@@ -20,5 +20,10 @@ pandas>=2.2.0
 openpyxl>=3.1.2
 exchange-calendars==4.13.2
 
+# Market-data source for Q10 lead-market, Q12 BTC/USD, macro/global sentiment, news and
+# feature-seed fallbacks. Declared explicitly: it was previously installed by hand and was
+# lost when the host venv was recreated from this file (2026-10-03 -> 2026-10-06 incident).
+yfinance==1.7.0
+
 pytest
 pyyaml

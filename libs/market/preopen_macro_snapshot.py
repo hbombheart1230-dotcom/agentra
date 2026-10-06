@@ -6,6 +6,7 @@ from typing import Any, Callable, Mapping
 
 from libs.core.settings import load_env_file
 from libs.market.global_sentiment import compute_global_sentiment_signal
+from libs.market.yfinance_support import require_yfinance
 
 
 def _load_state(path: Path) -> dict[str, Any]:
@@ -23,6 +24,11 @@ def capture_preopen_macro_snapshot(
     compute: Callable[..., Mapping[str, Any]] = compute_global_sentiment_signal,
 ) -> dict[str, Any]:
     load_env_file(env_path)
+    # The macro/global indicators are sourced from yfinance. Fail loudly with an
+    # explicit DataSourceDependencyError rather than writing a snapshot whose
+    # indicators are all silently "unavailable". (Callers record CAPTURE_FAILED.)
+    if compute is compute_global_sentiment_signal:  # injected computes (tests/replays) bring their own data
+        require_yfinance()
     state = _load_state(state_path)
     policy = dict(state.get("policy") or {}) if isinstance(state.get("policy"), Mapping) else {}
     policy.setdefault("macro_indicator_log_enabled", True)

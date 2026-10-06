@@ -185,10 +185,11 @@ def _fetch_seed_rows(symbol: str, *, policy: Dict[str, Any], state: Dict[str, An
     if cached_source and cached_epoch > 0 and (now_epoch - cached_epoch) < negative_cache_sec:
         return [], f"{cached_source}_cached"
 
-    try:
-        import yfinance as yf  # type: ignore
-    except Exception:
-        return [], "yfinance_unavailable"
+    from libs.market.yfinance_support import DEPENDENCY_MISSING_REASON, try_yfinance
+
+    yf = try_yfinance("scanner_feature_hydration")  # logs an explicit ERROR once if not installed
+    if yf is None:
+        return [], DEPENDENCY_MISSING_REASON
 
     period = str(policy.get("scanner_feature_seed_period") or os.getenv("SCANNER_FEATURE_SEED_PERIOD", "3mo") or "3mo")
     interval = str(policy.get("scanner_feature_seed_interval") or os.getenv("SCANNER_FEATURE_SEED_INTERVAL", "1d") or "1d")

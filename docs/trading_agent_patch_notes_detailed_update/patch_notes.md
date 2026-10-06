@@ -1760,3 +1760,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - The rebuilt venv passed the dependency drift audit without re-adding historical or optional packages; deterministic, UEF/replay, execution-authority, and production-write-leakage validations remained green.
 - The migration was committed and pushed on `codex/observability-20260824`. The temporary compatibility junction `C:\Trading_Agent_System -> C:\Agentra` remains during soak; accumulated data and runtime state were not relocated.
 - See `docs/daily_patch/2026-10-03_agentra_root_migration.md`.
+
+# 2026-10-06 - yfinance Dependency Restore and Data-Source Status Integrity
+
+- Root cause of the 2026-10-06 Q12 08:55 `MISSING` (exit 2) and the Q10 08:50 all-`UNAVAILABLE` snapshot: `yfinance` was absent from `requirements.txt` and from the venv recreated on 2026-10-03, and every call site swallowed the import failure.
+- `requirements.txt` now declares `yfinance==1.7.0`; installed into `C:\Agentra\venv` via the canonical requirements path (`pip check` clean). A throwaway Python 3.12 dry-run resolves the same dependency set the Docker build would. The running `trading-agent-live` image predates this and lacks `yfinance`; it was not rebuilt or restarted during market hours - rebuild after the close.
+- Missing dependency is now explicit: new `DataSourceDependencyError` (`dependency_missing:yfinance`). Q12 capture records `DEPENDENCY_MISSING` (no retries, exit 3); Q10 and the preopen macro snapshot raise and their scripts exit 3 (opening-macro slots record `CAPTURE_FAILED` with the explicit error). Loop-adjacent best-effort paths still degrade but log an explicit error.
+- Q10 status integrity: an all-`UNAVAILABLE` lead-market snapshot is persisted unchanged but reported `DATA_UNAVAILABLE` (reason `all_lead_market_observations_unavailable`) instead of `CAPTURED`; partial data stays `CAPTURED`. Scoring/signal semantics are unchanged; consumers that require `CAPTURED` now treat it as not captured.
+- Today's expired Q10/Q12 artifacts were not rewritten or replayed (no backfill). Read-only dry loads with the restored environment: Q10 12/13 available, Q12 BTC/USD and BTC/KRW eligible for 08:55, global-sentiment inputs populated; yfinance news returned no items (upstream/unclear).
+- Regression tests: `tests/test_yfinance_dependency_integrity.py` (27 tests); related Q10/Q12/macro/sentiment/news/hydration suites remain green.
+- See `docs/daily_patch/2026-10-06_yfinance_dependency_restore.md`.

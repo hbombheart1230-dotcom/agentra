@@ -1,14 +1,19 @@
 from __future__ import annotations
 
+import logging
+
 from bisect import bisect_left, bisect_right
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from libs.market.yfinance_support import DataSourceDependencyError, require_yfinance
 from libs.reporting.baseline_samsung_hynix.data_provider import load_existing_candles
 
 from .contracts import TARGET_SYMBOL, TARGET_TICKER
 from .trend_context import build_recent_btc_trend_context
+
+_LOG = logging.getLogger(__name__)
 
 
 KST = timezone(timedelta(hours=9))
@@ -81,10 +86,9 @@ def _yf_rows(
     interval: str = "1m",
     restrict_to_recent_days: bool = True,
 ) -> list[dict[str, Any]]:
-    try:
-        import yfinance as yf  # type: ignore
-    except Exception:
-        return []
+    # Missing dependency is an explicit error (DataSourceDependencyError), never an
+    # empty result; genuine fetch failures below still degrade to [].
+    yf = require_yfinance()
     try:
         frame = yf.Ticker(ticker).history(period=period, interval=interval)
     except Exception:
@@ -179,9 +183,18 @@ def _momentum_rows(rows: list[Mapping[str, Any]], *, source: str) -> list[dict[s
 def load_btc_signal_rows(
     *, day: str, include_research_context: bool = True
 ) -> dict[str, Any]:
-    btc_usd_rows = _yf_rows("BTC-USD", day=day)
-    coin_rows = _yf_rows("COIN", day=day)
-    krw_rows = _yf_rows("KRW=X", day=day)
+    dependency_error: DataSourceDependencyError | None = None
+    try:
+        btc_usd_rows = _yf_rows("BTC-USD", day=day)
+        coin_rows = _yf_rows("COIN", day=day)
+        krw_rows = _yf_rows("KRW=X", day=day)
+    except DataSourceDependencyError as exc:
+        # Explicit, non-crashing surface for long-running baseline loops: logged at
+        # ERROR and carried in the payload (fallback_reason / data_source_error).
+        # The 08:55 capture entrypoint fails loudly via require_yfinance() instead.
+        _LOG.error("DATA_SOURCE_DEPENDENCY_MISSING component=q12_btc_signal_rows %s", exc)
+        dependency_error = exc
+        btc_usd_rows, coin_rows, krw_rows = [], [], []
     btc_krw_rows: list[dict[str, Any]] = []
     krw_by_ts = {int(row["ts"]): row for row in krw_rows}
     for row in btc_usd_rows:
@@ -213,6 +226,8 @@ def load_btc_signal_rows(
     # ``sources`` so existing Q12 eligibility and ranking cannot consume it.
     def daily_research_rows(ticker: str) -> list[dict[str, Any]]:
         key = (ticker, day)
+        if dependency_error is not None:
+            return []
         if key not in _DAILY_RESEARCH_CACHE:
             _DAILY_RESEARCH_CACHE[key] = _yf_rows(
                 ticker,
@@ -237,7 +252,12 @@ def load_btc_signal_rows(
             "btc_usd_daily": btc_daily_rows,
             "woori_daily": woori_daily_rows,
         },
-        "fallback_reason": "" if available else "btc_and_crypto_proxy_unavailable",
+        "fallback_reason": (
+            ""
+            if available
+            else (dependency_error.reason if dependency_error is not None else "btc_and_crypto_proxy_unavailable")
+        ),
+        "data_source_error": dependency_error.reason if dependency_error is not None else "",
         "btc_0855_capture_reused": bool(captured_payload.get("btc_0855_capture_reused")),
         "btc_0855_capture_status": str(captured_payload.get("btc_0855_capture_status") or ""),
         "btc_0855_capture_reason": str(captured_payload.get("btc_0855_capture_reason") or ""),

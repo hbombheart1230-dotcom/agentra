@@ -29,7 +29,9 @@ def session_return(rows, day):
 
 
 def fetch_equities(day):
-    import yfinance as yf
+    from libs.market.yfinance_support import require_yfinance
+
+    yf = require_yfinance()  # explicit DataSourceDependencyError if not installed
     result = {}
     for ticker in ('COIN', 'MSTR'):
         try:

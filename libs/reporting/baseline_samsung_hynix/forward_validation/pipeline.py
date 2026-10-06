@@ -8,7 +8,13 @@ from typing import Any, Mapping
 from .contracts import ACTIVATION_DAY, EXPERIMENT_GUARDS, PROGRAM_ID, SCHEMA_VERSION, THRESHOLDS
 from .cumulative import build_cumulative
 from .expected_actual import build_expected_actual
-from .market_inputs import LeadMarketProvider, YFinanceLeadMarketProvider, detect_samsung_specific_event, flatten_signal_inputs
+from .market_inputs import (
+    LeadMarketProvider,
+    YFinanceLeadMarketProvider,
+    all_observations_unavailable,
+    detect_samsung_specific_event,
+    flatten_signal_inputs,
+)
 from .reaction_reader import build_actual_reactions
 from .report import render_forward_validation_report
 from .scoring import classify_hynix_extension, score_korea_market_state, score_semiconductor_signal
@@ -72,11 +78,23 @@ def _preopen_snapshot(
         "hynix_extension": classify_hynix_extension(inputs),
         "korea_market": score_korea_market_state(inputs),
     }
+    # Data-integrity status only: if every lead-market observation is UNAVAILABLE the
+    # snapshot is persisted (immutable, no backfill) but is NOT reported as a healthy
+    # CAPTURED. Scoring/signal semantics are unchanged.
+    no_data = all_observations_unavailable(observations)
     snapshot = {
         "schema_version": SCHEMA_VERSION,
         "evaluation_program_id": PROGRAM_ID,
         "day": day,
-        "capture_status": "CAPTURED",
+        "capture_status": "DATA_UNAVAILABLE" if no_data else "CAPTURED",
+        **({"reason": "all_lead_market_observations_unavailable"} if no_data else {}),
+        "observation_summary": {
+            "total": len(observations),
+            "available": sum(
+                1 for row in observations.values()
+                if isinstance(row, Mapping) and str(row.get("status") or "").upper() == "AVAILABLE"
+            ),
+        },
         "captured_at_kst": now.isoformat(),
         "capture_window_kst": [start.isoformat(), deadline.isoformat()],
         "observations": observations,

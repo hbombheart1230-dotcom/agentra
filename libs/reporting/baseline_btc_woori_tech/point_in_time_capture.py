@@ -5,6 +5,8 @@ from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
+from libs.market.yfinance_support import DataSourceDependencyError, require_yfinance
+
 
 KST = timezone(timedelta(hours=9))
 DEFAULT_ROOT = Path("data/logs/q12_btc_0855")
@@ -205,6 +207,25 @@ def capture_q12_btc_0855_snapshot(
         return result
 
     if signal_loader is None:
+        # Fail loudly (explicit status + reason) instead of reporting a silent
+        # empty source set when the data-source library is not installed.
+        try:
+            require_yfinance()
+        except DataSourceDependencyError as exc:
+            result = {
+                **base,
+                "capture_status": "DEPENDENCY_MISSING",
+                "reason": exc.reason,
+                "error": str(exc),
+                "snapshot_submitted": False,
+                "target_epoch": int(target.timestamp()),
+                "sources": {},
+                "source_count": 0,
+                "available_sources": [],
+            }
+            _write(paths["snapshot"], result)
+            _record_attempt(paths["ledger"], result, snapshot_path=paths["snapshot"])
+            return result
         from .data_provider import load_btc_signal_rows
 
         payload = dict(

@@ -18,6 +18,10 @@ from libs.reporting.baseline_btc_woori_tech.point_in_time_capture import (
 )
 
 
+# Exit codes: 0 = CAPTURED, 2 = not captured (MISSING/MISSED/...), 3 = required dependency missing.
+EXIT_DEPENDENCY_MISSING = 3
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Capture immutable Q12 BTC evidence at 08:55 KST.")
     parser.add_argument("--day", default=date.today().isoformat())
@@ -33,11 +37,15 @@ def main() -> int:
             day=str(args.day)[:10],
             root=Path(args.root),
         )
-        if result.get("capture_status") in {"CAPTURED", "MISSED"}:
+        if result.get("capture_status") in {"CAPTURED", "MISSED", "DEPENDENCY_MISSING"}:
+            # DEPENDENCY_MISSING cannot self-heal within the retry window: stop early.
             break
         if attempt + 1 < max(1, int(args.attempts)):
             time.sleep(max(0.0, float(args.retry_sec)))
     print(json.dumps(result, ensure_ascii=False, indent=2), flush=True)
+    if result.get("capture_status") == "DEPENDENCY_MISSING":
+        print(f"ERROR: Q12 capture failed: {result.get('error') or result.get('reason')}", file=sys.stderr, flush=True)
+        return EXIT_DEPENDENCY_MISSING
     return 0 if result.get("capture_status") == "CAPTURED" else 2
 
 

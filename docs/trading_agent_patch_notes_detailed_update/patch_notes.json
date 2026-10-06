@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 107,
+  "entry_count": 108,
   "entries": [
     {
       "date": "2026-09-08",
@@ -2832,6 +2832,38 @@
         "docs/daily_patch/2026-10-03_agentra_root_migration.md",
         "deploy/m28_launch_templates/windows/daily_uef_evaluation_task.xml",
         "deploy/compose/.env.example"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-06",
+      "version": "yfinance Dependency Restore and Data-Source Status Integrity",
+      "title": "yfinance restored as a declared dependency; missing-dependency and all-unavailable data are no longer reported as healthy",
+      "stage": "Data Integrity and Reliability",
+      "types": [
+        "DATA_INTEGRITY",
+        "RELIABILITY",
+        "OPERATIONS"
+      ],
+      "summary": "yfinance was missing from the recreated host venv and from requirements.txt, so the 2026-10-06 Q12 08:55 capture was MISSING (exit 2) and the Q10 08:50 snapshot was reported CAPTURED with all 13 lead-market observations UNAVAILABLE. The dependency is now declared and installed, missing-dependency failures are explicit, and an all-unavailable Q10 snapshot is no longer CAPTURED.",
+      "details": [
+        "requirements.txt now declares yfinance==1.7.0 (it had been installed by hand in the pre-migration venv and was lost when the venv was recreated on 2026-10-03; the migration drift audit had left it out as optional). Installed into C:\\Agentra\\venv through the canonical requirements path; pip check is clean.",
+        "Dependency parity: a throwaway python:3.12-slim-bookworm dry-run of requirements.txt resolves the same set (yfinance 1.7.0, pandas 3.0.6, numpy 2.5.3) as the host venv. The running trading-agent-live image was built before this change and does not contain yfinance; it was NOT rebuilt or restarted (market hours). A rebuild is required after the close before the next production image.",
+        "New libs/market/yfinance_support.py: DataSourceDependencyError (reason dependency_missing:yfinance), require_yfinance(), yfinance_dependency_status(), try_yfinance(component) which logs one explicit ERROR per component. Genuine fetch failures (network, empty frame, bad ticker) keep their existing unavailable handling.",
+        "Collectors fail loudly: Q12 _yf_rows raises; the Q12 08:55 capture records capture_status DEPENDENCY_MISSING (non-terminal, not MISSING) and the script stops retrying and exits 3; the Q10 provider raises and the capture script prints DEPENDENCY_MISSING, persists nothing and exits 3; the preopen macro snapshot raises (opening-macro slots record CAPTURE_FAILED with the explicit error) and its script exits 3. Exit 2 keeps meaning 'not captured'.",
+        "Loop-adjacent best-effort paths (global_sentiment, news_pipeline fallback, scanner feature hydration, decision-context seed) keep degrading but now log an explicit DATA_SOURCE_DEPENDENCY_MISSING error; scanner hydration reports dependency_missing:yfinance instead of the generic yfinance_unavailable; load_btc_signal_rows carries fallback_reason/data_source_error instead of crashing baseline loops.",
+        "Q10 status semantics: when every lead-market observation is UNAVAILABLE the preopen snapshot is persisted unchanged (immutable, no backfill) but its capture_status is DATA_UNAVAILABLE with reason all_lead_market_observations_unavailable and an observation_summary; partial data is still CAPTURED. Scoring and signal semantics are untouched; downstream consumers that require CAPTURED (controlled lane gating, Q9/Q12 readiness check, capture script exit code) now treat the all-unavailable case as not captured.",
+        "Today's expired artifacts were not rewritten or replayed: the 2026-10-06 Q12 08:55 snapshot remains MISSING and the 2026-10-06 Q10 preopen snapshot remains as written (CAPTURED, 0/13 available). Read-only dry loads with the restored environment: Q10 12/13 observations AVAILABLE (hynix_adr unavailable, as on 2026-10-01/02), Q12 BTC/USD and BTC/KRW point-in-time sources eligible for an 08:55 capture, global_sentiment inputs (S&P, Nasdaq, Dow, VIX, DXY, US10Y) populated; yfinance news returned no items for AAPL/NVDA/005930.KS (upstream/unclear, not a dependency error).",
+        "Regression tests: tests/test_yfinance_dependency_integrity.py (27 tests) covers the missing-dependency errors, source-unavailable vs dependency-missing distinction, DEPENDENCY_MISSING capture status and exit codes, all-unavailable vs partial Q10 status, macro/opening-macro behaviour and the explicit logging; related Q10/Q12/macro/sentiment/news/hydration suites remain green."
+      ],
+      "impact": "Silent empty-but-healthy data from a missing data-source library can no longer pass as a successful Q10/Q12/macro capture. Starting with the next trading day the host collectors have the dependency and fail visibly if it ever disappears; the Docker image needs a post-close rebuild to carry the same declaration.",
+      "sources": [
+        "docs/daily_patch/2026-10-06_yfinance_dependency_restore.md",
+        "requirements.txt",
+        "libs/market/yfinance_support.py",
+        "libs/reporting/baseline_samsung_hynix/forward_validation/pipeline.py",
+        "libs/reporting/baseline_btc_woori_tech/point_in_time_capture.py",
+        "tests/test_yfinance_dependency_integrity.py"
       ],
       "status": "current"
     }

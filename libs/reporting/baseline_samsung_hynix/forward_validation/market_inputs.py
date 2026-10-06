@@ -5,6 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Mapping, Protocol
 
+from libs.market.yfinance_support import require_yfinance
+
 
 class LeadMarketProvider(Protocol):
     def capture(self, *, as_of: datetime) -> Mapping[str, Any]: ...
@@ -45,9 +47,10 @@ class YFinanceLeadMarketProvider:
 
     @staticmethod
     def _rows(ticker: str, *, period: str, interval: str, prepost: bool = False) -> list[dict[str, Any]]:
+        # Missing dependency -> explicit DataSourceDependencyError (never an empty,
+        # healthy-looking result). Fetch failures below still degrade to [].
+        yf = require_yfinance()
         try:
-            import yfinance as yf  # type: ignore
-
             frame = yf.Ticker(ticker).history(
                 period=period,
                 interval=interval,
@@ -94,9 +97,8 @@ class YFinanceLeadMarketProvider:
 
     @staticmethod
     def _quote_previous_close(ticker: str) -> float | None:
+        yf = require_yfinance()
         try:
-            import yfinance as yf  # type: ignore
-
             return _number(yf.Ticker(ticker).fast_info.get("previous_close"))
         except Exception:
             return None
@@ -148,6 +150,15 @@ class YFinanceLeadMarketProvider:
             }
         )
         return observations
+
+
+def all_observations_unavailable(observations: Mapping[str, Any]) -> bool:
+    """True when no lead-market observation carries data (none is AVAILABLE).
+
+    Data-integrity helper only: it does not alter how signals are scored.
+    """
+    rows = [row for row in observations.values() if isinstance(row, Mapping)]
+    return not any(str(row.get("status") or "").upper() == "AVAILABLE" for row in rows)
 
 
 def _observation_return(observations: Mapping[str, Any], key: str) -> float | None:

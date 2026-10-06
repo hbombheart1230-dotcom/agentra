@@ -50,7 +50,9 @@ def capture_alignment(day, equities, rows):
 
 
 def fetch_alignment(day, equities):
-    import yfinance as yf
+    from libs.market.yfinance_support import require_yfinance
+
+    yf = require_yfinance()  # explicit DataSourceDependencyError if not installed
     frame = yf.Ticker('BTC-USD').history(period='5d', interval='5m', auto_adjust=False, timeout=8)
     # Do not reuse the legacy provider's missing-OPEN -> CLOSE fallback here.
     rows = [{'ts': int(index.timestamp()), 'open': number(row.get('Open'))}

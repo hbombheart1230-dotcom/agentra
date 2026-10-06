@@ -171,9 +171,10 @@ def _fetch_korea_index_inputs(state: Dict[str, Any], policy: Dict[str, Any]) -> 
 
 def _fetch_last2_closes_yfinance(ticker: str) -> Optional[Tuple[float, float]]:
     """Return (prev_close, last_close) for ticker, or None on failure."""
-    try:
-        import yfinance as yf  # optional
-    except Exception:
+    from libs.market.yfinance_support import try_yfinance
+
+    yf = try_yfinance("global_sentiment")  # logs an explicit ERROR once if not installed
+    if yf is None:
         return None
 
     try:
