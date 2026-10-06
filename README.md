@@ -1,4 +1,4 @@
-﻿# Trading Agent System
+﻿# Trading Agent System - Agentra
 
 ## Enterprise Architecture Overview (M20)
 
