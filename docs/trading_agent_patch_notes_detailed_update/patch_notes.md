@@ -1805,3 +1805,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - AST caller guard now covers direct, imported-alias, module-qualified and simple-alias calls. Documented limitation: with the readiness gate disabled by the operator and no readiness context there is nothing to revalidate.
 - No strategy, readiness, Step5C/5D, UEF or broker-routing change; no 2026-10-06 evidence fabricated; not deployed (Docker untouched).
 - Tests: `tests/test_r62_attempt_and_lock.py` (30) plus updated R6/R6.1 suites. See `docs/daily_patch/2026-10-06_r6_2_attempt_binding_and_lock_identity.md`.
+
+# 2026-10-06 - Docker Live-Open Observation and Daily UEF Freshness Incident
+
+- The retained daily record confirms one canonical Docker runtime at generation 5. The Host live-launch path recorded `HOST_LIVE_START_SKIPPED_CANONICAL_RUNTIME_DOCKER` while collectors remained active. The report records a BUY and matching SELL for `217590` quantity 41; broker reconciliation matched both local records to the broker by order number.
+- The contemporaneous Docker observation recorded `RestartCount=0` and no OOM kill for that generation. This is an observation only, not a new Docker acceptance, rebuild, deployment, or claim that the running image carries post-open changes.
+- The earlier Docker restart-storm incident and its R1/R2 corrective work remain historical records in the 2026-10-01/02 notes. No new recurrence or new fix is claimed here.
+- `TradingAgent-DailyUefEvaluation` started from `C:\Agentra` at 16:45:02 KST (SHA `a38bf4e9f5f6f76eaee37659c45c7c49705fcef2`) and ended at 16:45:03 KST with exit code 1, no canonical generation, and an explicit registered-freshness failure. It failed closed rather than materializing a canonical board that could mix a fresh through-day label with stale or unreviewed content.
+- The individual stale or unknown closeout-written source is not identified by the retained lifecycle event, so source-level RCA remains open. No source artifact, pointer, registry, UEF framework/freeze semantic, or historical evidence was changed. R6/R6.1/R6.2 deployment and live acceptance are not asserted.
+- See `docs/daily_patch/2026-10-06_docker_live_open_and_daily_uef_freshness_incident.md`.

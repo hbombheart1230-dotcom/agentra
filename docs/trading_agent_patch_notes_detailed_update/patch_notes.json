@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 111,
+  "entry_count": 112,
   "entries": [
     {
       "date": "2026-09-08",
@@ -2959,6 +2959,34 @@
         "libs/execution/intent_execution_owner.py",
         "libs/runtime/live_loop_lock.py",
         "tests/test_r62_attempt_and_lock.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-06",
+      "version": "Docker Live-Open Observation and Daily UEF Freshness Incident",
+      "title": "Docker generation 5 processed the observed session; Daily UEF failed closed on upstream freshness",
+      "stage": "Operations and Reliability",
+      "types": [
+        "OPERATIONS",
+        "RELIABILITY",
+        "DATA_INTEGRITY"
+      ],
+      "summary": "The retained 2026-10-06 daily record confirms one Docker canonical runtime (generation 5), two broker-aligned executions, and no observed container restart/OOM on that generation. The scheduled Daily UEF entrypoint then failed closed at 16:45 KST because one or more registered sources failed freshness or were unknown; it created no canonical generation.",
+      "details": [
+        "The Host live-launch path recorded HOST_LIVE_START_SKIPPED_CANONICAL_RUNTIME_DOCKER while collectors remained active. The daily report records a BUY and matching SELL for 217590, quantity 41, and broker reconciliation matched 2 local records to 2 broker records by order number.",
+        "The contemporaneous Docker observation recorded RestartCount=0 and no OOM kill for generation 5. This is an observation only, not a new Docker acceptance, rebuild, or deployment claim.",
+        "The historical Docker restart-storm incident and its R1/R2 corrective work remain documented in the 2026-10-01/02 records. No new recurrence or new fix is claimed by this entry.",
+        "TradingAgent-DailyUefEvaluation started from C:\\Agentra at 2026-10-06 16:45:02 KST (source SHA a38bf4e9f5f6f76eaee37659c45c7c49705fcef2) and ended one second later with exit code 1, no canonical generation, and the explicit registered-freshness failure reason.",
+        "The Daily UEF failure is fail-closed: it refused to materialize a canonical board that could mix a fresh through_day label with stale or unreviewed content. No source artifact, canonical pointer, registry, or UEF framework/freeze semantic was repaired, backfilled, deleted, or republished.",
+        "The lifecycle event does not name the individual stale or unknown closeout-written source. Source-level RCA remains open; R6/R6.1/R6.2 deployment and live acceptance are not asserted here."
+      ],
+      "impact": "The 2026-10-06 Daily UEF operational result is a visible freshness-contract failure rather than a silent or mixed-authority publication. Follow-up must identify the stale or unknown registered source without rewriting real operational evidence.",
+      "sources": [
+        "docs/daily_patch/2026-10-06_docker_live_open_and_daily_uef_freshness_incident.md",
+        "data/logs/events.jsonl",
+        "reports/operator_summary/daily/2026-10-06/daily_report.md",
+        "docs/daily_patch/2026-10-02_p1_3_r1_r4_docker_restart_safety.md"
       ],
       "status": "current"
     }
