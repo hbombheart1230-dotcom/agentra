@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import time
+import uuid
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -2005,6 +2006,7 @@ def _record_readiness_evidence(
     readiness_reason: str,
     readiness_details: Dict[str, Any],
     broker_submission_allowed: bool,
+    execution_attempt_id: str = "",
 ) -> Tuple[bool, str, Dict[str, Any]]:
     """R6 (2026-10-06): persist immutable per-intent readiness/guard EVIDENCE.
 
@@ -2031,6 +2033,7 @@ def _record_readiness_evidence(
         guard_reason=str(readiness_reason or ""),
         broker_submission_allowed=bool(broker_submission_allowed),
         source="execute_from_packet",
+        execution_attempt_id=execution_attempt_id,
     )
 
 
@@ -3220,6 +3223,9 @@ def execute_from_packet(state: dict) -> dict:
             logger.log(run_id=run_id, stage="execute_from_packet", event="end", payload={"ok": True})
             return state
 
+        # R6.2: one explicit execution-attempt identity flows readiness/guard -> evidence -> admission ->
+        # execute_owned_order -> broker submit; evidence is bound to exactly this attempt.
+        execution_attempt_id = uuid.uuid4().hex
         readiness_allowed, readiness_reason, readiness_details = _evaluate_execution_readiness_guard(state, order)
         if not readiness_allowed:
             # R6: the BLOCK verdict is recorded too (evidence only; the block is already decided).
@@ -3231,6 +3237,7 @@ def execute_from_packet(state: dict) -> dict:
                 readiness_reason=readiness_reason,
                 readiness_details=readiness_details,
                 broker_submission_allowed=False,
+                execution_attempt_id=execution_attempt_id,
             )
             readiness_details = {**readiness_details, "readiness_evidence": readiness_evidence}
             state["execution"] = _normalize_execution(
@@ -3948,6 +3955,7 @@ def execute_from_packet(state: dict) -> dict:
             readiness_reason=readiness_reason,
             readiness_details=readiness_details,
             broker_submission_allowed=True,
+            execution_attempt_id=execution_attempt_id,
         )
         if not evidence_ok:
             state["execution"] = _normalize_execution(
@@ -3991,6 +3999,7 @@ def execute_from_packet(state: dict) -> dict:
         state["execution"] = execute_owned_order(state=state, order=order, request=req,
             executor=executor, on_submit=_mark_submission_dispatched,
             readiness_evidence=readiness_evidence.get("reference"),
+            execution_attempt_id=execution_attempt_id,
             normalize=lambda result: _finalize_execution_observability_fields(_normalize_execution(
                 allowed=True, execution_result=result, allow_result=allow_result,
                 order=order, strategy_policy_summary=strategy_policy_summary)))

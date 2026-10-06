@@ -161,7 +161,8 @@ class ExecutorAgent:
                 if not evidence_ok:
                     return {"decision": decision_dict, "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": evidence_error}}
                 if evidence_ref:
-                    intent = {**(intent or {}), "readiness_evidence": evidence_ref}
+                    intent = {**(intent or {}), "readiness_evidence": evidence_ref,
+                              "execution_attempt_id": evidence_ref.get("execution_attempt_id")}
                 admission_error = self.approvals.admit_pre_approved_intent(intent or {}, source="executor_agent_auto")
                 if admission_error:
                     return {"decision": decision_dict, "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": admission_error}}
@@ -228,6 +229,7 @@ class ExecutorAgent:
             "intent_id": str(intent.get("intent_id") or ""),
             # R6.1: evidence reference produced by the approval/pre-admission helper (if any).
             "readiness_evidence": intent.get("readiness_evidence"),
+            "execution_attempt_id": intent.get("execution_attempt_id"),
         }
         out = self.runner.run(run_id=_new_run_id(), skill="order.place", args=skill_args)
         return asdict(out)

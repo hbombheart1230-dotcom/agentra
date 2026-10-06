@@ -96,6 +96,7 @@ def execute_order(state: dict) -> dict:
     from libs.execution.readiness_evidence import (
         PHASE_GUARD_BLOCK, PHASE_PRE_BROKER_SUBMIT, is_new_exposure_order, record_pre_admission_evidence)
     readiness_ref = None
+    attempt_id = __import__('uuid').uuid4().hex  # R6.2: one explicit attempt identity for this execution
     if is_new_exposure_order(guard_order, prep.request):
         from graphs.nodes.execute_from_packet import _evaluate_execution_readiness_guard
         r_allowed, r_reason, r_details = _evaluate_execution_readiness_guard(state, guard_order)
@@ -103,7 +104,8 @@ def execute_order(state: dict) -> dict:
             state=state, order=guard_order, request=prep.request,
             phase=PHASE_PRE_BROKER_SUBMIT if r_allowed else PHASE_GUARD_BLOCK,
             guard_enabled=bool((r_details or {}).get("enabled")), guard_allowed=r_allowed,
-            guard_reason=r_reason, broker_submission_allowed=bool(r_allowed), source="execute_order")
+            guard_reason=r_reason, broker_submission_allowed=bool(r_allowed), source="execute_order",
+            execution_attempt_id=attempt_id)
         if not r_allowed or not ev_ok:
             reason = r_reason if not r_allowed else ev_reason
             state["execution"] = {"allowed": False, "reason": reason, "execution_readiness_guard": r_details,
@@ -117,7 +119,7 @@ def execute_order(state: dict) -> dict:
     admit_order_intent(state=state, order=guard_order, source="legacy_execute_order_policy")
     state['execution'] = execute_owned_order(state=state, order=guard_order, request=prep.request,
                                             executor=executor, normalize=normalize_legacy,
-                                            readiness_evidence=readiness_ref)
+                                            readiness_evidence=readiness_ref, execution_attempt_id=attempt_id)
     broker_outcome = state['execution']['broker_outcome']
     if broker_outcome == "UNKNOWN":
         _quarantine_symbol_for_unknown_outcome(state, guard_order, state["execution"])

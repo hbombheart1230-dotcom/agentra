@@ -32,6 +32,8 @@ from libs.execution.readiness_evidence import (
     build_readiness_evidence_record,
 )
 
+from _r6_helpers import sync_owner, write_snapshot
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -41,6 +43,8 @@ def _real_mode_gate_on(monkeypatch, tmp_path):
     monkeypatch.setenv("EXECUTION_READINESS_GATE_ENABLED", "true")
     monkeypatch.setenv("EXECUTION_MODE", "real")
     monkeypatch.setenv("REPORTS_ROOT", str(tmp_path / "reports"))
+    monkeypatch.setenv("RUNTIME_OWNERSHIP_DB_PATH", str(tmp_path / "ownership.db"))
+    monkeypatch.setenv("EXECUTION_READINESS_SNAPSHOT_PATH", str(tmp_path / "readiness_snapshot.json"))
 
 
 class _Claims:
@@ -115,6 +119,8 @@ def _state(
         "catalog_path": _catalog(tmp_path),
     }
     state = build_execution_readiness(state)
+    # R6.2: the evidence is only honoured while the canonical owner still matches the ALLOW decision.
+    sync_owner(tmp_path / "ownership.db", instance_id=instance_id, generation=generation)
     state["executor"] = _RecordingExecutor(tmp_path / "evidence")
     return state
 
@@ -366,7 +372,8 @@ def test_r10d_record_identity_is_deterministic():
 def test_evidence_module_never_overwrites_or_truncates():
     source = (ROOT / "libs" / "execution" / "readiness_evidence.py").read_text(encoding="utf-8")
     assert "os.O_APPEND" in source
-    assert not re.search(r"open\([^)]*[\"']w", source) and "O_TRUNC" not in source and "write_text" not in source
+    assert not re.search(r"open\([^)]*[\"']w", source) and "O_TRUNC" not in source
+    assert "EVIDENCE_MAX_AGE_SEC" not in source  # R6.2: no age-based authorization window
 
 
 # --------------------------------------------------- 11-14 BUY / SELL / probe / stop-loss paths

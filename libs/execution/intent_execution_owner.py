@@ -25,7 +25,7 @@ def _store():
 
 
 def execute_owned_order(*, state: dict, order: dict, request, executor, normalize, child: bool = False, on_submit=None,
-                        readiness_evidence=None) -> dict:
+                        readiness_evidence=None, execution_attempt_id=None) -> dict:
     """Call only after existing policy approval; never bypass those guards.
 
     This is the single canonical claim-dispatch-finish sequence for every
@@ -52,8 +52,11 @@ def execute_owned_order(*, state: dict, order: dict, request, executor, normaliz
 
     R6.1 (final mutation choke point): for production-capable BUY/SELL (real execution mode, new
     exposure) the caller must pass ``readiness_evidence`` -- the reference returned by the shared R6
-    pre-admission helper. It is verified against durable storage here (a matching, hash-valid,
-    fresh pre_broker_submit record with an ALLOW verdict). Missing/invalid -> fail closed BEFORE any
+    pre-admission helper together with this attempt's ``execution_attempt_id``. It is verified against
+    durable storage here (a hash-valid pre_broker_submit ALLOW record bound to this intent AND this exact
+    attempt, runtime instance and ownership generation) and the CURRENT canonical owner / readiness /
+    recovery state must still match it (R6.2: evidence is proof, never a reusable capability token; there
+    is no age-based authorization). Missing/invalid/stale -> fail closed BEFORE any
     Step5C claim and with no broker call. This grants no authority: readiness/guard decisions stay
     with their existing owners; this only proves the evidence contract was satisfied.
     """
@@ -66,7 +69,8 @@ def execute_owned_order(*, state: dict, order: dict, request, executor, normaliz
         iid = bind_intent(state, order, child=child)
         from libs.execution.readiness_evidence import require_readiness_evidence_for_order
         evidence_ok, evidence_reason = require_readiness_evidence_for_order(
-            state=state, order=order, request=request, evidence=readiness_evidence)
+            state=state, order=order, request=request, evidence=readiness_evidence,
+            execution_attempt_id=str(execution_attempt_id or ''))
         physical_key = physical_order_fingerprint(state, order) if evidence_ok else ''
         if not evidence_ok:
             claim = {'claimed': False, 'reason': evidence_reason}

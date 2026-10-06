@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 110,
+  "entry_count": 111,
   "entries": [
     {
       "date": "2026-09-08",
@@ -2927,6 +2927,38 @@
         "libs/approval/service.py",
         "graphs/nodes/execute_order.py",
         "tests/test_r61_scope_fix.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-06",
+      "version": "R6.2 Evidence Is Proof, Not a Capability Token; Strict Lock Identity",
+      "title": "Evidence is bound to one execution attempt and revalidated against current safety state; the storage lock only breaks dead or PID-reused owners",
+      "stage": "Operations and Reliability",
+      "types": [
+        "SAFETY",
+        "RELIABILITY",
+        "OBSERVABILITY"
+      ],
+      "summary": "Independent audit of R6.1 found two blockers: a valid R6 evidence reference could be reused for up to 600 seconds (behaving like an authorization capability token), and the evidence storage lock was broken on file age alone. R6.2 removes the age-based authorization, binds evidence to exactly one execution attempt, revalidates the current canonical owner/readiness/recovery state at the final choke point, and replaces the mtime stale-break with a strict live-owner identity lock. No strategy, readiness, Step5C/Step5D, UEF or broker-routing semantics changed; nothing was deployed.",
+      "details": [
+        "R6 evidence is observational proof only. The former rule (valid ALLOW record + age <= 600 s -> execution permitted) is removed together with the 600-second constant; recorded_at remains as audit/retention data. Possessing a valid ALLOW record of any age grants nothing.",
+        "Explicit execution_attempt_id: one identity per execution attempt flows readiness/guard evaluation -> R6 evidence -> admission -> execute_owned_order -> broker submit (execute_from_packet, execute_order, and the approval/ToolFacade/ExecutorAgent/skills-runner chain). It is part of the deterministic record_id and the evidence reference together with intent_id, runtime_instance_id and ownership_generation. A later call for the same intent with a different attempt id cannot reuse old evidence; a new legitimate attempt needs new evidence.",
+        "Current-safety revalidation in execute_owned_order (no strategy or readiness recomputation): the evidence must match THIS attempt, intent, side, symbol, quantity, runtime instance and ownership generation, AND the current canonical runtime-owner row (read-only) must still show the same instance and generation with a live lease, AND the current readiness value (the caller's in-memory value, or the persisted snapshot when fresh) must still be ready, same instance/generation and recovery_required=false. Any mismatch or unverifiable state fails closed with readiness_evidence_stale/readiness_evidence_invalid before any Step5C claim and with no broker call.",
+        "Consumption contract: concurrent duplicate callers for the same attempt reference the same immutable record (same deterministic record_id, one stored line); Step5C/idempotency still allows exactly one broker mutation (tested with concurrent callers: one ACCEPTED, one NOT_SENT). Reuse of old evidence, stale-generation evidence, other-instance evidence and stale-readiness evidence are all blocked.",
+        "Documented limitation: if an operator disables the existing readiness gate (EXECUTION_READINESS_GATE_ENABLED=false) and no readiness context exists, there was no readiness ALLOW decision to revalidate; the evidence stays bound to its attempt/intent/order but owner/readiness revalidation is not applied. With readiness present it is still revalidated.",
+        "Evidence-storage lock: owner-identity contract (pid, process_start_identity, owner_token, acquired_at, host_id) built on the process-identity primitives of libs/runtime/live_loop_lock.py. A live owner's lock stays valid however old it is; a dead owner or a PID-reused owner is reclaimed through an exclusive reclaim-guard; a live pid whose identity cannot be verified, or malformed lock content, fails closed; a lock written by another host/PID namespace is never reclaimed (wait, then fail closed); release requires the exact owner token + pid + start identity. The lock is published atomically (tmp file + hard link) so readers never see a half-written lock. The mtime-only stale break is removed. The lock is storage serialisation only and has no connection to trading runtime ownership.",
+        "Critical section unchanged and verified: lock -> read valid records -> dedup -> allocate intent_sequence -> append -> flush/fsync -> read-back hash verification -> exact-owner release. A dead writer's lock is reclaimable, a torn final record is invalid, and no broker submit can proceed from an unverified record.",
+        "AST caller guard improved: the execute_owned_order caller inventory now counts direct calls, 'from ... import execute_owned_order as x', module-qualified/aliased-module calls and simple name aliases (arbitrary dynamic dispatch is out of scope). Tests: tests/test_r62_attempt_and_lock.py (30), tests/test_r61_scope_fix.py (33) and tests/test_r6_readiness_evidence.py (30) updated for the new contract. Existing tests that drive the choke point directly now supply attempt-bound evidence. The 8 pre-existing tests/test_step5b_fix4.py failures are unchanged.",
+        "Not deployed: Docker was not rebuilt or restarted. The 2026-10-06 09:02 BUY and 09:05 SELL remain READINESS_AT_EXECUTION = UNKNOWN (HISTORICAL_OBSERVABILITY_GAP); nothing is fabricated. Next: independent audit, then the after-hours exact-SHA rebuild."
+      ],
+      "impact": "A recorded ALLOW can no longer be replayed as a reusable authorization: it is valid only for its own execution attempt and only while the same runtime instance and ownership generation still hold a ready, non-recovering state. The evidence store cannot lose a live writer's lock to a slow-but-alive process.",
+      "sources": [
+        "docs/daily_patch/2026-10-06_r6_2_attempt_binding_and_lock_identity.md",
+        "libs/execution/readiness_evidence.py",
+        "libs/execution/intent_execution_owner.py",
+        "libs/runtime/live_loop_lock.py",
+        "tests/test_r62_attempt_and_lock.py"
       ],
       "status": "current"
     }

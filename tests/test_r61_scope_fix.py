@@ -35,6 +35,8 @@ from libs.execution.readiness_evidence import (
     record_pre_admission_evidence,
 )
 
+from _r6_helpers import sync_owner, write_snapshot
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -66,6 +68,8 @@ def _real_mode(monkeypatch, tmp_path):
     monkeypatch.setenv("INTENT_STATE_DB_PATH", str(tmp_path / "intent_state.db"))
     monkeypatch.setenv("REPORTS_ROOT", str(tmp_path / "reports"))
     monkeypatch.setenv("EXECUTION_READINESS_EVIDENCE_ROOT", str(tmp_path / "evidence"))
+    monkeypatch.setenv("RUNTIME_OWNERSHIP_DB_PATH", str(tmp_path / "ownership.db"))
+    monkeypatch.setenv("EXECUTION_READINESS_SNAPSHOT_PATH", str(tmp_path / "readiness_snapshot.json"))
     monkeypatch.delenv("AUTO_APPROVE", raising=False)
     monkeypatch.delenv("SYMBOL_ALLOWLIST", raising=False)
 
@@ -95,7 +99,11 @@ def _readiness_state(tmp_path: Path, *, ready: bool = True) -> dict[str, Any]:
         "intent_state_store": _Claims(),
         "execution_readiness_evidence_root": str(tmp_path / "evidence"),
     }
-    return build_execution_readiness(state)
+    state = build_execution_readiness(state)
+    # canonical owner row + persisted readiness snapshot (the revalidation inputs for paths without state)
+    sync_owner(tmp_path / "ownership.db", instance_id="inst-r61", generation=5)
+    write_snapshot(tmp_path / "readiness_snapshot.json", state["execution_readiness"])
+    return state
 
 
 def _records(tmp_path: Path) -> list[dict[str, Any]]:
@@ -149,10 +157,11 @@ def test_a_skills_runner_cannot_broker_submit_without_r6_evidence(tmp_path):
 
 def test_a2_skills_runner_rejects_a_forged_evidence_reference(tmp_path):
     spy = _Spy()
+    forged = {"record_id": "r6-forged", "day": "2026-10-06", "intent_id": "intent-r61-a2", "execution_attempt_id": "att-a2"}
     result = _runner(tmp_path, spy).run(
         run_id="r61-a2", skill="order.place",
         args={"side": "buy", "symbol": "005930", "qty": 1, "order_type": "market", "trde_tp": "3", "intent_id": "intent-r61-a2",
-              "readiness_evidence": {"record_id": "r6-forged", "day": "2026-10-06", "intent_id": "intent-r61-a2"}},
+              "readiness_evidence": forged, "execution_attempt_id": "att-a2"},
     )
     assert spy.calls == 0 and result.meta["blocked_reason"] == INVALID_REASON
 
@@ -284,14 +293,24 @@ def _admit(order: dict[str, Any]) -> None:
     admit_order_intent(state={"run_id": "r61"}, order=order, source="test_policy")
 
 
-def _owned(order, request, spy, *, evidence=None, state=None):
+def _owned(order, request, spy, *, evidence=None, state=None, attempt=None):
     from graphs.nodes.execute_from_packet import _normalize_execution
     from libs.execution.intent_execution_owner import execute_owned_order
 
     return execute_owned_order(
         state=state or {"run_id": "r61"}, order=order, request=request, executor=spy, readiness_evidence=evidence,
+        execution_attempt_id=attempt,
         normalize=lambda r: _normalize_execution(allowed=True, execution_result=r, allow_result=None, order=order),
     )
+
+
+def _evidence_for(tmp_path, order, *, guard_allowed=True, attempt="att-1", state=None):
+    world = state or _readiness_state(tmp_path)
+    ok, _, details = record_pre_admission_evidence(
+        state=world, order=order, request=_prep_request(), phase=PHASE_PRE_BROKER_SUBMIT, guard_enabled=True,
+        guard_allowed=guard_allowed, guard_reason="", broker_submission_allowed=guard_allowed, execution_attempt_id=attempt)
+    assert ok
+    return world, details["reference"]
 
 
 def test_e_execute_owned_order_without_evidence_fails_closed(tmp_path):
@@ -308,46 +327,35 @@ def test_e2_execute_owned_order_with_valid_evidence_proceeds(tmp_path):
     spy = _Spy()
     order = _direct_order("intent-r61-e2")
     _admit(order)
-    state = {"run_id": "r61", "execution_readiness_evidence_root": str(tmp_path / "evidence")}
-    ok, _, details = record_pre_admission_evidence(
-        state=state, order=order, request=_prep_request(), phase=PHASE_PRE_BROKER_SUBMIT, guard_enabled=True, guard_allowed=True,
-        guard_reason="", broker_submission_allowed=True)
-    assert ok
-    out = _owned(order, _prep_request(), spy, evidence=details["reference"], state=state)
+    world, ref = _evidence_for(tmp_path, order, attempt="att-e2")
+    out = _owned(order, _prep_request(), spy, evidence=ref, state=world, attempt="att-e2")
     assert spy.calls == 1 and out["broker_outcome"] == "ACCEPTED"
 
 
-@pytest.mark.parametrize("mutate", ["wrong_intent", "wrong_qty", "block_verdict", "stale", "unknown_record"])
+@pytest.mark.parametrize("mutate", ["wrong_intent", "wrong_qty", "block_verdict", "unknown_record", "wrong_attempt", "no_attempt"])
 def test_e3_invalid_evidence_fails_closed(tmp_path, mutate):
     spy = _Spy()
     order = _direct_order(f"intent-r61-e3-{mutate}", qty=4)
     _admit(order)
-    state = {"run_id": "r61", "execution_readiness_evidence_root": str(tmp_path / "evidence")}
     guard_allowed = mutate != "block_verdict"
-    ok, _, details = record_pre_admission_evidence(
-        state=state, order=order, request=_prep_request(), phase=PHASE_PRE_BROKER_SUBMIT, guard_enabled=True, guard_allowed=guard_allowed,
-        guard_reason="", broker_submission_allowed=guard_allowed)
-    assert ok
-    ref = dict(details["reference"])
-    submit = dict(order)
+    world, ref = _evidence_for(tmp_path, order, guard_allowed=guard_allowed, attempt="att-e3")
+    ref = dict(ref)
+    submit, attempt = dict(order), "att-e3"
     if mutate == "wrong_intent":
         submit["intent_id"] = "intent-r61-other"
         _admit(submit)
     elif mutate == "wrong_qty":
         submit["qty"] = 5
         _admit(submit)
-    elif mutate == "stale":
-        import libs.execution.readiness_evidence as mod
-        monkey = pytest.MonkeyPatch()
-        monkey.setattr(mod, "EVIDENCE_MAX_AGE_SEC", -1.0)
     elif mutate == "unknown_record":
         ref["record_id"] = "r6-" + "0" * 32
-    try:
-        out = _owned(submit, _prep_request(), spy, evidence=ref, state=state)
-    finally:
-        if mutate == "stale":
-            monkey.undo()
-    assert spy.calls == 0 and out["broker_outcome"] == "NOT_SENT" and out["reason"] == INVALID_REASON
+    elif mutate == "wrong_attempt":
+        attempt = "att-other"
+    elif mutate == "no_attempt":
+        attempt = None
+    out = _owned(submit, _prep_request(), spy, evidence=ref, state=world, attempt=attempt)
+    assert spy.calls == 0 and out["broker_outcome"] == "NOT_SENT"
+    assert out["reason"] in (INVALID_REASON, REQUIRED_REASON)
 
 
 def test_e4_cancel_modify_mock_and_read_paths_do_not_require_evidence(tmp_path, monkeypatch):
@@ -384,7 +392,8 @@ def test_f_canonical_execute_from_packet_still_passes_with_evidence_reference(tm
 # ------------------------------------------------------------- G/H/I. concurrent appends (processes)
 
 
-def _sample(intent_id: str, *, computed_at: int = 1_790_000_000, now_epoch: float = 1_790_000_100.0, reason: str = "") -> dict[str, Any]:
+def _sample(intent_id: str, *, computed_at: int = 1_790_000_000, now_epoch: float = 1_790_000_100.0, reason: str = "",
+            attempt: str = "att-1") -> dict[str, Any]:
     order = {"intent_id": intent_id, "action": "BUY", "symbol": "217590", "qty": 41, "order_type": "market"}
     state = {
         "run_id": "r",
@@ -394,7 +403,7 @@ def _sample(intent_id: str, *, computed_at: int = 1_790_000_000, now_epoch: floa
     }
     return build_readiness_evidence_record(
         state=state, order=order, phase=PHASE_PRE_BROKER_SUBMIT, guard_enabled=True, guard_allowed=True, guard_reason=reason,
-        broker_submission_allowed=True, execution_mode="real", now_epoch=now_epoch)
+        broker_submission_allowed=True, execution_mode="real", now_epoch=now_epoch, execution_attempt_id=attempt)
 
 
 def _worker(root: str, record: dict[str, Any], barrier, queue) -> None:
@@ -444,7 +453,7 @@ def test_h_concurrent_different_intents_all_persist(tmp_path):
 
 
 def test_i_concurrent_same_intent_later_attempts_get_unique_sequences(tmp_path):
-    records = [_sample("intent-r61-i", computed_at=1_790_000_000 + i, now_epoch=1_790_000_100.0 + i) for i in range(4)]
+    records = [_sample("intent-r61-i", computed_at=1_790_000_000 + i, now_epoch=1_790_000_100.0 + i, attempt=f"att-{i}") for i in range(4)]
     results = _run_workers(tmp_path, records)
     assert all(r.get("written") for r in results), results
     rows = _lines(tmp_path)
@@ -455,7 +464,7 @@ def test_i_concurrent_same_intent_later_attempts_get_unique_sequences(tmp_path):
 def test_g2_sequential_replay_is_deterministic(tmp_path):
     first = append_readiness_evidence(_sample("intent-r61-g2"), root=tmp_path)
     again = append_readiness_evidence(_sample("intent-r61-g2"), root=tmp_path)
-    later = append_readiness_evidence(_sample("intent-r61-g2", computed_at=1_790_000_050), root=tmp_path)
+    later = append_readiness_evidence(_sample("intent-r61-g2", computed_at=1_790_000_050, attempt="att-2"), root=tmp_path)
     assert (first["written"], again["written"], later["written"]) == (True, False, True)
     assert (first["intent_sequence"], again["intent_sequence"], later["intent_sequence"]) == (1, 1, 2)
 
@@ -489,9 +498,6 @@ def test_j2_torn_tail_is_isolated_and_later_evidence_is_valid(tmp_path):
     assert result["written"] is True and result["intent_sequence"] == 1
     valid = r6._read_valid_records(path)
     assert [row["intent_id"] for row in valid] == ["intent-r61-j2"]
-    reference = r6.evidence_reference(result, _sample("intent-r61-j2"))
-    order = {"intent_id": "intent-r61-j2", "action": "BUY", "symbol": "217590", "qty": 41}
-    assert r6.validate_evidence_reference(reference, order=order, root=tmp_path, now_epoch=1_790_000_200.0) == (True, "")
 
 
 def test_j3_readback_verification_failure_is_a_write_failure(tmp_path, monkeypatch):
@@ -510,16 +516,29 @@ def test_j4_tampered_record_is_not_valid_evidence(tmp_path):
 # ---------------------------------------------------------------- K. lock contention
 
 
+def _live_foreign_lock(tmp_path, record, *, age_sec=3600):
+    """A lock held by THIS live test process (so: a live, identity-verified owner) that is very old."""
+    from libs.runtime.live_loop_lock import _process_start_identity
+
+    day = r6._day_of(record["recorded_at_epoch"])
+    lock = tmp_path / f"{day}.jsonl.lock"
+    lock.write_text(json.dumps({
+        "pid": os.getpid(), "process_start_identity": _process_start_identity(os.getpid()), "owner_token": "other-writer",
+        "acquired_at": int(time.time()) - age_sec, "host_id": r6._host_id()}), encoding="utf-8")
+    old = time.time() - age_sec
+    os.utime(lock, (old, old))
+    return lock
+
+
 def test_k_lock_contention_is_bounded_and_fails_closed(tmp_path, monkeypatch):
     monkeypatch.setattr(r6, "LOCK_WAIT_SEC", 0.3)
     record = _sample("intent-r61-k")
-    day = r6._day_of(record["recorded_at_epoch"])
-    lock = tmp_path / f"{day}.jsonl.lock"
-    lock.write_text("held\n", encoding="utf-8")  # a fresh lock held by "another process"
+    lock = _live_foreign_lock(tmp_path, record)
     started = time.monotonic()
     with pytest.raises(ReadinessEvidenceWriteError, match="evidence_lock_timeout"):
         append_readiness_evidence(record, root=tmp_path)
     assert time.monotonic() - started < 3.0
+    assert lock.exists(), "a live owner's lock must survive however old it is"
     assert not list(tmp_path.glob("*.jsonl")), "nothing may be written while the lock is held"
 
 
@@ -530,9 +549,7 @@ def test_k2_lock_contention_blocks_broker_submission(tmp_path, monkeypatch):
     real_append = r6.append_readiness_evidence
 
     def with_lock_held(record, *, root):
-        day = r6._day_of(record["recorded_at_epoch"])
-        Path(root).mkdir(parents=True, exist_ok=True)
-        (Path(root) / f"{day}.jsonl.lock").write_text("held\n", encoding="utf-8")
+        _live_foreign_lock(Path(root), record)
         return real_append(record, root=root)
 
     monkeypatch.setattr(r6, "append_readiness_evidence", with_lock_held)
@@ -543,17 +560,6 @@ def test_k2_lock_contention_blocks_broker_submission(tmp_path, monkeypatch):
                                 "risk": {"open_positions": 0}, "exec_context": {}}
     out = execute_from_packet(state)
     assert spy.calls == 0 and out["execution"]["reason"] == WRITE_FAILED_REASON
-
-
-def test_k3_stale_lock_is_broken_and_the_write_proceeds(tmp_path, monkeypatch):
-    record = _sample("intent-r61-k3")
-    day = r6._day_of(record["recorded_at_epoch"])
-    lock = tmp_path / f"{day}.jsonl.lock"
-    lock.write_text("abandoned\n", encoding="utf-8")
-    old = time.time() - 3600
-    os.utime(lock, (old, old))
-    assert append_readiness_evidence(record, root=tmp_path)["written"] is True
-    assert not lock.exists(), "the lock is always released"
 
 
 # --------------------------------------------------------- M/N. authority and data-integrity pins
@@ -576,18 +582,16 @@ def test_n_yfinance_changes_unchanged():
 
 
 def test_all_execute_owned_order_callers_are_accounted_for():
-    """Fails when a NEW production caller of execute_owned_order appears without a conscious disposition."""
-    import ast
+    """Fails when a NEW production caller of execute_owned_order appears without a conscious disposition.
+
+    Alias-aware (R6.2): direct calls, `from ... import execute_owned_order as x`, module-qualified calls and
+    simple name aliases are counted. Arbitrary dynamic dispatch is intentionally out of scope."""
+    from _r6_helpers import count_execute_owned_order_calls
 
     callers = []
     for base in ("libs", "graphs", "apps", "scripts"):
         for path in (ROOT / base).rglob("*.py"):
-            tree = ast.parse(path.read_text(encoding="utf-8-sig"))
-            n = sum(
-                1 for node in ast.walk(tree)
-                if isinstance(node, ast.Call)
-                and (getattr(node.func, "id", None) == "execute_owned_order" or getattr(node.func, "attr", None) == "execute_owned_order")
-            )
+            n = count_execute_owned_order_calls(path.read_text(encoding="utf-8-sig"))
             if n:
                 callers.append((path.relative_to(ROOT).as_posix(), n))
     assert sorted(callers) == [

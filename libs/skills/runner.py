@@ -313,6 +313,7 @@ class CompositeSkillRunner:
                     state={"run_id": run_id}, order=owner_order, request=prep.request,
                     executor=self.executor, normalize=_capture_dispatch,
                     readiness_evidence=args.get("readiness_evidence"),
+                    execution_attempt_id=args.get("execution_attempt_id"),
                 )
                 if not owned.get("intent_claim", {}).get("claimed"):
                     self.events.log(run_id=run_id, stage="skill_execute", event="ownership_claim_denied", payload={

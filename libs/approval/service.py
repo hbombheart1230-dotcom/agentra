@@ -167,7 +167,9 @@ class ApprovalService:
             return True, None, None
         state = dict(readiness_state) if isinstance(readiness_state, dict) else {}
         if readiness_evidence is not None:
-            ok, reason = validate_evidence_reference(readiness_evidence, order=order, root=evidence_root(state))
+            ok, reason = validate_evidence_reference(
+                readiness_evidence, order=order, root=evidence_root(state),
+                execution_attempt_id=str(readiness_evidence.get("execution_attempt_id") or ""), state=state)
             return (True, None, dict(readiness_evidence)) if ok else (False, reason, None)
         if readiness_state is None:
             return False, f"{REQUIRED_REASON}: real-mode BUY/SELL via {source} needs runtime readiness context", None
@@ -465,7 +467,9 @@ class ApprovalService:
         self._append_marker(intent_id=iid, status="executing", reason="execution started", intent=intent)
 
         try:
-            exec_res = execute_fn({**intent, "readiness_evidence": evidence_ref} if evidence_ref else intent)
+            exec_res = execute_fn(
+                {**intent, "readiness_evidence": evidence_ref,
+                 "execution_attempt_id": evidence_ref.get("execution_attempt_id")} if evidence_ref else intent)
         except Exception as e:
             fail_reason = str(e)
             # Step5C Fix3 (MEDIUM2): the JSON read-model marker must never

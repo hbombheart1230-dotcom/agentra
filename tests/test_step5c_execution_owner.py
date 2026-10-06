@@ -262,11 +262,12 @@ def test_step5b_real_transport_composition(monkeypatch):
     bind_intent({'run_id': 'transport'}, candidate)
     ev_ok, _, ev_details = record_pre_admission_evidence(
         state={'run_id': 'transport'}, order=candidate, request=req, phase=PHASE_PRE_BROKER_SUBMIT,
-        guard_enabled=False, guard_allowed=True, guard_reason='', broker_submission_allowed=True, source='test')
+        guard_enabled=False, guard_allowed=True, guard_reason='', broker_submission_allowed=True, source='test',
+        execution_attempt_id='attempt-transport')
     assert ev_ok
     def run():
         return execute_owned_order(state={'run_id': 'transport'}, order=candidate, request=req, executor=ex,
-            readiness_evidence=ev_details['reference'],
+            readiness_evidence=ev_details['reference'], execution_attempt_id='attempt-transport',
             normalize=lambda r: _normalize_execution(allowed=True, execution_result=r, allow_result=None, order=candidate))
     assert run()['broker_outcome'] == 'UNKNOWN'
     assert run()['broker_outcome'] == 'NOT_SENT'

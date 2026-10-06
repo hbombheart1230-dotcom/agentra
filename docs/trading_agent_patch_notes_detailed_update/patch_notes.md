@@ -1793,3 +1793,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Operator note: real-mode BUY/SELL approvals through `approval_cli` now need runtime readiness context or a valid evidence reference. Strategy, readiness, Step5C/5D, UEF and broker routing are unchanged; no 2026-10-06 evidence is fabricated.
 - Tests: `tests/test_r61_scope_fix.py` (33). Not deployed; Docker untouched pending independent audit and the after-hours rebuild.
 - See `docs/daily_patch/2026-10-06_r6_1_scope_fix.md`.
+
+# 2026-10-06 - R6.2 Evidence Is Proof, Not a Capability Token; Strict Lock Identity
+
+- Codex verdict `R6_1_CORRECTION_REQUIRED`: (1) an R6 evidence reference stayed usable for 600 s and acted like an authorization token; (2) the evidence storage lock was broken on file age alone.
+- **R6 evidence is not an authorization token.** The 600-second authorization rule is removed; timestamps are audit data only.
+- Evidence is bound to `execution_attempt_id` + runtime instance + ownership generation, and that attempt id flows readiness/guard -> evidence -> admission -> `execute_owned_order` -> broker submit on every mutation path.
+- `execute_owned_order` revalidates the CURRENT safety state (canonical owner row with live lease, readiness ready, recovery false, same instance/generation); stale readiness/generation/instance evidence fails closed with no Step5C claim and no broker call. No strategy or readiness recomputation.
+- Duplicate concurrent callers for one attempt share one immutable record and Step5C still yields exactly one broker mutation; a later attempt needs new evidence.
+- Evidence storage lock: strict live-owner identity (pid + process start identity + owner token + host); live owners are never broken by age, dead or PID-reused owners are reclaimed, unverifiable or malformed locks and foreign-namespace locks fail closed, release is exact-owner only. The mtime-only stale break is removed. Storage serialisation only - not trading ownership.
+- AST caller guard now covers direct, imported-alias, module-qualified and simple-alias calls. Documented limitation: with the readiness gate disabled by the operator and no readiness context there is nothing to revalidate.
+- No strategy, readiness, Step5C/5D, UEF or broker-routing change; no 2026-10-06 evidence fabricated; not deployed (Docker untouched).
+- Tests: `tests/test_r62_attempt_and_lock.py` (30) plus updated R6/R6.1 suites. See `docs/daily_patch/2026-10-06_r6_2_attempt_binding_and_lock_identity.md`.

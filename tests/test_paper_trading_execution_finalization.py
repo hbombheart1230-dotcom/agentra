@@ -188,6 +188,11 @@ def _run_one_tick(monkeypatch, tmp_path, *, side: str, tick_no: int) -> Dict[str
     monkeypatch.setattr(monitor_node_mod, "monitor_node", _make_fake_monitor(side))
     monkeypatch.setattr(decision_node_mod, "decision_node", _fake_decision)
 
+    # R6.2: the evidence choke point revalidates against the canonical runtime-owner row, as in production.
+    from _r6_helpers import sync_owner
+
+    monkeypatch.setenv("RUNTIME_OWNERSHIP_DB_PATH", str(tmp_path / "survival_ownership.db"))
+    sync_owner(tmp_path / "survival_ownership.db", instance_id=f"survival-{tick_no}", generation=1)
     state = {
         "runtime_phase": "session",
         "catalog_path": str(cat),

@@ -1,4 +1,4 @@
-"""R6 / R6.1 -- immutable per-intent execution-readiness evidence (EVIDENCE ONLY).
+"""R6 / R6.1 / R6.2 -- immutable per-intent execution-readiness evidence (EVIDENCE ONLY).
 
 Problem (2026-10-06): ``data/state/execution_readiness.json`` is only the *latest* mutable
 snapshot, so the readiness value a given BUY/SELL actually saw at execution time could not be
@@ -6,6 +6,12 @@ proven afterwards.
 
 This module persists one append-only record per BUY/SELL execution decision, at the point where
 the readiness guard verdict is known and BEFORE intent admission / Step5C / broker submission.
+
+R6.2: EVIDENCE IS OBSERVATIONAL PROOF, NEVER A CAPABILITY TOKEN. Possessing a valid ALLOW record (of any age)
+does not permit anything. The final choke point requires (a) the record to be bound to exactly this
+execution attempt (execution_attempt_id), runtime instance and ownership generation, and (b) the CURRENT
+canonical owner / readiness / recovery state to still match that ALLOW decision. Timestamps are audit
+diagnostics only; there is no age-based authorization window.
 
 AUTHORITY RULE -- this record is evidence only. It is never an input to any readiness,
 execution, ownership, Step5C or Step5D decision. The in-memory ``state["execution_readiness"]``
@@ -48,6 +54,9 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
+import socket
+import uuid
+
 from libs.core.path_isolation import isolate_canonical_path_for_pytest
 
 SCHEMA_VERSION = "execution_readiness_evidence.v1"
@@ -58,9 +67,9 @@ WRITE_FAILED_REASON = "readiness_evidence_write_failed"
 REQUIRED_REASON = "readiness_evidence_required"
 INVALID_REASON = "readiness_evidence_invalid"
 
-EVIDENCE_MAX_AGE_SEC = 600.0  # evidence must be fresh relative to the submission it covers
-LOCK_WAIT_SEC = 5.0
-LOCK_STALE_SEC = 30.0  # the critical section lasts milliseconds; a lock this old is abandoned
+LOCK_WAIT_SEC = 5.0  # bounded wait for the storage lock; age NEVER authorises breaking a lock
+READINESS_SNAPSHOT_MAX_AGE_SEC = 120.0  # freshness of the persisted readiness snapshot used ONLY as a revalidation input
+STALE_REASON = "readiness_evidence_stale"
 
 _KST = timezone(timedelta(hours=9))
 _DAY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -155,6 +164,7 @@ def build_readiness_evidence_record(
     execution_mode: str,
     now_epoch: Optional[float] = None,
     source: str = "execute_from_packet",
+    execution_attempt_id: str = "",
 ) -> Dict[str, Any]:
     """Pure builder: captures the readiness/guard values exactly as the caller holds them now."""
     readiness = state.get("execution_readiness")
@@ -174,6 +184,7 @@ def build_readiness_evidence_record(
         "recorded_at": recorded_at.isoformat(timespec="microseconds"),
         "recorded_at_epoch": round(recorded, 6),
         "intent_id": _text(order.get("intent_id")),
+        "execution_attempt_id": _text(execution_attempt_id),
         "run_id": _text(state.get("run_id")),
         "runtime_instance_id": readiness.get("runtime_instance_id"),
         "ownership_generation": readiness.get("ownership_generation"),
@@ -218,18 +229,15 @@ def build_readiness_evidence_record(
     identity = {
         key: record[key]
         for key in (
-            "schema_version", "phase", "intent_id", "runtime_instance_id", "ownership_generation",
+            "schema_version", "phase", "intent_id", "execution_attempt_id", "runtime_instance_id", "ownership_generation",
             "execution_readiness_computed_at_epoch", "execution_readiness_ready",
             "execution_readiness_reasons", "recovery_required", "portfolio_reconciled",
             "open_orders_reconciled", "guard_enabled", "guard_verdict", "guard_reason",
             "broker_submission_allowed", "symbol", "side", "quantity",
         )
     }
-    # Attempt identity: a readiness computation stamp identifies the attempt. Callers without one
-    # (no tick, e.g. an operator path) are separated by their recorded second so legitimate repeats
-    # are distinct records while identical concurrent attempts collapse deterministically.
-    if record["execution_readiness_computed_at_epoch"] is None:
-        identity["attempt_second"] = int(recorded)
+    # Attempt identity is explicit: the same intent + the same execution_attempt_id (+ same readiness
+    # computation and verdicts) collapses deterministically; a new attempt is a new record.
     record["record_id"] = "r6-" + _digest(identity)[:32]
     return record
 
@@ -268,43 +276,181 @@ def _read_valid_records(path: Path) -> List[Dict[str, Any]]:
 # --------------------------------------------------------------------------------- lock
 
 
-class _DayLock:
-    """Per-day interprocess storage lock (O_CREAT|O_EXCL), bounded wait, stale-lock breaking."""
+def _host_id() -> str:
+    try:
+        return socket.gethostname()
+    except Exception:  # pragma: no cover
+        return ""
 
-    def __init__(self, path: Path, *, wait_sec: float = LOCK_WAIT_SEC, stale_sec: float = LOCK_STALE_SEC) -> None:
+
+class _EvidenceLock:
+    """Per-day interprocess STORAGE lock with strict live-owner identity (not an ownership authority).
+
+    Uses the proven process-identity primitives of libs/runtime/live_loop_lock.py (pid_exists,
+    process_start_identity) and the same exclusive-create + reclaim-guard pattern:
+
+    * live owner (same pid AND same process_start_identity)  -> lock stays valid however old it is
+    * dead owner (pid gone)                                    -> reclaim
+    * same pid, different start identity (PID reuse)           -> reclaim
+    * live pid whose identity cannot be verified               -> fail closed
+    * malformed / incomplete lock content                      -> fail closed
+    * lock written by another host / PID namespace             -> never reclaimed (liveness cannot be
+      verified from here); wait up to the bounded timeout, then fail closed
+    * release requires the exact owner token + pid + identity (non-owner release is rejected)
+    """
+
+    def __init__(self, path: Path, *, wait_sec: float = LOCK_WAIT_SEC) -> None:
         self.path = Path(path)
         self.wait_sec = float(wait_sec)
-        self.stale_sec = float(stale_sec)
+        self.token = uuid.uuid4().hex
+        self.pid = os.getpid()
+        self.identity: Optional[str] = None
         self._held = False
 
-    def __enter__(self) -> "_DayLock":
-        deadline = time.monotonic() + self.wait_sec
-        while True:
+    def _payload(self) -> Dict[str, Any]:
+        return {
+            "pid": self.pid,
+            "process_start_identity": self.identity,
+            "owner_token": self.token,
+            "acquired_at": int(time.time()),
+            "host_id": _host_id(),
+        }
+
+    @staticmethod
+    def _read(path: Path) -> Optional[Dict[str, Any]]:
+        try:
+            obj = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+        return obj if isinstance(obj, dict) else None
+
+    def _try_create(self) -> bool:
+        """Publish the lock with its identity content atomically (tmp file + hard link = exclusive)."""
+        payload = _canonical_json(self._payload()).encode("utf-8")
+        tmp = self.path.with_name(self.path.name + f".new-{self.token}")
+        fd = os.open(str(tmp), os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, "O_BINARY", 0), 0o644)
+        try:
+            os.write(fd, payload)
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+        try:
+            os.link(str(tmp), str(self.path))  # fails if the lock exists -> never exposes a half-written lock
+            return True
+        except FileExistsError:
+            return False
+        except OSError:
+            # Filesystem without hard links: exclusive create + immediate write; readers give a short grace
+            # to partially written content (see __enter__), never treating it as a broken lock.
             try:
-                fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, "O_BINARY", 0), 0o644)
-                try:
-                    os.write(fd, f"{os.getpid()} {int(time.time())}\n".encode("ascii"))
-                finally:
-                    os.close(fd)
-                self._held = True
-                return self
+                lfd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, "O_BINARY", 0), 0o644)
             except FileExistsError:
+                return False
+            try:
+                os.write(lfd, payload)
+                os.fsync(lfd)
+            finally:
+                os.close(lfd)
+            return True
+        finally:
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
+
+    def _reclaim(self, observed: Dict[str, Any]) -> bool:
+        """Replace a dead/reused owner's lock. Serialised with a short-lived exclusive guard file."""
+        guard = self.path.with_name(self.path.name + ".reclaim-guard")
+        try:
+            guard_fd = os.open(str(guard), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+        except FileExistsError:
+            return False  # another process is deciding this reclaim right now; favour safety
+        try:
+            current = self._read(self.path)
+            if current != observed:  # the picture changed since we looked
+                return False
+            tmp = self.path.with_name(self.path.name + f".tmp-{self.token}")
+            try:
+                tmp.write_text(_canonical_json(self._payload()), encoding="utf-8")
+                os.replace(tmp, self.path)
+            finally:
                 try:
-                    if time.time() - self.path.stat().st_mtime > self.stale_sec:
-                        self.path.unlink(missing_ok=True)
-                        continue
+                    tmp.unlink()
                 except OSError:
                     pass
-                if time.monotonic() >= deadline:
-                    raise ReadinessEvidenceWriteError("evidence_lock_timeout")
-                time.sleep(0.02)
+            return True
+        finally:
+            os.close(guard_fd)
+            try:
+                guard.unlink()
+            except OSError:
+                pass
+
+    def __enter__(self) -> "_EvidenceLock":
+        from libs.runtime.live_loop_lock import _process_start_identity, pid_exists
+
+        self.identity = _process_start_identity(self.pid)
+        if not self.identity:
+            raise ReadinessEvidenceWriteError("IDENTITY_UNVERIFIABLE:self")
+        deadline = time.monotonic() + self.wait_sec
+        while True:
+            if self._try_create():
+                self._held = True
+                return self
+            observed = self._read(self.path)
+            if observed is None:
+                if not self.path.exists():
+                    continue  # released between our attempt and our read
+                try:
+                    in_progress = time.time() - self.path.stat().st_mtime < 2.0  # fallback-create grace only
+                except OSError:
+                    in_progress = False
+                if in_progress and time.monotonic() < deadline:
+                    time.sleep(0.02)
+                    continue
+                raise ReadinessEvidenceWriteError("LOCK_METADATA_INVALID")
+            pid = _opt_int(observed.get("pid")) or 0
+            identity = _text(observed.get("process_start_identity"))
+            if pid <= 0 or not identity or not _text(observed.get("owner_token")):
+                raise ReadinessEvidenceWriteError("LOCK_METADATA_INVALID")
+            if _text(observed.get("host_id")) != _host_id():
+                pass  # foreign host / PID namespace: liveness unverifiable -> never reclaim, just wait
+            elif not pid_exists(pid):
+                if self._reclaim(observed):
+                    self._held = True
+                    return self
+            else:
+                current = _process_start_identity(pid)
+                if current is None:
+                    raise ReadinessEvidenceWriteError("IDENTITY_UNVERIFIABLE:owner")
+                if current != identity:  # PID reuse: the original owner is conclusively gone
+                    if self._reclaim(observed):
+                        self._held = True
+                        return self
+                # else: confirmed live, identity-matched owner -> age is irrelevant; wait
+            if time.monotonic() >= deadline:
+                raise ReadinessEvidenceWriteError("evidence_lock_timeout")
+            time.sleep(0.02)
+
+    def release(self) -> Tuple[bool, str]:
+        """Exact-owner release only."""
+        observed = self._read(self.path)
+        if observed is None:
+            return (True, "noop_no_lock") if not self.path.exists() else (False, "non_owner_release_rejected")
+        if (
+            _text(observed.get("owner_token")) != self.token
+            or _opt_int(observed.get("pid")) != self.pid
+            or _text(observed.get("process_start_identity")) != (self.identity or "")
+            or not self.identity
+        ):
+            return False, "non_owner_release_rejected"
+        self.path.unlink()
+        return True, "released"
 
     def __exit__(self, *_exc: Any) -> None:
         if self._held:
-            try:
-                self.path.unlink(missing_ok=True)
-            finally:
-                self._held = False
+            self._held = False
+            self.release()
 
 
 def _write_all(fd: int, payload: bytes) -> None:
@@ -333,7 +479,7 @@ def append_readiness_evidence(record: Mapping[str, Any], *, root: Path) -> Dict[
         day = _day_of(recorded_epoch)
         path.parent.mkdir(parents=True, exist_ok=True)
         intent_id = _text(body.get("intent_id"))
-        with _DayLock(path.with_name(path.name + ".lock"), wait_sec=LOCK_WAIT_SEC, stale_sec=LOCK_STALE_SEC):
+        with _EvidenceLock(path.with_name(path.name + ".lock"), wait_sec=LOCK_WAIT_SEC):
             existing = _read_valid_records(path)
             for row in existing:
                 if row.get("record_id") == record_id:
@@ -386,25 +532,117 @@ def evidence_reference(result: Mapping[str, Any], record: Mapping[str, Any]) -> 
     return {
         "record_id": result.get("record_id"),
         "intent_id": _text(record.get("intent_id")),
+        "execution_attempt_id": _text(record.get("execution_attempt_id")),
+        "runtime_instance_id": record.get("runtime_instance_id"),
+        "ownership_generation": record.get("ownership_generation"),
         "day": result.get("day"),
         "phase": record.get("phase"),
     }
 
 
-def validate_evidence_reference(
-    reference: Any, *, order: Mapping[str, Any], root: Path, now_epoch: Optional[float] = None
-) -> Tuple[bool, str]:
-    """Prove the evidence contract was satisfied for this order (storage lookup, not trust).
+def _current_canonical_owner() -> Optional[Dict[str, Any]]:
+    """Read-only view of the canonical runtime owner row (never creates/refreshes/acquires anything)."""
+    import sqlite3
 
-    Valid iff exactly one hash-verified pre_broker_submit record with the referenced record_id
-    exists, it was written for this very intent/side/symbol/quantity with an ALLOW verdict, and it
-    is fresh. This grants no authority -- the readiness/guard decision stays authoritative.
+    try:
+        from libs.runtime.runtime_ownership import resolve_runtime_ownership_db_path
+
+        db = Path(resolve_runtime_ownership_db_path())
+        if not db.exists():
+            return None
+        conn = sqlite3.connect(f"file:{db.as_posix()}?mode=ro", uri=True, timeout=5.0)
+        try:
+            conn.row_factory = sqlite3.Row
+            row = conn.execute(
+                "SELECT instance_id, generation, lease_expires_at FROM runtime_ownership WHERE id = 1"
+            ).fetchone()
+        finally:
+            conn.close()
+        return dict(row) if row is not None else None
+    except Exception:
+        return None
+
+
+def _current_readiness(state: Mapping[str, Any], now: float) -> Optional[Dict[str, Any]]:
+    """The CURRENT readiness value: the caller's in-memory authoritative dict if present, else the
+    persisted readiness snapshot (fresh only). Read as a revalidation input; never modified."""
+    live = state.get("execution_readiness") if isinstance(state, Mapping) else None
+    if isinstance(live, Mapping):
+        return dict(live)
+    try:
+        path = Path(os.getenv("EXECUTION_READINESS_SNAPSHOT_PATH", "") or "")
+        if not str(path):
+            from libs.core.path_isolation import isolate_canonical_path_for_pytest as iso
+
+            default = Path("data/state/execution_readiness.json")
+            path = iso(default, canonical_path=default, isolated_name="execution_readiness.json")
+        payload = json.loads(Path(path).read_text(encoding="utf-8"))
+        computed = float(payload.get("computed_at_epoch") or 0.0)
+        if not 0.0 <= now - computed <= READINESS_SNAPSHOT_MAX_AGE_SEC:
+            return None
+        readiness = payload.get("execution_readiness")
+        return dict(readiness) if isinstance(readiness, Mapping) else None
+    except Exception:
+        return None
+
+
+def revalidate_current_safety(row: Mapping[str, Any], *, state: Mapping[str, Any], now: Optional[float] = None) -> Tuple[bool, str]:
+    """Is the original ALLOW decision still safe to act on? Safety-state revalidation only.
+
+    Does NOT recompute strategy or readiness; it only checks that the canonical owner, the readiness
+    value and the recovery flag still match the ALLOW the evidence recorded.
+    """
+    t = float(now if now is not None else time.time())
+    if row.get("guard_enabled") is False and not row.get("readiness_present"):
+        # The operator disabled the existing readiness gate (EXECUTION_READINESS_GATE_ENABLED=false) and no
+        # readiness context existed: there was no readiness ALLOW decision to go stale. The evidence is still
+        # bound to this exact attempt/intent/order; only the owner/readiness revalidation is not applicable.
+        return True, ""
+    instance, generation = row.get("runtime_instance_id"), row.get("ownership_generation")
+    if not instance or generation is None:
+        return False, INVALID_REASON  # evidence without a runtime identity can never be current
+    owner = _current_canonical_owner()
+    if owner is None or float(owner.get("lease_expires_at") or 0.0) <= t:
+        return False, STALE_REASON  # no verifiable live canonical owner
+    if _text(owner.get("instance_id")) != _text(instance) or int(owner.get("generation") or -1) != int(generation):
+        return False, STALE_REASON  # runtime instance / ownership generation changed
+    current = _current_readiness(state, t)
+    if current is None:
+        return False, STALE_REASON  # current readiness unverifiable
+    if (
+        not current.get("ready")
+        or bool(current.get("recovery_required"))
+        or _text(current.get("runtime_instance_id")) != _text(instance)
+        or _opt_int(current.get("ownership_generation")) != int(generation)
+    ):
+        return False, STALE_REASON  # readiness / recovery / generation no longer match the ALLOW
+    return True, ""
+
+
+def validate_evidence_reference(
+    reference: Any,
+    *,
+    order: Mapping[str, Any],
+    root: Path,
+    execution_attempt_id: str = "",
+    state: Optional[Mapping[str, Any]] = None,
+    now_epoch: Optional[float] = None,
+) -> Tuple[bool, str]:
+    """Prove the evidence contract was satisfied for THIS execution attempt (storage lookup, not trust).
+
+    Valid iff exactly one hash-verified pre_broker_submit record with the referenced record_id exists,
+    it was written for this very intent/side/symbol/quantity AND this very execution_attempt_id with
+    an ALLOW verdict, AND the current canonical owner / readiness / recovery state still matches it.
+    No age window: a timestamp is audit data only. This grants no authority.
     """
     if not isinstance(reference, Mapping):
         return False, REQUIRED_REASON
+    attempt = _text(execution_attempt_id)
     record_id = _text(reference.get("record_id"))
     day = _text(reference.get("day"))
-    if not record_id or not _DAY_RE.match(day):
+    if not attempt:
+        return False, REQUIRED_REASON
+    if not record_id or not _DAY_RE.match(day) or _text(reference.get("execution_attempt_id")) != attempt:
         return False, INVALID_REASON
     try:
         rows = [row for row in _read_valid_records(Path(root) / f"{day}.jsonl") if row.get("record_id") == record_id]
@@ -413,31 +651,35 @@ def validate_evidence_reference(
     if len(rows) != 1:
         return False, INVALID_REASON  # missing, or ambiguous duplicate identity
     row = rows[0]
-    now = float(now_epoch if now_epoch is not None else time.time())
     quantity = _opt_int(order.get("qty") if order.get("qty") is not None else order.get("ord_qty"))
     checks = (
         row.get("schema_version") == SCHEMA_VERSION,
         row.get("phase") == PHASE_PRE_BROKER_SUBMIT,
         row.get("broker_submission_allowed") is True,
         row.get("guard_verdict") == "ALLOW",
+        _text(row.get("execution_attempt_id")) == attempt,
         _text(row.get("intent_id")) == _text(order.get("intent_id")) != "",
         _text(row.get("side")) == _text(order.get("action")).upper(),
         _text(row.get("symbol")) == _order_symbol(order),
         row.get("quantity") == quantity,
-        0.0 <= now - float(row.get("recorded_at_epoch") or 0.0) <= EVIDENCE_MAX_AGE_SEC,
+        _text(row.get("runtime_instance_id")) == _text(reference.get("runtime_instance_id")),
+        row.get("ownership_generation") == reference.get("ownership_generation"),
     )
-    return (True, "") if all(checks) else (False, INVALID_REASON)
+    if not all(checks):
+        return False, INVALID_REASON
+    return revalidate_current_safety(row, state=state or {}, now=now_epoch)
 
 
 def require_readiness_evidence_for_order(
-    *, state: Mapping[str, Any], order: Mapping[str, Any], request: Any, evidence: Any
+    *, state: Mapping[str, Any], order: Mapping[str, Any], request: Any, evidence: Any, execution_attempt_id: str = ""
 ) -> Tuple[bool, str]:
     """Final mutation choke-point check (execute_owned_order). (ok, reason)."""
     if resolve_execution_mode() != "real" or not is_new_exposure_order(order, request):
         return True, ""  # not production-capable BUY/SELL exposure -> not applicable
     if evidence is None:
         return False, REQUIRED_REASON
-    return validate_evidence_reference(evidence, order=order, root=evidence_root(state))
+    return validate_evidence_reference(
+        evidence, order=order, root=evidence_root(state), execution_attempt_id=execution_attempt_id, state=state)
 
 
 # ----------------------------------------------------------------------- shared helper
@@ -454,6 +696,7 @@ def record_pre_admission_evidence(
     broker_submission_allowed: bool,
     request: Any = None,
     source: str = "execute_from_packet",
+    execution_attempt_id: str = "",
 ) -> Tuple[bool, str, Dict[str, Any]]:
     """The ONE shared R6 pre-admission helper used by every production-capable mutation path.
 
@@ -465,11 +708,12 @@ def record_pre_admission_evidence(
     mode = resolve_execution_mode()
     if mode != "real" or not is_new_exposure_order(order, request):
         return True, "", {"enabled": False, "action": action, "execution_mode": mode}
+    attempt = _text(execution_attempt_id) or uuid.uuid4().hex
     try:
         record = build_readiness_evidence_record(
             state=state, order=order, phase=phase, guard_enabled=guard_enabled, guard_allowed=guard_allowed,
             guard_reason=guard_reason, broker_submission_allowed=broker_submission_allowed,
-            execution_mode=mode, source=source,
+            execution_mode=mode, source=source, execution_attempt_id=attempt,
         )
         result = append_readiness_evidence(record, root=evidence_root(state))
     except Exception as exc:
@@ -485,13 +729,15 @@ def record_pre_admission_evidence(
         "duplicate": bool(result.get("duplicate")),
         "intent_sequence": result.get("intent_sequence"),
         "path": result.get("path"),
+        "execution_attempt_id": attempt,
         "reference": evidence_reference(result, record),
     }
 
 
 __all__ = [
     "DEFAULT_ROOT",
-    "EVIDENCE_MAX_AGE_SEC",
+    "READINESS_SNAPSHOT_MAX_AGE_SEC",
+    "STALE_REASON",
     "INVALID_REASON",
     "PHASE_GUARD_BLOCK",
     "PHASE_PRE_BROKER_SUBMIT",
@@ -507,5 +753,6 @@ __all__ = [
     "record_pre_admission_evidence",
     "require_readiness_evidence_for_order",
     "resolve_execution_mode",
+    "revalidate_current_safety",
     "validate_evidence_reference",
 ]
