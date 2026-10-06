@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 109,
+  "entry_count": 110,
   "entries": [
     {
       "date": "2026-09-08",
@@ -2895,6 +2895,38 @@
         "graphs/nodes/execute_from_packet.py",
         "graphs/nodes/build_execution_readiness.py",
         "tests/test_r6_readiness_evidence.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-06",
+      "version": "R6.1 Mutation-Path Scope Fix and Atomic Evidence Append",
+      "title": "Every production BUY/SELL mutation path needs R6 readiness evidence; the final choke point verifies it; evidence append is interprocess-atomic",
+      "stage": "Operations and Reliability",
+      "types": [
+        "SAFETY",
+        "RELIABILITY",
+        "OBSERVABILITY"
+      ],
+      "summary": "R6 evidence only covered the canonical execute_from_packet path. R6.1 maps every execute_owned_order caller, routes the production-capable ones through one shared pre-admission evidence helper, makes execute_owned_order itself refuse a real-mode BUY/SELL without verified evidence, and serialises evidence appends across processes. No strategy, readiness, Step5C/Step5D, UEF or broker-routing semantics changed; nothing was deployed.",
+      "details": [
+        "Traced call graph of execute_owned_order: (1) execute_from_packet main BUY/SELL - R6_COVERED; (2)(3) execute_from_packet upper-limit and unfilled-order-recovery CANCEL - not new BUY/SELL exposure; (4) graphs/nodes/execute_order.py legacy node - no production caller found but BUY/SELL capable, now R6_COVERED via the shared helper plus the existing readiness guard; (5) libs/skills/runner.py order.place - reached through ToolFacade.order_execute / ExecutorAgent.execute_order from the approval flow, STRUCTURALLY_BLOCKED without an evidence reference; (6) libs/approval/service.py approve() and the ToolFacade/ExecutorAgent auto-admission - R6_COVERED when a runtime readiness_state is supplied, otherwise real-mode BUY/SELL is blocked before admission.",
+        "One shared helper libs/execution/readiness_evidence.record_pre_admission_evidence (and ApprovalService.prepare_readiness_evidence for operator paths) captures the existing authoritative readiness/guard values and persists the record BEFORE admission/Step5C/execute_owned_order. Required order: readiness/guard decision -> immutable evidence -> admission -> execute_owned_order -> broker submit. The evidence is not moved after admission.",
+        "Final mutation choke point: execute_owned_order takes readiness_evidence (a reference produced by the shared helper). For real-mode new BUY/SELL (kt10000/kt10001/ORDER_SUBMIT; CANCEL/MODIFY and mock mode excluded) it verifies the reference against durable storage (exactly one hash-valid pre_broker_submit record for the same intent, side, symbol and quantity with an ALLOW verdict, fresh within 600s). Missing -> readiness_evidence_required, invalid/ambiguous -> readiness_evidence_invalid; both fail closed with NOT_SENT before any Step5C claim and with no broker call. This grants no authority; readiness/guard decisions stay with their existing owners.",
+        "Behaviour note: operator approvals of real-mode BUY/SELL (scripts/approval_cli.py -> ToolFacade -> ApprovalService) now need a runtime readiness_state or a valid evidence reference; without one they are blocked before admission. Mock mode and CANCEL/MODIFY are unchanged.",
+        "Atomic append: the whole read -> validate/dedup -> allocate intent_sequence -> append -> fsync -> read-back verification section runs under a per-day interprocess lock (O_CREAT|O_EXCL lock file, same pattern as libs/kiwoom/token_refresh_guard.py; bounded 5s wait, stale-lock breaking, storage serialisation only). Lock timeout is a write failure and blocks submission; it never fails open. Operator override of the storage location: EXECUTION_READINESS_EVIDENCE_ROOT.",
+        "Replay contract: same intent + same attempt (same readiness computation and verdicts) -> same deterministic record_id, so concurrent or repeated writers get a deterministic duplicate answer pointing at the single stored record; a new legitimate attempt gets a new record_id and the next intent_sequence. Torn or partial writes never become valid evidence: only lines that parse and verify their record_hash count, a crashed writer's fragment is isolated on its own line, and success is reported only after the written bytes are read back and verified.",
+        "Tests: tests/test_r61_scope_fix.py (33 tests) covers the runner, approval service (manual and auto), execute_order node, direct execute_owned_order (missing, forged, wrong-intent/qty, block-verdict, stale, unknown record), valid-evidence behaviour unchanged, canonical execute_from_packet, multi-process concurrent same-intent/different-intents/later-attempt appends, torn/partial/tampered writes, lock contention and stale locks, Step5C/5D and yfinance pins, and an AST guard that fails when a new execute_owned_order caller appears. One existing test (test_step5b_real_transport_composition) now supplies valid evidence because it calls the choke point directly in real mode; the 8 pre-existing tests/test_step5b_fix4.py failures are unchanged.",
+        "No historical fabrication: the 2026-10-06 09:02 BUY and 09:05 SELL remain READINESS_AT_EXECUTION = UNKNOWN (HISTORICAL_OBSERVABILITY_GAP). Docker was not rebuilt or restarted; the running image does not contain yfinance, R6 or R6.1 and waits for the independent audit and the after-hours exact-SHA rebuild."
+      ],
+      "impact": "No production-capable real-mode BUY/SELL can reach the broker without immutable readiness evidence persisted first, regardless of which code path calls execute_owned_order, and the evidence store cannot produce ambiguous duplicate or half-written records under concurrent writers.",
+      "sources": [
+        "docs/daily_patch/2026-10-06_r6_1_scope_fix.md",
+        "libs/execution/readiness_evidence.py",
+        "libs/execution/intent_execution_owner.py",
+        "libs/approval/service.py",
+        "graphs/nodes/execute_order.py",
+        "tests/test_r61_scope_fix.py"
       ],
       "status": "current"
     }

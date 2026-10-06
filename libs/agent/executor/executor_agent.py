@@ -109,6 +109,7 @@ class ExecutorAgent:
         rationale: str = "",
         approval_mode: str = "manual",          # "manual" | "auto"
         execution_enabled: bool = False,        # gate for real execution
+        readiness_state: Optional[Dict[str, Any]] = None,  # R6.1: runtime readiness context (real-mode BUY/SELL)
     ) -> Dict[str, Any]:
         """
         Creates an order intent via supervisor.
@@ -154,6 +155,13 @@ class ExecutorAgent:
             # what authorizes persisting it as approved here.
             iid = str((intent or {}).get("intent_id") or "")
             if iid:
+                # R6.1: immutable readiness evidence BEFORE admission (real-mode BUY/SELL only).
+                evidence_ok, evidence_error, evidence_ref = self.approvals.prepare_readiness_evidence(
+                    intent or {}, readiness_state=readiness_state, source="executor_agent_auto")
+                if not evidence_ok:
+                    return {"decision": decision_dict, "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": evidence_error}}
+                if evidence_ref:
+                    intent = {**(intent or {}), "readiness_evidence": evidence_ref}
                 admission_error = self.approvals.admit_pre_approved_intent(intent or {}, source="executor_agent_auto")
                 if admission_error:
                     return {"decision": decision_dict, "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": admission_error}}
@@ -218,6 +226,8 @@ class ExecutorAgent:
             # path is reached without prior approval (e.g. APPROVAL_MODE
             # auto).
             "intent_id": str(intent.get("intent_id") or ""),
+            # R6.1: evidence reference produced by the approval/pre-admission helper (if any).
+            "readiness_evidence": intent.get("readiness_evidence"),
         }
         out = self.runner.run(run_id=_new_run_id(), skill="order.place", args=skill_args)
         return asdict(out)
@@ -227,6 +237,7 @@ class ExecutorAgent:
         *,
         intent_id: Optional[str] = None,
         execution_enabled: Optional[bool] = None,
+        readiness_state: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         M16 semantics:
@@ -242,6 +253,7 @@ class ExecutorAgent:
             intent_id=intent_id,
             execution_enabled=bool(execution_enabled),
             execute_fn=lambda it: self.execute_order(intent=it),
+            readiness_state=readiness_state,
         )
 
     def preview(self, *, intent_id: Optional[str] = None) -> Dict[str, Any]:

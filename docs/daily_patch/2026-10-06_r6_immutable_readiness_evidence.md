@@ -69,3 +69,8 @@ session closes: confirm flat/clean state, build an exact-SHA image from the push
 restart. R6 live acceptance is prospective: the next real/mock order must show a durable `pre_broker_submit` record
 (intent_id, instance_id, generation, recovery_required, reconciliation inputs, readiness verdict, guard verdict,
 broker_submission_allowed) that matches the intent, Step5C/5D state, broker order number and fill.
+
+## Scope update
+
+Superseded in scope by R6.1 (`2026-10-06_r6_1_scope_fix.md`): the other `execute_owned_order` callers are now covered or
+structurally blocked, and the final mutation choke point verifies the evidence. The R6 contract above is otherwise unchanged.

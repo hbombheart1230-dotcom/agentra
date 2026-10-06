@@ -92,9 +92,32 @@ def execute_order(state: dict) -> dict:
     guard_order.update({key: req_body.get(key) for key in ('orig_ord_no', 'cncl_qty', 'mdfy_qty', 'mdfy_uv')})
     guard_order.update(qty=req_body.get('ord_qty'), price=req_body.get('ord_uv'), intent_id=state.get('intent_id'))
     from libs.execution.intent_admission import admit_order_intent
+    # R6.1: readiness decision -> immutable evidence -> admission -> execute_owned_order.
+    from libs.execution.readiness_evidence import (
+        PHASE_GUARD_BLOCK, PHASE_PRE_BROKER_SUBMIT, is_new_exposure_order, record_pre_admission_evidence)
+    readiness_ref = None
+    if is_new_exposure_order(guard_order, prep.request):
+        from graphs.nodes.execute_from_packet import _evaluate_execution_readiness_guard
+        r_allowed, r_reason, r_details = _evaluate_execution_readiness_guard(state, guard_order)
+        ev_ok, ev_reason, ev_details = record_pre_admission_evidence(
+            state=state, order=guard_order, request=prep.request,
+            phase=PHASE_PRE_BROKER_SUBMIT if r_allowed else PHASE_GUARD_BLOCK,
+            guard_enabled=bool((r_details or {}).get("enabled")), guard_allowed=r_allowed,
+            guard_reason=r_reason, broker_submission_allowed=bool(r_allowed), source="execute_order")
+        if not r_allowed or not ev_ok:
+            reason = r_reason if not r_allowed else ev_reason
+            state["execution"] = {"allowed": False, "reason": reason, "execution_readiness_guard": r_details,
+                                  "readiness_evidence": ev_details, "broker_outcome": "NOT_SENT"}
+            try:
+                logger.end({"allowed": False, "reason": reason})
+            except Exception:
+                pass
+            return state
+        readiness_ref = ev_details.get("reference")
     admit_order_intent(state=state, order=guard_order, source="legacy_execute_order_policy")
     state['execution'] = execute_owned_order(state=state, order=guard_order, request=prep.request,
-                                            executor=executor, normalize=normalize_legacy)
+                                            executor=executor, normalize=normalize_legacy,
+                                            readiness_evidence=readiness_ref)
     broker_outcome = state['execution']['broker_outcome']
     if broker_outcome == "UNKNOWN":
         _quarantine_symbol_for_unknown_outcome(state, guard_order, state["execution"])

@@ -428,9 +428,12 @@ def test_r16_r17_step5c_step5d_unchanged_and_orphan_recorded(tmp_path):
     assert rec["orphan_claim_count"] == 1
     assert out["execution"]["reason"] == "execution_not_ready"  # Step5D orphan still blocks, as before
     assert state["executor"].calls == []
-    for name in ("intent_execution_owner.py", "intent_state_store.py"):
-        source = (ROOT / "libs" / "execution" / name if name.startswith("intent_exec") else ROOT / "libs" / "supervisor" / name).read_text(encoding="utf-8")
-        assert "readiness_evidence" not in source  # Step5C/5D code does not know about evidence
+    store_source = (ROOT / "libs" / "supervisor" / "intent_state_store.py").read_text(encoding="utf-8")
+    assert "readiness_evidence" not in store_source  # Step5C/5D store does not know about evidence
+    owner_source = (ROOT / "libs" / "execution" / "intent_execution_owner.py").read_text(encoding="utf-8")
+    # the choke point only checks the evidence contract; the Step5C claim calls are unchanged
+    assert "store.claim_physical_order(physical_key, intent_id=iid, owner=owner)" in owner_source
+    assert "store.claim_execution(iid, fingerprint=physical_key, owner=owner)" in owner_source
 
 
 def test_r18_broker_routing_unchanged(tmp_path):
@@ -457,13 +460,12 @@ def test_evidence_is_never_an_authority_input():
         ROOT / "graphs" / "nodes" / "build_execution_readiness.py",
         ROOT / "libs" / "runtime" / "runtime_ownership.py",
         ROOT / "libs" / "runtime" / "live_loop_runner.py",
-        ROOT / "libs" / "execution" / "intent_execution_owner.py",
         ROOT / "libs" / "supervisor" / "intent_state_store.py",
     ]
     for path in consumers:
         assert "readiness_evidence" not in path.read_text(encoding="utf-8"), path.name
     source = (ROOT / "graphs" / "nodes" / "execute_from_packet.py").read_text(encoding="utf-8")
-    assert "append_readiness_evidence" in source and "read_readiness_evidence" not in source
+    assert "record_pre_admission_evidence" in source and "read_readiness_evidence" not in source
 
 
 def test_readiness_dict_and_guard_inputs_unchanged_by_r6(tmp_path):

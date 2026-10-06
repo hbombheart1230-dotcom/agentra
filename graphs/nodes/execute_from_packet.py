@@ -2008,53 +2008,30 @@ def _record_readiness_evidence(
 ) -> Tuple[bool, str, Dict[str, Any]]:
     """R6 (2026-10-06): persist immutable per-intent readiness/guard EVIDENCE.
 
-    Evidence only -- the in-memory readiness value and the guard verdict computed just
-    before this call remain the sole authority and are never re-read from the record.
-    Scoped like the readiness guard itself: BUY/SELL in real execution mode only
-    (MockExecutor never reaches a broker; CANCEL/MODIFY are not new exposure).
+    Thin adapter over the shared R6 pre-admission helper
+    (libs/execution/readiness_evidence.py::record_pre_admission_evidence), used identically by every
+    production-capable mutation path. Evidence only -- the in-memory readiness value and the guard
+    verdict computed just before this call remain the sole authority.
 
-    Returns (ok, reason, details). ok=False means the evidence could not be persisted and
-    the caller MUST NOT submit to the broker (fail closed on this evidence contract only).
+    Returns (ok, reason, details). ok=False means the evidence could not be persisted and the
+    caller MUST NOT submit to the broker (fail closed on this evidence contract only).
     """
-    from libs.execution.readiness_evidence import (
-        WRITE_FAILED_REASON,
-        append_readiness_evidence,
-        build_readiness_evidence_record,
-        evidence_root,
-    )
+    from libs.execution.readiness_evidence import record_pre_admission_evidence
 
-    action = str(order.get("action") or "").strip().upper()
     mode = _resolve_execution_mode()
+    action = str(order.get("action") or "").strip().upper()
     if action not in ("BUY", "SELL") or mode != "real":
         return True, "", {"enabled": False, "action": action, "execution_mode": mode}
-    try:
-        record = build_readiness_evidence_record(
-            state=state,
-            order=order,
-            phase=phase,
-            guard_enabled=bool((readiness_details or {}).get("enabled")),
-            guard_allowed=bool(readiness_allowed),
-            guard_reason=str(readiness_reason or ""),
-            broker_submission_allowed=bool(broker_submission_allowed),
-            execution_mode=mode,
-        )
-        result = append_readiness_evidence(record, root=evidence_root(state))
-    except Exception as exc:  # typed ReadinessEvidenceWriteError or any builder/IO failure
-        return False, WRITE_FAILED_REASON, {
-            "enabled": True,
-            "action": action,
-            "phase": phase,
-            "error": f"{type(exc).__name__}: {str(exc)[:160]}",
-        }
-    return True, "", {
-        "enabled": True,
-        "action": action,
-        "phase": phase,
-        "record_id": result.get("record_id"),
-        "duplicate": bool(result.get("duplicate")),
-        "intent_sequence": result.get("intent_sequence"),
-        "path": result.get("path"),
-    }
+    return record_pre_admission_evidence(
+        state=state,
+        order=order,
+        phase=phase,
+        guard_enabled=bool((readiness_details or {}).get("enabled")),
+        guard_allowed=bool(readiness_allowed),
+        guard_reason=str(readiness_reason or ""),
+        broker_submission_allowed=bool(broker_submission_allowed),
+        source="execute_from_packet",
+    )
 
 
 def _evaluate_open_order_reconciliation_guard(state: Dict[str, Any], order: Dict[str, Any]) -> Tuple[bool, str, Dict[str, Any]]:
@@ -4012,7 +3989,9 @@ def execute_from_packet(state: dict) -> dict:
         # outer except block below.
         from libs.execution.intent_execution_owner import execute_owned_order
         state["execution"] = execute_owned_order(state=state, order=order, request=req,
-            executor=executor, on_submit=_mark_submission_dispatched, normalize=lambda result: _finalize_execution_observability_fields(_normalize_execution(
+            executor=executor, on_submit=_mark_submission_dispatched,
+            readiness_evidence=readiness_evidence.get("reference"),
+            normalize=lambda result: _finalize_execution_observability_fields(_normalize_execution(
                 allowed=True, execution_result=result, allow_result=allow_result,
                 order=order, strategy_policy_summary=strategy_policy_summary)))
         state["execution"]["portfolio_guard"] = portfolio_details

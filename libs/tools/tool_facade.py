@@ -129,6 +129,7 @@ class ToolFacade:
         order_type: str = "market",
         price: Optional[int] = None,
         rationale: str = "",
+        readiness_state: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         raw_intent = {
             "action": "BUY" if str(side).lower() == "buy" else "SELL",
@@ -173,6 +174,13 @@ class ToolFacade:
             # what authorizes persisting it as approved here.
             iid = str((intent or {}).get("intent_id") or "")
             if iid:
+                # R6.1: immutable readiness evidence BEFORE admission (real-mode BUY/SELL only).
+                evidence_ok, evidence_error, evidence_ref = self.approvals.prepare_readiness_evidence(
+                    intent or {}, readiness_state=readiness_state, source="tool_facade_auto")
+                if not evidence_ok:
+                    return {"decision": decision_dict, "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": evidence_error}}
+                if evidence_ref:
+                    intent = {**(intent or {}), "readiness_evidence": evidence_ref}
                 admission_error = self.approvals.admit_pre_approved_intent(intent or {}, source="tool_facade_auto")
                 if admission_error:
                     return {"decision": decision_dict, "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": admission_error}}
@@ -181,11 +189,12 @@ class ToolFacade:
 
         return {"decision": decision_dict}
 
-    def approve_intent(self, *, intent_id: Optional[str] = None) -> Dict[str, Any]:
+    def approve_intent(self, *, intent_id: Optional[str] = None, readiness_state: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         return self.approvals.approve(
             intent_id=intent_id,
             execution_enabled=_execution_enabled(),
             execute_fn=lambda it: self.order_execute(intent=it),
+            readiness_state=readiness_state,
         )
 
     def preview_intent(self, *, intent_id: Optional[str] = None) -> Dict[str, Any]:
@@ -293,6 +302,8 @@ class ToolFacade:
             # assigned once at creation, must survive unchanged all the way
             # to the broker call and the terminal state record.
             "intent_id": str(intent.get("intent_id") or ""),
+            # R6.1: evidence reference produced by the approval/pre-admission helper (if any).
+            "readiness_evidence": intent.get("readiness_evidence"),
         }
         out = self.runner.run(run_id=_new_run_id(), skill="order.place", args=skill_args)
         return asdict(out)

@@ -127,6 +127,69 @@ class ApprovalService:
             "mdfy_uv": intent.get("mdfy_uv"),
         }
 
+    def prepare_readiness_evidence(
+        self,
+        intent: Dict[str, Any],
+        *,
+        readiness_state: Optional[Dict[str, Any]] = None,
+        readiness_evidence: Optional[Dict[str, Any]] = None,
+        source: str = "approval_service",
+    ) -> Tuple[bool, Optional[str], Optional[Dict[str, Any]]]:
+        """R6.1 shared pre-admission evidence contract for the approval / operator paths.
+
+        Returns (ok, error_message, evidence_reference). Applies only to production-capable BUY/SELL
+        (real execution mode); everything else returns (True, None, None).
+
+        An operator/approval process has no runtime readiness context of its own. It therefore needs
+        either a runtime ``readiness_state`` (the dict carrying the authoritative
+        ``execution_readiness``) -- in which case the existing readiness guard decides and the evidence
+        is persisted -- or an already-valid ``readiness_evidence`` reference. With neither, real-mode
+        BUY/SELL is structurally blocked (fail closed) BEFORE admission/broker submission.
+        """
+        from libs.execution.readiness_evidence import (
+            PHASE_GUARD_BLOCK,
+            PHASE_PRE_BROKER_SUBMIT,
+            REQUIRED_REASON,
+            evidence_root,
+            is_new_exposure_order,
+            record_pre_admission_evidence,
+            resolve_execution_mode,
+            validate_evidence_reference,
+        )
+
+        order = self._execution_order(intent)
+        order["intent_id"] = str((intent or {}).get("intent_id") or "").strip()
+        try:
+            order["qty"] = int((intent or {}).get("qty") or 1)  # same default the dispatch layer applies
+        except (TypeError, ValueError):
+            return False, "readiness_evidence_invalid: qty", None
+        if resolve_execution_mode() != "real" or not is_new_exposure_order(order):
+            return True, None, None
+        state = dict(readiness_state) if isinstance(readiness_state, dict) else {}
+        if readiness_evidence is not None:
+            ok, reason = validate_evidence_reference(readiness_evidence, order=order, root=evidence_root(state))
+            return (True, None, dict(readiness_evidence)) if ok else (False, reason, None)
+        if readiness_state is None:
+            return False, f"{REQUIRED_REASON}: real-mode BUY/SELL via {source} needs runtime readiness context", None
+        from graphs.nodes.execute_from_packet import _evaluate_execution_readiness_guard
+
+        allowed, reason, details = _evaluate_execution_readiness_guard(state, order)
+        ok, ev_reason, ev_details = record_pre_admission_evidence(
+            state=state,
+            order=order,
+            phase=PHASE_PRE_BROKER_SUBMIT if allowed else PHASE_GUARD_BLOCK,
+            guard_enabled=bool((details or {}).get("enabled")),
+            guard_allowed=bool(allowed),
+            guard_reason=reason,
+            broker_submission_allowed=bool(allowed),
+            source=source,
+        )
+        if not allowed:
+            return False, reason or "execution_not_ready", None
+        if not ok:
+            return False, ev_reason, None
+        return True, None, ev_details.get("reference")
+
     def admit_pre_approved_intent(self, intent: Dict[str, Any], *, source: str = "automatic_policy") -> Optional[str]:
         """Persist intent_id into the canonical store as approved, without
         going through the manual approve() gate.
@@ -295,6 +358,8 @@ class ApprovalService:
         intent_id: Optional[str] = None,
         execution_enabled: bool,
         execute_fn: Callable[[Dict[str, Any]], Dict[str, Any]],
+        readiness_state: Optional[Dict[str, Any]] = None,
+        readiness_evidence: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         iid, intent, err = self._resolve_intent(intent_id)
         if err or not iid or not intent:
@@ -342,6 +407,18 @@ class ApprovalService:
                     "note": "Already approved. Execution is still disabled.",
                 }
 
+        # R6.1: when this call can reach the broker, the immutable readiness evidence contract must
+        # be satisfied BEFORE admission (fail closed otherwise). Evidence only -- no new authority.
+        evidence_ref: Optional[Dict[str, Any]] = None
+        if execution_enabled:
+            evidence_ok, evidence_error, evidence_ref = self.prepare_readiness_evidence(
+                intent, readiness_state=readiness_state, readiness_evidence=readiness_evidence,
+                source="approval_service",
+            )
+            if not evidence_ok:
+                return {"ok": False, "intent_id": iid, "message": evidence_error, "reason": "readiness_evidence_required",
+                        "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": evidence_error}}
+
         # Step5C Fix5 (item 9/20): admission is created here ONLY as the
         # first-ever transition into "approved" -- via admit_intent's own
         # pending->approved promotion, triggered by this explicit approve()
@@ -388,7 +465,7 @@ class ApprovalService:
         self._append_marker(intent_id=iid, status="executing", reason="execution started", intent=intent)
 
         try:
-            exec_res = execute_fn(intent)
+            exec_res = execute_fn({**intent, "readiness_evidence": evidence_ref} if evidence_ref else intent)
         except Exception as e:
             fail_reason = str(e)
             # Step5C Fix3 (MEDIUM2): the JSON read-model marker must never

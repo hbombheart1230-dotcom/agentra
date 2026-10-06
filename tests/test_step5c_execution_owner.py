@@ -256,8 +256,17 @@ def test_step5b_real_transport_composition(monkeypatch):
         action='cache_hit', token='fake', expires_at_epoch=9999999999, reason='test'))
     candidate = order('transport')
     req = PreparedRequest('kt10000', 'POST', '/api/dostk/ordr', {}, {}, {'stk_cd': '005930', 'ord_qty': '1'})
+    # R6.1: a real-mode BUY/SELL reaches the broker only with valid R6 readiness evidence.
+    from libs.execution.readiness_evidence import PHASE_PRE_BROKER_SUBMIT, record_pre_admission_evidence
+    from libs.execution.intent_identity import bind_intent
+    bind_intent({'run_id': 'transport'}, candidate)
+    ev_ok, _, ev_details = record_pre_admission_evidence(
+        state={'run_id': 'transport'}, order=candidate, request=req, phase=PHASE_PRE_BROKER_SUBMIT,
+        guard_enabled=False, guard_allowed=True, guard_reason='', broker_submission_allowed=True, source='test')
+    assert ev_ok
     def run():
         return execute_owned_order(state={'run_id': 'transport'}, order=candidate, request=req, executor=ex,
+            readiness_evidence=ev_details['reference'],
             normalize=lambda r: _normalize_execution(allowed=True, execution_result=r, allow_result=None, order=candidate))
     assert run()['broker_outcome'] == 'UNKNOWN'
     assert run()['broker_outcome'] == 'NOT_SENT'

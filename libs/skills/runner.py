@@ -305,9 +305,14 @@ class CompositeSkillRunner:
                         ok = bool(getattr(getattr(result, "response", None), "ok", False))
                         outcome = "ACCEPTED" if ok else "REJECTED"
                     return {"broker_outcome": outcome}
+                # R6.1: this runner never produces readiness evidence itself (it has no runtime
+                # readiness state). A production-capable BUY/SELL reaches the broker only if the
+                # caller supplied a valid R6 evidence reference; execute_owned_order fails closed
+                # otherwise (STRUCTURALLY_BLOCKED when absent).
                 owned = execute_owned_order(
                     state={"run_id": run_id}, order=owner_order, request=prep.request,
                     executor=self.executor, normalize=_capture_dispatch,
+                    readiness_evidence=args.get("readiness_evidence"),
                 )
                 if not owned.get("intent_claim", {}).get("claimed"):
                     self.events.log(run_id=run_id, stage="skill_execute", event="ownership_claim_denied", payload={

@@ -1782,3 +1782,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Tests: `tests/test_r6_readiness_evidence.py` (30). The 749-test execution/readiness/Step5/ownership regression set passes; 8 `test_step5b_fix4` tests fail identically on the pre-R6 baseline and were not touched.
 - The running Docker image does not contain yfinance or R6 and was not rebuilt during market hours; rebuild and a single controlled restart follow the close. R6 live acceptance is prospective (next real/mock order).
 - See `docs/daily_patch/2026-10-06_r6_immutable_readiness_evidence.md`.
+
+# 2026-10-06 - R6.1 Mutation-Path Scope Fix and Atomic Evidence Append
+
+- Codex verdict `R6_SCOPE_FIX_REQUIRED`: three other `execute_owned_order` callers could reach the broker without R6 evidence, and evidence append was scan-then-append without interprocess locking.
+- Call graph traced: `execute_from_packet` BUY/SELL (covered), its two CANCEL calls (not exposure), legacy `execute_order` node (now covered by the shared helper + existing readiness guard), `libs/skills/runner.py` (blocked without an evidence reference), and the approval service / ToolFacade / ExecutorAgent flow (covered when a runtime `readiness_state` is supplied, otherwise real-mode BUY/SELL is blocked before admission).
+- One shared pre-admission helper records the existing readiness/guard values BEFORE admission/Step5C/broker submit; the order is not moved after admission.
+- Final choke point: `execute_owned_order` verifies the evidence reference against durable storage for real-mode BUY/SELL (matching intent/side/symbol/quantity, hash-valid, ALLOW, fresh) and otherwise fails closed (`readiness_evidence_required` / `readiness_evidence_invalid`) before any Step5C claim and with no broker call. No new authority; CANCEL/MODIFY and mock mode excluded.
+- Atomic append: per-day interprocess lock (`O_EXCL` lock file, bounded wait) around read/dedup/sequence/append/fsync/read-back; lock timeout fails closed. Same intent + same attempt -> same `record_id` and a deterministic duplicate answer; later attempt -> next `intent_sequence`; torn/partial/tampered lines are never valid evidence.
+- Operator note: real-mode BUY/SELL approvals through `approval_cli` now need runtime readiness context or a valid evidence reference. Strategy, readiness, Step5C/5D, UEF and broker routing are unchanged; no 2026-10-06 evidence is fabricated.
+- Tests: `tests/test_r61_scope_fix.py` (33). Not deployed; Docker untouched pending independent audit and the after-hours rebuild.
+- See `docs/daily_patch/2026-10-06_r6_1_scope_fix.md`.

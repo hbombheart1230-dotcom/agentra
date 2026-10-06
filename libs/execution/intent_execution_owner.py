@@ -24,7 +24,8 @@ def _store():
     return SQLiteIntentStateStore()
 
 
-def execute_owned_order(*, state: dict, order: dict, request, executor, normalize, child: bool = False, on_submit=None) -> dict:
+def execute_owned_order(*, state: dict, order: dict, request, executor, normalize, child: bool = False, on_submit=None,
+                        readiness_evidence=None) -> dict:
     """Call only after existing policy approval; never bypass those guards.
 
     This is the single canonical claim-dispatch-finish sequence for every
@@ -48,6 +49,13 @@ def execute_owned_order(*, state: dict, order: dict, request, executor, normaliz
 
     normalize is the caller's existing Step5B outcome normalization boundary.
     No transport classification is invented by this ownership layer.
+
+    R6.1 (final mutation choke point): for production-capable BUY/SELL (real execution mode, new
+    exposure) the caller must pass ``readiness_evidence`` -- the reference returned by the shared R6
+    pre-admission helper. It is verified against durable storage here (a matching, hash-valid,
+    fresh pre_broker_submit record with an ALLOW verdict). Missing/invalid -> fail closed BEFORE any
+    Step5C claim and with no broker call. This grants no authority: readiness/guard decisions stay
+    with their existing owners; this only proves the evidence contract was satisfied.
     """
     owner = uuid.uuid4().hex
     iid = ''
@@ -56,8 +64,13 @@ def execute_owned_order(*, state: dict, order: dict, request, executor, normaliz
     phys_claim: dict = {}
     try:
         iid = bind_intent(state, order, child=child)
-        physical_key = physical_order_fingerprint(state, order)
-        if physical_key is None:
+        from libs.execution.readiness_evidence import require_readiness_evidence_for_order
+        evidence_ok, evidence_reason = require_readiness_evidence_for_order(
+            state=state, order=order, request=request, evidence=readiness_evidence)
+        physical_key = physical_order_fingerprint(state, order) if evidence_ok else ''
+        if not evidence_ok:
+            claim = {'claimed': False, 'reason': evidence_reason}
+        elif physical_key is None:
             # Step5C Fix3: the order cannot be canonicalized into a valid
             # physical order identity at all (unrecognized action, invalid
             # symbol, missing/invalid qty, or a LIMIT order with no real
