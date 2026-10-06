@@ -183,5 +183,8 @@ def build_execution_readiness(state: Dict[str, Any]) -> Dict[str, Any]:
     )
     readiness_dict = readiness.to_dict()
     state["execution_readiness"] = readiness_dict
+    # R6 evidence metadata only (never read by any readiness/execution decision): when this
+    # exact readiness value was computed, so per-intent evidence can cite it.
+    state["execution_readiness_computed_at_epoch"] = int(time.time())
     _persist_execution_readiness_snapshot(state, readiness_dict)
     return state

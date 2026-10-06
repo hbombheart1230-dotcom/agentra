@@ -1770,3 +1770,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Today's expired Q10/Q12 artifacts were not rewritten or replayed (no backfill). Read-only dry loads with the restored environment: Q10 12/13 available, Q12 BTC/USD and BTC/KRW eligible for 08:55, global-sentiment inputs populated; yfinance news returned no items (upstream/unclear).
 - Regression tests: `tests/test_yfinance_dependency_integrity.py` (27 tests); related Q10/Q12/macro/sentiment/news/hydration suites remain green.
 - See `docs/daily_patch/2026-10-06_yfinance_dependency_restore.md`.
+
+# 2026-10-06 - R6 Immutable Execution Readiness Evidence
+
+- Problem: `execution_readiness.json` is only the latest mutable snapshot, so the readiness value used by the 2026-10-06 09:02 BUY and 09:05 SELL could not be proven afterwards (Codex verdict `INSUFFICIENT_EVIDENCE`).
+- New append-only evidence: `libs/execution/readiness_evidence.py` writes one JSON line per BUY/SELL decision to `data/logs/execution_readiness_evidence/<day>.jsonl` (deterministic `record_id`, per-intent `intent_sequence`, `record_hash`, duplicate detection, never rewritten). Fields include intent/run ids, runtime instance id, ownership generation, `recovery_required`, portfolio and open-order reconciliation, readiness verdict/reasons/computed-at, guard verdict, `broker_submission_allowed`, execution mode, symbol/side/quantity and entry/exit reason correlation.
+- Order: readiness evaluated -> guard verdict -> evidence persisted -> only then intent admission and broker submission. Readiness-guard blocks are recorded as well.
+- Fail-closed: if the evidence cannot be persisted for a real-mode BUY/SELL, nothing is admitted or submitted (`readiness_evidence_write_failed`). A failed record on an already-blocked order leaves the existing block reason unchanged.
+- Evidence only: never read back by readiness, execution, ownership, Step5C or Step5D (pinned by tests). Scope: BUY/SELL, real execution mode, `execute_from_packet`. No change to strategy, UEF, Step5C/5D, R1-R5 or broker routing.
+- Prospective only: the 2026-10-06 09:02 BUY and 09:05 SELL stay `READINESS_AT_EXECUTION = UNKNOWN` (`HISTORICAL_OBSERVABILITY_GAP`); nothing is fabricated.
+- Tests: `tests/test_r6_readiness_evidence.py` (30). The 749-test execution/readiness/Step5/ownership regression set passes; 8 `test_step5b_fix4` tests fail identically on the pre-R6 baseline and were not touched.
+- The running Docker image does not contain yfinance or R6 and was not rebuilt during market hours; rebuild and a single controlled restart follow the close. R6 live acceptance is prospective (next real/mock order).
+- See `docs/daily_patch/2026-10-06_r6_immutable_readiness_evidence.md`.

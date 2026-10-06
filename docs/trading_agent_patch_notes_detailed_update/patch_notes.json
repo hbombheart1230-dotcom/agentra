@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 108,
+  "entry_count": 109,
   "entries": [
     {
       "date": "2026-09-08",
@@ -2864,6 +2864,37 @@
         "libs/reporting/baseline_samsung_hynix/forward_validation/pipeline.py",
         "libs/reporting/baseline_btc_woori_tech/point_in_time_capture.py",
         "tests/test_yfinance_dependency_integrity.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-06",
+      "version": "R6 Immutable Execution Readiness Evidence",
+      "title": "Per-intent readiness/guard evidence is persisted before broker submission; evidence-write failure fails closed",
+      "stage": "Operations and Reliability",
+      "types": [
+        "SAFETY",
+        "RELIABILITY",
+        "OBSERVABILITY"
+      ],
+      "summary": "execution_readiness.json is only the latest mutable snapshot, so the readiness value the 2026-10-06 09:02 BUY and 09:05 SELL saw at execution time could not be proven. R6 adds an append-only, per-intent evidence record written at the readiness decision point and before intent admission and broker submission. It is evidence only and prospective only.",
+      "details": [
+        "New libs/execution/readiness_evidence.py appends one JSON line per BUY/SELL execution decision to data/logs/execution_readiness_evidence/<KST day>.jsonl (O_APPEND, fsync). Existing lines are never rewritten or truncated. Each record carries a deterministic record_id (digest of the decision identity), a per-intent intent_sequence so replays of one intent stay ordered, and a record_hash over its own content; an exact duplicate record_id is detected and not written twice.",
+        "Record fields: schema_version, record_id, recorded_at, phase (readiness_guard_block | pre_broker_submit), intent_id, run_id, runtime_instance_id, ownership_generation, recovery_required, portfolio_reconciled, open_orders_reconciled, orphan_claim_count, execution_readiness_ready / reasons / computed_at, guard_enabled / guard_verdict / guard_reason, broker_submission_allowed, execution_mode, symbol, side, quantity, plus correlation (entry_reason, exit_reason, signal_source, rationale). The readiness node additionally stamps state['execution_readiness_computed_at_epoch'] (evidence metadata only; the readiness dict itself is unchanged).",
+        "Write order in execute_from_packet: readiness evaluated -> guard verdict determined -> evidence persisted -> only then intent admission and broker submission. A readiness-guard BLOCK is recorded too (broker_submission_allowed=false). The result carries execution.readiness_evidence (record_id) for intent -> evidence -> Step5C/5D -> broker order matching.",
+        "Fail-closed: if the evidence cannot be persisted for a BUY/SELL in real execution mode, nothing is admitted or submitted and the execution is blocked with reason readiness_evidence_write_failed. This applies only to this evidence contract; ordinary diagnostic logging is unaffected. If a readiness-guard block cannot be recorded, the existing block (execution_not_ready / execution_readiness_missing) is still returned unchanged.",
+        "Authority rule: the record is evidence only. It is never read back by readiness, execution, ownership, Step5C or Step5D code (pinned by tests); the in-memory readiness value and guard decision stay authoritative. Scope matches the readiness guard: BUY/SELL in real execution mode inside execute_from_packet; CANCEL/MODIFY and mock mode write nothing. Other execute_owned_order callers (skills runner / approval service, execute_order node) do not evaluate the readiness guard and are not changed.",
+        "Prospective only: nothing back-fills or fabricates evidence. For 2026-10-06 09:02 BUY (order 0015433) and 09:05 SELL (order 0021826) readiness-at-execution remains UNKNOWN (root cause: historical observability gap); both orders passed the outermost readiness guard but the in-memory value was not persisted.",
+        "No change to strategy, scoring, UEF, Step5C/Step5D semantics, ownership R1-R5, guard order or broker routing. Tests: tests/test_r6_readiness_evidence.py (30 tests) cover ready/not-ready/recovery, instance id, generation, portfolio and open-order reconciliation, evidence-before-submit and before-admission ordering, fail-closed (patched and real I/O failure), append-only/idempotent/duplicate behaviour, BUY/SELL/opening_rank1_controlled_probe/stop_loss paths, and unchanged guard/routing/Step5C/5D/strategy behaviour. The existing 749-test execution/readiness/Step5/ownership regression set passes; 8 tests in tests/test_step5b_fix4.py fail identically on the pre-R6 baseline (EXECUTION_ENABLED environment dependence) and were not touched.",
+        "Docker: the running trading-agent-live image (trading-agent-20261002:61586ae) contains neither yfinance nor R6 and was not rebuilt or restarted during market hours; a new exact-SHA image and one controlled after-hours restart follow the close. R6 live acceptance is prospective: the next real/mock order must show a durable pre-submit record that matches the intent, Step5C/5D state, broker order number and fill."
+      ],
+      "impact": "From the next BUY/SELL on a rebuilt runtime, the exact readiness and guard values used at the execution decision are provable after the fact, and an order can no longer be submitted without that proof being durable. Historical readiness-at-execution for 2026-10-06 stays UNKNOWN.",
+      "sources": [
+        "docs/daily_patch/2026-10-06_r6_immutable_readiness_evidence.md",
+        "libs/execution/readiness_evidence.py",
+        "graphs/nodes/execute_from_packet.py",
+        "graphs/nodes/build_execution_readiness.py",
+        "tests/test_r6_readiness_evidence.py"
       ],
       "status": "current"
     }

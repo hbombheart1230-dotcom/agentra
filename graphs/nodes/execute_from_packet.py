@@ -1996,6 +1996,67 @@ def _evaluate_execution_readiness_guard(state: Dict[str, Any], order: Dict[str, 
     return True, "", {"enabled": True, "action": action}
 
 
+def _record_readiness_evidence(
+    state: Dict[str, Any],
+    order: Dict[str, Any],
+    *,
+    phase: str,
+    readiness_allowed: bool,
+    readiness_reason: str,
+    readiness_details: Dict[str, Any],
+    broker_submission_allowed: bool,
+) -> Tuple[bool, str, Dict[str, Any]]:
+    """R6 (2026-10-06): persist immutable per-intent readiness/guard EVIDENCE.
+
+    Evidence only -- the in-memory readiness value and the guard verdict computed just
+    before this call remain the sole authority and are never re-read from the record.
+    Scoped like the readiness guard itself: BUY/SELL in real execution mode only
+    (MockExecutor never reaches a broker; CANCEL/MODIFY are not new exposure).
+
+    Returns (ok, reason, details). ok=False means the evidence could not be persisted and
+    the caller MUST NOT submit to the broker (fail closed on this evidence contract only).
+    """
+    from libs.execution.readiness_evidence import (
+        WRITE_FAILED_REASON,
+        append_readiness_evidence,
+        build_readiness_evidence_record,
+        evidence_root,
+    )
+
+    action = str(order.get("action") or "").strip().upper()
+    mode = _resolve_execution_mode()
+    if action not in ("BUY", "SELL") or mode != "real":
+        return True, "", {"enabled": False, "action": action, "execution_mode": mode}
+    try:
+        record = build_readiness_evidence_record(
+            state=state,
+            order=order,
+            phase=phase,
+            guard_enabled=bool((readiness_details or {}).get("enabled")),
+            guard_allowed=bool(readiness_allowed),
+            guard_reason=str(readiness_reason or ""),
+            broker_submission_allowed=bool(broker_submission_allowed),
+            execution_mode=mode,
+        )
+        result = append_readiness_evidence(record, root=evidence_root(state))
+    except Exception as exc:  # typed ReadinessEvidenceWriteError or any builder/IO failure
+        return False, WRITE_FAILED_REASON, {
+            "enabled": True,
+            "action": action,
+            "phase": phase,
+            "error": f"{type(exc).__name__}: {str(exc)[:160]}",
+        }
+    return True, "", {
+        "enabled": True,
+        "action": action,
+        "phase": phase,
+        "record_id": result.get("record_id"),
+        "duplicate": bool(result.get("duplicate")),
+        "intent_sequence": result.get("intent_sequence"),
+        "path": result.get("path"),
+    }
+
+
 def _evaluate_open_order_reconciliation_guard(state: Dict[str, Any], order: Dict[str, Any]) -> Tuple[bool, str, Dict[str, Any]]:
     """P0-A (real-readiness hardening, 2026-09-17): fail-closed pending/open-order
     reconciliation gate for the entry (BUY) path.
@@ -3184,6 +3245,17 @@ def execute_from_packet(state: dict) -> dict:
 
         readiness_allowed, readiness_reason, readiness_details = _evaluate_execution_readiness_guard(state, order)
         if not readiness_allowed:
+            # R6: the BLOCK verdict is recorded too (evidence only; the block is already decided).
+            _evidence_ok, _evidence_reason, readiness_evidence = _record_readiness_evidence(
+                state,
+                order,
+                phase="readiness_guard_block",
+                readiness_allowed=readiness_allowed,
+                readiness_reason=readiness_reason,
+                readiness_details=readiness_details,
+                broker_submission_allowed=False,
+            )
+            readiness_details = {**readiness_details, "readiness_evidence": readiness_evidence}
             state["execution"] = _normalize_execution(
                 allowed=False,
                 execution_result=None,
@@ -3889,6 +3961,47 @@ def execute_from_packet(state: dict) -> dict:
 
         # Prepare request and execute
         req = _prepare_request(order, catalog)
+        # R6: immutable readiness/guard evidence MUST be durable BEFORE intent admission and
+        # broker submission. If it cannot be persisted, nothing is admitted or submitted.
+        evidence_ok, evidence_reason, readiness_evidence = _record_readiness_evidence(
+            state,
+            order,
+            phase="pre_broker_submit",
+            readiness_allowed=readiness_allowed,
+            readiness_reason=readiness_reason,
+            readiness_details=readiness_details,
+            broker_submission_allowed=True,
+        )
+        if not evidence_ok:
+            state["execution"] = _normalize_execution(
+                allowed=False,
+                execution_result=None,
+                allow_result=allow_result,
+                order=order,
+                reason=evidence_reason,
+                strategy_policy_summary=strategy_policy_summary,
+            )
+            state["execution"]["readiness_evidence"] = readiness_evidence
+            _append_execution_trace_entries(
+                state,
+                order=order,
+                execution=state["execution"],
+                allow_result=allow_result,
+                strategy_policy_summary=strategy_policy_summary,
+            )
+            logger.log(
+                run_id=run_id,
+                stage="execute_from_packet",
+                event="readiness_evidence_write_block",
+                payload={"allowed": False, "reason": evidence_reason, **readiness_evidence},
+            )
+            _persist_execution_artifacts(
+                supervisor_allowed=False,
+                supervisor_reason=evidence_reason,
+                supervisor_details=readiness_evidence,
+            )
+            logger.log(run_id=run_id, stage="execute_from_packet", event="end", payload={"ok": True})
+            return state
         from libs.execution.intent_admission import admit_order_intent
         admit_order_intent(state=state, order=order, source="execute_from_packet_policy")
         # From this point on, any exception raised out of executor.execute()
@@ -3903,6 +4016,8 @@ def execute_from_packet(state: dict) -> dict:
                 allowed=True, execution_result=result, allow_result=allow_result,
                 order=order, strategy_policy_summary=strategy_policy_summary)))
         state["execution"]["portfolio_guard"] = portfolio_details
+        if bool(readiness_evidence.get("enabled")):
+            state["execution"]["readiness_evidence"] = dict(readiness_evidence)
         if execution_price_guard.get("applicable"):
             state["execution"]["opening_alpha_execution_price_guard"] = dict(execution_price_guard)
         allow_details = getattr(allow_result, "details", {})
