@@ -27,7 +27,7 @@ touched; no broker/execution code touched.
 - A second, more subtle finding: `build_alpha_research_board()`'s returned `through_day` field is always
   an ECHO of whatever the caller requested -- it is never derived from or validated against the underlying
   source data's own dates. Confirmed directly against this repository's own state:
-  `tmp/p1_1_acceptance/REAL_RUN_CAPTURE_A.json` claims `through_day="2026-09-29"` at its top level while
+  `docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/REAL_RUN_CAPTURE_A.json` claims `through_day="2026-09-29"` at its top level while
   several of its own per-source entries (`fresh_change`, `latent_reactivation`, `opening_cumulative`,
   `prospective_candidates`) carry `through_day="2026-09-25"` -- so a naive `board.through_day == target_day`
   guard would always pass trivially, by construction, even against multi-day-stale content.
@@ -64,7 +64,7 @@ touched; no broker/execution code touched.
 ## 2026-09-29 recovery attempt
 
 Ran `scripts/run_daily_uef_evaluation.py --through-day 2026-09-29` against this repository's actual current
-state (not the `tmp/p1_1_acceptance/` capture). Result: **FAILED (freshness_guard)** -- `prospective_candidates`,
+state (not the `docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/` capture). Result: **FAILED (freshness_guard)** -- `prospective_candidates`,
 `fresh_change`, `opening_cumulative`, and `latent_reactivation` are all still dated `through_day=2026-09-25`.
 This is the new guard working correctly, not a defect: several of the underlying cumulative shadow-evaluation
 pipelines that feed the Alpha Board genuinely have not advanced past that Friday, so today's board cannot be

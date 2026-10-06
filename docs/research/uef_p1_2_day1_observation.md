@@ -15,7 +15,7 @@ No `reports/evaluation/alpha_research_board/2026-09-29/` (or `2026-09-28/`) dire
 `latest.json`/`latest.md` still pointed at `through_day=2026-09-25`. The UEF-7/8/9 outputs that did exist
 with today's date in their filenames (`UEF7RUN_5cc7cb2afd9cfd04`, `UEF8RUN_09af2f7cdb2977be`,
 `UEF9RUN_34d8789cc40ea717`) were traced precisely: they are the artifacts of the earlier same-session P1.1
-Real-Run Acceptance task (`tmp/p1_1_acceptance/run_chain.py` against the static
+Real-Run Acceptance task (`evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py` against the static
 `REAL_RUN_CAPTURE_A.json`), not evidence of an automatic 2026-09-29 evaluation. Their numbers match the
 stated P1.1 baseline exactly (candidate_count=14, pair_count=91, COMPARABLE=0, CONDITIONAL=7,
 NOT_COMPARABLE=84, authority_status=VALID) because it is the same run being observed twice.

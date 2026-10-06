@@ -1,0 +1,1367 @@
+{
+  "authority": {
+    "candidate_ids_frozen": true,
+    "closeout_explanation_source": "alpha_research_board_only",
+    "feature_columns_frozen": true,
+    "legacy_evaluations_are_inputs_only": true,
+    "questions_frozen": true,
+    "row_columns_frozen": true
+  },
+  "behavior_change_authorized": false,
+  "behavior_effect": "evaluation_only",
+  "candidate_count": 14,
+  "candidate_ids": [
+    "IMMEDIATE_OPENING_PROBE",
+    "CONFIRMED_RECURRENT_RANK",
+    "DISLOCATION_REBOUND",
+    "OPEN_0_20_RANK1_30M",
+    "R1_FRESH_CHANGE_ACTIVATION_V1",
+    "R1_ENTRY_DAILY_MA5_20_EXTENDED_15M_V1",
+    "LATENT_REACTIVATION_FRESH_TRIGGER",
+    "SAMSUNG_HYNIX_FIXED_UNIVERSE_TOP1",
+    "STRATEGIST_STAGE2_REFRESH_AUTHORITY_V1",
+    "BTC_WOORI_V2_ONLY_LOCAL_CONFIRMATION",
+    "BTC_STRONG_BULL_LOCAL_CONFIRMATION_V1",
+    "R1_SCANNER_RISK_HIGH_30M_V1",
+    "HIGH_COMMON_SHORT_ALPHA_V1",
+    "TOP_VALUE_VOLUME_NEGATIVE_CONTROL_V1"
+  ],
+  "candidates": [
+    {
+      "agent_attribution": {},
+      "candidate_id": "IMMEDIATE_OPENING_PROBE",
+      "concentration": {},
+      "decision": "READY_FOR_FIXED_RUNTIME_VALIDATION",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+5m"
+        ],
+        "market_regime": [],
+        "price_structure": [],
+        "rank_and_selection": [
+          "opening_rank1",
+          "immediate_probe"
+        ],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_FAILED",
+      "historical_evidence": {},
+      "hypothesis": "Immediate opening response at +5m",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 1.0207,
+        "cohort": "prospective",
+        "coverage": null,
+        "max_drawdown_pct": -8.8994,
+        "profit_factor": 2.3027,
+        "sample_count": 35,
+        "win_rate": 0.6286,
+        "window_count": 35
+      },
+      "next_action": "기존 observer로 고정된 5거래일 prospective 런 검증 수행.",
+      "operation_status": "UNKNOWN_OPERATION_STATUS",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 1.0207,
+        "coverage": null,
+        "max_drawdown_pct": -8.8994,
+        "profit_factor": 2.3027,
+        "sample_count": 35,
+        "win_rate": 0.6286,
+        "window_count": 35
+      },
+      "question_id": "A",
+      "rationale": "기본 성과와 종목·일자·최대 수익 제거 민감도를 모두 통과함.",
+      "sample_quality": {
+        "historical_sample_count": 0,
+        "prospective_sample_count": 35,
+        "source_status": "COLLECTING"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\opening_rank1_shadow\\opening_rank1_shadow_cumulative.json",
+          "source_key": "opening_cumulative"
+        }
+      ],
+      "status": "PROSPECTIVE",
+      "target_horizon": "+5m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "CONFIRMED_RECURRENT_RANK",
+      "concentration": {},
+      "decision": "RUNTIME_DATA_REQUIRED",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+30m"
+        ],
+        "market_regime": [],
+        "price_structure": [],
+        "rank_and_selection": [
+          "opening_rank1",
+          "recurrent_rank"
+        ],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {},
+      "hypothesis": "Recurrent Rank confirmation at +30m",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 4.0405,
+        "cohort": "prospective",
+        "coverage": null,
+        "max_drawdown_pct": -0.28,
+        "profit_factor": 58.7218,
+        "sample_count": 4,
+        "win_rate": 0.75,
+        "window_count": 4
+      },
+      "next_action": "행동 변경 없이 기존 artifact로 필요한 독립 표본만 수집.",
+      "operation_status": "UNKNOWN_OPERATION_STATUS",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 4.0405,
+        "coverage": null,
+        "max_drawdown_pct": -0.28,
+        "profit_factor": 58.7218,
+        "sample_count": 4,
+        "win_rate": 0.75,
+        "window_count": 4
+      },
+      "question_id": "A",
+      "rationale": "독립 episode 4건으로 최소 5건에 미달함.",
+      "sample_quality": {
+        "historical_sample_count": 0,
+        "prospective_sample_count": 4,
+        "source_status": "COLLECTING"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\opening_rank1_shadow\\opening_rank1_shadow_cumulative.json",
+          "source_key": "opening_cumulative"
+        }
+      ],
+      "status": "PROSPECTIVE",
+      "target_horizon": "+30m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "DISLOCATION_REBOUND",
+      "concentration": {},
+      "decision": "REJECT_SYMBOL_CONTRIBUTOR_DEPENDENCE",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+60m"
+        ],
+        "market_regime": [],
+        "price_structure": [
+          "opening_dislocation",
+          "rebound"
+        ],
+        "rank_and_selection": [],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {},
+      "hypothesis": "Opening dislocation rebound at +60m",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 1.7021,
+        "cohort": "prospective",
+        "coverage": null,
+        "max_drawdown_pct": -3.405,
+        "profit_factor": 3.6244,
+        "sample_count": 14,
+        "win_rate": 0.6429,
+        "window_count": 14
+      },
+      "next_action": "종료 상태를 유지하고 참고 근거만 누적한다.",
+      "operation_status": "NOT_RUNNING",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 1.7021,
+        "coverage": null,
+        "max_drawdown_pct": -3.405,
+        "profit_factor": 3.6244,
+        "sample_count": 14,
+        "win_rate": 0.6429,
+        "window_count": 14
+      },
+      "question_id": "A",
+      "rationale": "종목 233740 제외 시 평균/PF 기준이 무너짐.",
+      "sample_quality": {
+        "historical_sample_count": 0,
+        "prospective_sample_count": 14,
+        "source_status": "COLLECTING"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\opening_rank1_shadow\\opening_rank1_shadow_cumulative.json",
+          "source_key": "opening_cumulative"
+        }
+      ],
+      "status": "CLOSED",
+      "target_horizon": "+60m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "OPEN_0_20_RANK1_30M",
+      "concentration": {
+        "largest_day_share": 0.1029,
+        "largest_symbol_share": 0.2514
+      },
+      "decision": "REJECTED",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+30m"
+        ],
+        "market_regime": [],
+        "price_structure": [],
+        "rank_and_selection": [
+          "opening_rank1",
+          "09:00-09:20_control"
+        ],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {},
+      "hypothesis": "All 09:00-09:20 Rank-1 control",
+      "net_metrics": {
+        "avg_net_return_pct": 0.3695,
+        "cohort": "prospective",
+        "coverage": 1.0,
+        "profit_factor": 1.2388,
+        "sample_count": 175,
+        "win_rate": 0.4514,
+        "window_count": 175
+      },
+      "next_action": "종료 상태를 유지하고 참고 근거만 누적한다.",
+      "operation_status": "NOT_RUNNING",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_net_return_pct": 0.3695,
+        "coverage": 1.0,
+        "profit_factor": 1.2388,
+        "sample_count": 175,
+        "win_rate": 0.4514,
+        "window_count": 175
+      },
+      "question_id": "A",
+      "rationale": "평균은 양수지만 고정된 종목 집중도 gate를 통과하지 못함.",
+      "sample_quality": {
+        "historical_sample_count": 0,
+        "prospective_sample_count": 175,
+        "source_status": "REJECTED"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\opening_rank1_shadow\\opening_rank1_shadow_cumulative.json",
+          "source_key": "opening_cumulative"
+        }
+      ],
+      "status": "CLOSED",
+      "target_horizon": "+30m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "R1_FRESH_CHANGE_ACTIVATION_V1",
+      "concentration": {},
+      "decision": "MANUAL_SINGLE_PATCH_REVIEW_READY",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+30m"
+        ],
+        "market_regime": [],
+        "price_structure": [],
+        "rank_and_selection": [
+          "fresh_top_change"
+        ],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 4.5475,
+        "coverage": 1.0,
+        "max_drawdown_pct": null,
+        "profit_factor": 10.8255,
+        "sample_count": 7,
+        "win_rate": 0.7143,
+        "window_count": 7
+      },
+      "hypothesis": "Fresh Top-change activation",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -1.2602,
+        "cohort": "prospective",
+        "coverage": 1.0,
+        "max_drawdown_pct": null,
+        "profit_factor": 0.6508,
+        "sample_count": 43,
+        "win_rate": 0.3488,
+        "window_count": 43
+      },
+      "next_action": "종료 상태를 유지하고 참고 근거만 누적한다.",
+      "operation_status": "NOT_RUNNING",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -1.2602,
+        "coverage": 1.0,
+        "max_drawdown_pct": null,
+        "profit_factor": 0.6508,
+        "sample_count": 43,
+        "win_rate": 0.3488,
+        "window_count": 43
+      },
+      "question_id": "A",
+      "rationale": "과거 양수 결과가 prospective에서 음수로 뒤집힘.",
+      "sample_quality": {
+        "historical_sample_count": 7,
+        "prospective_sample_count": 43,
+        "source_status": "MANUAL_SINGLE_PATCH_REVIEW_READY"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\feature_mart\\opening_rank1\\fresh_change_activation\\fresh_change_activation_cumulative.json",
+          "source_key": "fresh_change"
+        }
+      ],
+      "status": "CLOSED",
+      "target_horizon": "+30m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "R1_ENTRY_DAILY_MA5_20_EXTENDED_15M_V1",
+      "concentration": {
+        "independent_day_symbol_count": 46,
+        "largest_day": "2026-09-01",
+        "largest_day_share": 0.087,
+        "largest_symbol": "233740",
+        "largest_symbol_share": 0.5,
+        "observed_day_count": 27
+      },
+      "decision": "REJECT_PROSPECTIVE_EFFECT_NOT_CONFIRMED",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+15m"
+        ],
+        "market_regime": [],
+        "price_structure": [
+          "daily_ma5_20_post_cross_extended"
+        ],
+        "rank_and_selection": [],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 3.5835,
+        "coverage": null,
+        "max_drawdown_pct": null,
+        "profit_factor": null,
+        "sample_count": 10,
+        "win_rate": 0.8,
+        "window_count": 0
+      },
+      "hypothesis": "Daily MA5/20 extended state",
+      "net_metrics": {
+        "avg_mae_pct": -2.8105,
+        "avg_mfe_pct": 3.5043,
+        "avg_net_return_pct": 0.0433,
+        "cohort": "prospective",
+        "coverage": 1.0,
+        "max_drawdown_pct": null,
+        "profit_factor": 1.0409,
+        "sample_count": 46,
+        "win_rate": 0.587,
+        "window_count": 57
+      },
+      "next_action": "종료 상태를 유지하고 참고 근거만 누적한다.",
+      "operation_status": "NOT_RUNNING",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": -2.8105,
+        "avg_mfe_pct": 3.5043,
+        "avg_net_return_pct": 0.0433,
+        "coverage": 1.0,
+        "max_drawdown_pct": null,
+        "profit_factor": 1.0409,
+        "sample_count": 46,
+        "win_rate": 0.587,
+        "window_count": 57
+      },
+      "question_id": "A",
+      "rationale": "과거 양수 방향이 prospective 평균/PF에서 재현되지 않음.",
+      "sample_quality": {
+        "historical_sample_count": 10,
+        "prospective_sample_count": 46,
+        "source_status": "REJECT_PROSPECTIVE_EFFECT_NOT_CONFIRMED"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\feature_mart\\opening_rank1\\candidate_selection.json",
+          "source_key": "feature_candidates"
+        },
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\feature_mart\\opening_rank1\\prospective\\rank1_candidate_shadow_cumulative.json",
+          "source_key": "prospective_candidates"
+        }
+      ],
+      "status": "CLOSED",
+      "target_horizon": "+15m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "LATENT_REACTIVATION_FRESH_TRIGGER",
+      "concentration": {
+        "largest_day_share": 0.125,
+        "largest_symbol_share": 0.1875,
+        "positive_day_ratio": 0.381
+      },
+      "decision": "REJECTED",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "D+1-D+5 discovery",
+          "+30m trigger"
+        ],
+        "market_regime": [],
+        "price_structure": [],
+        "rank_and_selection": [
+          "prior_rank1",
+          "fresh_reactivation"
+        ],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {},
+      "hypothesis": "D+1-D+5 fresh reactivation",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 0.2265,
+        "cohort": "prospective",
+        "coverage": null,
+        "max_drawdown_pct": -22.0443,
+        "profit_factor": 1.1536,
+        "sample_count": 32,
+        "win_rate": 0.4375,
+        "window_count": 32
+      },
+      "next_action": "종료 상태를 유지하고 참고 근거만 누적한다.",
+      "operation_status": "NOT_RUNNING",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 0.2265,
+        "coverage": null,
+        "max_drawdown_pct": -22.0443,
+        "profit_factor": 1.1536,
+        "sample_count": 32,
+        "win_rate": 0.4375,
+        "window_count": 32
+      },
+      "question_id": "A",
+      "rationale": "수익률은 양수지만 날짜·종목 집중도와 양수 일자 gate를 통과하지 못함.",
+      "sample_quality": {
+        "historical_sample_count": 0,
+        "prospective_sample_count": 32,
+        "source_status": "REJECTED"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\opening_rank1_shadow\\latent_watch\\latent_reactivation_forward.json",
+          "source_key": "latent_reactivation"
+        }
+      ],
+      "status": "CLOSED",
+      "target_horizon": "+30m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "SAMSUNG_HYNIX_FIXED_UNIVERSE_TOP1",
+      "concentration": {},
+      "decision": "READY_FOR_OFFLINE_REVIEW",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [
+          "large_cap_common_stock",
+          "fixed_two_symbol_universe"
+        ],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+180m"
+        ],
+        "market_regime": [],
+        "price_structure": [],
+        "rank_and_selection": [
+          "momentum_volume_top1"
+        ],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {},
+      "hypothesis": "Samsung/Hynix fixed control",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -0.1449,
+        "cohort": "prospective",
+        "coverage": null,
+        "max_drawdown_pct": -5.012,
+        "profit_factor": 0.7087,
+        "sample_count": 25,
+        "win_rate": 0.52,
+        "window_count": 962
+      },
+      "next_action": "과거 시점 오류 자료를 섞지 않고 수정 이후 day-level episode만 누적.",
+      "operation_status": "UNKNOWN_OPERATION_STATUS",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -0.1449,
+        "coverage": null,
+        "max_drawdown_pct": -5.012,
+        "profit_factor": 0.7087,
+        "sample_count": 25,
+        "win_rate": 0.52,
+        "window_count": 962
+      },
+      "question_id": "A",
+      "rationale": "The corrected day-level minimum sample is available for review.",
+      "sample_quality": {
+        "historical_sample_count": 0,
+        "prospective_sample_count": 25,
+        "source_status": "READY_FOR_OFFLINE_REVIEW"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "multiple_daily_artifacts",
+          "source_key": "large_cap_daily"
+        }
+      ],
+      "status": "PROSPECTIVE",
+      "target_horizon": "+180m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {
+        "after_avg_return_pct": -0.005,
+        "average_delta_pct": -0.696,
+        "before_avg_return_pct": 0.691,
+        "changed_symbol_records": 1005,
+        "interpretation": "R2 is a Scanner result under Stage-2 policy, not necessarily an LLM-explicit symbol replacement.",
+        "refresh_records": 6048,
+        "same_symbol_records": 402,
+        "stage2_attributable_records": 1407
+      },
+      "candidate_id": "STRATEGIST_STAGE2_REFRESH_AUTHORITY_V1",
+      "concentration": {
+        "day_count": 8,
+        "max_single_day_share": 0.5645
+      },
+      "decision": "OBSERVATION_ONLY",
+      "feature_evidence": {
+        "agent_lineage": [
+          "strategist_stage2",
+          "scanner_rerun"
+        ],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+30m"
+        ],
+        "market_regime": [],
+        "price_structure": [],
+        "rank_and_selection": [
+          "R1_pre_stage2",
+          "R2_post_stage2"
+        ],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -0.005,
+        "coverage": null,
+        "max_drawdown_pct": null,
+        "profit_factor": null,
+        "sample_count": 124,
+        "win_rate": 0.3468,
+        "window_count": 1005
+      },
+      "hypothesis": "Stage-2 pre/post Rank-1 value",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -0.005,
+        "cohort": "historical",
+        "coverage": null,
+        "max_drawdown_pct": null,
+        "profit_factor": null,
+        "sample_count": 124,
+        "win_rate": 0.3468,
+        "window_count": 1005
+      },
+      "next_action": "재순위·후보 교체·진입 강화·no-trade 권한별 표본만 누적한다.",
+      "operation_status": "SHADOW_CONTINUES",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {},
+      "question_id": "A",
+      "rationale": "R2는 2차 전략가 이후 Scanner 재실행 결과이며 LLM의 명시적 종목 교체와 동일하지 않다.",
+      "sample_quality": {
+        "historical_sample_count": 124,
+        "prospective_sample_count": 0,
+        "source_status": "OBSERVATION_ONLY"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\agent_effectiveness\\cumulative_20260601_20260827\\strategist_stage2_effectiveness_deep_dive.json",
+          "source_key": "strategist_stage2_effectiveness"
+        }
+      ],
+      "status": "PROSPECTIVE",
+      "target_horizon": "+30m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "BTC_WOORI_V2_ONLY_LOCAL_CONFIRMATION",
+      "concentration": {},
+      "decision": "REJECT_DAY_CONTRIBUTOR_DEPENDENCE",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [
+          "btc_multi_horizon_momentum"
+        ],
+        "horizon_and_exit": [],
+        "market_regime": [],
+        "price_structure": [
+          "woori_local_confirmation"
+        ],
+        "rank_and_selection": [],
+        "volume_and_flow": [
+          "woori_volume_confirmation"
+        ]
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 0.5329,
+        "coverage": null,
+        "max_drawdown_pct": -3.2138,
+        "profit_factor": 3.1244,
+        "sample_count": 19,
+        "win_rate": 0.6842,
+        "window_count": 19
+      },
+      "hypothesis": "BTC lead plus Woori confirmation",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 0.5329,
+        "cohort": "historical",
+        "coverage": null,
+        "max_drawdown_pct": -3.2138,
+        "profit_factor": 3.1244,
+        "sample_count": 19,
+        "win_rate": 0.6842,
+        "window_count": 19
+      },
+      "next_action": "종료 상태를 유지하고 참고 근거만 누적한다.",
+      "operation_status": "NOT_RUNNING",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {},
+      "question_id": "B",
+      "rationale": "2026-08-21 제외 시 평균/PF가 기준 미만으로 내려가 일반 신호로 볼 수 없음.",
+      "sample_quality": {
+        "historical_sample_count": 19,
+        "prospective_sample_count": 0,
+        "source_status": "PROMISING_SUBSET_PROSPECTIVE_SHADOW_REQUIRED"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\baseline_btc_woori_tech\\historical\\q12_v1_v2_historical_review.json",
+          "source_key": "btc_woori_history"
+        }
+      ],
+      "status": "CLOSED",
+      "target_horizon": "+30m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "BTC_STRONG_BULL_LOCAL_CONFIRMATION_V1",
+      "concentration": {},
+      "decision": "PROSPECTIVE_SHADOW_FROM_2026_08_25",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [
+          "btc_0855_24h_thresholds",
+          "first_vs_repeated_surge"
+        ],
+        "horizon_and_exit": [
+          "09:00",
+          "09:03",
+          "09:05",
+          "09:10",
+          "pullback",
+          "+30m"
+        ],
+        "market_regime": [],
+        "price_structure": [
+          "btc_20d_60d_ath_breakout",
+          "woori_opening_gap"
+        ],
+        "rank_and_selection": [],
+        "volume_and_flow": [
+          "woori_0903_0905_confirmation"
+        ]
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 1.5467,
+        "coverage": null,
+        "max_drawdown_pct": -0.28,
+        "profit_factor": 24.7745,
+        "sample_count": 7,
+        "win_rate": 0.7143,
+        "window_count": 0
+      },
+      "hypothesis": "Strong BTC plus Woori confirmation",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 1.5467,
+        "cohort": "historical",
+        "coverage": null,
+        "max_drawdown_pct": -0.28,
+        "profit_factor": 24.7745,
+        "sample_count": 7,
+        "win_rate": 0.7143,
+        "window_count": 0
+      },
+      "next_action": "Collect only the fixed additive shadow variant from the next full session.",
+      "operation_status": "SHADOW_CONTINUES",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": null,
+        "coverage": null,
+        "max_drawdown_pct": null,
+        "profit_factor": null,
+        "sample_count": 0,
+        "win_rate": null,
+        "window_count": 0
+      },
+      "question_id": "B",
+      "rationale": "The historical strong-bull subgroup is hypothesis-generating only; the rejected broad BTC rule remains closed.",
+      "sample_quality": {
+        "historical_sample_count": 7,
+        "prospective_sample_count": 0,
+        "source_status": "PROSPECTIVE_SHADOW_FROM_2026_08_25"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\baseline_btc_woori_tech\\historical\\q12_v1_v2_historical_review.json",
+          "source_key": "btc_woori_history"
+        },
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\baseline_btc_woori_tech\\hypothesis_validation\\q12_btc_woori_hypothesis_cumulative.json",
+          "source_key": "btc_woori_hypothesis"
+        }
+      ],
+      "status": "PROSPECTIVE",
+      "target_horizon": "+30m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "R1_SCANNER_RISK_HIGH_30M_V1",
+      "concentration": {
+        "independent_day_symbol_count": 75,
+        "largest_day": "2026-08-20",
+        "largest_day_share": 0.08,
+        "largest_symbol": "233740",
+        "largest_symbol_share": 0.28,
+        "observed_day_count": 25
+      },
+      "decision": "REJECT_BASE_EFFECT",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+30m"
+        ],
+        "market_regime": [
+          "scanner_risk_band=HIGH"
+        ],
+        "price_structure": [],
+        "rank_and_selection": [
+          "opening_rank1"
+        ],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 1.4302,
+        "coverage": null,
+        "max_drawdown_pct": null,
+        "profit_factor": null,
+        "sample_count": 24,
+        "win_rate": 0.5833,
+        "window_count": 0
+      },
+      "hypothesis": "Scanner risk HIGH at +30m",
+      "net_metrics": {
+        "avg_mae_pct": -5.514,
+        "avg_mfe_pct": 2.6519,
+        "avg_net_return_pct": -0.1287,
+        "cohort": "prospective",
+        "coverage": 1.0,
+        "max_drawdown_pct": null,
+        "profit_factor": 0.9349,
+        "sample_count": 75,
+        "win_rate": 0.44,
+        "window_count": 87
+      },
+      "next_action": "종료 상태를 유지하고 참고 근거만 누적한다.",
+      "operation_status": "NOT_RUNNING",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": -5.514,
+        "avg_mfe_pct": 2.6519,
+        "avg_net_return_pct": -0.1287,
+        "coverage": 1.0,
+        "max_drawdown_pct": null,
+        "profit_factor": 0.9349,
+        "sample_count": 75,
+        "win_rate": 0.44,
+        "window_count": 87
+      },
+      "question_id": "C",
+      "rationale": "기본 prospective 성과가 고정 기대값/PF 기준을 통과하지 못함.",
+      "sample_quality": {
+        "historical_sample_count": 24,
+        "prospective_sample_count": 75,
+        "source_status": "REJECT_PROSPECTIVE_EFFECT_NOT_CONFIRMED"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\feature_mart\\opening_rank1\\candidate_selection.json",
+          "source_key": "feature_candidates"
+        },
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\feature_mart\\opening_rank1\\prospective\\rank1_candidate_shadow_cumulative.json",
+          "source_key": "prospective_candidates"
+        }
+      ],
+      "status": "CLOSED",
+      "target_horizon": "+30m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "HIGH_COMMON_SHORT_ALPHA_V1",
+      "concentration": {
+        "historical_day_count": 11,
+        "historical_largest_day_share": 0.1875,
+        "historical_largest_symbol_share": 0.375
+      },
+      "decision": "PROSPECTIVE_SHADOW_FROM_2026_08_25",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [
+          "common_stock"
+        ],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+5m",
+          "+15m",
+          "+30m",
+          "+60m",
+          "EOD"
+        ],
+        "market_regime": [
+          "scanner_risk_band=HIGH"
+        ],
+        "price_structure": [],
+        "rank_and_selection": [],
+        "volume_and_flow": []
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": 3.7281,
+        "coverage": null,
+        "max_drawdown_pct": -6.7187,
+        "profit_factor": 9.0534,
+        "sample_count": 16,
+        "win_rate": 0.625,
+        "window_count": 0
+      },
+      "hypothesis": "risk HIGH common-stock short alpha",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -0.9152,
+        "cohort": "prospective",
+        "coverage": null,
+        "max_drawdown_pct": -30.145,
+        "profit_factor": 0.5222,
+        "sample_count": 30,
+        "win_rate": 0.3667,
+        "window_count": 0
+      },
+      "next_action": "Collect the frozen HIGH common-stock cohort at +5m/+15m/+30m/EOD.",
+      "operation_status": "SHADOW_CONTINUES",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -0.9152,
+        "coverage": null,
+        "max_drawdown_pct": -30.145,
+        "profit_factor": 0.5222,
+        "sample_count": 30,
+        "win_rate": 0.3667,
+        "window_count": 0
+      },
+      "question_id": "C",
+      "rationale": "Post-hoc historical discriminator. Historical and prospective episodes are kept separate and no behavior is changed.",
+      "sample_quality": {
+        "historical_sample_count": 16,
+        "prospective_sample_count": 30,
+        "source_status": "PROSPECTIVE_SHADOW_FROM_2026_08_25"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\short_alpha_discriminator\\2026-09-29\\short_alpha_discriminator.json",
+          "source_key": "short_alpha_discriminator"
+        }
+      ],
+      "status": "PROSPECTIVE",
+      "target_horizon": "+5m",
+      "updated_through_day": "2026-09-29"
+    },
+    {
+      "agent_attribution": {},
+      "candidate_id": "TOP_VALUE_VOLUME_NEGATIVE_CONTROL_V1",
+      "concentration": {
+        "day_count": 32,
+        "largest_day_share": 0.0769,
+        "largest_symbol_share": 0.5385
+      },
+      "decision": "NEGATIVE_CONTROL",
+      "feature_evidence": {
+        "agent_lineage": [],
+        "asset_class": [
+          "mixed_control"
+        ],
+        "cost_and_quality": [],
+        "external_signal": [],
+        "horizon_and_exit": [
+          "+5m",
+          "+15m",
+          "+30m",
+          "+60m",
+          "EOD"
+        ],
+        "market_regime": [],
+        "price_structure": [],
+        "rank_and_selection": [
+          "top_value_or_top_volume"
+        ],
+        "volume_and_flow": [
+          "liquidity_only_control"
+        ]
+      },
+      "fixed_validation_status": "FIXED_VALIDATION_NOT_YET_RUN",
+      "historical_evidence": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -0.4872,
+        "coverage": null,
+        "max_drawdown_pct": -25.3794,
+        "profit_factor": 0.5413,
+        "sample_count": 52,
+        "win_rate": 0.3846,
+        "window_count": 0
+      },
+      "hypothesis": "Liquidity-only negative control",
+      "net_metrics": {
+        "avg_mae_pct": null,
+        "avg_mfe_pct": null,
+        "avg_net_return_pct": -0.4872,
+        "cohort": "historical",
+        "coverage": null,
+        "max_drawdown_pct": -25.3794,
+        "profit_factor": 0.5413,
+        "sample_count": 52,
+        "win_rate": 0.3846,
+        "window_count": 0
+      },
+      "next_action": "대조군으로만 누적하며 독립 정책 후보로 승격하지 않는다.",
+      "operation_status": "SHADOW_CONTINUES",
+      "production_promotion_status": "PRODUCTION_PROMOTION_NOT_ALLOWED",
+      "prospective_evidence": {},
+      "question_id": "C",
+      "rationale": "거래대금·거래량만 높은 후보가 충분한 구분자인지 확인하는 고정 음성 대조군이다.",
+      "sample_quality": {
+        "historical_sample_count": 52,
+        "prospective_sample_count": 0,
+        "source_status": "NEGATIVE_CONTROL"
+      },
+      "source_artifacts": [
+        {
+          "available": true,
+          "error": null,
+          "path": "reports\\evaluation\\short_alpha_discriminator\\2026-09-29\\short_alpha_discriminator.json",
+          "source_key": "short_alpha_discriminator"
+        }
+      ],
+      "status": "PROSPECTIVE",
+      "target_horizon": "+5m",
+      "updated_through_day": "2026-09-29"
+    }
+  ],
+  "closeout_summary": [
+    {
+      "active_candidates": 4,
+      "closed_candidates": 5,
+      "question": "장초반 Rank-1 성공과 실패를 가르는 구분자는 무엇인가?",
+      "question_id": "A",
+      "statement": "A: 활성 4개, CLOSED 5개. 판정은 historical과 prospective를 분리해 유지한다."
+    },
+    {
+      "active_candidates": 1,
+      "closed_candidates": 1,
+      "question": "BTC 강상승이 우리기술투자 상승으로 연결되는 조건은 무엇인가?",
+      "question_id": "B",
+      "statement": "B: 활성 1개, CLOSED 1개. 판정은 historical과 prospective를 분리해 유지한다."
+    },
+    {
+      "active_candidates": 2,
+      "closed_candidates": 1,
+      "question": "risk=HIGH에서 보통주는 성공하고 ETF는 실패한 이유는 무엇인가?",
+      "question_id": "C",
+      "statement": "C: 활성 2개, CLOSED 1개. 판정은 historical과 prospective를 분리해 유지한다."
+    }
+  ],
+  "contract_version": "abc_fixed_2026_08_27",
+  "cost_authority": {
+    "live_equity_round_trip_pct": 0.28,
+    "rule": "Gross, live-research net, and broker mock net must not be mixed."
+  },
+  "feature_columns": [
+    "market_regime",
+    "asset_class",
+    "rank_and_selection",
+    "price_structure",
+    "volume_and_flow",
+    "external_signal",
+    "agent_lineage",
+    "horizon_and_exit",
+    "cost_and_quality"
+  ],
+  "integrity": {
+    "candidate_registry_matches": true,
+    "column_errors": [],
+    "historical_prospective_separated": true,
+    "missing_or_invalid_sources": [],
+    "status": "PASS"
+  },
+  "questions": [
+    {
+      "active_candidate_ids": [
+        "IMMEDIATE_OPENING_PROBE",
+        "CONFIRMED_RECURRENT_RANK",
+        "SAMSUNG_HYNIX_FIXED_UNIVERSE_TOP1",
+        "STRATEGIST_STAGE2_REFRESH_AUTHORITY_V1"
+      ],
+      "candidate_count": 9,
+      "closed_candidate_ids": [
+        "DISLOCATION_REBOUND",
+        "OPEN_0_20_RANK1_30M",
+        "R1_FRESH_CHANGE_ACTIVATION_V1",
+        "R1_ENTRY_DAILY_MA5_20_EXTENDED_15M_V1",
+        "LATENT_REACTIVATION_FRESH_TRIGGER"
+      ],
+      "decision_scope": "opening_rank1_discriminator",
+      "question": "장초반 Rank-1 성공과 실패를 가르는 구분자는 무엇인가?",
+      "question_id": "A",
+      "status_counts": {
+        "CLOSED": 5,
+        "DISCOVERY": 0,
+        "PROMOTED": 0,
+        "PROSPECTIVE": 4,
+        "REJECTED": 0,
+        "REVIEW_READY": 0
+      }
+    },
+    {
+      "active_candidate_ids": [
+        "BTC_STRONG_BULL_LOCAL_CONFIRMATION_V1"
+      ],
+      "candidate_count": 2,
+      "closed_candidate_ids": [
+        "BTC_WOORI_V2_ONLY_LOCAL_CONFIRMATION"
+      ],
+      "decision_scope": "btc_woori_lead_lag",
+      "question": "BTC 강상승이 우리기술투자 상승으로 연결되는 조건은 무엇인가?",
+      "question_id": "B",
+      "status_counts": {
+        "CLOSED": 1,
+        "DISCOVERY": 0,
+        "PROMOTED": 0,
+        "PROSPECTIVE": 1,
+        "REJECTED": 0,
+        "REVIEW_READY": 0
+      }
+    },
+    {
+      "active_candidate_ids": [
+        "HIGH_COMMON_SHORT_ALPHA_V1",
+        "TOP_VALUE_VOLUME_NEGATIVE_CONTROL_V1"
+      ],
+      "candidate_count": 3,
+      "closed_candidate_ids": [
+        "R1_SCANNER_RISK_HIGH_30M_V1"
+      ],
+      "decision_scope": "risk_high_asset_class_divergence",
+      "question": "risk=HIGH에서 보통주는 성공하고 ETF는 실패한 이유는 무엇인가?",
+      "question_id": "C",
+      "status_counts": {
+        "CLOSED": 1,
+        "DISCOVERY": 0,
+        "PROMOTED": 0,
+        "PROSPECTIVE": 2,
+        "REJECTED": 0,
+        "REVIEW_READY": 0
+      }
+    }
+  ],
+  "row_columns": [
+    "question_id",
+    "candidate_id",
+    "status",
+    "hypothesis",
+    "feature_evidence",
+    "target_horizon",
+    "historical_evidence",
+    "prospective_evidence",
+    "sample_quality",
+    "concentration",
+    "net_metrics",
+    "agent_attribution",
+    "decision",
+    "rationale",
+    "next_action",
+    "source_artifacts",
+    "updated_through_day",
+    "operation_status",
+    "fixed_validation_status",
+    "production_promotion_status"
+  ],
+  "schema_version": "alpha_research_board.v2",
+  "settled_findings": [
+    {
+      "finding": "Enter every opening Rank-1",
+      "reason": "The broad control failed concentration and robustness checks.",
+      "status": "CLOSED"
+    },
+    {
+      "finding": "Relax every entry guard",
+      "reason": "Blocked candidates were not uniformly superior opportunities.",
+      "status": "CLOSED"
+    },
+    {
+      "finding": "Re-enter a symbol after a loss",
+      "reason": "Repeated loss-condition entries degraded cumulative results.",
+      "status": "CLOSED"
+    },
+    {
+      "finding": "Extend every holding period",
+      "reason": "Useful horizons differ by setup and EOD profit fade repeats.",
+      "status": "CLOSED"
+    }
+  ],
+  "sources": {
+    "btc_woori_history": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\baseline_btc_woori_tech\\historical\\q12_v1_v2_historical_review.json",
+      "schema_version": "q12_v1_v2_historical_review.v1",
+      "through_day": null
+    },
+    "btc_woori_hypothesis": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\baseline_btc_woori_tech\\hypothesis_validation\\q12_btc_woori_hypothesis_cumulative.json",
+      "schema_version": "q12_btc_woori_hypothesis_cumulative.v1",
+      "through_day": "2026-09-29"
+    },
+    "feature_candidates": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\feature_mart\\opening_rank1\\candidate_selection.json",
+      "schema_version": "rank1_candidate_selection.v1",
+      "through_day": null
+    },
+    "fresh_change": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\feature_mart\\opening_rank1\\fresh_change_activation\\fresh_change_activation_cumulative.json",
+      "schema_version": "rank1_fresh_change_activation_cumulative.v1",
+      "through_day": "2026-09-25"
+    },
+    "large_cap_daily": {
+      "available": true,
+      "error": null,
+      "path": "multiple_daily_artifacts",
+      "source_count": 28,
+      "through_day": "2026-09-29"
+    },
+    "latent_reactivation": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\opening_rank1_shadow\\latent_watch\\latent_reactivation_forward.json",
+      "schema_version": "latent_reactivation_forward.v1",
+      "through_day": "2026-09-25"
+    },
+    "opening_cumulative": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\opening_rank1_shadow\\opening_rank1_shadow_cumulative.json",
+      "schema_version": "opening_rank1_shadow.v1",
+      "through_day": "2026-09-25"
+    },
+    "prospective_candidates": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\feature_mart\\opening_rank1\\prospective\\rank1_candidate_shadow_cumulative.json",
+      "schema_version": "rank1_prospective_shadow_cumulative.v1",
+      "through_day": "2026-09-25"
+    },
+    "prospective_contract": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\feature_mart\\opening_rank1\\prospective\\frozen_candidate_contract.json",
+      "schema_version": "rank1_prospective_shadow.v1",
+      "through_day": null
+    },
+    "short_alpha_discriminator": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\short_alpha_discriminator\\2026-09-29\\short_alpha_discriminator.json"
+    },
+    "strategist_stage2_effectiveness": {
+      "available": true,
+      "error": null,
+      "path": "reports\\evaluation\\agent_effectiveness\\cumulative_20260601_20260827\\strategist_stage2_effectiveness_deep_dive.json",
+      "schema_version": "strategist_stage2_effectiveness_deep_dive.v1",
+      "through_day": null
+    }
+  },
+  "through_day": "2026-09-29"
+}

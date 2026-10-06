@@ -5,7 +5,7 @@ under termination review, and what is blocked by data/contract problems*, as of 
 2026-09-16 cutoff. It is a **research governance** document — not a code authority, not a
 UEF authority, not a runtime authority.
 
-Primary source: [`tmp/research_review_2026-09-16.md`](../../tmp/research_review_2026-09-16.md)
+Primary source: [`source_material/research_review_2026-09-16.md`](source_material/research_review_2026-09-16.md)
 (full per-program findings, citations, and the raw 29-family review this freeze narrows).
 Any number in this document that conflicts with that source has been deliberately corrected
 per §17 below; every other figure is carried over unchanged.
@@ -419,7 +419,7 @@ EDGE_PROMISING      != live-ready
 
 ---
 
-## 14. Source Corrections Applied (relative to `tmp/research_review_2026-09-16.md`)
+## 14. Source Corrections Applied (relative to `source_material/research_review_2026-09-16.md`)
 
 - **Q11**: the source review's shorthand `CONSUMER_ONLY` is corrected here to
   `PRIMARY NEGATIVE_CONTROL / SHADOW EVIDENCE` — Q11 generates its own evidence as a
