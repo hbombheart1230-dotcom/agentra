@@ -1963,3 +1963,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Frozen P1.5 final evidence/report schema, independent Claude audit, human approval and freeze-tag policy. P1.6 remains blocked until P1_5_FORMAL_FREEZE=YES.
 - Design authority: docs/refactor/p1_5_full_regression_docker_uef_freeze_implementation_packet_v1_0.md.
 
+# 2026-10-07 - P1.5 PREP Closed / Design Frozen
+
+- Formally closed P1.5 preparation and froze the implementation design while keeping runtime implementation gated.
+- Quantified the primary giant refactor surface at 57,847 LOC, or approximately 61,455 LOC including the adjacent intraday Monitor signal-engine hotspot.
+- Frozen target for the six non-Executor giant façade groups: 53,657 LOC of current giant surface becomes approximately 2,700-5,100 LOC of façade/orchestrator surface, a roughly 90.5-95.0% reduction in giant-file surface. This is responsibility extraction, not a claim of equivalent repository-total LOC deletion.
+- Identified approximately 1,100 LOC of definite unreachable Reporting legacy tail as the strongest direct deletion opportunity.
+- Frozen the responsibility-first target tree around thin graph adapters, explicit contracts, services, state adapters, evidence/observability owners, stable public facades and a deliberately centralized execution safety chain.
+- Preserved two LLM decision roles (Strategist and Reporter), Scanner/Monitor deterministic authority, Commander deterministic routing, Supervisor safety authority and Executor broker side-effect authority.
+- Marked P1.5 implementation as NOT STARTED and blocked until the upstream implementation baseline is formally frozen.
+- Closure authority: docs/refactor/p1_5_prep_closure_report.md.
+
