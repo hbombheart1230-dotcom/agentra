@@ -110,3 +110,10 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - runtime modes/phases, fast paths, Supervisor/Executor and ownership safety boundaries
    - CommanderRuntimeInput/Result design and C1-C10 staged implementation sequence
 
+12. p1_5_runtime_naming_implementation_packet_v1_0.md
+   - P1.5.8 milestone/runtime naming cleanup authority
+   - repo-wide milestone-name inventory and classification policy
+   - canonical M13/M28/M31 runtime mappings with compatibility wrappers
+   - state/env alias migration rules and historical/contract/safety no-rename rules
+   - N1-N7 staged implementation sequence and P1.5.10 wrapper-removal gates
+
