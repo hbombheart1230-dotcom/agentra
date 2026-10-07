@@ -272,3 +272,16 @@ The design branch may contain planning/documentation only.
 The first P1.5 implementation branch must be created from the P1.2/P1.3 frozen baseline SHA/tag.
 
 Do not treat the design-branch creation SHA as the implementation baseline.
+
+## 16. Documentation Policy
+
+P1.5 refactors documentation together with code, naming and tests.
+
+Rules:
+- current canonical documents must describe the current responsibility model
+- historical incident/freeze/milestone records are not rewritten to look modern
+- documentation movement requires inbound-link and patch-note-source analysis
+- `docs/daily_patch/` remains the detailed technical audit history
+- the structured Patch Notes UI source remains the existing JSON/Markdown pair until an explicitly tested adapter migration changes it
+- stale navigation pages may be rewritten; historical evidence pages are preserved
+- subsystem refactor completion requires corresponding canonical documentation and UI-linked patch-note updates
