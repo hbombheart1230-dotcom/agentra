@@ -1,7 +1,9 @@
 # P1.5 Strategist Decomposition
 
 Status: DETAILED DESIGN IN PROGRESS  
-Implementation: NOT AUTHORIZED BY THIS DOCUMENT
+Implementation: NOT AUTHORIZED UNTIL P1.2/P1.3 FROZEN BASELINE
+
+Final design authority: `p1_5_strategist_implementation_packet_v1_0.md`
 
 Current detailed packet: `p1_5_strategist_implementation_packet_v0_1.md`
 
