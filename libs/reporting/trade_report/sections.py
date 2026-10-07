@@ -889,7 +889,6 @@ def build_market_context_bullets(section: Any, *, scanner_reason: Dict[str, Any]
 
 def build_strategist_summary_section(market_context: Dict[str, Any], scanner_reason: Dict[str, Any], *, deps: Mapping[str, Any]) -> Dict[str, Any]:
     _clip = deps["clip"]
-    _core_value_opt = deps["core_value_opt"]
     _dedupe_list = deps["dedupe_list"]
     _extract_korea_indices_snapshot = deps["extract_korea_indices_snapshot"]
     _extract_us_indices_snapshot = deps["extract_us_indices_snapshot"]
@@ -1090,7 +1089,6 @@ def build_strategist_summary_section(market_context: Dict[str, Any], scanner_rea
 
 def build_market_scanner_linkage_bullet(section: Any, scanner_reason: Dict[str, Any] | None = None, *, deps: Mapping[str, Any]) -> str:
     _clip = deps["clip"]
-    _core_value_opt = deps["core_value_opt"]
     _listify = deps["listify"]
     _num_opt = deps["num_opt"]
     market = section if isinstance(section, dict) else {}

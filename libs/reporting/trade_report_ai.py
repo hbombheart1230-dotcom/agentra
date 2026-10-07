@@ -809,7 +809,6 @@ def _section_builder_deps() -> Dict[str, Any]:
         "join_headlines": _join_headlines,
         "listify": _listify,
         "select_symbol_headline": _select_symbol_headline,
-        "core_value_opt": _core_value_opt,
         "risk_mode_label": _risk_mode_label,
         "scanner_bias_text": _scanner_bias_text,
         "scanner_source_text": _scanner_source_text,
