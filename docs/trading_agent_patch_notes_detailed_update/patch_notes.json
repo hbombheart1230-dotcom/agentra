@@ -3022,26 +3022,29 @@
     {
       "date": "2026-10-07",
       "version": "P1.5.2 R2-A",
-      "title": "Reporting LLM service orchestration extracted behind compatibility façade",
+      "title": "Reporting service, normalization, operator-text and shared-section ownership extracted",
       "stage": "P1.5 Structural Refactor",
       "types": [
         "REFACTOR",
         "REPORTING",
         "TESTING"
       ],
-      "summary": "Moved AI trade-report and trade-summary LLM orchestration out of trade_report_ai.py into a dedicated service owner while preserving public APIs and runtime semantics.",
+      "summary": "Continued P1.5.2 R2-A by moving LLM service orchestration, report normalization, operator-facing text processing and shared deterministic section-seed assembly behind the trade_report_ai compatibility façade.",
       "details": [
-        "Added libs/reporting/trade_report/service.py and package initializer.",
-        "build_ai_trade_report() and build_trade_summary_report() remain public façade functions in trade_report_ai.py.",
-        "The façade injects its current helpers and LLMRouter at call time so existing monkeypatch and compatibility seams remain valid.",
-        "trade_report_ai.py moved from 7,223 to 6,770 LOC relative to the P1.5.1 baseline.",
-        "Python 3.12 focused Reporting regression passed 151/151.",
+        "Added libs/reporting/trade_report/service.py, normalization.py, operator_text.py and sections.py.",
+        "build_ai_trade_report(), build_trade_summary_report() and the existing private compatibility symbols remain exposed from trade_report_ai.py.",
+        "The façade injects current helper/router seams at call time where required, preserving monkeypatch/test compatibility.",
+        "trade_report_ai.py reduced from 7,223 LOC after P1.5.1 to 5,156 LOC after the shared-section extraction, a net façade reduction of 2,067 LOC.",
+        "Python 3.12 focused Reporting regression passed 151/151 after service, normalization, operator-text and shared-section checkpoints.",
         "No report schema, truth precedence, LLM role/count, retry/repair semantics, artifact path, trading authority, UEF, or broker behavior changed."
       ],
-      "impact": "Creates the first explicit Reporting service boundary for P1.5.2 without changing behavior. Residual normalization/operator-text/section extraction remains in R2-A.",
+      "impact": "Establishes explicit Reporting service/normalization/operator-text/shared-section owners while preserving the compatibility façade. R2-A remains active for compact-input/fallback residuals.",
       "sources": [
         "docs/daily_patch/2026-10-07_p1_5_2_r2a_reporting_service_extraction.md",
         "libs/reporting/trade_report/service.py",
+        "libs/reporting/trade_report/normalization.py",
+        "libs/reporting/trade_report/operator_text.py",
+        "libs/reporting/trade_report/sections.py",
         "libs/reporting/trade_report_ai.py"
       ],
       "status": "current"

@@ -55,3 +55,46 @@ TRADING SEMANTICS                SAME
 AUTHORITY CHANGES                NONE
 NEXT                             Continue R2-A residual normalization/operator-text/section extraction
 ```
+
+## R2-A residual extraction update
+
+The same R2-A branch continued with three additional behavior-preserving ownership moves:
+
+- `libs/reporting/trade_report/normalization.py`
+  - owns the implementation of `_normalize_trade_report_output()`
+  - façade wrapper retained
+- `libs/reporting/trade_report/operator_text.py`
+  - owns operator labels, language normalization, operator-facing text normalization and section operatorization
+  - historical logger identity for invalid-regex diagnostics preserved as `libs.reporting.trade_report_ai`
+  - façade private wrappers retained for existing callers/tests
+- `libs/reporting/trade_report/sections.py`
+  - owns the 693-line `_build_shared_summary_seed()` implementation
+  - existing helper seams are injected by the façade at call time
+
+### Updated size movement
+
+```text
+P1.5.1 baseline trade_report_ai.py   7,223 LOC
+service extraction                   6,770 LOC
+normalization extraction             6,559 LOC
+operator-text extraction             5,827 LOC
+shared-section-seed extraction       5,156 LOC
+---------------------------------------------
+net façade reduction                 2,067 LOC
+```
+
+### Additional verification
+
+Each checkpoint ran the same Python 3.12 focused Reporting selection and passed:
+
+```text
+normalization extraction     151 passed
+operator-text extraction     151 passed
+shared-section extraction    151 passed
+```
+
+No test expectations were weakened or removed. No runtime topology, report schema, truth precedence, LLM role/count, retry/repair behavior, artifact path, UEF, Supervisor/Executor authority or broker mutation semantics changed.
+
+### Updated next step
+
+R2-A is still active. The next residual targets are the compact-input/fallback/remaining section clusters; R2-B Markdown façade decomposition starts only after the R2-A residual ownership is sufficiently reduced and regression remains green.

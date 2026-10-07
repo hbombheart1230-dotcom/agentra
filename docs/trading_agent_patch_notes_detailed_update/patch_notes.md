@@ -1832,3 +1832,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Python 3.12 focused regression: **151 passed**.
 - No schema, truth precedence, LLM call-role/count, retry/repair, artifact-path, trading-authority, UEF, or broker semantic change.
 - See `docs/daily_patch/2026-10-07_p1_5_2_r2a_reporting_service_extraction.md`.
+
+## P1.5.2 R2-A Residual Update — Normalization / Operator Text / Shared Section Seed
+
+- Added `normalization.py`, `operator_text.py`, and `sections.py` under `libs/reporting/trade_report/`.
+- `trade_report_ai.py` now keeps compatibility wrappers while the moved implementations live in responsibility-specific owners.
+- Façade size: **7,223 -> 5,156 LOC** relative to the P1.5.1 baseline (net -2,067 LOC).
+- Python 3.12 focused Reporting suite passed **151/151** after normalization, after operator-text extraction, and again after shared-section extraction.
+- No schema, truth precedence, LLM decision role/count, retry/repair, artifact path, trading authority, UEF or broker behavior changed.

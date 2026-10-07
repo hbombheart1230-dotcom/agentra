@@ -196,3 +196,12 @@
 - `trade_report_ai.py` reduced from 7,223 to 6,770 LOC relative to the P1.5.1 baseline.
 - Focused Reporting regression on Python 3.12: **151 passed**.
 - No report schema, LLM role/count, truth precedence, retry/repair semantics, artifact paths, trading authority, UEF, or broker behavior changed.
+
+## P1.5.2 R2-A Residual Addendum (Normalization / Operator Text / Shared Section Seed — 2026-10-07)
+
+- Added `libs/reporting/trade_report/normalization.py` and moved `_normalize_trade_report_output` implementation behind the façade.
+- Added `libs/reporting/trade_report/operator_text.py` and moved operator-facing labels, language cleanup and section operatorization behind compatibility wrappers.
+- Added `libs/reporting/trade_report/sections.py` and moved the 693-line shared deterministic summary-seed assembler behind the façade.
+- `trade_report_ai.py` is now **5,156 LOC**, down from 7,223 after P1.5.1 (net -2,067 LOC from the façade).
+- Each extraction checkpoint passed the same Python 3.12 focused Reporting suite: **151/151 PASS**.
+- Public/private compatibility symbols used by existing tests remain exposed from `trade_report_ai.py`; no report/trading semantics changed.
