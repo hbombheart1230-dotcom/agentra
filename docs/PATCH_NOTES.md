@@ -253,3 +253,14 @@
 - No function remaining in `trade_report_markdown_clean.py` is 70 LOC or larger.
 - Final focused regression: **168/168 PASS**. Final broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
 - **P1.5.2 R2-B: COMPLETE. R2-C trade-story façade decomposition: NEXT.**
+
+## P1.5.2 R2-C Completion — Trade-story Façade (2026-10-07)
+
+- Extended existing human-payload, evidence-hydration and story-assembly owners instead of creating parallel duplicate pipelines.
+- Moved market/scanner/monitor/filter human payload construction, scanner/filter evidence enrichment, lifecycle bundle construction, report-section seeds and the 771-line main story-input assembler behind compatibility façades.
+- Moved residual scanner-selection/news contribution/feature-coverage helpers into the evidence owner.
+- `trade_story_pipeline.py`: **4,527 -> 1,552 LOC** (**-2,975 LOC / -65.7%**).
+- No function remaining in `trade_story_pipeline.py` is 70 LOC or larger.
+- Focused trade-story regression: **40/40 PASS**. Final broader Reporting + trade-story regression: **337/337 PASS, 1 warning**.
+- No schema, truth precedence, agent attribution, lifecycle interpretation, LLM, Supervisor/Executor, UEF or broker semantic change.
+- **P1.5.2 Reporting decomposition is COMPLETE. P1.5.3 Operator UI / Operator Brief is NEXT.**
