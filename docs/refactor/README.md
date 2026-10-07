@@ -62,3 +62,16 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - target Strategist package tree
    - staged S1-S5 implementation plan
    - GPT-first implementation and Cloud escalation policy
+
+
+6. `p1_5_strategist_implementation_packet_v0_1.md`
+   - detailed Strategist discovery inventory and first ownership map
+
+7. `p1_5_strategist_implementation_packet_v1_0.md`
+   - finalized Strategist P1.5 design authority
+   - AgentInput/Result boundary
+   - 66-key state adapter compatibility surface
+   - target package tree
+   - compatibility seams
+   - S1-S5 implementation sequence
+   - pytest gates
