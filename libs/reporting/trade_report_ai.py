@@ -74,6 +74,7 @@ from libs.reporting.trade_report_ai_deterministic import (
     merge_trade_report_candidate as _merge_trade_report_candidate_impl,
 )
 from libs.reporting.trade_report_ai_llm import run_trade_report_llm_attempts as _run_trade_report_llm_attempts_impl
+from libs.reporting.trade_report.service import build_ai_trade_report_service as _build_ai_trade_report_service_impl
 from libs.reporting.trade_report_ai_summary_adapter import (
     AI_TRADE_SUMMARY_EVALUATION_KEYS,
     build_trade_summary_evaluation_messages as _build_trade_summary_evaluation_messages_impl,
@@ -6627,314 +6628,32 @@ def build_ai_trade_report(
     hard_timeout_sec_override: Optional[float] = None,
     local_debug_no_llm: bool = False,
 ) -> Dict[str, Any]:
-    if enabled is None:
-        applied_policy = story_input.get("applied_policy") if isinstance(story_input.get("applied_policy"), dict) else {}
-        reporter_policy = applied_policy.get("reporter") if isinstance(applied_policy.get("reporter"), dict) else {}
-        trade_report_policy = reporter_policy.get("trade_report") if isinstance(reporter_policy.get("trade_report"), dict) else {}
-        commander = story_input.get("commander") if isinstance(story_input.get("commander"), dict) else {}
-        commander_policy = commander.get("applied_policy") if isinstance(commander.get("applied_policy"), dict) else {}
-        commander_reporter = commander_policy.get("reporter") if isinstance(commander_policy.get("reporter"), dict) else {}
-        commander_trade_report = (
-            commander_reporter.get("trade_report")
-            if isinstance(commander_reporter.get("trade_report"), dict)
-            else {}
-        )
-        reporter_fallback = story_input.get("reporter_policy") if isinstance(story_input.get("reporter_policy"), dict) else {}
-        trade_report_fallback = (
-            reporter_fallback.get("trade_report")
-            if isinstance(reporter_fallback.get("trade_report"), dict)
-            else {}
-        )
-        if trade_report_policy.get("enabled") is not None:
-            is_enabled = bool(trade_report_policy.get("enabled"))
-        elif commander_trade_report.get("enabled") is not None:
-            is_enabled = bool(commander_trade_report.get("enabled"))
-        elif trade_report_fallback.get("enabled") is not None:
-            is_enabled = bool(trade_report_fallback.get("enabled"))
-        else:
-            is_enabled = True
-    else:
-        is_enabled = bool(enabled)
-    chosen_model = _resolve_intraday_report_model(story_input, explicit_model=model)
-    execution_profile = _resolve_intraday_report_execution_profile(story_input)
-    trade_id = str(story_input.get("trade_id") or story_input.get("story_id") or "")
-    run_id = str(story_input.get("run_id") or "")
-    day = str(story_input.get("day") or "")
-    env_retry_fallback = str(os.getenv("TRADE_REPORT_AI_RETRY_MAX", "") or "").strip()
-    execution_slot_source = str(execution_profile.get("policy_source") or "").strip().lower()
-    if retry_max_override is not None:
-        retry_max = max(0, int(float(retry_max_override)))
-        execution_profile_source = "explicit_override"
-    elif execution_slot_source not in {"", "default_execution_profile", "default"}:
-        retry_max = max(0, int(float(execution_profile.get("retry_max") or 0)))
-        execution_profile_source = "applied_policy"
-    elif env_retry_fallback:
-        retry_max = max(0, int(float(env_retry_fallback or "2")))
-        execution_profile_source = "fallback_env"
-    elif execution_slot_source in {"", "default_execution_profile", "default"}:
-        retry_max = max(0, int(float(os.getenv("TRADE_REPORT_AI_DEFAULT_RETRY_MAX", "1") or "1")))
-        execution_profile_source = "default"
-    else:
-        retry_max = max(0, int(float(execution_profile.get("retry_max") or 2)))
-        execution_profile_source = "default"
-    execution_observability = build_execution_profile_observability(
-        execution_profile,
-        env_used=(execution_profile_source == "fallback_env"),
-    )
-    empty_required_meta = {
-        "parse_mode": "none",
-        "required_keys_expected": list(AI_TRADE_REPORT_REQUIRED_KEYS),
-        "required_keys_present": [],
-        "required_keys_missing": list(AI_TRADE_REPORT_REQUIRED_KEYS),
-        "completeness_score": 0.0,
-        "used_fallback_sections": [],
-    }
-    if not is_enabled:
-        report = _failure_report(
-            story_input,
-            status="disabled",
-            mode="fallback",
-            model=chosen_model,
-            reason="reporter.trade_report.enabled is false",
-        )
-        report["llm_response_artifact"] = build_llm_response_artifact(
-            component="ai_trade_report",
-            run_id=run_id,
-            trade_id=trade_id,
-            story_id=trade_id,
-            day=day,
-            status="fallback",
-            attempts=[],
-            parsed_output={},
-            model_info={"provider": "OpenRouter", "model": chosen_model or "openrouter/free"},
-            meta={"reason": "reporter.trade_report.enabled is false", **empty_required_meta, **build_execution_profile_observability(execution_profile, env_used=(execution_profile_source == "fallback_env"))},
-        )
-        return _attach_report_status_matrix(report, story_input, ai_trade_report_status="skipped")
-
-    temp = float(
-        temperature
-        if temperature is not None
-        else execution_profile.get("temperature") or 0.2
-    )
-    if max_tokens is not None:
-        token_budget = int(max_tokens)
-    else:
-        profile_token_budget = max(600, int(float(execution_profile.get("max_tokens") or 8192)))
-        if execution_slot_source in {"", "default_execution_profile", "default"}:
-            default_cap = max(600, int(float(os.getenv("TRADE_REPORT_AI_DEFAULT_MAX_TOKENS", "3072") or "3072")))
-            token_budget = min(profile_token_budget, default_cap)
-        else:
-            token_budget = profile_token_budget
-    timeout_sec = max(
-        1.0,
-        float(timeout_sec_override if timeout_sec_override is not None else execution_profile.get("timeout_sec") or 15.0),
-    )
-    hard_timeout_sec = (
-        max(0.1, float(hard_timeout_sec_override))
-        if hard_timeout_sec_override not in (None, "", 0)
-        else None
-    )
-    retry_backoff_sec = max(0.0, float(execution_profile.get("retry_backoff_sec") or 0.0))
-    execution_observability = build_execution_profile_observability(
-        execution_profile,
-        env_used=(execution_profile_source == "fallback_env"),
-        effective_overrides={
-            "temperature": float(temp),
-            "max_tokens": int(max(600, token_budget)),
-            "timeout_sec": float(timeout_sec),
-            "hard_timeout_sec": float(hard_timeout_sec) if hard_timeout_sec is not None else None,
-            "retry": {
-                "max_attempts": int(retry_max),
-                "backoff_sec": float(retry_backoff_sec),
-            },
-        },
-    )
-    if local_debug_no_llm:
-        report = _fallback_report(
-            story_input,
-            status="ok",
-            mode="local_debug",
-            model=chosen_model,
-            reason="local_debug_no_llm",
-        )
-        report["llm_response_artifact"] = build_llm_response_artifact(
-            component="ai_trade_report",
-            run_id=run_id,
-            trade_id=trade_id,
-            story_id=trade_id,
-            day=day,
-            status="fallback",
-            attempts=[],
-            parsed_output={},
-            model_info={"provider": "OpenRouter", "model": chosen_model or "openrouter/free"},
-            meta={"reason": "local_debug_no_llm", **empty_required_meta, **execution_observability},
-        )
-        return _attach_report_status_matrix(
-            report,
-            story_input,
-            ai_trade_report_status="skipped",
-            deterministic_report_status="ok",
-        )
-
-    router = LLMRouter.from_env()
-    if router.client is None:
-        report = _failure_report(
-            story_input,
-            status="error",
-            mode="ai",
-            model=chosen_model,
-            reason="OPENROUTER_API_KEY is not configured",
-        )
-        report["llm_response_artifact"] = build_llm_response_artifact(
-            component="ai_trade_report",
-            run_id=run_id,
-            trade_id=trade_id,
-            story_id=trade_id,
-            day=day,
-            status="error",
-            attempts=[],
-            parsed_output={},
-            model_info={"provider": "OpenRouter", "model": chosen_model or "openrouter/free"},
-            meta={"reason": "OPENROUTER_API_KEY is not configured", "error": "llm_client_unavailable", **empty_required_meta, **execution_observability},
-        )
-        return _attach_report_status_matrix(report, story_input, ai_trade_report_status="error")
-
-    retry_token_budget = max(800, token_budget)
-    messages = _build_messages(story_input)
-    attempts: List[Dict[str, Any]] = []
-    resolved_model = str(
-        router.resolve(
-            "trade_report",
-            policy={
-                "temperature": temp,
-                "max_tokens": max(600, token_budget),
-                "timeout_sec": float(timeout_sec),
-                **({"model": chosen_model} if chosen_model else {}),
-            },
-        ).model
-    )
-    final_status = "error"
-    final_reason = ""
-    final_error = ""
-    current_policy = {
-        "temperature": temp,
-        "max_tokens": max(600, token_budget),
-        "timeout_sec": float(timeout_sec),
-        "response_format": {"type": "json_object"},
-        "plugins": [{"id": "response-healing"}],
-        **({"model": chosen_model} if chosen_model else {}),
-    }
-    llm_result = _run_trade_report_llm_attempts_impl(
-        router=router,
-        story_input=story_input,
-        messages=messages,
-        current_policy=current_policy,
-        retry_max=retry_max,
-        retry_token_budget=retry_token_budget,
-        retry_backoff_sec=retry_backoff_sec,
-        hard_timeout_sec=hard_timeout_sec,
-        chosen_model=chosen_model,
-        resolved_model=resolved_model,
-        execution_observability=execution_observability,
-        router_chat_with_hard_timeout=_router_chat_with_hard_timeout,
-        trade_report_parse_meta=_trade_report_parse_meta,
-        trade_report_language_meta=_trade_report_language_meta,
-        build_repair_messages=_build_repair_messages,
-    )
-    attempts = list(llm_result.get("attempts") or [])
-    parsed = llm_result.get("parsed") if isinstance(llm_result.get("parsed"), dict) else None
-    best_partial = llm_result.get("best_partial") if isinstance(llm_result.get("best_partial"), dict) else {}
-    best_partial_meta = llm_result.get("best_partial_meta") if isinstance(llm_result.get("best_partial_meta"), dict) else {}
-    raw = str(llm_result.get("raw") or "")
-    final_status = str(llm_result.get("final_status") or final_status)
-    final_reason = str(llm_result.get("final_reason") or final_reason)
-    final_error = str(llm_result.get("final_error") or final_error)
-
-    if not parsed and best_partial:
-        final_status = "salvaged"
-        final_reason = final_reason or "trade_report_ai returned incomplete JSON; deterministic sections were salvaged from the partial response"
-        out = _merge_trade_report_candidate(
-            story_input,
-            best_partial,
-            status=final_status,
-            mode="ai",
-            model=chosen_model or resolved_model,
-            reason=final_reason,
-        )
-        out["llm_response_artifact"] = build_llm_response_artifact(
-            component="ai_trade_report",
-            run_id=run_id,
-            trade_id=trade_id,
-            story_id=trade_id,
-            day=day,
-            status=final_status,
-            attempts=attempts,
-            parsed_output=best_partial,
-            model_info={"provider": "OpenRouter", "model": chosen_model or resolved_model},
-            latency_ms=sum(int(row.get("latency_ms") or 0) for row in attempts),
-            meta={
-                "reason": final_reason,
-                "error": final_error,
-                **best_partial_meta,
-                "used_fallback_sections": list(out.get("used_fallback_sections") or []),
-                **execution_observability,
-            },
-        )
-        return _attach_report_status_matrix(out, story_input, ai_trade_report_status=final_status)
-
-    if not parsed:
-        report = _failure_report(
-            story_input,
-            status=final_status,
-            mode="ai",
-            model=chosen_model or resolved_model,
-            reason=final_reason or "AI trade report generation failed",
-            error=final_error,
-        )
-        report["llm_response_artifact"] = build_llm_response_artifact(
-            component="ai_trade_report",
-            run_id=run_id,
-            trade_id=trade_id,
-            story_id=trade_id,
-            day=day,
-            status=final_status,
-            attempts=attempts,
-            parsed_output={},
-            model_info={"provider": "OpenRouter", "model": chosen_model or resolved_model},
-            latency_ms=sum(int(row.get("latency_ms") or 0) for row in attempts),
-            meta={"reason": final_reason, "error": final_error, **empty_required_meta, **execution_observability},
-        )
-        return _attach_report_status_matrix(report, story_input, ai_trade_report_status=final_status)
-
-    parse_meta = _trade_report_parse_meta(raw, parsed)
-    out = _merge_trade_report_candidate(
+    return _build_ai_trade_report_service_impl(
         story_input,
-        parsed,
-        status=final_status,
-        mode="ai",
-        model=chosen_model or resolved_model,
-        reason=final_reason,
-    )
-    out["llm_response_artifact"] = build_llm_response_artifact(
-        component="ai_trade_report",
-        run_id=run_id,
-        trade_id=trade_id,
-        story_id=trade_id,
-        day=day,
-        status=final_status,
-        attempts=attempts,
-        parsed_output=parsed,
-        model_info={"provider": "OpenRouter", "model": chosen_model or resolved_model},
-        latency_ms=sum(int(row.get("latency_ms") or 0) for row in attempts),
-        meta={
-            **parse_meta,
-            "reason": final_reason,
-            "used_fallback_sections": list(out.get("used_fallback_sections") or []),
-            **execution_observability,
+        enabled=enabled,
+        model=model,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        retry_max_override=retry_max_override,
+        timeout_sec_override=timeout_sec_override,
+        hard_timeout_sec_override=hard_timeout_sec_override,
+        local_debug_no_llm=local_debug_no_llm,
+        deps={
+            "resolve_intraday_report_model": _resolve_intraday_report_model,
+            "resolve_intraday_report_execution_profile": _resolve_intraday_report_execution_profile,
+            "failure_report": _failure_report,
+            "attach_report_status_matrix": _attach_report_status_matrix,
+            "fallback_report": _fallback_report,
+            "llm_router_cls": LLMRouter,
+            "build_messages": _build_messages,
+            "router_chat_with_hard_timeout": _router_chat_with_hard_timeout,
+            "trade_report_parse_meta": _trade_report_parse_meta,
+            "trade_report_language_meta": _trade_report_language_meta,
+            "build_repair_messages": _build_repair_messages,
+            "merge_trade_report_candidate": _merge_trade_report_candidate,
+            "required_keys": tuple(AI_TRADE_REPORT_REQUIRED_KEYS),
         },
     )
-    return _attach_report_status_matrix(out, story_input, ai_trade_report_status=final_status)
-
 
 def render_trade_report_markdown(report: Dict[str, Any]) -> str:
     from libs.reporting.trade_report_markdown_clean import render_trade_report_markdown_clean
