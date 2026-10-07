@@ -21,7 +21,7 @@ _STREAM_CHUNK_CHARS = 4 * 1024 * 1024
 _WHITESPACE = " \n\r\t,"
 
 
-def _stream(path: Path, key: str) -> Iterator[Any]:
+def _stream(path: Path, key: str, strict: bool = False) -> Iterator[Any]:
     """Yield each array item, then finally a `(head, tail)` tuple for the rest of the document.
 
     `head` is the text before the array line, `tail` the text after the closing `]`, so that
@@ -32,6 +32,8 @@ def _stream(path: Path, key: str) -> Iterator[Any]:
     try:
         handle = path.open("r", encoding="utf-8")
     except OSError:
+        if strict:
+            raise
         return
     with handle:
         buffer = handle.read(_STREAM_CHUNK_CHARS)
@@ -40,6 +42,8 @@ def _stream(path: Path, key: str) -> Iterator[Any]:
             try:
                 payload = json.loads(buffer + handle.read())
             except ValueError:
+                if strict:
+                    raise
                 return
             if isinstance(payload, Mapping):
                 for item in payload.get(key) or []:
@@ -87,9 +91,13 @@ def _stream(path: Path, key: str) -> Iterator[Any]:
         yield ("__rest__", (head, f'\n  "{key}": []', tail))
 
 
-def iter_json_array(path: Path, key: str) -> Iterator[Any]:
-    """Yield the items of the top-level array `key` of a JSON object file, one at a time."""
-    for item in _stream(path, key):
+def iter_json_array(path: Path, key: str, *, strict: bool = False) -> Iterator[Any]:
+    """Yield the items of the top-level array `key` of a JSON object file, one at a time.
+
+    By default a missing/unparseable file yields nothing. With `strict=True` it raises
+    `OSError`/`ValueError` instead, for callers that must tell "unreadable" from "no items".
+    """
+    for item in _stream(path, key, strict):
         if isinstance(item, tuple):
             return
         yield item

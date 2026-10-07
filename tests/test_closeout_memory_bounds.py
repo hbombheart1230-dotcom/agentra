@@ -418,3 +418,60 @@ def test_effectiveness_windows_unreadable_or_missing_file_is_no_windows(tmp_path
     text = json.dumps({"windows": _effectiveness_windows()}, indent=2)
     (tmp_path / "bad.json").write_text(text[: len(text) // 2], encoding="utf-8")
     assert _q9_windows_for_effectiveness(tmp_path / "bad.json") == []
+
+
+# --------------------------------------------------------------------- candidate decision summary (streamed)
+
+
+def _reference_candidate_summary(path: Path):
+    """The pre-fix computation: json.loads the whole file, same folding."""
+    from collections import Counter
+
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    decisions, reasons = Counter(), Counter()
+    for raw in (payload.get("windows") if isinstance(payload, dict) else []) or []:
+        if not isinstance(raw, dict):
+            continue
+        commander = raw.get("commander_final") if isinstance(raw.get("commander_final"), dict) else {}
+        decisions[str(commander.get("decision") or "unknown").strip().lower()] += 1
+        reasons[str(commander.get("reason") or "unspecified").strip()] += 1
+    return decisions, reasons
+
+
+@pytest.mark.parametrize("variant", ["valid", "compact", "list-top", "windows-dict", "corrupt", "empty", "missing"])
+def test_candidate_decision_summary_equals_whole_file_reading(tmp_path, variant):
+    from libs.reporting.operator_candidate_decisions import load_candidate_decision_summary
+
+    day = "2026-02-02"
+    path = tmp_path / "operator_summary" / "daily" / day / "q9_decision_windows.json"
+    path.parent.mkdir(parents=True)
+    good = {"windows": [{"commander_final": {"decision": "Approve", "reason": "r1"}}, {"commander_final": {"decision": "reject", "reason": "r2"}},
+                        {"commander_final": "x"}, "junk", {}]}
+    text = {
+        "valid": json.dumps(good, indent=2), "compact": json.dumps(good), "list-top": json.dumps([1, 2]),
+        "windows-dict": json.dumps({"windows": {"a": 1}}, indent=2), "corrupt": json.dumps(good, indent=2)[:50], "empty": "",
+    }.get(variant)
+    if text is not None:
+        path.write_text(text, encoding="utf-8")
+    result = load_candidate_decision_summary(reports_root=tmp_path, day=day)
+    reference = _reference_candidate_summary(path)
+    if reference is None:
+        assert result["available"] is False and result["window_count"] == 0
+    else:
+        decisions, reasons = reference
+        assert result["available"] is True
+        assert result["decision_counts"] == dict(decisions)
+        assert result["reason_counts"] == dict(reasons.most_common(10))
+        assert result["window_count"] == sum(decisions.values())
+
+
+def test_iter_json_array_strict_raises_for_unreadable(tmp_path):
+    with pytest.raises(OSError):
+        list(jas.iter_json_array(tmp_path / "missing.json", "windows", strict=True))
+    (tmp_path / "bad.json").write_text("{nope", encoding="utf-8")
+    with pytest.raises(ValueError):
+        list(jas.iter_json_array(tmp_path / "bad.json", "windows", strict=True))
+    assert list(jas.iter_json_array(tmp_path / "bad.json", "windows")) == []  # default stays lenient
