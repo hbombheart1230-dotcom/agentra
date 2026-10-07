@@ -8,7 +8,7 @@ from .builder import build_episode
 from .candidates import select_candidates
 from .contracts import BEHAVIOR_EFFECT, CORE_FEATURE_PATHS, LIVE_COST_PCT, OUTCOME_LABELS, SCHEMA_VERSION
 from .integrity import audit
-from .loaders import historical_episodes, longitudinal_events, prospective_episodes, q9_windows, refresh_source_caches, source_rows
+from .loaders import historical_episodes, longitudinal_events, prospective_episodes, q9_windows, refresh_source_caches, source_rows_for_symbol
 from .report import render_integrity, render_summary
 from .trees import build_all_trees
 from .strategy_alignment_report import write_strategy_alignment_reports
@@ -54,30 +54,38 @@ def run(
             refresh_from_day=refresh_from_day,
             base_day=base_day,
         )
-    minute_by_symbol, daily_by_symbol = source_rows(
-        minute_cache_root=minute_cache_root,
-        daily_cache_root=daily_cache_root,
-        symbols=symbols,
-        additional_minute_cache_roots=(
-            project_root / "data" / "research" / "opening_rank1_shadow" / "minute_cache",
-        ),
-    )
+    additional_minute_cache_roots = (project_root / "data" / "research" / "opening_rank1_shadow" / "minute_cache",)
     longitudinal = longitudinal_events(longitudinal_path)
-    rows: list[dict[str, Any]] = []
-    for source, is_prospective in ((historical, False), (prospective, True)):
-        for item in source:
-            symbol = str(item.get("symbol") or "").zfill(6)
-            episode_id = str(item.get("episode_id") or "")
-            rows.append(
-                build_episode(
-                    row=item,
-                    prospective=is_prospective,
-                    window=windows.get(str(item.get("decision_id") or ""), {}),
-                    minute_rows=minute_by_symbol.get(symbol, []),
-                    daily_rows=daily_by_symbol.get(symbol, []),
-                    longitudinal=longitudinal.get(episode_id, {}),
-                )
+    # Build episode by episode but load each symbol's minute/daily rows only while that
+    # symbol's episodes are built (all symbols at once held ~540 MiB). `rows` keeps the
+    # original historical-then-prospective order so de-duplication below is unchanged.
+    items = [(item, is_prospective) for source, is_prospective in ((historical, False), (prospective, True)) for item in source]
+    indices_by_symbol: dict[str, list[int]] = {}
+    for index, (item, _is_prospective) in enumerate(items):
+        indices_by_symbol.setdefault(str(item.get("symbol") or "").zfill(6), []).append(index)
+    built: list[dict[str, Any] | None] = [None] * len(items)
+    for symbol in sorted(indices_by_symbol):
+        if symbol in symbols:
+            minute_rows, daily_rows = source_rows_for_symbol(
+                symbol=symbol,
+                minute_cache_root=minute_cache_root,
+                daily_cache_root=daily_cache_root,
+                additional_minute_cache_roots=additional_minute_cache_roots,
             )
+        else:
+            minute_rows, daily_rows = [], []
+        for index in indices_by_symbol[symbol]:
+            item, is_prospective = items[index]
+            built[index] = build_episode(
+                row=item,
+                prospective=is_prospective,
+                window=windows.get(str(item.get("decision_id") or ""), {}),
+                minute_rows=minute_rows,
+                daily_rows=daily_rows,
+                longitudinal=longitudinal.get(str(item.get("episode_id") or ""), {}),
+            )
+        del minute_rows, daily_rows
+    rows: list[dict[str, Any]] = [row for row in built if row is not None]
     deduplicated = {str(row["identity"]["episode_id"]): row for row in rows}
     rows = sorted(deduplicated.values(), key=lambda row: (row["identity"]["day"], row["identity"]["decision_epoch"], row["identity"]["symbol"]))
     integrity = audit(rows)

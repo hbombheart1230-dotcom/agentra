@@ -51,6 +51,101 @@ def longitudinal_events(path: Path) -> dict[str, dict[str, Any]]:
     }
 
 
+_STREAM_CHUNK_CHARS = 4 * 1024 * 1024
+
+
+def iter_json_array(path: Path, key: str):
+    """Yield the items of the top-level array `key` of a JSON object file, one at a time.
+
+    The q9 decision-window files reach ~130 MB; `json.loads` of one transiently needs
+    ~860 MiB of Python objects, which alone overflows the 1 GiB container. This reads the
+    file in chunks and decodes one array item at a time instead. It relies on the file
+    being the indent=2 dump this repository writes (`"key": [` on its own top-level line)
+    and falls back to a plain `json.loads` for any other layout. A truncated/corrupt file
+    raises ValueError part-way; the caller discards what it collected, which matches the
+    `read_json` -> `{}` behaviour (no windows at all) that this replaces.
+    """
+    marker = f'\n  "{key}": ['
+    try:
+        handle = path.open("r", encoding="utf-8")
+    except OSError:
+        return
+    with handle:
+        buffer = handle.read(_STREAM_CHUNK_CHARS)
+        start = buffer.find(marker)
+        if start < 0:
+            try:
+                payload = json.loads(buffer + handle.read())
+            except ValueError:
+                return
+            for item in (payload.get(key) or []) if isinstance(payload, Mapping) else []:
+                yield item
+            return
+        decoder = json.JSONDecoder()
+        position = start + len(marker)
+        exhausted = False
+        while True:
+            while True:
+                while position < len(buffer) and buffer[position] in " \n\r\t,":
+                    position += 1
+                if position < len(buffer) or exhausted:
+                    break
+                chunk = handle.read(_STREAM_CHUNK_CHARS)
+                if not chunk:
+                    exhausted = True
+                else:
+                    buffer = buffer[position:] + chunk
+                    position = 0
+            if position >= len(buffer) or buffer[position] == "]":
+                return
+            while True:
+                try:
+                    item, end = decoder.raw_decode(buffer, position)
+                    break
+                except ValueError:
+                    chunk = "" if exhausted else handle.read(_STREAM_CHUNK_CHARS)
+                    if not chunk:
+                        raise
+                    buffer = buffer[position:] + chunk
+                    position = 0
+            yield item
+            position = end
+            if position > _STREAM_CHUNK_CHARS:
+                buffer = buffer[position:]
+                position = 0
+
+
+def _project_window(enriched: dict[str, Any]) -> dict[str, Any]:
+    """Keep only the q9-window fields `builder.build_episode` reads (see builder.py).
+
+    Retaining every full window plus its canonical strategist/scanner documents for all
+    ~290 historical episodes held ~410 MiB. Truthiness of `_canonical_scanner` is also
+    observable (`canonical_scanner_present`), so a non-empty value that projects to
+    nothing stays non-empty.
+    """
+    universe = enriched.get("scanner_pre_strategist_universe")
+    scanner = enriched.get("_canonical_scanner")
+    table = scanner.get("candidate_ranking_table") if isinstance(scanner, Mapping) else None
+    projected: dict[str, Any] = {
+        key: enriched[key]
+        for key in ("decision_id", "run_id", "strategist_selection", "commander_final", "_canonical_strategist")
+        if key in enriched
+    }
+    if "scanner_pre_strategist_universe" in enriched:
+        projected["scanner_pre_strategist_universe"] = (
+            {"intrinsic_ranked_top20": universe.get("intrinsic_ranked_top20")}
+            if isinstance(universe, Mapping)
+            else universe
+        )
+    if "_canonical_scanner" in enriched:
+        projected["_canonical_scanner"] = (
+            {"candidate_ranking_table": table}
+            if isinstance(table, Mapping)
+            else ({"_projected_non_empty": True} if scanner else scanner)
+        )
+    return projected
+
+
 def q9_windows(
     reports_root: Path,
     episodes: list[Mapping[str, Any]],
@@ -63,23 +158,57 @@ def q9_windows(
             wanted.setdefault(day, set()).add(decision_id)
     found: dict[str, dict[str, Any]] = {}
     for day, decision_ids in sorted(wanted.items()):
-        payload = read_json(reports_root / "operator_summary" / "daily" / day / "q9_decision_windows.json")
-        for row in (payload.get("windows") or []) if isinstance(payload, Mapping) else []:
-            if not isinstance(row, Mapping):
-                continue
-            decision_id = str(row.get("decision_id") or "")
-            if decision_id in decision_ids:
-                enriched = dict(row)
-                run_id = str(row.get("run_id") or "")
-                canonical_root = reports_root / "canonical" / day / run_id
-                enriched["_canonical_strategist"] = read_json(
-                    canonical_root / "strategist.json"
-                )
-                enriched["_canonical_scanner"] = read_json(
-                    canonical_root / "scanner.json"
-                )
-                found[decision_id] = enriched
+        windows_path = reports_root / "operator_summary" / "daily" / day / "q9_decision_windows.json"
+        day_found: dict[str, dict[str, Any]] = {}
+        try:
+            for row in iter_json_array(windows_path, "windows"):
+                if not isinstance(row, Mapping):
+                    continue
+                decision_id = str(row.get("decision_id") or "")
+                if decision_id in decision_ids:
+                    enriched = dict(row)
+                    run_id = str(row.get("run_id") or "")
+                    canonical_root = reports_root / "canonical" / day / run_id
+                    enriched["_canonical_strategist"] = read_json(
+                        canonical_root / "strategist.json"
+                    )
+                    enriched["_canonical_scanner"] = read_json(
+                        canonical_root / "scanner.json"
+                    )
+                    day_found[decision_id] = _project_window(enriched)
+        except ValueError:
+            day_found = {}  # unreadable windows file == no windows for that day (as before)
+        found.update(day_found)
     return found
+
+
+def source_rows_for_symbol(
+    *,
+    symbol: str,
+    minute_cache_root: Path,
+    daily_cache_root: Path,
+    additional_minute_cache_roots: tuple[Path, ...] = (),
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Merged minute rows and daily rows for ONE symbol (the per-symbol unit of `source_rows`).
+
+    Loading every symbol up front held ~540 MiB (725k minute rows, copied during the merge);
+    callers that process symbol by symbol keep only one symbol's rows alive.
+    """
+    only = {symbol}
+    minute_sources = [load_minute_rows(minute_cache_root, only)]
+    minute_sources.extend(load_minute_rows(root, only) for root in additional_minute_cache_roots)
+    by_epoch = {
+        int(row.get("ts") or 0): dict(row)
+        for source in minute_sources
+        for row in source.get(symbol, [])
+        if int(row.get("ts") or 0) > 0
+    }
+    minutes = [by_epoch[key] for key in sorted(by_epoch)]
+    daily_rows = load_daily_cache(daily_cache_root, only).get(symbol, [])
+    derived = _daily_rows_from_minutes(minutes)
+    by_day = {str(row.get("day") or _raw_day(row)): dict(row) for row in daily_rows}
+    by_day.update({str(row["day"]): row for row in derived})
+    return minutes, [by_day[key] for key in sorted(by_day) if key]
 
 
 def source_rows(
@@ -89,23 +218,15 @@ def source_rows(
     symbols: set[str],
     additional_minute_cache_roots: tuple[Path, ...] = (),
 ) -> tuple[dict[str, list[dict[str, Any]]], dict[str, list[dict[str, Any]]]]:
-    minute_sources = [load_minute_rows(minute_cache_root, symbols)]
-    minute_sources.extend(load_minute_rows(root, symbols) for root in additional_minute_cache_roots)
     merged_minutes: dict[str, list[dict[str, Any]]] = {}
-    for symbol in symbols:
-        by_epoch = {
-            int(row.get("ts") or 0): dict(row)
-            for source in minute_sources
-            for row in source.get(symbol, [])
-            if int(row.get("ts") or 0) > 0
-        }
-        merged_minutes[symbol] = [by_epoch[key] for key in sorted(by_epoch)]
-    daily = load_daily_cache(daily_cache_root, symbols)
-    for symbol, minute_rows in merged_minutes.items():
-        derived = _daily_rows_from_minutes(minute_rows)
-        by_day = {str(row.get("day") or _raw_day(row)): dict(row) for row in daily.get(symbol, [])}
-        by_day.update({str(row["day"]): row for row in derived})
-        daily[symbol] = [by_day[key] for key in sorted(by_day) if key]
+    daily: dict[str, list[dict[str, Any]]] = {}
+    for symbol in sorted(symbols):
+        merged_minutes[symbol], daily[symbol] = source_rows_for_symbol(
+            symbol=symbol,
+            minute_cache_root=minute_cache_root,
+            daily_cache_root=daily_cache_root,
+            additional_minute_cache_roots=additional_minute_cache_roots,
+        )
     return merged_minutes, daily
 
 

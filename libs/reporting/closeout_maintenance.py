@@ -24,6 +24,40 @@ from libs.reporting.post_exit_shadow_recap import generate_post_exit_shadow_reca
 from libs.reporting.q8_shadow_blocker_review import generate_q8_shadow_blocker_review
 
 
+def _closeout_memory_snapshot() -> Dict[str, Any]:
+    """Best-effort process/cgroup memory at a closeout stage boundary (diagnostic only).
+
+    The 10-06/10-07 closeouts were OOM-killed inside the 1 GiB container with no durable
+    record of where memory went. Linux (the container) reports the cgroup's current/peak
+    usage and OOM/limit-hit counters plus this process's RSS; elsewhere it returns {}.
+    Never raises.
+    """
+    out: Dict[str, Any] = {}
+    try:
+        cgroup = Path("/sys/fs/cgroup")
+        for name, key in (("memory.current", "cgroup_current_mib"), ("memory.peak", "cgroup_peak_mib"), ("memory.max", "cgroup_limit_mib")):
+            path = cgroup / name
+            if path.exists():
+                text = path.read_text(encoding="utf-8").strip()
+                if text.isdigit():
+                    out[key] = round(int(text) / 1048576, 1)
+        events = cgroup / "memory.events"
+        if events.exists():
+            for line in events.read_text(encoding="utf-8").splitlines():
+                name, _, value = line.partition(" ")
+                if name in ("max", "oom", "oom_kill") and value.strip().isdigit():
+                    out[f"cgroup_events_{name}"] = int(value)
+        status = Path("/proc/self/status")
+        if status.exists():
+            for line in status.read_text(encoding="utf-8").splitlines():
+                if line.startswith(("VmRSS:", "VmHWM:")):
+                    key = "rss_mib" if line.startswith("VmRSS") else "rss_peak_mib"
+                    out[key] = round(int(line.split()[1]) / 1024, 1)
+    except Exception:  # noqa: BLE001 - diagnostics must never break closeout maintenance
+        return out
+    return out
+
+
 def log_closeout_stage(*, run_id: str, day: str, stage: str, phase: str, detail: Dict[str, Any] | None = None) -> None:
     """Durable, immediate-flush stage-boundary diagnostic record (2026-09-30
     closeout diagnostic hardening). Uses the existing EventLogger (data/logs/
@@ -59,7 +93,7 @@ def log_closeout_stage(*, run_id: str, day: str, stage: str, phase: str, detail:
             stage="closeout_maintenance",
             event=f"stage_{phase}",
             level="info",
-            payload={"target_day": day, "closeout_stage": stage, **(detail or {})},
+            payload={"target_day": day, "closeout_stage": stage, "memory": _closeout_memory_snapshot(), **(detail or {})},
         )
     except Exception:  # noqa: BLE001 - diagnostics must never break closeout maintenance
         pass
@@ -200,6 +234,7 @@ def run_closeout_maintenance(
         out["steps"]["closeout_residual_position_reconciliation"] = {"ok": True, "skipped": True}
         out["steps"]["carryover_exit_reconciliation"] = {"ok": True, "skipped": True}
 
+    log_closeout_stage(run_id=resolved_run_id, day=normalized_day, stage="broker_closed_trade_reconciliation", phase="start")
     try:
         reconciliation = reconcile_broker_closed_trade_reports(reports_root=reports_root, day=normalized_day)
         out["steps"]["broker_closed_trade_reconciliation"] = {
@@ -213,6 +248,7 @@ def run_closeout_maintenance(
     except Exception as exc:
         out["steps"]["broker_closed_trade_reconciliation"] = {"ok": False, "error": str(exc)}
 
+    log_closeout_stage(run_id=resolved_run_id, day=normalized_day, stage="q8_shadow_blocker_review", phase="start")
     try:
         q8 = generate_q8_shadow_blocker_review(reports_root=reports_root, day=normalized_day)
         out["steps"]["q8_shadow_blocker_review"] = {
@@ -225,6 +261,7 @@ def run_closeout_maintenance(
     except Exception as exc:
         out["steps"]["q8_shadow_blocker_review"] = {"ok": False, "error": str(exc)}
 
+    log_closeout_stage(run_id=resolved_run_id, day=normalized_day, stage="post_exit_shadow_recap", phase="start")
     try:
         resolved_state_path = resolve_post_exit_state_path(reports_root, state_path)
         recap = generate_post_exit_shadow_recap(
@@ -242,6 +279,7 @@ def run_closeout_maintenance(
     except Exception as exc:
         out["steps"]["post_exit_shadow_recap"] = {"ok": False, "error": str(exc)}
 
+    log_closeout_stage(run_id=resolved_run_id, day=normalized_day, stage="operator_daily_summary_artifact", phase="start")
     try:
         daily_md, daily_json, daily_payload = generate_operator_daily_summary_artifact(
             reports_root=reports_root,
@@ -270,6 +308,7 @@ def run_closeout_maintenance(
         except Exception as sync_exc:
             out["steps"]["performance_memory_sync_fallback"] = {"ok": False, "error": str(sync_exc)}
 
+    log_closeout_stage(run_id=resolved_run_id, day=normalized_day, stage="operator_visibility_summary", phase="start")
     try:
         operator = Reporter().generate_operator_summary(
             event_log_path=event_log_path,
@@ -293,6 +332,7 @@ def run_closeout_maintenance(
     except Exception as exc:
         out["steps"]["operator_visibility_summary"] = {"ok": False, "error": str(exc)}
 
+    log_closeout_stage(run_id=resolved_run_id, day=normalized_day, stage="q9_baseline_frozen_window", phase="start")
     try:
         from libs.reporting.evaluation.frozen_window_closeout import (
             run_frozen_window_closeout,
@@ -367,6 +407,7 @@ def run_closeout_maintenance(
         )
 
         project_root = Path(reports_root).resolve().parent
+        log_closeout_stage(run_id=resolved_run_id, day=normalized_day, stage="rank1_feature_mart", phase="start")
         mart = run_rank1_feature_mart(project_root=project_root)
         fixed_shadow = build_prospective_shadow(
             day=normalized_day,
@@ -442,6 +483,7 @@ def run_closeout_maintenance(
             "error": str(exc),
         }
 
+    log_closeout_stage(run_id=resolved_run_id, day=normalized_day, stage="same_symbol_sequence_provenance", phase="start")
     try:
         from libs.reporting.evaluation.same_symbol_sequences import (
             build_same_symbol_sequence_artifacts,

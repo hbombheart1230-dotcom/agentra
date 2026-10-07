@@ -95,18 +95,27 @@ def _record(path: Path, *, required: bool) -> dict[str, Any]:
     }
 
 
-def load_q9_pre_strategist_rows(reports_root: Path, day: str) -> list[dict[str, Any]]:
+def _iter_shadow_payloads(reports_root: Path, day: str):
+    """Yield each non-empty shadow payload of `day` one at a time, in file-name order.
+
+    Streaming (rather than collecting a list) keeps only one parsed payload alive at a
+    time; a trading day's full list was ~300 MiB of parsed objects and, loaded twice
+    here, was a large part of the closeout peak that OOM-killed the 1 GiB container.
+    """
     shadow_root = Path(reports_root).parent / "data" / "logs" / "quant_shadow_candidates" / day
-    shadow_payloads: list[dict[str, Any]] = []
-    if shadow_root.exists():
-        for shadow_path in sorted(shadow_root.glob("*.json")):
-            if shadow_path.name == "latest.json":
-                continue
-            shadow = read_json(shadow_path)
-            if shadow:
-                shadow_payloads.append(shadow)
+    if not shadow_root.exists():
+        return
+    for shadow_path in sorted(shadow_root.glob("*.json")):
+        if shadow_path.name == "latest.json":
+            continue
+        shadow = read_json(shadow_path)
+        if shadow:
+            yield shadow
+
+
+def load_q9_pre_strategist_rows(reports_root: Path, day: str) -> list[dict[str, Any]]:
     pre_rows: list[dict[str, Any]] = []
-    for shadow in shadow_payloads:
+    for shadow in _iter_shadow_payloads(reports_root, day):
         generated_at = str(shadow.get("generated_at") or "")
         for raw in shadow.get("q9_decision_candidates") or []:
             if (
@@ -159,15 +168,16 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
         for row in scanner_windows
         if row not in synthetic_windows and row not in post_session_windows
     ]
-    shadow_root = Path(reports_root).parent / "data" / "logs" / "quant_shadow_candidates" / day
-    shadow_payloads: list[dict[str, Any]] = []
-    if shadow_root.exists():
-        for shadow_path in sorted(shadow_root.glob("*.json")):
-            if shadow_path.name == "latest.json":
-                continue
-            shadow = read_json(shadow_path)
-            if shadow:
-                shadow_payloads.append(shadow)
+    # Only the payload count and the generated_at of payloads that carry q9 decision
+    # candidates are needed below, so reduce each payload to that as it streams past.
+    shadow_payload_count = 0
+    shadow_times = []
+    for shadow in _iter_shadow_payloads(reports_root, day):
+        shadow_payload_count += 1
+        if shadow.get("q9_decision_candidates"):
+            parsed = _parse_window_kst(shadow.get("generated_at"))
+            if parsed is not None:
+                shadow_times.append(parsed)
     pre_rows = load_q9_pre_strategist_rows(reports_root, day)
     recovery_candles = _load_forward_recovery_candles(reports_root, day)
     observed_rows = (
@@ -219,15 +229,6 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
         for parsed in (
             _parse_window_kst(row.get("generated_at"))
             for row in trusted_scanner_windows
-        )
-        if parsed is not None
-    ]
-    shadow_times = [
-        parsed
-        for parsed in (
-            _parse_window_kst(row.get("generated_at"))
-            for row in shadow_payloads
-            if row.get("q9_decision_candidates")
         )
         if parsed is not None
     ]
@@ -325,7 +326,7 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
             "post_close_account_snapshot_ok": bool(post_close_account_ok),
             "post_close_trigger": closeout_trigger,
             "late_session_runtime_evidence": bool(late_session_runtime_evidence),
-            "shadow_payload_count": len(shadow_payloads),
+            "shadow_payload_count": shadow_payload_count,
             "pre_strategist_forward_candidate_count": len(pre_rows),
             "forward_observed_candidate_count": forward_observed,
             "forward_missing_candidate_count": max(0, len(pre_rows) - forward_observed),
