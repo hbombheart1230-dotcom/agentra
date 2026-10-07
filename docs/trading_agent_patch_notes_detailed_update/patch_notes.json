@@ -3056,31 +3056,33 @@
     {
       "date": "2026-10-07",
       "version": "P1.5.2 R2-B",
-      "title": "Markdown summary, signal, carryover, memory and translation ownership extracted",
+      "title": "Reporting Markdown façade R2-B decomposition complete",
       "stage": "P1.5 Structural Refactor",
       "types": [
         "REFACTOR",
         "REPORTING",
         "TESTING"
       ],
-      "summary": "R2-B now owns trade-summary rendering/input, entry/exit signal presentation, carryover context, memory presentation and translation rules outside trade_report_markdown_clean.py while preserving compatibility seams and output semantics.",
+      "summary": "Completed R2-B by extracting summary rendering/input, signal presentation, carryover/memory, translation, diagnostics, market/strategist and final visibility/truth responsibilities from trade_report_markdown_clean.py while preserving compatibility seams and output semantics.",
       "details": [
-        "Added markdown_summary.py for trade-summary Markdown rendering and summary-input assembly.",
-        "Added markdown_signals.py for entry-watch, entry-signal and exit-trigger presentation helpers.",
-        "Extended trade_report_markdown_strategy_memory.py to own carryover context, prompt-proven memory and memory-application rendering.",
-        "Added markdown_translation.py to own the 170-line operator translation implementation.",
-        "trade_report_markdown_clean.py reduced from 5,852 LOC to 3,713 LOC, a 2,139-line / 36.6% façade reduction from the R2-B baseline.",
-        "Incremental gates caught local-helper/import boundary omissions and they were corrected without weakening or removing tests.",
-        "Final focused Python 3.12 Markdown/Reporting regression passed 168/168; broader Reporting/API/runtime regression passed 297/297 with one existing deprecation warning.",
-        "No Markdown contract, truth precedence, symbol metadata, signal interpretation, memory meaning, translation contract, LLM role/count, artifact path, trading authority, UEF or broker behavior changed."
+        "Responsibility owners now cover trade-summary rendering/input, entry/exit signals, carryover/memory, translation, same-day and evaluation diagnostics, market/strategist rendering, entry execution visibility and truth-surface rendering.",
+        "Existing public/private names remain compatibility façades/wrappers in trade_report_markdown_clean.py.",
+        "trade_report_markdown_clean.py reduced from 5,852 LOC to 3,044 LOC, a 2,808-line / 48.0% façade reduction.",
+        "No function remaining in trade_report_markdown_clean.py is 70 LOC or larger at the R2-B closure point.",
+        "Incremental gates caught local-helper and module-import boundary omissions; all were corrected without weakening or removing tests.",
+        "Final Python 3.12 focused Markdown/Reporting regression passed 168/168; broader Reporting/API/runtime regression passed 297/297 with one existing deprecation warning.",
+        "No Markdown contract, truth precedence, symbol metadata, signal interpretation, memory meaning, translation contract, strategist/market meaning, LLM role/count, artifact path, trading authority, UEF or broker behavior changed."
       ],
-      "impact": "R2-B remains active with the main summary/signal/carryover/memory/translation responsibilities outside the giant Markdown façade. Diagnostics/market/strategist residuals remain next.",
+      "impact": "P1.5.2 R2-B is complete. The Markdown giant façade is substantially reduced with explicit rendering responsibility owners; R2-C trade-story façade decomposition is next.",
       "sources": [
         "docs/daily_patch/2026-10-07_p1_5_2_r2b_markdown_decomposition.md",
         "libs/reporting/trade_report/markdown_summary.py",
         "libs/reporting/trade_report/markdown_signals.py",
         "libs/reporting/trade_report/markdown_translation.py",
+        "libs/reporting/trade_report/markdown_diagnostics.py",
+        "libs/reporting/trade_report/markdown_strategy.py",
         "libs/reporting/trade_report_markdown_strategy_memory.py",
+        "libs/reporting/trade_report_markdown_truth.py",
         "libs/reporting/trade_report_markdown_clean.py"
       ],
       "status": "current"

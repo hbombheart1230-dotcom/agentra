@@ -155,3 +155,88 @@ BROADER REPORTING REGRESSION     297/297 PASS
 TRADE MARKDOWN FAÇADE            5,852 -> 3,713 LOC
 NEXT                             diagnostics / market / strategist residuals
 ```
+
+## Diagnostics / market / strategist finalization
+
+The final R2-B pass moved the remaining large Markdown responsibilities out of the façade:
+
+- `libs/reporting/trade_report/markdown_diagnostics.py`
+  - owns same-day summary normalization
+  - owns deterministic diagnostics rendering
+  - owns LLM evaluation diagnostics rendering
+- `libs/reporting/trade_report/markdown_strategy.py`
+  - owns market-context rendering
+  - owns strategist-summary rendering
+  - owns strategist-output surface rendering
+- `libs/reporting/trade_report/markdown_signals.py`
+  - additionally owns entry execution visibility resolution
+- `libs/reporting/trade_report_markdown_truth.py`
+  - additionally owns final truth-surface rendering
+
+The original names remain compatibility wrappers in `trade_report_markdown_clean.py`.
+
+### Incremental gate finding
+
+The first diagnostics extraction run exposed one missing module-level dependency: `re` used by same-day summary parsing. The new diagnostics owner now imports `re` explicitly. This was an extraction-only wiring fix; no output rule or test expectation changed.
+
+### Final size movement
+
+```text
+R2-B baseline trade_report_markdown_clean.py      5,852 LOC
+summary + signal extraction                       4,187 LOC
+carryover + memory extraction                     3,868 LOC
+translation extraction                            3,713 LOC
+diagnostics extraction                            3,445 LOC
+market + strategist extraction                    3,165 LOC
+final visibility + truth extraction               3,044 LOC
+-----------------------------------------------------------
+net façade reduction                              2,808 LOC (-48.0%)
+```
+
+At R2-B closure, no function remaining in `trade_report_markdown_clean.py` is 70 LOC or larger.
+
+### Final verification
+
+Focused Python 3.12 Markdown/Reporting gate after diagnostics fix:
+
+```text
+168 passed
+```
+
+Focused gate after market/strategist extraction:
+
+```text
+168 passed in 3.31s
+```
+
+Focused gate after final visibility/truth extraction:
+
+```text
+168 passed in 3.71s
+```
+
+Final broader Reporting/API/runtime regression:
+
+```text
+297 passed, 1 warning in 10.12s
+```
+
+The single warning remains the existing Starlette/httpx test-client deprecation warning.
+
+### R2-B verdict
+
+```text
+P1.5.2 R2-B                      COMPLETE
+SUMMARY RENDERER / INPUT OWNER   PASS
+ENTRY / EXIT SIGNAL OWNER        PASS
+CARRYOVER / MEMORY OWNER         PASS
+TRANSLATION OWNER                PASS
+DIAGNOSTICS OWNER                PASS
+MARKET / STRATEGIST OWNER        PASS
+VISIBILITY / TRUTH OWNER         PASS
+FOCUSED REGRESSION               168/168 PASS
+BROADER REPORTING REGRESSION     297/297 PASS
+TRADE MARKDOWN FAÇADE            5,852 -> 3,044 LOC (-48.0%)
+LARGE FUNCTIONS >=70 LOC         0
+NEXT                             R2-C trade-story façade decomposition
+```

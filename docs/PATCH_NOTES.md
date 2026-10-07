@@ -242,3 +242,14 @@
 - Incremental gates caught two extraction-only import omissions: `timedelta` for carryover and `html/re` for translation. They were restored without changing semantics or weakening tests.
 - Focused Markdown/Reporting regression after fixes: **168/168 PASS**. Broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
 - R2-B remains **ACTIVE**; diagnostics/market/strategist residuals are next.
+
+## P1.5.2 R2-B Completion — Diagnostics / Market / Strategist / Final Truth Boundaries (2026-10-07)
+
+- Added `trade_report/markdown_diagnostics.py` for same-day summary normalization plus deterministic and LLM evaluation diagnostics.
+- Added `trade_report/markdown_strategy.py` for market-context, strategist-summary and strategist-output rendering.
+- Moved final entry-execution visibility rendering into `trade_report/markdown_signals.py`.
+- Moved final truth-surface rendering into `trade_report_markdown_truth.py`.
+- `trade_report_markdown_clean.py` is now **3,044 LOC**, down from 5,852 at the R2-B baseline (**-2,808 LOC / -48.0%**).
+- No function remaining in `trade_report_markdown_clean.py` is 70 LOC or larger.
+- Final focused regression: **168/168 PASS**. Final broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
+- **P1.5.2 R2-B: COMPLETE. R2-C trade-story façade decomposition: NEXT.**

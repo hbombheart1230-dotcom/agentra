@@ -1879,3 +1879,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Focused regression: **168 passed**. Broader Reporting/API/runtime regression: **297 passed, 1 warning**.
 - No Markdown contract, memory meaning, translation output contract, truth precedence, LLM, trading authority, UEF or broker semantic change.
 - R2-B remains **ACTIVE**; diagnostics/market/strategist residuals are next.
+
+## P1.5.2 R2-B Completion — Diagnostics / Market / Strategist / Truth
+
+- Added `trade_report/markdown_diagnostics.py` and `trade_report/markdown_strategy.py`.
+- Moved final entry-visibility logic into `markdown_signals.py` and truth-surface rendering into `trade_report_markdown_truth.py`.
+- `trade_report_markdown_clean.py`: **5,852 -> 3,044 LOC** (**-2,808 LOC / -48.0%**).
+- No remaining function in the Markdown façade is 70 LOC or larger.
+- Focused regression: **168 passed**. Final broader Reporting/API/runtime regression: **297 passed, 1 warning**.
+- No Markdown contract, truth precedence, strategist/market meaning, LLM behavior, trading authority, UEF or broker semantic change.
+- R2-B is **COMPLETE**. R2-C trade-story façade decomposition is next.
