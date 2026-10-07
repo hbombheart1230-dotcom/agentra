@@ -859,6 +859,8 @@ def _section_builder_deps() -> Dict[str, Any]:
         "operatorize_report_text": _operatorize_report_text,
         "execution_mode_label": _execution_mode_label,
         "exit_reason_label": _exit_reason_label,
+        "normalize_reporter_text": normalize_reporter_text,
+        "build_execution_truth_bullets": build_execution_truth_bullets,
     }
 
 def _build_market_context_summary(section: Any, *, scanner_reason: Dict[str, Any] | None = None) -> str:

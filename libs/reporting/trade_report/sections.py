@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from typing import Any, Dict, Mapping
 
 
@@ -1963,6 +1964,7 @@ def build_reporter_evaluation_from_feedback(reporter_feedback_packet: Dict[str, 
     _listify = deps["listify"]
     _num_opt = deps["num_opt"]
     _operatorize_report_text = deps["operatorize_report_text"]
+    normalize_reporter_text = deps["normalize_reporter_text"]
     packet = dict(reporter_feedback_packet or {})
     confidence = _clip(packet.get("confidence"), max_len=16).lower()
     confidence_label = {
@@ -2082,6 +2084,7 @@ def build_execution_quality_section(
     _korean_euro_ro = deps["korean_euro_ro"]
     _operator_action_label = deps["operator_action_label"]
     _operatorize_report_text = deps["operatorize_report_text"]
+    build_execution_truth_bullets = deps["build_execution_truth_bullets"]
     execution_details = story_input.get("execution_details") if isinstance(story_input.get("execution_details"), dict) else {}
     symbol = _clip(story_input.get("symbol"), max_len=24) or "종목"
     action = _operator_action_label(_clip(story_input.get("action"), max_len=24) or "WAIT")
