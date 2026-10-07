@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 124,
+  "entry_count": 125,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3429,6 +3429,45 @@
         "reviewer": null,
         "final_approval": "human",
         "verification": "direct repository code/test/design-packet inspection; no runtime implementation",
+        "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+        "provenance_baseline": null
+      }
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5.11 Final Freeze Design Complete",
+      "title": "P1.5 full regression, Docker, UEF replay and formal-freeze design frozen",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "TESTING",
+        "DOCKER",
+        "UEF",
+        "SAFETY",
+        "FREEZE"
+      ],
+      "summary": "Completed the P1.5 final acceptance design, binding freeze to one candidate SHA and requiring full regression, deterministic UEF replay, Docker ownership/restart safety, Step5 authority preservation, independent audit and human approval.",
+      "details": [
+        "Defined FZ1-FZ9 acceptance sequence from candidate lock and subsystem regression through full pytest, UEF replay, Step5 safety, Docker acceptance, compatibility/docs/security review, independent audit and formal freeze.",
+        "Required UEF frozen-manifest integrity plus UEF-7 candidate conservation, UEF-8 pair/ID conservation, UEF-9 VALID authority and deterministic replay.",
+        "Preserved the 2026-10-06 Daily UEF freshness failure as an upstream operational incident and forbade weakening freshness/backfilling authority merely to obtain freeze evidence.",
+        "Required Docker image/source parity, single ownership, contender rejection, restart/recovery, bounded ownership wait, SIGTERM/drain, persistence, resource/EOD smoke and no restart storm/OOM.",
+        "Required Step5B/C/D, readiness evidence ordering, Supervisor authority, CAS/idempotency, BrokerOutcome/UNKNOWN quarantine and broker mutation ordering to remain unchanged.",
+        "Defined final freeze report/manifest, Claude independent audit, human approval and freeze-tag policy; P1.6 remains blocked until P1_5_FORMAL_FREEZE=YES."
+      ],
+      "impact": "Design/documentation only. No runtime, Docker, UEF, execution, state, broker or strategy behavior changed.",
+      "sources": [
+        "docs/refactor/p1_5_full_regression_docker_uef_freeze_implementation_packet_v1_0.md",
+        "docs/daily_patch/2026-10-07_p1_5_full_regression_freeze_design_complete.md"
+      ],
+      "status": "current",
+      "provenance": {
+        "development_era": "P1.5 design",
+        "owner": "GPT-5.6 Sol",
+        "reviewer": null,
+        "final_approval": "human",
+        "verification": "direct repository code/test/ops/UEF documentation inspection; no runtime implementation",
         "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
         "provenance_baseline": null
       }
