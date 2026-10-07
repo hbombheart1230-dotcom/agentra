@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 114,
+  "entry_count": 115,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3064,6 +3064,43 @@
         "reviewer": null,
         "final_approval": "human",
         "verification": "documentation-only deep design; source/test inventory inspected on design branch",
+        "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+        "provenance_baseline": null
+      }
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5 Strategist Design Complete",
+      "title": "Strategist modular-refactor design frozen before implementation",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "DOCUMENTATION"
+      ],
+      "summary": "Finalized the P1.5 Strategist component boundary, compatibility state adapter, package ownership, migration sequence and pytest gates without changing runtime behavior.",
+      "details": [
+        "The 8,878-line Strategist node was decomposed at design level into explicit context, LLM, policy, output, observability, service and state-adapter responsibilities.",
+        "The existing per-symbol StrategyInput contract will not be reused for the high-level Strategist Agent; new StrategistAgentInput and StrategistAgentResult contracts are planned.",
+        "The existing StrategistOutput remains the canonical normalized compatibility output during P1.5.",
+        "The current Strategist node writes 66 compatibility state keys; P1.5 will preserve their observable values while centralizing shared-state mutation in a state adapter.",
+        "Implementation is split into S1 LLM extraction, S2 deterministic policy/output extraction, S3 context/IO extraction, S4 Agent contract/service/state adapter, and S5 test/wrapper cleanup.",
+        "Runtime implementation remains blocked until P1.2/P1.3 freeze and baseline SHA/tag capture."
+      ],
+      "impact": "Design only. No strategy, LLM, runtime, execution, broker or authority behavior changed.",
+      "sources": [
+        "docs/refactor/p1_5_strategist_implementation_packet_v0_1.md",
+        "docs/refactor/p1_5_strategist_implementation_packet_v1_0.md",
+        "docs/refactor/p1_5_strategist_decomposition.md",
+        "docs/daily_patch/2026-10-07_strategist_p1_5_design_complete.md"
+      ],
+      "status": "current",
+      "provenance": {
+        "development_era": "P1.5 design",
+        "owner": "GPT-5.6 Sol",
+        "reviewer": null,
+        "final_approval": "human",
+        "verification": "design-only repository analysis; no runtime implementation",
         "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
         "provenance_baseline": null
       }
