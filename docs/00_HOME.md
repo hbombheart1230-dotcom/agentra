@@ -1,4 +1,4 @@
-# Trading Agent System
+# Agentra
 
 ## Current State
 
@@ -11,10 +11,14 @@
 1. P0 Clean Evidence Registry: COMPLETE.
 2. P1 UEF-5 through UEF-9: COMPLETE / FORMALLY FROZEN.
 3. P1.1 UEF Real-Run Acceptance: PASS.
-4. P1.2 UEF Cross-day Observation: NON-BLOCKING / OBSERVE.
-5. P1.3 Docker: NEXT.
-6. P1.5 Large-file refactor / modularization: PLANNED.
-7. P2 Strategy Program Integration; P3 Safety 5D/5E/6; P4 Q100/Reporter v2; P5 Evidence Memory/Obsidian; P6 Self-improvement; P7 System V2 Freeze; P8 paper final experiments: PLANNED.
+4. P1.2 UEF Cross-day Observation: NON-BLOCKING / OBSERVE until freeze.
+5. P1.3 Docker / Operational Acceptance: freeze gate before refactor implementation.
+6. 2.E5-A / P1.5 Structural Modular Refactor: DESIGN IN PROGRESS; runtime implementation waits for the frozen baseline.
+7. 2.E5-B / P1.6 Orchestration Modernization: PLANNED after P1.5 freeze.
+8. 2.E6 / P2 Strategy Program Integration: PLANNED.
+9. P3 Safety 5D -> 5E -> 6: PLANNED.
+10. P4 Q100 / Reporter v2: PLANNED.
+11. P5 Evidence Memory / Obsidian; P6 Self-improvement; P7 Agentra V2 Freeze; P8 paper experiments: PLANNED.
 
 ## Historical Roadmap Sequence
 
@@ -88,3 +92,19 @@ PLANNED and are not yet architected in detail):
 - [Offline alpha research index](offline_alpha/README.md)
 
 This page is navigation only. Runtime and canonical artifacts remain the source of truth.
+
+
+## Documentation Authority
+
+- [P1.5/P1.6 refactor design](refactor/README.md)
+- [Documentation inventory](refactor/documentation_inventory.md)
+- [Documentation refactor plan](refactor/p1_5_documentation_refactor_plan.md)
+- [Daily technical patch history](daily_patch/README.md)
+- [UI/API patch-note update contract](trading_agent_patch_notes_detailed_update/README.md)
+
+Patch-note roles:
+- `docs/daily_patch/`: detailed technical/audit history
+- `docs/trading_agent_patch_notes_detailed_update/patch_notes.json` + `patch_notes.md`: Patch Notes UI/API authority
+- `docs/PATCH_NOTES.md`: legacy phase-oriented summary, not the UI data source
+
+Historical milestone documents may keep their original M/Step/Phase names. Current canonical architecture uses responsibility/domain names.
