@@ -302,9 +302,8 @@ Classification counts from the current 8,878-line source:
 
 ```json
 {
-  "MOVE": 57,
-  "MOVE/WRAPPER": 96,
-  "REVIEW": 2,
+  "MOVE": 58,
+  "MOVE/WRAPPER": 97,
   "KEEP/WRAPPER": 1
 }
 ```
@@ -313,11 +312,11 @@ Classification counts from the current 8,878-line source:
 |---|---:|---:|---|---|
 | `_is_trueish` | 97-100 | 4 | MOVE | `libs/runtime/strategist/common.py` |
 | `_env_bool` | 101-107 | 7 | MOVE/WRAPPER | `libs/runtime/strategist/config.py (provider settings stay in libs/ai/strategist_config.py)` |
-| `_strategy_memory_usage_disabled` | 108-139 | 32 | REVIEW | `libs/runtime/strategist/service.py or nearest owner` |
+| `_strategy_memory_usage_disabled` | 108-139 | 32 | MOVE/WRAPPER | `libs/runtime/strategist/config.py` |
 | `_to_int` | 140-146 | 7 | MOVE | `libs/runtime/strategist/common.py` |
 | `_env_int` | 147-156 | 10 | MOVE/WRAPPER | `libs/runtime/strategist/config.py (provider settings stay in libs/ai/strategist_config.py)` |
 | `_nested_mapping_value` | 157-165 | 9 | MOVE | `libs/runtime/strategist/common.py` |
-| `_neutralize_ambiguous_playbook_memory` | 166-185 | 20 | REVIEW | `libs/runtime/strategist/service.py or nearest owner` |
+| `_neutralize_ambiguous_playbook_memory` | 166-185 | 20 | MOVE | `libs/runtime/strategist/context/memory.py` |
 | `_load_recent_strategy_feedback` | 186-248 | 63 | MOVE | `libs/runtime/strategist/context/feedback.py` |
 | `_iso_day_from_value` | 249-261 | 13 | MOVE | `libs/runtime/strategist/common.py` |
 | `_resolve_state_day` | 262-268 | 7 | MOVE | `libs/runtime/strategist/common.py` |
@@ -636,7 +635,7 @@ Stop the batch and report instead of improvising if implementation appears to re
 
 ```text
 Global P1.5 principles              FROZEN
-Strategist responsibility map       HIGH CONFIDENCE
+Strategist responsibility map       156/156 FUNCTIONS OWNED
 Existing owner map                  MAPPED
 Primary compatibility seams         MAPPED
 Primary test consumers              MAPPED
@@ -658,3 +657,94 @@ Before implementation authorization:
 4. freeze S1 exact file/function move list
 5. define S1 targeted pytest command set
 6. prepare GPT-first implementation procedure and Cloud escalation threshold
+
+
+## 18. S1 Exact First Implementation Slice
+
+The first Strategist implementation slice after the P1.2/P1.3 baseline gate is intentionally mechanical.
+
+Move only these responsibilities:
+
+```text
+llm/parsing.py
+  _strip_fenced_block
+  _parse_text_list_fragment
+  _extract_contract_from_prose
+  _extract_json_object
+  _classify_llm_parse_failure
+
+llm/stage_contracts.py
+  _stage_text_list
+  _stage_bool
+  _stage_float
+  _normalize_stage2_selected_symbol_review
+  _normalize_stage3_hold_review
+  _normalize_stage4_carry_review
+  _derive_stage_specific_common_overrides
+  _stage_specific_role_boundary
+  _stage_specific_task_requirement
+  _stage_specific_user_requirement
+  _stage_specific_llm_contract
+  _normalize_llm_overrides
+
+llm/adjustments.py
+  _summarize_monitor_entry_policy_for_adjustment
+  _monitor_entry_policy_adjustment_delta_fields
+  _infer_policy_adjustment_direction
+  _build_llm_commander_refresh_context
+  _normalize_policy_adjustment_surface
+  _focus_axes_from_strings
+  _normalize_strategy_adjustment_directives
+
+llm/prompting.py
+  _build_strategist_llm_messages
+  _build_strategist_llm_repair_messages
+  _messages_to_prompt_text
+
+llm/payload.py
+  current compact/payload helpers between the prompt and runner boundaries
+
+llm/runner.py
+  _run_strategist_frame_llm
+```
+
+Keep re-export compatibility in `graphs/nodes/strategist_node.py` for every currently imported private helper.
+
+Keep node-module aliases for currently monkeypatched dependencies until tests are migrated.
+
+### S1 required tests
+
+Targeted minimum:
+
+```bash
+pytest -q tests/test_strategist_frame_llm_integration.py
+pytest -q tests/test_strategist_output_schema.py
+pytest -q tests/test_m21_commander_runtime_entry.py -k strategist
+```
+
+Affected-regression extension:
+
+```bash
+pytest -q tests/test_strategist_reasoning_quality.py
+pytest -q tests/test_strategist_explanation_contract.py
+```
+
+Then run the repository's normal full regression gate before S1 is accepted.
+
+No test may be deleted or weakened merely to accommodate moved imports.
+
+## 19. GPT-first Implementation Policy
+
+Default execution after the baseline gate:
+
+```text
+GPT
+  design
+  -> GitHub implementation
+  -> CI/pytest triage
+  -> repair
+```
+
+Escalate S1 to Codex Cloud only if repository-wide mechanical work or repeated local/CI repair is materially more efficient there.
+
+Claude Cloud is not required for low-risk S1 extraction if behavior tests and CI are fully green; reserve independent Cloud audit for higher-risk Strategist service/state-adapter completion or the P1.5 freeze gate.
