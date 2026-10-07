@@ -296,6 +296,7 @@ def run_closeout_maintenance(
             "avg_return_pct": metrics.get("avg_return_pct"),
             "performance_memory_sync": dict(daily_payload.get("performance_memory_sync") or {}),
         }
+        del daily_payload, metrics  # the full daily-summary payload is not needed after this point
     except Exception as exc:
         out["steps"]["operator_daily_summary_artifact"] = {"ok": False, "error": str(exc)}
         try:
@@ -359,6 +360,9 @@ def run_closeout_maintenance(
                 (frozen.get("day_record") or {}).get("primary_alpha") or {}
             ),
         }
+        # Measured: the frozen-window result stayed referenced for the rest of closeout
+        # (~155 MiB of the next steps' baseline). Everything needed is copied above.
+        del frozen
     except Exception as exc:
         out["steps"]["q9_baseline_frozen_window"] = {
             "ok": False,
@@ -443,6 +447,9 @@ def run_closeout_maintenance(
             "cumulative_json_path": activation_shadow.get("cumulative_json_path"),
             "cumulative_md_path": activation_shadow.get("cumulative_md_path"),
         }
+        # `mart` carries the feature-mart trees/candidates/integrity (~80 MiB measured) that
+        # nothing below reads; only its output_root/strategy_alignment paths were used above.
+        del mart, fixed_shadow, activation_shadow
     except Exception as exc:
         out["steps"]["rank1_fixed_candidate_shadow"] = {
             "ok": False,

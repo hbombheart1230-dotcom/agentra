@@ -12,6 +12,7 @@ from pathlib import Path
 
 import pytest
 
+import libs.reporting.json_array_stream as jas
 import libs.research.rank1_feature_mart.loaders as loaders
 from libs.reporting.evaluation import artifact_inventory as inventory
 
@@ -36,7 +37,7 @@ def _write(path: Path, doc: dict, *, indent=2) -> Path:
 
 @pytest.mark.parametrize("chunk", [64, 1000, 10_000_000])
 def test_iter_json_array_matches_json_loads_across_chunk_sizes(tmp_path, monkeypatch, chunk):
-    monkeypatch.setattr(loaders, "_STREAM_CHUNK_CHARS", chunk)
+    monkeypatch.setattr(jas, "_STREAM_CHUNK_CHARS", chunk)
     doc = _windows_doc(40, pad=300)
     doc["windows"][3]["blob"] = "한글 ✓ " * 50  # non-ASCII, multi-byte
     path = _write(tmp_path / "w.json", doc)
@@ -285,3 +286,93 @@ def test_closeout_memory_snapshot_is_best_effort_and_logged(monkeypatch):
 
     monkeypatch.setattr(cm, "_closeout_memory_snapshot", boom)
     cm.log_closeout_stage(run_id="r", day="2026-10-07", stage="x", phase="start")  # swallowed
+
+
+# --------------------------------------------------------------------- read_json_array_and_rest / q9 repair writer
+
+
+@pytest.mark.parametrize("chunk", [64, 1000, 10_000_000])
+@pytest.mark.parametrize("position", ["middle", "first", "last"])
+def test_read_json_array_and_rest_equals_json_loads(tmp_path, monkeypatch, chunk, position):
+    monkeypatch.setattr(jas, "_STREAM_CHUNK_CHARS", chunk)
+    windows = _windows_doc(25, pad=200)["windows"]
+    if position == "middle":
+        doc = {"schema_version": "v1", "day": "2026-10-01", "windows": windows, "window_count": 25, "recovery": {"a": [1, 2]}}
+    elif position == "first":
+        doc = {"windows": windows, "window_count": 25}
+    else:
+        doc = {"schema_version": "v1", "updated_at": "x", "windows": windows}
+    path = _write(tmp_path / "w.json", doc)
+    items, rest = jas.read_json_array_and_rest(path, "windows")
+    expected = json.loads(path.read_text(encoding="utf-8"))
+    assert items == expected["windows"]
+    assert rest == {**expected, "windows": []}
+    assert list(rest) == list(expected)  # key order (hence rewritten-file layout) preserved
+
+
+def test_read_json_array_and_rest_layout_fallback_and_errors(tmp_path):
+    doc = {"a": 1, "windows": [{"x": 1}], "b": 2}
+    compact = _write(tmp_path / "c.json", doc, indent=None)
+    assert jas.read_json_array_and_rest(compact, "windows") == ([{"x": 1}], {"a": 1, "windows": [], "b": 2})
+    assert jas.read_json_array_and_rest(tmp_path / "missing.json", "windows") == ([], {})
+    text = json.dumps(_windows_doc(10, pad=200), indent=2)
+    (tmp_path / "t.json").write_text(text[: len(text) // 2], encoding="utf-8")
+    assert jas.read_json_array_and_rest(tmp_path / "t.json", "windows") == ([], {})
+
+
+def test_q9_repair_writer_is_byte_identical_to_json_dumps(tmp_path):
+    from libs.reporting.evaluation import q9_artifact_repair as repair
+
+    payload = {"schema_version": "q9_decision_windows.v1", "windows": _windows_doc(5, pad=50)["windows"], "note": "한글", "when": Path("x")}
+    target = tmp_path / "out" / "q9_decision_windows.json"
+    repair._write_json_atomic(target, payload)
+    reference = tmp_path / "reference.json"  # the pre-fix writer: write_text(json.dumps(...) + newline), same platform newline handling
+    reference.write_text(json.dumps(dict(payload), ensure_ascii=False, indent=2, default=str) + chr(10), encoding="utf-8")
+    assert target.read_bytes() == reference.read_bytes()
+    assert not target.with_suffix(".json.tmp").exists()
+
+
+# --------------------------------------------------------------------- operator visibility: streamed day rows
+
+
+def _visibility_world(tmp_path: Path, day: str = "2026-04-08"):
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+    import benchmark_operator_visibility_memory as bench
+
+    events = tmp_path / "events.jsonl"
+    bench.gen_fixture(events, history_mb=0.3, day_mb=0.2, day=day)
+    return events, tmp_path / "reports", tmp_path / "metrics"
+
+
+def test_restreamed_day_rows_is_repeatable_filtered_and_truthy(tmp_path, monkeypatch):
+    import libs.reporting.operator_visibility as ov
+
+    monkeypatch.setenv("EVENT_LOG_DAY_CACHE_DIR", str(tmp_path / "cache"))
+    events, _reports, _metrics = _visibility_world(tmp_path)
+    rows = ov._RestreamedDayRows(events, "2026-04-08", "2026-04-08")
+    first = [r["_epoch"] for r in rows]
+    assert first and first == [r["_epoch"] for r in rows]  # re-iterable, same order each time
+    assert all(r["_day"] == "2026-04-08" for r in rows)
+    assert bool(rows) is True
+    assert bool(ov._RestreamedDayRows(events, "2026-04-08", "2000-01-01")) is False  # nothing for that day
+
+
+def test_daily_summary_payload_identical_with_streamed_and_materialised_rows(tmp_path, monkeypatch):
+    import libs.reporting.operator_visibility as ov
+
+    monkeypatch.setenv("EVENT_LOG_DAY_CACHE_DIR", str(tmp_path / "cache"))
+    events, reports, metrics = _visibility_world(tmp_path)
+    streamed = ov.build_operator_daily_summary_payload(events, reports, day="2026-04-08", metrics_report_dir=metrics)
+
+    original = ov._RestreamedDayRows
+
+    class Materialised(list):  # the pre-fix behaviour: the whole day held as a list
+        def __init__(self, events_path, day, target_day):
+            super().__init__(original(events_path, day, target_day))
+
+    monkeypatch.setattr(ov, "_RestreamedDayRows", Materialised)
+    materialised = ov.build_operator_daily_summary_payload(events, reports, day="2026-04-08", metrics_report_dir=metrics)
+    assert streamed == materialised
+    assert streamed["day"] == "2026-04-08" and streamed["source_run_count"] > 0

@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from libs.reporting.json_array_stream import iter_json_array
 from libs.research.opening_rank1_deep_dive.microstructure import load_minute_rows
 from libs.research.opening_rank1_longitudinal.daily_provider import load_daily_cache, refresh_daily_cache
 from libs.research.post_reclaim_alpha.kiwoom_history import KiwoomHistoricalMinuteReader
@@ -49,70 +50,6 @@ def longitudinal_events(path: Path) -> dict[str, dict[str, Any]]:
         for row in payload.get("events") or []
         if isinstance(row, Mapping) and row.get("episode_id")
     }
-
-
-_STREAM_CHUNK_CHARS = 4 * 1024 * 1024
-
-
-def iter_json_array(path: Path, key: str):
-    """Yield the items of the top-level array `key` of a JSON object file, one at a time.
-
-    The q9 decision-window files reach ~130 MB; `json.loads` of one transiently needs
-    ~860 MiB of Python objects, which alone overflows the 1 GiB container. This reads the
-    file in chunks and decodes one array item at a time instead. It relies on the file
-    being the indent=2 dump this repository writes (`"key": [` on its own top-level line)
-    and falls back to a plain `json.loads` for any other layout. A truncated/corrupt file
-    raises ValueError part-way; the caller discards what it collected, which matches the
-    `read_json` -> `{}` behaviour (no windows at all) that this replaces.
-    """
-    marker = f'\n  "{key}": ['
-    try:
-        handle = path.open("r", encoding="utf-8")
-    except OSError:
-        return
-    with handle:
-        buffer = handle.read(_STREAM_CHUNK_CHARS)
-        start = buffer.find(marker)
-        if start < 0:
-            try:
-                payload = json.loads(buffer + handle.read())
-            except ValueError:
-                return
-            for item in (payload.get(key) or []) if isinstance(payload, Mapping) else []:
-                yield item
-            return
-        decoder = json.JSONDecoder()
-        position = start + len(marker)
-        exhausted = False
-        while True:
-            while True:
-                while position < len(buffer) and buffer[position] in " \n\r\t,":
-                    position += 1
-                if position < len(buffer) or exhausted:
-                    break
-                chunk = handle.read(_STREAM_CHUNK_CHARS)
-                if not chunk:
-                    exhausted = True
-                else:
-                    buffer = buffer[position:] + chunk
-                    position = 0
-            if position >= len(buffer) or buffer[position] == "]":
-                return
-            while True:
-                try:
-                    item, end = decoder.raw_decode(buffer, position)
-                    break
-                except ValueError:
-                    chunk = "" if exhausted else handle.read(_STREAM_CHUNK_CHARS)
-                    if not chunk:
-                        raise
-                    buffer = buffer[position:] + chunk
-                    position = 0
-            yield item
-            position = end
-            if position > _STREAM_CHUNK_CHARS:
-                buffer = buffer[position:]
-                position = 0
 
 
 def _project_window(enriched: dict[str, Any]) -> dict[str, Any]:

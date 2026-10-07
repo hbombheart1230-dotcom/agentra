@@ -23,6 +23,7 @@ from libs.reporting.quant_tactic_evaluation import (
     build_quant_tactic_evaluation,
     render_quant_tactic_evaluation_lines,
 )
+from libs.reporting.json_array_stream import iter_json_array
 from libs.reporting.quant_shadow_candidate_evaluation import (
     CANDIDATE_EVALUATION_PAYLOAD_KEYS,
     build_quant_shadow_candidate_evaluation,
@@ -2264,37 +2265,37 @@ def _runtime_activity_payload(
         / day
         / "q9_decision_windows.json"
     )
-    q9_payload = _read_json(q9_path)
-    q9_payload = q9_payload if isinstance(q9_payload, dict) else {}
-    q9_windows = [
-        row
-        for row in list(q9_payload.get("windows") or [])
-        if isinstance(row, dict)
-        and not any(
-            marker in " ".join(
-                str(row.get(key) or "").lower()
-                for key in ("decision_id", "run_id", "candidate_pool_id")
-            )
-            for marker in ("test", "fixture", "synthetic")
-        )
-    ]
-    if q9_windows:
-        decisions = [
-            str((row.get("commander_final") or {}).get("decision") or "").strip().lower()
-            for row in q9_windows
-            if isinstance(row.get("commander_final"), dict)
-        ]
-        monitor_intents = [
-            str((row.get("commander_final") or {}).get("monitor_intent") or "").strip().upper()
-            for row in q9_windows
-            if isinstance(row.get("commander_final"), dict)
-        ]
+    # Streamed one window at a time: only the three filter ids and `commander_final`'s
+    # decision/monitor_intent are read, and the file is ~120 MB (see json_array_stream).
+    q9_window_count = 0
+    decisions: list[str] = []
+    monitor_intents: list[str] = []
+    try:
+        for row in iter_json_array(q9_path, "windows"):
+            if not isinstance(row, dict):
+                continue
+            if any(
+                marker in " ".join(
+                    str(row.get(key) or "").lower()
+                    for key in ("decision_id", "run_id", "candidate_pool_id")
+                )
+                for marker in ("test", "fixture", "synthetic")
+            ):
+                continue
+            q9_window_count += 1
+            commander_final = row.get("commander_final")
+            if isinstance(commander_final, dict):
+                decisions.append(str(commander_final.get("decision") or "").strip().lower())
+                monitor_intents.append(str(commander_final.get("monitor_intent") or "").strip().upper())
+    except ValueError:
+        q9_window_count, decisions, monitor_intents = 0, [], []  # unreadable file == no windows (as _read_json did)
+    if q9_window_count:
         return {
             "source": "q9_decision_windows",
             "source_path": str(q9_path),
-            "events": len(q9_windows),
+            "events": q9_window_count,
             "commander_decision_count": len(decisions),
-            "missing_commander_decision_count": max(0, len(q9_windows) - len(decisions)),
+            "missing_commander_decision_count": max(0, q9_window_count - len(decisions)),
             "approvals": sum(value in {"approve", "approved", "allow"} for value in decisions),
             "blocks": sum(value in {"reject", "blocked", "veto"} for value in decisions),
             "noops": sum(value in {"noop", "no_trade"} for value in decisions),
