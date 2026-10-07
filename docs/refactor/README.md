@@ -117,3 +117,10 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - state/env alias migration rules and historical/contract/safety no-rename rules
    - N1-N7 staged implementation sequence and P1.5.10 wrapper-removal gates
 
+13. p1_5_executor_low_risk_implementation_packet_v1_0.md
+   - P1.5.9 Executor low-risk extraction authority
+   - execute_from_packet safety inventory and exact guard/mutation ordering freeze
+   - Supervisor/readiness/evidence/Step5C/BrokerOutcome/UNKNOWN quarantine safety locks
+   - observability/artifact-only extraction targets
+   - EX1-EX6 staged implementation sequence and safety regression gates
+
