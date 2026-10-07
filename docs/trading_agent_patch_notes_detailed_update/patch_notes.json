@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 121,
+  "entry_count": 122,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3319,6 +3319,43 @@
         "reviewer": null,
         "final_approval": "human",
         "verification": "direct repository code/test/document inspection; no runtime implementation",
+        "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+        "provenance_baseline": null
+      }
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5.8 Runtime Naming Design Complete",
+      "title": "Milestone/runtime naming cleanup migration design frozen for P1.5.8",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "NAMING",
+        "COMPATIBILITY",
+        "TESTING"
+      ],
+      "summary": "Completed the behavior-preserving naming cleanup design, separating active runtime canonicalization from historical, serialized-contract, artifact-path and safety identifiers that must remain stable.",
+      "details": [
+        "Inventory found approximately 468 milestone/phase/step-named paths: docs 217, tests 140, scripts 63, data 15, deploy 14, libs 13 and graphs 6.",
+        "Frozen canonical mappings for active M13 live runtime, legacy M10 bridge, M28 deployment/runtime entrypoints and M31 agent-chain probe while retaining legacy wrappers.",
+        "Defined state/env alias migration for m13_tick_pipeline, M13_LIVE_LOCK_*, M28_LIFECYCLE_*, M31_MOCK_EXAM_SESSION_HARD_GATE, M25_BATCH_* and M25_NOTIFY_*.",
+        "Historical milestone docs/tests/data, serialized event kinds/schema identifiers and compatibility artifact/deploy paths are not blindly renamed.",
+        "Step5C/Step5D are safety-locked and UEF/Q identifiers remain domain/program names.",
+        "Frozen N1-N7 implementation order with wrapper deletion deferred to P1.5.10 after consumer proof."
+      ],
+      "impact": "Design/documentation only. No runtime imports, state/env behavior, path layout, strategy, execution authority, runtime ownership, UEF, Step5C or Step5D behavior changed.",
+      "sources": [
+        "docs/refactor/p1_5_runtime_naming_implementation_packet_v1_0.md",
+        "docs/daily_patch/2026-10-07_runtime_naming_p1_5_design_complete.md"
+      ],
+      "status": "current",
+      "provenance": {
+        "development_era": "P1.5 design",
+        "owner": "GPT-5.6 Sol",
+        "reviewer": null,
+        "final_approval": "human",
+        "verification": "direct repository tree/code/test/document inspection; no runtime implementation",
         "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
         "provenance_baseline": null
       }
