@@ -1,73 +1,76 @@
-# Daily Patch Log - 일일 패치 노트
+# Daily Patch Log — Technical Audit History
 
-## Folder Title Recommendation
+`docs/daily_patch/` is Agentra's canonical dated technical patch/audit history.
 
-Recommended title: `Daily Patch Log - 일일 패치 노트`
+It is intentionally different from the Patch Notes UI source.
 
-This folder is the operator-facing daily record for runtime, strategy, reporting, and safety patches.
+## Authority Split
 
-## Naming Rule
+```text
+docs/daily_patch/
+  = detailed technical evidence and audit history
 
-Use one file per trading day:
+docs/trading_agent_patch_notes_detailed_update/patch_notes.json
+docs/trading_agent_patch_notes_detailed_update/patch_notes.md
+  = human-facing Patch Notes UI/API changelog
+```
+
+The UI/API pair must not fall behind this directory.  
+`tests/test_patch_notes_sync.py` enforces date freshness.
+
+## Naming
+
+Use:
 
 ```text
 YYYY-MM-DD_short-main-title.md
 ```
 
-Examples:
+Multiple major entries on the same day are allowed when they represent distinct auditable changes.
 
-- `2026-04-29_strategy-conservatism-runtime-guards.md`
-- `2026-04-30_entry-gate-reporting-memory-defaults.md`
-- `2026-05-04_intraday-cash-truth-ai-report-check.md`
+## Add an Entry For
 
-## What To Record
+- formal freeze or acceptance milestone
+- architecture/authority decision
+- production/runtime safety fix
+- major operational incident
+- research lifecycle promotion/deprecation
+- major roadmap change
+- significant documentation-authority change
 
-- reason for the patch
-- changed runtime behavior
-- changed report/operator visibility
+Do not add a daily patch for every helper rename, formatting-only edit, ordinary test run or trivial refactor.
+
+## Required Content
+
+Record, as applicable:
+- reason/context
+- exact behavior or authority change
+- runtime/report/operator impact
 - validation commands and results
-- restart status, when the live process was restarted
-- remaining follow-up items
+- deployment/restart status
+- known limitations
+- remaining follow-up
+- links to canonical source/design evidence
 
-Keep this folder concise. Detailed design notes can stay in each owner folder, and this folder should link or summarize the daily operational change.
+## Historical Integrity
 
-## When To Add An Entry
+Old entries are audit evidence.
 
-Add an entry on:
+Do not rewrite an old incident/freeze note merely because architecture or naming later changed.  
+If a historical statement requires correction, add a new dated correction/clarification record.
 
-- a formal freeze (any UEF/Safety/adapter phase reaching FORMALLY FROZEN)
-- an architecture decision (new or amended ADR)
-- a production/runtime safety fix
-- a research-lifecycle promotion or deprecation (e.g. a family moving CLEAN/BLOCKED, an adapter
-  approved/frozen)
-- a major operational incident
-- a major roadmap change
+Historical milestone identifiers such as M13 or Step5C may remain when they accurately describe the original phase.
 
-Do not add an entry for every test, minor refactor, formatting change, or internal helper -- those stay
-in commit history and code comments, not this log.
+## Navigation
 
-## Latest Weekend Review
+Do not maintain a hand-written "latest hotfix" list in this README; it becomes stale.
 
-- `2026-05-09_weekend-validation-report-regeneration-review.md`: 2026-04-29 through 2026-05-08 patch status review, report regeneration timeout fix, and next live-check list.
+Use filename dates, Git history, the Patch Notes UI, or repository search for current entries.
 
-## Latest Live Hotfix
+## P1.5 Documentation Refactor
 
-- `2026-05-12_live-monitor-crash-hotfix.md`: live monitor `NameError` hotfix, strategy horizon translation verification, scanner/monitor chart-context runtime check, and restart status.
-- `2026-05-12_pending-exit-sell-guard.md`: 000660 pending exit confirmation mismatch fix, decision/executor SELL hard guard, and report wording alignment.
-- `2026-05-12_candidate-cascade-expansion-hotfix.md`: restored Commander-expanded runner-up evaluation when a stale strategist `cascade_enabled=false` conflicted with `max_priority_rank=10` / `max_runner_ups=9`.
-- `2026-05-12_vwap-exit-fresh-minute-source-hotfix.md`: fixed immediate VWAP exit risk by preferring fresh held-symbol minute VWAP over stale scanner feature `engine_vwap_distance`.
-- `2026-05-12_recent-buy-fill-settle-sell-guard.md`: blocks structural SELL orders while a same-symbol recent BUY is only partially reflected, while preserving emergency/stop exits.
-- `2026-05-12_full-close-trade-report-gate.md`: final trade reports are now written only after cumulative SELL quantity fully closes the entry quantity; partial exits remain lifecycle-only until full liquidation.
-- `2026-05-12_cost-floor-and-truth-surface-hotfix.md`: prevents metric-only VWAP/low-break hard invalidation from bypassing cost-aware profit floors on small positive gross gains, and labels ambiguous `ka10077` report values as unconfirmed observations.
-- `2026-05-12_scanner-monitor-chart-fit-verification.md`: verified 2026-05-11 scanner/monitor chart-fit wiring, restored Stage 2 chart-fit field visibility, and fixed common-stock `dstr_rt` being misread as ETF deviation.
-- `2026-05-12_llm-report-folder-dedup-and-trade-summary-copy.md`: classified LLM run folders now win over flat date-root folders, duplicate flat artifacts merge into the classified folder, and strategist summaries are copied into the matching trade bundle.
-- `2026-05-12_defensive-top3-and-repeat-loss-guard.md`: defensive/risk-off repeated blocker no-trade streaks can reopen conservative top3 cascade when capacity remains, and same-day repeat loser symbols receive a much stronger scanner prior penalty.
-- `2026-05-12_human-chart-guard-chartfit-horizon-alignment.md`: added hard buy blocking for broken human-chart context, scanner chart-fit report visibility, and strategy horizon enum cleanup.
-- `2026-05-12_monitor-human-chart-positive-entry-setup.md`: adds a conservative A-grade human-chart entry setup path so the monitor can promote near-ready clean VWAP/structure setups, not only block weak ones.
-- `2026-05-12_scanner-macro-chartfit-monitor-quality.md`: separates scanner bigger-picture chart-fit from monitor live-entry chart-fit, adds scanner macro soft rank bias, and adds monitor candle/VWAP/reward-room setup quality fields.
-- `2026-05-13_trade-summary-entry-exit-evidence-lines.md`: trade summaries now surface concrete entry evidence values and trend-breakdown exit basis lines.
-- `2026-05-13_time-limit-cost-floor-reassessment.md`: changes `max_hold` / `time_stop` from hard SELL triggers into cost-aware time-limit reassessment, strengthens late-entry reward-room blocking, and marks `SELL + hold` as a mismatch.
-- `2026-05-13_peak-profit-protection-report-evidence.md`: fixes gross-vs-effective profit-floor alignment, urgent peak-drawdown confirmation, per-position strategy pinning, and monitor evidence coverage in trade reports.
-- `2026-05-13_operator-summary-pattern-performance.md`: adds observation-only strategist/scanner/monitor pattern performance aggregation to daily, weekly, monthly, and symbol operator summaries.
-- `2026-05-13_strategist-summary-stage-meta-rendering-fix.md`: fixes strategist summary markdown rendering by loading sidecar LLM metadata, inferring Stage 2/3/4 calls, and regenerating the affected 2026-05-13 run/trade summaries.
-- `2026-05-14_vwap-reclaim-strategy-and-human-chart-entry-relaxation.md`: replaces new `leader_vwap_reclaim_pullback` output with `vwap_reclaim_pullback`, adds pullback evidence subtypes and weak fallback gating, and relaxes A-grade human-chart near-ready BUY promotion.
+See:
+- `docs/refactor/documentation_inventory.md`
+- `docs/refactor/p1_5_documentation_refactor_plan.md`
+
+P1.5 may reorganize navigation and current canonical documentation, but this directory remains an append-only audit-history surface unless an explicit, reference-safe migration is separately approved.
