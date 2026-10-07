@@ -1916,3 +1916,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No route policy, strategy, execution guard, UEF, Step5C/5D or broker behavior changed.
 - Design authority: docs/refactor/p1_5_commander_runtime_implementation_packet_v1_0.md.
 
+# 2026-10-07 - P1.5.8 Milestone / Runtime Naming Design Complete
+
+- Completed the P1.5.8 behavior-preserving naming-cleanup design without changing runtime code.
+- Inventory found approximately 468 milestone/phase/step-named file paths, dominated by historical docs (217) and tests (140); these are classified rather than blindly renamed.
+- Frozen active runtime canonicalization for the M13 live-loop/tick/EOD path, legacy M10 bridge, M28 deployment/runtime entrypoints and the M31 agent-chain probe.
+- Frozen compatibility aliases for milestone state/env names including m13_tick_pipeline, M13_LIVE_LOCK_*, M28_LIFECYCLE_*, M31_MOCK_EXAM_SESSION_HARD_GATE, M25_BATCH_* and M25_NOTIFY_*.
+- Historical docs/tests/data, serialized event kinds/schema versions, existing compatibility artifact paths, Step5C/Step5D safety identifiers and UEF/Q program names are explicitly preserved.
+- Lock-file path changes are treated as runtime-ownership-sensitive and are not allowed as cosmetic naming changes.
+- Frozen N1-N7 migration sequence; legacy-wrapper deletion remains P1.5.10 work after consumer proof.
+- No runtime topology, policy, strategy, execution, broker, UEF or Step5C/5D behavior changed.
+- Design authority: docs/refactor/p1_5_runtime_naming_implementation_packet_v1_0.md.
+
