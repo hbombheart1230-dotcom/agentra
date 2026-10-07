@@ -81,3 +81,11 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - P1.5.1 definite dead-code cleanup
    - P1.5.2 Reporting decomposition
    - existing helper ownership, compatibility seams, test architecture, and gates
+
+8. p1_5_operator_ui_brief_implementation_packet_v1_0.md
+   - P1.5.3 Operator UI / Operator Brief decomposition authority
+   - existing Phase-2 owner map and compatibility facade rules
+   - canonical Brief truth boundary and artifact-version freeze
+   - O1-O6 staged implementation sequence
+   - private/public test seams and pytest gates
+
