@@ -20,5 +20,15 @@ jobs:
           cache: 'pip'
       - name: Install dependencies
         run: python -m pip install --upgrade pip && pip install -r requirements.txt
-      - name: Run P1.5.1 required pytest
-        run: python -m pytest -q tests/test_trade_report_ai.py tests/test_trade_summary_symbol_metadata.py tests/test_reporting_provenance_preference.py
+      - name: Run P1.5.1 affected reporting regression
+        run: >
+          python -m pytest -q
+          tests/test_trade_report_ai.py
+          tests/test_trade_summary_symbol_metadata.py
+          tests/test_reporting_provenance_preference.py
+          tests/test_trade_report_ai_separated_adapter.py
+          tests/test_trade_story_pipeline_enrichment.py
+          tests/test_run_ai_trade_report_batch.py
+          tests/test_live_execution_bundle_report.py
+          tests/test_check_trade_report_runtime_regression.py
+          tests/test_report_metadata_alignment.py
