@@ -1928,3 +1928,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No runtime topology, policy, strategy, execution, broker, UEF or Step5C/5D behavior changed.
 - Design authority: docs/refactor/p1_5_runtime_naming_implementation_packet_v1_0.md.
 
+# 2026-10-07 - P1.5.9 Executor Low-Risk Extraction Design Complete
+
+- Completed the P1.5.9 low-risk Executor structural design without changing execution behavior.
+- Mapped graphs/nodes/execute_from_packet.py at approximately 4,190 LOC with 101 top-level functions and a roughly 1,192-line execute_from_packet authority coordinator.
+- Froze the existing execution ordering from readiness/guard evaluation through Supervisor verdict, durable readiness evidence, intent admission, Step5C physical/logical ownership, broker dispatch, BrokerOutcome normalization, UNKNOWN quarantine and post-submit recovery.
+- Classified Supervisor context, all execution guards, request/order shaping, readiness evidence, Step5C CAS/idempotency, BrokerOutcome classification, UNKNOWN quarantine, recent-order persistence and cancel/recovery as SAFETY-LOCK.
+- Limited P1.5.9 extraction to low-risk observability projection, canonical artifact coordination and optional pure order-view helpers, while preserving private compatibility wrappers.
+- Confirmed existing execution owners under libs/execution/ and retained execute_owned_order as the single canonical mutation choke point.
+- Frozen EX1-EX6 implementation order; no generic guard engine, new Executor service, broker abstraction, guard reordering, approval change or mutation-path change is permitted.
+- No strategy, runtime topology, Supervisor authority, broker semantics, UEF, Step5C or Step5D behavior changed.
+- Design authority: docs/refactor/p1_5_executor_low_risk_implementation_packet_v1_0.md.
+
