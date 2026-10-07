@@ -1,3 +1,9 @@
+> **LEGACY PHASE SUMMARY — NOT THE PATCH NOTES UI SOURCE**
+>
+> The current Patch Notes UI/API reads `docs/trading_agent_patch_notes_detailed_update/patch_notes.json`.
+> Detailed dated technical history lives in `docs/daily_patch/`.
+> This file is retained as an older phase-oriented summary until the P1.5 documentation refactor classifies its final disposition.
+
 # Phase 1 Patch Notes (Storage Policy + Canonical Artifact Quality)
 
 ## What Changed
