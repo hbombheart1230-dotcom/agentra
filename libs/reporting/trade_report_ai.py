@@ -78,6 +78,15 @@ from libs.reporting.trade_report_ai_deterministic import (
 from libs.reporting.trade_report_ai_llm import run_trade_report_llm_attempts as _run_trade_report_llm_attempts_impl
 from libs.reporting.trade_report.normalization import normalize_trade_report_output as _normalize_trade_report_output_impl
 from libs.reporting.trade_report.sections import (
+    select_entry_decision_detail as _select_entry_decision_detail_impl,
+    resolve_entry_monitor_reason as _resolve_entry_monitor_reason_impl,
+    build_reporter_evaluation_section as _build_reporter_evaluation_section_impl,
+    build_reporter_evaluation_from_feedback as _build_reporter_evaluation_from_feedback_impl,
+    build_holding_story_bullets as _build_holding_story_bullets_impl,
+    build_exit_decision_bullets as _build_exit_decision_bullets_impl,
+    build_execution_quality_section as _build_execution_quality_section_impl,
+    build_entry_decision_summary as _build_entry_decision_summary_impl,
+    build_entry_decision_bullets as _build_entry_decision_bullets_impl,
     build_market_context_bullets as _build_market_context_bullets_impl,
     build_market_context_summary as _build_market_context_summary_impl,
     build_market_scanner_linkage_bullet as _build_market_scanner_linkage_bullet_impl,
@@ -827,6 +836,29 @@ def _section_builder_deps() -> Dict[str, Any]:
         "build_scanner_choice_summary": _build_scanner_choice_summary,
         "build_scanner_choice_bullets": _build_scanner_choice_bullets,
         "build_scanner_choice_summary": _build_scanner_choice_summary,
+        "entry_gate_score_relation": _entry_gate_score_relation,
+        "entry_path_label": _entry_path_label,
+        "entry_reason_label": _entry_reason_label,
+        "operator_action_label": _operator_action_label,
+        "as_dict": _as_dict,
+        "compact_entry_gate_snapshot": _compact_entry_gate_snapshot,
+        "entry_gate_signature": _entry_gate_signature,
+        "entry_snapshot_as_post_entry_observation": _entry_snapshot_as_post_entry_observation,
+        "looks_like_post_entry_monitor_snapshot": _looks_like_post_entry_monitor_snapshot,
+        "select_entry_decision_detail": _select_entry_decision_detail,
+        "entry_gate_bits": _entry_gate_bits,
+        "korean_predicate": _korean_predicate,
+        "decision_chain_label": _decision_chain_label,
+        "fmt_pct": _fmt_pct,
+        "fmt_price": _fmt_price,
+        "is_low_information_bullet": _is_low_information_bullet,
+        "operator_axis_label": _operator_axis_label,
+        "build_reporter_evaluation_from_feedback": _build_reporter_evaluation_from_feedback,
+        "humanize_duration_text": _humanize_duration_text,
+        "korean_euro_ro": _korean_euro_ro,
+        "operatorize_report_text": _operatorize_report_text,
+        "execution_mode_label": _execution_mode_label,
+        "exit_reason_label": _exit_reason_label,
     }
 
 def _build_market_context_summary(section: Any, *, scanner_reason: Dict[str, Any] | None = None) -> str:
@@ -1180,96 +1212,7 @@ def _build_entry_decision_summary(
     monitor_reason: Dict[str, Any],
     action: str,
 ) -> str:
-    reason_human = _clip(entry_summary.get("reason_human"), max_len=600)
-    reason_label = _entry_reason_label(reason_human)
-    grouped_trace = (
-        monitor_reason.get("entry_grouped_logic_trace")
-        if isinstance(monitor_reason.get("entry_grouped_logic_trace"), dict)
-        else {}
-    )
-    entry_scores = (
-        monitor_reason.get("entry_condition_scores")
-        if isinstance(monitor_reason.get("entry_condition_scores"), dict)
-        else {}
-    )
-    symbol = _clip(scanner_reason.get("selected_symbol"), max_len=24)
-    rank = scanner_reason.get("selected_rank")
-    triggered_path = _entry_path_label(
-        grouped_trace.get("triggered_path")
-        or monitor_reason.get("entry_condition_path")
-    )
-    playbook = _market_token_label(market_context.get("playbook")) or _clip(market_context.get("playbook"), max_len=32)
-    confidence_score = _num_opt(entry_scores.get("confidence_score"))
-    confidence_threshold = _num_opt(entry_scores.get("confidence_threshold"))
-    entry_quality_score = _num_opt(entry_scores.get("entry_quality_score"))
-    entry_quality_tier = _clip(entry_scores.get("entry_quality_tier"), max_len=24)
-    entry_quality_path = _entry_path_label(entry_scores.get("entry_quality_path"))
-    entry_hard_gate_passed = entry_scores.get("entry_hard_gate_passed")
-    entry_hard_gate_blockers = entry_scores.get("entry_hard_gate_blockers")
-    if not isinstance(entry_hard_gate_blockers, list):
-        entry_hard_gate_blockers = []
-    fallback_ctx = _scanner_monitor_fallback_context(scanner_reason)
-
-    summary_parts: List[str] = []
-    if reason_label:
-        summary_parts.append(f"진입은 {reason_label} 조건에서 실행됐습니다.")
-    if fallback_ctx["used"] and fallback_ctx["scanner_top_pick_symbol"]:
-        rank_text = f"{rank}위" if rank not in (None, "") else "후보"
-        fallback_sentence = (
-            f"스캐너 상위 후보 {fallback_ctx['scanner_top_pick_symbol']}은 모니터 단계에서 보류됐고 "
-            f"{symbol} 차순위 재평가 {rank_text} 진입으로 전환됐습니다."
-        )
-        if fallback_ctx["reason"]:
-            fallback_sentence = (
-                f"스캐너 상위 후보 {fallback_ctx['scanner_top_pick_symbol']}은 {fallback_ctx['reason']} 이유로 보류됐고 "
-                f"{symbol} 차순위 재평가 {rank_text} 진입으로 전환됐습니다."
-            )
-        if fallback_ctx["trigger_reason"]:
-            fallback_sentence += f" 실제 트리거는 {fallback_ctx['trigger_reason']}였습니다."
-        summary_parts.append(fallback_sentence)
-    elif symbol and rank not in (None, ""):
-        summary_parts.append(f"{symbol}이 스캐너 {rank}위 후보로 올라온 뒤 매수로 이어졌습니다.")
-    elif symbol:
-        summary_parts.append(f"{symbol}에 대한 매수 판단으로 진입이 이어졌습니다.")
-    if playbook and triggered_path:
-        if playbook == "눌림목" and triggered_path != "눌림목·거래량 경로":
-            summary_parts.append(f"전략가 플레이북은 {playbook}이었지만 실제 엔트리는 {triggered_path}에서 확정됐습니다.")
-        else:
-            summary_parts.append(f"실제 엔트리 경로는 {triggered_path}였습니다.")
-    elif triggered_path:
-        summary_parts.append(f"실제 엔트리 경로는 {triggered_path}였습니다.")
-    if confidence_score is not None and confidence_threshold is not None:
-        relation = _entry_gate_score_relation(confidence_score, confidence_threshold)
-        particle = "과" if relation == "동일했습니다" else "을"
-        summary_parts.append(
-            f"진입 게이트 점수는 {confidence_score:.4f}이며 기준 {confidence_threshold:.4f}{particle} {relation}. "
-            "이 값은 확률형 신뢰도가 아니라 모니터 진입 조건의 경로 점수입니다."
-        )
-    if entry_quality_score is not None:
-        quality_bits = [f"진입 품질 점수는 {entry_quality_score:.4f}"]
-        if entry_quality_tier:
-            quality_bits.append(f"등급 {entry_quality_tier}")
-        if entry_quality_path:
-            quality_bits.append(f"우세 경로 {entry_quality_path}")
-        summary_parts.append(" / ".join(quality_bits) + "였습니다. 이 값은 관측용이며 매수 허용 기준으로 쓰지 않습니다.")
-        if entry_hard_gate_passed is False:
-            blocker_text = ", ".join(str(x or "").replace("_", " ") for x in entry_hard_gate_blockers[:4] if str(x or "").strip())
-            if blocker_text:
-                summary_parts.append(
-                    f"따라서 품질 점수가 높아도 hard gate는 미통과였으며 차단 축은 {blocker_text}였습니다."
-                )
-            else:
-                summary_parts.append("따라서 품질 점수가 높아도 hard gate는 미통과였고 매수 허가로 해석하지 않습니다.")
-        elif entry_hard_gate_passed is True:
-            summary_parts.append("hard gate도 통과해 품질 점수와 실제 진입 허가가 같은 방향이었습니다.")
-    if summary_parts:
-        return " ".join(summary_parts)
-    scanner_summary = _build_scanner_choice_summary(scanner_reason, market_context)
-    if scanner_summary:
-        entry_action = _operator_action_label(_clip(entry_summary.get("action"), max_len=24) or action or "BUY")
-        return f"{scanner_summary} 이에 따라 진입 판단은 {entry_action}로 이어졌습니다."
-    return "진입 판단 근거는 저장된 데이터 범위 안에서 충분히 확인되지 않았습니다."
-
+    return _build_entry_decision_summary_impl(entry_summary, scanner_reason, market_context, monitor_reason, action, deps=_section_builder_deps())
 
 def _entry_reason_label(value: Any) -> str:
     raw = _clip(value, max_len=220).strip()
@@ -1507,101 +1450,14 @@ def _entry_snapshot_as_post_entry_observation(monitor_reason: Dict[str, Any]) ->
 
 
 def _select_entry_decision_detail(story_input: Dict[str, Any], entry_summary: Dict[str, Any]) -> Dict[str, Any]:
-    monitor_timeline = _as_dict(story_input.get("monitor_timeline"))
-    rows = monitor_timeline.get("entry_decision_details")
-    if not isinstance(rows, list) or not rows:
-        artifacts = _as_dict(story_input.get("artifacts"))
-        monitor_evidence_path = _clip(artifacts.get("monitor_evidence_json"), max_len=500)
-        if monitor_evidence_path:
-            try:
-                from pathlib import Path
-
-                path = Path(monitor_evidence_path)
-                if path.exists():
-                    payload = json.loads(path.read_text(encoding="utf-8"))
-                    if isinstance(payload, dict):
-                        rows = payload.get("entry_decision_details")
-            except Exception:
-                rows = rows if isinstance(rows, list) else []
-    if not isinstance(rows, list):
-        return {}
-    entry_run_id = _clip(entry_summary.get("run_id"), max_len=120)
-    best: Dict[str, Any] = {}
-    best_score = -1
-    for row in rows:
-        event = _as_dict(row)
-        payload = _as_dict(event.get("payload"))
-        if not payload:
-            continue
-        decision = _clip(payload.get("decision"), max_len=24).upper()
-        entry_triggered = bool(payload.get("entry_triggered"))
-        buy_submitted = bool(payload.get("buy_submitted"))
-        if decision != "BUY" and not entry_triggered and not buy_submitted:
-            continue
-        score = 0
-        if entry_run_id and _clip(event.get("run_id"), max_len=120) == entry_run_id:
-            score += 100
-        if decision == "BUY":
-            score += 40
-        if entry_triggered:
-            score += 30
-        if buy_submitted:
-            score += 20
-        if payload.get("entry_condition_path") or _as_dict(payload.get("grouped_logic_trace")).get("triggered_path"):
-            score += 10
-        if score > best_score:
-            best_score = score
-            best = event
-    return best
-
+    return _select_entry_decision_detail_impl(story_input, entry_summary, deps=_section_builder_deps())
 
 def _resolve_entry_monitor_reason(
     story_input: Dict[str, Any],
     monitor_reason: Dict[str, Any],
     entry_summary: Dict[str, Any],
 ) -> Dict[str, Any]:
-    entry_detail = _select_entry_decision_detail(story_input, entry_summary)
-    payload = _as_dict(entry_detail.get("payload"))
-    if not payload:
-        if _looks_like_post_entry_monitor_snapshot(story_input, monitor_reason):
-            return _entry_snapshot_as_post_entry_observation(monitor_reason)
-        return monitor_reason
-
-    resolved = dict(monitor_reason or {})
-    post_entry_snapshot = _compact_entry_gate_snapshot(monitor_reason)
-
-    grouped_trace = _as_dict(payload.get("grouped_logic_trace"))
-    condition_scores = _as_dict(payload.get("condition_scores"))
-    entry_thresholds = (
-        _as_dict(payload.get("applied_policy"))
-        or _as_dict(payload.get("effective_policy"))
-        or _as_dict(payload.get("received_policy"))
-    )
-    entry_metrics = _as_dict(payload.get("metrics")) or _as_dict(payload.get("entry_metrics"))
-    if grouped_trace:
-        resolved["entry_grouped_logic_trace"] = grouped_trace
-    if condition_scores:
-        resolved["entry_condition_scores"] = condition_scores
-    if entry_metrics:
-        resolved["entry_metrics"] = entry_metrics
-    if payload.get("entry_condition_path") not in (None, ""):
-        resolved["entry_condition_path"] = payload.get("entry_condition_path")
-    if isinstance(payload.get("entry_condition_paths_passed"), list):
-        resolved["entry_condition_paths_passed"] = list(payload.get("entry_condition_paths_passed") or [])
-    if entry_thresholds:
-        resolved["entry_thresholds"] = entry_thresholds
-    if payload.get("entry_reason") not in (None, ""):
-        resolved["entry_reason"] = payload.get("entry_reason")
-    resolved["entry_gate_snapshot_source"] = "entry_decision_detail"
-    if entry_detail.get("ts") not in (None, ""):
-        resolved["entry_gate_snapshot_ts"] = entry_detail.get("ts")
-    if entry_detail.get("run_id") not in (None, ""):
-        resolved["entry_gate_snapshot_run_id"] = entry_detail.get("run_id")
-
-    if post_entry_snapshot and _entry_gate_signature(post_entry_snapshot) != _entry_gate_signature(resolved):
-        resolved["post_entry_gate_observation"] = post_entry_snapshot
-    return resolved
-
+    return _resolve_entry_monitor_reason_impl(story_input, monitor_reason, entry_summary, deps=_section_builder_deps())
 
 def _korean_predicate(value: str, *, noun_suffix: str = "입니다.") -> str:
     text = str(value or "").strip()
@@ -1638,135 +1494,7 @@ def _build_entry_decision_bullets(
     monitor_reason: Dict[str, Any],
     action: str,
 ) -> List[str]:
-    bullets: List[str] = [
-        f"진입 run은 {_clip(entry_summary.get('run_id'), max_len=80) or '기록 없음'}입니다.",
-        f"진입 시각은 {_clip(entry_summary.get('ts'), max_len=80) or '기록 없음'}입니다.",
-        f"진입 액션은 {_operator_action_label(_clip(entry_summary.get('action'), max_len=40) or action)}였습니다.",
-    ]
-    reason_label = _entry_reason_label(entry_summary.get("reason_human"))
-    if reason_label:
-        bullets.append(f"진입 사유는 {reason_label}{_korean_predicate(reason_label)}")
-
-    symbol = _clip(scanner_reason.get("selected_symbol"), max_len=24)
-    rank = scanner_reason.get("selected_rank")
-    selected_score = _num_opt(scanner_reason.get("selected_score"))
-    if symbol and rank not in (None, "") and selected_score is not None:
-        bullets.append(f"진입 시점 스캐너에서는 {symbol}이 {rank}위, 종합 점수 {selected_score:.3f}였습니다.")
-
-    grouped_trace = (
-        monitor_reason.get("entry_grouped_logic_trace")
-        if isinstance(monitor_reason.get("entry_grouped_logic_trace"), dict)
-        else {}
-    )
-    triggered_path = _entry_path_label(grouped_trace.get("triggered_path") or monitor_reason.get("entry_condition_path"))
-    paths_passed = [
-        _entry_path_label(item)
-        for item in _listify(
-            grouped_trace.get("paths_passed") or monitor_reason.get("entry_condition_paths_passed"),
-            max_items=4,
-            max_len=80,
-        )
-        if _entry_path_label(item)
-    ]
-    if triggered_path or paths_passed:
-        parts: List[str] = []
-        if triggered_path:
-            parts.append(f"실제 진입 경로는 {triggered_path}였습니다")
-        if paths_passed:
-            parts.append(f"통과 경로는 {', '.join(paths_passed)}였습니다")
-        bullets.append(". ".join(parts) + ".")
-
-    gate_bits = _entry_gate_bits(grouped_trace)
-    if gate_bits:
-        bullets.append("진입 게이트 상태는 " + ", ".join(gate_bits) + "였습니다.")
-
-    entry_scores = (
-        monitor_reason.get("entry_condition_scores")
-        if isinstance(monitor_reason.get("entry_condition_scores"), dict)
-        else {}
-    )
-    confidence_score = _num_opt(entry_scores.get("confidence_score"))
-    confidence_threshold = _num_opt(entry_scores.get("confidence_threshold"))
-    if confidence_score is not None and confidence_threshold is not None:
-        relation = _entry_gate_score_relation(confidence_score, confidence_threshold)
-        particle = "과" if relation == "동일했습니다" else "을"
-        bullets.append(
-            f"진입 게이트 점수는 {confidence_score:.4f}이며 기준 {confidence_threshold:.4f}{particle} {relation}. "
-            "표시 목적은 확률형 신뢰도보다 진입 조건 통과 여부 확인입니다."
-        )
-    entry_quality_score = _num_opt(entry_scores.get("entry_quality_score"))
-    if entry_quality_score is not None:
-        entry_quality_tier = _clip(entry_scores.get("entry_quality_tier"), max_len=24) or "-"
-        entry_quality_path = _entry_path_label(entry_scores.get("entry_quality_path")) or "-"
-        bullets.append(
-            f"진입 품질 점수는 {entry_quality_score:.4f}, 등급은 {entry_quality_tier}, 우세 경로는 {entry_quality_path}였습니다. "
-            "이 점수는 관측용이며 매수 허용 여부를 직접 바꾸지 않습니다."
-        )
-        entry_hard_gate_passed = entry_scores.get("entry_hard_gate_passed")
-        entry_hard_gate_blockers = entry_scores.get("entry_hard_gate_blockers")
-        if not isinstance(entry_hard_gate_blockers, list):
-            entry_hard_gate_blockers = []
-        if entry_hard_gate_passed is False:
-            blocker_text = ", ".join(
-                str(x or "").replace("_", " ")
-                for x in entry_hard_gate_blockers[:4]
-                if str(x or "").strip()
-            )
-            if blocker_text:
-                bullets.append(
-                    f"품질 점수가 높아도 hard gate는 미통과였습니다. 차단 축은 {blocker_text}였습니다."
-                )
-            else:
-                bullets.append("품질 점수가 높아도 hard gate는 미통과였으므로 매수 허가로 해석하지 않습니다.")
-        elif entry_hard_gate_passed is True:
-            bullets.append("hard gate도 통과해 품질 점수와 실제 진입 허가가 같은 방향이었습니다.")
-
-    post_entry_observation = _as_dict(monitor_reason.get("post_entry_gate_observation"))
-    post_grouped_trace = _as_dict(post_entry_observation.get("entry_grouped_logic_trace"))
-    post_entry_scores = _as_dict(post_entry_observation.get("entry_condition_scores"))
-    post_gate_bits = _entry_gate_bits(post_grouped_trace, post_entry_scores)
-    if post_gate_bits:
-        post_score = _num_opt(post_entry_scores.get("confidence_score"))
-        post_threshold = _num_opt(post_entry_scores.get("confidence_threshold"))
-        score_text = ""
-        if post_score is not None and post_threshold is not None:
-            score_text = f" 점수는 {post_score:.4f} / 기준 {post_threshold:.4f}였습니다."
-        bullets.append(
-            "사후 모니터 재평가 게이트는 "
-            + ", ".join(post_gate_bits)
-            + f"였습니다.{score_text} 이는 매수 후 보유·청산 구간의 재평가 상태입니다."
-        )
-
-    entry_thresholds = (
-        monitor_reason.get("entry_thresholds")
-        if isinstance(monitor_reason.get("entry_thresholds"), dict)
-        else {}
-    )
-    timeframe = entry_thresholds.get("timeframe_minutes")
-    breakout_lookback = entry_thresholds.get("breakout_lookback")
-    volume_ratio_min = _num_opt(entry_thresholds.get("volume_ratio_min"))
-    require_vwap_reclaim = entry_thresholds.get("require_vwap_reclaim")
-    require_rebound = entry_thresholds.get("require_rebound")
-    threshold_bits: List[str] = []
-    if timeframe not in (None, ""):
-        threshold_bits.append(f"{int(float(timeframe))}분봉")
-    if breakout_lookback not in (None, ""):
-        threshold_bits.append(f"돌파 확인 기준 봉 수 {int(float(breakout_lookback))}")
-    if volume_ratio_min is not None:
-        threshold_bits.append(f"최소 거래량 비율 {volume_ratio_min:.2f}")
-    if require_vwap_reclaim is not None:
-        threshold_bits.append(f"VWAP 재회복 {'필수' if require_vwap_reclaim else '비필수'}")
-    if require_rebound is not None:
-        threshold_bits.append(f"반등 확인 {'필수' if require_rebound else '비필수'}")
-    if threshold_bits:
-        bullets.append("적용 정책은 " + ", ".join(threshold_bits) + "였습니다.")
-
-    playbook = _market_token_label(market_context.get("playbook")) or _clip(market_context.get("playbook"), max_len=32)
-    if playbook and triggered_path:
-        bullets.append(f"전략가 플레이북은 {playbook}, 실제 진입 경로는 {triggered_path}였습니다.")
-
-    return _dedupe_list(bullets, max_items=12, max_len=260)
-
+    return _build_entry_decision_bullets_impl(entry_summary, scanner_reason, market_context, monitor_reason, action, deps=_section_builder_deps())
 
 def _build_holding_story_summary(hold_count: int, monitor_reason: Dict[str, Any], status_text: str) -> str:
     posture = _operator_action_label(_clip(monitor_reason.get("posture"), max_len=32) or "WAIT")
@@ -1787,63 +1515,7 @@ def _build_holding_story_summary(hold_count: int, monitor_reason: Dict[str, Any]
 
 
 def _build_holding_story_bullets(holding_summary: Dict[str, Any], monitor_reason: Dict[str, Any]) -> List[str]:
-    hold_count = len(list(holding_summary.get("run_ids") or []))
-    watch_axes = ", ".join(_operator_axis_label(item) for item in _listify(monitor_reason.get("watch_axes"), max_items=6, max_len=80))
-    decision_chain = " -> ".join(_decision_chain_label(item) for item in _listify(monitor_reason.get("decision_reason_chain"), max_items=5, max_len=60))
-    hard_stop = _fmt_pct(monitor_reason.get("hard_stop_pct"))
-    adaptive_stop = _fmt_pct(monitor_reason.get("adaptive_stop_loss_pct"))
-    effective_stop = _fmt_pct(monitor_reason.get("effective_stop_loss_pct"))
-    trailing_stop = _fmt_pct(monitor_reason.get("trailing_stop_pct"))
-    take_profit = _fmt_pct(monitor_reason.get("take_profit_pct"))
-    current_price = _fmt_price(monitor_reason.get("current_price"))
-    average_price = _fmt_price(monitor_reason.get("average_price"))
-    peak_price = _fmt_price(monitor_reason.get("peak_price"))
-    current_drawdown = _fmt_pct(monitor_reason.get("current_drawdown"))
-    peak_drawdown = _fmt_pct(monitor_reason.get("peak_drawdown"))
-    bullets: List[str] = []
-    if hold_count:
-        bullets.append(f"모니터는 총 {hold_count}회 실행되었습니다.")
-        bullets.append(f"Monitor runs: {hold_count}")
-    if _clip(monitor_reason.get("posture"), max_len=48):
-        bullets.append(f"현재 포지션 판단은 {_operator_action_label(monitor_reason.get('posture'))}입니다.")
-    if _clip(monitor_reason.get("trigger_type"), max_len=64):
-        trigger_label = _operator_axis_label(monitor_reason.get("trigger_type"))
-        bullets.append(f"보유 중 가장 강하게 감시된 신호는 {trigger_label}{_korean_predicate(trigger_label)}")
-    if monitor_reason.get("position_age_seconds") not in (None, ""):
-        bullets.append(f"포지션 보유 시간은 약 {int(monitor_reason.get('position_age_seconds') or 0)}초입니다.")
-    if effective_stop != "-":
-        stop_reason = _clip(monitor_reason.get("effective_stop_reason"), max_len=64)
-        suffix = f", 기준 축은 {_operator_axis_label(stop_reason)}입니다." if stop_reason else ""
-        bullets.append(f"유효 손절 기준은 {effective_stop}입니다{suffix}")
-    if take_profit != "-":
-        bullets.append(f"목표 수익 실현 기준은 {take_profit} 수준입니다.")
-    if _clip(monitor_reason.get("active_exit_axis"), max_len=80):
-        axis_label = _operator_axis_label(monitor_reason.get("active_exit_axis"))
-        bullets.append(f"당시 우선 감시 중이던 청산 축은 {axis_label}{_korean_predicate(axis_label)}")
-    if monitor_reason.get("confirm_required") is not None:
-        bullets.append(f"청산 확인 조건은 {int(monitor_reason.get('confirm_count') or 0)}/{int(monitor_reason.get('confirm_required') or 0)} 단계로 기록되었습니다.")
-    if watch_axes:
-        bullets.append(f"주요 감시 축은 {watch_axes}입니다.")
-    if decision_chain:
-        bullets.append(f"판단 흐름은 {decision_chain} 순서로 이어졌습니다.")
-    if current_price != "-" or average_price != "-" or peak_price != "-":
-        bullets.append(f"현재가, 평균가, 고점 기준 값은 {current_price} / {average_price} / {peak_price}입니다.")
-    if current_drawdown != "-" or peak_drawdown != "-":
-        bullets.append(f"현재 손익 변동과 고점 대비 하락폭은 {current_drawdown} / {peak_drawdown}입니다.")
-    if _clip(monitor_reason.get("price_source"), max_len=80):
-        bullets.append(f"가격 기준 소스는 {_clip(monitor_reason.get('price_source'), max_len=80)}입니다.")
-    if _clip(monitor_reason.get("feature_source"), max_len=80):
-        bullets.append(f"지표 기준 소스는 {_clip(monitor_reason.get('feature_source'), max_len=80)}입니다.")
-
-    recent_updates = [
-        _clip(item, max_len=180)
-        for item in list(holding_summary.get("monitor_updates") or [])[-4:]
-        if str(item or "").strip() and not _is_low_information_bullet(item)
-    ]
-    for item in recent_updates:
-        bullets.append(f"최근 모니터 업데이트는 다음과 같습니다: {item}")
-    return _dedupe_list(bullets, max_items=14, max_len=260)
-
+    return _build_holding_story_bullets_impl(holding_summary, monitor_reason, deps=_section_builder_deps())
 
 def _build_reporter_evaluation_section(
     shared_seed: Dict[str, Any],
@@ -1853,294 +1525,17 @@ def _build_reporter_evaluation_section(
     reporter_status: Dict[str, Any],
     reporter_feedback_packet: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    reporter_feedback = dict(reporter_feedback_packet or {})
-    reporter_feedback_available = bool(reporter_feedback.get("available")) or bool(reporter_feedback.get("consumed"))
-    reporter_status_value = _clip(reporter_status.get("status"), max_len=40).lower()
-    if reporter_feedback_available and reporter_status_value in {"", "missing", "pending", "auto_ignored", "source_unavailable", "not_captured", "unknown"}:
-        return _build_reporter_evaluation_from_feedback(reporter_feedback)
-
-    status = _clip(reporter_status.get("status"), max_len=40) or "missing"
-    grade = _clip(reporter_status.get("grade"), max_len=16) or "N/A"
-    symbol = _clip(scanner_reason.get("selected_symbol") or shared_seed.get("symbol"), max_len=24) or "선정 종목"
-    selected_rank = scanner_reason.get("selected_rank")
-    selected_score = _num_opt(scanner_reason.get("selected_score"))
-    confidence = _num_opt(scanner_reason.get("confidence"))
-    ranked_rows = _scanner_ranked_candidates(scanner_reason)
-    selected_row = _scanner_selected_row(scanner_reason)
-    selected_risk = _num_opt(selected_row.get("risk_score"))
-    hold_seconds = int(monitor_reason.get("position_age_seconds") or 0)
-    hold_duration = _humanize_duration_text(shared_seed.get("holding_duration"), fallback_seconds=hold_seconds)
-    trigger_type = _operator_axis_label(
-        _clip(monitor_reason.get("trigger_type"), max_len=80)
-        or _clip(shared_seed.get("exit_reason"), max_len=120)
-    )
-    exit_reason = _clip(shared_seed.get("exit_reason"), max_len=220)
-    execution_summary = _clip(execution_outcome.get("summary"), max_len=300)
-    same_day_status = _clip(reporter_status.get("same_day_linkage_status"), max_len=40)
-    same_day_reason = _clip(reporter_status.get("same_day_linkage_reason"), max_len=220)
-    reporter_summary = _clip(reporter_status.get("summary"), max_len=300)
-    reporter_summary_lower = reporter_summary.lower()
-    if "overtrading" in reporter_summary_lower or "rapid exit pressure" in reporter_summary_lower:
-        reporter_summary = "동일 일자 리포터도 과매매 또는 빠른 청산 압력을 시사했습니다."
-    same_day_status_label = {
-        "linked_run": "동일 실행 기록 직접 연계",
-        "linked_trade": "동일 거래 직접 연계",
-        "linked_day": "당일 묶음 연계",
-        "missing": "미연계",
-    }.get(same_day_status, same_day_status)
-
-    is_short_hold = hold_seconds > 0 and hold_seconds <= 120
-    peak_drawdown_exit = "peak_drawdown" in str(monitor_reason.get("trigger_type") or "").lower() or "peak_drawdown" in exit_reason.lower()
-    execution_recorded = "recorded" in execution_summary.lower() or "approved" in execution_summary.lower()
-
-    summary_parts: List[str] = []
-    if is_short_hold and peak_drawdown_exit:
-        summary_parts.append("이번 거래는 종목 선정 자체보다 진입 타이밍 부담이 더 크게 드러났습니다.")
-    elif peak_drawdown_exit:
-        summary_parts.append("이번 거래는 보유 이후 되밀림 관리가 더 크게 작동한 케이스로 보입니다.")
-    else:
-        summary_parts.append("이번 거래는 저장된 근거상 scanner, entry, hold, exit 축을 함께 봐야 합니다.")
-    if selected_rank == 1 and selected_score is not None:
-        scanner_bits = [f"스캐너는 {symbol}을 {selected_rank}위"]
-        if selected_score is not None:
-            scanner_bits.append(f"종합 점수 {selected_score:.3f}")
-        if confidence is not None:
-            scanner_bits.append(f"신뢰도 {confidence:.2f}")
-        if selected_risk is not None:
-            scanner_bits.append(f"리스크 {selected_risk:.3f}")
-        summary_parts.append(", ".join(scanner_bits) + "로 올렸고 선정 자체는 크게 흔들리지 않았습니다.")
-    if hold_duration and peak_drawdown_exit:
-        summary_parts.append(f"다만 진입 후 약 {hold_duration} 만에 {trigger_type} 축 청산이 발생해 추가 상승 지속성이 약했습니다.")
-    elif hold_duration:
-        summary_parts.append(f"보유 시간은 약 {hold_duration}로 짧아 hold 단계 해석은 제한적입니다.")
-    if execution_recorded:
-        summary_parts.append("실행 기록상 주문 자체 문제는 보이지 않았습니다.")
-    elif execution_summary:
-        summary_parts.append("실행 기록은 남아 있지만 주문 품질은 추가 확인이 필요합니다.")
-
-    bullets: List[str] = []
-    if selected_rank not in (None, "") and selected_score is not None:
-        scanner_line = f"종목 선정 평가는 {symbol} {selected_rank}위, 종합 점수 {selected_score:.3f}"
-        if confidence is not None:
-            scanner_line += f", 신뢰도 {confidence:.2f}"
-        if selected_risk is not None:
-            scanner_line += f", 리스크 {selected_risk:.3f}"
-        scanner_line += "로 종목 선택 자체는 비교적 정상으로 보입니다."
-        bullets.append(scanner_line)
-    if is_short_hold and peak_drawdown_exit:
-        bullets.append(
-            f"진입 평가는 진입 후 약 {hold_duration or f'{hold_seconds}초'} 만에 {trigger_type} 청산이 나와, 종목 선정보다 진입 위치 부담이 더 컸던 것으로 읽힙니다."
-        )
-    elif hold_duration:
-        bullets.append(f"진입·보유 평가는 보유 시간이 {hold_duration}로 짧아 추가 사례 비교가 필요합니다.")
-    if hold_duration:
-        bullets.append(f"보유 평가는 보유 시간이 {hold_duration}에 그쳐 중간 악화 흐름을 두껍게 읽기에는 정보가 부족합니다.")
-    if trigger_type:
-        bullets.append(f"청산 평가는 청산 축이 {trigger_type}{_korean_euro_ro(trigger_type)} 명확해 청산 규칙 자체는 규칙대로 작동한 것으로 보입니다.")
-    if execution_recorded:
-        bullets.append("실행 평가는 주문 승인 및 기록이 남아 있어 실행 누락보다는 전략/타이밍 해석 이슈 쪽에 가깝습니다.")
-    elif execution_summary:
-        bullets.append(f"실행 평가는 {execution_summary}")
-    if same_day_status:
-        linkage_line = f"당일 리포터 연계 상태는 {same_day_status_label}였습니다."
-        bullets.append(linkage_line)
-    if reporter_summary:
-        bullets.append(reporter_summary)
-
-    return {
-        "summary": " ".join(summary_parts).strip(),
-        "status": status,
-        "grade": grade,
-        "bullets": _dedupe_list(bullets, max_items=8, max_len=260),
-    }
-
+    return _build_reporter_evaluation_section_impl(shared_seed, scanner_reason, monitor_reason, execution_outcome, reporter_status, reporter_feedback_packet, deps=_section_builder_deps())
 
 def _build_reporter_evaluation_from_feedback(reporter_feedback_packet: Dict[str, Any] | None) -> Dict[str, Any]:
-    packet = dict(reporter_feedback_packet or {})
-    confidence = _clip(packet.get("confidence"), max_len=16).lower()
-    confidence_label = {
-        "high": "높음",
-        "medium": "중간",
-        "low": "낮음",
-    }.get(confidence, "확인되지 않음")
-    grade = {
-        "high": "A",
-        "medium": "B",
-        "low": "C",
-    }.get(confidence, "N/A")
-    source_reports = _as_dict(packet.get("source_reports"))
-    trade_summary = _as_dict(packet.get("trade_report_analysis"))
-    insight_summary = normalize_reporter_text(_operatorize_report_text(_clip(packet.get("insight_summary"), max_len=600)))
-    recommendations = [
-        normalize_reporter_text(_operatorize_report_text(item))
-        for item in _listify(packet.get("recommendation"), max_items=4, max_len=220)
-        if str(item or "").strip()
-    ]
-    normalized_recommendations: List[str] = []
-    for raw_item, rendered in zip(_listify(packet.get("recommendation"), max_items=4, max_len=220), recommendations):
-        if raw_item == "Same-price round trips produced fee/tax drag; tighten follow-through evidence before repeating quick reversals.":
-            normalized_recommendations.append("동일가 왕복 거래에서 수수료와 세금 손실이 반복돼, 짧은 반전 재진입 전에는 후속 추세 확인을 더 엄격하게 봐야 합니다.")
-            continue
-        if rendered:
-            normalized_recommendations.append(rendered)
-            continue
-    recommendations = normalized_recommendations
-    dominant_patterns = [
-        _as_dict(item)
-        for item in list(packet.get("dominant_patterns") or [])[:4]
-        if isinstance(item, dict)
-    ]
-    source_labels: List[str] = []
-    if source_reports.get("metrics"):
-        source_labels.append("당일 metrics")
-    if source_reports.get("reporter_analysis"):
-        source_labels.append("당일 reporter 분석")
-    if source_reports.get("trade_reports"):
-        source_labels.append("당일 닫힌 거래 리포트")
-    if not source_labels:
-        source_labels.append("당일 피드백 패킷")
-
-    closed_trade_count = int(trade_summary.get("closed_trade_count") or 0)
-    win_count = int(trade_summary.get("win_count") or 0)
-    loss_count = int(trade_summary.get("loss_count") or 0)
-    flat_count = int(trade_summary.get("flat_count") or 0)
-    unknown_pnl_count = int(trade_summary.get("unknown_pnl_count") or 0)
-    if closed_trade_count > 0 and unknown_pnl_count <= 0:
-        inferred_unknown = closed_trade_count - win_count - loss_count - flat_count
-        if inferred_unknown > 0:
-            unknown_pnl_count = inferred_unknown
-    pnl_pct_sample_count = int(trade_summary.get("pnl_pct_sample_count") or 0)
-    avg_pnl_pct = _num_opt(trade_summary.get("avg_pnl_pct"))
-
-    summary_parts: List[str] = [
-        f"당일 reporter feedback은 {', '.join(source_labels)} 기준으로 생성됐습니다."
-    ]
-    if closed_trade_count > 0:
-        trade_bits = [f"당일 closed trade {closed_trade_count}건"]
-        trade_bits.append(f"승/패 {win_count}/{loss_count}")
-        if flat_count > 0:
-            trade_bits.append(f"보합 {flat_count}건")
-        if unknown_pnl_count > 0:
-            trade_bits.append(f"손익 미확정 {unknown_pnl_count}건")
-        if avg_pnl_pct is not None and pnl_pct_sample_count > 0:
-            avg_label = "확인분 평균 손익률" if unknown_pnl_count > 0 else "평균 손익률"
-            trade_bits.append(f"{avg_label} {_fmt_pct(avg_pnl_pct)}")
-        summary_parts.append(", ".join(trade_bits) + "였습니다.")
-    if insight_summary:
-        summary_parts.append(insight_summary)
-
-    bullets: List[str] = []
-    bullets.append(f"피드백 생성 소스는 {', '.join(source_labels)}입니다.")
-    if closed_trade_count > 0:
-        trade_line = f"당일 closed trade 집계는 {closed_trade_count}건, 승패 {win_count}/{loss_count}"
-        if flat_count > 0:
-            trade_line += f", 보합 {flat_count}건"
-        if unknown_pnl_count > 0:
-            trade_line += f", 손익 미확정 {unknown_pnl_count}건"
-        if avg_pnl_pct is not None and pnl_pct_sample_count > 0:
-            avg_label = "확인분 평균 손익률" if unknown_pnl_count > 0 else "평균 손익률"
-            trade_line += f", {avg_label} {_fmt_pct(avg_pnl_pct)}"
-        trade_line += "입니다."
-        bullets.append(trade_line)
-    for row in dominant_patterns:
-        detail = normalize_reporter_text(_operatorize_report_text(_clip(row.get("detail"), max_len=180)))
-        name = normalize_reporter_text(_operatorize_report_text(_clip(row.get("name"), max_len=40)))
-        if detail:
-            bullets.append(f"주요 패턴: {detail}")
-        elif name:
-            bullets.append(f"주요 패턴: {name}")
-    for item in recommendations:
-        bullets.append(f"권고: {item}")
-
-    return {
-        "summary": " ".join(part for part in summary_parts if str(part or "").strip()).strip(),
-        "status": "ok",
-        "grade": grade,
-        "bullets": _dedupe_list(bullets, max_items=8, max_len=260),
-    }
-
+    return _build_reporter_evaluation_from_feedback_impl(reporter_feedback_packet, deps=_section_builder_deps())
 
 def _build_execution_quality_section(
     story_input: Dict[str, Any],
     execution_outcome: Dict[str, Any],
     lifecycle_summary: Dict[str, Any],
 ) -> Dict[str, Any]:
-    execution_details = story_input.get("execution_details") if isinstance(story_input.get("execution_details"), dict) else {}
-    symbol = _clip(story_input.get("symbol"), max_len=24) or "종목"
-    action = _operator_action_label(_clip(story_input.get("action"), max_len=24) or "WAIT")
-    filled_qty = execution_details.get("filled_qty")
-    filled_price = _fmt_price(execution_details.get("filled_price"))
-    avg_price = _fmt_price(execution_details.get("avg_price"))
-    order_status = _clip(execution_details.get("order_status"), max_len=80)
-    order_id = _clip(execution_details.get("order_id"), max_len=120)
-    execution_mode = _clip(execution_details.get("execution_mode"), max_len=80)
-    execution_mode_label = _clip(story_input.get("execution_mode_label"), max_len=80)
-    broker_env = _clip(execution_details.get("broker_env"), max_len=80)
-    outcome = _clip(execution_outcome.get("outcome"), max_len=80)
-    quantity = execution_outcome.get("quantity")
-    order_status_label = {
-        "allowed": "허용",
-        "approved": "승인",
-        "recorded": "기록 완료",
-        "rejected": "거부",
-    }.get(order_status.lower(), order_status) if order_status else ""
-    mode_label = {
-        "real": "실거래",
-        "live": "실거래",
-        "simulation": "시뮬레이션",
-    }.get(execution_mode.lower(), execution_mode) if execution_mode else ""
-    if execution_mode_label:
-        mode_label = _execution_mode_label(execution_mode_label)
-
-    summary_parts: List[str] = []
-    if outcome == "recorded":
-        qty_text = str(int(quantity)) if quantity not in (None, "") else (str(int(filled_qty)) if filled_qty not in (None, "") else "기록된 수량")
-        summary_parts.append(f"{symbol} {qty_text}주 {action} 주문은 승인 및 기록까지 확인됐습니다.")
-    elif _clip(execution_outcome.get("summary"), max_len=300):
-        summary_parts.append(_operatorize_report_text(execution_outcome.get("summary")))
-    elif _clip(lifecycle_summary.get("lifecycle_summary_human"), max_len=300):
-        summary_parts.append(_operatorize_report_text(lifecycle_summary.get("lifecycle_summary_human")))
-    else:
-        summary_parts.append("실행 품질 세부 정보는 제한적으로만 확인됩니다.")
-    if filled_price != "-":
-        summary_parts.append(f"체결 기준 가격은 {filled_price}였습니다.")
-    summary = " ".join(summary_parts)
-
-    bullets: List[str] = []
-    if outcome:
-        outcome_label = {"recorded": "기록 완료", "approved": "승인", "rejected": "거부"}.get(outcome, outcome)
-        bullets.append(f"주문 실행 결과는 {outcome_label}였습니다.")
-    if quantity not in (None, ""):
-        bullets.append(f"주문 수량은 {int(quantity)}주였습니다.")
-    elif filled_qty not in (None, ""):
-        bullets.append(f"체결 수량은 {int(filled_qty)}주였습니다.")
-    if mode_label:
-        bullets.append(f"실행 모드는 {mode_label}였습니다.")
-    if broker_env:
-        bullets.append(f"브로커 환경은 {broker_env}였습니다.")
-    else:
-        bullets.append("브로커 환경 정보는 별도로 기록되지 않았습니다.")
-    if order_status_label:
-        bullets.append(f"주문 상태는 {order_status_label}{_korean_euro_ro(order_status_label)} 확인됐습니다.")
-    else:
-        bullets.append("주문 상태는 별도로 기록되지 않았습니다.")
-    if order_id:
-        bullets.append(f"주문 번호는 {order_id}였습니다.")
-    else:
-        bullets.append("주문 번호는 별도로 기록되지 않았습니다.")
-    if filled_price != "-":
-        bullets.append(f"평균 체결가는 {filled_price}였습니다.")
-    elif avg_price != "-":
-        bullets.append(f"평균/포지션 기준가는 {avg_price}였지만 브로커 체결가는 직접 확보되지 않았습니다.")
-    for bullet in build_execution_truth_bullets(execution_details=execution_details):
-        if bullet not in bullets:
-            bullets.append(bullet)
-
-    return {
-        "summary": summary,
-        "bullets": _dedupe_list(bullets, max_items=12, max_len=260),
-    }
-
+    return _build_execution_quality_section_impl(story_input, execution_outcome, lifecycle_summary, deps=_section_builder_deps())
 
 def _build_exit_decision_summary(
     exit_summary: Dict[str, Any],
@@ -2180,56 +1575,7 @@ def _build_exit_decision_bullets(
     *,
     status_text: str,
 ) -> List[str]:
-    guard_context = exit_summary.get("guard_context") if isinstance(exit_summary.get("guard_context"), dict) else {}
-    execution_context = exit_summary.get("execution_context") if isinstance(exit_summary.get("execution_context"), dict) else {}
-    reason_label = _exit_reason_label(exit_summary.get("reason_human"))
-    decision_chain = " -> ".join(_decision_chain_label(item) for item in _listify(monitor_context.get("decision_reason_chain"), max_items=5, max_len=60))
-    bullets: List[str] = [
-        f"청산 판단이 기록된 run은 {_clip(exit_summary.get('run_id'), max_len=80) or 'not_captured'}입니다.",
-        f"청산 시각은 {_clip(exit_summary.get('ts'), max_len=80) or 'not_captured'}입니다.",
-        f"청산 액션은 {_operator_action_label(_clip(exit_summary.get('action'), max_len=40) or ('HOLD' if status_text == 'open' else 'not_captured'))}입니다.",
-        f"청산 사유는 {reason_label or ('포지션이 아직 열려 있음' if status_text == 'open' else '기록 없음')}입니다.",
-    ]
-    if _clip(monitor_context.get("trigger_type"), max_len=80):
-        trigger_label = _operator_axis_label(monitor_context.get("trigger_type"))
-        bullets.append(f"청산을 직접 촉발한 신호는 {trigger_label}{_korean_predicate(trigger_label)}")
-        bullets.append(f"Trigger type: {trigger_label}")
-    if _clip(monitor_context.get("active_exit_axis"), max_len=120):
-        axis_label = _operator_axis_label(monitor_context.get("active_exit_axis"))
-        bullets.append(f"청산 시점 우선 감시 축은 {axis_label}{_korean_predicate(axis_label)}")
-    if monitor_context.get("confirm_required") is not None:
-        bullets.append(f"청산 확인 조건은 {int(monitor_context.get('confirm_count') or 0)}/{int(monitor_context.get('confirm_required') or 0)} 단계로 기록되었습니다.")
-    effective_stop = _fmt_pct(monitor_context.get("effective_stop_loss_pct"))
-    if effective_stop != "-":
-        stop_reason = _clip(monitor_context.get("effective_stop_reason"), max_len=64)
-        suffix = f", 기준 축은 {_operator_axis_label(stop_reason)}입니다." if stop_reason else ""
-        bullets.append(f"청산 시점의 유효 손절 기준은 {effective_stop}입니다{suffix}")
-    take_profit = _fmt_pct(monitor_context.get("take_profit_pct"))
-    if take_profit != "-":
-        bullets.append(f"청산 시점의 목표 수익 실현 기준은 {take_profit} 수준입니다.")
-    current_price = _fmt_price(monitor_context.get("current_price"))
-    average_price = _fmt_price(monitor_context.get("average_price"))
-    peak_price = _fmt_price(monitor_context.get("peak_price"))
-    if current_price != "-" or average_price != "-" or peak_price != "-":
-        bullets.append(f"현재가, 평균가, 고점 기준 값은 {current_price} / {average_price} / {peak_price}입니다.")
-    current_drawdown = _fmt_pct(monitor_context.get("current_drawdown"))
-    peak_drawdown = _fmt_pct(monitor_context.get("peak_drawdown"))
-    if current_drawdown != "-" or peak_drawdown != "-":
-        bullets.append(f"현재 손익 변동과 고점 대비 하락폭은 {current_drawdown} / {peak_drawdown}입니다.")
-    if not decision_chain:
-        decision_chain = reason_label
-    if decision_chain:
-        bullets.append(f"판단 흐름은 {decision_chain} 기준으로 이어졌습니다.")
-    if _clip(guard_context.get("summary"), max_len=220):
-        bullets.append(f"가드 판단 결과는 {_clip(guard_context.get('summary'), max_len=220)}입니다.")
-    if _clip(execution_context.get("summary"), max_len=220):
-        bullets.append(f"주문 실행 결과는 {_clip(execution_context.get('summary'), max_len=220)}입니다.")
-    if _clip(monitor_context.get("price_source"), max_len=80):
-        bullets.append(f"가격 기준 소스는 {_clip(monitor_context.get('price_source'), max_len=80)}입니다.")
-    if _clip(monitor_context.get("feature_source"), max_len=80):
-        bullets.append(f"지표 기준 소스는 {_clip(monitor_context.get('feature_source'), max_len=80)}입니다.")
-    return _dedupe_list(bullets, max_items=16, max_len=260)
-
+    return _build_exit_decision_bullets_impl(exit_summary, monitor_context, status_text=status_text, deps=_section_builder_deps())
 
 def _compact_holding_summary(holding: Any) -> Dict[str, Any]:
     data = holding if isinstance(holding, dict) else {}
