@@ -1904,3 +1904,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Monitor scoring/shadow promotion, thresholds, chart logic, candidate cascade, sizing, exit guards, carry, execution, UEF and Step5C/5D semantics remain unchanged.
 - Design authority: docs/refactor/p1_5_monitor_implementation_packet_v1_0.md.
 
+# 2026-10-07 - P1.5.7 Commander / Runtime Design Complete
+
+- Completed the P1.5.7 Commander/runtime structural design without changing runtime behavior.
+- Mapped graphs/commander_runtime.py at approximately 6,298 LOC with 105 top-level functions and 46 directly assigned compatibility state keys.
+- Identified the main remaining hotspots in Commander decision building, behavior/applied-policy composition, open-position override logic, runtime lifecycle and phase routing.
+- Confirmed existing focused owners under libs/runtime/commander/ for runtime modes, fast paths, execution bridging, Strategist cache/fingerprint/refresh, session context, shadow runtime and policy surfaces; P1.5.7 completes this existing decomposition rather than building a parallel runtime.
+- Froze Commander as deterministic orchestration/policy with zero new LLM decision roles.
+- Preserved graph_spine / decision_packet / integrated_chain modes, preopen/session/closeout phases, fast-path semantics, forced closeout SELL, pending BUY cancellation, runtime ownership/CAS, Supervisor/Executor safety and broker mutation ordering.
+- Frozen implementation order: C1 contracts/state adapter -> C2 policy composition -> C3 entry control/decision builder -> C4 open-position control -> C5 lifecycle/reporter hooks -> C6 phase routing -> C7 fast-path/execution seams -> C8 evidence/artifacts -> C9 compatibility façade -> C10 test migration.
+- No route policy, strategy, execution guard, UEF, Step5C/5D or broker behavior changed.
+- Design authority: docs/refactor/p1_5_commander_runtime_implementation_packet_v1_0.md.
+
