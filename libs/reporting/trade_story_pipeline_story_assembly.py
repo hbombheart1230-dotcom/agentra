@@ -552,12 +552,9 @@ def build_trade_story_input(
     trade_lifecycle: Dict[str, Any] | None = None,
     deps: Mapping[str, Any],
 ) -> Dict[str, Any]:
-    BUY = deps["BUY"]
     EXECUTION_OUTCOME_NOT_CAPTURED = deps["EXECUTION_OUTCOME_NOT_CAPTURED"]
-    HOLD = deps["HOLD"]
     LIFECYCLE_CONCLUSION_NOT_CAPTURED = deps["LIFECYCLE_CONCLUSION_NOT_CAPTURED"]
     REPORTER_LINKAGE_NOT_CAPTURED = deps["REPORTER_LINKAGE_NOT_CAPTURED"]
-    WAIT = deps["WAIT"]
     _attach_news_scanner_contribution = deps["_attach_news_scanner_contribution"]
     _build_monitor_blocker_trace = deps["_build_monitor_blocker_trace"]
     _build_monitor_stop_policy_trace = deps["_build_monitor_stop_policy_trace"]
@@ -1356,5 +1353,4 @@ def build_trade_story_input(
     }
     story_out["strategist_feedback_input"] = build_strategist_feedback_input_view(story_out)
     return story_out
-
 

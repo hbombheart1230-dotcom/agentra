@@ -950,12 +950,9 @@ def build_commander_evidence(commander_payload: Dict[str, Any]) -> Dict[str, Any
 
 def _story_assembly_deps() -> Dict[str, Any]:
     return {
-        "BUY": BUY,
         "EXECUTION_OUTCOME_NOT_CAPTURED": EXECUTION_OUTCOME_NOT_CAPTURED,
-        "HOLD": HOLD,
         "LIFECYCLE_CONCLUSION_NOT_CAPTURED": LIFECYCLE_CONCLUSION_NOT_CAPTURED,
         "REPORTER_LINKAGE_NOT_CAPTURED": REPORTER_LINKAGE_NOT_CAPTURED,
-        "WAIT": WAIT,
         "_attach_news_scanner_contribution": _attach_news_scanner_contribution,
         "_build_monitor_blocker_trace": _build_monitor_blocker_trace,
         "_build_monitor_stop_policy_trace": _build_monitor_stop_policy_trace,
