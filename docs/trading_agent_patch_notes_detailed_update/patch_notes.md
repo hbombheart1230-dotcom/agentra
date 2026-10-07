@@ -1869,3 +1869,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Existing report schemas, truth precedence, LLM behavior, artifact paths, provenance, and public/test seams remain unchanged.
 - Design authority: `docs/refactor/p1_5_reporting_implementation_packet_v1_0.md`.
 
+# 2026-10-07 - P1.5.3 Operator UI / Operator Brief Design Complete
+
+- Completed the P1.5.3 Operator UI / Operator Brief structural design without changing runtime behavior.
+- Mapped the approximately 6,872-line apps/operator_ui/data_access_core.py and identified the remaining mixed responsibilities: canonical Brief truth projection, deterministic sections/fallback, compact LLM input, prompt/repair flow, LLM execution, cache/persistence, health/bundle synchronization, and Markdown rendering.
+- Confirmed the repository already contains focused Phase-2 owners for status, run sources, report reads, path linkage, and basic Brief parsing; P1.5.3 continues that existing ownership migration rather than creating a parallel UI framework.
+- Froze the Operator Brief required-field contract and artifact version 14, canonical truth precedence, artifact paths, LLM/prompt/retry semantics, Korean sanitation policy, cache invalidation, and UI-visible meaning.
+- Mapped direct private compatibility seams in tests/test_operator_ui.py (52 tests) and the existing facade migration contract in tests/test_operator_ui_data_access_phase2.py (28 tests).
+- Frozen implementation order: O1 existing-owner completion -> O2 canonical Brief read model/sections -> O3 deterministic fallback/compact/prompt/sanitation -> O4 LLM service/persistence/rendering -> O5 UI page/read orchestration -> O6 operator visibility/period-summary decomposition.
+- Runtime implementation remains gated by the P1.5 frozen-baseline policy.
+- Design authority: docs/refactor/p1_5_operator_ui_brief_implementation_packet_v1_0.md.
+
