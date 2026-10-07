@@ -1,6 +1,6 @@
 # P1.5 Strategist Decomposition
 
-Status: DETAILED DESIGN IN PROGRESS  
+Status: DESIGN COMPLETE / IMPLEMENTATION GATED  
 Implementation: NOT AUTHORIZED UNTIL P1.2/P1.3 FROZEN BASELINE
 
 Final design authority: `p1_5_strategist_implementation_packet_v1_0.md`
