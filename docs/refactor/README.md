@@ -131,3 +131,10 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - canonical-owner migration order with stable facade and safety exceptions
    - CW1-CW7 staged cleanup sequence and P1.5 freeze acceptance gates
 
+14. p1_5_full_regression_docker_uef_freeze_implementation_packet_v1_0.md
+   - P1.5.11 final regression / Docker / UEF replay / formal-freeze authority
+   - candidate-SHA locking, layered acceptance gates and artifact-hygiene policy
+   - UEF frozen-manifest, replay determinism, conservation/binding and cross-day rules
+   - Docker source-parity, ownership, restart/recovery, SIGTERM and paper-read acceptance
+   - FZ1-FZ9 freeze sequence, independent audit, human approval and freeze-manifest/tag policy
+
