@@ -1858,3 +1858,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Existing private imports and monkeypatch seams remain during staged migration.
 - Runtime implementation remains blocked until the P1.2/P1.3 frozen-baseline gate.
 - See `docs/refactor/p1_5_strategist_implementation_packet_v1_0.md`.
+
+# 2026-10-07 - P1.5 Reporting Design Complete
+
+- Completed the P1.5.1/P1.5.2 Reporting structural design.
+- Mapped the three giant Reporting modules totaling 18,743 LOC and the responsibility-specific helper modules already extracted from them.
+- Proved a roughly 1,100-LOC unreachable legacy tail after `render_trade_summary_markdown_with_evaluation()` delegates and returns.
+- Identified the duplicate/shadowed `_playbook_label` definition in `trade_report_markdown_clean.py`.
+- Froze a staged implementation sequence: dead-code cleanup first, then AI report façade, Markdown façade, and trade-story façade decomposition.
+- Existing report schemas, truth precedence, LLM behavior, artifact paths, provenance, and public/test seams remain unchanged.
+- Design authority: `docs/refactor/p1_5_reporting_implementation_packet_v1_0.md`.
+
