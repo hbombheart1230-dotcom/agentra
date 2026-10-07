@@ -1,2 +1,2 @@
 P1.5.1 reporting validation trigger. Temporary CI-only file.
-Run: after test artifact isolation fixes.
+Run: final artifact-isolation validation.
