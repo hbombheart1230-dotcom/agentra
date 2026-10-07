@@ -748,3 +748,177 @@ GPT
 Escalate S1 to Codex Cloud only if repository-wide mechanical work or repeated local/CI repair is materially more efficient there.
 
 Claude Cloud is not required for low-risk S1 extraction if behavior tests and CI are fully green; reserve independent Cloud audit for higher-risk Strategist service/state-adapter completion or the P1.5 freeze gate.
+
+
+## 20. StrategistAgentInput v0.1 Field Boundary
+
+Known legacy-state dependencies have now been reduced to explicit groups.
+
+Proposed Pydantic boundary:
+
+```text
+StrategistAgentInput
+  identity
+    run_id: str
+    day: str | None
+    runtime_phase: str
+
+  control
+    policy: dict
+    applied_policy: dict
+    commander_decision: dict
+    strategist_runtime_input: dict
+    previous_strategist_output: dict
+
+  candidate_context
+    candidates: list[dict]
+    universe: list/dict
+    candidate_symbols: list[str]
+
+  theme_context
+    themes: list[str]
+    top_themes: list[str]
+    theme_scores: dict
+    theme_map: dict
+    sector_map: dict
+    sector_filter: list/str
+    theme_filter: list/str
+
+  market_context
+    market_context: dict
+    macro_context: dict
+    kiwoom_market_summary: dict
+    global_sentiment_signal: dict
+
+  feedback_context
+    strategist_feedback_packet: dict
+    reporter_feedback_packet: dict
+    reporter_feedback_mode: str | None
+    reporter_feedback_mode_source: str | None
+
+  paths
+    reports_root: str
+
+  simulation_overrides
+    mock_global_sentiment: optional
+    mock_news_sentiment: optional
+    mock_news_items: optional
+```
+
+`event_logger`, LLM clients and provider callables are dependencies/adapters, not business data fields.
+
+The new contract should use explicit fields and forbid unknown fields once the compatibility adapter has been proven. During migration, a narrowly named compatibility context may temporarily carry provider-specific legacy values that have not yet been extracted.
+
+## 21. StrategistAgentResult v0.1 State Patch
+
+The current node writes the following compatibility surfaces. P1.5 must preserve them until downstream consumers migrate.
+
+### Candidate / context surfaces
+
+```text
+strategist_fallback_source
+universe_candidates
+global_sentiment
+global_sentiment_signal
+theme_strength_packet
+available_themes
+news_query_targets
+news_query_reasoning
+news_collection_policy
+news_collection_symbols
+news_theme_component_symbols
+policy
+candidates
+news_items
+news_sentiment
+news_sentiment_signal
+candidate_news_items
+candidate_news_context
+market_news_items
+market_news_sentiment
+market_news_sentiment_signal
+market_news_context
+themes
+candidate_symbols
+theme_map
+sector_map
+```
+
+### Feedback / read-model surfaces
+
+```text
+recent_strategy_feedback
+reporter_feedback_packet
+strategy_memory
+read_model_facts_summary
+```
+
+### Strategic frame / handoff surfaces
+
+```text
+selected_themes
+theme_strategy
+market_regime
+market_sentiment
+market_structure
+market_context_inputs
+regime_factors
+theme_strength
+key_events
+news_event_intelligence
+avoid_themes
+playbook
+scanner_bias
+scanner_bias_context
+scanner_priority
+trade_aggressiveness
+risk_tone
+monitor_guidance
+macro_stress_overlay
+monitor_entry_policy
+monitor_policy
+strategist_exit_policy
+strategy_policy
+strategist_plan
+commander_horizon_policy
+report_focus
+scanner_guidance
+```
+
+### Final / evidence surfaces
+
+```text
+strategist_output
+strategist_blocked
+strategist_blocked_reason
+strategist_llm
+strategist_policy_resolution
+strategist_global_sentiment_breakdown
+strategist_news_evidence_ranked
+strategist_candidate_symbols_hint
+strategist_decision_frame
+```
+
+The first service extraction should return these as one explicit `state_patch` rather than mutating the caller's state throughout domain logic.
+
+## 22. Dependency Boundary v0.1
+
+The Strategist service currently depends on these concrete capabilities:
+
+```text
+candidate universe / ranking
+global sentiment
+Kiwoom theme strength
+news collection
+news sentiment scoring
+Reporter feedback
+Strategy Memory
+trade/symbol read models
+LLM routing
+Commander memory/horizon helpers
+Scanner/Monitor policy normalizers
+Strategist explanation
+event/evidence/artifact writers
+```
+
+P1.5 should not invent a generic dependency-injection framework. Extract concrete adapters/modules first. Dependency injection should be limited to explicit testable seams where it removes hidden global state or replaces current node-level monkeypatching.
