@@ -1163,6 +1163,13 @@ def _evidence_enrichment_deps() -> Dict[str, Any]:
         "safe_int": safe_int,
     }
 
+def _evidence_enrichment_deps() -> Dict[str, Any]:
+    return {
+        "enrich_filters_from_evidence_impl": _enrich_filters_from_evidence_impl,
+        "enrich_scanner_reason_from_evidence_impl": _enrich_scanner_reason_from_evidence_impl,
+        "evidence_enrichment_deps": _evidence_enrichment_deps,
+    }
+
 def enrich_scanner_reason_from_evidence(
     scanner_reason_human: Dict[str, Any],
     scanner_evidence: Dict[str, Any],

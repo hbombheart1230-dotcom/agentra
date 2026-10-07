@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional
+from typing import Any, Dict, Mapping, Optional, List, Mapping, Optional
 
 
 def safe_read_json_file(path_value: Any) -> Dict[str, Any]:
@@ -1020,4 +1020,39 @@ def normalized_feature_coverage_from_scanner_evidence(
         "source": coverage_source,
     }
 
+# P1.5.2 R2-C: scanner/filter evidence enrichment owners.
+
+
+def enrich_scanner_reason_from_evidence(
+    scanner_reason_human: Dict[str, Any],
+    scanner_evidence: Dict[str, Any],
+    *,
+    deps: Mapping[str, Any],
+) -> Dict[str, Any]:
+    _enrich_scanner_reason_from_evidence_impl = deps["enrich_scanner_reason_from_evidence_impl"]
+    _evidence_enrichment_deps = deps["evidence_enrichment_deps"]
+    return _enrich_scanner_reason_from_evidence_impl(scanner_reason_human, scanner_evidence, deps=_evidence_enrichment_deps())
+
+
+def enrich_filters_from_evidence(
+    filters_human: Dict[str, Any],
+    scanner_evidence: Dict[str, Any],
+    *,
+    selected_symbol: str,
+    monitor_evidence: Optional[Dict[str, Any]] = None,
+    entry_execution_details: Optional[Dict[str, Any]] = None,
+    exit_execution_details: Optional[Dict[str, Any]] = None,
+    deps: Mapping[str, Any],
+) -> Dict[str, Any]:
+    _enrich_filters_from_evidence_impl = deps["enrich_filters_from_evidence_impl"]
+    _evidence_enrichment_deps = deps["evidence_enrichment_deps"]
+    return _enrich_filters_from_evidence_impl(
+        filters_human,
+        scanner_evidence,
+        selected_symbol=selected_symbol,
+        monitor_evidence=monitor_evidence,
+        entry_execution_details=entry_execution_details,
+        exit_execution_details=exit_execution_details,
+        deps=_evidence_enrichment_deps(),
+    )
 
