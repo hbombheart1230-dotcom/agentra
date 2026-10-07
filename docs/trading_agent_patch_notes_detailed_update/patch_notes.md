@@ -1869,3 +1869,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No Markdown contract, truth precedence, symbol metadata, signal interpretation, LLM, trading authority, UEF or broker semantic change.
 - R2-B is **ACTIVE**; carryover/memory/translation residual extraction is next.
 - See `docs/daily_patch/2026-10-07_p1_5_2_r2b_markdown_decomposition.md`.
+
+## P1.5.2 R2-B — Carryover / Memory / Translation Update
+
+- Extended `trade_report_markdown_strategy_memory.py` with carryover, prompt-proven memory and memory-application ownership.
+- Added `trade_report/markdown_translation.py` for operator-facing translation rules.
+- `trade_report_markdown_clean.py`: **5,852 -> 3,713 LOC** from the R2-B baseline (**-36.6%**).
+- Incremental gates caught and fixed missing `timedelta` and `html/re` imports without semantic changes.
+- Focused regression: **168 passed**. Broader Reporting/API/runtime regression: **297 passed, 1 warning**.
+- No Markdown contract, memory meaning, translation output contract, truth precedence, LLM, trading authority, UEF or broker semantic change.
+- R2-B remains **ACTIVE**; diagnostics/market/strategist residuals are next.

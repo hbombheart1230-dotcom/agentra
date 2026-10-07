@@ -233,3 +233,12 @@
 - An intermediate local-helper ownership mistake was caught by the focused gate and corrected without changing expected output.
 - Focused Markdown/Reporting regression: **168/168 PASS**. Broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
 - R2-B remains **ACTIVE**; carryover/memory/translation residuals are next.
+
+## P1.5.2 R2-B Addendum (Carryover / Memory / Translation — 2026-10-07)
+
+- Extended `trade_report_markdown_strategy_memory.py` to own carryover context, prompt-proven memory rendering and memory-application rendering.
+- Added `trade_report/markdown_translation.py` and moved the 170-line `_translate_text()` implementation behind a compatibility wrapper.
+- `trade_report_markdown_clean.py`: **4,187 -> 3,713 LOC** in this tranche; **5,852 -> 3,713 LOC** from the R2-B baseline (**-2,139 LOC / -36.6%**).
+- Incremental gates caught two extraction-only import omissions: `timedelta` for carryover and `html/re` for translation. They were restored without changing semantics or weakening tests.
+- Focused Markdown/Reporting regression after fixes: **168/168 PASS**. Broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
+- R2-B remains **ACTIVE**; diagnostics/market/strategist residuals are next.
