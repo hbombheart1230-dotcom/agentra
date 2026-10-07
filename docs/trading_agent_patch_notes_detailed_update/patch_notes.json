@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 114,
+  "entry_count": 115,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3050,6 +3050,35 @@
         "libs/reporting/trade_report_ai_compact_input.py",
         "libs/reporting/trade_report_ai_deterministic.py",
         "libs/reporting/trade_report_ai.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5.2 R2-B",
+      "title": "Markdown summary and signal ownership extraction",
+      "stage": "P1.5 Structural Refactor",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Started R2-B by extracting trade-summary Markdown rendering/input assembly and entry/exit signal presentation logic from trade_report_markdown_clean.py while preserving compatibility seams and output semantics.",
+      "details": [
+        "Added libs/reporting/trade_report/markdown_summary.py for render_trade_summary_markdown_clean() and build_trade_summary_input_clean() implementation ownership.",
+        "Added libs/reporting/trade_report/markdown_signals.py for entry-watch, entry-signal and exit-trigger presentation helpers.",
+        "Existing public and private names remain compatibility façades/wrappers in trade_report_markdown_clean.py and true external helper seams are injected at call time.",
+        "trade_report_markdown_clean.py reduced from 5,852 LOC to 4,187 LOC, a 1,665-line / 28.5% façade reduction.",
+        "The first focused gate caught a local-helper ownership wiring mistake; it was corrected without weakening tests or changing output contracts.",
+        "Python 3.12 focused Markdown/Reporting regression passed 168/168; broader Reporting/API/runtime regression passed 297/297 with one existing deprecation warning.",
+        "No Markdown contract, truth precedence, symbol metadata resolution, signal interpretation, LLM role/count, artifact path, trading authority, UEF or broker behavior changed."
+      ],
+      "impact": "R2-B is active with the two largest summary functions and the major entry/exit signal presentation cluster outside the giant Markdown façade. Carryover/memory/translation residuals remain next.",
+      "sources": [
+        "docs/daily_patch/2026-10-07_p1_5_2_r2b_markdown_decomposition.md",
+        "libs/reporting/trade_report/markdown_summary.py",
+        "libs/reporting/trade_report/markdown_signals.py",
+        "libs/reporting/trade_report_markdown_clean.py"
       ],
       "status": "current"
     }

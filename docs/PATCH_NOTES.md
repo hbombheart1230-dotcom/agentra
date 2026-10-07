@@ -224,3 +224,12 @@
 - Final broader Reporting regression across 14 relevant test files: **297/297 PASS**.
 - Two dependency-injection omissions were caught by the intermediate gates and corrected before closure; no test expectation was weakened.
 - **P1.5.2 R2-A: COMPLETE. R2-B Markdown façade decomposition: NEXT.**
+
+## P1.5.2 R2-B Addendum (Markdown Summary / Signal Extraction — 2026-10-07)
+
+- Added `trade_report/markdown_summary.py` and moved the 745-line trade-summary Markdown renderer plus 416-line summary-input assembler behind compatibility façades.
+- Added `trade_report/markdown_signals.py` and moved entry-watch, entry-signal and exit-trigger presentation helpers behind compatibility wrappers.
+- `trade_report_markdown_clean.py`: **5,852 -> 4,187 LOC** (**-1,665 LOC / -28.5%**).
+- An intermediate local-helper ownership mistake was caught by the focused gate and corrected without changing expected output.
+- Focused Markdown/Reporting regression: **168/168 PASS**. Broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
+- R2-B remains **ACTIVE**; carryover/memory/translation residuals are next.

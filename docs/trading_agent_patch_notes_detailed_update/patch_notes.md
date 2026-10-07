@@ -1858,3 +1858,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Intermediate dependency-boundary regressions were detected by tests and fixed without weakening assertions.
 - Final focused gate: **151 passed**. Final broader Reporting regression: **297 passed, 1 warning**.
 - R2-A is **COMPLETE**. R2-B Markdown façade decomposition is next.
+
+## P1.5.2 R2-B — Markdown Summary / Signal Extraction
+
+- Added `trade_report/markdown_summary.py` for trade-summary Markdown rendering and summary-input assembly.
+- Added `trade_report/markdown_signals.py` for entry-watch, entry-signal and exit-trigger presentation logic.
+- Existing public/private names in `trade_report_markdown_clean.py` remain compatibility façades/wrappers.
+- Markdown façade size: **5,852 -> 4,187 LOC** (**-28.5%**).
+- Focused regression: **168 passed**. Broader Reporting/API/runtime regression: **297 passed, 1 warning**.
+- No Markdown contract, truth precedence, symbol metadata, signal interpretation, LLM, trading authority, UEF or broker semantic change.
+- R2-B is **ACTIVE**; carryover/memory/translation residual extraction is next.
+- See `docs/daily_patch/2026-10-07_p1_5_2_r2b_markdown_decomposition.md`.
