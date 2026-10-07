@@ -1836,3 +1836,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Defined the explicit Agent-input groups and the current compatibility state-patch surface.
 - Runtime implementation remains gated on the frozen P1.2/P1.3 baseline.
 - See `docs/refactor/p1_5_strategist_implementation_packet_v0_1.md`.
+
+# 2026-10-07 - P1.5 Strategist Design Complete
+
+- Finalized the P1.5 Strategist modular-refactor design without changing runtime behavior.
+- The current 8,878-line Strategist node was mapped into context, LLM, policy, output, observability, service and state-adapter responsibilities.
+- New Agent-level contract names are frozen as `StrategistAgentInput` and `StrategistAgentResult`; the existing per-symbol `StrategyInput` is not repurposed.
+- Existing `StrategistOutput` remains the canonical normalized compatibility output during P1.5.
+- The current 66-key state-write surface will be preserved through a dedicated compatibility state adapter.
+- Implementation sequence is frozen as S1 LLM extraction -> S2 deterministic policy/output -> S3 context/IO -> S4 Agent contract/service/state adapter -> S5 tests/wrapper cleanup.
+- Implementation remains gated by P1.2/P1.3 freeze and baseline SHA/tag capture.
+- Authority: `docs/refactor/p1_5_strategist_implementation_packet_v1_0.md`.
+
