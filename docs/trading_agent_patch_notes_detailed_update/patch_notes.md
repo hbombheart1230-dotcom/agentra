@@ -1880,3 +1880,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Runtime implementation remains gated by the P1.5 frozen-baseline policy.
 - Design authority: docs/refactor/p1_5_operator_ui_brief_implementation_packet_v1_0.md.
 
+# 2026-10-07 - P1.5.5 Scanner Design Complete
+
+- Completed the P1.5.5 Scanner structural design without changing runtime behavior.
+- Mapped the approximately 4,179-line graphs/nodes/scanner_node.py, including 61 top-level functions/classes and a roughly 1,945-line scanner_node orchestration hotspot.
+- Confirmed existing focused owners for candidate selection, theme/practical filters, market-representative guard, candidate risk, output snapshots/payloads, feature hydration, runtime Scanner policy, Scanner bias, and memory bias; P1.5.5 reuses these owners rather than creating a parallel Scanner framework.
+- Classified libs/agent/scanner.py and the older scan_candidates/select_candidate paths as legacy compatibility surfaces rather than canonical Scanner authority.
+- Froze the 21-key compatibility state-write surface and the new ScannerAgentInput / ScannerAgentResult component boundary.
+- Preserved the Scanner/Monitor authority split: Scanner chart-fit and Monitor-readiness remain soft ranking context; Monitor remains the hard entry/exit gate.
+- Frozen implementation order: SC1 contracts/state adapter -> SC2 existing-owner completion -> SC3 guidance/repeat/prior -> SC4 compatibility/chart fit -> SC5 deterministic scoring -> SC6 evidence/IO -> SC7 scanner_node façade/tests.
+- Known Scanner tuning ideas remain deferred; no weights, thresholds, candidate sources, veto semantics, rank ordering, UEF, Step5C/5D, execution or broker behavior changed.
+- Design authority: docs/refactor/p1_5_scanner_implementation_packet_v1_0.md.
+
