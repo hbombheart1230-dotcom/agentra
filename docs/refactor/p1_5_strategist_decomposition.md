@@ -1,7 +1,9 @@
 # P1.5 Strategist Decomposition
 
-Status: DRAFT / ANALYSIS IN PROGRESS  
+Status: DETAILED DESIGN IN PROGRESS  
 Implementation: NOT AUTHORIZED BY THIS DOCUMENT
+
+Current detailed packet: `p1_5_strategist_implementation_packet_v0_1.md`
 
 ## 1. Why Strategist Is the Design Reference
 
