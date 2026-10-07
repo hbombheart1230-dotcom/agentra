@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 115,
+  "entry_count": 116,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3084,6 +3084,36 @@
         "libs/reporting/trade_report_markdown_strategy_memory.py",
         "libs/reporting/trade_report_markdown_truth.py",
         "libs/reporting/trade_report_markdown_clean.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5.2 R2-C",
+      "title": "Trade-story human payload, evidence and assembly ownership extraction",
+      "stage": "P1.5 Structural Refactor",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Started R2-C by extracting market/scanner/monitor human payloads, scanner/filter evidence enrichment, lifecycle bundle construction, report section seeds and final story assembly from trade_story_pipeline.py while preserving public APIs and runtime semantics.",
+      "details": [
+        "Expanded trade_story_pipeline_human_payloads.py with market/scanner/monitor human payload builders.",
+        "Expanded trade_story_pipeline_evidence_hydration.py with scanner/filter evidence enrichment.",
+        "Expanded trade_story_pipeline_story_assembly.py with lifecycle bundle construction, report section seeds and build_trade_story_input().",
+        "trade_story_pipeline.py reduced from 4,527 LOC to 1,873 LOC, a 2,654-line / 58.6% façade reduction.",
+        "Focused trade-story validation passed 40/40; broader Reporting + trade-story regression passed 337/337 with one existing deprecation warning.",
+        "Incremental gates caught helper-name and literal/dependency classification wiring mistakes; both were corrected without weakening tests.",
+        "No story schema, lifecycle interpretation, provenance, Scanner/Monitor attribution, truth precedence, LLM role/count, artifact path, trading authority, UEF or broker behavior changed."
+      ],
+      "impact": "R2-C is active with the major human payload, evidence enrichment and story-assembly responsibilities outside the giant façade. Residual scanner/news/provenance helper clusters remain next.",
+      "sources": [
+        "docs/daily_patch/2026-10-07_p1_5_2_r2c_trade_story_decomposition.md",
+        "libs/reporting/trade_story_pipeline_human_payloads.py",
+        "libs/reporting/trade_story_pipeline_evidence_hydration.py",
+        "libs/reporting/trade_story_pipeline_story_assembly.py",
+        "libs/reporting/trade_story_pipeline.py"
       ],
       "status": "current"
     }

@@ -1889,3 +1889,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Focused regression: **168 passed**. Final broader Reporting/API/runtime regression: **297 passed, 1 warning**.
 - No Markdown contract, truth precedence, strategist/market meaning, LLM behavior, trading authority, UEF or broker semantic change.
 - R2-B is **COMPLETE**. R2-C trade-story façade decomposition is next.
+
+## P1.5.2 R2-C — Trade-story Human / Evidence / Assembly Extraction
+
+- Moved market/scanner/monitor human payload builders into `trade_story_pipeline_human_payloads.py`.
+- Moved scanner/filter evidence enrichment into `trade_story_pipeline_evidence_hydration.py`.
+- Moved lifecycle bundle, report section seeds and final trade-story assembly into `trade_story_pipeline_story_assembly.py`.
+- `trade_story_pipeline.py`: **4,527 -> 1,873 LOC** (**-58.6%**).
+- Focused trade-story tests: **40 passed**. Broader Reporting + trade-story regression: **337 passed, 1 warning**.
+- No story schema, lifecycle meaning, provenance, truth precedence, LLM, trading authority, UEF or broker semantic change.
+- R2-C is **ACTIVE**; residual scanner/news/provenance helpers are next.
+- See `docs/daily_patch/2026-10-07_p1_5_2_r2c_trade_story_decomposition.md`.

@@ -253,3 +253,13 @@
 - No function remaining in `trade_report_markdown_clean.py` is 70 LOC or larger.
 - Final focused regression: **168/168 PASS**. Final broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
 - **P1.5.2 R2-B: COMPLETE. R2-C trade-story façade decomposition: NEXT.**
+
+## P1.5.2 R2-C Addendum (Trade-story Human / Evidence / Assembly Extraction — 2026-10-07)
+
+- Expanded `trade_story_pipeline_human_payloads.py` to own market/scanner/monitor human payload builders.
+- Expanded `trade_story_pipeline_evidence_hydration.py` to own scanner/filter evidence enrichment.
+- Expanded `trade_story_pipeline_story_assembly.py` to own lifecycle bundle construction, report section seeds and final trade-story assembly.
+- `trade_story_pipeline.py`: **4,527 -> 1,873 LOC** (**-2,654 LOC / -58.6%**).
+- Compatibility/public entry points remain in the façade; current helper seams are resolved at call time.
+- Focused trade-story validation: **40/40 PASS**. Broader Reporting + trade-story regression: **337/337 PASS, 1 warning**.
+- R2-C remains **ACTIVE**; residual scanner/news/provenance helpers are next.
