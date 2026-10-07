@@ -6,6 +6,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Iterable
 
+from libs.reporting.json_array_stream import iter_json_array
 from libs.reporting.quant_shadow_forward_outcomes import attach_forward_outcomes
 
 
@@ -154,20 +155,50 @@ def _load_forward_recovery_candles(
 
 def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) -> dict[str, Any]:
     path = Path(record.get("path") or "")
-    payload = read_json(path) if path.exists() else {}
-    windows = [row for row in payload.get("windows") or [] if isinstance(row, dict)]
-    scanner_windows = [row for row in windows if isinstance(row.get("scanner_control"), dict)]
-    synthetic_windows = [row for row in scanner_windows if _synthetic_identity(row)]
-    post_session_windows = [
-        row
-        for row in scanner_windows
-        if row not in synthetic_windows and not _regular_session_window(row)
-    ]
-    trusted_scanner_windows = [
-        row
-        for row in scanner_windows
-        if row not in synthetic_windows and row not in post_session_windows
-    ]
+    # The ~120 MB windows file is streamed one window at a time; each window is classified
+    # (synthetic / post-session / trusted scanner window) and only the counts and trusted windows'
+    # generated_at survive. Holding every parsed window (and the whole-file text) was a major part of
+    # the closeout peak. `row not in synthetic_windows` was an equality test, so identical windows
+    # always classify identically and per-window flags give the same sets.
+    window_count = synthetic_count = post_session_count = trusted_count = 0
+    abc_count = pabc_count = pre_universe_count = missing_selected_count = 0
+    trusted_window_times: list[Any] = []
+    if path.exists():
+        try:
+            for row in iter_json_array(path, "windows", strict=True):
+                if not isinstance(row, dict):
+                    continue
+                window_count += 1
+                if not isinstance(row.get("scanner_control"), dict):
+                    continue
+                if _synthetic_identity(row):
+                    synthetic_count += 1
+                    continue
+                if not _regular_session_window(row):
+                    post_session_count += 1
+                    continue
+                trusted_count += 1
+                parsed_time = _parse_window_kst(row.get("generated_at"))
+                if parsed_time is not None:
+                    trusted_window_times.append(parsed_time)
+                strategist = row.get("strategist_selection")
+                commander = row.get("commander_final")
+                universe = row.get("scanner_pre_strategist_universe")
+                if isinstance(strategist, dict) and isinstance(commander, dict):
+                    abc_count += 1
+                    if isinstance(universe, dict):
+                        pabc_count += 1
+                if isinstance(universe, dict) and bool(universe.get("intrinsic_ranked_top20")):
+                    pre_universe_count += 1
+                if bool((strategist or {}).get("post_strategist_top10")) and not str(
+                    (strategist or {}).get("selected_symbol") or ""
+                ):
+                    missing_selected_count += 1
+        except (OSError, ValueError):
+            # unreadable windows file == no windows (what read_json -> {} gave)
+            window_count = synthetic_count = post_session_count = trusted_count = 0
+            abc_count = pabc_count = pre_universe_count = missing_selected_count = 0
+            trusted_window_times = []
     # Only the payload count and the generated_at of payloads that carry q9 decision
     # candidates are needed below, so reduce each payload to that as it streams past.
     shadow_payload_count = 0
@@ -224,14 +255,7 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
             forward_unavailable += 1
         else:
             forward_invalid += 1
-    window_times = [
-        parsed
-        for parsed in (
-            _parse_window_kst(row.get("generated_at"))
-            for row in trusted_scanner_windows
-        )
-        if parsed is not None
-    ]
+    window_times = trusted_window_times
     first_window = min(window_times) if window_times else None
     last_window = max(window_times) if window_times else None
     last_runtime_evidence = max(window_times + shadow_times) if (window_times or shadow_times) else None
@@ -276,38 +300,14 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
         {
             "expected_schema_version": Q9_DECISION_SCHEMA,
             "schema_match": bool(record.get("schema_version") == Q9_DECISION_SCHEMA),
-            "window_count": len(windows),
-            "scanner_selection_window_count": len(trusted_scanner_windows),
-            "complete_abc_window_count": sum(
-                1
-                for row in trusted_scanner_windows
-                if isinstance(row.get("strategist_selection"), dict)
-                and isinstance(row.get("commander_final"), dict)
-            ),
-            "complete_pabc_window_count": sum(
-                1
-                for row in trusted_scanner_windows
-                if isinstance(row.get("scanner_pre_strategist_universe"), dict)
-                and isinstance(row.get("scanner_control"), dict)
-                and isinstance(row.get("strategist_selection"), dict)
-                and isinstance(row.get("commander_final"), dict)
-            ),
-            "pre_strategist_universe_window_count": sum(
-                1
-                for row in trusted_scanner_windows
-                if isinstance(row.get("scanner_pre_strategist_universe"), dict)
-                and bool(
-                    (row.get("scanner_pre_strategist_universe") or {}).get("intrinsic_ranked_top20")
-                )
-            ),
-            "missing_selected_candidate_count": sum(
-                1
-                for row in trusted_scanner_windows
-                if bool((row.get("strategist_selection") or {}).get("post_strategist_top10"))
-                and not str((row.get("strategist_selection") or {}).get("selected_symbol") or "")
-            ),
-            "synthetic_window_count": len(synthetic_windows),
-            "post_session_window_count": len(post_session_windows),
+            "window_count": window_count,
+            "scanner_selection_window_count": trusted_count,
+            "complete_abc_window_count": abc_count,
+            "complete_pabc_window_count": pabc_count,
+            "pre_strategist_universe_window_count": pre_universe_count,
+            "missing_selected_candidate_count": missing_selected_count,
+            "synthetic_window_count": synthetic_count,
+            "post_session_window_count": post_session_count,
             "first_scanner_window_kst": first_window.isoformat() if first_window else "",
             "last_scanner_window_kst": last_window.isoformat() if last_window else "",
             "last_q9_runtime_evidence_kst": (

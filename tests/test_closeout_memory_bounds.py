@@ -781,3 +781,151 @@ def test_lens_report_is_built_day_by_day_without_materialising_the_range(tmp_pat
     assert loads == [("2026-10-05", "2026-10-05"), ("2026-10-06", "2026-10-06"), ("2026-10-07", "2026-10-07")]  # one day resident at a time
     assert report["evidence"]["shadow_payload_count"] == 9 and report["evidence"]["candidate_count"] == 9
     assert report["evidence"]["q9_candidate_count"] == 18
+
+
+# --------------------------------------------------------------------- inventory window diagnostics / per-trade snapshot (streamed)
+
+
+def _inventory_windows():
+    base_ts = "2026-10-07T00:{m:02d}:00+00:00"  # 09:xx KST
+    windows = []
+    for i in range(6):
+        windows.append({
+            "decision_id": f"D{i}", "run_id": f"r{i}", "generated_at": base_ts.format(m=i),
+            "scanner_control": {"top1_symbol": "005930"}, "strategist_selection": {"selected_symbol": "005930", "post_strategist_top10": [1]} if i % 2 else {"selected_symbol": ""},
+            "commander_final": {"decision": "BUY"} if i != 3 else "x", "scanner_pre_strategist_universe": {"intrinsic_ranked_top20": [1]} if i % 3 else {},
+        })
+    windows.append({"decision_id": "test-1", "run_id": "r9", "generated_at": base_ts.format(m=9), "scanner_control": {"top1_symbol": "005930"}})  # synthetic id
+    windows.append({"decision_id": "D7", "run_id": "r7", "generated_at": "2026-10-07T07:00:00+00:00", "scanner_control": {"top1_symbol": "000660"}})  # 16:00 KST: post-session
+    windows.append({"decision_id": "D8", "run_id": "r8", "generated_at": base_ts.format(m=10), "scanner_control": {"top1_symbol": "NOT-A-SYMBOL"}})  # non-KRX symbol -> synthetic
+    windows.append({"decision_id": "D9", "run_id": "r10", "generated_at": base_ts.format(m=11)})  # no scanner_control
+    windows.append("junk")
+    return windows
+
+
+def _reference_q9_daily_diagnostics_counts(windows):
+    """The pre-fix list/equality based classification, on whole-file windows."""
+    from libs.reporting.evaluation import artifact_inventory as inv
+
+    dict_windows = [w for w in windows if isinstance(w, dict)]
+    scanner = [w for w in dict_windows if isinstance(w.get("scanner_control"), dict)]
+    synthetic = [w for w in scanner if inv._synthetic_identity(w)]
+    post = [w for w in scanner if w not in synthetic and not inv._regular_session_window(w)]
+    trusted = [w for w in scanner if w not in synthetic and w not in post]
+    return {
+        "window_count": len(dict_windows), "scanner_selection_window_count": len(trusted),
+        "complete_abc_window_count": sum(1 for r in trusted if isinstance(r.get("strategist_selection"), dict) and isinstance(r.get("commander_final"), dict)),
+        "complete_pabc_window_count": sum(1 for r in trusted if isinstance(r.get("scanner_pre_strategist_universe"), dict) and isinstance(r.get("scanner_control"), dict)
+                                          and isinstance(r.get("strategist_selection"), dict) and isinstance(r.get("commander_final"), dict)),
+        "pre_strategist_universe_window_count": sum(1 for r in trusted if isinstance(r.get("scanner_pre_strategist_universe"), dict)
+                                                    and bool((r.get("scanner_pre_strategist_universe") or {}).get("intrinsic_ranked_top20"))),
+        "missing_selected_candidate_count": sum(1 for r in trusted if bool((r.get("strategist_selection") or {}).get("post_strategist_top10"))
+                                                and not str((r.get("strategist_selection") or {}).get("selected_symbol") or "")),
+        "synthetic_window_count": len(synthetic), "post_session_window_count": len(post),
+    }
+
+
+def test_inventory_q9_window_diagnostics_stream_equals_whole_file_classification(tmp_path):
+    from libs.reporting.evaluation import artifact_inventory as inv
+
+    windows = _inventory_windows()
+    path = tmp_path / "q9_decision_windows.json"
+    _write(path, {"schema_version": inv.Q9_DECISION_SCHEMA, "windows": windows})
+    reports = tmp_path / "reports"
+    (reports / "operator_summary" / "daily" / "2026-10-07").mkdir(parents=True)
+    record = inv._q9_daily_diagnostics(reports, "2026-10-07", {"path": str(path), "schema_version": inv.Q9_DECISION_SCHEMA})
+    expected = _reference_q9_daily_diagnostics_counts(windows)
+    assert {k: record[k] for k in expected} == expected
+    assert expected["synthetic_window_count"] == 2 and expected["post_session_window_count"] == 1 and expected["scanner_selection_window_count"] > 0
+
+
+def test_inventory_q9_window_diagnostics_missing_or_corrupt_file_counts_nothing(tmp_path):
+    from libs.reporting.evaluation import artifact_inventory as inv
+
+    reports = tmp_path / "reports"
+    (reports / "operator_summary" / "daily" / "2026-10-07").mkdir(parents=True)
+    missing = inv._q9_daily_diagnostics(reports, "2026-10-07", {"path": str(tmp_path / "nope.json")})
+    text = json.dumps({"windows": _inventory_windows()}, indent=2)
+    bad = tmp_path / "bad.json"
+    bad.write_text(text[: len(text) // 2], encoding="utf-8")
+    corrupt = inv._q9_daily_diagnostics(reports, "2026-10-07", {"path": str(bad)})
+    for record in (missing, corrupt):
+        assert record["window_count"] == 0 and record["scanner_selection_window_count"] == 0 and record["synthetic_window_count"] == 0
+
+
+def _reference_daily_q9_snapshot(windows_payload, scanner_context, entry, selected_symbol):
+    from libs.reporting.evaluation import trade_read_model as trm
+
+    windows = [dict(row) for row in windows_payload.get("windows") or [] if isinstance(row, dict)]
+    if not windows:
+        return {}, ""
+    decision_id = str(scanner_context.get("q9_decision_id") or "").strip()
+    if decision_id:
+        exact = next((row for row in windows if str(row.get("decision_id") or "") == decision_id), None)
+        if exact:
+            return exact, "daily_q9_window.decision_id"
+    run_ids = {str(v or "").strip() for v in (entry.get("run_id"), scanner_context.get("run_id"), scanner_context.get("entry_run_id")) if str(v or "").strip()}
+    for row in windows:
+        if str(row.get("run_id") or "").strip() in run_ids:
+            return row, "daily_q9_window.run_id"
+    entry_ts = trm._parse_ts(entry.get("timestamp") or entry.get("ts"))
+    if entry_ts is None or not selected_symbol:
+        return {}, ""
+    nearest = None
+    for row in windows:
+        strategist = row.get("strategist_selection") if isinstance(row.get("strategist_selection"), dict) else {}
+        commander = row.get("commander_final") if isinstance(row.get("commander_final"), dict) else {}
+        if selected_symbol not in {str(strategist.get("selected_symbol") or ""), str(commander.get("selected_symbol") or ""), str(commander.get("candidate_symbol") or "")}:
+            continue
+        generated_at = trm._parse_ts(row.get("generated_at"))
+        if generated_at is None:
+            continue
+        delta = abs((generated_at - entry_ts).total_seconds())
+        if delta <= 600 and (nearest is None or delta < nearest[0]):
+            nearest = (delta, row)
+    return (nearest[1], "daily_q9_window.nearest_symbol_time") if nearest else ({}, "")
+
+
+@pytest.mark.parametrize(
+    "context,entry,symbol",
+    [
+        ({"q9_decision_id": "W2"}, {}, "005930"),                      # exact decision id
+        ({"q9_decision_id": "W2"}, {"run_id": "run-1"}, "005930"),     # exact id beats an earlier run match
+        ({"q9_decision_id": "missing"}, {"run_id": "run-1"}, "005930"),  # run id (first in file order)
+        ({}, {"timestamp": "2026-10-07T00:03:10+00:00"}, "000660"),    # nearest same-symbol window
+        ({}, {"timestamp": "2026-10-07T00:03:10+00:00"}, ""),          # no symbol -> nothing
+        ({}, {"timestamp": "bad"}, "005930"),
+        ({"q9_decision_id": "nope"}, {"run_id": "nope", "timestamp": "2000-01-01T00:00:00+00:00"}, "005930"),
+    ],
+)
+def test_daily_q9_snapshot_streamed_search_equals_whole_file_search(tmp_path, context, entry, symbol):
+    from libs.reporting.evaluation import trade_read_model as trm
+
+    windows = [
+        {"decision_id": "W0", "run_id": "run-1", "generated_at": "2026-10-07T00:01:00+00:00", "strategist_selection": {"selected_symbol": "005930"}},
+        {"decision_id": "W1", "run_id": "run-1", "generated_at": "2026-10-07T00:02:00+00:00", "commander_final": {"candidate_symbol": "000660"}},
+        {"decision_id": "W2", "run_id": "run-2", "generated_at": "2026-10-07T00:03:00+00:00", "commander_final": {"selected_symbol": "000660"}},
+        {"decision_id": "W3", "run_id": "run-3", "generated_at": "2026-10-07T00:03:05+00:00", "commander_final": {"selected_symbol": "000660"}},
+        "junk",
+    ]
+    payload = {"windows": windows}
+    reports = tmp_path / "reports"
+    path = reports / "operator_summary" / "daily" / "2026-10-07" / "q9_decision_windows.json"
+    path.parent.mkdir(parents=True)
+    _write(path, payload)
+    trade_dir = reports / "trades" / "2026-10-07" / "TRD1" / "x"
+    got = trm._daily_q9_snapshot(trade_dir, day="2026-10-07", entry=entry, scanner_context=context, selected_symbol=symbol)
+    assert got == _reference_daily_q9_snapshot(payload, context, entry, symbol)
+
+
+def test_daily_q9_snapshot_missing_or_corrupt_windows_file_is_empty(tmp_path):
+    from libs.reporting.evaluation import trade_read_model as trm
+
+    reports = tmp_path / "reports"
+    trade_dir = reports / "trades" / "2026-10-07" / "TRD1" / "x"
+    assert trm._daily_q9_snapshot(trade_dir, day="2026-10-07", entry={}, scanner_context={"q9_decision_id": "W1"}, selected_symbol="005930") == ({}, "")
+    path = reports / "operator_summary" / "daily" / "2026-10-07" / "q9_decision_windows.json"
+    path.parent.mkdir(parents=True)
+    text = json.dumps({"windows": [{"decision_id": f"W{i}", "blob": "x" * 200} for i in range(20)]}, indent=2)
+    path.write_text(text[: len(text) // 2], encoding="utf-8")
+    assert trm._daily_q9_snapshot(trade_dir, day="2026-10-07", entry={}, scanner_context={"q9_decision_id": "W19"}, selected_symbol="005930") == ({}, "")
