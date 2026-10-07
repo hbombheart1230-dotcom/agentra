@@ -124,3 +124,10 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - observability/artifact-only extraction targets
    - EX1-EX6 staged implementation sequence and safety regression gates
 
+13. p1_5_compatibility_wrapper_cleanup_implementation_packet_v1_0.md
+   - P1.5.10 compatibility-wrapper cleanup authority
+   - proof-based REMOVE/MIGRATE/KEEP/HISTORICAL/SAFETY classification
+   - cross-P1.5 wrapper inventory and consumer-proof manifest requirements
+   - canonical-owner migration order with stable facade and safety exceptions
+   - CW1-CW7 staged cleanup sequence and P1.5 freeze acceptance gates
+
