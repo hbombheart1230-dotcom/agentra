@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 116,
+  "entry_count": 115,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3084,37 +3084,6 @@
         "libs/reporting/trade_report_markdown_strategy_memory.py",
         "libs/reporting/trade_report_markdown_truth.py",
         "libs/reporting/trade_report_markdown_clean.py"
-      ],
-      "status": "current"
-    },
-    {
-      "date": "2026-10-07",
-      "version": "P1.5.2 R2-C",
-      "title": "Reporting trade-story façade R2-C decomposition complete",
-      "stage": "P1.5 Structural Refactor",
-      "types": [
-        "REFACTOR",
-        "REPORTING",
-        "TESTING"
-      ],
-      "summary": "Completed R2-C by moving trade-story human payload, evidence enrichment, lifecycle/section assembly and main story-input responsibilities out of trade_story_pipeline.py while preserving public APIs and runtime semantics.",
-      "details": [
-        "Extended the existing trade_story_pipeline_human_payloads.py, trade_story_pipeline_evidence_hydration.py and trade_story_pipeline_story_assembly.py owners instead of creating duplicate pipelines.",
-        "Moved market/scanner/monitor/filter human payload builders, scanner/filter evidence enrichment, lifecycle bundle construction, report-section seed assembly and the main build_trade_story_input() implementation behind compatibility façades.",
-        "Moved residual scanner selection, news contribution and normalized feature-coverage helpers into the evidence owner.",
-        "trade_story_pipeline.py reduced from 4,527 LOC to 1,552 LOC, a 2,975-line / 65.7% façade reduction.",
-        "No function remaining in trade_story_pipeline.py is 70 LOC or larger at the R2-C closure point.",
-        "The first focused extraction gate caught helper-name wiring errors; they were corrected without weakening or removing tests.",
-        "Focused Python 3.12 trade-story regression passed 40/40; final broader Reporting + trade-story regression passed 337/337 with one existing deprecation warning.",
-        "No report schema, truth precedence, broker truth preference, Scanner/Monitor attribution, Strategist/Reporter meaning, lifecycle interpretation, LLM role/count, artifact path, trading authority, UEF or broker behavior changed."
-      ],
-      "impact": "P1.5.2 Reporting decomposition is complete across R2-A, R2-B and R2-C. The next structural stage is P1.5.3 Operator UI / Operator Brief decomposition.",
-      "sources": [
-        "docs/daily_patch/2026-10-07_p1_5_2_r2c_trade_story_decomposition.md",
-        "libs/reporting/trade_story_pipeline.py",
-        "libs/reporting/trade_story_pipeline_human_payloads.py",
-        "libs/reporting/trade_story_pipeline_evidence_hydration.py",
-        "libs/reporting/trade_story_pipeline_story_assembly.py"
       ],
       "status": "current"
     }
