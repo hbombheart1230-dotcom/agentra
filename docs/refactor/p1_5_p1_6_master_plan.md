@@ -80,11 +80,12 @@ P1.2 daily checks remain operational until freeze:
 
 Name: **Mechanical Modular Refactor + Agent Boundary Restoration**
 
-P1.5 has three coordinated tracks:
+P1.5 has four coordinated tracks:
 
 - Architecture
 - Naming
 - Test architecture
+- Documentation architecture
 
 They are applied per subsystem, not as three unrelated mega-projects.
 
@@ -97,6 +98,7 @@ They are applied per subsystem, not as three unrelated mega-projects.
 - isolate IO, policy, orchestration, authority and evidence responsibilities
 - remove development-milestone naming from production runtime code
 - restructure tests alongside each subsystem
+- refactor canonical/current documentation alongside each subsystem while preserving historical audit evidence
 - eliminate unbounded test-artifact accumulation
 - retain compatibility seams until consumers are migrated
 
