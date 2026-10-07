@@ -1892,3 +1892,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Known Scanner tuning ideas remain deferred; no weights, thresholds, candidate sources, veto semantics, rank ordering, UEF, Step5C/5D, execution or broker behavior changed.
 - Design authority: docs/refactor/p1_5_scanner_implementation_packet_v1_0.md.
 
+# 2026-10-07 - P1.5.6 Monitor Design Complete
+
+- Completed the P1.5.6 Monitor structural design without changing runtime behavior.
+- Mapped graphs/nodes/monitor_node.py at approximately 3,633 LOC with a roughly 2,635-line monitor_node orchestration hotspot and a roughly 660-line entry-candidate evaluator.
+- Identified libs/runtime/intraday_monitor_signals.py (~3,608 LOC) as a separate deterministic signal/policy/chart/scoring hotspot for a later staged decomposition after Monitor orchestration is isolated.
+- Confirmed existing focused owners for candidate cascade, entry guards, cost filtering, policy context, quality, sizing, state, memory bias, minute OHLCV, policy/strategy framing, plus the already decomposed monitor_exit package.
+- Froze MonitorAgentInput / MonitorAgentResult and the 27-key compatibility state-write surface.
+- Preserved the authority chain: Scanner soft ranking -> Monitor hard entry/exit timing and at-most-one intent -> Supervisor approval -> Executor broker side effect.
+- Frozen implementation order: MO1 contracts/state adapter -> MO2 existing-owner completion -> MO3 entry orchestration -> MO4 exit orchestration -> MO5 intent arbitration/state adapter -> MO6 evidence/IO -> MO7 intraday signal engine -> MO8 monitor_node façade/tests.
+- Monitor scoring/shadow promotion, thresholds, chart logic, candidate cascade, sizing, exit guards, carry, execution, UEF and Step5C/5D semantics remain unchanged.
+- Design authority: docs/refactor/p1_5_monitor_implementation_packet_v1_0.md.
+
