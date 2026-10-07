@@ -1823,3 +1823,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Broader affected reporting selection: **280 test assertions passed**; pytest's production-path audit then identified test-only writes to `reports/metrics` and `reports/runtime`, and those tests were redirected to session `tmp_path` storage.
 - No trading/report schema, truth precedence, LLM, Supervisor/Executor, UEF, or broker semantics changed.
 - See `docs/daily_patch/2026-10-07_p1_5_1_reporting_dead_code_cleanup.md`.
+
+# 2026-10-07 - P1.5.2 R2-A Reporting Service Extraction
+
+- Extracted AI trade-report and trade-summary LLM orchestration into `libs/reporting/trade_report/service.py`.
+- Existing `trade_report_ai.py` public functions remain compatibility façades; current helper and router seams are passed through at call time.
+- Façade size moved from 7,223 to 6,770 LOC versus the P1.5.1 baseline.
+- Python 3.12 focused regression: **151 passed**.
+- No schema, truth precedence, LLM call-role/count, retry/repair, artifact-path, trading-authority, UEF, or broker semantic change.
+- See `docs/daily_patch/2026-10-07_p1_5_2_r2a_reporting_service_extraction.md`.

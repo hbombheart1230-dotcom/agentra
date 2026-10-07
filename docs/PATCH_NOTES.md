@@ -188,3 +188,11 @@
 - Required focused regression: 149 passed.
 - Broader affected reporting assertions: 280 passed; two test-only production-shaped paths were isolated to `tmp_path` afterward.
 - No production runtime, trading authority, UEF, broker, schema, truth-precedence, or LLM-policy change.
+
+## P1.5.2 R2-A Addendum (Reporting Service Extraction — 2026-10-07)
+
+- Added `libs/reporting/trade_report/service.py` as the owner for AI trade-report and trade-summary LLM orchestration.
+- `trade_report_ai.py` keeps the existing public entry points as compatibility façades and injects current helper/router seams at call time.
+- `trade_report_ai.py` reduced from 7,223 to 6,770 LOC relative to the P1.5.1 baseline.
+- Focused Reporting regression on Python 3.12: **151 passed**.
+- No report schema, LLM role/count, truth precedence, retry/repair semantics, artifact paths, trading authority, UEF, or broker behavior changed.

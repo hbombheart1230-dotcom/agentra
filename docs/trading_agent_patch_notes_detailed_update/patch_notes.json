@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 113,
+  "entry_count": 114,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3016,6 +3016,33 @@
         "libs/reporting/trade_report_markdown_clean.py",
         "tests/test_live_execution_bundle_report.py",
         "tests/test_report_metadata_alignment.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5.2 R2-A",
+      "title": "Reporting LLM service orchestration extracted behind compatibility façade",
+      "stage": "P1.5 Structural Refactor",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Moved AI trade-report and trade-summary LLM orchestration out of trade_report_ai.py into a dedicated service owner while preserving public APIs and runtime semantics.",
+      "details": [
+        "Added libs/reporting/trade_report/service.py and package initializer.",
+        "build_ai_trade_report() and build_trade_summary_report() remain public façade functions in trade_report_ai.py.",
+        "The façade injects its current helpers and LLMRouter at call time so existing monkeypatch and compatibility seams remain valid.",
+        "trade_report_ai.py moved from 7,223 to 6,770 LOC relative to the P1.5.1 baseline.",
+        "Python 3.12 focused Reporting regression passed 151/151.",
+        "No report schema, truth precedence, LLM role/count, retry/repair semantics, artifact path, trading authority, UEF, or broker behavior changed."
+      ],
+      "impact": "Creates the first explicit Reporting service boundary for P1.5.2 without changing behavior. Residual normalization/operator-text/section extraction remains in R2-A.",
+      "sources": [
+        "docs/daily_patch/2026-10-07_p1_5_2_r2a_reporting_service_extraction.md",
+        "libs/reporting/trade_report/service.py",
+        "libs/reporting/trade_report_ai.py"
       ],
       "status": "current"
     }
