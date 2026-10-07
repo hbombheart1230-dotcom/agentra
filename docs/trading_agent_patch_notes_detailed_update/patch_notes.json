@@ -3022,29 +3022,31 @@
     {
       "date": "2026-10-07",
       "version": "P1.5.2 R2-A",
-      "title": "Reporting service, normalization, operator-text and shared-section ownership extracted",
+      "title": "Reporting core ownership extracted behind compatibility façade",
       "stage": "P1.5 Structural Refactor",
       "types": [
         "REFACTOR",
         "REPORTING",
         "TESTING"
       ],
-      "summary": "Continued P1.5.2 R2-A by moving LLM service orchestration, report normalization, operator-facing text processing and shared deterministic section-seed assembly behind the trade_report_ai compatibility façade.",
+      "summary": "P1.5.2 R2-A moved LLM services, output normalization, operator text, shared deterministic section seeds, compact LLM input assembly and deterministic fallback construction out of trade_report_ai.py while preserving façade APIs and runtime semantics.",
       "details": [
-        "Added libs/reporting/trade_report/service.py, normalization.py, operator_text.py and sections.py.",
-        "build_ai_trade_report(), build_trade_summary_report() and the existing private compatibility symbols remain exposed from trade_report_ai.py.",
-        "The façade injects current helper/router seams at call time where required, preserving monkeypatch/test compatibility.",
-        "trade_report_ai.py reduced from 7,223 LOC after P1.5.1 to 5,156 LOC after the shared-section extraction, a net façade reduction of 2,067 LOC.",
-        "Python 3.12 focused Reporting regression passed 151/151 after service, normalization, operator-text and shared-section checkpoints.",
-        "No report schema, truth precedence, LLM role/count, retry/repair semantics, artifact path, trading authority, UEF, or broker behavior changed."
+        "Added responsibility owners for service orchestration, normalization, operator text and shared section seed assembly; compact-input and deterministic fallback owners were extended rather than duplicated.",
+        "build_ai_trade_report(), build_trade_summary_report() and existing private compatibility symbols remain exposed from trade_report_ai.py.",
+        "Helper/router seams are injected at call time where needed so existing monkeypatch and compatibility behavior remains intact.",
+        "trade_report_ai.py reduced from 7,223 LOC after P1.5.1 to 4,376 LOC, a net façade reduction of 2,847 LOC.",
+        "Python 3.12 focused Reporting regression passed 151/151 after the combined compact-input and deterministic fallback extraction, in addition to earlier green checkpoints.",
+        "No report schema, truth precedence, fallback meaning, LLM role/count, retry/repair semantics, artifact path, trading authority, UEF, or broker behavior changed."
       ],
-      "impact": "Establishes explicit Reporting service/normalization/operator-text/shared-section owners while preserving the compatibility façade. R2-A remains active for compact-input/fallback residuals.",
+      "impact": "The major R2-A responsibilities now have explicit owners outside the giant façade. Remaining R2-A work is limited to smaller section-builder ownership cleanup before R2-B Markdown façade work.",
       "sources": [
         "docs/daily_patch/2026-10-07_p1_5_2_r2a_reporting_service_extraction.md",
         "libs/reporting/trade_report/service.py",
         "libs/reporting/trade_report/normalization.py",
         "libs/reporting/trade_report/operator_text.py",
         "libs/reporting/trade_report/sections.py",
+        "libs/reporting/trade_report_ai_compact_input.py",
+        "libs/reporting/trade_report_ai_deterministic.py",
         "libs/reporting/trade_report_ai.py"
       ],
       "status": "current"

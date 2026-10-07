@@ -3,7 +3,7 @@
 ## Current State
 
 - Production runtime: separate from this documentation vault.
-- Current development milestone: P1.5 structural refactor. P1.5.1 Reporting definite-dead-code cleanup is COMPLETE; P1.5.2 Reporting decomposition is ACTIVE (R2-A service/normalization/operator-text/shared-section extraction PASS). UEF (UEF-1..UEF-9) remains COMPLETE and frozen as the evaluation-authority foundation.
+- Current development milestone: P1.5 structural refactor. P1.5.1 Reporting definite-dead-code cleanup is COMPLETE; P1.5.2 Reporting decomposition is ACTIVE (R2-A service/normalization/operator-text/shared-section/compact-input/fallback extraction PASS). UEF (UEF-1..UEF-9) remains COMPLETE and frozen as the evaluation-authority foundation.
 - Latest formal evaluation freeze: [[UEF|UEF-9 - Formal Evaluation Authority]] (UEF COMPLETE).
 
 ## Current Delivery Order
@@ -13,7 +13,7 @@
 3. P1.1 UEF Real-Run Acceptance: PASS.
 4. P1.2 UEF Cross-day Observation: NON-BLOCKING / OBSERVE.
 5. P1.3 Docker: COMPLETE / frozen operational baseline.
-6. P1.5 Large-file refactor / modularization: ACTIVE — P1.5.1 COMPLETE; P1.5.2 R2-A service/normalization/operator-text/shared-section extraction PASS; residual compact/fallback decomposition continues.
+6. P1.5 Large-file refactor / modularization: ACTIVE — P1.5.1 COMPLETE; P1.5.2 R2-A core extraction PASS through compact-input/fallback; residual section-builder cleanup continues.
 7. P2 Strategy Program Integration; P3 Safety 5D/5E/6; P4 Q100/Reporter v2; P5 Evidence Memory/Obsidian; P6 Self-improvement; P7 System V2 Freeze; P8 paper final experiments: PLANNED.
 
 ## Historical Roadmap Sequence

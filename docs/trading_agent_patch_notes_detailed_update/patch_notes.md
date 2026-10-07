@@ -1840,3 +1840,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Façade size: **7,223 -> 5,156 LOC** relative to the P1.5.1 baseline (net -2,067 LOC).
 - Python 3.12 focused Reporting suite passed **151/151** after normalization, after operator-text extraction, and again after shared-section extraction.
 - No schema, truth precedence, LLM decision role/count, retry/repair, artifact path, trading authority, UEF or broker behavior changed.
+
+## P1.5.2 R2-A Compact / Deterministic Fallback Update
+
+- Extracted `_compact_story_input_for_llm()` into `trade_report_ai_compact_input.py`.
+- Extracted deterministic `_fallback_report()` into `trade_report_ai_deterministic.py`.
+- Compatibility wrappers and helper injection preserve the existing public/private call seams.
+- `trade_report_ai.py`: **7,223 -> 4,376 LOC** versus the P1.5.1 baseline (net -2,847 LOC).
+- Python 3.12 focused Reporting suite: **151/151 PASS**.
+- No report contract, truth precedence, fallback meaning, LLM role/count, trading authority, UEF or broker semantics changed.

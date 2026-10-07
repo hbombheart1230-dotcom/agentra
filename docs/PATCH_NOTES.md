@@ -205,3 +205,12 @@
 - `trade_report_ai.py` is now **5,156 LOC**, down from 7,223 after P1.5.1 (net -2,067 LOC from the façade).
 - Each extraction checkpoint passed the same Python 3.12 focused Reporting suite: **151/151 PASS**.
 - Public/private compatibility symbols used by existing tests remain exposed from `trade_report_ai.py`; no report/trading semantics changed.
+
+## P1.5.2 R2-A Compact / Fallback Addendum — 2026-10-07
+
+- Moved the 385-line `_compact_story_input_for_llm()` implementation into `trade_report_ai_compact_input.py`; façade wrapper retained.
+- Moved the 486-line deterministic `_fallback_report()` implementation into `trade_report_ai_deterministic.py`; façade wrapper retained.
+- Existing helper/monkeypatch seams are injected at call time, preserving compatibility behavior.
+- `trade_report_ai.py` is now **4,376 LOC**, down from 7,223 after P1.5.1 (net façade reduction **2,847 LOC**).
+- Python 3.12 focused Reporting regression: **151/151 PASS** after both extractions.
+- No report schema, truth precedence, fallback semantics, LLM call role/count, trading authority, UEF, or broker behavior changed.

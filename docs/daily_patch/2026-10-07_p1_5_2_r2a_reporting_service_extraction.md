@@ -98,3 +98,41 @@ No test expectations were weakened or removed. No runtime topology, report schem
 ### Updated next step
 
 R2-A is still active. The next residual targets are the compact-input/fallback/remaining section clusters; R2-B Markdown façade decomposition starts only after the R2-A residual ownership is sufficiently reduced and regression remains green.
+
+## R2-A compact-input / deterministic fallback update
+
+Two further behavior-preserving moves completed the next planned R2-A residual tranche:
+
+- `libs/reporting/trade_report_ai_compact_input.py`
+  - now owns the 385-line `_compact_story_input_for_llm()` implementation
+  - `trade_report_ai.py` retains the private compatibility wrapper
+  - all current helper seams are injected from the façade at call time
+- `libs/reporting/trade_report_ai_deterministic.py`
+  - now owns the 486-line deterministic `_fallback_report()` implementation
+  - fallback section ordering, shared facts, truth/memory surfaces and operator-facing output paths remain unchanged
+  - the façade retains `_fallback_report()` and injects the existing helper seams
+
+### Updated façade size
+
+```text
+P1.5.1 baseline trade_report_ai.py        7,223 LOC
+service extraction                        6,770 LOC
+normalization extraction                  6,559 LOC
+operator-text extraction                  5,827 LOC
+shared-section-seed extraction            5,156 LOC
+compact-input + fallback extraction       4,376 LOC
+--------------------------------------------------
+net façade reduction                      2,847 LOC
+```
+
+### Verification
+
+Python 3.12 focused Reporting regression after the combined compact/fallback tranche:
+
+```text
+151 passed in 2.08s
+```
+
+No expected values were weakened and no tests were removed. No report JSON/Markdown contract, truth precedence, deterministic fallback meaning, LLM call role/count, retry/repair behavior, artifact path, Supervisor/Executor authority, UEF meaning, or broker mutation path changed.
+
+R2-A remains active only for smaller residual section-builder ownership cleanup; the major orchestration/normalization/operator/shared-seed/compact/fallback responsibilities are now outside the giant façade.
