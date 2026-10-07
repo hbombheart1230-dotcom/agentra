@@ -1848,3 +1848,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Implementation remains gated by P1.2/P1.3 freeze and baseline SHA/tag capture.
 - Authority: `docs/refactor/p1_5_strategist_implementation_packet_v1_0.md`.
 
+# 2026-10-07 - P1.5 Strategist Design Freeze
+
+- Frozen the Strategist P1.5 implementation design; no runtime code changed.
+- Current source inventory: `graphs/nodes/strategist_node.py` 8,879 lines, 156 top-level functions, 69 direct shared-state write keys.
+- New Agent-level contract names are `StrategistAgentInput` and `StrategistAgentResult`; the existing tactical `StrategyInput` is not repurposed.
+- Existing `StrategistOutput` remains the compatibility authority.
+- Implementation order is S1 LLM extraction → S2 deterministic policy/output → S3 context/IO → S4 service/contract/state adapter → S5 tests/wrappers.
+- Existing private imports and monkeypatch seams remain during staged migration.
+- Runtime implementation remains blocked until the P1.2/P1.3 frozen-baseline gate.
+- See `docs/refactor/p1_5_strategist_implementation_packet_v1_0.md`.
