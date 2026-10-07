@@ -136,3 +136,81 @@ Python 3.12 focused Reporting regression after the combined compact/fallback tra
 No expected values were weakened and no tests were removed. No report JSON/Markdown contract, truth precedence, deterministic fallback meaning, LLM call role/count, retry/repair behavior, artifact path, Supervisor/Executor authority, UEF meaning, or broker mutation path changed.
 
 R2-A remains active only for smaller residual section-builder ownership cleanup; the major orchestration/normalization/operator/shared-seed/compact/fallback responsibilities are now outside the giant façade.
+
+## R2-A final section/context extraction and completion
+
+The final R2-A residual pass moved the remaining large section/context responsibilities out of the façade:
+
+- `libs/reporting/trade_report/sections.py`
+  - market-context summary/bullets
+  - strategist summary section
+  - market↔scanner linkage
+  - scanner choice summary/bullets/comparison
+  - entry decision summary/bullets and entry-detail resolution
+  - holding-story bullets
+  - reporter evaluation / same-day feedback evaluation
+  - execution-quality section
+  - exit-decision bullets
+- `libs/reporting/trade_report/context.py`
+  - entry execution visibility assembly
+  - strategist compact report-context assembly
+
+Compatibility wrappers remain in `trade_report_ai.py` and resolve façade helpers at call time.
+
+### Validation findings during extraction
+
+The incremental gates did their job and caught two extraction-only dependency omissions before R2-A closure:
+
+1. Market/scanner extraction initially referenced a nested `_core_value_opt` as if it were façade-owned. The injection was removed and the original local helper ownership preserved.
+2. Lifecycle extraction initially omitted `json`, `normalize_reporter_text`, and `build_execution_truth_bullets` from the new owner boundary. These dependencies were restored without changing behavior.
+
+No expected values, test assertions, report semantics, or runtime authority rules were changed to make the tests pass.
+
+### Final size movement
+
+```text
+P1.5.1 baseline trade_report_ai.py        7,223 LOC
+service extraction                        6,770 LOC
+normalization extraction                  6,559 LOC
+operator-text extraction                  5,827 LOC
+shared-section-seed extraction            5,156 LOC
+compact-input + fallback extraction       4,376 LOC
+market/scanner builders                   3,847 LOC
+lifecycle builders                        3,195 LOC
+context builders                          3,040 LOC
+--------------------------------------------------
+net façade reduction                      4,183 LOC (-57.9%)
+```
+
+No function remaining in `trade_report_ai.py` exceeds 80 LOC at the R2-A closure point.
+
+### Final verification
+
+Focused Python 3.12 Reporting gate after the final context extraction:
+
+```text
+151 passed
+```
+
+Broader Python 3.12 Reporting regression covering 14 relevant Reporting/API/runtime test files:
+
+```text
+297 passed, 1 warning in 9.50s
+```
+
+The broader set included AI report, compact/separated adapter, provenance, batch runner, live bundle/recovery, metadata alignment, runtime regression, intraday, single-trade, symbol-trade, API trade-report, and closeout-report tests.
+
+### R2-A verdict
+
+```text
+P1.5.2 R2-A                       COMPLETE
+PUBLIC / PRIVATE COMPATIBILITY    PRESERVED
+REPORT CONTRACT                   PRESERVED
+TRUTH PRECEDENCE                  PRESERVED
+LLM ROLE / CALL COUNT             PRESERVED
+SUPERVISOR / EXECUTOR AUTHORITY   PRESERVED
+UEF / BROKER SEMANTICS            PRESERVED
+FOCUSED REGRESSION                151/151 PASS
+BROADER REPORTING REGRESSION      297/297 PASS
+NEXT                              R2-B Markdown façade decomposition
+```

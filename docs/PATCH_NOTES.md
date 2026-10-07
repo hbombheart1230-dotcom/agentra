@@ -214,3 +214,13 @@
 - `trade_report_ai.py` is now **4,376 LOC**, down from 7,223 after P1.5.1 (net façade reduction **2,847 LOC**).
 - Python 3.12 focused Reporting regression: **151/151 PASS** after both extractions.
 - No report schema, truth precedence, fallback semantics, LLM call role/count, trading authority, UEF, or broker behavior changed.
+
+## P1.5.2 R2-A Completion — Section / Context Builders (2026-10-07)
+
+- Moved market/scanner section builders, lifecycle section builders, entry execution visibility and strategist compact-context assembly behind responsibility-specific owners.
+- Added `libs/reporting/trade_report/context.py`; expanded `libs/reporting/trade_report/sections.py`.
+- `trade_report_ai.py` is now **3,040 LOC**, down from 7,223 LOC after P1.5.1 (**-4,183 LOC / -57.9%** from the P1.5.1 façade baseline).
+- Final focused regression: **151/151 PASS**.
+- Final broader Reporting regression across 14 relevant test files: **297/297 PASS**.
+- Two dependency-injection omissions were caught by the intermediate gates and corrected before closure; no test expectation was weakened.
+- **P1.5.2 R2-A: COMPLETE. R2-B Markdown façade decomposition: NEXT.**

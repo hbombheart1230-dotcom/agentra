@@ -1849,3 +1849,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `trade_report_ai.py`: **7,223 -> 4,376 LOC** versus the P1.5.1 baseline (net -2,847 LOC).
 - Python 3.12 focused Reporting suite: **151/151 PASS**.
 - No report contract, truth precedence, fallback meaning, LLM role/count, trading authority, UEF or broker semantics changed.
+
+## P1.5.2 R2-A Completion — Section / Context Builders
+
+- Extracted market/scanner and lifecycle section builders into `trade_report/sections.py`.
+- Added `trade_report/context.py` for entry execution visibility and strategist compact-context assembly.
+- `trade_report_ai.py`: **7,223 -> 3,040 LOC** from the P1.5.1 baseline (**-57.9%**).
+- Intermediate dependency-boundary regressions were detected by tests and fixed without weakening assertions.
+- Final focused gate: **151 passed**. Final broader Reporting regression: **297 passed, 1 warning**.
+- R2-A is **COMPLETE**. R2-B Markdown façade decomposition is next.
