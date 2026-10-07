@@ -1826,3 +1826,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No runtime, strategy, broker, execution-authority, or trading-semantic change is included.
 - See `docs/refactor/p1_5_p1_6_master_plan.md`, `docs/refactor/p1_5_refactor_constitution.md`, `docs/refactor/p1_5_documentation_refactor_plan.md`, and `docs/refactor/documentation_inventory.md`.
 
+# 2026-10-07 - P1.5 Strategist Deep Design v0.1
+
+- Mapped all 156 top-level functions in `graphs/nodes/strategist_node.py` to proposed P1.5 owners while keeping `strategist_node` as the stable runtime façade.
+- Preserved existing semantic owners: `StrategistOutput`, Monitor policy normalization, Scanner bias, horizon policy, explanation and artifact contracts.
+- The existing `StrategyInput` remains a per-symbol tactical contract; the new high-level boundary will use `StrategistAgentInput` / `StrategistAgentResult`.
+- Recorded direct private imports and node-module monkeypatch targets as compatibility seams.
+- Defined S1 as a mechanical LLM extraction only; no prompt, call-count, retry/fallback, strategy, candidate, topology or execution change.
+- Defined the explicit Agent-input groups and the current compatibility state-patch surface.
+- Runtime implementation remains gated on the frozen P1.2/P1.3 baseline.
+- See `docs/refactor/p1_5_strategist_implementation_packet_v0_1.md`.
