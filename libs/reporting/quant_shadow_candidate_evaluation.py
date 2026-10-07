@@ -6,6 +6,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
+from libs.reporting.json_array_stream import iter_json_array
 from libs.reporting.q8_evaluation_contract import (
     CANONICAL_DEDUPE_KEY_FIELDS,
     PROMOTION_CANDIDATE_MIN_DAYS,
@@ -64,20 +65,23 @@ def _json_paths_for_day(root: Path, day: str) -> List[Path]:
 
 
 def _q9_windows_by_id(reports_root: Path, day: str) -> Dict[str, Dict[str, Any]]:
-    payload = _read_json(
+    # `_augment_missing_q9_commander_candidate` reads only `commander_final` from a window, so
+    # the ~120 MB windows file is streamed and reduced to that field (id -> {"commander_final"}).
+    path = (
         Path(reports_root)
         / "operator_summary"
         / "daily"
         / str(day)[:10]
         / "q9_decision_windows.json"
     )
-    if not isinstance(payload, dict):
+    out: Dict[str, Dict[str, Any]] = {}
+    try:
+        for row in iter_json_array(path, "windows", strict=True):
+            if isinstance(row, Mapping) and str(row.get("decision_id") or ""):
+                out[str(row.get("decision_id") or "")] = {"commander_final": row.get("commander_final")}
+    except (OSError, ValueError):
         return {}
-    return {
-        str(row.get("decision_id") or ""): dict(row)
-        for row in payload.get("windows") or []
-        if isinstance(row, Mapping) and str(row.get("decision_id") or "")
-    }
+    return out
 
 
 def _augment_missing_q9_commander_candidate(

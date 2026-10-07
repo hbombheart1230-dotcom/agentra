@@ -95,12 +95,18 @@ def test_keys_none_is_the_unchanged_legacy_path(world):
 def _record_reads(monkeypatch):
     opened: list[str] = []
     real = qsce._read_json
+    real_stream = qsce.iter_json_array
 
     def spy(path):
         opened.append(Path(path).name)
         return real(path)
 
+    def stream_spy(path, *args, **kwargs):
+        opened.append(Path(path).name)  # the q9 windows file is now streamed rather than json-loaded
+        return real_stream(path, *args, **kwargs)
+
     monkeypatch.setattr(qsce, "_read_json", spy)
+    monkeypatch.setattr(qsce, "iter_json_array", stream_spy)
     return opened
 
 

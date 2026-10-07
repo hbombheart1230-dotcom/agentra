@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 
 import libs.reporting.json_array_stream as jas
+import libs.reporting.quant_shadow_candidate_evaluation as qsce
 import libs.research.rank1_feature_mart.loaders as loaders
 from libs.reporting.evaluation import artifact_inventory as inventory
 
@@ -475,3 +476,78 @@ def test_iter_json_array_strict_raises_for_unreadable(tmp_path):
     with pytest.raises(ValueError):
         list(jas.iter_json_array(tmp_path / "bad.json", "windows", strict=True))
     assert list(jas.iter_json_array(tmp_path / "bad.json", "windows")) == []  # default stays lenient
+
+
+# --------------------------------------------------------------------- q9 windows consumers reduced to the fields they read
+
+
+def _windows_world(tmp_path: Path, day="2026-10-05"):
+    path = tmp_path / "operator_summary" / "daily" / day / "q9_decision_windows.json"
+    path.parent.mkdir(parents=True)
+    windows = [
+        {"decision_id": "A", "run_id": "r1", "commander_final": {"decision": "BUY"}, "decision_epoch": 5, "generated_at": "g1", "blob": ["x"] * 100},
+        {"decision_id": "B", "run_id": "r2", "commander_final": None, "generated_at": "g2"},
+        {"decision_id": " ", "run_id": "skip"},
+        {"decision_id": "A", "run_id": "r3", "commander_final": {"decision": "SELL"}, "decision_epoch": 9, "generated_at": "g3"},  # later duplicate wins
+        "junk",
+    ]
+    _write(path, {"windows": windows})
+    return tmp_path, windows
+
+
+def test_stage2_load_q9_windows_matches_whole_file_semantics(tmp_path):
+    from libs.reporting.evaluation.stage2_authority.loaders import load_q9_windows
+
+    reports, windows = _windows_world(tmp_path)
+    result = load_q9_windows(reports, "2026-10-05", "2026-10-05")
+    expected = {}
+    for raw in windows:
+        if isinstance(raw, dict) and str(raw.get("decision_id") or "").strip():
+            row = dict(raw)
+            row["_day"] = "2026-10-05"
+            expected[str(raw["decision_id"]).strip()] = row
+    assert set(result) == set(expected) == {"A", "B"}
+    for key in ("_day", "run_id", "commander_final", "decision_epoch", "generated_at"):
+        assert [result[k].get(key) for k in sorted(result)] == [expected[k].get(key) for k in sorted(expected)]
+    assert "blob" not in result["A"]
+    assert load_q9_windows(reports, "2030-01-01", "2030-01-02") == {}
+
+
+def test_quant_shadow_windows_by_id_reduced_but_augmentation_unchanged(tmp_path):
+    reports, windows = _windows_world(tmp_path, day="2026-10-05")
+    by_id = qsce._q9_windows_by_id(reports, "2026-10-05")
+    assert set(by_id) == {" ", "A", "B"} and by_id["A"] == {"commander_final": {"decision": "SELL"}}  # keys are not stripped here, as before
+    payload = {"q9_decision_id": "A", "q9_decision_candidates": [{"symbol": "005930", "q9_decision_role": "B_STRATEGIST_RANKED"}]}
+    full = {str(w["decision_id"]): dict(w) for w in windows if isinstance(w, dict) and str(w.get("decision_id") or "")}
+    got = qsce._augment_missing_q9_commander_candidate(json.loads(json.dumps(payload)), windows_by_id=by_id)
+    ref = qsce._augment_missing_q9_commander_candidate(json.loads(json.dumps(payload)), windows_by_id=full)
+    assert got == ref
+    assert qsce._q9_windows_by_id(reports, "2000-01-01") == {}
+
+
+def test_q16_incremental_dedupe_equals_collect_then_dedupe(tmp_path, monkeypatch):
+    from libs.reporting.evaluation import q16_proxy_rejection_review as q16
+
+    reports = tmp_path / "reports"
+    daily = reports / "evaluation" / "daily"
+    rows_by_day = {
+        "2026-10-01": [{"q16_day": "2026-10-01", "q9_decision_id": "a", "symbol": "1", "v": 1}],
+        "2026-10-02": [{"q16_day": "2026-10-01", "q9_decision_id": "a", "symbol": "1", "v": 2},  # overlaps day 1 (cumulative review)
+                       {"q16_day": "2026-10-02", "q9_decision_id": "b", "symbol": "2", "v": 3}],
+    }
+    for day, rows in rows_by_day.items():
+        (daily / day).mkdir(parents=True)
+        (daily / day / "q16_proxy_rejection_review.json").write_text(json.dumps({"samples": rows + ["junk"]}), encoding="utf-8")
+    monkeypatch.setattr(q16, "_load_day_rows", lambda root, day: [{"q16_day": "2026-10-03", "q9_decision_id": "c", "symbol": "3", "v": 4},
+                                                                  {"q16_day": "2026-10-01", "q9_decision_id": "a", "symbol": "1", "v": 9}])
+    captured = {}
+    real = q16._forward_integrity
+
+    def spy(row):
+        captured.setdefault("order", []).append((row["q9_decision_id"], row["v"]))
+        return real(row)
+
+    monkeypatch.setattr(q16, "_forward_integrity", spy)
+    q16.build_q16_proxy_rejection_review(reports_root=reports, day="2026-10-03", start_day="2026-10-01")
+    # same order/values as: all rows collected in order, then dict-deduped (first position, last value wins)
+    assert captured["order"] == [("a", 9), ("b", 3), ("c", 4)]
