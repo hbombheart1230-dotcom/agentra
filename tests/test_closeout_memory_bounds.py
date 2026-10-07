@@ -929,3 +929,49 @@ def test_daily_q9_snapshot_missing_or_corrupt_windows_file_is_empty(tmp_path):
     text = json.dumps({"windows": [{"decision_id": f"W{i}", "blob": "x" * 200} for i in range(20)]}, indent=2)
     path.write_text(text[: len(text) // 2], encoding="utf-8")
     assert trm._daily_q9_snapshot(trade_dir, day="2026-10-07", entry={}, scanner_context={"q9_decision_id": "W19"}, selected_symbol="005930") == ({}, "")
+
+
+# --------------------------------------------------------------------- no-trade attribution: streamed windows
+
+
+def test_no_trade_attribution_streamed_windows_equal_whole_file_report(tmp_path):
+    from libs.reporting.evaluation import no_trade_attribution as nta
+
+    windows = [
+        {"decision_id": "A", "run_id": "r1", "generated_at": "2026-10-07T00:10:00+00:00", "scanner_control": {"top1_symbol": "005930", "blob": [1] * 40},
+         "strategist_selection": {"selected_symbol": "005930"}, "commander_final": {"decision": "approve", "monitor_intent": "NOOP", "reason": "r", "detail": "d" * 200,
+                                                                                   "monitor_observation": {"reason": "no_edge"}, "selected_symbol": "005930"}},
+        {"decision_id": "B", "run_id": "r2", "generated_at": "2026-10-07T00:11:00+00:00", "commander_final": {"decision": "approve", "monitor_intent": "BUY", "monitor_reason": "x"}},
+        {"decision_id": "test-C", "run_id": "r3", "generated_at": "2026-10-07T00:12:00+00:00", "commander_final": {"decision": "reject"}},  # synthetic id
+        {"decision_id": "D", "run_id": "r4", "generated_at": "2026-10-07T07:00:00+00:00", "commander_final": {"decision": "reject"}},  # 16:00 KST
+        {"decision_id": "E", "run_id": "r5", "generated_at": "2026-10-07T00:13:00+00:00", "scanner_control": "x", "strategist_selection": None, "commander_final": "y"},
+        "junk",
+    ]
+    reports = tmp_path / "reports"
+    path = reports / "operator_summary" / "daily" / "2026-10-07" / "q9_decision_windows.json"
+    path.parent.mkdir(parents=True)
+    _write(path, {"windows": windows})
+    got = nta.build_no_trade_attribution_report(day="2026-10-07", reports_root=reports, trade_count=0)
+
+    kept = [w for w in windows if isinstance(w, dict) and not nta.is_synthetic_evaluation_row(w) and nta.is_regular_session_evaluation_row(w)]
+    assert got["q9_window_count"] == len(kept) == 3
+    # the same report computed from the unreduced windows (the pre-fix behaviour)
+    original = nta._q9_windows
+    nta._q9_windows = lambda root, day: kept
+    try:
+        expected = nta.build_no_trade_attribution_report(day="2026-10-07", reports_root=reports, trade_count=0)
+    finally:
+        nta._q9_windows = original
+    assert json.dumps(got, sort_keys=True, default=str) == json.dumps(expected, sort_keys=True, default=str)
+
+
+def test_no_trade_attribution_missing_or_corrupt_windows_file_has_no_windows(tmp_path):
+    from libs.reporting.evaluation import no_trade_attribution as nta
+
+    reports = tmp_path / "reports"
+    assert nta._q9_windows(reports, "2026-10-07") == []
+    path = reports / "operator_summary" / "daily" / "2026-10-07" / "q9_decision_windows.json"
+    path.parent.mkdir(parents=True)
+    text = json.dumps({"windows": [{"decision_id": f"W{i}", "blob": "x" * 200} for i in range(20)]}, indent=2)
+    path.write_text(text[: len(text) // 2], encoding="utf-8")
+    assert nta._q9_windows(reports, "2026-10-07") == []
