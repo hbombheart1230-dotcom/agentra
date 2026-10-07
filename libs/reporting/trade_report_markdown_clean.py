@@ -4023,16 +4023,6 @@ def _risk_mode_label(value: Any) -> str:
     }.get(raw, _metadata_value(value) or "-")
 
 
-def _playbook_label(value: Any) -> str:
-    raw = _clip(value, 80).lower()
-    return {
-        "defensive": "방어형",
-        "breakout": "돌파형",
-        "pullback": "눌림목형",
-        "leader": "주도주형",
-    }.get(raw, _metadata_value(value) or "-")
-
-
 def _theme_label(value: Any) -> str:
     raw = _clip(value, 120).lower()
     mapping = {
