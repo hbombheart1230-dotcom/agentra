@@ -667,3 +667,117 @@ def test_stage2_authority_payload_projection_matches_full_load(tmp_path):
     )
     assert set(slim[0]) == {"q9_decision_candidates", "generated_at"}
     assert _q9_decision_candidate_rows(slim) == _q9_decision_candidate_rows(full)
+
+
+def test_evaluation_lens_opts_in_and_never_reads_dropped_q9_keys(tmp_path, monkeypatch):
+    from libs.reporting.evaluation import evaluation_lens_report as lens
+
+    monkeypatch.chdir(tmp_path)
+    reports = _q9_world(tmp_path)
+    baseline = lens.build_evaluation_lens_report(reports_root=reports, start="2026-10-07", end="2026-10-07")
+    real_loader = lens.load_quant_shadow_candidate_payloads_for_range
+
+    def trapping(**kwargs):
+        assert kwargs.get("drop_q9_row_keys") == qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN
+        payloads = real_loader(**{k: v for k, v in kwargs.items() if k != "drop_q9_row_keys"})
+        for payload in payloads:
+            for row in payload["q9_decision_candidates"]:
+                for key in qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN:
+                    row[key] = _Trap()
+        return payloads
+
+    _Trap.hits.clear()
+    monkeypatch.setattr(lens, "load_quant_shadow_candidate_payloads_for_range", trapping)
+    trapped = lens.build_evaluation_lens_report(reports_root=reports, start="2026-10-07", end="2026-10-07")
+    assert _Trap.hits == []
+    assert json.dumps(trapped, sort_keys=True, default=str) == json.dumps(baseline, sort_keys=True, default=str)
+
+
+# --------------------------------------------------------------------- evaluation lens: streaming accumulators
+
+
+def _lens_outcome(seed: int):
+    horizons = {"+5m": 0, "+15m": 1, "+30m": 2, "EOD": 3}
+    checkpoints = {}
+    for name, offset in horizons.items():
+        value = (seed * 7 + offset * 3) % 11 - 5
+        if (seed + offset) % 5 == 0:
+            checkpoints[name] = {"status": "pending"}  # not observed -> excluded, like the real outcomes
+        else:
+            checkpoints[name] = {"status": "observed", "return_pct": value * 0.37, "mfe_pct": abs(value) * 0.5 + 0.1, "mae_pct": -abs(value) * 0.3}
+    return {"available": True, "checkpoints": checkpoints}
+
+
+def _lens_candidate_rows(day_index: int, count: int):
+    blockers = ["breakout_not_ready", "pullback_not_mature", "other_reason", "volume_confirmation_missing", ""]
+    rows = []
+    for i in range(count):
+        seed = day_index * 100 + i
+        row = {
+            "symbol": f"{(seed % 7):06d}", "reason": blockers[seed % len(blockers)], "shadow_role": "top_pick",
+            "_payload_generated_at": f"2026-10-0{day_index + 1}T00:{i % 60:02d}:00+00:00",
+            "shadow_forward_base": {"baseline_raw_ts": f"2026100{day_index + 1}090000" if i % 3 else ""},
+            "entry_lane_observation": {"market_regime_rail": ["risk_on", "risk_off", ""][seed % 3]},
+            "shadow_forward_outcome": _lens_outcome(seed),
+        }
+        rows.append(row)
+    return rows
+
+
+def _lens_q9_rows(day_index: int, decisions: int):
+    roles = ["P_SCANNER_PRE_STRATEGIST_UNIVERSE", "A_SCANNER_CONTROL", "B_STRATEGIST_RANKED", "R1_PRE_REFRESH_SCANNER", "C_COMMANDER_FINAL"]
+    rows = []
+    for d in range(decisions):
+        for r, role in enumerate(roles):
+            for rank in (1, 2, 3):
+                seed = day_index * 1000 + d * 17 + r * 5 + rank
+                rows.append({
+                    "q9_decision_id": f"D{day_index}-{d % 4}" if d != 3 else "", "q9_decision_role": role, "rank": rank if (seed % 9) else "",
+                    "q9_selected": bool(role == "B_STRATEGIST_RANKED" and rank == 2 and d % 2), "shadow_forward_outcome": _lens_outcome(seed),
+                })
+    return rows
+
+
+def test_lens_streaming_accumulators_equal_the_materialised_reviews():
+    from libs.reporting.evaluation import evaluation_lens_report as lens
+
+    days = [(_lens_candidate_rows(i, 40), _lens_q9_rows(i, 9)) for i in range(3)]
+    all_candidates = [row for cands, _ in days for row in cands]
+    all_q9 = [row for _, q9 in days for row in q9]
+    for cost_floor in (0.0, 0.9):
+        blocker = lens._BlockerReviewAccumulator(cost_floor)
+        strategist = lens._StrategistDeltaAccumulator()
+        for cands, q9 in days:  # day-sized chunks, in order, like build_evaluation_lens_report
+            blocker.add_rows(cands)
+            strategist.add_rows(q9)
+        assert blocker.result() == lens._blocker_forward_review(all_candidates, cost_floor_pct=cost_floor)
+        assert strategist.result() == lens._strategist_delta_review(all_q9)
+    assert blocker.result()["by_blocker"] and blocker.result()["by_market_rail"]  # the fixture exercises real groups
+    assert strategist.result()["decision_window_count"] > 0
+
+
+def test_lens_report_is_built_day_by_day_without_materialising_the_range(tmp_path, monkeypatch):
+    from libs.reporting.evaluation import evaluation_lens_report as lens
+
+    monkeypatch.chdir(tmp_path)
+    reports = tmp_path / "reports"
+    reports.mkdir()
+    for day in ("2026-10-05", "2026-10-06", "2026-10-07"):
+        shadow = tmp_path / "data" / "logs" / "quant_shadow_candidates" / day
+        shadow.mkdir(parents=True)
+        for index in range(3):
+            payload = {"generated_at": f"{day}T00:0{index}:00+00:00", "candidates": [_q9_row("005930", "x", 1)], "q9_decision_candidates": [
+                _q9_row("005930", "P_SCANNER_PRE_STRATEGIST_UNIVERSE", 1, f"{day}-{index}"), _q9_row("000660", "B_STRATEGIST_RANKED", 1, f"{day}-{index}")]}
+            (shadow / f"{day.replace('-', '')}00{index}000Z_x.json").write_text(json.dumps(payload), encoding="utf-8")
+    loads = []
+    real = lens.load_quant_shadow_candidate_payloads_for_range
+
+    def spy(**kwargs):
+        loads.append((kwargs["start"], kwargs["end"]))
+        return real(**kwargs)
+
+    monkeypatch.setattr(lens, "load_quant_shadow_candidate_payloads_for_range", spy)
+    report = lens.build_evaluation_lens_report(reports_root=reports, start="2026-10-05", end="2026-10-07")
+    assert loads == [("2026-10-05", "2026-10-05"), ("2026-10-06", "2026-10-06"), ("2026-10-07", "2026-10-07")]  # one day resident at a time
+    assert report["evidence"]["shadow_payload_count"] == 9 and report["evidence"]["candidate_count"] == 9
+    assert report["evidence"]["q9_candidate_count"] == 18

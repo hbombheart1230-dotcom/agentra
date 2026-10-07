@@ -878,3 +878,139 @@ def test_strict_lock_primitive_never_imports_execution_or_broker_modules():
                 imported.append(node.module)
         for name in imported:
             assert not name.startswith(forbidden), f"{fn_name} must never import {name!r}"
+
+
+
+# =============================================================================
+# Cross-namespace guard (2026-10-07): a Host process must not judge a Docker-owned lock by PID,
+# and a container must not judge a Host-owned lock by PID.
+# =============================================================================
+
+
+def _other_kind_identity() -> str:
+    return "posix:12345" if os.name == "nt" else "win:134357436014167283"
+
+
+def _foreign_lock(lock_path, *, age_sec=0, heartbeat_age_sec=None, pid=1):
+    now = int(time.time())
+    payload = {
+        "pid": pid, "process_start_identity": _other_kind_identity(), "owner_token": "foreign-owner",
+        "acquired_at": now - age_sec, "acquired_ts": "x", "target_day": "2026-10-07", "trigger": "kiwoom_market_status_4",
+    }
+    if heartbeat_age_sec is not None:
+        payload["heartbeat_epoch"] = now - heartbeat_age_sec
+    lock_path.write_text(json.dumps(payload), encoding="utf-8")
+
+
+def test_t9_foreign_namespace_lock_with_fresh_heartbeat_is_not_reclaimed(tmp_path, monkeypatch):
+    import libs.runtime.live_loop_lock as lock_mod
+
+    lock_path = tmp_path / "closeout_maintenance.lock"
+    _foreign_lock(lock_path, age_sec=600, heartbeat_age_sec=20)
+    # even if the local PID table says the foreign pid is gone, the guard must not trust it
+    monkeypatch.setattr(lock_mod, "pid_exists", lambda pid: False)
+    before = lock_path.read_text(encoding="utf-8")
+    acquired, reason = lock_mod.acquire_live_loop_lock(
+        lock_path, lock_stale_sec=1800, strict_owner_identity=True, owner_token="mine", cross_namespace_guard=True
+    )
+    assert (acquired, reason) == (False, "FOREIGN_NAMESPACE_LOCK_ACTIVE")
+    assert lock_path.read_text(encoding="utf-8") == before
+
+
+def test_t9b_foreign_namespace_lock_without_heartbeat_uses_acquired_at_freshness(tmp_path, monkeypatch):
+    import libs.runtime.live_loop_lock as lock_mod
+
+    lock_path = tmp_path / "closeout_maintenance.lock"
+    _foreign_lock(lock_path, age_sec=30)  # no heartbeat yet, just acquired
+    monkeypatch.setattr(lock_mod, "pid_exists", lambda pid: False)
+    assert lock_mod.acquire_live_loop_lock(
+        lock_path, lock_stale_sec=1800, strict_owner_identity=True, owner_token="mine", cross_namespace_guard=True
+    ) == (False, "FOREIGN_NAMESPACE_LOCK_ACTIVE")
+
+
+def test_t9c_foreign_namespace_lock_with_stale_heartbeat_can_be_reclaimed(tmp_path):
+    import libs.runtime.live_loop_lock as lock_mod
+
+    lock_path = tmp_path / "closeout_maintenance.lock"
+    _foreign_lock(lock_path, age_sec=3000, heartbeat_age_sec=1200)
+    acquired, reason = lock_mod.acquire_live_loop_lock(
+        lock_path, lock_stale_sec=1800, strict_owner_identity=True, owner_token="mine", cross_namespace_guard=True
+    )
+    assert acquired is True and reason == "FOREIGN_NAMESPACE_STALE_HEARTBEAT_RECLAIMED"
+    assert json.loads(lock_path.read_text(encoding="utf-8"))["owner_token"] == "mine"
+
+
+def test_t9d_guard_is_opt_in_other_callers_keep_legacy_pid_judgement(tmp_path, monkeypatch):
+    import libs.runtime.live_loop_lock as lock_mod
+
+    lock_path = tmp_path / "m13.lock"
+    _foreign_lock(lock_path, age_sec=5, heartbeat_age_sec=1)
+    monkeypatch.setattr(lock_mod, "pid_exists", lambda pid: False)
+    acquired, reason = lock_mod.acquire_live_loop_lock(lock_path, lock_stale_sec=1800, strict_owner_identity=True, owner_token="mine")
+    assert (acquired, reason) == (True, "DEAD_OWNER_RECLAIMED")  # trading-lock semantics unchanged
+
+
+def test_t9e_same_namespace_dead_owner_is_still_reclaimed_under_the_guard(tmp_path):
+    import libs.runtime.live_loop_lock as lock_mod
+
+    lock_path = tmp_path / "closeout_maintenance.lock"
+    my_kind = "win" if os.name == "nt" else "posix"
+    lock_path.write_text(json.dumps({
+        "pid": 987654321, "process_start_identity": f"{my_kind}:42", "owner_token": "gone", "acquired_at": int(time.time()),
+    }), encoding="utf-8")
+    acquired, reason = lock_mod.acquire_live_loop_lock(
+        lock_path, lock_stale_sec=1800, strict_owner_identity=True, owner_token="mine", cross_namespace_guard=True
+    )
+    assert (acquired, reason) == (True, "DEAD_OWNER_RECLAIMED")
+
+
+def test_t9f_closeout_defers_to_a_live_foreign_owner_and_writes_no_completion(tmp_path, monkeypatch):
+    monkeypatch.setenv("EVENT_LOG_PATH", str(tmp_path / "events.jsonl"))
+    lock_path = tmp_path / "closeout_maintenance.lock"
+    _foreign_lock(lock_path, age_sec=100, heartbeat_age_sec=10)
+    ran = {"n": 0}
+    monkeypatch.setattr(
+        "libs.reporting.closeout_maintenance.run_closeout_maintenance",
+        lambda **k: ran.__setitem__("n", ran["n"] + 1) or {"ok": True, "steps": {}},
+    )
+    authority = tmp_path / "closeout_completion_authority.json"
+    result = run_closeout_maintenance_with_lock(day="2026-10-07", lock_path=lock_path, lock_stale_sec=1800, completion_authority_path=authority)
+    assert result["skipped"] is True and result["skip_reason"] == "ALREADY_RUNNING_FOREIGN_NAMESPACE_OWNER"
+    assert ran["n"] == 0 and not authority.exists()
+    assert json.loads(lock_path.read_text(encoding="utf-8"))["owner_token"] == "foreign-owner"  # not stolen, not released
+
+
+def test_t9g_interrupted_closeout_stays_retryable_and_exact_owner_releases(tmp_path, monkeypatch):
+    monkeypatch.setenv("EVENT_LOG_PATH", str(tmp_path / "events.jsonl"))
+    lock_path = tmp_path / "closeout_maintenance.lock"
+    authority = tmp_path / "closeout_completion_authority.json"
+
+    def boom(**kwargs):
+        raise RuntimeError("interrupted")
+
+    monkeypatch.setattr("libs.reporting.closeout_maintenance.run_closeout_maintenance", boom)
+    with pytest.raises(RuntimeError):
+        run_closeout_maintenance_with_lock(day="2026-10-07", lock_path=lock_path, lock_stale_sec=1800, completion_authority_path=authority)
+    assert not lock_path.exists() and not authority.exists()  # released by its exact owner, no SUCCESS recorded
+    monkeypatch.setattr("libs.reporting.closeout_maintenance.run_closeout_maintenance", _stub_ok)
+    retry = run_closeout_maintenance_with_lock(day="2026-10-07", lock_path=lock_path, lock_stale_sec=1800, completion_authority_path=authority)
+    assert retry["ok"] is True and authority.exists()
+
+
+def test_t9h_heartbeat_thread_refreshes_exact_owner_lock_and_stops(tmp_path, monkeypatch):
+    import libs.runtime.live_loop_lock as lock_mod
+    from libs.reporting import closeout_maintenance as cm
+
+    lock_path = tmp_path / "closeout_maintenance.lock"
+    assert lock_mod.acquire_live_loop_lock(lock_path, lock_stale_sec=1800, strict_owner_identity=True, owner_token="tok")[0]
+    monkeypatch.setattr(cm._CloseoutLockHeartbeat, "INTERVAL_SEC", 0.05)
+    beat = cm._CloseoutLockHeartbeat(lock_path, "tok")
+    beat.start()
+    deadline = time.time() + 3
+    while time.time() < deadline and "heartbeat_epoch" not in json.loads(lock_path.read_text(encoding="utf-8")):
+        time.sleep(0.05)
+    beat.stop()
+    assert "heartbeat_epoch" in json.loads(lock_path.read_text(encoding="utf-8"))
+    assert not beat._thread.is_alive()
+    ok, status = lock_mod.refresh_live_loop_lock(lock_path, strict_owner_identity=True, owner_token="someone-else")
+    assert ok is False and status == "non_owner_refresh_rejected"  # only the exact owner may refresh

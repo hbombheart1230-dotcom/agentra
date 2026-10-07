@@ -123,6 +123,20 @@ def _is_strict_lock_well_formed(obj: Dict[str, Any]) -> bool:
     return pid > 0 and bool(identity) and bool(token)
 
 
+# A lock file on the shared data volume can be written by a Windows Host process ("win:" identity)
+# or a Linux container process ("posix:" identity). `pid_exists`/`_process_start_identity` only see
+# the CALLER's own PID namespace, so a Host process looking at a container's `pid: 1` (or a container
+# looking at a Host PID) concludes "dead owner" for a perfectly live foreign owner. Callers that opt in
+# with `cross_namespace_guard=True` (closeout) therefore never judge a foreign-namespace owner by PID.
+FOREIGN_LOCK_HEARTBEAT_FRESH_SEC = 180
+
+
+def _identity_kind(identity: str) -> str:
+    """`win` / `posix` for identities this module produced; "" for anything unrecognised."""
+    kind = str(identity or "").split(":", 1)[0].strip().lower()
+    return kind if kind in ("win", "posix") else ""
+
+
 def acquire_live_loop_lock(
     lock_path: Path,
     *,
@@ -132,6 +146,8 @@ def acquire_live_loop_lock(
     owner_token: str | None = None,
     trigger: str | None = None,
     target_day: str | None = None,
+    cross_namespace_guard: bool = False,
+    foreign_heartbeat_fresh_sec: int = FOREIGN_LOCK_HEARTBEAT_FRESH_SEC,
 ) -> Tuple[bool, str]:
     if not strict_owner_identity:
         # --- Existing m13 live-loop semantics, UNCHANGED -----------------
@@ -240,7 +256,17 @@ def acquire_live_loop_lock(
     existing_pid = to_int(obj.get("pid"), 0)
     existing_identity = str(obj.get("process_start_identity") or "")
 
-    if not pid_exists(existing_pid):
+    existing_kind, my_kind = _identity_kind(existing_identity), _identity_kind(my_identity)
+    foreign_owner = bool(cross_namespace_guard) and bool(existing_kind) and bool(my_kind) and existing_kind != my_kind
+    if foreign_owner:
+        # Owner lives in a different PID namespace/OS: its pid cannot be checked from here, so
+        # liveness is judged only by its own heartbeat (refreshed while it runs). Fresh -> it is
+        # alive: fail closed. Stale -> it stopped refreshing (died/hung): reclaim is allowed.
+        last_seen = to_int(obj.get("heartbeat_epoch"), 0) or to_int(obj.get("acquired_at"), 0)
+        if last_seen <= 0 or (int(time.time()) - last_seen) <= max(1, int(foreign_heartbeat_fresh_sec)):
+            return False, "FOREIGN_NAMESPACE_LOCK_ACTIVE"
+        reclaim_reason = "FOREIGN_NAMESPACE_STALE_HEARTBEAT_RECLAIMED"
+    elif not pid_exists(existing_pid):
         reclaim_reason = "DEAD_OWNER_RECLAIMED"
     else:
         current_identity = _process_start_identity(existing_pid)
