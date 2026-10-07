@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 112,
+  "entry_count": 113,
   "entries": [
     {
       "date": "2026-09-08",
@@ -2989,6 +2989,47 @@
         "docs/daily_patch/2026-10-02_p1_3_r1_r4_docker_restart_safety.md"
       ],
       "status": "current"
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5/P1.6 Refactor Design and Documentation Refactor Start",
+      "title": "Agentra modular-refactor design branch and documentation architecture cleanup started",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "DOCUMENTATION",
+        "PATCH_NOTES"
+      ],
+      "summary": "Created the design-only P1.5/P1.6 modernization branch, froze refactor/safety/test rules, and started restructuring Agentra documentation without changing runtime behavior.",
+      "details": [
+        "P1.5 is defined as behavior-preserving agent-boundary restoration with explicit contracts, deterministic safety boundaries, naming cleanup, and incremental pytest restructuring.",
+        "P1.6 is defined as a post-P1.5 orchestration benchmark of the current custom runtime, LangGraph 1.x, and pydantic-graph; no orchestration framework is adopted during P1.5.",
+        "Development-milestone runtime names are cleanup targets, while domain/program identifiers such as UEF and Q-series remain valid identifiers.",
+        "Documentation refactoring uses inventory-first migration: canonical/current/history layers, preserved audit history, and link-safe staged movement rather than bulk relocation.",
+        "Patch-note authority was clarified: docs/daily_patch is the detailed technical audit history; docs/trading_agent_patch_notes_detailed_update/patch_notes.json and patch_notes.md are the UI/API-facing canonical changelog pair.",
+        "No runtime, strategy, order authority, broker path, execution semantics, or LLM decision-role changes are included."
+      ],
+      "impact": "Documentation and architecture planning only. Production runtime behavior is unchanged.",
+      "sources": [
+        "docs/refactor/p1_5_p1_6_master_plan.md",
+        "docs/refactor/p1_5_refactor_constitution.md",
+        "docs/refactor/p1_5_strategist_decomposition.md",
+        "docs/refactor/p1_5_documentation_refactor_plan.md",
+        "docs/refactor/documentation_inventory.md",
+        "docs/daily_patch/2026-10-07_p1_5_p1_6_refactor_design_start.md",
+        "docs/daily_patch/2026-10-07_documentation_refactor_start.md"
+      ],
+      "status": "current",
+      "provenance": {
+        "development_era": "P1.5/P1.6 design",
+        "owner": "GPT-5.6 Sol",
+        "reviewer": null,
+        "final_approval": "human",
+        "verification": "documentation-only change; canonical patch-note JSON parsed and entry_count checked",
+        "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+        "provenance_baseline": null
+      }
     }
   ]
 }
