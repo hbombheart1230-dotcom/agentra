@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from libs.reporting.broker_closed_trade_reconciler import reconcile_broker_closed_trade_reports
+from libs.reporting.json_array_stream import iter_json_array
 
 from .artifact_inventory import (
     build_artifact_inventory,
@@ -71,6 +72,43 @@ def _write_text(path: Path, text: str) -> None:
 def _baseline_hash() -> str:
     basis = build_freeze_manifest()
     return hashlib.sha256(json.dumps(basis, sort_keys=True, ensure_ascii=True).encode("utf-8")).hexdigest()[:16]
+
+
+def _q9_windows_for_effectiveness(path: Path) -> list[dict[str, Any]]:
+    """One day's q9 windows, streamed and reduced to what the effectiveness builders read.
+
+    `build_q9_evaluation` used to `read_json` the last 20 days' q9_decision_windows.json
+    (~90 MB each) and keep every window in full -- on the order of GiB, the dominant part of
+    the closeout OOM. `build_strategist_effectiveness` reads only
+    scanner_control.{full_strategist_control_eligibility,top1_symbol} and
+    strategist_selection.selected_symbol, and `build_feedback_effectiveness` only
+    strategist_provenance.feedback plus decision_id/q9_decision_id; the reduced windows give
+    those builders exactly the same inputs (non-dict values read as {} either way).
+    """
+    reduced: list[dict[str, Any]] = []
+    try:
+        for window in iter_json_array(path, "windows"):
+            if not isinstance(window, dict):
+                continue
+            item: dict[str, Any] = {}
+            for key in ("decision_id", "q9_decision_id"):
+                if key in window:
+                    item[key] = window[key]
+            control = window.get("scanner_control")
+            if isinstance(control, dict):
+                item["scanner_control"] = {
+                    key: control[key] for key in ("full_strategist_control_eligibility", "top1_symbol") if key in control
+                }
+            selection = window.get("strategist_selection")
+            if isinstance(selection, dict):
+                item["strategist_selection"] = {"selected_symbol": selection.get("selected_symbol")}
+            provenance = window.get("strategist_provenance")
+            if isinstance(provenance, dict) and isinstance(provenance.get("feedback"), dict):
+                item["strategist_provenance"] = {"feedback": provenance["feedback"]}
+            reduced.append(item)
+    except ValueError:
+        return []  # unreadable windows file == no windows for that day (as read_json -> {} gave)
+    return reduced
 
 
 def build_q9_evaluation(
@@ -278,10 +316,7 @@ def build_q9_evaluation(
             path.name for path in q9_daily_root.iterdir() if path.is_dir() and path.name <= day
         )[-20:]
         for q9_day in q9_days:
-            payload = read_json(q9_daily_root / q9_day / "q9_decision_windows.json")
-            for window in list(payload.get("windows") or []):
-                if isinstance(window, dict):
-                    q9_windows.append(dict(window))
+            q9_windows.extend(_q9_windows_for_effectiveness(q9_daily_root / q9_day / "q9_decision_windows.json"))
 
     strategist = build_strategist_effectiveness(all_evaluations, all_attributions, q9_windows)
     strategist["source_days"] = evaluation_days

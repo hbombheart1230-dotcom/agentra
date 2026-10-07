@@ -376,3 +376,45 @@ def test_daily_summary_payload_identical_with_streamed_and_materialised_rows(tmp
     materialised = ov.build_operator_daily_summary_payload(events, reports, day="2026-04-08", metrics_report_dir=metrics)
     assert streamed == materialised
     assert streamed["day"] == "2026-04-08" and streamed["source_run_count"] > 0
+
+
+# --------------------------------------------------------------------- q9 effectiveness windows (20-day load)
+
+
+def _effectiveness_windows():
+    return [
+        {"decision_id": "D1", "scanner_control": {"full_strategist_control_eligibility": {"eligible": True}, "top1_symbol": "005930", "junk": [1] * 50},
+         "strategist_selection": {"selected_symbol": "000660", "scenario": "x", "big": ["y"] * 100},
+         "strategist_provenance": {"feedback": {"feedback_id": "F1", "adoption_status": "CHANGE_OBSERVED_WITH_FEEDBACK_EXPOSURE",
+                                                  "source_day": "2026-09-30", "consumed": True, "changed_fields": ["a"]}, "other": 1},
+         "scanner_pre_strategist_universe": {"rows": ["z" * 100] * 200}},
+        {"q9_decision_id": "Q2", "scanner_control": {"full_strategist_control_eligibility": {"eligible": False}, "top1_symbol": "035720"},
+         "strategist_selection": {"selected_symbol": "035720"}, "strategist_provenance": {"feedback": {"feedback_id": "F2"}}},
+        {"decision_id": "D3", "scanner_control": "not-a-dict", "strategist_selection": None, "strategist_provenance": {"feedback": "nope"}},
+        {"decision_id": "D4"},
+        {"decision_id": "D1", "strategist_provenance": {"feedback": {"feedback_id": "F1"}}},  # duplicate identity for the feedback builder
+        "not-a-window",
+    ]
+
+
+def test_effectiveness_windows_reduction_gives_builders_identical_results(tmp_path):
+    from libs.reporting.evaluation.feedback_effectiveness import build_feedback_effectiveness
+    from libs.reporting.evaluation.pipeline import _q9_windows_for_effectiveness
+    from libs.reporting.evaluation.strategist_effectiveness import build_strategist_effectiveness
+
+    full = [w for w in _effectiveness_windows() if isinstance(w, dict)]
+    path = _write(tmp_path / "q9_decision_windows.json", {"schema_version": "v1", "windows": _effectiveness_windows(), "window_count": 6})
+    reduced = _q9_windows_for_effectiveness(path)
+    assert len(reduced) == len(full)
+    assert build_strategist_effectiveness([], [], reduced) == build_strategist_effectiveness([], [], full)
+    assert build_feedback_effectiveness([], reduced) == build_feedback_effectiveness([], full)
+    assert "scanner_pre_strategist_universe" not in reduced[0] and "other" not in reduced[0]["strategist_provenance"]
+
+
+def test_effectiveness_windows_unreadable_or_missing_file_is_no_windows(tmp_path):
+    from libs.reporting.evaluation.pipeline import _q9_windows_for_effectiveness
+
+    assert _q9_windows_for_effectiveness(tmp_path / "missing.json") == []
+    text = json.dumps({"windows": _effectiveness_windows()}, indent=2)
+    (tmp_path / "bad.json").write_text(text[: len(text) // 2], encoding="utf-8")
+    assert _q9_windows_for_effectiveness(tmp_path / "bad.json") == []
