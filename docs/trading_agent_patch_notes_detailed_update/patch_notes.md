@@ -1940,3 +1940,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No strategy, runtime topology, Supervisor authority, broker semantics, UEF, Step5C or Step5D behavior changed.
 - Design authority: docs/refactor/p1_5_executor_low_risk_implementation_packet_v1_0.md.
 
+# 2026-10-07 - P1.5.10 Compatibility-Wrapper Cleanup Design Complete
+
+- Completed the P1.5.10 proof-based compatibility cleanup design without deleting runtime wrappers or changing behavior.
+- Classified retained P1.5 seams as REMOVE_NOW, MIGRATE_THEN_REMOVE, KEEP_STABLE_FACADE, HISTORICAL_COMPATIBILITY, SAFETY_LOCK or CONTRACT_ALIAS.
+- Confirmed libs/runtime/commander/integrated_chain_support.py is still actively imported by graphs/commander_runtime.py and therefore requires consumer migration before deletion.
+- Kept apps/operator_ui/data_access.py and libs/reporting/trade_report_ai.py as intentional stable facades rather than treating wrapper count as a cleanup metric.
+- Classified the legacy libs.agent Strategist/Scanner/Monitor/Commander stack and M11 scan/select nodes as historical compatibility surfaces, with coherent-stack retirement required before deletion.
+- Identified duplicate AgentExecutor implementations as a strong cleanup candidate while leaving ExecutorAgent and Step5 safety paths intact.
+- Frozen a compatibility inventory manifest requirement and CW1-CW7 migration/removal sequence.
+- No runtime topology, state semantics, deployment path, Supervisor authority, guard order, CAS/idempotency, broker mutation, UEF or Step5C/5D behavior changed.
+- Design authority: docs/refactor/p1_5_compatibility_wrapper_cleanup_implementation_packet_v1_0.md.
+
