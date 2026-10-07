@@ -1814,3 +1814,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `TradingAgent-DailyUefEvaluation` started from `C:\Agentra` at 16:45:02 KST (SHA `a38bf4e9f5f6f76eaee37659c45c7c49705fcef2`) and ended at 16:45:03 KST with exit code 1, no canonical generation, and an explicit registered-freshness failure. It failed closed rather than materializing a canonical board that could mix a fresh through-day label with stale or unreviewed content.
 - The individual stale or unknown closeout-written source is not identified by the retained lifecycle event, so source-level RCA remains open. No source artifact, pointer, registry, UEF framework/freeze semantic, or historical evidence was changed. R6/R6.1/R6.2 deployment and live acceptance are not asserted.
 - See `docs/daily_patch/2026-10-06_docker_live_open_and_daily_uef_freshness_incident.md`.
+
+# 2026-10-07 - P1.3 Closeout OOM Fix, 2 GiB Limit and After-Hours Production Deployment
+
+- The 10-06 / 10-07 Docker restart storms (RestartCount 23 then 43) were proven to be kernel cgroup OOM kills of PID 1 during the in-process closeout at the 1 GiB limit (the post-restart `OOMKilled=false` read was not evidence).
+- Closeout memory use is now bounded (streamed q9 windows, projected shadow payloads, streamed visibility rows, per-symbol rank1 loading, lens folded day by day); outputs were identical to the previous implementation on real 10-01/02/06/07 data. The full 20-day rolling Q9 window was not compared against the old path.
+- Closeout-only cross-namespace lock guard: a Host closeout and the Docker closeout no longer reclaim each other's lock by PID; heartbeat decides, and the Host fallback still works when a Docker owner stops refreshing. The m13 trading lock is unchanged.
+- 1 GiB was rejected (isolated full closeout OOMed in the Q9 stage); 2 GiB passed (exit 0, 1381 s, one durable SUCCESS, no OOM). Production limit is now 2 GiB (`--memory 2g --memory-swap 3g`).
+- After-hours deployment of image `trading-agent-20261007:f4fa335` (application SHA `f4fa33521c1aeed30813a2799824eed5e12a58d6`, includes R6.2 and yfinance): healthy, RestartCount 0, no OOM, Python PID 1, one canonical Docker runtime, Host live runtime 0, today's closeout SUCCESS visible with no second SUCCESS, broker read path PASS. Ownership generation reset to 1 by design (clean lease release); the old container is kept stopped as the rollback.
+- Not claimed: FULL P1.3 freeze, P1.2 scheduled-validation PASS, R6 live acceptance, next-day Docker closeout PASS. Status: `PRODUCTION_DEPLOYED_PENDING_LIVE_ACCEPTANCE`; P1.2 `OBSERVING`.
+- See `docs/daily_patch/2026-10-07_p1_3_closeout_memory_fix_and_production_deployment.md`.

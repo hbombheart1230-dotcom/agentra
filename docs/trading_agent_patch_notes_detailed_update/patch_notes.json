@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 112,
+  "entry_count": 113,
   "entries": [
     {
       "date": "2026-09-08",
@@ -2987,6 +2987,41 @@
         "data/logs/events.jsonl",
         "reports/operator_summary/daily/2026-10-06/daily_report.md",
         "docs/daily_patch/2026-10-02_p1_3_r1_r4_docker_restart_safety.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.3 Closeout OOM Fix, 2 GiB Limit and After-Hours Production Deployment",
+      "title": "The in-process closeout was OOM-killed at 1 GiB; memory use is now bounded, the container limit is 2 GiB, and f4fa335 is deployed pending live acceptance",
+      "stage": "Operations and Reliability",
+      "types": [
+        "RELIABILITY",
+        "OPERATIONS",
+        "SAFETY",
+        "DATA_INTEGRITY"
+      ],
+      "summary": "The 2026-10-06 and 2026-10-07 Docker restart storms (RestartCount 23 then 43) were proven to be kernel cgroup OOM kills of PID 1 during the in-process closeout at the 1 GiB limit. The closeout loaders were rewritten to stream or project the large q9/shadow/event data (outputs identical on real data), a closeout-only cross-namespace lock guard stops a Host closeout and the Docker closeout from stealing each other's lock, 1 GiB was rejected and 2 GiB adopted after an isolated full-closeout run, and image f4fa335 (with R6.2 and yfinance) was deployed after hours. Live acceptance is still pending.",
+      "details": [
+        "Root cause: the docker-desktop kernel log retained one memory-cgroup OOM kill of the python PID 1 per restart (848-1019 MiB anon RSS against the 1 GiB limit). docker inspect OOMKilled/ExitCode read after a restart was not evidence because those fields reset on every restart. The durable closeout completion marker is written only after a full success, so every restart re-triggered the same closeout until the Host fallback completed it.",
+        "Memory fix (application SHA f4fa33521c1aeed30813a2799824eed5e12a58d6): streaming reader for the ~120 MB q9_decision_windows.json; opt-in payload key projection for closeout consumers that provably never read the bulky q9 row keys; streamed operator-visibility day rows; incremental q16 folding; per-symbol rank1 loading; the evaluation lens (which spans every shadow payload since 2026-06-29) folded day by day into streaming accumulators; results released after use; per-stage cgroup/RSS logging in closeout stage events.",
+        "Output equivalence was verified against the previous implementation on real 2026-10-01/02/06/07 data (rank1 byte-for-byte across 141 files). The full 20-day rolling Q9 window was not compared against the old path; effectiveness builders were compared on 5 real days and the lens on a 9-day range.",
+        "Cross-namespace closeout lock: acquire_live_loop_lock(cross_namespace_guard=True), used only by the closeout, never reclaims a foreign-namespace (Windows vs container) lock with a fresh heartbeat; the closeout refreshes its lock heartbeat every 30 s; a stale foreign heartbeat can still be reclaimed so the Host fallback keeps working. The m13 trading lock is unchanged. Verified live: a Host attempt during the isolated Docker closeout was skipped.",
+        "Limit decision: in an isolated container with all shadow history and a 350 MiB live-loop-sized ballast, 1 GiB OOMed in the Q9 stage and was rejected; 2 GiB completed in 1381 s with exit 0, one durable SUCCESS, no OOM and fresh UEF source files (process RSS peak about 984 MiB). Production limit is now 2 GiB (--memory 2g --memory-swap 3g); compose.trading.real.yaml mem_limit is 2g. The limit is defense-in-depth, not the fix.",
+        "Deployment (2026-10-07 22:39 KST, after hours, flat book): image trading-agent-20261007:f4fa335 (revision label = the full SHA; Python 3.12.15, yfinance 1.7.0, R6.2 and the guard present) replaced the old container, which is kept stopped as trading-agent-live-pre-20261007-deploy. Healthy, RestartCount 0, OOMKilled false, Memory 2147483648, idle about 235-258 MiB, Python PID 1, Host live runtime count 0, today's closeout SUCCESS visible with no second SUCCESS, broker read path PASS (positions 0, open orders 0).",
+        "Ownership generation reset to 1 (from 48) because the old container released its lease on graceful shutdown and the new one acquired fresh; this is by design and not a stale takeover. After hours the readiness snapshot is the 15:29 file (EXECUTION_READY_UNKNOWN:snapshot_stale in the healthcheck, recovery_required false there). The R6 evidence directory is created lazily on the first legitimate order and does not exist yet.",
+        "Not claimed: FULL P1.3 freeze, P1.2 scheduled-validation PASS, R6 live acceptance, next-day Docker closeout PASS. Trading, Step5C/5D and UEF semantics are unchanged; the UEF freeze manifest remains 11/11 MATCH."
+      ],
+      "impact": "The 15:30 closeout can now complete inside the Docker container instead of repeatedly killing PID 1, so the closeout-written UEF daily sources can be fresh before the 16:45 Daily UEF. Whether it actually does is the next live acceptance item.",
+      "sources": [
+        "docs/daily_patch/2026-10-07_p1_3_closeout_memory_fix_and_production_deployment.md",
+        "libs/reporting/json_array_stream.py",
+        "libs/reporting/evaluation/evaluation_lens_report.py",
+        "libs/reporting/closeout_maintenance.py",
+        "libs/runtime/live_loop_lock.py",
+        "deploy/trading/compose.trading.real.yaml",
+        "tests/test_closeout_memory_bounds.py",
+        "tests/test_closeout_single_owner_guard.py"
       ],
       "status": "current"
     }

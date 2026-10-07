@@ -207,7 +207,10 @@ services:
       - no-new-privileges:true
     pids_limit: 256
     cpus: 1.0
-    mem_limit: 1g
+    # 2026-10-07 P1.3: 1 GiB is too small for the in-process closeout (kernel OOM killed PID 1 23 times on
+    # 10-06 and 13+ times on 10-07; the fixed closeout peaks ~1.2 GiB incl. a live-loop-sized baseline and
+    # completes under 2 GiB). The canonical `trading-agent-live` container runs with the same 2 GiB.
+    mem_limit: 2g
     stop_signal: SIGTERM
     stop_grace_period: 20s
     healthcheck:
