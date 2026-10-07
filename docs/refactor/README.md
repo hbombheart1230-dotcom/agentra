@@ -96,3 +96,10 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - ScannerAgentInput/ScannerAgentResult boundary and 21-key compatibility state surface
    - SC1-SC7 staged implementation sequence and pytest gates
 
+10. p1_5_monitor_implementation_packet_v1_0.md
+   - P1.5.6 Monitor decomposition authority
+   - canonical monitor_node and intraday signal-engine inventory
+   - intent-only / hard-timing authority freeze
+   - MonitorAgentInput/MonitorAgentResult boundary and 27-key compatibility state surface
+   - MO1-MO8 staged implementation sequence and pytest gates
+
