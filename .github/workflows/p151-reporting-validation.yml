@@ -1,6 +1,9 @@
 name: P1.5.1 Reporting Validation
 
 on:
+  pull_request:
+    branches:
+      - codex/p1.5.1-reporting-dead-code-20261007
   push:
     branches:
       - codex/p1.5.1-reporting-dead-code-20261007
