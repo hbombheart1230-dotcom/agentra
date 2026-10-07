@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 116,
+  "entry_count": 117,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3137,6 +3137,42 @@
         "reviewer": null,
         "final_approval": "human",
         "verification": "design inventory and compatibility mapping only; no runtime code changed",
+        "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+        "provenance_baseline": null
+      }
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5 Reporting Design Complete",
+      "title": "Reporting giant-module refactor design frozen for P1.5.1 and P1.5.2",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Completed the behavior-preserving Reporting refactor design covering definite dead-code removal, ownership reuse, façade compatibility, test decomposition, and implementation gates.",
+      "details": [
+        "Mapped the three giant Reporting files totaling 18,743 LOC and their existing extracted helper modules.",
+        "Proved an unreachable legacy implementation tail of roughly 1,100 LOC after the early return in render_trade_summary_markdown_with_evaluation.",
+        "Identified the shadowed duplicate _playbook_label definition in trade_report_markdown_clean.py.",
+        "Defined P1.5.1 as dead-code-only cleanup and P1.5.2 as staged AI report, Markdown, and trade-story façade decomposition.",
+        "Preserved current report schemas, truth precedence, LLM behavior, artifact paths, provenance, and public/test compatibility seams.",
+        "No runtime/report-generation implementation was changed."
+      ],
+      "impact": "Design/documentation only. No production or reporting runtime behavior changed.",
+      "sources": [
+        "docs/refactor/p1_5_reporting_implementation_packet_v1_0.md",
+        "docs/daily_patch/2026-10-07_reporting_p1_5_design_complete.md"
+      ],
+      "status": "current",
+      "provenance": {
+        "development_era": "P1.5 design",
+        "owner": "GPT-5.6 Sol",
+        "reviewer": null,
+        "final_approval": "human",
+        "verification": "repository code/test inspection; no runtime implementation",
         "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
         "provenance_baseline": null
       }
