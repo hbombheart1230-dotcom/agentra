@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 118,
+  "entry_count": 119,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3210,6 +3210,42 @@
         "reviewer": null,
         "final_approval": "human",
         "verification": "direct repository code/test inspection; no runtime implementation",
+        "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+        "provenance_baseline": null
+      }
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5.5 Scanner Design Complete",
+      "title": "Scanner agent-boundary and orchestration decomposition design frozen for P1.5.5",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "SCANNER",
+        "TESTING"
+      ],
+      "summary": "Completed the behavior-preserving Scanner decomposition design, preserving ranking semantics, candidate sources, soft chart-fit authority, state compatibility and downstream Monitor/Commander contracts.",
+      "details": [
+        "Mapped graphs/nodes/scanner_node.py at approximately 4,179 LOC with 61 top-level functions/classes and a roughly 1,945-line scanner_node hotspot.",
+        "Mapped and preserved existing focused Scanner owners for candidate selection, theme/practical filters, market-representative guard, risk, output payloads/snapshots, feature hydration, policy, Scanner bias and memory bias.",
+        "Classified libs/agent/scanner.py plus legacy scan_candidates/select_candidate paths as compatibility surfaces rather than canonical integrated Scanner authority.",
+        "Froze ScannerAgentInput and ScannerAgentResult as the future Agent-level boundary while preserving the current 21-key graph-state compatibility write surface.",
+        "Preserved the Scanner/Monitor authority split: Scanner chart-fit and Monitor-readiness remain soft rank context; Monitor remains the actionable entry/exit hard gate.",
+        "Frozen SC1-SC7 implementation order and mapped direct private imports/monkeypatch test seams. No ranking weights, thresholds, candidate-source policy, veto meaning or runtime behavior changed."
+      ],
+      "impact": "Design/documentation only. No Scanner selection semantics, strategy, Monitor authority, execution, broker, UEF, Step5C or Step5D behavior changed.",
+      "sources": [
+        "docs/refactor/p1_5_scanner_implementation_packet_v1_0.md",
+        "docs/daily_patch/2026-10-07_scanner_p1_5_design_complete.md"
+      ],
+      "status": "current",
+      "provenance": {
+        "development_era": "P1.5 design",
+        "owner": "GPT-5.6 Sol",
+        "reviewer": null,
+        "final_approval": "human",
+        "verification": "direct repository code/test/document inspection; no runtime implementation",
         "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
         "provenance_baseline": null
       }
