@@ -103,3 +103,10 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - MonitorAgentInput/MonitorAgentResult boundary and 27-key compatibility state surface
    - MO1-MO8 staged implementation sequence and pytest gates
 
+11. p1_5_commander_runtime_implementation_packet_v1_0.md
+   - P1.5.7 Commander/runtime decomposition authority
+   - 6,298-line runtime inventory and existing owner map
+   - deterministic/no-LLM Commander role freeze
+   - runtime modes/phases, fast paths, Supervisor/Executor and ownership safety boundaries
+   - CommanderRuntimeInput/Result design and C1-C10 staged implementation sequence
+
