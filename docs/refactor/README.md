@@ -75,3 +75,9 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - compatibility seams
    - S1-S5 implementation sequence
    - pytest gates
+
+
+6. `p1_5_reporting_implementation_packet_v1_0.md`
+   - P1.5.1 definite dead-code cleanup
+   - P1.5.2 Reporting decomposition
+   - existing helper ownership, compatibility seams, test architecture, and gates
