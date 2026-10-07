@@ -43,3 +43,14 @@ Do **not** begin P1.5 runtime implementation until:
 - a baseline SHA/tag is recorded.
 
 The implementation branch must be cut from that frozen baseline, not automatically from this design branch.
+
+
+4. `p1_5_documentation_refactor_plan.md`
+   - documentation authority model
+   - patch-note preservation rules
+   - staged navigation/archive/link cleanup
+
+5. `documentation_inventory.md`
+   - current documentation size/inventory
+   - patch-note source-of-truth map
+   - migration risks and classification rules
