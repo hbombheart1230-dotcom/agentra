@@ -71,6 +71,7 @@ from libs.reporting.trade_report_ai_deterministic import (
     enrich_market_context_for_fallback as _enrich_market_context_for_fallback_impl,
     enrich_scanner_reason_for_fallback as _enrich_scanner_reason_for_fallback_impl,
     fallback_section_seeds as _fallback_section_seeds_impl,
+    fallback_report as _fallback_report_impl,
     failure_report as _failure_report_impl,
     merge_trade_report_candidate as _merge_trade_report_candidate_impl,
 )
@@ -3843,483 +3844,61 @@ def _fallback_report(
     model: str,
     reason: str,
 ) -> Dict[str, Any]:
-    shared_seed = _build_shared_summary_seed(story_input)
-    entry_execution_visibility = (
-        shared_seed.get("entry_execution_visibility")
-        if isinstance(shared_seed.get("entry_execution_visibility"), dict)
-        else {}
-    )
-    market_context = story_input.get("market_context_human") if isinstance(story_input.get("market_context_human"), dict) else {}
-    strategist_evidence = shared_seed.get("strategist_evidence") if isinstance(shared_seed.get("strategist_evidence"), dict) else {}
-    scanner_reason = story_input.get("scanner_reason_human") if isinstance(story_input.get("scanner_reason_human"), dict) else {}
-    has_runtime_market_context = bool(market_context)
-    has_runtime_scanner_reason = bool(scanner_reason)
-    filters_human = story_input.get("filters_human") if isinstance(story_input.get("filters_human"), dict) else {}
-    monitor_reason = story_input.get("monitor_reason_human") if isinstance(story_input.get("monitor_reason_human"), dict) else {}
-    guard_reason = story_input.get("guard_reason_human") if isinstance(story_input.get("guard_reason_human"), dict) else {}
-    execution_outcome = story_input.get("execution_outcome_human") if isinstance(story_input.get("execution_outcome_human"), dict) else {}
-    reporter_status = story_input.get("reporter_status_human") if isinstance(story_input.get("reporter_status_human"), dict) else {}
-    memory_surface = build_trade_report_memory_surface(story_input)
-    reporter_feedback_packet = _as_dict(memory_surface.get("reporter_feedback_packet"))
-    operator_conclusion = (
-        story_input.get("operator_conclusion_human") if isinstance(story_input.get("operator_conclusion_human"), dict) else {}
-    )
-    policy_ref_context = _extract_policy_ref_context(story_input, monitor_reason)
-    scanner_bias_summary = _extract_scanner_bias_summary(story_input, scanner_reason)
-    strategist_context = shared_seed.get("strategist_context") if isinstance(shared_seed.get("strategist_context"), dict) else {}
-    market_context = _enrich_market_context_for_fallback(
-        market_context=market_context,
-        strategist_context=strategist_context,
-        policy_ref_context=policy_ref_context,
-        scanner_bias_summary=scanner_bias_summary,
-    )
-    has_runtime_monitor_reason = bool(monitor_reason)
-    shared_scanner_reasoning = shared_seed.get("scanner_reasoning") if isinstance(shared_seed.get("scanner_reasoning"), dict) else {}
-    shared_selection_trace = shared_scanner_reasoning.get("selection_trace") if isinstance(shared_scanner_reasoning.get("selection_trace"), dict) else {}
-    section_seeds = _fallback_section_seeds(shared_seed)
-    market_context_seed = section_seeds["market_context"]
-    strategist_summary_seed = section_seeds["strategist_summary"]
-    why_symbol_seed = section_seeds["why_symbol"]
-    entry_decision_seed = section_seeds["entry_decision"]
-    holding_story_seed = section_seeds["holding_story"]
-    exit_decision_seed = section_seeds["exit_decision"]
-    scanner_filters_seed = section_seeds["scanner_filters"]
-    execution_quality_seed = section_seeds["execution_quality"]
-    guard_approval_seed = section_seeds["guard_approval"]
-    reporter_evaluation_seed = section_seeds["reporter_evaluation"]
-    final_operator_conclusion_seed = section_seeds["final_operator_conclusion"]
-    scanner_reason = _enrich_scanner_reason_for_fallback(
-        scanner_reason=scanner_reason,
-        shared_scanner_reasoning=shared_scanner_reasoning,
-        shared_selection_trace=shared_selection_trace,
-    )
-    action = _clip(shared_seed.get("lifecycle_action"), max_len=24) or _clip(story_input.get("action"), max_len=24) or "WAIT"
-    monitor_snapshot = _build_report_monitor_snapshot(
-        monitor_reason=monitor_reason,
-        story_input=story_input,
-        action=action,
-        entry_execution_visibility=entry_execution_visibility,
-    )
-    entry_summary = story_input.get("entry_summary") if isinstance(story_input.get("entry_summary"), dict) else {}
-    entry_monitor_reason = _resolve_entry_monitor_reason(story_input, monitor_reason, entry_summary)
-    for key in (
-        "entry_metrics",
-        "entry_thresholds",
-        "entry_condition_scores",
-        "entry_grouped_logic_trace",
-        "entry_condition_path",
-        "entry_condition_paths_passed",
-        "entry_reason",
-    ):
-        value = entry_monitor_reason.get(key)
-        if value not in (None, "", [], {}) and monitor_snapshot.get(key) in (None, "", [], {}):
-            monitor_snapshot[key] = value
-    holding_summary = story_input.get("holding_summary") if isinstance(story_input.get("holding_summary"), dict) else {}
-    exit_summary = story_input.get("exit_summary") if isinstance(story_input.get("exit_summary"), dict) else {}
-    lifecycle_summary = story_input.get("lifecycle_summary") if isinstance(story_input.get("lifecycle_summary"), dict) else {}
-    warnings = _listify(story_input.get("warnings"), max_items=10, max_len=260)
-    improvement_points = _listify(story_input.get("improvement_points"), max_items=10, max_len=260)
-    scanner_selection_trace = _as_dict(story_input.get("scanner_selection_trace"))
-    entry_scanner_context = (
-        entry_summary.get("scanner_context")
-        if isinstance(entry_summary.get("scanner_context"), dict)
-        else {}
-    )
-    news_scanner_contribution = _as_dict(
-        scanner_reason.get("news_scanner_contribution")
-        or scanner_selection_trace.get("news_scanner_contribution")
-        or entry_scanner_context.get("news_scanner_contribution")
-    )
-    effective_scanner_selection_trace = _as_dict(scanner_selection_trace) or _as_dict(shared_selection_trace)
-    if isinstance(effective_scanner_selection_trace.get("chart_feature_coverage"), dict):
-        effective_scanner_selection_trace["chart_feature_coverage"] = _scanner_chart_feature_coverage(
-            {"scanner_selection_trace": effective_scanner_selection_trace}
-        )
-    why_symbol_bullets = _build_scanner_choice_bullets(scanner_reason, market_context)
-    why_symbol_bullets = _append_news_scanner_choice_details(why_symbol_bullets, news_scanner_contribution)
-    raw_scanner_bullets = _listify(scanner_reason.get("bullets"), max_items=8, max_len=220)
-    raw_scanner_bullets.extend(_listify(scanner_reason.get("why_selected"), max_items=4, max_len=180))
-    selection_basis_text = _clip(scanner_reason.get("selection_basis"), max_len=220)
-    if selection_basis_text:
-        raw_scanner_bullets.append(f"Final decision basis: {selection_basis_text}")
-    tie_break_text = _clip(scanner_reason.get("tie_break_rule"), max_len=220)
-    if tie_break_text:
-        raw_scanner_bullets.append(f"Tie-break rule: {tie_break_text}")
-    runner_up_summaries = [
-        f"Runner-ups lost because: {_clip((row or {}).get('symbol'), max_len=24)}: {_clip((row or {}).get('summary'), max_len=160)}"
-        for row in list(scanner_reason.get("runner_ups_lost") or [])[:4]
-        if isinstance(row, dict) and str((row or {}).get("symbol") or "").strip() and str((row or {}).get("summary") or "").strip()
-    ]
-    raw_scanner_bullets.extend(runner_up_summaries)
-    for row in raw_scanner_bullets:
-        if row and row not in why_symbol_bullets:
-            why_symbol_bullets.append(row)
-
-    symbol = _clip(shared_seed.get("symbol"), max_len=32) or _clip(story_input.get("symbol"), max_len=32) or "unknown"
-    trade_id = _clip(shared_seed.get("trade_id"), max_len=120) or _clip(story_input.get("trade_id") or story_input.get("story_id"), max_len=120)
-    status_text = _clip(shared_seed.get("lifecycle_status"), max_len=32) or _clip(story_input.get("status"), max_len=32) or "closed"
-    operator_summary_text = _clip(operator_conclusion.get("summary"), max_len=600)
-    lifecycle_summary_text = _clip(lifecycle_summary.get("lifecycle_summary_human"), max_len=600)
-    if _lifecycle_summary_conflicts_with_status(lifecycle_summary_text, status_text):
-        lifecycle_summary_text = ""
-    execution_outcome_text = _clip(execution_outcome.get("summary"), max_len=600)
-    scanner_summary_text = _clip(scanner_reason.get("summary"), max_len=600)
-    if status_text.strip().lower() == "closed" and lifecycle_summary_text:
-        executive_reason = lifecycle_summary_text
-    else:
-        executive_reason = (
-            operator_summary_text
-            or lifecycle_summary_text
-            or execution_outcome_text
-            or scanner_summary_text
-            or "The decision path was recorded, but the operator-facing summary is limited."
-        )
-    confidence = _clip(scanner_reason.get("confidence_label"), max_len=24) or _clip(scanner_reason.get("confidence"), max_len=24)
-    scanner_choice_summary = _build_scanner_choice_summary(scanner_reason, market_context)
-    if (
-        (not has_runtime_scanner_reason and not scanner_selection_trace)
-        or not scanner_choice_summary
-        or _is_low_information_bullet(scanner_choice_summary)
-    ) and str(why_symbol_seed.get("summary") or "").strip():
-        scanner_choice_summary = _clip(why_symbol_seed.get("summary"), max_len=600)
-    if str(shared_seed.get("scanner_evidence_status") or "").strip() == "unavailable":
-        scanner_choice_summary = "Scanner evidence unavailable for this trade. Selection rationale is reported conservatively."
-    market_context_summary = _build_market_context_summary(market_context, scanner_reason=scanner_reason)
-    if (
-        not has_runtime_market_context
-        or not market_context_summary
-        or _is_low_information_bullet(market_context_summary)
-    ) and str(market_context_seed.get("summary") or "").strip():
-        market_context_summary = _clip(market_context_seed.get("summary"), max_len=600)
-    if str(shared_seed.get("strategist_evidence_status") or "").strip() == "unavailable" and (
-        not market_context_summary or _is_low_information_bullet(market_context_summary)
-    ):
-        market_context_summary = "Strategist evidence unavailable for this trade. Market context is shown as limited."
-    strategist_summary = _build_strategist_summary_section(market_context, scanner_reason)
-    strategist_summary_summary = _clip(strategist_summary.get("summary"), max_len=600)
-    if (
-        not has_runtime_market_context
-        or not strategist_summary_summary
-        or _is_low_information_bullet(strategist_summary_summary)
-    ) and str(strategist_summary_seed.get("summary") or "").strip():
-        strategist_summary["summary"] = _clip(strategist_summary_seed.get("summary"), max_len=600)
-    if (not strategist_summary.get("bullets")) and isinstance(strategist_summary_seed.get("bullets"), list):
-        strategist_summary["bullets"] = _listify(strategist_summary_seed.get("bullets"), max_items=10, max_len=260)
-    strategist_refresh_trace = _build_report_strategist_refresh_trace(story_input)
-    if not why_symbol_bullets and isinstance(why_symbol_seed.get("bullets"), list):
-        why_symbol_bullets = _listify(why_symbol_seed.get("bullets"), max_items=16, max_len=260)
-    scanner_filters_summary = _build_scanner_filters_summary(filters_human)
-    scanner_filters_bullets = _build_scanner_filters_bullets(filters_human)
-    if not filters_human and str(scanner_filters_seed.get("summary") or "").strip():
-        scanner_filters_summary = _clip(scanner_filters_seed.get("summary"), max_len=600)
-    if not filters_human and isinstance(scanner_filters_seed.get("bullets"), list):
-        scanner_filters_bullets = _listify(scanner_filters_seed.get("bullets"), max_items=10, max_len=260)
-
-    entry_decision = {
-        "summary": (
-            _build_entry_decision_summary(entry_summary, scanner_reason, market_context, entry_monitor_reason, action)
-            if bool(shared_seed.get("entry_exists"))
-            else "Entry evidence was insufficient, so entry timing is marked as unavailable."
-        ),
-        "bullets": _build_entry_decision_bullets(entry_summary, scanner_reason, market_context, entry_monitor_reason, action),
-    }
-    if (
-        not has_runtime_scanner_reason
-        or not _clip(entry_decision.get("summary"), max_len=600)
-        or _is_low_information_bullet(entry_decision.get("summary"))
-    ) and str(entry_decision_seed.get("summary") or "").strip():
-        entry_decision["summary"] = _clip(entry_decision_seed.get("summary"), max_len=600)
-    if (not entry_decision.get("bullets")) and isinstance(entry_decision_seed.get("bullets"), list):
-        entry_decision["bullets"] = _listify(entry_decision_seed.get("bullets"), max_items=12, max_len=260)
-    hold_count = len(list(holding_summary.get("run_ids") or []))
-    holding_story = {
-        "summary": _build_holding_story_summary(hold_count, monitor_reason, status_text),
-        "bullets": _build_holding_story_bullets(holding_summary, monitor_reason),
-    }
-    if (
-        not has_runtime_monitor_reason
-        or not _clip(holding_story.get("summary"), max_len=600)
-        or _is_low_information_bullet(holding_story.get("summary"))
-    ) and str(holding_story_seed.get("summary") or "").strip():
-        holding_story["summary"] = _clip(holding_story_seed.get("summary"), max_len=600)
-    if (not holding_story.get("bullets")) and isinstance(holding_story_seed.get("bullets"), list):
-        holding_story["bullets"] = _listify(holding_story_seed.get("bullets"), max_items=12, max_len=260)
-    if _clip(shared_seed.get("holding_duration"), max_len=80):
-        holding_story["bullets"] = [_holding_duration_label(_clip(shared_seed.get('holding_duration'), max_len=80))] + list(
-            holding_story.get("bullets") or []
-        )
-    exit_monitor_context = exit_summary.get("monitor_context") if isinstance(exit_summary.get("monitor_context"), dict) else {}
-    if exit_monitor_context:
-        exit_monitor_context = dict(exit_monitor_context)
-    else:
-        exit_monitor_context = dict(monitor_reason or {})
-    exit_decision = {
-        "summary": (
-            _build_exit_decision_summary(exit_summary, exit_monitor_context, status_text=status_text)
-            if bool(shared_seed.get("exit_exists")) or status_text.lower() != "open"
-            else "Exit evidence is not captured yet because this lifecycle remains open."
-        ),
-        "bullets": _build_exit_decision_bullets(exit_summary, exit_monitor_context, status_text=status_text),
-    }
-    if (
-        not has_runtime_monitor_reason
-        or not _clip(exit_decision.get("summary"), max_len=600)
-        or _is_low_information_bullet(exit_decision.get("summary"))
-    ) and str(exit_decision_seed.get("summary") or "").strip():
-        exit_decision["summary"] = _clip(exit_decision_seed.get("summary"), max_len=600)
-    if (not exit_decision.get("bullets")) and isinstance(exit_decision_seed.get("bullets"), list):
-        exit_decision["bullets"] = _listify(exit_decision_seed.get("bullets"), max_items=12, max_len=260)
-    if _clip(shared_seed.get("exit_reason"), max_len=240):
-        exit_reason_label = _exit_reason_label(_clip(shared_seed.get("exit_reason"), max_len=240))
-        exit_decision["bullets"] = [f"정규화된 청산 사유는 {exit_reason_label or _clip(shared_seed.get('exit_reason'), max_len=240)}입니다."] + list(
-            exit_decision.get("bullets") or []
-        )
-    execution_quality = _build_execution_quality_section(
+    return _fallback_report_impl(
         story_input,
-        execution_outcome,
-        lifecycle_summary,
+        status=status,
+        mode=mode,
+        model=model,
+        reason=reason,
+        deps={
+            "build_shared_summary_seed": _build_shared_summary_seed,
+            "build_trade_report_memory_surface": build_trade_report_memory_surface,
+            "as_dict": _as_dict,
+            "extract_policy_ref_context": _extract_policy_ref_context,
+            "extract_scanner_bias_summary": _extract_scanner_bias_summary,
+            "enrich_market_context_for_fallback": _enrich_market_context_for_fallback,
+            "fallback_section_seeds": _fallback_section_seeds,
+            "enrich_scanner_reason_for_fallback": _enrich_scanner_reason_for_fallback,
+            "clip": _clip,
+            "build_report_monitor_snapshot": _build_report_monitor_snapshot,
+            "resolve_entry_monitor_reason": _resolve_entry_monitor_reason,
+            "listify": _listify,
+            "scanner_chart_feature_coverage": _scanner_chart_feature_coverage,
+            "build_scanner_choice_bullets": _build_scanner_choice_bullets,
+            "append_news_scanner_choice_details": _append_news_scanner_choice_details,
+            "lifecycle_summary_conflicts_with_status": _lifecycle_summary_conflicts_with_status,
+            "build_scanner_choice_summary": _build_scanner_choice_summary,
+            "build_market_context_summary": _build_market_context_summary,
+            "build_market_context_bullets": _build_market_context_bullets,
+            "build_market_scanner_linkage_bullet": _build_market_scanner_linkage_bullet,
+            "build_strategist_summary_section": _build_strategist_summary_section,
+            "build_entry_decision_summary": _build_entry_decision_summary,
+            "build_entry_decision_bullets": _build_entry_decision_bullets,
+            "build_holding_story_summary": _build_holding_story_summary,
+            "build_holding_story_bullets": _build_holding_story_bullets,
+            "build_exit_decision_summary": _build_exit_decision_summary,
+            "build_exit_decision_bullets": _build_exit_decision_bullets,
+            "build_execution_quality_section": _build_execution_quality_section,
+            "build_scanner_filters_summary": _build_scanner_filters_summary,
+            "build_scanner_filters_bullets": _build_scanner_filters_bullets,
+            "build_reporter_evaluation_section": _build_reporter_evaluation_section,
+            "holding_duration_label": _holding_duration_label,
+            "exit_reason_label": _exit_reason_label,
+            "is_low_information_bullet": _is_low_information_bullet,
+            "reporter_summary_is_placeholder": _reporter_summary_is_placeholder,
+            "scanner_basis_text": _scanner_basis_text,
+            "build_report_shared_facts": _build_report_shared_facts,
+            "attach_backward_compatible_aliases": _attach_backward_compatible_aliases,
+            "build_report_strategist_refresh_trace": _build_report_strategist_refresh_trace,
+            "compact_strategist_report_context": _compact_strategist_report_context,
+            "compact_scalar_dict": _compact_scalar_dict,
+            "story_post_exit_shadow": _story_post_exit_shadow,
+            "utc_now_iso": _utc_now_iso,
+            "build_trade_report_truth_surface": build_trade_report_truth_surface,
+            "build_trade_memory_application_surface": build_trade_memory_application_surface,
+            "execution_outcome_summary_is_placeholder": execution_outcome_summary_is_placeholder,
+        },
     )
-    if execution_outcome_summary_is_placeholder(execution_quality_seed.get("summary")) and _clip(execution_quality.get("summary"), max_len=600):
-        execution_quality_seed = dict(execution_quality_seed)
-        execution_quality_seed["summary"] = _clip(execution_quality.get("summary"), max_len=600)
-        if execution_quality.get("bullets"):
-            execution_quality_seed["bullets"] = _listify(execution_quality.get("bullets"), max_items=12, max_len=260)
-    if (
-        not execution_outcome
-        or not _clip(execution_quality.get("summary"), max_len=600)
-        or _is_low_information_bullet(execution_quality.get("summary"))
-    ) and str(execution_quality_seed.get("summary") or "").strip():
-        execution_quality["summary"] = _clip(execution_quality_seed.get("summary"), max_len=600)
-    if (not execution_quality.get("bullets")) and isinstance(execution_quality_seed.get("bullets"), list):
-        execution_quality["bullets"] = _listify(execution_quality_seed.get("bullets"), max_items=12, max_len=260)
-    reporter_eval = _build_reporter_evaluation_section(
-        shared_seed,
-        scanner_reason,
-        monitor_reason,
-        execution_outcome,
-        reporter_status,
-        reporter_feedback_packet,
-    )
-    if _reporter_summary_is_placeholder(reporter_eval.get("summary")) and _clip(reporter_evaluation_seed.get("summary"), max_len=600):
-        reporter_eval["summary"] = _clip(reporter_evaluation_seed.get("summary"), max_len=600)
-        if reporter_evaluation_seed.get("bullets"):
-            reporter_eval["bullets"] = _listify(reporter_evaluation_seed.get("bullets"), max_items=12, max_len=260)
-        if reporter_evaluation_seed.get("status"):
-            reporter_eval["status"] = _clip(reporter_evaluation_seed.get("status"), max_len=48)
-        if reporter_evaluation_seed.get("grade"):
-            reporter_eval["grade"] = _clip(reporter_evaluation_seed.get("grade"), max_len=24)
-    if (
-        not reporter_status
-        or not _clip(reporter_eval.get("summary"), max_len=600)
-        or _is_low_information_bullet(reporter_eval.get("summary"))
-    ) and str(reporter_evaluation_seed.get("summary") or "").strip():
-        reporter_eval["summary"] = _clip(reporter_evaluation_seed.get("summary"), max_len=600)
-    if (not reporter_eval.get("bullets")) and isinstance(reporter_evaluation_seed.get("bullets"), list):
-        reporter_eval["bullets"] = _listify(reporter_evaluation_seed.get("bullets"), max_items=12, max_len=260)
-    reporter_eval_status = _clip(reporter_eval.get("status"), max_len=48)
-    if (
-        not reporter_status
-        or not reporter_eval_status
-        or reporter_eval_status.lower() in {"missing", "not_captured", "unknown", "n/a"}
-    ) and str(reporter_evaluation_seed.get("status") or "").strip():
-        reporter_eval["status"] = _clip(reporter_evaluation_seed.get("status"), max_len=48)
-    reporter_eval_grade = _clip(reporter_eval.get("grade"), max_len=24)
-    if (
-        not reporter_status
-        or not reporter_eval_grade
-        or reporter_eval_grade.lower() in {"missing", "not_captured", "unknown", "n/a"}
-    ) and str(reporter_evaluation_seed.get("grade") or "").strip():
-        reporter_eval["grade"] = _clip(reporter_evaluation_seed.get("grade"), max_len=24)
-    weaknesses_bullets = warnings + [item for item in improvement_points if item not in warnings]
-    full_timeline = [
-        row
-        for row in list(story_input.get("timeline") or [])
-        if isinstance(row, dict)
-    ][:24]
-
-    out = {
-        "schema_version": "ai_trade_report.v2",
-        "generated_at": _utc_now_iso(),
-        "trade_id": trade_id,
-        "story_id": _clip(story_input.get("story_id"), max_len=120) or trade_id,
-        "run_id": _clip(story_input.get("run_id"), max_len=120),
-        "symbol": symbol,
-        "action": action,
-        "status": status_text,
-        "story_type": _clip(story_input.get("story_type"), max_len=40),
-        "execution_mode_label": _clip(story_input.get("execution_mode_label"), max_len=80),
-        "generation": {
-            "status": status,
-            "mode": mode,
-            "model": _clip(model, max_len=120),
-            "reason": _clip(reason, max_len=320),
-        },
-        "executive_summary": {
-            "headline": f"{action} {symbol}",
-            "action": action,
-            "symbol": symbol,
-            "confidence": confidence or "not_captured",
-            "summary": executive_reason,
-        },
-        "market_context_at_entry": {
-            "summary": market_context_summary,
-            "bullets": _build_market_context_bullets(market_context, scanner_reason=scanner_reason),
-            "regime": _clip(market_context.get("regime"), max_len=40),
-            "market_sentiment": _clip(market_context.get("market_sentiment"), max_len=40),
-            "playbook": _clip(market_context.get("playbook"), max_len=40),
-            "policy_source": _clip(market_context.get("policy_source"), max_len=80),
-            "themes": _listify(market_context.get("themes"), max_items=6, max_len=80),
-            "theme_strength_packet": _compact_scalar_dict(
-                market_context.get("theme_strength_packet"),
-                max_items=8,
-                max_len=120,
-            ),
-            "theme_source": _clip(market_context.get("theme_source"), max_len=80),
-            "theme_source_status": _clip(market_context.get("theme_source_status"), max_len=80),
-            "theme_source_reason": _clip(market_context.get("theme_source_reason"), max_len=160),
-            "theme_strength_top_themes": _listify(market_context.get("theme_strength_top_themes"), max_items=6, max_len=80),
-            "risk_tone": _clip(market_context.get("risk_tone"), max_len=40),
-            "risk_mode": _clip(market_context.get("risk_mode"), max_len=40),
-            "selected_playbook": _clip(market_context.get("selected_playbook"), max_len=40),
-            "preferred_themes": _listify(market_context.get("preferred_themes"), max_items=6, max_len=80),
-            "avoid_themes": _listify(market_context.get("avoid_themes"), max_items=6, max_len=80),
-            "scanner_bias_summary": {
-                "enabled": (market_context.get("scanner_bias_summary") or {}).get("enabled"),
-                "active_biases": _listify((market_context.get("scanner_bias_summary") or {}).get("active_biases"), max_items=6, max_len=80),
-                "bias_strength": _clip((market_context.get("scanner_bias_summary") or {}).get("bias_strength"), max_len=24),
-                "bias_source": _clip((market_context.get("scanner_bias_summary") or {}).get("bias_source"), max_len=80),
-                "summary": _clip((market_context.get("scanner_bias_summary") or {}).get("summary"), max_len=220),
-            },
-            "global_sentiment_score": market_context.get("global_sentiment_score"),
-            "vix_level": market_context.get("vix_level"),
-            "stress_flags": _listify(market_context.get("stress_flags"), max_items=6, max_len=80),
-            "strategist_candidate_hints": _listify(
-                market_context.get("candidate_hints") or strategist_evidence.get("candidate_hints"), max_items=8, max_len=24
-            ),
-            "strategist_market_headlines": _listify(
-                market_context.get("market_headlines") or strategist_evidence.get("market_headlines"), max_items=3, max_len=180
-            ),
-            "strategist_symbol_headlines": _listify(
-                market_context.get("symbol_headlines") or strategist_evidence.get("symbol_headlines"), max_items=3, max_len=180
-            ),
-            "global_sentiment_signal": _compact_scalar_dict(
-                market_context.get("global_sentiment_signal") or strategist_evidence.get("global_sentiment_signal"), max_items=8, max_len=120
-            ),
-            "korea_indices": _as_dict(market_context.get("korea_indices") or strategist_evidence.get("korea_indices")),
-            "fear_index": _compact_scalar_dict(
-                market_context.get("fear_index") or strategist_evidence.get("fear_index"), max_items=8, max_len=120
-            ),
-            "key_events": _listify(
-                market_context.get("key_events") or market_context.get("key_events_hint") or strategist_evidence.get("key_events"),
-                max_items=6,
-                max_len=180,
-            ),
-            "strategist_market_context_summary": _clip(
-                strategist_context.get("market_context_summary"),
-                max_len=320,
-            ),
-            "scanner_linkage_summary": _build_market_scanner_linkage_bullet(market_context, scanner_reason),
-        },
-        "strategist_summary": strategist_summary,
-        "strategist_refresh_trace": strategist_refresh_trace,
-        "entry_execution_visibility": entry_execution_visibility,
-        "why_this_symbol_was_chosen": {
-            "summary": _clip(scanner_choice_summary or scanner_reason.get("summary"), max_len=600),
-            "bullets": _listify(why_symbol_bullets, max_items=16, max_len=260),
-            "selected_rank": scanner_reason.get("selected_rank"),
-            "universe_size": scanner_reason.get("universe_size"),
-            "symbol": _clip(scanner_reason.get("selected_symbol") or story_input.get("symbol"), max_len=32),
-            "basis": _scanner_basis_text(scanner_reason),
-            "strategist_candidate_hints": _listify(
-                market_context.get("candidate_hints") or strategist_evidence.get("candidate_hints"), max_items=8, max_len=24
-            ),
-            "scanner_selection_trace": effective_scanner_selection_trace,
-            "news_scanner_contribution": news_scanner_contribution,
-        },
-        "entry_decision": entry_decision,
-        "holding_monitoring_story": {
-            **holding_story,
-            "monitor_stop_policy_trace": _as_dict(story_input.get("monitor_stop_policy_trace")),
-            "monitor_blocker_trace": _as_dict(story_input.get("monitor_blocker_trace")),
-        },
-        "exit_decision": exit_decision,
-        "execution_quality": execution_quality,
-        "monitor_snapshot": {
-            **monitor_snapshot,
-            "monitor_stop_policy_trace": _as_dict(story_input.get("monitor_stop_policy_trace")),
-        },
-        "scanner_filters": {
-            "summary": scanner_filters_summary,
-            "bullets": scanner_filters_bullets,
-        },
-        "guard_approval_result": {
-            "summary": (
-                _clip(guard_reason.get("summary"), max_len=600)
-                or _clip(guard_approval_seed.get("summary"), max_len=600)
-            ),
-            "bullets": (
-                _listify(guard_reason.get("bullets"), max_items=8, max_len=260)
-                or _listify(guard_approval_seed.get("bullets"), max_items=8, max_len=260)
-            ),
-        },
-        "reporter_evaluation": reporter_eval,
-        "errors_weaknesses_improvement_points": {
-            "summary": (
-                "Warnings and missing links were recorded for operator follow-up."
-                if weaknesses_bullets
-                else "No explicit weaknesses were surfaced beyond the recorded trace."
-            ),
-            "bullets": weaknesses_bullets,
-        },
-        "full_timeline": full_timeline,
-        "timeline": full_timeline,
-        "final_operator_conclusion": {
-            "summary": (
-                executive_reason
-                if status_text.strip().lower() == "closed" and lifecycle_summary_text
-                else (
-                    _clip(operator_conclusion.get("summary"), max_len=600)
-                    or _clip(final_operator_conclusion_seed.get("summary"), max_len=600)
-                    or executive_reason
-                )
-            ),
-            "current_action": (
-                action
-                if status_text.strip().lower() == "closed"
-                else (
-                    _clip(operator_conclusion.get("current_action"), max_len=24)
-                    or _clip(final_operator_conclusion_seed.get("current_action"), max_len=24)
-                    or action
-                )
-            ),
-            "watch_next": (
-                _listify(operator_conclusion.get("watch_next"), max_items=6, max_len=200)
-                or _listify(final_operator_conclusion_seed.get("watch_next"), max_items=6, max_len=200)
-            ),
-            "thesis_invalidation": (
-                _listify(operator_conclusion.get("thesis_invalidation"), max_items=6, max_len=200)
-                or _listify(final_operator_conclusion_seed.get("thesis_invalidation"), max_items=6, max_len=200)
-            ),
-        },
-        "shared_facts": _build_report_shared_facts(
-            shared_seed=shared_seed,
-            action=action,
-            symbol=symbol,
-            trade_id=trade_id,
-            status_text=status_text,
-        ),
-    }
-    out["truth_surface"] = build_trade_report_truth_surface(out.get("shared_facts"))
-    out["memory_surface"] = memory_surface
-    out["memory_application_surface"] = build_trade_memory_application_surface(story_input)
-    strategist_output = _compact_strategist_report_context(story_input)
-    if strategist_output:
-        out["strategist_output"] = strategist_output
-    post_exit_shadow = _story_post_exit_shadow(story_input)
-    if post_exit_shadow:
-        out["post_exit_shadow"] = dict(post_exit_shadow)
-    return _attach_backward_compatible_aliases(out)
-
 
 def _failure_report(
     story_input: Dict[str, Any],
