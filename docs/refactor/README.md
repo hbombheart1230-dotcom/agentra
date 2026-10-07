@@ -54,3 +54,11 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - current documentation size/inventory
    - patch-note source-of-truth map
    - migration risks and classification rules
+
+
+6. `p1_5_strategist_implementation_packet_v0_1.md`
+   - 156-function ownership inventory
+   - compatibility/monkeypatch seams
+   - target Strategist package tree
+   - staged S1-S5 implementation plan
+   - GPT-first implementation and Cloud escalation policy
