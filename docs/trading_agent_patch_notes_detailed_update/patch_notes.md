@@ -1814,3 +1814,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `TradingAgent-DailyUefEvaluation` started from `C:\Agentra` at 16:45:02 KST (SHA `a38bf4e9f5f6f76eaee37659c45c7c49705fcef2`) and ended at 16:45:03 KST with exit code 1, no canonical generation, and an explicit registered-freshness failure. It failed closed rather than materializing a canonical board that could mix a fresh through-day label with stale or unreviewed content.
 - The individual stale or unknown closeout-written source is not identified by the retained lifecycle event, so source-level RCA remains open. No source artifact, pointer, registry, UEF framework/freeze semantic, or historical evidence was changed. R6/R6.1/R6.2 deployment and live acceptance are not asserted.
 - See `docs/daily_patch/2026-10-06_docker_live_open_and_daily_uef_freshness_incident.md`.
+
+# 2026-10-07 - P1.5/P1.6 Refactor Design and Documentation Refactor Start
+
+- Created the design-only `design/p1.5-p1.6-modernization` branch from baseline `b67934a5baa95f4d329ccf345c14ed591a126a0f`.
+- Defined P1.5 as behavior-preserving agent-boundary restoration: explicit input/output contracts, standalone-callable agent cores, naming cleanup, test architecture cleanup, and unchanged production topology.
+- Defined P1.6 as a post-P1.5 orchestration benchmark of the current custom runtime, LangGraph 1.x, and pydantic-graph. No orchestration framework is adopted during P1.5.
+- LLM decision roles remain Strategist + Reporter only. Scanner, Monitor, Supervisor, Executor, and Commander routing remain deterministic unless separately approved in a future feature phase.
+- Started documentation refactoring using an inventory-first, link-safe migration policy. Historical milestone and incident records are preserved as audit assets rather than rewritten.
+- Clarified patch-note authority: `docs/daily_patch/` is the detailed technical audit history; this folder's `patch_notes.json` and `patch_notes.md` are the UI/API-facing canonical changelog pair.
+- No runtime, strategy, broker, execution-authority, or trading-semantic change is included.
+- See `docs/refactor/p1_5_p1_6_master_plan.md`, `docs/refactor/p1_5_refactor_constitution.md`, `docs/refactor/p1_5_documentation_refactor_plan.md`, and `docs/refactor/documentation_inventory.md`.
+
