@@ -179,3 +179,16 @@
 - Replace heuristic `stability_score` with calibrated weighting per regime/playbook.
 - Add rolling window snapshots (e.g., 7d/30d) and decay weighting.
 - Add offline ML/RL candidates on top of deterministic feature tables without impacting live execution path.
+
+
+## 2026-10-07 Addendum (P1.5 / P1.6 Design Start)
+
+### What Changed
+- Created a design-only branch for P1.5 structural refactoring and P1.6 orchestration modernization.
+- Added the P1.5/P1.6 master plan, refactor constitution, and Strategist decomposition seed under `docs/refactor/`.
+- Formalized the implementation gate: P1.5 runtime changes begin only from the future frozen P1.2/P1.3 baseline.
+- Formalized agent modularity goals, LLM boundaries, naming cleanup, incremental pytest restructuring, test-artifact hygiene, and Codex/Claude Cloud responsibilities.
+
+### Runtime Impact
+- None.
+- No trading behavior, strategy, order authority, LLM call count, broker path, or production runtime code changed in this documentation-only update.
