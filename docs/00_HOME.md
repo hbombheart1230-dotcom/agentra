@@ -3,7 +3,7 @@
 ## Current State
 
 - Production runtime: separate from this documentation vault.
-- Current development milestone: P1.3 Docker (NEXT). UEF (UEF-1..UEF-9) is COMPLETE and frozen as the evaluation-authority foundation underneath it; [P1.1 real-run acceptance](research/uef_p1_1_real_run_acceptance.md) passed.
+- Current development milestone: P1.5 structural refactor. P1.5.1 Reporting definite-dead-code cleanup is COMPLETE; P1.5.2 Reporting decomposition is NEXT. UEF (UEF-1..UEF-9) remains COMPLETE and frozen as the evaluation-authority foundation.
 - Latest formal evaluation freeze: [[UEF|UEF-9 - Formal Evaluation Authority]] (UEF COMPLETE).
 
 ## Current Delivery Order
@@ -12,8 +12,8 @@
 2. P1 UEF-5 through UEF-9: COMPLETE / FORMALLY FROZEN.
 3. P1.1 UEF Real-Run Acceptance: PASS.
 4. P1.2 UEF Cross-day Observation: NON-BLOCKING / OBSERVE.
-5. P1.3 Docker: NEXT.
-6. P1.5 Large-file refactor / modularization: PLANNED.
+5. P1.3 Docker: COMPLETE / frozen operational baseline.
+6. P1.5 Large-file refactor / modularization: ACTIVE — P1.5.1 COMPLETE, P1.5.2 NEXT.
 7. P2 Strategy Program Integration; P3 Safety 5D/5E/6; P4 Q100/Reporter v2; P5 Evidence Memory/Obsidian; P6 Self-improvement; P7 System V2 Freeze; P8 paper final experiments: PLANNED.
 
 ## Historical Roadmap Sequence

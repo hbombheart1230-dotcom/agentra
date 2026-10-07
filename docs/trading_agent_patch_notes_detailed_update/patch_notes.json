@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 112,
+  "entry_count": 113,
   "entries": [
     {
       "date": "2026-09-08",
@@ -2987,6 +2987,35 @@
         "data/logs/events.jsonl",
         "reports/operator_summary/daily/2026-10-06/daily_report.md",
         "docs/daily_patch/2026-10-02_p1_3_r1_r4_docker_restart_safety.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5.1",
+      "title": "Reporting definite dead-code cleanup",
+      "stage": "P1.5 Structural Refactor",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TEST_HYGIENE"
+      ],
+      "summary": "Removed proven unreachable/shadowed reporting code while preserving public façades and report semantics; required reporting tests passed.",
+      "details": [
+        "trade_report_ai.py removed 1,131 unreachable lines after the unconditional Markdown delegation return; the public wrapper remains unchanged.",
+        "trade_report_markdown_clean.py removed the earlier shadowed _playbook_label definition; the later more complete binding remains authoritative.",
+        "Required P1.5.1 pytest suite passed 149/149.",
+        "A broader affected reporting run executed 280 tests and all assertions passed; the session audit then detected two production-shaped test directories, so the responsible tests were redirected to tmp_path.",
+        "No report schema, truth precedence, artifact path, LLM prompt/routing, trading semantics, Supervisor/Executor authority, UEF semantics, or broker mutation behavior changed.",
+        "The temporary branch-only GitHub Actions workflow used for remote validation was removed before finalization."
+      ],
+      "impact": "Reduces Reporting giant-file surface and test artifact leakage without changing runtime/report behavior. P1.5.2 structural decomposition is next.",
+      "sources": [
+        "docs/daily_patch/2026-10-07_p1_5_1_reporting_dead_code_cleanup.md",
+        "libs/reporting/trade_report_ai.py",
+        "libs/reporting/trade_report_markdown_clean.py",
+        "tests/test_live_execution_bundle_report.py",
+        "tests/test_report_metadata_alignment.py"
       ],
       "status": "current"
     }

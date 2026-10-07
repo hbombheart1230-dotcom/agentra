@@ -179,3 +179,12 @@
 - Replace heuristic `stability_score` with calibrated weighting per regime/playbook.
 - Add rolling window snapshots (e.g., 7d/30d) and decay weighting.
 - Add offline ML/RL candidates on top of deterministic feature tables without impacting live execution path.
+
+## P1.5.1 Addendum (Reporting Definite Dead-Code Cleanup — 2026-10-07)
+
+- Removed the unreachable legacy tail after `render_trade_summary_markdown_with_evaluation()` delegates to the clean renderer.
+- Removed the earlier shadowed `_playbook_label` definition from the clean Markdown renderer.
+- Public Reporting entry points and output semantics remain unchanged.
+- Required focused regression: 149 passed.
+- Broader affected reporting assertions: 280 passed; two test-only production-shaped paths were isolated to `tmp_path` afterward.
+- No production runtime, trading authority, UEF, broker, schema, truth-precedence, or LLM-policy change.

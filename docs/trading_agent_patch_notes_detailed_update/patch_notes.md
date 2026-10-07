@@ -1814,3 +1814,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `TradingAgent-DailyUefEvaluation` started from `C:\Agentra` at 16:45:02 KST (SHA `a38bf4e9f5f6f76eaee37659c45c7c49705fcef2`) and ended at 16:45:03 KST with exit code 1, no canonical generation, and an explicit registered-freshness failure. It failed closed rather than materializing a canonical board that could mix a fresh through-day label with stale or unreviewed content.
 - The individual stale or unknown closeout-written source is not identified by the retained lifecycle event, so source-level RCA remains open. No source artifact, pointer, registry, UEF framework/freeze semantic, or historical evidence was changed. R6/R6.1/R6.2 deployment and live acceptance are not asserted.
 - See `docs/daily_patch/2026-10-06_docker_live_open_and_daily_uef_freshness_incident.md`.
+
+# 2026-10-07 - P1.5.1 Reporting Definite Dead-Code Cleanup
+
+- Removed 1,131 unreachable lines from `trade_report_ai.py` after the unconditional Markdown delegation return; public API preserved.
+- Removed the earlier shadowed `_playbook_label` from `trade_report_markdown_clean.py`; the later complete binding remains.
+- Required P1.5.1 suite: **149 passed**.
+- Broader affected reporting selection: **280 test assertions passed**; pytest's production-path audit then identified test-only writes to `reports/metrics` and `reports/runtime`, and those tests were redirected to session `tmp_path` storage.
+- No trading/report schema, truth precedence, LLM, Supervisor/Executor, UEF, or broker semantics changed.
+- See `docs/daily_patch/2026-10-07_p1_5_1_reporting_dead_code_cleanup.md`.
