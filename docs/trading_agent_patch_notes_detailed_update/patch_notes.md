@@ -1952,3 +1952,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No runtime topology, state semantics, deployment path, Supervisor authority, guard order, CAS/idempotency, broker mutation, UEF or Step5C/5D behavior changed.
 - Design authority: docs/refactor/p1_5_compatibility_wrapper_cleanup_implementation_packet_v1_0.md.
 
+# 2026-10-07 - P1.5.11 Full Regression / Docker / UEF Replay / Freeze Design Complete
+
+- Completed the P1.5.11 final acceptance and formal-freeze design without changing runtime behavior.
+- Frozen a candidate-SHA-bound acceptance sequence covering targeted subsystem regression, full pytest, artifact hygiene, UEF frozen-manifest verification, deterministic UEF replay, Step5 authority/safety, Docker runtime acceptance, compatibility review, independent audit and human approval.
+- Required UEF acceptance now explicitly includes candidate conservation, pair conservation with unique comparison IDs, UEF-9 VALID binding, deterministic replay and Daily UEF publication-safety behavior.
+- Preserved the 2026-10-06 Daily UEF freshness incident as an operational upstream-freshness failure; P1.5.11 forbids weakening freshness contracts or fabricating canonical backfill to obtain a green freeze.
+- Required Docker revalidation covers clean-image/source parity, startup/health, single runtime ownership, contender rejection, controlled restart/recovery, bounded ownership wait, SIGTERM drain, persistence, resource/EOD smoke and no restart storm/OOM.
+- Required safety freeze preserves Supervisor authority, execute_owned_order as mutation choke point, Step5B/C/D semantics, readiness-evidence ordering, CAS/idempotency, UNKNOWN quarantine and broker-mutation ordering.
+- Frozen P1.5 final evidence/report schema, independent Claude audit, human approval and freeze-tag policy. P1.6 remains blocked until P1_5_FORMAL_FREEZE=YES.
+- Design authority: docs/refactor/p1_5_full_regression_docker_uef_freeze_implementation_packet_v1_0.md.
+
