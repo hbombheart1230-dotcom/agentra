@@ -24,6 +24,7 @@ from libs.reporting.quant_tactic_evaluation import (
     render_quant_tactic_evaluation_lines,
 )
 from libs.reporting.quant_shadow_candidate_evaluation import (
+    CANDIDATE_EVALUATION_PAYLOAD_KEYS,
     build_quant_shadow_candidate_evaluation,
     load_quant_shadow_candidate_payloads,
     load_quant_shadow_candidate_payloads_for_range,
@@ -2470,9 +2471,13 @@ def build_operator_daily_summary_artifact_payload(
     rows = _enrich_rows_with_truth_surface(rows, reports_root)
     metrics = _trade_metrics(rows)
     counters = _pattern_counters(rows)
+    # shadow_payloads feeds only build_quant_shadow_candidate_evaluation,
+    # build_q8_shadow_blocker_review and build_strategist_llm_evaluation, which read
+    # nothing but `candidates`/`generated_at`; project at load time to bound memory.
     shadow_payloads = load_quant_shadow_candidate_payloads(
         reports_root=reports_root,
         days=[normalized_day],
+        keys=CANDIDATE_EVALUATION_PAYLOAD_KEYS,
     )
     market_regime_rail = classify_market_regime_rail(
         load_latest_macro_snapshot(

@@ -11,6 +11,7 @@ from libs.reporting.q8_evaluation_contract import (
     dedupe_q8_candidates,
 )
 from libs.reporting.quant_shadow_candidate_evaluation import (
+    CANDIDATE_EVALUATION_PAYLOAD_KEYS,
     build_quant_shadow_candidate_evaluation,
     load_quant_shadow_candidate_payloads,
 )
@@ -314,7 +315,11 @@ def generate_q8_shadow_blocker_review(
     reports_root: Path,
     day: str,
 ) -> Dict[str, Any]:
-    payloads = load_quant_shadow_candidate_payloads(reports_root=reports_root, days=[day])
+    # Only `candidates`/`generated_at` are read from each payload below; projecting
+    # at load time keeps a trading day's worth of unused payload keys out of memory.
+    payloads = load_quant_shadow_candidate_payloads(
+        reports_root=reports_root, days=[day], keys=CANDIDATE_EVALUATION_PAYLOAD_KEYS
+    )
     market_regime_rail = classify_market_regime_rail(load_latest_macro_snapshot(day))
     quant_shadow_evaluation = build_quant_shadow_candidate_evaluation(payloads)
     review = build_q8_shadow_blocker_review(

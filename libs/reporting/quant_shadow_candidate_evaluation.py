@@ -4,7 +4,7 @@ import json
 from collections import Counter
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Sequence
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from libs.reporting.q8_evaluation_contract import (
     CANONICAL_DEDUPE_KEY_FIELDS,
@@ -132,15 +132,25 @@ def _augment_missing_q9_commander_candidate(
     return payload
 
 
+# The only top-level payload keys the closeout-path consumers read (candidate
+# evaluation, Q8 blocker review, strategist LLM evaluation). Everything else in
+# a shadow payload -- chiefly `q9_decision_candidates`, ~65% of the bytes -- is
+# dead weight for them. Closeout passes this to `keys=` so a full trading day
+# is not held in memory (the 10-06 closeout was OOM-killed at the 1 GiB cap).
+CANDIDATE_EVALUATION_PAYLOAD_KEYS: Tuple[str, ...] = ("candidates", "generated_at")
+
+
 def load_quant_shadow_candidate_payloads(
     *,
     reports_root: Path,
     days: Sequence[str],
+    keys: Optional[Sequence[str]] = None,
 ) -> List[Dict[str, Any]]:
     return list(
         iter_quant_shadow_candidate_payloads(
             reports_root=reports_root,
             days=days,
+            keys=keys,
         )
     )
 
@@ -149,22 +159,40 @@ def iter_quant_shadow_candidate_payloads(
     *,
     reports_root: Path,
     days: Sequence[str],
+    keys: Optional[Sequence[str]] = None,
 ) -> Iterable[Dict[str, Any]]:
+    """Yield one payload dict per shadow file.
+
+    `keys=None` (default) yields the complete payload, unchanged. With `keys`,
+    each payload is projected onto those top-level keys as soon as it is parsed
+    (the full parse is released immediately) and the q9 commander augmentation
+    -- which only ever rewrites `q9_decision_candidates` -- is skipped together
+    with its multi-hundred-MiB `q9_decision_windows.json` load, unless the
+    caller asked for that key.
+    """
     root = shadow_candidate_root_for_reports(reports_root)
     seen: set[str] = set()
+    wanted = tuple(keys) if keys is not None else None
+    augment = wanted is None or "q9_decision_candidates" in wanted
     for day in days:
-        q9_windows = _q9_windows_by_id(reports_root, day)
+        q9_windows = _q9_windows_by_id(reports_root, day) if augment else {}
         for path in _json_paths_for_day(root, day):
             key = str(path)
             if key in seen:
                 continue
             seen.add(key)
             payload = _read_json(path)
-            if isinstance(payload, dict):
-                yield _augment_missing_q9_commander_candidate(
-                    dict(payload),
-                    windows_by_id=q9_windows,
-                )
+            if not isinstance(payload, dict):
+                continue
+            if wanted is not None:
+                payload = {name: payload[name] for name in wanted if name in payload}
+                if not augment:
+                    yield payload
+                    continue
+            yield _augment_missing_q9_commander_candidate(
+                dict(payload),
+                windows_by_id=q9_windows,
+            )
 
 
 def iter_quant_shadow_candidate_payloads_for_range(
