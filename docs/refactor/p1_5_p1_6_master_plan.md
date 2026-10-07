@@ -1,6 +1,6 @@
 # Agentra P1.5 / P1.6 Master Plan
 
-Status: DESIGN FREEZE CANDIDATE  
+Status: P1.5 PREP CLOSED / DESIGN FROZEN / IMPLEMENTATION GATED  
 Date: 2026-10-07
 
 ## 1. Purpose
@@ -286,3 +286,18 @@ PASS / PASS_WITH_FINDINGS / FAIL
 Codex is the implementer.
 Claude is the independent verifier.
 Architecture ambiguity should be resolved before Codex receives a batch.
+
+
+## P1.5 PREP Closure
+
+P1.5 preparation/design is formally closed on 2026-10-07.
+
+Authority:
+- docs/refactor/p1_5_prep_closure_report.md
+- detailed implementation packets indexed by docs/refactor/README.md
+
+Important:
+- this is a DESIGN/PREP freeze, not a runtime implementation freeze
+- P1.5 implementation remains gated until the upstream implementation baseline is formally frozen
+- no P1.5 runtime Python change is authorized by this closure
+- P1.6 implementation remains blocked until P1.5 formal freeze
