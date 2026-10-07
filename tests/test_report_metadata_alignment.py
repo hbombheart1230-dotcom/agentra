@@ -70,7 +70,7 @@ def test_report_metadata_alignment_smoke(tmp_path: Path) -> None:
 
     _, metrics_json = generate_metrics_report(events_path, reports_root / "metrics", day=day)
     _, daily_json = generate_daily_report(events_path, reports_root, day=day)
-    operator_md, operator_json = generate_operator_daily_summary(events_path, reports_root / "operator_summary", day=day)
+    operator_md, operator_json = generate_operator_daily_summary(\n        events_path,\n        reports_root / "operator_summary",\n        day=day,\n        metrics_report_dir=reports_root / "metrics",\n    )
     _decision_md, decision_obj = generate_decision_story_report(events_path, reports_root / "decision_story", day=day, trade_only=False)
     _cards_md, cards_obj = generate_run_card_report(events_path, reports_root / "run_cards", day=day, trade_only=False)
     trade_md, trade_json, trade_obj = generate_trade_explain_report(
