@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 from libs.reporting.trade_report_markdown_truth import (
+    build_truth_surface as _build_truth_surface_impl,
     boolish as _boolish_impl,
     build_trade_cost_analysis as _build_trade_cost_analysis_impl,
     extract_trade_quantity as _extract_trade_quantity_impl,
@@ -85,6 +86,7 @@ from libs.reporting.trade_report.markdown_diagnostics import (
     same_day_summary_from_texts as _same_day_summary_from_texts_impl,
 )
 from libs.reporting.trade_report.markdown_signals import (
+    resolve_entry_execution_visibility as _resolve_entry_execution_visibility_impl,
     build_summary_exit_trigger_lines as _build_summary_exit_trigger_lines_impl,
     enrich_exit_signal_snapshot_from_monitor as _enrich_exit_signal_snapshot_from_monitor_impl,
     entry_signal_metric_summary_lines as _entry_signal_metric_summary_lines_impl,
@@ -969,80 +971,16 @@ def _resolve_trade_symbol_metadata(report: Dict[str, Any], symbol: str) -> Dict[
         translate_text=_translate_text,
     )
 
+def _markdown_entry_visibility_deps() -> Dict[str, Any]:
+    return {
+        "as_dict": _as_dict,
+        "first_dict": _first_dict,
+        "metadata_value": _metadata_value,
+        "resolve_entry_monitor_artifact": _resolve_entry_monitor_artifact,
+    }
+
 def _resolve_entry_execution_visibility(report: Dict[str, Any]) -> Dict[str, Any]:
-    visibility = _as_dict(report.get("entry_execution_visibility"))
-    entry_monitor = _resolve_entry_monitor_artifact(report)
-    strategist_output = _as_dict(report.get("strategist_output"))
-    strategy_detail = _as_dict(strategist_output.get("strategy_detail"))
-    monitor = _as_dict(report.get("monitor_snapshot"))
-    shared = _as_dict(report.get("shared_facts"))
-    commander_route = _as_dict(shared.get("commander_route"))
-    entry_policy_ref = _as_dict(entry_monitor.get("policy_ref"))
-    entry_applied_policy = _as_dict(entry_policy_ref.get("applied_policy"))
-
-    proposal = _as_dict(visibility.get("strategy_candidate_watch_proposal"))
-    if not proposal:
-        proposal = _as_dict(strategy_detail.get("candidate_watch_policy"))
-
-    entry_control = _first_dict(
-        _as_dict(entry_policy_ref.get("entry_control")),
-        _as_dict(entry_applied_policy.get("commander_entry_control")),
-        _as_dict(entry_applied_policy.get("entry_control")),
-        _as_dict(visibility.get("commander_entry_control")),
-    )
-    if not entry_control:
-        entry_control = _as_dict(commander_route.get("entry_control"))
-    if not proposal:
-        proposal = _as_dict(entry_control.get("proposal")) or _as_dict(entry_control.get("candidate_watch_policy_proposal"))
-    if proposal and entry_control:
-        proposal = dict(proposal)
-        nested = _as_dict(entry_control.get("proposal")) or _as_dict(entry_control.get("candidate_watch_policy_proposal"))
-        if proposal.get("max_priority_rank") in (None, "") and entry_control.get("proposed_max_priority_rank") not in (None, ""):
-            proposal["max_priority_rank"] = entry_control.get("proposed_max_priority_rank")
-        if proposal.get("max_runner_ups") in (None, "") and entry_control.get("proposed_max_runner_ups") not in (None, ""):
-            proposal["max_runner_ups"] = entry_control.get("proposed_max_runner_ups")
-        if proposal.get("cascade_enabled") in (None, "") and nested.get("cascade_enabled") not in (None, ""):
-            proposal["cascade_enabled"] = nested.get("cascade_enabled")
-        for key in ("source", "behavior_effect", "tactical_strategy", "reason"):
-            if proposal.get(key) in (None, "") and nested.get(key) not in (None, ""):
-                proposal[key] = nested.get(key)
-        for key in ("cascade_allowed_reasons", "cascade_blocked_reasons"):
-            if proposal.get(key) in (None, "", []) and nested.get(key) not in (None, "", []):
-                proposal[key] = nested.get(key)
-
-    cascade = _first_dict(
-        _as_dict(entry_monitor.get("entry_candidate_cascade")),
-        _as_dict(_as_dict(entry_monitor.get("scanner_monitor_handoff")).get("entry_candidate_cascade")),
-        _as_dict(visibility.get("monitor_entry_candidate_cascade")),
-        _as_dict(monitor.get("entry_candidate_cascade")),
-    )
-    focus_context = _first_dict(
-        _as_dict(entry_monitor.get("monitor_focus_context")),
-        _as_dict(visibility.get("monitor_focus_context")),
-        _as_dict(monitor.get("monitor_focus_context")),
-    )
-    grouped_trace = _first_dict(
-        _as_dict(entry_monitor.get("entry_grouped_logic_trace")),
-        _as_dict(_as_dict(entry_monitor.get("threshold_snapshot")).get("entry_grouped_logic_trace")),
-        _as_dict(visibility.get("entry_grouped_logic_trace")),
-    )
-
-    out: Dict[str, Any] = {}
-    if proposal:
-        out["strategy_candidate_watch_proposal"] = proposal
-    if entry_control:
-        out["commander_entry_control"] = entry_control
-    if cascade:
-        out["monitor_entry_candidate_cascade"] = cascade
-    if focus_context:
-        out["monitor_focus_context"] = focus_context
-    if grouped_trace:
-        out["entry_grouped_logic_trace"] = grouped_trace
-    summary = _metadata_value(visibility.get("summary"))
-    if summary:
-        out["summary"] = summary
-    return out
-
+    return _resolve_entry_execution_visibility_impl(report, deps=_markdown_entry_visibility_deps())
 
 def _first_dict(*items: Dict[str, Any]) -> Dict[str, Any]:
     for item in items:
@@ -1931,81 +1869,22 @@ def _memory_status_label(value: Any) -> str:
     return mapping.get(raw, _metadata_value(value) or "-")
 
 
+def _markdown_truth_surface_deps() -> Dict[str, Any]:
+    return {
+        "as_dict": _as_dict,
+        "authority_label": _authority_label,
+        "badge": _badge,
+        "fmt_pct": _fmt_pct,
+        "fmt_price": _fmt_price,
+        "get_truth_surface": _get_truth_surface,
+        "metadata_value": _metadata_value,
+        "num_opt": _num_opt,
+        "trade_cost_analysis_lines": _trade_cost_analysis_lines,
+        "truth_source_label": _truth_source_label,
+    }
+
 def _build_truth_surface(report: Dict[str, Any]) -> List[str]:
-    truth = _get_truth_surface(report)
-    price = _as_dict(truth.get("price"))
-    pnl = _as_dict(truth.get("pnl"))
-    availability = _as_dict(truth.get("availability"))
-    lines: List[str] = []
-
-    broker_buy = price.get("broker_buy_price")
-    broker_sell = price.get("broker_fill_price")
-    account_mark = price.get("account_mark_price")
-    broker_fee = pnl.get("broker_fee")
-    broker_tax = pnl.get("broker_tax")
-    pnl_value = pnl.get("value")
-    pnl_pct = pnl.get("pct")
-
-    lines.append(f"- {_badge('확정값', '#2563eb')} 브로커 체결과 당일 손익 기준을 우선합니다.")
-
-    if broker_buy not in (None, "") and broker_sell not in (None, ""):
-        lines.append(f"- 브로커 매수가/매도가는 {_fmt_price(broker_buy)} / {_fmt_price(broker_sell)}입니다.")
-    elif broker_sell not in (None, ""):
-        lines.append(f"- 브로커 체결 가격은 {_fmt_price(broker_sell)}입니다.")
-
-    if account_mark not in (None, ""):
-        lines.append(f"- 계좌 기준 마크 가격은 {_fmt_price(account_mark)}입니다.")
-
-    if pnl_value not in (None, "", "unavailable") and pnl_pct not in (None, ""):
-        lines.append(f"- 확정 손익은 {pnl_value} / {_fmt_pct(pnl_pct)}입니다.")
-    elif pnl_pct not in (None, ""):
-        lines.append(f"- 브로커 체결가와 계좌 평가손익 기준 추정 손익률은 {_fmt_pct(pnl_pct)}입니다.")
-
-    if broker_fee not in (None, "") or broker_tax not in (None, ""):
-        lines.append(
-            f"- 브로커 수수료/세금은 {broker_fee if broker_fee not in (None, '') else '-'} / "
-            f"{broker_tax if broker_tax not in (None, '') else '-'}입니다."
-        )
-    cost_lines = _trade_cost_analysis_lines(report, bullet="-")
-    for cost_line in cost_lines:
-        lines.append(cost_line.replace("**", ""))
-
-    price_truth_source = _truth_source_label(price.get("price_truth_source"))
-    pnl_truth_source = _truth_source_label(pnl.get("pnl_truth_source"))
-    lines.append(f"- 가격 기준은 {price_truth_source}입니다.")
-    lines.append(f"- 손익 기준은 {pnl_truth_source}입니다.")
-
-    broker_day_source = _truth_source_label(pnl.get("broker_day_truth_source"))
-    broker_day_match_mode = _metadata_value(pnl.get("broker_day_match_mode") or "-")
-    broker_day_authoritative = _authority_label(pnl.get("broker_day_authoritative"))
-    if pnl.get("broker_day_truth_source"):
-        lines.append(
-            f"- 브로커 당일 손익은 {broker_day_authoritative}으로 연결됐고, 소스는 {broker_day_source}입니다."
-        )
-        lines.append(f"- 브로커 당일 손익 매칭 방식은 {broker_day_match_mode}입니다.")
-
-    availability_bits = []
-    availability_bits.append("브로커 체결가는 확보됐습니다" if availability.get("broker_fill_present") else "브로커 체결가는 직접 확보되지 않았습니다")
-    availability_bits.append("계좌 마크는 확인됐습니다" if availability.get("account_mark_present") else "계좌 마크는 없었습니다")
-    availability_bits.append("모니터 가격은 남아 있습니다" if availability.get("monitor_mark_present") else "모니터 가격은 남지 않았습니다")
-    availability_bits.append("브로커 손익도 확인됐습니다" if availability.get("broker_pnl_present") else "브로커 손익은 직접 확인되지 않았습니다")
-    lines.append(f"- 가용성 요약: {', '.join(availability_bits)}.")
-
-    if (
-        broker_buy not in (None, "")
-        and broker_sell not in (None, "")
-        and float(broker_buy) == float(broker_sell)
-        and pnl_value not in (None, "", "unavailable")
-        and _num_opt(pnl_value) is not None
-        and _num_opt(pnl_value) < 0
-    ):
-        lines.append("- 매수가와 매도가가 같았고, 손익은 가격 변동이 아니라 수수료와 세금에서 발생했습니다.")
-
-    if broker_sell not in (None, "") and broker_buy in (None, "") and pnl.get("broker_day_truth_source"):
-        lines.append("- 브로커 매수 체결가는 직접 복구되지 않았고, 확정 손익은 키움 당일 실현손익 기준으로만 확인했습니다.")
-
-    return lines
-
+    return _build_truth_surface_impl(report, deps=_markdown_truth_surface_deps())
 
 def _memory_layers_text(values: Any, *, arrow: bool = False, humanize: bool = True) -> str:
     items = [str(x).strip() for x in _listify(values) if str(x).strip()]

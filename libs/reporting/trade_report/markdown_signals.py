@@ -731,3 +731,82 @@ def build_summary_exit_trigger_lines(
     return lines
 
 
+def resolve_entry_execution_visibility(report: Dict[str, Any], *, deps: Mapping[str, Any]) -> Dict[str, Any]:
+    _as_dict = deps["as_dict"]
+    _first_dict = deps["first_dict"]
+    _metadata_value = deps["metadata_value"]
+    _resolve_entry_monitor_artifact = deps["resolve_entry_monitor_artifact"]
+    visibility = _as_dict(report.get("entry_execution_visibility"))
+    entry_monitor = _resolve_entry_monitor_artifact(report)
+    strategist_output = _as_dict(report.get("strategist_output"))
+    strategy_detail = _as_dict(strategist_output.get("strategy_detail"))
+    monitor = _as_dict(report.get("monitor_snapshot"))
+    shared = _as_dict(report.get("shared_facts"))
+    commander_route = _as_dict(shared.get("commander_route"))
+    entry_policy_ref = _as_dict(entry_monitor.get("policy_ref"))
+    entry_applied_policy = _as_dict(entry_policy_ref.get("applied_policy"))
+
+    proposal = _as_dict(visibility.get("strategy_candidate_watch_proposal"))
+    if not proposal:
+        proposal = _as_dict(strategy_detail.get("candidate_watch_policy"))
+
+    entry_control = _first_dict(
+        _as_dict(entry_policy_ref.get("entry_control")),
+        _as_dict(entry_applied_policy.get("commander_entry_control")),
+        _as_dict(entry_applied_policy.get("entry_control")),
+        _as_dict(visibility.get("commander_entry_control")),
+    )
+    if not entry_control:
+        entry_control = _as_dict(commander_route.get("entry_control"))
+    if not proposal:
+        proposal = _as_dict(entry_control.get("proposal")) or _as_dict(entry_control.get("candidate_watch_policy_proposal"))
+    if proposal and entry_control:
+        proposal = dict(proposal)
+        nested = _as_dict(entry_control.get("proposal")) or _as_dict(entry_control.get("candidate_watch_policy_proposal"))
+        if proposal.get("max_priority_rank") in (None, "") and entry_control.get("proposed_max_priority_rank") not in (None, ""):
+            proposal["max_priority_rank"] = entry_control.get("proposed_max_priority_rank")
+        if proposal.get("max_runner_ups") in (None, "") and entry_control.get("proposed_max_runner_ups") not in (None, ""):
+            proposal["max_runner_ups"] = entry_control.get("proposed_max_runner_ups")
+        if proposal.get("cascade_enabled") in (None, "") and nested.get("cascade_enabled") not in (None, ""):
+            proposal["cascade_enabled"] = nested.get("cascade_enabled")
+        for key in ("source", "behavior_effect", "tactical_strategy", "reason"):
+            if proposal.get(key) in (None, "") and nested.get(key) not in (None, ""):
+                proposal[key] = nested.get(key)
+        for key in ("cascade_allowed_reasons", "cascade_blocked_reasons"):
+            if proposal.get(key) in (None, "", []) and nested.get(key) not in (None, "", []):
+                proposal[key] = nested.get(key)
+
+    cascade = _first_dict(
+        _as_dict(entry_monitor.get("entry_candidate_cascade")),
+        _as_dict(_as_dict(entry_monitor.get("scanner_monitor_handoff")).get("entry_candidate_cascade")),
+        _as_dict(visibility.get("monitor_entry_candidate_cascade")),
+        _as_dict(monitor.get("entry_candidate_cascade")),
+    )
+    focus_context = _first_dict(
+        _as_dict(entry_monitor.get("monitor_focus_context")),
+        _as_dict(visibility.get("monitor_focus_context")),
+        _as_dict(monitor.get("monitor_focus_context")),
+    )
+    grouped_trace = _first_dict(
+        _as_dict(entry_monitor.get("entry_grouped_logic_trace")),
+        _as_dict(_as_dict(entry_monitor.get("threshold_snapshot")).get("entry_grouped_logic_trace")),
+        _as_dict(visibility.get("entry_grouped_logic_trace")),
+    )
+
+    out: Dict[str, Any] = {}
+    if proposal:
+        out["strategy_candidate_watch_proposal"] = proposal
+    if entry_control:
+        out["commander_entry_control"] = entry_control
+    if cascade:
+        out["monitor_entry_candidate_cascade"] = cascade
+    if focus_context:
+        out["monitor_focus_context"] = focus_context
+    if grouped_trace:
+        out["entry_grouped_logic_trace"] = grouped_trace
+    summary = _metadata_value(visibility.get("summary"))
+    if summary:
+        out["summary"] = summary
+    return out
+
+
