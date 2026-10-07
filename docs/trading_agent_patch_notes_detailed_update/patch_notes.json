@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 113,
+  "entry_count": 114,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3027,6 +3027,43 @@
         "reviewer": null,
         "final_approval": "human",
         "verification": "documentation-only change; canonical patch-note JSON parsed and entry_count checked",
+        "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+        "provenance_baseline": null
+      }
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5 Strategist Deep Design v0.1",
+      "title": "Strategist 8,878-line node decomposed into explicit P1.5 ownership and contract boundaries",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "STRATEGIST",
+        "TESTING"
+      ],
+      "summary": "Mapped all 156 Strategist functions, preserved existing contract owners and compatibility seams, and defined the staged GPT-first extraction plan without changing runtime behavior.",
+      "details": [
+        "All 156 top-level functions in graphs/nodes/strategist_node.py now have a proposed owner; strategist_node itself remains the stable runtime facade.",
+        "Existing StrategyInput is retained for per-symbol tactical decisions; new high-level agent contracts will use StrategistAgentInput and StrategistAgentResult to avoid semantic collision.",
+        "Existing StrategistOutput/coerce_strategist_output remains the P1.5 output compatibility authority.",
+        "Direct private imports and monkeypatch targets in Strategist/Commander tests were recorded as compatibility seams requiring wrappers or same-batch test migration.",
+        "The first implementation slice S1 is limited to mechanical LLM parsing/stage-contract/prompt/payload/runner extraction with no prompt, retry, strategy or topology change.",
+        "Runtime implementation remains blocked until the P1.2/P1.3 frozen baseline gate."
+      ],
+      "impact": "Design and test-migration preparation only; no trading, LLM-call, strategy, broker, authority, runtime-topology or artifact-schema behavior changed.",
+      "sources": [
+        "docs/refactor/p1_5_strategist_implementation_packet_v0_1.md",
+        "docs/refactor/p1_5_strategist_decomposition.md",
+        "docs/daily_patch/2026-10-07_p1_5_strategist_deep_design.md"
+      ],
+      "status": "current",
+      "provenance": {
+        "development_era": "P1.5 design",
+        "owner": "GPT-5.6 Sol",
+        "reviewer": null,
+        "final_approval": "human",
+        "verification": "documentation-only deep design; source/test inventory inspected on design branch",
         "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
         "provenance_baseline": null
       }
