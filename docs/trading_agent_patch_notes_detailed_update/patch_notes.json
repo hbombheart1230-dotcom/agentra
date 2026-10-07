@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 125,
+  "entry_count": 126,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3468,6 +3468,43 @@
         "reviewer": null,
         "final_approval": "human",
         "verification": "direct repository code/test/ops/UEF documentation inspection; no runtime implementation",
+        "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+        "provenance_baseline": null
+      }
+    },
+    {
+      "date": "2026-10-07",
+      "version": "P1.5 PREP Closed",
+      "title": "P1.5 preparation closed and implementation design frozen",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "DESIGN_FREEZE",
+        "TESTING"
+      ],
+      "summary": "Closed P1.5 preparation with quantified monolith inventory, responsibility-first target tree, implementation gates and final regression/freeze criteria while leaving runtime implementation untouched.",
+      "details": [
+        "Mapped 57,847 LOC of primary giant refactor surface, approximately 61,455 LOC including the adjacent intraday Monitor signal-engine hotspot.",
+        "Frozen the six non-Executor giant façade target from 53,657 LOC to approximately 2,700-5,100 LOC of façade/orchestrator surface, a roughly 90.5-95.0% giant-file surface reduction through focused ownership extraction.",
+        "Separated façade shrink from repository-total LOC deletion; most logic moves into contracts, services, state adapters, policy/scoring, evidence/observability and IO owners.",
+        "Identified approximately 1,100 LOC of definite unreachable Reporting legacy tail as the strongest direct deletion opportunity.",
+        "Frozen the target package tree for Strategist, Scanner, Monitor, Commander, Reporting, Operator UI and low-risk Executor extraction while preserving centralized execution safety.",
+        "Marked P1.5 PREP CLOSED / DESIGN FROZEN / IMPLEMENTATION GATED. Runtime Python implementation remains not started until the upstream implementation baseline is formally frozen."
+      ],
+      "impact": "Design/documentation closure only. Runtime Python changes remain zero; production topology, trading semantics, LLM roles, Supervisor/Executor authority, UEF and Step5 behavior remain unchanged.",
+      "sources": [
+        "docs/refactor/p1_5_prep_closure_report.md",
+        "docs/daily_patch/2026-10-07_p1_5_prep_closed.md",
+        "docs/refactor/p1_5_p1_6_master_plan.md"
+      ],
+      "status": "current",
+      "provenance": {
+        "development_era": "P1.5 design",
+        "owner": "GPT-5.6 Sol",
+        "reviewer": null,
+        "final_approval": "human",
+        "verification": "direct consolidation of frozen P1.5 design packets; no runtime implementation",
         "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
         "provenance_baseline": null
       }
