@@ -1,0 +1,21 @@
+name: P1.5.1 Reporting Validation
+
+on:
+  push:
+    branches:
+      - codex/p1.5.1-reporting-dead-code-20261007
+
+jobs:
+  reporting-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Run P1.5.1 required pytest
+        run: python -m pytest -q tests/test_trade_report_ai.py tests/test_trade_summary_symbol_metadata.py tests/test_reporting_provenance_preference.py
