@@ -12,6 +12,7 @@ from pathlib import Path
 
 import pytest
 
+ROOT = Path(__file__).resolve().parents[1]
 import libs.reporting.json_array_stream as jas
 import libs.reporting.quant_shadow_candidate_evaluation as qsce
 import libs.research.rank1_feature_mart.loaders as loaders
@@ -551,3 +552,118 @@ def test_q16_incremental_dedupe_equals_collect_then_dedupe(tmp_path, monkeypatch
     q16.build_q16_proxy_rejection_review(reports_root=reports, day="2026-10-03", start_day="2026-10-01")
     # same order/values as: all rows collected in order, then dict-deduped (first position, last value wins)
     assert captured["order"] == [("a", 9), ("b", 3), ("c", 4)]
+
+
+# --------------------------------------------------------------------- q9 row-key projection (drop_q9_row_keys)
+
+
+def _q9_row(symbol, role, rank, decision="d1", **extra):
+    row = {"symbol": symbol, "q9_decision_role": role, "q9_decision_id": decision, "rank": rank, "q9_semantic_role": role,
+           "shadow_forward_base": {"available": True, "baseline_epoch": 1791331200, "baseline_price": 100.0},
+           "q9_candidate_sources": ["top_value"], "q9_candidate_source_scores": {"top_value": 1.0},
+           "entry_lane_observation": {"lane": "x" * 400}, "score_breakdown": {"a": 1, "b": [2] * 50},
+           "compact_feature_snapshot": {"c": 3}, "below_vwap_reclaim_observation": {"d": 4}}
+    row.update(extra)
+    return row
+
+
+def _q9_world(tmp_path: Path, day="2026-10-07", count=4):
+    shadow = tmp_path / "data" / "logs" / "quant_shadow_candidates" / day
+    shadow.mkdir(parents=True)
+    for index in range(count):
+        payload = {"generated_at": f"{day}T00:{index:02d}:00+00:00", "q9_decision_id": f"d{index}", "candidates": [],
+                   "q9_decision_candidates": [_q9_row("005930", "P_SCANNER_PRE_STRATEGIST_UNIVERSE", 1, f"d{index}"),
+                                              _q9_row("000660", "A_SCANNER_CONTROL", 1, f"d{index}"),
+                                              _q9_row("005930", "B_STRATEGIST_RANKED", 1, f"d{index}", q9_selected=True)]}
+        (shadow / f"2026100700{index}000Z_x.json").write_text(json.dumps(payload), encoding="utf-8")
+    (tmp_path / "reports").mkdir()
+    return tmp_path / "reports"
+
+
+def test_drop_q9_row_keys_removes_only_the_listed_keys(tmp_path):
+    reports = _q9_world(tmp_path)
+    full = qsce.load_quant_shadow_candidate_payloads(reports_root=reports, days=["2026-10-07"])
+    slim = qsce.load_quant_shadow_candidate_payloads(
+        reports_root=reports, days=["2026-10-07"], drop_q9_row_keys=qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN
+    )
+    assert len(full) == len(slim) == 4
+    for a, b in zip(full, slim):
+        assert [set(r) - set(qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN) for r in a["q9_decision_candidates"]] == [set(r) for r in b["q9_decision_candidates"]]
+        for ra, rb in zip(a["q9_decision_candidates"], b["q9_decision_candidates"]):
+            assert {k: v for k, v in ra.items() if k not in qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN} == rb
+    # default keeps everything, and the range wrapper forwards the option
+    assert "entry_lane_observation" in full[0]["q9_decision_candidates"][0]
+    ranged = qsce.load_quant_shadow_candidate_payloads_for_range(
+        reports_root=reports, start="2026-10-07", end="2026-10-07", drop_q9_row_keys=("score_breakdown",)
+    )
+    assert "score_breakdown" not in ranged[0]["q9_decision_candidates"][0] and "entry_lane_observation" in ranged[0]["q9_decision_candidates"][0]
+
+
+class _Trap(dict):
+    """A value that records (and rejects) any attempt to look inside it."""
+
+    hits: list = []
+
+    def _hit(self, how):
+        _Trap.hits.append(how)
+        raise AssertionError(f"consumer read a key declared unused ({how})")
+
+    def __getitem__(self, key): self._hit("getitem")
+    def get(self, *args): self._hit("get")
+    def items(self): self._hit("items")
+    def keys(self): self._hit("keys")
+    def values(self): self._hit("values")
+    def __iter__(self): self._hit("iter")
+    def __contains__(self, key): self._hit("contains")
+
+
+def test_full_chain_review_never_reads_the_dropped_q9_keys_and_output_is_unchanged(tmp_path, monkeypatch):
+    from libs.reporting.evaluation import full_chain_component_review as fc
+
+    monkeypatch.chdir(tmp_path)
+    reports = _q9_world(tmp_path)
+    baseline = fc.build_full_chain_component_review(reports_root=reports, start="2026-10-07", end="2026-10-07")
+    real_loader = fc.load_quant_shadow_candidate_payloads_for_range
+
+    def trapping_loader(**kwargs):
+        assert kwargs.get("drop_q9_row_keys") == qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN  # the review opts in
+        payloads = real_loader(**{k: v for k, v in kwargs.items() if k != "drop_q9_row_keys"})
+        for payload in payloads:
+            for row in payload["q9_decision_candidates"]:
+                for key in qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN:
+                    row[key] = _Trap()
+        return payloads
+
+    _Trap.hits.clear()
+    monkeypatch.setattr(fc, "load_quant_shadow_candidate_payloads_for_range", trapping_loader)
+    trapped = fc.build_full_chain_component_review(reports_root=reports, start="2026-10-07", end="2026-10-07")
+    assert _Trap.hits == []
+    assert json.dumps(trapped, sort_keys=True, default=str) == json.dumps(baseline, sort_keys=True, default=str)
+
+
+def test_dropped_key_names_are_not_referenced_by_the_modules_that_opt_in():
+    import re
+
+    paths = [
+        "libs/reporting/evaluation/full_chain_component_review.py",
+        "libs/reporting/evaluation/scanner_quality.py",
+        "libs/reporting/evaluation/cost_basis_comparison.py",
+        "libs/reporting/quant_shadow_forward_outcomes.py",
+        "libs/reporting/q8_evaluation_contract.py",
+    ]
+    for path in paths:
+        text = (ROOT / path).read_text(encoding="utf-8")
+        for key in qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN:
+            assert not re.search(rf"""["']{key}["']""", text), (path, key)
+
+
+def test_stage2_authority_payload_projection_matches_full_load(tmp_path):
+    from libs.reporting.evaluation.full_chain_component_review import _q9_decision_candidate_rows
+
+    reports = _q9_world(tmp_path)
+    full = qsce.load_quant_shadow_candidate_payloads_for_range(reports_root=reports, start="2026-10-07", end="2026-10-07")
+    slim = qsce.load_quant_shadow_candidate_payloads_for_range(
+        reports_root=reports, start="2026-10-07", end="2026-10-07", keys=("q9_decision_candidates", "generated_at")
+    )
+    assert set(slim[0]) == {"q9_decision_candidates", "generated_at"}
+    assert _q9_decision_candidate_rows(slim) == _q9_decision_candidate_rows(full)

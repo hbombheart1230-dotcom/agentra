@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from libs.reporting.quant_shadow_candidate_evaluation import (
+    Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN,
     load_quant_shadow_candidate_payloads_for_range,
 )
 from libs.reporting.q9_forward_candles import (
@@ -87,6 +88,7 @@ def build_cost_basis_comparison(
         reports_root=Path(reports_root),
         start=start,
         end=end,
+        drop_q9_row_keys=Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN,  # only pre-strategist rows' forward outcomes are read
     )
     profile = load_broker_cost_profile(cost_profile_path)
     bases = build_evaluation_cost_bases(profile, slippage_pct=slippage_pct)
