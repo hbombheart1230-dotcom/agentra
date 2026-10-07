@@ -89,3 +89,10 @@ The implementation branch must be cut from that frozen baseline, not automatical
    - O1-O6 staged implementation sequence
    - private/public test seams and pytest gates
 
+9. p1_5_scanner_implementation_packet_v1_0.md
+   - P1.5.5 Scanner decomposition authority
+   - canonical scanner_node inventory and legacy-wrapper classification
+   - Scanner/Monitor soft-vs-hard authority freeze
+   - ScannerAgentInput/ScannerAgentResult boundary and 21-key compatibility state surface
+   - SC1-SC7 staged implementation sequence and pytest gates
+
