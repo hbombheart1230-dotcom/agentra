@@ -2,7 +2,7 @@
 
 ## Single active implementation branch
 CANONICAL: `codex/p1.5-reporting`
-CANONICAL DESIGN: `design/p1.5-p1.6-modernization`
+CANONICAL DESIGN: preserved in `codex/p1.5-reporting` under `docs/refactor/`
 
 ## Git history proof
 The canonical refactor branch was created from `fbfab9b3f56152f08a2ce50e69cc8173496fde7d`.
@@ -16,9 +16,9 @@ GitHub compare verified that each previous implementation branch is strictly con
 The cumulative code changed previously, and the current ref consolidation introduces NO further runtime Python changes.
 
 ## Design authority
-- Original design `docs/refactor/p1_5_reporting_implementation_packet_v1_0.md` remains on the consolidated design branch.
-- Revised `docs/refactor/p1_5_reporting_implementation_packet_v1_1.md` on that design branch requires one owner per responsibility and explicit consumer-backed wrapper retention/retirement.
-- v1.1 design is not silently copied into this runtime tree. Implementation changes must reference the canonical design branch at a pinned commit.
+- Original design `docs/refactor/p1_5_reporting_implementation_packet_v1_0.md` is preserved on this canonical branch.
+- Revised `docs/refactor/p1_5_reporting_implementation_packet_v1_1.md` requires one owner per responsibility and explicit consumer-backed wrapper retention/retirement.
+- The completed design authority is retained in this canonical documentation tree; implementation changes must reference these versioned packets.
 
 ## CI + artifacts
 - Redirect existing broader Reporting Python 3.12 + seam/UI regression to `codex/p1.5-reporting`.

@@ -1,7 +1,7 @@
 {
     "schema_version":  "2.0",
     "generated_for":  "Agentra",
-    "entry_count":  121,
+    "entry_count":  138,
     "entries":  [
                     {
                         "date":  "2026-09-08",
@@ -3268,6 +3268,617 @@
                                         "reports/evaluation/alpha_research_board/2026-10-08/generations/UEF9RUN_559c27f2d0d1f62b/COMPLETE.json",
                                         "data/logs/execution_readiness_evidence/2026-10-08.jsonl",
                                         "data/logs/events.jsonl"
+                                    ],
+                        "status":  "current"
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5/P1.6 Refactor Design and Documentation Refactor Start",
+                        "title":  "Agentra modular-refactor design branch and documentation architecture cleanup started",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "DOCUMENTATION",
+                                      "PATCH_NOTES"
+                                  ],
+                        "summary":  "Created the design-only P1.5/P1.6 modernization branch, froze refactor/safety/test rules, and started restructuring Agentra documentation without changing runtime behavior.",
+                        "details":  [
+                                        "P1.5 is defined as behavior-preserving agent-boundary restoration with explicit contracts, deterministic safety boundaries, naming cleanup, and incremental pytest restructuring.",
+                                        "P1.6 is defined as a post-P1.5 orchestration benchmark of the current custom runtime, LangGraph 1.x, and pydantic-graph; no orchestration framework is adopted during P1.5.",
+                                        "Development-milestone runtime names are cleanup targets, while domain/program identifiers such as UEF and Q-series remain valid identifiers.",
+                                        "Documentation refactoring uses inventory-first migration: canonical/current/history layers, preserved audit history, and link-safe staged movement rather than bulk relocation.",
+                                        "Patch-note authority was clarified: docs/daily_patch is the detailed technical audit history; docs/trading_agent_patch_notes_detailed_update/patch_notes.json and patch_notes.md are the UI/API-facing canonical changelog pair.",
+                                        "No runtime, strategy, order authority, broker path, execution semantics, or LLM decision-role changes are included."
+                                    ],
+                        "impact":  "Documentation and architecture planning only. Production runtime behavior is unchanged.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_p1_6_master_plan.md",
+                                        "docs/refactor/p1_5_refactor_constitution.md",
+                                        "docs/refactor/p1_5_strategist_decomposition.md",
+                                        "docs/refactor/p1_5_documentation_refactor_plan.md",
+                                        "docs/refactor/documentation_inventory.md",
+                                        "docs/daily_patch/2026-10-07_p1_5_p1_6_refactor_design_start.md",
+                                        "docs/daily_patch/2026-10-07_documentation_refactor_start.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5/P1.6 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "documentation-only change; canonical patch-note JSON parsed and entry_count checked",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5 Strategist Deep Design v0.1",
+                        "title":  "Strategist 8,878-line node decomposed into explicit P1.5 ownership and contract boundaries",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "STRATEGIST",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Mapped all 156 Strategist functions, preserved existing contract owners and compatibility seams, and defined the staged GPT-first extraction plan without changing runtime behavior.",
+                        "details":  [
+                                        "All 156 top-level functions in graphs/nodes/strategist_node.py now have a proposed owner; strategist_node itself remains the stable runtime facade.",
+                                        "Existing StrategyInput is retained for per-symbol tactical decisions; new high-level agent contracts will use StrategistAgentInput and StrategistAgentResult to avoid semantic collision.",
+                                        "Existing StrategistOutput/coerce_strategist_output remains the P1.5 output compatibility authority.",
+                                        "Direct private imports and monkeypatch targets in Strategist/Commander tests were recorded as compatibility seams requiring wrappers or same-batch test migration.",
+                                        "The first implementation slice S1 is limited to mechanical LLM parsing/stage-contract/prompt/payload/runner extraction with no prompt, retry, strategy or topology change.",
+                                        "Runtime implementation remains blocked until the P1.2/P1.3 frozen baseline gate."
+                                    ],
+                        "impact":  "Design and test-migration preparation only; no trading, LLM-call, strategy, broker, authority, runtime-topology or artifact-schema behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_strategist_implementation_packet_v0_1.md",
+                                        "docs/refactor/p1_5_strategist_decomposition.md",
+                                        "docs/daily_patch/2026-10-07_p1_5_strategist_deep_design.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "documentation-only deep design; source/test inventory inspected on design branch",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5 Strategist Design Complete",
+                        "title":  "Strategist modular-refactor design frozen before implementation",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "DOCUMENTATION"
+                                  ],
+                        "summary":  "Finalized the P1.5 Strategist component boundary, compatibility state adapter, package ownership, migration sequence and pytest gates without changing runtime behavior.",
+                        "details":  [
+                                        "The 8,878-line Strategist node was decomposed at design level into explicit context, LLM, policy, output, observability, service and state-adapter responsibilities.",
+                                        "The existing per-symbol StrategyInput contract will not be reused for the high-level Strategist Agent; new StrategistAgentInput and StrategistAgentResult contracts are planned.",
+                                        "The existing StrategistOutput remains the canonical normalized compatibility output during P1.5.",
+                                        "The current Strategist node writes 66 compatibility state keys; P1.5 will preserve their observable values while centralizing shared-state mutation in a state adapter.",
+                                        "Implementation is split into S1 LLM extraction, S2 deterministic policy/output extraction, S3 context/IO extraction, S4 Agent contract/service/state adapter, and S5 test/wrapper cleanup.",
+                                        "Runtime implementation remains blocked until P1.2/P1.3 freeze and baseline SHA/tag capture."
+                                    ],
+                        "impact":  "Design only. No strategy, LLM, runtime, execution, broker or authority behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_strategist_implementation_packet_v0_1.md",
+                                        "docs/refactor/p1_5_strategist_implementation_packet_v1_0.md",
+                                        "docs/refactor/p1_5_strategist_decomposition.md",
+                                        "docs/daily_patch/2026-10-07_strategist_p1_5_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "design-only repository analysis; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5 Strategist Design Freeze",
+                        "title":  "Strategist P1.5 design frozen for later implementation",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "STRATEGIST",
+                                      "TEST"
+                                  ],
+                        "summary":  "Completed the frozen Strategist P1.5 implementation design without changing runtime behavior.",
+                        "details":  [
+                                        "Mapped the 8,879-line strategist node into a framework-neutral runtime package plan with 156 top-level functions inventoried.",
+                                        "Defined StrategistAgentInput and StrategistAgentResult as new Agent-level contracts while preserving the existing per-symbol StrategyInput and canonical StrategistOutput meanings.",
+                                        "Mapped 69 current shared-state write keys as compatibility output until consumers are explicitly migrated.",
+                                        "Frozen S1-S5 extraction order: LLM, deterministic policy/output, context/IO, service/contract/state adapter, then test/wrapper cleanup.",
+                                        "Preserved current private imports and monkeypatch seams for staged migration.",
+                                        "Runtime implementation remains blocked until the P1.2/P1.3 frozen baseline gate."
+                                    ],
+                        "impact":  "Design/documentation only. No change to Strategist LLM calls, prompts, topology, trading semantics, authority, artifacts, or broker execution.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_strategist_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_strategist_p1_5_design_freeze.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "design inventory and compatibility mapping only; no runtime code changed",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5 Reporting Design Complete",
+                        "title":  "Reporting giant-module refactor design frozen for P1.5.1 and P1.5.2",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "REPORTING",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Completed the behavior-preserving Reporting refactor design covering definite dead-code removal, ownership reuse, façade compatibility, test decomposition, and implementation gates.",
+                        "details":  [
+                                        "Mapped the three giant Reporting files totaling 18,743 LOC and their existing extracted helper modules.",
+                                        "Proved an unreachable legacy implementation tail of roughly 1,100 LOC after the early return in render_trade_summary_markdown_with_evaluation.",
+                                        "Identified the shadowed duplicate _playbook_label definition in trade_report_markdown_clean.py.",
+                                        "Defined P1.5.1 as dead-code-only cleanup and P1.5.2 as staged AI report, Markdown, and trade-story façade decomposition.",
+                                        "Preserved current report schemas, truth precedence, LLM behavior, artifact paths, provenance, and public/test compatibility seams.",
+                                        "No runtime/report-generation implementation was changed."
+                                    ],
+                        "impact":  "Design/documentation only. No production or reporting runtime behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_reporting_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_reporting_p1_5_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "repository code/test inspection; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5.3 Operator UI / Operator Brief Design Complete",
+                        "title":  "Operator UI and Brief giant-module refactor design frozen for P1.5.3",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "OPERATOR_UI",
+                                      "REPORTING",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Completed the behavior-preserving Operator UI / Operator Brief decomposition design, preserving canonical truth, compatibility seams, LLM behavior and artifact contracts.",
+                        "details":  [
+                                        "Mapped apps/operator_ui/data_access_core.py (~6,872 LOC) and the existing focused Phase-2 data-access/read-model modules.",
+                                        "Identified the remaining Operator Brief responsibility cluster: canonical trade facts, section assembly, deterministic fallback, compact LLM input, sanitation, prompting/repair, LLM execution, cache/persistence and Markdown rendering.",
+                                        "Froze required Operator Brief fields and artifact version 14, canonical truth precedence, cache/source-signature semantics, artifact paths and UI-visible meaning.",
+                                        "Mapped 52 tests in tests/test_operator_ui.py plus 28 Phase-2 data-access compatibility tests and preserved direct private wrappers during staged migration.",
+                                        "Frozen O1-O6 implementation order: existing-owner completion, canonical Brief read model/sections, fallback/compact/prompt/sanitation, LLM service/persistence/rendering, page/read orchestration, then visibility/period-summary decomposition.",
+                                        "No runtime implementation was changed."
+                                    ],
+                        "impact":  "Design/documentation only. No Operator UI runtime, LLM, strategy, execution, broker, UEF, Step5C or Step5D behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_operator_ui_brief_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_operator_ui_brief_p1_5_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "direct repository code/test inspection; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5.5 Scanner Design Complete",
+                        "title":  "Scanner agent-boundary and orchestration decomposition design frozen for P1.5.5",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "SCANNER",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Completed the behavior-preserving Scanner decomposition design, preserving ranking semantics, candidate sources, soft chart-fit authority, state compatibility and downstream Monitor/Commander contracts.",
+                        "details":  [
+                                        "Mapped graphs/nodes/scanner_node.py at approximately 4,179 LOC with 61 top-level functions/classes and a roughly 1,945-line scanner_node hotspot.",
+                                        "Mapped and preserved existing focused Scanner owners for candidate selection, theme/practical filters, market-representative guard, risk, output payloads/snapshots, feature hydration, policy, Scanner bias and memory bias.",
+                                        "Classified libs/agent/scanner.py plus legacy scan_candidates/select_candidate paths as compatibility surfaces rather than canonical integrated Scanner authority.",
+                                        "Froze ScannerAgentInput and ScannerAgentResult as the future Agent-level boundary while preserving the current 21-key graph-state compatibility write surface.",
+                                        "Preserved the Scanner/Monitor authority split: Scanner chart-fit and Monitor-readiness remain soft rank context; Monitor remains the actionable entry/exit hard gate.",
+                                        "Frozen SC1-SC7 implementation order and mapped direct private imports/monkeypatch test seams. No ranking weights, thresholds, candidate-source policy, veto meaning or runtime behavior changed."
+                                    ],
+                        "impact":  "Design/documentation only. No Scanner selection semantics, strategy, Monitor authority, execution, broker, UEF, Step5C or Step5D behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_scanner_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_scanner_p1_5_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "direct repository code/test/document inspection; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5.6 Monitor Design Complete",
+                        "title":  "Monitor intent-authority and orchestration decomposition design frozen for P1.5.6",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "MONITOR",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Completed the behavior-preserving Monitor decomposition design while freezing entry/exit semantics, intent-only authority, policy/scoring behavior and Supervisor/Executor boundaries.",
+                        "details":  [
+                                        "Mapped graphs/nodes/monitor_node.py at approximately 3,633 LOC with a roughly 2,635-line monitor_node hotspot and a roughly 660-line entry-candidate evaluator.",
+                                        "Identified libs/runtime/intraday_monitor_signals.py at approximately 3,608 LOC as a later signal/policy/chart/scoring decomposition target behind compatibility imports.",
+                                        "Mapped existing focused Monitor entry owners and the already decomposed libs/runtime/monitor_exit package rather than creating parallel runtime logic.",
+                                        "Froze MonitorAgentInput and MonitorAgentResult plus the current 27-key graph-state compatibility write surface.",
+                                        "Preserved the authority chain: Scanner soft ranking, Monitor hard entry/exit timing with at most one intent, Supervisor approval, Executor broker side effects.",
+                                        "Frozen MO1-MO8 implementation order. No scoring promotion, threshold tuning, chart logic, candidate cascade, sizing, exit guard, carry, execution, UEF or Step5C/5D behavior changed."
+                                    ],
+                        "impact":  "Design/documentation only. No Monitor runtime, intent semantics, strategy, execution authority, broker behavior, UEF, Step5C or Step5D behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_monitor_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_monitor_p1_5_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "direct repository code/test/document inspection; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5.7 Commander Runtime Design Complete",
+                        "title":  "Commander/runtime orchestration decomposition design frozen for P1.5.7",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "COMMANDER",
+                                      "RUNTIME",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Completed the behavior-preserving Commander/runtime decomposition design while freezing deterministic routing, runtime modes/phases, fast paths, ownership, Supervisor/Executor safety and compatibility state semantics.",
+                        "details":  [
+                                        "Mapped graphs/commander_runtime.py at approximately 6,298 LOC with 105 top-level functions and 46 directly assigned compatibility state keys.",
+                                        "Identified remaining hotspots in Commander decision building, policy composition, open-position override logic, runtime lifecycle and phase routing.",
+                                        "Mapped existing focused owners under libs/runtime/commander/ and froze CommanderRuntimeInput/CommanderRuntimeResult/CommanderRoutePlan/CommanderDecision as the new deterministic runtime boundary.",
+                                        "Preserved graph_spine, decision_packet and integrated_chain modes plus preopen/session/closeout phases and runtime agent order.",
+                                        "Classified runtime ownership/CAS, execute_from_packet Supervisor/guard semantics, fast-path forced SELL/CANCEL behavior, broker mutation ordering, UEF and Step5C/Step5D as safety-locked.",
+                                        "Frozen C1-C10 implementation order. No runtime route, strategy, policy semantics, execution guard or broker behavior changed."
+                                    ],
+                        "impact":  "Design/documentation only. No Commander runtime, execution authority, runtime ownership, route topology, UEF, Step5C or Step5D behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_commander_runtime_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_commander_runtime_p1_5_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "direct repository code/test/document inspection; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5.8 Runtime Naming Design Complete",
+                        "title":  "Milestone/runtime naming cleanup migration design frozen for P1.5.8",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "NAMING",
+                                      "COMPATIBILITY",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Completed the behavior-preserving naming cleanup design, separating active runtime canonicalization from historical, serialized-contract, artifact-path and safety identifiers that must remain stable.",
+                        "details":  [
+                                        "Inventory found approximately 468 milestone/phase/step-named paths: docs 217, tests 140, scripts 63, data 15, deploy 14, libs 13 and graphs 6.",
+                                        "Frozen canonical mappings for active M13 live runtime, legacy M10 bridge, M28 deployment/runtime entrypoints and M31 agent-chain probe while retaining legacy wrappers.",
+                                        "Defined state/env alias migration for m13_tick_pipeline, M13_LIVE_LOCK_*, M28_LIFECYCLE_*, M31_MOCK_EXAM_SESSION_HARD_GATE, M25_BATCH_* and M25_NOTIFY_*.",
+                                        "Historical milestone docs/tests/data, serialized event kinds/schema identifiers and compatibility artifact/deploy paths are not blindly renamed.",
+                                        "Step5C/Step5D are safety-locked and UEF/Q identifiers remain domain/program names.",
+                                        "Frozen N1-N7 implementation order with wrapper deletion deferred to P1.5.10 after consumer proof."
+                                    ],
+                        "impact":  "Design/documentation only. No runtime imports, state/env behavior, path layout, strategy, execution authority, runtime ownership, UEF, Step5C or Step5D behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_runtime_naming_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_runtime_naming_p1_5_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "direct repository tree/code/test/document inspection; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5.9 Executor Low-Risk Design Complete",
+                        "title":  "Executor low-risk structural extraction design frozen for P1.5.9",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "EXECUTOR",
+                                      "SAFETY",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Completed the behavior-preserving Executor low-risk extraction design while safety-locking Supervisor authority, readiness/evidence order, Step5C ownership, broker mutation ordering, BrokerOutcome and recovery semantics.",
+                        "details":  [
+                                        "Mapped graphs/nodes/execute_from_packet.py at approximately 4,190 LOC with 101 top-level functions and a roughly 1,192-line authority coordinator.",
+                                        "Frozen the current readiness/guard -\u003e Supervisor -\u003e pre-admission evidence -\u003e intent admission -\u003e Step5C physical/logical claim -\u003e broker dispatch -\u003e outcome/quarantine/recovery ordering.",
+                                        "Mapped existing libs/execution owners and retained execute_owned_order as the single canonical mutation choke point.",
+                                        "Classified all guard logic, request/order shaping, readiness evidence, Step5C CAS/idempotency, BrokerOutcome, UNKNOWN quarantine, recent-order persistence and cancel/recovery as safety-locked.",
+                                        "Limited extraction to observability projection, canonical artifact coordination and optional pure order-view helpers with compatibility wrappers retained.",
+                                        "Frozen EX1-EX6 implementation order. No guard reordering, approval change, broker abstraction, new Executor authority or mutation-path change is permitted."
+                                    ],
+                        "impact":  "Design/documentation only. No execution runtime, Supervisor authority, readiness/evidence sequence, CAS/idempotency, broker outcome, recovery, UEF, Step5C or Step5D behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_executor_low_risk_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_executor_p1_5_low_risk_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "direct repository code/test/document inspection; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5.10 Compatibility Cleanup Design Complete",
+                        "title":  "Proof-based compatibility-wrapper cleanup design frozen for P1.5.10",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "COMPATIBILITY",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Completed the compatibility-wrapper cleanup design, requiring positive consumer proof before deletion and preserving stable facades, historical regression surfaces, contract aliases and safety-locked execution seams.",
+                        "details":  [
+                                        "Classified retained P1.5 seams into REMOVE_NOW, MIGRATE_THEN_REMOVE, KEEP_STABLE_FACADE, HISTORICAL_COMPATIBILITY, SAFETY_LOCK and CONTRACT_ALIAS.",
+                                        "Confirmed the Commander integrated_chain_support compatibility surface still has an active canonical-runtime consumer and must be migrated before removal.",
+                                        "Kept Operator UI data_access and Reporting trade_report_ai as intentional stable facades through the P1.5 freeze.",
+                                        "Classified the legacy libs.agent Strategist/Scanner/Monitor/Commander stack and M11 scan/select nodes as historical compatibility surfaces requiring coherent review rather than piecemeal deletion.",
+                                        "Identified duplicate AgentExecutor implementations as a strong cleanup candidate while safety-locking ExecutorAgent and Step5 execution wrappers.",
+                                        "Frozen the p1_5_compatibility_inventory manifest and CW1-CW7 implementation sequence with full regression, Docker, UEF and Step5 gates."
+                                    ],
+                        "impact":  "Design/documentation only. No wrapper was deleted and no runtime, state/env, deployment, Supervisor, execution, UEF, Step5C or Step5D behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_compatibility_wrapper_cleanup_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_compatibility_wrapper_p1_5_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "direct repository code/test/design-packet inspection; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5.11 Final Freeze Design Complete",
+                        "title":  "P1.5 full regression, Docker, UEF replay and formal-freeze design frozen",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "TESTING",
+                                      "DOCKER",
+                                      "UEF",
+                                      "SAFETY",
+                                      "FREEZE"
+                                  ],
+                        "summary":  "Completed the P1.5 final acceptance design, binding freeze to one candidate SHA and requiring full regression, deterministic UEF replay, Docker ownership/restart safety, Step5 authority preservation, independent audit and human approval.",
+                        "details":  [
+                                        "Defined FZ1-FZ9 acceptance sequence from candidate lock and subsystem regression through full pytest, UEF replay, Step5 safety, Docker acceptance, compatibility/docs/security review, independent audit and formal freeze.",
+                                        "Required UEF frozen-manifest integrity plus UEF-7 candidate conservation, UEF-8 pair/ID conservation, UEF-9 VALID authority and deterministic replay.",
+                                        "Preserved the 2026-10-06 Daily UEF freshness failure as an upstream operational incident and forbade weakening freshness/backfilling authority merely to obtain freeze evidence.",
+                                        "Required Docker image/source parity, single ownership, contender rejection, restart/recovery, bounded ownership wait, SIGTERM/drain, persistence, resource/EOD smoke and no restart storm/OOM.",
+                                        "Required Step5B/C/D, readiness evidence ordering, Supervisor authority, CAS/idempotency, BrokerOutcome/UNKNOWN quarantine and broker mutation ordering to remain unchanged.",
+                                        "Defined final freeze report/manifest, Claude independent audit, human approval and freeze-tag policy; P1.6 remains blocked until P1_5_FORMAL_FREEZE=YES."
+                                    ],
+                        "impact":  "Design/documentation only. No runtime, Docker, UEF, execution, state, broker or strategy behavior changed.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_full_regression_docker_uef_freeze_implementation_packet_v1_0.md",
+                                        "docs/daily_patch/2026-10-07_p1_5_full_regression_freeze_design_complete.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "direct repository code/test/ops/UEF documentation inspection; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-07",
+                        "version":  "P1.5 PREP Closed",
+                        "title":  "P1.5 preparation closed and implementation design frozen",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "DESIGN_FREEZE",
+                                      "TESTING"
+                                  ],
+                        "summary":  "Closed P1.5 preparation with quantified monolith inventory, responsibility-first target tree, implementation gates and final regression/freeze criteria while leaving runtime implementation untouched.",
+                        "details":  [
+                                        "Mapped 57,847 LOC of primary giant refactor surface, approximately 61,455 LOC including the adjacent intraday Monitor signal-engine hotspot.",
+                                        "Frozen the six non-Executor giant façade target from 53,657 LOC to approximately 2,700-5,100 LOC of façade/orchestrator surface, a roughly 90.5-95.0% giant-file surface reduction through focused ownership extraction.",
+                                        "Separated façade shrink from repository-total LOC deletion; most logic moves into contracts, services, state adapters, policy/scoring, evidence/observability and IO owners.",
+                                        "Identified approximately 1,100 LOC of definite unreachable Reporting legacy tail as the strongest direct deletion opportunity.",
+                                        "Frozen the target package tree for Strategist, Scanner, Monitor, Commander, Reporting, Operator UI and low-risk Executor extraction while preserving centralized execution safety.",
+                                        "Marked P1.5 PREP CLOSED / DESIGN FROZEN / IMPLEMENTATION GATED. Runtime Python implementation remains not started until the upstream implementation baseline is formally frozen."
+                                    ],
+                        "impact":  "Design/documentation closure only. Runtime Python changes remain zero; production topology, trading semantics, LLM roles, Supervisor/Executor authority, UEF and Step5 behavior remain unchanged.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_prep_closure_report.md",
+                                        "docs/daily_patch/2026-10-07_p1_5_prep_closed.md",
+                                        "docs/refactor/p1_5_p1_6_master_plan.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5 design",
+                                           "owner":  "GPT-5.6 Sol",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "direct consolidation of frozen P1.5 design packets; no runtime implementation",
+                                           "source_baseline":  "b67934a5baa95f4d329ccf345c14ed591a126a0f",
+                                           "provenance_baseline":  null
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-08",
+                        "version":  "P1.5.2 Reporting Responsibility-Minimal Design v1.1",
+                        "title":  "Reporting R2-A/B/C responsibility-minimal closure design revised against pushed implementation",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "TESTING",
+                                      "DOCUMENTATION"
+                                  ],
+                        "summary":  "Updated P1.5.2 design authority to preserve one implementation owner per responsibility and shrink Reporting façades safely, distinguishing completed R2 extraction from remaining program acceptance.",
+                        "details":  [
+                                        "Retained original P1.5 Reporting design v1.0; published v1.1 with observed 8,354/5,862/4,527 -\u003e 3,040/3,044/949 LOC façade state.",
+                                        "Required symbol-by-symbol KEEP/MOVE/WRAPPER/DEAD/SAFETY-LOCK ledger and consumer evidence before further moves or wrapper removal.",
+                                        "Defined AI, Markdown and Story residual audit priorities, responsibility-based unit/integration/regression test migration and original façade size guidance.",
+                                        "Kept P1.5.10 as proof-based wrapper retirement, and preserved behavior, LLM, UEF, Supervisor/Executor, baseline freeze and no-production-write constraints.",
+                                        "Document/design change only. Previously recorded R2-A/B/C extraction PASS is not equivalent to P1.5.2 final acceptance."
+                                    ],
+                        "impact":  "Design and UI history only. No runtime Python change, no execution/authority change and no production rollout.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_reporting_implementation_packet_v1_1.md",
+                                        "docs/refactor/README.md",
+                                        "docs/daily_patch/2026-10-08_p1_5_2_reporting_design_v11.md"
+                                    ],
+                        "status":  "current",
+                        "provenance":  {
+                                           "development_era":  "P1.5.2 design revision",
+                                           "owner":  "GPT-6",
+                                           "reviewer":  null,
+                                           "final_approval":  "human",
+                                           "verification":  "GitHub source and R2-A/B/C completion records reviewed; design-only change",
+                                           "source_baseline":  "920ebd045b0d894b7182c05f90d6997edec96cf4",
+                                           "provenance_baseline":  "fbfab9b3f56152f08a2ce50e69cc8173496fde7d"
+                                       }
+                    },
+                    {
+                        "date":  "2026-10-08",
+                        "version":  "P1.5 Reporting Branch Consolidation — Design",
+                        "title":  "P1.5 design authority consolidated into one active branch",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "DOCUMENTATION",
+                                      "REFACTOR"
+                                  ],
+                        "summary":  "Fast-forwarded P1.5.2 Reporting responsibility-minimal v1.1 into the original P1.5/P1.6 design branch, preserving the full original design ancestry.",
+                        "details":  [
+                                        "Canonical design branch is design/p1.5-p1.6-modernization and contains immutable Reporting v1.0 plus the follow-on v1.1 design packet.",
+                                        "Canonical Reporting implementation branch is codex/p1.5-reporting and contains the ordered P1.5.1, R2-A, R2-B, R2-C and residual extraction commits.",
+                                        "Updated the design CI trigger to the canonical design branch; one active design and one active Reporting code authority replace per-tranche branching for future work.",
+                                        "Historical branches and existing PR links require separate safe reference cleanup and are not evidence of lost implementation.",
+                                        "No Runtime Python, execution authority, broker path, UEF, production rollout or P1.5 safety gates were altered."
+                                    ],
+                        "impact":  "Design branch and documentation routing only; no production code change.",
+                        "sources":  [
+                                        "docs/refactor/README.md",
+                                        "docs/refactor/p1_5_reporting_implementation_packet_v1_1.md",
+                                        "docs/daily_patch/2026-10-08_p1_5_reporting_branch_consolidation.md"
+                                    ],
+                        "status":  "current"
+                    },
+                    {
+                        "date":  "2026-10-08",
+                        "version":  "P1.5.1–P1.5.11 Responsibility-Minimal Design Review",
+                        "title":  "Complete cross-stage audit of P1.5.1–P1.5.11 responsibility-minimal refactor design",
+                        "stage":  "Architecture and Maintainability",
+                        "types":  [
+                                      "ARCHITECTURE",
+                                      "REFACTOR",
+                                      "DESIGN_REVIEW",
+                                      "TESTING",
+                                      "SAFETY"
+                                  ],
+                        "summary":  "Reviewed every original P1.5.1–P1.5.11 implementation design packet against the frozen one-Owner/minimum-façade contract; retained all original decomposition plans and added common evidence-based acceptance.",
+                        "details":  [
+                                        "Confirmed P1.5.1 narrow dead cleanup, P1.5.2 Reporting R2-A/B/C, P1.5.3 Operator Brief, P1.5.4 Strategist, P1.5.5 Scanner, P1.5.6 Monitor, P1.5.7 Commander, P1.5.8 runtime naming, P1.5.9 low-risk Executor, P1.5.10 wrapper cleanup, P1.5.11 full freeze form a coherent ordered design.",
+                                        "Required per-symbol canonical Owner/classification, consumer/monkeypatch dependency proof, direct Agent fixture, state adapter and IO/authority evidence at each stage boundary.",
+                                        "Preserved Executive exception: execute_from_packet safety coordinator may remain large; Supervisor, guards, CAS/idempotency, BrokerOutcome/UNKNOWN and mutation ordering never move solely to reduce LOC.",
+                                        "Clarified MO7 signal-engine owner audit is required while new submodules are conditional on distinct responsibility, avoiding duplicate monitor_exit ownership.",
+                                        "Strengthened P1.5.11 architecture freeze with ownership conservation, façade debt exception ledger and test conservation, in addition to existing full pytest, Docker, UEF, authority and independent audit/human approval.",
+                                        "Design-only review: original v1.0 packets unchanged, Reporting v1.1 retained, no runtime Python, main merge or production execution change."
+                                    ],
+                        "impact":  "Design authority and UI change history only; original P1.5 safety and behavior locks retained.",
+                        "sources":  [
+                                        "docs/refactor/p1_5_1_to_11_responsibility_alignment_v1_1.md",
+                                        "docs/refactor/p1_5_p1_6_master_plan.md",
+                                        "docs/refactor/README.md",
+                                        "docs/daily_patch/2026-10-08_p1_5_1_to_11_responsibility_review.md"
                                     ],
                         "status":  "current"
                     }
