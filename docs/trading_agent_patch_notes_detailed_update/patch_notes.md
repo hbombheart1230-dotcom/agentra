@@ -1920,3 +1920,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - ZIP artifact consists only of changed files; no repo-persistent test artifacts, production deployment, real trade orders, broker changes or authority changes.
 - **R2-C structural extraction COMPLETE on feature branch only**; main integration/deployment requires a separate review.
 - Technical audit: `docs/daily_patch/2026-10-08_p1_5_2_r2c_residual_owners.md`.
+
+---
+
+## 2026-10-08 · P1.5 Reporting Branch Consolidation — Implementation
+**Stage:** Architecture and Maintainability  
+**Tags:** ARCHITECTURE · REFACTOR · DOCUMENTATION · TESTING
+
+- P1.5.1, R2-A, R2-B, R2-C 및 2026-10-08 잔여 추출의 직선형 Git 이력을 `codex/p1.5-reporting` 하나의 구현 기준으로 통합했습니다.
+- 설계 단일 기준은 `design/p1.5-p1.6-modernization`이며, v1.0 원본 설계와 v1.1 책임 최소화 수정 설계를 모두 보존합니다.
+- 기존 Report CI를 통합 브랜치로 옮기고, ZIP 산출물은 해당 커밋의 실제 변경 파일만 포함하도록 수정했습니다.
+- 과거 배치별 브랜치는 개발 중단 및 삭제 검토 대상으로만 유지합니다. `main` 병합이나 실거래/도커 설정은 변경하지 않았습니다.
+- 상세: docs/daily_patch/2026-10-08_p1_5_reporting_branch_consolidation.md.

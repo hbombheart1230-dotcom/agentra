@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 118,
+  "entry_count": 119,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3174,6 +3174,33 @@
         "libs/reporting/trade_story_pipeline_scanner.py",
         "libs/reporting/trade_story_pipeline_provenance.py",
         "tests/test_p152_r2c_helper_seams.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-08",
+      "version": "P1.5 Reporting Branch Consolidation — Implementation",
+      "title": "P1.5.1 and Reporting R2-A/B/C cumulative implementation now has one canonical development branch",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "DOCUMENTATION",
+        "TESTING"
+      ],
+      "summary": "Set codex/p1.5-reporting as the only active Reporting refactor implementation branch; preserved P1.5.1, R2-A, R2-B, R2-C and residual commit ancestry without resetting or changing runtime code.",
+      "details": [
+        "All four earlier code milestone branches are strict ancestors of fbfab9b3f56152f08a2ce50e69cc8173496fde7d; no cherry-pick or conflict resolution is required.",
+        "The consolidated code baseline is a ref pointing to the latest completed R2-C residual implementation before this documentation commit.",
+        "The active design authority is design/p1.5-p1.6-modernization containing Reporting v1.0 and responsibility-minimal v1.1; all future design work stays there.",
+        "The existing Python 3.12 Reporting regression CI is redirected to the single code branch; ZIP upload now includes only files actually changed in the triggering commit.",
+        "Historical PR-linked and tranche branches are noncanonical. Branch ref deletion must be separately completed; no PR or reference is silently destroyed.",
+        "No changes to trade-report logic, report schemas, LLM routing, Supervisor/Executor authority, UEF or production operations."
+      ],
+      "impact": "Branch routing, documentation and CI packaging only; runtime implementation remains unchanged.",
+      "sources": [
+        "docs/daily_patch/2026-10-08_p1_5_reporting_branch_consolidation.md",
+        ".github/workflows/p152-r2c-residual-regression.yml"
       ],
       "status": "current"
     }
