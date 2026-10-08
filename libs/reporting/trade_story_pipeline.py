@@ -75,6 +75,48 @@ from libs.reporting.trade_story_pipeline_story_assembly import (
     normalize_trade_lifecycle_for_story_input as _normalize_trade_lifecycle_for_story_input_impl,
 )
 from libs.core.symbols import normalize_symbol
+from libs.reporting.trade_story_pipeline_news import (
+    _headline_text,
+    _clean_news_fragment,
+    _news_item_field,
+    _news_sample_parts,
+    _norm_symbol_text,
+    _symbol_name_from_text,
+    _sample_title_directly_matches_symbol,
+    _format_symbol_news_headline,
+    _collect_symbol_headlines_from_ranked_rows,
+    _headline_matches_symbol,
+    _collect_top_headlines,
+    _title_prefixed_symbol,
+    _list_text_for_symbol,
+    _optional_float,
+    _build_news_scanner_contribution_trace,
+)
+from libs.reporting.trade_story_pipeline_scanner import (
+    _korea_indices_bullet,
+    _top_numeric_drivers,
+    _scanner_chart_fit_payload,
+    _scanner_macro_chart_fit_payload,
+    _candidate_sources_from_score_breakdown,
+    _selection_basis_from_scores,
+    _scanner_candidate_row_from_evidence,
+    _build_scanner_selection_trace,
+)
+from libs.reporting.trade_story_pipeline_provenance import (
+    _source_confidence_label,
+    _is_present,
+    compute_evidence_completeness,
+    _safe_path_text,
+    _safe_ref_map,
+    _resolve_commander_source_ref,
+    _commander_reasoning_flag,
+    _commander_reasoning_source_priority,
+    build_commander_evidence,
+    _section_source_entry,
+    build_section_provenance,
+    _section_seed_provenance_entry,
+    build_report_section_provenance_seeds,
+)
 
 
 def _has_substantive_exit_evidence(exit_payload: Any) -> bool:
@@ -115,196 +157,6 @@ def _resolve_selection_monitor_artifact(
     )
 
 
-def _headline_text(row: Any) -> str:
-    item = row if isinstance(row, dict) else {}
-    for key in ("title", "headline", "summary", "description", "text", "news_title"):
-        text = clip(item.get(key), max_len=180)
-        if text:
-            return text
-    return ""
-
-
-def _clean_news_fragment(value: Any, *, max_len: int = 180) -> str:
-    text = html.unescape(str(value or ""))
-    text = re.sub(r"<[^>]+>", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return clip(text, max_len=max_len)
-
-
-def _news_item_field(raw: Any, field: str) -> str:
-    text = str(raw or "")
-    for quote in ("'", '"'):
-        marker = f"{field}={quote}"
-        start = text.find(marker)
-        if start < 0:
-            continue
-        start += len(marker)
-        end = text.find(f"{quote}, ", start)
-        if end < 0:
-            end = text.find(quote, start)
-        if end > start:
-            return _clean_news_fragment(text[start:end])
-    return ""
-
-
-def _news_sample_parts(raw: Any) -> Dict[str, str]:
-    if isinstance(raw, dict):
-        return {
-            "title": _clean_news_fragment(
-                raw.get("title") or raw.get("headline") or raw.get("news_title")
-            ),
-            "summary": _clean_news_fragment(
-                raw.get("summary") or raw.get("description") or raw.get("text"),
-                max_len=260,
-            ),
-            "symbol": _norm_symbol_text(raw.get("symbol") or raw.get("code") or raw.get("ticker")),
-        }
-    return {
-        "title": _news_item_field(raw, "title") or _clean_news_fragment(raw),
-        "summary": _news_item_field(raw, "summary"),
-        "symbol": _norm_symbol_text(_news_item_field(raw, "symbol")),
-    }
-
-
-def _norm_symbol_text(value: Any) -> str:
-    return normalize_symbol(value, allow_test_symbols=True).strip().upper()
-
-
-def _symbol_name_from_text(text: Any, symbol: str) -> str:
-    target = _norm_symbol_text(symbol)
-    if not target:
-        return ""
-    cleaned = _clean_news_fragment(text, max_len=320)
-    pattern = rf"([A-Za-z0-9가-힣&·.\-\s]{{1,40}})\(\s*{re.escape(target)}\s*\)"
-    match = re.search(pattern, cleaned)
-    if not match:
-        return ""
-    name = re.sub(r"\s+", " ", str(match.group(1) or "")).strip(" ,;:·-")
-    if not name:
-        return ""
-    # Keep the nearest token phrase; news snippets often have a long prefix.
-    pieces = re.split(r"[,\s]+", name)
-    return pieces[-1].strip() if pieces else name
-
-
-def _sample_title_directly_matches_symbol(parts: Dict[str, str], symbol: str) -> bool:
-    target = _norm_symbol_text(symbol)
-    title = str(parts.get("title") or "")
-    if not target or not title:
-        return False
-    if target in title:
-        return True
-    symbol_name = _symbol_name_from_text(parts.get("summary"), target)
-    return bool(symbol_name and symbol_name in title)
-
-
-def _format_symbol_news_headline(symbol: str, title: str, *, indirect: bool = False) -> str:
-    target = _norm_symbol_text(symbol)
-    cleaned = _clean_news_fragment(title)
-    if not cleaned:
-        return ""
-    if re.match(r"\s*\d{6}\s*:", cleaned):
-        return cleaned
-    if indirect:
-        return f"{target}: 관련 테마 뉴스 - {cleaned}" if target else f"관련 테마 뉴스 - {cleaned}"
-    return f"{target}: {cleaned}" if target else cleaned
-
-
-def _collect_symbol_headlines_from_ranked_rows(rows: Any, *, symbol: str, limit: int = 3) -> List[str]:
-    if not isinstance(rows, list):
-        return []
-    target = _norm_symbol_text(symbol)
-    if not target:
-        return []
-    direct: List[str] = []
-    indirect: List[str] = []
-    for row in rows:
-        item = row if isinstance(row, dict) else {}
-        row_target = _norm_symbol_text(
-            item.get("target")
-            or item.get("symbol")
-            or item.get("code")
-            or item.get("ticker")
-        )
-        if row_target and row_target != target:
-            continue
-        samples = item.get("sample_titles") or item.get("sample") or item.get("headlines") or []
-        if not isinstance(samples, list):
-            samples = [samples]
-        if not samples:
-            samples = [item]
-        for sample in samples:
-            parts = _news_sample_parts(sample)
-            title = parts.get("title") or ""
-            if not title:
-                continue
-            sample_symbol = _norm_symbol_text(parts.get("symbol"))
-            summary_has_target = bool(target in str(parts.get("summary") or ""))
-            title_is_direct = _sample_title_directly_matches_symbol(parts, target)
-            if sample_symbol and sample_symbol != target and not summary_has_target:
-                continue
-            bucket = direct if title_is_direct else indirect
-            headline = _format_symbol_news_headline(target, title, indirect=not title_is_direct)
-            if headline and headline not in bucket:
-                bucket.append(headline)
-    picked = direct if direct else indirect
-    return picked[: max(1, int(limit))]
-
-
-def _headline_matches_symbol(row: Any, symbol: str) -> bool:
-    item = row if isinstance(row, dict) else {}
-    target = _norm_symbol_text(symbol)
-    if not target:
-        return False
-    scalar_candidates = [
-        item.get("symbol"),
-        item.get("code"),
-        item.get("ticker"),
-        item.get("query_target"),
-        item.get("query"),
-        item.get("news_query_target"),
-    ]
-    for candidate in scalar_candidates:
-        if _norm_symbol_text(candidate) == target:
-            return True
-    for key in ("symbols", "tickers", "related_symbols"):
-        values = item.get(key)
-        if not isinstance(values, list):
-            continue
-        for candidate in values:
-            if _norm_symbol_text(candidate) == target:
-                return True
-    joined = " ".join(
-        [
-            str(item.get("title") or ""),
-            str(item.get("headline") or ""),
-            str(item.get("summary") or ""),
-            str(item.get("description") or ""),
-            str(item.get("query_target") or ""),
-        ]
-    ).upper()
-    return bool(target and target in joined)
-
-
-def _collect_top_headlines(rows: Any, *, limit: int = 3, symbol: str = "") -> List[str]:
-    if not isinstance(rows, list):
-        return []
-    filtered: List[str] = []
-    fallback: List[str] = []
-    for row in rows:
-        if not isinstance(row, dict):
-            continue
-        text = _headline_text(row)
-        if not text:
-            continue
-        if text not in fallback:
-            fallback.append(text)
-        if symbol and _headline_matches_symbol(row, symbol) and text not in filtered:
-            filtered.append(text)
-    picked = filtered if symbol else fallback
-    return picked[: max(1, int(limit))]
-
-
 def _raw_strategist_evidence(bundle_out: Dict[str, Any]) -> Dict[str, Any]:
     if isinstance(bundle_out.get("strategist_evidence"), dict):
         return dict(bundle_out.get("strategist_evidence") or {})
@@ -327,175 +179,6 @@ def _strategist_trace_source(
     if raw.get("market_context_snapshots") is not None and source.get("market_context_snapshots") is None:
         source["market_context_snapshots"] = raw.get("market_context_snapshots")
     return source
-
-
-def _title_prefixed_symbol(value: Any) -> str:
-    match = re.match(r"\s*(\d{6})\s*:", str(value or ""))
-    return match.group(1) if match else ""
-
-
-def _list_text_for_symbol(values: Any, *, symbol: str, limit: int = 3, max_len: int = 180) -> List[str]:
-    target = _norm_symbol_text(symbol)
-    rows = _list_text(values, limit=50, max_len=max_len)
-    if not target:
-        return rows[: max(1, int(limit))]
-    matched: List[str] = []
-    untagged: List[str] = []
-    has_detectable_symbol = False
-    for row in rows:
-        row_symbol = _title_prefixed_symbol(row)
-        if row_symbol:
-            has_detectable_symbol = True
-        if row_symbol == target and row not in matched:
-            matched.append(row)
-        elif not row_symbol and row not in untagged:
-            untagged.append(row)
-    if matched:
-        return matched[: max(1, int(limit))]
-    if not has_detectable_symbol:
-        return untagged[: max(1, int(limit))]
-    return []
-
-
-def _korea_indices_bullet(korea_indices: Any) -> str:
-    packet = korea_indices if isinstance(korea_indices, dict) else {}
-    indices = packet.get("indices") if isinstance(packet.get("indices"), dict) else {}
-    parts: List[str] = []
-    for name in ("KOSPI", "KOSDAQ"):
-        row = indices.get(name) if isinstance(indices.get(name), dict) else {}
-        if not row:
-            continue
-        parts.append(
-            f"{name} current={format_pct(row.get('current'))} "
-            f"previous_close={format_pct(row.get('previous_close'))} "
-            f"change={format_pct(row.get('change_pct'))}%"
-        )
-    return "; ".join(parts)
-
-
-def _top_numeric_drivers(values: Any, *, limit: int = 4) -> Dict[str, float]:
-    if not isinstance(values, dict):
-        return {}
-    scored: List[tuple[float, str, float]] = []
-    for key, value in values.items():
-        try:
-            numeric = float(value)
-        except Exception:
-            continue
-        if numeric == 0.0:
-            continue
-        scored.append((abs(numeric), str(key), numeric))
-    scored.sort(key=lambda row: (-row[0], row[1]))
-    out: Dict[str, float] = {}
-    for _, key, numeric in scored[: max(1, int(limit))]:
-        out[key] = numeric
-    return out
-
-
-def _scanner_chart_fit_payload(row: Mapping[str, Any] | None) -> Dict[str, Any]:
-    obj = dict(row or {}) if isinstance(row, Mapping) else {}
-    score = obj.get("scanner_chart_fit_score")
-    authority = str(obj.get("scanner_chart_fit_authority") or "").strip()
-    components = obj.get("scanner_chart_fit_components") if isinstance(obj.get("scanner_chart_fit_components"), dict) else {}
-    if score in (None, "") and not authority and not components:
-        return {}
-    return {
-        "score": safe_float(score, 0.0) if score not in (None, "") else None,
-        "authority": authority,
-        "components": dict(components or {}),
-    }
-
-
-def _scanner_macro_chart_fit_payload(row: Mapping[str, Any] | None) -> Dict[str, Any]:
-    obj = dict(row or {}) if isinstance(row, Mapping) else {}
-    score = obj.get("scanner_macro_chart_fit_score")
-    authority = str(obj.get("scanner_macro_chart_fit_authority") or "").strip()
-    components = (
-        obj.get("scanner_macro_chart_fit_components")
-        if isinstance(obj.get("scanner_macro_chart_fit_components"), dict)
-        else {}
-    )
-    bias = obj.get("scanner_macro_chart_fit_bias")
-    if score in (None, "") and bias in (None, "") and not authority and not components:
-        return {}
-    return {
-        "score": safe_float(score, 0.0) if score not in (None, "") else None,
-        "bias": safe_float(bias, 0.0) if bias not in (None, "") else None,
-        "authority": authority,
-        "components": dict(components or {}),
-    }
-
-
-def _candidate_sources_from_score_breakdown(score_breakdown: Mapping[str, Any] | None) -> List[str]:
-    scores = dict(score_breakdown or {})
-    sources: List[str] = []
-    if safe_float(scores.get("trading_value"), 0.0) > 0.0:
-        sources.append("top_value")
-    if safe_float(scores.get("volume_surge"), 0.0) > 0.0:
-        sources.append("top_volume")
-    if safe_float(scores.get("theme_boost"), 0.0) > 0.0:
-        sources.append("sector_theme")
-    if safe_float(scores.get("sentiment"), 0.0) > 0.0:
-        sources.append("sentiment")
-    return sources
-
-
-def _selection_basis_from_scores(
-    score_breakdown: Mapping[str, Any] | None,
-    sources: List[str],
-) -> List[str]:
-    scores = dict(score_breakdown or {})
-    basis: List[str] = []
-    if safe_float(scores.get("trading_value"), 0.0) > 0.0 or "top_value" in sources:
-        basis.append("trading value")
-    if safe_float(scores.get("volume_surge"), 0.0) > 0.0 or "top_volume" in sources:
-        basis.append("turnover and volume")
-    if safe_float(scores.get("theme_boost"), 0.0) > 0.0 or "sector_theme" in sources:
-        basis.append("theme and sector alignment")
-    if safe_float(scores.get("sentiment"), 0.0) > 0.0 or "sentiment" in sources:
-        basis.append("sentiment support")
-    if not basis and safe_float(scores.get("momentum"), 0.0) > 0.0:
-        basis.append("momentum")
-    if not basis and safe_float(scores.get("trend"), 0.0) > 0.0:
-        basis.append("trend")
-    if not basis:
-        basis.append("combined scanner ranking score")
-    return basis
-
-
-def _scanner_candidate_row_from_evidence(
-    scanner_evidence: Mapping[str, Any] | None,
-    *,
-    selected_symbol: str,
-) -> Dict[str, Any]:
-    symbol = str(selected_symbol or "").strip()
-    if not symbol:
-        return {}
-    evidence = dict(scanner_evidence or {})
-    for collection_name in ("candidate_ranking_tables", "selection_outputs"):
-        for event in list(evidence.get(collection_name) or []):
-            payload = event.get("payload") if isinstance(event, dict) and isinstance(event.get("payload"), dict) else {}
-            rows: List[Any] = []
-            if collection_name == "candidate_ranking_tables":
-                rows = list(payload.get("rows") or [])
-            else:
-                rows = list(payload.get("ranking_top_n") or payload.get("scanner_top_candidates") or [])
-                selected_candidate = payload.get("selected_candidate") if isinstance(payload.get("selected_candidate"), dict) else {}
-                if selected_candidate:
-                    rows.append(selected_candidate)
-            for row in rows:
-                if not isinstance(row, dict) or str(row.get("symbol") or "").strip() != symbol:
-                    continue
-                candidate = dict(row)
-                score_breakdown = (
-                    candidate.get("score_breakdown")
-                    if isinstance(candidate.get("score_breakdown"), dict)
-                    else {}
-                )
-                if not isinstance(candidate.get("sources"), list):
-                    candidate["sources"] = _candidate_sources_from_score_breakdown(score_breakdown)
-                return candidate
-    return {}
 
 
 def _build_strategist_evidence_trace(
@@ -563,154 +246,6 @@ def _build_strategist_evidence_trace(
         "korea_indices": dict(global_signal.get("korea_indices") or {}) if isinstance(global_signal.get("korea_indices"), dict) else {},
         "fear_index": dict(fear_index or {}),
         "key_events": key_events,
-    }
-
-
-def _build_scanner_selection_trace(scanner_reason: Dict[str, Any], scanner_artifact: Dict[str, Any]) -> Dict[str, Any]:
-    reason = scanner_reason if isinstance(scanner_reason, dict) else {}
-    artifact = scanner_artifact if isinstance(scanner_artifact, dict) else {}
-    selected_symbol = str(
-        reason.get("selected_symbol")
-        or artifact.get("selected_symbol")
-        or ""
-    ).strip()
-    selected_rank = safe_int(reason.get("selected_rank"), safe_int(artifact.get("selected_rank"), 0))
-    ranked_candidates = [dict(row) for row in list(reason.get("top_candidates") or []) if isinstance(row, dict)]
-    if not ranked_candidates:
-        ranked_candidates = [dict(row) for row in list(artifact.get("ranked_candidates") or []) if isinstance(row, dict)]
-    if not ranked_candidates:
-        ranking_table = artifact.get("candidate_ranking_table") if isinstance(artifact.get("candidate_ranking_table"), dict) else {}
-        ranked_candidates = [dict(row) for row in list(ranking_table.get("rows") or []) if isinstance(row, dict)]
-    score_drivers = {}
-    if isinstance(reason.get("score_breakdown"), dict):
-        score_drivers = _top_numeric_drivers(reason.get("score_breakdown"), limit=4)
-    if not score_drivers:
-        score_breakdown_by_symbol = artifact.get("score_breakdown_by_symbol") if isinstance(artifact.get("score_breakdown_by_symbol"), dict) else {}
-        score_drivers = _top_numeric_drivers(score_breakdown_by_symbol.get(selected_symbol), limit=4)
-    selection_reason = (
-        clip(reason.get("selection_basis"), max_len=260)
-        or clip(reason.get("selection_reason_with_bias"), max_len=260)
-        or clip(artifact.get("selection_reason_with_bias"), max_len=260)
-        or clip(artifact.get("selection_reason"), max_len=260)
-        or clip((artifact.get("candidate_selection_reason") or {}).get("selection_summary"), max_len=260)
-        or clip(reason.get("summary"), max_len=260)
-    )
-    chart_feature_coverage = reason.get("feature_coverage") if isinstance(reason.get("feature_coverage"), dict) else {}
-    scanner_chart_fit = reason.get("scanner_chart_fit") if isinstance(reason.get("scanner_chart_fit"), dict) else {}
-    scanner_macro_chart_fit = (
-        reason.get("scanner_macro_chart_fit")
-        if isinstance(reason.get("scanner_macro_chart_fit"), dict)
-        else {}
-    )
-    if not chart_feature_coverage:
-        selected_row: Dict[str, Any] = {}
-        for row in ranked_candidates:
-            if str(row.get("symbol") or "").strip() == selected_symbol:
-                selected_row = row
-                break
-        if not selected_row or not isinstance(selected_row.get("feature_coverage"), dict):
-            ranking_table = artifact.get("candidate_ranking_table") if isinstance(artifact.get("candidate_ranking_table"), dict) else {}
-            for row in list(ranking_table.get("rows") or []):
-                if not isinstance(row, dict):
-                    continue
-                if str(row.get("symbol") or "").strip() == selected_symbol:
-                    selected_row = dict(row)
-                    break
-        if isinstance(selected_row.get("feature_coverage"), dict):
-            chart_feature_coverage = dict(selected_row.get("feature_coverage") or {})
-        if not scanner_chart_fit:
-            scanner_chart_fit = _scanner_chart_fit_payload(selected_row)
-        if not scanner_macro_chart_fit:
-            scanner_macro_chart_fit = _scanner_macro_chart_fit_payload(selected_row)
-    if not scanner_chart_fit:
-        scanner_chart_fit = _scanner_chart_fit_payload(artifact)
-    if not scanner_macro_chart_fit:
-        scanner_macro_chart_fit = _scanner_macro_chart_fit_payload(artifact)
-    return {
-        "ranked_candidates": ranked_candidates[:5],
-        "selected_symbol": selected_symbol,
-        "selected_rank": selected_rank,
-        "selection_reason": selection_reason,
-        "selected_symbol_score_drivers": score_drivers,
-        "chart_feature_coverage": chart_feature_coverage,
-        "scanner_chart_fit": scanner_chart_fit,
-        "scanner_macro_chart_fit": scanner_macro_chart_fit,
-    }
-
-
-def _optional_float(value: Any) -> Any:
-    if value in (None, ""):
-        return None
-    return safe_float(value, 0.0)
-
-
-def _build_news_scanner_contribution_trace(
-    *,
-    selected_symbol: str,
-    selected_score: Any,
-    selected_sources: List[str],
-    score_breakdown: Dict[str, Any],
-    component_snapshot: Dict[str, Any],
-    strategist: Dict[str, Any],
-) -> Dict[str, Any]:
-    positive_total = sum(max(safe_float(value, 0.0), 0.0) for value in dict(score_breakdown or {}).values())
-    key_rows: Dict[str, Dict[str, Any]] = {}
-    for key in ("trading_value", "momentum", "trend", "theme_boost", "sentiment"):
-        value = safe_float(score_breakdown.get(key), 0.0)
-        key_rows[key] = {
-            "value": value,
-            "positive_share_pct": (100.0 * value / positive_total) if positive_total > 0 else 0.0,
-        }
-
-    ranked = strategist.get("news_evidence_ranked") if isinstance(strategist.get("news_evidence_ranked"), dict) else {}
-    market_headlines = _collect_top_headlines(list(ranked.get("market_news_ranked") or []), limit=3)
-    symbol_headlines = _collect_top_headlines(
-        list(ranked.get("candidate_news_ranked") or []),
-        limit=3,
-        symbol=selected_symbol,
-    )
-    query_targets = _list_text(
-        strategist.get("news_query_targets")
-        if strategist.get("news_query_targets") is not None
-        else ranked.get("news_query_targets"),
-        limit=8,
-        max_len=80,
-    )
-    decision_frame = strategist.get("decision_frame") if isinstance(strategist.get("decision_frame"), dict) else {}
-    theme_packet = strategist.get("theme_strength_packet") if isinstance(strategist.get("theme_strength_packet"), dict) else {}
-    if not theme_packet and isinstance(decision_frame.get("theme_strength_packet"), dict):
-        theme_packet = dict(decision_frame.get("theme_strength_packet") or {})
-    theme_source = str(strategist.get("theme_source") or theme_packet.get("source") or "").strip()
-    theme_status = str(strategist.get("theme_source_status") or theme_packet.get("status") or "").strip()
-    theme_reason = str(strategist.get("theme_source_reason") or theme_packet.get("reason") or "").strip()
-
-    return {
-        "selected_score_total": safe_float(selected_score, 0.0),
-        "positive_contribution_total": positive_total,
-        "core_score_contributions": key_rows,
-        "sentiment_inputs": {
-            "news_sentiment_score": _optional_float(component_snapshot.get("news_sentiment")),
-            "global_sentiment_score": _optional_float(component_snapshot.get("global_sentiment")),
-            "blended_sentiment_component": _optional_float(component_snapshot.get("sentiment_component")),
-            "weighted_sentiment_score_contribution": safe_float(score_breakdown.get("sentiment"), 0.0),
-        },
-        "theme_alignment_trace": {
-            "theme_boost_score_contribution": safe_float(score_breakdown.get("theme_boost"), 0.0),
-            "theme_source_matched": ("sector_theme" in selected_sources) or safe_float(score_breakdown.get("theme_boost"), 0.0) > 0.0,
-            "strategist_themes": _list_text(strategist.get("themes"), limit=6, max_len=80),
-            "theme_source": theme_source,
-            "theme_source_status": theme_status,
-            "theme_source_reason": theme_reason,
-            "top_themes": _list_text(theme_packet.get("top_themes"), limit=6, max_len=80),
-            "theme_scores": dict(theme_packet.get("theme_scores") or {}) if isinstance(theme_packet.get("theme_scores"), dict) else {},
-        },
-        "news_linkage_trace": {
-            "news_query_targets": query_targets,
-            "symbol_headlines_used": symbol_headlines,
-            "market_headlines_used": market_headlines,
-            "symbol_headline_count": len(symbol_headlines),
-            "market_headline_count": len(market_headlines),
-        },
     }
 
 
@@ -835,119 +370,6 @@ def _build_monitor_blocker_trace(monitor: Dict[str, Any]) -> Dict[str, Any]:
     return _build_monitor_blocker_trace_impl(monitor)
 
 
-def _source_confidence_label(source: Any) -> str:
-    raw = str(source or "").strip().lower()
-    if raw in {"canonical", "normalized_trade_artifact", "normalized_trade"}:
-        return "high"
-    if raw in {"direct_artifact", "direct"}:
-        return "medium"
-    if raw in {"event_log", "fallback", "inferred"}:
-        return "low"
-    return "low"
-
-
-def _is_present(value: Any) -> bool:
-    if value is None:
-        return False
-    if isinstance(value, str):
-        return bool(value.strip())
-    if isinstance(value, (list, dict)):
-        return bool(value)
-    return True
-
-
-def compute_evidence_completeness(story_input: Dict[str, Any]) -> Dict[str, Any]:
-    obj = dict(story_input or {})
-    required_sections = [
-        "market_context_human",
-        "scanner_reason_human",
-        "filters_human",
-        "monitor_reason_human",
-        "guard_reason_human",
-        "execution_outcome_human",
-        "operator_conclusion_human",
-    ]
-    present_sections: List[str] = []
-    missing_sections: List[str] = []
-    for key in required_sections:
-        value = obj.get(key)
-        if isinstance(value, dict) and (_is_present(value.get("summary")) or _is_present(value.get("bullets"))):
-            present_sections.append(key)
-        elif _is_present(value):
-            present_sections.append(key)
-        else:
-            missing_sections.append(key)
-    score = float(len(present_sections)) / float(len(required_sections)) if required_sections else 1.0
-    return {
-        "required_sections": required_sections,
-        "present_sections": present_sections,
-        "missing_sections": missing_sections,
-        "completeness_score": score,
-    }
-
-
-def _safe_path_text(value: Any) -> str:
-    return str(value or "").strip()
-
-
-def _safe_ref_map(values: Any) -> Dict[str, str]:
-    if not isinstance(values, dict):
-        return {}
-    out: Dict[str, str] = {}
-    for key, value in values.items():
-        out[str(key)] = _safe_path_text(value)
-    return out
-
-
-def _resolve_commander_source_ref(refs: Dict[str, Any], section_provenance: Dict[str, Any]) -> str:
-    ref_map = _safe_ref_map(refs)
-    section_map = dict(section_provenance or {})
-    return str(
-        ref_map.get("canonical_commander_json")
-        or ref_map.get("canonical_commander")
-        or (section_map.get("market_context_human") or {}).get("artifact_path")
-        or (section_map.get("operator_conclusion_human") or {}).get("artifact_path")
-        or ""
-    )
-
-
-def _commander_reasoning_flag(source: Dict[str, Any], commander_summary: Dict[str, Any], key: str) -> bool:
-    summary_obj = dict(commander_summary or {})
-    if key in summary_obj and isinstance(summary_obj.get(key), bool):
-        return bool(summary_obj.get(key))
-    latest_provenance = source.get("latest_reasoning_trace_provenance")
-    if isinstance(latest_provenance, dict) and key in latest_provenance and isinstance(latest_provenance.get(key), bool):
-        return bool(latest_provenance.get(key))
-    commander_obj = source.get("commander")
-    if isinstance(commander_obj, dict) and key in commander_obj and isinstance(commander_obj.get(key), bool):
-        return bool(commander_obj.get(key))
-    return False
-
-
-def _commander_reasoning_source_priority(source: Dict[str, Any], commander_summary: Dict[str, Any]) -> List[str]:
-    summary_obj = dict(commander_summary or {})
-    latest_provenance = source.get("latest_reasoning_trace_provenance") if isinstance(source.get("latest_reasoning_trace_provenance"), dict) else {}
-    commander_obj = source.get("commander") if isinstance(source.get("commander"), dict) else {}
-    for candidate in (latest_provenance, commander_obj, summary_obj):
-        values = [str(x or "").strip() for x in list(candidate.get("source_priority") or []) if str(x or "").strip()]
-        if values:
-            return values
-    return []
-
-
-def build_commander_evidence(commander_payload: Dict[str, Any]) -> Dict[str, Any]:
-    payload = dict(commander_payload or {})
-    return {
-        "schema_version": "commander_evidence.v1",
-        "session_type": str(payload.get("session_type") or ""),
-        "market_regime_summary": str(payload.get("market_regime_summary") or ""),
-        "goal": str(payload.get("goal") or ""),
-        "decision_path": str(payload.get("final_runtime_path") or payload.get("path") or ""),
-        "invocation_plan": [str(x or "") for x in list(payload.get("agent_invocation_plan") or []) if str(x or "").strip()],
-        "final_reason": str(payload.get("final_reason") or payload.get("reason") or ""),
-    }
-
-
 def _story_assembly_deps() -> Dict[str, Any]:
     return {
         "EXECUTION_OUTCOME_NOT_CAPTURED": EXECUTION_OUTCOME_NOT_CAPTURED,
@@ -1021,84 +443,6 @@ def build_lifecycle_bundle(
         deps=_story_assembly_deps(),
     )
 
-def _section_source_entry(
-    *,
-    source: str,
-    artifact_path: str = "",
-) -> Dict[str, str]:
-    return {
-        "source": str(source or "fallback"),
-        "artifact_path": str(artifact_path or ""),
-        "confidence": _source_confidence_label(source),
-    }
-
-
-def build_section_provenance(bundle_out: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
-    artifacts = bundle_out.get("artifacts") if isinstance(bundle_out.get("artifacts"), dict) else {}
-    evidence_provenance = _derive_evidence_provenance(bundle_out)
-
-    def _agent_source(agent: str) -> str:
-        return str(evidence_provenance.get(agent) or "fallback").strip().lower()
-
-    def _agent_path(agent: str) -> str:
-        canonical_key = f"canonical_{agent}_json"
-        canonical_path = str(artifacts.get(canonical_key) or "").strip()
-        if canonical_path:
-            return canonical_path
-        if agent == "reporter":
-            return str(artifacts.get("reporter_analysis_json") or "").strip()
-        return str(artifacts.get("agent_pipeline_trace_json") or "").strip()
-
-    strategist_entry = _section_source_entry(
-        source=_agent_source("strategist"),
-        artifact_path=_agent_path("strategist"),
-    )
-    scanner_entry = _section_source_entry(
-        source=_agent_source("scanner"),
-        artifact_path=_agent_path("scanner"),
-    )
-    monitor_entry = _section_source_entry(
-        source=_agent_source("monitor"),
-        artifact_path=_agent_path("monitor"),
-    )
-    supervisor_entry = _section_source_entry(
-        source=_agent_source("supervisor"),
-        artifact_path=_agent_path("supervisor"),
-    )
-    executor_entry = _section_source_entry(
-        source=_agent_source("executor"),
-        artifact_path=_agent_path("executor"),
-    )
-    reporter_entry = _section_source_entry(
-        source=_agent_source("reporter"),
-        artifact_path=_agent_path("reporter"),
-    )
-    commander_entry = _section_source_entry(
-        source=_agent_source("commander"),
-        artifact_path=_agent_path("commander"),
-    )
-    return {
-        "market_context_human": strategist_entry,
-        "scanner_reason_human": scanner_entry,
-        "filters_human": scanner_entry,
-        "monitor_reason_human": monitor_entry,
-        "guard_reason_human": supervisor_entry,
-        "execution_outcome_human": executor_entry,
-        "reporter_status_human": reporter_entry,
-        "operator_conclusion_human": commander_entry,
-        "timeline": commander_entry,
-    }
-
-
-def _section_seed_provenance_entry(section_provenance: Dict[str, Any], key: str) -> Dict[str, str]:
-    entry = section_provenance.get(key) if isinstance(section_provenance.get(key), dict) else {}
-    return {
-        "source": str(entry.get("source") or "fallback"),
-        "artifact_path": str(entry.get("artifact_path") or ""),
-        "confidence": str(entry.get("confidence") or _source_confidence_label(entry.get("source"))),
-    }
-
-
 def build_report_section_seeds(
     *,
     market_context_human: Dict[str, Any],
@@ -1121,23 +465,6 @@ def build_report_section_seeds(
         operator_conclusion_human=operator_conclusion_human,
         deps=_story_assembly_deps(),
     )
-
-def build_report_section_provenance_seeds(section_provenance: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
-    provenance = dict(section_provenance or {})
-    return {
-        "market_context_at_entry": _section_seed_provenance_entry(provenance, "market_context_human"),
-        "strategist_summary": _section_seed_provenance_entry(provenance, "market_context_human"),
-        "why_this_symbol_was_chosen": _section_seed_provenance_entry(provenance, "scanner_reason_human"),
-        "entry_decision": _section_seed_provenance_entry(provenance, "scanner_reason_human"),
-        "holding_monitoring_story": _section_seed_provenance_entry(provenance, "monitor_reason_human"),
-        "exit_decision": _section_seed_provenance_entry(provenance, "execution_outcome_human"),
-        "scanner_filters": _section_seed_provenance_entry(provenance, "filters_human"),
-        "execution_quality": _section_seed_provenance_entry(provenance, "execution_outcome_human"),
-        "guard_approval_result": _section_seed_provenance_entry(provenance, "guard_reason_human"),
-        "reporter_evaluation": _section_seed_provenance_entry(provenance, "reporter_status_human"),
-        "final_operator_conclusion": _section_seed_provenance_entry(provenance, "operator_conclusion_human"),
-    }
-
 
 def slug(value: Any, *, max_len: int = 80) -> str:
     text = re.sub(r"[^a-zA-Z0-9_-]+", "_", str(value or "").strip()).strip("_")
