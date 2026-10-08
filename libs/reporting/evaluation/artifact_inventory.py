@@ -6,6 +6,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Iterable
 
+from libs.reporting.json_array_stream import iter_json_array
 from libs.reporting.quant_shadow_forward_outcomes import attach_forward_outcomes
 
 
@@ -22,24 +23,28 @@ def _synthetic_identity(row: dict[str, Any]) -> bool:
         return True
     symbols: list[str] = []
 
-    def collect(value: Any) -> None:
+    def collect(value: Any, *, path: tuple[str, ...] = ()) -> None:
         if isinstance(value, dict):
             for key, child in value.items():
+                child_path = (*path, str(key))
                 if key in {
                     "symbol",
                     "ticker",
                     "selected_symbol",
                     "top1_symbol",
                     "candidate_symbol",
-                }:
+                } and not any(
+                    part == "layer_packet_ids" or part.endswith("_packet_ids")
+                    for part in path
+                ):
                     text = str(child or "").strip()
                     if text:
                         symbols.append(text)
                 elif isinstance(child, (dict, list)):
-                    collect(child)
+                    collect(child, path=child_path)
         elif isinstance(value, list):
             for child in value:
-                collect(child)
+                collect(child, path=path)
 
     collect(row)
     return any(not _KRX_SYMBOL_RE.fullmatch(symbol) for symbol in symbols)
@@ -91,33 +96,27 @@ def _record(path: Path, *, required: bool) -> dict[str, Any]:
     }
 
 
-def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) -> dict[str, Any]:
-    path = Path(record.get("path") or "")
-    payload = read_json(path) if path.exists() else {}
-    windows = [row for row in payload.get("windows") or [] if isinstance(row, dict)]
-    scanner_windows = [row for row in windows if isinstance(row.get("scanner_control"), dict)]
-    synthetic_windows = [row for row in scanner_windows if _synthetic_identity(row)]
-    post_session_windows = [
-        row
-        for row in scanner_windows
-        if row not in synthetic_windows and not _regular_session_window(row)
-    ]
-    trusted_scanner_windows = [
-        row
-        for row in scanner_windows
-        if row not in synthetic_windows and row not in post_session_windows
-    ]
+def _iter_shadow_payloads(reports_root: Path, day: str):
+    """Yield each non-empty shadow payload of `day` one at a time, in file-name order.
+
+    Streaming (rather than collecting a list) keeps only one parsed payload alive at a
+    time; a trading day's full list was ~300 MiB of parsed objects and, loaded twice
+    here, was a large part of the closeout peak that OOM-killed the 1 GiB container.
+    """
     shadow_root = Path(reports_root).parent / "data" / "logs" / "quant_shadow_candidates" / day
-    shadow_payloads: list[dict[str, Any]] = []
-    if shadow_root.exists():
-        for shadow_path in sorted(shadow_root.glob("*.json")):
-            if shadow_path.name == "latest.json":
-                continue
-            shadow = read_json(shadow_path)
-            if shadow:
-                shadow_payloads.append(shadow)
+    if not shadow_root.exists():
+        return
+    for shadow_path in sorted(shadow_root.glob("*.json")):
+        if shadow_path.name == "latest.json":
+            continue
+        shadow = read_json(shadow_path)
+        if shadow:
+            yield shadow
+
+
+def load_q9_pre_strategist_rows(reports_root: Path, day: str) -> list[dict[str, Any]]:
     pre_rows: list[dict[str, Any]] = []
-    for shadow in shadow_payloads:
+    for shadow in _iter_shadow_payloads(reports_root, day):
         generated_at = str(shadow.get("generated_at") or "")
         for raw in shadow.get("q9_decision_candidates") or []:
             if (
@@ -133,7 +132,93 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
             ):
                 continue
             pre_rows.append(row)
-    observed_rows = attach_forward_outcomes(pre_rows) if pre_rows else []
+    return pre_rows
+
+
+def _load_forward_recovery_candles(
+    reports_root: Path, day: str
+) -> dict[str, list[dict[str, Any]]]:
+    payload = read_json(
+        Path(reports_root)
+        / "evaluation"
+        / "daily"
+        / day
+        / "q9_forward_recovery_candles.json"
+    )
+    by_symbol = payload.get("minute_rows_by_symbol")
+    return {
+        str(symbol): [dict(row) for row in rows if isinstance(row, dict)]
+        for symbol, rows in (by_symbol.items() if isinstance(by_symbol, dict) else [])
+        if isinstance(rows, list)
+    }
+
+
+def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) -> dict[str, Any]:
+    path = Path(record.get("path") or "")
+    # The ~120 MB windows file is streamed one window at a time; each window is classified
+    # (synthetic / post-session / trusted scanner window) and only the counts and trusted windows'
+    # generated_at survive. Holding every parsed window (and the whole-file text) was a major part of
+    # the closeout peak. `row not in synthetic_windows` was an equality test, so identical windows
+    # always classify identically and per-window flags give the same sets.
+    window_count = synthetic_count = post_session_count = trusted_count = 0
+    abc_count = pabc_count = pre_universe_count = missing_selected_count = 0
+    trusted_window_times: list[Any] = []
+    if path.exists():
+        try:
+            for row in iter_json_array(path, "windows", strict=True):
+                if not isinstance(row, dict):
+                    continue
+                window_count += 1
+                if not isinstance(row.get("scanner_control"), dict):
+                    continue
+                if _synthetic_identity(row):
+                    synthetic_count += 1
+                    continue
+                if not _regular_session_window(row):
+                    post_session_count += 1
+                    continue
+                trusted_count += 1
+                parsed_time = _parse_window_kst(row.get("generated_at"))
+                if parsed_time is not None:
+                    trusted_window_times.append(parsed_time)
+                strategist = row.get("strategist_selection")
+                commander = row.get("commander_final")
+                universe = row.get("scanner_pre_strategist_universe")
+                if isinstance(strategist, dict) and isinstance(commander, dict):
+                    abc_count += 1
+                    if isinstance(universe, dict):
+                        pabc_count += 1
+                if isinstance(universe, dict) and bool(universe.get("intrinsic_ranked_top20")):
+                    pre_universe_count += 1
+                if bool((strategist or {}).get("post_strategist_top10")) and not str(
+                    (strategist or {}).get("selected_symbol") or ""
+                ):
+                    missing_selected_count += 1
+        except (OSError, ValueError):
+            # unreadable windows file == no windows (what read_json -> {} gave)
+            window_count = synthetic_count = post_session_count = trusted_count = 0
+            abc_count = pabc_count = pre_universe_count = missing_selected_count = 0
+            trusted_window_times = []
+    # Only the payload count and the generated_at of payloads that carry q9 decision
+    # candidates are needed below, so reduce each payload to that as it streams past.
+    shadow_payload_count = 0
+    shadow_times = []
+    for shadow in _iter_shadow_payloads(reports_root, day):
+        shadow_payload_count += 1
+        if shadow.get("q9_decision_candidates"):
+            parsed = _parse_window_kst(shadow.get("generated_at"))
+            if parsed is not None:
+                shadow_times.append(parsed)
+    pre_rows = load_q9_pre_strategist_rows(reports_root, day)
+    recovery_candles = _load_forward_recovery_candles(reports_root, day)
+    observed_rows = (
+        attach_forward_outcomes(
+            pre_rows,
+            minute_rows_by_symbol=recovery_candles or None,
+        )
+        if pre_rows
+        else []
+    )
     forward_observed = sum(
         1
         for row in observed_rows
@@ -143,6 +228,7 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
     forward_unavailable = 0
     forward_invalid = 0
     forward_reason_counts: Counter[str] = Counter()
+    forward_status_signature_counts: Counter[str] = Counter()
     for row in observed_rows:
         outcome = row.get("shadow_forward_outcome")
         outcome = outcome if isinstance(outcome, dict) else {}
@@ -157,6 +243,8 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
             for checkpoint in checkpoints.values()
             if isinstance(checkpoint, dict)
         }
+        signature = "+".join(sorted(statuses)) or "NO_CHECKPOINT_STATUS"
+        forward_status_signature_counts[signature] += 1
         if reason in {"", "forward_window_pending"} and statuses <= {"", "pending"}:
             forward_pending += 1
         elif reason in {
@@ -167,23 +255,7 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
             forward_unavailable += 1
         else:
             forward_invalid += 1
-    window_times = [
-        parsed
-        for parsed in (
-            _parse_window_kst(row.get("generated_at"))
-            for row in trusted_scanner_windows
-        )
-        if parsed is not None
-    ]
-    shadow_times = [
-        parsed
-        for parsed in (
-            _parse_window_kst(row.get("generated_at"))
-            for row in shadow_payloads
-            if row.get("q9_decision_candidates")
-        )
-        if parsed is not None
-    ]
+    window_times = trusted_window_times
     first_window = min(window_times) if window_times else None
     last_window = max(window_times) if window_times else None
     last_runtime_evidence = max(window_times + shadow_times) if (window_times or shadow_times) else None
@@ -228,38 +300,14 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
         {
             "expected_schema_version": Q9_DECISION_SCHEMA,
             "schema_match": bool(record.get("schema_version") == Q9_DECISION_SCHEMA),
-            "window_count": len(windows),
-            "scanner_selection_window_count": len(trusted_scanner_windows),
-            "complete_abc_window_count": sum(
-                1
-                for row in trusted_scanner_windows
-                if isinstance(row.get("strategist_selection"), dict)
-                and isinstance(row.get("commander_final"), dict)
-            ),
-            "complete_pabc_window_count": sum(
-                1
-                for row in trusted_scanner_windows
-                if isinstance(row.get("scanner_pre_strategist_universe"), dict)
-                and isinstance(row.get("scanner_control"), dict)
-                and isinstance(row.get("strategist_selection"), dict)
-                and isinstance(row.get("commander_final"), dict)
-            ),
-            "pre_strategist_universe_window_count": sum(
-                1
-                for row in trusted_scanner_windows
-                if isinstance(row.get("scanner_pre_strategist_universe"), dict)
-                and bool(
-                    (row.get("scanner_pre_strategist_universe") or {}).get("intrinsic_ranked_top20")
-                )
-            ),
-            "missing_selected_candidate_count": sum(
-                1
-                for row in trusted_scanner_windows
-                if bool((row.get("strategist_selection") or {}).get("post_strategist_top10"))
-                and not str((row.get("strategist_selection") or {}).get("selected_symbol") or "")
-            ),
-            "synthetic_window_count": len(synthetic_windows),
-            "post_session_window_count": len(post_session_windows),
+            "window_count": window_count,
+            "scanner_selection_window_count": trusted_count,
+            "complete_abc_window_count": abc_count,
+            "complete_pabc_window_count": pabc_count,
+            "pre_strategist_universe_window_count": pre_universe_count,
+            "missing_selected_candidate_count": missing_selected_count,
+            "synthetic_window_count": synthetic_count,
+            "post_session_window_count": post_session_count,
             "first_scanner_window_kst": first_window.isoformat() if first_window else "",
             "last_scanner_window_kst": last_window.isoformat() if last_window else "",
             "last_q9_runtime_evidence_kst": (
@@ -278,7 +326,7 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
             "post_close_account_snapshot_ok": bool(post_close_account_ok),
             "post_close_trigger": closeout_trigger,
             "late_session_runtime_evidence": bool(late_session_runtime_evidence),
-            "shadow_payload_count": len(shadow_payloads),
+            "shadow_payload_count": shadow_payload_count,
             "pre_strategist_forward_candidate_count": len(pre_rows),
             "forward_observed_candidate_count": forward_observed,
             "forward_missing_candidate_count": max(0, len(pre_rows) - forward_observed),
@@ -286,6 +334,10 @@ def _q9_daily_diagnostics(reports_root: Path, day: str, record: dict[str, Any]) 
             "forward_unavailable_candidate_count": forward_unavailable,
             "forward_invalid_candidate_count": forward_invalid,
             "forward_outcome_reason_counts": dict(forward_reason_counts),
+            "forward_outcome_status_signature_counts": dict(
+                forward_status_signature_counts
+            ),
+            "forward_recovery_artifact_used": bool(recovery_candles),
         }
     )
     return record
@@ -317,7 +369,7 @@ def inventory_trade(trade_dir: Path) -> dict[str, Any]:
         ("commander_evidence", trade_dir / "evidence" / "commander_evidence.json", True),
         ("monitor_evidence", trade_dir / "evidence" / "monitor_evidence.json", True),
         ("ai_trade_summary", trade_dir / "reports" / "ai_trade_summary.json", False),
-        ("post_exit_shadow", trade_dir / "reports" / "post_exit_shadow.json", False),
+        ("post_exit_shadow", trade_dir / "reports" / "post_exit_shadow_recap.json", False),
     )
     artifacts = {name: _record(path, required=required) for name, path, required in paths}
     missing_required = [name for name, row in artifacts.items() if row["required"] and not row["exists"]]

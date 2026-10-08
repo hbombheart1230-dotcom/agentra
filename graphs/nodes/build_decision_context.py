@@ -209,9 +209,10 @@ def _fetch_yfinance_seed(symbol: str, policy: Dict[str, Any]) -> List[Dict[str, 
     if not bool(enable):
         return []
 
-    try:
-        import yfinance as yf  # type: ignore
-    except Exception:
+    from libs.market.yfinance_support import try_yfinance
+
+    yf = try_yfinance("build_decision_context")  # logs an explicit ERROR once if not installed
+    if yf is None:
         return []
 
     ticker = _resolve_yf_ticker(symbol, policy)

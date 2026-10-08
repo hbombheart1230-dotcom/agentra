@@ -281,22 +281,29 @@ def build_q16_proxy_rejection_review(
     start_day: str = Q16_START_DAY,
 ) -> dict[str, Any]:
     reports_root = Path(reports_root)
-    rows: list[dict[str, Any]] = []
     day_root = reports_root / "evaluation" / "daily"
+    deduped: dict[tuple[str, str, str], dict[str, Any]] = {}
+
+    def _fold(samples) -> None:
+        # Folding each file's samples into `deduped` as it is read gives the same dict (same
+        # key order, last row per key wins) as collecting every row first and de-duplicating
+        # afterwards. Each daily review embeds all earlier days' samples, so collecting first
+        # held ~59 overlapping copies (>1 GiB) -- part of the closeout OOM.
+        for row in samples:
+            key = (
+                str(row.get("q16_day") or ""),
+                str(row.get("q9_decision_id") or row.get("_payload_generated_at") or ""),
+                str(row.get("symbol") or ""),
+            )
+            deduped[key] = row
+
     for path in sorted(day_root.glob("*/q16_proxy_rejection_review.json")) if day_root.exists() else []:
         source_day = path.parent.name
         if start_day <= source_day < day:
             prior = _read(path)
-            rows.extend(row for row in prior.get("samples") or [] if isinstance(row, dict))
-    rows.extend(_load_day_rows(reports_root, day))
-    deduped: dict[tuple[str, str, str], dict[str, Any]] = {}
-    for row in rows:
-        key = (
-            str(row.get("q16_day") or ""),
-            str(row.get("q9_decision_id") or row.get("_payload_generated_at") or ""),
-            str(row.get("symbol") or ""),
-        )
-        deduped[key] = row
+            _fold(row for row in prior.get("samples") or [] if isinstance(row, dict))
+            del prior
+    _fold(_load_day_rows(reports_root, day))
     rows = list(deduped.values())
     for row in rows:
         row.setdefault("q17_candidate_class", _q17_candidate_class(row))

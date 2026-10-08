@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from libs.reporting.json_array_stream import iter_json_array
 from libs.reporting.trade_read_model import build_trade_read_model as build_legacy_trade_read_model
 
 from .artifact_inventory import inventory_trade, read_json
@@ -313,22 +314,9 @@ def _daily_q9_snapshot(
         reports_root = trade_dir.parents[3]
     except IndexError:
         return {}, ""
-    payload = read_json(
-        reports_root / "operator_summary" / "daily" / day[:10] / "q9_decision_windows.json"
-    )
-    windows = [dict(row) for row in payload.get("windows") or [] if isinstance(row, dict)]
-    if not windows:
-        return {}, ""
+    windows_path = reports_root / "operator_summary" / "daily" / day[:10] / "q9_decision_windows.json"
 
     decision_id = str(scanner_context.get("q9_decision_id") or "").strip()
-    if decision_id:
-        exact = next(
-            (row for row in windows if str(row.get("decision_id") or "") == decision_id),
-            None,
-        )
-        if exact:
-            return exact, "daily_q9_window.decision_id"
-
     run_ids = {
         str(value or "").strip()
         for value in (
@@ -338,37 +326,51 @@ def _daily_q9_snapshot(
         )
         if str(value or "").strip()
     }
-    for row in windows:
-        if str(row.get("run_id") or "").strip() in run_ids:
-            return row, "daily_q9_window.run_id"
-
     entry_ts = _parse_ts(entry.get("timestamp") or entry.get("ts"))
+    # One streamed pass over the (~120 MB) windows file instead of parsing it whole for every trade.
+    # Priority is unchanged: an exact decision_id match anywhere wins (so the scan stops there), else the
+    # first run_id match in file order, else the nearest same-symbol window within 600 s (first of equals).
+    first_run_match: dict[str, Any] | None = None
+    nearest: tuple[float, dict[str, Any]] | None = None
+    try:
+        for raw in iter_json_array(windows_path, "windows"):
+            if not isinstance(raw, dict):
+                continue
+            if decision_id and str(raw.get("decision_id") or "") == decision_id:
+                return dict(raw), "daily_q9_window.decision_id"
+            if first_run_match is None and str(raw.get("run_id") or "").strip() in run_ids:
+                first_run_match = dict(raw)
+            if entry_ts is None or not selected_symbol:
+                continue
+            strategist = raw.get("strategist_selection")
+            strategist = strategist if isinstance(strategist, dict) else {}
+            commander = raw.get("commander_final")
+            commander = commander if isinstance(commander, dict) else {}
+            if selected_symbol not in {
+                str(strategist.get("selected_symbol") or ""),
+                str(commander.get("selected_symbol") or ""),
+                str(commander.get("candidate_symbol") or ""),
+            }:
+                continue
+            generated_at = _parse_ts(raw.get("generated_at"))
+            if generated_at is None:
+                continue
+            delta = abs((generated_at - entry_ts).total_seconds())
+            if delta <= 600 and (nearest is None or delta < nearest[0]):
+                nearest = (delta, dict(raw))
+    except ValueError:
+        return {}, ""  # unreadable windows file == no windows (what read_json -> {} gave)
+    if first_run_match is not None:
+        return first_run_match, "daily_q9_window.run_id"
     if entry_ts is None or not selected_symbol:
         return {}, ""
-    nearest: tuple[float, dict[str, Any]] | None = None
-    for row in windows:
-        strategist = row.get("strategist_selection")
-        strategist = strategist if isinstance(strategist, dict) else {}
-        commander = row.get("commander_final")
-        commander = commander if isinstance(commander, dict) else {}
-        if selected_symbol not in {
-            str(strategist.get("selected_symbol") or ""),
-            str(commander.get("selected_symbol") or ""),
-            str(commander.get("candidate_symbol") or ""),
-        }:
-            continue
-        generated_at = _parse_ts(row.get("generated_at"))
-        if generated_at is None:
-            continue
-        delta = abs((generated_at - entry_ts).total_seconds())
-        if delta <= 600 and (nearest is None or delta < nearest[0]):
-            nearest = (delta, row)
     return (nearest[1], "daily_q9_window.nearest_symbol_time") if nearest else ({}, "")
 
 
 def build_q9_trade_read_model(trade_dir: Path) -> dict[str, Any]:
     legacy = build_legacy_trade_read_model(str(trade_dir))
     bundle = read_json(trade_dir / "lifecycle_bundle.json")
+    ai_report = read_json(trade_dir / "reports" / "ai_trade_report.json")
     legacy_facts = legacy.get("facts") if isinstance(legacy.get("facts"), dict) else {}
     trade_id = str(legacy_facts.get("trade_id") or bundle.get("trade_id") or trade_dir.name)
     day = str(bundle.get("day") or trade_dir.parts[-3])
@@ -441,6 +443,10 @@ def build_q9_trade_read_model(trade_dir: Path) -> dict[str, Any]:
     behavior_metric_excluded = exclusion_active and bool(
         exclusion_scopes & {"behavior_attribution", "promotion_metrics"}
     )
+    exit_metric_excluded = exclusion_active and bool(
+        exclusion_scopes
+        & {"exit_horizon_attribution", "exit_quality_promotion"}
+    )
     existing_broker_truth = bool(
         realized_exit
         and (
@@ -480,6 +486,10 @@ def build_q9_trade_read_model(trade_dir: Path) -> dict[str, Any]:
         defects.append("confirmed_runtime_defect")
         watch_items.append(
             f"evaluation_exclusion:{evaluation_exclusion.get('reason_code') or 'confirmed_runtime_defect'}"
+        )
+    elif exit_metric_excluded:
+        watch_items.append(
+            f"exit_metric_exclusion:{evaluation_exclusion.get('reason_code') or 'runtime_incident'}"
         )
 
     metric_exclusion_only = bool(defects) and set(defects) <= {
@@ -597,6 +607,13 @@ def build_q9_trade_read_model(trade_dir: Path) -> dict[str, Any]:
         "trade_id": trade_id,
         "day": day,
         "symbol": symbol,
+        "controlled_mock_lane": (
+            dict(bundle.get("controlled_mock_lane") or {})
+            if isinstance(bundle.get("controlled_mock_lane"), dict)
+            else dict(ai_report.get("controlled_mock_lane") or {})
+            if isinstance(ai_report.get("controlled_mock_lane"), dict)
+            else {}
+        ),
         "status": str(
             lifecycle.get("status")
             or ((bundle.get("shared_facts") or {}).get("status") if isinstance(bundle.get("shared_facts"), dict) else "")
@@ -738,6 +755,7 @@ def build_q9_trade_read_model(trade_dir: Path) -> dict[str, Any]:
                     **evaluation_exclusion,
                     "active": exclusion_active,
                     "behavior_metric_excluded": behavior_metric_excluded,
+                    "exit_metric_excluded": exit_metric_excluded,
                 }
                 if evaluation_exclusion
                 else {}

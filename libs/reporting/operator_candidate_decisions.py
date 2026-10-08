@@ -5,6 +5,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Mapping
 
+from libs.reporting.json_array_stream import iter_json_array
+
 
 def load_candidate_decision_summary(
     *,
@@ -28,23 +30,23 @@ def load_candidate_decision_summary(
         "candidate_noop_total": 0,
         "candidate_approved_total": 0,
     }
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return empty
-
     decision_counts: Counter[str] = Counter()
     reason_counts: Counter[str] = Counter()
-    windows = payload.get("windows") if isinstance(payload, Mapping) else []
-    for raw in windows or []:
-        if not isinstance(raw, Mapping):
-            continue
-        commander = raw.get("commander_final")
-        commander = commander if isinstance(commander, Mapping) else {}
-        decision = str(commander.get("decision") or "unknown").strip().lower()
-        reason = str(commander.get("reason") or "unspecified").strip()
-        decision_counts[decision] += 1
-        reason_counts[reason] += 1
+    # Streamed: the file is ~120 MB and only commander_final's decision/reason are read, so
+    # json.loads of the whole document (~450 MiB of objects) is avoided. Counts are folded in
+    # only after the whole file has been read, so an unreadable file still returns `empty`.
+    try:
+        for raw in iter_json_array(path, "windows", strict=True):
+            if not isinstance(raw, Mapping):
+                continue
+            commander = raw.get("commander_final")
+            commander = commander if isinstance(commander, Mapping) else {}
+            decision = str(commander.get("decision") or "unknown").strip().lower()
+            reason = str(commander.get("reason") or "unspecified").strip()
+            decision_counts[decision] += 1
+            reason_counts[reason] += 1
+    except (OSError, ValueError):
+        return empty
 
     return {
         "available": True,

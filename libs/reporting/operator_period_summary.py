@@ -23,7 +23,9 @@ from libs.reporting.quant_tactic_evaluation import (
     build_quant_tactic_evaluation,
     render_quant_tactic_evaluation_lines,
 )
+from libs.reporting.json_array_stream import iter_json_array
 from libs.reporting.quant_shadow_candidate_evaluation import (
+    CANDIDATE_EVALUATION_PAYLOAD_KEYS,
     build_quant_shadow_candidate_evaluation,
     load_quant_shadow_candidate_payloads,
     load_quant_shadow_candidate_payloads_for_range,
@@ -40,6 +42,10 @@ from libs.reporting.market_regime_rail_review import (
 )
 from libs.reporting.q8_shadow_blocker_review import (
     build_q8_shadow_blocker_review,
+)
+from libs.reporting.controlled_validation_daily import (
+    build_controlled_validation_daily,
+    render_controlled_validation_daily_lines,
 )
 from libs.reporting.kiwoom_day_trade_diary_truth import match_trade_diary_row
 
@@ -1223,6 +1229,8 @@ def _extract_trade_decision_fields(row: Dict[str, Any], reports_root: Path) -> D
         "risk_tone": candidate_watch.get("risk_tone") or market_strategy.get("risk_tone"),
         "trade_aggressiveness": candidate_watch.get("trade_aggressiveness"),
         "strategy_horizon": _first_text(
+            _dig(lifecycle_bundle, "monitor_summary", "exit_vs_strategy_intent", "commander_horizon_policy", "strategy_horizon"),
+            _dig(lifecycle_bundle, "monitor_summary", "exit_vs_strategy_intent", "strategy_horizon"),
             _find_key_recursive(exit_payload, "strategy_horizon"),
             _dig(lifecycle_bundle, "trade_lifecycle", "exit", "monitor_context", "strategy_horizon"),
         ),
@@ -2257,37 +2265,37 @@ def _runtime_activity_payload(
         / day
         / "q9_decision_windows.json"
     )
-    q9_payload = _read_json(q9_path)
-    q9_payload = q9_payload if isinstance(q9_payload, dict) else {}
-    q9_windows = [
-        row
-        for row in list(q9_payload.get("windows") or [])
-        if isinstance(row, dict)
-        and not any(
-            marker in " ".join(
-                str(row.get(key) or "").lower()
-                for key in ("decision_id", "run_id", "candidate_pool_id")
-            )
-            for marker in ("test", "fixture", "synthetic")
-        )
-    ]
-    if q9_windows:
-        decisions = [
-            str((row.get("commander_final") or {}).get("decision") or "").strip().lower()
-            for row in q9_windows
-            if isinstance(row.get("commander_final"), dict)
-        ]
-        monitor_intents = [
-            str((row.get("commander_final") or {}).get("monitor_intent") or "").strip().upper()
-            for row in q9_windows
-            if isinstance(row.get("commander_final"), dict)
-        ]
+    # Streamed one window at a time: only the three filter ids and `commander_final`'s
+    # decision/monitor_intent are read, and the file is ~120 MB (see json_array_stream).
+    q9_window_count = 0
+    decisions: list[str] = []
+    monitor_intents: list[str] = []
+    try:
+        for row in iter_json_array(q9_path, "windows"):
+            if not isinstance(row, dict):
+                continue
+            if any(
+                marker in " ".join(
+                    str(row.get(key) or "").lower()
+                    for key in ("decision_id", "run_id", "candidate_pool_id")
+                )
+                for marker in ("test", "fixture", "synthetic")
+            ):
+                continue
+            q9_window_count += 1
+            commander_final = row.get("commander_final")
+            if isinstance(commander_final, dict):
+                decisions.append(str(commander_final.get("decision") or "").strip().lower())
+                monitor_intents.append(str(commander_final.get("monitor_intent") or "").strip().upper())
+    except ValueError:
+        q9_window_count, decisions, monitor_intents = 0, [], []  # unreadable file == no windows (as _read_json did)
+    if q9_window_count:
         return {
             "source": "q9_decision_windows",
             "source_path": str(q9_path),
-            "events": len(q9_windows),
+            "events": q9_window_count,
             "commander_decision_count": len(decisions),
-            "missing_commander_decision_count": max(0, len(q9_windows) - len(decisions)),
+            "missing_commander_decision_count": max(0, q9_window_count - len(decisions)),
             "approvals": sum(value in {"approve", "approved", "allow"} for value in decisions),
             "blocks": sum(value in {"reject", "blocked", "veto"} for value in decisions),
             "noops": sum(value in {"noop", "no_trade"} for value in decisions),
@@ -2464,9 +2472,13 @@ def build_operator_daily_summary_artifact_payload(
     rows = _enrich_rows_with_truth_surface(rows, reports_root)
     metrics = _trade_metrics(rows)
     counters = _pattern_counters(rows)
+    # shadow_payloads feeds only build_quant_shadow_candidate_evaluation,
+    # build_q8_shadow_blocker_review and build_strategist_llm_evaluation, which read
+    # nothing but `candidates`/`generated_at`; project at load time to bound memory.
     shadow_payloads = load_quant_shadow_candidate_payloads(
         reports_root=reports_root,
         days=[normalized_day],
+        keys=CANDIDATE_EVALUATION_PAYLOAD_KEYS,
     )
     market_regime_rail = classify_market_regime_rail(
         load_latest_macro_snapshot(
@@ -2505,6 +2517,10 @@ def build_operator_daily_summary_artifact_payload(
             quant_shadow_evaluation=quant_shadow_evaluation,
         ),
         "strategist_llm_evaluation": build_strategist_llm_evaluation(rows, shadow_payloads),
+        "controlled_validation": build_controlled_validation_daily(
+            reports_root=reports_root,
+            day=normalized_day,
+        ),
         "symbol_summary": _symbol_rows(rows),
         "residual_positions": _build_residual_positions_payload(reports_root=reports_root, day=normalized_day),
     }
@@ -3004,6 +3020,9 @@ def render_operator_daily_summary_markdown(payload: Dict[str, Any]) -> str:
     lines.extend(_render_market_regime_rail_lines(payload))
     lines.extend(_render_q8_shadow_blocker_review_lines(payload))
     lines.extend(_render_strategist_llm_evaluation_lines(payload))
+    controlled_validation = payload.get("controlled_validation")
+    if isinstance(controlled_validation, dict):
+        lines.extend(render_controlled_validation_daily_lines(controlled_validation))
 
     lines += ["", "---", "", "## 종목별 요약", ""]
     if not symbols:

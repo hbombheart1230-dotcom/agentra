@@ -109,6 +109,7 @@ class ExecutorAgent:
         rationale: str = "",
         approval_mode: str = "manual",          # "manual" | "auto"
         execution_enabled: bool = False,        # gate for real execution
+        readiness_state: Optional[Dict[str, Any]] = None,  # R6.1: runtime readiness context (real-mode BUY/SELL)
     ) -> Dict[str, Any]:
         """
         Creates an order intent via supervisor.
@@ -137,6 +138,34 @@ class ExecutorAgent:
                     "decision": decision_dict,
                     "note": "APPROVAL_MODE=auto but EXECUTION_ENABLED=false, so execution is blocked.",
                 }
+            if str(decision_dict.get("status") or "").lower() == "rejected":
+                return {
+                    "decision": decision_dict,
+                    "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": "supervisor_rejected"},
+                }
+            # Step5C Fix4: this shortcut never goes through
+            # approve()'s own PENDING->APPROVED transition, so the
+            # canonical store would otherwise have no row at all for this
+            # intent_id when execute_owned_order's claim_execution runs --
+            # and a caller-supplied identity with no persisted, approved
+            # OrderIntent behind it is no longer auto-admitted (see
+            # ApprovalService.admit_pre_approved_intent). The risk-gate
+            # decision already made inside supervisor.create_intent(),
+            # combined with this call's own auto+enabled configuration, is
+            # what authorizes persisting it as approved here.
+            iid = str((intent or {}).get("intent_id") or "")
+            if iid:
+                # R6.1: immutable readiness evidence BEFORE admission (real-mode BUY/SELL only).
+                evidence_ok, evidence_error, evidence_ref = self.approvals.prepare_readiness_evidence(
+                    intent or {}, readiness_state=readiness_state, source="executor_agent_auto")
+                if not evidence_ok:
+                    return {"decision": decision_dict, "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": evidence_error}}
+                if evidence_ref:
+                    intent = {**(intent or {}), "readiness_evidence": evidence_ref,
+                              "execution_attempt_id": evidence_ref.get("execution_attempt_id")}
+                admission_error = self.approvals.admit_pre_approved_intent(intent or {}, source="executor_agent_auto")
+                if admission_error:
+                    return {"decision": decision_dict, "execution": {"ok": False, "broker_outcome": "NOT_SENT", "reason": admission_error}}
             exec_res = self.execute_order(intent=intent or raw_intent)
             return {"decision": decision_dict, "execution": exec_res}
 
@@ -189,6 +218,18 @@ class ExecutorAgent:
             "qty": int(intent.get("qty") or 1),
             "order_type": intent.get("order_type") or "market",
             "price": intent.get("price"),
+            "trde_tp": "3" if str(intent.get("order_type") or "market").lower() in ("market", "mkt") else "0",
+            # Step5C Fix1: the manually-approved OrderIntent's own
+            # canonical intent_id (assigned once at
+            # TwoPhaseSupervisor.create_intent) so the shared execution
+            # ownership boundary in CompositeSkillRunner can recognize an
+            # already-established claim, or claim one itself when this
+            # path is reached without prior approval (e.g. APPROVAL_MODE
+            # auto).
+            "intent_id": str(intent.get("intent_id") or ""),
+            # R6.1: evidence reference produced by the approval/pre-admission helper (if any).
+            "readiness_evidence": intent.get("readiness_evidence"),
+            "execution_attempt_id": intent.get("execution_attempt_id"),
         }
         out = self.runner.run(run_id=_new_run_id(), skill="order.place", args=skill_args)
         return asdict(out)
@@ -198,6 +239,7 @@ class ExecutorAgent:
         *,
         intent_id: Optional[str] = None,
         execution_enabled: Optional[bool] = None,
+        readiness_state: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         M16 semantics:
@@ -213,6 +255,7 @@ class ExecutorAgent:
             intent_id=intent_id,
             execution_enabled=bool(execution_enabled),
             execute_fn=lambda it: self.execute_order(intent=it),
+            readiness_state=readiness_state,
         )
 
     def preview(self, *, intent_id: Optional[str] = None) -> Dict[str, Any]:

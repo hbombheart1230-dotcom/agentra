@@ -5,6 +5,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Mapping
 
+from libs.reporting.json_array_stream import iter_json_array
 from libs.reporting.evaluation.artifact_inventory import (
     is_regular_session_evaluation_row,
     is_synthetic_evaluation_row,
@@ -47,15 +48,39 @@ def _top(counter: Counter[str], limit: int = 10) -> list[dict[str, Any]]:
     ]
 
 
+def _q9_window_view(row: Mapping[str, Any]) -> dict[str, Any]:
+    """The only parts of a q9 window `build_no_trade_attribution_report` reads (non-mappings read as {})."""
+    view: dict[str, Any] = {}
+    scanner = row.get("scanner_control")
+    if isinstance(scanner, Mapping):
+        view["scanner_control"] = {"top1_symbol": scanner.get("top1_symbol")}
+    strategist = row.get("strategist_selection")
+    if isinstance(strategist, Mapping):
+        view["strategist_selection"] = {"selected_symbol": strategist.get("selected_symbol")}
+    commander = row.get("commander_final")
+    if isinstance(commander, Mapping):
+        observation = commander.get("monitor_observation")
+        view["commander_final"] = {
+            key: commander.get(key)
+            for key in ("selected_symbol", "decision", "monitor_intent", "reason", "detail", "monitor_reason")
+        }
+        if isinstance(observation, Mapping):
+            view["commander_final"]["monitor_observation"] = {"reason": observation.get("reason")}
+    return view
+
+
 def _q9_windows(reports_root: Path, day: str) -> list[dict[str, Any]]:
-    payload = _read_json(reports_root / "operator_summary" / "daily" / day / "q9_decision_windows.json")
-    return [
-        row
-        for row in payload.get("windows") or []
-        if isinstance(row, dict)
-        and not is_synthetic_evaluation_row(row)
-        and is_regular_session_evaluation_row(row)
-    ]
+    # Streamed and reduced to the fields the report reads: the ~120 MB windows file is no longer parsed
+    # whole (and its regular rows are not all kept) just to count a handful of fields per window.
+    path = reports_root / "operator_summary" / "daily" / day / "q9_decision_windows.json"
+    windows: list[dict[str, Any]] = []
+    try:
+        for row in iter_json_array(path, "windows"):
+            if isinstance(row, dict) and not is_synthetic_evaluation_row(row) and is_regular_session_evaluation_row(row):
+                windows.append(_q9_window_view(row))
+    except ValueError:
+        return []  # unreadable windows file == no windows (what _read_json -> {} gave)
+    return windows
 
 
 def _baseline_samsung(reports_root: Path, day: str) -> dict[str, Any]:

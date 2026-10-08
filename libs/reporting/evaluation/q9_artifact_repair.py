@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from libs.reporting.json_array_stream import read_json_array_and_rest
 from libs.reporting.quant_shadow_candidate_evaluation import (
     _augment_missing_q9_commander_candidate,
     shadow_candidate_root_for_reports,
@@ -22,10 +23,12 @@ def _read_json(path: Path) -> dict[str, Any]:
 def _write_json_atomic(path: Path, payload: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_suffix(path.suffix + ".tmp")
-    temp.write_text(
-        json.dumps(dict(payload), ensure_ascii=False, indent=2, default=str) + "\n",
-        encoding="utf-8",
-    )
+    # json.dump streams the encoder's chunks to the file instead of first building the whole
+    # document as one string (a second ~120 MB copy for q9_decision_windows.json); the bytes
+    # written are identical to `json.dumps(...) + "\n"`.
+    with temp.open("w", encoding="utf-8") as handle:
+        json.dump(dict(payload), handle, ensure_ascii=False, indent=2, default=str)
+        handle.write("\n")
     temp.replace(path)
 
 
@@ -59,6 +62,9 @@ def _compact_candidate(row: Mapping[str, Any]) -> dict[str, Any]:
                 "engine_close_last",
                 "quote_best_bid",
                 "quote_best_ask",
+                "quote_payload_available",
+                "quote_source",
+                "quote_evidence_status",
                 "intraday_change_pct",
             )
             if feature_snapshot.get(key) not in (None, "")
@@ -96,6 +102,9 @@ def _canonical_scanner_candidates(
                     "engine_close_last",
                     "quote_best_bid",
                     "quote_best_ask",
+                    "quote_payload_available",
+                    "quote_source",
+                    "quote_evidence_status",
                     "intraday_change_pct",
                 )
                 if feature_snapshot.get(key) not in (None, "")
@@ -370,12 +379,11 @@ def repair_q9_day_artifacts(*, reports_root: Path, day: str) -> dict[str, Any]:
         / normalized_day
         / "q9_decision_windows.json"
     )
-    decision_payload = _read_json(decision_path)
-    windows = [
-        dict(row)
-        for row in decision_payload.get("windows") or []
-        if isinstance(row, Mapping)
-    ]
+    # Stream the (~120 MB) windows array instead of json.loads of the whole file: no file-text
+    # copy, and `decision_payload` keeps every other top-level key in its original position.
+    raw_windows, decision_payload = read_json_array_and_rest(decision_path, "windows")
+    windows = [dict(row) for row in raw_windows if isinstance(row, Mapping)]
+    del raw_windows
     windows, recovered_windows, enriched_windows = _merge_shadow_windows(
         reports_root=Path(reports_root),
         day=normalized_day,

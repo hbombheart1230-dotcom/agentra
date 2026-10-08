@@ -58,9 +58,10 @@ def _resolve_yf_ticker(symbol: str, policy: Dict[str, Any]) -> str:
 
 
 def _fetch_yfinance_news_items(symbol: str, policy: Dict[str, Any]) -> List[NewsItem]:
-    try:
-        import yfinance as yf  # type: ignore
-    except Exception:
+    from libs.market.yfinance_support import try_yfinance
+
+    yf = try_yfinance("news_pipeline")  # logs an explicit ERROR once if not installed
+    if yf is None:
         return []
 
     ticker = _resolve_yf_ticker(symbol, policy)
