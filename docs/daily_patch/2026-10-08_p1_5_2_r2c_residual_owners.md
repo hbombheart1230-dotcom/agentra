@@ -37,3 +37,40 @@ PROVENANCE OWNER       EXTRACTED
 PUBLIC HELPER NAMES    PRESERVED
 NEXT                   final façade seam audit and residual-function sizing
 ```
+
+
+## Closure extension — final long functions
+A second, validation-gated extraction moved:
+- `_attach_news_scanner_contribution()` (101 LOC) to `trade_story_pipeline_news.py`;
+- `_scanner_chart_fit_from_scanner_evidence()`, `_scanner_macro_chart_fit_from_scanner_evidence()`, and `_normalized_feature_coverage_from_scanner_evidence()` to `trade_story_pipeline_scanner.py`.
+
+All moved functions preserve their existing façade-level signatures and dynamically resolve previously patchable helpers at call time.
+
+### Final size and risk gate
+```text
+BEFORE R2-C                 4,527 LOC
+AFTER FIRST R2-C TRANCHE    1,873 LOC
+AFTER RESIDUAL OWNERS       1,200 LOC
+AFTER LONG-HELPER CLEANUP     949 LOC
+TOTAL REDUCTION            3,578 LOC (79.0%)
+REMAINING FUNCTIONS            45
+LONGEST REMAINING FUNCTION     70 LOC
+```
+
+Final GitHub Actions Python 3.12 acceptance:
+- original Reporting/trade-story test matrix: **337 passed, 1 pre-existing warning**;
+- added patch-seam, UI Patch Notes API and sync: **12 passed, 1 pre-existing warning**;
+- owner modules compile successfully;
+- changed-files-only ZIP artifact published by GitHub Actions.
+
+### Formal status
+```text
+R2-C STRUCTURAL REFACTOR    COMPLETE (FEATURE BRANCH)
+CI REGRESSION               PASS
+CI HELPER-SEAM LOCK         PASS
+PATCH NOTES UI SOURCE       SYNCHRONIZED
+MAIN MERGE                  NOT PERFORMED
+LIVE / DOCKER ACCEPTANCE    NOT PERFORMED
+EXECUTION MODE              NOT CHANGED
+NEXT                        P1.5.3 design-to-code after explicit integration review
+```

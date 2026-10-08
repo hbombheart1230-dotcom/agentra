@@ -1910,3 +1910,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No report data schema, canonical evidence priority, LLM count/routing, Supervisor/Executor permission, UEF or broker execution change.
 - R2-C remains **ACTIVE** for final seam and residual-function review; no deployment or live-mode enablement occurred.
 - Technical evidence: `docs/daily_patch/2026-10-08_p1_5_2_r2c_residual_owners.md`.
+
+## P1.5.2 R2-C Closure — Final Scanner/News Long Functions (2026-10-08)
+
+- Extracted news/scanner contribution attachment, chart-fit evidence lookups, and normalized feature coverage from the trade-story façade.
+- Final `trade_story_pipeline.py`: **4,527 → 949 LOC** (**-3,578 LOC / ~79.0%** cumulative R2-C reduction); **45 functions**, longest **70 LOC**.
+- Compatibility façade keeps exact callable names, and extracted owner functions resolve patchable helpers at call time.
+- Python 3.12: **337 passed, 1 existing warning** (broader trade-story / Reporting), plus **12 passed, 1 existing warning** (helper seam / UI Patch Notes API and sync).
+- ZIP artifact consists only of changed files; no repo-persistent test artifacts, production deployment, real trade orders, broker changes or authority changes.
+- **R2-C structural extraction COMPLETE on feature branch only**; main integration/deployment requires a separate review.
+- Technical audit: `docs/daily_patch/2026-10-08_p1_5_2_r2c_residual_owners.md`.
