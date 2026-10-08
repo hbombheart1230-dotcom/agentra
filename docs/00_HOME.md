@@ -3,7 +3,7 @@
 ## Current State
 
 - Production runtime: separate from this documentation vault.
-- Current development milestone: P1.5 structural refactor. P1.5.1 Reporting definite-dead-code cleanup is COMPLETE; P1.5.2 Reporting decomposition R2-A and R2-B are COMPLETE; R2-C trade-story façade decomposition is ACTIVE (human payload + evidence + story assembly PASS). UEF (UEF-1..UEF-9) remains COMPLETE and frozen as the evaluation-authority foundation.
+- Current development milestone: P1.5 structural refactor. P1.2 is CLOSED and P1.3 Docker is FULL DOCKER FROZEN (2026-10-08, production `f4fa335`, 2 GiB). P1.5.1 and P1.5.2 R2-A/R2-B/R2-C are complete on the reconciled implementation branch. UEF (UEF-1..UEF-9) remains COMPLETE and frozen as the evaluation-authority foundation; [P1.1 real-run acceptance](research/uef_p1_1_real_run_acceptance.md) passed.
 - Latest formal evaluation freeze: [[UEF|UEF-9 - Formal Evaluation Authority]] (UEF COMPLETE).
 
 ## Current Delivery Order
@@ -11,9 +11,9 @@
 1. P0 Clean Evidence Registry: COMPLETE.
 2. P1 UEF-5 through UEF-9: COMPLETE / FORMALLY FROZEN.
 3. P1.1 UEF Real-Run Acceptance: PASS.
-4. P1.2 UEF Cross-day Observation: NON-BLOCKING / OBSERVE.
-5. P1.3 Docker: COMPLETE / frozen operational baseline.
-6. P1.5 Large-file refactor / modularization: ACTIVE — P1.5.1 COMPLETE; P1.5.2 R2-A COMPLETE; R2-B COMPLETE; R2-C ACTIVE — human payload/evidence/story assembly PASS; residual scanner/news/provenance helpers NEXT.
+4. P1.2 UEF Cross-day Observation: CLOSED (scheduled 2026-10-08 acceptance PASS; see [daily record](daily_patch/2026-10-08_p1_2_p1_3_final_closure.md)).
+5. P1.3 Docker: FULL DOCKER FROZEN (production `f4fa335`, 2 GiB limit).
+6. P1.5 Large-file refactor / modularization: ACTIVE — P1.5.1 and P1.5.2 R2-A/R2-B/R2-C are complete on the reconciled implementation branch.
 7. P2 Strategy Program Integration; P3 Safety 5D/5E/6; P4 Q100/Reporter v2; P5 Evidence Memory/Obsidian; P6 Self-improvement; P7 System V2 Freeze; P8 paper final experiments: PLANNED.
 
 ## Historical Roadmap Sequence
@@ -66,7 +66,7 @@ PLANNED and are not yet architected in detail):
 - UEF-7, Alpha Board Normalization: FORMALLY FROZEN. See [UEF-7 freeze record](research/uef7_alpha_board_normalization_freeze.md).
 - UEF-8, Fair Comparison Validation: FORMALLY FROZEN. See [UEF-8 freeze record](research/uef8_fair_comparison_validation_freeze.md).
 - UEF-9, Formal Evaluation Authority: FORMALLY FROZEN. See [UEF-9 freeze record](research/uef9_formal_evaluation_authority_freeze.md).
-- **UEF COMPLETE (current state)**: UEF-1 through UEF-9 are all FORMALLY FROZEN. [P1.1 real-run acceptance](research/uef_p1_1_real_run_acceptance.md) is PASS; P1.2 cross-day observation is non-blocking. Current execution priority: **P1.5 structural refactor**. Strategy Program Integration remains P2 and is not started.
+- **UEF COMPLETE (current state)**: UEF-1 through UEF-9 are all FORMALLY FROZEN. [P1.1 real-run acceptance](research/uef_p1_1_real_run_acceptance.md) is PASS; P1.2 cross-day observation is CLOSED (2026-10-08) and P1.3 Docker is FULL DOCKER FROZEN. Current execution priority: **P1.5 structural refactor**. Strategy Program Integration remains P2 and is not started.
 - Historical closeout: UEF-1 through UEF-9 are all FORMALLY FROZEN. Strategy Program Integration was the next action at that freeze point; the current priority is documented above as P1.3 Docker.
 - UEF-4A inventory detail: [Legacy family inventory](research/uef4_legacy_family_inventory.md).
 - Full UEF status: [[UEF]].

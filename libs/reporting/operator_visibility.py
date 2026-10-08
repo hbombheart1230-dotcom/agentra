@@ -620,6 +620,29 @@ def _iter_day_rows_with_epoch(events_path: Path, day: str) -> Iterable[Dict[str,
         yield {**raw, "_epoch": _to_epoch(ts), "_day": _utc_day(ts)}
 
 
+class _RestreamedDayRows:
+    """A day's event rows that is re-read from the per-day event cache on every iteration.
+
+    `build_operator_daily_summary_payload` used to materialise the whole day (~6.5M parsed
+    objects, ~400 MiB for 10-06) and hand that list to six consumers. This yields the same
+    rows in the same order but keeps none of them: each consumer streams the (already built)
+    day cache. `bool()` is true iff the day has at least one row, like the list it replaces.
+    """
+
+    def __init__(self, events_path: Path, day: Any, target_day: str) -> None:
+        self._events_path = events_path
+        self._day = day
+        self._target_day = target_day
+
+    def __iter__(self) -> Iterable[Dict[str, Any]]:
+        for row in _iter_day_rows_with_epoch(self._events_path, self._day):
+            if str(row.get("_day") or "") == self._target_day:
+                yield row
+
+    def __bool__(self) -> bool:
+        return next(iter(self), None) is not None
+
+
 def _build_run_contexts(day_rows: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
     # OOM RCA follow-up (2026-09-23): day_rows used to be pre-sorted here
     # (sorted(day_rows, key=epoch)), which required the caller to already
@@ -956,14 +979,19 @@ def build_operator_daily_summary_payload(
 ) -> Dict[str, Any]:
     report_dir.mkdir(parents=True, exist_ok=True)
 
-    rows: List[Dict[str, Any]] = []
-    source_rows = iter_jsonl_events(events_path, day=day) if day else _iter_jsonl(events_path)
-    for raw in source_rows:
-        ts = raw.get("ts") or (raw.get("payload") or {}).get("ts")
-        rows.append({**raw, "_epoch": _to_epoch(ts), "_day": _utc_day(ts)})
-
-    target_day = _pick_day(rows, day)
-    day_rows = [r for r in rows if str(r.get("_day") or "") == target_day]
+    if day:
+        # `_pick_day` returns the requested day unchanged when one is given, so the day is
+        # known up front and the rows never need to be materialised (see _RestreamedDayRows).
+        target_day = str(day).strip()
+        day_rows: Any = _RestreamedDayRows(events_path, day, target_day)
+    else:
+        rows: List[Dict[str, Any]] = []
+        for raw in _iter_jsonl(events_path):
+            ts = raw.get("ts") or (raw.get("payload") or {}).get("ts")
+            rows.append({**raw, "_epoch": _to_epoch(ts), "_day": _utc_day(ts)})
+        target_day = _pick_day(rows, day)
+        day_rows = [r for r in rows if str(r.get("_day") or "") == target_day]
+        del rows
     canonical_report_root = _canonical_report_root(report_dir)
     candidate_decision_summary = load_candidate_decision_summary(
         reports_root=canonical_report_root,
@@ -1001,7 +1029,11 @@ def build_operator_daily_summary_payload(
     duplicate_execution_total = 0
     guard_precedence_violation_total = 0
 
+    run_ids_seen: set[str] = set()
     for row in day_rows:
+        run_id_seen = str(row.get("run_id") or "").strip()
+        if run_id_seen:
+            run_ids_seen.add(run_id_seen)
         stage = str(row.get("stage") or "").strip()
         event = str(row.get("event") or "").strip()
         payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
@@ -1139,7 +1171,7 @@ def build_operator_daily_summary_payload(
         recommended_actions.append("Inspect top issues and run closeout checks before enabling broader automation.")
 
     top_block_reason = blocked_reason_counts.most_common(1)
-    run_total = len({str(r.get("run_id") or "").strip() for r in day_rows if str(r.get("run_id") or "").strip()})
+    run_total = len(run_ids_seen)
     blocked_total = int(sum(int(v) for v in blocked_reason_counts.values()))
     llm_metrics = metrics.get("strategist_llm") if isinstance(metrics.get("strategist_llm"), dict) else {}
     llm_total = _safe_int(llm_metrics.get("total"), 0)

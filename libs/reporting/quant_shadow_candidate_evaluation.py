@@ -6,6 +6,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
+from libs.reporting.json_array_stream import iter_json_array
 from libs.reporting.q8_evaluation_contract import (
     CANONICAL_DEDUPE_KEY_FIELDS,
     PROMOTION_CANDIDATE_MIN_DAYS,
@@ -64,20 +65,23 @@ def _json_paths_for_day(root: Path, day: str) -> List[Path]:
 
 
 def _q9_windows_by_id(reports_root: Path, day: str) -> Dict[str, Dict[str, Any]]:
-    payload = _read_json(
+    # `_augment_missing_q9_commander_candidate` reads only `commander_final` from a window, so
+    # the ~120 MB windows file is streamed and reduced to that field (id -> {"commander_final"}).
+    path = (
         Path(reports_root)
         / "operator_summary"
         / "daily"
         / str(day)[:10]
         / "q9_decision_windows.json"
     )
-    if not isinstance(payload, dict):
+    out: Dict[str, Dict[str, Any]] = {}
+    try:
+        for row in iter_json_array(path, "windows", strict=True):
+            if isinstance(row, Mapping) and str(row.get("decision_id") or ""):
+                out[str(row.get("decision_id") or "")] = {"commander_final": row.get("commander_final")}
+    except (OSError, ValueError):
         return {}
-    return {
-        str(row.get("decision_id") or ""): dict(row)
-        for row in payload.get("windows") or []
-        if isinstance(row, Mapping) and str(row.get("decision_id") or "")
-    }
+    return out
 
 
 def _augment_missing_q9_commander_candidate(
@@ -139,18 +143,43 @@ def _augment_missing_q9_commander_candidate(
 # is not held in memory (the 10-06 closeout was OOM-killed at the 1 GiB cap).
 CANDIDATE_EVALUATION_PAYLOAD_KEYS: Tuple[str, ...] = ("candidates", "generated_at")
 
+# Keys of each `q9_decision_candidates` row that are ~83% of its bytes and that the full-chain
+# component review, the scanner-quality review and the cost-basis comparison never read
+# (verified statically and with access-trapping values on real days -- see
+# tests/test_closeout_memory_bounds.py). Those consumers pass `drop_q9_row_keys=` so a day of
+# q9 rows is not held in full. Consumers that DO read them (stage-2 authority, episode scanner
+# review, evaluation lens ...) must not use it.
+Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN: Tuple[str, ...] = (
+    "entry_lane_observation",
+    "score_breakdown",
+    "compact_feature_snapshot",
+    "below_vwap_reclaim_observation",
+)
+
+
+def _drop_q9_row_keys(payload: Dict[str, Any], drop: Optional[Sequence[str]]) -> Dict[str, Any]:
+    """Remove `drop` keys from every q9 decision-candidate row of `payload` (no-op when `drop` is empty)."""
+    if drop:
+        for row in payload.get("q9_decision_candidates") or []:
+            if isinstance(row, dict):
+                for key in drop:
+                    row.pop(key, None)
+    return payload
+
 
 def load_quant_shadow_candidate_payloads(
     *,
     reports_root: Path,
     days: Sequence[str],
     keys: Optional[Sequence[str]] = None,
+    drop_q9_row_keys: Optional[Sequence[str]] = None,
 ) -> List[Dict[str, Any]]:
     return list(
         iter_quant_shadow_candidate_payloads(
             reports_root=reports_root,
             days=days,
             keys=keys,
+            drop_q9_row_keys=drop_q9_row_keys,
         )
     )
 
@@ -160,6 +189,7 @@ def iter_quant_shadow_candidate_payloads(
     reports_root: Path,
     days: Sequence[str],
     keys: Optional[Sequence[str]] = None,
+    drop_q9_row_keys: Optional[Sequence[str]] = None,
 ) -> Iterable[Dict[str, Any]]:
     """Yield one payload dict per shadow file.
 
@@ -187,11 +217,14 @@ def iter_quant_shadow_candidate_payloads(
             if wanted is not None:
                 payload = {name: payload[name] for name in wanted if name in payload}
                 if not augment:
-                    yield payload
+                    yield _drop_q9_row_keys(payload, drop_q9_row_keys)
                     continue
-            yield _augment_missing_q9_commander_candidate(
-                dict(payload),
-                windows_by_id=q9_windows,
+            yield _drop_q9_row_keys(
+                _augment_missing_q9_commander_candidate(
+                    dict(payload),
+                    windows_by_id=q9_windows,
+                ),
+                drop_q9_row_keys,
             )
 
 
@@ -200,10 +233,12 @@ def iter_quant_shadow_candidate_payloads_for_range(
     reports_root: Path,
     start: str,
     end: str,
+    drop_q9_row_keys: Optional[Sequence[str]] = None,
 ) -> Iterable[Dict[str, Any]]:
     return iter_quant_shadow_candidate_payloads(
         reports_root=reports_root,
         days=list(_iter_days(start, end)),
+        drop_q9_row_keys=drop_q9_row_keys,
     )
 
 
@@ -212,10 +247,14 @@ def load_quant_shadow_candidate_payloads_for_range(
     reports_root: Path,
     start: str,
     end: str,
+    drop_q9_row_keys: Optional[Sequence[str]] = None,
+    keys: Optional[Sequence[str]] = None,
 ) -> List[Dict[str, Any]]:
     return load_quant_shadow_candidate_payloads(
         reports_root=reports_root,
         days=list(_iter_days(start, end)),
+        keys=keys,
+        drop_q9_row_keys=drop_q9_row_keys,
     )
 
 

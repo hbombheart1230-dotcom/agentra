@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import threading
 import time
 import uuid
 from pathlib import Path
@@ -10,7 +11,7 @@ from typing import Any, Dict
 from libs.agent.reporter import Reporter
 from libs.performance.strategy_memory import sync_strategy_memory_artifacts
 from libs.read.kiwoom_account_snapshot_collector import save_kiwoom_account_snapshot
-from libs.runtime.live_loop_lock import acquire_live_loop_lock, release_live_loop_lock
+from libs.runtime.live_loop_lock import acquire_live_loop_lock, refresh_live_loop_lock, release_live_loop_lock
 from libs.reporting.closeout_completion_authority import (
     COMPLETION_ACTION_KEY,
     read_closeout_completion,
@@ -296,6 +297,7 @@ def run_closeout_maintenance(
             "avg_return_pct": metrics.get("avg_return_pct"),
             "performance_memory_sync": dict(daily_payload.get("performance_memory_sync") or {}),
         }
+        del daily_payload, metrics  # the full daily-summary payload is not needed after this point
     except Exception as exc:
         out["steps"]["operator_daily_summary_artifact"] = {"ok": False, "error": str(exc)}
         try:
@@ -359,6 +361,9 @@ def run_closeout_maintenance(
                 (frozen.get("day_record") or {}).get("primary_alpha") or {}
             ),
         }
+        # Measured: the frozen-window result stayed referenced for the rest of closeout
+        # (~155 MiB of the next steps' baseline). Everything needed is copied above.
+        del frozen
     except Exception as exc:
         out["steps"]["q9_baseline_frozen_window"] = {
             "ok": False,
@@ -443,6 +448,9 @@ def run_closeout_maintenance(
             "cumulative_json_path": activation_shadow.get("cumulative_json_path"),
             "cumulative_md_path": activation_shadow.get("cumulative_md_path"),
         }
+        # `mart` carries the feature-mart trees/candidates/integrity (~80 MiB measured) that
+        # nothing below reads; only its output_root/strategy_alignment paths were used above.
+        del mart, fixed_shadow, activation_shadow
     except Exception as exc:
         out["steps"]["rank1_fixed_candidate_shadow"] = {
             "ok": False,
@@ -574,9 +582,44 @@ _DEFAULT_CLOSEOUT_LOCK_STALE_SEC = 1800
 
 _CLOSEOUT_SKIP_REASON_BY_ACQUIRE_REASON = {
     "lock_active": "ALREADY_RUNNING_VALID_OWNER",
+    "FOREIGN_NAMESPACE_LOCK_ACTIVE": "ALREADY_RUNNING_FOREIGN_NAMESPACE_OWNER",
     "LOCK_METADATA_INVALID": "LOCK_METADATA_INVALID",
     "IDENTITY_UNVERIFIABLE": "IDENTITY_UNVERIFIABLE",
 }
+
+
+class _CloseoutLockHeartbeat:
+    """Refreshes the closeout lock's heartbeat while the owner runs (exact-owner refresh only).
+
+    A closeout owner in another PID namespace (Host vs the Docker container) cannot be probed by
+    PID, so the lock's heartbeat is the only liveness signal it can read: fresh -> defer, stale ->
+    the owner stopped (died or hung) and the fallback may take over. Failures are ignored -- a
+    missed refresh only makes the lock look stale sooner; it never blocks or fails the closeout.
+    """
+
+    INTERVAL_SEC = 30.0
+
+    def __init__(self, lock_path: Path, owner_token: str) -> None:
+        self._lock_path = lock_path
+        self._owner_token = owner_token
+        self._stop = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    def start(self) -> None:
+        self._thread = threading.Thread(target=self._run, name="closeout-lock-heartbeat", daemon=True)
+        self._thread.start()
+
+    def _run(self) -> None:
+        while not self._stop.wait(self.INTERVAL_SEC):
+            try:
+                refresh_live_loop_lock(self._lock_path, strict_owner_identity=True, owner_token=self._owner_token)
+            except Exception:  # noqa: BLE001 - liveness hint only
+                pass
+
+    def stop(self) -> None:
+        self._stop.set()
+        if self._thread is not None:
+            self._thread.join(timeout=2.0)
 
 
 def run_closeout_maintenance_with_lock(
@@ -663,6 +706,7 @@ def run_closeout_maintenance_with_lock(
         owner_token=owner_token,
         trigger=trigger,
         target_day=normalized_day,
+        cross_namespace_guard=True,
     )
     if not acquired:
         skip_reason = _CLOSEOUT_SKIP_REASON_BY_ACQUIRE_REASON.get(reason, f"OWNERSHIP_NOT_ACQUIRED:{reason}")
@@ -711,6 +755,8 @@ def run_closeout_maintenance_with_lock(
             "acquire_reason": reason,
         },
     )
+    heartbeat = _CloseoutLockHeartbeat(resolved_lock_path, owner_token)
+    heartbeat.start()
     try:
         result = run_closeout_maintenance(
             day=day,
@@ -740,6 +786,7 @@ def run_closeout_maintenance_with_lock(
             )
         return result
     finally:
+        heartbeat.stop()
         released, release_status = release_live_loop_lock(
             resolved_lock_path,
             strict_owner_identity=True,

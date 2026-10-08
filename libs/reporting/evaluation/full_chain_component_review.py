@@ -8,6 +8,7 @@ from typing import Any, Mapping
 
 from libs.reporting.q8_evaluation_contract import candidate_day
 from libs.reporting.quant_shadow_candidate_evaluation import (
+    Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN,
     load_quant_shadow_candidate_payloads_for_range,
 )
 from libs.reporting.quant_shadow_forward_outcomes import attach_forward_outcomes
@@ -603,6 +604,7 @@ def build_full_chain_component_review(
         reports_root=reports_root,
         start=start,
         end=end,
+        drop_q9_row_keys=Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN,  # never read below; ~80% of the q9 rows' bytes
     )
     candidates = _candidate_rows(payloads)
     all_models = _load_trade_models(reports_root, start, end)

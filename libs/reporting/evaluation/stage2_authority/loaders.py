@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
+from libs.reporting.json_array_stream import iter_json_array
+
 
 def _read_json(path: Path) -> dict[str, Any]:
     try:
@@ -11,6 +13,9 @@ def _read_json(path: Path) -> dict[str, Any]:
     except Exception:
         return {}
     return dict(value) if isinstance(value, Mapping) else {}
+
+
+_STAGE2_WINDOW_KEYS = ("decision_id", "run_id", "commander_final", "decision_epoch", "generated_at")
 
 
 def load_q9_windows(reports_root: Path, start: str, end: str) -> dict[str, dict[str, Any]]:
@@ -21,15 +26,22 @@ def load_q9_windows(reports_root: Path, start: str, end: str) -> dict[str, dict[
     for day_dir in sorted(root.iterdir()):
         if not day_dir.is_dir() or not (start <= day_dir.name <= end):
             continue
-        payload = _read_json(day_dir / "q9_decision_windows.json")
-        for raw in payload.get("windows") or []:
-            if not isinstance(raw, Mapping):
-                continue
-            decision_id = str(raw.get("decision_id") or "").strip()
-            if decision_id:
-                row = dict(raw)
-                row["_day"] = day_dir.name
-                result[decision_id] = row
+        # Streamed and reduced to the window fields stage2_authority.builder reads
+        # (decision_id, run_id, commander_final, decision_epoch, generated_at, _day): the file
+        # is ~120 MB per day and holding every full window was a large part of the closeout OOM.
+        day_rows: dict[str, dict[str, Any]] = {}
+        try:
+            for raw in iter_json_array(day_dir / "q9_decision_windows.json", "windows"):
+                if not isinstance(raw, Mapping):
+                    continue
+                decision_id = str(raw.get("decision_id") or "").strip()
+                if decision_id:
+                    row = {key: raw[key] for key in _STAGE2_WINDOW_KEYS if key in raw}
+                    row["_day"] = day_dir.name
+                    day_rows[decision_id] = row
+        except ValueError:
+            day_rows = {}  # unreadable file == no windows for that day (as _read_json -> {} gave)
+        result.update(day_rows)
     return result
 
 

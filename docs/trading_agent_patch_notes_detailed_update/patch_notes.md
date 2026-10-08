@@ -1,4 +1,4 @@
-# Trading Agent System — Detailed Patch Notes Timeline
+﻿# Trading Agent System — Detailed Patch Notes Timeline
 
 > UI 노출용 상세 프로젝트 변경 이력. 저장소에 남아 있는 milestone 문서, daily patch, evaluation/research 문서를 시간순으로 재구성했다. Git commit metadata가 ZIP에 포함되지 않은 초기 구간은 정확한 일자를 임의 생성하지 않고 milestone 순서/범위로 표기했다.
 
@@ -1814,6 +1814,26 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `TradingAgent-DailyUefEvaluation` started from `C:\Agentra` at 16:45:02 KST (SHA `a38bf4e9f5f6f76eaee37659c45c7c49705fcef2`) and ended at 16:45:03 KST with exit code 1, no canonical generation, and an explicit registered-freshness failure. It failed closed rather than materializing a canonical board that could mix a fresh through-day label with stale or unreviewed content.
 - The individual stale or unknown closeout-written source is not identified by the retained lifecycle event, so source-level RCA remains open. No source artifact, pointer, registry, UEF framework/freeze semantic, or historical evidence was changed. R6/R6.1/R6.2 deployment and live acceptance are not asserted.
 - See `docs/daily_patch/2026-10-06_docker_live_open_and_daily_uef_freshness_incident.md`.
+
+# 2026-10-07 - P1.3 Closeout OOM Fix, 2 GiB Limit and After-Hours Production Deployment
+
+- The 10-06 / 10-07 Docker restart storms (RestartCount 23 then 43) were proven to be kernel cgroup OOM kills of PID 1 during the in-process closeout at the 1 GiB limit (the post-restart `OOMKilled=false` read was not evidence).
+- Closeout memory use is now bounded (streamed q9 windows, projected shadow payloads, streamed visibility rows, per-symbol rank1 loading, lens folded day by day); outputs were identical to the previous implementation on real 10-01/02/06/07 data. The full 20-day rolling Q9 window was not compared against the old path.
+- Closeout-only cross-namespace lock guard: a Host closeout and the Docker closeout no longer reclaim each other's lock by PID; heartbeat decides, and the Host fallback still works when a Docker owner stops refreshing. The m13 trading lock is unchanged.
+- 1 GiB was rejected (isolated full closeout OOMed in the Q9 stage); 2 GiB passed (exit 0, 1381 s, one durable SUCCESS, no OOM). Production limit is now 2 GiB (`--memory 2g --memory-swap 3g`).
+- After-hours deployment of image `trading-agent-20261007:f4fa335` (application SHA `f4fa33521c1aeed30813a2799824eed5e12a58d6`, includes R6.2 and yfinance): healthy, RestartCount 0, no OOM, Python PID 1, one canonical Docker runtime, Host live runtime 0, today's closeout SUCCESS visible with no second SUCCESS, broker read path PASS. Ownership generation reset to 1 by design (clean lease release); the old container is kept stopped as the rollback.
+- Not claimed: FULL P1.3 freeze, P1.2 scheduled-validation PASS, R6 live acceptance, next-day Docker closeout PASS. Status: `PRODUCTION_DEPLOYED_PENDING_LIVE_ACCEPTANCE`; P1.2 `OBSERVING`.
+- See `docs/daily_patch/2026-10-07_p1_3_closeout_memory_fix_and_production_deployment.md`.
+
+# 2026-10-08 - P1.2 Closed and P1.3 Full Docker Frozen
+
+- Historical truth kept: scheduled Daily UEF FAILED 2026-10-06 and 2026-10-07; the 2026-10-07 manual recovery PASSED (chain proof only); the 2026-10-08 scheduled run PASSED.
+- Production `trading-agent-20261007:f4fa335` (SHA `f4fa33521c1aeed30813a2799824eed5e12a58d6`), 2 GiB: RestartCount 0, no OOM, one canonical Docker runtime, Host live runtimes 0, ownership generation 1 stable, 77/77 watchdog runs `HOST_LIVE_START_SKIPPED_CANONICAL_RUNTIME_DOCKER`.
+- Fresh readiness at 09:00:09 and 15:29:53 (ready, recovery false, reconciled, orphans 0). Two real orders (BUY/SELL 155 x 002720) carried hash-verified R6 evidence recorded before the Step5C CAS and broker submit; ended flat with no unresolved or duplicate execution.
+- Docker closeout 15:30:08-15:51:50 KST (21 m 42 s), 17/17 steps ok, one durable SUCCESS; the 16:00 Host fallback saw it complete. Process peak RSS 1066-1081 MiB under the 2 GiB limit; oom/oom_kill 0.
+- Scheduled 16:45 Daily UEF: exit 0, one COMPLETE `UEF9RUN_559c27f2d0d1f62b`; UEF-7 14/14, UEF-8 91 pairs (0 COMPARABLE / 7 CONDITIONAL / 84 NOT_COMPARABLE), UEF-9 VALID; pointers and registry aligned; replay reproduced the run ids; freeze 11/11 MATCH.
+- Status: **P1.2 CLOSED; P1.3 FULL DOCKER FROZEN.** Backlog (non-blocking): Q9 compute-once/share, 20-day old-path equivalence NOT_AVAILABLE, monitor-exit-guard environment contamination. Next: P1.5 prework.
+- See `docs/daily_patch/2026-10-08_p1_2_p1_3_final_closure.md`.
 
 # 2026-10-07 - P1.5.1 Reporting Definite Dead-Code Cleanup
 

@@ -86,10 +86,12 @@ def write_stage2_authority_review(
     output_dir: Path,
 ) -> dict[str, Any]:
     reports_root = Path(reports_root)
+    # Only `_q9_decision_candidate_rows` (q9_decision_candidates + generated_at) is read from the payloads.
     payloads = load_quant_shadow_candidate_payloads_for_range(
         reports_root=reports_root,
         start=start,
         end=end,
+        keys=("q9_decision_candidates", "generated_at"),
     )
     candidate_rows = _q9_decision_candidate_rows(payloads)
     records = build_stage2_authority_records(
