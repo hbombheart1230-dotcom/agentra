@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 127,
+  "entry_count": 128,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3544,6 +3544,32 @@
         "source_baseline": "920ebd045b0d894b7182c05f90d6997edec96cf4",
         "provenance_baseline": "fbfab9b3f56152f08a2ce50e69cc8173496fde7d"
       }
+    },
+    {
+      "date": "2026-10-08",
+      "version": "P1.5 Reporting Branch Consolidation — Design",
+      "title": "P1.5 design authority consolidated into one active branch",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "DOCUMENTATION",
+        "REFACTOR"
+      ],
+      "summary": "Fast-forwarded P1.5.2 Reporting responsibility-minimal v1.1 into the original P1.5/P1.6 design branch, preserving the full original design ancestry.",
+      "details": [
+        "Canonical design branch is design/p1.5-p1.6-modernization and contains immutable Reporting v1.0 plus the follow-on v1.1 design packet.",
+        "Canonical Reporting implementation branch is codex/p1.5-reporting and contains the ordered P1.5.1, R2-A, R2-B, R2-C and residual extraction commits.",
+        "Updated the design CI trigger to the canonical design branch; one active design and one active Reporting code authority replace per-tranche branching for future work.",
+        "Historical branches and existing PR links require separate safe reference cleanup and are not evidence of lost implementation.",
+        "No Runtime Python, execution authority, broker path, UEF, production rollout or P1.5 safety gates were altered."
+      ],
+      "impact": "Design branch and documentation routing only; no production code change.",
+      "sources": [
+        "docs/refactor/README.md",
+        "docs/refactor/p1_5_reporting_implementation_packet_v1_1.md",
+        "docs/daily_patch/2026-10-08_p1_5_reporting_branch_consolidation.md"
+      ],
+      "status": "current"
     }
   ]
 }

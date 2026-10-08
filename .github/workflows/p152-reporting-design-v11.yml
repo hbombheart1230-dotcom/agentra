@@ -3,7 +3,7 @@ name: P1.5.2 design v1.1 integrity and changed-files ZIP
 on:
   push:
     branches:
-      - design/p1.5.2-reporting-responsibility-minimal-v1.1-20261008
+      - design/p1.5-p1.6-modernization
   workflow_dispatch:
 
 permissions:

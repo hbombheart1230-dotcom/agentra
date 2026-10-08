@@ -1986,3 +1986,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Reporting unit/integration/regression 테스트 분리, 전체 회귀검증과 독립 감사를 최종 P1.5.2 수용 조건으로 명시했습니다.
 - 원래 v1.0 설계 및 R2-A/B/C 완료 증거는 보존하며 이번 커밋은 설계 문서만 변경합니다.
 - 상세: docs/refactor/p1_5_reporting_implementation_packet_v1_1.md.
+
+---
+
+## 2026-10-08 · P1.5 Reporting Branch Consolidation — Design
+**Stage:** Architecture and Maintainability  
+**Tags:** ARCHITECTURE · DOCUMENTATION · REFACTOR
+
+- v1.1 Reporting 책임 최소화 설계를 원래 `design/p1.5-p1.6-modernization`에 fast-forward 통합했습니다.
+- 설계 v1.0 역사 기록과 v1.1 실행 지침을 모두 보존하며, 향후 설계 변경은 이 브랜치 하나에서만 진행합니다.
+- 리팩토링 구현 단일 기준은 `codex/p1.5-reporting`입니다.
+- 해당 브랜치의 설계 검증 Actions 트리거를 갱신했습니다. `main` 병합, 운영 설정 및 런타임 코드는 변경하지 않았습니다.
+- 상세: docs/daily_patch/2026-10-08_p1_5_reporting_branch_consolidation.md.
