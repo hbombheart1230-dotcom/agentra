@@ -6,6 +6,8 @@ Base at creation: `b67934a5baa95f4d329ccf345c14ed591a126a0f`
 
 This directory is the design authority for the Agentra structural refactor and orchestration modernization work.
 
+**Whole-program P1.5.1–P1.5.11 design audit (2026-10-08):** [p1_5_1_to_11_responsibility_alignment_v1_1.md](p1_5_1_to_11_responsibility_alignment_v1_1.md). This is a cross-stage ACCEPTANCE ADDENDUM: one canonical Owner per responsibility, minimal façades, explicit adapter/Agent contract boundaries, verified wrapper consumers and freeze evidence. Preserve all original v1.0 packets as the detailed authority and the Reporting v1.1 residual packet. Executor safety-chain size exception remains authoritative.
+
 **Active design branch: `design/p1.5-p1.6-modernization`**. The separate 2026-10-08 v1.1 branch has been fast-forward integrated; only this design branch is authoritative for ongoing changes. The former branch is historical and should not receive new commits.
 
 **Active P1.5 Reporting implementation branch: `codex/p1.5-reporting`**. R2-A/B/C code ancestry is preserved there. Production main has not been merged or deployed.

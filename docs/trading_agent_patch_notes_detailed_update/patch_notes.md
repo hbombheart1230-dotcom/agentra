@@ -1998,3 +1998,16 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 리팩토링 구현 단일 기준은 `codex/p1.5-reporting`입니다.
 - 해당 브랜치의 설계 검증 Actions 트리거를 갱신했습니다. `main` 병합, 운영 설정 및 런타임 코드는 변경하지 않았습니다.
 - 상세: docs/daily_patch/2026-10-08_p1_5_reporting_branch_consolidation.md.
+
+---
+
+## 2026-10-08 · P1.5.1–P1.5.11 Responsibility-Minimal Design Review
+**Stage:** Architecture and Maintainability  
+**Tags:** ARCHITECTURE · REFACTOR · DESIGN_REVIEW · TESTING · SAFETY
+
+- P1.5.1부터 P1.5.11까지 기존 세부 구현 패킷 전체를 최초 책임 최소화 설계 원칙으로 재검토했습니다.
+- 모든 v1.0 설계와 단계 순서는 유지하고, 함수별 단일 Owner·호환성 소비자 증거·독립 호출·State Adapter·IO/Authority 경계 인수조건을 추가했습니다.
+- P1.5.9 Executor의 안전 체인 중앙집중은 명시적 크기 예외로 보존했습니다.
+- P1.5.10 wrapper 소비자 검증과 P1.5.11 최종 Owner/테스트 보존 증거를 연결했습니다.
+- 설계 수정만 수행했으며 런타임 코드, UEF, 실거래 및 Docker 배포는 변경하지 않았습니다.
+- 정본 추가 문서: docs/refactor/p1_5_1_to_11_responsibility_alignment_v1_1.md.

@@ -1,4 +1,4 @@
-name: P1.5.2 design v1.1 integrity and changed-files ZIP
+name: P1.5 Design Authority and Changed-Files ZIP
 
 on:
   push:
@@ -33,6 +33,19 @@ jobs:
           for item in ["KEEP, MOVE, WRAPPER, DEAD, SAFETY-LOCK","P1.5.10","tests/unit/reporting","P1.2/P1.3"]:
               assert item in doc,item
           assert "P1.5.2 Reporting Responsibility-Minimal Design v1.1" in (root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
+          full=root/"docs/refactor/p1_5_1_to_11_responsibility_alignment_v1_1.md"
+          assert full.is_file()
+          matrix=full.read_text(encoding="utf-8")
+          for step in range(1,12):
+              assert f"P1.5.{step}" in matrix, f"missing stage {step}"
+          required=["one authoritative implementation owner", "CANONICAL_OWNER",
+                    "P1.5.10", "P1.5.11", "Supervisor", "Executor",
+                    "tests", "MO7"]
+          for term in required: assert term in matrix, term
+          newest="P1.5.1–P1.5.11 Responsibility-Minimal Design Review"
+          assert sum(v.get("version")==newest for v in j["entries"])==1
+          for entry in [v for v in j["entries"] if v.get("version")==newest]:
+              assert all((root/src).is_file() for src in entry["sources"])
           print(f"DESIGN VALIDATION PASS: entries={j['entry_count']}, sources={len(e['sources'])}")
           PY
       - name: Prepare only files changed by this commit

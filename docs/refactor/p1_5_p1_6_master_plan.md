@@ -301,3 +301,10 @@ Important:
 - P1.5 implementation remains gated until the upstream implementation baseline is formally frozen
 - no P1.5 runtime Python change is authorized by this closure
 - P1.6 implementation remains blocked until P1.5 formal freeze
+
+
+## 2026-10-08 P1.5.1–P1.5.11 Responsibility Alignment Addendum
+
+Authority: [p1_5_1_to_11_responsibility_alignment_v1_1.md](p1_5_1_to_11_responsibility_alignment_v1_1.md).
+
+All eleven stages were reviewed against the original responsibility-minimal constitution. The v1.0 stage-specific implementation packets and stage order remain intact. A stage cannot close solely on giant-file LOC reduction or focused pytest: canonical single Owner per responsibility, independently callable Agent contracts, explicit state adapters and IO/authority boundaries, consumer-proven compatibility exceptions and test preservation are mandatory evidence. P1.5.10 receives wrapper-debt carryovers; P1.5.11 must include an architecture ownership ledger and test-conservation proof alongside existing full pytest, Docker, UEF and independent safety gates. Executor remains the intentional safety-constrained façade-size exception. This is a design supplement only, not retroactive approval of implementation or P1.2/P1.3 baseline freeze.
