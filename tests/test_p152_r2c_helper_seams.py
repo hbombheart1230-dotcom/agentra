@@ -42,3 +42,21 @@ def test_completeness_resolves_patched_presence_check(monkeypatch):
     monkeypatch.setattr(story, "_is_present", lambda _value: False)
     completeness = story.compute_evidence_completeness({"market_context_human": {"summary": "present"}})
     assert completeness["completeness_score"] == 0.0
+
+
+def test_news_scanner_attachment_resolves_patched_contribution(monkeypatch):
+    monkeypatch.setattr(story, "_build_news_scanner_contribution_trace", lambda **_kwargs: {"theme_alignment_trace": {}, "sentiment_inputs": {}, "news_linkage_trace": {}})
+    scanner_reason = {"bullets": []}
+    selection_trace = {}
+    story._attach_news_scanner_contribution(
+        scanner_reason_human=scanner_reason,
+        scanner_selection_trace=selection_trace,
+        canonical_scanner={}, canonical_strategist={}, selected_symbol="005930",
+    )
+    assert scanner_reason["news_scanner_contribution"] == selection_trace["news_scanner_contribution"]
+
+
+def test_scanner_evidence_fit_resolves_patched_chart_helper(monkeypatch):
+    monkeypatch.setattr(story, "_scanner_chart_fit_payload", lambda _row: {"patched": True})
+    evidence = {"candidate_ranking_tables": [{"payload": {"rows": [{"symbol": "005930"}]}}]}
+    assert story._scanner_chart_fit_from_scanner_evidence(evidence, selected_symbol="005930") == {"patched": True}

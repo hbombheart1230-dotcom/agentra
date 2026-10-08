@@ -328,3 +328,106 @@ def _build_news_scanner_contribution_trace(
             "market_headline_count": len(market_headlines),
         },
     }
+
+
+def _attach_news_scanner_contribution(
+    *,
+    scanner_reason_human: Dict[str, Any],
+    scanner_selection_trace: Dict[str, Any],
+    canonical_scanner: Dict[str, Any],
+    canonical_strategist: Dict[str, Any],
+    selected_symbol: str,
+) -> None:
+    # Compatibility helpers are resolved at call time.
+    from libs.reporting import trade_story_pipeline as _facade
+    selected_candidate = (
+        canonical_scanner.get("selected_candidate")
+        if isinstance(canonical_scanner.get("selected_candidate"), dict)
+        else {}
+    )
+    selected_sources = [
+        str(x or "")
+        for x in list(
+            scanner_reason_human.get("selected_sources")
+            or selected_candidate.get("sources")
+            or []
+        )
+        if str(x or "").strip()
+    ]
+    score_breakdown = (
+        scanner_reason_human.get("score_breakdown")
+        if isinstance(scanner_reason_human.get("score_breakdown"), dict)
+        else selected_candidate.get("score_breakdown")
+        if isinstance(selected_candidate.get("score_breakdown"), dict)
+        else {}
+    )
+    component_snapshot = (
+        selected_candidate.get("component_snapshot")
+        if isinstance(selected_candidate.get("component_snapshot"), dict)
+        else {}
+    )
+    selected_score = (
+        scanner_reason_human.get("selected_score")
+        if scanner_reason_human.get("selected_score") not in (None, "")
+        else selected_candidate.get("score_total")
+    )
+    news_scanner_contribution = _facade._build_news_scanner_contribution_trace(
+        selected_symbol=selected_symbol,
+        selected_score=selected_score,
+        selected_sources=selected_sources,
+        score_breakdown=score_breakdown if isinstance(score_breakdown, dict) else {},
+        component_snapshot=component_snapshot if isinstance(component_snapshot, dict) else {},
+        strategist=canonical_strategist if isinstance(canonical_strategist, dict) else {},
+    )
+    _facade._set_or_replace_placeholder(
+        scanner_reason_human,
+        "news_scanner_contribution",
+        dict(news_scanner_contribution),
+    )
+    _facade._set_or_replace_placeholder(
+        scanner_selection_trace,
+        "news_scanner_contribution",
+        dict(news_scanner_contribution),
+    )
+    bullets = [str(x or "") for x in list(scanner_reason_human.get("bullets") or []) if str(x or "").strip()]
+    if not any(row.startswith("Core score contributions:") for row in bullets):
+        bullets.append(
+            "Core score contributions: "
+            f"trading_value {_facade.safe_float((score_breakdown or {}).get('trading_value'), 0.0):+.3f}, "
+            f"momentum {_facade.safe_float((score_breakdown or {}).get('momentum'), 0.0):+.3f}, "
+            f"trend {_facade.safe_float((score_breakdown or {}).get('trend'), 0.0):+.3f}, "
+            f"theme_boost {_facade.safe_float((score_breakdown or {}).get('theme_boost'), 0.0):+.3f}, "
+            f"sentiment {_facade.safe_float((score_breakdown or {}).get('sentiment'), 0.0):+.3f}"
+        )
+    if not any(row.startswith("Theme linkage:") for row in bullets):
+        theme_trace = news_scanner_contribution.get("theme_alignment_trace") if isinstance(news_scanner_contribution.get("theme_alignment_trace"), dict) else {}
+        bullets.append(
+            "Theme linkage: "
+            f"matched={bool(theme_trace.get('theme_source_matched'))}, "
+            f"theme_boost={_facade.safe_float(theme_trace.get('theme_boost_score_contribution'), 0.0):+.3f}, "
+            f"themes={', '.join(_facade._list_text(theme_trace.get('strategist_themes'), limit=4, max_len=60)) or 'none captured'}, "
+            f"source={theme_trace.get('theme_source') or 'not_captured'}, "
+            f"status={theme_trace.get('theme_source_status') or 'not_captured'}, "
+            f"reason={theme_trace.get('theme_source_reason') or 'not_captured'}"
+        )
+    if not any(row.startswith("Sentiment input trace:") for row in bullets):
+        sentiment_inputs = news_scanner_contribution.get("sentiment_inputs") if isinstance(news_scanner_contribution.get("sentiment_inputs"), dict) else {}
+        if any(sentiment_inputs.get(key) is not None for key in ("news_sentiment_score", "global_sentiment_score", "blended_sentiment_component")):
+            bullets.append(
+                "Sentiment input trace: "
+                f"news={_facade.safe_float(sentiment_inputs.get('news_sentiment_score'), 0.0):+.3f}, "
+                f"global={_facade.safe_float(sentiment_inputs.get('global_sentiment_score'), 0.0):+.3f}, "
+                f"blended={_facade.safe_float(sentiment_inputs.get('blended_sentiment_component'), 0.0):+.3f}, "
+                f"weighted_score={_facade.safe_float(sentiment_inputs.get('weighted_sentiment_score_contribution'), 0.0):+.3f}"
+            )
+    if not any(row.startswith("News linkage to scanner:") for row in bullets):
+        news_linkage = news_scanner_contribution.get("news_linkage_trace") if isinstance(news_scanner_contribution.get("news_linkage_trace"), dict) else {}
+        if _facade.safe_int(news_linkage.get("symbol_headline_count"), 0) > 0 or _facade.safe_int(news_linkage.get("market_headline_count"), 0) > 0:
+            bullets.append(
+                "News linkage to scanner: "
+                f"symbol_headlines={_facade.safe_int(news_linkage.get('symbol_headline_count'), 0)}, "
+                f"market_headlines={_facade.safe_int(news_linkage.get('market_headline_count'), 0)}, "
+                f"query_targets={', '.join(_facade._list_text(news_linkage.get('news_query_targets'), limit=5, max_len=60)) or 'not captured'}"
+            )
+    if bullets:
+        scanner_reason_human["bullets"] = bullets[:14]

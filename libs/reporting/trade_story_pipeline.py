@@ -91,6 +91,7 @@ from libs.reporting.trade_story_pipeline_news import (
     _list_text_for_symbol,
     _optional_float,
     _build_news_scanner_contribution_trace,
+    _attach_news_scanner_contribution,
 )
 from libs.reporting.trade_story_pipeline_scanner import (
     _korea_indices_bullet,
@@ -101,6 +102,9 @@ from libs.reporting.trade_story_pipeline_scanner import (
     _selection_basis_from_scores,
     _scanner_candidate_row_from_evidence,
     _build_scanner_selection_trace,
+    _scanner_chart_fit_from_scanner_evidence,
+    _scanner_macro_chart_fit_from_scanner_evidence,
+    _normalized_feature_coverage_from_scanner_evidence,
 )
 from libs.reporting.trade_story_pipeline_provenance import (
     _source_confidence_label,
@@ -247,107 +251,6 @@ def _build_strategist_evidence_trace(
         "fear_index": dict(fear_index or {}),
         "key_events": key_events,
     }
-
-
-def _attach_news_scanner_contribution(
-    *,
-    scanner_reason_human: Dict[str, Any],
-    scanner_selection_trace: Dict[str, Any],
-    canonical_scanner: Dict[str, Any],
-    canonical_strategist: Dict[str, Any],
-    selected_symbol: str,
-) -> None:
-    selected_candidate = (
-        canonical_scanner.get("selected_candidate")
-        if isinstance(canonical_scanner.get("selected_candidate"), dict)
-        else {}
-    )
-    selected_sources = [
-        str(x or "")
-        for x in list(
-            scanner_reason_human.get("selected_sources")
-            or selected_candidate.get("sources")
-            or []
-        )
-        if str(x or "").strip()
-    ]
-    score_breakdown = (
-        scanner_reason_human.get("score_breakdown")
-        if isinstance(scanner_reason_human.get("score_breakdown"), dict)
-        else selected_candidate.get("score_breakdown")
-        if isinstance(selected_candidate.get("score_breakdown"), dict)
-        else {}
-    )
-    component_snapshot = (
-        selected_candidate.get("component_snapshot")
-        if isinstance(selected_candidate.get("component_snapshot"), dict)
-        else {}
-    )
-    selected_score = (
-        scanner_reason_human.get("selected_score")
-        if scanner_reason_human.get("selected_score") not in (None, "")
-        else selected_candidate.get("score_total")
-    )
-    news_scanner_contribution = _build_news_scanner_contribution_trace(
-        selected_symbol=selected_symbol,
-        selected_score=selected_score,
-        selected_sources=selected_sources,
-        score_breakdown=score_breakdown if isinstance(score_breakdown, dict) else {},
-        component_snapshot=component_snapshot if isinstance(component_snapshot, dict) else {},
-        strategist=canonical_strategist if isinstance(canonical_strategist, dict) else {},
-    )
-    _set_or_replace_placeholder(
-        scanner_reason_human,
-        "news_scanner_contribution",
-        dict(news_scanner_contribution),
-    )
-    _set_or_replace_placeholder(
-        scanner_selection_trace,
-        "news_scanner_contribution",
-        dict(news_scanner_contribution),
-    )
-    bullets = [str(x or "") for x in list(scanner_reason_human.get("bullets") or []) if str(x or "").strip()]
-    if not any(row.startswith("Core score contributions:") for row in bullets):
-        bullets.append(
-            "Core score contributions: "
-            f"trading_value {safe_float((score_breakdown or {}).get('trading_value'), 0.0):+.3f}, "
-            f"momentum {safe_float((score_breakdown or {}).get('momentum'), 0.0):+.3f}, "
-            f"trend {safe_float((score_breakdown or {}).get('trend'), 0.0):+.3f}, "
-            f"theme_boost {safe_float((score_breakdown or {}).get('theme_boost'), 0.0):+.3f}, "
-            f"sentiment {safe_float((score_breakdown or {}).get('sentiment'), 0.0):+.3f}"
-        )
-    if not any(row.startswith("Theme linkage:") for row in bullets):
-        theme_trace = news_scanner_contribution.get("theme_alignment_trace") if isinstance(news_scanner_contribution.get("theme_alignment_trace"), dict) else {}
-        bullets.append(
-            "Theme linkage: "
-            f"matched={bool(theme_trace.get('theme_source_matched'))}, "
-            f"theme_boost={safe_float(theme_trace.get('theme_boost_score_contribution'), 0.0):+.3f}, "
-            f"themes={', '.join(_list_text(theme_trace.get('strategist_themes'), limit=4, max_len=60)) or 'none captured'}, "
-            f"source={theme_trace.get('theme_source') or 'not_captured'}, "
-            f"status={theme_trace.get('theme_source_status') or 'not_captured'}, "
-            f"reason={theme_trace.get('theme_source_reason') or 'not_captured'}"
-        )
-    if not any(row.startswith("Sentiment input trace:") for row in bullets):
-        sentiment_inputs = news_scanner_contribution.get("sentiment_inputs") if isinstance(news_scanner_contribution.get("sentiment_inputs"), dict) else {}
-        if any(sentiment_inputs.get(key) is not None for key in ("news_sentiment_score", "global_sentiment_score", "blended_sentiment_component")):
-            bullets.append(
-                "Sentiment input trace: "
-                f"news={safe_float(sentiment_inputs.get('news_sentiment_score'), 0.0):+.3f}, "
-                f"global={safe_float(sentiment_inputs.get('global_sentiment_score'), 0.0):+.3f}, "
-                f"blended={safe_float(sentiment_inputs.get('blended_sentiment_component'), 0.0):+.3f}, "
-                f"weighted_score={safe_float(sentiment_inputs.get('weighted_sentiment_score_contribution'), 0.0):+.3f}"
-            )
-    if not any(row.startswith("News linkage to scanner:") for row in bullets):
-        news_linkage = news_scanner_contribution.get("news_linkage_trace") if isinstance(news_scanner_contribution.get("news_linkage_trace"), dict) else {}
-        if safe_int(news_linkage.get("symbol_headline_count"), 0) > 0 or safe_int(news_linkage.get("market_headline_count"), 0) > 0:
-            bullets.append(
-                "News linkage to scanner: "
-                f"symbol_headlines={safe_int(news_linkage.get('symbol_headline_count'), 0)}, "
-                f"market_headlines={safe_int(news_linkage.get('market_headline_count'), 0)}, "
-                f"query_targets={', '.join(_list_text(news_linkage.get('news_query_targets'), limit=5, max_len=60)) or 'not captured'}"
-            )
-    if bullets:
-        scanner_reason_human["bullets"] = bullets[:14]
 
 
 def _normalize_stop_thresholds(thresholds: Dict[str, Any]) -> Dict[str, Any]:
@@ -668,160 +571,6 @@ def enrich_scanner_reason_from_evidence(
     scanner_evidence: Dict[str, Any],
 ) -> Dict[str, Any]:
     return _enrich_scanner_reason_from_evidence_impl(scanner_reason_human, scanner_evidence, deps=_evidence_enrichment_deps())
-
-def _scanner_chart_fit_from_scanner_evidence(
-    scanner_evidence: Dict[str, Any],
-    *,
-    selected_symbol: str,
-) -> Dict[str, Any]:
-    symbol = str(selected_symbol or "").strip()
-    if not symbol:
-        return {}
-    ranking_sources: List[Dict[str, Any]] = []
-    for row in list((scanner_evidence or {}).get("candidate_ranking_tables") or []):
-        payload = row.get("payload") if isinstance(row, dict) and isinstance(row.get("payload"), dict) else {}
-        for ranking_row in list(payload.get("rows") or []):
-            if isinstance(ranking_row, dict):
-                ranking_sources.append(ranking_row)
-    for row in list((scanner_evidence or {}).get("selection_outputs") or []):
-        payload = row.get("payload") if isinstance(row, dict) and isinstance(row.get("payload"), dict) else {}
-        for ranking_row in list(payload.get("ranking_top_n") or []):
-            if isinstance(ranking_row, dict):
-                ranking_sources.append(ranking_row)
-        selected_candidate = payload.get("selected_candidate") if isinstance(payload.get("selected_candidate"), dict) else {}
-        if selected_candidate:
-            ranking_sources.append(selected_candidate)
-    for row in ranking_sources:
-        if str(row.get("symbol") or "").strip() != symbol:
-            continue
-        chart_fit = _scanner_chart_fit_payload(row)
-        if chart_fit:
-            return chart_fit
-    return {}
-
-
-def _scanner_macro_chart_fit_from_scanner_evidence(
-    scanner_evidence: Dict[str, Any],
-    *,
-    selected_symbol: str,
-) -> Dict[str, Any]:
-    symbol = str(selected_symbol or "").strip()
-    if not symbol:
-        return {}
-    ranking_sources: List[Dict[str, Any]] = []
-    for row in list((scanner_evidence or {}).get("candidate_ranking_tables") or []):
-        payload = row.get("payload") if isinstance(row, dict) and isinstance(row.get("payload"), dict) else {}
-        for ranking_row in list(payload.get("rows") or []):
-            if isinstance(ranking_row, dict):
-                ranking_sources.append(ranking_row)
-    for row in list((scanner_evidence or {}).get("selection_outputs") or []):
-        payload = row.get("payload") if isinstance(row, dict) and isinstance(row.get("payload"), dict) else {}
-        for ranking_row in list(payload.get("ranking_top_n") or []):
-            if isinstance(ranking_row, dict):
-                ranking_sources.append(ranking_row)
-        selected_candidate = payload.get("selected_candidate") if isinstance(payload.get("selected_candidate"), dict) else {}
-        if selected_candidate:
-            ranking_sources.append(selected_candidate)
-    for row in ranking_sources:
-        if str(row.get("symbol") or "").strip() != symbol:
-            continue
-        chart_fit = _scanner_macro_chart_fit_payload(row)
-        if chart_fit:
-            return chart_fit
-    return {}
-
-
-def _normalized_feature_coverage_from_scanner_evidence(
-    scanner_evidence: Dict[str, Any],
-    *,
-    selected_symbol: str,
-) -> Dict[str, Any]:
-    symbol = str(selected_symbol or "").strip()
-    if not symbol:
-        return {}
-
-    ranking_sources: List[Dict[str, Any]] = []
-    for row in list((scanner_evidence or {}).get("candidate_ranking_tables") or []):
-        payload = row.get("payload") if isinstance(row, dict) and isinstance(row.get("payload"), dict) else {}
-        for ranking_row in list(payload.get("rows") or []):
-            if isinstance(ranking_row, dict):
-                ranking_sources.append(ranking_row)
-    for row in list((scanner_evidence or {}).get("selection_outputs") or []):
-        payload = row.get("payload") if isinstance(row, dict) and isinstance(row.get("payload"), dict) else {}
-        for ranking_row in list(payload.get("ranking_top_n") or []):
-            if isinstance(ranking_row, dict):
-                ranking_sources.append(ranking_row)
-        selected_candidate = payload.get("selected_candidate") if isinstance(payload.get("selected_candidate"), dict) else {}
-        if selected_candidate:
-            ranking_sources.append(selected_candidate)
-
-    matched_row: Dict[str, Any] = {}
-    for row in ranking_sources:
-        row_symbol = str(row.get("symbol") or "").strip()
-        if row_symbol == symbol:
-            matched_row = row
-            break
-    if not matched_row:
-        return {}
-
-    reported = matched_row.get("feature_coverage") if isinstance(matched_row.get("feature_coverage"), dict) else {}
-    snapshot = matched_row.get("compact_feature_snapshot") if isinstance(matched_row.get("compact_feature_snapshot"), dict) else {}
-    if not snapshot:
-        snapshot = matched_row.get("feature_snapshot") if isinstance(matched_row.get("feature_snapshot"), dict) else {}
-    if not snapshot and not reported:
-        return {}
-
-    keys = [
-        "engine_ma20_gap",
-        "engine_ma60",
-        "engine_ma120",
-        "engine_adx14",
-        "engine_trend_strength",
-        "engine_atr14",
-        "engine_volume_spike20",
-        "engine_volatility20",
-        "engine_vwap_distance",
-        "engine_sector_relative_strength",
-        "engine_cross_section_rank",
-        "engine_regime",
-        "engine_signal_score",
-    ]
-    computed_present_keys = [key for key in keys if snapshot.get(key) is not None]
-    computed_missing_keys = [key for key in keys if snapshot.get(key) is None]
-    computed_total = len(keys)
-    computed_present = len(computed_present_keys)
-    present = safe_int(reported.get("present"), computed_present)
-    total = safe_int(reported.get("total"), computed_total)
-    coverage_ratio = safe_float(reported.get("coverage_ratio"), float(present) / float(total) if total else 0.0)
-    quality = str(reported.get("quality") or "").strip().lower()
-    if not quality:
-        if coverage_ratio >= 0.75:
-            quality = "strong"
-        elif coverage_ratio >= 0.5:
-            quality = "partial"
-        else:
-            quality = "weak"
-    reported_present_keys = [str(x or "") for x in list(reported.get("present_keys") or []) if str(x or "").strip()]
-    reported_missing_keys = [str(x or "") for x in list(reported.get("missing_keys") or []) if str(x or "").strip()]
-    reported_key_counts_match = bool(
-        reported_present_keys
-        and len(reported_present_keys) == present
-        and len(reported_present_keys) + len(reported_missing_keys) == total
-    )
-    computed_key_counts_match = computed_present == present and computed_total == total
-    present_keys = reported_present_keys if reported_key_counts_match else (computed_present_keys if computed_key_counts_match else [])
-    missing_keys = reported_missing_keys if reported_key_counts_match else (computed_missing_keys if computed_key_counts_match else [])
-    coverage_source = "feature_coverage_reported" if reported else "snapshot_derived"
-    return {
-        "present": present,
-        "total": total,
-        "coverage_ratio": coverage_ratio,
-        "quality": quality,
-        "present_keys": present_keys,
-        "missing_keys": missing_keys,
-        "source": coverage_source,
-    }
-
 
 def enrich_filters_from_evidence(
     filters_human: Dict[str, Any],
