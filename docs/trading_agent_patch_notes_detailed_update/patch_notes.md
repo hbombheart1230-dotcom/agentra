@@ -1974,3 +1974,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Marked P1.5 implementation as NOT STARTED and blocked until the upstream implementation baseline is formally frozen.
 - Closure authority: docs/refactor/p1_5_prep_closure_report.md.
 
+---
+
+## 2026-10-08 · P1.5.2 Reporting Responsibility-Minimal Design v1.1
+**Stage:** Architecture and Maintainability  
+**Tags:** ARCHITECTURE · REFACTOR · TESTING · DOCUMENTATION
+
+- GitHub에 푸시된 R2-A/B/C 실제 구현(3,040 / 3,044 / 949 LOC)을 기준으로 Reporting 상세 설계를 v1.1로 정정했습니다.
+- 최초 책임 최소화 목표를 유지하되, 기존 WRAPPER와 실제 구현 책임을 한 함수씩 KEEP/MOVE/WRAPPER/DEAD/SAFETY-LOCK으로 증명하도록 했습니다.
+- 중복 Owner를 만들지 않고, API 및 monkeypatch 호환성은 사용처를 이전·검증한 후에만 정리합니다.
+- Reporting unit/integration/regression 테스트 분리, 전체 회귀검증과 독립 감사를 최종 P1.5.2 수용 조건으로 명시했습니다.
+- 원래 v1.0 설계 및 R2-A/B/C 완료 증거는 보존하며 이번 커밋은 설계 문서만 변경합니다.
+- 상세: docs/refactor/p1_5_reporting_implementation_packet_v1_1.md.

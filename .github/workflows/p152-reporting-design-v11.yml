@@ -1,0 +1,55 @@
+name: P1.5.2 design v1.1 integrity and changed-files ZIP
+
+on:
+  push:
+    branches:
+      - design/p1.5.2-reporting-responsibility-minimal-v1.1-20261008
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-and-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Verify design and patch-note authority
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path(".")
+          p=root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
+          j=json.loads(p.read_text(encoding="utf-8"))
+          assert j["entry_count"]==len(j["entries"])
+          v="P1.5.2 Reporting Responsibility-Minimal Design v1.1"
+          assert sum(e.get("version")==v for e in j["entries"])==1
+          e=next(e for e in j["entries"] if e.get("version")==v)
+          assert all((root/s).is_file() for s in e["sources"])
+          doc=(root/"docs/refactor/p1_5_reporting_implementation_packet_v1_1.md").read_text(encoding="utf-8")
+          for item in ["KEEP, MOVE, WRAPPER, DEAD, SAFETY-LOCK","P1.5.10","tests/unit/reporting","P1.2/P1.3"]:
+              assert item in doc,item
+          assert "P1.5.2 Reporting Responsibility-Minimal Design v1.1" in (root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
+          print(f"DESIGN VALIDATION PASS: entries={j['entry_count']}, sources={len(e['sources'])}")
+          PY
+      - name: Prepare only files changed by this commit
+        run: |
+          python3 - <<'PY'
+          import subprocess,zipfile,pathlib
+          names=subprocess.check_output(["git","diff","--name-only","-z","HEAD^","HEAD"]).decode().split("\0")
+          names=[n for n in names if n and pathlib.Path(n).is_file()]
+          assert names, "No modified paths"
+          pathlib.Path("design_output").mkdir(exist_ok=True)
+          with zipfile.ZipFile("design_output/p152_reporting_design_v11_changed_files.zip","w",compression=zipfile.ZIP_DEFLATED) as z:
+              for p in names:z.write(p,arcname=p)
+          print("ZIP FILES:",*names,sep="\n- ")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: p152-reporting-design-v11-changed-files-20261008
+          path: design_output/p152_reporting_design_v11_changed_files.zip
+          retention-days: 14
+          if-no-files-found: error

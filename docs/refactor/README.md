@@ -6,6 +6,8 @@ Base at creation: `b67934a5baa95f4d329ccf345c14ed591a126a0f`
 
 This directory is the design authority for the Agentra structural refactor and orchestration modernization work.
 
+**Reporting implementation design revision (2026-10-08):** For remaining P1.5.2 work use **p1_5_reporting_implementation_packet_v1_1.md**, which rebaselines responsibility-minimal ownership and acceptance against the pushed R2-A/B/C implementation. Retain **p1_5_reporting_implementation_packet_v1_0.md** as the original frozen design record. This revision does not authorize runtime changes or bypass the P1.2/P1.3 baseline gate.
+
 ## Documents
 
 1. `p1_5_p1_6_master_plan.md`

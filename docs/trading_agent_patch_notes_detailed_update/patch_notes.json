@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 126,
+  "entry_count": 127,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3507,6 +3507,42 @@
         "verification": "direct consolidation of frozen P1.5 design packets; no runtime implementation",
         "source_baseline": "b67934a5baa95f4d329ccf345c14ed591a126a0f",
         "provenance_baseline": null
+      }
+    },
+    {
+      "date": "2026-10-08",
+      "version": "P1.5.2 Reporting Responsibility-Minimal Design v1.1",
+      "title": "Reporting R2-A/B/C responsibility-minimal closure design revised against pushed implementation",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Updated P1.5.2 design authority to preserve one implementation owner per responsibility and shrink Reporting façades safely, distinguishing completed R2 extraction from remaining program acceptance.",
+      "details": [
+        "Retained original P1.5 Reporting design v1.0; published v1.1 with observed 8,354/5,862/4,527 -> 3,040/3,044/949 LOC façade state.",
+        "Required symbol-by-symbol KEEP/MOVE/WRAPPER/DEAD/SAFETY-LOCK ledger and consumer evidence before further moves or wrapper removal.",
+        "Defined AI, Markdown and Story residual audit priorities, responsibility-based unit/integration/regression test migration and original façade size guidance.",
+        "Kept P1.5.10 as proof-based wrapper retirement, and preserved behavior, LLM, UEF, Supervisor/Executor, baseline freeze and no-production-write constraints.",
+        "Document/design change only. Previously recorded R2-A/B/C extraction PASS is not equivalent to P1.5.2 final acceptance."
+      ],
+      "impact": "Design and UI history only. No runtime Python change, no execution/authority change and no production rollout.",
+      "sources": [
+        "docs/refactor/p1_5_reporting_implementation_packet_v1_1.md",
+        "docs/refactor/README.md",
+        "docs/daily_patch/2026-10-08_p1_5_2_reporting_design_v11.md"
+      ],
+      "status": "current",
+      "provenance": {
+        "development_era": "P1.5.2 design revision",
+        "owner": "GPT-6",
+        "reviewer": null,
+        "final_approval": "human",
+        "verification": "GitHub source and R2-A/B/C completion records reviewed; design-only change",
+        "source_baseline": "920ebd045b0d894b7182c05f90d6997edec96cf4",
+        "provenance_baseline": "fbfab9b3f56152f08a2ce50e69cc8173496fde7d"
       }
     }
   ]
