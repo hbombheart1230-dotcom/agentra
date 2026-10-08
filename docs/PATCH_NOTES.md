@@ -179,3 +179,87 @@
 - Replace heuristic `stability_score` with calibrated weighting per regime/playbook.
 - Add rolling window snapshots (e.g., 7d/30d) and decay weighting.
 - Add offline ML/RL candidates on top of deterministic feature tables without impacting live execution path.
+
+## P1.5.1 Addendum (Reporting Definite Dead-Code Cleanup — 2026-10-07)
+
+- Removed the unreachable legacy tail after `render_trade_summary_markdown_with_evaluation()` delegates to the clean renderer.
+- Removed the earlier shadowed `_playbook_label` definition from the clean Markdown renderer.
+- Public Reporting entry points and output semantics remain unchanged.
+- Required focused regression: 149 passed.
+- Broader affected reporting assertions: 280 passed; two test-only production-shaped paths were isolated to `tmp_path` afterward.
+- No production runtime, trading authority, UEF, broker, schema, truth-precedence, or LLM-policy change.
+
+## P1.5.2 R2-A Addendum (Reporting Service Extraction — 2026-10-07)
+
+- Added `libs/reporting/trade_report/service.py` as the owner for AI trade-report and trade-summary LLM orchestration.
+- `trade_report_ai.py` keeps the existing public entry points as compatibility façades and injects current helper/router seams at call time.
+- `trade_report_ai.py` reduced from 7,223 to 6,770 LOC relative to the P1.5.1 baseline.
+- Focused Reporting regression on Python 3.12: **151 passed**.
+- No report schema, LLM role/count, truth precedence, retry/repair semantics, artifact paths, trading authority, UEF, or broker behavior changed.
+
+## P1.5.2 R2-A Residual Addendum (Normalization / Operator Text / Shared Section Seed — 2026-10-07)
+
+- Added `libs/reporting/trade_report/normalization.py` and moved `_normalize_trade_report_output` implementation behind the façade.
+- Added `libs/reporting/trade_report/operator_text.py` and moved operator-facing labels, language cleanup and section operatorization behind compatibility wrappers.
+- Added `libs/reporting/trade_report/sections.py` and moved the 693-line shared deterministic summary-seed assembler behind the façade.
+- `trade_report_ai.py` is now **5,156 LOC**, down from 7,223 after P1.5.1 (net -2,067 LOC from the façade).
+- Each extraction checkpoint passed the same Python 3.12 focused Reporting suite: **151/151 PASS**.
+- Public/private compatibility symbols used by existing tests remain exposed from `trade_report_ai.py`; no report/trading semantics changed.
+
+## P1.5.2 R2-A Compact / Fallback Addendum — 2026-10-07
+
+- Moved the 385-line `_compact_story_input_for_llm()` implementation into `trade_report_ai_compact_input.py`; façade wrapper retained.
+- Moved the 486-line deterministic `_fallback_report()` implementation into `trade_report_ai_deterministic.py`; façade wrapper retained.
+- Existing helper/monkeypatch seams are injected at call time, preserving compatibility behavior.
+- `trade_report_ai.py` is now **4,376 LOC**, down from 7,223 after P1.5.1 (net façade reduction **2,847 LOC**).
+- Python 3.12 focused Reporting regression: **151/151 PASS** after both extractions.
+- No report schema, truth precedence, fallback semantics, LLM call role/count, trading authority, UEF, or broker behavior changed.
+
+## P1.5.2 R2-A Completion — Section / Context Builders (2026-10-07)
+
+- Moved market/scanner section builders, lifecycle section builders, entry execution visibility and strategist compact-context assembly behind responsibility-specific owners.
+- Added `libs/reporting/trade_report/context.py`; expanded `libs/reporting/trade_report/sections.py`.
+- `trade_report_ai.py` is now **3,040 LOC**, down from 7,223 LOC after P1.5.1 (**-4,183 LOC / -57.9%** from the P1.5.1 façade baseline).
+- Final focused regression: **151/151 PASS**.
+- Final broader Reporting regression across 14 relevant test files: **297/297 PASS**.
+- Two dependency-injection omissions were caught by the intermediate gates and corrected before closure; no test expectation was weakened.
+- **P1.5.2 R2-A: COMPLETE. R2-B Markdown façade decomposition: NEXT.**
+
+## P1.5.2 R2-B Addendum (Markdown Summary / Signal Extraction — 2026-10-07)
+
+- Added `trade_report/markdown_summary.py` and moved the 745-line trade-summary Markdown renderer plus 416-line summary-input assembler behind compatibility façades.
+- Added `trade_report/markdown_signals.py` and moved entry-watch, entry-signal and exit-trigger presentation helpers behind compatibility wrappers.
+- `trade_report_markdown_clean.py`: **5,852 -> 4,187 LOC** (**-1,665 LOC / -28.5%**).
+- An intermediate local-helper ownership mistake was caught by the focused gate and corrected without changing expected output.
+- Focused Markdown/Reporting regression: **168/168 PASS**. Broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
+- R2-B remains **ACTIVE**; carryover/memory/translation residuals are next.
+
+## P1.5.2 R2-B Addendum (Carryover / Memory / Translation — 2026-10-07)
+
+- Extended `trade_report_markdown_strategy_memory.py` to own carryover context, prompt-proven memory rendering and memory-application rendering.
+- Added `trade_report/markdown_translation.py` and moved the 170-line `_translate_text()` implementation behind a compatibility wrapper.
+- `trade_report_markdown_clean.py`: **4,187 -> 3,713 LOC** in this tranche; **5,852 -> 3,713 LOC** from the R2-B baseline (**-2,139 LOC / -36.6%**).
+- Incremental gates caught two extraction-only import omissions: `timedelta` for carryover and `html/re` for translation. They were restored without changing semantics or weakening tests.
+- Focused Markdown/Reporting regression after fixes: **168/168 PASS**. Broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
+- R2-B remains **ACTIVE**; diagnostics/market/strategist residuals are next.
+
+## P1.5.2 R2-B Completion — Diagnostics / Market / Strategist / Final Truth Boundaries (2026-10-07)
+
+- Added `trade_report/markdown_diagnostics.py` for same-day summary normalization plus deterministic and LLM evaluation diagnostics.
+- Added `trade_report/markdown_strategy.py` for market-context, strategist-summary and strategist-output rendering.
+- Moved final entry-execution visibility rendering into `trade_report/markdown_signals.py`.
+- Moved final truth-surface rendering into `trade_report_markdown_truth.py`.
+- `trade_report_markdown_clean.py` is now **3,044 LOC**, down from 5,852 at the R2-B baseline (**-2,808 LOC / -48.0%**).
+- No function remaining in `trade_report_markdown_clean.py` is 70 LOC or larger.
+- Final focused regression: **168/168 PASS**. Final broader Reporting/API/runtime regression: **297/297 PASS, 1 warning**.
+- **P1.5.2 R2-B: COMPLETE. R2-C trade-story façade decomposition: NEXT.**
+
+## P1.5.2 R2-C Addendum (Trade-story Human / Evidence / Assembly Extraction — 2026-10-07)
+
+- Expanded `trade_story_pipeline_human_payloads.py` to own market/scanner/monitor human payload builders.
+- Expanded `trade_story_pipeline_evidence_hydration.py` to own scanner/filter evidence enrichment.
+- Expanded `trade_story_pipeline_story_assembly.py` to own lifecycle bundle construction, report section seeds and final trade-story assembly.
+- `trade_story_pipeline.py`: **4,527 -> 1,873 LOC** (**-2,654 LOC / -58.6%**).
+- Compatibility/public entry points remain in the façade; current helper seams are resolved at call time.
+- Focused trade-story validation: **40/40 PASS**. Broader Reporting + trade-story regression: **337/337 PASS, 1 warning**.
+- R2-C remains **ACTIVE**; residual scanner/news/provenance helpers are next.

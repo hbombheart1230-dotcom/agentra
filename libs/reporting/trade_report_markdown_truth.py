@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Mapping, Optional
 
 from libs.reporting.report_truth_surface import build_trade_report_truth_surface
 
@@ -307,3 +307,91 @@ def trade_cost_analysis_lines(
     if cost.get("mock_cost_warning"):
         lines.append(f"{bullet} 모의투자 비용 주의: 현재 수수료는 실계좌 OpenAPI 기본 수수료보다 크게 반영될 수 있습니다.")
     return lines
+
+
+def build_truth_surface(report: Dict[str, Any], *, deps: Mapping[str, Any]) -> List[str]:
+    _as_dict = deps["as_dict"]
+    _authority_label = deps["authority_label"]
+    _badge = deps["badge"]
+    _fmt_pct = deps["fmt_pct"]
+    _fmt_price = deps["fmt_price"]
+    _get_truth_surface = deps["get_truth_surface"]
+    _metadata_value = deps["metadata_value"]
+    _num_opt = deps["num_opt"]
+    _trade_cost_analysis_lines = deps["trade_cost_analysis_lines"]
+    _truth_source_label = deps["truth_source_label"]
+    truth = _get_truth_surface(report)
+    price = _as_dict(truth.get("price"))
+    pnl = _as_dict(truth.get("pnl"))
+    availability = _as_dict(truth.get("availability"))
+    lines: List[str] = []
+
+    broker_buy = price.get("broker_buy_price")
+    broker_sell = price.get("broker_fill_price")
+    account_mark = price.get("account_mark_price")
+    broker_fee = pnl.get("broker_fee")
+    broker_tax = pnl.get("broker_tax")
+    pnl_value = pnl.get("value")
+    pnl_pct = pnl.get("pct")
+
+    lines.append(f"- {_badge('확정값', '#2563eb')} 브로커 체결과 당일 손익 기준을 우선합니다.")
+
+    if broker_buy not in (None, "") and broker_sell not in (None, ""):
+        lines.append(f"- 브로커 매수가/매도가는 {_fmt_price(broker_buy)} / {_fmt_price(broker_sell)}입니다.")
+    elif broker_sell not in (None, ""):
+        lines.append(f"- 브로커 체결 가격은 {_fmt_price(broker_sell)}입니다.")
+
+    if account_mark not in (None, ""):
+        lines.append(f"- 계좌 기준 마크 가격은 {_fmt_price(account_mark)}입니다.")
+
+    if pnl_value not in (None, "", "unavailable") and pnl_pct not in (None, ""):
+        lines.append(f"- 확정 손익은 {pnl_value} / {_fmt_pct(pnl_pct)}입니다.")
+    elif pnl_pct not in (None, ""):
+        lines.append(f"- 브로커 체결가와 계좌 평가손익 기준 추정 손익률은 {_fmt_pct(pnl_pct)}입니다.")
+
+    if broker_fee not in (None, "") or broker_tax not in (None, ""):
+        lines.append(
+            f"- 브로커 수수료/세금은 {broker_fee if broker_fee not in (None, '') else '-'} / "
+            f"{broker_tax if broker_tax not in (None, '') else '-'}입니다."
+        )
+    cost_lines = _trade_cost_analysis_lines(report, bullet="-")
+    for cost_line in cost_lines:
+        lines.append(cost_line.replace("**", ""))
+
+    price_truth_source = _truth_source_label(price.get("price_truth_source"))
+    pnl_truth_source = _truth_source_label(pnl.get("pnl_truth_source"))
+    lines.append(f"- 가격 기준은 {price_truth_source}입니다.")
+    lines.append(f"- 손익 기준은 {pnl_truth_source}입니다.")
+
+    broker_day_source = _truth_source_label(pnl.get("broker_day_truth_source"))
+    broker_day_match_mode = _metadata_value(pnl.get("broker_day_match_mode") or "-")
+    broker_day_authoritative = _authority_label(pnl.get("broker_day_authoritative"))
+    if pnl.get("broker_day_truth_source"):
+        lines.append(
+            f"- 브로커 당일 손익은 {broker_day_authoritative}으로 연결됐고, 소스는 {broker_day_source}입니다."
+        )
+        lines.append(f"- 브로커 당일 손익 매칭 방식은 {broker_day_match_mode}입니다.")
+
+    availability_bits = []
+    availability_bits.append("브로커 체결가는 확보됐습니다" if availability.get("broker_fill_present") else "브로커 체결가는 직접 확보되지 않았습니다")
+    availability_bits.append("계좌 마크는 확인됐습니다" if availability.get("account_mark_present") else "계좌 마크는 없었습니다")
+    availability_bits.append("모니터 가격은 남아 있습니다" if availability.get("monitor_mark_present") else "모니터 가격은 남지 않았습니다")
+    availability_bits.append("브로커 손익도 확인됐습니다" if availability.get("broker_pnl_present") else "브로커 손익은 직접 확인되지 않았습니다")
+    lines.append(f"- 가용성 요약: {', '.join(availability_bits)}.")
+
+    if (
+        broker_buy not in (None, "")
+        and broker_sell not in (None, "")
+        and float(broker_buy) == float(broker_sell)
+        and pnl_value not in (None, "", "unavailable")
+        and _num_opt(pnl_value) is not None
+        and _num_opt(pnl_value) < 0
+    ):
+        lines.append("- 매수가와 매도가가 같았고, 손익은 가격 변동이 아니라 수수료와 세금에서 발생했습니다.")
+
+    if broker_sell not in (None, "") and broker_buy in (None, "") and pnl.get("broker_day_truth_source"):
+        lines.append("- 브로커 매수 체결가는 직접 복구되지 않았고, 확정 손익은 키움 당일 실현손익 기준으로만 확인했습니다.")
+
+    return lines
+
+

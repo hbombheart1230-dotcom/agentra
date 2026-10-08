@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 from libs.reporting.trade_report_markdown_truth import (
+    build_truth_surface as _build_truth_surface_impl,
     boolish as _boolish_impl,
     build_trade_cost_analysis as _build_trade_cost_analysis_impl,
     extract_trade_quantity as _extract_trade_quantity_impl,
@@ -37,6 +38,9 @@ from libs.reporting.trade_report_markdown_monitor import (
     price_source_policy_label as _price_source_policy_label_impl,
 )
 from libs.reporting.trade_report_markdown_strategy_memory import (
+    carryover_context as _carryover_context_impl,
+    build_prompt_proven_memory as _build_prompt_proven_memory_impl,
+    build_memory_application as _build_memory_application_impl,
     build_strategy_horizon_lines as _build_strategy_horizon_lines_impl,
     duration_label_compact as _duration_label_compact_impl,
     hold_window_label as _hold_window_label_impl,
@@ -72,6 +76,32 @@ from libs.reporting.strategist_quant_context_report import (
 from libs.reporting.controlled_mock_lane_report import (
     render_controlled_lane_report_lines as _render_controlled_lane_report_lines,
 )
+from libs.reporting.trade_report.markdown_summary import (
+    build_trade_summary_input as _build_trade_summary_input_impl,
+    render_trade_summary_markdown as _render_trade_summary_markdown_impl,
+)
+from libs.reporting.trade_report.markdown_diagnostics import (
+    build_summary_deterministic_diagnostics_section as _build_summary_deterministic_diagnostics_section_impl,
+    build_summary_llm_evaluation_section as _build_summary_llm_evaluation_section_impl,
+    same_day_summary_from_texts as _same_day_summary_from_texts_impl,
+)
+from libs.reporting.trade_report.markdown_signals import (
+    resolve_entry_execution_visibility as _resolve_entry_execution_visibility_impl,
+    build_summary_exit_trigger_lines as _build_summary_exit_trigger_lines_impl,
+    enrich_exit_signal_snapshot_from_monitor as _enrich_exit_signal_snapshot_from_monitor_impl,
+    entry_signal_metric_summary_lines as _entry_signal_metric_summary_lines_impl,
+    entry_watch_execution_lines as _entry_watch_execution_lines_impl,
+    entry_watch_summary_lines as _entry_watch_summary_lines_impl,
+    resolve_entry_signal_snapshot as _resolve_entry_signal_snapshot_impl,
+)
+from libs.reporting.trade_report.markdown_translation import (
+    translate_text as _translate_text_impl,
+)
+from libs.reporting.trade_report.markdown_strategy import (
+    build_market_context as _build_market_context_impl,
+    build_strategist_output_surface as _build_strategist_output_surface_impl,
+    build_strategist_summary as _build_strategist_summary_impl,
+)
 
 
 def _same_day_current_result(report: Dict[str, Any]) -> Dict[str, Any]:
@@ -98,134 +128,33 @@ def _same_day_current_result(report: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def _markdown_diagnostics_deps() -> Dict[str, Any]:
+    return {
+        "action_label": _action_label,
+        "as_dict": _as_dict,
+        "authoritative_final_operator_summary": _authoritative_final_operator_summary,
+        "first_present_impl": _first_present_impl,
+        "listify": _listify,
+        "looks_like_symbol_name_impl": _looks_like_symbol_name_impl,
+        "metadata_value": _metadata_value,
+        "normalize_evaluation_hold_duration": _normalize_evaluation_hold_duration,
+        "resolve_trade_symbol_metadata": _resolve_trade_symbol_metadata,
+        "strip_trailing_blanks": _strip_trailing_blanks,
+        "summary_decimal": _summary_decimal,
+        "summary_eval_sentence": _summary_eval_sentence,
+        "summary_fact_text": _summary_fact_text,
+        "summary_money": _summary_money,
+        "summary_problem_label": _summary_problem_label,
+        "summary_root_cause_label": _summary_root_cause_label,
+        "translate_text": _translate_text,
+    }
+
 def _same_day_summary_from_texts(
     texts: Iterable[Any],
     fallback: str = "",
     current_result: Dict[str, Any] | None = None,
 ) -> str:
-    """Normalize same-day trade summary without treating unknown PnL as flat."""
-
-    translated_texts: List[str] = []
-    for raw in texts:
-        text = _translate_text(raw).strip()
-        if text:
-            translated_texts.append(text)
-
-    for text in translated_texts:
-        closed_match = re.search(
-            r"(?:closed trade|닫힌 거래|총 거래).*?(\d+)\s*(?:건|trades?)",
-            text,
-            flags=re.IGNORECASE,
-        )
-        if not closed_match:
-            continue
-        win_loss_match = None
-        for pattern in (
-            r"(?:승\s*/\s*패|승패|승률)\s*(\d+)\s*/\s*(\d+)",
-            r"(\d+)\s*승\s*/\s*(\d+)\s*패",
-            r"(\d+)\s*wins?\D+(\d+)\s*loss",
-        ):
-            win_loss_match = re.search(pattern, text, flags=re.IGNORECASE)
-            if win_loss_match:
-                break
-        if not win_loss_match:
-            continue
-
-        avg_match = re.search(
-            r"(확인분\s*)?평균(?:\s*손익률|\s*손익)?\s*([+-]?\d+(?:\.\d+)?)(%)?",
-            text,
-            flags=re.IGNORECASE,
-        )
-        avg_source_is_ratio = False
-        if not avg_match:
-            avg_match = re.search(
-                r"(?:avg pnl pct|average same-day pnl pct)\s*([+-]?\d+(?:\.\d+)?)(%)?",
-                text,
-                flags=re.IGNORECASE,
-            )
-            avg_source_is_ratio = bool(avg_match and not avg_match.group(2))
-        unknown_match = re.search(r"(?:손익\s*)?미확정\s*(\d+)\s*건", text) or re.search(
-            r"(\d+)\s*unknown pnl",
-            text,
-            flags=re.IGNORECASE,
-        )
-        flat_match = re.search(r"보합\s*(\d+)\s*건", text) or re.search(
-            r"(\d+)\s*flat",
-            text,
-            flags=re.IGNORECASE,
-        )
-
-        closed = int(closed_match.group(1))
-        wins = int(win_loss_match.group(1))
-        losses = int(win_loss_match.group(2))
-        unknown = int(next(group for group in unknown_match.groups() if group)) if unknown_match else 0
-        flat = int(next(group for group in flat_match.groups() if group)) if flat_match else 0
-        avg_text = ""
-        avg_confirmed = False
-        if avg_match:
-            if len(avg_match.groups()) > 2:
-                avg_confirmed = bool(avg_match.group(1))
-                avg_text = avg_match.group(2)
-            else:
-                avg_text = avg_match.group(1)
-
-        avg_num = None
-        if avg_text:
-            try:
-                avg_num = float(avg_text)
-            except (TypeError, ValueError):
-                avg_num = None
-        if avg_source_is_ratio and avg_num is not None and abs(avg_num) <= 1.0:
-            avg_num *= 100.0
-            avg_text = f"{avg_num:.2f}"
-            avg_confirmed = True
-        if (
-            unknown <= 0
-            and closed > 0
-            and wins == 0
-            and losses == 0
-            and flat == 0
-            and avg_num == 0.0
-        ):
-            unknown = closed
-            avg_text = ""
-        current = dict(current_result or {})
-        current_classification = current.get("classification")
-        if (
-            (unknown == closed or closed == 1)
-            and current_classification in (-1, 0, 1)
-        ):
-            wins = 1 if current_classification > 0 else 0
-            losses = 1 if current_classification < 0 else 0
-            flat = 1 if current_classification == 0 else 0
-            unknown = max(0, closed - wins - losses - flat)
-            current_pct_text = str(current.get("pct_text") or "").strip()
-            if current_pct_text:
-                avg_text = current_pct_text
-                avg_confirmed = True
-        accounted = wins + losses + flat
-        if accounted >= closed:
-            flat = max(0, closed - wins - losses)
-            unknown = 0
-        else:
-            unknown = max(0, min(unknown, closed - accounted))
-
-        parts = [f"{closed}건 중 {wins}승 / {losses}패"]
-        if flat > 0:
-            parts.append(f"{flat}건 보합")
-        if unknown > 0:
-            parts.append(f"{unknown}건 손익 미확정")
-        if avg_text:
-            avg_label = "확인분 평균" if unknown > 0 or avg_confirmed else "평균"
-            parts.append(f"{avg_label} {avg_text}%")
-        return " / ".join(parts)
-
-    for text in translated_texts:
-        lowered = text.lower()
-        if "closed trade" in lowered or "닫힌 거래" in text or "평균 손익" in text:
-            return text.rstrip(".")
-    return fallback
-
+    return _same_day_summary_from_texts_impl(texts, fallback=fallback, current_result=current_result, deps=_markdown_diagnostics_deps())
 
 def render_trade_report_markdown_clean(report: Dict[str, Any]) -> str:
     lines: List[str] = []
@@ -279,1166 +208,120 @@ def render_trade_report_markdown_clean(report: Dict[str, Any]) -> str:
     return "\n".join(_strip_trailing_blanks(lines)).strip() + "\n"
 
 
-def render_trade_summary_markdown_clean(report: Dict[str, Any]) -> str:
-    """Render the short operator-facing summary next to ai_trade_report.md."""
-
-    def _pick(*values: Any) -> Any:
-        for value in values:
-            if value not in (None, ""):
-                return value
-        return ""
-
-    def _money(value: Any) -> str:
-        num = _num_opt(value)
-        if num is None:
-            return "-"
-        if abs(num) >= 100:
-            return f"{num:,.0f}"
-        return f"{num:,.2f}".rstrip("0").rstrip(".")
-
-    def _compact_number(value: Any) -> str:
-        num = _num_opt(value)
-        if num is not None:
-            rendered = f"{num:.6f}".rstrip("0").rstrip(".")
-            return rendered or "0"
-        text = str(value if value is not None else "").strip()
-        return _metadata_value(text) or "-"
-
-    def _compact_decimal(value: Any, digits: int = 2) -> str:
-        num = _num_opt(value)
-        if num is None:
-            return _metadata_value(value) or "-"
-        return f"{num:.{digits}f}"
-
-    def _first_matching_line(values: Iterable[Any], needles: Iterable[str]) -> str:
-        lowered_needles = [needle.lower() for needle in needles]
-        for raw in values:
-            text = _translate_text(raw).strip()
-            if not text:
-                continue
-            lowered = text.lower()
-            if any(needle in lowered for needle in lowered_needles):
-                return text.rstrip(".")
-        return ""
-
-    def _section_texts(*sections: Dict[str, Any]) -> List[str]:
-        texts: List[str] = []
-        for section in sections:
-            if not isinstance(section, dict):
-                continue
-            if section.get("summary"):
-                texts.append(str(section.get("summary") or ""))
-            texts.extend(str(item or "") for item in _listify(section.get("bullets")))
-        return texts
-
-    def _same_day_summary(section: Dict[str, Any]) -> str:
-        return _same_day_summary_from_texts(
-            _section_texts(section),
-            fallback="당일 성과 집계는 리포터 평가 섹션에서 확인 필요",
-            current_result=_same_day_current_result(report),
-        )
-
-    def _selected_score(selection: Dict[str, Any]) -> str:
-        score = _pick(selection.get("score_total"), selection.get("selected_score"))
-        trace = _as_dict(selection.get("scanner_selection_trace"))
-        selected_symbol = str(_pick(selection.get("symbol"), report.get("symbol"), trace.get("monitor_selected_symbol"), trace.get("selected_symbol")) or "").strip()
-        if score in (None, "") and _selection_fallback_context(selection, selected_symbol).get("used"):
-            news = _as_dict(trace.get("news_scanner_contribution"))
-            score = _pick(trace.get("selected_score"), news.get("selected_score_total"))
-        if score in (None, ""):
-            for row in _listify(trace.get("ranked_candidates")):
-                row_obj = _as_dict(row)
-                if str(row_obj.get("symbol") or "").strip() == selected_symbol:
-                    score = _pick(row_obj.get("score_total"), row_obj.get("score"))
-                    break
-        num = _num_opt(score)
-        return f"{num:.3f}" if num is not None else "-"
-
-    def _selected_rank(selection: Dict[str, Any]) -> str:
-        trace = _as_dict(selection.get("scanner_selection_trace"))
-        rank = _pick(selection.get("selected_rank"), trace.get("selected_rank"), selection.get("scanner_rank"))
-        return str(rank) if rank not in (None, "") else "-"
-
-    def _extract_run_id(timeline: Iterable[Any], event_name: str) -> str:
-        for row in timeline:
-            row_obj = _as_dict(row)
-            event = str(_pick(row_obj.get("event"), row_obj.get("step")) or "").lower()
-            if event_name not in event:
-                continue
-            direct = _pick(row_obj.get("run_id"), row_obj.get("id"))
-            if direct:
-                return str(direct)
-            desc = str(_pick(row_obj.get("description"), row_obj.get("summary")) or "")
-            match = re.search(r"\brun\s+([0-9a-f]{8,64})\b", desc, flags=re.IGNORECASE)
-            if match:
-                return match.group(1)
-        return "-"
-
-    def _policy_delta_lines(memory_app: Dict[str, Any]) -> List[str]:
-        monitor = _as_dict(memory_app.get("monitor_memory_bias"))
-        scanner = _as_dict(memory_app.get("scanner_memory_bias"))
-        lines_out = [
-            f"* 스캐너 메모리: {_applied_label(scanner.get('applied'))}",
-            f"* 모니터 메모리: {_applied_label(monitor.get('applied'))}"
-            + (f" ({_memory_layers_text(monitor.get('active_layers'))} 레벨)" if monitor.get("active_layers") else ""),
-        ]
-        deltas: List[str] = []
-        for row in _listify(monitor.get("applied_deltas")) + _listify(monitor.get("exit_deltas")):
-            row_obj = _as_dict(row)
-            field = str(row_obj.get("field") or "").strip()
-            if not field:
-                continue
-            before = row_obj.get("from")
-            after = row_obj.get("to")
-            deltas.append(f"* {field}: {_compact_number(before)} → {_compact_number(after)}")
-        if deltas:
-            lines_out.append("")
-            lines_out.append("### 정책 변화")
-            lines_out.extend(deltas[:4])
-        return lines_out
-
-    shared = _as_dict(report.get("shared_facts"))
-    truth = _get_truth_surface(report)
-    truth_price = _as_dict(truth.get("price"))
-    truth_pnl = _as_dict(truth.get("pnl"))
-    market = _resolve_market_context(report)
-    strategist = _as_dict(report.get("strategist_summary"))
-    selection = _as_dict(report.get("why_this_symbol_was_chosen"))
-    entry = _as_dict(report.get("entry_decision"))
-    holding = _as_dict(report.get("holding_monitoring_story"))
-    exit_decision = _as_dict(report.get("exit_decision"))
-    execution = _as_dict(report.get("execution_quality"))
-    reporter_eval = _as_dict(report.get("reporter_evaluation"))
-    memory_app = _as_dict(report.get("memory_application_surface"))
-    monitor = _as_dict(report.get("monitor_snapshot"))
-    entry_signal_snapshot = _resolve_entry_signal_snapshot(report)
-    entry_signal_metric_lines = _entry_signal_metric_summary_lines(entry_signal_snapshot)
-    final = _as_dict(report.get("final_operator_conclusion"))
-    timeline = _listify(report.get("full_timeline") if isinstance(report.get("full_timeline"), list) else report.get("timeline"))
-
-    trade_id = _clip(report.get("trade_id") or report.get("story_id"), 80) or "-"
-    symbol = _clip(_pick(report.get("symbol"), shared.get("symbol")), 32) or "-"
-    symbol_metadata = _resolve_trade_symbol_metadata(report, symbol)
-    symbol_name = str(symbol_metadata.get("symbol_name") or "").strip()
-    symbol_theme = str(symbol_metadata.get("theme") or "").strip()
-    status = _status_label(_pick(report.get("status"), shared.get("status")))
-    story_type = _story_type_label(report.get("story_type"))
-    execution_mode = _execution_mode_label(report.get("execution_mode_label"))
-    action = _action_label(_pick(final.get("current_action"), report.get("action"), shared.get("action")))
-
-    pnl = _pick(truth_pnl.get("value"), shared.get("pnl"))
-    pnl_pct, pnl_pct_is_observation = _operator_pnl_pct(truth_pnl, shared)
-    pnl_num = _num_opt(pnl)
-    pnl_label_basis = pnl_num if pnl_num is not None else _num_opt(pnl_pct)
-    result_label = "보합"
-    if pnl_label_basis is not None and pnl_label_basis > 0:
-        result_label = "이익"
-    elif pnl_label_basis is not None and pnl_label_basis < 0:
-        result_label = "손실"
-    result_basis_label = " 관측" if pnl_num is None and pnl_pct_is_observation else ""
-    result_text = (
-        f"{result_label}{result_basis_label} ({_fmt_pct(pnl_pct)})"
-        if pnl_pct not in (None, "")
-        else result_label
-    )
-
-    same_day = _same_day_summary(reporter_eval)
-    combined_texts = _section_texts(market, strategist, selection, entry, holding, exit_decision, reporter_eval)
-    combined_blob = "\n".join(combined_texts).lower()
-    entry_blob = "\n".join(_section_texts(selection, entry)).lower()
-    exit_blob = "\n".join(_section_texts(exit_decision, holding)).lower()
-    cost_analysis = _build_trade_cost_analysis(report)
-    cost_drag_pct = _num_opt(cost_analysis.get("cost_drag_pct"))
-    holding_duration_summary = _authoritative_holding_duration_label(report) or _pick(
-        shared.get("holding_duration"), report.get("hold_duration"), ""
-    )
-    rank_num = _num_opt(_selected_rank(selection))
-    selection_fallback_summary = _selection_fallback_context(selection, symbol)
-    scanner_top_pick = _metadata_value(selection_fallback_summary.get("scanner_top_pick_symbol"))
-    recovered_partial_exit = _is_recovered_partial_exit_report(report)
-    carryover_context = _carryover_context(report)
-    carryover_exit = bool(carryover_context.get("is_carryover_exit"))
-    exit_only_report = recovered_partial_exit or carryover_exit
-    if exit_only_report:
-        rank_num = None
-    normalized_exit_reason = _normalize_exit_trigger_label(shared.get("exit_reason"), "")
-    actual_take_profit = normalized_exit_reason == "목표 수익 실현 기준"
-    actual_peak_exit = (
-        normalized_exit_reason == "고점 대비 하락폭 기준"
-        or (
-            not normalized_exit_reason
-            and (
-                "peak_drawdown" in exit_blob
-                or "고점 대비 하락폭 기준" in exit_blob
-                or "고점 대비 하락폭으로 청산" in exit_blob
-                or "고점 대비 하락폭 축" in exit_blob
-            )
-        )
-    )
-    actual_hard_stop = normalized_exit_reason == "고정 손절 기준"
-
-    positives = []
-    broker_fill_present = truth_price.get("broker_fill_price") not in (None, "")
-    realized_pnl_present = str(truth_pnl.get("value") or shared.get("pnl") or "").strip().lower() not in {
-        "",
-        "unavailable",
-        "not_available",
-        "none",
-        "-",
+def _summary_render_deps() -> Dict[str, Any]:
+    return {
+        "RECOVERED_PARTIAL_ENTRY_NOTE": _RECOVERED_PARTIAL_ENTRY_NOTE,
+        "RECOVERED_PARTIAL_EXIT_NOTE": _RECOVERED_PARTIAL_EXIT_NOTE,
+        "action_label": _action_label,
+        "applied_label": _applied_label,
+        "as_dict": _as_dict,
+        "authoritative_final_operator_summary": _authoritative_final_operator_summary,
+        "authoritative_holding_duration_label": _authoritative_holding_duration_label,
+        "build_post_exit_shadow_summary_lines": _build_post_exit_shadow_summary_lines,
+        "build_strategy_horizon_lines": _build_strategy_horizon_lines,
+        "build_summary_exit_trigger_lines": _build_summary_exit_trigger_lines,
+        "build_trade_cost_analysis": _build_trade_cost_analysis,
+        "carryover_context": _carryover_context,
+        "clip": _clip,
+        "dedupe": _dedupe,
+        "enrich_exit_signal_snapshot_from_monitor": _enrich_exit_signal_snapshot_from_monitor,
+        "ensure_sentence": _ensure_sentence,
+        "entry_confidence_for_operator_summary": _entry_confidence_for_operator_summary,
+        "entry_reason_line": _entry_reason_line,
+        "entry_signal_metric_summary_lines": _entry_signal_metric_summary_lines,
+        "entry_watch_summary_lines": _entry_watch_summary_lines,
+        "execution_mode_label": _execution_mode_label,
+        "extract_exit_signal_snapshot": _extract_exit_signal_snapshot,
+        "fmt_pct": _fmt_pct,
+        "get_truth_surface": _get_truth_surface,
+        "is_not_captured": _is_not_captured,
+        "is_post_entry_gate_text": _is_post_entry_gate_text,
+        "is_recovered_partial_exit_report": _is_recovered_partial_exit_report,
+        "korea_index_lines": _korea_index_lines,
+        "listify": _listify,
+        "memory_layers_text": _memory_layers_text,
+        "metadata_value": _metadata_value,
+        "normalize_entry_confidence_for_operator_summary": _normalize_entry_confidence_for_operator_summary,
+        "normalize_exit_trigger_label": _normalize_exit_trigger_label,
+        "num_opt": _num_opt,
+        "operator_pnl_pct": _operator_pnl_pct,
+        "playbook_label": _playbook_label,
+        "pnl_basis_label": _pnl_basis_label,
+        "render_controlled_lane_report_lines": _render_controlled_lane_report_lines,
+        "render_quant_tactic_report_lines_impl": _render_quant_tactic_report_lines_impl,
+        "resolve_entry_signal_snapshot": _resolve_entry_signal_snapshot,
+        "resolve_market_context": _resolve_market_context,
+        "resolve_trade_symbol_metadata": _resolve_trade_symbol_metadata,
+        "risk_mode_label": _risk_mode_label,
+        "same_day_current_result": _same_day_current_result,
+        "same_day_summary_from_texts": _same_day_summary_from_texts,
+        "sample_news_titles": _sample_news_titles,
+        "sample_news_titles_for_symbol": _sample_news_titles_for_symbol,
+        "selection_fallback_context": _selection_fallback_context,
+        "status_label": _status_label,
+        "story_type_label": _story_type_label,
+        "strip_trailing_blanks": _strip_trailing_blanks,
+        "theme_label": _theme_label,
+        "trade_cost_analysis_lines": _trade_cost_analysis_lines,
+        "translate_text": _translate_text,
+        "translated_metadata": _translated_metadata,
     }
-    if broker_fill_present and realized_pnl_present:
-        positives.append("키움 체결가와 당일 실현손익 확보")
-    elif broker_fill_present:
-        positives.append("브로커 체결가 확보, 실현손익/비용은 확인 대기")
-    if carryover_exit:
-        positives.append("오버나이트/주말 이월 청산을 신규 선정 평가와 분리해 기록")
-    elif recovered_partial_exit:
-        positives.append("회수/partial 청산을 신규 진입 평가와 분리해 기록")
-    elif rank_num is not None:
-        positives.append(f"스캐너 순위 {int(rank_num)}위와 모니터 재평가 경로 기록")
-    elif strategist or selection or entry or exit_decision:
-        positives.append("전략 → 스캐너 → 모니터 판단 흐름 기록")
-    if holding_duration_summary and not _is_not_captured(holding_duration_summary):
-        positives.append(f"보유 시간 {holding_duration_summary}와 청산 트리거 기록")
-    elif entry or exit_decision or memory_app:
-        positives.append("진입/청산 근거 및 정책 추적 가능")
-    if not positives:
-        positives.append("핵심 거래 아티팩트가 보존됨")
 
-    problems: List[str] = []
-    monitor_line = _first_matching_line(combined_texts, ["monitor_only", "monitor-only", "monitor 단독"])
-    if monitor_line:
-        problems.append("당일 monitor_only 경로 비중 높음")
-    if carryover_exit:
-        problems.append("오늘 신규 진입이 아니라 전일/주말 이월 포지션으로 별도 해석 필요")
-    if recovered_partial_exit:
-        problems.append("당일 BUY 근거가 없어 신규 진입 품질 평가는 제외 필요")
-    if cost_analysis.get("mock_cost_warning") and cost_drag_pct is not None:
-        problems.append(f"모의투자 비용 드래그 {_fmt_pct(cost_drag_pct)} 별도 해석 필요")
-    if selection_fallback_summary.get("used") or (rank_num is not None and rank_num > 1):
-        if scanner_top_pick and scanner_top_pick != "-":
-            problems.append(f"1순위 {scanner_top_pick} 보류 후 {symbol} {int(rank_num) if rank_num else '-'}위 재평가 진입")
-        else:
-            problems.append("1순위 탈락 후 차순위 재평가 진입 구조")
-    if "pullback_not_mature" in entry_blob:
-        problems.append("pullback 성숙도 부족으로 진입 보류 발생")
-    if actual_peak_exit:
-        problems.append("이번 청산이 peak_drawdown 축이라 confirm 조건 점검 필요")
-    if not problems:
-        problems.append("거래별 반복 패턴 판단을 위한 추가 표본 필요")
+def _summary_input_deps() -> Dict[str, Any]:
+    return {
+        "RECOVERED_PARTIAL_ENTRY_NOTE": _RECOVERED_PARTIAL_ENTRY_NOTE,
+        "RECOVERED_PARTIAL_EXIT_NOTE": _RECOVERED_PARTIAL_EXIT_NOTE,
+        "action_label": _action_label,
+        "as_dict": _as_dict,
+        "authoritative_final_operator_summary": _authoritative_final_operator_summary,
+        "authoritative_hold_duration_seconds": _authoritative_hold_duration_seconds,
+        "authoritative_holding_duration_label": _authoritative_holding_duration_label,
+        "build_trade_cost_analysis": _build_trade_cost_analysis,
+        "carryover_context": _carryover_context,
+        "clip": _clip,
+        "compact_post_exit_shadow": _compact_post_exit_shadow,
+        "enrich_exit_signal_snapshot_from_monitor": _enrich_exit_signal_snapshot_from_monitor,
+        "entry_confidence_for_operator_summary": _entry_confidence_for_operator_summary,
+        "entry_reason_line": _entry_reason_line,
+        "entry_watch_execution_lines": _entry_watch_execution_lines,
+        "execution_mode_label": _execution_mode_label,
+        "extract_exit_signal_snapshot": _extract_exit_signal_snapshot,
+        "fmt_pct": _fmt_pct,
+        "get_truth_surface": _get_truth_surface,
+        "is_not_captured": _is_not_captured,
+        "is_recovered_partial_exit_report": _is_recovered_partial_exit_report,
+        "listify": _listify,
+        "metadata_value": _metadata_value,
+        "normalize_exit_trigger_label": _normalize_exit_trigger_label,
+        "num_opt": _num_opt,
+        "operator_pnl_pct": _operator_pnl_pct,
+        "playbook_label": _playbook_label,
+        "post_exit_shadow_surface": _post_exit_shadow_surface,
+        "quant_tactic_surface_impl": _quant_tactic_surface_impl,
+        "resolve_entry_execution_visibility": _resolve_entry_execution_visibility,
+        "resolve_entry_signal_snapshot": _resolve_entry_signal_snapshot,
+        "resolve_market_context": _resolve_market_context,
+        "resolve_trade_symbol_metadata": _resolve_trade_symbol_metadata,
+        "risk_mode_label": _risk_mode_label,
+        "same_day_current_result": _same_day_current_result,
+        "same_day_summary_from_texts": _same_day_summary_from_texts,
+        "sample_news_titles": _sample_news_titles,
+        "sample_news_titles_for_symbol": _sample_news_titles_for_symbol,
+        "selection_fallback_context": _selection_fallback_context,
+        "status_label": _status_label,
+        "story_type_label": _story_type_label,
+        "strategy_horizon_report_surface": _strategy_horizon_report_surface,
+        "theme_label": _theme_label,
+        "translate_text": _translate_text,
+        "translated_metadata": _translated_metadata,
+        "truth_source_label": _truth_source_label,
+    }
 
-    monitor_memory = _as_dict(memory_app.get("monitor_memory_bias"))
-    cause_lines: List[str] = []
-    if carryover_exit:
-        if carryover_context.get("estimated_entry_kst") and carryover_context.get("exit_kst"):
-            cause_lines.append(
-                f"{symbol}은 {carryover_context.get('estimated_entry_date_kst')} 보유분이 "
-                f"{carryover_context.get('exit_date_kst')}에 청산된 이월 포지션입니다"
-            )
-        else:
-            cause_lines.append(f"{symbol}은 오늘 신규 진입이 아니라 전일/주말 이월 보유분의 청산 결과입니다")
-        if carryover_context.get("carry_risk_label"):
-            cause_lines.append(f"런타임 상태는 {carryover_context.get('carry_state_label')} / {carryover_context.get('carry_risk_label')}로 기록됨")
-    if recovered_partial_exit:
-        cause_lines.append("보유/회수 포지션의 당일 SELL 결과이며, 신규 매수 선정·진입 판단과 같은 표본으로 보지 않습니다")
-    for row in _listify(monitor_memory.get("applied_deltas")):
-        row_obj = _as_dict(row)
-        if str(row_obj.get("field") or "") == "breakout_buffer_pct" and (_num_opt(row_obj.get("delta")) or 0.0) > 0:
-            cause_lines.append(
-                "진입 정책은 breakout_buffer "
-                f"{_compact_number(row_obj.get('from'))} → {_compact_number(row_obj.get('to'))}로 보수화됨"
-            )
-            break
-    if actual_take_profit:
-        cause_lines.append("청산은 목표 수익 실현 기준으로 실행됨")
-    elif actual_peak_exit:
-        cause_lines.append("청산은 peak_drawdown 축으로 실행됨")
-    elif actual_hard_stop:
-        cause_lines.append("청산은 고정 손절 기준으로 실행됨")
-    if selection_fallback_summary.get("used") or (rank_num is not None and rank_num > 1):
-        if scanner_top_pick and scanner_top_pick != "-":
-            cause_lines.append(f"{scanner_top_pick} 보류 후 {symbol}에서 진입 조건이 충족됨")
-        else:
-            cause_lines.append("상위 후보 탈락 후 차순위 후보에서 진입이 성립됨")
-    if cost_analysis.get("mock_cost_warning") and cost_drag_pct is not None:
-        cause_lines.append(f"모의투자 수수료/세금이 손익률을 {_fmt_pct(cost_drag_pct)} 압박")
-    if not cause_lines:
-        cause_lines.append("진입/청산 구조의 반복성은 당일 패턴 섹션에서 추가 확인 필요")
-
-    recommendations: List[str] = []
-    if carryover_exit:
-        recommendations.append("오버나이트 승인 시각/근거와 당일 청산 컨텍스트를 분리해 검증")
-    if recovered_partial_exit:
-        recommendations.append("회수/partial 청산은 완료 거래와 별도 집계해 승패와 평균 수익률을 확인")
-    if cost_analysis.get("mock_cost_warning"):
-        recommendations.append("모의투자 비용 기준과 실계좌 추정 비용 기준 분리 확인")
-    if actual_peak_exit:
-        recommendations.append("peak_drawdown activation/confirm 조건 점검")
-    if "pullback_not_mature" in entry_blob:
-        recommendations.append("pullback 조건 완화 또는 성숙도 판정 재검토")
-    if selection_fallback_summary.get("used") or (rank_num is not None and rank_num > 1):
-        recommendations.append("1순위 보류 사유와 차순위 진입 기대값 비교")
-    if monitor_line:
-        recommendations.append("monitor_only 비중이 높은 당일 route mix 점검")
-    if (not holding_duration_summary or _is_not_captured(holding_duration_summary) or str(holding_duration_summary).strip() in {"0", "0s", "0초"}):
-        recommendations.append("보유 구간 모니터 스냅샷 보강")
-    if not recommendations:
-        recommendations.append("동일 패턴 3건 이상 누적 후 정책 조정 여부 판단")
-    recommendations = _dedupe([item for item in recommendations if item])[:4]
-
-    market_news = _sample_news_titles(
-        market.get("market_news_titles") or report.get("strategist_market_headlines"),
-        limit=2,
-    )
-    symbol_news = _sample_news_titles_for_symbol(
-        symbol,
-        market.get("symbol_news_titles"),
-        report.get("strategist_symbol_headlines"),
-        market.get("candidate_news_titles"),
-        limit=2,
-    )
-    market_summary = _translate_text(market.get("summary")) or "시장 요약은 상세 리포트에서 확인 필요"
-    playbook = _playbook_label(_pick(market.get("playbook"), market.get("selected_playbook")))
-    trace_summary = _as_dict(report.get("strategist_trace_summary"))
-    risk_tone = _risk_mode_label(_pick(market.get("risk_tone"), trace_summary.get("risk_tone"), market.get("risk_mode")))
-    monitor_guide = _metadata_value(_pick(trace_summary.get("monitor_guidance"), market.get("monitor_guidance"), ""))
-    selection_reason = _translate_text(selection.get("basis") or "").strip()
-    if not selection_reason:
-        selection_reason = _first_matching_line(_listify(selection.get("bullets")), ["거래대금", "거래량", "모멘텀", "선정"])
-    selection_trace = _as_dict(selection.get("scanner_selection_trace"))
-    scanner_chart_fit = _as_dict(selection.get("scanner_chart_fit")) or _as_dict(selection_trace.get("scanner_chart_fit"))
-    selection_fallback = _selection_fallback_context(selection, symbol)
-    entry_watch_lines = _entry_watch_summary_lines(
-        report,
-        require_trade_symbol_match=bool(selection_fallback.get("used")) or bool(exit_only_report),
-    )
-    blocked_reason = ""
-    if not selection_fallback.get("used"):
-        blocked_reason = _first_matching_line(_listify(selection.get("bullets")) + _listify(entry.get("bullets")), ["1순위", "top pick", "막혔", "blocked"])
-    entry_reason = _entry_reason_line(_listify(entry.get("bullets")))
-    if not entry_reason:
-        entry_reason = _entry_reason_line([entry.get("summary")])
-    entry_confidence = _entry_confidence_for_operator_summary(
-        _listify(entry.get("bullets")),
-        action=action,
-        buy_price=_pick(truth_price.get("broker_buy_price"), shared.get("broker_buy_price")),
-    )
-    if not entry_confidence and "신뢰도" in str(entry.get("summary") or ""):
-        entry_summary_text = _translate_text(entry.get("summary")).rstrip(".")
-        if not _is_post_entry_gate_text(entry_summary_text):
-            entry_confidence = _normalize_entry_confidence_for_operator_summary(
-                entry_summary_text,
-                action=action,
-                buy_price=_pick(truth_price.get("broker_buy_price"), shared.get("broker_buy_price")),
-            )
-    if carryover_exit:
-        selection_reason = "오버나이트/주말 이월 포지션 청산"
-        blocked_reason = ""
-        entry_reason = "오늘 신규 진입 판단이 아니라 전일/주말 이월 포지션입니다."
-        entry_confidence = ""
-    elif recovered_partial_exit:
-        selection_reason = "보유/회수 포지션 청산"
-        blocked_reason = ""
-        entry_reason = _RECOVERED_PARTIAL_ENTRY_NOTE
-        entry_confidence = ""
-    holding_duration = _authoritative_holding_duration_label(report) or _pick(
-        shared.get("holding_duration"), report.get("hold_duration"), ""
-    )
-    exit_signal_texts = _section_texts(exit_decision) + _section_texts(holding)
-    exit_signal_snapshot = _extract_exit_signal_snapshot(exit_signal_texts)
-    exit_signal_snapshot = _enrich_exit_signal_snapshot_from_monitor(exit_signal_snapshot, monitor)
-    exit_trigger = _first_matching_line(_listify(exit_decision.get("bullets")), ["촉발", "트리거", "청산 사유", "고점 대비"])
-    if not exit_trigger:
-        exit_trigger = _first_matching_line(_section_texts(exit_decision), ["촉발", "트리거", "청산 사유", "고점 대비"])
-    exit_price = _pick(truth_price.get("broker_fill_price"), shared.get("broker_fill_price"))
-    buy_price = _pick(truth_price.get("broker_buy_price"), shared.get("broker_buy_price"))
-    monitor_exit_reference_price = _pick(
-        truth_price.get("monitor_mark_price"),
-        shared.get("monitor_mark_price"),
-        exit_signal_snapshot.get("monitor_current_price"),
-    )
-    exit_price_note = ""
-    if exit_price in (None, "") and monitor_exit_reference_price not in (None, ""):
-        exit_price_note = f" (체결가 미확정, 모니터 기준 {_money(monitor_exit_reference_price)})"
-
-    lines: List[str] = []
-    lines.append(f"# AI 거래 리포트 ({trade_id})")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🔴 운영 요약 (Operator Decision Summary)")
-    lines.append("")
-    lines.append(f"* 결과: **{result_text}**")
-    lines.append(f"* 당일 성과(리포트 생성 시점 기준): **{same_day}**")
-    lines.append("")
-    lines.append("### ✔ 잘된 점")
-    lines.append("")
-    lines.extend(f"* {item}" for item in positives[:3])
-    lines.append("")
-    lines.append("### ❌ 문제점")
-    lines.append("")
-    lines.extend(f"{idx}. {item}" for idx, item in enumerate(problems[:3], 1))
-    lines.append("")
-    lines.append("### 📌 원인 해석")
-    lines.append("")
-    lines.extend(f"* {item}" for item in cause_lines[:4])
-    lines.append("")
-    headline_focus = recommendations[0] if recommendations else problems[0]
-    lines.append(f"👉 **{result_label} 거래; 핵심 점검: {headline_focus}**")
-    lines.append("")
-    lines.append("### 🛠 권고 액션 (우선순위)")
-    lines.append("")
-    lines.extend(f"{idx}. {item}" for idx, item in enumerate(recommendations[:4], 1))
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🧭 거래 개요")
-    lines.append("")
-    symbol_line = f"* 종목: {symbol}"
-    if symbol_name:
-        symbol_line += f" ({symbol_name})"
-    lines.append(symbol_line)
-    if symbol_theme:
-        lines.append(f"* 테마: {symbol_theme}")
-    lines.append(f"* 거래 유형: {story_type}")
-    lines.append(f"* 상태: {status}")
-    lines.append(f"* 실행 모드: {execution_mode}")
-    controlled_lane_lines = _render_controlled_lane_report_lines(report)
-    if controlled_lane_lines:
-        lines.append("")
-        lines.append("### 통제 모의투자 레인")
-        lines.append("")
-        lines.extend(controlled_lane_lines)
-    if recovered_partial_exit:
-        lines.append(f"* {_RECOVERED_PARTIAL_EXIT_NOTE}")
-    if carryover_exit:
-        lines.append(f"* 포지션 성격: {carryover_context.get('carry_state_label') or '오버나이트/이월 보유'}")
-        if carryover_context.get("estimated_entry_kst") or carryover_context.get("exit_kst"):
-            basis = carryover_context.get("date_basis") or "이월 보유 시간 기준"
-            lines.append(
-                f"* 날짜 기준: 보유 시작 {carryover_context.get('estimated_entry_kst') or '-'} / "
-                f"청산 {carryover_context.get('exit_kst') or '-'} ({basis})"
-            )
-        if carryover_context.get("duration_label"):
-            lines.append(f"* 이월 보유 시간: {carryover_context.get('duration_label')}")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 📊 실행 결과 (Truth Surface)")
-    lines.append("")
-    lines.append(f"* 매수가 / 매도가: {_money(buy_price)} / {_money(exit_price)}{exit_price_note}")
-    if pnl_num is None and pnl_pct_is_observation:
-        lines.append("* 실현 손익: **확인 불가**")
-    else:
-        pnl_line = _money(pnl)
-        if pnl_pct not in (None, ""):
-            pnl_line = f"{pnl_line} ({_fmt_pct(pnl_pct)})"
-        lines.append(f"* 실현 손익: **{pnl_line}**")
-    fee_display = _money(_pick(shared.get("broker_fee"), truth_pnl.get("broker_fee")))
-    tax_display = _money(_pick(shared.get("broker_tax"), truth_pnl.get("broker_tax")))
-    lines.append(f"* 수수료 / 세금: {fee_display} / {tax_display}")
-    lines.extend(_trade_cost_analysis_lines(report))
-    lines.append(f"* 손익 기준: {_pnl_basis_label(truth_pnl, shared)}")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🧠 전략 및 시장 맥락")
-    lines.append("")
-    lines.append("### 시장 상태")
-    lines.append("")
-    lines.append(f"* {market_summary}")
-    for korea_line in _korea_index_lines(market):
-        lines.append(f"* 국내 지수: {korea_line}")
-    if market.get("vix_level") not in (None, ""):
-        lines.append(f"* VIX: {_compact_decimal(market.get('vix_level'))}")
-    if market.get("market_sentiment"):
-        lines.append(f"* 시장 심리: {_metadata_value(market.get('market_sentiment'))}")
-    if carryover_exit:
-        lines.append(
-            f"* 날짜 주의: 위 시장/지수는 {carryover_context.get('exit_date_kst') or '청산일'} 청산 시점 컨텍스트입니다. "
-            f"오버나이트 승인 판단은 {carryover_context.get('estimated_entry_date_kst') or '이전 거래일'} 기준과 분리해 봅니다."
-        )
-    lines.append("")
-    lines.append("### 전략가 출력 요약")
-    lines.append("")
-    lines.append(f"* 플레이북: **{playbook or '-'}**")
-    lines.append(f"* 리스크 톤: {risk_tone or '-'}")
-    themes = [_theme_label(x) for x in _listify(market.get("themes") or market.get("preferred_themes")) if not _is_not_captured(x)]
-    if themes:
-        lines.append(f"* 핵심 테마: {', '.join(themes[:4])}")
-    theme_source = _metadata_value(market.get("theme_source"))
-    theme_status = _metadata_value(market.get("theme_source_status"))
-    if theme_source and theme_source != "-":
-        source_text = theme_source
-        if theme_status and theme_status != "-":
-            source_text += f" / {theme_status}"
-        lines.append(f"* 테마 출처: {source_text}")
-    if monitor_guide:
-        lines.append(f"* 모니터 가이드: {monitor_guide}")
-    strategy_horizon_lines = _build_strategy_horizon_lines(report, compact=True)
-    if strategy_horizon_lines:
-        lines.append("")
-        lines.append("### 전략 보유 기간")
-        lines.append("")
-        lines.extend(strategy_horizon_lines)
-    if entry_watch_lines and not carryover_exit:
-        lines.append(f"* 후보 감시: {entry_watch_lines[0]}")
-        if len(entry_watch_lines) > 1:
-            lines.append(f"* 후보 선택: {entry_watch_lines[-1]}")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 📰 뉴스 및 컨텍스트")
-    lines.append("")
-    lines.append("### 시장 뉴스")
-    lines.append("")
-    if market_news:
-        lines.extend(f"* {item}" for item in market_news)
-    else:
-        lines.append("* 표본 없음")
-        lines.append("* 원천 위치: ai_trade_report_input.json의 market_context_at_entry.market_news_titles")
-    lines.append("")
-    lines.append(f"### 종목 뉴스 ({symbol})")
-    lines.append("")
-    if symbol_news:
-        lines.extend(f"* {item}" for item in symbol_news)
-    else:
-        lines.append("* 표본 없음")
-        lines.append(f"* 원천 위치: ai_trade_report_input.json의 market_context_at_entry.candidate_news_titles 중 {symbol} 항목")
-    lines.append("")
-    lines.append("👉 해석:")
-    lines.append("")
-    if carryover_exit:
-        lines.append("* 종목은 오버나이트/주말 이월 포지션 청산 흐름")
-        lines.append(f"* 전략은 {playbook or '-'} → **당일 신규 선정이 아니라 보유 포지션 청산 품질 중심으로 확인 필요**")
-    elif recovered_partial_exit:
-        lines.append("* 종목은 보유/회수 포지션 청산 흐름")
-        lines.append(f"* 전략은 {playbook or '-'} → **신규 선정 평가가 아니라 청산 결과 중심으로 확인 필요**")
-    else:
-        lines.append(f"* 종목은 {_translated_metadata(selection.get('basis') or '후보 점수 우위')} 흐름")
-        lines.append(f"* 전략은 {playbook or '-'} → **전략/종목 톤 정합성 점검 필요**")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🎯 종목 선정 흐름")
-    lines.append("")
-    if carryover_exit:
-        lines.append("* 선정 경로: 오버나이트/주말 이월 포지션 청산")
-        if carryover_context.get("estimated_entry_kst"):
-            lines.append(f"* 보유 시작 추정: {carryover_context.get('estimated_entry_kst')} ({carryover_context.get('date_basis')})")
-        if carryover_context.get("duration_label"):
-            lines.append(f"* 이월 보유 시간: {carryover_context.get('duration_label')}")
-        if carryover_context.get("carry_state_label"):
-            line = f"* 이월 상태: {carryover_context.get('carry_state_label')}"
-            if carryover_context.get("carry_risk_label"):
-                line += f" / {carryover_context.get('carry_risk_label')}"
-            lines.append(line)
-        if carryover_context.get("weekend_carry"):
-            lines.append("* 주말 이월: 금요일 보유분이 월요일 청산까지 이어진 거래입니다.")
-    elif recovered_partial_exit:
-        lines.append("* 선정 경로: 보유/회수 포지션 청산")
-        lines.append("* 스캐너 순위: 기록 없음")
-    elif selection_fallback.get("used"):
-        lines.append("* 선정 경로: 차순위 재평가")
-        lines.append(f"* 재평가 순위: {_selected_rank(selection)}위")
-        lines.append(f"* 재평가 점수: {_selected_score(selection)}")
-    else:
-        lines.append(f"* 스캐너 순위: {_selected_rank(selection)}위")
-        lines.append(f"* 점수: {_selected_score(selection)}")
-    if selection_reason:
-        lines.append(f"* 선정 이유: {selection_reason}")
-    if scanner_chart_fit:
-        lines.append(
-            "* Scanner chart-fit: "
-            f"{_compact_decimal(scanner_chart_fit.get('score'), 3)} "
-            f"/ {scanner_chart_fit.get('authority') or '-'}"
-        )
-    if selection_fallback.get("used"):
-        top_pick = selection_fallback.get("scanner_top_pick_symbol") or "-"
-        reason = selection_fallback.get("reason") or "모니터 조건 미충족"
-        lines.append(f"* 스캐너 상위 후보 {top_pick} 보류 후 {symbol}이 재평가에서 실제 진입 후보로 확정됐습니다.")
-        lines.append(f"* 모니터 확인 사유: {reason}")
-        for metric_line in _entry_signal_metric_summary_lines(entry_signal_snapshot, prefix="모니터 확인 수치"):
-            lines.append(f"* {metric_line}")
-    if blocked_reason:
-        lines.append(f"* {blocked_reason}")
-    if not selection_fallback.get("used") and not recovered_partial_exit:
-        for watch_line in entry_watch_lines[1:3]:
-            lines.append(f"* {watch_line}")
-    lines.append("")
-    if carryover_exit:
-        lines.append("👉 특징: **오늘 신규 선정 평가가 아니라 오버나이트/주말 이월 포지션의 청산 결과입니다**")
-    elif recovered_partial_exit:
-        lines.append("👉 특징: **신규 선정 평가가 아니라 회수 포지션의 청산 결과입니다**")
-    else:
-        lines.append("👉 특징: **강한 종목이어도 실제 진입 구조와 별도 검증 필요**")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🚪 진입 판단")
-    lines.append("")
-    quant_compact_lines = _render_quant_tactic_report_lines_impl(report, compact=True)
-    if quant_compact_lines:
-        lines.extend(quant_compact_lines[:4])
-    if entry_reason:
-        lines.append(f"* 조건: {entry_reason}")
-    if not selection_fallback.get("used") and not exit_only_report:
-        lines.extend(f"* {item}" for item in entry_signal_metric_lines)
-    if carryover_exit:
-        lines.append("* 방식: 당일 신규 매수 평가 제외")
-        if carryover_context.get("estimated_entry_kst"):
-            lines.append("* 원 진입/보유 시작 시각은 리포트 입력의 actual_hold_sec와 청산 시각으로 역산했습니다.")
-    elif recovered_partial_exit:
-        lines.append("* 방식: 당일 신규 매수 평가 제외")
-    else:
-        lines.append("* 방식: 돌파/확인형 진입")
-        if entry_confidence:
-            lines.append(f"* {entry_confidence}")
-    lines.append("")
-    if carryover_exit:
-        lines.append("👉 **신규 진입 판단이 아니라 이월 포지션 청산 리포트입니다.**")
-    elif recovered_partial_exit:
-        lines.append("👉 **신규 진입 판단이 아니라 회수 포지션 청산 리포트입니다.**")
-    else:
-        lines.append("👉 **threshold 근접 진입 여부 확인 필요**")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## ⏱ 보유 및 청산")
-    lines.append("")
-    if holding_duration and not _is_not_captured(holding_duration):
-        lines.append(f"* 보유 시간: {holding_duration}")
-    elif carryover_exit and carryover_context.get("duration_label"):
-        lines.append(f"* 보유 시간: {carryover_context.get('duration_label')}")
-    elif recovered_partial_exit:
-        lines.append("* 보유 시간: 기록 없음")
-    if carryover_exit and carryover_context.get("estimated_entry_kst"):
-        lines.append(f"* 보유 시작 추정: {carryover_context.get('estimated_entry_kst')}")
-    lines.append(f"* 청산가: {_money(exit_price)}{exit_price_note}")
-    lines.append("")
-    lines.append("### 청산 트리거")
-    lines.append("")
-    exit_trigger_lines = _build_summary_exit_trigger_lines(
-        exit_trigger,
-        exit_signal_snapshot,
-        fallback_reason=shared.get("exit_reason"),
-        buy_price=buy_price,
-        exit_price=exit_price,
-        pnl_pct=pnl_pct,
-        truth_source=_pick(shared.get("pnl_truth_source"), truth_pnl.get("pnl_truth_source")),
-    )
-    if recovered_partial_exit and (_num_opt(pnl_pct) or 0.0) > 0.0 and exit_trigger_lines:
-        trigger_text = exit_trigger_lines[0].replace("트리거:", "").strip()
-        if trigger_text in {"Stop Loss", "stop_loss", "고정 손절 기준"}:
-            trigger_text = "고정 손절 기준"
-        exit_trigger_lines[0] = f"트리거: 모니터 신호명은 {trigger_text}이었지만 Truth Surface 기준 실현 결과는 이익입니다."
-    lines.extend(f"* {item}" for item in exit_trigger_lines)
-    if quant_compact_lines:
-        for item in quant_compact_lines[4:8]:
-            lines.append(item if item.startswith("* ") else f"* {item.lstrip('- ')}")
-    lines.append("")
-    lines.append("👉 수익 구간 진입 후 유지/청산 품질 점검 필요")
-    shadow_lines = _build_post_exit_shadow_summary_lines(report)
-    if shadow_lines:
-        lines.append("")
-        lines.extend(shadow_lines)
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## ⚙️ 정책 및 메모리 영향")
-    lines.append("")
-    lines.extend(_policy_delta_lines(memory_app) if memory_app else ["* 정책/메모리 영향은 상세 리포트에서 확인 필요"])
-    lines.append("")
-    lines.append("👉 **진입/청산 정책 조합의 손익비 영향 확인 필요**")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🔁 패턴 분석 (당일)")
-    lines.append("")
-    lines.append(f"* {same_day}")
-    lines.append("")
-    lines.append("### 반복 패턴")
-    lines.append("")
-    pattern_lines = [
-        line
-        for line in _listify(reporter_eval.get("bullets"))
-        if any(token in str(line).lower() for token in ("monitor", "fallback", "blocker", "closed trade", "차순위"))
-    ]
-    if pattern_lines:
-        lines.extend(f"* {_translate_text(line).rstrip('.')}" for line in pattern_lines[:4])
-    else:
-        lines.append("* 반복 패턴은 추가 집계 필요")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## ⚠️ 주요 리스크")
-    lines.append("")
-    default_risks = (
-        ["이월 승인 근거와 당일 청산 판단의 날짜 혼선 가능성", "장기/주말 이월 상태에서 청산 우선순위 검증 필요"]
-        if carryover_exit
-        else ["전략 vs 종목 톤 미스매치", "scanner → monitor 정합성 저하 가능성"]
-    )
-    risk_lines = _dedupe(problems + default_risks)
-    lines.extend(f"* {item}" for item in risk_lines[:4])
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 📌 보완 필요")
-    lines.append("")
-    lines.extend(f"* {item}" for item in recommendations[:4])
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 📎 근거 출처")
-    lines.append("")
-    lines.append("* canonical agent artifacts 기반")
-    lines.append("* commander / strategist / scanner / monitor / executor / supervisor 로그")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🧾 타임라인")
-    lines.append("")
-    lines.append(f"* 진입 run: {_extract_run_id(timeline, 'entry')}")
-    lines.append(f"* 청산 run: {_extract_run_id(timeline, 'exit')}")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🔚 최종 판단")
-    lines.append("")
-    lines.append(f"* 상태: {status}")
-    lines.append(f"* 액션: {action}")
-    lines.append("")
-    final_summary = _authoritative_final_operator_summary(
-        report,
-        action=action,
-        fallback=(
-            _ensure_sentence(_translate_text(final.get("summary")))
-            if final.get("summary")
-            else ""
-        ),
-    )
-    if final_summary:
-        lines.append(f"👉 **{final_summary}**")
-        lines.append("")
-    lines.append(f"👉 **{result_label} 원인은 단일 장애보다 진입/청산 구조와 정책 조합에서 우선 점검해야 합니다.**")
-    return "\n".join(_strip_trailing_blanks(lines)).strip() + "\n"
-
+def render_trade_summary_markdown_clean(report: Dict[str, Any]) -> str:
+    return _render_trade_summary_markdown_impl(report, deps=_summary_render_deps())
 
 def build_trade_summary_input_clean(report: Dict[str, Any]) -> Dict[str, Any]:
-    """Build the compact deterministic input that a summary LLM may evaluate."""
-
-    def _pick(*values: Any) -> Any:
-        for value in values:
-            if value not in (None, ""):
-                return value
-        return ""
-
-    def _section_texts(*sections: Dict[str, Any]) -> List[str]:
-        texts: List[str] = []
-        for section in sections:
-            if not isinstance(section, dict):
-                continue
-            summary = _translate_text(section.get("summary")).strip()
-            if summary:
-                texts.append(summary)
-            texts.extend(_translate_text(item).strip() for item in _listify(section.get("bullets")) if str(item or "").strip())
-        return texts
-
-    def _same_day_summary(section: Dict[str, Any]) -> str:
-        return _same_day_summary_from_texts(
-            _section_texts(section),
-            current_result=_same_day_current_result(report),
-        )
-
-    def _first_matching_line(values: Iterable[Any], needles: Iterable[str]) -> str:
-        lowered_needles = [needle.lower() for needle in needles]
-        for raw in values:
-            text = _translate_text(raw).strip()
-            if not text:
-                continue
-            lowered = text.lower()
-            if any(needle in lowered for needle in lowered_needles):
-                return text.rstrip(".")
-        return ""
-
-    def _policy_deltas(memory_bias: Dict[str, Any]) -> List[Dict[str, Any]]:
-        rows: List[Dict[str, Any]] = []
-        for row in _listify(memory_bias.get("applied_deltas")) + _listify(memory_bias.get("exit_deltas")):
-            row_obj = _as_dict(row)
-            field = str(row_obj.get("field") or "").strip()
-            if not field:
-                continue
-            rows.append(
-                {
-                    "field": field,
-                    "from": row_obj.get("from"),
-                    "to": row_obj.get("to"),
-                    "delta": row_obj.get("delta"),
-                }
-            )
-        return rows[:8]
-
-    def _compact_section(section: Dict[str, Any], *, limit: int = 5) -> Dict[str, Any]:
-        return {
-            "summary": _translate_text(section.get("summary")).strip(),
-            "bullets": [_translate_text(item).strip() for item in _listify(section.get("bullets"))[:limit] if str(item or "").strip()],
-        }
-
-    shared = _as_dict(report.get("shared_facts"))
-    truth = _get_truth_surface(report)
-    truth_price = _as_dict(truth.get("price"))
-    truth_pnl = _as_dict(truth.get("pnl"))
-    market = _resolve_market_context(report)
-    strategist = _as_dict(report.get("strategist_summary"))
-    trace_summary = _as_dict(report.get("strategist_trace_summary"))
-    selection = _as_dict(report.get("why_this_symbol_was_chosen"))
-    entry = _as_dict(report.get("entry_decision"))
-    holding = _as_dict(report.get("holding_monitoring_story"))
-    exit_decision = _as_dict(report.get("exit_decision"))
-    reporter_eval = _as_dict(report.get("reporter_evaluation"))
-    memory_app = _as_dict(report.get("memory_application_surface"))
-    monitor = _as_dict(report.get("monitor_snapshot"))
-    scanner_memory = _as_dict(memory_app.get("scanner_memory_bias"))
-    monitor_memory = _as_dict(memory_app.get("monitor_memory_bias"))
-    final = _as_dict(report.get("final_operator_conclusion"))
-    trade_id = _clip(report.get("trade_id") or report.get("story_id"), 80)
-    symbol = _clip(_pick(report.get("symbol"), shared.get("symbol")), 32)
-    symbol_metadata = _resolve_trade_symbol_metadata(report, symbol)
-    action_label = _action_label(_pick(final.get("current_action"), report.get("action"), shared.get("action")))
-    recovered_partial_exit = _is_recovered_partial_exit_report(report)
-    carryover_context = _carryover_context(report)
-    carryover_exit = bool(carryover_context.get("is_carryover_exit"))
-    exit_only_report = recovered_partial_exit or carryover_exit
-    day = _clip(report.get("day") or shared.get("day"), 32)
-    if not day:
-        match = re.search(r"TRD_(\d{4})(\d{2})(\d{2})", trade_id)
-        if match:
-            day = f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
-
-    pnl = _pick(truth_pnl.get("value"), shared.get("pnl"))
-    pnl_pct, pnl_pct_is_observation = _operator_pnl_pct(truth_pnl, shared)
-    pnl_num = _num_opt(pnl)
-    pnl_label_basis = pnl_num if pnl_num is not None else _num_opt(pnl_pct)
-    result_label = "breakeven"
-    if pnl_label_basis is not None and pnl_label_basis > 0:
-        result_label = "profit"
-    elif pnl_label_basis is not None and pnl_label_basis < 0:
-        result_label = "loss"
-    truth_source_value = _pick(truth_pnl.get("pnl_truth_source"), shared.get("pnl_truth_source"))
-    if pnl_num is None and pnl_pct_is_observation:
-        truth_source_value = _pick(
-            truth_price.get("price_truth_source"),
-            shared.get("price_truth_source"),
-            truth_source_value,
-        )
-
-    selection_trace = _as_dict(selection.get("scanner_selection_trace"))
-    scanner_chart_fit = _as_dict(selection.get("scanner_chart_fit")) or _as_dict(selection_trace.get("scanner_chart_fit"))
-    selection_fallback = _selection_fallback_context(selection, _clip(_pick(report.get("symbol"), shared.get("symbol")), 32))
-    entry_signal_snapshot = _resolve_entry_signal_snapshot(report)
-    selection_rank = _pick(selection.get("selected_rank"), selection_trace.get("selected_rank"), selection.get("scanner_rank"))
-    selection_score = _pick(selection.get("score_total"), selection.get("selected_score"))
-    if selection_score in (None, "") and selection_fallback.get("used"):
-        selection_score = _pick(selection_trace.get("selected_score"), _as_dict(selection_trace.get("news_scanner_contribution")).get("selected_score_total"))
-    if exit_only_report:
-        selection_rank = None
-        selection_score = ""
-    selection_texts = _section_texts(selection)
-    entry_texts = _section_texts(entry)
-    exit_texts = _section_texts(exit_decision)
-    exit_signal_snapshot = _extract_exit_signal_snapshot(exit_texts + _section_texts(holding))
-    exit_signal_snapshot = _enrich_exit_signal_snapshot_from_monitor(exit_signal_snapshot, monitor)
-    post_exit_shadow_summary = _compact_post_exit_shadow(_post_exit_shadow_surface(report))
-    strategy_horizon_summary = _strategy_horizon_report_surface(report)
-    authoritative_hold_sec = _authoritative_hold_duration_seconds(report)
-    authoritative_hold_label = _authoritative_holding_duration_label(report)
-    if authoritative_hold_sec is not None:
-        strategy_horizon_summary = dict(strategy_horizon_summary)
-        strategy_horizon_summary["actual_hold_sec"] = authoritative_hold_sec
-        strategy_horizon_summary["actual_hold_label"] = authoritative_hold_label
-        strategy_horizon_summary["actual_hold_source"] = "entry_exit_execution_timestamps"
-    exit_trigger = _first_matching_line(
-        _listify(exit_decision.get("bullets")),
-        ["촉발", "트리거", "청산 사유", "peak_drawdown", "고점 대비"],
-    )
-    if not exit_trigger:
-        exit_trigger = _first_matching_line(exit_texts, ["촉발", "트리거", "청산", "peak_drawdown", "고점 대비"])
-    exit_trigger_label = _normalize_exit_trigger_label(
-        exit_signal_snapshot.get("trigger") or exit_trigger,
-        shared.get("exit_reason"),
-    )
-    reporter_texts = _section_texts(reporter_eval)
-    combined_texts = _section_texts(market, strategist, selection, entry, holding, exit_decision, reporter_eval)
-    combined_blob = "\n".join(combined_texts).lower()
-    entry_execution_visibility = _resolve_entry_execution_visibility(report)
-    entry_watch_lines = _entry_watch_execution_lines(
-        report,
-        require_trade_symbol_match=bool(selection_fallback.get("used")) or bool(exit_only_report),
-    )
-    broker_alignment = _as_dict(report.get("broker_alignment"))
-    broker_alignment_summary = _as_dict(broker_alignment.get("summary"))
-    broker_account_snapshot = _as_dict(broker_alignment.get("account_snapshot"))
-
-    deterministic_positives: List[str] = []
-    if truth_price.get("broker_fill_price") not in (None, "") or truth_pnl.get("value") not in (None, ""):
-        deterministic_positives.append("broker_truth_available")
-    if strategist or selection or entry or exit_decision:
-        deterministic_positives.append("agent_decision_flow_available")
-    if memory_app:
-        deterministic_positives.append("policy_memory_surface_available")
-    if carryover_exit:
-        deterministic_positives.append("carryover_exit_accounted_separately")
-    if recovered_partial_exit:
-        deterministic_positives.append("recovered_partial_exit_accounted_separately")
-
-    deterministic_problems: List[str] = []
-    if "monitor_only" in combined_blob or "monitor-only" in combined_blob or "monitor 단독" in combined_blob:
-        deterministic_problems.append("monitor_only_path_ratio_high")
-    if recovered_partial_exit:
-        deterministic_problems.append("entry_evidence_missing_for_recovered_partial_exit")
-    if carryover_exit:
-        deterministic_problems.append("carryover_exit_requires_separate_date_basis")
-    if "peak_drawdown" in combined_blob or "고점 대비 하락폭" in combined_blob:
-        deterministic_problems.append("peak_drawdown_exit_needs_review")
-    rank_num = _num_opt(selection_rank)
-    scanner_chart_fit_score = _num_opt(scanner_chart_fit.get("score")) if scanner_chart_fit else None
-    if rank_num is not None and rank_num > 1:
-        deterministic_problems.append("entered_lower_rank_after_top_candidate_block")
-    if scanner_chart_fit_score is not None and scanner_chart_fit_score < 0.25:
-        deterministic_problems.append("scanner_chart_fit_low")
-    if "pullback" in combined_blob:
-        deterministic_problems.append("pullback_condition_repeated")
-
-    root_cause_candidates: List[str] = []
-    for row in _listify(monitor_memory.get("applied_deltas")):
-        row_obj = _as_dict(row)
-        if str(row_obj.get("field") or "") == "breakout_buffer_pct" and (_num_opt(row_obj.get("delta")) or 0.0) > 0:
-            root_cause_candidates.append("entry_was_tightened_by_breakout_buffer")
-            break
-    for row in _listify(monitor_memory.get("exit_deltas")):
-        row_obj = _as_dict(row)
-        if "peak_drawdown" in str(row_obj.get("field") or "") and (_num_opt(row_obj.get("delta")) or 0.0) < 0:
-            root_cause_candidates.append("exit_was_tightened_by_peak_drawdown")
-            break
-    if rank_num is not None and rank_num > 1:
-        root_cause_candidates.append("scanner_monitor_reassessment_after_top_rank_block")
-    if scanner_chart_fit_score is not None and scanner_chart_fit_score < 0.25:
-        root_cause_candidates.append("scanner_selected_candidate_had_weak_chart_fit")
-    if recovered_partial_exit:
-        root_cause_candidates.append("recovered_partial_exit_excludes_new_entry_assessment")
-    if carryover_exit:
-        root_cause_candidates.append("carryover_position_excludes_same_day_scanner_selection_assessment")
-
-    validation_questions: List[str] = []
-    if recovered_partial_exit:
-        validation_questions.append("회수/partial 청산을 완료 거래와 별도 집계했을 때 당일 실현 성과가 어떻게 달라지는가?")
-    if carryover_exit:
-        validation_questions.append("오버나이트 승인 근거와 당일 청산 컨텍스트가 분리되어 집계됐는가?")
-    if "peak_drawdown_exit_needs_review" in deterministic_problems:
-        validation_questions.append("peak_drawdown activation/confirm 조건이 실제 손익비를 악화시키는가?")
-    if "entered_lower_rank_after_top_candidate_block" in deterministic_problems:
-        validation_questions.append("1순위 탈락 후 차순위 진입의 기대값이 충분한가?")
-    if "scanner_chart_fit_low" in deterministic_problems:
-        validation_questions.append("scanner_chart_fit_score가 낮은 후보가 다른 점수 축 때문에 선택됐는지 확인해야 하는가?")
-    if not validation_questions:
-        validation_questions.append("진입/청산 정책 조합이 당일 반복 손익 패턴과 일치하는가?")
-
-    return {
-        "schema_version": "ai_trade_summary_input.v1",
-        "artifact_type": "ai_trade_summary_input",
-        "source_artifact": "ai_trade_report.json",
-        "trade": {
-            "trade_id": trade_id,
-            "day": day,
-            "symbol": _clip(_pick(report.get("symbol"), shared.get("symbol")), 32),
-            "symbol_name": str(symbol_metadata.get("symbol_name") or ""),
-            "theme": str(symbol_metadata.get("theme") or ""),
-            "themes": list(symbol_metadata.get("themes") or []),
-            "status": _status_label(_pick(report.get("status"), shared.get("status"))),
-            "story_type": _story_type_label(report.get("story_type")),
-            "execution_mode": _execution_mode_label(report.get("execution_mode_label")),
-            "action": action_label,
-            "recovered_partial_exit": recovered_partial_exit,
-            "carryover_exit": carryover_exit,
-            "carryover_context": carryover_context,
-            "entry_assessment_scope": (
-                "excluded_carryover_exit"
-                if carryover_exit
-                else ("excluded_recovered_partial" if recovered_partial_exit else "normal")
-            ),
-        },
-        "truth_surface": {
-            "result_label": result_label,
-            "pnl": pnl,
-            "pnl_pct": pnl_pct,
-            "pnl_pct_text": _fmt_pct(pnl_pct),
-            "buy_price": _pick(truth_price.get("broker_buy_price"), shared.get("broker_buy_price")),
-            "sell_price": _pick(truth_price.get("broker_fill_price"), shared.get("broker_fill_price")),
-            "monitor_sell_reference_price": _pick(
-                truth_price.get("monitor_mark_price"),
-                shared.get("monitor_mark_price"),
-                exit_signal_snapshot.get("monitor_current_price"),
-            ),
-            "fee": _pick(shared.get("broker_fee"), truth_pnl.get("broker_fee")),
-            "tax": _pick(shared.get("broker_tax"), truth_pnl.get("broker_tax")),
-            "cost_analysis": _build_trade_cost_analysis(report),
-            "truth_source": _truth_source_label(truth_source_value),
-        },
-        "same_day_context": {
-            "summary": _same_day_summary(reporter_eval),
-            "label": "당일 성과(리포트 생성 시점 기준)",
-            "basis": "report_generation_time",
-            "reporter_evaluation": _compact_section(reporter_eval, limit=6),
-        },
-        "broker_alignment": {
-            "status": _metadata_value(broker_alignment.get("status")),
-            "generated_at": _metadata_value(broker_alignment.get("generated_at")),
-            "report_json_path": _metadata_value(broker_alignment.get("report_json_path")),
-            "account_snapshot_path": _metadata_value(broker_account_snapshot.get("path")),
-            "account_snapshot_status": _metadata_value(broker_account_snapshot.get("status")),
-            "account_snapshot_api_call_count": broker_account_snapshot.get("api_call_count"),
-            "account_snapshot_ok_count": broker_account_snapshot.get("ok_count"),
-            "account_snapshot_error_count": broker_account_snapshot.get("error_count"),
-            "local_total": broker_alignment_summary.get("local_total"),
-            "broker_total": broker_alignment_summary.get("broker_total"),
-            "matched_by_ord_no": broker_alignment_summary.get("matched_by_ord_no"),
-            "missing_in_local_total": broker_alignment_summary.get("missing_in_local_total"),
-            "missing_in_broker_total": broker_alignment_summary.get("missing_in_broker_total"),
-            "error": _metadata_value(broker_alignment.get("error")),
-        },
-        "market_and_strategy": {
-            "market_summary": _translate_text(market.get("summary")).strip(),
-            "vix": market.get("vix_level"),
-            "market_sentiment": _metadata_value(market.get("market_sentiment")),
-            "playbook": _playbook_label(_pick(market.get("playbook"), market.get("selected_playbook"))),
-            "risk_tone": _risk_mode_label(_pick(market.get("risk_tone"), trace_summary.get("risk_tone"), market.get("risk_mode"))),
-            "monitor_guidance": _metadata_value(_pick(trace_summary.get("monitor_guidance"), market.get("monitor_guidance"))),
-            "themes": [_theme_label(x) for x in _listify(market.get("themes")) if not _is_not_captured(x)],
-            "preferred_themes": [_theme_label(x) for x in _listify(market.get("preferred_themes")) if not _is_not_captured(x)],
-            "theme_source": _metadata_value(market.get("theme_source")),
-            "theme_source_status": _metadata_value(market.get("theme_source_status")),
-            "theme_strength_top_themes": [_theme_label(x) for x in _listify(market.get("theme_strength_top_themes")) if not _is_not_captured(x)],
-            "market_news_titles": _sample_news_titles(market.get("market_news_titles") or report.get("strategist_market_headlines"), limit=4),
-            "symbol_news_titles": _sample_news_titles_for_symbol(
-                symbol,
-                market.get("symbol_news_titles"),
-                report.get("strategist_symbol_headlines"),
-                market.get("candidate_news_titles"),
-                limit=4,
-            ),
-        },
-        "decision_flow": {
-            "scanner_rank": selection_rank,
-            "scanner_score": selection_score,
-            "scanner_chart_fit": scanner_chart_fit,
-            "scanner_chart_fit_score": scanner_chart_fit.get("score") if scanner_chart_fit else None,
-            "scanner_chart_fit_authority": scanner_chart_fit.get("authority") if scanner_chart_fit else "",
-            "scanner_rank_basis": (
-                "carryover_exit_no_same_day_entry"
-                if carryover_exit
-                else "recovered_partial_no_entry_evidence"
-                if recovered_partial_exit
-                else ("monitor_fallback_reassessment" if selection_fallback.get("used") else "scanner_rank")
-            ),
-            "selection_path": (
-                "carryover_exit"
-                if carryover_exit
-                else "recovered_partial_exit"
-                if recovered_partial_exit
-                else selection_fallback.get("selection_path") or _metadata_value(selection_trace.get("selection_path"))
-            ),
-            "scanner_top_pick_symbol": selection_fallback.get("scanner_top_pick_symbol"),
-            "monitor_fallback_reason": selection_fallback.get("reason"),
-            "selection_basis": (
-                "오버나이트/주말 이월 포지션 청산"
-                if carryover_exit
-                else ("보유/회수 포지션 청산" if recovered_partial_exit else _translated_metadata(selection.get("basis")))
-            ),
-            "selection_blocker": (
-                ""
-                if exit_only_report
-                else (
-                f"스캐너 상위 후보 {selection_fallback.get('scanner_top_pick_symbol')} 보류 후 재평가"
-                if selection_fallback.get("used")
-                else _first_matching_line(selection_texts + entry_texts, ["1순위", "top pick", "blocked", "막혔"])
-                )
-            ),
-            "entry_reason": (
-                "오늘 신규 진입 판단이 아니라 전일/주말 이월 포지션입니다."
-                if carryover_exit
-                else (_RECOVERED_PARTIAL_ENTRY_NOTE if recovered_partial_exit else _entry_reason_line(entry_texts))
-            ),
-            "entry_confidence": _entry_confidence_for_operator_summary(
-                entry_texts,
-                action=action_label,
-                buy_price=_pick(truth_price.get("broker_buy_price"), shared.get("broker_buy_price")),
-            )
-            if not exit_only_report
-            else "",
-            "entry_observation": entry_signal_snapshot,
-            "holding_duration": authoritative_hold_label or _pick(
-                shared.get("holding_duration"),
-                report.get("hold_duration"),
-                carryover_context.get("duration_label"),
-            ),
-            "exit_reason": exit_trigger_label,
-            "exit_trigger": exit_trigger_label,
-            "exit_trigger_basis": "monitor_signal_snapshot_not_realized_result",
-            "exit_result_note": (
-                "모니터 신호명과 별개로 Truth Surface 기준 실현 결과는 이익입니다."
-                if recovered_partial_exit and (_num_opt(pnl_pct) or 0.0) > 0.0
-                else ""
-            ),
-            "entry_execution_visibility": entry_execution_visibility,
-            "entry_watch_summary_lines": entry_watch_lines,
-            "recovered_partial_note": _RECOVERED_PARTIAL_EXIT_NOTE if recovered_partial_exit else "",
-            "carryover_note": "오버나이트/주말 이월 포지션 청산은 당일 신규 스캐너 선정 평가에서 제외합니다." if carryover_exit else "",
-            "carryover_context": carryover_context,
-            "exit_observation": exit_signal_snapshot,
-            "final_operator_summary": _authoritative_final_operator_summary(
-                report,
-                action=action_label,
-                fallback=_translate_text(final.get("summary")).strip(),
-            ),
-        },
-        "strategy_horizon": strategy_horizon_summary,
-        "post_exit_shadow": post_exit_shadow_summary,
-        "quant_tactic": _quant_tactic_surface_impl(report),
-        "memory_and_policy": {
-            "scanner_memory_applied": bool(scanner_memory.get("applied")),
-            "monitor_memory_applied": bool(monitor_memory.get("applied")),
-            "monitor_active_layers": list(monitor_memory.get("active_layers") or []),
-            "monitor_policy_deltas": _policy_deltas(monitor_memory),
-        },
-        "deterministic_findings": {
-            "positives": deterministic_positives,
-            "problems": deterministic_problems,
-            "root_cause_candidates": root_cause_candidates,
-            "validation_questions": validation_questions,
-            "raw_reporter_pattern_lines": [_translate_text(line).strip() for line in reporter_texts[:6] if line],
-        },
-        "llm_task": {
-            "purpose": "Fill only the interpretation fields for ai_trade_summary evaluation.",
-            "allowed_output_fields": [
-                "conclusion",
-                "root_cause",
-                "priority_actions",
-                "risk_notes",
-                "validation_questions",
-            ],
-            "hard_constraints": [
-                "Do not invent or modify prices, pnl, fees, taxes, timestamps, or order facts.",
-                "Use truth_surface as immutable fact.",
-                "Treat decision_flow.exit_observation as monitor_signal_snapshot only, not as broker fill or realized pnl.",
-                "Treat strategy_horizon as strategy intent and observation-only report visibility; do not treat it as forced hold unless allow_behavior_change is true.",
-                "Treat post_exit_shadow as observation-only evidence, not as a live behavior-change rule.",
-                "If trade.carryover_exit is true, separate the original carry/overnight date basis from the current-day exit context.",
-                "If evidence is weak, state that validation is required instead of asserting causality.",
-                "Keep output operator-facing and concise.",
-            ],
-        },
-    }
-
+    return _build_trade_summary_input_impl(report, deps=_summary_input_deps())
 
 def render_trade_summary_markdown_with_evaluation_clean(
     report: Dict[str, Any],
@@ -1502,186 +385,14 @@ def _build_summary_deterministic_diagnostics_section(
     *,
     report: Dict[str, Any] | None = None,
 ) -> List[str]:
-    payload = summary_report if isinstance(summary_report, dict) else {}
-    trade = _as_dict(payload.get("trade"))
-    truth = _as_dict(payload.get("truth_surface"))
-    decision = _as_dict(payload.get("decision_flow"))
-    broker_alignment = _as_dict(payload.get("broker_alignment"))
-    findings = _as_dict(payload.get("deterministic_findings"))
-    fallback_meta = _resolve_trade_symbol_metadata(report or {}, str(trade.get("symbol") or ""))
-
-    facts: List[str] = []
-    symbol = _metadata_value(trade.get("symbol"))
-    raw_symbol_name = _metadata_value(trade.get("symbol_name"))
-    symbol_name = raw_symbol_name if _looks_like_symbol_name_impl(raw_symbol_name, symbol) else ""
-    if not symbol_name:
-        symbol_name = _metadata_value(fallback_meta.get("symbol_name"))
-    theme = _metadata_value(trade.get("theme") or fallback_meta.get("theme"))
-    if symbol != "-":
-        label = f"{symbol} ({symbol_name})" if symbol_name not in {"", "-"} else symbol
-        facts.append(f"대상 종목: {label}")
-    if theme not in {"", "-"}:
-        facts.append(f"종목 해당 테마: {theme}")
-    if truth.get("pnl") not in (None, "") or truth.get("pnl_pct_text") not in (None, ""):
-        pnl_text = _summary_money(truth.get("pnl")) if truth.get("pnl") not in (None, "") else "-"
-        facts.append(f"실현손익: {pnl_text} ({truth.get('pnl_pct_text') or '-'})")
-    if broker_alignment:
-        status = _metadata_value(broker_alignment.get("status"))
-        local_total = broker_alignment.get("local_total")
-        broker_total = broker_alignment.get("broker_total")
-        missing_local = broker_alignment.get("missing_in_local_total")
-        missing_broker = broker_alignment.get("missing_in_broker_total")
-        facts.append(
-            "브로커 주문 정합성: "
-            f"{status or '-'} / local {local_total if local_total not in (None, '') else '-'}"
-            f" / broker {broker_total if broker_total not in (None, '') else '-'}"
-            f" / local누락 {missing_local if missing_local not in (None, '') else '-'}"
-            f" / broker누락 {missing_broker if missing_broker not in (None, '') else '-'}"
-        )
-        snapshot_path = _metadata_value(broker_alignment.get("account_snapshot_path"))
-        if snapshot_path not in {"", "-"}:
-            facts.append(f"키움 계좌 스냅샷: {snapshot_path}")
-    if decision.get("scanner_rank") not in (None, ""):
-        score = _summary_decimal(decision.get("scanner_score"), 3)
-        facts.append(f"스캐너 순위/점수: {decision.get('scanner_rank')}위 / {score}")
-    chart_score = decision.get("scanner_chart_fit_score")
-    if chart_score not in (None, ""):
-        authority = _metadata_value(decision.get("scanner_chart_fit_authority"))
-        facts.append(f"Scanner chart-fit: {_summary_decimal(chart_score, 3)} / {authority}")
-    top_pick = _metadata_value(decision.get("scanner_top_pick_symbol"))
-    fallback_reason = _summary_fact_text(decision.get("monitor_fallback_reason"))
-    if top_pick != "-":
-        facts.append(f"상위 후보 보류: {top_pick} ({fallback_reason or '-'})")
-    entry_reason = _summary_fact_text(decision.get("entry_reason"))
-    if entry_reason:
-        facts.append(f"진입 근거: {entry_reason}")
-    exit_reason = _summary_fact_text(decision.get("exit_reason"))
-    if exit_reason:
-        facts.append(f"청산 근거: {exit_reason}")
-
-    problems = [_summary_problem_label(item) for item in _listify(findings.get("problems")) if str(item or "").strip()]
-    causes = [_summary_root_cause_label(item) for item in _listify(findings.get("root_cause_candidates")) if str(item or "").strip()]
-    questions = [_summary_eval_sentence(item) for item in _listify(findings.get("validation_questions")) if str(item or "").strip()]
-
-    if not facts and not problems and not causes and not questions:
-        return []
-
-    lines: List[str] = ["## 🧾 확정 진단", ""]
-    if facts:
-        lines.append("### 확정 사실")
-        lines.append("")
-        lines.extend(f"* {item}" for item in facts[:10])
-    if problems:
-        lines.append("")
-        lines.append("### 확정 문제 후보")
-        lines.append("")
-        lines.extend(f"* {item}" for item in problems[:8])
-    if causes:
-        lines.append("")
-        lines.append("### 원인 후보")
-        lines.append("")
-        lines.extend(f"* {item}" for item in causes[:6])
-    if questions:
-        lines.append("")
-        lines.append("### 검증 질문")
-        lines.append("")
-        lines.extend(f"* {item}" for item in questions[:6])
-    return _strip_trailing_blanks(lines)
-
+    return _build_summary_deterministic_diagnostics_section_impl(summary_report, report=report, deps=_markdown_diagnostics_deps())
 
 def _build_summary_llm_evaluation_section(
     summary_report: Dict[str, Any],
     *,
     report: Dict[str, Any] | None = None,
 ) -> List[str]:
-    payload = summary_report if isinstance(summary_report, dict) else {}
-    evaluation = _as_dict(payload.get("llm_evaluation"))
-    generation = _as_dict(payload.get("generation"))
-    status = str(generation.get("status") or payload.get("summary_status") or "").strip().lower()
-    has_content = any(
-        [
-            str(evaluation.get("conclusion") or "").strip(),
-            str(evaluation.get("root_cause") or "").strip(),
-            _listify(evaluation.get("priority_actions")),
-            _listify(evaluation.get("risk_notes")),
-            _listify(evaluation.get("validation_questions")),
-        ]
-    )
-    if not has_content:
-        return []
-
-    lines: List[str] = [
-        "## 🤖 LLM 복기 초안",
-        "",
-        "* 성격: 아래 내용은 확정 사실이 아니라 문제 파악을 돕는 해석 초안입니다. 수치와 사실은 위 확정 진단과 Truth Surface를 우선합니다.",
-    ]
-    if status:
-        lines.append(f"* 상태: {status}")
-    action = _action_label(
-        _first_present_impl(
-            _as_dict((report or {}).get("final_operator_conclusion")).get("current_action"),
-            (report or {}).get("action"),
-            _as_dict((report or {}).get("shared_facts")).get("action"),
-        )
-    )
-    conclusion = _summary_eval_sentence(evaluation.get("conclusion"))
-    if report:
-        conclusion = _authoritative_final_operator_summary(
-            report,
-            action=action,
-            fallback=_normalize_evaluation_hold_duration(conclusion, report),
-        )
-    if conclusion:
-        lines.append(f"* 결론: **{conclusion}**")
-    root_cause = _normalize_evaluation_hold_duration(
-        _summary_eval_sentence(evaluation.get("root_cause")),
-        report or {},
-    )
-    trade = _as_dict(_as_dict((report or {}).get("fact_payload")).get("trade"))
-    entry = _as_dict(trade.get("entry_summary"))
-    opening_probe = entry.get("reason_human") == "opening_rank1_controlled_probe"
-    if opening_probe:
-        root_cause = (
-            "Opening Alpha 예외 진입 거래입니다. 기존 진입 대기/차단 항목과 최종 레인 승인 결과는 구분해야 합니다. "
-            "기존 blocker의 존재만으로 손실 원인이나 무단 우회를 단정할 수 없습니다. "
-            "LLM 원문 해석은 검증되지 않았으며 원본 응답 파일에 보존합니다."
-        )
-    if root_cause:
-        lines.append(f"* 원인 해석: {root_cause}")
-
-    actions = [
-        _normalize_evaluation_hold_duration(_summary_eval_sentence(item), report or {})
-        for item in _listify(evaluation.get("priority_actions"))
-        if str(item or "").strip()
-    ]
-    if opening_probe:
-        actions = ["레인 승인 근거, 실제 체결 가격, 최종 청산 트리거를 대조해 원인을 검증합니다."]
-    if actions:
-        lines.append("")
-        lines.append("### 우선 액션")
-        lines.append("")
-        lines.extend(f"{idx}. {item}" for idx, item in enumerate(actions[:4], 1))
-
-    risks = [
-        _normalize_evaluation_hold_duration(_summary_eval_sentence(item), report or {})
-        for item in _listify(evaluation.get("risk_notes"))
-        if str(item or "").strip()
-    ]
-    if risks:
-        lines.append("")
-        lines.append("### 리스크")
-        lines.append("")
-        lines.extend(f"* {item}" for item in risks[:4])
-
-    questions = [_summary_eval_sentence(item) for item in _listify(evaluation.get("validation_questions")) if str(item or "").strip()]
-    if questions:
-        lines.append("")
-        lines.append("### 검증 질문")
-        lines.append("")
-        lines.extend(f"* {item}" for item in questions[:4])
-
-    return _strip_trailing_blanks(lines)
-
+    return _build_summary_llm_evaluation_section_impl(summary_report, report=report, deps=_markdown_diagnostics_deps())
 
 def _normalize_evaluation_hold_duration(text: str, report: Dict[str, Any]) -> str:
     duration = _authoritative_holding_duration_label(report)
@@ -1868,118 +579,42 @@ def _is_recovered_partial_exit_report(report: Dict[str, Any]) -> bool:
     return bool(explicit_markers or entry_missing or scanner_empty)
 
 
-def _carryover_context(report: Dict[str, Any]) -> Dict[str, Any]:
-    shared = _as_dict(report.get("shared_facts"))
-    final = _as_dict(report.get("final_operator_conclusion"))
-    action_raw = str(final.get("current_action") or report.get("action") or shared.get("action") or "").strip()
-    action_is_sell = action_raw.upper() == "SELL" or _action_label(action_raw) == "매도"
-
-    carry_state = _metadata_value(
-        _first_report_path(
-            report,
-            [
-                "shared_facts.commander_route.applied_policy.horizon.runtime_context.carry_state",
-                "shared_facts.commander_route.horizon.runtime_context.carry_state",
-                "fact_payload.trade.commander_route.applied_policy.horizon.runtime_context.carry_state",
-                "fact_payload.trade.shared_facts.commander_route.applied_policy.horizon.runtime_context.carry_state",
-                "fact_payload.trade.canonical_agent_artifacts.monitor.applied_policy.horizon.runtime_context.carry_state",
-                "monitor_snapshot.applied_policy.horizon.runtime_context.carry_state",
-                "monitor_snapshot.decision_trace.applied_policy.horizon.runtime_context.carry_state",
-                "runtime_context.carry_state",
-            ],
-        )
-    )
-    carry_risk_bias = _metadata_value(
-        _first_report_path(
-            report,
-            [
-                "shared_facts.commander_route.applied_policy.horizon.runtime_context.carry_risk_bias",
-                "shared_facts.commander_route.horizon.runtime_context.carry_risk_bias",
-                "fact_payload.trade.commander_route.applied_policy.horizon.runtime_context.carry_risk_bias",
-                "fact_payload.trade.shared_facts.commander_route.applied_policy.horizon.runtime_context.carry_risk_bias",
-                "fact_payload.trade.canonical_agent_artifacts.monitor.applied_policy.horizon.runtime_context.carry_risk_bias",
-                "monitor_snapshot.applied_policy.horizon.runtime_context.carry_risk_bias",
-                "monitor_snapshot.decision_trace.applied_policy.horizon.runtime_context.carry_risk_bias",
-                "runtime_context.carry_risk_bias",
-            ],
-        )
-    )
-    actual_hold_sec = _num_opt(
-        _first_report_path(
-            report,
-            [
-                "fact_payload.trade.exit_vs_strategy_intent.actual_hold_sec",
-                "fact_payload.trade.canonical_agent_artifacts.monitor.exit_vs_strategy_intent.actual_hold_sec",
-                "fact_payload.trade.canonical_agent_artifacts.monitor.decision_trace.exit_vs_strategy_intent.actual_hold_sec",
-                "fact_payload.trade.monitor_snapshot.exit_vs_strategy_intent.actual_hold_sec",
-                "monitor_snapshot.exit_vs_strategy_intent.actual_hold_sec",
-                "monitor_snapshot.decision_trace.exit_vs_strategy_intent.actual_hold_sec",
-                "exit_vs_strategy_intent.actual_hold_sec",
-                "shared_facts.exit_vs_strategy_intent.actual_hold_sec",
-            ],
-        )
-    )
-    exit_ts = _first_report_path(
-        report,
-        [
-            "fact_payload.trade.exit_summary.ts",
-            "fact_payload.trade.lifecycle_summary.exit.ts",
-            "shared_facts.exit_ts",
-            "exit_summary.ts",
-        ],
-    )
-    if not exit_ts:
-        for row in _listify(report.get("full_timeline") if isinstance(report.get("full_timeline"), list) else report.get("timeline")):
-            row_obj = _as_dict(row)
-            event = str(row_obj.get("event") or row_obj.get("step") or "").lower()
-            if "exit" in event or "sell" in event or "청산" in event:
-                exit_ts = row_obj.get("ts") or row_obj.get("timestamp")
-                break
-
-    exit_dt = _parse_report_datetime(exit_ts)
-    estimated_entry_dt = None
-    if exit_dt is not None and actual_hold_sec is not None and actual_hold_sec > 0:
-        estimated_entry_dt = exit_dt - timedelta(seconds=actual_hold_sec)
-
-    carry_state_key = carry_state.lower()
-    explicit_carry = carry_state_key in {
-        "overnight_open",
-        "multi_session_stale",
-        "eod_carry_approved",
-        "carry_overnight_approved",
-        "overnight",
-    }
-
-    entry_kst = _to_kst(estimated_entry_dt)
-    exit_kst = _to_kst(exit_dt)
-    weekend_carry = False
-    crosses_session_date = False
-    if entry_kst is not None and exit_kst is not None:
-        crosses_session_date = entry_kst.date() != exit_kst.date()
-        weekend_carry = (
-            entry_kst.weekday() == 4
-            and exit_kst.weekday() == 0
-            and entry_kst.date() != exit_kst.date()
-        ) or (exit_kst.date() - entry_kst.date()).days >= 2
-    is_carryover_exit = bool(action_is_sell and (explicit_carry or crosses_session_date))
-
+def _strategy_memory_deps() -> Dict[str, Any]:
     return {
-        "is_carryover_exit": is_carryover_exit,
-        "carry_state": carry_state,
-        "carry_state_label": _carry_state_label(carry_state, weekend_carry=weekend_carry),
-        "carry_risk_bias": carry_risk_bias,
-        "carry_risk_label": _carry_risk_label(carry_risk_bias),
-        "actual_hold_sec": actual_hold_sec,
-        "duration_label": _duration_label_seconds(actual_hold_sec),
-        "exit_ts": exit_ts,
-        "exit_kst": _format_kst_datetime(exit_dt),
-        "exit_date_kst": _format_kst_date(exit_dt),
-        "estimated_entry_kst": _format_kst_datetime(estimated_entry_dt),
-        "estimated_entry_date_kst": _format_kst_date(estimated_entry_dt),
-        "weekend_carry": weekend_carry,
-        "date_basis": "actual_hold_sec와 청산 시각 역산",
+        "action_label": _action_label,
+        "as_dict": _as_dict,
+        "badge": _badge,
+        "carry_risk_label": _carry_risk_label,
+        "carry_state_label": _carry_state_label,
+        "dedupe": _dedupe,
+        "duration_label_seconds": _duration_label_seconds,
+        "failure_label": _failure_label,
+        "first_report_path": _first_report_path,
+        "fmt_pct": _fmt_pct,
+        "format_kst_date": _format_kst_date,
+        "format_kst_datetime": _format_kst_datetime,
+        "humanize_reporter_source_label": _humanize_reporter_source_label,
+        "listify": _listify,
+        "memory_layers_text": _memory_layers_text,
+        "memory_packet_state_line": _memory_packet_state_line,
+        "memory_status_label": _memory_status_label,
+        "metadata_value": _metadata_value,
+        "monitor_delta_interpretation": _monitor_delta_interpretation,
+        "monitor_phase_line": _monitor_phase_line,
+        "num_opt": _num_opt,
+        "parse_report_datetime": _parse_report_datetime,
+        "playbook_label": _playbook_label,
+        "policy_phase_line": _policy_phase_line,
+        "policy_source_label": _policy_source_label,
+        "reason_summary_line": _reason_summary_line,
+        "resolve_prompt_proven_surface": _resolve_prompt_proven_surface,
+        "same_policy_snapshot": _same_policy_snapshot,
+        "scanner_phase_line": _scanner_phase_line,
+        "to_kst": _to_kst,
     }
 
+def _carryover_context(report: Dict[str, Any]) -> Dict[str, Any]:
+    return _carryover_context_impl(report, deps=_strategy_memory_deps())
 
 def _strategy_horizon_label(value: Any) -> str:
     return _strategy_horizon_label_impl(value, metadata_value=_metadata_value)
@@ -2336,80 +971,16 @@ def _resolve_trade_symbol_metadata(report: Dict[str, Any], symbol: str) -> Dict[
         translate_text=_translate_text,
     )
 
+def _markdown_entry_visibility_deps() -> Dict[str, Any]:
+    return {
+        "as_dict": _as_dict,
+        "first_dict": _first_dict,
+        "metadata_value": _metadata_value,
+        "resolve_entry_monitor_artifact": _resolve_entry_monitor_artifact,
+    }
+
 def _resolve_entry_execution_visibility(report: Dict[str, Any]) -> Dict[str, Any]:
-    visibility = _as_dict(report.get("entry_execution_visibility"))
-    entry_monitor = _resolve_entry_monitor_artifact(report)
-    strategist_output = _as_dict(report.get("strategist_output"))
-    strategy_detail = _as_dict(strategist_output.get("strategy_detail"))
-    monitor = _as_dict(report.get("monitor_snapshot"))
-    shared = _as_dict(report.get("shared_facts"))
-    commander_route = _as_dict(shared.get("commander_route"))
-    entry_policy_ref = _as_dict(entry_monitor.get("policy_ref"))
-    entry_applied_policy = _as_dict(entry_policy_ref.get("applied_policy"))
-
-    proposal = _as_dict(visibility.get("strategy_candidate_watch_proposal"))
-    if not proposal:
-        proposal = _as_dict(strategy_detail.get("candidate_watch_policy"))
-
-    entry_control = _first_dict(
-        _as_dict(entry_policy_ref.get("entry_control")),
-        _as_dict(entry_applied_policy.get("commander_entry_control")),
-        _as_dict(entry_applied_policy.get("entry_control")),
-        _as_dict(visibility.get("commander_entry_control")),
-    )
-    if not entry_control:
-        entry_control = _as_dict(commander_route.get("entry_control"))
-    if not proposal:
-        proposal = _as_dict(entry_control.get("proposal")) or _as_dict(entry_control.get("candidate_watch_policy_proposal"))
-    if proposal and entry_control:
-        proposal = dict(proposal)
-        nested = _as_dict(entry_control.get("proposal")) or _as_dict(entry_control.get("candidate_watch_policy_proposal"))
-        if proposal.get("max_priority_rank") in (None, "") and entry_control.get("proposed_max_priority_rank") not in (None, ""):
-            proposal["max_priority_rank"] = entry_control.get("proposed_max_priority_rank")
-        if proposal.get("max_runner_ups") in (None, "") and entry_control.get("proposed_max_runner_ups") not in (None, ""):
-            proposal["max_runner_ups"] = entry_control.get("proposed_max_runner_ups")
-        if proposal.get("cascade_enabled") in (None, "") and nested.get("cascade_enabled") not in (None, ""):
-            proposal["cascade_enabled"] = nested.get("cascade_enabled")
-        for key in ("source", "behavior_effect", "tactical_strategy", "reason"):
-            if proposal.get(key) in (None, "") and nested.get(key) not in (None, ""):
-                proposal[key] = nested.get(key)
-        for key in ("cascade_allowed_reasons", "cascade_blocked_reasons"):
-            if proposal.get(key) in (None, "", []) and nested.get(key) not in (None, "", []):
-                proposal[key] = nested.get(key)
-
-    cascade = _first_dict(
-        _as_dict(entry_monitor.get("entry_candidate_cascade")),
-        _as_dict(_as_dict(entry_monitor.get("scanner_monitor_handoff")).get("entry_candidate_cascade")),
-        _as_dict(visibility.get("monitor_entry_candidate_cascade")),
-        _as_dict(monitor.get("entry_candidate_cascade")),
-    )
-    focus_context = _first_dict(
-        _as_dict(entry_monitor.get("monitor_focus_context")),
-        _as_dict(visibility.get("monitor_focus_context")),
-        _as_dict(monitor.get("monitor_focus_context")),
-    )
-    grouped_trace = _first_dict(
-        _as_dict(entry_monitor.get("entry_grouped_logic_trace")),
-        _as_dict(_as_dict(entry_monitor.get("threshold_snapshot")).get("entry_grouped_logic_trace")),
-        _as_dict(visibility.get("entry_grouped_logic_trace")),
-    )
-
-    out: Dict[str, Any] = {}
-    if proposal:
-        out["strategy_candidate_watch_proposal"] = proposal
-    if entry_control:
-        out["commander_entry_control"] = entry_control
-    if cascade:
-        out["monitor_entry_candidate_cascade"] = cascade
-    if focus_context:
-        out["monitor_focus_context"] = focus_context
-    if grouped_trace:
-        out["entry_grouped_logic_trace"] = grouped_trace
-    summary = _metadata_value(visibility.get("summary"))
-    if summary:
-        out["summary"] = summary
-    return out
-
+    return _resolve_entry_execution_visibility_impl(report, deps=_markdown_entry_visibility_deps())
 
 def _first_dict(*items: Dict[str, Any]) -> Dict[str, Any]:
     for item in items:
@@ -2570,150 +1141,32 @@ def _candidate_cascade_matches_trade(cascade: Dict[str, Any], traded_symbol: Any
     return symbol in cascade_symbols
 
 
+def _markdown_signal_deps() -> Dict[str, Any]:
+    return {
+        "as_dict": _as_dict,
+        "candidate_cascade_matches_trade": _candidate_cascade_matches_trade,
+        "candidate_watch_reason_label": _candidate_watch_reason_label,
+        "dedupe": _dedupe,
+        "display_candidate_symbol": _display_candidate_symbol,
+        "first_present_value": _first_present_value,
+        "fmt_multiple": _fmt_multiple,
+        "fmt_pct": _fmt_pct,
+        "fmt_signed_pct": _fmt_signed_pct,
+        "listify": _listify,
+        "metadata_value": _metadata_value,
+        "normalize_exit_trigger_label": _normalize_exit_trigger_label,
+        "num_opt": _num_opt,
+        "resolve_entry_execution_visibility": _resolve_entry_execution_visibility,
+        "summary_money": _summary_money,
+        "truth_source_label": _truth_source_label,
+        "watch_scope_label": _watch_scope_label,
+    }
+
 def _entry_watch_execution_lines(report: Dict[str, Any], *, require_trade_symbol_match: bool = False) -> List[str]:
-    visibility = _resolve_entry_execution_visibility(report)
-    if not visibility:
-        return []
-    proposal = _as_dict(visibility.get("strategy_candidate_watch_proposal"))
-    entry_control = _as_dict(visibility.get("commander_entry_control"))
-    cascade = _as_dict(visibility.get("monitor_entry_candidate_cascade"))
-    focus_context = _as_dict(visibility.get("monitor_focus_context"))
-    shared = _as_dict(report.get("shared_facts"))
-    traded_symbol = _display_candidate_symbol(report.get("symbol") or shared.get("symbol"))
-    cascade_matches_trade = (
-        _candidate_cascade_matches_trade(cascade, traded_symbol)
-        if require_trade_symbol_match
-        else True
-    )
-    lines: List[str] = []
-
-    if focus_context:
-        entry_symbol = _display_candidate_symbol(
-            focus_context.get("entry_final_symbol") or focus_context.get("entry_candidate_symbol")
-        )
-        position_symbol = _display_candidate_symbol(focus_context.get("position_focus_symbol"))
-        if entry_symbol and position_symbol and entry_symbol != position_symbol:
-            reason = _metadata_value(
-                focus_context.get("entry_guard_reason") or focus_context.get("entry_reason")
-            )
-            text = f"신규 후보 {entry_symbol} 평가 / 보유 관리 {position_symbol}"
-            if reason and reason != "-":
-                text += f" / 신규 후보 보류 사유: {_candidate_watch_reason_label(reason)}"
-            lines.append(text)
-
-    if entry_control:
-        scope = _watch_scope_label(entry_control)
-        text = f"감시 범위: {scope}" if scope else ""
-        if entry_control.get("cascade_enabled") not in (None, ""):
-            cascade_text = f"cascade {'활성' if bool(entry_control.get('cascade_enabled')) else '비활성'}"
-            text = f"{text} / {cascade_text}".strip(" /")
-        if text:
-            lines.append(text)
-
-    if proposal:
-        scope = _watch_scope_label(proposal)
-        tactical = _metadata_value(proposal.get("tactical_strategy"))
-        if scope:
-            text = f"전략가 제안: {scope}"
-            if tactical and tactical != "-":
-                text += f" / 전술={tactical}"
-            lines.append(text)
-        elif tactical and tactical != "-" and not lines:
-            lines.append(f"전술={tactical}.")
-
-    if cascade and cascade_matches_trade:
-        top_pick = _display_candidate_symbol(cascade.get("top_pick_symbol"))
-        top_reason = _metadata_value(cascade.get("top_pick_reason") or cascade.get("reason"))
-        runner_ups = [
-            _display_candidate_symbol(symbol)
-            for symbol in _listify(cascade.get("runner_up_symbols"))
-            if _display_candidate_symbol(symbol)
-        ]
-        attempted = bool(cascade.get("attempted"))
-        if attempted:
-            text = f"실제 확인: 1순위 {top_pick or '-'} 보류"
-            if runner_ups:
-                text += f" -> 차순위 {', '.join(runner_ups)} 확인"
-            if top_reason and top_reason != "-":
-                text += f" (사유: {_candidate_watch_reason_label(top_reason)})"
-            lines.append(text)
-        else:
-            blocked = _candidate_watch_reason_label(cascade.get("blocked_reason"))
-            details: List[str] = []
-            if top_pick and top_pick != "-":
-                details.append(f"1순위 {top_pick}")
-            if blocked:
-                details.append(f"사유: {blocked}")
-            text = "실제 확인: 차순위 미실행"
-            if details:
-                text += f" ({', '.join(details)})"
-            lines.append(text)
-        if bool(cascade.get("fallback_used")):
-            final_symbol = _display_candidate_symbol(cascade.get("fallback_to_symbol") or cascade.get("final_selected_symbol"))
-            final_rank = cascade.get("fallback_to_rank") or cascade.get("final_selected_rank")
-            lines.append(f"최종 후보: {final_symbol or '-'}{f'({final_rank}위)' if final_rank not in (None, '') else ''}")
-        elif cascade.get("final_selected_symbol"):
-            final_symbol = _display_candidate_symbol(cascade.get("final_selected_symbol"))
-            final_rank = cascade.get("final_selected_rank")
-            lines.append(f"최종 후보: {final_symbol}{f'({final_rank}위)' if final_rank not in (None, '') else ''}")
-
-    return _dedupe([line for line in lines if line])
-
+    return _entry_watch_execution_lines_impl(report, require_trade_symbol_match=require_trade_symbol_match, deps=_markdown_signal_deps())
 
 def _entry_watch_summary_lines(report: Dict[str, Any], *, require_trade_symbol_match: bool = False) -> List[str]:
-    visibility = _resolve_entry_execution_visibility(report)
-    if not visibility:
-        return []
-    entry_control = _as_dict(visibility.get("commander_entry_control"))
-    cascade = _as_dict(visibility.get("monitor_entry_candidate_cascade"))
-    shared = _as_dict(report.get("shared_facts"))
-    traded_symbol = _display_candidate_symbol(report.get("symbol") or shared.get("symbol"))
-    cascade_matches_trade = (
-        _candidate_cascade_matches_trade(cascade, traded_symbol)
-        if require_trade_symbol_match
-        else True
-    )
-    lines: List[str] = []
-
-    scope = _watch_scope_label(entry_control)
-    if scope:
-        parts = [scope]
-        if entry_control.get("cascade_enabled") not in (None, ""):
-            parts.append(f"cascade {'활성' if bool(entry_control.get('cascade_enabled')) else '비활성'}")
-        lines.append(" / ".join(parts))
-
-    attempted = bool(cascade.get("attempted"))
-    top_pick = _display_candidate_symbol(cascade.get("top_pick_symbol"))
-    if cascade and cascade_matches_trade:
-        if attempted:
-            runner_ups = [
-                _display_candidate_symbol(symbol)
-                for symbol in _listify(cascade.get("runner_up_symbols"))
-                if _display_candidate_symbol(symbol)
-            ]
-            if runner_ups:
-                lines.append(f"실제 확인: 1순위 {top_pick or '-'} 보류 -> 차순위 {', '.join(runner_ups)} 확인")
-        else:
-            blocked = _candidate_watch_reason_label(cascade.get("blocked_reason"))
-            details: List[str] = []
-            if top_pick and top_pick != "-":
-                details.append(f"1순위 {top_pick}")
-            if blocked:
-                details.append(f"사유: {blocked}")
-            text = "실제 확인: 차순위 미실행"
-            if details:
-                text += f" ({', '.join(details)})"
-            lines.append(text)
-
-    if cascade and cascade_matches_trade:
-        final_symbol = _display_candidate_symbol(cascade.get("final_selected_symbol") or cascade.get("fallback_to_symbol"))
-        final_rank = cascade.get("final_selected_rank") or cascade.get("fallback_to_rank")
-        if final_symbol and final_symbol != "-":
-            rank_text = f"({final_rank}위)" if final_rank not in (None, "") else ""
-            lines.append(f"최종 후보: {final_symbol}{rank_text}")
-
-    return lines
-
+    return _entry_watch_summary_lines_impl(report, require_trade_symbol_match=require_trade_symbol_match, deps=_markdown_signal_deps())
 
 def _has_payload(value: Any) -> bool:
     if value is None:
@@ -2927,268 +1380,10 @@ def _first_present_value(*values: Any) -> Any:
 
 
 def _resolve_entry_signal_snapshot(report: Dict[str, Any]) -> Dict[str, Any]:
-    monitor = _as_dict(report.get("monitor_snapshot"))
-    shared = _as_dict(report.get("shared_facts"))
-    visibility = _resolve_entry_execution_visibility(report)
-    focus_context = _as_dict(visibility.get("monitor_focus_context"))
-    entry_metrics = _as_dict(monitor.get("entry_metrics"))
-    if not entry_metrics:
-        entry_metrics = _as_dict(focus_context.get("entry_metrics"))
-    if not entry_metrics:
-        entry_metrics = _as_dict(report.get("entry_metrics"))
-    if not entry_metrics:
-        entry_metrics = _as_dict(shared.get("entry_metrics"))
-    human_detail_observed = _as_dict(entry_metrics.get("human_chart_detail_observed"))
-    if not human_detail_observed:
-        human_detail_observed = _as_dict(_as_dict(monitor.get("human_chart_detail_context")).get("observed"))
-    if not human_detail_observed:
-        human_detail_observed = _as_dict(_as_dict(focus_context.get("human_chart_detail_context")).get("observed"))
-
-    entry_thresholds = _as_dict(monitor.get("entry_thresholds"))
-    if not entry_thresholds:
-        entry_thresholds = _as_dict(focus_context.get("entry_thresholds"))
-    if not entry_thresholds:
-        entry_thresholds = _as_dict(report.get("entry_thresholds"))
-    if not entry_thresholds:
-        entry_thresholds = _as_dict(shared.get("entry_thresholds"))
-
-    snapshot: Dict[str, Any] = {}
-    for key, value in {
-        "current_price": _first_present_value(
-            entry_metrics.get("current_price"),
-            entry_metrics.get("price"),
-            focus_context.get("current_price"),
-            monitor.get("entry_price"),
-            shared.get("broker_buy_price"),
-        ),
-        "vwap": _first_present_value(
-            entry_metrics.get("vwap"),
-            focus_context.get("vwap"),
-            monitor.get("entry_vwap"),
-        ),
-        "vwap_distance": _first_present_value(
-            entry_metrics.get("vwap_distance"),
-            entry_metrics.get("extended_from_vwap_pct"),
-            focus_context.get("vwap_distance"),
-            monitor.get("entry_vwap_distance"),
-            monitor.get("entry_extended_from_vwap_pct"),
-        ),
-        "volume": _first_present_value(
-            entry_metrics.get("current_volume"),
-            entry_metrics.get("current_bar_volume"),
-            entry_metrics.get("volume"),
-            focus_context.get("current_volume"),
-        ),
-        "volume_ratio": _first_present_value(
-            entry_metrics.get("volume_ratio"),
-            entry_metrics.get("volume_ratio_effective"),
-            focus_context.get("volume_ratio"),
-            monitor.get("entry_volume_ratio"),
-        ),
-        "volume_ratio_raw": _first_present_value(
-            entry_metrics.get("volume_ratio_raw"),
-            focus_context.get("volume_ratio_raw"),
-        ),
-        "volume_adjusted": _first_present_value(
-            entry_metrics.get("volume_adjusted"),
-            focus_context.get("volume_adjusted"),
-        ),
-        "volume_adjustment_reason": _first_present_value(
-            entry_metrics.get("volume_adjustment_reason"),
-            focus_context.get("volume_adjustment_reason"),
-        ),
-        "volume_ratio_min": _first_present_value(
-            entry_thresholds.get("volume_ratio_min"),
-            focus_context.get("volume_ratio_min"),
-            monitor.get("entry_volume_ratio_min"),
-        ),
-        "min_extended_from_vwap_pct": _first_present_value(
-            entry_thresholds.get("min_extended_from_vwap_pct"),
-            focus_context.get("min_extended_from_vwap_pct"),
-            monitor.get("entry_min_extended_from_vwap_pct"),
-        ),
-        "max_extended_from_vwap_pct": _first_present_value(
-            entry_thresholds.get("max_extended_from_vwap_pct"),
-            focus_context.get("max_extended_from_vwap_pct"),
-            monitor.get("entry_max_extended_from_vwap_pct"),
-        ),
-        "recent_high": _first_present_value(entry_metrics.get("recent_high"), focus_context.get("recent_high")),
-        "breakout_level": _first_present_value(entry_metrics.get("breakout_level"), focus_context.get("breakout_level")),
-        "confidence_score": _first_present_value(entry_metrics.get("confidence_score"), focus_context.get("confidence_score")),
-        "confidence_threshold": _first_present_value(
-            entry_metrics.get("confidence_threshold"),
-            focus_context.get("confidence_threshold"),
-        ),
-        "entry_quality_score": _first_present_value(
-            entry_metrics.get("entry_quality_score"),
-            focus_context.get("entry_quality_score"),
-        ),
-        "entry_quality_tier": _first_present_value(
-            entry_metrics.get("entry_quality_tier"),
-            focus_context.get("entry_quality_tier"),
-        ),
-        "entry_hard_gate_passed": _first_present_value(
-            entry_metrics.get("entry_hard_gate_passed"),
-            focus_context.get("entry_hard_gate_passed"),
-        ),
-        "entry_hard_gate_blockers": _first_present_value(
-            entry_metrics.get("entry_hard_gate_blockers"),
-            focus_context.get("entry_hard_gate_blockers"),
-        ),
-        "entry_quality_vs_gate_summary": _first_present_value(
-            entry_metrics.get("entry_quality_vs_gate_summary"),
-            focus_context.get("entry_quality_vs_gate_summary"),
-        ),
-        "breakout_proximity_score": _first_present_value(
-            entry_metrics.get("breakout_proximity_score"),
-            focus_context.get("breakout_proximity_score"),
-            entry_metrics.get("breakout_score"),
-            focus_context.get("breakout_score"),
-        ),
-        "human_candle_quality_score": _first_present_value(
-            entry_metrics.get("human_candle_quality_score"),
-            focus_context.get("human_candle_quality_score"),
-        ),
-        "human_vwap_reference_quality_score": _first_present_value(
-            entry_metrics.get("human_vwap_reference_quality_score"),
-            focus_context.get("human_vwap_reference_quality_score"),
-        ),
-        "human_reward_room_score": _first_present_value(
-            entry_metrics.get("human_reward_room_score"),
-            focus_context.get("human_reward_room_score"),
-        ),
-        "human_multi_window_structure_score": _first_present_value(
-            entry_metrics.get("human_multi_window_structure_score"),
-            focus_context.get("human_multi_window_structure_score"),
-        ),
-        "close_location": human_detail_observed.get("close_location"),
-        "upper_wick_ratio": human_detail_observed.get("upper_wick_ratio"),
-        "lower_wick_ratio": human_detail_observed.get("lower_wick_ratio"),
-        "body_ratio": human_detail_observed.get("body_ratio"),
-        "vwap_source": human_detail_observed.get("vwap_source"),
-        "vwap_bar_count": human_detail_observed.get("vwap_bar_count"),
-        "explicit_vwap_count": human_detail_observed.get("explicit_vwap_count"),
-        "explicit_vwap_ratio": human_detail_observed.get("explicit_vwap_ratio"),
-        "prior_resistance": human_detail_observed.get("prior_resistance"),
-        "reward_room_pct": human_detail_observed.get("reward_room_pct"),
-        "breakout_extension_pct": human_detail_observed.get("breakout_extension_pct"),
-    }.items():
-        if value not in (None, ""):
-            snapshot[key] = value
-
-    if snapshot:
-        snapshot["basis"] = "monitor_entry_metrics"
-    return snapshot
-
+    return _resolve_entry_signal_snapshot_impl(report, deps=_markdown_signal_deps())
 
 def _entry_signal_metric_summary_lines(snapshot: Dict[str, Any], *, prefix: str = "진입 수치") -> List[str]:
-    row = _as_dict(snapshot)
-    if not row:
-        return []
-
-    parts: List[str] = []
-    if row.get("current_price") not in (None, ""):
-        parts.append(f"현재가 {_summary_money(row.get('current_price'))}")
-    if row.get("vwap") not in (None, ""):
-        parts.append(f"VWAP {_summary_money(row.get('vwap'))}")
-    if row.get("vwap_distance") not in (None, ""):
-        distance_text = f"VWAP 대비 {_fmt_signed_pct(row.get('vwap_distance'))}"
-        min_vwap = row.get("min_extended_from_vwap_pct")
-        max_vwap = row.get("max_extended_from_vwap_pct")
-        if min_vwap not in (None, "") or max_vwap not in (None, ""):
-            distance_text += f" (허용 {_fmt_signed_pct(min_vwap) if min_vwap not in (None, '') else '-'}~{_fmt_signed_pct(max_vwap) if max_vwap not in (None, '') else '-'})"
-        parts.append(distance_text)
-    if row.get("volume") not in (None, ""):
-        parts.append(f"거래량 {_summary_money(row.get('volume'))}")
-    if row.get("volume_ratio") not in (None, ""):
-        volume_text = f"거래량 비율 {_fmt_multiple(row.get('volume_ratio'))}"
-        if row.get("volume_ratio_min") not in (None, ""):
-            volume_text += f" (기준 {_fmt_multiple(row.get('volume_ratio_min'))})"
-        if row.get("volume_ratio_raw") not in (None, "") and row.get("volume_ratio_raw") != row.get("volume_ratio"):
-            volume_text += f" / 원비율 {_fmt_multiple(row.get('volume_ratio_raw'))}"
-        if row.get("volume_adjusted") is True and row.get("volume_adjustment_reason"):
-            volume_text += f" / 보정 {row.get('volume_adjustment_reason')}"
-        parts.append(volume_text)
-    if row.get("recent_high") not in (None, ""):
-        parts.append(f"최근 고점 {_summary_money(row.get('recent_high'))}")
-    if row.get("breakout_level") not in (None, ""):
-        parts.append(f"돌파 기준 {_summary_money(row.get('breakout_level'))}")
-    if row.get("confidence_score") not in (None, ""):
-        confidence_text = f"신뢰도 {_summary_money(row.get('confidence_score'))}"
-        if row.get("confidence_threshold") not in (None, ""):
-            confidence_text += f" (기준 {_summary_money(row.get('confidence_threshold'))})"
-        parts.append(confidence_text)
-    if row.get("breakout_proximity_score") not in (None, ""):
-        parts.append(f"돌파 근접 점수 {_summary_money(row.get('breakout_proximity_score'))}")
-    lines = [f"{prefix}: " + " / ".join(parts)] if parts else []
-
-    gate_parts: List[str] = []
-    if row.get("entry_quality_score") not in (None, ""):
-        quality_text = f"진입 품질 {_summary_money(row.get('entry_quality_score'))}"
-        if row.get("entry_quality_tier") not in (None, ""):
-            quality_text += f" ({row.get('entry_quality_tier')})"
-        gate_parts.append(quality_text)
-    if row.get("entry_hard_gate_passed") is True:
-        gate_parts.append("hard gate 통과")
-    elif row.get("entry_hard_gate_passed") is False:
-        blockers = row.get("entry_hard_gate_blockers")
-        blocker_text = ""
-        if isinstance(blockers, list):
-            blocker_text = ", ".join(str(x or "").replace("_", " ") for x in blockers[:4] if str(x or "").strip())
-        gate_parts.append(f"hard gate 미통과{f' ({blocker_text})' if blocker_text else ''}")
-    if row.get("entry_quality_vs_gate_summary") not in (None, ""):
-        gate_parts.append(str(row.get("entry_quality_vs_gate_summary")).replace("_", " "))
-    if gate_parts:
-        lines.append("진입 품질 vs 허가: " + " / ".join(gate_parts))
-
-    setup_parts: List[str] = []
-    if row.get("human_candle_quality_score") not in (None, ""):
-        setup_parts.append(f"캔들 품질 {_summary_money(row.get('human_candle_quality_score'))}")
-    if row.get("human_vwap_reference_quality_score") not in (None, ""):
-        setup_parts.append(f"VWAP 신뢰도 {_summary_money(row.get('human_vwap_reference_quality_score'))}")
-    if row.get("human_reward_room_score") not in (None, ""):
-        setup_parts.append(f"위쪽 여지 점수 {_summary_money(row.get('human_reward_room_score'))}")
-    if row.get("human_multi_window_structure_score") not in (None, ""):
-        setup_parts.append(f"다중 구간 구조 {_summary_money(row.get('human_multi_window_structure_score'))}")
-    if setup_parts:
-        lines.append("진입 자리 품질: " + " / ".join(setup_parts))
-
-    candle_parts: List[str] = []
-    if row.get("close_location") not in (None, ""):
-        candle_parts.append(f"종가 위치 {_summary_money(row.get('close_location'))}")
-    if row.get("upper_wick_ratio") not in (None, ""):
-        candle_parts.append(f"윗꼬리 {_summary_money(row.get('upper_wick_ratio'))}")
-    if row.get("lower_wick_ratio") not in (None, ""):
-        candle_parts.append(f"아랫꼬리 {_summary_money(row.get('lower_wick_ratio'))}")
-    if row.get("body_ratio") not in (None, ""):
-        candle_parts.append(f"몸통 {_summary_money(row.get('body_ratio'))}")
-    if candle_parts:
-        lines.append("캔들 근거: " + " / ".join(candle_parts))
-
-    vwap_parts: List[str] = []
-    if row.get("vwap_source") not in (None, ""):
-        vwap_parts.append(f"소스 {_metadata_value(row.get('vwap_source'))}")
-    if row.get("vwap_bar_count") not in (None, ""):
-        vwap_parts.append(f"사용 분봉 {int(_num_opt(row.get('vwap_bar_count')) or 0)}개")
-    if row.get("explicit_vwap_count") not in (None, ""):
-        vwap_parts.append(f"원본 VWAP {int(_num_opt(row.get('explicit_vwap_count')) or 0)}개")
-    if row.get("explicit_vwap_ratio") not in (None, ""):
-        vwap_parts.append(f"원본 비율 {_summary_money(row.get('explicit_vwap_ratio'))}")
-    if vwap_parts:
-        lines.append("VWAP 근거: " + " / ".join(vwap_parts))
-
-    reward_parts: List[str] = []
-    if row.get("prior_resistance") not in (None, ""):
-        reward_parts.append(f"근접 저항 {_summary_money(row.get('prior_resistance'))}")
-    if row.get("reward_room_pct") not in (None, ""):
-        reward_parts.append(f"저항까지 {_fmt_pct(row.get('reward_room_pct'))}")
-    if row.get("breakout_extension_pct") not in (None, ""):
-        reward_parts.append(f"돌파 후 이격 {_fmt_pct(row.get('breakout_extension_pct'))}")
-    if reward_parts:
-        lines.append("위쪽 여지: " + " / ".join(reward_parts))
-
-    return lines
-
+    return _entry_signal_metric_summary_lines_impl(snapshot, prefix=prefix, deps=_markdown_signal_deps())
 
 def _number_from_text(value: Any) -> Optional[float]:
     text = str(value or "").replace(",", "").strip()
@@ -3274,104 +1469,7 @@ def _enrich_exit_signal_snapshot_from_monitor(
     snapshot: Dict[str, Any],
     monitor: Dict[str, Any],
 ) -> Dict[str, Any]:
-    out = dict(snapshot or {})
-    monitor = _as_dict(monitor)
-    if not monitor:
-        return out
-
-    def _first_present(*keys: str) -> Any:
-        for key in keys:
-            value = monitor.get(key)
-            if value not in (None, ""):
-                return value
-        return None
-
-    def _set_if_present(key: str, *candidates: str) -> None:
-        if out.get(key) not in (None, ""):
-            return
-        value = _first_present(*candidates)
-        if value not in (None, ""):
-            out[key] = value
-
-    _set_if_present("gross_pnl_ratio", "gross_pnl_ratio", "exit_gross_pnl_ratio")
-    _set_if_present("technical_pnl_ratio", "technical_pnl_ratio", "exit_technical_pnl_ratio")
-    _set_if_present("effective_pnl_ratio", "effective_pnl_ratio", "exit_effective_pnl_ratio", "pnl_ratio", "exit_pnl_ratio")
-    _set_if_present("stop_pnl_ratio", "stop_pnl_ratio", "exit_stop_pnl_ratio")
-    _set_if_present("stop_pnl_ratio_source", "stop_pnl_ratio_source", "exit_stop_pnl_ratio_source")
-    _set_if_present("hard_stop_pnl_ratio", "hard_stop_pnl_ratio", "exit_hard_stop_pnl_ratio")
-    _set_if_present("hard_stop_pnl_ratio_source", "hard_stop_pnl_ratio_source", "exit_hard_stop_pnl_ratio_source")
-    _set_if_present("cost_drag_pressure_pct", "cost_drag_pressure_pct", "exit_cost_drag_pressure_pct")
-    _set_if_present("cost_drag_pressure_reason", "cost_drag_pressure_reason", "exit_cost_drag_pressure_reason")
-    _set_if_present("expected_exit_price", "expected_exit_price", "exit_expected_exit_price")
-    _set_if_present("expected_exit_price_source", "expected_exit_price_source", "exit_expected_exit_price_source")
-    _set_if_present("expected_exit_pnl_ratio", "expected_exit_pnl_ratio", "exit_expected_exit_pnl_ratio")
-    _set_if_present("expected_exit_net_pnl_ratio", "expected_exit_net_pnl_ratio", "exit_expected_exit_net_pnl_ratio")
-    _set_if_present(
-        "expected_exit_profit_floor_gap_pct",
-        "expected_exit_profit_floor_gap_pct",
-        "exit_expected_exit_profit_floor_gap_pct",
-    )
-    _set_if_present(
-        "expected_exit_profit_floor_blocked_reason",
-        "expected_exit_profit_floor_blocked_reason",
-        "exit_expected_exit_profit_floor_blocked_reason",
-    )
-    _set_if_present(
-        "stop_loss_cost_drag_blocked_reason",
-        "stop_loss_cost_drag_blocked_reason",
-        "exit_stop_loss_cost_drag_blocked_reason",
-    )
-    _set_if_present("technical_price", "technical_price", "exit_technical_price")
-    _set_if_present("technical_price_source", "technical_price_source", "exit_technical_price_source")
-    _set_if_present("vwap", "vwap", "exit_vwap")
-    _set_if_present("vwap_distance", "vwap_distance", "exit_vwap_distance")
-    _set_if_present("vwap_distance_source", "vwap_distance_source", "exit_vwap_distance_source")
-    _set_if_present("exit_trigger_metric_name", "exit_trigger_metric_name")
-    _set_if_present("exit_trigger_metric_value", "exit_trigger_metric_value")
-    _set_if_present("exit_trigger_metric_source", "exit_trigger_metric_source")
-    _set_if_present("trend_strength", "trend_strength", "engine_trend_strength", "exit_trend_strength")
-    _set_if_present("trend_strength_floor", "trend_strength_floor", "exit_trend_strength_floor")
-
-    thresholds = _as_dict(_as_dict(monitor.get("thresholds_guards_used")).get("thresholds")) or _as_dict(monitor.get("thresholds"))
-    if out.get("trend_strength_floor") in (None, "") and thresholds.get("trend_strength_floor") not in (None, ""):
-        out["trend_strength_floor"] = thresholds.get("trend_strength_floor")
-    if out.get("vwap_breakdown_pct") in (None, ""):
-        threshold = _first_present(
-            "vwap_breakdown_pct",
-            "exit_vwap_breakdown_pct",
-            "monitor_vwap_breakdown_pct",
-        )
-        if threshold in (None, ""):
-            threshold = thresholds.get("vwap_breakdown_pct")
-        if threshold not in (None, ""):
-            out["vwap_breakdown_pct"] = threshold
-
-    for key, candidates in {
-        "cost_drag_pressure": ("cost_drag_pressure", "exit_cost_drag_pressure"),
-        "stop_loss_cost_drag_blocked": (
-            "stop_loss_cost_drag_blocked",
-            "exit_stop_loss_cost_drag_blocked",
-        ),
-        "expected_exit_profit_floor_met": (
-            "expected_exit_profit_floor_met",
-            "exit_expected_exit_profit_floor_met",
-        ),
-        "expected_exit_profit_floor_blocked": (
-            "expected_exit_profit_floor_blocked",
-            "exit_expected_exit_profit_floor_blocked",
-        ),
-    }.items():
-        if out.get(key) not in (None, ""):
-            continue
-        value = _first_present(*candidates)
-        if value not in (None, ""):
-            out[key] = bool(value)
-
-    if out:
-        out.setdefault("basis", "monitor_signal_snapshot")
-        out.setdefault("truth_note", "체결가와 실현손익은 Truth Surface 기준입니다.")
-    return out
-
+    return _enrich_exit_signal_snapshot_from_monitor_impl(snapshot, monitor, deps=_markdown_signal_deps())
 
 def _build_summary_exit_trigger_lines(
     exit_trigger: Any,
@@ -3383,174 +1481,16 @@ def _build_summary_exit_trigger_lines(
     pnl_pct: Any = "",
     truth_source: Any = "",
 ) -> List[str]:
-    raw_trigger_value = exit_signal_snapshot.get("trigger") or exit_trigger
-    raw_trigger_text = " ".join(
-        str(part or "")
-        for part in (raw_trigger_value, fallback_reason)
-        if str(part or "").strip()
+    return _build_summary_exit_trigger_lines_impl(
+        exit_trigger,
+        exit_signal_snapshot,
+        fallback_reason=fallback_reason,
+        buy_price=buy_price,
+        exit_price=exit_price,
+        pnl_pct=pnl_pct,
+        truth_source=truth_source,
+        deps=_markdown_signal_deps(),
     )
-    trigger_label = _normalize_exit_trigger_label(
-        raw_trigger_value,
-        fallback_reason,
-    )
-    raw_trigger_lower = raw_trigger_text.strip().lower()
-    execution_only_exit = (
-        "sell_execution_confirmed" in raw_trigger_lower
-        or "full_sell_quantity_reconciled" in raw_trigger_lower
-        or "sell 실행 및 잔여수량" in raw_trigger_text
-        or "매도 실행 확인" in trigger_label
-        or "전량 매도 수량 확인" in trigger_label
-    )
-    missing_trigger = (
-        execution_only_exit
-        or "exit_trigger_not_captured" in raw_trigger_lower
-        or "monitor_exit_trigger_not_captured" in raw_trigger_lower
-        or "청산 트리거 미확인" in raw_trigger_text
-        or "청산 이유는 기록되지" in raw_trigger_text
-        or "exit reasoning was not captured" in raw_trigger_lower
-    )
-    if missing_trigger:
-        trigger_label = "모니터 청산 트리거 미확인"
-    lines = [f"트리거: {trigger_label}"]
-    if execution_only_exit:
-        lines.append("체결 상태: SELL 실행 및 잔여수량 0 확인으로 전량 청산")
-    trigger_metric_name = str(exit_signal_snapshot.get("exit_trigger_metric_name") or "").strip().lower()
-    trigger_metric_value = exit_signal_snapshot.get("exit_trigger_metric_value")
-    vwap_distance = exit_signal_snapshot.get("vwap_distance")
-    if vwap_distance in (None, "") and trigger_metric_name == "vwap_distance":
-        vwap_distance = trigger_metric_value
-    vwap_distance_num = _num_opt(vwap_distance)
-    is_vwap_trigger = "VWAP" in trigger_label or "vwap" in trigger_label.lower() or trigger_metric_name == "vwap_distance"
-    if is_vwap_trigger and vwap_distance_num is not None:
-        lines[0] = f"트리거: {trigger_label} (VWAP 대비 {_fmt_signed_pct(vwap_distance_num)})"
-
-    trend_strength = exit_signal_snapshot.get("trend_strength")
-    if trend_strength in (None, "") and trigger_metric_name == "trend_strength":
-        trend_strength = trigger_metric_value
-    trend_strength_num = _num_opt(trend_strength)
-    trend_floor_num = _num_opt(exit_signal_snapshot.get("trend_strength_floor"))
-    is_trend_trigger = (
-        trigger_metric_name == "trend_strength"
-        or "추세" in trigger_label
-        or "trend" in str(trigger_label or "").lower()
-    )
-    if is_trend_trigger and trend_strength_num is not None:
-        floor_text = f" <= 기준 {trend_floor_num:.4f}" if trend_floor_num is not None else ""
-        lines[0] = f"트리거: 추세 훼손 (추세강도 {trend_strength_num:.4f}{floor_text})"
-
-    observation_parts: List[str] = []
-    if exit_signal_snapshot.get("confirm_state"):
-        observation_parts.append(f"확인 조건 {exit_signal_snapshot.get('confirm_state')}")
-    if exit_signal_snapshot.get("monitor_current_price") not in (None, ""):
-        observation_parts.append(f"현재가 {_summary_money(exit_signal_snapshot.get('monitor_current_price'))}")
-    if is_vwap_trigger and vwap_distance_num is not None:
-        vwap_value = _num_opt(exit_signal_snapshot.get("vwap"))
-        current_value = _num_opt(exit_signal_snapshot.get("monitor_current_price"))
-        if vwap_value is None and current_value is not None and (1.0 + vwap_distance_num) > 0.0:
-            vwap_value = current_value / (1.0 + vwap_distance_num)
-        vwap_parts = []
-        if vwap_value is not None:
-            vwap_parts.append(f"VWAP {_summary_money(vwap_value)}")
-        vwap_parts.append(f"VWAP 대비 {_fmt_signed_pct(vwap_distance_num)}")
-        threshold_num = _num_opt(exit_signal_snapshot.get("vwap_breakdown_pct"))
-        if threshold_num is not None:
-            vwap_parts.append(f"이탈 기준 {_fmt_signed_pct(-abs(threshold_num))}")
-        observation_parts.append(" / ".join(vwap_parts))
-    if is_trend_trigger and trend_strength_num is not None:
-        trend_parts = [f"추세강도 {trend_strength_num:.4f}"]
-        if trend_floor_num is not None:
-            trend_parts.append(f"훼손 기준 {trend_floor_num:.4f}")
-        source = _metadata_value(exit_signal_snapshot.get("exit_trigger_metric_source"))
-        if source and source != "-":
-            trend_parts.append(f"소스 {source}")
-        observation_parts.append(" / ".join(trend_parts))
-    if exit_signal_snapshot.get("position_avg_price") not in (None, ""):
-        observation_parts.append(
-            f"포지션 평균단가(모니터 신호 계산용) {_summary_money(exit_signal_snapshot.get('position_avg_price'))}"
-        )
-    if exit_signal_snapshot.get("peak_price") not in (None, ""):
-        observation_parts.append(f"고점 {_summary_money(exit_signal_snapshot.get('peak_price'))}")
-    monitor_drawdown_pct = (
-        exit_signal_snapshot.get("monitor_drawdown_pct_text")
-        or exit_signal_snapshot.get("monitor_pnl_pct_text")
-    )
-    if monitor_drawdown_pct:
-        observation_parts.append(f"고점 대비 하락폭 {monitor_drawdown_pct}")
-    if observation_parts:
-        observation_label = (
-            "마지막 모니터 관측값(청산 트리거 아님)"
-            if missing_trigger
-            else "모니터 관측값(신호 판단용)"
-        )
-        lines.append(f"{observation_label}: " + " / ".join(observation_parts))
-
-    pnl_basis_parts: List[str] = []
-    gross_pnl = exit_signal_snapshot.get("gross_pnl_ratio")
-    effective_pnl = exit_signal_snapshot.get("effective_pnl_ratio")
-    stop_pnl = exit_signal_snapshot.get("stop_pnl_ratio")
-    hard_stop_pnl = exit_signal_snapshot.get("hard_stop_pnl_ratio")
-    if gross_pnl not in (None, ""):
-        pnl_basis_parts.append(f"가격 기준 손익 {_fmt_pct(gross_pnl)}")
-    if effective_pnl not in (None, ""):
-        pnl_basis_parts.append(f"비용/계좌 반영 손익 {_fmt_pct(effective_pnl)}")
-    if stop_pnl not in (None, ""):
-        source = _metadata_value(exit_signal_snapshot.get("stop_pnl_ratio_source"))
-        suffix = f", {source}" if source and source != "-" else ""
-        pnl_basis_parts.append(f"일반 손절 판단 기준 {_fmt_pct(stop_pnl)}{suffix}")
-    if hard_stop_pnl not in (None, ""):
-        source = _metadata_value(exit_signal_snapshot.get("hard_stop_pnl_ratio_source"))
-        suffix = f", {source}" if source and source != "-" else ""
-        pnl_basis_parts.append(f"하드스탑 판단 기준 {_fmt_pct(hard_stop_pnl)}{suffix}")
-    if pnl_basis_parts:
-        lines.append("손익 기준 분리: " + " / ".join(pnl_basis_parts))
-
-    if exit_signal_snapshot.get("cost_drag_pressure"):
-        pressure_pct = _fmt_pct(exit_signal_snapshot.get("cost_drag_pressure_pct"))
-        reason = _metadata_value(exit_signal_snapshot.get("cost_drag_pressure_reason"))
-        detail = f" ({pressure_pct})" if pressure_pct != "-" else ""
-        if reason and reason != "-":
-            detail += f", {reason}"
-        lines.append("비용 압박: 비용/계좌 반영 손익이 가격 기준보다 낮게 잡혔습니다" + detail)
-    if exit_signal_snapshot.get("stop_loss_cost_drag_blocked"):
-        reason = _metadata_value(exit_signal_snapshot.get("stop_loss_cost_drag_blocked_reason"))
-        suffix = f" ({reason})" if reason and reason != "-" else ""
-        lines.append("일반 손절 차단: 가격 기준 손절선은 미통과했고 비용 반영 손익만 손절선을 건드렸습니다" + suffix)
-    if exit_signal_snapshot.get("expected_exit_price") not in (None, ""):
-        source = _metadata_value(exit_signal_snapshot.get("expected_exit_price_source"))
-        source_suffix = f", {source}" if source and source != "-" else ""
-        expected_parts = [
-            f"예상 체결가 {_summary_money(exit_signal_snapshot.get('expected_exit_price'))}{source_suffix}",
-        ]
-        if exit_signal_snapshot.get("expected_exit_pnl_ratio") not in (None, ""):
-            expected_parts.append(f"예상 가격 손익 {_fmt_pct(exit_signal_snapshot.get('expected_exit_pnl_ratio'))}")
-        if exit_signal_snapshot.get("expected_exit_net_pnl_ratio") not in (None, ""):
-            expected_parts.append(f"예상 비용 차감 손익 {_fmt_pct(exit_signal_snapshot.get('expected_exit_net_pnl_ratio'))}")
-        if exit_signal_snapshot.get("expected_exit_profit_floor_met") not in (None, ""):
-            expected_parts.append(
-                "비용 바닥 통과" if exit_signal_snapshot.get("expected_exit_profit_floor_met") else "비용 바닥 미통과"
-            )
-        lines.append("예상 체결가 비용 점검: " + " / ".join(expected_parts))
-    if exit_signal_snapshot.get("expected_exit_profit_floor_blocked"):
-        reason = _metadata_value(exit_signal_snapshot.get("expected_exit_profit_floor_blocked_reason"))
-        suffix = f" ({reason})" if reason and reason != "-" else ""
-        lines.append("익절 보류: 예상 체결가 기준 비용 바닥을 통과하지 못했습니다" + suffix)
-
-    truth_parts: List[str] = []
-    if buy_price not in (None, ""):
-        truth_parts.append(f"매수가 {_summary_money(buy_price)}")
-    if exit_price not in (None, ""):
-        truth_parts.append(f"매도가 {_summary_money(exit_price)}")
-    elif buy_price not in (None, ""):
-        truth_parts.append("매도 체결가 미확정")
-    if pnl_pct not in (None, ""):
-        truth_parts.append(f"실현손익률 {_fmt_pct(pnl_pct)}")
-    truth_label = _truth_source_label(truth_source)
-    if truth_label and truth_label != "-":
-        truth_parts.append(truth_label)
-    if truth_parts:
-        lines.append("체결/실현손익 기준: Truth Surface의 " + " / ".join(truth_parts))
-    return lines
-
 
 def _strip_html_tags(text: Any) -> str:
     raw = html.unescape(_clip(text, 300))
@@ -3769,175 +1709,17 @@ def _axis_label(value: Any) -> str:
     return mapping.get(lowered, raw or "-")
 
 
-def _translate_text(text: Any) -> str:
-    raw = html.unescape(_clip(text, 800))
-    if not raw:
-        return ""
-    exact = {
-        "hold": "현재 포지션 판단은 보유 유지입니다.",
-        "open trade": "아직 청산 체결이 확인되지 않아 포지션이 열려 있습니다.",
-        "Current lifecycle status is closed. Entry and exit are connected in one lifecycle story.": "이번 라이프사이클은 종결 상태이며, 진입과 청산이 하나의 거래 흐름으로 연결됐습니다.",
-        "Supervisor approved the order because Allowed.": "슈퍼바이저는 주문을 승인했고 가드 판단은 허용이었습니다.",
-        "Approval mode: not captured in the execution trace": "승인 모드는 실행 추적에는 별도로 남아 있지 않습니다.",
-        "Holding-phase evidence is thin; preserve more monitor context between entry and exit.": "보유 구간 근거는 제한적이며 진입과 청산 사이 모니터 맥락이 충분하지 않습니다.",
-        "Execution outcome summary was not captured.": "거래 생애주기 실행 요약은 기록되지 않았습니다.",
-        "Lifecycle conclusion was not captured.": "최종 생애주기 결론은 기록되지 않았습니다.",
-        "Final decision basis: Scanner selected the highest-ranked candidate after strategist-guided weighting, source scoring, and risk penalties.": "최종 선정 기준은 전략가 가중치, source 점수, 위험 패널티를 반영한 뒤 스캐너 최고 순위 후보를 채택한 것입니다.",
-        "Warnings and missing links were recorded for operator follow-up.": "운영자 후속 확인이 필요한 경고와 누락 연결을 정리했습니다.",
-        "Link same-day reporter analysis to this lifecycle for a complete quality review.": "동일 일자 리포터 분석을 이 거래 생애주기에 연결해 결과 평가를 보강해야 합니다.",
-        "Entry execution evidence is incomplete; preserve BUY linkage for closed-trade diagnosis.": "진입 실행 근거가 불완전해, 닫힌 거래 진단을 위해 BUY 연결 기록을 더 보존해야 합니다.",
-        "Same-price round trips produced fee/tax drag; tighten follow-through evidence before repeating quick reversals.": "동일가 왕복 거래에서 수수료와 세금 손실이 발생했으므로, 빠른 재진입 전에는 후속 탄력 근거를 더 확인해야 합니다.",
+def _markdown_translation_deps() -> Dict[str, Any]:
+    return {
+        "action_label": _action_label,
+        "axis_label": _axis_label,
+        "clip": _clip,
+        "metadata_value": _metadata_value,
+        "translate_reason_phrase": _translate_reason_phrase,
     }
-    if raw in exact:
-        return exact[raw]
-    replaced = raw
-    replaced = replaced.replace("Market Sentiment", "시장 심리")
-    replaced = replaced.replace("Stress Flags", "스트레스 신호")
-    replaced = replaced.replace("Scanner Rank", "스캐너 순위")
-    replaced = replaced.replace("Tie Break Rule", "동률 해소 기준")
-    replaced = replaced.replace("Trailing stop", "추적 손절")
-    replaced = replaced.replace("Hard stop", "고정 손절")
-    replaced = replaced.replace("Adaptive stop", "상황 적응형 손절")
-    replaced = replaced.replace("Take profit", "목표 수익 실현")
-    replaced = replaced.replace("Partial take profit", "1차 일부 익절")
-    replaced = replaced.replace("Profit ladder", "구간별 분할 익절")
-    replaced = replaced.replace("Risk/reward take profit", "손익비 익절")
-    replaced = replaced.replace("VWAP extension take profit", "VWAP 과확장 익절")
-    replaced = replaced.replace("Resistance take profit", "저항권 익절")
-    replaced = replaced.replace("Volume exhaustion take profit", "거래량 둔화 익절")
-    replaced = replaced.replace("Opening gap profit take", "갭 추격 빠른 익절")
-    replaced = replaced.replace("Time-decay profit exit", "시간 경과 수익 보전")
-    replaced = replaced.replace("VWAP breakdown", "VWAP 이탈")
-    replaced = replaced.replace("broad_market_leaders", "시장 대표주")
-    replaced = replaced.replace("illiquid_microcap", "유동성 낮은 초소형주")
-    replaced = replaced.replace("headline_only_momentum", "헤드라인 추격형 모멘텀")
-    replaced = replaced.replace("high_gap_speculative", "갭 과열 투기형")
-    replaced = replaced.replace("브로드마켓 리더", "시장 대표주")
-    replaced = replaced.replace("밸런스드", "균형형")
-    replaced = replaced.replace("turnover and volume", "회전율/거래량")
-    replaced = replaced.replace("정서 지원", "감성 지원")
-    replaced = replaced.replace("top_value", "거래대금 상위")
-    replaced = replaced.replace("top_change_rate", "등락률 상위")
-    replaced = replaced.replace(
-        "pullback rebound above vwap with volume confirmation",
-        "VWAP 위 되돌림 반등과 거래량 확인",
-    )
-    replaced = replaced.replace(
-        "눌림목 rebound above vwap with volume confirmation",
-        "VWAP 위 되돌림 반등과 거래량 확인",
-    )
-    replaced = replaced.replace(
-        "pullback structure above vwap with volume confirmation",
-        "VWAP 위 눌림목 구조와 거래량 확인",
-    )
-    replaced = replaced.replace(
-        "눌림목 structure above vwap with volume confirmation",
-        "VWAP 위 눌림목 구조와 거래량 확인",
-    )
-    replaced = replaced.replace(
-        "breakout above recent high with vwap hold and volume confirmation",
-        "VWAP 유지와 거래량 확인이 있는 최근 고점 돌파",
-    )
-    replaced = replaced.replace(
-        "breakout above recent high with vwap structure confirmation",
-        "직전 고점 돌파와 VWAP 구조 확인",
-    )
-    replaced = re.sub(r"스캐너 1순위\s+([A-Z0-9]+)은", r"스캐너 상위 후보 \1은", replaced)
-    replaced = replaced.replace(" 이유로 막혔고", " 이유로 보류됐고")
-    replaced = replaced.replace(" 사유로 막힌 뒤", " 사유로 보류된 뒤")
-    replaced = replaced.replace("news/global sentiment contribution was", "뉴스/글로벌 심리 기여도")
-    replaced = replaced.replace("Peak Drawdown", "고점 대비 하락폭 기준")
-    replaced = replaced.replace("peak_drawdown", "고점 대비 하락폭 기준")
-    replaced = replaced.replace("partial_take_profit", "1차 일부 익절")
-    replaced = replaced.replace("profit_ladder", "구간별 분할 익절")
-    replaced = replaced.replace("risk_reward_take_profit", "손익비 익절")
-    replaced = replaced.replace("vwap_extension_take_profit", "VWAP 과확장 익절")
-    replaced = replaced.replace("resistance_take_profit", "저항권 익절")
-    replaced = replaced.replace("volume_exhaustion_take_profit", "거래량 둔화 익절")
-    replaced = replaced.replace("opening_gap_profit_take", "갭 추격 빠른 익절")
-    replaced = replaced.replace("time_decay_profit_exit", "시간 경과 수익 보전")
-    replaced = replaced.replace("hard_stop", "고정 손절 기준")
-    replaced = replaced.replace("intraday low break", "장중 저점 이탈 기준")
-    replaced = replaced.replace("intraday_low_break", "장중 저점 이탈 기준")
-    replaced = replaced.replace("below_vwap_reclaim_not_ready", "VWAP 재회복 미완료")
-    replaced = replaced.replace("슈퍼바이저 결정: approve", "슈퍼바이저 결정은 승인입니다.")
-    replaced = replaced.replace("슈퍼바이저 결정: approved", "슈퍼바이저 결정은 승인입니다.")
-    replaced = replaced.replace("가드 판단 사유는 Allowed입니다", "가드 판단 사유는 허용입니다.")
-    replaced = replaced.replace("가드 판단 사유는 allowed입니다", "가드 판단 사유는 허용입니다.")
-    replaced = replaced.replace("액션 검토: SELL", "검토 액션은 매도입니다.")
-    replaced = replaced.replace("액션 검토: BUY", "검토 액션은 매수입니다.")
-    replaced = replaced.replace("확인였습니다", "확인이었습니다")
-    replaced = replaced.replace("입니다..", "입니다.")
-    replaced = replaced.replace(
-        "진입 신뢰도 점수는 0.55로 기준 0.55를 하회했습니다.",
-        "진입 게이트 점수는 기준 0.55와 같은 수준이었습니다.",
-    )
-    if m := re.fullmatch(
-        r"News input:\s*(\d+)\s+headlines were considered across\s*(\d+)\s+targets\s*\((\d+)\s+market\s*/\s*(\d+)\s+candidate signals\)\.?",
-        raw,
-        re.I,
-    ):
-        return f"뉴스 입력은 {m.group(1)}건 헤드라인, 조회 대상 {m.group(2)}개 ({m.group(3)} 시장 / {m.group(4)} 후보 신호)를 반영했습니다."
-    if m := re.fullmatch(r"소스 조합:\s*(.+)에서 선정됨", replaced):
-        return f"선정 소스는 {m.group(1)}입니다."
-    if m := re.fullmatch(r"Scanner Rank:\s*([0-9]+)\?*\s*/\s*Total Score:\s*([0-9.]+)", raw, re.I):
-        return f"스캐너 순위는 {m.group(1)}위였고 총점은 {m.group(2)}였습니다."
-    if m := re.fullmatch(r"Scanner Rank:\s*(.+)", raw, re.I):
-        cleaned = m.group(1).replace("?", "").strip()
-        return f"스캐너 순위: {cleaned}"
-    if m := re.fullmatch(r"Tie Break Rule:\s*(.+)", raw, re.I):
-        return f"동률 해소 기준: {m.group(1)}"
-    if m := re.fullmatch(r"Universe scanned:\s*(\d+)", raw, re.I):
-        return f"비교한 후보 수는 {m.group(1)}개였습니다."
-    if m := re.fullmatch(r"Selected rank:\s*#?(\d+)", raw, re.I):
-        return f"실제 선택 순위는 {m.group(1)}위였습니다."
-    if m := re.fullmatch(
-        r"Actual traded symbol\s+([A-Z0-9]+)\s+had scanner rank\s+#?(\d+);\s*score\s*([0-9.]+);\s*confidence\s*([0-9.]+);\s*risk\s*([0-9.]+)\.?",
-        raw,
-        re.I,
-    ):
-        score = m.group(3).rstrip(".")
-        confidence = m.group(4).rstrip(".")
-        risk = m.group(5).rstrip(".")
-        return (
-            f"실제 체결 종목 {m.group(1)}은 스캐너 {m.group(2)}위였고, "
-            f"점수는 {score}, 신뢰도는 {confidence}, 위험 점수는 {risk} 수준으로 집계됐습니다."
-        )
-    if m := re.fullmatch(r"fallback observed in\s*(\d+)/(\d+)\s*route-tagged runs\.?", raw, re.I):
-        return f"차순위 재평가 경로는 전체 {m.group(2)}회 중 {m.group(1)}회 관측됐습니다."
-    if m := re.fullmatch(r"Fallback entry trigger:\s*(.+)", raw, re.I):
-        return f"fallback 진입 트리거는 {_translate_reason_phrase(m.group(1))}였습니다."
-    if m := re.fullmatch(r"Supervisor verdict:\s*(.+)", raw, re.I):
-        verdict = m.group(1).strip().lower()
-        return f"슈퍼바이저 최종 판단은 {'승인' if verdict == 'approve' else _metadata_value(m.group(1))}입니다."
-    if m := re.fullmatch(r"Supervisor allow:\s*(.+)", raw, re.I):
-        verdict = m.group(1).strip().lower()
-        return f"주문 허용 여부는 {'허용' if verdict in {'yes', 'true', 'allowed'} else _metadata_value(m.group(1))}입니다."
-    if m := re.fullmatch(r"Guard reason:\s*(.+)", raw, re.I):
-        return f"가드 판단 사유는 {_metadata_value(m.group(1))}입니다."
-    if m := re.fullmatch(r"Action reviewed:\s*(.+)", raw, re.I):
-        return f"검토한 액션은 {_action_label(m.group(1))}입니다."
-    if m := re.fullmatch(r"Symbol reviewed:\s*(.+)", raw, re.I):
-        return f"검토한 종목은 {m.group(1).strip()}입니다."
-    if m := re.fullmatch(
-        r"Entry reason:\s*Scanner selected\s+([A-Z0-9]+)\s+as rank #(\d+)\s+out of\s+(\d+)\s+candidates with score\s+([0-9.]+)\s+because it led on\s+(.+?)\.?",
-        raw,
-        re.I,
-    ):
-        rationale = m.group(5)
-        rationale = rationale.replace("trading value", "거래대금")
-        rationale = rationale.replace("theme and sector alignment", "테마 및 섹터 정합성")
-        rationale = rationale.replace("theme alignment", "테마 정합성")
-        rationale = rationale.replace("sector alignment", "섹터 정합성")
-        return (
-            f"진입 이유는 {m.group(1)}이 {m.group(3)}개 후보 중 {m.group(2)}위, "
-            f"점수 {m.group(4)}로 선정됐고 {rationale}에서 앞섰기 때문입니다."
-        )
-    if replaced.startswith("SELL was triggered because "):
-        reason = replaced[len("SELL was triggered because ") :].strip().rstrip(".")
-        return f"{_axis_label(reason)}으로 청산"
-    return replaced
 
+def _translate_text(text: Any) -> str:
+    return _translate_text_impl(text, deps=_markdown_translation_deps())
 
 def _bullet_lines(section: Dict[str, Any], *, skip_prefixes: Iterable[str] = ()) -> List[str]:
     lines: List[str] = []
@@ -4023,16 +1805,6 @@ def _risk_mode_label(value: Any) -> str:
     }.get(raw, _metadata_value(value) or "-")
 
 
-def _playbook_label(value: Any) -> str:
-    raw = _clip(value, 80).lower()
-    return {
-        "defensive": "방어형",
-        "breakout": "돌파형",
-        "pullback": "눌림목형",
-        "leader": "주도주형",
-    }.get(raw, _metadata_value(value) or "-")
-
-
 def _theme_label(value: Any) -> str:
     raw = _clip(value, 120).lower()
     mapping = {
@@ -4097,81 +1869,22 @@ def _memory_status_label(value: Any) -> str:
     return mapping.get(raw, _metadata_value(value) or "-")
 
 
+def _markdown_truth_surface_deps() -> Dict[str, Any]:
+    return {
+        "as_dict": _as_dict,
+        "authority_label": _authority_label,
+        "badge": _badge,
+        "fmt_pct": _fmt_pct,
+        "fmt_price": _fmt_price,
+        "get_truth_surface": _get_truth_surface,
+        "metadata_value": _metadata_value,
+        "num_opt": _num_opt,
+        "trade_cost_analysis_lines": _trade_cost_analysis_lines,
+        "truth_source_label": _truth_source_label,
+    }
+
 def _build_truth_surface(report: Dict[str, Any]) -> List[str]:
-    truth = _get_truth_surface(report)
-    price = _as_dict(truth.get("price"))
-    pnl = _as_dict(truth.get("pnl"))
-    availability = _as_dict(truth.get("availability"))
-    lines: List[str] = []
-
-    broker_buy = price.get("broker_buy_price")
-    broker_sell = price.get("broker_fill_price")
-    account_mark = price.get("account_mark_price")
-    broker_fee = pnl.get("broker_fee")
-    broker_tax = pnl.get("broker_tax")
-    pnl_value = pnl.get("value")
-    pnl_pct = pnl.get("pct")
-
-    lines.append(f"- {_badge('확정값', '#2563eb')} 브로커 체결과 당일 손익 기준을 우선합니다.")
-
-    if broker_buy not in (None, "") and broker_sell not in (None, ""):
-        lines.append(f"- 브로커 매수가/매도가는 {_fmt_price(broker_buy)} / {_fmt_price(broker_sell)}입니다.")
-    elif broker_sell not in (None, ""):
-        lines.append(f"- 브로커 체결 가격은 {_fmt_price(broker_sell)}입니다.")
-
-    if account_mark not in (None, ""):
-        lines.append(f"- 계좌 기준 마크 가격은 {_fmt_price(account_mark)}입니다.")
-
-    if pnl_value not in (None, "", "unavailable") and pnl_pct not in (None, ""):
-        lines.append(f"- 확정 손익은 {pnl_value} / {_fmt_pct(pnl_pct)}입니다.")
-    elif pnl_pct not in (None, ""):
-        lines.append(f"- 브로커 체결가와 계좌 평가손익 기준 추정 손익률은 {_fmt_pct(pnl_pct)}입니다.")
-
-    if broker_fee not in (None, "") or broker_tax not in (None, ""):
-        lines.append(
-            f"- 브로커 수수료/세금은 {broker_fee if broker_fee not in (None, '') else '-'} / "
-            f"{broker_tax if broker_tax not in (None, '') else '-'}입니다."
-        )
-    cost_lines = _trade_cost_analysis_lines(report, bullet="-")
-    for cost_line in cost_lines:
-        lines.append(cost_line.replace("**", ""))
-
-    price_truth_source = _truth_source_label(price.get("price_truth_source"))
-    pnl_truth_source = _truth_source_label(pnl.get("pnl_truth_source"))
-    lines.append(f"- 가격 기준은 {price_truth_source}입니다.")
-    lines.append(f"- 손익 기준은 {pnl_truth_source}입니다.")
-
-    broker_day_source = _truth_source_label(pnl.get("broker_day_truth_source"))
-    broker_day_match_mode = _metadata_value(pnl.get("broker_day_match_mode") or "-")
-    broker_day_authoritative = _authority_label(pnl.get("broker_day_authoritative"))
-    if pnl.get("broker_day_truth_source"):
-        lines.append(
-            f"- 브로커 당일 손익은 {broker_day_authoritative}으로 연결됐고, 소스는 {broker_day_source}입니다."
-        )
-        lines.append(f"- 브로커 당일 손익 매칭 방식은 {broker_day_match_mode}입니다.")
-
-    availability_bits = []
-    availability_bits.append("브로커 체결가는 확보됐습니다" if availability.get("broker_fill_present") else "브로커 체결가는 직접 확보되지 않았습니다")
-    availability_bits.append("계좌 마크는 확인됐습니다" if availability.get("account_mark_present") else "계좌 마크는 없었습니다")
-    availability_bits.append("모니터 가격은 남아 있습니다" if availability.get("monitor_mark_present") else "모니터 가격은 남지 않았습니다")
-    availability_bits.append("브로커 손익도 확인됐습니다" if availability.get("broker_pnl_present") else "브로커 손익은 직접 확인되지 않았습니다")
-    lines.append(f"- 가용성 요약: {', '.join(availability_bits)}.")
-
-    if (
-        broker_buy not in (None, "")
-        and broker_sell not in (None, "")
-        and float(broker_buy) == float(broker_sell)
-        and pnl_value not in (None, "", "unavailable")
-        and _num_opt(pnl_value) is not None
-        and _num_opt(pnl_value) < 0
-    ):
-        lines.append("- 매수가와 매도가가 같았고, 손익은 가격 변동이 아니라 수수료와 세금에서 발생했습니다.")
-
-    if broker_sell not in (None, "") and broker_buy in (None, "") and pnl.get("broker_day_truth_source"):
-        lines.append("- 브로커 매수 체결가는 직접 복구되지 않았고, 확정 손익은 키움 당일 실현손익 기준으로만 확인했습니다.")
-
-    return lines
-
+    return _build_truth_surface_impl(report, deps=_markdown_truth_surface_deps())
 
 def _memory_layers_text(values: Any, *, arrow: bool = False, humanize: bool = True) -> str:
     items = [str(x).strip() for x in _listify(values) if str(x).strip()]
@@ -4463,135 +2176,7 @@ def _resolve_reconstructed_memory_surface(memory: Dict[str, Any]) -> Dict[str, A
 
 
 def _build_prompt_proven_memory(report: Dict[str, Any]) -> List[str]:
-    memory = _as_dict(report.get("memory_surface"))
-    if not memory:
-        return []
-    prompt = _resolve_prompt_proven_surface(memory)
-    status = _as_dict(prompt.get("status"))
-    strategy = _as_dict(prompt.get("strategy_memory"))
-    packets = _as_dict(prompt.get("memory_packets"))
-    policy = _as_dict(prompt.get("commander_memory_policy"))
-    selected = _as_dict(prompt.get("selected_symbol_memory"))
-    reporter = _as_dict(prompt.get("reporter_feedback_packet"))
-    read_model = _as_dict(prompt.get("read_model_facts"))
-    lines: List[str] = []
-
-    def _present_label(value: Any) -> str:
-        return "확인" if bool(value) else "미확인"
-
-    def _yes_no(value: Any) -> str:
-        return "예" if bool(value) else "아니오"
-
-    lines.append(
-        f"- {_badge('입력 확인', '#0f766e')} 전략가 호출 당시 프롬프트에 포함된 메모리, 리포터 피드백, 읽기 모델 입력입니다. "
-        "최종 전략 해석은 '전략가 출력 근거'에서 분리해 봅니다."
-    )
-
-    lines.append(
-        "- [포함 여부] 전략 메모리={strategy}, 메모리 패킷={packets}, 지휘관 정책={policy}, 종목 메모리={symbol}, "
-        "리포터 피드백={reporter}, 읽기 모델={read_model}.".format(
-            strategy=_present_label(status.get("strategy_memory_present")),
-            packets=_present_label(status.get("memory_packets_present")),
-            policy=_present_label(status.get("commander_memory_policy_present")),
-            symbol=_present_label(status.get("selected_symbol_memory_present")),
-            reporter=_present_label(status.get("reporter_feedback_present")),
-            read_model=_present_label(status.get("read_model_facts_present")),
-        )
-    )
-
-    if status.get("commander_memory_policy_present") and policy:
-        application_mode = _metadata_value(policy.get("application_mode") or "-")
-        lines.append(
-            f"- [지휘관 정책] 활성 레이어={_memory_layers_text(policy.get('active_layers'))}; "
-            f"우선순위={_memory_layers_text(policy.get('priority_order'), arrow=True)}; 적용 모드={application_mode}."
-        )
-    else:
-        lines.append("- [지휘관 정책] 전략가 프롬프트에서 직접 확인되지 않았습니다.")
-
-    if status.get("memory_packets_present") and packets:
-        packet_line = "; ".join(
-            [
-                _memory_packet_state_line("daily", _as_dict(packets.get("daily"))),
-                _memory_packet_state_line("weekly", _as_dict(packets.get("weekly"))),
-                _memory_packet_state_line("monthly", _as_dict(packets.get("monthly"))),
-                _memory_packet_state_line("symbol", _as_dict(packets.get("symbol"))),
-            ]
-        )
-        lines.append(f"- [메모리 패킷] {packet_line}.")
-    else:
-        lines.append("- [메모리 패킷] 전략가 프롬프트에서 직접 확인되지 않았습니다.")
-
-    if status.get("strategy_memory_present") and strategy:
-        requested = _metadata_value(strategy.get("requested_day") or "")
-        resolved = _metadata_value(strategy.get("resolved_day") or "")
-        strategy_parts = [f"상태={_memory_status_label(strategy.get('status') or '-')}"]
-        if requested and resolved:
-            strategy_parts.append(f"기준일={requested} -> {resolved}")
-        best = _memory_layers_text(strategy.get("best_playbooks"))
-        worst = _memory_layers_text(strategy.get("worst_playbooks"))
-        failures = _memory_layers_text(strategy.get("recent_failures"))
-        if best != "-":
-            strategy_parts.append(f"우세={_playbook_label(best)}")
-        if worst != "-":
-            strategy_parts.append(f"취약={_playbook_label(worst)}")
-        if failures != "-":
-            strategy_parts.append(f"최근 실패={_failure_label(failures)}")
-        lines.append(f"- [전략 메모리] {', '.join(strategy_parts)}.")
-    else:
-        lines.append("- [전략 메모리] 전략가 프롬프트에서 직접 확인되지 않았습니다.")
-
-    prompt_symbol = _metadata_value(selected.get("symbol") or report.get("symbol") or "-")
-    if status.get("selected_symbol_memory_present"):
-        trade_count = selected.get("trade_count") if selected.get("trade_count") not in (None, "") else "-"
-        win_rate = selected.get("win_rate")
-        win_rate_text = _fmt_pct(win_rate) if win_rate not in (None, "") else "-"
-        dominant_playbook = _metadata_value(selected.get("dominant_playbook") or "-")
-        lines.append(
-            f"- [종목 메모리] 종목={prompt_symbol}, 과거 거래={trade_count}건, 승률={win_rate_text}, 우세 전략={_playbook_label(dominant_playbook)}."
-        )
-    else:
-        lines.append(f"- [종목 메모리] {prompt_symbol} 세부 메모리는 전략가 프롬프트에서 직접 확인되지 않았습니다.")
-
-    if status.get("reporter_feedback_present"):
-        source_label = _humanize_reporter_source_label(_as_dict(reporter.get("source_reports")))
-        reporter_status = _memory_status_label(reporter.get("status") or ("ok" if reporter.get("available") else "-"))
-        reporter_parts = [
-            f"사용 가능={_yes_no(reporter.get('available'))}",
-            f"소비={_yes_no(reporter.get('consumed'))}",
-            f"상태={reporter_status}",
-            f"신뢰도={_metadata_value(reporter.get('confidence') or '-')}",
-            f"소스={source_label}",
-        ]
-        analysis = _as_dict(reporter.get("trade_report_analysis"))
-        if analysis:
-            reporter_parts.append(
-                "요약=닫힌 거래 {closed}건 / 승패 {wins}/{losses} / 평균 손익률 {avg}".format(
-                    closed=analysis.get("closed_trade_count") if analysis.get("closed_trade_count") not in (None, "") else "-",
-                    wins=analysis.get("win_count") if analysis.get("win_count") not in (None, "") else "-",
-                    losses=analysis.get("loss_count") if analysis.get("loss_count") not in (None, "") else "-",
-                    avg=_fmt_pct(analysis.get("avg_pnl_pct")),
-                )
-            )
-        else:
-            reporter_parts.append("요약=없음")
-        lines.append(f"- [리포터 피드백] {', '.join(reporter_parts)}.")
-    else:
-        lines.append("- [리포터 피드백] 전략가 프롬프트에서 직접 확인되지 않았습니다.")
-
-    if status.get("read_model_facts_present"):
-        symbols = _memory_layers_text(read_model.get("symbols"), humanize=False)
-        lines.append(
-            f"- [읽기 모델] 최근 거래={read_model.get('recent_trade_count') or 0}건, "
-            f"종목 패턴={read_model.get('symbol_pattern_count') or 0}건, "
-            f"일간 요약={'있음' if read_model.get('daily_summary_present') else '없음'}."
-        )
-        if symbols != "-":
-            lines.append(f"- [읽기 모델 표본] 종목={symbols}.")
-    else:
-        lines.append("- [읽기 모델] 전략가 프롬프트에서 직접 확인되지 않았습니다.")
-
-    lines.append("- [해석] 이 값들은 전략가 입력 근거입니다. 실제 수치 조정 여부는 아래 메모리 적용 결과의 스캐너/모니터 라인을 우선 봅니다.")
-    return _dedupe(lines)
+    return _build_prompt_proven_memory_impl(report, deps=_strategy_memory_deps())
 
 def _build_reconstructed_trade_memory(report: Dict[str, Any]) -> List[str]:
     memory = _as_dict(report.get("memory_surface"))
@@ -4645,125 +2230,7 @@ def _build_reconstructed_trade_memory(report: Dict[str, Any]) -> List[str]:
     return lines
 
 def _build_memory_application(report: Dict[str, Any]) -> List[str]:
-    memory_app = _as_dict(report.get("memory_application_surface"))
-    if not memory_app:
-        return []
-    memory_surface = _as_dict(report.get("memory_surface"))
-    prompt_surface = _resolve_prompt_proven_surface(memory_surface) if memory_surface else {}
-    prompt_policy = _as_dict(prompt_surface.get("commander_memory_policy"))
-    latest_policy = _as_dict(memory_surface.get("commander_memory_policy"))
-    scanner = _as_dict(memory_app.get("scanner_memory_bias"))
-    monitor = _as_dict(memory_app.get("monitor_memory_bias"))
-    lines: List[str] = []
-
-    lines.append(
-        f"- {_badge('적용 결과', '#b45309')} 메모리 영향은 전략가 입력, 스캐너 적용, 모니터 적용, 최신 커맨더 상태 순서로 분리했습니다."
-    )
-    if prompt_policy:
-        lines.append(_policy_phase_line("전략가 입력 시점", prompt_policy))
-    else:
-        lines.append("- [전략가 입력 시점] 지휘관 메모리 정책은 전략가 프롬프트에서 직접 확인되지 않았습니다.")
-    if scanner:
-        lines.append(_scanner_phase_line(scanner))
-    else:
-        lines.append("- [스캐너 적용 시점] 스캐너 메모리 적용 trace가 없습니다.")
-    if monitor:
-        lines.append(_monitor_phase_line(monitor))
-    else:
-        lines.append("- [모니터 적용 시점] 모니터 메모리 적용 trace가 없습니다.")
-    if latest_policy:
-        lines.append(_policy_phase_line("최신 커맨더 상태", latest_policy))
-        if prompt_policy and not _same_policy_snapshot(prompt_policy, latest_policy):
-            lines.append("- [시점 차이] 최신 커맨더 상태는 전략가 프롬프트 이후 실행/복원 기준이라 전략가 입력 시점과 다를 수 있습니다.")
-    else:
-        lines.append("- [최신 커맨더 상태] 리포트에서 최신 커맨더 메모리 정책을 확인하지 못했습니다.")
-    lines.append("- [적용 해석] 전략가 입력 시점의 비활성 여부보다 실제 매매 영향은 스캐너/모니터 적용 시점 라인을 우선 봅니다.")
-
-    if scanner.get("captured"):
-        active_layers = _memory_layers_text(scanner.get("active_layers"))
-        state = "실제 후보 점수에 적용된 상태" if scanner.get("applied") else "요약만 기록된 상태"
-        lines.append(f"- 스캐너 메모리 가중치는 {state}이며, 실제 반영 레이어는 {active_layers}입니다.")
-        deltas = _as_dict(scanner.get("source_weight_delta"))
-        if deltas:
-            ordered = [f"{key} {float(val):+0.3f}" for key, val in deltas.items() if _num_opt(val) is not None]
-            if ordered:
-                lines.append(f"- 스캐너 소스 가중치 변화는 {', '.join(ordered)}입니다.")
-        else:
-            lines.append("- 스캐너 쪽은 소스 가중치 변화 상세가 남지 않아, 후보별 가감점만 확인됩니다.")
-        symbol = _metadata_value(scanner.get("selected_symbol") or report.get("symbol") or "해당 종목")
-        delta = _num_opt(scanner.get("selected_bias_adjustment"))
-        if delta is not None:
-            if abs(delta) < 1e-12:
-                lines.append(f"- 이번 거래 후보 {symbol}에는 메모리 기반 추가 가감점이 없었습니다.")
-            else:
-                lines.append(f"- 이번 거래 후보 {symbol}에는 메모리 기반 가감점 {delta:+0.3f}이 반영됐습니다.")
-        reason = ", ".join(str(x) for x in _listify(scanner.get("reason")) if str(x).strip())
-        if reason:
-            summary = _reason_summary_line(_listify(scanner.get("reason")), "스캐너 조정은")
-            if summary:
-                lines.append(summary)
-    else:
-        lines.append("- 스캐너 메모리 가중치의 실제 delta는 이 거래 artifact에 기록되지 않았습니다.")
-
-    if monitor.get("captured"):
-        active_layers_text = _memory_layers_text(monitor.get("active_layers"))
-        state = "진입 정책에 적용된 상태" if monitor.get("applied") else "요약만 기록된 상태"
-        lines.append(f"- 모니터 메모리 조정은 {state}이며, 실제 반영 레이어는 {active_layers_text}입니다.")
-        active_layers = [str(x) for x in _listify(monitor.get("active_layers")) if str(x).strip()]
-        if monitor.get("applied") and active_layers:
-            lines.append(f"- 이번 거래에서는 모니터가 {_memory_layers_text(active_layers)} 메모리를 진입 판단에 직접 반영했습니다.")
-        deltas = []
-        for row in _listify(monitor.get("applied_deltas")):
-            row = _as_dict(row)
-            if not row:
-                continue
-            deltas.append(
-                f"{row.get('field')} {float(row.get('from')):0.3f} -> {float(row.get('to')):0.3f} ({float(row.get('delta')):+0.3f})"
-            )
-        if deltas:
-            lines.append(f"- 진입 정책 변화는 {', '.join(deltas)}입니다.")
-            interpretation = _monitor_delta_interpretation(_listify(monitor.get("applied_deltas")))
-            if interpretation:
-                lines.append(f"- 진입 적용 해석: {interpretation}")
-        else:
-            lines.append("- 모니터 진입 정책 변화는 이 거래 artifact에 기록되지 않았습니다.")
-
-        hold_deltas = []
-        for row in _listify(monitor.get("hold_deltas")):
-            row = _as_dict(row)
-            if not row:
-                continue
-            hold_deltas.append(
-                f"{row.get('field')} {float(row.get('from')):0.3f} -> {float(row.get('to')):0.3f} ({float(row.get('delta')):+0.3f})"
-            )
-        if hold_deltas:
-            lines.append(f"- 보유 관리 변화는 {', '.join(hold_deltas)}입니다.")
-            lines.append("- 보유 관리 해석: 경고 후 재확인 조건을 줄여, 보유 포지션을 더 빨리 정리할 수 있게 했습니다.")
-
-        exit_deltas = []
-        for row in _listify(monitor.get("exit_deltas")):
-            row = _as_dict(row)
-            if not row:
-                continue
-            exit_deltas.append(
-                f"{row.get('field')} {float(row.get('from')):0.3f} -> {float(row.get('to')):0.3f} ({float(row.get('delta')):+0.3f})"
-            )
-        if exit_deltas:
-            lines.append(f"- 청산 정책 변화는 {', '.join(exit_deltas)}입니다.")
-            lines.append("- 청산 정책 해석: 손실과 drawdown 기준을 더 타이트하게 잡아, 손상이 확인되면 더 빨리 청산하도록 조정했습니다.")
-
-        lines.append(
-            f"- 모니터 위험 자세는 {_playbook_label(monitor.get('risk_posture') or '-')}이었고, 최종 정책 기준은 {_policy_source_label(monitor.get('effective_policy_source') or '-')}이었습니다."
-        )
-        reason = ", ".join(str(x) for x in _listify(monitor.get("reason")) if str(x).strip())
-        if reason:
-            summary = _reason_summary_line(_listify(monitor.get("reason")), "모니터 조정은")
-            if summary:
-                lines.append(summary)
-    else:
-        lines.append("- 모니터 메모리 조정의 실제 delta는 이 거래 artifact에 기록되지 않았습니다.")
-
-    return lines
+    return _build_memory_application_impl(report, deps=_strategy_memory_deps())
 
 def _market_context_structured_lines(context: Dict[str, Any]) -> List[str]:
     lines: List[str] = []
@@ -4821,172 +2288,46 @@ def _market_context_summary_from_raw(summary: Any) -> str:
     return f"- 시장 상태는 {regime}, 시장 심리는 {sentiment}, 선택 플레이북은 {playbook}입니다."
 
 
-def _build_market_context(report: Dict[str, Any]) -> List[str]:
-    context = _resolve_market_context(report)
-    lines = []
-    summary = _section_summary(context)
-    if summary and not _looks_corrupted(summary):
-        lines.append(summary)
-    structured_summary = _market_context_summary_from_raw(context.get("summary"))
-    if structured_summary and structured_summary not in lines:
-        lines.append(structured_summary)
-    lines.extend(_market_context_structured_lines(context))
-    for raw in _listify(context.get("bullets")):
-        text = _translate_text(raw)
-        if not text:
-            continue
-        if _looks_corrupted(text):
-            continue
-        if _mismatched_symbol_news_bullet(text, report.get("symbol")):
-            continue
-        raw_text = _clip(raw, 240)
-        lowered = raw_text.lower()
-        if lowered.startswith("global sentiment ") or lowered.startswith("global_sentiment score="):
-            continue
-        if lowered.startswith("vix "):
-            continue
-        if lowered.startswith("stress flags:"):
-            continue
-        if lowered.startswith("news input:"):
-            continue
-        if "source=" in lowered or "status=" in lowered:
-            continue
-        if any(key in text for key in ["스캐너 연결 근거는", "전략가 핵심 입력은", "주요 시장 뉴스는"]):
-            continue
-        if text not in [line.removeprefix("- ").strip() for line in lines]:
-            lines.append(f"- {text}")
-    headline_count = _num_opt(context.get("headline_count"))
-    news_query_count = _num_opt(context.get("news_query_count"))
-    market_titles = _sample_news_titles(context.get("market_news_titles"))
-    if headline_count is not None and news_query_count is not None:
-        lines.append(f"- 뉴스 입력은 {int(news_query_count)}개 관찰 대상에서 {int(headline_count)}개 headline을 검토했습니다.")
-    elif headline_count is not None:
-        lines.append(f"- 뉴스 입력은 총 {int(headline_count)}개 headline을 검토했습니다.")
-    if market_titles:
-        lines.append(f"- 참고한 시장 뉴스는 {' / '.join(market_titles)}였습니다.")
-    fallback_summary = _translate_text(context.get("strategist_market_context_summary"))
-    if (
-        fallback_summary
-        and not _looks_corrupted(fallback_summary)
-        and not fallback_summary.lower().startswith("market regime was ")
-    ):
-        lines.append(f"- {fallback_summary}")
-    regime = context.get("regime")
-    sentiment = context.get("market_sentiment")
-    playbook = context.get("selected_playbook") or context.get("playbook")
-    global_sentiment = _num_opt(context.get("global_sentiment_score"))
-    risk_mode = _risk_mode_label(context.get("risk_mode"))
-    if not any("시장 상태는" in line or "시장 심리는" in line for line in lines):
-        pieces: List[str] = []
-        if not _is_not_captured(regime):
-            pieces.append(f"시장 상태는 {_metadata_value(regime)}")
-        if not _is_not_captured(sentiment):
-            pieces.append(f"시장 심리는 {_metadata_value(sentiment)}")
-        if not _is_not_captured(playbook):
-            pieces.append(f"선택된 전략 프레임은 {_playbook_label(playbook)}")
-        if pieces:
-            lines.append(f"- {', '.join(pieces)}으로 정리됐습니다.")
-    if global_sentiment is not None and not any("글로벌 감성 입력은" in line for line in lines):
-        lines.append(f"- 글로벌 감성 입력은 {global_sentiment:.3f}이었고, 전체 위험 톤은 {risk_mode}으로 정리됐습니다.")
-    for korea_line in _korea_index_lines(context):
-        rendered = f"- 국내 지수는 {korea_line} 기준으로 반영됐습니다."
-        if rendered not in lines:
-            lines.append(rendered)
-    preferred = [_theme_label(x) for x in _listify(context.get("preferred_themes")) if not _is_not_captured(x)]
-    avoided = [_theme_label(x) for x in _listify(context.get("avoid_themes")) if not _is_not_captured(x)]
-    if preferred and not any("선호 테마는" in line for line in lines):
-        lines.append(f"- 선호 테마는 {', '.join(preferred)} 기준으로 정리됐습니다.")
-    if avoided and not any("회피 테마는" in line for line in lines):
-        lines.append(f"- 회피 테마는 {', '.join(avoided[:3])} 기준으로 정리됐습니다.")
-    if not lines:
-        lines.append("- 시장 환경 직접 캡처가 충분하지 않아, 저장된 실행 기록과 지휘관 정책 기준으로만 정리했습니다.")
-    return _dedupe(lines)
+def _markdown_strategy_deps() -> Dict[str, Any]:
+    return {
+        "append_strategy_output_line": _append_strategy_output_line,
+        "as_dict": _as_dict,
+        "clip": _clip,
+        "dedupe": _dedupe,
+        "entry_watch_execution_lines": _entry_watch_execution_lines,
+        "is_not_captured": _is_not_captured,
+        "korea_index_lines": _korea_index_lines,
+        "listify": _listify,
+        "looks_corrupted": _looks_corrupted,
+        "market_context_structured_lines": _market_context_structured_lines,
+        "market_context_summary_from_raw": _market_context_summary_from_raw,
+        "memory_layers_text": _memory_layers_text,
+        "metadata_value": _metadata_value,
+        "mismatched_symbol_news_bullet": _mismatched_symbol_news_bullet,
+        "news_linkage_strength_label": _news_linkage_strength_label,
+        "noun_predicate_was": _noun_predicate_was,
+        "num_opt": _num_opt,
+        "playbook_label": _playbook_label,
+        "policy_token_label": _policy_token_label,
+        "rank_scope_text": _rank_scope_text,
+        "resolve_market_context": _resolve_market_context,
+        "resolve_strategist_output_surface": _resolve_strategist_output_surface,
+        "risk_mode_label": _risk_mode_label,
+        "sample_news_titles": _sample_news_titles,
+        "sample_news_titles_for_symbol": _sample_news_titles_for_symbol,
+        "section_summary": _section_summary,
+        "strategy_output_layer_bits": _strategy_output_layer_bits,
+        "strategy_output_list_text": _strategy_output_list_text,
+        "strategy_output_text": _strategy_output_text,
+        "theme_label": _theme_label,
+        "translate_text": _translate_text,
+    }
 
+def _build_market_context(report: Dict[str, Any]) -> List[str]:
+    return _build_market_context_impl(report, deps=_markdown_strategy_deps())
 
 def _build_strategist_summary(report: Dict[str, Any]) -> List[str]:
-    strategist = _as_dict(report.get("strategist_summary"))
-    context = _resolve_market_context(report)
-    shared = _as_dict(report.get("shared_facts"))
-    lines: List[str] = []
-    summary = _section_summary(strategist)
-    if summary and not _looks_corrupted(summary):
-        lines.append(summary)
-    for raw in _listify(strategist.get("bullets")):
-        text = _translate_text(raw)
-        if text and not _looks_corrupted(text):
-            if _mismatched_symbol_news_bullet(text, report.get("symbol")):
-                continue
-            lines.append(f"- {text}")
-    context_bullets = [_translate_text(x) for x in _listify(context.get("bullets")) if _translate_text(x)]
-    for text in context_bullets:
-        if _looks_corrupted(text):
-            continue
-        if text.startswith("전략가 핵심 입력은") or text.startswith("주요 시장 뉴스는"):
-            lines.append(f"- {text}")
-    if not lines:
-        commander_route = _as_dict(shared.get("commander_route"))
-        applied_policy = _as_dict(commander_route.get("applied_policy"))
-        interpretation_policy = _as_dict(applied_policy.get("interpretation_policy"))
-        entry_style = _playbook_label(interpretation_policy.get("entry_style"))
-        notes = [_clip(x, 120) for x in _listify(interpretation_policy.get("notes")) if _clip(x, 120)]
-        required = [_policy_token_label(x) for x in _listify(interpretation_policy.get("required_checks")) if _clip(x, 80)]
-        blockers = [_policy_token_label(x) for x in _listify(interpretation_policy.get("blockers")) if _clip(x, 80)]
-        if entry_style != "-":
-            lines.append(f"- 전략가는 최종적으로 {entry_style} 전략 프레임을 유지했습니다.")
-        if any("monitor_guidance:defensive_exit" in note for note in notes):
-            lines.append("- 청산 쪽에는 방어적 청산 안내를 유지했습니다.")
-        if any("vwap_reclaim_required" in note for note in notes):
-            lines.append("- 진입 해석에서는 VWAP 재회복 확인을 우선 조건으로 두었습니다.")
-        if required:
-            if len(required[:3]) == 1:
-                lines.append(f"- 핵심 확인 조건은 {_noun_predicate_was(required[0])}.")
-            else:
-                lines.append(f"- 핵심 확인 조건은 {', '.join(required[:3])}였습니다.")
-        if blockers:
-            lines.append(f"- 경계 신호는 {', '.join(blockers[:2])}였습니다.")
-        if not lines:
-            lines.append("- 전략가 요약 직접 캡처가 충분하지 않아, 저장된 지휘관 정책과 실행 기록 기준으로만 정리했습니다.")
-    linkage = _as_dict(context.get("news_symbol_linkage"))
-    linkage_strength = _news_linkage_strength_label(linkage.get("linkage_strength"))
-    selected_vs_runner = _as_dict(linkage.get("selected_vs_runner_up"))
-    selected_symbol_raw = selected_vs_runner.get("selected_symbol") or linkage.get("selected_symbol") or report.get("symbol")
-    selected_symbol = _metadata_value(selected_symbol_raw)
-    market_titles = _sample_news_titles(context.get("market_news_titles"))
-    candidate_titles = _sample_news_titles_for_symbol(
-        selected_symbol_raw,
-        context.get("symbol_news_titles"),
-        context.get("symbol_headlines"),
-        context.get("strategist_symbol_headlines"),
-        context.get("candidate_news_titles"),
-    )
-    runner_up_symbol = _metadata_value(
-        selected_vs_runner.get("runner_up_symbol") or linkage.get("runner_up_symbol")
-    )
-    selected_headline_count = _num_opt(selected_vs_runner.get("selected_headline_count"))
-    runner_up_headline_count = _num_opt(selected_vs_runner.get("runner_up_headline_count"))
-    if market_titles or candidate_titles:
-        pieces: List[str] = []
-        if market_titles:
-            pieces.append(f"시장 뉴스 {len(market_titles)}건")
-        if candidate_titles:
-            pieces.append(f"후보 뉴스 {len(candidate_titles)}건")
-        if pieces:
-            lines.append(f"- 전략가는 {'과 '.join(pieces)}을 함께 확인했습니다.")
-        if candidate_titles:
-            lines.append(f"- 전략가가 후보군 판단에 참고한 뉴스는 {' / '.join(candidate_titles)}였습니다.")
-        if not selected_symbol or not runner_up_symbol:
-            lines.append("- 전략가는 뉴스 입력을 시장 톤 확인과 후보군 보조 비교에 사용했습니다.")
-    if selected_symbol and runner_up_symbol and selected_headline_count is not None and runner_up_headline_count is not None:
-        if int(selected_headline_count) == 0 and int(runner_up_headline_count) == 0:
-            lines.append(
-                f"- 뉴스 연결 강도는 {linkage_strength}였고, 선택 종목 {selected_symbol}과 차순위 {runner_up_symbol}에 직접 연결된 뉴스는 모두 없어 시장 톤 확인용으로만 활용했습니다."
-            )
-        else:
-            lines.append(
-                f"- 뉴스 연결 강도는 {linkage_strength}였고, 선택 종목 {selected_symbol}과 차순위 {runner_up_symbol}의 직접 연결 뉴스는 {int(selected_headline_count)}건 / {int(runner_up_headline_count)}건이었습니다."
-            )
-    return _dedupe(lines)
-
+    return _build_strategist_summary_impl(report, deps=_markdown_strategy_deps())
 
 def _resolve_strategist_output_surface(report: Dict[str, Any]) -> Dict[str, Any]:
     direct = _as_dict(report.get("strategist_output") or report.get("strategist_output_surface"))
@@ -5189,166 +2530,7 @@ def _build_strategist_refresh_trace(report: Dict[str, Any]) -> List[str]:
 
 
 def _build_strategist_output_surface(report: Dict[str, Any]) -> List[str]:
-    output = _resolve_strategist_output_surface(report)
-    if not output:
-        return []
-
-    lines: List[str] = []
-    thesis = _as_dict(output.get("strategy_thesis"))
-    strategy_detail = _as_dict(output.get("strategy_detail"))
-    memory = _as_dict(output.get("memory_usage_trace"))
-    news = _as_dict(output.get("news_usage_trace"))
-    scanner = _as_dict(output.get("scanner_handoff"))
-    monitor = _as_dict(output.get("monitor_handoff"))
-    permission = _as_dict(output.get("trade_permission_frame"))
-    boundary = _as_dict(output.get("responsibility_boundary"))
-
-    if thesis:
-        one_line = _strategy_output_text(thesis.get("one_line"), max_len=220)
-        parts = []
-        playbook = _strategy_output_text(thesis.get("selected_playbook"), max_len=60)
-        risk_tone = _strategy_output_text(thesis.get("risk_tone"), max_len=60)
-        market_view = _strategy_output_text(thesis.get("market_view"), max_len=120)
-        if playbook:
-            parts.append(f"playbook={playbook}")
-        if risk_tone:
-            parts.append(f"risk={risk_tone}")
-        if market_view:
-            parts.append(f"market={market_view}")
-        detail = one_line or "; ".join(parts)
-        if one_line and parts:
-            detail = f"{one_line} ({'; '.join(parts)})"
-        _append_strategy_output_line(lines, "전략가 출력", detail)
-
-    if strategy_detail:
-        detail_parts: List[str] = []
-        pre_llm = _strategy_output_text(strategy_detail.get("pre_llm_playbook"), max_len=60)
-        llm_requested = _strategy_output_text(strategy_detail.get("llm_requested_playbook"), max_len=60)
-        final_playbook = _strategy_output_text(strategy_detail.get("final_playbook"), max_len=60)
-        tactical = _strategy_output_text(strategy_detail.get("tactical_strategy"), max_len=80)
-        if pre_llm or llm_requested or final_playbook:
-            detail_parts.append(
-                f"playbook 흐름={pre_llm or '-'} -> {llm_requested or '-'} -> {final_playbook or '-'}"
-            )
-        if tactical:
-            detail_parts.append(f"전술={tactical}")
-        watch = _as_dict(strategy_detail.get("candidate_watch_policy"))
-        if watch:
-            watch_scope = _rank_scope_text(watch)
-            if watch_scope:
-                detail_parts.append(f"후보 감시 제안={watch_scope}")
-        scores = _as_dict(strategy_detail.get("strategy_scores"))
-        if scores:
-            ordered_scores = sorted(
-                [(str(name), value) for name, value in scores.items() if str(name or "").strip()],
-                key=lambda row: float(row[1]) if isinstance(row[1], (int, float)) else -1.0,
-                reverse=True,
-            )
-            detail_parts.append(
-                "전략 점수="
-                + ", ".join(f"{_strategy_output_text(name, max_len=50)}={value}" for name, value in ordered_scores[:3])
-            )
-        _append_strategy_output_line(lines, "전략 디테일", "; ".join(part for part in detail_parts if part))
-
-    execution_lines = _entry_watch_execution_lines(report)
-    if execution_lines:
-        _append_strategy_output_line(lines, "후보 감시 실행", " ".join(execution_lines[:3]))
-
-    if memory:
-        active_layers = _memory_layers_text(memory.get("active_layers"), humanize=False)
-        priority = _memory_layers_text(memory.get("priority_order"), arrow=True, humanize=False)
-        human_summary = _strategy_output_text(memory.get("human_summary"), max_len=220)
-        memory_bits = f"활성 레이어: {active_layers}; 우선순위: {priority}"
-        if human_summary:
-            memory_bits += f"; {human_summary}"
-        _append_strategy_output_line(lines, "메모리", memory_bits)
-        layer_bits = _strategy_output_layer_bits(memory.get("layer_decisions"))
-        if layer_bits:
-            _append_strategy_output_line(lines, "메모리 레이어", layer_bits)
-
-    if news:
-        news_summary = (
-            _strategy_output_text(news.get("human_summary"), max_len=220)
-            or _strategy_output_text(news.get("market_effect"), max_len=180)
-            or _strategy_output_text(news.get("scanner_guidance_effect"), max_len=180)
-        )
-        targets = _strategy_output_list_text(news.get("query_targets"), limit=5)
-        confidence = _strategy_output_text(news.get("confidence"), max_len=40)
-        news_bits = news_summary
-        extras = []
-        if targets:
-            extras.append(f"대상={targets}")
-        if confidence:
-            extras.append(f"신뢰도={confidence}")
-        if extras:
-            news_bits = (news_bits + "; " if news_bits else "") + "; ".join(extras)
-        _append_strategy_output_line(lines, "뉴스", news_bits)
-        headline_text = _strategy_output_list_text(
-            news.get("market_headlines_used") or news.get("candidate_headlines_used"),
-            limit=2,
-            sep=" / ",
-        )
-        if headline_text:
-            _append_strategy_output_line(lines, "뉴스 입력", headline_text)
-
-    if scanner:
-        scanner_parts = []
-        ranking = _strategy_output_text(scanner.get("ranking_guidance"), max_len=180)
-        prefer = _strategy_output_list_text(scanner.get("prefer_candidate_traits"), limit=3)
-        penalize = _strategy_output_list_text(scanner.get("penalize_traits"), limit=3)
-        if ranking:
-            scanner_parts.append(ranking)
-        if prefer:
-            scanner_parts.append(f"선호={prefer}")
-        if penalize:
-            scanner_parts.append(f"회피={penalize}")
-        _append_strategy_output_line(lines, "스캐너 인계", "; ".join(scanner_parts))
-
-    if monitor:
-        monitor_parts = []
-        policy_effect = _strategy_output_text(monitor.get("policy_effect_summary"), max_len=180)
-        aggressiveness = _strategy_output_text(monitor.get("entry_aggressiveness"), max_len=60)
-        confirmations = _strategy_output_list_text(monitor.get("entry_confirmation"), limit=3)
-        hold_off = _strategy_output_list_text(monitor.get("hold_off_conditions"), limit=3)
-        if policy_effect:
-            monitor_parts.append(policy_effect)
-        if aggressiveness:
-            monitor_parts.append(f"진입 강도={aggressiveness}")
-        if confirmations:
-            monitor_parts.append(f"확인={confirmations}")
-        if hold_off:
-            monitor_parts.append(f"보류={hold_off}")
-        _append_strategy_output_line(lines, "모니터 인계", "; ".join(monitor_parts))
-
-    if permission:
-        permission_parts = []
-        level = _strategy_output_text(permission.get("permission_level"), max_len=60)
-        reason = _strategy_output_text(permission.get("reason"), max_len=140)
-        allowed = _strategy_output_list_text(permission.get("entry_allowed_if"), limit=2)
-        blocked = _strategy_output_list_text(permission.get("entry_blocked_if"), limit=2)
-        if level:
-            permission_parts.append(f"권한={level}")
-        if reason:
-            permission_parts.append(reason)
-        if allowed:
-            permission_parts.append(f"허용={allowed}")
-        if blocked:
-            permission_parts.append(f"차단={blocked}")
-        _append_strategy_output_line(lines, "권한 프레임", "; ".join(permission_parts))
-
-    boundary_text = _strategy_output_list_text(
-        scanner.get("not_responsible_for") or boundary.get("not_responsible_for"),
-        limit=4,
-    )
-    if boundary_text:
-        _append_strategy_output_line(
-            lines,
-            "역할 경계",
-            f"전략가는 {boundary_text}을 직접 결정하지 않습니다. 최종 종목/순위 설명은 스캐너와 모니터 산출물을 기준으로 해석합니다.",
-        )
-
-    return _dedupe(lines)
-
+    return _build_strategist_output_surface_impl(report, deps=_markdown_strategy_deps())
 
 def _is_scanner_execution_mismatch_line(value: Any) -> bool:
     return _is_scanner_execution_mismatch_line_impl(value, metadata_value=_metadata_value)

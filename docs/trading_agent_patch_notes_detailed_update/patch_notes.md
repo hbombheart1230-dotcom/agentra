@@ -1834,3 +1834,318 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Scheduled 16:45 Daily UEF: exit 0, one COMPLETE `UEF9RUN_559c27f2d0d1f62b`; UEF-7 14/14, UEF-8 91 pairs (0 COMPARABLE / 7 CONDITIONAL / 84 NOT_COMPARABLE), UEF-9 VALID; pointers and registry aligned; replay reproduced the run ids; freeze 11/11 MATCH.
 - Status: **P1.2 CLOSED; P1.3 FULL DOCKER FROZEN.** Backlog (non-blocking): Q9 compute-once/share, 20-day old-path equivalence NOT_AVAILABLE, monitor-exit-guard environment contamination. Next: P1.5 prework.
 - See `docs/daily_patch/2026-10-08_p1_2_p1_3_final_closure.md`.
+
+# 2026-10-07 - P1.5/P1.6 Refactor Design and Documentation Refactor Start
+
+- Created the design-only `design/p1.5-p1.6-modernization` branch from baseline `b67934a5baa95f4d329ccf345c14ed591a126a0f`.
+- Defined P1.5 as behavior-preserving agent-boundary restoration: explicit input/output contracts, standalone-callable agent cores, naming cleanup, test architecture cleanup, and unchanged production topology.
+- Defined P1.6 as a post-P1.5 orchestration benchmark of the current custom runtime, LangGraph 1.x, and pydantic-graph. No orchestration framework is adopted during P1.5.
+- LLM decision roles remain Strategist + Reporter only. Scanner, Monitor, Supervisor, Executor, and Commander routing remain deterministic unless separately approved in a future feature phase.
+- Started documentation refactoring using an inventory-first, link-safe migration policy. Historical milestone and incident records are preserved as audit assets rather than rewritten.
+- Clarified patch-note authority: `docs/daily_patch/` is the detailed technical audit history; this folder's `patch_notes.json` and `patch_notes.md` are the UI/API-facing canonical changelog pair.
+- No runtime, strategy, broker, execution-authority, or trading-semantic change is included.
+- See `docs/refactor/p1_5_p1_6_master_plan.md`, `docs/refactor/p1_5_refactor_constitution.md`, `docs/refactor/p1_5_documentation_refactor_plan.md`, and `docs/refactor/documentation_inventory.md`.
+
+# 2026-10-07 - P1.5 Strategist Deep Design v0.1
+
+- Mapped all 156 top-level functions in `graphs/nodes/strategist_node.py` to proposed P1.5 owners while keeping `strategist_node` as the stable runtime façade.
+- Preserved existing semantic owners: `StrategistOutput`, Monitor policy normalization, Scanner bias, horizon policy, explanation and artifact contracts.
+- The existing `StrategyInput` remains a per-symbol tactical contract; the new high-level boundary will use `StrategistAgentInput` / `StrategistAgentResult`.
+- Recorded direct private imports and node-module monkeypatch targets as compatibility seams.
+- Defined S1 as a mechanical LLM extraction only; no prompt, call-count, retry/fallback, strategy, candidate, topology or execution change.
+- Defined the explicit Agent-input groups and the current compatibility state-patch surface.
+- Runtime implementation remains gated on the frozen P1.2/P1.3 baseline.
+- See `docs/refactor/p1_5_strategist_implementation_packet_v0_1.md`.
+
+# 2026-10-07 - P1.5 Strategist Design Complete
+
+- Finalized the P1.5 Strategist modular-refactor design without changing runtime behavior.
+- The current 8,878-line Strategist node was mapped into context, LLM, policy, output, observability, service and state-adapter responsibilities.
+- New Agent-level contract names are frozen as `StrategistAgentInput` and `StrategistAgentResult`; the existing per-symbol `StrategyInput` is not repurposed.
+- Existing `StrategistOutput` remains the canonical normalized compatibility output during P1.5.
+- The current 66-key state-write surface will be preserved through a dedicated compatibility state adapter.
+- Implementation sequence is frozen as S1 LLM extraction -> S2 deterministic policy/output -> S3 context/IO -> S4 Agent contract/service/state adapter -> S5 tests/wrapper cleanup.
+- Implementation remains gated by P1.2/P1.3 freeze and baseline SHA/tag capture.
+- Authority: `docs/refactor/p1_5_strategist_implementation_packet_v1_0.md`.
+
+# 2026-10-07 - P1.5 Strategist Design Freeze
+
+- Frozen the Strategist P1.5 implementation design; no runtime code changed.
+- Current source inventory: `graphs/nodes/strategist_node.py` 8,879 lines, 156 top-level functions, 69 direct shared-state write keys.
+- New Agent-level contract names are `StrategistAgentInput` and `StrategistAgentResult`; the existing tactical `StrategyInput` is not repurposed.
+- Existing `StrategistOutput` remains the compatibility authority.
+- Implementation order is S1 LLM extraction → S2 deterministic policy/output → S3 context/IO → S4 service/contract/state adapter → S5 tests/wrappers.
+- Existing private imports and monkeypatch seams remain during staged migration.
+- Runtime implementation remains blocked until the P1.2/P1.3 frozen-baseline gate.
+- See `docs/refactor/p1_5_strategist_implementation_packet_v1_0.md`.
+
+# 2026-10-07 - P1.5 Reporting Design Complete
+
+- Completed the P1.5.1/P1.5.2 Reporting structural design.
+- Mapped the three giant Reporting modules totaling 18,743 LOC and the responsibility-specific helper modules already extracted from them.
+- Proved a roughly 1,100-LOC unreachable legacy tail after `render_trade_summary_markdown_with_evaluation()` delegates and returns.
+- Identified the duplicate/shadowed `_playbook_label` definition in `trade_report_markdown_clean.py`.
+- Froze a staged implementation sequence: dead-code cleanup first, then AI report façade, Markdown façade, and trade-story façade decomposition.
+- Existing report schemas, truth precedence, LLM behavior, artifact paths, provenance, and public/test seams remain unchanged.
+- Design authority: `docs/refactor/p1_5_reporting_implementation_packet_v1_0.md`.
+
+# 2026-10-07 - P1.5.3 Operator UI / Operator Brief Design Complete
+
+- Completed the P1.5.3 Operator UI / Operator Brief structural design without changing runtime behavior.
+- Mapped the approximately 6,872-line apps/operator_ui/data_access_core.py and identified the remaining mixed responsibilities: canonical Brief truth projection, deterministic sections/fallback, compact LLM input, prompt/repair flow, LLM execution, cache/persistence, health/bundle synchronization, and Markdown rendering.
+- Confirmed the repository already contains focused Phase-2 owners for status, run sources, report reads, path linkage, and basic Brief parsing; P1.5.3 continues that existing ownership migration rather than creating a parallel UI framework.
+- Froze the Operator Brief required-field contract and artifact version 14, canonical truth precedence, artifact paths, LLM/prompt/retry semantics, Korean sanitation policy, cache invalidation, and UI-visible meaning.
+- Mapped direct private compatibility seams in tests/test_operator_ui.py (52 tests) and the existing facade migration contract in tests/test_operator_ui_data_access_phase2.py (28 tests).
+- Frozen implementation order: O1 existing-owner completion -> O2 canonical Brief read model/sections -> O3 deterministic fallback/compact/prompt/sanitation -> O4 LLM service/persistence/rendering -> O5 UI page/read orchestration -> O6 operator visibility/period-summary decomposition.
+- Runtime implementation remains gated by the P1.5 frozen-baseline policy.
+- Design authority: docs/refactor/p1_5_operator_ui_brief_implementation_packet_v1_0.md.
+
+# 2026-10-07 - P1.5.5 Scanner Design Complete
+
+- Completed the P1.5.5 Scanner structural design without changing runtime behavior.
+- Mapped the approximately 4,179-line graphs/nodes/scanner_node.py, including 61 top-level functions/classes and a roughly 1,945-line scanner_node orchestration hotspot.
+- Confirmed existing focused owners for candidate selection, theme/practical filters, market-representative guard, candidate risk, output snapshots/payloads, feature hydration, runtime Scanner policy, Scanner bias, and memory bias; P1.5.5 reuses these owners rather than creating a parallel Scanner framework.
+- Classified libs/agent/scanner.py and the older scan_candidates/select_candidate paths as legacy compatibility surfaces rather than canonical Scanner authority.
+- Froze the 21-key compatibility state-write surface and the new ScannerAgentInput / ScannerAgentResult component boundary.
+- Preserved the Scanner/Monitor authority split: Scanner chart-fit and Monitor-readiness remain soft ranking context; Monitor remains the hard entry/exit gate.
+- Frozen implementation order: SC1 contracts/state adapter -> SC2 existing-owner completion -> SC3 guidance/repeat/prior -> SC4 compatibility/chart fit -> SC5 deterministic scoring -> SC6 evidence/IO -> SC7 scanner_node façade/tests.
+- Known Scanner tuning ideas remain deferred; no weights, thresholds, candidate sources, veto semantics, rank ordering, UEF, Step5C/5D, execution or broker behavior changed.
+- Design authority: docs/refactor/p1_5_scanner_implementation_packet_v1_0.md.
+
+# 2026-10-07 - P1.5.6 Monitor Design Complete
+
+- Completed the P1.5.6 Monitor structural design without changing runtime behavior.
+- Mapped graphs/nodes/monitor_node.py at approximately 3,633 LOC with a roughly 2,635-line monitor_node orchestration hotspot and a roughly 660-line entry-candidate evaluator.
+- Identified libs/runtime/intraday_monitor_signals.py (~3,608 LOC) as a separate deterministic signal/policy/chart/scoring hotspot for a later staged decomposition after Monitor orchestration is isolated.
+- Confirmed existing focused owners for candidate cascade, entry guards, cost filtering, policy context, quality, sizing, state, memory bias, minute OHLCV, policy/strategy framing, plus the already decomposed monitor_exit package.
+- Froze MonitorAgentInput / MonitorAgentResult and the 27-key compatibility state-write surface.
+- Preserved the authority chain: Scanner soft ranking -> Monitor hard entry/exit timing and at-most-one intent -> Supervisor approval -> Executor broker side effect.
+- Frozen implementation order: MO1 contracts/state adapter -> MO2 existing-owner completion -> MO3 entry orchestration -> MO4 exit orchestration -> MO5 intent arbitration/state adapter -> MO6 evidence/IO -> MO7 intraday signal engine -> MO8 monitor_node façade/tests.
+- Monitor scoring/shadow promotion, thresholds, chart logic, candidate cascade, sizing, exit guards, carry, execution, UEF and Step5C/5D semantics remain unchanged.
+- Design authority: docs/refactor/p1_5_monitor_implementation_packet_v1_0.md.
+
+# 2026-10-07 - P1.5.7 Commander / Runtime Design Complete
+
+- Completed the P1.5.7 Commander/runtime structural design without changing runtime behavior.
+- Mapped graphs/commander_runtime.py at approximately 6,298 LOC with 105 top-level functions and 46 directly assigned compatibility state keys.
+- Identified the main remaining hotspots in Commander decision building, behavior/applied-policy composition, open-position override logic, runtime lifecycle and phase routing.
+- Confirmed existing focused owners under libs/runtime/commander/ for runtime modes, fast paths, execution bridging, Strategist cache/fingerprint/refresh, session context, shadow runtime and policy surfaces; P1.5.7 completes this existing decomposition rather than building a parallel runtime.
+- Froze Commander as deterministic orchestration/policy with zero new LLM decision roles.
+- Preserved graph_spine / decision_packet / integrated_chain modes, preopen/session/closeout phases, fast-path semantics, forced closeout SELL, pending BUY cancellation, runtime ownership/CAS, Supervisor/Executor safety and broker mutation ordering.
+- Frozen implementation order: C1 contracts/state adapter -> C2 policy composition -> C3 entry control/decision builder -> C4 open-position control -> C5 lifecycle/reporter hooks -> C6 phase routing -> C7 fast-path/execution seams -> C8 evidence/artifacts -> C9 compatibility façade -> C10 test migration.
+- No route policy, strategy, execution guard, UEF, Step5C/5D or broker behavior changed.
+- Design authority: docs/refactor/p1_5_commander_runtime_implementation_packet_v1_0.md.
+
+# 2026-10-07 - P1.5.8 Milestone / Runtime Naming Design Complete
+
+- Completed the P1.5.8 behavior-preserving naming-cleanup design without changing runtime code.
+- Inventory found approximately 468 milestone/phase/step-named file paths, dominated by historical docs (217) and tests (140); these are classified rather than blindly renamed.
+- Frozen active runtime canonicalization for the M13 live-loop/tick/EOD path, legacy M10 bridge, M28 deployment/runtime entrypoints and the M31 agent-chain probe.
+- Frozen compatibility aliases for milestone state/env names including m13_tick_pipeline, M13_LIVE_LOCK_*, M28_LIFECYCLE_*, M31_MOCK_EXAM_SESSION_HARD_GATE, M25_BATCH_* and M25_NOTIFY_*.
+- Historical docs/tests/data, serialized event kinds/schema versions, existing compatibility artifact paths, Step5C/Step5D safety identifiers and UEF/Q program names are explicitly preserved.
+- Lock-file path changes are treated as runtime-ownership-sensitive and are not allowed as cosmetic naming changes.
+- Frozen N1-N7 migration sequence; legacy-wrapper deletion remains P1.5.10 work after consumer proof.
+- No runtime topology, policy, strategy, execution, broker, UEF or Step5C/5D behavior changed.
+- Design authority: docs/refactor/p1_5_runtime_naming_implementation_packet_v1_0.md.
+
+# 2026-10-07 - P1.5.9 Executor Low-Risk Extraction Design Complete
+
+- Completed the P1.5.9 low-risk Executor structural design without changing execution behavior.
+- Mapped graphs/nodes/execute_from_packet.py at approximately 4,190 LOC with 101 top-level functions and a roughly 1,192-line execute_from_packet authority coordinator.
+- Froze the existing execution ordering from readiness/guard evaluation through Supervisor verdict, durable readiness evidence, intent admission, Step5C physical/logical ownership, broker dispatch, BrokerOutcome normalization, UNKNOWN quarantine and post-submit recovery.
+- Classified Supervisor context, all execution guards, request/order shaping, readiness evidence, Step5C CAS/idempotency, BrokerOutcome classification, UNKNOWN quarantine, recent-order persistence and cancel/recovery as SAFETY-LOCK.
+- Limited P1.5.9 extraction to low-risk observability projection, canonical artifact coordination and optional pure order-view helpers, while preserving private compatibility wrappers.
+- Confirmed existing execution owners under libs/execution/ and retained execute_owned_order as the single canonical mutation choke point.
+- Frozen EX1-EX6 implementation order; no generic guard engine, new Executor service, broker abstraction, guard reordering, approval change or mutation-path change is permitted.
+- No strategy, runtime topology, Supervisor authority, broker semantics, UEF, Step5C or Step5D behavior changed.
+- Design authority: docs/refactor/p1_5_executor_low_risk_implementation_packet_v1_0.md.
+
+# 2026-10-07 - P1.5.10 Compatibility-Wrapper Cleanup Design Complete
+
+- Completed the P1.5.10 proof-based compatibility cleanup design without deleting runtime wrappers or changing behavior.
+- Classified retained P1.5 seams as REMOVE_NOW, MIGRATE_THEN_REMOVE, KEEP_STABLE_FACADE, HISTORICAL_COMPATIBILITY, SAFETY_LOCK or CONTRACT_ALIAS.
+- Confirmed libs/runtime/commander/integrated_chain_support.py is still actively imported by graphs/commander_runtime.py and therefore requires consumer migration before deletion.
+- Kept apps/operator_ui/data_access.py and libs/reporting/trade_report_ai.py as intentional stable facades rather than treating wrapper count as a cleanup metric.
+- Classified the legacy libs.agent Strategist/Scanner/Monitor/Commander stack and M11 scan/select nodes as historical compatibility surfaces, with coherent-stack retirement required before deletion.
+- Identified duplicate AgentExecutor implementations as a strong cleanup candidate while leaving ExecutorAgent and Step5 safety paths intact.
+- Frozen a compatibility inventory manifest requirement and CW1-CW7 migration/removal sequence.
+- No runtime topology, state semantics, deployment path, Supervisor authority, guard order, CAS/idempotency, broker mutation, UEF or Step5C/5D behavior changed.
+- Design authority: docs/refactor/p1_5_compatibility_wrapper_cleanup_implementation_packet_v1_0.md.
+
+# 2026-10-07 - P1.5.11 Full Regression / Docker / UEF Replay / Freeze Design Complete
+
+- Completed the P1.5.11 final acceptance and formal-freeze design without changing runtime behavior.
+- Frozen a candidate-SHA-bound acceptance sequence covering targeted subsystem regression, full pytest, artifact hygiene, UEF frozen-manifest verification, deterministic UEF replay, Step5 authority/safety, Docker runtime acceptance, compatibility review, independent audit and human approval.
+- Required UEF acceptance now explicitly includes candidate conservation, pair conservation with unique comparison IDs, UEF-9 VALID binding, deterministic replay and Daily UEF publication-safety behavior.
+- Preserved the 2026-10-06 Daily UEF freshness incident as an operational upstream-freshness failure; P1.5.11 forbids weakening freshness contracts or fabricating canonical backfill to obtain a green freeze.
+- Required Docker revalidation covers clean-image/source parity, startup/health, single runtime ownership, contender rejection, controlled restart/recovery, bounded ownership wait, SIGTERM drain, persistence, resource/EOD smoke and no restart storm/OOM.
+- Required safety freeze preserves Supervisor authority, execute_owned_order as mutation choke point, Step5B/C/D semantics, readiness-evidence ordering, CAS/idempotency, UNKNOWN quarantine and broker-mutation ordering.
+- Frozen P1.5 final evidence/report schema, independent Claude audit, human approval and freeze-tag policy. P1.6 remains blocked until P1_5_FORMAL_FREEZE=YES.
+- Design authority: docs/refactor/p1_5_full_regression_docker_uef_freeze_implementation_packet_v1_0.md.
+
+# 2026-10-07 - P1.5 PREP Closed / Design Frozen
+
+- Formally closed P1.5 preparation and froze the implementation design while keeping runtime implementation gated.
+- Quantified the primary giant refactor surface at 57,847 LOC, or approximately 61,455 LOC including the adjacent intraday Monitor signal-engine hotspot.
+- Frozen target for the six non-Executor giant façade groups: 53,657 LOC of current giant surface becomes approximately 2,700-5,100 LOC of façade/orchestrator surface, a roughly 90.5-95.0% reduction in giant-file surface. This is responsibility extraction, not a claim of equivalent repository-total LOC deletion.
+- Identified approximately 1,100 LOC of definite unreachable Reporting legacy tail as the strongest direct deletion opportunity.
+- Frozen the responsibility-first target tree around thin graph adapters, explicit contracts, services, state adapters, evidence/observability owners, stable public facades and a deliberately centralized execution safety chain.
+- Preserved two LLM decision roles (Strategist and Reporter), Scanner/Monitor deterministic authority, Commander deterministic routing, Supervisor safety authority and Executor broker side-effect authority.
+- Marked P1.5 implementation as NOT STARTED and blocked until the upstream implementation baseline is formally frozen.
+- Closure authority: docs/refactor/p1_5_prep_closure_report.md.
+
+---
+
+## 2026-10-08 · P1.5.2 Reporting Responsibility-Minimal Design v1.1
+**Stage:** Architecture and Maintainability  
+**Tags:** ARCHITECTURE · REFACTOR · TESTING · DOCUMENTATION
+
+- GitHub에 푸시된 R2-A/B/C 실제 구현(3,040 / 3,044 / 949 LOC)을 기준으로 Reporting 상세 설계를 v1.1로 정정했습니다.
+- 최초 책임 최소화 목표를 유지하되, 기존 WRAPPER와 실제 구현 책임을 한 함수씩 KEEP/MOVE/WRAPPER/DEAD/SAFETY-LOCK으로 증명하도록 했습니다.
+- 중복 Owner를 만들지 않고, API 및 monkeypatch 호환성은 사용처를 이전·검증한 후에만 정리합니다.
+- Reporting unit/integration/regression 테스트 분리, 전체 회귀검증과 독립 감사를 최종 P1.5.2 수용 조건으로 명시했습니다.
+- 원래 v1.0 설계 및 R2-A/B/C 완료 증거는 보존하며 이번 커밋은 설계 문서만 변경합니다.
+- 상세: docs/refactor/p1_5_reporting_implementation_packet_v1_1.md.
+
+---
+
+## 2026-10-08 · P1.5 Reporting Branch Consolidation — Design
+**Stage:** Architecture and Maintainability  
+**Tags:** ARCHITECTURE · DOCUMENTATION · REFACTOR
+
+- v1.1 Reporting 책임 최소화 설계를 원래 `design/p1.5-p1.6-modernization`에 fast-forward 통합했습니다.
+- 설계 v1.0 역사 기록과 v1.1 실행 지침을 모두 보존하며, 향후 설계 변경은 이 브랜치 하나에서만 진행합니다.
+- 리팩토링 구현 단일 기준은 `codex/p1.5-reporting`입니다.
+- 해당 브랜치의 설계 검증 Actions 트리거를 갱신했습니다. `main` 병합, 운영 설정 및 런타임 코드는 변경하지 않았습니다.
+- 상세: docs/daily_patch/2026-10-08_p1_5_reporting_branch_consolidation.md.
+
+---
+
+## 2026-10-08 · P1.5.1–P1.5.11 Responsibility-Minimal Design Review
+**Stage:** Architecture and Maintainability  
+**Tags:** ARCHITECTURE · REFACTOR · DESIGN_REVIEW · TESTING · SAFETY
+
+- P1.5.1부터 P1.5.11까지 기존 세부 구현 패킷 전체를 최초 책임 최소화 설계 원칙으로 재검토했습니다.
+- 모든 v1.0 설계와 단계 순서는 유지하고, 함수별 단일 Owner·호환성 소비자 증거·독립 호출·State Adapter·IO/Authority 경계 인수조건을 추가했습니다.
+- P1.5.9 Executor의 안전 체인 중앙집중은 명시적 크기 예외로 보존했습니다.
+- P1.5.10 wrapper 소비자 검증과 P1.5.11 최종 Owner/테스트 보존 증거를 연결했습니다.
+- 설계 수정만 수행했으며 런타임 코드, UEF, 실거래 및 Docker 배포는 변경하지 않았습니다.
+- 정본 추가 문서: docs/refactor/p1_5_1_to_11_responsibility_alignment_v1_1.md.
+
+# 2026-10-07 - P1.5.1 Reporting Definite Dead-Code Cleanup
+
+- Removed 1,131 unreachable lines from `trade_report_ai.py` after the unconditional Markdown delegation return; public API preserved.
+- Removed the earlier shadowed `_playbook_label` from `trade_report_markdown_clean.py`; the later complete binding remains.
+- Required P1.5.1 suite: **149 passed**.
+- Broader affected reporting selection: **280 test assertions passed**; pytest's production-path audit then identified test-only writes to `reports/metrics` and `reports/runtime`, and those tests were redirected to session `tmp_path` storage.
+- No trading/report schema, truth precedence, LLM, Supervisor/Executor, UEF, or broker semantics changed.
+- See `docs/daily_patch/2026-10-07_p1_5_1_reporting_dead_code_cleanup.md`.
+
+# 2026-10-07 - P1.5.2 R2-A Reporting Service Extraction
+
+- Extracted AI trade-report and trade-summary LLM orchestration into `libs/reporting/trade_report/service.py`.
+- Existing `trade_report_ai.py` public functions remain compatibility façades; current helper and router seams are passed through at call time.
+- Façade size moved from 7,223 to 6,770 LOC versus the P1.5.1 baseline.
+- Python 3.12 focused regression: **151 passed**.
+- No schema, truth precedence, LLM call-role/count, retry/repair, artifact-path, trading-authority, UEF, or broker semantic change.
+- See `docs/daily_patch/2026-10-07_p1_5_2_r2a_reporting_service_extraction.md`.
+
+## P1.5.2 R2-A Residual Update — Normalization / Operator Text / Shared Section Seed
+
+- Added `normalization.py`, `operator_text.py`, and `sections.py` under `libs/reporting/trade_report/`.
+- `trade_report_ai.py` now keeps compatibility wrappers while the moved implementations live in responsibility-specific owners.
+- Façade size: **7,223 -> 5,156 LOC** relative to the P1.5.1 baseline (net -2,067 LOC).
+- Python 3.12 focused Reporting suite passed **151/151** after normalization, after operator-text extraction, and again after shared-section extraction.
+- No schema, truth precedence, LLM decision role/count, retry/repair, artifact path, trading authority, UEF or broker behavior changed.
+
+## P1.5.2 R2-A Compact / Deterministic Fallback Update
+
+- Extracted `_compact_story_input_for_llm()` into `trade_report_ai_compact_input.py`.
+- Extracted deterministic `_fallback_report()` into `trade_report_ai_deterministic.py`.
+- Compatibility wrappers and helper injection preserve the existing public/private call seams.
+- `trade_report_ai.py`: **7,223 -> 4,376 LOC** versus the P1.5.1 baseline (net -2,847 LOC).
+- Python 3.12 focused Reporting suite: **151/151 PASS**.
+- No report contract, truth precedence, fallback meaning, LLM role/count, trading authority, UEF or broker semantics changed.
+
+## P1.5.2 R2-A Completion — Section / Context Builders
+
+- Extracted market/scanner and lifecycle section builders into `trade_report/sections.py`.
+- Added `trade_report/context.py` for entry execution visibility and strategist compact-context assembly.
+- `trade_report_ai.py`: **7,223 -> 3,040 LOC** from the P1.5.1 baseline (**-57.9%**).
+- Intermediate dependency-boundary regressions were detected by tests and fixed without weakening assertions.
+- Final focused gate: **151 passed**. Final broader Reporting regression: **297 passed, 1 warning**.
+- R2-A is **COMPLETE**. R2-B Markdown façade decomposition is next.
+
+## P1.5.2 R2-B — Markdown Summary / Signal Extraction
+
+- Added `trade_report/markdown_summary.py` for trade-summary Markdown rendering and summary-input assembly.
+- Added `trade_report/markdown_signals.py` for entry-watch, entry-signal and exit-trigger presentation logic.
+- Existing public/private names in `trade_report_markdown_clean.py` remain compatibility façades/wrappers.
+- Markdown façade size: **5,852 -> 4,187 LOC** (**-28.5%**).
+- Focused regression: **168 passed**. Broader Reporting/API/runtime regression: **297 passed, 1 warning**.
+- No Markdown contract, truth precedence, symbol metadata, signal interpretation, LLM, trading authority, UEF or broker semantic change.
+- R2-B is **ACTIVE**; carryover/memory/translation residual extraction is next.
+- See `docs/daily_patch/2026-10-07_p1_5_2_r2b_markdown_decomposition.md`.
+
+## P1.5.2 R2-B — Carryover / Memory / Translation Update
+
+- Extended `trade_report_markdown_strategy_memory.py` with carryover, prompt-proven memory and memory-application ownership.
+- Added `trade_report/markdown_translation.py` for operator-facing translation rules.
+- `trade_report_markdown_clean.py`: **5,852 -> 3,713 LOC** from the R2-B baseline (**-36.6%**).
+- Incremental gates caught and fixed missing `timedelta` and `html/re` imports without semantic changes.
+- Focused regression: **168 passed**. Broader Reporting/API/runtime regression: **297 passed, 1 warning**.
+- No Markdown contract, memory meaning, translation output contract, truth precedence, LLM, trading authority, UEF or broker semantic change.
+- R2-B remains **ACTIVE**; diagnostics/market/strategist residuals are next.
+
+## P1.5.2 R2-B Completion — Diagnostics / Market / Strategist / Truth
+
+- Added `trade_report/markdown_diagnostics.py` and `trade_report/markdown_strategy.py`.
+- Moved final entry-visibility logic into `markdown_signals.py` and truth-surface rendering into `trade_report_markdown_truth.py`.
+- `trade_report_markdown_clean.py`: **5,852 -> 3,044 LOC** (**-2,808 LOC / -48.0%**).
+- No remaining function in the Markdown façade is 70 LOC or larger.
+- Focused regression: **168 passed**. Final broader Reporting/API/runtime regression: **297 passed, 1 warning**.
+- No Markdown contract, truth precedence, strategist/market meaning, LLM behavior, trading authority, UEF or broker semantic change.
+- R2-B is **COMPLETE**. R2-C trade-story façade decomposition is next.
+
+## P1.5.2 R2-C — Trade-story Human / Evidence / Assembly Extraction
+
+- Moved market/scanner/monitor human payload builders into `trade_story_pipeline_human_payloads.py`.
+- Moved scanner/filter evidence enrichment into `trade_story_pipeline_evidence_hydration.py`.
+- Moved lifecycle bundle, report section seeds and final trade-story assembly into `trade_story_pipeline_story_assembly.py`.
+- `trade_story_pipeline.py`: **4,527 -> 1,873 LOC** (**-58.6%**).
+- Focused trade-story tests: **40 passed**. Broader Reporting + trade-story regression: **337 passed, 1 warning**.
+- No story schema, lifecycle meaning, provenance, truth precedence, LLM, trading authority, UEF or broker semantic change.
+- R2-C is **ACTIVE**; residual scanner/news/provenance helpers are next.
+- See `docs/daily_patch/2026-10-07_p1_5_2_r2c_trade_story_decomposition.md`.
+
+## P1.5.2 R2-C — Residual News / Scanner / Provenance Owners (2026-10-08)
+
+- Extracted 15 news, 8 scanner and 13 provenance helpers into three dedicated `trade_story_pipeline_*.py` owners.
+- Reduced `trade_story_pipeline.py` from **1,873 to 1,200 LOC** (**-673 LOC**, cumulative R2-C reduction **73.5%** from 4,527 LOC).
+- Retained existing façade imports and introduced call-time lookup for helper seams across owner boundaries.
+- Broader Reporting/trade-story suite passed **337 tests** with one existing Starlette warning; isolated helper-seam and UI Patch Notes consistency checks were added to the validation workflow.
+- No report data schema, canonical evidence priority, LLM count/routing, Supervisor/Executor permission, UEF or broker execution change.
+- R2-C remains **ACTIVE** for final seam and residual-function review; no deployment or live-mode enablement occurred.
+- Technical evidence: `docs/daily_patch/2026-10-08_p1_5_2_r2c_residual_owners.md`.
+
+## P1.5.2 R2-C Closure — Final Scanner/News Long Functions (2026-10-08)
+
+- Extracted news/scanner contribution attachment, chart-fit evidence lookups, and normalized feature coverage from the trade-story façade.
+- Final `trade_story_pipeline.py`: **4,527 → 949 LOC** (**-3,578 LOC / ~79.0%** cumulative R2-C reduction); **45 functions**, longest **70 LOC**.
+- Compatibility façade keeps exact callable names, and extracted owner functions resolve patchable helpers at call time.
+- Python 3.12: **337 passed, 1 existing warning** (broader trade-story / Reporting), plus **12 passed, 1 existing warning** (helper seam / UI Patch Notes API and sync).
+- ZIP artifact consists only of changed files; no repo-persistent test artifacts, production deployment, real trade orders, broker changes or authority changes.
+- **R2-C structural extraction COMPLETE on feature branch only**; main integration/deployment requires a separate review.
+- Technical audit: `docs/daily_patch/2026-10-08_p1_5_2_r2c_residual_owners.md`.
+
+---
+
+## 2026-10-08 · P1.5 Reporting Branch Consolidation — Implementation
+**Stage:** Architecture and Maintainability  
+**Tags:** ARCHITECTURE · REFACTOR · DOCUMENTATION · TESTING
+
+- P1.5.1, R2-A, R2-B, R2-C 및 2026-10-08 잔여 추출의 직선형 Git 이력을 `codex/p1.5-reporting` 하나의 구현 기준으로 통합했습니다.
+- 설계 단일 기준은 `design/p1.5-p1.6-modernization`이며, v1.0 원본 설계와 v1.1 책임 최소화 수정 설계를 모두 보존합니다.
+- 기존 Report CI를 통합 브랜치로 옮기고, ZIP 산출물은 해당 커밋의 실제 변경 파일만 포함하도록 수정했습니다.
+- 과거 배치별 브랜치는 개발 중단 및 삭제 검토 대상으로만 유지합니다. `main` 병합이나 실거래/도커 설정은 변경하지 않았습니다.
+- 상세: docs/daily_patch/2026-10-08_p1_5_reporting_branch_consolidation.md.

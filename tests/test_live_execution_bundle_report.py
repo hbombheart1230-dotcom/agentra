@@ -6,6 +6,8 @@ from pathlib import Path
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
+import pytest
+
 from libs.reporting.intraday_trade_reports import (
     apply_live_bundle_backfill as shared_apply_live_bundle_backfill,
     apply_ai_trade_report_generation_result as shared_apply_ai_trade_report_generation_result,
@@ -55,6 +57,15 @@ import libs.reporting.live_execution_bundle_runner as runner_mod
 import libs.reporting.trade_story_pipeline as story_pipeline
 import scripts.run_live_execution_bundle_report as mod
 from libs.reporting.trade_report_ai import build_deterministic_trade_report
+
+
+@pytest.fixture(autouse=True)
+def _isolate_live_bundle_runtime_lock(tmp_path: Path, monkeypatch) -> None:
+    """Keep background-job lock writes out of repo reports/runtime during tests."""
+    monkeypatch.setenv(
+        "INTRADAY_TRADE_REPORT_JOB_LOCK_PATH",
+        str(tmp_path / "runtime" / "intraday_trade_report_bundle.lock"),
+    )
 
 
 def _write_jsonl(path: Path, rows: list[dict]) -> None:

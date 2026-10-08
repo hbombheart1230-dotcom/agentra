@@ -1,0 +1,54 @@
+name: P1.5.2 R2-C Residual Regression
+on:
+  push:
+    branches:
+      - codex/p1.5-reporting
+  workflow_dispatch:
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTEST_ADDOPTS: '-p no:cacheprovider'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Compile extracted owners
+        run: python -m compileall -q libs/reporting/trade_story_pipeline.py libs/reporting/trade_story_pipeline_news.py libs/reporting/trade_story_pipeline_scanner.py libs/reporting/trade_story_pipeline_provenance.py
+      - name: Broader reporting regression
+        run: python -m pytest -q tests/test_trade_report_ai.py tests/test_trade_summary_symbol_metadata.py tests/test_reporting_provenance_preference.py tests/test_trade_report_ai_separated_adapter.py tests/test_run_ai_trade_report_batch.py tests/test_live_execution_bundle_report.py tests/test_live_execution_bundle_report_runtime_recovery.py tests/test_report_metadata_alignment.py tests/test_check_trade_report_runtime_regression.py tests/test_intraday_trade_reports.py tests/test_single_trade_report.py tests/test_symbol_trade_report.py tests/apps/api/test_trade_reports.py tests/test_m25_3_alert_reporting_closeout.py tests/test_trade_story_pipeline_enrichment.py tests/test_phase3_lifecycle_bundle.py
+      - name: Helper-seam and UI patch-notes regression
+        run: python -m pytest -q tests/test_p152_r2c_helper_seams.py tests/test_patch_notes_sync.py tests/apps/api/test_patch_notes.py
+      - name: Pack files changed in this commit only
+        if: success()
+        run: |
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          files = subprocess.check_output(
+              ["git", "diff", "--name-only", "-z", "HEAD^", "HEAD"]
+          ).decode().split("\0")
+          files = [p for p in files if p and Path(p).is_file()]
+          assert files, "No tracked changed files"
+          Path("branch_output").mkdir(exist_ok=True)
+          with ZipFile("branch_output/p15_reporting_changed_files.zip", "w", ZIP_DEFLATED) as out:
+              for name in files:
+                  out.write(name, arcname=name)
+          print("ZIP ENTRIES:", *files, sep="\n- ")
+          PY
+      - name: Upload changed-files ZIP only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p15-reporting-changed-files
+          retention-days: 14
+          if-no-files-found: error
+          path: branch_output/p15_reporting_changed_files.zip

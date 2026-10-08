@@ -41,3 +41,16 @@
 - `tests/test_patch_notes_sync.py`가 `patch_notes.json`의 최신 날짜가 `docs/daily_patch/`의 최신 날짜보다
   뒤처지지 않는지 검증합니다. 새 형식 동결(formal freeze)이나 주요 마일스톤을 `docs/daily_patch/`에
   기록했다면, 같은 작업에서 이 폴더의 두 파일도 반드시 갱신하십시오.
+
+## P1.5 Compatibility Note
+
+The directory name is historical and is a naming-cleanup candidate, but the current API adapter hard-codes this path. Do not rename or move this folder as a documentation-only cleanup.
+
+Any future path rename requires:
+- adapter migration
+- API tests
+- freshness/sync tests
+- web Patch Notes smoke test
+- compatibility/rollback plan
+
+Until then, this JSON/Markdown pair remains the canonical UI/API changelog location.
