@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 113,
+  "entry_count": 114,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3022,6 +3022,38 @@
         "deploy/trading/compose.trading.real.yaml",
         "tests/test_closeout_memory_bounds.py",
         "tests/test_closeout_single_owner_guard.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-08",
+      "version": "P1.2 Closed and P1.3 Full Docker Frozen",
+      "title": "The first scheduled Daily UEF PASS and the first Docker closeout that completed inside the 2 GiB container close P1.2 and freeze the P1.3 Docker runtime",
+      "stage": "Operations and Reliability",
+      "types": [
+        "RELIABILITY",
+        "OPERATIONS",
+        "DATA_INTEGRITY",
+        "SAFETY"
+      ],
+      "summary": "Production evidence from the first full live session on image f4fa335 with the 2 GiB limit: the Docker closeout ran 15:30:08-15:51:50 KST, completed all 17 steps with one durable SUCCESS and no restart or OOM, the four closeout-written UEF sources were current before 16:45, and the scheduled 16:45 Daily UEF completed with one canonical COMPLETE generation (UEF9RUN_559c27f2d0d1f62b; UEF-7 14 candidates, UEF-8 91 pairs, UEF-9 VALID). Two real (mock-account) orders carried hash-verified R6 evidence. P1.2 is CLOSED and P1.3 is FULL DOCKER FROZEN.",
+      "details": [
+        "Historical truth is preserved: the scheduled Daily UEF FAILED on 2026-10-06 and 2026-10-07 (stale closeout-written sources); the 2026-10-07 manual recovery run PASSED and proved the chain but not scheduled timing; the 2026-10-08 scheduled run PASSED.",
+        "Runtime: one canonical Docker runtime on trading-agent-20261007:f4fa335 (application SHA f4fa33521c1aeed30813a2799824eed5e12a58d6), memory limit 2 GiB, RestartCount 0 since the 2026-10-07 22:39 KST deployment, OOMKilled false, cgroup oom/oom_kill/max all 0, Host intraday runtimes 0, ownership generation 1 all day with a current heartbeat. 77 of 77 SessionWatchdog runs recorded HOST_LIVE_START_SKIPPED_CANONICAL_RUNTIME_DOCKER.",
+        "Live session: fresh execution readiness at 09:00:09 and 15:29:53 KST (ready, recovery_required false, reconciled, orphans 0). Two orders (BUY then SELL of 155 x 002720, broker orders 0009477 and 0013018) each had an immutable hash-verified R6 evidence record written before the Step5C executing CAS and the broker submit, ending flat with Step5C claims 0, Step5D orphans 0, no unresolved or duplicate execution. This is the first real-order exercise of R6.2.",
+        "Docker closeout: started 15:30:08, completed 15:51:50 KST (21 min 42 s), exactly one durable SUCCESS (trigger kiwoom_market_status_4, owner pid 1); the 16:00 Host fallback saw the completion and did no maintenance, so no duplicate closeout or lock contention occurred (the cross-namespace guard was therefore not exercised live today).",
+        "Production closeout memory from the new in-container stage logs: RSS 393 MiB at closeout start, process peak (VmHWM) 1066-1081 MiB in the opening_rank1/rank1 stages, about 610-645 MiB retained afterwards; the 1 GiB limit would not have fit. Headroom under 2 GiB is about 0.9 GiB.",
+        "Scheduled Daily UEF: one invocation at 16:45:01 (exit 0, LastTaskResult 0, canonical root C:\\Agentra), one COMPLETE generation whose digests match, current.json, latest.json and the registry all pointing to UEF9RUN_559c27f2d0d1f62b; UEF-7 14 in/14 out, UEF-8 91 expected/91 actual unique pairs (0 COMPARABLE, 7 CONDITIONAL, 84 NOT_COMPARABLE), UEF-9 VALID with promotion/ranking/trading authority all NONE; an in-memory replay reproduced all three run ids. UEF freeze manifest 11/11 MATCH.",
+        "Non-blocking backlog: Q9 forward-outcome rows are still recomputed per consumer; the full 20-day rolling Q9 window was never compared against the old implementation; 12 monitor-exit-guard tests fail in C:\\Agentra but pass in a clean export; the container still binds via the C:/Trading_Agent_System junction; branch cleanup waits for P1.5 prework."
+      ],
+      "impact": "The daily evaluation chain (closeout -> Q9/rank1 sources -> scheduled UEF) now runs end to end inside the production Docker runtime without a restart storm, so the evaluation-authority foundation updates itself daily. P1.2 cross-day observation and the P1.3 Docker runtime are closed; P1.5 prework is next.",
+      "sources": [
+        "docs/daily_patch/2026-10-08_p1_2_p1_3_final_closure.md",
+        "docs/daily_patch/2026-10-07_p1_3_closeout_memory_fix_and_production_deployment.md",
+        "reports/operator_summary/daily/2026-10-08/closeout_maintenance.json",
+        "reports/evaluation/alpha_research_board/2026-10-08/generations/UEF9RUN_559c27f2d0d1f62b/COMPLETE.json",
+        "data/logs/execution_readiness_evidence/2026-10-08.jsonl",
+        "data/logs/events.jsonl"
       ],
       "status": "current"
     }

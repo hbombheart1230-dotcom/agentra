@@ -1824,3 +1824,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - After-hours deployment of image `trading-agent-20261007:f4fa335` (application SHA `f4fa33521c1aeed30813a2799824eed5e12a58d6`, includes R6.2 and yfinance): healthy, RestartCount 0, no OOM, Python PID 1, one canonical Docker runtime, Host live runtime 0, today's closeout SUCCESS visible with no second SUCCESS, broker read path PASS. Ownership generation reset to 1 by design (clean lease release); the old container is kept stopped as the rollback.
 - Not claimed: FULL P1.3 freeze, P1.2 scheduled-validation PASS, R6 live acceptance, next-day Docker closeout PASS. Status: `PRODUCTION_DEPLOYED_PENDING_LIVE_ACCEPTANCE`; P1.2 `OBSERVING`.
 - See `docs/daily_patch/2026-10-07_p1_3_closeout_memory_fix_and_production_deployment.md`.
+
+# 2026-10-08 - P1.2 Closed and P1.3 Full Docker Frozen
+
+- Historical truth kept: scheduled Daily UEF FAILED 2026-10-06 and 2026-10-07; the 2026-10-07 manual recovery PASSED (chain proof only); the 2026-10-08 scheduled run PASSED.
+- Production `trading-agent-20261007:f4fa335` (SHA `f4fa33521c1aeed30813a2799824eed5e12a58d6`), 2 GiB: RestartCount 0, no OOM, one canonical Docker runtime, Host live runtimes 0, ownership generation 1 stable, 77/77 watchdog runs `HOST_LIVE_START_SKIPPED_CANONICAL_RUNTIME_DOCKER`.
+- Fresh readiness at 09:00:09 and 15:29:53 (ready, recovery false, reconciled, orphans 0). Two real orders (BUY/SELL 155 x 002720) carried hash-verified R6 evidence recorded before the Step5C CAS and broker submit; ended flat with no unresolved or duplicate execution.
+- Docker closeout 15:30:08-15:51:50 KST (21 m 42 s), 17/17 steps ok, one durable SUCCESS; the 16:00 Host fallback saw it complete. Process peak RSS 1066-1081 MiB under the 2 GiB limit; oom/oom_kill 0.
+- Scheduled 16:45 Daily UEF: exit 0, one COMPLETE `UEF9RUN_559c27f2d0d1f62b`; UEF-7 14/14, UEF-8 91 pairs (0 COMPARABLE / 7 CONDITIONAL / 84 NOT_COMPARABLE), UEF-9 VALID; pointers and registry aligned; replay reproduced the run ids; freeze 11/11 MATCH.
+- Status: **P1.2 CLOSED; P1.3 FULL DOCKER FROZEN.** Backlog (non-blocking): Q9 compute-once/share, 20-day old-path equivalence NOT_AVAILABLE, monitor-exit-guard environment contamination. Next: P1.5 prework.
+- See `docs/daily_patch/2026-10-08_p1_2_p1_3_final_closure.md`.
