@@ -9,22 +9,28 @@ from libs.reporting.trade_report_common import clip_text as clip, list_text as _
 
 
 def _headline_text(row: Any) -> str:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     item = row if isinstance(row, dict) else {}
     for key in ("title", "headline", "summary", "description", "text", "news_title"):
-        text = clip(item.get(key), max_len=180)
+        text = _facade.clip(item.get(key), max_len=180)
         if text:
             return text
     return ""
 
 
 def _clean_news_fragment(value: Any, *, max_len: int = 180) -> str:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     text = html.unescape(str(value or ""))
     text = re.sub(r"<[^>]+>", "", text)
     text = re.sub(r"\s+", " ", text).strip()
-    return clip(text, max_len=max_len)
+    return _facade.clip(text, max_len=max_len)
 
 
 def _news_item_field(raw: Any, field: str) -> str:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     text = str(raw or "")
     for quote in ("'", '"'):
         marker = f"{field}={quote}"
@@ -36,38 +42,44 @@ def _news_item_field(raw: Any, field: str) -> str:
         if end < 0:
             end = text.find(quote, start)
         if end > start:
-            return _clean_news_fragment(text[start:end])
+            return _facade._clean_news_fragment(text[start:end])
     return ""
 
 
 def _news_sample_parts(raw: Any) -> Dict[str, str]:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     if isinstance(raw, dict):
         return {
-            "title": _clean_news_fragment(
+            "title": _facade._clean_news_fragment(
                 raw.get("title") or raw.get("headline") or raw.get("news_title")
             ),
-            "summary": _clean_news_fragment(
+            "summary": _facade._clean_news_fragment(
                 raw.get("summary") or raw.get("description") or raw.get("text"),
                 max_len=260,
             ),
-            "symbol": _norm_symbol_text(raw.get("symbol") or raw.get("code") or raw.get("ticker")),
+            "symbol": _facade._norm_symbol_text(raw.get("symbol") or raw.get("code") or raw.get("ticker")),
         }
     return {
-        "title": _news_item_field(raw, "title") or _clean_news_fragment(raw),
-        "summary": _news_item_field(raw, "summary"),
-        "symbol": _norm_symbol_text(_news_item_field(raw, "symbol")),
+        "title": _facade._news_item_field(raw, "title") or _facade._clean_news_fragment(raw),
+        "summary": _facade._news_item_field(raw, "summary"),
+        "symbol": _facade._norm_symbol_text(_facade._news_item_field(raw, "symbol")),
     }
 
 
 def _norm_symbol_text(value: Any) -> str:
-    return normalize_symbol(value, allow_test_symbols=True).strip().upper()
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
+    return _facade.normalize_symbol(value, allow_test_symbols=True).strip().upper()
 
 
 def _symbol_name_from_text(text: Any, symbol: str) -> str:
-    target = _norm_symbol_text(symbol)
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
+    target = _facade._norm_symbol_text(symbol)
     if not target:
         return ""
-    cleaned = _clean_news_fragment(text, max_len=320)
+    cleaned = _facade._clean_news_fragment(text, max_len=320)
     pattern = rf"([A-Za-z0-9가-힣&·.\-\s]{{1,40}})\(\s*{re.escape(target)}\s*\)"
     match = re.search(pattern, cleaned)
     if not match:
@@ -81,19 +93,23 @@ def _symbol_name_from_text(text: Any, symbol: str) -> str:
 
 
 def _sample_title_directly_matches_symbol(parts: Dict[str, str], symbol: str) -> bool:
-    target = _norm_symbol_text(symbol)
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
+    target = _facade._norm_symbol_text(symbol)
     title = str(parts.get("title") or "")
     if not target or not title:
         return False
     if target in title:
         return True
-    symbol_name = _symbol_name_from_text(parts.get("summary"), target)
+    symbol_name = _facade._symbol_name_from_text(parts.get("summary"), target)
     return bool(symbol_name and symbol_name in title)
 
 
 def _format_symbol_news_headline(symbol: str, title: str, *, indirect: bool = False) -> str:
-    target = _norm_symbol_text(symbol)
-    cleaned = _clean_news_fragment(title)
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
+    target = _facade._norm_symbol_text(symbol)
+    cleaned = _facade._clean_news_fragment(title)
     if not cleaned:
         return ""
     if re.match(r"\s*\d{6}\s*:", cleaned):
@@ -104,16 +120,18 @@ def _format_symbol_news_headline(symbol: str, title: str, *, indirect: bool = Fa
 
 
 def _collect_symbol_headlines_from_ranked_rows(rows: Any, *, symbol: str, limit: int = 3) -> List[str]:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     if not isinstance(rows, list):
         return []
-    target = _norm_symbol_text(symbol)
+    target = _facade._norm_symbol_text(symbol)
     if not target:
         return []
     direct: List[str] = []
     indirect: List[str] = []
     for row in rows:
         item = row if isinstance(row, dict) else {}
-        row_target = _norm_symbol_text(
+        row_target = _facade._norm_symbol_text(
             item.get("target")
             or item.get("symbol")
             or item.get("code")
@@ -127,17 +145,17 @@ def _collect_symbol_headlines_from_ranked_rows(rows: Any, *, symbol: str, limit:
         if not samples:
             samples = [item]
         for sample in samples:
-            parts = _news_sample_parts(sample)
+            parts = _facade._news_sample_parts(sample)
             title = parts.get("title") or ""
             if not title:
                 continue
-            sample_symbol = _norm_symbol_text(parts.get("symbol"))
+            sample_symbol = _facade._norm_symbol_text(parts.get("symbol"))
             summary_has_target = bool(target in str(parts.get("summary") or ""))
-            title_is_direct = _sample_title_directly_matches_symbol(parts, target)
+            title_is_direct = _facade._sample_title_directly_matches_symbol(parts, target)
             if sample_symbol and sample_symbol != target and not summary_has_target:
                 continue
             bucket = direct if title_is_direct else indirect
-            headline = _format_symbol_news_headline(target, title, indirect=not title_is_direct)
+            headline = _facade._format_symbol_news_headline(target, title, indirect=not title_is_direct)
             if headline and headline not in bucket:
                 bucket.append(headline)
     picked = direct if direct else indirect
@@ -145,8 +163,10 @@ def _collect_symbol_headlines_from_ranked_rows(rows: Any, *, symbol: str, limit:
 
 
 def _headline_matches_symbol(row: Any, symbol: str) -> bool:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     item = row if isinstance(row, dict) else {}
-    target = _norm_symbol_text(symbol)
+    target = _facade._norm_symbol_text(symbol)
     if not target:
         return False
     scalar_candidates = [
@@ -158,14 +178,14 @@ def _headline_matches_symbol(row: Any, symbol: str) -> bool:
         item.get("news_query_target"),
     ]
     for candidate in scalar_candidates:
-        if _norm_symbol_text(candidate) == target:
+        if _facade._norm_symbol_text(candidate) == target:
             return True
     for key in ("symbols", "tickers", "related_symbols"):
         values = item.get(key)
         if not isinstance(values, list):
             continue
         for candidate in values:
-            if _norm_symbol_text(candidate) == target:
+            if _facade._norm_symbol_text(candidate) == target:
                 return True
     joined = " ".join(
         [
@@ -180,6 +200,8 @@ def _headline_matches_symbol(row: Any, symbol: str) -> bool:
 
 
 def _collect_top_headlines(rows: Any, *, limit: int = 3, symbol: str = "") -> List[str]:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     if not isinstance(rows, list):
         return []
     filtered: List[str] = []
@@ -187,12 +209,12 @@ def _collect_top_headlines(rows: Any, *, limit: int = 3, symbol: str = "") -> Li
     for row in rows:
         if not isinstance(row, dict):
             continue
-        text = _headline_text(row)
+        text = _facade._headline_text(row)
         if not text:
             continue
         if text not in fallback:
             fallback.append(text)
-        if symbol and _headline_matches_symbol(row, symbol) and text not in filtered:
+        if symbol and _facade._headline_matches_symbol(row, symbol) and text not in filtered:
             filtered.append(text)
     picked = filtered if symbol else fallback
     return picked[: max(1, int(limit))]
@@ -204,15 +226,17 @@ def _title_prefixed_symbol(value: Any) -> str:
 
 
 def _list_text_for_symbol(values: Any, *, symbol: str, limit: int = 3, max_len: int = 180) -> List[str]:
-    target = _norm_symbol_text(symbol)
-    rows = _list_text(values, limit=50, max_len=max_len)
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
+    target = _facade._norm_symbol_text(symbol)
+    rows = _facade._list_text(values, limit=50, max_len=max_len)
     if not target:
         return rows[: max(1, int(limit))]
     matched: List[str] = []
     untagged: List[str] = []
     has_detectable_symbol = False
     for row in rows:
-        row_symbol = _title_prefixed_symbol(row)
+        row_symbol = _facade._title_prefixed_symbol(row)
         if row_symbol:
             has_detectable_symbol = True
         if row_symbol == target and row not in matched:
@@ -227,9 +251,11 @@ def _list_text_for_symbol(values: Any, *, symbol: str, limit: int = 3, max_len: 
 
 
 def _optional_float(value: Any) -> Any:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     if value in (None, ""):
         return None
-    return safe_float(value, 0.0)
+    return _facade.safe_float(value, 0.0)
 
 
 def _build_news_scanner_contribution_trace(
@@ -241,23 +267,25 @@ def _build_news_scanner_contribution_trace(
     component_snapshot: Dict[str, Any],
     strategist: Dict[str, Any],
 ) -> Dict[str, Any]:
-    positive_total = sum(max(safe_float(value, 0.0), 0.0) for value in dict(score_breakdown or {}).values())
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
+    positive_total = sum(max(_facade.safe_float(value, 0.0), 0.0) for value in dict(score_breakdown or {}).values())
     key_rows: Dict[str, Dict[str, Any]] = {}
     for key in ("trading_value", "momentum", "trend", "theme_boost", "sentiment"):
-        value = safe_float(score_breakdown.get(key), 0.0)
+        value = _facade.safe_float(score_breakdown.get(key), 0.0)
         key_rows[key] = {
             "value": value,
             "positive_share_pct": (100.0 * value / positive_total) if positive_total > 0 else 0.0,
         }
 
     ranked = strategist.get("news_evidence_ranked") if isinstance(strategist.get("news_evidence_ranked"), dict) else {}
-    market_headlines = _collect_top_headlines(list(ranked.get("market_news_ranked") or []), limit=3)
-    symbol_headlines = _collect_top_headlines(
+    market_headlines = _facade._collect_top_headlines(list(ranked.get("market_news_ranked") or []), limit=3)
+    symbol_headlines = _facade._collect_top_headlines(
         list(ranked.get("candidate_news_ranked") or []),
         limit=3,
         symbol=selected_symbol,
     )
-    query_targets = _list_text(
+    query_targets = _facade._list_text(
         strategist.get("news_query_targets")
         if strategist.get("news_query_targets") is not None
         else ranked.get("news_query_targets"),
@@ -273,23 +301,23 @@ def _build_news_scanner_contribution_trace(
     theme_reason = str(strategist.get("theme_source_reason") or theme_packet.get("reason") or "").strip()
 
     return {
-        "selected_score_total": safe_float(selected_score, 0.0),
+        "selected_score_total": _facade.safe_float(selected_score, 0.0),
         "positive_contribution_total": positive_total,
         "core_score_contributions": key_rows,
         "sentiment_inputs": {
-            "news_sentiment_score": _optional_float(component_snapshot.get("news_sentiment")),
-            "global_sentiment_score": _optional_float(component_snapshot.get("global_sentiment")),
-            "blended_sentiment_component": _optional_float(component_snapshot.get("sentiment_component")),
-            "weighted_sentiment_score_contribution": safe_float(score_breakdown.get("sentiment"), 0.0),
+            "news_sentiment_score": _facade._optional_float(component_snapshot.get("news_sentiment")),
+            "global_sentiment_score": _facade._optional_float(component_snapshot.get("global_sentiment")),
+            "blended_sentiment_component": _facade._optional_float(component_snapshot.get("sentiment_component")),
+            "weighted_sentiment_score_contribution": _facade.safe_float(score_breakdown.get("sentiment"), 0.0),
         },
         "theme_alignment_trace": {
-            "theme_boost_score_contribution": safe_float(score_breakdown.get("theme_boost"), 0.0),
-            "theme_source_matched": ("sector_theme" in selected_sources) or safe_float(score_breakdown.get("theme_boost"), 0.0) > 0.0,
-            "strategist_themes": _list_text(strategist.get("themes"), limit=6, max_len=80),
+            "theme_boost_score_contribution": _facade.safe_float(score_breakdown.get("theme_boost"), 0.0),
+            "theme_source_matched": ("sector_theme" in selected_sources) or _facade.safe_float(score_breakdown.get("theme_boost"), 0.0) > 0.0,
+            "strategist_themes": _facade._list_text(strategist.get("themes"), limit=6, max_len=80),
             "theme_source": theme_source,
             "theme_source_status": theme_status,
             "theme_source_reason": theme_reason,
-            "top_themes": _list_text(theme_packet.get("top_themes"), limit=6, max_len=80),
+            "top_themes": _facade._list_text(theme_packet.get("top_themes"), limit=6, max_len=80),
             "theme_scores": dict(theme_packet.get("theme_scores") or {}) if isinstance(theme_packet.get("theme_scores"), dict) else {},
         },
         "news_linkage_trace": {
