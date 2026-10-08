@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 116,
+  "entry_count": 117,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3114,6 +3114,36 @@
         "libs/reporting/trade_story_pipeline_evidence_hydration.py",
         "libs/reporting/trade_story_pipeline_story_assembly.py",
         "libs/reporting/trade_story_pipeline.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-08",
+      "version": "P1.5.2 R2-C Residual Extraction",
+      "title": "Trade-story scanner, news and provenance ownership extraction",
+      "stage": "P1.5 Structural Refactor",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Continued R2-C by extracting news parsing/attribution, scanner selection/score helpers, and provenance/completeness owners while preserving callable façade names and call-time helper patching.",
+      "details": [
+        "Added trade_story_pipeline_news.py, trade_story_pipeline_scanner.py and trade_story_pipeline_provenance.py; moved 36 residual functions without changing their return shapes.",
+        "trade_story_pipeline.py reduced from 1,873 to 1,200 LOC in this tranche; from 4,527 before R2-C to 1,200 LOC in total.",
+        "Owner functions resolve compatibility helpers through the existing façade at call time so prior monkeypatch/test hook semantics remain observable.",
+        "Unchanged broader Python 3.12 Reporting + trade-story regression passed 337/337 with one pre-existing Starlette deprecation warning; supplemental helper seam and patch-notes sync checks added.",
+        "No report schema, news/scanner attribution arithmetic, evidence priority, LLM call routing/count, UEF, trading approval, guards, execution or broker operations intentionally changed.",
+        "R2-C remains ACTIVE pending final façade audit and production-adjacent validation; this is structural code motion only."
+      ],
+      "impact": "Lower trade-story giant-file surface while maintaining compatibility behavior. Operator UI receives this history through canonical Patch Notes JSON/Markdown, not from daily_patch alone.",
+      "sources": [
+        "docs/daily_patch/2026-10-08_p1_5_2_r2c_residual_owners.md",
+        "libs/reporting/trade_story_pipeline.py",
+        "libs/reporting/trade_story_pipeline_news.py",
+        "libs/reporting/trade_story_pipeline_scanner.py",
+        "libs/reporting/trade_story_pipeline_provenance.py",
+        "tests/test_p152_r2c_helper_seams.py"
       ],
       "status": "current"
     }

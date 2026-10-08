@@ -1900,3 +1900,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No story schema, lifecycle meaning, provenance, truth precedence, LLM, trading authority, UEF or broker semantic change.
 - R2-C is **ACTIVE**; residual scanner/news/provenance helpers are next.
 - See `docs/daily_patch/2026-10-07_p1_5_2_r2c_trade_story_decomposition.md`.
+
+## P1.5.2 R2-C — Residual News / Scanner / Provenance Owners (2026-10-08)
+
+- Extracted 15 news, 8 scanner and 13 provenance helpers into three dedicated `trade_story_pipeline_*.py` owners.
+- Reduced `trade_story_pipeline.py` from **1,873 to 1,200 LOC** (**-673 LOC**, cumulative R2-C reduction **73.5%** from 4,527 LOC).
+- Retained existing façade imports and introduced call-time lookup for helper seams across owner boundaries.
+- Broader Reporting/trade-story suite passed **337 tests** with one existing Starlette warning; isolated helper-seam and UI Patch Notes consistency checks were added to the validation workflow.
+- No report data schema, canonical evidence priority, LLM count/routing, Supervisor/Executor permission, UEF or broker execution change.
+- R2-C remains **ACTIVE** for final seam and residual-function review; no deployment or live-mode enablement occurred.
+- Technical evidence: `docs/daily_patch/2026-10-08_p1_5_2_r2c_residual_owners.md`.
