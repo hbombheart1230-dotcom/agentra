@@ -27,6 +27,8 @@ def _is_present(value: Any) -> bool:
 
 
 def compute_evidence_completeness(story_input: Dict[str, Any]) -> Dict[str, Any]:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     obj = dict(story_input or {})
     required_sections = [
         "market_context_human",
@@ -41,9 +43,9 @@ def compute_evidence_completeness(story_input: Dict[str, Any]) -> Dict[str, Any]
     missing_sections: List[str] = []
     for key in required_sections:
         value = obj.get(key)
-        if isinstance(value, dict) and (_is_present(value.get("summary")) or _is_present(value.get("bullets"))):
+        if isinstance(value, dict) and (_facade._is_present(value.get("summary")) or _facade._is_present(value.get("bullets"))):
             present_sections.append(key)
-        elif _is_present(value):
+        elif _facade._is_present(value):
             present_sections.append(key)
         else:
             missing_sections.append(key)
@@ -61,16 +63,20 @@ def _safe_path_text(value: Any) -> str:
 
 
 def _safe_ref_map(values: Any) -> Dict[str, str]:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     if not isinstance(values, dict):
         return {}
     out: Dict[str, str] = {}
     for key, value in values.items():
-        out[str(key)] = _safe_path_text(value)
+        out[str(key)] = _facade._safe_path_text(value)
     return out
 
 
 def _resolve_commander_source_ref(refs: Dict[str, Any], section_provenance: Dict[str, Any]) -> str:
-    ref_map = _safe_ref_map(refs)
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
+    ref_map = _facade._safe_ref_map(refs)
     section_map = dict(section_provenance or {})
     return str(
         ref_map.get("canonical_commander_json")
@@ -123,16 +129,20 @@ def _section_source_entry(
     source: str,
     artifact_path: str = "",
 ) -> Dict[str, str]:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     return {
         "source": str(source or "fallback"),
         "artifact_path": str(artifact_path or ""),
-        "confidence": _source_confidence_label(source),
+        "confidence": _facade._source_confidence_label(source),
     }
 
 
 def build_section_provenance(bundle_out: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     artifacts = bundle_out.get("artifacts") if isinstance(bundle_out.get("artifacts"), dict) else {}
-    evidence_provenance = _derive_evidence_provenance(bundle_out)
+    evidence_provenance = _facade._derive_evidence_provenance(bundle_out)
 
     def _agent_source(agent: str) -> str:
         return str(evidence_provenance.get(agent) or "fallback").strip().lower()
@@ -146,31 +156,31 @@ def build_section_provenance(bundle_out: Dict[str, Any]) -> Dict[str, Dict[str, 
             return str(artifacts.get("reporter_analysis_json") or "").strip()
         return str(artifacts.get("agent_pipeline_trace_json") or "").strip()
 
-    strategist_entry = _section_source_entry(
+    strategist_entry = _facade._section_source_entry(
         source=_agent_source("strategist"),
         artifact_path=_agent_path("strategist"),
     )
-    scanner_entry = _section_source_entry(
+    scanner_entry = _facade._section_source_entry(
         source=_agent_source("scanner"),
         artifact_path=_agent_path("scanner"),
     )
-    monitor_entry = _section_source_entry(
+    monitor_entry = _facade._section_source_entry(
         source=_agent_source("monitor"),
         artifact_path=_agent_path("monitor"),
     )
-    supervisor_entry = _section_source_entry(
+    supervisor_entry = _facade._section_source_entry(
         source=_agent_source("supervisor"),
         artifact_path=_agent_path("supervisor"),
     )
-    executor_entry = _section_source_entry(
+    executor_entry = _facade._section_source_entry(
         source=_agent_source("executor"),
         artifact_path=_agent_path("executor"),
     )
-    reporter_entry = _section_source_entry(
+    reporter_entry = _facade._section_source_entry(
         source=_agent_source("reporter"),
         artifact_path=_agent_path("reporter"),
     )
-    commander_entry = _section_source_entry(
+    commander_entry = _facade._section_source_entry(
         source=_agent_source("commander"),
         artifact_path=_agent_path("commander"),
     )
@@ -188,26 +198,30 @@ def build_section_provenance(bundle_out: Dict[str, Any]) -> Dict[str, Dict[str, 
 
 
 def _section_seed_provenance_entry(section_provenance: Dict[str, Any], key: str) -> Dict[str, str]:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     entry = section_provenance.get(key) if isinstance(section_provenance.get(key), dict) else {}
     return {
         "source": str(entry.get("source") or "fallback"),
         "artifact_path": str(entry.get("artifact_path") or ""),
-        "confidence": str(entry.get("confidence") or _source_confidence_label(entry.get("source"))),
+        "confidence": str(entry.get("confidence") or _facade._source_confidence_label(entry.get("source"))),
     }
 
 
 def build_report_section_provenance_seeds(section_provenance: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
+    # Resolve through the compatibility façade to retain call-time patched helpers.
+    from libs.reporting import trade_story_pipeline as _facade
     provenance = dict(section_provenance or {})
     return {
-        "market_context_at_entry": _section_seed_provenance_entry(provenance, "market_context_human"),
-        "strategist_summary": _section_seed_provenance_entry(provenance, "market_context_human"),
-        "why_this_symbol_was_chosen": _section_seed_provenance_entry(provenance, "scanner_reason_human"),
-        "entry_decision": _section_seed_provenance_entry(provenance, "scanner_reason_human"),
-        "holding_monitoring_story": _section_seed_provenance_entry(provenance, "monitor_reason_human"),
-        "exit_decision": _section_seed_provenance_entry(provenance, "execution_outcome_human"),
-        "scanner_filters": _section_seed_provenance_entry(provenance, "filters_human"),
-        "execution_quality": _section_seed_provenance_entry(provenance, "execution_outcome_human"),
-        "guard_approval_result": _section_seed_provenance_entry(provenance, "guard_reason_human"),
-        "reporter_evaluation": _section_seed_provenance_entry(provenance, "reporter_status_human"),
-        "final_operator_conclusion": _section_seed_provenance_entry(provenance, "operator_conclusion_human"),
+        "market_context_at_entry": _facade._section_seed_provenance_entry(provenance, "market_context_human"),
+        "strategist_summary": _facade._section_seed_provenance_entry(provenance, "market_context_human"),
+        "why_this_symbol_was_chosen": _facade._section_seed_provenance_entry(provenance, "scanner_reason_human"),
+        "entry_decision": _facade._section_seed_provenance_entry(provenance, "scanner_reason_human"),
+        "holding_monitoring_story": _facade._section_seed_provenance_entry(provenance, "monitor_reason_human"),
+        "exit_decision": _facade._section_seed_provenance_entry(provenance, "execution_outcome_human"),
+        "scanner_filters": _facade._section_seed_provenance_entry(provenance, "filters_human"),
+        "execution_quality": _facade._section_seed_provenance_entry(provenance, "execution_outcome_human"),
+        "guard_approval_result": _facade._section_seed_provenance_entry(provenance, "guard_reason_human"),
+        "reporter_evaluation": _facade._section_seed_provenance_entry(provenance, "reporter_status_human"),
+        "final_operator_conclusion": _facade._section_seed_provenance_entry(provenance, "operator_conclusion_human"),
     }
