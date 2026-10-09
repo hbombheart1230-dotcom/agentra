@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 147,
+  "entry_count": 148,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4146,6 +4146,31 @@
         "libs/reporting/trade_story_evidence_parts/canonical.py",
         "libs/reporting/trade_story_evidence_parts/scanner.py",
         "libs/reporting/trade_story_evidence_parts/filters.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Reporting Service Owner Split 07",
+      "title": "Two Reporting service responsibilities separated into <=350 LOC owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "The deterministic trade summary orchestration and AI report generation service are moved into distinct small Owner modules without altering function bodies; service.py remains a compatibility export.",
+      "details": [
+        "libs/reporting/trade_report/service.py: 573 -> 4 LOC",
+        "libs/reporting/trade_report/services/ai_report.py: 347 LOC",
+        "libs/reporting/trade_report/services/trade_summary.py: 232 LOC",
+        "Original dependency injection and LLM attempt semantics unchanged in moved source, target broad CI and independent local equality."
+      ],
+      "impact": "Reporter service code location only; no model/prompt/trading authority changes.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_service_owner_split_07.md",
+        "libs/reporting/trade_report/services/ai_report.py",
+        "libs/reporting/trade_report/services/trade_summary.py"
       ],
       "status": "current"
     }

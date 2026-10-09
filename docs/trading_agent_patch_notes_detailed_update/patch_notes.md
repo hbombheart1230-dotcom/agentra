@@ -2239,3 +2239,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 - Trade Story의 정본 증거 hydration, Scanner enrichment, Filters enrichment 5개 구현을 각각 350 LOC 이하인 Owner 3개로 이동했습니다.
 - 기존 import 경로·함수 본문·증거 우선순위는 유지했습니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Reporting Service Owner Split 07
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · REPORTING · TESTING
+
+- Reporting 서비스의 AI 생성 및 deterministic summary 두 함수를 각각 독립적인 350 LOC 이하 Owner로 옮겼습니다.
+- 기존 `trade_report/service.py`는 공개 import 호환성만 유지하며, 서비스 본문과 LLM 동작은 변경하지 않았습니다.
