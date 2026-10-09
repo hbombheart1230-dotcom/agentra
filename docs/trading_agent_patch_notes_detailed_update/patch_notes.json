@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 153,
+  "entry_count": 154,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4291,6 +4291,33 @@
       "sources": [
         "docs/daily_patch/2026-10-09_p1_5_2_zip_upload_path_fix.md",
         ".github/workflows/p152-r2c-residual-regression.yml"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Remote Source Audit",
+      "title": "Remote source and CI evidence passes with local acceptance gates still open",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "DOCUMENTATION",
+        "TESTING",
+        "QUALITY"
+      ],
+      "summary": "Audited the pinned P1.5.2 split from the successful changed-files artifact and CI without editing runtime Python; remote structure passes but canonical local verification remains required.",
+      "details": [
+        "Latest refactor/p1.5 HEAD 8a9ba219; GitHub Actions run 37877818709 completed successfully and uploaded the modified-only artifact.",
+        "Pinned parity gate covers 38 unchanged moved function ASTs and 26 <=350-LOC small Owner modules; isolated artifact import scan found no changed-module cycle.",
+        "Public facades 3039/3043/948 LOC and 802/464/428/807/703-LOC remaining implementations stay explicitly OPEN rather than being treated as accepted size passes.",
+        "C:\\Agentra real-data/worktree/full-suite checks and separate Claude/Codex evidence files are still absent, so P1.5.2 remains OPEN and P1.5.3 is not authorized.",
+        "No runtime Python, broker, UEF, Docker, Step5C/D, R6.2, strategy, production report/data or order path was changed."
+      ],
+      "impact": "Adds auditable remote verification evidence and narrows the remaining blocker to local/independent acceptance; no trading behavior change.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-VERIFY-002-GPT-REMOTE.md",
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_remote_source_audit.md",
+        "docs/refactor/work_orders/CURRENT.md"
       ],
       "status": "current"
     }

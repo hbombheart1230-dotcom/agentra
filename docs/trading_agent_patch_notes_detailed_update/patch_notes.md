@@ -2292,3 +2292,16 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 **Tags:** BUGFIX · TESTING · DOCUMENTATION
 
 - 최종 CI의 코드 검증(38 AST, 26 소형 Owner, 337+12 회귀)은 통과했고 ZIP 업로드 경로만 이전 파일명을 참조했습니다. 변경 파일 ZIP의 업로드 경로를 일치시켰으며 런타임 코드는 수정하지 않았습니다.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Remote Source Audit
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · DOCUMENTATION · TESTING · QUALITY
+
+- `refactor/p1.5` 원격 HEAD `8a9ba219`과 최신 GitHub Actions run `37877818709`를 다시 감사했습니다. 38개 원본 AST/export parity, 26개 소형 Owner 350 LOC 상한, Reporting 337 + seam/UI 12 회귀 및 변경 파일 ZIP 업로드가 모두 성공했습니다.
+- 성공 artifact를 격리 경로에서 AST/import 분석한 결과, 변경 모듈의 의존 방향은 façade/wrapper → Owner이며 변경 모듈 사이 순환 import는 발견되지 않았습니다.
+- 다만 3,039/3,043/948 LOC 공개 façade와 802/464/428/807/703 LOC의 잔여 대형 구현은 여전히 OPEN입니다.
+- `C:\Agentra` 실데이터·worktree·full pytest 및 별도 Claude/Codex 증거가 아직 없으므로 **P1.5.2는 CLOSED가 아니며 P1.5.3은 시작하지 않습니다.**
+- 런타임 Python, 실거래, Broker, UEF, Docker, Step5C/D, R6.2, 전략 및 production 데이터 경로는 변경하지 않았습니다.
+- 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-VERIFY-002-GPT-REMOTE.md`.
