@@ -2408,3 +2408,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 모니터 정책 중 손절/익절/추적손절의 **보고서 표시 문구만** 별도 Owner(89 LOC)로 분리했습니다. 원래 출력 순서와 보조함수 주입 유지.
 - 매매 전략·주문·가드·UEF·Docker 권한 변경 없음. **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_policy_bullets_17.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Monitor Entry Review Owner 18
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- 진입/차트 피처 및 정책 근거를 설명하는 read-only Monitor 문구를 전용 Owner 146 LOC로 분리했습니다. 원래 항목 순서, 21개 호출 시점 입력·함수 의존성 유지.
+- 매매/주문 권한·UEF·Docker 불변, **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_entry_review_owner_18.md`.

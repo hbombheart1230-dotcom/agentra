@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 164,
+  "entry_count": 165,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4565,6 +4565,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_policy_bullets_17.md",
         "libs/reporting/trade_story_human_parts/monitor_policy_bullets.py",
         "tests/test_p152_monitor_policy_bullets_owner.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Monitor Entry Review Owner 18",
+      "title": "Move human Monitor entry and chart diagnostic rendering to bounded owner",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Separated read-only observed entry/chart/policy reference text while preserving input dependencies and original output ordering.",
+      "details": [
+        "Monitor human payload 736 -> 634 LOC; new Owner 146 LOC.",
+        "No decision function, strategy, broker order, Supervisor, UEF, R6.2 or Step5 guard modified.",
+        "Focused test added to CI; local report equality and independent source audit pending, P1.5.2 OPEN."
+      ],
+      "impact": "Clearer ownership of Monitor entry observation text without authority change.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_entry_review_owner_18.md",
+        "libs/reporting/trade_story_human_parts/monitor_entry_review.py",
+        "tests/test_p152_monitor_entry_review_owner.py"
       ],
       "status": "current"
     }
