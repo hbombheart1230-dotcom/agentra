@@ -2284,3 +2284,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 다만 주요 façade와 800/700/400줄대 혼합 책임 함수, 로컬 실데이터/전체 회귀 테스트는 **미완료**이므로 P1.5.2의 최종 완료는 선언하지 않았습니다.
 - `work_orders/CURRENT.md`는 Claude/Codex가 코드 수정 없이 각각 로컬 실데이터·호출/계약/모듈 검증만 수행하도록 갱신했습니다. P1.5.3 자동 착수는 금지했습니다.
 - 검증 GitHub CI에서 P1.5.2 시작 커밋 대비 **실제로 수정된 파일만 ZIP**에 수록하게 했습니다.
+
+---
+
+## 2026-10-09 · P1.5.2 ZIP Upload Path Repair
+**Stage:** Architecture and Maintainability  
+**Tags:** BUGFIX · TESTING · DOCUMENTATION
+
+- 최종 CI의 코드 검증(38 AST, 26 소형 Owner, 337+12 회귀)은 통과했고 ZIP 업로드 경로만 이전 파일명을 참조했습니다. 변경 파일 ZIP의 업로드 경로를 일치시켰으며 런타임 코드는 수정하지 않았습니다.

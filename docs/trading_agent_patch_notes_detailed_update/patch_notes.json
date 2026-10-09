@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 152,
+  "entry_count": 153,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4269,6 +4269,28 @@
         "docs/refactor/work_orders/CURRENT.md",
         "scripts/refactor/p152_owner_parity.py",
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_implementation_verification_handoff.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 ZIP Upload Path Repair",
+      "title": "Fix all-changed-file ZIP upload artifact path after full CI tests passed",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "BUGFIX",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Previous run passed the full P1.5.2 static AST/Owner size and Reporting 337+12 matrices, but upload pointed to outdated ZIP name; correct only upload path.",
+      "details": [
+        "Pack step created branch_output/p152_refactor_modified_only.zip with 50 changed paths; upload-artifact used obsolete branch_output/p15_reporting_changed_files.zip.",
+        "Fixed the CI artifact path without changing tests, runtime files, output semantics or safety. Rerun required before artifact delivery."
+      ],
+      "impact": "CI ZIP delivery only.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_zip_upload_path_fix.md",
+        ".github/workflows/p152-r2c-residual-regression.yml"
       ],
       "status": "current"
     }
