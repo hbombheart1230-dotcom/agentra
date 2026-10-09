@@ -2594,3 +2594,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 최신 CI `37887432333` **337 Reporting + 144 Helper/Owner/UI PASS**, 31개 Owner 의존성 검사 완료. 세 공개 façade 3027/2948/636 LOC, 436 함수 보존.
 - 소비자 맵 1,763개 Python 파일 중 공개 심볼 82개 정적 참조, 동적 불확실 4건; 나머지 DEAD 금지. 로컬 실데이터 및 독립 검증은 **OPEN**.
 - 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER26-31-REMOTE-CI.md`, `docs/refactor/work_orders/P15_R2_OWNER31_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Markdown Clean Display Owners 32–33
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- 리포트 표시 문자열/Strategist 설명 함수 21개를 Owner 두 개(227/79 LOC)로 분리. 기존 `trade_report_markdown_clean.py` **2948→2717 LOC**. 공개 함수 209개 및 monkeypatch 유지.
+- 원본 AST/출력 21개, 33-Owner CI 크기/DAG 검사. 실제 보고서·LLM/독립 검증 전 **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_markdown_clean_label_owner_32_33.md`.

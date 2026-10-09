@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 182,
+  "entry_count": 183,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5000,6 +5000,31 @@
         "docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER26-31-REMOTE-CI.md",
         "docs/refactor/work_orders/P15_R2_OWNER31_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md",
         "docs/refactor/work_orders/CURRENT.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Markdown Clean Display Owners 32-33",
+      "title": "Extract Markdown Clean display labels and Strategist wording",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "21 report display functions move to 227/79-LOC Owners, Markdown Clean 2948->2717 LOC.",
+      "details": [
+        "209 public definitions and 436 ledger symbols retained; call-time dependency injection and monkeypatch compatibility.",
+        "21 original-body AST comparisons, 21 output fixtures and 33-Owner static DAG guard added to CI.",
+        "P1.5.2 OPEN; local report, LLM call and independent proof NOT RUN; no trade authority touched."
+      ],
+      "impact": "Improved reporting-only code ownership without public API retirements.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_markdown_clean_label_owner_32_33.md",
+        "tests/test_p152_markdown_clean_operator_labels_owners.py",
+        "libs/reporting/trade_report/markdown_clean_parts/operator_labels.py",
+        "libs/reporting/trade_report/markdown_clean_parts/strategist_language.py"
       ],
       "status": "current"
     }

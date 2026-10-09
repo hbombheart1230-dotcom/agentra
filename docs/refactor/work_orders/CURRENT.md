@@ -85,6 +85,10 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - Public façade sizes AI 3027, Markdown Clean 2948, Story 636 LOC, all original 436 names preserved; 31 new bounded Owner DAG. Full source/CI evidence `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER26-31-REMOTE-CI.md`.
 - Required next read-only local Claude/Codex protocol: `docs/refactor/work_orders/P15_R2_OWNER31_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`. Actual real-report bytes/LLM prompts/full suite/runtime consumers and independent signoff NOT RUN, P1.5.2 OPEN. No P1.5.3.
 
+## GPT Markdown Clean Owners 32–33 (2026-10-09)
+- 21 display-only original AST function bodies split into two <=350-LOC Owners, parent 2948->2717 LOC; 209 public names and full 436 ledger intact. Pinned AST/output/patch tests and 33-Owner DAG require CI PASS.
+- C:\\Agentra actual reports/LLM/full test baseline and independent Codex/Claude NOT RUN. Local READ-ONLY LOCAL VERIFICATION / NO RUNTIME PYTHON EDITS, P1.5.2 OPEN, no P1.5.3.
+
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
 - docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md

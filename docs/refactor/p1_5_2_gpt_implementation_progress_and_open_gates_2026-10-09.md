@@ -179,3 +179,9 @@ AI façade 3039->3027 LOC via 47-LOC pure read-only language Helper. Source AST,
 ## 2026-10-09 — GPT Owners 26–31 Remote CI ACCEPTED, Overall P1.5.2 OPEN
 
 Remote source `a65d3e47e5a0de3eb801c4a12ee364cbe98270dd`; GitHub CI 37887432333 **SUCCESS**, 337 broad Reporting and 144 helper/UI/Owner tests, original 38-function AST and 31-Owner DAG. Static index 436 public façade symbols, 82 statically referenced, 4 uncertain sites across 1763 Python files. Unreferenced != DEAD. Final three public façade LOC 3027/2948/636, all 436 callable names preserved, 6 bounded new Owners. Detailed remote evidence `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER26-31-REMOTE-CI.md`; specific read-only local acceptance checklist `docs/refactor/work_orders/P15_R2_OWNER31_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`. No actual Windows production report/LLM/cross-day/test baseline or independent Claude/Codex verification. No P1.5.3 or trading/UEF/R6.2/Docker changes.
+
+---
+
+## 2026-10-09 — GPT Markdown Clean Owners 32–33
+
+21 body-identical read-only output labels in 227 LOC and 79 LOC Owners, Markdown Clean 2948->2717 LOC, 209 public names/436 symbols preserved. Added 21 AST, 21 output, patch and 33-owner DAG CI. Real Windows data/LLM/cross-day/full-suite and independent audits NOT RUN. No Broker/UEF/R6.2/Docker authority changes; P1.5.2 OPEN.
