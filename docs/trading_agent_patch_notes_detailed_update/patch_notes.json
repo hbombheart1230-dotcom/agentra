@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 168,
+  "entry_count": 169,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4662,6 +4662,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_render_diagnostics_owner_20.md",
         "libs/reporting/trade_report/summary_parts/render_diagnostics.py",
         "tests/test_p152_render_diagnostics_owner.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Monitor Trace Wrapper Owner 21",
+      "title": "Complete 350-LOC Monitor human Owner size gate while retaining compatibility",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Extracted three Monitor explanation/trace functions into a 107-LOC Owner, retaining public wrappers and call-time dependency injection.",
+      "details": [
+        "Human payload parent 431 -> 350 LOC; original three bodies AST-identical and 32 x 3 isolated execution comparisons equal.",
+        "Public import and monkeypatch surfaces preserved; focused tests added to full Reporting CI.",
+        "Markdown summary and three public façades, local real-data and independent acceptance remain OPEN."
+      ],
+      "impact": "Completes Monitor human 350-LOC size check without moving trading authority.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_monitor_trace_wrapper_owner_21.md",
+        "libs/reporting/trade_story_human_parts/monitor_traces.py",
+        "tests/test_p152_monitor_trace_wrappers.py"
       ],
       "status": "current"
     }

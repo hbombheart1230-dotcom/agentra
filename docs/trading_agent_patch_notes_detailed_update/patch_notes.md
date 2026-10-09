@@ -2451,3 +2451,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 이월청산/부분청산/비용/차순위/청산 패턴의 64개 조합에서 사전·사후 출력 일치. 실제 거래 보고서 골든 테스트는 미실행.
 - 거래 권한·UEF·R6.2·Step5/Docker 불변. **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_render_diagnostics_owner_20.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Monitor Trace Wrapper Owner 21
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- Monitor 정책 근거/진입 차단 관측 및 Strategist 적응형 청산 추적 3개 함수의 본문을 107 LOC Owner로 이동. 공개 래퍼와 monkeypatch 의존성 그대로 유지.
+- Human payload 부모 파일 **431 → 350 LOC**로 350 LOC 상한 충족. 3개 함수 AST 동일, 32×3 전/후 결과 일치.
+- Markdown·공개 façade 및 C:\\Agentra 실데이터 검증은 여전히 OPEN. 매매 실행 경계 불변, **P1.5.2 미종료**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_monitor_trace_wrapper_owner_21.md`.
