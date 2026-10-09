@@ -2440,3 +2440,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - AST 동일성 84개 문장 및 65개 명시적 반환값 검증, 6개 사전/사후 독립 실행 fixture PASS. 실제 Windows 거래 리포트 비교는 미실행.
 - 전략·실거래·UEF·R6.2·Step5/Docker 불변. **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_monitor_context_split_19.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Render Diagnostics Owner 20
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- Markdown 요약의 강점/문제점/원인/권고 문구 109줄을 150 LOC Owner로 분리했습니다. `markdown_summary.py` 1226 → 1145 LOC, 원본 AST 37구문 동일.
+- 이월청산/부분청산/비용/차순위/청산 패턴의 64개 조합에서 사전·사후 출력 일치. 실제 거래 보고서 골든 테스트는 미실행.
+- 거래 권한·UEF·R6.2·Step5/Docker 불변. **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_render_diagnostics_owner_20.md`.

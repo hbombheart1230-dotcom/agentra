@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 167,
+  "entry_count": 168,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4638,6 +4638,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_monitor_context_split_19.md",
         "libs/reporting/trade_story_human_parts/monitor_context.py",
         "tests/test_p152_monitor_context_owner.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Render Diagnostics Owner 20",
+      "title": "Extract operator summary diagnostics from Markdown renderer",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved operator strengths/problems/causes/recommendations to a 150-LOC Reporting Owner with 37 AST-identical statements.",
+      "details": [
+        "Markdown summary 1226 -> 1145 physical LOC. New render_diagnostics.py 150 LOC.",
+        "64 combinatorial pre/post comparisons exactly matched; full CI and user local real-data equality are distinct gates.",
+        "No Broker, UEF, R6.2, Step5C/D, Docker or live execution path modified. P1.5.2 OPEN."
+      ],
+      "impact": "Reduced rendering complexity while preserving canonical truth and Korean operator guidance.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_render_diagnostics_owner_20.md",
+        "libs/reporting/trade_report/summary_parts/render_diagnostics.py",
+        "tests/test_p152_render_diagnostics_owner.py"
       ],
       "status": "current"
     }
