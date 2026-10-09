@@ -2398,3 +2398,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - deterministic positives/problems/causes/validation 질문 구성을 별도 Owner로 분리했습니다. 원래 평가 순서 및 call-time dependencies 유지, 안전 회귀 검사 추가.
 - 전략/승인/주문/UEF/Step5/Docker 동작을 변경하지 않았습니다. **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_summary_findings_owner_16.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Monitor Policy Bullets Owner 17
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- 모니터 정책 중 손절/익절/추적손절의 **보고서 표시 문구만** 별도 Owner(89 LOC)로 분리했습니다. 원래 출력 순서와 보조함수 주입 유지.
+- 매매 전략·주문·가드·UEF·Docker 권한 변경 없음. **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_policy_bullets_17.md`.
