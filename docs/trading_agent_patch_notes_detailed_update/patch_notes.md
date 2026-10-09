@@ -2418,3 +2418,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 진입/차트 피처 및 정책 근거를 설명하는 read-only Monitor 문구를 전용 Owner 146 LOC로 분리했습니다. 원래 항목 순서, 21개 호출 시점 입력·함수 의존성 유지.
 - 매매/주문 권한·UEF·Docker 불변, **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_entry_review_owner_18.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Remote Continuation 08–18 CI Closeout
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION · QUALITY
+
+- 작은 Reporting Owner 12개 추가, 공개 façade 436개 심볼 인벤토리 및 원본 호환성 경계를 유지했습니다. `trade_story_pipeline_story_assembly.py` 331 LOC, `operator_text.py` 320 LOC.
+- 최신 CI `37881544761` **PASS** — 원본 AST 38개, Reporting 337건, helper/UI/owner 43건, 변경 파일 ZIP 업로드. 실패 `37881458077`의 들여쓰기 오류도 이력에 남기고 `8f3c1465` 수정 후 재검증했습니다.
+- Markdown summary 1,226 LOC, Monitor human 636 LOC, 공개 façade 3,039/3,043/948 LOC 및 실데이터·전체 pytest·독립검증은 아직 OPEN. **P1.5.2 미종료, P1.5.3 미승인.**
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_continuation_08_to_18_ci_accepted.md`.

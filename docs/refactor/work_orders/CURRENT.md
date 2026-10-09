@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: GPT REMOTE OWNER 16 CI PASS; LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
+Status: GPT REMOTE OWNER 18 CI PASS / LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -23,6 +23,15 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - CI PASS: direct story `37879772952`; story assembly <=350 `37879934368`; operator text owner `37880715491`; language normalization `37880840829`; deterministic Markdown findings `37880943767`.
 - The work order still protects both local verifiers: **READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS**. They must check actual C:\Agentra worktrees, real-data output equality, monkeypatch consumers, full baseline tests and execution-authority leakage before any stage acceptance.
 - Giant Markdown rendering/input, remaining monitor human payload, public Reporting façades and test architecture remain OPEN. P1.5.2 is not closed. Do not start P1.5.3.
+
+## GPT continuation 08–18 remote acceptance (2026-10-09)
+- Code SHA `8f3c146529d263f0ef480fa754bc6d1bf5ee20a9` (indentation-only repair of Owner 18 after `a39aa452` syntax CI FAIL).
+- Full remote Reporting CI run `37881544761`: **SUCCESS**. Pinned original AST parity: 38 moved functions across original 26 small owners. Broad Reporting: **337 passed**. Helper seam, patch notes and new Owner tests: **43 passed**. Changed-file-only ZIP artifact uploaded.
+- Added **12** further bounded single-responsibility Python Owner modules through stages 08–18 (all measured <=350 physical LOC), and a 436-symbol public façade inventory. Current measured key files: story assembly 331; human payload 636; operator text 320; markdown summary 1,226 LOC.
+- Three public Reporting façades remain unchanged at 3,039/3,043/948 LOC pending import/patchable-symbol/consumer proof. Markdown summary renderer/input and residual monitor human function remain open; never claim LOC size acceptance on them.
+- CI run `37881458077` failed at Python import with IndentationError in newly split Owner 18; corrected only indentation in `8f3c1465`, and the next run `37881544761` passed. Preserve both failure and recovery evidence.
+- Production `C:\Agentra` is inaccessible here. Full repository pytest equivalence, real-report byte/semantic parity, local LLM prompt/call/retry equality, and independent Claude/Codex reports are still **NOT RUN**.
+- P1.5.2 remains OPEN. P1.5.3 is NOT authorized, and Q12 dirty worktrees remain untouched.
 
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md

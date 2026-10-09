@@ -61,3 +61,29 @@ See docs/refactor/work_orders/CURRENT.md, ID P15-R2-GPT-VERIFY-002. Claude local
 Remote branch count remains two: main and refactor/p1.5. Dirty Q12 local worktrees are out of scope and must not be touched.
 
 This report closes the **current GPT implementation slice record**, NOT P1.5.2 overall.
+
+---
+
+## 2026-10-09 — GPT continuation 08–18 final remote snapshot (not overall closure)
+
+Current code HEAD: `8f3c146529d263f0ef480fa754bc6d1bf5ee20a9` on `refactor/p1.5`.
+
+Code-only work since the original pinned `4f291e9` slice extracted **12** additional small, focused read-only Reporting Owners. In addition, the 3 public façades have a JSON AST name/line inventory for **436** existing definitions/classes. The original 38 moved function AST identities across 26 earlier Owners continue to pass the existing parity guard; this is not an AST identity claim for every new split.
+
+| Measured source | Before current continuation | Now (physical lines) | Acceptance |
+|---|---:|---:|---|
+| Story assembly | 835 | **331** | <=350 measured |
+| Story human payload | 861 | **636** | OPEN oversized |
+| Operator text | 804 | **320** | <=350 measured |
+| Markdown summary | 1,275 | **1,226** | OPEN oversized |
+| Public AI report façade | 3,039 | **3,039** | OPEN wrapper/consumer ledger |
+| Public Markdown façade | 3,043 | **3,043** | OPEN wrapper/consumer ledger |
+| Public story façade | 948 | **948** | OPEN wrapper/consumer ledger |
+
+Current new owner LOC: lifecycle human 116; reasoning provenance 85; direct story 246; lifecycle evidence 169; monitor diagnostics 75; policy bullets 89; entry review 146; exact phrases 67; context patterns 156; lifecycle patterns 189; operator language 136; deterministic findings 84. All are <=350.
+
+Latest verified CI: [run 37881544761](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/37881544761) **SUCCESS**: original AST/size guard PASS, Reporting **337 passed**, helper/patch-note/owner tests **43 passed**. Prior `37881458077` was **FAIL** due to new monitor entry Owner indentation and was corrected in `8f3c1465`. Do not erase the negative evidence.
+
+No changes intended to seven agents, Q10/Q12, ordering/approval, Broker, UEF, immutable readiness R6.2, Step5C/D, canonical FULL_DOCKER_FROZEN or production execution. CI only; no live order, production restart, dirty Q12 cleanup, or local real report replay.
+
+**Overall P1.5.2 = OPEN.** Residual tasks: consumer-proven façade KEEP/WRAPPER/MOVE classifications; oversized Markdown renderer/input and Monitor human implementation; local byte-and-semantic golden comparisons and LLM call/retry proof; complete repository baseline parity; independent Codex audit; human acceptance. No P1.5.3 before those gates.
