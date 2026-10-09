@@ -2194,3 +2194,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `build_shared_summary_seed()`의 Commander, Scanner, Monitor, Strategist 시드 구성 책임을 4개 소형 Owner에 분리했습니다. 각 파일은 350 LOC 이하입니다.
 - 사실 우선순위와 최종 결과 조립 로직, 호출 순서, 기존 16개 섹션 API를 유지합니다. 새 로직이나 외부 의존성은 추가하지 않았습니다.
 - CI 회귀 테스트를 거쳐 사용하며, 로컬 실데이터 동등성 검증은 별도 인수 조건으로 남깁니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Trade Story Assembly Owner Split 03
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · REPORTING · TESTING
+
+- Trade Story의 타임라인·라이프사이클 정규화·라이프사이클 번들·섹션 시드 책임 6개 함수를 **4개 단일 Owner**로 이동했습니다. 구현 본문과 API를 변경하지 않았습니다.
+- 새 파일은 모두 350 LOC 이하입니다. 남은 809줄 Story 조립 함수는 별도 동등성 검증 후 분리합니다.

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 142,
+  "entry_count": 143,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4012,6 +4012,36 @@
         "libs/reporting/trade_report/section_seed_parts/scanner.py",
         "libs/reporting/trade_report/section_seed_parts/monitor.py",
         "libs/reporting/trade_report/section_seed_parts/strategist.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Trade Story Assembly Owner Split 03",
+      "title": "Trade-story lifecycle, timeline and section seeds separated into small canonical owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Moved six independent deterministic assembly functions to four single-purpose <=350 LOC modules, preserving all original caller-visible function names and their bodies.",
+      "details": [
+        "trade_story_pipeline_story_assembly.py shrunk from 1355 to 834 physical LOC; the large build_trade_story_input remains the next tracked split candidate.",
+        "No function body modifications; existing build_report_section_seeds name remains patchable by the original module's top-level story builder.",
+        "libs/reporting/trade_story_assembly_parts/timeline.py: 78 LOC",
+        "libs/reporting/trade_story_assembly_parts/lifecycle_normalization.py: 116 LOC",
+        "libs/reporting/trade_story_assembly_parts/lifecycle_bundle.py: 256 LOC",
+        "libs/reporting/trade_story_assembly_parts/report_seeds.py: 112 LOC",
+        "No change to canonical trade-story facts, lifecycle, UEF, LLM, Step5 or broker execution. CI and local real-data equivalence are separate checks."
+      ],
+      "impact": "Reporter-only deterministic assembly owner moves.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_story_assembly_owner_split_03.md",
+        "libs/reporting/trade_story_assembly_parts/timeline.py",
+        "libs/reporting/trade_story_assembly_parts/lifecycle_normalization.py",
+        "libs/reporting/trade_story_assembly_parts/lifecycle_bundle.py",
+        "libs/reporting/trade_story_assembly_parts/report_seeds.py"
       ],
       "status": "current"
     }
