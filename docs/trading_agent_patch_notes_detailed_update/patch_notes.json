@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 177,
+  "entry_count": 178,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4880,6 +4880,30 @@
         "tests/test_p152_story_facade_compatible_owners.py",
         "libs/reporting/trade_story_facade_parts/strategist_evidence.py",
         "libs/reporting/trade_story_facade_parts/filter_checklist.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Story Façade Human Judgments Owner 28",
+      "title": "Extract Supervisor, Reporter and Operator explanation implementations behind Story wrappers",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved three observational story explanation bodies into 110-LOC Owner; legacy Story facade 826->753 LOC and 45 names unchanged.",
+      "details": [
+        "Source body AST parity, synthetic output cases and a call-time Reporter normalizer monkeypatch check added.",
+        "436-symbol ledger adjusted only for new line positions; no dead-code approvals.",
+        "Local real outputs/full pytest/independent validation NOT RUN, trading boundaries unchanged."
+      ],
+      "impact": "Keeps consumer compatibility while separating human explanations from Story facade orchestration.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_story_facade_human_judgments_28.md",
+        "tests/test_p152_story_facade_human_owners.py",
+        "libs/reporting/trade_story_facade_parts/human_judgments.py"
       ],
       "status": "current"
     }

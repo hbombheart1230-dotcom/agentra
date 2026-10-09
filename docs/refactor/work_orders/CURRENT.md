@@ -65,6 +65,10 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - 948->826 LOC Story façade after strat provenance & scanner filter small Owners. Original 45 function names retained, pinned AST/fixture/monkeypatch CI proof pending.
 - Full static consumer JSON from Owner26 does NOT authorize deletion; 436 symbol ledger remains conservative. Local Windows production/LLM/independent proof and public other two façades OPEN. READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS for local Claude/Codex. P1.5.3 not authorized.
 
+## GPT Owner 28 Story human judgment wrappers (2026-10-09)
+- Three pure/report-only explanation bodies extracted to 110-LOC `human_judgments.py`; public Story façade 826->753 LOC, 45 function names retained; original AST & synthetic goldens / patchable normalizer tests in CI.
+- Continue public façade consumer proof conservatively. Local Claude/Codex READ-ONLY LOCAL VERIFICATION / NO RUNTIME PYTHON EDITS. No P1.5.3; Windows actual report evidence OPEN.
+
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
 - docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md

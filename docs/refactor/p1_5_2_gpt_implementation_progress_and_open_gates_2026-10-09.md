@@ -149,3 +149,9 @@ Pinned `3a3ca3097b267b8cd22edeb0e45ef87690cfe466`. Added `scripts/refactor/p152_
 ## 2026-10-09 — GPT Story Façade Compatible Owner 27
 
 Code baseline `f381772d2118aca6444108fab429e4a0e0fba056`. Four function implementation bodies extracted (Strategist raw/selection/news evidence trace, Scanner filter narrative) to 103/73 LOC Owners. Original Story façade 948->826 LOC, 45 callable names preserved; 436-symbol public ledger positions synchronized. CI pins prior AST body suffix, synthetic outputs and call-time monkeypatch. No static-symbol DEAD inferences. Local C:\\Agentra real report/LLM/entire suite and independent auditors NOT RUN. P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT Story Human Judgments Owner 28
+
+Owner27 826-LOC Story façade now 753 LOC after observational Supervisor/Reporter/Operator human explanation owner (110 LOC), retaining 45 function names, call-time normalizer patch seam and 436-symbol ledger. Pinned AST/fixture/patch parity in CI. User-local production report/LLM/full repository/independent evidence NOT RUN, no Broker/UEF/R6.2/Docker/trading authority change. P1.5.2 OPEN.

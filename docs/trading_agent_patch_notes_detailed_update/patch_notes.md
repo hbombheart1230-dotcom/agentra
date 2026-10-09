@@ -2544,3 +2544,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 기존 Story 함수 4개 본문을 Strategist 근거/Scanner 필터 전용 Owner 2개 (103/73 LOC)로 분리. 공개 이름·호출시점 monkeypatch 유지; façade 948 → 826 LOC.
 - 436개 공개 함수 장부 위치를 동기화하고 원본 AST/출력 등가·monkeypatch CI 검사를 추가했어. 매매 권한·UEF·Docker 불변, **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_story_facade_compatible_owners_27.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Story Façade Human Judgments Owner 28
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- Supervisor·Reporter·Operator의 기존 설명 함수 3개 본문을 110 LOC 전용 Owner로 분리하고 public 함수명·시그니처·호출 시점 의존성을 유지했습니다. Story façade 826 → 753 LOC.
+- 원본 AST·출력 비교·monkeypatch 검사, 공개 심볼 436개 장부 동기화. 실거래 경계 불변이며 **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_story_facade_human_judgments_28.md`.
