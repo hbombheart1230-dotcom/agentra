@@ -2257,3 +2257,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 - 분리된 Reporting 함수 38개의 AST를 시작 커밋 `2fb4b8f`의 원본 구현과 대조하고, 기존 import 재공개 동일성과 새 Owner의 350 LOC 제한을 검사하는 CI를 추가했습니다.
 - 실제 로컬 리포트 데이터/LLM/UEF 검증을 대신할 수는 없으며 별도 Codex 독립검증이 필요합니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Owner Parity Gate Invocation Fix
+**Stage:** Architecture and Maintainability  
+**Tags:** BUGFIX · TESTING
+
+- AST 동등성 검증 실행 시 저장소 루트가 Python import 경로에서 빠져 CI가 실패했습니다. 모듈 방식(`python -m`)으로 실행하도록 교정했습니다. 검사 내용과 런타임 코드는 변경하지 않았습니다.

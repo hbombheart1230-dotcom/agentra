@@ -81,7 +81,7 @@ jobs:
       - name: Fetch pinned P1.5.2 before-source for deterministic owner parity
         run: git fetch --no-tags --depth=1 origin 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c
       - name: Check 38 extracted function ASTs and <=350 LOC Owners
-        run: python scripts/refactor/p152_owner_parity.py
+        run: python -m scripts.refactor.p152_owner_parity
       - name: Compile extracted owners
         run: python -m compileall -q libs/reporting/trade_story_pipeline.py libs/reporting/trade_story_pipeline_news.py libs/reporting/trade_story_pipeline_scanner.py libs/reporting/trade_story_pipeline_provenance.py
       - name: Broader reporting regression

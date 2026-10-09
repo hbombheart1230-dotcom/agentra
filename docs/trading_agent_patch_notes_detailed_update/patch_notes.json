@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 149,
+  "entry_count": 150,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4196,6 +4196,28 @@
         "scripts/refactor/p152_owner_parity.py",
         ".github/workflows/p152-r2c-residual-regression.yml",
         "docs/daily_patch/2026-10-09_p1_5_2_owner_parity_guard.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Owner Parity Gate Invocation Fix",
+      "title": "Fix parity script invocation from repository root; original AST checks unchanged",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "BUGFIX",
+        "TESTING"
+      ],
+      "summary": "The new read-only AST parity CI failed because direct script invocation hid repo root from Python sys.path; execute it as a module from repo root.",
+      "details": [
+        "Failed CI https://github.com/hbombheart1230-dotcom/agentra/actions/runs/37877155363 raised ModuleNotFoundError: No module named libs.",
+        "Change only workflow invocation to python -m scripts.refactor.p152_owner_parity.",
+        "No AST expectations weakened, tests removed or runtime Python touched."
+      ],
+      "impact": "GitHub Actions test invocation only.",
+      "sources": [
+        ".github/workflows/p152-r2c-residual-regression.yml",
+        "docs/daily_patch/2026-10-09_p1_5_2_owner_parity_module_invocation_fix.md"
       ],
       "status": "current"
     }
