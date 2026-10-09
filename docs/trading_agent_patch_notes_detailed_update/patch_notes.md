@@ -2212,3 +2212,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 - Shared Seed 분리 커밋의 CI가 누락된 `build_seed_commander_route` import로 실패했습니다. 이력과 실패 근거를 보존하고 소형 Owner 4개에 대한 명시적 import를 복원했습니다.
 - 기존 함수의 본문과 출력 의미는 변경하지 않았고, 전체 회귀검증 결과로 다시 인수합니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Human Market and Scanner Owner Split 04
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · REPORTING · TESTING
+
+- Trade Story의 Market Context / Scanner Reason 사람용 프로젝션을 각 350 LOC 이하의 단일 Owner 파일로 이동했습니다. 원본 함수 본문과 공개 API 이름을 보존했습니다.
+- 남은 Monitor Reason 대형 함수는 별도 안전 동등성 작업으로 유지합니다.

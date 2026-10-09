@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 144,
+  "entry_count": 145,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4066,6 +4066,32 @@
       "sources": [
         "docs/daily_patch/2026-10-09_p1_5_2_seed_import_repair.md",
         "libs/reporting/trade_report/sections.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Human Market and Scanner Owner Split 04",
+      "title": "Trade-story human market/scanner projections split to single-purpose small Owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Moved build_market_context_human and build_scanner_reason_human into two <=350 LOC owner modules with unchanged function bodies, original imports and separate monitor monolith pending review.",
+      "details": [
+        "libs/reporting/trade_story_pipeline_human_payloads.py: 1335 -> 859 LOC",
+        "libs/reporting/trade_story_human_parts/market_context.py: 221 LOC",
+        "libs/reporting/trade_story_human_parts/scanner_reason.py: 278 LOC",
+        "Exports retained under original trade_story_pipeline_human_payloads module; no change to result payload, truth preference, command/scanner/monitor authority or prompts.",
+        "Large build_monitor_reason_human remains in old module for evidence-backed follow-on decomposition. Local actual report parity not yet certified."
+      ],
+      "impact": "Human-facing deterministic summary code ownership move only.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_human_market_scanner_split_04.md",
+        "libs/reporting/trade_story_human_parts/market_context.py",
+        "libs/reporting/trade_story_human_parts/scanner_reason.py"
       ],
       "status": "current"
     }
