@@ -13,7 +13,7 @@ def test_facade_ledger_covers_every_top_level_definition_without_declaring_dead(
     assert len(document["files"]) == 3
     for row in document["files"]:
         path = ROOT / row["path"]
-        text = path.read_text(encoding="utf-8")
+        text = path.read_text(encoding="utf-8-sig")
         tree = ast.parse(text)
         actual = [(node.name, node.lineno) for node in tree.body
                   if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))]
