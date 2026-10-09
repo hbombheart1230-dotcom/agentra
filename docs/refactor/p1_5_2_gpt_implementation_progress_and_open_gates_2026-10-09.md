@@ -123,3 +123,9 @@ Extracted the unchanged broker alignment, market/strategy and decision-flow dict
 ## 2026-10-09 — GPT Summary Input Main Owner 24
 
 Complete unchanged body moved to 328-LOC `summary_input_parts/main_builder.py`, public wrapper retained with injected helpers. `markdown_summary.py` 740 -> 432 LOC. 23-Owner DAG guard and six input JSON pre-split goldens, plus new monkeypatch test in CI. CI pending. The large renderer and three public façades remain OPEN, Windows production report parity and separate Codex/Claude evidence NOT RUN. P1.5.2 OPEN, P1.5.3 not authorized.
+
+---
+
+## 2026-10-09 — GPT Markdown Renderer and Helpers Owner 25
+
+11 private render nested helper bodies moved to 130-LOC Owner, core renderer moved to 326-LOC Owner, original `markdown_summary.py` reduced to 60 LOC as public compatibility façade. Both public signatures and call-time monkeypatch bindings preserved. Owner DAG/LOC guard extended 23 -> 25, six output and six input pre-split golden fixtures remain. Remote CI to verify. Windows actual-report, LLM call/retry, full-suite and independent audits NOT RUN. P1.5.2 OPEN, P1.5.3 not authorized.

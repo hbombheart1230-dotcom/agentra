@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 173,
+  "entry_count": 174,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4781,6 +4781,30 @@
       "sources": [
         "docs/daily_patch/2026-10-09_p1_5_2_input_main_builder_owner_24.md",
         "tests/test_p152_summary_input_part_owners.py",
+        "libs/reporting/trade_report/markdown_summary.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Markdown Renderer and Helpers Owner 25",
+      "title": "Finish canonical Markdown implementation split behind existing public functions",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved nested report formatting helpers and renderer into 130/326-LOC Owners, leaving a 60-LOC public compatibility façade.",
+      "details": [
+        "Original nested helper ASTs and renderer statements retained; public renderer passes 16 original call-time dependencies.",
+        "Six original-output SHA-256 byte goldens, explicit monkeypatch seam and 25-Owner DAG/LOC guard added.",
+        "Local real report/LLM/full repository and independent gates remain OPEN, no trading authority change. P1.5.2 NOT CLOSED."
+      ],
+      "impact": "Markdown implementation decomposition complete at small-owner size while preserving public Reporter API.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_markdown_facade_main_renderer_25.md",
+        "tests/test_p152_markdown_render_section_owners.py",
         "libs/reporting/trade_report/markdown_summary.py"
       ],
       "status": "current"

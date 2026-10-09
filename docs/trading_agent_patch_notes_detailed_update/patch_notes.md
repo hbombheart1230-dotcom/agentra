@@ -2503,3 +2503,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `build_trade_summary_input`의 구현을 328 LOC Owner로 옮기고 공개 함수는 호출시점 의존성 주입 래퍼로 유지. `markdown_summary.py` 740 → 432 LOC.
 - 입력 JSON 골든 6건과 monkeypatch 호환 검증, 23개 신규 Owner 크기/DAG 검사 추가. 실제 거래 보고서 검증 전 **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_input_main_builder_owner_24.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Markdown Renderer and Helpers Owner 25
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- Markdown 내부 헬퍼 11개 및 렌더러 본문을 소형 Owner 2개 (130/326 LOC)로 분리했습니다. 기존 `markdown_summary.py` 432 → 60 LOC 호환 공개 래퍼만 유지.
+- 원본 보고서 바이트 골든 6개, 호출시점 monkeypatch 및 25개 Owner 의존성 검증 추가. 실데이터 검증 전 **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_markdown_facade_main_renderer_25.md`.

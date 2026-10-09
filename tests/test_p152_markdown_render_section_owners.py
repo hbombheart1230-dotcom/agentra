@@ -104,3 +104,17 @@ def test_render_section_owners_are_bounded_and_no_reverse_import():
             if isinstance(node,ast.ImportFrom):
                 assert all(name not in (node.module or "") for name in
                            ("markdown_summary","trade_report_ai","trade_report_markdown_clean"))
+
+
+def test_render_facade_keeps_patchable_append_owner(monkeypatch):
+    import libs.reporting.trade_report.markdown_summary as api
+    monkeypatch.setattr(api, "append_summary_overview", lambda **kwargs: kwargs["lines"].append("PATCHED OVERVIEW"))
+    assert "PATCHED OVERVIEW" in api.render_trade_summary_markdown({}, deps=deps())
+
+
+def test_new_render_owners_are_bounded():
+    import libs.reporting.trade_report.summary_render_parts.main_renderer as impl
+    import libs.reporting.trade_report.summary_render_parts.render_helpers as helpers
+    from pathlib import Path
+    assert len(Path(impl.__file__).read_text(encoding="utf-8").splitlines()) <= 350
+    assert len(Path(helpers.__file__).read_text(encoding="utf-8").splitlines()) <= 350

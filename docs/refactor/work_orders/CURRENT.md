@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: GPT REMOTE OWNER 24 IMPLEMENTED, CI PENDING; 23-OWNER DAG GATE ADDED / LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
+Status: GPT REMOTE OWNER 25 IMPLEMENTED, CI PENDING; 25-OWNER DAG GATE ADDED / LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -52,6 +52,10 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 ## GPT Owner 24 input builder extracted (2026-10-09)
 - Implemented 328-LOC `summary_input_parts/main_builder.py` with original body and patchable `markdown_summary.build_trade_summary_input` wrapper. CI for this commit pending.
 - `markdown_summary.py` 432 LOC. Rendering/main public façades and local real reports/LLM/independent gate still OPEN. Local Claude/Codex READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS, no P1.5.3.
+
+## GPT Owner 25 Markdown compatibility facade (2026-10-09)
+- 11 nested helpers -> 130-LOC Owner, renderer -> 326-LOC Owner, public Markdown facade 60 LOC. Call-time helper injection and both public functions preserved. Remote CI PENDING.
+- Three large top-level Reporter/Story facades and actual Windows production report/consumer/full suite/independent checks remain OPEN. Local Claude/Codex READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS; no P1.5.3.
 
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
