@@ -2564,3 +2564,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Story 식별자·커버리지·실행모드 *표시* 함수 8개를 162 LOC Owner로 이동, Story façade 753 → 636 LOC. 공개 함수 45개와 monkeypatch 유지.
 - 원본 AST/대표 출력 및 29개 Owner DAG CI 고정. Broker 실제 모드·주문 경로는 변경하지 않았고 **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_story_contract_owner_29.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Markdown Clean Summary Language Owner 30
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- Markdown Clean 순수 출력 문구 함수 8개를 140 LOC Owner로 분리하고 부모 3043 → 2948 LOC. 공개 함수 209개와 monkeypatch 경로 보존.
+- 원본 AST/문자열 출력 CI, 30개 신규 Owner DAG 검사. 실데이터/실거래 권한 불변. **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_markdown_clean_summary_language_30.md`.

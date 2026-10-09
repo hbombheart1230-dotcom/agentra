@@ -73,6 +73,9 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - Moved eight display/ID/coverage functions into 162-LOC Owner, Story façade 753->636 LOC with all 45 top-level names intact. 29 Owner static guard and pinned AST/output/monkeypatch CI tests.
 - Report-only classification, not Broker runtime. Local user real-data, independent audits and remaining public Reporting façade consumers still OPEN. Claude/Codex READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS; no P1.5.3.
 
+## GPT Markdown Clean Owner 30 (2026-10-09)
+- Source baseline `007e7c2ff757181048bac6d467ff76ec9f4ddce1`; pure text helpers in 140-LOC Owner, old façade 3043->2948 LOC with 209 names intact. Pin AST/fixtures/monkeypatch in CI. Local Claude/Codex READ-ONLY LOCAL VERIFICATION / NO RUNTIME PYTHON EDITS; all final acceptance gates OPEN.
+
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
 - docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md

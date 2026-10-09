@@ -161,3 +161,9 @@ Owner27 826-LOC Story façade now 753 LOC after observational Supervisor/Reporte
 ## 2026-10-09 — GPT Story Contract Owner 29
 
 Eight pure Reporting-only Story metadata/coverage/ID/display functions extracted to a 162-LOC Owner; public Story façade 753->636 LOC, 45 names preserved, 436 symbol ledger reconciled. 29-Owner DAG and pinned AST/fixture/monkeypatch CI. Windows actual outputs, LLM, full pytest and independent audits NOT RUN; Broker/UEF/R6.2/Docker/authority untouched. P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT Markdown Clean Owner 30
+
+3043->2948 LOC legacy Markdown Clean façade, 140-LOC output-localization Owner, 8 AST-identical old bodies, 209 names retained and 436-symbol ledger positions updated. 30-Owner DAG and pinned text/patch tests in CI. Production C:\\Agentra real reports, LLM, full pytest and independent verification NOT RUN; P1.5.2 OPEN.
