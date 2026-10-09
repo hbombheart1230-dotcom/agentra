@@ -10,6 +10,14 @@ import threading
 import time
 from typing import Any, Dict, List, Optional
 
+from libs.reporting.trade_report.ai_facade_parts.text_helpers import (
+    _is_low_information_bullet_impl,
+    _count_hangul_impl,
+    _count_latin_impl,
+    _first_nonempty_text_impl,
+    _has_evidence_payload_impl,
+    _as_action_impl,
+)
 from libs.llm.json_response import parse_llm_json_response, required_key_metadata
 from libs.llm.model_catalog import build_execution_profile_observability, resolve_policy_llm_execution_slot, resolve_policy_llm_slot
 from libs.llm.model_names import normalize_openrouter_model_name
@@ -200,24 +208,15 @@ def _router_chat_with_hard_timeout(
 
 
 def _is_low_information_bullet(value: Any) -> bool:
-    text = str(value or "").strip().lower()
-    if not text:
-        return True
-    if text in {"hold", "wait", "buy", "sell", "noop", "monitor", "monitoring"}:
-        return True
-    if len(text) <= 12 and _safe_fullmatch(r"[a-z_\- ]+", text):
-        return True
-    return False
+    return _is_low_information_bullet_impl(value, _safe_fullmatch=_safe_fullmatch)
 
 
 def _count_hangul(text: Any) -> int:
-    raw = str(text or "")
-    return sum(1 for ch in raw if "\uac00" <= ch <= "\ud7a3")
+    return _count_hangul_impl(text)
 
 
 def _count_latin(text: Any) -> int:
-    raw = str(text or "")
-    return sum(1 for ch in raw if ("a" <= ch.lower() <= "z"))
+    return _count_latin_impl(text)
 
 
 def _count_forbidden_cjk_or_japanese(text: Any) -> int:
@@ -318,19 +317,11 @@ def _actual_lifecycle_action(story_input: Dict[str, Any]) -> str:
 
 
 def _first_nonempty_text(*values: Any, max_len: int = 240) -> str:
-    for value in values:
-        text = _clip(value, max_len=max_len)
-        if text:
-            return text
-    return ""
+    return _first_nonempty_text_impl(*values, max_len=max_len, _clip=_clip)
 
 
 def _has_evidence_payload(value: Any) -> bool:
-    if isinstance(value, dict):
-        return bool(value)
-    if isinstance(value, list):
-        return bool(value)
-    return bool(str(value or "").strip())
+    return _has_evidence_payload_impl(value)
 
 
 def _as_dict(value: Any) -> Dict[str, Any]:
@@ -338,10 +329,7 @@ def _as_dict(value: Any) -> Dict[str, Any]:
 
 
 def _as_action(value: Any) -> str:
-    text = _clip(value, max_len=24).upper()
-    if text in {"NOOP", "NONE"}:
-        return "WAIT"
-    return text
+    return _as_action_impl(value, _clip=_clip)
 
 
 def _as_status(value: Any) -> str:

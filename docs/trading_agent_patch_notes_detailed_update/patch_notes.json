@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 180,
+  "entry_count": 181,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4952,6 +4952,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_markdown_clean_summary_language_30.md",
         "tests/test_p152_markdown_clean_summary_language_owner.py",
         "libs/reporting/trade_report/markdown_clean_parts/summary_language.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 AI Reporter Text Helpers Owner 31",
+      "title": "Extract six AI Reporter display-only helpers behind public compatibility wrappers",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "AI façade 3039->3027 LOC, 47-LOC pure display Owner; all 182 public names preserved.",
+      "details": [
+        "Original AST body/source and synthetic output/monkeypatch CI tests, 31 bounded Owner import DAG guard.",
+        "436-symbol inventory kept, no retirements; no model prompts or Broker call changes.",
+        "Real local report/LLM and independent acceptance NOT RUN, P1.5.2 OPEN."
+      ],
+      "impact": "Conservative reporting UI text ownership with original callable surfaces intact.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_ai_facade_text_helpers_31.md",
+        "libs/reporting/trade_report/ai_facade_parts/text_helpers.py",
+        "tests/test_p152_ai_facade_text_helpers.py"
       ],
       "status": "current"
     }

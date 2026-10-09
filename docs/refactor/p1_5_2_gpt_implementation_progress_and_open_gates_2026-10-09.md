@@ -167,3 +167,9 @@ Eight pure Reporting-only Story metadata/coverage/ID/display functions extracted
 ## 2026-10-09 — GPT Markdown Clean Owner 30
 
 3043->2948 LOC legacy Markdown Clean façade, 140-LOC output-localization Owner, 8 AST-identical old bodies, 209 names retained and 436-symbol ledger positions updated. 30-Owner DAG and pinned text/patch tests in CI. Production C:\\Agentra real reports, LLM, full pytest and independent verification NOT RUN; P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT AI Text Helper Owner31
+
+AI façade 3039->3027 LOC via 47-LOC pure read-only language Helper. Source AST, synthetic outputs and patchable facade helper seams in CI, 31-Owner size/dependency guard. 182 AI definitions and 436 overall public symbols intact. Local real-report/LLM/full-suite and independent evidence NOT RUN, P1.5.2 OPEN.

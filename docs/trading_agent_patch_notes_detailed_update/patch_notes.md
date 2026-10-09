@@ -2574,3 +2574,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Markdown Clean 순수 출력 문구 함수 8개를 140 LOC Owner로 분리하고 부모 3043 → 2948 LOC. 공개 함수 209개와 monkeypatch 경로 보존.
 - 원본 AST/문자열 출력 CI, 30개 신규 Owner DAG 검사. 실데이터/실거래 권한 불변. **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_markdown_clean_summary_language_30.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 AI Reporter Text Helpers Owner 31
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- AI Reporter의 출력용 helper 6개 구현을 47 LOC 전용 Owner로 분리. 공개 API 182개 유지, 부모 3039 → 3027 LOC.
+- 원본 AST·출력/monkeypatch 및 31개 Owner DAG CI. LLM/매매 경계 불변, **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_ai_facade_text_helpers_31.md`.
