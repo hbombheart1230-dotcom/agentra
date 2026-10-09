@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: GPT REMOTE OWNER 31 CI PASS (337 REPORTING + 144 SEAM/UI/OWNER); LOCAL CLAUDE+CODEX ACCEPTANCE NOT RUN; P1.5.2 OPEN; NO P1.5.3
+Status: GPT REMOTE OWNER 36 CI PASS (337 REPORTING + 234 SEAM/UI/OWNER); 35 SMALL OWNERS + PUBLIC ABI/SCOPE GUARD; LOCAL CLAUDE+CODEX NOT RUN; P1.5.2 OPEN; NO P1.5.3
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -96,6 +96,12 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 ## GPT AI Reporter Display Owners 35–36 (2026-10-09)
 - 21 pure Korean market/scanner/entry display helpers into 117/166 LOC Owners, AI facade 3027->2820 LOC. 182 top-level callable names preserved and 436-symbol ledger updated. Exact AST/fixtures/patch/35-Owner DAG and global ABI/scope CI pending.
 - Real Windows report, LLM prompt/retry, full repository suite and local independent signoff NOT RUN. Claude/Codex READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS. P1.5.2 OPEN, no P1.5.3.
+
+## GPT Owners 32–36 verified remote evidence (2026-10-09)
+- Current verified CODE SHA `46e4e7439d146ffdc6135b5b483c04dc78ce0cfa`; CI `37888641327` SUCCESS: Reporting 337 PASS, seam/UI/Owner 234 PASS, 38 prior pinned-body AST checks, 35-Owner DAG/size check, public façade ABI/scope guard.
+- Display-only Markdown Clean Owners 32–33: original 21 function bodies, public facade 2948→2717 LOC. Public API/authority guard 34: 436 public function signatures and changed-path scope. AI Reporter Owners 35–36: original 21 pure display functions, AI facade 3027→2820 LOC. 436 legacy public declarations retained; no DEAD.
+- Latest **read-only local checklist**: `docs/refactor/work_orders/P15_R2_OWNER36_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`. Latest remote evidence: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER32-36-REMOTE-CI.md`.
+- User-local C:\\Agentra report-byte/JSON/prompt and actual Broker/LLM evidence, full baseline tests and independent Claude/Codex reports NOT RUN. No P1.5.3 or main merge.
 
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md

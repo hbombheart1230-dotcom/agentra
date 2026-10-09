@@ -197,3 +197,9 @@ Added bounded read-only CI test preserving all 436 top-level Reporting façade c
 ## 2026-10-09 — GPT AI Display Owners 35–36
 
 21 original display-only market/Scanner/entry helpers moved to small 117/166 LOC Owners, public AI facade 3027->2820 LOC, all 182 function declarations and 436 ledger symbols preserved. Added original-body AST, display fixture, patch and 35-Owner DAG tests; global ABI/authority path guard retained. Windows actual trade report, LLM prompt/retry, full pytest and independent Codex/Claude NOT RUN. P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT Owners 32–36 Remote CI Verified
+
+Code SHA `46e4e7439d146ffdc6135b5b483c04dc78ce0cfa`; CI `37888641327` SUCCESS: 337 Reporting + 234 Helper/UI/new Owner PASS; 38 historical pinned AST bodies; 35-new-Owner DAG/LOC; 436-callable signature/ABI import and no-trading-authority path guard. Markdown Clean 2948→2717 LOC (21 display bodies moved); AI Reporter 3027→2820 LOC (21 display bodies moved). Static consumer index 1,770 scanned, 96/436 referenced, 6 uncertainty sites; absence does not prove DEAD. Full local C:\\Agentra real report bytes/JSON/LLM/full pytest and Claude/Codex **NOT RUN**. Updated latest local read-only checklist `docs/refactor/work_orders/P15_R2_OWNER36_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md` and evidence `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER32-36-REMOTE-CI.md`. P1.5.2 OPEN, P1.5.3 unauthorized.

@@ -1,0 +1,12 @@
+# P1.5.2 Owners 32–36 — Independent Remote CI Evidence (2026-10-09)
+
+- Active branch `refactor/p1.5`; source code HEAD `46e4e7439d146ffdc6135b5b483c04dc78ce0cfa` (this documentation-only commit follows).
+- Starting source SHA for this user continuation `52508ade9d0d246fa4e848525fe62f2fe067acb7`.
+- Owner 32–33: 21 body AST-identical Markdown Clean operator/Strategist label functions, extracted to 227-LOC `operator_labels.py` and 79-LOC `strategist_language.py`, façade 2,948→2,717 LOC. [CI `37888202798`](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/37888202798) SUCCESS.
+- Owner 34: public façade ABI guard protects original 436 top-level function names, arguments/defaults, return annotations, decorators and callable imports against SHA `52508ade9d0d246fa4e848525fe62f2fe067acb7`; changed-path guard denies modifications outside Reporting/tests/docs/refactor tools and P1.5.2 workflow. [CI `37888435223`](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/37888435223) SUCCESS.
+- Owner 35–36: 21 body AST-identical display-only AI Reporter market/Scanner/entry helpers to 117-LOC `market_labels.py` and 166-LOC `scanner_labels.py`; AI façade 3,027→2,820 LOC. [CI `37888641327`](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/37888641327) SUCCESS.
+- Final code CI `37888641327`: historical 38-function/26-Owner AST PASS, **337 broad Reporting tests PASS**, **234 helper/UI/new Owner tests PASS**, **35 new Owner module size/DAG guard PASS**, public facade ABI and changed-path authority guard PASS.
+- Latest conservative static index: 1,770 Python files inspected, 436 façade symbols, 96 statically referenced; 6 dynamic/parse uncertainty sites. **340 not statically referenced are UNKNOWN, not DEAD; do not delete**.
+- Three public source façades remain oversized: AI 2,820 LOC, Markdown Clean 2,717 LOC, Story 636 LOC. All 182+209+45 original callable exports unchanged. Thin wrappers are intentionally kept until external consumer/monkeypatch proof; no forced deletion or auto-merge.
+- Real historical user-local report bytes, truth/source provenance, actual LLM message/template/model/retry parity, full repo pytest before/after, Q12 worktree safety and independent Codex+Claude read-only audits **NOT RUN**. A GitHub success is not Windows production signoff.
+- Broker, Executor/Supervisor execution authority, trading writes, UEF/R6.2, Step5C/D, Docker, Q12, frozen main not changed. **P1.5.2 OPEN and P1.5.3 NOT AUTHORIZED**.

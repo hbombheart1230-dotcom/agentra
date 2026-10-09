@@ -2625,3 +2625,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - AI Reporter 시장·테마·스캐너·진입 결과 표시 21개 함수를 117/166 LOC Owner로 분리. 공개 부모 **3027→2820 LOC**로 감소했고 182개 함수·monkeypatch는 그대로 유지.
 - 본문 원본 AST/출력 21개 검증, 35-Owner DAG 및 공개 API·매매 영역 보호 CI 포함. **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_ai_facade_labels_35_36.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Owners32–36 Remote CI Evidence
+**Stage:** Architecture and Maintainability  
+**Tags:** TESTING · QUALITY · DOCUMENTATION
+
+- 원격 코드 `46e4e7439d146ffdc6135b5b483c04dc78ce0cfa` CI `37888641327`: Reporting **337 PASS**, Helper/UI/Owner **234 PASS**, 35 Owner 크기/DAG 및 436 public ABI/변경 경로 검사 PASS.
+- Markdown Clean 2,717 LOC, AI Reporter 2,820 LOC, Story 636 LOC. 총 436 공개 심볼 유지, 미참조 340개는 DEAD가 아니라 UNKNOWN.
+- 독립 Claude/Codex 읽기 전용 로컬 검증 지시서와 원격 근거 최신화. 실보고서·전체 테스트 미실행이므로 **P1.5.2 OPEN, P1.5.3 미시작**.
+- 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER32-36-REMOTE-CI.md`.

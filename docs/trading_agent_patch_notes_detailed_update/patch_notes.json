@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 185,
+  "entry_count": 186,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5073,6 +5073,30 @@
         "tests/test_p152_ai_facade_market_scanner_labels.py",
         "libs/reporting/trade_report/ai_facade_parts/market_labels.py",
         "libs/reporting/trade_report/ai_facade_parts/scanner_labels.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Owners32-36 Remote CI Evidence and ReadOnly Checklist",
+      "title": "Record verified Owner36 CI, public ABI and local read-only acceptance requirements",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "QUALITY",
+        "DOCUMENTATION"
+      ],
+      "summary": "Owner36 code CI PASSED: 337 Reporting, 234 helper/UI/Owner, 35 small Owner DAG, 436 public ABI/authority checks. Final P1.5.2 local acceptance still OPEN.",
+      "details": [
+        "42 report-only label functions extracted in Owners32–33 and 35–36 with exact original AST/output checks.",
+        "All 436 public symbols intact; 96 static references, 6 uncertain sites, no deletions.",
+        "Independent Claude/Codex and real local production artifacts not run; no P1.5.3/authority changes."
+      ],
+      "impact": "Evidence-backed separation between completed remote CI and remaining safety approval.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER32-36-REMOTE-CI.md",
+        "docs/refactor/work_orders/P15_R2_OWNER36_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md",
+        "docs/refactor/work_orders/CURRENT.md"
       ],
       "status": "current"
     }
