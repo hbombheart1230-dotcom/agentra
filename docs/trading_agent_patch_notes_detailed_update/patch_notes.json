@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 154,
+  "entry_count": 155,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4318,6 +4318,31 @@
         "docs/refactor/work_orders/evidence/P15-R2-GPT-VERIFY-002-GPT-REMOTE.md",
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_remote_source_audit.md",
         "docs/refactor/work_orders/CURRENT.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Lifecycle Human Owner 08",
+      "title": "Extract lifecycle human fallback into a focused small Owner",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved lifecycle human fallback and captured-truth preference to a single 116-LOC Owner while keeping dependency injection at call time.",
+      "details": [
+        "trade_story_pipeline_story_assembly.py 835 -> 762 physical LOC, new lifecycle_human.py 116 LOC.",
+        "Original statements retain order; old facade injected dependencies remain patchable.",
+        "Two isolated baseline-vs-candidate AST smoke fixtures matched; new targeted unit tests added to Reporting CI.",
+        "No broker/UEF/Step5C-D/R6.2/Docker/trading/LLM behavior intended. P1.5.2 not accepted or closed."
+      ],
+      "impact": "Read-only Reporting ownership change with preservation of user-facing lifecycle fallback.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_lifecycle_human_small_owner_08.md",
+        "libs/reporting/trade_story_assembly_parts/lifecycle_human.py",
+        "tests/test_p152_lifecycle_human_owner.py"
       ],
       "status": "current"
     }

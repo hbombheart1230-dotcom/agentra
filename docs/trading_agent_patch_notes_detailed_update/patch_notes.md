@@ -2305,3 +2305,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `C:\Agentra` 실데이터·worktree·full pytest 및 별도 Claude/Codex 증거가 아직 없으므로 **P1.5.2는 CLOSED가 아니며 P1.5.3은 시작하지 않습니다.**
 - 런타임 Python, 실거래, Broker, UEF, Docker, Step5C/D, R6.2, 전략 및 production 데이터 경로는 변경하지 않았습니다.
 - 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-VERIFY-002-GPT-REMOTE.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Lifecycle Human Owner 08
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- trade-story 생명주기 human fallback/truth 우선순위를 별도 작은 Owner (116 LOC)로 분리해 기존 835 LOC 구현 파일을 762 LOC로 축소했습니다.
+- 기존 call-time `deps` 호환성 유지, 직접/생명주기 경로의 사전/사후 비교 및 보완 회귀 테스트 추가.
+- 출력·LLM·전략·실거래·UEF·Docker·Step5C/D/R6.2 기능 변경 없음. **P1.5.2는 계속 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_lifecycle_human_small_owner_08.md`.

@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: GPT REMOTE SOURCE AUDIT PASS_WITH_FINDINGS / LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
+Status: GPT REMOTE IMPLEMENTATION CONTINUING (OWNER 08); LOCAL CLAUDE+CODEX VERIFICATION STILL PENDING / P1.5.2 NOT CLOSED
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -8,7 +8,13 @@ Original BEFORE code SHA: 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c
 Main frozen SHA: 2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb
 Local actual HEAD: NOT OBSERVED. Claude/Codex must reconcile without reset or Q12 cleanup.
 Primary local root: C:\Agentra
-Work type: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS; NO P1.5.3 IMPLEMENTATION.
+Work type: GPT REMOTE NON-AUTHORITY REPORTING SMALL-OWNER IMPLEMENTATION + LOCAL READ-ONLY CLAUDE/CODEX VERIFICATION. NO P1.5.3 IMPLEMENTATION. Local Claude/Codex remain read-only under this order.
+
+## Operator directive: GPT implementation must continue (2026-10-09)
+- User explicitly requested GPT to complete every feasible P1.5.2 Reporting source/test/CI/documentation task before local handoff; supersedes verifier-first stop for GPT itself only.
+- Continue small coherent Owner extractions on `refactor/p1.5`, each new Owner <=350 LOC, no authority changes, independent CI and patch notes every batch.
+- This directive does not authorize local Claude or Codex source edits, production runtime orders/restarts, or P1.5.3.
+- Initial GPT continuation: lifecycle-human Owner 08 extracted; see daily patch. Real-data/independent evidence remains required for final acceptance.
 
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
