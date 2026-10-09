@@ -2513,3 +2513,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Markdown 내부 헬퍼 11개 및 렌더러 본문을 소형 Owner 2개 (130/326 LOC)로 분리했습니다. 기존 `markdown_summary.py` 432 → 60 LOC 호환 공개 래퍼만 유지.
 - 원본 보고서 바이트 골든 6개, 호출시점 monkeypatch 및 25개 Owner 의존성 검증 추가. 실데이터 검증 전 **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_markdown_facade_main_renderer_25.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Owner25 Remote CI Evidence Closeout
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION · QUALITY
+
+- Markdown 공개 래퍼 60 LOC / 신규 구현 Owner 최대 350 LOC로 분리 완료. 원격 CI `37885565737` **337 Reporting + 72 Helper/UI/Owner PASS**, 기존 38개 함수 AST 검증 PASS.
+- 12개 합성 Golden 출력, 25개 신규 Owner 순환/역방향 의존 검사 포함. 로컬 진짜 보고서/LLM/전체 pytest·독립검증은 미실행. 3개 대형 공개 façade도 소비자 증거 확보 전까지 유지.
+- **P1.5.2 OPEN**, P1.5.3 미시작. 매매 실행·Docker·UEF·R6.2·Step5C/D 불변.
+- 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER25-REMOTE-CI.md`.

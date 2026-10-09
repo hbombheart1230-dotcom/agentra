@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 174,
+  "entry_count": 175,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4806,6 +4806,31 @@
         "docs/daily_patch/2026-10-09_p1_5_2_markdown_facade_main_renderer_25.md",
         "tests/test_p152_markdown_render_section_owners.py",
         "libs/reporting/trade_report/markdown_summary.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Owner25 Remote CI Evidence Closeout",
+      "title": "Record verified Markdown small-Owner refactor and remaining acceptance gates",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION",
+        "QUALITY"
+      ],
+      "summary": "Remote CI 37885565737 PASS: 337 Reporting, 72 seam/UI/Owner, 38 historical AST functions. Markdown public wrapper down to 60 LOC, local acceptance still OPEN.",
+      "details": [
+        "Owner25 Markdown split preserves both public signatures and tests 12 pre-split golden fixtures; all newly added Owners <=350 LOC.",
+        "Three giant outer Reporter/Story facades plus 436 symbol consumer proofs and Windows real-data/full-suite/LLM checks are not accepted.",
+        "No trade authority/UEF/R6.2/Step5C/D/Docker changes. P1.5.2 NOT CLOSED; P1.5.3 NOT STARTED."
+      ],
+      "impact": "Verified code/CI evidence and explicit boundaries between completed remote work and pending local safety acceptance.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER25-REMOTE-CI.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/p1_5_2_gpt_implementation_progress_and_open_gates_2026-10-09.md"
       ],
       "status": "current"
     }

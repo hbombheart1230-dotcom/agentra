@@ -129,3 +129,11 @@ Complete unchanged body moved to 328-LOC `summary_input_parts/main_builder.py`, 
 ## 2026-10-09 — GPT Markdown Renderer and Helpers Owner 25
 
 11 private render nested helper bodies moved to 130-LOC Owner, core renderer moved to 326-LOC Owner, original `markdown_summary.py` reduced to 60 LOC as public compatibility façade. Both public signatures and call-time monkeypatch bindings preserved. Owner DAG/LOC guard extended 23 -> 25, six output and six input pre-split golden fixtures remain. Remote CI to verify. Windows actual-report, LLM call/retry, full-suite and independent audits NOT RUN. P1.5.2 OPEN, P1.5.3 not authorized.
+
+---
+
+## 2026-10-09 — GPT Remote CI Finalized through Owner 25
+
+CI run `37885565737` **PASS** at SHA `8e43112ea42f5f9dd19db6429e637b7aa0c1614a`: historical 38-function AST parity, Reporting **337 PASS**, Helper/Owner/UI **72 PASS**. Four Markdown output Owner modules + three input contract Owner modules + bounded input main and renderer helper/main Owners, all <=350 LOC. `markdown_summary.py` from 1,145 LOC to **60 LOC**, public signatures retained and 12 synthetic pre-split golden hashes pinned in CI. The new 25-Owner DAG/size guard PASS.
+
+**P1.5.2 REMAINS OPEN**: Three public 3039/3043/948-LOC façades (436 symbol consumer audit), local real report byte/LLM/full-suite validation, and independent Claude/Codex evidence. These gates require actual local resources, not remotely inferred proof. No P1.5.3, Broker/UEF/R6.2/Step5C/D/Docker/trading changes.
