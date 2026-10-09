@@ -2265,3 +2265,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 **Tags:** BUGFIX · TESTING
 
 - AST 동등성 검증 실행 시 저장소 루트가 Python import 경로에서 빠져 CI가 실패했습니다. 모듈 방식(`python -m`)으로 실행하도록 교정했습니다. 검사 내용과 런타임 코드는 변경하지 않았습니다.
+
+---
+
+## 2026-10-09 · P1.5.2 AI Owner Physical LOC Cap Repair
+**Stage:** Architecture and Maintainability  
+**Tags:** BUGFIX · REFACTOR · TESTING
+
+- 물리적 LOC 상한 검사에서 AI 서비스 파일의 마지막 공백 줄 때문에 351 LOC가 검출됐습니다. 함수 AST는 그대로 보존하고 뒤쪽 공백만 삭제했습니다(351 → 347). 검사 기준을 완화하지 않았습니다.

@@ -345,7 +345,3 @@ def build_ai_trade_report_service(
         },
     )
     return _attach_report_status_matrix(out, story_input, ai_trade_report_status=final_status)
-
-
-
-

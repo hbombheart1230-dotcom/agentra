@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 150,
+  "entry_count": 151,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4218,6 +4218,29 @@
       "sources": [
         ".github/workflows/p152-r2c-residual-regression.yml",
         "docs/daily_patch/2026-10-09_p1_5_2_owner_parity_module_invocation_fix.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 AI Owner Physical LOC Cap Repair",
+      "title": "Strict physical LOC owner gate caught trailing blank lines in AI service module",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "BUGFIX",
+        "REFACTOR",
+        "TESTING"
+      ],
+      "summary": "Preserved the newly added 350-line hard gate; shortened only trailing blank whitespace from the copied AI report service Owner so real physical line count passes without modifying its AST.",
+      "details": [
+        "Original AI Owner physical LOC (including blank trailing lines): 351; after whitespace normalization: 347.",
+        "Failing CI evidence https://github.com/hbombheart1230-dotcom/agentra/actions/runs/37877264205 ; AST/call graph/output semantics unchanged.",
+        "Repeat full static 38-function original AST comparison and Reporting 337+12 CI matrices, never waive the gate."
+      ],
+      "impact": "Whitespace-only Python code change; no behavioral modification.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_ai_service_loc_cap_fix.md",
+        "libs/reporting/trade_report/services/ai_report.py"
       ],
       "status": "current"
     }
