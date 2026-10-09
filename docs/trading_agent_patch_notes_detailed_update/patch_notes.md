@@ -2316,3 +2316,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 기존 call-time `deps` 호환성 유지, 직접/생명주기 경로의 사전/사후 비교 및 보완 회귀 테스트 추가.
 - 출력·LLM·전략·실거래·UEF·Docker·Step5C/D/R6.2 기능 변경 없음. **P1.5.2는 계속 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_lifecycle_human_small_owner_08.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Shared Story Provenance Owner 09
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- lifecycle v2와 일반 v1의 동일한 reasoning provenance 블록(각 67줄)을 85 LOC 단일 Owner로 통합했습니다.
+- story assembly 762 → 644 LOC. canonical 증거 우선순위·call-time monkeypatch 호환 유지, 별도 단위 테스트 추가.
+- 직전 CI `37879379703`은 Python 테스트 이전에 CURRENT 문구 검사에서 FAIL, `a010f53`에서 문구 수정. **P1.5.2는 여전히 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_story_provenance_owner_09.md`.

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 155,
+  "entry_count": 156,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4343,6 +4343,31 @@
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_lifecycle_human_small_owner_08.md",
         "libs/reporting/trade_story_assembly_parts/lifecycle_human.py",
         "tests/test_p152_lifecycle_human_owner.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Shared Story Provenance Owner 09",
+      "title": "Deduplicate v1/v2 story provenance derivation into a single 85-LOC Owner",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Removed duplicated schema-path provenance implementation, preserving canonical source preference and per-call injected dependencies.",
+      "details": [
+        "Both 67-line derivation blocks were text-identical; now call one provenance Owner (85 LOC).",
+        "Story assembly parent falls from 762 to 644 LOC; new targeted deterministic provenance tests added.",
+        "Prior static-work-order wording regression from 37879379703 corrected in a010f53; CI verification for this tranche required.",
+        "Trading, broker authority, UEF, Step5C/D, R6.2, Docker and LLM paths unchanged; P1.5.2 remains OPEN."
+      ],
+      "impact": "One canonical Reporting provenance implementation across both story contract paths.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_story_provenance_owner_09.md",
+        "libs/reporting/trade_story_assembly_parts/reasoning_provenance.py",
+        "tests/test_p152_story_reasoning_owner.py"
       ],
       "status": "current"
     }
