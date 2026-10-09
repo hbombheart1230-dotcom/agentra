@@ -155,3 +155,9 @@ Code baseline `f381772d2118aca6444108fab429e4a0e0fba056`. Four function implemen
 ## 2026-10-09 — GPT Story Human Judgments Owner 28
 
 Owner27 826-LOC Story façade now 753 LOC after observational Supervisor/Reporter/Operator human explanation owner (110 LOC), retaining 45 function names, call-time normalizer patch seam and 436-symbol ledger. Pinned AST/fixture/patch parity in CI. User-local production report/LLM/full repository/independent evidence NOT RUN, no Broker/UEF/R6.2/Docker/trading authority change. P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT Story Contract Owner 29
+
+Eight pure Reporting-only Story metadata/coverage/ID/display functions extracted to a 162-LOC Owner; public Story façade 753->636 LOC, 45 names preserved, 436 symbol ledger reconciled. 29-Owner DAG and pinned AST/fixture/monkeypatch CI. Windows actual outputs, LLM, full pytest and independent audits NOT RUN; Broker/UEF/R6.2/Docker/authority untouched. P1.5.2 OPEN.

@@ -69,6 +69,10 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - Three pure/report-only explanation bodies extracted to 110-LOC `human_judgments.py`; public Story façade 826->753 LOC, 45 function names retained; original AST & synthetic goldens / patchable normalizer tests in CI.
 - Continue public façade consumer proof conservatively. Local Claude/Codex READ-ONLY LOCAL VERIFICATION / NO RUNTIME PYTHON EDITS. No P1.5.3; Windows actual report evidence OPEN.
 
+## GPT Owner 29 Story report contracts (2026-10-09)
+- Moved eight display/ID/coverage functions into 162-LOC Owner, Story façade 753->636 LOC with all 45 top-level names intact. 29 Owner static guard and pinned AST/output/monkeypatch CI tests.
+- Report-only classification, not Broker runtime. Local user real-data, independent audits and remaining public Reporting façade consumers still OPEN. Claude/Codex READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS; no P1.5.3.
+
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
 - docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md

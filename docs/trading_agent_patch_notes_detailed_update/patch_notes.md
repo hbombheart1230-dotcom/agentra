@@ -2554,3 +2554,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Supervisor·Reporter·Operator의 기존 설명 함수 3개 본문을 110 LOC 전용 Owner로 분리하고 public 함수명·시그니처·호출 시점 의존성을 유지했습니다. Story façade 826 → 753 LOC.
 - 원본 AST·출력 비교·monkeypatch 검사, 공개 심볼 436개 장부 동기화. 실거래 경계 불변이며 **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_story_facade_human_judgments_28.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Story Report Contract Owner 29
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- Story 식별자·커버리지·실행모드 *표시* 함수 8개를 162 LOC Owner로 이동, Story façade 753 → 636 LOC. 공개 함수 45개와 monkeypatch 유지.
+- 원본 AST/대표 출력 및 29개 Owner DAG CI 고정. Broker 실제 모드·주문 경로는 변경하지 않았고 **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_story_contract_owner_29.md`.

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 178,
+  "entry_count": 179,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4904,6 +4904,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_story_facade_human_judgments_28.md",
         "tests/test_p152_story_facade_human_owners.py",
         "libs/reporting/trade_story_facade_parts/human_judgments.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Story Report Contract Owner 29",
+      "title": "Move Story report ID, coverage and execution-mode display helpers behind public wrappers",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Eight unchanged report metadata helper bodies extracted to 162-LOC Owner; Story façade 753->636 LOC with all public names intact.",
+      "details": [
+        "Pinned original AST and representative outputs plus monkeypatch dependency tests in CI.",
+        "Static dependency/LOC guard now covers 29 small Owners and ledger still spans all 436 symbols.",
+        "No actual Broker mode or trade decision mutation; real local report and independent acceptance OPEN."
+      ],
+      "impact": "Reduces Story façade cognitive complexity without changing trade authority.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_story_contract_owner_29.md",
+        "tests/test_p152_story_facade_contract_owners.py",
+        "libs/reporting/trade_story_facade_parts/story_contracts.py"
       ],
       "status": "current"
     }
