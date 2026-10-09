@@ -2327,3 +2327,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - story assembly 762 → 644 LOC. canonical 증거 우선순위·call-time monkeypatch 호환 유지, 별도 단위 테스트 추가.
 - 직전 CI `37879379703`은 Python 테스트 이전에 CURRENT 문구 검사에서 FAIL, `a010f53`에서 문구 수정. **P1.5.2는 여전히 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_story_provenance_owner_09.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Direct Story Owner 10
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- 일반(v1) trade-story 조립 경로를 단일 246 LOC Owner로 추출, 기존 story assembly 644 → 445 LOC 축소.
+- 기존 v1/v2 사전·사후 결과 일치, 350 LOC 상한 검증 추가. UI·실거래·UEF·Docker·LLM 기능은 변경하지 않았습니다.
+- **P1.5.2 OPEN**, 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_direct_story_owner_10.md`.

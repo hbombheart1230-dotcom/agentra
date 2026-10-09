@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 156,
+  "entry_count": 157,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4368,6 +4368,31 @@
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_story_provenance_owner_09.md",
         "libs/reporting/trade_story_assembly_parts/reasoning_provenance.py",
         "tests/test_p152_story_reasoning_owner.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Direct Story Owner 10",
+      "title": "Extract direct v1 trade-story assembler into its own bounded owner",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved non-lifecycle v1 story schema assembly verbatim to a 246-LOC single Owner, leaving v2 and stable external compatibility in place.",
+      "details": [
+        "Story assembly 644 -> 445 physical LOC; direct_story.py is 246 LOC.",
+        "No-lifecycle v1 branch delegates all runtime dependencies explicitly at call time; no owner->facade import.",
+        "Before/after isolated direct and lifecycle fixtures match; structural CI test and historical regression planned.",
+        "P1.5.2 still OPEN; local real-data and independent verification NOT RUN."
+      ],
+      "impact": "Smaller single-purpose direct story composition Owner without changing trade/report semantics.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_direct_story_owner_10.md",
+        "libs/reporting/trade_story_assembly_parts/direct_story.py",
+        "tests/test_p152_direct_story_owner.py"
       ],
       "status": "current"
     }
