@@ -2161,3 +2161,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Executor `execute_from_packet.py`는 안전한 EX1~EX6 이후 추가 EX7~EX10을 선택적으로 허용합니다. 현 4,189 LOC → 중간 2,600~3,200 → 동등성 입증 시 최종 1,200~1,800 LOC를 목표로 하되, 단일 주문 변경 권한·Guard 순서·R6.2·Step5C/D·UNKNOWN 처리는 보존합니다.
 - P1.2 CLOSED, P1.3 FULL_DOCKER_FROZEN, Docker 2 GiB, 7개 Agent 및 Q12 dirty worktree 보존. 설계 문서와 검증 Workflow만 변경하고 런타임 Python은 수정하지 않았습니다.
 - 문서: `docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md`, `p1_5_reporting_implementation_packet_v1_2.md`, `p1_5_executor_safe_decomposition_packet_v1_1.md`.
+
+---
+
+## 2026-10-09 · P1.5 Git-Driven Claude/Codex Work Orders v1.0
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · ARCHITECTURE · DOCUMENTATION · TESTING · WORKFLOW
+
+- 긴 채팅 프롬프트 대신 **GitHub 문서를 단일 작업 지시의 정본**으로 지정했습니다. 루트의 `CLAUDE.md`, `AGENTS.md`에서 각 역할의 운영 지침과 `docs/refactor/work_orders/CURRENT.md`를 읽도록 구성했습니다.
+- `docs/refactor/P15_EXECUTION_PROTOCOL.md`에 GPT 범위/수용 판정 → 로컬 Claude 구현 → 로컬 Codex 독립 검증 → GPT PASS/FIX 단계 전환을 정의했습니다.
+- 첫 지시서 `P15-R2-R0R1-001`은 Reporting 현재 로컬 상태/BEFORE 동등성/함수·사용처·Owner 목록 확인만 수행하는 감사 전용 작업입니다. Python 수정 없이 증거를 먼저 확보합니다.
+- 작업별 증거는 Claude와 Codex가 서로 다른 파일에 기록하고, 정확한 코드 SHA를 기준으로 검증합니다. `refactor/p1.5` 한 브랜치, Q12 dirty worktree 보존, 새 Owner 350 LOC 상한, UI 패치노트·변경 파일 ZIP 규칙을 유지합니다.
+- 이번 커밋은 문서와 검증 워크플로만 변경했습니다. 운영·매매·Docker·UEF 코드는 변경하지 않았습니다.

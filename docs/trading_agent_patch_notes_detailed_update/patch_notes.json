@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 139,
+  "entry_count": 140,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3921,6 +3921,38 @@
         "source_baseline": "2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb",
         "provenance_baseline": "453084b3a17c0cfa562c73f74b7e7ea0b844a381"
       }
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5 Git-Driven Claude/Codex Work Orders v1.0",
+      "title": "P1.5 git-hosted work orders, local Claude implementation and independent Codex verification protocol",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "ARCHITECTURE",
+        "DOCUMENTATION",
+        "TESTING",
+        "WORKFLOW"
+      ],
+      "summary": "Instead of copying chat prompts, Claude and Codex read root entrypoints plus a single work order and source design packets from canonical refactor/p1.5; GPT owns status advancement and final tranche acceptance.",
+      "details": [
+        "Created root CLAUDE.md and AGENTS.md as short role-specific onboarding entrypoints into one Git-driven protocol.",
+        "docs/refactor/P15_EXECUTION_PROTOCOL.md establishes local-first Claude implementation, Codex independent pinned-SHA audit, GPT ACCEPT/FIX decision, branch/rollback restrictions and safety gates.",
+        "docs/refactor/work_orders/CURRENT.md pins first AUDIT-ONLY P15-R2-R0R1-001 task to local Reporting baseline and 2,233-line sections.py responsibility ledger before authorizing further Python changes.",
+        "The same stable CURRENT.md path will be updated only after GPT review; Claude and Codex evidence reports are separate and tied to the exact audited SHA.",
+        "Remote branches stay main/refactor/p1.5, no Q12 dirty worktree edits, no production broker/Docker/UEF changes, existing v1.2 strict <=350 LOC extracted owner contract unchanged.",
+        "No runtime Python or test code was changed in this protocol publication."
+      ],
+      "impact": "Documentation and CI governance only. First task is local baseline inventory, not code implementation.",
+      "sources": [
+        "CLAUDE.md",
+        "AGENTS.md",
+        "docs/refactor/P15_EXECUTION_PROTOCOL.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/README.md",
+        "docs/daily_patch/2026-10-09_p1_5_git_driven_work_order_protocol.md"
+      ],
+      "status": "current"
     }
   ]
 }

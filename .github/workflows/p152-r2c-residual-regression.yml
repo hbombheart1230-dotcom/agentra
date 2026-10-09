@@ -46,6 +46,38 @@ jobs:
           assert "P1.5 Small-Owner and Executor v1.2" in (root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
           print("P1.5 DESIGN GUARD PASS —", j["entry_count"], "patch note entries")
           PY
+      - name: Validate Git-driven work order and independent roles
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          paths=[
+              "CLAUDE.md", "AGENTS.md",
+              "docs/refactor/P15_EXECUTION_PROTOCOL.md",
+              "docs/refactor/work_orders/README.md",
+              "docs/refactor/work_orders/CURRENT.md",
+          ]
+          for name in paths:
+              assert Path(name).is_file(), name
+          cl=Path("CLAUDE.md").read_text(encoding="utf-8")
+          cx=Path("AGENTS.md").read_text(encoding="utf-8")
+          cur=Path("docs/refactor/work_orders/CURRENT.md").read_text(encoding="utf-8")
+          protocol=Path("docs/refactor/P15_EXECUTION_PROTOCOL.md").read_text(encoding="utf-8")
+          assert "docs/refactor/work_orders/CURRENT.md" in cl
+          assert "docs/refactor/work_orders/CURRENT.md" in cx
+          assert "P15-R2-R0R1-001" in cur
+          assert "AUDIT/BEFORE CHARACTERIZATION ONLY" in cur
+          assert "NO RUNTIME PYTHON EDITS" in cur
+          assert "CODEX" in protocol and "CLAUDE" in protocol and "GPT_ACCEPTED" in protocol
+          notes=json.loads(Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.json").read_text(encoding="utf-8"))
+          assert notes["entry_count"]==len(notes["entries"])
+          key="P1.5 Git-Driven Claude/Codex Work Orders v1.0"
+          matching=[e for e in notes["entries"] if e.get("version")==key]
+          assert len(matching)==1
+          assert all(Path(src).is_file() for src in matching[0]["sources"])
+          assert key in Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
+          print("P1.5 GIT WORK ORDER GUARD PASS",notes["entry_count"])
+          PY
       - name: Compile extracted owners
         run: python -m compileall -q libs/reporting/trade_story_pipeline.py libs/reporting/trade_story_pipeline_news.py libs/reporting/trade_story_pipeline_scanner.py libs/reporting/trade_story_pipeline_provenance.py
       - name: Broader reporting regression

@@ -6,6 +6,8 @@ Frozen baseline: `main` at `2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb`
 
 This directory holds original frozen design records and the current versioned implementation guidance for the Agentra structural refactor.
 
+**Git-driven agent work orders (2026-10-09):** [P1.5 Execution Protocol](P15_EXECUTION_PROTOCOL.md) specifies the GPT → local Claude → independent local Codex → GPT decision sequence. [CURRENT work order](work_orders/CURRENT.md) is the ONE active task. The root `CLAUDE.md` and `AGENTS.md` direct the respective local agents to these docs; do not paste long task prompts into chat. Work-order acceptance and findings are recorded under `docs/refactor/work_orders/evidence/`.
+
 **2026-10-09 UPDATED IMPLEMENTATION AUTHORITY:** [strict small-Owner / continue-not-rollback v1.2](p1_5_small_owner_policy_and_rollback_decision_v1_2.md), [Reporting owner continuation v1.2](p1_5_reporting_implementation_packet_v1_2.md), [Executor safe size reduction v1.1](p1_5_executor_safe_decomposition_packet_v1_1.md). New implementation owners <=350 physical LOC. Original v1.0/v1.1 packets and their safety gates remain intact.
 
 **Whole-program P1.5.1–P1.5.11 design audit (2026-10-08):** [p1_5_1_to_11_responsibility_alignment_v1_1.md](p1_5_1_to_11_responsibility_alignment_v1_1.md). This is a cross-stage ACCEPTANCE ADDENDUM: one canonical Owner per responsibility, minimal façades, explicit adapter/Agent contract boundaries, verified wrapper consumers and freeze evidence. Preserve all original v1.0 packets as the detailed authority and the Reporting v1.1 residual packet. Executor safety-chain size exception remains authoritative.
