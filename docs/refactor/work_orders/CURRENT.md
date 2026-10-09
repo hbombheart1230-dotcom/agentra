@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: GPT REMOTE IMPLEMENTATION CONTINUING (OWNER 08); LOCAL CLAUDE+CODEX VERIFICATION STILL PENDING / P1.5.2 NOT CLOSED
+Status: GPT REMOTE OWNER 16 CI PASS; LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -16,6 +16,13 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - Continue small coherent Owner extractions on `refactor/p1.5`, each new Owner <=350 LOC, no authority changes, independent CI and patch notes every batch.
 - This directive does not authorize local Claude or Codex source edits, production runtime orders/restarts, or P1.5.3.
 - Initial GPT continuation: lifecycle-human Owner 08 extracted; see daily patch. Real-data/independent evidence remains required for final acceptance.
+
+## GPT remote continuation evidence (2026-10-09)
+- Current code HEAD before this work-order update: `a659e5d39978672b1abe1365a9ebe32c3e30f7f6`.
+- GPT implemented Reporter/Story small-owner slices 08-16 on `refactor/p1.5` and updated UI-linked patch notes per tranche.
+- CI PASS: direct story `37879772952`; story assembly <=350 `37879934368`; operator text owner `37880715491`; language normalization `37880840829`; deterministic Markdown findings `37880943767`.
+- The work order still protects both local verifiers: **READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS**. They must check actual C:\Agentra worktrees, real-data output equality, monkeypatch consumers, full baseline tests and execution-authority leakage before any stage acceptance.
+- Giant Markdown rendering/input, remaining monitor human payload, public Reporting façades and test architecture remain OPEN. P1.5.2 is not closed. Do not start P1.5.3.
 
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
