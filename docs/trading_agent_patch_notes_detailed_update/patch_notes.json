@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 166,
+  "entry_count": 167,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4614,6 +4614,30 @@
         "docs/refactor/p1_5_2_gpt_implementation_progress_and_open_gates_2026-10-09.md",
         "docs/refactor/work_orders/CURRENT.md",
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_continuation_08_to_18_ci_accepted.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Monitor Context Owner 19",
+      "title": "Separate Monitor report snapshot context from human narrative",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved 224 lines of report-only Monitor context collection into a 258-LOC bounded Owner with exact statement AST parity and explicit live-out values.",
+      "details": [
+        "Story human parent 636 -> 431 physical LOC; original 84 moved statements AST-identical and 65 live-out values unpacked explicitly.",
+        "Six isolated before/after Reporting fixtures equal; CI test added. Actual C:\\\\Agentra real-data goldens and full independent acceptance NOT RUN.",
+        "No trade authority, UEF, R6.2, Step5C/D, Docker or production data mutation. P1.5.2 OPEN."
+      ],
+      "impact": "Smaller Reporting-only Monitor context owner without changing trade decisions.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_monitor_context_split_19.md",
+        "libs/reporting/trade_story_human_parts/monitor_context.py",
+        "tests/test_p152_monitor_context_owner.py"
       ],
       "status": "current"
     }

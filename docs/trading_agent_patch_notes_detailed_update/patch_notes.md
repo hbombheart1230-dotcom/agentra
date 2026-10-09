@@ -2429,3 +2429,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 최신 CI `37881544761` **PASS** — 원본 AST 38개, Reporting 337건, helper/UI/owner 43건, 변경 파일 ZIP 업로드. 실패 `37881458077`의 들여쓰기 오류도 이력에 남기고 `8f3c1465` 수정 후 재검증했습니다.
 - Markdown summary 1,226 LOC, Monitor human 636 LOC, 공개 façade 3,039/3,043/948 LOC 및 실데이터·전체 pytest·독립검증은 아직 OPEN. **P1.5.2 미종료, P1.5.3 미승인.**
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_continuation_08_to_18_ci_accepted.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Monitor Context Owner 19
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- Monitor 스냅샷/정책 근거·진입 관측 컨텍스트 224줄을 258 LOC 전용 Owner로 분리하여 human payload **636 → 431 LOC**로 축소했습니다.
+- AST 동일성 84개 문장 및 65개 명시적 반환값 검증, 6개 사전/사후 독립 실행 fixture PASS. 실제 Windows 거래 리포트 비교는 미실행.
+- 전략·실거래·UEF·R6.2·Step5/Docker 불변. **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_monitor_context_split_19.md`.
