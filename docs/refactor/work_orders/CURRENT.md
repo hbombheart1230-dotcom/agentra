@@ -57,6 +57,10 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - 11 nested helpers -> 130-LOC Owner, renderer -> 326-LOC Owner, public Markdown facade 60 LOC. Call-time helper injection and both public functions preserved. Remote CI PENDING.
 - Three large top-level Reporter/Story facades and actual Windows production report/consumer/full suite/independent checks remain OPEN. Local Claude/Codex READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS; no P1.5.3.
 
+## GPT static façade consumer evidence 26 (2026-10-09)
+- Added a repository-wide conservative AST consumer index for the 3 public façades. CI publishes standalone JSON; STATIC_ONLY does NOT prove DEAD or authorize public symbol deletion.
+- Continue GPT Reporting-only changes on `refactor/p1.5`, local Claude/Codex remain READ-ONLY LOCAL VERIFICATION / NO RUNTIME PYTHON EDITS. P1.5.2 OPEN, P1.5.3 unauthorized.
+
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
 - docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md

@@ -2524,3 +2524,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 12개 합성 Golden 출력, 25개 신규 Owner 순환/역방향 의존 검사 포함. 로컬 진짜 보고서/LLM/전체 pytest·독립검증은 미실행. 3개 대형 공개 façade도 소비자 증거 확보 전까지 유지.
 - **P1.5.2 OPEN**, P1.5.3 미시작. 매매 실행·Docker·UEF·R6.2·Step5C/D 불변.
 - 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER25-REMOTE-CI.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Static Façade Consumer Evidence 26
+**Stage:** Architecture and Maintainability  
+**Tags:** TESTING · QUALITY · DOCUMENTATION
+
+- 3개 Reporting 공개 façade의 436개 심볼에 대해 저장소 전체의 정적 import·모듈 별칭·monkeypatch·getattr·문자열 patch/동적 참조를 구분하는 CI 근거 산출기를 추가했습니다.
+- 정적으로 참조되지 않은 함수도 **DEAD 판정 금지**, 런타임 소비자·로컬 검증 OPEN. P1.5.3 미시작.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_facade_static_consumer_evidence_26.md`.

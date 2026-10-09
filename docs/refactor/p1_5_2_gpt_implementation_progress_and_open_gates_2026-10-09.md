@@ -137,3 +137,9 @@ Complete unchanged body moved to 328-LOC `summary_input_parts/main_builder.py`, 
 CI run `37885565737` **PASS** at SHA `8e43112ea42f5f9dd19db6429e637b7aa0c1614a`: historical 38-function AST parity, Reporting **337 PASS**, Helper/Owner/UI **72 PASS**. Four Markdown output Owner modules + three input contract Owner modules + bounded input main and renderer helper/main Owners, all <=350 LOC. `markdown_summary.py` from 1,145 LOC to **60 LOC**, public signatures retained and 12 synthetic pre-split golden hashes pinned in CI. The new 25-Owner DAG/size guard PASS.
 
 **P1.5.2 REMAINS OPEN**: Three public 3039/3043/948-LOC façades (436 symbol consumer audit), local real report byte/LLM/full-suite validation, and independent Claude/Codex evidence. These gates require actual local resources, not remotely inferred proof. No P1.5.3, Broker/UEF/R6.2/Step5C/D/Docker/trading changes.
+
+---
+
+## 2026-10-09 — GPT Static Consumer Evidence 26
+
+Pinned `3a3ca3097b267b8cd22edeb0e45ef87690cfe466`. Added `scripts/refactor/p152_facade_consumer_scan.py`, AST recognition unit tests, and CI artifact of static imports, module attributes, monkeypatch/literal string patch/wildcard and dynamic uncertainties for 436 symbols in 3 public façades. STATIC ABSENCE != DEAD: no symbol deletion or disposition override. Remote CI/JSON artifact and user-local runtime consumer proofs separate. No trading/Docker/UEF/R6.2 changes; P1.5.2 OPEN.

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 175,
+  "entry_count": 176,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4831,6 +4831,30 @@
         "docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER25-REMOTE-CI.md",
         "docs/refactor/work_orders/CURRENT.md",
         "docs/refactor/p1_5_2_gpt_implementation_progress_and_open_gates_2026-10-09.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Static Façade Consumer Evidence 26",
+      "title": "Add read-only full-repository Reporting façade consumer map and uncertainty tracking",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "QUALITY",
+        "DOCUMENTATION"
+      ],
+      "summary": "Added AST-based repository consumer indexing of 436 symbols across 3 public façades, distinguishing import/patch references from dynamic uncertainty.",
+      "details": [
+        "CI emits a dedicated static JSON evidence artifact; absent static references are explicitly UNKNOWN, not DEAD.",
+        "No façade runtime source or ledger disposition change; no symbols retired.",
+        "Local actual runtime/LLM/real-report and independent signoff still OPEN; P1.5.3 unauthorized."
+      ],
+      "impact": "Consumer evidence without trading-authority changes or unsafe dead-code classification.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_facade_static_consumer_evidence_26.md",
+        "scripts/refactor/p152_facade_consumer_scan.py",
+        "tests/test_p152_facade_consumer_static_index.py"
       ],
       "status": "current"
     }
