@@ -2184,3 +2184,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 기존 16개 API명과 함수 본문, `deps` 호출 바인딩을 변경하지 않고 `sections.py`에서 명시적으로 재공개합니다.
 - 약 700줄인 `build_shared_summary_seed()`는 동작·truth precedence를 보존한 채 남겨 **별도 작업으로 검증 후 분리**합니다.
 - 변경 사항은 GitHub CI와 로컬 실데이터/Codex 검증을 거쳐 최종 인수합니다. 실거래 권한·UEF·Docker 설정은 변경하지 않았습니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Reporting Seed Owner Split 02
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · REPORTING · TESTING
+
+- `build_shared_summary_seed()`의 Commander, Scanner, Monitor, Strategist 시드 구성 책임을 4개 소형 Owner에 분리했습니다. 각 파일은 350 LOC 이하입니다.
+- 사실 우선순위와 최종 결과 조립 로직, 호출 순서, 기존 16개 섹션 API를 유지합니다. 새 로직이나 외부 의존성은 추가하지 않았습니다.
+- CI 회귀 테스트를 거쳐 사용하며, 로컬 실데이터 동등성 검증은 별도 인수 조건으로 남깁니다.

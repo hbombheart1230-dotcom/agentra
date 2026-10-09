@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 141,
+  "entry_count": 142,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3982,6 +3982,36 @@
         "libs/reporting/trade_report/section_parts/lifecycle_bullets.py",
         "libs/reporting/trade_report/section_parts/reporter_evaluation.py",
         "libs/reporting/trade_report/section_parts/execution_quality.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Reporting Seed Owner Split 02",
+      "title": "Shared Reporting seed broken into four canonical small Owners with original truth/return contracts",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Split the original ~716-line deterministic shared summary-seed builder into commander, scanner, monitor and strategist responsibility owners, all <=350 physical LOC.",
+      "details": [
+        "sections.py now 246 physical LOC including stable reexports for 16 other sections; original summary seed return payload keys and trade-truth/fact precedence body preserved.",
+        "Original commander/scanner/monitor/strategist dictionary construction and enrichment blocks retained verbatim in four owner files; outer function simply delegates in the exact old evaluation order.",
+        "libs/reporting/trade_report/section_seed_parts/commander.py: 104 LOC",
+        "libs/reporting/trade_report/section_seed_parts/scanner.py: 114 LOC",
+        "libs/reporting/trade_report/section_seed_parts/monitor.py: 197 LOC",
+        "libs/reporting/trade_report/section_seed_parts/strategist.py: 170 LOC",
+        "No new LLM decisions, new trading authority or direct broker writes. CI verifies broad Reporting tests; local real-data Codex acceptance remains separate."
+      ],
+      "impact": "Deterministic Reporting data projection only; frozen UEF/Step5C/D and live broker unchanged.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_seed_owner_split_02.md",
+        "libs/reporting/trade_report/section_seed_parts/commander.py",
+        "libs/reporting/trade_report/section_seed_parts/scanner.py",
+        "libs/reporting/trade_report/section_seed_parts/monitor.py",
+        "libs/reporting/trade_report/section_seed_parts/strategist.py"
       ],
       "status": "current"
     }
