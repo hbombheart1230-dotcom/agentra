@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 161,
+  "entry_count": 162,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4493,6 +4493,30 @@
         "libs/reporting/trade_report/operator_parts/context_patterns.py",
         "libs/reporting/trade_report/operator_parts/lifecycle_patterns.py",
         "tests/test_p152_operator_phrase_owners.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Operator Language Owner 15",
+      "title": "Complete small-Owner split of operator language normalizer",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved deterministic normalization to a bounded owner with public call-time patch seams preserved.",
+      "details": [
+        "operator_text.py 443 to 318 physical LOC; language.py 136 physical LOC, both within <=350 cap.",
+        "Kept existing public import path, injected sanitizer/clip dependencies at call time, and added seam/parity regression.",
+        "No Broker, trade authority, UEF, Step5C/D, R6.2, Docker, runtime live data or LLM change; P1.5.2 remains OPEN."
+      ],
+      "impact": "Smaller deterministic operator reporting implementation with legacy wrapper compatibility.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_operator_language_owner_15.md",
+        "libs/reporting/trade_report/operator_parts/language.py",
+        "tests/test_p152_operator_language_owner.py"
       ],
       "status": "current"
     }
