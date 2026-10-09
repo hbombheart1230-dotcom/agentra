@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: GPT REMOTE OWNER 23 IMPLEMENTED, CI PENDING; 22-OWNER DAG GATE ADDED / LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
+Status: GPT REMOTE OWNER 24 IMPLEMENTED, CI PENDING; 23-OWNER DAG GATE ADDED / LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -48,6 +48,10 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 ## GPT Owner 23 summary contract split (2026-10-09)
 - Code baseline `83b70148ab0822d9434200a058befbc87cfbca84`. Three bounded read-only broker/market/decision summary payload Owners; six original JSON SHA-256 fixture goldens, extended 22-Owner DAG guard. CI PENDING.
 - External public façades and full Windows real reports/independent acceptance remain OPEN. READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS for local verifiers, P1.5.3 not authorized.
+
+## GPT Owner 24 input builder extracted (2026-10-09)
+- Implemented 328-LOC `summary_input_parts/main_builder.py` with original body and patchable `markdown_summary.build_trade_summary_input` wrapper. CI for this commit pending.
+- `markdown_summary.py` 432 LOC. Rendering/main public façades and local real reports/LLM/independent gate still OPEN. Local Claude/Codex READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS, no P1.5.3.
 
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md

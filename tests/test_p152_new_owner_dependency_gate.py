@@ -26,6 +26,7 @@ OWNER_FILES = (
     "libs/reporting/trade_report/summary_input_parts/broker_alignment.py",
     "libs/reporting/trade_report/summary_input_parts/market_and_strategy.py",
     "libs/reporting/trade_report/summary_input_parts/decision_flow.py",
+    "libs/reporting/trade_report/summary_input_parts/main_builder.py",
 )
 FORBIDDEN = (
     "trade_report_ai", "trade_report_markdown_clean",
@@ -36,7 +37,7 @@ FORBIDDEN = (
 
 def test_new_reporting_owners_are_bounded_and_acyclic():
     paths = {Path(p) for p in OWNER_FILES}
-    assert len(paths) == 22
+    assert len(paths) == 23
     deps = {}
     for path in paths:
         source = (ROOT / path).read_text(encoding="utf-8")

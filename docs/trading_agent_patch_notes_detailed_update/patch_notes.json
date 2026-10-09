@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 172,
+  "entry_count": 173,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4758,6 +4758,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_summary_input_contract_owners_23.md",
         "tests/test_p152_summary_input_part_owners.py",
         ".github/workflows/p152-r2c-residual-regression.yml"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Summary Input Builder Owner 24",
+      "title": "Move summary input implementation to bounded owner behind patchable public wrapper",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved complete summary-input function body unchanged to 328-LOC Owner; reduced legacy module to 432 LOC without removing public callable.",
+      "details": [
+        "Call-time injection of contract functions preserves public monkeypatch seams; six original JSON output goldens and new seam assertion in CI.",
+        "Owner count 22->23 for strict static DAG/LOC checks.",
+        "No trading/LLM action authority changes; Windows real report corpus and independent verifier gates remain OPEN."
+      ],
+      "impact": "Clean summary input ownership without changing reporter JSON schema or facade API.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_input_main_builder_owner_24.md",
+        "tests/test_p152_summary_input_part_owners.py",
+        "libs/reporting/trade_report/markdown_summary.py"
       ],
       "status": "current"
     }

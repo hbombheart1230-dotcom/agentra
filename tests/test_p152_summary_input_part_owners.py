@@ -50,3 +50,10 @@ def test_canonical_summary_input_parts_are_bounded_and_do_not_import_facades():
         assert 'from libs.reporting.trade_report_markdown_clean import' not in src
         assert 'from libs.reporting.trade_report_ai import' not in src
         assert 'from libs.reporting.trade_report.markdown_summary import' not in src
+
+
+def test_input_public_wrapper_uses_call_time_decision_builder(monkeypatch):
+    import libs.reporting.trade_report.markdown_summary as api
+    monkeypatch.setattr(api, "build_decision_flow", lambda **kwargs: {"patched": True})
+    result = api.build_trade_summary_input({}, deps=deps())
+    assert result["decision_flow"] == {"patched": True}

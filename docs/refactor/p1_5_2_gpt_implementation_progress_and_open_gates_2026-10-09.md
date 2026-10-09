@@ -117,3 +117,9 @@ Refactored output-only Markdown blocks into Owners (98, 93, 144, 90 LOC). `markd
 ## 2026-10-09 — GPT Summary Input Contract Owners 23
 
 Extracted the unchanged broker alignment, market/strategy and decision-flow dicts into bounded Owners (26, 34, 92 LOC). `markdown_summary.py` now 740 LOC. Six pre-split JSON SHA-256 deterministic fixture goldens and 22-Owner DAG/size CI checks. CI needs PASS confirmation. C:\\Agentra real data, full suite, LLM prompt/call/retry and independent Codex/Claude NOT RUN; P1.5.2 remains OPEN, P1.5.3 not authorized.
+
+---
+
+## 2026-10-09 — GPT Summary Input Main Owner 24
+
+Complete unchanged body moved to 328-LOC `summary_input_parts/main_builder.py`, public wrapper retained with injected helpers. `markdown_summary.py` 740 -> 432 LOC. 23-Owner DAG guard and six input JSON pre-split goldens, plus new monkeypatch test in CI. CI pending. The large renderer and three public façades remain OPEN, Windows production report parity and separate Codex/Claude evidence NOT RUN. P1.5.2 OPEN, P1.5.3 not authorized.
