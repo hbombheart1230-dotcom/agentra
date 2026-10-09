@@ -2221,3 +2221,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 - Trade Story의 Market Context / Scanner Reason 사람용 프로젝션을 각 350 LOC 이하의 단일 Owner 파일로 이동했습니다. 원본 함수 본문과 공개 API 이름을 보존했습니다.
 - 남은 Monitor Reason 대형 함수는 별도 안전 동등성 작업으로 유지합니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Markdown Signals Owner Split 05
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · REPORTING · TESTING
+
+- Markdown의 Entry Watch, Entry Metrics, Exit 판단 설명 7개 함수를 3개 Owner로 분리했습니다. 각 모듈은 350 LOC 이하입니다.
+- 원래 모듈 경로와 함수 본문을 그대로 유지해 기존 import 사용자와 출력 계약을 보존합니다.

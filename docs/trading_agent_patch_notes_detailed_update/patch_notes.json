@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 145,
+  "entry_count": 146,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4092,6 +4092,33 @@
         "docs/daily_patch/2026-10-09_p1_5_2_human_market_scanner_split_04.md",
         "libs/reporting/trade_story_human_parts/market_context.py",
         "libs/reporting/trade_story_human_parts/scanner_reason.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Markdown Signals Owner Split 05",
+      "title": "Markdown entry/exit signals separated into three canonical small owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "All seven independent entry/exit Markdown signal projection functions moved verbatim into three <=350-line owners while keeping the old markdown_signals exports.",
+      "details": [
+        "libs/reporting/trade_report/markdown_signals.py 810 -> 20 physical LOC",
+        "libs/reporting/trade_report/markdown_signal_parts/entry_watch.py: 322 LOC",
+        "libs/reporting/trade_report/markdown_signal_parts/entry_metrics.py: 198 LOC",
+        "libs/reporting/trade_report/markdown_signal_parts/exit.py: 296 LOC",
+        "Function bodies and injected deps Mapping unchanged, old import targets preserved. No changes to Scanner/Monitor execution or source truth."
+      ],
+      "impact": "Read-only Markdown formatting ownership only.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_markdown_signals_split_05.md",
+        "libs/reporting/trade_report/markdown_signal_parts/entry_watch.py",
+        "libs/reporting/trade_report/markdown_signal_parts/entry_metrics.py",
+        "libs/reporting/trade_report/markdown_signal_parts/exit.py"
       ],
       "status": "current"
     }
