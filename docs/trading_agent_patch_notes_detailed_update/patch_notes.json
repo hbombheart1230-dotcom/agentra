@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 159,
+  "entry_count": 160,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4443,6 +4443,30 @@
         "docs/refactor/p1_5_2_facade_symbol_audit_2026-10-09.md",
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_facade_symbol_inventory_12.md",
         "tests/test_p152_facade_symbol_ledger.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Monitor Diagnostics Owner 13",
+      "title": "Separate read-only monitor watch axes and threshold gap descriptions",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Extracted pure human-readable Monitor diagnostics to a 75-LOC owner without changing Monitor/Executor decision semantics.",
+      "details": [
+        "trade_story_pipeline_human_payloads.py 861 -> 812 LOC; new monitor_diagnostics.py 75 LOC.",
+        "Diagnostic values, order and dependency injection retained; focused tests added to existing Reporting CI.",
+        "Monitor reason remainder still oversized and open; P1.5.2 not accepted."
+      ],
+      "impact": "Reduced Reporting-only monitor human-text ownership while preserving decision authority.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_diagnostics_owner_13.md",
+        "libs/reporting/trade_story_human_parts/monitor_diagnostics.py",
+        "tests/test_p152_monitor_diagnostics_owner.py"
       ],
       "status": "current"
     }

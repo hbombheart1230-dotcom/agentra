@@ -2358,3 +2358,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Reporting 공개 façade 3개의 top-level 정의 **436개**를 파일·줄 범위·호환성·소유 책임별로 인벤토리화하고 CI 누락 검사를 추가했습니다.
 - 실제 사용자 환경의 monkeypatch/호출 소비자는 검증 전이므로 무근거 DEAD 삭제 없음. 원본 public/import 경로 유지, P1.5.2 OPEN.
 - 근거: `docs/refactor/p1_5_2_facade_symbol_audit_2026-10-09.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Monitor Diagnostics Owner 13
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- Monitor 진단 문구의 watch axes 및 entry threshold gaps를 75 LOC 전용 Owner로 분리, 기존 human payload 파일 861 → 812 LOC.
+- 위험/매매 의사결정이 아닌 읽기 전용 문구 로직만 이동. 원래 호출 주입·회귀 테스트 유지. P1.5.2는 OPEN.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_diagnostics_owner_13.md`.
