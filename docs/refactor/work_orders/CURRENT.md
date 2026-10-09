@@ -61,6 +61,10 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - Added a repository-wide conservative AST consumer index for the 3 public façades. CI publishes standalone JSON; STATIC_ONLY does NOT prove DEAD or authorize public symbol deletion.
 - Continue GPT Reporting-only changes on `refactor/p1.5`, local Claude/Codex remain READ-ONLY LOCAL VERIFICATION / NO RUNTIME PYTHON EDITS. P1.5.2 OPEN, P1.5.3 unauthorized.
 
+## GPT Owner 27 Story façade compatibility extraction (2026-10-09)
+- 948->826 LOC Story façade after strat provenance & scanner filter small Owners. Original 45 function names retained, pinned AST/fixture/monkeypatch CI proof pending.
+- Full static consumer JSON from Owner26 does NOT authorize deletion; 436 symbol ledger remains conservative. Local Windows production/LLM/independent proof and public other two façades OPEN. READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS for local Claude/Codex. P1.5.3 not authorized.
+
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
 - docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md

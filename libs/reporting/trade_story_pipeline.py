@@ -16,6 +16,11 @@ from libs.reporting.strategy_read_model import (
 )
 from libs.reporting.trade_read_model import normalize_trade_report_section
 from libs.reporting.trade_report_ai import resolve_shared_trade_facts
+from libs.reporting.trade_story_facade_parts.strategist_evidence import (
+    _raw_strategist_evidence_impl, _strategist_trace_source_impl,
+    _build_strategist_evidence_trace_impl,
+)
+from libs.reporting.trade_story_facade_parts.filter_checklist import build_filters_human_impl
 from libs.reporting.trade_report_common import (
     clip_text as clip,
     format_exit_label,
@@ -162,27 +167,14 @@ def _resolve_selection_monitor_artifact(
 
 
 def _raw_strategist_evidence(bundle_out: Dict[str, Any]) -> Dict[str, Any]:
-    if isinstance(bundle_out.get("strategist_evidence"), dict):
-        return dict(bundle_out.get("strategist_evidence") or {})
-    evidence = bundle_out.get("evidence") if isinstance(bundle_out.get("evidence"), dict) else {}
-    if isinstance(evidence.get("strategist"), dict):
-        return dict(evidence.get("strategist") or {})
-    return {}
+    return _raw_strategist_evidence_impl(bundle_out)
 
 
 def _strategist_trace_source(
     canonical_strategist: Dict[str, Any],
     raw_strategist_evidence: Dict[str, Any],
 ) -> Dict[str, Any]:
-    source = dict(canonical_strategist or {})
-    raw = raw_strategist_evidence if isinstance(raw_strategist_evidence, dict) else {}
-    # Raw evidence carries the structured news rows. Prefer those over stale
-    # flattened market_context headlines when rebuilding reports.
-    if raw.get("news_evidence_ranked") is not None:
-        source["news_evidence_ranked"] = raw.get("news_evidence_ranked")
-    if raw.get("market_context_snapshots") is not None and source.get("market_context_snapshots") is None:
-        source["market_context_snapshots"] = raw.get("market_context_snapshots")
-    return source
+    return _strategist_trace_source_impl(canonical_strategist, raw_strategist_evidence)
 
 
 def _build_strategist_evidence_trace(
@@ -192,65 +184,14 @@ def _build_strategist_evidence_trace(
     fallback_market_titles: Any = None,
     fallback_candidate_titles: Any = None,
 ) -> Dict[str, Any]:
-    data = strategist if isinstance(strategist, dict) else {}
-    news_ranked_raw = data.get("news_evidence_ranked")
-    news_ranked = news_ranked_raw if isinstance(news_ranked_raw, dict) else {}
-    if not news_ranked and isinstance(news_ranked_raw, list):
-        for event in news_ranked_raw:
-            payload = event.get("payload") if isinstance(event, dict) else {}
-            if isinstance(payload, dict) and (
-                payload.get("candidate_news_ranked") is not None
-                or payload.get("market_news_ranked") is not None
-            ):
-                news_ranked = dict(payload)
-                break
-    global_signal = data.get("global_sentiment_signal") if isinstance(data.get("global_sentiment_signal"), dict) else {}
-    fear_index = data.get("fear_index") if isinstance(data.get("fear_index"), dict) else {}
-    if not fear_index and isinstance(global_signal.get("fear_index"), dict):
-        fear_index = dict(global_signal.get("fear_index") or {})
-    market_rows = list(news_ranked.get("market_news_ranked") or [])
-    candidate_rows = list(news_ranked.get("candidate_news_ranked") or [])
-    market_headlines = _collect_top_headlines(market_rows, limit=3)
-    symbol_headlines = _collect_symbol_headlines_from_ranked_rows(
-        candidate_rows,
-        symbol=selected_symbol,
-        limit=3,
-    ) or _collect_top_headlines(candidate_rows, limit=3, symbol=selected_symbol)
-    if not market_headlines:
-        market_headlines = _list_text(fallback_market_titles, limit=3, max_len=180)
-    if not symbol_headlines:
-        symbol_headlines = _list_text_for_symbol(
-            fallback_candidate_titles,
-            symbol=selected_symbol,
-            limit=3,
-            max_len=180,
-        )
-    candidate_hints = _list_text(
-        data.get("candidate_symbols_hint"),
-        limit=8,
-        max_len=24,
+    return _build_strategist_evidence_trace_impl(
+        strategist, selected_symbol=selected_symbol,
+        fallback_market_titles=fallback_market_titles,
+        fallback_candidate_titles=fallback_candidate_titles,
+        list_text=_list_text, collect_top_headlines=_collect_top_headlines,
+        collect_symbol_headlines_from_ranked_rows=_collect_symbol_headlines_from_ranked_rows,
+        list_text_for_symbol=_list_text_for_symbol,
     )
-    key_events = _list_text(
-        data.get("key_events") if data.get("key_events") is not None else data.get("key_events_hint"),
-        limit=6,
-        max_len=180,
-    )
-    return {
-        "candidate_hints": candidate_hints,
-        "news_query_targets": _list_text(
-            data.get("news_query_targets")
-            if data.get("news_query_targets") is not None
-            else news_ranked.get("news_query_targets"),
-            limit=8,
-            max_len=80,
-        ),
-        "market_headlines": market_headlines,
-        "symbol_headlines": symbol_headlines,
-        "global_sentiment_signal": dict(global_signal or {}),
-        "korea_indices": dict(global_signal.get("korea_indices") or {}) if isinstance(global_signal.get("korea_indices"), dict) else {},
-        "fear_index": dict(fear_index or {}),
-        "key_events": key_events,
-    }
 
 
 def _normalize_stop_thresholds(thresholds: Dict[str, Any]) -> Dict[str, Any]:
@@ -592,73 +533,10 @@ def enrich_filters_from_evidence(
     )
 
 def build_filters_human(scanner: Dict[str, Any], strategist: Dict[str, Any], supervisor: Dict[str, Any]) -> Dict[str, Any]:
-    selected = scanner.get("selected_candidate") if isinstance(scanner.get("selected_candidate"), dict) else {}
-    sources = [str(x or "") for x in list(selected.get("sources") or []) if str(x or "").strip()]
-    score_breakdown = selected.get("score_breakdown") if isinstance(selected.get("score_breakdown"), dict) else {}
-    components = selected.get("component_snapshot") if isinstance(selected.get("component_snapshot"), dict) else {}
-    feature_snapshot = selected.get("feature_snapshot") if isinstance(selected.get("feature_snapshot"), dict) else {}
-    coverage = normalized_feature_coverage(scanner, selected)
-    checks: List[Dict[str, str]] = []
-
-    def add_check(name: str, status: str, detail: str) -> None:
-        checks.append({"name": name, "status": status, "detail": detail})
-
-    liquidity_pass = "top_value" in sources or safe_float(components.get("trading_value_component"), 0.0) > 0
-    turnover_pass = "top_volume" in sources or safe_float(score_breakdown.get("volume_surge"), 0.0) > 0
-    theme_score = safe_float(score_breakdown.get("theme_boost"), 0.0)
-    theme_pass = "sector_theme" in sources or theme_score > 0.0
-    theme_detail = (
-        f"selected candidate theme boost was {theme_score:+.3f} or sector_theme source matched"
-        if theme_pass
-        else f"selected candidate had no sector_theme source and theme boost was {theme_score:+.3f}"
+    return build_filters_human_impl(
+        scanner, strategist, supervisor,
+        normalized_feature_coverage=normalized_feature_coverage, safe_float=safe_float,
     )
-    if coverage["total"] <= 0:
-        chart_status = "NOT_AVAILABLE"
-    elif coverage["present"] >= 8:
-        chart_status = "PASS"
-    elif coverage["present"] >= 4:
-        chart_status = "PARTIAL"
-    else:
-        chart_status = "FAIL"
-    sentiment_gate = safe_float(components.get("sentiment_component"), 0.0) >= 0 or safe_float(
-        strategist.get("global_sentiment_score"),
-        0.0,
-    ) > -0.35
-    risk_gate = bool(supervisor.get("supervisor_allow")) and safe_float(selected.get("risk_score"), 0.0) <= 1.0
-    spread_bps = selected.get("spread_bps")
-    if spread_bps in (None, ""):
-        spread_bps = feature_snapshot.get("quote_spread_bps")
-    spread_bps = (safe_float(spread_bps, 0.0) if spread_bps not in (None, "") else None)
-    spread_threshold_bps = 50.0
-    spread_status = "NOT_AVAILABLE"
-    spread_detail = "spread or slippage diagnostics were not captured in this run"
-    if spread_bps is not None:
-        spread_status = "PASS" if spread_bps <= spread_threshold_bps else "FAIL"
-        spread_detail = f"scanner quote snapshot spread was {spread_bps:.1f} bps"
-
-    add_check("liquidity filter", "PASS" if liquidity_pass else "FAIL", "top value or trading-value input supported the selection")
-    add_check("turnover filter", "PASS" if turnover_pass else "FAIL", "top volume or turnover input supported the selection")
-    add_check("sector/theme alignment", "PASS" if theme_pass else "FAIL", theme_detail)
-    add_check("chart completeness filter", chart_status, f"{coverage['present']}/{coverage['total']} captured chart features")
-    add_check("sentiment gate", "PASS" if sentiment_gate else "FAIL", f"news/global sentiment contribution was {safe_float(components.get('sentiment_component'), 0.0):.3f}")
-    add_check("risk gate", "PASS" if risk_gate else "FAIL", f"risk score was {safe_float(selected.get('risk_score'), 0.0):.3f} and supervisor allow={bool(supervisor.get('supervisor_allow'))}")
-    add_check("price anomaly filter", "NOT_AVAILABLE", "price anomaly check was not captured in this run")
-    add_check("spread/slippage filter", spread_status, spread_detail)
-
-    passed = sum(1 for row in checks if row["status"] == "PASS")
-    bullets = [f"{row['name']}: {row['status']} - {row['detail']}" for row in checks]
-    condition_status = str(scanner.get("condition_search_status") or "").strip()
-    if condition_status:
-        bullets.append(f"Condition search source: {condition_status} ({scanner.get('condition_search_reason') or 'no extra reason captured'})")
-    coverage_quality = str(coverage.get("quality") or chart_status.lower()).strip().lower()
-    return {
-        "checks": checks,
-        "summary": (
-            f"Scanner and guard checks passed {passed} of {len(checks)} visible gates. "
-            f"Chart completeness was {coverage_quality} with {coverage['present']}/{coverage['total']} captured features."
-        ),
-        "bullets": bullets,
-    }
 
 
 def build_monitor_reason_human(monitor: Dict[str, Any], execution: Dict[str, Any]) -> Dict[str, Any]:

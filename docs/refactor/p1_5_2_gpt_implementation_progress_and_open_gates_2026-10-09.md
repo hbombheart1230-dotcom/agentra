@@ -143,3 +143,9 @@ CI run `37885565737` **PASS** at SHA `8e43112ea42f5f9dd19db6429e637b7aa0c1614a`:
 ## 2026-10-09 — GPT Static Consumer Evidence 26
 
 Pinned `3a3ca3097b267b8cd22edeb0e45ef87690cfe466`. Added `scripts/refactor/p152_facade_consumer_scan.py`, AST recognition unit tests, and CI artifact of static imports, module attributes, monkeypatch/literal string patch/wildcard and dynamic uncertainties for 436 symbols in 3 public façades. STATIC ABSENCE != DEAD: no symbol deletion or disposition override. Remote CI/JSON artifact and user-local runtime consumer proofs separate. No trading/Docker/UEF/R6.2 changes; P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT Story Façade Compatible Owner 27
+
+Code baseline `f381772d2118aca6444108fab429e4a0e0fba056`. Four function implementation bodies extracted (Strategist raw/selection/news evidence trace, Scanner filter narrative) to 103/73 LOC Owners. Original Story façade 948->826 LOC, 45 callable names preserved; 436-symbol public ledger positions synchronized. CI pins prior AST body suffix, synthetic outputs and call-time monkeypatch. No static-symbol DEAD inferences. Local C:\\Agentra real report/LLM/entire suite and independent auditors NOT RUN. P1.5.2 OPEN.

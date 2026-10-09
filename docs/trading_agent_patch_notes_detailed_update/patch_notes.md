@@ -2534,3 +2534,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 3개 Reporting 공개 façade의 436개 심볼에 대해 저장소 전체의 정적 import·모듈 별칭·monkeypatch·getattr·문자열 patch/동적 참조를 구분하는 CI 근거 산출기를 추가했습니다.
 - 정적으로 참조되지 않은 함수도 **DEAD 판정 금지**, 런타임 소비자·로컬 검증 OPEN. P1.5.3 미시작.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_facade_static_consumer_evidence_26.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Story Façade Compatible Owner 27
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- 기존 Story 함수 4개 본문을 Strategist 근거/Scanner 필터 전용 Owner 2개 (103/73 LOC)로 분리. 공개 이름·호출시점 monkeypatch 유지; façade 948 → 826 LOC.
+- 436개 공개 함수 장부 위치를 동기화하고 원본 AST/출력 등가·monkeypatch CI 검사를 추가했어. 매매 권한·UEF·Docker 불변, **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_story_facade_compatible_owners_27.md`.

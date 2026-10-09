@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 176,
+  "entry_count": 177,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4855,6 +4855,31 @@
         "docs/daily_patch/2026-10-09_p1_5_2_facade_static_consumer_evidence_26.md",
         "scripts/refactor/p152_facade_consumer_scan.py",
         "tests/test_p152_facade_consumer_static_index.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Story Façade Compatible Owner 27",
+      "title": "Split Story façade strategist provenance and Scanner filter checklist behind wrappers",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Four original report-only function bodies moved into two <=350-LOC Owners while retaining all Story façade public names; parent 948->826 LOC.",
+      "details": [
+        "Pre-split AST bodies pinned to immutable SHA, output fixtures and call-time monkeypatch seams guarded in CI.",
+        "436 symbol ledger reconciled to source positions; no function marked DEAD or removed.",
+        "Real Windows report and runtime patch uses, full pytest baseline, independent audits NOT RUN; P1.5.2 OPEN."
+      ],
+      "impact": "Reduces shared façade implementations without breaking imported Reporting callers or changing trade authority.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_story_facade_compatible_owners_27.md",
+        "tests/test_p152_story_facade_compatible_owners.py",
+        "libs/reporting/trade_story_facade_parts/strategist_evidence.py",
+        "libs/reporting/trade_story_facade_parts/filter_checklist.py"
       ],
       "status": "current"
     }
