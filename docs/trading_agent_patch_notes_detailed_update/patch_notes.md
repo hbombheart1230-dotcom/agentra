@@ -2203,3 +2203,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 - Trade Story의 타임라인·라이프사이클 정규화·라이프사이클 번들·섹션 시드 책임 6개 함수를 **4개 단일 Owner**로 이동했습니다. 구현 본문과 API를 변경하지 않았습니다.
 - 새 파일은 모두 350 LOC 이하입니다. 남은 809줄 Story 조립 함수는 별도 동등성 검증 후 분리합니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Seed Owner Import Binding Repair
+**Stage:** Architecture and Maintainability  
+**Tags:** BUGFIX · REPORTING · TESTING
+
+- Shared Seed 분리 커밋의 CI가 누락된 `build_seed_commander_route` import로 실패했습니다. 이력과 실패 근거를 보존하고 소형 Owner 4개에 대한 명시적 import를 복원했습니다.
+- 기존 함수의 본문과 출력 의미는 변경하지 않았고, 전체 회귀검증 결과로 다시 인수합니다.

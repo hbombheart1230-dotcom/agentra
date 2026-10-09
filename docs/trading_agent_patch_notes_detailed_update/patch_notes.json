@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 143,
+  "entry_count": 144,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4042,6 +4042,30 @@
         "libs/reporting/trade_story_assembly_parts/lifecycle_normalization.py",
         "libs/reporting/trade_story_assembly_parts/lifecycle_bundle.py",
         "libs/reporting/trade_story_assembly_parts/report_seeds.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Seed Owner Import Binding Repair",
+      "title": "Repair missing seed owner imports after CI detected NameError in Reporting refactor",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "BUGFIX",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "The P1.5.2 shared seed split was not accepted: CI exposed NameError because a generated import block was omitted. Add explicit Owner imports without changing seed logic and rerun both regression matrices.",
+      "details": [
+        "Preserved original failed CI evidence on SHA 598b844 (broad Reporting suite failed with NameError: build_seed_commander_route not defined); no test expectations weakened.",
+        "Declared four exact module imports for commander, scanner, monitor and strategist small Owners in sections.py.",
+        "R2-A/B/C frozen trade behavior, output keys, runtime Broker/UEF/Step5C/D and production settings untouched.",
+        "Do not certify P1.5.2 from this fix alone; require full green CI plus independent local semantic/evidence parity."
+      ],
+      "impact": "Name binding repair for pure deterministic Reporting composition.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_seed_import_repair.md",
+        "libs/reporting/trade_report/sections.py"
       ],
       "status": "current"
     }
