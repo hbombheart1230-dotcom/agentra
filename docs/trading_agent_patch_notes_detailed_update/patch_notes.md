@@ -2615,3 +2615,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 기준 SHA 이후 Trading·Broker·Executor·Supervisor·Docker·UEF 소스 파일이 변경되면 테스트가 실패하도록 범위를 제한했습니다.
 - 로컬 거래 리포트·LLM/전체 독립 검증은 별도 OPEN, **P1.5.2 미종료**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_facade_abi_authority_guard_34.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 AI Reporter Market and Scanner Labels Owners 35–36
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- AI Reporter 시장·테마·스캐너·진입 결과 표시 21개 함수를 117/166 LOC Owner로 분리. 공개 부모 **3027→2820 LOC**로 감소했고 182개 함수·monkeypatch는 그대로 유지.
+- 본문 원본 AST/출력 21개 검증, 35-Owner DAG 및 공개 API·매매 영역 보호 CI 포함. **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_ai_facade_labels_35_36.md`.

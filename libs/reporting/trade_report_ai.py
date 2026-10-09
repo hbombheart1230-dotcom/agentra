@@ -10,6 +10,31 @@ import threading
 import time
 from typing import Any, Dict, List, Optional
 
+from libs.reporting.trade_report.ai_facade_parts.market_labels import (
+    _market_token_label_impl,
+    _theme_token_label_impl,
+    _theme_text_impl,
+    _theme_linkage_label_impl,
+    _risk_mode_label_impl,
+    _strategy_constraint_label_impl,
+    _strategy_constraint_text_impl,
+    _scanner_bias_label_impl,
+    _scanner_bias_text_impl,
+)
+from libs.reporting.trade_report.ai_facade_parts.scanner_labels import (
+    _scanner_source_label_impl,
+    _scanner_source_text_impl,
+    _scanner_score_driver_label_impl,
+    _scanner_chart_feature_label_impl,
+    _scanner_check_name_label_impl,
+    _scanner_check_status_label_impl,
+    _entry_reason_label_impl,
+    _decision_chain_label_impl,
+    _execution_mode_label_impl,
+    _entry_path_label_impl,
+    _entry_gate_state_label_impl,
+    _entry_gate_name_label_impl,
+)
 from libs.reporting.trade_report.ai_facade_parts.text_helpers import (
     _is_low_information_bullet_impl,
     _count_hangul_impl,
@@ -582,125 +607,31 @@ def _clean_news_title(value: Any, *, max_len: int = 220) -> str:
 
 
 def _market_token_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "neutral": "중립",
-        "bullish": "강세",
-        "bearish": "약세",
-        "pullback": "눌림목",
-        "breakout": "돌파",
-        "trend": "추세",
-        "defensive": "방어적",
-        "risk_off": "위험회피",
-        "risk_on": "위험선호",
-        "not_captured": "직접 캡처되지 않음",
-        "unavailable": "확인 불가",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _market_token_label_impl(value, _clip=_clip)
 
 def _theme_token_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "broad_market_leaders": "브로드마켓 리더",
-        "semiconductor_leaders": "반도체 리더",
-        "high_beta_leaders": "고베타 리더",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _theme_token_label_impl(value, _clip=_clip)
 
 def _theme_text(values: Any, *, max_items: int = 4) -> str:
-    labels = [_theme_token_label(item) for item in _listify(values, max_items=max_items, max_len=80)]
-    labels = [item for item in labels if item]
-    if len(labels) == 2:
-        return f"{labels[0]}와 {labels[1]}"
-    if len(labels) >= 3:
-        return ", ".join(labels[:-1]) + f", {labels[-1]}"
-    return labels[0] if labels else "not_captured"
-
+    return _theme_text_impl(values, max_items=max_items, _theme_token_label=_theme_token_label, _listify=_listify)
 
 def _theme_linkage_label(values: Any) -> str:
-    theme_values = [str(item or "").strip().lower() for item in _listify(values, max_items=4, max_len=80)]
-    if "broad_market_leaders" in theme_values:
-        return "시장 주도 대형주 우위"
-    if "semiconductor_leaders" in theme_values:
-        return "반도체 리더 우위"
-    if "high_beta_leaders" in theme_values:
-        return "고베타 리더 우위"
-    themed = _theme_text(values, max_items=2)
-    return f"{themed} 맥락" if themed and themed != "not_captured" else "시장 맥락"
-
+    return _theme_linkage_label_impl(values, _listify=_listify, _theme_text=_theme_text)
 
 def _risk_mode_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "balanced": "균형형",
-        "conservative": "보수형",
-        "aggressive": "공격형",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _risk_mode_label_impl(value, _clip=_clip)
 
 def _strategy_constraint_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "defensive_assets": "방어 자산",
-        "counter_trend_low_liquidity": "역추세 저유동성",
-        "high_beta_leaders": "고베타 리더",
-        "semiconductor_leaders": "반도체 리더",
-        "broad_market_leaders": "브로드마켓 리더",
-        "illiquid_microcap": "저유동성 소형주",
-        "headline_only_momentum": "헤드라인 추격 모멘텀",
-        "high_gap_speculative": "갭 급등 투기성 종목",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _strategy_constraint_label_impl(value, _clip=_clip)
 
 def _strategy_constraint_text(values: Any, *, max_items: int = 4) -> str:
-    labels = [_strategy_constraint_label(item) for item in _listify(values, max_items=max_items, max_len=80)]
-    labels = [item for item in labels if item]
-    if len(labels) >= 3:
-        return ", ".join(labels[:-1]) + f", {labels[-1]}"
-    if len(labels) == 2:
-        return ", ".join(labels)
-    return labels[0] if labels else ""
-
+    return _strategy_constraint_text_impl(values, max_items=max_items, _strategy_constraint_label=_strategy_constraint_label, _listify=_listify)
 
 def _scanner_bias_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "prefer_shallow_pullback_candidates": "얕은 눌림목 후보 선호",
-        "penalize_overextended": "과확장 후보 패널티",
-        "prefer_reclaim_candidates": "재회복 후보 선호",
-        "prefer_volume_confirmation": "거래량 확인 후보 선호",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _scanner_bias_label_impl(value, _clip=_clip)
 
 def _scanner_bias_text(summary: Any) -> str:
-    data = summary if isinstance(summary, dict) else {}
-    active_values = data.get("active_biases")
-    if isinstance(active_values, str):
-        raw = active_values.strip()
-        if raw.startswith("[") and raw.endswith("]"):
-            try:
-                parsed = ast.literal_eval(raw)
-                if isinstance(parsed, list):
-                    active_values = parsed
-            except Exception:
-                pass
-    active = [_scanner_bias_label(item) for item in _listify(active_values, max_items=6, max_len=80)]
-    active = [item for item in active if item]
-    strength = _clip(data.get("bias_strength"), max_len=24).strip().lower()
-    strength_label = {"low": "낮음", "medium": "중간", "high": "높음"}.get(strength, _clip(strength, max_len=24))
-    if active:
-        joined = ", ".join(active)
-        if strength_label:
-            return f"{joined} (강도 {strength_label})"
-        return joined
-    raw_summary = _clip(data.get("summary"), max_len=220)
-    return raw_summary
-
+    return _scanner_bias_text_impl(summary, ast=ast, _scanner_bias_label=_scanner_bias_label, _listify=_listify, _clip=_clip)
 
 def _extract_us_indices_snapshot(events: Any) -> Dict[str, float]:
     for row in _listify(events, max_items=8, max_len=220):
@@ -899,69 +830,16 @@ def _scanner_basis_text(scanner_reason: Dict[str, Any]) -> str:
 
 
 def _scanner_source_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "top_value": "거래대금 상위",
-        "top_volume": "거래량 상위",
-        "sector_theme": "섹터·테마 정렬",
-        "sentiment": "감성 반영",
-        "news": "뉴스 반영",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _scanner_source_label_impl(value, _clip=_clip)
 
 def _scanner_source_text(values: Any) -> str:
-    labels = [_scanner_source_label(item) for item in _listify(values, max_items=4, max_len=80)]
-    labels = [item for item in labels if item]
-    if len(labels) == 2:
-        return f"{labels[0]}와 {labels[1]}"
-    if len(labels) >= 3:
-        return ", ".join(labels[:-1]) + f", {labels[-1]}"
-    return ", ".join(labels)
-
+    return _scanner_source_text_impl(values, _scanner_source_label=_scanner_source_label, _listify=_listify)
 
 def _scanner_score_driver_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "trading_value": "거래대금",
-        "momentum": "모멘텀",
-        "trend": "추세",
-        "ma_alignment": "이동평균 정렬",
-        "adx_trend": "ADX 추세",
-        "volume_surge": "거래량 스파이크",
-        "intraday_strength": "장중 강도",
-        "vwap_alignment": "VWAP 정렬",
-        "theme_boost": "테마 가점",
-        "sentiment": "감성",
-        "cross_section_rank": "횡단면 순위",
-        "entry_compatibility_bias": "진입 적합성",
-        "rank_bonus": "순위 가점",
-        "risk_penalty": "리스크 패널티",
-        "repeat_symbol_penalty": "중복 종목 패널티",
-        "scanner_bias": "스캐너 바이어스",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _scanner_score_driver_label_impl(value, _clip=_clip)
 
 def _scanner_chart_feature_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "engine_ma20_gap": "20일선 이격",
-        "engine_ma60": "60일선",
-        "engine_ma120": "120일선",
-        "engine_adx14": "ADX14",
-        "engine_trend_strength": "추세 강도",
-        "engine_atr14": "ATR14",
-        "engine_volume_spike20": "20봉 거래량 스파이크",
-        "engine_volatility20": "20봉 변동성",
-        "engine_vwap_distance": "VWAP 이격",
-        "engine_sector_relative_strength": "섹터 상대강도",
-        "engine_cross_section_rank": "횡단면 순위",
-        "engine_regime": "레짐",
-        "engine_signal_score": "신호 점수",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _scanner_chart_feature_label_impl(value, _clip=_clip)
 
 def _scanner_ranked_candidates(scanner_reason: Dict[str, Any]) -> List[Dict[str, Any]]:
     for key in ("top_candidates", "ranked_candidates"):
@@ -1127,37 +1005,10 @@ def _has_noisy_trade_report_text(value: Any) -> bool:
 
 
 def _scanner_check_name_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "liquidity filter": "유동성 점검",
-        "유동성 필터": "유동성 점검",
-        "turnover filter": "회전율 점검",
-        "회전율 필터": "회전율 점검",
-        "sector/theme alignment": "섹터·테마 정렬 점검",
-        "섹터/테마 정렬": "섹터·테마 정렬 점검",
-        "chart completeness filter": "차트 피처 충실도 점검",
-        "차트 완전성 필터": "차트 피처 충실도 점검",
-        "sentiment gate": "시장 심리 점검",
-        "시장 심리 게이트": "시장 심리 점검",
-        "risk gate": "리스크 점검",
-        "리스크 게이트": "리스크 점검",
-        "price anomaly filter": "가격 이상치 점검",
-        "가격 이상치 필터": "가격 이상치 점검",
-        "spread/slippage filter": "호가 스프레드·슬리피지 점검",
-        "스프레드/슬리피지 필터": "호가 스프레드·슬리피지 점검",
-    }
-    return mapping.get(raw, _clip(value, max_len=80) or "스캐너 점검")
-
+    return _scanner_check_name_label_impl(value, _clip=_clip)
 
 def _scanner_check_status_label(value: Any) -> str:
-    raw = _clip(value, max_len=40).strip().upper()
-    mapping = {
-        "PASS": "통과",
-        "FAIL": "미통과",
-        "NOT_AVAILABLE": "확인 불가",
-    }
-    return mapping.get(raw, _clip(value, max_len=40) or "확인 불가")
-
+    return _scanner_check_status_label_impl(value, _clip=_clip)
 
 def _build_scanner_filters_summary(filters_human: Dict[str, Any]) -> str:
     checks = [row for row in list(filters_human.get("checks") or []) if isinstance(row, dict)]
@@ -1209,44 +1060,13 @@ def _build_entry_decision_summary(
     return _build_entry_decision_summary_impl(entry_summary, scanner_reason, market_context, monitor_reason, action, deps=_section_builder_deps())
 
 def _entry_reason_label(value: Any) -> str:
-    raw = _clip(value, max_len=220).strip()
-    mapping = {
-        "breakout_above_recent_high_with_vwap_structure_confirmation": "직전 고점 돌파와 VWAP 구조 확인",
-        "breakout_confirmed": "돌파 확인",
-        "pullback_rebound_confirmed": "눌림목 반등 확인",
-        "reclaim_confirmed": "VWAP 재회복 확인",
-        "breakout_vwap_hold": "돌파 후 VWAP 지지 확인",
-    }
-    if not raw:
-        return ""
-    if raw in mapping:
-        return mapping[raw]
-    return raw.replace("_", " ")
-
+    return _entry_reason_label_impl(value, _clip=_clip)
 
 def _exit_reason_label(value: Any) -> str:
     return _exit_reason_label_impl(value)
 
 def _decision_chain_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "confirmed_exit_signal": "청산 확인 신호",
-        "peak_drawdown": "고점 대비 하락폭",
-        "breakout_above_recent_high_with_vwap_structure_confirmation": "직전 고점 돌파와 VWAP 구조 확인",
-        "hard_stop": "고정 손절",
-        "partial_take_profit": "1차 일부 익절",
-        "profit_ladder": "구간별 분할 익절",
-        "risk_reward_take_profit": "손익비 익절",
-        "vwap_extension_take_profit": "VWAP 과확장 익절",
-        "resistance_take_profit": "저항권 익절",
-        "volume_exhaustion_take_profit": "거래량 둔화 익절",
-        "opening_gap_profit_take": "갭 추격 빠른 익절",
-        "time_decay_profit_exit": "시간 경과 수익 보전",
-        "vwap_breakdown": "VWAP 이탈",
-        "breakout_path": "돌파 경로",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _decision_chain_label_impl(value, _clip=_clip)
 
 def _humanize_duration_text(value: Any, *, fallback_seconds: Any = None) -> str:
     text = _clip(value, max_len=80).strip()
@@ -1300,43 +1120,16 @@ def _holding_duration_label(value: Any) -> str:
 
 
 def _execution_mode_label(value: Any) -> str:
-    raw = _clip(value, max_len=120).strip().lower()
-    mapping = {
-        "simulation trade report": "시뮬레이션 거래 리포트",
-        "simulation": "시뮬레이션",
-        "simulation (mock broker)": "시뮬레이션 (모의 브로커)",
-        "real": "실거래",
-        "live": "실거래",
-    }
-    return mapping.get(raw, _clip(value, max_len=120))
-
+    return _execution_mode_label_impl(value, _clip=_clip)
 
 def _entry_path_label(value: Any) -> str:
-    raw = _clip(value, max_len=80).strip().lower()
-    mapping = {
-        "breakout_path": "돌파 경로",
-        "pullback_volume_path": "눌림목·거래량 경로",
-        "reclaim_path": "재회복 경로",
-    }
-    return mapping.get(raw, _clip(value, max_len=80))
-
+    return _entry_path_label_impl(value, _clip=_clip)
 
 def _entry_gate_state_label(value: Any) -> str:
-    if value is True:
-        return "통과"
-    if value is False:
-        return "미통과"
-    return "기록 없음"
-
+    return _entry_gate_state_label_impl(value)
 
 def _entry_gate_name_label(value: str) -> str:
-    mapping = {
-        "reclaim": "VWAP 재회복",
-        "extension": "과확장 점검",
-        "confidence gate": "신뢰도 게이트",
-    }
-    return mapping.get(value, value)
-
+    return _entry_gate_name_label_impl(value)
 
 def _entry_gate_score_relation(score: float, threshold: float) -> str:
     if abs(float(score) - float(threshold)) <= 1e-6:

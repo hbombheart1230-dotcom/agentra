@@ -191,3 +191,9 @@ Remote source `a65d3e47e5a0de3eb801c4a12ee364cbe98270dd`; GitHub CI 37887432333 
 ## 2026-10-09 — GPT API Contract & Scope Guard 34
 
 Added bounded read-only CI test preserving all 436 top-level Reporting façade callable declarations, signatures, defaults, return annotations, decorators and importability against SHA `52508ade9d0d246fa4e848525fe62f2fe067acb7`, plus global git diff path protection against non-Reporting/trading authority modules relative to pinned start SHA. Remote CI to observe. Local actual-output/LLM/full-suite and independent auditors NOT RUN. P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT AI Display Owners 35–36
+
+21 original display-only market/Scanner/entry helpers moved to small 117/166 LOC Owners, public AI facade 3027->2820 LOC, all 182 function declarations and 436 ledger symbols preserved. Added original-body AST, display fixture, patch and 35-Owner DAG tests; global ABI/authority path guard retained. Windows actual trade report, LLM prompt/retry, full pytest and independent Codex/Claude NOT RUN. P1.5.2 OPEN.

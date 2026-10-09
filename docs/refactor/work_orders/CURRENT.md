@@ -93,6 +93,10 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - 436 public Reporting function declarations and callable imports protected against Owner31 pinned SHA; branch diff scope pinned to Reporting-only/test/docs/refactor-script/CI workflow.
 - CI PENDING. Local actual windows C:\\Agentra outputs, LLM equality/full tests and independent auditors NOT RUN; READ-ONLY LOCAL VERIFICATION, NO RUNTIME PYTHON EDITS. P1.5.2 OPEN; P1.5.3 unauthorized.
 
+## GPT AI Reporter Display Owners 35–36 (2026-10-09)
+- 21 pure Korean market/scanner/entry display helpers into 117/166 LOC Owners, AI facade 3027->2820 LOC. 182 top-level callable names preserved and 436-symbol ledger updated. Exact AST/fixtures/patch/35-Owner DAG and global ABI/scope CI pending.
+- Real Windows report, LLM prompt/retry, full repository suite and local independent signoff NOT RUN. Claude/Codex READ-ONLY LOCAL VERIFICATION; NO RUNTIME PYTHON EDITS. P1.5.2 OPEN, no P1.5.3.
+
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
 - docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md

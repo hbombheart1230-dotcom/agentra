@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 184,
+  "entry_count": 185,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5048,6 +5048,31 @@
       "sources": [
         "docs/daily_patch/2026-10-09_p1_5_2_facade_abi_authority_guard_34.md",
         "tests/test_p152_facade_abi_and_authority_boundary.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 AI Reporter Market and Scanner Labels Owners 35-36",
+      "title": "Extract AI Reporter market, theme, scanner and entry text labels",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Extracted 21 original display-only AI Reporter functions to 117/166-LOC Owners; public AI facade 3027->2820 LOC.",
+      "details": [
+        "Public 182 AI functions and 436 ledger symbols retained with call-time helper patching.",
+        "21 original AST and 21 output fixtures in CI; 35-Owner DAG and global public-ABI guard.",
+        "Local real-report/LLM/full baseline and independent Codex/Claude proof NOT RUN, trading paths untouched."
+      ],
+      "impact": "Lower AI Reporter coupling while keeping the original public ABI and call-time patchable seams.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_ai_facade_labels_35_36.md",
+        "tests/test_p152_ai_facade_market_scanner_labels.py",
+        "libs/reporting/trade_report/ai_facade_parts/market_labels.py",
+        "libs/reporting/trade_report/ai_facade_parts/scanner_labels.py"
       ],
       "status": "current"
     }
