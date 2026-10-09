@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 157,
+  "entry_count": 158,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4393,6 +4393,31 @@
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_direct_story_owner_10.md",
         "libs/reporting/trade_story_assembly_parts/direct_story.py",
         "tests/test_p152_direct_story_owner.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Lifecycle Evidence Owner 11",
+      "title": "Complete small-Owner treatment of trade-story assembler",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved lifecycle evidence enrichment into a 169-LOC owner; main story assembly is now under the 350-LOC hard cap.",
+      "details": [
+        "Previously 835-LOC source now 331-LOC parent via human fallback, shared provenance, direct v1, lifecycle evidence bounded owners.",
+        "No changed branch/lifecycle schema fields, canonical evidence precedence or call-time deps.",
+        "Isolated parity on v1/v2 fixture inputs PASS; CI regression and independent local gates still required.",
+        "P1.5.2 remains OPEN for markdown/operator/human payload/facade debt and local/independent acceptance."
+      ],
+      "impact": "Single-responsibility Reporting story assembly owner size gate achieved without trading-authority changes.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_lifecycle_evidence_owner_11.md",
+        "libs/reporting/trade_story_assembly_parts/lifecycle_evidence.py",
+        "tests/test_p152_lifecycle_evidence_owner.py"
       ],
       "status": "current"
     }

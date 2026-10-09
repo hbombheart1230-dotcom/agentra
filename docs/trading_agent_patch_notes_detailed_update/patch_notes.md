@@ -2337,3 +2337,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 일반(v1) trade-story 조립 경로를 단일 246 LOC Owner로 추출, 기존 story assembly 644 → 445 LOC 축소.
 - 기존 v1/v2 사전·사후 결과 일치, 350 LOC 상한 검증 추가. UI·실거래·UEF·Docker·LLM 기능은 변경하지 않았습니다.
 - **P1.5.2 OPEN**, 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_direct_story_owner_10.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Lifecycle Evidence Owner 11
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- canonical Strategist/Scanner/Monitor 근거·선택·출구정책 해석을 169 LOC 작은 Owner로 분리해 story assembly 부모 파일 **445 → 331 LOC**로 줄였습니다 (시작 835 LOC).
+- v1/v2 before/after smoke 일치, 350 LOC 상한 및 의존 방향 단위 테스트 추가. Trading/UEF/Docker/LLM 수정 없음.
+- 남은 Markdown/Human/Operator/public façade 책임 및 로컬 검증으로 **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_lifecycle_evidence_owner_11.md`.
