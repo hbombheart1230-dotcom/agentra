@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 158,
+  "entry_count": 159,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4418,6 +4418,31 @@
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_lifecycle_evidence_owner_11.md",
         "libs/reporting/trade_story_assembly_parts/lifecycle_evidence.py",
         "tests/test_p152_lifecycle_evidence_owner.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Facade Symbol Inventory 12",
+      "title": "Inventory all Reporting public façade symbols and compatibility-gated owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "DOCUMENTATION",
+        "TESTING"
+      ],
+      "summary": "Pinned inventory of 436 Reporting façade top-level definitions/classes, their ranges, import aliases and provisional compatibility dispositions.",
+      "details": [
+        "No public name, patchable symbol or import path was removed. All local consumer proofs explicitly NOT RUN.",
+        "Added a CI guard that checks full AST definition coverage against the inventory.",
+        "No artificial DEAD/COMPLETE declarations; P1.5.2 final proof remains outstanding."
+      ],
+      "impact": "Auditable no-deletion/symbol coverage control for future safe Reporting decomposition.",
+      "sources": [
+        "docs/refactor/p1_5_2_facade_symbol_ledger_2026-10-09.json",
+        "docs/refactor/p1_5_2_facade_symbol_audit_2026-10-09.md",
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_facade_symbol_inventory_12.md",
+        "tests/test_p152_facade_symbol_ledger.py"
       ],
       "status": "current"
     }

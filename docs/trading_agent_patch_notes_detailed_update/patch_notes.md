@@ -2348,3 +2348,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - v1/v2 before/after smoke 일치, 350 LOC 상한 및 의존 방향 단위 테스트 추가. Trading/UEF/Docker/LLM 수정 없음.
 - 남은 Markdown/Human/Operator/public façade 책임 및 로컬 검증으로 **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_lifecycle_evidence_owner_11.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Facade Symbol Inventory 12
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · DOCUMENTATION · TESTING
+
+- Reporting 공개 façade 3개의 top-level 정의 **436개**를 파일·줄 범위·호환성·소유 책임별로 인벤토리화하고 CI 누락 검사를 추가했습니다.
+- 실제 사용자 환경의 monkeypatch/호출 소비자는 검증 전이므로 무근거 DEAD 삭제 없음. 원본 public/import 경로 유지, P1.5.2 OPEN.
+- 근거: `docs/refactor/p1_5_2_facade_symbol_audit_2026-10-09.md`.
