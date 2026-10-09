@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 140,
+  "entry_count": 141,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3951,6 +3951,37 @@
         "docs/refactor/work_orders/CURRENT.md",
         "docs/refactor/work_orders/README.md",
         "docs/daily_patch/2026-10-09_p1_5_git_driven_work_order_protocol.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Reporting Sections Owner Split 01",
+      "title": "Reporting sections: 16 distinct builders extracted into eight <=350 LOC canonical owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Extracted 16 deterministic section builders from trade_report/sections.py into eight cohesive <=350-line modules, with previous names re-exported unchanged from the compatibility module; heavy common summary-seed remains a clearly tracked residual.",
+      "details": [
+        "sections.py shrinks from 2231 to approximately 763 physical lines; the long shared summary seed remains unchanged for a separate bounded tranche.",
+        "All 16 function bodies are copied verbatim; signatures, injected deps Mapping, monkeypatch-facing import names and call paths remain unchanged.",
+        "New section_parts owner modules: libs/reporting/trade_report/section_parts/market_context.py 170 LOC; libs/reporting/trade_report/section_parts/strategist.py 202 LOC; libs/reporting/trade_report/section_parts/scanner_selection.py 308 LOC; libs/reporting/trade_report/section_parts/entry_decision.py 221 LOC; libs/reporting/trade_report/section_parts/entry_bullets.py 154 LOC; libs/reporting/trade_report/section_parts/lifecycle_bullets.py 141 LOC; libs/reporting/trade_report/section_parts/reporter_evaluation.py 238 LOC; libs/reporting/trade_report/section_parts/execution_quality.py 95 LOC",
+        "No runtime trade authority, prompt, broker, UEF, Step5C/D or R6.2 behavior changed. Automated regression and independent local equivalence remain separate acceptance gates."
+      ],
+      "impact": "Read-only deterministic Reporting owner location change; no production broker/authority or runtime configuration change.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_sections_owner_split_01.md",
+        "libs/reporting/trade_report/section_parts/market_context.py",
+        "libs/reporting/trade_report/section_parts/strategist.py",
+        "libs/reporting/trade_report/section_parts/scanner_selection.py",
+        "libs/reporting/trade_report/section_parts/entry_decision.py",
+        "libs/reporting/trade_report/section_parts/entry_bullets.py",
+        "libs/reporting/trade_report/section_parts/lifecycle_bullets.py",
+        "libs/reporting/trade_report/section_parts/reporter_evaluation.py",
+        "libs/reporting/trade_report/section_parts/execution_quality.py"
       ],
       "status": "current"
     }

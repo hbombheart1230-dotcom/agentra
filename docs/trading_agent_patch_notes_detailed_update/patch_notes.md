@@ -2173,3 +2173,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 첫 지시서 `P15-R2-R0R1-001`은 Reporting 현재 로컬 상태/BEFORE 동등성/함수·사용처·Owner 목록 확인만 수행하는 감사 전용 작업입니다. Python 수정 없이 증거를 먼저 확보합니다.
 - 작업별 증거는 Claude와 Codex가 서로 다른 파일에 기록하고, 정확한 코드 SHA를 기준으로 검증합니다. `refactor/p1.5` 한 브랜치, Q12 dirty worktree 보존, 새 Owner 350 LOC 상한, UI 패치노트·변경 파일 ZIP 규칙을 유지합니다.
 - 이번 커밋은 문서와 검증 워크플로만 변경했습니다. 운영·매매·Docker·UEF 코드는 변경하지 않았습니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Reporting Sections Owner Split 01
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · REPORTING · TESTING
+
+- `trade_report/sections.py`의 독립 섹션 빌더 16개를 **책임별 8개 단일 Owner**로 분리했습니다. 추출된 새 파일은 전부 **350 physical LOC 이하**입니다.
+- 기존 16개 API명과 함수 본문, `deps` 호출 바인딩을 변경하지 않고 `sections.py`에서 명시적으로 재공개합니다.
+- 약 700줄인 `build_shared_summary_seed()`는 동작·truth precedence를 보존한 채 남겨 **별도 작업으로 검증 후 분리**합니다.
+- 변경 사항은 GitHub CI와 로컬 실데이터/Codex 검증을 거쳐 최종 인수합니다. 실거래 권한·UEF·Docker 설정은 변경하지 않았습니다.
