@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: GPT REMOTE OWNER 25 CI PASS (337 REPORTING + 72 SEAM/UI/OWNER); LOCAL CLAUDE+CODEX ACCEPTANCE NOT RUN; P1.5.2 NOT CLOSED / LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
+Status: GPT REMOTE OWNER 31 CI PASS (337 REPORTING + 144 SEAM/UI/OWNER); LOCAL CLAUDE+CODEX ACCEPTANCE NOT RUN; P1.5.2 OPEN; NO P1.5.3
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -79,6 +79,11 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 ## GPT AI text helper Owner31 (2026-10-09)
 - Six read-only formatting helper bodies moved into 47-LOC Owner behind existing 182 public AI Reporter definitions; façade 3039->3027 LOC. Pinned AST/output/patch and 31 Owner CI gate.
 - GPT remote only; local Claude/Codex READ-ONLY LOCAL VERIFICATION / NO RUNTIME PYTHON EDITS. Actual C:\\Agentra/LLM/full repo/independent gates OPEN. P1.5.3 not authorized.
+
+## GPT Owner26–31 remote verified acceptance boundary (2026-10-09)
+- Source SHA `a65d3e47e5a0de3eb801c4a12ee364cbe98270dd`, remote CI 37887432333 PASS: 337 Reporting + 144 seam/Owner/UI. Static consumer index 436 symbols/82 referenced/4 unknown hazard entries/1763 Python files; NO STATIC DEAD PROOF.
+- Public façade sizes AI 3027, Markdown Clean 2948, Story 636 LOC, all original 436 names preserved; 31 new bounded Owner DAG. Full source/CI evidence `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER26-31-REMOTE-CI.md`.
+- Required next read-only local Claude/Codex protocol: `docs/refactor/work_orders/P15_R2_OWNER31_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`. Actual real-report bytes/LLM prompts/full suite/runtime consumers and independent signoff NOT RUN, P1.5.2 OPEN. No P1.5.3.
 
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md

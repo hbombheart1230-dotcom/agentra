@@ -173,3 +173,9 @@ Eight pure Reporting-only Story metadata/coverage/ID/display functions extracted
 ## 2026-10-09 — GPT AI Text Helper Owner31
 
 AI façade 3039->3027 LOC via 47-LOC pure read-only language Helper. Source AST, synthetic outputs and patchable facade helper seams in CI, 31-Owner size/dependency guard. 182 AI definitions and 436 overall public symbols intact. Local real-report/LLM/full-suite and independent evidence NOT RUN, P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT Owners 26–31 Remote CI ACCEPTED, Overall P1.5.2 OPEN
+
+Remote source `a65d3e47e5a0de3eb801c4a12ee364cbe98270dd`; GitHub CI 37887432333 **SUCCESS**, 337 broad Reporting and 144 helper/UI/Owner tests, original 38-function AST and 31-Owner DAG. Static index 436 public façade symbols, 82 statically referenced, 4 uncertain sites across 1763 Python files. Unreferenced != DEAD. Final three public façade LOC 3027/2948/636, all 436 callable names preserved, 6 bounded new Owners. Detailed remote evidence `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER26-31-REMOTE-CI.md`; specific read-only local acceptance checklist `docs/refactor/work_orders/P15_R2_OWNER31_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`. No actual Windows production report/LLM/cross-day/test baseline or independent Claude/Codex verification. No P1.5.3 or trading/UEF/R6.2/Docker changes.

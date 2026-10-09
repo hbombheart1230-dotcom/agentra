@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 181,
+  "entry_count": 182,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4976,6 +4976,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_ai_facade_text_helpers_31.md",
         "libs/reporting/trade_report/ai_facade_parts/text_helpers.py",
         "tests/test_p152_ai_facade_text_helpers.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Owners26-31 Verified Remote CI Evidence",
+      "title": "Confirm CI for all three public façade report-only refactors and define local acceptance gates",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "QUALITY",
+        "DOCUMENTATION"
+      ],
+      "summary": "CI 37887432333 PASS: 337 Reporting, 144 Owner/seam/UI, 31-Owner DAG, 436 public API ledger intact; local acceptance pending.",
+      "details": [
+        "Full tree scan 1763 Python sources, 82/436 statically referenced symbols, 4 uncertainty sites, never classify absent reference as DEAD.",
+        "Three public façade sizes AI 3027 / Markdown Clean 2948 / Story 636 LOC; no broker or model invocation changes.",
+        "Read-only Codex/Claude local checklist published; true report/LLM/full pytest/dirty Q12 proof NOT RUN, P1.5.2 OPEN."
+      ],
+      "impact": "Provides independently readable evidence and an explicit boundary against premature P1.5.3 acceptance.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER26-31-REMOTE-CI.md",
+        "docs/refactor/work_orders/P15_R2_OWNER31_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md",
+        "docs/refactor/work_orders/CURRENT.md"
       ],
       "status": "current"
     }

@@ -2584,3 +2584,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - AI Reporter의 출력용 helper 6개 구현을 47 LOC 전용 Owner로 분리. 공개 API 182개 유지, 부모 3039 → 3027 LOC.
 - 원본 AST·출력/monkeypatch 및 31개 Owner DAG CI. LLM/매매 경계 불변, **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_ai_facade_text_helpers_31.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Owners26–31 Remote CI Evidence
+**Stage:** Architecture and Maintainability  
+**Tags:** TESTING · QUALITY · DOCUMENTATION
+
+- 최신 CI `37887432333` **337 Reporting + 144 Helper/Owner/UI PASS**, 31개 Owner 의존성 검사 완료. 세 공개 façade 3027/2948/636 LOC, 436 함수 보존.
+- 소비자 맵 1,763개 Python 파일 중 공개 심볼 82개 정적 참조, 동적 불확실 4건; 나머지 DEAD 금지. 로컬 실데이터 및 독립 검증은 **OPEN**.
+- 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER26-31-REMOTE-CI.md`, `docs/refactor/work_orders/P15_R2_OWNER31_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`.
