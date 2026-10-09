@@ -35,8 +35,10 @@ def test_public_signatures_and_names_unchanged(path):
                 right=getattr(current,key)
                 if isinstance(left,ast.AST) and isinstance(right,ast.AST):
                     equal=ast.dump(left,include_attributes=False)==ast.dump(right,include_attributes=False)
+                elif isinstance(left,list) and isinstance(right,list):
+                    equal=[ast.dump(v,include_attributes=False) for v in left]==[ast.dump(v,include_attributes=False) for v in right]
                 else:
-                    equal=repr(left)==repr(right)
+                    equal=left==right
                 assert equal,(path,name,key)
     module=importlib.import_module(path[:-3].replace("/","."))
     assert all(callable(getattr(module,name,None)) for name in before),(path,"public callable inaccessible")
