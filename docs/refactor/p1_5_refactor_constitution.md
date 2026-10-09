@@ -285,3 +285,8 @@ Rules:
 - the structured Patch Notes UI source remains the existing JSON/Markdown pair until an explicitly tested adapter migration changes it
 - stale navigation pages may be rewritten; historical evidence pages are preserved
 - subsystem refactor completion requires corresponding canonical documentation and UI-linked patch-note updates
+
+
+## 2026-10-09 Implementation v1.2 Size-Owner Acceptance Supplement
+
+Read [p1_5_small_owner_policy_and_rollback_decision_v1_2.md](p1_5_small_owner_policy_and_rollback_decision_v1_2.md) together with original §9. Each newly extracted or materially expanded Python implementation Owner <=350 physical LOC HARD at tranche PASS; prefer 150–300. Over-limit extracted Reporting owners remain acceptance debt, not completed modularity. Single responsibility and no duplicate canonical Owner are indispensable, with no artificial function-per-file splits. Executor still preserves ONE auditable ordered mutation coordinator but must be actively reduced where proven safe under [Executor v1.1](p1_5_executor_safe_decomposition_packet_v1_1.md); unchanged Supervisor, BrokerOutcome, R6.2, Step5C/D, UEF and P1.3 2 GiB Docker semantics override LOC.

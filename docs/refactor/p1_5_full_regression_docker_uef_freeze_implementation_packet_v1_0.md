@@ -1225,3 +1225,10 @@ human approval gate frozen: YES
 freeze manifest/tag policy frozen: YES
 FZ1-FZ9 sequence frozen: YES
 Runtime implementation: NOT STARTED
+
+
+## 2026-10-09 P1.5 Small-Owner / Executor Closure Gate (v1.2)
+
+In addition to existing FZ1–FZ9 checks, freeze evidence MUST record each newly extracted/touched implementation-owner Python file, exact physical LOC, canonical responsibility and direct test. Any new owner >350 LOC is **FAIL**, not cosmetic PASS. The earlier oversized Reporting owners must be dispositioned using [Reporting v1.2](p1_5_reporting_implementation_packet_v1_2.md). Preserve test conservation, imports/private monkeypatch seams, exact artifact truth, full pytest, deterministic UEF, Docker mock, Step5C/D, R6.2 and human approval.
+
+Executor [v1.1](p1_5_executor_safe_decomposition_packet_v1_1.md) reports before/current/after physical LOC for `execute_from_packet.py` (starting ~4,189); original v1.0 EX1–EX6 plus optional guarded EX7–EX10. Aspirational 1,200–1,800 LOC, interim 2,600–3,200. Any unproven shrink is `SIZE_DEFERRED` or `SAFETY_BLOCKED`, never an invented acceptance. The single ordered Supervisor/readiness/R6.2/Step5C/broker/UNKNOWN authority path cannot be broken to meet a size goal. This amendment does not reopen frozen P1.2/P1.3 or modify runtime code.

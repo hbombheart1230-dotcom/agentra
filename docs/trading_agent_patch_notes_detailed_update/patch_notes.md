@@ -2149,3 +2149,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 기존 Report CI를 통합 브랜치로 옮기고, ZIP 산출물은 해당 커밋의 실제 변경 파일만 포함하도록 수정했습니다.
 - 과거 배치별 브랜치는 개발 중단 및 삭제 검토 대상으로만 유지합니다. `main` 병합이나 실거래/도커 설정은 변경하지 않았습니다.
 - 상세: docs/daily_patch/2026-10-08_p1_5_reporting_branch_consolidation.md.
+
+---
+
+## 2026-10-09 · P1.5 Small-Owner and Executor v1.2
+**Stage:** Architecture and Maintainability  
+**Tags:** ARCHITECTURE · REFACTOR · EXECUTOR · REPORTING · SAFETY · TESTING
+
+- P1.5.1/R2-A/B/C 기존 코드를 **전체 롤백하지 않고 현재 refactor/p1.5에서 계속 구현**합니다. C:\Agentra 로컬 환경의 HEAD와 실데이터 BEFORE 동등성을 먼저 확인합니다.
+- 새로 추출·확장한 단일 책임 구현 Owner는 **150~300줄 권장, 350 physical LOC 초과 금지**로 설계를 강화했습니다. 현재 2,233/1,356/1,337/1,275줄 등 대형 Reporting Owner는 책임별로 추가 분리합니다.
+- Executor `execute_from_packet.py`는 안전한 EX1~EX6 이후 추가 EX7~EX10을 선택적으로 허용합니다. 현 4,189 LOC → 중간 2,600~3,200 → 동등성 입증 시 최종 1,200~1,800 LOC를 목표로 하되, 단일 주문 변경 권한·Guard 순서·R6.2·Step5C/D·UNKNOWN 처리는 보존합니다.
+- P1.2 CLOSED, P1.3 FULL_DOCKER_FROZEN, Docker 2 GiB, 7개 Agent 및 Q12 dirty worktree 보존. 설계 문서와 검증 Workflow만 변경하고 런타임 Python은 수정하지 않았습니다.
+- 문서: `docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md`, `p1_5_reporting_implementation_packet_v1_2.md`, `p1_5_executor_safe_decomposition_packet_v1_1.md`.

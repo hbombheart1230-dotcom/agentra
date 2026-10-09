@@ -1,16 +1,16 @@
 # Agentra P1.5 / P1.6 Refactor Design
 
-Status: DESIGN / PRE-IMPLEMENTATION  
-Branch: `design/p1.5-p1.6-modernization`  
-Base at creation: `b67934a5baa95f4d329ccf345c14ed591a126a0f`
+Status: IMPLEMENTATION — LOCAL FIRST (as of 2026-10-09)  
+Canonical development branch: `refactor/p1.5`  
+Frozen baseline: `main` at `2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb`
 
-This directory is the design authority for the Agentra structural refactor and orchestration modernization work.
+This directory holds original frozen design records and the current versioned implementation guidance for the Agentra structural refactor.
+
+**2026-10-09 UPDATED IMPLEMENTATION AUTHORITY:** [strict small-Owner / continue-not-rollback v1.2](p1_5_small_owner_policy_and_rollback_decision_v1_2.md), [Reporting owner continuation v1.2](p1_5_reporting_implementation_packet_v1_2.md), [Executor safe size reduction v1.1](p1_5_executor_safe_decomposition_packet_v1_1.md). New implementation owners <=350 physical LOC. Original v1.0/v1.1 packets and their safety gates remain intact.
 
 **Whole-program P1.5.1–P1.5.11 design audit (2026-10-08):** [p1_5_1_to_11_responsibility_alignment_v1_1.md](p1_5_1_to_11_responsibility_alignment_v1_1.md). This is a cross-stage ACCEPTANCE ADDENDUM: one canonical Owner per responsibility, minimal façades, explicit adapter/Agent contract boundaries, verified wrapper consumers and freeze evidence. Preserve all original v1.0 packets as the detailed authority and the Reporting v1.1 residual packet. Executor safety-chain size exception remains authoritative.
 
-**Active design branch: `design/p1.5-p1.6-modernization`**. The separate 2026-10-08 v1.1 branch has been fast-forward integrated; only this design branch is authoritative for ongoing changes. The former branch is historical and should not receive new commits.
-
-**Active P1.5 Reporting implementation branch: `codex/p1.5-reporting`**. R2-A/B/C code ancestry is preserved there. Production main has not been merged or deployed.
+**Current branch policy:** `main` and `refactor/p1.5` are the only active remote branches. Former `design/*` and `codex/*` branches are historical references only, not checkout or deployment instructions. All implementation is local-first at `C:\Agentra` with Claude implementing and Codex independently verifying.
 
 **Reporting implementation design revision (2026-10-08):** For remaining P1.5.2 work use **p1_5_reporting_implementation_packet_v1_1.md**, which rebaselines responsibility-minimal ownership and acceptance against the pushed R2-A/B/C implementation. Retain **p1_5_reporting_implementation_packet_v1_0.md** as the original frozen design record. This revision does not authorize runtime changes or bypass the P1.2/P1.3 baseline gate.
 
