@@ -2604,3 +2604,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 리포트 표시 문자열/Strategist 설명 함수 21개를 Owner 두 개(227/79 LOC)로 분리. 기존 `trade_report_markdown_clean.py` **2948→2717 LOC**. 공개 함수 209개 및 monkeypatch 유지.
 - 원본 AST/출력 21개, 33-Owner CI 크기/DAG 검사. 실제 보고서·LLM/독립 검증 전 **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_markdown_clean_label_owner_32_33.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 Façade ABI and Authority Scope Guard 34
+**Stage:** Architecture and Maintainability  
+**Tags:** TESTING · QUALITY · DOCUMENTATION
+
+- Reporter/Story 공개 함수 436개 ABI(인수/반환형/데코레이터)와 실제 import 가능 여부를 기존 소스 기준으로 CI 고정했습니다.
+- 기준 SHA 이후 Trading·Broker·Executor·Supervisor·Docker·UEF 소스 파일이 변경되면 테스트가 실패하도록 범위를 제한했습니다.
+- 로컬 거래 리포트·LLM/전체 독립 검증은 별도 OPEN, **P1.5.2 미종료**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_facade_abi_authority_guard_34.md`.

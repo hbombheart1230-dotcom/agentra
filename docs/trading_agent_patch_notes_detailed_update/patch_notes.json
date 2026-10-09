@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 183,
+  "entry_count": 184,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5025,6 +5025,29 @@
         "tests/test_p152_markdown_clean_operator_labels_owners.py",
         "libs/reporting/trade_report/markdown_clean_parts/operator_labels.py",
         "libs/reporting/trade_report/markdown_clean_parts/strategist_language.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Facade ABI and Trading Boundary Guard 34",
+      "title": "Pin Reporting facade API signatures and prohibit trading authority file changes",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "QUALITY",
+        "DOCUMENTATION"
+      ],
+      "summary": "Added test to protect the public API shape across 436 legacy Reporting symbols and reject changes outside strict Reporting/test/documentation refactor paths.",
+      "details": [
+        "Compare arguments/defaults/return/decorators to pinned Owner31 code and dynamically verify legacy callable exports.",
+        "Reject source diffs in Broker/Executor/Supervisor/Docker/UEF areas against original refactor baseline.",
+        "No change to production business logic. Local actual report/full suite and independent audits NOT RUN. P1.5.2 OPEN."
+      ],
+      "impact": "Future safety guard for compatibility and trade-authority scope boundaries.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_facade_abi_authority_guard_34.md",
+        "tests/test_p152_facade_abi_and_authority_boundary.py"
       ],
       "status": "current"
     }

@@ -185,3 +185,9 @@ Remote source `a65d3e47e5a0de3eb801c4a12ee364cbe98270dd`; GitHub CI 37887432333 
 ## 2026-10-09 — GPT Markdown Clean Owners 32–33
 
 21 body-identical read-only output labels in 227 LOC and 79 LOC Owners, Markdown Clean 2948->2717 LOC, 209 public names/436 symbols preserved. Added 21 AST, 21 output, patch and 33-owner DAG CI. Real Windows data/LLM/cross-day/full-suite and independent audits NOT RUN. No Broker/UEF/R6.2/Docker authority changes; P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT API Contract & Scope Guard 34
+
+Added bounded read-only CI test preserving all 436 top-level Reporting façade callable declarations, signatures, defaults, return annotations, decorators and importability against SHA `52508ade9d0d246fa4e848525fe62f2fe067acb7`, plus global git diff path protection against non-Reporting/trading authority modules relative to pinned start SHA. Remote CI to observe. Local actual-output/LLM/full-suite and independent auditors NOT RUN. P1.5.2 OPEN.

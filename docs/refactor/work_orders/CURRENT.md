@@ -89,6 +89,10 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - 21 display-only original AST function bodies split into two <=350-LOC Owners, parent 2948->2717 LOC; 209 public names and full 436 ledger intact. Pinned AST/output/patch tests and 33-Owner DAG require CI PASS.
 - C:\\Agentra actual reports/LLM/full test baseline and independent Codex/Claude NOT RUN. Local READ-ONLY LOCAL VERIFICATION / NO RUNTIME PYTHON EDITS, P1.5.2 OPEN, no P1.5.3.
 
+## GPT ABI and authority scope guard 34 (2026-10-09)
+- 436 public Reporting function declarations and callable imports protected against Owner31 pinned SHA; branch diff scope pinned to Reporting-only/test/docs/refactor-script/CI workflow.
+- CI PENDING. Local actual windows C:\\Agentra outputs, LLM equality/full tests and independent auditors NOT RUN; READ-ONLY LOCAL VERIFICATION, NO RUNTIME PYTHON EDITS. P1.5.2 OPEN; P1.5.3 unauthorized.
+
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
 - docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md
