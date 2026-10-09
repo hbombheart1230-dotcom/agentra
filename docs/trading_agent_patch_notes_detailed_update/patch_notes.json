@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 162,
+  "entry_count": 163,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4517,6 +4517,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_operator_language_owner_15.md",
         "libs/reporting/trade_report/operator_parts/language.py",
         "tests/test_p152_operator_language_owner.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Summary Findings Owner 16",
+      "title": "Extract deterministic report interpretation candidates to focused read-only owner",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Moved contiguous deterministic report evidence and validation question calculation into bounded Owner, retaining exact condition order.",
+      "details": [
+        "Only report summary evidence flags are moved; no trading behavior change.",
+        "Call-time num_opt/as_dict/listify passed explicitly; focused tests and existing CI added.",
+        "Local real report artifacts and independent audits remain NOT RUN; P1.5.2 OPEN."
+      ],
+      "impact": "More maintainable reporting without new LLM/trading decision authority.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_summary_findings_owner_16.md",
+        "libs/reporting/trade_report/summary_parts/findings.py",
+        "tests/test_p152_summary_findings_owner.py"
       ],
       "status": "current"
     }

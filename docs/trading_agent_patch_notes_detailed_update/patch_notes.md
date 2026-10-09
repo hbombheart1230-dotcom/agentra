@@ -2388,3 +2388,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 언어 정규화 구현을 별도 <=350 LOC Owner로 옮기고 공개 import 경로, call-time clip/sanitize 테스트 주입은 유지했습니다.
 - `operator_text.py` 443 → 318 LOC. P1.5.2 승인 전까지 실제 보고서/전수 회귀 검증 필요.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_operator_language_owner_15.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Summary Findings Owner 16
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- deterministic positives/problems/causes/validation 질문 구성을 별도 Owner로 분리했습니다. 원래 평가 순서 및 call-time dependencies 유지, 안전 회귀 검사 추가.
+- 전략/승인/주문/UEF/Step5/Docker 동작을 변경하지 않았습니다. **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_summary_findings_owner_16.md`.
