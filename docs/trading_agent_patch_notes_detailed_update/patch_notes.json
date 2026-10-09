@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 146,
+  "entry_count": 147,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4119,6 +4119,33 @@
         "libs/reporting/trade_report/markdown_signal_parts/entry_watch.py",
         "libs/reporting/trade_report/markdown_signal_parts/entry_metrics.py",
         "libs/reporting/trade_report/markdown_signal_parts/exit.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Story Evidence Owner Split 06",
+      "title": "Trade-story canonical hydration, scanner enrichment and filter evidence split into small owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "TESTING"
+      ],
+      "summary": "Moved five independent pure/reader evidence helpers into three <=350 LOC canonical modules while maintaining original wrapper import names and bodies.",
+      "details": [
+        "libs/reporting/trade_story_pipeline_evidence_hydration.py: 659 -> 23 LOC",
+        "libs/reporting/trade_story_evidence_parts/canonical.py 87 LOC",
+        "libs/reporting/trade_story_evidence_parts/scanner.py 320 LOC",
+        "libs/reporting/trade_story_evidence_parts/filters.py 267 LOC",
+        "Original helper bodies, source precedence and data-source truth semantics unchanged. No broker, authority or production write intentionally introduced."
+      ],
+      "impact": "Evidence read/enrichment code owner relocation with compatibility imports.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_evidence_owner_split_06.md",
+        "libs/reporting/trade_story_evidence_parts/canonical.py",
+        "libs/reporting/trade_story_evidence_parts/scanner.py",
+        "libs/reporting/trade_story_evidence_parts/filters.py"
       ],
       "status": "current"
     }

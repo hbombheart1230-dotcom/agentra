@@ -2230,3 +2230,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 - Markdown의 Entry Watch, Entry Metrics, Exit 판단 설명 7개 함수를 3개 Owner로 분리했습니다. 각 모듈은 350 LOC 이하입니다.
 - 원래 모듈 경로와 함수 본문을 그대로 유지해 기존 import 사용자와 출력 계약을 보존합니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Story Evidence Owner Split 06
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · REPORTING · TESTING
+
+- Trade Story의 정본 증거 hydration, Scanner enrichment, Filters enrichment 5개 구현을 각각 350 LOC 이하인 Owner 3개로 이동했습니다.
+- 기존 import 경로·함수 본문·증거 우선순위는 유지했습니다.
