@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 169,
+  "entry_count": 170,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4686,6 +4686,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_monitor_trace_wrapper_owner_21.md",
         "libs/reporting/trade_story_human_parts/monitor_traces.py",
         "tests/test_p152_monitor_trace_wrappers.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 New Owner Dependency DAG Gate",
+      "title": "Add CI import DAG and size guard covering fifteen new Reporting Owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "QUALITY",
+        "DOCUMENTATION"
+      ],
+      "summary": "CI test explicitly covers 15 focused Reporting Owners and blocks overlong files, reverse public-facade/trading imports and local Owner dependency cycles.",
+      "details": [
+        "All 15 new Owner files capped at <=350 physical LOC; relative Owner imports form a DAG.",
+        "Prior CI runs 37882840893, 37883134008 and 37883364541 passed; new dependency guard pending its own remote CI.",
+        "Markdown renderer/public facades and local actual-data/independent audit remain OPEN."
+      ],
+      "impact": "Improved refactor safety and traceability; no runtime behavior change.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_owner_19_21_dependency_gate.md",
+        "tests/test_p152_new_owner_dependency_gate.py",
+        "docs/refactor/work_orders/CURRENT.md"
       ],
       "status": "current"
     }

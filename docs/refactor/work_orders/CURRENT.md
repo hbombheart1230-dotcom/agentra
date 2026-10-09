@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: GPT REMOTE OWNER 18 CI PASS / LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
+Status: GPT REMOTE OWNER 21 CI PASS; 15-OWNER DEPENDENCY GATE PENDING / LOCAL CLAUDE+CODEX VERIFICATION PENDING / P1.5.2 NOT CLOSED
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -32,6 +32,14 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - CI run `37881458077` failed at Python import with IndentationError in newly split Owner 18; corrected only indentation in `8f3c1465`, and the next run `37881544761` passed. Preserve both failure and recovery evidence.
 - Production `C:\Agentra` is inaccessible here. Full repository pytest equivalence, real-report byte/semantic parity, local LLM prompt/call/retry equality, and independent Claude/Codex reports are still **NOT RUN**.
 - P1.5.2 remains OPEN. P1.5.3 is NOT authorized, and Q12 dirty worktrees remain untouched.
+
+## GPT continuation Owner 19–21 evidence (2026-10-09)
+- Owner 19: 224 original statement lines / 84 AST nodes of Monitor context moved to 258-LOC Owner, 65 explicit return variables, 6 isolated before/after fixtures matched. CI PASS `37882840893`, source SHA `62be4bc1`.
+- Owner 20: Markdown strengths/problems/causes/recommendations moved to 150-LOC Owner, 37 AST-identical statements, 64 deterministic before/after combinations matched. CI PASS `37883134008`, source SHA `42f6ad83`.
+- Owner 21: three Monitor trace public functions moved to 107-LOC Owner with unchanged public wrappers and patchable call-time dependencies. Parent Monitor human file now exactly 350 LOC. 32 input combinations x 3 functions matched. CI PASS `37883364541`, source SHA `b8d4197f`.
+- Added a static 15-Owner dependency-DAG/LOC/reverse-import test to CI; gate acceptance requires its own CI PASS.
+- Outstanding oversize: Markdown summary 1,145 LOC; public reporting façades 3,039 / 3,043 / 948 LOC. Local real-data report/LLM/full repository test and independent Codex/Claude acceptance **NOT RUN**.
+- Local Claude/Codex remain READ-ONLY; do not touch Q12 dirty worktrees, trading/UEF/R6.2/Step5C/D/Docker or P1.5.3.
 
 ## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md

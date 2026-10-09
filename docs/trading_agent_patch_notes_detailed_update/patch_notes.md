@@ -2462,3 +2462,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Human payload 부모 파일 **431 → 350 LOC**로 350 LOC 상한 충족. 3개 함수 AST 동일, 32×3 전/후 결과 일치.
 - Markdown·공개 façade 및 C:\\Agentra 실데이터 검증은 여전히 OPEN. 매매 실행 경계 불변, **P1.5.2 미종료**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_monitor_trace_wrapper_owner_21.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 New Owner Dependency DAG Gate
+**Stage:** Architecture and Maintainability  
+**Tags:** TESTING · QUALITY · DOCUMENTATION
+
+- 새 Reporting Owner 15개 각각 350 LOC 이하, 공개 façade·실거래 코드 역방향 import 금지, Owner 순환 의존 금지를 검사하는 pytest를 CI에 추가했습니다.
+- 직전 Owner 19/20/21 원격 CI PASS. 이 추가 게이트는 이번 커밋의 CI에서 별도 확인합니다.
+- Markdown/Public façade·실데이터/전체 테스트·독립 검증은 **OPEN**이며 거래 권한·Docker·UEF·R6.2 불변.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_owner_19_21_dependency_gate.md`.

@@ -87,3 +87,21 @@ Latest verified CI: [run 37881544761](https://github.com/hbombheart1230-dotcom/a
 No changes intended to seven agents, Q10/Q12, ordering/approval, Broker, UEF, immutable readiness R6.2, Step5C/D, canonical FULL_DOCKER_FROZEN or production execution. CI only; no live order, production restart, dirty Q12 cleanup, or local real report replay.
 
 **Overall P1.5.2 = OPEN.** Residual tasks: consumer-proven façade KEEP/WRAPPER/MOVE classifications; oversized Markdown renderer/input and Monitor human implementation; local byte-and-semantic golden comparisons and LLM call/retry proof; complete repository baseline parity; independent Codex audit; human acceptance. No P1.5.3 before those gates.
+
+---
+
+## 2026-10-09 — GPT Owners 19–21 continuation (remote CI accepted, overall OPEN)
+
+| Source | Before Owner 19 | Current physical LOC | Gate |
+|---|---:|---:|---|
+| `trade_story_pipeline_story_assembly.py` | 331 | **331** | <=350 |
+| `trade_story_pipeline_human_payloads.py` | 636 | **350** | <=350 |
+| `trade_report/operator_text.py` | 320 | **320** | <=350 |
+| `trade_report/markdown_summary.py` | 1,226 | **1,145** | OPEN oversized |
+| Public Reporting façades | 3,039 / 3,043 / 948 | unchanged | OPEN consumer/import proof |
+
+New Owner modules 19–21: `trade_story_human_parts/monitor_context.py` 258 LOC, `trade_report/summary_parts/render_diagnostics.py` 150 LOC, `trade_story_human_parts/monitor_traces.py` 107 LOC. No initial business statements changed, and original patchable public wrapper names remain valid.
+
+CI evidence: `37882840893` PASS (19); `37883134008` PASS (20); `37883364541` PASS (21). The original 38-function AST parity across 26 earlier Owners remains guarded separately. This update adds a 15-new-Owner import DAG/no-trading reverse import/<=350 guard (its CI PASS must be separately observed).
+
+User-local `C:\Agentra` real report byte/schema equality, LLM prompt/call/retry comparison, full repository pytest vs accepted baseline, local dirty Q12 worktrees and independent Claude/Codex evidence were NOT RUN. No Broker, UEF/R6.2/Step5C/D, trading strategy/authority, Docker or production data modification. P1.5.2 OPEN; P1.5.3 not authorized.
