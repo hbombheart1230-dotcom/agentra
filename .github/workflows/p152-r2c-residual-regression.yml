@@ -87,7 +87,7 @@ jobs:
       - name: Broader reporting regression
         run: python -m pytest -q tests/test_trade_report_ai.py tests/test_trade_summary_symbol_metadata.py tests/test_reporting_provenance_preference.py tests/test_trade_report_ai_separated_adapter.py tests/test_run_ai_trade_report_batch.py tests/test_live_execution_bundle_report.py tests/test_live_execution_bundle_report_runtime_recovery.py tests/test_report_metadata_alignment.py tests/test_check_trade_report_runtime_regression.py tests/test_intraday_trade_reports.py tests/test_single_trade_report.py tests/test_symbol_trade_report.py tests/apps/api/test_trade_reports.py tests/test_m25_3_alert_reporting_closeout.py tests/test_trade_story_pipeline_enrichment.py tests/test_phase3_lifecycle_bundle.py
       - name: Helper-seam and UI patch-notes regression
-        run: python -m pytest -q tests/test_p152_monitor_diagnostics_owner.py tests/test_p152_facade_symbol_ledger.py tests/test_p152_lifecycle_evidence_owner.py tests/test_p152_direct_story_owner.py tests/test_p152_story_reasoning_owner.py tests/test_p152_lifecycle_human_owner.py tests/test_p152_r2c_helper_seams.py tests/test_patch_notes_sync.py tests/apps/api/test_patch_notes.py
+        run: python -m pytest -q tests/test_p152_operator_phrase_owners.py tests/test_p152_monitor_diagnostics_owner.py tests/test_p152_facade_symbol_ledger.py tests/test_p152_lifecycle_evidence_owner.py tests/test_p152_direct_story_owner.py tests/test_p152_story_reasoning_owner.py tests/test_p152_lifecycle_human_owner.py tests/test_p152_r2c_helper_seams.py tests/test_patch_notes_sync.py tests/apps/api/test_patch_notes.py
       - name: Pack only P1.5.2 files changed since pinned GPT baseline
         if: success()
         run: |

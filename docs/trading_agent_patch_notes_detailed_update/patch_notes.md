@@ -2368,3 +2368,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Monitor 진단 문구의 watch axes 및 entry threshold gaps를 75 LOC 전용 Owner로 분리, 기존 human payload 파일 861 → 812 LOC.
 - 위험/매매 의사결정이 아닌 읽기 전용 문구 로직만 이동. 원래 호출 주입·회귀 테스트 유지. P1.5.2는 OPEN.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_diagnostics_owner_13.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Operator Phrase Owners 14
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- 긴 operator 문구 처리 함수에서 exact phrase / 시장·종목선정 / 거래 생명주기·실행 문구를 **3개 별도 <=350 LOC Owner**로 분리했습니다. 원래 매칭 순서·공개 함수·호출 시 의존성 주입은 유지했습니다.
+- 신규 회귀 테스트와 기존 Reporting CI를 함께 실행하고, 실제 로컬 데이터 검증 전에는 **P1.5.2 OPEN**을 유지합니다.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_gpt_operator_phrase_owners_14.md`.

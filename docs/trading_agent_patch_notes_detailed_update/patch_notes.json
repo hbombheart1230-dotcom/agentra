@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 160,
+  "entry_count": 161,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4467,6 +4467,32 @@
         "docs/daily_patch/2026-10-09_p1_5_2_gpt_monitor_diagnostics_owner_13.md",
         "libs/reporting/trade_story_human_parts/monitor_diagnostics.py",
         "tests/test_p152_monitor_diagnostics_owner.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Operator Phrase Owners 14",
+      "title": "Split deterministic operator phrase rendering into bounded responsibility owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Extracted exact, market/selection and lifecycle text-only formatting with preserved match ordering and runtime dependency injection.",
+      "details": [
+        "Original public module and operatorize_report_text API unchanged; three new implementation Owners <=350 LOC.",
+        "Added direct phrase assertions and maintained existing Reporting regression CI matrix.",
+        "No broker, trade-order, Supervisor, Step5C/D, R6.2, UEF, Docker or LLM changes. P1.5.2 stays OPEN."
+      ],
+      "impact": "Operator text implementation reduced without reassigning trade policy or order execution.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_operator_phrase_owners_14.md",
+        "libs/reporting/trade_report/operator_parts/exact_phrases.py",
+        "libs/reporting/trade_report/operator_parts/context_patterns.py",
+        "libs/reporting/trade_report/operator_parts/lifecycle_patterns.py",
+        "tests/test_p152_operator_phrase_owners.py"
       ],
       "status": "current"
     }
