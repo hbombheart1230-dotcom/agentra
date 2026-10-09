@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 170,
+  "entry_count": 171,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4710,6 +4710,30 @@
         "docs/daily_patch/2026-10-09_p1_5_2_owner_19_21_dependency_gate.md",
         "tests/test_p152_new_owner_dependency_gate.py",
         "docs/refactor/work_orders/CURRENT.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Markdown Render Section Owners 22",
+      "title": "Four bounded Markdown output section Owners with golden rendering checks",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Four read-only Markdown formatting sections moved to bounded Owners, with six pinned original-output SHA-256 fixtures.",
+      "details": [
+        "Parent markdown_summary.py 1,145 -> 827 LOC; Owners 98/93/144/90 LOC.",
+        "New goldens and extended 19-Owner DAG/size gate; remote CI required for acceptance.",
+        "Original report facts, prompt/LLM authority, Broker/UEF/Step5C/D/R6.2/Docker unchanged; P1.5.2 OPEN."
+      ],
+      "impact": "Smaller Markdown renderer with explicit byte-equality regression coverage.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_markdown_render_section_owners_22.md",
+        "tests/test_p152_markdown_render_section_owners.py",
+        ".github/workflows/p152-r2c-residual-regression.yml"
       ],
       "status": "current"
     }

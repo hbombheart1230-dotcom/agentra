@@ -2473,3 +2473,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 직전 Owner 19/20/21 원격 CI PASS. 이 추가 게이트는 이번 커밋의 CI에서 별도 확인합니다.
 - Markdown/Public façade·실데이터/전체 테스트·독립 검증은 **OPEN**이며 거래 권한·Docker·UEF·R6.2 불변.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_owner_19_21_dependency_gate.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Markdown Render Section Owners 22
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- 보고서 개요·시장/뉴스·매매 결정·최종 판단을 4개 Markdown Owner로 분리해 `markdown_summary.py` **1,145 → 827 LOC**로 감소했습니다.
+- 6개 원본 출력 SHA-256 골든을 CI에 고정하고 새 Owner 19개 크기/의존성 검사를 추가했습니다. 실거래 보고서 검증 전에는 **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_markdown_render_section_owners_22.md`.

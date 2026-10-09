@@ -10,6 +10,12 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional
 from .summary_parts.findings import collect_deterministic_summary_findings
 from .summary_parts.render_diagnostics import collect_render_diagnostics
 
+from .summary_render_parts.overview import append_summary_overview
+from .summary_render_parts.market_news import append_summary_market_news
+from .summary_render_parts.decision_lifecycle import append_summary_decision_lifecycle
+from .summary_render_parts.closing import append_summary_closing
+
+
 
 def render_trade_summary_markdown(report: Dict[str, Any], *, deps: Mapping[str, Any]) -> str:
     _RECOVERED_PARTIAL_ENTRY_NOTE = deps["RECOVERED_PARTIAL_ENTRY_NOTE"]
@@ -367,365 +373,44 @@ def render_trade_summary_markdown(report: Dict[str, Any], *, deps: Mapping[str, 
         exit_price_note = f" (체결가 미확정, 모니터 기준 {_money(monitor_exit_reference_price)})"
 
     lines: List[str] = []
-    lines.append(f"# AI 거래 리포트 ({trade_id})")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🔴 운영 요약 (Operator Decision Summary)")
-    lines.append("")
-    lines.append(f"* 결과: **{result_text}**")
-    lines.append(f"* 당일 성과(리포트 생성 시점 기준): **{same_day}**")
-    lines.append("")
-    lines.append("### ✔ 잘된 점")
-    lines.append("")
-    lines.extend(f"* {item}" for item in positives[:3])
-    lines.append("")
-    lines.append("### ❌ 문제점")
-    lines.append("")
-    lines.extend(f"{idx}. {item}" for idx, item in enumerate(problems[:3], 1))
-    lines.append("")
-    lines.append("### 📌 원인 해석")
-    lines.append("")
-    lines.extend(f"* {item}" for item in cause_lines[:4])
-    lines.append("")
-    headline_focus = recommendations[0] if recommendations else problems[0]
-    lines.append(f"👉 **{result_label} 거래; 핵심 점검: {headline_focus}**")
-    lines.append("")
-    lines.append("### 🛠 권고 액션 (우선순위)")
-    lines.append("")
-    lines.extend(f"{idx}. {item}" for idx, item in enumerate(recommendations[:4], 1))
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🧭 거래 개요")
-    lines.append("")
-    symbol_line = f"* 종목: {symbol}"
-    if symbol_name:
-        symbol_line += f" ({symbol_name})"
-    lines.append(symbol_line)
-    if symbol_theme:
-        lines.append(f"* 테마: {symbol_theme}")
-    lines.append(f"* 거래 유형: {story_type}")
-    lines.append(f"* 상태: {status}")
-    lines.append(f"* 실행 모드: {execution_mode}")
-    controlled_lane_lines = _render_controlled_lane_report_lines(report)
-    if controlled_lane_lines:
-        lines.append("")
-        lines.append("### 통제 모의투자 레인")
-        lines.append("")
-        lines.extend(controlled_lane_lines)
-    if recovered_partial_exit:
-        lines.append(f"* {_RECOVERED_PARTIAL_EXIT_NOTE}")
-    if carryover_exit:
-        lines.append(f"* 포지션 성격: {carryover_context.get('carry_state_label') or '오버나이트/이월 보유'}")
-        if carryover_context.get("estimated_entry_kst") or carryover_context.get("exit_kst"):
-            basis = carryover_context.get("date_basis") or "이월 보유 시간 기준"
-            lines.append(
-                f"* 날짜 기준: 보유 시작 {carryover_context.get('estimated_entry_kst') or '-'} / "
-                f"청산 {carryover_context.get('exit_kst') or '-'} ({basis})"
-            )
-        if carryover_context.get("duration_label"):
-            lines.append(f"* 이월 보유 시간: {carryover_context.get('duration_label')}")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 📊 실행 결과 (Truth Surface)")
-    lines.append("")
-    lines.append(f"* 매수가 / 매도가: {_money(buy_price)} / {_money(exit_price)}{exit_price_note}")
-    if pnl_num is None and pnl_pct_is_observation:
-        lines.append("* 실현 손익: **확인 불가**")
-    else:
-        pnl_line = _money(pnl)
-        if pnl_pct not in (None, ""):
-            pnl_line = f"{pnl_line} ({_fmt_pct(pnl_pct)})"
-        lines.append(f"* 실현 손익: **{pnl_line}**")
-    fee_display = _money(_pick(shared.get("broker_fee"), truth_pnl.get("broker_fee")))
-    tax_display = _money(_pick(shared.get("broker_tax"), truth_pnl.get("broker_tax")))
-    lines.append(f"* 수수료 / 세금: {fee_display} / {tax_display}")
-    lines.extend(_trade_cost_analysis_lines(report))
-    lines.append(f"* 손익 기준: {_pnl_basis_label(truth_pnl, shared)}")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🧠 전략 및 시장 맥락")
-    lines.append("")
-    lines.append("### 시장 상태")
-    lines.append("")
-    lines.append(f"* {market_summary}")
-    for korea_line in _korea_index_lines(market):
-        lines.append(f"* 국내 지수: {korea_line}")
-    if market.get("vix_level") not in (None, ""):
-        lines.append(f"* VIX: {_compact_decimal(market.get('vix_level'))}")
-    if market.get("market_sentiment"):
-        lines.append(f"* 시장 심리: {_metadata_value(market.get('market_sentiment'))}")
-    if carryover_exit:
-        lines.append(
-            f"* 날짜 주의: 위 시장/지수는 {carryover_context.get('exit_date_kst') or '청산일'} 청산 시점 컨텍스트입니다. "
-            f"오버나이트 승인 판단은 {carryover_context.get('estimated_entry_date_kst') or '이전 거래일'} 기준과 분리해 봅니다."
-        )
-    lines.append("")
-    lines.append("### 전략가 출력 요약")
-    lines.append("")
-    lines.append(f"* 플레이북: **{playbook or '-'}**")
-    lines.append(f"* 리스크 톤: {risk_tone or '-'}")
-    themes = [_theme_label(x) for x in _listify(market.get("themes") or market.get("preferred_themes")) if not _is_not_captured(x)]
-    if themes:
-        lines.append(f"* 핵심 테마: {', '.join(themes[:4])}")
-    theme_source = _metadata_value(market.get("theme_source"))
-    theme_status = _metadata_value(market.get("theme_source_status"))
-    if theme_source and theme_source != "-":
-        source_text = theme_source
-        if theme_status and theme_status != "-":
-            source_text += f" / {theme_status}"
-        lines.append(f"* 테마 출처: {source_text}")
-    if monitor_guide:
-        lines.append(f"* 모니터 가이드: {monitor_guide}")
-    strategy_horizon_lines = _build_strategy_horizon_lines(report, compact=True)
-    if strategy_horizon_lines:
-        lines.append("")
-        lines.append("### 전략 보유 기간")
-        lines.append("")
-        lines.extend(strategy_horizon_lines)
-    if entry_watch_lines and not carryover_exit:
-        lines.append(f"* 후보 감시: {entry_watch_lines[0]}")
-        if len(entry_watch_lines) > 1:
-            lines.append(f"* 후보 선택: {entry_watch_lines[-1]}")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 📰 뉴스 및 컨텍스트")
-    lines.append("")
-    lines.append("### 시장 뉴스")
-    lines.append("")
-    if market_news:
-        lines.extend(f"* {item}" for item in market_news)
-    else:
-        lines.append("* 표본 없음")
-        lines.append("* 원천 위치: ai_trade_report_input.json의 market_context_at_entry.market_news_titles")
-    lines.append("")
-    lines.append(f"### 종목 뉴스 ({symbol})")
-    lines.append("")
-    if symbol_news:
-        lines.extend(f"* {item}" for item in symbol_news)
-    else:
-        lines.append("* 표본 없음")
-        lines.append(f"* 원천 위치: ai_trade_report_input.json의 market_context_at_entry.candidate_news_titles 중 {symbol} 항목")
-    lines.append("")
-    lines.append("👉 해석:")
-    lines.append("")
-    if carryover_exit:
-        lines.append("* 종목은 오버나이트/주말 이월 포지션 청산 흐름")
-        lines.append(f"* 전략은 {playbook or '-'} → **당일 신규 선정이 아니라 보유 포지션 청산 품질 중심으로 확인 필요**")
-    elif recovered_partial_exit:
-        lines.append("* 종목은 보유/회수 포지션 청산 흐름")
-        lines.append(f"* 전략은 {playbook or '-'} → **신규 선정 평가가 아니라 청산 결과 중심으로 확인 필요**")
-    else:
-        lines.append(f"* 종목은 {_translated_metadata(selection.get('basis') or '후보 점수 우위')} 흐름")
-        lines.append(f"* 전략은 {playbook or '-'} → **전략/종목 톤 정합성 점검 필요**")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🎯 종목 선정 흐름")
-    lines.append("")
-    if carryover_exit:
-        lines.append("* 선정 경로: 오버나이트/주말 이월 포지션 청산")
-        if carryover_context.get("estimated_entry_kst"):
-            lines.append(f"* 보유 시작 추정: {carryover_context.get('estimated_entry_kst')} ({carryover_context.get('date_basis')})")
-        if carryover_context.get("duration_label"):
-            lines.append(f"* 이월 보유 시간: {carryover_context.get('duration_label')}")
-        if carryover_context.get("carry_state_label"):
-            line = f"* 이월 상태: {carryover_context.get('carry_state_label')}"
-            if carryover_context.get("carry_risk_label"):
-                line += f" / {carryover_context.get('carry_risk_label')}"
-            lines.append(line)
-        if carryover_context.get("weekend_carry"):
-            lines.append("* 주말 이월: 금요일 보유분이 월요일 청산까지 이어진 거래입니다.")
-    elif recovered_partial_exit:
-        lines.append("* 선정 경로: 보유/회수 포지션 청산")
-        lines.append("* 스캐너 순위: 기록 없음")
-    elif selection_fallback.get("used"):
-        lines.append("* 선정 경로: 차순위 재평가")
-        lines.append(f"* 재평가 순위: {_selected_rank(selection)}위")
-        lines.append(f"* 재평가 점수: {_selected_score(selection)}")
-    else:
-        lines.append(f"* 스캐너 순위: {_selected_rank(selection)}위")
-        lines.append(f"* 점수: {_selected_score(selection)}")
-    if selection_reason:
-        lines.append(f"* 선정 이유: {selection_reason}")
-    if scanner_chart_fit:
-        lines.append(
-            "* Scanner chart-fit: "
-            f"{_compact_decimal(scanner_chart_fit.get('score'), 3)} "
-            f"/ {scanner_chart_fit.get('authority') or '-'}"
-        )
-    if selection_fallback.get("used"):
-        top_pick = selection_fallback.get("scanner_top_pick_symbol") or "-"
-        reason = selection_fallback.get("reason") or "모니터 조건 미충족"
-        lines.append(f"* 스캐너 상위 후보 {top_pick} 보류 후 {symbol}이 재평가에서 실제 진입 후보로 확정됐습니다.")
-        lines.append(f"* 모니터 확인 사유: {reason}")
-        for metric_line in _entry_signal_metric_summary_lines(entry_signal_snapshot, prefix="모니터 확인 수치"):
-            lines.append(f"* {metric_line}")
-    if blocked_reason:
-        lines.append(f"* {blocked_reason}")
-    if not selection_fallback.get("used") and not recovered_partial_exit:
-        for watch_line in entry_watch_lines[1:3]:
-            lines.append(f"* {watch_line}")
-    lines.append("")
-    if carryover_exit:
-        lines.append("👉 특징: **오늘 신규 선정 평가가 아니라 오버나이트/주말 이월 포지션의 청산 결과입니다**")
-    elif recovered_partial_exit:
-        lines.append("👉 특징: **신규 선정 평가가 아니라 회수 포지션의 청산 결과입니다**")
-    else:
-        lines.append("👉 특징: **강한 종목이어도 실제 진입 구조와 별도 검증 필요**")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🚪 진입 판단")
-    lines.append("")
-    quant_compact_lines = _render_quant_tactic_report_lines_impl(report, compact=True)
-    if quant_compact_lines:
-        lines.extend(quant_compact_lines[:4])
-    if entry_reason:
-        lines.append(f"* 조건: {entry_reason}")
-    if not selection_fallback.get("used") and not exit_only_report:
-        lines.extend(f"* {item}" for item in entry_signal_metric_lines)
-    if carryover_exit:
-        lines.append("* 방식: 당일 신규 매수 평가 제외")
-        if carryover_context.get("estimated_entry_kst"):
-            lines.append("* 원 진입/보유 시작 시각은 리포트 입력의 actual_hold_sec와 청산 시각으로 역산했습니다.")
-    elif recovered_partial_exit:
-        lines.append("* 방식: 당일 신규 매수 평가 제외")
-    else:
-        lines.append("* 방식: 돌파/확인형 진입")
-        if entry_confidence:
-            lines.append(f"* {entry_confidence}")
-    lines.append("")
-    if carryover_exit:
-        lines.append("👉 **신규 진입 판단이 아니라 이월 포지션 청산 리포트입니다.**")
-    elif recovered_partial_exit:
-        lines.append("👉 **신규 진입 판단이 아니라 회수 포지션 청산 리포트입니다.**")
-    else:
-        lines.append("👉 **threshold 근접 진입 여부 확인 필요**")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## ⏱ 보유 및 청산")
-    lines.append("")
-    if holding_duration and not _is_not_captured(holding_duration):
-        lines.append(f"* 보유 시간: {holding_duration}")
-    elif carryover_exit and carryover_context.get("duration_label"):
-        lines.append(f"* 보유 시간: {carryover_context.get('duration_label')}")
-    elif recovered_partial_exit:
-        lines.append("* 보유 시간: 기록 없음")
-    if carryover_exit and carryover_context.get("estimated_entry_kst"):
-        lines.append(f"* 보유 시작 추정: {carryover_context.get('estimated_entry_kst')}")
-    lines.append(f"* 청산가: {_money(exit_price)}{exit_price_note}")
-    lines.append("")
-    lines.append("### 청산 트리거")
-    lines.append("")
-    exit_trigger_lines = _build_summary_exit_trigger_lines(
-        exit_trigger,
-        exit_signal_snapshot,
-        fallback_reason=shared.get("exit_reason"),
-        buy_price=buy_price,
-        exit_price=exit_price,
-        pnl_pct=pnl_pct,
-        truth_source=_pick(shared.get("pnl_truth_source"), truth_pnl.get("pnl_truth_source")),
+    append_summary_overview(
+        lines=lines, _RECOVERED_PARTIAL_EXIT_NOTE=_RECOVERED_PARTIAL_EXIT_NOTE, _fmt_pct=_fmt_pct, _money=_money,
+        _pick=_pick, _pnl_basis_label=_pnl_basis_label, _render_controlled_lane_report_lines=_render_controlled_lane_report_lines, _trade_cost_analysis_lines=_trade_cost_analysis_lines,
+        buy_price=buy_price, carryover_context=carryover_context, carryover_exit=carryover_exit, cause_lines=cause_lines,
+        execution_mode=execution_mode, exit_price=exit_price, exit_price_note=exit_price_note, pnl=pnl,
+        pnl_num=pnl_num, pnl_pct=pnl_pct, pnl_pct_is_observation=pnl_pct_is_observation, positives=positives,
+        problems=problems, recommendations=recommendations, recovered_partial_exit=recovered_partial_exit, report=report,
+        result_label=result_label, result_text=result_text, same_day=same_day, shared=shared,
+        status=status, story_type=story_type, symbol=symbol, symbol_name=symbol_name,
+        symbol_theme=symbol_theme, trade_id=trade_id, truth_pnl=truth_pnl,
     )
-    if recovered_partial_exit and (_num_opt(pnl_pct) or 0.0) > 0.0 and exit_trigger_lines:
-        trigger_text = exit_trigger_lines[0].replace("트리거:", "").strip()
-        if trigger_text in {"Stop Loss", "stop_loss", "고정 손절 기준"}:
-            trigger_text = "고정 손절 기준"
-        exit_trigger_lines[0] = f"트리거: 모니터 신호명은 {trigger_text}이었지만 Truth Surface 기준 실현 결과는 이익입니다."
-    lines.extend(f"* {item}" for item in exit_trigger_lines)
-    if quant_compact_lines:
-        for item in quant_compact_lines[4:8]:
-            lines.append(item if item.startswith("* ") else f"* {item.lstrip('- ')}")
-    lines.append("")
-    lines.append("👉 수익 구간 진입 후 유지/청산 품질 점검 필요")
-    shadow_lines = _build_post_exit_shadow_summary_lines(report)
-    if shadow_lines:
-        lines.append("")
-        lines.extend(shadow_lines)
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## ⚙️ 정책 및 메모리 영향")
-    lines.append("")
-    lines.extend(_policy_delta_lines(memory_app) if memory_app else ["* 정책/메모리 영향은 상세 리포트에서 확인 필요"])
-    lines.append("")
-    lines.append("👉 **진입/청산 정책 조합의 손익비 영향 확인 필요**")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🔁 패턴 분석 (당일)")
-    lines.append("")
-    lines.append(f"* {same_day}")
-    lines.append("")
-    lines.append("### 반복 패턴")
-    lines.append("")
-    pattern_lines = [
-        line
-        for line in _listify(reporter_eval.get("bullets"))
-        if any(token in str(line).lower() for token in ("monitor", "fallback", "blocker", "closed trade", "차순위"))
-    ]
-    if pattern_lines:
-        lines.extend(f"* {_translate_text(line).rstrip('.')}" for line in pattern_lines[:4])
-    else:
-        lines.append("* 반복 패턴은 추가 집계 필요")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## ⚠️ 주요 리스크")
-    lines.append("")
-    default_risks = (
-        ["이월 승인 근거와 당일 청산 판단의 날짜 혼선 가능성", "장기/주말 이월 상태에서 청산 우선순위 검증 필요"]
-        if carryover_exit
-        else ["전략 vs 종목 톤 미스매치", "scanner → monitor 정합성 저하 가능성"]
+    append_summary_market_news(
+        lines=lines, _build_strategy_horizon_lines=_build_strategy_horizon_lines, _compact_decimal=_compact_decimal, _is_not_captured=_is_not_captured,
+        _korea_index_lines=_korea_index_lines, _listify=_listify, _metadata_value=_metadata_value, _theme_label=_theme_label,
+        _translated_metadata=_translated_metadata, carryover_context=carryover_context, carryover_exit=carryover_exit, entry_watch_lines=entry_watch_lines,
+        market=market, market_news=market_news, market_summary=market_summary, monitor_guide=monitor_guide,
+        playbook=playbook, recovered_partial_exit=recovered_partial_exit, report=report, risk_tone=risk_tone,
+        selection=selection, symbol=symbol, symbol_news=symbol_news,
     )
-    risk_lines = _dedupe(problems + default_risks)
-    lines.extend(f"* {item}" for item in risk_lines[:4])
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 📌 보완 필요")
-    lines.append("")
-    lines.extend(f"* {item}" for item in recommendations[:4])
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 📎 근거 출처")
-    lines.append("")
-    lines.append("* canonical agent artifacts 기반")
-    lines.append("* commander / strategist / scanner / monitor / executor / supervisor 로그")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🧾 타임라인")
-    lines.append("")
-    lines.append(f"* 진입 run: {_extract_run_id(timeline, 'entry')}")
-    lines.append(f"* 청산 run: {_extract_run_id(timeline, 'exit')}")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("## 🔚 최종 판단")
-    lines.append("")
-    lines.append(f"* 상태: {status}")
-    lines.append(f"* 액션: {action}")
-    lines.append("")
-    final_summary = _authoritative_final_operator_summary(
-        report,
-        action=action,
-        fallback=(
-            _ensure_sentence(_translate_text(final.get("summary")))
-            if final.get("summary")
-            else ""
-        ),
+    append_summary_decision_lifecycle(
+        lines=lines, _build_post_exit_shadow_summary_lines=_build_post_exit_shadow_summary_lines, _build_summary_exit_trigger_lines=_build_summary_exit_trigger_lines, _compact_decimal=_compact_decimal,
+        _entry_signal_metric_summary_lines=_entry_signal_metric_summary_lines, _is_not_captured=_is_not_captured, _money=_money, _num_opt=_num_opt,
+        _pick=_pick, _render_quant_tactic_report_lines_impl=_render_quant_tactic_report_lines_impl, _selected_rank=_selected_rank, _selected_score=_selected_score,
+        blocked_reason=blocked_reason, buy_price=buy_price, carryover_context=carryover_context, carryover_exit=carryover_exit,
+        entry_confidence=entry_confidence, entry_reason=entry_reason, entry_signal_metric_lines=entry_signal_metric_lines, entry_signal_snapshot=entry_signal_snapshot,
+        entry_watch_lines=entry_watch_lines, exit_only_report=exit_only_report, exit_price=exit_price, exit_price_note=exit_price_note,
+        exit_signal_snapshot=exit_signal_snapshot, exit_trigger=exit_trigger, holding_duration=holding_duration, pnl_pct=pnl_pct,
+        recovered_partial_exit=recovered_partial_exit, report=report, scanner_chart_fit=scanner_chart_fit, selection=selection,
+        selection_fallback=selection_fallback, selection_reason=selection_reason, shared=shared, symbol=symbol,
+        truth_pnl=truth_pnl,
     )
-    if final_summary:
-        lines.append(f"👉 **{final_summary}**")
-        lines.append("")
-    lines.append(f"👉 **{result_label} 원인은 단일 장애보다 진입/청산 구조와 정책 조합에서 우선 점검해야 합니다.**")
+    append_summary_closing(
+        lines=lines, _authoritative_final_operator_summary=_authoritative_final_operator_summary, _dedupe=_dedupe, _ensure_sentence=_ensure_sentence,
+        _extract_run_id=_extract_run_id, _listify=_listify, _policy_delta_lines=_policy_delta_lines, _translate_text=_translate_text,
+        action=action, carryover_exit=carryover_exit, final=final, memory_app=memory_app,
+        problems=problems, recommendations=recommendations, report=report, reporter_eval=reporter_eval,
+        result_label=result_label, same_day=same_day, status=status, timeline=timeline,
+    )
     return "\n".join(_strip_trailing_blanks(lines)).strip() + "\n"
 
 

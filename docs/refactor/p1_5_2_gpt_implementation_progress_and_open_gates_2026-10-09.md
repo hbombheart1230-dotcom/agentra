@@ -105,3 +105,9 @@ New Owner modules 19–21: `trade_story_human_parts/monitor_context.py` 258 LOC,
 CI evidence: `37882840893` PASS (19); `37883134008` PASS (20); `37883364541` PASS (21). The original 38-function AST parity across 26 earlier Owners remains guarded separately. This update adds a 15-new-Owner import DAG/no-trading reverse import/<=350 guard (its CI PASS must be separately observed).
 
 User-local `C:\Agentra` real report byte/schema equality, LLM prompt/call/retry comparison, full repository pytest vs accepted baseline, local dirty Q12 worktrees and independent Claude/Codex evidence were NOT RUN. No Broker, UEF/R6.2/Step5C/D, trading strategy/authority, Docker or production data modification. P1.5.2 OPEN; P1.5.3 not authorized.
+
+---
+
+## 2026-10-09 — GPT Markdown Render Section Owner 22
+
+Refactored output-only Markdown blocks into Owners (98, 93, 144, 90 LOC). `markdown_summary.py` 1145 -> 827 LOC. Six original SHA-256 byte goldens and extended 19-Owner cycle/import/size guard are in CI; confirm remote CI after commit. Local real reports, LLM prompt/retry, full-repo baseline and independent Codex/Claude NOT RUN. No authority/UEF/R6.2/Docker changes; P1.5.2 OPEN.
