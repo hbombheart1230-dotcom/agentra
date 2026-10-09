@@ -212,6 +212,16 @@ def check() -> None:
             assert ast.dump(former, include_attributes=False) == ast.dump(current, include_attributes=False), (original, owner, name, "source AST body changed")
             assert getattr(legacy_module, name) is getattr(owner_module, name), (name, "legacy export identity changed")
             total += 1
+    # Genuine seed decomposition is not body-AST-identical; still enforce owner size.
+    for owner in [
+        "libs/reporting/trade_report/section_seed_parts/commander.py",
+        "libs/reporting/trade_report/section_seed_parts/scanner.py",
+        "libs/reporting/trade_report/section_seed_parts/monitor.py",
+        "libs/reporting/trade_report/section_seed_parts/strategist.py",
+    ]:
+        loc = len(Path(owner).read_text(encoding="utf-8").splitlines())
+        assert loc <= 350, f"seed owner too large: {owner} {loc} LOC"
+        owners.add(owner)
     expected = 38
     assert total == expected, (total, expected)
     print(f"P1.5.2 OWNER PARITY PASS: {total} unchanged function ASTs in {len(owners)} <=350-LOC owners")

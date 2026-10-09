@@ -2273,3 +2273,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 **Tags:** BUGFIX · REFACTOR · TESTING
 
 - 물리적 LOC 상한 검사에서 AI 서비스 파일의 마지막 공백 줄 때문에 351 LOC가 검출됐습니다. 함수 AST는 그대로 보존하고 뒤쪽 공백만 삭제했습니다(351 → 347). 검사 기준을 완화하지 않았습니다.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Split Evidence and Local Verification Work Order
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · DOCUMENTATION · TESTING · QUALITY
+
+- P1.5.2 GPT 구현 분할 작업을 코드 SHA `4f291e9`로 동결해 검증 지시서를 만들었습니다. **26개 소형 Owner**, 38개 원본 함수 AST 동등성, GitHub Reporting 테스트 337+12 PASS가 확인됐습니다.
+- 다만 주요 façade와 800/700/400줄대 혼합 책임 함수, 로컬 실데이터/전체 회귀 테스트는 **미완료**이므로 P1.5.2의 최종 완료는 선언하지 않았습니다.
+- `work_orders/CURRENT.md`는 Claude/Codex가 코드 수정 없이 각각 로컬 실데이터·호출/계약/모듈 검증만 수행하도록 갱신했습니다. P1.5.3 자동 착수는 금지했습니다.
+- 검증 GitHub CI에서 P1.5.2 시작 커밋 대비 **실제로 수정된 파일만 ZIP**에 수록하게 했습니다.

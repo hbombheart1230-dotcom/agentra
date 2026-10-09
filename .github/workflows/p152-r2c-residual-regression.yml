@@ -65,8 +65,8 @@ jobs:
           protocol=Path("docs/refactor/P15_EXECUTION_PROTOCOL.md").read_text(encoding="utf-8")
           assert "docs/refactor/work_orders/CURRENT.md" in cl
           assert "docs/refactor/work_orders/CURRENT.md" in cx
-          assert "P15-R2-R0R1-001" in cur
-          assert "AUDIT/BEFORE CHARACTERIZATION ONLY" in cur
+          assert "P15-R2-GPT-VERIFY-002" in cur
+          assert "READ-ONLY LOCAL VERIFICATION" in cur
           assert "NO RUNTIME PYTHON EDITS" in cur
           assert "CODEX" in protocol and "CLAUDE" in protocol and "GPT_ACCEPTED" in protocol
           notes=json.loads(Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.json").read_text(encoding="utf-8"))
@@ -88,7 +88,7 @@ jobs:
         run: python -m pytest -q tests/test_trade_report_ai.py tests/test_trade_summary_symbol_metadata.py tests/test_reporting_provenance_preference.py tests/test_trade_report_ai_separated_adapter.py tests/test_run_ai_trade_report_batch.py tests/test_live_execution_bundle_report.py tests/test_live_execution_bundle_report_runtime_recovery.py tests/test_report_metadata_alignment.py tests/test_check_trade_report_runtime_regression.py tests/test_intraday_trade_reports.py tests/test_single_trade_report.py tests/test_symbol_trade_report.py tests/apps/api/test_trade_reports.py tests/test_m25_3_alert_reporting_closeout.py tests/test_trade_story_pipeline_enrichment.py tests/test_phase3_lifecycle_bundle.py
       - name: Helper-seam and UI patch-notes regression
         run: python -m pytest -q tests/test_p152_r2c_helper_seams.py tests/test_patch_notes_sync.py tests/apps/api/test_patch_notes.py
-      - name: Pack files changed in this commit only
+      - name: Pack only P1.5.2 files changed since pinned GPT baseline
         if: success()
         run: |
           python - <<'PY'
@@ -96,12 +96,12 @@ jobs:
           from pathlib import Path
           from zipfile import ZipFile, ZIP_DEFLATED
           files = subprocess.check_output(
-              ["git", "diff", "--name-only", "-z", "HEAD^", "HEAD"]
+              ["git", "diff", "--name-only", "-z", "2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c", "HEAD"]
           ).decode().split("\0")
           files = [p for p in files if p and Path(p).is_file()]
           assert files, "No tracked changed files"
           Path("branch_output").mkdir(exist_ok=True)
-          with ZipFile("branch_output/p15_reporting_changed_files.zip", "w", ZIP_DEFLATED) as out:
+          with ZipFile("branch_output/p152_refactor_modified_only.zip", "w", ZIP_DEFLATED) as out:
               for name in files:
                   out.write(name, arcname=name)
           print("ZIP ENTRIES:", *files, sep="\n- ")
@@ -110,7 +110,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: p15-reporting-changed-files
+          name: p152-only-modified-files
           retention-days: 14
           if-no-files-found: error
           path: branch_output/p15_reporting_changed_files.zip

@@ -1,50 +1,40 @@
-# P1.5 CURRENT Work Order — P15-R2-R0R1-001
+# P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: READY_FOR_LOCAL_BASELINE (NOT IMPLEMENTATION PASS)
+Status: READ-ONLY LOCAL VERIFICATION / P1.5.2 NOT CLOSED
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
-Observed remote source HEAD BEFORE this work-order-doc update: 6bdeb3ca783f99fcef2e1c0d048bf40623438490
-Frozen main baseline: 2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb
-Local HEAD: UNKNOWN — Claude must record and reconcile it WITHOUT reset/clean.
-Local primary workspace: C:\Agentra
-Work type: AUDIT/BEFORE CHARACTERIZATION ONLY. NO RUNTIME PYTHON EDITS IN THIS WORK ORDER.
+Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
+Original BEFORE code SHA: 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c
+Main frozen SHA: 2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb
+Local actual HEAD: NOT OBSERVED. Claude/Codex must reconcile without reset or Q12 cleanup.
+Primary local root: C:\Agentra
+Work type: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS; NO P1.5.3 IMPLEMENTATION.
 
-## Authoritative instructions
-
+## Read these files first
 - docs/refactor/P15_EXECUTION_PROTOCOL.md
 - docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md
 - docs/refactor/p1_5_reporting_implementation_packet_v1_2.md
-- docs/refactor/p1_5_reporting_implementation_packet_v1_1.md
+- docs/refactor/p1_5_2_gpt_implementation_progress_and_open_gates_2026-10-09.md
 - docs/refactor/p1_5_refactor_constitution.md
 - docs/refactor/p1_5_1_to_11_responsibility_alignment_v1_1.md
 
-## Objective
+## Why this order is NOT a completion certificate
+The GPT implementation already extracted 26 small Owner modules, and CI passes pinned AST equality of 38 moved functions and broad Reporting 337+12 tests. However top-level AI/Markdown/Story public facades and several high-LOC implementation functions still have unresolved responsibility/compatibility debt; real local data equivalence and full suite are unverified. P1.5.2 must not be labeled COMPLETE or next stage P1.5.3 begun without explicit separate approval.
 
-Prove the existing R2-A/B/C lineage is safe to CONTINUE rather than whole rollback. Produce a pinned local reporting BEFORE baseline and a complete owner/caller map for ONE first <=350-LOC read-only section extraction **for the NEXT** work order. Do NOT create new modules or alter runtime in this first work order.
+## Claude — local real-data verifier, no implementation
+1. Check actual C:\Agentra HEAD/branch/status, main ancestry and all worktrees. Preserve two Q12 dirty worktrees; stop on unexplained divergence.
+2. Read-only characterize user real local Reporting JSON/Markdown, source truth preference, sample output comparisons, LLM prompt/call counts/retry/timeout, unchanged import paths and patchable symbols against SHA 4f291e9a44739772cb9303c0b0f963fa16ad8feb.
+3. Run targeted local Reporting and safe broad regression in isolated test directories, preserve FAIL evidence bounded. Do not write any production report/data path or submit an order.
+4. Inventory remaining huge functions and owner/wrapper burden; do not implement or delete wrappers under this verifier-only order.
+5. Report exact SHA, commands, cases, output hashes, PASS/FAIL/NOT RUN and findings at docs/refactor/work_orders/evidence/P15-R2-GPT-VERIFY-002-CLAUDE.md. Evidence reports may be committed only after source work is complete, on refactor/p1.5.
 
-## Claude task — local C:\Agentra
+## Codex — independent source/consumer verifier, no implementation
+1. Independently inspect git diff 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c..4f291e9a44739772cb9303c0b0f963fa16ad8feb, all new Owner physical LOC and Python import/cycle/monkeypatch consumer graphs. Re-run `python -m scripts.refactor.p152_owner_parity` on the approved git tree.
+2. Verify that AST-equal functions still behave equivalently under old global patching contexts; inspect the phase-rewritten build_shared_summary_seed ordering, source precedence, exception behavior and hidden test coverage.
+3. Check exact test mappings and verify all remaining oversized facades/functions are marked OPEN and not called DONE; cross-check R6.2/Step5C/D/UEF/authority/source changes did not leak.
+4. Write independent PASS/PASS_WITH_FINDINGS/FAIL/BLOCKED report at docs/refactor/work_orders/evidence/P15-R2-GPT-VERIFY-002-CODEX.md with exact checked code SHA and NOT RUN local gates.
 
-1. Inspect branch, actual HEAD, status, main ancestry, git worktrees. Do not disturb two Q12 dirty worktrees. Abort on unexplained local divergence.
-2. Measure physical LOC, defs, public/private exports, patchable symbols, direct production/test imports/callers and dependencies for libs/reporting/trade_report/sections.py (remote observed 2,233 physical LOC) and related trade_report_ai.py façade (remote observed 3,039).
-3. Build one function-by-function owner/consumer ledger: current line number, KEEP/MOVE/WRAPPER/DEAD/SAFETY-LOCK, responsibility, proposed SINGLE owner and target <=350 LOC, side effects/LLM, monkeypatch binding and test evidence.
-4. Choose ONE smallest cohesive read-only section builder as candidate for NEXT tranche; name exact functions, destination module, LOC estimate, call-time patch compatibility and its direct golden tests. If no safe candidate, mark BLOCKED.
-5. Capture representative report JSON/Markdown/truth/provenance and prompt/retry/call-count BEFORE evidence using existing READ-ONLY real local report fixtures. Never regenerate a production artifact path, mutate broker or touch UEF production files.
-6. Run non-destructive relevant focused pytest with isolated temp output and write exact commands, pass/fail/skip totals; compare availability of historical 337+12 tests with local collection. If not run, explicitly state NOT RUN.
-7. Record all findings in the Claude evidence report. Commit only the evidence documentation and meaningful UI patch notes+daily patch as appropriate. Do not modify Python or fixtures.
-
-Claude report path: docs/refactor/work_orders/evidence/P15-R2-R0R1-001-CLAUDE.md
-
-## Codex task — independent local verification
-
-Read the exact SHA that Claude reports and independently reproduce the function/consumer/monkeypatch and local pytest evidence. Verify the proposed single owner is really independent, <=350 LOC projected and output/truth/LLM-safe; find hidden callers and any missing test categories. Do not change source or fix Claude's report silently. Record PASS / PASS_WITH_FINDINGS / FAIL / BLOCKED with actual executed checks and unresolved gates.
-
-Codex report path: docs/refactor/work_orders/evidence/P15-R2-R0R1-001-CODEX.md
-
-## Acceptance and stop criteria
-
-- Both reports cite pinned actual local and submitted SHAs, with no incorrect branch/worktree claims.
-- No runtime Python, test-fixture or production artifact mutation.
-- Full ledger, independent consumer/patch surface, BEFORE baseline with safe redacted evidence, test counts, proposed bounded <=350-LOC implementation scope.
-- No assertion of current local test PASS without an actual run; safety/UEF/Docker marked NOT RUN where applicable.
-- GPT reviews Codex verdict, records next decision; CURRENT.md not changed by Claude/Codex.
-- STOP on local dirty/unexpected branch, missing owner proof, real-order path, Q12 worktree interference, failed/non-equivalent baseline or unknown production-write risk.
+## Stop and next action
+- No implementation code changes permitted to either local agent under this work order.
+- GPT reviews the two reports, then either issues another P1.5.2 small Owner implementation order or declares P1.5.2 accepted only after all prior requirements and human safety approval. NO automatic P1.5.3 transition.
+- GitHub CI artifacts/ZIP must include only actual P1.5.2 modified files against 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c.

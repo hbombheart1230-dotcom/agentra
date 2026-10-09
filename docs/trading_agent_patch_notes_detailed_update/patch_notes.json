@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 151,
+  "entry_count": 152,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4241,6 +4241,34 @@
       "sources": [
         "docs/daily_patch/2026-10-09_p1_5_2_ai_service_loc_cap_fix.md",
         "libs/reporting/trade_report/services/ai_report.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Split Evidence and Local Verification Work Order",
+      "title": "Pin 26 small Reporting owners for local independent verification while retaining explicit P1.5.2 final blockers",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "DOCUMENTATION",
+        "TESTING",
+        "QUALITY"
+      ],
+      "summary": "Publish exact code SHA, original-vs-current owner sizes and unresolved owner/façade/local data gates, and route the next current work order to read-only Claude/Codex independent verification.",
+      "details": [
+        "GPT refactor slice implemented 26 new small owners and conserved 38 moved original function ASTs; generated seed rewrite needs independent semantic verification.",
+        "Remaining public AI/Markdown/Story façades at 3039/3043/948 LOC and big 1275 Markdown summary, 804 operator text, 835 Story assembly and 861 human payload modules block full P1.5.2 closure.",
+        "CURRENT.md changed from pre-work AUDIT-only instructions to read-only local verification of pinned code SHA 4f291e9; neither Claude nor Codex may silently implement or start P1.5.3.",
+        "CI now enforces size on all 26 owner modules and builds a ZIP containing only paths modified since original GPT before-code SHA 2fb4b8f.",
+        "No complete local real-data/LLM/UEF/Docker acceptance claimed and no main/production changes."
+      ],
+      "impact": "Verification handoff documentation/CI and UI patch-note routing only.",
+      "sources": [
+        "docs/refactor/p1_5_2_gpt_implementation_progress_and_open_gates_2026-10-09.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "scripts/refactor/p152_owner_parity.py",
+        "docs/daily_patch/2026-10-09_p1_5_2_gpt_implementation_verification_handoff.md"
       ],
       "status": "current"
     }
