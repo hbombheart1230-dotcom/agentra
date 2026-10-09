@@ -8,7 +8,8 @@ Original BEFORE code SHA: 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c
 Main frozen SHA: 2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb
 Local actual HEAD: NOT OBSERVED. Claude/Codex must reconcile without reset or Q12 cleanup.
 Primary local root: C:\Agentra
-Work type: GPT REMOTE NON-AUTHORITY REPORTING SMALL-OWNER IMPLEMENTATION + LOCAL READ-ONLY CLAUDE/CODEX VERIFICATION. NO P1.5.3 IMPLEMENTATION. Local Claude/Codex remain read-only under this order.
+Work type: GPT REMOTE NON-AUTHORITY REPORTING SMALL-OWNER IMPLEMENTATION + LOCAL READ-ONLY CLAUDE/CODEX VERIFICATION. NO P1.5.3 IMPLEMENTATION.
+Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. This restriction applies to local verifiers, not GPT's explicitly operator-authorized remote Reporting-only slices.
 
 ## Operator directive: GPT implementation must continue (2026-10-09)
 - User explicitly requested GPT to complete every feasible P1.5.2 Reporting source/test/CI/documentation task before local handoff; supersedes verifier-first stop for GPT itself only.
