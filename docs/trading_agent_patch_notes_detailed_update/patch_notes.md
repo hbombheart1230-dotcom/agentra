@@ -2248,3 +2248,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 - Reporting 서비스의 AI 생성 및 deterministic summary 두 함수를 각각 독립적인 350 LOC 이하 Owner로 옮겼습니다.
 - 기존 `trade_report/service.py`는 공개 import 호환성만 유지하며, 서비스 본문과 LLM 동작은 변경하지 않았습니다.
+
+---
+
+## 2026-10-09 · P1.5.2 Original Source AST Parity Gate
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · QUALITY
+
+- 분리된 Reporting 함수 38개의 AST를 시작 커밋 `2fb4b8f`의 원본 구현과 대조하고, 기존 import 재공개 동일성과 새 Owner의 350 LOC 제한을 검사하는 CI를 추가했습니다.
+- 실제 로컬 리포트 데이터/LLM/UEF 검증을 대신할 수는 없으며 별도 Codex 독립검증이 필요합니다.

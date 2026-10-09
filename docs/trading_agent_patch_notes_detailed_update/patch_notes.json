@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 148,
+  "entry_count": 149,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4171,6 +4171,31 @@
         "docs/daily_patch/2026-10-09_p1_5_2_service_owner_split_07.md",
         "libs/reporting/trade_report/services/ai_report.py",
         "libs/reporting/trade_report/services/trade_summary.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 Original Source AST Parity Gate",
+      "title": "Pin original R2 commit and verify 38 moved Reporting function bodies and 22 small owners",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "QUALITY"
+      ],
+      "summary": "Add a deterministic source AST parity guard comparing moved functions with their exact original bodies at the pinned pre-work HEAD, check old-module import identity and enforce <=350 LOC on every new implementation owner.",
+      "details": [
+        "Static gate maps 38 functions in 22 owner files back to baseline 2fb4b8f and checks AST equality, public import identity and physical owner LOC <=350.",
+        "CI fetches pinned baseline in the isolated runner, runs parity gate before Reporting 337-case and seam/UI 12-case matrices.",
+        "Common shared seed refactor is intentionally NOT in body-copy mapping because its function was intentionally decomposed, so functional regression tests remain primary evidence.",
+        "No trading/UEF/Executor behavior or production runtime touched. Local real-data/Codex audit remains outstanding."
+      ],
+      "impact": "CI/test verification tooling only.",
+      "sources": [
+        "scripts/refactor/p152_owner_parity.py",
+        ".github/workflows/p152-r2c-residual-regression.yml",
+        "docs/daily_patch/2026-10-09_p1_5_2_owner_parity_guard.md"
       ],
       "status": "current"
     }
