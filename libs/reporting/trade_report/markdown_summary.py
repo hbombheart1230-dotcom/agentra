@@ -9,6 +9,10 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional
 
 from .summary_parts.findings import collect_deterministic_summary_findings
 from .summary_parts.render_diagnostics import collect_render_diagnostics
+from .summary_input_parts.broker_alignment import build_broker_alignment
+from .summary_input_parts.market_and_strategy import build_market_and_strategy
+from .summary_input_parts.decision_flow import build_decision_flow
+
 
 from .summary_render_parts.overview import append_summary_overview
 from .summary_render_parts.market_news import append_summary_market_news
@@ -677,117 +681,26 @@ def build_trade_summary_input(report: Dict[str, Any], *, deps: Mapping[str, Any]
             "basis": "report_generation_time",
             "reporter_evaluation": _compact_section(reporter_eval, limit=6),
         },
-        "broker_alignment": {
-            "status": _metadata_value(broker_alignment.get("status")),
-            "generated_at": _metadata_value(broker_alignment.get("generated_at")),
-            "report_json_path": _metadata_value(broker_alignment.get("report_json_path")),
-            "account_snapshot_path": _metadata_value(broker_account_snapshot.get("path")),
-            "account_snapshot_status": _metadata_value(broker_account_snapshot.get("status")),
-            "account_snapshot_api_call_count": broker_account_snapshot.get("api_call_count"),
-            "account_snapshot_ok_count": broker_account_snapshot.get("ok_count"),
-            "account_snapshot_error_count": broker_account_snapshot.get("error_count"),
-            "local_total": broker_alignment_summary.get("local_total"),
-            "broker_total": broker_alignment_summary.get("broker_total"),
-            "matched_by_ord_no": broker_alignment_summary.get("matched_by_ord_no"),
-            "missing_in_local_total": broker_alignment_summary.get("missing_in_local_total"),
-            "missing_in_broker_total": broker_alignment_summary.get("missing_in_broker_total"),
-            "error": _metadata_value(broker_alignment.get("error")),
-        },
-        "market_and_strategy": {
-            "market_summary": _translate_text(market.get("summary")).strip(),
-            "vix": market.get("vix_level"),
-            "market_sentiment": _metadata_value(market.get("market_sentiment")),
-            "playbook": _playbook_label(_pick(market.get("playbook"), market.get("selected_playbook"))),
-            "risk_tone": _risk_mode_label(_pick(market.get("risk_tone"), trace_summary.get("risk_tone"), market.get("risk_mode"))),
-            "monitor_guidance": _metadata_value(_pick(trace_summary.get("monitor_guidance"), market.get("monitor_guidance"))),
-            "themes": [_theme_label(x) for x in _listify(market.get("themes")) if not _is_not_captured(x)],
-            "preferred_themes": [_theme_label(x) for x in _listify(market.get("preferred_themes")) if not _is_not_captured(x)],
-            "theme_source": _metadata_value(market.get("theme_source")),
-            "theme_source_status": _metadata_value(market.get("theme_source_status")),
-            "theme_strength_top_themes": [_theme_label(x) for x in _listify(market.get("theme_strength_top_themes")) if not _is_not_captured(x)],
-            "market_news_titles": _sample_news_titles(market.get("market_news_titles") or report.get("strategist_market_headlines"), limit=4),
-            "symbol_news_titles": _sample_news_titles_for_symbol(
-                symbol,
-                market.get("symbol_news_titles"),
-                report.get("strategist_symbol_headlines"),
-                market.get("candidate_news_titles"),
-                limit=4,
-            ),
-        },
-        "decision_flow": {
-            "scanner_rank": selection_rank,
-            "scanner_score": selection_score,
-            "scanner_chart_fit": scanner_chart_fit,
-            "scanner_chart_fit_score": scanner_chart_fit.get("score") if scanner_chart_fit else None,
-            "scanner_chart_fit_authority": scanner_chart_fit.get("authority") if scanner_chart_fit else "",
-            "scanner_rank_basis": (
-                "carryover_exit_no_same_day_entry"
-                if carryover_exit
-                else "recovered_partial_no_entry_evidence"
-                if recovered_partial_exit
-                else ("monitor_fallback_reassessment" if selection_fallback.get("used") else "scanner_rank")
-            ),
-            "selection_path": (
-                "carryover_exit"
-                if carryover_exit
-                else "recovered_partial_exit"
-                if recovered_partial_exit
-                else selection_fallback.get("selection_path") or _metadata_value(selection_trace.get("selection_path"))
-            ),
-            "scanner_top_pick_symbol": selection_fallback.get("scanner_top_pick_symbol"),
-            "monitor_fallback_reason": selection_fallback.get("reason"),
-            "selection_basis": (
-                "오버나이트/주말 이월 포지션 청산"
-                if carryover_exit
-                else ("보유/회수 포지션 청산" if recovered_partial_exit else _translated_metadata(selection.get("basis")))
-            ),
-            "selection_blocker": (
-                ""
-                if exit_only_report
-                else (
-                f"스캐너 상위 후보 {selection_fallback.get('scanner_top_pick_symbol')} 보류 후 재평가"
-                if selection_fallback.get("used")
-                else _first_matching_line(selection_texts + entry_texts, ["1순위", "top pick", "blocked", "막혔"])
-                )
-            ),
-            "entry_reason": (
-                "오늘 신규 진입 판단이 아니라 전일/주말 이월 포지션입니다."
-                if carryover_exit
-                else (_RECOVERED_PARTIAL_ENTRY_NOTE if recovered_partial_exit else _entry_reason_line(entry_texts))
-            ),
-            "entry_confidence": _entry_confidence_for_operator_summary(
-                entry_texts,
-                action=action_label,
-                buy_price=_pick(truth_price.get("broker_buy_price"), shared.get("broker_buy_price")),
-            )
-            if not exit_only_report
-            else "",
-            "entry_observation": entry_signal_snapshot,
-            "holding_duration": authoritative_hold_label or _pick(
-                shared.get("holding_duration"),
-                report.get("hold_duration"),
-                carryover_context.get("duration_label"),
-            ),
-            "exit_reason": exit_trigger_label,
-            "exit_trigger": exit_trigger_label,
-            "exit_trigger_basis": "monitor_signal_snapshot_not_realized_result",
-            "exit_result_note": (
-                "모니터 신호명과 별개로 Truth Surface 기준 실현 결과는 이익입니다."
-                if recovered_partial_exit and (_num_opt(pnl_pct) or 0.0) > 0.0
-                else ""
-            ),
-            "entry_execution_visibility": entry_execution_visibility,
-            "entry_watch_summary_lines": entry_watch_lines,
-            "recovered_partial_note": _RECOVERED_PARTIAL_EXIT_NOTE if recovered_partial_exit else "",
-            "carryover_note": "오버나이트/주말 이월 포지션 청산은 당일 신규 스캐너 선정 평가에서 제외합니다." if carryover_exit else "",
-            "carryover_context": carryover_context,
-            "exit_observation": exit_signal_snapshot,
-            "final_operator_summary": _authoritative_final_operator_summary(
-                report,
-                action=action_label,
-                fallback=_translate_text(final.get("summary")).strip(),
-            ),
-        },
+        "broker_alignment": build_broker_alignment(
+            _metadata_value=_metadata_value, broker_account_snapshot=broker_account_snapshot, broker_alignment=broker_alignment, broker_alignment_summary=broker_alignment_summary,
+        ),
+        "market_and_strategy": build_market_and_strategy(
+            _is_not_captured=_is_not_captured, _listify=_listify, _metadata_value=_metadata_value, _pick=_pick,
+            _playbook_label=_playbook_label, _risk_mode_label=_risk_mode_label, _sample_news_titles=_sample_news_titles, _sample_news_titles_for_symbol=_sample_news_titles_for_symbol,
+            _theme_label=_theme_label, _translate_text=_translate_text, market=market, report=report,
+            symbol=symbol, trace_summary=trace_summary,
+        ),
+        "decision_flow": build_decision_flow(
+            _RECOVERED_PARTIAL_ENTRY_NOTE=_RECOVERED_PARTIAL_ENTRY_NOTE, _RECOVERED_PARTIAL_EXIT_NOTE=_RECOVERED_PARTIAL_EXIT_NOTE, _authoritative_final_operator_summary=_authoritative_final_operator_summary, _entry_confidence_for_operator_summary=_entry_confidence_for_operator_summary,
+            _entry_reason_line=_entry_reason_line, _first_matching_line=_first_matching_line, _metadata_value=_metadata_value, _num_opt=_num_opt,
+            _pick=_pick, _translate_text=_translate_text, _translated_metadata=_translated_metadata, action_label=action_label,
+            authoritative_hold_label=authoritative_hold_label, carryover_context=carryover_context, carryover_exit=carryover_exit, entry_execution_visibility=entry_execution_visibility,
+            entry_signal_snapshot=entry_signal_snapshot, entry_texts=entry_texts, entry_watch_lines=entry_watch_lines, exit_only_report=exit_only_report,
+            exit_signal_snapshot=exit_signal_snapshot, exit_trigger_label=exit_trigger_label, final=final, pnl_pct=pnl_pct,
+            recovered_partial_exit=recovered_partial_exit, report=report, scanner_chart_fit=scanner_chart_fit, selection=selection,
+            selection_fallback=selection_fallback, selection_rank=selection_rank, selection_score=selection_score, selection_texts=selection_texts,
+            selection_trace=selection_trace, shared=shared, truth_price=truth_price,
+        ),
         "strategy_horizon": strategy_horizon_summary,
         "post_exit_shadow": post_exit_shadow_summary,
         "quant_tactic": _quant_tactic_surface_impl(report),

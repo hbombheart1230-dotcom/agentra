@@ -2483,3 +2483,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 보고서 개요·시장/뉴스·매매 결정·최종 판단을 4개 Markdown Owner로 분리해 `markdown_summary.py` **1,145 → 827 LOC**로 감소했습니다.
 - 6개 원본 출력 SHA-256 골든을 CI에 고정하고 새 Owner 19개 크기/의존성 검사를 추가했습니다. 실거래 보고서 검증 전에는 **P1.5.2 OPEN**.
 - 근거: `docs/daily_patch/2026-10-09_p1_5_2_markdown_render_section_owners_22.md`.
+
+---
+
+## 2026-10-09 · P1.5.2 GPT Summary Input Contract Owners 23
+**Stage:** Architecture and Maintainability  
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- Broker alignment/Market & Strategy/Decision Flow 3개 출력 딕셔너리를 전용 Owner로 분리하여 `markdown_summary.py` 827 → 740 LOC.
+- 원본 계약 AST와 6개 JSON SHA-256 골든 동일성 검증 추가, 22개 Owner DAG·크기 체크. 로컬 원천 데이터 검증 전이므로 **P1.5.2 OPEN**.
+- 근거: `docs/daily_patch/2026-10-09_p1_5_2_summary_input_contract_owners_23.md`.

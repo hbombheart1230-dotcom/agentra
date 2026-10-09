@@ -111,3 +111,9 @@ User-local `C:\Agentra` real report byte/schema equality, LLM prompt/call/retry 
 ## 2026-10-09 — GPT Markdown Render Section Owner 22
 
 Refactored output-only Markdown blocks into Owners (98, 93, 144, 90 LOC). `markdown_summary.py` 1145 -> 827 LOC. Six original SHA-256 byte goldens and extended 19-Owner cycle/import/size guard are in CI; confirm remote CI after commit. Local real reports, LLM prompt/retry, full-repo baseline and independent Codex/Claude NOT RUN. No authority/UEF/R6.2/Docker changes; P1.5.2 OPEN.
+
+---
+
+## 2026-10-09 — GPT Summary Input Contract Owners 23
+
+Extracted the unchanged broker alignment, market/strategy and decision-flow dicts into bounded Owners (26, 34, 92 LOC). `markdown_summary.py` now 740 LOC. Six pre-split JSON SHA-256 deterministic fixture goldens and 22-Owner DAG/size CI checks. CI needs PASS confirmation. C:\\Agentra real data, full suite, LLM prompt/call/retry and independent Codex/Claude NOT RUN; P1.5.2 remains OPEN, P1.5.3 not authorized.

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 171,
+  "entry_count": 172,
   "entries": [
     {
       "date": "2026-09-08",
@@ -4733,6 +4733,30 @@
       "sources": [
         "docs/daily_patch/2026-10-09_p1_5_2_markdown_render_section_owners_22.md",
         "tests/test_p152_markdown_render_section_owners.py",
+        ".github/workflows/p152-r2c-residual-regression.yml"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-09",
+      "version": "P1.5.2 GPT Summary Input Contract Owners 23",
+      "title": "Separate canonical summary-input broker/market/decision payloads without schema changes",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Three original output mapping expressions moved verbatim into bounded read-only owners, with pinned six-case JSON parity goldens.",
+      "details": [
+        "Markdown summary 827 -> 740 LOC; new Owner LOC 26/34/92.",
+        "Canonical schema, market/selection/truth provenance and LLM hard constraint dict preserved. DAG/size gate 19->22 Owners.",
+        "Actual Windows report/LLM and independent audits NOT RUN; P1.5.2 OPEN."
+      ],
+      "impact": "Explicitly owns summary input contracts without changing trading or evidence authority.",
+      "sources": [
+        "docs/daily_patch/2026-10-09_p1_5_2_summary_input_contract_owners_23.md",
+        "tests/test_p152_summary_input_part_owners.py",
         ".github/workflows/p152-r2c-residual-regression.yml"
       ],
       "status": "current"
