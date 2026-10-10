@@ -134,7 +134,7 @@ jobs:
                   out.write(name, arcname=name)
           print("ZIP ENTRIES:", *files, sep="\n- ")
           PY
-      - name: Pack only the latest commit's modified files
+      - name: Pack only Owner37 tranche changed files
         if: success()
         run: |
           python - <<'PY'
@@ -142,21 +142,21 @@ jobs:
           from pathlib import Path
           from zipfile import ZipFile, ZIP_DEFLATED
           changed = subprocess.check_output(
-              ["git", "diff", "--name-only", "-z", "HEAD^", "HEAD"]
-          ).decode().split("\\0")
+              ["git", "diff", "--name-only", "-z", "ef22bec761d7f2b01762cb17e3c6523b9df8040c", "HEAD"]
+          ).decode().split("\0")
           changed = [p for p in changed if p and Path(p).is_file()]
           assert changed, "No latest-commit changed files"
           Path("branch_output").mkdir(exist_ok=True)
-          with ZipFile("branch_output/p152_latest_commit_modified_only.zip", "w", ZIP_DEFLATED) as out:
+          with ZipFile("branch_output/p152_owner37_modified_only.zip", "w", ZIP_DEFLATED) as out:
               for p in changed:
                   out.write(p, arcname=p)
-          print("LATEST COMMIT CHANGED FILES:", len(changed))
+          print("OWNER37 TRANCHE CHANGED FILES:", len(changed))
           PY
-      - name: Upload latest-commit modified-only ZIP
+      - name: Upload Owner37 modified-only ZIP
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: p152-latest-commit-modified-only
+          name: p152-owner37-modified-only
           retention-days: 14
           if-no-files-found: error
           path: branch_output/p152_latest_commit_modified_only.zip
