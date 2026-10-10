@@ -2662,3 +2662,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 근거: `docs/daily_patch/2026-10-10_p1_5_2_markdown_news_headlines_owner_38.md`.
 - 최종 원격 검증 [38025461656](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38025461656) **SUCCESS**: Reporting 337 + Helper/UI/Owner 286 = 623 PASS. 최초 실패는 테스트의 monkeypatch 해제 누락이었으며 테스트에서만 수정했습니다.
 - 증거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER38-REMOTE-CI.md`; 로컬 독립 검증 지시서: `docs/refactor/work_orders/P15_R2_OWNER38_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`.
+
+---
+
+## 2026-10-10 · P1.5.2 통합 검증·종료 게이트 003
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · DOCUMENTATION · SAFETY
+
+- Owner 38에서 추가 소형 분리를 중단하고 실제 결과 동등성·검증 부채 해소를 우선합니다. 변경된 Reporting 실행 코드 없이 37개 Owner 크기와 436개 공개 ABI를 확인하는 정적 통합 스냅샷을 도입했습니다.
+- 기존 원격 Reporting 회귀 외에 Reporter/Node/일별 LLM(mock)/운영 리포트 테스트를 별도 CI에서 검증하도록 확장했습니다. 정확한 결과는 CI 로그로 확정하며 로컬 실데이터 성공으로 표기하지 않습니다.
+- GitHub-only 성공만으로는 P1.5.2를 종료할 수 없으며 `C:\\Agentra` 실데이터 JSON/Markdown 바이트 비교·LLM 프롬프트·전체 pytest·Claude와 Codex 독립 검증은 **NOT RUN**입니다.
+- P1.5.2 OPEN, P1.5.3 미착수. 원본 동결 Q12/UEF/R6.2/Step5C/D/실거래 및 Docker 변경 없음.
+- 근거: `docs/daily_patch/2026-10-10_p152_integration_closeout_003.md`, `scripts/refactor/p152_integration_acceptance.py`.

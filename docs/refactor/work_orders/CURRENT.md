@@ -1,6 +1,6 @@
-# P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
+# P1.5 CURRENT Work Order — P15-R2-GPT-CLOSEOUT-003
 
-Status: GPT REMOTE OWNER38 CI PASS (337 REPORTING + 286 SEAM/UI/OWNER); 37 SMALL OWNERS + 436 PUBLIC ABI/SCOPE GUARD; LOCAL CLAUDE+CODEX NOT RUN; P1.5.2 OPEN; NO P1.5.3
+Status: P1.5.2 INTEGRATION CLOSEOUT IN PROGRESS; NEW OWNER EXTRACTION PAUSED; 37 SMALL OWNERS + 436 PUBLIC ABI; USER-LOCAL CLAUDE+CODEX NOT RUN; P1.5.2 OPEN; P1.5.3 BLOCKED
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -8,8 +8,20 @@ Original BEFORE code SHA: 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c
 Main frozen SHA: 2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb
 Local actual HEAD: NOT OBSERVED. Claude/Codex must reconcile without reset or Q12 cleanup.
 Primary local root: C:\Agentra
-Work type: GPT REMOTE NON-AUTHORITY REPORTING SMALL-OWNER IMPLEMENTATION + LOCAL READ-ONLY CLAUDE/CODEX VERIFICATION. NO P1.5.3 IMPLEMENTATION.
+Work type: GPT remote integration tests and acceptance inventory ONLY + local READ-ONLY Claude/Codex independent real-data and full-suite validation. Do not continue extracting minor Owners; NO P1.5.3.
 Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. This restriction applies to local verifiers, not GPT's explicitly operator-authorized remote Reporting-only slices.
+
+## Active P1.5.2 Integration Closeout Order (2026-10-10)
+- User approved move from incremental Owner38 extraction to INTEGRATED VERIFICATION. No Owner39+ extraction and no production/authority source edits in this order. Historical implementation orders below are retained as evidence, not new instructions.
+- Remote GPT: add only reporting-adjacent offline regression tests, gate inventory, CI and patch notes. Verify exactly which tests pass and which local gates are NOT RUN; check immutable 436 façade ABI and 37 bounded Owners.
+- Local Claude: READ-ONLY compare user-local actual reports from before/after using frozen copies and SHA-256, source truth precedence, output Markdown/JSON, captured LLM prompt, count/retry/timeout; verify worktree/Q12 safety. Report PASS/FAIL and evidence SHA, **do not run orders or change runtime source**.
+- Local Codex: INDEPENDENT READ-ONLY consumer/monkeypatch/ABI/Owner DAG/scope audit and complete safe repo pytest with production outputs isolated; report findings and non-executed gates separately.
+- GPT/human: evaluate reports; do not mark P1.5.2 COMPLETE or start P1.5.3 until local real data, full safe suite, independent audit and explicit human acceptance.
+- Remote evidence machine JSON: `branch_output/p152_integration_acceptance_snapshot.json` in GitHub Actions artifact. Generation means REMOTE SOURCE INVENTORY ONLY, never local approval.
+- Pinned source implementation SHA: `80f56edfbbda8d336b09e7c5f0b18069d77785b9`; entry baseline `b59e4bd0d4c7d5141ed766315148ed6c6daba323`; local root `C:\\Agentra` remains inaccessible to remote GitHub tools.
+- Local checklists: `docs/refactor/work_orders/P15_R2_OWNER38_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`. New evidence files must be append-only and SHA-specific.
+
+## HISTORICAL context — superseded by integration closeout order above
 
 ## Operator directive: GPT implementation must continue (2026-10-09)
 - User explicitly requested GPT to complete every feasible P1.5.2 Reporting source/test/CI/documentation task before local handoff; supersedes verifier-first stop for GPT itself only.
