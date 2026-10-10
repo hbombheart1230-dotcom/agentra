@@ -18,3 +18,8 @@ CI results for this tranche must be added to separate follow-up evidence after t
 - Failure groups: CI-wide DRY_RUN masked expected fake LLM paths (3), old AST commits not fetched in separate job (3), Windows style path and process-lock assertions on Linux (5), API route APIRoute emptiness (1). These are diagnostic categories, NOT independently confirmed as pre-existing.
 - Correct CI harness only: remove global DRY_RUN, retain TRADING_MODE=mock and blank credentials; fetch pinned AST commits before broad run; raise maxfail to 25 to expose additional failures. Add independent API route test to test cross-test contamination. Do NOT alter production app/locking/path/trading code.
 - Full Windows regression, actual C:\\Agentra snapshots and independent verifiers still NOT RUN.
+
+## Remote 004 second sweep (still FAIL)
+- [38035913347](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38035913347): 4,607 passed / 25 failed / 25 skipped / 9 deselected after maxfail25; isolated API route test also failed. LLM mock and missing AST checkout failures from the first run disappeared after CI-only fix.
+- Scoped failure analysis `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-SECOND.md`. Original/updated source file blob equality confirmed for observed API, lock, path, Step5B, Scanner, UEF5 modules; baseline runtime equality remains unproven.
+- Next run remove only maxfail early abort to inventory full remaining eligible Linux tests without changing any production safety code.

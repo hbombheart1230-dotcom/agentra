@@ -243,7 +243,7 @@ jobs:
       - name: Repo-wide offline pytest excluding declared heavy, docker and benchmark
         run: |
           mkdir -p branch_output
-          python -m pytest -q tests -m "not heavy and not docker and not benchmark" --maxfail=25 --disable-warnings --junitxml=branch_output/p152_repo_safe_sweep_junit.xml
+          python -m pytest -q tests -m "not heavy and not docker and not benchmark" --disable-warnings --junitxml=branch_output/p152_repo_safe_sweep_junit.xml
       - name: Isolate broad-sweep API route failure in fresh pytest process
         if: always()
         run: python -m pytest -q tests/apps/api/test_isolation.py::test_api_routes_are_get_only

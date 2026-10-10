@@ -2690,3 +2690,5 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 근거: `docs/daily_patch/2026-10-10_p152_prelocal_remote_exhaustive_004.md`.
 - 넓은 테스트 첫 실행 [38035524693](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38035524693): **2,114 PASS / 12 FAIL / 9 deselected**, 즉 전체 PASS 아님. CI의 전역 DRY_RUN 영향·이전 커밋 미확보·Linux/Windows 환경 차이·API route 검증 실패를 분리 조사 중.
 - 원격 증거: `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-INITIAL.md`. 생산 실행 코드는 건드리지 않고 CI 설정만 교정.
+- 두 번째 원격 광범위 테스트 [38035913347](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38035913347): **4,607 PASS / 25 FAIL / 25 SKIP / 9 DESELECTED**, 25 실패 시 중단. 모의 LLM/과거 AST 누락은 해결됐지만 Scanner·보호된 Step5B·로컬 UEF fixture·Windows 경로 등 실패를 보존합니다.
+- 전체 결과 관측을 위해 조기 종료 `--maxfail`만 해제합니다. 근거 `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-SECOND.md`.

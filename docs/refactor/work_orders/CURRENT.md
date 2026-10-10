@@ -11,6 +11,11 @@ Primary local root: C:\Agentra
 Work type: GPT remote integration tests and acceptance inventory ONLY + local READ-ONLY Claude/Codex independent real-data and full-suite validation. Do not continue extracting minor Owners; NO P1.5.3.
 Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. This restriction applies to local verifiers, not GPT's explicitly operator-authorized remote Reporting-only slices.
 
+## Broad remote sweep 004 second diagnostic and all-eligible follow-up
+- https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38035913347 — selected CI PASS; separate repo-wide Linux mock CI **4,607 passed / 25 failed / 25 skipped / 9 deselected**, stopped by --maxfail25. Standalone API get-only assertion FAILED. See `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-SECOND.md`.
+- Measured untouched original source+test Git blobs for API, closeout, market-data, operator UI, Scanner rank, Step5B and UEF5. Failed tests are not recategorized PASS merely because code was unchanged.
+- Next action: remove early abort ONLY for repo-wide offline job (no real credentials), record all remaining failures and missing fixture groups. Local audit remains deferred; no main merge or P1.5.3.
+
 ## Broad remote sweep 004 diagnostic results and CI harness repair
 - CI 38035524693 primary selected regression PASS, broad non-heavy Linux suite **2,114 PASS + 12 FAIL before stop**. This is not a complete repository PASS.
 - Diagnosed likely CI env/pinned history factors and Windows-specific lock/path tests, plus API route test to isolate. Evidence: `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-INITIAL.md`. Rerun CI with no global DRY_RUN, pinned AST fetch, API isolation. Do NOT mislabel non-Reporting failures as P1.5.2 code defects or as resolved.
