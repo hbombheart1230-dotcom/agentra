@@ -5122,7 +5122,7 @@
         "docs/daily_patch/2026-10-10_p1_5_2_ai_duration_language_owner_37.md",
         "tests/test_p152_ai_duration_language_owner.py"
       ],
-      "status": "in_progress"
+      "status": "current"
     }
   ]
 }
