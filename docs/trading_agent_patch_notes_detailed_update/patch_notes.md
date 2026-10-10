@@ -2660,3 +2660,5 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - AST/21건 합성 결과/호출시점 monkeypatch, 37 Owner DAG/크기, 436개 façade 공개 함수 불변 검증을 CI에 추가했습니다.
 - 실데이터·LLM 프롬프트·전체 pytest·Claude/Codex 독립 검증 전까지 **P1.5.2 OPEN**, P1.5.3 미착수. 주문/UEF/R6.2/Step5C/D/Docker 변경 없음.
 - 근거: `docs/daily_patch/2026-10-10_p1_5_2_markdown_news_headlines_owner_38.md`.
+- 최종 원격 검증 [38025461656](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38025461656) **SUCCESS**: Reporting 337 + Helper/UI/Owner 286 = 623 PASS. 최초 실패는 테스트의 monkeypatch 해제 누락이었으며 테스트에서만 수정했습니다.
+- 증거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER38-REMOTE-CI.md`; 로컬 독립 검증 지시서: `docs/refactor/work_orders/P15_R2_OWNER38_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`.

@@ -5140,12 +5140,15 @@
       "details": [
         "8 pinned original function-body AST checks; 21 synthetic output and call-time helper-patching checks.",
         "209 Markdown Clean and 436 global Reporting facade names/signatures preserved; 37 small Owner DAG/size guard.",
-        "Owner38-only ZIP added to CI; stage acceptance remains gated by actual C:\\Agentra read-only real reports, full suite, LLM equality and independent verification."
+        "Owner38-only ZIP added to CI; stage acceptance remains gated by actual C:\\Agentra read-only real reports, full suite, LLM equality and independent verification.",
+        "GitHub Actions 38025461656 SUCCESS: 337 Reporting + 286 helper/owner/UI PASS; one initial test monkeypatch isolation failure repaired without runtime change. Production evidence remains NOT RUN."
       ],
       "impact": "Reduce news narrative logic in the large Markdown compatibility facade without changing symbol or report truth behavior.",
       "sources": [
         "docs/daily_patch/2026-10-10_p1_5_2_markdown_news_headlines_owner_38.md",
-        "tests/test_p152_markdown_clean_news_headlines_owner.py"
+        "tests/test_p152_markdown_clean_news_headlines_owner.py",
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER38-REMOTE-CI.md",
+        "docs/refactor/work_orders/P15_R2_OWNER38_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md"
       ],
       "status": "current"
     }

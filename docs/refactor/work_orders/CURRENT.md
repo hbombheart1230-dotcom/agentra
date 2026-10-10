@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-VERIFY-002
 
-Status: GPT REMOTE OWNER 36 CI PASS (337 REPORTING + 234 SEAM/UI/OWNER); 35 SMALL OWNERS + PUBLIC ABI/SCOPE GUARD; LOCAL CLAUDE+CODEX NOT RUN; P1.5.2 OPEN; NO P1.5.3
+Status: GPT REMOTE OWNER38 CI PASS (337 REPORTING + 286 SEAM/UI/OWNER); 37 SMALL OWNERS + 436 PUBLIC ABI/SCOPE GUARD; LOCAL CLAUDE+CODEX NOT RUN; P1.5.2 OPEN; NO P1.5.3
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -146,5 +146,11 @@ The GPT implementation already extracted 26 small Owner modules, and CI passes p
 
 ## GPT Owner38 — Markdown Clean news headline-only extraction (2026-10-10)
 - Pinned previous code SHA `0409687aa76e195bd001d7756419b86b9580c531`. Eight report-only news headlines, ticker matching, mismatch bullet and linkage label ASTs moved to <=350 LOC small Owner, maintaining 209/436 original façade callables and helper monkeypatch references.
-- New Owner count 37, pinned AST and 21 synthetic fixtures, changed-files-only Owner38 ZIP. Remote CI initially PENDING.
+- New Owner count 37, pinned AST and 21 synthetic fixtures, changed-files-only Owner38 ZIP. Remote CI SUCCESS at CODE SHA `80f56edfbbda8d336b09e7c5f0b18069d77785b9`, run `38025461656`: Reporting 337 PASS + Seam/UI/Owner 286 PASS; evidence: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER38-REMOTE-CI.md`. Latest local checklist: `docs/refactor/work_orders/P15_R2_OWNER38_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`.
 - Local C:\Agentra real report/LLM/full suite and separate Claude/Codex read-only verification NOT RUN. P1.5.2 OPEN; no main merge or P1.5.3.
+
+
+## GPT Owner38 remote CI acceptance (2026-10-10)
+- CODE SHA `80f56edfbbda8d336b09e7c5f0b18069d77785b9`: [CI run 38025461656](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38025461656) **SUCCESS**; Reporting **337** and Helper/UI/Owner **286** PASS. Owner38 news headline parity 8 ASTs/21 historical-result inputs and patchable globals; 37 new Owners <=350 LOC, 436 public signatures stable, reporting-only modified-path guard PASS.
+- Failure 38025389102 (337 PASS + 285 PASS + one Owner38 test monkeypatch self-isolation FAIL) repaired in `80f56edfbbda8d336b09e7c5f0b18069d77785b9` by restoring the patched function before subsequent assertion; no runtime source fix after initial Owner38 commit `67a655e9`.
+- Immutable real data output, LLM prompt/timeout/retry and full test baseline at C:\Agentra and separate Claude/Codex independent read-only reviews are **NOT RUN**. **P1.5.2 OPEN**, P1.5.3 NOT AUTHORIZED, no main merge. See `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER38-REMOTE-CI.md` and `docs/refactor/work_orders/P15_R2_OWNER38_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`.
