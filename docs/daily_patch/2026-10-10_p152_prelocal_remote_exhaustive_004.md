@@ -23,3 +23,9 @@ CI results for this tranche must be added to separate follow-up evidence after t
 - [38035913347](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38035913347): 4,607 passed / 25 failed / 25 skipped / 9 deselected after maxfail25; isolated API route test also failed. LLM mock and missing AST checkout failures from the first run disappeared after CI-only fix.
 - Scoped failure analysis `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-SECOND.md`. Original/updated source file blob equality confirmed for observed API, lock, path, Step5B, Scanner, UEF5 modules; baseline runtime equality remains unproven.
 - Next run remove only maxfail early abort to inventory full remaining eligible Linux tests without changing any production safety code.
+
+## Full remote-eligible Linux sweep without maxfail (NOT PASS)
+- https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38036400641: **4,919 PASS / 41 FAIL / 2 ERROR / 25 SKIP / 9 DESELECTED**, and independent API route test FAIL. Full evidence `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md`.
+- Provenance notes: Linux/Windows path/strict lock, scanner runner-up rank, disallowed live-broker mock tests, missing canonical UEF report fixtures and UEF5 registry static assertions. None silently waived. No runtime trading code changes.
+- The additional broad Linux sweep is retained as an explicit manual CI diagnostic; avoid automatically making subsequent documentation commits red. Add a separate Windows GitHub-hosted contract test for OS-dependent failures; not equivalent to `C:\\Agentra`.
+- ZIP's pinned change baseline moved to pre-user-turn `4db23efbc69c176d0901bf8f4a7dbc9f6d234bf8` so only files modified after this GPT work began are packaged.

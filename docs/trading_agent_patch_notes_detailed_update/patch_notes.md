@@ -2692,3 +2692,6 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 원격 증거: `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-INITIAL.md`. 생산 실행 코드는 건드리지 않고 CI 설정만 교정.
 - 두 번째 원격 광범위 테스트 [38035913347](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38035913347): **4,607 PASS / 25 FAIL / 25 SKIP / 9 DESELECTED**, 25 실패 시 중단. 모의 LLM/과거 AST 누락은 해결됐지만 Scanner·보호된 Step5B·로컬 UEF fixture·Windows 경로 등 실패를 보존합니다.
 - 전체 결과 관측을 위해 조기 종료 `--maxfail`만 해제합니다. 근거 `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-SECOND.md`.
+- 조기 중단 없는 원격 Linux 회귀 [38036400641](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38036400641): **4,919 PASS / 41 FAIL / 2 ERROR / 25 SKIP / 9 DESELECTED**. 원격 전체 PASS로 오인하지 않으며 결과를 보존합니다.
+- Windows 호스팅 테스트를 추가해 경로·락·API·Scanner 문제를 OS별로 독립 확인합니다. 실거래 실행과 사용자의 실제 로컬 데이터는 사용하지 않습니다.
+- 이번 사용자 요청 시작 시점 SHA `4db23efbc69c176d0901bf8f4a7dbc9f6d234bf8` 이후 변경된 파일만 ZIP으로 묶도록 범위를 교정했습니다. 원격 분석 증거 `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md`.

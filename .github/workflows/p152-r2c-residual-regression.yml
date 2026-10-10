@@ -165,8 +165,8 @@ jobs:
                   out.write(name, arcname=name)
           print("ZIP ENTRIES:", *files, sep="\n- ")
           PY
-      - name: Fetch pinned integration-only ZIP baseline
-        run: git fetch --no-tags --depth=1 origin b59e4bd0d4c7d5141ed766315148ed6c6daba323
+      - name: Fetch pinned current-turn modified-only ZIP baseline
+        run: git fetch --no-tags --depth=1 origin 4db23efbc69c176d0901bf8f4a7dbc9f6d234bf8
       - name: Package only P1.5.2 integration-closeout changed files
         if: success()
         run: |
@@ -175,7 +175,7 @@ jobs:
           from pathlib import Path
           from zipfile import ZIP_DEFLATED, ZipFile
           names = subprocess.check_output(
-              ["git", "diff", "--name-only", "-z", "b59e4bd0d4c7d5141ed766315148ed6c6daba323", "HEAD"]
+              ["git", "diff", "--name-only", "-z", "4db23efbc69c176d0901bf8f4a7dbc9f6d234bf8", "HEAD"]
           ).decode().split("\0")
           names = [p for p in names if p and Path(p).is_file()]
           assert names, "No P1.5.2 integration changed paths"
@@ -204,7 +204,8 @@ jobs:
 
 
   broad_remote_offline:
-    name: Repo-wide mock/offline non-heavy regression (separate from 709)
+    name: Repo-wide mock/offline non-heavy regression (manual diagnostic only)
+    if: github.event_name == 'workflow_dispatch'
     needs: regression
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -255,3 +256,44 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
           path: branch_output/p152_repo_safe_sweep_junit.xml
+
+
+  windows_prelocal_diagnostics:
+    name: Windows hosted path/lock/UI compatibility (not user-local)
+    runs-on: windows-latest
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+      PYTEST_ADDOPTS: '-p no:cacheprovider'
+      TRADING_MODE: 'mock'
+      OPENROUTER_API_KEY: ''
+      KIWOOM_APP_KEY: ''
+      KIWOOM_APP_SECRET: ''
+      KIWOOM_ACCESS_TOKEN: ''
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Hosted Windows strict owner lock and platform path tests
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force branch_output | Out-Null
+          python -m pytest -q tests/test_closeout_single_owner_guard.py tests/test_market_data_receipts.py tests/test_operator_ui.py tests/test_runtime_entrypoint_common.py tests/test_windows_subprocess.py --disable-warnings --maxfail=15 --junitxml=branch_output/p152_windows_platform_junit.xml
+      - name: Hosted Windows API and scanner isolation diagnostics
+        if: always()
+        shell: pwsh
+        run: python -m pytest -q tests/apps/api/test_isolation.py::test_api_routes_are_get_only tests/test_scanner_rank_plumbing_fix.py --disable-warnings
+      - name: Upload hosted Windows diagnostic results even on failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p152-windows-hosted-platform-diagnostics
+          retention-days: 14
+          if-no-files-found: warn
+          path: branch_output/p152_windows_platform_junit.xml

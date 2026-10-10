@@ -21,6 +21,13 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - Diagnosed likely CI env/pinned history factors and Windows-specific lock/path tests, plus API route test to isolate. Evidence: `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-INITIAL.md`. Rerun CI with no global DRY_RUN, pinned AST fetch, API isolation. Do NOT mislabel non-Reporting failures as P1.5.2 code defects or as resolved.
 - Remain in GPT REMOTE-FIRST phase, local Claude/Codex PAUSED. No runtime changes, no P1.5.3.
 
+## GPT prelocal exhaustive Linux CI and Windows-hosted final check (2026-10-10)
+- Linux exhaustive eligible sweep https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38036400641: **4,919 PASS / 41 FAIL / 2 setup errors / 25 SKIP / 9 DESELECTED**. This is NOT a passing repo-wide suite; original 709 selected Reporting checks remain green. Evidence `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md`.
+- Native `C:\\Agentra` real report/LLM parity, full Windows baseline and independent Claude/Codex remain NOT RUN. Current owner38 Reporting source frozen.
+- Additional GitHub-hosted Windows path/strict-lock/API/scanner test job is allowed with mock and no credentials, still NOT local acceptance. Broad unsafe/missing-fixture Linux diagnostics are manual-only after this snapshot, avoiding repetitive misleading red on unrelated documentation pushes.
+- Modified-only ZIP against user-turn starting SHA `4db23efbc69c176d0901bf8f4a7dbc9f6d234bf8`, NOT earlier Owner38 tranche. UI patch notes updated.
+- No Scanner/UEF/R6.2/Step5C/D/Executor/Supervisor/Docker/production files touched. P1.5.2 OPEN; no P1.5.3.
+
 ## Operator update — GPT exhaust remote before local (2026-10-10)
 - User explicitly postpones local Claude/Codex checks until GPT completes feasible remote checks. Do not request local handoff as the next step while remote CI/source inventory and unresolved issues remain.
 - No further tiny Owner extraction, no runtime/execution/authority code changes, no main merge, no P1.5.3.

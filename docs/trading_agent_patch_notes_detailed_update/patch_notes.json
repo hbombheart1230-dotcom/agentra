@@ -5198,7 +5198,9 @@
         "Add guarded separate CI run for repo-wide non-heavy/non-Docker/non-benchmark tests with mock/DRY_RUN and no trading credentials; report failures rather than masking them.",
         "Retain original 709 selected smoke suite and user-local acceptance gates. Broad CI is not production-real-data proof.",
         "First Linux repo-wide sweep on CI 38035524693: 2,114 passed, 12 failed, 9 deselected before maxfail; broad job FAILED while focused regression passed. CI environment/pinned SHA and platform conditions under investigation.",
-        "Second broad Linux sweep CI 38035913347: 4607 passed, 25 failed, 25 skipped, 9 deselected until maxfail=25. Mock LLM/AST shallow fetch issues fixed; remaining environment, Windows-path, scanner, Step5B and UEF contract failures preserved."
+        "Second broad Linux sweep CI 38035913347: 4607 passed, 25 failed, 25 skipped, 9 deselected until maxfail=25. Mock LLM/AST shallow fetch issues fixed; remaining environment, Windows-path, scanner, Step5B and UEF contract failures preserved.",
+        "Exhaustive eligible Linux offline CI 38036400641: 4919 passed, 41 failed, 2 errors, 25 skipped, 9 deselected; no false PASS, no production authority changes. Windows-hosted mock platform isolation scheduled separately.",
+        "Changed-file ZIP baseline fixed to pre-user-turn 4db23efb; recurring broad Linux diagnostic made manual-only after failure inventory."
       ],
       "impact": "Reduce P1.5.2 remaining debt through better evidence instead of repetitive tiny Owner extraction.",
       "sources": [
@@ -5206,7 +5208,8 @@
         "scripts/refactor/p152_prelocal_consumer_debt.py",
         "tests/test_p152_prelocal_consumer_debt.py",
         "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-INITIAL.md",
-        "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-SECOND.md"
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-SECOND.md",
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md"
       ],
       "status": "current"
     }
