@@ -159,7 +159,7 @@ jobs:
           name: p152-owner37-modified-only
           retention-days: 14
           if-no-files-found: error
-          path: branch_output/p152_latest_commit_modified_only.zip
+          path: branch_output/p152_owner37_modified_only.zip
       - name: Upload changed-files ZIP only
         if: success()
         uses: actions/upload-artifact@v4
