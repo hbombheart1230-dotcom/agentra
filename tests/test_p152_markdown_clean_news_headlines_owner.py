@@ -64,6 +64,7 @@ def test_original_synthetic_results(name,args,kwargs):
     assert getattr(api,name)(*args,**kwargs) == original[name](*args,**kwargs)
 
 def test_call_time_facade_patch_seams(monkeypatch):
+    original_strip = api._strip_html_tags
     monkeypatch.setattr(api, "_strip_html_tags", lambda value: "PATCHED")
     assert api._clean_news_title("ignore") == "PATCHED"
     monkeypatch.setattr(api, "_clean_news_title", lambda value: "NEWS_PATCH")
@@ -75,5 +76,6 @@ def test_call_time_facade_patch_seams(monkeypatch):
     assert api._mismatched_symbol_news_bullet("종목 뉴스 000660: mismatch", "ignored")
     monkeypatch.setattr(api, "_metadata_value", lambda value: "METADATA_PATCH")
     assert api._news_linkage_strength_label("unknown") == "METADATA_PATCH"
+    monkeypatch.setattr(api, "_strip_html_tags", original_strip)
     monkeypatch.setattr(api, "_clip", lambda *args, **kwargs: "CLIP_PATCH")
     assert api._strip_html_tags("ignored") == "CLIP_PATCH"
