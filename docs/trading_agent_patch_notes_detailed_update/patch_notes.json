@@ -5115,12 +5115,14 @@
         "Preserve 182 AI Reporter callable names and 436 Reporting facade contracts, no change to execution authority or LLM prompt/retry.",
         "Move duration parse/label and Korean predicate/particle formatting AST bodies to a <=350-LOC owner; inject patchable facade helpers at call time.",
         "Add historical AST, synthetic output equivalence, dependency patching, owner size/DAG tests and explicit CI coverage.",
-        "Additional latest-commit-only modified-files ZIP alongside historical cumulative artifact. Real Windows report/full suite and independent verification remain OPEN."
+        "Additional latest-commit-only modified-files ZIP alongside historical cumulative artifact. Real Windows report/full suite and independent verification remain OPEN.",
+        "Remote CI 38023989098 SUCCESS at 27fa504e: 337 Reporting + 255 helper/owner/UI PASS, patched failure evidence preserved. Local Windows actual-report/full suite and independent audits NOT RUN."
       ],
       "impact": "Smaller Reporting compatibility facade without granting any trading authority or claiming production output equivalence.",
       "sources": [
         "docs/daily_patch/2026-10-10_p1_5_2_ai_duration_language_owner_37.md",
-        "tests/test_p152_ai_duration_language_owner.py"
+        "tests/test_p152_ai_duration_language_owner.py",
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER37-REMOTE-CI.md"
       ],
       "status": "current"
     }

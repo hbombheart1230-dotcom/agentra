@@ -2647,3 +2647,5 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 원본 AST/결과·의존성 패치 회귀 테스트와 36개 Owner DAG/350 LOC 검사, 신규 커밋 변경 파일만 담는 ZIP CI 아티팩트를 추가했습니다.
 - 실제 C:\\Agentra 거래 리포트·전체 pytest·독립 Claude/Codex 검증 미완료로 **P1.5.2 OPEN**, P1.5.3 미착수입니다. 실거래/UEF/R6.2/Docker/Step5C/D 변경 없음.
 - 근거: `docs/daily_patch/2026-10-10_p1_5_2_ai_duration_language_owner_37.md`.
+- GitHub Actions [`38023989098`](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38023989098) **SUCCESS**: Reporting 337, Owner/UI 255 PASS; 원본 함수 AST/입력·출력/monkeypatch와 436 공개 함수 보존. 실데이터·전체 pytest·독립 검증 미완료.
+- 원격 증거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER37-REMOTE-CI.md`.
