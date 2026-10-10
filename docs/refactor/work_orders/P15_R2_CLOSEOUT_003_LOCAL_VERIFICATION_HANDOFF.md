@@ -6,6 +6,8 @@ Local root: `C:\Agentra`
 Current: `docs/refactor/work_orders/CURRENT.md`
 Detail checklist: `docs/refactor/work_orders/P15_R2_OWNER38_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md`
 
+**ACTIVE faster workflow:** see `docs/refactor/work_orders/P15_R2_FAST_LOCAL_PARITY_KIT.md` for direct two-folder parity evidence and **Codex batch implementation/verification first; Claude independent audit second**. This file's historic roles are kept as optional independent audit prompts, not as simultaneous required starts.
+
 ## Claude copy/paste
 
 ```text

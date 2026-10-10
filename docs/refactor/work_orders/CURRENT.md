@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-CLOSEOUT-003
 
-Status: REMOTE INTEGRATION 709 SELECTED PASS; OWNER EXTRACTION PAUSED; 37 OWNERS + 436 ABI; LOCAL REAL DATA/FULL PYTEST/CLAUDE/CODEX NOT RUN; P1.5.2 OPEN; P1.5.3 BLOCKED
+Status: GPT FAST HANDOFF KIT IMPLEMENTED; 709 CORE + CONSERVATIVE GUARDS, BROAD DIAGNOSTIC FAILURES PRESERVED; ACTUAL LOCAL PARITY/INDEPENDENT REVIEW NOT RUN; P1.5.2 OPEN, NO P1.5.3
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -20,6 +20,12 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - CI 38035524693 primary selected regression PASS, broad non-heavy Linux suite **2,114 PASS + 12 FAIL before stop**. This is not a complete repository PASS.
 - Diagnosed likely CI env/pinned history factors and Windows-specific lock/path tests, plus API route test to isolate. Evidence: `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-INITIAL.md`. Rerun CI with no global DRY_RUN, pinned AST fetch, API isolation. Do NOT mislabel non-Reporting failures as P1.5.2 code defects or as resolved.
 - Remain in GPT REMOTE-FIRST phase, local Claude/Codex PAUSED. No runtime changes, no P1.5.3.
+
+## GPT one-batch speed handoff — saved parity tool (2026-10-10)
+- User directed speed-first remote finishing, local agents own detailed discrepancies. GPT has frozen Owner38 runtime, stopped tiny Owner extractions, and added `scripts/refactor/p152_snapshot_parity.py` for SHA256 byte report/jsonl/markdown snapshot parity with no live authority.
+- Tests: `tests/test_p152_snapshot_parity.py`, enforce PASS/FALSE, key-order-only byte drift, missing/extra artifacts, invalid roots/captures, no plaintext leak.
+- Local safe usage and Codex then Claude division: `docs/refactor/work_orders/P15_R2_FAST_LOCAL_PARITY_KIT.md`. Existing local prompts below are historical; this concise kit is active.
+- Invariant: Script does NOT create authentic historical originals, prove runtime capture completeness, or touch local data. All actual environment and LLM equivalence remain NOT RUN, no P1.5.3.
 
 ## GPT remote-first 004 — measured completion with findings, local deferred (2026-10-10)
 - **No new Owner39+, no Reporting execution source code changes** after `80f56edfbbda8d336b09e7c5f0b18069d77785b9`. 37 small Owners <=350 LOC, 436 original callable ABI names/signatures retained.

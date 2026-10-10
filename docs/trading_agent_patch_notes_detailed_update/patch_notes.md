@@ -2698,3 +2698,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - GitHub 호스팅 Windows 테스트 [38036845579](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38036845579): 락·경로·UI·subprocess **123 PASS**, API/Scanner 그룹 **11 PASS / 2 FAIL**. 후자 두 건은 Linux/Windows 모두 재현, 리팩토링 범위 밖의 미해결 검증 항목으로 보존합니다.
 - 광범위 Linux/Windows 테스트는 원격 진단용 수동 실행으로 전환합니다. 자동 Reporting 핵심 회귀 PASS와 광범위 진단 FAIL을 혼동하지 않습니다.
 - Windows 증거: `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-WINDOWS-HOSTED.md`; 로컬 실데이터·전체 native 검증과 별도 사용자 최종승인은 NOT RUN.
+
+---
+
+## 2026-10-10 · P1.5.2 빠른 로컬 동등성 검증 도구 005
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · DOCUMENTATION · SAFETY
+
+- 이미 안전하게 복사해 둔 보고서 디렉터리 두 개의 Markdown/JSON/JSONL 해시·바이트를 비교하고, JSON 포맷만 다르더라도 바이트 차이를 FAIL로 기록하는 로컬 검증 도구를 추가했습니다.
+- 선택된 JSON/JSONL LLM 캡처의 누락 및 불일치 확인, 잘못된 동일 경로/빈 폴더/심볼릭 링크 거부, 민감한 원문 대신 해시만 출력하도록 설계했습니다.
+- 실제 거래 실행·LLM 호출 또는 로컬 증거 자동 수집은 하지 않습니다. Codex 일괄 검증 → Claude 독립 감사를 위한 빠른 인계 문서가 함께 제공됩니다.
+- 근거: `docs/daily_patch/2026-10-10_p152_fast_parity_kit_005.md`, `docs/refactor/work_orders/P15_R2_FAST_LOCAL_PARITY_KIT.md`. P1.5.2 OPEN, P1.5.3 미착수.

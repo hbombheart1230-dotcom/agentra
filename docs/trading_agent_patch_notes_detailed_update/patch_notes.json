@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 190,
+  "entry_count": 191,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5213,6 +5213,31 @@
         "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-SECOND.md",
         "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md",
         "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-WINDOWS-HOSTED.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-10",
+      "version": "P1.5.2 Fast Immutable Snapshot Parity Kit 005",
+      "title": "Ready-to-run real-report compare script and short local Codex/Claude handoff",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "DOCUMENTATION",
+        "SAFETY"
+      ],
+      "summary": "Generate deterministic SHA256 parity evidence from existing frozen report copies, rejecting missing/extra reports and avoiding any live trading or LLM calls.",
+      "details": [
+        "Add stdlib snapshot comparator for Markdown/JSON/JSONL bytes, optional pre-captured LLM trace, canonical-JSON classification; no report secrets in evidence.",
+        "Add focused synthetic CI tests, fail-closed invalid input guard, and short safe local workflow/role handoff.",
+        "Owner38 Reporting runtime untouched; local actual-file and LLM parity, full Windows pytest, independent audits and 3-facade size debt still OPEN."
+      ],
+      "impact": "Shift costly remote iterative review to one reusable local validation tool and concise independent handoff without weakening P1.5.2 completion gates.",
+      "sources": [
+        "docs/daily_patch/2026-10-10_p152_fast_parity_kit_005.md",
+        "scripts/refactor/p152_snapshot_parity.py",
+        "tests/test_p152_snapshot_parity.py",
+        "docs/refactor/work_orders/P15_R2_FAST_LOCAL_PARITY_KIT.md"
       ],
       "status": "current"
     }
