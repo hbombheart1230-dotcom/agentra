@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 187,
+  "entry_count": 188,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5123,6 +5123,29 @@
         "docs/daily_patch/2026-10-10_p1_5_2_ai_duration_language_owner_37.md",
         "tests/test_p152_ai_duration_language_owner.py",
         "docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER37-REMOTE-CI.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-10",
+      "version": "P1.5.2 Markdown Clean News Headlines Owner38",
+      "title": "Extract news headlines and symbol-specific matching from Markdown Clean facade",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "summary": "Eight reporting-only headline, six-digit symbol and strength label helpers moved behind patchable public facade.",
+      "details": [
+        "8 pinned original function-body AST checks; 21 synthetic output and call-time helper-patching checks.",
+        "209 Markdown Clean and 436 global Reporting facade names/signatures preserved; 37 small Owner DAG/size guard.",
+        "Owner38-only ZIP added to CI; stage acceptance remains gated by actual C:\\Agentra read-only real reports, full suite, LLM equality and independent verification."
+      ],
+      "impact": "Reduce news narrative logic in the large Markdown compatibility facade without changing symbol or report truth behavior.",
+      "sources": [
+        "docs/daily_patch/2026-10-10_p1_5_2_markdown_news_headlines_owner_38.md",
+        "tests/test_p152_markdown_clean_news_headlines_owner.py"
       ],
       "status": "current"
     }

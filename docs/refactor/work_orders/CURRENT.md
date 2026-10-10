@@ -143,3 +143,8 @@ The GPT implementation already extracted 26 small Owner modules, and CI passes p
 - Source baseline `ef22bec761d7f2b01762cb17e3c6523b9df8040c`; four AST-original display bodies move to a <=350-LOC Owner with call-time facade dependency injection and all original 182 AI Reporter/436 total public callable signatures intact.
 - Owner DAG now 36; pre-Owner37 AST, synthetic output and monkeypatch CI tests, tranche-only ZIP workflow and UI patch notes updated together. **REMOTE CI SUCCESS** at workflow 38023989098 / final validated HEAD 27fa504e (337 Reporting + 255 Helper/UI/Owner PASS); evidence: docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER37-REMOTE-CI.md.
 - Actual user-local `C:\\Agentra` real Markdown/JSON and LLM parity, full repository pytest and separate read-only Claude/Codex reports remain **NOT RUN**. **P1.5.2 OPEN, P1.5.3 NOT STARTED.**
+
+## GPT Owner38 — Markdown Clean news headline-only extraction (2026-10-10)
+- Pinned previous code SHA `0409687aa76e195bd001d7756419b86b9580c531`. Eight report-only news headlines, ticker matching, mismatch bullet and linkage label ASTs moved to <=350 LOC small Owner, maintaining 209/436 original façade callables and helper monkeypatch references.
+- New Owner count 37, pinned AST and 21 synthetic fixtures, changed-files-only Owner38 ZIP. Remote CI initially PENDING.
+- Local C:\Agentra real report/LLM/full suite and separate Claude/Codex read-only verification NOT RUN. P1.5.2 OPEN; no main merge or P1.5.3.

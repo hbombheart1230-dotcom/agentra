@@ -7,6 +7,16 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
+from libs.reporting.trade_report.markdown_clean_parts.news_headlines import (
+    _strip_html_tags_impl,
+    _clean_news_title_impl,
+    _sample_news_titles_impl,
+    _normalize_news_symbol_impl,
+    _news_symbol_from_item_impl,
+    _sample_news_titles_for_symbol_impl,
+    _mismatched_symbol_news_bullet_impl,
+    _news_linkage_strength_label_impl,
+)
 from libs.reporting.trade_report.markdown_clean_parts.operator_labels import (
     _rank_scope_text_impl,
     _watch_scope_label_impl,
@@ -1391,101 +1401,32 @@ def _build_summary_exit_trigger_lines(
     )
 
 def _strip_html_tags(text: Any) -> str:
-    raw = html.unescape(_clip(text, 300))
-    if not raw:
-        return ""
-    raw = re.sub(r"<[^>]+>", "", raw)
-    raw = raw.replace("NewsItem(title='", "")
-    raw = raw.split("', url='", 1)[0]
-    return re.sub(r"\s+", " ", raw).strip()
-
+    return _strip_html_tags_impl(text, html=html, re=re, _clip=_clip)
 
 def _clean_news_title(text: Any) -> str:
-    return _strip_html_tags(text).rstrip(".")
-
+    return _clean_news_title_impl(text, _strip_html_tags=_strip_html_tags)
 
 def _sample_news_titles(values: Any, limit: int = 2) -> List[str]:
-    out: List[str] = []
-    seen = set()
-    for raw in _listify(values):
-        cleaned = _clean_news_title(raw)
-        if not cleaned or cleaned in seen:
-            continue
-        seen.add(cleaned)
-        out.append(cleaned)
-        if len(out) >= limit:
-            break
-    return out
-
+    return _sample_news_titles_impl(values, limit=limit, _listify=_listify, _clean_news_title=_clean_news_title)
 
 def _normalize_news_symbol(value: Any) -> str:
-    if value is None:
-        return ""
-    match = re.search(r"\b(\d{6})\b", str(value))
-    return match.group(1) if match else ""
-
+    return _normalize_news_symbol_impl(value, re=re)
 
 def _news_symbol_from_item(value: Any) -> str:
-    if isinstance(value, dict):
-        for key in ("symbol", "code", "stock_code", "ticker"):
-            symbol = _normalize_news_symbol(value.get(key))
-            if symbol:
-                return symbol
-        return ""
-    raw = str(value or "")
-    match = re.match(r"\s*(\d{6})\s*:", raw)
-    if match:
-        return match.group(1)
-    match = re.search(r"\bsymbol=['\"]?(\d{6})['\"]?", raw)
-    return match.group(1) if match else ""
-
+    return _news_symbol_from_item_impl(value, re=re, _normalize_news_symbol=_normalize_news_symbol)
 
 def _sample_news_titles_for_symbol(symbol: Any, *sources: Any, limit: int = 2) -> List[str]:
-    target = _normalize_news_symbol(symbol)
-    untagged_fallback: List[Any] = []
-    for source in sources:
-        rows = _listify(source)
-        if not rows:
-            continue
-        if not target:
-            return _sample_news_titles(rows, limit=limit)
-        matched: List[Any] = []
-        has_detectable_symbol = False
-        for row in rows:
-            row_symbol = _news_symbol_from_item(row)
-            if row_symbol:
-                has_detectable_symbol = True
-            if row_symbol == target:
-                matched.append(row)
-        if matched:
-            return _sample_news_titles(matched, limit=limit)
-        if not has_detectable_symbol and not untagged_fallback:
-            # Curated symbol-only headline lists may omit the code prefix.
-            untagged_fallback = rows
-    if untagged_fallback:
-        return _sample_news_titles(untagged_fallback, limit=limit)
-    return []
-
+    return _sample_news_titles_for_symbol_impl(
+        symbol, *sources, limit=limit, _normalize_news_symbol=_normalize_news_symbol,
+        _listify=_listify, _sample_news_titles=_sample_news_titles,
+        _news_symbol_from_item=_news_symbol_from_item,
+    )
 
 def _mismatched_symbol_news_bullet(text: Any, symbol: Any) -> bool:
-    target = _normalize_news_symbol(symbol)
-    if not target:
-        return False
-    raw = str(text or "")
-    if "대표 종목/섹터 뉴스" not in raw and "종목 뉴스" not in raw:
-        return False
-    symbols = set(re.findall(r"\b(\d{6})\s*:", raw))
-    return bool(symbols and target not in symbols)
-
+    return _mismatched_symbol_news_bullet_impl(text, symbol, re=re, _normalize_news_symbol=_normalize_news_symbol)
 
 def _news_linkage_strength_label(value: Any) -> str:
-    lowered = _clip(value, 40).lower()
-    return {
-        "weak": "약한 편이었습니다",
-        "moderate": "보통 수준이었습니다",
-        "strong": "강한 편이었습니다",
-    }.get(lowered, _metadata_value(value) or "-")
-
+    return _news_linkage_strength_label_impl(value, _clip=_clip, _metadata_value=_metadata_value)
 
 def _badge(label: str, color: str) -> str:
     return f"**[{label}]**"

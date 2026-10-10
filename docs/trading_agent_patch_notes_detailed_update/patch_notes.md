@@ -2649,3 +2649,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 근거: `docs/daily_patch/2026-10-10_p1_5_2_ai_duration_language_owner_37.md`.
 - GitHub Actions [`38023989098`](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38023989098) **SUCCESS**: Reporting 337, Owner/UI 255 PASS; 원본 함수 AST/입력·출력/monkeypatch와 436 공개 함수 보존. 실데이터·전체 pytest·독립 검증 미완료.
 - 원격 증거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER37-REMOTE-CI.md`.
+
+---
+
+## 2026-10-10 · P1.5.2 Markdown Clean News Headlines Owner38
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- 뉴스 제목 정제·샘플링·종목코드 매칭·타 종목 기사 배제·문구 8개를 전용 Owner로 추출하고 기존 Markdown Clean 공개 API를 유지했습니다.
+- AST/21건 합성 결과/호출시점 monkeypatch, 37 Owner DAG/크기, 436개 façade 공개 함수 불변 검증을 CI에 추가했습니다.
+- 실데이터·LLM 프롬프트·전체 pytest·Claude/Codex 독립 검증 전까지 **P1.5.2 OPEN**, P1.5.3 미착수. 주문/UEF/R6.2/Step5C/D/Docker 변경 없음.
+- 근거: `docs/daily_patch/2026-10-10_p1_5_2_markdown_news_headlines_owner_38.md`.
