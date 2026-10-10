@@ -1,6 +1,6 @@
 # P1.5 CURRENT Work Order — P15-R2-GPT-CLOSEOUT-003
 
-Status: P1.5.2 INTEGRATION CLOSEOUT IN PROGRESS; NEW OWNER EXTRACTION PAUSED; 37 SMALL OWNERS + 436 PUBLIC ABI; USER-LOCAL CLAUDE+CODEX NOT RUN; P1.5.2 OPEN; P1.5.3 BLOCKED
+Status: REMOTE INTEGRATION 709 SELECTED PASS; OWNER EXTRACTION PAUSED; 37 OWNERS + 436 ABI; LOCAL REAL DATA/FULL PYTEST/CLAUDE/CODEX NOT RUN; P1.5.2 OPEN; P1.5.3 BLOCKED
 Created: 2026-10-09
 Branch: refactor/p1.5 ONLY
 Audited CODE SHA: 4f291e9a44739772cb9303c0b0f963fa16ad8feb (before this documentation-only work-order commit)
@@ -10,6 +10,13 @@ Local actual HEAD: NOT OBSERVED. Claude/Codex must reconcile without reset or Q1
 Primary local root: C:\Agentra
 Work type: GPT remote integration tests and acceptance inventory ONLY + local READ-ONLY Claude/Codex independent real-data and full-suite validation. Do not continue extracting minor Owners; NO P1.5.3.
 Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. This restriction applies to local verifiers, not GPT's explicitly operator-authorized remote Reporting-only slices.
+
+## Integration 003 remote acceptance and next local action — 2026-10-10
+- CI https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38031366650 **SUCCESS**: 337+286+83+3 = **709 selected tests PASS**; this is NOT full repository validation.
+- Reporting implementation source frozen at Owner38; 3 facade sizes 2761/2658/636 LOC remain SIZE NOT MET and wrapper/dependency debts OPEN.
+- Machine inventory states `closeout_allowed=false` and all real-local gates NOT RUN. Evidence: `docs/refactor/work_orders/evidence/P15-R2-GPT-CLOSEOUT-003-REMOTE-CI.md`.
+- Claude/Codex local READ-ONLY SHA-specific prompts: `docs/refactor/work_orders/P15_R2_CLOSEOUT_003_LOCAL_VERIFICATION_HANDOFF.md`; no repeat history, code edits, resets, Q12 cleanup, real orders or Docker restart.
+- P1.5.2 OPEN. No P1.5.3 until full local output/LLM parity and independent reports/human review.
 
 ## Active P1.5.2 Integration Closeout Order (2026-10-10)
 - User approved move from incremental Owner38 extraction to INTEGRATED VERIFICATION. No Owner39+ extraction and no production/authority source edits in this order. Historical implementation orders below are retained as evidence, not new instructions.

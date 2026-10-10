@@ -2674,3 +2674,6 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - GitHub-only 성공만으로는 P1.5.2를 종료할 수 없으며 `C:\\Agentra` 실데이터 JSON/Markdown 바이트 비교·LLM 프롬프트·전체 pytest·Claude와 Codex 독립 검증은 **NOT RUN**입니다.
 - P1.5.2 OPEN, P1.5.3 미착수. 원본 동결 Q12/UEF/R6.2/Step5C/D/실거래 및 Docker 변경 없음.
 - 근거: `docs/daily_patch/2026-10-10_p152_integration_closeout_003.md`, `scripts/refactor/p152_integration_acceptance.py`.
+- 통합 CI [38031366650](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38031366650) **SUCCESS**: 337+286+83+3=**709 PASS** (선택된 오프라인 회귀 테스트 한정).
+- 아직 façade 2,761/2,658/636 LOC이며 크기 목표 미달을 OPEN으로 유지. 실데이터/LLM/전체 테스트/독립 검증은 NOT RUN.
+- 검증 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-CLOSEOUT-003-REMOTE-CI.md`; Claude/Codex 복붙 지시서: `docs/refactor/work_orders/P15_R2_CLOSEOUT_003_LOCAL_VERIFICATION_HANDOFF.md`.

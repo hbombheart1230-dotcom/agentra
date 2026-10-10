@@ -5167,14 +5167,18 @@
         "37 bounded Owners and existing 436 Reporting public callables stay untouched; new script checks scope/ABI/owner sizes without invoking brokerage or LLM.",
         "Selected additional offline Reporter/Agent integration suites and isolated CI validation; final PASS numbers pending actual CI.",
         "Generate structured P1.5.2 OPEN gate snapshot and separate changed-files-only ZIP; do not start P1.5.3 before local SHA-specific independent reviews.",
-        "C:\\\\Agentra real JSON/Markdown equality, prompt/call/retry parity, complete repository regression and two independent audits remain NOT RUN."
+        "C:\\\\Agentra real JSON/Markdown equality, prompt/call/retry parity, complete repository regression and two independent audits remain NOT RUN.",
+        "GitHub CI 38031366650 SUCCESS: 337 Reporting + 286 Owner/UI + 83 expanded offline + 3 snapshot contracts = 709 selected PASS; full repository and local real outputs NOT RUN.",
+        "Legacy façade 2,761/2,658/636 LOC remain SIZE NOT MET, requiring consumer-driven exception or coherent later work."
       ],
       "impact": "Replace repeated tiny extraction cycles with explicit integrated evidence, remote safety controls and a bounded closure decision.",
       "sources": [
         "docs/daily_patch/2026-10-10_p152_integration_closeout_003.md",
         "scripts/refactor/p152_integration_acceptance.py",
         "tests/test_p152_integration_acceptance_inventory.py",
-        "docs/refactor/work_orders/CURRENT.md"
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-CLOSEOUT-003-REMOTE-CI.md",
+        "docs/refactor/work_orders/P15_R2_CLOSEOUT_003_LOCAL_VERIFICATION_HANDOFF.md"
       ],
       "status": "current"
     }
