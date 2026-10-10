@@ -2636,3 +2636,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Markdown Clean 2,717 LOC, AI Reporter 2,820 LOC, Story 636 LOC. 총 436 공개 심볼 유지, 미참조 340개는 DEAD가 아니라 UNKNOWN.
 - 독립 Claude/Codex 읽기 전용 로컬 검증 지시서와 원격 근거 최신화. 실보고서·전체 테스트 미실행이므로 **P1.5.2 OPEN, P1.5.3 미시작**.
 - 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER32-36-REMOTE-CI.md`.
+
+---
+
+## 2026-10-10 · P1.5.2 AI Reporter Duration/Grammar Owner37
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · DOCUMENTATION
+
+- 보유시간 문자열 변환·한국어 서술격 및 ‘으로/로’ 처리를 별도 소형 Owner로 분리하고 기존 호출 경로 및 monkeypatch 호환성을 유지했습니다.
+- 원본 AST/결과·의존성 패치 회귀 테스트와 36개 Owner DAG/350 LOC 검사, 신규 커밋 변경 파일만 담는 ZIP CI 아티팩트를 추가했습니다.
+- 실제 C:\\Agentra 거래 리포트·전체 pytest·독립 Claude/Codex 검증 미완료로 **P1.5.2 OPEN**, P1.5.3 미착수입니다. 실거래/UEF/R6.2/Docker/Step5C/D 변경 없음.
+- 근거: `docs/daily_patch/2026-10-10_p1_5_2_ai_duration_language_owner_37.md`.

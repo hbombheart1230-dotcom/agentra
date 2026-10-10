@@ -138,3 +138,8 @@ The GPT implementation already extracted 26 small Owner modules, and CI passes p
 - No implementation code changes permitted to either local agent under this work order.
 - GPT reviews the two reports, then either issues another P1.5.2 small Owner implementation order or declares P1.5.2 accepted only after all prior requirements and human safety approval. NO automatic P1.5.3 transition.
 - GitHub CI artifacts/ZIP must include only actual P1.5.2 modified files against 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c.
+
+## GPT Owner37 Korean duration / particle display split (2026-10-10)
+- Source baseline `ef22bec761d7f2b01762cb17e3c6523b9df8040c`; four AST-original display bodies move to a <=350-LOC Owner with call-time facade dependency injection and all original 182 AI Reporter/436 total public callable signatures intact.
+- Owner DAG now 36; pre-Owner37 AST, synthetic output and monkeypatch CI tests, latest-commit-only ZIP workflow and UI patch notes updated together. **CI PENDING** until independently observed.
+- Actual user-local `C:\\Agentra` real Markdown/JSON and LLM parity, full repository pytest and separate read-only Claude/Codex reports remain **NOT RUN**. **P1.5.2 OPEN, P1.5.3 NOT STARTED.**
