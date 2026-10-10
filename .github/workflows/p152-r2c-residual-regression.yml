@@ -153,6 +153,8 @@ jobs:
                   out.write(name, arcname=name)
           print("ZIP ENTRIES:", *files, sep="\n- ")
           PY
+      - name: Fetch pinned integration-only ZIP baseline
+        run: git fetch --no-tags --depth=1 origin b59e4bd0d4c7d5141ed766315148ed6c6daba323
       - name: Package only P1.5.2 integration-closeout changed files
         if: success()
         run: |
