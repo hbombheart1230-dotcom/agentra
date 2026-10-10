@@ -2688,3 +2688,5 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 전체 테스트 대상 중 표시된 heavy/Docker/benchmark를 제외한 오프라인 mock/DRY_RUN CI를 별도 잡으로 추가하고 JUnit 결과를 보존합니다. 원격 데이터 검증은 `C:\\Agentra` 실데이터 검증을 대체하지 않습니다.
 - P1.5.2 OPEN / P1.5.3 차단. 기존 실거래·UEF·R6.2·Step5C/D·Q12 Docker 운영 코드 변경 없음.
 - 근거: `docs/daily_patch/2026-10-10_p152_prelocal_remote_exhaustive_004.md`.
+- 넓은 테스트 첫 실행 [38035524693](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38035524693): **2,114 PASS / 12 FAIL / 9 deselected**, 즉 전체 PASS 아님. CI의 전역 DRY_RUN 영향·이전 커밋 미확보·Linux/Windows 환경 차이·API route 검증 실패를 분리 조사 중.
+- 원격 증거: `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-INITIAL.md`. 생산 실행 코드는 건드리지 않고 CI 설정만 교정.

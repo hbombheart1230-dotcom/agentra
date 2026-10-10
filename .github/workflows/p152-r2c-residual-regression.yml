@@ -211,7 +211,6 @@ jobs:
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       PYTEST_ADDOPTS: '-p no:cacheprovider'
-      DRY_RUN: '1'
       TRADING_MODE: 'mock'
       OPENROUTER_API_KEY: ''
       KIWOOM_APP_KEY: ''
@@ -226,10 +225,28 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
       - run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Fetch pinned historic public facade AST baselines in separate sweep job
+        run: |
+          for commit in \
+            2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c \
+            f381772d2118aca6444108fab429e4a0e0fba056 \
+            0da31c9e6bbcf1754e1b9b209878dca1c6eda9e3 \
+            df57b57acf6380174189ed4b69b3f9f92c638d02 \
+            007e7c2ff757181048bac6d467ff76ec9f4ddce1 \
+            9242d6e30c1c9917bf434bed99e7cca373876678 \
+            52508ade9d0d246fa4e848525fe62f2fe067acb7 \
+            183924bdbe2e51723987436b45a48d0e849724db \
+            ef22bec761d7f2b01762cb17e3c6523b9df8040c \
+            0409687aa76e195bd001d7756419b86b9580c531; do
+            git fetch --no-tags --depth=1 origin "$commit"
+          done
       - name: Repo-wide offline pytest excluding declared heavy, docker and benchmark
         run: |
           mkdir -p branch_output
-          python -m pytest -q tests -m "not heavy and not docker and not benchmark" --maxfail=12 --disable-warnings --junitxml=branch_output/p152_repo_safe_sweep_junit.xml
+          python -m pytest -q tests -m "not heavy and not docker and not benchmark" --maxfail=25 --disable-warnings --junitxml=branch_output/p152_repo_safe_sweep_junit.xml
+      - name: Isolate broad-sweep API route failure in fresh pytest process
+        if: always()
+        run: python -m pytest -q tests/apps/api/test_isolation.py::test_api_routes_are_get_only
       - name: Preserve offline repo-wide test evidence even on failures
         if: always()
         uses: actions/upload-artifact@v4
