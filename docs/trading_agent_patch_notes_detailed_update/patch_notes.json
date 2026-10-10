@@ -5200,7 +5200,9 @@
         "First Linux repo-wide sweep on CI 38035524693: 2,114 passed, 12 failed, 9 deselected before maxfail; broad job FAILED while focused regression passed. CI environment/pinned SHA and platform conditions under investigation.",
         "Second broad Linux sweep CI 38035913347: 4607 passed, 25 failed, 25 skipped, 9 deselected until maxfail=25. Mock LLM/AST shallow fetch issues fixed; remaining environment, Windows-path, scanner, Step5B and UEF contract failures preserved.",
         "Exhaustive eligible Linux offline CI 38036400641: 4919 passed, 41 failed, 2 errors, 25 skipped, 9 deselected; no false PASS, no production authority changes. Windows-hosted mock platform isolation scheduled separately.",
-        "Changed-file ZIP baseline fixed to pre-user-turn 4db23efb; recurring broad Linux diagnostic made manual-only after failure inventory."
+        "Changed-file ZIP baseline fixed to pre-user-turn 4db23efb; recurring broad Linux diagnostic made manual-only after failure inventory.",
+        "Hosted Windows CI 38036845579: 123 platform-specific tests PASS, 11 API/Scanner group PASS, 2 FAIL (API GET-only and Scanner runner-up rank), both also fail on Linux.",
+        "After evidence capture, Linux wide sweep and Windows hosted platforms are manual-only diagnostic CI jobs; standard Reporting gate remains unchanged and all negative evidence preserved."
       ],
       "impact": "Reduce P1.5.2 remaining debt through better evidence instead of repetitive tiny Owner extraction.",
       "sources": [
@@ -5209,7 +5211,8 @@
         "tests/test_p152_prelocal_consumer_debt.py",
         "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-INITIAL.md",
         "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-SECOND.md",
-        "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md"
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md",
+        "docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-WINDOWS-HOSTED.md"
       ],
       "status": "current"
     }

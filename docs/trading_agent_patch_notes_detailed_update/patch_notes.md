@@ -2695,3 +2695,6 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 조기 중단 없는 원격 Linux 회귀 [38036400641](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38036400641): **4,919 PASS / 41 FAIL / 2 ERROR / 25 SKIP / 9 DESELECTED**. 원격 전체 PASS로 오인하지 않으며 결과를 보존합니다.
 - Windows 호스팅 테스트를 추가해 경로·락·API·Scanner 문제를 OS별로 독립 확인합니다. 실거래 실행과 사용자의 실제 로컬 데이터는 사용하지 않습니다.
 - 이번 사용자 요청 시작 시점 SHA `4db23efbc69c176d0901bf8f4a7dbc9f6d234bf8` 이후 변경된 파일만 ZIP으로 묶도록 범위를 교정했습니다. 원격 분석 증거 `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md`.
+- GitHub 호스팅 Windows 테스트 [38036845579](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38036845579): 락·경로·UI·subprocess **123 PASS**, API/Scanner 그룹 **11 PASS / 2 FAIL**. 후자 두 건은 Linux/Windows 모두 재현, 리팩토링 범위 밖의 미해결 검증 항목으로 보존합니다.
+- 광범위 Linux/Windows 테스트는 원격 진단용 수동 실행으로 전환합니다. 자동 Reporting 핵심 회귀 PASS와 광범위 진단 FAIL을 혼동하지 않습니다.
+- Windows 증거: `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-WINDOWS-HOSTED.md`; 로컬 실데이터·전체 native 검증과 별도 사용자 최종승인은 NOT RUN.

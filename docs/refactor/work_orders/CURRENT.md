@@ -21,6 +21,15 @@ Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. 
 - Diagnosed likely CI env/pinned history factors and Windows-specific lock/path tests, plus API route test to isolate. Evidence: `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-INITIAL.md`. Rerun CI with no global DRY_RUN, pinned AST fetch, API isolation. Do NOT mislabel non-Reporting failures as P1.5.2 code defects or as resolved.
 - Remain in GPT REMOTE-FIRST phase, local Claude/Codex PAUSED. No runtime changes, no P1.5.3.
 
+## GPT remote-first 004 — measured completion with findings, local deferred (2026-10-10)
+- **No new Owner39+, no Reporting execution source code changes** after `80f56edfbbda8d336b09e7c5f0b18069d77785b9`. 37 small Owners <=350 LOC, 436 original callable ABI names/signatures retained.
+- Remote selected regressions continue PASS (709 Reporting/Owner/integration plus 3 conservative static-debt test cases).
+- Offline broad Linux full eligible diagnostic 38036400641: **4,919 pass / 41 fail / 2 errors / 25 skip / 9 deselect**; not a whole-repo passing gate. See `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md`.
+- GitHub-hosted Windows diagnostic 38036845579: **123 PASS** path/lock/UI/subprocess; isolated API/Scanner **2 FAIL, 11 PASS**. See `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-WINDOWS-HOSTED.md`. Failure cases both-platform reproduced, source identities equal pre-R2, so separately triage rather than rewrite unrelated authority code.
+- Per-function static audit across 1,778 Python files: 436 facade callable symbols, 106 statically seen, 330 UNKNOWN/NOT DEAD, 8 dynamic hazards. Existing facade symbolic ledger reports 147 WRAPPER + 249 KEEP_PENDING_CONSUMER_PROOF + 40 KEEP. Zero deletion/retirement authorized; size targets 2,761 / 2,658 / 636 LOC remain NOT MET and need explicit approval/defer.
+- **GPT remote-first work to this evidence extent FINISHED WITH FINDINGS.** Local data and full native Windows equivalence, LLM prompts/retries, Claude/Codex independent reports, user SIZE_DEFERRED decision remain NOT RUN; user requested local validation later. Do not auto-launch local agents or P1.5.3.
+- Wide Linux/Windows hosted diagnostics retained as manual-only Actions jobs; per-push Reporting test stays a true scoped gate. All failures are in evidence, not suppressed or called passing.
+
 ## GPT prelocal exhaustive Linux CI and Windows-hosted final check (2026-10-10)
 - Linux exhaustive eligible sweep https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38036400641: **4,919 PASS / 41 FAIL / 2 setup errors / 25 SKIP / 9 DESELECTED**. This is NOT a passing repo-wide suite; original 709 selected Reporting checks remain green. Evidence `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-BROAD-SWEEP-EXHAUSTIVE.md`.
 - Native `C:\\Agentra` real report/LLM parity, full Windows baseline and independent Claude/Codex remain NOT RUN. Current owner38 Reporting source frozen.

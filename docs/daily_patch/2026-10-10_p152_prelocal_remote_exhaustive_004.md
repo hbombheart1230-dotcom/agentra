@@ -29,3 +29,9 @@ CI results for this tranche must be added to separate follow-up evidence after t
 - Provenance notes: Linux/Windows path/strict lock, scanner runner-up rank, disallowed live-broker mock tests, missing canonical UEF report fixtures and UEF5 registry static assertions. None silently waived. No runtime trading code changes.
 - The additional broad Linux sweep is retained as an explicit manual CI diagnostic; avoid automatically making subsequent documentation commits red. Add a separate Windows GitHub-hosted contract test for OS-dependent failures; not equivalent to `C:\\Agentra`.
 - ZIP's pinned change baseline moved to pre-user-turn `4db23efbc69c176d0901bf8f4a7dbc9f6d234bf8` so only files modified after this GPT work began are packaged.
+
+## GitHub-hosted Windows results
+- [CI 38036845579](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38036845579): Windows owner-lock/path/UI/subprocess tests **123 PASS**; separately API+Scanner group **11 PASS / 2 FAIL**.
+- API GET-only and Scanner canonical runner-up rank assertion failed on both Linux and Windows hosted; existing baseline source/test Git blobs identical, not automatically waived. No P1.5.2/authority source patch.
+- Evidence `docs/refactor/work_orders/evidence/P15-R2-GPT-PRELOCAL-004-WINDOWS-HOSTED.md`. Host Windows still does not access actual user-local data.
+- After capturing results, Windows hosted diagnostic moved to manual-only `workflow_dispatch` to retain meaningful selected Reporting CI on subsequent documentation commits.
