@@ -2677,3 +2677,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 통합 CI [38031366650](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38031366650) **SUCCESS**: 337+286+83+3=**709 PASS** (선택된 오프라인 회귀 테스트 한정).
 - 아직 façade 2,761/2,658/636 LOC이며 크기 목표 미달을 OPEN으로 유지. 실데이터/LLM/전체 테스트/독립 검증은 NOT RUN.
 - 검증 근거: `docs/refactor/work_orders/evidence/P15-R2-GPT-CLOSEOUT-003-REMOTE-CI.md`; Claude/Codex 복붙 지시서: `docs/refactor/work_orders/P15_R2_CLOSEOUT_003_LOCAL_VERIFICATION_HANDOFF.md`.
+
+---
+
+## 2026-10-10 · P1.5.2 사전 로컬 검증을 위한 원격 검증 강화 004
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · DOCUMENTATION · SAFETY
+
+- 로컬 검증은 GPT 원격 점검 후로 연기했습니다. 436개 Reporter 공개 함수의 정적 참조, 래퍼/호환성 유지 판단, 누락된 정적 참조와 동적 접근 위험을 별도 장부로 생성합니다.
+- 전체 테스트 대상 중 표시된 heavy/Docker/benchmark를 제외한 오프라인 mock/DRY_RUN CI를 별도 잡으로 추가하고 JUnit 결과를 보존합니다. 원격 데이터 검증은 `C:\\Agentra` 실데이터 검증을 대체하지 않습니다.
+- P1.5.2 OPEN / P1.5.3 차단. 기존 실거래·UEF·R6.2·Step5C/D·Q12 Docker 운영 코드 변경 없음.
+- 근거: `docs/daily_patch/2026-10-10_p152_prelocal_remote_exhaustive_004.md`.

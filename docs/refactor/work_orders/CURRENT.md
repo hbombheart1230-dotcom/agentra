@@ -11,6 +11,12 @@ Primary local root: C:\Agentra
 Work type: GPT remote integration tests and acceptance inventory ONLY + local READ-ONLY Claude/Codex independent real-data and full-suite validation. Do not continue extracting minor Owners; NO P1.5.3.
 Local Claude/Codex work: READ-ONLY LOCAL VERIFICATION. NO RUNTIME PYTHON EDITS. This restriction applies to local verifiers, not GPT's explicitly operator-authorized remote Reporting-only slices.
 
+## Operator update — GPT exhaust remote before local (2026-10-10)
+- User explicitly postpones local Claude/Codex checks until GPT completes feasible remote checks. Do not request local handoff as the next step while remote CI/source inventory and unresolved issues remain.
+- No further tiny Owner extraction, no runtime/execution/authority code changes, no main merge, no P1.5.3.
+- New work: conservative per-symbol static consumer/monkeypatch map for all 436 exports, explicit KEEP wrapper default (never DEAD from 0 static references); repo-wide mock/offline non-heavy pytest in a **separate** CI job. Run condition excludes declared `heavy`, `docker`, `benchmark` tests and no production credentials. This is NOT actual local full pytest parity or live data.
+- Local handoff prompts are retained but PAUSED until GPT reports the remote audit results and any residual blockers to operator. P1.5.2 remains OPEN.
+
 ## Integration 003 remote acceptance and next local action — 2026-10-10
 - CI https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38031366650 **SUCCESS**: 337+286+83+3 = **709 selected tests PASS**; this is NOT full repository validation.
 - Reporting implementation source frozen at Owner38; 3 facade sizes 2761/2658/636 LOC remain SIZE NOT MET and wrapper/dependency debts OPEN.

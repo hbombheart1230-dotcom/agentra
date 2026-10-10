@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 189,
+  "entry_count": 190,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5179,6 +5179,30 @@
         "docs/refactor/work_orders/CURRENT.md",
         "docs/refactor/work_orders/evidence/P15-R2-GPT-CLOSEOUT-003-REMOTE-CI.md",
         "docs/refactor/work_orders/P15_R2_CLOSEOUT_003_LOCAL_VERIFICATION_HANDOFF.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-10",
+      "version": "P1.5.2 Prelocal Remote Coverage 004",
+      "title": "Conservative facade consumer classification and broad offline repository sweep",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "DOCUMENTATION",
+        "SAFETY"
+      ],
+      "summary": "Keep all 436 Reporting public symbols until genuine dynamic/local consumer evidence exists, and independently test repository-wide non-heavy mock/offline coverage.",
+      "details": [
+        "Generate per-function consumer/compatibility and monkeypatch evidence; no dead-code deletion authorized from missing static references.",
+        "Add guarded separate CI run for repo-wide non-heavy/non-Docker/non-benchmark tests with mock/DRY_RUN and no trading credentials; report failures rather than masking them.",
+        "Retain original 709 selected smoke suite and user-local acceptance gates. Broad CI is not production-real-data proof."
+      ],
+      "impact": "Reduce P1.5.2 remaining debt through better evidence instead of repetitive tiny Owner extraction.",
+      "sources": [
+        "docs/daily_patch/2026-10-10_p152_prelocal_remote_exhaustive_004.md",
+        "scripts/refactor/p152_prelocal_consumer_debt.py",
+        "tests/test_p152_prelocal_consumer_debt.py"
       ],
       "status": "current"
     }

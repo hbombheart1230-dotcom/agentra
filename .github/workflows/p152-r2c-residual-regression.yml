@@ -125,6 +125,18 @@ jobs:
           retention-days: 14
           if-no-files-found: error
           path: branch_output/p152_integration_acceptance_snapshot.json
+      - name: Conservative prelocal facade compatibility-debt contracts
+        run: python -m pytest -q tests/test_p152_prelocal_consumer_debt.py
+      - name: Emit 436-symbol conservative consumer and wrapper debt inventory
+        run: python -m scripts.refactor.p152_prelocal_consumer_debt --out branch_output/p152_prelocal_consumer_debt.json
+      - name: Upload prelocal 436-symbol keep/compatibility review
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p152-prelocal-consumer-debt-436
+          retention-days: 14
+          if-no-files-found: error
+          path: branch_output/p152_prelocal_consumer_debt.json
       - name: Produce conservative whole-repository façade consumer index
         run: python -m scripts.refactor.p152_facade_consumer_scan --out branch_output/p152_facade_consumer_static_coverage.json
       - name: Upload static façade consumer evidence
@@ -189,3 +201,40 @@ jobs:
           retention-days: 14
           if-no-files-found: error
           path: branch_output/p152_refactor_modified_only.zip
+
+
+  broad_remote_offline:
+    name: Repo-wide mock/offline non-heavy regression (separate from 709)
+    needs: regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTEST_ADDOPTS: '-p no:cacheprovider'
+      DRY_RUN: '1'
+      TRADING_MODE: 'mock'
+      OPENROUTER_API_KEY: ''
+      KIWOOM_APP_KEY: ''
+      KIWOOM_APP_SECRET: ''
+      KIWOOM_ACCESS_TOKEN: ''
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Repo-wide offline pytest excluding declared heavy, docker and benchmark
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests -m "not heavy and not docker and not benchmark" --maxfail=12 --disable-warnings --junitxml=branch_output/p152_repo_safe_sweep_junit.xml
+      - name: Preserve offline repo-wide test evidence even on failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p152-repo-wide-offline-sweep-junit
+          retention-days: 14
+          if-no-files-found: warn
+          path: branch_output/p152_repo_safe_sweep_junit.xml
