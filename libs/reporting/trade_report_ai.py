@@ -171,6 +171,46 @@ from libs.reporting.truth_source_labels import (
     truth_availability_line,
 )
 from libs.runtime.strategist_explanation import build_strategy_refresh_trace
+import sys as _r3_sys
+from libs.reporting.trade_report.ai_facade_r3_parts.bodies_01 import (
+    _normalize_section_r3_impl,
+    _actual_lifecycle_action_r3_impl,
+    _reporter_summary_is_placeholder_r3_impl,
+    resolve_shared_trade_facts_r3_impl,
+    _extract_korea_indices_snapshot_r3_impl,
+    _format_korea_indices_sentence_r3_impl,
+    _scanner_selected_row_r3_impl,
+    _build_scanner_driver_summary_r3_impl,
+    _build_runner_up_comparison_r3_impl,
+)
+from libs.reporting.trade_report.ai_facade_r3_parts.bodies_02 import (
+    _has_noisy_trade_report_text_r3_impl,
+    _build_scanner_filters_summary_r3_impl,
+    _looks_like_post_entry_monitor_snapshot_r3_impl,
+    _build_exit_decision_summary_r3_impl,
+    _compact_entry_or_exit_summary_r3_impl,
+    _extract_policy_ref_context_r3_impl,
+    _extract_scanner_bias_summary_r3_impl,
+)
+from libs.reporting.trade_report.ai_facade_r3_parts.bodies_03 import (
+    _extract_strategy_detail_from_source_r3_impl,
+    _compact_strategy_detail_context_r3_impl,
+    _enrich_candidate_watch_proposal_from_entry_control_r3_impl,
+    _compact_commander_entry_control_r3_impl,
+    _compact_entry_candidate_cascade_r3_impl,
+    _entry_execution_visibility_summary_r3_impl,
+)
+from libs.reporting.trade_report.ai_facade_r3_parts.bodies_04 import (
+    _extract_strategist_report_context_r3_impl,
+    _build_report_strategist_refresh_trace_r3_impl,
+    _compact_strategy_refresh_trace_r3_impl,
+    _compact_memory_application_trace_r3_impl,
+    _normalize_provenance_entry_r3_impl,
+    _report_section_provenance_r3_impl,
+)
+from libs.reporting.trade_report.ai_facade_r3_parts.bodies_05 import (
+    _attach_report_status_matrix_r3_impl,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -300,51 +340,12 @@ def _env_bool(name: str, default: bool = True) -> bool:
 
 
 def _normalize_section(section: Any, *, default_summary: str = "", bullet_key: str = "bullets") -> Dict[str, Any]:
-    data = section if isinstance(section, dict) else {}
-    out = {
-        "summary": _clip(data.get("summary"), max_len=600) or _clip(default_summary, max_len=600),
-        bullet_key: _listify(data.get(bullet_key), max_items=8, max_len=260),
-    }
-    for key in (
-        "headline",
-        "action",
-        "confidence",
-        "status",
-        "grade",
-        "current_action",
-        "symbol",
-        "story_type",
-    ):
-        value = _clip(data.get(key), max_len=120)
-        if value:
-            out[key] = value
-    return out
+    return _normalize_section_r3_impl(section, default_summary=default_summary,
+        bullet_key=bullet_key, facade=_r3_sys.modules[__name__])
 
 
 def _actual_lifecycle_action(story_input: Dict[str, Any]) -> str:
-    status_text = str(story_input.get("status") or "").strip().lower()
-    exit_summary = story_input.get("exit_summary") if isinstance(story_input.get("exit_summary"), dict) else {}
-    entry_summary = story_input.get("entry_summary") if isinstance(story_input.get("entry_summary"), dict) else {}
-    operator_conclusion = story_input.get("operator_conclusion_human") if isinstance(story_input.get("operator_conclusion_human"), dict) else {}
-
-    exit_action = _clip(exit_summary.get("action"), max_len=24).upper()
-    entry_action = _clip(entry_summary.get("action"), max_len=24).upper()
-    requested_action = _clip(story_input.get("action"), max_len=24).upper()
-    conclusion_action = _clip(operator_conclusion.get("current_action"), max_len=24).upper()
-
-    if exit_action in {"BUY", "SELL"}:
-        return exit_action
-    if status_text == "open":
-        if conclusion_action in {"HOLD", "WAIT", "BUY"}:
-            return conclusion_action
-        return "HOLD"
-    if requested_action in {"BUY", "SELL"}:
-        return requested_action
-    if conclusion_action in {"BUY", "SELL", "HOLD", "WAIT"}:
-        return conclusion_action
-    if entry_action in {"BUY", "SELL"}:
-        return entry_action
-    return "WAIT"
+    return _actual_lifecycle_action_r3_impl(story_input, facade=_r3_sys.modules[__name__])
 
 
 def _first_nonempty_text(*values: Any, max_len: int = 240) -> str:
@@ -431,27 +432,7 @@ def _story_post_exit_shadow(story_input: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _reporter_summary_is_placeholder(value: Any) -> bool:
-    text = str(value or "").strip()
-    if not text:
-        return False
-    lowered = text.lower()
-    exact_markers = {
-        "same-day reporter analysis was not generated yet.",
-        "a same-day reporter file exists, but this run was not linked to a run-specific evaluation yet.",
-        "a same-day reporter analysis was linked to this run.",
-        "당일 리포터 분석은 아직 생성되지 않았습니다.",
-        "당일 리포터 파일은 있지만 이 run에 대한 개별 평가는 아직 연결되지 않았습니다.",
-        "당일 리포터 분석이 이 run에 연결됐습니다.",
-    }
-    prefix_markers = (
-        "reporter status:",
-        "reporter reason:",
-        "reporter grade:",
-        "reporter summary:",
-    )
-    if lowered in {marker.lower() for marker in exact_markers}:
-        return True
-    return any(lowered.startswith(marker) for marker in prefix_markers)
+    return _reporter_summary_is_placeholder_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _resolve_trade_facts_with_precedence(story_input: Dict[str, Any]) -> Dict[str, Any]:
@@ -484,28 +465,7 @@ def _build_shared_summary_seed(story_input: Dict[str, Any]) -> Dict[str, Any]:
     )
 
 def resolve_shared_trade_facts(story_input: Dict[str, Any]) -> Dict[str, Any]:
-    shared_seed = _build_shared_summary_seed(story_input)
-    resolved = _as_dict(shared_seed.get("resolved_trade_facts"))
-    data_source = _as_dict(resolved.get("data_source"))
-    return {
-        "action": _as_action(resolved.get("action")) or "unavailable",
-        "status": _as_status(resolved.get("status")) or "unavailable",
-        "holding_duration": _clip(resolved.get("holding_duration"), max_len=80) or "unavailable",
-        "exit_reason": _clip(resolved.get("exit_reason"), max_len=280) or "unavailable",
-        "pnl": resolved.get("pnl", "unavailable"),
-        "pnl_pct": resolved.get("pnl_pct", "unavailable"),
-        "broker_fee": resolved.get("broker_fee"),
-        "broker_tax": resolved.get("broker_tax"),
-        "pnl_truth_source": _clip(resolved.get("pnl_truth_source"), max_len=80) or "unavailable",
-        "broker_fill_price": resolved.get("broker_fill_price"),
-        "broker_buy_price": resolved.get("broker_buy_price"),
-        "account_mark_price": resolved.get("account_mark_price"),
-        "monitor_mark_price": resolved.get("monitor_mark_price"),
-        "price_truth_source": _clip(resolved.get("price_truth_source"), max_len=40) or "unavailable",
-        "monitor_price_source": _clip(resolved.get("monitor_price_source"), max_len=120) or "unavailable",
-        "data_source": data_source,
-        "monitor_decision": _as_dict(shared_seed.get("monitor_decision")),
-    }
+    return resolve_shared_trade_facts_r3_impl(story_input, facade=_r3_sys.modules[__name__])
 
 
 def _normalize_trade_report_output(story_input: Dict[str, Any], report: Dict[str, Any]) -> Dict[str, Any]:
@@ -657,54 +617,11 @@ def _extract_us_indices_snapshot(events: Any) -> Dict[str, float]:
 
 
 def _extract_korea_indices_snapshot(section: Any) -> Dict[str, Dict[str, Any]]:
-    data = section if isinstance(section, dict) else {}
-    packet = data.get("korea_indices") if isinstance(data.get("korea_indices"), dict) else {}
-    indices = packet.get("indices") if isinstance(packet.get("indices"), dict) else {}
-    out: Dict[str, Dict[str, Any]] = {}
-    for name in ("KOSPI", "KOSDAQ"):
-        row = indices.get(name) if isinstance(indices.get(name), dict) else {}
-        if row:
-            out[name] = dict(row)
-    if out:
-        return out
-    events = data.get("key_events") or data.get("key_events_hint")
-    for row in _listify(events, max_items=8, max_len=260):
-        text = str(row or "")
-        match = re.search(
-            r"kospi=([+-]?\d+(?:\.\d+)?)/prev=([+-]?\d+(?:\.\d+)?)/chg=([+-]?\d+(?:\.\d+)?)%.*?"
-            r"kosdaq=([+-]?\d+(?:\.\d+)?)/prev=([+-]?\d+(?:\.\d+)?)/chg=([+-]?\d+(?:\.\d+)?)%",
-            text,
-            flags=re.IGNORECASE,
-        )
-        if not match:
-            continue
-        return {
-            "KOSPI": {"current": float(match.group(1)), "previous_close": float(match.group(2)), "change_pct": float(match.group(3))},
-            "KOSDAQ": {"current": float(match.group(4)), "previous_close": float(match.group(5)), "change_pct": float(match.group(6))},
-        }
-    return {}
+    return _extract_korea_indices_snapshot_r3_impl(section, facade=_r3_sys.modules[__name__])
 
 
 def _format_korea_indices_sentence(indices: Dict[str, Dict[str, Any]]) -> str:
-    parts: List[str] = []
-    for name in ("KOSPI", "KOSDAQ"):
-        row = indices.get(name) if isinstance(indices.get(name), dict) else {}
-        if not row:
-            continue
-        current = _num_opt(row.get("current"))
-        previous = _num_opt(row.get("previous_close"))
-        change_pct = _num_opt(row.get("change_pct"))
-        if current is None and previous is None and change_pct is None:
-            continue
-        bits = [name]
-        if current is not None:
-            bits.append(f"현재 {current:,.2f}")
-        if previous is not None:
-            bits.append(f"전일 {previous:,.2f}")
-        if change_pct is not None:
-            bits.append(f"등락률 {_format_pct_points(change_pct)}")
-        parts.append(" ".join(bits))
-    return "; ".join(parts)
+    return _format_korea_indices_sentence_r3_impl(indices, facade=_r3_sys.modules[__name__])
 
 
 def _format_pct_points(value: Any) -> str:
@@ -857,25 +774,7 @@ def _scanner_ranked_candidates(scanner_reason: Dict[str, Any]) -> List[Dict[str,
 
 
 def _scanner_selected_row(scanner_reason: Dict[str, Any]) -> Dict[str, Any]:
-    selected_symbol = _clip(scanner_reason.get("selected_symbol"), max_len=24)
-    ranked_rows = _scanner_ranked_candidates(scanner_reason)
-    if selected_symbol:
-        for row in ranked_rows:
-            if _clip(row.get("symbol"), max_len=24) == selected_symbol:
-                return dict(row)
-    fallback_ctx = _scanner_monitor_fallback_context(scanner_reason)
-    if fallback_ctx["used"] and selected_symbol:
-        trace = scanner_reason.get("scanner_selection_trace") if isinstance(scanner_reason.get("scanner_selection_trace"), dict) else {}
-        news = trace.get("news_scanner_contribution") if isinstance(trace.get("news_scanner_contribution"), dict) else {}
-        row = {
-            "symbol": selected_symbol,
-            "rank": scanner_reason.get("selected_rank") or trace.get("selected_rank"),
-            "score_total": scanner_reason.get("selected_score") or trace.get("selected_score") or news.get("selected_score_total"),
-            "confidence": scanner_reason.get("confidence") or trace.get("confidence"),
-            "risk_score": scanner_reason.get("risk_score") or trace.get("risk_score"),
-        }
-        return {key: value for key, value in row.items() if value not in (None, "")}
-    return dict(ranked_rows[0]) if ranked_rows else {}
+    return _scanner_selected_row_r3_impl(scanner_reason, facade=_r3_sys.modules[__name__])
 
 
 def _scanner_monitor_fallback_context(scanner_reason: Dict[str, Any]) -> Dict[str, Any]:
@@ -914,25 +813,7 @@ def _scanner_chart_feature_coverage(scanner_reason: Dict[str, Any]) -> Dict[str,
 
 
 def _build_scanner_driver_summary(scanner_reason: Dict[str, Any]) -> str:
-    driver_source = (
-        scanner_reason.get("selected_symbol_score_drivers")
-        if isinstance(scanner_reason.get("selected_symbol_score_drivers"), dict)
-        else {}
-    )
-    if not driver_source:
-        trace = scanner_reason.get("scanner_selection_trace") if isinstance(scanner_reason.get("scanner_selection_trace"), dict) else {}
-        driver_source = trace.get("selected_symbol_score_drivers") if isinstance(trace.get("selected_symbol_score_drivers"), dict) else {}
-    driver_rows: List[tuple[str, float]] = []
-    for key, value in dict(driver_source or {}).items():
-        numeric = _num_opt(value)
-        if numeric is None or numeric <= 0:
-            continue
-        driver_rows.append((_scanner_score_driver_label(key), numeric))
-    if not driver_rows:
-        return ""
-    driver_rows.sort(key=lambda item: item[1], reverse=True)
-    top_rows = [f"{label} {value:.3f}" for label, value in driver_rows[:3]]
-    return ", ".join(top_rows)
+    return _build_scanner_driver_summary_r3_impl(scanner_reason, facade=_r3_sys.modules[__name__])
 
 
 def _build_runner_up_comparison(
@@ -942,29 +823,9 @@ def _build_runner_up_comparison(
     selected_score: Optional[float],
     selected_risk: Optional[float],
 ) -> str:
-    runner_symbol = _clip(row.get("symbol"), max_len=24)
-    if not runner_symbol:
-        return ""
-    parts: List[str] = []
-    runner_score = _num_opt(row.get("score_total"))
-    runner_risk = _num_opt(row.get("risk_score"))
-    if runner_score is not None and selected_score is not None:
-        gap = selected_score - runner_score
-        if gap >= 0:
-            parts.append(
-                f"종합 점수 {runner_score:.3f}로 {selected_symbol}({selected_score:.3f})보다 {gap:.3f} 낮았습니다"
-            )
-    if runner_risk is not None and selected_risk is not None and runner_risk > selected_risk:
-        parts.append(
-            f"리스크 점수 {runner_risk:.3f}로 {selected_symbol}({selected_risk:.3f})보다 높았습니다"
-        )
-    if not parts:
-        why_text = _clip(row.get("why") or row.get("summary"), max_len=220)
-        if why_text:
-            parts.append(_operatorize_report_text(why_text))
-    if not parts:
-        return ""
-    return f"{runner_symbol}은 " + ". ".join(parts) + "."
+    return _build_runner_up_comparison_r3_impl(row, selected_symbol=selected_symbol,
+        selected_score=selected_score, selected_risk=selected_risk,
+        facade=_r3_sys.modules[__name__])
 
 
 def _build_scanner_choice_bullets(
@@ -983,31 +844,7 @@ def _build_scanner_candidate_comparison_section(
     return _build_scanner_candidate_comparison_section_impl(scanner_reason, market_context, deps=_section_builder_deps())
 
 def _has_noisy_trade_report_text(value: Any) -> bool:
-    raw = str(value or "").strip().lower()
-    if not raw:
-        return False
-    noisy_tokens = (
-        "cached_strategist",
-        "policy_validation_status",
-        "fallback_invalid",
-        "strategist invocation",
-        "headlines were considered",
-        "market regime",
-        "scanner selected ",
-        "source mix:",
-        "chart feature coverage",
-        "trading value",
-        "theme and sector alignment",
-        "confidence:",
-        "risk_score",
-        "timeframe ",
-        "breakout lookback",
-        "volume lookback",
-        "volume_ratio_min",
-        "min_extended_from_vwap_pct",
-        "max_extended_from_vwap_pct",
-    )
-    return any(token in raw for token in noisy_tokens)
+    return _has_noisy_trade_report_text_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _scanner_check_name_label(value: Any) -> str:
@@ -1017,27 +854,7 @@ def _scanner_check_status_label(value: Any) -> str:
     return _scanner_check_status_label_impl(value, _clip=_clip)
 
 def _build_scanner_filters_summary(filters_human: Dict[str, Any]) -> str:
-    checks = [row for row in list(filters_human.get("checks") or []) if isinstance(row, dict)]
-    feature_coverage = filters_human.get("feature_coverage") if isinstance(filters_human.get("feature_coverage"), dict) else {}
-    if not checks:
-        return _clip(filters_human.get("summary"), max_len=600) or "스캐너 후보 비교 근거는 저장된 범위 안에서 제한적으로 확인됩니다."
-    pass_count = sum(1 for row in checks if str(row.get("status") or "").strip().upper() == "PASS")
-    fail_count = sum(1 for row in checks if str(row.get("status") or "").strip().upper() == "FAIL")
-    na_count = sum(1 for row in checks if str(row.get("status") or "").strip().upper() == "NOT_AVAILABLE")
-    present = int(float(feature_coverage.get("present") or 0)) if _num_opt(feature_coverage.get("present")) is not None else 0
-    total = int(float(feature_coverage.get("total") or 0)) if _num_opt(feature_coverage.get("total")) is not None else 0
-    quality_raw = _clip(feature_coverage.get("quality"), max_len=40).strip().lower()
-    quality = {
-        "strong": "양호",
-        "good": "양호",
-        "moderate": "보통",
-        "weak": "취약",
-    }.get(quality_raw, _clip(feature_coverage.get("quality"), max_len=40) or "not_captured")
-
-    summary = f"스캐너 후보 비교에서는 {len(checks)}개 체크 중 통과 {pass_count}개, 미통과 {fail_count}개, 확인 불가 {na_count}개였습니다."
-    if present and total:
-        summary += f" 차트 피처 커버리지는 {present}/{total}로 {quality} 수준이었습니다."
-    return summary
+    return _build_scanner_filters_summary_r3_impl(filters_human, facade=_r3_sys.modules[__name__])
 
 
 def _build_scanner_filters_bullets(filters_human: Dict[str, Any]) -> List[str]:
@@ -1143,42 +960,8 @@ def _compact_entry_gate_snapshot(source: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _looks_like_post_entry_monitor_snapshot(story_input: Dict[str, Any], monitor_reason: Dict[str, Any]) -> bool:
-    grouped_trace = _as_dict(monitor_reason.get("entry_grouped_logic_trace"))
-    entry_scores = _as_dict(monitor_reason.get("entry_condition_scores"))
-    has_entry_gate_snapshot = bool(
-        grouped_trace
-        or entry_scores
-        or monitor_reason.get("entry_condition_path") not in (None, "")
-    )
-    if not has_entry_gate_snapshot:
-        return False
-
-    status_text = _clip(
-        story_input.get("status")
-        or story_input.get("lifecycle_status")
-        or _as_dict(story_input.get("shared_facts")).get("status"),
-        max_len=40,
-    ).lower()
-    action_text = _clip(
-        story_input.get("action")
-        or _as_dict(story_input.get("shared_facts")).get("action"),
-        max_len=40,
-    ).upper()
-    posture = _clip(monitor_reason.get("posture"), max_len=40).upper()
-    has_exit_axis = any(
-        monitor_reason.get(key) not in (None, "", [], {})
-        for key in (
-            "active_exit_axis",
-            "exit_triggered",
-            "position_age_seconds",
-            "trigger_type",
-            "peak_drawdown",
-            "current_drawdown",
-            "effective_stop_loss_pct",
-            "watch_axes",
-        )
-    )
-    return bool(has_exit_axis and (status_text == "closed" or action_text == "SELL" or posture in {"SELL", "HOLD"}))
+    return _looks_like_post_entry_monitor_snapshot_r3_impl(story_input, monitor_reason,
+        facade=_r3_sys.modules[__name__])
 
 
 def _entry_snapshot_as_post_entry_observation(monitor_reason: Dict[str, Any]) -> Dict[str, Any]:
@@ -1271,30 +1054,8 @@ def _build_exit_decision_summary(
     *,
     status_text: str,
 ) -> str:
-    reason = _clip(exit_summary.get("reason_human"), max_len=600)
-    reason_label = _exit_reason_label(reason)
-    if status_text.lower() == "open":
-        return reason_label or "현재 포지션은 아직 열려 있어 확정된 청산 체결은 기록되지 않았습니다."
-    if reason or reason_label:
-        price = _fmt_price(monitor_context.get("current_price"))
-        avg_price = _fmt_price(monitor_context.get("average_price"))
-        drawdown = _fmt_pct(monitor_context.get("current_drawdown"))
-        axis = _operator_axis_label(_clip(monitor_context.get("active_exit_axis"), max_len=64))
-        confirm_required = monitor_context.get("confirm_required")
-        confirm_count = monitor_context.get("confirm_count")
-        details: List[str] = []
-        if axis:
-            details.append(f"핵심 청산 축은 {axis}")
-        if confirm_required is not None:
-            details.append(f"확인 조건은 {int(confirm_count or 0)}/{int(confirm_required or 0)}")
-        if price != "-" and avg_price != "-":
-            details.append(f"현재가는 {price}, 평균가는 {avg_price}")
-        if drawdown != "-":
-            details.append(f"현재 손익 변동은 {drawdown}")
-        if details:
-            return f"{reason_label or reason}. 청산 당시 상황은 " + ", ".join(details) + "입니다."
-        return reason_label or reason
-    return "청산 판단 근거는 저장된 데이터 범위 안에서 충분히 확인되지 않았습니다."
+    return _build_exit_decision_summary_r3_impl(exit_summary, monitor_context,
+        status_text=status_text, facade=_r3_sys.modules[__name__])
 
 
 def _build_exit_decision_bullets(
@@ -1320,113 +1081,17 @@ def _compact_holding_summary(holding: Any) -> Dict[str, Any]:
 
 
 def _compact_entry_or_exit_summary(summary: Any) -> Dict[str, Any]:
-    data = summary if isinstance(summary, dict) else {}
-    strategist_ctx = data.get("strategist_context") if isinstance(data.get("strategist_context"), dict) else {}
-    scanner_ctx = data.get("scanner_context") if isinstance(data.get("scanner_context"), dict) else {}
-    monitor_ctx = data.get("monitor_context") if isinstance(data.get("monitor_context"), dict) else {}
-    guard_ctx = data.get("guard_context") if isinstance(data.get("guard_context"), dict) else {}
-    execution_ctx = data.get("execution_context") if isinstance(data.get("execution_context"), dict) else {}
-    return {
-        "run_id": _clip(data.get("run_id"), max_len=40),
-        "ts": _clip(data.get("ts"), max_len=40),
-        "action": _clip(data.get("action"), max_len=24),
-        "reason_human": _clip(data.get("reason_human"), max_len=280),
-        "strategist_context": {
-            "market_regime": _clip(strategist_ctx.get("market_regime"), max_len=32),
-            "market_sentiment": _clip(strategist_ctx.get("market_sentiment"), max_len=32),
-            "playbook": _clip(strategist_ctx.get("playbook"), max_len=40),
-            "themes": _listify(strategist_ctx.get("themes"), max_items=4, max_len=80),
-            "global_sentiment_score": strategist_ctx.get("global_sentiment_score"),
-            "vix_level": strategist_ctx.get("vix_level"),
-            "headline_count": strategist_ctx.get("headline_count"),
-            "news_query_targets": _listify(strategist_ctx.get("news_query_targets"), max_items=5, max_len=80),
-            "stress_flags": _listify(strategist_ctx.get("stress_flags"), max_items=4, max_len=80),
-        },
-        "scanner_context": {
-            "selected_symbol": _clip(scanner_ctx.get("selected_symbol"), max_len=24),
-            "selected_rank": scanner_ctx.get("selected_rank"),
-            "universe_size": scanner_ctx.get("universe_size"),
-            "score_total": scanner_ctx.get("score_total"),
-            "confidence": scanner_ctx.get("confidence"),
-            "top_candidates": _compact_named_rows(scanner_ctx.get("top_candidates"), max_items=3),
-            "selection_reason": _clip(scanner_ctx.get("selection_reason"), max_len=220),
-        },
-        "monitor_context": _compact_monitor_snapshot(monitor_ctx),
-        "guard_context": {
-            "status": _clip(guard_ctx.get("status") or guard_ctx.get("verdict"), max_len=32),
-            "summary": _clip(guard_ctx.get("summary") or guard_ctx.get("reason"), max_len=220),
-        },
-        "execution_context": {
-            "status": _clip(execution_ctx.get("status"), max_len=32),
-            "summary": _clip(execution_ctx.get("summary") or execution_ctx.get("message"), max_len=220),
-            "qty": execution_ctx.get("qty"),
-            "price": execution_ctx.get("price"),
-        },
-    }
+    return _compact_entry_or_exit_summary_r3_impl(summary, facade=_r3_sys.modules[__name__])
 
 
 def _extract_policy_ref_context(story_input: Dict[str, Any], monitor_reason: Dict[str, Any]) -> Dict[str, Any]:
-    candidates: List[Dict[str, Any]] = []
-    if isinstance(monitor_reason.get("policy_ref"), dict):
-        candidates.append(monitor_reason.get("policy_ref"))
-    for key in ("entry_summary", "exit_summary"):
-        block = story_input.get(key) if isinstance(story_input.get(key), dict) else {}
-        monitor_ctx = block.get("monitor_context") if isinstance(block.get("monitor_context"), dict) else {}
-        policy_ref = monitor_ctx.get("policy_ref") if isinstance(monitor_ctx.get("policy_ref"), dict) else {}
-        if policy_ref:
-            candidates.append(policy_ref)
-    holding = story_input.get("holding_summary") if isinstance(story_input.get("holding_summary"), dict) else {}
-    for row in list(holding.get("holding_events") or [])[:8]:
-        if not isinstance(row, dict):
-            continue
-        monitor_ctx = row.get("monitor_context") if isinstance(row.get("monitor_context"), dict) else {}
-        policy_ref = monitor_ctx.get("policy_ref") if isinstance(monitor_ctx.get("policy_ref"), dict) else {}
-        if policy_ref:
-            candidates.append(policy_ref)
-    for policy_ref in candidates:
-        symbol_constraints = policy_ref.get("symbol_constraints") if isinstance(policy_ref.get("symbol_constraints"), dict) else {}
-        risk_mode = _clip(policy_ref.get("risk_mode"), max_len=40)
-        selected_playbook = _clip(policy_ref.get("selected_playbook"), max_len=40)
-        preferred_themes = _listify(symbol_constraints.get("preferred_themes"), max_items=6, max_len=80)
-        avoid_themes = _listify(symbol_constraints.get("avoid_themes"), max_items=6, max_len=80)
-        if risk_mode or selected_playbook or preferred_themes or avoid_themes:
-            return {
-                "risk_mode": risk_mode,
-                "selected_playbook": selected_playbook,
-                "preferred_themes": preferred_themes,
-                "avoid_themes": avoid_themes,
-            }
-    return {}
+    return _extract_policy_ref_context_r3_impl(story_input, monitor_reason,
+        facade=_r3_sys.modules[__name__])
 
 
 def _extract_scanner_bias_summary(story_input: Dict[str, Any], scanner_reason: Dict[str, Any]) -> Dict[str, Any]:
-    candidates: List[Dict[str, Any]] = []
-    if isinstance(scanner_reason.get("scanner_bias_summary"), dict) and scanner_reason.get("scanner_bias_summary"):
-        candidates.append(scanner_reason.get("scanner_bias_summary"))
-    scanner_trace_summary = story_input.get("scanner_trace_summary") if isinstance(story_input.get("scanner_trace_summary"), dict) else {}
-    if isinstance(scanner_trace_summary.get("scanner_bias_summary"), dict) and scanner_trace_summary.get("scanner_bias_summary"):
-        candidates.append(scanner_trace_summary.get("scanner_bias_summary"))
-    canonical_artifacts = story_input.get("canonical_agent_artifacts") if isinstance(story_input.get("canonical_agent_artifacts"), dict) else {}
-    canonical_scanner = canonical_artifacts.get("scanner") if isinstance(canonical_artifacts.get("scanner"), dict) else {}
-    if isinstance(canonical_scanner.get("scanner_bias_summary"), dict) and canonical_scanner.get("scanner_bias_summary"):
-        candidates.append(canonical_scanner.get("scanner_bias_summary"))
-    scanner_evidence = story_input.get("scanner_evidence") if isinstance(story_input.get("scanner_evidence"), dict) else {}
-    for row in list(scanner_evidence.get("candidate_selection_reasons") or [])[:3]:
-        if not isinstance(row, dict):
-            continue
-        payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-        if isinstance(payload.get("scanner_bias_summary"), dict) and payload.get("scanner_bias_summary"):
-            candidates.append(payload.get("scanner_bias_summary"))
-    for item in candidates:
-        if item:
-            return {
-                "enabled": item.get("enabled"),
-                "active_biases": _listify(item.get("active_biases"), max_items=6, max_len=80),
-                "bias_strength": _clip(item.get("bias_strength"), max_len=24),
-                "bias_source": _clip(item.get("bias_source"), max_len=80),
-                "summary": _clip(item.get("summary"), max_len=220),
-            }
-    return {}
+    return _extract_scanner_bias_summary_r3_impl(story_input, scanner_reason,
+        facade=_r3_sys.modules[__name__])
 
 
 def _evidence_digest(evidence: Any, keys: List[str]) -> Dict[str, int]:
@@ -1435,117 +1100,11 @@ def _evidence_digest(evidence: Any, keys: List[str]) -> Dict[str, int]:
 
 
 def _extract_strategy_detail_from_source(source: Any) -> Dict[str, Any]:
-    data = source if isinstance(source, dict) else {}
-    if not data:
-        return {}
-    strategy_policy = _as_dict(data.get("strategy_policy"))
-    market_policy = _as_dict(strategy_policy.get("market_policy"))
-    scanner_policy = _as_dict(strategy_policy.get("scanner_policy"))
-    direct_detail = _as_dict(data.get("strategy_detail"))
-
-    def _pick_text(key: str, *, max_len: int = 80) -> str:
-        return _first_nonempty_text(
-            direct_detail.get(key),
-            data.get(key),
-            market_policy.get(key),
-            max_len=max_len,
-        )
-
-    detail: Dict[str, Any] = {}
-    for key in (
-        "pre_llm_playbook",
-        "llm_requested_playbook",
-        "requested_playbook",
-        "requested_playbook_source",
-        "final_playbook",
-        "tactical_strategy",
-        "tactical_subtype",
-    ):
-        value = _pick_text(key)
-        if value:
-            detail[key] = value
-
-    scores = (
-        _as_dict(direct_detail.get("strategy_scores"))
-        or _as_dict(data.get("strategy_scores"))
-        or _as_dict(market_policy.get("strategy_scores"))
-    )
-    if scores:
-        detail["strategy_scores"] = {
-            str(key): value
-            for key, value in list(scores.items())[:8]
-            if str(key or "").strip()
-        }
-
-    rejected = (
-        _as_dict(direct_detail.get("rejected_strategy_reasons"))
-        or _as_dict(data.get("rejected_strategy_reasons"))
-        or _as_dict(market_policy.get("rejected_strategy_reasons"))
-    )
-    if rejected:
-        detail["rejected_strategy_reasons"] = _compact_scalar_dict(rejected, max_items=6, max_len=180)
-
-    watch = (
-        _as_dict(direct_detail.get("candidate_watch_policy"))
-        or _as_dict(data.get("candidate_watch_policy"))
-        or _as_dict(scanner_policy.get("candidate_watch_policy"))
-    )
-    if watch:
-        detail["candidate_watch_policy"] = {
-            "behavior_effect": _clip(watch.get("behavior_effect"), max_len=40),
-            "source": _clip(watch.get("source"), max_len=80),
-            "max_priority_rank": watch.get("max_priority_rank"),
-            "max_runner_ups": watch.get("max_runner_ups"),
-            "cascade_enabled": watch.get("cascade_enabled"),
-            "tactical_strategy": _clip(watch.get("tactical_strategy"), max_len=80),
-            "reason": _clip(watch.get("reason"), max_len=220),
-            "cascade_allowed_reasons": _listify(watch.get("cascade_allowed_reasons"), max_items=6, max_len=80),
-            "cascade_blocked_reasons": _listify(watch.get("cascade_blocked_reasons"), max_items=8, max_len=80),
-        }
-
-    return {key: value for key, value in detail.items() if value not in ("", None, [], {})}
+    return _extract_strategy_detail_from_source_r3_impl(source, facade=_r3_sys.modules[__name__])
 
 
 def _compact_strategy_detail_context(value: Any) -> Dict[str, Any]:
-    detail = _as_dict(value)
-    if not detail:
-        return {}
-    out: Dict[str, Any] = {}
-    for key, max_len in (
-        ("pre_llm_playbook", 60),
-        ("llm_requested_playbook", 60),
-        ("requested_playbook", 60),
-        ("requested_playbook_source", 60),
-        ("final_playbook", 60),
-        ("tactical_strategy", 80),
-        ("tactical_subtype", 80),
-    ):
-        text = _clip(detail.get(key), max_len=max_len)
-        if text:
-            out[key] = text
-    scores = _compact_scalar_dict(detail.get("strategy_scores"), max_items=8, max_len=80)
-    if scores:
-        out["strategy_scores"] = scores
-    rejected = _compact_scalar_dict(detail.get("rejected_strategy_reasons"), max_items=6, max_len=180)
-    if rejected:
-        out["rejected_strategy_reasons"] = rejected
-    watch = _as_dict(detail.get("candidate_watch_policy"))
-    if watch:
-        watch_out = {
-            "behavior_effect": _clip(watch.get("behavior_effect"), max_len=40),
-            "source": _clip(watch.get("source"), max_len=80),
-            "max_priority_rank": watch.get("max_priority_rank"),
-            "max_runner_ups": watch.get("max_runner_ups"),
-            "cascade_enabled": watch.get("cascade_enabled"),
-            "tactical_strategy": _clip(watch.get("tactical_strategy"), max_len=80),
-            "reason": _clip(watch.get("reason"), max_len=220),
-            "cascade_allowed_reasons": _listify(watch.get("cascade_allowed_reasons"), max_items=6, max_len=80),
-            "cascade_blocked_reasons": _listify(watch.get("cascade_blocked_reasons"), max_items=8, max_len=80),
-        }
-        watch_out = {key: val for key, val in watch_out.items() if val not in ("", None, [], {})}
-        if watch_out:
-            out["candidate_watch_policy"] = watch_out
-    return out
+    return _compact_strategy_detail_context_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _compact_candidate_watch_proposal(value: Any) -> Dict[str, Any]:
@@ -1571,111 +1130,16 @@ def _enrich_candidate_watch_proposal_from_entry_control(
     proposal: Dict[str, Any],
     entry_control: Dict[str, Any],
 ) -> Dict[str, Any]:
-    out = dict(proposal or {})
-    control = _as_dict(entry_control)
-    nested = _as_dict(control.get("proposal")) or _as_dict(control.get("candidate_watch_policy_proposal"))
-    if not out and nested:
-        out = dict(nested)
-    if not out:
-        return {}
-    if out.get("max_priority_rank") in (None, "") and control.get("proposed_max_priority_rank") not in (None, ""):
-        out["max_priority_rank"] = control.get("proposed_max_priority_rank")
-    if out.get("max_runner_ups") in (None, "") and control.get("proposed_max_runner_ups") not in (None, ""):
-        out["max_runner_ups"] = control.get("proposed_max_runner_ups")
-    if out.get("cascade_enabled") in (None, "") and nested.get("cascade_enabled") not in (None, ""):
-        out["cascade_enabled"] = nested.get("cascade_enabled")
-    for key in ("source", "behavior_effect", "tactical_strategy", "reason"):
-        if out.get(key) in (None, "") and nested.get(key) not in (None, ""):
-            out[key] = nested.get(key)
-    for key in ("cascade_allowed_reasons", "cascade_blocked_reasons"):
-        if out.get(key) in (None, "", []) and nested.get(key) not in (None, "", []):
-            out[key] = nested.get(key)
-    return _compact_candidate_watch_proposal(out)
+    return _enrich_candidate_watch_proposal_from_entry_control_r3_impl(proposal, entry_control,
+        facade=_r3_sys.modules[__name__])
 
 
 def _compact_commander_entry_control(value: Any) -> Dict[str, Any]:
-    data = _as_dict(value)
-    if not data:
-        return {}
-    proposal = _compact_candidate_watch_proposal(data.get("candidate_watch_policy_proposal"))
-    out = {
-        "schema_version": _clip(data.get("schema_version"), max_len=80),
-        "mode": _clip(data.get("mode"), max_len=80),
-        "decision": _clip(data.get("decision"), max_len=100),
-        "reason": _clip(data.get("reason"), max_len=220),
-        "max_priority_rank": data.get("max_priority_rank"),
-        "max_runner_ups": data.get("max_runner_ups"),
-        "cascade_enabled": data.get("cascade_enabled"),
-        "candidate_watch_policy_detected": data.get("candidate_watch_policy_detected"),
-        "candidate_watch_policy_applied": data.get("candidate_watch_policy_applied"),
-        "candidate_watch_policy_effect": _clip(data.get("candidate_watch_policy_effect"), max_len=80),
-        "candidate_watch_policy_clamp_reason": _clip(
-            data.get("candidate_watch_policy_clamp_reason"),
-            max_len=220,
-        ),
-        "proposed_max_priority_rank": data.get("proposed_max_priority_rank") or proposal.get("max_priority_rank"),
-        "proposed_max_runner_ups": data.get("proposed_max_runner_ups") or proposal.get("max_runner_ups"),
-        "proposal": proposal,
-        "cascade_allowed_reasons": _listify(data.get("cascade_allowed_reasons"), max_items=6, max_len=80),
-        "cascade_blocked_reasons": _listify(data.get("cascade_blocked_reasons"), max_items=8, max_len=80),
-    }
-    return {key: value for key, value in out.items() if value not in ("", None, [], {})}
+    return _compact_commander_entry_control_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _compact_entry_candidate_cascade(value: Any) -> Dict[str, Any]:
-    data = _as_dict(value)
-    if not data:
-        return {}
-    trace_rows: List[Dict[str, Any]] = []
-    for row in list(data.get("fallback_trace") or [])[:6]:
-        item = _as_dict(row)
-        if not item:
-            continue
-        trace_rows.append(
-            {
-                "symbol": _clip(item.get("symbol"), max_len=24),
-                "rank": item.get("rank"),
-                "score_total": item.get("score_total"),
-                "triggered": item.get("triggered"),
-                "reason": _clip(item.get("reason"), max_len=120),
-                "primary_failure_axis": _clip(item.get("primary_failure_axis"), max_len=80),
-                "guard_blocked": item.get("guard_blocked"),
-                "confidence_score": item.get("confidence_score"),
-                "confidence_threshold": item.get("confidence_threshold"),
-                "volume_ratio": item.get("volume_ratio"),
-                "vwap_distance": item.get("vwap_distance"),
-            }
-        )
-    trace_rows = [
-        {key: value for key, value in row.items() if value not in ("", None, [], {})}
-        for row in trace_rows
-    ]
-    out = {
-        "attempted": data.get("attempted"),
-        "eligible": data.get("eligible"),
-        "cascade_enabled": data.get("cascade_enabled"),
-        "reason": _clip(data.get("reason"), max_len=140),
-        "blocked_reason": _clip(data.get("blocked_reason"), max_len=140),
-        "top_pick_symbol": _clip(data.get("top_pick_symbol"), max_len=24),
-        "top_pick_triggered": data.get("top_pick_triggered"),
-        "top_pick_reason": _clip(data.get("top_pick_reason"), max_len=140),
-        "top_pick_guard_blocked": data.get("top_pick_guard_blocked"),
-        "max_priority_rank": data.get("max_priority_rank"),
-        "max_runner_ups": data.get("max_runner_ups"),
-        "control_source": _clip(data.get("control_source"), max_len=80),
-        "control_mode": _clip(data.get("control_mode"), max_len=80),
-        "runner_up_symbols": _listify(data.get("runner_up_symbols"), max_items=9, max_len=24),
-        "fallback_used": data.get("fallback_used"),
-        "fallback_from_symbol": _clip(data.get("fallback_from_symbol"), max_len=24),
-        "fallback_to_symbol": _clip(data.get("fallback_to_symbol"), max_len=24),
-        "fallback_to_rank": data.get("fallback_to_rank"),
-        "final_selected_symbol": _clip(data.get("final_selected_symbol"), max_len=24),
-        "final_selected_rank": data.get("final_selected_rank"),
-        "fallback_trace": trace_rows,
-        "cascade_allowed_reasons": _listify(data.get("cascade_allowed_reasons"), max_items=6, max_len=80),
-        "cascade_blocked_reasons": _listify(data.get("cascade_blocked_reasons"), max_items=8, max_len=80),
-    }
-    return {key: value for key, value in out.items() if value not in ("", None, [], {})}
+    return _compact_entry_candidate_cascade_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _first_dict_from(*values: Any) -> Dict[str, Any]:
@@ -1692,30 +1156,8 @@ def _entry_execution_visibility_summary(
     entry_control: Dict[str, Any],
     cascade: Dict[str, Any],
 ) -> str:
-    parts: List[str] = []
-    if proposal:
-        parts.append(
-            "strategy proposed "
-            f"rank<={proposal.get('max_priority_rank', '-')}, runner_ups={proposal.get('max_runner_ups', '-')}"
-        )
-    if entry_control:
-        parts.append(
-            "commander applied "
-            f"rank<={entry_control.get('max_priority_rank', '-')}, runner_ups={entry_control.get('max_runner_ups', '-')}"
-        )
-        clamp_reason = _clip(entry_control.get("candidate_watch_policy_clamp_reason"), max_len=120)
-        if clamp_reason:
-            parts.append(f"clamp={clamp_reason}")
-    if cascade:
-        attempted = "attempted" if bool(cascade.get("attempted")) else "not_attempted"
-        fallback = cascade.get("fallback_to_symbol") if bool(cascade.get("fallback_used")) else ""
-        if fallback:
-            parts.append(f"monitor {attempted}, fallback_to={fallback}")
-        else:
-            blocked = _clip(cascade.get("blocked_reason"), max_len=120)
-            suffix = f", blocked={blocked}" if blocked else ""
-            parts.append(f"monitor {attempted}{suffix}")
-    return "; ".join(part for part in parts if part)
+    return _entry_execution_visibility_summary_r3_impl(proposal=proposal,
+        entry_control=entry_control, cascade=cascade, facade=_r3_sys.modules[__name__])
 
 
 def _context_builder_deps() -> Dict[str, Any]:
@@ -1742,127 +1184,16 @@ def _extract_entry_execution_visibility(story_input: Dict[str, Any]) -> Dict[str
     return _extract_entry_execution_visibility_impl(story_input, deps=_context_builder_deps())
 
 def _extract_strategist_report_context(story_input: Dict[str, Any]) -> Dict[str, Any]:
-    canonical = story_input.get("canonical_agent_artifacts") if isinstance(story_input.get("canonical_agent_artifacts"), dict) else {}
-    carriers = [
-        story_input.get("strategist_output"),
-        story_input.get("strategist"),
-        canonical.get("strategist"),
-        story_input,
-    ]
-    fields = (
-        "strategy_thesis",
-        "strategy_delta_trace",
-        "strategy_refresh_trace",
-        "memory_usage_trace",
-        "news_usage_trace",
-        "scanner_handoff",
-        "monitor_handoff",
-        "conflict_analysis",
-        "trade_permission_frame",
-        "responsibility_boundary",
-        "strategy_detail",
-    )
-    out: Dict[str, Any] = {}
-    for carrier in carriers:
-        source = carrier if isinstance(carrier, dict) else {}
-        if not source:
-            continue
-        for field in fields:
-            if field in out:
-                continue
-            value = source.get(field)
-            if isinstance(value, dict) and value:
-                out[field] = dict(value)
-    if "strategy_detail" not in out:
-        for carrier in carriers:
-            detail = _extract_strategy_detail_from_source(carrier)
-            if detail:
-                out["strategy_detail"] = detail
-                break
-    return out
+    return _extract_strategist_report_context_r3_impl(story_input, facade=_r3_sys.modules[__name__])
 
 
 def _build_report_strategist_refresh_trace(story_input: Dict[str, Any]) -> Dict[str, Any]:
-    canonical = story_input.get("canonical_agent_artifacts") if isinstance(story_input.get("canonical_agent_artifacts"), dict) else {}
-    strategist_artifact = canonical.get("strategist") if isinstance(canonical.get("strategist"), dict) else {}
-    commander_artifact = canonical.get("commander") if isinstance(canonical.get("commander"), dict) else {}
-    strategist_output = (
-        story_input.get("strategist_output")
-        if isinstance(story_input.get("strategist_output"), dict)
-        else strategist_artifact
-    )
-    if not isinstance(strategist_output, dict):
-        strategist_output = {}
-    commander_decision = (
-        commander_artifact.get("commander_decision")
-        if isinstance(commander_artifact.get("commander_decision"), dict)
-        else story_input.get("commander_decision")
-        if isinstance(story_input.get("commander_decision"), dict)
-        else {}
-    )
-    if isinstance(strategist_artifact.get("strategy_refresh_trace"), dict) and strategist_artifact.get("strategy_refresh_trace"):
-        return _compact_strategy_refresh_trace(strategist_artifact.get("strategy_refresh_trace"))
-    if isinstance(strategist_output.get("strategy_refresh_trace"), dict) and strategist_output.get("strategy_refresh_trace"):
-        return _compact_strategy_refresh_trace(strategist_output.get("strategy_refresh_trace"))
-    trace = build_strategy_refresh_trace(
-        strategist_output=dict(strategist_output),
-        state={
-            "commander_decision": dict(commander_decision or {}),
-            "route_observability": dict(commander_artifact.get("route_observability") or {}),
-        },
-    )
-    return _compact_strategy_refresh_trace(trace)
+    return _build_report_strategist_refresh_trace_r3_impl(story_input,
+        facade=_r3_sys.modules[__name__])
 
 
 def _compact_strategy_refresh_trace(value: Any) -> Dict[str, Any]:
-    trace = value if isinstance(value, dict) else {}
-    stages: List[Dict[str, Any]] = []
-    for row in list(trace.get("stages") or [])[:4]:
-        if not isinstance(row, dict):
-            continue
-        quant_context = _as_dict(row.get("quant_context") or row.get("strategist_quant_context"))
-        quant_market = _as_dict(quant_context.get("quant_market_context"))
-        quant_scorecard = _as_dict(quant_market.get("scorecard"))
-        quant_feedback = _as_dict(quant_scorecard.get("quant_memory_feedback"))
-        compact_stage = {
-            "stage": _clip(row.get("stage"), max_len=80),
-            "label": _clip(row.get("label"), max_len=80),
-            "summary": _clip(row.get("summary"), max_len=320),
-            "requested": row.get("requested"),
-            "evaluated": row.get("evaluated"),
-            "effective": row.get("effective"),
-            "reason": _clip(row.get("reason"), max_len=160),
-            "selected_symbol": _clip(row.get("selected_symbol"), max_len=24),
-            "policy_delta_count": row.get("policy_delta_count"),
-            "policy_delta_fields": _listify(row.get("policy_delta_fields"), max_items=8, max_len=80),
-        }
-        if quant_context:
-            compact_stage.update(
-                {
-                    "quant_context_call_kind": _clip(quant_context.get("call_kind"), max_len=80),
-                    "quant_scorecard_available": quant_scorecard.get("available"),
-                    "quant_feedback_tags": _listify(quant_feedback.get("feedback_tags"), max_items=8, max_len=80),
-                    "selected_symbol_quant_snapshot_present": bool(quant_context.get("selected_symbol_quant_snapshot")),
-                    "hold_quant_context_present": bool(quant_context.get("hold_quant_context")),
-                    "carry_quant_context_present": bool(quant_context.get("carry_quant_context")),
-                    "quant_behavior_effect": _clip(quant_context.get("behavior_effect"), max_len=80),
-                }
-            )
-        stages.append(
-            {key: val for key, val in compact_stage.items() if val not in ("", None, [], {})}
-        )
-    out = {
-        "summary": _clip(trace.get("summary"), max_len=700),
-        "bullets": _listify(trace.get("bullets"), max_items=8, max_len=220),
-        "stages": stages,
-        "refresh_requested": trace.get("refresh_requested"),
-        "refresh_effective": trace.get("refresh_effective"),
-        "policy_delta_count": trace.get("policy_delta_count"),
-        "policy_delta_fields": _listify(trace.get("policy_delta_fields"), max_items=8, max_len=80),
-        "source": _clip(trace.get("source"), max_len=120),
-        "llm_interpretation": _compact_scalar_dict(trace.get("llm_interpretation"), max_items=4, max_len=240),
-    }
-    return {key: val for key, val in out.items() if val not in ("", None, [], {})}
+    return _compact_strategy_refresh_trace_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _compact_memory_layer_decisions(value: Any) -> Dict[str, Any]:
@@ -1886,26 +1217,7 @@ def _compact_memory_layer_decisions(value: Any) -> Dict[str, Any]:
 
 
 def _compact_memory_application_trace(value: Any) -> Dict[str, Any]:
-    trace = value if isinstance(value, dict) else {}
-    return {
-        "captured": trace.get("captured"),
-        "enabled": trace.get("enabled"),
-        "applied": trace.get("applied"),
-        "entry_applied": trace.get("entry_applied"),
-        "hold_applied": trace.get("hold_applied"),
-        "exit_applied": trace.get("exit_applied"),
-        "not_applied_reason": _clip(trace.get("not_applied_reason"), max_len=120),
-        "bias_source": _clip(trace.get("bias_source"), max_len=80),
-        "active_layers": _listify(trace.get("active_layers"), max_items=5, max_len=32),
-        "source_delta_keys": _listify(trace.get("source_delta_keys"), max_items=8, max_len=48),
-        "entry_delta_keys": _listify(trace.get("entry_delta_keys"), max_items=8, max_len=48),
-        "hold_delta_keys": _listify(trace.get("hold_delta_keys"), max_items=8, max_len=48),
-        "exit_delta_keys": _listify(trace.get("exit_delta_keys"), max_items=8, max_len=48),
-        "selected_symbol": _clip(trace.get("selected_symbol"), max_len=24),
-        "selected_bias_adjustment": trace.get("selected_bias_adjustment"),
-        "effective_policy_source": _clip(trace.get("effective_policy_source"), max_len=80),
-        "reason": _listify(trace.get("reason"), max_items=5, max_len=80),
-    }
+    return _compact_memory_application_trace_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _compact_strategist_report_context(story_input: Dict[str, Any]) -> Dict[str, Any]:
@@ -1953,67 +1265,11 @@ def _sparse_story_input_for_llm(story_input: Dict[str, Any]) -> Dict[str, Any]:
     )
 
 def _normalize_provenance_entry(entry: Any) -> Dict[str, Any]:
-    row = entry if isinstance(entry, dict) else {}
-    source = str(row.get("source") or "fallback").strip().lower()
-    path = str(row.get("artifact_path") or "").strip()
-    confidence = str(row.get("confidence") or "").strip().lower()
-    if confidence not in {"high", "medium", "low"}:
-        if source == "canonical":
-            confidence = "high"
-        elif source in {"direct_artifact", "direct"}:
-            confidence = "medium"
-        else:
-            confidence = "low"
-    if confidence == "high":
-        completeness = 1.0
-    elif confidence == "medium":
-        completeness = 0.75
-    else:
-        completeness = 0.5 if source != "fallback" else 0.35
-    return {
-        "source": source or "fallback",
-        "evidence_source": source or "fallback",
-        "artifact_path": path,
-        "confidence": confidence,
-        "completeness": completeness,
-    }
+    return _normalize_provenance_entry_r3_impl(entry, facade=_r3_sys.modules[__name__])
 
 
 def _report_section_provenance(story_input: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
-    source = story_input.get("section_provenance") if isinstance(story_input.get("section_provenance"), dict) else {}
-    fallback = _normalize_provenance_entry({"source": "fallback", "artifact_path": "", "confidence": "low"})
-    seeded = source.get("report_section_provenance_seeds") if isinstance(source.get("report_section_provenance_seeds"), dict) else {}
-
-    def _pick(section_key: str, *legacy_keys: str) -> Dict[str, Any]:
-        direct = source.get(section_key)
-        if isinstance(direct, dict) and direct:
-            return _normalize_provenance_entry(direct)
-        seeded_entry = seeded.get(section_key)
-        if isinstance(seeded_entry, dict) and seeded_entry:
-            return _normalize_provenance_entry(seeded_entry)
-        for legacy_key in legacy_keys:
-            legacy = source.get(legacy_key)
-            if isinstance(legacy, dict) and legacy:
-                return _normalize_provenance_entry(legacy)
-        return fallback
-
-    return {
-        "executive_summary": _pick("executive_summary", "operator_conclusion_human"),
-        "market_context_at_entry": _pick("market_context_at_entry", "market_context_human"),
-        "strategist_summary": _pick("strategist_summary", "market_context_at_entry", "market_context_human"),
-        "strategist_refresh_trace": _pick("strategist_refresh_trace", "strategist_output", "commander"),
-        "why_this_symbol_was_chosen": _pick("why_this_symbol_was_chosen", "scanner_reason_human"),
-        "entry_decision": _pick("entry_decision", "why_this_symbol_was_chosen", "scanner_reason_human"),
-        "holding_monitoring_story": _pick("holding_monitoring_story", "monitor_reason_human"),
-        "exit_decision": _pick("exit_decision", "holding_monitoring_story", "monitor_reason_human"),
-        "execution_quality": _pick("execution_quality", "execution_outcome_human"),
-        "scanner_filters": _pick("scanner_filters", "filters_human"),
-        "guard_approval_result": _pick("guard_approval_result", "guard_reason_human"),
-        "reporter_evaluation": _pick("reporter_evaluation", "reporter_status_human"),
-        "errors_weaknesses_improvement_points": _pick("errors_weaknesses_improvement_points", "reporter_evaluation", "reporter_status_human"),
-        "full_timeline": _pick("full_timeline", "timeline"),
-        "final_operator_conclusion": _pick("final_operator_conclusion", "operator_conclusion_human"),
-    }
+    return _report_section_provenance_r3_impl(story_input, facade=_r3_sys.modules[__name__])
 
 
 def _contains_hangul(value: Any) -> bool:
@@ -2539,68 +1795,9 @@ def _attach_report_status_matrix(
     ai_trade_report_status: Any,
     deterministic_report_status: Any = "ok",
 ) -> Dict[str, Any]:
-    out = dict(report or {})
-    diagnostics = story_input.get("ai_report_diagnostics") if isinstance(story_input.get("ai_report_diagnostics"), dict) else {}
-    llm_brief_status = _canonical_ai_report_status(diagnostics.get("llm_brief_status") or "skipped")
-    out["deterministic_report_status"] = _canonical_ai_report_status(deterministic_report_status)
-    out["llm_brief_status"] = llm_brief_status
-    out["ai_trade_report_status"] = _canonical_ai_report_status(ai_trade_report_status)
-    generation = out.get("generation") if isinstance(out.get("generation"), dict) else {}
-    generation["deterministic_report_status"] = out["deterministic_report_status"]
-    generation["llm_brief_status"] = out["llm_brief_status"]
-    generation["ai_trade_report_status"] = out["ai_trade_report_status"]
-    out["generation"] = generation
-    if "fact_payload" not in out or "narrative" not in out:
-        separated_trade_model = _resolve_separated_trade_model(story_input)
-        runtime_mode = str(story_input.get("report_runtime_mode") or "").strip().lower()
-        enable_separated_narrative = bool(story_input.get("enable_separated_narrative"))
-        skip_separated_report_llm = bool(story_input.get("skip_separated_report_llm"))
-        try:
-            if enable_separated_narrative and not skip_separated_report_llm:
-                from libs.reporting.fact_narrative_report import build_separated_report
-
-                separated = build_separated_report(
-                    trade_model=dict(separated_trade_model or {}),
-                    model=str(generation.get("model") or "").strip() or None,
-                    execution_profile=_resolve_intraday_report_execution_profile(
-                        dict(separated_trade_model or {})
-                    ),
-                )
-            else:
-                skip_reason = (
-                    f"{runtime_mode or 'runtime'}_skip_separated_report_llm"
-                    if skip_separated_report_llm
-                    else f"{runtime_mode or 'runtime'}_separated_narrative_disabled"
-                )
-                separated = _build_skipped_separated_report(
-                    dict(separated_trade_model or {}),
-                    reason=skip_reason,
-                )
-        except Exception:
-            separated = {
-                "fact_payload": {"trade": dict(separated_trade_model or {}), "daily": {}, "symbol": {}},
-                "narrative": {
-                    "summary": "",
-                    "insight": "",
-                    "recommendation": "",
-                    "source": "llm",
-                    "based_on": "fact_payload",
-                    "status": "error",
-                },
-            }
-        if isinstance(separated.get("fact_payload"), dict):
-            out["fact_payload"] = dict(separated.get("fact_payload") or {})
-        if isinstance(separated.get("narrative"), dict):
-            out["narrative"] = dict(separated.get("narrative") or {})
-    post_exit_shadow = _story_post_exit_shadow(story_input)
-    if post_exit_shadow:
-        out.setdefault("post_exit_shadow", dict(post_exit_shadow))
-        fact_payload = out.get("fact_payload") if isinstance(out.get("fact_payload"), dict) else {}
-        if fact_payload:
-            fact_payload = dict(fact_payload)
-            fact_payload.setdefault("post_exit_shadow", dict(post_exit_shadow))
-            out["fact_payload"] = fact_payload
-    return out
+    return _attach_report_status_matrix_r3_impl(report, story_input,
+        ai_trade_report_status=ai_trade_report_status,
+        deterministic_report_status=deterministic_report_status, facade=_r3_sys.modules[__name__])
 
 
 def build_deterministic_trade_report(story_input: Dict[str, Any]) -> Dict[str, Any]:
