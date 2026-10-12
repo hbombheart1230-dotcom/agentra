@@ -2811,3 +2811,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 호출 도중 monkeypatch seam이 baseline과 57/57 동일해졌고(이전 36개 불일치), 호출 전 패치 57/57, 직접 357 케이스, 기록된 호출 47,091/47,092가 동일합니다(1건은 wall-clock latency).
 - 집중 오프라인 Reporting 테스트 925 passed / 1 skipped, 운영 경로 쓰기 0. 436 ABI·import DAG·Owner ≤350 불변.
 - 폐기 대상 feature 브랜치 `feature/p152-facades-r3`는 조상/클린 검증 후 정리했습니다. 실제 snapshot·LLM parity BLOCKED, façade 크기 SIZE_DEFERRED, `controlled_mock_lanes` 쓰기 격리 이슈 OPEN, P1.5.2 OPEN / P1.5.3 미착수.
+
+## 2026-10-12 · P1.5.2 R3 Codex 독립 감사 인계
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · TESTING
+
+- `refactor/p1.5`의 `6512201`을 Codex 감사 대상으로 고정했습니다. feature 브랜치는 삭제됐고 `main` 변경은 없습니다.
+- Claude 검증 보고: 호출 전·중 seam 57/57 동등, 925 PASS / 1 SKIP, 집중 테스트 쓰기 0. 독립 감사 전으로 최종 PASS는 아닙니다.
+- 기존 전체 테스트의 쓰기 격리 이슈, 실자료·LLM parity BLOCKED, façade SIZE_DEFERRED, Owner 응집도 부채는 그대로 OPEN입니다.
+- 근거: `docs/refactor/work_orders/P15_R3_CODEX_SEAM_AUDIT_004.md`, `docs/daily_patch/2026-10-12_p152_r3_codex_seam_audit_handoff.md`.

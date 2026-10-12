@@ -1,0 +1,3 @@
+# 2026-10-12 — R3 use-time restoration Codex handoff
+
+Git checked `refactor/p1.5` at `651220191e4e61506984e6020355d1c411100204`: old feature branch is deleted, `main` frozen. Claude reports 57/57 mid-call and pre-call seam parity after lazy use-site lookup restoration; 925 PASS / 1 SKIP with zero focused writes. This is Claude evidence, not independent Codex acceptance. Activate `docs/refactor/work_orders/P15_R3_CODEX_SEAM_AUDIT_004.md` as the sole next work order. Prior full-suite CWD write-isolation finding and unavailable historical report/LLM snapshots remain OPEN/BLOCKED; R3 façade SIZE_DEFERRED; P1.5.2 OPEN and P1.5.3 not authorized. Docs-only change.
