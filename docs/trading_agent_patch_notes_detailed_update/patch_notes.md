@@ -2964,3 +2964,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - B2 Scanner: `scanner_node.py` 4,178 → 2,652줄, 본문 40개를 `libs/runtime/scanner` Owner 11개로 이동(순위·tie-break·soft guidance 의미 불변).
 - B3 Monitor: helper 2개만 이동하고 `monitor_node`(2,634줄)·`_evaluate_monitor_entry_candidate`(658줄)는 2차 부채로 남겼습니다(intent-only 역할 불변).
 - 검증: 이동 본문 AST 동일성·use-time oracle, 범위/권한 경계 테스트, consumer 620개 baseline=feature 동일, 동시 실행 호출 비교에서 baseline 안정 레코드 16,792건 중 차이 0(라이브 시장 데이터 기반 672건은 비결정적), 운영 쓰기 0. 실제 snapshot·LLM parity BLOCKED, 전체 pytest·Docker·UEF는 Wave D, Codex Wave B 감사 대기.
+
+## 2026-10-12 · P1.5 Fast Track Wave C (Commander · 런타임 명칭 · Executor read model · wrapper 분류)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · SAFETY · WORKFLOW
+
+- C1 Commander: `graphs/commander_runtime.py` 6,297 → 4,709줄, 순수 정책·projection 본문 48개를 `libs/runtime/commander` Owner 8개로 이동(그래프 순서·fast path·state key·runtime 소유 함수는 유지, 새 LLM 역할 없음).
+- C2 명칭: 기존 이름은 그대로 두고 canonical 모듈/CLI(`live_cycle`, `runtime_tick`, `eod_report`, `entrypoints.live_loop`, `run_live_loop.py`)와 `LIVE_LOOP_LOCK_*` → `M13_LIVE_LOCK_*` 우선순위 resolver를 추가했습니다(lock 경로·state key 불변).
+- C3 Executor: 관측/read-model 함수 3개만 `libs/execution/executor_observability.py`로 이동. guard·readiness·admission·CAS·UNKNOWN·broker 경로는 baseline과 AST 동일, 나머지는 실제 fixture 부재로 SAFETY_BLOCKED.
+- C4 wrapper: 분류만 수행(DEFINITE_DEAD 0, Reporting ABI 330 UNKNOWN, 중복 본문 114그룹, 삭제·통합 없음).
+- 검증: 범위/권한 경계·AST 동일성·alias 테스트·consumer 회귀, 동시 실행 호출 비교에서 baseline 안정 레코드 차이 0, 운영 쓰기 0. Codex Wave B PASS_WITH_FINDINGS 기록, 실제 snapshot·LLM parity BLOCKED, 전체 pytest·Docker·UEF는 Wave D, Codex Wave C 감사 대기.

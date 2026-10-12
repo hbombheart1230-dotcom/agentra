@@ -1,0 +1,15 @@
+# P15 FAST TRACK WAVE C 018 — P1.5.7 Commander, P1.5.8 runtime naming, P1.5.9 Executor read models, P1.5.10 wrapper classification
+
+**Status:** IMPLEMENTED (Claude), CODEX WAVE C AUDIT PENDING. Preauthorized first-pass structural work on `refactor/p1.5` only; Git commit/push is the sole deliverable (no ZIP).
+**Start SHA:** `cba2124a85d2a3bf7cef96876920ba4912bd1c5e` (Wave B closed FIRST_PASS_WITH_DEBT, CI green). Read order: `CLAUDE.md` -> `CURRENT.md` -> this order -> Fast Track plan -> `COMMON_RULES.md`; packets `p1_5_commander_runtime_...v1_0`, `p1_5_runtime_naming_...v1_0`, `p1_5_executor_low_risk_...v1_0` + `p1_5_executor_safe_decomposition_packet_v1_1`, `p1_5_compatibility_wrapper_cleanup_...v1_0` interpreted under the 2026-10-12 Fast Track approval.
+
+## Stages
+- **C1 Commander (P1.5.7):** pure policy/projection bodies of `graphs/commander_runtime.py` move verbatim to responsibility-named Owners under `libs/runtime/commander/`. Graph order, fast-path routing, state keys, runtime ownership (transitions, shadow runtime lifecycle, incident registry, hooks, preflight application, phases, `run_commander_runtime`) stay in place. No new LLM role.
+- **C2 Runtime naming (P1.5.8):** additive canonical names only (`graphs/pipelines/{live_cycle,runtime_tick,eod_report}.py`, `libs/runtime/entrypoints/live_loop.py`, `scripts/run_live_loop.py`) delegating at call time to the legacy implementations, plus one `live_loop_env` resolver (canonical `LIVE_LOOP_LOCK_*` then legacy `M13_LIVE_LOCK_*` then default). No legacy module, CLI, env, lock path, state key (`m13_tick_pipeline`) or tick value (`legacy_m10`) is renamed or removed; M10/M11/M13 history and Q10/Q12/UEF identifiers untouched.
+- **C3 Executor (P1.5.9):** only the pure trace/read-model projections (`_append_execution_trace_entries`, `_summarize_strategy_policy`, `_extract_strategy_policy`) move to `libs/execution/executor_observability.py`. Every guard/readiness/admission/CAS/idempotency/UNKNOWN/BrokerOutcome/broker-mutation function, `_normalize_execution`, `_execution_mode_details`, quote/chart guard snapshots and the 1,191-LOC coordinator are **SAFETY_BLOCKED** (no immutable real-case fixtures; EX1 gate unavailable).
+- **C4 Wrapper cleanup (P1.5.10):** classification only; nothing deleted or consolidated (see inventory).
+
+## Gates
+`tests/test_p155_wave_c_moved_bodies.py` (baseline AST equality after unqualification, exact qualified names, no unresolved globals, wrapper injection, use-time oracle vs the pinned baseline function, declarations retained, Owners <=350), `tests/test_p155_wave_c_scope_and_authority_boundary.py` (path scope, every non-moved def AST-identical to baseline in the two touched modules, Owner import/LLM-role checks), `tests/test_p155_runtime_naming_aliases.py`, consumer suites, concurrent baseline-vs-feature call differential. Wave A/B guards stay pinned to their end commits.
+
+Result: [evidence](evidence/P15-FAST-TRACK-WAVE-C-CLAUDE-019.md). Wrapper classification: [inventory](../p1_5_wrapper_cleanup_inventory_2026_10_12.json), [note](../p1_5_wrapper_cleanup_classification_2026_10_12.md).

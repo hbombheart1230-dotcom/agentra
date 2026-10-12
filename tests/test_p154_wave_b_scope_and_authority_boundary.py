@@ -1,6 +1,6 @@
 """Fast Track Wave B (P1.5.4 Strategist / P1.5.5 Scanner / P1.5.6 Monitor) scope + trading-authority boundary.
 
-Stage-scoped: diffs the pinned Wave B start commit against HEAD. Later waves get their own gate; this one never
+Stage-scoped: diffs the pinned Wave B start commit against the pinned Wave B end commit. Later waves get their own gate; this one never
 loosens the Wave A guard (tests/test_p152_facade_abi_and_authority_boundary.py stays pinned to the Wave A end).
 """
 import ast
@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WAVE_B_BASE = "877455db439e9e6f72af413216acc9758b91a2a9"
+WAVE_B_END = "cba2124a85d2a3bf7cef96876920ba4912bd1c5e"  # stage pin: later waves have their own gate
 LEDGER = ROOT / "docs/refactor/p1_5_wave_b_moved_bodies_ledger.json"
 
 ALLOWED = (
@@ -33,7 +34,7 @@ FORBIDDEN_IMPORT_PARTS = ("libs.execution", "libs.broker", "libs.supervisor", "l
 
 
 def _changed():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", WAVE_B_BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", WAVE_B_BASE, WAVE_B_END], cwd=ROOT).decode().split(chr(0))
     return [p for p in out if p]
 
 

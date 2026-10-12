@@ -1,0 +1,390 @@
+{
+ "schema": "p15-wrapper-cleanup-inventory-v1",
+ "date": "2026-10-12",
+ "evidence_scope": "STATIC_ONLY; no deletion or consolidation performed; input to GPT second-pass per-function design",
+ "definite_dead": 0,
+ "reporting_facade_abi": {
+  "symbols": 436,
+  "statically_referenced": 106,
+  "static_unreferenced_UNKNOWN_NOT_DEAD": 330,
+  "dynamic_hazards": 11
+ },
+ "legacy_alias_modules": [
+  {
+   "module": "libs.agent.commander",
+   "path": "libs/agent/commander.py",
+   "loc": 169,
+   "static_import_files": 1,
+   "by_area": {
+    "tests": 1
+   },
+   "string_or_dynamic_refs": 0,
+   "classification": "KEEP_STABLE_FACADE"
+  },
+  {
+   "module": "libs.agent.strategist",
+   "path": "libs/agent/strategist.py",
+   "loc": 98,
+   "static_import_files": 3,
+   "by_area": {
+    "libs": 2,
+    "tests": 1
+   },
+   "string_or_dynamic_refs": 0,
+   "classification": "KEEP_STABLE_FACADE"
+  },
+  {
+   "module": "libs.agent.scanner",
+   "path": "libs/agent/scanner.py",
+   "loc": 133,
+   "static_import_files": 2,
+   "by_area": {
+    "libs": 1,
+    "tests": 1
+   },
+   "string_or_dynamic_refs": 0,
+   "classification": "KEEP_STABLE_FACADE"
+  },
+  {
+   "module": "libs.agent.monitor",
+   "path": "libs/agent/monitor.py",
+   "loc": 22,
+   "static_import_files": 2,
+   "by_area": {
+    "libs": 1,
+    "tests": 1
+   },
+   "string_or_dynamic_refs": 0,
+   "classification": "KEEP_STABLE_FACADE"
+  },
+  {
+   "module": "graphs.nodes.scan_candidates",
+   "path": "graphs/nodes/scan_candidates.py",
+   "loc": 212,
+   "static_import_files": 3,
+   "by_area": {
+    "graphs": 1,
+    "tests": 2
+   },
+   "string_or_dynamic_refs": 0,
+   "classification": "KEEP_UNTIL_CONSUMER_PROOF"
+  },
+  {
+   "module": "graphs.nodes.select_candidate",
+   "path": "graphs/nodes/select_candidate.py",
+   "loc": 46,
+   "static_import_files": 2,
+   "by_area": {
+    "graphs": 1,
+    "tests": 1
+   },
+   "string_or_dynamic_refs": 0,
+   "classification": "KEEP_UNTIL_CONSUMER_PROOF"
+  },
+  {
+   "module": "graphs.nodes.commander_node",
+   "path": "graphs/nodes/commander_node.py",
+   "loc": 16,
+   "static_import_files": 0,
+   "by_area": {},
+   "string_or_dynamic_refs": 0,
+   "classification": "KEEP_UNTIL_CONSUMER_PROOF"
+  },
+  {
+   "module": "apps.operator_ui.data_access",
+   "path": "apps/operator_ui/data_access.py",
+   "loc": 10,
+   "static_import_files": 3,
+   "by_area": {
+    "scripts": 1,
+    "tests": 2
+   },
+   "string_or_dynamic_refs": 1,
+   "classification": "KEEP_STABLE_FACADE"
+  },
+  {
+   "module": "apps.operator_ui.data_access_reports",
+   "path": "apps/operator_ui/data_access_reports.py",
+   "loc": 9,
+   "static_import_files": 1,
+   "by_area": {
+    "tests": 1
+   },
+   "string_or_dynamic_refs": 0,
+   "classification": "KEEP_STABLE_FACADE"
+  },
+  {
+   "module": "graphs.pipelines.m13_live_loop",
+   "path": "graphs/pipelines/m13_live_loop.py",
+   "loc": 212,
+   "static_import_files": 5,
+   "by_area": {
+    "libs": 1,
+    "graphs": 1,
+    "tests": 3
+   },
+   "string_or_dynamic_refs": 1,
+   "classification": "KEEP_COMPAT_ALIAS_CANONICAL_NAME_ADDED"
+  },
+  {
+   "module": "graphs.pipelines.m13_tick",
+   "path": "graphs/pipelines/m13_tick.py",
+   "loc": 66,
+   "static_import_files": 4,
+   "by_area": {
+    "graphs": 2,
+    "scripts": 1,
+    "tests": 1
+   },
+   "string_or_dynamic_refs": 1,
+   "classification": "KEEP_COMPAT_ALIAS_CANONICAL_NAME_ADDED"
+  },
+  {
+   "module": "graphs.pipelines.m13_eod_report",
+   "path": "graphs/pipelines/m13_eod_report.py",
+   "loc": 125,
+   "static_import_files": 5,
+   "by_area": {
+    "graphs": 2,
+    "tests": 3
+   },
+   "string_or_dynamic_refs": 1,
+   "classification": "KEEP_COMPAT_ALIAS_CANONICAL_NAME_ADDED"
+  },
+  {
+   "module": "libs.runtime.entrypoints.m13_live_loop",
+   "path": "libs/runtime/entrypoints/m13_live_loop.py",
+   "loc": 86,
+   "static_import_files": 3,
+   "by_area": {
+    "libs": 1,
+    "scripts": 1,
+    "tests": 1
+   },
+   "string_or_dynamic_refs": 2,
+   "classification": "KEEP_COMPAT_ALIAS_CANONICAL_NAME_ADDED"
+  },
+  {
+   "module": "libs.runtime.intraday_monitor_signals",
+   "path": "libs/runtime/intraday_monitor_signals.py",
+   "loc": 3607,
+   "static_import_files": 3,
+   "by_area": {
+    "graphs": 2,
+    "tests": 1
+   },
+   "string_or_dynamic_refs": 0,
+   "classification": "KEEP_UNTIL_CONSUMER_PROOF"
+  }
+ ],
+ "duplicate_function_bodies": {
+  "definition": "top-level functions >=6 LOC with identical normalized AST (body+args) in >=2 modules under libs/graphs/apps/scripts (tests, owner *_r3_parts excluded)",
+  "groups": 114,
+  "functions": 395,
+  "disposition": "KEEP (no consolidation: independent CLIs/readers, no consumer/dynamic-import/monkeypatch proof, low benefit)",
+  "top_groups": [
+   {
+    "loc": 70,
+    "members": [
+     "scripts/run_m27_portfolio_budget_boundary_check.py:_intents",
+     "scripts/run_m27_runtime_portfolio_guard_check.py:_intents"
+    ]
+   },
+   {
+    "loc": 61,
+    "members": [
+     "libs/reporting/monitor_timeline_reconciliation.py:latest_exit_monitor_context_from_timeline",
+     "libs/reporting/trade_bundle_assembly.py:_latest_exit_monitor_context_from_timeline"
+    ]
+   },
+   {
+    "loc": 45,
+    "members": [
+     "scripts/refactor/p152_r3_call_recorder.py:validate_environment",
+     "scripts/refactor/p152_r3_seam_challenge.py:validate_environment"
+    ]
+   },
+   {
+    "loc": 26,
+    "members": [
+     "libs/reporting/intraday_trade_reports.py:_pid_active",
+     "libs/reporting/live_execution_bundle_runner.py:_pid_active"
+    ]
+   },
+   {
+    "loc": 26,
+    "members": [
+     "libs/reporting/metrics_report/event_extractors.py:to_epoch",
+     "scripts/check_audit_trail_completeness.py:_to_epoch",
+     "scripts/generate_ops_diagnostic_report.py:_to_epoch",
+     "scripts/query_m25_notification_events.py:_to_epoch",
+     "scripts/reconstruct_incident_timeline.py:_to_epoch",
+     "scripts/run_m26_replay_runner.py:_to_epoch",
+     "scripts/run_m26_scorecard.py:_to_epoch",
+     "scripts/run_m31_mock_investor_exam_check.py:_to_epoch",
+     "scripts/run_m31_slo_incident_review_check.py:_to_epoch",
+     "scripts/run_m31_weekly_health_summary.py:_to_epoch"
+    ]
+   },
+   {
+    "loc": 21,
+    "members": [
+     "libs/reporting/report_source_helpers.py:to_epoch",
+     "libs/reporting/daily_report_runtime/freshness.py:to_epoch"
+    ]
+   },
+   {
+    "loc": 20,
+    "members": [
+     "libs/reporting/agent_pipeline_trace.py:_to_epoch",
+     "libs/reporting/reporter_analysis.py:_to_epoch",
+     "libs/reporting/trade_explain.py:_to_epoch"
+    ]
+   },
+   {
+    "loc": 20,
+    "members": [
+     "libs/reporting/intraday_trade_reports.py:_terminate_process_tree",
+     "libs/reporting/live_execution_bundle_runner.py:_terminate_process_tree"
+    ]
+   },
+   {
+    "loc": 20,
+    "members": [
+     "libs/reporting/live_execution_report_context.py:to_epoch",
+     "libs/reporting/live_execution_strategist_artifacts.py:_to_epoch",
+     "libs/reporting/trade_lifecycle_builder.py:_to_epoch"
+    ]
+   },
+   {
+    "loc": 18,
+    "members": [
+     "libs/reporting/operator_visibility.py:_iter_jsonl",
+     "libs/reporting/report_source_helpers.py:iter_jsonl",
+     "scripts/run_m31_mock_investor_exam_check.py:_iter_jsonl",
+     "scripts/run_m31_slo_incident_review_check.py:_iter_jsonl",
+     "scripts/run_m31_weekly_health_summary.py:_iter_jsonl"
+    ]
+   },
+   {
+    "loc": 18,
+    "members": [
+     "libs/reporting/phase_runtime_health.py:_iter_jsonl",
+     "libs/reporting/symbol_trade_report.py:_iter_jsonl"
+    ]
+   },
+   {
+    "loc": 18,
+    "members": [
+     "libs/runtime/monitor_memory_bias_rules.py:_symbol_signal_multiplier",
+     "libs/runtime/scanner_memory_bias_rules.py:_symbol_signal_multiplier"
+    ]
+   },
+   {
+    "loc": 18,
+    "members": [
+     "scripts/refactor/p152_r3_call_recorder.py:_require_absolute",
+     "scripts/refactor/p152_r3_seam_challenge.py:_require_absolute"
+    ]
+   },
+   {
+    "loc": 17,
+    "members": [
+     "libs/reporting/trade_read_model.py:brief_top_numeric_drivers",
+     "libs/reporting/trade_story_pipeline_scanner.py:_top_numeric_drivers"
+    ]
+   },
+   {
+    "loc": 16,
+    "members": [
+     "graphs/nodes/execute_from_packet.py:_broker_code_success",
+     "scripts/generate_ops_diagnostic_report.py:_broker_code_success",
+     "scripts/query_trade_reason_chain.py:_broker_code_success"
+    ]
+   },
+   {
+    "loc": 16,
+    "members": [
+     "libs/reporting/agent_pipeline_trace.py:_iter_jsonl",
+     "libs/reporting/live_execution_bundle_runner.py:_iter_jsonl",
+     "libs/reporting/reporter_analysis.py:_iter_jsonl",
+     "libs/reporting/trade_explain.py:_iter_jsonl"
+    ]
+   },
+   {
+    "loc": 16,
+    "members": [
+     "libs/reporting/intraday_trade_reports.py:normalize_trade_id_filters",
+     "scripts/run_operator_brief_batch.py:_normalize_trade_id_filters"
+    ]
+   },
+   {
+    "loc": 16,
+    "members": [
+     "libs/reporting/phase_runtime_health.py:_build_parser",
+     "scripts/check_phase_5_2_5_3_runtime_health.py:_build_parser"
+    ]
+   },
+   {
+    "loc": 16,
+    "members": [
+     "libs/runtime/monitor_entry_sizing.py:_has_strategy_policy_content",
+     "libs/runtime/monitor_strategy_frame.py:has_strategy_policy_content"
+    ]
+   },
+   {
+    "loc": 16,
+    "members": [
+     "scripts/check_audit_trail_completeness.py:_iter_rows",
+     "scripts/query_m25_notification_events.py:_iter_rows",
+     "scripts/reconstruct_incident_timeline.py:_iter_rows",
+     "scripts/run_m26_replay_runner.py:_iter_jsonl",
+     "scripts/run_m26_scorecard.py:_iter_jsonl"
+    ]
+   },
+   {
+    "loc": 16,
+    "members": [
+     "scripts/query_commander_resilience_events.py:_load_jsonl",
+     "scripts/query_strategist_llm_events.py:_load_jsonl"
+    ]
+   },
+   {
+    "loc": 15,
+    "members": [
+     "libs/read/kiwoom_market_index_reader.py:_parse_kiwoom_number",
+     "libs/read/kiwoom_program_trading_reader.py:_parse_number"
+    ]
+   },
+   {
+    "loc": 15,
+    "members": [
+     "libs/reporting/chart_structure_decision_hint_summary.py:_safe_list_of_str",
+     "libs/reporting/policy_surface_summary.py:_safe_list_of_str"
+    ]
+   },
+   {
+    "loc": 15,
+    "members": [
+     "libs/runtime/entrypoints/m28_deploy_launch_template_check.py:_item",
+     "libs/runtime/entrypoints/m28_launch_hook_integration_check.py:_item",
+     "libs/runtime/entrypoints/m28_registration_helper_check.py:_item",
+     "libs/runtime/entrypoints/m28_rollout_rollback_check.py:_item",
+     "libs/runtime/entrypoints/m28_scheduler_worker_launch_wrapper_check.py:_item",
+     "libs/runtime/entrypoints/m28_startup_preflight_check.py:_item",
+     "scripts/run_m31_mock_exam_readiness_check.py:_item",
+     "scripts/run_m31_mock_investor_exam_check.py:_item",
+     "scripts/run_m31_slo_incident_review_check.py:_item",
+     "scripts/run_m31_weekly_health_summary.py:_item"
+    ]
+   },
+   {
+    "loc": 13,
+    "members": [
+     "graphs/commander_runtime.py:_resolve_risk_max_positions",
+     "libs/runtime/commander/strategist_refresh_decision.py:resolve_risk_max_positions"
+    ]
+   }
+  ]
+ }
+}

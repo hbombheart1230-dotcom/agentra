@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 217,
+  "entry_count": 218,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5895,6 +5895,32 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-B-CLAUDE-016.md",
         "docs/daily_patch/2026-10-12_p1_5_fast_track_wave_b.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5 Fast Track Wave C",
+      "title": "Fast Track Wave C: Commander decomposition, canonical runtime names, executor read models and wrapper classification",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "SAFETY",
+        "WORKFLOW"
+      ],
+      "summary": "48 Commander policy/projection bodies moved to 8 libs/runtime/commander Owners, 3 executor observability projections moved to one Owner, canonical runtime names added as additive aliases, and wrapper cleanup recorded as a classification inventory; no trading-authority path changed.",
+      "details": [
+        "C1 Commander: graphs/commander_runtime.py 6,297 -> 4,709 LOC; 48 verbatim bodies (carry review, fast-path policy, entry control, applied policy, candidate watch, position projection, session assessments, event projection); orchestration, runtime transitions, hooks and phases stay.",
+        "C2 Naming: additive canonical modules/CLI (live_cycle, runtime_tick, eod_report, entrypoints.live_loop, run_live_loop.py) and a single live_loop_env resolver (LIVE_LOOP_LOCK_* then legacy M13_LIVE_LOCK_*); no legacy module, CLI, env, lock path or state key renamed.",
+        "C3 Executor: only _append_execution_trace_entries, _summarize_strategy_policy and _extract_strategy_policy moved (execute_from_packet 4,189 -> 4,105); every guard/readiness/admission/CAS/UNKNOWN/broker path is AST-identical to baseline and the rest is SAFETY_BLOCKED pending real fixtures.",
+        "C4 Wrapper cleanup: classification only — DEFINITE_DEAD 0, 330 UNKNOWN Reporting ABI symbols, 114 duplicate-body groups, legacy aliases KEEP; nothing deleted or consolidated.",
+        "Gates: Wave C moved-body gate, scope/authority gate (non-moved definitions AST-identical), alias tests, consumer suites; concurrent call differential 0 differences on baseline-stable records; 0 production writes. Codex Wave B PASS_WITH_FINDINGS recorded.",
+        "Open: real frozen report/LLM parity BLOCKED, full pytest/Docker/UEF in Wave D, controlled_mock_lanes isolation OPEN. Wave C is FIRST_PASS_WITH_DEBT, awaiting Codex audit."
+      ],
+      "impact": "Smaller, responsibility-named Commander runtime and canonical runtime names without changing orchestration order, trading authority or legacy compatibility.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-C-CLAUDE-019.md",
+        "docs/daily_patch/2026-10-12_p1_5_fast_track_wave_c.md"
       ],
       "status": "current"
     }
