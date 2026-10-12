@@ -1,5 +1,7 @@
 # Agentra P1.5 / P1.6 Refactor Design
 
+> **Active P1.5.2 R3 task (2026-10-12):** [CURRENT.md](work_orders/CURRENT.md) → [COMMON_RULES.md](work_orders/COMMON_RULES.md) → linked work order. **Agentra Claude implementation → Codex independent audit → GPT/user acceptance**, unlike Agentco. One isolated feature worktree authorized for R3 only. Historical workflow paragraphs below are retained for design traceability, not as a substitute for CURRENT.
+
 Status: IMPLEMENTATION — LOCAL FIRST (as of 2026-10-09)  
 Canonical development branch: `refactor/p1.5`  
 Frozen baseline: `main` at `2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb`

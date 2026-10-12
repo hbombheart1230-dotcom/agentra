@@ -1,6 +1,9 @@
 # P1.5 Git-Driven Claude/Codex Execution Protocol v1.0
 
 Date: 2026-10-09
+
+> **P1.5.2 R3 active clarification (2026-10-12):** Agentra roles remain **Claude = implementer, Codex = independent auditor, GPT/operator = final gate** (Agentco uses the reverse roles). Follow the short active `docs/refactor/work_orders/CURRENT.md` → `COMMON_RULES.md` → linked R3 task. R3 exceptionally permits **one isolated `feature/p152-facades-r3` worktree/branch** so operational `C:\Agentra` stays untouched; implementation changes are integrated into `refactor/p1.5` only after Codex verification and GPT/operator approval. This single branch exception supersedes the old prohibition on ALL extra branches for R3 only. Historical safety/no trading/data/LLM rules remain binding; P1.5.3 unauthorized.
+
 Repository: https://github.com/hbombheart1230-dotcom/Trading_Agent_System (may redirect to /agentra)
 Canonical branches: main (frozen) + refactor/p1.5 (only implementation)
 Primary runtime/artifact environment: C:\Agentra (Windows, Docker, SQLite, data/reports, scheduler)

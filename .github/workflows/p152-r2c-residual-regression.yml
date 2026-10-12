@@ -167,17 +167,28 @@ jobs:
                   out.write(name, arcname=name)
           print("ZIP ENTRIES:", *files, sep="\n- ")
           PY
-      - name: Fetch pinned current-turn modified-only ZIP baseline
-        run: git fetch --no-tags --depth=1 origin e60c30d869678562b9e99f88a3043e5f39c1adb7
+      - name: Fetch actual push baseline for changed-files-only ZIP
+        env:
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            git fetch --no-tags --depth=1 origin "$PUSH_BEFORE"
+          fi
       - name: Package only P1.5.2 integration-closeout changed files
         if: success()
+        env:
+          PUSH_BEFORE: ${{ github.event.before }}
         run: |
           python - <<'PY'
           import subprocess
           from pathlib import Path
           from zipfile import ZIP_DEFLATED, ZipFile
+          import os
+          before = os.environ.get("PUSH_BEFORE") or ""
+          if not before or before == "0"*40:
+              before = subprocess.check_output(["git", "rev-parse", "HEAD^"], text=True).strip()
           names = subprocess.check_output(
-              ["git", "diff", "--name-only", "-z", "e60c30d869678562b9e99f88a3043e5f39c1adb7", "HEAD"]
+              ["git", "diff", "--name-only", "-z", before, "HEAD"]
           ).decode().split("\0")
           names = [p for p in names if p and Path(p).is_file()]
           assert names, "No P1.5.2 integration changed paths"

@@ -1,0 +1,22 @@
+# Agentra Shared Rules — Git-first agent collaboration
+
+## One authority, short context
+- The sole active task is `docs/refactor/work_orders/CURRENT.md` → ONE linked work order. Read this document once. Do not reread archived historical work orders or previous chats unless explicitly referenced.
+- Agentra: **Claude implementation / Codex independent audit / GPT+user acceptance**. Agentco is separate and reversed. Agents do not implement/audit concurrently on the same changes.
+- Record only **deltas**: baseline and code SHA, changed paths, exact commands, tests PASS/FAIL/SKIP/NOT RUN, risks, next owner. Keep immutable evidence in `docs/refactor/work_orders/evidence/` and archived prior CURRENT in `archive/`.
+
+## Git and workspace
+- Observe live `C:\Agentra` safely: operational processes may write live `reports/`, `data/`. No code development/full pytest against this live root.
+- For this R3 only, **one task feature** `feature/p152-facades-r3` on a separate isolated worktree, created from fetched `origin/refactor/p1.5`; no extra tranche/ZIP branches. Test in separate isolated clone/paths with zero real broker/prod writes. Preserve current feature/task ancestry.
+- Do not force/reset/clean/prune anything unknown, disturb Q12's two dirty worktrees, overwrite local untracked Claude evidence, move production database, merge `main`, restart runtime or use direct checkout that affects live operations.
+- Claude pushes task feature commits (A/B/C coherent batches); Codex audits *pinned* code SHA; GPT/user explicitly authorizes integration via PR/fast-forward/cherry-pick as appropriate, and only in safe runtime window. Never manual-copy source from clone to live root or auto-merge.
+- `refactor/p1.5` and `main` are not changed by feature work until authorized. `main` frozen.
+
+## Safety and quality
+- No real orders, live LLM or cloud inference calls, broker mutation, production writes, Docker/scheduler restarts, production SQL, seven-agent topology changes; don't touch Scanner/Strategist/Supervisor/Executor/Q10/Q12, Step5C/D, UEF/R6.2 safety authorities.
+- Every NEW/extracted implementation Owner <=350 **physical lines**. A/B/C existing façades target <=350 each without breaking **436 callables**, signatures, module identity/monkeypatch hooks, dynamic consumers, import DAG, canonical truth precedence or LLM prompt/timeout/retry/fallback/call counts. Never use weak dynamic `__getattr__` hiding or delete "unreferenced" exports merely to hit LOC.
+- Mandatory per-stage gates: focused mock/offline Reporting pytest, ABI signature/seam checks, import DAG, synthetic output exactness, no production-path writes. Use correct project venv, isolated test/temporary roots. Failures retained only in bounded safe evidence; successful temporary outputs cleaned.
+- Exact historical report/LLM parity only with genuine frozen copies. Missing => NOT RUN/BLOCKED, never PASS; never create fabricated baseline.
+- Whole native pytest's ~50% stop: capture exit code, OS termination/memory, last test once, classify unrelated pre-existing API/Scanner/UEF/Step5B failures; no blind repeat/full-suite loops.
+- For each code or workflow change, update BOTH `docs/trading_agent_patch_notes_detailed_update/patch_notes.json` AND `patch_notes.md` (UI-linked), plus daily patch/evidence. User-facing downloadable ZIP contains **ONLY paths changed by task**, never entire repository or accumulated unrelated history. No secrets, real reports or captured prompts in Git/ZIP.
+- If evidence missing or incompatibility appears, STOP and return FAIL/BLOCKED not a false PASS. P1.5.2 completion and P1.5.3 transition require separate GPT/user decision.

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 193,
+  "entry_count": 194,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5105,7 +5105,11 @@
       "version": "P1.5.2 Codex Local Acceptance",
       "title": "Windows parity-tool decoding and local acceptance evidence",
       "stage": "Architecture and Maintainability",
-      "types": ["TESTING", "DOCUMENTATION", "SAFETY"],
+      "types": [
+        "TESTING",
+        "DOCUMENTATION",
+        "SAFETY"
+      ],
       "summary": "Make the Owner parity verifier decode UTF-8 source reliably on Windows and record local acceptance results without touching runtime artifacts.",
       "details": [
         "Owner parity passed for 38 AST-preserved functions in 26 bounded Owners; facade consumer scan retained 436 symbols as conservative UNKNOWN/NOT DEAD where static proof is absent.",
@@ -5125,7 +5129,11 @@
       "version": "P1.5.2 Isolated Clone Acceptance",
       "title": "Venv test and write-audit isolation evidence",
       "stage": "Architecture and Maintainability",
-      "types": ["TESTING", "DOCUMENTATION", "SAFETY"],
+      "types": [
+        "TESTING",
+        "DOCUMENTATION",
+        "SAFETY"
+      ],
       "summary": "Run P1.5.2 tests from a history-preserving local clone with the project venv and distinguish clean Reporting verification from pre-existing API/full-suite failures.",
       "details": [
         "The isolated clone passed 295 P1.5.2 tests with one Windows skip and produced zero production-path write-audit markers.",
@@ -5276,6 +5284,32 @@
         "scripts/refactor/p152_snapshot_parity.py",
         "tests/test_p152_snapshot_parity.py",
         "docs/refactor/work_orders/P15_R2_FAST_LOCAL_PARITY_KIT.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Claude-Codex Git-First 001",
+      "title": "Agentra canonical Claude implementation, Codex independent audit and Git-only short handoffs",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "DOCUMENTATION",
+        "WORKFLOW",
+        "SAFETY"
+      ],
+      "summary": "Publish one short active task and shared Git rules for P1.5.2 R3; preserve old history in an archive and keep Agentra/Agentco roles separate.",
+      "details": [
+        "Clarify Agentra Claude implements -> Codex audits -> GPT/operator accepts; Agentco is the reverse role order.",
+        "Add bounded R3 feature-worktree task targeting 636/2658/2761 physical LOC façades, each <=350 only while 436 ABI/public patch behavior and LLM/report semantics remain unchanged.",
+        "Preserve frozen evidence, known incomplete full suite and missing actual report/LLM snapshots as NOT RUN; no operational/Reporting execution code changes.",
+        "Fix CI task ZIP artifact comparison to actual push base, avoiding stale accumulated history."
+      ],
+      "impact": "Agents only need AGENTS.md/CLAUDE.md and CURRENT.md, follow Git task to reduce prompt and context overhead.",
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/COMMON_RULES.md",
+        "docs/refactor/work_orders/P15_R3_FACADE_DECOMPOSITION_001.md",
+        "docs/daily_patch/2026-10-12_p152_r3_claude_codex_git_first.md"
       ],
       "status": "current"
     }

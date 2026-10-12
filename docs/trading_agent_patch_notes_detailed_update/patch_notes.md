@@ -2725,3 +2725,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Full pytest no longer has the prior FastAPI collection error, but the first failure is the out-of-scope API isolation test; an unrestricted run terminated at 50% without a complete summary, so it is not accepted as PASS.
 - No actual frozen report/LLM captures exist under `C:\\AgentraEvidence`; parity remains **BLOCKED / NOT RUN**. Façades remain **KEEP/DEFER** at 2,761 / 2,658 / 636 LOC.
 - Evidence: `docs/refactor/work_orders/evidence/P15-R2-CODEX-CLONE-ACCEPTANCE-2026-10-12.md`.
+
+---
+
+## 2026-10-12 · P1.5.2 R3 Git-first / Agentra Claude 구현·Codex 감사
+**Stage:** Architecture and Maintainability
+**Tags:** DOCUMENTATION · WORKFLOW · SAFETY
+
+- Agentra의 공식 역할은 **Claude 구현 → Codex 독립 감사 → GPT/사용자 승인**입니다. Agentco만 구현/감사가 반대 순서입니다.
+- 기존 CURRENT 전문은 archive에 안전하게 보존하고, 짧은 CURRENT/공용 규칙/단일 R3 지시서를 통해 대형 façade 3개(636 / 2,658 / 2,761줄)를 순서대로 분리할 작업을 정의했습니다.
+- R3에서만 격리된 feature worktree 1개를 허용하며, 독립 검증 전 원본 C:\\Agentra, refactor/p1.5, main은 건드리지 않습니다. 436 ABI, monkeypatch, LLM/보고서 동등성 필수.
+- UI 패치노트 JSON/MD 연동과 실제 푸시 diff 기준 변경 파일 ZIP 생성을 유지합니다. 전체 pytest는 여전히 미완료, 실데이터·LLM parity는 NOT RUN, P1.5.2 OPEN / P1.5.3 미착수입니다.
+- 근거: `docs/daily_patch/2026-10-12_p152_r3_claude_codex_git_first.md`, `docs/refactor/work_orders/P15_R3_FACADE_DECOMPOSITION_001.md`.
