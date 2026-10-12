@@ -135,7 +135,13 @@ jobs:
       - name: Gate harness_guards (test_p152_r3_harness_guards.py)
         run: |
           mkdir -p branch_output
-          python -m pytest -q tests/test_p152_r3_harness_guards.py --junitxml=branch_output/gate_harness_guards_junit.xml
+          set +e
+          python -m pytest -q tests/test_p152_r3_harness_guards.py --tb=short --junitxml=branch_output/gate_harness_guards_junit.xml > branch_output/harness_guards.log 2>&1
+          code=$?
+          set -e
+          grep -E "^(FAILED|ERROR) |^E  " branch_output/harness_guards.log | head -40 | while IFS= read -r line; do echo "::error::${line:0:380}"; done
+          tail -n 3 branch_output/harness_guards.log
+          exit $code
       - name: Gate symbol_ledger (test_p152_facade_symbol_ledger.py)
         run: |
           mkdir -p branch_output
