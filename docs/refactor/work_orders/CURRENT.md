@@ -1,21 +1,22 @@
-# ACTIVE — P1.5.2 R3 offline audit harness safety guards
+# ACTIVE — P1.5.2 R3 Guard 006 Codex independent audit
 
-**State:** CLOSEOUT_005_EVIDENCE_RECORDED; HARNESS_GUARD_006_AUTHORIZED; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
-**Single task:** [P15_R3_AUDIT_HARNESS_GUARDS_006.md](P15_R3_AUDIT_HARNESS_GUARDS_006.md).
-**Rules:** [COMMON_RULES.md](COMMON_RULES.md).
+**State:** GUARD_006_CLAUDE_SUBMITTED; CODEX_AUDIT_PENDING; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
+**One active task:** [P15_R3_CODEX_GUARD_AUDIT_007.md](P15_R3_CODEX_GUARD_AUDIT_007.md).
+**Next queued (not yet implementation-authorized):** [P15_R3_FACADE_LOC_MAX_REDUCTION_008.md](P15_R3_FACADE_LOC_MAX_REDUCTION_008.md).
+**Shared rules:** [COMMON_RULES.md](COMMON_RULES.md).
 **Agentra roles:** Claude implements → Codex independently audits → GPT/user decides.
-**Only refactor branch:** `refactor/p1.5`; `main` frozen; NO feature/task/ZIP branches.
-**Before-task HEAD:** `df4caa567dec49e234e05a819ea485d3eade2acc`. **Audited R3 runtime SHA:** `651220191e4e61506984e6020355d1c411100204`.
-**Protected:** live `C:\Agentra`, both dirty Q12 worktrees and production reports/data.
+**Only refactor branch:** `refactor/p1.5`. No feature/task/ZIP branches. `main` frozen.
+**Audited Guard 006 code SHA:** `f6cc71b25d9f3aadd356ee6509b629778861ce32`. R3 Reporting code SHA `651220191e4e61506984e6020355d1c411100204`.
+**Protected:** live `C:\Agentra`, dirty Q12 worktrees, production data/reports and all live loops.
 
-## Accepted evidence (no more live probes)
-- [Closeout 005](evidence/P15-R3-CLAUDE-LIVE-RUN-TRIAGE-005.md): live-root comparison collected **0 tests**. Observed file/directory changes were written by **UNKNOWN** actor; routine live writers plausible but unproven. SHA-256 read of ~10 GB ledger was avoidable I/O. Do not probe live.
-- R3 seam Codex **PASS_WITH_FINDINGS**: moved-body 298 PASS and 357 cases / 57 functions. Invalid live-root comparison is EXCLUDED.
-- Prior isolated suite: **5115 PASS, 35 FAIL, 2 ERROR, 27 SKIP, 9 deselected**; baseline-identical out-of-Reporting failures. Test-originated `controlled_mock_lanes` CWD write issue OPEN.
-- Historical frozen Markdown/JSON/JSONL and LLM parity **BLOCKED / NOT RUN**; façade SIZE_DEFERRED (562/1891/1958); numbered Owner cohesion debt OPEN.
+## Submitted Guard 006 — Codex must verify
+- Claude-reported guard tests 61 PASS / 0 SKIP; selected P1.5.2/patch-note regression 656 PASS / 1 SKIP; seam smoke 357 direct cases / 57 functions; focused operational writes 0.
+- Allowed changes only two R3 offline audit scripts, focused tests, docs/evidence. Audit task 007 checks Windows paths, fail-before-import, no live access and test validity. No full pytest or main merge.
+- Legacy live-root accidental comparison collected 0 tests and is INVALID; write actor UNKNOWN and should not be inferred.
 
-## Next
-- Only implement **R3 offline audit harness fail-closed safety** per the linked task, then stop for Codex independent audit. No Reporting runtime modification, native full pytest, main merge, P1.5.2 final PASS or P1.5.3.
+## Why Reporting LOC is still OPEN
+- Current public façades: AI **1,958** (182 defs), Markdown **1,891** (209 defs), Story **562** (45 defs), total **4,411** vs 18,743 original. Source inspection identified substantial residual dependency maps/glue and protected public function inventory.
+- **SIZE_DEFERRED is an unmet target, not a permanent waiver.** Plan 008 queues maximum safe further reduction based on function responsibilities, true import/patch consumers and measured remaining bodies. No forced line packing or deletion of 436 preserved declarations without evidence.
+- R3 use-time seam Codex PASS_WITH_FINDINGS, 57/57. Real frozen report/LLM parity BLOCKED/NOT RUN; older isolated full suite 5115 PASS / 35 FAIL / 2 ERROR, failures baseline-identical, `controlled_mock_lanes` write isolation OPEN; numbered Owner cohesion debt OPEN.
 
-## Guard 006 implemented (2026-10-12, Claude) - awaiting Codex audit
-- Both R3 audit tools now fail closed (explicit absolute root, cwd==root, isolated Git clone, live `C:\Agentra` always denied, safe I/O paths, `PYTHONDONTWRITEBYTECODE=1`) before any production import/collection/output. Evidence: [P15-R3-CLAUDE-HARNESS-GUARDS-006.md](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-HARNESS-GUARDS-006.md); 61 guard tests passed, regression 656 passed / 1 skipped, 0 writes. No runtime change; other gates unchanged; P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.
+**Next:** Codex independently audit Guard 006. Only afterward decide to activate staged LOC reduction 008. P1.5.2 OPEN, P1.5.3 unauthorized.
