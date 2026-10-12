@@ -2885,3 +2885,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 436개 def 이름/시그니처는 그대로이며 각 맵은 주입된 façade 모듈의 `facade.NAME`을 호출 시점에 조회해 원래 dict literal과 동일하게 현재 전역을 반영합니다.
 - baseline 대비 기록 호출 96,565건 중 96,564건 동일(1건은 wall-clock latency), 맵 9개 모두 실행, 집중 회귀 1,041 passed / 1 skipped, 운영 경로 쓰기 0.
 - façade 합계 4,198줄(원본 18,743). 실제 snapshot·LLM parity BLOCKED, 크기 SIZE_DEFERRED 유지, P1.5.2 OPEN / P1.5.3 미착수, Codex 감사 대기.
+
+## 2026-10-12 · P1.5.2 LOC 008 제출 및 Codex 독립 감사 인계
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · TESTING
+
+- Claude 구현 `3d85085`: Markdown 의존성 맵 factory 9개를 268-LOC 책임형 Owner로 이동. façade **1,891→1,678 LOC(-213)**, 3개 합계 **4,411→4,198 LOC**. 기존 436 함수 계약 유지.
+- 66개 moved-body(57+9) 게이트 확장; Claude 보고 집중 **1,041 PASS/1 SKIP**, 합성 호출 **96,564/96,565 동일**(차이 1건은 latency), 운영 쓰기 0. Codex 재검증 전 최종 PASS 아님.
+- 남은 LOC 후보: Markdown 서술/번역(-93 추정), AI·Story deps(각 -75 추정), memory/policy(-65), 숫자 포맷(-55). LOC 010은 현재 *대기*이며 감사 후 활성화 판단.
+- 실보고서·LLM parity BLOCKED, test-write 격리 OPEN, façade SIZE_DEFERRED와 Owner 응집도 OPEN, P1.5.2 OPEN/P1.5.3 미승인.
+- 근거: `docs/refactor/work_orders/P15_R3_CODEX_LOC_008_AUDIT_009.md`, `docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md`, `docs/daily_patch/2026-10-12_p152_loc008_codex_handoff.md`.

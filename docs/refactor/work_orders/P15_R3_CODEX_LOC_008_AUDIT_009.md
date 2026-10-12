@@ -1,0 +1,15 @@
+# P15-R3-CODEX-LOC-008-AUDIT-009 — independent pinned SHA audit
+
+**Auditor:** Codex. **READ ONLY / NO COMMIT.** Audit `3d85085011de8ed2cbeb720ddce8e55cf7a60d9d` on sole `refactor/p1.5`; diff base `6760ab4abaf1a9bc6ec168f6c1daf9a727e19dfb`. No new branches, implementation, merge, live tests, real LLM/broker, Docker or production data access.
+**Read only:** `AGENTS.md` → `docs/refactor/work_orders/CURRENT.md` → this order → `docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-008.md`. Inspect only the 9 changed LOC-008 files plus actual direct consumers, not old archive.
+**Isolated audit root:** detached read-only clone outside `C:\Agentra` and Q12 paths, test output in session temp. The Guard 006 requirements (`--root`, `R3_ROOT`, explicit I/O paths, `PYTHONDONTWRITEBYTECODE=1`) apply.
+
+## Independent checks
+1. Recount Markdown physical LOC `1891 → 1678`, three façade total `4411 → 4198`, named Owner 268 LOC (≤350). Verify the other two façades/runtime authority unchanged and exactly 9 expected dependency-map factories moved with no duplicate active source of truth.
+2. Check **all 436 public façade callables**: same names/arguments/defaults/decorators/import identities and module monkeypatch behavior. Verify ledger exactly 66 moved symbols (57+9); prior R3 use-time seams retain parity. No import cycles or Owner→façade imports. Look for cases where `facade.NAME` timing, constants, overridden nested callbacks or monkeypatching produce different map objects/values vs the pre-refactor code.
+3. Critically inspect new AST/moved-body and nine-map tests for non-vacuous assertions, correct pinned baseline and count, scope shadowing, aliases, **pre-call and mid-call patch** semantics, and retained Markdown output order/Unicode/truth precedence; no test weakening/fixtures manufactured to match current output.
+4. Independently run focused offline tests/guarded differential in isolated clone when feasible. Verify the Claude-reported **1,041 PASS / 1 SKIP**, map 9/9, **96,564/96,565** matching call records (1 nondeterministic latency claim), **49,473 map invocations** and write-audit 0 as actually evidenced; report actual independent counts and NOT RUN where absent. No native full suite rerun without separately authorized scope.
+5. Record new risks including dynamic callers, map dictionary key/value identities and time of evaluation; distinguish a behavioral regression from cosmetic LOC. Verify UI patch-notes JSON/MD and source ledger consistency.
+6. Explicit residuals: actual frozen report/LLM parity BLOCKED/NOT RUN, `controlled_mock_lanes` test write isolation OPEN, façade size SIZE_DEFERRED, numbered Owner cohesion OPEN, P1.5.2 still open.
+
+**Output:** PASS / PASS_WITH_FINDINGS / FAIL / BLOCKED at exact SHA with concise commands/counts, verified/nonverified differences and minimal remediation. Report only, **no implementation/merge/P1.5.3**.

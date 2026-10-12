@@ -1,26 +1,19 @@
-# ACTIVE — P1.5.2 Reporting façade maximum safe LOC reduction 008
+# ACTIVE — P1.5.2 LOC 008 Codex independent audit
 
-**State:** GUARD_007_CODEX_PASS_WITH_FINDINGS; LOC_008_ACTIVE; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
-**ONE task:** [P15_R3_FACADE_LOC_MAX_REDUCTION_008.md](P15_R3_FACADE_LOC_MAX_REDUCTION_008.md).
+**State:** LOC_008_CLAUDE_SUBMITTED; CODEX_INDEPENDENT_AUDIT_PENDING; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
+**ONE active task:** [P15_R3_CODEX_LOC_008_AUDIT_009.md](P15_R3_CODEX_LOC_008_AUDIT_009.md).
+**Next queued, NOT authorized:** [P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md](P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md).
 **Rules:** [COMMON_RULES.md](COMMON_RULES.md).
-**Roles:** Claude implements one bounded slice → Codex independently audits pinned SHA → GPT/user decides.
-**Only refactor branch:** `refactor/p1.5`. No additional feature/task/ZIP branches; `main` remains frozen.
-**Baseline for next work:** `ac12d2d570c0fed436eca0c129b2923f166499f0`; Guard 006 audited code `f6cc71b25d9f3aadd356ee6509b629778861ce32`.
-**Operational protection:** do not execute tests or modify files under live `C:\Agentra` or dirty Q12 worktrees. Work in separate isolated clone only.
+**Agentra roles:** Claude implements → Codex independently audits → GPT/user decides.
+**ONLY refactor branch:** `refactor/p1.5`; `main` frozen. No feature/task/ZIP branches.
+**Pinned implementation SHA:** `3d85085011de8ed2cbeb720ddce8e55cf7a60d9d` (previous `6760ab4abaf1a9bc6ec168f6c1daf9a727e19dfb`).
+**Safety:** isolated clone ONLY, never test against live `C:\Agentra` or dirty Q12 worktrees; no real orders, LLM, Docker restarts or production file access.
 
-## Guard 007 — accepted independent audit
-- User-supplied Codex audit **PASS_WITH_FINDINGS** on `f6cc71b`: guard tests **61 PASS / 0 SKIP**, guarded seam smoke **357 direct cases / 57 functions**, clone write audit **0**, detached clone clean; `libs/`, `apps/`, `graphs/`, `conftest.py` unchanged; no live/Q12 access.
-- Nonblocking finding: pytest `cache_dir` unknown-config warning (1). **No mandatory Guard 007 fix**.
-- Evidence: [P15-R3-CODEX-GUARD-AUDIT-007.md](evidence/P15-R3-CODEX-GUARD-AUDIT-007.md). Counts are reported by Codex via user, not rerun by GPT.
+## LOC 008 submitted — not yet independently accepted
+- Nine Markdown dependency-map factories moved into one named **268-LOC Owner**; Markdown façade `1,891 → 1,678` (**-213 physical LOC**). AI `1,958`, Story `562`, façade sum `4,411 → 4,198`. Ledger now records 66 moved symbols (57 existing + 9 maps); 436 facade callable declarations kept.
+- Claude evidence: [P15-R3-CLAUDE-LOC-008.md](evidence/P15-R3-CLAUDE-LOC-008.md). Claims: baseline differential **96,564/96,565** calls same (1 wall-clock latency); 49,473 map calls across nine factories; focused **1,041 PASS / 1 SKIP**, write audit 0, 436 ABI/cycle/Owner size gates PASS. **Independent Codex audit required**, not a blanket ACCEPTED verdict.
+- **SIZE_DEFERRED is unpaid debt, not a waiver to stop shrinking.** Measure & pursue every positive-value, consumer-safe cohesive candidate with use-time facade-global resolution intact, not formatting tricks. Queue 010 only after this audit.
+- Prior R3 seam **PASS_WITH_FINDINGS**; Guard 007 **PASS_WITH_FINDINGS**. Invalid live-root comparison excluded.
 
-## LOC 008 — why further shrinking is justified
-- Three current Reporting public façades: AI **1,958** LOC (182 defs), Markdown **1,891** (209 defs), Story **562** (45 defs), sum **4,411**. Original sum **18,743**; remaining is partly 436 preserved callable seams plus dependency maps and actual residual implementation.
-- **SIZE_DEFERRED = unmet size target, NOT indefinite waiver.** Claude must measure all remaining nontrivial functions and dependency factories, identify existing canonical Owners and migrate the highest-value **safe cohesive** slice now; no arbitrary code formatting tricks or unproven ABI removal.
-- Keep 436 callable signatures/decorators and lazy use-time façade-global lookup. New/moved Owners <=350 physical LOC and domain responsibility clear; no numbered catch-all.
-- LLM prompt/retry/timeout/call-count, report truth precedence, order, Unicode, output schema and trading authorities are frozen. No real LLM/broker or production writes.
-
-## Still OPEN
-Actual frozen report Markdown/JSON/JSONL and LLM before/after traces **BLOCKED / NOT RUN**; full native pytest previous baseline-matched 35F+2E and `controlled_mock_lanes` test write-isolation **OPEN**; numbered Owner cohesion debt OPEN. **P1.5.2 final PASS, `main` merge, live rollout, P1.5.3 all unapproved.**
-
-## LOC 008 implemented (2026-10-12, Claude) - awaiting Codex audit
-- One cohesive slice: the 9 Markdown-clean dependency-map factories moved to `libs/reporting/trade_report/markdown_clean_dependency_maps.py` (268 LOC) with use-time `facade.NAME` lookup. Markdown facade 1,891 -> 1,678 (-213); three facades 4,411 -> 4,198. Evidence: [P15-R3-CLAUDE-LOC-008.md](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-008.md). Differential 96,564/96,565 calls identical (1 = latency), focused 1,041 passed / 1 skipped, 0 writes. Real-data/LLM parity BLOCKED; façade size still SIZE_DEFERRED; P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.
+## Separate unresolved gates
+Frozen real Markdown/JSON/JSONL and LLM parity **BLOCKED / NOT RUN**. Full-suite `controlled_mock_lanes` write-isolation OPEN (previous baseline-matched 35F+2E). Numbered Owners `bodies_01..05` cohesion OPEN. **P1.5.2 OPEN**, no `main` merge or P1.5.3.

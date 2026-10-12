@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 209,
+  "entry_count": 210,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5685,6 +5685,33 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-008.md",
         "docs/daily_patch/2026-10-12_p1_5_2_r3_facade_loc_008.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 LOC 008 Submitted for Codex Audit",
+      "title": "Audit 9 Markdown dependency-map extractions and retain façade-reduction backlog",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "REFACTOR",
+        "TESTING"
+      ],
+      "summary": "Claude submitted a 213-line Markdown façade reduction; Codex pinned-SHA independent audit is required before accepting and continuing further LOC work.",
+      "details": [
+        "Git-confirmed f6cc71b Guard006 and 3d85085 LOC008 on refactor/p1.5; nine dependency-map factories moved into one named 268-LOC owner with façade wrappers intact.",
+        "Markdown façade 1891 to 1678 lines (-213), three façade total 4411 to 4198; 436 ABI callable names retained, moved-body ledger 57 to 66.",
+        "Claude reports 1041 focused PASS / 1 SKIP, zero production writes and 96564/96565 call records identical (one latency); pending independent Codex verification.",
+        "Next potential slices: Markdown narrative/translation, AI/Story dependency maps, memory/policy and format primitives; no new implementation yet.",
+        "Actual historical report/LLM parity BLOCKED, controlled_mock_lanes write isolation OPEN, façade size and Owner cohesion debts OPEN, P1.5.2 OPEN / P1.5.3 prohibited."
+      ],
+      "impact": "Delivers measurable modular reduction while keeping strict compatibility and independent-audit sequencing.",
+      "sources": [
+        "docs/refactor/work_orders/P15_R3_CODEX_LOC_008_AUDIT_009.md",
+        "docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md",
+        "docs/daily_patch/2026-10-12_p152_loc008_codex_handoff.md",
+        "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-008.md"
       ],
       "status": "current"
     }
