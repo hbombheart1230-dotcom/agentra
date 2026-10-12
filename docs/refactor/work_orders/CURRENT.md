@@ -1,6 +1,6 @@
-# ACTIVE — Agentra P1.5 FAST TRACK Wave A (Reporting → Operator UI) — CLAUDE WAVE COMPLETE, CODEX AUDIT PENDING
+# ACTIVE — Agentra P1.5 FAST TRACK Wave A (Reporting → Operator UI) — CLOSED FIRST_PASS_WITH_DEBT
 
-**State:** WAVE_A_IMPLEMENTED_FIRST_PASS_WITH_DEBT; CODEX_WAVE_A_AUDIT_PENDING; P1.5.2 OPEN (final acceptance); P1.5.3 FIRST_PASS_WITH_DEBT (not final accepted); MAIN_FROZEN.
+**State:** WAVE_A_CLOSED_FIRST_PASS_WITH_DEBT (Codex PASS_WITH_FINDINGS, scope guard + CI fixed); P1.5.2 OPEN (final acceptance); P1.5.3 FIRST_PASS_WITH_DEBT (not final accepted); MAIN_FROZEN.
 **Work order:** [P15_FAST_TRACK_WAVE_A_013.md](P15_FAST_TRACK_WAVE_A_013.md). **Workflow authority:** [Fast Track plan](../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md) → [COMMON_RULES.md](COMMON_RULES.md).
 **Roles:** Claude implements a wave → Codex audits the pinned aggregated diff → GPT/user final release decisions.
 **Only `refactor/p1.5` development branch**; `main` frozen; no feature/task branches. **No ZIP/download artifacts — Git commit/push is the only deliverable** (user decision 2026-10-12).
@@ -14,5 +14,5 @@
 
 ## Still open (not FINAL)
 - Real frozen report Markdown/JSON/JSONL and LLM before/after parity **BLOCKED / NOT RUN**; full native pytest and `controlled_mock_lanes` write isolation **OPEN**; façade size and numbered Owner cohesion **SECOND_PASS_DEBT**.
-- CI guard step in `.github/workflows/p152-r2c-residual-regression.yml` still asserts R3-era markers in CURRENT.md (stale vs Fast Track); needs a Codex/GPT-approved workflow update — not changed here.
-- Next: Codex independent Wave A audit of the pinned SHA; Waves B/C only after audited nonblocking evidence. No main merge, deployment or final P1.5.2/P1.5.3 acceptance.
+- Codex Wave A verdict **PASS_WITH_FINDINGS** recorded in [P15-FAST-TRACK-WAVE-A-CODEX-AUDIT-015.md](evidence/P15-FAST-TRACK-WAVE-A-CODEX-AUDIT-015.md); the one policy failure (R2-era scope guard) is fixed by a stage-pinned guard and the CI workflow now validates the Fast Track active contract with all ZIP packaging removed.
+- Next: Wave B (P1.5.4-P1.5.6) under its own scope/authority gate. No main merge, deployment or final P1.5.2/P1.5.3 acceptance.

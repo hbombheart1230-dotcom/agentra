@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 215,
+  "entry_count": 216,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5845,6 +5845,30 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-A-CLAUDE-014.md",
         "docs/daily_patch/2026-10-12_p1_5_fast_track_wave_a.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5 Fast Track Wave A Closeout",
+      "title": "Wave A closeout: stage-scoped scope guard and ZIP-free Fast Track CI",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "WORKFLOW",
+        "SAFETY"
+      ],
+      "summary": "Codex Wave A PASS_WITH_FINDINGS recorded; the R2-era scope guard is pinned to the Wave A end commit with an explicit apps/operator_ui allowance, and the GitHub Actions workflow validates the Fast Track active contract with all ZIP steps removed.",
+      "details": [
+        "Scope guard test is pinned to 318015a0 (Wave A end): allowed libs/reporting, tests, docs, scripts/refactor, apps/operator_ui; apps/api, graphs, conftest.py and execution/broker/supervisor/runtime/ai/core prefixes stay forbidden.",
+        "Workflow: R3-era CURRENT.md string checks replaced by an active-contract guard (single Fast Track work order, state line without FINAL_ACCEPTED, single branch, no ZIP); all ZIP packaging/upload steps deleted; JSON inventories, ABI/Owner/patch-note/offline regression kept; JUnit evidence and moved-body gates added.",
+        "Codex Wave A audit recorded: 1,455 PASS / 1 policy FAIL (fixed), A2 gate 706 PASS, production writes 0.",
+        "Real frozen report/LLM parity BLOCKED, controlled_mock_lanes isolation and full native pytest OPEN. Wave A is FIRST_PASS_WITH_DEBT, not FINAL_ACCEPTED."
+      ],
+      "impact": "Fast Track waves can change graphs/operator code without tripping a stale historical guard; CI no longer produces ZIP artifacts.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-A-CODEX-AUDIT-015.md",
+        "docs/daily_patch/2026-10-12_p1_5_wave_a_closeout.md"
       ],
       "status": "current"
     }

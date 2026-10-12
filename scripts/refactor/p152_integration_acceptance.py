@@ -14,7 +14,10 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 PINNED_BEFORE = "2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c"
-SOURCE_SCOPE = ("libs/reporting/", "tests/", "docs/", "scripts/refactor/")
+# Stage-scoped inventory (Fast Track): the P1.5.2 source inventory is pinned to the Wave A end commit so later
+# waves (B/C: graphs/nodes, libs/runtime, ...) never invalidate it; each later wave has its own scope gate.
+INVENTORY_END_REF = "318015a02b8378b0dbf7b0b24ec18c2786688d18"
+SOURCE_SCOPE = ("libs/reporting/", "tests/", "docs/", "scripts/refactor/", "apps/operator_ui/")
 # Narrow documentation entrypoint exception: no trading/root runtime files.
 DOC_ENTRYPOINT_ALLOWLIST = ("AGENTS.md", "CLAUDE.md")
 WORKFLOW = ".github/workflows/p152-r2c-residual-regression.yml"
@@ -65,7 +68,7 @@ def owner_files(root: Path) -> tuple[str, ...]:
     raise ValueError("Owner ledger missing")
 
 
-def build_inventory(root: Path = ROOT, *, ref: str = "HEAD") -> dict[str, Any]:
+def build_inventory(root: Path = ROOT, *, ref: str = INVENTORY_END_REF) -> dict[str, Any]:
     head = _git("rev-parse", ref, root=root)
     changed = [
         p for p in _git("diff", "--name-only", PINNED_BEFORE, ref, root=root).splitlines()

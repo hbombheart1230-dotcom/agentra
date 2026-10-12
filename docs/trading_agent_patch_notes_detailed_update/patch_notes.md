@@ -2945,3 +2945,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 영속화·IO·LLM 호출 함수와 350줄 초과 단일 함수는 이동하지 않고 2차 부채로 기록했습니다.
 - 검증: 이동 본문 AST 동일성·use-time oracle·ABI, baseline 대비 호출 비교(Reporting 150,692/150,693 동일, Operator UI 결과 동일·`prompt_hash`만 비결정적), 통합 집중 회귀 2,374 passed / 1 skipped / 기존 API 실패 1건, 운영 경로 쓰기 0.
 - 운영 규칙: 책임 단위 일괄 추출, 하위 시스템별 게이트, ZIP·다운로드 산출물 금지(Git만 산출물)를 Git 문서에 반영했습니다. 실제 snapshot·LLM parity BLOCKED, 전체 pytest·`controlled_mock_lanes` OPEN, P1.5.2 최종 OPEN, Codex Wave A 감사 대기.
+
+## 2026-10-12 · P1.5 Fast Track Wave A 종료
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · WORKFLOW · SAFETY
+
+- Codex Wave A 판정 PASS_WITH_FINDINGS를 기록했습니다(집중 1,455 PASS / 정책 FAIL 1, A2 706 PASS, 운영 쓰기 0).
+- R2 시대 범위 가드를 Wave A 종료 커밋에 고정하고 `apps/operator_ui/`를 명시 허용했으며 apps/api·graphs·conftest.py·실행 권한 경로는 계속 금지합니다.
+- GitHub Actions는 Fast Track 활성 작업 계약 검사로 교체하고 모든 ZIP 생성·업로드 단계를 삭제했습니다(JSON inventory·JUnit·ABI·Owner·patch-note·오프라인 회귀 유지).
+- 실제 frozen 보고서/LLM parity BLOCKED, `controlled_mock_lanes`·전체 pytest OPEN. Wave A는 FIRST_PASS_WITH_DEBT이며 FINAL_ACCEPTED가 아닙니다.

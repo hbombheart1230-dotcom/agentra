@@ -46,41 +46,46 @@ jobs:
           assert "P1.5 Small-Owner and Executor v1.2" in (root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
           print("P1.5 DESIGN GUARD PASS —", j["entry_count"], "patch note entries")
           PY
-      - name: Validate Git-driven work order and independent roles
+      - name: Validate Fast Track active work-order contract and independent roles
         run: |
           python - <<'PY'
+          import json, re
           from pathlib import Path
-          import json
-          paths=[
-              "CLAUDE.md", "AGENTS.md",
-              "docs/refactor/P15_EXECUTION_PROTOCOL.md",
-              "docs/refactor/work_orders/README.md",
-              "docs/refactor/work_orders/CURRENT.md",
-          ]
-          for name in paths:
+          for name in ["CLAUDE.md", "AGENTS.md", "docs/refactor/P15_EXECUTION_PROTOCOL.md",
+                       "docs/refactor/work_orders/README.md", "docs/refactor/work_orders/CURRENT.md",
+                       "docs/refactor/work_orders/COMMON_RULES.md",
+                       "docs/refactor/P15_FAST_TRACK_FIRST_PASS_2026_10_12.md"]:
               assert Path(name).is_file(), name
-          cl=Path("CLAUDE.md").read_text(encoding="utf-8")
-          cx=Path("AGENTS.md").read_text(encoding="utf-8")
-          cur=Path("docs/refactor/work_orders/CURRENT.md").read_text(encoding="utf-8")
-          protocol=Path("docs/refactor/P15_EXECUTION_PROTOCOL.md").read_text(encoding="utf-8")
-          assert "docs/refactor/work_orders/CURRENT.md" in cl
-          assert "docs/refactor/work_orders/CURRENT.md" in cx
-          assert "P15_R3_FACADE_DECOMPOSITION_001.md" in cur
-          assert "READY_FOR_CLAUDE_IMPLEMENTATION" in cur
-          assert "P1.5.3 NOT AUTHORIZED" in cur
-          assert "CLAUDE IMPLEMENTS" in cx and "CODEX INDEPENDENT" in cx
-          assert "CLAUDE PRIMARY IMPLEMENTER" in cl
-          assert Path("docs/refactor/work_orders/COMMON_RULES.md").is_file()
-          assert Path("docs/refactor/work_orders/archive/CURRENT_R2_THROUGH_341CEDC_2026-10-12.md").is_file()
+          cl = Path("CLAUDE.md").read_text(encoding="utf-8")
+          cx = Path("AGENTS.md").read_text(encoding="utf-8")
+          cur = Path("docs/refactor/work_orders/CURRENT.md").read_text(encoding="utf-8")
+          rules = Path("docs/refactor/work_orders/COMMON_RULES.md").read_text(encoding="utf-8")
+          plan = Path("docs/refactor/P15_FAST_TRACK_FIRST_PASS_2026_10_12.md").read_text(encoding="utf-8")
+          protocol = Path("docs/refactor/P15_EXECUTION_PROTOCOL.md").read_text(encoding="utf-8")
+          assert "docs/refactor/work_orders/CURRENT.md" in cl and "docs/refactor/work_orders/CURRENT.md" in cx
+          assert "CLAUDE IMPLEMENTS" in cx and "CODEX INDEPENDENT" in cx and "CLAUDE PRIMARY IMPLEMENTER" in cl
           assert "CODEX" in protocol and "CLAUDE" in protocol and "GPT_ACCEPTED" in protocol
-          notes=json.loads(Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.json").read_text(encoding="utf-8"))
-          assert notes["entry_count"]==len(notes["entries"])
-          key="P1.5 Git-Driven Claude/Codex Work Orders v1.0"
-          matching=[e for e in notes["entries"] if e.get("version")==key]
-          assert len(matching)==1
-          assert all(Path(src).is_file() for src in matching[0]["sources"])
-          assert key in Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
-          print("P1.5 GIT WORK ORDER GUARD PASS",notes["entry_count"])
+          # ONE active Fast Track work order: CURRENT links exactly one existing P15_FAST_TRACK_WAVE_*.md
+          links = sorted(set(re.findall(r"\(?(P15_FAST_TRACK_WAVE_[A-Z]_\d+\.md)\)?", cur)))
+          assert len(links) == 1, links
+          assert (Path("docs/refactor/work_orders") / links[0]).is_file(), links[0]
+          # approved scope + state: single branch, main frozen, no ZIP, never a FINAL acceptance claim
+          state = re.search(r"^\*\*State:\*\*(.*)$", cur, flags=re.M)
+          assert state, "CURRENT.md has no **State:** line"
+          assert "FINAL_ACCEPTED" not in state.group(1), state.group(1)
+          assert "refactor/p1.5" in cur and ("MAIN_FROZEN" in cur or "main` frozen" in cur)
+          assert "No ZIP" in cur or "no ZIP" in cur
+          assert "FIRST_PASS_WITH_DEBT" in plan and "Fast Track execution rules" in rules
+          assert "No ZIP" in rules or "no ZIP" in rules
+          wf = Path(".github/workflows/p152-r2c-residual-regression.yml").read_text(encoding="utf-8")
+          assert ("Zip" + "File") not in wf and ("." + "zip") not in wf, "ZIP packaging must not exist in CI"
+          notes = json.loads(Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.json").read_text(encoding="utf-8"))
+          assert notes["entry_count"] == len(notes["entries"])
+          for entry in notes["entries"][-5:]:
+              assert all(Path(src).is_file() for src in entry["sources"]), entry["version"]
+          md = Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
+          assert notes["entries"][-1]["date"] in md
+          print("P1.5 FAST TRACK CONTRACT GUARD PASS", links[0], notes["entry_count"])
           PY
       - name: Fetch pinned P1.5.2 before-source for deterministic owner parity
         run: git fetch --no-tags --depth=1 origin 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c
@@ -104,6 +109,8 @@ jobs:
         run: git fetch --no-tags --depth=1 origin ef22bec761d7f2b01762cb17e3c6523b9df8040c
       - name: Fetch original Markdown Clean before Owner38 headline split
         run: git fetch --no-tags --depth=1 origin 0409687aa76e195bd001d7756419b86b9580c531
+      - name: Fetch Wave A end commit for the stage-scoped scope guard and moved-body gates
+        run: git fetch --no-tags --depth=1 origin 318015a02b8378b0dbf7b0b24ec18c2786688d18 fb8de628eb56b0941007e90ad2e98b4f684983ba ba6618d483e6d617f4ee56b2cb5647392c777071
       - name: Check 38 extracted function ASTs and <=350 LOC Owners
         run: python -m scripts.refactor.p152_owner_parity
       - name: Compile extracted owners
@@ -117,6 +124,27 @@ jobs:
           DRY_RUN: '1'
           TRADING_MODE: 'mock'
         run: python -m pytest -q tests/test_reporter_agent_trade_entrypoint.py tests/test_reporter_node.py tests/test_reporter_service.py tests/test_reporter_analysis_report.py tests/test_reporter_feedback.py tests/test_reporter_commander_hooks.py tests/test_reporter_script_wrappers.py tests/test_trade_explain_report.py tests/test_operator_summary_reports.py tests/test_controlled_mock_lane_report.py tests/test_agent_pipeline_trace_report.py tests/test_report_trades_continuity.py tests/test_check_reporter_upgrade_regression.py tests/test_m19_6_llm_daily_report.py
+      - name: P1.5.2/P1.5.3 moved-body gates (AST + use-time seam oracle), harness guards, scope guards
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests/test_p152_r3_moved_bodies.py tests/test_p153_operator_ui_moved_bodies.py tests/test_p152_r3_harness_guards.py tests/test_p152_facade_symbol_ledger.py tests/test_p152_facade_abi_and_authority_boundary.py --junitxml=branch_output/p152_p153_gates_junit.xml
+      - name: Operator UI / Brief offline regression (no live broker or LLM)
+        env:
+          DRY_RUN: '1'
+          TRADING_MODE: 'mock'
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests/test_operator_ui.py tests/test_operator_summary_reports.py tests/test_operator_visibility_reports.py tests/test_phase3_lifecycle_bundle.py --junitxml=branch_output/p153_operator_ui_junit.xml
+      - name: Upload JUnit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p15-fast-track-junit
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            branch_output/p152_p153_gates_junit.xml
+            branch_output/p153_operator_ui_junit.xml
       - name: P1.5.2 final-acceptance inventory contracts
         run: python -m pytest -q tests/test_p152_integration_acceptance_inventory.py
       - name: Emit source and unresolved local acceptance JSON
@@ -153,99 +181,6 @@ jobs:
           retention-days: 14
           if-no-files-found: error
           path: branch_output/p152_facade_consumer_static_coverage.json
-      - name: Pack only P1.5.2 files changed since pinned GPT baseline
-        if: success()
-        run: |
-          python - <<'PY'
-          import subprocess
-          from pathlib import Path
-          from zipfile import ZipFile, ZIP_DEFLATED
-          files = subprocess.check_output(
-              ["git", "diff", "--name-only", "-z", "2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c", "HEAD"]
-          ).decode().split("\0")
-          files = [p for p in files if p and Path(p).is_file()]
-          assert files, "No tracked changed files"
-          Path("branch_output").mkdir(exist_ok=True)
-          with ZipFile("branch_output/p152_refactor_modified_only.zip", "w", ZIP_DEFLATED) as out:
-              for name in files:
-                  out.write(name, arcname=name)
-          print("ZIP ENTRIES:", *files, sep="\n- ")
-          PY
-      - name: Fetch actual push baseline for changed-files-only ZIP
-        env:
-          PUSH_BEFORE: ${{ github.event.before }}
-        run: |
-          if [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != "0000000000000000000000000000000000000000" ]; then
-            git fetch --no-tags --depth=1 origin "$PUSH_BEFORE"
-          fi
-      - name: Package only P1.5.2 integration-closeout changed files
-        if: success()
-        env:
-          PUSH_BEFORE: ${{ github.event.before }}
-        run: |
-          python - <<'PY'
-          import subprocess
-          from pathlib import Path
-          from zipfile import ZIP_DEFLATED, ZipFile
-          import os
-          before = os.environ.get("PUSH_BEFORE") or ""
-          if not before or before == "0"*40:
-              before = subprocess.check_output(["git", "rev-parse", "HEAD^"], text=True).strip()
-          names = subprocess.check_output(
-              ["git", "diff", "--name-only", "-z", before, "HEAD"]
-          ).decode().split("\0")
-          names = [p for p in names if p and Path(p).is_file()]
-          assert names, "No P1.5.2 integration changed paths"
-          Path("branch_output").mkdir(exist_ok=True)
-          with ZipFile("branch_output/p152_integration_modified_only.zip", "w", ZIP_DEFLATED) as z:
-              for p in names:
-                  z.write(p, arcname=p)
-          print("P1.5.2 integration changed-only paths:", len(names))
-          PY
-      - name: Upload integration tranche modified-only ZIP
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: p152-integration-modified-only
-          retention-days: 14
-          if-no-files-found: error
-          path: branch_output/p152_integration_modified_only.zip
-      - name: Upload changed-files ZIP only
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: p152-only-modified-files
-          retention-days: 14
-          if-no-files-found: error
-          path: branch_output/p152_refactor_modified_only.zip
-
-      - name: Pack ONLY files modified since R3 Git-work-order task baseline
-        if: success()
-        run: |
-          git fetch --no-tags --depth=1 origin 341cedcd95b37b2f30e8dc6b821a25c20fd3fa7b
-          python - <<'PY'
-          import subprocess
-          from pathlib import Path
-          from zipfile import ZipFile, ZIP_DEFLATED
-          baseline="341cedcd95b37b2f30e8dc6b821a25c20fd3fa7b"
-          changed=subprocess.check_output(
-              ["git","diff","--name-only","-z",baseline,"HEAD"]
-          ).decode().split("\0")
-          changed=[x for x in changed if x and Path(x).is_file()]
-          assert changed, "No changed files since R3 task start"
-          with ZipFile("branch_output/p152_r3_task_changed_only.zip","w",ZIP_DEFLATED) as z:
-              for x in changed:
-                  z.write(x, arcname=x)
-          print("R3 task changed-only ZIP:",len(changed),"files")
-          PY
-      - name: Upload R3 task changed-only ZIP
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: p152-r3-task-changed-only
-          retention-days: 14
-          if-no-files-found: error
-          path: branch_output/p152_r3_task_changed_only.zip
 
 
   broad_remote_offline:
