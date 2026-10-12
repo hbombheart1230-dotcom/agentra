@@ -132,7 +132,4 @@ def exit_frame_avg_price_decision(selected_symbol, pos_map, state, selected_snap
             frame=frame_applied,
             hold_sec=hold_sec,
         )
-        if bool(eod_carry.get("approved")):
-            decision["triggered"] = False
-            decision["reason"] = "carry_overnight_approved"
     return (avg_price, decision, eod_carry, features, hold_sec, intents, price, qty, selected_pending_order_for_exit, symbol)

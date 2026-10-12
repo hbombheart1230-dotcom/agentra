@@ -49,25 +49,7 @@ def entry_quality_qty_sizing_info(state, symbol, selected, position_sizing_polic
     return (qty, sizing_info)
 
 
-def entry_quality_entry_cost_filter_entry_quality_gate(entry_info, selected, entry_cost_filter_config, qty, plan, strategy_frame, state, commander_context, *, facade):
-    entry_cost_filter = facade._evaluate_entry_cost_filter(
-        entry_info=entry_info,
-        selected=selected,
-        qty=int(qty),
-        config=entry_cost_filter_config,
-    )
-    entry_info["entry_cost_filter"] = dict(entry_cost_filter)
-    entry_info["cost_adjusted_edge_ok"] = bool(entry_cost_filter.get("cost_adjusted_edge_ok"))
-    entry_info["cost_adjusted_edge_pct"] = entry_cost_filter.get("cost_adjusted_edge_pct")
-    entry_info["cost_drag_pct"] = entry_cost_filter.get("cost_drag_pct")
-    entry_quality_gate = facade._evaluate_entry_quality_gate(
-        selected=selected,
-        entry_info=entry_info,
-        entry_cost_filter=entry_cost_filter,
-    )
-    entry_info["entry_quality_gate"] = dict(entry_quality_gate)
-    entry_info["entry_lane"] = "strict"
-    entry_info["scoring_mode"] = str(entry_info.get("scoring_mode") or "disabled")
+def entry_quality_quant_entry_decision_quant_entry_enforce(plan, strategy_frame, entry_info, selected, state, *, facade):
     tactic_id_for_quant_entry = str(
         plan.get("tactical_strategy")
         or strategy_frame.get("tactical_strategy")
@@ -94,44 +76,4 @@ def entry_quality_entry_cost_filter_entry_quality_gate(entry_info, selected, ent
         playbook=playbook_for_quant_entry,
     )
     quant_entry_enforcement = facade.build_entry_quant_enforcement(quant_entry_decision)
-    entry_info["quant_factor_snapshot"] = dict(quant_entry_factor_snapshot)
-    entry_info["entry_quant_decision"] = dict(quant_entry_decision)
-    entry_info["quant_entry_enforcement"] = dict(quant_entry_enforcement)
-    strategist_output = state.get("strategist_output") if isinstance(state.get("strategist_output"), dict) else {}
-    market_regime_for_entry = (
-        strategy_frame.get("market_regime")
-        or commander_context.get("market_regime")
-        or strategist_output.get("market_regime")
-        or state.get("market_regime")
-        or ""
-    )
-    commander_rail_shadow = (
-        commander_context.get("market_regime_rail_shadow")
-        if isinstance(commander_context.get("market_regime_rail_shadow"), dict)
-        else {}
-    )
-    strategist_rail_shadow = (
-        strategist_output.get("market_regime_rail_shadow")
-        if isinstance(strategist_output.get("market_regime_rail_shadow"), dict)
-        else {}
-    )
-    market_regime_rail_for_entry = (
-        strategy_frame.get("market_regime_rail")
-        or commander_context.get("market_regime_rail")
-        or commander_rail_shadow.get("market_regime_rail")
-        or commander_rail_shadow.get("rail_id")
-        or strategist_output.get("market_regime_rail")
-        or strategist_rail_shadow.get("market_regime_rail")
-        or strategist_rail_shadow.get("rail_id")
-        or state.get("market_regime_rail")
-        or ""
-    )
-    market_rail_translation = facade.evaluate_market_rail_translation(
-        entry_info=entry_info,
-        entry_quant_decision=quant_entry_decision,
-        factor_snapshot=quant_entry_factor_snapshot,
-        market_regime=market_regime_for_entry,
-        market_regime_rail=market_regime_rail_for_entry,
-    )
-    entry_info["market_rail_translation"] = dict(market_rail_translation)
-    return (entry_cost_filter, entry_quality_gate, market_rail_translation, market_regime_for_entry, market_regime_rail_for_entry, quant_entry_decision, quant_entry_enforcement, tactic_id_for_quant_entry)
+    return (quant_entry_decision, quant_entry_enforcement, quant_entry_factor_snapshot, tactic_id_for_quant_entry)

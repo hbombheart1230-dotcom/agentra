@@ -1,6 +1,6 @@
 """Fast Track Wave C (P1.5.7 Commander, P1.5.8 naming aliases, P1.5.9 Executor read models) scope + trading-authority boundary.
 
-Stage-scoped: diffs the pinned Wave C start (== Wave B end) against HEAD. Wave A/B guards stay pinned to their own end commits.
+Stage-scoped: diffs the pinned Wave C start (== Wave B end) against the pinned Wave C end. Wave A/B guards stay pinned to their own end commits.
 """
 import ast
 import json
@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WAVE_C_BASE = "cba2124a85d2a3bf7cef96876920ba4912bd1c5e"
+WAVE_C_END = "1f7add2b0f9b5a33399da27edcdd2f390bdf911b"  # stage pin: the second pass has its own gate
 LEDGER = ROOT / "docs/refactor/p1_5_wave_c_moved_bodies_ledger.json"
 
 ALLOWED_EXACT = {
@@ -36,7 +37,7 @@ FORBIDDEN_IMPORT_PARTS = ("libs.execution.intent", "libs.execution.guards", "lib
 
 
 def _changed():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", WAVE_C_BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", WAVE_C_BASE, WAVE_C_END], cwd=ROOT).decode().split(chr(0))
     return [p for p in out if p]
 
 
@@ -66,7 +67,7 @@ def test_unmoved_functions_of_touched_modules_are_ast_identical_to_baseline():
     assert set(moved) <= {"graphs/commander_runtime.py", "graphs/nodes/execute_from_packet.py"}
     for module, names in moved.items():
         before = {n.name: n for n in _base_tree(module).body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
-        after_tree = ast.parse((ROOT / module).read_text(encoding="utf-8-sig"))
+        after_tree = ast.parse(subprocess.check_output(["git", "show", f"{WAVE_C_END}:{module}"], cwd=ROOT).decode("utf-8-sig"))
         after = {n.name: n for n in after_tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
         assert before.keys() == after.keys(), (module, sorted(set(before) ^ set(after)))
         for name, node in before.items():

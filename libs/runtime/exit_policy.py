@@ -18,7 +18,7 @@ from libs.runtime.monitor_exit.exit_policy_pnl_projection import (
     exit_pnl_apx_crosscheck,
     exit_pnl_gross_pnl_ratio_gross_profit_floor_gap_p,
     exit_pnl_expected_exit_floor_blocked_profit_exit,
-    exit_pnl_effective_stop_pct_etf_deviation_pct,
+    exit_pnl_effective_stop_candidates_effective_stop,
 )
 from libs.runtime.monitor_exit.exit_policy_trigger_inputs import (
     exit_trigger_peak_drawdown_th_profit_protection_urgen,
@@ -627,7 +627,20 @@ def evaluate_exit_policy(
         out["hold_block_reason"] = f"{str(reason or 'protective_exit')}:cost_aware_profit_floor_not_met"
         return True
 
-    effective_stop_pct, etf_deviation_pct, etf_deviation_source, hard_sl, hard_stop_pnl_ratio, sl, stop_pnl_ratio, tp = exit_pnl_effective_stop_pct_etf_deviation_pct(out=out, p=p, facade=_r3_sys.modules[__name__])
+    effective_stop_candidates, effective_stop_pct, effective_stop_reason, etf_deviation_pct, etf_deviation_source, hard_sl, sl, tp = exit_pnl_effective_stop_candidates_effective_stop(out=out, p=p, facade=_r3_sys.modules[__name__])
+    if effective_stop_candidates:
+        effective_stop_reason, effective_stop_pct = min(
+            effective_stop_candidates,
+            key=lambda row: float(row[1]),
+        )
+        out["thresholds"]["effective_stop_loss_pct"] = float(effective_stop_pct)
+        out["thresholds"]["effective_stop_reason"] = str(effective_stop_reason)
+    else:
+        out["thresholds"]["effective_stop_loss_pct"] = 0.0
+        out["thresholds"]["effective_stop_reason"] = ""
+
+    hard_stop_pnl_ratio = float(out["hard_stop_pnl_ratio"])
+    stop_pnl_ratio = float(out["stop_pnl_ratio"])
     if hard_sl > 0.0 and hard_stop_pnl_ratio <= -hard_sl:
         return _finalize(
             triggered=True,

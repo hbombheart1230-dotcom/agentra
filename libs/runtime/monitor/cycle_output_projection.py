@@ -282,8 +282,4 @@ def cycle_output_monitor_entry_exit_reason_quant_entry_de(buy_blocked_post_exit_
         tactic_id=tactic_id,
         playbook=tactic_playbook,
     )
-    entry_info["quant_factor_snapshot"] = dict(quant_entry_factor_snapshot)
-    entry_info["entry_quant_decision"] = dict(quant_entry_decision)
-    entry_info["quant_entry_enforcement"] = dict(quant_entry_enforcement)
-    exit_info["exit_quant_decision"] = dict(quant_exit_decision)
     return (monitor_entry_exit_reason, quant_entry_decision, quant_entry_enforcement, quant_entry_factor_snapshot, quant_exit_decision)

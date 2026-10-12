@@ -9,7 +9,7 @@ calls are present - those statements stay in the orchestrator).
 from __future__ import annotations
 
 
-def cycle_posture_entry_applied_policy_monitor_policy_trac(exit_info, entry_info, entry_applied_policy, commander_context, strategy_monitor_policy, strategist_plan, policy_provenance, current_reason, entry_received_policy, entry_policy_origin, commander_memory_application_trace, entry_policy_contract, *, facade):
+def cycle_posture_entry_applied_policy_entry_metrics(exit_info, entry_info, entry_applied_policy, commander_context, strategy_monitor_policy, strategist_plan, policy_provenance, current_reason, entry_received_policy, entry_policy_origin, commander_memory_application_trace, *, facade):
     thresholds = dict(exit_info.get("thresholds") or {}) if isinstance(exit_info.get("thresholds"), dict) else {}
     entry_metrics = dict(entry_info.get("metrics") or {}) if isinstance(entry_info.get("metrics"), dict) else {}
     entry_thresholds = dict(entry_info.get("thresholds") or {}) if isinstance(entry_info.get("thresholds"), dict) else {}
@@ -49,7 +49,10 @@ def cycle_posture_entry_applied_policy_monitor_policy_trac(exit_info, entry_info
     policy_ref["monitor_memory_bias_exit_deltas"] = list(exit_info.get("monitor_memory_bias_exit_deltas") or [])
     policy_ref["commander_memory_application_trace"] = dict(commander_memory_application_trace)
     policy_ref["monitor_memory_application_trace"] = dict(commander_memory_application_trace)
-    monitor_policy_trace["policy_ref"] = policy_ref
+    return (entry_applied_policy, entry_metrics, entry_thresholds, monitor_policy_trace, policy_ref, thresholds)
+
+
+def cycle_posture_threshold_snapshot(exit_info, entry_applied_policy, thresholds, entry_metrics, entry_received_policy, entry_policy_origin, entry_policy_contract, entry_thresholds, entry_info, *, facade):
     pnl_ratio = facade._to_float(exit_info.get("pnl_ratio")) if exit_info.get("pnl_ratio") not in (None, "") else None
     threshold_snapshot = {
         "current_price": exit_info.get("price"),
@@ -200,7 +203,7 @@ def cycle_posture_entry_applied_policy_monitor_policy_trac(exit_info, entry_info
         "entry_scoring_decision": str(entry_info.get("scoring_entry_decision") or "WAIT"),
         "entry_transition_trace": dict(entry_info.get("entry_transition_trace") or {}),
     }
-    return (entry_applied_policy, monitor_policy_trace, threshold_snapshot)
+    return (threshold_snapshot,)
 
 
 def cycle_posture_value_te_monitor_state_transition(previous_posture, current_posture, previous_reason, current_reason, state_changed, entry_transition_trace, exit_info, entry_info, previous_monitor_state, *, facade):

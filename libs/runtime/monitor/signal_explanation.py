@@ -9,71 +9,7 @@ calls are present - those statements stay in the orchestrator).
 from __future__ import annotations
 
 
-def signal_explain_entry_condition_path_pattern(human_chart_entry_setup, entry_condition_paths_passed, signal_chain, passed_checks, policy_alignment_summary, *, facade):
-    if True:
-        triggered = True
-        setup_label = str(human_chart_entry_setup.get("setup_label") or "clean_vwap_continuation")
-        pattern = f"human_chart_{setup_label}"
-        reason = "human_chart_entry_setup_confirmed"
-        entry_condition_path = "human_chart_setup_path"
-        primary_failure_axis = "confirmed_entry"
-        if "human_chart_setup_path" not in entry_condition_paths_passed:
-            entry_condition_paths_passed.append("human_chart_setup_path")
-        if "human_chart_entry_setup" not in signal_chain:
-            signal_chain.append("human_chart_entry_setup")
-        if "human_chart_entry_setup" not in passed_checks:
-            passed_checks.append("human_chart_entry_setup")
-        policy_alignment_summary["summary_notes"] = facade._dedupe_non_empty(
-            [
-                *list(policy_alignment_summary.get("summary_notes") or []),
-                "human_chart_entry_setup_applied",
-            ]
-        )
-    return (entry_condition_path, pattern, primary_failure_axis, reason, triggered)
-
-
-def signal_explain_human_chart_buy_guard_primary_failure_ax(chart_human_context, human_chart_detail_context, prev_close_distance_pct, open_gap_pct, entry_condition_path, triggered, signal_chain, failed_checks, policy_alignment_summary, primary_failure_axis, reason, *, facade):
-    human_chart_buy_guard = facade._build_human_chart_buy_guard(
-        chart_human_context=chart_human_context,
-        chart_detail_context=human_chart_detail_context,
-        prev_close_distance_pct=prev_close_distance_pct,
-        open_gap_pct=open_gap_pct,
-        candidate_triggered=bool(triggered),
-        entry_condition_path=entry_condition_path,
-    )
-    if bool(human_chart_buy_guard.get("applied")):
-        triggered = False
-        reason = "human_chart_sanity_guard_blocked"
-        primary_failure_axis = "human_chart_sanity"
-        if "human_chart_buy_guard" not in signal_chain:
-            signal_chain.append("human_chart_buy_guard")
-        if "human_chart_buy_guard" not in failed_checks:
-            failed_checks.append("human_chart_buy_guard")
-        policy_alignment_summary["summary_notes"] = facade._dedupe_non_empty(
-            [
-                *list(policy_alignment_summary.get("summary_notes") or []),
-                "human_chart_buy_guard_applied",
-            ]
-        )
-    return (human_chart_buy_guard, primary_failure_axis, reason, triggered)
-
-
-def signal_explain_transition_trace(reclaim_distance_to_ready, rebound_progress, volume_distance_to_ready, breakout_distance_to_ready, transition_readiness_score, vwap_reclaim_progress, primary_failure_axis, triggered, policy_aware_gating, human_chart_entry_setup, entry_condition_path, grouped_logic_trace, scoring_settings, score_breakdown, chart_structure_decision_hint, chart_human_context, human_chart_detail_context, human_chart_buy_guard, entry_quality_score, entry_quality_tier, entry_quality_path, entry_hard_gate_passed, entry_hard_gate_blockers, entry_quality_vs_gate_summary, breakout_score, etf_deviation_entry_score, *, facade):
-    transition_trace = facade._empty_entry_transition_trace()
-    transition_trace.update(
-        {
-            "reclaim_distance_to_ready": reclaim_distance_to_ready,
-            "vwap_reclaim_progress": round(vwap_reclaim_progress, 4),
-            "rebound_progress": rebound_progress,
-            "volume_distance_to_ready": volume_distance_to_ready,
-            "breakout_distance_to_ready": breakout_distance_to_ready,
-            "transition_readiness_score": transition_readiness_score,
-            "last_blocking_axis": primary_failure_axis if not triggered else "",
-            "became_ready_this_cycle": bool(
-                policy_aware_gating.get("applied") or human_chart_entry_setup.get("applied")
-            ),
-        }
-    )
+def signal_explain_effect_free_block_3479(entry_condition_path, grouped_logic_trace, scoring_settings, score_breakdown, policy_aware_gating, chart_structure_decision_hint, chart_human_context, human_chart_entry_setup, human_chart_detail_context, human_chart_buy_guard, entry_quality_score, entry_quality_tier, entry_quality_path, entry_hard_gate_passed, entry_hard_gate_blockers, entry_quality_vs_gate_summary, breakout_score, etf_deviation_entry_score, *, facade):
     grouped_logic_trace["triggered_path"] = entry_condition_path
     grouped_logic_trace["scoring_mode"] = str(scoring_settings.get("scoring_mode") or "disabled")
     grouped_logic_trace["score_passed"] = bool(sum(facade._to_float(v) for v in score_breakdown.values()) >= float(scoring_settings.get("entry_threshold") or 3.0))
@@ -124,4 +60,4 @@ def signal_explain_transition_trace(reclaim_distance_to_ready, rebound_progress,
     grouped_logic_trace["entry_quality_vs_gate_summary"] = entry_quality_vs_gate_summary
     grouped_logic_trace["breakout_proximity_score"] = breakout_score
     grouped_logic_trace["etf_deviation_entry_score"] = round(float(etf_deviation_entry_score), 4)
-    return (transition_trace,)
+    return None

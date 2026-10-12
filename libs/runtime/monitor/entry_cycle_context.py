@@ -48,22 +48,7 @@ def entry_cycle_all_pos_map_monitor_policy(state, *, facade):
     return (all_pos_map, monitor_policy, plan, policy, run_id, selected, strategist_output, strategy_monitor_policy)
 
 
-def entry_cycle_buy_blocked_closeout_window_buy_blocked(state, strategy_monitor_policy, strategist_output, open_position_count, max_positions, *, facade):
-    strategy_frame = facade._extract_monitor_strategy_frame(state)
-    commander_context = (
-        dict(strategy_frame.get("commander_context") or {})
-        if isinstance(strategy_frame.get("commander_context"), dict)
-        else {}
-    )
-    commander_entry_control = facade._resolve_commander_entry_control_for_monitor(
-        commander_context=commander_context,
-        strategy_monitor_policy=strategy_monitor_policy,
-        state=state,
-    )
-    if commander_entry_control:
-        commander_context["entry_control"] = dict(commander_entry_control)
-        commander_context["commander_entry_control"] = dict(commander_entry_control)
-        strategy_frame["commander_context"] = commander_context
+def entry_cycle_buy_blocked_closeout_window_buy_blocked(strategy_monitor_policy, commander_context, state, strategy_frame, strategist_output, commander_entry_control, open_position_count, max_positions, *, facade):
     monitor_memory_bias = facade._resolve_monitor_memory_bias_payload(
         strategy_monitor_policy=strategy_monitor_policy,
         commander_context=commander_context,
@@ -141,4 +126,8 @@ def entry_cycle_buy_blocked_closeout_window_buy_blocked(state, strategy_monitor_
     entry_guard_blocked = False
     entry_guard_reason = ""
     entry_applied_policy: facade.Dict[str, facade.Any] = {}
-    return (buy_blocked_closeout_window, buy_blocked_open_position, buy_blocked_pending_buy, buy_blocked_post_exit_cooldown, buy_blocked_same_symbol, commander_context, commander_entry_control, entry_applied_policy, entry_guard_blocked, entry_guard_reason, entry_info, entry_policy_contract, entry_policy_input, entry_policy_origin, max_positions_reached, monitor_memory_bias, monitor_memory_bias_observation_only, monitor_memory_bias_summary, policy_provenance, post_exit_cooldown_remaining_sec, strategist_plan, strategy_frame)
+    entry_received_policy: facade.Dict[str, facade.Any] = {}
+    effective_policy_trace: facade.Dict[str, facade.Any] = {}
+    hold_bias_result: facade.Dict[str, facade.Any] = {"controls": {}, "applied": False, "deltas": []}
+    exit_bias_result: facade.Dict[str, facade.Any] = {"policy": {}, "applied": False, "deltas": []}
+    return (buy_blocked_closeout_window, buy_blocked_open_position, buy_blocked_pending_buy, buy_blocked_post_exit_cooldown, buy_blocked_same_symbol, entry_applied_policy, entry_guard_blocked, entry_guard_reason, entry_info, entry_policy_contract, entry_policy_input, entry_policy_origin, entry_received_policy, exit_bias_result, hold_bias_result, max_positions_reached, monitor_memory_bias, monitor_memory_bias_observation_only, monitor_memory_bias_summary, policy_provenance, post_exit_cooldown_remaining_sec, strategist_plan)

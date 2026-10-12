@@ -274,3 +274,34 @@ def signal_score_entry_condition_path_entry_hard_gate_blo(etf_deviation_pct, etf
     entry_hard_gate_passed = bool(triggered)
     entry_quality_vs_gate_summary = ""
     return (entry_condition_path, entry_hard_gate_blockers, entry_hard_gate_passed, entry_quality_tier, entry_quality_vs_gate_summary, grouped_logic_trace, pattern, primary_failure_axis, reason, triggered)
+
+
+def signal_score_chart_structure_features_legacy_decision(entry_condition_path, grouped_logic_trace, triggered, reason, pattern, candles, current_close, current_vwap, recent_high, breakout_ok, pullback_ok, vwap_reclaim_ok, volume_ok, confidence_gate_ok, volume_ratio, extension_ok, extended_from_vwap_pct, max_extended_from_vwap_pct, pullback_mature, *, facade):
+    grouped_logic_trace["triggered_path"] = entry_condition_path
+    legacy_triggered = bool(triggered)
+    legacy_decision = "BUY" if legacy_triggered else "WAIT"
+    legacy_reason = str(reason or "")
+    legacy_pattern = str(pattern or "")
+    legacy_entry_condition_path = str(entry_condition_path or "")
+    chart_structure_features = facade.build_chart_structure_features(
+        candles,
+        current_price=current_close,
+        current_vwap=current_vwap,
+        recent_high=recent_high,
+        breakout_ok=breakout_ok,
+        pullback_ok=pullback_ok,
+        reclaim_ok=vwap_reclaim_ok,
+        volume_ok=volume_ok,
+        confidence_ok=confidence_gate_ok,
+        volume_ratio=volume_ratio,
+        too_extended=bool(not extension_ok and extended_from_vwap_pct > max_extended_from_vwap_pct),
+    )
+    score_breakdown = facade._build_monitor_score_breakdown(
+        vwap_reclaim_ok=bool(vwap_reclaim_ok),
+        breakout_ok=bool(breakout_ok),
+        pullback_mature=bool(pullback_mature),
+        volume_ok=bool(volume_ok),
+        confidence_gate_ok=bool(confidence_gate_ok),
+        chart_structure_features=chart_structure_features,
+    )
+    return (chart_structure_features, legacy_decision, legacy_entry_condition_path, legacy_pattern, legacy_reason, legacy_triggered, score_breakdown)

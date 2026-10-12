@@ -217,6 +217,44 @@ from libs.runtime.commander.event_projection import (
     _shadow_selected_score_r3_impl,
     _seed_commander_shadow_prior_context_r3_impl,
 )
+from libs.runtime.commander.policy_inputs_projection import (
+    behavior_input_allow_legacy_rule_allow_legacy_strategy,
+)
+from libs.runtime.commander.policy_normalizers_projection import (
+    behavior_norm_buy_closeout_cutoff_min_eod_flat_cutoff,
+    behavior_norm_carry_exit_policy_overrides_carry_policy,
+)
+from libs.runtime.commander.applied_policy_attach_projection import (
+    attach_policy_commander_context_commander_memory_polic,
+    attach_policy_commander_decision_commander_horizon_pol,
+    attach_policy_monitor_policy,
+    attach_policy_provenance,
+)
+from libs.runtime.commander.decision_context_projection import (
+    decision_ctx_entry_capacity_available_market_regime,
+    decision_ctx_allowed_playbooks_applied_policy_meta,
+)
+from libs.runtime.commander.decision_context_projection_applied_policy_command import (
+    decision_ctx_applied_policy_command_intent,
+)
+from libs.runtime.commander.decision_overlay_projection import (
+    decision_overlay_applied_policy_commander_horizon_policy,
+    decision_overlay_blocker_counts_decision_summary,
+)
+from libs.runtime.commander.decision_rules_projection import (
+    decision_rules_adaptive_feedback_allowed_adaptive_polic,
+    decision_rules_decision_summary_observations,
+    decision_rules_current_monitor_entry_policy_summary_pri,
+)
+from libs.runtime.commander.open_position_inputs_projection import (
+    open_pos_input_anomaly_found_last_exit_sweep_by_symbol,
+    open_pos_input_anomaly_found_candidate_loss_ratios,
+)
+from libs.runtime.commander.open_position_assessment_projection import (
+    open_pos_assess_carry_control,
+    open_pos_assess_force_exit_review_pending_open_position,
+    open_pos_assess_force_exit_review_pending_open_position_2,
+)
 
 
 def _is_trueish(v: Any) -> bool:
@@ -532,292 +570,9 @@ def _resolve_commander_behavior_policy(
             cursor = cursor.get(key)
         return cursor
 
-    route = str(selected_route or _derive_commander_selected_route(state) or "").strip().lower() or "unknown"
-    phase_text = str(phase or state.get("runtime_phase") or "session").strip().lower() or "session"
-    feedback_policy = _resolve_commander_reporter_feedback_policy(
-        state,
-        selected_route=route,
-        phase=phase_text,
-    )
-    reporter_ai_review_enabled = _existing_value("reporter", "ai_review", "enabled")
-    if reporter_ai_review_enabled is None:
-        reporter_ai_review_enabled = False
-    trade_report_enabled = _existing_value("reporter", "trade_report", "enabled")
-    if trade_report_enabled is None:
-        trade_report_enabled = True
-    trade_report_generate_on_open = _existing_value("reporter", "trade_report", "generate_on_open")
-    if trade_report_generate_on_open is None:
-        trade_report_generate_on_open = False
-    strict_mode = _existing_value("strategist", "runtime", "strict_mode")
-    if strict_mode is None:
-        strict_mode = True
-    allow_legacy_rule = _existing_value("strategist", "runtime", "allow_legacy_rule")
-    if allow_legacy_rule is None:
-        allow_legacy_rule = False
-    allow_legacy_strategy_v1 = _existing_value("strategist", "runtime", "allow_legacy_strategy_v1")
-    if allow_legacy_strategy_v1 is None:
-        allow_legacy_strategy_v1 = False
-    memory_feedback_enabled = _existing_value("strategist", "memory_feedback", "enabled")
-    if memory_feedback_enabled is None:
-        memory_feedback_enabled = _env_bool(
-            "USE_STRATEGY_MEMORY_FEEDBACK",
-            _commander_default_bool("USE_STRATEGY_MEMORY_FEEDBACK", True),
-        )
-    performance_memory_enabled = _existing_value("strategist", "performance_memory", "enabled")
-    if performance_memory_enabled is None:
-        performance_memory_enabled = _env_bool(
-            "USE_STRATEGY_PERFORMANCE_MEMORY",
-            _commander_default_bool("USE_STRATEGY_PERFORMANCE_MEMORY", True),
-        )
-    strategy_memory_persist_enabled = _existing_value("strategist", "performance_memory", "persist_enabled")
-    if strategy_memory_persist_enabled is None:
-        strategy_memory_persist_enabled = _env_bool(
-            "STRATEGY_MEMORY_PERSIST_ENABLED",
-            _commander_default_bool("STRATEGY_MEMORY_PERSIST_ENABLED", True),
-        )
-    commander_memory_usage_disabled = _existing_value("commander", "memory_usage", "disabled")
-    if commander_memory_usage_disabled is None:
-        commander_memory_usage_disabled = _env_bool(
-            "COMMANDER_MEMORY_USAGE_DISABLED",
-            _commander_default_bool("COMMANDER_MEMORY_USAGE_DISABLED", False),
-        )
-    strategist_memory_usage_disabled = _existing_value("strategist", "memory_usage", "disabled")
-    if strategist_memory_usage_disabled is None:
-        strategist_memory_usage_disabled = _env_bool(
-            "STRATEGIST_MEMORY_USAGE_DISABLED",
-            _commander_default_bool("STRATEGIST_MEMORY_USAGE_DISABLED", False),
-        )
-    post_scanner_refresh_enabled = _existing_value("commander", "route", "post_scanner_refresh_enabled")
-    if post_scanner_refresh_enabled is None:
-        post_scanner_refresh_enabled = _env_bool(
-            "COMMANDER_POST_SCANNER_REFRESH_ENABLED",
-            _commander_default_bool("COMMANDER_POST_SCANNER_REFRESH_ENABLED", True),
-        )
-    pre_entry_exit_sweep_enabled = _existing_value("commander", "route", "pre_entry_exit_sweep_enabled")
-    if pre_entry_exit_sweep_enabled is None:
-        pre_entry_exit_sweep_enabled = True
-    risk_max_positions = _resolve_risk_max_positions(state)
-    memory_bias_observation_only = _env_bool(
-        "MEMORY_BIAS_OBSERVATION_ONLY",
-        _commander_default_bool("MEMORY_BIAS_OBSERVATION_ONLY", True),
-    )
-    monitor_only_when_holding = _existing_value("commander", "route", "monitor_only_when_holding")
-    if monitor_only_when_holding is None:
-        monitor_only_when_holding = True
-    cached_strategist_when_flat = _existing_value("commander", "route", "cached_strategist_when_flat")
-    if cached_strategist_when_flat is None:
-        cached_strategist_when_flat = False
-    exit_policy_enabled = _existing_value("monitor", "exit", "enabled")
-    if exit_policy_enabled is None:
-        exit_policy_enabled = True
-    exit_policy_use_eod_flat = _existing_value("monitor", "exit", "eod_flat", "enabled")
-    if exit_policy_use_eod_flat is None:
-        exit_policy_use_eod_flat = True
-    block_buy_when_open_position = _existing_value("monitor", "entry", "block_buy_when_open_position")
-    if block_buy_when_open_position is None:
-        block_buy_when_open_position = risk_max_positions <= 1
-    monitor_scoring_enabled = _existing_value("monitor", "entry", "scoring", "enabled")
-    if monitor_scoring_enabled is None:
-        monitor_scoring_enabled = False
-    monitor_scoring_shadow_mode = _existing_value("monitor", "entry", "scoring", "shadow_mode")
-    if monitor_scoring_shadow_mode is None:
-        monitor_scoring_shadow_mode = True
-    post_exit_cooldown_sec = _existing_value("execution", "cooldowns", "post_exit_sec")
-    if post_exit_cooldown_sec is None:
-        post_exit_cooldown_sec = 180
-    sell_cooldown_sec = _existing_value("execution", "cooldowns", "sell_sec")
-    if sell_cooldown_sec is None:
-        sell_cooldown_sec = 300
-    min_hold_seconds = _existing_value("monitor", "hold", "min_hold_seconds")
-    if min_hold_seconds is None:
-        min_hold_seconds = 600
-    exit_confirm_ticks = _existing_value("monitor", "exit", "confirm_ticks")
-    if exit_confirm_ticks is None:
-        exit_confirm_ticks = 2
-    eod_flat_cutoff_min = _existing_value("monitor", "exit", "eod_flat", "cutoff_min")
-    if eod_flat_cutoff_min is None:
-        eod_flat_cutoff_min = 10
-    buy_closeout_cutoff_min = _existing_value("monitor", "entry", "buy_closeout_cutoff_min")
-    if buy_closeout_cutoff_min is None:
-        buy_closeout_cutoff_min = max(
-            _DEFAULT_BUY_CLOSEOUT_CUTOFF_MIN,
-            _coerce_int(eod_flat_cutoff_min, 10),
-        )
-    top_candidate_pool = _existing_value("scanner", "candidate", "top_pool")
-    if top_candidate_pool is None:
-        top_candidate_pool = 30
-    kiwoom_condition_limit = _existing_value("scanner", "kiwoom", "condition_limit")
-    if kiwoom_condition_limit is None:
-        kiwoom_condition_limit = 200
-    scanner_source_type = _existing_value("scanner", "source", "type")
-    if scanner_source_type in (None, ""):
-        scanner_source_type = "kiwoom"
-    scanner_strict_only = _existing_value("scanner", "kiwoom", "strict_only")
-    if scanner_strict_only is None:
-        scanner_strict_only = True
-    scanner_strict_only = _is_trueish(scanner_strict_only)
-    scanner_block_static_when_empty = _existing_value("scanner", "fallback", "block_static_when_empty")
-    if scanner_block_static_when_empty is None:
-        scanner_block_static_when_empty = True
-    scanner_block_static_when_empty = _is_trueish(scanner_block_static_when_empty)
-    scanner_live_fetch = _existing_value("scanner", "kiwoom", "live_fetch")
-    if scanner_live_fetch is None:
-        scanner_live_fetch = True
-    scanner_live_fetch = _is_trueish(scanner_live_fetch)
-    scanner_include_change_rate = _existing_value("scanner", "kiwoom", "include_change_rate")
-    if scanner_include_change_rate is None:
-        scanner_include_change_rate = True
-    scanner_include_change_rate = _is_trueish(scanner_include_change_rate)
-    universe_asset_type = _existing_value("universe", "asset_type")
-    if universe_asset_type in (None, ""):
-        universe_asset_type = "all_tradable"
-    monitor_scoring_threshold = _existing_value("monitor", "entry", "scoring", "threshold")
-    if monitor_scoring_threshold is None:
-        monitor_scoring_threshold = 3
-    position_sizing_enabled = _existing_value("monitor", "entry", "position_sizing", "enabled")
-    if position_sizing_enabled is None:
-        position_sizing_enabled = True
-    position_sizing_risk_per_trade_ratio = _existing_value(
-        "monitor",
-        "entry",
-        "position_sizing",
-        "risk_per_trade_ratio",
-    )
-    if position_sizing_risk_per_trade_ratio is None:
-        position_sizing_risk_per_trade_ratio = 0.01
-    position_sizing_notional_ratio = _existing_value(
-        "monitor",
-        "entry",
-        "position_sizing",
-        "position_notional_ratio",
-    )
-    if position_sizing_notional_ratio is None:
-        position_sizing_notional_ratio = 0.50
-    position_sizing_max_qty = _existing_value("monitor", "entry", "position_sizing", "max_position_qty")
-    if position_sizing_max_qty is None:
-        position_sizing_max_qty = _coerce_int(os.getenv("MAX_ORDER_QTY") or os.getenv("MAX_QTY"), 10)
-    position_sizing_max_notional = _existing_value("monitor", "entry", "position_sizing", "max_position_notional")
-    if position_sizing_max_notional is None:
-        position_sizing_max_notional = _runtime_float(
-            os.getenv("MAX_ORDER_NOTIONAL") or os.getenv("MAX_NOTIONAL"),
-            1_000_000.0,
-        )
-    position_sizing_min_qty = _existing_value("monitor", "entry", "position_sizing", "min_position_qty")
-    if position_sizing_min_qty is None:
-        position_sizing_min_qty = 1
-    position_sizing_lot_size = _existing_value("monitor", "entry", "position_sizing", "lot_size")
-    if position_sizing_lot_size is None:
-        position_sizing_lot_size = 1
-    strategy_memory_recent_runs = _existing_value("strategist", "memory_feedback", "recent_runs")
-    if strategy_memory_recent_runs is None:
-        strategy_memory_recent_runs = 12
-    strategist_llm_profile = str(_existing_value("llm", "strategist", "profile") or "balanced").strip().lower() or "balanced"
-    reporter_intraday_profile = str(_existing_value("llm", "reporter", "intraday", "profile") or "fast_free").strip().lower() or "fast_free"
-    reporter_daily_profile = str(_existing_value("llm", "reporter", "daily", "profile") or "strong_reasoning").strip().lower() or "strong_reasoning"
-    strategist_llm = resolve_model_profile(strategist_llm_profile, default_profile="balanced")
-    reporter_intraday_llm = resolve_model_profile(reporter_intraday_profile, default_profile="fast_free")
-    reporter_daily_llm = resolve_model_profile(reporter_daily_profile, default_profile="strong_reasoning")
-    default_execution_profile_name = (
-        str(
-            _existing_value("llm", "execution_profile", "profile_name")
-            or _existing_value("llm", "execution_profile", "name")
-            or "default_intraday"
-        ).strip().lower()
-        or "default_intraday"
-    )
-    default_execution_profile = resolve_execution_profile(
-        default_execution_profile_name,
-        default_profile="default_intraday",
-        defaults={
-            "profile_name": "default_intraday",
-            "name": "default_intraday",
-            "temperature": 0.2,
-            "max_tokens": 8192,
-            "timeout_sec": 15,
-            "retry": {"max_attempts": 2, "backoff_sec": 0.0},
-            "retry_max": 2,
-            "retry_backoff_sec": 0.0,
-        },
-    )
-    strategist_execution_profile_name = (
-        str(_existing_value("llm", "strategist", "execution_profile", "name") or "balanced_reasoning").strip().lower()
-        or "balanced_reasoning"
-    )
-    reporter_intraday_execution_profile_name = (
-        str(_existing_value("llm", "reporter", "intraday", "execution_profile", "name") or "concise_review").strip().lower()
-        or "concise_review"
-    )
-    reporter_daily_execution_profile_name = (
-        str(_existing_value("llm", "reporter", "daily", "execution_profile", "name") or "deep_review").strip().lower()
-        or "deep_review"
-    )
-    strategist_execution_profile = resolve_execution_profile(
-        strategist_execution_profile_name,
-        default_profile="balanced_reasoning",
-        defaults={
-            "profile_name": "balanced_reasoning",
-            "name": "balanced_reasoning",
-            "temperature": 0.1,
-            "max_tokens": 8192,
-            "timeout_sec": 15,
-            "retry": {
-                "max_attempts": int(((default_execution_profile.get("retry") or {}).get("max_attempts") or 2)),
-                "backoff_sec": float(((default_execution_profile.get("retry") or {}).get("backoff_sec") or 0.0)),
-            },
-            "retry_max": 2,
-            "retry_backoff_sec": float(((default_execution_profile.get("retry") or {}).get("backoff_sec") or 0.0)),
-        },
-    )
-    reporter_intraday_execution_profile = resolve_execution_profile(
-        reporter_intraday_execution_profile_name,
-        default_profile="concise_review",
-        defaults={
-            "profile_name": "concise_review",
-            "name": "concise_review",
-            "temperature": 0.2,
-            "max_tokens": 8192,
-            "timeout_sec": max(1, _coerce_int(default_execution_profile.get("timeout_sec"), 15)),
-            "retry": {
-                "max_attempts": int(((default_execution_profile.get("retry") or {}).get("max_attempts") or 2)),
-                "backoff_sec": float(((default_execution_profile.get("retry") or {}).get("backoff_sec") or 0.0)),
-            },
-            "retry_max": int(((default_execution_profile.get("retry") or {}).get("max_attempts") or 2)),
-            "retry_backoff_sec": float(((default_execution_profile.get("retry") or {}).get("backoff_sec") or 0.0)),
-        },
-    )
-    reporter_daily_execution_profile = resolve_execution_profile(
-        reporter_daily_execution_profile_name,
-        default_profile="deep_review",
-        defaults={
-            "profile_name": "deep_review",
-            "name": "deep_review",
-            "temperature": 0.2,
-            "max_tokens": 8192,
-            "timeout_sec": max(1, _coerce_int(default_execution_profile.get("timeout_sec"), 15)),
-            "retry": {
-                "max_attempts": int(((default_execution_profile.get("retry") or {}).get("max_attempts") or 2)),
-                "backoff_sec": float(((default_execution_profile.get("retry") or {}).get("backoff_sec") or 0.0)),
-            },
-            "retry_max": int(((default_execution_profile.get("retry") or {}).get("max_attempts") or 2)),
-            "retry_backoff_sec": float(((default_execution_profile.get("retry") or {}).get("backoff_sec") or 0.0)),
-        },
-    )
-    carry_state = str(commander_override.get("carry_state") or "").strip().lower()
-    carry_risk_bias = str(commander_override.get("carry_risk_bias") or "").strip().lower()
-    carry_risk_reason = str(commander_override.get("carry_risk_reason") or "")
-    override_reason = str(commander_override.get("override_reason") or "").strip().lower()
-    hold_repeat_count_max = max(0, _coerce_int(commander_override.get("hold_repeat_count_max"), 0))
-    effective_loss_ratio_min = float(_runtime_float(commander_override.get("effective_loss_ratio_min"), 0.0))
-    session_open_recovery = (
-        dict(commander_override.get("session_open_recovery_assessment") or {})
-        if isinstance(commander_override.get("session_open_recovery_assessment"), dict)
-        else {}
-    )
-    market_context = state.get("market_context") if isinstance(state.get("market_context"), dict) else {}
-    raw_minutes_to_close = market_context.get("minutes_to_close")
-    minutes_to_close = None if raw_minutes_to_close in (None, "") else float(_runtime_float(raw_minutes_to_close, 0.0))
-    carry_exit_policy_overrides: Dict[str, Any] = {}
-    carry_policy_adjustments: list[str] = []
+    allow_legacy_rule, allow_legacy_strategy_v1, block_buy_when_open_position, cached_strategist_when_flat, commander_memory_usage_disabled, exit_policy_enabled, exit_policy_use_eod_flat, feedback_policy, memory_bias_observation_only, memory_feedback_enabled, monitor_only_when_holding, monitor_scoring_enabled, performance_memory_enabled, phase_text, post_scanner_refresh_enabled, pre_entry_exit_sweep_enabled, reporter_ai_review_enabled, risk_max_positions, route, strategist_memory_usage_disabled, strategy_memory_persist_enabled, strict_mode, trade_report_enabled, trade_report_generate_on_open = behavior_input_allow_legacy_rule_allow_legacy_strategy(selected_route=selected_route, state=state, phase=phase, _existing_value=_existing_value, facade=_r3_sys.modules[__name__])
+    buy_closeout_cutoff_min, eod_flat_cutoff_min, exit_confirm_ticks, kiwoom_condition_limit, min_hold_seconds, monitor_scoring_shadow_mode, monitor_scoring_threshold, position_sizing_enabled, position_sizing_lot_size, position_sizing_max_notional, position_sizing_max_qty, position_sizing_min_qty, position_sizing_notional_ratio, position_sizing_risk_per_trade_ratio, post_exit_cooldown_sec, scanner_block_static_when_empty, scanner_include_change_rate, scanner_live_fetch, scanner_source_type, scanner_strict_only, sell_cooldown_sec, strategy_memory_recent_runs, top_candidate_pool, universe_asset_type = behavior_norm_buy_closeout_cutoff_min_eod_flat_cutoff(_existing_value=_existing_value, facade=_r3_sys.modules[__name__])
+    carry_exit_policy_overrides, carry_policy_adjustments, carry_risk_bias, carry_risk_reason, carry_state, default_execution_profile, effective_loss_ratio_min, hold_repeat_count_max, minutes_to_close, override_reason, reporter_daily_execution_profile, reporter_daily_llm, reporter_intraday_execution_profile, reporter_intraday_llm, session_open_recovery, strategist_execution_profile, strategist_llm = behavior_norm_carry_exit_policy_overrides_carry_policy(_existing_value=_existing_value, commander_override=commander_override, state=state, facade=_r3_sys.modules[__name__])
     if carry_risk_bias == "urgent_exit_review":
         carry_exit_policy_overrides = {
             "vwap_break_requires_profit": False,
@@ -1318,24 +1073,7 @@ def _attach_commander_applied_policy(state: Dict[str, Any]) -> Dict[str, Any]:
     if not strategist_output:
         return state
 
-    strategist_output = dict(strategist_output)
-    strategy_policy = (
-        dict(strategist_output.get("strategy_policy") or {})
-        if isinstance(strategist_output.get("strategy_policy"), dict)
-        else {}
-    )
-    scanner_policy = (
-        dict(strategy_policy.get("scanner_policy") or {})
-        if isinstance(strategy_policy.get("scanner_policy"), dict)
-        else {}
-    )
-    commander_context = (
-        dict(strategy_policy.get("commander_context") or {})
-        if isinstance(strategy_policy.get("commander_context"), dict)
-        else {}
-    )
-    memory_packets = {}
-    commander_memory_policy = {}
+    commander_context, commander_memory_policy, memory_packets, scanner_policy, strategist_output, strategy_policy = attach_policy_commander_context_commander_memory_polic(strategist_output=strategist_output, facade=_r3_sys.modules[__name__])
     try:
         memory_packets = load_commander_memory_packets(state=state)
         commander_memory_policy = build_commander_memory_policy(
@@ -1506,42 +1244,7 @@ def _attach_commander_applied_policy(state: Dict[str, Any]) -> Dict[str, Any]:
             "monitor_memory_bias_summary": dict(monitor_memory_bias_summary),
         }
     )
-    horizon_proposal = {}
-    if isinstance(strategist_output.get("strategist_horizon_proposal"), dict):
-        horizon_proposal = dict(strategist_output.get("strategist_horizon_proposal") or {})
-    elif isinstance(strategist_output.get("strategy_horizon_feedback"), dict):
-        horizon_proposal = dict(strategist_output.get("strategy_horizon_feedback") or {})
-    elif isinstance((strategy_policy.get("monitor_policy") or {}).get("strategy_horizon_feedback"), dict):
-        horizon_proposal = dict((strategy_policy.get("monitor_policy") or {}).get("strategy_horizon_feedback") or {})
-    commander_horizon_policy = build_commander_horizon_policy(
-        horizon_proposal,
-        commander_context=commander_context,
-        memory_packets=memory_packets,
-        runtime_phase=str(state.get("runtime_phase") or commander_context.get("session_bias") or ""),
-        live_validation_mode=True,
-        source="commander_applied_policy",
-    )
-    horizon_context = build_horizon_context(commander_horizon_policy)
-    strategist_refresh_context = (
-        dict(commander_context.get("strategist_refresh_context") or {})
-        if isinstance(commander_context.get("strategist_refresh_context"), dict)
-        else {}
-    )
-    strategist_refresh_context["commander_horizon_policy"] = dict(commander_horizon_policy)
-    strategist_refresh_context["horizon_context"] = dict(horizon_context)
-    commander_context["strategist_refresh_context"] = strategist_refresh_context
-    open_position_refresh_context = (
-        dict(commander_context.get("open_position_refresh_context") or {})
-        if isinstance(commander_context.get("open_position_refresh_context"), dict)
-        else {}
-    )
-    if open_position_refresh_context:
-        open_position_refresh_context["commander_horizon_policy"] = dict(commander_horizon_policy)
-        open_position_refresh_context["horizon_context"] = dict(horizon_context)
-        commander_context["open_position_refresh_context"] = open_position_refresh_context
-    commander_context["commander_horizon_policy"] = dict(commander_horizon_policy)
-    commander_context["horizon_context"] = dict(horizon_context)
-    commander_decision = dict(commander_decision)
+    commander_decision, commander_horizon_policy, horizon_context = attach_policy_commander_decision_commander_horizon_pol(strategist_output=strategist_output, strategy_policy=strategy_policy, commander_context=commander_context, memory_packets=memory_packets, state=state, commander_decision=commander_decision, facade=_r3_sys.modules[__name__])
     commander_decision["commander_horizon_policy"] = dict(commander_horizon_policy)
     commander_decision["horizon_context"] = dict(horizon_context)
     state["commander_decision"] = commander_decision
@@ -1550,24 +1253,7 @@ def _attach_commander_applied_policy(state: Dict[str, Any]) -> Dict[str, Any]:
     merged_applied_policy["horizon"] = dict(commander_horizon_policy)
     merged_applied_policy["commander_horizon_policy"] = dict(commander_horizon_policy)
     state["applied_policy"] = merged_applied_policy
-    strategy_policy["commander_context"] = commander_context
-
-    monitor_policy = (
-        dict(strategy_policy.get("monitor_policy") or {})
-        if isinstance(strategy_policy.get("monitor_policy"), dict)
-        else {}
-    )
-    monitor_policy["applied_policy"] = dict(applied_policy)
-    monitor_policy["policy_source"] = str(policy_meta.get("policy_source") or "")
-    monitor_policy["policy_validation_status"] = str(policy_meta.get("policy_validation_status") or "")
-    monitor_policy["policy_fallback_used"] = bool(policy_meta.get("policy_fallback_used"))
-    monitor_policy["policy_fallback_reason"] = str(policy_meta.get("policy_fallback_reason") or "")
-    monitor_policy["policy_partial_normalized"] = bool(policy_meta.get("policy_partial_normalized"))
-    monitor_policy["policy_default_filled_fields"] = list(policy_meta.get("policy_default_filled_fields") or [])
-    monitor_policy["policy_validation_missing_fields"] = list(policy_meta.get("policy_validation_missing_fields") or [])
-    monitor_policy["policy_validation_invalid_fields"] = list(policy_meta.get("policy_validation_invalid_fields") or [])
-    monitor_policy["override_reason"] = str(policy_meta.get("override_reason") or "")
-    monitor_policy["applied_policy_source_chain"] = list(policy_meta.get("applied_policy_source_chain") or [])
+    monitor_policy = attach_policy_monitor_policy(commander_context=commander_context, strategy_policy=strategy_policy, applied_policy=applied_policy, policy_meta=policy_meta, facade=_r3_sys.modules[__name__])[0]
     monitor_policy["monitor_memory_bias"] = dict(monitor_memory_bias)
     monitor_policy["monitor_memory_bias_summary"] = dict(monitor_memory_bias_summary)
     monitor_policy["commander_horizon_policy"] = dict(commander_horizon_policy)
@@ -1583,37 +1269,7 @@ def _attach_commander_applied_policy(state: Dict[str, Any]) -> Dict[str, Any]:
     scanner_policy["scanner_bias_summary"] = dict(scanner_bias_summary)
     scanner_policy["scanner_memory_bias"] = dict(scanner_memory_bias)
     scanner_policy["scanner_memory_bias_summary"] = dict(scanner_memory_bias_summary)
-    if commander_entry_control:
-        scanner_policy["entry_control"] = dict(commander_entry_control)
-        scanner_policy["max_priority_rank"] = int(
-            commander_entry_control.get("max_priority_rank")
-            if commander_entry_control.get("max_priority_rank") not in (None, "")
-            else 10
-        )
-        scanner_policy["max_runner_ups"] = int(
-            commander_entry_control.get("max_runner_ups")
-            if commander_entry_control.get("max_runner_ups") not in (None, "")
-            else 9
-        )
-    strategy_policy["scanner_policy"] = scanner_policy
-
-    provenance = (
-        dict(strategy_policy.get("provenance") or {})
-        if isinstance(strategy_policy.get("provenance"), dict)
-        else {}
-    )
-    provenance["applied_policy_source"] = str(policy_meta.get("policy_source") or "")
-    provenance["policy_validation_status"] = str(policy_meta.get("policy_validation_status") or "")
-    provenance["policy_fallback_used"] = bool(policy_meta.get("policy_fallback_used"))
-    provenance["policy_fallback_reason"] = str(policy_meta.get("policy_fallback_reason") or "")
-    provenance["policy_partial_normalized"] = bool(policy_meta.get("policy_partial_normalized"))
-    provenance["policy_default_filled_fields"] = list(policy_meta.get("policy_default_filled_fields") or [])
-    provenance["policy_validation_missing_fields"] = list(policy_meta.get("policy_validation_missing_fields") or [])
-    provenance["policy_validation_invalid_fields"] = list(policy_meta.get("policy_validation_invalid_fields") or [])
-    provenance["override_reason"] = str(policy_meta.get("override_reason") or "")
-    provenance["applied_policy_source_chain"] = list(policy_meta.get("applied_policy_source_chain") or [])
-    provenance["scanner_bias_source"] = str(scanner_bias_meta.get("bias_source") or "")
-    strategy_policy["provenance"] = provenance
+    provenance = attach_policy_provenance(commander_entry_control=commander_entry_control, scanner_policy=scanner_policy, strategy_policy=strategy_policy, policy_meta=policy_meta, scanner_bias_meta=scanner_bias_meta, facade=_r3_sys.modules[__name__])[0]
 
     strategist_output["strategy_policy"] = strategy_policy
     strategist_output["commander_context_ref"] = {
@@ -1762,215 +1418,10 @@ def _build_commander_decision(
     path_value: str,
     reason_text: str = "",
 ) -> Dict[str, Any]:
-    portfolio_snapshot = state.get("portfolio_snapshot") if isinstance(state.get("portfolio_snapshot"), dict) else {}
-    preflight = state.get("portfolio_preflight") if isinstance(state.get("portfolio_preflight"), dict) else {}
-    runtime_fast_path = state.get("runtime_fast_path") if isinstance(state.get("runtime_fast_path"), dict) else {}
-    strategist_output = state.get("strategist_output") if isinstance(state.get("strategist_output"), dict) else {}
-    resilience = state.get("runtime_resilience_state") if isinstance(state.get("runtime_resilience_state"), dict) else {}
-    shadow_assessment = _build_shadow_assessment_summary(
-        state,
-        mode_value=mode_value,
-        phase_value=phase_value,
-        status_value=status_value,
-        path_value=path_value,
-        reason_text=reason_text,
-    )
-    positions = [row for row in list(portfolio_snapshot.get("positions") or []) if isinstance(row, dict)]
-    open_position_count = len(positions)
-    max_positions = _resolve_risk_max_positions(state)
-    entry_capacity_available = open_position_count < max_positions
-    market_regime, strategist_fallback_used = _derive_commander_market_regime(state, shadow_assessment=shadow_assessment)
-    strategist_rail_raw = strategist_output.get("market_regime_rail")
-    strategist_rail_shadow = (
-        strategist_output.get("market_regime_rail_shadow")
-        if isinstance(strategist_output.get("market_regime_rail_shadow"), dict)
-        else {}
-    )
-    strategist_input_quality = (
-        strategist_output.get("strategist_input_quality")
-        if isinstance(strategist_output.get("strategist_input_quality"), dict)
-        else {}
-    )
-    input_quality_rail = (
-        strategist_input_quality.get("market_regime_rail")
-        if isinstance(strategist_input_quality.get("market_regime_rail"), dict)
-        else {}
-    )
-    risk_off_policy = (
-        strategist_output.get("risk_off_exception_policy")
-        if isinstance(strategist_output.get("risk_off_exception_policy"), dict)
-        else {}
-    )
-    if isinstance(strategist_rail_raw, dict):
-        market_regime_rail = str(
-            strategist_rail_raw.get("market_regime_rail")
-            or strategist_rail_raw.get("rail_id")
-            or strategist_rail_raw.get("rail")
-            or ""
-        )
-    else:
-        market_regime_rail = str(strategist_rail_raw or "")
-    market_regime_rail = str(
-        market_regime_rail
-        or strategist_rail_shadow.get("market_regime_rail")
-        or strategist_rail_shadow.get("rail_id")
-        or input_quality_rail.get("market_regime_rail")
-        or input_quality_rail.get("rail_id")
-        or risk_off_policy.get("market_regime_rail")
-        or state.get("market_regime_rail")
-        or ""
-    ).strip()
-    rail_l = market_regime_rail.lower()
-    rail_risk_off = bool("risk_off" in rail_l or "gap_down" in rail_l or "breadth_collapse" in rail_l)
-    if rail_risk_off and market_regime != "risk_off":
-        market_regime = "risk_off"
-    macro_stress_overlay = (
-        strategist_output.get("macro_stress_overlay")
-        if isinstance(strategist_output.get("macro_stress_overlay"), dict)
-        else {}
-    )
-    raw_stress_flags = list(macro_stress_overlay.get("stress_flags") or [])
-    macro_stress_active = bool(macro_stress_overlay.get("active"))
-    stress_flags = raw_stress_flags if macro_stress_active else []
-    if str(phase_value or "").strip() == "preopen":
-        session_bias = "preopen_context"
-    elif str(phase_value or "").strip() == "closeout":
-        session_bias = "closeout_control"
-    elif open_position_count > 0 and not entry_capacity_available:
-        session_bias = "position_management"
-    elif open_position_count > 0 and entry_capacity_available:
-        session_bias = "multi_position_selection"
-    elif "cached" in str(path_value or ""):
-        session_bias = "context_reuse"
-    else:
-        session_bias = "active_selection"
-
-    runtime_status_blocked = str(status_value or "").strip().lower() in {"blocked", "preflight_blocked"}
-    hard_runtime_blocked = bool(preflight.get("blocked")) or (
-        bool(runtime_status_blocked) and not bool(entry_capacity_available)
-    )
-    if hard_runtime_blocked:
-        risk_mode = "blocked"
-    elif market_regime == "risk_off" or rail_risk_off or bool(stress_flags) or str(resilience.get("degrade_mode") or "").strip():
-        risk_mode = "defensive"
-    elif market_regime == "risk_on":
-        risk_mode = "offensive"
-    else:
-        risk_mode = "balanced"
+    entry_capacity_available, market_regime, market_regime_rail, max_positions, open_position_count, preflight, rail_risk_off, resilience, risk_mode, runtime_fast_path, session_bias, shadow_assessment, strategist_fallback_used, strategist_output, stress_flags = decision_ctx_entry_capacity_available_market_regime(state=state, mode_value=mode_value, phase_value=phase_value, status_value=status_value, path_value=path_value, reason_text=reason_text, facade=_r3_sys.modules[__name__])
 
     allowed_playbooks: list[str]
-    if risk_mode == "blocked":
-        allowed_playbooks = []
-    elif risk_mode == "defensive":
-        allowed_playbooks = ["defensive", "pullback"]
-    elif risk_mode == "offensive":
-        allowed_playbooks = ["breakout", "pullback"]
-    else:
-        allowed_playbooks = ["pullback", "defensive", "breakout"]
-    all_playbooks = ["breakout", "pullback", "reversal", "defensive"]
-    banned_playbooks = [x for x in all_playbooks if x not in allowed_playbooks]
-
-    if risk_mode == "defensive":
-        scanner_mission = "Prioritize liquid leaders and defensive candidates with resilient participation."
-        monitor_mission = "Require cleaner confirmation and protect downside quickly."
-    elif risk_mode == "offensive":
-        scanner_mission = "Prioritize liquid momentum leaders with strong participation and clean continuation."
-        monitor_mission = "Confirm intraday continuation promptly while respecting risk rails."
-    elif session_bias == "position_management":
-        scanner_mission = "Keep candidate refresh narrow while existing exposure is being managed."
-        monitor_mission = "Focus on hold versus exit confirmation for open positions first."
-    elif session_bias == "multi_position_selection":
-        scanner_mission = "Continue candidate selection while existing exposure is monitored, avoiding held symbols."
-        monitor_mission = "Evaluate fresh entries only when position capacity remains and duplicate-symbol guards pass."
-    else:
-        scanner_mission = "Prioritize balanced liquid leaders with clear scanner fit and manageable risk."
-        monitor_mission = "Wait for confirmation and avoid low-quality chase entries."
-
-    if "cached" in str(path_value or "") or str(runtime_fast_path.get("reason") or "").strip() == "flat_position_cached_strategist":
-        llm_policy = "prefer_cached_context"
-    elif session_bias == "position_management":
-        llm_policy = "allow_if_context_changed"
-    elif str(phase_value or "").strip() == "preopen":
-        llm_policy = "allow_context_refresh"
-    else:
-        llm_policy = "allow"
-
-    shadow_used = bool(shadow_assessment)
-    shadow_no_trade_reason_code = str(shadow_assessment.get("no_trade_reason_code") or "").strip()
-    shadow_reason_summary = str(shadow_assessment.get("reason_summary") or "").strip()
-    command_intent = str(shadow_assessment.get("decision") or "OBSERVE_ONLY").strip() if shadow_used else "OBSERVE_ONLY"
-    strategist_invocation = str(shadow_assessment.get("strategist_action_recommendation") or "").strip() if shadow_used else ""
-    llm_policy = str(shadow_assessment.get("llm_call_advice") or llm_policy).strip()
-    flow_instruction = str(shadow_assessment.get("suggested_action") or "").strip()
-    no_trade_reason_code = shadow_no_trade_reason_code
-    if not strategist_invocation:
-        strategist_invocation = "SKIP" if open_position_count > 0 and not entry_capacity_available else "RUN"
-    if not flow_instruction:
-        flow_instruction = "HOLD_OBSERVE" if open_position_count > 0 and not entry_capacity_available else "NO_ACTION"
-    if not no_trade_reason_code:
-        no_trade_reason_code = "MAX_POSITIONS_REACHED" if open_position_count > 0 and not entry_capacity_available else "NONE"
-    observations = dict(shadow_assessment.get("observations") or {}) if isinstance(shadow_assessment.get("observations"), dict) else {}
-    refresh_assessment = _assess_pre_buy_strategist_refresh_need(state, commander_market_regime=market_regime)
-    strategist_refresh_requested = bool(refresh_assessment.get("requested"))
-    strategist_refresh_reason = str(refresh_assessment.get("refresh_signal") or refresh_assessment.get("reason") or "").strip()
-    strategist_refresh_context = {
-        k: v
-        for k, v in dict(refresh_assessment).items()
-        if k not in {"requested"}
-    }
-    cache_reuse_assessment = _assess_cached_strategist_reuse_preference(state)
-    strategist_cache_preferred = bool(cache_reuse_assessment.get("preferred"))
-    strategist_cache_preference_reason = str(cache_reuse_assessment.get("reason") or "").strip()
-    strategist_cache_preference_context = {
-        k: v
-        for k, v in dict(cache_reuse_assessment).items()
-        if k not in {"preferred"}
-    }
-    if strategist_refresh_requested:
-        strategist_invocation = "RUN_REFRESH"
-        llm_policy = "allow_context_refresh"
-        flow_instruction = "REFRESH_STRATEGY_FRAME"
-        observations = {
-            **observations,
-            "strategist_refresh_requested": True,
-            "strategist_refresh_reason": strategist_refresh_reason,
-        }
-    elif strategist_invocation == "RUN" and strategist_cache_preferred:
-        strategist_invocation = "SKIP"
-        llm_policy = "prefer_cached_context"
-        flow_instruction = "REUSE_STRATEGY_FRAME"
-        observations = {
-            **observations,
-            "strategist_cache_preferred": True,
-            "strategist_cache_preference_reason": strategist_cache_preference_reason,
-        }
-    source_priority = ["shadow_commander", "runtime_observation", "strategist_fallback"]
-    if strategist_refresh_requested:
-        source_priority = ["commander_refresh_heuristic", *source_priority]
-    elif strategist_invocation == "SKIP" and strategist_cache_preferred:
-        source_priority = ["commander_cache_reuse", *source_priority]
-    source_refs = {
-        "shadow_event": "commander_router.shadow_assessment",
-        "runtime_fast_path_reason": str(runtime_fast_path.get("reason") or ""),
-        "runtime_path": str(path_value or ""),
-        "strategist_fallback_fields": ["market_regime"] if strategist_fallback_used else [],
-    }
-    if strategist_refresh_requested:
-        source_refs["strategist_refresh_reason"] = strategist_refresh_reason
-        source_refs["strategist_refresh_scope"] = "strategy_frame_refresh"
-    elif strategist_invocation == "SKIP" and strategist_cache_preferred:
-        source_refs["strategist_cache_preference_reason"] = strategist_cache_preference_reason
-        source_refs["strategist_cache_preference_scope"] = "cached_strategy_frame_reuse"
-    applied_policy_meta = (
-        dict(state.get("commander_applied_policy_meta") or {})
-        if isinstance(state.get("commander_applied_policy_meta"), dict)
-        else {}
-    )
-    reporter_feedback_policy = (
-        dict(state.get("commander_reporter_feedback_policy") or {})
-        if isinstance(state.get("commander_reporter_feedback_policy"), dict)
-        else {}
-    )
+    allowed_playbooks, applied_policy_meta, banned_playbooks, command_intent, flow_instruction, llm_policy, monitor_mission, no_trade_reason_code, observations, reporter_feedback_policy, scanner_mission, shadow_reason_summary, shadow_used, source_priority, source_refs, strategist_cache_preference_context, strategist_cache_preference_reason, strategist_cache_preferred, strategist_invocation, strategist_refresh_context, strategist_refresh_reason, strategist_refresh_requested = decision_ctx_allowed_playbooks_applied_policy_meta(risk_mode=risk_mode, session_bias=session_bias, path_value=path_value, phase_value=phase_value, runtime_fast_path=runtime_fast_path, shadow_assessment=shadow_assessment, open_position_count=open_position_count, entry_capacity_available=entry_capacity_available, state=state, market_regime=market_regime, strategist_fallback_used=strategist_fallback_used, facade=_r3_sys.modules[__name__])
     if not applied_policy_meta:
         strategist_policy_present = bool(
             (isinstance(strategist_output.get("monitor_entry_policy"), dict) and strategist_output.get("monitor_entry_policy"))
@@ -1982,245 +1433,9 @@ def _build_commander_decision(
         )
         if strategist_policy_present:
             applied_policy_meta = _resolve_commander_applied_policy(state)
-    applied_policy = dict(applied_policy_meta.get("applied_policy") or {})
-    commander_behavior_policy = (
-        dict(state.get("commander_behavior_policy") or {})
-        if isinstance(state.get("commander_behavior_policy"), dict)
-        else {}
-    )
-    commander_override = (
-        dict(state.get("commander_open_position_override") or {})
-        if isinstance(state.get("commander_open_position_override"), dict)
-        else {}
-    )
-    open_position_refresh_context = (
-        dict(state.get("commander_open_position_refresh_context") or {})
-        if isinstance(state.get("commander_open_position_refresh_context"), dict)
-        else dict(commander_override.get("strategist_refresh_context") or {})
-        if isinstance(commander_override.get("strategist_refresh_context"), dict)
-        else {}
-    )
-    commander_carry_state = str(
-        commander_override.get("carry_state")
-        or open_position_refresh_context.get("carry_state")
-        or ""
-    )
-    commander_carry_risk_bias = str(
-        commander_override.get("carry_risk_bias")
-        or open_position_refresh_context.get("carry_risk_bias")
-        or ""
-    )
-    commander_carry_risk_reason = str(
-        commander_override.get("carry_risk_reason")
-        or open_position_refresh_context.get("carry_risk_reason")
-        or ""
-    )
-    commander_session_open_recovery = (
-        dict(
-            commander_override.get("session_open_recovery_assessment")
-            or open_position_refresh_context.get("session_open_recovery_assessment")
-            or {}
-        )
-        if isinstance(commander_override.get("session_open_recovery_assessment"), dict)
-        or isinstance(open_position_refresh_context.get("session_open_recovery_assessment"), dict)
-        else {}
-    )
-    if str(commander_override.get("override_action") or "").strip().lower() == "strategist_refresh":
-        strategist_refresh_requested = True
-        strategist_refresh_reason = strategist_refresh_reason or str(
-            commander_override.get("override_reason") or "repeated_hold_monitor_only"
-        )
-        strategist_refresh_context = {
-            **strategist_refresh_context,
-            **open_position_refresh_context,
-        }
-    if open_position_count > 0 and (commander_carry_state or commander_carry_risk_bias):
-        observations = {
-            **observations,
-            "carry_state": commander_carry_state,
-            "carry_risk_bias": commander_carry_risk_bias,
-            "carry_risk_reason": commander_carry_risk_reason,
-            "session_open_recovery_assessment": dict(commander_session_open_recovery),
-        }
-        source_priority = ["commander_carry_control", *[x for x in source_priority if x != "commander_carry_control"]]
-        source_refs = {
-            **source_refs,
-            "carry_state": commander_carry_state,
-            "carry_risk_bias": commander_carry_risk_bias,
-        }
-        if commander_carry_risk_reason:
-            source_refs["carry_risk_reason"] = commander_carry_risk_reason
-    if (
-        str(phase_value or "").strip().lower() == "preopen"
-        and open_position_count > 0
-        and commander_carry_risk_bias in {"elevated", "urgent_exit_review"}
-    ):
-        strategist_refresh_requested = True
-        strategist_refresh_reason = "preopen_carry_risk_review"
-        strategist_refresh_context = {
-            **dict(strategist_refresh_context or {}),
-            **dict(open_position_refresh_context or {}),
-            "refresh_scope": str(
-                (open_position_refresh_context or {}).get("refresh_scope")
-                or "preopen_open_position_review"
-            ),
-            "refresh_signal": "preopen_carry_risk_review",
-            "carry_state": commander_carry_state,
-            "carry_risk_bias": commander_carry_risk_bias,
-            "carry_risk_reason": commander_carry_risk_reason,
-            "session_open_recovery_assessment": dict(commander_session_open_recovery),
-        }
-        observations = {
-            **observations,
-            "strategist_refresh_requested": True,
-            "strategist_refresh_reason": "preopen_carry_risk_review",
-        }
-        llm_policy = "allow_context_refresh"
-        strategist_invocation = "RUN_REFRESH"
-        command_intent = "MANAGE_OPEN_RISK"
-        flow_instruction = "REVIEW_CARRY_POSITIONS_BEFORE_NEW_ENTRIES"
-        source_priority = ["commander_preopen_carry_review", *[x for x in source_priority if x != "commander_preopen_carry_review"]]
-        source_refs = {
-            **source_refs,
-            "strategist_refresh_reason": "preopen_carry_risk_review",
-            "strategist_refresh_scope": "preopen_open_position_review",
-        }
-    if commander_carry_risk_bias == "urgent_exit_review":
-        session_bias = "position_management"
-        command_intent = "MANAGE_OPEN_RISK"
-        scanner_mission = "Deprioritize new candidate exploration while carried-position risk is under urgent exit review."
-        monitor_mission = "Prioritize carried-position exit review and failed session-open recovery before new entries."
-        if str(flow_instruction or "").strip() in {
-            "",
-            "HOLD_OBSERVE",
-            "NO_ACTION",
-            "REUSE_STRATEGY_FRAME",
-            "allow_current_flow",
-            "RUN_STRATEGIST_REFRESH",
-        }:
-            flow_instruction = "REDUCE_CARRY_RISK_FIRST"
-        if not strategist_refresh_requested:
-            llm_policy = "allow_context_refresh"
-    elif commander_carry_risk_bias == "elevated":
-        session_bias = "position_management"
-        scanner_mission = "Keep new candidate exploration narrow while carried exposure is being revalidated."
-        monitor_mission = "Prioritize carried-position confirmation and recovery quality before new entries."
-        if not strategist_refresh_requested and str(flow_instruction or "").strip() in {
-            "",
-            "HOLD_OBSERVE",
-            "NO_ACTION",
-            "allow_current_flow",
-        }:
-            flow_instruction = "PRIORITIZE_CARRY_REVIEW"
-    if str(phase_value or "").strip().lower() == "preopen" and commander_carry_risk_bias in {"elevated", "urgent_exit_review"}:
-        scanner_mission = "Review carried positions first and keep preopen candidate expansion narrow until carry risk is revalidated."
-        monitor_mission = "Prepare session-open carry-risk response for held positions before allowing new entry exploration."
-    commander_applied_policy_summary = dict(state.get("commander_applied_policy_summary") or {})
+    applied_policy, command_intent, commander_applied_policy_summary, commander_behavior_policy, commander_carry_risk_bias, commander_carry_risk_reason, commander_carry_state, commander_override, commander_session_open_recovery, flow_instruction, llm_policy, monitor_mission, observations, open_position_refresh_context, scanner_mission, session_bias, source_priority, source_refs, strategist_invocation, strategist_refresh_context, strategist_refresh_reason, strategist_refresh_requested = decision_ctx_applied_policy_command_intent(applied_policy_meta=applied_policy_meta, state=state, strategist_refresh_reason=strategist_refresh_reason, strategist_refresh_context=strategist_refresh_context, open_position_count=open_position_count, observations=observations, source_refs=source_refs, source_priority=source_priority, phase_value=phase_value, strategist_refresh_requested=strategist_refresh_requested, flow_instruction=flow_instruction, command_intent=command_intent, llm_policy=llm_policy, monitor_mission=monitor_mission, scanner_mission=scanner_mission, session_bias=session_bias, strategist_invocation=strategist_invocation, facade=_r3_sys.modules[__name__])
     memory_packets = load_commander_memory_packets(state=state)
-    commander_memory_policy = build_commander_memory_policy(
-        session_bias=session_bias,
-        memory_packets=memory_packets,
-        usage_disabled=_commander_memory_usage_disabled(state),
-    )
-    scanner_memory_bias = build_scanner_memory_bias(
-        commander_memory_policy=commander_memory_policy,
-        memory_packets=memory_packets,
-    )
-    scanner_memory_bias_summary = summarize_scanner_memory_bias(scanner_memory_bias)
-    monitor_memory_bias = build_monitor_memory_bias(
-        commander_memory_policy=commander_memory_policy,
-        memory_packets=memory_packets,
-    )
-    monitor_memory_bias_summary = summarize_monitor_memory_bias(monitor_memory_bias)
-    intraday_performance_circuit = _build_intraday_performance_circuit(
-        strategist_output=strategist_output,
-        memory_packets=memory_packets,
-        current_day=str(state.get("day") or state.get("trading_day") or state.get("session_day") or ""),
-    )
-    horizon_proposal = {}
-    if isinstance(strategist_output.get("strategist_horizon_proposal"), dict):
-        horizon_proposal = dict(strategist_output.get("strategist_horizon_proposal") or {})
-    elif isinstance(strategist_output.get("strategy_horizon_feedback"), dict):
-        horizon_proposal = dict(strategist_output.get("strategy_horizon_feedback") or {})
-    commander_horizon_policy = build_commander_horizon_policy(
-        horizon_proposal,
-        commander_context={
-            "runtime_phase": str(phase_value or ""),
-            "market_regime": market_regime,
-            "market_regime_rail": market_regime_rail,
-            "market_regime_forced_by_rail": rail_risk_off,
-            "session_bias": session_bias,
-            "risk_mode": risk_mode,
-            "strategist_refresh_requested": strategist_refresh_requested,
-            "strategist_refresh_reason": strategist_refresh_reason,
-            "carry_state": commander_carry_state,
-            "carry_risk_bias": commander_carry_risk_bias,
-            "commander_memory_policy": dict(commander_memory_policy),
-        },
-        memory_packets=memory_packets,
-        runtime_phase=str(phase_value or ""),
-        live_validation_mode=True,
-        source="commander_decision",
-    )
-    horizon_context = build_horizon_context(commander_horizon_policy)
-    strategist_refresh_context = {
-        **dict(strategist_refresh_context or {}),
-        "commander_horizon_policy": dict(commander_horizon_policy),
-        "horizon_context": dict(horizon_context),
-    }
-    if open_position_refresh_context:
-        open_position_refresh_context = {
-            **dict(open_position_refresh_context or {}),
-            "commander_horizon_policy": dict(commander_horizon_policy),
-            "horizon_context": dict(horizon_context),
-        }
-    observations = {
-        **observations,
-        "horizon_owner": "commander",
-        "commander_horizon": str(commander_horizon_policy.get("strategy_horizon") or ""),
-        "source_strategy_horizon": str(commander_horizon_policy.get("source_strategy_horizon") or ""),
-    }
-    applied_policy = dict(applied_policy)
-    applied_policy["horizon"] = dict(commander_horizon_policy)
-    applied_policy["commander_horizon_policy"] = dict(commander_horizon_policy)
-    if list(commander_memory_policy.get("active_layers") or []):
-        observations = {
-            **observations,
-            "memory_active_layers": list(commander_memory_policy.get("active_layers") or []),
-            "memory_priority_order": list(commander_memory_policy.get("priority_order") or []),
-            "symbol_memory_override_enabled": bool(commander_memory_policy.get("symbol_memory_override_enabled")),
-            "scanner_memory_bias_enabled": bool(scanner_memory_bias.get("enabled")),
-            "monitor_memory_bias_enabled": bool(monitor_memory_bias.get("enabled")),
-        }
-        source_priority = [*list(source_priority or []), *([] if "commander_memory_policy" in list(source_priority or []) else ["commander_memory_policy"])]
-        source_refs = {
-            **source_refs,
-            "memory_active_layers": list(commander_memory_policy.get("active_layers") or []),
-            "scanner_memory_bias_enabled": bool(scanner_memory_bias.get("enabled")),
-            "monitor_memory_bias_enabled": bool(monitor_memory_bias.get("enabled")),
-        }
-    policy_sources = (
-        dict(applied_policy.get("policy_sources") or {})
-        if isinstance(applied_policy.get("policy_sources"), dict)
-        else dict(commander_behavior_policy.get("policy_sources") or {})
-        if isinstance(commander_behavior_policy.get("policy_sources"), dict)
-        else {}
-    )
-
-    decision_summary = (
-        f"Commander set regime={market_regime}, session_bias={session_bias}, risk_mode={risk_mode}; "
-        f"allowed_playbooks={', '.join(allowed_playbooks) if allowed_playbooks else 'none'}."
-    )
-    if shadow_reason_summary:
-        decision_summary = shadow_reason_summary
-    if reason_text:
-        decision_summary = f"{decision_summary} Runtime note: {str(reason_text).strip()[:180]}"
-    if bool(commander_override.get("override_triggered")):
-        decision_summary = (
-            f"{decision_summary} Commander override requested "
-            f"{str(commander_override.get('override_action') or 'force_exit_review')} "
-            f"because {str(commander_override.get('override_reason') or 'open_position_risk')}."
-        )
+    applied_policy, commander_horizon_policy, commander_memory_policy, decision_summary, horizon_context, intraday_performance_circuit, monitor_memory_bias, monitor_memory_bias_summary, observations, open_position_refresh_context, policy_sources, scanner_memory_bias, scanner_memory_bias_summary, source_priority, source_refs, strategist_refresh_context = decision_overlay_applied_policy_commander_horizon_policy(session_bias=session_bias, memory_packets=memory_packets, state=state, strategist_output=strategist_output, market_regime=market_regime, market_regime_rail=market_regime_rail, rail_risk_off=rail_risk_off, risk_mode=risk_mode, strategist_refresh_requested=strategist_refresh_requested, strategist_refresh_reason=strategist_refresh_reason, commander_carry_state=commander_carry_state, commander_carry_risk_bias=commander_carry_risk_bias, phase_value=phase_value, strategist_refresh_context=strategist_refresh_context, open_position_refresh_context=open_position_refresh_context, observations=observations, applied_policy=applied_policy, source_refs=source_refs, source_priority=source_priority, commander_behavior_policy=commander_behavior_policy, allowed_playbooks=allowed_playbooks, shadow_reason_summary=shadow_reason_summary, reason_text=reason_text, commander_override=commander_override, facade=_r3_sys.modules[__name__])
     if strategist_refresh_requested:
         decision_summary = (
             f"{decision_summary} Commander requested fresh strategist context "
@@ -2234,77 +1449,7 @@ def _build_commander_decision(
             f"{decision_summary} Commander preferred cached strategist context "
             f"for this cycle ({strategist_cache_preference_reason or 'context_reuse'})."
         )
-    if commander_carry_risk_bias:
-        decision_summary = (
-            f"{decision_summary} Carry control classified state={commander_carry_state or 'unknown'} "
-            f"with bias={commander_carry_risk_bias}."
-        )
-        if commander_carry_risk_reason:
-            decision_summary = f"{decision_summary} Carry reason: {commander_carry_risk_reason}."
-    if list(commander_memory_policy.get("active_layers") or []):
-        decision_summary = (
-            f"{decision_summary} Commander memory policy active layers="
-            f"{', '.join(list(commander_memory_policy.get('active_layers') or []))}."
-        )
-        
-    strategist_call_decision = strategist_invocation
-    strategist_call_reason = strategist_refresh_reason if strategist_refresh_requested else ("normal_cycle" if strategist_invocation == "RUN" else "")
-    strategist_skip_reason = (
-        strategist_cache_preference_reason
-        if strategist_cache_preferred
-        else (
-            ("open_positions_present" if max_positions <= 1 else "max_positions_reached")
-            if open_position_count > 0 and not entry_capacity_available
-            else ""
-        )
-    )
-
-    # Task 2: Explicit Strategy Decision Rules
-    cache_payload_for_state = _strategist_cache_payload(state)
-    cached_output_for_state = cache_payload_for_state.get("output") if isinstance(cache_payload_for_state.get("output"), dict) else {}
-    generated_epoch_for_state = max(0, _coerce_int(cache_payload_for_state.get("generated_epoch"), 0))
-    now_epoch_for_state = _runtime_now_epoch(state)
-    cache_age_sec_for_state = max(0, now_epoch_for_state - generated_epoch_for_state) if generated_epoch_for_state > 0 else 10**9
-    reuse_sec_for_state = max(0, _coerce_int(os.getenv("COMMANDER_STRATEGIST_CACHE_REUSE_SEC", "600"), 600))
-    is_cache_stale = cache_age_sec_for_state > reuse_sec_for_state
-
-    if not cached_output_for_state:
-        strategy_state = "INVALID"
-    elif strategist_refresh_requested:
-        strategy_state = "REBUILD_REQUIRED"
-    elif is_cache_stale:
-        strategy_state = "STALE"
-    else:
-        strategy_state = "ACTIVE"
-
-    if _is_trueish(state.get("force_refresh_strategist")):
-        strategy_selection_mode = "force_fresh"
-    elif strategist_refresh_requested:
-        strategy_selection_mode = "prefer_fresh"
-    else:
-        strategy_selection_mode = "prefer_cache"
-
-    if open_position_count > 0 and not entry_capacity_available:
-        strategist_invocation_mode = "SKIP_MONITOR_ONLY"
-    elif not cached_output_for_state:
-        strategist_invocation_mode = "RUN"
-    elif strategist_refresh_requested and is_cache_stale:
-        strategist_invocation_mode = "RUN_REFRESH"
-    elif strategist_refresh_requested and not is_cache_stale:
-        strategist_invocation_mode = "SKIP_USE_CACHE"
-    elif open_position_count == 0 and is_cache_stale:
-        strategist_invocation_mode = "RUN"
-    else:
-        strategist_invocation_mode = "SKIP_USE_CACHE"
-
-    # Task 4: Monitor feedback and adaptive policy
-    persisted = state.get("persisted_state") if isinstance(state.get("persisted_state"), dict) else {}
-    monitor_last_states = persisted.get("monitor_last_state_by_symbol") if isinstance(persisted.get("monitor_last_state_by_symbol"), dict) else {}
-    
-    recent_feedback = state.get("recent_strategy_feedback") if isinstance(state.get("recent_strategy_feedback"), dict) else {}
-    recent_monitor_issues = list(recent_feedback.get("recent_monitor_issues") or [])
-    
-    blocker_counts = {}
+    blocker_counts, decision_summary, monitor_last_states, recent_monitor_issues, strategist_call_decision, strategist_call_reason, strategist_invocation_mode, strategist_skip_reason, strategy_selection_mode, strategy_state = decision_overlay_blocker_counts_decision_summary(commander_carry_risk_bias=commander_carry_risk_bias, commander_carry_risk_reason=commander_carry_risk_reason, decision_summary=decision_summary, commander_carry_state=commander_carry_state, commander_memory_policy=commander_memory_policy, strategist_invocation=strategist_invocation, strategist_refresh_requested=strategist_refresh_requested, strategist_refresh_reason=strategist_refresh_reason, strategist_cache_preferred=strategist_cache_preferred, strategist_cache_preference_reason=strategist_cache_preference_reason, open_position_count=open_position_count, entry_capacity_available=entry_capacity_available, max_positions=max_positions, state=state, facade=_r3_sys.modules[__name__])
     for issue in recent_monitor_issues:
         issue_str = str(issue).strip()
         if issue_str:
@@ -2330,60 +1475,7 @@ def _build_commander_decision(
             if score >= 0.7:
                 near_ready_count += 1
                 
-    dominant_blocker = ""
-    blocker_count = 0
-    if blocker_counts:
-        dominant_blocker = max(blocker_counts, key=blocker_counts.get)
-        blocker_count = blocker_counts[dominant_blocker]
-        
-    avg_distance_to_ready = avg_distance / total_wait if total_wait > 0 else 0.0
-    near_ready_flag = near_ready_count > 0
-    failure_streak = blocker_count
-    
-    injected_feedback = state.get("mock_monitor_feedback")
-    if isinstance(injected_feedback, dict):
-        dominant_blocker = injected_feedback.get("dominant_blocker", dominant_blocker)
-        blocker_count = injected_feedback.get("blocker_count", blocker_count)
-        failure_streak = injected_feedback.get("failure_streak", failure_streak)
-        near_ready_flag = injected_feedback.get("near_ready_flag", near_ready_flag)
-        avg_distance_to_ready = injected_feedback.get("avg_distance_to_ready", avg_distance_to_ready)
-
-    monitor_feedback = {
-        "dominant_blocker": str(dominant_blocker),
-        "blocker_count": int(blocker_count),
-        "failure_streak": int(failure_streak),
-        "near_ready_flag": bool(near_ready_flag),
-        "avg_distance_to_ready": float(avg_distance_to_ready),
-    }
-    entry_control = _build_commander_entry_control(
-        market_regime=market_regime,
-        market_regime_rail=market_regime_rail,
-        risk_mode=risk_mode,
-        open_position_count=open_position_count,
-        preflight=preflight,
-        stress_flags=stress_flags,
-        resilience=resilience,
-        monitor_feedback=monitor_feedback,
-        applied_policy=applied_policy,
-        max_positions=max_positions,
-        strategist_output=strategist_output,
-        performance_circuit=intraday_performance_circuit,
-    )
-
-    adaptive_policy = {
-        "entry_bias_adjustment": 0.0,
-        "diversification_adjustment": 0.0,
-        "reentry_penalty_adjustment": 0.0,
-        "scan_aggressiveness": 0.0,
-    }
-    policy_adjustment_trace = []
-    adaptive_feedback_allowed = str(entry_control.get("mode") or "") not in {
-        "blocked_no_entry_expansion",
-        "position_management_no_entry_expansion",
-        "preserve_defensive_no_trade_ok",
-        "preserve_guardrail_no_trade_ok",
-        "risk_off_no_entry_expansion",
-    }
+    adaptive_feedback_allowed, adaptive_policy, entry_control, monitor_feedback, policy_adjustment_trace = decision_rules_adaptive_feedback_allowed_adaptive_polic(blocker_counts=blocker_counts, total_wait=total_wait, avg_distance=avg_distance, near_ready_count=near_ready_count, state=state, market_regime=market_regime, market_regime_rail=market_regime_rail, risk_mode=risk_mode, open_position_count=open_position_count, preflight=preflight, stress_flags=stress_flags, resilience=resilience, applied_policy=applied_policy, max_positions=max_positions, strategist_output=strategist_output, intraday_performance_circuit=intraday_performance_circuit, facade=_r3_sys.modules[__name__])
 
     if monitor_feedback["dominant_blocker"] and monitor_feedback["failure_streak"] >= 3 and adaptive_feedback_allowed:
         adaptive_policy["entry_bias_adjustment"] += 0.02
@@ -2408,111 +1500,9 @@ def _build_commander_decision(
             float(adaptive_policy["scan_aggressiveness"]),
             float(entry_control.get("scan_aggressiveness_floor") or 0.0),
         )
-    if str(entry_control.get("mode") or "") != "baseline":
-        policy_adjustment_trace.append(
-            f"entry_control={entry_control.get('mode')} -> {entry_control.get('reason')}"
-        )
-
-    scanner_policy = {
-        "avoid_recent_symbol": False,
-        "recent_symbol_penalty": round(max(0.0, 0.05 + adaptive_policy["reentry_penalty_adjustment"]), 6),
-        "diversification_bias": round(
-            max(0.0, (0.02 if adaptive_feedback_allowed else 0.0) + adaptive_policy["diversification_adjustment"]),
-            6,
-        ),
-        "entry_bias_cap": round(max(0.0, 0.0 + adaptive_policy["entry_bias_adjustment"]), 6),
-        "scan_aggressiveness": round(max(0.0, adaptive_policy["scan_aggressiveness"]), 6),
-        "allow_same_symbol_reentry": True,
-        "reentry_score_gap_threshold": 0.03,
-        "market_representative_guard": {
-            "enabled": True,
-            "symbols": ["005930", "000660"],
-            "penalty": 0.04,
-            "max_penalty": 0.12,
-            "near_tie_gap": 0.06,
-            "top_value_dominance_min": 0.55,
-            "weak_confirmation_max": 1,
-            "strong_confirmation_min": 2,
-            "bypass_when_strong_confirmation": True,
-            "apply_when_top_value_only": True,
-            "policy_source": "commander_default",
-        },
-        "max_priority_rank": int(entry_control.get("max_priority_rank") if entry_control.get("max_priority_rank") not in (None, "") else 10),
-        "max_runner_ups": int(entry_control.get("max_runner_ups") if entry_control.get("max_runner_ups") not in (None, "") else 9),
-        "entry_control": dict(entry_control),
-    }
-    observations = {
-        **observations,
-        "entry_control_mode": str(entry_control.get("mode") or ""),
-        "entry_control_decision": str(entry_control.get("decision") or ""),
-        "entry_control_reason": str(entry_control.get("reason") or ""),
-        "entry_control_max_priority_rank": int(entry_control.get("max_priority_rank") if entry_control.get("max_priority_rank") not in (None, "") else 10),
-        "entry_control_dynamic_band": bool(entry_control.get("allow_dynamic_entry_band")),
-        "open_position_count": int(open_position_count),
-        "max_positions": int(max_positions),
-        "multi_position_capacity_remaining": max(0, int(max_positions) - int(open_position_count)),
-    }
-    source_refs = {
-        **source_refs,
-        "entry_control": {
-            "source": "commander_decision.monitor_feedback",
-            "dominant_blocker": str(entry_control.get("dominant_blocker") or ""),
-            "failure_streak": int(entry_control.get("failure_streak") or 0),
-            "market_supportive": bool(entry_control.get("market_supportive")),
-            "mode": str(entry_control.get("mode") or ""),
-        },
-    }
-    if "commander_entry_control" not in list(source_priority or []):
-        source_priority = [*list(source_priority or []), "commander_entry_control"]
-    if str(entry_control.get("mode") or "") not in {"", "baseline"}:
-        decision_summary = (
-            f"{decision_summary} Entry control {entry_control.get('mode')} "
-            f"because {entry_control.get('reason')}."
-        )
+    decision_summary, observations, scanner_policy, source_priority, source_refs = decision_rules_decision_summary_observations(policy_adjustment_trace=policy_adjustment_trace, entry_control=entry_control, adaptive_policy=adaptive_policy, adaptive_feedback_allowed=adaptive_feedback_allowed, observations=observations, open_position_count=open_position_count, max_positions=max_positions, source_refs=source_refs, source_priority=source_priority, decision_summary=decision_summary, facade=_r3_sys.modules[__name__])
     shadow_runtime = _ensure_commander_shadow_runtime(state)
-    prior_context = dict(shadow_runtime.get("prior_context") or {}) if isinstance(shadow_runtime.get("prior_context"), dict) else {}
-    prior_monitor_entry_policy_summary = (
-        dict(prior_context.get("monitor_entry_policy_summary") or {})
-        if isinstance(prior_context.get("monitor_entry_policy_summary"), dict)
-        else {}
-    )
-    current_monitor_entry_policy_summary = dict(
-        applied_policy_meta.get("monitor_entry_policy_summary")
-        or _summarize_monitor_entry_policy(applied_policy)
-        or {}
-    )
-    if (
-        strategist_refresh_requested
-        and open_position_refresh_context
-        and not current_monitor_entry_policy_summary
-        and prior_monitor_entry_policy_summary
-    ):
-        current_monitor_entry_policy_summary = dict(prior_monitor_entry_policy_summary)
-    strategist_refresh_evaluated = bool(
-        str(commander_override.get("override_action") or "").strip().lower() == "strategist_refresh"
-        or strategist_invocation == "RUN_REFRESH"
-    )
-    strategist_refresh_policy_delta_fields = (
-        _monitor_entry_policy_delta_fields(
-            prior_monitor_entry_policy_summary,
-            current_monitor_entry_policy_summary,
-        )
-        if strategist_refresh_evaluated
-        else []
-    )
-    if strategist_refresh_requested:
-        strategist_refresh_context = {
-            **dict(strategist_refresh_context or {}),
-            "prior_monitor_entry_policy_summary": dict(prior_monitor_entry_policy_summary),
-            "current_monitor_entry_policy_summary": dict(current_monitor_entry_policy_summary),
-            "carry_state": commander_carry_state,
-            "carry_risk_bias": commander_carry_risk_bias,
-            "carry_risk_reason": commander_carry_risk_reason,
-            "session_open_recovery_assessment": dict(commander_session_open_recovery),
-        }
-    strategist_refresh_effective = bool(
-        strategist_refresh_evaluated and bool(strategist_refresh_policy_delta_fields)
-    )
+    current_monitor_entry_policy_summary, prior_monitor_entry_policy_summary, strategist_refresh_context, strategist_refresh_effective, strategist_refresh_evaluated, strategist_refresh_policy_delta_fields = decision_rules_current_monitor_entry_policy_summary_pri(shadow_runtime=shadow_runtime, applied_policy=applied_policy, applied_policy_meta=applied_policy_meta, strategist_refresh_requested=strategist_refresh_requested, open_position_refresh_context=open_position_refresh_context, strategist_invocation=strategist_invocation, commander_override=commander_override, commander_carry_state=commander_carry_state, commander_carry_risk_bias=commander_carry_risk_bias, commander_carry_risk_reason=commander_carry_risk_reason, commander_session_open_recovery=commander_session_open_recovery, strategist_refresh_context=strategist_refresh_context, facade=_r3_sys.modules[__name__])
 
     return {
         "market_regime": market_regime,
@@ -3325,63 +2315,7 @@ def _position_current_profit_ratio(
 
 
 def _assess_open_position_commander_override(state: Dict[str, Any]) -> Dict[str, Any]:
-    snapshot = state.get("portfolio_snapshot") if isinstance(state.get("portfolio_snapshot"), dict) else {}
-    positions = snapshot.get("positions")
-    if isinstance(positions, dict):
-        rows = list(positions.values())
-    elif isinstance(positions, list):
-        rows = positions
-    else:
-        rows = []
-
-    persisted = state.get("persisted_state") if isinstance(state.get("persisted_state"), dict) else {}
-    monitor_last_state = (
-        persisted.get("monitor_last_state_by_symbol")
-        if isinstance(persisted.get("monitor_last_state_by_symbol"), dict)
-        else {}
-    )
-    prior_hold_counts = (
-        persisted.get("commander_open_position_hold_repeat_by_symbol")
-        if isinstance(persisted.get("commander_open_position_hold_repeat_by_symbol"), dict)
-        else {}
-    )
-    prior_refresh_cooldowns = (
-        persisted.get("commander_open_position_refresh_cooldown_until_by_symbol")
-        if isinstance(persisted.get("commander_open_position_refresh_cooldown_until_by_symbol"), dict)
-        else {}
-    )
-    overnight_decisions = (
-        persisted.get("overnight_decision_by_symbol")
-        if isinstance(persisted.get("overnight_decision_by_symbol"), dict)
-        else {}
-    )
-    position_peak_price = (
-        persisted.get("position_peak_price")
-        if isinstance(persisted.get("position_peak_price"), dict)
-        else {}
-    )
-    position_strategy_context = (
-        persisted.get("position_strategy_context")
-        if isinstance(persisted.get("position_strategy_context"), dict)
-        else {}
-    )
-    last_exit_sweep_by_symbol = (
-        persisted.get("commander_pre_entry_exit_sweep_last_checked_by_symbol")
-        if isinstance(persisted.get("commander_pre_entry_exit_sweep_last_checked_by_symbol"), dict)
-        else {}
-    )
-    profit_activation_ratio = _resolve_profit_protection_activation_ratio(state)
-
-    next_hold_counts: Dict[str, int] = {}
-    next_refresh_cooldowns: Dict[str, int] = {}
-    reasons: list[str] = []
-    rows_summary: list[Dict[str, Any]] = []
-    repeated_hold_rows: list[Dict[str, Any]] = []
-    anomaly_found = False
-    risk_found = False
-    max_hold_repeat = 0
-    min_effective_loss_ratio: float | None = None
-    now_epoch = _runtime_now_epoch(state)
+    anomaly_found, last_exit_sweep_by_symbol, max_hold_repeat, min_effective_loss_ratio, monitor_last_state, next_hold_counts, next_refresh_cooldowns, now_epoch, overnight_decisions, persisted, position_peak_price, position_strategy_context, prior_hold_counts, prior_refresh_cooldowns, profit_activation_ratio, reasons, repeated_hold_rows, risk_found, rows, rows_summary = open_pos_input_anomaly_found_last_exit_sweep_by_symbol(state=state, facade=_r3_sys.modules[__name__])
 
     for row in rows:
         if not isinstance(row, dict):
@@ -3416,100 +2350,7 @@ def _assess_open_position_commander_override(state: Dict[str, Any]) -> Dict[str,
                     price_anomaly = True
                     price_anomaly_reason = f"account_mark_above_reference_ratio:{mark_ratio:.4f}"
 
-        raw_loss_ratio = (
-            float((current_price / avg_price) - 1.0)
-            if current_price > 0.0 and avg_price > 0.0
-            else None
-        )
-        unrealized_loss_ratio = (
-            float(unrealized_pnl / float(avg_price * qty))
-            if avg_price > 0.0 and qty > 0
-            else None
-        )
-        candidate_loss_ratios = [x for x in (raw_loss_ratio, unrealized_loss_ratio) if x is not None]
-        if account_pnl_ratio is not None and not price_anomaly:
-            candidate_loss_ratios.append(float(account_pnl_ratio))
-        effective_loss_ratio = min(candidate_loss_ratios) if candidate_loss_ratios else None
-        current_profit_ratio = _position_current_profit_ratio(
-            raw_price_ratio=raw_loss_ratio,
-            account_pnl_ratio=account_pnl_ratio,
-            price_anomaly=price_anomaly,
-        )
-        peak_price = max(
-            _runtime_float(row.get("peak_price"), 0.0),
-            _runtime_float(row.get("high_water_mark"), 0.0),
-            _runtime_float(position_peak_price.get(symbol), 0.0) if isinstance(position_peak_price, dict) else 0.0,
-            current_price,
-            avg_price,
-        )
-        peak_profit_ratio = float((peak_price / avg_price) - 1.0) if peak_price > 0.0 and avg_price > 0.0 else None
-        profit_giveback_ratio = (
-            max(0.0, float(peak_profit_ratio) - float(current_profit_ratio))
-            if peak_profit_ratio is not None and current_profit_ratio is not None
-            else 0.0
-        )
-        profit_protection_priority = 0
-        if peak_profit_ratio is not None and peak_profit_ratio >= profit_activation_ratio:
-            profit_protection_priority = 2
-        elif current_profit_ratio is not None and current_profit_ratio >= profit_activation_ratio:
-            profit_protection_priority = 2
-        elif current_profit_ratio is not None and current_profit_ratio >= (profit_activation_ratio * 0.75):
-            profit_protection_priority = 1
-        last_exit_sweep_epoch = max(0, _coerce_int(last_exit_sweep_by_symbol.get(symbol), 0))
-
-        previous = monitor_last_state.get(symbol) if isinstance(monitor_last_state, dict) else {}
-        previous_posture = str((previous or {}).get("posture") or "").strip().lower()
-        previous_reason = str((previous or {}).get("reason") or "")
-        previous_active_exit_axis = str((previous or {}).get("active_exit_axis") or "")
-        previous_entry_state = dict((previous or {}).get("entry_state") or {})
-        hold_repeat_count = max(0, _coerce_int(prior_hold_counts.get(symbol), 0))
-        if previous_posture == "hold":
-            hold_repeat_count += 1
-        else:
-            hold_repeat_count = 0
-        next_hold_counts[symbol] = int(hold_repeat_count)
-        max_hold_repeat = max(max_hold_repeat, int(hold_repeat_count))
-        refresh_cooldown_until = max(0, _coerce_int(prior_refresh_cooldowns.get(symbol), 0))
-        if refresh_cooldown_until > now_epoch:
-            next_refresh_cooldowns[symbol] = int(refresh_cooldown_until)
-
-        if effective_loss_ratio is not None:
-            min_effective_loss_ratio = (
-                float(effective_loss_ratio)
-                if min_effective_loss_ratio is None
-                else min(float(min_effective_loss_ratio), float(effective_loss_ratio))
-            )
-
-        if price_anomaly:
-            anomaly_found = True
-            reasons.append(f"{symbol}:price_anomaly:{price_anomaly_reason}")
-        if effective_loss_ratio is not None and effective_loss_ratio <= -0.01:
-            risk_found = True
-            reasons.append(f"{symbol}:loss_threshold:{effective_loss_ratio:.4f}")
-        if hold_repeat_count >= 3:
-            reasons.append(f"{symbol}:hold_repeat:{hold_repeat_count}")
-            repeated_hold_rows.append(
-                {
-                    "symbol": symbol,
-                    "hold_repeat_count": int(hold_repeat_count),
-                    "refresh_cooldown_until": int(refresh_cooldown_until) if refresh_cooldown_until > 0 else 0,
-                    "refresh_cooldown_remaining_sec": max(0, int(refresh_cooldown_until - now_epoch))
-                    if refresh_cooldown_until > now_epoch
-                    else 0,
-                }
-            )
-        position_age_seconds = _resolve_position_age_seconds(state, row, symbol)
-        symbol_strategy_context = (
-            position_strategy_context.get(symbol)
-            if isinstance(position_strategy_context, dict)
-            else {}
-        )
-        symbol_strategy_context = (
-            symbol_strategy_context if isinstance(symbol_strategy_context, dict) else {}
-        )
-        horizon_revision_allowed = bool(
-            symbol_strategy_context.get("horizon_revision_allowed", True)
-        )
+        anomaly_found, candidate_loss_ratios, current_profit_ratio, effective_loss_ratio, hold_repeat_count, horizon_revision_allowed, last_exit_sweep_epoch, max_hold_repeat, min_effective_loss_ratio, peak_price, peak_profit_ratio, position_age_seconds, previous, previous_active_exit_axis, previous_entry_state, previous_posture, previous_reason, profit_giveback_ratio, profit_protection_priority, raw_loss_ratio, refresh_cooldown_until, risk_found, symbol_strategy_context, unrealized_loss_ratio = open_pos_input_anomaly_found_candidate_loss_ratios(current_price=current_price, avg_price=avg_price, qty=qty, unrealized_pnl=unrealized_pnl, account_pnl_ratio=account_pnl_ratio, price_anomaly=price_anomaly, position_peak_price=position_peak_price, row=row, symbol=symbol, profit_activation_ratio=profit_activation_ratio, last_exit_sweep_by_symbol=last_exit_sweep_by_symbol, monitor_last_state=monitor_last_state, prior_hold_counts=prior_hold_counts, next_hold_counts=next_hold_counts, max_hold_repeat=max_hold_repeat, prior_refresh_cooldowns=prior_refresh_cooldowns, now_epoch=now_epoch, next_refresh_cooldowns=next_refresh_cooldowns, min_effective_loss_ratio=min_effective_loss_ratio, reasons=reasons, price_anomaly_reason=price_anomaly_reason, repeated_hold_rows=repeated_hold_rows, state=state, position_strategy_context=position_strategy_context, anomaly_found=anomaly_found, risk_found=risk_found, facade=_r3_sys.modules[__name__])
         horizon_review_due = horizon_revision_allowed and position_review_due(
             symbol_strategy_context,
             position_age_seconds=position_age_seconds,
@@ -3518,64 +2359,7 @@ def _assess_open_position_commander_override(state: Dict[str, Any]) -> Dict[str,
         position_horizon_state = ensure_horizon_state(
             symbol_strategy_context
         )
-        carry_control = _assess_position_carry_control(
-            state=state,
-            symbol=symbol,
-            hold_repeat_count=int(hold_repeat_count),
-            position_age_seconds=position_age_seconds,
-            effective_loss_ratio=effective_loss_ratio,
-            monitor_reason=previous_reason,
-            active_exit_axis=previous_active_exit_axis,
-            entry_state=previous_entry_state,
-            overnight_decision=overnight_decisions.get(symbol) if isinstance(overnight_decisions, dict) else {},
-        )
-        if str(carry_control.get("carry_risk_bias") or "") != "normal":
-            reasons.append(
-                f"{symbol}:carry_bias:{str(carry_control.get('carry_risk_bias') or '')}:{str(carry_control.get('carry_risk_reason') or '')}"
-            )
-        if bool(carry_control.get("closeout_unresolved_flatten_required")):
-            reasons.append(f"{symbol}:closeout_unresolved_flatten_required")
-
-        rows_summary.append(
-            {
-                "symbol": symbol,
-                "qty": int(qty),
-                "effective_loss_ratio": effective_loss_ratio,
-                "raw_loss_ratio": raw_loss_ratio,
-                "current_profit_ratio": current_profit_ratio,
-                "peak_price": peak_price if peak_price > 0.0 else None,
-                "peak_profit_ratio": peak_profit_ratio,
-                "profit_giveback_ratio": profit_giveback_ratio,
-                "profit_protection_priority": int(profit_protection_priority),
-                "profit_protection_activation_ratio": float(profit_activation_ratio),
-                "last_exit_sweep_epoch": int(last_exit_sweep_epoch),
-                "account_pnl_ratio": account_pnl_ratio,
-                "price_anomaly": bool(price_anomaly),
-                "price_anomaly_reason": str(price_anomaly_reason),
-                "hold_repeat_count": int(hold_repeat_count),
-                "posture": str(previous_posture or ""),
-                "reason": str(previous_reason or ""),
-                "active_exit_axis": str(previous_active_exit_axis or ""),
-                "entry_state": _compact_monitor_entry_state_for_refresh(previous_entry_state),
-                "position_age_seconds": position_age_seconds,
-                "horizon_review_due": bool(horizon_review_due),
-                "horizon_revision_allowed": bool(horizon_revision_allowed),
-                "position_horizon_state": dict(position_horizon_state),
-                "refresh_cooldown_until": int(refresh_cooldown_until) if refresh_cooldown_until > 0 else None,
-                "refresh_cooldown_remaining_sec": max(0, int(refresh_cooldown_until - now_epoch))
-                if refresh_cooldown_until > now_epoch
-                else 0,
-                "carry_state": str(carry_control.get("carry_state") or ""),
-                "carry_risk_bias": str(carry_control.get("carry_risk_bias") or ""),
-                "carry_risk_reason": str(carry_control.get("carry_risk_reason") or ""),
-                "overnight_carry_approved": bool(carry_control.get("overnight_carry_approved")),
-                "overnight_carry_reason": str(carry_control.get("overnight_carry_reason") or ""),
-                "closeout_unresolved_flatten_required": bool(
-                    carry_control.get("closeout_unresolved_flatten_required")
-                ),
-                "session_open_recovery_assessment": dict(carry_control.get("session_open_recovery_assessment") or {}),
-            }
-        )
+        carry_control = open_pos_assess_carry_control(state=state, symbol=symbol, position_age_seconds=position_age_seconds, effective_loss_ratio=effective_loss_ratio, previous_reason=previous_reason, previous_active_exit_axis=previous_active_exit_axis, previous_entry_state=previous_entry_state, hold_repeat_count=hold_repeat_count, overnight_decisions=overnight_decisions, reasons=reasons, rows_summary=rows_summary, raw_loss_ratio=raw_loss_ratio, current_profit_ratio=current_profit_ratio, peak_profit_ratio=peak_profit_ratio, profit_giveback_ratio=profit_giveback_ratio, account_pnl_ratio=account_pnl_ratio, qty=qty, peak_price=peak_price, profit_protection_priority=profit_protection_priority, profit_activation_ratio=profit_activation_ratio, last_exit_sweep_epoch=last_exit_sweep_epoch, price_anomaly=price_anomaly, price_anomaly_reason=price_anomaly_reason, horizon_review_due=horizon_review_due, horizon_revision_allowed=horizon_revision_allowed, position_horizon_state=position_horizon_state, previous_posture=previous_posture, refresh_cooldown_until=refresh_cooldown_until, now_epoch=now_epoch, facade=_r3_sys.modules[__name__])[0]
 
     if next_hold_counts:
         persisted["commander_open_position_hold_repeat_by_symbol"] = dict(next_hold_counts)
@@ -3588,25 +2372,7 @@ def _assess_open_position_commander_override(state: Dict[str, Any]) -> Dict[str,
     horizon_review_found = any(
         bool(row.get("horizon_review_due")) for row in rows_summary if isinstance(row, dict)
     )
-    override_triggered = bool(
-        closeout_unresolved_found
-        or anomaly_found
-        or risk_found
-        or max_hold_repeat >= 3
-        or horizon_review_found
-    )
-    override_action = ""
-    override_reason = ""
-    override_suppressed = False
-    override_suppressed_reason = ""
-    refresh_cooldown_symbol = ""
-    refresh_cooldown_until = 0
-    refresh_cooldown_remaining_sec = 0
-    position_refresh_due = False
-    position_refresh_trigger = ""
-    force_exit_review_pending = False
-    open_position_risk_review_reason = ""
-    strategist_refresh_context: Dict[str, Any] = {}
+    force_exit_review_pending, open_position_risk_review_reason, override_action, override_reason, override_suppressed, override_suppressed_reason, override_triggered, position_refresh_due, position_refresh_trigger, refresh_cooldown_remaining_sec, refresh_cooldown_symbol, refresh_cooldown_until, strategist_refresh_context = open_pos_assess_force_exit_review_pending_open_position(closeout_unresolved_found=closeout_unresolved_found, anomaly_found=anomaly_found, risk_found=risk_found, horizon_review_found=horizon_review_found, max_hold_repeat=max_hold_repeat, facade=_r3_sys.modules[__name__])
 
     def _row_loss_value(item: Dict[str, Any]) -> float:
         value = item.get("effective_loss_ratio")
@@ -3656,69 +2422,7 @@ def _assess_open_position_commander_override(state: Dict[str, Any]) -> Dict[str,
             override_action = "force_exit_review"
             override_reason = "price_pnl_anomaly"
         else:
-            selected_row = (
-                _select_open_position_refresh_candidate(require_loss=True)
-                if risk_found
-                else _select_open_position_refresh_candidate(require_loss=False)
-            )
-            refresh_cooldown_symbol = str(selected_row.get("symbol") or "")
-            refresh_cooldown_until = max(0, _coerce_int(selected_row.get("refresh_cooldown_until"), 0))
-            refresh_trigger = (
-                "loss_threshold_exceeded"
-                if risk_found
-                else "horizon_review_due"
-                if bool(selected_row.get("horizon_review_due"))
-                else "repeated_hold_monitor_only"
-            )
-            if selected_row and refresh_cooldown_until > now_epoch:
-                refresh_cooldown_remaining_sec = max(0, int(refresh_cooldown_until - now_epoch))
-                override_suppressed = True
-                override_suppressed_reason = (
-                    "loss_threshold_refresh_cooldown"
-                    if risk_found
-                    else "repeated_hold_monitor_only_refresh_cooldown"
-                )
-                reasons.append(
-                    f"{refresh_cooldown_symbol}:refresh_cooldown_active:{refresh_cooldown_remaining_sec}"
-                )
-                if risk_found:
-                    override_action = "force_exit_review"
-                    override_reason = "loss_threshold_exceeded"
-                    force_exit_review_pending = True
-                    open_position_risk_review_reason = "loss_threshold_exceeded"
-                    position_refresh_trigger = str(refresh_trigger)
-                else:
-                    override_triggered = False
-            elif selected_row:
-                override_action = "strategist_refresh"
-                override_reason = str(refresh_trigger)
-                position_refresh_due = True
-                position_refresh_trigger = str(refresh_trigger)
-                force_exit_review_pending = bool(risk_found)
-                open_position_risk_review_reason = "loss_threshold_exceeded" if risk_found else ""
-                refresh_cooldown_until = int(now_epoch + _OPEN_POSITION_STRATEGIST_REFRESH_COOLDOWN_SEC)
-                refresh_cooldown_remaining_sec = int(_OPEN_POSITION_STRATEGIST_REFRESH_COOLDOWN_SEC)
-                if refresh_cooldown_symbol:
-                    next_refresh_cooldowns[refresh_cooldown_symbol] = int(refresh_cooldown_until)
-                strategist_refresh_context = _build_open_position_strategist_refresh_context(
-                    {
-                        "refresh_cooldown_symbol": refresh_cooldown_symbol,
-                        "hold_repeat_count_max": max_hold_repeat,
-                        "effective_loss_ratio_min": min_effective_loss_ratio,
-                        "price_anomaly_flag": anomaly_found,
-                        "refresh_trigger": str(refresh_trigger),
-                        "refresh_cadence_sec": int(_OPEN_POSITION_STRATEGIST_REFRESH_COOLDOWN_SEC),
-                        "force_exit_review_pending": bool(force_exit_review_pending),
-                        "open_position_risk_review_reason": str(open_position_risk_review_reason),
-                        "reason_chain": list(reasons),
-                        "positions": rows_summary,
-                    }
-                )
-            elif risk_found:
-                override_action = "force_exit_review"
-                override_reason = "loss_threshold_exceeded"
-                force_exit_review_pending = True
-                open_position_risk_review_reason = "loss_threshold_exceeded"
+            force_exit_review_pending, open_position_risk_review_reason, override_action, override_reason, override_suppressed, override_suppressed_reason, override_triggered, position_refresh_due, position_refresh_trigger, refresh_cooldown_remaining_sec, refresh_cooldown_symbol, refresh_cooldown_until, strategist_refresh_context = open_pos_assess_force_exit_review_pending_open_position_2(risk_found=risk_found, _select_open_position_refresh_candidate=_select_open_position_refresh_candidate, now_epoch=now_epoch, reasons=reasons, refresh_cooldown_remaining_sec=refresh_cooldown_remaining_sec, next_refresh_cooldowns=next_refresh_cooldowns, max_hold_repeat=max_hold_repeat, min_effective_loss_ratio=min_effective_loss_ratio, anomaly_found=anomaly_found, rows_summary=rows_summary, force_exit_review_pending=force_exit_review_pending, open_position_risk_review_reason=open_position_risk_review_reason, override_action=override_action, override_reason=override_reason, override_suppressed=override_suppressed, override_suppressed_reason=override_suppressed_reason, override_triggered=override_triggered, position_refresh_due=position_refresh_due, position_refresh_trigger=position_refresh_trigger, strategist_refresh_context=strategist_refresh_context, facade=_r3_sys.modules[__name__])
 
     if next_refresh_cooldowns:
         persisted["commander_open_position_refresh_cooldown_until_by_symbol"] = dict(next_refresh_cooldowns)

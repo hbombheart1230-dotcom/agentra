@@ -227,7 +227,7 @@ def exit_pnl_expected_exit_floor_blocked_profit_exit(out, technical_px, px, _fir
     return (expected_exit_floor_blocked, profit_exit_metric_name, profit_exit_pnl_ratio)
 
 
-def exit_pnl_effective_stop_pct_etf_deviation_pct(out, p, *, facade):
+def exit_pnl_effective_stop_candidates_effective_stop(out, p, *, facade):
     sl = float(out["thresholds"]["stop_loss_pct"])
     hard_sl = float(out["thresholds"]["hard_stop_pct"])
     tp = float(out["thresholds"]["take_profit_pct"])
@@ -251,17 +251,4 @@ def exit_pnl_effective_stop_pct_etf_deviation_pct(out, p, *, facade):
     ]
     effective_stop_reason = ""
     effective_stop_pct = 0.0
-    if effective_stop_candidates:
-        effective_stop_reason, effective_stop_pct = min(
-            effective_stop_candidates,
-            key=lambda row: float(row[1]),
-        )
-        out["thresholds"]["effective_stop_loss_pct"] = float(effective_stop_pct)
-        out["thresholds"]["effective_stop_reason"] = str(effective_stop_reason)
-    else:
-        out["thresholds"]["effective_stop_loss_pct"] = 0.0
-        out["thresholds"]["effective_stop_reason"] = ""
-
-    hard_stop_pnl_ratio = float(out["hard_stop_pnl_ratio"])
-    stop_pnl_ratio = float(out["stop_pnl_ratio"])
-    return (effective_stop_pct, etf_deviation_pct, etf_deviation_source, hard_sl, hard_stop_pnl_ratio, sl, stop_pnl_ratio, tp)
+    return (effective_stop_candidates, effective_stop_pct, effective_stop_reason, etf_deviation_pct, etf_deviation_source, hard_sl, sl, tp)

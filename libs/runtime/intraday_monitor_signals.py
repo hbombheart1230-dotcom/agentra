@@ -36,15 +36,13 @@ from libs.runtime.monitor.signal_features_breakout_volume_gate import (
 from libs.runtime.monitor.signal_score_projection import (
     signal_score_entry_condition_path_entry_condition_pat,
     signal_score_entry_condition_path_entry_hard_gate_blo,
-)
-from libs.runtime.monitor.signal_score_projection_chart_structure_features import (
     signal_score_chart_structure_features_legacy_decision,
-    signal_score_chart_human_context_chart_structure_deci,
+)
+from libs.runtime.monitor.signal_score_projection_chart_structure_decision import (
+    signal_score_chart_structure_decision_hint_policy_ali,
 )
 from libs.runtime.monitor.signal_explanation import (
-    signal_explain_entry_condition_path_pattern,
-    signal_explain_human_chart_buy_guard_primary_failure_ax,
-    signal_explain_transition_trace,
+    signal_explain_effect_free_block_3479,
 )
 
 
@@ -2538,8 +2536,37 @@ def evaluate_intraday_entry_signal(
         )
     elif entry_hard_gate_passed:
         entry_quality_vs_gate_summary = f"hard_gate_passed:{entry_condition_path or reason or 'entry_confirmed'}"
-    chart_structure_features, legacy_decision, legacy_entry_condition_path, legacy_pattern, legacy_reason, legacy_triggered, score_breakdown = signal_score_chart_structure_features_legacy_decision(entry_condition_path=entry_condition_path, grouped_logic_trace=grouped_logic_trace, triggered=triggered, reason=reason, pattern=pattern, candles=candles, current_close=current_close, current_vwap=current_vwap, recent_high=recent_high, breakout_ok=breakout_ok, pullback_ok=pullback_ok, vwap_reclaim_ok=vwap_reclaim_ok, volume_ok=volume_ok, confidence_gate_ok=confidence_gate_ok, volume_ratio=volume_ratio, extension_ok=extension_ok, extended_from_vwap_pct=extended_from_vwap_pct, max_extended_from_vwap_pct=max_extended_from_vwap_pct, pullback_mature=pullback_mature, etf_deviation_tradeable=etf_deviation_tradeable, etf_deviation_entry_score=etf_deviation_entry_score, scoring_settings=scoring_settings, facade=_r3_sys.modules[__name__])
-    chart_human_context, chart_structure_decision_hint, human_chart_detail_context, policy_alignment_summary, policy_aware_gating, policy_interpreter_trace, signal_evidence = signal_score_chart_human_context_chart_structure_deci(vwap_reclaim_progress=vwap_reclaim_progress, volume_score=volume_score, pullback_score=pullback_score, breakout_score=breakout_score, confidence_score=confidence_score, confidence_threshold=confidence_threshold, entry_quality_score=entry_quality_score, breakout_quality_score=breakout_quality_score, pullback_quality_score=pullback_quality_score, entry_quality_path=entry_quality_path, vwap_reclaim_ok=vwap_reclaim_ok, volume_ok=volume_ok, pullback_ok=pullback_ok, breakout_ok=breakout_ok, rebound_ok=rebound_ok, reclaim_gate_ok=reclaim_gate_ok, breakout_path_ok=breakout_path_ok, pullback_volume_path_ok=pullback_volume_path_ok, extension_ok=extension_ok, rebound_progress=rebound_progress, transition_readiness_score=transition_readiness_score, reclaim_distance_to_ready=reclaim_distance_to_ready, volume_distance_to_ready=volume_distance_to_ready, breakout_distance_to_ready=breakout_distance_to_ready, score_breakdown=score_breakdown, extended_from_vwap_pct=extended_from_vwap_pct, max_extended_from_vwap_pct=max_extended_from_vwap_pct, scoring_settings=scoring_settings, chart_structure_features=chart_structure_features, out=out, legacy_triggered=legacy_triggered, legacy_reason=legacy_reason, legacy_decision=legacy_decision, legacy_entry_condition_path=legacy_entry_condition_path, candles=candles, current_close=current_close, current_vwap=current_vwap, recent_high=recent_high, breakout_level=breakout_level, volume_ratio=volume_ratio, facade=_r3_sys.modules[__name__])
+    chart_structure_features, legacy_decision, legacy_entry_condition_path, legacy_pattern, legacy_reason, legacy_triggered, score_breakdown = signal_score_chart_structure_features_legacy_decision(entry_condition_path=entry_condition_path, grouped_logic_trace=grouped_logic_trace, triggered=triggered, reason=reason, pattern=pattern, candles=candles, current_close=current_close, current_vwap=current_vwap, recent_high=recent_high, breakout_ok=breakout_ok, pullback_ok=pullback_ok, vwap_reclaim_ok=vwap_reclaim_ok, volume_ok=volume_ok, confidence_gate_ok=confidence_gate_ok, volume_ratio=volume_ratio, extension_ok=extension_ok, extended_from_vwap_pct=extended_from_vwap_pct, max_extended_from_vwap_pct=max_extended_from_vwap_pct, pullback_mature=pullback_mature, facade=_r3_sys.modules[__name__])
+    if etf_deviation_tradeable:
+        score_breakdown["etf_deviation_discount"] = round(float(etf_deviation_entry_score), 4)
+    chart_structure_decision_hint, policy_alignment_summary, policy_aware_gating, policy_interpreter_trace, signal_evidence = signal_score_chart_structure_decision_hint_policy_ali(scoring_settings=scoring_settings, score_breakdown=score_breakdown, vwap_reclaim_progress=vwap_reclaim_progress, volume_score=volume_score, pullback_score=pullback_score, breakout_score=breakout_score, confidence_score=confidence_score, confidence_threshold=confidence_threshold, entry_quality_score=entry_quality_score, breakout_quality_score=breakout_quality_score, pullback_quality_score=pullback_quality_score, entry_quality_path=entry_quality_path, vwap_reclaim_ok=vwap_reclaim_ok, volume_ok=volume_ok, pullback_ok=pullback_ok, breakout_ok=breakout_ok, rebound_ok=rebound_ok, reclaim_gate_ok=reclaim_gate_ok, breakout_path_ok=breakout_path_ok, pullback_volume_path_ok=pullback_volume_path_ok, extension_ok=extension_ok, rebound_progress=rebound_progress, transition_readiness_score=transition_readiness_score, reclaim_distance_to_ready=reclaim_distance_to_ready, volume_distance_to_ready=volume_distance_to_ready, breakout_distance_to_ready=breakout_distance_to_ready, extended_from_vwap_pct=extended_from_vwap_pct, max_extended_from_vwap_pct=max_extended_from_vwap_pct, chart_structure_features=chart_structure_features, out=out, legacy_triggered=legacy_triggered, legacy_reason=legacy_reason, legacy_decision=legacy_decision, legacy_entry_condition_path=legacy_entry_condition_path, facade=_r3_sys.modules[__name__])
+    if bool(chart_structure_decision_hint.get("available")):
+        policy_interpreter_trace["notes"] = _dedupe_non_empty(
+            [
+                *list(policy_interpreter_trace.get("notes") or []),
+                "chart_structure_decision_hint_evaluated",
+            ]
+        )
+    if bool(chart_structure_decision_hint.get("applied")):
+        policy_alignment_summary["summary_notes"] = _dedupe_non_empty(
+            [
+                *list(policy_alignment_summary.get("summary_notes") or []),
+                "chart_structure_decision_hint_applied",
+            ]
+        )
+    chart_human_context = (
+        dict(chart_structure_features.get("human_chart_context") or {})
+        if isinstance(chart_structure_features.get("human_chart_context"), Mapping)
+        else {}
+    )
+    human_chart_detail_context = _build_human_chart_detail_context(
+        candles,
+        current_close=current_close,
+        current_vwap=current_vwap,
+        recent_high=recent_high,
+        breakout_level=breakout_level,
+        volume_ratio=volume_ratio,
+    )
     if bool(policy_aware_gating.get("applied")):
         triggered = True
         pattern = "breakout_policy_reclaim_near_ready"
@@ -2573,9 +2600,47 @@ def evaluate_intraday_entry_signal(
         legacy_reason=legacy_reason,
     )
     if bool(human_chart_entry_setup.get("applied")):
-        entry_condition_path, pattern, primary_failure_axis, reason, triggered = signal_explain_entry_condition_path_pattern(human_chart_entry_setup=human_chart_entry_setup, entry_condition_paths_passed=entry_condition_paths_passed, signal_chain=signal_chain, passed_checks=passed_checks, policy_alignment_summary=policy_alignment_summary, facade=_r3_sys.modules[__name__])
+        triggered = True
+        setup_label = str(human_chart_entry_setup.get("setup_label") or "clean_vwap_continuation")
+        pattern = f"human_chart_{setup_label}"
+        reason = "human_chart_entry_setup_confirmed"
+        entry_condition_path = "human_chart_setup_path"
+        primary_failure_axis = "confirmed_entry"
+        if "human_chart_setup_path" not in entry_condition_paths_passed:
+            entry_condition_paths_passed.append("human_chart_setup_path")
+        if "human_chart_entry_setup" not in signal_chain:
+            signal_chain.append("human_chart_entry_setup")
+        if "human_chart_entry_setup" not in passed_checks:
+            passed_checks.append("human_chart_entry_setup")
+        policy_alignment_summary["summary_notes"] = _dedupe_non_empty(
+            [
+                *list(policy_alignment_summary.get("summary_notes") or []),
+                "human_chart_entry_setup_applied",
+            ]
+        )
 
-    human_chart_buy_guard, primary_failure_axis, reason, triggered = signal_explain_human_chart_buy_guard_primary_failure_ax(chart_human_context=chart_human_context, human_chart_detail_context=human_chart_detail_context, prev_close_distance_pct=prev_close_distance_pct, open_gap_pct=open_gap_pct, entry_condition_path=entry_condition_path, triggered=triggered, signal_chain=signal_chain, failed_checks=failed_checks, policy_alignment_summary=policy_alignment_summary, primary_failure_axis=primary_failure_axis, reason=reason, facade=_r3_sys.modules[__name__])
+    human_chart_buy_guard = _build_human_chart_buy_guard(
+        chart_human_context=chart_human_context,
+        chart_detail_context=human_chart_detail_context,
+        prev_close_distance_pct=prev_close_distance_pct,
+        open_gap_pct=open_gap_pct,
+        candidate_triggered=bool(triggered),
+        entry_condition_path=entry_condition_path,
+    )
+    if bool(human_chart_buy_guard.get("applied")):
+        triggered = False
+        reason = "human_chart_sanity_guard_blocked"
+        primary_failure_axis = "human_chart_sanity"
+        if "human_chart_buy_guard" not in signal_chain:
+            signal_chain.append("human_chart_buy_guard")
+        if "human_chart_buy_guard" not in failed_checks:
+            failed_checks.append("human_chart_buy_guard")
+        policy_alignment_summary["summary_notes"] = _dedupe_non_empty(
+            [
+                *list(policy_alignment_summary.get("summary_notes") or []),
+                "human_chart_buy_guard_applied",
+            ]
+        )
 
     metrics = {
         "timeframe_minutes": timeframe_minutes,
@@ -2697,7 +2762,22 @@ def evaluate_intraday_entry_signal(
         "lower_rebound_vwap_band_ok": bool(lower_rebound_vwap_band_ok),
         "lower_vwap_rebound_probe": dict(threshold_margins.get("lower_vwap_rebound_probe") or {}),
     }
-    transition_trace = signal_explain_transition_trace(reclaim_distance_to_ready=reclaim_distance_to_ready, rebound_progress=rebound_progress, volume_distance_to_ready=volume_distance_to_ready, breakout_distance_to_ready=breakout_distance_to_ready, transition_readiness_score=transition_readiness_score, vwap_reclaim_progress=vwap_reclaim_progress, primary_failure_axis=primary_failure_axis, triggered=triggered, policy_aware_gating=policy_aware_gating, human_chart_entry_setup=human_chart_entry_setup, entry_condition_path=entry_condition_path, grouped_logic_trace=grouped_logic_trace, scoring_settings=scoring_settings, score_breakdown=score_breakdown, chart_structure_decision_hint=chart_structure_decision_hint, chart_human_context=chart_human_context, human_chart_detail_context=human_chart_detail_context, human_chart_buy_guard=human_chart_buy_guard, entry_quality_score=entry_quality_score, entry_quality_tier=entry_quality_tier, entry_quality_path=entry_quality_path, entry_hard_gate_passed=entry_hard_gate_passed, entry_hard_gate_blockers=entry_hard_gate_blockers, entry_quality_vs_gate_summary=entry_quality_vs_gate_summary, breakout_score=breakout_score, etf_deviation_entry_score=etf_deviation_entry_score, facade=_r3_sys.modules[__name__])[0]
+    transition_trace = _empty_entry_transition_trace()
+    transition_trace.update(
+        {
+            "reclaim_distance_to_ready": reclaim_distance_to_ready,
+            "vwap_reclaim_progress": round(vwap_reclaim_progress, 4),
+            "rebound_progress": rebound_progress,
+            "volume_distance_to_ready": volume_distance_to_ready,
+            "breakout_distance_to_ready": breakout_distance_to_ready,
+            "transition_readiness_score": transition_readiness_score,
+            "last_blocking_axis": primary_failure_axis if not triggered else "",
+            "became_ready_this_cycle": bool(
+                policy_aware_gating.get("applied") or human_chart_entry_setup.get("applied")
+            ),
+        }
+    )
+    signal_explain_effect_free_block_3479(entry_condition_path=entry_condition_path, grouped_logic_trace=grouped_logic_trace, scoring_settings=scoring_settings, score_breakdown=score_breakdown, policy_aware_gating=policy_aware_gating, chart_structure_decision_hint=chart_structure_decision_hint, chart_human_context=chart_human_context, human_chart_entry_setup=human_chart_entry_setup, human_chart_detail_context=human_chart_detail_context, human_chart_buy_guard=human_chart_buy_guard, entry_quality_score=entry_quality_score, entry_quality_tier=entry_quality_tier, entry_quality_path=entry_quality_path, entry_hard_gate_passed=entry_hard_gate_passed, entry_hard_gate_blockers=entry_hard_gate_blockers, entry_quality_vs_gate_summary=entry_quality_vs_gate_summary, breakout_score=breakout_score, etf_deviation_entry_score=etf_deviation_entry_score, facade=_r3_sys.modules[__name__])
     _apply_monitor_scoring_fields(
         out,
         scoring_settings=scoring_settings,

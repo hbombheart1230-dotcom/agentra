@@ -209,13 +209,10 @@ def entry_cascade_buy_blocked_closeout_window_buy_blocked_2(entry_candidate_casc
                 entry_signal_detected = bool(runner_result.get("entry_signal_detected"))
                 symbol = str(runner_result.get("symbol") or runner_symbol)
                 qty = int(runner_result.get("qty") or 0)
-                entry_info["fallback_from_symbol"] = entry_candidate_cascade.get("fallback_from_symbol")
-                entry_info["fallback_to_symbol"] = runner_symbol
-                entry_info["pullback_evidence_profile"] = dict(runner_subtype)
     return (buy_blocked_closeout_window, buy_blocked_open_position, buy_blocked_pending_buy, buy_blocked_post_exit_cooldown, buy_blocked_same_symbol, entry_applied_policy, entry_guard_blocked, entry_info, entry_received_policy, max_positions_reached, post_exit_cooldown_remaining_sec, qty, selected, sizing_info, symbol)
 
 
-def entry_cascade_intent_intents(symbol, qty, order_price, order_price_source, entry_candidate_cascade, selected, entry_info, plan, sizing_info, post_exit_cooldown_sec, *, facade):
+def entry_cascade_intent(symbol, qty, order_price, order_price_source, entry_candidate_cascade, selected, entry_info, plan, *, facade):
     if True:
             intent = {
                 "symbol": symbol,
@@ -277,16 +274,4 @@ def entry_cascade_intent_intents(symbol, qty, order_price, order_price_source, e
                     ),
                 },
             }
-            if bool(sizing_info.get("enabled")):
-                intent["meta"]["sizing"] = {
-                    "reason": str(sizing_info.get("reason") or ""),
-                    "price": sizing_info.get("price"),
-                    "cash": sizing_info.get("cash"),
-                    "inputs": sizing_info.get("inputs"),
-                }
-            if post_exit_cooldown_sec > 0:
-                intent["meta"]["post_exit_cooldown_sec"] = int(post_exit_cooldown_sec)
-            if int(entry_info.get("intent_cooldown_sec") or 0) > 0:
-                intent["meta"]["entry_intent_cooldown_sec"] = int(entry_info.get("intent_cooldown_sec") or 0)
-            intents = [intent]
-    return (intent, intents)
+    return (intent,)

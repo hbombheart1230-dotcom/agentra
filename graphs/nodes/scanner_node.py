@@ -157,6 +157,30 @@ from libs.runtime.scanner.macro_chart_fit import (
     _scanner_chart_fit_from_entry_result_r3_impl,
     _compute_scanner_macro_chart_fit_r3_impl,
 )
+from libs.runtime.scanner.candidate_context_projection import (
+    scan_context_candidates_policy,
+    scan_context_commander_context_intrinsic_control_w,
+    scan_context_compatibility_bias_context_compatibility,
+)
+from libs.runtime.scanner.score_feature_projection import (
+    scan_feature_candidate_rank_score_candidate_universe,
+    scan_feature_adx14_adx_component,
+    scan_feature_avoid_theme_penalty_bias_result,
+)
+from libs.runtime.scanner.score_policy_projection import (
+    scan_score_adj_risk_compatibility_bias,
+    scan_score_adj_conf_adj_risk,
+)
+from libs.runtime.scanner.selection_evidence_projection import (
+    scan_select_value_state_scanner_output,
+    scan_select_value_state_scanner_skill,
+    scan_select_commander_memory_application_trace_selec,
+    scan_select_reasons_row_conf,
+)
+from libs.runtime.scanner.selection_evidence_projection_value_te_scanner import (
+    scan_select_value_te_scanner_selection_reason,
+    scan_select_candidate_selection_reason_payload,
+)
 
 
 def _clamp(x: float, lo: float, hi: float) -> float:
@@ -707,27 +731,7 @@ def _apply_blocker_family_concentration_overlay(
 
 
 def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    """Graph node: Scanner (Data + feature extraction).
-
-    M17-3 contract (additive):
-      - Builds candidate pool from Kiwoom market data (default)
-      - Applies strategist theme hints when mapping data exists
-      - Falls back to strategist candidates when Kiwoom pool is empty
-      - Computes per-candidate features/risk/confidence
-      - Selects exactly 1 candidate into state['selected'] (or None)
-
-    Writes:
-      - state['scan_results'] : list[dict]
-      - state['selected'] : dict | None
-      - state['risk'] : dict (risk_score/confidence for selected)
-
-    Test hooks:
-      - state['mock_scan_results'] : {symbol: {score, risk_score, confidence, features?}}
-        If present, Scanner will use these values instead of generating.
-    """
-    # M18-4: sentiment-aware scoring (offline-friendly)
-    policy = state.get("policy") if isinstance(state.get("policy"), dict) else {}
-    candidates, pool_meta = _resolve_scanner_candidates(state, policy)
+    candidates, policy, pool_meta = scan_context_candidates_policy(state=state, facade=_r3_sys.modules[__name__])
     if _enforce_live_equity_symbols(state, policy):
         candidates, live_symbol_meta = _filter_live_equity_candidates(list(candidates or []))
         pool_meta = dict(pool_meta)
@@ -771,56 +775,7 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
         for k, v in mock.items():
             mock_by_sym[_norm_symbol(k)] = v
 
-    w = _get_scanner_weights(policy)
-    practical_w = _resolve_scanner_score_weights(policy)
-    intrinsic_control_w = dict(practical_w)
-    scanner_guidance = _extract_scanner_guidance(state)
-    playbook = str(scanner_guidance.get("playbook") or "").strip().lower()
-    scanner_bias = str(scanner_guidance.get("scanner_bias") or "").strip().lower()
-    scanner_bias_context = (
-        dict(scanner_guidance.get("scanner_bias_context") or {})
-        if isinstance(scanner_guidance.get("scanner_bias_context"), dict)
-        else {}
-    )
-    scanner_memory_bias = (
-        dict(scanner_guidance.get("scanner_memory_bias") or {})
-        if isinstance(scanner_guidance.get("scanner_memory_bias"), dict)
-        else {}
-    )
-    scanner_priority = _normalize_priority_list(scanner_guidance.get("scanner_priority"))
-    trade_aggressiveness = str(scanner_guidance.get("trade_aggressiveness") or "").strip().lower()
-    risk_tone = str(scanner_guidance.get("risk_tone") or "").strip().lower()
-    monitor_guidance = str(scanner_guidance.get("monitor_guidance") or "").strip().lower()
-    strategy_monitor_policy = (
-        dict(scanner_guidance.get("monitor_policy") or {})
-        if isinstance(scanner_guidance.get("monitor_policy"), dict)
-        else {}
-    )
-    commander_context = (
-        dict(scanner_guidance.get("commander_context") or {})
-        if isinstance(scanner_guidance.get("commander_context"), dict)
-        else {}
-    )
-    strategist_plan = (
-        dict(scanner_guidance.get("strategist_plan") or {})
-        if isinstance(scanner_guidance.get("strategist_plan"), dict)
-        else {}
-    )
-    policy_provenance = (
-        dict(scanner_guidance.get("policy_provenance") or {})
-        if isinstance(scanner_guidance.get("policy_provenance"), dict)
-        else {}
-    )
-    scanner_policy_trace = _build_scanner_policy_trace(
-        commander_context=commander_context,
-        strategist_plan=strategist_plan,
-        policy_provenance=policy_provenance,
-        playbook=playbook,
-        scanner_priority=scanner_priority,
-        scanner_bias=scanner_bias,
-        scanner_bias_context=scanner_bias_context,
-        scanner_memory_bias=scanner_memory_bias,
-    )
+    commander_context, intrinsic_control_w, monitor_guidance, playbook, policy_provenance, practical_w, risk_tone, scanner_bias, scanner_bias_context, scanner_guidance, scanner_memory_bias, scanner_policy_trace, scanner_priority, strategy_monitor_policy, trade_aggressiveness, w = scan_context_commander_context_intrinsic_control_w(policy=policy, state=state, facade=_r3_sys.modules[__name__])
     if isinstance(scanner_guidance.get("score_weights"), dict):
         for key, value in dict(scanner_guidance.get("score_weights") or {}).items():
             if key in practical_w and value not in (None, ""):
@@ -849,27 +804,7 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
         policy=policy,
         refresh_existing=refresh_existing_features,
     )
-    if not feature_map:
-        feature_map, feature_source, feature_errors = _extract_feature_engine_map(state)
-    minute_rows_by_symbol, minute_rows_meta = extract_minute_ohlcv_by_symbol(state)
-    ohlcv_by_symbol = state.get("ohlcv_by_symbol") if isinstance(state.get("ohlcv_by_symbol"), dict) else {}
-    compatibility_bias_context = _resolve_compatibility_bias_context(state)
-    compatibility_policy_input = _build_scanner_monitor_policy_input(
-        state=state,
-        commander_context=commander_context,
-        monitor_policy=strategy_monitor_policy,
-    )
-    compatibility_frame = _build_scanner_monitor_frame(
-        playbook=playbook,
-        monitor_guidance=monitor_guidance,
-        risk_tone=risk_tone,
-        trade_aggressiveness=trade_aggressiveness,
-    )
-    compatibility_policy = (
-        resolve_intraday_entry_policy(compatibility_policy_input or None, frame=compatibility_frame or None)
-        if compatibility_policy_input
-        else None
-    )
+    compatibility_bias_context, compatibility_policy, feature_errors, feature_map, feature_source, minute_rows_by_symbol, minute_rows_meta, ohlcv_by_symbol = scan_context_compatibility_bias_context_compatibility(feature_map=feature_map, state=state, commander_context=commander_context, strategy_monitor_policy=strategy_monitor_policy, playbook=playbook, monitor_guidance=monitor_guidance, risk_tone=risk_tone, trade_aggressiveness=trade_aggressiveness, feature_errors=feature_errors, feature_source=feature_source, facade=_r3_sys.modules[__name__])
     state["scanner_quote_diagnostic"] = {
         **dict(quote_metric_coverage),
         "feature_refresh_forced": bool(refresh_existing_features),
@@ -1046,182 +981,9 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
         base_conf = _to_float(row.get("confidence") or 0.55)
         row["raw_score"] = float(base_score)
         row["base_score"] = float(base_score)
-        candidate_rank_score = _clamp(_to_float(candidate_meta.get("rank_score") or 0.0), -1.0, 1.0)
-        candidate_universe_score = _clamp(_to_float(candidate_meta.get("universe_score") or 0.0), 0.0, 10.0)
-        source_scores = dict(candidate_meta.get("source_scores") or {})
-
-        news_s = _to_float(news_by_sym.get(symbol, news_by_sym.get(_norm_symbol(symbol), 0.0)))
-        news_sig = (
-            news_signal_by_sym.get(symbol)
-            if isinstance(news_signal_by_sym.get(symbol), dict)
-            else news_signal_by_sym.get(_norm_symbol(symbol), {})
-        )
-        metrics = _candidate_quote_metrics(symbol, skill_quotes=skill_quotes, state=state)
-        quote = skill_quotes.get(_norm_symbol(symbol), {}) if isinstance(skill_quotes.get(_norm_symbol(symbol)), dict) else {}
-        quote_price = quote.get("price")
-        if quote_price is None:
-            quote_price = quote.get("cur")
-        quote_price_num = _to_float(quote_price) if quote_price is not None else None
-        deviation_signal = extract_etf_deviation_signal(
-            symbol=symbol,
-            candidate={**dict(candidate_meta), **dict(row if isinstance(row, dict) else {})},
-            features=feature_map.get(_norm_symbol(symbol), {}) if isinstance(feature_map.get(_norm_symbol(symbol)), dict) else {},
-            quote=quote,
-            state=state,
-            asset_class_detected=(
-                candidate_meta.get("asset_class_detected")
-                or (row.get("asset_class_detected") if isinstance(row, dict) else "")
-            ),
-        )
-        etf_deviation_tradeable = bool(
-            deviation_signal.get("is_etf_family")
-            or deviation_signal.get("available")
-        )
-        etf_deviation_entry_score = (
-            float(deviation_signal.get("entry_discount_score") or 0.0)
-            if etf_deviation_tradeable
-            else 0.0
-        )
-        etf_deviation_premium_score = (
-            float(deviation_signal.get("exit_premium_score") or 0.0)
-            if etf_deviation_tradeable
-            else 0.0
-        )
-        etf_deviation_bias = float((0.08 * etf_deviation_entry_score) - (0.08 * etf_deviation_premium_score))
-        open_orders = int(skill_order_counts.get(_norm_symbol(symbol), 0))
-        order_penalty = min(open_orders, 3)
-
-        feature_row = feature_map.get(_norm_symbol(symbol), {})
-        if not isinstance(feature_row, dict):
-            feature_row = {}
-        feature_signal = _clamp(_to_float(feature_row.get("signal_score") or 0.0), -1.0, 1.0)
-        feature_regime = str(feature_row.get("regime") or "").strip().lower()
-        return20 = _to_float(feature_row.get("return20"))
-        ma20_gap = _to_float(feature_row.get("ma20_gap"))
-        ma60_gap = _to_float(feature_row.get("ma60_gap"))
-        ma120_gap = _to_float(feature_row.get("ma120_gap"))
-        trend_strength = _to_float(feature_row.get("trend_strength"))
-        adx14 = _to_float(feature_row.get("adx14"))
-        volume_spike20 = _to_float(feature_row.get("volume_spike20"))
-        volatility20 = _to_float(feature_row.get("volatility20"))
-        vwap_distance = _to_float(feature_row.get("vwap_distance"))
-        cross_section_rank = _to_float(feature_row.get("cross_section_rank"))
-        gap_pct = abs(_to_float(feature_row.get("gap_pct")))
-        base_risk_result = resolve_candidate_base_risk(
-            candidate=candidate_meta,
-            scanner_row=row,
-            features=feature_row,
-            quote_metrics=metrics,
-        )
-        base_risk = float(base_risk_result.get("risk_score") or 0.0)
-
-        trading_value_component = _norm01(_to_float(source_scores.get("top_value")), 0.0, 2.0)
-        momentum_raw = (0.65 * _signed01(return20, 0.10)) + (0.35 * _signed01(ma20_gap, 0.03))
-        momentum_component = max(0.0, momentum_raw)
-        ma_alignment_component = max(
-            0.0,
-            (
-                0.45 * _signed01(ma20_gap, 0.03)
-                + 0.35 * _signed01(ma60_gap, 0.05)
-                + 0.20 * _signed01(ma120_gap, 0.08)
-            ),
-        )
-        adx_component = _norm01(adx14, 15.0, 35.0)
-        trend_raw = trend_strength if trend_strength != 0.0 else feature_signal
-        trend_component = max(
-            0.0,
-            (
-                0.45 * max(0.0, _signed01(trend_raw, 1.0))
-                + 0.35 * ma_alignment_component
-                + 0.20 * adx_component
-            ),
-        )
-        volume_surge_component = _norm01(volume_spike20, 1.0, 3.0)
-        vwap_alignment_component = max(0.0, _signed01(vwap_distance, 0.02))
-        intraday_strength_component = max(
-            0.0,
-            (
-                0.70 * max(0.0, _signed01(_to_float(metrics.get("change_pct")), 5.0))
-                + 0.30 * vwap_alignment_component
-            ),
-        )
-        cross_section_rank_component = _norm01(cross_section_rank, 0.0, 1.0)
-
-        theme_matched_symbols = set(_norm_symbol(x) for x in list(pool_meta.get("theme_matched_symbols") or []))
-        avoid_theme_symbols = set(_norm_symbol(x) for x in list(pool_meta.get("avoid_matched_symbols") or []))
-        theme_boost_component = 1.0 if (symbol in theme_matched_symbols and len(theme_matched_symbols) > 0) else 0.0
-        sentiment_component = max(0.0, (0.7 * news_s) + (0.3 * gs))
-
-        volatility_penalty = _norm01(volatility20, 0.03, 0.08)
-        gap_penalty = _norm01(gap_pct, 0.03, 0.10)
-        open_order_penalty = _norm01(float(order_penalty), 0.0, 3.0)
-        avoid_theme_penalty = 1.0 if (symbol in avoid_theme_symbols and len(avoid_theme_symbols) > 0) else 0.0
-
-        repeat_penalty_meta = _repeat_symbol_penalty(state, symbol=symbol, policy=policy)
-        repeat_symbol_penalty = _to_float(repeat_penalty_meta.get("penalty"))
-        blocker_penalty_meta = _repeat_blocker_cooldown_penalty(state, symbol=symbol, policy=policy)
-        repeat_blocker_penalty = _to_float(blocker_penalty_meta.get("penalty"))
-
-        positive_score = (
-            practical_w["trading_value"] * trading_value_component
-            + practical_w["momentum"] * momentum_component
-            + practical_w["trend"] * trend_component
-            + practical_w["volume_surge"] * volume_surge_component
-            + practical_w["intraday_strength"] * intraday_strength_component
-            + practical_w["theme_boost"] * theme_boost_component
-            + practical_w["sentiment"] * sentiment_component
-            + (0.06 * max(0.0, candidate_rank_score))
-            + (0.02 * _norm01(candidate_universe_score, 0.0, 10.0))
-            + (0.05 * cross_section_rank_component)
-        ) * practical_scale
-        risk_penalty_score = (
-            practical_w["volatility_penalty"] * volatility_penalty
-            + practical_w["gap_penalty"] * gap_penalty
-            + practical_w["open_order_penalty"] * open_order_penalty
-            + (0.20 * avoid_theme_penalty)
-        ) * practical_scale
-
-        # Keep backward compatibility with previous additive sentiment/risk knobs.
-        legacy_adjust = (
-            w["weight_news"] * news_s
-            + w["weight_global"] * gs
-            + w["feature_score_weight"] * feature_signal
-            - (0.03 * open_order_penalty)
-        )
-        rank_bonus = 0.01 * max(0.0, candidate_rank_score)
-        intrinsic_control_positive = (
-            intrinsic_control_w["trading_value"] * trading_value_component
-            + intrinsic_control_w["momentum"] * momentum_component
-            + intrinsic_control_w["trend"] * trend_component
-            + intrinsic_control_w["volume_surge"] * volume_surge_component
-            + intrinsic_control_w["intraday_strength"] * intraday_strength_component
-            + intrinsic_control_w["sentiment"] * sentiment_component
-            + (0.06 * max(0.0, candidate_rank_score))
-            + (0.02 * _norm01(candidate_universe_score, 0.0, 10.0))
-            + (0.05 * cross_section_rank_component)
-        ) * practical_scale
-        intrinsic_control_risk = (
-            intrinsic_control_w["volatility_penalty"] * volatility_penalty
-            + intrinsic_control_w["gap_penalty"] * gap_penalty
-            + intrinsic_control_w["open_order_penalty"] * open_order_penalty
-        ) * practical_scale
-        bias_result = _compute_structured_scanner_bias(
-            symbol=symbol,
-            feature_row=feature_row,
-            metrics=metrics,
-            bias_context=scanner_bias_context,
-        )
-        scanner_bias_adjustment = float(bias_result.get("bias_adjustment") or 0.0)
-        memory_bias_result = compute_scanner_memory_bias_adjustment(
-            symbol=symbol,
-            candidate_sources=list(candidate_meta.get("sources") or []),
-            memory_bias=scanner_memory_bias,
-        )
-        scanner_memory_bias_observed_adjustment = float(memory_bias_result.get("bias_adjustment") or 0.0)
-        scanner_memory_bias_observation_only = _memory_bias_observation_only(state)
-        scanner_memory_bias_adjustment = 0.0 if scanner_memory_bias_observation_only else scanner_memory_bias_observed_adjustment
-        candidate_rows = []
-        raw_minute_rows = minute_rows_by_symbol.get(_norm_symbol(symbol)) if isinstance(minute_rows_by_symbol, dict) else None
+        candidate_rank_score, candidate_universe_score, deviation_signal, etf_deviation_bias, etf_deviation_entry_score, etf_deviation_premium_score, etf_deviation_tradeable, feature_regime, feature_row, feature_signal, ma120_gap, ma20_gap, ma60_gap, metrics, news_s, news_sig, open_orders, order_penalty, quote, quote_price, quote_price_num, return20, source_scores, trend_strength = scan_feature_candidate_rank_score_candidate_universe(candidate_meta=candidate_meta, symbol=symbol, news_by_sym=news_by_sym, news_signal_by_sym=news_signal_by_sym, skill_quotes=skill_quotes, state=state, row=row, feature_map=feature_map, skill_order_counts=skill_order_counts, facade=_r3_sys.modules[__name__])
+        adx14, adx_component, avoid_theme_symbols, base_risk, base_risk_result, cross_section_rank, cross_section_rank_component, gap_pct, intraday_strength_component, ma_alignment_component, momentum_component, momentum_raw, sentiment_component, theme_boost_component, theme_matched_symbols, trading_value_component, trend_component, trend_raw, volatility20, volatility_penalty, volume_spike20, volume_surge_component, vwap_alignment_component, vwap_distance = scan_feature_adx14_adx_component(feature_row=feature_row, candidate_meta=candidate_meta, row=row, metrics=metrics, source_scores=source_scores, return20=return20, ma20_gap=ma20_gap, ma120_gap=ma120_gap, ma60_gap=ma60_gap, trend_strength=trend_strength, feature_signal=feature_signal, pool_meta=pool_meta, symbol=symbol, news_s=news_s, gs=gs, facade=_r3_sys.modules[__name__])
+        avoid_theme_penalty, bias_result, blocker_penalty_meta, candidate_rows, gap_penalty, intrinsic_control_positive, intrinsic_control_risk, legacy_adjust, memory_bias_result, open_order_penalty, positive_score, rank_bonus, raw_minute_rows, repeat_blocker_penalty, repeat_penalty_meta, repeat_symbol_penalty, risk_penalty_score, scanner_bias_adjustment, scanner_memory_bias_adjustment, scanner_memory_bias_observation_only, scanner_memory_bias_observed_adjustment = scan_feature_avoid_theme_penalty_bias_result(gap_pct=gap_pct, order_penalty=order_penalty, symbol=symbol, avoid_theme_symbols=avoid_theme_symbols, state=state, policy=policy, practical_scale=practical_scale, cross_section_rank_component=cross_section_rank_component, candidate_universe_score=candidate_universe_score, sentiment_component=sentiment_component, candidate_rank_score=candidate_rank_score, theme_boost_component=theme_boost_component, practical_w=practical_w, intraday_strength_component=intraday_strength_component, volume_surge_component=volume_surge_component, trend_component=trend_component, trading_value_component=trading_value_component, momentum_component=momentum_component, volatility_penalty=volatility_penalty, feature_signal=feature_signal, news_s=news_s, gs=gs, w=w, intrinsic_control_w=intrinsic_control_w, feature_row=feature_row, metrics=metrics, scanner_bias_context=scanner_bias_context, scanner_memory_bias=scanner_memory_bias, candidate_meta=candidate_meta, minute_rows_by_symbol=minute_rows_by_symbol, facade=_r3_sys.modules[__name__])
         if isinstance(raw_minute_rows, list) and raw_minute_rows:
             candidate_rows = list(raw_minute_rows)
         else:
@@ -1257,127 +1019,8 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
             }
             if top_level_override:
                 mock_compatibility_override = top_level_override
-        compatibility_result = _merge_mock_compatibility_override(
-            compatibility_result,
-            override=mock_compatibility_override,
-        )
-        compatibility_bias = float(compatibility_result.get("compatibility_bias") or 0.0)
-        macro_chart_fit = _compute_scanner_macro_chart_fit(
-            feature_row=feature_row,
-            ma_alignment_component=ma_alignment_component,
-            trend_component=trend_component,
-            adx_component=adx_component,
-            momentum_component=momentum_component,
-            volume_surge_component=volume_surge_component,
-            vwap_alignment_component=vwap_alignment_component,
-            cross_section_rank_component=cross_section_rank_component,
-            volatility_penalty=volatility_penalty,
-            gap_penalty=gap_penalty,
-            playbook=playbook,
-            scanner_priority=scanner_priority,
-            risk_tone=risk_tone,
-            trade_aggressiveness=trade_aggressiveness,
-        )
-        scanner_macro_chart_fit_bias = float(
-            macro_chart_fit.get("scanner_macro_chart_fit_bias") or 0.0
-        )
-        symbol_prior_result = _compute_symbol_prior_adjustment(
-            symbol_model=dict(symbol_priors.get(symbol) or {}),
-            playbook=playbook,
-            current_day=_resolve_canonical_day(state),
-        )
-        symbol_prior_adjustment = float(symbol_prior_result.get("adjustment") or 0.0)
-        scanner_intrinsic_control_score_total = (
-            base_score
-            + intrinsic_control_positive
-            + legacy_adjust
-            - intrinsic_control_risk
-            + rank_bonus
-            - repeat_symbol_penalty
-            - repeat_blocker_penalty
-            + scanner_memory_bias_adjustment
-            + symbol_prior_adjustment
-            + etf_deviation_bias
-        )
-        pre_adjust_score_total = (
-            base_score
-            + positive_score
-            + legacy_adjust
-            - risk_penalty_score
-            + rank_bonus
-            - repeat_symbol_penalty
-            - repeat_blocker_penalty
-            + scanner_bias_adjustment
-            + scanner_memory_bias_adjustment
-            + symbol_prior_adjustment
-            + etf_deviation_bias
-        )
-        score_total = pre_adjust_score_total + compatibility_bias + scanner_macro_chart_fit_bias
-
-        neg_news = max(-news_s, 0.0)
-        neg_global = max(-gs, 0.0)
-        feature_risk = w["feature_risk_penalty"] * max(-feature_signal, 0.0)
-        if feature_regime == "high_volatility":
-            feature_risk += w["high_vol_risk_penalty"]
-        adj_risk = (
-            base_risk
-            + w["risk_news_penalty"] * neg_news
-            + w["risk_global_penalty"] * neg_global
-            + feature_risk
-            + (0.35 * volatility_penalty * practical_scale)
-            + (0.25 * gap_penalty * practical_scale)
-            + (0.10 * open_order_penalty)
-        )
-        if etf_deviation_tradeable and etf_deviation_premium_score > 0.0:
-            adj_risk += 0.05 * etf_deviation_premium_score
-        if etf_deviation_tradeable and etf_deviation_entry_score > 0.0:
-            adj_risk -= 0.03 * etf_deviation_entry_score
-        adj_conf = _clamp(
-            base_conf
-            + w["confidence_news_boost"] * max(news_s, 0.0)
-            + 0.15 * (positive_score - risk_penalty_score)
-            - 0.08 * open_order_penalty,
-            0.0,
-            1.0,
-        )
-        if etf_deviation_tradeable and etf_deviation_entry_score > 0.0:
-            adj_conf = _clamp(adj_conf + (0.05 * etf_deviation_entry_score), 0.0, 1.0)
-        if etf_deviation_tradeable and etf_deviation_premium_score > 0.0:
-            adj_conf = _clamp(adj_conf - (0.04 * etf_deviation_premium_score), 0.0, 1.0)
-        if repeat_symbol_penalty > 0.0:
-            adj_conf = _clamp(adj_conf - (0.40 * repeat_symbol_penalty), 0.0, 1.0)
-            adj_risk = _clamp(adj_risk + (0.25 * repeat_symbol_penalty), 0.0, 1.0)
-        if repeat_blocker_penalty > 0.0:
-            adj_conf = _clamp(adj_conf - (0.35 * repeat_blocker_penalty), 0.0, 1.0)
-            adj_risk = _clamp(adj_risk + (0.20 * repeat_blocker_penalty), 0.0, 1.0)
-        adj_conf = _clamp(adj_conf + float(symbol_prior_result.get("confidence_delta") or 0.0), 0.0, 1.0)
-        adj_risk = _clamp(adj_risk + float(symbol_prior_result.get("risk_delta") or 0.0), 0.0, 1.0)
-
-        score_breakdown = {
-            "trading_value": float(practical_w["trading_value"] * trading_value_component),
-            "momentum": float(practical_w["momentum"] * momentum_component),
-            "trend": float(practical_w["trend"] * trend_component),
-            "ma_alignment": float(practical_w["trend"] * 0.35 * ma_alignment_component),
-            "adx_trend": float(practical_w["trend"] * 0.20 * adx_component),
-            "volume_surge": float(practical_w["volume_surge"] * volume_surge_component),
-            "intraday_strength": float(practical_w["intraday_strength"] * intraday_strength_component),
-            "vwap_alignment": float(practical_w["intraday_strength"] * 0.30 * vwap_alignment_component),
-            "theme_boost": float(practical_w["theme_boost"] * theme_boost_component),
-            "sentiment": float(practical_w["sentiment"] * sentiment_component),
-            "cross_section_rank": float(0.05 * cross_section_rank_component * practical_scale),
-            "avoid_theme_penalty": float(-0.20 * avoid_theme_penalty * practical_scale),
-            "repeat_symbol_penalty": float(-repeat_symbol_penalty),
-            "repeat_blocker_penalty": float(-repeat_blocker_penalty),
-            "scanner_bias": float(scanner_bias_adjustment),
-            "scanner_memory_bias": float(scanner_memory_bias_adjustment),
-            "scanner_memory_bias_observed": float(scanner_memory_bias_observed_adjustment),
-            "symbol_prior": float(symbol_prior_adjustment),
-            "etf_deviation_bias": float(etf_deviation_bias),
-            "entry_compatibility_bias": float(compatibility_bias),
-            "scanner_macro_chart_fit_bias": float(scanner_macro_chart_fit_bias),
-            "risk_penalty": float(-risk_penalty_score),
-            "rank_bonus": float(rank_bonus),
-        }
+        adj_risk, compatibility_bias, compatibility_result, feature_risk, macro_chart_fit, neg_global, neg_news, pre_adjust_score_total, scanner_intrinsic_control_score_total, scanner_macro_chart_fit_bias, score_total, symbol_prior_adjustment, symbol_prior_result = scan_score_adj_risk_compatibility_bias(compatibility_result=compatibility_result, mock_compatibility_override=mock_compatibility_override, feature_row=feature_row, ma_alignment_component=ma_alignment_component, trend_component=trend_component, adx_component=adx_component, momentum_component=momentum_component, volume_surge_component=volume_surge_component, vwap_alignment_component=vwap_alignment_component, cross_section_rank_component=cross_section_rank_component, volatility_penalty=volatility_penalty, gap_penalty=gap_penalty, playbook=playbook, scanner_priority=scanner_priority, risk_tone=risk_tone, trade_aggressiveness=trade_aggressiveness, state=state, symbol=symbol, symbol_priors=symbol_priors, etf_deviation_bias=etf_deviation_bias, scanner_memory_bias_adjustment=scanner_memory_bias_adjustment, repeat_blocker_penalty=repeat_blocker_penalty, repeat_symbol_penalty=repeat_symbol_penalty, rank_bonus=rank_bonus, intrinsic_control_risk=intrinsic_control_risk, legacy_adjust=legacy_adjust, base_score=base_score, intrinsic_control_positive=intrinsic_control_positive, scanner_bias_adjustment=scanner_bias_adjustment, risk_penalty_score=risk_penalty_score, positive_score=positive_score, news_s=news_s, gs=gs, w=w, feature_signal=feature_signal, feature_regime=feature_regime, open_order_penalty=open_order_penalty, practical_scale=practical_scale, base_risk=base_risk, facade=_r3_sys.modules[__name__])
+        adj_conf, adj_risk, score_breakdown = scan_score_adj_conf_adj_risk(etf_deviation_tradeable=etf_deviation_tradeable, etf_deviation_premium_score=etf_deviation_premium_score, etf_deviation_entry_score=etf_deviation_entry_score, open_order_penalty=open_order_penalty, base_conf=base_conf, positive_score=positive_score, risk_penalty_score=risk_penalty_score, w=w, news_s=news_s, repeat_symbol_penalty=repeat_symbol_penalty, adj_risk=adj_risk, repeat_blocker_penalty=repeat_blocker_penalty, symbol_prior_result=symbol_prior_result, scanner_bias_adjustment=scanner_bias_adjustment, scanner_memory_bias_adjustment=scanner_memory_bias_adjustment, scanner_memory_bias_observed_adjustment=scanner_memory_bias_observed_adjustment, symbol_prior_adjustment=symbol_prior_adjustment, etf_deviation_bias=etf_deviation_bias, compatibility_bias=compatibility_bias, scanner_macro_chart_fit_bias=scanner_macro_chart_fit_bias, rank_bonus=rank_bonus, trading_value_component=trading_value_component, momentum_component=momentum_component, trend_component=trend_component, ma_alignment_component=ma_alignment_component, adx_component=adx_component, volume_surge_component=volume_surge_component, intraday_strength_component=intraday_strength_component, vwap_alignment_component=vwap_alignment_component, theme_boost_component=theme_boost_component, sentiment_component=sentiment_component, practical_scale=practical_scale, practical_w=practical_w, cross_section_rank_component=cross_section_rank_component, avoid_theme_penalty=avoid_theme_penalty, facade=_r3_sys.modules[__name__])
 
         row["score"] = float(score_total)
         row["score_total"] = float(score_total)
@@ -1845,177 +1488,7 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
             else None
         )
     )
-    state["scanner_output"] = {
-        "top_stock": state["top_stock"] or None,
-        "primary_watch_symbol": state["top_stock"] or None,
-        "score": (
-            float(selected.get("raw_score"))
-            if isinstance(selected, dict) and selected.get("raw_score") is not None
-            else float(selected.get("score"))
-            if isinstance(selected, dict) and selected.get("score") is not None
-            else None
-        ),
-        "top_score": top_score,
-        "risk_score": (
-            float(selected.get("risk_score"))
-            if isinstance(selected, dict) and selected.get("risk_score") is not None
-            else None
-        ),
-        "confidence": (
-            float(selected.get("confidence"))
-            if isinstance(selected, dict) and selected.get("confidence") is not None
-            else None
-        ),
-        "candidate_count": int(len(scan_results_sorted)),
-        "candidate_pool_size": int(len(scan_results_sorted)),
-        "ranked_candidates": visible_ranked_candidates,
-        "watch_candidates": visible_ranked_candidates,
-        "candidate_source": str(pool_meta.get("candidate_source") or ""),
-        "scanner_candidate_source": str(pool_meta.get("scanner_candidate_source") or ""),
-        "scanner_policy_source": str(pool_meta.get("scanner_policy_source") or ""),
-        "scanner_fallback_mode": str(pool_meta.get("scanner_fallback_mode") or ""),
-        "scanner_strict_mode": bool(pool_meta.get("scanner_strict_mode")),
-        "fallback_reason": str(pool_meta.get("fallback_reason") or ""),
-        "blocked_static_fallback": bool(pool_meta.get("blocked_static_fallback")),
-        "strict_kiwoom_only": bool(pool_meta.get("strict_kiwoom_only")),
-        "theme_filter_applied": bool(pool_meta.get("theme_filter_applied")),
-        "market_native_bypass_count": int(pool_meta.get("market_native_bypass_count") or 0),
-        "market_native_bypass_symbols": list(pool_meta.get("market_native_bypass_symbols") or []),
-        "avoid_filter_applied": bool(pool_meta.get("avoid_filter_applied")),
-        "avoid_filter_reason": str(pool_meta.get("avoid_filter_reason") or ""),
-        "avoid_filter_fallback_used": bool(pool_meta.get("avoid_filter_fallback_used")),
-        "backfill_used": bool(pool_meta.get("backfill_used")),
-        "backfill_count": int(pool_meta.get("backfill_count") or 0),
-        "backfill_skipped_reason": str(pool_meta.get("backfill_skipped_reason") or ""),
-        "scan_aggressiveness": float(_to_float(pool_meta.get("scan_aggressiveness"))),
-        "strict_mode_relaxed_by_scan_aggressiveness": bool(pool_meta.get("strict_mode_relaxed_by_scan_aggressiveness")),
-        "candidate_limit_base": int(pool_meta.get("candidate_limit_base") or 0),
-        "candidate_limit_effective": int(pool_meta.get("candidate_limit_effective") or 0),
-        "aggressive_source_expansion_used": bool(pool_meta.get("aggressive_source_expansion_used")),
-        "aggressive_source_expansion_slots": int(pool_meta.get("aggressive_source_expansion_slots") or 0),
-        "aggressive_source_expansion_sources": list(pool_meta.get("aggressive_source_expansion_sources") or []),
-        "score_weights": dict(practical_w),
-        "source_mix": dict(pool_meta.get("pool_source_mix") or {}),
-        "theme_source": str(scanner_guidance.get("theme_source") or ""),
-        "theme_source_status": str(scanner_guidance.get("theme_source_status") or ""),
-        "selected_themes": list(pool_meta.get("selected_themes") or []),
-        "selected_theme_source": str(pool_meta.get("selected_theme_source") or ""),
-        "available_themes": list(scanner_guidance.get("available_themes") or [])[:8],
-        "theme_strategy": dict(scanner_guidance.get("theme_strategy") or {})
-        if isinstance(scanner_guidance.get("theme_strategy"), dict)
-        else {},
-        "theme_strength_packet": dict(scanner_guidance.get("theme_strength_packet") or {})
-        if isinstance(scanner_guidance.get("theme_strength_packet"), dict)
-        else {},
-        "asset_universe_policy": str(pool_meta.get("asset_universe_policy") or ""),
-        "asset_universe_policy_source": str(pool_meta.get("asset_universe_policy_source") or ""),
-        "excluded_candidate_count_by_asset_policy": int(pool_meta.get("asset_policy_excluded_count") or 0),
-        "excluded_candidates_by_asset_policy": list(pool_meta.get("asset_policy_exclusions") or []),
-        "excluded_candidate_count_by_mock_broker_restricted": int(pool_meta.get("mock_broker_restricted_excluded_count") or 0),
-        "excluded_candidates_by_mock_broker_restricted": list(pool_meta.get("mock_broker_restricted_exclusions") or []),
-        "mock_broker_restricted_filter_applied": bool(pool_meta.get("mock_broker_restricted_filter_applied")),
-        "asset_detection_stats": dict(pool_meta.get("asset_detection_stats") or {}),
-        "unknown_asset_candidate_count": int(pool_meta.get("unknown_asset_candidate_count") or 0),
-        "total_candidates_before_filter": int(pool_meta.get("total_candidates_before_filter") or 0),
-        "total_candidates_after_filter": int(pool_meta.get("total_candidates_after_filter") or 0),
-        "condition_search_status": str(pool_meta.get("condition_search_status") or ""),
-        "condition_search_source": str(pool_meta.get("condition_search_source") or ""),
-        "condition_search_reason": str(pool_meta.get("condition_search_reason") or ""),
-        "scanner_source_policy": dict(pool_meta.get("scanner_source_policy") or {}),
-        "strategist_scanner_priority": list(scanner_priority),
-        "strategist_playbook": playbook or None,
-        "strategist_scanner_bias": scanner_bias or None,
-        "strategist_avoid_themes": list(pool_meta.get("avoid_themes") or []),
-        "strategist_trade_aggressiveness": trade_aggressiveness or None,
-        "strategist_risk_tone": risk_tone or None,
-        "repeat_guard": _resolve_scanner_repeat_guard_policy(policy),
-        "recent_scanner_selected_count": int(len(_scanner_recent_selection_history(state))),
-        "commander_context_consumed": bool(scanner_policy_trace.get("commander_context_consumed")),
-        "consumed_fields": list(scanner_policy_trace.get("consumed_fields") or []),
-        "commander_priority_ref": dict(scanner_policy_trace.get("commander_priority_ref") or {}),
-        "strategist_constraints_ref": dict(scanner_policy_trace.get("strategist_constraints_ref") or {}),
-        "selection_basis": dict(scanner_policy_trace.get("selection_basis") or {}),
-        "ranking_factors": list(scanner_policy_trace.get("ranking_factors") or []),
-        "playbook": str(scanner_policy_trace.get("playbook") or playbook or ""),
-        "policy_source": str(scanner_policy_trace.get("policy_source") or ""),
-        "applied_policy_present": bool(scanner_policy_trace.get("applied_policy_present")),
-        "monitor_entry_policy_summary": dict(scanner_policy_trace.get("monitor_entry_policy_summary") or {}),
-        "entry_compatibility_score": float(_to_float((selected or {}).get("entry_compatibility_score"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_bias": float(_to_float((selected or {}).get("compatibility_bias"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_components": dict((selected or {}).get("compatibility_components") or {}) if isinstance(selected, dict) else {},
-        "scanner_chart_fit_score": float(_to_float((selected or {}).get("scanner_chart_fit_score"))) if isinstance(selected, dict) else 0.0,
-        "scanner_chart_fit_authority": str((selected or {}).get("scanner_chart_fit_authority") or "") if isinstance(selected, dict) else "",
-        "scanner_chart_fit_components": dict((selected or {}).get("scanner_chart_fit_components") or {}) if isinstance(selected, dict) else {},
-        "tactic_suitability": dict((selected or {}).get("tactic_suitability") or {}) if isinstance(selected, dict) else {},
-        "scanner_macro_chart_fit_score": float(_to_float((selected or {}).get("scanner_macro_chart_fit_score"), 0.5)) if isinstance(selected, dict) else 0.5,
-        "scanner_macro_chart_fit_bias": float(_to_float((selected or {}).get("scanner_macro_chart_fit_bias"))) if isinstance(selected, dict) else 0.0,
-        "scanner_macro_chart_fit_authority": str((selected or {}).get("scanner_macro_chart_fit_authority") or "") if isinstance(selected, dict) else "",
-        "scanner_macro_chart_fit_components": dict((selected or {}).get("scanner_macro_chart_fit_components") or {}) if isinstance(selected, dict) else {},
-        "expected_monitor_block_reason": str((selected or {}).get("expected_monitor_block_reason") or "") if isinstance(selected, dict) else "",
-        "dominant_block_reason": str((selected or {}).get("dominant_block_reason") or compatibility_bias_context.get("dominant_block_reason") or "") if isinstance(selected, dict) else str(compatibility_bias_context.get("dominant_block_reason") or ""),
-        "dominant_block_reason_ratio": float(_to_float((selected or {}).get("dominant_block_reason_ratio") or compatibility_bias_context.get("dominant_block_reason_ratio"))),
-        "bias_scale": float(_to_float((selected or {}).get("bias_scale") or compatibility_bias_context.get("bias_scale"))),
-        "soft_penalty": float(_to_float((selected or {}).get("soft_penalty"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_score_pre_penalty": float(_to_float((selected or {}).get("compatibility_score_pre_penalty"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_score_post_penalty": float(_to_float((selected or {}).get("compatibility_score_post_penalty"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_trace": dict((selected or {}).get("compatibility_trace") or {}) if isinstance(selected, dict) else {},
-        "pre_adjust_score_total": float(_to_float((selected or {}).get("pre_adjust_score_total"))) if isinstance(selected, dict) else 0.0,
-        "post_adjust_score_total": float(_to_float((selected or {}).get("post_adjust_score_total") or (selected or {}).get("score_total") or (selected or {}).get("score"))) if isinstance(selected, dict) else 0.0,
-        "quote_data_diagnostic": dict(state.get("scanner_quote_diagnostic") or {}),
-        "scanner_bias_applied": False,
-        "scanner_bias_summary": dict(scanner_policy_trace.get("scanner_bias_summary") or {}),
-        "scanner_memory_bias_applied": False,
-        "scanner_memory_bias_summary": dict(scanner_policy_trace.get("scanner_memory_bias_summary") or {}),
-        "candidate_bias_adjustments": [],
-        "candidate_memory_bias_adjustments": [],
-        "candidate_symbol_prior_adjustments": [],
-        "selection_reason_with_bias": "",
-        "shadow_used": bool(scanner_policy_trace.get("shadow_used")),
-        "strategist_fallback_used": bool(scanner_policy_trace.get("strategist_fallback_used")),
-        "policy_provenance": dict(policy_provenance),
-        "policy_provenance_ref": dict(scanner_policy_trace.get("policy_provenance_ref") or {}),
-        "applied_scanner_policy": dict(commander_scanner_policy),
-        "score_adjustment_trace": list(score_adjustment_trace),
-        "reentry_penalty_applied": bool(reentry_penalty_applied),
-        "reentry_penalty_value": float(reentry_penalty_value),
-        "diversification_applied": bool(diversification_applied),
-        "diversification_bonus_value": float(diversification_bonus_value),
-        "entry_bias_cap_applied": bool((selected or {}).get("entry_bias_cap_applied") if isinstance(selected, dict) else False),
-        "market_representative_guard_enabled": bool(market_representative_guard_meta.get("enabled")),
-        "market_representative_guard_applied": bool(market_representative_guard_meta.get("applied")),
-        "market_representative_guard_policy": dict(market_representative_guard_meta.get("policy") or {}),
-        "market_representative_guard_symbol": str(market_representative_guard_meta.get("symbol") or ""),
-        "market_representative_guard_penalty": float(_to_float(market_representative_guard_meta.get("penalty"))),
-        "market_representative_guard_score_gap": float(_to_float(market_representative_guard_meta.get("score_gap"))),
-        "market_representative_guard_reason": str(
-            market_representative_guard_meta.get("reason")
-            or market_representative_guard_meta.get("skipped_reason")
-            or ""
-        ),
-        "market_representative_guard_top_value_dominance": bool(market_representative_guard_meta.get("top_value_dominance")),
-        "market_representative_guard_confirmation_sources": list(market_representative_guard_meta.get("confirmation_sources") or []),
-        "market_representative_guard_before_top": list(market_representative_guard_meta.get("before_top") or []),
-        "market_representative_guard_after_top": list(market_representative_guard_meta.get("after_top") or []),
-        "raw_entry_compatibility_bias": float(
-            _to_float((selected or {}).get("raw_entry_compatibility_bias")) if isinstance(selected, dict) else 0.0
-        ),
-        "effective_entry_compatibility_bias": float(
-            _to_float((selected or {}).get("effective_entry_compatibility_bias")) if isinstance(selected, dict) else 0.0
-        ),
-        "adjusted_score_total": float(_to_float((selected or {}).get("score_total"))) if isinstance(selected, dict) else 0.0,
-        "ranking_before_policy": ranking_before_policy,
-        "ranking_after_policy": ranking_after_policy,
-        "blocker_family_concentration_applied": bool(blocker_family_overlay_meta.get("applied")),
-        "blocker_family_concentration_family": str(blocker_family_overlay_meta.get("family") or ""),
-        "blocker_family_concentration_penalty": float(_to_float(blocker_family_overlay_meta.get("penalty"))),
-        "blocker_family_concentration_candidate_count": int(blocker_family_overlay_meta.get("candidate_count") or 0),
-        "blocker_family_concentration_top3_before": list(blocker_family_overlay_meta.get("top3_symbols_before") or []),
-        "blocker_family_concentration_top3_after": list(blocker_family_overlay_meta.get("top3_symbols_after") or []),
-        "blocker_family_concentration_alternative_symbols": list(blocker_family_overlay_meta.get("alternative_symbols") or []),
-        "selection_vetoed": bool(blocker_family_overlay_meta.get("selection_vetoed")),
-        "selection_veto_enforced": bool(selection_veto_enforced),
-        "selection_veto_reason": str(blocker_family_overlay_meta.get("selection_veto_reason") or ""),
-    }
+    state["scanner_output"] = scan_select_value_state_scanner_output(top_score=top_score, visible_ranked_candidates=visible_ranked_candidates, ranking_before_policy=ranking_before_policy, ranking_after_policy=ranking_after_policy, practical_w=practical_w, scanner_priority=scanner_priority, playbook=playbook, scanner_bias=scanner_bias, trade_aggressiveness=trade_aggressiveness, risk_tone=risk_tone, policy=policy, policy_provenance=policy_provenance, commander_scanner_policy=commander_scanner_policy, score_adjustment_trace=score_adjustment_trace, reentry_penalty_applied=reentry_penalty_applied, reentry_penalty_value=reentry_penalty_value, diversification_applied=diversification_applied, diversification_bonus_value=diversification_bonus_value, selection_veto_enforced=selection_veto_enforced, state=state, scan_results_sorted=scan_results_sorted, selected=selected, pool_meta=pool_meta, scanner_policy_trace=scanner_policy_trace, market_representative_guard_meta=market_representative_guard_meta, blocker_family_overlay_meta=blocker_family_overlay_meta, scanner_guidance=scanner_guidance, compatibility_bias_context=compatibility_bias_context, facade=_r3_sys.modules[__name__])
 
     # Provide a normalized risk snapshot for Decision Node.
     if isinstance(selected, dict):
@@ -2026,18 +1499,7 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
     else:
         state["risk"] = {"risk_score": 0.0, "confidence": 0.0}
     fallback_reasons: List[str] = list(quote_meta.get("errors") or []) + list(order_meta.get("errors") or [])
-    state["scanner_skill"] = {
-        "contract_version": SKILL_CONTRACT_VERSION,
-        "used": bool(skill_quotes) or bool(skill_order_counts),
-        "quote_symbols": len(skill_quotes),
-        "account_open_order_symbols": len(skill_order_counts),
-        "account_order_rows": int(skill_order_rows),
-        "quote_present": bool(quote_meta.get("present")),
-        "account_orders_present": bool(order_meta.get("present")),
-        "fallback": bool(fallback_reasons),
-        "fallback_reasons": fallback_reasons,
-        "error_count": len(fallback_reasons),
-    }
+    state["scanner_skill"] = scan_select_value_state_scanner_skill(fallback_reasons=fallback_reasons, skill_quotes=skill_quotes, skill_order_counts=skill_order_counts, skill_order_rows=skill_order_rows, quote_meta=quote_meta, order_meta=order_meta, facade=_r3_sys.modules[__name__])
     state["scanner_feature"] = {
         "used": bool(feature_map),
         "source": feature_source,
@@ -2124,28 +1586,7 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
     scanner_memory_bias_applied = any(
         abs(float(_to_float(row.get("memory_bias_adjustment")))) > 1e-9 for row in list(scan_results_sorted)
     )
-    selected_memory_bias_result = {
-        "bias_adjustment": float(_to_float((selected or {}).get("memory_bias_adjustment"))) if isinstance(selected, dict) else 0.0,
-        "observed_bias_adjustment": float(_to_float((selected or {}).get("memory_bias_observed_adjustment"))) if isinstance(selected, dict) else 0.0,
-        "observation_only": bool((selected or {}).get("memory_bias_observation_only")) if isinstance(selected, dict) else False,
-        "source_delta": float(_to_float((selected or {}).get("memory_bias_source_delta"))) if isinstance(selected, dict) else 0.0,
-        "symbol_delta": float(_to_float((selected or {}).get("memory_bias_symbol_delta"))) if isinstance(selected, dict) else 0.0,
-        "adjustments": list((selected or {}).get("memory_bias_adjustments") or []) if isinstance(selected, dict) else [],
-    }
-    commander_memory_application_trace = build_scanner_commander_memory_application_trace(
-        scanner_memory_bias=scanner_memory_bias,
-        selected_symbol=selected_symbol,
-        candidate_sources=(
-            list(((selected or {}).get("candidate") or {}).get("sources") or [])
-            if isinstance(selected, dict) and isinstance((selected or {}).get("candidate"), dict)
-            else []
-        ),
-        selected_memory_bias_result=selected_memory_bias_result,
-        candidate_memory_bias_adjustments=candidate_memory_bias_adjustments,
-        scanner_memory_bias_summary=scanner_memory_bias_summary,
-        scanner_memory_bias_applied=bool(scanner_memory_bias_applied),
-    )
-    selection_reason_with_bias = selection_summary
+    commander_memory_application_trace, selection_reason_with_bias = scan_select_commander_memory_application_trace_selec(selected=selected, scanner_memory_bias=scanner_memory_bias, selected_symbol=selected_symbol, candidate_memory_bias_adjustments=candidate_memory_bias_adjustments, scanner_memory_bias_summary=scanner_memory_bias_summary, scanner_memory_bias_applied=scanner_memory_bias_applied, selection_summary=selection_summary, facade=_r3_sys.modules[__name__])
     if scanner_bias_applied:
         bias_text = str(scanner_bias_summary.get("summary") or "scanner_bias").strip() or "scanner_bias"
         selection_reason_with_bias = (
@@ -2198,106 +1639,10 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
         for row in list(scan_results_sorted[1:3]):
             if not isinstance(row, dict):
                 continue
-            reasons: List[str] = []
-            row_score = float(_to_float(row.get("score_total") or row.get("score")))
-            row_conf = float(_to_float(row.get("confidence")))
-            row_risk = float(_to_float(row.get("risk_score")))
-            if row_score < selected_score:
-                reasons.append(f"lower total score ({row_score:.3f} vs {selected_score:.3f})")
-            if row_conf < selected_confidence:
-                reasons.append(f"lower confidence ({row_conf:.2f} vs {selected_confidence:.2f})")
-            if row_risk > selected_risk:
-                reasons.append(f"higher risk ({row_risk:.2f} vs {selected_risk:.2f})")
-            if not reasons:
-                reasons.append("lost on tie-break after score, confidence, and risk comparison")
-            runner_up_reasons.append(
-                {
-                    "symbol": str(row.get("symbol") or ""),
-                    "why_lost": reasons,
-                }
-            )
+            reasons, row_conf, row_risk, row_score = scan_select_reasons_row_conf(row=row, selected_score=selected_score, selected_confidence=selected_confidence, selected_risk=selected_risk, runner_up_reasons=runner_up_reasons, facade=_r3_sys.modules[__name__])
     state["scanner_ranking_table"] = list(ranking_table)
     state["scanner_runner_up_reasons"] = list(runner_up_reasons)
-    state["scanner_selection_reason"] = {
-        "selected_symbol": selected_symbol,
-        "selected_rank": int(selected_rank),
-        "selected_score_total": float(selected_score_total),
-        "margin_vs_second": float(margin_vs_second),
-        "critical_positive_factors": list(critical_positive_factors),
-        "critical_negative_factors": list(critical_negative_factors),
-        "selection_summary": selection_summary,
-        "commander_context_consumed": bool(scanner_policy_trace.get("commander_context_consumed")),
-        "consumed_fields": list(scanner_policy_trace.get("consumed_fields") or []),
-        "commander_priority_ref": dict(scanner_policy_trace.get("commander_priority_ref") or {}),
-        "strategist_constraints_ref": dict(scanner_policy_trace.get("strategist_constraints_ref") or {}),
-        "selection_basis": dict(scanner_policy_trace.get("selection_basis") or {}),
-        "ranking_factors": list(scanner_policy_trace.get("ranking_factors") or []),
-        "playbook": str(scanner_policy_trace.get("playbook") or playbook or ""),
-        "policy_source": str(scanner_policy_trace.get("policy_source") or ""),
-        "applied_policy_present": bool(scanner_policy_trace.get("applied_policy_present")),
-        "monitor_entry_policy_summary": dict(scanner_policy_trace.get("monitor_entry_policy_summary") or {}),
-        "entry_compatibility_score": float(_to_float((selected or {}).get("entry_compatibility_score"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_bias": float(_to_float((selected or {}).get("compatibility_bias"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_components": dict((selected or {}).get("compatibility_components") or {}) if isinstance(selected, dict) else {},
-        "scanner_chart_fit_score": float(_to_float((selected or {}).get("scanner_chart_fit_score"))) if isinstance(selected, dict) else 0.0,
-        "scanner_chart_fit_authority": str((selected or {}).get("scanner_chart_fit_authority") or "") if isinstance(selected, dict) else "",
-        "scanner_chart_fit_components": dict((selected or {}).get("scanner_chart_fit_components") or {}) if isinstance(selected, dict) else {},
-        "scanner_macro_chart_fit_score": float(_to_float((selected or {}).get("scanner_macro_chart_fit_score"), 0.5)) if isinstance(selected, dict) else 0.5,
-        "scanner_macro_chart_fit_bias": float(_to_float((selected or {}).get("scanner_macro_chart_fit_bias"))) if isinstance(selected, dict) else 0.0,
-        "scanner_macro_chart_fit_authority": str((selected or {}).get("scanner_macro_chart_fit_authority") or "") if isinstance(selected, dict) else "",
-        "scanner_macro_chart_fit_components": dict((selected or {}).get("scanner_macro_chart_fit_components") or {}) if isinstance(selected, dict) else {},
-        "expected_monitor_block_reason": str((selected or {}).get("expected_monitor_block_reason") or "") if isinstance(selected, dict) else "",
-        "dominant_block_reason": str((selected or {}).get("dominant_block_reason") or compatibility_bias_context.get("dominant_block_reason") or "") if isinstance(selected, dict) else str(compatibility_bias_context.get("dominant_block_reason") or ""),
-        "dominant_block_reason_ratio": float(_to_float((selected or {}).get("dominant_block_reason_ratio") or compatibility_bias_context.get("dominant_block_reason_ratio"))),
-        "market_representative_guard_enabled": bool(market_representative_guard_meta.get("enabled")),
-        "market_representative_guard_applied": bool(market_representative_guard_meta.get("applied")),
-        "market_representative_guard_policy": dict(market_representative_guard_meta.get("policy") or {}),
-        "market_representative_guard_symbol": str(market_representative_guard_meta.get("symbol") or ""),
-        "market_representative_guard_penalty": float(_to_float(market_representative_guard_meta.get("penalty"))),
-        "market_representative_guard_score_gap": float(_to_float(market_representative_guard_meta.get("score_gap"))),
-        "market_representative_guard_reason": str(
-            market_representative_guard_meta.get("reason")
-            or market_representative_guard_meta.get("skipped_reason")
-            or ""
-        ),
-        "market_representative_guard_top_value_dominance": bool(market_representative_guard_meta.get("top_value_dominance")),
-        "market_representative_guard_confirmation_sources": list(market_representative_guard_meta.get("confirmation_sources") or []),
-        "market_representative_guard_before_top": list(market_representative_guard_meta.get("before_top") or []),
-        "market_representative_guard_after_top": list(market_representative_guard_meta.get("after_top") or []),
-        "blocker_family_concentration_applied": bool(blocker_family_overlay_meta.get("applied")),
-        "blocker_family_concentration_family": str(blocker_family_overlay_meta.get("family") or ""),
-        "blocker_family_concentration_penalty": float(_to_float(blocker_family_overlay_meta.get("penalty"))),
-        "blocker_family_concentration_top3_before": list(blocker_family_overlay_meta.get("top3_symbols_before") or []),
-        "blocker_family_concentration_top3_after": list(blocker_family_overlay_meta.get("top3_symbols_after") or []),
-        "blocker_family_concentration_alternative_symbols": list(blocker_family_overlay_meta.get("alternative_symbols") or []),
-        "selection_vetoed": bool(blocker_family_overlay_meta.get("selection_vetoed")),
-        "selection_veto_enforced": bool(selection_veto_enforced),
-        "selection_veto_reason": str(blocker_family_overlay_meta.get("selection_veto_reason") or ""),
-        "bias_scale": float(_to_float((selected or {}).get("bias_scale") or compatibility_bias_context.get("bias_scale"))),
-        "soft_penalty": float(_to_float((selected or {}).get("soft_penalty"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_score_pre_penalty": float(_to_float((selected or {}).get("compatibility_score_pre_penalty"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_score_post_penalty": float(_to_float((selected or {}).get("compatibility_score_post_penalty"))) if isinstance(selected, dict) else 0.0,
-        "compatibility_trace": dict((selected or {}).get("compatibility_trace") or {}) if isinstance(selected, dict) else {},
-        "pre_adjust_score_total": float(_to_float((selected or {}).get("pre_adjust_score_total"))) if isinstance(selected, dict) else 0.0,
-        "post_adjust_score_total": float(_to_float((selected or {}).get("post_adjust_score_total") or (selected or {}).get("score_total") or (selected or {}).get("score"))) if isinstance(selected, dict) else 0.0,
-        "scanner_bias_applied": bool(scanner_bias_applied),
-        "scanner_bias_summary": dict(scanner_bias_summary),
-        "scanner_memory_bias_applied": bool(scanner_memory_bias_applied),
-        "scanner_memory_bias": dict(scanner_memory_bias),
-        "scanner_memory_bias_summary": dict(scanner_memory_bias_summary),
-        "commander_memory_application_trace": dict(commander_memory_application_trace),
-        "scanner_memory_application_trace": dict(commander_memory_application_trace),
-        "candidate_bias_adjustments": list(candidate_bias_adjustments),
-        "candidate_memory_bias_adjustments": list(candidate_memory_bias_adjustments),
-        "candidate_symbol_prior_adjustments": list(candidate_symbol_prior_adjustments),
-        "selection_reason_with_bias": selection_reason_with_bias,
-        "shadow_used": bool(scanner_policy_trace.get("shadow_used")),
-        "strategist_fallback_used": bool(scanner_policy_trace.get("strategist_fallback_used")),
-        "policy_provenance_ref": dict(scanner_policy_trace.get("policy_provenance_ref") or {}),
-        "selected_asset_class_detected": str((selected or {}).get("asset_class_detected") or "") if isinstance(selected, dict) else "",
-        "selected_asset_detection_source": str((selected or {}).get("detection_source") or "") if isinstance(selected, dict) else "",
-        "selected_asset_detection_field": str((selected or {}).get("detection_field") or "") if isinstance(selected, dict) else "",
-    }
+    state["scanner_selection_reason"] = scan_select_value_te_scanner_selection_reason(selected_symbol=selected_symbol, selection_summary=selection_summary, selection_reason_with_bias=selection_reason_with_bias, selected_rank=selected_rank, selected_score_total=selected_score_total, margin_vs_second=margin_vs_second, critical_positive_factors=critical_positive_factors, critical_negative_factors=critical_negative_factors, selection_veto_enforced=selection_veto_enforced, scanner_bias_applied=scanner_bias_applied, scanner_bias_summary=scanner_bias_summary, scanner_memory_bias_applied=scanner_memory_bias_applied, scanner_memory_bias=scanner_memory_bias, scanner_memory_bias_summary=scanner_memory_bias_summary, commander_memory_application_trace=commander_memory_application_trace, candidate_bias_adjustments=candidate_bias_adjustments, candidate_memory_bias_adjustments=candidate_memory_bias_adjustments, candidate_symbol_prior_adjustments=candidate_symbol_prior_adjustments, playbook=playbook, selected=selected, scanner_policy_trace=scanner_policy_trace, market_representative_guard_meta=market_representative_guard_meta, blocker_family_overlay_meta=blocker_family_overlay_meta, compatibility_bias_context=compatibility_bias_context, facade=_r3_sys.modules[__name__])
     if isinstance(state.get("scanner_output"), dict):
         state["scanner_output"]["selection_summary"] = selection_summary
         state["scanner_output"]["selected_rank"] = int(selected_rank)
@@ -2440,31 +1785,7 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
             "status": "error",
             "reason": f"{type(exc).__name__}: {exc}"[:300],
         }
-    candidate_selection_reason_payload = _build_candidate_selection_reason_payload(
-        selected=selected if isinstance(selected, dict) else None,
-        selected_symbol=selected_symbol,
-        selected_rank=selected_rank,
-        selected_score_total=selected_score_total,
-        margin_vs_second=margin_vs_second,
-        critical_positive_factors=critical_positive_factors,
-        critical_negative_factors=critical_negative_factors,
-        selection_summary=selection_summary,
-        scanner_policy_trace=scanner_policy_trace,
-        playbook=playbook,
-        compatibility_bias_context=compatibility_bias_context,
-        market_representative_guard_meta=market_representative_guard_meta,
-        blocker_family_overlay_meta=blocker_family_overlay_meta,
-        selection_veto_enforced=selection_veto_enforced,
-        scanner_bias_applied=scanner_bias_applied,
-        scanner_memory_bias_applied=scanner_memory_bias_applied,
-        scanner_memory_bias=scanner_memory_bias,
-        commander_memory_application_trace=commander_memory_application_trace,
-        candidate_bias_adjustments=candidate_bias_adjustments,
-        candidate_memory_bias_adjustments=candidate_memory_bias_adjustments,
-        candidate_symbol_prior_adjustments=candidate_symbol_prior_adjustments,
-        selection_reason_with_bias=selection_reason_with_bias,
-        runner_up_reasons=runner_up_reasons,
-    )
+    candidate_selection_reason_payload = scan_select_candidate_selection_reason_payload(selected_symbol=selected_symbol, selected_rank=selected_rank, selected_score_total=selected_score_total, margin_vs_second=margin_vs_second, critical_positive_factors=critical_positive_factors, critical_negative_factors=critical_negative_factors, selection_summary=selection_summary, scanner_policy_trace=scanner_policy_trace, playbook=playbook, compatibility_bias_context=compatibility_bias_context, market_representative_guard_meta=market_representative_guard_meta, blocker_family_overlay_meta=blocker_family_overlay_meta, selection_veto_enforced=selection_veto_enforced, scanner_bias_applied=scanner_bias_applied, scanner_memory_bias_applied=scanner_memory_bias_applied, scanner_memory_bias=scanner_memory_bias, commander_memory_application_trace=commander_memory_application_trace, candidate_bias_adjustments=candidate_bias_adjustments, candidate_memory_bias_adjustments=candidate_memory_bias_adjustments, candidate_symbol_prior_adjustments=candidate_symbol_prior_adjustments, selection_reason_with_bias=selection_reason_with_bias, runner_up_reasons=runner_up_reasons, selected=selected, facade=_r3_sys.modules[__name__])[0]
     state["scanner_candidate_selection_reason"] = dict(candidate_selection_reason_payload)
     _emit_scanner_event(
         state,
