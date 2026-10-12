@@ -2,7 +2,7 @@
 
 **State:** USER_AUTHORIZED_BREADTH_FIRST; LOC010_CODEX_PASS_WITH_FINDINGS; WAVE_A_ACTIVE; P1.5.2_FINAL_OPEN; MAIN_FROZEN.
 **ONE active work order:** [P15_FAST_TRACK_WAVE_A_013.md](P15_FAST_TRACK_WAVE_A_013.md).
-**Workflow authority:** [P15_FAST_TRACK_FIRST_PASS_2026_10_12.md](../../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md) → [COMMON_RULES.md](COMMON_RULES.md).
+**Workflow authority:** [P15_FAST_TRACK_FIRST_PASS_2026_10_12.md](../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md) → [COMMON_RULES.md](COMMON_RULES.md).
 **Roles:** Claude implements a wave → Codex audits the pinned aggregated diff → GPT/user final release decisions.
 **Only `refactor/p1.5` development branch**; `main` frozen. No additional feature/task/ZIP branches. Detached or separate isolated audit clones allowed.
 **Code baseline:** LOC010 code `b0cfc2b5646ff81ec5ce7b738f485a9d22365826`; planning activation from `9b36b638d812b71152b764dbcdd56c427bcc27f7`.

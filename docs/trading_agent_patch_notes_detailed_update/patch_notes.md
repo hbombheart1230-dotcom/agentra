@@ -2934,3 +2934,4 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Codex LOC010 PASS_WITH_FINDINGS 수용(812 PASS/1 SKIP, 핵심 460 PASS, 436 ABI/86 이동 심볼, 쓰기 0). 실보고서/LLM parity BLOCKED, `controlled_mock_lanes` 격리 OPEN; `FIRST_PASS_WITH_DEBT`는 최종 PASS가 아님.
 - `main` 및 live 변경·실거래·추가 브랜치 없음. 패치노트 이전 011 소스 링크 오류도 바로잡음.
 - 근거: `docs/refactor/P15_FAST_TRACK_FIRST_PASS_2026_10_12.md`, `docs/refactor/work_orders/P15_FAST_TRACK_WAVE_A_013.md`, `docs/daily_patch/2026-10-12_p15_fast_track_first_pass_approved.md`.
+- 작업지시서·공통규칙의 Fast Track 정책 링크는 실제 상대 경로 `../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md`로 정정했습니다.

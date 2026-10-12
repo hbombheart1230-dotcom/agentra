@@ -5809,7 +5809,8 @@
         "Claude batches multiple cohesive low-risk slices, runs focused safety/contract/write gates per stage, and Codex audits one pinned cumulative diff per wave; high-risk paths still stop for immediate review.",
         "Oversized façades, numbered Owners and consumer-proven wrapper retirement remain tracked debts for second-pass work, NOT size-target PASS; FIRST_PASS_WITH_DEBT never equals production acceptance.",
         "Only refactor/p1.5 isolated clones, no live trading/LLM/broker or main merge; P1.6 benchmark design may prepare early, runtime shadow work starts after P1.5 freeze.",
-        "Repaired malformed previous patch-note source reference for LOC010 audit."
+        "Repaired malformed previous patch-note source reference for LOC010 audit.",
+        "Fixed relative navigation from work_orders to the Fast Track authority document (../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md)."
       ],
       "impact": "Accelerates P1.5 structural coverage without weakening frozen trading authority, evidence honesty or the formal release gate.",
       "sources": [

@@ -1,7 +1,7 @@
 # P15 FAST TRACK WAVE A 013 — Reporting first-pass handoff + Operator UI first-pass
 
 **Status:** ACTIVE, preauthorized first-pass implementation on `refactor/p1.5`.
-**Read order:** `CLAUDE.md` → `docs/refactor/work_orders/CURRENT.md` → this order → [Fast Track policy](../../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md) → `COMMON_RULES.md`. Only inspect stage-specific packets if a real code boundary requires it; do not reread historical work orders.
+**Read order:** `CLAUDE.md` → `docs/refactor/work_orders/CURRENT.md` → this order → [Fast Track policy](../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md) → `COMMON_RULES.md`. Only inspect stage-specific packets if a real code boundary requires it; do not reread historical work orders.
 **Start repository SHA:** `9b36b638d812b71152b764dbcdd56c427bcc27f7`. Audited LOC 010 code SHA `b0cfc2b5646ff81ec5ce7b738f485a9d22365826`. Isolated clone only; never operate in `C:\Agentra` / Q12 worktrees.
 
 ## A1 — Reporting quick first pass (no repeated 50-line rounds)
