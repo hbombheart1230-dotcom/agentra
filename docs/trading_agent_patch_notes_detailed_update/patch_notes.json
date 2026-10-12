@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 211,
+  "entry_count": 212,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5738,6 +5738,30 @@
         "docs/refactor/work_orders/evidence/P15-R3-CODEX-LOC-008-AUDIT-009.md",
         "docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md",
         "docs/daily_patch/2026-10-12_p152_loc008_audit_accepted_loc010_activated.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Facade LOC Reduction 010",
+      "title": "Move 20 Markdown-clean operator narrative builders to a named Owner",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "REFACTOR"
+      ],
+      "summary": "Sentence/translation helpers and entry/guard/timeline bullet builders moved to a 264-LOC Owner; Markdown façade 1,678 -> 1,527 with unchanged 436-callable contract and use-time lookup.",
+      "details": [
+        "Re-measured candidates; the 20-function operator-narrative set gave the largest safe net saving (-151) versus AI maps (-69), Story maps (-64), memory/policy (-65, higher risk) and numeric primitives (-55, hot code).",
+        "Façade keeps all 20 def names/signatures; bodies delegate to markdown_clean_operator_narrative with the injected façade module; every former global is qualified as facade.NAME at its use site (lazy lookup, callbacks and patched globals honoured).",
+        "Moved-body gate extended to 86 symbols (57 + 9 + 20) with pinned baseline AST equality; 436 ABI, import DAG and Owner <=350 verified independently.",
+        "Differential vs baseline: 99,690 recorded calls, 99,689 identical (one wall-clock latency field), 20/20 functions exercised; focused regression 1,142 passed / 1 skipped, zero production writes.",
+        "Façades now 1,958 / 1,527 / 562 LOC (sum 4,047, from 18,743). Real-data/LLM parity BLOCKED, size SIZE_DEFERRED, controlled_mock_lanes isolation OPEN. P1.5.2 OPEN, P1.5.3 not authorized."
+      ],
+      "impact": "Smaller Markdown façade with identical public contract and patch semantics; awaiting independent Codex audit.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-010.md",
+        "docs/daily_patch/2026-10-12_p1_5_2_r3_facade_loc_010.md"
       ],
       "status": "current"
     }

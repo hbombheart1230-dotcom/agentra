@@ -194,6 +194,28 @@ from libs.reporting.trade_report.markdown_clean_dependency_maps import (
     _markdown_truth_surface_deps_r3_impl,
     _markdown_strategy_deps_r3_impl,
 )
+from libs.reporting.trade_report.markdown_clean_operator_narrative import (
+    _translate_watch_item_r3_impl,
+    _translate_reason_phrase_r3_impl,
+    _translate_invalidation_item_r3_impl,
+    _humanize_reporter_recommendation_r3_impl,
+    _bullet_lines_r3_impl,
+    _section_summary_r3_impl,
+    _build_entry_decision_r3_impl,
+    _build_guard_approval_r3_impl,
+    _build_timeline_r3_impl,
+    _extract_metadata_from_texts_r3_impl,
+    _monitor_delta_interpretation_r3_impl,
+    _entry_reason_line_r3_impl,
+    _entry_confidence_line_r3_impl,
+    _normalize_entry_confidence_for_operator_summary_r3_impl,
+    _correct_final_operator_summary_r3_impl,
+    _reason_summary_line_r3_impl,
+    _ensure_sentence_r3_impl,
+    _noun_predicate_was_r3_impl,
+    _first_nonempty_r3_impl,
+    _market_context_summary_from_raw_r3_impl,
+)
 
 
 def _same_day_current_result(report: Dict[str, Any]) -> Dict[str, Any]:
@@ -287,39 +309,16 @@ def _is_entry_gate_status_text(value: Any) -> bool:
 
 
 def _entry_reason_line(values: Iterable[Any]) -> str:
-    needles = ("진입 사유", "직전 고점", "vwap", "리바운드", "돌파", "rebound", "breakout")
-    for raw in values:
-        text = _translate_text(raw).strip()
-        if not text or _is_post_entry_gate_text(text) or _is_entry_gate_status_text(text):
-            continue
-        lowered = text.lower()
-        if any(needle in lowered for needle in needles):
-            return text.rstrip(".")
-    return ""
+    return _entry_reason_line_r3_impl(values, facade=_r3_sys.modules[__name__])
 
 
 def _entry_confidence_line(values: Iterable[Any]) -> str:
-    for raw in values:
-        text = _translate_text(raw).strip()
-        if not text or _is_post_entry_gate_text(text):
-            continue
-        lowered = text.lower()
-        if "신뢰도" in text or "confidence" in lowered:
-            return text.rstrip(".")
-    return ""
+    return _entry_confidence_line_r3_impl(values, facade=_r3_sys.modules[__name__])
 
 
 def _normalize_entry_confidence_for_operator_summary(value: str, *, action: Any, buy_price: Any) -> str:
-    text = str(value or "").strip()
-    if (
-        text
-        and "미통과" in text
-        and "진입 게이트" in text
-        and str(action or "").strip() == "매도"
-        and buy_price not in (None, "")
-    ):
-        return "진입 게이트 상세는 실제 BUY 체결 이후 사후 모니터 재평가와 혼재될 수 있어 확정 표시하지 않습니다"
-    return text
+    return _normalize_entry_confidence_for_operator_summary_r3_impl(value, action=action,
+        buy_price=buy_price, facade=_r3_sys.modules[__name__])
 
 
 def _entry_confidence_for_operator_summary(values: Iterable[Any], *, action: Any, buy_price: Any) -> str:
@@ -521,15 +520,8 @@ def _translated_metadata(value: Any) -> str:
 
 
 def _correct_final_operator_summary(summary: str, *, action: Any) -> str:
-    text = str(summary or "").strip()
-    action_label = str(action or "").strip()
-    if not text:
-        return ""
-    if action_label == "매도":
-        return re.sub(r"현재 판단은 진입 유지(?:입니다|이다)\.?", "현재 판단은 청산 완료입니다.", text, count=1)
-    if action_label == "매수":
-        return re.sub(r"현재 판단은 청산 완료(?:입니다|이다)\.?", "현재 판단은 진입 유지입니다.", text, count=1)
-    return text
+    return _correct_final_operator_summary_r3_impl(summary, action=action,
+        facade=_r3_sys.modules[__name__])
 
 
 def _authoritative_final_operator_summary(
@@ -999,25 +991,12 @@ def _translate_text(text: Any) -> str:
     return _translate_text_impl(text, deps=_markdown_translation_deps())
 
 def _bullet_lines(section: Dict[str, Any], *, skip_prefixes: Iterable[str] = ()) -> List[str]:
-    lines: List[str] = []
-    for raw in _listify(section.get("bullets")):
-        text = _translate_text(raw)
-        if not text:
-            continue
-        if _looks_corrupted(text):
-            continue
-        lowered = text.lower()
-        if any(lowered.startswith(prefix.lower()) for prefix in skip_prefixes):
-            continue
-        lines.append(f"- {text}")
-    return lines
+    return _bullet_lines_r3_impl(section, skip_prefixes=skip_prefixes,
+        facade=_r3_sys.modules[__name__])
 
 
 def _section_summary(section: Dict[str, Any]) -> str:
-    summary = _translate_text(section.get("summary"))
-    if _looks_corrupted(summary):
-        return ""
-    return summary
+    return _section_summary_r3_impl(section, facade=_r3_sys.modules[__name__])
 
 
 def _build_generation_info(report: Dict[str, Any]) -> List[str]:
@@ -1218,16 +1197,7 @@ def _reason_tag_summary(tag: str) -> str:
 
 
 def _reason_summary_line(tags: List[Any], prefix: str) -> Optional[str]:
-    phrases: List[str] = []
-    seen = set()
-    for raw in tags:
-        text = _reason_tag_summary(str(raw))
-        if text and text not in seen:
-            seen.add(text)
-            phrases.append(text)
-    if not phrases:
-        return None
-    return f"- {prefix} {', '.join(phrases[:4])}."
+    return _reason_summary_line_r3_impl(tags, prefix, facade=_r3_sys.modules[__name__])
 
 
 def _reporter_source_label(source_reports: Dict[str, Any]) -> str:
@@ -1273,19 +1243,7 @@ def _market_context_structured_lines(context: Dict[str, Any]) -> List[str]:
 
 
 def _market_context_summary_from_raw(summary: Any) -> str:
-    raw = _clip(summary, 400)
-    if not raw:
-        return ""
-    lowered = raw.lower()
-    if "regime" not in lowered and "market sentiment" not in lowered and "playbook" not in lowered:
-        return ""
-    regime_match = re.search(r"([A-Za-z_-]+)\s+Regime", raw, re.I)
-    sentiment_match = re.search(r"([A-Za-z_-]+)\s+Market Sentiment", raw, re.I)
-    playbook_match = re.search(r"([A-Za-z_-]+)\s+playbook", raw, re.I)
-    regime = regime_match.group(1) if regime_match else "-"
-    sentiment = sentiment_match.group(1) if sentiment_match else "-"
-    playbook = playbook_match.group(1) if playbook_match else "-"
-    return f"- 시장 상태는 {regime}, 시장 심리는 {sentiment}, 선택 플레이북은 {playbook}입니다."
+    return _market_context_summary_from_raw_r3_impl(summary, facade=_r3_sys.modules[__name__])
 
 
 def _markdown_strategy_deps() -> Dict[str, Any]:
@@ -1390,35 +1348,11 @@ def _build_scanner_comparison(report: Dict[str, Any]) -> List[str]:
     )
 
 def _build_entry_decision(report: Dict[str, Any]) -> List[str]:
-    section = _as_dict(report.get("entry_decision"))
-    lines: List[str] = []
-    summary = _section_summary(section)
-    if summary and not _looks_corrupted(summary):
-        lines.append(summary)
-    for bullet in _bullet_lines(section):
-        lines.append(bullet)
-    return _dedupe(lines)
+    return _build_entry_decision_r3_impl(report, facade=_r3_sys.modules[__name__])
 
 
 def _build_guard_approval(report: Dict[str, Any]) -> List[str]:
-    section = _as_dict(report.get("guard_approval_result"))
-    lines: List[str] = []
-    raw_summary = _clip(section.get("summary"), 120).strip().lower()
-    summary = _section_summary(section)
-    if summary and raw_summary not in {"guard", "approval", ""} and not _looks_corrupted(summary):
-        lines.append(summary)
-    repeated = {
-        "- 가드 승인 결과를 정리했습니다.",
-        "- 슈퍼바이저는 주문을 승인했습니다.",
-        "- 가드 판단은 허용이었습니다.",
-    }
-    for bullet in _bullet_lines(section):
-        if summary and bullet in repeated:
-            continue
-        lines.append(bullet)
-    if not lines:
-        lines.append("- 가드 승인 결과는 별도 예외 없이 통과했습니다.")
-    return _dedupe(lines)
+    return _build_guard_approval_r3_impl(report, facade=_r3_sys.modules[__name__])
 
 def _parse_monitor_bullet(text: str) -> Optional[str]:
     return _parse_monitor_bullet_impl(
@@ -1513,16 +1447,7 @@ def _build_execution_quality(report: Dict[str, Any]) -> List[str]:
 
 
 def _humanize_reporter_recommendation(text: Any) -> str:
-    raw = _clip(text, 240)
-    if raw == "Same-day closed trades are loss-heavy; keep defensive entry posture until follow-through quality improves.":
-        return "당일 닫힌 거래가 손실 쪽으로 기울어 있어, 추세 연속성 품질이 회복되기 전까지는 진입을 더 방어적으로 유지해야 합니다."
-    if raw == "Cached strategist reuse is elevated; compare refresh cadence against fresh full-cycle opportunities.":
-        return "기존 전략가 재사용 비중이 높아, 새 전체 재평가 경로를 얼마나 자주 허용할지 다시 점검해야 합니다."
-    if raw == "Top blocker is confidence_ok; inspect whether this gate is dominating no-trade outcomes.":
-        return "no-trade를 가장 많이 막은 축이 진입 게이트였으니, 이 gate가 과도하게 지배적인지 다시 점검해야 합니다."
-    if raw == "Monitor-only share is high; review hold-management concentration before widening entry tuning.":
-        return "모니터 단독 경로 비중이 높으니, 진입 조건을 넓히기 전에 보유 관리가 한쪽에 과도하게 쏠리지 않았는지 먼저 점검해야 합니다."
-    return _translate_text(raw)
+    return _humanize_reporter_recommendation_r3_impl(text, facade=_r3_sys.modules[__name__])
 
 def _humanize_reporter_pattern(name: Any, detail: Any, value: Any) -> str:
     return _humanize_reporter_pattern_r3_impl(name, detail, value, facade=_r3_sys.modules[__name__])
@@ -1536,18 +1461,7 @@ def _build_weaknesses(report: Dict[str, Any]) -> List[str]:
 
 
 def _extract_metadata_from_texts(texts: Iterable[str]) -> List[str]:
-    lines: List[str] = []
-    for text in texts:
-        raw = _clip(text, 240)
-        if not raw:
-            continue
-        source_match = re.search(r"source=([A-Za-z0-9_.:/-]+)", raw)
-        status_match = re.search(r"status=([A-Za-z0-9_.:/-]+)", raw)
-        if source_match:
-            lines.append(f"- 데이터 출처: {source_match.group(1)}")
-        if status_match:
-            lines.append(f"- 상태: {_metadata_value(status_match.group(1))}")
-    return lines
+    return _extract_metadata_from_texts_r3_impl(texts, facade=_r3_sys.modules[__name__])
 
 
 def _build_provenance(report: Dict[str, Any]) -> List[str]:
@@ -1555,78 +1469,27 @@ def _build_provenance(report: Dict[str, Any]) -> List[str]:
 
 
 def _build_timeline(report: Dict[str, Any]) -> List[str]:
-    lines: List[str] = []
-    for row in _listify(report.get("full_timeline")):
-        item = _as_dict(row)
-        event = _clip(item.get("event"), 40).lower()
-        desc = _clip(item.get("description"), 240)
-        if not desc:
-            continue
-        if m := re.fullmatch(r"Entry BUY was executed by run (.+)\.", desc):
-            lines.append(f"- 진입: run {m.group(1)}에서 매수 진입이 실행됐습니다.")
-        elif m := re.fullmatch(r"Exit SELL was executed by run (.+)\.", desc):
-            lines.append(f"- 청산: run {m.group(1)}에서 매도 청산이 실행됐습니다.")
-        elif event == "entry":
-            lines.append(f"- 진입: {_translate_text(desc)}")
-        elif event == "exit":
-            lines.append(f"- 청산: {_translate_text(desc)}")
-        else:
-            lines.append(f"- {_translate_text(desc)}")
-    return lines
+    return _build_timeline_r3_impl(report, facade=_r3_sys.modules[__name__])
 
 
 def _translate_watch_item(text: str) -> str:
-    raw = _clip(text, 200)
-    mapping = {
-        "Lifecycle status: closed": "라이프사이클 상태 종결",
-        "Monitor trigger changes": "모니터 트리거 변화",
-        "Macro/news shifts": "거시 환경 및 뉴스 변화",
-        "VWAP retest": "VWAP 재확인",
-    }
-    return mapping.get(raw, _translate_text(raw))
+    return _translate_watch_item_r3_impl(text, facade=_r3_sys.modules[__name__])
 
 
 def _translate_reason_phrase(text: str) -> str:
-    raw = _clip(text, 200).strip().strip(".")
-    mapping = {
-        "breakout above recent high with vwap structure confirmation": "직전 고점 돌파와 VWAP 구조 확인",
-        "breakout above recent high with vwap hold and volume confirmation": "VWAP 유지와 거래량 확인이 있는 최근 고점 돌파",
-        "pullback structure above vwap with volume confirmation": "VWAP 위 눌림목 구조와 거래량 확인",
-        "pullback rebound above vwap with volume confirmation": "VWAP 위 되돌림 반등과 거래량 확인",
-    }
-    return mapping.get(raw.lower(), _translate_text(raw))
+    return _translate_reason_phrase_r3_impl(text, facade=_r3_sys.modules[__name__])
 
 
 def _translate_invalidation_item(text: str) -> str:
-    raw = _clip(text, 200)
-    mapping = {
-        "stop-loss breach": "손절 기준 이탈",
-        "monitor and scanner divergence": "모니터와 스캐너 판단 발산",
-        "negative macro regime shift": "거시 환경의 부정적 전환",
-        "prior low break": "직전 저점 이탈",
-    }
-    return mapping.get(raw, _translate_text(raw))
+    return _translate_invalidation_item_r3_impl(text, facade=_r3_sys.modules[__name__])
 
 
 def _ensure_sentence(text: str) -> str:
-    raw = _clip(text, 240).strip()
-    if not raw:
-        return ""
-    if raw.endswith(("?", "!", "요.", "입니다.", "였습니다.", "합니다.", "됩니다.", "다.", ".")):
-        return raw
-    return raw + "입니다."
+    return _ensure_sentence_r3_impl(text, facade=_r3_sys.modules[__name__])
 
 
 def _noun_predicate_was(text: str) -> str:
-    raw = _clip(text, 240).strip()
-    if not raw:
-        return "-"
-    last = raw[-1]
-    if "가" <= last <= "힣":
-        base = ord(last) - ord("가")
-        has_batchim = (base % 28) != 0
-        return raw + ("이었습니다" if has_batchim else "였습니다")
-    return raw + "이었습니다"
+    return _noun_predicate_was_r3_impl(text, facade=_r3_sys.modules[__name__])
 
 
 def _build_final_conclusion(report: Dict[str, Any]) -> List[str]:
@@ -1634,25 +1497,11 @@ def _build_final_conclusion(report: Dict[str, Any]) -> List[str]:
 
 
 def _first_nonempty(values: List[Any]) -> Any:
-    for value in values:
-        if _clip(value, 240):
-            return value
-    return ""
+    return _first_nonempty_r3_impl(values, facade=_r3_sys.modules[__name__])
 
 
 def _monitor_delta_interpretation(rows: List[Any]) -> str:
-    notes: List[str] = []
-    for raw in rows:
-        row = _as_dict(raw)
-        field = _clip(row.get("field"), 80)
-        delta = _num_opt(row.get("delta"))
-        if field == "breakout_buffer_pct" and delta is not None and delta > 0:
-            notes.append("돌파 확인 버퍼를 키워 추격 진입을 더 보수적으로 막았습니다.")
-        elif field == "max_extended_from_vwap_pct" and delta is not None and delta < 0:
-            notes.append("VWAP 기준 과확장 추격 허용 범위를 줄여 현재 가격 부담이 큰 진입을 줄였습니다.")
-        elif field == "volume_ratio_min" and delta is not None and delta > 0:
-            notes.append("거래량 확인 기준을 높여 힘이 약한 종목 진입을 더 엄격하게 걸렀습니다.")
-    return " ".join(notes[:3])
+    return _monitor_delta_interpretation_r3_impl(rows, facade=_r3_sys.modules[__name__])
 
 
 def _looks_corrupted(text: str) -> bool:

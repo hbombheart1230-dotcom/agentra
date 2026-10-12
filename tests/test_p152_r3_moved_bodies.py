@@ -97,7 +97,7 @@ class _Unqualify(ast.NodeTransformer):
 
 
 def test_expected_r3_moves_present():
-    assert len(MOVED) == 66, "ledger must record the 57 R3 bodies + 9 LOC-008 dependency maps"
+    assert len(MOVED) == 86, "ledger must record 57 R3 bodies + 9 LOC-008 dependency maps + 20 LOC-010 narrative helpers"
 
 
 @pytest.mark.parametrize("path,name,owner", MOVED)

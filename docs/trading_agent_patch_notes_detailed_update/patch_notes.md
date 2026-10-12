@@ -2905,3 +2905,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 다음 **LOC 010**에 책임형 코드 한 묶음의 실질적 추가 축소를 승인. 사용자 원칙대로 SIZE_DEFERRED는 영구 면제가 아니며, 함수별 소비자/패치 시점 호환성을 증명하면서 안전한 범위를 최대한 추출.
 - 실보고서/LLM parity BLOCKED, `controlled_mock_lanes` 쓰기 격리·Owner 응집도·나머지 façade 크기 OPEN. P1.5.2 OPEN/P1.5.3 미승인.
 - 근거: `docs/refactor/work_orders/evidence/P15-R3-CODEX-LOC-008-AUDIT-009.md`, `docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md`, `docs/daily_patch/2026-10-12_p152_loc008_audit_accepted_loc010_activated.md`.
+
+## 2026-10-12 · P1.5.2 R3 façade LOC 축소 010
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR
+
+- 후보를 재측정해 가장 큰 안전 순감을 낸 Markdown-clean 운영자 서술 builder 20개(문장·번역 helper, entry/guard/timeline bullet)를 `markdown_clean_operator_narrative.py`(264줄)로 이동했습니다. Markdown façade는 1,678 → 1,527줄(-151)입니다.
+- 436개 def 이름/시그니처는 유지되고 이동한 본문은 `facade.NAME`을 사용 위치에서 조회하므로 호출 중 monkeypatch도 원래와 동일하게 반영됩니다.
+- baseline 대비 기록 호출 99,690건 중 99,689건 동일(1건은 wall-clock latency), 20개 모두 실행, 집중 회귀 1,142 passed / 1 skipped, 운영 경로 쓰기 0.
+- façade 합계 4,047줄(원본 18,743). 실제 snapshot·LLM parity BLOCKED, 크기 SIZE_DEFERRED 유지, P1.5.2 OPEN / P1.5.3 미착수, Codex 감사 대기.

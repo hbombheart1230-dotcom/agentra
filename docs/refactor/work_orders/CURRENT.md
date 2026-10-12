@@ -23,3 +23,6 @@
 - `controlled_mock_lanes` full-suite test-write isolation **OPEN**; historical isolated full suite 5115 PASS / 35 FAIL / 2 ERROR, 37 failure/error nodes baseline-identical.
 - Numbered `bodies_01..05` Owner domain cohesion OPEN; public façade sizes SIZE_DEFERRED (AI 1958, Markdown 1678, Story 562).
 - **P1.5.2 final PASS, main merge, live rollout and P1.5.3 NOT AUTHORIZED.**
+
+## LOC 010 implemented (2026-10-12, Claude) - awaiting Codex audit
+- One slice: 20 Markdown operator-narrative builders -> `markdown_clean_operator_narrative.py` (264 LOC), use-time `facade.NAME`. Markdown facade 1,678 -> 1,527 (-151); three facades 4,198 -> 4,047. Evidence: [P15-R3-CLAUDE-LOC-010.md](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-010.md). Differential 99,689/99,690 calls identical (1 = latency); focused 1,142 passed / 1 skipped; 0 writes. Parity BLOCKED; size SIZE_DEFERRED; P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.
