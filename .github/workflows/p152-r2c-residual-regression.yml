@@ -110,7 +110,7 @@ jobs:
       - name: Fetch original Markdown Clean before Owner38 headline split
         run: git fetch --no-tags --depth=1 origin 0409687aa76e195bd001d7756419b86b9580c531
       - name: Fetch Wave A end commit for the stage-scoped scope guard and moved-body gates
-        run: git fetch --no-tags --depth=1 origin 318015a02b8378b0dbf7b0b24ec18c2786688d18 fb8de628eb56b0941007e90ad2e98b4f684983ba ba6618d483e6d617f4ee56b2cb5647392c777071
+        run: git fetch --no-tags --depth=1 origin 318015a02b8378b0dbf7b0b24ec18c2786688d18 fb8de628eb56b0941007e90ad2e98b4f684983ba ba6618d483e6d617f4ee56b2cb5647392c777071 877455db439e9e6f72af413216acc9758b91a2a9
       - name: Check 38 extracted function ASTs and <=350 LOC Owners
         run: python -m scripts.refactor.p152_owner_parity
       - name: Compile extracted owners
@@ -150,6 +150,14 @@ jobs:
         run: |
           mkdir -p branch_output
           python -m pytest -q tests/test_p152_facade_abi_and_authority_boundary.py --junitxml=branch_output/gate_scope_abi_guards_junit.xml
+      - name: Gate wave_b_moved_bodies (test_p154_wave_b_moved_bodies.py)
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests/test_p154_wave_b_moved_bodies.py --junitxml=branch_output/gate_wave_b_moved_bodies_junit.xml
+      - name: Gate wave_b_scope_and_authority (Strategist/Scanner/Monitor)
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests/test_p154_wave_b_scope_and_authority_boundary.py --junitxml=branch_output/gate_wave_b_scope_junit.xml
       - name: Operator UI / Brief offline regression (no live broker or LLM)
         env:
           DRY_RUN: '1'

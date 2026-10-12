@@ -1,0 +1,737 @@
+{
+ "schema": "p15-wave-b-moved-bodies-v1",
+ "baseline_sha": "877455db439e9e6f72af413216acc9758b91a2a9",
+ "note": "Fast Track Wave B (P1.5.4 Strategist / P1.5.5 Scanner / P1.5.6 Monitor first pass): non-delegating, IO-light, non-LLM-call module-level function bodies moved to responsibility-named Owners with use-time `facade.NAME` qualification; public defs/signatures stay in the node module.",
+ "moves": [
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_strategy_memory_usage_disabled",
+   "owner": "libs/runtime/strategist/context/memory.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_neutralize_ambiguous_playbook_memory",
+   "owner": "libs/runtime/strategist/context/memory.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_symbol_memory_model_has_signal",
+   "owner": "libs/runtime/strategist/context/memory.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_recent_strategy_feedback_for_llm",
+   "owner": "libs/runtime/strategist/context/memory.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_reporter_feedback_for_llm",
+   "owner": "libs/runtime/strategist/context/memory.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_strategy_memory_for_llm",
+   "owner": "libs/runtime/strategist/context/memory.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_hide_stage1_symbol_memory",
+   "owner": "libs/runtime/strategist/context/memory.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_pick_playbook",
+   "owner": "libs/runtime/strategist/context/memory.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_env_int",
+   "owner": "libs/runtime/strategist/context/common_values.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_nested_mapping_value",
+   "owner": "libs/runtime/strategist/context/common_values.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_attach_quant_context_to_strategy_refresh_trace",
+   "owner": "libs/runtime/strategist/context/common_values.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_append_unique_text",
+   "owner": "libs/runtime/strategist/context/common_values.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_signal_score",
+   "owner": "libs/runtime/strategist/context/common_values.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_resolve_top_n_candidates",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_candidates_from_state",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_extract_market_context_inputs",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_market_structure_label",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compose_regime_score",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_scanner_priority",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_scanner_bias",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_scanner_bias_context_seed",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_macro_stress_overlay",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_apply_macro_stress_to_monitor_frame",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_market_regime_summary",
+   "owner": "libs/runtime/strategist/context/market_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_key_events",
+   "owner": "libs/runtime/strategist/context/market_key_events.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_stage_text_list",
+   "owner": "libs/runtime/strategist/llm/stage_reviews.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_stage_bool",
+   "owner": "libs/runtime/strategist/llm/stage_reviews.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_stage_float",
+   "owner": "libs/runtime/strategist/llm/stage_reviews.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_normalize_stage2_selected_symbol_review",
+   "owner": "libs/runtime/strategist/llm/stage_reviews.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_normalize_stage3_hold_review",
+   "owner": "libs/runtime/strategist/llm/stage_reviews.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_normalize_stage4_carry_review",
+   "owner": "libs/runtime/strategist/llm/stage_reviews.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_derive_stage_specific_common_overrides",
+   "owner": "libs/runtime/strategist/llm/override_normalization.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_normalize_llm_overrides",
+   "owner": "libs/runtime/strategist/llm/override_normalization.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_infer_policy_adjustment_direction",
+   "owner": "libs/runtime/strategist/llm/adjustment_directives.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_normalize_policy_adjustment_surface",
+   "owner": "libs/runtime/strategist/llm/adjustment_directives.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_clean_directive_reason",
+   "owner": "libs/runtime/strategist/llm/adjustment_directives.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_normalize_strategy_adjustment_directives",
+   "owner": "libs/runtime/strategist/llm/adjustment_directives.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_normalize_rejected_strategy_reasons",
+   "owner": "libs/runtime/strategist/llm/adjustment_directives.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_sanitize_reason_list",
+   "owner": "libs/runtime/strategist/llm/adjustment_directives.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_normalize_candidate_watch_policy",
+   "owner": "libs/runtime/strategist/llm/candidate_watch_overrides.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_extract_ai_overrides",
+   "owner": "libs/runtime/strategist/llm/candidate_watch_overrides.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_merge_override_text_list",
+   "owner": "libs/runtime/strategist/llm/candidate_watch_overrides.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_summarize_monitor_entry_policy_for_adjustment",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_monitor_entry_policy_adjustment_delta_fields",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_focus_axes_from_strings",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_monitor_entry_policy_baseline_for_llm",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_monitor_policy",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_strategy_policy_score_weights",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_strategy_policy_entry_policy",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_strategy_policy",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_strategist_monitor_entry_policy_seed",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy_seed.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_monitor_entry_policy_rationale",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy_seed.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_strategy_policy_provenance",
+   "owner": "libs/runtime/strategist/policy/monitor_entry_policy_seed.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_llm_commander_refresh_context",
+   "owner": "libs/runtime/strategist/context/commander_refresh_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_top_metric_map",
+   "owner": "libs/runtime/strategist/context/commander_refresh_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_performance_summary_map",
+   "owner": "libs/runtime/strategist/context/commander_refresh_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_pattern_performance_for_llm",
+   "owner": "libs/runtime/strategist/context/commander_refresh_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_scalar_mapping_for_llm",
+   "owner": "libs/runtime/strategist/context/commander_refresh_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_pattern_rows_for_llm",
+   "owner": "libs/runtime/strategist/context/commander_refresh_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_trade_read_model_for_llm",
+   "owner": "libs/runtime/strategist/context/commander_refresh_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_symbol_read_model_for_llm",
+   "owner": "libs/runtime/strategist/context/symbol_read_models.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_read_model_facts_for_llm",
+   "owner": "libs/runtime/strategist/context/symbol_read_models.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_candidate_context_for_refresh",
+   "owner": "libs/runtime/strategist/context/symbol_read_models.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_slim_refresh_context_for_llm",
+   "owner": "libs/runtime/strategist/context/symbol_read_models.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_news_sample_for_llm",
+   "owner": "libs/runtime/strategist/context/news_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_global_signal_for_llm",
+   "owner": "libs/runtime/strategist/context/news_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_news_signal_label",
+   "owner": "libs/runtime/strategist/context/news_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_news_item_title_for_llm",
+   "owner": "libs/runtime/strategist/context/news_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_news_signal_summary_for_llm",
+   "owner": "libs/runtime/strategist/context/news_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_selected_symbol_news_signal_for_llm",
+   "owner": "libs/runtime/strategist/context/news_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_merge_news_collection_symbols",
+   "owner": "libs/runtime/strategist/context/news_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_market_news_query_targets",
+   "owner": "libs/runtime/strategist/context/news_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_market_news_query_reasoning",
+   "owner": "libs/runtime/strategist/context/news_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_news_context_summary",
+   "owner": "libs/runtime/strategist/context/news_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_merge_news_contexts",
+   "owner": "libs/runtime/strategist/context/news_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_sample_news_for_evidence",
+   "owner": "libs/runtime/strategist/context/news_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_rank_news_evidence_rows",
+   "owner": "libs/runtime/strategist/context/news_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_global_sentiment_breakdown_payload",
+   "owner": "libs/runtime/strategist/context/news_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_merge_news_samples",
+   "owner": "libs/runtime/strategist/context/news_context.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_operator_summary_for_llm",
+   "owner": "libs/runtime/strategist/output/strategy_scores_and_summary.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_deterministic_strategy_scores",
+   "owner": "libs/runtime/strategist/output/strategy_scores_and_summary.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_normalize_strategy_scores",
+   "owner": "libs/runtime/strategist/output/strategy_scores_and_summary.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_commander_context_summary",
+   "owner": "libs/runtime/strategist/output/commander_context_and_plan.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_strategist_plan",
+   "owner": "libs/runtime/strategist/output/commander_context_and_plan.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_augment_strategy_fields",
+   "owner": "libs/runtime/strategist/output/commander_context_and_plan.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_strategic_answers",
+   "owner": "libs/runtime/strategist/output/strategic_answers.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_compact_theme_strength_for_llm",
+   "owner": "libs/runtime/strategist/context/theme_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_theme_packet_summary_for_llm",
+   "owner": "libs/runtime/strategist/context/theme_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_extract_themes",
+   "owner": "libs/runtime/strategist/context/theme_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_theme_to_news_queries",
+   "owner": "libs/runtime/strategist/context/theme_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_theme_news_query_terms",
+   "owner": "libs/runtime/strategist/context/theme_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_theme_component_symbols_for_news",
+   "owner": "libs/runtime/strategist/context/theme_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_extract_theme_symbol_index",
+   "owner": "libs/runtime/strategist/context/theme_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_merge_theme_symbol_map",
+   "owner": "libs/runtime/strategist/context/theme_compaction.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_merge_theme_packet_into_state",
+   "owner": "libs/runtime/strategist/context/theme_packet.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_extract_theme_names_from_any",
+   "owner": "libs/runtime/strategist/context/theme_packet.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_theme_packet_available_themes",
+   "owner": "libs/runtime/strategist/context/theme_packet.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_resolve_selected_themes_from_api",
+   "owner": "libs/runtime/strategist/context/theme_packet.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_build_theme_strategy_surface",
+   "owner": "libs/runtime/strategist/context/theme_packet.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_theme_strength_map",
+   "owner": "libs/runtime/strategist/context/theme_strength.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_avoid_themes",
+   "owner": "libs/runtime/strategist/context/theme_strength.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_default_policy",
+   "owner": "libs/runtime/strategist/policy/exit_and_defaults.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_exit_policy",
+   "owner": "libs/runtime/strategist/policy/exit_and_defaults.py"
+  },
+  {
+   "module": "graphs/nodes/strategist_node.py",
+   "name": "_scanner_source_policy",
+   "owner": "libs/runtime/strategist/policy/scanner_policy.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_memory_bias_observation_only",
+   "owner": "libs/runtime/scanner/scoring_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_enforce_live_equity_symbols",
+   "owner": "libs/runtime/scanner/scoring_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_filter_live_equity_candidates",
+   "owner": "libs/runtime/scanner/scoring_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_get_scanner_weights",
+   "owner": "libs/runtime/scanner/scoring_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_stable_unit_hash",
+   "owner": "libs/runtime/scanner/scoring_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_resolve_scanner_score_weights",
+   "owner": "libs/runtime/scanner/scoring_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_normalize_priority_list",
+   "owner": "libs/runtime/scanner/scoring_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_resolve_compatibility_bias_context",
+   "owner": "libs/runtime/scanner/scoring_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_resolve_scanner_repeat_guard_policy",
+   "owner": "libs/runtime/scanner/repeat_guard.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_scanner_recent_selection_history",
+   "owner": "libs/runtime/scanner/repeat_guard.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_scanner_recent_block_history",
+   "owner": "libs/runtime/scanner/repeat_guard.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_repeat_symbol_penalty",
+   "owner": "libs/runtime/scanner/repeat_guard.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_repeat_blocker_cooldown_penalty",
+   "owner": "libs/runtime/scanner/repeat_guard.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_normalize_scanner_blocker_family",
+   "owner": "libs/runtime/scanner/repeat_guard.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_candidate_blocker_families",
+   "owner": "libs/runtime/scanner/repeat_guard.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_apply_blocker_family_concentration_overlay",
+   "owner": "libs/runtime/scanner/blocker_family_overlay.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_compute_symbol_prior_adjustment",
+   "owner": "libs/runtime/scanner/symbol_prior.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_extract_account_open_order_counts",
+   "owner": "libs/runtime/scanner/evidence.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_should_auto_hydrate_scanner_skills",
+   "owner": "libs/runtime/scanner/evidence.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_extract_feature_engine_map",
+   "owner": "libs/runtime/scanner/evidence.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_build_scanner_policy_trace",
+   "owner": "libs/runtime/scanner/evidence.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_summarize_quote_metric_coverage",
+   "owner": "libs/runtime/scanner/feature_coverage.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_should_refresh_scanner_features",
+   "owner": "libs/runtime/scanner/feature_coverage.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_get_global_sentiment_score",
+   "owner": "libs/runtime/scanner/sentiment_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_get_news_sentiment_map",
+   "owner": "libs/runtime/scanner/sentiment_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_get_global_sentiment_signal",
+   "owner": "libs/runtime/scanner/sentiment_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_get_news_sentiment_signal_map",
+   "owner": "libs/runtime/scanner/sentiment_inputs.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_extract_scanner_guidance",
+   "owner": "libs/runtime/scanner/guidance.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_apply_scanner_guidance_weights",
+   "owner": "libs/runtime/scanner/guidance.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_compute_structured_scanner_bias",
+   "owner": "libs/runtime/scanner/guidance.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_scanner_macro_focus",
+   "owner": "libs/runtime/scanner/macro_focus.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_build_scanner_monitor_policy_input",
+   "owner": "libs/runtime/scanner/compatibility.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_build_scanner_monitor_frame",
+   "owner": "libs/runtime/scanner/compatibility.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_compute_entry_compatibility_signal",
+   "owner": "libs/runtime/scanner/compatibility.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_extract_monitor_entry_block_reason",
+   "owner": "libs/runtime/scanner/compatibility.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_merge_mock_compatibility_override",
+   "owner": "libs/runtime/scanner/compatibility.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_calc_reclaim_proximity",
+   "owner": "libs/runtime/scanner/macro_chart_fit.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_calc_breakout_proximity",
+   "owner": "libs/runtime/scanner/macro_chart_fit.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_scanner_chart_fit_from_entry_result",
+   "owner": "libs/runtime/scanner/macro_chart_fit.py"
+  },
+  {
+   "module": "graphs/nodes/scanner_node.py",
+   "name": "_compute_scanner_macro_chart_fit",
+   "owner": "libs/runtime/scanner/macro_chart_fit.py"
+  },
+  {
+   "module": "graphs/nodes/monitor_node.py",
+   "name": "_entry_forced_block_reason_for_open_carry",
+   "owner": "libs/runtime/monitor/entry_carry_guard.py"
+  },
+  {
+   "module": "graphs/nodes/monitor_node.py",
+   "name": "_memory_bias_observation_only",
+   "owner": "libs/runtime/monitor/entry_carry_guard.py"
+  }
+ ]
+}

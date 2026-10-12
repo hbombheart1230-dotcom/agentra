@@ -2954,3 +2954,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - R2 시대 범위 가드를 Wave A 종료 커밋에 고정하고 `apps/operator_ui/`를 명시 허용했으며 apps/api·graphs·conftest.py·실행 권한 경로는 계속 금지합니다.
 - GitHub Actions는 Fast Track 활성 작업 계약 검사로 교체하고 모든 ZIP 생성·업로드 단계를 삭제했습니다(JSON inventory·JUnit·ABI·Owner·patch-note·오프라인 회귀 유지).
 - 실제 frozen 보고서/LLM parity BLOCKED, `controlled_mock_lanes`·전체 pytest OPEN. Wave A는 FIRST_PASS_WITH_DEBT이며 FINAL_ACCEPTED가 아닙니다.
+
+## 2026-10-12 · P1.5 Fast Track Wave B (Strategist · Scanner · Monitor 1차 분해)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · SAFETY · WORKFLOW
+
+- Wave A 종료: 범위 가드·P1.5.2 inventory를 Wave A 종료 커밋에 고정하고 CI를 Fast Track 활성 계약 검사로 교체했으며 ZIP 단계를 모두 삭제했습니다(CI 성공 2504d70, Codex Wave A PASS_WITH_FINDINGS 기록).
+- B1 Strategist: `strategist_node.py` 8,878 → 5,144줄, 본문 104개를 `libs/runtime/strategist/{context,policy,llm,output}` Owner 22개로 이동. LLM 호출·prompt·repair·token budget·call-kind 경로는 노드에 그대로 유지했습니다.
+- B2 Scanner: `scanner_node.py` 4,178 → 2,652줄, 본문 40개를 `libs/runtime/scanner` Owner 11개로 이동(순위·tie-break·soft guidance 의미 불변).
+- B3 Monitor: helper 2개만 이동하고 `monitor_node`(2,634줄)·`_evaluate_monitor_entry_candidate`(658줄)는 2차 부채로 남겼습니다(intent-only 역할 불변).
+- 검증: 이동 본문 AST 동일성·use-time oracle, 범위/권한 경계 테스트, consumer 620개 baseline=feature 동일, 동시 실행 호출 비교에서 baseline 안정 레코드 16,792건 중 차이 0(라이브 시장 데이터 기반 672건은 비결정적), 운영 쓰기 0. 실제 snapshot·LLM parity BLOCKED, 전체 pytest·Docker·UEF는 Wave D, Codex Wave B 감사 대기.

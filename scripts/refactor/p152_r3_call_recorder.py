@@ -153,11 +153,13 @@ def _extra_protected_from_env(env):
 # ---------------------------------------------------------------------------------------------
 
 _P1=re.compile(r"[A-Za-z]:[\\/][^\"'\s,\]\}]*")
-_P2=re.compile(r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:?\d{2})?")
+_P2=re.compile(r"\d{4}-\d{2}-\d{2}[T ]\d{2}[:-]\d{2}[:-]\d{2}(\.\d+|-\d{2}-\d{2})?(Z|[+-]\d{2}:?\d{2})?")
 _P3=re.compile(r"(pytest-of-[^\/]+|pytest-\d+|test_[A-Za-z0-9_]+\d*)")
+_P4=re.compile(r"[0-9a-f]{20,64}")
 def _s(x):
     x=_P1.sub("<PATH>",x)
     x=_P2.sub("<TS>",x)
+    x=_P4.sub("<HEX>",x)
     return x
 
 NAMES = {}
@@ -174,10 +176,15 @@ def norm(o, depth=0, seen=None):
         return "<deep>"
     if isinstance(o, str):
         return _s(o)
-    if o is None or isinstance(o, (bool, int)):
+    if isinstance(o, bool) or o is None:
         return o
-    if isinstance(o, float):
-        return repr(o)
+    if isinstance(o, (int, float)):
+        # wall-clock epochs (seconds / milliseconds) are run-specific, not behaviour
+        if 1.4e9 <= o <= 2.2e9:
+            return "<EPOCH>"
+        if 1.4e12 <= o <= 2.2e12:
+            return "<EPOCH_MS>"
+        return o if isinstance(o, int) else repr(o)
     if id(o) in seen:
         return "<cycle>"
     seen = seen | {id(o)}

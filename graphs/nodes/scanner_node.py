@@ -94,6 +94,69 @@ from libs.runtime.scanner_feature_hydration import hydrate_scanner_feature_map
 from libs.runtime.scanner_policy import resolve_scanner_runtime_policy
 from libs.strategies.contracts import coerce_strategist_output
 from libs.reporting.symbol_read_model import build_symbol_read_model
+import sys as _r3_sys
+from libs.runtime.scanner.scoring_inputs import (
+    _memory_bias_observation_only_r3_impl,
+    _enforce_live_equity_symbols_r3_impl,
+    _filter_live_equity_candidates_r3_impl,
+    _get_scanner_weights_r3_impl,
+    _stable_unit_hash_r3_impl,
+    _resolve_scanner_score_weights_r3_impl,
+    _normalize_priority_list_r3_impl,
+    _resolve_compatibility_bias_context_r3_impl,
+)
+from libs.runtime.scanner.repeat_guard import (
+    _resolve_scanner_repeat_guard_policy_r3_impl,
+    _scanner_recent_selection_history_r3_impl,
+    _scanner_recent_block_history_r3_impl,
+    _repeat_symbol_penalty_r3_impl,
+    _repeat_blocker_cooldown_penalty_r3_impl,
+    _normalize_scanner_blocker_family_r3_impl,
+    _candidate_blocker_families_r3_impl,
+)
+from libs.runtime.scanner.blocker_family_overlay import (
+    _apply_blocker_family_concentration_overlay_r3_impl,
+)
+from libs.runtime.scanner.symbol_prior import (
+    _compute_symbol_prior_adjustment_r3_impl,
+)
+from libs.runtime.scanner.evidence import (
+    _extract_account_open_order_counts_r3_impl,
+    _should_auto_hydrate_scanner_skills_r3_impl,
+    _extract_feature_engine_map_r3_impl,
+    _build_scanner_policy_trace_r3_impl,
+)
+from libs.runtime.scanner.feature_coverage import (
+    _summarize_quote_metric_coverage_r3_impl,
+    _should_refresh_scanner_features_r3_impl,
+)
+from libs.runtime.scanner.sentiment_inputs import (
+    _get_global_sentiment_score_r3_impl,
+    _get_news_sentiment_map_r3_impl,
+    _get_global_sentiment_signal_r3_impl,
+    _get_news_sentiment_signal_map_r3_impl,
+)
+from libs.runtime.scanner.guidance import (
+    _extract_scanner_guidance_r3_impl,
+    _apply_scanner_guidance_weights_r3_impl,
+    _compute_structured_scanner_bias_r3_impl,
+)
+from libs.runtime.scanner.macro_focus import (
+    _scanner_macro_focus_r3_impl,
+)
+from libs.runtime.scanner.compatibility import (
+    _build_scanner_monitor_policy_input_r3_impl,
+    _build_scanner_monitor_frame_r3_impl,
+    _compute_entry_compatibility_signal_r3_impl,
+    _extract_monitor_entry_block_reason_r3_impl,
+    _merge_mock_compatibility_override_r3_impl,
+)
+from libs.runtime.scanner.macro_chart_fit import (
+    _calc_reclaim_proximity_r3_impl,
+    _calc_breakout_proximity_r3_impl,
+    _scanner_chart_fit_from_entry_result_r3_impl,
+    _compute_scanner_macro_chart_fit_r3_impl,
+)
 
 
 def _clamp(x: float, lo: float, hi: float) -> float:
@@ -116,15 +179,7 @@ def _is_trueish(v: Any) -> bool:
 
 
 def _memory_bias_observation_only(state: Dict[str, Any] | None = None) -> bool:
-    if isinstance(state, dict):
-        for key in ("memory_bias_observation_only", "commander_memory_bias_observation_only"):
-            if state.get(key) not in (None, ""):
-                return _is_trueish(state.get(key))
-    for name in ("MEMORY_BIAS_OBSERVATION_ONLY", "COMMANDER_MEMORY_BIAS_OBSERVATION_ONLY"):
-        raw = str(os.getenv(name, "") or "").strip()
-        if raw:
-            return _is_trueish(raw)
-    return False
+    return _memory_bias_observation_only_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _to_int(v: Any, default: int) -> int:
@@ -135,58 +190,7 @@ def _to_int(v: Any, default: int) -> int:
 
 
 def _resolve_scanner_repeat_guard_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
-    raw_policy = policy.get("scanner_repeat_guard") if isinstance(policy.get("scanner_repeat_guard"), dict) else {}
-    lookback_sec = _to_int(
-        raw_policy.get("lookback_sec", os.getenv("SCANNER_REPEAT_LOOKBACK_SEC", "1800")),
-        1800,
-    )
-    per_hit_penalty = _to_float(
-        raw_policy.get("per_hit_penalty", os.getenv("SCANNER_REPEAT_SYMBOL_PENALTY", "0.06"))
-    )
-    recent_trade_penalty = _to_float(
-        raw_policy.get("recent_trade_penalty", os.getenv("SCANNER_RECENT_TRADE_SYMBOL_PENALTY", "0.10"))
-    )
-    trade_lookback_sec = _to_int(
-        raw_policy.get("trade_lookback_sec", os.getenv("SCANNER_RECENT_TRADE_LOOKBACK_SEC", "5400")),
-        5400,
-    )
-    max_penalty = _to_float(
-        raw_policy.get("max_penalty", os.getenv("SCANNER_REPEAT_SYMBOL_MAX_PENALTY", "0.40"))
-    )
-    streak_threshold = _to_int(
-        raw_policy.get("streak_threshold", os.getenv("SCANNER_REPEAT_STREAK_THRESHOLD", "3")),
-        3,
-    )
-    streak_penalty = _to_float(
-        raw_policy.get("streak_penalty", os.getenv("SCANNER_REPEAT_STREAK_PENALTY", "0.12"))
-    )
-    history_limit = _to_int(
-        raw_policy.get("history_limit", os.getenv("SCANNER_REPEAT_HISTORY_LIMIT", "40")),
-        40,
-    )
-    blocker_lookback_sec = _to_int(
-        raw_policy.get("blocker_lookback_sec", os.getenv("SCANNER_REPEAT_BLOCK_LOOKBACK_SEC", "900")),
-        900,
-    )
-    blocker_per_hit_penalty = _to_float(
-        raw_policy.get("blocker_per_hit_penalty", os.getenv("SCANNER_REPEAT_BLOCK_PENALTY", "0.08"))
-    )
-    blocker_max_penalty = _to_float(
-        raw_policy.get("blocker_max_penalty", os.getenv("SCANNER_REPEAT_BLOCK_MAX_PENALTY", "0.18"))
-    )
-    return {
-        "lookback_sec": max(0, int(lookback_sec)),
-        "per_hit_penalty": max(0.0, float(per_hit_penalty)),
-        "recent_trade_penalty": max(0.0, float(recent_trade_penalty)),
-        "trade_lookback_sec": max(0, int(trade_lookback_sec)),
-        "max_penalty": max(0.0, float(max_penalty)),
-        "streak_threshold": max(2, int(streak_threshold)),
-        "streak_penalty": max(0.0, float(streak_penalty)),
-        "history_limit": max(5, int(history_limit)),
-        "blocker_lookback_sec": max(0, int(blocker_lookback_sec)),
-        "blocker_per_hit_penalty": max(0.0, float(blocker_per_hit_penalty)),
-        "blocker_max_penalty": max(0.0, float(blocker_max_penalty)),
-    }
+    return _resolve_scanner_repeat_guard_policy_r3_impl(policy, facade=_r3_sys.modules[__name__])
 
 
 def _resolve_reports_root(state: Dict[str, Any]) -> Path:
@@ -219,137 +223,16 @@ def _compute_symbol_prior_adjustment(
     playbook: str,
     current_day: str = "",
 ) -> Dict[str, Any]:
-    if not isinstance(symbol_model, dict) or not symbol_model:
-        return {
-            "adjustment": 0.0,
-            "risk_delta": 0.0,
-            "confidence_delta": 0.0,
-            "reasons": [],
-            "summary": {},
-        }
-
-    adjustment = 0.0
-    risk_delta = 0.0
-    confidence_delta = 0.0
-    reasons: List[str] = []
-    playbook_norm = str(playbook or "").strip().lower()
-
-    if str(symbol_model.get("data_quality", {}).get("data_source") or "").strip() == "symbol_memory":
-        reasons.append("symbol_memory")
-
-    avg_pnl_pct = _to_float(symbol_model.get("avg_pnl_pct"))
-    win_rate = _to_float(symbol_model.get("win_rate"))
-    loss_count = _to_int(symbol_model.get("loss_count"), 0)
-    closed_trade_count = _to_int(symbol_model.get("closed_trade_count"), 0)
-    last_trade_date = str(symbol_model.get("last_trade_date") or "").strip()
-    dominant_playbook = str(symbol_model.get("dominant_playbook") or "").strip().lower()
-    dominant_blocker = str(symbol_model.get("dominant_monitor_blocker") or "").strip()
-    repeated_failures = list(symbol_model.get("repeated_failure_pattern") or [])
-    same_day_model = bool(str(current_day or "").strip() and last_trade_date == str(current_day or "").strip())
-
-    if avg_pnl_pct < 0:
-        adjustment -= 0.08
-        risk_delta += 0.08
-        confidence_delta -= 0.06
-        reasons.append(f"negative_avg_pnl_pct:{avg_pnl_pct:.2f}")
-    elif avg_pnl_pct > 0:
-        adjustment += 0.04
-        confidence_delta += 0.03
-        reasons.append(f"positive_avg_pnl_pct:{avg_pnl_pct:.2f}")
-
-    if win_rate > 0.0 and win_rate < 0.4:
-        adjustment -= 0.05
-        risk_delta += 0.05
-        confidence_delta -= 0.04
-        reasons.append(f"low_win_rate:{win_rate:.2f}")
-    elif win_rate >= 0.6:
-        adjustment += 0.03
-        confidence_delta += 0.02
-        reasons.append(f"strong_win_rate:{win_rate:.2f}")
-
-    if playbook_norm and dominant_playbook and dominant_playbook != "unknown":
-        if playbook_norm == dominant_playbook:
-            adjustment += 0.03
-            reasons.append(f"playbook_fit:{dominant_playbook}")
-        else:
-            adjustment -= 0.04
-            risk_delta += 0.03
-            reasons.append(f"playbook_mismatch:{dominant_playbook}")
-
-    if dominant_blocker and dominant_blocker.lower() != "unknown":
-        risk_delta += 0.03
-        reasons.append(f"dominant_blocker:{dominant_blocker}")
-
-    if repeated_failures:
-        first = repeated_failures[0] if isinstance(repeated_failures[0], dict) else {}
-        failure_type = str(first.get("type") or "").strip()
-        failure_value = str(first.get("value") or "").strip()
-        if failure_value:
-            reasons.append(f"repeated_failure:{failure_type}:{failure_value}")
-
-    if same_day_model and closed_trade_count >= 2 and (loss_count >= 2 or avg_pnl_pct < -0.10):
-        adjustment -= 0.25
-        risk_delta += 0.18
-        confidence_delta -= 0.12
-        reasons.append(f"same_day_repeat_loss:{loss_count}/{closed_trade_count}")
-    if same_day_model and closed_trade_count >= 3 and (loss_count >= 3 or avg_pnl_pct < -0.15):
-        adjustment -= 0.20
-        risk_delta += 0.12
-        confidence_delta -= 0.08
-        reasons.append("same_day_trade_lockout_bias")
-
-    adjustment = _clamp(adjustment, -0.60, 0.10)
-    risk_delta = _clamp(risk_delta, 0.0, 0.35)
-    confidence_delta = _clamp(confidence_delta, -0.30, 0.05)
-    return {
-        "adjustment": float(adjustment),
-        "risk_delta": float(risk_delta),
-        "confidence_delta": float(confidence_delta),
-        "reasons": reasons[:6],
-        "summary": {
-            "dominant_playbook": str(symbol_model.get("dominant_playbook") or ""),
-            "dominant_monitor_blocker": str(symbol_model.get("dominant_monitor_blocker") or ""),
-            "avg_pnl_pct": float(avg_pnl_pct),
-            "win_rate": float(win_rate),
-            "last_trade_date": str(last_trade_date),
-            "same_day_model": bool(same_day_model),
-            "closed_trade_count": int(closed_trade_count),
-            "loss_count": int(loss_count),
-        },
-    }
+    return _compute_symbol_prior_adjustment_r3_impl(symbol_model=symbol_model, playbook=playbook,
+        current_day=current_day, facade=_r3_sys.modules[__name__])
 
 
 def _scanner_recent_selection_history(state: Dict[str, Any]) -> List[Dict[str, Any]]:
-    persisted = state.get("persisted_state") if isinstance(state.get("persisted_state"), dict) else {}
-    rows = persisted.get("recent_scanner_selected")
-    if not isinstance(rows, list):
-        return []
-    out: List[Dict[str, Any]] = []
-    for row in rows:
-        if not isinstance(row, dict):
-            continue
-        sym = _norm_symbol(row.get("symbol"))
-        epoch = _to_int(row.get("epoch"), 0)
-        if sym and epoch > 0:
-            out.append({"symbol": sym, "epoch": epoch})
-    return out
+    return _scanner_recent_selection_history_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _scanner_recent_block_history(state: Dict[str, Any]) -> List[Dict[str, Any]]:
-    persisted = state.get("persisted_state") if isinstance(state.get("persisted_state"), dict) else {}
-    rows = persisted.get("recent_monitor_blocks")
-    if not isinstance(rows, list):
-        return []
-    out: List[Dict[str, Any]] = []
-    for row in rows:
-        if not isinstance(row, dict):
-            continue
-        sym = _norm_symbol(row.get("symbol"))
-        reason = str(row.get("reason") or "").strip()
-        epoch = _to_int(row.get("epoch"), 0)
-        if sym and reason and epoch > 0:
-            out.append({"symbol": sym, "reason": reason, "epoch": epoch})
-    return out
+    return _scanner_recent_block_history_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _resolve_now_epoch(state: Dict[str, Any]) -> int:
@@ -366,53 +249,8 @@ def _repeat_symbol_penalty(
     symbol: str,
     policy: Dict[str, Any],
 ) -> Dict[str, Any]:
-    cfg = _resolve_scanner_repeat_guard_policy(policy)
-    now_epoch = _resolve_now_epoch(state)
-    history = _scanner_recent_selection_history(state)
-    sel = _norm_symbol(symbol)
-    repeat_count = 0
-    streak_count = 0
-    if cfg["lookback_sec"] > 0 and sel:
-        cutoff = max(0, now_epoch - cfg["lookback_sec"])
-        for row in history:
-            if row.get("symbol") == sel and _to_int(row.get("epoch"), 0) >= cutoff:
-                repeat_count += 1
-        for row in reversed(history):
-            if _to_int(row.get("epoch"), 0) < cutoff:
-                break
-            if row.get("symbol") != sel:
-                break
-            streak_count += 1
-
-    persisted = state.get("persisted_state") if isinstance(state.get("persisted_state"), dict) else {}
-    last_trade_symbol = _norm_symbol(persisted.get("last_trade_symbol"))
-    last_trade_epoch = _to_int(persisted.get("last_trade_epoch"), 0)
-    recent_trade_same_symbol = False
-    if (
-        sel
-        and last_trade_symbol == sel
-        and last_trade_epoch > 0
-        and cfg["trade_lookback_sec"] > 0
-        and (now_epoch - last_trade_epoch) <= cfg["trade_lookback_sec"]
-    ):
-        recent_trade_same_symbol = True
-
-    streak_extra = cfg["streak_penalty"] if streak_count >= cfg["streak_threshold"] else 0.0
-    penalty = min(
-        cfg["max_penalty"],
-        (repeat_count * cfg["per_hit_penalty"])
-        + streak_extra
-        + (cfg["recent_trade_penalty"] if recent_trade_same_symbol else 0.0),
-    )
-    return {
-        "penalty": float(max(0.0, penalty)),
-        "repeat_count": int(repeat_count),
-        "streak_count": int(streak_count),
-        "recent_trade_same_symbol": bool(recent_trade_same_symbol),
-        "now_epoch": int(now_epoch),
-        "history_count": int(len(history)),
-        "config": cfg,
-    }
+    return _repeat_symbol_penalty_r3_impl(state, symbol=symbol, policy=policy,
+        facade=_r3_sys.modules[__name__])
 
 
 def _repeat_blocker_cooldown_penalty(
@@ -421,57 +259,8 @@ def _repeat_blocker_cooldown_penalty(
     symbol: str,
     policy: Dict[str, Any],
 ) -> Dict[str, Any]:
-    cfg = _resolve_scanner_repeat_guard_policy(policy)
-    now_epoch = _resolve_now_epoch(state)
-    sel = _norm_symbol(symbol)
-    if not sel or cfg["blocker_lookback_sec"] <= 0:
-        return {
-            "penalty": 0.0,
-            "reason": "",
-            "repeat_count": 0,
-            "config": cfg,
-        }
-
-    cutoff = max(0, now_epoch - cfg["blocker_lookback_sec"])
-    history = _scanner_recent_block_history(state)
-    reason_counter: Dict[str, int] = {}
-    for row in history:
-        if row.get("symbol") != sel:
-            continue
-        if _to_int(row.get("epoch"), 0) < cutoff:
-            continue
-        reason = str(row.get("reason") or "").strip()
-        if not reason:
-            continue
-        reason_counter[reason] = int(reason_counter.get(reason, 0)) + 1
-
-    if not reason_counter:
-        return {
-            "penalty": 0.0,
-            "reason": "",
-            "repeat_count": 0,
-            "config": cfg,
-        }
-
-    dominant_reason, repeat_count = max(reason_counter.items(), key=lambda item: item[1])
-    weight = 0.0
-    if dominant_reason == "too_extended_from_vwap":
-        weight = 1.0
-    elif dominant_reason in {"volume_insufficient", "volume_confirmation_missing"}:
-        weight = 0.5
-    elif dominant_reason in {"breakout_not_ready", "below_vwap_reclaim_not_ready", "pullback_below_vwap_reclaim_not_ready"}:
-        weight = 0.35
-
-    penalty = min(
-        cfg["blocker_max_penalty"],
-        float(repeat_count) * cfg["blocker_per_hit_penalty"] * float(weight),
-    )
-    return {
-        "penalty": float(max(0.0, penalty)),
-        "reason": str(dominant_reason),
-        "repeat_count": int(repeat_count),
-        "config": cfg,
-    }
+    return _repeat_blocker_cooldown_penalty_r3_impl(state, symbol=symbol, policy=policy,
+        facade=_r3_sys.modules[__name__])
 
 
 def _remember_selected_symbol(state: Dict[str, Any], selected_symbol: str, *, now_epoch: int, policy: Dict[str, Any]) -> None:
@@ -548,19 +337,7 @@ def _extract_skill_quotes(state: Dict[str, Any]) -> Tuple[Dict[str, Dict[str, An
 
 
 def _extract_account_open_order_counts(state: Dict[str, Any]) -> Tuple[Dict[str, int], int, Dict[str, Any]]:
-    rows, meta = extract_account_orders_rows(state)
-
-    out: Dict[str, int] = {}
-    for r in rows:
-        if not isinstance(r, dict):
-            continue
-        if not account_order_is_pending(r):
-            continue
-        symbol = _norm_symbol(r.get("symbol") or r.get("stk_cd") or r.get("code"))
-        if not symbol:
-            continue
-        out[symbol] = int(out.get(symbol, 0)) + 1
-    return out, len(rows), meta
+    return _extract_account_open_order_counts_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _is_live_equity_symbol(symbol: str) -> bool:
@@ -569,68 +346,16 @@ def _is_live_equity_symbol(symbol: str) -> bool:
 
 
 def _enforce_live_equity_symbols(state: Dict[str, Any], policy: Dict[str, Any]) -> bool:
-    for raw in (
-        policy.get("enforce_live_equity_symbols") if isinstance(policy, dict) else None,
-        state.get("enforce_live_equity_symbols") if isinstance(state, dict) else None,
-        os.getenv("SCANNER_ENFORCE_LIVE_EQUITY_SYMBOLS", ""),
-    ):
-        if raw not in (None, ""):
-            return _is_trueish(raw)
-    return not bool(os.getenv("PYTEST_CURRENT_TEST"))
+    return _enforce_live_equity_symbols_r3_impl(state, policy, facade=_r3_sys.modules[__name__])
 
 
 def _filter_live_equity_candidates(candidates: List[Any]) -> Tuple[List[Any], Dict[str, Any]]:
-    kept: List[Any] = []
-    excluded: List[str] = []
-    for item in list(candidates or []):
-        raw_symbol = item.get("symbol") if isinstance(item, dict) else item
-        symbol = _norm_symbol(raw_symbol)
-        if not _is_live_equity_symbol(symbol):
-            if symbol:
-                excluded.append(symbol)
-            continue
-        if isinstance(item, dict):
-            row = dict(item)
-            row["symbol"] = symbol
-            kept.append(row)
-        else:
-            kept.append(symbol)
-    return kept, {
-        "live_equity_symbol_filter_enabled": True,
-        "live_equity_symbol_excluded_count": int(len(excluded)),
-        "live_equity_symbol_excluded_symbols": excluded[:20],
-        "candidate_pool_after_live_equity_symbol_filter": int(len(kept)),
-    }
+    return _filter_live_equity_candidates_r3_impl(candidates, facade=_r3_sys.modules[__name__])
 
 
 def _should_auto_hydrate_scanner_skills(state: Dict[str, Any], candidates: List[Any]) -> bool:
-    policy = state.get("policy") if isinstance(state.get("policy"), dict) else {}
-    explicit = policy.get("enable_scanner_skill_hydration")
-    if explicit is not None:
-        enabled = _is_trueish(explicit)
-    else:
-        env_value = os.getenv("SCANNER_AUTO_SKILL_HYDRATION", "")
-        if env_value:
-            enabled = _is_trueish(env_value)
-        else:
-            enabled = not bool(os.getenv("PYTEST_CURRENT_TEST"))
-    if not enabled:
-        return False
-
-    if state.get("skill_runner") is not None or callable(state.get("skill_runner_factory")):
-        return True
-    if _is_trueish(state.get("auto_skill_runner")) or _is_trueish(os.getenv("M22_AUTO_SKILL_RUNNER", "")):
-        return True
-
-    candidate_symbols: List[str] = []
-    for item in candidates:
-        if isinstance(item, dict):
-            sym = _norm_symbol(item.get("symbol"))
-        else:
-            sym = _norm_symbol(item)
-        if sym:
-            candidate_symbols.append(sym)
-    return any(_is_live_equity_symbol(sym) for sym in candidate_symbols)
+    return _should_auto_hydrate_scanner_skills_r3_impl(state, candidates,
+        facade=_r3_sys.modules[__name__])
 
 
 def _maybe_hydrate_scanner_skill_results(state: Dict[str, Any], candidates: List[Any]) -> Dict[str, Any]:
@@ -687,46 +412,7 @@ def _get_global_sentiment_score(state: Dict[str, Any]) -> float:
       4) state['policy']['global_sentiment']['score'] (set by strategist)
       5) default 0.0
     """
-    gsig = state.get("global_sentiment_signal")
-    if isinstance(gsig, dict):
-        try:
-            return _clamp(float(gsig.get("score") or 0.0), -1.0, 1.0)
-        except Exception:
-            return 0.0
-
-    if "mock_global_sentiment" in state:
-        try:
-            return _clamp(float(state.get("mock_global_sentiment") or 0.0), -1.0, 1.0)
-        except Exception:
-            return 0.0
-
-    gs = state.get("global_sentiment")
-    if isinstance(gs, dict) and "score" in gs:
-        try:
-            return _clamp(float(gs.get("score") or 0.0), -1.0, 1.0)
-        except Exception:
-            return 0.0
-    if isinstance(gs, (int, float, str)):
-        try:
-            return _clamp(float(gs), -1.0, 1.0)
-        except Exception:
-            return 0.0
-
-    pol = state.get("policy")
-    if isinstance(pol, dict):
-        pgs = pol.get("global_sentiment")
-        if isinstance(pgs, dict) and "score" in pgs:
-            try:
-                return _clamp(float(pgs.get("score") or 0.0), -1.0, 1.0)
-            except Exception:
-                return 0.0
-        if isinstance(pgs, (int, float, str)):
-            try:
-                return _clamp(float(pgs), -1.0, 1.0)
-            except Exception:
-                return 0.0
-
-    return 0.0
+    return _get_global_sentiment_score_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _get_news_sentiment_map(state: Dict[str, Any]) -> Dict[str, float]:
@@ -737,62 +423,15 @@ def _get_news_sentiment_map(state: Dict[str, Any]) -> Dict[str, float]:
       2) state['news_sentiment'][symbol]
       3) state['mock_news_sentiment'][symbol]
     """
-    raw_sig = state.get("news_sentiment_signal")
-    if isinstance(raw_sig, dict):
-        out_sig: Dict[str, float] = {}
-        for k, v in raw_sig.items():
-            if isinstance(v, dict):
-                try:
-                    out_sig[str(k)] = _clamp(float(v.get("score") or 0.0), -1.0, 1.0)
-                except Exception:
-                    out_sig[str(k)] = 0.0
-        if out_sig:
-            return out_sig
-
-    raw = state.get("news_sentiment")
-    if not isinstance(raw, dict):
-        raw = state.get("mock_news_sentiment") if isinstance(state.get("mock_news_sentiment"), dict) else {}
-    out: Dict[str, float] = {}
-    for k, v in (raw or {}).items():
-        try:
-            out[str(k)] = _clamp(float(v), -1.0, 1.0)
-        except Exception:
-            out[str(k)] = 0.0
-    return out
+    return _get_news_sentiment_map_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _get_global_sentiment_signal(state: Dict[str, Any]) -> Dict[str, Any]:
-    sig = state.get("global_sentiment_signal")
-    if isinstance(sig, dict):
-        return dict(sig)
-    if "mock_global_sentiment" in state:
-        return {"status": "ok", "source": "mock_global_sentiment", "reason": ""}
-    gs = state.get("global_sentiment")
-    if isinstance(gs, dict) and gs.get("score") is not None:
-        return {"status": "fallback", "source": "legacy_global_sentiment", "reason": "signal_missing"}
-    return {"status": "fallback", "source": "scanner_node", "reason": "missing_global_signal"}
+    return _get_global_sentiment_signal_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _get_news_sentiment_signal_map(state: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
-    raw = state.get("news_sentiment_signal")
-    if not isinstance(raw, dict):
-        raw_scores = state.get("news_sentiment")
-        if not isinstance(raw_scores, dict):
-            raw_scores = state.get("mock_news_sentiment") if isinstance(state.get("mock_news_sentiment"), dict) else {}
-        out_legacy: Dict[str, Dict[str, Any]] = {}
-        for k, _v in (raw_scores or {}).items():
-            source = "legacy_news_sentiment"
-            status = "fallback"
-            if isinstance(state.get("mock_news_sentiment"), dict) and str(k) in state.get("mock_news_sentiment", {}):
-                source = "mock_news_sentiment"
-                status = "ok"
-            out_legacy[str(k)] = {"status": status, "source": source, "reason": "signal_missing"}
-        return out_legacy
-    out: Dict[str, Dict[str, Any]] = {}
-    for k, v in raw.items():
-        if isinstance(v, dict):
-            out[str(k)] = dict(v)
-    return out
+    return _get_news_sentiment_signal_map_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _get_scanner_weights(policy: Any) -> Dict[str, float]:
@@ -801,17 +440,7 @@ def _get_scanner_weights(policy: Any) -> Dict[str, float]:
     Defaults are conservative (small influence), and should not change behavior
     when sentiments are missing (both default to 0.0).
     """
-    pol = policy if isinstance(policy, dict) else {}
-    return {
-        "weight_news": float(pol.get("weight_news", 0.20)),
-        "weight_global": float(pol.get("weight_global", 0.10)),
-        "risk_news_penalty": float(pol.get("risk_news_penalty", 0.30)),
-        "risk_global_penalty": float(pol.get("risk_global_penalty", 0.20)),
-        "confidence_news_boost": float(pol.get("confidence_news_boost", 0.05)),
-        "feature_score_weight": float(pol.get("feature_score_weight", 0.0)),
-        "feature_risk_penalty": float(pol.get("feature_risk_penalty", 0.0)),
-        "high_vol_risk_penalty": float(pol.get("high_vol_risk_penalty", 0.0)),
-    }
+    return _get_scanner_weights_r3_impl(policy, facade=_r3_sys.modules[__name__])
 
 
 def _stable_unit_hash(text: str) -> float:
@@ -819,301 +448,27 @@ def _stable_unit_hash(text: str) -> float:
 
     We avoid Python's built-in hash() because it is salted per-process.
     """
-    # A tiny, deterministic rolling hash
-    h = 0
-    for ch in text:
-        h = (h * 131 + ord(ch)) % 10_000
-    return (h % 10_000) / 10_000.0
+    return _stable_unit_hash_r3_impl(text, facade=_r3_sys.modules[__name__])
 
 
 def _extract_feature_engine_map(state: Dict[str, Any]) -> Tuple[Dict[str, Dict[str, Any]], str, List[str]]:
-    errors: List[str] = []
-
-    # Priority 1: explicit features map injection.
-    direct = state.get("scanner_features")
-    if isinstance(direct, dict):
-        out: Dict[str, Dict[str, Any]] = {}
-        for k, v in direct.items():
-            if not isinstance(v, dict):
-                continue
-            sym = _norm_symbol(k)
-            if sym:
-                out[sym] = dict(v)
-        return out, "state.scanner_features", errors
-
-    # Priority 2: precomputed feature engine output.
-    fe = state.get("feature_engine")
-    if isinstance(fe, dict) and isinstance(fe.get("by_symbol"), dict):
-        out2: Dict[str, Dict[str, Any]] = {}
-        by_symbol = fe.get("by_symbol") or {}
-        for k, v in by_symbol.items():
-            if not isinstance(v, dict):
-                continue
-            sym = _norm_symbol(k)
-            if sym:
-                out2[sym] = dict(v)
-        return out2, "state.feature_engine.by_symbol", errors
-
-    # Priority 3: compute from OHLCV data if available.
-    ohlcv = state.get("ohlcv_by_symbol")
-    if isinstance(ohlcv, dict):
-        try:
-            policy = state.get("policy") if isinstance(state.get("policy"), dict) else {}
-            trend_gap_threshold = float(policy.get("feature_trend_gap_threshold", 0.01))
-            high_vol_threshold = float(policy.get("feature_high_vol_threshold", 0.03))
-            ctx: Dict[str, Any] = {
-                "global_sentiment": _get_global_sentiment_score(state),
-            }
-            # Optional context hooks (already normalized in state when available).
-            if isinstance(state.get("market_context"), dict):
-                mc = state.get("market_context") or {}
-                if mc.get("market_breadth") is not None:
-                    ctx["market_breadth"] = mc.get("market_breadth")
-                if mc.get("index_trend") is not None:
-                    ctx["index_trend"] = mc.get("index_trend")
-                if mc.get("realized_vol") is not None:
-                    ctx["realized_vol"] = mc.get("realized_vol")
-            built = build_feature_map(
-                ohlcv,
-                trend_gap_threshold=trend_gap_threshold,
-                high_vol_threshold=high_vol_threshold,
-                context=ctx,
-            )
-            return {_norm_symbol(k): v for k, v in built.items() if _norm_symbol(k)}, "state.ohlcv_by_symbol", errors
-        except Exception as e:
-            errors.append(f"feature_engine:error:{type(e).__name__}")
-
-    return {}, "none", errors
+    return _extract_feature_engine_map_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _normalize_scanner_blocker_family(value: Any) -> str:
-    text = str(value or "").strip().lower()
-    if not text or text in {"mixed", "none"}:
-        return ""
-    if text in {"buy_blocked_open_position", "open_position_blocked"}:
-        return "open_position_guard"
-    if text.startswith("entry_guard_cooldown") or "cooldown" in text:
-        return "cooldown_guard"
-    if text in {
-        "pullback_not_mature",
-        "pullback_mature",
-        "pullback_ok",
-        "pullback_structure_ok",
-        "pullback_volume_path_ok",
-        "pullback_below_vwap_reclaim_not_ready",
-    } or "pullback" in text:
-        return "pullback_timing"
-    if "extend" in text or "overextended" in text:
-        return "overextension_guard"
-    if text in {
-        "below_vwap_reclaim_not_ready",
-        "vwap_reclaim_ok",
-        "reclaim_gate_ok",
-        "vwap_hold_ok",
-    } or "reclaim" in text or "vwap" in text:
-        return "reclaim_readiness"
-    if text in {"volume_confirmation_missing", "volume_insufficient", "volume_ok"} or "volume" in text:
-        return "volume_confirmation"
-    if text in {
-        "breakout_not_ready",
-        "breakout_ok",
-        "breakout_path_ok",
-        "wait_for_confirmation",
-    } or "breakout" in text or "confirmation" in text:
-        return "breakout_confirmation"
-    if text in {"rebound_ok"} or "rebound" in text:
-        return "rebound_confirmation"
-    if text in {"structure_hh_hl", "chart_structure_guard"} or "structure" in text:
-        return "structure_confirmation"
-    if text in {"confidence_gate_ok"} or "confidence" in text:
-        return "confidence_gate"
-    if text.startswith("risk_") or text == "risk_blocked":
-        return "risk_guard"
-    if text == "unknown":
-        return "unknown"
-    return "other"
+    return _normalize_scanner_blocker_family_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _candidate_blocker_families(row: Mapping[str, Any]) -> List[str]:
-    if not isinstance(row, Mapping):
-        return []
-    out: List[str] = []
-    seen = set()
-    for raw in (
-        row.get("expected_monitor_block_reason"),
-        row.get("dominant_block_reason"),
-    ):
-        family = _normalize_scanner_blocker_family(raw)
-        if not family or family in {"unknown", "other"} or family in seen:
-            continue
-        seen.add(family)
-        out.append(family)
-    return out
+    return _candidate_blocker_families_r3_impl(row, facade=_r3_sys.modules[__name__])
 
 
 def _resolve_scanner_score_weights(policy: Dict[str, Any]) -> Dict[str, float]:
-    def pf(key: str, env_key: str, default: float) -> float:
-        raw = policy.get(key)
-        if raw in (None, ""):
-            raw = os.getenv(env_key, str(default))
-        return _to_float(raw)
-
-    return {
-        "trading_value": pf("score_weight_trading_value", "SCORE_WEIGHTS_TRADING_VALUE", 0.20),
-        "momentum": pf("score_weight_momentum", "SCORE_WEIGHTS_MOMENTUM", 0.22),
-        "trend": pf("score_weight_trend", "SCORE_WEIGHTS_TREND", 0.20),
-        "volume_surge": pf("score_weight_volume_surge", "SCORE_WEIGHTS_VOLUME_SURGE", 0.14),
-        "intraday_strength": pf("score_weight_intraday_strength", "SCORE_WEIGHTS_INTRADAY_STRENGTH", 0.12),
-        "theme_boost": pf("score_weight_theme_boost", "SCORE_WEIGHTS_THEME_BOOST", 0.06),
-        "sentiment": pf("score_weight_sentiment", "SCORE_WEIGHTS_SENTIMENT", 0.06),
-        "volatility_penalty": pf("score_weight_volatility_penalty", "SCORE_WEIGHTS_VOLATILITY_PENALTY", 0.10),
-        "gap_penalty": pf("score_weight_gap_penalty", "SCORE_WEIGHTS_GAP_PENALTY", 0.07),
-        "open_order_penalty": pf("score_weight_open_order_penalty", "SCORE_WEIGHTS_OPEN_ORDER_PENALTY", 0.04),
-    }
+    return _resolve_scanner_score_weights_r3_impl(policy, facade=_r3_sys.modules[__name__])
 
 
 def _extract_scanner_guidance(state: Dict[str, Any]) -> Dict[str, Any]:
-    strategist_output_raw = state.get("strategist_output")
-    strategist_output = coerce_strategist_output(strategist_output_raw) if isinstance(strategist_output_raw, dict) else {}
-    strategy_policy = (
-        dict(strategist_output.get("strategy_policy") or {})
-        if isinstance(strategist_output.get("strategy_policy"), dict)
-        else {}
-    )
-    scanner_policy = (
-        dict(strategy_policy.get("scanner_policy") or {})
-        if isinstance(strategy_policy.get("scanner_policy"), dict)
-        else {}
-    )
-    monitor_policy = (
-        dict(strategy_policy.get("monitor_policy") or {})
-        if isinstance(strategy_policy.get("monitor_policy"), dict)
-        else {}
-    )
-    commander_context = (
-        dict(strategy_policy.get("commander_context") or {})
-        if isinstance(strategy_policy.get("commander_context"), dict)
-        else {}
-    )
-    strategist_plan = (
-        dict(strategy_policy.get("strategist_plan") or {})
-        if isinstance(strategy_policy.get("strategist_plan"), dict)
-        else {}
-    )
-    policy_provenance = (
-        dict(strategy_policy.get("provenance") or {})
-        if isinstance(strategy_policy.get("provenance"), dict)
-        else {}
-    )
-    scanner_bias_context = {}
-    if isinstance(commander_context.get("scanner_bias"), dict):
-        scanner_bias_context = dict(commander_context.get("scanner_bias") or {})
-    elif isinstance(scanner_policy.get("scanner_bias"), dict):
-        scanner_bias_context = dict(scanner_policy.get("scanner_bias") or {})
-    elif isinstance(strategist_output.get("scanner_bias_context"), dict):
-        scanner_bias_context = dict(strategist_output.get("scanner_bias_context") or {})
-    scanner_memory_bias = {}
-    if isinstance(commander_context.get("scanner_memory_bias"), dict):
-        scanner_memory_bias = dict(commander_context.get("scanner_memory_bias") or {})
-    elif isinstance(scanner_policy.get("scanner_memory_bias"), dict):
-        scanner_memory_bias = dict(scanner_policy.get("scanner_memory_bias") or {})
-    elif isinstance(strategist_output.get("scanner_memory_bias"), dict):
-        scanner_memory_bias = dict(strategist_output.get("scanner_memory_bias") or {})
-    symbol_constraints = (
-        dict(strategist_plan.get("symbol_constraints") or {})
-        if isinstance(strategist_plan.get("symbol_constraints"), dict)
-        else {}
-    )
-    raw_bias = strategist_output.get("scanner_bias")
-    if isinstance(raw_bias, dict):
-        raw_bias = str(raw_bias.get("style") or "")
-    base = {
-        "themes": list(strategist_output.get("themes") or []),
-        "selected_themes": list(strategist_output.get("selected_themes") or []),
-        "avoid_themes": list(strategist_output.get("avoid_themes") or []),
-        "playbook": str(
-            strategist_output.get("playbook")
-            or strategist_plan.get("selected_playbook")
-            or ""
-        ),
-        "tactical_strategy": str(strategist_output.get("tactical_strategy") or ""),
-        "tactical_subtype": str(strategist_output.get("tactical_subtype") or ""),
-        "scanner_priority": list(
-            scanner_policy.get("priority_tilts")
-            or strategist_output.get("scanner_priority")
-            or symbol_constraints.get("scanner_priority")
-            or []
-        ),
-        "scanner_source_policy": dict(
-            scanner_policy.get("candidate_sources")
-            if isinstance(scanner_policy.get("candidate_sources"), dict)
-            else strategist_output.get("scanner_source_policy")
-            or {}
-        ),
-        "scanner_bias": str(raw_bias or "").strip().lower(),
-        "scanner_bias_context": dict(scanner_bias_context),
-        "scanner_memory_bias": dict(scanner_memory_bias),
-        "trade_aggressiveness": strategist_output.get("trade_aggressiveness"),
-        "risk_tone": strategist_output.get("risk_tone"),
-        "monitor_guidance": strategist_output.get("monitor_guidance"),
-        "theme_source": strategist_output.get("theme_source"),
-        "theme_source_status": strategist_output.get("theme_source_status"),
-        "theme_strength_packet": dict(strategist_output.get("theme_strength_packet") or {})
-        if isinstance(strategist_output.get("theme_strength_packet"), dict)
-        else {},
-        "available_themes": list(strategist_output.get("available_themes") or []),
-        "theme_strategy": dict(strategist_output.get("theme_strategy") or {})
-        if isinstance(strategist_output.get("theme_strategy"), dict)
-        else {},
-        "score_weights": dict(scanner_policy.get("score_weights") or {}),
-        "filters": dict(scanner_policy.get("filters") or {}),
-        "ranking_rules": dict(scanner_policy.get("ranking_rules") or {}),
-        "monitor_policy": dict(monitor_policy),
-        "commander_context": commander_context,
-        "strategist_plan": strategist_plan,
-        "policy_provenance": policy_provenance,
-    }
-
-    # Backward-compatible override hook; canonical source remains strategist_output.
-    guidance = state.get("scanner_guidance")
-    if isinstance(guidance, dict):
-        out = dict(base)
-        for key in (
-            "themes",
-            "selected_themes",
-            "avoid_themes",
-            "playbook",
-            "tactical_strategy",
-            "tactical_subtype",
-            "scanner_priority",
-            "scanner_source_policy",
-            "scanner_bias",
-            "scanner_bias_context",
-            "scanner_memory_bias",
-            "trade_aggressiveness",
-            "risk_tone",
-            "monitor_guidance",
-            "theme_source",
-            "theme_source_status",
-            "theme_strength_packet",
-            "available_themes",
-            "theme_strategy",
-            "score_weights",
-            "filters",
-            "ranking_rules",
-            "monitor_policy",
-            "commander_context",
-            "strategist_plan",
-            "policy_provenance",
-        ):
-            if guidance.get(key) not in (None, ""):
-                out[key] = guidance.get(key)
-        raw_override_bias = out.get("scanner_bias")
-        if isinstance(raw_override_bias, dict):
-            out["scanner_bias"] = str(raw_override_bias.get("style") or "")
-        return out
-
-    return base
+    return _extract_scanner_guidance_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 _build_kiwoom_candidates = partial(
@@ -1136,159 +491,15 @@ def _build_scanner_policy_trace(
     scanner_bias_context: Dict[str, Any],
     scanner_memory_bias: Dict[str, Any],
 ) -> Dict[str, Any]:
-    consumed_fields: List[str] = []
-    for key in (
-        "scanner_mission",
-        "allowed_playbooks",
-        "banned_playbooks",
-        "risk_mode",
-        "command_intent",
-        "strategist_invocation",
-        "no_trade_reason_code",
-        "source_priority",
-    ):
-        value = commander_context.get(key)
-        if value not in (None, "", [], {}):
-            consumed_fields.append(key)
-    commander_context_consumed = bool(consumed_fields)
-
-    strategist_consumed_fields: List[str] = []
-    for key in ("selected_playbook", "candidate_hypotheses", "symbol_constraints", "strategy_summary"):
-        value = strategist_plan.get(key)
-        if value not in (None, "", [], {}):
-            strategist_consumed_fields.append(key)
-
-    commander_priority_ref = {
-        "scanner_mission": str(commander_context.get("scanner_mission") or ""),
-        "allowed_playbooks": list(commander_context.get("allowed_playbooks") or []),
-        "banned_playbooks": list(commander_context.get("banned_playbooks") or []),
-        "risk_mode": str(commander_context.get("risk_mode") or ""),
-        "command_intent": str(commander_context.get("command_intent") or ""),
-        "strategist_invocation": str(commander_context.get("strategist_invocation") or ""),
-        "no_trade_reason_code": str(commander_context.get("no_trade_reason_code") or ""),
-        "source_priority": list(commander_context.get("source_priority") or []),
-    }
-    strategist_constraints_ref = {
-        "selected_playbook": str(strategist_plan.get("selected_playbook") or ""),
-        "candidate_hypotheses": list(strategist_plan.get("candidate_hypotheses") or []),
-        "symbol_constraints": dict(strategist_plan.get("symbol_constraints") or {}),
-        "strategy_summary": str(strategist_plan.get("strategy_summary") or ""),
-    }
-    applied_policy = (
-        dict(commander_context.get("applied_policy") or {})
-        if isinstance(commander_context.get("applied_policy"), dict)
-        else {}
-    )
-    normalized_scanner_bias_context, _scanner_bias_meta = normalize_scanner_bias_context(
-        scanner_bias_context or None,
-        bias_source=str(commander_context.get("policy_source") or "strategist"),
-    )
-    scanner_bias_summary = summarize_scanner_bias_context(normalized_scanner_bias_context)
-    scanner_memory_bias_summary = summarize_scanner_memory_bias(scanner_memory_bias)
-    policy_source = str(
-        commander_context.get("policy_source")
-        or policy_provenance.get("applied_policy_source")
-        or policy_provenance.get("monitor_entry_policy_source")
-        or ""
-    )
-    monitor_entry_policy_summary = {
-        key: applied_policy.get(key)
-        for key in (
-            "timeframe_minutes",
-            "breakout_lookback",
-            "volume_lookback",
-            "volume_ratio_min",
-            "pullback_min_pct",
-            "pullback_max_pct",
-            "max_extended_from_vwap_pct",
-        )
-        if key in applied_policy
-    }
-    ranking_factors = list(dict.fromkeys([str(x).strip() for x in list(scanner_priority or []) if str(x).strip()]))[:8]
-    if scanner_bias:
-        ranking_factors.append(f"bias:{scanner_bias}")
-    if bool(scanner_bias_summary.get("enabled")):
-        ranking_factors.append(f"scanner_bias:{scanner_bias_summary.get('summary')}")
-    if bool(scanner_memory_bias_summary.get("enabled")):
-        ranking_factors.append("memory_bias")
-    if playbook:
-        ranking_factors.append(f"playbook:{playbook}")
-    if str(commander_context.get("scanner_mission") or "").strip():
-        ranking_factors.append("commander_mission")
-    if str(commander_context.get("risk_mode") or "").strip():
-        ranking_factors.append(f"risk_mode:{str(commander_context.get('risk_mode') or '').strip()}")
-    ranking_factors = list(dict.fromkeys(ranking_factors))[:10]
-
-    summary_parts: List[str] = []
-    if str(commander_context.get("scanner_mission") or "").strip():
-        summary_parts.append(f"commander_mission={str(commander_context.get('scanner_mission') or '').strip()}")
-    if str(strategist_plan.get("selected_playbook") or playbook).strip():
-        summary_parts.append(f"playbook={str(strategist_plan.get('selected_playbook') or playbook).strip()}")
-    if str(commander_context.get("risk_mode") or "").strip():
-        summary_parts.append(f"risk_mode={str(commander_context.get('risk_mode') or '').strip()}")
-    if str(commander_context.get("no_trade_reason_code") or "").strip():
-        summary_parts.append(f"no_trade_reason={str(commander_context.get('no_trade_reason_code') or '').strip()}")
-    if policy_source:
-        summary_parts.append(f"policy_source={policy_source}")
-    if bool(scanner_bias_summary.get("enabled")):
-        summary_parts.append(f"scanner_bias={str(scanner_bias_summary.get('summary') or '')}")
-    if bool(scanner_memory_bias_summary.get("enabled")):
-        summary_parts.append("memory_bias=commander")
-
-    return {
-        "commander_context_consumed": commander_context_consumed,
-        "consumed_fields": consumed_fields,
-        "commander_priority_ref": commander_priority_ref,
-        "strategist_constraints_ref": strategist_constraints_ref,
-        "selection_basis": {
-            "commander_context_consumed": commander_context_consumed,
-            "strategist_plan_consumed": bool(strategist_consumed_fields),
-            "consumed_fields": consumed_fields + strategist_consumed_fields,
-            "scanner_bias_context": normalized_scanner_bias_context.to_dict(),
-            "scanner_bias_summary": dict(scanner_bias_summary),
-            "scanner_memory_bias_summary": dict(scanner_memory_bias_summary),
-            "summary": " | ".join(summary_parts) if summary_parts else "base_quantitative_ranking",
-        },
-        "ranking_factors": ranking_factors,
-        "playbook": str(strategist_plan.get("selected_playbook") or playbook or ""),
-        "policy_source": policy_source,
-        "applied_policy_present": bool(applied_policy),
-        "monitor_entry_policy_summary": monitor_entry_policy_summary,
-        "scanner_bias_context": normalized_scanner_bias_context.to_dict(),
-        "scanner_bias_summary": dict(scanner_bias_summary),
-        "scanner_memory_bias": dict(scanner_memory_bias or {}),
-        "scanner_memory_bias_summary": dict(scanner_memory_bias_summary),
-        "shadow_used": bool(
-            commander_context.get("shadow_used")
-            if commander_context.get("shadow_used") is not None
-            else policy_provenance.get("shadow_used")
-        ),
-        "strategist_fallback_used": bool(
-            commander_context.get("strategist_fallback_used")
-            if commander_context.get("strategist_fallback_used") is not None
-            else policy_provenance.get("strategist_fallback_used")
-        ),
-        "policy_provenance_ref": {
-            "policy_source": policy_source,
-            "applied_policy_present": bool(applied_policy),
-            "monitor_entry_policy_summary": monitor_entry_policy_summary,
-            "scanner_bias_summary": dict(scanner_bias_summary),
-        },
-    }
+    return _build_scanner_policy_trace_r3_impl(commander_context=commander_context,
+        strategist_plan=strategist_plan, policy_provenance=policy_provenance, playbook=playbook,
+        scanner_priority=scanner_priority, scanner_bias=scanner_bias,
+        scanner_bias_context=scanner_bias_context, scanner_memory_bias=scanner_memory_bias,
+        facade=_r3_sys.modules[__name__])
 
 
 def _normalize_priority_list(values: Any) -> List[str]:
-    out: List[str] = []
-    seen = set()
-    if not isinstance(values, list):
-        return out
-    for row in values:
-        s = str(row or "").strip().lower()
-        if not s or s in seen:
-            continue
-        seen.add(s)
-        out.append(s)
-    return out
+    return _normalize_priority_list_r3_impl(values, facade=_r3_sys.modules[__name__])
 
 
 def _apply_scanner_guidance_weights(
@@ -1300,71 +511,10 @@ def _apply_scanner_guidance_weights(
     trade_aggressiveness: str,
     risk_tone: str,
 ) -> Dict[str, float]:
-    out = dict(weights or {})
-    bias = str(scanner_bias or "").strip().lower()
-    priority_set = set(_normalize_priority_list(scanner_priority))
-    playbook_norm = str(playbook or "").strip().lower()
-    aggr = str(trade_aggressiveness or "").strip().lower()
-    tone = str(risk_tone or "").strip().lower()
-
-    if bias == "large_cap":
-        out["trading_value"] = float(out.get("trading_value", 0.0) * 1.10)
-        out["volatility_penalty"] = float(out.get("volatility_penalty", 0.0) * 1.12)
-    elif bias == "leader":
-        out["trend"] = float(out.get("trend", 0.0) * 1.08)
-        out["theme_boost"] = float(out.get("theme_boost", 0.0) * 1.08)
-    elif bias == "momentum":
-        out["momentum"] = float(out.get("momentum", 0.0) * 1.12)
-        out["volume_surge"] = float(out.get("volume_surge", 0.0) * 1.08)
-    elif bias == "value":
-        out["trading_value"] = float(out.get("trading_value", 0.0) * 1.10)
-        out["momentum"] = float(out.get("momentum", 0.0) * 0.94)
-
-    # Priority-driven mild boosts (additive-safe, scanner remains quantitative).
-    if "liquidity" in priority_set:
-        out["trading_value"] = float(out.get("trading_value", 0.0) * 1.10)
-    if "momentum" in priority_set or "breakout" in priority_set:
-        out["momentum"] = float(out.get("momentum", 0.0) * 1.12)
-    if "trend_strength" in priority_set or "trend" in priority_set:
-        out["trend"] = float(out.get("trend", 0.0) * 1.10)
-    if "ma_alignment" in priority_set or "moving_average_trend" in priority_set:
-        out["trend"] = float(out.get("trend", 0.0) * 1.08)
-    if "vwap_reclaim" in priority_set or "vwap_distance" in priority_set:
-        out["intraday_strength"] = float(out.get("intraday_strength", 0.0) * 1.08)
-    if "cross_section_rank" in priority_set or "relative_strength" in priority_set:
-        out["trend"] = float(out.get("trend", 0.0) * 1.06)
-        out["theme_boost"] = float(out.get("theme_boost", 0.0) * 1.04)
-    if "volume_surge" in priority_set or "volume_confirmation" in priority_set:
-        out["volume_surge"] = float(out.get("volume_surge", 0.0) * 1.08)
-    if "risk_penalty" in priority_set or "drawdown_control" in priority_set:
-        out["volatility_penalty"] = float(out.get("volatility_penalty", 0.0) * 1.15)
-        out["gap_penalty"] = float(out.get("gap_penalty", 0.0) * 1.15)
-
-    # Playbook guidance remains additive (Scanner still does final quantitative ranking).
-    if playbook_norm == "breakout":
-        out["momentum"] = float(out.get("momentum", 0.0) * 1.10)
-        out["volume_surge"] = float(out.get("volume_surge", 0.0) * 1.06)
-    elif playbook_norm == "pullback":
-        out["trend"] = float(out.get("trend", 0.0) * 1.08)
-        out["intraday_strength"] = float(out.get("intraday_strength", 0.0) * 1.05)
-    elif playbook_norm == "reversal":
-        out["momentum"] = float(out.get("momentum", 0.0) * 0.92)
-        out["gap_penalty"] = float(out.get("gap_penalty", 0.0) * 1.10)
-    elif playbook_norm == "defensive":
-        out["trading_value"] = float(out.get("trading_value", 0.0) * 1.08)
-        out["volatility_penalty"] = float(out.get("volatility_penalty", 0.0) * 1.12)
-
-    # Risk tone / aggressiveness final tuning.
-    if aggr == "high" and tone in ("aggressive", "normal"):
-        out["momentum"] = float(out.get("momentum", 0.0) * 1.05)
-        out["intraday_strength"] = float(out.get("intraday_strength", 0.0) * 1.05)
-    if aggr == "low" or tone == "conservative":
-        out["volatility_penalty"] = float(out.get("volatility_penalty", 0.0) * 1.20)
-        out["gap_penalty"] = float(out.get("gap_penalty", 0.0) * 1.20)
-        out["intraday_strength"] = float(out.get("intraday_strength", 0.0) * 0.95)
-        out["momentum"] = float(out.get("momentum", 0.0) * 0.95)
-
-    return out
+    return _apply_scanner_guidance_weights_r3_impl(weights, playbook=playbook,
+        scanner_bias=scanner_bias, scanner_priority=scanner_priority,
+        trade_aggressiveness=trade_aggressiveness, risk_tone=risk_tone,
+        facade=_r3_sys.modules[__name__])
 
 
 def _scanner_bias_total_cap(bias_strength: str) -> float:
@@ -1378,59 +528,8 @@ def _compute_structured_scanner_bias(
     metrics: Dict[str, Any],
     bias_context: Dict[str, Any],
 ) -> Dict[str, Any]:
-    normalized_context, _meta = normalize_scanner_bias_context(bias_context or None)
-    context = normalized_context.to_dict()
-    summary = summarize_scanner_bias_context(context)
-    if not bool(summary.get("enabled")):
-        return {
-            "bias_adjustment": 0.0,
-            "bias_adjustments": [],
-            "bias_summary": dict(summary),
-            "bias_signals": {},
-        }
-
-    vwap_distance = _to_float(feature_row.get("vwap_distance"))
-    volume_spike20 = _to_float(feature_row.get("volume_spike20"))
-    intraday_change_pct = _to_float(metrics.get("change_pct"))
-    signals = {
-        "vwap_distance": float(vwap_distance),
-        "volume_spike20": float(volume_spike20),
-        "intraday_change_pct": float(intraday_change_pct),
-    }
-    adjustments: List[Dict[str, Any]] = []
-    bias_delta = 0.0
-    strength = str(context.get("bias_strength") or "low").strip().lower()
-    cap = _scanner_bias_total_cap(strength)
-    step = 0.005 if strength == "medium" else 0.003
-
-    if bool(context.get("prefer_shallow_pullback_candidates")) and -0.015 <= vwap_distance <= 0.03:
-        bias_delta += step
-        adjustments.append({"rule": "prefer_shallow_pullback_candidates", "delta": float(step), "reason": "shallow pullback preference applied"})
-
-    if bool(context.get("penalize_overextended")) and vwap_distance >= 0.08:
-        delta = -(step * 1.5)
-        bias_delta += delta
-        adjustments.append({"rule": "penalize_overextended", "delta": float(delta), "reason": "overextended penalty applied"})
-
-    if bool(context.get("prefer_reclaim_candidates")) and -0.01 <= vwap_distance <= 0.02:
-        bias_delta += step
-        adjustments.append({"rule": "prefer_reclaim_candidates", "delta": float(step), "reason": "reclaim preference applied"})
-
-    if bool(context.get("prefer_volume_confirmation")) and volume_spike20 >= 1.2:
-        bias_delta += step
-        adjustments.append({"rule": "prefer_volume_confirmation", "delta": float(step), "reason": "volume confirmation bias applied"})
-
-    bias_delta = _clamp(bias_delta, -cap, cap)
-    if adjustments and abs(bias_delta) < 1e-9:
-        adjustments = []
-
-    return {
-        "bias_adjustment": float(bias_delta),
-        "bias_adjustments": adjustments[:4],
-        "bias_summary": dict(summary),
-        "bias_signals": signals,
-        "symbol": str(symbol or ""),
-    }
+    return _compute_structured_scanner_bias_r3_impl(symbol=symbol, feature_row=feature_row,
+        metrics=metrics, bias_context=bias_context, facade=_r3_sys.modules[__name__])
 
 
 def _summarize_quote_metric_coverage(
@@ -1439,39 +538,8 @@ def _summarize_quote_metric_coverage(
     skill_quotes: Dict[str, Dict[str, Any]],
     state: Dict[str, Any],
 ) -> Dict[str, Any]:
-    live_equity_candidates = 0
-    quote_rows_present = 0
-    quote_rows_with_price = 0
-    quote_rows_with_activity = 0
-    zero_quote_metric_symbols: List[str] = []
-
-    for item in list(candidates or []):
-        symbol = _norm_symbol(item.get("symbol") if isinstance(item, dict) else item)
-        if not _is_live_equity_symbol(symbol):
-            continue
-        live_equity_candidates += 1
-        quote = skill_quotes.get(symbol) if isinstance(skill_quotes.get(symbol), dict) else {}
-        if quote:
-            quote_rows_present += 1
-            if _to_float(quote.get("price") or quote.get("cur")) > 0.0:
-                quote_rows_with_price += 1
-        metrics = _candidate_quote_metrics(symbol, skill_quotes=skill_quotes, state=state)
-        if (
-            _to_float(metrics.get("volume")) > 0.0
-            or _to_float(metrics.get("trading_value")) > 0.0
-            or abs(_to_float(metrics.get("change_pct"))) > 1e-9
-        ):
-            quote_rows_with_activity += 1
-        else:
-            zero_quote_metric_symbols.append(symbol)
-
-    return {
-        "live_equity_candidates": int(live_equity_candidates),
-        "quote_rows_present": int(quote_rows_present),
-        "quote_rows_with_price": int(quote_rows_with_price),
-        "quote_rows_with_activity": int(quote_rows_with_activity),
-        "zero_quote_metric_symbols": list(zero_quote_metric_symbols)[:10],
-    }
+    return _summarize_quote_metric_coverage_r3_impl(candidates, skill_quotes=skill_quotes,
+        state=state, facade=_r3_sys.modules[__name__])
 
 
 def _should_refresh_scanner_features(
@@ -1480,28 +548,8 @@ def _should_refresh_scanner_features(
     candidates: List[Any],
     quote_metric_coverage: Dict[str, Any],
 ) -> Tuple[bool, str]:
-    live_equity_candidates = _to_int(quote_metric_coverage.get("live_equity_candidates"), 0)
-    if live_equity_candidates <= 0:
-        return False, ""
-    if _to_int(quote_metric_coverage.get("quote_rows_with_activity"), 0) > 0:
-        return False, ""
-
-    fe_root = state.get("feature_engine") if isinstance(state.get("feature_engine"), dict) else {}
-    fe_by_symbol = fe_root.get("by_symbol") if isinstance(fe_root.get("by_symbol"), dict) else {}
-    if not isinstance(fe_by_symbol, dict) or not fe_by_symbol:
-        return False, ""
-
-    stale_symbols: List[str] = []
-    for item in list(candidates or []):
-        symbol = _norm_symbol(item.get("symbol") if isinstance(item, dict) else item)
-        if not _is_live_equity_symbol(symbol):
-            continue
-        value = fe_by_symbol.get(symbol)
-        if isinstance(value, dict) and value:
-            stale_symbols.append(symbol)
-    if not stale_symbols:
-        return False, ""
-    return True, "quote_metrics_missing_rebuild_feature_engine"
+    return _should_refresh_scanner_features_r3_impl(state=state, candidates=candidates,
+        quote_metric_coverage=quote_metric_coverage, facade=_r3_sys.modules[__name__])
 
 
 def _build_scanner_monitor_policy_input(
@@ -1510,15 +558,9 @@ def _build_scanner_monitor_policy_input(
     commander_context: Dict[str, Any],
     monitor_policy: Dict[str, Any],
 ) -> Dict[str, Any]:
-    if isinstance(commander_context.get("applied_policy"), dict):
-        return dict(commander_context.get("applied_policy") or {})
-    if isinstance(state.get("commander_applied_policy"), dict):
-        return dict(state.get("commander_applied_policy") or {})
-    if isinstance(monitor_policy.get("entry_policy"), dict):
-        return dict(monitor_policy.get("entry_policy") or {})
-    if isinstance(state.get("monitor_entry_policy"), dict):
-        return dict(state.get("monitor_entry_policy") or {})
-    return {}
+    return _build_scanner_monitor_policy_input_r3_impl(state=state,
+        commander_context=commander_context, monitor_policy=monitor_policy,
+        facade=_r3_sys.modules[__name__])
 
 
 def _build_scanner_monitor_frame(
@@ -1528,80 +570,23 @@ def _build_scanner_monitor_frame(
     risk_tone: str,
     trade_aggressiveness: str,
 ) -> Dict[str, Any]:
-    out: Dict[str, Any] = {}
-    if str(playbook or "").strip():
-        out["playbook"] = str(playbook).strip().lower()
-    if str(monitor_guidance or "").strip():
-        out["monitor_guidance"] = str(monitor_guidance).strip().lower()
-    if str(risk_tone or "").strip():
-        out["risk_tone"] = str(risk_tone).strip().lower()
-    if str(trade_aggressiveness or "").strip():
-        out["trade_aggressiveness"] = str(trade_aggressiveness).strip().lower()
-    return out
+    return _build_scanner_monitor_frame_r3_impl(playbook=playbook,
+        monitor_guidance=monitor_guidance, risk_tone=risk_tone,
+        trade_aggressiveness=trade_aggressiveness, facade=_r3_sys.modules[__name__])
 
 
 def _calc_reclaim_proximity(*, actual: float | None, minimum: float | None) -> float:
-    if actual is None:
-        return 0.5
-    actual_num = float(actual)
-    minimum_num = float(minimum if minimum is not None else -0.02)
-    if actual_num >= minimum_num:
-        return 1.0
-    band = max(0.05, abs(minimum_num) * 3.0)
-    return _clamp(1.0 - abs(actual_num - minimum_num) / band, 0.0, 1.0)
+    return _calc_reclaim_proximity_r3_impl(actual=actual, minimum=minimum,
+        facade=_r3_sys.modules[__name__])
 
 
 def _calc_breakout_proximity(*, actual: float | None, minimum: float | None) -> float:
-    if actual is None:
-        return 0.5
-    actual_num = float(actual)
-    minimum_num = float(minimum if minimum is not None else 0.0)
-    if actual_num >= minimum_num:
-        return 1.0
-    band = 0.02
-    return _clamp(1.0 - abs(actual_num - minimum_num) / band, 0.0, 1.0)
+    return _calc_breakout_proximity_r3_impl(actual=actual, minimum=minimum,
+        facade=_r3_sys.modules[__name__])
 
 
 def _scanner_chart_fit_from_entry_result(result: Mapping[str, Any]) -> Dict[str, Any]:
-    chart_features = (
-        dict(result.get("chart_structure_features") or {})
-        if isinstance(result.get("chart_structure_features"), Mapping)
-        else {}
-    )
-    context = (
-        dict(chart_features.get("human_chart_context") or {})
-        if isinstance(chart_features.get("human_chart_context"), Mapping)
-        else {}
-    )
-    if not bool(context.get("available")):
-        return {
-            "available": False,
-            "chart_context_score": 0.5,
-            "exit_risk_score": 0.0,
-            "late_entry_risk": "",
-            "soft_penalty": 0.0,
-            "components": {},
-        }
-    late_entry_risk = str(context.get("late_entry_risk") or "").strip().lower()
-    late_penalty = {"high": 0.10, "medium": 0.05, "low": 0.02}.get(late_entry_risk, 0.0)
-    exit_risk_score = _clamp(_to_float(context.get("exit_risk_score")), 0.0, 1.0)
-    risk_penalty = 0.05 if exit_risk_score >= 0.55 else 0.0
-    return {
-        "available": True,
-        "chart_context_score": _clamp(_to_float(context.get("entry_chart_score"), 0.5), 0.0, 1.0),
-        "exit_risk_score": float(exit_risk_score),
-        "late_entry_risk": late_entry_risk,
-        "soft_penalty": float(late_penalty + risk_penalty),
-        "components": {
-            "vwap_reclaim_persistence": context.get("vwap_reclaim_persistence"),
-            "ma_bullish_persistence": context.get("ma_bullish_persistence"),
-            "volume_expansion_persistence": context.get("volume_expansion_persistence"),
-            "late_entry_risk": late_entry_risk,
-            "swing_low_above_vwap": bool(context.get("swing_low_above_vwap")),
-            "box_breakout_retest_hold": bool(context.get("box_breakout_retest_hold")),
-            "exit_risk_score": float(exit_risk_score),
-        },
-    }
+    return _scanner_chart_fit_from_entry_result_r3_impl(result, facade=_r3_sys.modules[__name__])
 
 
 def _scanner_macro_focus(
@@ -1611,58 +596,9 @@ def _scanner_macro_focus(
     risk_tone: str = "",
     trade_aggressiveness: str = "",
 ) -> Dict[str, float]:
-    focus = {
-        "trend_alignment": 1.0,
-        "relative_strength": 1.0,
-        "adx_trend": 1.0,
-        "volume_accumulation": 1.0,
-        "breakout_base": 1.0,
-        "risk_balance": 1.0,
-    }
-    playbook_text = str(playbook or "").strip().lower()
-    if playbook_text == "breakout":
-        focus["breakout_base"] += 0.25
-        focus["volume_accumulation"] += 0.15
-        focus["relative_strength"] += 0.10
-    elif playbook_text in {"pullback", "reversal"}:
-        focus["trend_alignment"] += 0.15
-        focus["risk_balance"] += 0.15
-        focus["breakout_base"] -= 0.10
-    elif playbook_text == "defensive":
-        focus["risk_balance"] += 0.25
-        focus["trend_alignment"] += 0.10
-
-    for item in list(scanner_priority or []):
-        text = str(item or "").strip().lower()
-        if text in {"trend", "trend_strength", "ma_alignment", "ma20", "ma60", "ma120"}:
-            focus["trend_alignment"] += 0.10
-        elif text in {"relative_strength", "cross_section_rank", "leader", "leaders"}:
-            focus["relative_strength"] += 0.10
-        elif text in {"adx", "adx14"}:
-            focus["adx_trend"] += 0.10
-        elif text in {"volume", "volume_surge", "volume_spike", "turnover"}:
-            focus["volume_accumulation"] += 0.10
-        elif text in {"breakout", "breakout_base", "vwap_reclaim", "momentum"}:
-            focus["breakout_base"] += 0.10
-        elif text in {"low_risk", "risk", "volatility", "gap"}:
-            focus["risk_balance"] += 0.10
-
-    risk_text = str(risk_tone or "").strip().lower()
-    if risk_text == "conservative":
-        focus["risk_balance"] += 0.20
-    elif risk_text == "aggressive":
-        focus["breakout_base"] += 0.10
-        focus["volume_accumulation"] += 0.10
-
-    aggression_text = str(trade_aggressiveness or "").strip().lower()
-    if aggression_text == "high":
-        focus["relative_strength"] += 0.10
-        focus["breakout_base"] += 0.10
-    elif aggression_text == "low":
-        focus["risk_balance"] += 0.15
-        focus["trend_alignment"] += 0.05
-
-    return {key: _clamp(float(value), 0.50, 1.50) for key, value in focus.items()}
+    return _scanner_macro_focus_r3_impl(playbook=playbook, scanner_priority=scanner_priority,
+        risk_tone=risk_tone, trade_aggressiveness=trade_aggressiveness,
+        facade=_r3_sys.modules[__name__])
 
 
 def _compute_scanner_macro_chart_fit(
@@ -1683,113 +619,16 @@ def _compute_scanner_macro_chart_fit(
     trade_aggressiveness: str = "",
     bias_cap: float = 0.06,
 ) -> Dict[str, Any]:
-    coverage_keys = (
-        "return20",
-        "ma20_gap",
-        "ma60_gap",
-        "ma120_gap",
-        "trend_strength",
-        "adx14",
-        "volume_spike20",
-        "cross_section_rank",
-        "rolling_drawdown20",
-        "volatility20",
-        "gap_pct",
-    )
-    coverage = sum(1 for key in coverage_keys if feature_row.get(key) not in (None, ""))
-    focus = _scanner_macro_focus(
-        playbook=playbook,
-        scanner_priority=scanner_priority,
-        risk_tone=risk_tone,
-        trade_aggressiveness=trade_aggressiveness,
-    )
-    if coverage < 3:
-        return {
-            "scanner_macro_chart_fit_score": 0.5,
-            "scanner_macro_chart_fit_bias": 0.0,
-            "scanner_macro_chart_fit_authority": "soft_rank_bias_only_insufficient_feature_coverage",
-            "scanner_macro_chart_fit_components": {
-                "feature_coverage_count": int(coverage),
-                "focus": dict(focus),
-            },
-            "scanner_macro_chart_fit_focus": dict(focus),
-        }
-    return20 = _to_float(feature_row.get("return20"))
-    ma20_gap = _to_float(feature_row.get("ma20_gap"))
-    rolling_drawdown20 = abs(_to_float(feature_row.get("rolling_drawdown20")))
-    relative_strength = feature_row.get("sector_relative_strength")
-    if relative_strength in (None, ""):
-        relative_strength = feature_row.get("relative_strength20")
-    relative_strength_component = max(
-        cross_section_rank_component,
-        max(0.0, _signed01(_to_float(relative_strength), 0.08)),
-        max(0.0, _signed01(return20, 0.10)),
-    )
-    trend_alignment_score = _clamp(
-        (0.48 * ma_alignment_component) + (0.32 * trend_component) + (0.20 * adx_component),
-        0.0,
-        1.0,
-    )
-    adx_trend_score = _clamp((0.65 * adx_component) + (0.35 * trend_component), 0.0, 1.0)
-    volume_accumulation_score = _clamp(volume_surge_component, 0.0, 1.0)
-    breakout_base_score = _clamp(
-        (0.45 * momentum_component)
-        + (0.25 * trend_component)
-        + (0.20 * vwap_alignment_component)
-        + (0.10 * max(0.0, _signed01(ma20_gap, 0.03))),
-        0.0,
-        1.0,
-    )
-    drawdown_penalty = _norm01(rolling_drawdown20, 0.08, 0.25)
-    overextension_risk = max(
-        _norm01(max(0.0, ma20_gap), 0.06, 0.15),
-        _clamp(volatility_penalty, 0.0, 1.0),
-        _clamp(gap_penalty, 0.0, 1.0),
-    )
-    risk_balance_score = _clamp(
-        1.0
-        - (
-            (0.40 * _clamp(volatility_penalty, 0.0, 1.0))
-            + (0.35 * _clamp(gap_penalty, 0.0, 1.0))
-            + (0.25 * drawdown_penalty)
-        ),
-        0.0,
-        1.0,
-    )
-    components = {
-        "trend_alignment_score": float(trend_alignment_score),
-        "relative_strength_score": float(_clamp(relative_strength_component, 0.0, 1.0)),
-        "adx_trend_score": float(adx_trend_score),
-        "volume_accumulation_score": float(volume_accumulation_score),
-        "breakout_base_score": float(breakout_base_score),
-        "risk_balance_score": float(risk_balance_score),
-        "overextension_risk": float(_clamp(overextension_risk, 0.0, 1.0)),
-        "rolling_drawdown20": float(rolling_drawdown20),
-        "focus": dict(focus),
-    }
-    weights = {
-        "trend_alignment_score": 0.24 * focus["trend_alignment"],
-        "relative_strength_score": 0.18 * focus["relative_strength"],
-        "adx_trend_score": 0.12 * focus["adx_trend"],
-        "volume_accumulation_score": 0.16 * focus["volume_accumulation"],
-        "breakout_base_score": 0.18 * focus["breakout_base"],
-        "risk_balance_score": 0.12 * focus["risk_balance"],
-    }
-    weight_total = sum(float(v) for v in weights.values()) or 1.0
-    score = _clamp(
-        sum(float(components[key]) * weight for key, weight in weights.items()) / weight_total,
-        0.0,
-        1.0,
-    )
-    bias_limit = max(0.0, float(bias_cap))
-    bias = _clamp((score - 0.50) * 0.12, -bias_limit, bias_limit)
-    return {
-        "scanner_macro_chart_fit_score": float(score),
-        "scanner_macro_chart_fit_bias": float(bias),
-        "scanner_macro_chart_fit_authority": "soft_rank_bias_only",
-        "scanner_macro_chart_fit_components": components,
-        "scanner_macro_chart_fit_focus": dict(focus),
-    }
+    return _compute_scanner_macro_chart_fit_r3_impl(feature_row=feature_row,
+        ma_alignment_component=ma_alignment_component, trend_component=trend_component,
+        adx_component=adx_component, momentum_component=momentum_component,
+        volume_surge_component=volume_surge_component,
+        vwap_alignment_component=vwap_alignment_component,
+        cross_section_rank_component=cross_section_rank_component,
+        volatility_penalty=volatility_penalty, gap_penalty=gap_penalty, playbook=playbook,
+        scanner_priority=scanner_priority, risk_tone=risk_tone,
+        trade_aggressiveness=trade_aggressiveness, bias_cap=bias_cap,
+        facade=_r3_sys.modules[__name__])
 
 
 def _compute_entry_compatibility_signal(
@@ -1802,187 +641,9 @@ def _compute_entry_compatibility_signal(
     policy: Any,
     bias_context: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    if policy in (None, {}, ""):
-        return {
-            "entry_compatibility_score": 0.5,
-            "compatibility_bias": 0.0,
-            "dominant_block_reason": "mixed",
-            "dominant_block_reason_ratio": 0.0,
-            "bias_scale": 0.10,
-            "soft_penalty": 0.0,
-            "compatibility_score_pre_penalty": 0.5,
-            "compatibility_score_post_penalty": 0.5,
-            "compatibility_components": {
-                "vwap_proximity_score": 0.5,
-                "volume_readiness_score": 0.5,
-                "breakout_readiness_score": 0.5,
-                "reclaim_proximity": 0.5,
-            },
-            "scanner_chart_fit_score": 0.5,
-            "scanner_chart_fit_authority": "disabled_no_policy",
-            "scanner_chart_fit_components": {},
-            "scanner_chart_fit_penalty": 0.0,
-            "expected_monitor_block_reason": "",
-            "compatibility_source": "disabled",
-            "triggered_path": "",
-            "paths_passed": [],
-            "vwap_distance_abs": None,
-            "is_below_vwap": False,
-            "reclaim_proximity": 0.5,
-            "volume_ratio": None,
-            "breakout_gap_pct": None,
-        }
-    result = evaluate_intraday_entry_signal(
-        candidate_rows,
-        current_price=current_price,
-        features=feature_row,
-        policy=policy,
-        frame=None,
-    )
-    thresholds = dict(result.get("threshold_margins") or {})
-    condition_scores = dict(result.get("condition_scores") or {})
-    metrics_map = dict(result.get("metrics") or {})
-
-    vwap_distance = metrics_map.get("extended_from_vwap_pct")
-    if vwap_distance in (None, ""):
-        vwap_distance = metrics_map.get("vwap_distance")
-    volume_ratio = metrics_map.get("volume_ratio")
-    breakout_gap_threshold = thresholds.get("breakout_gap_pct") if isinstance(thresholds.get("breakout_gap_pct"), dict) else {}
-    extended_threshold = thresholds.get("extended_from_vwap_pct") if isinstance(thresholds.get("extended_from_vwap_pct"), dict) else {}
-    volume_threshold = thresholds.get("volume_ratio") if isinstance(thresholds.get("volume_ratio"), dict) else {}
-    breakout_gap_pct = breakout_gap_threshold.get("actual")
-    min_extended = extended_threshold.get("min")
-    max_extended = extended_threshold.get("max")
-    volume_min = volume_threshold.get("min")
-    below_vwap = bool(vwap_distance is not None and _to_float(vwap_distance) < 0.0)
-
-    source = "minute_eval"
-    if not bool(result.get("evaluated")):
-        source = "feature_heuristic"
-        vwap_distance = feature_row.get("vwap_distance")
-        volume_ratio = feature_row.get("volume_ratio")
-        if volume_ratio in (None, ""):
-            volume_ratio = feature_row.get("volume_spike20")
-        breakout_gap_pct = None
-        min_extended = policy.get("min_extended_from_vwap_pct") if hasattr(policy, "get") else None
-        max_extended = policy.get("max_extended_from_vwap_pct") if hasattr(policy, "get") else None
-        volume_min = policy.get("volume_ratio_min") if hasattr(policy, "get") else None
-        below_vwap = bool(vwap_distance is not None and _to_float(vwap_distance) < 0.0)
-    elif max_extended in (None, "") and hasattr(policy, "get"):
-        max_extended = policy.get("max_extended_from_vwap_pct")
-
-    vwap_distance_num = float(_to_float(vwap_distance)) if vwap_distance not in (None, "") else None
-    vwap_distance_abs = abs(vwap_distance_num) if vwap_distance_num is not None else None
-    max_extended_num = float(_to_float(max_extended)) if max_extended not in (None, "") else None
-    reclaim_proximity = _calc_reclaim_proximity(
-        actual=vwap_distance_num,
-        minimum=float(min_extended) if min_extended not in (None, "") else None,
-    )
-    vwap_proximity_score = (
-        _clamp(1.0 - abs(min(0.0, float(vwap_distance_num))) / 0.10, 0.0, 1.0)
-        if vwap_distance_num is not None
-        else 0.5
-    )
-    overextension_score = 1.0
-    if vwap_distance_num is not None and max_extended_num is not None and max_extended_num > 0.0:
-        overextension_score = _clamp(
-            1.0 - max(0.0, vwap_distance_num - max_extended_num) / max(0.02, max_extended_num),
-            0.0,
-            1.0,
-        )
-        vwap_proximity_score = min(vwap_proximity_score, overextension_score)
-    volume_readiness_score = 0.5
-    if volume_ratio not in (None, ""):
-        volume_floor = max(_to_float(volume_min), 1e-6)
-        volume_readiness_score = _clamp(_to_float(volume_ratio) / volume_floor, 0.0, 1.0)
-    breakout_readiness_score = 0.5
-    if breakout_gap_pct not in (None, ""):
-        breakout_readiness_score = _clamp(1.0 - abs(min(0.0, _to_float(breakout_gap_pct))) / 0.03, 0.0, 1.0)
-
-    base_compatibility_score = _clamp(
-        (0.45 * vwap_proximity_score)
-        + (0.35 * volume_readiness_score)
-        + (0.20 * breakout_readiness_score),
-        0.0,
-        1.0,
-    )
-    chart_fit = _scanner_chart_fit_from_entry_result(result)
-    scanner_chart_fit_score = float(base_compatibility_score)
-    if bool(chart_fit.get("available")):
-        chart_context_score = _clamp(_to_float(chart_fit.get("chart_context_score"), 0.5), 0.0, 1.0)
-        scanner_chart_fit_score = _clamp(
-            (0.75 * base_compatibility_score)
-            + (0.25 * chart_context_score)
-            - _to_float(chart_fit.get("soft_penalty")),
-            0.0,
-            1.0,
-        )
-    entry_compatibility_score = scanner_chart_fit_score
-    compatibility_score_pre_penalty = float(entry_compatibility_score)
-    soft_penalty = 0.0
-    volume_ratio_num = _to_float(volume_ratio) if volume_ratio not in (None, "") else None
-    volume_min_num = max(_to_float(volume_min), 1e-6) if volume_min not in (None, "") else None
-    if volume_ratio_num is not None:
-        if volume_ratio_num <= 0.0:
-            soft_penalty += 0.08
-        if volume_min_num is not None and volume_ratio_num < (0.33 * volume_min_num):
-            soft_penalty += 0.05
-    if vwap_distance_num is not None and vwap_distance_num < -0.07:
-        soft_penalty += 0.03
-    if (
-        vwap_distance_num is not None
-        and max_extended_num is not None
-        and max_extended_num > 0.0
-        and vwap_distance_num > max_extended_num
-    ):
-        soft_penalty += min(0.12, 0.04 + (vwap_distance_num - max_extended_num))
-    if str(result.get("reason") or "").strip() == "too_extended_from_vwap":
-        soft_penalty += 0.04
-    compatibility_score_post_penalty = max(0.0, compatibility_score_pre_penalty - soft_penalty)
-    if str(result.get("reason") or "").strip() == "too_extended_from_vwap":
-        compatibility_score_post_penalty = min(compatibility_score_post_penalty, 0.35)
-    dominant_block_reason = str((bias_context or {}).get("dominant_block_reason") or "mixed")
-    dominant_block_reason_ratio = float(_to_float((bias_context or {}).get("dominant_block_reason_ratio")))
-    bias_scale = float(_to_float((bias_context or {}).get("bias_scale") or 0.10))
-    compatibility_bias = bias_scale * (compatibility_score_post_penalty - 0.5)
-    expected_monitor_block_reason = ""
-    if not bool(result.get("triggered")):
-        expected_monitor_block_reason = str(result.get("reason") or "").strip()
-    elif below_vwap:
-        expected_monitor_block_reason = "below_vwap_reclaim_not_ready"
-
-    return {
-        "entry_compatibility_score": float(compatibility_score_post_penalty),
-        "compatibility_bias": float(compatibility_bias),
-        "dominant_block_reason": dominant_block_reason,
-        "dominant_block_reason_ratio": float(dominant_block_reason_ratio),
-        "bias_scale": float(bias_scale),
-        "soft_penalty": float(soft_penalty),
-        "compatibility_score_pre_penalty": float(compatibility_score_pre_penalty),
-        "compatibility_score_post_penalty": float(compatibility_score_post_penalty),
-        "compatibility_components": {
-            "vwap_proximity_score": float(vwap_proximity_score),
-            "volume_readiness_score": float(volume_readiness_score),
-            "breakout_readiness_score": float(breakout_readiness_score),
-            "reclaim_proximity": float(reclaim_proximity),
-            "base_compatibility_score": float(base_compatibility_score),
-            "scanner_chart_fit_score": float(scanner_chart_fit_score),
-            "scanner_chart_fit_available": bool(chart_fit.get("available")),
-        },
-        "scanner_chart_fit_score": float(scanner_chart_fit_score),
-        "scanner_chart_fit_authority": "soft_rank_bias_only",
-        "scanner_chart_fit_components": dict(chart_fit.get("components") or {}),
-        "scanner_chart_fit_penalty": float(_to_float(chart_fit.get("soft_penalty"))),
-        "expected_monitor_block_reason": expected_monitor_block_reason,
-        "compatibility_source": source,
-        "triggered_path": str(result.get("entry_condition_path") or ""),
-        "paths_passed": list(result.get("entry_condition_paths_passed") or []),
-        "vwap_distance_abs": float(vwap_distance_abs) if vwap_distance_abs is not None else None,
-        "is_below_vwap": bool(below_vwap),
-        "reclaim_proximity": float(reclaim_proximity),
-        "volume_ratio": float(_to_float(volume_ratio)) if volume_ratio not in (None, "") else None,
-        "breakout_gap_pct": float(_to_float(breakout_gap_pct)) if breakout_gap_pct not in (None, "") else None,
-    }
+    return _compute_entry_compatibility_signal_r3_impl(symbol=symbol, feature_row=feature_row,
+        metrics=metrics, candidate_rows=candidate_rows, current_price=current_price, policy=policy,
+        bias_context=bias_context, facade=_r3_sys.modules[__name__])
 
 
 def _resolve_canonical_day(state: Dict[str, Any]) -> str:
@@ -2008,83 +669,12 @@ _ENTRY_COMPATIBILITY_BLOCK_REASONS = {
 
 
 def _extract_monitor_entry_block_reason(payload: Dict[str, Any]) -> str:
-    if not isinstance(payload, dict):
-        return ""
-    cascade = payload.get("entry_candidate_cascade") if isinstance(payload.get("entry_candidate_cascade"), dict) else {}
-    candidates = [
-        cascade.get("reason"),
-        cascade.get("top_pick_reason"),
-        payload.get("entry_reason"),
-        payload.get("entry_exit_reason"),
-        payload.get("primary_reason_code"),
-    ]
-    for value in candidates:
-        reason = str(value or "").strip()
-        if reason in _ENTRY_COMPATIBILITY_BLOCK_REASONS:
-            return reason
-    return ""
+    return _extract_monitor_entry_block_reason_r3_impl(payload, facade=_r3_sys.modules[__name__])
 
 
 def _resolve_compatibility_bias_context(state: Dict[str, Any], *, limit: int = 20) -> Dict[str, Any]:
-    root = Path.cwd() / "reports" / "canonical" / _resolve_canonical_day(state)
-    if not root.exists():
-        return {
-            "dominant_block_reason": "mixed",
-            "dominant_block_reason_ratio": 0.0,
-            "bias_scale": 0.10,
-            "sample_size": 0,
-        }
-
-    monitor_paths = sorted(
-        [
-            p / "monitor.json"
-            for p in root.iterdir()
-            if p.is_dir()
-            and len(str(p.name)) == 32
-            and all(ch in "0123456789abcdefABCDEF" for ch in str(p.name))
-            and (p / "monitor.json").exists()
-        ],
-        key=lambda p: p.stat().st_mtime,
-        reverse=True,
-    )[: max(1, int(limit))]
-    reasons: List[str] = []
-    for path in monitor_paths:
-        try:
-            import json
-
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        reason = _extract_monitor_entry_block_reason(payload)
-        if reason:
-            reasons.append(reason)
-
-    if not reasons:
-        return {
-            "dominant_block_reason": "mixed",
-            "dominant_block_reason_ratio": 0.0,
-            "bias_scale": 0.10,
-            "sample_size": 0,
-        }
-
-    counter = Counter(reasons)
-    top_reason, top_count = counter.most_common(1)[0]
-    top_ratio = float(top_count) / float(len(reasons))
-    dominant_block_reason = top_reason if top_ratio >= 0.40 else "mixed"
-    if dominant_block_reason in {"volume_confirmation_missing", "volume_insufficient"}:
-        bias_scale = 0.18 if top_ratio >= 0.60 else 0.15
-    elif dominant_block_reason in {"below_vwap_reclaim_not_ready", "pullback_below_vwap_reclaim_not_ready"}:
-        bias_scale = 0.16 if top_ratio >= 0.45 else 0.12
-    elif dominant_block_reason in {"pullback_not_mature", "breakout_not_ready"}:
-        bias_scale = 0.14 if top_ratio >= 0.45 else 0.11
-    else:
-        bias_scale = 0.10
-    return {
-        "dominant_block_reason": str(dominant_block_reason),
-        "dominant_block_reason_ratio": float(top_ratio if dominant_block_reason != "mixed" else 0.0),
-        "bias_scale": float(bias_scale),
-        "sample_size": int(len(reasons)),
-    }
+    return _resolve_compatibility_bias_context_r3_impl(state, limit=limit,
+        facade=_r3_sys.modules[__name__])
 
 
 def _norm01(x: float, lo: float, hi: float) -> float:
@@ -2103,39 +693,8 @@ def _merge_mock_compatibility_override(
     *,
     override: Any,
 ) -> Dict[str, Any]:
-    if not isinstance(override, Mapping):
-        return dict(base or {})
-    merged = dict(base or {})
-    for key in (
-        "entry_compatibility_score",
-        "compatibility_bias",
-        "dominant_block_reason_ratio",
-        "bias_scale",
-        "soft_penalty",
-        "compatibility_score_pre_penalty",
-        "compatibility_score_post_penalty",
-        "vwap_distance_abs",
-        "reclaim_proximity",
-        "volume_ratio",
-        "breakout_gap_pct",
-    ):
-        if override.get(key) not in (None, ""):
-            merged[key] = float(_to_float(override.get(key)))
-    for key in (
-        "expected_monitor_block_reason",
-        "dominant_block_reason",
-        "compatibility_source",
-        "triggered_path",
-    ):
-        if override.get(key) not in (None, ""):
-            merged[key] = str(override.get(key) or "")
-    if override.get("is_below_vwap") is not None:
-        merged["is_below_vwap"] = bool(override.get("is_below_vwap"))
-    if isinstance(override.get("paths_passed"), list):
-        merged["paths_passed"] = list(override.get("paths_passed") or [])
-    if isinstance(override.get("compatibility_components"), Mapping):
-        merged["compatibility_components"] = dict(override.get("compatibility_components") or {})
-    return merged
+    return _merge_mock_compatibility_override_r3_impl(base, override=override,
+        facade=_r3_sys.modules[__name__])
 
 
 def _apply_blocker_family_concentration_overlay(
@@ -2143,93 +702,8 @@ def _apply_blocker_family_concentration_overlay(
     *,
     scan_aggressiveness: float,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    meta = {
-        "applied": False,
-        "family": "",
-        "penalty": 0.0,
-        "candidate_count": 0,
-        "top3_symbols_before": [],
-        "top3_symbols_after": [],
-        "alternative_symbols": [],
-        "selection_vetoed": False,
-        "selection_veto_reason": "",
-    }
-    ranked_rows = [dict(row) for row in list(rows or []) if isinstance(row, dict)]
-    if len(ranked_rows) < 3:
-        return ranked_rows, meta
-
-    top3_rows = ranked_rows[:3]
-    top3_family_sets = [set(_candidate_blocker_families(row)) for row in top3_rows]
-    if any(not family_set for family_set in top3_family_sets):
-        return ranked_rows, meta
-
-    common_families = set.intersection(*top3_family_sets) if top3_family_sets else set()
-    common_families = {family for family in common_families if family}
-    if not common_families:
-        return ranked_rows, meta
-
-    family_counter: Counter[str] = Counter()
-    for row in ranked_rows:
-        for family in _candidate_blocker_families(row):
-            family_counter[family] += 1
-    concentrated_family = sorted(common_families, key=lambda family: (-family_counter.get(family, 0), family))[0]
-
-    affected_rows = [row for row in ranked_rows if concentrated_family in _candidate_blocker_families(row)]
-    alternative_rows = [row for row in ranked_rows if concentrated_family not in _candidate_blocker_families(row)]
-    meta.update(
-        {
-            "applied": True,
-            "family": str(concentrated_family),
-            "candidate_count": int(len(affected_rows)),
-            "top3_symbols_before": [str((row or {}).get("symbol") or "") for row in top3_rows],
-            "alternative_symbols": [str((row or {}).get("symbol") or "") for row in alternative_rows[:5]],
-        }
-    )
-    if not alternative_rows:
-        meta["selection_vetoed"] = True
-        meta["selection_veto_reason"] = "blocker_family_concentration_no_alternative"
-        meta["top3_symbols_after"] = list(meta.get("top3_symbols_before") or [])
-        return ranked_rows, meta
-
-    third_score = float(_to_float(top3_rows[2].get("score_total") or top3_rows[2].get("score")))
-    best_alternative_score = max(
-        float(_to_float((row or {}).get("score_total") or (row or {}).get("score")))
-        for row in alternative_rows
-    )
-    base_penalty = 0.04 + min(0.02, max(0.0, float(scan_aggressiveness)))
-    required_penalty = max(0.0, third_score - best_alternative_score + 0.001)
-    penalty = min(0.15, max(base_penalty, required_penalty))
-
-    adjusted_rows: List[Dict[str, Any]] = []
-    for row in ranked_rows:
-        row_copy = dict(row)
-        families = _candidate_blocker_families(row_copy)
-        if concentrated_family in families:
-            score_before = float(_to_float(row_copy.get("score_total") or row_copy.get("score")))
-            score_after = score_before - penalty
-            row_copy["score_total"] = float(score_after)
-            row_copy["score"] = float(score_after)
-            row_copy["blocker_family_concentration_penalty_applied"] = float(penalty)
-            row_copy["blocker_family_concentration_family"] = str(concentrated_family)
-        adjusted_rows.append(row_copy)
-
-    adjusted_rows.sort(
-        key=lambda r: (
-            float(r.get("score_total") or 0.0),
-            float(r.get("confidence") or 0.0),
-            -float(r.get("risk_score") or 0.0),
-        ),
-        reverse=True,
-    )
-    post_top3_rows = adjusted_rows[:3]
-    meta["penalty"] = float(penalty)
-    meta["top3_symbols_after"] = [str((row or {}).get("symbol") or "") for row in post_top3_rows]
-    if len(post_top3_rows) >= 3 and all(
-        concentrated_family in _candidate_blocker_families(row) for row in post_top3_rows
-    ):
-        meta["selection_vetoed"] = True
-        meta["selection_veto_reason"] = "blocker_family_concentration_unresolved"
-    return adjusted_rows, meta
+    return _apply_blocker_family_concentration_overlay_r3_impl(rows,
+        scan_aggressiveness=scan_aggressiveness, facade=_r3_sys.modules[__name__])
 
 
 def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 216,
+  "entry_count": 217,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5869,6 +5869,32 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-A-CODEX-AUDIT-015.md",
         "docs/daily_patch/2026-10-12_p1_5_wave_a_closeout.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5 Fast Track Wave B",
+      "title": "Fast Track Wave B: Strategist, Scanner and Monitor first-pass decomposition",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "SAFETY",
+        "WORKFLOW"
+      ],
+      "summary": "146 deterministic node-function bodies moved verbatim into 34 responsibility-named Owners (Strategist 104, Scanner 40, Monitor 2); node LOC 16,688 -> 11,390; LLM call paths, trading authority and ranking semantics untouched; Wave A closeout and ZIP-free CI recorded.",
+      "details": [
+        "Phase 1 closeout: R2-era scope guard and P1.5.2 inventory pinned to the Wave A end commit; workflow validates the Fast Track active contract, all ZIP steps removed, CI green (2504d70). Codex Wave A PASS_WITH_FINDINGS recorded.",
+        "B1 Strategist: strategist_node.py 8,878 -> 5,144 LOC; 104 bodies in 22 Owners under libs/runtime/strategist/{context,policy,llm,output}; every LLM invocation, prompt/repair builder, token budget, call-kind and parse-failure classification stays in the node.",
+        "B2 Scanner: scanner_node.py 4,178 -> 2,652 LOC; 40 bodies in 11 Owners under libs/runtime/scanner (guidance, repeat guard, symbol prior, compatibility, macro/chart fit, evidence, sentiment, scoring inputs).",
+        "B3 Monitor: 2 policy helpers moved; monitor_node (2,634 LOC) and _evaluate_monitor_entry_candidate (658 LOC) remain as second-pass debt (real decomposition required); intent-only role untouched.",
+        "Gates: Wave B moved-body gate (AST equality after unqualification, exact qualified names, use-time oracle vs pinned baseline), scope/authority boundary test, 620 consumer tests identical baseline vs feature, concurrent call differential with 0 differences among baseline-stable records (live market-data records are non-deterministic), 0 production writes.",
+        "Open: real frozen report/LLM parity BLOCKED, full pytest/Docker/UEF in Wave D, controlled_mock_lanes isolation OPEN. Wave B is FIRST_PASS_WITH_DEBT, awaiting Codex audit."
+      ],
+      "impact": "First-pass responsibility decomposition of Strategist/Scanner/Monitor graph nodes without changing trading behaviour, LLM roles or public node surfaces.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-B-CLAUDE-016.md",
+        "docs/daily_patch/2026-10-12_p1_5_fast_track_wave_b.md"
       ],
       "status": "current"
     }

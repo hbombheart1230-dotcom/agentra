@@ -168,6 +168,11 @@ from libs.runtime.monitor_strategy_frame import (
 )
 from libs.runtime.position_sizing import evaluate_position_size
 from libs.runtime.strategy_horizon_feedback import build_exit_vs_strategy_intent
+import sys as _r3_sys
+from libs.runtime.monitor.entry_carry_guard import (
+    _entry_forced_block_reason_for_open_carry_r3_impl,
+    _memory_bias_observation_only_r3_impl,
+)
 
 _preview_exit_decision_for_symbol = partial(
     preview_exit_decision_for_symbol,
@@ -194,15 +199,7 @@ def _to_int(v: Any) -> int:
 
 
 def _memory_bias_observation_only(state: Dict[str, Any] | None = None) -> bool:
-    if isinstance(state, dict):
-        for key in ("memory_bias_observation_only", "commander_memory_bias_observation_only"):
-            if state.get(key) not in (None, ""):
-                return _is_trueish(state.get(key))
-    for name in ("MEMORY_BIAS_OBSERVATION_ONLY", "COMMANDER_MEMORY_BIAS_OBSERVATION_ONLY"):
-        raw = str(os.getenv(name, "") or "").strip()
-        if raw:
-            return _is_trueish(raw)
-    return False
+    return _memory_bias_observation_only_r3_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _to_float(v: Any, default: float = 0.0) -> float:
@@ -241,43 +238,8 @@ def _entry_forced_block_reason_for_open_carry(
     *,
     now_epoch: int,
 ) -> str:
-    persisted = state.get("persisted_state") if isinstance(state.get("persisted_state"), dict) else {}
-    unresolved: set[str] = set()
-    for source in (state, persisted):
-        if not isinstance(source, dict):
-            continue
-        marker = source.get("closeout_unresolved_flatten_by_symbol")
-        if isinstance(marker, dict):
-            unresolved.update(_norm_symbol(x) for x in marker.keys() if _norm_symbol(x))
-        backup = source.get("closeout_backup_liquidation")
-        if isinstance(backup, dict):
-            for key in ("unresolved_flatten_symbols", "unresolved_flatten_requires_next_open_symbols"):
-                unresolved.update(_norm_symbol(x) for x in list(backup.get(key) or []) if _norm_symbol(x))
-
-    open_rows = [
-        (_norm_symbol(sym), row if isinstance(row, dict) else {})
-        for sym, row in (all_pos_map or {}).items()
-        if _norm_symbol(sym) and max(0, _to_int((row or {}).get("qty"))) > 0
-    ]
-    if any(sym in unresolved for sym, _row in open_rows):
-        return "closeout_unresolved_flatten_required"
-
-    entry_epoch_by_symbol = (
-        persisted.get("position_entry_epoch_by_symbol")
-        if isinstance(persisted.get("position_entry_epoch_by_symbol"), dict)
-        else {}
-    )
-    for sym, row in open_rows:
-        entry_epoch = _to_int(
-            row.get("position_entry_epoch")
-            if row.get("position_entry_epoch") not in (None, "")
-            else row.get("entry_epoch")
-        )
-        if entry_epoch <= 0:
-            entry_epoch = _to_int(entry_epoch_by_symbol.get(sym))
-        if entry_epoch > 0 and now_epoch > entry_epoch and (now_epoch - entry_epoch) >= 12 * 3600:
-            return "overnight_carry_recovery_pending"
-    return ""
+    return _entry_forced_block_reason_for_open_carry_r3_impl(state, all_pos_map,
+        now_epoch=now_epoch, facade=_r3_sys.modules[__name__])
 
 
 def _norm_symbol(v: Any) -> str:

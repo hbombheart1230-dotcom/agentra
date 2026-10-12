@@ -1,18 +1,21 @@
-# ACTIVE — Agentra P1.5 FAST TRACK Wave A (Reporting → Operator UI) — CLOSED FIRST_PASS_WITH_DEBT
+# ACTIVE — Agentra P1.5 FAST TRACK Wave B (Strategist → Scanner → Monitor) — CLAUDE WAVE COMPLETE, CODEX AUDIT PENDING
 
-**State:** WAVE_A_CLOSED_FIRST_PASS_WITH_DEBT (Codex PASS_WITH_FINDINGS, scope guard + CI fixed); P1.5.2 OPEN (final acceptance); P1.5.3 FIRST_PASS_WITH_DEBT (not final accepted); MAIN_FROZEN.
-**Work order:** [P15_FAST_TRACK_WAVE_A_013.md](P15_FAST_TRACK_WAVE_A_013.md). **Workflow authority:** [Fast Track plan](../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md) → [COMMON_RULES.md](COMMON_RULES.md).
+**State:** WAVE_B_IMPLEMENTED_FIRST_PASS_WITH_DEBT; CODEX_WAVE_B_AUDIT_PENDING; Wave A CLOSED (FIRST_PASS_WITH_DEBT, Codex PASS_WITH_FINDINGS, CI green); P1.5.2 OPEN (final acceptance); P1.5.3 FIRST_PASS_WITH_DEBT; P1.5.4/P1.5.5 FIRST_PASS_WITH_DEBT; P1.5.6 minimal first pass (giant-function debt); MAIN_FROZEN.
+**Work order:** [P15_FAST_TRACK_WAVE_B_015.md](P15_FAST_TRACK_WAVE_B_015.md). **Workflow authority:** [Fast Track plan](../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md) → [COMMON_RULES.md](COMMON_RULES.md).
 **Roles:** Claude implements a wave → Codex audits the pinned aggregated diff → GPT/user final release decisions.
-**Only `refactor/p1.5` development branch**; `main` frozen; no feature/task branches. **No ZIP/download artifacts — Git commit/push is the only deliverable** (user decision 2026-10-12).
-**Wave A start:** `fb8de628eb56b0941007e90ad2e98b4f684983ba` (LOC010 code `b0cfc2b5646ff81ec5ce7b738f485a9d22365826`). Pinned wave SHA: see the evidence file / final commit.
-**Protected:** live `C:\Agentra`, dirty Q12 worktrees, broker, real LLM, production data/reports, Docker/scheduler.
+**Only `refactor/p1.5` development branch**; `main` frozen; no feature/task branches. **No ZIP/download artifacts — Git commit/push is the only deliverable.**
+**Wave B start:** `877455db439e9e6f72af413216acc9758b91a2a9` (Wave A closeout CI green at `2504d70`). Pinned wave SHA: see the final commit / evidence file.
+**Protected:** live `C:\Agentra`, dirty Q12 worktrees, broker, real LLM, production data/reports, Docker/scheduler, Supervisor/Executor/Commander authority.
 
-## Wave A result (evidence: [P15-FAST-TRACK-WAVE-A-CLAUDE-014.md](evidence/P15-FAST-TRACK-WAVE-A-CLAUDE-014.md))
-- **A1 Reporting:** 55 more bodies (dependency maps + deterministic domain helpers) moved to 10 responsibility-named Owners; façades 4,047 -> 3,479 LOC (AI 1,656 / Markdown 1,325 / Story 498); 436 ABI intact; moved-body ledger 141.
-- **A2 P1.5.3 Operator UI/Brief:** 136 IO-free bodies moved to 22 responsibility-named Owners; `data_access_core.py` 6,871 -> 4,594, `operator_period_summary.py` 3,210 -> 1,195, `operator_visibility.py` 1,879 -> 1,520 (-4,651); every public def/signature retained; use-time `facade.NAME` seams.
-- Persistence/IO/clock/LLM-calling functions and any single function > 350 LOC (`_build_operator_brief_sections` 846, `_render_operator_brief_markdown` 652, `_load_operator_brief` 442, `_build_operator_brief_input` 426, ...) were intentionally NOT moved — SECOND_PASS_DEBT.
+## Wave B result (evidence: [P15-FAST-TRACK-WAVE-B-CLAUDE-016.md](evidence/P15-FAST-TRACK-WAVE-B-CLAUDE-016.md))
+- **B1 Strategist:** `strategist_node.py` 8,878 -> 5,144 LOC; 104 verbatim bodies in 22 Owners under `libs/runtime/strategist/{context,policy,llm,output}/`. All LLM call/prompt/retry/timeout/call-kind paths stayed in the node.
+- **B2 Scanner:** `scanner_node.py` 4,178 -> 2,652 LOC; 40 bodies in 11 Owners under `libs/runtime/scanner/`; ranking/guidance/repeat-guard moved verbatim, hydration and state writes stayed.
+- **B3 Monitor:** only 2 helpers moved (1 Owner); `monitor_node` (2,634 LOC) and `_evaluate_monitor_entry_candidate` (658 LOC) need real decomposition -> SECOND_PASS_DEBT.
+- Totals: -5,298 LOC in the three nodes, 146 symbols, 34 Owners (max 312 LOC), use-time `facade.NAME` seams, 436 Reporting ABI untouched.
+- Gates: moved-body + scope/authority 759 + monitor consumers 1,156 passed in final run; 620 consumer tests identical baseline vs feature; concurrent call differential 0 differences among 16,792 baseline-stable records (672 nondeterministic live-market-data records excluded); 0 production writes.
 
 ## Still open (not FINAL)
-- Real frozen report Markdown/JSON/JSONL and LLM before/after parity **BLOCKED / NOT RUN**; full native pytest and `controlled_mock_lanes` write isolation **OPEN**; façade size and numbered Owner cohesion **SECOND_PASS_DEBT**.
-- Codex Wave A verdict **PASS_WITH_FINDINGS** recorded in [P15-FAST-TRACK-WAVE-A-CODEX-AUDIT-015.md](evidence/P15-FAST-TRACK-WAVE-A-CODEX-AUDIT-015.md); the one policy failure (R2-era scope guard) is fixed by a stage-pinned guard and the CI workflow now validates the Fast Track active contract with all ZIP packaging removed.
-- Next: Wave B (P1.5.4-P1.5.6) under its own scope/authority gate. No main merge, deployment or final P1.5.2/P1.5.3 acceptance.
+- Real frozen report/LLM parity **BLOCKED / NOT RUN**; full native pytest, Docker and UEF replay are Wave D; `controlled_mock_lanes` write isolation **OPEN**.
+- Existing offline tests read live public market data (yfinance) -> non-deterministic; pre-existing.
+- Second pass: large node functions (`strategist_node`, `_run_strategist_frame_llm`, `scanner_node`, `monitor_node`, `_evaluate_monitor_entry_candidate`), façade wrappers, numbered Owners.
+- Next: Codex independent Wave B audit of the pinned SHA; Wave C only after audited nonblocking evidence. No main merge, deployment or final acceptance.
