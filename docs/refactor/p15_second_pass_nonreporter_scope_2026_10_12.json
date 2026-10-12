@@ -1,0 +1,2422 @@
+{
+  "schema": "p15_second_pass_nonreporter_scope_v1",
+  "source_sha": "1f7add2b0f9b5a33399da27edcdd2f390bdf911b",
+  "code_mutation": "NONE",
+  "scope_query": "python sources under graphs, libs/runtime, libs/execution, libs/supervisor, libs/risk/supervisor.py, libs/agent, libs/contracts/agents, apps/operator_ui excluding reporter/reporting/trade_report path names",
+  "file_count": 340,
+  "bytes": 4231441,
+  "meaning": "file-scope index with provisional triage; not whole-repository function-level consumer proof, not dead-code proof",
+  "hotspot_details": "P15_SECOND_PASS_GPT_FUNCTION_SLICES_2026_10_12.md",
+  "counts": {
+    "operator_ui": {
+      "files": 19,
+      "bytes": 405825
+    },
+    "commander_runtime": {
+      "files": 62,
+      "bytes": 640529
+    },
+    "shared": {
+      "files": 104,
+      "bytes": 749542
+    },
+    "safety_execution_supervisor": {
+      "files": 27,
+      "bytes": 485604
+    },
+    "monitor": {
+      "files": 53,
+      "bytes": 862341
+    },
+    "scanner": {
+      "files": 30,
+      "bytes": 378409
+    },
+    "strategist": {
+      "files": 45,
+      "bytes": 709191
+    }
+  },
+  "files": [
+    {
+      "path": "apps/operator_ui/__init__.py",
+      "bytes": 186,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_brief_canonical_input.py",
+      "bytes": 18481,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_brief_compaction.py",
+      "bytes": 23528,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_brief_fallback.py",
+      "bytes": 15684,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_brief_monitor_notes.py",
+      "bytes": 10749,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_brief_prompts.py",
+      "bytes": 11785,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_brief_sanitation.py",
+      "bytes": 13475,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_brief.py",
+      "bytes": 2204,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_core.py",
+      "bytes": 240426,
+      "domain": "operator_ui",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_linkage.py",
+      "bytes": 4962,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_reports.py",
+      "bytes": 312,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_run_read_models.py",
+      "bytes": 16584,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_runs.py",
+      "bytes": 1713,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_status.py",
+      "bytes": 13569,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_symbol_run_chain.py",
+      "bytes": 4960,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_trade_read_models.py",
+      "bytes": 12887,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access_value_formatting.py",
+      "bytes": 9523,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/data_access.py",
+      "bytes": 422,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "apps/operator_ui/main.py",
+      "bytes": 4375,
+      "domain": "operator_ui",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/commander_runtime.py",
+      "bytes": 229167,
+      "domain": "commander_runtime",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/assemble_decision_packet.py",
+      "bytes": 2738,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/build_decision_context.py",
+      "bytes": 19640,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/build_execution_readiness.py",
+      "bytes": 8049,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/build_market_snapshot.py",
+      "bytes": 4127,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/build_open_order_snapshot.py",
+      "bytes": 2303,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/build_portfolio_snapshot.py",
+      "bytes": 21537,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/build_risk_context.py",
+      "bytes": 1532,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/build_snapshots.py",
+      "bytes": 802,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/commander_node.py",
+      "bytes": 550,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/decide_trade.py",
+      "bytes": 65080,
+      "domain": "safety_execution_supervisor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/decision_node.py",
+      "bytes": 8203,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/ensure_token.py",
+      "bytes": 786,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/execute_from_packet.py",
+      "bytes": 183181,
+      "domain": "safety_execution_supervisor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/execute_order.py",
+      "bytes": 6641,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/executor_node.py",
+      "bytes": 381,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/hydrate_skill_results_node.py",
+      "bytes": 11820,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/load_state.py",
+      "bytes": 412,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/log_decision_trace.py",
+      "bytes": 1709,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/monitor_node.py",
+      "bytes": 219670,
+      "domain": "monitor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/plan_api.py",
+      "bytes": 572,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/portfolio_guard_node.py",
+      "bytes": 4608,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/prepare_api_call.py",
+      "bytes": 1608,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/prepare_order_dry_run.py",
+      "bytes": 1995,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/read_account_balance.py",
+      "bytes": 1032,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/risk_cash_truth.py",
+      "bytes": 2914,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/save_state.py",
+      "bytes": 398,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/scan_candidates.py",
+      "bytes": 8397,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/scanner_node.py",
+      "bytes": 152867,
+      "domain": "scanner",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/select_candidate.py",
+      "bytes": 1457,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/skill_contracts.py",
+      "bytes": 14604,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/strategist_node.py",
+      "bytes": 250599,
+      "domain": "strategist",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/nodes/update_state_after_execution.py",
+      "bytes": 59649,
+      "domain": "safety_execution_supervisor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/eod_report.py",
+      "bytes": 533,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/live_cycle.py",
+      "bytes": 638,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/m10_live_pipeline.py",
+      "bytes": 1403,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/m11_2_live_pipeline.py",
+      "bytes": 1175,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/m11_live_pipeline.py",
+      "bytes": 1056,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/m13_eod_report.py",
+      "bytes": 4849,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/m13_live_loop.py",
+      "bytes": 8571,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/m13_tick.py",
+      "bytes": 2140,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/offhours_validation.py",
+      "bytes": 9295,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/pipelines/runtime_tick.py",
+      "bytes": 508,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "graphs/trading_graph.py",
+      "bytes": 3199,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/__init__.py",
+      "bytes": 364,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/commander.py",
+      "bytes": 6046,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/executor.py",
+      "bytes": 2288,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/executor/__init__.py",
+      "bytes": 130,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/executor/agent_executor.py",
+      "bytes": 2182,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/executor/executor_agent.py",
+      "bytes": 11115,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/intent_parser.py",
+      "bytes": 2714,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/monitor.py",
+      "bytes": 589,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/router.py",
+      "bytes": 1336,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/scanner.py",
+      "bytes": 6046,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/agent/strategist.py",
+      "bytes": 3235,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/__init__.py",
+      "bytes": 0,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/execution_readiness.py",
+      "bytes": 7169,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/executor_observability.py",
+      "bytes": 5565,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/executors/__init__.py",
+      "bytes": 86,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/executors/base.py",
+      "bytes": 693,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/executors/factory.py",
+      "bytes": 1208,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/executors/mock_executor.py",
+      "bytes": 1381,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/executors/real_executor.py",
+      "bytes": 19224,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/guards/__init__.py",
+      "bytes": 0,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/guards/broker_mutation.py",
+      "bytes": 7981,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/guards/symbol_allowlist.py",
+      "bytes": 879,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/guards/unknown_quarantine.py",
+      "bytes": 15584,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/intent_admission.py",
+      "bytes": 1098,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/intent_execution_owner.py",
+      "bytes": 7733,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/intent_identity.py",
+      "bytes": 9269,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/order_client.py",
+      "bytes": 2700,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/order_lifecycle_policy.py",
+      "bytes": 5661,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/readiness_evidence.py",
+      "bytes": 33989,
+      "domain": "safety_execution_supervisor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/execution/recent_order_guard.py",
+      "bytes": 6470,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/risk/supervisor.py",
+      "bytes": 8446,
+      "domain": "safety_execution_supervisor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/__init__.py",
+      "bytes": 0,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/asset_universe_policy.py",
+      "bytes": 20223,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/broker_cost_profile.py",
+      "bytes": 7073,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/canonical_artifacts.py",
+      "bytes": 25384,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/chart_structure_features.py",
+      "bytes": 18299,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/circuit_breaker.py",
+      "bytes": 6264,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander_memory_application_trace.py",
+      "bytes": 10147,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander_memory_policy.py",
+      "bytes": 12831,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/applied_policy.py",
+      "bytes": 12005,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/candidate_watch_policy.py",
+      "bytes": 5423,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/carry_review_policy.py",
+      "bytes": 9890,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/entry_control_policy.py",
+      "bytes": 13202,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/env_overrides.py",
+      "bytes": 4573,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/event_projection.py",
+      "bytes": 13971,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/execution.py",
+      "bytes": 6355,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/fast_path_policy.py",
+      "bytes": 14420,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/fast_paths.py",
+      "bytes": 16832,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/integrated_chain_support.py",
+      "bytes": 1511,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/nodes.py",
+      "bytes": 1804,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/output_frames.py",
+      "bytes": 2700,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/policy_readers.py",
+      "bytes": 2350,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/policy_surface.py",
+      "bytes": 5919,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/position_projection.py",
+      "bytes": 14451,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/route_surface.py",
+      "bytes": 3171,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/runtime_modes.py",
+      "bytes": 3017,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/session_assessments.py",
+      "bytes": 10777,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/session_context.py",
+      "bytes": 3191,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/shadow_runtime.py",
+      "bytes": 3190,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/strategist_cache_decision.py",
+      "bytes": 14611,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/strategist_cache_store.py",
+      "bytes": 4186,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/strategist_cycle.py",
+      "bytes": 10045,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/strategist_fingerprint.py",
+      "bytes": 20754,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/commander/strategist_refresh_decision.py",
+      "bytes": 18408,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/controlled_mock_lanes/__init__.py",
+      "bytes": 220,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/controlled_mock_lanes/artifacts.py",
+      "bytes": 1099,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/controlled_mock_lanes/contracts.py",
+      "bytes": 994,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/controlled_mock_lanes/coordinator.py",
+      "bytes": 24847,
+      "domain": "shared",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/controlled_mock_lanes/ledger.py",
+      "bytes": 13539,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/controlled_mock_lanes/signals.py",
+      "bytes": 9536,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/daily_strategy_memory_packet.py",
+      "bytes": 7660,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/dates.py",
+      "bytes": 348,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/decision_observability.py",
+      "bytes": 38281,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/decision_trace.py",
+      "bytes": 2828,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoint_common.py",
+      "bytes": 2562,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/check_runtime_profile.py",
+      "bytes": 2853,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/commander_runtime_once.py",
+      "bytes": 3740,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/launch_with_preflight.py",
+      "bytes": 5038,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/live_loop.py",
+      "bytes": 548,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/live_session_summary.py",
+      "bytes": 11002,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/live_session_watch.py",
+      "bytes": 14286,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m13_live_loop.py",
+      "bytes": 3485,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_closeout_check.py",
+      "bytes": 11920,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_deploy_launch_template_check.py",
+      "bytes": 7576,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_launch_hook_integration_check.py",
+      "bytes": 8294,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_launch_templates.py",
+      "bytes": 6218,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_registration_helper_check.py",
+      "bytes": 8007,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_registration_helpers.py",
+      "bytes": 5324,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_rollout_rollback_check.py",
+      "bytes": 8907,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_runtime_lifecycle_hooks_check.py",
+      "bytes": 3896,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_runtime_profile_scaffold_check.py",
+      "bytes": 5413,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_scheduler_worker_launch_wrapper_check.py",
+      "bytes": 7585,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m28_startup_preflight_check.py",
+      "bytes": 9406,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/m31_agent_chain_probe.py",
+      "bytes": 7022,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/mock_exam_day.py",
+      "bytes": 12779,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/entrypoints/offhours_validation_loop.py",
+      "bytes": 3724,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/etf_deviation.py",
+      "bytes": 6474,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/exit_policy.py",
+      "bytes": 79106,
+      "domain": "monitor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/feature_engine.py",
+      "bytes": 13998,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/host_supervisor.py",
+      "bytes": 5678,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/intent_conflict_resolver.py",
+      "bytes": 9973,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/intraday_monitor_signals.py",
+      "bytes": 166091,
+      "domain": "monitor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/kiwoom_market_status.py",
+      "bytes": 9761,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/live_loop_config.py",
+      "bytes": 891,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/live_loop_lock.py",
+      "bytes": 21845,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/live_loop_process_query.py",
+      "bytes": 2828,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/live_loop_runner.py",
+      "bytes": 24520,
+      "domain": "commander_runtime",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/live_session_summary_helpers.py",
+      "bytes": 4622,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/llm_report_classifier.py",
+      "bytes": 13453,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/market_hours.py",
+      "bytes": 846,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/market_status_closeout.py",
+      "bytes": 8925,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/memory_packet_loader.py",
+      "bytes": 848,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/mock_exam_day/__init__.py",
+      "bytes": 45,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/mock_exam_day/closeout_liquidation.py",
+      "bytes": 16278,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/mock_exam_day/closeout_phase.py",
+      "bytes": 10758,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/mock_exam_day/common.py",
+      "bytes": 2837,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/mock_exam_day/preopen_phase.py",
+      "bytes": 6907,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/mock_exam_day/processes.py",
+      "bytes": 9923,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/mock_exam_day/session_phase.py",
+      "bytes": 5993,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_candidate_cascade.py",
+      "bytes": 11829,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_directional_edge.py",
+      "bytes": 8526,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_entry_blockers.py",
+      "bytes": 4172,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_entry_controls.py",
+      "bytes": 5788,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_entry_cost_filter.py",
+      "bytes": 21947,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_entry_policy_context.py",
+      "bytes": 10025,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_entry_quality.py",
+      "bytes": 10655,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_entry_sizing.py",
+      "bytes": 14695,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_entry_state.py",
+      "bytes": 8329,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit_confirmation.py",
+      "bytes": 186,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit_inputs.py",
+      "bytes": 168,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/__init__.py",
+      "bytes": 169,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/adapters/__init__.py",
+      "bytes": 36,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/adapters/state_data.py",
+      "bytes": 2132,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/hold_controls.py",
+      "bytes": 4444,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/market_enrichment.py",
+      "bytes": 7375,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/numeric.py",
+      "bytes": 208,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/observability.py",
+      "bytes": 20893,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/order_lifecycle.py",
+      "bytes": 2574,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/overnight_carry.py",
+      "bytes": 14203,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/policy_config.py",
+      "bytes": 10170,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/policy_map_builder.py",
+      "bytes": 1594,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/position_risk.py",
+      "bytes": 1885,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/position_state_enrichment.py",
+      "bytes": 2922,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/position_tracking.py",
+      "bytes": 5463,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/post_exit_shadow.py",
+      "bytes": 4955,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/preview.py",
+      "bytes": 10985,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/price_resolution.py",
+      "bytes": 5520,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/reasons.py",
+      "bytes": 4866,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/runtime_clock.py",
+      "bytes": 4820,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/selected_snapshot.py",
+      "bytes": 7674,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/selection.py",
+      "bytes": 2884,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/session_vwap.py",
+      "bytes": 3194,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/vwap_confirmation.py",
+      "bytes": 2537,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_exit/vwap_state_adapter.py",
+      "bytes": 1109,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_memory_bias_reasons.py",
+      "bytes": 3044,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_memory_bias_rules.py",
+      "bytes": 7362,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_memory_bias.py",
+      "bytes": 7614,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_minute_ohlcv.py",
+      "bytes": 31411,
+      "domain": "monitor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_policy.py",
+      "bytes": 36903,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_runner_up_quality.py",
+      "bytes": 3542,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor_strategy_frame.py",
+      "bytes": 42462,
+      "domain": "monitor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor/__init__.py",
+      "bytes": 0,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monitor/entry_carry_guard.py",
+      "bytes": 2900,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/monthly_strategy_memory_packet.py",
+      "bytes": 1306,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/news_event_intelligence.py",
+      "bytes": 14975,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/offhours_validation_runtime.py",
+      "bytes": 2383,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/opening_rank1_controlled_probe.py",
+      "bytes": 30131,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/opening_rank1_observation_price.py",
+      "bytes": 1835,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/opening_rank1_probe_authority.py",
+      "bytes": 2717,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/opening_rank1_probe_cost_edge.py",
+      "bytes": 6778,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/opening_rank1_probe_discriminator.py",
+      "bytes": 1254,
+      "domain": "monitor",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/operator_summary_memory.py",
+      "bytes": 4715,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/policy_bundle.py",
+      "bytes": 1129,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/portfolio_allocation.py",
+      "bytes": 7114,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/portfolio_budget_guard.py",
+      "bytes": 10127,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/position_horizon_revision.py",
+      "bytes": 16262,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/position_sizing.py",
+      "bytes": 7649,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/process_tree_status.py",
+      "bytes": 1657,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/q9_decision_snapshots.py",
+      "bytes": 25161,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/__init__.py",
+      "bytes": 225,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/context.py",
+      "bytes": 8270,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/contracts.py",
+      "bytes": 3195,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/decision.py",
+      "bytes": 12219,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/enforcement.py",
+      "bytes": 2449,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/entry_lane_observation.py",
+      "bytes": 14459,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/entry_promotion_policy.py",
+      "bytes": 3332,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/factors.py",
+      "bytes": 8821,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/market_rail_translation.py",
+      "bytes": 9175,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/market_regime_observation.py",
+      "bytes": 5548,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/memory.py",
+      "bytes": 4626,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/opening_largecap_surge_shadow.py",
+      "bytes": 4774,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/risk_off_defensive_policy.py",
+      "bytes": 2968,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/scorecard.py",
+      "bytes": 7569,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/shadow_candidates.py",
+      "bytes": 43778,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/suitability.py",
+      "bytes": 6345,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/tactics.py",
+      "bytes": 3311,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/quant/vwap_reclaim_observation.py",
+      "bytes": 7225,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/regime.py",
+      "bytes": 2805,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/resilience_state.py",
+      "bytes": 3582,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/runtime_lifecycle.py",
+      "bytes": 3566,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/runtime_mode.py",
+      "bytes": 4547,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/runtime_output_helpers.py",
+      "bytes": 2165,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/runtime_ownership.py",
+      "bytes": 15465,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/runtime_profile.py",
+      "bytes": 6509,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/same_symbol_loss_reentry.py",
+      "bytes": 5652,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner_bias.py",
+      "bytes": 5402,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner_feature_hydration.py",
+      "bytes": 15792,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner_memory_bias_reasons.py",
+      "bytes": 2577,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner_memory_bias_rules.py",
+      "bytes": 5176,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner_memory_bias.py",
+      "bytes": 4802,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner_policy.py",
+      "bytes": 4910,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/__init__.py",
+      "bytes": 1,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/blocker_family_overlay.py",
+      "bytes": 4444,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/candidate_risk.py",
+      "bytes": 3803,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/candidate_selection.py",
+      "bytes": 21416,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/compatibility.py",
+      "bytes": 13412,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/control_eligibility.py",
+      "bytes": 2357,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/evidence.py",
+      "bytes": 12106,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/feature_coverage.py",
+      "bytes": 3108,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/guidance.py",
+      "bytes": 13223,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/macro_chart_fit.py",
+      "bytes": 7853,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/macro_focus.py",
+      "bytes": 2641,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/market_representative_guard.py",
+      "bytes": 12350,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/output_payloads.py",
+      "bytes": 13822,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/output_snapshots.py",
+      "bytes": 13408,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/practical_filters.py",
+      "bytes": 10006,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/repeat_guard.py",
+      "bytes": 10402,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/scoring_inputs.py",
+      "bytes": 7390,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/sentiment_inputs.py",
+      "bytes": 4821,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/symbol_prior.py",
+      "bytes": 4660,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/scanner/theme_filter.py",
+      "bytes": 9760,
+      "domain": "scanner",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/session_entry_dispatch.py",
+      "bytes": 1184,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/shadow_loop_session.py",
+      "bytes": 641,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/stage3_horizon_lineage.py",
+      "bytes": 14055,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist_explanation.py",
+      "bytes": 40326,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist_feedback_trace.py",
+      "bytes": 2658,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist_input_quality.py",
+      "bytes": 6553,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist_packet_visibility.py",
+      "bytes": 15625,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/__init__.py",
+      "bytes": 0,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/__init__.py",
+      "bytes": 0,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/commander_refresh_context.py",
+      "bytes": 12167,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/common_values.py",
+      "bytes": 2485,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/market_inputs.py",
+      "bytes": 12825,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/market_key_events.py",
+      "bytes": 4218,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/memory.py",
+      "bytes": 16081,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/news_compaction.py",
+      "bytes": 14265,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/news_context.py",
+      "bytes": 12112,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/symbol_read_models.py",
+      "bytes": 5253,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/theme_compaction.py",
+      "bytes": 8924,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/theme_packet.py",
+      "bytes": 12423,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/context/theme_strength.py",
+      "bytes": 1950,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/llm/__init__.py",
+      "bytes": 0,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/llm/adjustment_directives.py",
+      "bytes": 16083,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/llm/candidate_watch_overrides.py",
+      "bytes": 4352,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/llm/override_normalization.py",
+      "bytes": 13816,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/llm/stage_reviews.py",
+      "bytes": 10545,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/output/__init__.py",
+      "bytes": 0,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/output/commander_context_and_plan.py",
+      "bytes": 13258,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/output/strategic_answers.py",
+      "bytes": 8757,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/output/strategy_scores_and_summary.py",
+      "bytes": 9399,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/policy/__init__.py",
+      "bytes": 0,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/policy/exit_and_defaults.py",
+      "bytes": 10760,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/policy/monitor_entry_policy_seed.py",
+      "bytes": 2814,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/policy/monitor_entry_policy.py",
+      "bytes": 14619,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategist/policy/scanner_policy.py",
+      "bytes": 9196,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategy_horizon_feedback.py",
+      "bytes": 42812,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategy_memory_support_artifacts.py",
+      "bytes": 7808,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategy_memory_window_common.py",
+      "bytes": 25452,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/strategy_memory_window_sections.py",
+      "bytes": 19554,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/symbol_memory_packet.py",
+      "bytes": 9466,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/volume_confirmation.py",
+      "bytes": 4322,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/weekly_strategy_memory_packet.py",
+      "bytes": 1297,
+      "domain": "strategist",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/runtime/windows_subprocess.py",
+      "bytes": 1328,
+      "domain": "shared",
+      "disposition": "KEEP_CURRENT_OWNER_UNLESS_CONSUMER_AND_EFFECT_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/supervisor/__init__.py",
+      "bytes": 65,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/supervisor/intent_state_store.py",
+      "bytes": 35607,
+      "domain": "safety_execution_supervisor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/supervisor/intent_store.py",
+      "bytes": 4030,
+      "domain": "safety_execution_supervisor",
+      "disposition": "SAFETY_LOCK_KEEP_PENDING_PROOF",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    },
+    {
+      "path": "libs/supervisor/two_phase.py",
+      "bytes": 2856,
+      "domain": "safety_execution_supervisor",
+      "disposition": "FUNCTION_LEVEL_REVIEW_IN_GPT_SLICES",
+      "semantic_analysis": "NOT_ASSERTED_BY_PATH_CENSUS"
+    }
+  ]
+}
