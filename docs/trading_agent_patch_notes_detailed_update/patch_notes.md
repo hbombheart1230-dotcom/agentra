@@ -2876,3 +2876,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 현재 façade AI 1,958 / Markdown 1,891 / Story 562, 총 4,411 LOC. 436 ABI 및 호출 중 façade 전역 패치 호환성을 유지하면서 함수별 책임·호출자 분석 후 하나의 응집된 구현 영역을 추출하고 Codex 감사를 받을 예정.
 - 실데이터/LLM parity BLOCKED, `controlled_mock_lanes` 쓰기 격리 OPEN, P1.5.2 OPEN / P1.5.3 미승인.
 - 근거: `docs/refactor/work_orders/evidence/P15-R3-CODEX-GUARD-AUDIT-007.md`, `docs/refactor/work_orders/P15_R3_FACADE_LOC_MAX_REDUCTION_008.md`, `docs/daily_patch/2026-10-12_p152_guard007_pass_loc008_activation.md`.
+
+## 2026-10-12 · P1.5.2 R3 façade LOC 축소 008
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR
+
+- 남은 façade 함수를 전수 측정한 결과 계약이 없는 가장 큰 덩어리는 Markdown-clean 의존성 맵 factory 9개(242줄)였고, 이를 `markdown_clean_dependency_maps.py`(268줄)로 이동했습니다. Markdown façade는 1,891 → 1,678줄(-213)입니다.
+- 436개 def 이름/시그니처는 그대로이며 각 맵은 주입된 façade 모듈의 `facade.NAME`을 호출 시점에 조회해 원래 dict literal과 동일하게 현재 전역을 반영합니다.
+- baseline 대비 기록 호출 96,565건 중 96,564건 동일(1건은 wall-clock latency), 맵 9개 모두 실행, 집중 회귀 1,041 passed / 1 skipped, 운영 경로 쓰기 0.
+- façade 합계 4,198줄(원본 18,743). 실제 snapshot·LLM parity BLOCKED, 크기 SIZE_DEFERRED 유지, P1.5.2 OPEN / P1.5.3 미착수, Codex 감사 대기.

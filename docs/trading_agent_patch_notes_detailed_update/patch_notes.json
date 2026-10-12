@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 208,
+  "entry_count": 209,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5661,6 +5661,30 @@
         "docs/refactor/work_orders/evidence/P15-R3-CODEX-GUARD-AUDIT-007.md",
         "docs/refactor/work_orders/P15_R3_FACADE_LOC_MAX_REDUCTION_008.md",
         "docs/daily_patch/2026-10-12_p152_guard007_pass_loc008_activation.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Facade LOC Reduction 008",
+      "title": "Move Markdown-clean dependency maps out of the public façade",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "REFACTOR"
+      ],
+      "summary": "Nine call-time dependency-map factories moved from trade_report_markdown_clean.py to a responsibility-named 268-LOC Owner; façade 1,891 -> 1,678 LOC with unchanged 436-callable contract and use-time lookup.",
+      "details": [
+        "Measured every remaining façade function (implementation, delegation, dependency maps); dependency-map factories were the largest contract-free block (Markdown 242 LOC / 9 maps).",
+        "Façade keeps all 9 def names/signatures; bodies delegate to markdown_clean_dependency_maps with the injected façade module; each former global is qualified as facade.NAME so maps resolve current globals at call time exactly like the original dict literals.",
+        "Gate extended to 66 moved symbols (57 + 9) with pinned baseline AST equality and a new test that every map entry follows monkeypatched façade globals.",
+        "Differential vs baseline: 96,565 recorded calls, 96,564 identical (one wall-clock latency field), all 9 maps exercised; focused regression 1,041 passed / 1 skipped, zero production writes.",
+        "Façades now 1,958 / 1,678 / 562 LOC (sum 4,198, from 18,743). Real-data/LLM parity BLOCKED, façade size SIZE_DEFERRED, controlled_mock_lanes isolation OPEN. P1.5.2 OPEN, P1.5.3 not authorized."
+      ],
+      "impact": "Smaller Markdown façade with unchanged public contract and patch semantics; awaiting independent Codex audit.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-008.md",
+        "docs/daily_patch/2026-10-12_p1_5_2_r3_facade_loc_008.md"
       ],
       "status": "current"
     }

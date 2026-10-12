@@ -21,3 +21,6 @@
 
 ## Still OPEN
 Actual frozen report Markdown/JSON/JSONL and LLM before/after traces **BLOCKED / NOT RUN**; full native pytest previous baseline-matched 35F+2E and `controlled_mock_lanes` test write-isolation **OPEN**; numbered Owner cohesion debt OPEN. **P1.5.2 final PASS, `main` merge, live rollout, P1.5.3 all unapproved.**
+
+## LOC 008 implemented (2026-10-12, Claude) - awaiting Codex audit
+- One cohesive slice: the 9 Markdown-clean dependency-map factories moved to `libs/reporting/trade_report/markdown_clean_dependency_maps.py` (268 LOC) with use-time `facade.NAME` lookup. Markdown facade 1,891 -> 1,678 (-213); three facades 4,411 -> 4,198. Evidence: [P15-R3-CLAUDE-LOC-008.md](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-008.md). Differential 96,564/96,565 calls identical (1 = latency), focused 1,041 passed / 1 skipped, 0 writes. Real-data/LLM parity BLOCKED; façade size still SIZE_DEFERRED; P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.

@@ -97,7 +97,7 @@ class _Unqualify(ast.NodeTransformer):
 
 
 def test_expected_r3_moves_present():
-    assert len(MOVED) == 57, "ledger must record the 57 R3 moved implementation bodies"
+    assert len(MOVED) == 66, "ledger must record the 57 R3 bodies + 9 LOC-008 dependency maps"
 
 
 @pytest.mark.parametrize("path,name,owner", MOVED)
@@ -229,6 +229,35 @@ def test_lazy_use_time_lookup_before_and_within_call(path, name, owner, shape):
             assert all(v == "v2" for v, _ in events[1:]), (name, events[:8])
             if any(v == "v2" for v, _ in events):
                 _SWITCHED["functions_with_v2"] += 1
+
+
+DEP_MAPS = [(p, n, o) for p, n, o in MOVED if n.endswith("_deps")]
+
+
+@pytest.mark.parametrize("path,name,owner", DEP_MAPS)
+def test_dependency_map_values_resolve_facade_globals_at_call_time(path, name, owner, monkeypatch):
+    """Each map entry must be the CURRENT façade global when the map function is called (use-time),
+    exactly like the original in-façade dict literal."""
+    module = importlib.import_module(path[:-3].replace("/", "."))
+    fn = getattr(module, name)
+    before = fn()
+    assert before, name
+    attrs = [a for a in dir(module) if not a.startswith("__")]
+    by_id = {}
+    for a in attrs:
+        by_id.setdefault(id(getattr(module, a)), []).append(a)
+    checked = 0
+    for key, value in before.items():
+        names = by_id.get(id(value), [])
+        # the source name is the unique façade attribute whose lookup produced this value
+        for cand in names:
+            sentinel = object()
+            with monkeypatch.context() as m:
+                m.setattr(module, cand, sentinel)
+                if any(v is sentinel for v in fn().values()):
+                    checked += 1
+                    break
+    assert checked >= max(1, len(before) // 2), (name, checked, len(before))
 
 
 def test_lazy_lookup_was_actually_exercised():

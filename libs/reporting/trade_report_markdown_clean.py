@@ -183,6 +183,17 @@ from libs.reporting.trade_report.markdown_clean_r3_parts.bodies_04 import (
 from libs.reporting.trade_report.markdown_clean_r3_parts.bodies_05 import (
     _build_final_conclusion_r3_impl,
 )
+from libs.reporting.trade_report.markdown_clean_dependency_maps import (
+    _markdown_diagnostics_deps_r3_impl,
+    _summary_render_deps_r3_impl,
+    _summary_input_deps_r3_impl,
+    _strategy_memory_deps_r3_impl,
+    _markdown_entry_visibility_deps_r3_impl,
+    _markdown_signal_deps_r3_impl,
+    _markdown_translation_deps_r3_impl,
+    _markdown_truth_surface_deps_r3_impl,
+    _markdown_strategy_deps_r3_impl,
+)
 
 
 def _same_day_current_result(report: Dict[str, Any]) -> Dict[str, Any]:
@@ -190,25 +201,7 @@ def _same_day_current_result(report: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _markdown_diagnostics_deps() -> Dict[str, Any]:
-    return {
-        "action_label": _action_label,
-        "as_dict": _as_dict,
-        "authoritative_final_operator_summary": _authoritative_final_operator_summary,
-        "first_present_impl": _first_present_impl,
-        "listify": _listify,
-        "looks_like_symbol_name_impl": _looks_like_symbol_name_impl,
-        "metadata_value": _metadata_value,
-        "normalize_evaluation_hold_duration": _normalize_evaluation_hold_duration,
-        "resolve_trade_symbol_metadata": _resolve_trade_symbol_metadata,
-        "strip_trailing_blanks": _strip_trailing_blanks,
-        "summary_decimal": _summary_decimal,
-        "summary_eval_sentence": _summary_eval_sentence,
-        "summary_fact_text": _summary_fact_text,
-        "summary_money": _summary_money,
-        "summary_problem_label": _summary_problem_label,
-        "summary_root_cause_label": _summary_root_cause_label,
-        "translate_text": _translate_text,
-    }
+    return _markdown_diagnostics_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _same_day_summary_from_texts(
     texts: Iterable[Any],
@@ -222,113 +215,10 @@ def render_trade_report_markdown_clean(report: Dict[str, Any]) -> str:
 
 
 def _summary_render_deps() -> Dict[str, Any]:
-    return {
-        "RECOVERED_PARTIAL_ENTRY_NOTE": _RECOVERED_PARTIAL_ENTRY_NOTE,
-        "RECOVERED_PARTIAL_EXIT_NOTE": _RECOVERED_PARTIAL_EXIT_NOTE,
-        "action_label": _action_label,
-        "applied_label": _applied_label,
-        "as_dict": _as_dict,
-        "authoritative_final_operator_summary": _authoritative_final_operator_summary,
-        "authoritative_holding_duration_label": _authoritative_holding_duration_label,
-        "build_post_exit_shadow_summary_lines": _build_post_exit_shadow_summary_lines,
-        "build_strategy_horizon_lines": _build_strategy_horizon_lines,
-        "build_summary_exit_trigger_lines": _build_summary_exit_trigger_lines,
-        "build_trade_cost_analysis": _build_trade_cost_analysis,
-        "carryover_context": _carryover_context,
-        "clip": _clip,
-        "dedupe": _dedupe,
-        "enrich_exit_signal_snapshot_from_monitor": _enrich_exit_signal_snapshot_from_monitor,
-        "ensure_sentence": _ensure_sentence,
-        "entry_confidence_for_operator_summary": _entry_confidence_for_operator_summary,
-        "entry_reason_line": _entry_reason_line,
-        "entry_signal_metric_summary_lines": _entry_signal_metric_summary_lines,
-        "entry_watch_summary_lines": _entry_watch_summary_lines,
-        "execution_mode_label": _execution_mode_label,
-        "extract_exit_signal_snapshot": _extract_exit_signal_snapshot,
-        "fmt_pct": _fmt_pct,
-        "get_truth_surface": _get_truth_surface,
-        "is_not_captured": _is_not_captured,
-        "is_post_entry_gate_text": _is_post_entry_gate_text,
-        "is_recovered_partial_exit_report": _is_recovered_partial_exit_report,
-        "korea_index_lines": _korea_index_lines,
-        "listify": _listify,
-        "memory_layers_text": _memory_layers_text,
-        "metadata_value": _metadata_value,
-        "normalize_entry_confidence_for_operator_summary": _normalize_entry_confidence_for_operator_summary,
-        "normalize_exit_trigger_label": _normalize_exit_trigger_label,
-        "num_opt": _num_opt,
-        "operator_pnl_pct": _operator_pnl_pct,
-        "playbook_label": _playbook_label,
-        "pnl_basis_label": _pnl_basis_label,
-        "render_controlled_lane_report_lines": _render_controlled_lane_report_lines,
-        "render_quant_tactic_report_lines_impl": _render_quant_tactic_report_lines_impl,
-        "resolve_entry_signal_snapshot": _resolve_entry_signal_snapshot,
-        "resolve_market_context": _resolve_market_context,
-        "resolve_trade_symbol_metadata": _resolve_trade_symbol_metadata,
-        "risk_mode_label": _risk_mode_label,
-        "same_day_current_result": _same_day_current_result,
-        "same_day_summary_from_texts": _same_day_summary_from_texts,
-        "sample_news_titles": _sample_news_titles,
-        "sample_news_titles_for_symbol": _sample_news_titles_for_symbol,
-        "selection_fallback_context": _selection_fallback_context,
-        "status_label": _status_label,
-        "story_type_label": _story_type_label,
-        "strip_trailing_blanks": _strip_trailing_blanks,
-        "theme_label": _theme_label,
-        "trade_cost_analysis_lines": _trade_cost_analysis_lines,
-        "translate_text": _translate_text,
-        "translated_metadata": _translated_metadata,
-    }
+    return _summary_render_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _summary_input_deps() -> Dict[str, Any]:
-    return {
-        "RECOVERED_PARTIAL_ENTRY_NOTE": _RECOVERED_PARTIAL_ENTRY_NOTE,
-        "RECOVERED_PARTIAL_EXIT_NOTE": _RECOVERED_PARTIAL_EXIT_NOTE,
-        "action_label": _action_label,
-        "as_dict": _as_dict,
-        "authoritative_final_operator_summary": _authoritative_final_operator_summary,
-        "authoritative_hold_duration_seconds": _authoritative_hold_duration_seconds,
-        "authoritative_holding_duration_label": _authoritative_holding_duration_label,
-        "build_trade_cost_analysis": _build_trade_cost_analysis,
-        "carryover_context": _carryover_context,
-        "clip": _clip,
-        "compact_post_exit_shadow": _compact_post_exit_shadow,
-        "enrich_exit_signal_snapshot_from_monitor": _enrich_exit_signal_snapshot_from_monitor,
-        "entry_confidence_for_operator_summary": _entry_confidence_for_operator_summary,
-        "entry_reason_line": _entry_reason_line,
-        "entry_watch_execution_lines": _entry_watch_execution_lines,
-        "execution_mode_label": _execution_mode_label,
-        "extract_exit_signal_snapshot": _extract_exit_signal_snapshot,
-        "fmt_pct": _fmt_pct,
-        "get_truth_surface": _get_truth_surface,
-        "is_not_captured": _is_not_captured,
-        "is_recovered_partial_exit_report": _is_recovered_partial_exit_report,
-        "listify": _listify,
-        "metadata_value": _metadata_value,
-        "normalize_exit_trigger_label": _normalize_exit_trigger_label,
-        "num_opt": _num_opt,
-        "operator_pnl_pct": _operator_pnl_pct,
-        "playbook_label": _playbook_label,
-        "post_exit_shadow_surface": _post_exit_shadow_surface,
-        "quant_tactic_surface_impl": _quant_tactic_surface_impl,
-        "resolve_entry_execution_visibility": _resolve_entry_execution_visibility,
-        "resolve_entry_signal_snapshot": _resolve_entry_signal_snapshot,
-        "resolve_market_context": _resolve_market_context,
-        "resolve_trade_symbol_metadata": _resolve_trade_symbol_metadata,
-        "risk_mode_label": _risk_mode_label,
-        "same_day_current_result": _same_day_current_result,
-        "same_day_summary_from_texts": _same_day_summary_from_texts,
-        "sample_news_titles": _sample_news_titles,
-        "sample_news_titles_for_symbol": _sample_news_titles_for_symbol,
-        "selection_fallback_context": _selection_fallback_context,
-        "status_label": _status_label,
-        "story_type_label": _story_type_label,
-        "strategy_horizon_report_surface": _strategy_horizon_report_surface,
-        "theme_label": _theme_label,
-        "translate_text": _translate_text,
-        "translated_metadata": _translated_metadata,
-        "truth_source_label": _truth_source_label,
-    }
+    return _summary_input_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def render_trade_summary_markdown_clean(report: Dict[str, Any]) -> str:
     return _render_trade_summary_markdown_impl(report, deps=_summary_render_deps())
@@ -449,38 +339,7 @@ def _is_recovered_partial_exit_report(report: Dict[str, Any]) -> bool:
 
 
 def _strategy_memory_deps() -> Dict[str, Any]:
-    return {
-        "action_label": _action_label,
-        "as_dict": _as_dict,
-        "badge": _badge,
-        "carry_risk_label": _carry_risk_label,
-        "carry_state_label": _carry_state_label,
-        "dedupe": _dedupe,
-        "duration_label_seconds": _duration_label_seconds,
-        "failure_label": _failure_label,
-        "first_report_path": _first_report_path,
-        "fmt_pct": _fmt_pct,
-        "format_kst_date": _format_kst_date,
-        "format_kst_datetime": _format_kst_datetime,
-        "humanize_reporter_source_label": _humanize_reporter_source_label,
-        "listify": _listify,
-        "memory_layers_text": _memory_layers_text,
-        "memory_packet_state_line": _memory_packet_state_line,
-        "memory_status_label": _memory_status_label,
-        "metadata_value": _metadata_value,
-        "monitor_delta_interpretation": _monitor_delta_interpretation,
-        "monitor_phase_line": _monitor_phase_line,
-        "num_opt": _num_opt,
-        "parse_report_datetime": _parse_report_datetime,
-        "playbook_label": _playbook_label,
-        "policy_phase_line": _policy_phase_line,
-        "policy_source_label": _policy_source_label,
-        "reason_summary_line": _reason_summary_line,
-        "resolve_prompt_proven_surface": _resolve_prompt_proven_surface,
-        "same_policy_snapshot": _same_policy_snapshot,
-        "scanner_phase_line": _scanner_phase_line,
-        "to_kst": _to_kst,
-    }
+    return _strategy_memory_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _carryover_context(report: Dict[str, Any]) -> Dict[str, Any]:
     return _carryover_context_impl(report, deps=_strategy_memory_deps())
@@ -757,12 +616,7 @@ def _resolve_trade_symbol_metadata(report: Dict[str, Any], symbol: str) -> Dict[
     )
 
 def _markdown_entry_visibility_deps() -> Dict[str, Any]:
-    return {
-        "as_dict": _as_dict,
-        "first_dict": _first_dict,
-        "metadata_value": _metadata_value,
-        "resolve_entry_monitor_artifact": _resolve_entry_monitor_artifact,
-    }
+    return _markdown_entry_visibility_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _resolve_entry_execution_visibility(report: Dict[str, Any]) -> Dict[str, Any]:
     return _resolve_entry_execution_visibility_impl(report, deps=_markdown_entry_visibility_deps())
@@ -875,25 +729,7 @@ def _candidate_cascade_matches_trade(cascade: Dict[str, Any], traded_symbol: Any
 
 
 def _markdown_signal_deps() -> Dict[str, Any]:
-    return {
-        "as_dict": _as_dict,
-        "candidate_cascade_matches_trade": _candidate_cascade_matches_trade,
-        "candidate_watch_reason_label": _candidate_watch_reason_label,
-        "dedupe": _dedupe,
-        "display_candidate_symbol": _display_candidate_symbol,
-        "first_present_value": _first_present_value,
-        "fmt_multiple": _fmt_multiple,
-        "fmt_pct": _fmt_pct,
-        "fmt_signed_pct": _fmt_signed_pct,
-        "listify": _listify,
-        "metadata_value": _metadata_value,
-        "normalize_exit_trigger_label": _normalize_exit_trigger_label,
-        "num_opt": _num_opt,
-        "resolve_entry_execution_visibility": _resolve_entry_execution_visibility,
-        "summary_money": _summary_money,
-        "truth_source_label": _truth_source_label,
-        "watch_scope_label": _watch_scope_label,
-    }
+    return _markdown_signal_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _entry_watch_execution_lines(report: Dict[str, Any], *, require_trade_symbol_match: bool = False) -> List[str]:
     return _entry_watch_execution_lines_impl(report, require_trade_symbol_match=require_trade_symbol_match, deps=_markdown_signal_deps())
@@ -1157,13 +993,7 @@ def _axis_label(value: Any) -> str:
     return _axis_label_impl(value, _clip=_clip)
 
 def _markdown_translation_deps() -> Dict[str, Any]:
-    return {
-        "action_label": _action_label,
-        "axis_label": _axis_label,
-        "clip": _clip,
-        "metadata_value": _metadata_value,
-        "translate_reason_phrase": _translate_reason_phrase,
-    }
+    return _markdown_translation_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _translate_text(text: Any) -> str:
     return _translate_text_impl(text, deps=_markdown_translation_deps())
@@ -1282,18 +1112,7 @@ def _memory_status_label(value: Any) -> str:
 
 
 def _markdown_truth_surface_deps() -> Dict[str, Any]:
-    return {
-        "as_dict": _as_dict,
-        "authority_label": _authority_label,
-        "badge": _badge,
-        "fmt_pct": _fmt_pct,
-        "fmt_price": _fmt_price,
-        "get_truth_surface": _get_truth_surface,
-        "metadata_value": _metadata_value,
-        "num_opt": _num_opt,
-        "trade_cost_analysis_lines": _trade_cost_analysis_lines,
-        "truth_source_label": _truth_source_label,
-    }
+    return _markdown_truth_surface_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _build_truth_surface(report: Dict[str, Any]) -> List[str]:
     return _build_truth_surface_impl(report, deps=_markdown_truth_surface_deps())
@@ -1470,39 +1289,7 @@ def _market_context_summary_from_raw(summary: Any) -> str:
 
 
 def _markdown_strategy_deps() -> Dict[str, Any]:
-    return {
-        "append_strategy_output_line": _append_strategy_output_line,
-        "as_dict": _as_dict,
-        "clip": _clip,
-        "dedupe": _dedupe,
-        "entry_watch_execution_lines": _entry_watch_execution_lines,
-        "is_not_captured": _is_not_captured,
-        "korea_index_lines": _korea_index_lines,
-        "listify": _listify,
-        "looks_corrupted": _looks_corrupted,
-        "market_context_structured_lines": _market_context_structured_lines,
-        "market_context_summary_from_raw": _market_context_summary_from_raw,
-        "memory_layers_text": _memory_layers_text,
-        "metadata_value": _metadata_value,
-        "mismatched_symbol_news_bullet": _mismatched_symbol_news_bullet,
-        "news_linkage_strength_label": _news_linkage_strength_label,
-        "noun_predicate_was": _noun_predicate_was,
-        "num_opt": _num_opt,
-        "playbook_label": _playbook_label,
-        "policy_token_label": _policy_token_label,
-        "rank_scope_text": _rank_scope_text,
-        "resolve_market_context": _resolve_market_context,
-        "resolve_strategist_output_surface": _resolve_strategist_output_surface,
-        "risk_mode_label": _risk_mode_label,
-        "sample_news_titles": _sample_news_titles,
-        "sample_news_titles_for_symbol": _sample_news_titles_for_symbol,
-        "section_summary": _section_summary,
-        "strategy_output_layer_bits": _strategy_output_layer_bits,
-        "strategy_output_list_text": _strategy_output_list_text,
-        "strategy_output_text": _strategy_output_text,
-        "theme_label": _theme_label,
-        "translate_text": _translate_text,
-    }
+    return _markdown_strategy_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _build_market_context(report: Dict[str, Any]) -> List[str]:
     return _build_market_context_impl(report, deps=_markdown_strategy_deps())
