@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 213,
+  "entry_count": 214,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5785,10 +5785,38 @@
       ],
       "impact": "Demonstrates additional real façade reduction while retaining independent audit sequencing and strict safety boundaries.",
       "sources": [
-        "# P15-R3-CODEX-LOC-010-AUDIT-011 — independent pinned-SHA audit\n\n**Role:** Codex AUDIT ONLY, no source edits, commits, new branches, merges or runtime actions.\n**Review code:** `b0cfc2b5646ff81ec5ce7b738f485a9d22365826` on single `refactor/p1.5`, compared with `24c0b2f80a0fba1938d6530f40d9b76ad038a43d`.\n**Minimum context:** `AGENTS.md → CURRENT.md → this file → evidence/P15-R3-CLAUDE-LOC-010.md`. Inspect nine changed paths and necessary direct callers only; do not reload prior archives.\n**Isolation:** detached/separate audit clone rooted outside operational `C:\\Agentra` and Q12 worktrees; use Guard 006 for all recorder/seam tools; `PYTHONDONTWRITEBYTECODE=1`, session temp results, 0 production writes. No live orders, LLM, broker, or full native pytest.\n\n## Audit gates\n1. Recount physical LOC: Markdown `1678 → 1527` (−151), named `markdown_clean_operator_narrative.py` **264** (≤350), total public façades `4198 → 4047`. Confirm exactly **20** original bodies moved, **86** moved-body ledger names (57+9+20) and no duplicate active implementations. AI/Story and authority paths unchanged.\n2. Independently prove **436** façade callable signatures/defaults/decorators/import identities unchanged. AST after stripping use-site `facade.` qualification must match pinned original body for all moved symbols; no capture-at-entry, import cycles, dynamic `__getattr__` or Owner→façade imports. Inspect nested callback / recursion / lexical shadowing and patch-after-call-entry cases, not just static tests.\n3. Inspect the **20 operator prose/translation/entry/guard/timeline** members for side effects, truth-source precedence, ordered bullets, Unicode/Korean output, formatting, missing/falsey handling and any approval/guard truth semantics. Names containing `guard`/`entry` here are report presentation, not Supervisor/broker authority; verify no semantic crossover.\n4. Run safe focused tests independently and record actual commands/PASS/FAIL/SKIP and production-write audit. Compare deterministic output/golden and mock-LLM prompts/retry/timeout/fallback where covered. Assess Claude's reported **459 PASS moved-body+ABI**, **1,142 PASS/1 SKIP focused**, and **99,689/99,690** call parity as evidence; if not rerun, label *CLAUDE-ONLY*, not verified. One latency difference is not evidence of output regression unless reproduced as deterministic.\n5. Confirm canonical symbol ledger, both UI patch-note sources and documentation in sync. Fail if tests were weakened, hidden dynamic consumers or test output artifacts leaked.\n\n## Verdict\nReport PASS / PASS_WITH_FINDINGS / FAIL / BLOCKED at pinned SHA, reproducible counts, risks, necessary fixes; **do not implement**. Genuine historical report/LLM parity remains BLOCKED/NOT RUN; `controlled_mock_lanes` full-suite write isolation OPEN; façade SIZE_DEFERRED and numbered Owner cohesion OPEN. This audit does not close P1.5.2 or authorize LOC 012, `main` merge or P1.5.3.\n",
+        "docs/refactor/work_orders/P15_R3_CODEX_LOC_010_AUDIT_011.md",
         "docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_012.md",
         "docs/daily_patch/2026-10-12_p152_loc010_codex_handoff.md",
         "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-010.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5 Fast Track First Pass Approved",
+      "title": "Breadth-first structural batches through P1.5.11, deeper LOC debt in second pass",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "TESTING",
+        "WORKFLOW"
+      ],
+      "summary": "User approved faster whole-program first-pass refactoring by integrated subsystem waves instead of audit per 100–200 LOC, while retaining immediate safety gates and final P1.5.11 acceptance.",
+      "details": [
+        "Codex LOC010 accepted PASS_WITH_FINDINGS at b0cfc2b: 812 selected PASS/1 SKIP, 460 core PASS, 436 ABI/86 moved symbols PASS and zero audit-clone writes; historical genuine real-report/LLM parity remains BLOCKED.",
+        "Wave A Reporting+Operator UI, Wave B Strategist+Scanner+Monitor, Wave C Commander+Naming+safe Executor read-only+Wrapper, Wave D P1.5.11 full-suite/Docker/UEF freeze.",
+        "Claude batches multiple cohesive low-risk slices, runs focused safety/contract/write gates per stage, and Codex audits one pinned cumulative diff per wave; high-risk paths still stop for immediate review.",
+        "Oversized façades, numbered Owners and consumer-proven wrapper retirement remain tracked debts for second-pass work, NOT size-target PASS; FIRST_PASS_WITH_DEBT never equals production acceptance.",
+        "Only refactor/p1.5 isolated clones, no live trading/LLM/broker or main merge; P1.6 benchmark design may prepare early, runtime shadow work starts after P1.5 freeze.",
+        "Repaired malformed previous patch-note source reference for LOC010 audit."
+      ],
+      "impact": "Accelerates P1.5 structural coverage without weakening frozen trading authority, evidence honesty or the formal release gate.",
+      "sources": [
+        "docs/refactor/P15_FAST_TRACK_FIRST_PASS_2026_10_12.md",
+        "docs/refactor/work_orders/P15_FAST_TRACK_WAVE_A_013.md",
+        "docs/daily_patch/2026-10-12_p15_fast_track_first_pass_approved.md",
+        "docs/refactor/work_orders/evidence/P15-R3-CODEX-LOC-010-AUDIT-011.md"
       ],
       "status": "current"
     }

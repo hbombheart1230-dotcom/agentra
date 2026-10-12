@@ -313,3 +313,15 @@ All eleven stages were reviewed against the original responsibility-minimal cons
 ## 2026-10-09 P1.5 Implementation v1.2 — Small Owners and Executor
 
 Per operator handoff P1.2 is CLOSED and P1.3 FULL_DOCKER_FROZEN. Both remain closed for ordinary refactoring. Current remote working line is `refactor/p1.5`, parent `main`; local C:\Agentra is the implementation environment. Continue accepted R2-A/B/C code, do not whole-reset. Future newly extracted Owners MUST be <=350 physical LOC at tranche acceptance (150–300 preferred); already oversized Reporting owners require substantive single-responsibility decomposition. P1.5.9 additionally aims to reduce `execute_from_packet.py` from about 4,189 LOC toward 1,200–1,800 if strict guard/R6.2/Step5C-D/broker/UNKNOWN equality is proven, with 2,600–3,200 intermediate. No size metric overrides execution safety. Full guidance: [P1.5 v1.2 policy](p1_5_small_owner_policy_and_rollback_decision_v1_2.md), [Reporting v1.2](p1_5_reporting_implementation_packet_v1_2.md), [Executor v1.1](p1_5_executor_safe_decomposition_packet_v1_1.md). Original stage packets are historical authority for frozen semantics and precise guard order. This amendment changes no runtime Python or live trading setting.
+
+## 2026-10-12 — User-approved P1.5 Fast Track first pass (implementation process addendum)
+
+**Authority:** [Fast Track first-pass plan](P15_FAST_TRACK_FIRST_PASS_2026_10_12.md). The frozen design and stage order remain; this update changes implementation sequencing, NOT trade authority, output semantics or P1.5.11 final acceptance.
+
+- **Wave A:** P1.5.2 Reporting low-risk residuals + P1.5.3 Operator UI/Brief first-pass boundaries.
+- **Wave B:** P1.5.4 Strategist, P1.5.5 Scanner, P1.5.6 Monitor explicit contracts/Owner adapters, preserving LLM/rank/timing safety.
+- **Wave C:** P1.5.7 Commander, P1.5.8 runtime naming, P1.5.9 only safe Executor observability/read-only extraction, P1.5.10 provably unused wrappers (otherwise retain).
+- **Wave D:** P1.5.11 formal full regression/Docker/UEF parity, safety, write isolation, evidence freeze and explicit GPT/user acceptance.
+- **P1.6:** evaluation-plan/fixture preparation can run during P1.5, but LangGraph/pydantic-graph shadow runtime work waits for formal P1.5 freeze.
+
+Use **one Codex independent audit per integrated low-risk wave**, mandatory focused tests before each stage handoff, additional immediate high-risk checks. Stage progress may be `FIRST_PASS_WITH_DEBT`, which is NOT final PASS or production ready. Old history's implementation role/gating and pre-freeze notes describe prior procedural authority; see linked Fast Track for the current bounded exception. `main` remains frozen; no live deployment or unapproved P1.6 runtime.
