@@ -2782,3 +2782,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 구 feature 원격 ref는 이력 포함 및 로컬 워크트리 정합성 확인 후 삭제하도록 활성 작업에 명시했습니다. 보존해야 할 로컬 변경은 강제 정리하지 않습니다.
 - P1.5.2 OPEN, P1.5.3 미승인.
 - 근거: `docs/daily_patch/2026-10-12_p152_single_refactor_branch_policy.md`, `docs/refactor/work_orders/CURRENT.md`.
+
+## 2026-10-12 · P1.5.2 R3 수용 증거 002
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · REPORTING · SAFETY
+
+- 동일 fixture 625개 테스트에서 이동한 57개 함수의 호출 47,092건을 baseline과 비교해 47,091건이 동일했고, 1건은 wall-clock latency만 달랐습니다(두 함수는 직접 357 케이스로 비교).
+- Seam 점검: 호출 전 패치는 57/57 동일, 호출 도중 콜백 패치는 36개에서 달랐습니다(호출 진입 시 façade 전역 바인딩). 결정 대기.
+- 전체 pytest 1회 완료: 35 failed / 5115 passed / 2 errors, 실패 노드는 모두 baseline과 동일한 범위 밖(UEF/Step5B/Scanner/API) 항목이며 `data/logs/controlled_mock_lanes` 쓰기 격리 이슈 1건을 기록했습니다.
+- Story Owner 줄 수를 102로 정정, 실제 snapshot·LLM parity는 계속 BLOCKED/NOT RUN. P1.5.2 OPEN, P1.5.3 미착수.
+- 근거: `docs/refactor/work_orders/evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md`.

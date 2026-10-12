@@ -12,9 +12,12 @@
 ## Recorded audit (2026-10-12)
 - Codex result **PASS_WITH_FINDINGS** supplied by user; audit clone `C:\AgentraEvidence\p152_r3_audit_e41d42d`. Reported subset **197 PASS / 1 SKIP**, 436-symbol scan, Owner parity, max LOC, production-write audit 0. The independent audit's raw log is not checked into Git; treat counts as reported, not freshly rerun here.
 - Evidence: [P15-R3-CODEX-INDEPENDENT-001.md](evidence/P15-R3-CODEX-INDEPENDENT-001.md).
-- Open gates: actual frozen Markdown/JSON/JSONL and LLM prompt/retry/timeout/call-count parity **NOT RUN/BLOCKED**; complete native pytest **NOT RUN/INCOMPLETE**; façade size **SIZE_DEFERRED** (562/1891/1958); dynamic consumers/patch seams unproven.
-- Earlier review asks (entry-time global binding, numbered Owner responsibility, Story LOC discrepancy and independent synthetic differential) are **NOT RESOLVED BY THE SUBMITTED AUDIT SUMMARY**; keep as explicit checks, not assumed passed.
+- Open gates: real frozen Markdown/JSON/JSONL and LLM prompt/retry/timeout/call-count parity **BLOCKED/NOT RUN**; façade size **SIZE_DEFERRED** (562/1891/1958). Full native pytest now run by Claude: 5115 PASS / 35 FAIL / 27 SKIP / 2 ERROR, all failing tests identical to baseline; one unrelated test-originated production-style write-isolation finding.
+- New Claude acceptance evidence 002 at feature SHA `1c6e603`: synthetic baseline-vs-R3 comparison **47091/47092 identical** (one timing-only), pre-call patch **57/57 same**, **within-call mutation differs 36/57 (strict seam parity FAIL)**, Story Owner LOC corrected **102**, numbered Owners remain responsibility-naming debt. Claude's evidence requires Codex independent audit; no semantic-difference waiver.
 - Feature history is now already on `refactor/p1.5` as WIP; **no main integration, live deployment, or P1.5.3**.
 
 ## Next
-- First clean the obsolete R3 feature branch safely (verify fully integrated ancestry and clean local feature worktree; never force); then execute the ONE linked evidence-only task on isolated clone of `refactor/p1.5`; record PASS/FAIL/NOT RUN truthfully. No reimplementation and no forced baseline snapshots.
+- First clean the obsolete R3 feature branch safely (verify the pinned feature HEAD is ancestor of latest `refactor/p1.5`, and that the local feature worktree has no untracked/dirty files; never force). Codex then independently audits [Claude evidence 002](evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md). GPT/user decides the **36/57 strict mid-call seam differences** separately before any runtime changes or P1.5.2 acceptance.
+
+## Single-branch preservation note
+- Concurrent Claude evidence SHA `1c6e603` was merged into `refactor/p1.5` through a two-parent preservation commit without discarding the single-branch rules. `main` and live checkouts remain unchanged. Old remote feature ref is pending safe deletion by local agent; stop all pushes to it.
