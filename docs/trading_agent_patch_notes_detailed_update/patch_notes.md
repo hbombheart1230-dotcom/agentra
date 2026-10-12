@@ -2754,3 +2754,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - AI provider/router/prompt/retry/timeout/fallback/merge 경로는 이동하지 않았습니다. façade ≤350줄 목표는 SIZE_DEFERRED입니다.
 - 집중 오프라인 Reporting 테스트 810 passed / 1 skipped, 운영 경로 쓰기 감사 0. 실제 snapshot·LLM parity는 NOT RUN, 전체 pytest 미완료, P1.5.2 OPEN, P1.5.3 미착수, Codex 독립 감사 대기.
 - 근거: `docs/refactor/work_orders/evidence/P15-R3-CLAUDE-IMPLEMENTATION-001.md`, `docs/daily_patch/2026-10-12_p1_5_2_r3_compat_first_decomposition.md`.
+
+## 2026-10-12 · P1.5.2 R3 Codex 독립 감사 작업지시
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · SAFETY
+
+- `CURRENT.md`의 활성 작업을 Codex 독립 감사로 전환했습니다. 감사 SHA `e41d42d` / 런타임 `321eabb`; 구현 변경과 병합은 없습니다.
+- ABI 436개, façade 전역 바인딩 시점, numbered Owner 구조, Story Owner LOC 불일치, 격리 합성 입력 차분과 쓰기 감사를 확인합니다.
+- 실제 자료·LLM parity와 전체 pytest는 여전히 미완료. P1.5.2 OPEN / P1.5.3 미승인.
+- 근거: `docs/refactor/work_orders/P15_R3_CODEX_INDEPENDENT_AUDIT_001.md`, `docs/daily_patch/2026-10-12_p152_r3_codex_audit_handoff.md`.

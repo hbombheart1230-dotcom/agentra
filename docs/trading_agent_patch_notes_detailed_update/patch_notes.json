@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 195,
+  "entry_count": 196,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5340,6 +5340,30 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-IMPLEMENTATION-001.md",
         "docs/daily_patch/2026-10-12_p1_5_2_r3_compat_first_decomposition.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Codex Audit Task",
+      "title": "Pin independent Codex review of 57 façade body moves",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "REFACTOR",
+        "SAFETY"
+      ],
+      "summary": "Git-first Codex audit task replaces stale R3 implementation entrypoint; pinned code SHA unchanged; no runtime changes or merge.",
+      "details": [
+        "Audit pinned e41d42d (runtime 321eabb); separate baseline ba6618d.",
+        "Inspect 436-callable ABI, monkeypatch global timing, numbered Owner cohesion, Story LOC evidence, exact synthetic differential, patch-note provenance and write isolation.",
+        "Claude's 810 pass/1 skip is not Codex-independent acceptance. Real snapshot/LLM parity and whole-suite remain NOT RUN/INCOMPLETE.",
+        "P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED."
+      ],
+      "impact": "Codex can run from CURRENT.md without a chat-length prompt; audit gate remains blocking.",
+      "sources": [
+        "docs/refactor/work_orders/P15_R3_CODEX_INDEPENDENT_AUDIT_001.md",
+        "docs/daily_patch/2026-10-12_p152_r3_codex_audit_handoff.md"
       ],
       "status": "current"
     }

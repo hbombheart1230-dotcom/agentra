@@ -1,11 +1,11 @@
-# ACTIVE WORK ORDER — P1.5.2 R3 façade decomposition
+# ACTIVE WORK ORDER — P1.5.2 R3 Codex independent audit
 
-**State:** READY_FOR_CLAUDE_IMPLEMENTATION. R3 NOT STARTED, P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.
-**Baseline:** `341cedcd95b37b2f30e8dc6b821a25c20fd3fa7b` on `origin/refactor/p1.5` (plus this docs-only task activation commit).
-**One task:** [P15_R3_FACADE_DECOMPOSITION_001.md](P15_R3_FACADE_DECOMPOSITION_001.md).
+**State:** CLAUDE_R3_A_B_C_SUBMITTED; CODEX_INDEPENDENT_AUDIT_PENDING. P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.
+**Baseline:** `ba6618d483e6d617f4ee56b2cb5647392c777071` on `origin/refactor/p1.5`; pinned review `e41d42d754dba9d538fba0fa2dda969d6ea83f02` (runtime `321eabb5b83a6aa4eb912cadaf6436a82214a848`).
+**One task:** [P15_R3_CODEX_INDEPENDENT_AUDIT_001.md](P15_R3_CODEX_INDEPENDENT_AUDIT_001.md) (implementation plan/history not the active entrypoint).
 **Shared rules:** [COMMON_RULES.md](COMMON_RULES.md).
 **Agentra roles:** CLAUDE implementation → CODEX independent audit → GPT/user integration decision. NOT Agentco roles.
-**Workspace:** live `C:\Agentra` must be protected; implementation on isolated feature worktree as task requires. Two dirty Q12 worktrees must remain intact.
+**Workspace:** audit isolated and read-only; live `C:\Agentra` and two dirty Q12 worktrees are protected.
 **History:** [archived previous CURRENT](archive/CURRENT_R2_THROUGH_341CEDC_2026-10-12.md) (NOT an ordinary task prerequisite).
 
 ## Verified baseline and unresolved gates
@@ -13,7 +13,7 @@
 - Isolated Windows acceptance at `341cedc`: P1.5.2 selected **295 PASS / 1 SKIP**, production-path write audit **0**, correct venv Python/FastAPI. Evidence [clone acceptance](evidence/P15-R2-CODEX-CLONE-ACCEPTANCE-2026-10-12.md); not whole suite.
 - Whole native pytest **INCOMPLETE/NOT PASS** (API GET-only failure; another run terminated ~50% without summary). Historical Linux full safe sweep **4919 PASS / 41 FAIL / 2 ERROR**. Do not conflate out-of-scope known failures with Reporting regression.
 - Historical real Markdown/JSON/JSONL and captured LLM before/after evidence **missing**, so real-data and LLM output parity **NOT RUN/BLOCKED**. Do not invent snapshots.
-- **Next action:** Claude implements R3-A→R3-B→R3-C in isolated task branch, publishes exact code SHA and test reports; Codex audits that exact SHA before any integration. STOP if safety/compatibility cannot be proved.
+- **Next action:** Codex independent review of pinned `e41d42d`, including before/after synthetic differential and global-capture semantics; no implementation or merge.
 
 ## R3 status update (2026-10-12, compatibility-first resume)
-- Claude implemented R3-A/B/C on `feature/p152-facades-r3` with SIZE_DEFERRED façade LOC; **awaiting Codex independent audit of the pinned SHA in `evidence/P15-R3-CLAUDE-IMPLEMENTATION-001.md`**. Not merged; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED. Real snapshot/LLM parity NOT RUN; whole native pytest incomplete.
+- Claude implemented R3-A/B/C; code SHA `321eabb5`, review SHA `e41d42d`; 57 bodies, 11 Owners, façade SIZE_DEFERRED. Reported 810 PASS / 1 SKIP (not independently rerun). Codex audit pending. Frozen real snapshots/LLM parity NOT RUN, full pytest incomplete; P1.5.2 OPEN and P1.5.3 NOT AUTHORIZED.
