@@ -2838,3 +2838,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `events.jsonl`, `reports/canonical|llm` 변경의 쓰기 주체는 PID 정보가 없어 **UNKNOWN**이며 live 루프와 일치하나 입증되지는 않았습니다. live 프로브/재실행은 하지 않았습니다.
 - 확인된 영향은 읽기 전용 스캔(약 10GB ledger SHA-256 읽기 포함)뿐이며 비교 증거에서는 제외합니다. 원인은 작업 디렉터리 의존 도구이고, `--root` 가드는 별도 승인 과제로 권고합니다.
 - 실데이터/LLM parity BLOCKED, 전체 pytest 0-write와 `controlled_mock_lanes` 격리 OPEN, façade SIZE_DEFERRED, P1.5.2 OPEN / P1.5.3 미착수.
+
+## 2026-10-12 · P1.5.2 R3 감사 도구 실행경로 보호 작업 시작
+**Stage:** Safety and Test Infrastructure
+**Tags:** SAFETY · TESTING · REFACTOR
+
+- 실수 실행은 live 루트에서 테스트 0건 수집; 관측된 기록 파일 변경의 쓰기 주체는 UNKNOWN으로 유지합니다.
+- R3 오프라인 감사 스크립트 2개에만 `--root`/환경변수 명시, live 실행 차단, 결과 경로 격리 및 bytecode 비활성화를 추가하도록 작업지시했습니다.
+- 독립 clone에서 집중 테스트 후 Codex 감사. 런타임 변경·전체 pytest·main 병합·신규 브랜치 금지. P1.5.2 OPEN / P1.5.3 미승인.
+- 근거: `docs/refactor/work_orders/P15_R3_AUDIT_HARNESS_GUARDS_006.md`, `docs/daily_patch/2026-10-12_p152_r3_harness_guard_task_activation.md`.

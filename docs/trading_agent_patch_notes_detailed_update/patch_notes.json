@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 204,
+  "entry_count": 205,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5561,6 +5561,30 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LIVE-RUN-TRIAGE-005.md",
         "docs/daily_patch/2026-10-12_p1_5_2_r3_live_run_triage_005.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Audit Harness Guard 006 Activation",
+      "title": "Require explicit isolated roots for offline R3 audit harnesses",
+      "stage": "Safety and Test Infrastructure",
+      "types": [
+        "SAFETY",
+        "TESTING",
+        "REFACTOR"
+      ],
+      "summary": "Authorize a scoped fail-closed guard for R3 offline audit utilities after the live-root accidental invocation was characterized.",
+      "details": [
+        "Existing triage: zero tests collected from live root, observed writer identity UNKNOWN; no live repro.",
+        "Scope limited to two offline audit scripts, direct guard tests and docs: explicit absolute root/cwd match, live-root denial and output isolation.",
+        "No production code or conftest modification; no full native pytest rerun, live LLM/broker, main merge or new branch.",
+        "Codex independently audits guard implementation; R3 seam PASS_WITH_FINDINGS, P1.5.2 OPEN, real-report/LLM parity BLOCKED, P1.5.3 unauthorized."
+      ],
+      "impact": "Reduces risk of mistakenly executing audit commands in the operational checkout.",
+      "sources": [
+        "docs/refactor/work_orders/P15_R3_AUDIT_HARNESS_GUARDS_006.md",
+        "docs/daily_patch/2026-10-12_p152_r3_harness_guard_task_activation.md"
       ],
       "status": "current"
     }

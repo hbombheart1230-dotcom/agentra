@@ -1,21 +1,18 @@
-# ACTIVE — P1.5.2 R3 audit closeout
+# ACTIVE — P1.5.2 R3 offline audit harness safety guards
 
-**State:** CODEX_PASS_WITH_FINDINGS; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
-**Single task:** [P15_R3_AUDIT_CLOSEOUT_005.md](P15_R3_AUDIT_CLOSEOUT_005.md).
-**Shared rules:** [COMMON_RULES.md](COMMON_RULES.md).
-**Roles:** Claude evidence triage → Codex independent check if needed → GPT/user decision.
-**Only refactor branch:** `refactor/p1.5`. No feature/task/ZIP branches; `main` frozen. Protect live `C:\Agentra` and both dirty Q12 worktrees.
-**Audited R3 code SHA:** `651220191e4e61506984e6020355d1c411100204`.
+**State:** CLOSEOUT_005_EVIDENCE_RECORDED; HARNESS_GUARD_006_AUTHORIZED; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
+**Single task:** [P15_R3_AUDIT_HARNESS_GUARDS_006.md](P15_R3_AUDIT_HARNESS_GUARDS_006.md).
+**Rules:** [COMMON_RULES.md](COMMON_RULES.md).
+**Agentra roles:** Claude implements → Codex independently audits → GPT/user decides.
+**Only refactor branch:** `refactor/p1.5`; `main` frozen; NO feature/task/ZIP branches.
+**Before-task HEAD:** `df4caa567dec49e234e05a819ea485d3eade2acc`. **Audited R3 runtime SHA:** `651220191e4e61506984e6020355d1c411100204`.
+**Protected:** live `C:\Agentra`, both dirty Q12 worktrees and production reports/data.
 
-## Codex independent result (user-provided)
-- **PASS_WITH_FINDINGS**, moved-body test **298 passed**, seam challenge **357 synthetic cases / 57 moved functions**, exit 0; use-time seam 57/57 checked.
-- **INVALID / EXCLUDED:** pre-repair comparison run without explicit cwd from live `C:\Agentra`; write-audit saw an external writer change. Attribution and live impact UNKNOWN; do not rerun testing there.
-- Actual frozen report/LLM parity BLOCKED/NOT RUN. Historical isolated full-suite 5115 PASS / 35 FAIL / 27 SKIP / 2 ERROR / 9 deselected, same failures as baseline; `controlled_mock_lanes` test-originated write-isolation finding OPEN.
-- Façade size SIZE_DEFERRED (562/1891/1958), numbered Owner cohesion debt OPEN. R3 seam audit accepted with findings only, **not P1.5.2 final PASS**.
-- Evidence: [P15-R3-CODEX-SEAM-AUDIT-004.md](evidence/P15-R3-CODEX-SEAM-AUDIT-004.md).
+## Accepted evidence (no more live probes)
+- [Closeout 005](evidence/P15-R3-CLAUDE-LIVE-RUN-TRIAGE-005.md): live-root comparison collected **0 tests**. Observed file/directory changes were written by **UNKNOWN** actor; routine live writers plausible but unproven. SHA-256 read of ~10 GB ledger was avoidable I/O. Do not probe live.
+- R3 seam Codex **PASS_WITH_FINDINGS**: moved-body 298 PASS and 357 cases / 57 functions. Invalid live-root comparison is EXCLUDED.
+- Prior isolated suite: **5115 PASS, 35 FAIL, 2 ERROR, 27 SKIP, 9 deselected**; baseline-identical out-of-Reporting failures. Test-originated `controlled_mock_lanes` CWD write issue OPEN.
+- Historical frozen Markdown/JSON/JSONL and LLM parity **BLOCKED / NOT RUN**; façade SIZE_DEFERRED (562/1891/1958); numbered Owner cohesion debt OPEN.
 
 ## Next
-- Only read existing audit logs/evidence for the accidental live-root test. If attribution is unknown, report BLOCKED without probing live; no runtime changes or merge. P1.5.3 remains unapproved.
-
-## Closeout 005 triage (2026-10-12, Claude; logs only)
-- [P15-R3-CLAUDE-LIVE-RUN-TRIAGE-005.md](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LIVE-RUN-TRIAGE-005.md): the accidental live-root run collected **0 tests** (file absent in live checkout), so test-code causation is excluded; writer of `events.jsonl`/`reports/canonical|llm` changes is **UNKNOWN** (no PID metadata), consistent with live loops. No live write/impact by the run identified (read-only scans incl. full SHA-256 read of ~10 GB ledger). Not probed. Gates unchanged; P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.
+- Only implement **R3 offline audit harness fail-closed safety** per the linked task, then stop for Codex independent audit. No Reporting runtime modification, native full pytest, main merge, P1.5.2 final PASS or P1.5.3.
