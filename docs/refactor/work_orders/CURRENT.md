@@ -1,23 +1,22 @@
-# ACTIVE — P1.5.2 R3 Acceptance Evidence (single refactor branch)
+# ACTIVE — P1.5.2 R3 use-time façade seam restoration
 
-**State:** R3_CODEX_PASS_WITH_FINDINGS; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED; `main` merge and live deployment BLOCKED.
-**One task:** [P15_R3_ACCEPTANCE_EVIDENCE_002.md](P15_R3_ACCEPTANCE_EVIDENCE_002.md).
-**Rules:** [COMMON_RULES.md](COMMON_RULES.md). Claude executes bounded evidence work; Codex independently audits; GPT/user decides.
-**Baseline:** `ba6618d483e6d617f4ee56b2cb5647392c777071`.
-**Pinned R3 review:** `e41d42d754dba9d538fba0fa2dda969d6ea83f02` (runtime `321eabb5b83a6aa4eb912cadaf6436a82214a848`).
-**Latest docs-only handoff before this entry:** `923d1e2cfd8b08df747a0454da4ce9f3a0792098`.
-**Branch policy (user directive):** **`refactor/p1.5` is the ONLY refactor branch**. R3 feature commits were fast-forwarded to `refactor/p1.5` from `ba6618d` through `05dbb5f` on 2026-10-12; this is UNACCEPTED WIP, not a P1.5.2 PASS. `feature/p152-facades-r3` must be deleted only after ancestor + clean worktree checks; no new branches.
-**Protected:** live `C:\Agentra`, two dirty Q12 worktrees; no broker/real LLM/Docker/production report writes.
+**Status:** R3_SEAM_REGRESSION_CONFIRMED; REWORK_APPROVED_IN_SCOPE; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
+**One active task:** [P15_R3_SEAM_RESTORATION_003.md](P15_R3_SEAM_RESTORATION_003.md).
+**Common rules:** [COMMON_RULES.md](COMMON_RULES.md).
+**Agentra roles:** Claude implements → Codex audits pinned SHA → GPT/user decides.
+**Sole refactor branch:** `refactor/p1.5`. **NO additional feature/task/ZIP branches.**
+**HEAD at decision:** `bd8053bcf21d256337a97863700bdf442683ba11`, already contains prior R3 code and concurrent Claude acceptance evidence through `1c6e603`; `main` unchanged.
+**Safety:** work from isolated clone tracking `origin/refactor/p1.5` only; do NOT modify live `C:\Agentra` or either dirty Q12 worktree.
 
-## Recorded audit (2026-10-12)
-- Codex result **PASS_WITH_FINDINGS** supplied by user; audit clone `C:\AgentraEvidence\p152_r3_audit_e41d42d`. Reported subset **197 PASS / 1 SKIP**, 436-symbol scan, Owner parity, max LOC, production-write audit 0. The independent audit's raw log is not checked into Git; treat counts as reported, not freshly rerun here.
-- Evidence: [P15-R3-CODEX-INDEPENDENT-001.md](evidence/P15-R3-CODEX-INDEPENDENT-001.md).
-- Open gates: real frozen Markdown/JSON/JSONL and LLM prompt/retry/timeout/call-count parity **BLOCKED/NOT RUN**; façade size **SIZE_DEFERRED** (562/1891/1958). Full native pytest now run by Claude: 5115 PASS / 35 FAIL / 27 SKIP / 2 ERROR, all failing tests identical to baseline; one unrelated test-originated production-style write-isolation finding.
-- New Claude acceptance evidence 002 at feature SHA `1c6e603`: synthetic baseline-vs-R3 comparison **47091/47092 identical** (one timing-only), pre-call patch **57/57 same**, **within-call mutation differs 36/57 (strict seam parity FAIL)**, Story Owner LOC corrected **102**, numbered Owners remain responsibility-naming debt. Claude's evidence requires Codex independent audit; no semantic-difference waiver.
-- Feature history is now already on `refactor/p1.5` as WIP; **no main integration, live deployment, or P1.5.3**.
+## Verified evidence, not completion
+- Claude [acceptance evidence 002](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md): 47,091/47,092 synthetic moved-function calls identical (one nondeterministic latency), plus 357 direct test cases; 57/57 pre-call patch seams identical.
+- **FAIL:** 36/57 moved functions differ from baseline when façade globals change *during* one call: Owner currently captures globals at function entry. **GPT decision: do not waive; restore original use-time lookup semantics before acceptance.**
+- Baseline-matched full pytest: 5,115 PASS / 35 FAIL / 27 SKIP / 2 ERROR / 9 deselected; 37 failure/error nodes outside Reporting, same as baseline. One **test-originated** `data/logs/controlled_mock_lanes` write-isolation finding must remain OPEN; no false 0-write full-suite PASS.
+- 11 R3 Owners <=350 LOC, façade LOC 562/1,891/1,958 (**SIZE_DEFERRED**). Story Owner actually 102 LOC. Source-order `bodies_01..05` naming/cohesion is unresolved debt; no cosmetic rename within this seam fix.
+- Real frozen Markdown/JSON/JSONL and LLM prompt/retry/timeout/call-count parity: **BLOCKED/NOT RUN**; no fabrication.
+- Codex's older independent verdict PASS_WITH_FINDINGS covers pre-evidence R3, **not** the 36 mid-call seam failures nor the next fix.
 
-## Next
-- First clean the obsolete R3 feature branch safely (verify the pinned feature HEAD is ancestor of latest `refactor/p1.5`, and that the local feature worktree has no untracked/dirty files; never force). Codex then independently audits [Claude evidence 002](evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md). GPT/user decides the **36/57 strict mid-call seam differences** separately before any runtime changes or P1.5.2 acceptance.
-
-## Single-branch preservation note
-- Concurrent Claude evidence SHA `1c6e603` was merged into `refactor/p1.5` through a two-parent preservation commit without discarding the single-branch rules. `main` and live checkouts remain unchanged. Old remote feature ref is pending safe deletion by local agent; stop all pushes to it.
+## Immediate next action
+1. First safely retire obsolete `feature/p152-facades-r3` only if fully ancestor of `refactor/p1.5` and local feature worktree clean; **no forced cleanup or lost untracked files**. If unsafe, keep it and report BLOCKED, but never push further to it.
+2. Claude performs **one bounded seam restoration** per linked task on `refactor/p1.5`; Codex independently audits changed runtime and regression tests at pinned SHA.
+3. No `main` merge, live rollout, operational trade/LLM calls, P1.5.2 final PASS or P1.5.3.

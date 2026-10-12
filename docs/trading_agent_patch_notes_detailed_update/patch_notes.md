@@ -2792,3 +2792,36 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 전체 pytest 1회 완료: 35 failed / 5115 passed / 2 errors, 실패 노드는 모두 baseline과 동일한 범위 밖(UEF/Step5B/Scanner/API) 항목이며 `data/logs/controlled_mock_lanes` 쓰기 격리 이슈 1건을 기록했습니다.
 - Story Owner 줄 수를 102로 정정, 실제 snapshot·LLM parity는 계속 BLOCKED/NOT RUN. P1.5.2 OPEN, P1.5.3 미착수.
 - 근거: `docs/refactor/work_orders/evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md`.
+
+## 2026-10-12 · P1.5.2 R3 호출 시점 호환성 복구 결정
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · SAFETY
+
+- Claude 독립 합성 차분은 47,091/47,092건 일치(1건 타이밍 필드) 및 직접 케이스 357건. 호출 이전 패치 57/57 동일하지만 호출 중 전역 패치 36/57 차이가 발생해 **엄격한 호환성 FAIL**로 판정했습니다.
+- 호출 진입 시점 고정 바인딩을 수용하지 않고 기존 **실제 사용 시점 전역 조회**를 보존하는 제한적 수정을 승인했습니다. `refactor/p1.5` 단일 브랜치만 사용하며 Codex 독립 감사를 거칩니다.
+- 이전 전체 pytest 5,115 PASS / 35 FAIL / 2 ERROR / 27 SKIP / 9 deselected (baseline 동일 실패 37건). `controlled_mock_lanes` 테스트 쓰기 이슈와 numbered Owner 책임 구분은 별도 OPEN.
+- 실보고서/LLM parity BLOCKED, façade 크기 SIZE_DEFERRED, P1.5.2 OPEN, P1.5.3 미승인.
+- 근거: `# P15-R3-SEAM-RESTORATION-003 — compatibility-first seam repair
+
+**Owner:** Claude implementation and tests → Codex independent audit → GPT/user integration decision.
+**Single Git branch:** `refactor/p1.5`, no new branch ever. Use isolated **separate clone** from latest `origin/refactor/p1.5`, not the live checkout. Preserve Q12 worktrees; do not reset/force-clean unknown files.
+**Source of truth:** [Claude evidence 002](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md) and pinned R3 baseline `ba6618d483e6d617f4ee56b2cb5647392c777071`. Inspect only affected façade/Owner/test files.
+
+## Architectural decision
+- **REJECT** treating call-entry global capture as acceptable compatibility drift. In 36/57 moved functions, callback-triggered within-call façade-global monkeypatching behaves differently from original module-level late lookup.
+- **RESTORE original use-time façade global resolution**, not merely pre-call monkeypatch reachability. Keep 436 original façade callable names/signatures/decorators, 57 moved-body responsibility, original imports/dynamic consumers and no Owner → façade imports/cycles.
+- Do **not** use `__getattr__`, `exec`, dynamic module reflection hacks, fabricated goldens or cosmetic LOC tricks. Explicit `facade` dependency is allowed; safe, typed/explicit access at the original use sites is preferred. Preserve semantics for callable and noncallable globals, nested callbacks, scopes, recursion, default-arg evaluation, and strict order of resolution.
+- R3 AST gate must validate correct baseline equivalence **including global-resolution timing**, not force an AST-identical body despite necessary qualification changes. **Never delete/disable tests or silently relax 436 ABI, truth precedence or LLM safety**. Add targeted reproducing tests for each class of the 36 differences and the unchanged 21, including mid-call, pre-call and nested callback seams.
+- Each newly affected Owner <=350 physical LOC; façade size remains **SIZE_DEFERRED** unless genuinely reduced without API drift. Provider/router/prompt/retry/timeout/fallback/merge paths remain safety locked. Domain regrouping of `bodies_01..05` is **not authorized in this tranche**; retain as named acceptance debt.
+
+## Execution and acceptance
+1. **One-time branch hygiene first.** Verify old feature tip `1c6e603` is an ancestor of current `refactor/p1.5` using Git; inspect the old R3 feature worktree for both tracked and untracked changes. If clean, safely remove only that feature worktree/local branch and delete old remote `feature/p152-facades-r3`; never force. If dirty, stop cleanup and preserve files (do not block isolated evidence activity).
+2. Claude implements **only** bounded Reporting seam repairs on `refactor/p1.5`. Commit/push after SHA check, and provide precise changed-file inventory; no parallel work by Codex.
+3. Reproduce baseline-vs-fix **57/57 pre-call and 57/57 within-call seam equivalence** on the same deterministic inputs; target 0 semantic differences. Add focused regression tests protecting lazy use-time lookup and AST/provenance at 436-ABI level. Run targeted mock/offline Reporting pytest, static import DAG, consumer/monkeypatch checks and a zero-write focused audit in isolated clone. If a seam cannot be preserved without unsafe broad rewrites, STOP with concrete counterexample, never label PASS.
+4. Recheck existing 47,092 synthetic call comparisons (ignore only proven wall-clock nondeterminism), report mock LLM prompt/retry/fallback/call count, truth precedence, format/Unicode unchanged; no real LLM/broker calls, production writes or Docker restarts.
+5. Do **not** rerun full native pytest blindly: prior one-shot suite + baseline failure inventory already exists. The unrelated controlled-mock-lane CWD write isolation remains a separate OPEN safety/test-quality item; identify culprit in a later scoped task. Never claim full-suite 0-write PASS.
+6. Record exact commands, SHA, PASS/FAIL/NOT RUN and residual gates, update UI-linked patch-notes JSON+MD and daily patch, and package **only changed files** in ZIP. Codex independently audits pinned committed code/evidence after Claude finishes; no automatic merge.
+7. If real historical frozen snapshots/LLM traces are absent, keep genuine real-data parity **BLOCKED / NOT RUN**. P1.5.2 OPEN / P1.5.3 NOT AUTHORIZED.
+
+**Stop conditions:** any ABI break, unproven dynamic patch seam, new import cycle, production-path write, changed LLM/trading authority or >350-LOC new Owner. Do not touch main or live `C:\Agentra`.
+`, `docs/daily_patch/2026-10-12_p152_r3_seam_restoration_decision.md`.
