@@ -17,3 +17,8 @@
 
 ## Next
 - Execute the ONE linked evidence-only task; record PASS/FAIL/NOT RUN truthfully. No reimplementation and no forced baseline snapshots.
+
+## Acceptance evidence 002 executed (2026-10-12, Claude)
+- Report: [P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md](evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md). Synthetic differential 47,091/47,092 identical (1 = wall-clock latency); pre-call seams 57/57 identical; **within-call seams differ for 36/57 (entry-time binding) — needs GPT/user decision**; full native pytest completed 35F+2E identical to baseline (all out of scope) with one write-isolation finding (`data/logs/controlled_mock_lanes`); real-data/LLM parity BLOCKED; Story Owner LOC corrected to 102.
+- Awaiting Codex audit of the new evidence/tools and GPT/user decision. No merge; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
+

@@ -6,7 +6,7 @@ History: earlier BLOCKER commit `02bbf298` (floor analysis: Story 417 / Markdown
 ## Pinned code SHAs (per batch)
 | Batch | Code SHA | Moved bodies | New Owner files (LOC) | Façade LOC |
 |---|---|---:|---|---|
-| R3-A Story | `33031d526e67427514d79eb110dfc89d765256b6` | 3 | `trade_story_facade_r3_parts/bodies_01.py` (271) | 636 -> 562 |
+| R3-A Story | `33031d526e67427514d79eb110dfc89d765256b6` | 3 | `trade_story_facade_r3_parts/bodies_01.py` (102; corrected from an erroneous 271, see ACCEPTANCE-EVIDENCE-002) | 636 -> 562 |
 | R3-B Markdown | `e8d0f7d5857bd3c8ecad3c271bcf06b1d7f4e175` | 25 | `trade_report/markdown_clean_r3_parts/bodies_01..05.py` (261/252/262/251/63) | 2658 -> 1891 |
 | R3-C AI | `321eabb5b83a6aa4eb912cadaf6436a82214a848` | 29 | `trade_report/ai_facade_r3_parts/bodies_01..05.py` (245/252/275/228/84) | 2761 -> 1958 |
 

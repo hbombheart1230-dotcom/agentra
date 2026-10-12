@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 197,
+  "entry_count": 198,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5389,6 +5389,31 @@
         "docs/refactor/work_orders/evidence/P15-R3-CODEX-INDEPENDENT-001.md",
         "docs/refactor/work_orders/P15_R3_ACCEPTANCE_EVIDENCE_002.md",
         "docs/daily_patch/2026-10-12_p152_r3_codex_pass_with_findings.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Acceptance Evidence 002",
+      "title": "R3 synthetic differential, call-time seam challenge and one-shot full pytest evidence",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "REPORTING",
+        "SAFETY"
+      ],
+      "summary": "Evidence-only follow-up for R3: baseline-vs-feature synthetic differential, seam challenge, full native pytest diagnostic and real-data provenance search; no runtime change.",
+      "details": [
+        "Synthetic differential over 625 tests / 47,092 recorded moved-function calls: 47,091 identical, 1 differs by wall-clock latency only; 55/57 functions exercised plus 357 direct cases for the other two.",
+        "Seam challenge: patching before the call is identical for all 57 moved functions; patching from a callback within a call differs for 36 because bodies bind former façade globals at call entry (documented; decision pending).",
+        "Full native pytest completed once in an isolated clone: 35 failed, 5115 passed, 27 skipped, 2 errors; all failing nodes are identical to baseline and in out-of-scope UEF/Step5B/Scanner/API tests. One write-isolation finding under data/logs/controlled_mock_lanes recorded.",
+        "Story R3 Owner LOC corrected to 102; bodies_01..05 identified as source-order buckets rather than named responsibilities.",
+        "Real Markdown/JSON/JSONL and LLM before/after parity remains BLOCKED / NOT RUN (no immutable authorized snapshots). P1.5.2 OPEN, P1.5.3 not authorized."
+      ],
+      "impact": "Characterizes remaining R3 acceptance gates honestly without changing runtime behaviour.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md",
+        "docs/daily_patch/2026-10-12_p1_5_2_r3_acceptance_evidence_002.md"
       ],
       "status": "current"
     }
