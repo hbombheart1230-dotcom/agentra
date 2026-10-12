@@ -1,0 +1,247 @@
+{
+ "schema": "p15-wave-c-moved-bodies-v1",
+ "baseline_sha": "cba2124a85d2a3bf7cef96876920ba4912bd1c5e",
+ "note": "Fast Track Wave C (P1.5.7 Commander, P1.5.9 Executor read models): non-delegating, IO-free module-level function bodies moved verbatim with use-time `facade.NAME` qualification; public defs stay in the original module.",
+ "moves": [
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_build_stage4_carry_review_context",
+   "owner": "libs/runtime/commander/carry_review_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_force_stage4_carry_review_decision",
+   "owner": "libs/runtime/commander/carry_review_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_assess_position_carry_control",
+   "owner": "libs/runtime/commander/carry_review_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_derive_carry_state",
+   "owner": "libs/runtime/commander/carry_review_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_carry_state_rank",
+   "owner": "libs/runtime/commander/carry_review_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_carry_risk_bias_rank",
+   "owner": "libs/runtime/commander/carry_review_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_should_use_monitor_only_fast_path",
+   "owner": "libs/runtime/commander/fast_path_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_should_use_session_closeout_fast_path",
+   "owner": "libs/runtime/commander/fast_path_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_build_commander_entry_control",
+   "owner": "libs/runtime/commander/entry_control_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_resolve_commander_applied_policy",
+   "owner": "libs/runtime/commander/applied_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_attach_commander_behavior_policy",
+   "owner": "libs/runtime/commander/applied_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_attach_commander_reporter_feedback_policy",
+   "owner": "libs/runtime/commander/applied_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_extract_commander_policy_vwap_ceiling",
+   "owner": "libs/runtime/commander/applied_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_dedupe_reason_list",
+   "owner": "libs/runtime/commander/applied_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_resolve_profit_protection_activation_ratio",
+   "owner": "libs/runtime/commander/applied_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_position_current_profit_ratio",
+   "owner": "libs/runtime/commander/applied_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_extract_strategist_candidate_watch_policy",
+   "owner": "libs/runtime/commander/candidate_watch_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_normalize_candidate_watch_proposal_for_commander",
+   "owner": "libs/runtime/commander/candidate_watch_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_candidate_watch_rank_cap",
+   "owner": "libs/runtime/commander/candidate_watch_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_apply_candidate_watch_proposal_to_entry_control",
+   "owner": "libs/runtime/commander/candidate_watch_policy.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_portfolio_open_position_count",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_portfolio_open_position_symbols",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_portfolio_open_position_row",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_open_position_focus_sort_key",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_select_open_position_focus_symbol",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_closeout_unresolved_flatten_symbols",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_resolve_position_age_seconds",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_build_open_position_strategist_refresh_context",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_compact_monitor_entry_state_for_refresh",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_summarize_monitor_entry_policy",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_monitor_entry_policy_delta_fields",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_summarize_monitor_entry_policy_from_strategist_output",
+   "owner": "libs/runtime/commander/position_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_build_session_open_recovery_assessment",
+   "owner": "libs/runtime/commander/session_assessments.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_build_intraday_performance_circuit",
+   "owner": "libs/runtime/commander/session_assessments.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_derive_commander_market_regime",
+   "owner": "libs/runtime/commander/session_assessments.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_build_shadow_assessment_summary",
+   "owner": "libs/runtime/commander/session_assessments.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_ensure_market_context_clock_fields",
+   "owner": "libs/runtime/commander/session_assessments.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_commander_decision_event_meta",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_portfolio_guard_event_summary",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_portfolio_preflight_event_summary",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_portfolio_preflight_block_payload",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_extract_portfolio_snapshot_health",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_order_row_side",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_pending_buy_cancel_intents_from_account_orders",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_strategist_shadow_fingerprint",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_shadow_float",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_shadow_selected_score",
+   "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/commander_runtime.py",
+   "name": "_seed_commander_shadow_prior_context",
+   "owner": "libs/runtime/commander/event_projection.py"
+  }
+ ]
+}
