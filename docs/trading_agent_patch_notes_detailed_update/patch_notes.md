@@ -2847,3 +2847,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - R3 오프라인 감사 스크립트 2개에만 `--root`/환경변수 명시, live 실행 차단, 결과 경로 격리 및 bytecode 비활성화를 추가하도록 작업지시했습니다.
 - 독립 clone에서 집중 테스트 후 Codex 감사. 런타임 변경·전체 pytest·main 병합·신규 브랜치 금지. P1.5.2 OPEN / P1.5.3 미승인.
 - 근거: `docs/refactor/work_orders/P15_R3_AUDIT_HARNESS_GUARDS_006.md`, `docs/daily_patch/2026-10-12_p152_r3_harness_guard_task_activation.md`.
+
+## 2026-10-12 · P1.5.2 R3 감사 하네스 Guard 006
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY
+
+- seam-challenge 스크립트와 call-recorder 플러그인이 명시적 절대 경로의 격리 Git clone root, cwd 일치, `PYTHONDONTWRITEBYTECODE=1`을 만족하지 않으면 Reporting import·pytest 수집·출력 열기 전에 거부합니다.
+- 라이브 `C:\Agentra`와 그 하위/상위 경로는 항상 거부하며(대소문자·슬래시·긴 경로 접두사·`..`·8.3 별칭·심볼릭 링크/junction 포함) 라이브 경로는 문자열 검사만 하고 stat/실행하지 않습니다. 출력은 새 파일만 허용하고 입력 덮어쓰기·clone 내부 출력은 거부합니다.
+- 가드 테스트 61개 통과, 안전 smoke 결과는 baseline seam 결과와 동일(357 케이스/57 함수), 회귀 656 passed / 1 skipped, 운영 경로 쓰기 0. 런타임 코드 변경 없음.
+- 미해결: `controlled_mock_lanes` 쓰기 격리, 실제 snapshot·LLM parity BLOCKED, façade SIZE_DEFERRED. P1.5.2 OPEN, P1.5.3 미착수.

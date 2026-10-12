@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 205,
+  "entry_count": 206,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5585,6 +5585,30 @@
       "sources": [
         "docs/refactor/work_orders/P15_R3_AUDIT_HARNESS_GUARDS_006.md",
         "docs/daily_patch/2026-10-12_p152_r3_harness_guard_task_activation.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Audit Harness Guards 006",
+      "title": "Fail-closed offline R3 audit harnesses (explicit isolated root, live root denied)",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY"
+      ],
+      "summary": "The seam-challenge script and call-recorder plugin refuse to run unless given an explicit absolute isolated Git clone root matching cwd; the live checkout is always denied before any import, collection or output.",
+      "details": [
+        "Seam script requires --root and no longer infers the tree from the working directory; recorder requires R3_ROOT and validates at plugin import, before conftest and collection.",
+        "Guard: lexical absolute-path/protected-root checks first (case, slash, long-path prefix, '..', 8.3 aliases, ancestors and descendants of the live root), then cwd equality, PYTHONDONTWRITEBYTECODE=1, symlink/junction refusal and a real .git directory; inputs must exist, outputs must be new and outside the clone.",
+        "61 offline guard tests (no live path is stat-ed, imported or run) plus mini-clone success cases; guarded smoke output equals the baseline seam result (357 direct cases / 57 functions).",
+        "PowerShell templates provided; no runtime/Reporting code changed. Regression 656 passed / 1 skipped, zero production writes.",
+        "Unchanged OPEN items: controlled_mock_lanes write isolation, real-data/LLM parity BLOCKED, facade SIZE_DEFERRED. P1.5.2 OPEN, P1.5.3 not authorized."
+      ],
+      "impact": "Prevents a repeat of running audit tooling against the operational checkout; evidence generation stays isolated.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-HARNESS-GUARDS-006.md",
+        "docs/daily_patch/2026-10-12_p1_5_2_r3_harness_guards_006.md"
       ],
       "status": "current"
     }

@@ -16,3 +16,6 @@
 
 ## Next
 - Only implement **R3 offline audit harness fail-closed safety** per the linked task, then stop for Codex independent audit. No Reporting runtime modification, native full pytest, main merge, P1.5.2 final PASS or P1.5.3.
+
+## Guard 006 implemented (2026-10-12, Claude) - awaiting Codex audit
+- Both R3 audit tools now fail closed (explicit absolute root, cwd==root, isolated Git clone, live `C:\Agentra` always denied, safe I/O paths, `PYTHONDONTWRITEBYTECODE=1`) before any production import/collection/output. Evidence: [P15-R3-CLAUDE-HARNESS-GUARDS-006.md](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-HARNESS-GUARDS-006.md); 61 guard tests passed, regression 656 passed / 1 skipped, 0 writes. No runtime change; other gates unchanged; P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.
