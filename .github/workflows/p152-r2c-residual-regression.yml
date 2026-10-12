@@ -124,10 +124,26 @@ jobs:
           DRY_RUN: '1'
           TRADING_MODE: 'mock'
         run: python -m pytest -q tests/test_reporter_agent_trade_entrypoint.py tests/test_reporter_node.py tests/test_reporter_service.py tests/test_reporter_analysis_report.py tests/test_reporter_feedback.py tests/test_reporter_commander_hooks.py tests/test_reporter_script_wrappers.py tests/test_trade_explain_report.py tests/test_operator_summary_reports.py tests/test_controlled_mock_lane_report.py tests/test_agent_pipeline_trace_report.py tests/test_report_trades_continuity.py tests/test_check_reporter_upgrade_regression.py tests/test_m19_6_llm_daily_report.py
-      - name: P1.5.2/P1.5.3 moved-body gates (AST + use-time seam oracle), harness guards, scope guards
+      - name: Gate moved_body_reporting (test_p152_r3_moved_bodies.py)
         run: |
           mkdir -p branch_output
-          python -m pytest -q tests/test_p152_r3_moved_bodies.py tests/test_p153_operator_ui_moved_bodies.py tests/test_p152_r3_harness_guards.py tests/test_p152_facade_symbol_ledger.py tests/test_p152_facade_abi_and_authority_boundary.py --junitxml=branch_output/p152_p153_gates_junit.xml
+          python -m pytest -q tests/test_p152_r3_moved_bodies.py --junitxml=branch_output/gate_moved_body_reporting_junit.xml
+      - name: Gate moved_body_operator_ui (test_p153_operator_ui_moved_bodies.py)
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests/test_p153_operator_ui_moved_bodies.py --junitxml=branch_output/gate_moved_body_operator_ui_junit.xml
+      - name: Gate harness_guards (test_p152_r3_harness_guards.py)
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests/test_p152_r3_harness_guards.py --junitxml=branch_output/gate_harness_guards_junit.xml
+      - name: Gate symbol_ledger (test_p152_facade_symbol_ledger.py)
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests/test_p152_facade_symbol_ledger.py --junitxml=branch_output/gate_symbol_ledger_junit.xml
+      - name: Gate scope_abi_guards (test_p152_facade_abi_and_authority_boundary.py)
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests/test_p152_facade_abi_and_authority_boundary.py --junitxml=branch_output/gate_scope_abi_guards_junit.xml
       - name: Operator UI / Brief offline regression (no live broker or LLM)
         env:
           DRY_RUN: '1'
@@ -143,7 +159,7 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
           path: |
-            branch_output/p152_p153_gates_junit.xml
+            branch_output/gate_*_junit.xml
             branch_output/p153_operator_ui_junit.xml
       - name: P1.5.2 final-acceptance inventory contracts
         run: python -m pytest -q tests/test_p152_integration_acceptance_inventory.py
