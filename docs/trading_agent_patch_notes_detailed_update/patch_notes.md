@@ -2986,3 +2986,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 이번 변경은 아키텍처 문서·UI 패치노트만 포함합니다. Reporter 코드, Broker, Supervisor/Executor, main, live runtime과 배포는 변경하지 않았습니다.
 
 ---
+
+## 2026-10-13 · P1.5 Wave D 이전 Reporter 포함 전체 구조 정리
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · WORKFLOW
+
+- 2차 대량 모듈화(S1~S6)와 Codex 중간 통합감사 이후 실제 코드 전체를 다시 검사합니다.
+- Reporter도 포함해 남은 거대 함수, 중복 Owner, 번호형 Owner, 공개 Facade 및 최소권한 부채를 GPT가 설계하고 Claude가 추가 대량 모듈화를 반복합니다.
+- Reporter `intraday_trade_reports.py`와 AI·Markdown·Story 경로는 실제 소비자 및 부작용 근거를 확인한 범위에서만 분해합니다.
+- 전체 구조감사 완료 이후 Wave D에서 실데이터 Reporter/LLM, Executor, UEF, Docker, 전체 pytest를 최종 검증합니다.
+- 이 변경은 작업 순서의 문서 기록이며 실거래·코드·권한 변경이 아닙니다.

@@ -1,4 +1,6 @@
 # Agentra P1.5 Second Pass — GPT Master Design
+
+> **Sequencing correction (2026-10-13; authoritative):** [Pre-Wave-D structural closure order](P15_PRE_WAVE_D_STRUCTURAL_CLOSURE_ORDER_2026_10_13.md). S1–S6 bulk → Codex checkpoint → GPT all-seven-agent residual review **including Reporter** → Claude third-and-later bulk module splits **including Reporter** → Codex structural closure audit → **Wave D last**. Any older direct second-pass-to-Wave-D language below is superseded. Reporter is excluded from *S1–S6 only*.
 Baseline: refactor/p1.5 @ 1f7add2b0f9b5a33399da27edcdd2f390bdf911b
 Status: DESIGN SPECIFICATION / NOT IMPLEMENTED / NOT FINAL_ACCEPTED
 Author: GPT architecture; implementation owner Claude; independent verifier Codex.

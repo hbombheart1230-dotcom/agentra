@@ -1,5 +1,7 @@
 # P1.5 canonical target architecture — actual Git tree + Reporter status
 
+> **Authoritative delivery order (2026-10-13):** [P1.5 pre-Wave-D structural closure](P15_PRE_WAVE_D_STRUCTURAL_CLOSURE_ORDER_2026_10_13.md). After 2nd-pass S1–S6 and Codex checkpoint, GPT re-examines **all seven agents including Reporter**. Claude performs third-and-later bulk decomposition **including Reporter**, Codex performs structural closure audit, and **only then Wave D**. References below implying Reporter follow-up occurs after Wave D are superseded; Reporter is excluded from the initial S1–S6 pass *only*.
+
 **Status:** ARCHITECTURE TARGET (not yet implemented) · **Reporter:** FIRST_PASS_WITH_DEBT, second-pass code EXCLUDED · **Inspected HEAD:** 60dfa1c4cd7ca62d127251a4051b3404a86f6932 · **Date:** 2026-10-13 KST.
 **Authority:** this target tree fixes architectural intent for the Claude bulk second pass, but not a permission to delete or rename existing modules. GPT designs; Claude implements; Codex audits; GPT/user decide acceptance.
 

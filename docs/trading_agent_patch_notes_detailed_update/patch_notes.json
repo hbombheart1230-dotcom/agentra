@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 219,
+  "entry_count": 220,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5947,6 +5947,26 @@
         "docs/refactor/P15_CANONICAL_TARGET_TREE_AND_REPORTER_ASIS_2026_10_13.md",
         "docs/refactor/P15_SECOND_PASS_GPT_MASTER_DESIGN_2026_10_12.md",
         "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-A-CLAUDE-014.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Structural Closure Before Wave D",
+      "title": "Reporter-inclusive modularization before Wave D",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "WORKFLOW"
+      ],
+      "summary": "Second-pass bulk implementation and Codex checkpoint precede full residual decomposition including Reporter; Wave D is the final mandatory validation gate.",
+      "details": [
+        "After second-pass S1–S6, review the entire seven-agent tree including Reporter, then iterate additional bulk module ownership splits and independent Codex audits.",
+        "Reporter bundle runtime, public reporting facades and their dynamic consumers are checked and modularized where safe before Wave D.",
+        "Real report/LLM parity and executor safety remain mandatory Wave D evidence, not presumed PASS."
+      ],
+      "sources": [
+        "docs/refactor/P15_PRE_WAVE_D_STRUCTURAL_CLOSURE_ORDER_2026_10_13.md"
       ],
       "status": "current"
     }
