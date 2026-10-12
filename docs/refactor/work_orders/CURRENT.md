@@ -14,3 +14,6 @@
 - Whole native pytest **INCOMPLETE/NOT PASS** (API GET-only failure; another run terminated ~50% without summary). Historical Linux full safe sweep **4919 PASS / 41 FAIL / 2 ERROR**. Do not conflate out-of-scope known failures with Reporting regression.
 - Historical real Markdown/JSON/JSONL and captured LLM before/after evidence **missing**, so real-data and LLM output parity **NOT RUN/BLOCKED**. Do not invent snapshots.
 - **Next action:** Claude implements R3-A→R3-B→R3-C in isolated task branch, publishes exact code SHA and test reports; Codex audits that exact SHA before any integration. STOP if safety/compatibility cannot be proved.
+
+## R3 status update (2026-10-12, compatibility-first resume)
+- Claude implemented R3-A/B/C on `feature/p152-facades-r3` with SIZE_DEFERRED façade LOC; **awaiting Codex independent audit of the pinned SHA in `evidence/P15-R3-CLAUDE-IMPLEMENTATION-001.md`**. Not merged; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED. Real snapshot/LLM parity NOT RUN; whole native pytest incomplete.

@@ -28,3 +28,10 @@
 - **STOP and hand to Codex**; no feature merge to `refactor/p1.5`, no main change or P1.5.3.
 - Codex independent read-only audit: pinned Claude SHA, source diff, all 436 ABI, seams and import DAG, LOC <=350, output/LLM safety, isolated tests and blocked gates. Report to `docs/refactor/work_orders/evidence/P15-R3-CODEX-INDEPENDENT-001.md` only if safe evidence-write authorized; otherwise deliver report externally. PASS/PASS_WITH_FINDINGS/FAIL/BLOCKED with honest NOT RUN.
 - GPT/user alone authorize integration and eventual P1.5.2 acceptance. Small façades and passing focused tests alone do NOT close missing real-data parity or whole-suite blockers.
+
+## GPT architecture decision — compatibility-first resume (2026-10-12)
+- R3 resumed on the same `feature/p152-facades-r3`. **Façade <=350 LOC is SIZE_DEFERRED when unmet** (ABI guard sets a per-façade floor: Story 417, Markdown 1024, AI 1100 at original formatting); every new implementation Owner stays <=350.
+- Preserve 436 callables, signatures, decorators, import names and patch call-time semantics. Forbidden: `__getattr__`, exec, indiscriminate re-export, formatting compaction.
+- Verify the pinned contract (façade ABI test) separately from current implementation location (ledger `r3_owner` + `tests/test_p152_r3_moved_bodies.py`). AI provider/router/prompt/retry/timeout/fallback/merge paths are not moved without proof.
+- Real frozen-snapshot and LLM parity stay NOT RUN; whole native pytest stays incomplete. No P1.5.3, no merge into `refactor/p1.5` or `main` before Codex audit.
+- Evidence: `evidence/P15-R3-CLAUDE-IMPLEMENTATION-001.md` (supersedes the BLOCKER section there).

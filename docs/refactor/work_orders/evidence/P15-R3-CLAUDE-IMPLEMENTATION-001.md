@@ -1,34 +1,35 @@
-# P15-R3-FACADE-DECOMPOSITION-001 — Claude implementation report
+# P15-R3-FACADE-DECOMPOSITION-001 — Claude implementation report (compatibility-first resume)
 
-Task baseline / pinned code SHA: `ba6618d483e6d617f4ee56b2cb5647392c777071` (`origin/refactor/p1.5`).
-Feature branch: `feature/p152-facades-r3` (isolated worktree `C:\AgentraWorktrees\p152-facades-r3`; upstream unset; nothing pushed to `refactor/p1.5` or `main`).
-Outcome: **R3-A STOPPED — BLOCKER. R3-B and R3-C NOT STARTED (blocked by A, and independently infeasible).** No runtime Python was changed; code SHA == baseline. This commit is evidence/docs only.
+Task baseline: `ba6618d483e6d617f4ee56b2cb5647392c777071` (`origin/refactor/p1.5`). Branch `feature/p152-facades-r3`, worktree `C:\AgentraWorktrees\p152-facades-r3`. Nothing merged into `refactor/p1.5` / `main`.
+History: earlier BLOCKER commit `02bbf298` (floor analysis: Story 417 / Markdown 1024 / AI 1100) -> GPT decision: compatibility-first, façade <=350 = SIZE_DEFERRED, Owner <=350 kept.
 
-## Why stop (exact blocker)
-`tests/test_p152_facade_abi_and_authority_boundary.py` requires every one of the 436 original public names to remain a top-level `def` **in the façade file** with an AST-identical signature/returns/decorators. Therefore each façade has an unavoidable physical-line floor of (signature lines + at least one body line) per callable, before any imports.
+## Pinned code SHAs (per batch)
+| Batch | Code SHA | Moved bodies | New Owner files (LOC) | Façade LOC |
+|---|---|---:|---|---|
+| R3-A Story | `33031d526e67427514d79eb110dfc89d765256b6` | 3 | `trade_story_facade_r3_parts/bodies_01.py` (271) | 636 -> 562 |
+| R3-B Markdown | `e8d0f7d5857bd3c8ecad3c271bcf06b1d7f4e175` | 25 | `trade_report/markdown_clean_r3_parts/bodies_01..05.py` (261/252/262/251/63) | 2658 -> 1891 |
+| R3-C AI | `321eabb5b83a6aa4eb912cadaf6436a82214a848` | 29 | `trade_report/ai_facade_r3_parts/bodies_01..05.py` (245/252/275/228/84) | 2761 -> 1958 |
 
-| Façade | LOC now | `def`s | signature lines | import lines | floor: imports+sigs+1-line bodies+PEP8 blanks | absolute floor (no imports, no blanks) |
-|---|---:|---:|---:|---:|---:|---:|
-| `trade_story_pipeline.py` | 636 | 45 | 142 | 140 | **417** | 187 |
-| `trade_report_markdown_clean.py` | 2658 | 209 | 248 | 147 | **1024** | 457 |
-| `trade_report_ai.py` | 2761 | 182 | 361 | 171 | **1100** | 543 |
+The Codex audit target is the final branch HEAD reported in chat (docs, patch notes and ZIP only after batch C; runtime code equals `321eabb5`).
 
-- Markdown and AI cannot reach <=350 even in the impossible case of zero imports and zero blank lines (457 / 543 > 350). They would require either moving the `def`s out of the façade (violates the ABI guard and patch-global semantics: function globals would become the Owner's, so patching `façade.X` stops affecting the code) or hidden dynamic exposure (`__getattr__`, `exec` into façade globals), which the work order forbids.
-- Story's floor is 417 with the current import/signature formatting. Reaching 350 would need only cosmetic changes (grid-wrapping 113 imported names, collapsing multi-line signatures/calls, dropping PEP8 blank lines) which do not reduce responsibility and are LOC gaming under COMMON_RULES. Real behaviour-neutral moves available (render_* functions, `build_trade_story_input_from_bundle` body, deps-dict builders via a call-time resolver) would bring Story to roughly 450-480, still above target.
-- Imported names must stay as façade globals: tests patch façade attributes (`_headline_text`, `_collect_top_headlines`, `_top_numeric_drivers`, `_derive_evidence_provenance`, `_is_present`, `_build_news_scanner_contribution_trace`, `_scanner_chart_fit_payload`) that the deps builders read at call time.
+## What moved and how
+- Moved only bodies that were real implementations (>=20 lines; Story >=15), excluding existing thin delegations and `*_deps` wiring. Façade `def` (name, signature with defaults/annotations, decorators, docstring) stays; the body becomes `return <name>_r3_impl(args..., facade=_r3_sys.modules[__name__])`.
+- Owner functions keep the original body unchanged (AST-identical) after a prelude `x = facade.x` for every former façade global that body referenced (computed with `symtable`, nested scopes included). No `__getattr__`, `exec`, `globals()`, star-import or blanket re-export; Owners import only `__future__`.
+- Semantics note: globals are bound at call entry rather than lazily at each use; a façade global mutated *during* one call would differ (no such pattern found; call-time patching before the call is preserved).
+- AI safety lock, NOT moved: `build_ai_trade_report`, `build_separated_ai_trade_report`, `build_trade_summary_report`, `_router_chat_with_hard_timeout`, `_build_repair_messages`, `_build_concise_trade_report_messages`, `_resolve_intraday_report_execution_profile`, `_failure_report`, `_fallback_report`, `_merge_trade_report_candidate`, `_build_skipped_separated_report`, `_trade_report_parse_meta`, `_trade_report_language_meta`, `_normalize_trade_report_output`, `_compact_story_input_for_llm`. No moved function binds router/chat/retry/timeout/prompt/attempt names.
 
-## Baseline facts recorded (no change)
-- LOC 636 / 2658 / 2761; callables 45 / 209 / 182 = 436.
-- Focused offline tests, project venv (`C:\Agentra\venv`, Python 3.14.2) from the isolated worktree (no live `reports/`; `data/` here is tracked eval fixtures only): `32 p152 test files + tests/test_patch_notes_sync.py` = **297 passed, 1 skipped**, 0 failures, no production-path write banner. Skip = Windows symlink privilege (same as Codex).
-- Command: `python -m pytest -q -p no:cacheprovider tests/*p152*.py tests/test_patch_notes_sync.py`.
-- Full-suite pytest, real-data snapshot parity and LLM parity: NOT RUN (inputs absent / out of scope; not marked PASS).
+## Verification (isolated worktree, project venv `C:\Agentra\venv`, Python 3.14.2; no live reports/ or runtime processes in the worktree)
+- `python -m pytest -q -p no:cacheprovider tests/*p152*.py <42 façade-consumer test files incl. LLM/report tests> tests/test_patch_notes_sync.py` -> **810 passed, 1 skipped** (Windows symlink privilege). Production-path write banner count: 0.
+- New gate `tests/test_p152_r3_moved_bodies.py` (57 symbols x checks): body AST == baseline modulo prelude; prelude == exact former-global set; owner has no unresolved global; façade wrapper keeps args/returns/decorators and injects its own module; owner reads the names from the injected object at entry; Owner <=350 and never imports a façade.
+- Contract vs location split: ABI test (pinned names/signatures) unchanged and passing; symbol ledger records current `start_line/end_line/physical_loc` and `r3_owner` per symbol. No check deleted or weakened.
+- Independent scripts (own AST/symtable, not repo tests): 436 baseline top-level defs, 0 ABI violations; 11 new Owner files, none >350; 0 module-level import cycles in `libs.reporting`; no Owner imports a façade; changed paths limited to `libs/reporting`, `tests`, `docs`.
+- Byte parity: structural (AST identity + identical binding) plus existing synthetic golden/consumer tests. A differential before/after execution on synthetic inputs was NOT added.
 
-## Options for GPT/user decision (Claude does not choose)
-1. Redefine the façade size gate as "no implementation bodies in façade; only signature + delegation + patch-global deps" (and record 417 / 1024 / 1100 as accepted floor), keep ABI guard. Further real moves then target body lines only (render_*, from_bundle, deps builders).
-2. Amend the ABI guard to allow re-export of pure (no patchable-global) callables from Owners, accepting that `__module__`/globals identity changes; needs consumer proof for all 436.
-3. Accept cosmetic compaction to hit 350 (not recommended: no responsibility reduction, E704/format churn).
-4. DEFER façade size (SIZE_DEFERRED) until genuine historical report/LLM snapshots exist.
+## Gates NOT satisfied / NOT RUN
+- Façade physical LOC <=350: **SIZE_DEFERRED** (562 / 1891 / 1958); Owners all <=350.
+- Real frozen Markdown/JSON/JSONL snapshots and captured LLM prompt/retry/timeout/call-count parity: **NOT RUN** (no genuine snapshots).
+- Whole native pytest: **not run / incomplete** (known API GET-only, Scanner/UEF/Step5B out-of-scope failures untouched).
+- Codex independent audit, GPT/user acceptance, merge: pending. P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
 
-## Side effects / protection notes
-- `git fetch` + `git merge --ff-only` was applied to live `C:\Agentra` (`341cedc` -> `ba6618d`; docs/tests/scripts only, no runtime source). Untracked `docs/refactor/work_orders/evidence/P15-R2-CLAUDE-FINAL-AUDIT.md` left untouched. Q12 worktrees untouched (both detached at `342060f`). No orders, LLM calls, Docker or process restarts.
-- P1.5.2 remains OPEN; P1.5.3 NOT authorized.
+## Protection
+Live `C:\Agentra` and both Q12 worktrees untouched in this resume; no orders, LLM, Docker or process restarts.

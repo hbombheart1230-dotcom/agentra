@@ -2744,3 +2744,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - CI emits an additional task-baseline ZIP for precisely the paths changed since `341cedc`, alongside the existing push-only ZIP.
 
 - 원격 acceptance inventory 역시 루트 문서 `AGENTS.md`, `CLAUDE.md` 두 개만 허용하는 정확한 allowlist를 사용합니다. 다른 루트 실행/거래 파일 변경은 계속 차단합니다.
+
+## 2026-10-12 · P1.5.2 R3 호환성 우선 façade 분해
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · SAFETY
+
+- Story/Markdown/AI façade의 구현 본문 57개(3/25/29)를 `libs/reporting/**/…_r3_parts/bodies_*.py` 11개 Owner(최대 275줄)로 이동했습니다. façade LOC는 636/2,658/2,761 → 562/1,891/1,958입니다.
+- 436개 public `def`, 시그니처, 데코레이터는 그대로이며, 이동한 본문은 AST가 동일하고 기존 façade 전역은 주입된 `facade` 모듈에서 호출 시점에 이름으로 읽어 monkeypatch 의미를 보존합니다. `__getattr__`/exec/일괄 re-export는 사용하지 않았습니다.
+- AI provider/router/prompt/retry/timeout/fallback/merge 경로는 이동하지 않았습니다. façade ≤350줄 목표는 SIZE_DEFERRED입니다.
+- 집중 오프라인 Reporting 테스트 810 passed / 1 skipped, 운영 경로 쓰기 감사 0. 실제 snapshot·LLM parity는 NOT RUN, 전체 pytest 미완료, P1.5.2 OPEN, P1.5.3 미착수, Codex 독립 감사 대기.
+- 근거: `docs/refactor/work_orders/evidence/P15-R3-CLAUDE-IMPLEMENTATION-001.md`, `docs/daily_patch/2026-10-12_p1_5_2_r3_compat_first_decomposition.md`.

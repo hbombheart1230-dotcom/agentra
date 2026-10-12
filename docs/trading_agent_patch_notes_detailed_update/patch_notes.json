@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 194,
+  "entry_count": 195,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5314,6 +5314,32 @@
         "docs/refactor/work_orders/COMMON_RULES.md",
         "docs/refactor/work_orders/P15_R3_FACADE_DECOMPOSITION_001.md",
         "docs/daily_patch/2026-10-12_p152_r3_claude_codex_git_first.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Compatibility-First Facade Decomposition",
+      "title": "Move 57 façade implementation bodies into 11 bounded Owners with unchanged 436-callable contract",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "REFACTOR",
+        "SAFETY"
+      ],
+      "summary": "Story/Markdown/AI façades keep every public def and patch surface; non-delegating bodies move to <=275-LOC Owners that read former façade globals from an injected façade module. Façade LOC target is SIZE_DEFERRED.",
+      "details": [
+        "Façade LOC 636/2658/2761 -> 562/1891/1958; 45/209/182 = 436 defs, signatures and decorators unchanged (independent AST check: 0 violations).",
+        "57 AST-identical bodies (3 Story, 25 Markdown, 29 AI) moved into 11 new Owners (max 275 LOC); no Owner imports a façade; no import cycles in libs.reporting.",
+        "Moved bodies read each former façade global by name from the injected `facade` module at call entry, preserving monkeypatch behaviour; no __getattr__, exec or blanket re-export.",
+        "AI provider/router/prompt/retry/timeout/fallback/merge paths were intentionally NOT moved.",
+        "New gate tests/test_p152_r3_moved_bodies.py separates the pinned contract from implementation location (ledger r3_owner).",
+        "Focused offline Reporting tests 810 passed / 1 skipped, zero production-path write audit. Real snapshot/LLM parity NOT RUN, whole native pytest incomplete, P1.5.2 OPEN, P1.5.3 not authorized."
+      ],
+      "impact": "Reduces façade implementation weight without changing public Reporting behaviour; awaiting independent Codex audit.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-IMPLEMENTATION-001.md",
+        "docs/daily_patch/2026-10-12_p1_5_2_r3_compat_first_decomposition.md"
       ],
       "status": "current"
     }
