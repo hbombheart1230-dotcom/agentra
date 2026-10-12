@@ -20,3 +20,7 @@
 1. First safely retire obsolete `feature/p152-facades-r3` only if fully ancestor of `refactor/p1.5` and local feature worktree clean; **no forced cleanup or lost untracked files**. If unsafe, keep it and report BLOCKED, but never push further to it.
 2. Claude performs **one bounded seam restoration** per linked task on `refactor/p1.5`; Codex independently audits changed runtime and regression tests at pinned SHA.
 3. No `main` merge, live rollout, operational trade/LLM calls, P1.5.2 final PASS or P1.5.3.
+
+## Seam restoration 003 implemented (2026-10-12, Claude) — awaiting Codex audit
+- Moved bodies now qualify every former façade global at its use site as `facade.NAME` (no entry-time prelude). Evidence: [P15-R3-CLAUDE-SEAM-RESTORATION-003.md](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-SEAM-RESTORATION-003.md). Within-call seams 57/57 identical to baseline (was 21/57); pre-call 57/57; 47,091/47,092 synthetic calls identical (1 = latency). Focused 925 passed / 1 skipped, 0 writes.
+- Still OPEN: real snapshot/LLM parity (BLOCKED), full-suite zero-write (controlled_mock_lanes finding), façade SIZE_DEFERRED, bodies_01..05 cohesion debt. P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED; no main merge.

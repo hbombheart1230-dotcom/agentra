@@ -1,21 +1,20 @@
 """Behavior-preserving R3 implementation bodies moved from the public facade.
 
-Each function keeps its original body. Names it used as facade module globals are
-read from the injected `facade` module at call entry (explicit names, no getattr
-fallback), preserving monkeypatch semantics. Owner never imports the facade.
+Each function keeps its original body except that every former facade module global is
+qualified at its use site as `facade.NAME` (explicit injected module, no getattr fallback,
+no entry-time capture), so late/use-time lookup and monkeypatching match the original
+module-level resolution. Owner never imports the facade.
 """
 from __future__ import annotations
 
 
 def build_trade_story_input_from_bundle_r3_impl(bundle_out, *, trade_lifecycle, existing_story_input, facade):
-    _normalize_trade_lifecycle_for_story_input = facade._normalize_trade_lifecycle_for_story_input
-    build_trade_story_input = facade.build_trade_story_input
-    normalized_lifecycle = _normalize_trade_lifecycle_for_story_input(
+    normalized_lifecycle = facade._normalize_trade_lifecycle_for_story_input(
         bundle_out,
         trade_lifecycle=trade_lifecycle,
         existing_story_input=existing_story_input,
     )
-    story_input = build_trade_story_input(
+    story_input = facade.build_trade_story_input(
         bundle_out,
         trade_lifecycle=normalized_lifecycle if normalized_lifecycle else trade_lifecycle,
     )

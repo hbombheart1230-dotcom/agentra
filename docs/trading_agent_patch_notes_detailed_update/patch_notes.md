@@ -2802,3 +2802,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 이전 전체 pytest 5,115 PASS / 35 FAIL / 2 ERROR / 27 SKIP / 9 deselected (baseline 동일 실패 37건). `controlled_mock_lanes` 테스트 쓰기 이슈와 numbered Owner 책임 구분은 별도 OPEN.
 - 실보고서/LLM parity BLOCKED, façade 크기 SIZE_DEFERRED, P1.5.2 OPEN, P1.5.3 미승인.
 - 근거: `docs/refactor/work_orders/P15_R3_SEAM_RESTORATION_003.md`, `docs/daily_patch/2026-10-12_p152_r3_seam_restoration_decision.md`.
+
+## 2026-10-12 · P1.5.2 R3 사용 시점(use-time) seam 복원
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · SAFETY
+
+- 이동한 57개 본문이 호출 진입 시 façade 전역을 캡처하던 방식을 제거하고, 각 전역을 원래 사용 위치에서 `facade.NAME`으로 조회하도록 복원했습니다(507개 지점).
+- 호출 도중 monkeypatch seam이 baseline과 57/57 동일해졌고(이전 36개 불일치), 호출 전 패치 57/57, 직접 357 케이스, 기록된 호출 47,091/47,092가 동일합니다(1건은 wall-clock latency).
+- 집중 오프라인 Reporting 테스트 925 passed / 1 skipped, 운영 경로 쓰기 0. 436 ABI·import DAG·Owner ≤350 불변.
+- 폐기 대상 feature 브랜치 `feature/p152-facades-r3`는 조상/클린 검증 후 정리했습니다. 실제 snapshot·LLM parity BLOCKED, façade 크기 SIZE_DEFERRED, `controlled_mock_lanes` 쓰기 격리 이슈 OPEN, P1.5.2 OPEN / P1.5.3 미착수.
