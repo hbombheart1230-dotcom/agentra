@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 191,
+  "entry_count": 192,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5097,6 +5097,26 @@
         "docs/refactor/work_orders/evidence/P15-R2-GPT-P152-OWNER32-36-REMOTE-CI.md",
         "docs/refactor/work_orders/P15_R2_OWNER36_READONLY_LOCAL_ACCEPTANCE_CHECKLIST.md",
         "docs/refactor/work_orders/CURRENT.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 Codex Local Acceptance",
+      "title": "Windows parity-tool decoding and local acceptance evidence",
+      "stage": "Architecture and Maintainability",
+      "types": ["TESTING", "DOCUMENTATION", "SAFETY"],
+      "summary": "Make the Owner parity verifier decode UTF-8 source reliably on Windows and record local acceptance results without touching runtime artifacts.",
+      "details": [
+        "Owner parity passed for 38 AST-preserved functions in 26 bounded Owners; facade consumer scan retained 436 symbols as conservative UNKNOWN/NOT DEAD where static proof is absent.",
+        "P1.5.2 selected tests passed, but production-path write audit fired; full pytest collection also lacks FastAPI. Real report and LLM snapshot equivalence remains NOT RUN.",
+        "No trade execution, live LLM, Docker, Q12 worktree, API/Scanner/UEF/Step5B source, or facade size debt was changed."
+      ],
+      "impact": "Windows-local verification is reproducible while completion gates remain explicitly open pending clean isolation and independent real-data evidence.",
+      "sources": [
+        "docs/daily_patch/2026-10-12_p1_5_2_codex_local_acceptance.md",
+        "docs/refactor/work_orders/evidence/P15-R2-CODEX-LOCAL-ACCEPTANCE-2026-10-12.md",
+        "scripts/refactor/p152_owner_parity.py"
       ],
       "status": "current"
     },

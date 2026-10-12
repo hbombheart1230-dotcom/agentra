@@ -199,7 +199,11 @@ def check() -> None:
     for item in MOVES:
         original, owner = item["original"], item["target"]
         if original not in original_cache:
-            original_cache[original] = subprocess.check_output(["git", "show", f"{BASELINE}:{original}"], text=True)
+            original_cache[original] = subprocess.check_output(
+                ["git", "show", f"{BASELINE}:{original}"],
+                text=True,
+                encoding="utf-8",
+            )
         target_text = Path(owner).read_text(encoding="utf-8")
         loc = len(target_text.splitlines())
         assert loc <= 350, f"new Owner too large: {owner} {loc} physical LOC"

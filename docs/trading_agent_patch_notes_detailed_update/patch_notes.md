@@ -2709,3 +2709,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 선택된 JSON/JSONL LLM 캡처의 누락 및 불일치 확인, 잘못된 동일 경로/빈 폴더/심볼릭 링크 거부, 민감한 원문 대신 해시만 출력하도록 설계했습니다.
 - 실제 거래 실행·LLM 호출 또는 로컬 증거 자동 수집은 하지 않습니다. Codex 일괄 검증 → Claude 독립 감사를 위한 빠른 인계 문서가 함께 제공됩니다.
 - 근거: `docs/daily_patch/2026-10-10_p152_fast_parity_kit_005.md`, `docs/refactor/work_orders/P15_R2_FAST_LOCAL_PARITY_KIT.md`. P1.5.2 OPEN, P1.5.3 미착수.
+## 2026-10-12 · P1.5.2 Codex Local Acceptance
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · DOCUMENTATION · SAFETY
+
+- Windows Owner parity source decoding now uses explicit UTF-8; 38 AST-preserved functions across 26 bounded Owners passed.
+- P1.5.2 selected tests: **295 passed / 1 skipped**, but the production-path write audit fired. Full pytest is **NOT PASS** because FastAPI is unavailable during collection; real report/LLM snapshot parity is **NOT RUN** because no independent frozen copies were available.
+- Facade sizes remain **2,761 / 2,658 / 636 LOC** and OPEN. No trade execution, live LLM, Docker, Q12, API/Scanner/UEF/Step5B, or runtime source changes.
+- Evidence: `docs/refactor/work_orders/evidence/P15-R2-CODEX-LOCAL-ACCEPTANCE-2026-10-12.md`.
