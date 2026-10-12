@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 218,
+  "entry_count": 219,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5921,6 +5921,32 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-C-CLAUDE-019.md",
         "docs/daily_patch/2026-10-12_p1_5_fast_track_wave_c.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Canonical Target Tree / Reporter AS-IS",
+      "title": "Canonical seven-agent target architecture and verified Reporter as-is tree",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "DOCUMENTATION",
+        "REPORTING"
+      ],
+      "summary": "Freeze the P1.5 target owner tree with existing-vs-proposed markings; verify Reporter actual modules and unresolved first-pass debt. Documents only, no trading/runtime code change.",
+      "details": [
+        "Added docs/refactor/P15_CANONICAL_TARGET_TREE_AND_REPORTER_ASIS_2026_10_13.md, linked from GPT master design. Current physical modules [E] are distinguished from proposed Owners [P] and safety-locked boundaries [L].",
+        "Reporter node is a thin delegate to intraday_trade_reports.generate_intraday_trade_artifacts; the latter remains a roughly 1,850-line bundle queue/process/artifact runtime, not a fully split report engine.",
+        "libs/reporting/ contains 466 Python files including Q10/Q12 research, Alpha Board and UEF evaluation; not all files belong to the Reporter agent.",
+        "Wave A A1 moved 55 report functions to 10 Owners. Public Reporting facades and 330 UNKNOWN of 436 ABI names remain; frozen real report/LLM parity is BLOCKED/NOT RUN and P1.5.2 final acceptance is OPEN.",
+        "Second-pass Reporter implementation remains EXCLUDED. Supervisor/Executor guards and live broker authority unchanged; only architecture documents and UI patch notes updated."
+      ],
+      "impact": "Stable documentation of actual versus planned module ownership for Claude's bulk second pass, without overclaiming Reporter completion or authorizing code/authority changes.",
+      "sources": [
+        "docs/refactor/P15_CANONICAL_TARGET_TREE_AND_REPORTER_ASIS_2026_10_13.md",
+        "docs/refactor/P15_SECOND_PASS_GPT_MASTER_DESIGN_2026_10_12.md",
+        "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-A-CLAUDE-014.md"
       ],
       "status": "current"
     }

@@ -3,6 +3,7 @@ Baseline: refactor/p1.5 @ 1f7add2b0f9b5a33399da27edcdd2f390bdf911b
 Status: DESIGN SPECIFICATION / NOT IMPLEMENTED / NOT FINAL_ACCEPTED
 Author: GPT architecture; implementation owner Claude; independent verifier Codex.
 Reporter implementation is OUT OF SCOPE.
+**Canonical current-vs-target tree (Reporter included, Reporter code frozen):** [P15_CANONICAL_TARGET_TREE_AND_REPORTER_ASIS_2026_10_13.md](P15_CANONICAL_TARGET_TREE_AND_REPORTER_ASIS_2026_10_13.md). This reference distinguishes physical existing modules [E] from implementation proposals [P]; do not interpret the 466 files under libs/reporting/ as Reporter-only.
 
 ## 1. Goal, evidence boundary and scope
 Modularize Agentra around **single responsibility, least authority, narrow interfaces and one canonical owner per behavior**. Do not optimize for file length alone. Retain the seven-agent orchestration semantics, existing prompts, ranking, ordering and release authority. Wave A/B/C have Codex PASS_WITH_FINDINGS, not final integration acceptance.

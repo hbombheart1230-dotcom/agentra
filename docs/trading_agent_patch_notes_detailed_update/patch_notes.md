@@ -2974,3 +2974,15 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - C3 Executor: 관측/read-model 함수 3개만 `libs/execution/executor_observability.py`로 이동. guard·readiness·admission·CAS·UNKNOWN·broker 경로는 baseline과 AST 동일, 나머지는 실제 fixture 부재로 SAFETY_BLOCKED.
 - C4 wrapper: 분류만 수행(DEFINITE_DEAD 0, Reporting ABI 330 UNKNOWN, 중복 본문 114그룹, 삭제·통합 없음).
 - 검증: 범위/권한 경계·AST 동일성·alias 테스트·consumer 회귀, 동시 실행 호출 비교에서 baseline 안정 레코드 차이 0, 운영 쓰기 0. Codex Wave B PASS_WITH_FINDINGS 기록, 실제 snapshot·LLM parity BLOCKED, 전체 pytest·Docker·UEF는 Wave D, Codex Wave C 감사 대기.
+
+## 2026-10-13 · P1.5 Seven-Agent 목표 트리 및 Reporter 실제 구조 기준 고정
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · DOCUMENTATION · REPORTING
+
+- GPT가 `docs/refactor/P15_CANONICAL_TARGET_TREE_AND_REPORTER_ASIS_2026_10_13.md`에 7-Agent + Reporter + Operator UI 최종 목표 트리와 현재 Git의 실제 경로를 `[E]`/`[P]`/`[L]`로 구분해 기록했습니다. GPT 2차 마스터 설계에도 연결했습니다.
+- Reporter는 `reporter_node.py → intraday_trade_reports.generate_intraday_trade_artifacts` 연결이 확인됐고, 실제 bundle/queue/process/IO 핵심 구현은 약 1,850줄로 남아 있습니다. Reporter는 `FIRST_PASS_WITH_DEBT`로 분류합니다.
+- `libs/reporting/` 아래에는 Reporter 거래 리포트뿐 아니라 Q10/Q12 연구, Alpha Board, UEF 평가도 함께 있습니다. 466개 Python 파일을 모두 Reporter 에이전트 코드로 분류하지 않습니다.
+- Wave A의 Reporting 55개 함수→10 Owner 이동은 실제 반영됐지만, 공개 façade 436개 ABI 중 330개는 소비자 증거가 UNKNOWN이고, 실제 frozen report/LLM parity는 BLOCKED/NOT RUN입니다.
+- 이번 변경은 아키텍처 문서·UI 패치노트만 포함합니다. Reporter 코드, Broker, Supervisor/Executor, main, live runtime과 배포는 변경하지 않았습니다.
+
+---
