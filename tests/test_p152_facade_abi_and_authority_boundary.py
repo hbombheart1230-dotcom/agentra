@@ -48,7 +48,12 @@ def test_changes_remain_reporting_only_with_no_trading_authority_files():
     files=[p for p in changed if p]
     assert files,"Expected a P1.5.2 reporting diff"
     allowed=("libs/reporting/","tests/","docs/","scripts/refactor/")
+    # Repository agent-entrypoint instructions are an explicit, bounded
+    # documentation-only exception; trading/other root files remain forbidden.
+    allowed_root_agent_docs = {"AGENTS.md", "CLAUDE.md"}
     for filename in files:
+        if filename in allowed_root_agent_docs:
+            continue
         if filename.startswith(".github/workflows/"):
             assert filename==".github/workflows/p152-r2c-residual-regression.yml",filename
         else:

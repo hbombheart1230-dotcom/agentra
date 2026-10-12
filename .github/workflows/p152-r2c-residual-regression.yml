@@ -219,6 +219,34 @@ jobs:
           if-no-files-found: error
           path: branch_output/p152_refactor_modified_only.zip
 
+      - name: Pack ONLY files modified since R3 Git-work-order task baseline
+        if: success()
+        run: |
+          git fetch --no-tags --depth=1 origin 341cedcd95b37b2f30e8dc6b821a25c20fd3fa7b
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          baseline="341cedcd95b37b2f30e8dc6b821a25c20fd3fa7b"
+          changed=subprocess.check_output(
+              ["git","diff","--name-only","-z",baseline,"HEAD"]
+          ).decode().split("\0")
+          changed=[x for x in changed if x and Path(x).is_file()]
+          assert changed, "No changed files since R3 task start"
+          with ZipFile("branch_output/p152_r3_task_changed_only.zip","w",ZIP_DEFLATED) as z:
+              for x in changed:
+                  z.write(x, arcname=x)
+          print("R3 task changed-only ZIP:",len(changed),"files")
+          PY
+      - name: Upload R3 task changed-only ZIP
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p152-r3-task-changed-only
+          retention-days: 14
+          if-no-files-found: error
+          path: branch_output/p152_r3_task_changed_only.zip
+
 
   broad_remote_offline:
     name: Repo-wide mock/offline non-heavy regression (manual diagnostic only)

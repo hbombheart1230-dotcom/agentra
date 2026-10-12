@@ -2739,3 +2739,6 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 근거: `docs/daily_patch/2026-10-12_p152_r3_claude_codex_git_first.md`, `docs/refactor/work_orders/P15_R3_FACADE_DECOMPOSITION_001.md`.
 
 - Git 작업지시 CI 게이트의 구식 R2 감사 전용 검사를 R3의 Claude 구현·Codex 감사 지시서/보존 아카이브 검사로 교체했습니다.
+
+- P1.5.2 Reporting authority test preserves its path guard but explicitly permits only the two agent instruction files `AGENTS.md` and `CLAUDE.md` as root documentation edits.
+- CI emits an additional task-baseline ZIP for precisely the paths changed since `341cedc`, alongside the existing push-only ZIP.

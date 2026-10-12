@@ -9,3 +9,5 @@
 - Changes are **documentation, entrypoint and CI packaging only**; no Reporting runtime code changes and no R3 implementation/test PASS claims.
 
 - Follow-up CI guard correction: obsolete R2 read-only task marker assertions replaced by R3 active pointer/roles/archive assertions.
+
+- CI authority-path test: only two documentation entrypoints AGENTS.md/CLAUDE.md explicitly allowlisted; trading-logic protection stays strict. Added R3-task-baseline changed-path-only ZIP artifact to accompany normal per-push-only ZIP.
