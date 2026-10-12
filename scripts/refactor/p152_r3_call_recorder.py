@@ -67,7 +67,7 @@ def _require_absolute(value, label, pm=os.path):
 
 def _protected_forms(extra, pm):
     forms = {_lex(LIVE_ROOT, ntpath)}
-    for item in [LIVE_ROOT] + list(extra or ()):
+    for item in list(extra or ()):  # LIVE_ROOT is a Windows path string: always handled lexically via ntpath above
         _require_absolute(item, "protected root", pm)
         forms.add(_lex(item, pm))
         forms.add(_lex(item, ntpath))
