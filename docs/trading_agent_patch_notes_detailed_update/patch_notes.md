@@ -2742,3 +2742,5 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 - P1.5.2 Reporting authority test preserves its path guard but explicitly permits only the two agent instruction files `AGENTS.md` and `CLAUDE.md` as root documentation edits.
 - CI emits an additional task-baseline ZIP for precisely the paths changed since `341cedc`, alongside the existing push-only ZIP.
+
+- 원격 acceptance inventory 역시 루트 문서 `AGENTS.md`, `CLAUDE.md` 두 개만 허용하는 정확한 allowlist를 사용합니다. 다른 루트 실행/거래 파일 변경은 계속 차단합니다.

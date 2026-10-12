@@ -5305,7 +5305,8 @@
         "Fix CI task ZIP artifact comparison to actual push base, avoiding stale accumulated history.",
         "CI Git-work-order guard now verifies CURRENT R3 pointer and Claude/Codex role separation instead of enforcing obsolete R2 audit-only markers.",
         "Maintain the strict Reporting authority-diff gate while explicitly allowing only the two root agent instruction files AGENTS.md and CLAUDE.md; all other unapproved root paths remain blocked.",
-        "Provide both per-push changed-only ZIP and R3 task-baseline changed-only ZIP; neither contains unchanged project files."
+        "Provide both per-push changed-only ZIP and R3 task-baseline changed-only ZIP; neither contains unchanged project files.",
+        "The offline acceptance-inventory source-scope validator mirrors the strict two-file root AGENTS.md/CLAUDE.md documentation allowlist; no other root/runtime authority paths are permitted."
       ],
       "impact": "Agents only need AGENTS.md/CLAUDE.md and CURRENT.md, follow Git task to reduce prompt and context overhead.",
       "sources": [

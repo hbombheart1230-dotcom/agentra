@@ -15,6 +15,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 PINNED_BEFORE = "2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c"
 SOURCE_SCOPE = ("libs/reporting/", "tests/", "docs/", "scripts/refactor/")
+# Narrow documentation entrypoint exception: no trading/root runtime files.
+DOC_ENTRYPOINT_ALLOWLIST = ("AGENTS.md", "CLAUDE.md")
 WORKFLOW = ".github/workflows/p152-r2c-residual-regression.yml"
 FACADES = {
     "libs/reporting/trade_report_ai.py": 182,
@@ -71,7 +73,7 @@ def build_inventory(root: Path = ROOT, *, ref: str = "HEAD") -> dict[str, Any]:
     ]
     out_of_scope = [
         p for p in changed
-        if not (p.startswith(SOURCE_SCOPE) or p == WORKFLOW)
+        if not (p.startswith(SOURCE_SCOPE) or p == WORKFLOW or p in DOC_ENTRYPOINT_ALLOWLIST)
     ]
     facade = {}
     for path, expected in FACADES.items():
