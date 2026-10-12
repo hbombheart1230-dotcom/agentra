@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 202,
+  "entry_count": 203,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5512,6 +5512,31 @@
       "sources": [
         "docs/refactor/work_orders/P15_R3_CODEX_SEAM_AUDIT_004.md",
         "docs/daily_patch/2026-10-12_p152_r3_codex_seam_audit_handoff.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Codex Seam Audit Result",
+      "title": "Record seam PASS_WITH_FINDINGS and exclude invalid comparison",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "TESTING",
+        "SAFETY"
+      ],
+      "summary": "Codex independently verified the restored use-time seam, while comparison with an incorrect working directory was excluded.",
+      "details": [
+        "Audited runtime 6512201: 298 moved-body tests passed, 357 direct seam cases over 57 functions, exit 0.",
+        "Incorrectly scoped comparison result excluded; a write-audit observation has unresolved attribution. Do not run tests from the live workspace.",
+        "Real frozen report/LLM parity NOT RUN; historical full-suite baseline-matched failures and mock-lane write isolation remain open.",
+        "R3 seam PASS_WITH_FINDINGS only; P1.5.2 OPEN, P1.5.3 unapproved; no main merge."
+      ],
+      "impact": "Tracks valid independent evidence and unresolved test-execution safety separately.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R3-CODEX-SEAM-AUDIT-004.md",
+        "docs/refactor/work_orders/P15_R3_AUDIT_CLOSEOUT_005.md",
+        "docs/daily_patch/2026-10-12_p152_r3_audit_closeout.md"
       ],
       "status": "current"
     }

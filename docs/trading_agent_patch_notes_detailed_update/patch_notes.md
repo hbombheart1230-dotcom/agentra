@@ -2820,3 +2820,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Claude 검증 보고: 호출 전·중 seam 57/57 동등, 925 PASS / 1 SKIP, 집중 테스트 쓰기 0. 독립 감사 전으로 최종 PASS는 아닙니다.
 - 기존 전체 테스트의 쓰기 격리 이슈, 실자료·LLM parity BLOCKED, façade SIZE_DEFERRED, Owner 응집도 부채는 그대로 OPEN입니다.
 - 근거: `docs/refactor/work_orders/P15_R3_CODEX_SEAM_AUDIT_004.md`, `docs/daily_patch/2026-10-12_p152_r3_codex_seam_audit_handoff.md`.
+
+## 2026-10-12 · P1.5.2 R3 Codex seam 감사 결과
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · TESTING · SAFETY
+
+- Codex 독립 감사 결과 PASS_WITH_FINDINGS: 298 PASS, seam 검증 357건 / 함수 57개. 감사 대상 코드 SHA `6512201`.
+- 실행 경로 오류가 있던 비교 결과는 무효 처리했으며, 감사 중 관찰된 쓰기 이벤트의 귀속은 확인되지 않았습니다.
+- 실보고서/LLM parity는 NOT RUN, 기존 전체 테스트 격리 결함 OPEN. P1.5.2 OPEN / P1.5.3 미승인.
+- 근거: `docs/refactor/work_orders/evidence/P15-R3-CODEX-SEAM-AUDIT-004.md`, `docs/daily_patch/2026-10-12_p152_r3_audit_closeout.md`.
