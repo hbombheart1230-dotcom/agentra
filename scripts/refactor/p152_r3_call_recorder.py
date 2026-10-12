@@ -218,6 +218,11 @@ def pytest_configure(config):
                     except BaseException as e:  # noqa
                         rec.append([modname.rsplit(".", 1)[-1] + "." + n, ah, "EXC:%s:%s" % (type(e).__name__, str(e)[:80])])
                         raise
+                    if os.environ.get("R3_POST"):
+                        # in-place mutation of arguments (e.g. graph State) is behaviour too: hash args after the call
+                        rec.append([modname.rsplit(".", 1)[-1] + "." + n, ah, h(r), "post:" + h([a, k])]
+                                   + ([json.dumps(norm([a, k, r]), ensure_ascii=False, default=str)] if os.environ.get("R3_KEEP") else []))
+                        return r
                     rec.append([modname.rsplit(".", 1)[-1] + "." + n, ah, h(r)] + ([json.dumps(norm([a,k]),ensure_ascii=False,default=str)[:int(os.environ.get("R3_KEEP","600"))]] if os.environ.get("R3_KEEP") else []))
                     return r
                 wrapper.__name__ = orig.__name__

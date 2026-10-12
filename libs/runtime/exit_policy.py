@@ -9,6 +9,22 @@ from libs.runtime.etf_deviation import (
     normalize_deviation_pct,
     score_etf_deviation_for_exit,
 )
+import sys as _r3_sys
+from libs.runtime.monitor_exit.exit_policy_chart_projection import (
+    exit_chart_out,
+)
+from libs.runtime.monitor_exit.exit_policy_pnl_projection import (
+    exit_pnl_hs_news_shock_th,
+    exit_pnl_apx_crosscheck,
+    exit_pnl_gross_pnl_ratio_gross_profit_floor_gap_p,
+    exit_pnl_expected_exit_floor_blocked_profit_exit,
+    exit_pnl_effective_stop_pct_etf_deviation_pct,
+)
+from libs.runtime.monitor_exit.exit_policy_trigger_inputs import (
+    exit_trigger_peak_drawdown_th_profit_protection_urgen,
+    exit_trigger_confirm_bars_required_confirmation_requi,
+    exit_trigger_confirm_bars_required_confirmed,
+)
 
 
 def _to_float(v: Any, default: float = 0.0) -> float:
@@ -381,265 +397,7 @@ def evaluate_exit_policy(
     """
     p = dict(policy or {})
     chart_context_summary = _build_chart_context_summary(p)
-    out: Dict[str, Any] = {
-        "evaluated": True,
-        "triggered": False,
-        "reason": "",
-        "hold_block_reason": "",
-        "max_runup_pct": None,
-        "peak_drawdown_from_peak": None,
-        "peak_drawdown_armed": False,
-        "peak_drawdown_mode": "",
-        "peak_drawdown_blocked": False,
-        "peak_drawdown_block_reason": "",
-        "peak_drawdown_profit_floor_required_pct": None,
-        "peak_drawdown_profit_floor_met": False,
-        "peak_drawdown_profit_protection_urgent": False,
-        "peak_drawdown_profit_protection_reason": "",
-        "final_peak_drawdown_ratio": None,
-        "peak_drawdown_source": "",
-        "risk_reward_take_profit_target_pct": None,
-        "resistance_price": None,
-        "resistance_price_source": "",
-        "resistance_distance_pct": None,
-        "profit_time_stop_peak_giveback_pct": None,
-        "partial_exit": False,
-        "exit_qty": None,
-        "exit_qty_fraction": None,
-        "partial_take_profit_taken": False,
-        "profit_ladder_level_pct": None,
-        "profit_ladder_level_index": None,
-        "risk_reward_take_profit_rung": None,
-        "volume_ratio": None,
-        "execution_strength": None,
-        "trade_strength": None,
-        "opening_gap_chase_observed": False,
-        "etf_deviation_pct": None,
-        "etf_deviation_source": "",
-        "etf_premium_take_profit_score": 0.0,
-        "etf_premium_take_profit_armed": False,
-        "exit_trigger_metric_name": "",
-        "exit_trigger_metric_value": None,
-        "exit_trigger_metric_source": "",
-        "vwap_breakdown_confirmation_required": False,
-        "vwap_breakdown_confirmed": False,
-        "vwap_breakdown_confirmation_pending": False,
-        "vwap_breakdown_confirmation_reason": "",
-        "vwap_breakdown_consecutive_bars": 0,
-        "vwap_breakdown_low_break_confirmed": False,
-        "vwap_breakdown_volume_confirmed": False,
-        "intraday_low_break_confirmation_required": False,
-        "intraday_low_break_confirmed": False,
-        "intraday_low_break_confirmation_pending": False,
-        "intraday_low_break_confirmation_reason": "",
-        "intraday_low_break_consecutive_bars": 0,
-        "intraday_low_break_low_break_confirmed": False,
-        "intraday_low_break_volume_confirmed": False,
-        "intraday_low_break_min_hold_blocked": False,
-        "protective_exit_floor_blocked": False,
-        "protective_exit_floor_blocked_reason": "",
-        "protective_exit_hard_invalidation": False,
-        "protective_exit_hard_invalidation_reason": "",
-        "protective_exit_hard_invalidation_suppressed_by_cost_floor": False,
-        "protective_exit_hard_invalidation_suppressed_reason": "",
-        "pnl_ratio": None,
-        "raw_pnl_ratio": None,
-        "gross_pnl_ratio": None,
-        "technical_pnl_ratio": None,
-        "effective_pnl_ratio": None,
-        "stop_pnl_ratio": None,
-        "stop_pnl_ratio_source": "",
-        "hard_stop_pnl_ratio": None,
-        "hard_stop_pnl_ratio_source": "",
-        "cost_drag_pressure": False,
-        "cost_drag_pressure_pct": None,
-        "cost_drag_pressure_reason": "",
-        "stop_loss_cost_drag_blocked": False,
-        "stop_loss_cost_drag_blocked_reason": "",
-        "expected_exit_price": None,
-        "expected_exit_price_source": "",
-        "expected_exit_price_fallback_used": False,
-        "expected_exit_quote_rejected": bool(p.get("expected_exit_quote_rejected")),
-        "expected_exit_quote_rejected_reason": str(p.get("expected_exit_quote_rejected_reason") or ""),
-        "expected_exit_quote_observed_epoch": p.get("expected_exit_quote_observed_epoch"),
-        "expected_exit_quote_age_sec": p.get("expected_exit_quote_age_sec"),
-        "expected_exit_quote_price_divergence_pct": p.get("expected_exit_quote_price_divergence_pct"),
-        "expected_exit_slippage_buffer_pct": None,
-        "expected_exit_pnl_ratio": None,
-        "expected_exit_net_pnl_ratio": None,
-        "expected_exit_profit_floor_met": False,
-        "expected_exit_profit_floor_gap_pct": None,
-        "expected_exit_profit_floor_blocked": False,
-        "expected_exit_profit_floor_blocked_reason": "",
-        "raw_price": None,
-        "technical_price": None,
-        "technical_price_source": "",
-        "effective_price": None,
-        "effective_price_source": "",
-        "account_current_price": None,
-        "account_current_price_source": "",
-        "account_unrealized_pnl": None,
-        "account_mark_price": None,
-        "account_mark_price_source": "",
-        "account_pnl_ratio": None,
-        "account_pnl_ratio_source": "",
-        "pnl_crosscheck_gap": None,
-        "price_crosscheck_gap": None,
-        "pnl_crosscheck_applied": False,
-        "pnl_crosscheck_reason": "",
-        "price_anomaly_flag": False,
-        "price_anomaly_reason": "",
-        "pnl_fallback_applied": False,
-        "fallback_price_source": "",
-        "account_crosscheck": {},
-        "chart_context_available": bool(chart_context_summary.get("available")),
-        "chart_context_summary": dict(chart_context_summary),
-        "structure_breakdown_signal": str(chart_context_summary.get("structure_breakdown_signal") or ""),
-        "exit_threshold_source": str(
-            p.get("final_exit_threshold_source")
-            or p.get("policy_source")
-            or p.get("effective_policy_source")
-            or "effective_policy"
-        ),
-        "thresholds": {
-            "hard_stop_pct": _clamp_non_negative(_to_float(p.get("hard_stop_pct"), 0.0)),
-            "stop_loss_pct": _clamp_non_negative(_to_float(p.get("stop_loss_pct"), 0.03)),
-            "take_profit_pct": _clamp_non_negative(_to_float(p.get("take_profit_pct"), 0.05)),
-            "partial_take_profit_pct": _clamp_non_negative(_to_float(p.get("partial_take_profit_pct"), 0.0)),
-            "partial_take_profit_fraction": _clamp_non_negative(
-                _to_float(p.get("partial_take_profit_fraction"), 0.0)
-            ),
-            "profit_ladder_levels_pct": _to_float_list(p.get("profit_ladder_levels_pct")),
-            "profit_ladder_fraction": _clamp_non_negative(_to_float(p.get("profit_ladder_fraction"), 0.0)),
-            "risk_reward_take_profit_r": _clamp_non_negative(_to_float(p.get("risk_reward_take_profit_r"), 0.0)),
-            "risk_reward_take_profit_rungs": _to_float_list(p.get("risk_reward_take_profit_rungs")),
-            "risk_reward_take_profit_fraction": _clamp_non_negative(
-                _to_float(p.get("risk_reward_take_profit_fraction"), 0.0)
-            ),
-            "risk_reward_take_profit_min_pct": _clamp_non_negative(
-                _to_float(p.get("risk_reward_take_profit_min_pct"), 0.0)
-            ),
-            "vwap_extension_take_profit_pct": _clamp_non_negative(
-                _to_float(p.get("vwap_extension_take_profit_pct"), 0.0)
-            ),
-            "vwap_extension_take_profit_min_pct": _clamp_non_negative(
-                _to_float(p.get("vwap_extension_take_profit_min_pct"), 0.0)
-            ),
-            "resistance_take_profit_near_pct": _clamp_non_negative(
-                _to_float(p.get("resistance_take_profit_near_pct"), 0.0)
-            ),
-            "resistance_take_profit_min_pct": _clamp_non_negative(
-                _to_float(p.get("resistance_take_profit_min_pct"), 0.0)
-            ),
-            "profit_time_stop_sec": max(0, int(_to_float(p.get("profit_time_stop_sec"), 0.0))),
-            "profit_time_stop_min_pct": _clamp_non_negative(_to_float(p.get("profit_time_stop_min_pct"), 0.0)),
-            "profit_time_stop_peak_giveback_pct": _clamp_non_negative(
-                _to_float(p.get("profit_time_stop_peak_giveback_pct"), 0.0)
-            ),
-            "volume_exhaustion_take_profit_min_pct": _clamp_non_negative(
-                _to_float(p.get("volume_exhaustion_take_profit_min_pct"), 0.0)
-            ),
-            "volume_exhaustion_volume_ratio_max": _clamp_non_negative(
-                _to_float(p.get("volume_exhaustion_volume_ratio_max"), 0.0)
-            ),
-            "volume_exhaustion_strength_max": _clamp_non_negative(
-                _to_float(p.get("volume_exhaustion_strength_max"), 0.0)
-            ),
-            "opening_gap_profit_take_min_pct": _clamp_non_negative(
-                _to_float(p.get("opening_gap_profit_take_min_pct"), 0.0)
-            ),
-            "opening_gap_profit_take_window_sec": max(
-                0,
-                int(_to_float(p.get("opening_gap_profit_take_window_sec"), 0.0)),
-            ),
-            "opening_gap_profit_take_fraction": _clamp_non_negative(
-                _to_float(p.get("opening_gap_profit_take_fraction"), 0.0)
-            ),
-            "etf_premium_take_profit_enabled": _to_bool(
-                p.get("etf_premium_take_profit_enabled"),
-                True,
-            ),
-            "etf_premium_take_profit_pct": _clamp_non_negative(
-                _to_float(p.get("etf_premium_take_profit_pct"), DEFAULT_PREMIUM_TRIGGER_PCT)
-            ),
-            "etf_premium_take_profit_min_pct": _clamp_non_negative(
-                _to_float(p.get("etf_premium_take_profit_min_pct"), 0.0)
-            ),
-            "cost_aware_profit_floor_enabled": _to_bool(p.get("cost_aware_profit_floor_enabled"), False),
-            "round_trip_cost_floor_pct": _clamp_non_negative(_to_float(p.get("round_trip_cost_floor_pct"), 0.0)),
-            "min_net_profit_buffer_pct": _clamp_non_negative(_to_float(p.get("min_net_profit_buffer_pct"), 0.0)),
-            "cost_aware_profit_floor_pct": _clamp_non_negative(
-                _to_float(p.get("cost_aware_profit_floor_pct"), 0.0)
-            ),
-            "cost_aware_profit_floor_use_expected_exit": _to_bool(
-                p.get("cost_aware_profit_floor_use_expected_exit"),
-                True,
-            ),
-        "sell_slippage_buffer_pct": _clamp_non_negative(
-            _to_float(p.get("sell_slippage_buffer_pct"), 0.0)
-        ),
-            "min_expected_net_profit_pct": _clamp_non_negative(
-                _to_float(
-                    p.get("min_expected_net_profit_pct"),
-                    _to_float(p.get("min_net_profit_buffer_pct"), 0.0),
-                )
-            ),
-            "max_hold_sec": max(0, int(_to_float(p.get("max_hold_sec"), 0))),
-            "time_stop_sec": max(
-                0,
-                int(
-                    _to_float(
-                        p.get("time_stop_sec"),
-                        _to_float(p.get("max_hold_sec"), 0.0),
-                    )
-                ),
-            ),
-            "trailing_stop_pct": _clamp_non_negative(_to_float(p.get("trailing_stop_pct"), 0.0)),
-            "vol_expansion_ratio": _clamp_non_negative(_to_float(p.get("vol_expansion_ratio"), 0.0)),
-            "news_shock_threshold": _clamp_non_negative(_to_float(p.get("news_shock_threshold"), 0.0)),
-            "peak_drawdown_exit_pct": _clamp_non_negative(_to_float(p.get("peak_drawdown_exit_pct"), 0.0)),
-            "profit_protection_activation_pct": _clamp_non_negative(
-                _to_float(
-                    p.get(
-                        "profit_protection_activation_pct",
-                        p.get("peak_drawdown_activation_pct", 0.008),
-                    ),
-                    0.008,
-                )
-            ),
-            "peak_drawdown_mode": str(p.get("peak_drawdown_mode") or "profit_protection").strip().lower(),
-            "confirm_required_for_peak_drawdown": max(
-                1,
-                int(
-                    _to_float(
-                        p.get("confirm_required_for_peak_drawdown"),
-                        2.0,
-                    )
-                ),
-            ),
-            "vwap_breakdown_pct": _clamp_non_negative(_to_float(p.get("vwap_breakdown_pct"), 0.0)),
-            "vwap_breakdown_confirm_bars": max(
-                1,
-                int(_to_float(p.get("vwap_breakdown_confirm_bars"), 2.0)),
-            ),
-            "vwap_breakdown_min_hold_sec": max(
-                0,
-                int(_to_float(p.get("vwap_breakdown_min_hold_sec"), 120.0)),
-            ),
-            "intraday_low_break_pct": _clamp_non_negative(_to_float(p.get("intraday_low_break_pct"), 0.0)),
-            "intraday_low_break_min_hold_sec": max(
-                0,
-                int(_to_float(p.get("intraday_low_break_min_hold_sec"), 60.0)),
-            ),
-            "intraday_low_break_confirm_bars": max(
-                1,
-                int(_to_float(p.get("intraday_low_break_confirm_bars"), 2.0)),
-            ),
-            "trend_strength_floor": _to_float(p.get("trend_strength_floor"), 0.0),
-            "eod_flat_cutoff_min": max(0, int(_to_float(p.get("eod_flat_cutoff_min"), 10))),
-        },
-    }
-    out["peak_drawdown_mode"] = str(out["thresholds"].get("peak_drawdown_mode") or "profit_protection")
+    out = exit_chart_out(chart_context_summary=chart_context_summary, p=p, facade=_r3_sys.modules[__name__])[0]
     if bool(out["thresholds"].get("cost_aware_profit_floor_enabled")):
         explicit_floor = float(out["thresholds"].get("cost_aware_profit_floor_pct") or 0.0)
         cost_floor = float(out["thresholds"].get("round_trip_cost_floor_pct") or 0.0)
@@ -753,24 +511,7 @@ def evaluate_exit_policy(
         out["minutes_to_close"] = float(minutes_to_close)
         return _finalize(triggered=True, reason="eod_flat")
 
-    max_hold_sec = int(out["thresholds"]["max_hold_sec"])
-    time_stop_sec = int(out["thresholds"]["time_stop_sec"])
-    hold_limit = time_stop_sec if time_stop_sec > 0 else max_hold_sec
-    hs = None if hold_sec is None else max(0, int(hold_sec))
-    out["hold_sec"] = hs
-    time_limit_reason = "time_stop" if has_explicit_time_stop and time_stop_sec > 0 else "max_hold"
-    time_limit_reached = bool(hold_limit > 0 and hs is not None and hs >= hold_limit)
-    out["hold_limit_sec"] = int(hold_limit)
-    out["max_hold_reached"] = bool(max_hold_sec > 0 and hs is not None and hs >= max_hold_sec)
-    out["time_stop_reached"] = bool(time_stop_sec > 0 and hs is not None and hs >= time_stop_sec)
-    out["time_limit_reached"] = bool(time_limit_reached)
-    out["time_limit_reason"] = time_limit_reason if time_limit_reached else ""
-    out["time_limit_reassessment_required"] = bool(time_limit_reached)
-    out["time_limit_reassessment_blocked"] = False
-    out["time_limit_reassessment_blocked_reason"] = ""
-
-    # News shock exit (optional): sentiment crash forces immediate flattening.
-    news_shock_th = float(out["thresholds"]["news_shock_threshold"])
+    hs, news_shock_th, time_limit_reached, time_limit_reason = exit_pnl_hs_news_shock_th(out=out, hold_sec=hold_sec, has_explicit_time_stop=has_explicit_time_stop, facade=_r3_sys.modules[__name__])
     if news_shock_th > 0.0:
         symbol_sent = _to_float(p.get("symbol_sentiment_score"), 0.0)
         global_sent = _to_float(p.get("global_sentiment_score"), 0.0)
@@ -779,40 +520,7 @@ def evaluate_exit_policy(
         if symbol_sent <= -news_shock_th or global_sent <= -news_shock_th:
             return _finalize(triggered=True, reason="news_shock")
 
-    apx = _to_float(avg_price, 0.0) if avg_price is not None else 0.0
-    crosscheck = _build_account_pnl_crosscheck(
-        p,
-        price=price,
-        avg_price=avg_price,
-        qty=q,
-    )
-    out["account_crosscheck"] = dict(crosscheck)
-    out["raw_price"] = crosscheck.get("raw_price")
-    out["effective_price"] = crosscheck.get("effective_price")
-    out["effective_price_source"] = str(crosscheck.get("effective_price_source") or "")
-    out["account_current_price"] = crosscheck.get("account_current_price")
-    out["account_current_price_source"] = str(crosscheck.get("account_current_price_source") or "")
-    out["account_unrealized_pnl"] = crosscheck.get("account_unrealized_pnl")
-    out["account_mark_price"] = crosscheck.get("account_mark_price")
-    out["account_mark_price_source"] = str(crosscheck.get("account_mark_price_source") or "")
-    out["account_pnl_ratio"] = crosscheck.get("account_pnl_ratio")
-    out["account_pnl_ratio_source"] = str(crosscheck.get("account_pnl_ratio_source") or "")
-    out["raw_pnl_ratio"] = crosscheck.get("raw_pnl_ratio")
-    out["effective_pnl_ratio"] = crosscheck.get("effective_pnl_ratio")
-    out["pnl_crosscheck_gap"] = crosscheck.get("pnl_ratio_gap")
-    out["price_crosscheck_gap"] = crosscheck.get("price_gap")
-    out["pnl_crosscheck_applied"] = bool(crosscheck.get("applied"))
-    out["pnl_crosscheck_reason"] = str(crosscheck.get("reason") or "")
-    out["price_anomaly_flag"] = bool(crosscheck.get("price_anomaly_flag"))
-    out["price_anomaly_reason"] = str(crosscheck.get("price_anomaly_reason") or "")
-    out["pnl_fallback_applied"] = bool(crosscheck.get("pnl_fallback_applied"))
-    out["fallback_price_source"] = str(crosscheck.get("fallback_price_source") or "")
-
-    px = _to_float(crosscheck.get("effective_price"), 0.0) if crosscheck.get("effective_price") is not None else 0.0
-    raw_px = _to_float(crosscheck.get("raw_price"), 0.0) if crosscheck.get("raw_price") is not None else 0.0
-    technical_px = float(raw_px if raw_px > 0.0 else px)
-    out["technical_price"] = float(technical_px) if technical_px > 0.0 else None
-    out["technical_price_source"] = "raw_price" if raw_px > 0.0 else str(out.get("effective_price_source") or "")
+    apx, crosscheck, px, technical_px = exit_pnl_apx_crosscheck(avg_price=avg_price, p=p, price=price, q=q, out=out, facade=_r3_sys.modules[__name__])
     if px <= 0.0 or technical_px <= 0.0 or apx <= 0.0:
         if out["price_anomaly_flag"] and not out["hold_block_reason"]:
             out["hold_block_reason"] = str(out["price_anomaly_reason"] or "price_anomaly")
@@ -829,53 +537,7 @@ def evaluate_exit_policy(
             if vol_ratio >= vol_ratio_th:
                 return _finalize(triggered=True, reason="volatility_expansion")
 
-    pnl_ratio = float((px / apx) - 1.0)
-    raw_pnl_ratio = crosscheck.get("raw_pnl_ratio")
-    gross_pnl_ratio = (
-        float(raw_pnl_ratio)
-        if raw_pnl_ratio is not None
-        else float((technical_px / apx) - 1.0)
-        if technical_px > 0.0 and apx > 0.0
-        else pnl_ratio
-    )
-    out["pnl_ratio"] = pnl_ratio
-    out["gross_pnl_ratio"] = gross_pnl_ratio
-    out["technical_pnl_ratio"] = gross_pnl_ratio
-    out["effective_pnl_ratio"] = pnl_ratio
-    out["stop_pnl_ratio"] = gross_pnl_ratio
-    out["stop_pnl_ratio_source"] = str(out.get("technical_price_source") or "technical_price")
-    out["hard_stop_pnl_ratio"] = pnl_ratio
-    out["hard_stop_pnl_ratio_source"] = str(out.get("effective_price_source") or "effective_price")
-    if pnl_ratio < gross_pnl_ratio - 1e-9:
-        out["cost_drag_pressure"] = True
-        out["cost_drag_pressure_pct"] = float(gross_pnl_ratio - pnl_ratio)
-        out["cost_drag_pressure_reason"] = str(out.get("pnl_crosscheck_reason") or "effective_pnl_below_gross_pnl")
-    profit_floor_pct = float(out["thresholds"].get("cost_aware_profit_floor_pct") or 0.0)
-    profit_floor_enabled = bool(out["thresholds"].get("cost_aware_profit_floor_enabled")) and profit_floor_pct > 0.0
-    round_trip_cost_floor_pct = float(out["thresholds"].get("round_trip_cost_floor_pct") or 0.0)
-    min_expected_net_profit_pct = float(out["thresholds"].get("min_expected_net_profit_pct") or 0.0)
-    gross_net_profit_ratio = float(gross_pnl_ratio - round_trip_cost_floor_pct)
-    gross_profit_floor_gap_pct = (
-        float(
-            max(
-                profit_floor_pct - gross_pnl_ratio,
-                min_expected_net_profit_pct - gross_net_profit_ratio,
-                0.0,
-            )
-        )
-        if profit_floor_enabled
-        else 0.0
-    )
-    gross_profit_floor_met = bool(
-        (not profit_floor_enabled)
-        or (
-            gross_pnl_ratio >= profit_floor_pct
-            and gross_net_profit_ratio >= min_expected_net_profit_pct
-        )
-    )
-    out["gross_net_profit_ratio"] = float(gross_net_profit_ratio)
-    out["gross_profit_floor_met"] = bool(gross_profit_floor_met)
-    out["gross_profit_floor_gap_pct"] = float(gross_profit_floor_gap_pct)
+    gross_pnl_ratio, gross_profit_floor_gap_pct, gross_profit_floor_met, min_expected_net_profit_pct, pnl_ratio, profit_floor_enabled, profit_floor_pct, round_trip_cost_floor_pct = exit_pnl_gross_pnl_ratio_gross_profit_floor_gap_p(px=px, apx=apx, crosscheck=crosscheck, technical_px=technical_px, out=out, facade=_r3_sys.modules[__name__])
 
     def _first_positive_price(*keys: str) -> tuple[float, str]:
         for key in keys:
@@ -887,109 +549,7 @@ def evaluate_exit_policy(
                 return float(candidate), key
         return 0.0, ""
 
-    expected_exit_price = 0.0
-    expected_exit_source = ""
-    expected_exit_fallback_used = False
-    expected_exit_slippage_buffer_pct = float(out["thresholds"].get("sell_slippage_buffer_pct") or 0.0)
-    # Profit exits are evaluated against executable/raw price context, not
-    # account PnL marks that may already include fee/tax drag. Otherwise the
-    # round-trip floor is effectively counted twice.
-    observed_exit_price = float(technical_px if technical_px > 0.0 else px)
-    best_bid, best_bid_source = _first_positive_price(
-        "expected_exit_best_bid",
-        "best_bid",
-        "quote_best_bid",
-        "bid",
-        "bid_price",
-    )
-    if best_bid > 0.0:
-        expected_exit_price = float(min(best_bid, observed_exit_price))
-        expected_exit_source = str(best_bid_source)
-    elif expected_exit_slippage_buffer_pct > 0.0 and observed_exit_price > 0.0:
-        expected_exit_price = float(observed_exit_price * max(0.0, 1.0 - expected_exit_slippage_buffer_pct))
-        expected_exit_source = "observed_price_minus_slippage_buffer"
-        expected_exit_fallback_used = True
-    elif observed_exit_price > 0.0:
-        expected_exit_price = float(observed_exit_price)
-        expected_exit_source = "observed_price"
-
-    expected_exit_pnl_ratio = (
-        float((expected_exit_price / apx) - 1.0)
-        if expected_exit_price > 0.0 and apx > 0.0
-        else None
-    )
-    expected_exit_net_pnl_ratio = (
-        float(expected_exit_pnl_ratio - round_trip_cost_floor_pct)
-        if expected_exit_pnl_ratio is not None
-        else None
-    )
-    expected_exit_profit_floor_met = bool(not profit_floor_enabled)
-    expected_exit_profit_floor_gap_pct = None
-    if profit_floor_enabled and expected_exit_pnl_ratio is not None:
-        expected_exit_profit_floor_met = bool(
-            expected_exit_pnl_ratio >= profit_floor_pct
-            and (
-                expected_exit_net_pnl_ratio is None
-                or expected_exit_net_pnl_ratio >= min_expected_net_profit_pct
-            )
-        )
-        expected_exit_profit_floor_gap_pct = float(
-            max(
-                profit_floor_pct - expected_exit_pnl_ratio,
-                min_expected_net_profit_pct - float(expected_exit_net_pnl_ratio or 0.0),
-                0.0,
-            )
-        )
-    floor_source = "expected_exit_pnl_ratio" if expected_exit_pnl_ratio is not None else "gross_pnl_ratio"
-    cost_aware_profit_floor_met = (
-        bool(expected_exit_profit_floor_met)
-        if profit_floor_enabled
-        and bool(out["thresholds"].get("cost_aware_profit_floor_use_expected_exit"))
-        and expected_exit_pnl_ratio is not None
-        else bool(gross_profit_floor_met)
-    )
-    expected_exit_floor_blocked = bool(
-        profit_floor_enabled
-        and bool(out["thresholds"].get("cost_aware_profit_floor_use_expected_exit"))
-        and gross_profit_floor_met
-        and not expected_exit_profit_floor_met
-    )
-    out["cost_aware_profit_floor_met"] = bool(cost_aware_profit_floor_met)
-    out["cost_aware_profit_floor_source"] = str(floor_source if profit_floor_enabled else "disabled")
-    if profit_floor_enabled:
-        out["cost_aware_profit_floor_gap_pct"] = (
-            expected_exit_profit_floor_gap_pct
-            if (
-                bool(out["thresholds"].get("cost_aware_profit_floor_use_expected_exit"))
-                and expected_exit_pnl_ratio is not None
-            )
-            else gross_profit_floor_gap_pct
-        )
-    out["expected_exit_price"] = expected_exit_price if expected_exit_price > 0.0 else None
-    out["expected_exit_price_source"] = expected_exit_source
-    out["expected_exit_price_fallback_used"] = bool(expected_exit_fallback_used)
-    out["expected_exit_slippage_buffer_pct"] = float(expected_exit_slippage_buffer_pct)
-    out["expected_exit_pnl_ratio"] = expected_exit_pnl_ratio
-    out["expected_exit_net_pnl_ratio"] = expected_exit_net_pnl_ratio
-    out["expected_exit_profit_floor_met"] = bool(expected_exit_profit_floor_met)
-    out["expected_exit_profit_floor_gap_pct"] = expected_exit_profit_floor_gap_pct
-    out["expected_exit_profit_floor_blocked"] = bool(expected_exit_floor_blocked)
-    if expected_exit_floor_blocked:
-        out["expected_exit_profit_floor_blocked_reason"] = "expected_exit_price_below_cost_aware_floor"
-    profit_exit_pnl_ratio = (
-        float(expected_exit_pnl_ratio)
-        if expected_exit_pnl_ratio is not None
-        and bool(out["thresholds"].get("cost_aware_profit_floor_use_expected_exit"))
-        else float(gross_pnl_ratio)
-    )
-    profit_exit_metric_name = (
-        "expected_exit_pnl_ratio"
-        if expected_exit_pnl_ratio is not None
-        and bool(out["thresholds"].get("cost_aware_profit_floor_use_expected_exit"))
-        else "gross_pnl_ratio"
-    )
-    out["profit_exit_pnl_ratio"] = float(profit_exit_pnl_ratio)
-    out["profit_exit_metric_name"] = str(profit_exit_metric_name)
+    expected_exit_floor_blocked, profit_exit_metric_name, profit_exit_pnl_ratio = exit_pnl_expected_exit_floor_blocked_profit_exit(out=out, technical_px=technical_px, px=px, _first_positive_price=_first_positive_price, apx=apx, round_trip_cost_floor_pct=round_trip_cost_floor_pct, profit_floor_enabled=profit_floor_enabled, profit_floor_pct=profit_floor_pct, min_expected_net_profit_pct=min_expected_net_profit_pct, gross_profit_floor_met=gross_profit_floor_met, gross_profit_floor_gap_pct=gross_profit_floor_gap_pct, gross_pnl_ratio=gross_pnl_ratio, facade=_r3_sys.modules[__name__])
 
     def _profit_threshold(base: float) -> float:
         return float(max(float(base or 0.0), profit_floor_pct if profit_floor_enabled else 0.0))
@@ -1067,42 +627,7 @@ def evaluate_exit_policy(
         out["hold_block_reason"] = f"{str(reason or 'protective_exit')}:cost_aware_profit_floor_not_met"
         return True
 
-    sl = float(out["thresholds"]["stop_loss_pct"])
-    hard_sl = float(out["thresholds"]["hard_stop_pct"])
-    tp = float(out["thresholds"]["take_profit_pct"])
-    etf_deviation_pct = normalize_deviation_pct(p.get("etf_deviation_pct"))
-    etf_deviation_source = str(p.get("etf_deviation_source") or "")
-    out["etf_deviation_pct"] = etf_deviation_pct
-    out["etf_deviation_source"] = etf_deviation_source
-    etf_premium_score = score_etf_deviation_for_exit(
-        etf_deviation_pct,
-        premium_trigger_pct=float(out["thresholds"].get("etf_premium_take_profit_pct") or DEFAULT_PREMIUM_TRIGGER_PCT),
-    )
-    out["etf_premium_take_profit_score"] = float(etf_premium_score)
-
-    effective_stop_candidates = [
-        (reason, threshold)
-        for reason, threshold in (
-            ("hard_stop", hard_sl),
-            ("stop_loss", sl),
-        )
-        if threshold > 0.0
-    ]
-    effective_stop_reason = ""
-    effective_stop_pct = 0.0
-    if effective_stop_candidates:
-        effective_stop_reason, effective_stop_pct = min(
-            effective_stop_candidates,
-            key=lambda row: float(row[1]),
-        )
-        out["thresholds"]["effective_stop_loss_pct"] = float(effective_stop_pct)
-        out["thresholds"]["effective_stop_reason"] = str(effective_stop_reason)
-    else:
-        out["thresholds"]["effective_stop_loss_pct"] = 0.0
-        out["thresholds"]["effective_stop_reason"] = ""
-
-    hard_stop_pnl_ratio = float(out["hard_stop_pnl_ratio"])
-    stop_pnl_ratio = float(out["stop_pnl_ratio"])
+    effective_stop_pct, etf_deviation_pct, etf_deviation_source, hard_sl, hard_stop_pnl_ratio, sl, stop_pnl_ratio, tp = exit_pnl_effective_stop_pct_etf_deviation_pct(out=out, p=p, facade=_r3_sys.modules[__name__])
     if hard_sl > 0.0 and hard_stop_pnl_ratio <= -hard_sl:
         return _finalize(
             triggered=True,
@@ -1174,31 +699,7 @@ def evaluate_exit_policy(
         else:
             peak_drawdown_armed = True
             peak_profit_floor_met = True
-        out["max_runup_pct"] = max_runup_pct
-        out["peak_drawdown"] = peak_drawdown
-        out["peak_drawdown_from_peak"] = peak_drawdown
-        out["peak_drawdown_armed"] = bool(peak_drawdown_armed)
-        out["peak_drawdown_mode"] = str(peak_drawdown_mode)
-        out["peak_drawdown_blocked"] = bool(not peak_drawdown_armed and bool(peak_drawdown_block_reason))
-        out["peak_drawdown_block_reason"] = str(peak_drawdown_block_reason)
-        out["peak_drawdown_profit_floor_required_pct"] = float(peak_profit_floor_required_pct)
-        out["peak_drawdown_profit_floor_met"] = bool(peak_profit_floor_met)
-        out["final_peak_drawdown_ratio"] = peak_drawdown
-        out["peak_drawdown_source"] = f"{str(out.get('technical_price_source') or 'technical_price')}_vs_peak_price"
-
-        peak_drawdown_th = float(out["thresholds"]["peak_drawdown_exit_pct"])
-        profit_protection_urgent = bool(
-            peak_drawdown_th > 0.0
-            and peak_drawdown_armed
-            and peak_drawdown <= -peak_drawdown_th
-            and profit_floor_enabled
-            and profit_floor_pct > 0.0
-            and peak_profit_floor_met
-            and gross_pnl_ratio < profit_floor_pct
-        )
-        out["peak_drawdown_profit_protection_urgent"] = bool(profit_protection_urgent)
-        if profit_protection_urgent:
-            out["peak_drawdown_profit_protection_reason"] = "max_runup_crossed_cost_floor_then_gave_back"
+        peak_drawdown_th, profit_protection_urgent = exit_trigger_peak_drawdown_th_profit_protection_urgen(max_runup_pct=max_runup_pct, out=out, peak_drawdown=peak_drawdown, peak_drawdown_armed=peak_drawdown_armed, peak_drawdown_mode=peak_drawdown_mode, peak_drawdown_block_reason=peak_drawdown_block_reason, peak_profit_floor_required_pct=peak_profit_floor_required_pct, peak_profit_floor_met=peak_profit_floor_met, profit_floor_enabled=profit_floor_enabled, profit_floor_pct=profit_floor_pct, gross_pnl_ratio=gross_pnl_ratio, facade=_r3_sys.modules[__name__])
         if (
             peak_drawdown_th > 0.0
             and peak_drawdown_armed
@@ -1220,33 +721,7 @@ def evaluate_exit_policy(
         vwap_distance_source = str(p.get("vwap_distance_source") or "selected.features.engine_vwap_distance")
         require_profit = _to_bool(p.get("vwap_break_requires_profit"), True)
         if vwap_distance <= -vwap_breakdown_th and (not require_profit or peak_price > apx or gross_pnl_ratio > 0.0):
-            confirmation_required = _to_bool(p.get("vwap_breakdown_confirmation_required"), True)
-            confirm_bars_required = int(out["thresholds"].get("vwap_breakdown_confirm_bars") or 2)
-            min_hold_required = int(out["thresholds"].get("vwap_breakdown_min_hold_sec") or 120)
-            consecutive_bars = max(0, int(_to_float(p.get("vwap_breakdown_consecutive_bars"), 0.0)))
-            low_break_confirmed = _to_bool(p.get("vwap_breakdown_low_break_confirmed"), False)
-            volume_confirmed = _to_bool(p.get("vwap_breakdown_volume_confirmed"), False)
-            confirmed = bool(
-                not confirmation_required
-                or consecutive_bars >= confirm_bars_required
-                or (low_break_confirmed and volume_confirmed)
-                or _to_bool(p.get("hard_invalidation_confirmed"), False)
-                or _to_bool(p.get("vwap_breakdown_hard_invalidation"), False)
-            )
-            early_hold_blocked = bool(
-                min_hold_required > 0
-                and hs is not None
-                and int(hs) < int(min_hold_required)
-                and not _to_bool(p.get("hard_invalidation_confirmed"), False)
-                and not _to_bool(p.get("vwap_breakdown_hard_invalidation"), False)
-            )
-            out["vwap_breakdown_confirmation_required"] = bool(confirmation_required)
-            out["vwap_breakdown_consecutive_bars"] = int(consecutive_bars)
-            out["vwap_breakdown_confirm_bars_required"] = int(confirm_bars_required)
-            out["vwap_breakdown_min_hold_sec"] = int(min_hold_required)
-            out["vwap_breakdown_low_break_confirmed"] = bool(low_break_confirmed)
-            out["vwap_breakdown_volume_confirmed"] = bool(volume_confirmed)
-            out["vwap_breakdown_confirmed"] = bool(confirmed)
+            confirm_bars_required, confirmation_required, confirmed, consecutive_bars, early_hold_blocked, low_break_confirmed, min_hold_required, volume_confirmed = exit_trigger_confirm_bars_required_confirmation_requi(p=p, out=out, hs=hs, facade=_r3_sys.modules[__name__])
             if early_hold_blocked:
                 out["vwap_breakdown_confirmation_pending"] = True
                 out["vwap_breakdown_confirmation_reason"] = (
@@ -1277,40 +752,7 @@ def evaluate_exit_policy(
         prior_bar_low = _to_float(p.get("prior_bar_low"), 0.0)
         out["prior_bar_low"] = float(prior_bar_low)
         if prior_bar_low > 0.0 and technical_px <= float(prior_bar_low * (1.0 - intraday_low_break_pct)):
-            hard_invalidation = _protective_exit_hard_invalidation("intraday_low_break")
-            hard_invalidation_reason = str(out.get("protective_exit_hard_invalidation_reason") or "")
-            explicit_hard_invalidation = bool(
-                hard_invalidation
-                and not hard_invalidation_reason.startswith("intraday_low_break_deep:")
-            )
-            min_hold_required = int(out["thresholds"].get("intraday_low_break_min_hold_sec") or 60)
-            confirm_bars_required = int(out["thresholds"].get("intraday_low_break_confirm_bars") or 2)
-            consecutive_bars = max(0, int(_to_float(p.get("intraday_low_break_consecutive_bars"), 0.0)))
-            low_break_confirmed = _to_bool(p.get("intraday_low_break_low_break_confirmed"), False)
-            volume_confirmed = _to_bool(p.get("intraday_low_break_volume_confirmed"), False)
-            confirmation_required = _to_bool(p.get("intraday_low_break_confirmation_required"), True)
-            confirmed = bool(
-                explicit_hard_invalidation
-                or not confirmation_required
-                or consecutive_bars >= confirm_bars_required
-                or (low_break_confirmed and volume_confirmed)
-                or _to_bool(p.get("hard_invalidation_confirmed"), False)
-                or _to_bool(p.get("intraday_low_break_hard_invalidation"), False)
-            )
-            early_hold_blocked = bool(
-                not explicit_hard_invalidation
-                and min_hold_required > 0
-                and hs is not None
-                and int(hs) < int(min_hold_required)
-            )
-            out["intraday_low_break_confirmation_required"] = bool(confirmation_required)
-            out["intraday_low_break_consecutive_bars"] = int(consecutive_bars)
-            out["intraday_low_break_confirm_bars_required"] = int(confirm_bars_required)
-            out["intraday_low_break_low_break_confirmed"] = bool(low_break_confirmed)
-            out["intraday_low_break_volume_confirmed"] = bool(volume_confirmed)
-            out["intraday_low_break_confirmed"] = bool(confirmed)
-            out["intraday_low_break_min_hold_sec"] = int(min_hold_required)
-            out["intraday_low_break_min_hold_blocked"] = bool(early_hold_blocked)
+            confirm_bars_required, confirmed, early_hold_blocked, min_hold_required = exit_trigger_confirm_bars_required_confirmed(_protective_exit_hard_invalidation=_protective_exit_hard_invalidation, out=out, p=p, hs=hs, facade=_r3_sys.modules[__name__])
             if early_hold_blocked:
                 out["intraday_low_break_confirmation_pending"] = True
                 out["intraday_low_break_confirmation_reason"] = (
