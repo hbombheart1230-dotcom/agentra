@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 206,
+  "entry_count": 207,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5609,6 +5609,31 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-HARNESS-GUARDS-006.md",
         "docs/daily_patch/2026-10-12_p1_5_2_r3_harness_guards_006.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Guard 007 Audit and LOC 008 Queue",
+      "title": "Hand Guard 006 to Codex and require further measured Reporting façade reduction",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "REFACTOR",
+        "TESTING"
+      ],
+      "summary": "Git verified the Guard 006 submission and measured Reporting façade LOC; independent guard audit active and domain-based safe size reduction queued.",
+      "details": [
+        "Guard 006 SHA f6cc71b: Claude reports 61 guard tests PASS, 656 regression PASS/1 SKIP and 357/57 offline seam smoke; independent Codex 007 audit pending.",
+        "Reporting façades now 1958 AI, 1891 Markdown, 562 Story = 4411 physical LOC across 436 top-level definitions; original was 18743 LOC.",
+        "SIZE_DEFERRED remains an unpaid target, not an indefinite waiver; Plan 008 requires per-function LOC, owner and dynamic/static consumer proof and maximum safe extraction after guard acceptance.",
+        "Real frozen report/LLM parity BLOCKED, native test-origin write isolation OPEN, numbered Owner cohesion debt OPEN; P1.5.2 OPEN and P1.5.3 not authorized."
+      ],
+      "impact": "Makes remaining Reporting façade reduction measurable and actionable without sacrificing compatibility or operational safety.",
+      "sources": [
+        "docs/refactor/work_orders/P15_R3_CODEX_GUARD_AUDIT_007.md",
+        "docs/refactor/work_orders/P15_R3_FACADE_LOC_MAX_REDUCTION_008.md",
+        "docs/daily_patch/2026-10-12_p152_r3_guard_audit_and_loc_reduction_queue.md"
       ],
       "status": "current"
     }

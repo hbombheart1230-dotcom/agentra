@@ -2856,3 +2856,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 라이브 `C:\Agentra`와 그 하위/상위 경로는 항상 거부하며(대소문자·슬래시·긴 경로 접두사·`..`·8.3 별칭·심볼릭 링크/junction 포함) 라이브 경로는 문자열 검사만 하고 stat/실행하지 않습니다. 출력은 새 파일만 허용하고 입력 덮어쓰기·clone 내부 출력은 거부합니다.
 - 가드 테스트 61개 통과, 안전 smoke 결과는 baseline seam 결과와 동일(357 케이스/57 함수), 회귀 656 passed / 1 skipped, 운영 경로 쓰기 0. 런타임 코드 변경 없음.
 - 미해결: `controlled_mock_lanes` 쓰기 격리, 실제 snapshot·LLM parity BLOCKED, façade SIZE_DEFERRED. P1.5.2 OPEN, P1.5.3 미착수.
+
+## 2026-10-12 · P1.5.2 R3 Guard 독립 감사 및 Façade 추가 축소 계획
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · TESTING
+
+- Guard 006 `f6cc71b` 제출 검증 완료. Claude 보고 가드 61 PASS, 회귀 656 PASS / 1 SKIP, 격리 seam 357건/57 함수. Codex 독립 감사 007 대기.
+- 현재 Reporting façade 물리 LOC: AI 1,958 / Markdown 1,891 / Story 562 = 4,411줄(최초 18,743줄). 기존 선언 436개 유지.
+- `SIZE_DEFERRED`는 계속 줄일 대상이며 영구 면제 아님. 감사 후 LOC 008에서 함수별 책임/실제 소비자/전역 패치 호환성을 검증하고 **안전하게 줄일 수 있는 부분을 최대한 추출**할 계획.
+- 실보고서·LLM parity BLOCKED, 테스트 격리 부채 OPEN. P1.5.2 OPEN, P1.5.3 미승인.
+- 근거: `docs/refactor/work_orders/P15_R3_CODEX_GUARD_AUDIT_007.md`, `docs/refactor/work_orders/P15_R3_FACADE_LOC_MAX_REDUCTION_008.md`.
