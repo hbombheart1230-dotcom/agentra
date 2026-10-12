@@ -2737,3 +2737,5 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - R3에서만 격리된 feature worktree 1개를 허용하며, 독립 검증 전 원본 C:\\Agentra, refactor/p1.5, main은 건드리지 않습니다. 436 ABI, monkeypatch, LLM/보고서 동등성 필수.
 - UI 패치노트 JSON/MD 연동과 실제 푸시 diff 기준 변경 파일 ZIP 생성을 유지합니다. 전체 pytest는 여전히 미완료, 실데이터·LLM parity는 NOT RUN, P1.5.2 OPEN / P1.5.3 미착수입니다.
 - 근거: `docs/daily_patch/2026-10-12_p152_r3_claude_codex_git_first.md`, `docs/refactor/work_orders/P15_R3_FACADE_DECOMPOSITION_001.md`.
+
+- Git 작업지시 CI 게이트의 구식 R2 감사 전용 검사를 R3의 Claude 구현·Codex 감사 지시서/보존 아카이브 검사로 교체했습니다.

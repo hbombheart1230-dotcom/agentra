@@ -5302,7 +5302,8 @@
         "Clarify Agentra Claude implements -> Codex audits -> GPT/operator accepts; Agentco is the reverse role order.",
         "Add bounded R3 feature-worktree task targeting 636/2658/2761 physical LOC façades, each <=350 only while 436 ABI/public patch behavior and LLM/report semantics remain unchanged.",
         "Preserve frozen evidence, known incomplete full suite and missing actual report/LLM snapshots as NOT RUN; no operational/Reporting execution code changes.",
-        "Fix CI task ZIP artifact comparison to actual push base, avoiding stale accumulated history."
+        "Fix CI task ZIP artifact comparison to actual push base, avoiding stale accumulated history.",
+        "CI Git-work-order guard now verifies CURRENT R3 pointer and Claude/Codex role separation instead of enforcing obsolete R2 audit-only markers."
       ],
       "impact": "Agents only need AGENTS.md/CLAUDE.md and CURRENT.md, follow Git task to reduce prompt and context overhead.",
       "sources": [

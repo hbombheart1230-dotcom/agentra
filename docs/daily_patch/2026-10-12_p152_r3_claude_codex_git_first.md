@@ -7,3 +7,5 @@
 - Baseline `341cedcd95b37b2f30e8dc6b821a25c20fd3fa7b`. Prior isolated clone 295 PASS/1 SKIP and write-audit zero, but whole repository pytest incomplete and real report/LLM parity NOT RUN. P1.5.2 still OPEN; P1.5.3 unauthorized.
 - Update UI-linked canonical patch notes (JSON + Markdown) and dynamic changed-only CI ZIP comparison, replacing stale prior-tranche baseline.
 - Changes are **documentation, entrypoint and CI packaging only**; no Reporting runtime code changes and no R3 implementation/test PASS claims.
+
+- Follow-up CI guard correction: obsolete R2 read-only task marker assertions replaced by R3 active pointer/roles/archive assertions.
