@@ -2717,3 +2717,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - P1.5.2 selected tests: **295 passed / 1 skipped**, but the production-path write audit fired. Full pytest is **NOT PASS** because FastAPI is unavailable during collection; real report/LLM snapshot parity is **NOT RUN** because no independent frozen copies were available.
 - Facade sizes remain **2,761 / 2,658 / 636 LOC** and OPEN. No trade execution, live LLM, Docker, Q12, API/Scanner/UEF/Step5B, or runtime source changes.
 - Evidence: `docs/refactor/work_orders/evidence/P15-R2-CODEX-LOCAL-ACCEPTANCE-2026-10-12.md`.
+## 2026-10-12 · P1.5.2 Isolated Clone Acceptance
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · DOCUMENTATION · SAFETY
+
+- History-preserving clone with project venv Python 3.14.2, pytest 9.1.1 and FastAPI 0.142.2: P1.5.2 selection **295 passed / 1 skipped**, with zero clone write-audit markers.
+- Full pytest no longer has the prior FastAPI collection error, but the first failure is the out-of-scope API isolation test; an unrestricted run terminated at 50% without a complete summary, so it is not accepted as PASS.
+- No actual frozen report/LLM captures exist under `C:\\AgentraEvidence`; parity remains **BLOCKED / NOT RUN**. Façades remain **KEEP/DEFER** at 2,761 / 2,658 / 636 LOC.
+- Evidence: `docs/refactor/work_orders/evidence/P15-R2-CODEX-CLONE-ACCEPTANCE-2026-10-12.md`.
