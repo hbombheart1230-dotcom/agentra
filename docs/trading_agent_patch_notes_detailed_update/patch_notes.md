@@ -2914,3 +2914,29 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 436개 def 이름/시그니처는 유지되고 이동한 본문은 `facade.NAME`을 사용 위치에서 조회하므로 호출 중 monkeypatch도 원래와 동일하게 반영됩니다.
 - baseline 대비 기록 호출 99,690건 중 99,689건 동일(1건은 wall-clock latency), 20개 모두 실행, 집중 회귀 1,142 passed / 1 skipped, 운영 경로 쓰기 0.
 - façade 합계 4,047줄(원본 18,743). 실제 snapshot·LLM parity BLOCKED, 크기 SIZE_DEFERRED 유지, P1.5.2 OPEN / P1.5.3 미착수, Codex 감사 대기.
+
+## 2026-10-12 · P1.5.2 LOC 010 제출 및 Codex 독립 감사 011
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · TESTING
+
+- Claude `b0cfc2b`: Markdown 운영자 서술·번역·entry/guard/timeline 표시용 함수 20개를 책임형 Owner(264 LOC)로 이동. façade **1,678→1,527 LOC(−151)**, 3개 façade 합계 **4,198→4,047**. 저장소 전체 코드 151줄 삭제와는 다름.
+- 436개 함수 계약/86개 이동 심볼 호환성 유지 주장. Claude 집중 테스트 1,142 PASS/1 SKIP, 합성 호출 99,689/99,690 동일(1건 실행시간), 운영 쓰기 0 — **Codex 독립 감사 전**.
+- Codex 감사 011을 활성화하고 다음 AI/Story dependency map 등 LOC 012는 대기로 유지. `SIZE_DEFERRED`는 미완료 부채.
+- 실제 frozen report/LLM parity BLOCKED, `controlled_mock_lanes` 쓰기 격리 OPEN, Owner 응집도 OPEN. P1.5.2 OPEN / P1.5.3 미승인.
+- 근거: `# P15-R3-CODEX-LOC-010-AUDIT-011 — independent pinned-SHA audit
+
+**Role:** Codex AUDIT ONLY, no source edits, commits, new branches, merges or runtime actions.
+**Review code:** `b0cfc2b5646ff81ec5ce7b738f485a9d22365826` on single `refactor/p1.5`, compared with `24c0b2f80a0fba1938d6530f40d9b76ad038a43d`.
+**Minimum context:** `AGENTS.md → CURRENT.md → this file → evidence/P15-R3-CLAUDE-LOC-010.md`. Inspect nine changed paths and necessary direct callers only; do not reload prior archives.
+**Isolation:** detached/separate audit clone rooted outside operational `C:\Agentra` and Q12 worktrees; use Guard 006 for all recorder/seam tools; `PYTHONDONTWRITEBYTECODE=1`, session temp results, 0 production writes. No live orders, LLM, broker, or full native pytest.
+
+## Audit gates
+1. Recount physical LOC: Markdown `1678 → 1527` (−151), named `markdown_clean_operator_narrative.py` **264** (≤350), total public façades `4198 → 4047`. Confirm exactly **20** original bodies moved, **86** moved-body ledger names (57+9+20) and no duplicate active implementations. AI/Story and authority paths unchanged.
+2. Independently prove **436** façade callable signatures/defaults/decorators/import identities unchanged. AST after stripping use-site `facade.` qualification must match pinned original body for all moved symbols; no capture-at-entry, import cycles, dynamic `__getattr__` or Owner→façade imports. Inspect nested callback / recursion / lexical shadowing and patch-after-call-entry cases, not just static tests.
+3. Inspect the **20 operator prose/translation/entry/guard/timeline** members for side effects, truth-source precedence, ordered bullets, Unicode/Korean output, formatting, missing/falsey handling and any approval/guard truth semantics. Names containing `guard`/`entry` here are report presentation, not Supervisor/broker authority; verify no semantic crossover.
+4. Run safe focused tests independently and record actual commands/PASS/FAIL/SKIP and production-write audit. Compare deterministic output/golden and mock-LLM prompts/retry/timeout/fallback where covered. Assess Claude's reported **459 PASS moved-body+ABI**, **1,142 PASS/1 SKIP focused**, and **99,689/99,690** call parity as evidence; if not rerun, label *CLAUDE-ONLY*, not verified. One latency difference is not evidence of output regression unless reproduced as deterministic.
+5. Confirm canonical symbol ledger, both UI patch-note sources and documentation in sync. Fail if tests were weakened, hidden dynamic consumers or test output artifacts leaked.
+
+## Verdict
+Report PASS / PASS_WITH_FINDINGS / FAIL / BLOCKED at pinned SHA, reproducible counts, risks, necessary fixes; **do not implement**. Genuine historical report/LLM parity remains BLOCKED/NOT RUN; `controlled_mock_lanes` full-suite write isolation OPEN; façade SIZE_DEFERRED and numbered Owner cohesion OPEN. This audit does not close P1.5.2 or authorize LOC 012, `main` merge or P1.5.3.
+`, `docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_012.md`, `docs/daily_patch/2026-10-12_p152_loc010_codex_handoff.md`.

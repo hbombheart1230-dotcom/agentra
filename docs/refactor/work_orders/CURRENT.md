@@ -1,28 +1,21 @@
-# ACTIVE — P1.5.2 Reporting façade LOC 010 safe reduction
+# ACTIVE — P1.5.2 LOC 010 Codex independent audit
 
-**State:** LOC_008_CODEX_PASS_WITH_FINDINGS; LOC_010_AUTHORIZED; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
-**ONE active task:** [P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md](P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md).
+**State:** LOC_010_CLAUDE_SUBMITTED; CODEX_AUDIT_PENDING; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED.
+**ONE active work order:** [P15_R3_CODEX_LOC_010_AUDIT_011.md](P15_R3_CODEX_LOC_010_AUDIT_011.md).
+**NEXT QUEUED, not authorized:** [P15_R3_FACADE_LOC_NEXT_CANDIDATES_012.md](P15_R3_FACADE_LOC_NEXT_CANDIDATES_012.md).
 **Rules:** [COMMON_RULES.md](COMMON_RULES.md).
-**Roles:** Claude implements one measured cohesive slice → Codex independently audits pinned SHA → GPT/user decides.
-**ONLY refactor branch:** `refactor/p1.5`. No feature/task/ZIP branches. `main` frozen.
-**Start HEAD:** `119c68f58cfcd44b64c48ce8383edbc1311b2d5e`. **Audited LOC 008 runtime:** `3d85085011de8ed2cbeb720ddce8e55cf7a60d9d`.
-**Safety:** work only in a separate isolated clone, never touch live `C:\Agentra`, Q12 dirty worktrees, broker, real LLM or production report/data.
+**Agentra roles:** Claude implementation → Codex independent audit → GPT/user decision.
+**Sole refactor branch:** `refactor/p1.5`. No feature/task/ZIP branches; `main` remains frozen.
+**Pinned reviewed code SHA:** `b0cfc2b5646ff81ec5ce7b738f485a9d22365826`; diff base `24c0b2f80a0fba1938d6530f40d9b76ad038a43d`.
+**Safety:** isolated clone only; do not touch live `C:\Agentra`, dirty Q12 worktrees, real LLM, broker, runtime processes or production data.
 
-## LOC 008 audited and accepted WITH FINDINGS
-- Independent Codex result (user supplied) **PASS_WITH_FINDINGS** for `3d85085`: nine map use-time tests **55 PASS**, 66 moved-body+ABI+UI-note focused **359 PASS**, selected `p152` **711 PASS / 1 SKIP**; 436 ABI, 66 moved ledger, import/Owner boundaries PASS, isolated write-audit 0.
-- Markdown façade **1891 → 1678 physical LOC (-213)**; new cohesive `markdown_clean_dependency_maps.py` **268 LOC**. Three façade sum **4411 → 4198** with all 436 callable definitions retained; no runtime-authority changes.
-- Nonblocking: pytest `cache_dir` unknown-option warning (one). No mandatory LOC 008 corrective changes. Codex's narrower 711-test selection and Claude's previously reported 1041-test selection are NOT equivalent coverage claims.
-- Evidence: [P15-R3-CODEX-LOC-008-AUDIT-009.md](evidence/P15-R3-CODEX-LOC-008-AUDIT-009.md).
+## LOC 010 — CLAUDE SUBMITTED (independent audit pending)
+- Moved **20** Markdown operator-facing narrative/translation/entry/guard/timeline builders to `libs/reporting/trade_report/markdown_clean_operator_narrative.py` (**264 LOC**). Markdown public façade **1,678 → 1,527** (**−151**); AI 1,958, Story 562; three-facade total **4,198 → 4,047**. This is code movement / improved boundaries, **not** a claim that repo LOC fell 151 lines.
+- Preserve **436** public façade def names/signatures/decorators and **86** relocated-body ledger symbols (57+9+20); use-time `facade.NAME` globals and pre-/within-call monkeypatch compatibility.
+- Claude's [evidence](evidence/P15-R3-CLAUDE-LOC-010.md): focused **1,142 PASS / 1 SKIP**, synthetic **99,689/99,690** recorded calls equal (one wall-clock latency field), 20/20 exercised, production write-audit zero. Counts are CLAUDE-REPORTED, not yet independently reproduced. Codex must check moving entry/guard prose cannot alter truth/authority semantics.
+- Previous LOC 008 independently **PASS_WITH_FINDINGS**; Guard 007 independently **PASS_WITH_FINDINGS**.
 
-## Next
-- **LOC 010 is IMPLEMENTATION-AUTHORIZED** under the single linked task. Continue **maximum meaningful safety-preserving** façade reduction: measure candidate benefit, extract **one** next coherent, highest-value and provably safe domain slice, then stop for Codex audit.
-- `SIZE_DEFERRED` is remaining size debt, not an indefinite exemption. Preserve 436 API/monkeypatch use-time behavior and honest LOC after extraction. Never reduce LOC by minification/hidden API magic.
-
-## Still not done
-- Real frozen Markdown/JSON/JSONL and LLM call/prompt/retry/timeout parity **BLOCKED / NOT RUN**.
-- `controlled_mock_lanes` full-suite test-write isolation **OPEN**; historical isolated full suite 5115 PASS / 35 FAIL / 2 ERROR, 37 failure/error nodes baseline-identical.
-- Numbered `bodies_01..05` Owner domain cohesion OPEN; public façade sizes SIZE_DEFERRED (AI 1958, Markdown 1678, Story 562).
-- **P1.5.2 final PASS, main merge, live rollout and P1.5.3 NOT AUTHORIZED.**
-
-## LOC 010 implemented (2026-10-12, Claude) - awaiting Codex audit
-- One slice: 20 Markdown operator-narrative builders -> `markdown_clean_operator_narrative.py` (264 LOC), use-time `facade.NAME`. Markdown facade 1,678 -> 1,527 (-151); three facades 4,198 -> 4,047. Evidence: [P15-R3-CLAUDE-LOC-010.md](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-010.md). Differential 99,689/99,690 calls identical (1 = latency); focused 1,142 passed / 1 skipped; 0 writes. Parity BLOCKED; size SIZE_DEFERRED; P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.
+## Still OPEN (not this audit)
+- Genuine historical frozen Markdown/JSON/JSONL and LLM traces **BLOCKED / NOT RUN**; prior native full-suite baseline-matched 35 FAIL+2 ERROR; `controlled_mock_lanes` test-origin write isolation OPEN.
+- Public façade LOC target SIZE_DEFERRED (AI 1,958 / Markdown 1,527 / Story 562); existing `bodies_01..05` Owner cohesion OPEN.
+- **P1.5.2 final PASS, `main` merge/live rollout and P1.5.3 NOT AUTHORIZED.**
