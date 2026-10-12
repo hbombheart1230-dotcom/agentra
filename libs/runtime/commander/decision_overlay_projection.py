@@ -117,7 +117,7 @@ def decision_overlay_applied_policy_commander_horizon_policy(session_bias, memor
     return (applied_policy, commander_horizon_policy, commander_memory_policy, decision_summary, horizon_context, intraday_performance_circuit, monitor_memory_bias, monitor_memory_bias_summary, observations, open_position_refresh_context, policy_sources, scanner_memory_bias, scanner_memory_bias_summary, source_priority, source_refs, strategist_refresh_context)
 
 
-def decision_overlay_blocker_counts_decision_summary(commander_carry_risk_bias, commander_carry_risk_reason, decision_summary, commander_carry_state, commander_memory_policy, strategist_invocation, strategist_refresh_requested, strategist_refresh_reason, strategist_cache_preferred, strategist_cache_preference_reason, open_position_count, entry_capacity_available, max_positions, state, *, facade):
+def decision_overlay_cached_output_for_state_decision_summary(commander_carry_risk_bias, commander_carry_risk_reason, decision_summary, commander_carry_state, commander_memory_policy, strategist_invocation, strategist_refresh_requested, strategist_refresh_reason, strategist_cache_preferred, strategist_cache_preference_reason, open_position_count, entry_capacity_available, max_positions, state, *, facade):
     if commander_carry_risk_bias:
         decision_summary = (
             f"{decision_summary} Carry control classified state={commander_carry_state or 'unknown'} "
@@ -147,9 +147,10 @@ def decision_overlay_blocker_counts_decision_summary(commander_carry_risk_bias, 
     cache_payload_for_state = facade._strategist_cache_payload(state)
     cached_output_for_state = cache_payload_for_state.get("output") if isinstance(cache_payload_for_state.get("output"), dict) else {}
     generated_epoch_for_state = max(0, facade._coerce_int(cache_payload_for_state.get("generated_epoch"), 0))
-    now_epoch_for_state = facade._runtime_now_epoch(state)
-    cache_age_sec_for_state = max(0, now_epoch_for_state - generated_epoch_for_state) if generated_epoch_for_state > 0 else 10**9
-    reuse_sec_for_state = max(0, facade._coerce_int(facade.os.getenv("COMMANDER_STRATEGIST_CACHE_REUSE_SEC", "600"), 600))
+    return (cached_output_for_state, decision_summary, generated_epoch_for_state, strategist_call_decision, strategist_call_reason, strategist_skip_reason)
+
+
+def decision_overlay_blocker_counts_monitor_last_states(cache_age_sec_for_state, reuse_sec_for_state, cached_output_for_state, strategist_refresh_requested, state, open_position_count, entry_capacity_available, *, facade):
     is_cache_stale = cache_age_sec_for_state > reuse_sec_for_state
 
     if not cached_output_for_state:
@@ -189,4 +190,4 @@ def decision_overlay_blocker_counts_decision_summary(commander_carry_risk_bias, 
     recent_monitor_issues = list(recent_feedback.get("recent_monitor_issues") or [])
     
     blocker_counts = {}
-    return (blocker_counts, decision_summary, monitor_last_states, recent_monitor_issues, strategist_call_decision, strategist_call_reason, strategist_invocation_mode, strategist_skip_reason, strategy_selection_mode, strategy_state)
+    return (blocker_counts, monitor_last_states, recent_monitor_issues, strategist_invocation_mode, strategy_selection_mode, strategy_state)

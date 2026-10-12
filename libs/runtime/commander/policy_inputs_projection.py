@@ -36,49 +36,10 @@ def behavior_input_allow_legacy_rule_allow_legacy_strategy(selected_route, state
     if allow_legacy_strategy_v1 is None:
         allow_legacy_strategy_v1 = False
     memory_feedback_enabled = _existing_value("strategist", "memory_feedback", "enabled")
-    if memory_feedback_enabled is None:
-        memory_feedback_enabled = facade._env_bool(
-            "USE_STRATEGY_MEMORY_FEEDBACK",
-            facade._commander_default_bool("USE_STRATEGY_MEMORY_FEEDBACK", True),
-        )
-    performance_memory_enabled = _existing_value("strategist", "performance_memory", "enabled")
-    if performance_memory_enabled is None:
-        performance_memory_enabled = facade._env_bool(
-            "USE_STRATEGY_PERFORMANCE_MEMORY",
-            facade._commander_default_bool("USE_STRATEGY_PERFORMANCE_MEMORY", True),
-        )
-    strategy_memory_persist_enabled = _existing_value("strategist", "performance_memory", "persist_enabled")
-    if strategy_memory_persist_enabled is None:
-        strategy_memory_persist_enabled = facade._env_bool(
-            "STRATEGY_MEMORY_PERSIST_ENABLED",
-            facade._commander_default_bool("STRATEGY_MEMORY_PERSIST_ENABLED", True),
-        )
-    commander_memory_usage_disabled = _existing_value("commander", "memory_usage", "disabled")
-    if commander_memory_usage_disabled is None:
-        commander_memory_usage_disabled = facade._env_bool(
-            "COMMANDER_MEMORY_USAGE_DISABLED",
-            facade._commander_default_bool("COMMANDER_MEMORY_USAGE_DISABLED", False),
-        )
-    strategist_memory_usage_disabled = _existing_value("strategist", "memory_usage", "disabled")
-    if strategist_memory_usage_disabled is None:
-        strategist_memory_usage_disabled = facade._env_bool(
-            "STRATEGIST_MEMORY_USAGE_DISABLED",
-            facade._commander_default_bool("STRATEGIST_MEMORY_USAGE_DISABLED", False),
-        )
-    post_scanner_refresh_enabled = _existing_value("commander", "route", "post_scanner_refresh_enabled")
-    if post_scanner_refresh_enabled is None:
-        post_scanner_refresh_enabled = facade._env_bool(
-            "COMMANDER_POST_SCANNER_REFRESH_ENABLED",
-            facade._commander_default_bool("COMMANDER_POST_SCANNER_REFRESH_ENABLED", True),
-        )
-    pre_entry_exit_sweep_enabled = _existing_value("commander", "route", "pre_entry_exit_sweep_enabled")
-    if pre_entry_exit_sweep_enabled is None:
-        pre_entry_exit_sweep_enabled = True
-    risk_max_positions = facade._resolve_risk_max_positions(state)
-    memory_bias_observation_only = facade._env_bool(
-        "MEMORY_BIAS_OBSERVATION_ONLY",
-        facade._commander_default_bool("MEMORY_BIAS_OBSERVATION_ONLY", True),
-    )
+    return (allow_legacy_rule, allow_legacy_strategy_v1, feedback_policy, memory_feedback_enabled, phase_text, reporter_ai_review_enabled, route, strict_mode, trade_report_enabled, trade_report_generate_on_open)
+
+
+def behavior_input_block_buy_when_open_position_buy_closeou(_existing_value, risk_max_positions, *, facade):
     monitor_only_when_holding = _existing_value("commander", "route", "monitor_only_when_holding")
     if monitor_only_when_holding is None:
         monitor_only_when_holding = True
@@ -97,4 +58,70 @@ def behavior_input_allow_legacy_rule_allow_legacy_strategy(selected_route, state
     monitor_scoring_enabled = _existing_value("monitor", "entry", "scoring", "enabled")
     if monitor_scoring_enabled is None:
         monitor_scoring_enabled = False
-    return (allow_legacy_rule, allow_legacy_strategy_v1, block_buy_when_open_position, cached_strategist_when_flat, commander_memory_usage_disabled, exit_policy_enabled, exit_policy_use_eod_flat, feedback_policy, memory_bias_observation_only, memory_feedback_enabled, monitor_only_when_holding, monitor_scoring_enabled, performance_memory_enabled, phase_text, post_scanner_refresh_enabled, pre_entry_exit_sweep_enabled, reporter_ai_review_enabled, risk_max_positions, route, strategist_memory_usage_disabled, strategy_memory_persist_enabled, strict_mode, trade_report_enabled, trade_report_generate_on_open)
+    monitor_scoring_shadow_mode = _existing_value("monitor", "entry", "scoring", "shadow_mode")
+    if monitor_scoring_shadow_mode is None:
+        monitor_scoring_shadow_mode = True
+    post_exit_cooldown_sec = _existing_value("execution", "cooldowns", "post_exit_sec")
+    if post_exit_cooldown_sec is None:
+        post_exit_cooldown_sec = 180
+    sell_cooldown_sec = _existing_value("execution", "cooldowns", "sell_sec")
+    if sell_cooldown_sec is None:
+        sell_cooldown_sec = 300
+    min_hold_seconds = _existing_value("monitor", "hold", "min_hold_seconds")
+    if min_hold_seconds is None:
+        min_hold_seconds = 600
+    exit_confirm_ticks = _existing_value("monitor", "exit", "confirm_ticks")
+    if exit_confirm_ticks is None:
+        exit_confirm_ticks = 2
+    eod_flat_cutoff_min = _existing_value("monitor", "exit", "eod_flat", "cutoff_min")
+    if eod_flat_cutoff_min is None:
+        eod_flat_cutoff_min = 10
+    buy_closeout_cutoff_min = _existing_value("monitor", "entry", "buy_closeout_cutoff_min")
+    if buy_closeout_cutoff_min is None:
+        buy_closeout_cutoff_min = max(
+            facade._DEFAULT_BUY_CLOSEOUT_CUTOFF_MIN,
+            facade._coerce_int(eod_flat_cutoff_min, 10),
+        )
+    top_candidate_pool = _existing_value("scanner", "candidate", "top_pool")
+    if top_candidate_pool is None:
+        top_candidate_pool = 30
+    kiwoom_condition_limit = _existing_value("scanner", "kiwoom", "condition_limit")
+    if kiwoom_condition_limit is None:
+        kiwoom_condition_limit = 200
+    scanner_source_type = _existing_value("scanner", "source", "type")
+    if scanner_source_type in (None, ""):
+        scanner_source_type = "kiwoom"
+    scanner_strict_only = _existing_value("scanner", "kiwoom", "strict_only")
+    if scanner_strict_only is None:
+        scanner_strict_only = True
+    scanner_strict_only = facade._is_trueish(scanner_strict_only)
+    scanner_block_static_when_empty = _existing_value("scanner", "fallback", "block_static_when_empty")
+    if scanner_block_static_when_empty is None:
+        scanner_block_static_when_empty = True
+    scanner_block_static_when_empty = facade._is_trueish(scanner_block_static_when_empty)
+    scanner_live_fetch = _existing_value("scanner", "kiwoom", "live_fetch")
+    if scanner_live_fetch is None:
+        scanner_live_fetch = True
+    scanner_live_fetch = facade._is_trueish(scanner_live_fetch)
+    scanner_include_change_rate = _existing_value("scanner", "kiwoom", "include_change_rate")
+    if scanner_include_change_rate is None:
+        scanner_include_change_rate = True
+    scanner_include_change_rate = facade._is_trueish(scanner_include_change_rate)
+    universe_asset_type = _existing_value("universe", "asset_type")
+    if universe_asset_type in (None, ""):
+        universe_asset_type = "all_tradable"
+    monitor_scoring_threshold = _existing_value("monitor", "entry", "scoring", "threshold")
+    if monitor_scoring_threshold is None:
+        monitor_scoring_threshold = 3
+    position_sizing_enabled = _existing_value("monitor", "entry", "position_sizing", "enabled")
+    if position_sizing_enabled is None:
+        position_sizing_enabled = True
+    position_sizing_risk_per_trade_ratio = _existing_value(
+        "monitor",
+        "entry",
+        "position_sizing",
+        "risk_per_trade_ratio",
+    )
+    if position_sizing_risk_per_trade_ratio is None:
+        position_sizing_risk_per_trade_ratio = 0.01
+    return (block_buy_when_open_position, buy_closeout_cutoff_min, cached_strategist_when_flat, eod_flat_cutoff_min, exit_confirm_ticks, exit_policy_enabled, exit_policy_use_eod_flat, kiwoom_condition_limit, min_hold_seconds, monitor_only_when_holding, monitor_scoring_enabled, monitor_scoring_shadow_mode, monitor_scoring_threshold, position_sizing_enabled, position_sizing_risk_per_trade_ratio, post_exit_cooldown_sec, scanner_block_static_when_empty, scanner_include_change_rate, scanner_live_fetch, scanner_source_type, scanner_strict_only, sell_cooldown_sec, top_candidate_pool, universe_asset_type)

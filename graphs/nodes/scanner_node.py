@@ -160,7 +160,6 @@ from libs.runtime.scanner.macro_chart_fit import (
 from libs.runtime.scanner.candidate_context_projection import (
     scan_context_candidates_policy,
     scan_context_commander_context_intrinsic_control_w,
-    scan_context_compatibility_bias_context_compatibility,
 )
 from libs.runtime.scanner.score_feature_projection import (
     scan_feature_candidate_rank_score_candidate_universe,
@@ -804,7 +803,27 @@ def scanner_node(state: Dict[str, Any]) -> Dict[str, Any]:
         policy=policy,
         refresh_existing=refresh_existing_features,
     )
-    compatibility_bias_context, compatibility_policy, feature_errors, feature_map, feature_source, minute_rows_by_symbol, minute_rows_meta, ohlcv_by_symbol = scan_context_compatibility_bias_context_compatibility(feature_map=feature_map, state=state, commander_context=commander_context, strategy_monitor_policy=strategy_monitor_policy, playbook=playbook, monitor_guidance=monitor_guidance, risk_tone=risk_tone, trade_aggressiveness=trade_aggressiveness, feature_errors=feature_errors, feature_source=feature_source, facade=_r3_sys.modules[__name__])
+    if not feature_map:
+        feature_map, feature_source, feature_errors = _extract_feature_engine_map(state)
+    minute_rows_by_symbol, minute_rows_meta = extract_minute_ohlcv_by_symbol(state)
+    ohlcv_by_symbol = state.get("ohlcv_by_symbol") if isinstance(state.get("ohlcv_by_symbol"), dict) else {}
+    compatibility_bias_context = _resolve_compatibility_bias_context(state)
+    compatibility_policy_input = _build_scanner_monitor_policy_input(
+        state=state,
+        commander_context=commander_context,
+        monitor_policy=strategy_monitor_policy,
+    )
+    compatibility_frame = _build_scanner_monitor_frame(
+        playbook=playbook,
+        monitor_guidance=monitor_guidance,
+        risk_tone=risk_tone,
+        trade_aggressiveness=trade_aggressiveness,
+    )
+    compatibility_policy = (
+        resolve_intraday_entry_policy(compatibility_policy_input or None, frame=compatibility_frame or None)
+        if compatibility_policy_input
+        else None
+    )
     state["scanner_quote_diagnostic"] = {
         **dict(quote_metric_coverage),
         "feature_refresh_forced": bool(refresh_existing_features),

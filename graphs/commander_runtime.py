@@ -219,10 +219,10 @@ from libs.runtime.commander.event_projection import (
 )
 from libs.runtime.commander.policy_inputs_projection import (
     behavior_input_allow_legacy_rule_allow_legacy_strategy,
+    behavior_input_block_buy_when_open_position_buy_closeou,
 )
 from libs.runtime.commander.policy_normalizers_projection import (
-    behavior_norm_buy_closeout_cutoff_min_eod_flat_cutoff,
-    behavior_norm_carry_exit_policy_overrides_carry_policy,
+    behavior_norm_carry_risk_bias_carry_risk_reason,
 )
 from libs.runtime.commander.applied_policy_attach_projection import (
     attach_policy_commander_context_commander_memory_polic,
@@ -239,7 +239,8 @@ from libs.runtime.commander.decision_context_projection_applied_policy_command i
 )
 from libs.runtime.commander.decision_overlay_projection import (
     decision_overlay_applied_policy_commander_horizon_policy,
-    decision_overlay_blocker_counts_decision_summary,
+    decision_overlay_cached_output_for_state_decision_summary,
+    decision_overlay_blocker_counts_monitor_last_states,
 )
 from libs.runtime.commander.decision_rules_projection import (
     decision_rules_adaptive_feedback_allowed_adaptive_polic,
@@ -248,7 +249,8 @@ from libs.runtime.commander.decision_rules_projection import (
 )
 from libs.runtime.commander.open_position_inputs_projection import (
     open_pos_input_anomaly_found_last_exit_sweep_by_symbol,
-    open_pos_input_anomaly_found_candidate_loss_ratios,
+    open_pos_input_candidate_loss_ratios_current_profit_rat,
+    open_pos_input_anomaly_found_hold_repeat_count,
 )
 from libs.runtime.commander.open_position_assessment_projection import (
     open_pos_assess_carry_control,
@@ -570,9 +572,80 @@ def _resolve_commander_behavior_policy(
             cursor = cursor.get(key)
         return cursor
 
-    allow_legacy_rule, allow_legacy_strategy_v1, block_buy_when_open_position, cached_strategist_when_flat, commander_memory_usage_disabled, exit_policy_enabled, exit_policy_use_eod_flat, feedback_policy, memory_bias_observation_only, memory_feedback_enabled, monitor_only_when_holding, monitor_scoring_enabled, performance_memory_enabled, phase_text, post_scanner_refresh_enabled, pre_entry_exit_sweep_enabled, reporter_ai_review_enabled, risk_max_positions, route, strategist_memory_usage_disabled, strategy_memory_persist_enabled, strict_mode, trade_report_enabled, trade_report_generate_on_open = behavior_input_allow_legacy_rule_allow_legacy_strategy(selected_route=selected_route, state=state, phase=phase, _existing_value=_existing_value, facade=_r3_sys.modules[__name__])
-    buy_closeout_cutoff_min, eod_flat_cutoff_min, exit_confirm_ticks, kiwoom_condition_limit, min_hold_seconds, monitor_scoring_shadow_mode, monitor_scoring_threshold, position_sizing_enabled, position_sizing_lot_size, position_sizing_max_notional, position_sizing_max_qty, position_sizing_min_qty, position_sizing_notional_ratio, position_sizing_risk_per_trade_ratio, post_exit_cooldown_sec, scanner_block_static_when_empty, scanner_include_change_rate, scanner_live_fetch, scanner_source_type, scanner_strict_only, sell_cooldown_sec, strategy_memory_recent_runs, top_candidate_pool, universe_asset_type = behavior_norm_buy_closeout_cutoff_min_eod_flat_cutoff(_existing_value=_existing_value, facade=_r3_sys.modules[__name__])
-    carry_exit_policy_overrides, carry_policy_adjustments, carry_risk_bias, carry_risk_reason, carry_state, default_execution_profile, effective_loss_ratio_min, hold_repeat_count_max, minutes_to_close, override_reason, reporter_daily_execution_profile, reporter_daily_llm, reporter_intraday_execution_profile, reporter_intraday_llm, session_open_recovery, strategist_execution_profile, strategist_llm = behavior_norm_carry_exit_policy_overrides_carry_policy(_existing_value=_existing_value, commander_override=commander_override, state=state, facade=_r3_sys.modules[__name__])
+    allow_legacy_rule, allow_legacy_strategy_v1, feedback_policy, memory_feedback_enabled, phase_text, reporter_ai_review_enabled, route, strict_mode, trade_report_enabled, trade_report_generate_on_open = behavior_input_allow_legacy_rule_allow_legacy_strategy(selected_route=selected_route, state=state, phase=phase, _existing_value=_existing_value, facade=_r3_sys.modules[__name__])
+    if memory_feedback_enabled is None:
+        memory_feedback_enabled = _env_bool(
+            "USE_STRATEGY_MEMORY_FEEDBACK",
+            _commander_default_bool("USE_STRATEGY_MEMORY_FEEDBACK", True),
+        )
+    performance_memory_enabled = _existing_value("strategist", "performance_memory", "enabled")
+    if performance_memory_enabled is None:
+        performance_memory_enabled = _env_bool(
+            "USE_STRATEGY_PERFORMANCE_MEMORY",
+            _commander_default_bool("USE_STRATEGY_PERFORMANCE_MEMORY", True),
+        )
+    strategy_memory_persist_enabled = _existing_value("strategist", "performance_memory", "persist_enabled")
+    if strategy_memory_persist_enabled is None:
+        strategy_memory_persist_enabled = _env_bool(
+            "STRATEGY_MEMORY_PERSIST_ENABLED",
+            _commander_default_bool("STRATEGY_MEMORY_PERSIST_ENABLED", True),
+        )
+    commander_memory_usage_disabled = _existing_value("commander", "memory_usage", "disabled")
+    if commander_memory_usage_disabled is None:
+        commander_memory_usage_disabled = _env_bool(
+            "COMMANDER_MEMORY_USAGE_DISABLED",
+            _commander_default_bool("COMMANDER_MEMORY_USAGE_DISABLED", False),
+        )
+    strategist_memory_usage_disabled = _existing_value("strategist", "memory_usage", "disabled")
+    if strategist_memory_usage_disabled is None:
+        strategist_memory_usage_disabled = _env_bool(
+            "STRATEGIST_MEMORY_USAGE_DISABLED",
+            _commander_default_bool("STRATEGIST_MEMORY_USAGE_DISABLED", False),
+        )
+    post_scanner_refresh_enabled = _existing_value("commander", "route", "post_scanner_refresh_enabled")
+    if post_scanner_refresh_enabled is None:
+        post_scanner_refresh_enabled = _env_bool(
+            "COMMANDER_POST_SCANNER_REFRESH_ENABLED",
+            _commander_default_bool("COMMANDER_POST_SCANNER_REFRESH_ENABLED", True),
+        )
+    pre_entry_exit_sweep_enabled = _existing_value("commander", "route", "pre_entry_exit_sweep_enabled")
+    if pre_entry_exit_sweep_enabled is None:
+        pre_entry_exit_sweep_enabled = True
+    risk_max_positions = _resolve_risk_max_positions(state)
+    memory_bias_observation_only = _env_bool(
+        "MEMORY_BIAS_OBSERVATION_ONLY",
+        _commander_default_bool("MEMORY_BIAS_OBSERVATION_ONLY", True),
+    )
+    block_buy_when_open_position, buy_closeout_cutoff_min, cached_strategist_when_flat, eod_flat_cutoff_min, exit_confirm_ticks, exit_policy_enabled, exit_policy_use_eod_flat, kiwoom_condition_limit, min_hold_seconds, monitor_only_when_holding, monitor_scoring_enabled, monitor_scoring_shadow_mode, monitor_scoring_threshold, position_sizing_enabled, position_sizing_risk_per_trade_ratio, post_exit_cooldown_sec, scanner_block_static_when_empty, scanner_include_change_rate, scanner_live_fetch, scanner_source_type, scanner_strict_only, sell_cooldown_sec, top_candidate_pool, universe_asset_type = behavior_input_block_buy_when_open_position_buy_closeou(_existing_value=_existing_value, risk_max_positions=risk_max_positions, facade=_r3_sys.modules[__name__])
+    position_sizing_notional_ratio = _existing_value(
+        "monitor",
+        "entry",
+        "position_sizing",
+        "position_notional_ratio",
+    )
+    if position_sizing_notional_ratio is None:
+        position_sizing_notional_ratio = 0.50
+    position_sizing_max_qty = _existing_value("monitor", "entry", "position_sizing", "max_position_qty")
+    if position_sizing_max_qty is None:
+        position_sizing_max_qty = _coerce_int(os.getenv("MAX_ORDER_QTY") or os.getenv("MAX_QTY"), 10)
+    position_sizing_max_notional = _existing_value("monitor", "entry", "position_sizing", "max_position_notional")
+    if position_sizing_max_notional is None:
+        position_sizing_max_notional = _runtime_float(
+            os.getenv("MAX_ORDER_NOTIONAL") or os.getenv("MAX_NOTIONAL"),
+            1_000_000.0,
+        )
+    carry_risk_bias, carry_risk_reason, carry_state, default_execution_profile, hold_repeat_count_max, override_reason, position_sizing_lot_size, position_sizing_min_qty, reporter_daily_execution_profile, reporter_daily_llm, reporter_intraday_execution_profile, reporter_intraday_llm, strategist_execution_profile, strategist_llm, strategy_memory_recent_runs = behavior_norm_carry_risk_bias_carry_risk_reason(_existing_value=_existing_value, commander_override=commander_override, facade=_r3_sys.modules[__name__])
+    effective_loss_ratio_min = float(_runtime_float(commander_override.get("effective_loss_ratio_min"), 0.0))
+    session_open_recovery = (
+        dict(commander_override.get("session_open_recovery_assessment") or {})
+        if isinstance(commander_override.get("session_open_recovery_assessment"), dict)
+        else {}
+    )
+    market_context = state.get("market_context") if isinstance(state.get("market_context"), dict) else {}
+    raw_minutes_to_close = market_context.get("minutes_to_close")
+    minutes_to_close = None if raw_minutes_to_close in (None, "") else float(_runtime_float(raw_minutes_to_close, 0.0))
+    carry_exit_policy_overrides: Dict[str, Any] = {}
+    carry_policy_adjustments: list[str] = []
     if carry_risk_bias == "urgent_exit_review":
         carry_exit_policy_overrides = {
             "vwap_break_requires_profit": False,
@@ -1449,7 +1522,11 @@ def _build_commander_decision(
             f"{decision_summary} Commander preferred cached strategist context "
             f"for this cycle ({strategist_cache_preference_reason or 'context_reuse'})."
         )
-    blocker_counts, decision_summary, monitor_last_states, recent_monitor_issues, strategist_call_decision, strategist_call_reason, strategist_invocation_mode, strategist_skip_reason, strategy_selection_mode, strategy_state = decision_overlay_blocker_counts_decision_summary(commander_carry_risk_bias=commander_carry_risk_bias, commander_carry_risk_reason=commander_carry_risk_reason, decision_summary=decision_summary, commander_carry_state=commander_carry_state, commander_memory_policy=commander_memory_policy, strategist_invocation=strategist_invocation, strategist_refresh_requested=strategist_refresh_requested, strategist_refresh_reason=strategist_refresh_reason, strategist_cache_preferred=strategist_cache_preferred, strategist_cache_preference_reason=strategist_cache_preference_reason, open_position_count=open_position_count, entry_capacity_available=entry_capacity_available, max_positions=max_positions, state=state, facade=_r3_sys.modules[__name__])
+    cached_output_for_state, decision_summary, generated_epoch_for_state, strategist_call_decision, strategist_call_reason, strategist_skip_reason = decision_overlay_cached_output_for_state_decision_summary(commander_carry_risk_bias=commander_carry_risk_bias, commander_carry_risk_reason=commander_carry_risk_reason, decision_summary=decision_summary, commander_carry_state=commander_carry_state, commander_memory_policy=commander_memory_policy, strategist_invocation=strategist_invocation, strategist_refresh_requested=strategist_refresh_requested, strategist_refresh_reason=strategist_refresh_reason, strategist_cache_preferred=strategist_cache_preferred, strategist_cache_preference_reason=strategist_cache_preference_reason, open_position_count=open_position_count, entry_capacity_available=entry_capacity_available, max_positions=max_positions, state=state, facade=_r3_sys.modules[__name__])
+    now_epoch_for_state = _runtime_now_epoch(state)
+    cache_age_sec_for_state = max(0, now_epoch_for_state - generated_epoch_for_state) if generated_epoch_for_state > 0 else 10**9
+    reuse_sec_for_state = max(0, _coerce_int(os.getenv("COMMANDER_STRATEGIST_CACHE_REUSE_SEC", "600"), 600))
+    blocker_counts, monitor_last_states, recent_monitor_issues, strategist_invocation_mode, strategy_selection_mode, strategy_state = decision_overlay_blocker_counts_monitor_last_states(cache_age_sec_for_state=cache_age_sec_for_state, reuse_sec_for_state=reuse_sec_for_state, cached_output_for_state=cached_output_for_state, strategist_refresh_requested=strategist_refresh_requested, state=state, open_position_count=open_position_count, entry_capacity_available=entry_capacity_available, facade=_r3_sys.modules[__name__])
     for issue in recent_monitor_issues:
         issue_str = str(issue).strip()
         if issue_str:
@@ -2315,7 +2392,8 @@ def _position_current_profit_ratio(
 
 
 def _assess_open_position_commander_override(state: Dict[str, Any]) -> Dict[str, Any]:
-    anomaly_found, last_exit_sweep_by_symbol, max_hold_repeat, min_effective_loss_ratio, monitor_last_state, next_hold_counts, next_refresh_cooldowns, now_epoch, overnight_decisions, persisted, position_peak_price, position_strategy_context, prior_hold_counts, prior_refresh_cooldowns, profit_activation_ratio, reasons, repeated_hold_rows, risk_found, rows, rows_summary = open_pos_input_anomaly_found_last_exit_sweep_by_symbol(state=state, facade=_r3_sys.modules[__name__])
+    anomaly_found, last_exit_sweep_by_symbol, max_hold_repeat, min_effective_loss_ratio, monitor_last_state, next_hold_counts, next_refresh_cooldowns, overnight_decisions, persisted, position_peak_price, position_strategy_context, prior_hold_counts, prior_refresh_cooldowns, profit_activation_ratio, reasons, repeated_hold_rows, risk_found, rows, rows_summary = open_pos_input_anomaly_found_last_exit_sweep_by_symbol(state=state, facade=_r3_sys.modules[__name__])
+    now_epoch = _runtime_now_epoch(state)
 
     for row in rows:
         if not isinstance(row, dict):
@@ -2350,12 +2428,15 @@ def _assess_open_position_commander_override(state: Dict[str, Any]) -> Dict[str,
                     price_anomaly = True
                     price_anomaly_reason = f"account_mark_above_reference_ratio:{mark_ratio:.4f}"
 
-        anomaly_found, candidate_loss_ratios, current_profit_ratio, effective_loss_ratio, hold_repeat_count, horizon_revision_allowed, last_exit_sweep_epoch, max_hold_repeat, min_effective_loss_ratio, peak_price, peak_profit_ratio, position_age_seconds, previous, previous_active_exit_axis, previous_entry_state, previous_posture, previous_reason, profit_giveback_ratio, profit_protection_priority, raw_loss_ratio, refresh_cooldown_until, risk_found, symbol_strategy_context, unrealized_loss_ratio = open_pos_input_anomaly_found_candidate_loss_ratios(current_price=current_price, avg_price=avg_price, qty=qty, unrealized_pnl=unrealized_pnl, account_pnl_ratio=account_pnl_ratio, price_anomaly=price_anomaly, position_peak_price=position_peak_price, row=row, symbol=symbol, profit_activation_ratio=profit_activation_ratio, last_exit_sweep_by_symbol=last_exit_sweep_by_symbol, monitor_last_state=monitor_last_state, prior_hold_counts=prior_hold_counts, next_hold_counts=next_hold_counts, max_hold_repeat=max_hold_repeat, prior_refresh_cooldowns=prior_refresh_cooldowns, now_epoch=now_epoch, next_refresh_cooldowns=next_refresh_cooldowns, min_effective_loss_ratio=min_effective_loss_ratio, reasons=reasons, price_anomaly_reason=price_anomaly_reason, repeated_hold_rows=repeated_hold_rows, state=state, position_strategy_context=position_strategy_context, anomaly_found=anomaly_found, risk_found=risk_found, facade=_r3_sys.modules[__name__])
-        horizon_review_due = horizon_revision_allowed and position_review_due(
-            symbol_strategy_context,
-            position_age_seconds=position_age_seconds,
-            now_epoch=now_epoch,
+        candidate_loss_ratios, current_profit_ratio, effective_loss_ratio, raw_loss_ratio, unrealized_loss_ratio = open_pos_input_candidate_loss_ratios_current_profit_rat(current_price=current_price, avg_price=avg_price, qty=qty, unrealized_pnl=unrealized_pnl, account_pnl_ratio=account_pnl_ratio, price_anomaly=price_anomaly, facade=_r3_sys.modules[__name__])
+        peak_price = max(
+            _runtime_float(row.get("peak_price"), 0.0),
+            _runtime_float(row.get("high_water_mark"), 0.0),
+            _runtime_float(position_peak_price.get(symbol), 0.0) if isinstance(position_peak_price, dict) else 0.0,
+            current_price,
+            avg_price,
         )
+        anomaly_found, hold_repeat_count, horizon_review_due, horizon_revision_allowed, last_exit_sweep_epoch, max_hold_repeat, min_effective_loss_ratio, peak_profit_ratio, position_age_seconds, previous, previous_active_exit_axis, previous_entry_state, previous_posture, previous_reason, profit_giveback_ratio, profit_protection_priority, refresh_cooldown_until, risk_found, symbol_strategy_context = open_pos_input_anomaly_found_hold_repeat_count(peak_price=peak_price, avg_price=avg_price, current_profit_ratio=current_profit_ratio, profit_activation_ratio=profit_activation_ratio, symbol=symbol, last_exit_sweep_by_symbol=last_exit_sweep_by_symbol, monitor_last_state=monitor_last_state, prior_hold_counts=prior_hold_counts, next_hold_counts=next_hold_counts, max_hold_repeat=max_hold_repeat, prior_refresh_cooldowns=prior_refresh_cooldowns, now_epoch=now_epoch, next_refresh_cooldowns=next_refresh_cooldowns, effective_loss_ratio=effective_loss_ratio, min_effective_loss_ratio=min_effective_loss_ratio, price_anomaly=price_anomaly, reasons=reasons, price_anomaly_reason=price_anomaly_reason, repeated_hold_rows=repeated_hold_rows, state=state, row=row, position_strategy_context=position_strategy_context, anomaly_found=anomaly_found, risk_found=risk_found, facade=_r3_sys.modules[__name__])
         position_horizon_state = ensure_horizon_state(
             symbol_strategy_context
         )

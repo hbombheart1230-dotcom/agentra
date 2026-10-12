@@ -86,28 +86,3 @@ def scan_context_commander_context_intrinsic_control_w(policy, state, *, facade)
         scanner_memory_bias=scanner_memory_bias,
     )
     return (commander_context, intrinsic_control_w, monitor_guidance, playbook, policy_provenance, practical_w, risk_tone, scanner_bias, scanner_bias_context, scanner_guidance, scanner_memory_bias, scanner_policy_trace, scanner_priority, strategy_monitor_policy, trade_aggressiveness, w)
-
-
-def scan_context_compatibility_bias_context_compatibility(feature_map, state, commander_context, strategy_monitor_policy, playbook, monitor_guidance, risk_tone, trade_aggressiveness, feature_errors, feature_source, *, facade):
-    if not feature_map:
-        feature_map, feature_source, feature_errors = facade._extract_feature_engine_map(state)
-    minute_rows_by_symbol, minute_rows_meta = facade.extract_minute_ohlcv_by_symbol(state)
-    ohlcv_by_symbol = state.get("ohlcv_by_symbol") if isinstance(state.get("ohlcv_by_symbol"), dict) else {}
-    compatibility_bias_context = facade._resolve_compatibility_bias_context(state)
-    compatibility_policy_input = facade._build_scanner_monitor_policy_input(
-        state=state,
-        commander_context=commander_context,
-        monitor_policy=strategy_monitor_policy,
-    )
-    compatibility_frame = facade._build_scanner_monitor_frame(
-        playbook=playbook,
-        monitor_guidance=monitor_guidance,
-        risk_tone=risk_tone,
-        trade_aggressiveness=trade_aggressiveness,
-    )
-    compatibility_policy = (
-        facade.resolve_intraday_entry_policy(compatibility_policy_input or None, frame=compatibility_frame or None)
-        if compatibility_policy_input
-        else None
-    )
-    return (compatibility_bias_context, compatibility_policy, feature_errors, feature_map, feature_source, minute_rows_by_symbol, minute_rows_meta, ohlcv_by_symbol)

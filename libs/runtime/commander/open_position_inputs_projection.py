@@ -66,11 +66,10 @@ def open_pos_input_anomaly_found_last_exit_sweep_by_symbol(state, *, facade):
     risk_found = False
     max_hold_repeat = 0
     min_effective_loss_ratio: float | None = None
-    now_epoch = facade._runtime_now_epoch(state)
-    return (anomaly_found, last_exit_sweep_by_symbol, max_hold_repeat, min_effective_loss_ratio, monitor_last_state, next_hold_counts, next_refresh_cooldowns, now_epoch, overnight_decisions, persisted, position_peak_price, position_strategy_context, prior_hold_counts, prior_refresh_cooldowns, profit_activation_ratio, reasons, repeated_hold_rows, risk_found, rows, rows_summary)
+    return (anomaly_found, last_exit_sweep_by_symbol, max_hold_repeat, min_effective_loss_ratio, monitor_last_state, next_hold_counts, next_refresh_cooldowns, overnight_decisions, persisted, position_peak_price, position_strategy_context, prior_hold_counts, prior_refresh_cooldowns, profit_activation_ratio, reasons, repeated_hold_rows, risk_found, rows, rows_summary)
 
 
-def open_pos_input_anomaly_found_candidate_loss_ratios(current_price, avg_price, qty, unrealized_pnl, account_pnl_ratio, price_anomaly, position_peak_price, row, symbol, profit_activation_ratio, last_exit_sweep_by_symbol, monitor_last_state, prior_hold_counts, next_hold_counts, max_hold_repeat, prior_refresh_cooldowns, now_epoch, next_refresh_cooldowns, min_effective_loss_ratio, reasons, price_anomaly_reason, repeated_hold_rows, state, position_strategy_context, anomaly_found, risk_found, *, facade):
+def open_pos_input_candidate_loss_ratios_current_profit_rat(current_price, avg_price, qty, unrealized_pnl, account_pnl_ratio, price_anomaly, *, facade):
     if True:
         raw_loss_ratio = (
             float((current_price / avg_price) - 1.0)
@@ -91,13 +90,11 @@ def open_pos_input_anomaly_found_candidate_loss_ratios(current_price, avg_price,
             account_pnl_ratio=account_pnl_ratio,
             price_anomaly=price_anomaly,
         )
-        peak_price = max(
-            facade._runtime_float(row.get("peak_price"), 0.0),
-            facade._runtime_float(row.get("high_water_mark"), 0.0),
-            facade._runtime_float(position_peak_price.get(symbol), 0.0) if isinstance(position_peak_price, dict) else 0.0,
-            current_price,
-            avg_price,
-        )
+    return (candidate_loss_ratios, current_profit_ratio, effective_loss_ratio, raw_loss_ratio, unrealized_loss_ratio)
+
+
+def open_pos_input_anomaly_found_hold_repeat_count(peak_price, avg_price, current_profit_ratio, profit_activation_ratio, symbol, last_exit_sweep_by_symbol, monitor_last_state, prior_hold_counts, next_hold_counts, max_hold_repeat, prior_refresh_cooldowns, now_epoch, next_refresh_cooldowns, effective_loss_ratio, min_effective_loss_ratio, price_anomaly, reasons, price_anomaly_reason, repeated_hold_rows, state, row, position_strategy_context, anomaly_found, risk_found, *, facade):
+    if True:
         peak_profit_ratio = float((peak_price / avg_price) - 1.0) if peak_price > 0.0 and avg_price > 0.0 else None
         profit_giveback_ratio = (
             max(0.0, float(peak_profit_ratio) - float(current_profit_ratio))
@@ -166,4 +163,9 @@ def open_pos_input_anomaly_found_candidate_loss_ratios(current_price, avg_price,
         horizon_revision_allowed = bool(
             symbol_strategy_context.get("horizon_revision_allowed", True)
         )
-    return (anomaly_found, candidate_loss_ratios, current_profit_ratio, effective_loss_ratio, hold_repeat_count, horizon_revision_allowed, last_exit_sweep_epoch, max_hold_repeat, min_effective_loss_ratio, peak_price, peak_profit_ratio, position_age_seconds, previous, previous_active_exit_axis, previous_entry_state, previous_posture, previous_reason, profit_giveback_ratio, profit_protection_priority, raw_loss_ratio, refresh_cooldown_until, risk_found, symbol_strategy_context, unrealized_loss_ratio)
+        horizon_review_due = horizon_revision_allowed and facade.position_review_due(
+            symbol_strategy_context,
+            position_age_seconds=position_age_seconds,
+            now_epoch=now_epoch,
+        )
+    return (anomaly_found, hold_repeat_count, horizon_review_due, horizon_revision_allowed, last_exit_sweep_epoch, max_hold_repeat, min_effective_loss_ratio, peak_profit_ratio, position_age_seconds, previous, previous_active_exit_axis, previous_entry_state, previous_posture, previous_reason, profit_giveback_ratio, profit_protection_priority, refresh_cooldown_until, risk_found, symbol_strategy_context)

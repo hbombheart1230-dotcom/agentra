@@ -156,6 +156,36 @@ from apps.operator_ui.data_access_run_read_models import (
 from apps.operator_ui.data_access_symbol_run_chain import (
     load_symbol_run_chain_r3_impl,
 )
+from apps.operator_ui.data_access_brief_facts import (
+    brief_facts_canonical_monitor_snapshot_execution,
+    brief_facts_confidence_execution_action,
+)
+from apps.operator_ui.data_access_brief_market_sections import (
+    brief_market_candidate_hints_defensive_mode,
+    brief_market_anomaly_note_anomaly_status,
+    brief_market_active_exit_axis_avg_price_monitor,
+)
+from apps.operator_ui.data_access_brief_monitor_sections import (
+    brief_monitor_canonical_active_exit_axis_canonical_ave,
+    brief_monitor_decision_reason_execution_quality,
+    brief_monitor_execution_status_label_next_expected_ste,
+)
+from apps.operator_ui.data_access_brief_input_projection import (
+    brief_input_candidate_hints_market_headlines,
+    brief_input_scanner_selection_trace,
+    brief_input_canonical_monitor_snapshot_stop_policy_t,
+    brief_input_commander_applied_policy_monitor_applied,
+)
+from apps.operator_ui.data_access_brief_render_sections import (
+    brief_render_lines,
+    brief_render_current_snapshot_entry,
+    brief_render_lines_market_headlines,
+    brief_render_effect_free_block_3748,
+)
+from apps.operator_ui.data_access_brief_render_fallback import (
+    brief_fallback_comparison_reasons_display_symbol,
+    brief_fallback_lines,
+)
 
 
 KST = timezone(timedelta(hours=9), name="KST")
@@ -1384,82 +1414,12 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
     trade_report_data = trade_report.get("report_data") if isinstance(trade_report.get("report_data"), dict) else {}
     trade_story_input = trade_report_data.get("trade_story_input") if isinstance(trade_report_data.get("trade_story_input"), dict) else {}
     canonical_trade = _build_canonical_trade_brief_input(trade_report)
-    canonical_monitor_snapshot = (
-        canonical_trade.get("monitor_snapshot")
-        if isinstance(canonical_trade.get("monitor_snapshot"), dict)
-        else {}
-    )
-
-    strategist_summary = strategist.get("summary") if isinstance(strategist.get("summary"), dict) else {}
-    strategist_trace = strategist.get("decision_trace") if isinstance(strategist.get("decision_trace"), dict) else {}
-    strategist_evidence = strategist.get("evidence") if isinstance(strategist.get("evidence"), dict) else {}
-    strategist_raw_input = strategist_evidence.get("raw_input") if isinstance(strategist_evidence.get("raw_input"), dict) else {}
-
-    scanner_summary = scanner.get("summary") if isinstance(scanner.get("summary"), dict) else {}
-    scanner_trace = scanner.get("decision_trace") if isinstance(scanner.get("decision_trace"), dict) else {}
-    selected_candidate = scanner_trace.get("selected_candidate") if isinstance(scanner_trace.get("selected_candidate"), dict) else {}
-    feature_snapshot = selected_candidate.get("feature_snapshot") if isinstance(selected_candidate.get("feature_snapshot"), dict) else {}
-    score_breakdown = selected_candidate.get("score_breakdown") if isinstance(selected_candidate.get("score_breakdown"), dict) else {}
-    source_scores = selected_candidate.get("source_scores") if isinstance(selected_candidate.get("source_scores"), dict) else {}
-    feature_coverage = _normalized_feature_coverage(
-        scanner.get("feature_coverage") if isinstance(scanner.get("feature_coverage"), dict) else {},
-        feature_snapshot,
-    )
-    quote_metrics = scanner.get("quote_metrics") if isinstance(scanner.get("quote_metrics"), dict) else _quote_metrics_snapshot(feature_snapshot)
-
-    monitor_summary = monitor.get("summary") if isinstance(monitor.get("summary"), dict) else {}
-    monitor_trace = monitor.get("decision_trace") if isinstance(monitor.get("decision_trace"), dict) else {}
-    thresholds = monitor_trace.get("thresholds") if isinstance(monitor_trace.get("thresholds"), dict) else {}
-    live_monitor_reason = str(monitor_summary.get("monitor_reason") or monitor_trace.get("monitor_reason") or "").strip()
-    live_exit_reason = str(monitor_summary.get("exit_reason") or monitor_trace.get("exit_reason") or "").strip()
-
-    verdict = supervisor.get("verdict") if isinstance(supervisor.get("verdict"), dict) else {}
-    execution = _normalize_execution_payload(executor.get("execution") if isinstance(executor.get("execution"), dict) else {})
-    phase = str(((detail.get("commander") or {}).get("phase") or "session")).strip() or "session"
-    path_label = str(((detail.get("commander") or {}).get("path") or "-")).strip() or "-"
-    supervisor_reason = _clean_brief_text(verdict.get("reason") or supervisor.get("reason") or "")
-
-    selected_symbol = normalize_symbol(
-        canonical_trade.get("symbol")
-        or execution.get("symbol")
-        or scanner_trace.get("selected_symbol")
-        or scanner_summary.get("top_stock")
-        or selected_candidate.get("symbol")
-        or "",
-        allow_test_symbols=True,
-    ).strip()
-    top_candidates = _build_top_candidates(scanner_summary, scanner_trace, selected_symbol)
+    canonical_monitor_snapshot, execution, feature_coverage, feature_snapshot, live_exit_reason, live_monitor_reason, monitor_summary, monitor_trace, path_label, phase, quote_metrics, scanner_summary, scanner_trace, score_breakdown, selected_candidate, selected_symbol, source_scores, strategist_raw_input, strategist_summary, strategist_trace, supervisor_reason, thresholds, top_candidates, verdict = brief_facts_canonical_monitor_snapshot_execution(canonical_trade=canonical_trade, strategist=strategist, scanner=scanner, monitor=monitor, supervisor=supervisor, executor=executor, detail=detail, facade=_r3_sys.modules[__name__])
     selected_rank = _safe_int(
         canonical_trade.get("selected_rank"),
         next((int(row.get("rank") or 0) for row in top_candidates if str(row.get("symbol") or "") == selected_symbol), 0),
     )
-    universe_size = _safe_int(
-        canonical_trade.get("universe_size"),
-        _safe_int(scanner_summary.get("candidate_pool_after_filter"), _safe_int(scanner_trace.get("candidate_pool_size"), len(top_candidates))),
-    )
-
-    shared_facts = canonical_trade.get("shared_facts") if isinstance(canonical_trade.get("shared_facts"), dict) else {}
-    execution_action = str(execution.get("action") or "").upper()
-    report_lifecycle_status = str(shared_facts.get("status") or canonical_trade.get("lifecycle_status") or "").strip().lower()
-    canonical_action = str(shared_facts.get("action") or canonical_trade.get("current_action") or "").upper()
-    monitor_reason = str(canonical_trade.get("monitor_summary") or live_monitor_reason or "").strip()
-    exit_reason = str(shared_facts.get("exit_reason") or canonical_trade.get("exit_reason") or live_exit_reason or "").strip()
-    final_action = canonical_action if canonical_action in {"BUY", "SELL", "HOLD", "WAIT"} else "WAIT"
-
-    confidence_raw = (
-        selected_candidate.get("confidence")
-        if selected_candidate.get("confidence") is not None
-        else selected_candidate.get("score_total")
-    )
-    confidence = _format_float(confidence_raw, 2) if confidence_raw is not None else ""
-
-    selection_reasons: List[str] = []
-    selected_why = _clean_brief_text(selected_candidate.get("why") or scanner_trace.get("selected_reason") or "")
-    canonical_selection_basis = _clean_brief_text(canonical_trade.get("selection_basis") or "")
-    if canonical_trade.get("selection_summary"):
-        selection_reasons.append(str(canonical_trade.get("selection_summary")))
-    if canonical_selection_basis and canonical_selection_basis not in selection_reasons:
-        selection_reasons.append(canonical_selection_basis)
+    confidence, execution_action, exit_reason, final_action, monitor_reason, report_lifecycle_status, selected_why, selection_reasons, shared_facts, universe_size = brief_facts_confidence_execution_action(canonical_trade=canonical_trade, scanner_summary=scanner_summary, top_candidates=top_candidates, scanner_trace=scanner_trace, execution=execution, live_monitor_reason=live_monitor_reason, live_exit_reason=live_exit_reason, selected_candidate=selected_candidate, facade=_r3_sys.modules[__name__])
     for reason in list(canonical_trade.get("why_selected") or [])[:4]:
         cleaned = _clean_brief_text(reason)
         if cleaned and cleaned not in selection_reasons:
@@ -1499,121 +1459,14 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
     else:
         comparison_reasons.append("only one ranked candidate was persisted for this run")
 
-    global_inputs = strategist_raw_input.get("global_sentiment_inputs") if isinstance(strategist_raw_input.get("global_sentiment_inputs"), dict) else {}
-    fear_index = global_inputs.get("fear_index") if isinstance(global_inputs.get("fear_index"), dict) else {}
-    macro_moves = global_inputs.get("macro_moves") if isinstance(global_inputs.get("macro_moves"), dict) else {}
-    global_score = canonical_trade.get("global_sentiment") or global_inputs.get("score")
-    vix_level = canonical_trade.get("vix") or fear_index.get("level")
-    market_news_titles = [str((x or {}).get("title") or "") for x in list(strategist_raw_input.get("collected_market_news") or []) if isinstance(x, dict)]
-    news_targets = list(strategist_summary.get("news_query_targets") or strategist_raw_input.get("news_query_targets") or [])
-    news_ranked = (
-        strategist.get("artifact", {}).get("news_evidence_ranked")
-        if isinstance(strategist.get("artifact"), dict) and isinstance(strategist.get("artifact", {}).get("news_evidence_ranked"), dict)
-        else {}
-    )
-    market_headlines = (
-        _brief_collect_top_headlines(news_ranked.get("market_news_ranked") or [], limit=3)
-        or list(canonical_trade.get("strategist_market_headlines") or canonical_trade.get("market_news_titles") or [])[:3]
-        or market_news_titles[:3]
-    )
-    symbol_headlines = (
-        _brief_collect_top_headlines(news_ranked.get("candidate_news_ranked") or [], limit=3, symbol=selected_symbol)
-        or list(canonical_trade.get("strategist_symbol_headlines") or canonical_trade.get("candidate_news_titles") or [])[:3]
-        or [str((x or {}).get("title") or "") for x in list(strategist_raw_input.get("collected_candidate_news") or []) if isinstance(x, dict)][:3]
-    )
-    candidate_hints = list(
-        (
-            strategist.get("artifact", {}).get("candidate_symbols_hint")
-            if isinstance(strategist.get("artifact"), dict)
-            else None
-        )
-        or strategist_summary.get("candidate_hints")
-        or canonical_trade.get("strategist_candidate_hints")
-        or []
-    )[:8]
-    macro_stress_overlay = strategist_trace.get("macro_stress_overlay") if isinstance(strategist_trace.get("macro_stress_overlay"), dict) else {}
-    defensive_mode = bool(macro_stress_overlay.get("active")) or str(strategist_summary.get("playbook") or "").lower() == "defensive" or (_safe_float(vix_level, 0.0) >= 25.0 if vix_level is not None else False)
-    if canonical_trade.get("market_context_summary"):
-        news_summary = str(canonical_trade.get("market_context_summary"))
-    elif market_news_titles:
-        news_summary = "; ".join([title for title in market_news_titles[:2] if title]) or "market news sampled"
-    elif news_targets:
-        news_summary = "no strong market-moving headline was retained in this run"
-    else:
-        news_summary = "no meaningful news input was captured"
-
-    detected_themes = _clean_brief_list(canonical_trade.get("themes") or strategist_summary.get("themes"), limit=6)
-    playbook = _clean_brief_text(strategist_summary.get("playbook") or canonical_trade.get("playbook") or "")
-    theme_match = _clean_brief_text(
-        selected_candidate.get("theme_match")
-        or selected_candidate.get("sector_theme")
-        or selected_candidate.get("theme")
-        or ""
-    )
+    candidate_hints, defensive_mode, detected_themes, global_score, macro_moves, market_headlines, news_summary, news_targets, playbook, symbol_headlines, theme_match, vix_level = brief_market_candidate_hints_defensive_mode(strategist_raw_input=strategist_raw_input, canonical_trade=canonical_trade, strategist_summary=strategist_summary, strategist=strategist, selected_symbol=selected_symbol, strategist_trace=strategist_trace, selected_candidate=selected_candidate, facade=_r3_sys.modules[__name__])
     if not theme_match and selected_why and detected_themes:
         lowered = selected_why.lower()
         for theme in detected_themes:
             if str(theme).lower() in lowered:
                 theme_match = theme
                 break
-    if detected_themes and theme_match:
-        priority_alignment = "yes"
-        theme_priority = "high-priority theme"
-    elif detected_themes and selected_symbol:
-        priority_alignment = "partial"
-        theme_priority = "fallback theme match"
-    elif detected_themes:
-        priority_alignment = "unknown"
-        theme_priority = "theme detected but symbol linkage unavailable"
-    else:
-        priority_alignment = "no"
-        theme_priority = "no explicit theme detected"
-
-    sector_strength = feature_snapshot.get("engine_sector_relative_strength")
-    sentiment_gate_status = "SKIPPED"
-    sentiment_gate_note = "sentiment input not available"
-    if global_score is not None:
-        sentiment_gate_status = "PASS" if _safe_float(global_score, 0.0) >= -0.35 else "FAIL"
-        sentiment_gate_note = f"global sentiment {_format_float(global_score, 2)}"
-
-    liquidity_status = "SKIPPED"
-    liquidity_note = "quote volume not available"
-    if quote_metrics.get("quote_volume") is not None:
-        liquidity_status = "PASS" if _safe_float(quote_metrics.get("quote_volume"), 0.0) > 0 else "FAIL"
-        liquidity_note = f"quote volume {quote_metrics.get('quote_volume')}"
-
-    turnover_status = "SKIPPED"
-    turnover_note = "turnover metric not available"
-    if quote_metrics.get("quote_trading_value") is not None:
-        turnover_status = "PASS" if _safe_float(quote_metrics.get("quote_trading_value"), 0.0) > 0 else "FAIL"
-        turnover_note = f"trading value {quote_metrics.get('quote_trading_value')}"
-
-    sector_status = "SKIPPED"
-    sector_note = "sector relative strength not available"
-    if sector_strength is not None:
-        sector_status = "PASS" if _safe_float(sector_strength, 0.0) >= 0 else "FAIL"
-        sector_note = f"sector relative strength {_format_float(sector_strength, 2)}"
-
-    chart_status, chart_note = _chart_filter_status_and_note(feature_coverage)
-
-    risk_status = "PASS" if bool(verdict.get("allowed")) else "FAIL"
-    risk_note = str(verdict.get("reason") or ("order allowed" if risk_status == "PASS" else "order blocked"))
-
-    change_pct = quote_metrics.get("intraday_change_pct")
-    anomaly_status = "SKIPPED"
-    anomaly_note = "intraday change metric not available"
-    if change_pct is not None:
-        anomaly_status = "PASS" if abs(_safe_float(change_pct, 0.0)) <= 12.0 else "FAIL"
-        anomaly_note = f"intraday change {_format_percent(change_pct, 2)}"
-
-    spread_bps = selected_candidate.get("spread_bps")
-    spread_status = "SKIPPED"
-    spread_note = "spread/slippage metric not available in this run"
-    if spread_bps is not None:
-        spread_status = "PASS" if _safe_float(spread_bps, 9999.0) <= 50.0 else "FAIL"
-        spread_note = f"spread {spread_bps} bps"
-
-    ranking_basis: List[str] = []
+    anomaly_note, anomaly_status, chart_note, chart_status, liquidity_note, liquidity_status, priority_alignment, ranking_basis, risk_note, risk_status, sector_note, sector_status, sentiment_gate_note, sentiment_gate_status, spread_note, spread_status, theme_priority, turnover_note, turnover_status = brief_market_anomaly_note_anomaly_status(detected_themes=detected_themes, theme_match=theme_match, selected_symbol=selected_symbol, feature_snapshot=feature_snapshot, global_score=global_score, quote_metrics=quote_metrics, feature_coverage=feature_coverage, verdict=verdict, selected_candidate=selected_candidate, facade=_r3_sys.modules[__name__])
     for key in list(score_breakdown.keys())[:6]:
         ranking_basis.append(_friendly_feature_name(key))
     if not ranking_basis:
@@ -1628,155 +1481,8 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
     if not component_scores:
         for key, value in list(source_scores.items())[:6]:
             component_scores.append(f"{str(key).replace('_', ' ')}: {_format_float(value, 3)}")
-    scanner_selection_trace = (
-        trade_story_input.get("scanner_selection_trace")
-        if isinstance(trade_story_input.get("scanner_selection_trace"), dict)
-        else canonical_trade.get("scanner_selection_trace")
-        if isinstance(canonical_trade.get("scanner_selection_trace"), dict)
-        else {}
-    )
-
-    positive_factors: List[str] = []
-    if selected_why:
-        positive_factors.append(selected_why)
-    if _safe_float(quote_metrics.get("quote_trading_value"), 0.0) > 0:
-        positive_factors.append("strong tradable turnover")
-    if chart_status == "PASS":
-        positive_factors.append("robust chart feature coverage")
-    if sector_status == "PASS":
-        positive_factors.append("sector alignment is acceptable")
-    if not positive_factors:
-        positive_factors.append("selected symbol retained highest available composite rank")
-
-    weak_factors: List[str] = []
-    missing_keys = list(feature_coverage.get("missing_keys") or [])
-    if missing_keys:
-        weak_factors.append(
-            "missing features: " + ", ".join(_friendly_feature_name(k) for k in missing_keys[:2])
-        )
-    volatility20 = feature_snapshot.get("engine_volatility20")
-    if volatility20 is not None and _safe_float(volatility20, 0.0) >= 0.3:
-        weak_factors.append("elevated short-term volatility remains")
-    if sentiment_gate_status == "FAIL":
-        weak_factors.append("negative global sentiment requires tighter monitoring")
-    if not weak_factors:
-        weak_factors.append("no major weakness persisted in this run snapshot")
-
-    present_feature_names = [_friendly_feature_name(k) for k in list(feature_coverage.get("present_keys") or [])[:6]]
-    missing_feature_names = [_friendly_feature_name(k) for k in missing_keys[:4]]
-    if chart_status == "PASS":
-        chart_interpretation = "feature coverage is robust enough for scanner ranking confidence"
-    elif chart_status == "PARTIAL":
-        chart_interpretation = "feature coverage is usable but needs caution on weaker technical inputs"
-    else:
-        chart_interpretation = "feature coverage is insufficient; treat selection confidence conservatively"
-
-    stop_loss = thresholds.get("stop_loss_pct")
-    take_profit = thresholds.get("take_profit_pct")
-    effective_stop_loss = thresholds.get("effective_stop_loss_pct")
-    effective_stop_reason = str(thresholds.get("effective_stop_reason") or "").strip()
-    if stop_loss is None:
-        stop_loss = thresholds.get("stop_loss")
-    if take_profit is None:
-        take_profit = thresholds.get("take_profit")
-    stop_loss_text = _format_percent(stop_loss, 2) if stop_loss is not None else "-"
-    take_profit_text = _format_percent(take_profit, 2) if take_profit is not None else "-"
-    effective_stop_text = _format_percent(effective_stop_loss, 2) if effective_stop_loss not in (None, "") else stop_loss_text
-    current_price = monitor_trace.get("price")
-    avg_price_monitor = monitor_trace.get("avg_price")
-    peak_price = monitor_trace.get("peak_price") or monitor_summary.get("peak_price")
-    peak_drawdown_raw = monitor_trace.get("peak_drawdown")
-    if peak_drawdown_raw in (None, ""):
-        peak_drawdown_raw = monitor_summary.get("peak_drawdown")
-    vwap_distance_raw = monitor_trace.get("vwap_distance")
-    if vwap_distance_raw in (None, ""):
-        vwap_distance_raw = monitor_summary.get("vwap_distance")
-    current_drawdown_raw = None
-    if _safe_float(current_price, 0.0) > 0.0 and _safe_float(peak_price, 0.0) > 0.0:
-        current_drawdown_raw = (_safe_float(current_price, 0.0) / _safe_float(peak_price, 1.0)) - 1.0
-    elif peak_drawdown_raw not in (None, ""):
-        current_drawdown_raw = peak_drawdown_raw
-    watch_axes = _monitor_watch_axes(thresholds)
-    active_exit_axis = _friendly_exit_reason(live_exit_reason or effective_stop_reason or live_monitor_reason or exit_reason or monitor_reason or "hold")
-    holding_time = _format_duration(monitor_summary.get("position_age_seconds") or monitor_trace.get("position_age_seconds"))
-
-    canonical_holding_time = str(
-        canonical_monitor_snapshot.get("holding_time")
-        or shared_facts.get("holding_duration")
-        or ""
-    ).strip()
-    canonical_posture = str(canonical_monitor_snapshot.get("posture") or "").strip()
-    canonical_current_price = str(canonical_monitor_snapshot.get("current_price") or "").strip()
-    canonical_average_price = str(canonical_monitor_snapshot.get("average_price") or "").strip()
-    canonical_peak_price = str(canonical_monitor_snapshot.get("peak_price") or "").strip()
-    canonical_current_drawdown = str(canonical_monitor_snapshot.get("current_drawdown") or "").strip()
-    canonical_peak_drawdown = str(canonical_monitor_snapshot.get("peak_drawdown") or "").strip()
-    canonical_vwap_distance = str(canonical_monitor_snapshot.get("vwap_distance") or "").strip()
-    canonical_stop_loss = str(canonical_monitor_snapshot.get("stop_loss") or "").strip()
-    canonical_effective_stop = str(canonical_monitor_snapshot.get("effective_stop") or "").strip()
-    canonical_effective_stop_reason = str(canonical_monitor_snapshot.get("effective_stop_reason") or "").strip()
-    canonical_take_profit = str(canonical_monitor_snapshot.get("take_profit") or "").strip()
-    canonical_price_source = str(canonical_monitor_snapshot.get("price_source") or "").strip()
-    canonical_feature_source = str(canonical_monitor_snapshot.get("feature_source") or "").strip()
-    canonical_price_source_policy = str(canonical_monitor_snapshot.get("price_source_policy") or "").strip()
-    canonical_active_exit_axis = str(canonical_monitor_snapshot.get("active_exit_axis") or "").strip()
-    canonical_watch_axes = [str(x or "") for x in list(canonical_monitor_snapshot.get("watch_axes") or []) if str(x or "").strip()]
-    canonical_hold_reasons = [str(x or "") for x in list(canonical_monitor_snapshot.get("hold_reasons") or []) if str(x or "").strip()]
-    canonical_exit_triggers = [str(x or "") for x in list(canonical_monitor_snapshot.get("exit_triggers") or []) if str(x or "").strip()]
-
-    entry_evaluated = bool(
-        canonical_monitor_snapshot.get("entry_evaluated")
-        or monitor_summary.get("entry_evaluated")
-        or monitor_trace.get("entry_evaluated")
-    )
-    entry_triggered = bool(
-        canonical_monitor_snapshot.get("entry_triggered")
-        or monitor_summary.get("entry_triggered")
-        or monitor_trace.get("entry_triggered")
-    )
-    entry_reason_code = str(
-        canonical_monitor_snapshot.get("entry_reason")
-        or monitor_summary.get("entry_reason")
-        or monitor_trace.get("entry_reason")
-        or ""
-    ).strip()
-    entry_pattern = str(
-        canonical_monitor_snapshot.get("entry_pattern")
-        or monitor_summary.get("entry_pattern")
-        or monitor_trace.get("entry_pattern")
-        or ""
-    ).strip()
-    entry_metrics = (
-        canonical_monitor_snapshot.get("entry_metrics")
-        if isinstance(canonical_monitor_snapshot.get("entry_metrics"), dict)
-        else (
-            monitor_summary.get("entry_metrics")
-            if isinstance(monitor_summary.get("entry_metrics"), dict)
-            else (
-                monitor_trace.get("entry_metrics")
-                if isinstance(monitor_trace.get("entry_metrics"), dict)
-                else {}
-            )
-        )
-    )
-    entry_guard_reason = str(
-        canonical_monitor_snapshot.get("entry_guard_reason")
-        or monitor_summary.get("entry_guard_reason")
-        or monitor_trace.get("entry_guard_reason")
-        or ""
-    ).strip()
-    entry_signal_chain = [
-        str(x or "")
-        for x in list(
-            canonical_monitor_snapshot.get("entry_signal_chain")
-            or monitor_summary.get("entry_signal_chain")
-            or monitor_trace.get("entry_signal_chain")
-            or []
-        )
-        if str(x or "").strip()
-    ]
-
-    hold_reasons: List[str] = []
+    active_exit_axis, avg_price_monitor, canonical_current_price, canonical_holding_time, canonical_posture, chart_interpretation, current_drawdown_raw, current_price, effective_stop_reason, effective_stop_text, holding_time, missing_feature_names, peak_drawdown_raw, peak_price, positive_factors, present_feature_names, scanner_selection_trace, stop_loss, stop_loss_text, take_profit, take_profit_text, vwap_distance_raw, watch_axes, weak_factors = brief_market_active_exit_axis_avg_price_monitor(trade_story_input=trade_story_input, canonical_trade=canonical_trade, selected_why=selected_why, quote_metrics=quote_metrics, chart_status=chart_status, sector_status=sector_status, feature_coverage=feature_coverage, feature_snapshot=feature_snapshot, sentiment_gate_status=sentiment_gate_status, thresholds=thresholds, monitor_trace=monitor_trace, monitor_summary=monitor_summary, live_exit_reason=live_exit_reason, live_monitor_reason=live_monitor_reason, exit_reason=exit_reason, monitor_reason=monitor_reason, canonical_monitor_snapshot=canonical_monitor_snapshot, shared_facts=shared_facts, facade=_r3_sys.modules[__name__])
+    canonical_active_exit_axis, canonical_average_price, canonical_current_drawdown, canonical_effective_stop, canonical_effective_stop_reason, canonical_exit_triggers, canonical_feature_source, canonical_hold_reasons, canonical_peak_drawdown, canonical_peak_price, canonical_price_source, canonical_price_source_policy, canonical_stop_loss, canonical_take_profit, canonical_vwap_distance, canonical_watch_axes, entry_evaluated, entry_guard_reason, entry_metrics, entry_pattern, entry_reason_code, entry_signal_chain, entry_triggered, hold_reasons = brief_monitor_canonical_active_exit_axis_canonical_ave(canonical_monitor_snapshot=canonical_monitor_snapshot, monitor_summary=monitor_summary, monitor_trace=monitor_trace, facade=_r3_sys.modules[__name__])
     if final_action == "HOLD":
         hold_reasons.append("no explicit exit trigger was hit yet")
         hold_reasons.append(f"monitor reason: {monitor_reason or '-'} / exit reason: {exit_reason or '-'}")
@@ -1803,189 +1509,8 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
         ]
 
     prefer_runtime_reporter = _prefer_runtime_reporter_state(reporter)
-    reporter_found = bool(reporter.get("found")) if prefer_runtime_reporter else (
-        bool(reporter.get("found")) or str(canonical_trade.get("reporter_status") or "").strip().lower() == "linked"
-    )
-    reporter_reason_key = str(reporter.get("reason") or "").strip()
-    if reporter_found:
-        reporter_status = "linked"
-        reporter_reason = "same-day reporter analysis is linked to this run"
-    elif reporter_reason_key == "same_day_report_missing":
-        reporter_status = "pending"
-        reporter_reason = "same-day reporter analysis file is not generated yet"
-    elif reporter_reason_key == "run_not_linked_in_same_day_report":
-        reporter_status = "pending"
-        reporter_reason = "same-day reporter analysis exists, but this run_id is not linked yet"
-    else:
-        reporter_status = "missing"
-        reporter_reason = "reporter linkage is unavailable for this run"
-
-    run_grade = str((reporter.get("ai_run_grade") if prefer_runtime_reporter else "") or canonical_trade.get("reporter_grade") or reporter.get("ai_run_grade") or "").strip()
-    ai_summary = str((reporter.get("ai_summary") if prefer_runtime_reporter else "") or canonical_trade.get("reporter_summary") or reporter.get("ai_summary") or "").strip()
-    strategy_alignment = "strategy frame and scanner trace were captured"
-    execution_quality = "execution log present" if execution_action in {"BUY", "SELL"} else "no executed order in this run"
-    monitor_consistency = f"monitor={monitor_reason or '-'} / exit={exit_reason or '-'}"
-    if reporter_found:
-        trade_quality = f"grade {run_grade}" if run_grade else "grade not provided"
-        key_finding = ai_summary or "reporter summary exists but key finding text is empty"
-    else:
-        trade_quality = "post-trade quality grade is pending"
-        key_finding = ai_summary or reporter_reason
-
-    canonical_report_summary = str(canonical_trade.get("report_summary") or "")
-    generic_lifecycle_summary = canonical_report_summary.lower().startswith("current lifecycle status is")
-    if canonical_report_summary and not (final_action == "SELL" and generic_lifecycle_summary):
-        decision_reason = str(canonical_trade.get("report_summary"))
-    elif final_action == "BUY":
-        decision_reason = (
-            f"scanner rank #{selected_rank or 1} out of {max(universe_size, 1)} with strong selection factors, "
-            f"chart coverage {feature_coverage.get('present')}/{feature_coverage.get('total')}, and approved execution."
-        )
-    elif final_action == "SELL":
-        decision_reason = (
-            f"monitor/supervisor flow triggered SELL for {selected_symbol or '-'} "
-            f"after exit condition review ({exit_reason or monitor_reason or 'triggered'})."
-        )
-    elif final_action == "HOLD":
-        decision_reason = (
-            f"scanner rank #{selected_rank or 1} candidate is retained with chart coverage "
-            f"{feature_coverage.get('present')}/{feature_coverage.get('total')}, and no active exit trigger yet."
-        )
-    else:
-        decision_reason = (
-            f"no executable BUY/SELL action yet; waiting for entry confirmation while monitoring {selected_symbol or 'candidate'}."
-        )
-
-    watch_next: List[str] = []
-    if take_profit_text != "-":
-        watch_next.append(f"take-profit proximity ({take_profit_text})")
-    if stop_loss_text != "-":
-        watch_next.append(f"stop-loss proximity ({stop_loss_text})")
-    if vix_level is not None:
-        watch_next.append(f"volatility trend (VIX {_format_float(vix_level, 2)})")
-    if detected_themes:
-        watch_next.append(f"theme strength drift ({', '.join(detected_themes[:2])})")
-    if not watch_next:
-        watch_next = ["entry/exit trigger activation", "volatility expansion", "sector weakness"]
-
-    thesis_invalidation = [
-        "stop-loss breach or abnormal drawdown",
-        "scanner and monitor signal divergence",
-        "negative macro/news regime shift",
-    ]
-
-    report_available = bool(trade_report.get("report_available"))
-    report_diag = (
-        trade_report.get("ai_report_diagnostics")
-        if isinstance(trade_report.get("ai_report_diagnostics"), dict)
-        else {}
-    )
-    report_status = str(
-        report_diag.get("report_status")
-        or trade_report.get("report_status")
-        or ("available" if report_available else "skipped")
-    ).strip().lower()
-    report_reason = str(
-        report_diag.get("report_reason_human")
-        or trade_report.get("report_reason_human")
-        or _report_reason_human(trade_report.get("report_reason_code"))
-    ).strip()
-    report_next_step = str(
-        report_diag.get("next_expected_step")
-        or trade_report.get("report_next_expected_step")
-        or _report_next_step(trade_report.get("report_reason_code"))
-    ).strip()
-    report_model = str(
-        report_diag.get("llm_model_used")
-        or trade_report.get("report_generation_model")
-        or "-"
-    ).strip()
-    report_trade_id = str(trade_report.get("trade_id") or "")
-    report_lifecycle_status = str(trade_report.get("lifecycle_status") or "")
-    report_lifecycle_summary = str(trade_report.get("lifecycle_summary") or "")
-    report_story_type = str(trade_report.get("story_type_label") or trade_report.get("story_type") or "No linked report")
-    report_mode = str(trade_report.get("execution_mode_label") or "-")
-    report_summary = str(trade_report.get("report_summary") or "")
-    report_link = str(trade_report.get("report_link") or "")
-    focus_symbol = selected_symbol or _clean_brief_text(scanner_summary.get("top_stock") or "") or "-"
-    supervisor_allowed = bool(verdict.get("allowed"))
-    execution_status_label = str(
-        execution.get("fill_status_summary")
-        or execution.get("status")
-        or canonical_trade.get("execution_mode_label")
-        or "not captured"
-    ).strip()
-    stop_policy_trace = dict(canonical_trade.get("monitor_stop_policy_trace") or {}) if isinstance(canonical_trade.get("monitor_stop_policy_trace"), dict) else {}
-    hard_stop_source = stop_policy_trace.get("hard_stop_pct")
-    if hard_stop_source in (None, ""):
-        hard_stop_source = thresholds.get("hard_stop_pct")
-    if hard_stop_source in (None, ""):
-        hard_stop_source = stop_loss
-    hard_stop_brief = (
-        _format_percent(hard_stop_source, 2)
-        if hard_stop_source not in (None, "")
-        else canonical_monitor_snapshot.get("stop_loss")
-        or stop_loss_text
-    )
-    effective_stop_brief = canonical_monitor_snapshot.get("effective_stop") or effective_stop_text
-    take_profit_source = stop_policy_trace.get("take_profit_pct")
-    if take_profit_source in (None, ""):
-        take_profit_source = take_profit
-    take_profit_brief = canonical_monitor_snapshot.get("take_profit") or (_format_percent(take_profit_source, 2) if take_profit_source not in (None, "") else take_profit_text)
-    effective_stop_reason_brief = (
-        canonical_effective_stop_reason
-        or (_friendly_exit_reason(effective_stop_reason or "stop_loss") if effective_stop_brief != "-" else "")
-    )
-    stop_policy_summary: List[str] = []
-    if hard_stop_brief and str(hard_stop_brief).strip() not in {"", "-"}:
-        stop_policy_summary.append(f"Hard fail-safe stop {hard_stop_brief}")
-    strategist_baseline_stop = stop_policy_trace.get("strategist_baseline_stop_loss_pct")
-    if strategist_baseline_stop not in (None, ""):
-        stop_policy_summary.append(
-            f"Strategist baseline adaptive stop {_format_percent(strategist_baseline_stop, 2)}"
-        )
-    if effective_stop_brief and str(effective_stop_brief).strip() not in {"", "-"}:
-        stop_policy_summary.append(f"Effective stop {effective_stop_brief} ({effective_stop_reason_brief or 'active stop'})")
-    if take_profit_brief and str(take_profit_brief).strip() not in {"", "-"}:
-        stop_policy_summary.append(f"Take profit {take_profit_brief}")
-    strategist_baseline_take_profit = stop_policy_trace.get("strategist_baseline_take_profit_pct")
-    if strategist_baseline_take_profit not in (None, ""):
-        stop_policy_summary.append(
-            f"Strategist baseline take profit {_format_percent(strategist_baseline_take_profit, 2)}"
-        )
-    trailing_stop_brief = stop_policy_trace.get("trailing_stop_pct")
-    if trailing_stop_brief in (None, ""):
-        trailing_stop_brief = thresholds.get("trailing_stop_pct")
-    if trailing_stop_brief not in (None, ""):
-        stop_policy_summary.append(f"Trailing stop {_format_percent(trailing_stop_brief, 2)}")
-    strategist_baseline_trailing = stop_policy_trace.get("strategist_baseline_trailing_stop_pct")
-    if strategist_baseline_trailing not in (None, ""):
-        stop_policy_summary.append(
-            f"Strategist baseline trailing stop {_format_percent(strategist_baseline_trailing, 2)}"
-        )
-
-    next_expected_step = ""
-    if watch_next:
-        next_expected_step = str(watch_next[0] or "").strip()
-    elif final_action == "WAIT":
-        next_expected_step = f"Wait for clearer entry confirmation on {selected_symbol or 'the current focus symbol'}."
-    elif final_action in {"BUY", "HOLD"}:
-        next_expected_step = f"Keep monitoring {selected_symbol or 'the position'} against {active_exit_axis or 'the active exit axis'}."
-    elif final_action == "SELL":
-        next_expected_step = "Review the closed trade and wait for the next qualified setup."
-
-    strategist_evidence_summary_bits = [
-        f"{playbook} playbook" if playbook else "",
-        f"regime {strategist_summary.get('market_regime')}" if strategist_summary.get("market_regime") else "",
-        f"global sentiment {_format_float(global_score, 2)}" if global_score is not None else "",
-        f"VIX {_format_float(vix_level, 2)}" if vix_level is not None else "",
-    ]
-    strategist_evidence_summary = ", ".join([bit for bit in strategist_evidence_summary_bits if bit]) or "Strategist evidence was captured for this run."
-    selection_reason_text = (
-        selection_reasons[0]
-        if selection_reasons
-        else str(canonical_trade.get("selection_summary") or selected_why or "Selection rationale was not explicitly persisted.")
-    )
+    decision_reason, execution_quality, focus_symbol, key_finding, monitor_consistency, report_available, report_lifecycle_status, report_lifecycle_summary, report_link, report_mode, report_model, report_next_step, report_reason, report_status, report_story_type, report_summary, report_trade_id, reporter_reason, reporter_status, run_grade, strategy_alignment, thesis_invalidation, trade_quality, watch_next = brief_monitor_decision_reason_execution_quality(prefer_runtime_reporter=prefer_runtime_reporter, reporter=reporter, canonical_trade=canonical_trade, execution_action=execution_action, monitor_reason=monitor_reason, exit_reason=exit_reason, final_action=final_action, selected_rank=selected_rank, universe_size=universe_size, feature_coverage=feature_coverage, selected_symbol=selected_symbol, take_profit_text=take_profit_text, stop_loss_text=stop_loss_text, vix_level=vix_level, detected_themes=detected_themes, trade_report=trade_report, scanner_summary=scanner_summary, facade=_r3_sys.modules[__name__])
+    execution_status_label, next_expected_step, selection_reason_text, stop_policy_summary, strategist_evidence_summary, supervisor_allowed = brief_monitor_execution_status_label_next_expected_ste(verdict=verdict, execution=execution, canonical_trade=canonical_trade, thresholds=thresholds, stop_loss=stop_loss, stop_loss_text=stop_loss_text, canonical_monitor_snapshot=canonical_monitor_snapshot, effective_stop_text=effective_stop_text, take_profit=take_profit, take_profit_text=take_profit_text, canonical_effective_stop_reason=canonical_effective_stop_reason, effective_stop_reason=effective_stop_reason, watch_next=watch_next, final_action=final_action, selected_symbol=selected_symbol, active_exit_axis=active_exit_axis, playbook=playbook, global_score=global_score, vix_level=vix_level, strategist_summary=strategist_summary, selection_reasons=selection_reasons, selected_why=selected_why, facade=_r3_sys.modules[__name__])
     score_driver_preview = list(component_scores[:4]) or [
         f"{key}={value}"
         for key, value in list((scanner_selection_trace.get("selected_symbol_score_drivers") or {}).items())[:4]
@@ -2318,87 +1843,10 @@ def _build_operator_brief_input(detail: Dict[str, Any]) -> Dict[str, Any]:
         canonical_selection_bullets = updated_selection_bullets[:6]
     else:
         canonical_filters_summary = canonical_trade.get("filters_summary")
-    monitor_summary = monitor.get("summary") if isinstance(monitor.get("summary"), dict) else {}
-    monitor_trace = monitor.get("decision_trace") if isinstance(monitor.get("decision_trace"), dict) else {}
-    monitor_artifact = monitor.get("artifact") if isinstance(monitor.get("artifact"), dict) else {}
-    monitor_policy_ref = monitor_trace.get("policy_ref") if isinstance(monitor_trace.get("policy_ref"), dict) else {}
-    monitor_timing_assessment = monitor_trace.get("timing_assessment") if isinstance(monitor_trace.get("timing_assessment"), dict) else {}
-    monitor_thresholds_used = monitor_trace.get("thresholds_guards_used") if isinstance(monitor_trace.get("thresholds_guards_used"), dict) else {}
-    monitor_entry_metrics = monitor_summary.get("entry_metrics") if isinstance(monitor_summary.get("entry_metrics"), dict) else {}
-    monitor_entry_thresholds = monitor_summary.get("entry_thresholds") if isinstance(monitor_summary.get("entry_thresholds"), dict) else {}
-    selected_symbol = str(
-        scanner_trace.get("selected_symbol")
-        or selected.get("symbol")
-        or canonical_trade.get("symbol")
-        or ""
-    ).strip()
-    news_ranked = (
-        strategist_artifact.get("news_evidence_ranked")
-        if isinstance(strategist_artifact.get("news_evidence_ranked"), dict)
-        else {}
-    )
-    market_headlines = (
-        _brief_collect_top_headlines(news_ranked.get("market_news_ranked") or [], limit=3)
-        or [str((x or {}).get("title") or "") for x in list(raw_input.get("collected_market_news") or []) if isinstance(x, dict)][:3]
-        or list(canonical_trade.get("strategist_market_headlines") or canonical_trade.get("market_news_titles") or [])[:3]
-    )
-    symbol_headlines = (
-        _brief_collect_top_headlines(news_ranked.get("candidate_news_ranked") or [], limit=3, symbol=selected_symbol)
-        or [str((x or {}).get("title") or "") for x in list(raw_input.get("collected_candidate_news") or []) if isinstance(x, dict)][:3]
-        or list(canonical_trade.get("strategist_symbol_headlines") or canonical_trade.get("candidate_news_titles") or [])[:3]
-    )
-    candidate_hints = list(
-        strategist_artifact.get("candidate_symbols_hint")
-        or strategist_summary.get("candidate_hints")
-        or canonical_trade.get("strategist_candidate_hints")
-        or []
-    )[:8]
-    scanner_selection_trace = (
-        trade_story_input.get("scanner_selection_trace")
-        if isinstance(trade_story_input.get("scanner_selection_trace"), dict)
-        else canonical_trade.get("scanner_selection_trace")
-        if isinstance(canonical_trade.get("scanner_selection_trace"), dict)
-        else {}
-    )
+    candidate_hints, market_headlines, monitor_artifact, monitor_entry_metrics, monitor_entry_thresholds, monitor_policy_ref, monitor_summary, monitor_thresholds_used, monitor_timing_assessment, monitor_trace, scanner_selection_trace, selected_symbol, symbol_headlines = brief_input_candidate_hints_market_headlines(monitor=monitor, scanner_trace=scanner_trace, selected=selected, canonical_trade=canonical_trade, strategist_artifact=strategist_artifact, raw_input=raw_input, strategist_summary=strategist_summary, trade_story_input=trade_story_input, facade=_r3_sys.modules[__name__])
     if not scanner_selection_trace:
-        score_breakdown_by_symbol = (
-            scanner_artifact.get("score_breakdown_by_symbol")
-            if isinstance(scanner_artifact.get("score_breakdown_by_symbol"), dict)
-            else {}
-        )
-        scanner_selection_trace = {
-            "ranked_candidates": list(canonical_trade.get("top_candidates") or [])[:5],
-            "selected_symbol": selected_symbol,
-            "selected_rank": scanner_trace.get("selected_rank") or selected.get("rank"),
-            "selection_reason": canonical_trade.get("selection_basis")
-            or canonical_trade.get("selection_summary")
-            or scanner_trace.get("selection_reason_with_bias")
-            or selected.get("why"),
-            "selected_symbol_score_drivers": _brief_top_numeric_drivers(
-                score_breakdown_by_symbol.get(selected_symbol)
-                if isinstance(score_breakdown_by_symbol.get(selected_symbol), dict)
-                else score_breakdown,
-                limit=4,
-            ),
-        }
-    merged_monitor_stop_source: Dict[str, Any] = {}
-    if isinstance(monitor_artifact, dict):
-        merged_monitor_stop_source.update(monitor_artifact)
-    if isinstance(monitor_summary, dict):
-        merged_monitor_stop_source.update(monitor_summary)
-    if isinstance(monitor_trace, dict):
-        merged_monitor_stop_source.update(monitor_trace)
-    monitor_stop_policy_trace = _brief_build_stop_policy_trace(merged_monitor_stop_source)
-    canonical_monitor_stop_policy_trace = (
-        canonical_trade.get("monitor_stop_policy_trace")
-        if isinstance(canonical_trade.get("monitor_stop_policy_trace"), dict)
-        else {}
-    )
-    canonical_monitor_snapshot_stop_policy_trace = (
-        (canonical_trade.get("monitor_snapshot") or {}).get("monitor_stop_policy_trace")
-        if isinstance((canonical_trade.get("monitor_snapshot") or {}).get("monitor_stop_policy_trace"), dict)
-        else {}
-    )
+        scanner_selection_trace = brief_input_scanner_selection_trace(scanner_artifact=scanner_artifact, selected_symbol=selected_symbol, score_breakdown=score_breakdown, scanner_trace=scanner_trace, selected=selected, canonical_trade=canonical_trade, facade=_r3_sys.modules[__name__])[0]
+    canonical_monitor_snapshot_stop_policy_trace, canonical_monitor_stop_policy_trace, monitor_stop_policy_trace = brief_input_canonical_monitor_snapshot_stop_policy_t(monitor_artifact=monitor_artifact, monitor_summary=monitor_summary, monitor_trace=monitor_trace, canonical_trade=canonical_trade, facade=_r3_sys.modules[__name__])
     if not any(value not in (None, "", []) for value in monitor_stop_policy_trace.values()):
         monitor_stop_policy_trace = dict(canonical_monitor_stop_policy_trace or {})
     elif canonical_monitor_stop_policy_trace:
@@ -2409,42 +1857,7 @@ def _build_operator_brief_input(detail: Dict[str, Any]) -> Dict[str, Any]:
         for key, value in canonical_monitor_snapshot_stop_policy_trace.items():
             if monitor_stop_policy_trace.get(key) in (None, "", []):
                 monitor_stop_policy_trace[key] = value
-    commander_applied_policy = (
-        commander_artifact.get("applied_policy")
-        if isinstance(commander_artifact.get("applied_policy"), dict)
-        else (
-            commander_decision.get("applied_policy")
-            if isinstance(commander_decision.get("applied_policy"), dict)
-            else {}
-        )
-    )
-    monitor_applied_policy = (
-        monitor_trace.get("applied_policy")
-        if isinstance(monitor_trace.get("applied_policy"), dict)
-        else (
-            monitor_policy_ref.get("applied_policy")
-            if isinstance(monitor_policy_ref.get("applied_policy"), dict)
-            else {}
-        )
-    )
-    monitor_received_policy = (
-        monitor_trace.get("received_policy")
-        if isinstance(monitor_trace.get("received_policy"), dict)
-        else (
-            monitor_policy_ref.get("received_policy")
-            if isinstance(monitor_policy_ref.get("received_policy"), dict)
-            else {}
-        )
-    )
-    monitor_effective_policy = (
-        monitor_trace.get("effective_policy")
-        if isinstance(monitor_trace.get("effective_policy"), dict)
-        else (
-            monitor_policy_ref.get("effective_policy")
-            if isinstance(monitor_policy_ref.get("effective_policy"), dict)
-            else monitor_applied_policy
-        )
-    )
+    commander_applied_policy, monitor_applied_policy, monitor_effective_policy, monitor_received_policy = brief_input_commander_applied_policy_monitor_applied(commander_artifact=commander_artifact, commander_decision=commander_decision, monitor_trace=monitor_trace, monitor_policy_ref=monitor_policy_ref, facade=_r3_sys.modules[__name__])
     return {
         "run_id": detail.get("run_id"),
         "commander": {
@@ -3556,60 +2969,10 @@ def _render_operator_brief_markdown(brief: Dict[str, Any]) -> str:
     valid_statuses = {"", "ok", "partial", "salvaged", "repaired", "fallback"}
     status = str(brief.get("status") or "").strip().lower()
     if status not in valid_statuses:
-        failure = brief.get("failure") if isinstance(brief.get("failure"), dict) else {}
-        lines = [
-            "# 운영자 브리프",
-            "",
-            "## 1. 최종 판단 요약",
-            "",
-            "- 저장된 요약 결과가 완전하지 않아 현재 판단을 보수적으로 다시 정리했습니다.",
-            "",
-            "## 2. 종목 선정 이유",
-            "",
-            "- 저장 범위가 제한되어 종목 선정 배경은 간단히만 확인됩니다.",
-            "",
-            "## 3. 진입 근거",
-            "",
-            "- 저장된 데이터가 부족해 진입 시점의 분봉 근거는 보수적으로 해석합니다.",
-            "",
-            "## 4. 현재 상태",
-            "",
-            f"- 현재 브리프 상태는 {_metric_text(brief.get('status'))}이며 추가 확인이 필요합니다.",
-            "",
-            "## 5. 청산 계획",
-            "",
-            "- 청산 계획은 저장된 데이터 범위 안에서 다시 확인해야 합니다.",
-            "",
-            "## 6. 리스크 요인",
-            "",
-            f"- 생성 과정에서 {_metric_text(failure.get('reason') or brief.get('reason'))} 이슈가 있어 일부 설명이 축약되었습니다.",
-            "",
-            "## 7. 다음 체크포인트",
-            "",
-            "- 저장 구조와 LLM 응답 상태를 다시 확인합니다.",
-            "",
-        ]
+        lines = brief_render_lines(brief=brief, _metric_text=_metric_text, facade=_r3_sys.modules[__name__])[0]
         return "\n".join(lines)
 
-    sections = brief.get("sections") if isinstance(brief.get("sections"), dict) else {}
-    executive = sections.get("executive_decision") if isinstance(sections.get("executive_decision"), dict) else {}
-    selection = sections.get("why_symbol_chosen") if isinstance(sections.get("why_symbol_chosen"), dict) else {}
-    market = sections.get("market_context") if isinstance(sections.get("market_context"), dict) else {}
-    monitor = sections.get("position_monitor_reasoning") if isinstance(sections.get("position_monitor_reasoning"), dict) else {}
-    entry = sections.get("entry_timing") if isinstance(sections.get("entry_timing"), dict) else {}
-    exit_plan = sections.get("exit_plan") if isinstance(exit_plan := sections.get("exit_plan"), dict) else {}
-    operator_conclusion = sections.get("operator_conclusion") if isinstance(sections.get("operator_conclusion"), dict) else {}
-    risk_alerts = sections.get("risk_alerts") if isinstance(sections.get("risk_alerts"), dict) else {}
-    current_snapshot = sections.get("current_snapshot") if isinstance(sections.get("current_snapshot"), dict) else {}
-    strategist_evidence = sections.get("strategist_evidence") if isinstance(sections.get("strategist_evidence"), dict) else {}
-    scanner_focus = sections.get("scanner_focus") if isinstance(sections.get("scanner_focus"), dict) else {}
-    monitor_guard_snapshot = sections.get("monitor_guard_snapshot") if isinstance(sections.get("monitor_guard_snapshot"), dict) else {}
-    next_step_section = sections.get("next_step") if isinstance(sections.get("next_step"), dict) else {}
-
-    selected_symbol = str(executive.get("symbol") or "-")
-    final_action = str(executive.get("final_action") or operator_conclusion.get("current_action") or "").strip().upper()
-    posture_action = str(monitor.get("posture") or final_action).strip().upper()
-    headline = str(brief.get("headline") or "").strip()
+    current_snapshot, entry, executive, exit_plan, final_action, headline, market, monitor, monitor_guard_snapshot, next_step_section, operator_conclusion, posture_action, risk_alerts, scanner_focus, selected_symbol, selection, strategist_evidence = brief_render_current_snapshot_entry(brief=brief, facade=_r3_sys.modules[__name__])
 
     def _usable_narrative_text(text: Any) -> str:
         cleaned = _narrative_text(text)
@@ -3643,99 +3006,7 @@ def _render_operator_brief_markdown(brief: Dict[str, Any]) -> str:
             next_step_section,
         )
     ):
-        snapshot_summary = _summary_text(
-            current_snapshot,
-            brief.get("executive_summary"),
-            brief.get("headline"),
-        ) or "현재 run 기준 핵심 상태를 요약했습니다."
-        strategist_summary = _summary_text(
-            strategist_evidence,
-            brief.get("strategist_summary"),
-        ) or "전략가 근거는 제한된 범위에서만 확인되었습니다."
-        scanner_summary = _summary_text(
-            scanner_focus,
-            brief.get("scanner_summary"),
-        ) or "스캐너 선정 근거는 제한된 범위에서만 확인되었습니다."
-        monitor_summary = _summary_text(
-            monitor_guard_snapshot,
-            brief.get("monitor_summary"),
-        ) or "모니터와 가드 상태를 중심으로 현재 상황을 정리했습니다."
-        next_step_summary = _summary_text(
-            next_step_section,
-            operator_conclusion.get("watch_next"),
-            brief.get("operator_takeaways"),
-        ) or "다음 체크포인트를 계속 확인합니다."
-
-        snapshot_focus = _sanitize_operator_brief_text(
-            current_snapshot.get("current_focus")
-            or current_snapshot.get("selected_symbol")
-            or executive.get("symbol")
-        )
-        snapshot_action = _sanitize_operator_brief_text(
-            current_snapshot.get("final_action")
-            or executive.get("final_action")
-            or operator_conclusion.get("current_action")
-        )
-        guard_status = _sanitize_operator_brief_text(
-            monitor_guard_snapshot.get("guard_status") or current_snapshot.get("guard_status")
-        )
-        execution_status = _sanitize_operator_brief_text(
-            monitor_guard_snapshot.get("execution_status") or current_snapshot.get("execution_status")
-        )
-
-        candidate_hints = _compact_items(strategist_evidence.get("candidate_hints"), limit=8, max_len=40)
-        market_headlines = _compact_items(strategist_evidence.get("market_headlines"), limit=3, max_len=180)
-        symbol_headlines = _compact_items(strategist_evidence.get("symbol_headlines"), limit=3, max_len=180)
-
-        top_candidates = [row for row in list(scanner_focus.get("top_candidates") or []) if isinstance(row, dict)][:5]
-        top_candidates_summary = ", ".join(
-            f"#{idx} {(_sanitize_operator_brief_text(row.get('symbol')) or '-')}"
-            for idx, row in enumerate(top_candidates, start=1)
-            if _sanitize_operator_brief_text(row.get("symbol"))
-        )
-        selection_reason = _sanitize_operator_brief_text(scanner_focus.get("selection_reason"))
-        score_drivers_map = scanner_focus.get("score_drivers") if isinstance(scanner_focus.get("score_drivers"), dict) else {}
-        score_driver_items = [
-            f"{_sanitize_operator_brief_text(key)}={_format_float(value, 3)}"
-            for key, value in list(score_drivers_map.items())[:4]
-            if _sanitize_operator_brief_text(key)
-        ]
-
-        stop_policy_summary = _compact_items(monitor_guard_snapshot.get("stop_policy_summary"), limit=5, max_len=140)
-        monitor_reason = _sanitize_operator_brief_text(
-            monitor_guard_snapshot.get("monitor_reason") or monitor_guard_snapshot.get("entry_reason")
-        )
-        next_watch = _compact_items(next_step_section.get("watch_next"), limit=4, max_len=180)
-        takeaways = _compact_items(
-            next_step_section.get("operator_takeaways") or brief.get("operator_takeaways"),
-            limit=4,
-            max_len=180,
-        )
-
-        lines = [
-            "# 운영자 브리프",
-            "",
-            "## 1. 현재 스냅샷",
-            "",
-            f"- {snapshot_summary}",
-        ]
-        if snapshot_focus:
-            lines.append(f"- 현재 포커스 종목: {snapshot_focus}")
-        if snapshot_action:
-            lines.append(f"- 현재 판단: {snapshot_action}")
-        if guard_status:
-            lines.append(f"- 가드 상태: {guard_status}")
-        if execution_status:
-            lines.append(f"- 실행 상태: {execution_status}")
-
-        lines.extend([
-            "",
-            "## 2. 전략가 근거",
-            "",
-            f"- {strategist_summary}",
-        ])
-        if candidate_hints:
-            lines.append(f"- 전략가 후보 힌트: {', '.join(candidate_hints)}")
+        lines, market_headlines, monitor_reason, monitor_summary, next_step_summary, next_watch, scanner_summary, score_driver_items, selection_reason, stop_policy_summary, symbol_headlines, takeaways, top_candidates_summary = brief_render_lines_market_headlines(_summary_text=_summary_text, current_snapshot=current_snapshot, brief=brief, strategist_evidence=strategist_evidence, scanner_focus=scanner_focus, monitor_guard_snapshot=monitor_guard_snapshot, next_step_section=next_step_section, operator_conclusion=operator_conclusion, executive=executive, _compact_items=_compact_items, facade=_r3_sys.modules[__name__])
         if market_headlines:
             lines.append("- 시장 헤드라인:")
             for item in market_headlines:
@@ -3745,31 +3016,7 @@ def _render_operator_brief_markdown(brief: Dict[str, Any]) -> str:
             for item in symbol_headlines:
                 lines.append(f"  - {item}")
 
-        lines.extend([
-            "",
-            "## 3. 스캐너 포커스",
-            "",
-            f"- {scanner_summary}",
-        ])
-        if scanner_focus.get("selected_symbol"):
-            lines.append(
-                f"- 최종 선택: {scanner_focus.get('selected_symbol')} (rank {scanner_focus.get('selected_rank') or '-'})"
-            )
-        if top_candidates_summary:
-            lines.append(f"- 상위 후보: {top_candidates_summary}")
-        if selection_reason:
-            lines.append(f"- 선정 이유: {selection_reason}")
-        if score_driver_items:
-            lines.append(f"- 주요 점수 요인: {', '.join(score_driver_items)}")
-
-        lines.extend([
-            "",
-            "## 4. 모니터 / 가드",
-            "",
-            f"- {monitor_summary}",
-        ])
-        if monitor_reason:
-            lines.append(f"- 핵심 모니터 이유: {monitor_reason}")
+        brief_render_effect_free_block_3748(lines=lines, scanner_summary=scanner_summary, scanner_focus=scanner_focus, top_candidates_summary=top_candidates_summary, selection_reason=selection_reason, score_driver_items=score_driver_items, monitor_summary=monitor_summary, monitor_reason=monitor_reason, facade=_r3_sys.modules[__name__])
         if stop_policy_summary:
             lines.append("- 활성 스톱 정책:")
             for item in stop_policy_summary:
@@ -3799,44 +3046,7 @@ def _render_operator_brief_markdown(brief: Dict[str, Any]) -> str:
             lines.append("")
         return "\n".join(lines)
 
-    display_symbol = selected_symbol if selected_symbol and selected_symbol != "-" else "\ud574\ub2f9 \uc885\ubaa9"
-    executive_summary = _usable_narrative_text(brief.get("executive_summary")) or _narrative_text("" if status == "fallback" else (str(brief.get("executive_summary") or "").strip() or headline))
-    scanner_reason = _usable_narrative_text(brief.get("scanner_reason")) or _usable_narrative_text(brief.get("scanner_summary")) or _narrative_text("" if status == "fallback" else str(brief.get("scanner_reason") or brief.get("scanner_summary") or "").strip())
-    holding_summary = _usable_narrative_text(brief.get("holding_summary"))
-    if not holding_summary and posture_action not in {"SELL", "WAIT"}:
-        holding_summary = _usable_narrative_text(brief.get("monitor_summary"))
-    if not holding_summary:
-        holding_summary = _narrative_text("" if status == "fallback" else str(brief.get("holding_summary") or brief.get("monitor_summary") or "").strip())
-    exit_plan_summary = _usable_narrative_text(brief.get("exit_plan_summary")) or _narrative_text("" if status == "fallback" else str(brief.get("exit_plan_summary") or "").strip())
-    risk_summary = _usable_narrative_text(brief.get("risk_summary")) or _narrative_text("" if status == "fallback" else str(brief.get("risk_summary") or "").strip())
-    if risk_summary.startswith("[") and risk_summary.endswith("]"):
-        risk_summary = ""
-    next_checkpoints = [_usable_narrative_text(x) for x in list(brief.get("next_checkpoints") or []) if _usable_narrative_text(x)]
-    takeaways = [_narrative_text(x) for x in list(brief.get("operator_takeaways") or []) if _narrative_text(x)]
-
-    universe_size_raw = _safe_int(selection.get("universe_size"), 0)
-    selected_rank_raw = _safe_int(selection.get("selected_rank"), 0) or 1
-    selection_reasons = [str(x or "").strip() for x in list(selection.get("selection_reasons") or []) if str(x or "").strip()]
-    comparison_reasons = [str(x or "").strip() for x in list(selection.get("comparison_reasons") or []) if str(x or "").strip()]
-    signal_source = " ".join([scanner_reason] + selection_reasons + comparison_reasons).lower()
-    signal_phrases: List[str] = []
-    if any(token in signal_source for token in ["\uac70\ub798\ub7c9", "volume", "trading value", "\uac70\ub798\ub300\uae08"]):
-        signal_phrases.append("\uac70\ub798\ub7c9\uacfc \uac70\ub798\ub300\uae08 \ud750\ub984\uc774 \ud568\uaed8 \ud655\uc778\ub418\uc5c8\uc2b5\ub2c8\ub2e4.")
-    if any(token in signal_source for token in ["\ub3cc\ud30c", "breakout"]):
-        signal_phrases.append("\ub2e8\uae30 \ub3cc\ud30c \uc2dc\ub3c4 \ud750\ub984\uc774 \ud3ec\ucc29\ub418\uc5c8\uc2b5\ub2c8\ub2e4.")
-    if any(token in signal_source for token in ["\ubcc0\ub3d9\uc131", "volatility"]):
-        signal_phrases.append("\ub2e8\uae30 \ubcc0\ub3d9\uc131 \ud655\ub300\uac00 \ud568\uaed8 \uad00\ucc30\ub418\uc5c8\uc2b5\ub2c8\ub2e4.")
-    if any(token in signal_source for token in ["\ub20c\ub9bc", "pullback", "\ubc18\ub4f1", "rebound"]):
-        signal_phrases.append("\ub20c\ub9bc \uc774\ud6c4 \ubc18\ub4f1 \uac00\ub2a5\uc131\uc744 \ud568\uaed8 \uc810\uac80\ud588\uc2b5\ub2c8\ub2e4.")
-    if not scanner_reason or not any(token in scanner_reason for token in ["\ud6c4\ubcf4", "\uc120\uc815", "\uc21c\uc704", "\uac10\uc2dc"]):
-        if universe_size_raw > 0:
-            scanner_reason = f"\ucd1d {universe_size_raw}\uac1c \ud6c4\ubcf4 \uc911 {selected_rank_raw}\uc21c\uc704 \uac10\uc2dc \ub300\uc0c1\uc73c\ub85c \uc120\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4."
-        else:
-            scanner_reason = "\uc774\ubc88 \uc2e4\ud589\uc5d0\uc11c\ub294 \ud6c4\ubcf4 \ube44\uad50 \ub370\uc774\ud130\uac00 \ucda9\ubd84\ud788 \uc800\uc7a5\ub418\uc9c0 \uc54a\uc544 \uc0c1\ub300 \uc21c\uc704\ub97c \uc790\uc138\ud788 \ubcf5\uc6d0\ud558\uae30 \uc5b4\ub835\uc2b5\ub2c8\ub2e4. \ub2e4\ub9cc \uc774\ud6c4 \ubcf4\uc720\u00b7\uccad\uc0b0 \ud750\ub984\uc740 \ud655\uc778\ub418\uc5b4 \ud574\ub2f9 \uc885\ubaa9 \uc911\uc2ec\uc73c\ub85c \uc815\ub9ac\ud588\uc2b5\ub2c8\ub2e4."
-    if signal_phrases and all(phrase not in scanner_reason for phrase in signal_phrases[:2]):
-        scanner_reason = " ".join([scanner_reason] + signal_phrases[:2])
-
-    entry_summary = _usable_narrative_text(brief.get("entry_summary"))
+    comparison_reasons, display_symbol, entry_summary, executive_summary, exit_plan_summary, holding_summary, next_checkpoints, risk_summary, scanner_reason, selection_reasons, takeaways = brief_fallback_comparison_reasons_display_symbol(selected_symbol=selected_symbol, _usable_narrative_text=_usable_narrative_text, _narrative_text=_narrative_text, brief=brief, status=status, headline=headline, posture_action=posture_action, selection=selection, facade=_r3_sys.modules[__name__])
     if not entry_summary:
         entry_reason_text = _narrative_text(str(entry.get("reason_text") or "").strip())
         if _count_hangul_chars(entry_reason_text) > 0 and status != "fallback":
@@ -3922,105 +3132,7 @@ def _render_operator_brief_markdown(brief: Dict[str, Any]) -> str:
         else:
             risk_summary = "\ud604\uc7ac \uc815\ubcf4 \ubc94\uc704\uc5d0\uc11c\ub294 \ucd94\uac00 \ub9ac\uc2a4\ud06c\uac00 \uc81c\ud55c\uc801\uc774\uc9c0\ub9cc \ubd84\ubd09 \uad6c\uc870 \ubcc0\ud654\uc640 \uac70\ub798\ub7c9 \ub454\ud654 \uc5ec\ubd80\ub97c \uacc4\uc18d \ud655\uc778\ud574\uc57c \ud569\ub2c8\ub2e4."
 
-    if not next_checkpoints:
-        next_checkpoints = [_narrative_text(x) for x in list(operator_conclusion.get("watch_next") or []) if _narrative_text(x)]
-    if not next_checkpoints and takeaways:
-        next_checkpoints = takeaways[:3]
-    if not next_checkpoints:
-        next_checkpoints = _default_next_checkpoints(entry, monitor, exit_plan, posture_action)
-    if not next_checkpoints:
-        if posture_action == "SELL":
-            next_checkpoints = [
-                "\ub2e4\uc74c \uac70\ub798\uc5d0\uc11c\ub294 \ubd84\ubd09 \uc9c4\uc785 \uadfc\uac70\uc640 \ud6c4\ubcf4 \ube44\uad50 \ub370\uc774\ud130\uac00 \ucda9\ubd84\ud788 \ub0a8\ub294\uc9c0 \uba3c\uc800 \ud655\uc778\ud569\ub2c8\ub2e4."
-            ]
-        elif posture_action == "WAIT":
-            next_checkpoints = [
-                "\ubd84\ubd09 \uae30\uc900\uc73c\ub85c \uc7ac\ub3cc\ud30c \uc5ec\ubd80\uc640 \uac70\ub798\ub7c9 \uc99d\uac00 \uc5ec\ubd80\ub97c \ub2e4\uc74c \uccb4\ud06c\ud3ec\uc778\ud2b8\ub85c \uc124\uc815\ud569\ub2c8\ub2e4."
-            ]
-        else:
-            next_checkpoints = [
-                "\ud604\uc7ac \ubcf4\uc720 \uc0c1\ud0dc\uc5d0\uc11c\ub294 \uace0\uc810 \ub300\ube44 \ud558\ub77d\ud3ed\uacfc \uac70\ub798\ub7c9 \ub454\ud654\ub97c \uc8fc\uc694 \ud655\uc778 \uc9c0\ud45c\ub85c \ubd05\ub2c8\ub2e4."
-            ]
-
-    lines = [
-        "# 운영자 브리프",
-        "",
-        "## 1. 최종 판단 요약",
-        "",
-        f"- {executive_summary}",
-        "",
-        "## 2. 종목 선정 이유",
-        "",
-        f"- {scanner_reason}",
-    ]
-    _append_list(lines, selection_reasons, limit=3)
-    _append_list(lines, comparison_reasons, limit=2)
-
-    lines.extend([
-        "",
-        "## 3. 진입 근거",
-        "",
-        f"- {entry_summary}",
-    ])
-    entry_metrics = entry.get("metrics") if isinstance(entry.get("metrics"), dict) else {}
-    if entry_metrics.get("recent_high") not in (None, ""):
-        lines.append(f"- 최근 고점 기준값은 {_format_float(entry_metrics.get('recent_high'), 2)}였습니다.")
-    if entry_metrics.get("vwap") not in (None, ""):
-        lines.append(f"- 당시 VWAP 기준값은 {_format_float(entry_metrics.get('vwap'), 2)}였습니다.")
-    if entry_metrics.get("vwap_distance") not in (None, ""):
-        lines.append(f"- VWAP 이격은 {_vwap_interpretation(entry_metrics.get('vwap_distance'))}")
-    if entry_metrics.get("volume_ratio") not in (None, ""):
-        lines.append(f"- 거래량은 평시 대비 {_format_float(entry_metrics.get('volume_ratio'), 2)}배 수준으로 확인됐습니다.")
-    if entry_metrics.get("pullback_pct") not in (None, ""):
-        lines.append(f"- 눌림 폭은 {_format_percent(entry_metrics.get('pullback_pct'), 2)} 수준이었습니다.")
-
-    lines.extend([
-        "",
-        "## 4. 현재 상태",
-        "",
-        f"- {holding_summary}",
-        f"- 현재 포지션 판단은 {_action_label(monitor.get('posture') or final_action)}입니다.",
-        f"- 평균 단가는 {_metric_text(monitor.get('average_price'))}, 현재가는 {_metric_text(monitor.get('current_price'))}, 장중 고점은 {_metric_text(monitor.get('peak_price'))}입니다.",
-        f"- 현재 손익은 {_metric_text(monitor.get('current_drawdown'))}이며, 고점 대비 하락폭은 {_metric_text(monitor.get('peak_drawdown'))}입니다.",
-    ])
-    hold_reasons = [str(x or "").strip() for x in list(monitor.get("hold_reasons") or []) if str(x or "").strip()]
-    _append_list(lines, hold_reasons, limit=3)
-
-    lines.extend([
-        "",
-        "## 5. 청산 계획",
-        "",
-        f"- {exit_plan_summary}",
-        (
-            f"- 현재 {_axis_label(exit_plan.get('effective_stop_reason') or monitor.get('effective_stop_reason'))}은 {_metric_text(exit_plan.get('effective_stop') or monitor.get('effective_stop'))} 수준으로 보고 있습니다."
-            if _axis_is_explicit(_axis_label(exit_plan.get('effective_stop_reason') or monitor.get('effective_stop_reason')))
-            else f"- 현재 저장된 손절 기준은 {_metric_text(exit_plan.get('effective_stop') or monitor.get('effective_stop'))} 수준으로 보고 있습니다."
-        ),
-        f"- 목표 수익 실현 기준은 {_metric_text(exit_plan.get('take_profit') or monitor.get('take_profit'))} 수준입니다.",
-        f"- 주요 감시 조건은 {', '.join([_axis_label(x) for x in list(exit_plan.get('watch_axes') or monitor.get('watch_axes') or [])[:3] if str(x or '').strip()]) or '감시 조건 변화'}입니다.",
-    ])
-    exit_triggers = [str(x or "").strip() for x in list(exit_plan.get("exit_triggers") or monitor.get("exit_triggers") or []) if str(x or "").strip()]
-    _append_list(lines, exit_triggers, limit=3)
-
-    lines.extend([
-        "",
-        "## 6. 리스크 요인",
-        "",
-        f"- {risk_summary}",
-    ])
-    weak_factors = [str(x or "").strip() for x in list(risk_alerts.get("weak_factors") or []) if str(x or "").strip()]
-    _append_list(lines, weak_factors, limit=3)
-    if str(market.get("global_sentiment") or "-") != "-" or str(market.get("vix") or "-") != "-":
-        lines.append(f"- 시장 맥락상 글로벌 감성은 {_metric_text(market.get('global_sentiment'))}, VIX는 {_metric_text(market.get('vix'))} 수준입니다.")
-
-    lines.extend([
-        "",
-        "## 7. 다음 체크포인트",
-        "",
-    ])
-    _append_list(lines, next_checkpoints or takeaways or ["다음 분봉과 거래량 흐름을 다시 확인합니다."], limit=4)
-    if lines[-1] != "":
-        lines.append("")
+    lines = brief_fallback_lines(next_checkpoints=next_checkpoints, _narrative_text=_narrative_text, operator_conclusion=operator_conclusion, takeaways=takeaways, _default_next_checkpoints=_default_next_checkpoints, entry=entry, monitor=monitor, exit_plan=exit_plan, posture_action=posture_action, executive_summary=executive_summary, scanner_reason=scanner_reason, _append_list=_append_list, selection_reasons=selection_reasons, comparison_reasons=comparison_reasons, entry_summary=entry_summary, _vwap_interpretation=_vwap_interpretation, holding_summary=holding_summary, _action_label=_action_label, _metric_text=_metric_text, final_action=final_action, exit_plan_summary=exit_plan_summary, _axis_is_explicit=_axis_is_explicit, _axis_label=_axis_label, risk_summary=risk_summary, risk_alerts=risk_alerts, market=market, facade=_r3_sys.modules[__name__])[0]
     return "\n".join(lines)
 def _operator_brief_source_signature(detail: Dict[str, Any]) -> str:
     trade_report = detail.get("trade_report") if isinstance(detail.get("trade_report"), dict) else {}
