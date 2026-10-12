@@ -16,3 +16,6 @@
 
 ## Next
 - Only read existing audit logs/evidence for the accidental live-root test. If attribution is unknown, report BLOCKED without probing live; no runtime changes or merge. P1.5.3 remains unapproved.
+
+## Closeout 005 triage (2026-10-12, Claude; logs only)
+- [P15-R3-CLAUDE-LIVE-RUN-TRIAGE-005.md](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LIVE-RUN-TRIAGE-005.md): the accidental live-root run collected **0 tests** (file absent in live checkout), so test-code causation is excluded; writer of `events.jsonl`/`reports/canonical|llm` changes is **UNKNOWN** (no PID metadata), consistent with live loops. No live write/impact by the run identified (read-only scans incl. full SHA-256 read of ~10 GB ledger). Not probed. Gates unchanged; P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.

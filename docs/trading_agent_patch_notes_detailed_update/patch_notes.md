@@ -2829,3 +2829,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 실행 경로 오류가 있던 비교 결과는 무효 처리했으며, 감사 중 관찰된 쓰기 이벤트의 귀속은 확인되지 않았습니다.
 - 실보고서/LLM parity는 NOT RUN, 기존 전체 테스트 격리 결함 OPEN. P1.5.2 OPEN / P1.5.3 미승인.
 - 근거: `docs/refactor/work_orders/evidence/P15-R3-CODEX-SEAM-AUDIT-004.md`, `docs/daily_patch/2026-10-12_p152_r3_audit_closeout.md`.
+
+## 2026-10-12 · P1.5.2 R3 감사 종결 005 — live-root 실수 실행 로그 분석
+**Stage:** Architecture and Maintainability
+**Tags:** DOCUMENTATION · SAFETY
+
+- 수리 전 비교 테스트가 live `C:\Agentra`에서 실행됐으나 대상 테스트 파일이 없어 **수집된 테스트 0개**였고, 테스트 코드로 인한 쓰기 가능성은 배제됩니다(conftest 훅만 실행).
+- `events.jsonl`, `reports/canonical|llm` 변경의 쓰기 주체는 PID 정보가 없어 **UNKNOWN**이며 live 루프와 일치하나 입증되지는 않았습니다. live 프로브/재실행은 하지 않았습니다.
+- 확인된 영향은 읽기 전용 스캔(약 10GB ledger SHA-256 읽기 포함)뿐이며 비교 증거에서는 제외합니다. 원인은 작업 디렉터리 의존 도구이고, `--root` 가드는 별도 승인 과제로 권고합니다.
+- 실데이터/LLM parity BLOCKED, 전체 pytest 0-write와 `controlled_mock_lanes` 격리 OPEN, façade SIZE_DEFERRED, P1.5.2 OPEN / P1.5.3 미착수.

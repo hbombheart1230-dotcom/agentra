@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 203,
+  "entry_count": 204,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5537,6 +5537,30 @@
         "docs/refactor/work_orders/evidence/P15-R3-CODEX-SEAM-AUDIT-004.md",
         "docs/refactor/work_orders/P15_R3_AUDIT_CLOSEOUT_005.md",
         "docs/daily_patch/2026-10-12_p152_r3_audit_closeout.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Audit Closeout 005",
+      "title": "Triage of the accidental live-root pytest run from existing logs",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "DOCUMENTATION",
+        "SAFETY"
+      ],
+      "summary": "Evidence-only: reconcile the pre-repair comparison run executed from live C:\\Agentra using saved logs and source, without probing or rerunning on live.",
+      "details": [
+        "The run collected zero tests (test file absent in the live checkout), so test-code causation of the reported writer changes is excluded; only conftest hooks ran.",
+        "Writer of data/evidence_ledger/events.jsonl and reports/canonical|llm day directories is UNKNOWN (no PID metadata); consistent with live loops, not proven.",
+        "No live write or runtime impact identified; the run caused read-only scans including a full SHA-256 read of the ~10 GB ledger. Result is excluded as comparison evidence.",
+        "Root cause: seam-challenge tool resolves the tree from the working directory; explicit --root guard recommended under a separately approved task.",
+        "Gates unchanged: real-data/LLM parity BLOCKED, full-suite zero-write and controlled_mock_lanes isolation OPEN, façade SIZE_DEFERRED. P1.5.2 OPEN, P1.5.3 not authorized."
+      ],
+      "impact": "Documents what is and is not known about the accidental live-root run; no runtime change.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LIVE-RUN-TRIAGE-005.md",
+        "docs/daily_patch/2026-10-12_p1_5_2_r3_live_run_triage_005.md"
       ],
       "status": "current"
     }
