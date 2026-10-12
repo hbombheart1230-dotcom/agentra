@@ -2866,3 +2866,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `SIZE_DEFERRED`는 계속 줄일 대상이며 영구 면제 아님. 감사 후 LOC 008에서 함수별 책임/실제 소비자/전역 패치 호환성을 검증하고 **안전하게 줄일 수 있는 부분을 최대한 추출**할 계획.
 - 실보고서·LLM parity BLOCKED, 테스트 격리 부채 OPEN. P1.5.2 OPEN, P1.5.3 미승인.
 - 근거: `docs/refactor/work_orders/P15_R3_CODEX_GUARD_AUDIT_007.md`, `docs/refactor/work_orders/P15_R3_FACADE_LOC_MAX_REDUCTION_008.md`.
+
+## 2026-10-12 · P1.5.2 Guard 007 수용 및 LOC 008 활성화
+**Stage:** Architecture and Maintainability
+**Tags:** SAFETY · TESTING · REPORTING · REFACTOR
+
+- Codex Guard 007 독립 감사 **PASS_WITH_FINDINGS**: 61 PASS / 0 SKIP, 오프라인 seam 357건 / 57함수, 격리 clone 쓰기 0. `cache_dir` 설정 경고 1건은 비차단이며 필수 수정 없음.
+- `refactor/p1.5` 단일 개발 브랜치 유지, `main` 및 라이브 영향 없음. 사용자 방향에 맞춰 Reporting façade **안전하게 줄일 수 있는 부분 최대 축소**를 위한 LOC 008 구현 작업 활성화.
+- 현재 façade AI 1,958 / Markdown 1,891 / Story 562, 총 4,411 LOC. 436 ABI 및 호출 중 façade 전역 패치 호환성을 유지하면서 함수별 책임·호출자 분석 후 하나의 응집된 구현 영역을 추출하고 Codex 감사를 받을 예정.
+- 실데이터/LLM parity BLOCKED, `controlled_mock_lanes` 쓰기 격리 OPEN, P1.5.2 OPEN / P1.5.3 미승인.
+- 근거: `docs/refactor/work_orders/evidence/P15-R3-CODEX-GUARD-AUDIT-007.md`, `docs/refactor/work_orders/P15_R3_FACADE_LOC_MAX_REDUCTION_008.md`, `docs/daily_patch/2026-10-12_p152_guard007_pass_loc008_activation.md`.

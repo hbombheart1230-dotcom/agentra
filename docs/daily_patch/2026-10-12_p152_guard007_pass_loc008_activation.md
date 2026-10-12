@@ -1,0 +1,5 @@
+# 2026-10-12 — Guard 007 accepted and Reporting LOC 008 activated
+
+Codex independent Guard 007: **PASS_WITH_FINDINGS**, 61 guard PASS, 357 seam cases/57 functions exit 0, detached audit clone 0 writes, no runtime code changes or live/Q12 access; only nonblocking pytest `cache_dir` configuration warning. R3 Guard 006 pinned SHA `f6cc71b`.
+
+GPT/User prior direction: do not leave Reporting oversized without explaining and reducing every safe candidate. Active `docs/refactor/work_orders/P15_R3_FACADE_LOC_MAX_REDUCTION_008.md` now authorizes Claude one bounded, cohesive, highest-yield Reporting façade extraction after a concise per-function consumer/Owner inventory; Codex audits the resulting SHA. Current façade sizes: AI 1958, Markdown 1891, Story 562 (4411 vs original 18743), and 436 public callable declarations remain. SIZE_DEFERRED remains an unmet target, not a permanent pass. P1.5.2 OPEN; real frozen output/LLM parity BLOCKED; `controlled_mock_lanes` write isolation OPEN; P1.5.3 and main merge unapproved.

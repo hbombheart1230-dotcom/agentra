@@ -1,28 +1,26 @@
-# P15-R3-FACADE-LOC-MAX-REDUCTION-008 — queued after Guard 007
+# P15-R3-FACADE-LOC-MAX-REDUCTION-008 — ACTIVE: measure and extract maximum safely cohesive slice
 
-**Status: QUEUED FOR ARCHITECTURE/CONSUMER PROOF, NOT YET AUTHORIZED TO MODIFY RUNTIME.**
-**Direction:** Reduce all remaining safely reducible code. `SIZE_DEFERRED` is an unmet target, not permission to stop. One refactor branch `refactor/p1.5`; no trading/LLM behavior change.
+**Authorized:** Claude first analyzes then IMPLEMENTS **one** high-value bounded Reporting façade reduction slice without another prompt; STOP after commit/push/evidence for Codex independent audit.
+**Branch:** `refactor/p1.5` only. Detached/isolated separate clone allowed for evidence; DO NOT create feature/task remote branches or disturb live `C:\Agentra`/Q12.
+**Start SHA:** `ac12d2d570c0fed436eca0c129b2923f166499f0`. Read `CLAUDE.md → docs/refactor/work_orders/CURRENT.md → this task`; do not revisit archives.
+**Scope:** `libs/reporting` (only the three public façades and genuinely existing/cohesive Owners or a necessary bounded domain Owner), directly relevant tests, documentation and UI patch notes. No `apps/`, `graphs/`, `conftest.py`, trading logic, live data, broker or real LLM.
 
-## Direct source inventory at `f6cc71b25d9f3aadd356ee6509b629778861ce32` (physical lines)
-| Façade | Original | Pre-R3 | Now | Top-level functions | Preamble before first def | Functions <=5 lines |
-|---|---:|---:|---:|---:|---:|---:|
-| AI Reporter | 8354 | 2761 | **1958** | 182 | 217 | 93 |
-| Markdown | 5862 | 2658 | **1891** | 209 | 187 | 107 |
-| Story | 4527 | 636 | **562** | 45 | 150 | 25 |
-| TOTAL | 18743 | 6055 | **4411** | 436 | 554 | 225 |
+## Why big — measured at Guard 006 SHA
+| Façade | Initial LOC | Current LOC | Top-level defs | Before-first-def LOC | Functions ≤5 LOC |
+|---|---:|---:|---:|---:|---:|
+| `trade_report_ai.py` | 8354 | **1958** | 182 | 217 | 93 |
+| `trade_report_markdown_clean.py` | 5862 | **1891** | 209 | 187 | 107 |
+| `trade_story_pipeline.py` | 4527 | **562** | 45 | 150 | 25 |
+| **TOTAL** | **18743** | **4411** | **436** | **554** | **225** |
 
-R3 reduced the façade files by 1644 LOC, with 57 moved implementation functions in 11 small Owners. Those lines mostly moved, not disappeared from the repository.
+The 436 top-level declarations are compatibility/patch surfaces (and many already thin); 182 AI and 209 Markdown declarations alone cannot fit into 350 LOC under current ABI. **Do not stop at SIZE_DEFERRED:** reduce real residual body and dependency wiring as far as semantic proof permits. Do not minify, suppress symbols or add `__getattr__`/wildcard proxy hacks.
 
-## Why large, and high-yield candidates
-- AI has 182 function contracts plus import/dependency wiring. Larger remaining candidates (physical spans): `_fallback_report` ~64, `build_separated_ai_trade_report` ~61, `_section_builder_deps` ~59, `_trade_report_language_meta` ~45, `build_ai_trade_report` ~39, `_router_chat_with_hard_timeout` ~32. Protect LLM timeout/retry/fallback and truth precedence with explicit proof; don't blindly move.
-- Markdown has 209 preserved function contracts. Dependency adapters consume many lines: `_summary_render_deps` ~59, `_summary_input_deps` ~50, `_markdown_strategy_deps` ~35, `_strategy_memory_deps` ~34. Look for coherent canonical ownership and reduced wiring.
-- Story: `_story_assembly_deps` ~46, `build_lifecycle_bundle` ~27, `build_report_section_seeds` ~23, `_human_payload_deps` ~22, `build_timeline` ~23. Smaller baseline means another bounded split may help.
-- Most functions already act as short compatibility surfaces: 225 of 436 are <=5 lines. Even if every AI/Markdown public function were only 2 lines, 182 AI defs require at least 364 lines and 209 Markdown defs require at least 418 lines, **before imports or wiring**. Thus the strict 350-line target contradicts retaining all original defs. Shrink through proven consumer migration and P1.5.10 wrapper retirement, not minification or hiding exports.
+## Authorized ordered work
+1. **Read-only measurement first (within this task):** inventory every remaining façade function's body/LOC and reason: pure implementation, domain glue, dependency-map, necessary dynamic patch wrapper or LLM safety-locked entrypoint. For meaningful candidates record canonical Owner, static and dynamic consumer hazards, monkeypatch timing and expected LOC savings. Produce a compact inventory in the evidence, not a 436-row chat dump.
+2. **Choose ONE biggest high-confidence cohesive candidate group** and IMPLEMENT transfer to the existing correct Owner or new responsibility-named Owner only when necessary, bounded <=350 physical LOC. Prioritize pure Markdown formatting, Story assembly glue or deterministic AI helpers and dependency-map consolidation; evaluate the real size savings rather than merely moving a function to another filename. Avoid fragile LLM timeout/repair/fallback and truth precedence until strong deterministic mock evidence; no new numbered `bodies_06` or responsibility duplication.
+3. **Compatibility invariants:** preserve the public façade’s 436 name/signature/default/decorator/module identities, `facade.NAME` **use-time** global resolution (including mid-call mutation), import DAG, return/schema/order/truth provenance/Unicode, mock LLM prompt/routing/retry/timeout/call count, and no new execution/approval authority.
+4. **Gates:** before/after line counts for changed façade and Owners, 436 ABI, 57 moved-body seam, deterministic synthetic Markdown/JSON fixtures (mock LLM where applicable), import cycle, all affected Reporting focused pytest, guard 006 offline tools if used; **zero production writes** in separate isolated clone. Record exact commands/counts/SKIP; no full native pytest rerun, no real operational reports, orders or LLM calls. Do not weaken tests to match implementation.
+5. **Stop if blocked:** if no safe positive-value reduction survives the real caller/seam review, **do not make runtime changes**; publish measured reasons and next best candidates. Do not substitute source packing, fragile aliases, blanket export deletion, or code relocated into an oversized Owner. Public symbol retirement only with full consumer proof and later P1.5.10 authorization.
+6. **Delivery:** one coherent commit/push to `origin/refactor/p1.5` after head check, update BOTH UI-linked patch notes JSON/MD and daily patch, save bounded evidence under `docs/refactor/work_orders/evidence/`, generate ZIP of **only modified/new paths**, and STOP for Codex independent audit at pinned SHA. No main merge/production rollout/P1.5.3.
 
-## Proposed future tranches (not approved yet)
-1. Read-only per-function LOC/owner/caller/monkeypatch ledger: KEEP/MOVE/WRAPPER/SAFETY-LOCK/DEAD. Mark whether each nontrivial body or dependency adapter can move to an *existing cohesive Owner* and preserve use-time `facade.NAME` semantics.
-2. After GPT/user acceptance of a bounded slice, Claude moves highest safe-yield pure/reporting glue first, preserving **436 ABI**, result/schema/order/Unicode, LLM prompts/retry/call count, import DAG, and no production writes. Never create a giant catch-all, duplicate business Owner, or expand a new Owner beyond 350 LOC. Codex audits exact SHA.
-3. Consider legacy public-wrapper deletions only with complete dynamic/static consumer and patch evidence, ordinarily at P1.5.10. Static absence is not proof of dead code.
-4. Record actual before/after LOC and *why each remaining long function cannot be safely moved*, including consumer-proven compatibility exceptions; don't treat size exception as PASS.
-
-**Open:** Actual historical report/LLM parity BLOCKED/NOT RUN, native full-suite controlled_mock_lanes write isolation OPEN, numbered Owner domain cohesion debt; P1.5.2 OPEN/P1.5.3 forbidden.
+**Separate unresolved gates:** historic real report/LLM parity BLOCKED, pre-existing `controlled_mock_lanes` write-isolation OPEN, façade size exceptions and numbered Owner cohesion debt until explicitly resolved. **P1.5.2 OPEN.**
