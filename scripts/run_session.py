@@ -12,7 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from libs.core.settings import load_env_file
-from libs.runtime.entrypoint_common import first_universe_symbol, resolve_env_path, to_int
+from libs.runtime.entrypoint_common import first_universe_symbol, live_loop_env, resolve_env_path, to_int
 from libs.runtime.session_entry_dispatch import dispatch_entry_implementation
 
 
@@ -44,12 +44,12 @@ def _build_parser(default_env_path: Path) -> argparse.ArgumentParser:
     parser.add_argument("--allow-offhours", action="store_true")
     parser.add_argument(
         "--lock-path",
-        default=str(os.getenv("M13_LIVE_LOCK_PATH", "data/state/m13_live_loop.lock") or "data/state/m13_live_loop.lock"),
+        default=str(live_loop_env("LIVE_LOOP_LOCK_PATH", "M13_LIVE_LOCK_PATH", "data/state/m13_live_loop.lock") or "data/state/m13_live_loop.lock"),
     )
     parser.add_argument(
         "--lock-stale-sec",
         type=int,
-        default=to_int(os.getenv("M13_LIVE_LOCK_STALE_SEC", "1800"), 1800),
+        default=to_int(live_loop_env("LIVE_LOOP_LOCK_STALE_SEC", "M13_LIVE_LOCK_STALE_SEC", "1800"), 1800),
     )
     parser.add_argument("--event-log-path", default=os.getenv("EVENT_LOG_PATH", "data/logs/events.jsonl"))
     parser.add_argument("--summary-report-dir", default="reports/live_summary")

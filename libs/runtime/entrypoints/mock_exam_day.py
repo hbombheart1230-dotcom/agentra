@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parents[3]
 
+from libs.runtime.entrypoint_common import live_loop_env
 from libs.runtime.live_loop_process_query import query_live_loop_processes
 from libs.runtime.market_hours import KST
 from libs.runtime.market_hours import now_kst
@@ -206,7 +207,7 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument("--python-path", default=sys.executable)
     p.add_argument("--timeout-sec", type=int, default=1800)
     p.add_argument("--lock-path", default="data/state/m13_live_loop.lock")
-    p.add_argument("--lock-stale-sec", type=int, default=_to_int(os.getenv("M13_LIVE_LOCK_STALE_SEC", "1800"), 1800))
+    p.add_argument("--lock-stale-sec", type=int, default=_to_int(live_loop_env("LIVE_LOOP_LOCK_STALE_SEC", "M13_LIVE_LOCK_STALE_SEC", "1800"), 1800))
     p.add_argument("--session-stdout-path", default="data/logs/dev/session/mock_exam_day_session_stdout.log")
     p.add_argument("--session-stderr-path", default="data/logs/dev/session/mock_exam_day_session_stderr.log")
     p.add_argument("--now-kst", default=None)

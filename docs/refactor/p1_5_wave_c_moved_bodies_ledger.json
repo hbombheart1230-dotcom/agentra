@@ -242,6 +242,21 @@
    "module": "graphs/commander_runtime.py",
    "name": "_seed_commander_shadow_prior_context",
    "owner": "libs/runtime/commander/event_projection.py"
+  },
+  {
+   "module": "graphs/nodes/execute_from_packet.py",
+   "name": "_append_execution_trace_entries",
+   "owner": "libs/execution/executor_observability.py"
+  },
+  {
+   "module": "graphs/nodes/execute_from_packet.py",
+   "name": "_summarize_strategy_policy",
+   "owner": "libs/execution/executor_observability.py"
+  },
+  {
+   "module": "graphs/nodes/execute_from_packet.py",
+   "name": "_extract_strategy_policy",
+   "owner": "libs/execution/executor_observability.py"
   }
  ]
 }

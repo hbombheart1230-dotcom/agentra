@@ -67,3 +67,15 @@ def resolve_path_from_root(root: Path, raw: str, default_rel: str) -> Path:
     if not path.is_absolute():
         path = root / path
     return path
+
+
+def live_loop_env(canonical: str, legacy: str, default: str) -> str:
+    """Resolve a live-loop environment value: canonical name first, then the legacy (milestone) name, then default.
+
+    Compatibility helper (P1.5.8): when only the legacy variable is set -- or neither -- the result is exactly the
+    previous ``os.getenv(legacy, default)``; the canonical name is purely additive.
+    """
+    value = os.getenv(canonical)
+    if value is None:
+        value = os.getenv(legacy)
+    return default if value is None else value

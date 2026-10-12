@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 from graphs.pipelines.offhours_validation import run_offhours_validation_once
 from libs.core.settings import load_env_file
-from libs.runtime.entrypoint_common import first_universe_symbol, resolve_path_from_root, to_int
+from libs.runtime.entrypoint_common import first_universe_symbol, live_loop_env, resolve_path_from_root, to_int
 from libs.runtime.live_loop_lock import acquire_live_loop_lock, release_live_loop_lock
 from libs.runtime.offhours_validation_runtime import (
     apply_runtime_paths,
@@ -31,8 +31,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     p.add_argument("--sleep-sec", type=int, default=to_int(os.getenv("SCAN_INTERVAL_SEC", "60"), 60))
     p.add_argument("--iterations", type=int, default=0, help="0 means infinite loop.")
     p.add_argument("--once", action="store_true")
-    p.add_argument("--lock-path", default=str(os.getenv("M13_LIVE_LOCK_PATH", "data/state/offhours_validation.lock") or "data/state/offhours_validation.lock"))
-    p.add_argument("--lock-stale-sec", type=int, default=to_int(os.getenv("M13_LIVE_LOCK_STALE_SEC", "1800"), 1800))
+    p.add_argument("--lock-path", default=str(live_loop_env("LIVE_LOOP_LOCK_PATH", "M13_LIVE_LOCK_PATH", "data/state/offhours_validation.lock") or "data/state/offhours_validation.lock"))
+    p.add_argument("--lock-stale-sec", type=int, default=to_int(live_loop_env("LIVE_LOOP_LOCK_STALE_SEC", "M13_LIVE_LOCK_STALE_SEC", "1800"), 1800))
     p.add_argument("--json", action="store_true")
     args = p.parse_args(argv)
 

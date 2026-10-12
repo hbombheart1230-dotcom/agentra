@@ -36,6 +36,12 @@ from libs.core.path_isolation import isolate_canonical_path_for_pytest
 from libs.runtime.opening_rank1_controlled_probe import (
     evaluate_opening_alpha_execution_price_guard,
 )
+import sys as _r3_sys
+from libs.execution.executor_observability import (
+    _append_execution_trace_entries_r3_impl,
+    _summarize_strategy_policy_r3_impl,
+    _extract_strategy_policy_r3_impl,
+)
 
 
 def _import_api_catalog():
@@ -2548,47 +2554,12 @@ def _supervisor_allow(supervisor: Any, order: Dict[str, Any], risk: Dict[str, An
 
 
 def _extract_strategy_policy(packet: Dict[str, Any], state: Dict[str, Any]) -> Dict[str, Any]:
-    raw = packet.get("strategy_policy")
-    if isinstance(raw, dict) and raw:
-        return dict(raw)
-    strategist_output = state.get("strategist_output")
-    if isinstance(strategist_output, dict):
-        raw = strategist_output.get("strategy_policy")
-        if isinstance(raw, dict) and raw:
-            return dict(raw)
-    raw = state.get("strategy_policy")
-    if isinstance(raw, dict) and raw:
-        return dict(raw)
-    return {}
+    return _extract_strategy_policy_r3_impl(packet, state, facade=_r3_sys.modules[__name__])
 
 
 def _summarize_strategy_policy(strategy_policy: Dict[str, Any], packet: Dict[str, Any]) -> Dict[str, Any]:
-    packet_summary = packet.get("strategy_policy_summary")
-    if isinstance(packet_summary, dict) and packet_summary:
-        return dict(packet_summary)
-    if not isinstance(strategy_policy, dict) or not strategy_policy:
-        return {}
-
-    market_policy = strategy_policy.get("market_policy") if isinstance(strategy_policy.get("market_policy"), dict) else {}
-    entry_policy = strategy_policy.get("entry_policy") if isinstance(strategy_policy.get("entry_policy"), dict) else {}
-    position_sizing = entry_policy.get("position_sizing") if isinstance(entry_policy.get("position_sizing"), dict) else {}
-    monitor_policy = strategy_policy.get("monitor_policy") if isinstance(strategy_policy.get("monitor_policy"), dict) else {}
-    hard_risk_rails = monitor_policy.get("hard_risk_rails") if isinstance(monitor_policy.get("hard_risk_rails"), dict) else {}
-    decision_policy = strategy_policy.get("decision_policy") if isinstance(strategy_policy.get("decision_policy"), dict) else {}
-    return {
-        "schema_version": str(strategy_policy.get("schema_version") or "strategy_policy.v1"),
-        "playbook": str(market_policy.get("playbook") or ""),
-        "risk_tone": str(market_policy.get("risk_tone") or ""),
-        "trade_aggressiveness": str(market_policy.get("trade_aggressiveness") or ""),
-        "defensive_mode": bool(market_policy.get("defensive_mode", False)),
-        "max_position_qty": _coerce_int(position_sizing.get("max_position_qty"), 0),
-        "min_position_qty": _coerce_int(position_sizing.get("min_position_qty"), 0),
-        "lot_size": _coerce_int(position_sizing.get("lot_size"), 0),
-        "hard_stop_pct": _coerce_float(hard_risk_rails.get("hard_stop_pct"), 0.0),
-        "max_stop_pct_cap": _coerce_float(hard_risk_rails.get("max_stop_pct_cap"), 0.0),
-        "use_strategy_v1_engine": _is_trueish(decision_policy.get("use_strategy_v1_engine")),
-        "allow_score_override": _is_trueish(decision_policy.get("allow_score_override")),
-    }
+    return _summarize_strategy_policy_r3_impl(strategy_policy, packet,
+        facade=_r3_sys.modules[__name__])
 
 
 def _augment_supervisor_risk_context(
@@ -2936,64 +2907,9 @@ def _append_execution_trace_entries(
     allow_result: Any = None,
     strategy_policy_summary: Optional[Dict[str, Any]] = None,
 ) -> None:
-    action = str(order.get("action") or "").strip().upper()
-    reason = str(execution.get("reason") or "")
-    allowed = bool(execution.get("allowed"))
-    ok = bool(execution.get("ok"))
-    payload = execution.get("payload") if isinstance(execution.get("payload"), dict) else {}
-
-    supervisor_allow: Optional[bool] = None
-    supervisor_reason = ""
-    supervisor_details: Dict[str, Any] = {}
-    if allow_result is not None:
-        supervisor_allow = bool(getattr(allow_result, "allowed", getattr(allow_result, "allow", False)))
-        supervisor_reason = str(getattr(allow_result, "reason", "") or "")
-        raw_details = getattr(allow_result, "details", {})
-        if isinstance(raw_details, dict):
-            supervisor_details = dict(raw_details)
-
-    append_decision_trace(
-        state,
-        agent="supervisor",
-        event="verdict",
-        payload={
-            "verdict": "approve" if allowed else "reject",
-            "guard_reason": reason or supervisor_reason,
-            "supervisor_allow": supervisor_allow,
-            "supervisor_reason": supervisor_reason,
-            "supervisor_details": supervisor_details,
-            "action": action,
-            "symbol": str(order.get("symbol") or ""),
-            "strategy_policy_summary": dict(strategy_policy_summary or {}),
-        },
-    )
-
-    execution_attempted = bool(allowed and action in ("BUY", "SELL"))
-    if not execution_attempted:
-        fill_status = "not_attempted"
-    elif ok:
-        fill_status = "accepted_or_filled"
-    else:
-        fill_status = "rejected"
-
-    append_decision_trace(
-        state,
-        agent="executor",
-        event="result",
-        payload={
-            "execution_attempted": execution_attempted,
-            "order_result": {
-                "ok": ok,
-                "reason": reason,
-                "mode": str(payload.get("mode") or ""),
-                "broker_code": str(payload.get("broker_code") or ""),
-                "broker_message": str(payload.get("broker_message") or ""),
-                "order_id": str(payload.get("order_id") or ""),
-            },
-            "fill_status_summary": fill_status,
-            "strategy_policy_summary": dict(strategy_policy_summary or {}),
-        },
-    )
+    return _append_execution_trace_entries_r3_impl(state, order=order, execution=execution,
+        allow_result=allow_result, strategy_policy_summary=strategy_policy_summary,
+        facade=_r3_sys.modules[__name__])
 
 
 def execute_from_packet(state: dict) -> dict:

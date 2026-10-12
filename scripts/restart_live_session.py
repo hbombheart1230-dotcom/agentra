@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from libs.runtime.entrypoint_common import to_int
+from libs.runtime.entrypoint_common import live_loop_env, to_int
 from libs.runtime.live_loop_lock import pid_exists
 from libs.runtime.live_loop_process_query import query_live_loop_processes, read_lock_owner_pid
 from libs.runtime.runtime_mode import host_live_start_decision
@@ -225,8 +225,8 @@ def _wait_for_healthy_start(
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Stop stale live loop state and start one clean live intraday session.")
     p.add_argument("--env-path", default=".env")
-    p.add_argument("--lock-path", default=os.getenv("M13_LIVE_LOCK_PATH", "data/state/m13_live_loop.lock"))
-    p.add_argument("--lock-stale-sec", type=int, default=to_int(os.getenv("M13_LIVE_LOCK_STALE_SEC", "1800"), 1800))
+    p.add_argument("--lock-path", default=live_loop_env("LIVE_LOOP_LOCK_PATH", "M13_LIVE_LOCK_PATH", "data/state/m13_live_loop.lock"))
+    p.add_argument("--lock-stale-sec", type=int, default=to_int(live_loop_env("LIVE_LOOP_LOCK_STALE_SEC", "M13_LIVE_LOCK_STALE_SEC", "1800"), 1800))
     p.add_argument("--tick-pipeline", choices=["legacy_m10", "integrated_chain"], default="integrated_chain")
     p.add_argument("--sleep-sec", type=int, default=30)
     p.add_argument("--allow-offhours", dest="allow_offhours", action="store_true", default=False)

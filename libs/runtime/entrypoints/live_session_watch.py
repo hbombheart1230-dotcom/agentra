@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parents[3]
 
-from libs.runtime.entrypoint_common import to_int
+from libs.runtime.entrypoint_common import live_loop_env, to_int
 from libs.runtime.live_loop_lock import pid_exists
 from libs.runtime.live_loop_process_query import read_lock_owner_pid
 from libs.runtime.runtime_output_helpers import latest_event_epoch, parse_stdout_json, tail_text
@@ -211,7 +211,7 @@ def _parse_args(argv: Optional[List[str]]) -> argparse.Namespace:
     )
     p.add_argument("--summary-report-dir", default="reports/dev/live/live_summary")
     p.add_argument("--watch-report-dir", default="reports/dev/live/live_watch")
-    p.add_argument("--lock-path", default=os.getenv("M13_LIVE_LOCK_PATH", "data/state/m13_live_loop.lock"))
+    p.add_argument("--lock-path", default=live_loop_env("LIVE_LOOP_LOCK_PATH", "M13_LIVE_LOCK_PATH", "data/state/m13_live_loop.lock"))
     p.add_argument("--lookback-min", type=int, default=to_int(os.getenv("LIVE_SUMMARY_LOOKBACK_MIN"), 30))
     p.add_argument("--sleep-sec", type=int, default=to_int(os.getenv("LIVE_WATCH_SLEEP_SEC"), 300))
     p.add_argument("--max-event-lag-sec", type=int, default=to_int(os.getenv("LIVE_WATCH_MAX_EVENT_LAG_SEC"), 420))

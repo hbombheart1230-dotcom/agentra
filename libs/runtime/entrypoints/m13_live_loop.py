@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 from libs.core.settings import load_env_file
 from libs.runtime.entrypoint_common import (
+    live_loop_env,
     first_universe_symbol,
     resolve_env_path,
     resolve_path_from_root,
@@ -52,13 +53,13 @@ def main(argv: Optional[list[str]] = None) -> int:
     p.add_argument("--allow-offhours", action="store_true", help="Disable session hard gate for off-hours drills.")
     p.add_argument(
         "--lock-path",
-        default=str(os.getenv("M13_LIVE_LOCK_PATH", "data/state/m13_live_loop.lock") or "data/state/m13_live_loop.lock"),
+        default=str(live_loop_env("LIVE_LOOP_LOCK_PATH", "M13_LIVE_LOCK_PATH", "data/state/m13_live_loop.lock") or "data/state/m13_live_loop.lock"),
         help="Single-instance lock file path.",
     )
     p.add_argument(
         "--lock-stale-sec",
         type=int,
-        default=to_int(os.getenv("M13_LIVE_LOCK_STALE_SEC", "1800"), 1800),
+        default=to_int(live_loop_env("LIVE_LOOP_LOCK_STALE_SEC", "M13_LIVE_LOCK_STALE_SEC", "1800"), 1800),
         help="Stale lock threshold seconds.",
     )
     args = p.parse_args(argv)
