@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 196,
+  "entry_count": 197,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5364,6 +5364,31 @@
       "sources": [
         "docs/refactor/work_orders/P15_R3_CODEX_INDEPENDENT_AUDIT_001.md",
         "docs/daily_patch/2026-10-12_p152_r3_codex_audit_handoff.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 R3 Codex PASS_WITH_FINDINGS",
+      "title": "Record independent R3 findings and open acceptance-evidence gate",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "REFACTOR",
+        "SAFETY"
+      ],
+      "summary": "Codex audit result received as PASS_WITH_FINDINGS; R3 integration remains blocked pending parity and full-suite evidence.",
+      "details": [
+        "Audit report supplied by operator: 197 PASS/1 SKIP, zero clone writes, 436-symbol consumer scan, 38 AST/26 Owner parity; raw independent logs not committed.",
+        "Façade size SIZE_DEFERRED 562/1891/1958; real Markdown/JSON/JSONL and LLM parity BLOCKED/NOT RUN; full native pytest NOT RUN.",
+        "Synthetic differential, entry-time global capture, Owner cohesion and Story LOC discrepancy remain follow-up evidence items until explicitly closed.",
+        "New Git-first evidence-only work order; no runtime changes or refactor/main merge. P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED."
+      ],
+      "impact": "Preserves a verifiable boundary between structural R3 audit and final acceptance.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R3-CODEX-INDEPENDENT-001.md",
+        "docs/refactor/work_orders/P15_R3_ACCEPTANCE_EVIDENCE_002.md",
+        "docs/daily_patch/2026-10-12_p152_r3_codex_pass_with_findings.md"
       ],
       "status": "current"
     }

@@ -2763,3 +2763,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - ABI 436개, façade 전역 바인딩 시점, numbered Owner 구조, Story Owner LOC 불일치, 격리 합성 입력 차분과 쓰기 감사를 확인합니다.
 - 실제 자료·LLM parity와 전체 pytest는 여전히 미완료. P1.5.2 OPEN / P1.5.3 미승인.
 - 근거: `docs/refactor/work_orders/P15_R3_CODEX_INDEPENDENT_AUDIT_001.md`, `docs/daily_patch/2026-10-12_p152_r3_codex_audit_handoff.md`.
+
+## 2026-10-12 · P1.5.2 R3 Codex PASS_WITH_FINDINGS 및 증거 보완
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · SAFETY
+
+- 사용자가 전달한 Codex 독립 감사: **PASS_WITH_FINDINGS**, 197 PASS / 1 SKIP, 격리 clone 쓰기 0. 원시 감사 로그는 Git에 아직 없음.
+- façade SIZE_DEFERRED(562/1,891/1,958); 실제 Markdown/JSON/LLM 동등성 BLOCKED·NOT RUN, 전체 pytest NOT RUN. P1.5.2 OPEN, 병합·P1.5.3 미승인.
+- 합성 before/after 차분, façade 전역 바인딩, Story LOC 및 Owner 책임성 검토를 [증거 보완 작업](docs/refactor/work_orders/P15_R3_ACCEPTANCE_EVIDENCE_002.md)으로 전환. 코드 변경 없음.
+- 근거: `docs/refactor/work_orders/evidence/P15-R3-CODEX-INDEPENDENT-001.md`, `docs/daily_patch/2026-10-12_p152_r3_codex_pass_with_findings.md`.

@@ -1,19 +1,19 @@
-# ACTIVE WORK ORDER — P1.5.2 R3 Codex independent audit
+# ACTIVE — P1.5.2 R3 Acceptance Evidence (no merge)
 
-**State:** CLAUDE_R3_A_B_C_SUBMITTED; CODEX_INDEPENDENT_AUDIT_PENDING. P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.
-**Baseline:** `ba6618d483e6d617f4ee56b2cb5647392c777071` on `origin/refactor/p1.5`; pinned review `e41d42d754dba9d538fba0fa2dda969d6ea83f02` (runtime `321eabb5b83a6aa4eb912cadaf6436a82214a848`).
-**One task:** [P15_R3_CODEX_INDEPENDENT_AUDIT_001.md](P15_R3_CODEX_INDEPENDENT_AUDIT_001.md) (implementation plan/history not the active entrypoint).
-**Shared rules:** [COMMON_RULES.md](COMMON_RULES.md).
-**Agentra roles:** CLAUDE implementation → CODEX independent audit → GPT/user integration decision. NOT Agentco roles.
-**Workspace:** audit isolated and read-only; live `C:\Agentra` and two dirty Q12 worktrees are protected.
-**History:** [archived previous CURRENT](archive/CURRENT_R2_THROUGH_341CEDC_2026-10-12.md) (NOT an ordinary task prerequisite).
+**State:** R3_CODEX_PASS_WITH_FINDINGS; P1.5.2 OPEN; P1.5.3 NOT AUTHORIZED; MERGE BLOCKED.
+**One task:** [P15_R3_ACCEPTANCE_EVIDENCE_002.md](P15_R3_ACCEPTANCE_EVIDENCE_002.md).
+**Rules:** [COMMON_RULES.md](COMMON_RULES.md). Claude executes bounded evidence work; Codex independently audits; GPT/user decides.
+**Baseline:** `ba6618d483e6d617f4ee56b2cb5647392c777071`.
+**Pinned R3 review:** `e41d42d754dba9d538fba0fa2dda969d6ea83f02` (runtime `321eabb5b83a6aa4eb912cadaf6436a82214a848`).
+**Latest docs-only handoff before this entry:** `923d1e2cfd8b08df747a0454da4ce9f3a0792098`.
+**Protected:** live `C:\Agentra`, two dirty Q12 worktrees; no broker/real LLM/Docker/production report writes.
 
-## Verified baseline and unresolved gates
-- Story `trade_story_pipeline.py` **636** physical LOC; Markdown `trade_report_markdown_clean.py` **2658**; AI `trade_report_ai.py` **2761**. Combined original **436** callable public contracts (45 + 209 + 182). Target <=350 LOC per façade only with full import/patch/behavior compatibility.
-- Isolated Windows acceptance at `341cedc`: P1.5.2 selected **295 PASS / 1 SKIP**, production-path write audit **0**, correct venv Python/FastAPI. Evidence [clone acceptance](evidence/P15-R2-CODEX-CLONE-ACCEPTANCE-2026-10-12.md); not whole suite.
-- Whole native pytest **INCOMPLETE/NOT PASS** (API GET-only failure; another run terminated ~50% without summary). Historical Linux full safe sweep **4919 PASS / 41 FAIL / 2 ERROR**. Do not conflate out-of-scope known failures with Reporting regression.
-- Historical real Markdown/JSON/JSONL and captured LLM before/after evidence **missing**, so real-data and LLM output parity **NOT RUN/BLOCKED**. Do not invent snapshots.
-- **Next action:** Codex independent review of pinned `e41d42d`, including before/after synthetic differential and global-capture semantics; no implementation or merge.
+## Recorded audit (2026-10-12)
+- Codex result **PASS_WITH_FINDINGS** supplied by user; audit clone `C:\AgentraEvidence\p152_r3_audit_e41d42d`. Reported subset **197 PASS / 1 SKIP**, 436-symbol scan, Owner parity, max LOC, production-write audit 0. The independent audit's raw log is not checked into Git; treat counts as reported, not freshly rerun here.
+- Evidence: [P15-R3-CODEX-INDEPENDENT-001.md](evidence/P15-R3-CODEX-INDEPENDENT-001.md).
+- Open gates: actual frozen Markdown/JSON/JSONL and LLM prompt/retry/timeout/call-count parity **NOT RUN/BLOCKED**; complete native pytest **NOT RUN/INCOMPLETE**; façade size **SIZE_DEFERRED** (562/1891/1958); dynamic consumers/patch seams unproven.
+- Earlier review asks (entry-time global binding, numbered Owner responsibility, Story LOC discrepancy and independent synthetic differential) are **NOT RESOLVED BY THE SUBMITTED AUDIT SUMMARY**; keep as explicit checks, not assumed passed.
+- No integration to `refactor/p1.5` or main. P1.5.3 remains unauthorized.
 
-## R3 status update (2026-10-12, compatibility-first resume)
-- Claude implemented R3-A/B/C; code SHA `321eabb5`, review SHA `e41d42d`; 57 bodies, 11 Owners, façade SIZE_DEFERRED. Reported 810 PASS / 1 SKIP (not independently rerun). Codex audit pending. Frozen real snapshots/LLM parity NOT RUN, full pytest incomplete; P1.5.2 OPEN and P1.5.3 NOT AUTHORIZED.
+## Next
+- Execute the ONE linked evidence-only task; record PASS/FAIL/NOT RUN truthfully. No reimplementation and no forced baseline snapshots.
