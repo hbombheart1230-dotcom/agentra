@@ -26,6 +26,33 @@ from libs.reporting.report_source_helpers import (
     build_commander_route_summary,
     build_policy_surface_quality_snapshot,
 )
+import sys as _r3_sys
+from libs.reporting.operator_visibility_parts.summary_snapshot_and_bundle import (
+    build_operator_summary_snapshot_from_payload_r3_impl,
+    build_separated_operator_brief_r3_impl,
+    generate_operator_visibility_bundle_r3_impl,
+    _run_context_default_r3_impl,
+    _build_report_freshness_r3_impl,
+    _canonical_report_root_r3_impl,
+    _apply_commander_route_overlay_r3_impl,
+    _merge_scanner_handoff_with_selection_r3_impl,
+    _is_trade_story_r3_impl,
+    _iter_day_rows_with_epoch_r3_impl,
+)
+from libs.reporting.operator_visibility_parts.reason_text_and_time import (
+    _story_explanation_r3_impl,
+    _normalize_reason_code_r3_impl,
+    _humanize_reason_r3_impl,
+    _reason_text_r3_impl,
+    _render_reason_top_r3_impl,
+    _format_reason_rows_r3_impl,
+    _decision_axis_r3_impl,
+    _to_epoch_r3_impl,
+    _epoch_to_iso_r3_impl,
+    _compact_kv_text_r3_impl,
+    _broker_code_success_r3_impl,
+    _compact_distance_to_ready_text_r3_impl,
+)
 
 
 _REASON_LABELS: Dict[str, str] = {
@@ -54,28 +81,7 @@ def _write_operator_markdown(path: Path, text: str) -> None:
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
-    if ts is None:
-        return None
-    if isinstance(ts, (int, float)):
-        return int(ts)
-
-    s = str(ts).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s))
-    except Exception:
-        pass
-
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    try:
-        dt = datetime.fromisoformat(s)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
-    except Exception:
-        return None
+    return _to_epoch_r3_impl(ts, facade=_r3_sys.modules[__name__])
 
 
 def _utc_day(ts: Any) -> Optional[str]:
@@ -148,37 +154,13 @@ def _utc_now_iso() -> str:
 
 
 def _epoch_to_iso(epoch: Any) -> str:
-    try:
-        n = int(float(epoch))
-    except Exception:
-        return ""
-    if n <= 0:
-        return ""
-    return datetime.fromtimestamp(n, tz=timezone.utc).isoformat(timespec="seconds")
+    return _epoch_to_iso_r3_impl(epoch, facade=_r3_sys.modules[__name__])
 
 
 def _build_report_freshness(day_rows: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
     # Single streaming pass (day_rows may be a one-shot iterator) -- was two
     # separate passes over a materialized list before the OOM RCA follow-up.
-    latest_run_id = ""
-    latest_epoch = 0
-    run_ids: set[str] = set()
-    for row in day_rows:
-        run_id = str(row.get("run_id") or "").strip()
-        if run_id:
-            run_ids.add(run_id)
-        epoch = int(row.get("_epoch") or 0)
-        if epoch <= 0:
-            continue
-        if epoch >= latest_epoch:
-            latest_epoch = epoch
-            latest_run_id = run_id
-    return {
-        "generated_at": _utc_now_iso(),
-        "source_run_count": int(len(run_ids)),
-        "latest_run_id": latest_run_id,
-        "latest_run_ts": _epoch_to_iso(latest_epoch),
-    }
+    return _build_report_freshness_r3_impl(day_rows, facade=_r3_sys.modules[__name__])
 
 def _load_or_build_metrics(events_path: Path, metrics_report_dir: Path, day: str) -> Dict[str, Any]:
     metrics_report_dir.mkdir(parents=True, exist_ok=True)
@@ -240,59 +222,15 @@ def _build_trading_health_status(reports_root: Path, day: str) -> Dict[str, Any]
 
 
 def _compact_kv_text(raw: Any, *, topn: int = 4) -> str:
-    if isinstance(raw, dict):
-        pairs = []
-        for k, v in raw.items():
-            if isinstance(v, (dict, list)):
-                continue
-            pairs.append((str(k), str(v)))
-        pairs = pairs[:topn]
-        if not pairs:
-            return "-"
-        return ", ".join(f"{k}={v}" for k, v in pairs)
-    if isinstance(raw, list):
-        vals = [str(x) for x in raw[:topn] if x is not None]
-        return ", ".join(vals) if vals else "-"
-    if raw is None:
-        return "-"
-    s = str(raw).strip()
-    return s if s else "-"
+    return _compact_kv_text_r3_impl(raw, topn=topn, facade=_r3_sys.modules[__name__])
 
 
 def _reason_text(intent: Dict[str, Any], trace: Dict[str, Any], llm: Dict[str, Any]) -> str:
-    cand = [
-        intent.get("reason"),
-        intent.get("rationale"),
-        trace.get("rationale"),
-        (trace.get("raw_intent") if isinstance(trace.get("raw_intent"), dict) else {}).get("reason"),
-        llm.get("intent_reason"),
-        llm.get("intent_rationale"),
-    ]
-    for v in cand:
-        s = str(v or "").strip()
-        if s:
-            return s
-    return "unspecified"
+    return _reason_text_r3_impl(intent, trace, llm, facade=_r3_sys.modules[__name__])
 
 
 def _humanize_reason(raw: Any) -> str:
-    reason = str(raw or "").strip()
-    if not reason:
-        return _REASON_LABELS["unspecified"]
-    low = reason.lower()
-    if low in _REASON_LABELS:
-        return _REASON_LABELS[low]
-    if reason in _REASON_LABELS:
-        return _REASON_LABELS[reason]
-    if low.startswith("exit_policy:"):
-        tail = reason.split(":", 1)[1].replace("_", " ").strip()
-        return f"Exit policy triggered ({tail})"
-    if low.startswith("score_override:"):
-        tail = reason.split(":", 1)[1].strip()
-        return f"Score override applied ({tail})"
-    if low.startswith("eod_force_liquidation:"):
-        return f"EOD force liquidation ({reason.split(':', 1)[1]})"
-    return reason
+    return _humanize_reason_r3_impl(raw, facade=_r3_sys.modules[__name__])
 
 
 def _normalize_reason_code(
@@ -302,23 +240,9 @@ def _normalize_reason_code(
     execution_status: str,
     guard_status: str,
 ) -> str:
-    reason = str(raw_reason or "").strip()
-    if reason:
-        low = reason.lower()
-        if any(k in low for k in ("allowlist", "notional", "guard", "blocked")):
-            return "GUARD_BLOCK"
-        if "market_closed" in low or ("market" in low and "closed" in low):
-            return "MARKET_CLOSED"
-        if low in ("unspecified", "none"):
-            reason = ""
-
-    if guard_status == "intervened" or execution_status == "BLOCKED":
-        return "GUARD_BLOCK"
-    if action == "NOOP":
-        return "NO_CANDIDATE"
-    if execution_status in ("UNKNOWN", "SKIPPED"):
-        return "MARKET_CLOSED"
-    return reason or "unspecified"
+    return _normalize_reason_code_r3_impl(raw_reason, action=action,
+        execution_status=execution_status, guard_status=guard_status,
+        facade=_r3_sys.modules[__name__])
 
 
 def _health_badge(level: str) -> str:
@@ -329,40 +253,15 @@ def _health_badge(level: str) -> str:
 
 
 def _render_reason_top(counter: Counter[str], *, topn: int = 5) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
-    for reason, cnt in counter.most_common(topn):
-        out.append(
-            {
-                "reason": str(reason or ""),
-                "label": _humanize_reason(reason),
-                "count": int(cnt),
-            }
-        )
-    return out
+    return _render_reason_top_r3_impl(counter, topn=topn, facade=_r3_sys.modules[__name__])
 
 
 def _format_reason_rows(rows: List[Dict[str, Any]]) -> str:
-    if not rows:
-        return "none"
-    return "; ".join(
-        f"{str(r.get('label') or r.get('reason') or '-')} ({int(r.get('count') or 0)})"
-        for r in rows
-    )
+    return _format_reason_rows_r3_impl(rows, facade=_r3_sys.modules[__name__])
 
 
 def _compact_distance_to_ready_text(raw: Any) -> str:
-    row = raw if isinstance(raw, dict) else {}
-    if not row:
-        return "-"
-    parts: List[str] = []
-    for key in ("reclaim_score_gap", "breakout_gap", "volume_gap", "confidence_gap"):
-        if row.get(key) in (None, ""):
-            continue
-        try:
-            parts.append(f"{key}={float(row.get(key)):.4f}")
-        except Exception:
-            parts.append(f"{key}={row.get(key)}")
-    return ", ".join(parts) if parts else "-"
+    return _compact_distance_to_ready_text_r3_impl(raw, facade=_r3_sys.modules[__name__])
 
 
 def _compact_blocking_features(raw: Any, *, limit: int = 3) -> str:
@@ -375,231 +274,45 @@ def _merge_scanner_handoff_with_selection(
     handoff: Any,
     selection: Any,
 ) -> Dict[str, Any]:
-    handoff_row = handoff if isinstance(handoff, dict) else {}
-    selection_row = selection if isinstance(selection, dict) else {}
-    if not handoff_row and not selection_row:
-        return {}
-    merged = dict(selection_row)
-    merged.update(dict(handoff_row))
-    return merged
+    return _merge_scanner_handoff_with_selection_r3_impl(handoff, selection,
+        facade=_r3_sys.modules[__name__])
 
 
 def _broker_code_success(value: Any) -> Optional[bool]:
-    if value is None:
-        return None
-    s = str(value).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s)) == 0
-    except Exception:
-        pass
-    t = s.lower()
-    if t in ("ok", "success", "accepted"):
-        return True
-    if t in ("error", "failed", "rejected"):
-        return False
-    return False
+    return _broker_code_success_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _decision_axis(story: Dict[str, Any]) -> str:
-    action = str(story.get("action") or "").strip().upper()
-    no_trade = story.get("no_trade_surface") if isinstance(story.get("no_trade_surface"), dict) else {}
-    outcome = str(no_trade.get("decision_outcome") or "").strip().upper()
-    if action == "SELL" or outcome == "SELL":
-        return "exit"
-    return "entry"
+    return _decision_axis_r3_impl(story, facade=_r3_sys.modules[__name__])
 
 
 def _story_explanation(story: Dict[str, Any]) -> Dict[str, str]:
-    no_trade = story.get("no_trade_surface") if isinstance(story.get("no_trade_surface"), dict) else {}
-    explanation = build_narrative_explanation(
-        action=story.get("action"),
-        decision_outcome=no_trade.get("decision_outcome"),
-        final_outcome=story.get("final_outcome"),
-        key_reason=story.get("key_reason"),
-        no_trade_reason_summary=no_trade.get("no_trade_reason_summary"),
-        dominant_blocker=no_trade.get("dominant_blocker"),
-        distance_to_ready=_compact_distance_to_ready_text(no_trade.get("distance_to_ready")),
-        exit_reason=story.get("key_reason") if _decision_axis(story) == "exit" else "",
-    )
-    return {
-        "axis": str(explanation.get("decision_axis") or "unknown"),
-        "primary_summary": str(explanation.get("primary_explanation") or "-"),
-        "entry_narrative": str(explanation.get("entry_narrative") or "-"),
-        "exit_narrative": str(explanation.get("exit_narrative") or "-"),
-        "why_not_buy_summary": str(explanation.get("why_not_buy_summary") or "-"),
-        "dominant_blocker": str(explanation.get("dominant_blocker_display") or "-"),
-        "entry_context_blocker": str(explanation.get("entry_context_blocker") or "-"),
-        "distance_to_ready": str(explanation.get("distance_to_ready") or "-"),
-        "exit_trigger_basis": str(explanation.get("why_exit_summary") or "-"),
-        "narrative_order": list(explanation.get("narrative_order") or []),
-        "narrative_order_text": str(explanation.get("narrative_order_text") or "-"),
-        "narrative_consistency_flag": bool(explanation.get("narrative_consistency_flag")),
-        "explanation_mode": str(explanation.get("explanation_mode") or "unknown"),
-        "explanation_source": str(explanation.get("explanation_source") or "-"),
-        "mixed_reason": str(explanation.get("mixed_reason") or "-"),
-    }
+    return _story_explanation_r3_impl(story, facade=_r3_sys.modules[__name__])
 
 
 def _canonical_report_root(report_dir: Path) -> Path:
-    if report_dir.name == "operator_summary":
-        return report_dir.parent
-    if report_dir.name == "daily" and report_dir.parent.name == "operator_summary":
-        return report_dir.parent.parent
-    if report_dir.parent.name == "daily" and report_dir.parent.parent.name == "operator_summary":
-        return report_dir.parent.parent.parent
-    if report_dir.name in {"daily", "metrics"}:
-        return report_dir.parent
-    if report_dir.name in {"run_cards", "decision_story"}:
-        parent = report_dir.parent
-        if parent.name == "manual" and parent.parent.name == "dev":
-            return parent.parent.parent
-    if report_dir.name == "trade_explain":
-        parent = report_dir.parent
-        if parent.name == "analysis" and parent.parent.name == "dev":
-            return parent.parent.parent
-    return report_dir
+    return _canonical_report_root_r3_impl(report_dir, facade=_r3_sys.modules[__name__])
 
 
 def _apply_commander_route_overlay(
     stories: List[Dict[str, Any]],
     route_summary: Dict[str, Any],
 ) -> List[Dict[str, Any]]:
-    by_run = route_summary.get("by_run") if isinstance(route_summary.get("by_run"), dict) else {}
-    if not by_run:
-        return stories
-    for story in stories:
-        run_id = str(story.get("run_id") or "").strip()
-        if not run_id:
-            continue
-        route_row = by_run.get(run_id)
-        if not isinstance(route_row, dict):
-            continue
-        existing = story.get("commander_route") if isinstance(story.get("commander_route"), dict) else {}
-        merged = {**dict(existing), **dict(route_row)}
-        story["commander_route"] = merged
-    return stories
+    return _apply_commander_route_overlay_r3_impl(stories, route_summary,
+        facade=_r3_sys.modules[__name__])
 
 
 def build_operator_summary_snapshot_from_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
-    executive = payload.get("executive_summary") if isinstance(payload.get("executive_summary"), dict) else {}
-    system_health = payload.get("system_health_status") if isinstance(payload.get("system_health_status"), dict) else {}
-    trading_activity = (
-        payload.get("trading_activity_summary")
-        if isinstance(payload.get("trading_activity_summary"), dict)
-        else {}
-    )
-    top_issues = payload.get("top_issues") if isinstance(payload.get("top_issues"), list) else []
-    recommended_actions = (
-        payload.get("recommended_operator_actions")
-        if isinstance(payload.get("recommended_operator_actions"), list)
-        else []
-    )
-    route_summary = payload.get("route_summary") if isinstance(payload.get("route_summary"), dict) else {}
-    data_freshness = build_data_freshness(
-        generated_at=str(payload.get("generated_at") or ""),
-        source_run_count=payload.get("source_run_count"),
-        latest_run_id=str(payload.get("latest_run_id") or ""),
-        latest_run_ts=str(payload.get("latest_run_ts") or ""),
-        stale=False,
-    )
-    return {
-        "available": True,
-        "generated_at": str(payload.get("generated_at") or ""),
-        "source_run_count": payload.get("source_run_count"),
-        "latest_run_id": str(payload.get("latest_run_id") or ""),
-        "latest_run_ts": str(payload.get("latest_run_ts") or ""),
-        "data_freshness": data_freshness,
-        "executive_summary": {
-            "system_status": str(executive.get("system_status") or ""),
-            "summary_lines": [str(x or "") for x in list(executive.get("summary_lines") or []) if str(x or "").strip()][:5],
-        },
-        "system_health_status": {
-            "system_health_level": str(system_health.get("system_health_level") or ""),
-            "reasoning": [str(x or "") for x in list(system_health.get("reasoning") or []) if str(x or "").strip()][:5],
-            "recommended_action": [str(x or "") for x in list(system_health.get("recommended_action") or []) if str(x or "").strip()][:3],
-        },
-        "trading_activity_summary": {
-            "run_total": trading_activity.get("run_total"),
-            "decision_action_counts": dict(trading_activity.get("decision_action_counts") or {}),
-            "strategy_counts": dict(trading_activity.get("strategy_counts") or {}),
-            "executions_total": trading_activity.get("executions_total"),
-            "executions_ok_total": trading_activity.get("executions_ok_total"),
-            "executions_fail_total": trading_activity.get("executions_fail_total"),
-            "blocked_total": trading_activity.get("blocked_total"),
-        },
-        "route_summary": {
-            "route_source": str(route_summary.get("route_source") or ""),
-            "route_source_run_count": int(route_summary.get("route_source_run_count") or 0),
-            "route_source_missing_count": int(route_summary.get("route_source_missing_count") or 0),
-            "route_source_breakdown": dict(route_summary.get("route_source_breakdown") or {}),
-            "route_selected_total": dict(route_summary.get("route_selected_total") or {}),
-            "strategy_generation_mode_total": dict(route_summary.get("strategy_generation_mode_total") or {}),
-        },
-        "route_provenance": build_route_provenance(route_summary),
-        "top_issues": [
-            {
-                "code": str((issue or {}).get("code") or ""),
-                "severity": str((issue or {}).get("severity") or ""),
-                "detail": str((issue or {}).get("detail") or ""),
-            }
-            for issue in top_issues[:5]
-            if isinstance(issue, dict)
-        ],
-        "recommended_operator_actions": [str(x or "") for x in recommended_actions[:5] if str(x or "").strip()],
-        "narrative_axis_policy": dict(payload.get("narrative_axis_policy") or narrative_axis_policy()),
-    }
+    return build_operator_summary_snapshot_from_payload_r3_impl(payload,
+        facade=_r3_sys.modules[__name__])
 
 
 def _run_context_default(run_id: str) -> Dict[str, Any]:
-    return {
-        "run_id": run_id,
-        "first_epoch": 0,
-        "last_epoch": 0,
-        "symbol": "",
-        "action": "",
-        "qty": 0,
-        "execution_status": "UNKNOWN",
-        "guard_status": "none",
-        "guard_reason": "",
-        "guard_reason_human": "none",
-        "key_reason": "",
-        "key_reason_raw": "",
-        "technical_evidence": "",
-        "sentiment_evidence": "",
-        "policy_evidence": "",
-        "news_status": {"symbol_sentiment_status": "", "global_sentiment_status": ""},
-        "invalidation": {},
-        "operator_intervention": [],
-        "final_outcome": "",
-        "risk_flags": [],
-        "llm": {},
-        "decision": {},
-        "monitor_entry": {},
-        "scanner_selection": {},
-        "strategist_policy_resolution": {},
-        "commander_route": {},
-        "verdict": {},
-        "execution": {},
-        "strategy_frame": {},
-    }
+    return _run_context_default_r3_impl(run_id, facade=_r3_sys.modules[__name__])
 
 
 def _is_trade_story(story: Dict[str, Any]) -> bool:
-    action = str(story.get("action") or "").strip().upper()
-    status = str(story.get("execution_status") or "").strip().upper()
-    guard_status = str(story.get("guard_status") or "").strip().lower()
-    no_trade = story.get("no_trade_surface") if isinstance(story.get("no_trade_surface"), dict) else {}
-    if action in ("BUY", "SELL"):
-        return True
-    if status in ("EXECUTED", "EXECUTED_OK", "EXECUTED_FAIL", "BLOCKED", "INTENT_ONLY"):
-        return True
-    if guard_status == "intervened":
-        return True
-    if str(no_trade.get("no_trade_stage") or "").strip() in {"guard_block", "pre_intent_wait", "pre_intent_noop"}:
-        return True
-    return False
+    return _is_trade_story_r3_impl(story, facade=_r3_sys.modules[__name__])
 
 
 def _decision_trace_inner(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -615,9 +328,7 @@ def _iter_day_rows_with_epoch(events_path: Path, day: str) -> Iterable[Dict[str,
     same (events_path, day) within one report -- one per consumer -- only
     pay the full-file scan once; the rest stream the much smaller day cache.
     """
-    for raw in iter_jsonl_events(events_path, day=day):
-        ts = raw.get("ts") or (raw.get("payload") or {}).get("ts")
-        yield {**raw, "_epoch": _to_epoch(ts), "_day": _utc_day(ts)}
+    return _iter_day_rows_with_epoch_r3_impl(events_path, day, facade=_r3_sys.modules[__name__])
 
 
 class _RestreamedDayRows:
@@ -1791,39 +1502,8 @@ def generate_operator_visibility_bundle(
     report_root: Path,
     day: Optional[str] = None,
 ) -> Dict[str, Any]:
-    summary_md, summary_js = generate_operator_daily_summary(
-        events_path,
-        report_root / "operator_summary",
-        day=day,
-        metrics_report_dir=report_root / "metrics",
-        m30_post_golive_dir=report_root / "milestones" / "m30_post_golive",
-        m30_golive_dir=report_root / "milestones" / "m30_golive",
-        m31_slo_incident_dir=report_root / "m31_slo_incident",
-    )
-    summary_obj = _read_json(summary_js)
-    target_day = str(summary_obj.get("day") or day or "")
-
-    manual_dir = report_root / "dev" / "manual"
-    decision_md, decision_obj = generate_decision_story_report(
-        events_path,
-        manual_dir / "decision_story",
-        day=target_day or day,
-    )
-    run_cards_md, run_cards_obj = generate_run_card_report(
-        events_path,
-        manual_dir / "run_cards",
-        day=target_day or day,
-    )
-
-    return {
-        "day": target_day or (day or ""),
-        "operator_summary_md": str(summary_md),
-        "operator_summary_json": str(summary_js),
-        "decision_story_md": str(decision_md),
-        "decision_story_total": int(decision_obj.get("story_total") or 0),
-        "run_cards_md": str(run_cards_md),
-        "run_card_total": int(run_cards_obj.get("card_total") or 0),
-    }
+    return generate_operator_visibility_bundle_r3_impl(events_path=events_path,
+        report_root=report_root, day=day, facade=_r3_sys.modules[__name__])
 
 
 def _operator_brief_trade_model_is_valid(trade_model: Dict[str, Any]) -> bool:
@@ -1836,44 +1516,5 @@ def _operator_brief_trade_model_is_valid(trade_model: Dict[str, Any]) -> bool:
 
 def build_separated_operator_brief(trade_dir: str, symbol: str, trades_root: str, *, model: Optional[str] = None) -> Dict[str, Any]:
     """Phase 6-1 Task 4: Fact/Narrative separated operator brief."""
-    from libs.reporting.trade_read_model import build_trade_read_model
-    from libs.reporting.symbol_read_model import build_symbol_read_model
-    from libs.reporting.fact_narrative_report import build_separated_report
-
-    try:
-        trade_model = build_trade_read_model(str(trade_dir))
-    except Exception:
-        trade_model = {}
-    try:
-        symbol_model = build_symbol_read_model(str(trades_root), str(symbol))
-    except Exception:
-        symbol_model = {}
-    trade_scope = trade_model if _operator_brief_trade_model_is_valid(trade_model) else {}
-    llm_scope = trade_scope if trade_scope else symbol_model
-    chosen_model = normalize_openrouter_model_name(
-        str(model or "").strip()
-        or str(resolve_policy_llm_slot(llm_scope if isinstance(llm_scope, dict) else {}, "reporter", "intraday", default_profile="fast_free").get("primary") or "").strip()
-        or "minimax/minimax-m2.5"
-    )
-    execution_profile = resolve_policy_llm_execution_slot(
-        llm_scope if isinstance(llm_scope, dict) else {},
-        "reporter",
-        "intraday",
-        default_profile="concise_review",
-        defaults={
-            "profile_name": "concise_review",
-            "name": "concise_review",
-            "temperature": 0.2,
-            "max_tokens": 8192,
-            "timeout_sec": 15,
-            "retry": {"max_attempts": 2, "backoff_sec": 0.0},
-            "retry_max": 2,
-            "retry_backoff_sec": 0.0,
-        },
-    )
-    return build_separated_report(
-        trade_model=trade_model,
-        symbol_model=symbol_model,
-        model=chosen_model,
-        execution_profile=execution_profile,
-    )
+    return build_separated_operator_brief_r3_impl(trade_dir, symbol, trades_root, model=model,
+        facade=_r3_sys.modules[__name__])

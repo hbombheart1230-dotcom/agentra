@@ -38,6 +38,6 @@
 - P1.5.11 cannot pass while real truth/LLM parity or test write-safety acceptance remains BLOCKED. No main merge, production deployment or P1.6 runtime until explicitly authorized.
 
 ## Reporting and artifact discipline
-- Update **both** UI-linked patch notes JSON and MD and short daily patch per integrated wave or meaningful code change; only changed paths in downloadable ZIP (for enormous patch-note files, separate append/delta is acceptable with Git canonical full files).
+- Update **both** UI-linked patch notes JSON and MD and short daily patch per integrated wave or meaningful code change; no ZIP/download artifact is produced (Git commit/push only, user decision 2026-10-12).
 - Single active `CURRENT.md`, concise SHA/changed paths/test counts/debt ledger; no rerunning or rereading completed history. No fabricated fixture parity, no loosening tests, no unresolved 350+ new Owner, no unbounded pytest artifacts.
 - At a wave boundary, Codex audits the **aggregated pinned diff**, not each trivial extraction; if a high-risk change is proposed, isolate it and require immediate independent review or defer to second pass.

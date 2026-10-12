@@ -1,0 +1,687 @@
+{
+ "schema": "p153-operator-ui-moved-bodies-v1",
+ "baseline_sha": "fb8de628eb56b0941007e90ad2e98b4f684983ba",
+ "note": "Fast Track Wave A A2 (P1.5.3 first pass): non-delegating, IO-free module-level function bodies moved to responsibility-named Owners. Each former module global is qualified at its use site as `facade.NAME` (lazy). Public def names/signatures stay in the original module.",
+ "moves": [
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_build_canonical_trade_brief_input",
+   "owner": "apps/operator_ui/data_access_brief_canonical_input.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_compact_operator_brief_input_for_llm",
+   "owner": "apps/operator_ui/data_access_brief_compaction.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_compact_canonical_trade_for_brief",
+   "owner": "apps/operator_ui/data_access_brief_compaction.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_compact_ranked_symbols",
+   "owner": "apps/operator_ui/data_access_brief_compaction.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_compact_monitor_thresholds",
+   "owner": "apps/operator_ui/data_access_brief_compaction.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_compact_scalar_map",
+   "owner": "apps/operator_ui/data_access_brief_compaction.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_brief_build_stop_policy_trace",
+   "owner": "apps/operator_ui/data_access_brief_monitor_notes.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_monitor_threshold_shortfall_notes",
+   "owner": "apps/operator_ui/data_access_brief_monitor_notes.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_monitor_watch_axes",
+   "owner": "apps/operator_ui/data_access_brief_monitor_notes.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_monitor_row_summary",
+   "owner": "apps/operator_ui/data_access_brief_monitor_notes.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_should_replace_brief_monitor_summary",
+   "owner": "apps/operator_ui/data_access_brief_monitor_notes.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_prefer_richer_brief_text",
+   "owner": "apps/operator_ui/data_access_brief_monitor_notes.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_strategist_nested_value",
+   "owner": "apps/operator_ui/data_access_brief_monitor_notes.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_fallback_operator_brief",
+   "owner": "apps/operator_ui/data_access_brief_fallback.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_failure_operator_brief",
+   "owner": "apps/operator_ui/data_access_brief_fallback.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_salvage_operator_brief_fields",
+   "owner": "apps/operator_ui/data_access_brief_fallback.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_normalize_operator_brief_payload",
+   "owner": "apps/operator_ui/data_access_brief_sanitation.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_sanitize_operator_brief_result",
+   "owner": "apps/operator_ui/data_access_brief_sanitation.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_sanitize_operator_brief_text",
+   "owner": "apps/operator_ui/data_access_brief_sanitation.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_operator_brief_language_ok",
+   "owner": "apps/operator_ui/data_access_brief_sanitation.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_operator_brief_label_ko",
+   "owner": "apps/operator_ui/data_access_brief_sanitation.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_build_operator_brief_messages",
+   "owner": "apps/operator_ui/data_access_brief_prompts.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_build_operator_brief_repair_messages",
+   "owner": "apps/operator_ui/data_access_brief_prompts.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_build_operator_brief_line_messages",
+   "owner": "apps/operator_ui/data_access_brief_prompts.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_parse_operator_brief_lines",
+   "owner": "apps/operator_ui/data_access_brief_prompts.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_build_operator_brief_kr_facts",
+   "owner": "apps/operator_ui/data_access_brief_prompts.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_truncate_json",
+   "owner": "apps/operator_ui/data_access_brief_prompts.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "load_recent_trades_for_day",
+   "owner": "apps/operator_ui/data_access_trade_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "summarize_trades_by_symbol",
+   "owner": "apps/operator_ui/data_access_trade_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "build_overtrading_warning",
+   "owner": "apps/operator_ui/data_access_trade_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_build_top_candidates",
+   "owner": "apps/operator_ui/data_access_trade_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "load_latest_strategist_prompt_summary",
+   "owner": "apps/operator_ui/data_access_trade_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "load_health",
+   "owner": "apps/operator_ui/data_access_trade_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "load_trade_report_detail",
+   "owner": "apps/operator_ui/data_access_trade_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_to_datetime",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_to_epoch",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_format_percent",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_format_duration",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_format_float",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_friendly_exit_reason",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_friendly_feature_name",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_feature_coverage",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_normalized_feature_coverage",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_chart_filter_status_and_note",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_quote_metrics_snapshot",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_normalize_execution_payload",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_clean_str_list",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_latest_evidence",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_count_stages",
+   "owner": "apps/operator_ui/data_access_value_formatting.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "load_recent_runs",
+   "owner": "apps/operator_ui/data_access_run_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_extract_portfolio_guard_payload_from_run_rows",
+   "owner": "apps/operator_ui/data_access_run_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "_run_activity_meta",
+   "owner": "apps/operator_ui/data_access_run_read_models.py"
+  },
+  {
+   "module": "apps/operator_ui/data_access_core.py",
+   "name": "load_symbol_run_chain",
+   "owner": "apps/operator_ui/data_access_symbol_run_chain.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "build_operator_period_summary",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "build_operator_symbol_summary_artifact_payload",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_period_from_week",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_period_from_month",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_decision_is_weekend_carry",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_is_carryover_exit_marker",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_find_key_recursive",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_iso_to_kst_dt",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_epoch_to_kst_text",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_epoch_day_kst",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_parse_day",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_trade_id_day",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_dig",
+   "owner": "libs/reporting/operator_period_summary_parts/period_payloads.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "render_operator_daily_summary_markdown",
+   "owner": "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_render_q8_shadow_blocker_review_lines",
+   "owner": "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_render_market_regime_rail_lines",
+   "owner": "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_render_pattern_performance_lines",
+   "owner": "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_pattern_perf_line",
+   "owner": "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "render_operator_period_summary_markdown",
+   "owner": "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "render_operator_symbol_summary_markdown",
+   "owner": "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_build_residual_positions_payload",
+   "owner": "libs/reporting/operator_period_summary_parts/residual_positions.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_residual_position_status",
+   "owner": "libs/reporting/operator_period_summary_parts/residual_positions.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_snapshot_position_symbols",
+   "owner": "libs/reporting/operator_period_summary_parts/residual_positions.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_overnight_missing_context",
+   "owner": "libs/reporting/operator_period_summary_parts/residual_positions.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_overnight_recorded_context",
+   "owner": "libs/reporting/operator_period_summary_parts/residual_positions.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_account_snapshot_closeout_reconciliation",
+   "owner": "libs/reporting/operator_period_summary_parts/closeout_reconciliation.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_same_day_sell_guard_reconciliation",
+   "owner": "libs/reporting/operator_period_summary_parts/closeout_reconciliation.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_closeout_state_metadata",
+   "owner": "libs/reporting/operator_period_summary_parts/closeout_reconciliation.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_snapshot_day_trade_diary_rows",
+   "owner": "libs/reporting/operator_period_summary_parts/closeout_reconciliation.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_broker_day_trade_diary_truth_metrics",
+   "owner": "libs/reporting/operator_period_summary_parts/closeout_reconciliation.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_operator_reason_name",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_naming.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_operator_pattern_name",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_naming.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_operator_pattern_from_reason_name",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_naming.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_operator_signal_basis_name",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_naming.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_combined_pattern_key",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_naming.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_pattern_performance_payload",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_pattern_counters",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_performance_rows_by_field",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_performance_field_value",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_pattern_payload",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_pattern_perf_rows",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_top_counter",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_return_count_payload",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_score_bucket",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_rank_bucket",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_pct_bucket",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_mismatch_bucket",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_confirmation_bucket",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_bool_bucket",
+   "owner": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_extract_trade_decision_fields",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_decision_fields.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_daily_trade_index_rows",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_trade_metrics",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_symbol_rows",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_extract_truth_surface_metrics",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_merge_daily_trade_index_with_symbol_history",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_enrich_rows_with_truth_surface",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_entry_reason_from_decision_flow",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_is_closed_trade",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_entry_truth_hints",
+   "owner": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_operator_readout",
+   "owner": "libs/reporting/operator_period_summary_parts/operator_readouts.py"
+  },
+  {
+   "module": "libs/reporting/operator_period_summary.py",
+   "name": "_operator_label_fallback",
+   "owner": "libs/reporting/operator_period_summary_parts/operator_readouts.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "build_operator_summary_snapshot_from_payload",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "build_separated_operator_brief",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "generate_operator_visibility_bundle",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_run_context_default",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_build_report_freshness",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_canonical_report_root",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_apply_commander_route_overlay",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_merge_scanner_handoff_with_selection",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_is_trade_story",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_iter_day_rows_with_epoch",
+   "owner": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_story_explanation",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_normalize_reason_code",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_humanize_reason",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_reason_text",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_render_reason_top",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_format_reason_rows",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_decision_axis",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_to_epoch",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_epoch_to_iso",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_compact_kv_text",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_broker_code_success",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  },
+  {
+   "module": "libs/reporting/operator_visibility.py",
+   "name": "_compact_distance_to_ready_text",
+   "owner": "libs/reporting/operator_visibility_parts/reason_text_and_time.py"
+  }
+ ]
+}

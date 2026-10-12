@@ -19,6 +19,6 @@
 ## Wave A closeout
 - One concise stage matrix for P1.5.2 and P1.5.3: files before/after LOC, canonical Owner map, moved API/module identities, exact commands/counts, 0 production writes, tests intentionally NOT RUN and high-risk debts.
 - Commit/push same `refactor/p1.5` branch (can use intermediate same-branch commits for safety), compare origin HEAD before push; no new branches, no unsafe reset/clean or live work.
-- Update both canonical UI patch-note sources and daily patch. ZIP **changed files only** from Wave A starting SHA; preserve evidence within bounded retention.
+- Update both canonical UI patch-note sources and daily patch. No ZIP/download artifact: Git commit/push is the only deliverable; preserve evidence within bounded retention.
 - STOP at wave boundary and hand one pinned SHA plus cumulative diff to Codex for an independent A-wave audit, not per-small-function audits. Codex must report PASS / PASS_WITH_FINDINGS / FAIL / BLOCKED.
 - If independent wave A findings are nonblocking, proceed to preauthorized Wave B in sequence after evidence is recorded. Critical, unknown or authority-sensitive findings block transition; P1.5.11 and actual deployment always require explicit final acceptance.

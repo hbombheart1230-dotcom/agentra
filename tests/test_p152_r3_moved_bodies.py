@@ -97,7 +97,7 @@ class _Unqualify(ast.NodeTransformer):
 
 
 def test_expected_r3_moves_present():
-    assert len(MOVED) == 86, "ledger must record 57 R3 bodies + 9 LOC-008 dependency maps + 20 LOC-010 narrative helpers"
+    assert len(MOVED) == 141, "ledger must record 57 R3 bodies + dependency maps (LOC 008/013) + narrative/domain helpers (LOC 010/013)"
 
 
 @pytest.mark.parametrize("path,name,owner", MOVED)
@@ -183,14 +183,59 @@ def _facade_free_names(path, name):
     return sorted(g for g in _global_refs(_base_source(path), name) if g in tree)
 
 
+def _reference_function(path, name, module):
+    """The pinned baseline function body bound to the LIVE façade globals: the original late-lookup
+    semantics (test oracle only; never imported by production code)."""
+    import types
+    src = _base_source(path)
+    node = _func(ast.parse(src), name)
+    seg = ast.get_source_segment(src, node)
+    ns = dict(module.__dict__)  # only used to evaluate defaults/annotations at def time
+    exec(compile("from __future__ import annotations" + chr(10) + seg, "<r3-baseline-%s>" % name, "exec"), ns)
+    f = ns[name]
+    ref = types.FunctionType(f.__code__, module.__dict__, name, f.__defaults__, f.__closure__)
+    ref.__kwdefaults__ = f.__kwdefaults__
+    return ref
+
+
+def _scenario_events(fn, req, kwreq, mk, targets, module, scenario):
+    originals = {n: getattr(module, n) for n in targets}
+    events, state = [], {"switched": False}
+
+    def make(n, ver):
+        def stub(*a, **k):
+            events.append((ver, n))
+            if scenario == "within_call" and ver == "v1" and not state["switched"]:
+                state["switched"] = True
+                for m in targets:
+                    setattr(module, m, make(m, "v2"))
+            return MagicMock()
+        return stub
+
+    for n in targets:
+        setattr(module, n, make(n, "v1"))
+    outcome = "ok"
+    try:
+        try:
+            fn(*[mk() for _ in req], **{p.name: mk() for p in kwreq})
+        except Exception as exc:  # noqa
+            outcome = "EXC:" + type(exc).__name__
+    finally:
+        for n, v in originals.items():
+            setattr(module, n, v)
+    return outcome, events
+
+
 @pytest.mark.parametrize("path,name,owner", MOVED)
 @pytest.mark.parametrize("shape", ["empty_dict", "mock", "text"])
-def test_lazy_use_time_lookup_before_and_within_call(path, name, owner, shape):
-    """Before the call every stub is used; when a callback re-patches ALL façade globals mid-call,
-    every later use must hit the new binding (original module-level late lookup)."""
+def test_lazy_use_time_lookup_matches_baseline_before_and_within_call(path, name, owner, shape):
+    """Before the call and when a callback re-patches ALL façade globals mid-call, the moved function
+    must produce exactly the same stub-call sequence and outcome as the pinned baseline function
+    executed against the same live façade globals."""
     _SWITCHED["cases"] += 1
     module = importlib.import_module(path[:-3].replace("/", "."))
     fn = getattr(module, name)
+    ref = _reference_function(path, name, module)
     sig = inspect.signature(fn)
     req = [p for p in sig.parameters.values()
            if p.default is p.empty and p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)]
@@ -200,35 +245,11 @@ def test_lazy_use_time_lookup_before_and_within_call(path, name, owner, shape):
                and not isinstance(getattr(module, n), type)]
     mk = {"empty_dict": dict, "mock": MagicMock, "text": lambda: "abc"}[shape]
     for scenario in ("pre_call", "within_call"):
-        originals = {n: getattr(module, n) for n in targets}
-        events, state = [], {"switched": False}
-
-        def make(n, ver):
-            def stub(*a, **k):
-                events.append((ver, n))
-                if scenario == "within_call" and ver == "v1" and not state["switched"]:
-                    state["switched"] = True
-                    for m in targets:
-                        setattr(module, m, make(m, "v2"))
-                return MagicMock()
-            return stub
-
-        for n in targets:
-            setattr(module, n, make(n, "v1"))
-        try:
-            try:
-                fn(*[mk() for _ in req], **{p.name: mk() for p in kwreq})
-            except Exception:
-                pass
-        finally:
-            for n, v in originals.items():
-                setattr(module, n, v)
-        if scenario == "pre_call":
-            assert all(v == "v1" for v, _ in events), (name, events)
-        else:
-            assert all(v == "v2" for v, _ in events[1:]), (name, events[:8])
-            if any(v == "v2" for v, _ in events):
-                _SWITCHED["functions_with_v2"] += 1
+        got = _scenario_events(fn, req, kwreq, mk, targets, module, scenario)
+        want = _scenario_events(ref, req, kwreq, mk, targets, module, scenario)
+        assert got == want, (name, scenario, got[1][:8], want[1][:8])
+        if scenario == "within_call" and any(v == "v2" for v, _ in got[1]):
+            _SWITCHED["functions_with_v2"] += 1
 
 
 DEP_MAPS = [(p, n, o) for p, n, o in MOVED if n.endswith("_deps")]

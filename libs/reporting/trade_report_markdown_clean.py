@@ -216,6 +216,36 @@ from libs.reporting.trade_report.markdown_clean_operator_narrative import (
     _first_nonempty_r3_impl,
     _market_context_summary_from_raw_r3_impl,
 )
+from libs.reporting.trade_report.markdown_clean_parts.report_paths_and_time import (
+    _get_report_path_r3_impl,
+    _parse_report_datetime_r3_impl,
+    _duration_label_seconds_r3_impl,
+    _carry_state_label_r3_impl,
+    _carry_risk_label_r3_impl,
+    _strategy_horizon_report_surface_r3_impl,
+)
+from libs.reporting.trade_report.markdown_clean_parts.memory_policy_phases import (
+    _memory_layer_label_r3_impl,
+    _memory_status_label_r3_impl,
+    _memory_layers_text_r3_impl,
+    _memory_packet_state_line_r3_impl,
+    _policy_phase_line_r3_impl,
+    _same_policy_snapshot_r3_impl,
+    _scanner_phase_line_r3_impl,
+    _monitor_phase_line_r3_impl,
+    _resolve_reconstructed_memory_surface_r3_impl,
+    _build_generation_info_r3_impl,
+    _is_closed_trade_context_r3_impl,
+    _strategy_output_layer_bits_r3_impl,
+)
+from libs.reporting.trade_report.markdown_clean_parts.monitor_artifact_resolution import (
+    _safe_read_json_object_r3_impl,
+    _is_entry_monitor_artifact_r3_impl,
+    _canonical_monitor_from_trade_report_path_r3_impl,
+    _canonical_monitor_from_section_provenance_r3_impl,
+    _resolve_entry_monitor_artifact_r3_impl,
+    _candidate_cascade_matches_trade_r3_impl,
+)
 
 
 def _same_day_current_result(report: Dict[str, Any]) -> Dict[str, Any]:
@@ -368,23 +398,7 @@ def _hold_window_label(window: Dict[str, Any]) -> str:
 
 
 def _strategy_horizon_report_surface(report: Dict[str, Any]) -> Dict[str, Any]:
-    surface = _strategy_horizon_report_surface_impl(
-        report,
-        as_dict=_as_dict,
-        first_report_path=_first_report_path,
-        compact_post_exit_shadow=_compact_post_exit_shadow,
-        post_exit_shadow_surface=_post_exit_shadow_surface,
-        carryover_context=_carryover_context,
-        num_opt=_num_opt,
-        duration_label_compact_fn=_duration_label_compact,
-    )
-    authoritative_hold_sec = _authoritative_hold_duration_seconds(report)
-    if authoritative_hold_sec is not None:
-        surface = dict(surface)
-        surface["actual_hold_sec"] = authoritative_hold_sec
-        surface["actual_hold_label"] = _duration_label_seconds(authoritative_hold_sec)
-        surface["actual_hold_source"] = "entry_exit_execution_timestamps"
-    return surface
+    return _strategy_horizon_report_surface_r3_impl(report, facade=_r3_sys.modules[__name__])
 
 
 def _build_strategy_horizon_lines(report: Dict[str, Any], *, compact: bool = False) -> List[str]:
@@ -411,30 +425,11 @@ def _first_report_path(root: Dict[str, Any], paths: Iterable[str]) -> Any:
 
 
 def _get_report_path(root: Any, path: str) -> Any:
-    current = root
-    for part in str(path or "").split("."):
-        if not part:
-            continue
-        if isinstance(current, dict):
-            current = current.get(part)
-        else:
-            return None
-    return current
+    return _get_report_path_r3_impl(root, path, facade=_r3_sys.modules[__name__])
 
 
 def _parse_report_datetime(value: Any) -> Optional[datetime]:
-    text = str(value or "").strip()
-    if not text:
-        return None
-    try:
-        if text.endswith("Z"):
-            text = text[:-1] + "+00:00"
-        parsed = datetime.fromisoformat(text)
-        if parsed.tzinfo is None:
-            parsed = parsed.replace(tzinfo=timezone.utc)
-        return parsed.astimezone(timezone.utc)
-    except ValueError:
-        return None
+    return _parse_report_datetime_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _to_kst(value: Optional[datetime]) -> Optional[datetime]:
@@ -458,23 +453,7 @@ def _format_kst_date(value: Optional[datetime]) -> str:
 
 
 def _duration_label_seconds(value: Any) -> str:
-    seconds = _num_opt(value)
-    if seconds is None or seconds <= 0:
-        return ""
-    total = int(round(seconds))
-    days, rem = divmod(total, 86400)
-    hours, rem = divmod(rem, 3600)
-    minutes, seconds = divmod(rem, 60)
-    parts: List[str] = []
-    if days:
-        parts.append(f"{days}일")
-    if hours:
-        parts.append(f"{hours}시간")
-    if minutes:
-        parts.append(f"{minutes}분")
-    if seconds or not parts:
-        parts.append(f"{seconds}초")
-    return " ".join(parts)
+    return _duration_label_seconds_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _authoritative_hold_duration_seconds(report: Dict[str, Any]) -> Optional[float]:
@@ -487,32 +466,12 @@ def _authoritative_holding_duration_label(report: Dict[str, Any]) -> str:
 
 
 def _carry_state_label(value: Any, *, weekend_carry: bool = False) -> str:
-    key = str(value or "").strip().lower()
-    labels = {
-        "multi_session_stale": "전일/주말 이월 보유",
-        "overnight_open": "오버나이트 보유",
-        "eod_carry_approved": "장마감 이월 승인",
-        "carry_overnight_approved": "오버나이트 승인",
-        "overnight": "오버나이트 보유",
-    }
-    if key in labels:
-        return labels[key]
-    if weekend_carry:
-        return "주말 이월 보유"
-    return _metadata_value(value) if _metadata_value(value) != "-" else "오버나이트/이월 보유"
+    return _carry_state_label_r3_impl(value, weekend_carry=weekend_carry,
+        facade=_r3_sys.modules[__name__])
 
 
 def _carry_risk_label(value: Any) -> str:
-    key = str(value or "").strip().lower()
-    labels = {
-        "urgent_exit_review": "장기/주말 이월 후 우선 청산 검토",
-        "exit_review": "청산 검토",
-        "normal": "일반",
-    }
-    if key in labels:
-        return labels[key]
-    text = _metadata_value(value)
-    return "" if text == "-" else text
+    return _carry_risk_label_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _translated_metadata(value: Any) -> str:
@@ -621,73 +580,25 @@ def _first_dict(*items: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _safe_read_json_object(path_value: Any) -> Dict[str, Any]:
-    text = str(path_value or "").strip()
-    if not text:
-        return {}
-    try:
-        path = Path(text)
-        if not path.exists() or not path.is_file():
-            return {}
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        return payload if isinstance(payload, dict) else {}
-    except Exception:
-        return {}
+    return _safe_read_json_object_r3_impl(path_value, facade=_r3_sys.modules[__name__])
 
 
 def _is_entry_monitor_artifact(payload: Dict[str, Any]) -> bool:
-    if not payload:
-        return False
-    focus = _as_dict(payload.get("monitor_focus_context"))
-    if bool(payload.get("entry_triggered")) or str(payload.get("entry_decision") or "").upper() == "BUY":
-        return True
-    if bool(focus.get("entry_triggered")) or str(focus.get("entry_decision") or "").upper() == "BUY":
-        return True
-    return False
+    return _is_entry_monitor_artifact_r3_impl(payload, facade=_r3_sys.modules[__name__])
 
 
 def _canonical_monitor_from_trade_report_path(report: Dict[str, Any], run_id: str) -> Dict[str, Any]:
-    paths = _as_dict(report.get("paths"))
-    report_path_text = str(paths.get("ai_trade_report_json") or "").strip()
-    if not report_path_text or not run_id:
-        return {}
-    try:
-        report_path = Path(report_path_text)
-        parts = list(report_path.parts)
-        idx = parts.index("trades")
-        reports_root = Path(*parts[:idx])
-        day = parts[idx + 1]
-    except Exception:
-        return {}
-    return _safe_read_json_object(reports_root / "canonical" / day / run_id / "monitor.json")
+    return _canonical_monitor_from_trade_report_path_r3_impl(report, run_id,
+        facade=_r3_sys.modules[__name__])
 
 
 def _canonical_monitor_from_section_provenance(report: Dict[str, Any]) -> Dict[str, Any]:
-    provenance = _as_dict(report.get("section_provenance"))
-    for key in ("entry_decision", "why_this_symbol_was_chosen", "market_context_at_entry"):
-        row = _as_dict(provenance.get(key))
-        artifact_path = str(row.get("artifact_path") or "").strip()
-        if not artifact_path:
-            continue
-        monitor = _safe_read_json_object(Path(artifact_path).with_name("monitor.json"))
-        if _is_entry_monitor_artifact(monitor):
-            return monitor
-    return {}
+    return _canonical_monitor_from_section_provenance_r3_impl(report,
+        facade=_r3_sys.modules[__name__])
 
 
 def _resolve_entry_monitor_artifact(report: Dict[str, Any]) -> Dict[str, Any]:
-    fact_payload = _as_dict(report.get("fact_payload"))
-    trade_payload = _as_dict(fact_payload.get("trade"))
-    entry_summary = _as_dict(trade_payload.get("entry_summary"))
-    entry_monitor = _as_dict(entry_summary.get("monitor_context"))
-    if _is_entry_monitor_artifact(entry_monitor):
-        return entry_monitor
-
-    entry_run_id = str(entry_summary.get("run_id") or report.get("run_id") or "").strip()
-    monitor = _canonical_monitor_from_trade_report_path(report, entry_run_id)
-    if _is_entry_monitor_artifact(monitor):
-        return monitor
-
-    return _canonical_monitor_from_section_provenance(report)
+    return _resolve_entry_monitor_artifact_r3_impl(report, facade=_r3_sys.modules[__name__])
 
 
 def _rank_scope_text(row: Dict[str, Any]) -> str:
@@ -711,13 +622,8 @@ def _candidate_cascade_symbols(cascade: Dict[str, Any]) -> set[str]:
 
 
 def _candidate_cascade_matches_trade(cascade: Dict[str, Any], traded_symbol: Any) -> bool:
-    symbol = _display_candidate_symbol(traded_symbol)
-    if not symbol or not cascade:
-        return True
-    cascade_symbols = _candidate_cascade_symbols(cascade)
-    if not cascade_symbols:
-        return True
-    return symbol in cascade_symbols
+    return _candidate_cascade_matches_trade_r3_impl(cascade, traded_symbol,
+        facade=_r3_sys.modules[__name__])
 
 
 def _markdown_signal_deps() -> Dict[str, Any]:
@@ -1000,18 +906,7 @@ def _section_summary(section: Dict[str, Any]) -> str:
 
 
 def _build_generation_info(report: Dict[str, Any]) -> List[str]:
-    generation = _as_dict(report.get("generation"))
-    lines = [
-        f"- 생성 상태: {_metadata_value(generation.get('status') or '-')}",
-        f"- 생성 방식: {_metadata_value(generation.get('mode') or '-')}",
-        f"- 사용 모델: {_metadata_value(generation.get('model') or '-')}",
-    ]
-    if report.get("generated_at"):
-        lines.append(f"- 생성 시각: {_clip(report.get('generated_at'), 80)}")
-    reason = _metadata_value(generation.get("reason"))
-    if reason:
-        lines.append(f"- 생성 사유: {reason}")
-    return lines
+    return _build_generation_info_r3_impl(report, facade=_r3_sys.modules[__name__])
 
 
 def _get_truth_surface(report: Dict[str, Any]) -> Dict[str, Any]:
@@ -1037,14 +932,7 @@ def _pnl_basis_label(truth_pnl: Dict[str, Any], shared: Dict[str, Any]) -> str:
 
 
 def _memory_layer_label(value: Any) -> str:
-    raw = _clip(value, 80).lower()
-    mapping = {
-        "daily": "당일",
-        "weekly": "주간",
-        "monthly": "월간",
-        "symbol": "종목",
-    }
-    return mapping.get(raw, _metadata_value(value) or "-")
+    return _memory_layer_label_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _authority_label(value: Any) -> str:
@@ -1066,28 +954,11 @@ def _is_not_captured(value: Any) -> bool:
 
 
 def _is_closed_trade_context(report: Dict[str, Any]) -> bool:
-    status = _clip(report.get("status"), 20).lower()
-    if status == "closed":
-        return True
-    shared = _as_dict(report.get("shared_facts"))
-    monitor = _as_dict(report.get("monitor_snapshot"))
-    action = _clip(shared.get("action") or report.get("action"), 20).upper()
-    if action == "SELL" and monitor.get("trigger_type"):
-        return True
-    return False
+    return _is_closed_trade_context_r3_impl(report, facade=_r3_sys.modules[__name__])
 
 
 def _memory_status_label(value: Any) -> str:
-    raw = _clip(value, 80).lower()
-    mapping = {
-        "ok": "정상 기록",
-        "not_recorded": "미기록",
-        "missing": "미기록",
-        "empty": "비어 있음",
-        "auto_ignored": "자동 제외",
-        "error": "오류",
-    }
-    return mapping.get(raw, _metadata_value(value) or "-")
+    return _memory_status_label_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _markdown_truth_surface_deps() -> Dict[str, Any]:
@@ -1097,22 +968,12 @@ def _build_truth_surface(report: Dict[str, Any]) -> List[str]:
     return _build_truth_surface_impl(report, deps=_markdown_truth_surface_deps())
 
 def _memory_layers_text(values: Any, *, arrow: bool = False, humanize: bool = True) -> str:
-    items = [str(x).strip() for x in _listify(values) if str(x).strip()]
-    if not items:
-        return "-"
-    if humanize:
-        items = [_memory_layer_label(x) for x in items]
-    return " -> ".join(items) if arrow else ", ".join(items)
+    return _memory_layers_text_r3_impl(values, arrow=arrow, humanize=humanize,
+        facade=_r3_sys.modules[__name__])
 
 
 def _memory_packet_state_line(name: str, packet: Dict[str, Any]) -> str:
-    status = _memory_status_label(packet.get("status") or "not_recorded")
-    parts = [status]
-    sample_day_count = packet.get("sample_day_count")
-    if name in {"weekly", "monthly"} and sample_day_count not in (None, ""):
-        parts.append(f"{sample_day_count}days")
-    parts.append("활성" if packet.get("active") else "보조 참고")
-    return f"{_memory_layer_label(name)}=" + ", ".join(parts)
+    return _memory_packet_state_line_r3_impl(name, packet, facade=_r3_sys.modules[__name__])
 
 
 def _on_off_label(value: Any) -> str:
@@ -1124,57 +985,19 @@ def _applied_label(value: Any) -> str:
 
 
 def _policy_phase_line(label: str, policy: Dict[str, Any]) -> str:
-    active_layers = _memory_layers_text(policy.get("active_layers"))
-    priority_order = _memory_layers_text(policy.get("priority_order"), arrow=True)
-    scanner_bias = _on_off_label(policy.get("scanner_bias_enabled"))
-    monitor_bias = _on_off_label(policy.get("monitor_bias_enabled"))
-    symbol_override = _on_off_label(policy.get("symbol_memory_override_enabled"))
-    application_mode = _metadata_value(policy.get("application_mode") or "-")
-    return (
-        f"- [{label}] 활성 레이어={active_layers}; 우선순위={priority_order}; "
-        f"scanner bias={scanner_bias}; monitor bias={monitor_bias}; "
-        f"symbol override={symbol_override}; 적용 모드={application_mode}."
-    )
+    return _policy_phase_line_r3_impl(label, policy, facade=_r3_sys.modules[__name__])
 
 
 def _same_policy_snapshot(left: Dict[str, Any], right: Dict[str, Any]) -> bool:
-    keys = (
-        "active_layers",
-        "priority_order",
-        "scanner_bias_enabled",
-        "monitor_bias_enabled",
-        "symbol_memory_override_enabled",
-        "application_mode",
-    )
-    return all(left.get(key) == right.get(key) for key in keys)
+    return _same_policy_snapshot_r3_impl(left, right, facade=_r3_sys.modules[__name__])
 
 
 def _scanner_phase_line(scanner: Dict[str, Any]) -> str:
-    source = _metadata_value(scanner.get("source") or "-")
-    active_layers = _memory_layers_text(scanner.get("active_layers"))
-    not_applied = _metadata_value(scanner.get("not_applied_reason") or "")
-    suffix = f"; 미적용 사유={not_applied}" if not_applied else ""
-    return (
-        f"- [스캐너 적용 시점] captured={_on_off_label(scanner.get('captured'))}; "
-        f"enabled={_on_off_label(scanner.get('enabled'))}; "
-        f"applied={_applied_label(scanner.get('applied'))}; "
-        f"active_layers={active_layers}; source={source}{suffix}."
-    )
+    return _scanner_phase_line_r3_impl(scanner, facade=_r3_sys.modules[__name__])
 
 
 def _monitor_phase_line(monitor: Dict[str, Any]) -> str:
-    source = _metadata_value(monitor.get("source") or "-")
-    active_layers = _memory_layers_text(monitor.get("active_layers"))
-    not_applied = _metadata_value(monitor.get("not_applied_reason") or "")
-    suffix = f"; 미적용 사유={not_applied}" if not_applied else ""
-    return (
-        f"- [모니터 적용 시점] captured={_on_off_label(monitor.get('captured'))}; "
-        f"enabled={_on_off_label(monitor.get('enabled'))}; "
-        f"entry={_applied_label(monitor.get('applied'))}; "
-        f"hold={_applied_label(monitor.get('hold_applied'))}; "
-        f"exit={_applied_label(monitor.get('exit_applied'))}; "
-        f"active_layers={active_layers}; source={source}{suffix}."
-    )
+    return _monitor_phase_line_r3_impl(monitor, facade=_r3_sys.modules[__name__])
 
 
 def _playbook_label(value: Any) -> str:
@@ -1211,22 +1034,7 @@ def _resolve_prompt_proven_surface(memory: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _resolve_reconstructed_memory_surface(memory: Dict[str, Any]) -> Dict[str, Any]:
-    reconstructed = _as_dict(memory.get("reconstructed_trade_context"))
-    if reconstructed:
-        return reconstructed
-    return {
-        "status": {
-            "selected_symbol_memory_rebuilt": False,
-            "reporter_feedback_rebuilt": False,
-            "memory_packets_rebuilt": False,
-            "commander_memory_policy_rebuilt": False,
-        },
-        "selected_symbol_memory": dict(_as_dict(memory.get("selected_symbol_memory")), rebuilt=False, source="prompt_proven"),
-        "reporter_feedback_packet": dict(_as_dict(memory.get("reporter_feedback_packet")), rebuilt=False, source="prompt_proven"),
-        "memory_packets": {"rebuilt": False, "source": "prompt_proven"},
-        "commander_memory_policy": dict(_as_dict(memory.get("commander_memory_policy")), rebuilt=False, source="prompt_proven"),
-        "notes": [],
-    }
+    return _resolve_reconstructed_memory_surface_r3_impl(memory, facade=_r3_sys.modules[__name__])
 
 
 def _build_prompt_proven_memory(report: Dict[str, Any]) -> List[str]:
@@ -1269,17 +1077,7 @@ def _strategy_output_list_text(values: Any, *, limit: int = 4, sep: str = ", ") 
     return _strategy_output_list_text_impl(values, limit=limit, sep=sep, _listify=_listify, _strategy_output_text=_strategy_output_text)
 
 def _strategy_output_layer_bits(layer_decisions: Any) -> str:
-    decisions = _as_dict(layer_decisions)
-    bits: List[str] = []
-    for layer, row in list(decisions.items())[:4]:
-        item = _as_dict(row)
-        used = "used" if bool(item.get("used")) else "not_used"
-        gate = _strategy_output_text(
-            item.get("gate_reason") or item.get("reason") or item.get("status"),
-            max_len=80,
-        )
-        bits.append(f"{layer}={used}" + (f"/{gate}" if gate else ""))
-    return ", ".join(bits)
+    return _strategy_output_layer_bits_r3_impl(layer_decisions, facade=_r3_sys.modules[__name__])
 
 
 def _append_strategy_output_line(lines: List[str], label: str, text: str) -> None:

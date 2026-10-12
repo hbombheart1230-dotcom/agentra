@@ -1,19 +1,18 @@
-# ACTIVE — Agentra P1.5 FAST TRACK Wave A (Reporting → Operator UI)
+# ACTIVE — Agentra P1.5 FAST TRACK Wave A (Reporting → Operator UI) — CLAUDE WAVE COMPLETE, CODEX AUDIT PENDING
 
-**State:** USER_AUTHORIZED_BREADTH_FIRST; LOC010_CODEX_PASS_WITH_FINDINGS; WAVE_A_ACTIVE; P1.5.2_FINAL_OPEN; MAIN_FROZEN.
-**ONE active work order:** [P15_FAST_TRACK_WAVE_A_013.md](P15_FAST_TRACK_WAVE_A_013.md).
-**Workflow authority:** [P15_FAST_TRACK_FIRST_PASS_2026_10_12.md](../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md) → [COMMON_RULES.md](COMMON_RULES.md).
+**State:** WAVE_A_IMPLEMENTED_FIRST_PASS_WITH_DEBT; CODEX_WAVE_A_AUDIT_PENDING; P1.5.2 OPEN (final acceptance); P1.5.3 FIRST_PASS_WITH_DEBT (not final accepted); MAIN_FROZEN.
+**Work order:** [P15_FAST_TRACK_WAVE_A_013.md](P15_FAST_TRACK_WAVE_A_013.md). **Workflow authority:** [Fast Track plan](../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md) → [COMMON_RULES.md](COMMON_RULES.md).
 **Roles:** Claude implements a wave → Codex audits the pinned aggregated diff → GPT/user final release decisions.
-**Only `refactor/p1.5` development branch**; `main` frozen. No additional feature/task/ZIP branches. Detached or separate isolated audit clones allowed.
-**Code baseline:** LOC010 code `b0cfc2b5646ff81ec5ce7b738f485a9d22365826`; planning activation from `9b36b638d812b71152b764dbcdd56c427bcc27f7`.
-**Protected:** live `C:\Agentra`, both dirty Q12 worktrees, broker, real LLM/cloud, production data/reports, Docker/scheduler runtime.
+**Only `refactor/p1.5` development branch**; `main` frozen; no feature/task branches. **No ZIP/download artifacts — Git commit/push is the only deliverable** (user decision 2026-10-12).
+**Wave A start:** `fb8de628eb56b0941007e90ad2e98b4f684983ba` (LOC010 code `b0cfc2b5646ff81ec5ce7b738f485a9d22365826`). Pinned wave SHA: see the evidence file / final commit.
+**Protected:** live `C:\Agentra`, dirty Q12 worktrees, broker, real LLM, production data/reports, Docker/scheduler.
 
-## Verified transition
-- Codex independent LOC010 verdict **PASS_WITH_FINDINGS**, 812 selected PASS/1 SKIP, 460 core PASS, 436 ABI and 86 moved-body ledger PASS; zero isolated writes. No mandatory LOC010 fix. The 99,689/99,690 synthetic call comparison was **CLAUDE ONLY**, not independently rerun by Codex. [Evidence](evidence/P15-R3-CODEX-LOC-010-AUDIT-011.md).
-- Reporting 3 public façades at LOC010: AI **1,958**, Markdown **1,527**, Story **562** = **4,047** physical LOC vs original 18,743. Do not conflate moved lines with repo-wide deletion. `SIZE_DEFERRED` and `bodies_01..05` cohesion debt remain.
-- Immutable historical report/LLM parity **BLOCKED/NOT RUN**; native full-suite `controlled_mock_lanes` write isolation OPEN. **P1.5.2 remains FINAL OPEN**; the fast first pass is not a false PASS.
+## Wave A result (evidence: [P15-FAST-TRACK-WAVE-A-CLAUDE-014.md](evidence/P15-FAST-TRACK-WAVE-A-CLAUDE-014.md))
+- **A1 Reporting:** 55 more bodies (dependency maps + deterministic domain helpers) moved to 10 responsibility-named Owners; façades 4,047 -> 3,479 LOC (AI 1,656 / Markdown 1,325 / Story 498); 436 ABI intact; moved-body ledger 141.
+- **A2 P1.5.3 Operator UI/Brief:** 136 IO-free bodies moved to 22 responsibility-named Owners; `data_access_core.py` 6,871 -> 4,594, `operator_period_summary.py` 3,210 -> 1,195, `operator_visibility.py` 1,879 -> 1,520 (-4,651); every public def/signature retained; use-time `facade.NAME` seams.
+- Persistence/IO/clock/LLM-calling functions and any single function > 350 LOC (`_build_operator_brief_sections` 846, `_render_operator_brief_markdown` 652, `_load_operator_brief` 442, `_build_operator_brief_input` 426, ...) were intentionally NOT moved — SECOND_PASS_DEBT.
 
-## Current execution
-- Claude implements **Wave A** only: one batched low-risk Reporting residual pass, then P1.5.3 Operator UI/Brief first pass under isolated focused safety gates. No per-100-LOC audit loop.
-- At Wave A boundary STOP for ONE pinned Codex independent audit; further waves B/C need audited nonblocking evidence and same-branch preauthorization policy.
-- Unchanged: no new trading semantics, LLM decision roles, Broker/Executor/Supervisor mutation authority, UEF/Step5C/D/R6.2, main integration or live rollout.
+## Still open (not FINAL)
+- Real frozen report Markdown/JSON/JSONL and LLM before/after parity **BLOCKED / NOT RUN**; full native pytest and `controlled_mock_lanes` write isolation **OPEN**; façade size and numbered Owner cohesion **SECOND_PASS_DEBT**.
+- CI guard step in `.github/workflows/p152-r2c-residual-regression.yml` still asserts R3-era markers in CURRENT.md (stale vs Fast Track); needs a Codex/GPT-approved workflow update — not changed here.
+- Next: Codex independent Wave A audit of the pinned SHA; Waves B/C only after audited nonblocking evidence. No main merge, deployment or final P1.5.2/P1.5.3 acceptance.

@@ -2935,3 +2935,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - `main` 및 live 변경·실거래·추가 브랜치 없음. 패치노트 이전 011 소스 링크 오류도 바로잡음.
 - 근거: `docs/refactor/P15_FAST_TRACK_FIRST_PASS_2026_10_12.md`, `docs/refactor/work_orders/P15_FAST_TRACK_WAVE_A_013.md`, `docs/daily_patch/2026-10-12_p15_fast_track_first_pass_approved.md`.
 - 작업지시서·공통규칙의 Fast Track 정책 링크는 실제 상대 경로 `../P15_FAST_TRACK_FIRST_PASS_2026_10_12.md`로 정정했습니다.
+
+## 2026-10-12 · P1.5 Fast Track Wave A (Reporting 잔여 + P1.5.3 Operator UI/Brief 1차 분해)
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · OPERATOR_UI · REFACTOR · WORKFLOW
+
+- A1 Reporting: 의존성 맵과 결정적 도메인 helper 55개를 책임명 Owner 10개로 이동했고 façade 합계는 4,047 → 3,479줄입니다(AI 1,656 / Markdown 1,325 / Story 498). 436 ABI 유지.
+- A2 P1.5.3: Operator UI/Brief의 IO 없는 본문 136개를 Owner 22개로 이동했습니다. `data_access_core.py` 6,871 → 4,594, `operator_period_summary.py` 3,210 → 1,195, `operator_visibility.py` 1,879 → 1,520(-4,651줄). 공개 def/시그니처와 use-time monkeypatch seam은 그대로입니다.
+- 영속화·IO·LLM 호출 함수와 350줄 초과 단일 함수는 이동하지 않고 2차 부채로 기록했습니다.
+- 검증: 이동 본문 AST 동일성·use-time oracle·ABI, baseline 대비 호출 비교(Reporting 150,692/150,693 동일, Operator UI 결과 동일·`prompt_hash`만 비결정적), 통합 집중 회귀 2,374 passed / 1 skipped / 기존 API 실패 1건, 운영 경로 쓰기 0.
+- 운영 규칙: 책임 단위 일괄 추출, 하위 시스템별 게이트, ZIP·다운로드 산출물 금지(Git만 산출물)를 Git 문서에 반영했습니다. 실제 snapshot·LLM parity BLOCKED, 전체 pytest·`controlled_mock_lanes` OPEN, P1.5.2 최종 OPEN, Codex Wave A 감사 대기.

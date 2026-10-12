@@ -36,7 +36,7 @@ CURRENT.md status transitions are documented by GPT only after reviewing the app
 - Only if CURRENT authorizes CODE CHANGES: move one coherent responsibility to one canonical Owner; every NEW/moved/expanded Python implementation Owner <=350 physical LOC (150–300 preferred), no new 1,000-line helper dumping ground; retain existing patch/import seams and canonical source precedence.
 - Execute targeted pytest, real-data equivalence when safe and available, import/cycle and no-production-write checks in isolated temp directories. Record commands, SHA, count and PASS/FAIL/NOT RUN; do not fake operational acceptance.
 - For meaningful code changes: append to BOTH docs/trading_agent_patch_notes_detailed_update/patch_notes.json and patch_notes.md; add a daily patch note; document actual changed paths and local rollback/failure evidence. Test PASS temp artifacts cleaned; FAIL evidence bounded.
-- Commit/push only on refactor/p1.5; changed-files-only ZIP can be provided by the repo Actions workflow or created from a deterministic commit diff. Do not create ci/* or artifacts/* branches.
+- Commit/push only on refactor/p1.5; no ZIP/download artifact is produced by the implementer (user decision 2026-10-12); the Git commit diff is the deliverable. Do not create ci/* or artifacts/* branches.
 - Publish a Claude evidence report at the CURRENT-specified path, pin the commit SHA; stop for Codex. Claude does not self-certify final PASS.
 
 ## Codex — independent local verifier

@@ -211,6 +211,46 @@ from libs.reporting.trade_report.ai_facade_r3_parts.bodies_04 import (
 from libs.reporting.trade_report.ai_facade_r3_parts.bodies_05 import (
     _attach_report_status_matrix_r3_impl,
 )
+from libs.reporting.trade_report.ai_facade_parts.dependency_maps import (
+    _section_builder_deps_r3_impl,
+    _context_builder_deps_r3_impl,
+)
+from libs.reporting.trade_report.ai_facade_parts.scanner_selection import (
+    _scanner_basis_text_r3_impl,
+    _scanner_ranked_candidates_r3_impl,
+    _scanner_monitor_fallback_context_r3_impl,
+    _scanner_chart_feature_coverage_r3_impl,
+    _build_scanner_filters_bullets_r3_impl,
+)
+from libs.reporting.trade_report.ai_facade_parts.entry_gate_snapshots import (
+    _entry_gate_bits_r3_impl,
+    _entry_gate_signature_r3_impl,
+    _compact_entry_gate_snapshot_r3_impl,
+    _entry_snapshot_as_post_entry_observation_r3_impl,
+)
+from libs.reporting.trade_report.ai_facade_parts.market_context_text import (
+    _is_market_context_noise_bullet_r3_impl,
+    _sanitize_market_context_summary_r3_impl,
+    _extract_us_indices_snapshot_r3_impl,
+    _clean_news_title_r3_impl,
+    _select_symbol_headline_r3_impl,
+    _num_opt_r3_impl,
+)
+from libs.reporting.trade_report.ai_facade_parts.holding_memory_compaction import (
+    _build_holding_story_summary_r3_impl,
+    _compact_holding_summary_r3_impl,
+    _compact_candidate_watch_proposal_r3_impl,
+    _compact_memory_layer_decisions_r3_impl,
+)
+from libs.reporting.trade_report.ai_facade_parts.lifecycle_status_labels import (
+    _as_status_r3_impl,
+    _action_from_exit_reason_r3_impl,
+    _is_open_position_placeholder_reason_r3_impl,
+    _is_hold_placeholder_exit_reason_r3_impl,
+    _lifecycle_summary_conflicts_with_status_r3_impl,
+    _story_post_exit_shadow_r3_impl,
+    _canonical_ai_report_status_r3_impl,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -365,70 +405,28 @@ def _as_action(value: Any) -> str:
 
 
 def _as_status(value: Any) -> str:
-    text = _clip(value, max_len=32).lower()
-    if text == "opened":
-        return "open"
-    if text == "closed_out":
-        return "closed"
-    return text
+    return _as_status_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _action_from_exit_reason(value: Any) -> str:
-    text = str(value or "").strip().lower()
-    if not text:
-        return ""
-    if "sell" in text or "매도" in text or "청산" in text:
-        return "SELL"
-    return ""
+    return _action_from_exit_reason_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _is_open_position_placeholder_reason(value: Any) -> bool:
-    text = str(value or "").strip().lower()
-    if not text:
-        return False
-    markers = (
-        "no_position",
-        "no position",
-        "position is still open",
-        "monitor is watching for exit",
-        "still open",
-        "포지션이 아직",
-    )
-    return any(token in text for token in markers)
+    return _is_open_position_placeholder_reason_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _is_hold_placeholder_exit_reason(value: Any) -> bool:
-    text = str(value or "").strip()
-    if not text:
-        return False
-    normalized = re.sub(r"^sell\s+was\s+triggered\s+because\s*", "", text, flags=re.IGNORECASE)
-    normalized = normalized.strip().strip(".").strip().lower()
-    return normalized in {"hold", "hold_position", "holding", "보유", "보유 유지"} or "because hold" in text.lower()
+    return _is_hold_placeholder_exit_reason_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _lifecycle_summary_conflicts_with_status(value: Any, status: Any) -> bool:
-    text = str(value or "").strip().lower()
-    status_text = str(status or "").strip().lower()
-    if not text or not status_text:
-        return False
-    if status_text == "closed" and (" is partial" in text or "status is partial" in text):
-        return True
-    if status_text == "partial" and (" is closed" in text or "status is closed" in text):
-        return True
-    return False
+    return _lifecycle_summary_conflicts_with_status_r3_impl(value, status,
+        facade=_r3_sys.modules[__name__])
 
 
 def _story_post_exit_shadow(story_input: Dict[str, Any]) -> Dict[str, Any]:
-    for candidate in (
-        _as_dict(story_input.get("post_exit_shadow")),
-        _as_dict(_as_dict(story_input.get("lifecycle_bundle")).get("post_exit_shadow")),
-        _as_dict(_as_dict(story_input.get("trade_lifecycle")).get("post_exit_shadow")),
-        _as_dict(_as_dict(_as_dict(story_input.get("trade_lifecycle")).get("exit")).get("post_exit_shadow")),
-        _as_dict(_as_dict(_as_dict(story_input.get("lifecycle_bundle")).get("exit")).get("post_exit_shadow")),
-    ):
-        if candidate:
-            return candidate
-    return {}
+    return _story_post_exit_shadow_r3_impl(story_input, facade=_r3_sys.modules[__name__])
 
 
 def _reporter_summary_is_placeholder(value: Any) -> bool:
@@ -516,60 +514,19 @@ def _compact_monitor_snapshot(section: Any) -> Dict[str, Any]:
     )
 
 def _is_market_context_noise_bullet(value: Any) -> bool:
-    text = _clip(value, max_len=260).strip()
-    if not text:
-        return True
-    lowered = text.lower()
-    if lowered.startswith("news input:"):
-        return True
-    if lowered.startswith("news query targets:"):
-        return True
-    if "headlines were considered across" in lowered:
-        return True
-    if text.startswith("뉴스 입력 요약은"):
-        return True
-    if text.startswith("뉴스 조회 대상은"):
-        return True
-    if "관련 헤드라인" in text and "반영" in text:
-        return True
-    return False
+    return _is_market_context_noise_bullet_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _sanitize_market_context_summary(value: Any) -> str:
-    text = _clip(value, max_len=600).strip()
-    if not text:
-        return ""
-    cleaned = re.sub(
-        r"[^.]*\b\d+\s*headlines were considered across \d+\s*targets[^.]*\.?\s*",
-        " ",
-        text,
-        flags=re.IGNORECASE,
-    )
-    cleaned = re.sub(
-        r"[^.]*관련 헤드라인\s*\d+건[^.]*\.?\s*",
-        " ",
-        cleaned,
-    )
-    cleaned = re.sub(r"\s{2,}", " ", cleaned).strip(" .")
-    return cleaned or text
+    return _sanitize_market_context_summary_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _num_opt(value: Any) -> Optional[float]:
-    try:
-        if value in (None, ""):
-            return None
-        return float(value)
-    except Exception:
-        return None
+    return _num_opt_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _clean_news_title(value: Any, *, max_len: int = 220) -> str:
-    text = html.unescape(_clip(value, max_len=max_len).strip())
-    if not text:
-        return ""
-    text = re.sub(r"<[^>]+>", "", text)
-    text = re.sub(r"\s+", " ", text).strip(" .;")
-    return text
+    return _clean_news_title_r3_impl(value, max_len=max_len, facade=_r3_sys.modules[__name__])
 
 
 def _market_token_label(value: Any) -> str:
@@ -600,20 +557,7 @@ def _scanner_bias_text(summary: Any) -> str:
     return _scanner_bias_text_impl(summary, ast=ast, _scanner_bias_label=_scanner_bias_label, _listify=_listify, _clip=_clip)
 
 def _extract_us_indices_snapshot(events: Any) -> Dict[str, float]:
-    for row in _listify(events, max_items=8, max_len=220):
-        match = re.search(
-            r"sp500=([+-]?\d+(?:\.\d+)?)%\s+nasdaq=([+-]?\d+(?:\.\d+)?)%\s+dow=([+-]?\d+(?:\.\d+)?)%",
-            str(row),
-            flags=re.IGNORECASE,
-        )
-        if not match:
-            continue
-        return {
-            "sp500": float(match.group(1)),
-            "nasdaq": float(match.group(2)),
-            "dow": float(match.group(3)),
-        }
-    return {}
+    return _extract_us_indices_snapshot_r3_impl(events, facade=_r3_sys.modules[__name__])
 
 
 def _extract_korea_indices_snapshot(section: Any) -> Dict[str, Dict[str, Any]]:
@@ -632,16 +576,7 @@ def _format_pct_points(value: Any) -> str:
 
 
 def _select_symbol_headline(headlines: Any, symbol: str = "") -> str:
-    cleaned_rows = [_clean_news_title(row) for row in _listify(headlines, max_items=20, max_len=240)]
-    cleaned_rows = [row for row in cleaned_rows if row]
-    if not cleaned_rows:
-        return ""
-    symbol_token = str(symbol or "").strip()
-    if symbol_token:
-        for row in cleaned_rows:
-            if row.startswith(f"{symbol_token}:"):
-                return row
-    return cleaned_rows[0]
+    return _select_symbol_headline_r3_impl(headlines, symbol, facade=_r3_sys.modules[__name__])
 
 
 def _join_headlines(headlines: Any, *, max_items: int = 2, max_len: int = 180) -> str:
@@ -651,63 +586,7 @@ def _join_headlines(headlines: Any, *, max_items: int = 2, max_len: int = 180) -
 
 
 def _section_builder_deps() -> Dict[str, Any]:
-    return {
-        "clip": _clip,
-        "extract_korea_indices_snapshot": _extract_korea_indices_snapshot,
-        "extract_us_indices_snapshot": _extract_us_indices_snapshot,
-        "format_korea_indices_sentence": _format_korea_indices_sentence,
-        "format_pct_points": _format_pct_points,
-        "market_token_label": _market_token_label,
-        "num_opt": _num_opt,
-        "theme_text": _theme_text,
-        "dedupe_list": _dedupe_list,
-        "join_headlines": _join_headlines,
-        "listify": _listify,
-        "select_symbol_headline": _select_symbol_headline,
-        "risk_mode_label": _risk_mode_label,
-        "scanner_bias_text": _scanner_bias_text,
-        "scanner_source_text": _scanner_source_text,
-        "strategy_constraint_text": _strategy_constraint_text,
-        "theme_linkage_label": _theme_linkage_label,
-        "build_runner_up_comparison": _build_runner_up_comparison,
-        "build_scanner_driver_summary": _build_scanner_driver_summary,
-        "fmt_num": _fmt_num,
-        "scanner_basis_text": _scanner_basis_text,
-        "scanner_chart_feature_coverage": _scanner_chart_feature_coverage,
-        "scanner_chart_feature_label": _scanner_chart_feature_label,
-        "scanner_monitor_fallback_context": _scanner_monitor_fallback_context,
-        "scanner_ranked_candidates": _scanner_ranked_candidates,
-        "scanner_selected_row": _scanner_selected_row,
-        "build_scanner_choice_bullets": _build_scanner_choice_bullets,
-        "build_scanner_choice_summary": _build_scanner_choice_summary,
-        "build_scanner_choice_bullets": _build_scanner_choice_bullets,
-        "build_scanner_choice_summary": _build_scanner_choice_summary,
-        "entry_gate_score_relation": _entry_gate_score_relation,
-        "entry_path_label": _entry_path_label,
-        "entry_reason_label": _entry_reason_label,
-        "operator_action_label": _operator_action_label,
-        "as_dict": _as_dict,
-        "compact_entry_gate_snapshot": _compact_entry_gate_snapshot,
-        "entry_gate_signature": _entry_gate_signature,
-        "entry_snapshot_as_post_entry_observation": _entry_snapshot_as_post_entry_observation,
-        "looks_like_post_entry_monitor_snapshot": _looks_like_post_entry_monitor_snapshot,
-        "select_entry_decision_detail": _select_entry_decision_detail,
-        "entry_gate_bits": _entry_gate_bits,
-        "korean_predicate": _korean_predicate,
-        "decision_chain_label": _decision_chain_label,
-        "fmt_pct": _fmt_pct,
-        "fmt_price": _fmt_price,
-        "is_low_information_bullet": _is_low_information_bullet,
-        "operator_axis_label": _operator_axis_label,
-        "build_reporter_evaluation_from_feedback": _build_reporter_evaluation_from_feedback,
-        "humanize_duration_text": _humanize_duration_text,
-        "korean_euro_ro": _korean_euro_ro,
-        "operatorize_report_text": _operatorize_report_text,
-        "execution_mode_label": _execution_mode_label,
-        "exit_reason_label": _exit_reason_label,
-        "normalize_reporter_text": normalize_reporter_text,
-        "build_execution_truth_bullets": build_execution_truth_bullets,
-    }
+    return _section_builder_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _build_market_context_summary(section: Any, *, scanner_reason: Dict[str, Any] | None = None) -> str:
     return _build_market_context_summary_impl(section, scanner_reason=scanner_reason, deps=_section_builder_deps())
@@ -732,24 +611,7 @@ def _fmt_num(value: Any, *, digits: int = 3) -> str:
 
 
 def _scanner_basis_text(scanner_reason: Dict[str, Any]) -> str:
-    def _basis_label(value: Any) -> str:
-        raw = _clip(value, max_len=120).strip()
-        mapping = {
-            "trading value": "거래대금",
-            "theme and sector alignment": "섹터·테마 정렬",
-            "sentiment support": "감성 지원",
-            "top value": "거래대금 상위",
-            "top volume": "거래량 상위",
-            "momentum": "모멘텀",
-            "trend": "추세",
-            "confidence": "신뢰도",
-        }
-        return mapping.get(raw.lower(), raw)
-
-    basis = scanner_reason.get("ranking_basis")
-    if isinstance(basis, list):
-        return ", ".join(_basis_label(item) for item in _listify(basis, max_items=4, max_len=80) if _basis_label(item))
-    return _basis_label(_clip(basis, max_len=220))
+    return _scanner_basis_text_r3_impl(scanner_reason, facade=_r3_sys.modules[__name__])
 
 
 def _scanner_source_label(value: Any) -> str:
@@ -765,12 +627,7 @@ def _scanner_chart_feature_label(value: Any) -> str:
     return _scanner_chart_feature_label_impl(value, _clip=_clip)
 
 def _scanner_ranked_candidates(scanner_reason: Dict[str, Any]) -> List[Dict[str, Any]]:
-    for key in ("top_candidates", "ranked_candidates"):
-        rows = [row for row in list(scanner_reason.get(key) or []) if isinstance(row, dict)]
-        if rows:
-            return rows[:5]
-    trace = scanner_reason.get("scanner_selection_trace") if isinstance(scanner_reason.get("scanner_selection_trace"), dict) else {}
-    return [row for row in list(trace.get("ranked_candidates") or []) if isinstance(row, dict)][:5]
+    return _scanner_ranked_candidates_r3_impl(scanner_reason, facade=_r3_sys.modules[__name__])
 
 
 def _scanner_selected_row(scanner_reason: Dict[str, Any]) -> Dict[str, Any]:
@@ -778,38 +635,12 @@ def _scanner_selected_row(scanner_reason: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _scanner_monitor_fallback_context(scanner_reason: Dict[str, Any]) -> Dict[str, Any]:
-    trace = scanner_reason.get("scanner_selection_trace") if isinstance(scanner_reason.get("scanner_selection_trace"), dict) else {}
-    return {
-        "used": bool(scanner_reason.get("monitor_fallback_used") or trace.get("monitor_fallback_used")),
-        "scanner_top_pick_symbol": _clip(
-            scanner_reason.get("scanner_top_pick_symbol") or trace.get("scanner_top_pick_symbol"),
-            max_len=24,
-        ),
-        "reason": _operatorize_report_text(
-            scanner_reason.get("monitor_fallback_reason") or trace.get("monitor_fallback_reason")
-        ),
-        "trigger_reason": _operatorize_report_text(
-            scanner_reason.get("monitor_trigger_reason") or trace.get("monitor_trigger_reason")
-        ),
-    }
+    return _scanner_monitor_fallback_context_r3_impl(scanner_reason,
+        facade=_r3_sys.modules[__name__])
 
 
 def _scanner_chart_feature_coverage(scanner_reason: Dict[str, Any]) -> Dict[str, Any]:
-    trace = scanner_reason.get("scanner_selection_trace") if isinstance(scanner_reason.get("scanner_selection_trace"), dict) else {}
-    row = trace.get("chart_feature_coverage") if isinstance(trace.get("chart_feature_coverage"), dict) else {}
-    out = dict(row)
-    present = int(float(out.get("present") or 0)) if _num_opt(out.get("present")) is not None else 0
-    total = int(float(out.get("total") or 0)) if _num_opt(out.get("total")) is not None else 0
-    present_keys = [str(x or "") for x in list(out.get("present_keys") or []) if str(x or "").strip()]
-    missing_keys = [str(x or "") for x in list(out.get("missing_keys") or []) if str(x or "").strip()]
-    if (present_keys or missing_keys) and not (
-        present_keys
-        and len(present_keys) == present
-        and len(present_keys) + len(missing_keys) == total
-    ):
-        out["present_keys"] = []
-        out["missing_keys"] = []
-    return out
+    return _scanner_chart_feature_coverage_r3_impl(scanner_reason, facade=_r3_sys.modules[__name__])
 
 
 def _build_scanner_driver_summary(scanner_reason: Dict[str, Any]) -> str:
@@ -858,19 +689,7 @@ def _build_scanner_filters_summary(filters_human: Dict[str, Any]) -> str:
 
 
 def _build_scanner_filters_bullets(filters_human: Dict[str, Any]) -> List[str]:
-    checks = [row for row in list(filters_human.get("checks") or []) if isinstance(row, dict)]
-    if not checks:
-        return _listify(filters_human.get("bullets"), max_items=10, max_len=260)
-    bullets: List[str] = []
-    for row in checks[:8]:
-        label = _scanner_check_name_label(row.get("name"))
-        status = _scanner_check_status_label(row.get("status"))
-        detail = _operatorize_report_text(row.get("detail"))
-        if detail:
-            bullets.append(f"{label}은 {status}였습니다. 근거: {detail}")
-        else:
-            bullets.append(f"{label}은 {status}였습니다.")
-    return _dedupe_list(bullets, max_items=10, max_len=260)
+    return _build_scanner_filters_bullets_r3_impl(filters_human, facade=_r3_sys.modules[__name__])
 
 
 def _build_entry_decision_summary(
@@ -918,45 +737,15 @@ def _entry_gate_score_relation(score: float, threshold: float) -> str:
 
 
 def _entry_gate_bits(grouped_trace: Dict[str, Any], entry_scores: Dict[str, Any] | None = None) -> List[str]:
-    scores = entry_scores if isinstance(entry_scores, dict) else {}
-    gate_bits: List[str] = []
-    if "reclaim_gate_ok" in grouped_trace:
-        gate_bits.append(f"{_entry_gate_name_label('reclaim')} {_entry_gate_state_label(grouped_trace.get('reclaim_gate_ok'))}")
-    if "extension_ok" in grouped_trace:
-        gate_bits.append(f"{_entry_gate_name_label('extension')} {_entry_gate_state_label(grouped_trace.get('extension_ok'))}")
-    if "confidence_gate_ok" in grouped_trace:
-        gate_bits.append(f"{_entry_gate_name_label('confidence gate')} {_entry_gate_state_label(grouped_trace.get('confidence_gate_ok'))}")
-    elif "confidence_gate_ok" in scores:
-        gate_bits.append(f"{_entry_gate_name_label('confidence gate')} {_entry_gate_state_label(scores.get('confidence_gate_ok'))}")
-    return gate_bits
+    return _entry_gate_bits_r3_impl(grouped_trace, entry_scores, facade=_r3_sys.modules[__name__])
 
 
 def _entry_gate_signature(source: Dict[str, Any]) -> tuple[Any, ...]:
-    grouped_trace = _as_dict(source.get("entry_grouped_logic_trace"))
-    entry_scores = _as_dict(source.get("entry_condition_scores"))
-    return (
-        grouped_trace.get("reclaim_gate_ok"),
-        grouped_trace.get("extension_ok"),
-        grouped_trace.get("confidence_gate_ok", entry_scores.get("confidence_gate_ok")),
-        grouped_trace.get("triggered_path") or source.get("entry_condition_path"),
-        entry_scores.get("confidence_score"),
-        entry_scores.get("confidence_threshold"),
-    )
+    return _entry_gate_signature_r3_impl(source, facade=_r3_sys.modules[__name__])
 
 
 def _compact_entry_gate_snapshot(source: Dict[str, Any]) -> Dict[str, Any]:
-    grouped_trace = _as_dict(source.get("entry_grouped_logic_trace"))
-    entry_scores = _as_dict(source.get("entry_condition_scores"))
-    out: Dict[str, Any] = {}
-    if grouped_trace:
-        out["entry_grouped_logic_trace"] = grouped_trace
-    if entry_scores:
-        out["entry_condition_scores"] = entry_scores
-    if source.get("entry_condition_path") not in (None, ""):
-        out["entry_condition_path"] = source.get("entry_condition_path")
-    if source.get("entry_reason") not in (None, ""):
-        out["entry_reason"] = source.get("entry_reason")
-    return out
+    return _compact_entry_gate_snapshot_r3_impl(source, facade=_r3_sys.modules[__name__])
 
 
 def _looks_like_post_entry_monitor_snapshot(story_input: Dict[str, Any], monitor_reason: Dict[str, Any]) -> bool:
@@ -965,21 +754,8 @@ def _looks_like_post_entry_monitor_snapshot(story_input: Dict[str, Any], monitor
 
 
 def _entry_snapshot_as_post_entry_observation(monitor_reason: Dict[str, Any]) -> Dict[str, Any]:
-    resolved = dict(monitor_reason or {})
-    post_entry_snapshot = _compact_entry_gate_snapshot(monitor_reason)
-    for key in (
-        "entry_grouped_logic_trace",
-        "entry_condition_scores",
-        "entry_condition_path",
-        "entry_condition_paths_passed",
-        "entry_reason",
-        "entry_thresholds",
-    ):
-        resolved.pop(key, None)
-    if post_entry_snapshot:
-        resolved["post_entry_gate_observation"] = post_entry_snapshot
-        resolved["entry_gate_snapshot_source"] = "post_entry_monitor_snapshot_only"
-    return resolved
+    return _entry_snapshot_as_post_entry_observation_r3_impl(monitor_reason,
+        facade=_r3_sys.modules[__name__])
 
 
 def _select_entry_decision_detail(story_input: Dict[str, Any], entry_summary: Dict[str, Any]) -> Dict[str, Any]:
@@ -1008,21 +784,8 @@ def _build_entry_decision_bullets(
     return _build_entry_decision_bullets_impl(entry_summary, scanner_reason, market_context, monitor_reason, action, deps=_section_builder_deps())
 
 def _build_holding_story_summary(hold_count: int, monitor_reason: Dict[str, Any], status_text: str) -> str:
-    posture = _operator_action_label(_clip(monitor_reason.get("posture"), max_len=32) or "WAIT")
-    trigger = _operator_axis_label(_clip(monitor_reason.get("trigger_type"), max_len=48) or "not_captured")
-    axis = _operator_axis_label(_clip(monitor_reason.get("active_exit_axis"), max_len=64) or trigger)
-    confirm_required = monitor_reason.get("confirm_required")
-    confirm_count = monitor_reason.get("confirm_count")
-    exit_triggered = bool(monitor_reason.get("exit_triggered"))
-    if hold_count > 0:
-        base = f"보유 구간에서는 모니터가 총 {hold_count}회 실행되었고, 마지막 포지션 판단은 {posture}였습니다. 핵심 감시 축은 {axis}{_korean_euro_ro(axis)} 유지됐습니다."
-    else:
-        base = "이번 lifecycle의 보유 구간 기록은 제한적이어서, 저장된 모니터 근거를 중심으로 보수적으로 정리했습니다."
-    if confirm_required is not None:
-        base += f" 청산 확인 조건은 {int(confirm_count or 0)}/{int(confirm_required or 0)} 단계로 기록되었습니다."
-    if status_text.lower() == "open" and not exit_triggered:
-        base += " 아직 확정된 매도 신호는 확인되지 않았습니다."
-    return base
+    return _build_holding_story_summary_r3_impl(hold_count, monitor_reason, status_text,
+        facade=_r3_sys.modules[__name__])
 
 
 def _build_holding_story_bullets(holding_summary: Dict[str, Any], monitor_reason: Dict[str, Any]) -> List[str]:
@@ -1067,17 +830,7 @@ def _build_exit_decision_bullets(
     return _build_exit_decision_bullets_impl(exit_summary, monitor_context, status_text=status_text, deps=_section_builder_deps())
 
 def _compact_holding_summary(holding: Any) -> Dict[str, Any]:
-    data = holding if isinstance(holding, dict) else {}
-    posture_rows = data.get("posture_history") if isinstance(data.get("posture_history"), list) else []
-    recent_posture = [_compact_event_row(row) for row in posture_rows[-4:] if isinstance(row, dict)]
-    recent_posture = [row for row in recent_posture if row]
-    return {
-        "run_count": len(list(data.get("run_ids") or [])),
-        "recent_run_ids": [str(x or "") for x in list(data.get("run_ids") or [])[-6:] if str(x or "").strip()],
-        "holding_event_count": len(list(data.get("holding_events") or [])),
-        "recent_posture_history": recent_posture,
-        "recent_monitor_updates": _tail_list(data.get("monitor_updates"), max_items=6, max_len=200),
-    }
+    return _compact_holding_summary_r3_impl(holding, facade=_r3_sys.modules[__name__])
 
 
 def _compact_entry_or_exit_summary(summary: Any) -> Dict[str, Any]:
@@ -1108,22 +861,7 @@ def _compact_strategy_detail_context(value: Any) -> Dict[str, Any]:
 
 
 def _compact_candidate_watch_proposal(value: Any) -> Dict[str, Any]:
-    data = _as_dict(value)
-    if not data:
-        return {}
-    out = {
-        "source": _clip(data.get("source"), max_len=80),
-        "behavior_effect": _clip(data.get("behavior_effect"), max_len=48),
-        "tactical_strategy": _clip(data.get("tactical_strategy"), max_len=80),
-        "tactical_subtype": _clip(data.get("tactical_subtype"), max_len=80),
-        "max_priority_rank": data.get("max_priority_rank"),
-        "max_runner_ups": data.get("max_runner_ups"),
-        "cascade_enabled": data.get("cascade_enabled"),
-        "reason": _clip(data.get("reason"), max_len=220),
-        "cascade_allowed_reasons": _listify(data.get("cascade_allowed_reasons"), max_items=6, max_len=80),
-        "cascade_blocked_reasons": _listify(data.get("cascade_blocked_reasons"), max_items=8, max_len=80),
-    }
-    return {key: value for key, value in out.items() if value not in ("", None, [], {})}
+    return _compact_candidate_watch_proposal_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _enrich_candidate_watch_proposal_from_entry_control(
@@ -1161,24 +899,7 @@ def _entry_execution_visibility_summary(
 
 
 def _context_builder_deps() -> Dict[str, Any]:
-    return {
-        "as_dict": _as_dict,
-        "clip": _clip,
-        "compact_candidate_watch_proposal": _compact_candidate_watch_proposal,
-        "compact_commander_entry_control": _compact_commander_entry_control,
-        "compact_entry_candidate_cascade": _compact_entry_candidate_cascade,
-        "enrich_candidate_watch_proposal_from_entry_control": _enrich_candidate_watch_proposal_from_entry_control,
-        "entry_execution_visibility_summary": _entry_execution_visibility_summary,
-        "extract_strategy_detail_from_source": _extract_strategy_detail_from_source,
-        "first_dict_from": _first_dict_from,
-        "compact_memory_application_trace": _compact_memory_application_trace,
-        "compact_memory_layer_decisions": _compact_memory_layer_decisions,
-        "compact_scalar_dict": _compact_scalar_dict,
-        "compact_strategy_detail_context": _compact_strategy_detail_context,
-        "compact_strategy_refresh_trace": _compact_strategy_refresh_trace,
-        "extract_strategist_report_context": _extract_strategist_report_context,
-        "listify": _listify,
-    }
+    return _context_builder_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def _extract_entry_execution_visibility(story_input: Dict[str, Any]) -> Dict[str, Any]:
     return _extract_entry_execution_visibility_impl(story_input, deps=_context_builder_deps())
@@ -1197,23 +918,7 @@ def _compact_strategy_refresh_trace(value: Any) -> Dict[str, Any]:
 
 
 def _compact_memory_layer_decisions(value: Any) -> Dict[str, Any]:
-    decisions = value if isinstance(value, dict) else {}
-    out: Dict[str, Any] = {}
-    for layer, row in list(decisions.items())[:6]:
-        if not isinstance(row, dict):
-            continue
-        out[str(layer)] = {
-            "status": _clip(row.get("status"), max_len=32),
-            "active": row.get("active"),
-            "visible": row.get("visible"),
-            "used": row.get("used"),
-            "gate_reason": _clip(row.get("gate_reason"), max_len=80),
-            "effect": _clip(row.get("effect"), max_len=140),
-            "reason": _clip(row.get("reason"), max_len=220),
-            "confidence": row.get("confidence"),
-            "application_targets": _listify(row.get("application_targets"), max_items=5, max_len=60),
-        }
-    return out
+    return _compact_memory_layer_decisions_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _compact_memory_application_trace(value: Any) -> Dict[str, Any]:
@@ -1778,14 +1483,7 @@ def _build_messages(story_input: Dict[str, Any]) -> List[Dict[str, str]]:
 
 
 def _canonical_ai_report_status(value: Any) -> str:
-    raw = str(value or "").strip().lower()
-    if raw in {"ok", "partial", "salvaged", "error", "skipped"}:
-        return raw
-    if raw in {"repaired"}:
-        return "ok"
-    if raw in {"disabled", "fallback", "unavailable", "dry_run"}:
-        return "skipped"
-    return "error"
+    return _canonical_ai_report_status_r3_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _attach_report_status_matrix(

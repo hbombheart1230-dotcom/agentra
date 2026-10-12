@@ -146,6 +146,11 @@ from libs.reporting.trade_story_facade_r3_parts.bodies_01 import (
     render_bundle_markdown_r3_impl,
     render_summary_markdown_r3_impl,
 )
+from libs.reporting.trade_story_facade_parts.dependency_maps import (
+    _story_assembly_deps_r3_impl,
+    _human_payload_deps_r3_impl,
+    _evidence_enrichment_deps_r3_impl,
+)
 
 
 def _has_substantive_exit_evidence(exit_payload: Any) -> bool:
@@ -235,50 +240,7 @@ def _build_monitor_blocker_trace(monitor: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _story_assembly_deps() -> Dict[str, Any]:
-    return {
-        "EXECUTION_OUTCOME_NOT_CAPTURED": EXECUTION_OUTCOME_NOT_CAPTURED,
-        "LIFECYCLE_CONCLUSION_NOT_CAPTURED": LIFECYCLE_CONCLUSION_NOT_CAPTURED,
-        "REPORTER_LINKAGE_NOT_CAPTURED": REPORTER_LINKAGE_NOT_CAPTURED,
-        "_attach_news_scanner_contribution": _attach_news_scanner_contribution,
-        "_build_monitor_blocker_trace": _build_monitor_blocker_trace,
-        "_build_monitor_stop_policy_trace": _build_monitor_stop_policy_trace,
-        "_build_scanner_selection_trace": _build_scanner_selection_trace,
-        "_build_strategist_evidence_trace": _build_strategist_evidence_trace,
-        "_commander_reasoning_flag": _commander_reasoning_flag,
-        "_commander_reasoning_source_priority": _commander_reasoning_source_priority,
-        "_compact_canonical_monitor": _compact_canonical_monitor,
-        "_derive_evidence_provenance": _derive_evidence_provenance,
-        "_has_substantive_exit_evidence": _has_substantive_exit_evidence,
-        "_hydrate_canonical_agent_artifacts": _hydrate_canonical_agent_artifacts,
-        "_is_empty_placeholder": _is_empty_placeholder,
-        "_list_text": _list_text,
-        "_raw_strategist_evidence": _raw_strategist_evidence,
-        "_resolve_commander_source_ref": _resolve_commander_source_ref,
-        "_resolve_selection_monitor_artifact": _resolve_selection_monitor_artifact,
-        "_safe_ref_map": _safe_ref_map,
-        "_set_or_replace_placeholder": _set_or_replace_placeholder,
-        "_strategist_trace_source": _strategist_trace_source,
-        "build_execution_outcome_fallback_from_lifecycle": build_execution_outcome_fallback_from_lifecycle,
-        "build_news_symbol_linkage_view": build_news_symbol_linkage_view,
-        "build_operator_conclusion_human": build_operator_conclusion_human,
-        "build_reasoning_provenance": build_reasoning_provenance,
-        "build_reasoning_trace_from_summaries": build_reasoning_trace_from_summaries,
-        "build_report_section_provenance_seeds": build_report_section_provenance_seeds,
-        "build_report_section_seeds": build_report_section_seeds,
-        "build_section_provenance": build_section_provenance,
-        "build_strategist_feedback_input_view": build_strategist_feedback_input_view,
-        "compute_evidence_completeness": compute_evidence_completeness,
-        "enrich_filters_from_evidence": enrich_filters_from_evidence,
-        "enrich_scanner_reason_from_evidence": enrich_scanner_reason_from_evidence,
-        "execution_outcome_summary_is_placeholder": execution_outcome_summary_is_placeholder,
-        "lifecycle_conclusion_summary_is_placeholder": lifecycle_conclusion_summary_is_placeholder,
-        "normalize_reasoning_provenance_aliases": normalize_reasoning_provenance_aliases,
-        "normalize_reasoning_trace_aliases": normalize_reasoning_trace_aliases,
-        "normalize_reporter_status_human": normalize_reporter_status_human,
-        "normalize_trade_report_section": normalize_trade_report_section,
-        "reanchor_scanner_selection_for_monitor_fallback": reanchor_scanner_selection_for_monitor_fallback,
-        "resolve_shared_trade_facts": resolve_shared_trade_facts,
-    }
+    return _story_assembly_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def build_lifecycle_bundle(
     *,
@@ -363,26 +325,7 @@ def build_story_contract(bundle_out: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _human_payload_deps() -> Dict[str, Any]:
-    return {
-        "build_strategist_evidence_trace": _build_strategist_evidence_trace,
-        "korea_indices_bullet": _korea_indices_bullet,
-        "list_text": _list_text,
-        "format_pct": format_pct,
-        "safe_float": safe_float,
-        "safe_int": safe_int,
-        "build_news_scanner_contribution_trace": _build_news_scanner_contribution_trace,
-        "build_scanner_selection_trace": _build_scanner_selection_trace,
-        "scanner_chart_fit_payload": _scanner_chart_fit_payload,
-        "scanner_macro_chart_fit_payload": _scanner_macro_chart_fit_payload,
-        "clip": clip,
-        "confidence_label": confidence_label,
-        "normalized_feature_coverage": normalized_feature_coverage,
-        "build_monitor_blocker_trace": _build_monitor_blocker_trace,
-        "build_monitor_stop_policy_trace": _build_monitor_stop_policy_trace,
-        "merge_missing_values": _merge_missing_values,
-        "format_exit_label": format_exit_label,
-        "format_ratio_pct": format_ratio_pct,
-    }
+    return _human_payload_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def build_market_context_human(strategist: Dict[str, Any]) -> Dict[str, Any]:
     return _build_market_context_human_impl(strategist, deps=_human_payload_deps())
@@ -391,14 +334,7 @@ def build_scanner_reason_human(scanner: Dict[str, Any], strategist: Dict[str, An
     return _build_scanner_reason_human_impl(scanner, strategist, deps=_human_payload_deps())
 
 def _evidence_enrichment_deps() -> Dict[str, Any]:
-    return {
-        "normalized_feature_coverage_from_scanner_evidence": _normalized_feature_coverage_from_scanner_evidence,
-        "scanner_candidate_row_from_evidence": _scanner_candidate_row_from_evidence,
-        "scanner_chart_fit_from_scanner_evidence": _scanner_chart_fit_from_scanner_evidence,
-        "scanner_macro_chart_fit_from_scanner_evidence": _scanner_macro_chart_fit_from_scanner_evidence,
-        "selection_basis_from_scores": _selection_basis_from_scores,
-        "top_numeric_drivers": _top_numeric_drivers,
-    }
+    return _evidence_enrichment_deps_r3_impl(facade=_r3_sys.modules[__name__])
 
 def enrich_scanner_reason_from_evidence(
     scanner_reason_human: Dict[str, Any],

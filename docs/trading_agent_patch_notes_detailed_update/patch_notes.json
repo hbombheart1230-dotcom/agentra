@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 214,
+  "entry_count": 215,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5818,6 +5818,33 @@
         "docs/refactor/work_orders/P15_FAST_TRACK_WAVE_A_013.md",
         "docs/daily_patch/2026-10-12_p15_fast_track_first_pass_approved.md",
         "docs/refactor/work_orders/evidence/P15-R3-CODEX-LOC-010-AUDIT-011.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5 Fast Track Wave A",
+      "title": "Fast Track Wave A: Reporting residual extraction and P1.5.3 Operator UI/Brief first-pass decomposition",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "OPERATOR_UI",
+        "REFACTOR",
+        "WORKFLOW"
+      ],
+      "summary": "191 IO-free bodies moved into 32 responsibility-named Owners across the three Reporting façades and the Operator UI/Brief read model; public defs and use-time monkeypatch seams unchanged. Fast Track execution rules and the no-ZIP decision are recorded in Git.",
+      "details": [
+        "A1 Reporting: dependency maps and deterministic domain helpers (55 symbols, 10 Owners); façades 4,047 -> 3,479 LOC (AI 1,656 / Markdown 1,325 / Story 498); 436 ABI intact, moved-body ledger 141.",
+        "A2 P1.5.3 Operator UI/Brief: 136 IO-free bodies in 22 Owners; data_access_core.py 6,871 -> 4,594, operator_period_summary.py 3,210 -> 1,195, operator_visibility.py 1,879 -> 1,520 (-4,651 LOC). Persistence/IO/LLM-calling functions and >350-LOC single functions stay (second-pass debt).",
+        "New P1.5.3 gate (136 symbols): baseline AST equality after unqualification, exact qualified names, use-time oracle against the pinned baseline function, module declarations retained, Owners <=350 and never importing the original module.",
+        "Differential vs baseline: Reporting 150,692/150,693 identical calls (one latency field); Operator UI per-test outcomes identical, only the already non-deterministic Brief prompt_hash varies (also baseline-vs-baseline). Consolidated focused regression 2,374 passed / 1 skipped / 1 known baseline API failure, zero production writes.",
+        "Workflow: batch-by-responsibility execution rules, per-subsystem gates and Git-only deliverables (no ZIP/download artifacts) added to CLAUDE.md, AGENTS.md, COMMON_RULES, Wave A order, Fast Track plan and README/protocol.",
+        "Open: real frozen report/LLM parity BLOCKED, full native pytest and controlled_mock_lanes isolation OPEN, façade size/numbered Owner cohesion second-pass debt, stale CI CURRENT guard needs workflow update. P1.5.2 final OPEN; Operator UI FIRST_PASS_WITH_DEBT; awaiting Codex Wave A audit."
+      ],
+      "impact": "First-pass responsibility decomposition of Reporting residuals and the Operator UI/Brief read model without behaviour or API change.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-FAST-TRACK-WAVE-A-CLAUDE-014.md",
+        "docs/daily_patch/2026-10-12_p1_5_fast_track_wave_a.md"
       ],
       "status": "current"
     }
