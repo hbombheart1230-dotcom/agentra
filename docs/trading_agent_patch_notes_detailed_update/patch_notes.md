@@ -2772,3 +2772,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - façade SIZE_DEFERRED(562/1,891/1,958); 실제 Markdown/JSON/LLM 동등성 BLOCKED·NOT RUN, 전체 pytest NOT RUN. P1.5.2 OPEN, 병합·P1.5.3 미승인.
 - 합성 before/after 차분, façade 전역 바인딩, Story LOC 및 Owner 책임성 검토를 [증거 보완 작업](docs/refactor/work_orders/P15_R3_ACCEPTANCE_EVIDENCE_002.md)으로 전환. 코드 변경 없음.
 - 근거: `docs/refactor/work_orders/evidence/P15-R3-CODEX-INDEPENDENT-001.md`, `docs/daily_patch/2026-10-12_p152_r3_codex_pass_with_findings.md`.
+
+## 2026-10-12 · 리팩터링 브랜치 단일화 규칙
+**Stage:** Architecture and Operations
+**Tags:** REFACTOR · SAFETY · DOCUMENTATION
+
+- 사용자 지시: 개발 브랜치는 `refactor/p1.5` **하나만** 유지합니다. feature/task/ZIP 추가 브랜치 금지.
+- R3 기존 feature 작업 이력을 `refactor/p1.5`로 안전하게 fast-forward(`ba6618d` → `05dbb5f`)했습니다. 이는 WIP 보존이지 P1.5.2 완료 승인·main 병합·라이브 반영이 아닙니다.
+- 구 feature 원격 ref는 이력 포함 및 로컬 워크트리 정합성 확인 후 삭제하도록 활성 작업에 명시했습니다. 보존해야 할 로컬 변경은 강제 정리하지 않습니다.
+- P1.5.2 OPEN, P1.5.3 미승인.
+- 근거: `docs/daily_patch/2026-10-12_p152_single_refactor_branch_policy.md`, `docs/refactor/work_orders/CURRENT.md`.

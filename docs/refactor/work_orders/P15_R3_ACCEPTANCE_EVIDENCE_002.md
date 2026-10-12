@@ -3,7 +3,10 @@
 **Owner:** Claude (test/evidence work) → Codex (independent audit) → GPT/user (decision).
 **Scope:** Only P1.5.2 R3 evidence, focused Reporting tests/fixtures and documentation. No runtime code refactor or rule relaxation authorized.
 **Source reviewed:** `e41d42d754dba9d538fba0fa2dda969d6ea83f02`; before baseline `ba6618d483e6d617f4ee56b2cb5647392c777071`.
-**Do not merge** to `refactor/p1.5` or main, disturb live `C:\Agentra`/Q12, call real LLM/broker, restart Docker or generate production reports.
+**Single development branch:** `refactor/p1.5` only; the existing feature commit ancestry has already been fast-forwarded there as WIP (not accepted). Do not merge to main, touch live `C:\Agentra`/Q12, call real LLM/broker, restart Docker or generate production reports. Use separate isolated clone tracking `refactor/p1.5`; do not create any feature branch.
+
+## Mandatory branch cleanup before evidence work
+Verify `origin/feature/p152-facades-r3` is ancestor of `origin/refactor/p1.5`; inspect only `C:\AgentraWorktrees\p152-facades-r3` for uncommitted AND untracked changes; remove that worktree/local feature branch without force only when clean, then delete the obsolete remote feature ref with `git push origin --delete feature/p152-facades-r3`. If the workspace is dirty or a commit is not on `refactor/p1.5`, STOP and preserve it. Never touch the two Q12 worktrees.
 
 ## Smallest ordered steps
 1. **Evidence reconciliation:** capture exact Codex audit commands/log provenance (197 PASS/1 SKIP, zero writes), static/dynamic hazards, whether synthetic differential, global-binding, domain-owner naming and Story Owner LOC discrepancy were checked. Do not claim unrun checks PASS.
@@ -17,4 +20,4 @@
 ## Stop rules
 - Preserve 436 ABI, 57 moved-body semantics, no new Owner >350 LOC, no authority/LLM behavior drift or production writes.
 - Any regression or unsafe behavior ⇒ stop, report exact reproduction; Claude runtime code changes need a *new expressly authorized* implementation task.
-- **R3 PASS_WITH_FINDINGS is not P1.5.2 final PASS.** No integration/P1.5.3 until GPT/user authorizes after missing gates are characterized.
+- **R3 PASS_WITH_FINDINGS is not P1.5.2 final PASS.** No main integration/live deployment/P1.5.3 until GPT/user authorizes after missing gates are characterized.

@@ -7,10 +7,10 @@
 
 ## Git and workspace
 - Observe live `C:\Agentra` safely: operational processes may write live `reports/`, `data/`. No code development/full pytest against this live root.
-- For this R3 only, **one task feature** `feature/p152-facades-r3` on a separate isolated worktree, created from fetched `origin/refactor/p1.5`; no extra tranche/ZIP branches. Test in separate isolated clone/paths with zero real broker/prod writes. Preserve current feature/task ancestry.
+- **ONE refactor development branch only: `refactor/p1.5`**. The former R3 feature history has been fast-forwarded into this branch as UNACCEPTED WIP. No new feature/tranche/task/ZIP branches. Work from an isolated *separate clone* of the single refactor branch; never check out/change live `C:\Agentra` or dirty Q12 worktrees. Test in separate isolated paths with zero broker/production writes.
 - Do not force/reset/clean/prune anything unknown, disturb Q12's two dirty worktrees, overwrite local untracked Claude evidence, move production database, merge `main`, restart runtime or use direct checkout that affects live operations.
-- Claude pushes task feature commits (A/B/C coherent batches); Codex audits *pinned* code SHA; GPT/user explicitly authorizes integration via PR/fast-forward/cherry-pick as appropriate, and only in safe runtime window. Never manual-copy source from clone to live root or auto-merge.
-- `refactor/p1.5` and `main` are not changed by feature work until authorized. `main` frozen.
+- Claude commits/pushes authorized changes only on `origin/refactor/p1.5` after remote-head verification; Codex independently audits *pinned* code SHA. GPT/user explicitly authorizes any later main integration/live rollout. Never manual-copy source from clone to live root. Clean up obsolete R3 feature branch only after verifying ancestry and the feature worktree has no uncommitted/untracked files; no force removal.
+- `main` remains frozen. `refactor/p1.5` contains R3 WIP and **does not mean P1.5.2 final acceptance or production deployment**.
 
 ## Safety and quality
 - No real orders, live LLM or cloud inference calls, broker mutation, production writes, Docker/scheduler restarts, production SQL, seven-agent topology changes; don't touch Scanner/Strategist/Supervisor/Executor/Q10/Q12, Step5C/D, UEF/R6.2 safety authorities.

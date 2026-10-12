@@ -1,0 +1,3 @@
+# 2026-10-12 — Single refactor branch correction
+
+User policy: ONLY `refactor/p1.5` for P1.5 development; NO feature/task/ZIP branches. Existing R3 work commits were already linear descendants of `ba6618d` and safely fast-forwarded to `refactor/p1.5` at `05dbb5f`, preserving all work, Codex audit evidence and OPEN gates. This is still **unaccepted WIP**; no `main` merge, live checkout changes or orders. GitHub tool cannot delete an existing branch ref: old `feature/p152-facades-r3` remote branch deletion is explicitly required after ancestry + clean worktree verification. Rules updated in `AGENTS.md`, `CLAUDE.md`, `CURRENT.md`, `COMMON_RULES.md`, and active task. P1.5.2 OPEN / P1.5.3 NOT AUTHORIZED.

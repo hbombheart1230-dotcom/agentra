@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 197,
+  "entry_count": 198,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5389,6 +5389,30 @@
         "docs/refactor/work_orders/evidence/P15-R3-CODEX-INDEPENDENT-001.md",
         "docs/refactor/work_orders/P15_R3_ACCEPTANCE_EVIDENCE_002.md",
         "docs/daily_patch/2026-10-12_p152_r3_codex_pass_with_findings.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5 Single Refactor Branch Policy",
+      "title": "Preserve R3 WIP on refactor/p1.5 and forbid extra refactor branches",
+      "stage": "Architecture and Operations",
+      "types": [
+        "REFACTOR",
+        "SAFETY",
+        "DOCUMENTATION"
+      ],
+      "summary": "User requires a single refactor branch. Existing R3 feature commits safely fast-forwarded to refactor/p1.5 without acceptance or runtime deployment.",
+      "details": [
+        "Remote refactor/p1.5 fast-forward from ba6618d to 05dbb5f; main untouched; P1.5.2 still OPEN and Codex PASS_WITH_FINDINGS.",
+        "No new feature/task/ZIP branches; isolated independent clone of refactor/p1.5 for future changes, protect live C:\\Agentra and dirty Q12 worktrees.",
+        "Obsolete remote feature ref awaits safe deletion after ancestry and clean-worktree checks; never force remove local changes.",
+        "No main merge, real LLM/broker calls, runtime rollout or P1.5.3 authorization."
+      ],
+      "impact": "Eliminates competing refactor development branches while preserving unaccepted work and audit gates.",
+      "sources": [
+        "docs/daily_patch/2026-10-12_p152_single_refactor_branch_policy.md",
+        "docs/refactor/work_orders/CURRENT.md"
       ],
       "status": "current"
     }
