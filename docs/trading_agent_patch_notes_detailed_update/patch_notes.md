@@ -2895,3 +2895,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 남은 LOC 후보: Markdown 서술/번역(-93 추정), AI·Story deps(각 -75 추정), memory/policy(-65), 숫자 포맷(-55). LOC 010은 현재 *대기*이며 감사 후 활성화 판단.
 - 실보고서·LLM parity BLOCKED, test-write 격리 OPEN, façade SIZE_DEFERRED와 Owner 응집도 OPEN, P1.5.2 OPEN/P1.5.3 미승인.
 - 근거: `docs/refactor/work_orders/P15_R3_CODEX_LOC_008_AUDIT_009.md`, `docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md`, `docs/daily_patch/2026-10-12_p152_loc008_codex_handoff.md`.
+
+## 2026-10-12 · P1.5.2 LOC 008 Codex 감사 수용 및 LOC 010 활성화
+**Stage:** Architecture and Maintainability
+**Tags:** REPORTING · REFACTOR · TESTING
+
+- 독립 Codex 감사 결과 **PASS_WITH_FINDINGS** (`3d85085`): 맵 호출시점 55 PASS, 66 moved-body·ABI·패치노트 핵심 359 PASS, p152 선택군 711 PASS/1 SKIP, 운영 쓰기 0. `cache_dir` 경고 1건은 비차단. 독립 검증 범위와 Claude의 1,041건 회귀군은 다름.
+- Markdown façade 1,891→1,678 LOC **-213** 확인, 새 책임형 Owner 268 LOC, 436 API 계약/66 symbol 보호 유지. 현재 3개 façade 합계 4,198 LOC.
+- 다음 **LOC 010**에 책임형 코드 한 묶음의 실질적 추가 축소를 승인. 사용자 원칙대로 SIZE_DEFERRED는 영구 면제가 아니며, 함수별 소비자/패치 시점 호환성을 증명하면서 안전한 범위를 최대한 추출.
+- 실보고서/LLM parity BLOCKED, `controlled_mock_lanes` 쓰기 격리·Owner 응집도·나머지 façade 크기 OPEN. P1.5.2 OPEN/P1.5.3 미승인.
+- 근거: `docs/refactor/work_orders/evidence/P15-R3-CODEX-LOC-008-AUDIT-009.md`, `docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md`, `docs/daily_patch/2026-10-12_p152_loc008_audit_accepted_loc010_activated.md`.

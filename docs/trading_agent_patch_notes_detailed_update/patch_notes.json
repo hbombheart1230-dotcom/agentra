@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 210,
+  "entry_count": 211,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5712,6 +5712,32 @@
         "docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md",
         "docs/daily_patch/2026-10-12_p152_loc008_codex_handoff.md",
         "docs/refactor/work_orders/evidence/P15-R3-CLAUDE-LOC-008.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-12",
+      "version": "P1.5.2 LOC 008 Codex Accepted; LOC 010 Activated",
+      "title": "Accept verified Markdown map reduction and authorize next safe Reporting façade extraction",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REPORTING",
+        "REFACTOR",
+        "TESTING"
+      ],
+      "summary": "Independent Codex LOC 008 audit passed with nonblocking warning; 213 physical façade LOC reduction confirmed, and one further bounded LOC 010 extraction activated.",
+      "details": [
+        "Audited SHA 3d85085; independent Codex 55 map tests PASS, 359 core tests PASS, 711 selected p152 PASS/1 SKIP, ABI 436 PASS, 66 moved symbols PASS and 0 clone writes.",
+        "Markdown 1891 to 1678 LOC (-213), named dependency-map Owner 268 LOC; AI 1958 and Story 562 unchanged; three façades total 4198.",
+        "Unknown cache_dir pytest configuration warning is nonblocking and no LOC 008 corrective action required. Claude's larger test group and 96565-call differential were not fully rerun by Codex.",
+        "Next LOC 010 selects and implements one largest-safe net reduction of narrative/translation or dependency-map responsibilities on same refactor/p1.5 branch; Codex independent audit follows.",
+        "Real historical reports/LLM parity BLOCKED/NOT RUN, controlled_mock_lanes write-isolation OPEN, remaining façade size and numbered Owner cohesion OPEN. P1.5.2 OPEN; no main merge or P1.5.3."
+      ],
+      "impact": "Enforces maximum meaningful, safe reduction with independent acceptance and explicit unresolved correctness gates.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-R3-CODEX-LOC-008-AUDIT-009.md",
+        "docs/refactor/work_orders/P15_R3_FACADE_LOC_NEXT_CANDIDATES_010.md",
+        "docs/daily_patch/2026-10-12_p152_loc008_audit_accepted_loc010_activated.md"
       ],
       "status": "current"
     }
