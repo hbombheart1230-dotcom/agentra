@@ -99,4 +99,8 @@ P1 write containment: PENDING_CLOSURE until independent Codex audit. P2 NTFS set
 
 ## 11. CI
 
-Recorded below after the hosted run (see the delivery commit).
+Run 38481326390 on `44a7147` (code/tests/CI/docs): SUCCESS for `regression` (Linux, all pinned gates, harness accounting step) and the required `windows-harness-smoke`.
+
+* Windows hosted (`windows-latest`, Python 3.12.10): **46 passed, 1 skipped** (the skip is the Store-alias reproduction test, no Store alias on GitHub runners; its local run is evidenced in T3-0.2). All 24 containment/evidence/retention/diagnostic tests PASSED (the junit step requires >= 24 and every mutation case name present); none skipped. Local Windows 11: 47 passed, 0 skipped.
+* Linux: the same harness file runs; Windows-only tests are accounted as SKIPPED and not counted as Windows PASS.
+* NTFS diagnostics on the hosted run: probe `reproduced: false` (10 directories, no mtime change between samples, no lstat/DirEntry mismatch); settle session exit code 0, `banner_present: false`, no MODIFIED entries. Two observations only: the T3-0.2 hosted finding is **not reproduced** in this run, and the cause is still **UNRESOLVED** (P2). The settle step remains in place and is not relied on to tolerate anything.
