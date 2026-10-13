@@ -3032,3 +3032,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Reporter T0 동작·ABI 증거 확보 → T1 순수 Read Model·Fallback 분리 → T2 증거가 충분한 번들 실행기 분리 → T3 Owner facade·tuple 계약 정리 → T4 기타 에이전트 거대 함수 분리 → Codex 독립 감사 → 마지막 Wave D 순서입니다.
 - Reporter 공개 Facade 물리 이동·rename 금지; 실 LLM/보고서/락/큐/저장 동작 미검증 영역은 SAFETY_LOCK. 작업 계획 문서만 수정했습니다.
 
+## 2026-10-13 · P1.5 현재 폴더트리 / 거대 함수 / 삭제 후보 검증
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · REFACTOR · SAFETY
+
+- HEAD `4cb92916` 실제 트리(전체 Python 1,941, reporting 466)와 목표 트리의 `[E]/[P]` 상태를 대조했습니다. 2차에 생성된 Owner 상당수가 과거 설계에는 `[P]`로 남아 있어 상태 보정 안내를 연결했습니다.
+- 운영 소스 20KB 이상 파일 118개의 함수 경계를 검사해 빠진 `libs/contracts/agent_outputs.py` 공통 계약 생성자(809/530/466/358줄)와 `decide_trade`, Monitor 추가 함수, Reporter 메트릭 실행기 등을 3차 후속 점검 대상에 포함했습니다.
+- Reporter와 Q10/Q12/UEF를 구분하고 레거시 어댑터 및 안전 실행 경로 삭제 금지를 확인했습니다. `strategist_llm_summary.py`의 중복 이름 함수는 사용처 검증을 요구하는 **후보**일 뿐 삭제 승인이 아닙니다.
+- Reporter T0+T1 작업 순서는 그대로이며 코드 삭제·이동·실거래 경로 변경·Wave D 실행은 없습니다.
+

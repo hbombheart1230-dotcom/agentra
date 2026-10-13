@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 224,
+  "entry_count": 225,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6070,6 +6070,32 @@
         "docs/refactor/work_orders/CURRENT.md"
       ],
       "status": "current"
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Actual Tree and Deletion-Candidate Audit",
+      "title": "Reconcile current module tree, missed cross-agent giants and delete-proof boundaries",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Git SHA 4cb92916 tree audit confirms architectural fit but stale planned-state markings and omitted large common output-contract functions; inspected 118 >=20KB production Python files and flagged candidates for separate deletion proof. Docs only.",
+      "details": [
+        "Tracked Python inventory 1,941, including 466 under libs/reporting and 135 UEF evaluation files. Reviewed 118 production Python files >=20 KB; size-based scan is not an exhaustive AST consumer census.",
+        "Second-pass Monitor/Scanner/Commander/Operator UI modules physically exist despite older [P] markers. ranking_core.py and brief_text_rules.py are absent and must not be added solely to match names.",
+        "Added cross-agent libs/contracts/agent_outputs.py giant builders (Monitor 809, Strategist 530, Scanner 466, Commander 358) to third-pass residual T3.5/T4 scope. Also flagged decide_trade, monitor_minute_ohlcv, monitor_strategy_frame and metrics_report_generator.",
+        "Distinguished legacy libs/agent compatibility adapters, M17 baseline graph/stub, legacy_reachable execute_order path, and Reporter facades from safe deletion candidates.",
+        "Source includes two top-level render_strategist_llm_summary_markdown definitions in libs/reporting/strategist_llm_summary.py near L1044/L1526; earlier is a potential shadowed-body deletion candidate requiring consumer and frozen output parity proof. No deletion authorized."
+      ],
+      "impact": "Prevents stale target-tree markers from directing unsafe file generation/deletion and expands pre-Wave-D structural scope to important shared ABI builders without changing execution code.",
+      "sources": [
+        "docs/refactor/P15_ACTUAL_TREE_LARGE_FUNCTION_DELETE_AUDIT_2026_10_13.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/P15_THIRD_PASS_GPT_REPORTER_INCLUSIVE_DESIGN_2026_10_13.md"
+      ]
     }
   ]
 }

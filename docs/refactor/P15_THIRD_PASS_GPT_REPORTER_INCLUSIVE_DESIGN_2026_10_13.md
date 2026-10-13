@@ -1,5 +1,7 @@
 # P1.5 Third Pass — GPT Reporter-inclusive function/authority design (2026-10-13)
 
+> **2026-10-13 scope addendum:** [P15_ACTUAL_TREE_LARGE_FUNCTION_DELETE_AUDIT_2026_10_13.md](P15_ACTUAL_TREE_LARGE_FUNCTION_DELETE_AUDIT_2026_10_13.md). This audit discovered previously omitted `libs/contracts/agent_outputs.py` (Monitor 809, Strategist 530, Scanner 466, Commander 358 lines), `graphs/nodes/decide_trade.py` (~457), `libs/runtime/monitor_minute_ohlcv.py` (~395), `libs/runtime/monitor_strategy_frame.py` (~381), and Reporting metrics (~471). Add these to T3.5/T4 structural inventory, preserve all ABI/authority; do not interrupt Reporter T0/T1. A separate read-only deletion audit is required. The target tree's old [P] markers are not current status.
+
 **Status:** THIRD_PASS_DESIGN; implementation NOT started. **Code and evidence baseline:** `bf59c4d2941442fc2dff41c3c2888f053b4b1577` on `refactor/p1.5`. **Previous verified CI:** successful for that SHA. **Human-provided independent Codex result:** PASS_WITH_FINDINGS for second-pass parity P1 fix. This design does not claim GPT re-ran Codex's tests.
 
 **Scope:** all seven agents plus Operator UI, with **Reporter INCLUDED BEFORE WAVE D**. Existing schema/ABI/public facades remain stable. No new live trading, real Broker/LLM call, production-file write, main merge or Wave D without separate authorization. The second-pass AST parity audit and targeted replay are a **checkpoint**, not a permanent waiver of regression checks.

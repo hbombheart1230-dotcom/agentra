@@ -1,5 +1,7 @@
 # P1.5 canonical target architecture — actual Git tree + Reporter status
 
+> **Current Git actual-tree reconciliation (2026-10-13):** [P15_ACTUAL_TREE_LARGE_FUNCTION_DELETE_AUDIT_2026_10_13.md](P15_ACTUAL_TREE_LARGE_FUNCTION_DELETE_AUDIT_2026_10_13.md). The [P]/[E] markers below describe the older inspected SHA; second-pass files under Monitor, Commander, Scanner and Operator UI now exist. The latest audit also discovers giant cross-agent output builders and a potential shadowed rendering function. No deletes are approved.
+
 > **Third Pass source-verified design (2026-10-13):** [P15_THIRD_PASS_GPT_REPORTER_INCLUSIVE_DESIGN_2026_10_13.md](P15_THIRD_PASS_GPT_REPORTER_INCLUSIVE_DESIGN_2026_10_13.md). Following the user-supplied Codex PASS_WITH_FINDINGS for the parity P1 fix, Reporter pure read-model and guarded bundle-runtime work, second-pass Owner facade/tuple debt, and remaining agent giants precede Wave D. Older Reporter exclusion was only for the completed S1-S6 second pass.
 
 > **Authoritative delivery order (2026-10-13):** [P1.5 pre-Wave-D structural closure](P15_PRE_WAVE_D_STRUCTURAL_CLOSURE_ORDER_2026_10_13.md). After 2nd-pass S1–S6 and Codex checkpoint, GPT re-examines **all seven agents including Reporter**. Claude performs third-and-later bulk decomposition **including Reporter**, Codex performs structural closure audit, and **only then Wave D**. References below implying Reporter follow-up occurs after Wave D are superseded; Reporter is excluded from the initial S1–S6 pass *only*.
