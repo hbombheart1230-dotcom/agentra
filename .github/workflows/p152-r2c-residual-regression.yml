@@ -284,7 +284,15 @@ jobs:
         shell: bash
         run: |
           mkdir -p branch_output
-          python -m pytest -q -p no:cacheprovider tests/test_p156_parity_harness.py -rs --junitxml=branch_output/harness_windows_junit.xml
+          rc=0
+          python -m pytest -q -p no:cacheprovider tests/test_p156_parity_harness.py -rs --junitxml=branch_output/harness_windows_junit.xml > branch_output/harness_windows_pytest.log 2>&1 || rc=$?
+          cat branch_output/harness_windows_pytest.log
+          python - <<'PY'
+          t = open('branch_output/harness_windows_pytest.log', encoding='utf-8', errors='replace').read()[-7000:]
+          t = t.replace('%', '%25').replace(chr(13), '%0D').replace(chr(10), '%0A')
+          print('::notice title=windows-harness-pytest-tail::' + t)
+          PY
+          exit $rc
       - name: Windows-only tests must have RUN and PASSED (a skip is a failure here)
         shell: bash
         run: |
@@ -306,7 +314,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: p15-windows-harness-junit
-          path: branch_output/harness_windows_junit.xml
+          path: |
+            branch_output/harness_windows_junit.xml
+            branch_output/harness_windows_pytest.log
           if-no-files-found: warn
   broad_remote_offline:
     name: Repo-wide mock/offline non-heavy regression (manual diagnostic only)
