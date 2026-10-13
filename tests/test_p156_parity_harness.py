@@ -240,9 +240,19 @@ def test_session_env_pins_a_resolved_per_session_pycache_prefix(tmp_path):
         assert not any("%" in str(v) for v in env.values())
 
 
+def _interpreter_works(path):
+    """True only for a real, runnable CPython 3 (a Microsoft Store *alias stub* exists as a file but exits 9009 and only
+    prints an install hint - e.g. on GitHub runners without the Store package)."""
+    try:
+        r = _sp.run([path, "-c", "import sys; print(sys.version_info[0])"], capture_output=True, text=True, timeout=60)
+    except (OSError, _sp.SubprocessError):
+        return False
+    return r.returncode == 0 and r.stdout.strip() == "3"
+
+
 def _windows_interpreters():
-    """Distinct CPython executables available on this Windows host: the running one, `python` on PATH and the
-    Microsoft Store app-execution alias (which is the one that misbehaves without SYSTEMDRIVE)."""
+    """Distinct RUNNABLE CPython executables on this Windows host: the running one, `python` on PATH and the Microsoft
+    Store app-execution alias (the one that misbehaves without SYSTEMDRIVE) when it is a real interpreter."""
     import shutil
     cands = [_sys.executable, shutil.which("python"), shutil.which("python3")]
     local = os.environ.get("LOCALAPPDATA")
@@ -250,9 +260,11 @@ def _windows_interpreters():
         cands.append(str(Path(local) / "Microsoft" / "WindowsApps" / "python.exe"))
     seen, out = set(), []
     for c in cands:
-        if c and os.path.isfile(c) and os.path.normcase(os.path.abspath(c)) not in seen:
-            seen.add(os.path.normcase(os.path.abspath(c)))
-            out.append(c)
+        key = os.path.normcase(os.path.abspath(c)) if c else None
+        if c and os.path.isfile(c) and key not in seen:
+            seen.add(key)
+            if _interpreter_works(c):
+                out.append(c)
     return out
 
 
@@ -344,3 +356,12 @@ def test_preflight_fails_closed_when_the_interpreter_writes_into_its_cwd(tmp_pat
 
 def test_preflight_passes_for_a_well_behaved_interpreter(tmp_path):
     assert P.preflight_interpreter(_sys.executable, tmp_path / "pre", tmp_path / "_h", tmp_path / "n.json") == []
+
+
+@_pytest.mark.skipif(os.name != "nt", reason="Windows-only: .bat stub emulating the Store alias stub")
+def test_windows_non_runnable_interpreter_stubs_are_excluded_from_the_isolation_matrix(tmp_path):
+    stub = tmp_path / "python.bat"
+    stub.write_text("@echo off\r\necho Python was not found\r\nexit /b 9009\r\n", encoding="utf-8")
+    assert _interpreter_works(str(stub)) is False
+    assert _interpreter_works(_sys.executable) is True
+    assert _sys.executable in _windows_interpreters()
