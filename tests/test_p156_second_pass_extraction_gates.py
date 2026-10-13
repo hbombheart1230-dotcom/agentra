@@ -21,6 +21,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "60dfa1c4cd7ca62d127251a4051b3404a86f6932"
+SECOND_PASS_END = "bf59c4d2941442fc2dff41c3c2888f053b4b1577"  # stage pin: the third pass has its own gate
 LEDGER = ROOT / "docs/refactor/p1_5_second_pass_moved_segments_ledger.json"
 MAX_OWNER_LOC = 350
 ALLOWED_PREFIXES = ("tests/", "docs/", "scripts/refactor/", "libs/runtime/monitor/", "libs/runtime/monitor_exit/",
@@ -276,7 +277,7 @@ def test_owners_only_mutate_caller_fresh_local_containers():
 
 
 def test_second_pass_changes_stay_in_scope():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, SECOND_PASS_END], cwd=ROOT).decode().split(chr(0))
     for path in [p for p in out if p]:
         assert not path.startswith(FORBIDDEN_PREFIXES), f"authority surface changed: {path}"
         assert path in ALLOWED_EXACT or path.startswith(ALLOWED_PREFIXES), f"path outside Second Pass scope: {path}"
