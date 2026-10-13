@@ -3076,3 +3076,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - T3-B: T2 정책 모듈을 `closed_sell_reconciliation.py`/`report_generation_policy.py`로 분리하고, 기계적 `if True:`를 제거했으며, Owner 함수 12개가 의미 있는 이름의 불변 NamedTuple record를 반환합니다(위치 호환, 호출부 불변).
 - 검증: 순서 있는 파일 효과 포함 69/69, Reporter 2,912/2,912, 2차 소비자 1,020 동일 + 정당화 91 + 불일치 0(미해결 20은 재실행 20/20). 남은 위치 반환·facade 폭·REAL_REPORT_PARITY_BLOCKED·T3.5~T5·Wave D는 미완이며 Codex 감사 대기입니다.
 
+## 2026-10-13 · P1.5 Third Pass T3-0.1 (감사 종결·구조 증거 보강)
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY · WORKFLOW
+
+- 분석기 P1: `Path(src).replace(dst)`가 PURE로 오판되던 문제를 수정했습니다. `replace`는 수신자 타입이 증명된 경우에만 판정합니다(Path → IMPURE, str → PURE, 그 외 UNKNOWN). 입력을 변경하는 메서드는 신선한 지역 컨테이너가 아니면 UNKNOWN이며 "순수"는 I/O 없음이지 입력 불변성이 아닙니다(문서화). 테스트 13 → 24, 검사기는 계속 ADVISORY입니다.
+- 소유권 매트릭스는 도달 가능한 커밋 `a5cffb9`의 Git 객체에서 재현 가능하게 생성됩니다(207행 재검증, `--verify`). CONTRACT_CANDIDATE와 RENAME_CANDIDATE는 독립 플래그이며 결함 주장이 아닙니다. 마커만을 위한 파일·이동·삭제는 없습니다.
+- 변환된 NamedTuple 12개에 dict/list payload 기반 테스트(순서·참조 동일성·공유 변경·copy/deepcopy·JSON 뷰)와 불변 T2 스냅샷 대비 실제 함수 비교를 추가했습니다(NamedTuple은 얕은 불변만 보장).
+- `%SystemDrive%` 미해결 placeholder가 clone 안에 캐시 디버리스를 만드는 문제를 재현하고, 세션별 해결된 `PYTHONPYCACHEPREFIX`와 placeholder fail-closed 검사를 harness에 추가했습니다. 운영 코드 변경 없음, T3.1/T3.5/Wave D 미시작, Codex delta 감사 대기.
+

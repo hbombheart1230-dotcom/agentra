@@ -1,0 +1,7 @@
+{
+ "R1 Path(src).replace(dst)": "IMPURE",
+ "R2 alias: from pathlib import Path as P; P(src).replace(dst)": "IMPURE",
+ "R3 unknown receiver obj.replace(dst)": "UNKNOWN",
+ "S1 str.replace (literal receiver)": "PURE",
+ "S2 str.replace (str() receiver)": "PURE"
+}

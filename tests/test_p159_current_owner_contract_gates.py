@@ -164,3 +164,126 @@ def test_t3_changed_paths_contain_no_authority_surface():
     for p in [x for x in out if x]:
         assert not p.startswith(forbidden), f"T3 touched a protected surface: {p}"
         assert not re.search(r"bodies_0\d\.py$", p), f"numbered body touched: {p}"
+
+
+# ---- T3-0.1: real-object payload / alias tests for the converted records -------------------------------------------
+import copy  # noqa: E402
+import types  # noqa: E402
+
+
+def _record_classes():
+    for c in _t3()["changes"]:
+        mod = importlib.import_module(c["new_module"][:-3].replace("/", "."))
+        yield c, getattr(mod, c["record"])
+
+
+def _object_payload(n):
+    """Distinct mutable dict/list payloads (not integers): field i is a dict for even i, a list for odd i."""
+    return [({"i": i, "nested": {"vals": [i, {"deep": i}]}} if i % 2 == 0 else [i, {"x": i}, [i]]) for i in range(n)]
+
+
+def test_records_keep_field_order_and_positional_unpacking_with_object_payloads():
+    for c, rec in _record_classes():
+        payload = _object_payload(len(c["fields"]))
+        r = rec(*payload)
+        assert tuple(r._fields) == tuple(c["fields"])
+        assert list(r._asdict().keys()) == list(c["fields"])
+        first, *rest = r
+        assert first is payload[0] and all(a is b for a, b in zip(rest, payload[1:]))
+        assert r == tuple(payload)  # nested dict/list equality, same as the legacy tuple
+        assert tuple(r) == tuple(payload)
+
+
+def test_records_preserve_reference_identity_and_shared_mutation_like_the_legacy_tuple():
+    for c, rec in _record_classes():
+        payload = _object_payload(len(c["fields"]))
+        legacy = tuple(payload)
+        r = rec(*payload)
+        assert all(a is b for a, b in zip(r, legacy)), c["record"]
+        # a mutation through the original reference is visible through the record exactly as through the tuple
+        payload[0]["added_after_return"] = True
+        assert r[0]["added_after_return"] is True and legacy[0]["added_after_return"] is True
+        # ... and a mutation made through the record is visible to every other holder of the reference
+        getattr(r, c["fields"][0])["via_record"] = 1
+        assert payload[0]["via_record"] == 1
+
+
+def test_records_copy_and_deepcopy_semantics_match_a_tuple():
+    for c, rec in _record_classes():
+        payload = _object_payload(len(c["fields"]))
+        r = rec(*payload)
+        shallow = copy.copy(r)
+        assert type(shallow) is rec and all(a is b for a, b in zip(shallow, r))  # shallow copy shares the objects
+        deep = copy.deepcopy(r)
+        assert type(deep) is rec and deep == r and all(a is not b for a, b in zip(deep, r))
+        deep[0]["only_in_deep"] = 1
+        assert "only_in_deep" not in r[0]
+        assert pickle_roundtrip_equal(r)
+
+
+def pickle_roundtrip_equal(obj):
+    import pickle
+    return pickle.loads(pickle.dumps(obj)) == obj
+
+
+def test_records_are_shallowly_immutable_only_and_json_state_view_is_unchanged():
+    for c, rec in _record_classes():
+        payload = _object_payload(len(c["fields"]))
+        r = rec(*payload)
+        try:
+            setattr(r, c["fields"][0], {})
+        except AttributeError:
+            pass
+        else:  # pragma: no cover
+            raise AssertionError("NamedTuple fields must not be rebindable")
+        # NamedTuple is NOT deeply immutable: contained dict/list objects stay mutable (legacy behavior preserved)
+        r[0]["still_mutable"] = True
+        import json
+        assert json.dumps(list(r), sort_keys=True) == json.dumps(list(tuple(payload)), sort_keys=True)
+        assert json.dumps(dict(r._asdict()), sort_keys=True) == json.dumps(dict(zip(c["fields"], payload)), sort_keys=True)
+
+
+def _historical_function(sha, module, name):
+    ns = {}
+    exec(compile(_git_show(module, sha), f"{sha}:{module}", "exec"), ns)  # noqa: S102 (test-only, pure Owner module)
+    return ns[name]
+
+
+def test_real_closed_sell_owner_matches_the_historical_tuple_and_alias_behavior():
+    hist = _historical_function(LEDGERS["t2"][1], "libs/reporting/reporter_bundle_runtime_parts/lifecycle_report_policy.py",
+                                "closed_sell_execution_details")
+    cur_mod = importlib.import_module("libs.reporting.reporter_bundle_runtime_parts.closed_sell_reconciliation")
+
+    def build_inputs():
+        nested = {"vals": [1, 2, {"deep": True}]}
+        ctx = {"lifecycle": {"symbol": "AAA", "nested": nested}, "lifecycle_bundle": {"b": [1]},
+               "summary_obj": {"s": 1}, "entry_execution_details": {"e": 1}, "exit_execution_details": {"x": 1},
+               "execution_details": {"d": 1}, "holding_phase_observability": {"h": [1]}}
+        return {"lifecycle": {"symbol": "ZZZ"}, "live_trade_context": ctx, "lifecycle_bundle": {"b": []},
+                "summary_obj": {}}, nested
+
+    def facade_for(trace):
+        def reconcile(*, lifecycle, lifecycle_bundle, execution_details):
+            lifecycle_bundle["reconciled"] = True          # in-place mutation the caller must observe
+            trace.append(("reconcile", id(lifecycle), id(lifecycle_bundle), id(execution_details)))
+            return "closed"
+
+        def refresh(*, lifecycle, lifecycle_bundle, summary_obj, execution_details, status):
+            trace.append(("refresh", status, id(summary_obj)))
+            return {"refreshed": status, **summary_obj}
+        return types.SimpleNamespace(_reconcile_partial_full_sell_lifecycle=reconcile,
+                                     _refresh_closed_sell_lifecycle_summary=refresh)
+
+    args_old, nested_old = build_inputs()
+    args_new, nested_new = build_inputs()
+    t_old, t_new = [], []
+    old = hist(**args_old, facade=facade_for(t_old))
+    new = cur_mod.closed_sell_execution_details(**args_new, facade=facade_for(t_new))
+    assert isinstance(old, tuple) and not hasattr(old, "_fields")
+    assert type(new).__name__ == "ClosedSellExecutionDetails" and tuple(new) == old and new == old
+    assert [t[0] for t in t_new] == [t[0] for t in t_old] == ["reconcile", "refresh"]  # same call order
+    assert new.status == old[6] == "closed"
+    # alias behavior: shallow dict() copies share nested objects, and the stub's in-place mutation is visible
+    assert new.lifecycle["nested"] is nested_new and old[4]["nested"] is nested_old
+    assert new.lifecycle_bundle["reconciled"] is True and old[5]["reconciled"] is True
+    assert new.lifecycle_bundle is not args_new["live_trade_context"]["lifecycle_bundle"]  # dict() copy, as before

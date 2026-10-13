@@ -184,3 +184,123 @@ def test_relative_imports_reexports_and_star_imports_are_followed(tmp_path):
     })
     assert C.check_function(root, "pkg/user.py", "ok").verdict == C.PURE
     assert C.check_function(root, "pkg/user.py", "bad").verdict == C.IMPURE
+
+
+# ---- T3-0.1: receiver-type-dependent methods (Codex confirmed false PURE for Path.replace) -------------------------
+def test_path_replace_is_impure_not_pure(tmp_path):
+    r = _verdict(tmp_path, {"m.py": """
+        from pathlib import Path
+        def f(src, dst):
+            return Path(src).replace(dst)
+        """}, "m.py", "f")
+    assert r.verdict == C.IMPURE and any("Path.replace" in f.detail for f in r.findings)
+
+
+def test_aliased_and_module_qualified_path_replace_is_impure(tmp_path):
+    for src in ("from pathlib import Path as P\ndef f(a, b):\n    return P(a).replace(b)\n",
+                "import pathlib as pl\ndef f(a, b):\n    return pl.Path(a).replace(b)\n",
+                "import pathlib\ndef f(a, b):\n    return pathlib.Path(a).replace(b)\n"):
+        assert _verdict(tmp_path, {"m.py": src}, "m.py", "f").verdict == C.IMPURE, src
+
+
+def test_nested_call_chain_keeps_the_path_kind(tmp_path):
+    r = _verdict(tmp_path, {"m.py": """
+        from pathlib import Path
+        def f(a, b):
+            return Path(a).with_suffix(".bak").resolve().replace(b)
+        """}, "m.py", "f")
+    assert r.verdict == C.IMPURE
+    r2 = _verdict(tmp_path, {"m2.py": """
+        from pathlib import Path
+        def f(a, b):
+            p = Path(a)
+            q = p / "x"
+            return q.replace(b)
+        """}, "m2.py", "f")
+    assert r2.verdict == C.IMPURE
+
+
+def test_unknown_receiver_replace_is_unknown_never_pure(tmp_path):
+    for src in ("def f(obj, dst):\n    return obj.replace(dst)\n",
+                "def f(items, dst):\n    return items[0].replace(dst)\n",
+                "def f(x, dst):\n    y = x\n    return y.replace(dst)\n",
+                "def f(g, dst):\n    return g().replace(dst)\n"):
+        r = _verdict(tmp_path, {"m.py": src}, "m.py", "f")
+        assert r.verdict == C.UNKNOWN, (src, r.as_dict())
+
+
+def test_proven_str_replace_is_pure(tmp_path):
+    cases = ("def f(x):\n    return 'a-b'.replace('-', x)\n",
+             "def f(x):\n    return str(x).replace('-', '_').strip()\n",
+             "def f(x):\n    s = f'{x}-y'\n    return s.replace('-', '_')\n",
+             "def f(x: str):\n    return x.replace('-', '_')\n",
+             "def f(a, b, c):\n    return str.replace(a, b, c)\n")
+    for src in cases:
+        r = _verdict(tmp_path, {"m.py": src}, "m.py", "f")
+        assert r.verdict == C.PURE, (src, r.as_dict())
+
+
+def test_annotated_path_parameter_replace_is_impure(tmp_path):
+    r = _verdict(tmp_path, {"m.py": """
+        from pathlib import Path
+        def f(src: Path, dst):
+            return src.replace(dst)
+        """}, "m.py", "f")
+    assert r.verdict == C.IMPURE
+
+
+def test_facade_dispatched_path_replace_is_resolved_or_unknown(tmp_path):
+    files = {"owner.py": "def g(a, b, *, facade):\n    return facade.Path(a).replace(b)\n",
+             "runner.py": "from pathlib import Path\n"}
+    root = _tree(tmp_path, files)
+    assert C.check_function(root, "owner.py", "g").verdict == C.UNKNOWN  # no facade module supplied
+    assert C.check_function(root, "owner.py", "g", facade_module="runner.py").verdict == C.IMPURE
+    root2 = _tree(tmp_path / "x", {"owner.py": "def g(a, b, *, facade):\n    return facade.Path(a).replace(b)\n",
+                                   "runner.py": "def Path(x):\n    return x\n"})
+    assert C.check_function(root2, "owner.py", "g", facade_module="runner.py").verdict != C.PURE
+
+
+def test_replace_through_helper_import_is_transitively_impure(tmp_path):
+    r = _verdict(tmp_path, {
+        "libs/__init__.py": "",
+        "libs/helper.py": "from pathlib import Path\ndef move(a, b):\n    return Path(a).replace(b)\n",
+        "libs/m.py": "from libs.helper import move\ndef f(a, b):\n    return move(a, b)\n"}, "libs/m.py", "f")
+    assert r.verdict == C.IMPURE
+
+
+# ---- mutating methods: no I/O, but NOT input immutability (documented; unproven receivers are UNKNOWN) --------------
+def test_mutators_on_fresh_local_containers_are_pure_and_on_unproven_receivers_unknown(tmp_path):
+    fresh = _verdict(tmp_path, {"m.py": """
+        def f(rows):
+            out = []
+            seen = {}
+            for r in rows:
+                out.append(r)
+                seen.update({r: 1})
+            return out
+        """}, "m.py", "f")
+    # `out`/`seen` are fresh locals, but `rows` is only iterated: no unproven mutation
+    assert fresh.verdict == C.PURE, fresh.as_dict()
+    for src in ("def f(state):\n    state.update({'a': 1})\n",
+                "def f(items):\n    items.append(1)\n",
+                "def f(d):\n    d.setdefault('k', [])\n",
+                "def f(d):\n    return d.pop('k')\n"):
+        r = _verdict(tmp_path, {"m.py": src}, "m.py", "f")
+        assert r.verdict == C.UNKNOWN and any("input mutation not excluded" in f.detail for f in r.findings), src
+
+
+def test_reassigned_name_loses_its_inferred_kind(tmp_path):
+    r = _verdict(tmp_path, {"m.py": """
+        from pathlib import Path
+        def f(a, b, flag):
+            p = "text"
+            if flag:
+                p = Path(a)
+            return p.replace(b)
+        """}, "m.py", "f")
+    assert r.verdict == C.UNKNOWN  # two assignments of different kinds: not proven str, not proven Path
+
+
+def test_checker_is_declared_advisory_and_never_an_extraction_approval():
+    text = (ROOT / "scripts/refactor/p158_static_purity_closure.py").read_text(encoding="utf-8")
+    assert "ADVISORY" in text and "never sufficient" in text and "NOT input immutability" in text

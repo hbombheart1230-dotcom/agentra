@@ -311,19 +311,21 @@ Claude S1 Monitor → S2 Scanner → S3 Commander → S4 Operator UI → S5 Stra
 
 **Maintenance rule:** When new modules actually land, update this [E]/[P] map in the same code commit; never mark proposed paths as implemented before they exist. Update UI-linked patch_notes.json + patch_notes.md and concise daily patch for meaningful updates.
 
+## G. Current status overlay (verified against Git commit `a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60`)
 
-## G. Current status overlay (T3, verified against the physical Git tree at `bcb83a6`, 2026-10-13)
+*The sections above are a historical design snapshot and are intentionally not rewritten. This overlay describes
+exactly one immutable tree - commit `a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60` - and is reproducible with `scripts/refactor/p159_ownership_matrix.py`.
+Code that changed after that commit is recorded as a separate tree delta in the matrix JSON (`tree_delta`), never
+folded silently into this snapshot.* Matrix: [p1_5_third_pass_t3_ownership_matrix.json](p1_5_third_pass_t3_ownership_matrix.json)
+(207 modules; classes {'KEEP': 23, 'CANONICAL_OWNER': 169, 'COMPAT_FACADE': 14, 'SAFETY_LOCK': 1}; flags {'CONTRACT_CANDIDATE': 30, 'RENAME_CANDIDATE': 54}).
 
-*The sections above are a historical design snapshot and are intentionally not rewritten.* Machine-readable matrix:
-[p1_5_third_pass_t3_ownership_matrix.json](p1_5_third_pass_t3_ownership_matrix.json) (207 modules; classes {'KEEP': 23, 'CANONICAL_OWNER': 139, 'RENAME_CANDIDATE': 30, 'COMPAT_FACADE': 14, 'SAFETY_LOCK': 1}).
+### G.1 Packages at that commit
+- `libs/reporting/reporter_bundle_runtime_parts/` - T2 bundle-runner pure projections: EXISTS
+- `libs/reporting/trade_memory_projection_parts/` - T1 memory surface projections: EXISTS
+- `libs/reporting/trade_read_model_parts/` - T1 read-model projections: EXISTS
+- `libs/reporting/trade_report/ai_facade_parts/` - T1 fallback / compact-input projections (fallback_*, compact_input_*): EXISTS
 
-### G.1 Packages that now EXIST ([P] -> [E])
-- `libs/reporting/reporter_bundle_runtime_parts/` - T2 bundle-runner pure projections (6 modules after the T3 policy split)
-- `libs/reporting/trade_memory_projection_parts/` - T1 memory surface projections
-- `libs/reporting/trade_read_model_parts/` - T1 read-model projections
-- `libs/reporting/trade_report/ai_facade_parts/ (fallback_*, compact_input_*)` - T1 fallback/compact-input projections
-
-### G.2 Every `[P]` marker above, checked against the tree
+### G.2 Every `[P]` marker above, checked against that tree
 | Planned path | Actual | Match | Decision |
 |---|---|---|---|
 | `policy_normalizers.py` | NOT PRESENT | - | [P] keep planned; do NOT create without a genuine responsibility and consumer evidence |
@@ -355,19 +357,19 @@ Claude S1 Monitor → S2 Scanner → S3 Commander → S4 Operator UI → S5 Stra
 | `data_access_brief_render_sections.py` | EXISTS | apps/operator_ui/data_access_brief_render_sections.py | [E] promote marker |
 | `data_access_brief_render_fallback.py` | EXISTS | apps/operator_ui/data_access_brief_render_fallback.py | [E] promote marker |
 
-Additional explicit decisions (not in the table because the marker lives in other design documents): `libs/runtime/scanner/ranking_core.py` is **NOT PRESENT and REJECTED** (a second canonical ranking authority must not be created; ranking stays in `scanner_node`); `apps/operator_ui/data_access_brief_text_rules.py` is **NOT PRESENT** and is created only if a genuine responsibility is proven.
+Explicit decisions: `libs/runtime/scanner/ranking_core.py` is **NOT PRESENT and REJECTED** (a second canonical ranking authority must not be created; ranking stays in `scanner_node`); `apps/operator_ui/data_access_brief_text_rules.py` is created only if a genuine responsibility is proven.
 
-### G.3 Locked / protected (unchanged): [L]
+### G.3 Locked / protected: [L]
 `graphs/trading_graph.py`, legacy `libs/agent/*`, Reporter facades `trade_report_ai.py` / `trade_report_markdown_clean.py` / `trade_story_pipeline.py`, numbered `bodies_*.py`, `execute_from_packet.py`, `live_execution_bundle_runner.py::main` effect coordinator, `controlled_mock_lanes/`.
 
 ### G.4 Recommended tree (responsibility-based; no file is created for an old marker alone)
 ~~~
-libs/runtime/{commander,strategist,scanner,monitor,monitor_exit}/   [E] keep; rename generated *_projection_* modules only after consumer mapping (RENAME_CANDIDATE rows in the matrix)
+libs/runtime/{commander,strategist,scanner,monitor,monitor_exit}/   [E] keep; review mechanically generated names (RENAME_CANDIDATE flag) only after consumer mapping
 libs/reporting/
-  reporter_bundle_runtime_parts/   [E] one responsibility per module: targeted rows | exit/monitor context | human summaries | evidence+enrichment | closed-sell reconciliation | generation policy
+  reporter_bundle_runtime_parts/   [E] targeted rows | exit/monitor context | human summaries | evidence+enrichment | closed-sell reconciliation | generation policy
   trade_memory_projection_parts/   [E] memory input + visibility | feedback rebuild | status summary | payload
   trade_read_model_parts/          [E] artifact selection | truth projection | display context
   trade_report/ai_facade_parts/    [E] fallback seed/summary/sections | compact input facts/payload
 apps/operator_ui/                  [E] data_access_core (coordinator, LLM path SAFETY_LOCK) + data_access_brief_* owners
 ~~~
-Reasoning: each proposed unit has one read/projection responsibility, one contract (named record where arity > 8), and no I/O capability; folders exist only where a cohesive group of at least two Owners already lives.
+Reasoning: each unit has one read/projection responsibility and no I/O capability; folders exist only where a cohesive group of at least two Owners already lives.

@@ -192,3 +192,57 @@ def test_session_env_redirects_controlled_mock_lane_logs_outside_the_clone(tmp_p
     env = P.session_env(sdir / "tree", sdir, tmp_path / "_h", tmp_path / "n.json", sdir / "calls.json", "det", True)
     root = Path(env["CONTROLLED_MOCK_LANE_LOG_ROOT"])
     assert str(root).startswith(str(sdir)) and (sdir / "tree") not in root.parents
+
+
+# ---- T3-0.1: unresolved environment placeholders must never reach a session (clone-local cache debris) ---------------
+import subprocess as _sp  # noqa: E402
+import sys as _sys  # noqa: E402
+
+import pytest as _pytest  # noqa: E402
+
+
+def test_assert_resolved_env_rejects_placeholders_and_relative_paths():
+    ok = {"TEMP": str(Path("C:/x/tmp") if os.name == "nt" else Path("/x/tmp")), "PYTHONUTF8": "1"}
+    assert P.assert_resolved_env(dict(ok)) == ok
+    for bad in ({"PYTHONPYCACHEPREFIX": r"%SystemDrive%\pyc"}, {"TEMP": "%TEMP%\run"}, {"TMP": "${HOME}/t"},
+                {"PYTHONPYCACHEPREFIX": "relative/pyc"}, {"R3_LOG": "calls.json"}):
+        with pytest.raises(SystemExit):
+            P.assert_resolved_env(bad)
+
+
+def test_session_env_pins_a_resolved_per_session_pycache_prefix(tmp_path):
+    seen = set()
+    for tag in ("b1", "b2", "f1", "f2"):
+        sdir = tmp_path / f"s_{tag}"
+        env = P.session_env(sdir / "tree", sdir, tmp_path / "_h", tmp_path / "n.json", sdir / "calls.json", "det", True)
+        prefix = env["PYTHONPYCACHEPREFIX"]
+        assert os.path.isabs(prefix) and prefix.startswith(str(sdir)) and "%" not in prefix
+        assert (sdir / "tree") not in Path(prefix).parents and prefix not in seen
+        seen.add(prefix)
+        assert env["PYTHONDONTWRITEBYTECODE"] == "1"
+        assert not any("%" in str(v) for v in env.values())
+
+
+@_pytest.mark.skipif(os.name != "nt", reason="the literal %SystemDrive% directory is a Windows cmd-style placeholder")
+def test_unresolved_placeholder_creates_clone_local_debris_but_the_harness_env_does_not(tmp_path):
+    def run(extra_env, cwd):
+        env = {"SYSTEMROOT": os.environ.get("SYSTEMROOT", r"C:\Windows"), "PATH": os.environ.get("PATH", "")}
+        env.update(extra_env)
+        (cwd / "m.py").write_text("X = 1\n", encoding="utf-8")
+        (cwd / "run.py").write_text("import m\nprint(m.X)\n", encoding="utf-8")
+        r = _sp.run([_sys.executable, "run.py"], cwd=str(cwd), env=env, capture_output=True, text=True, timeout=60)
+        assert r.returncode == 0, r.stderr
+        return sorted(p.name for p in cwd.iterdir())
+
+    # 1) the hazard: an unexpanded placeholder becomes a RELATIVE prefix -> literal directory inside the clone
+    hazard = tmp_path / "hazard_clone"
+    hazard.mkdir()
+    assert "%SystemDrive%" in run({"PYTHONPYCACHEPREFIX": r"%SystemDrive%\pyc"}, hazard)
+    # 2) the harness environment: resolved absolute prefix OUTSIDE the clone -> no debris in the clone
+    clean = tmp_path / "clean_clone"
+    clean.mkdir()
+    sdir = tmp_path / "session"
+    env = P.session_env(clean, sdir, tmp_path / "_h", tmp_path / "n.json", sdir / "calls.json", "det", False)
+    names = run({"PYTHONPYCACHEPREFIX": env["PYTHONPYCACHEPREFIX"]}, clean)  # bytecode ALLOWED here: prefix absorbs it
+    assert names == ["m.py", "run.py"], names
+    assert (sdir / "pycache").is_dir()

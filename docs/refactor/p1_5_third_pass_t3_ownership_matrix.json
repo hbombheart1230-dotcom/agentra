@@ -1,17 +1,41 @@
 {
- "schema": "p159_t3_ownership_matrix.v1",
- "base_commit": "bcb83a6e1834b23aee885359e686deafa9970195",
- "summary": {
-  "KEEP": 23,
-  "CANONICAL_OWNER": 139,
-  "RENAME_CANDIDATE": 30,
-  "COMPAT_FACADE": 14,
-  "SAFETY_LOCK": 1
+ "schema": "p159_t3_ownership_matrix.v2",
+ "source_sha": "a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60",
+ "generator": {
+  "script": "scripts/refactor/p159_ownership_matrix.py",
+  "script_sha256": "dc3e64a766c6b9f0e5de61c4b4cdc80c8b4d8dbbc0fc4a86e223603c787728d0",
+  "command": "python scripts/refactor/p159_ownership_matrix.py --sha a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60 --write",
+  "verify": "python scripts/refactor/p159_ownership_matrix.py --verify"
  },
+ "summary": {
+  "classes": {
+   "KEEP": 23,
+   "CANONICAL_OWNER": 169,
+   "COMPAT_FACADE": 14,
+   "SAFETY_LOCK": 1
+  },
+  "flags": {
+   "CONTRACT_CANDIDATE": 30,
+   "RENAME_CANDIDATE": 54
+  }
+ },
+ "tree_delta": {
+  "from": "a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60",
+  "to": "a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60",
+  "production_paths_changed": [],
+  "other_paths_changed": []
+ },
+ "ledger_inputs": [
+  "docs/refactor/p1_5_second_pass_moved_segments_ledger.json",
+  "docs/refactor/p1_5_third_pass_t1_moved_segments_ledger.json",
+  "docs/refactor/p1_5_third_pass_t2_moved_segments_ledger.json",
+  "docs/refactor/p1_5_third_pass_t3_owner_contract_ledger.json"
+ ],
  "rows": [
   {
    "module": "apps/operator_ui/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 11,
@@ -20,8 +44,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -29,21 +54,20 @@
   {
    "module": "apps/operator_ui/data_access.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "(no module docstring)",
    "loc": 11,
    "public_functions": 0,
    "functions": 0,
-   "prod_consumers": 5,
+   "prod_consumers": 1,
    "prod_consumer_sample": [
-    "docs/daily_patch/2026-10-07_operator_ui_brief_p1_5_design_complete.md",
-    "docs/refactor/p1_5_compatibility_wrapper_cleanup_implementation_packet_v1_0.md",
-    "docs/refactor/p1_5_operator_ui_brief_implementation_packet_v1_0.md",
-    "docs/refactor/p1_5_wrapper_cleanup_inventory_2026_10_12.json"
+    "scripts/run_operator_brief_batch.py"
    ],
    "test_consumers": 3,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -51,6 +75,7 @@
   {
    "module": "apps/operator_ui/data_access_brief.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "Operator brief read-model/render owner",
    "responsibility": "(no module docstring)",
    "loc": 74,
@@ -61,8 +86,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -70,6 +96,7 @@
   {
    "module": "apps/operator_ui/data_access_brief_canonical_input.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "Operator brief read-model/render owner",
    "responsibility": "Operator Brief canonical trade input assembly (read model over canonical artifacts; no persistence, no LLM).",
    "loc": 314,
@@ -80,8 +107,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 10,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -89,6 +117,7 @@
   {
    "module": "apps/operator_ui/data_access_brief_compaction.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "Operator brief read-model/render owner",
    "responsibility": "Operator Brief compact-input construction for the LLM prompt (pure projection).",
    "loc": 344,
@@ -99,16 +128,21 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "apps/operator_ui/data_access_brief_facts.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass); 1 function(s) returned as named records (T3)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
    "responsibility": "Operator brief canonical-trade/agent facts (read-only; Reporter output is not recomputed).",
    "loc": 121,
    "public_functions": 2,
@@ -118,15 +152,17 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 10,
+   "max_unconverted_output_arity": 10,
    "named_record_functions": 1,
+   "generated_name_functions": 1,
    "facade_symbols": 10,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 10)"
+   "action": "KEEP; named-record candidate (positional arity 10)"
   },
   {
    "module": "apps/operator_ui/data_access_brief_fallback.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "Operator brief read-model/render owner",
    "responsibility": "Operator Brief deterministic fallback, failure brief and field salvage (pure text composition).",
    "loc": 248,
@@ -137,16 +173,21 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 13,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "apps/operator_ui/data_access_brief_input_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Operator brief normalized input projection (prompt payload unchanged; LLM coordinator untouched).",
    "loc": 143,
    "public_functions": 4,
@@ -156,16 +197,21 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 13,
+   "max_unconverted_output_arity": 13,
    "named_record_functions": 0,
+   "generated_name_functions": 4,
    "facade_symbols": 6,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 13)"
+   "action": "KEEP; named-record candidate (positional arity 13)"
   },
   {
    "module": "apps/operator_ui/data_access_brief_market_sections.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Operator brief market/news/selected-rank/source and feature evidence sections.",
    "loc": 210,
    "public_functions": 3,
@@ -175,15 +221,17 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 24,
+   "max_unconverted_output_arity": 24,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 13,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 24)"
+   "action": "KEEP; named-record candidate (positional arity 24)"
   },
   {
    "module": "apps/operator_ui/data_access_brief_monitor_notes.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "Operator brief read-model/render owner",
    "responsibility": "Operator Brief Monitor stop-policy trace, threshold shortfall and watch-axis notes (pure).",
    "loc": 217,
@@ -194,16 +242,21 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 8,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "apps/operator_ui/data_access_brief_monitor_sections.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Operator brief monitor/position/exit/watch/guard/entry detail sections.",
    "loc": 275,
    "public_functions": 3,
@@ -213,15 +266,17 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 24,
+   "max_unconverted_output_arity": 24,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 8,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 24)"
+   "action": "KEEP; named-record candidate (positional arity 24)"
   },
   {
    "module": "apps/operator_ui/data_access_brief_prompts.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "Operator brief read-model/render owner",
    "responsibility": "Operator Brief prompt/repair/line message construction and response line parsing (string building only; no LLM call).",
    "loc": 252,
@@ -232,16 +287,21 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 8,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "apps/operator_ui/data_access_brief_render_fallback.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Operator brief markdown fallback narrative/metrics/output line fragments.",
    "loc": 155,
    "public_functions": 2,
@@ -251,16 +311,21 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 11,
+   "max_unconverted_output_arity": 11,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 5,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 11)"
+   "action": "KEEP; named-record candidate (positional arity 11)"
   },
   {
    "module": "apps/operator_ui/data_access_brief_render_sections.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Operator brief markdown status/section rendering fragments (exact text, spacing and newlines).",
    "loc": 199,
    "public_functions": 4,
@@ -270,15 +335,17 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 17,
+   "max_unconverted_output_arity": 17,
    "named_record_functions": 0,
+   "generated_name_functions": 4,
    "facade_symbols": 3,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 17)"
+   "action": "KEEP; named-record candidate (positional arity 17)"
   },
   {
    "module": "apps/operator_ui/data_access_brief_sanitation.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "Operator brief read-model/render owner",
    "responsibility": "Operator Brief payload normalisation, Korean-language and internal-marker sanitation (pure).",
    "loc": 326,
@@ -289,8 +356,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -298,21 +366,20 @@
   {
    "module": "apps/operator_ui/data_access_core.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Operator UI data-access coordinator (contains LLM brief path)",
    "responsibility": "(no module docstring)",
    "loc": 3707,
    "public_functions": 12,
    "functions": 143,
-   "prod_consumers": 6,
+   "prod_consumers": 1,
    "prod_consumer_sample": [
-    "apps/operator_ui/data_access.py",
-    "docs/refactor/evidence/p156_parity/det1_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/det2_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/targetedA2_p1fix_summary.json"
+    "apps/operator_ui/data_access.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "datetime.now",
@@ -327,6 +394,7 @@
   {
    "module": "apps/operator_ui/data_access_linkage.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "(no module docstring)",
    "loc": 86,
@@ -337,8 +405,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -346,18 +415,18 @@
   {
    "module": "apps/operator_ui/data_access_reports.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "(no module docstring)",
    "loc": 10,
    "public_functions": 0,
    "functions": 0,
-   "prod_consumers": 1,
-   "prod_consumer_sample": [
-    "docs/refactor/p1_5_wrapper_cleanup_inventory_2026_10_12.json"
-   ],
+   "prod_consumers": 0,
+   "prod_consumer_sample": [],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -365,6 +434,7 @@
   {
    "module": "apps/operator_ui/data_access_run_read_models.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "Operator UI recent-run list read model, run activity meta and portfolio-guard extraction (pure projections over loaded rows).",
    "loc": 295,
@@ -375,8 +445,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 22,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -384,6 +455,7 @@
   {
    "module": "apps/operator_ui/data_access_runs.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "(no module docstring)",
    "loc": 51,
@@ -394,8 +466,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -403,6 +476,7 @@
   {
    "module": "apps/operator_ui/data_access_status.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "(no module docstring)",
    "loc": 325,
@@ -413,8 +487,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -422,6 +497,7 @@
   {
    "module": "apps/operator_ui/data_access_symbol_run_chain.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "Operator UI symbol run-chain read model (pure projection over loaded rows).",
    "loc": 106,
@@ -432,8 +508,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 8,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -441,6 +518,7 @@
   {
    "module": "apps/operator_ui/data_access_trade_read_models.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "Operator UI trade-day/symbol summaries, overtrading warning, top candidates, health and report detail projections.",
    "loc": 293,
@@ -451,8 +529,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 23,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -460,6 +539,7 @@
   {
    "module": "apps/operator_ui/data_access_value_formatting.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "Operator UI value, time, percent and feature-coverage formatting helpers (pure).",
    "loc": 281,
@@ -470,8 +550,9 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 9,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -479,6 +560,7 @@
   {
    "module": "apps/operator_ui/main.py",
    "class": "KEEP",
+   "flags": [],
    "role": "Operator UI module",
    "responsibility": "(no module docstring)",
    "loc": 125,
@@ -489,8 +571,9 @@
     "scripts/run_operator_ui.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -498,21 +581,23 @@
   {
    "module": "graphs/commander_runtime.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Commander runtime (route/phase authority, runtime ownership)",
    "responsibility": "(no module docstring)",
    "loc": 3495,
    "public_functions": 1,
    "functions": 105,
-   "prod_consumers": 15,
+   "prod_consumers": 6,
    "prod_consumer_sample": [
-    "docs/daily_patch/2026-05-15_incremental-refactor-plan-start.md",
-    "docs/plan/m21_9_commander_bridge_to_canonical_runtime.md",
-    "docs/refactor/evidence/p156_parity/det1_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/det2_concurrent_summary.json"
+    "graphs/nodes/commander_node.py",
+    "graphs/pipelines/m13_tick.py",
+    "libs/agent/commander.py",
+    "libs/runtime/entrypoints/commander_runtime_once.py"
    ],
    "test_consumers": 20,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "logging",
@@ -524,21 +609,23 @@
   {
    "module": "graphs/nodes/monitor_node.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Monitor graph node (OrderIntent / cooldown / entry-exit order)",
    "responsibility": "(no module docstring)",
    "loc": 1918,
    "public_functions": 1,
    "functions": 14,
-   "prod_consumers": 11,
+   "prod_consumers": 5,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p156_parity/det1_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/det2_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/targetedA2_p1fix_summary.json",
-    "docs/refactor/evidence/p156_parity/targetedA_summary.json"
+    "graphs/pipelines/offhours_validation.py",
+    "graphs/trading_graph.py",
+    "libs/runtime/commander/nodes.py",
+    "scripts/demo_m22_skill_flow.py"
    ],
    "test_consumers": 27,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv",
@@ -549,21 +636,23 @@
   {
    "module": "graphs/nodes/scanner_node.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Scanner graph node (canonical ranking + selected rank)",
    "responsibility": "(no module docstring)",
    "loc": 1993,
    "public_functions": 1,
    "functions": 61,
-   "prod_consumers": 11,
+   "prod_consumers": 5,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p156_parity/det1_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/det2_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/targetedA2_p1fix_summary.json",
-    "docs/refactor/evidence/p156_parity/targetedA_summary.json"
+    "graphs/pipelines/offhours_validation.py",
+    "graphs/trading_graph.py",
+    "libs/runtime/commander/nodes.py",
+    "scripts/demo_m22_skill_flow.py"
    ],
    "test_consumers": 33,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv",
@@ -574,21 +663,23 @@
   {
    "module": "graphs/nodes/strategist_node.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Strategist graph node (LLM boundary + state writes)",
    "responsibility": "(no module docstring)",
    "loc": 4677,
    "public_functions": 1,
    "functions": 156,
-   "prod_consumers": 13,
+   "prod_consumers": 4,
    "prod_consumer_sample": [
-    "docs/daily_patch/2026-10-07_p1_5_strategist_deep_design.md",
-    "docs/daily_patch/2026-10-07_strategist_p1_5_design_complete.md",
-    "docs/refactor/evidence/p156_parity/det1_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/det2_concurrent_summary.json"
+    "graphs/commander_runtime.py",
+    "graphs/pipelines/offhours_validation.py",
+    "graphs/trading_graph.py",
+    "libs/runtime/commander/nodes.py"
    ],
    "test_consumers": 32,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "datetime.now",
@@ -600,21 +691,21 @@
   {
    "module": "libs/reporting/live_execution_bundle_runner.py",
    "class": "SAFETY_LOCK",
+   "flags": [],
    "role": "Reporter bundle runner effect coordinator",
    "responsibility": "(no module docstring)",
    "loc": 2788,
    "public_functions": 2,
    "functions": 50,
-   "prod_consumers": 7,
+   "prod_consumers": 2,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p158_third_pass_t2/t2c_baseline_control_det_pinned_summary.json",
-    "docs/refactor/evidence/p158_third_pass_t2/t2f_feature_det_pinned_summary.json",
-    "docs/refactor/evidence/p158_third_pass_t2/t2g_feature_natural_summary.json",
-    "docs/refactor/evidence/p158_third_pass_t2/t2h_feature_wide_det_summary.json"
+    "libs/reporting/intraday_trade_reports.py",
+    "scripts/run_live_execution_bundle_report.py"
    ],
    "test_consumers": 2,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "mkdir",
@@ -632,6 +723,7 @@
   {
    "module": "libs/reporting/reporter_bundle_runtime_parts/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "Pure per-run/per-lifecycle projection owners extracted from live_execution_bundle_runner.main (Third Pass T2).",
    "loc": 2,
@@ -640,8 +732,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -649,7 +742,8 @@
   {
    "module": "libs/reporting/reporter_bundle_runtime_parts/closed_sell_reconciliation.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (t3 split); 1 function(s) returned as named records (T3)",
+   "flags": [],
+   "role": "extracted Owner (t3 split); 1 function(s) return named records (T3)",
    "responsibility": "Closed-sell lifecycle reconciliation: execution details, holding-phase observability and summary refresh.",
    "loc": 47,
    "public_functions": 1,
@@ -659,8 +753,9 @@
     "libs/reporting/live_execution_bundle_runner.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 1,
+   "generated_name_functions": 0,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -668,7 +763,8 @@
   {
    "module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_evidence_context.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t2)",
+   "flags": [],
+   "role": "extracted Owner (t2)",
    "responsibility": "Lifecycle commander/market-context evidence and scanner/filter reason enrichment projections.",
    "loc": 77,
    "public_functions": 2,
@@ -678,8 +774,9 @@
     "libs/reporting/live_execution_bundle_runner.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 5,
+   "max_unconverted_output_arity": 5,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 7,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -687,7 +784,8 @@
   {
    "module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_human_summaries.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t2)",
+   "flags": [],
+   "role": "extracted Owner (t2)",
    "responsibility": "Lifecycle execution-outcome, reporter-status and operator-conclusion human summaries.",
    "loc": 48,
    "public_functions": 2,
@@ -697,8 +795,9 @@
     "libs/reporting/live_execution_bundle_runner.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 3,
+   "max_unconverted_output_arity": 3,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 4,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -706,7 +805,8 @@
   {
    "module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_story_context.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t2); 1 function(s) returned as named records (T3)",
+   "flags": [],
+   "role": "extracted Owner (t2); 1 function(s) return named records (T3)",
    "responsibility": "Lifecycle exit/holding monitor-context projection and open-lifecycle monitor-reason backfill.",
    "loc": 74,
    "public_functions": 1,
@@ -716,8 +816,9 @@
     "libs/reporting/live_execution_bundle_runner.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 1,
+   "generated_name_functions": 0,
    "facade_symbols": 4,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -725,7 +826,8 @@
   {
    "module": "libs/reporting/reporter_bundle_runtime_parts/report_generation_policy.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (t3 split); 1 function(s) returned as named records (T3)",
+   "flags": [],
+   "role": "extracted Owner (t3 split); 1 function(s) return named records (T3)",
    "responsibility": "Report-generation policy gate: seeded diagnostics and generate-on-open / before-full-close decision inputs.",
    "loc": 54,
    "public_functions": 1,
@@ -735,8 +837,9 @@
     "libs/reporting/live_execution_bundle_runner.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 1,
+   "generated_name_functions": 0,
    "facade_symbols": 3,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -744,7 +847,8 @@
   {
    "module": "libs/reporting/reporter_bundle_runtime_parts/targeted_run_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t2)",
+   "flags": [],
+   "role": "extracted Owner (t2)",
    "responsibility": "Targeted-run row projection: target run-id expansion and merged day event/evidence rows (read-only over copied rows).",
    "loc": 27,
    "public_functions": 1,
@@ -754,8 +858,9 @@
     "libs/reporting/live_execution_bundle_runner.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 2,
+   "max_unconverted_output_arity": 2,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 5,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -763,6 +868,7 @@
   {
    "module": "libs/reporting/trade_memory_projection_parts/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "Cohesive read-model projection owners extracted from trade_memory_surface (Third Pass T1).",
    "loc": 2,
@@ -771,16 +877,21 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/reporting/trade_memory_projection_parts/memory_feedback_rebuild.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_third_pass_t1)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (t1)",
    "responsibility": "Rebuilt memory packet / feedback and playbook projection.",
    "loc": 94,
    "public_functions": 1,
@@ -790,16 +901,18 @@
     "libs/reporting/trade_memory_surface.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 30,
+   "max_unconverted_output_arity": 30,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 12,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 30)"
+   "action": "KEEP; named-record candidate (positional arity 30)"
   },
   {
    "module": "libs/reporting/trade_memory_projection_parts/memory_input_visibility.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t1); 2 function(s) returned as named records (T3)",
+   "flags": [],
+   "role": "extracted Owner (t1); 2 function(s) return named records (T3)",
    "responsibility": "Memory packet input and visibility projection for the trade report memory surface (copied mappings in, values out).",
    "loc": 262,
    "public_functions": 2,
@@ -809,16 +922,21 @@
     "libs/reporting/trade_memory_surface.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 2,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/reporting/trade_memory_projection_parts/memory_status_summary.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_third_pass_t1)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (t1)",
    "responsibility": "Read-model status and summary projection for the memory surface.",
    "loc": 75,
    "public_functions": 1,
@@ -828,16 +946,20 @@
     "libs/reporting/trade_memory_surface.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 16,
+   "max_unconverted_output_arity": 16,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 11,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 16)"
+   "action": "KEEP; named-record candidate (positional arity 16)"
   },
   {
    "module": "libs/reporting/trade_memory_projection_parts/memory_surface_payload.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t1)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (t1)",
    "responsibility": "Read-model status and summary projection for the memory surface.",
    "loc": 328,
    "public_functions": 1,
@@ -847,8 +969,9 @@
     "libs/reporting/trade_memory_surface.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 6,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -856,21 +979,21 @@
   {
    "module": "libs/reporting/trade_memory_surface.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Reporter memory surface API",
    "responsibility": "(no module docstring)",
    "loc": 394,
    "public_functions": 1,
    "functions": 25,
-   "prod_consumers": 7,
+   "prod_consumers": 2,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p157_third_pass/t1_differential_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_natural_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_timeout_test_natural_mode_summary.json"
+    "libs/reporting/trade_bundle_assembly.py",
+    "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv",
@@ -881,21 +1004,23 @@
   {
    "module": "libs/reporting/trade_read_model.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Reporter read-model API",
    "responsibility": "(no module docstring)",
    "loc": 1357,
    "public_functions": 32,
    "functions": 34,
-   "prod_consumers": 16,
+   "prod_consumers": 9,
    "prod_consumer_sample": [
     "apps/operator_ui/data_access_core.py",
     "apps/operator_ui/data_access_reports.py",
-    "docs/refactor/evidence/p157_third_pass/t1_differential_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_det_summary.json"
+    "graphs/nodes/strategist_node.py",
+    "libs/agent/reporter.py"
    ],
    "test_consumers": 7,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "read_text"
@@ -905,6 +1030,7 @@
   {
    "module": "libs/reporting/trade_read_model_parts/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "Cohesive read-model projection owners extracted from trade_read_model (Third Pass T1).",
    "loc": 2,
@@ -913,8 +1039,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -922,7 +1049,8 @@
   {
    "module": "libs/reporting/trade_read_model_parts/read_artifact_selection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t1); 1 function(s) returned as named records (T3)",
+   "flags": [],
+   "role": "extracted Owner (t1); 1 function(s) return named records (T3)",
    "responsibility": "Artifact selection and precedence facts for the trade read model (inputs are already-loaded artifacts).",
    "loc": 104,
    "public_functions": 1,
@@ -932,8 +1060,9 @@
     "libs/reporting/trade_read_model.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 1,
+   "generated_name_functions": 0,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -941,7 +1070,10 @@
   {
    "module": "libs/reporting/trade_read_model_parts/read_display_context.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t1)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (t1)",
    "responsibility": "Display/context assembly of the trade read model result.",
    "loc": 226,
    "public_functions": 1,
@@ -951,16 +1083,21 @@
     "libs/reporting/trade_read_model.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 1,
+   "max_unconverted_output_arity": 1,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/reporting/trade_read_model_parts/read_truth_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_third_pass_t1)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (t1)",
    "responsibility": "Entry/exit/monitor truth and data-source-quality projection.",
    "loc": 235,
    "public_functions": 1,
@@ -970,16 +1107,21 @@
     "libs/reporting/trade_read_model.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 13,
+   "max_unconverted_output_arity": 13,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 2,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 13)"
+   "action": "KEEP; named-record candidate (positional arity 13)"
   },
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/compact_input_facts.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_third_pass_t1); 1 function(s) returned as named records (T3)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (t1); 1 function(s) return named records (T3)",
    "responsibility": "Stable compact prompt facts for the LLM story input.",
    "loc": 95,
    "public_functions": 2,
@@ -989,16 +1131,20 @@
     "libs/reporting/trade_report_ai_compact_input.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 13,
+   "max_unconverted_output_arity": 13,
    "named_record_functions": 1,
+   "generated_name_functions": 1,
    "facade_symbols": 1,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 13)"
+   "action": "KEEP; named-record candidate (positional arity 13)"
   },
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/compact_input_payload.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t1)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (t1)",
    "responsibility": "Stable ordered compact LLM payload assembly (key order and shape unchanged).",
    "loc": 330,
    "public_functions": 1,
@@ -1008,8 +1154,9 @@
     "libs/reporting/trade_report_ai_compact_input.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 1,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1017,6 +1164,7 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/dependency_maps.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "AI report façade dependency maps: call-time name->callable dictionaries handed to the AI section/context builders.",
    "loc": 90,
@@ -1027,8 +1175,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 67,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1036,6 +1185,7 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/duration_language.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Non-authoritative display-only Korean grammar and duration formatting.",
    "loc": 90,
@@ -1046,8 +1196,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1055,6 +1206,7 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/entry_gate_snapshots.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "AI report entry-gate snapshot compaction and post-entry observation shaping (deterministic, read-only).",
    "loc": 69,
@@ -1065,8 +1217,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 5,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1074,7 +1227,10 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/fallback_sections_schema.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t1)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (t1)",
    "responsibility": "Deterministic fallback section selection and final schema assembly.",
    "loc": 260,
    "public_functions": 2,
@@ -1084,8 +1240,9 @@
     "libs/reporting/trade_report_ai_deterministic.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 7,
+   "max_unconverted_output_arity": 7,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 1,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1093,7 +1250,8 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/fallback_seed_context.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_third_pass_t1); 1 function(s) returned as named records (T3)",
+   "flags": [],
+   "role": "extracted Owner (t1); 1 function(s) return named records (T3)",
    "responsibility": "Deterministic fallback report seed/context projection (dependency callables are passed explicitly).",
    "loc": 102,
    "public_functions": 1,
@@ -1103,16 +1261,21 @@
     "libs/reporting/trade_report_ai_deterministic.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 1,
+   "generated_name_functions": 0,
    "facade_symbols": 1,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/fallback_summary_status.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_third_pass_t1)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (t1)",
    "responsibility": "Deterministic fallback summary and status projection.",
    "loc": 77,
    "public_functions": 2,
@@ -1122,15 +1285,17 @@
     "libs/reporting/trade_report_ai_deterministic.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 10,
+   "max_unconverted_output_arity": 10,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 1,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 10)"
+   "action": "KEEP; named-record candidate (positional arity 10)"
   },
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/holding_memory_compaction.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "AI report holding-story, candidate-watch and memory-layer compaction helpers (deterministic, read-only).",
    "loc": 80,
@@ -1141,8 +1306,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 9,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1150,6 +1316,7 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/lifecycle_status_labels.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "AI report lifecycle/exit placeholder and status-label classification helpers (deterministic, read-only).",
    "loc": 87,
@@ -1160,8 +1327,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 4,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1169,6 +1337,7 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/market_context_text.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "AI report market-context sanitising, index snapshot and headline text helpers (deterministic, read-only).",
    "loc": 96,
@@ -1179,8 +1348,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 6,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1188,6 +1358,7 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/market_labels.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 118,
@@ -1198,8 +1369,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1207,6 +1379,7 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/scanner_labels.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 167,
@@ -1217,8 +1390,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1226,6 +1400,7 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/scanner_selection.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "AI report scanner-selection text and filter-bullet composition (deterministic, read-only).",
    "loc": 90,
@@ -1236,8 +1411,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 8,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1245,6 +1421,7 @@
   {
    "module": "libs/reporting/trade_report/ai_facade_parts/text_helpers.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 48,
@@ -1255,8 +1432,9 @@
     "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1264,21 +1442,23 @@
   {
    "module": "libs/reporting/trade_report_ai.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Reporter AI facade (ABI)",
    "responsibility": "(no module docstring)",
    "loc": 1657,
    "public_functions": 10,
    "functions": 182,
-   "prod_consumers": 21,
+   "prod_consumers": 12,
    "prod_consumer_sample": [
     "apps/operator_ui/data_access_core.py",
-    "docs/daily_patch/2026-10-07_p1_5_2_r2a_reporting_service_extraction.md",
-    "docs/refactor/evidence/p157_third_pass/t1_differential_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_det_summary.json"
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/intraday_trade_reports.py"
    ],
    "test_consumers": 20,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "logging",
@@ -1289,21 +1469,20 @@
   {
    "module": "libs/reporting/trade_report_ai_compact_input.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Reporter compact LLM input API",
    "responsibility": "(no module docstring)",
    "loc": 419,
    "public_functions": 4,
    "functions": 4,
-   "prod_consumers": 6,
+   "prod_consumers": 1,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p157_third_pass/t1_differential_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_natural_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_timeout_test_natural_mode_summary.json"
+    "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP (public ABI / effect owner); delegates cohesive pure projections to Owners"
@@ -1311,21 +1490,20 @@
   {
    "module": "libs/reporting/trade_report_ai_deterministic.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Reporter deterministic fallback API",
    "responsibility": "(no module docstring)",
    "loc": 750,
    "public_functions": 11,
    "functions": 11,
-   "prod_consumers": 6,
+   "prod_consumers": 1,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p157_third_pass/t1_differential_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_natural_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_timeout_test_natural_mode_summary.json"
+    "libs/reporting/trade_report_ai.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP (public ABI / effect owner); delegates cohesive pure projections to Owners"
@@ -1333,21 +1511,22 @@
   {
    "module": "libs/reporting/trade_report_markdown_clean.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Reporter Markdown facade (ABI)",
    "responsibility": "(no module docstring)",
    "loc": 1326,
    "public_functions": 4,
    "functions": 209,
-   "prod_consumers": 10,
+   "prod_consumers": 3,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p157_third_pass/t1_differential_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_natural_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_timeout_test_natural_mode_summary.json"
+    "libs/reporting/trade_report_ai.py",
+    "scripts/refactor/p152_facade_consumer_scan.py",
+    "scripts/refactor/p152_r3_seam_challenge.py"
    ],
    "test_consumers": 10,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP (public ABI / effect owner); delegates cohesive pure projections to Owners"
@@ -1355,21 +1534,23 @@
   {
    "module": "libs/reporting/trade_story_pipeline.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Reporter story pipeline facade (ABI)",
    "responsibility": "(no module docstring)",
    "loc": 499,
    "public_functions": 26,
    "functions": 45,
-   "prod_consumers": 25,
+   "prod_consumers": 18,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p157_third_pass/t1_differential_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_det_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_revalidation_67e0dc0_natural_summary.json",
-    "docs/refactor/evidence/p157_third_pass/t1_timeout_test_natural_mode_summary.json"
+    "libs/reporting/intraday_trade_reports.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/live_execution_event_evidence.py",
+    "libs/reporting/live_execution_execution_runs.py"
    ],
    "test_consumers": 11,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP (public ABI / effect owner); delegates cohesive pure projections to Owners"
@@ -1377,6 +1558,7 @@
   {
    "module": "libs/runtime/commander/applied_policy.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Commander applied-policy resolution and behavior/reporter-feedback policy attachment (pure).",
    "loc": 267,
@@ -1387,8 +1569,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 14,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1396,7 +1579,10 @@
   {
    "module": "libs/runtime/commander/applied_policy_attach_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Commander applied-policy attach/provenance projections (state field assignment timing stays in the caller).",
    "loc": 129,
    "public_functions": 4,
@@ -1406,8 +1592,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 6,
+   "max_unconverted_output_arity": 6,
    "named_record_functions": 0,
+   "generated_name_functions": 4,
    "facade_symbols": 3,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1415,6 +1602,7 @@
   {
    "module": "libs/runtime/commander/candidate_watch_policy.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Commander candidate-watch proposal normalisation, rank cap and entry-control application (pure).",
    "loc": 134,
@@ -1425,8 +1613,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 6,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1434,6 +1623,7 @@
   {
    "module": "libs/runtime/commander/carry_review_policy.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Commander stage-4 carry-review context/decision and position carry-control assessment (pure policy over state).",
    "loc": 207,
@@ -1444,16 +1634,21 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 11,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/runtime/commander/decision_context_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Commander decision snapshots/preflight/risk-off/fast-path context (no hard veto changes).",
    "loc": 225,
    "public_functions": 2,
@@ -1463,16 +1658,21 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 22,
+   "max_unconverted_output_arity": 22,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 6,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 22)"
+   "action": "KEEP; named-record candidate (positional arity 22)"
   },
   {
    "module": "libs/runtime/commander/decision_context_projection_applied_policy_command.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Commander decision snapshots/preflight/risk-off/fast-path context (no hard veto changes).",
    "loc": 148,
    "public_functions": 1,
@@ -1482,16 +1682,21 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 22,
+   "max_unconverted_output_arity": 22,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 1,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 22)"
+   "action": "KEEP; named-record candidate (positional arity 22)"
   },
   {
    "module": "libs/runtime/commander/decision_overlay_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Commander applied-policy/memory overlay projections (advisory only).",
    "loc": 194,
    "public_functions": 3,
@@ -1501,16 +1706,20 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 16,
+   "max_unconverted_output_arity": 16,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 13,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 16)"
+   "action": "KEEP; named-record candidate (positional arity 16)"
   },
   {
    "module": "libs/runtime/commander/decision_rules_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Commander deterministic strategy-choice and monitor-feedback projections (same rule order).",
    "loc": 180,
    "public_functions": 3,
@@ -1520,8 +1729,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 6,
+   "max_unconverted_output_arity": 6,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 4,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1529,6 +1739,7 @@
   {
    "module": "libs/runtime/commander/entry_control_policy.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Commander entry-control construction (pure policy over strategist/monitor/portfolio state).",
    "loc": 290,
@@ -1539,8 +1750,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 11,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1548,6 +1760,7 @@
   {
    "module": "libs/runtime/commander/env_overrides.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 93,
@@ -1561,8 +1774,9 @@
     "libs/runtime/commander/runtime_modes.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.environ",
@@ -1573,6 +1787,7 @@
   {
    "module": "libs/runtime/commander/event_projection.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Commander decision-event meta, portfolio guard/preflight summaries and pending-order cancel intent projection (pure).",
    "loc": 271,
@@ -1583,8 +1798,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1592,6 +1808,7 @@
   {
    "module": "libs/runtime/commander/execution.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 160,
@@ -1603,8 +1820,9 @@
     "libs/runtime/commander/integrated_chain_support.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1612,6 +1830,7 @@
   {
    "module": "libs/runtime/commander/fast_path_policy.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Commander monitor-only and session-closeout fast-path eligibility policy (pure decisions; routing order unchanged).",
    "loc": 284,
@@ -1622,8 +1841,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 11,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1631,6 +1851,7 @@
   {
    "module": "libs/runtime/commander/fast_paths.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 378,
@@ -1641,8 +1862,9 @@
     "libs/runtime/commander/integrated_chain_support.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1650,6 +1872,7 @@
   {
    "module": "libs/runtime/commander/integrated_chain_support.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 45,
@@ -1660,8 +1883,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1669,6 +1893,7 @@
   {
    "module": "libs/runtime/commander/nodes.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 48,
@@ -1679,16 +1904,21 @@
     "libs/runtime/commander/integrated_chain_support.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/runtime/commander/open_position_assessment_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Commander open-position carry/review/cooldown/refresh assessment projections (result only; persisted_state write stays in the caller).",
    "loc": 164,
    "public_functions": 3,
@@ -1698,16 +1928,21 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 13,
+   "max_unconverted_output_arity": 13,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 8,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 13)"
+   "action": "KEEP; named-record candidate (positional arity 13)"
   },
   {
    "module": "libs/runtime/commander/open_position_inputs_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Commander open-position inventory/position/age input projections.",
    "loc": 172,
    "public_functions": 3,
@@ -1717,15 +1952,17 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 19,
+   "max_unconverted_output_arity": 19,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 8,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 19)"
+   "action": "KEEP; named-record candidate (positional arity 19)"
   },
   {
    "module": "libs/runtime/commander/output_frames.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 56,
@@ -1736,16 +1973,21 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/runtime/commander/policy_inputs_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass); 1 function(s) returned as named records (T3)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
    "responsibility": "Commander behavior-policy input resolution (source precedence and fallbacks unchanged; env/default reads stay in the caller).",
    "loc": 159,
    "public_functions": 2,
@@ -1755,16 +1997,21 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 10,
+   "max_unconverted_output_arity": 10,
    "named_record_functions": 1,
+   "generated_name_functions": 1,
    "facade_symbols": 6,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 10)"
+   "action": "KEEP; named-record candidate (positional arity 10)"
   },
   {
    "module": "libs/runtime/commander/policy_normalizers_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Commander behavior-policy route/execution/stop/size normalization (same fallbacks).",
    "loc": 119,
    "public_functions": 1,
@@ -1774,15 +2021,17 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 15,
+   "max_unconverted_output_arity": 15,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 4,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 15)"
+   "action": "KEEP; named-record candidate (positional arity 15)"
   },
   {
    "module": "libs/runtime/commander/policy_readers.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 66,
@@ -1796,8 +2045,9 @@
     "libs/runtime/commander/strategist_fingerprint.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv"
@@ -1807,6 +2057,7 @@
   {
    "module": "libs/runtime/commander/policy_surface.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 174,
@@ -1820,8 +2071,9 @@
     "libs/runtime/commander/strategist_refresh_decision.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1829,6 +2081,7 @@
   {
    "module": "libs/runtime/commander/position_projection.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Commander open-position, focus-symbol and strategist-refresh context projections (pure read-model).",
    "loc": 315,
@@ -1839,8 +2092,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1848,6 +2102,7 @@
   {
    "module": "libs/runtime/commander/route_surface.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 83,
@@ -1858,8 +2113,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1867,6 +2123,7 @@
   {
    "module": "libs/runtime/commander/runtime_modes.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 84,
@@ -1877,8 +2134,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv"
@@ -1888,6 +2146,7 @@
   {
    "module": "libs/runtime/commander/session_assessments.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Commander session-open recovery, intraday performance circuit and market-regime assessments (pure).",
    "loc": 251,
@@ -1898,8 +2157,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 9,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1907,6 +2167,7 @@
   {
    "module": "libs/runtime/commander/session_context.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 70,
@@ -1917,8 +2178,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1926,6 +2188,7 @@
   {
    "module": "libs/runtime/commander/shadow_runtime.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 94,
@@ -1938,8 +2201,9 @@
     "libs/runtime/commander/strategist_cycle.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1947,6 +2211,7 @@
   {
    "module": "libs/runtime/commander/strategist_cache_decision.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 337,
@@ -1960,8 +2225,9 @@
     "libs/runtime/commander/strategist_refresh_decision.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv",
@@ -1972,6 +2238,7 @@
   {
    "module": "libs/runtime/commander/strategist_cache_store.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 93,
@@ -1982,8 +2249,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -1991,6 +2259,7 @@
   {
    "module": "libs/runtime/commander/strategist_cycle.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 219,
@@ -2001,8 +2270,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2010,6 +2280,7 @@
   {
    "module": "libs/runtime/commander/strategist_fingerprint.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 530,
@@ -2022,8 +2293,9 @@
     "libs/runtime/commander/strategist_refresh_decision.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv"
@@ -2033,6 +2305,7 @@
   {
    "module": "libs/runtime/commander/strategist_refresh_decision.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 368,
@@ -2043,8 +2316,9 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv"
@@ -2054,21 +2328,23 @@
   {
    "module": "libs/runtime/exit_policy.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Exit policy trigger precedence",
    "responsibility": "(no module docstring)",
    "loc": 1059,
    "public_functions": 3,
    "functions": 10,
-   "prod_consumers": 10,
+   "prod_consumers": 5,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p156_parity/det1_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/det2_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/targetedA2_p1fix_summary.json",
-    "docs/refactor/evidence/p156_parity/targetedA_summary.json"
+    "graphs/nodes/decide_trade.py",
+    "libs/runtime/monitor_exit/overnight_carry.py",
+    "libs/runtime/monitor_exit/policy_config.py",
+    "libs/runtime/monitor_exit/policy_map_builder.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv"
@@ -2078,21 +2354,21 @@
   {
    "module": "libs/runtime/intraday_monitor_signals.py",
    "class": "COMPAT_FACADE",
+   "flags": [],
    "role": "Intraday entry signal evaluation",
    "responsibility": "(no module docstring)",
    "loc": 2860,
    "public_functions": 2,
    "functions": 49,
-   "prod_consumers": 8,
+   "prod_consumers": 2,
    "prod_consumer_sample": [
-    "docs/refactor/evidence/p156_parity/det1_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/det2_concurrent_summary.json",
-    "docs/refactor/evidence/p156_parity/targetedA2_p1fix_summary.json",
-    "docs/refactor/evidence/p156_parity/targetedA_summary.json"
+    "graphs/nodes/monitor_node.py",
+    "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP (public ABI / effect owner); delegates cohesive pure projections to Owners"
@@ -2100,6 +2376,7 @@
   {
    "module": "libs/runtime/monitor/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 1,
@@ -2108,8 +2385,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2117,7 +2395,10 @@
   {
    "module": "libs/runtime/monitor/cycle_detail_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor focus, entry/exit decision detail and evaluation projections.",
    "loc": 193,
    "public_functions": 3,
@@ -2127,8 +2408,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 8,
+   "max_unconverted_output_arity": 8,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 1,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2136,7 +2418,10 @@
   {
    "module": "libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor focus, entry/exit decision detail and evaluation projections.",
    "loc": 272,
    "public_functions": 4,
@@ -2146,8 +2431,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 3,
+   "max_unconverted_output_arity": 3,
    "named_record_functions": 0,
+   "generated_name_functions": 4,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2155,7 +2441,10 @@
   {
    "module": "libs/runtime/monitor/cycle_output_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor cycle output projection: monitor_output, sizing, quant result and entry/exit snapshots.",
    "loc": 286,
    "public_functions": 2,
@@ -2165,8 +2454,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 5,
+   "max_unconverted_output_arity": 5,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 6,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2174,7 +2464,10 @@
   {
    "module": "libs/runtime/monitor/cycle_output_projection_value_state_monitor.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor cycle output projection: monitor_output, sizing, quant result and entry/exit snapshots.",
    "loc": 38,
    "public_functions": 1,
@@ -2184,8 +2477,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 1,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2193,7 +2487,10 @@
   {
    "module": "libs/runtime/monitor/cycle_posture_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor posture, threshold, handoff and blocker surface projections.",
    "loc": 254,
    "public_functions": 4,
@@ -2203,8 +2500,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 6,
+   "max_unconverted_output_arity": 6,
    "named_record_functions": 0,
+   "generated_name_functions": 4,
    "facade_symbols": 4,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2212,6 +2510,7 @@
   {
    "module": "libs/runtime/monitor/entry_carry_guard.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Monitor open-carry forced entry-block reason and memory-bias observation flag (pure policy helpers; intent-only role unchanged).",
    "loc": 61,
@@ -2222,8 +2521,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 5,
    "side_effect_tokens": [
     "os.getenv"
@@ -2232,8 +2532,12 @@
   },
   {
    "module": "libs/runtime/monitor/entry_cascade_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor entry candidate cascade and intent-selection evidence (evidence only; no ordering or intent creation change).",
    "loc": 278,
    "public_functions": 5,
@@ -2243,16 +2547,21 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 18,
+   "max_unconverted_output_arity": 18,
    "named_record_functions": 0,
+   "generated_name_functions": 5,
    "facade_symbols": 6,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 18)"
+   "action": "KEEP; named-record candidate (positional arity 18)"
   },
   {
    "module": "libs/runtime/monitor/entry_context.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor entry-candidate context facts (selected/position/pending/cooldown/memory-bias/Commander control).",
    "loc": 65,
    "public_functions": 1,
@@ -2262,16 +2571,21 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 19,
+   "max_unconverted_output_arity": 19,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 10,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 19)"
+   "action": "KEEP; named-record candidate (positional arity 19)"
   },
   {
    "module": "libs/runtime/monitor/entry_cycle_context.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor entry-cycle context: portfolio/strategy/policy-contract snapshots derived before the entry cascade.",
    "loc": 134,
    "public_functions": 2,
@@ -2281,16 +2595,20 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 22,
+   "max_unconverted_output_arity": 22,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 9,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 22)"
+   "action": "KEEP; named-record candidate (positional arity 22)"
   },
   {
    "module": "libs/runtime/monitor/entry_evidence.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor entry signal evidence views (minute OHLCV meta, ETF deviation, signal trace and sizing inputs).",
    "loc": 48,
    "public_functions": 1,
@@ -2300,16 +2618,21 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 7,
+   "max_unconverted_output_arity": 7,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 6,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/runtime/monitor/entry_guard_evidence.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor entry-guard evidence facts (Commander rail, risk-off, re-entry, rank-1 authority input).",
    "loc": 87,
    "public_functions": 2,
@@ -2319,16 +2642,20 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 10,
+   "max_unconverted_output_arity": 10,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 4,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 10)"
+   "action": "KEEP; named-record candidate (positional arity 10)"
   },
   {
    "module": "libs/runtime/monitor/entry_quality_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor entry sizing/cost/quality/quant constraint summaries.",
    "loc": 80,
    "public_functions": 2,
@@ -2338,16 +2665,21 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 4,
+   "max_unconverted_output_arity": 4,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 10,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/runtime/monitor/exit_decision_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor exit decision evidence: same-symbol suppression, pending orders, hold/stop/confirm and SELL construction inputs.",
    "loc": 175,
    "public_functions": 3,
@@ -2357,16 +2689,21 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 15,
+   "max_unconverted_output_arity": 15,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 8,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 15)"
+   "action": "KEEP; named-record candidate (positional arity 15)"
   },
   {
    "module": "libs/runtime/monitor/exit_frame_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Monitor exit selected-symbol/frame/policy/carry projections computed once per cycle.",
    "loc": 136,
    "public_functions": 3,
@@ -2376,16 +2713,20 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 10,
+   "max_unconverted_output_arity": 10,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 15,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 10)"
+   "action": "KEEP; named-record candidate (positional arity 10)"
   },
   {
    "module": "libs/runtime/monitor/signal_explanation.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Intraday entry-signal reason/explanation views (read-only).",
    "loc": 64,
    "public_functions": 1,
@@ -2395,16 +2736,21 @@
     "libs/runtime/intraday_monitor_signals.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/runtime/monitor/signal_features.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass); 1 function(s) returned as named records (T3)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
    "responsibility": "Intraday entry-signal feature facts (price/volume/structure features before scoring).",
    "loc": 341,
    "public_functions": 6,
@@ -2414,16 +2760,20 @@
     "libs/runtime/intraday_monitor_signals.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 24,
+   "max_unconverted_output_arity": 24,
    "named_record_functions": 1,
+   "generated_name_functions": 5,
    "facade_symbols": 33,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 24)"
+   "action": "KEEP; named-record candidate (positional arity 24)"
   },
   {
    "module": "libs/runtime/monitor/signal_features_breakout_volume_gate.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Intraday entry-signal feature facts (price/volume/structure features before scoring).",
    "loc": 130,
    "public_functions": 1,
@@ -2433,16 +2783,21 @@
     "libs/runtime/intraday_monitor_signals.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 7,
+   "max_unconverted_output_arity": 7,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/runtime/monitor/signal_score_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Intraday entry-signal score components and caps (pure projections of features).",
    "loc": 308,
    "public_functions": 3,
@@ -2452,16 +2807,20 @@
     "libs/runtime/intraday_monitor_signals.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 10,
+   "max_unconverted_output_arity": 10,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 12,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 10)"
+   "action": "KEEP; named-record candidate (positional arity 10)"
   },
   {
    "module": "libs/runtime/monitor/signal_score_projection_chart_structure_decision.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Intraday entry-signal score components and caps (pure projections of features).",
    "loc": 70,
    "public_functions": 1,
@@ -2471,8 +2830,9 @@
     "libs/runtime/intraday_monitor_signals.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 5,
+   "max_unconverted_output_arity": 5,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 7,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2480,6 +2840,7 @@
   {
    "module": "libs/runtime/monitor_exit/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 7,
@@ -2488,8 +2849,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2497,6 +2859,7 @@
   {
    "module": "libs/runtime/monitor_exit/adapters/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 3,
@@ -2505,8 +2868,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2514,6 +2878,7 @@
   {
    "module": "libs/runtime/monitor_exit/adapters/state_data.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 55,
@@ -2525,8 +2890,9 @@
     "libs/runtime/monitor_exit/vwap_state_adapter.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2534,7 +2900,10 @@
   {
    "module": "libs/runtime/monitor_exit/exit_policy_chart_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Exit-policy chart/pnl/candidate condition projections (pure; trigger precedence stays in evaluate_exit_policy).",
    "loc": 273,
    "public_functions": 1,
@@ -2544,8 +2913,9 @@
     "libs/runtime/exit_policy.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 1,
+   "max_unconverted_output_arity": 1,
    "named_record_functions": 0,
+   "generated_name_functions": 1,
    "facade_symbols": 8,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2553,7 +2923,10 @@
   {
    "module": "libs/runtime/monitor_exit/exit_policy_pnl_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Exit-policy pnl/guard evidence projections (pure; trigger precedence stays in evaluate_exit_policy).",
    "loc": 255,
    "public_functions": 5,
@@ -2563,8 +2936,9 @@
     "libs/runtime/exit_policy.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 8,
+   "max_unconverted_output_arity": 8,
    "named_record_functions": 0,
+   "generated_name_functions": 5,
    "facade_symbols": 6,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2572,7 +2946,10 @@
   {
    "module": "libs/runtime/monitor_exit/exit_policy_trigger_inputs.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Exit-policy trigger input/result-interpretation projections (pure; no trigger selection).",
    "loc": 111,
    "public_functions": 3,
@@ -2582,8 +2959,9 @@
     "libs/runtime/exit_policy.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 8,
+   "max_unconverted_output_arity": 8,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 3,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2591,6 +2969,7 @@
   {
    "module": "libs/runtime/monitor_exit/hold_controls.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 112,
@@ -2601,8 +2980,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv"
@@ -2612,6 +2992,7 @@
   {
    "module": "libs/runtime/monitor_exit/market_enrichment.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 190,
@@ -2622,8 +3003,9 @@
     "libs/runtime/monitor_exit/policy_map_builder.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "time.time"
@@ -2633,6 +3015,7 @@
   {
    "module": "libs/runtime/monitor_exit/numeric.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 12,
@@ -2646,8 +3029,9 @@
     "libs/runtime/monitor_exit/position_tracking.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2655,6 +3039,7 @@
   {
    "module": "libs/runtime/monitor_exit/observability.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 291,
@@ -2665,8 +3050,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2674,6 +3060,7 @@
   {
    "module": "libs/runtime/monitor_exit/order_lifecycle.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 79,
@@ -2684,8 +3071,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2693,6 +3081,7 @@
   {
    "module": "libs/runtime/monitor_exit/overnight_carry.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 353,
@@ -2703,8 +3092,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2712,6 +3102,7 @@
   {
    "module": "libs/runtime/monitor_exit/policy_config.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 203,
@@ -2723,8 +3114,9 @@
     "libs/runtime/monitor_entry_controls.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv"
@@ -2734,6 +3126,7 @@
   {
    "module": "libs/runtime/monitor_exit/policy_map_builder.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 54,
@@ -2746,8 +3139,9 @@
     "libs/runtime/monitor_exit_inputs.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2755,6 +3149,7 @@
   {
    "module": "libs/runtime/monitor_exit/position_risk.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 44,
@@ -2765,8 +3160,9 @@
     "libs/runtime/monitor_exit/policy_map_builder.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2774,6 +3170,7 @@
   {
    "module": "libs/runtime/monitor_exit/position_state_enrichment.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 64,
@@ -2784,8 +3181,9 @@
     "libs/runtime/monitor_exit/policy_map_builder.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2793,6 +3191,7 @@
   {
    "module": "libs/runtime/monitor_exit/position_tracking.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 137,
@@ -2805,8 +3204,9 @@
     "libs/runtime/monitor_exit/preview.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "time.time"
@@ -2816,6 +3216,7 @@
   {
    "module": "libs/runtime/monitor_exit/post_exit_shadow.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 113,
@@ -2826,8 +3227,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2835,6 +3237,7 @@
   {
    "module": "libs/runtime/monitor_exit/preview.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 281,
@@ -2847,8 +3250,9 @@
     "libs/runtime/monitor_exit/selection.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "time.time"
@@ -2858,6 +3262,7 @@
   {
    "module": "libs/runtime/monitor_exit/price_resolution.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 146,
@@ -2871,8 +3276,9 @@
     "libs/runtime/monitor_exit/preview.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2880,6 +3286,7 @@
   {
    "module": "libs/runtime/monitor_exit/reasons.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 135,
@@ -2893,8 +3300,9 @@
     "libs/runtime/quant/decision.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2902,6 +3310,7 @@
   {
    "module": "libs/runtime/monitor_exit/runtime_clock.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 128,
@@ -2913,8 +3322,9 @@
     "libs/runtime/monitor_exit/overnight_carry.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "datetime.now"
@@ -2924,6 +3334,7 @@
   {
    "module": "libs/runtime/monitor_exit/selected_snapshot.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 161,
@@ -2935,8 +3346,9 @@
     "libs/runtime/monitor_exit/preview.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2944,6 +3356,7 @@
   {
    "module": "libs/runtime/monitor_exit/selection.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 86,
@@ -2954,8 +3367,9 @@
     "graphs/nodes/monitor_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2963,6 +3377,7 @@
   {
    "module": "libs/runtime/monitor_exit/session_vwap.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 96,
@@ -2974,8 +3389,9 @@
     "libs/runtime/monitor_exit/vwap_confirmation.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -2983,6 +3399,7 @@
   {
    "module": "libs/runtime/monitor_exit/vwap_confirmation.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 65,
@@ -2993,8 +3410,9 @@
     "libs/runtime/monitor_exit/vwap_state_adapter.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3002,6 +3420,7 @@
   {
    "module": "libs/runtime/monitor_exit/vwap_state_adapter.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 39,
@@ -3013,8 +3432,9 @@
     "libs/runtime/monitor_exit_confirmation.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3022,6 +3442,7 @@
   {
    "module": "libs/runtime/scanner/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 2,
@@ -3030,8 +3451,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3039,6 +3461,7 @@
   {
    "module": "libs/runtime/scanner/blocker_family_overlay.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner blocker-family concentration overlay (pure).",
    "loc": 99,
@@ -3049,16 +3472,21 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 4,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
   {
    "module": "libs/runtime/scanner/candidate_context_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Scanner candidate-source context projections (eligibility/guidance/quote diagnostics; I/O and hydration stay in the node).",
    "loc": 89,
    "public_functions": 2,
@@ -3068,15 +3496,17 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 16,
+   "max_unconverted_output_arity": 16,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 7,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 16)"
+   "action": "KEEP; named-record candidate (positional arity 16)"
   },
   {
    "module": "libs/runtime/scanner/candidate_risk.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 113,
@@ -3087,8 +3517,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3096,6 +3527,7 @@
   {
    "module": "libs/runtime/scanner/candidate_selection.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 455,
@@ -3106,8 +3538,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv"
@@ -3117,6 +3550,7 @@
   {
    "module": "libs/runtime/scanner/compatibility.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner monitor-compatibility policy input, frame and entry-compatibility signal (pure).",
    "loc": 289,
@@ -3127,8 +3561,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 8,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3136,6 +3571,7 @@
   {
    "module": "libs/runtime/scanner/control_eligibility.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 56,
@@ -3146,8 +3582,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3155,6 +3592,7 @@
   {
    "module": "libs/runtime/scanner/evidence.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner open-order counts, feature-engine map and policy-trace evidence (pure).",
    "loc": 268,
@@ -3165,8 +3603,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [
     "os.getenv"
@@ -3176,6 +3615,7 @@
   {
    "module": "libs/runtime/scanner/feature_coverage.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner quote-metric coverage summary and feature refresh decision (pure).",
    "loc": 70,
@@ -3186,8 +3626,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 6,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3195,6 +3636,7 @@
   {
    "module": "libs/runtime/scanner/guidance.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner guidance extraction, weight application and structured bias (pure).",
    "loc": 286,
@@ -3205,8 +3647,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 8,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3214,6 +3657,7 @@
   {
    "module": "libs/runtime/scanner/macro_chart_fit.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner macro/chart-fit proximity and fit computation (pure).",
    "loc": 201,
@@ -3224,8 +3668,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 7,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3233,6 +3678,7 @@
   {
    "module": "libs/runtime/scanner/macro_focus.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner macro focus derivation (pure).",
    "loc": 64,
@@ -3243,8 +3689,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3252,6 +3699,7 @@
   {
    "module": "libs/runtime/scanner/market_representative_guard.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 329,
@@ -3262,8 +3710,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3271,6 +3720,7 @@
   {
    "module": "libs/runtime/scanner/output_payloads.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 231,
@@ -3281,8 +3731,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 2,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3290,6 +3741,7 @@
   {
    "module": "libs/runtime/scanner/output_snapshots.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 237,
@@ -3300,8 +3752,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 1,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3309,6 +3762,7 @@
   {
    "module": "libs/runtime/scanner/practical_filters.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 266,
@@ -3319,8 +3773,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [
     "os.getenv"
@@ -3330,6 +3785,7 @@
   {
    "module": "libs/runtime/scanner/repeat_guard.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner repeat-symbol / blocker-cooldown penalty policy and blocker-family normalisation (pure).",
    "loc": 266,
@@ -3340,8 +3796,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 11,
    "side_effect_tokens": [
     "os.getenv"
@@ -3350,8 +3807,12 @@
   },
   {
    "module": "libs/runtime/scanner/score_feature_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass); 1 function(s) returned as named records (T3)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
    "responsibility": "Scanner candidate feature projection and deterministic defaults (scale, floating order and risk cap unchanged).",
    "loc": 231,
    "public_functions": 3,
@@ -3361,16 +3822,21 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 24,
+   "max_unconverted_output_arity": 24,
    "named_record_functions": 1,
+   "generated_name_functions": 2,
    "facade_symbols": 14,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 24)"
+   "action": "KEEP; named-record candidate (positional arity 24)"
   },
   {
    "module": "libs/runtime/scanner/score_policy_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Scanner score-component projection (memory/compatibility/macro/tactical; same rounding and clamps).",
    "loc": 141,
    "public_functions": 2,
@@ -3380,15 +3846,17 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 13,
+   "max_unconverted_output_arity": 13,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 6,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 13)"
+   "action": "KEEP; named-record candidate (positional arity 13)"
   },
   {
    "module": "libs/runtime/scanner/scoring_inputs.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner score-weight, live-equity filter and compatibility-bias inputs (pure).",
    "loc": 184,
@@ -3399,8 +3867,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 10,
    "side_effect_tokens": [
     "os.getenv",
@@ -3411,7 +3880,10 @@
   {
    "module": "libs/runtime/scanner/selection_evidence_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Scanner selected/scan-output and rank-evidence projections (state-write order stays in the node; canonical ranking owner untouched).",
    "loc": 252,
    "public_functions": 4,
@@ -3421,8 +3893,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 4,
+   "max_unconverted_output_arity": 4,
    "named_record_functions": 0,
+   "generated_name_functions": 4,
    "facade_symbols": 7,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3430,7 +3903,10 @@
   {
    "module": "libs/runtime/scanner/selection_evidence_projection_value_te_scanner.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Scanner selected/scan-output and rank-evidence projections (state-write order stays in the node; canonical ranking owner untouched).",
    "loc": 124,
    "public_functions": 2,
@@ -3440,8 +3916,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 1,
+   "max_unconverted_output_arity": 1,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 3,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3449,6 +3926,7 @@
   {
    "module": "libs/runtime/scanner/sentiment_inputs.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner global/news sentiment score and signal-map accessors (pure).",
    "loc": 127,
@@ -3459,8 +3937,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3468,6 +3947,7 @@
   {
    "module": "libs/runtime/scanner/symbol_prior.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Scanner symbol-prior adjustment computation (pure).",
    "loc": 110,
@@ -3478,8 +3958,9 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 4,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3487,6 +3968,7 @@
   {
    "module": "libs/runtime/scanner/theme_filter.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "(no module docstring)",
    "loc": 268,
@@ -3499,8 +3981,9 @@
     "libs/runtime/scanner/output_snapshots.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3508,6 +3991,7 @@
   {
    "module": "libs/runtime/strategist/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 1,
@@ -3516,8 +4000,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3525,6 +4010,7 @@
   {
    "module": "libs/runtime/strategist/context/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 1,
@@ -3533,8 +4019,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3542,6 +4029,7 @@
   {
    "module": "libs/runtime/strategist/context/commander_refresh_context.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist LLM commander-refresh context and read-model compaction (pure).",
    "loc": 299,
@@ -3552,8 +4040,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 5,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3561,6 +4050,7 @@
   {
    "module": "libs/runtime/strategist/context/common_values.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist small value/trace helpers shared by context builders (pure).",
    "loc": 76,
@@ -3571,8 +4061,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 4,
    "side_effect_tokens": [
     "os.getenv"
@@ -3582,6 +4073,7 @@
   {
    "module": "libs/runtime/strategist/context/market_inputs.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist market-context inputs, regime summary and macro-stress frame overlay (pure).",
    "loc": 306,
@@ -3592,8 +4084,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 8,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3601,6 +4094,7 @@
   {
    "module": "libs/runtime/strategist/context/market_key_events.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist market key-event extraction (pure).",
    "loc": 102,
@@ -3611,8 +4105,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 3,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3620,6 +4115,7 @@
   {
    "module": "libs/runtime/strategist/context/memory.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist LLM-context memory/feedback compaction and playbook memory neutralisation (pure projections).",
    "loc": 311,
@@ -3630,8 +4126,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 6,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3639,6 +4136,7 @@
   {
    "module": "libs/runtime/strategist/context/news_compaction.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist news sample/signal compaction and query-target building (pure).",
    "loc": 313,
@@ -3649,8 +4147,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [
     "os.getenv"
@@ -3660,6 +4159,7 @@
   {
    "module": "libs/runtime/strategist/context/news_context.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist news context merging, ranking and sentiment breakdown (pure).",
    "loc": 271,
@@ -3670,8 +4170,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 6,
    "side_effect_tokens": [
     "os.getenv"
@@ -3680,8 +4181,12 @@
   },
   {
    "module": "libs/runtime/strategist/context/node_context_projection.py",
-   "class": "RENAME_CANDIDATE",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "class": "CANONICAL_OWNER",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Strategist deterministic candidate/theme/news/policy seed projections (provider reads and state writes stay in the node).",
    "loc": 123,
    "public_functions": 4,
@@ -3691,15 +4196,17 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 18,
+   "max_unconverted_output_arity": 18,
    "named_record_functions": 0,
+   "generated_name_functions": 4,
    "facade_symbols": 20,
    "side_effect_tokens": [],
-   "action": "RENAME_CANDIDATE / named-record candidate (positional arity 18)"
+   "action": "KEEP; named-record candidate (positional arity 18)"
   },
   {
    "module": "libs/runtime/strategist/context/symbol_read_models.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist symbol read-model / refresh-context compaction (pure).",
    "loc": 127,
@@ -3710,8 +4217,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 11,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3719,6 +4227,7 @@
   {
    "module": "libs/runtime/strategist/context/theme_compaction.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist theme strength/summary compaction and theme-to-news query helpers (pure).",
    "loc": 249,
@@ -3729,8 +4238,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 5,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3738,6 +4248,7 @@
   {
    "module": "libs/runtime/strategist/context/theme_packet.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist theme-packet merge, available-theme resolution and theme strategy surface (pure).",
    "loc": 299,
@@ -3748,8 +4259,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 5,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3757,6 +4269,7 @@
   {
    "module": "libs/runtime/strategist/context/theme_strength.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist theme strength map and avoid-theme helpers (pure).",
    "loc": 43,
@@ -3767,8 +4280,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 3,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3776,6 +4290,7 @@
   {
    "module": "libs/runtime/strategist/llm/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 1,
@@ -3784,8 +4299,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3793,6 +4309,7 @@
   {
    "module": "libs/runtime/strategist/llm/adjustment_directives.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist policy-adjustment directive normalisation (post-processing of already received output).",
    "loc": 312,
@@ -3803,8 +4320,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 16,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3812,6 +4330,7 @@
   {
    "module": "libs/runtime/strategist/llm/candidate_watch_overrides.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist candidate-watch policy and AI override merging (post-processing).",
    "loc": 105,
@@ -3822,8 +4341,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3831,6 +4351,7 @@
   {
    "module": "libs/runtime/strategist/llm/override_normalization.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist LLM override derivation/normalisation (post-processing of already received output).",
    "loc": 291,
@@ -3841,8 +4362,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 9,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3850,6 +4372,7 @@
   {
    "module": "libs/runtime/strategist/llm/stage_reviews.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist stage-specific LLM review normalisation helpers (post-processing of already received output).",
    "loc": 219,
@@ -3860,8 +4383,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 7,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3869,6 +4393,7 @@
   {
    "module": "libs/runtime/strategist/output/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 1,
@@ -3877,8 +4402,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3886,6 +4412,7 @@
   {
    "module": "libs/runtime/strategist/output/commander_context_and_plan.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist commander context summary, strategist plan and strategy-field augmentation (pure).",
    "loc": 280,
@@ -3896,8 +4423,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 11,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3905,7 +4433,10 @@
   {
    "module": "libs/runtime/strategist/output/node_output_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Strategist output/strategy-frame projections (pure dict building; state apply order stays in the node).",
    "loc": 109,
    "public_functions": 3,
@@ -3915,8 +4446,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 2,
+   "max_unconverted_output_arity": 2,
    "named_record_functions": 0,
+   "generated_name_functions": 3,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3924,7 +4456,10 @@
   {
    "module": "libs/runtime/strategist/output/node_trace_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Strategist explanation/trace projections (emit and artifact writes stay in the node).",
    "loc": 112,
    "public_functions": 2,
@@ -3934,8 +4469,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 3,
+   "max_unconverted_output_arity": 3,
    "named_record_functions": 0,
+   "generated_name_functions": 2,
    "facade_symbols": 3,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3943,6 +4479,7 @@
   {
    "module": "libs/runtime/strategist/output/strategic_answers.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist strategic-answers assembly (pure).",
    "loc": 178,
@@ -3953,8 +4490,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 3,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3962,6 +4500,7 @@
   {
    "module": "libs/runtime/strategist/output/strategy_scores_and_summary.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist operator summary and deterministic strategy scoring (pure).",
    "loc": 207,
@@ -3972,8 +4511,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3981,6 +4521,7 @@
   {
    "module": "libs/runtime/strategist/policy/__init__.py",
    "class": "KEEP",
+   "flags": [],
    "role": "package marker",
    "responsibility": "(no module docstring)",
    "loc": 1,
@@ -3989,8 +4530,9 @@
    "prod_consumers": 0,
    "prod_consumer_sample": [],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 0,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -3998,6 +4540,7 @@
   {
    "module": "libs/runtime/strategist/policy/exit_and_defaults.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist default and exit policy construction from configuration (pure).",
    "loc": 227,
@@ -4008,8 +4551,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 7,
    "side_effect_tokens": [
     "os.getenv"
@@ -4019,6 +4563,7 @@
   {
    "module": "libs/runtime/strategist/policy/monitor_entry_policy.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist monitor-entry policy summaries, adjustment deltas and strategy policy assembly (pure).",
    "loc": 309,
@@ -4029,8 +4574,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 9,
    "side_effect_tokens": [
     "os.getenv"
@@ -4040,6 +4586,7 @@
   {
    "module": "libs/runtime/strategist/policy/monitor_entry_policy_seed.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist monitor-entry policy seed, rationale and provenance (pure).",
    "loc": 75,
@@ -4050,8 +4597,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 2,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -4059,7 +4607,10 @@
   {
    "module": "libs/runtime/strategist/policy/node_policy_projection.py",
    "class": "CANONICAL_OWNER",
-   "role": "extracted Owner (p1_5_second_pass)",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "role": "extracted Owner (second_pass)",
    "responsibility": "Strategist bounded-override, monitor entry/exit policy and theme/strategy plan projections (after the LLM boundary; frame application order ",
    "loc": 252,
    "public_functions": 4,
@@ -4069,8 +4620,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 8,
+   "max_unconverted_output_arity": 8,
    "named_record_functions": 0,
+   "generated_name_functions": 4,
    "facade_symbols": 25,
    "side_effect_tokens": [],
    "action": "KEEP"
@@ -4078,6 +4630,7 @@
   {
    "module": "libs/runtime/strategist/policy/scanner_policy.py",
    "class": "CANONICAL_OWNER",
+   "flags": [],
    "role": "pre-existing responsibility-named Owner (Wave A-C)",
    "responsibility": "Strategist scanner-source policy derivation (pure).",
    "loc": 202,
@@ -4088,8 +4641,9 @@
     "graphs/nodes/strategist_node.py"
    ],
    "test_consumers": 0,
-   "max_output_arity": 0,
+   "max_unconverted_output_arity": 0,
    "named_record_functions": 0,
+   "generated_name_functions": 0,
    "facade_symbols": 4,
    "side_effect_tokens": [],
    "action": "KEEP"

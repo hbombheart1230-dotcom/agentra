@@ -236,12 +236,34 @@ def make_session(repo, work_root, name, sha):
     return root
 
 
+_PLACEHOLDER = re.compile(r"%[A-Za-z_][A-Za-z0-9_]*%|\$\{[^}]*\}|\$[A-Za-z_][A-Za-z0-9_]*")
+# variables whose value is ONE filesystem path and therefore must be absolute and fully resolved
+_ABS_PATH_VARS = ("TEMP", "TMP", "PYTHONPYCACHEPREFIX", "R3_ROOT", "R3_NAMES", "R3_LOG", "CONTROLLED_MOCK_LANE_LOG_ROOT")
+
+
+def assert_resolved_env(env):
+    """A child interpreter given an unexpanded placeholder (e.g. PYTHONPYCACHEPREFIX=%SystemDrive%/pyc) would treat it
+    as a RELATIVE path and create a literal `%SystemDrive%` directory tree under its cwd - clone-local debris. Fail closed."""
+    bad = []
+    for key, value in env.items():
+        text = str(value)
+        if _PLACEHOLDER.search(text):
+            bad.append(f"{key} contains an unresolved placeholder: {text!r}")
+        elif key in _ABS_PATH_VARS and not os.path.isabs(text):
+            bad.append(f"{key} must be an absolute resolved path: {text!r}")
+    if bad:
+        raise SystemExit("unresolved/relative environment for a session: " + "; ".join(bad))
+    return env
+
+
 def session_env(root, session_dir, harness_dir, names, log, mode, keep, effect_funcs="", pin_pid=False):
     env = {
         "SYSTEMROOT": os.environ.get("SYSTEMROOT", r"C:\Windows"),
         "PATH": os.pathsep.join([str(Path(PY).parent), r"C:\Program Files\Git\cmd", r"C:\Windows\System32", r"C:\Windows"]),
         "TEMP": str(session_dir / "tmp"), "TMP": str(session_dir / "tmp"),
         "PYTHONUTF8": "1", "PYTHONHASHSEED": "0", "PYTHONDONTWRITEBYTECODE": "1",
+        # never inherited: an unresolved or relative prefix would put bytecode debris inside the session clone
+        "PYTHONPYCACHEPREFIX": str(session_dir / "pycache"),
         "PYTHONPATH": str(harness_dir),
         "R3_ROOT": str(root), "R3_NAMES": str(names), "R3_LOG": str(log), "R3_POST": "1",
         "P156_DETERMINISM": "1" if mode == "det" else "0",
@@ -253,6 +275,7 @@ def session_env(root, session_dir, harness_dir, names, log, mode, keep, effect_f
         env["R3_KEEP"] = "1"
     if pin_pid:
         env["P156_PID_PIN"] = "full"
+    assert_resolved_env(env)
     if effect_funcs:
         # ordered file-effect capture (opens/writes/renames/removes with content digests) for the listed functions
         env["R3_EFFECTS"] = "1"

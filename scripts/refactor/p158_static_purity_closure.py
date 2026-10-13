@@ -50,14 +50,28 @@ KNOWN_PURE = {
 # methods that are pure regardless of receiver type
 KNOWN_PURE_METHODS = {
     "get", "items", "keys", "values", "copy", "strip", "lstrip", "rstrip", "lower", "upper", "title", "split",
-    "rsplit", "splitlines", "join", "startswith", "endswith", "format", "replace", "append", "extend", "update",
-    "setdefault", "pop", "index", "count", "isdigit", "isalpha", "isalnum", "isspace", "encode", "decode",
-    "casefold", "zfill", "ljust", "rjust", "center", "partition", "rpartition", "sort", "reverse", "add", "discard",
-    "union", "intersection", "difference", "issubset", "issuperset", "isoformat", "strftime", "timestamp",
-    "total_seconds", "hexdigest", "group", "groups", "groupdict", "span", "start", "end", "sub", "match",
-    "search", "findall", "fullmatch", "finditer", "as_posix", "with_suffix", "with_name", "relative_to",
-    "joinpath", "resolve_value", "to_dict", "asdict", "_asdict", "_replace", "is_integer", "bit_length",
+    "rsplit", "splitlines", "join", "startswith", "endswith", "format", "index", "count", "isdigit", "isalpha",
+    "isalnum", "isspace", "encode", "decode", "casefold", "zfill", "ljust", "rjust", "center", "partition",
+    "rpartition", "union", "intersection", "difference", "issubset", "issuperset", "isoformat", "strftime",
+    "timestamp", "total_seconds", "hexdigest", "group", "groups", "groupdict", "span", "start", "end", "sub",
+    "match", "search", "findall", "fullmatch", "finditer", "as_posix", "with_suffix", "with_name", "relative_to",
+    "joinpath", "to_dict", "asdict", "_asdict", "_replace", "is_integer", "bit_length",
 }
+# Methods whose meaning depends on the receiver type. `replace` is str.replace (pure) / datetime.replace (pure) /
+# Path.replace (FILESYSTEM RENAME = I/O); it is therefore decided ONLY by a proven receiver kind, never by name.
+RECEIVER_DEPENDENT_METHODS = {"replace"}
+# In-place mutators: they perform no I/O, but they change the receiver. "Purity" in this checker means *no I/O, clock,
+# env, lock or logging in the call closure* - it is NOT input immutability. A mutator on a receiver that is not proven
+# to be a locally created fresh container is UNKNOWN ("input mutation not excluded"); on a proven fresh local
+# container it is PURE (the mutation cannot be observed by the caller).
+MUTATING_METHODS = {"append", "extend", "update", "setdefault", "pop", "popitem", "clear", "insert", "remove", "sort",
+                    "reverse", "add", "discard", "appendleft", "popleft"}
+STR_RETURNING_METHODS = {"strip", "lstrip", "rstrip", "lower", "upper", "title", "join", "format", "replace",
+                         "casefold", "zfill", "ljust", "rjust", "center", "removeprefix", "removesuffix",
+                         "capitalize", "swapcase", "expandtabs"}
+PATH_RETURNING_METHODS = {"with_suffix", "with_name", "relative_to", "joinpath", "resolve", "expanduser",
+                          "absolute", "with_stem"}
+FRESH_CALLS = {"dict", "list", "set", "sorted", "tuple", "defaultdict", "OrderedDict", "deque", "Counter"}
 # methods / names that perform I/O, locking or clock access
 IMPURE_METHODS = {
     "read_text", "write_text", "read_bytes", "write_bytes", "exists", "is_file", "is_dir", "open", "mkdir",
@@ -65,7 +79,8 @@ IMPURE_METHODS = {
     "readline", "read", "write", "writelines", "flush", "close", "seek", "truncate", "acquire", "release",
     "now", "utcnow", "today", "sleep", "info", "warning", "error", "exception", "debug", "critical", "log",
     "send", "recv", "connect", "request", "post", "put", "commit", "execute", "executemany", "fetchall",
-    "fetchone", "dump", "load", "getenv", "listdir", "makedirs", "remove", "system", "popen", "run", "Popen",
+    "fetchone", "dump", "load", "getenv", "listdir", "makedirs", "system", "popen", "run", "Popen", "symlink_to",
+    "hardlink_to", "write_through", "samefile", "owner", "group_name", "expanduser_io",
 }
 IMPURE_ROOTS = {"os", "shutil", "subprocess", "socket", "sqlite3", "requests", "tempfile", "logging", "time",
                 "random", "uuid", "secrets", "threading", "multiprocessing", "urllib", "http", "ctypes", "signal",
@@ -237,21 +252,116 @@ class Checker:
                     assigned.add(x.id)
                 if isinstance(x, ast.arg):
                     assigned.add(x.arg)
+        env = self._infer_env(mod, nodes)
         out: List[Finding] = []
         for n in nodes:
             for c in ast.walk(n):
                 if isinstance(c, (ast.Await, ast.Yield, ast.YieldFrom)):
                     out.append(Finding(UNKNOWN, "await/yield in closure", chain))
                 if isinstance(c, ast.Call):
-                    out += self._call(mod, c, depth, chain, local_defs, assigned)
+                    out += self._call(mod, c, depth, chain, local_defs, assigned, env)
         return out
 
-    def _call(self, mod, call: ast.Call, depth, chain, local_defs, assigned) -> List[Finding]:
+    # ---- minimal receiver-kind inference (str / Path / fresh container); anything else is None -> UNKNOWN ------------
+    def _is_pathlib_path(self, mod, func) -> bool:
+        if isinstance(func, ast.Name):
+            return mod.imports.get(func.id) == ("pathlib", "Path")
+        if isinstance(func, ast.Attribute) and func.attr == "Path" and isinstance(func.value, ast.Name):
+            rn = func.value.id
+            if rn == "facade" and self.facade_module:
+                fm = self.load(self.facade_module)
+                return fm is not None and fm.imports.get("Path") == ("pathlib", "Path")
+            return rn in mod.imports and mod.imports[rn][0] == "pathlib" and mod.imports[rn][1] is None
+        return False
+
+    def _kind(self, mod, e, env) -> Optional[str]:
+        if isinstance(e, ast.Constant):
+            return "str" if isinstance(e.value, str) else None
+        if isinstance(e, ast.JoinedStr):
+            return "str"
+        if isinstance(e, (ast.Dict, ast.List, ast.Set, ast.ListComp, ast.DictComp, ast.SetComp)):
+            return "fresh"
+        if isinstance(e, ast.Name):
+            return env.get(e.id)
+        if isinstance(e, ast.BinOp):
+            left, right = self._kind(mod, e.left, env), self._kind(mod, e.right, env)
+            if isinstance(e.op, (ast.Add, ast.Mod)) and "str" in (left, right) and {left, right} <= {"str", None}:
+                return "str"
+            if isinstance(e.op, ast.Div) and "path" in (left, right) and {left, right} <= {"path", "str"}:
+                return "path"
+            return None
+        if isinstance(e, ast.Call):
+            f = e.func
+            if isinstance(f, ast.Name):
+                if f.id in ("str", "repr") and f.id not in mod.imports and f.id not in mod.funcs:
+                    return "str"
+                if f.id in FRESH_CALLS and f.id not in mod.funcs and f.id not in mod.imports:
+                    return "fresh"
+            if self._is_pathlib_path(mod, f):
+                return "path"
+            if isinstance(f, ast.Attribute):
+                recv = self._kind(mod, f.value, env)
+                if recv == "str" and f.attr in STR_RETURNING_METHODS:
+                    return "str"
+                if recv == "path" and f.attr in PATH_RETURNING_METHODS:
+                    return "path"
+            return None
+        if isinstance(e, ast.Attribute) and e.attr == "parent" and self._kind(mod, e.value, env) == "path":
+            return "path"
+        return None
+
+    def _infer_env(self, mod, nodes) -> Dict[str, str]:
+        """name -> kind, only for names with exactly one plain assignment (or an annotated parameter) in the analysed
+        statements. Re-assigned, loop/with/augmented targets and unpacked names get no kind (-> UNKNOWN)."""
+        counts: Dict[str, int] = {}
+        values: Dict[str, ast.AST] = {}
+        poisoned: Set[str] = set()
+        env: Dict[str, str] = {}
+        for n in nodes:
+            for x in ast.walk(n):
+                if isinstance(x, ast.Assign):
+                    for t in x.targets:
+                        if isinstance(t, ast.Name) and len(x.targets) == 1:
+                            counts[t.id] = counts.get(t.id, 0) + 1
+                            values[t.id] = x.value
+                        else:
+                            for y in ast.walk(t):
+                                if isinstance(y, ast.Name):
+                                    poisoned.add(y.id)
+                elif isinstance(x, ast.AnnAssign) and isinstance(x.target, ast.Name) and x.value is not None:
+                    counts[x.target.id] = counts.get(x.target.id, 0) + 1
+                    values[x.target.id] = x.value
+                elif isinstance(x, (ast.For, ast.AugAssign, ast.comprehension, ast.NamedExpr)):
+                    for y in ast.walk(x.target):
+                        if isinstance(y, ast.Name):
+                            poisoned.add(y.id)
+                elif isinstance(x, ast.With):
+                    for it in x.items:
+                        if it.optional_vars is not None:
+                            for y in ast.walk(it.optional_vars):
+                                if isinstance(y, ast.Name):
+                                    poisoned.add(y.id)
+                elif isinstance(x, ast.arg):
+                    ann = x.annotation
+                    if isinstance(ann, ast.Name) and ann.id == "str":
+                        env[x.arg] = "str"
+                    elif ann is not None and self._is_pathlib_path(mod, ann):
+                        env[x.arg] = "path"
+        for name, cnt in counts.items():
+            if cnt == 1 and name not in poisoned and name not in env:
+                k = self._kind(mod, values[name], env)
+                if k:
+                    env[name] = k
+        for name in poisoned:
+            env.pop(name, None)
+        return env
+
+    def _call(self, mod, call: ast.Call, depth, chain, local_defs, assigned, env=None) -> List[Finding]:
         f = call.func
         if isinstance(f, ast.Name):
             return self._name_call(mod, f.id, depth, chain, local_defs, assigned)
         if isinstance(f, ast.Attribute):
-            return self._attr_call(mod, f, depth, chain)
+            return self._attr_call(mod, f, depth, chain, env or {})
         return [Finding(UNKNOWN, f"dynamic call target ({type(f).__name__}) at line {call.lineno}", chain)]
 
     def _name_call(self, mod, name, depth, chain, local_defs, assigned):
@@ -278,7 +388,8 @@ class Checker:
             return [Finding(UNKNOWN, f"call through local variable {name}() (dynamic dispatch)", chain)]
         return [Finding(UNKNOWN, f"unresolved call target {name}()", chain)]
 
-    def _attr_call(self, mod, f: ast.Attribute, depth, chain):
+    def _attr_call(self, mod, f: ast.Attribute, depth, chain, env=None):
+        env = env or {}
         root = f
         parts = []
         while isinstance(root, ast.Attribute):
@@ -311,6 +422,23 @@ class Checker:
         # method call on an arbitrary expression (variable, subscript, call result ...)
         if attr in IMPURE_METHODS:
             return [Finding(IMPURE, f"method .{attr}() (I/O, lock or clock)", chain)]
+        recv = f.value
+        if isinstance(recv, ast.Name) and recv.id in ("str", "bytes") and recv.id not in mod.imports \
+                and recv.id not in mod.funcs:
+            return []  # unbound builtin type method, e.g. str.replace(s, a, b)
+        kind = self._kind(mod, recv, env)
+        if attr in RECEIVER_DEPENDENT_METHODS:
+            if kind == "str":
+                return []
+            if kind == "path":
+                return [Finding(IMPURE, f"Path.{attr}() renames/moves a filesystem entry", chain)]
+            return [Finding(UNKNOWN, f".{attr}() on a receiver of unproven type (str.replace is pure, "
+                                     f"Path.replace is filesystem I/O)", chain)]
+        if attr in MUTATING_METHODS:
+            if kind == "fresh":
+                return []  # mutation of a locally created container is not observable by the caller
+            return [Finding(UNKNOWN, f".{attr}() mutates a receiver that is not proven to be a fresh local "
+                                     f"container (input mutation not excluded)", chain)]
         if attr in KNOWN_PURE_METHODS:
             return []
         return [Finding(UNKNOWN, f"method .{attr}() on an unresolved receiver", chain)]
