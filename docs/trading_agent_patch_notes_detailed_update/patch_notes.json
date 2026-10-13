@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 230,
+  "entry_count": 231,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6222,6 +6222,31 @@
         "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-0-1-CLAUDE-028.md",
         "docs/refactor/p1_5_third_pass_t3_ownership_matrix.json",
         "scripts/refactor/p159_ownership_matrix.py"
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Third Pass T3-0.2",
+      "title": "T3-0.2: Windows harness isolation P1 root cause (missing SYSTEMDRIVE) and mandatory Windows smoke gate",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "Confirmed that a Microsoft Store CPython started with a scrubbed environment lacking SYSTEMDRIVE creates a literal %SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches tree in its cwd (the session clone); session_env now carries a resolved SYSTEMDRIVE, an interpreter preflight fails closed on any cwd debris, the isolation test uses the real session_env across available interpreters, and a required Windows CI smoke job was added; no production file or sitecustomize.py changed.",
+      "details": [
+        "Reproduced in a clean clone: FAIL with Store CPython 3.13.14, PASS with python.org CPython 3.14; cause confirmed by the minimal 'python -c pass' probe (debris without SYSTEMDRIVE, none with it); not caused by PYTHONPYCACHEPREFIX or sitecustomize.py.",
+        "A/B/C experiments: placeholder prefix (hazard by design), minimal env + absolute prefix (still debris on Store python), real session_env (9 paths before, 0 after); end-to-end orchestrator run 4/4 sessions exit 0 with 0 new paths.",
+        "Harness tests 17 -> 22 (real session_env x all interpreters x bytecode on/off, Store-python reproduction, fail-closed preflight); Linux accounts Windows-only tests as skipped, never as Windows PASS; new windows-latest smoke job requires them to run and pass.",
+        "Closure PENDING_CLOSURE until independent Codex re-audit; T3.1, T3.5, Wave D not started; REAL_REPORT_PARITY_BLOCKED open."
+      ],
+      "impact": "Test-harness, CI and documentation evidence only; no trading, LLM, ranking, lock/queue or report behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-0-2-CLAUDE-029.md",
+        "scripts/refactor/p156_parity_differential.py",
+        "tests/test_p156_parity_harness.py"
       ]
     }
   ]

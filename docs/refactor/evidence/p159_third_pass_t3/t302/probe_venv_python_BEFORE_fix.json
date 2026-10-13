@@ -1,0 +1,218 @@
+{
+ "python": {
+  "path": "C:/Agentra/venv/Scripts/python.exe",
+  "host_python": "C:\\Agentra\\venv\\Scripts\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0"
+ },
+ "runs": [
+  {
+   "label": "A unresolved %SystemDrive% prefix (hazard)",
+   "returncode": 0,
+   "parent_pid": 16912,
+   "child": {
+    "pid": 8952,
+    "ppid": 14020,
+    "cwd": "C:\\AgentraEvidence\\par_t302\\probe\\A\\clone",
+    "executable": "C:\\Agentra\\venv\\Scripts\\python.exe",
+    "version": "3.14.2",
+    "pycache_prefix": "%SystemDrive%\\pyc",
+    "dont_write_bytecode": false,
+    "sitecustomize": null,
+    "m_cached": "%SystemDrive%\\pyc\\AgentraEvidence\\par_t302\\probe\\A\\clone\\m.cpython-314.pyc",
+    "env": {
+     "PYTHONPYCACHEPREFIX": "%SystemDrive%\\pyc",
+     "TEMP": null,
+     "TMP": null,
+     "PYTHONPATH": null,
+     "PYTHONDONTWRITEBYTECODE": null
+    }
+   },
+   "elapsed_s": 0.422,
+   "existed_before_child": {
+    "clone_has_%SystemDrive%": false,
+    "clone_has___pycache__": false
+   },
+   "created_during_child_in_clone": [
+    "%SystemDrive%",
+    "%SystemDrive%/pyc",
+    "%SystemDrive%/pyc/AgentraEvidence",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe/A",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe/A/clone",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe/A/clone/m.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users",
+    "%SystemDrive%/pyc/Users/홍훈",
+    "%SystemDrive%/pyc/Users/홍훈/AppData",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/collections",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/collections/__init__.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/copyreg.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/encodings",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/encodings/__init__.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/encodings/_win_cp_codecs.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/encodings/aliases.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/encodings/cp949.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/encodings/utf_8.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/enum.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/functools.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/json",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/json/__init__.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/json/decoder.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/json/encoder.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/json/scanner.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/keyword.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/operator.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/re",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/re/__init__.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/re/_casefix.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/re/_compiler.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/re/_constants.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/re/_parser.cpython-314.pyc",
+    "%SystemDrive%/pyc/Users/홍훈/AppData/Local/Python/pythoncore-3.14-64/Lib/reprlib.cpython-314.pyc"
+   ],
+   "created_count_clone": 41,
+   "created_during_child_in_session": [],
+   "literal_percent_dirs_in_clone_after": [
+    "%SystemDrive%",
+    "%SystemDrive%/pyc",
+    "%SystemDrive%/pyc/AgentraEvidence",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe/A",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe/A/clone",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe/A/clone/m.cpython-314.pyc"
+   ],
+   "pycache_dirs_in_clone_after": []
+  },
+  {
+   "label": "B minimal env + absolute prefix",
+   "returncode": 0,
+   "parent_pid": 16912,
+   "child": {
+    "pid": 14852,
+    "ppid": 14376,
+    "cwd": "C:\\AgentraEvidence\\par_t302\\probe\\B\\clone",
+    "executable": "C:\\Agentra\\venv\\Scripts\\python.exe",
+    "version": "3.14.2",
+    "pycache_prefix": "C:\\AgentraEvidence\\par_t302\\probe\\B\\session\\pycache",
+    "dont_write_bytecode": false,
+    "sitecustomize": null,
+    "m_cached": "C:\\AgentraEvidence\\par_t302\\probe\\B\\session\\pycache\\AgentraEvidence\\par_t302\\probe\\B\\clone\\m.cpython-314.pyc",
+    "env": {
+     "PYTHONPYCACHEPREFIX": "C:\\AgentraEvidence\\par_t302\\probe\\B\\session\\pycache",
+     "TEMP": null,
+     "TMP": null,
+     "PYTHONPATH": null,
+     "PYTHONDONTWRITEBYTECODE": null
+    }
+   },
+   "elapsed_s": 0.228,
+   "existed_before_child": {
+    "clone_has_%SystemDrive%": false,
+    "clone_has___pycache__": false
+   },
+   "created_during_child_in_clone": [],
+   "created_count_clone": 0,
+   "created_during_child_in_session": [
+    "pycache",
+    "pycache/AgentraEvidence",
+    "pycache/AgentraEvidence/par_t302",
+    "pycache/AgentraEvidence/par_t302/probe",
+    "pycache/AgentraEvidence/par_t302/probe/B",
+    "pycache/AgentraEvidence/par_t302/probe/B/clone",
+    "pycache/AgentraEvidence/par_t302/probe/B/clone/m.cpython-314.pyc",
+    "pycache/Users",
+    "pycache/Users/홍훈",
+    "pycache/Users/홍훈/AppData",
+    "pycache/Users/홍훈/AppData/Local",
+    "pycache/Users/홍훈/AppData/Local/Python"
+   ],
+   "literal_percent_dirs_in_clone_after": [],
+   "pycache_dirs_in_clone_after": []
+  },
+  {
+   "label": "C real session_env() as returned",
+   "returncode": 0,
+   "parent_pid": 16912,
+   "child": {
+    "pid": 26992,
+    "ppid": 20460,
+    "cwd": "C:\\AgentraEvidence\\par_t302\\probe\\C\\clone",
+    "executable": "C:\\Agentra\\venv\\Scripts\\python.exe",
+    "version": "3.14.2",
+    "pycache_prefix": "C:\\AgentraEvidence\\par_t302\\probe\\C\\session\\pycache",
+    "dont_write_bytecode": true,
+    "sitecustomize": null,
+    "m_cached": "C:\\AgentraEvidence\\par_t302\\probe\\C\\session\\pycache\\AgentraEvidence\\par_t302\\probe\\C\\clone\\m.cpython-314.pyc",
+    "env": {
+     "PYTHONPYCACHEPREFIX": "C:\\AgentraEvidence\\par_t302\\probe\\C\\session\\pycache",
+     "TEMP": "C:\\AgentraEvidence\\par_t302\\probe\\C\\session\\tmp",
+     "TMP": "C:\\AgentraEvidence\\par_t302\\probe\\C\\session\\tmp",
+     "PYTHONPATH": "C:\\AgentraEvidence\\par_t302\\probe\\C\\_h",
+     "PYTHONDONTWRITEBYTECODE": "1"
+    }
+   },
+   "elapsed_s": 0.187,
+   "existed_before_child": {
+    "clone_has_%SystemDrive%": false,
+    "clone_has___pycache__": false
+   },
+   "created_during_child_in_clone": [],
+   "created_count_clone": 0,
+   "created_during_child_in_session": [],
+   "literal_percent_dirs_in_clone_after": [],
+   "pycache_dirs_in_clone_after": []
+  },
+  {
+   "label": "C2 real session_env() with bytecode writing enabled",
+   "returncode": 0,
+   "parent_pid": 16912,
+   "child": {
+    "pid": 2256,
+    "ppid": 15724,
+    "cwd": "C:\\AgentraEvidence\\par_t302\\probe\\C2\\clone",
+    "executable": "C:\\Agentra\\venv\\Scripts\\python.exe",
+    "version": "3.14.2",
+    "pycache_prefix": "C:\\AgentraEvidence\\par_t302\\probe\\C2\\session\\pycache",
+    "dont_write_bytecode": false,
+    "sitecustomize": null,
+    "m_cached": "C:\\AgentraEvidence\\par_t302\\probe\\C2\\session\\pycache\\AgentraEvidence\\par_t302\\probe\\C2\\clone\\m.cpython-314.pyc",
+    "env": {
+     "PYTHONPYCACHEPREFIX": "C:\\AgentraEvidence\\par_t302\\probe\\C2\\session\\pycache",
+     "TEMP": "C:\\AgentraEvidence\\par_t302\\probe\\C2\\session\\tmp",
+     "TMP": "C:\\AgentraEvidence\\par_t302\\probe\\C2\\session\\tmp",
+     "PYTHONPATH": "C:\\AgentraEvidence\\par_t302\\probe\\C2\\_h",
+     "PYTHONDONTWRITEBYTECODE": null
+    }
+   },
+   "elapsed_s": 0.259,
+   "existed_before_child": {
+    "clone_has_%SystemDrive%": false,
+    "clone_has___pycache__": false
+   },
+   "created_during_child_in_clone": [],
+   "created_count_clone": 0,
+   "created_during_child_in_session": [
+    "pycache",
+    "pycache/AgentraEvidence",
+    "pycache/AgentraEvidence/par_t302",
+    "pycache/AgentraEvidence/par_t302/probe",
+    "pycache/AgentraEvidence/par_t302/probe/C2",
+    "pycache/AgentraEvidence/par_t302/probe/C2/clone",
+    "pycache/AgentraEvidence/par_t302/probe/C2/clone/m.cpython-314.pyc",
+    "pycache/Users",
+    "pycache/Users/홍훈",
+    "pycache/Users/홍훈/AppData",
+    "pycache/Users/홍훈/AppData/Local",
+    "pycache/Users/홍훈/AppData/Local/Python"
+   ],
+   "literal_percent_dirs_in_clone_after": [],
+   "pycache_dirs_in_clone_after": [],
+   "session_pycache_exists": true
+  }
+ ]
+}

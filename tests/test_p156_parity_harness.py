@@ -13,6 +13,18 @@ sys.path.insert(0, str(ROOT / "scripts" / "refactor"))
 import p156_parity_differential as P  # noqa: E402
 
 
+@pytest.fixture(scope="module", autouse=True)
+def _repository_root_must_stay_clean():
+    """Clone-root write containment for this whole module: no test may create (or leave) anything at the top level
+    of the repository checkout - this is exactly what silently happened with the %SystemDrive% tree (T3-0.2)."""
+    def top():
+        return {p.name for p in ROOT.iterdir() if p.name not in (".git", "__pycache__", ".pytest_cache", "branch_output")}
+    before = top()
+    yield
+    created = sorted(top() - before)
+    assert not created, f"harness tests created entries in the repository root: {created}"
+
+
 def _rec(name, ah, rh, post, payload):
     return [name, ah, rh, post, json.dumps(payload)]
 
@@ -97,17 +109,22 @@ def test_session_env_isolates_paths_per_run(tmp_path):
         assert not any(k.upper().startswith(("KIWOOM", "ANTHROPIC", "OPENAI", "AWS")) for k in env)
 
 
-def _run_plugin(code):
-    env = {"SYSTEMROOT": os.environ.get("SYSTEMROOT", ""), "PATH": os.environ.get("PATH", ""),
+def _run_plugin(code, cwd):
+    """Run a snippet in a child interpreter with a scrubbed environment. The child ALWAYS gets a resolved SYSTEMDRIVE
+    and an explicit disposable cwd: a Microsoft Store CPython started without SYSTEMDRIVE writes a literal
+    `%SystemDrive%\\ProgramData\\...` tree into its cwd, and an inherited cwd is the repository root (T3-0.2 root cause
+    of the clone-root debris created by this very helper)."""
+    env = {"SYSTEMROOT": os.environ.get("SYSTEMROOT", ""), "SYSTEMDRIVE": P._system_drive(),
+           "PATH": os.environ.get("PATH", ""),
            "PYTHONUTF8": "1", "PYTHONDONTWRITEBYTECODE": "1", "P156_DETERMINISM": "1",
            "PYTHONPATH": str(ROOT / "scripts" / "refactor")}
     out = subprocess.run([sys.executable, "-c", "import p156_determinism_plugin as p\n" + code], env=env,
-                         capture_output=True, text=True, timeout=120)
+                         cwd=str(cwd), capture_output=True, text=True, timeout=120)
     assert out.returncode == 0, out.stderr[-500:]
     return out.stdout.strip()
 
 
-def test_determinism_plugin_clock_uuid_and_network_are_repeatable():
+def test_determinism_plugin_clock_uuid_and_network_are_repeatable(tmp_path):
     code = ("import time, uuid, datetime, socket, random\n"
             "p._reset()\n"
             "a = [time.time(), time.time(), datetime.datetime.now().isoformat(), str(uuid.uuid4()), random.random()]\n"
@@ -115,7 +132,7 @@ def test_determinism_plugin_clock_uuid_and_network_are_repeatable():
             "try:\n    socket.create_connection(('example.com', 80), timeout=1); a.append('CONNECTED')\n"
             "except OSError as e:\n    a.append('blocked')\n"
             "print(repr(a))\n")
-    first, second = _run_plugin(code), _run_plugin(code)
+    first, second = _run_plugin(code, tmp_path), _run_plugin(code, tmp_path)
     assert first == second and "blocked" in first and "CONNECTED" not in first
 
 
@@ -223,26 +240,107 @@ def test_session_env_pins_a_resolved_per_session_pycache_prefix(tmp_path):
         assert not any("%" in str(v) for v in env.values())
 
 
-@_pytest.mark.skipif(os.name != "nt", reason="the literal %SystemDrive% directory is a Windows cmd-style placeholder")
-def test_unresolved_placeholder_creates_clone_local_debris_but_the_harness_env_does_not(tmp_path):
-    def run(extra_env, cwd):
-        env = {"SYSTEMROOT": os.environ.get("SYSTEMROOT", r"C:\Windows"), "PATH": os.environ.get("PATH", "")}
-        env.update(extra_env)
-        (cwd / "m.py").write_text("X = 1\n", encoding="utf-8")
-        (cwd / "run.py").write_text("import m\nprint(m.X)\n", encoding="utf-8")
-        r = _sp.run([_sys.executable, "run.py"], cwd=str(cwd), env=env, capture_output=True, text=True, timeout=60)
-        assert r.returncode == 0, r.stderr
-        return sorted(p.name for p in cwd.iterdir())
+def _windows_interpreters():
+    """Distinct CPython executables available on this Windows host: the running one, `python` on PATH and the
+    Microsoft Store app-execution alias (which is the one that misbehaves without SYSTEMDRIVE)."""
+    import shutil
+    cands = [_sys.executable, shutil.which("python"), shutil.which("python3")]
+    local = os.environ.get("LOCALAPPDATA")
+    if local:
+        cands.append(str(Path(local) / "Microsoft" / "WindowsApps" / "python.exe"))
+    seen, out = set(), []
+    for c in cands:
+        if c and os.path.isfile(c) and os.path.normcase(os.path.abspath(c)) not in seen:
+            seen.add(os.path.normcase(os.path.abspath(c)))
+            out.append(c)
+    return out
 
-    # 1) the hazard: an unexpanded placeholder becomes a RELATIVE prefix -> literal directory inside the clone
+
+def _listing(path):
+    return sorted(p.name for p in Path(path).iterdir())
+
+
+def test_session_env_carries_a_resolved_system_drive(tmp_path):
+    sdir = tmp_path / "s"
+    env = P.session_env(sdir / "tree", sdir, tmp_path / "_h", tmp_path / "n.json", sdir / "calls.json", "det", True)
+    assert "SYSTEMDRIVE" in env  # present on every platform: the scrubbed environment must not depend on the parent
+    assert env["SYSTEMDRIVE"] and "%" not in env["SYSTEMDRIVE"]
+    if os.name == "nt":
+        assert env["SYSTEMDRIVE"].endswith(":")
+
+
+@_pytest.mark.skipif(os.name != "nt", reason="Windows-only: literal %SystemDrive% directory is a cmd-style placeholder")
+def test_windows_unresolved_placeholder_prefix_is_the_hazard_it_is_claimed_to_be(tmp_path):
     hazard = tmp_path / "hazard_clone"
     hazard.mkdir()
-    assert "%SystemDrive%" in run({"PYTHONPYCACHEPREFIX": r"%SystemDrive%\pyc"}, hazard)
-    # 2) the harness environment: resolved absolute prefix OUTSIDE the clone -> no debris in the clone
-    clean = tmp_path / "clean_clone"
-    clean.mkdir()
-    sdir = tmp_path / "session"
-    env = P.session_env(clean, sdir, tmp_path / "_h", tmp_path / "n.json", sdir / "calls.json", "det", False)
-    names = run({"PYTHONPYCACHEPREFIX": env["PYTHONPYCACHEPREFIX"]}, clean)  # bytecode ALLOWED here: prefix absorbs it
-    assert names == ["m.py", "run.py"], names
-    assert (sdir / "pycache").is_dir()
+    (hazard / "m.py").write_text("X = 1\n", encoding="utf-8")
+    (hazard / "run.py").write_text("import m\nprint(m.X)\n", encoding="utf-8")
+    env = {"SYSTEMROOT": os.environ.get("SYSTEMROOT", r"C:\Windows"), "SYSTEMDRIVE": P._system_drive(),
+           "PATH": os.environ.get("PATH", ""), "PYTHONPYCACHEPREFIX": r"%SystemDrive%\pyc"}
+    r = _sp.run([_sys.executable, "run.py"], cwd=str(hazard), env=env, capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0, r.stderr
+    assert "%SystemDrive%" in _listing(hazard)  # relative placeholder prefix -> literal tree inside the clone
+    with pytest.raises(SystemExit):  # ... which the harness refuses to hand to a session
+        P.assert_resolved_env(env)
+
+
+@_pytest.mark.skipif(os.name != "nt", reason="Windows-only: interpreter startup behavior under a scrubbed environment")
+def test_windows_real_session_env_leaves_no_clone_root_debris_for_every_available_interpreter(tmp_path):
+    """The REAL session_env() (not a hand-made minimal env) must keep every available interpreter - including the
+    Microsoft Store alias - from creating files or directories in the clone root, with or without bytecode writing."""
+    interpreters = _windows_interpreters()
+    assert interpreters, "no interpreter found"
+    for n, interp in enumerate(interpreters):
+        for write_bytecode in (False, True):
+            case = tmp_path / f"i{n}_{int(write_bytecode)}"
+            clone, sdir = case / "clone", case / "session"
+            clone.mkdir(parents=True)
+            (sdir / "tmp").mkdir(parents=True)
+            (clone / "m.py").write_text("X = 1\n", encoding="utf-8")
+            (clone / "run.py").write_text("import m\nprint(m.X)\n", encoding="utf-8")
+            env = P.session_env(clone, sdir, case / "_h", case / "n.json", sdir / "calls.json", "det", True)
+            if write_bytecode:
+                env.pop("PYTHONDONTWRITEBYTECODE")  # bytecode must then land in the per-session prefix, not the clone
+            before = _listing(clone)
+            r = _sp.run([interp, "run.py"], cwd=str(clone), env=env, capture_output=True, text=True, timeout=120)
+            assert r.returncode == 0, (interp, r.stderr[-300:])
+            assert _listing(clone) == before == ["m.py", "run.py"], (interp, write_bytecode, _listing(clone))
+            if write_bytecode:
+                assert (sdir / "pycache").is_dir(), (interp, "bytecode did not go to the session prefix")
+
+
+@_pytest.mark.skipif(os.name != "nt", reason="Windows-only: reproduces the confirmed root cause (missing SYSTEMDRIVE)")
+def test_windows_store_python_without_systemdrive_creates_debris_and_the_harness_env_does_not(tmp_path):
+    local = os.environ.get("LOCALAPPDATA")
+    store = Path(local) / "Microsoft" / "WindowsApps" / "python.exe" if local else None
+    if not store or not store.is_file():
+        _pytest.skip("Microsoft Store python alias not installed on this host")
+    d = tmp_path / "cwd"
+    d.mkdir()
+    env = {"SYSTEMROOT": os.environ.get("SYSTEMROOT", r"C:\Windows"), "PATH": os.environ.get("PATH", "")}
+    r = _sp.run([str(store), "-c", "pass"], cwd=str(d), env=env, capture_output=True, text=True, timeout=60)
+    if r.returncode != 0:
+        _pytest.skip("Store python alias is not runnable from this context")
+    assert "%SystemDrive%" in _listing(d), "root cause not reproducible on this host (no SYSTEMDRIVE -> debris)"
+    # the harness environment carries SYSTEMDRIVE, so the preflight passes for the same interpreter
+    assert P.preflight_interpreter(str(store), tmp_path / "pre", tmp_path / "_h", tmp_path / "n.json") == []
+
+
+def test_preflight_fails_closed_when_the_interpreter_writes_into_its_cwd(tmp_path, monkeypatch):
+    class _Done:
+        returncode = 0
+        stderr = ""
+        stdout = "ok"
+
+    def fake_run(cmd, cwd=None, **kw):
+        (Path(cwd) / "%SystemDrive%").mkdir()  # what the Store alias does when SYSTEMDRIVE is missing
+        return _Done()
+
+    monkeypatch.setattr(P.subprocess, "run", fake_run)
+    with pytest.raises(SystemExit) as exc:
+        P.preflight_interpreter("python", tmp_path / "pre", tmp_path / "_h", tmp_path / "n.json")
+    assert "%SystemDrive%" in str(exc.value) and "debris" in str(exc.value)
+
+
+def test_preflight_passes_for_a_well_behaved_interpreter(tmp_path):
+    assert P.preflight_interpreter(_sys.executable, tmp_path / "pre", tmp_path / "_h", tmp_path / "n.json") == []

@@ -256,9 +256,22 @@ def assert_resolved_env(env):
     return env
 
 
+def _system_drive():
+    """Resolved system drive (e.g. `C:`): the parent value, else the drive of SYSTEMROOT, else C:."""
+    val = os.environ.get("SYSTEMDRIVE", "")
+    if val and not _PLACEHOLDER.search(val):
+        return val
+    drive = os.path.splitdrive(os.environ.get("SYSTEMROOT", r"C:\Windows"))[0]
+    return drive or "C:"
+
+
 def session_env(root, session_dir, harness_dir, names, log, mode, keep, effect_funcs="", pin_pid=False):
     env = {
         "SYSTEMROOT": os.environ.get("SYSTEMROOT", r"C:\Windows"),
+        # Root cause of the T3-0.2 P1: a Microsoft Store (MSIX app-execution-alias) CPython started with a scrubbed
+        # environment WITHOUT SYSTEMDRIVE creates a literal `%SystemDrive%\ProgramData\Microsoft\Windows\Caches\*.db`
+        # tree in its cwd (the session clone) at interpreter startup, before any user code runs.
+        "SYSTEMDRIVE": _system_drive(),
         "PATH": os.pathsep.join([str(Path(PY).parent), r"C:\Program Files\Git\cmd", r"C:\Windows\System32", r"C:\Windows"]),
         "TEMP": str(session_dir / "tmp"), "TMP": str(session_dir / "tmp"),
         "PYTHONUTF8": "1", "PYTHONHASHSEED": "0", "PYTHONDONTWRITEBYTECODE": "1",
@@ -316,6 +329,27 @@ def audit_session(before, after, stdout_text, exit_code, expect_failures=0):
             "verdict": "FAIL" if problems else "PASS"}
 
 
+def preflight_interpreter(py, scratch, harness_dir, names, mode="det"):
+    """Start the session interpreter ONCE with the exact scrubbed session environment inside a scratch directory and fail
+    closed if it writes anything into its cwd (e.g. Microsoft Store Python without SYSTEMDRIVE). Returns the snapshot
+    diff (empty on success). The scratch directory belongs to the caller."""
+    scratch = Path(scratch)
+    tree = scratch / "tree"
+    tree.mkdir(parents=True, exist_ok=True)
+    (scratch / "tmp").mkdir(exist_ok=True)
+    env = session_env(tree, scratch, harness_dir, names, scratch / "calls.json", mode, False)
+    before = snapshot_tree(tree)
+    r = subprocess.run([py, "-c", "import sys; sys.stdout.write('ok')"], cwd=str(tree), env=env, capture_output=True,
+                       text=True, timeout=120)
+    created = sorted(snapshot_tree(tree) - before)
+    if r.returncode != 0:
+        raise SystemExit(f"interpreter preflight failed (exit {r.returncode}): {(r.stderr or '')[-300:]}")
+    if created:
+        raise SystemExit("interpreter preflight: the session interpreter created paths in its cwd under the scrubbed "
+                         "session environment (clone-local debris): " + ", ".join(created[:8]))
+    return created
+
+
 def run_sessions(args):
     repo = Path(args.repo).resolve()
     work = Path(args.work_root).resolve()
@@ -329,6 +363,11 @@ def run_sessions(args):
     out.mkdir(parents=True, exist_ok=False)
     harness = work / "_harness"
     harness.mkdir()
+    names_path = Path(args.names).resolve()
+    pre_dir = work / "_preflight"
+    pre_dir.mkdir()
+    preflight_interpreter(PY, pre_dir, harness, names_path, args.mode)
+    shutil.rmtree(pre_dir, ignore_errors=True)
     for fname in ("p152_r3_call_recorder.py", "p156_determinism_plugin.py"):
         shutil.copy2(HERE / fname, harness / fname)
     names = Path(args.names).resolve()

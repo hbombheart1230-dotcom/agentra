@@ -1,0 +1,237 @@
+{
+ "python": {
+  "path": "<USERPROFILE>/AppData/Local/Microsoft/WindowsApps/python.exe",
+  "host_python": "C:\\Agentra\\venv\\Scripts\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0"
+ },
+ "runs": [
+  {
+   "label": "A unresolved %SystemDrive% prefix (hazard)",
+   "returncode": 0,
+   "parent_pid": 2544,
+   "child": {
+    "pid": 12332,
+    "ppid": 2544,
+    "cwd": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\A\\clone",
+    "executable": "<USERPROFILE>\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+    "version": "3.13.14",
+    "pycache_prefix": "%SystemDrive%\\pyc",
+    "dont_write_bytecode": false,
+    "sitecustomize": null,
+    "m_cached": "%SystemDrive%\\pyc\\AgentraEvidence\\par_t302\\probe_store_after\\A\\clone\\m.cpython-313.pyc",
+    "env": {
+     "PYTHONPYCACHEPREFIX": "%SystemDrive%\\pyc",
+     "TEMP": null,
+     "TMP": null,
+     "PYTHONPATH": null,
+     "PYTHONDONTWRITEBYTECODE": null
+    }
+   },
+   "elapsed_s": 0.329,
+   "existed_before_child": {
+    "clone_has_%SystemDrive%": false,
+    "clone_has___pycache__": false
+   },
+   "created_during_child_in_clone": [
+    "%SystemDrive%",
+    "%SystemDrive%/ProgramData",
+    "%SystemDrive%/ProgramData/Microsoft",
+    "%SystemDrive%/ProgramData/Microsoft/Windows",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/cversions.2.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{0A9FE8E7-7F6D-43E9-9055-49CB0F1E68C2}.2.ver0x0000000000000001.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{6AF0698E-D558-4F6E-9B3C-3716689AF493}.2.ver0x0000000000000001.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{DDF571F2-BE98-426D-8288-1A9A39C3FDA2}.2.ver0x0000000000000001.db",
+    "%SystemDrive%/pyc",
+    "%SystemDrive%/pyc/AgentraEvidence",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe_store_after",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe_store_after/A",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe_store_after/A/clone",
+    "%SystemDrive%/pyc/AgentraEvidence/par_t302/probe_store_after/A/clone/m.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files",
+    "%SystemDrive%/pyc/Program Files/WindowsApps",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/collections",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/collections/__init__.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/copyreg.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/encodings",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/encodings/__init__.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/encodings/aliases.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/encodings/cp949.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/encodings/utf_8.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/encodings/utf_8_sig.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/enum.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/functools.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/json",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/json/__init__.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/json/decoder.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/json/encoder.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/json/scanner.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/keyword.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/operator.cpython-313.pyc",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/re",
+    "%SystemDrive%/pyc/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/re/__init__.cpython-313.pyc"
+   ],
+   "created_count_clone": 46,
+   "created_during_child_in_session": [],
+   "literal_percent_dirs_in_clone_after": [
+    "%SystemDrive%",
+    "%SystemDrive%/ProgramData",
+    "%SystemDrive%/ProgramData/Microsoft",
+    "%SystemDrive%/ProgramData/Microsoft/Windows",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/cversions.2.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{0A9FE8E7-7F6D-43E9-9055-49CB0F1E68C2}.2.ver0x0000000000000001.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{6AF0698E-D558-4F6E-9B3C-3716689AF493}.2.ver0x0000000000000001.db"
+   ],
+   "pycache_dirs_in_clone_after": []
+  },
+  {
+   "label": "B minimal env + absolute prefix",
+   "returncode": 0,
+   "parent_pid": 2544,
+   "child": {
+    "pid": 15940,
+    "ppid": 2544,
+    "cwd": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\B\\clone",
+    "executable": "<USERPROFILE>\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+    "version": "3.13.14",
+    "pycache_prefix": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\B\\session\\pycache",
+    "dont_write_bytecode": false,
+    "sitecustomize": null,
+    "m_cached": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\B\\session\\pycache\\AgentraEvidence\\par_t302\\probe_store_after\\B\\clone\\m.cpython-313.pyc",
+    "env": {
+     "PYTHONPYCACHEPREFIX": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\B\\session\\pycache",
+     "TEMP": null,
+     "TMP": null,
+     "PYTHONPATH": null,
+     "PYTHONDONTWRITEBYTECODE": null
+    }
+   },
+   "elapsed_s": 0.294,
+   "existed_before_child": {
+    "clone_has_%SystemDrive%": false,
+    "clone_has___pycache__": false
+   },
+   "created_during_child_in_clone": [
+    "%SystemDrive%",
+    "%SystemDrive%/ProgramData",
+    "%SystemDrive%/ProgramData/Microsoft",
+    "%SystemDrive%/ProgramData/Microsoft/Windows",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/cversions.2.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{0A9FE8E7-7F6D-43E9-9055-49CB0F1E68C2}.2.ver0x0000000000000001.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{6AF0698E-D558-4F6E-9B3C-3716689AF493}.2.ver0x0000000000000001.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{DDF571F2-BE98-426D-8288-1A9A39C3FDA2}.2.ver0x0000000000000001.db"
+   ],
+   "created_count_clone": 9,
+   "created_during_child_in_session": [
+    "pycache",
+    "pycache/AgentraEvidence",
+    "pycache/AgentraEvidence/par_t302",
+    "pycache/AgentraEvidence/par_t302/probe_store_after",
+    "pycache/AgentraEvidence/par_t302/probe_store_after/B",
+    "pycache/AgentraEvidence/par_t302/probe_store_after/B/clone",
+    "pycache/AgentraEvidence/par_t302/probe_store_after/B/clone/m.cpython-313.pyc",
+    "pycache/Program Files",
+    "pycache/Program Files/WindowsApps",
+    "pycache/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0",
+    "pycache/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib",
+    "pycache/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/collections"
+   ],
+   "literal_percent_dirs_in_clone_after": [
+    "%SystemDrive%",
+    "%SystemDrive%/ProgramData",
+    "%SystemDrive%/ProgramData/Microsoft",
+    "%SystemDrive%/ProgramData/Microsoft/Windows",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/cversions.2.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{0A9FE8E7-7F6D-43E9-9055-49CB0F1E68C2}.2.ver0x0000000000000001.db",
+    "%SystemDrive%/ProgramData/Microsoft/Windows/Caches/{6AF0698E-D558-4F6E-9B3C-3716689AF493}.2.ver0x0000000000000001.db"
+   ],
+   "pycache_dirs_in_clone_after": []
+  },
+  {
+   "label": "C real session_env() as returned",
+   "returncode": 0,
+   "parent_pid": 2544,
+   "child": {
+    "pid": 29968,
+    "ppid": 2544,
+    "cwd": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C\\clone",
+    "executable": "<USERPROFILE>\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+    "version": "3.13.14",
+    "pycache_prefix": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C\\session\\pycache",
+    "dont_write_bytecode": true,
+    "sitecustomize": null,
+    "m_cached": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C\\session\\pycache\\AgentraEvidence\\par_t302\\probe_store_after\\C\\clone\\m.cpython-313.pyc",
+    "env": {
+     "PYTHONPYCACHEPREFIX": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C\\session\\pycache",
+     "TEMP": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C\\session\\tmp",
+     "TMP": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C\\session\\tmp",
+     "PYTHONPATH": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C\\_h",
+     "PYTHONDONTWRITEBYTECODE": "1"
+    }
+   },
+   "elapsed_s": 0.206,
+   "existed_before_child": {
+    "clone_has_%SystemDrive%": false,
+    "clone_has___pycache__": false
+   },
+   "created_during_child_in_clone": [],
+   "created_count_clone": 0,
+   "created_during_child_in_session": [],
+   "literal_percent_dirs_in_clone_after": [],
+   "pycache_dirs_in_clone_after": []
+  },
+  {
+   "label": "C2 real session_env() with bytecode writing enabled",
+   "returncode": 0,
+   "parent_pid": 2544,
+   "child": {
+    "pid": 19484,
+    "ppid": 2544,
+    "cwd": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C2\\clone",
+    "executable": "<USERPROFILE>\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+    "version": "3.13.14",
+    "pycache_prefix": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C2\\session\\pycache",
+    "dont_write_bytecode": false,
+    "sitecustomize": null,
+    "m_cached": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C2\\session\\pycache\\AgentraEvidence\\par_t302\\probe_store_after\\C2\\clone\\m.cpython-313.pyc",
+    "env": {
+     "PYTHONPYCACHEPREFIX": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C2\\session\\pycache",
+     "TEMP": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C2\\session\\tmp",
+     "TMP": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C2\\session\\tmp",
+     "PYTHONPATH": "C:\\AgentraEvidence\\par_t302\\probe_store_after\\C2\\_h",
+     "PYTHONDONTWRITEBYTECODE": null
+    }
+   },
+   "elapsed_s": 0.273,
+   "existed_before_child": {
+    "clone_has_%SystemDrive%": false,
+    "clone_has___pycache__": false
+   },
+   "created_during_child_in_clone": [],
+   "created_count_clone": 0,
+   "created_during_child_in_session": [
+    "pycache",
+    "pycache/AgentraEvidence",
+    "pycache/AgentraEvidence/par_t302",
+    "pycache/AgentraEvidence/par_t302/probe_store_after",
+    "pycache/AgentraEvidence/par_t302/probe_store_after/C2",
+    "pycache/AgentraEvidence/par_t302/probe_store_after/C2/clone",
+    "pycache/AgentraEvidence/par_t302/probe_store_after/C2/clone/m.cpython-313.pyc",
+    "pycache/Program Files",
+    "pycache/Program Files/WindowsApps",
+    "pycache/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0",
+    "pycache/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib",
+    "pycache/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0/Lib/collections"
+   ],
+   "literal_percent_dirs_in_clone_after": [],
+   "pycache_dirs_in_clone_after": [],
+   "session_pycache_exists": true
+  }
+ ]
+}

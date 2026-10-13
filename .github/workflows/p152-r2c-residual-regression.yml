@@ -190,6 +190,20 @@ jobs:
         run: |
           mkdir -p branch_output
           python -m pytest -q tests/test_p159_current_owner_contract_gates.py tests/test_p159_static_purity_closure.py tests/test_p159_ownership_matrix_provenance.py --junitxml=branch_output/gate_third_pass_t3_junit.xml
+      - name: Linux harness accounting (Windows-only tests are SKIPPED here and are NOT counted as Windows PASS)
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q -p no:cacheprovider tests/test_p156_parity_harness.py -rs --junitxml=branch_output/harness_linux_junit.xml
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          rows = [(c.get('name'), 'SKIPPED' if c.find('skipped') is not None else 'FAILED' if c.find('failure') is not None else 'PASSED')
+                  for c in ET.parse('branch_output/harness_linux_junit.xml').iter('testcase')]
+          win = [r for r in rows if 'windows' in r[0]]
+          print('LINUX harness tests:', len(rows), 'Windows-only tests present:', len(win))
+          assert win, 'Windows-only isolation tests missing from the harness test file'
+          assert all(s == 'SKIPPED' for _, s in win), win
+          print('Windows-only tests skipped on Linux (accounted separately):', [n for n, _ in win])
+          PY
       - name: Operator UI / Brief offline regression (no live broker or LLM)
         env:
           DRY_RUN: '1'
@@ -254,6 +268,46 @@ jobs:
           path: branch_output/p152_facade_consumer_static_coverage.json
 
 
+  windows-harness-smoke:
+    name: Windows harness isolation smoke (required)
+    runs-on: windows-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip && python -m pip install pytest
+      - name: Windows parity-harness isolation tests (real session_env, interpreter preflight, placeholder fail-closed)
+        shell: bash
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q -p no:cacheprovider tests/test_p156_parity_harness.py -rs --junitxml=branch_output/harness_windows_junit.xml
+      - name: Windows-only tests must have RUN and PASSED (a skip is a failure here)
+        shell: bash
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          rows = [(c.get('name'), 'SKIPPED' if c.find('skipped') is not None else 'FAILED' if c.find('failure') is not None or c.find('error') is not None else 'PASSED')
+                  for c in ET.parse('branch_output/harness_windows_junit.xml').iter('testcase')]
+          win = [r for r in rows if 'windows' in r[0]]
+          print('WINDOWS harness tests:', len(rows), 'Windows-only:', win)
+          required = {'test_windows_unresolved_placeholder_prefix_is_the_hazard_it_is_claimed_to_be',
+                      'test_windows_real_session_env_leaves_no_clone_root_debris_for_every_available_interpreter'}
+          got = {n: s for n, s in win}
+          for name in required:
+              assert got.get(name) == 'PASSED', (name, got.get(name))
+          assert not [n for n, s in win if s == 'FAILED'], win
+          PY
+      - name: Upload Windows harness JUnit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p15-windows-harness-junit
+          path: branch_output/harness_windows_junit.xml
+          if-no-files-found: warn
   broad_remote_offline:
     name: Repo-wide mock/offline non-heavy regression (manual diagnostic only)
     if: github.event_name == 'workflow_dispatch'

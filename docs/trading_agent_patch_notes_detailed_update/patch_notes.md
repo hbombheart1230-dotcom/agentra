@@ -3085,3 +3085,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 변환된 NamedTuple 12개에 dict/list payload 기반 테스트(순서·참조 동일성·공유 변경·copy/deepcopy·JSON 뷰)와 불변 T2 스냅샷 대비 실제 함수 비교를 추가했습니다(NamedTuple은 얕은 불변만 보장).
 - `%SystemDrive%` 미해결 placeholder가 clone 안에 캐시 디버리스를 만드는 문제를 재현하고, 세션별 해결된 `PYTHONPYCACHEPREFIX`와 placeholder fail-closed 검사를 harness에 추가했습니다. 운영 코드 변경 없음, T3.1/T3.5/Wave D 미시작, Codex delta 감사 대기.
 
+## 2026-10-13 · P1.5 Third Pass T3-0.2 (Windows harness 격리 P1 종결 작업)
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY · WORKFLOW
+
+- 원인 확정: `SYSTEMDRIVE`가 없는 scrubbed 환경으로 Microsoft Store CPython을 시작하면 시작 시점에 cwd(세션 clone) 안에 리터럴 `%SystemDrive%\ProgramData\Microsoft\Windows\Caches` 트리가 생깁니다. `PYTHONPYCACHEPREFIX`·`sitecustomize.py`와 무관하며 python.org CPython에서는 재현되지 않습니다. 기존 테스트의 최소 환경과 실제 `session_env()` 모두 `SYSTEMDRIVE`가 없었습니다.
+- 수정(harness 한정): `session_env`에 해결된 `SYSTEMDRIVE`를 항상 포함하고, 세션 시작 전 인터프리터 preflight가 cwd에 무엇이든 생기면 fail-closed로 중단합니다. 격리 테스트는 손으로 만든 최소 환경 대신 실제 `session_env()`로 사용 가능한 모든 인터프리터·바이트코드 on/off를 검증합니다(17 → 22).
+- CI: Linux는 Windows 전용 테스트를 SKIPPED로 따로 집계(Windows PASS로 계산하지 않음)하고, 새 필수 `windows-latest` smoke job은 Windows 전용 테스트가 실제 실행되어 통과하지 않으면 실패합니다. `sitecustomize.py`·운영 코드 변경 없음, 독립 Codex 재감사 전까지 PENDING_CLOSURE.
+
