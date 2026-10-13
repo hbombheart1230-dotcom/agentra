@@ -74,3 +74,17 @@ After the harness fix, running the harness test file with the Store interpreter 
 Fix: `_run_plugin(code, cwd)` now passes a resolved `SYSTEMDRIVE` and an explicit disposable `tmp_path`; and a module-scoped autouse fixture `_repository_root_must_stay_clean` fails the module if ANY entry appears at the top level of the checkout while the harness tests run (clone-root write containment as a standing guard, not a one-off check).
 Result after the fix (PowerShell, repo-root cwd, full user env, then `Test-Path .\%SystemDrive%`): Store CPython 3.13.14 **22 passed, no debris**; python.org CPython 3.14 venv **22 passed, no debris**; pytest-only venv (CI-like) **22 passed, no debris**; per-test bisect afterwards: **22/22 clean**.
 Other spawning tests were audited: `test_p152_r3_harness_guards.py::_run` inherits the full parent environment (so SYSTEMDRIVE is present) and always sets an explicit temp `cwd`; the stage-gate tests only call `git` with `cwd=ROOT`.
+
+## 8. Hosted `windows-latest` result (CI diagnosis, 3 iterations)
+
+The required `windows-harness-smoke` job failed twice before it passed; each failure was diagnosed from the job's own output (not assumed):
+
+| Commit | Windows job | Finding |
+| --- | --- | --- |
+| `af1aff1` | FAILED | Pytest output was not visible; added alias-stub hardening (`_interpreter_works`: a Store alias that exists as a file but exits 9009 is not a runnable interpreter) in `bc6db04` |
+| `bc6db04` | FAILED | With output surfaced (`::notice` annotation): **22 passed, 1 skipped**; the exit code 1 came from the repository's own `conftest.py` fast-tier production-write audit reporting `MODIFIED data/eval`, `data/originals`, `data/specs` (directory entries, `size=-1`, mtime differing by ~2 ms between session start and finish, no file created/deleted) |
+| `d1d7884` | PASSED | Added a throw-away `--collect-only` settle session before the audited run; the audited run reports 22 passed / 1 skipped with **no** write-audit finding |
+
+Interpretation (stated as an interpretation): the three directories are exactly the ones git materialised on the fresh checkout; NTFS directory timestamps read via `DirEntry.stat()` are settled lazily, so the first audited session on a fresh checkout sees a spurious ~2 ms change. This is a latent property of the pre-existing `conftest.py` audit on a fresh Windows checkout (the hosted Windows job had never run it because it is manual-only), not a write by the harness tests; the audited run after the settle session is clean. `conftest.py` and `sitecustomize.py` were **not** modified. The settle session's own result is intentionally unused and is documented in the workflow; the real run keeps the full audit.
+
+The one skip on hosted Windows is `test_windows_store_python_without_systemdrive_creates_debris_and_the_harness_env_does_not` (no Store alias on GitHub runners); the two required tests (`..._hazard_it_is_claimed_to_be`, `..._real_session_env_leaves_no_clone_root_debris_for_every_available_interpreter`) PASSED and are enforced by the junit check step. The Store-CPython reproduction itself is evidenced locally (section 1/3).
