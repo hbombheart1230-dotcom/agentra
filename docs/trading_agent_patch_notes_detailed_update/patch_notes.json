@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 227,
+  "entry_count": 228,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6145,6 +6145,32 @@
         "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T1-EVIDENCE-CLOSURE-025.md",
         "docs/refactor/evidence/p157_third_pass/raw_evidence_manifest.json",
         "tests/test_p157_third_pass_t1_extraction_gates.py"
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Third Pass T2 Reporter Bundle Runner",
+      "title": "Third Pass T2: pure projection cuts of the Reporter bundle runner main() and shallow-history CI hardening",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "SAFETY",
+        "TESTING",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "live_execution_bundle_runner.main 1527 -> 1343 LOC via 8 statically proven pure segments in 5 Owners; lock, queue, LLM, persistence and event effects stay in main(); ordered file-effect stream byte-identical across isolated baseline/feature sessions; CI now guarantees stage-gate ancestry on shallow checkouts.",
+      "details": [
+        "T2-0: CI ancestry step (unshallow/deepen + merge-base assertions for T1 BASE/END and T2 BASE); CURRENT.md obsolete T0/T1/design-ready instructions replaced and historical text labelled.",
+        "T2: main 1527 -> 1343; 192 LOC in libs/reporting/reporter_bundle_runtime_parts (targeted rows, lifecycle exit/monitor context, human summaries, commander/market evidence, scanner/filter enrichment, closed-sell details, policy gate).",
+        "Admission by transitive static purity closure (no I/O, env, clock, logging, lock in the call closure); an aggregation-mutating segment was dropped; <=8 outputs per Owner.",
+        "Harness: ordered file-effect capture (open/write digest/close/mkdir/replace/remove) and pid/ppid/ns normalisation; pinned-det run 69/69 byte-identical incl. effect streams; natural runs outcome-equal only; no-execution and zero-fill fixtures BLOCKED; REAL_REPORT_PARITY_BLOCKED open; Codex T2 audit pending."
+      ],
+      "impact": "Smaller Reporter bundle-runner coordinator with explicit pure projection Owners; no change to locks, queue, LLM, persistence, event order or report bytes on mock fixtures.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T2-CLAUDE-026.md",
+        "docs/refactor/p1_5_third_pass_t2_moved_segments_ledger.json",
+        "docs/refactor/evidence/p158_third_pass_t2/raw_evidence_manifest.json"
       ]
     }
   ]

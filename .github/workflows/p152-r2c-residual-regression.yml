@@ -111,6 +111,14 @@ jobs:
         run: git fetch --no-tags --depth=1 origin 0409687aa76e195bd001d7756419b86b9580c531
       - name: Fetch Wave A end commit for the stage-scoped scope guard and moved-body gates
         run: git fetch --no-tags --depth=1 origin 318015a02b8378b0dbf7b0b24ec18c2786688d18 fb8de628eb56b0941007e90ad2e98b4f684983ba ba6618d483e6d617f4ee56b2cb5647392c777071 877455db439e9e6f72af413216acc9758b91a2a9 cba2124a85d2a3bf7cef96876920ba4912bd1c5e 1f7add2b0f9b5a33399da27edcdd2f390bdf911b 60dfa1c4cd7ca62d127251a4051b3404a86f6932 bf59c4d2941442fc2dff41c3c2888f053b4b1577 4cb92916c976f947613f52e8b0c0790addac7eb5 67e0dc0ee0b91d45d242ccbfb3e1133d3a06e5ea
+      - name: Ensure full commit ancestry for stage-pinned gates (shallow-history robustness)
+        run: |
+          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+            git fetch --no-tags --unshallow origin refactor/p1.5 || git fetch --no-tags --depth=5000 origin refactor/p1.5
+          fi
+          for sha in 4cb92916c976f947613f52e8b0c0790addac7eb5 67e0dc0ee0b91d45d242ccbfb3e1133d3a06e5ea af0a4489dc250d804854e27917d5e2d881261537; do
+            git merge-base --is-ancestor "$sha" HEAD || { echo "::error::pinned stage SHA $sha is not an ancestor of HEAD"; exit 1; }
+          done
       - name: Check 38 extracted function ASTs and <=350 LOC Owners
         run: python -m scripts.refactor.p152_owner_parity
       - name: Compile extracted owners

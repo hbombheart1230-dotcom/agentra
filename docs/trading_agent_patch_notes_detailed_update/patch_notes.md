@@ -3058,3 +3058,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 자연 모드의 UNRESOLVED 1건은 hard-timeout 테스트의 wall-clock `latency_ms`(109 vs 106ms)로, 같은 측 반복 간에도 달라지는 본질적 비결정성입니다. 허용오차는 추가하지 않았고 결정성 모드에서 동일함을 근거로 남겼습니다. 결정성 모드의 알려진 타임아웃 실패는 양쪽에서 동일 원인(sleep 대체)으로 재현됩니다.
 - T1 scope gate를 BASE..T1_END_SHA 고정 범위(조상 검증 포함)로 교체하고, CI에 독립 단계 'Gate P1.5 Third Pass T1 — pinned extraction parity'(JUnit 포함)를 분리했습니다. CURRENT.md 상태 정정: T2–T5·Wave D 미시작, REAL_REPORT_PARITY_BLOCKED OPEN, Codex 재감사 필요.
 
+## 2026-10-13 · P1.5 Third Pass T2 (Reporter bundle runner 순수 구간 분해 · CI 얕은 이력 보강)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · SAFETY · TESTING · WORKFLOW
+
+- T2-0: CI에 조상(ancestry) 확보 단계를 추가해 `fetch-depth: 2`에서도 T1/T2 단계 고정 SHA가 HEAD의 조상임을 보장하고, CURRENT.md의 낡은 T0/T1/설계 대기 지시를 정리했습니다.
+- T2: `live_execution_bundle_runner.main` 1527 → 1343줄. 호출 closure에 파일 I/O·환경·시계·로깅·락이 없음을 정적으로 증명한 순수 구간 8개(192줄)를 `reporter_bundle_runtime_parts` Owner 5개로 이동했고, 락·큐·LLM·저장·이벤트 효과는 main()에 남겼습니다. 집계 목록을 변경하던 구간은 제외했습니다.
+- 검증: 고정 결정성 모드에서 `main()` 호출 29건과 순서가 있는 파일 효과 스트림(경로·내용 SHA-256)을 포함해 69/69 byte-identical, 자연 모드는 전체 테스트 통과(효과 스트림은 시간/pid 노이즈로 미해결), 운영 쓰기 0.
+- 무실행일·zero-fill fixture는 BLOCKED, REAL_REPORT_PARITY_BLOCKED OPEN, T3~T5·Wave D 미시작, Codex T2 감사 대기.
+

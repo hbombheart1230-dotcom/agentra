@@ -1,0 +1,162 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "natural",
+ "sequential": true,
+ "same_session_path": true,
+ "baseline_sha": "af0a4489dc250d804854e27917d5e2d881261537",
+ "feature_sha": "d4a5364bae817504c253e06b9150ee49c692e120",
+ "repo_head_for_harness": "d4a5364bae817504c253e06b9150ee49c692e120",
+ "names": {
+  "libs.reporting.live_execution_bundle_runner": [
+   "main",
+   "run_live_execution_bundle_inprocess"
+  ],
+  "libs.reporting.trade_lifecycle_builder": [
+   "_build_trade_lifecycles"
+  ]
+ },
+ "test_files": [
+  "tests/test_live_execution_bundle_report.py",
+  "tests/test_live_execution_bundle_report_runtime_recovery.py",
+  "tests/test_trade_lifecycle_builder.py",
+  "tests/test_intraday_trade_reports.py",
+  "tests/test_trade_bundle_persistence.py"
+ ],
+ "execution_order": [
+  "b1",
+  "f1",
+  "b2",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "af0a4489dc250d804854e27917d5e2d881261537",
+   "exit_code": 0,
+   "log_sha256": "72cf33496405b4f3d4583161bf7db5d810487ce812c49e63de2e7e12b7ea5a4b",
+   "log_bytes": 4706092,
+   "pytest_summary": "110 passed, 1 warning in 15.30s"
+  },
+  "f1": {
+   "sha": "d4a5364bae817504c253e06b9150ee49c692e120",
+   "exit_code": 0,
+   "log_sha256": "e4e2c5aea0b921054599b3d396eb4ef4a90ae31ef9eee1ce41a6b7b7bf21362a",
+   "log_bytes": 4699021,
+   "pytest_summary": "110 passed, 1 warning in 14.44s"
+  },
+  "b2": {
+   "sha": "af0a4489dc250d804854e27917d5e2d881261537",
+   "exit_code": 0,
+   "log_sha256": "e5461cb536510359227a3164283f83dbe6176b901d1edf7b0377fabd8acbfb2f",
+   "log_bytes": 4706102,
+   "pytest_summary": "110 passed, 1 warning in 14.89s"
+  },
+  "f2": {
+   "sha": "d4a5364bae817504c253e06b9150ee49c692e120",
+   "exit_code": 0,
+   "log_sha256": "640b869d3461382f0c1112c6a5b2d854ff4bf602e836c3cf6e4bbc3aa558d732",
+   "log_bytes": 4706116,
+   "pytest_summary": "110 passed, 1 warning in 13.94s"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "b2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   }
+  }
+ },
+ "tolerance_rules": {
+  "R-ID": {
+   "keys": [
+    "run_id",
+    "request_id",
+    "trace_id",
+    "event_id"
+   ],
+   "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value; the generic key 'strategy' is NOT eligible (only memory-packet ids under an explicit packet-id container, see R-MEMORY-PACKET-ID)"
+  },
+  "R-MEMORY-PACKET-ID": {
+   "keys": [
+    "packet_id"
+   ],
+   "why": "content hash id of a memory packet whose payload embeds the session temp path (<pid>-<uuid>); valid only as memory_<20 hex> on BOTH sides, as leaf `packet_id` or under an explicit packet-id container"
+  },
+  "R-MTIME": {
+   "keys": [
+    "source_signature"
+   ],
+   "why": "artifact signature embeds the file mtime_ns of a fixture written by the test itself"
+  },
+  "R-MTIME-DERIVED": {
+   "keys": [],
+   "why": "hash of an LLM prompt/response artifact whose prompt embeds the same record's source_signature (file mtime_ns); applies only when that signature differs in the same record"
+  },
+  "R-AGE": {
+   "keys": [
+    "minutes_since_open",
+    "minute_snapshot_age_minutes",
+    "quote_age_sec",
+    "expected_exit_quote_age_sec",
+    "age_sec"
+   ],
+   "why": "wall-clock derived age (<=2 units) between two processes started at different instants"
+  }
+ },
+ "summary": {
+  "total_calls": 69,
+  "BYTE_IDENTICAL": 40,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 29,
+  "per_function": {
+   "trade_lifecycle_builder._build_trade_lifecycles": {
+    "calls": 40,
+    "BYTE_IDENTICAL": 40,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "live_execution_bundle_runner.main": {
+    "calls": 29,
+    "BYTE_IDENTICAL": 0,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 29
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": []
+ },
+ "reproduce": "C:\\Agentra\\venv\\Scripts\\python.exe scripts/refactor/p156_parity_differential.py --repo <clone> --baseline-sha af0a4489dc250d804854e27917d5e2d881261537 --feature-sha d4a5364bae817504c253e06b9150ee49c692e120 --names <names.json> --tests <tests.txt> --work-root <empty dir> --out-dir <new dir> --mode natural --same-path"
+}

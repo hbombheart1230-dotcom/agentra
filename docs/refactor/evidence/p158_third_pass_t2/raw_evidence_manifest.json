@@ -1,0 +1,94 @@
+{
+ "schema": "p158_t2_raw_evidence_manifest.v1",
+ "retention": "raw call/effect logs stay outside the repository under C:/AgentraEvidence; only summaries are committed",
+ "raw": {
+  "t2c_baseline_control_det_pinned": [
+   {
+    "path": "C:/AgentraEvidence/par_out_t2c\\raw_calls_b1.json",
+    "bytes": 4699097,
+    "sha256": "0d78e0e80f175d14e163033b17de7ffcebd689df619274b016713d04a9e7c614"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2c\\raw_calls_b2.json",
+    "bytes": 4699097,
+    "sha256": "0d78e0e80f175d14e163033b17de7ffcebd689df619274b016713d04a9e7c614"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2c\\raw_calls_f1.json",
+    "bytes": 4699097,
+    "sha256": "0d78e0e80f175d14e163033b17de7ffcebd689df619274b016713d04a9e7c614"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2c\\raw_calls_f2.json",
+    "bytes": 4699097,
+    "sha256": "0d78e0e80f175d14e163033b17de7ffcebd689df619274b016713d04a9e7c614"
+   }
+  ],
+  "t2f_feature_det_pinned": [
+   {
+    "path": "C:/AgentraEvidence/par_out_t2f\\raw_calls_b1.json",
+    "bytes": 4699097,
+    "sha256": "a175bbfe1892f1ca652314ef4779d0fd83ec73dbc3319cdc27b2efaaa041fc19"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2f\\raw_calls_b2.json",
+    "bytes": 4699097,
+    "sha256": "a175bbfe1892f1ca652314ef4779d0fd83ec73dbc3319cdc27b2efaaa041fc19"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2f\\raw_calls_f1.json",
+    "bytes": 4699097,
+    "sha256": "a175bbfe1892f1ca652314ef4779d0fd83ec73dbc3319cdc27b2efaaa041fc19"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2f\\raw_calls_f2.json",
+    "bytes": 4699097,
+    "sha256": "a175bbfe1892f1ca652314ef4779d0fd83ec73dbc3319cdc27b2efaaa041fc19"
+   }
+  ],
+  "t2g_feature_natural": [
+   {
+    "path": "C:/AgentraEvidence/par_out_t2g\\raw_calls_b1.json",
+    "bytes": 4706092,
+    "sha256": "72cf33496405b4f3d4583161bf7db5d810487ce812c49e63de2e7e12b7ea5a4b"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2g\\raw_calls_b2.json",
+    "bytes": 4706102,
+    "sha256": "e5461cb536510359227a3164283f83dbe6176b901d1edf7b0377fabd8acbfb2f"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2g\\raw_calls_f1.json",
+    "bytes": 4699021,
+    "sha256": "e4e2c5aea0b921054599b3d396eb4ef4a90ae31ef9eee1ce41a6b7b7bf21362a"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2g\\raw_calls_f2.json",
+    "bytes": 4706116,
+    "sha256": "640b869d3461382f0c1112c6a5b2d854ff4bf602e836c3cf6e4bbc3aa558d732"
+   }
+  ],
+  "t2h_feature_wide_det": [
+   {
+    "path": "C:/AgentraEvidence/par_out_t2h\\raw_calls_b1.json",
+    "bytes": 4709623,
+    "sha256": "01301cb64757719673e22eeb2273e899a914854a55aec6f03614b4cc5e260549"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2h\\raw_calls_b2.json",
+    "bytes": 4709640,
+    "sha256": "822f2666978b7d658c8c1d883ddc8f8e78b6bb21bd52a2d2584b04ce3601ef57"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2h\\raw_calls_f1.json",
+    "bytes": 4709623,
+    "sha256": "01301cb64757719673e22eeb2273e899a914854a55aec6f03614b4cc5e260549"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t2h\\raw_calls_f2.json",
+    "bytes": 4709623,
+    "sha256": "d4768f7093b0214ff01d850faf49006901fd725d34fd1e73c19f1c02685081bc"
+   }
+  ]
+ }
+}

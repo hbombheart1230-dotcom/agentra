@@ -1,0 +1,169 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "det",
+ "sequential": true,
+ "same_session_path": true,
+ "baseline_sha": "af0a4489dc250d804854e27917d5e2d881261537",
+ "feature_sha": "d4a5364bae817504c253e06b9150ee49c692e120",
+ "repo_head_for_harness": "d4a5364bae817504c253e06b9150ee49c692e120",
+ "names": {
+  "libs.reporting.live_execution_bundle_runner": [
+   "main",
+   "run_live_execution_bundle_inprocess"
+  ],
+  "libs.reporting.trade_lifecycle_builder": [
+   "_build_trade_lifecycles"
+  ]
+ },
+ "test_files": [
+  "tests/test_check_trade_report_runtime_regression.py",
+  "tests/test_commander_env_migration_phase1.py",
+  "tests/test_intraday_trade_reports.py",
+  "tests/test_live_execution_bundle_report.py",
+  "tests/test_live_execution_bundle_report_runtime_recovery.py",
+  "tests/test_operator_ui.py",
+  "tests/test_reporting_provenance_preference.py",
+  "tests/test_run_mock_exam_day.py",
+  "tests/test_trade_bundle_assembly.py",
+  "tests/test_trade_bundle_persistence.py",
+  "tests/test_trade_bundle_state.py",
+  "tests/test_trade_lifecycle_builder.py"
+ ],
+ "execution_order": [
+  "b1",
+  "f1",
+  "b2",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "af0a4489dc250d804854e27917d5e2d881261537",
+   "exit_code": 0,
+   "log_sha256": "01301cb64757719673e22eeb2273e899a914854a55aec6f03614b4cc5e260549",
+   "log_bytes": 4709623,
+   "pytest_summary": "207 passed, 2 warnings in 22.04s"
+  },
+  "f1": {
+   "sha": "d4a5364bae817504c253e06b9150ee49c692e120",
+   "exit_code": 0,
+   "log_sha256": "01301cb64757719673e22eeb2273e899a914854a55aec6f03614b4cc5e260549",
+   "log_bytes": 4709623,
+   "pytest_summary": "207 passed, 2 warnings in 19.91s"
+  },
+  "b2": {
+   "sha": "af0a4489dc250d804854e27917d5e2d881261537",
+   "exit_code": 0,
+   "log_sha256": "822f2666978b7d658c8c1d883ddc8f8e78b6bb21bd52a2d2584b04ce3601ef57",
+   "log_bytes": 4709640,
+   "pytest_summary": "207 passed, 2 warnings in 19.90s"
+  },
+  "f2": {
+   "sha": "d4a5364bae817504c253e06b9150ee49c692e120",
+   "exit_code": 0,
+   "log_sha256": "d4768f7093b0214ff01d850faf49006901fd725d34fd1e73c19f1c02685081bc",
+   "log_bytes": 4709623,
+   "pytest_summary": "207 passed, 2 warnings in 19.97s"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "b2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   }
+  }
+ },
+ "tolerance_rules": {
+  "R-ID": {
+   "keys": [
+    "run_id",
+    "request_id",
+    "trace_id",
+    "event_id"
+   ],
+   "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value; the generic key 'strategy' is NOT eligible (only memory-packet ids under an explicit packet-id container, see R-MEMORY-PACKET-ID)"
+  },
+  "R-MEMORY-PACKET-ID": {
+   "keys": [
+    "packet_id"
+   ],
+   "why": "content hash id of a memory packet whose payload embeds the session temp path (<pid>-<uuid>); valid only as memory_<20 hex> on BOTH sides, as leaf `packet_id` or under an explicit packet-id container"
+  },
+  "R-MTIME": {
+   "keys": [
+    "source_signature"
+   ],
+   "why": "artifact signature embeds the file mtime_ns of a fixture written by the test itself"
+  },
+  "R-MTIME-DERIVED": {
+   "keys": [],
+   "why": "hash of an LLM prompt/response artifact whose prompt embeds the same record's source_signature (file mtime_ns); applies only when that signature differs in the same record"
+  },
+  "R-AGE": {
+   "keys": [
+    "minutes_since_open",
+    "minute_snapshot_age_minutes",
+    "quote_age_sec",
+    "expected_exit_quote_age_sec",
+    "age_sec"
+   ],
+   "why": "wall-clock derived age (<=2 units) between two processes started at different instants"
+  }
+ },
+ "summary": {
+  "total_calls": 69,
+  "BYTE_IDENTICAL": 41,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 28,
+  "per_function": {
+   "trade_lifecycle_builder._build_trade_lifecycles": {
+    "calls": 40,
+    "BYTE_IDENTICAL": 40,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "live_execution_bundle_runner.main": {
+    "calls": 29,
+    "BYTE_IDENTICAL": 1,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 28
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": []
+ },
+ "reproduce": "C:\\Agentra\\venv\\Scripts\\python.exe scripts/refactor/p156_parity_differential.py --repo <clone> --baseline-sha af0a4489dc250d804854e27917d5e2d881261537 --feature-sha d4a5364bae817504c253e06b9150ee49c692e120 --names <names.json> --tests <tests.txt> --work-root <empty dir> --out-dir <new dir> --mode det --same-path"
+}

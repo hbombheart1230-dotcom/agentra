@@ -22,7 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "af0a4489dc250d804854e27917d5e2d881261537"  # T1 evidence-closure commit (T2 start)
 # stage pin: T1 scope is fixed to its completion commit; T2 and later have their own gates (never widen this list)
-T2_END_SHA = "PENDING_T2_END_SHA"
+T2_END_SHA = "d4a5364bae817504c253e06b9150ee49c692e120"
 LEDGER = ROOT / "docs/refactor/p1_5_third_pass_t2_moved_segments_ledger.json"
 MAX_OWNER_LOC = 350
 ALLOWED_PREFIXES = ("tests/", "docs/", "scripts/refactor/", "libs/reporting/reporter_bundle_runtime_parts/")
