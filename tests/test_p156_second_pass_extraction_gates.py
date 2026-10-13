@@ -45,6 +45,11 @@ def _git_show(path, sha=BASE):
     return subprocess.check_output(["git", "show", f"{sha}:{path}"], cwd=ROOT).decode("utf-8-sig")
 
 
+def _snap(path):
+    """Immutable historical snapshot of `path` at this stage's end commit (never the moving HEAD)."""
+    return _git_show(path, SECOND_PASS_END)
+
+
 def _func(tree, name):
     for n in tree.body:
         if isinstance(n, ast.FunctionDef) and n.name == name:
@@ -140,7 +145,7 @@ def _group():
 def _owner_nodes(segs):
     owners = {}
     for seg in segs:
-        tree = ast.parse((ROOT / seg["owner_module"]).read_text(encoding="utf-8-sig"))
+        tree = ast.parse(_snap(seg["owner_module"]))
         owners[seg["owner_function"]] = {"kind": seg["kind"], "node": _func(tree, seg["owner_function"])}
     return owners
 
@@ -162,7 +167,7 @@ def test_ledger_is_complete_and_unique():
 def test_inlining_owner_calls_reconstructs_the_baseline_function_ast():
     for (module, function), segs in _group().items():
         base_fn = _func(ast.parse(_git_show(module)), function)
-        cur_fn = copy.deepcopy(_func(ast.parse((ROOT / module).read_text(encoding="utf-8-sig")), function))
+        cur_fn = copy.deepcopy(_func(ast.parse(_snap(module)), function))
         owners = _owner_nodes(segs)
         inl = _Inline(owners)
         new_fn = inl.visit(cur_fn)
@@ -177,7 +182,7 @@ def test_unmoved_definitions_and_module_constants_are_baseline_identical():
         moved.setdefault(module, set()).add(function)
     for module, names in moved.items():
         before_t = ast.parse(_git_show(module))
-        after_t = ast.parse((ROOT / module).read_text(encoding="utf-8-sig"))
+        after_t = ast.parse(_snap(module))
         before = {n.name: n for n in before_t.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
         after = {n.name: n for n in after_t.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
         assert before.keys() == after.keys(), (module, sorted(set(before) ^ set(after)))
@@ -189,8 +194,8 @@ def test_unmoved_definitions_and_module_constants_are_baseline_identical():
         assert keep(before_t) == keep(after_t), module
 
 
-def _free_globals(path, fname):
-    table = symtable.symtable(path.read_text(encoding="utf-8-sig"), str(path), "exec")
+def _free_globals(owner, fname):
+    table = symtable.symtable(_snap(owner), owner, "exec")
     child = next(c for c in table.get_children() if c.get_name() == fname)
     out = set()
     for sym in child.get_symbols():
@@ -202,8 +207,7 @@ def _free_globals(path, fname):
 def test_owner_functions_have_no_unresolved_globals_and_no_imports():
     builtin_names = set(dir(builtins))
     for owner in {s["owner_module"] for s in _ledger()["segments"]}:
-        path = ROOT / owner
-        tree = ast.parse(path.read_text(encoding="utf-8-sig"))
+        tree = ast.parse(_snap(owner))
         for node in tree.body:
             if isinstance(node, ast.Import):
                 raise AssertionError(f"{owner}: plain import not allowed in a pure Owner")
@@ -211,20 +215,20 @@ def test_owner_functions_have_no_unresolved_globals_and_no_imports():
                 assert node.module == "__future__", (owner, node.module)
         for n in tree.body:
             if isinstance(n, ast.FunctionDef):
-                bad = _free_globals(path, n.name) - builtin_names
+                bad = _free_globals(owner, n.name) - builtin_names
                 assert not bad, (owner, n.name, sorted(bad))
                 assert [a.arg for a in n.args.kwonlyargs] == ["facade"], (owner, n.name)
 
 
 def test_owner_modules_respect_loc_budget():
     for owner in {s["owner_module"] for s in _ledger()["segments"]}:
-        n = len((ROOT / owner).read_text(encoding="utf-8").split("\n"))
+        n = len(_snap(owner).splitlines())
         assert n <= MAX_OWNER_LOC, (owner, n)
 
 
 def test_owners_do_not_import_or_reference_forbidden_authority_surfaces():
     for owner in {s["owner_module"] for s in _ledger()["segments"]}:
-        text = (ROOT / owner).read_text(encoding="utf-8")
+        text = _snap(owner)
         for part in FORBIDDEN_OWNER_IMPORT_ROOTS:
             assert f"import {part}" not in text and f"from {part}" not in text, (owner, part)
         for token in ("os.environ", "os.getenv", "getenv(", "time.time(", "datetime.now", "uuid.uuid", "open("):

@@ -1,0 +1,294 @@
+[
+ {
+  "owner_function": "targeted_day_rows",
+  "orig": [
+   1545,
+   1557
+  ],
+  "verdict": "PURE",
+  "findings": []
+ },
+ {
+  "owner_function": "lifecycle_exit_monitor_context",
+  "orig": [
+   1776,
+   1820
+  ],
+  "verdict": "UNKNOWN",
+  "findings": [
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _merge_missing_values() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[1776-1820]",
+     "libs/reporting/trade_story_pipeline.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_pipeline_human_payloads.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_human_parts/monitor_context.py::prepare_monitor_review_context"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable safe_float() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[1776-1820]",
+     "libs/reporting/trade_story_pipeline.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_pipeline_human_payloads.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_human_parts/monitor_context.py::prepare_monitor_review_context",
+     "libs/reporting/trade_story_human_parts/monitor_diagnostics.py::build_monitor_watch_axes"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable safe_int() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[1776-1820]",
+     "libs/reporting/trade_story_pipeline.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_pipeline_human_payloads.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_human_parts/monitor_context.py::prepare_monitor_review_context"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _list_text() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[1776-1820]",
+     "libs/reporting/trade_story_pipeline.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_pipeline_human_payloads.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_human_parts/monitor_context.py::prepare_monitor_review_context"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable format_ratio_pct() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[1776-1820]",
+     "libs/reporting/trade_story_pipeline.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_pipeline_human_payloads.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_human_parts/monitor_context.py::prepare_monitor_review_context",
+     "libs/reporting/trade_story_human_parts/monitor_diagnostics.py::build_monitor_entry_threshold_gaps"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _build_monitor_stop_policy_trace() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[1776-1820]",
+     "libs/reporting/trade_story_pipeline.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_pipeline_human_payloads.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_human_parts/monitor_context.py::prepare_monitor_review_context"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _build_monitor_blocker_trace() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[1776-1820]",
+     "libs/reporting/trade_story_pipeline.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_pipeline_human_payloads.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_human_parts/monitor_context.py::prepare_monitor_review_context"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable format_exit_label() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[1776-1820]",
+     "libs/reporting/trade_story_pipeline.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_pipeline_human_payloads.py::build_monitor_reason_human",
+     "libs/reporting/trade_story_human_parts/monitor_context.py::prepare_monitor_review_context"
+    ]
+   }
+  ]
+ },
+ {
+  "owner_function": "lifecycle_outcome_and_reporter_summaries",
+  "orig": [
+   1821,
+   1835
+  ],
+  "verdict": "PURE",
+  "findings": []
+ },
+ {
+  "owner_function": "lifecycle_operator_conclusion_fallback",
+  "orig": [
+   1840,
+   1854
+  ],
+  "verdict": "PURE",
+  "findings": []
+ },
+ {
+  "owner_function": "lifecycle_commander_market_evidence",
+  "orig": [
+   2006,
+   2025
+  ],
+  "verdict": "UNKNOWN",
+  "findings": [
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable safe_int() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2006-2025]",
+     "libs/reporting/trade_story_pipeline.py::build_market_context_human",
+     "libs/reporting/trade_story_human_parts/market_context.py::build_market_context_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _build_strategist_evidence_trace() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2006-2025]",
+     "libs/reporting/trade_story_pipeline.py::build_market_context_human",
+     "libs/reporting/trade_story_human_parts/market_context.py::build_market_context_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _korea_indices_bullet() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2006-2025]",
+     "libs/reporting/trade_story_pipeline.py::build_market_context_human",
+     "libs/reporting/trade_story_human_parts/market_context.py::build_market_context_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable format_pct() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2006-2025]",
+     "libs/reporting/trade_story_pipeline.py::build_market_context_human",
+     "libs/reporting/trade_story_human_parts/market_context.py::build_market_context_human"
+    ]
+   }
+  ]
+ },
+ {
+  "owner_function": "lifecycle_scanner_filter_enrichment",
+  "orig": [
+   2061,
+   2099
+  ],
+  "verdict": "UNKNOWN",
+  "findings": [
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable safe_int() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_market_context_human",
+     "libs/reporting/trade_story_human_parts/market_context.py::build_market_context_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _build_strategist_evidence_trace() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_market_context_human",
+     "libs/reporting/trade_story_human_parts/market_context.py::build_market_context_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _korea_indices_bullet() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_market_context_human",
+     "libs/reporting/trade_story_human_parts/market_context.py::build_market_context_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable format_pct() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_market_context_human",
+     "libs/reporting/trade_story_human_parts/market_context.py::build_market_context_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable normalized_feature_coverage() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_scanner_reason_human",
+     "libs/reporting/trade_story_human_parts/scanner_reason.py::build_scanner_reason_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _scanner_chart_fit_payload() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_scanner_reason_human",
+     "libs/reporting/trade_story_human_parts/scanner_reason.py::build_scanner_reason_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _scanner_macro_chart_fit_payload() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_scanner_reason_human",
+     "libs/reporting/trade_story_human_parts/scanner_reason.py::build_scanner_reason_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _build_news_scanner_contribution_trace() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_scanner_reason_human",
+     "libs/reporting/trade_story_human_parts/scanner_reason.py::build_scanner_reason_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable _build_scanner_selection_trace() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_scanner_reason_human",
+     "libs/reporting/trade_story_human_parts/scanner_reason.py::build_scanner_reason_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable confidence_label() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_scanner_reason_human",
+     "libs/reporting/trade_story_human_parts/scanner_reason.py::build_scanner_reason_human"
+    ]
+   },
+   {
+    "kind": "UNKNOWN",
+    "detail": "call through local variable safe_float() (dynamic dispatch)",
+    "chain": [
+     "libs/reporting/live_execution_bundle_runner.py::main[2061-2099]",
+     "libs/reporting/trade_story_pipeline.py::build_filters_human",
+     "libs/reporting/trade_story_facade_parts/filter_checklist.py::build_filters_human_impl"
+    ]
+   }
+  ]
+ },
+ {
+  "owner_function": "closed_sell_execution_details",
+  "orig": [
+   2154,
+   2172
+  ],
+  "verdict": "PURE",
+  "findings": []
+ },
+ {
+  "owner_function": "report_generation_policy_gate",
+  "orig": [
+   2196,
+   2221
+  ],
+  "verdict": "PURE",
+  "findings": []
+ }
+]
