@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 223,
+  "entry_count": 224,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6045,6 +6045,31 @@
         "docs/refactor/evidence/p156_parity/targetedA2_p1fix_summary.json",
         "scripts/refactor/p156_parity_differential.py"
       ]
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Third Pass Reporter-Inclusive Design",
+      "title": "Third-pass source-verified Reporter and all-agent modularization design",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "WORKFLOW",
+        "REPORTING"
+      ],
+      "summary": "Source-pinned third-pass plan after user-reported Codex PASS_WITH_FINDINGS: prioritize Reporter core giant functions, capability-limited Owners and remaining seven-agent giants before Wave D. Documentation only.",
+      "details": [
+        "Inspected bf59c4d: live_execution_bundle_runner.main ~1,529 LOC; trade_memory_surface 675; trade_read_model 601; fallback_report 538; _build_trade_lifecycles 535; Scanner, Strategist, Monitor nodes >1,100.",
+        "Reporter T0 consumer/real-or-mock frozen parity baseline before output code edits; then pure read-model and fallback cuts, then only evidence-gated effectful bundle-runner regions; leave true LLM/queue/lock/write effects SAFETY_LOCK as needed.",
+        "42/45 broad facade injection and 24-item tuple seams remain second-pass findings; narrow use-time capabilities without breaking monkeypatch ABI. Existing Reporter facades remain at physical paths.",
+        "Controlled_mock_lanes cwd-relative operational root remains OPEN, require separate approval and evidence; Executor, Supervisor, Step5C CAS and broker mutation locked.",
+        "Added design source link to CURRENT, prior GPT master/target documents and both UI patch notes. No application/runtime source changes; Wave D not started."
+      ],
+      "impact": "A coherent implementation contract for the Reporter-inclusive pre-Wave-D structural convergence, with explicit source evidence and safety gates.",
+      "sources": [
+        "docs/refactor/P15_THIRD_PASS_GPT_REPORTER_INCLUSIVE_DESIGN_2026_10_13.md",
+        "docs/refactor/work_orders/CURRENT.md"
+      ],
+      "status": "current"
     }
   ]
 }

@@ -3023,3 +3023,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - data/logs 원인: controlled_mock_lanes ledger의 기본 루트가 cwd 상대 경로이며 baseline에서도 재현됩니다. harness가 세션별 `CONTROLLED_MOCK_LANE_LOG_ROOT`로 우회하고, 프로젝트 쓰기 감사는 약화하지 않았습니다(운영 코드 OPEN 항목은 그대로).
 - containment 검사는 빈/무시된 디렉터리·프로젝트 감사 배너·종료 코드까지 FAIL로 판정합니다. Targeted A: baseline×2/feature×2 순차 exit_code 0×4, 17/17 byte-identical, 금지된 쓰기 0.
 
+## 2026-10-13 · P1.5 Third Pass Reporter 포함 전체 모듈화 설계
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · WORKFLOW · REPORTING
+
+- 사용자 전달 Codex P1 수정 재감사 `PASS_WITH_FINDINGS`를 토대로 3차 설계를 시작하되 GPT가 테스트를 재실행한 것처럼 주장하지 않습니다.
+- Reporter 실제 번들 실행기 `main` 약 1,529줄, memory surface 675줄, trade read model 601줄 등 주요 잔여 대형 함수를 소스에서 검증하고 작업 순서를 문서에 고정했습니다.
+- Reporter T0 동작·ABI 증거 확보 → T1 순수 Read Model·Fallback 분리 → T2 증거가 충분한 번들 실행기 분리 → T3 Owner facade·tuple 계약 정리 → T4 기타 에이전트 거대 함수 분리 → Codex 독립 감사 → 마지막 Wave D 순서입니다.
+- Reporter 공개 Facade 물리 이동·rename 금지; 실 LLM/보고서/락/큐/저장 동작 미검증 영역은 SAFETY_LOCK. 작업 계획 문서만 수정했습니다.
+
