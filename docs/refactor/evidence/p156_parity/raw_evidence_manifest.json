@@ -111,6 +111,35 @@
     "bytes": 23502239,
     "sha256": "27e4c7392a822daa818d3148264f46eb2b89e12794f4d26c8c662db5c9ceae8b"
    }
+  ],
+  "targeted_A2_p1fix_legacy_mismatch_tests": [
+   {
+    "path": "C:/AgentraEvidence/par_out_A2\\raw_calls_b1.json",
+    "bytes": 5090955,
+    "sha256": "a0d38076d1b865d8d356296efc61eef68a4aa9aba11afb60341fd0a0334a6969"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_A2\\raw_calls_b2.json",
+    "bytes": 5090955,
+    "sha256": "a0d38076d1b865d8d356296efc61eef68a4aa9aba11afb60341fd0a0334a6969"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_A2\\raw_calls_f1.json",
+    "bytes": 5090955,
+    "sha256": "a0d38076d1b865d8d356296efc61eef68a4aa9aba11afb60341fd0a0334a6969"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_A2\\raw_calls_f2.json",
+    "bytes": 5090955,
+    "sha256": "a0d38076d1b865d8d356296efc61eef68a4aa9aba11afb60341fd0a0334a6969"
+   }
+  ],
+  "det2_reclassification_p1fix_output": [
+   {
+    "path": "C:/AgentraEvidence/par_reclass_det2_p1fix.json",
+    "bytes": 233114,
+    "sha256": "6813a2c39d21c0524ee2d40a9c549f0c2354afc08ecb4306cdbba23efc45f76f"
+   }
   ]
  }
 }

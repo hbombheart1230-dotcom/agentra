@@ -3015,3 +3015,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 기존 불일치 6개 테스트(17/17)와 미해결 24개 테스트(28/28)는 목표 재실행에서 byte-identical. 운영 코드 변경 없음, 운영 쓰기 0.
 - 실제 frozen 보고서/LLM·Brief byte parity는 BLOCKED, 전체 pytest·Docker·UEF는 Wave D, controlled_mock_lanes 운영 경로 격리 OPEN, Codex 재감사 대기.
 
+## 2026-10-13 · P1.5 Parity Comparator P1 Fix (비교기 R-ID 결함 · Targeted A 쓰기 감사)
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY
+
+- 비교기: `strategy`를 R-ID 허용 키에서 제거했고, memory packet id는 `memory_<20 hex>` 형식이 양쪽에서 맞고 명시적 packet-id 컨테이너 아래일 때만 조건부 허용합니다. 전략 선택·순위·가격·수량·승인 필드는 ID라는 이유로 허용하지 않으며 음성 테스트를 추가했습니다. 과거 86건 재분류 결과는 86건 그대로(전부 실제 memory id/mtime 서명)입니다.
+- data/logs 원인: controlled_mock_lanes ledger의 기본 루트가 cwd 상대 경로이며 baseline에서도 재현됩니다. harness가 세션별 `CONTROLLED_MOCK_LANE_LOG_ROOT`로 우회하고, 프로젝트 쓰기 감사는 약화하지 않았습니다(운영 코드 OPEN 항목은 그대로).
+- containment 검사는 빈/무시된 디렉터리·프로젝트 감사 배너·종료 코드까지 FAIL로 판정합니다. Targeted A: baseline×2/feature×2 순차 exit_code 0×4, 17/17 byte-identical, 금지된 쓰기 0.
+

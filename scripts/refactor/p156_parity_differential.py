@@ -51,6 +51,13 @@ def _chk_run_id(u, v):
     return bool(_HEX_ID.match(str(u))) and bool(_HEX_ID.match(str(v)))
 
 
+_MEMORY_ID = re.compile(r"^'?memory_[0-9a-f]{20}'?$")
+
+
+def _chk_memory_id(u, v):
+    return bool(_MEMORY_ID.match(str(u))) and bool(_MEMORY_ID.match(str(v)))
+
+
 def _chk_mtime_signature(u, v):
     return _MTIME_SIG.sub(":#:", str(u)) == _MTIME_SIG.sub(":#:", str(v))
 
@@ -61,9 +68,15 @@ def _chk_small_age(u, v):
 
 
 TOLERANCE_RULES = {
-    "R-ID": {"keys": ("run_id", "packet_id", "packet_ids", "strategy", "request_id", "trace_id", "event_id"),
+    "R-ID": {"keys": ("run_id", "request_id", "trace_id", "event_id"),
              "check": _chk_run_id,
-             "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value"},
+             "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value; the generic key "
+                    "'strategy' is NOT eligible (only memory-packet ids under an explicit packet-id container, see "
+                    "R-MEMORY-PACKET-ID)"},
+    "R-MEMORY-PACKET-ID": {"keys": ("packet_id",), "check": lambda u, v: _chk_memory_id(u, v),
+                           "why": "content hash id of a memory packet whose payload embeds the session temp path "
+                                  "(<pid>-<uuid>); valid only as memory_<20 hex> on BOTH sides, as leaf `packet_id` or "
+                                  "under an explicit packet-id container"},
     "R-MTIME": {"keys": ("source_signature",), "check": _chk_mtime_signature,
                 "why": "artifact signature embeds the file mtime_ns of a fixture written by the test itself"},
     "R-MTIME-DERIVED": {"keys": (), "check": lambda u, v: False,
@@ -111,9 +124,9 @@ def _justify(path, u, v, record_has_mtime_diff=False):
     for rid, rule in TOLERANCE_RULES.items():
         if key in rule["keys"] and rule["check"](u, v):
             return rid
-    # memory packet ids per layer: {packet_ids: {daily|weekly|monthly|symbol|strategy: memory_<hex>}}
-    if any(c in strs[:-1] for c in _ID_CONTAINERS) and _chk_run_id(u, v) and str(u).strip("'").startswith("memory_"):
-        return "R-ID"
+    # memory packet ids per layer/strategy: only directly under an explicit packet-id container, memory_<20 hex> both sides
+    if len(strs) >= 2 and strs[-2] in _ID_CONTAINERS and _chk_memory_id(u, v):
+        return "R-MEMORY-PACKET-ID"
     if record_has_mtime_diff and key in _MTIME_DERIVED_KEYS and _chk_run_id(u, v):
         return "R-MTIME-DERIVED"
     return None
@@ -232,10 +245,46 @@ def session_env(root, session_dir, harness_dir, names, log, mode, keep):
         "PYTHONPATH": str(harness_dir),
         "R3_ROOT": str(root), "R3_NAMES": str(names), "R3_LOG": str(log), "R3_POST": "1",
         "P156_DETERMINISM": "1" if mode == "det" else "0",
+        # supported knob of libs/runtime/controlled_mock_lanes/ledger.py: without it the ledger writes cwd-relative
+        # data/logs/controlled_mock_lanes inside the repository root (project write audit then fails the session)
+        "CONTROLLED_MOCK_LANE_LOG_ROOT": str(session_dir / "mock_lane_logs"),
     }
     if keep:
         env["R3_KEEP"] = "1"
     return env
+
+
+def snapshot_tree(root):
+    """Every file AND directory (including empty and git-ignored ones) below root, excluding the .git directory."""
+    seen = set()
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if not (Path(dirpath) == Path(root) and d == ".git")]
+        base = Path(dirpath)
+        for name in dirnames + filenames:
+            seen.add(str((base / name).relative_to(root)).replace("\\", "/"))
+    return seen
+
+
+AUDIT_BANNER = "PRODUCTION PATH WRITE DETECTED"
+
+
+def audit_session(before, after, stdout_text, exit_code, expect_failures=0):
+    """Verdict for one session: any new path (file, directory, empty or git-ignored) inside the session root, the
+    project's own production-write banner, or an exit code other than the expected one is a FAIL."""
+    new_paths = sorted(after - before)
+    banner = AUDIT_BANNER in stdout_text
+    problems = []
+    if new_paths:
+        problems.append("new paths created inside the session root: %d" % len(new_paths))
+    if banner:
+        problems.append("project write audit banner present")
+    if expect_failures == 0 and exit_code != 0:
+        problems.append("pytest exit code %s (expected 0)" % exit_code)
+    if expect_failures > 0 and not (exit_code == 1 and ("%d failed" % expect_failures) in stdout_text):
+        problems.append("pytest exit code %s without exactly %d known failure(s)" % (exit_code, expect_failures))
+    return {"new_paths_in_session_root": len(new_paths), "new_paths_sample": new_paths[:20],
+            "project_write_audit_banner": banner, "exit_code": exit_code, "problems": problems,
+            "verdict": "FAIL" if problems else "PASS"}
 
 
 def run_sessions(args):
@@ -276,14 +325,16 @@ def run_sessions(args):
         env = session_env(s["root"], s["dir"], harness, names, s["log"], args.mode, True)
         fh = open(s["stdout"], "wb")
         order.append(s["tag"])
+        s["before"] = snapshot_tree(s["root"])
         return subprocess.Popen([PY, *cmd_tail], cwd=str(s["root"]), env=env, stdout=fh, stderr=subprocess.STDOUT), fh
 
     def finish(s, p, fh):
         p.wait()
         fh.close()
         s["exit"] = p.returncode
-        st = _git("status", "--porcelain", "--untracked-files=all", cwd=s["root"]).stdout.splitlines()
-        s["contained"] = {"changed_or_untracked_paths_in_session_root": len(st), "sample": [x[3:] for x in st[:15]]}
+        text = Path(s["stdout"]).read_text(encoding="utf-8", errors="replace")
+        s["contained"] = audit_session(s["before"], snapshot_tree(s["root"]), text, p.returncode,
+                                       expect_failures=args.expect_failures)
         s["pytest_summary"] = _tail(s["stdout"])
         s["log_sha256"] = _sha256(s["log"])
         s["log_bytes"] = s["log"].stat().st_size
@@ -361,12 +412,19 @@ def main(argv=None):
     ap.add_argument("--sequential", action="store_true")
     ap.add_argument("--same-path", action="store_true",
                     help="sequential runs, each in a fresh disposable clone at the SAME path")
+    ap.add_argument("--expect-failures", type=int, default=0,
+                    help="number of known baseline test failures that make exit code 1 acceptable (0 = exit must be 0)")
     ap.add_argument("--keep-sessions", action="store_true")
     a = ap.parse_args(argv)
     ev = run_sessions(a)
     s = ev["summary"]
+    bad = {t: v["problems"] for t, v in ev["isolation"]["write_containment"].items() if v["verdict"] != "PASS"}
     print(json.dumps({k: s[k] for k in ("total_calls", "BYTE_IDENTICAL", "JUSTIFIED_TOLERANCE", "REAL_MISMATCH",
                                          "UNRESOLVED", "test_outcomes_identical_across_all_sessions")}))
+    if bad:
+        print("ISOLATION_VERDICT=FAIL", json.dumps(bad))
+        raise SystemExit(2)
+    print("ISOLATION_VERDICT=PASS")
 
 
 if __name__ == "__main__":

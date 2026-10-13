@@ -50,7 +50,7 @@ def test_only_allowlisted_identifier_fields_are_justified():
     b = _call(_norm_dict(packet_id="memory_aaaaaaaaaaaaaaaaaaaa"), "b")
     f = _call(_norm_dict(packet_id="memory_bbbbbbbbbbbbbbbbbbbb"), "f")
     summary, details = P.compare(_runs(b, b, f, f))
-    assert summary["JUSTIFIED_TOLERANCE"] == 1 and details[0]["rules"] == ["R-ID"]
+    assert summary["JUSTIFIED_TOLERANCE"] == 1 and details[0]["rules"] == ["R-MEMORY-PACKET-ID"]
     # an id-shaped value under a decision field is not tolerated
     b = _call(_norm_dict(side="aaaaaaaaaaaaaaaaaaaa"), "b")
     f = _call(_norm_dict(side="bbbbbbbbbbbbbbbbbbbb"), "f")
@@ -121,8 +121,74 @@ def test_determinism_plugin_clock_uuid_and_network_are_repeatable():
 
 def test_layer_packet_ids_and_mtime_derived_hashes_are_conditional():
     j = P._justify
-    assert j(["'x'", "'packet_ids'", "'daily'"], "memory_" + "a" * 20, "memory_" + "b" * 20) == "R-ID"
+    assert j(["'x'", "'packet_ids'", "'daily'"], "memory_" + "a" * 20, "memory_" + "b" * 20) == "R-MEMORY-PACKET-ID"
     assert j(["'x'", "'daily'"], "memory_" + "a" * 20, "memory_" + "b" * 20) is None  # not under a packet-id container
     assert j(["'x'", "'prompt_hash'"], "a" * 60, "b" * 60) is None
     assert j(["'x'", "'prompt_hash'"], "a" * 60, "b" * 60, True) == "R-MTIME-DERIVED"
     assert j(["'x'", "'quantity'"], "a" * 60, "b" * 60, True) is None
+
+
+def test_strategy_named_fields_are_never_tolerated_as_ids():
+    j = P._justify
+    # generic strategy-like id strings (previously accepted because the key "strategy" was on the R-ID list)
+    assert j(["'x'", "'strategy'"], "strategy_" + "a" * 12, "strategy_" + "b" * 12) is None
+    assert j(["'x'", "'selected_strategy'"], "strategy_" + "a" * 12, "strategy_" + "b" * 12) is None
+    assert j(["'x'", "'strategy'"], "memory_" + "a" * 20, "memory_" + "b" * 20) is None  # outside a packet-id container
+    assert j(["'x'", "'packet_ids'", "'strategy'"], "strategy_" + "a" * 12, "strategy_" + "b" * 12) is None  # not memory id
+    assert j(["'x'", "'packet_ids'", "'strategy'"], "memory_" + "a" * 20, "memory_" + "b" * 20) == "R-MEMORY-PACKET-ID"
+    assert j(["'x'", "'packet_ids'", "'strategy'"], "memory_" + "a" * 20, "strategy_" + "b" * 12) is None  # both sides
+
+
+def test_strategy_id_difference_is_real_mismatch_through_compare():
+    b = _call(_norm_dict(strategy="strategy_aaaaaaaaaaaa"), "b")
+    f = _call(_norm_dict(strategy="strategy_bbbbbbbbbbbb"), "f")
+    summary, _ = P.compare(_runs(b, b, f, f))
+    assert summary["REAL_MISMATCH"] == 1 and summary["JUSTIFIED_TOLERANCE"] == 0
+    b = _call(_norm_dict(selected_strategy="momentum_1a2b3c4d5e6f"), "b")
+    f = _call(_norm_dict(selected_strategy="momentum_9f8e7d6c5b4a"), "f")
+    summary, _ = P.compare(_runs(b, b, f, f))
+    assert summary["REAL_MISMATCH"] == 1
+
+
+def test_container_memory_id_through_compare_is_conditional_r_id():
+    b = _call({"d": [["'packet_ids'", {"d": [["'strategy'", "memory_" + "a" * 20]]}]]}, "b")
+    f = _call({"d": [["'packet_ids'", {"d": [["'strategy'", "memory_" + "b" * 20]]}]]}, "f")
+    summary, details = P.compare(_runs(b, b, f, f))
+    assert summary["JUSTIFIED_TOLERANCE"] == 1 and details[0]["rules"] == ["R-MEMORY-PACKET-ID"]
+    # same strategy-key memory-id shape OUTSIDE the container is a real mismatch
+    b = _call(_norm_dict(strategy="memory_" + "a" * 20), "b")
+    f = _call(_norm_dict(strategy="memory_" + "b" * 20), "f")
+    summary, _ = P.compare(_runs(b, b, f, f))
+    assert summary["REAL_MISMATCH"] == 1
+
+
+def test_snapshot_detects_empty_and_ignored_directories(tmp_path):
+    root = tmp_path / "tree"
+    (root / ".git").mkdir(parents=True)
+    (root / "tracked.txt").write_text("x", encoding="utf-8")
+    before = P.snapshot_tree(root)
+    (root / "data" / "logs").mkdir(parents=True)  # empty directory: invisible to `git status`
+    (root / "__pycache__").mkdir()  # typically git-ignored
+    (root / ".git" / "inside-git").write_text("ignored by design", encoding="utf-8")
+    after = P.snapshot_tree(root)
+    assert sorted(after - before) == ["__pycache__", "data", "data/logs"]
+    verdict = P.audit_session(before, after, "6 passed", 0)
+    assert verdict["verdict"] == "FAIL" and verdict["new_paths_in_session_root"] == 3
+    clean = P.audit_session(before, before, "6 passed", 0)
+    assert clean["verdict"] == "PASS"
+
+
+def test_audit_fails_on_project_write_banner_or_bad_exit_code():
+    base = {"tracked.txt"}
+    banner = "x\nPRODUCTION PATH WRITE DETECTED DURING TEST SESSION\n6 passed"
+    assert P.audit_session(base, base, banner, 0)["verdict"] == "FAIL"  # banner alone fails, even with exit 0
+    assert P.audit_session(base, base, "6 passed", 1)["verdict"] == "FAIL"  # exit 1 not expected
+    assert P.audit_session(base, base, "1 failed, 5 passed", 1, expect_failures=1)["verdict"] == "PASS"
+    assert P.audit_session(base, base, "2 failed, 4 passed", 1, expect_failures=1)["verdict"] == "FAIL"
+
+
+def test_session_env_redirects_controlled_mock_lane_logs_outside_the_clone(tmp_path):
+    sdir = tmp_path / "s_b1"
+    env = P.session_env(sdir / "tree", sdir, tmp_path / "_h", tmp_path / "n.json", sdir / "calls.json", "det", True)
+    root = Path(env["CONTROLLED_MOCK_LANE_LOG_ROOT"])
+    assert str(root).startswith(str(sdir)) and (sdir / "tree") not in root.parents
