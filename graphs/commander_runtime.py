@@ -219,7 +219,7 @@ from libs.runtime.commander.event_projection import (
 )
 from libs.runtime.commander.policy_inputs_projection import (
     behavior_input_allow_legacy_rule_allow_legacy_strategy,
-    behavior_input_block_buy_when_open_position_buy_closeou,
+    commander_behavior_policy_inputs,
 )
 from libs.runtime.commander.policy_normalizers_projection import (
     behavior_norm_carry_risk_bias_carry_risk_reason,
@@ -616,7 +616,7 @@ def _resolve_commander_behavior_policy(
         "MEMORY_BIAS_OBSERVATION_ONLY",
         _commander_default_bool("MEMORY_BIAS_OBSERVATION_ONLY", True),
     )
-    block_buy_when_open_position, buy_closeout_cutoff_min, cached_strategist_when_flat, eod_flat_cutoff_min, exit_confirm_ticks, exit_policy_enabled, exit_policy_use_eod_flat, kiwoom_condition_limit, min_hold_seconds, monitor_only_when_holding, monitor_scoring_enabled, monitor_scoring_shadow_mode, monitor_scoring_threshold, position_sizing_enabled, position_sizing_risk_per_trade_ratio, post_exit_cooldown_sec, scanner_block_static_when_empty, scanner_include_change_rate, scanner_live_fetch, scanner_source_type, scanner_strict_only, sell_cooldown_sec, top_candidate_pool, universe_asset_type = behavior_input_block_buy_when_open_position_buy_closeou(_existing_value=_existing_value, risk_max_positions=risk_max_positions, facade=_r3_sys.modules[__name__])
+    block_buy_when_open_position, buy_closeout_cutoff_min, cached_strategist_when_flat, eod_flat_cutoff_min, exit_confirm_ticks, exit_policy_enabled, exit_policy_use_eod_flat, kiwoom_condition_limit, min_hold_seconds, monitor_only_when_holding, monitor_scoring_enabled, monitor_scoring_shadow_mode, monitor_scoring_threshold, position_sizing_enabled, position_sizing_risk_per_trade_ratio, post_exit_cooldown_sec, scanner_block_static_when_empty, scanner_include_change_rate, scanner_live_fetch, scanner_source_type, scanner_strict_only, sell_cooldown_sec, top_candidate_pool, universe_asset_type = commander_behavior_policy_inputs(_existing_value=_existing_value, risk_max_positions=risk_max_positions, facade=_r3_sys.modules[__name__])
     position_sizing_notional_ratio = _existing_value(
         "monitor",
         "entry",

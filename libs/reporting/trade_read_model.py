@@ -17,7 +17,7 @@ from libs.reporting.strategy_read_model import (
 )
 import sys as _r3_sys
 from libs.reporting.trade_read_model_parts.read_artifact_selection import (
-    read_select_artifacts_bundle,
+    selected_trade_artifacts,
 )
 from libs.reporting.trade_read_model_parts.read_truth_projection import (
     read_truth_blocker_trace_data_source_quality,
@@ -1297,7 +1297,7 @@ def build_trade_read_model(trade_dir: str) -> Dict[str, Any]:
         "aggregated_bundle_path": "",
     }
     report_payloads = load_trade_report_payloads(trade_report_meta, read_json=_read_json)
-    artifacts, bundle, canonical, commander_art, entry_obj, entry_ts, entry_ts_source, evidence_provenance, executor_art, exit_obj, exit_ts, exit_ts_source, filters_human, hold_duration_sec, hold_duration_source, holding_obj, lifecycle, lifecycle_path_used, market_context_human, monitor_art, monitor_reason_human, report, report_data, report_path_used, same_day_linkage, scanner_art, scanner_reason_human, shared_facts, story_meta, strategist_art = read_select_artifacts_bundle(report_payloads=report_payloads, _pick_with_source=_pick_with_source, facade=_r3_sys.modules[__name__])
+    artifacts, bundle, canonical, commander_art, entry_obj, entry_ts, entry_ts_source, evidence_provenance, executor_art, exit_obj, exit_ts, exit_ts_source, filters_human, hold_duration_sec, hold_duration_source, holding_obj, lifecycle, lifecycle_path_used, market_context_human, monitor_art, monitor_reason_human, report, report_data, report_path_used, same_day_linkage, scanner_art, scanner_reason_human, shared_facts, story_meta, strategist_art = selected_trade_artifacts(report_payloads=report_payloads, _pick_with_source=_pick_with_source, facade=_r3_sys.modules[__name__])
     if hold_duration_sec <= 0 and entry_ts != "unknown" and exit_ts != "unknown":
         try:
             e1 = entry_ts.replace("Z", "+00:00")

@@ -8,8 +8,45 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 
-def read_select_artifacts_bundle(report_payloads, _pick_with_source, *, facade):
+
+class SelectedTradeArtifacts(NamedTuple):
+    """Result of `selected_trade_artifacts` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    artifacts: Any
+    bundle: Any
+    canonical: Any
+    commander_art: Any
+    entry_obj: Any
+    entry_ts: Any
+    entry_ts_source: Any
+    evidence_provenance: Any
+    executor_art: Any
+    exit_obj: Any
+    exit_ts: Any
+    exit_ts_source: Any
+    filters_human: Any
+    hold_duration_sec: Any
+    hold_duration_source: Any
+    holding_obj: Any
+    lifecycle: Any
+    lifecycle_path_used: Any
+    market_context_human: Any
+    monitor_art: Any
+    monitor_reason_human: Any
+    report: Any
+    report_data: Any
+    report_path_used: Any
+    same_day_linkage: Any
+    scanner_art: Any
+    scanner_reason_human: Any
+    shared_facts: Any
+    story_meta: Any
+    strategist_art: Any
+
+
+def selected_trade_artifacts(report_payloads, _pick_with_source, *, facade):
     bundle = dict(report_payloads.get("lifecycle_data") or {})
     report = dict(report_payloads.get("report_data") or {})
     payload_paths = dict(report_payloads.get("paths") or {})
@@ -63,4 +100,4 @@ def read_select_artifacts_bundle(report_payloads, _pick_with_source, *, facade):
             hold_duration_source = "lifecycle.exit.position_age_seconds"
         except Exception:
             pass
-    return (artifacts, bundle, canonical, commander_art, entry_obj, entry_ts, entry_ts_source, evidence_provenance, executor_art, exit_obj, exit_ts, exit_ts_source, filters_human, hold_duration_sec, hold_duration_source, holding_obj, lifecycle, lifecycle_path_used, market_context_human, monitor_art, monitor_reason_human, report, report_data, report_path_used, same_day_linkage, scanner_art, scanner_reason_human, shared_facts, story_meta, strategist_art)
+    return SelectedTradeArtifacts(artifacts, bundle, canonical, commander_art, entry_obj, entry_ts, entry_ts_source, evidence_provenance, executor_art, exit_obj, exit_ts, exit_ts_source, filters_human, hold_duration_sec, hold_duration_source, holding_obj, lifecycle, lifecycle_path_used, market_context_human, monitor_art, monitor_reason_human, report, report_data, report_path_used, same_day_linkage, scanner_art, scanner_reason_human, shared_facts, story_meta, strategist_art)

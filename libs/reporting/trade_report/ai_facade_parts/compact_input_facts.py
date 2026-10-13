@@ -8,8 +8,40 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 
-def cp_facts_commander_route_diagnostics(story_input, _build_shared_summary_seed, _extract_policy_ref_context, _extract_scanner_bias_summary, _as_dict, *, facade):
+
+class CompactStoryFacts(NamedTuple):
+    """Result of `compact_story_facts` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    commander_route: Any
+    diagnostics: Any
+    entry_execution_visibility: Any
+    execution_outcome: Any
+    execution_quality_seed: Any
+    filters_human: Any
+    guard_reason: Any
+    holding_story_seed: Any
+    lifecycle_summary: Any
+    market_context: Any
+    market_context_seed: Any
+    monitor_reason: Any
+    monitor_reasoning: Any
+    operator_conclusion: Any
+    policy_ref_context: Any
+    report_section_seeds: Any
+    reporter_status: Any
+    scanner_bias_summary: Any
+    scanner_filters_seed: Any
+    scanner_reason: Any
+    scanner_reasoning: Any
+    strategist_context: Any
+    strategist_evidence: Any
+    strategist_summary_seed: Any
+    why_symbol_seed: Any
+
+
+def compact_story_facts(story_input, _build_shared_summary_seed, _extract_policy_ref_context, _extract_scanner_bias_summary, _as_dict, *, facade):
     market_context = story_input.get("market_context_human") if isinstance(story_input.get("market_context_human"), dict) else {}
     scanner_reason = story_input.get("scanner_reason_human") if isinstance(story_input.get("scanner_reason_human"), dict) else {}
     filters_human = story_input.get("filters_human") if isinstance(story_input.get("filters_human"), dict) else {}
@@ -40,7 +72,7 @@ def cp_facts_commander_route_diagnostics(story_input, _build_shared_summary_seed
     holding_story_seed = _as_dict(report_section_seeds.get("holding_monitoring_story"))
     scanner_filters_seed = _as_dict(report_section_seeds.get("scanner_filters"))
     execution_quality_seed = _as_dict(report_section_seeds.get("execution_quality"))
-    return (commander_route, diagnostics, entry_execution_visibility, execution_outcome, execution_quality_seed, filters_human, guard_reason, holding_story_seed, lifecycle_summary, market_context, market_context_seed, monitor_reason, monitor_reasoning, operator_conclusion, policy_ref_context, report_section_seeds, reporter_status, scanner_bias_summary, scanner_filters_seed, scanner_reason, scanner_reasoning, strategist_context, strategist_evidence, strategist_summary_seed, why_symbol_seed)
+    return CompactStoryFacts(commander_route, diagnostics, entry_execution_visibility, execution_outcome, execution_quality_seed, filters_human, guard_reason, holding_story_seed, lifecycle_summary, market_context, market_context_seed, monitor_reason, monitor_reasoning, operator_conclusion, policy_ref_context, report_section_seeds, reporter_status, scanner_bias_summary, scanner_filters_seed, scanner_reason, scanner_reasoning, strategist_context, strategist_evidence, strategist_summary_seed, why_symbol_seed)
 
 
 def cp_facts_execution_bullets_execution_summary(_clip, market_context, market_context_seed, _listify, strategist_summary_seed, scanner_reason, why_symbol_seed, filters_human, scanner_filters_seed, monitor_reason, holding_story_seed, guard_reason, _as_dict, report_section_seeds, execution_outcome, execution_quality_seed, *, facade):

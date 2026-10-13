@@ -214,8 +214,10 @@ from libs.reporting.reporter_bundle_runtime_parts.lifecycle_evidence_context imp
     lifecycle_commander_market_evidence,
     lifecycle_scanner_filter_enrichment,
 )
-from libs.reporting.reporter_bundle_runtime_parts.lifecycle_report_policy import (
+from libs.reporting.reporter_bundle_runtime_parts.closed_sell_reconciliation import (
     closed_sell_execution_details,
+)
+from libs.reporting.reporter_bundle_runtime_parts.report_generation_policy import (
     report_generation_policy_gate,
 )
 

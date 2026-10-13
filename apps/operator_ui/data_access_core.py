@@ -157,7 +157,7 @@ from apps.operator_ui.data_access_symbol_run_chain import (
     load_symbol_run_chain_r3_impl,
 )
 from apps.operator_ui.data_access_brief_facts import (
-    brief_facts_canonical_monitor_snapshot_execution,
+    operator_brief_canonical_facts,
     brief_facts_confidence_execution_action,
 )
 from apps.operator_ui.data_access_brief_market_sections import (
@@ -1414,7 +1414,7 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
     trade_report_data = trade_report.get("report_data") if isinstance(trade_report.get("report_data"), dict) else {}
     trade_story_input = trade_report_data.get("trade_story_input") if isinstance(trade_report_data.get("trade_story_input"), dict) else {}
     canonical_trade = _build_canonical_trade_brief_input(trade_report)
-    canonical_monitor_snapshot, execution, feature_coverage, feature_snapshot, live_exit_reason, live_monitor_reason, monitor_summary, monitor_trace, path_label, phase, quote_metrics, scanner_summary, scanner_trace, score_breakdown, selected_candidate, selected_symbol, source_scores, strategist_raw_input, strategist_summary, strategist_trace, supervisor_reason, thresholds, top_candidates, verdict = brief_facts_canonical_monitor_snapshot_execution(canonical_trade=canonical_trade, strategist=strategist, scanner=scanner, monitor=monitor, supervisor=supervisor, executor=executor, detail=detail, facade=_r3_sys.modules[__name__])
+    canonical_monitor_snapshot, execution, feature_coverage, feature_snapshot, live_exit_reason, live_monitor_reason, monitor_summary, monitor_trace, path_label, phase, quote_metrics, scanner_summary, scanner_trace, score_breakdown, selected_candidate, selected_symbol, source_scores, strategist_raw_input, strategist_summary, strategist_trace, supervisor_reason, thresholds, top_candidates, verdict = operator_brief_canonical_facts(canonical_trade=canonical_trade, strategist=strategist, scanner=scanner, monitor=monitor, supervisor=supervisor, executor=executor, detail=detail, facade=_r3_sys.modules[__name__])
     selected_rank = _safe_int(
         canonical_trade.get("selected_rank"),
         next((int(row.get("rank") or 0) for row in top_candidates if str(row.get("symbol") or "") == selected_symbol), 0),

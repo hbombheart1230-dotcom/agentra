@@ -8,6 +8,8 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
+
 
 def signal_feature_candles_out(policy, frame, scoring, rows, policy_contract, *, facade):
     resolved_policy = (
@@ -52,7 +54,36 @@ def signal_feature_candles_out(policy, frame, scoring, rows, policy_contract, *,
     return (candles, out, resolved_policy, scoring_settings, timeframe_minutes)
 
 
-def signal_feature_breakout_buffer_pct_breakout_level(out, candles, resolved_policy, current_price, *, facade):
+class BreakoutLevelFeatures(NamedTuple):
+    """Result of `breakout_level_features` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    breakout_buffer_pct: Any
+    breakout_level: Any
+    breakout_ok: Any
+    current_close: Any
+    current_high: Any
+    current_low: Any
+    current_volume: Any
+    current_vwap: Any
+    extended_from_vwap_pct: Any
+    minutes_since_session_open: Any
+    open_gap_pct: Any
+    prev_close_distance_pct: Any
+    prior_bar_high: Any
+    prior_bar_low: Any
+    prior_close: Any
+    pullback_depth_pct: Any
+    rebound_ok: Any
+    recent_high: Any
+    reclaim_tolerance_pct: Any
+    session_gap_context: Any
+    volume_confirmation: Any
+    volume_ratio_raw: Any
+    vwap_hold_ok: Any
+    vwap_reclaim_ok: Any
+
+
+def breakout_level_features(out, candles, resolved_policy, current_price, *, facade):
     out["evaluated"] = True
     last = candles[-1]
     prior = candles[-2]
@@ -105,7 +136,7 @@ def signal_feature_breakout_buffer_pct_breakout_level(out, candles, resolved_pol
         minutes_since_session_open=minutes_since_session_open,
     )
     volume_ratio_raw = float(volume_confirmation.raw_ratio)
-    return (breakout_buffer_pct, breakout_level, breakout_ok, current_close, current_high, current_low, current_volume, current_vwap, extended_from_vwap_pct, minutes_since_session_open, open_gap_pct, prev_close_distance_pct, prior_bar_high, prior_bar_low, prior_close, pullback_depth_pct, rebound_ok, recent_high, reclaim_tolerance_pct, session_gap_context, volume_confirmation, volume_ratio_raw, vwap_hold_ok, vwap_reclaim_ok)
+    return BreakoutLevelFeatures(breakout_buffer_pct, breakout_level, breakout_ok, current_close, current_high, current_low, current_volume, current_vwap, extended_from_vwap_pct, minutes_since_session_open, open_gap_pct, prev_close_distance_pct, prior_bar_high, prior_bar_low, prior_close, pullback_depth_pct, rebound_ok, recent_high, reclaim_tolerance_pct, session_gap_context, volume_confirmation, volume_ratio_raw, vwap_hold_ok, vwap_reclaim_ok)
 
 
 def signal_feature_average_volume_breakout_chase_extension(volume_confirmation, resolved_policy, extended_from_vwap_pct, pullback_depth_pct, vwap_hold_ok, vwap_reclaim_ok, rebound_ok, breakout_ok, minutes_since_session_open, open_gap_pct, prev_close_distance_pct, session_gap_context, current_close, breakout_level, *, facade):

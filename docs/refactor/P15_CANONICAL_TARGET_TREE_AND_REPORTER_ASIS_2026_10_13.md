@@ -310,3 +310,62 @@ This conceptual ownership graph DOES NOT authorize changing the actual graph exe
 Claude S1 Monitor → S2 Scanner → S3 Commander → S4 Operator UI → S5 Strategist → S6 low-risk Supervisor/Executor, all one second-pass delivery with a single integrated Codex audit. Then Wave D full regression, Docker mocked, UEF, exact frozen report and LLM parity, executor real fixtures and mock-lane isolation. No main merge, live deployment, final acceptance or ZIP.
 
 **Maintenance rule:** When new modules actually land, update this [E]/[P] map in the same code commit; never mark proposed paths as implemented before they exist. Update UI-linked patch_notes.json + patch_notes.md and concise daily patch for meaningful updates.
+
+
+## G. Current status overlay (T3, verified against the physical Git tree at `bcb83a6`, 2026-10-13)
+
+*The sections above are a historical design snapshot and are intentionally not rewritten.* Machine-readable matrix:
+[p1_5_third_pass_t3_ownership_matrix.json](p1_5_third_pass_t3_ownership_matrix.json) (207 modules; classes {'KEEP': 23, 'CANONICAL_OWNER': 139, 'RENAME_CANDIDATE': 30, 'COMPAT_FACADE': 14, 'SAFETY_LOCK': 1}).
+
+### G.1 Packages that now EXIST ([P] -> [E])
+- `libs/reporting/reporter_bundle_runtime_parts/` - T2 bundle-runner pure projections (6 modules after the T3 policy split)
+- `libs/reporting/trade_memory_projection_parts/` - T1 memory surface projections
+- `libs/reporting/trade_read_model_parts/` - T1 read-model projections
+- `libs/reporting/trade_report/ai_facade_parts/ (fallback_*, compact_input_*)` - T1 fallback/compact-input projections
+
+### G.2 Every `[P]` marker above, checked against the tree
+| Planned path | Actual | Match | Decision |
+|---|---|---|---|
+| `policy_normalizers.py` | NOT PRESENT | - | [P] keep planned; do NOT create without a genuine responsibility and consumer evidence |
+| `decision_context.py` | NOT PRESENT | - | [P] keep planned; do NOT create without a genuine responsibility and consumer evidence |
+| `decision_rules_projection.py` | EXISTS | libs/runtime/commander/decision_rules_projection.py | [E] promote marker |
+| `news_projection.py` | NOT PRESENT | - | [P] keep planned; do NOT create without a genuine responsibility and consumer evidence |
+| `candidate_rerank.py` | NOT PRESENT | - | [P] keep planned; do NOT create without a genuine responsibility and consumer evidence |
+| `strategy_frame_projection.py` | NOT PRESENT | - | [P] keep planned; do NOT create without a genuine responsibility and consumer evidence |
+| `score_features.py` | NOT PRESENT | - | [P] keep planned; do NOT create without a genuine responsibility and consumer evidence |
+| `score_policy.py` | NOT PRESENT | - | [P] keep planned; do NOT create without a genuine responsibility and consumer evidence |
+| `entry_context.py` | EXISTS | libs/runtime/monitor/entry_context.py | [E] promote marker |
+| `entry_evidence.py` | EXISTS | libs/runtime/monitor/entry_evidence.py | [E] promote marker |
+| `entry_quality_projection.py` | EXISTS | libs/runtime/monitor/entry_quality_projection.py | [E] promote marker |
+| `entry_guard_evidence.py` | EXISTS | libs/runtime/monitor/entry_guard_evidence.py | [E] promote marker |
+| `entry_probe_view.py` | NOT PRESENT | - | [P] keep planned; do NOT create without a genuine responsibility and consumer evidence |
+| `entry_cycle_context.py` | EXISTS | libs/runtime/monitor/entry_cycle_context.py | [E] promote marker |
+| `entry_cascade_projection.py` | EXISTS | libs/runtime/monitor/entry_cascade_projection.py | [E] promote marker |
+| `exit_decision_projection.py` | EXISTS | libs/runtime/monitor/exit_decision_projection.py | [E] promote marker |
+| `cycle_output_projection.py` | EXISTS | libs/runtime/monitor/cycle_output_projection.py | [E] promote marker |
+| `cycle_detail_projection.py` | EXISTS | libs/runtime/monitor/cycle_detail_projection.py | [E] promote marker |
+| `signal_features.py` | EXISTS | libs/runtime/monitor/signal_features.py | [E] promote marker |
+| `signal_score_projection.py` | EXISTS | libs/runtime/monitor/signal_score_projection.py | [E] promote marker |
+| `signal_explanation.py` | EXISTS | libs/runtime/monitor/signal_explanation.py | [E] promote marker |
+| `data_access_brief_facts.py` | EXISTS | apps/operator_ui/data_access_brief_facts.py | [E] promote marker |
+| `data_access_brief_market_sections.py` | EXISTS | apps/operator_ui/data_access_brief_market_sections.py | [E] promote marker |
+| `data_access_brief_monitor_sections.py` | EXISTS | apps/operator_ui/data_access_brief_monitor_sections.py | [E] promote marker |
+| `data_access_brief_input_projection.py` | EXISTS | apps/operator_ui/data_access_brief_input_projection.py | [E] promote marker |
+| `data_access_brief_text_rules.py` | NOT PRESENT | - | [P] not created: no genuine responsibility proven |
+| `data_access_brief_render_sections.py` | EXISTS | apps/operator_ui/data_access_brief_render_sections.py | [E] promote marker |
+| `data_access_brief_render_fallback.py` | EXISTS | apps/operator_ui/data_access_brief_render_fallback.py | [E] promote marker |
+
+### G.3 Locked / protected (unchanged): [L]
+`graphs/trading_graph.py`, legacy `libs/agent/*`, Reporter facades `trade_report_ai.py` / `trade_report_markdown_clean.py` / `trade_story_pipeline.py`, numbered `bodies_*.py`, `execute_from_packet.py`, `live_execution_bundle_runner.py::main` effect coordinator, `controlled_mock_lanes/`.
+
+### G.4 Recommended tree (responsibility-based; no file is created for an old marker alone)
+~~~
+libs/runtime/{commander,strategist,scanner,monitor,monitor_exit}/   [E] keep; rename generated *_projection_* modules only after consumer mapping (RENAME_CANDIDATE rows in the matrix)
+libs/reporting/
+  reporter_bundle_runtime_parts/   [E] one responsibility per module: targeted rows | exit/monitor context | human summaries | evidence+enrichment | closed-sell reconciliation | generation policy
+  trade_memory_projection_parts/   [E] memory input + visibility | feedback rebuild | status summary | payload
+  trade_read_model_parts/          [E] artifact selection | truth projection | display context
+  trade_report/ai_facade_parts/    [E] fallback seed/summary/sections | compact input facts/payload
+apps/operator_ui/                  [E] data_access_core (coordinator, LLM path SAFETY_LOCK) + data_access_brief_* owners
+~~~
+Reasoning: each proposed unit has one read/projection responsibility, one contract (named record where arity > 8), and no I/O capability; folders exist only where a cohesive group of at least two Owners already lives.

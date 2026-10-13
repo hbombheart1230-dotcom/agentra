@@ -11,7 +11,7 @@ from libs.reporting.trade_report_common import (
 )
 import sys as _r3_sys
 from libs.reporting.trade_report.ai_facade_parts.compact_input_facts import (
-    cp_facts_commander_route_diagnostics,
+    compact_story_facts,
     cp_facts_execution_bullets_execution_summary,
 )
 from libs.reporting.trade_report.ai_facade_parts.compact_input_payload import (
@@ -388,7 +388,7 @@ def compact_story_input_for_llm(
     _evidence_digest = deps["evidence_digest"]
     execution_outcome_summary_is_placeholder = deps["execution_outcome_summary_is_placeholder"]
 
-    commander_route, diagnostics, entry_execution_visibility, execution_outcome, execution_quality_seed, filters_human, guard_reason, holding_story_seed, lifecycle_summary, market_context, market_context_seed, monitor_reason, monitor_reasoning, operator_conclusion, policy_ref_context, report_section_seeds, reporter_status, scanner_bias_summary, scanner_filters_seed, scanner_reason, scanner_reasoning, strategist_context, strategist_evidence, strategist_summary_seed, why_symbol_seed = cp_facts_commander_route_diagnostics(story_input=story_input, _build_shared_summary_seed=_build_shared_summary_seed, _extract_policy_ref_context=_extract_policy_ref_context, _extract_scanner_bias_summary=_extract_scanner_bias_summary, _as_dict=_as_dict, facade=_r3_sys.modules[__name__])
+    commander_route, diagnostics, entry_execution_visibility, execution_outcome, execution_quality_seed, filters_human, guard_reason, holding_story_seed, lifecycle_summary, market_context, market_context_seed, monitor_reason, monitor_reasoning, operator_conclusion, policy_ref_context, report_section_seeds, reporter_status, scanner_bias_summary, scanner_filters_seed, scanner_reason, scanner_reasoning, strategist_context, strategist_evidence, strategist_summary_seed, why_symbol_seed = compact_story_facts(story_input=story_input, _build_shared_summary_seed=_build_shared_summary_seed, _extract_policy_ref_context=_extract_policy_ref_context, _extract_scanner_bias_summary=_extract_scanner_bias_summary, _as_dict=_as_dict, facade=_r3_sys.modules[__name__])
     if _clip(execution_outcome.get("summary"), max_len=280) and execution_outcome_summary_is_placeholder(execution_quality_seed.get("summary")):
         execution_quality_seed = dict(execution_quality_seed)
         execution_quality_seed["summary"] = _clip(execution_outcome.get("summary"), max_len=280)

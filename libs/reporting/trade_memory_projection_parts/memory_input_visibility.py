@@ -8,8 +8,45 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 
-def memory_input_commander_memory_policy_daily_packet(story_input, *, facade):
+
+class MemoryPacketsAndVisibility(NamedTuple):
+    """Result of `memory_packets_and_visibility` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    commander_memory_policy: Any
+    daily_packet: Any
+    frame_payload: Any
+    llm_output: Any
+    memory_packets: Any
+    packets_visibility: Any
+    policy_visibility: Any
+    prompt_commander_memory_policy: Any
+    prompt_daily_packet: Any
+    prompt_memory_packets: Any
+    prompt_monthly_packet: Any
+    prompt_read_model_facts: Any
+    prompt_reporter_feedback: Any
+    prompt_selected_symbol_memory: Any
+    prompt_strategy_memory: Any
+    prompt_symbol_packet: Any
+    prompt_weekly_packet: Any
+    read_model_facts: Any
+    read_model_visibility: Any
+    recent_feedback_visibility: Any
+    reporter_feedback: Any
+    reporter_visibility: Any
+    selected_symbol_memory: Any
+    selected_visibility: Any
+    source: Any
+    strategist_source_input: Any
+    strategist_summary: Any
+    strategy_memory: Any
+    strategy_visibility: Any
+    weekly_packet: Any
+
+
+def memory_packets_and_visibility(story_input, *, facade):
     source = story_input if isinstance(story_input, dict) else {}
     commander_summary, strategist_summary, llm_output, frame_payload, visibility, strategist_source_input = facade._nested_memory_sources(source)
     commander_refresh_context = facade._dict(strategist_source_input.get("commander_refresh_context"))
@@ -95,10 +132,45 @@ def memory_input_commander_memory_policy_daily_packet(story_input, *, facade):
 
     daily_packet = facade._dict(memory_packets.get("daily_strategy_memory"))
     weekly_packet = facade._dict(memory_packets.get("weekly_strategy_memory"))
-    return (commander_memory_policy, daily_packet, frame_payload, llm_output, memory_packets, packets_visibility, policy_visibility, prompt_commander_memory_policy, prompt_daily_packet, prompt_memory_packets, prompt_monthly_packet, prompt_read_model_facts, prompt_reporter_feedback, prompt_selected_symbol_memory, prompt_strategy_memory, prompt_symbol_packet, prompt_weekly_packet, read_model_facts, read_model_visibility, recent_feedback_visibility, reporter_feedback, reporter_visibility, selected_symbol_memory, selected_visibility, source, strategist_source_input, strategist_summary, strategy_memory, strategy_visibility, weekly_packet)
+    return MemoryPacketsAndVisibility(commander_memory_policy, daily_packet, frame_payload, llm_output, memory_packets, packets_visibility, policy_visibility, prompt_commander_memory_policy, prompt_daily_packet, prompt_memory_packets, prompt_monthly_packet, prompt_read_model_facts, prompt_reporter_feedback, prompt_selected_symbol_memory, prompt_strategy_memory, prompt_symbol_packet, prompt_weekly_packet, read_model_facts, read_model_visibility, recent_feedback_visibility, reporter_feedback, reporter_visibility, selected_symbol_memory, selected_visibility, source, strategist_source_input, strategist_summary, strategy_memory, strategy_visibility, weekly_packet)
 
 
-def memory_input_monitor_guidance_monthly_packet(memory_packets, source, selected_visibility, selected_symbol_memory, llm_output, frame_payload, strategist_summary, strategist_source_input, prompt_strategy_memory, strategy_visibility, prompt_selected_symbol_memory, prompt_reporter_feedback, reporter_visibility, prompt_read_model_facts, read_model_visibility, strategy_memory, reporter_feedback, read_model_facts, *, facade):
+class MemoryPromptVisibility(NamedTuple):
+    """Result of `memory_prompt_visibility` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    monitor_guidance: Any
+    monthly_packet: Any
+    playbook: Any
+    prompt_best_playbooks: Any
+    prompt_read_model_present: Any
+    prompt_recent_failures: Any
+    prompt_recent_success_patterns: Any
+    prompt_reporter_available: Any
+    prompt_reporter_consumed: Any
+    prompt_reporter_present: Any
+    prompt_reporter_status: Any
+    prompt_selected_blocker: Any
+    prompt_selected_playbook: Any
+    prompt_selected_present: Any
+    prompt_selected_trade_count: Any
+    prompt_selected_win_rate: Any
+    prompt_strategy_present: Any
+    prompt_strategy_requested_day: Any
+    prompt_strategy_resolved_day: Any
+    prompt_strategy_status: Any
+    prompt_worst_playbooks: Any
+    read_model_present: Any
+    reporter_available: Any
+    reporter_consumed: Any
+    reporter_present: Any
+    scanner_bias: Any
+    selected_present: Any
+    strategy_present: Any
+    symbol: Any
+    symbol_packet: Any
+
+
+def memory_prompt_visibility(memory_packets, source, selected_visibility, selected_symbol_memory, llm_output, frame_payload, strategist_summary, strategist_source_input, prompt_strategy_memory, strategy_visibility, prompt_selected_symbol_memory, prompt_reporter_feedback, reporter_visibility, prompt_read_model_facts, read_model_visibility, strategy_memory, reporter_feedback, read_model_facts, *, facade):
     monthly_packet = facade._dict(memory_packets.get("monthly_strategy_memory"))
     symbol_packet = facade._dict(memory_packets.get("symbol_memory_packet"))
 
@@ -186,4 +258,4 @@ def memory_input_monitor_guidance_monthly_packet(memory_packets, source, selecte
         prompt_reporter_feedback.get("status") or reporter_visibility.get("status"),
         max_len=40,
     )
-    return (monitor_guidance, monthly_packet, playbook, prompt_best_playbooks, prompt_read_model_present, prompt_recent_failures, prompt_recent_success_patterns, prompt_reporter_available, prompt_reporter_consumed, prompt_reporter_present, prompt_reporter_status, prompt_selected_blocker, prompt_selected_playbook, prompt_selected_present, prompt_selected_trade_count, prompt_selected_win_rate, prompt_strategy_present, prompt_strategy_requested_day, prompt_strategy_resolved_day, prompt_strategy_status, prompt_worst_playbooks, read_model_present, reporter_available, reporter_consumed, reporter_present, scanner_bias, selected_present, strategy_present, symbol, symbol_packet)
+    return MemoryPromptVisibility(monitor_guidance, monthly_packet, playbook, prompt_best_playbooks, prompt_read_model_present, prompt_recent_failures, prompt_recent_success_patterns, prompt_reporter_available, prompt_reporter_consumed, prompt_reporter_present, prompt_reporter_status, prompt_selected_blocker, prompt_selected_playbook, prompt_selected_present, prompt_selected_trade_count, prompt_selected_win_rate, prompt_strategy_present, prompt_strategy_requested_day, prompt_strategy_resolved_day, prompt_strategy_status, prompt_worst_playbooks, read_model_present, reporter_available, reporter_consumed, reporter_present, scanner_bias, selected_present, strategy_present, symbol, symbol_packet)

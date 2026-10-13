@@ -8,65 +8,95 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 
-def scan_feature_candidate_rank_score_candidate_universe(candidate_meta, symbol, news_by_sym, news_signal_by_sym, skill_quotes, state, row, feature_map, skill_order_counts, *, facade):
-    if True:
-        candidate_rank_score = facade._clamp(facade._to_float(candidate_meta.get("rank_score") or 0.0), -1.0, 1.0)
-        candidate_universe_score = facade._clamp(facade._to_float(candidate_meta.get("universe_score") or 0.0), 0.0, 10.0)
-        source_scores = dict(candidate_meta.get("source_scores") or {})
 
-        news_s = facade._to_float(news_by_sym.get(symbol, news_by_sym.get(facade._norm_symbol(symbol), 0.0)))
-        news_sig = (
-            news_signal_by_sym.get(symbol)
-            if isinstance(news_signal_by_sym.get(symbol), dict)
-            else news_signal_by_sym.get(facade._norm_symbol(symbol), {})
-        )
-        metrics = facade._candidate_quote_metrics(symbol, skill_quotes=skill_quotes, state=state)
-        quote = skill_quotes.get(facade._norm_symbol(symbol), {}) if isinstance(skill_quotes.get(facade._norm_symbol(symbol)), dict) else {}
-        quote_price = quote.get("price")
-        if quote_price is None:
-            quote_price = quote.get("cur")
-        quote_price_num = facade._to_float(quote_price) if quote_price is not None else None
-        deviation_signal = facade.extract_etf_deviation_signal(
-            symbol=symbol,
-            candidate={**dict(candidate_meta), **dict(row if isinstance(row, dict) else {})},
-            features=feature_map.get(facade._norm_symbol(symbol), {}) if isinstance(feature_map.get(facade._norm_symbol(symbol)), dict) else {},
-            quote=quote,
-            state=state,
-            asset_class_detected=(
-                candidate_meta.get("asset_class_detected")
-                or (row.get("asset_class_detected") if isinstance(row, dict) else "")
-            ),
-        )
-        etf_deviation_tradeable = bool(
-            deviation_signal.get("is_etf_family")
-            or deviation_signal.get("available")
-        )
-        etf_deviation_entry_score = (
-            float(deviation_signal.get("entry_discount_score") or 0.0)
-            if etf_deviation_tradeable
-            else 0.0
-        )
-        etf_deviation_premium_score = (
-            float(deviation_signal.get("exit_premium_score") or 0.0)
-            if etf_deviation_tradeable
-            else 0.0
-        )
-        etf_deviation_bias = float((0.08 * etf_deviation_entry_score) - (0.08 * etf_deviation_premium_score))
-        open_orders = int(skill_order_counts.get(facade._norm_symbol(symbol), 0))
-        order_penalty = min(open_orders, 3)
+class CandidateRankInputs(NamedTuple):
+    """Result of `candidate_rank_inputs` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
 
-        feature_row = feature_map.get(facade._norm_symbol(symbol), {})
-        if not isinstance(feature_row, dict):
-            feature_row = {}
-        feature_signal = facade._clamp(facade._to_float(feature_row.get("signal_score") or 0.0), -1.0, 1.0)
-        feature_regime = str(feature_row.get("regime") or "").strip().lower()
-        return20 = facade._to_float(feature_row.get("return20"))
-        ma20_gap = facade._to_float(feature_row.get("ma20_gap"))
-        ma60_gap = facade._to_float(feature_row.get("ma60_gap"))
-        ma120_gap = facade._to_float(feature_row.get("ma120_gap"))
-        trend_strength = facade._to_float(feature_row.get("trend_strength"))
-    return (candidate_rank_score, candidate_universe_score, deviation_signal, etf_deviation_bias, etf_deviation_entry_score, etf_deviation_premium_score, etf_deviation_tradeable, feature_regime, feature_row, feature_signal, ma120_gap, ma20_gap, ma60_gap, metrics, news_s, news_sig, open_orders, order_penalty, quote, quote_price, quote_price_num, return20, source_scores, trend_strength)
+    candidate_rank_score: Any
+    candidate_universe_score: Any
+    deviation_signal: Any
+    etf_deviation_bias: Any
+    etf_deviation_entry_score: Any
+    etf_deviation_premium_score: Any
+    etf_deviation_tradeable: Any
+    feature_regime: Any
+    feature_row: Any
+    feature_signal: Any
+    ma120_gap: Any
+    ma20_gap: Any
+    ma60_gap: Any
+    metrics: Any
+    news_s: Any
+    news_sig: Any
+    open_orders: Any
+    order_penalty: Any
+    quote: Any
+    quote_price: Any
+    quote_price_num: Any
+    return20: Any
+    source_scores: Any
+    trend_strength: Any
+
+
+def candidate_rank_inputs(candidate_meta, symbol, news_by_sym, news_signal_by_sym, skill_quotes, state, row, feature_map, skill_order_counts, *, facade):
+    candidate_rank_score = facade._clamp(facade._to_float(candidate_meta.get("rank_score") or 0.0), -1.0, 1.0)
+    candidate_universe_score = facade._clamp(facade._to_float(candidate_meta.get("universe_score") or 0.0), 0.0, 10.0)
+    source_scores = dict(candidate_meta.get("source_scores") or {})
+
+    news_s = facade._to_float(news_by_sym.get(symbol, news_by_sym.get(facade._norm_symbol(symbol), 0.0)))
+    news_sig = (
+        news_signal_by_sym.get(symbol)
+        if isinstance(news_signal_by_sym.get(symbol), dict)
+        else news_signal_by_sym.get(facade._norm_symbol(symbol), {})
+    )
+    metrics = facade._candidate_quote_metrics(symbol, skill_quotes=skill_quotes, state=state)
+    quote = skill_quotes.get(facade._norm_symbol(symbol), {}) if isinstance(skill_quotes.get(facade._norm_symbol(symbol)), dict) else {}
+    quote_price = quote.get("price")
+    if quote_price is None:
+        quote_price = quote.get("cur")
+    quote_price_num = facade._to_float(quote_price) if quote_price is not None else None
+    deviation_signal = facade.extract_etf_deviation_signal(
+        symbol=symbol,
+        candidate={**dict(candidate_meta), **dict(row if isinstance(row, dict) else {})},
+        features=feature_map.get(facade._norm_symbol(symbol), {}) if isinstance(feature_map.get(facade._norm_symbol(symbol)), dict) else {},
+        quote=quote,
+        state=state,
+        asset_class_detected=(
+            candidate_meta.get("asset_class_detected")
+            or (row.get("asset_class_detected") if isinstance(row, dict) else "")
+        ),
+    )
+    etf_deviation_tradeable = bool(
+        deviation_signal.get("is_etf_family")
+        or deviation_signal.get("available")
+    )
+    etf_deviation_entry_score = (
+        float(deviation_signal.get("entry_discount_score") or 0.0)
+        if etf_deviation_tradeable
+        else 0.0
+    )
+    etf_deviation_premium_score = (
+        float(deviation_signal.get("exit_premium_score") or 0.0)
+        if etf_deviation_tradeable
+        else 0.0
+    )
+    etf_deviation_bias = float((0.08 * etf_deviation_entry_score) - (0.08 * etf_deviation_premium_score))
+    open_orders = int(skill_order_counts.get(facade._norm_symbol(symbol), 0))
+    order_penalty = min(open_orders, 3)
+
+    feature_row = feature_map.get(facade._norm_symbol(symbol), {})
+    if not isinstance(feature_row, dict):
+        feature_row = {}
+    feature_signal = facade._clamp(facade._to_float(feature_row.get("signal_score") or 0.0), -1.0, 1.0)
+    feature_regime = str(feature_row.get("regime") or "").strip().lower()
+    return20 = facade._to_float(feature_row.get("return20"))
+    ma20_gap = facade._to_float(feature_row.get("ma20_gap"))
+    ma60_gap = facade._to_float(feature_row.get("ma60_gap"))
+    ma120_gap = facade._to_float(feature_row.get("ma120_gap"))
+    trend_strength = facade._to_float(feature_row.get("trend_strength"))
+    return CandidateRankInputs(candidate_rank_score, candidate_universe_score, deviation_signal, etf_deviation_bias, etf_deviation_entry_score, etf_deviation_premium_score, etf_deviation_tradeable, feature_regime, feature_row, feature_signal, ma120_gap, ma20_gap, ma60_gap, metrics, news_s, news_sig, open_orders, order_penalty, quote, quote_price, quote_price_num, return20, source_scores, trend_strength)
 
 
 def scan_feature_adx14_adx_component(feature_row, candidate_meta, row, metrics, source_scores, return20, ma20_gap, ma120_gap, ma60_gap, trend_strength, feature_signal, pool_meta, symbol, news_s, gs, *, facade):

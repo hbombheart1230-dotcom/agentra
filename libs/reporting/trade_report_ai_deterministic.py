@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable, Dict, List
 import sys as _r3_sys
 from libs.reporting.trade_report.ai_facade_parts.fallback_seed_context import (
-    fb_seed_action_entry_decision_seed,
+    fallback_report_seed,
 )
 from libs.reporting.trade_report.ai_facade_parts.fallback_summary_status import (
     fb_summary_effective_scanner_selection_trace_exit_s,
@@ -615,7 +615,7 @@ def fallback_report(
     build_trade_memory_application_surface = deps["build_trade_memory_application_surface"]
     execution_outcome_summary_is_placeholder = deps["execution_outcome_summary_is_placeholder"]
 
-    action, entry_decision_seed, entry_execution_visibility, execution_outcome, execution_quality_seed, exit_decision_seed, filters_human, final_operator_conclusion_seed, guard_approval_seed, guard_reason, has_runtime_market_context, has_runtime_monitor_reason, has_runtime_scanner_reason, holding_story_seed, market_context, market_context_seed, memory_surface, monitor_reason, operator_conclusion, reporter_evaluation_seed, reporter_feedback_packet, reporter_status, scanner_filters_seed, scanner_reason, shared_seed, shared_selection_trace, strategist_context, strategist_evidence, strategist_summary_seed, why_symbol_seed = fb_seed_action_entry_decision_seed(_build_shared_summary_seed=_build_shared_summary_seed, story_input=story_input, build_trade_report_memory_surface=build_trade_report_memory_surface, _as_dict=_as_dict, _extract_policy_ref_context=_extract_policy_ref_context, _extract_scanner_bias_summary=_extract_scanner_bias_summary, _enrich_market_context_for_fallback=_enrich_market_context_for_fallback, _fallback_section_seeds=_fallback_section_seeds, _enrich_scanner_reason_for_fallback=_enrich_scanner_reason_for_fallback, _clip=_clip, facade=_r3_sys.modules[__name__])
+    action, entry_decision_seed, entry_execution_visibility, execution_outcome, execution_quality_seed, exit_decision_seed, filters_human, final_operator_conclusion_seed, guard_approval_seed, guard_reason, has_runtime_market_context, has_runtime_monitor_reason, has_runtime_scanner_reason, holding_story_seed, market_context, market_context_seed, memory_surface, monitor_reason, operator_conclusion, reporter_evaluation_seed, reporter_feedback_packet, reporter_status, scanner_filters_seed, scanner_reason, shared_seed, shared_selection_trace, strategist_context, strategist_evidence, strategist_summary_seed, why_symbol_seed = fallback_report_seed(_build_shared_summary_seed=_build_shared_summary_seed, story_input=story_input, build_trade_report_memory_surface=build_trade_report_memory_surface, _as_dict=_as_dict, _extract_policy_ref_context=_extract_policy_ref_context, _extract_scanner_bias_summary=_extract_scanner_bias_summary, _enrich_market_context_for_fallback=_enrich_market_context_for_fallback, _fallback_section_seeds=_fallback_section_seeds, _enrich_scanner_reason_for_fallback=_enrich_scanner_reason_for_fallback, _clip=_clip, facade=_r3_sys.modules[__name__])
     monitor_snapshot = _build_report_monitor_snapshot(
         monitor_reason=monitor_reason,
         story_input=story_input,

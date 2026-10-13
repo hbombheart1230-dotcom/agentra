@@ -218,7 +218,9 @@ class _FxFile:
         elif not isinstance(data, str):
             return
         pid, ppid = str(os.getpid()), str(os.getppid())
-        data = re.sub(r"\d{18,19}", "<NS>", data.replace(pid, "<PID>").replace(ppid, "<PPID>")).encode("utf-8")
+        # ns timestamps first: a pid substring inside a 19-digit number must not split it
+        data = re.sub(r"\d{18,19}", "<NS>", data)
+        data = data.replace(pid, "<PID>").replace(ppid, "<PPID>").encode("utf-8")
         self._h.update(data)
         if len(self._prev) < 700:
             object.__setattr__(self, "_prev", (self._prev + data)[:700])

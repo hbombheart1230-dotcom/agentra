@@ -8,8 +8,39 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 
-def brief_facts_canonical_monitor_snapshot_execution(canonical_trade, strategist, scanner, monitor, supervisor, executor, detail, *, facade):
+
+class OperatorBriefCanonicalFacts(NamedTuple):
+    """Result of `operator_brief_canonical_facts` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    canonical_monitor_snapshot: Any
+    execution: Any
+    feature_coverage: Any
+    feature_snapshot: Any
+    live_exit_reason: Any
+    live_monitor_reason: Any
+    monitor_summary: Any
+    monitor_trace: Any
+    path_label: Any
+    phase: Any
+    quote_metrics: Any
+    scanner_summary: Any
+    scanner_trace: Any
+    score_breakdown: Any
+    selected_candidate: Any
+    selected_symbol: Any
+    source_scores: Any
+    strategist_raw_input: Any
+    strategist_summary: Any
+    strategist_trace: Any
+    supervisor_reason: Any
+    thresholds: Any
+    top_candidates: Any
+    verdict: Any
+
+
+def operator_brief_canonical_facts(canonical_trade, strategist, scanner, monitor, supervisor, executor, detail, *, facade):
     canonical_monitor_snapshot = (
         canonical_trade.get("monitor_snapshot")
         if isinstance(canonical_trade.get("monitor_snapshot"), dict)
@@ -55,7 +86,7 @@ def brief_facts_canonical_monitor_snapshot_execution(canonical_trade, strategist
         allow_test_symbols=True,
     ).strip()
     top_candidates = facade._build_top_candidates(scanner_summary, scanner_trace, selected_symbol)
-    return (canonical_monitor_snapshot, execution, feature_coverage, feature_snapshot, live_exit_reason, live_monitor_reason, monitor_summary, monitor_trace, path_label, phase, quote_metrics, scanner_summary, scanner_trace, score_breakdown, selected_candidate, selected_symbol, source_scores, strategist_raw_input, strategist_summary, strategist_trace, supervisor_reason, thresholds, top_candidates, verdict)
+    return OperatorBriefCanonicalFacts(canonical_monitor_snapshot, execution, feature_coverage, feature_snapshot, live_exit_reason, live_monitor_reason, monitor_summary, monitor_trace, path_label, phase, quote_metrics, scanner_summary, scanner_trace, score_breakdown, selected_candidate, selected_symbol, source_scores, strategist_raw_input, strategist_summary, strategist_trace, supervisor_reason, thresholds, top_candidates, verdict)
 
 
 def brief_facts_confidence_execution_action(canonical_trade, scanner_summary, top_candidates, scanner_trace, execution, live_monitor_reason, live_exit_reason, selected_candidate, *, facade):

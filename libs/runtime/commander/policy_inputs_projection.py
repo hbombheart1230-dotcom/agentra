@@ -8,6 +8,8 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
+
 
 def behavior_input_allow_legacy_rule_allow_legacy_strategy(selected_route, state, phase, _existing_value, *, facade):
     route = str(selected_route or facade._derive_commander_selected_route(state) or "").strip().lower() or "unknown"
@@ -39,7 +41,36 @@ def behavior_input_allow_legacy_rule_allow_legacy_strategy(selected_route, state
     return (allow_legacy_rule, allow_legacy_strategy_v1, feedback_policy, memory_feedback_enabled, phase_text, reporter_ai_review_enabled, route, strict_mode, trade_report_enabled, trade_report_generate_on_open)
 
 
-def behavior_input_block_buy_when_open_position_buy_closeou(_existing_value, risk_max_positions, *, facade):
+class CommanderBehaviorPolicyInputs(NamedTuple):
+    """Result of `commander_behavior_policy_inputs` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    block_buy_when_open_position: Any
+    buy_closeout_cutoff_min: Any
+    cached_strategist_when_flat: Any
+    eod_flat_cutoff_min: Any
+    exit_confirm_ticks: Any
+    exit_policy_enabled: Any
+    exit_policy_use_eod_flat: Any
+    kiwoom_condition_limit: Any
+    min_hold_seconds: Any
+    monitor_only_when_holding: Any
+    monitor_scoring_enabled: Any
+    monitor_scoring_shadow_mode: Any
+    monitor_scoring_threshold: Any
+    position_sizing_enabled: Any
+    position_sizing_risk_per_trade_ratio: Any
+    post_exit_cooldown_sec: Any
+    scanner_block_static_when_empty: Any
+    scanner_include_change_rate: Any
+    scanner_live_fetch: Any
+    scanner_source_type: Any
+    scanner_strict_only: Any
+    sell_cooldown_sec: Any
+    top_candidate_pool: Any
+    universe_asset_type: Any
+
+
+def commander_behavior_policy_inputs(_existing_value, risk_max_positions, *, facade):
     monitor_only_when_holding = _existing_value("commander", "route", "monitor_only_when_holding")
     if monitor_only_when_holding is None:
         monitor_only_when_holding = True
@@ -124,4 +155,4 @@ def behavior_input_block_buy_when_open_position_buy_closeou(_existing_value, ris
     )
     if position_sizing_risk_per_trade_ratio is None:
         position_sizing_risk_per_trade_ratio = 0.01
-    return (block_buy_when_open_position, buy_closeout_cutoff_min, cached_strategist_when_flat, eod_flat_cutoff_min, exit_confirm_ticks, exit_policy_enabled, exit_policy_use_eod_flat, kiwoom_condition_limit, min_hold_seconds, monitor_only_when_holding, monitor_scoring_enabled, monitor_scoring_shadow_mode, monitor_scoring_threshold, position_sizing_enabled, position_sizing_risk_per_trade_ratio, post_exit_cooldown_sec, scanner_block_static_when_empty, scanner_include_change_rate, scanner_live_fetch, scanner_source_type, scanner_strict_only, sell_cooldown_sec, top_candidate_pool, universe_asset_type)
+    return CommanderBehaviorPolicyInputs(block_buy_when_open_position, buy_closeout_cutoff_min, cached_strategist_when_flat, eod_flat_cutoff_min, exit_confirm_ticks, exit_policy_enabled, exit_policy_use_eod_flat, kiwoom_condition_limit, min_hold_seconds, monitor_only_when_holding, monitor_scoring_enabled, monitor_scoring_shadow_mode, monitor_scoring_threshold, position_sizing_enabled, position_sizing_risk_per_trade_ratio, post_exit_cooldown_sec, scanner_block_static_when_empty, scanner_include_change_rate, scanner_live_fetch, scanner_source_type, scanner_strict_only, sell_cooldown_sec, top_candidate_pool, universe_asset_type)
