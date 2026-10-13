@@ -1,0 +1,299 @@
+{
+ "schema": "p157_t0_reporter_consumer_map.v1",
+ "code_sha": "4cb92916c976f947613f52e8b0c0790addac7eb5",
+ "targets": {
+  "build_trade_report_memory_surface": {
+   "module": "libs/reporting/trade_memory_surface.py",
+   "production_consumers": [
+    "libs/reporting/trade_bundle_assembly.py",
+    "libs/reporting/trade_report/normalization.py",
+    "libs/reporting/trade_report_ai.py",
+    "libs/reporting/trade_report_ai_deterministic.py"
+   ],
+   "test_files": [
+    "tests/test_trade_memory_surface.py"
+   ],
+   "monkeypatch_files": [],
+   "module_imported_by": [
+    "libs/reporting/trade_bundle_assembly.py",
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  "build_trade_read_model": {
+   "module": "libs/reporting/trade_read_model.py",
+   "production_consumers": [
+    "graphs/nodes/strategist_node.py",
+    "libs/agent/reporter.py",
+    "libs/reporting/evaluation/trade_read_model.py",
+    "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py",
+    "libs/reporting/symbol_read_model.py",
+    "libs/reporting/trade_report_ai.py"
+   ],
+   "test_files": [
+    "tests/test_llm_model_policy.py",
+    "tests/test_operator_ui_data_access_phase2.py",
+    "tests/test_reporter_agent_trade_entrypoint.py",
+    "tests/test_single_trade_report.py",
+    "tests/test_symbol_read_model.py",
+    "tests/test_trade_read_model.py",
+    "tests/test_trade_report_ai.py",
+    "tests/test_trade_report_ai_separated_adapter.py"
+   ],
+   "monkeypatch_files": [
+    "tests/test_llm_model_policy.py",
+    "tests/test_reporter_agent_trade_entrypoint.py",
+    "tests/test_symbol_read_model.py",
+    "tests/test_trade_report_ai.py"
+   ],
+   "module_imported_by": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_reports.py",
+    "graphs/nodes/strategist_node.py",
+    "libs/agent/reporter.py",
+    "libs/reporting/evaluation/trade_read_model.py",
+    "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py",
+    "libs/reporting/symbol_read_model.py",
+    "libs/reporting/trade_report_ai.py",
+    "libs/reporting/trade_story_pipeline.py"
+   ]
+  },
+  "fallback_report": {
+   "module": "libs/reporting/trade_report_ai_deterministic.py",
+   "production_consumers": [
+    "libs/reporting/trade_report/services/ai_report.py",
+    "libs/reporting/trade_report_ai.py"
+   ],
+   "test_files": [],
+   "monkeypatch_files": [],
+   "module_imported_by": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  "compact_story_input_for_llm": {
+   "module": "libs/reporting/trade_report_ai_compact_input.py",
+   "production_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ],
+   "test_files": [],
+   "monkeypatch_files": [],
+   "module_imported_by": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  }
+ },
+ "facades": {
+  "libs/reporting/trade_report_ai.py": {
+   "test_files": [
+    "tests/test_commander_env_migration_phase1.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_llm_model_policy.py",
+    "tests/test_llm_status_semantics_phase2.py",
+    "tests/test_p152_ai_duration_language_owner.py",
+    "tests/test_p152_ai_facade_market_scanner_labels.py",
+    "tests/test_p152_ai_facade_text_helpers.py",
+    "tests/test_p152_facade_consumer_static_index.py",
+    "tests/test_p152_operator_phrase_owners.py",
+    "tests/test_p152_r3_harness_guards.py",
+    "tests/test_p152_summary_input_part_owners.py",
+    "tests/test_phase_6_2_consumption.py",
+    "tests/test_quant_tactic_report.py",
+    "tests/test_run_ai_trade_report_batch.py",
+    "tests/test_single_trade_report.py",
+    "tests/test_strategist_quant_context_report.py",
+    "tests/test_trade_memory_application_surface.py",
+    "tests/test_trade_memory_surface.py",
+    "tests/test_trade_report_ai.py",
+    "tests/test_trade_report_ai_separated_adapter.py"
+   ],
+   "production_importers": [
+    "apps/operator_ui/data_access_core.py",
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/intraday_trade_reports.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/post_exit_shadow_recap.py",
+    "libs/reporting/single_trade_report.py",
+    "libs/reporting/trade_report/operator_text.py",
+    "libs/reporting/trade_story_pipeline.py",
+    "scripts/refactor/p152_facade_consumer_scan.py",
+    "scripts/refactor/p152_r3_seam_challenge.py",
+    "scripts/run_ai_trade_report_batch.py"
+   ],
+   "monkeypatch_lines": 2
+  },
+  "libs/reporting/trade_report_markdown_clean.py": {
+   "test_files": [
+    "tests/test_korea_market_indices_context.py",
+    "tests/test_opening_rank1_observation_price.py",
+    "tests/test_p152_facade_consumer_static_index.py",
+    "tests/test_p152_markdown_clean_news_headlines_owner.py",
+    "tests/test_p152_markdown_clean_operator_labels_owners.py",
+    "tests/test_p152_markdown_clean_summary_language_owner.py",
+    "tests/test_p152_render_diagnostics_owner.py",
+    "tests/test_p152_summary_findings_owner.py",
+    "tests/test_p152_summary_input_part_owners.py",
+    "tests/test_trade_summary_symbol_metadata.py"
+   ],
+   "production_importers": [
+    "libs/reporting/trade_report_ai.py",
+    "scripts/refactor/p152_facade_consumer_scan.py",
+    "scripts/refactor/p152_r3_seam_challenge.py"
+   ],
+   "monkeypatch_lines": 2
+  },
+  "libs/reporting/trade_story_pipeline.py": {
+   "test_files": [
+    "tests/test_korea_market_indices_context.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_p152_facade_consumer_static_index.py",
+    "tests/test_p152_monitor_context_owner.py",
+    "tests/test_p152_monitor_trace_wrappers.py",
+    "tests/test_p152_story_facade_compatible_owners.py",
+    "tests/test_p152_story_facade_contract_owners.py",
+    "tests/test_p152_story_facade_human_owners.py",
+    "tests/test_phase3_lifecycle_bundle.py",
+    "tests/test_quant_tactic_report.py",
+    "tests/test_reporting_provenance_preference.py",
+    "tests/test_trade_story_pipeline_enrichment.py"
+   ],
+   "production_importers": [
+    "libs/reporting/intraday_trade_reports.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/live_execution_event_evidence.py",
+    "libs/reporting/live_execution_execution_runs.py",
+    "libs/reporting/live_execution_lifecycle_recovery.py",
+    "libs/reporting/live_execution_open_monitor.py",
+    "libs/reporting/live_execution_scanner_evidence.py",
+    "libs/reporting/live_execution_strategist_artifacts.py",
+    "libs/reporting/monitor_timeline_reconciliation.py",
+    "libs/reporting/single_trade_report.py",
+    "libs/reporting/trade_bundle_assembly.py",
+    "libs/reporting/trade_bundle_state.py",
+    "libs/reporting/trade_execution_snapshot.py",
+    "libs/reporting/trade_lifecycle_builder.py",
+    "scripts/refactor/p152_facade_consumer_scan.py"
+   ],
+   "monkeypatch_lines": 2
+  }
+ },
+ "focused_test_files": [
+  "tests/test_commander_env_migration_phase1.py",
+  "tests/test_korea_market_indices_context.py",
+  "tests/test_live_execution_bundle_report.py",
+  "tests/test_llm_model_policy.py",
+  "tests/test_llm_status_semantics_phase2.py",
+  "tests/test_opening_rank1_observation_price.py",
+  "tests/test_operator_ui_data_access_phase2.py",
+  "tests/test_p152_ai_duration_language_owner.py",
+  "tests/test_p152_ai_facade_market_scanner_labels.py",
+  "tests/test_p152_ai_facade_text_helpers.py",
+  "tests/test_p152_facade_consumer_static_index.py",
+  "tests/test_p152_markdown_clean_news_headlines_owner.py",
+  "tests/test_p152_markdown_clean_operator_labels_owners.py",
+  "tests/test_p152_markdown_clean_summary_language_owner.py",
+  "tests/test_p152_monitor_context_owner.py",
+  "tests/test_p152_monitor_trace_wrappers.py",
+  "tests/test_p152_operator_phrase_owners.py",
+  "tests/test_p152_r3_harness_guards.py",
+  "tests/test_p152_render_diagnostics_owner.py",
+  "tests/test_p152_story_facade_compatible_owners.py",
+  "tests/test_p152_story_facade_contract_owners.py",
+  "tests/test_p152_story_facade_human_owners.py",
+  "tests/test_p152_summary_findings_owner.py",
+  "tests/test_p152_summary_input_part_owners.py",
+  "tests/test_phase3_lifecycle_bundle.py",
+  "tests/test_phase_6_2_consumption.py",
+  "tests/test_quant_tactic_report.py",
+  "tests/test_reporter_agent_trade_entrypoint.py",
+  "tests/test_reporting_provenance_preference.py",
+  "tests/test_run_ai_trade_report_batch.py",
+  "tests/test_single_trade_report.py",
+  "tests/test_strategist_quant_context_report.py",
+  "tests/test_symbol_read_model.py",
+  "tests/test_trade_memory_application_surface.py",
+  "tests/test_trade_memory_surface.py",
+  "tests/test_trade_read_model.py",
+  "tests/test_trade_report_ai.py",
+  "tests/test_trade_report_ai_separated_adapter.py",
+  "tests/test_trade_story_pipeline_enrichment.py",
+  "tests/test_trade_summary_symbol_metadata.py"
+ ],
+ "frozen_real_report_fixtures": {
+  "status": "REAL_REPORT_PARITY_BLOCKED",
+  "reason": "no lawfully available frozen production report/LLM artifacts in the repository; only MOCK/synthetic fixtures exist (tests build story inputs in-test)"
+ },
+ "representative_scenario_coverage_by_existing_tests": {
+  "no_execution": {
+   "count": 0,
+   "examples": []
+  },
+  "open_or_hold": {
+   "count": 21,
+   "examples": [
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_reuses_intraday_linkage_and_hold_helpers",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_builds_trade_lifecycle_with_entry_hold_exit",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_links_hold_run_from_monitor_trace_symbol",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_keeps_open_lifecycle_without_exit",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_backfills_open_monitor_snapshot_from_runtime_state",
+    "test_live_execution_bundle_report.py::test_build_holding_phase_observability_recovers_short_hold_evidence"
+   ]
+  },
+  "partial_exit": {
+   "count": 11,
+   "examples": [
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_defers_partial_exit_report_until_full_close",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_marks_partial_recovery_trade_explicitly",
+    "test_llm_status_semantics_phase2.py::test_trade_report_partial_output_is_not_marked_ok",
+    "test_llm_status_semantics_phase2.py::test_reporter_review_partial_output_is_not_marked_ok",
+    "test_p152_summary_findings_owner.py::test_deterministic_findings_carryover_and_partial_keeps_precedence",
+    "test_run_ai_trade_report_batch.py::test_run_ai_trade_report_batch_classifies_partial_trade_artifact_when_only_early_evidence_exists"
+   ]
+  },
+  "closed_buy_sell": {
+   "count": 10,
+   "examples": [
+    "test_live_execution_bundle_report.py::test_build_trade_lifecycles_promotes_closed_trade_story_type_from_exit_bundle",
+    "test_live_execution_bundle_report.py::test_build_trade_lifecycles_promotes_closed_trade_story_type_from_snapshot_when_bundle_missing",
+    "test_run_ai_trade_report_batch.py::test_story_input_quality_score_penalizes_closed_symbol_mismatch_and_rewards_canonical_monitor",
+    "test_trade_report_ai.py::test_trade_report_shared_fact_closed_reconciles_buy_to_sell_from_exit_evidence",
+    "test_trade_report_ai.py::test_normalize_trade_report_output_reconciles_closed_buy_when_exit_reason_is_sell",
+    "test_trade_report_ai.py::test_trade_summary_corrects_closed_sell_final_operator_summary_prefix"
+   ]
+  },
+  "llm_failure_fallback": {
+   "count": 41,
+   "examples": [
+    "test_korea_market_indices_context.py::test_strategist_market_context_uses_korea_indices_as_fallback_inputs",
+    "test_live_execution_bundle_report.py::test_strategist_evidence_trace_filters_fallback_candidate_news_to_selected_symbol",
+    "test_llm_model_policy.py::test_llm_profiles_resolve_expected_primary_and_fallback",
+    "test_llm_model_policy.py::test_reporter_final_review_uses_env_execution_fallback_when_policy_missing",
+    "test_llm_model_policy.py::test_strategist_primary_fallback_trace_reads_policy_models",
+    "test_opening_rank1_observation_price.py::test_fresh_quote_fallback"
+   ]
+  },
+  "regeneration_queue_lock": {
+   "count": 11,
+   "examples": [
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_background_job_paths_default_to_repo_root",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_skips_when_background_job_is_already_running",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_ignores_process_scan_when_no_lock_owner_exists",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_parent_spawn_reuses_matching_lock_without_skipping",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_spawns_followup_from_queue_after_completion",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_skips_ai_regeneration_when_fingerprint_matches"
+   ]
+  },
+  "missing_coverage_status": {
+   "count": 40,
+   "examples": [
+    "test_live_execution_bundle_report.py::test_trade_story_rebuild_overrides_stale_candidate_news_with_raw_symbol_evidence",
+    "test_live_execution_bundle_report.py::test_build_filters_human_prefers_normalized_scanner_feature_coverage",
+    "test_live_execution_bundle_report.py::test_scanner_evidence_enrichment_normalizes_chart_coverage",
+    "test_live_execution_bundle_report.py::test_live_execution_bundle_report_explains_missing_reporter_linkage",
+    "test_live_execution_bundle_report.py::test_build_trade_lifecycles_promotes_closed_trade_story_type_from_snapshot_when_bundle_missing",
+    "test_live_execution_bundle_report.py::test_same_day_reporter_linkage_keeps_missing_path_honest"
+   ]
+  }
+ },
+ "fixture_provenance": "MOCK/synthetic in-test fixtures only; no REAL frozen production report/LLM artifacts available -> REAL_REPORT_PARITY_BLOCKED",
+ "exact_contract_scope": "recorded per call: normalized args/result hashes + post-call args hash for 4 target functions and 40 public facade functions (Markdown str / JSON dict outputs)"
+}

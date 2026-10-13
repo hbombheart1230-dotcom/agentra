@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 225,
+  "entry_count": 226,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6095,6 +6095,31 @@
         "docs/refactor/P15_ACTUAL_TREE_LARGE_FUNCTION_DELETE_AUDIT_2026_10_13.md",
         "docs/refactor/work_orders/CURRENT.md",
         "docs/refactor/P15_THIRD_PASS_GPT_REPORTER_INCLUSIVE_DESIGN_2026_10_13.md"
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Third Pass T0+T1 Reporter",
+      "title": "Third Pass T0/T1: Reporter consumer map and pure read-model, fallback and compact-input cuts",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "SAFETY",
+        "TESTING"
+      ],
+      "status": "current",
+      "summary": "Reporter consumer/monkeypatch map recorded and four large pure Reporter functions split into 12 least-privilege Owners (largest function 671 -> 187 LOC); 2,912 recorded calls including Markdown/JSON outputs were byte-identical across isolated baseline/feature sessions; facades, prompts, persistence, queue/lock paths untouched.",
+      "details": [
+        "T0: consumer, monkeypatch and fixture inventory (40 focused test files, 3 facades); no frozen production report available -> REAL_REPORT_PARITY_BLOCKED.",
+        "T1: build_trade_report_memory_surface 671->50, build_trade_read_model 563->80, fallback_report 534->187, compact_story_input_for_llm 408->51; 16 verbatim segments in trade_memory_projection_parts/, trade_read_model_parts/ and trade_report/ai_facade_parts/.",
+        "Dependency callables are passed explicitly (deps bindings stay in the originals); clock only as an injected parameter; Owners import nothing and mutate only fresh local containers.",
+        "Isolated deterministic differential 2,912/2,912 byte-identical; ledger inline-reconstruct gate; production writes 0. Not run: real frozen report/LLM parity, T2-T5, Wave D; Codex audit pending."
+      ],
+      "impact": "Smaller single-responsibility Reporter read-model/fallback/compact-input functions with unchanged report and prompt bytes on mock fixtures; no persistence, LLM call, queue/lock or trading path changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T0-T1-CLAUDE-024.md",
+        "docs/refactor/p1_5_third_pass_t1_moved_segments_ledger.json",
+        "docs/refactor/evidence/p157_third_pass/t0_reporter_consumer_map.json"
       ]
     }
   ]

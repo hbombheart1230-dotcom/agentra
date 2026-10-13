@@ -1,0 +1,552 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "det",
+ "sequential": false,
+ "same_session_path": false,
+ "baseline_sha": "4cb92916c976f947613f52e8b0c0790addac7eb5",
+ "feature_sha": "4fcb325a555602874a1184c13069664263f1cfb0",
+ "repo_head_for_harness": "4fcb325a555602874a1184c13069664263f1cfb0",
+ "names": {
+  "libs.reporting.trade_memory_surface": [
+   "build_trade_report_memory_surface"
+  ],
+  "libs.reporting.trade_read_model": [
+   "build_trade_read_model"
+  ],
+  "libs.reporting.trade_report_ai_deterministic": [
+   "fallback_report"
+  ],
+  "libs.reporting.trade_report_ai_compact_input": [
+   "compact_story_input_for_llm"
+  ],
+  "libs.reporting.trade_report_ai": [
+   "resolve_shared_trade_facts",
+   "build_ai_trade_report_compact_input",
+   "build_separated_ai_trade_report",
+   "build_deterministic_trade_report",
+   "build_ai_trade_report",
+   "render_trade_report_markdown",
+   "build_trade_summary_input",
+   "build_trade_summary_report",
+   "render_trade_summary_markdown",
+   "render_trade_summary_markdown_with_evaluation"
+  ],
+  "libs.reporting.trade_report_markdown_clean": [
+   "render_trade_report_markdown_clean",
+   "render_trade_summary_markdown_clean",
+   "build_trade_summary_input_clean",
+   "render_trade_summary_markdown_with_evaluation_clean"
+  ],
+  "libs.reporting.trade_story_pipeline": [
+   "build_lifecycle_bundle",
+   "build_report_section_seeds",
+   "slug",
+   "feature_coverage",
+   "normalized_feature_coverage",
+   "confidence_label",
+   "execution_mode_label",
+   "classify_story_type",
+   "build_story_id",
+   "build_story_contract",
+   "build_market_context_human",
+   "build_scanner_reason_human",
+   "enrich_scanner_reason_from_evidence",
+   "enrich_filters_from_evidence",
+   "build_filters_human",
+   "build_monitor_reason_human",
+   "build_guard_reason_human",
+   "build_execution_outcome_human",
+   "build_reporter_status_human",
+   "build_operator_conclusion_human",
+   "build_timeline",
+   "collect_story_warnings",
+   "build_trade_story_input_from_bundle",
+   "build_trade_story_input",
+   "render_bundle_markdown",
+   "render_summary_markdown"
+  ]
+ },
+ "test_files": [
+  "tests/test_commander_env_migration_phase1.py",
+  "tests/test_korea_market_indices_context.py",
+  "tests/test_live_execution_bundle_report.py",
+  "tests/test_llm_model_policy.py",
+  "tests/test_llm_status_semantics_phase2.py",
+  "tests/test_opening_rank1_observation_price.py",
+  "tests/test_operator_ui_data_access_phase2.py",
+  "tests/test_p152_ai_duration_language_owner.py",
+  "tests/test_p152_ai_facade_market_scanner_labels.py",
+  "tests/test_p152_ai_facade_text_helpers.py",
+  "tests/test_p152_facade_consumer_static_index.py",
+  "tests/test_p152_markdown_clean_news_headlines_owner.py",
+  "tests/test_p152_markdown_clean_operator_labels_owners.py",
+  "tests/test_p152_markdown_clean_summary_language_owner.py",
+  "tests/test_p152_monitor_context_owner.py",
+  "tests/test_p152_monitor_trace_wrappers.py",
+  "tests/test_p152_operator_phrase_owners.py",
+  "tests/test_p152_r3_harness_guards.py",
+  "tests/test_p152_render_diagnostics_owner.py",
+  "tests/test_p152_story_facade_compatible_owners.py",
+  "tests/test_p152_story_facade_contract_owners.py",
+  "tests/test_p152_story_facade_human_owners.py",
+  "tests/test_p152_summary_findings_owner.py",
+  "tests/test_p152_summary_input_part_owners.py",
+  "tests/test_phase3_lifecycle_bundle.py",
+  "tests/test_phase_6_2_consumption.py",
+  "tests/test_quant_tactic_report.py",
+  "tests/test_reporter_agent_trade_entrypoint.py",
+  "tests/test_reporting_provenance_preference.py",
+  "tests/test_run_ai_trade_report_batch.py",
+  "tests/test_single_trade_report.py",
+  "tests/test_strategist_quant_context_report.py",
+  "tests/test_symbol_read_model.py",
+  "tests/test_trade_memory_application_surface.py",
+  "tests/test_trade_memory_surface.py",
+  "tests/test_trade_read_model.py",
+  "tests/test_trade_report_ai.py",
+  "tests/test_trade_report_ai_separated_adapter.py",
+  "tests/test_trade_story_pipeline_enrichment.py",
+  "tests/test_trade_summary_symbol_metadata.py"
+ ],
+ "execution_order": [
+  "b1",
+  "b2",
+  "f1",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "4cb92916c976f947613f52e8b0c0790addac7eb5",
+   "exit_code": 1,
+   "log_sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4",
+   "log_bytes": 87705270,
+   "pytest_summary": "1 failed, 671 passed, 1 warning in 100.49s (0:01:40)"
+  },
+  "b2": {
+   "sha": "4cb92916c976f947613f52e8b0c0790addac7eb5",
+   "exit_code": 1,
+   "log_sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4",
+   "log_bytes": 87705270,
+   "pytest_summary": "1 failed, 671 passed, 1 warning in 100.51s (0:01:40)"
+  },
+  "f1": {
+   "sha": "4fcb325a555602874a1184c13069664263f1cfb0",
+   "exit_code": 1,
+   "log_sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4",
+   "log_bytes": 87705270,
+   "pytest_summary": "1 failed, 671 passed, 1 warning in 100.51s (0:01:40)"
+  },
+  "f2": {
+   "sha": "4fcb325a555602874a1184c13069664263f1cfb0",
+   "exit_code": 1,
+   "log_sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4",
+   "log_bytes": 87705270,
+   "pytest_summary": "1 failed, 671 passed, 1 warning in 100.41s (0:01:40)"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 1,
+    "problems": [
+     "pytest exit code 1 (expected 0)"
+    ],
+    "verdict": "FAIL"
+   },
+   "b2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 1,
+    "problems": [
+     "pytest exit code 1 (expected 0)"
+    ],
+    "verdict": "FAIL"
+   },
+   "f1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 1,
+    "problems": [
+     "pytest exit code 1 (expected 0)"
+    ],
+    "verdict": "FAIL"
+   },
+   "f2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 1,
+    "problems": [
+     "pytest exit code 1 (expected 0)"
+    ],
+    "verdict": "FAIL"
+   }
+  }
+ },
+ "tolerance_rules": {
+  "R-ID": {
+   "keys": [
+    "run_id",
+    "request_id",
+    "trace_id",
+    "event_id"
+   ],
+   "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value; the generic key 'strategy' is NOT eligible (only memory-packet ids under an explicit packet-id container, see R-MEMORY-PACKET-ID)"
+  },
+  "R-MEMORY-PACKET-ID": {
+   "keys": [
+    "packet_id"
+   ],
+   "why": "content hash id of a memory packet whose payload embeds the session temp path (<pid>-<uuid>); valid only as memory_<20 hex> on BOTH sides, as leaf `packet_id` or under an explicit packet-id container"
+  },
+  "R-MTIME": {
+   "keys": [
+    "source_signature"
+   ],
+   "why": "artifact signature embeds the file mtime_ns of a fixture written by the test itself"
+  },
+  "R-MTIME-DERIVED": {
+   "keys": [],
+   "why": "hash of an LLM prompt/response artifact whose prompt embeds the same record's source_signature (file mtime_ns); applies only when that signature differs in the same record"
+  },
+  "R-AGE": {
+   "keys": [
+    "minutes_since_open",
+    "minute_snapshot_age_minutes",
+    "quote_age_sec",
+    "expected_exit_quote_age_sec",
+    "age_sec"
+   ],
+   "why": "wall-clock derived age (<=2 units) between two processes started at different instants"
+  }
+ },
+ "summary": {
+  "total_calls": 2912,
+  "BYTE_IDENTICAL": 2912,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "trade_memory_surface.build_trade_report_memory_surface": {
+    "calls": 118,
+    "BYTE_IDENTICAL": 118,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.build_ai_trade_report": {
+    "calls": 17,
+    "BYTE_IDENTICAL": 17,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_market_context_human": {
+    "calls": 81,
+    "BYTE_IDENTICAL": 81,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_markdown_clean.render_trade_summary_markdown_clean": {
+    "calls": 110,
+    "BYTE_IDENTICAL": 110,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.feature_coverage": {
+    "calls": 159,
+    "BYTE_IDENTICAL": 159,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.normalized_feature_coverage": {
+    "calls": 155,
+    "BYTE_IDENTICAL": 155,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_filters_human": {
+    "calls": 77,
+    "BYTE_IDENTICAL": 77,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.classify_story_type": {
+    "calls": 64,
+    "BYTE_IDENTICAL": 64,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.execution_mode_label": {
+    "calls": 101,
+    "BYTE_IDENTICAL": 101,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_story_contract": {
+    "calls": 47,
+    "BYTE_IDENTICAL": 47,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.confidence_label": {
+    "calls": 77,
+    "BYTE_IDENTICAL": 77,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_scanner_reason_human": {
+    "calls": 74,
+    "BYTE_IDENTICAL": 74,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_monitor_reason_human": {
+    "calls": 53,
+    "BYTE_IDENTICAL": 53,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_guard_reason_human": {
+    "calls": 47,
+    "BYTE_IDENTICAL": 47,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_execution_outcome_human": {
+    "calls": 45,
+    "BYTE_IDENTICAL": 45,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_reporter_status_human": {
+    "calls": 48,
+    "BYTE_IDENTICAL": 48,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_operator_conclusion_human": {
+    "calls": 100,
+    "BYTE_IDENTICAL": 100,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_timeline": {
+    "calls": 44,
+    "BYTE_IDENTICAL": 44,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.collect_story_warnings": {
+    "calls": 40,
+    "BYTE_IDENTICAL": 40,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.slug": {
+    "calls": 170,
+    "BYTE_IDENTICAL": 170,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_story_id": {
+    "calls": 42,
+    "BYTE_IDENTICAL": 42,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.render_bundle_markdown": {
+    "calls": 80,
+    "BYTE_IDENTICAL": 80,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.enrich_scanner_reason_from_evidence": {
+    "calls": 54,
+    "BYTE_IDENTICAL": 54,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.enrich_filters_from_evidence": {
+    "calls": 51,
+    "BYTE_IDENTICAL": 51,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_report_section_seeds": {
+    "calls": 51,
+    "BYTE_IDENTICAL": 51,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_trade_story_input": {
+    "calls": 51,
+    "BYTE_IDENTICAL": 51,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_trade_story_input_from_bundle": {
+    "calls": 41,
+    "BYTE_IDENTICAL": 41,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai_compact_input.compact_story_input_for_llm": {
+    "calls": 70,
+    "BYTE_IDENTICAL": 70,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.build_ai_trade_report_compact_input": {
+    "calls": 40,
+    "BYTE_IDENTICAL": 40,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai_deterministic.fallback_report": {
+    "calls": 66,
+    "BYTE_IDENTICAL": 66,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.build_deterministic_trade_report": {
+    "calls": 43,
+    "BYTE_IDENTICAL": 43,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_markdown_clean.render_trade_report_markdown_clean": {
+    "calls": 87,
+    "BYTE_IDENTICAL": 87,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.render_trade_report_markdown": {
+    "calls": 87,
+    "BYTE_IDENTICAL": 87,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_markdown_clean.build_trade_summary_input_clean": {
+    "calls": 106,
+    "BYTE_IDENTICAL": 106,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.build_trade_summary_input": {
+    "calls": 93,
+    "BYTE_IDENTICAL": 93,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_markdown_clean.render_trade_summary_markdown_with_evaluation_clean": {
+    "calls": 83,
+    "BYTE_IDENTICAL": 83,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.render_trade_summary_markdown_with_evaluation": {
+    "calls": 81,
+    "BYTE_IDENTICAL": 81,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.build_trade_summary_report": {
+    "calls": 31,
+    "BYTE_IDENTICAL": 31,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.resolve_shared_trade_facts": {
+    "calls": 36,
+    "BYTE_IDENTICAL": 36,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.build_lifecycle_bundle": {
+    "calls": 36,
+    "BYTE_IDENTICAL": 36,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_story_pipeline.render_summary_markdown": {
+    "calls": 28,
+    "BYTE_IDENTICAL": 28,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.build_separated_ai_trade_report": {
+    "calls": 3,
+    "BYTE_IDENTICAL": 3,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.render_trade_summary_markdown": {
+    "calls": 18,
+    "BYTE_IDENTICAL": 18,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_read_model.build_trade_read_model": {
+    "calls": 7,
+    "BYTE_IDENTICAL": 7,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": [
+   "tests/test_trade_report_ai.py::test_ai_trade_report_hard_timeout_override_stops_slow_call"
+  ]
+ },
+ "reproduce": "C:\\Agentra\\venv\\Scripts\\python.exe scripts/refactor/p156_parity_differential.py --repo <clone> --baseline-sha 4cb92916c976f947613f52e8b0c0790addac7eb5 --feature-sha 4fcb325a555602874a1184c13069664263f1cfb0 --names <names.json> --tests <tests.txt> --work-root <empty dir> --out-dir <new dir> --mode det"
+}

@@ -1,0 +1,50 @@
+{
+ "schema": "p157_third_pass_raw_evidence_manifest.v1",
+ "retention": "raw call logs stay outside the repository under C:/AgentraEvidence; only summaries are committed",
+ "raw": {
+  "t1_det_isolated_4_sessions": [
+   {
+    "path": "C:/AgentraEvidence/par_out_t1\\raw_calls_b1.json",
+    "bytes": 87705270,
+    "sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t1\\raw_calls_b2.json",
+    "bytes": 87705270,
+    "sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t1\\raw_calls_f1.json",
+    "bytes": 87705270,
+    "sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t1\\raw_calls_f2.json",
+    "bytes": 87705270,
+    "sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4"
+   }
+  ],
+  "t1_timeout_test_natural_mode": [
+   {
+    "path": "C:/AgentraEvidence/par_out_n\\raw_calls_b1.json",
+    "bytes": 77468,
+    "sha256": "c60ca04e0a74773ad939a37ae018eaed999ad725822a757684c5558312ca361b"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_n\\raw_calls_b2.json",
+    "bytes": 77468,
+    "sha256": "f5a03b4bac13614be9908005558947c08f702370f9a477dbf6f9e69732b4c7eb"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_n\\raw_calls_f1.json",
+    "bytes": 77468,
+    "sha256": "d1d157e43239cd460687a966e87c55d08e4b6bed1e8482e8bfe5d185a4d9ff2c"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_n\\raw_calls_f2.json",
+    "bytes": 77468,
+    "sha256": "ec32768a86f44797286ee69930e673ab75dcd0c2275537f95d0d69885da098be"
+   }
+  ]
+ }
+}

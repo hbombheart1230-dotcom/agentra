@@ -3041,3 +3041,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Reporter와 Q10/Q12/UEF를 구분하고 레거시 어댑터 및 안전 실행 경로 삭제 금지를 확인했습니다. `strategist_llm_summary.py`의 중복 이름 함수는 사용처 검증을 요구하는 **후보**일 뿐 삭제 승인이 아닙니다.
 - Reporter T0+T1 작업 순서는 그대로이며 코드 삭제·이동·실거래 경로 변경·Wave D 실행은 없습니다.
 
+## 2026-10-13 · P1.5 Third Pass T0+T1 (Reporter 소비자 지도 · 순수 read-model/fallback/compact-input 분해)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · SAFETY · TESTING
+
+- T0: Reporter 소비자·monkeypatch·fixture 지도를 기록했습니다(집중 테스트 40개, facade 3개). 실제 frozen 운영 보고서가 없어 REAL_REPORT_PARITY_BLOCKED로 분리했습니다.
+- T1: build_trade_report_memory_surface 671→50, build_trade_read_model 563→80, fallback_report 534→187, compact_story_input_for_llm 408→51. 본문 16개를 trade_memory_projection_parts/·trade_read_model_parts/·trade_report/ai_facade_parts/ Owner 12개로 이동했고 facade·prompt·저장·queue/lock 경로는 건드리지 않았습니다.
+- 의존 callable은 명시적 인자로 전달하고(deps 바인딩은 원 함수에 유지), Owner는 import·파일·LLM·State 접근이 없습니다.
+- 격리 baseline×2/feature×2 결정성 비교: 기록 호출 2,912건(Markdown str·JSON dict 포함) 전부 byte-identical, 운영 쓰기 0. 실제 frozen 보고서/LLM parity·T2~T5·Wave D 미실행, Codex 감사 대기.

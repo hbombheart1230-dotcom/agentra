@@ -28,6 +28,9 @@ ALLOWED_PREFIXES = ("tests/", "docs/", "scripts/refactor/", "libs/reporting/trad
 FORBIDDEN_PREFIXES = ("libs/execution/", "libs/broker/", "libs/supervisor/", "libs/risk/", "libs/llm/", "libs/executor/",
                       "graphs/nodes/execute_from_packet.py", "graphs/nodes/decide_trade.py",
                       "graphs/nodes/update_state_after_execution.py", "libs/runtime/controlled_mock_lanes/")
+# the two NEW package markers only (docstring-only, no code)
+PACKAGE_MARKERS = {"libs/reporting/trade_memory_projection_parts/__init__.py",
+                   "libs/reporting/trade_read_model_parts/__init__.py"}
 ALLOWED_EXACT = {"libs/reporting/trade_memory_surface.py", "libs/reporting/trade_read_model.py",
                  "libs/reporting/trade_report_ai_deterministic.py", "libs/reporting/trade_report_ai_compact_input.py",
                  ".github/workflows/p152-r2c-residual-regression.yml", "CLAUDE.md", "AGENTS.md"}
@@ -278,7 +281,9 @@ def test_second_pass_changes_stay_in_scope():
         assert path in ALLOWED_EXACT or path.startswith(ALLOWED_PREFIXES), f"path outside Second Pass scope: {path}"
     ledger_modules = {s["module"] for s in _ledger()["segments"]}
     for path in [p for p in out if p and p.endswith(".py") and not p.startswith(("tests/", "scripts/"))]:
-        if path in ledger_modules:
+        if path in ledger_modules or path in PACKAGE_MARKERS:
+            if path in PACKAGE_MARKERS:
+                assert len((ROOT / path).read_text(encoding="utf-8").splitlines()) <= 2, path
             continue
         # every other changed production .py file must be a NEW Owner listed in the ledger
         assert path in {s["owner_module"] for s in _ledger()["segments"]}, f"unledgered production change: {path}"

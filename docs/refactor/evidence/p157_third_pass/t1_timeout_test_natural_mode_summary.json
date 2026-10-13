@@ -1,0 +1,216 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "natural",
+ "sequential": true,
+ "same_session_path": true,
+ "baseline_sha": "4cb92916c976f947613f52e8b0c0790addac7eb5",
+ "feature_sha": "4fcb325a555602874a1184c13069664263f1cfb0",
+ "repo_head_for_harness": "4fcb325a555602874a1184c13069664263f1cfb0",
+ "names": {
+  "libs.reporting.trade_memory_surface": [
+   "build_trade_report_memory_surface"
+  ],
+  "libs.reporting.trade_read_model": [
+   "build_trade_read_model"
+  ],
+  "libs.reporting.trade_report_ai_deterministic": [
+   "fallback_report"
+  ],
+  "libs.reporting.trade_report_ai_compact_input": [
+   "compact_story_input_for_llm"
+  ],
+  "libs.reporting.trade_report_ai": [
+   "resolve_shared_trade_facts",
+   "build_ai_trade_report_compact_input",
+   "build_separated_ai_trade_report",
+   "build_deterministic_trade_report",
+   "build_ai_trade_report",
+   "render_trade_report_markdown",
+   "build_trade_summary_input",
+   "build_trade_summary_report",
+   "render_trade_summary_markdown",
+   "render_trade_summary_markdown_with_evaluation"
+  ],
+  "libs.reporting.trade_report_markdown_clean": [
+   "render_trade_report_markdown_clean",
+   "render_trade_summary_markdown_clean",
+   "build_trade_summary_input_clean",
+   "render_trade_summary_markdown_with_evaluation_clean"
+  ],
+  "libs.reporting.trade_story_pipeline": [
+   "build_lifecycle_bundle",
+   "build_report_section_seeds",
+   "slug",
+   "feature_coverage",
+   "normalized_feature_coverage",
+   "confidence_label",
+   "execution_mode_label",
+   "classify_story_type",
+   "build_story_id",
+   "build_story_contract",
+   "build_market_context_human",
+   "build_scanner_reason_human",
+   "enrich_scanner_reason_from_evidence",
+   "enrich_filters_from_evidence",
+   "build_filters_human",
+   "build_monitor_reason_human",
+   "build_guard_reason_human",
+   "build_execution_outcome_human",
+   "build_reporter_status_human",
+   "build_operator_conclusion_human",
+   "build_timeline",
+   "collect_story_warnings",
+   "build_trade_story_input_from_bundle",
+   "build_trade_story_input",
+   "render_bundle_markdown",
+   "render_summary_markdown"
+  ]
+ },
+ "test_files": [
+  "tests/test_trade_report_ai.py::test_ai_trade_report_hard_timeout_override_stops_slow_call"
+ ],
+ "execution_order": [
+  "b1",
+  "f1",
+  "b2",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "4cb92916c976f947613f52e8b0c0790addac7eb5",
+   "exit_code": 0,
+   "log_sha256": "c60ca04e0a74773ad939a37ae018eaed999ad725822a757684c5558312ca361b",
+   "log_bytes": 77468,
+   "pytest_summary": "1 passed, 1 warning in 0.94s"
+  },
+  "f1": {
+   "sha": "4fcb325a555602874a1184c13069664263f1cfb0",
+   "exit_code": 0,
+   "log_sha256": "d1d157e43239cd460687a966e87c55d08e4b6bed1e8482e8bfe5d185a4d9ff2c",
+   "log_bytes": 77468,
+   "pytest_summary": "1 passed, 1 warning in 0.76s"
+  },
+  "b2": {
+   "sha": "4cb92916c976f947613f52e8b0c0790addac7eb5",
+   "exit_code": 0,
+   "log_sha256": "f5a03b4bac13614be9908005558947c08f702370f9a477dbf6f9e69732b4c7eb",
+   "log_bytes": 77468,
+   "pytest_summary": "1 passed, 1 warning in 0.70s"
+  },
+  "f2": {
+   "sha": "4fcb325a555602874a1184c13069664263f1cfb0",
+   "exit_code": 0,
+   "log_sha256": "ec32768a86f44797286ee69930e673ab75dcd0c2275537f95d0d69885da098be",
+   "log_bytes": 77468,
+   "pytest_summary": "1 passed, 1 warning in 0.81s"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "b2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   }
+  }
+ },
+ "tolerance_rules": {
+  "R-ID": {
+   "keys": [
+    "run_id",
+    "request_id",
+    "trace_id",
+    "event_id"
+   ],
+   "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value; the generic key 'strategy' is NOT eligible (only memory-packet ids under an explicit packet-id container, see R-MEMORY-PACKET-ID)"
+  },
+  "R-MEMORY-PACKET-ID": {
+   "keys": [
+    "packet_id"
+   ],
+   "why": "content hash id of a memory packet whose payload embeds the session temp path (<pid>-<uuid>); valid only as memory_<20 hex> on BOTH sides, as leaf `packet_id` or under an explicit packet-id container"
+  },
+  "R-MTIME": {
+   "keys": [
+    "source_signature"
+   ],
+   "why": "artifact signature embeds the file mtime_ns of a fixture written by the test itself"
+  },
+  "R-MTIME-DERIVED": {
+   "keys": [],
+   "why": "hash of an LLM prompt/response artifact whose prompt embeds the same record's source_signature (file mtime_ns); applies only when that signature differs in the same record"
+  },
+  "R-AGE": {
+   "keys": [
+    "minutes_since_open",
+    "minute_snapshot_age_minutes",
+    "quote_age_sec",
+    "expected_exit_quote_age_sec",
+    "age_sec"
+   ],
+   "why": "wall-clock derived age (<=2 units) between two processes started at different instants"
+  }
+ },
+ "summary": {
+  "total_calls": 3,
+  "BYTE_IDENTICAL": 2,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 1,
+  "per_function": {
+   "trade_report_ai_compact_input.compact_story_input_for_llm": {
+    "calls": 1,
+    "BYTE_IDENTICAL": 1,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_memory_surface.build_trade_report_memory_surface": {
+    "calls": 1,
+    "BYTE_IDENTICAL": 1,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_report_ai.build_ai_trade_report": {
+    "calls": 1,
+    "BYTE_IDENTICAL": 0,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 1
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": []
+ },
+ "reproduce": "C:\\Agentra\\venv\\Scripts\\python.exe scripts/refactor/p156_parity_differential.py --repo <clone> --baseline-sha 4cb92916c976f947613f52e8b0c0790addac7eb5 --feature-sha 4fcb325a555602874a1184c13069664263f1cfb0 --names <names.json> --tests <tests.txt> --work-root <empty dir> --out-dir <new dir> --mode natural --same-path"
+}
