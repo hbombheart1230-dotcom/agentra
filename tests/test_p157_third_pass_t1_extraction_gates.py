@@ -21,6 +21,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "4cb92916c976f947613f52e8b0c0790addac7eb5"
+# stage pin: T1 scope is fixed to its completion commit; T2 and later have their own gates (never widen this list)
+T1_END_SHA = "67e0dc0ee0b91d45d242ccbfb3e1133d3a06e5ea"
 LEDGER = ROOT / "docs/refactor/p1_5_third_pass_t1_moved_segments_ledger.json"
 MAX_OWNER_LOC = 350
 ALLOWED_PREFIXES = ("tests/", "docs/", "scripts/refactor/", "libs/reporting/trade_memory_projection_parts/",
@@ -274,16 +276,25 @@ def test_owners_only_mutate_caller_fresh_local_containers():
                 assert name in fresh, f"{seg['owner_function']} mutates non-fresh input {name!r} of {module}::{function}"
 
 
-def test_second_pass_changes_stay_in_scope():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
-    for path in [p for p in out if p]:
+def test_t1_end_sha_is_an_ancestor_of_head():
+    r = subprocess.run(["git", "merge-base", "--is-ancestor", T1_END_SHA, "HEAD"], cwd=ROOT)
+    assert r.returncode == 0, "T1_END_SHA must be reachable from HEAD (shallow clone: fetch the pinned SHA)"
+
+
+def test_t1_changes_stay_in_scope():
+    """Scope is BASE..T1_END_SHA, not BASE..HEAD: later tranches are governed by their own gates."""
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, T1_END_SHA], cwd=ROOT).decode().split(chr(0))
+    changed = [p for p in out if p]
+    assert changed, "empty T1 diff"
+    for path in changed:
         assert not path.startswith(FORBIDDEN_PREFIXES), f"authority surface changed: {path}"
-        assert path in ALLOWED_EXACT or path.startswith(ALLOWED_PREFIXES), f"path outside Second Pass scope: {path}"
+        assert path in ALLOWED_EXACT or path.startswith(ALLOWED_PREFIXES), f"path outside T1 scope: {path}"
     ledger_modules = {s["module"] for s in _ledger()["segments"]}
-    for path in [p for p in out if p and p.endswith(".py") and not p.startswith(("tests/", "scripts/"))]:
-        if path in ledger_modules or path in PACKAGE_MARKERS:
-            if path in PACKAGE_MARKERS:
-                assert len((ROOT / path).read_text(encoding="utf-8").splitlines()) <= 2, path
+    owners = {s["owner_module"] for s in _ledger()["segments"]}
+    for path in [p for p in changed if p.endswith(".py") and not p.startswith(("tests/", "scripts/"))]:
+        if path in PACKAGE_MARKERS:
+            text = subprocess.check_output(["git", "show", f"{T1_END_SHA}:{path}"], cwd=ROOT).decode("utf-8")
+            assert len(text.splitlines()) <= 2, path
             continue
-        # every other changed production .py file must be a NEW Owner listed in the ledger
-        assert path in {s["owner_module"] for s in _ledger()["segments"]}, f"unledgered production change: {path}"
+        # every other changed production .py file is either a ledgered original module or a NEW ledgered Owner
+        assert path in ledger_modules or path in owners, f"unledgered production change: {path}"

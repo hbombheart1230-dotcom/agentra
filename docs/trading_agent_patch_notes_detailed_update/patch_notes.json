@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 226,
+  "entry_count": 227,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6120,6 +6120,31 @@
         "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T0-T1-CLAUDE-024.md",
         "docs/refactor/p1_5_third_pass_t1_moved_segments_ledger.json",
         "docs/refactor/evidence/p157_third_pass/t0_reporter_consumer_map.json"
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Third Pass T1 Evidence Closure",
+      "title": "Third Pass T1 evidence revalidation: exact-SHA differential, pinned scope gate, dedicated CI gate",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "Re-ran the isolated baseline/feature differential at the exact T1 completion SHA (2,912/2,912 byte-identical in deterministic mode, 2,911 + 1 intrinsic wall-clock latency record in natural mode), pinned the T1 scope gate to BASE..T1_END_SHA and split it into a dedicated CI gate.",
+      "details": [
+        "BASE 4cb92916 vs FEATURE exactly 67e0dc0e, BASE x2 / FEATURE x2 isolated sessions, 40 Reporter test files, same 44 recorded functions; earlier 4fcb325 run kept only as past evidence.",
+        "Deterministic: 2,912 byte-identical, one identical harness-induced timeout-test failure (fake sleep); natural: all 672 tests pass, one unresolved latency_ms record (wall-clock), no tolerance added.",
+        "test_p157 scope gate now BASE..T1_END_SHA with ancestor check; dedicated CI step 'Gate P1.5 Third Pass T1 — pinned extraction parity' with JUnit; CURRENT.md state corrected.",
+        "T2-T5, Wave D not started; REAL_REPORT_PARITY_BLOCKED open; Codex re-audit required."
+      ],
+      "impact": "Test-harness, gate, CI and documentation only; no Reporter source or runtime behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T1-EVIDENCE-CLOSURE-025.md",
+        "docs/refactor/evidence/p157_third_pass/raw_evidence_manifest.json",
+        "tests/test_p157_third_pass_t1_extraction_gates.py"
       ]
     }
   ]

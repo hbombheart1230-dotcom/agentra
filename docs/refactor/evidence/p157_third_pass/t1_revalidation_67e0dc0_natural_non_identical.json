@@ -1,0 +1,33 @@
+[
+ {
+  "test": "tests/test_trade_report_ai.py::test_ai_trade_report_hard_timeout_override_stops_slow_call",
+  "ordinal": 2,
+  "function": "trade_report_ai.build_ai_trade_report",
+  "reason": "repeats unstable and differences not on a justified field",
+  "diff_sample": [
+   {
+    "path": [
+     "3",
+     "'llm_response_artifact'",
+     "'attempts'",
+     "1",
+     "'latency_ms'"
+    ],
+    "base": "109",
+    "feature": "106",
+    "rule": null
+   },
+   {
+    "path": [
+     "3",
+     "'llm_response_artifact'",
+     "'latency_ms'"
+    ],
+    "base": "109",
+    "feature": "106",
+    "rule": null
+   }
+  ],
+  "class": "UNRESOLVED"
+ }
+]

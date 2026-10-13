@@ -3049,3 +3049,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - T1: build_trade_report_memory_surface 671→50, build_trade_read_model 563→80, fallback_report 534→187, compact_story_input_for_llm 408→51. 본문 16개를 trade_memory_projection_parts/·trade_read_model_parts/·trade_report/ai_facade_parts/ Owner 12개로 이동했고 facade·prompt·저장·queue/lock 경로는 건드리지 않았습니다.
 - 의존 callable은 명시적 인자로 전달하고(deps 바인딩은 원 함수에 유지), Owner는 import·파일·LLM·State 접근이 없습니다.
 - 격리 baseline×2/feature×2 결정성 비교: 기록 호출 2,912건(Markdown str·JSON dict 포함) 전부 byte-identical, 운영 쓰기 0. 실제 frozen 보고서/LLM parity·T2~T5·Wave D 미실행, Codex 감사 대기.
+
+## 2026-10-13 · P1.5 Third Pass T1 Evidence Closure (T1 증거 재고정)
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY · WORKFLOW
+
+- 정확히 T1 완료 SHA(67e0dc0e)와 BASE(4cb92916)로 격리 세션 BASE×2/FEATURE×2 비교를 새로 실행했습니다. 결정성 모드 2,912건 전부 byte-identical, 자연 모드 테스트 672개 전부 통과·2,911건 동일.
+- 자연 모드의 UNRESOLVED 1건은 hard-timeout 테스트의 wall-clock `latency_ms`(109 vs 106ms)로, 같은 측 반복 간에도 달라지는 본질적 비결정성입니다. 허용오차는 추가하지 않았고 결정성 모드에서 동일함을 근거로 남겼습니다. 결정성 모드의 알려진 타임아웃 실패는 양쪽에서 동일 원인(sleep 대체)으로 재현됩니다.
+- T1 scope gate를 BASE..T1_END_SHA 고정 범위(조상 검증 포함)로 교체하고, CI에 독립 단계 'Gate P1.5 Third Pass T1 — pinned extraction parity'(JUnit 포함)를 분리했습니다. CURRENT.md 상태 정정: T2–T5·Wave D 미시작, REAL_REPORT_PARITY_BLOCKED OPEN, Codex 재감사 필요.
+
