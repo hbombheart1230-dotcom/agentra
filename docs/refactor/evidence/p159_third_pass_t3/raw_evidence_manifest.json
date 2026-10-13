@@ -1,0 +1,94 @@
+{
+ "schema": "p159_t3_raw_evidence_manifest.v1",
+ "retention": "raw logs stay outside the repository under C:/AgentraEvidence; only summaries are committed",
+ "raw": {
+  "t3a_t2_anchors_pinned_effects": [
+   {
+    "path": "C:/AgentraEvidence/par_out_t3a\\raw_calls_b1.json",
+    "bytes": 4699097,
+    "sha256": "920eef34cf41064f6d0a1da3c0402dfd84b49e78221af5cab0ebcae562da6054"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3a\\raw_calls_b2.json",
+    "bytes": 4699097,
+    "sha256": "920eef34cf41064f6d0a1da3c0402dfd84b49e78221af5cab0ebcae562da6054"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3a\\raw_calls_f1.json",
+    "bytes": 4699097,
+    "sha256": "920eef34cf41064f6d0a1da3c0402dfd84b49e78221af5cab0ebcae562da6054"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3a\\raw_calls_f2.json",
+    "bytes": 4699097,
+    "sha256": "920eef34cf41064f6d0a1da3c0402dfd84b49e78221af5cab0ebcae562da6054"
+   }
+  ],
+  "t3b_t1_reporter_40_files": [
+   {
+    "path": "C:/AgentraEvidence/par_out_t3b\\raw_calls_b1.json",
+    "bytes": 87705270,
+    "sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3b\\raw_calls_b2.json",
+    "bytes": 87705270,
+    "sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3b\\raw_calls_f1.json",
+    "bytes": 87705270,
+    "sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3b\\raw_calls_f2.json",
+    "bytes": 87705270,
+    "sha256": "eecb947d6cba9dd38d4b97f81abd726e34ceb21dbc9e821fc0db768d996107c4"
+   }
+  ],
+  "t3c_second_pass_consumers_140_files": [
+   {
+    "path": "C:/AgentraEvidence/par_out_t3c\\raw_calls_b1.json",
+    "bytes": 360506452,
+    "sha256": "ce4ed9418ec14456cfc26e2f601b2edf03c86119c7ee4bd656cc2058b98516b5"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3c\\raw_calls_b2.json",
+    "bytes": 360506452,
+    "sha256": "d0ba1ad6cf5bd27b0bad920897837b97545aa289ec7bb91c36a7ed2a9150402a"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3c\\raw_calls_f1.json",
+    "bytes": 360506452,
+    "sha256": "ba6e6f5364e6227c8db1d60fce642d018650c06af97eecd334d5197ff4698565"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3c\\raw_calls_f2.json",
+    "bytes": 360506452,
+    "sha256": "b134176692b4abe226b2197a3c553f3d980e73ebf5e77684f761dee4d8d70509"
+   }
+  ],
+  "t3d_strategist_unresolved_rerun_pinned": [
+   {
+    "path": "C:/AgentraEvidence/par_out_t3d\\raw_calls_b1.json",
+    "bytes": 17939081,
+    "sha256": "eef6bc2435343e460d83233877d63440e8a157da30706e50ab2791e0444c9b72"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3d\\raw_calls_b2.json",
+    "bytes": 17939081,
+    "sha256": "eef6bc2435343e460d83233877d63440e8a157da30706e50ab2791e0444c9b72"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3d\\raw_calls_f1.json",
+    "bytes": 17939081,
+    "sha256": "eef6bc2435343e460d83233877d63440e8a157da30706e50ab2791e0444c9b72"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_t3d\\raw_calls_f2.json",
+    "bytes": 17939081,
+    "sha256": "eef6bc2435343e460d83233877d63440e8a157da30706e50ab2791e0444c9b72"
+   }
+  ]
+ }
+}

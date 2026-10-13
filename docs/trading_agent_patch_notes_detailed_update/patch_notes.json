@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 228,
+  "entry_count": 229,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6171,6 +6171,32 @@
         "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T2-CLAUDE-026.md",
         "docs/refactor/p1_5_third_pass_t2_moved_segments_ledger.json",
         "docs/refactor/evidence/p158_third_pass_t2/raw_evidence_manifest.json"
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Third Pass T3",
+      "title": "Third Pass T3: portable fail-closed purity checker, immutable-snapshot stage gates, ownership matrix and Owner contract cleanup",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "SAFETY",
+        "TESTING",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "Static purity checker made portable and tri-state (UNKNOWN never PURE, advisory); historical extraction gates read immutable stage snapshots while separate current gates validate HEAD; source-grounded ownership matrix and canonical overlay; 12 Owner functions return named positional-compatible records, the mixed T2 policy module was split and mechanical if-True scaffolding removed; 3,000+ recorded calls byte-identical.",
+      "details": [
+        "T3-0: p158_static_purity_closure.py explicit root, PURE/IMPURE/UNKNOWN, depth/cycle safe, 13 tests; strict re-check of T2 segments 5 PURE / 3 UNKNOWN (dependency-injected callables).",
+        "Historical gates p156/p157/p158 now compare stage-end git snapshots; p159 current gates cover imports, authority, record contracts, signatures, facade breadth; both pass together after the cleanup.",
+        "T3-A: ownership matrix JSON+MD for 207 modules and an [E]/[P]/[L] overlay of the canonical target tree (ranking_core.py rejected; no marker-only files created).",
+        "T3-B: lifecycle_report_policy.py split into closed_sell_reconciliation.py and report_generation_policy.py; 12 NamedTuple records with semantic names; if-True removed; behavior parity A 69/69 (incl. ordered effects), B 2,912/2,912, C 1,020 + 91 justified + 0 mismatch (20 strategist records re-run 20/20). Remaining positional contracts, facade breadth, REAL_REPORT_PARITY_BLOCKED and T3.5-T5 open."
+      ],
+      "impact": "More cohesive, named Owner contracts and independently auditable stage gates; no change to graph order, authority, LLM calls, ranking, locks/queue or report bytes on mock fixtures.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-CLAUDE-027.md",
+        "docs/refactor/p1_5_third_pass_t3_ownership_matrix.json",
+        "docs/refactor/p1_5_third_pass_t3_owner_contract_ledger.json"
       ]
     }
   ]

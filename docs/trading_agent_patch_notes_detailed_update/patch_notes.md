@@ -3067,3 +3067,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 검증: 고정 결정성 모드에서 `main()` 호출 29건과 순서가 있는 파일 효과 스트림(경로·내용 SHA-256)을 포함해 69/69 byte-identical, 자연 모드는 전체 테스트 통과(효과 스트림은 시간/pid 노이즈로 미해결), 운영 쓰기 0.
 - 무실행일·zero-fill fixture는 BLOCKED, REAL_REPORT_PARITY_BLOCKED OPEN, T3~T5·Wave D 미시작, Codex T2 감사 대기.
 
+## 2026-10-13 · P1.5 Third Pass T3 (아키텍처·Owner 계약 정리)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · SAFETY · TESTING · WORKFLOW
+
+- T3-0: 정적 순수성 검사기를 이식 가능한 3상태(PURE/IMPURE/UNKNOWN, 자문용)로 재작성했습니다. 해석 불가·동적 dispatch·깊이 초과는 UNKNOWN이며 PURE로 바뀌지 않습니다. 과거 추출 gate는 단계 종료 SHA의 불변 스냅샷을 비교하고, 현재 HEAD는 별도 gate(import·권한·record 계약·시그니처·facade 폭)로 검증합니다. 두 gate가 정리 후에도 함께 통과합니다.
+- T3-A: 207개 모듈의 책임·소비자·계약·부수효과·호환 상태 매트릭스(JSON+MD)와 canonical 목표 트리의 [E]/[P]/[L] 현황 overlay를 추가했습니다. `ranking_core.py`는 두 번째 순위 권한이 되므로 만들지 않았고 마커만을 위한 파일도 만들지 않았습니다.
+- T3-B: T2 정책 모듈을 `closed_sell_reconciliation.py`/`report_generation_policy.py`로 분리하고, 기계적 `if True:`를 제거했으며, Owner 함수 12개가 의미 있는 이름의 불변 NamedTuple record를 반환합니다(위치 호환, 호출부 불변).
+- 검증: 순서 있는 파일 효과 포함 69/69, Reporter 2,912/2,912, 2차 소비자 1,020 동일 + 정당화 91 + 불일치 0(미해결 20은 재실행 20/20). 남은 위치 반환·facade 폭·REAL_REPORT_PARITY_BLOCKED·T3.5~T5·Wave D는 미완이며 Codex 감사 대기입니다.
+

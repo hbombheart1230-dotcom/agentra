@@ -116,7 +116,7 @@ jobs:
           if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
             git fetch --no-tags --unshallow origin refactor/p1.5 || git fetch --no-tags --depth=5000 origin refactor/p1.5
           fi
-          for sha in 4cb92916c976f947613f52e8b0c0790addac7eb5 67e0dc0ee0b91d45d242ccbfb3e1133d3a06e5ea af0a4489dc250d804854e27917d5e2d881261537; do
+          for sha in 60dfa1c4cd7ca62d127251a4051b3404a86f6932 bf59c4d2941442fc2dff41c3c2888f053b4b1577 4cb92916c976f947613f52e8b0c0790addac7eb5 67e0dc0ee0b91d45d242ccbfb3e1133d3a06e5ea af0a4489dc250d804854e27917d5e2d881261537 d4a5364bae817504c253e06b9150ee49c692e120 ede47324e8db4be12c45e0a09ca3dcd22c68c5c1; do
             git merge-base --is-ancestor "$sha" HEAD || { echo "::error::pinned stage SHA $sha is not an ancestor of HEAD"; exit 1; }
           done
       - name: Check 38 extracted function ASTs and <=350 LOC Owners
@@ -186,6 +186,10 @@ jobs:
         run: |
           mkdir -p branch_output
           python -m pytest -q tests/test_p158_third_pass_t2_extraction_gates.py --junitxml=branch_output/gate_third_pass_t2_junit.xml
+      - name: Gate P1.5 Third Pass T3 — current Owner contracts and static purity checker
+        run: |
+          mkdir -p branch_output
+          python -m pytest -q tests/test_p159_current_owner_contract_gates.py tests/test_p159_static_purity_closure.py --junitxml=branch_output/gate_third_pass_t3_junit.xml
       - name: Operator UI / Brief offline regression (no live broker or LLM)
         env:
           DRY_RUN: '1'

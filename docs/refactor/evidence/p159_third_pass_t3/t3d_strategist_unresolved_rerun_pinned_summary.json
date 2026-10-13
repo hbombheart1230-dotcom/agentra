@@ -1,0 +1,190 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "det",
+ "sequential": true,
+ "same_session_path": true,
+ "baseline_sha": "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1",
+ "feature_sha": "bb994fbc3d2e183478c03751dcf76b30b7757dbe",
+ "repo_head_for_harness": "bb994fbc3d2e183478c03751dcf76b30b7757dbe",
+ "names": {
+  "graphs.nodes.monitor_node": [
+   "monitor_node",
+   "_evaluate_monitor_entry_candidate"
+  ],
+  "libs.runtime.intraday_monitor_signals": [
+   "evaluate_intraday_entry_signal"
+  ],
+  "libs.runtime.exit_policy": [
+   "evaluate_exit_policy"
+  ],
+  "graphs.nodes.scanner_node": [
+   "scanner_node"
+  ],
+  "graphs.commander_runtime": [
+   "_build_commander_decision",
+   "_resolve_commander_behavior_policy",
+   "_attach_commander_applied_policy",
+   "_assess_open_position_commander_override"
+  ],
+  "apps.operator_ui.data_access_core": [
+   "_build_operator_brief_sections",
+   "_build_operator_brief_input",
+   "_render_operator_brief_markdown"
+  ],
+  "graphs.nodes.strategist_node": [
+   "strategist_node"
+  ]
+ },
+ "test_files": [
+  "tests/test_llm_model_policy.py::test_strategist_policy_model_keeps_decision_surface_unchanged",
+  "tests/test_strategist_frame_llm_integration.py::test_stage2_selected_symbol_contract_is_preserved_and_mapped_to_watch_policy",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_frame_llm_hint_only_prose_is_salvaged",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_frame_llm_max_tokens_falls_back_to_ai_strategist_setting",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_frame_llm_nested_output_and_string_lists_are_normalized",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_frame_llm_overrides_are_applied",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_frame_llm_prose_contract_is_salvaged",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_frame_llm_repair_retry_can_recover",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_frame_llm_timeout_falls_back_to_ai_strategist_setting",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_prefers_commander_canonical_mode_over_state_fallback",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_reads_recent_strategy_feedback_when_available",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_recent_feedback_is_advisory_not_hard_override",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_reporter_feedback_mode_auto_consumes_fresh_relevant_packet",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_reporter_feedback_mode_auto_ignores_missing_packet",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_reporter_feedback_mode_auto_ignores_stale_packet",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_reporter_feedback_mode_disabled_ignores_packet",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_reporter_feedback_mode_enabled_consumes_advisory_only",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_reporter_feedback_mode_state_fallback_remains_supported",
+  "tests/test_strategist_frame_llm_integration.py::test_strategist_selected_themes_are_constrained_to_kiwoom_available_themes",
+  "tests/test_strategy_performance_feedback.py::test_strategist_includes_strategy_memory_hints"
+ ],
+ "execution_order": [
+  "b1",
+  "f1",
+  "b2",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1",
+   "exit_code": 0,
+   "log_sha256": "eef6bc2435343e460d83233877d63440e8a157da30706e50ab2791e0444c9b72",
+   "log_bytes": 17939081,
+   "pytest_summary": "20 passed, 1 warning in 5.70s"
+  },
+  "f1": {
+   "sha": "bb994fbc3d2e183478c03751dcf76b30b7757dbe",
+   "exit_code": 0,
+   "log_sha256": "eef6bc2435343e460d83233877d63440e8a157da30706e50ab2791e0444c9b72",
+   "log_bytes": 17939081,
+   "pytest_summary": "20 passed, 1 warning in 5.06s"
+  },
+  "b2": {
+   "sha": "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1",
+   "exit_code": 0,
+   "log_sha256": "eef6bc2435343e460d83233877d63440e8a157da30706e50ab2791e0444c9b72",
+   "log_bytes": 17939081,
+   "pytest_summary": "20 passed, 1 warning in 4.82s"
+  },
+  "f2": {
+   "sha": "bb994fbc3d2e183478c03751dcf76b30b7757dbe",
+   "exit_code": 0,
+   "log_sha256": "eef6bc2435343e460d83233877d63440e8a157da30706e50ab2791e0444c9b72",
+   "log_bytes": 17939081,
+   "pytest_summary": "20 passed, 1 warning in 4.85s"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "b2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS"
+   }
+  }
+ },
+ "tolerance_rules": {
+  "R-ID": {
+   "keys": [
+    "run_id",
+    "request_id",
+    "trace_id",
+    "event_id"
+   ],
+   "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value; the generic key 'strategy' is NOT eligible (only memory-packet ids under an explicit packet-id container, see R-MEMORY-PACKET-ID)"
+  },
+  "R-MEMORY-PACKET-ID": {
+   "keys": [
+    "packet_id"
+   ],
+   "why": "content hash id of a memory packet whose payload embeds the session temp path (<pid>-<uuid>); valid only as memory_<20 hex> on BOTH sides, as leaf `packet_id` or under an explicit packet-id container"
+  },
+  "R-MTIME": {
+   "keys": [
+    "source_signature"
+   ],
+   "why": "artifact signature embeds the file mtime_ns of a fixture written by the test itself"
+  },
+  "R-MTIME-DERIVED": {
+   "keys": [],
+   "why": "hash of an LLM prompt/response artifact whose prompt embeds the same record's source_signature (file mtime_ns); applies only when that signature differs in the same record"
+  },
+  "R-AGE": {
+   "keys": [
+    "minutes_since_open",
+    "minute_snapshot_age_minutes",
+    "quote_age_sec",
+    "expected_exit_quote_age_sec",
+    "age_sec"
+   ],
+   "why": "wall-clock derived age (<=2 units) between two processes started at different instants"
+  }
+ },
+ "summary": {
+  "total_calls": 20,
+  "BYTE_IDENTICAL": 20,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "strategist_node.strategist_node": {
+    "calls": 20,
+    "BYTE_IDENTICAL": 20,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": []
+ },
+ "reproduce": "C:\\Agentra\\venv\\Scripts\\python.exe scripts/refactor/p156_parity_differential.py --repo <clone> --baseline-sha ede47324e8db4be12c45e0a09ca3dcd22c68c5c1 --feature-sha bb994fbc3d2e183478c03751dcf76b30b7757dbe --names <names.json> --tests <tests.txt> --work-root <empty dir> --out-dir <new dir> --mode det --same-path"
+}

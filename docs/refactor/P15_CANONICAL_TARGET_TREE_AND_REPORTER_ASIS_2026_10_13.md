@@ -355,6 +355,8 @@ Claude S1 Monitor → S2 Scanner → S3 Commander → S4 Operator UI → S5 Stra
 | `data_access_brief_render_sections.py` | EXISTS | apps/operator_ui/data_access_brief_render_sections.py | [E] promote marker |
 | `data_access_brief_render_fallback.py` | EXISTS | apps/operator_ui/data_access_brief_render_fallback.py | [E] promote marker |
 
+Additional explicit decisions (not in the table because the marker lives in other design documents): `libs/runtime/scanner/ranking_core.py` is **NOT PRESENT and REJECTED** (a second canonical ranking authority must not be created; ranking stays in `scanner_node`); `apps/operator_ui/data_access_brief_text_rules.py` is **NOT PRESENT** and is created only if a genuine responsibility is proven.
+
 ### G.3 Locked / protected (unchanged): [L]
 `graphs/trading_graph.py`, legacy `libs/agent/*`, Reporter facades `trade_report_ai.py` / `trade_report_markdown_clean.py` / `trade_story_pipeline.py`, numbered `bodies_*.py`, `execute_from_packet.py`, `live_execution_bundle_runner.py::main` effect coordinator, `controlled_mock_lanes/`.
 

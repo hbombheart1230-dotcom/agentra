@@ -1,0 +1,164 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "det",
+ "sequential": true,
+ "same_session_path": true,
+ "baseline_sha": "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1",
+ "feature_sha": "bb994fbc3d2e183478c03751dcf76b30b7757dbe",
+ "repo_head_for_harness": "bb994fbc3d2e183478c03751dcf76b30b7757dbe",
+ "names": {
+  "libs.reporting.live_execution_bundle_runner": [
+   "main",
+   "run_live_execution_bundle_inprocess"
+  ],
+  "libs.reporting.trade_lifecycle_builder": [
+   "_build_trade_lifecycles"
+  ]
+ },
+ "test_files": [
+  "tests/test_live_execution_bundle_report.py",
+  "tests/test_live_execution_bundle_report_runtime_recovery.py",
+  "tests/test_trade_lifecycle_builder.py",
+  "tests/test_intraday_trade_reports.py",
+  "tests/test_trade_bundle_persistence.py"
+ ],
+ "execution_order": [
+  "b1",
+  "f1",
+  "b2",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1",
+   "exit_code": 1,
+   "log_sha256": "920eef34cf41064f6d0a1da3c0402dfd84b49e78221af5cab0ebcae562da6054",
+   "log_bytes": 4699097,
+   "pytest_summary": "1 failed, 109 passed, 1 warning in 12.61s"
+  },
+  "f1": {
+   "sha": "bb994fbc3d2e183478c03751dcf76b30b7757dbe",
+   "exit_code": 1,
+   "log_sha256": "920eef34cf41064f6d0a1da3c0402dfd84b49e78221af5cab0ebcae562da6054",
+   "log_bytes": 4699097,
+   "pytest_summary": "1 failed, 109 passed, 1 warning in 11.34s"
+  },
+  "b2": {
+   "sha": "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1",
+   "exit_code": 1,
+   "log_sha256": "920eef34cf41064f6d0a1da3c0402dfd84b49e78221af5cab0ebcae562da6054",
+   "log_bytes": 4699097,
+   "pytest_summary": "1 failed, 109 passed, 1 warning in 11.08s"
+  },
+  "f2": {
+   "sha": "bb994fbc3d2e183478c03751dcf76b30b7757dbe",
+   "exit_code": 1,
+   "log_sha256": "920eef34cf41064f6d0a1da3c0402dfd84b49e78221af5cab0ebcae562da6054",
+   "log_bytes": 4699097,
+   "pytest_summary": "1 failed, 109 passed, 1 warning in 11.08s"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 1,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f1": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 1,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "b2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 1,
+    "problems": [],
+    "verdict": "PASS"
+   },
+   "f2": {
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "project_write_audit_banner": false,
+    "exit_code": 1,
+    "problems": [],
+    "verdict": "PASS"
+   }
+  }
+ },
+ "tolerance_rules": {
+  "R-ID": {
+   "keys": [
+    "run_id",
+    "request_id",
+    "trace_id",
+    "event_id"
+   ],
+   "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value; the generic key 'strategy' is NOT eligible (only memory-packet ids under an explicit packet-id container, see R-MEMORY-PACKET-ID)"
+  },
+  "R-MEMORY-PACKET-ID": {
+   "keys": [
+    "packet_id"
+   ],
+   "why": "content hash id of a memory packet whose payload embeds the session temp path (<pid>-<uuid>); valid only as memory_<20 hex> on BOTH sides, as leaf `packet_id` or under an explicit packet-id container"
+  },
+  "R-MTIME": {
+   "keys": [
+    "source_signature"
+   ],
+   "why": "artifact signature embeds the file mtime_ns of a fixture written by the test itself"
+  },
+  "R-MTIME-DERIVED": {
+   "keys": [],
+   "why": "hash of an LLM prompt/response artifact whose prompt embeds the same record's source_signature (file mtime_ns); applies only when that signature differs in the same record"
+  },
+  "R-AGE": {
+   "keys": [
+    "minutes_since_open",
+    "minute_snapshot_age_minutes",
+    "quote_age_sec",
+    "expected_exit_quote_age_sec",
+    "age_sec"
+   ],
+   "why": "wall-clock derived age (<=2 units) between two processes started at different instants"
+  }
+ },
+ "summary": {
+  "total_calls": 69,
+  "BYTE_IDENTICAL": 69,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "trade_lifecycle_builder._build_trade_lifecycles": {
+    "calls": 40,
+    "BYTE_IDENTICAL": 40,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "live_execution_bundle_runner.main": {
+    "calls": 29,
+    "BYTE_IDENTICAL": 29,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": [
+   "tests/test_intraday_trade_reports.py::test_intraday_trade_reports_dedupes_when_background_job_is_already_running"
+  ]
+ },
+ "reproduce": "C:\\Agentra\\venv\\Scripts\\python.exe scripts/refactor/p156_parity_differential.py --repo <clone> --baseline-sha ede47324e8db4be12c45e0a09ca3dcd22c68c5c1 --feature-sha bb994fbc3d2e183478c03751dcf76b30b7757dbe --names <names.json> --tests <tests.txt> --work-root <empty dir> --out-dir <new dir> --mode det --same-path"
+}
