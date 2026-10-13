@@ -3093,3 +3093,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 수정(harness 한정): `session_env`에 해결된 `SYSTEMDRIVE`를 항상 포함하고, 세션 시작 전 인터프리터 preflight가 cwd에 무엇이든 생기면 fail-closed로 중단합니다. 격리 테스트는 손으로 만든 최소 환경 대신 실제 `session_env()`로 사용 가능한 모든 인터프리터·바이트코드 on/off를 검증합니다(17 → 22).
 - CI: Linux는 Windows 전용 테스트를 SKIPPED로 따로 집계(Windows PASS로 계산하지 않음)하고, 새 필수 `windows-latest` smoke job은 Windows 전용 테스트가 실제 실행되어 통과하지 않으면 실패합니다. `sitecustomize.py`·운영 코드 변경 없음, 독립 Codex 재감사 전까지 PENDING_CLOSURE.
 
+## 2026-10-14 · P1.5 Third Pass T3-0.3 (세션 write-containment P1 종결 작업)
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY · WORKFLOW
+
+- 확인된 격리 공백: 기존 harness는 경로 이름만 스냅샷하여 *새 파일*만 검출했고, 기존 파일의 내용 변경·삭제·같은 크기 변경(mtime 복원 포함)은 PASS로 처리되었습니다. 8개 변경 케이스를 먼저 재현했습니다(6건 false PASS).
+- 수정(harness 한정): 구조화된 manifest(type/size/mtime_ns/SHA-256/symlink target)로 CREATED·DELETED·TYPE_CHANGED·CONTENT_CHANGED·METADATA_CHANGED·SCAN_ERROR를 모두 증거에 기록하고, 읽기 실패·불안정 스캔·지원하지 않는 타입은 fail-closed로 FAIL 처리합니다. strict(SHA-256)와 fast(내용 동등성 미증명, 명시 라벨)를 구분하고, 보장 수준은 `PRE_POST_END_STATE_MANIFEST_EQUIVALENCE`(실행 중 일시적 write-and-restore 및 OS 전체 write 차단은 증명하지 않음)로 명명했습니다.
+- 실패 세션 증거는 cleanup 전에 기록하며(경계·민감정보 제외·보존 개수/기간/용량 제한, task-owned 디렉터리만 삭제) 통제 실험: 동일 SHA 4세션 PASS(59/59 동일), 단일 세션 의도적 오염은 병렬·`--same-path` 모두 exit 2.
+- NTFS 디렉터리 mtime 문제는 P2 UNRESOLVED로 유지(로컬 재현 불가, 호스티드 진단 추가, 허용치 없음). 운영 코드·`sitecustomize.py`·`conftest.py` 변경 없음, 독립 Codex 감사 전까지 PENDING_CLOSURE.
+

@@ -1,0 +1,299 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "det",
+ "sequential": false,
+ "same_session_path": false,
+ "baseline_sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+ "feature_sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+ "execution_order": [
+  "b1",
+  "b2",
+  "f1",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+   "exit_code": 0,
+   "log_sha256": "b8da9f9e7e4e959d8ed90ee23daf885ceeb96f88532bc576e101c3a949258eba",
+   "log_bytes": 1611529,
+   "pytest_summary": "69 passed, 1 warning in 12.15s"
+  },
+  "b2": {
+   "sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+   "exit_code": 0,
+   "log_sha256": "b8da9f9e7e4e959d8ed90ee23daf885ceeb96f88532bc576e101c3a949258eba",
+   "log_bytes": 1611529,
+   "pytest_summary": "69 passed, 1 warning in 11.04s"
+  },
+  "f1": {
+   "sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+   "exit_code": 0,
+   "log_sha256": "b8da9f9e7e4e959d8ed90ee23daf885ceeb96f88532bc576e101c3a949258eba",
+   "log_bytes": 1611529,
+   "pytest_summary": "69 passed, 1 warning in 11.15s"
+  },
+  "f2": {
+   "sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+   "exit_code": 0,
+   "log_sha256": "b8da9f9e7e4e959d8ed90ee23daf885ceeb96f88532bc576e101c3a949258eba",
+   "log_bytes": 1611529,
+   "pytest_summary": "69 passed, 1 warning in 10.86s"
+  }
+ },
+ "summary": {
+  "total_calls": 59,
+  "BYTE_IDENTICAL": 59,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "trade_lifecycle_builder._build_trade_lifecycles": {
+    "calls": 30,
+    "BYTE_IDENTICAL": 30,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "live_execution_bundle_runner.main": {
+    "calls": 29,
+    "BYTE_IDENTICAL": 29,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": []
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "c92e8fa846fb70750f8af0862a21e48015130b4c13db19ea8afb87b3f6ad61b4",
+    "manifest_sha256_after": "c92e8fa846fb70750f8af0862a21e48015130b4c13db19ea8afb87b3f6ad61b4",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   },
+   "b2": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "7ea0b7dbee7842f03f290bd416ce5966cd4d7c002477f772510c45bded032be2",
+    "manifest_sha256_after": "7ea0b7dbee7842f03f290bd416ce5966cd4d7c002477f772510c45bded032be2",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   },
+   "f1": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "3cfa63d4dc5132893a998c9ff475a8683384a144d7d86a96caef9fd37ba99424",
+    "manifest_sha256_after": "3cfa63d4dc5132893a998c9ff475a8683384a144d7d86a96caef9fd37ba99424",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   },
+   "f2": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "5b2fe7a147c5108bf9c279bd0bc02893b6409f74d16434e7af017ea94500d315",
+    "manifest_sha256_after": "5b2fe7a147c5108bf9c279bd0bc02893b6409f74d16434e7af017ea94500d315",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   }
+  },
+  "containment_guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+  "containment_manifest_mode": "strict_sha256",
+  "content_equivalence_proven": true,
+  "containment_not_proven": [
+   "transient write-and-restore during execution",
+   "writes outside the session root",
+   "OS-wide write interception"
+  ],
+  "containment_verdict": "PASS",
+  "failed_sessions": []
+ },
+ "containment_files": {
+  "b1": {
+   "verdict": "PASS",
+   "stats": {
+    "entries": 3410,
+    "files": 3177,
+    "dirs": 233,
+    "bytes": 33943214,
+    "scan_seconds": 0.769
+   },
+   "scan_seconds": {
+    "before": 18.809,
+    "after": 0.769
+   },
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "manifest_sha256_before": "c92e8fa846fb70750f8af0862a21e48015130b4c13db19ea8afb87b3f6ad61b4",
+   "manifest_sha256_after": "c92e8fa846fb70750f8af0862a21e48015130b4c13db19ea8afb87b3f6ad61b4",
+   "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+   "manifest_mode": "strict_sha256",
+   "content_equivalence_proven": true,
+   "exit_code": 0,
+   "problems": []
+  },
+  "b2": {
+   "verdict": "PASS",
+   "stats": {
+    "entries": 3410,
+    "files": 3177,
+    "dirs": 233,
+    "bytes": 33943214,
+    "scan_seconds": 0.706
+   },
+   "scan_seconds": {
+    "before": 19.808,
+    "after": 0.706
+   },
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "manifest_sha256_before": "7ea0b7dbee7842f03f290bd416ce5966cd4d7c002477f772510c45bded032be2",
+   "manifest_sha256_after": "7ea0b7dbee7842f03f290bd416ce5966cd4d7c002477f772510c45bded032be2",
+   "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+   "manifest_mode": "strict_sha256",
+   "content_equivalence_proven": true,
+   "exit_code": 0,
+   "problems": []
+  },
+  "f1": {
+   "verdict": "PASS",
+   "stats": {
+    "entries": 3410,
+    "files": 3177,
+    "dirs": 233,
+    "bytes": 33943214,
+    "scan_seconds": 0.702
+   },
+   "scan_seconds": {
+    "before": 19.759,
+    "after": 0.702
+   },
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "manifest_sha256_before": "3cfa63d4dc5132893a998c9ff475a8683384a144d7d86a96caef9fd37ba99424",
+   "manifest_sha256_after": "3cfa63d4dc5132893a998c9ff475a8683384a144d7d86a96caef9fd37ba99424",
+   "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+   "manifest_mode": "strict_sha256",
+   "content_equivalence_proven": true,
+   "exit_code": 0,
+   "problems": []
+  },
+  "f2": {
+   "verdict": "PASS",
+   "stats": {
+    "entries": 3410,
+    "files": 3177,
+    "dirs": 233,
+    "bytes": 33943214,
+    "scan_seconds": 0.605
+   },
+   "scan_seconds": {
+    "before": 19.786,
+    "after": 0.605
+   },
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "manifest_sha256_before": "5b2fe7a147c5108bf9c279bd0bc02893b6409f74d16434e7af017ea94500d315",
+   "manifest_sha256_after": "5b2fe7a147c5108bf9c279bd0bc02893b6409f74d16434e7af017ea94500d315",
+   "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+   "manifest_mode": "strict_sha256",
+   "content_equivalence_proven": true,
+   "exit_code": 0,
+   "problems": []
+  }
+ }
+}

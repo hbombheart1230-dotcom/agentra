@@ -1,0 +1,34 @@
+[
+ {
+  "case": "new file",
+  "verdict": "FAIL CREATED"
+ },
+ {
+  "case": "existing file content modification",
+  "verdict": "FAIL CONTENT_CHANGED"
+ },
+ {
+  "case": "existing file deletion",
+  "verdict": "FAIL DELETED"
+ },
+ {
+  "case": "existing empty directory deletion",
+  "verdict": "FAIL DELETED"
+ },
+ {
+  "case": "existing file mtime-only change",
+  "verdict": "FAIL METADATA_CHANGED"
+ },
+ {
+  "case": "same-size content change",
+  "verdict": "FAIL CONTENT_CHANGED"
+ },
+ {
+  "case": "same-size content change with restored mtime",
+  "verdict": "FAIL CONTENT_CHANGED"
+ },
+ {
+  "case": "no filesystem change",
+  "verdict": "PASS "
+ }
+]

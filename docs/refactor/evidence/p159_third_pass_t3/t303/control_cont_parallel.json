@@ -1,0 +1,410 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "det",
+ "sequential": false,
+ "same_session_path": false,
+ "baseline_sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+ "feature_sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+ "execution_order": [
+  "b1",
+  "b2",
+  "f1",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+   "exit_code": 0,
+   "log_sha256": "440b6e212829f8d9f4315ff273a51dd2ea8b878ce063ff4d64f16102bf7f7bb9",
+   "log_bytes": 1611573,
+   "pytest_summary": "70 passed, 1 warning in 11.24s"
+  },
+  "b2": {
+   "sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+   "exit_code": 0,
+   "log_sha256": "440b6e212829f8d9f4315ff273a51dd2ea8b878ce063ff4d64f16102bf7f7bb9",
+   "log_bytes": 1611573,
+   "pytest_summary": "70 passed, 1 warning in 11.20s"
+  },
+  "f1": {
+   "sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+   "exit_code": 0,
+   "log_sha256": "440b6e212829f8d9f4315ff273a51dd2ea8b878ce063ff4d64f16102bf7f7bb9",
+   "log_bytes": 1611573,
+   "pytest_summary": "70 passed, 1 warning in 11.15s"
+  },
+  "f2": {
+   "sha": "910afd25491cbbc5c9aa451873b4b6816f9572ff",
+   "exit_code": 0,
+   "log_sha256": "440b6e212829f8d9f4315ff273a51dd2ea8b878ce063ff4d64f16102bf7f7bb9",
+   "log_bytes": 1611573,
+   "pytest_summary": "70 passed, 1 warning in 10.94s"
+  }
+ },
+ "summary": {
+  "total_calls": 59,
+  "BYTE_IDENTICAL": 59,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "trade_lifecycle_builder._build_trade_lifecycles": {
+    "calls": 30,
+    "BYTE_IDENTICAL": 30,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "live_execution_bundle_runner.main": {
+    "calls": 29,
+    "BYTE_IDENTICAL": 29,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": []
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "8a7090df786c5cf6821a99b36d1a9e5b1ee0b91030774a3501cc8aef660e5b0b",
+    "manifest_sha256_after": "8a7090df786c5cf6821a99b36d1a9e5b1ee0b91030774a3501cc8aef660e5b0b",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   },
+   "b2": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "3948914bcc93d725e7c9bed3165716e70e4a45ccbd29d6fc80a5d15f293f085a",
+    "manifest_sha256_after": "3948914bcc93d725e7c9bed3165716e70e4a45ccbd29d6fc80a5d15f293f085a",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   },
+   "f1": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "488a66bb114dd7f89b66204c22623528adabad007a674c3e9cfea8a43f0aac23",
+    "manifest_sha256_after": "488a66bb114dd7f89b66204c22623528adabad007a674c3e9cfea8a43f0aac23",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   },
+   "f2": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 3,
+    "difference_counts": {
+     "CREATED": 1,
+     "DELETED": 1,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 1,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 1,
+    "new_paths_sample": [
+     "contamination_new.txt"
+    ],
+    "manifest_sha256_before": "9848f302a5fb810b9b4806bef0bd946d055d1d5eb02306525650fe9ff1bb8d68",
+    "manifest_sha256_after": "907b1159e894c30aca4e1a93ce339c7377165c1551fae34eb11c67bb6d950c2a",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [
+     "filesystem differences inside the session root: CREATED=1, DELETED=1, CONTENT_CHANGED=1"
+    ],
+    "verdict": "FAIL",
+    "differences_sample": [
+     {
+      "path": "contamination_new.txt",
+      "kind": "CREATED",
+      "before": null,
+      "after": {
+       "type": "file",
+       "size": 6,
+       "mtime_ns": 1791931182147363800,
+       "sha256": "27f7340b5bceb6ab6e5fc69f34abe5537575b65abffe1814f4d46d1f424a9839"
+      }
+     },
+     {
+      "path": "AGENTS.md",
+      "kind": "DELETED",
+      "before": {
+       "type": "file",
+       "size": 2230,
+       "mtime_ns": 1791931087067029300,
+       "sha256": "38debd27ef39632f3dbc252610f2de365a7a90e5e8ef4f569a2be4f7b5b09ba3"
+      },
+      "after": null
+     },
+     {
+      "path": "README.md",
+      "kind": "CONTENT_CHANGED",
+      "before": {
+       "type": "file",
+       "size": 26500,
+       "mtime_ns": 1791931087068652600,
+       "sha256": "ab49f5923edee7d011493b8578ab134707fe056134947f4dd42e182ac8a8074c"
+      },
+      "after": {
+       "type": "file",
+       "size": 26500,
+       "mtime_ns": 1791931087068652600,
+       "sha256": "23241991b63d9d7b60509e700f58416dff99321b63e31c552df2f4257ea37276"
+      }
+     }
+    ]
+   }
+  },
+  "containment_guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+  "containment_manifest_mode": "strict_sha256",
+  "content_equivalence_proven": true,
+  "containment_not_proven": [
+   "transient write-and-restore during execution",
+   "writes outside the session root",
+   "OS-wide write interception"
+  ],
+  "containment_verdict": "FAIL",
+  "failed_sessions": [
+   "f2"
+  ]
+ },
+ "containment_files": {
+  "b1": {
+   "verdict": "PASS",
+   "stats": {
+    "entries": 3410,
+    "files": 3177,
+    "dirs": 233,
+    "bytes": 33943214,
+    "scan_seconds": 0.716
+   },
+   "scan_seconds": {
+    "before": 19.172,
+    "after": 0.716
+   },
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "manifest_sha256_before": "8a7090df786c5cf6821a99b36d1a9e5b1ee0b91030774a3501cc8aef660e5b0b",
+   "manifest_sha256_after": "8a7090df786c5cf6821a99b36d1a9e5b1ee0b91030774a3501cc8aef660e5b0b",
+   "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+   "manifest_mode": "strict_sha256",
+   "content_equivalence_proven": true,
+   "exit_code": 0,
+   "problems": []
+  },
+  "b2": {
+   "verdict": "PASS",
+   "stats": {
+    "entries": 3410,
+    "files": 3177,
+    "dirs": 233,
+    "bytes": 33943214,
+    "scan_seconds": 0.714
+   },
+   "scan_seconds": {
+    "before": 19.816,
+    "after": 0.714
+   },
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "manifest_sha256_before": "3948914bcc93d725e7c9bed3165716e70e4a45ccbd29d6fc80a5d15f293f085a",
+   "manifest_sha256_after": "3948914bcc93d725e7c9bed3165716e70e4a45ccbd29d6fc80a5d15f293f085a",
+   "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+   "manifest_mode": "strict_sha256",
+   "content_equivalence_proven": true,
+   "exit_code": 0,
+   "problems": []
+  },
+  "f1": {
+   "verdict": "PASS",
+   "stats": {
+    "entries": 3410,
+    "files": 3177,
+    "dirs": 233,
+    "bytes": 33943214,
+    "scan_seconds": 0.706
+   },
+   "scan_seconds": {
+    "before": 19.924,
+    "after": 0.706
+   },
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "manifest_sha256_before": "488a66bb114dd7f89b66204c22623528adabad007a674c3e9cfea8a43f0aac23",
+   "manifest_sha256_after": "488a66bb114dd7f89b66204c22623528adabad007a674c3e9cfea8a43f0aac23",
+   "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+   "manifest_mode": "strict_sha256",
+   "content_equivalence_proven": true,
+   "exit_code": 0,
+   "problems": []
+  },
+  "f2": {
+   "verdict": "FAIL",
+   "stats": {
+    "entries": 3410,
+    "files": 3177,
+    "dirs": 233,
+    "bytes": 33940990,
+    "scan_seconds": 0.622
+   },
+   "scan_seconds": {
+    "before": 19.802,
+    "after": 0.622
+   },
+   "difference_counts": {
+    "CREATED": 1,
+    "DELETED": 1,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 1,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [
+    {
+     "path": "contamination_new.txt",
+     "kind": "CREATED",
+     "before": null,
+     "after": {
+      "type": "file",
+      "size": 6,
+      "mtime_ns": 1791931182147363800,
+      "sha256": "27f7340b5bceb6ab6e5fc69f34abe5537575b65abffe1814f4d46d1f424a9839"
+     }
+    },
+    {
+     "path": "AGENTS.md",
+     "kind": "DELETED",
+     "before": {
+      "type": "file",
+      "size": 2230,
+      "mtime_ns": 1791931087067029300,
+      "sha256": "38debd27ef39632f3dbc252610f2de365a7a90e5e8ef4f569a2be4f7b5b09ba3"
+     },
+     "after": null
+    },
+    {
+     "path": "README.md",
+     "kind": "CONTENT_CHANGED",
+     "before": {
+      "type": "file",
+      "size": 26500,
+      "mtime_ns": 1791931087068652600,
+      "sha256": "ab49f5923edee7d011493b8578ab134707fe056134947f4dd42e182ac8a8074c"
+     },
+     "after": {
+      "type": "file",
+      "size": 26500,
+      "mtime_ns": 1791931087068652600,
+      "sha256": "23241991b63d9d7b60509e700f58416dff99321b63e31c552df2f4257ea37276"
+     }
+    }
+   ],
+   "manifest_sha256_before": "9848f302a5fb810b9b4806bef0bd946d055d1d5eb02306525650fe9ff1bb8d68",
+   "manifest_sha256_after": "907b1159e894c30aca4e1a93ce339c7377165c1551fae34eb11c67bb6d950c2a",
+   "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+   "manifest_mode": "strict_sha256",
+   "content_equivalence_proven": true,
+   "exit_code": 0,
+   "problems": [
+    "filesystem differences inside the session root: CREATED=1, DELETED=1, CONTENT_CHANGED=1"
+   ]
+  }
+ },
+ "failed_bundles": {
+  "f2": {
+   "files": [
+    ".p156_task_owned",
+    "bundle.json",
+    "diff.json",
+    "files",
+    "manifest_after.json",
+    "manifest_before.json"
+   ],
+   "bundle": {
+    "copied": [
+     "contamination_new.txt",
+     "README.md"
+    ],
+    "skipped": [],
+    "copied_bytes": 26506,
+    "caps": {
+     "max_files": 64,
+     "max_file_bytes": 1048576,
+     "max_total_bytes": 8388608
+    }
+   }
+  }
+ }
+}

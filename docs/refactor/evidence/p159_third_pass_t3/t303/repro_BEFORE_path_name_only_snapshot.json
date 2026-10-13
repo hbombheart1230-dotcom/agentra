@@ -1,0 +1,34 @@
+[
+ {
+  "case": "new file",
+  "verdict": "FAIL"
+ },
+ {
+  "case": "existing file content modification",
+  "verdict": "PASS"
+ },
+ {
+  "case": "existing file deletion",
+  "verdict": "PASS"
+ },
+ {
+  "case": "existing empty directory deletion",
+  "verdict": "PASS"
+ },
+ {
+  "case": "existing file mtime-only change",
+  "verdict": "PASS"
+ },
+ {
+  "case": "same-size content change",
+  "verdict": "PASS"
+ },
+ {
+  "case": "same-size content change with restored mtime",
+  "verdict": "PASS"
+ },
+ {
+  "case": "no filesystem change",
+  "verdict": "PASS"
+ }
+]

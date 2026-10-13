@@ -183,20 +183,26 @@ def test_snapshot_detects_empty_and_ignored_directories(tmp_path):
     root = tmp_path / "tree"
     (root / ".git").mkdir(parents=True)
     (root / "tracked.txt").write_text("x", encoding="utf-8")
-    before = P.snapshot_tree(root)
+    before = P.snapshot_manifest(root)
     (root / "data" / "logs").mkdir(parents=True)  # empty directory: invisible to `git status`
     (root / "__pycache__").mkdir()  # typically git-ignored
     (root / ".git" / "inside-git").write_text("ignored by design", encoding="utf-8")
-    after = P.snapshot_tree(root)
-    assert sorted(after - before) == ["__pycache__", "data", "data/logs"]
+    after = P.snapshot_manifest(root)
+    created = sorted(d["path"] for d in P.diff_manifests(before, after) if d["kind"] == "CREATED")
+    assert created == ["__pycache__", "data", "data/logs"]
     verdict = P.audit_session(before, after, "6 passed", 0)
     assert verdict["verdict"] == "FAIL" and verdict["new_paths_in_session_root"] == 3
     clean = P.audit_session(before, before, "6 passed", 0)
     assert clean["verdict"] == "PASS"
 
 
+def _empty_manifest():
+    return {"schema": P.MANIFEST_SCHEMA, "mode": P.MODE_STRICT, "entries": {}, "errors": [], "stats": {},
+            "manifest_sha256": "0"}
+
+
 def test_audit_fails_on_project_write_banner_or_bad_exit_code():
-    base = {"tracked.txt"}
+    base = _empty_manifest()
     banner = "x\nPRODUCTION PATH WRITE DETECTED DURING TEST SESSION\n6 passed"
     assert P.audit_session(base, base, banner, 0)["verdict"] == "FAIL"  # banner alone fails, even with exit 0
     assert P.audit_session(base, base, "6 passed", 1)["verdict"] == "FAIL"  # exit 1 not expected
@@ -365,3 +371,242 @@ def test_windows_non_runnable_interpreter_stubs_are_excluded_from_the_isolation_
     assert _interpreter_works(str(stub)) is False
     assert _interpreter_works(_sys.executable) is True
     assert _sys.executable in _windows_interpreters()
+
+
+# ---- T3-0.3 write containment: structured, integrity-aware manifests -----------------------------------------------
+def _tree(tmp_path):
+    root = tmp_path / "tree"
+    (root / ".git").mkdir(parents=True)
+    (root / "sub").mkdir()
+    (root / "emptydir").mkdir()
+    (root / "a.txt").write_text("hello world", encoding="utf-8")
+    (root / "sub" / "b.txt").write_text("0123456789", encoding="utf-8")
+    (root / "ignored.log").write_text("x", encoding="utf-8")
+    return root
+
+
+def _mtime_only(root):
+    st = (root / "a.txt").stat()
+    os.utime(root / "a.txt", ns=(st.st_atime_ns, st.st_mtime_ns + 5_000_000_000))
+
+
+def _same_size_restored_mtime(root):
+    st = (root / "a.txt").stat()
+    (root / "a.txt").write_text("HELLO WORLD", encoding="utf-8")
+    os.utime(root / "a.txt", ns=(st.st_atime_ns, st.st_mtime_ns))
+
+
+def _same_size(root):
+    st = (root / "a.txt").stat()
+    (root / "a.txt").write_text("HELLO WORLD", encoding="utf-8")
+    os.utime(root / "a.txt", ns=(st.st_atime_ns, st.st_mtime_ns + 7_000_000_000))
+
+
+def _type_changed(root):
+    (root / "emptydir").rmdir()
+    (root / "emptydir").write_text("now a file", encoding="utf-8")
+
+
+_MUTATIONS = {
+    "new_file": (lambda r: (r / "new.txt").write_text("n", encoding="utf-8"), "CREATED"),
+    "new_empty_directory": (lambda r: (r / "newdir").mkdir(), "CREATED"),
+    "content_modified": (lambda r: (r / "a.txt").write_text("changed content!!", encoding="utf-8"), "CONTENT_CHANGED"),
+    "file_deleted": (lambda r: (r / "a.txt").unlink(), "DELETED"),
+    "empty_directory_deleted": (lambda r: (r / "emptydir").rmdir(), "DELETED"),
+    "mtime_only": (_mtime_only, "METADATA_CHANGED"),
+    "same_size_content": (_same_size, "CONTENT_CHANGED"),
+    "same_size_content_restored_mtime": (_same_size_restored_mtime, "CONTENT_CHANGED"),
+    "type_changed": (_type_changed, "TYPE_CHANGED"),
+}
+
+
+@pytest.mark.parametrize("name", sorted(_MUTATIONS))
+def test_containment_every_filesystem_mutation_fails_the_session_in_strict_mode(tmp_path, name):
+    root = _tree(tmp_path)
+    before = P.snapshot_manifest(root)
+    mutate, kind = _MUTATIONS[name]
+    mutate(root)
+    verdict = P.audit_session(before, P.snapshot_manifest(root), "6 passed", 0)
+    assert verdict["verdict"] == "FAIL", verdict
+    assert verdict["difference_counts"][kind] >= 1, verdict["difference_counts"]
+    assert verdict["content_equivalence_proven"] is True and verdict["guarantee"] == P.CONTAINMENT_GUARANTEE
+
+
+def test_containment_unchanged_tree_is_a_clean_pass_without_false_differences(tmp_path):
+    root = _tree(tmp_path)
+    before = P.snapshot_manifest(root)
+    after = P.snapshot_manifest(root)
+    verdict = P.audit_session(before, after, "6 passed", 0)
+    assert verdict["verdict"] == "PASS" and verdict["differences_total"] == 0
+    assert before["manifest_sha256"] == after["manifest_sha256"]
+    assert before["stats"]["files"] == 3 and before["stats"]["dirs"] == 2
+
+
+def test_containment_git_metadata_is_excluded_but_ordinary_ignored_and_empty_entries_are_not(tmp_path):
+    root = _tree(tmp_path)
+    before = P.snapshot_manifest(root)
+    (root / ".git" / "HEAD").write_text("ref", encoding="utf-8")
+    assert P.audit_session(before, P.snapshot_manifest(root), "ok", 0)["verdict"] == "PASS"
+    assert "ignored.log" in before["entries"] and "emptydir" in before["entries"]
+
+
+def test_containment_fast_mode_is_labelled_and_cannot_see_same_size_restored_mtime_changes(tmp_path):
+    root = _tree(tmp_path)
+    before = P.snapshot_manifest(root, P.MODE_FAST)
+    _same_size_restored_mtime(root)
+    verdict = P.audit_session(before, P.snapshot_manifest(root, P.MODE_FAST), "ok", 0)
+    assert verdict["manifest_mode"] == P.MODE_FAST and verdict["content_equivalence_proven"] is False
+    assert verdict["verdict"] == "PASS"  # the documented, labelled coverage limit of the fast tier
+    strict_before = P.snapshot_manifest(root)
+    st = (root / "a.txt").stat()
+    (root / "a.txt").write_text("Hello World", encoding="utf-8")  # same size again, mtime restored
+    os.utime(root / "a.txt", ns=(st.st_atime_ns, st.st_mtime_ns))
+    assert P.audit_session(strict_before, P.snapshot_manifest(root), "ok", 0)["verdict"] == "FAIL"
+
+
+@pytest.mark.parametrize("which", ["mtime", "size"])
+def test_containment_fast_mode_still_fails_size_and_mtime_changes(tmp_path, which):
+    root = _tree(tmp_path)
+    before = P.snapshot_manifest(root, P.MODE_FAST)
+    if which == "mtime":
+        _mtime_only(root)
+    else:
+        (root / "a.txt").write_text("longer content", encoding="utf-8")
+    assert P.audit_session(before, P.snapshot_manifest(root, P.MODE_FAST), "ok", 0)["verdict"] == "FAIL"
+
+
+def test_containment_scan_error_fails_closed(tmp_path, monkeypatch):
+    root = _tree(tmp_path)
+    before = P.snapshot_manifest(root)
+    real = P._sha256
+
+    def boom(path):
+        if str(path).endswith("a.txt"):
+            raise PermissionError("denied")
+        return real(path)
+
+    monkeypatch.setattr(P, "_sha256", boom)
+    after = P.snapshot_manifest(root)
+    assert after["errors"] and "a.txt" in after["errors"][0]["path"]
+    verdict = P.audit_session(before, after, "ok", 0)
+    assert verdict["verdict"] == "FAIL" and verdict["difference_counts"]["SCAN_ERROR"] >= 1
+
+
+def test_containment_unstable_file_during_hash_fails_closed(tmp_path, monkeypatch):
+    root = _tree(tmp_path)
+    real = P._sha256
+
+    def racing(path):
+        digest = real(path)
+        if str(path).endswith("a.txt"):
+            Path(path).write_text("rewritten while hashing", encoding="utf-8")
+        return digest
+
+    monkeypatch.setattr(P, "_sha256", racing)
+    m = P.snapshot_manifest(root)
+    assert any("unstable" in e["error"] for e in m["errors"])
+    assert P.audit_session(m, m, "ok", 0)["verdict"] == "FAIL"
+
+
+def test_containment_refuses_path_name_only_snapshots_and_mixed_modes(tmp_path):
+    root = _tree(tmp_path)
+    names = P.snapshot_tree(root)
+    with pytest.raises(TypeError):
+        P.audit_session(names, names, "ok", 0)
+    with pytest.raises(ValueError):
+        P.audit_session(P.snapshot_manifest(root), P.snapshot_manifest(root, P.MODE_FAST), "ok", 0)
+
+
+def test_containment_guarantee_is_named_and_states_what_it_does_not_prove():
+    assert P.CONTAINMENT_GUARANTEE == "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE"
+    joined = " ".join(P.CONTAINMENT_NOT_PROVEN)
+    assert "transient write-and-restore" in joined and "OS-wide write interception" in joined
+
+
+def test_failed_session_evidence_is_bounded_sanitized_and_recorded_before_cleanup(tmp_path):
+    root = _tree(tmp_path)
+    before = P.snapshot_manifest(root)
+    (root / "leak.txt").write_text("debris", encoding="utf-8")
+    (root / ".env.local").write_text("SECRET=1", encoding="utf-8")
+    (root / "big.bin").write_bytes(b"0" * 2048)
+    (root / "a.txt").unlink()
+    after = P.snapshot_manifest(root)
+    verdict = P.audit_session(before, after, "ok", 0)
+    caps = {"max_files": 64, "max_file_bytes": 1024, "max_total_bytes": 4096}
+    dest = tmp_path / "out" / "failed_sessions" / "b1"
+    summary = P.preserve_failed_evidence(root, verdict, dest, before, after, caps)
+    assert summary["copied"] == ["leak.txt"]
+    reasons = {x["path"]: x["reason"] for x in summary["skipped"]}
+    assert "secret" in reasons[".env.local"] and "max_file_bytes" in reasons["big.bin"]
+    assert not (dest / "files" / ".env.local").exists()
+    import shutil
+    shutil.rmtree(root)  # the disposable clone is gone; the bundle must still describe the deletion
+    d = json.loads((dest / "diff.json").read_text(encoding="utf-8"))
+    kinds = {(x["path"], x["kind"]) for x in d["differences"]}
+    assert ("a.txt", "DELETED") in kinds and ("leak.txt", "CREATED") in kinds
+    assert (dest / "manifest_before.json").is_file() and (dest / "manifest_after.json").is_file()
+
+
+def test_retention_prunes_only_marked_task_owned_bundles(tmp_path):
+    parent = tmp_path / "evidence"
+    parent.mkdir()
+    import time as _t
+    now = _t.time()
+    for i in range(4):
+        d = parent / f"bundle{i}"
+        d.mkdir()
+        (d / P.TASK_OWNED_MARKER).write_text("x", encoding="utf-8")
+        (d / "diff.json").write_text("{}", encoding="utf-8")
+        os.utime(d, (now - i * 100, now - i * 100))
+    foreign = parent / "codex_clone"
+    foreign.mkdir()
+    (foreign / "keep.txt").write_text("not ours", encoding="utf-8")
+    os.utime(foreign, (now - 99 * 86400, now - 99 * 86400))
+    removed = P.prune_task_owned(parent, keep=2, max_age_days=14, now=now)
+    assert sorted(removed) == ["bundle2", "bundle3"]
+    assert (parent / "bundle0").exists() and (parent / "bundle1").exists()
+    assert (foreign / "keep.txt").exists(), "an unmarked directory must never be removed"
+
+
+def test_cleanup_refuses_directories_outside_the_task_owned_work_root(tmp_path):
+    work, other = tmp_path / "work", tmp_path / "codex_clone"
+    (work / "s_b1").mkdir(parents=True)
+    other.mkdir()
+    (other / "f.txt").write_text("x", encoding="utf-8")
+    with pytest.raises(SystemExit):
+        P._remove_task_owned(other, work)
+    with pytest.raises(SystemExit):
+        P._remove_task_owned(work, work)
+    P._remove_task_owned(work / "s_b1", work)
+    assert not (work / "s_b1").exists() and (other / "f.txt").exists()
+
+
+# ---- T3-0.3 NTFS directory-mtime diagnostics (P2 stays UNRESOLVED; facts only) ---------------------------------------
+def _diag():
+    import importlib
+    return importlib.import_module("p160_ntfs_dir_mtime_diagnostics")
+
+
+def test_containment_ntfs_diag_summarize_settle_parses_directory_only_modifications(tmp_path):
+    log = tmp_path / "settle.log"
+    log.write_text(
+        "PRODUCTION PATH WRITE DETECTED DURING TEST SESSION (audit_mode=fast)\n"
+        "  MODIFIED data/eval  size=-1->-1 mtime_ns=100->2000100 sha256_after=<unreadable>\n"
+        "  MODIFIED data/specs  size=-1->-1 mtime_ns=5->2000005 sha256_after=<unreadable>\n", encoding="utf-8")
+    rec = _diag().summarize_settle(str(log), 1)
+    assert rec["banner_present"] is True and rec["directory_only"] is True and rec["status"] == "UNRESOLVED"
+    assert [r["mtime_delta_ns"] for r in rec["modified_entries"]] == [2000000, 2000000]
+
+
+def test_containment_ntfs_diag_clean_settle_log_is_reported_as_clean(tmp_path):
+    log = tmp_path / "settle.log"
+    log.write_text("23 tests collected\n", encoding="utf-8")
+    rec = _diag().summarize_settle(str(log), 0)
+    assert rec["banner_present"] is False and rec["modified_entries"] == [] and rec["first_session_exit_code"] == 0
+
+
+def test_containment_ntfs_diag_probe_is_read_only_and_never_tolerant(tmp_path):
+    before = P.snapshot_manifest(_diag().ROOT.joinpath("scripts"), P.MODE_FAST)
+    rec = _diag().probe(delays=(0.0, 0.0))
+    assert rec["status"] == "UNRESOLVED" and "no tolerance" in rec["note"]
+    assert P.audit_session(before, P.snapshot_manifest(_diag().ROOT.joinpath("scripts"), P.MODE_FAST), "ok", 0)["verdict"] == "PASS"

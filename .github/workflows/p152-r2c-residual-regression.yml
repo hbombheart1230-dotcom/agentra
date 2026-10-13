@@ -288,8 +288,13 @@ jobs:
           # directory entries of data/eval, data/originals and data/specs 'change' by ~2 ms between its own start and
           # finish although nothing wrote there (T3-0.2). One throw-away collect-only session lets them settle; its
           # result is NOT used. The real run below keeps the full write audit and must be clean.
-          python -m pytest -q -p no:cacheprovider --collect-only tests/test_p156_parity_harness.py > branch_output/harness_windows_settle.log 2>&1 || true
+          # T3-0.3 (P2 stays UNRESOLVED): record the facts - directory mtime samples BEFORE the settle session and the
+          # exit code / banner of the settle session itself - so reproducibility is visible per run. Diagnostic only.
+          python scripts/refactor/p160_ntfs_dir_mtime_diagnostics.py probe --out branch_output/ntfs_probe_before_settle.json
+          settle_rc=0
+          python -m pytest -q -p no:cacheprovider --collect-only tests/test_p156_parity_harness.py > branch_output/harness_windows_settle.log 2>&1 || settle_rc=$?
           tail -n 25 branch_output/harness_windows_settle.log
+          python scripts/refactor/p160_ntfs_dir_mtime_diagnostics.py summarize-settle branch_output/harness_windows_settle.log $settle_rc --out branch_output/ntfs_settle_summary.json
           rc=0
           python -m pytest -q -p no:cacheprovider tests/test_p156_parity_harness.py -rs --junitxml=branch_output/harness_windows_junit.xml > branch_output/harness_windows_pytest.log 2>&1 || rc=$?
           cat branch_output/harness_windows_pytest.log
@@ -314,6 +319,17 @@ jobs:
           for name in required:
               assert got.get(name) == 'PASSED', (name, got.get(name))
           assert not [n for n, s in win if s == 'FAILED'], win
+          # T3-0.3: the write-containment negative tests must have RUN and PASSED on Windows (never skipped)
+          cont = [(n, s) for n, s in rows if n.startswith(('test_containment_', 'test_failed_session_evidence',
+                                                           'test_retention_', 'test_cleanup_refuses'))]
+          print('WINDOWS containment tests:', len(cont))
+          assert len(cont) >= 24, len(cont)
+          assert all(s == 'PASSED' for _, s in cont), [r for r in cont if r[1] != 'PASSED']
+          need = ['content_modified', 'file_deleted', 'empty_directory_deleted', 'mtime_only', 'same_size_content',
+                  'same_size_content_restored_mtime', 'new_file', 'type_changed']
+          names = [n for n, _ in cont]
+          for k in need:
+              assert any(n.endswith('[' + k + ']') for n in names), k
           PY
       - name: Upload Windows harness JUnit
         if: always()
@@ -323,6 +339,9 @@ jobs:
           path: |
             branch_output/harness_windows_junit.xml
             branch_output/harness_windows_pytest.log
+            branch_output/harness_windows_settle.log
+            branch_output/ntfs_probe_before_settle.json
+            branch_output/ntfs_settle_summary.json
           if-no-files-found: warn
   broad_remote_offline:
     name: Repo-wide mock/offline non-heavy regression (manual diagnostic only)

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 231,
+  "entry_count": 232,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6246,6 +6246,32 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-0-2-CLAUDE-029.md",
         "scripts/refactor/p156_parity_differential.py",
+        "tests/test_p156_parity_harness.py"
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "version": "P1.5 Third Pass T3-0.3",
+      "title": "T3-0.3: integrity-aware session write-containment manifests (P1 gap closure)",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "The parity harness audited sessions with path-name-only snapshots and could not see modified or deleted files. Sessions are now audited with structured SHA-256 manifests (CREATED, DELETED, TYPE_CHANGED, CONTENT_CHANGED, METADATA_CHANGED, SCAN_ERROR), fail-closed on unreadable or unstable scans, with bounded failed-session evidence written before cleanup; no production file, sitecustomize.py or conftest.py changed.",
+      "details": [
+        "Reproduced the gap first: 6 of 8 mutation cases (content change, deletion, empty-directory deletion, mtime-only, same-size change, same-size change with restored mtime) were false PASS; all 8 now behave as required.",
+        "Strict mode proves content equivalence by SHA-256 (about 0.7 s for 3,177 files / 34 MB); fast mode is labelled and cannot see same-size changes with restored mtime. The guarantee is named PRE_POST_END_STATE_MANIFEST_EQUIVALENCE and does not claim to detect transient write-and-restore or OS-wide writes.",
+        "Control runs at one code SHA: 4 parallel sessions PASS (59/59 identical); intentional contamination of one session fails with exit 2 in parallel and --same-path modes and its evidence bundle survives clone removal.",
+        "NTFS directory-mtime issue stays P2 UNRESOLVED: not reproduced locally; read-only diagnostics added to the Windows job; the settle workaround is not a fix and containment is not weakened. T3.1, T3.5, Wave D not started."
+      ],
+      "impact": "Test-harness, CI and documentation evidence only; no trading, LLM, ranking, lock/queue or report behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-0-3-CLAUDE-030.md",
+        "scripts/refactor/p156_parity_differential.py",
+        "scripts/refactor/p160_ntfs_dir_mtime_diagnostics.py",
         "tests/test_p156_parity_harness.py"
       ]
     }

@@ -1,0 +1,86 @@
+{
+ "python": "3.13.14",
+ "runs": [
+  {
+   "run": 0,
+   "scans": [
+    {
+     "after_delay_s": 0.2,
+     "lstat_dir_mtime_changes": 0,
+     "direntry_dir_mtime_changes": 0,
+     "manifest_differences": 0,
+     "sample": []
+    },
+    {
+     "after_delay_s": 1.0,
+     "lstat_dir_mtime_changes": 0,
+     "direntry_dir_mtime_changes": 0,
+     "manifest_differences": 0,
+     "sample": []
+    },
+    {
+     "after_delay_s": 5.0,
+     "lstat_dir_mtime_changes": 0,
+     "direntry_dir_mtime_changes": 0,
+     "manifest_differences": 0,
+     "sample": []
+    }
+   ],
+   "lstat_vs_direntry_dir_mismatch": 0
+  },
+  {
+   "run": 1,
+   "scans": [
+    {
+     "after_delay_s": 0.2,
+     "lstat_dir_mtime_changes": 0,
+     "direntry_dir_mtime_changes": 0,
+     "manifest_differences": 0,
+     "sample": []
+    },
+    {
+     "after_delay_s": 1.0,
+     "lstat_dir_mtime_changes": 0,
+     "direntry_dir_mtime_changes": 0,
+     "manifest_differences": 0,
+     "sample": []
+    },
+    {
+     "after_delay_s": 5.0,
+     "lstat_dir_mtime_changes": 0,
+     "direntry_dir_mtime_changes": 0,
+     "manifest_differences": 0,
+     "sample": []
+    }
+   ],
+   "lstat_vs_direntry_dir_mismatch": 0
+  },
+  {
+   "run": 2,
+   "scans": [
+    {
+     "after_delay_s": 0.2,
+     "lstat_dir_mtime_changes": 0,
+     "direntry_dir_mtime_changes": 0,
+     "manifest_differences": 0,
+     "sample": []
+    },
+    {
+     "after_delay_s": 1.0,
+     "lstat_dir_mtime_changes": 0,
+     "direntry_dir_mtime_changes": 0,
+     "manifest_differences": 0,
+     "sample": []
+    },
+    {
+     "after_delay_s": 5.0,
+     "lstat_dir_mtime_changes": 0,
+     "direntry_dir_mtime_changes": 0,
+     "manifest_differences": 0,
+     "sample": []
+    }
+   ],
+   "lstat_vs_direntry_dir_mismatch": 0
+  }
+ ]
+}

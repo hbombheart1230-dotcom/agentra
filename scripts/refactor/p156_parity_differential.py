@@ -296,37 +296,258 @@ def session_env(root, session_dir, harness_dir, names, log, mode, keep, effect_f
     return env
 
 
+# --------------------------------------------------------------------------------------------------------------------
+# Write containment (T3-0.3). Guarantee name: PRE_POST_END_STATE_MANIFEST_EQUIVALENCE.
+# A before/after manifest proves that the END STATE of the session root equals its START STATE (strict mode: down to the
+# SHA-256 of every file). It does NOT prove that no transient write-and-restore happened during the run, it does NOT
+# cover paths outside the session root, and it is NOT OS-wide write interception.
+# --------------------------------------------------------------------------------------------------------------------
+MANIFEST_SCHEMA = "p156_tree_manifest.v1"
+CONTAINMENT_GUARANTEE = "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE"
+CONTAINMENT_NOT_PROVEN = ("transient write-and-restore during execution", "writes outside the session root",
+                          "OS-wide write interception")
+MODE_STRICT = "strict_sha256"
+MODE_FAST = "fast_metadata_only"
+DIFF_KINDS = ("CREATED", "DELETED", "TYPE_CHANGED", "CONTENT_CHANGED", "METADATA_CHANGED", "SCAN_ERROR")
+_REPARSE = 0x400  # FILE_ATTRIBUTE_REPARSE_POINT
+
+
 def snapshot_tree(root):
-    """Every file AND directory (including empty and git-ignored ones) below root, excluding the .git directory."""
-    seen = set()
-    for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if not (Path(dirpath) == Path(root) and d == ".git")]
-        base = Path(dirpath)
-        for name in dirnames + filenames:
-            seen.add(str((base / name).relative_to(root)).replace("\\", "/"))
-    return seen
+    """LEGACY path-name-only snapshot (diagnostics only). It cannot see modification or deletion and `audit_session`
+    refuses it. Use `snapshot_manifest`."""
+    return set(snapshot_manifest(root, MODE_FAST)["entries"])
+
+
+def _entry_for(path, st, strict):
+    import stat as _st
+    attrs = getattr(st, "st_file_attributes", 0)
+    mode = st.st_mode
+    if _st.S_ISLNK(mode) or (attrs & _REPARSE and not _st.S_ISREG(mode)):
+        try:
+            target = os.readlink(path)
+        except OSError as exc:
+            return None, f"unsupported reparse point / unreadable link: {exc}"
+        return {"type": "symlink", "target": str(target), "size": 0, "mtime_ns": st.st_mtime_ns}, None
+    if _st.S_ISDIR(mode):
+        return {"type": "dir", "size": 0, "mtime_ns": st.st_mtime_ns}, None
+    if _st.S_ISREG(mode):
+        e = {"type": "file", "size": st.st_size, "mtime_ns": st.st_mtime_ns}
+        if strict:
+            try:
+                e["sha256"] = _sha256(path)
+            except OSError as exc:
+                return None, f"unreadable file: {exc}"
+            try:
+                st2 = os.lstat(path)
+            except OSError as exc:
+                return None, f"vanished while hashing: {exc}"
+            if (st2.st_size, st2.st_mtime_ns) != (st.st_size, st.st_mtime_ns):
+                return None, "unstable: file changed while it was being hashed"
+        return e, None
+    return None, f"unsupported file type (st_mode={mode:#o})"
+
+
+def snapshot_manifest(root, mode=MODE_STRICT):
+    """Structured manifest of every entry below `root` (files, directories incl. empty and git-ignored ones, symlinks),
+    excluding the top-level `.git` metadata. Entry: {type, size, mtime_ns, sha256 (strict files), target (symlinks)}.
+    Anything that cannot be classified, read or hashed stably is recorded in `errors` (fail closed at diff time)."""
+    if mode not in (MODE_STRICT, MODE_FAST):
+        raise ValueError(f"unknown manifest mode {mode!r}")
+    strict = mode == MODE_STRICT
+    root = str(root)
+    entries, errors = {}, []
+    t0 = time.perf_counter()
+    stack = [root]
+    while stack:
+        cur = stack.pop()
+        try:
+            with os.scandir(cur) as it:
+                names = sorted(e.name for e in it)
+        except OSError as exc:
+            errors.append({"path": os.path.relpath(cur, root).replace("\\", "/"), "error": f"unlistable: {exc}"})
+            continue
+        for name in names:
+            full = os.path.join(cur, name)
+            rel = os.path.relpath(full, root).replace("\\", "/")
+            if cur == root and name == ".git":
+                continue
+            try:
+                st = os.lstat(full)
+            except OSError as exc:
+                errors.append({"path": rel, "error": f"lstat failed: {exc}"})
+                continue
+            e, err = _entry_for(full, st, strict)
+            if err:
+                errors.append({"path": rel, "error": err})
+                continue
+            entries[rel] = e
+            if e["type"] == "dir":
+                stack.append(full)
+    canon = json.dumps(entries, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return {"schema": MANIFEST_SCHEMA, "mode": mode, "entries": entries, "errors": errors,
+            "stats": {"entries": len(entries), "files": sum(1 for v in entries.values() if v["type"] == "file"),
+                      "dirs": sum(1 for v in entries.values() if v["type"] == "dir"),
+                      "bytes": sum(v["size"] for v in entries.values() if v["type"] == "file"),
+                      "scan_seconds": round(time.perf_counter() - t0, 3)},
+            "manifest_sha256": hashlib.sha256(canon.encode("utf-8")).hexdigest()}
+
+
+def diff_manifests(before, after):
+    """Every difference between two manifests of the same mode as [{path, kind, before, after}]. Fail closed: scan
+    errors in either manifest are SCAN_ERROR differences; manifests of different modes cannot be compared."""
+    for m in (before, after):
+        if not isinstance(m, dict) or m.get("schema") != MANIFEST_SCHEMA:
+            raise TypeError("audit requires structured manifests from snapshot_manifest(); a path-name-only snapshot "
+                            "cannot prove containment")
+    if before["mode"] != after["mode"]:
+        raise ValueError("manifest modes differ: %s vs %s" % (before["mode"], after["mode"]))
+    out = []
+    for side, m in (("before", before), ("after", after)):
+        for err in m["errors"]:
+            out.append({"path": err["path"], "kind": "SCAN_ERROR", "before": None, "after": None,
+                        "detail": f"{side}: {err['error']}"})
+    b, a = before["entries"], after["entries"]
+    for p in sorted(set(a) - set(b)):
+        out.append({"path": p, "kind": "CREATED", "before": None, "after": a[p]})
+    for p in sorted(set(b) - set(a)):
+        out.append({"path": p, "kind": "DELETED", "before": b[p], "after": None})
+    strict = before["mode"] == MODE_STRICT
+    for p in sorted(set(a) & set(b)):
+        x, y = b[p], a[p]
+        if x["type"] != y["type"]:
+            kind = "TYPE_CHANGED"
+        elif x["type"] == "file":
+            if x["size"] != y["size"] or (strict and x["sha256"] != y["sha256"]):
+                kind = "CONTENT_CHANGED"
+            elif x["mtime_ns"] != y["mtime_ns"]:
+                kind = "METADATA_CHANGED"  # in fast mode content equivalence is NOT proven
+            else:
+                continue
+        elif x["type"] == "symlink":
+            if x["target"] != y["target"]:
+                kind = "CONTENT_CHANGED"
+            elif x["mtime_ns"] != y["mtime_ns"]:
+                kind = "METADATA_CHANGED"
+            else:
+                continue
+        else:  # dir
+            if x["mtime_ns"] == y["mtime_ns"]:
+                continue
+            kind = "METADATA_CHANGED"
+        out.append({"path": p, "kind": kind, "before": x, "after": y})
+    return out
 
 
 AUDIT_BANNER = "PRODUCTION PATH WRITE DETECTED"
 
 
 def audit_session(before, after, stdout_text, exit_code, expect_failures=0):
-    """Verdict for one session: any new path (file, directory, empty or git-ignored) inside the session root, the
-    project's own production-write banner, or an exit code other than the expected one is a FAIL."""
-    new_paths = sorted(after - before)
+    """Verdict for one session: any filesystem difference inside the session root (created, deleted, type/content/
+    metadata changed, scan error), the project's own production-write banner, or an unexpected exit code is a FAIL."""
+    diffs = diff_manifests(before, after)
+    counts = {k: sum(1 for d in diffs if d["kind"] == k) for k in DIFF_KINDS}
     banner = AUDIT_BANNER in stdout_text
     problems = []
-    if new_paths:
-        problems.append("new paths created inside the session root: %d" % len(new_paths))
+    if diffs:
+        problems.append("filesystem differences inside the session root: %s" %
+                        ", ".join(f"{k}={n}" for k, n in counts.items() if n))
     if banner:
         problems.append("project write audit banner present")
     if expect_failures == 0 and exit_code != 0:
         problems.append("pytest exit code %s (expected 0)" % exit_code)
     if expect_failures > 0 and not (exit_code == 1 and ("%d failed" % expect_failures) in stdout_text):
         problems.append("pytest exit code %s without exactly %d known failure(s)" % (exit_code, expect_failures))
-    return {"new_paths_in_session_root": len(new_paths), "new_paths_sample": new_paths[:20],
+    return {"guarantee": CONTAINMENT_GUARANTEE, "manifest_mode": before["mode"],
+            "content_equivalence_proven": before["mode"] == MODE_STRICT,
+            "differences_total": len(diffs), "difference_counts": counts,
+            "new_paths_in_session_root": counts["CREATED"],
+            "new_paths_sample": [d["path"] for d in diffs if d["kind"] == "CREATED"][:20],
+            "differences": diffs,
+            "manifest_sha256_before": before["manifest_sha256"], "manifest_sha256_after": after["manifest_sha256"],
             "project_write_audit_banner": banner, "exit_code": exit_code, "problems": problems,
             "verdict": "FAIL" if problems else "PASS"}
+
+
+# ---- failed-session evidence: preserved BEFORE cleanup, bounded, sanitized, finite retention ------------------------
+FAILED_EVIDENCE_CAPS = {"max_files": 64, "max_file_bytes": 1 << 20, "max_total_bytes": 8 << 20}
+_SECRET_NAME = re.compile(
+    r"(^|[\\/])(\.env[^\\/]*|[^\\/]*\.(key|pem|pfx|p12)|[^\\/]*(secret|token|credential|password)[^\\/]*)$",
+    re.IGNORECASE)
+TASK_OWNED_MARKER = ".p156_task_owned"
+
+
+def preserve_failed_evidence(root, verdict, dest, before, after, caps=None):
+    """Write a compact, bounded bundle for a FAILED session BEFORE its disposable clone is cleaned: full difference
+    list, both manifests (paths + sizes + SHA-256), and a bounded copy of the created/changed files (never files whose
+    names look like secrets). Returns the bundle summary."""
+    caps = caps or FAILED_EVIDENCE_CAPS
+    dest = Path(dest)
+    (dest / "files").mkdir(parents=True, exist_ok=True)
+    (dest / TASK_OWNED_MARKER).write_text("p156 failed-session evidence bundle\n", encoding="utf-8")
+    (dest / "diff.json").write_text(json.dumps(verdict, indent=1, ensure_ascii=False), encoding="utf-8")
+    for tag, m in (("before", before), ("after", after)):
+        (dest / f"manifest_{tag}.json").write_text(json.dumps(m, indent=0, ensure_ascii=False), encoding="utf-8")
+    copied, skipped, total = [], [], 0
+    for d in verdict["differences"]:
+        if d["kind"] not in ("CREATED", "CONTENT_CHANGED", "METADATA_CHANGED", "TYPE_CHANGED"):
+            continue
+        a = d.get("after") or {}
+        if a.get("type") != "file":
+            continue
+        reason = None
+        if _SECRET_NAME.search(d["path"]):
+            reason = "name looks like a secret/credential file"
+        elif a["size"] > caps["max_file_bytes"]:
+            reason = "larger than max_file_bytes"
+        elif len(copied) >= caps["max_files"]:
+            reason = "max_files reached"
+        elif total + a["size"] > caps["max_total_bytes"]:
+            reason = "max_total_bytes reached"
+        if reason:
+            skipped.append({"path": d["path"], "reason": reason})
+            continue
+        try:
+            tgt = dest / "files" / d["path"]
+            tgt.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(Path(root) / d["path"], tgt)
+            copied.append(d["path"])
+            total += a["size"]
+        except OSError as exc:
+            skipped.append({"path": d["path"], "reason": f"copy failed: {exc}"})
+    summary = {"copied": copied, "skipped": skipped, "copied_bytes": total, "caps": caps}
+    (dest / "bundle.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
+    return summary
+
+
+def prune_task_owned(parent, keep=5, max_age_days=14.0, max_total_bytes=64 << 20, now=None):
+    """Finite retention for failed-evidence bundles: only DIRECT children of `parent` that carry TASK_OWNED_MARKER are
+    ever considered; the newest `keep` survive, older than `max_age_days` or beyond `max_total_bytes` are removed.
+    Anything without the marker (Codex clones, user workspaces) is never touched. Returns the removed names."""
+    parent = Path(parent)
+    now = time.time() if now is None else now
+    owned = []
+    for child in (parent.iterdir() if parent.is_dir() else []):
+        if child.is_dir() and not child.is_symlink() and (child / TASK_OWNED_MARKER).is_file():
+            size = sum(f.stat().st_size for f in child.rglob("*") if f.is_file())
+            owned.append((child.stat().st_mtime, child, size))
+    owned.sort(key=lambda t: t[0], reverse=True)
+    removed, kept_bytes = [], 0
+    for idx, (mtime, child, size) in enumerate(owned):
+        too_old = (now - mtime) > max_age_days * 86400
+        if idx >= keep or too_old or kept_bytes + size > max_total_bytes:
+            shutil.rmtree(child, ignore_errors=True)
+            removed.append(child.name)
+        else:
+            kept_bytes += size
+    return removed
+
+
+def _remove_task_owned(path, owner_root):
+    """Delete a disposable session directory only if it is strictly inside the run's own work root."""
+    p, o = Path(path).resolve(), Path(owner_root).resolve()
+    if p == o or not _lex_under(p, str(o)):
+        raise SystemExit(f"refusing to delete a directory outside the task-owned work root: {p}")
+    shutil.rmtree(p, ignore_errors=True)
 
 
 def preflight_interpreter(py, scratch, harness_dir, names, mode="det"):
@@ -338,10 +559,10 @@ def preflight_interpreter(py, scratch, harness_dir, names, mode="det"):
     tree.mkdir(parents=True, exist_ok=True)
     (scratch / "tmp").mkdir(exist_ok=True)
     env = session_env(tree, scratch, harness_dir, names, scratch / "calls.json", mode, False)
-    before = snapshot_tree(tree)
+    before = snapshot_manifest(tree, MODE_STRICT)
     r = subprocess.run([py, "-c", "import sys; sys.stdout.write('ok')"], cwd=str(tree), env=env, capture_output=True,
                        text=True, timeout=120)
-    created = sorted(snapshot_tree(tree) - before)
+    created = sorted(d["path"] for d in diff_manifests(before, snapshot_manifest(tree, MODE_STRICT)))
     if r.returncode != 0:
         raise SystemExit(f"interpreter preflight failed (exit {r.returncode}): {(r.stderr or '')[-300:]}")
     if created:
@@ -361,6 +582,8 @@ def run_sessions(args):
         raise SystemExit("work-root/out-dir must be outside the audited repository")
     work.mkdir(parents=True, exist_ok=True)
     out.mkdir(parents=True, exist_ok=False)
+    (work / TASK_OWNED_MARKER).write_text("p156 run-owned disposable work root\n", encoding="utf-8")
+    manifest_mode = MODE_FAST if getattr(args, "containment", "strict") == "fast" else MODE_STRICT
     harness = work / "_harness"
     harness.mkdir()
     names_path = Path(args.names).resolve()
@@ -393,7 +616,7 @@ def run_sessions(args):
         env = session_env(s["root"], s["dir"], harness, names, s["log"], args.mode, True, getattr(args, "effect_funcs", ""), bool(getattr(args, "pin_pid", False)))
         fh = open(s["stdout"], "wb")
         order.append(s["tag"])
-        s["before"] = snapshot_tree(s["root"])
+        s["before"] = snapshot_manifest(s["root"], manifest_mode)
         return subprocess.Popen([PY, *cmd_tail], cwd=str(s["root"]), env=env, stdout=fh, stderr=subprocess.STDOUT), fh
 
     def finish(s, p, fh):
@@ -401,8 +624,18 @@ def run_sessions(args):
         fh.close()
         s["exit"] = p.returncode
         text = Path(s["stdout"]).read_text(encoding="utf-8", errors="replace")
-        s["contained"] = audit_session(s["before"], snapshot_tree(s["root"]), text, p.returncode,
-                                       expect_failures=args.expect_failures)
+        after = snapshot_manifest(s["root"], manifest_mode)
+        s["contained"] = audit_session(s["before"], after, text, p.returncode, expect_failures=args.expect_failures)
+        # classification and evidence are recorded BEFORE any cleanup (same-path mode removes the clone right after)
+        (out / f"containment_{s['tag']}.json").write_text(json.dumps(
+            {"tag": s["tag"], "sha": s["sha"], "scan_seconds": {"before": s["before"]["stats"]["scan_seconds"],
+                                                                "after": after["stats"]["scan_seconds"]},
+             "stats": after["stats"], **s["contained"]}, indent=1, ensure_ascii=False), encoding="utf-8")
+        if s["contained"]["verdict"] != "PASS":
+            s["failed_evidence"] = preserve_failed_evidence(s["root"], s["contained"], out / "failed_sessions" / s["tag"],
+                                                            s["before"], after)
+        s["contained"] = {k: v for k, v in s["contained"].items() if k != "differences"} | {
+            "differences_sample": s["contained"]["differences"][:20]}
         s["pytest_summary"] = _tail(s["stdout"])
         s["log_sha256"] = _sha256(s["log"])
         s["log_bytes"] = s["log"].stat().st_size
@@ -415,8 +648,10 @@ def run_sessions(args):
         for tag in ("b1", "f1", "b2", "f2"):
             s = prepare(tag, "s_run")
             p, fh = launch(s)
-            finish(s, p, fh)
-            shutil.rmtree(s["dir"], ignore_errors=True)
+            try:
+                finish(s, p, fh)
+            finally:
+                _remove_task_owned(s["dir"], work)
     elif args.sequential:
         for tag in ("b1", "f1", "b2", "f2"):
             s = prepare(tag, f"s_{tag}")
@@ -443,7 +678,12 @@ def run_sessions(args):
         "sessions": {t: {"sha": s["sha"], "exit_code": s.get("exit"), "log_sha256": s["log_sha256"],
                          "log_bytes": s["log_bytes"], "pytest_summary": s["pytest_summary"]}
                      for t, s in sessions.items()},
-        "isolation": {"separate_session_roots": True, "separate_temp_dirs": True, "write_containment": contained},
+        "isolation": {"separate_session_roots": True, "separate_temp_dirs": True, "write_containment": contained,
+                      "containment_guarantee": CONTAINMENT_GUARANTEE, "containment_manifest_mode": manifest_mode,
+                      "content_equivalence_proven": manifest_mode == MODE_STRICT,
+                      "containment_not_proven": list(CONTAINMENT_NOT_PROVEN),
+                      "containment_verdict": "PASS" if all(v["verdict"] == "PASS" for v in contained.values()) else "FAIL",
+                      "failed_sessions": sorted(t for t, v in contained.items() if v["verdict"] != "PASS")},
         "tolerance_rules": {k: {"keys": list(v["keys"]), "why": v["why"]} for k, v in TOLERANCE_RULES.items()},
         "summary": summary,
         "reproduce": " ".join([PY, "scripts/refactor/p156_parity_differential.py", "--repo", "<clone>",
@@ -455,7 +695,7 @@ def run_sessions(args):
     (out / "non_identical_details.json").write_text(json.dumps(details, indent=1, ensure_ascii=False), encoding="utf-8")
     if not args.keep_sessions:
         for s in sessions.values():
-            shutil.rmtree(s["dir"], ignore_errors=True)
+            _remove_task_owned(s["dir"], work)
     return evidence
 
 
@@ -487,6 +727,9 @@ def main(argv=None):
     ap.add_argument("--expect-failures", type=int, default=0,
                     help="number of known baseline test failures that make exit code 1 acceptable (0 = exit must be 0)")
     ap.add_argument("--keep-sessions", action="store_true")
+    ap.add_argument("--containment", choices=("strict", "fast"), default="strict",
+                    help="strict: SHA-256 of every file (content equivalence proven); fast: size+mtime only "
+                         "(content equivalence NOT proven, labelled in the evidence)")
     a = ap.parse_args(argv)
     ev = run_sessions(a)
     s = ev["summary"]
