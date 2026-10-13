@@ -5968,7 +5968,8 @@
       "sources": [
         "docs/refactor/P15_PRE_WAVE_D_STRUCTURAL_CLOSURE_ORDER_2026_10_13.md"
       ],
-      "status": "current"
+      "status": "current",
+      "impact": "Documentation-only: records the requirement for Reporter-inclusive structural closure before Wave D; no code or runtime behavior change."
     },
     {
       "date": "2026-10-13",
@@ -5994,7 +5995,7 @@
         "docs/refactor/work_orders/P15_FAST_TRACK_WAVE_S_020.md",
         "docs/refactor/p1_5_second_pass_moved_segments_ledger.json"
       ],
-      "impact": "Smaller, responsibility-named Commander runtime and canonical runtime names without changing orchestration order, trading authority or legacy compatibility.",
+      "impact": "Smaller, single-responsibility orchestrators for Monitor, Scanner, Commander, Operator Brief and Strategist with verbatim effect-free Owner segments; no trading-authority, LLM, ranking-order or state-write path changed; independent Codex audit pending.",
       "status": "current"
     }
   ]
