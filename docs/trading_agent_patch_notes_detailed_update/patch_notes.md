@@ -2996,3 +2996,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Reporter `intraday_trade_reports.py`와 AI·Markdown·Story 경로는 실제 소비자 및 부작용 근거를 확인한 범위에서만 분해합니다.
 - 전체 구조감사 완료 이후 Wave D에서 실데이터 Reporter/LLM, Executor, UEF, Docker, 전체 pytest를 최종 검증합니다.
 - 이 변경은 작업 순서의 문서 기록이며 실거래·코드·권한 변경이 아닙니다.
+
+## 2026-10-13 · P1.5 Second Pass (Monitor · Scanner · Commander · Operator Brief · Strategist 함수 내부 일괄 분해)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · SAFETY · TESTING
+
+- 거대 비-Reporter 함수 13개를 dataflow로 증명된 extract-method로 분해: 본문 120개(6,533줄)를 최소권한 Owner 45개(모두 350줄 이하)로 이동했습니다. 상태 쓰기·이벤트·artifact·provider/LLM 호출·trigger 우선순위·정규 scanner 순위 구간은 원래 함수에 그대로 남았습니다.
+- Monitor: monitor_node 2,634→1,107, evaluate_intraday_entry_signal 1,229→458, evaluate_exit_policy 1,234→673. Commander: _build_commander_decision 857→195. Operator Brief: sections/input/markdown 846/426/652→341/314/351(_load_operator_brief LLM 조정자 불변). Strategist: LLM 경계 밖 1,705→1,216(SAFETY_LOCK 함수 불변). Supervisor/Executor는 SAFETY_LOCK 유지.
+- Owner는 import·환경·시계 읽기가 없고 caller의 fresh 지역 컨테이너만 변경하며 모듈 전역은 use-time facade로 해석합니다(TEMPORARY_COMPATIBILITY, monkeypatch seam 보존).
+- 검증: Owner 호출을 baseline 함수 AST로 되돌려 비교하는 ledger 게이트, consumer 2,950개 baseline과 결과 동일(기존 실패 2개), post-call State 해시 포함 호출 비교 불일치 0(결정적 레코드), 운영 쓰기 0. 실제 frozen 보고서/LLM·Brief byte parity는 BLOCKED, 전체 pytest·Docker·UEF는 Wave D, Codex 독립 감사 대기이며 FINAL_ACCEPTED가 아닙니다.

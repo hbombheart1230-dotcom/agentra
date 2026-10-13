@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 220,
+  "entry_count": 221,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5968,6 +5968,33 @@
       "sources": [
         "docs/refactor/P15_PRE_WAVE_D_STRUCTURAL_CLOSURE_ORDER_2026_10_13.md"
       ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Second Pass",
+      "title": "Second Pass: intra-function bulk modularization of Monitor, Scanner, Commander, Operator Brief and Strategist giants",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "SAFETY",
+        "TESTING"
+      ],
+      "summary": "13 giant non-Reporter functions were split by dataflow-proven extract-method into 45 least-privilege Owners (120 verbatim segments, 6,533 LOC); effectful statements, trigger precedence, LLM boundaries and the canonical scanner ranking stay in the original sequencers; Supervisor/Executor remain SAFETY_LOCK.",
+      "details": [
+        "S1 Monitor: monitor_node 2,634->1,107, _evaluate_monitor_entry_candidate 658->449, evaluate_intraday_entry_signal 1,229->458, evaluate_exit_policy 1,234->673 (trigger precedence stays in one function).",
+        "S2 Scanner: scanner_node 1,944->1,261; canonical ranking window and stable tie order untouched. S3 Commander: _build_commander_decision 857->195, _assess_open_position_commander_override 437->155, _resolve_commander_behavior_policy 740->528, _attach_commander_applied_policy 396->297.",
+        "S4 Operator UI: brief sections/input/markdown render 846/426/652 -> 341/314/351; _load_operator_brief (LLM chat/retry) untouched. S5 Strategist: strategist_node 1,705->1,216 outside the LLM boundary; SAFETY_LOCK LLM functions untouched.",
+        "Owners import nothing, read no env/clock, mutate only caller-fresh local containers and resolve module globals at use time through a TEMPORARY_COMPATIBILITY facade (monkeypatch seams preserved).",
+        "Gates: ledger inline-reconstruct-to-baseline AST test, unmoved definition identity, Owner <=350 LOC, scope/authority guard (Wave C guard re-pinned), 2,950 consumer tests outcome-identical to baseline, call differential with post-call State hashing; production writes 0.",
+        "Real frozen report/LLM and Brief byte parity BLOCKED/NOT RUN; full pytest/Docker/UEF are Wave D; Codex independent audit pending; not FINAL_ACCEPTED."
+      ],
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-SECOND-PASS-CLAUDE-021.md",
+        "docs/refactor/work_orders/P15_FAST_TRACK_WAVE_S_020.md",
+        "docs/refactor/p1_5_second_pass_moved_segments_ledger.json"
+      ],
+      "impact": "Smaller, responsibility-named Commander runtime and canonical runtime names without changing orchestration order, trading authority or legacy compatibility.",
       "status": "current"
     }
   ]
