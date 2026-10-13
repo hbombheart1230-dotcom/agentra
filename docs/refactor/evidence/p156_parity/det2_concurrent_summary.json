@@ -1,0 +1,346 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "det",
+ "sequential": false,
+ "same_session_path": false,
+ "baseline_sha": "1f7add2b0f9b5a33399da27edcdd2f390bdf911b",
+ "feature_sha": "fb21f2b12db84c294b1c634adb21cd8545bf9568",
+ "repo_head_for_harness": "fb21f2b12db84c294b1c634adb21cd8545bf9568",
+ "names": {
+  "graphs.nodes.monitor_node": [
+   "monitor_node",
+   "_evaluate_monitor_entry_candidate"
+  ],
+  "libs.runtime.intraday_monitor_signals": [
+   "evaluate_intraday_entry_signal"
+  ],
+  "libs.runtime.exit_policy": [
+   "evaluate_exit_policy"
+  ],
+  "graphs.nodes.scanner_node": [
+   "scanner_node"
+  ],
+  "graphs.commander_runtime": [
+   "_build_commander_decision",
+   "_resolve_commander_behavior_policy",
+   "_attach_commander_applied_policy",
+   "_assess_open_position_commander_override"
+  ],
+  "apps.operator_ui.data_access_core": [
+   "_build_operator_brief_sections",
+   "_build_operator_brief_input",
+   "_render_operator_brief_markdown"
+  ],
+  "graphs.nodes.strategist_node": [
+   "strategist_node"
+  ]
+ },
+ "test_files": [
+  "tests/apps/api/test_isolation.py",
+  "tests/test_asset_universe_policy.py",
+  "tests/test_broker_cost_profile.py",
+  "tests/test_canonical_agent_artifacts.py",
+  "tests/test_commander_env_migration_phase1.py",
+  "tests/test_commander_env_migration_phase2.py",
+  "tests/test_commander_post_scanner_context.py",
+  "tests/test_controlled_validation_daily_submission_provenance.py",
+  "tests/test_data_quality_state_propagation.py",
+  "tests/test_decision_trace_ledger.py",
+  "tests/test_evidence_ledger_trace_layer.py",
+  "tests/test_intraday_monitor_signals.py",
+  "tests/test_intraday_trade_reports.py",
+  "tests/test_kiwoom_candidate_provider.py",
+  "tests/test_korea_market_indices_context.py",
+  "tests/test_live_execution_bundle_report.py",
+  "tests/test_live_loop_config.py",
+  "tests/test_llm_model_policy.py",
+  "tests/test_m13_live_loop.py",
+  "tests/test_m17_monitor_emits_intent_only.py",
+  "tests/test_m18_3_global_sentiment_policy_adjust.py",
+  "tests/test_m18_3_news_sentiment_pass_through.py",
+  "tests/test_m18_4_scanner_sentiment_weighting.py",
+  "tests/test_m18_5_candidate_rerank_by_news.py",
+  "tests/test_m18_5_risk_off_candidate_count.py",
+  "tests/test_m18_market_scan_candidates.py",
+  "tests/test_m18_scanner_global_sentiment_contract.py",
+  "tests/test_m18_top_picks_candidates.py",
+  "tests/test_m20_2_decide_trade_llm_flow.py",
+  "tests/test_m20_3_legacy_llm_router_compat.py",
+  "tests/test_m21_commander_runtime_entry.py",
+  "tests/test_m21_graph_spine_parity.py",
+  "tests/test_m21_runtime_once_script.py",
+  "tests/test_m22_skill_hydration_node.py",
+  "tests/test_m22_skill_native_scanner_monitor.py",
+  "tests/test_m23_1_runtime_resilience_state_contract.py",
+  "tests/test_m23_4_commander_incident_cooldown_routing.py",
+  "tests/test_m23_6_operator_intervention_resume.py",
+  "tests/test_m27_4_runtime_portfolio_guard_integration.py",
+  "tests/test_m29_2_scanner_feature_integration.py",
+  "tests/test_m29_3_monitor_exit_policy.py",
+  "tests/test_m29_4_monitor_position_sizing.py",
+  "tests/test_m29_5_monitor_metrics_report.py",
+  "tests/test_m31_17_theme_candidate_flow_upgrade.py",
+  "tests/test_monitor_cash_truth.py",
+  "tests/test_monitor_exit_guard.py",
+  "tests/test_monitor_exit_price_freshness.py",
+  "tests/test_monitor_fallback_quality_gate.py",
+  "tests/test_monitor_feedback_adaptive_policy.py",
+  "tests/test_monitor_memory_bias.py",
+  "tests/test_monitor_price_source_resolution.py",
+  "tests/test_news_pipeline_provider_shape_compat.py",
+  "tests/test_opening_alpha_executable_quote_refresh.py",
+  "tests/test_opening_rank1_controlled_probe.py",
+  "tests/test_operator_summary_memory_linkage.py",
+  "tests/test_operator_ui.py",
+  "tests/test_operator_ui_data_access_phase2.py",
+  "tests/test_p0a_e2e_open_order_guard_integrated_chain.py",
+  "tests/test_p152_facade_abi_and_authority_boundary.py",
+  "tests/test_p153_operator_ui_moved_bodies.py",
+  "tests/test_p154_wave_b_moved_bodies.py",
+  "tests/test_p154_wave_b_scope_and_authority_boundary.py",
+  "tests/test_p155_wave_c_moved_bodies.py",
+  "tests/test_p155_wave_c_scope_and_authority_boundary.py",
+  "tests/test_p1_e2e_execution_readiness_integrated_chain.py",
+  "tests/test_paper_trading_execution_finalization.py",
+  "tests/test_phase1_agent_artifact_quality.py",
+  "tests/test_phase3_lifecycle_bundle.py",
+  "tests/test_phase_6_2_consumption.py",
+  "tests/test_query_trade_reason_chain.py",
+  "tests/test_r6_readiness_evidence.py",
+  "tests/test_report_trades_continuity.py",
+  "tests/test_reporter_commander_hooks.py",
+  "tests/test_reporter_node.py",
+  "tests/test_run_ai_trade_report_batch.py",
+  "tests/test_run_live_session_summary.py",
+  "tests/test_run_m13_live_loop_lock.py",
+  "tests/test_run_operator_brief_batch.py",
+  "tests/test_scanner_bias_integration.py",
+  "tests/test_scanner_candidate_risk.py",
+  "tests/test_scanner_fallback_policy.py",
+  "tests/test_scanner_live_symbol_filter.py",
+  "tests/test_scanner_memory_bias.py",
+  "tests/test_scanner_monitor_compatibility.py",
+  "tests/test_scanner_policy_overlay.py",
+  "tests/test_scanner_practical_selection_engine.py",
+  "tests/test_scanner_quote_hydration_runtime.py",
+  "tests/test_scanner_rank_plumbing_fix.py",
+  "tests/test_scanner_strategy_frame_integration.py",
+  "tests/test_scanner_universe_candidate_metadata.py",
+  "tests/test_sell_cooldown_env_alias_decide_trade.py",
+  "tests/test_session_entry_dispatch.py",
+  "tests/test_single_trade_report.py",
+  "tests/test_stage3_horizon_lineage.py",
+  "tests/test_step5b_safety_fix.py",
+  "tests/test_strategist_frame_llm_integration.py",
+  "tests/test_strategist_reasoning_quality.py",
+  "tests/test_strategist_refresh_decision.py",
+  "tests/test_strategy_feedback_builder.py",
+  "tests/test_strategy_horizon_operational_policy.py",
+  "tests/test_strategy_performance_feedback.py",
+  "tests/test_strategy_sizing_exit_upgrade.py",
+  "tests/test_strategy_universe_builder.py",
+  "tests/test_strategy_v1_multi_strategy_selection.py",
+  "tests/test_symbol_trade_report.py",
+  "tests/test_trade_bundle_persistence.py",
+  "tests/test_trade_bundle_state.py",
+  "tests/test_trade_explain_report.py",
+  "tests/test_uef4b4_q10_index_adapter.py"
+ ],
+ "execution_order": [
+  "b1",
+  "b2",
+  "f1",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "1f7add2b0f9b5a33399da27edcdd2f390bdf911b",
+   "exit_code": 1,
+   "log_sha256": "eefecc071beaab349790f7e37d6c9dec12906f71ee0f666b5b3212a27ddf8128",
+   "log_bytes": 360509812,
+   "pytest_summary": "1 failed, 2949 passed, 2 warnings in 774.89s (0:12:54)"
+  },
+  "b2": {
+   "sha": "1f7add2b0f9b5a33399da27edcdd2f390bdf911b",
+   "exit_code": 1,
+   "log_sha256": "d56945feeeb9906910e6949eee6ebc3e327fe891c630b2951a8c24806ab63e9c",
+   "log_bytes": 360509812,
+   "pytest_summary": "1 failed, 2949 passed, 2 warnings in 774.93s (0:12:54)"
+  },
+  "f1": {
+   "sha": "fb21f2b12db84c294b1c634adb21cd8545bf9568",
+   "exit_code": 1,
+   "log_sha256": "cf001616a460756a3d070dc6d7c36b03e24f6dc5b06768d4504015a3184cafa1",
+   "log_bytes": 360509812,
+   "pytest_summary": "1 failed, 2949 passed, 2 warnings in 776.39s (0:12:56)"
+  },
+  "f2": {
+   "sha": "fb21f2b12db84c294b1c634adb21cd8545bf9568",
+   "exit_code": 1,
+   "log_sha256": "e4b2076d77259722f5b672877958b4890840fcb1633a6b7b52ccb6ff555c3abf",
+   "log_bytes": 360509812,
+   "pytest_summary": "1 failed, 2949 passed, 2 warnings in 774.84s (0:12:54)"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "changed_or_untracked_paths_in_session_root": 0,
+    "sample": []
+   },
+   "b2": {
+    "changed_or_untracked_paths_in_session_root": 0,
+    "sample": []
+   },
+   "f1": {
+    "changed_or_untracked_paths_in_session_root": 0,
+    "sample": []
+   },
+   "f2": {
+    "changed_or_untracked_paths_in_session_root": 0,
+    "sample": []
+   }
+  }
+ },
+ "tolerance_rules": {
+  "R-ID": {
+   "keys": [
+    "run_id",
+    "packet_id",
+    "packet_ids",
+    "strategy",
+    "request_id",
+    "trace_id",
+    "event_id"
+   ],
+   "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value"
+  },
+  "R-MTIME": {
+   "keys": [
+    "source_signature"
+   ],
+   "why": "artifact signature embeds the file mtime_ns of a fixture written by the test itself"
+  },
+  "R-MTIME-DERIVED": {
+   "keys": [],
+   "why": "hash of an LLM prompt/response artifact whose prompt embeds the same record's source_signature (file mtime_ns); applies only when that signature differs in the same record"
+  },
+  "R-AGE": {
+   "keys": [
+    "minutes_since_open",
+    "minute_snapshot_age_minutes",
+    "quote_age_sec",
+    "expected_exit_quote_age_sec",
+    "age_sec"
+   ],
+   "why": "wall-clock derived age (<=2 units) between two processes started at different instants"
+  }
+ },
+ "summary": {
+  "total_calls": 1131,
+  "BYTE_IDENTICAL": 1020,
+  "JUSTIFIED_TOLERANCE": 86,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 25,
+  "per_function": {
+   "commander_runtime._build_commander_decision": {
+    "calls": 233,
+    "BYTE_IDENTICAL": 233,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "commander_runtime._resolve_commander_behavior_policy": {
+    "calls": 62,
+    "BYTE_IDENTICAL": 62,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "commander_runtime._attach_commander_applied_policy": {
+    "calls": 96,
+    "BYTE_IDENTICAL": 96,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "scanner_node.scanner_node": {
+    "calls": 79,
+    "BYTE_IDENTICAL": 74,
+    "JUSTIFIED_TOLERANCE": 4,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 1
+   },
+   "monitor_node._evaluate_monitor_entry_candidate": {
+    "calls": 167,
+    "BYTE_IDENTICAL": 166,
+    "JUSTIFIED_TOLERANCE": 1,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "monitor_node.monitor_node": {
+    "calls": 160,
+    "BYTE_IDENTICAL": 159,
+    "JUSTIFIED_TOLERANCE": 1,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "strategist_node.strategist_node": {
+    "calls": 73,
+    "BYTE_IDENTICAL": 0,
+    "JUSTIFIED_TOLERANCE": 49,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 24
+   },
+   "intraday_monitor_signals.evaluate_intraday_entry_signal": {
+    "calls": 70,
+    "BYTE_IDENTICAL": 70,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "exit_policy.evaluate_exit_policy": {
+    "calls": 50,
+    "BYTE_IDENTICAL": 50,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "commander_runtime._assess_open_position_commander_override": {
+    "calls": 24,
+    "BYTE_IDENTICAL": 24,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "data_access_core._build_operator_brief_input": {
+    "calls": 37,
+    "BYTE_IDENTICAL": 37,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "data_access_core._build_operator_brief_sections": {
+    "calls": 39,
+    "BYTE_IDENTICAL": 39,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "data_access_core._render_operator_brief_markdown": {
+    "calls": 41,
+    "BYTE_IDENTICAL": 10,
+    "JUSTIFIED_TOLERANCE": 31,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": [
+   "tests/apps/api/test_isolation.py::test_api_routes_are_get_only"
+  ]
+ },
+ "reproduce": "C:\\Agentra\\venv\\Scripts\\python.exe scripts/refactor/p156_parity_differential.py --repo <clone> --baseline-sha 1f7add2b0f9b5a33399da27edcdd2f390bdf911b --feature-sha fb21f2b12db84c294b1c634adb21cd8545bf9568 --names <names.json> --tests <tests.txt> --work-root <empty dir> --out-dir <new dir> --mode det"
+}

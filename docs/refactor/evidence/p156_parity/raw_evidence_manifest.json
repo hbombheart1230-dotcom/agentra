@@ -1,0 +1,116 @@
+{
+ "schema": "p156_parity_evidence_manifest.v1",
+ "retention": "raw call logs stay OUTSIDE the repository under C:/AgentraEvidence (not committed: large, normalized, no credentials/accounts); only summaries are committed",
+ "raw": {
+  "legacy_spc8_unisolated_baseline_runs_shared_one_clone": [
+   {
+    "path": "C:/AgentraEvidence/spc8_b1.json",
+    "bytes": 366968577,
+    "sha256": "0ff55f6c51a6a658f668935ba473c472a7680edd4f923db4731b2d8b20dd9ba8"
+   },
+   {
+    "path": "C:/AgentraEvidence/spc8_b2.json",
+    "bytes": 366965470,
+    "sha256": "b356c94f7713e46b60ad3d9ed4e27cdf76a120a2922ed57f0887b9ba538a5076"
+   },
+   {
+    "path": "C:/AgentraEvidence/spc8_f.json",
+    "bytes": 366963500,
+    "sha256": "91867cd81b95888d0daba3f492749e5f4cccec7341eb682d7c7c3975894a5292"
+   },
+   {
+    "path": "C:/AgentraEvidence/spc8_f2.json",
+    "bytes": 366961494,
+    "sha256": "8af96ee8923020220c19e7d3cadbbbf14467da6e6a25bb25d6f081468c1e0db2"
+   }
+  ],
+  "det_concurrent_isolated_v1": [
+   {
+    "path": "C:/AgentraEvidence/par_out_det\\raw_calls_b1.json",
+    "bytes": 360493786,
+    "sha256": "9f04bb0c61faae639a4bf48efc12d84ce7ad3f15098f4aacaf79a7858f1167ca"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_det\\raw_calls_b2.json",
+    "bytes": 360493786,
+    "sha256": "a725cdc8ce82c816313d7401e76154b20b15b8b3dffedbc35891c7406e367fa9"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_det\\raw_calls_f1.json",
+    "bytes": 360493786,
+    "sha256": "45d2f8bfcb46946b25a9fb45cff46a71f2eab472fa1d111373d0972a4b72924a"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_det\\raw_calls_f2.json",
+    "bytes": 360493786,
+    "sha256": "28d2e42bb4e89f53d1d95d69fb6a9120ce4204c1e4fe04f17b0dcc805730d300"
+   }
+  ],
+  "det_concurrent_isolated_v2": [
+   {
+    "path": "C:/AgentraEvidence/par_out_det2\\raw_calls_b1.json",
+    "bytes": 360509812,
+    "sha256": "eefecc071beaab349790f7e37d6c9dec12906f71ee0f666b5b3212a27ddf8128"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_det2\\raw_calls_b2.json",
+    "bytes": 360509812,
+    "sha256": "d56945feeeb9906910e6949eee6ebc3e327fe891c630b2951a8c24806ab63e9c"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_det2\\raw_calls_f1.json",
+    "bytes": 360509812,
+    "sha256": "cf001616a460756a3d070dc6d7c36b03e24f6dc5b06768d4504015a3184cafa1"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_det2\\raw_calls_f2.json",
+    "bytes": 360509812,
+    "sha256": "e4b2076d77259722f5b672877958b4890840fcb1633a6b7b52ccb6ff555c3abf"
+   }
+  ],
+  "targeted_A_legacy_mismatch_tests": [
+   {
+    "path": "C:/AgentraEvidence/par_out_A\\raw_calls_b1.json",
+    "bytes": 5092635,
+    "sha256": "f36492e1d7651d602c46a2e0af0778ff03512643db1313903ca85e15d064f159"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_A\\raw_calls_b2.json",
+    "bytes": 5092635,
+    "sha256": "f36492e1d7651d602c46a2e0af0778ff03512643db1313903ca85e15d064f159"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_A\\raw_calls_f1.json",
+    "bytes": 5092635,
+    "sha256": "f36492e1d7651d602c46a2e0af0778ff03512643db1313903ca85e15d064f159"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_A\\raw_calls_f2.json",
+    "bytes": 5092635,
+    "sha256": "f36492e1d7651d602c46a2e0af0778ff03512643db1313903ca85e15d064f159"
+   }
+  ],
+  "targeted_B_det2_unresolved_tests": [
+   {
+    "path": "C:/AgentraEvidence/par_out_B\\raw_calls_b1.json",
+    "bytes": 23502239,
+    "sha256": "27e4c7392a822daa818d3148264f46eb2b89e12794f4d26c8c662db5c9ceae8b"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_B\\raw_calls_b2.json",
+    "bytes": 23502239,
+    "sha256": "27e4c7392a822daa818d3148264f46eb2b89e12794f4d26c8c662db5c9ceae8b"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_B\\raw_calls_f1.json",
+    "bytes": 23502239,
+    "sha256": "27e4c7392a822daa818d3148264f46eb2b89e12794f4d26c8c662db5c9ceae8b"
+   },
+   {
+    "path": "C:/AgentraEvidence/par_out_B\\raw_calls_f2.json",
+    "bytes": 23502239,
+    "sha256": "27e4c7392a822daa818d3148264f46eb2b89e12794f4d26c8c662db5c9ceae8b"
+   }
+  ]
+ }
+}

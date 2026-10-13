@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 221,
+  "entry_count": 222,
   "entries": [
     {
       "date": "2026-09-08",
@@ -5997,6 +5997,30 @@
       ],
       "impact": "Smaller, single-responsibility orchestrators for Monitor, Scanner, Commander, Operator Brief and Strategist with verbatim effect-free Owner segments; no trading-authority, LLM, ranking-order or state-write path changed; independent Codex audit pending.",
       "status": "current"
+    },
+    {
+      "date": "2026-10-13",
+      "version": "P1.5 Parity Evidence Closure",
+      "title": "Second Pass parity evidence: isolated deterministic differential and targeted reproduction",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Isolated per-session baseline/feature differential harness with a deterministic-environment plugin; 0 real mismatches, the legacy 9 mismatches and 25 unresolved records reproduced byte-identical in targeted runs; no production code changed.",
+      "details": [
+        "Original 1,131-call raw logs located and SHA-256 recorded; strict field-rule reclassification shows they are not a PASS (shared clone directory, live market data).",
+        "New harness (scripts/refactor/p156_parity_differential.py, p156_determinism_plugin.py): per-session clone/TEMP/log, field-specific tolerance rules, exact comparison for ranking/risk/intent/quantity/price/authority fields.",
+        "Isolated 4-session run: 1,020 identical, 86 justified id/mtime, 0 real mismatch, 25 unresolved (single PID-in-temp-path cause); targeted reruns of the 6 mismatch tests (17/17) and 24 unresolved tests (28/28) byte-identical.",
+        "Not run: real frozen report/LLM and Brief byte parity, full pytest/Docker/UEF (Wave D), controlled_mock_lanes operational-path isolation OPEN; Codex re-audit pending."
+      ],
+      "impact": "Evidence and test-harness only; no trading, LLM, ranking or state-write behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-PARITY-EVIDENCE-CLAUDE-022.md",
+        "docs/refactor/evidence/p156_parity/raw_evidence_manifest.json",
+        "scripts/refactor/p156_parity_differential.py"
+      ]
     }
   ]
 }

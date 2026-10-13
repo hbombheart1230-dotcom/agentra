@@ -1,0 +1,178 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "det",
+ "sequential": true,
+ "same_session_path": true,
+ "baseline_sha": "1f7add2b0f9b5a33399da27edcdd2f390bdf911b",
+ "feature_sha": "fb21f2b12db84c294b1c634adb21cd8545bf9568",
+ "repo_head_for_harness": "fb21f2b12db84c294b1c634adb21cd8545bf9568",
+ "names": {
+  "graphs.nodes.monitor_node": [
+   "monitor_node",
+   "_evaluate_monitor_entry_candidate"
+  ],
+  "libs.runtime.intraday_monitor_signals": [
+   "evaluate_intraday_entry_signal"
+  ],
+  "libs.runtime.exit_policy": [
+   "evaluate_exit_policy"
+  ],
+  "graphs.nodes.scanner_node": [
+   "scanner_node"
+  ],
+  "graphs.commander_runtime": [
+   "_build_commander_decision",
+   "_resolve_commander_behavior_policy",
+   "_attach_commander_applied_policy",
+   "_assess_open_position_commander_override"
+  ],
+  "apps.operator_ui.data_access_core": [
+   "_build_operator_brief_sections",
+   "_build_operator_brief_input",
+   "_render_operator_brief_markdown"
+  ],
+  "graphs.nodes.strategist_node": [
+   "strategist_node"
+  ]
+ },
+ "test_files": [
+  "tests/test_paper_trading_execution_finalization.py::test_execution_disabled_buy_blocked_then_next_tick_executes",
+  "tests/test_scanner_policy_overlay.py::test_blocker_family_concentration_can_still_enforce_null_selection_when_configured",
+  "tests/test_scanner_policy_overlay.py::test_scanner_excludes_mock_broker_restricted_symbol_before_ranking",
+  "tests/test_scanner_practical_selection_engine.py::test_scanner_candidate_pool_reduction_by_liquidity_filters",
+  "tests/test_scanner_practical_selection_engine.py::test_scanner_theme_boost_works_when_theme_filter_disabled",
+  "tests/test_scanner_universe_candidate_metadata.py::test_scanner_preserves_universe_candidate_metadata"
+ ],
+ "execution_order": [
+  "b1",
+  "f1",
+  "b2",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "1f7add2b0f9b5a33399da27edcdd2f390bdf911b",
+   "exit_code": 1,
+   "log_sha256": "f36492e1d7651d602c46a2e0af0778ff03512643db1313903ca85e15d064f159",
+   "log_bytes": 5092635,
+   "pytest_summary": "6 passed, 1 warning in 2.78s"
+  },
+  "f1": {
+   "sha": "fb21f2b12db84c294b1c634adb21cd8545bf9568",
+   "exit_code": 1,
+   "log_sha256": "f36492e1d7651d602c46a2e0af0778ff03512643db1313903ca85e15d064f159",
+   "log_bytes": 5092635,
+   "pytest_summary": "6 passed, 1 warning in 2.83s"
+  },
+  "b2": {
+   "sha": "1f7add2b0f9b5a33399da27edcdd2f390bdf911b",
+   "exit_code": 1,
+   "log_sha256": "f36492e1d7651d602c46a2e0af0778ff03512643db1313903ca85e15d064f159",
+   "log_bytes": 5092635,
+   "pytest_summary": "6 passed, 1 warning in 3.05s"
+  },
+  "f2": {
+   "sha": "fb21f2b12db84c294b1c634adb21cd8545bf9568",
+   "exit_code": 1,
+   "log_sha256": "f36492e1d7651d602c46a2e0af0778ff03512643db1313903ca85e15d064f159",
+   "log_bytes": 5092635,
+   "pytest_summary": "6 passed, 1 warning in 2.81s"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "changed_or_untracked_paths_in_session_root": 0,
+    "sample": []
+   },
+   "f1": {
+    "changed_or_untracked_paths_in_session_root": 0,
+    "sample": []
+   },
+   "b2": {
+    "changed_or_untracked_paths_in_session_root": 0,
+    "sample": []
+   },
+   "f2": {
+    "changed_or_untracked_paths_in_session_root": 0,
+    "sample": []
+   }
+  }
+ },
+ "tolerance_rules": {
+  "R-ID": {
+   "keys": [
+    "run_id",
+    "packet_id",
+    "packet_ids",
+    "strategy",
+    "request_id",
+    "trace_id",
+    "event_id"
+   ],
+   "why": "randomly generated identifier (uuid/hex) that embeds no market or decision value"
+  },
+  "R-MTIME": {
+   "keys": [
+    "source_signature"
+   ],
+   "why": "artifact signature embeds the file mtime_ns of a fixture written by the test itself"
+  },
+  "R-MTIME-DERIVED": {
+   "keys": [],
+   "why": "hash of an LLM prompt/response artifact whose prompt embeds the same record's source_signature (file mtime_ns); applies only when that signature differs in the same record"
+  },
+  "R-AGE": {
+   "keys": [
+    "minutes_since_open",
+    "minute_snapshot_age_minutes",
+    "quote_age_sec",
+    "expected_exit_quote_age_sec",
+    "age_sec"
+   ],
+   "why": "wall-clock derived age (<=2 units) between two processes started at different instants"
+  }
+ },
+ "summary": {
+  "total_calls": 17,
+  "BYTE_IDENTICAL": 17,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "commander_runtime._build_commander_decision": {
+    "calls": 6,
+    "BYTE_IDENTICAL": 6,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "commander_runtime._resolve_commander_behavior_policy": {
+    "calls": 2,
+    "BYTE_IDENTICAL": 2,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "commander_runtime._attach_commander_applied_policy": {
+    "calls": 4,
+    "BYTE_IDENTICAL": 4,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "scanner_node.scanner_node": {
+    "calls": 5,
+    "BYTE_IDENTICAL": 5,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": []
+ },
+ "reproduce": "C:\\Agentra\\venv\\Scripts\\python.exe scripts/refactor/p156_parity_differential.py --repo <clone> --baseline-sha 1f7add2b0f9b5a33399da27edcdd2f390bdf911b --feature-sha fb21f2b12db84c294b1c634adb21cd8545bf9568 --names <names.json> --tests <tests.txt> --work-root <empty dir> --out-dir <new dir> --mode det --same-path"
+}

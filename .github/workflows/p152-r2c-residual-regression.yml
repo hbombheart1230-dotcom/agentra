@@ -169,7 +169,7 @@ jobs:
       - name: Gate second_pass_extraction (ledger inline-reconstruct, Owner purity, scope/authority)
         run: |
           mkdir -p branch_output
-          python -m pytest -q tests/test_p156_second_pass_extraction_gates.py --junitxml=branch_output/gate_second_pass_junit.xml
+          python -m pytest -q tests/test_p156_second_pass_extraction_gates.py tests/test_p156_parity_harness.py --junitxml=branch_output/gate_second_pass_junit.xml
       - name: Operator UI / Brief offline regression (no live broker or LLM)
         env:
           DRY_RUN: '1'
