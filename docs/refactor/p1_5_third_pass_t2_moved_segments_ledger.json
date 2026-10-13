@@ -1,0 +1,223 @@
+{
+ "base_sha": "af0a4489dc250d804854e27917d5e2d881261537",
+ "schema": 1,
+ "pass": "third_pass_T2",
+ "segments": [
+  {
+   "module": "libs/reporting/live_execution_bundle_runner.py",
+   "function": "main",
+   "owner_module": "libs/reporting/reporter_bundle_runtime_parts/targeted_run_projection.py",
+   "owner_function": "targeted_day_rows",
+   "kind": "run",
+   "orig_start": 1545,
+   "orig_end": 1557,
+   "loc": 13,
+   "inputs": [
+    "day_event_rows",
+    "targeted_run_ids",
+    "all_day_event_rows",
+    "target_ctx",
+    "day_evidence_rows"
+   ],
+   "outputs": [
+    "day_event_rows",
+    "day_evidence_rows"
+   ],
+   "mutates_inputs": []
+  },
+  {
+   "module": "libs/reporting/live_execution_bundle_runner.py",
+   "function": "main",
+   "owner_module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_story_context.py",
+   "owner_function": "lifecycle_exit_monitor_context",
+   "kind": "run",
+   "orig_start": 1776,
+   "orig_end": 1820,
+   "loc": 45,
+   "inputs": [
+    "holding",
+    "exit_ctx",
+    "status",
+    "exit_action",
+    "anchor_bundle",
+    "symbol",
+    "runtime_state",
+    "story_type",
+    "execution_mode_label_text",
+    "trade_id",
+    "lifecycle",
+    "anchor_execution"
+   ],
+   "outputs": [
+    "exit_execution_context",
+    "exit_guard_context",
+    "exit_monitor_context",
+    "latest_holding_event",
+    "latest_holding_monitor_context",
+    "lifecycle_monitor_reason_human",
+    "merged_exit_monitor_context",
+    "story_contract"
+   ],
+   "mutates_inputs": []
+  },
+  {
+   "module": "libs/reporting/live_execution_bundle_runner.py",
+   "function": "main",
+   "owner_module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_human_summaries.py",
+   "owner_function": "lifecycle_outcome_and_reporter_summaries",
+   "kind": "run",
+   "orig_start": 1821,
+   "orig_end": 1835,
+   "loc": 15,
+   "inputs": [
+    "exit_execution_context",
+    "anchor_bundle",
+    "anchor_execution",
+    "story_type",
+    "execution_mode_label_text",
+    "resolved_bundle_sources",
+    "reporter_obj"
+   ],
+   "outputs": [
+    "lifecycle_execution_outcome_human",
+    "lifecycle_operator_conclusion_human",
+    "lifecycle_reporter_status_human"
+   ],
+   "mutates_inputs": []
+  },
+  {
+   "module": "libs/reporting/live_execution_bundle_runner.py",
+   "function": "main",
+   "owner_module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_human_summaries.py",
+   "owner_function": "lifecycle_operator_conclusion_fallback",
+   "kind": "run",
+   "orig_start": 1840,
+   "orig_end": 1854,
+   "loc": 15,
+   "inputs": [
+    "anchor_execution",
+    "exit_action",
+    "status",
+    "exit_ctx",
+    "lifecycle_monitor_reason_human",
+    "lifecycle_execution_outcome_human",
+    "lifecycle_reporter_status_human",
+    "anchor_bundle",
+    "entry_ctx"
+   ],
+   "outputs": [
+    "conclusion_execution",
+    "lifecycle_operator_conclusion_human"
+   ],
+   "mutates_inputs": []
+  },
+  {
+   "module": "libs/reporting/live_execution_bundle_runner.py",
+   "function": "main",
+   "owner_module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_evidence_context.py",
+   "owner_function": "lifecycle_commander_market_evidence",
+   "kind": "run",
+   "orig_start": 2006,
+   "orig_end": 2025,
+   "loc": 20,
+   "inputs": [
+    "lifecycle_bundle"
+   ],
+   "outputs": [
+    "commander_evidence",
+    "existing_market_context",
+    "existing_playbook",
+    "existing_regime",
+    "existing_vix"
+   ],
+   "mutates_inputs": [
+    "lifecycle_bundle"
+   ]
+  },
+  {
+   "module": "libs/reporting/live_execution_bundle_runner.py",
+   "function": "main",
+   "owner_module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_evidence_context.py",
+   "owner_function": "lifecycle_scanner_filter_enrichment",
+   "kind": "run",
+   "orig_start": 2061,
+   "orig_end": 2099,
+   "loc": 39,
+   "inputs": [
+    "lifecycle_bundle",
+    "scanner_evidence",
+    "monitor_timeline",
+    "symbol",
+    "entry_run_id",
+    "anchor_run_id",
+    "strategist_input_artifact"
+   ],
+   "outputs": [
+    "strategy_anchor_run_id"
+   ],
+   "mutates_inputs": [
+    "lifecycle_bundle"
+   ]
+  },
+  {
+   "module": "libs/reporting/live_execution_bundle_runner.py",
+   "function": "main",
+   "owner_module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_report_policy.py",
+   "owner_function": "closed_sell_execution_details",
+   "kind": "run",
+   "orig_start": 2154,
+   "orig_end": 2172,
+   "loc": 19,
+   "inputs": [
+    "lifecycle",
+    "live_trade_context",
+    "lifecycle_bundle",
+    "summary_obj"
+   ],
+   "outputs": [
+    "entry_execution_details",
+    "execution_details",
+    "exit_execution_details",
+    "holding_phase_observability",
+    "lifecycle",
+    "lifecycle_bundle",
+    "status",
+    "summary_obj"
+   ],
+   "mutates_inputs": []
+  },
+  {
+   "module": "libs/reporting/live_execution_bundle_runner.py",
+   "function": "main",
+   "owner_module": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_report_policy.py",
+   "owner_function": "report_generation_policy_gate",
+   "kind": "run",
+   "orig_start": 2196,
+   "orig_end": 2221,
+   "loc": 26,
+   "inputs": [
+    "trade_story_input",
+    "trace_context",
+    "lifecycle_bundle",
+    "runtime_state",
+    "status",
+    "lifecycle",
+    "lifecycle_monitor_reason_human",
+    "story_type",
+    "report_requested",
+    "configured_report_model"
+   ],
+   "outputs": [
+    "diagnostics",
+    "generate_before_full_close_reason",
+    "generate_on_open_effective",
+    "lifecycle_bundle",
+    "policy_gate",
+    "should_attempt_generation",
+    "trade_report_policy",
+    "trade_story_input"
+   ],
+   "mutates_inputs": []
+  }
+ ]
+}

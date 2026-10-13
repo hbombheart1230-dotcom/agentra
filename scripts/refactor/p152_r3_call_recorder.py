@@ -167,6 +167,125 @@ LOG = None
 _ACTIVE = False
 CUR = [None]
 CALLS = {}
+# ---------------------------------------------------------------------------------------------
+# Optional ordered-effect capture (R3_EFFECTS=1; names listed in R3_EFFECT_FUNCS as "<module>.<name>" or "*").
+# Records, in order, every file open-for-write / write content digest / rename / replace / remove / mkdir performed
+# while a recorded top-level call is running, with paths normalised relative to the session TEMP or clone root.
+# Harness-only: no behaviour is changed, nothing is written.
+# ---------------------------------------------------------------------------------------------
+import builtins as _builtins
+import io as _io
+
+_FX_STACK = []
+_FX_INSTALLED = [False]
+_FX_REAL = {}
+
+
+def _fx_rel(path):
+    try:
+        p = os.path.normcase(os.path.abspath(os.fspath(path)))
+    except Exception:
+        return "<unpathable>"
+    for env_key, token in (("TEMP", "<TEMP>"), ("R3_ROOT", "<ROOT>")):
+        base = os.environ.get(env_key)
+        if base:
+            b = os.path.normcase(os.path.abspath(base))
+            if p == b or p.startswith(b + os.sep):
+                return token + "/" + os.path.relpath(p, b).replace("\\", "/")
+    return "<ABS>/" + p.replace("\\", "/")
+
+
+def _fx_log(entry):
+    for lst in _FX_STACK:
+        lst.append(entry)
+
+
+class _FxFile:
+    def __init__(self, raw, rel, mode):
+        object.__setattr__(self, "_raw", raw)
+        object.__setattr__(self, "_rel", rel)
+        object.__setattr__(self, "_mode", mode)
+        object.__setattr__(self, "_h", hashlib.sha256())
+        object.__setattr__(self, "_n", 0)
+        object.__setattr__(self, "_prev", b"")
+        object.__setattr__(self, "_closed", False)
+
+    def _account(self, data):
+        # run-specific numbers are normalised before hashing: process ids (lock/heartbeat files), parent pid and
+        # nanosecond file mtimes embedded by cache meta files
+        if isinstance(data, (bytes, bytearray, memoryview)):
+            data = bytes(data).decode("utf-8", "replace")
+        elif not isinstance(data, str):
+            return
+        pid, ppid = str(os.getpid()), str(os.getppid())
+        data = re.sub(r"\d{18,19}", "<NS>", data.replace(pid, "<PID>").replace(ppid, "<PPID>")).encode("utf-8")
+        self._h.update(data)
+        if len(self._prev) < 700:
+            object.__setattr__(self, "_prev", (self._prev + data)[:700])
+        object.__setattr__(self, "_n", self._n + len(data))
+
+    def write(self, data):
+        self._account(data)
+        return self._raw.write(data)
+
+    def writelines(self, lines):
+        lines = list(lines)
+        for ln in lines:
+            self._account(ln)
+        return self._raw.writelines(lines)
+
+    def close(self):
+        if not self._closed:
+            object.__setattr__(self, "_closed", True)
+            _fx_log(["close", self._rel, self._mode, self._n, self._h.hexdigest()[:16], self._prev.decode("utf-8", "replace")])
+        return self._raw.close()
+
+    def __enter__(self):
+        self._raw.__enter__()
+        return self
+
+    def __exit__(self, *exc):
+        try:
+            return self._raw.__exit__(*exc)
+        finally:
+            self.close()
+
+    def __iter__(self):
+        return iter(self._raw)
+
+    def __getattr__(self, name):
+        return getattr(self._raw, name)
+
+
+def _fx_install():
+    if _FX_INSTALLED[0]:
+        return
+    _FX_INSTALLED[0] = True
+    real_open = _io.open
+    _FX_REAL["open"] = real_open
+
+    def fx_open(file, mode="r", *a, **k):
+        f = real_open(file, mode, *a, **k)
+        if _FX_STACK and isinstance(mode, str) and any(c in mode for c in "wax+") and isinstance(file, (str, bytes, os.PathLike)):
+            rel = _fx_rel(file)
+            _fx_log(["open", rel, mode])
+            return _FxFile(f, rel, mode)
+        return f
+
+    _io.open = fx_open
+    _builtins.open = fx_open
+    for name in ("replace", "rename", "remove", "unlink", "mkdir", "makedirs", "rmdir"):
+        real = getattr(os, name)
+
+        def wrap(real=real, name=name):
+            def fn(*a, **k):
+                if _FX_STACK and a:
+                    _fx_log([name] + [_fx_rel(x) for x in a[:2] if isinstance(x, (str, bytes, os.PathLike))])
+                return real(*a, **k)
+            return fn
+        setattr(os, name, wrap())
+
+
 OUT = {}
 
 
@@ -213,19 +332,38 @@ def pytest_configure(config):
                 def wrapper(*a, **k):
                     rec = CALLS.setdefault(CUR[0], [])
                     ah = h([a, k])
+                    fxl = None
+                    if os.environ.get("R3_EFFECTS") == "1":
+                        wanted = os.environ.get("R3_EFFECT_FUNCS", "")
+                        key = modname.rsplit(".", 1)[-1] + "." + n
+                        if wanted == "*" or key in wanted.split(","):
+                            _fx_install()
+                            fxl = []
+                            _FX_STACK.append(fxl)
                     try:
                         r = orig(*a, **k)
                     except BaseException as e:  # noqa
-                        rec.append([modname.rsplit(".", 1)[-1] + "." + n, ah, "EXC:%s:%s" % (type(e).__name__, str(e)[:80])])
+                        if fxl is not None:
+                            _FX_STACK.remove(fxl)
+                        rec.append([modname.rsplit(".", 1)[-1] + "." + n, ah, "EXC:%s:%s" % (type(e).__name__, str(e)[:80])]
+                                   + (["fx:" + h(fxl)] if fxl is not None else []))
                         raise
+                    if fxl is not None:
+                        _FX_STACK.remove(fxl)
                     if os.environ.get("R3_POST"):
                         # in-place mutation of arguments (e.g. graph State) is behaviour too: hash args after the call
-                        rec.append([modname.rsplit(".", 1)[-1] + "." + n, ah, h(r), "post:" + h([a, k])]
-                                   + ([json.dumps(norm([a, k, r]), ensure_ascii=False, default=str)] if os.environ.get("R3_KEEP") else []))
+                        fx_tag = (":fx:" + h(fxl)) if fxl is not None else ""
+                        payload = [a, k, r] + ([fxl] if fxl is not None else [])
+                        rec.append([modname.rsplit(".", 1)[-1] + "." + n, ah, h(r), "post:" + h([a, k]) + fx_tag]
+                                   + ([json.dumps(norm(payload), ensure_ascii=False, default=str)] if os.environ.get("R3_KEEP") else []))
                         return r
                     rec.append([modname.rsplit(".", 1)[-1] + "." + n, ah, h(r)] + ([json.dumps(norm([a,k]),ensure_ascii=False,default=str)[:int(os.environ.get("R3_KEEP","600"))]] if os.environ.get("R3_KEEP") else []))
                     return r
-                wrapper.__name__ = orig.__name__
+                try:  # keep the public identity of the wrapped function (module/qualname/doc/signature)
+                    import functools
+                    functools.update_wrapper(wrapper, orig)
+                except Exception:
+                    wrapper.__name__ = orig.__name__
                 return wrapper
             setattr(mod, n, make(orig, n, modname))
 

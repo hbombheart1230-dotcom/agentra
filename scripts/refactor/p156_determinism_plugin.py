@@ -139,6 +139,8 @@ def _install():
     _dt.datetime = _FakeDateTime  # `date.today()` stays real: C extensions break if `datetime.date` is replaced
     uuid.uuid4 = _fake_uuid4
     os.getpid = lambda: 4242  # only until pytest_sessionstart (see below)
+    if os.environ.get("P156_PID_PIN") == "full":
+        os.getppid = lambda: 4241  # parent pid digits reach logged event sizes (e.g. cache source_size)
     socket.socket.connect = _blocked_connect
     socket.create_connection = _blocked_create_connection
     socket.getaddrinfo = _blocked_getaddrinfo
@@ -162,7 +164,9 @@ if _ACTIVE:
 
 
 def pytest_sessionstart(session):
-    if _ACTIVE:
+    # P156_PID_PIN=full keeps the pid constant for the whole session (artifact sizes/hashes that embed the pid digits
+    # become deterministic); the default restores the real pid so pid-liveness/lock tests behave
+    if _ACTIVE and os.environ.get("P156_PID_PIN") != "full":
         os.getpid = _real["getpid"]
 
 

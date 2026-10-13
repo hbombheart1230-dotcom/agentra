@@ -199,6 +199,25 @@ from libs.reporting.trade_bundle_persistence import (
     persist_trade_llm_artifacts,
 )
 from libs.runtime.canonical_artifacts import load_run_canonical_artifacts
+import sys as _r3_sys
+from libs.reporting.reporter_bundle_runtime_parts.targeted_run_projection import (
+    targeted_day_rows,
+)
+from libs.reporting.reporter_bundle_runtime_parts.lifecycle_story_context import (
+    lifecycle_exit_monitor_context,
+)
+from libs.reporting.reporter_bundle_runtime_parts.lifecycle_human_summaries import (
+    lifecycle_outcome_and_reporter_summaries,
+    lifecycle_operator_conclusion_fallback,
+)
+from libs.reporting.reporter_bundle_runtime_parts.lifecycle_evidence_context import (
+    lifecycle_commander_market_evidence,
+    lifecycle_scanner_filter_enrichment,
+)
+from libs.reporting.reporter_bundle_runtime_parts.lifecycle_report_policy import (
+    closed_sell_execution_details,
+    report_generation_policy_gate,
+)
 
 
 def _env_bool(name: str, default: bool = True) -> bool:
@@ -1542,19 +1561,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             for row in list(execution_runs or [])
             if str(row.get("run_id") or "").strip()
         )
-        targeted_run_ids = _expand_targeted_run_ids_with_cached_strategist_sources(
-            event_rows=day_event_rows,
-            targeted_run_ids=targeted_run_ids,
-        )
-        target_monitor_rows = _target_symbol_monitor_rows(
-            all_day_event_rows,
-            symbol=str(target_ctx.get("target_symbol") or ""),
-        )
-        day_event_rows = _merge_rows_by_identity(
-            _filter_rows_by_run_ids(day_event_rows, targeted_run_ids),
-            target_monitor_rows,
-        )
-        day_evidence_rows = _filter_rows_by_run_ids(day_evidence_rows, targeted_run_ids)
+        day_event_rows, day_evidence_rows = targeted_day_rows(day_event_rows=day_event_rows, targeted_run_ids=targeted_run_ids, all_day_event_rows=all_day_event_rows, target_ctx=target_ctx, day_evidence_rows=day_evidence_rows, facade=_r3_sys.modules[__name__])
     if targeted_mode:
         trade_report_dir = official_trade_explain_report_dir(reports_root)
         trade_md, trade_js = _resolve_existing_day_artifact(trade_report_dir, "trade_explain", day)
@@ -1773,85 +1780,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
         summary_obj = lifecycle.get("summary") if isinstance(lifecycle.get("summary"), dict) else {}
         reporter_obj = lifecycle.get("reporter") if isinstance(lifecycle.get("reporter"), dict) else {}
-        latest_holding_event = (
-            list(holding.get("holding_events") or [])[-1]
-            if isinstance(holding.get("holding_events"), list) and list(holding.get("holding_events") or [])
-            else {}
-        )
-        latest_holding_monitor_context = (
-            dict(latest_holding_event.get("monitor_context") or {})
-            if isinstance(latest_holding_event, dict) and isinstance(latest_holding_event.get("monitor_context"), dict)
-            else {}
-        )
-        exit_monitor_context = dict(exit_ctx.get("monitor_context") or {}) if isinstance(exit_ctx.get("monitor_context"), dict) else {}
-        exit_guard_context = dict(exit_ctx.get("guard_context") or {}) if isinstance(exit_ctx.get("guard_context"), dict) else {}
-        exit_execution_context = dict(exit_ctx.get("execution_context") or {}) if isinstance(exit_ctx.get("execution_context"), dict) else {}
-        merged_exit_monitor_context = dict(latest_holding_monitor_context)
-        if exit_monitor_context:
-            merged_exit_monitor_context.update(exit_monitor_context)
-        if status == "closed" and merged_exit_monitor_context:
-            lifecycle_monitor_reason_human = build_monitor_reason_human(
-                merged_exit_monitor_context,
-                {"action": exit_action or "SELL"},
-            )
-        elif latest_holding_monitor_context:
-            lifecycle_monitor_reason_human = build_monitor_reason_human(
-                latest_holding_monitor_context,
-                {"action": "HOLD"},
-            )
-        else:
-            lifecycle_monitor_reason_human = dict(
-                anchor_bundle.get("monitor_reason_human")
-                or exit_ctx.get("monitor_context")
-                or {}
-            )
-        lifecycle_monitor_reason_human = _backfill_open_lifecycle_monitor_reason(
-            lifecycle_monitor_reason_human,
-            lifecycle_status=status,
-            symbol=symbol,
-            state_obj=runtime_state,
-        )
-        story_contract = {
-            "story_available": True,
-            "story_type": story_type,
-            "execution_mode_label": execution_mode_label_text,
-            "story_anchor": f"{anchor_execution.get('action') or 'WAIT'} {symbol or '-'} x{safe_int(anchor_execution.get('qty'), 0)} | trade {trade_id}",
-            "warnings": list(lifecycle.get("warnings") or []),
-        }
-        lifecycle_execution_outcome_human = dict(exit_execution_context or anchor_bundle.get("execution_outcome_human") or {})
-        if not lifecycle_execution_outcome_human:
-            lifecycle_execution_outcome_human = build_execution_outcome_human(
-                anchor_execution,
-                dict((resolved_bundle_sources.get("agents") or {}).get("executor") or anchor_bundle.get("executor") or {}),
-                story_type=story_type,
-                mode_label=execution_mode_label_text,
-            )
-        lifecycle_reporter_status_human = {
-            "status": str(reporter_obj.get("status_human") or "missing"),
-            "summary": str(reporter_obj.get("summary") or ""),
-            "grade": str(reporter_obj.get("grade") or "N/A"),
-            "bullets": [str(x or "") for x in list(reporter_obj.get("improvement_points") or [])[:6]],
-        }
-        lifecycle_operator_conclusion_human = dict(anchor_bundle.get("operator_conclusion_human") or {})
+        exit_execution_context, exit_guard_context, exit_monitor_context, latest_holding_event, latest_holding_monitor_context, lifecycle_monitor_reason_human, merged_exit_monitor_context, story_contract = lifecycle_exit_monitor_context(holding=holding, exit_ctx=exit_ctx, status=status, exit_action=exit_action, anchor_bundle=anchor_bundle, symbol=symbol, runtime_state=runtime_state, story_type=story_type, execution_mode_label_text=execution_mode_label_text, trade_id=trade_id, lifecycle=lifecycle, anchor_execution=anchor_execution, facade=_r3_sys.modules[__name__])
+        lifecycle_execution_outcome_human, lifecycle_operator_conclusion_human, lifecycle_reporter_status_human = lifecycle_outcome_and_reporter_summaries(exit_execution_context=exit_execution_context, anchor_bundle=anchor_bundle, anchor_execution=anchor_execution, story_type=story_type, execution_mode_label_text=execution_mode_label_text, resolved_bundle_sources=resolved_bundle_sources, reporter_obj=reporter_obj, facade=_r3_sys.modules[__name__])
         if (
             not lifecycle_operator_conclusion_human
             or lifecycle_conclusion_summary_is_placeholder(lifecycle_operator_conclusion_human.get("summary"))
         ):
-            conclusion_execution = dict(anchor_execution)
-            if status == "closed" and exit_action:
-                conclusion_execution["action"] = exit_action
-                if exit_ctx.get("qty") not in (None, ""):
-                    conclusion_execution["qty"] = safe_int(exit_ctx.get("qty"), safe_int(conclusion_execution.get("qty"), 0))
-                if exit_ctx.get("ts") not in (None, ""):
-                    conclusion_execution["ts"] = str(exit_ctx.get("ts") or "")
-            lifecycle_operator_conclusion_human = build_operator_conclusion_human(
-                execution=conclusion_execution if status == "closed" and exit_action else anchor_execution,
-                scanner_reason_human=dict(anchor_bundle.get("scanner_reason_human") or entry_ctx.get("scanner_context") or {}),
-                filters_human=dict(anchor_bundle.get("filters_human") or {}),
-                monitor_reason_human=lifecycle_monitor_reason_human,
-                execution_outcome_human=lifecycle_execution_outcome_human,
-                reporter_status_human=lifecycle_reporter_status_human,
-            )
+            conclusion_execution, lifecycle_operator_conclusion_human = lifecycle_operator_conclusion_fallback(anchor_execution=anchor_execution, exit_action=exit_action, status=status, exit_ctx=exit_ctx, lifecycle_monitor_reason_human=lifecycle_monitor_reason_human, lifecycle_execution_outcome_human=lifecycle_execution_outcome_human, lifecycle_reporter_status_human=lifecycle_reporter_status_human, anchor_bundle=anchor_bundle, entry_ctx=entry_ctx, facade=_r3_sys.modules[__name__])
         if not str(lifecycle_operator_conclusion_human.get("summary") or "").strip():
             lifecycle_operator_conclusion_human["summary"] = str(summary_obj.get("operator_conclusion_human") or "")
         if not str(lifecycle_operator_conclusion_human.get("current_action") or "").strip():
@@ -2003,26 +1938,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             dict(lifecycle_bundle.get("strategist") or {}),
             strategist_evidence,
         )
-        existing_market_context = (
-            lifecycle_bundle.get("market_context_human")
-            if isinstance(lifecycle_bundle.get("market_context_human"), dict)
-            else {}
-        )
-        existing_regime = str(existing_market_context.get("regime") or "").strip().lower()
-        existing_playbook = str(existing_market_context.get("playbook") or "").strip().lower()
-        existing_vix = existing_market_context.get("vix_level")
-        if (
-            not existing_market_context
-            or existing_regime in {"", "not_captured"}
-            or existing_playbook in {"", "not_captured"}
-            or existing_vix in (None, "", "not_captured")
-        ):
-            lifecycle_bundle["market_context_human"] = build_market_context_human(
-                lifecycle_bundle.get("strategist") if isinstance(lifecycle_bundle.get("strategist"), dict) else {}
-            )
-        commander_evidence = build_commander_evidence(
-            lifecycle_bundle.get("commander") if isinstance(lifecycle_bundle.get("commander"), dict) else {}
-        )
+        commander_evidence, existing_market_context, existing_playbook, existing_regime, existing_vix = lifecycle_commander_market_evidence(lifecycle_bundle=lifecycle_bundle, facade=_r3_sys.modules[__name__])
         write_json(strategist_evidence_path, strategist_evidence)
         write_json(scanner_evidence_path, scanner_evidence)
         write_json(monitor_evidence_path, monitor_timeline)
@@ -2058,45 +1974,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             lifecycle_bundle.get("strategist") if isinstance(lifecycle_bundle.get("strategist"), dict) else {},
             strategist_input_artifact,
         )
-        lifecycle_bundle["market_context_human"] = build_market_context_human(
-            lifecycle_bundle.get("strategist") if isinstance(lifecycle_bundle.get("strategist"), dict) else {}
-        )
-        lifecycle_bundle["scanner_reason_human"] = build_scanner_reason_human(
-            lifecycle_bundle.get("scanner") if isinstance(lifecycle_bundle.get("scanner"), dict) else {},
-            lifecycle_bundle.get("strategist") if isinstance(lifecycle_bundle.get("strategist"), dict) else {},
-        )
-        lifecycle_bundle["scanner_reason_human"] = _enrich_scanner_reason_from_evidence(
-            lifecycle_bundle.get("scanner_reason_human")
-            if isinstance(lifecycle_bundle.get("scanner_reason_human"), dict)
-            else {},
-            scanner_evidence,
-        )
-        lifecycle_bundle["scanner_evidence"] = scanner_evidence if isinstance(scanner_evidence, dict) else {}
-        lifecycle_bundle["monitor_evidence"] = monitor_timeline if isinstance(monitor_timeline, dict) else {}
-        lifecycle_bundle["filters_human"] = build_filters_human(
-            lifecycle_bundle.get("scanner") if isinstance(lifecycle_bundle.get("scanner"), dict) else {},
-            lifecycle_bundle.get("strategist") if isinstance(lifecycle_bundle.get("strategist"), dict) else {},
-            lifecycle_bundle.get("supervisor") if isinstance(lifecycle_bundle.get("supervisor"), dict) else {},
-        )
-        lifecycle_bundle["filters_human"] = _enrich_filters_from_evidence(
-            lifecycle_bundle.get("filters_human") if isinstance(lifecycle_bundle.get("filters_human"), dict) else {},
-            scanner_evidence,
-            selected_symbol=str(
-                (
-                    lifecycle_bundle.get("scanner_reason_human")
-                    if isinstance(lifecycle_bundle.get("scanner_reason_human"), dict)
-                    else {}
-                ).get("selected_symbol")
-                or symbol
-            ),
-            monitor_evidence=monitor_timeline,
-        )
-        strategy_anchor_run_id = str(
-            ((strategist_input_artifact.get("meta") or {}).get("source_run_id") or "")
-            or entry_run_id
-            or anchor_run_id
-            or ""
-        ).strip()
+        strategy_anchor_run_id = lifecycle_scanner_filter_enrichment(lifecycle_bundle=lifecycle_bundle, scanner_evidence=scanner_evidence, monitor_timeline=monitor_timeline, symbol=symbol, entry_run_id=entry_run_id, anchor_run_id=anchor_run_id, strategist_input_artifact=strategist_input_artifact, facade=_r3_sys.modules[__name__])[0]
         anchor_context = apply_strategy_anchor_metadata(
             lifecycle=lifecycle,
             lifecycle_bundle=lifecycle_bundle,
@@ -2151,25 +2029,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             exit_bundle=exit_bundle,
             post_exit_price_rows=_runtime_minute_rows_for_symbol(runtime_state, symbol),
         )
-        lifecycle = dict(live_trade_context.get("lifecycle") or lifecycle)
-        lifecycle_bundle = dict(live_trade_context.get("lifecycle_bundle") or lifecycle_bundle)
-        summary_obj = dict(live_trade_context.get("summary_obj") or summary_obj)
-        entry_execution_details = dict(live_trade_context.get("entry_execution_details") or {})
-        exit_execution_details = dict(live_trade_context.get("exit_execution_details") or {})
-        execution_details = dict(live_trade_context.get("execution_details") or {})
-        status = _reconcile_partial_full_sell_lifecycle(
-            lifecycle=lifecycle,
-            lifecycle_bundle=lifecycle_bundle,
-            execution_details=execution_details,
-        )
-        summary_obj = _refresh_closed_sell_lifecycle_summary(
-            lifecycle=lifecycle,
-            lifecycle_bundle=lifecycle_bundle,
-            summary_obj=summary_obj,
-            execution_details=execution_details,
-            status=status,
-        )
-        holding_phase_observability = dict(live_trade_context.get("holding_phase_observability") or {})
+        entry_execution_details, execution_details, exit_execution_details, holding_phase_observability, lifecycle, lifecycle_bundle, status, summary_obj = closed_sell_execution_details(lifecycle=lifecycle, live_trade_context=live_trade_context, lifecycle_bundle=lifecycle_bundle, summary_obj=summary_obj, facade=_r3_sys.modules[__name__])
         same_day_reporter_linkage = dict(live_trade_context.get("same_day_reporter_linkage") or {})
         trade_story_input = build_trade_story_input_from_bundle(lifecycle_bundle, trade_lifecycle=lifecycle)
         trade_story_input["day"] = day
@@ -2193,32 +2053,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             lifecycle_bundle=lifecycle_bundle,
             scanner_evidence=scanner_evidence if isinstance(scanner_evidence, dict) else {},
         )
-        trade_story_input = dict(trace_context.get("trade_story_input") or trade_story_input)
-        lifecycle_bundle = dict(trace_context.get("lifecycle_bundle") or lifecycle_bundle)
-        trade_report_policy = _resolve_trade_report_policy(
-            runtime_state=runtime_state,
-            story_input=trade_story_input,
-        )
-        generate_before_full_close_reason = _report_before_full_close_reason(
-            lifecycle_status=status,
-            lifecycle=lifecycle,
-            lifecycle_bundle=lifecycle_bundle,
-            monitor_reason_human=lifecycle_monitor_reason_human,
-        )
-        generate_on_open_effective = bool(
-            trade_report_policy.get("generate_on_open")
-            or generate_before_full_close_reason
-        )
-        policy_gate = _seed_diagnostics_for_policy(
-            lifecycle_status=status,
-            story_type=story_type,
-            report_requested=report_requested,
-            story_input_available=bool(trade_story_input),
-            model_hint=configured_report_model,
-            generate_on_open=generate_on_open_effective,
-        )
-        diagnostics = dict(policy_gate.get("diagnostics") or {})
-        should_attempt_generation = bool(policy_gate.get("should_attempt_generation"))
+        diagnostics, generate_before_full_close_reason, generate_on_open_effective, lifecycle_bundle, policy_gate, should_attempt_generation, trade_report_policy, trade_story_input = report_generation_policy_gate(trade_story_input=trade_story_input, trace_context=trace_context, lifecycle_bundle=lifecycle_bundle, runtime_state=runtime_state, status=status, lifecycle=lifecycle, lifecycle_monitor_reason_human=lifecycle_monitor_reason_human, story_type=story_type, report_requested=report_requested, configured_report_model=configured_report_model, facade=_r3_sys.modules[__name__])
         if generate_before_full_close_reason and not bool(trade_report_policy.get("generate_on_open")):
             diagnostics["generate_before_full_close_reason"] = generate_before_full_close_reason
             diagnostics["generate_on_open_effective"] = True

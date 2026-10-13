@@ -236,7 +236,7 @@ def make_session(repo, work_root, name, sha):
     return root
 
 
-def session_env(root, session_dir, harness_dir, names, log, mode, keep):
+def session_env(root, session_dir, harness_dir, names, log, mode, keep, effect_funcs="", pin_pid=False):
     env = {
         "SYSTEMROOT": os.environ.get("SYSTEMROOT", r"C:\Windows"),
         "PATH": os.pathsep.join([str(Path(PY).parent), r"C:\Program Files\Git\cmd", r"C:\Windows\System32", r"C:\Windows"]),
@@ -251,6 +251,12 @@ def session_env(root, session_dir, harness_dir, names, log, mode, keep):
     }
     if keep:
         env["R3_KEEP"] = "1"
+    if pin_pid:
+        env["P156_PID_PIN"] = "full"
+    if effect_funcs:
+        # ordered file-effect capture (opens/writes/renames/removes with content digests) for the listed functions
+        env["R3_EFFECTS"] = "1"
+        env["R3_EFFECT_FUNCS"] = effect_funcs
     return env
 
 
@@ -322,7 +328,7 @@ def run_sessions(args):
         return s
 
     def launch(s):
-        env = session_env(s["root"], s["dir"], harness, names, s["log"], args.mode, True)
+        env = session_env(s["root"], s["dir"], harness, names, s["log"], args.mode, True, getattr(args, "effect_funcs", ""), bool(getattr(args, "pin_pid", False)))
         fh = open(s["stdout"], "wb")
         order.append(s["tag"])
         s["before"] = snapshot_tree(s["root"])
@@ -410,6 +416,10 @@ def main(argv=None):
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--mode", choices=("det", "natural"), default="det")
     ap.add_argument("--sequential", action="store_true")
+    ap.add_argument("--pin-pid", action="store_true",
+                    help="keep os.getpid constant for the whole session (anchor suites that tolerate it)")
+    ap.add_argument("--effect-funcs", default="",
+                    help="comma list of <module>.<name> (or *) whose ordered file effects are captured and compared")
     ap.add_argument("--same-path", action="store_true",
                     help="sequential runs, each in a fresh disposable clone at the SAME path")
     ap.add_argument("--expect-failures", type=int, default=0,
