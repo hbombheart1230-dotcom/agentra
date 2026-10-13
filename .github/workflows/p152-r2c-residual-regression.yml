@@ -284,6 +284,12 @@ jobs:
         shell: bash
         run: |
           mkdir -p branch_output
+          # NTFS settles directory timestamps lazily on a FRESH checkout: the conftest fast-tier write audit sees the
+          # directory entries of data/eval, data/originals and data/specs 'change' by ~2 ms between its own start and
+          # finish although nothing wrote there (T3-0.2). One throw-away collect-only session lets them settle; its
+          # result is NOT used. The real run below keeps the full write audit and must be clean.
+          python -m pytest -q -p no:cacheprovider --collect-only tests/test_p156_parity_harness.py > branch_output/harness_windows_settle.log 2>&1 || true
+          tail -n 25 branch_output/harness_windows_settle.log
           rc=0
           python -m pytest -q -p no:cacheprovider tests/test_p156_parity_harness.py -rs --junitxml=branch_output/harness_windows_junit.xml > branch_output/harness_windows_pytest.log 2>&1 || rc=$?
           cat branch_output/harness_windows_pytest.log
