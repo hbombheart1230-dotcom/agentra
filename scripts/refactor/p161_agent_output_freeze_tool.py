@@ -151,7 +151,8 @@ def compute_digests(outdir, sample_mod=16, only_builders=None):
         trace = []
         kind, payload, mutated = _call(ao, rec["builder"], args, kwargs, trace)
         enc = F.encode(payload) if kind == "result" else payload
-        entry = {"kind": kind, "result_norm": hashlib.sha256(F.canonical(norm_seps(enc)).encode()).hexdigest(),
+        entry = {"kind": kind, "result_norm_json": norm_seps(enc),
+                 "result_norm": hashlib.sha256(F.canonical(norm_seps(enc)).encode()).hexdigest(),
                  "mutated": mutated, "trace": trace, "variants": {}}
         for vid, va, vk in V.variants(rec["builder"], args, kwargs):
             if not _sampled(rec["id"], vid, sample_mod):

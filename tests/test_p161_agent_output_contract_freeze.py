@@ -84,11 +84,15 @@ def test_replay_matches_base_bytes_mutation_dependency_trace_and_variants(tmp_pa
         # integrity of the committed golden on this platform: pinned BASE here == golden (modulo path separators)
         base, _ = T.load(FIX)
         import hashlib
+        integrity = []
         for rec in base:
             enc = rec["result"]
             want = hashlib.sha256(F.canonical(T.norm_seps(enc)).encode()).hexdigest()
-            assert base_digests[rec["id"]]["result_norm"] == want, (rec["id"], "BASE on this platform != committed golden")
-            assert base_digests[rec["id"]]["trace"] == rec["dependency_trace"], rec["id"]
+            if base_digests[rec["id"]]["result_norm"] != want:
+                integrity.append((rec["id"], T.first_diff(base_digests[rec["id"]]["result_norm_json"], T.norm_seps(enc))))
+            if base_digests[rec["id"]]["trace"] != rec["dependency_trace"]:
+                integrity.append((rec["id"], "dependency_trace"))
+        assert integrity == [], f"BASE tree on this platform != committed golden ({len(integrity)}): {integrity[:6]}"
     bad = T.verify(FIX, sample_mod=SAMPLE_MOD, portable=PORTABLE, base_digests=base_digests)
     kinds = {}
     for item in bad:
