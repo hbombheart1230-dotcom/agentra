@@ -28,7 +28,7 @@ New parameterized tests: SHA (14 cases: valid, +LF, +CRLF, +space, leading space
 
 ## 3. CI
 
-Recorded after the hosted run (delivery commit).
+Run 38513619584 on `832d125`: SUCCESS for Linux `regression` and the required `windows-harness-smoke`. Hosted Windows (Python 3.12.10): **107 passed, 1 skipped** (the skip is the Store-alias reproduction test; no Store alias on GitHub runners); the junit step requires >= 85 containment/security/export tests PASSED and >= 52 `test_export_*`, none skipped.
 
 ## 4. Remaining
 
