@@ -1,0 +1,1771 @@
+{
+ "records": [
+  {
+   "id": "build_commander_shadow_artifact#01",
+   "source_test": "tests/test_asset_universe_policy.py::test_commander_injects_all_tradable_universe_policy",
+   "kind": "result",
+   "variants": 136,
+   "result_digest": "04ea9f129afcc26bfa487bbe8034e2ea6f29742f84f7e852f670a5249d32411a",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#02",
+   "source_test": "tests/test_asset_universe_policy.py::test_commander_injects_all_tradable_universe_policy",
+   "kind": "result",
+   "variants": 145,
+   "result_digest": "7e9d5efee6064106cbf139fed07ce6f3410198c455c61ad241b0b7d4e75d41d3",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#03",
+   "source_test": "tests/test_asset_universe_policy.py::test_commander_injects_all_tradable_universe_policy",
+   "kind": "result",
+   "variants": 192,
+   "result_digest": "2b7e32b6fe1a677a83a51bc68bd84c2b79bcb8fd064b379f2e384660f3a0ef93",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#01",
+   "source_test": "tests/test_asset_universe_policy.py::test_scanner_excludes_etf_candidates_and_records_observability",
+   "kind": "result",
+   "variants": 129,
+   "result_digest": "e7ba7ba679732db4f359baabc924741d29f6d895ff29533fbe211bf1d131c251",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#01",
+   "source_test": "tests/test_asset_universe_policy.py::test_scanner_and_executor_share_asset_resolver_results",
+   "kind": "result",
+   "variants": 65,
+   "result_digest": "da49c4ff109f980bdd62ae5a89cf2193dbbaed5cb79a8d0340a6039571b52e86",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#01",
+   "source_test": "tests/test_asset_universe_policy.py::test_scanner_and_executor_share_asset_resolver_results",
+   "kind": "result",
+   "variants": 73,
+   "result_digest": "ff69f5a780cbf751d688581301a0e964a910c5dbf91af3d0962b886f521c7b69",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#02",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_execute_from_packet_writes_supervisor_and_executor_artifacts",
+   "kind": "result",
+   "variants": 67,
+   "result_digest": "1e19bb4cc26e9227e6d65277e5324d63aa0f27d69f9a4bbe84165aa95fcbed74",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#02",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_execute_from_packet_writes_supervisor_and_executor_artifacts",
+   "kind": "result",
+   "variants": 73,
+   "result_digest": "ef081ecd7812c5614bfc7d7061185dc0b635b01a5a9cf24a461237a9848a7c2b",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#03",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_execute_from_packet_persists_quote_snapshot_in_executor_artifact",
+   "kind": "result",
+   "variants": 64,
+   "result_digest": "daf8fa5939b22183e5660ba342ec8fae9efd1fb5d78e43c74fb1edc034b38bb7",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#03",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_execute_from_packet_persists_quote_snapshot_in_executor_artifact",
+   "kind": "result",
+   "variants": 70,
+   "result_digest": "311aa223b2b54fedfcc4b22ff5d7b6da8819bf86a05923e88c4922ed8ac31d1a",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#04",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_commander_runtime_writes_commander_artifact",
+   "kind": "result",
+   "variants": 134,
+   "result_digest": "a21d8a0714e7a099524eb1011c45d469e4d60cd6bd7f7b8888c54f41f0dc2402",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#05",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_commander_runtime_writes_commander_artifact",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "e31bf4e9fa3a187b8b85f9ab0166557c71d03a8322f8fe5a61ee142d25a04d30",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#01",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_commander_runtime_writes_commander_artifact",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "ffaf4c2e5b587512c4a7c1c3d516551333c1e2a8d4914def407ccf9e04468eec",
+   "dependency_trace": [
+    "kst_day_str",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#06",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_commander_runtime_writes_artifact_when_cooldown_blocks_execution",
+   "kind": "result",
+   "variants": 134,
+   "result_digest": "87ad34f47c301f03e78aac56bab16a2e67b9ecb6bfbe1a385777d85dec43bfdc",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#07",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_commander_runtime_writes_artifact_when_cooldown_blocks_execution",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "a92d5f1ac957ef1af021ad60ccb781649b2ac858037a40b224ca47af0c4dc2dd",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#02",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_commander_runtime_writes_artifact_when_cooldown_blocks_execution",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "9cfbd397a30606b8235072cdce93ccbdbc39fb4d928913a805f280152ffd0cd6",
+   "dependency_trace": [
+    "kst_day_str",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#08",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_commander_shadow_write_failure_does_not_break_runtime",
+   "kind": "result",
+   "variants": 134,
+   "result_digest": "3eca5c017db77aa23bf8b80e0a4478518738e0f5857ac8b2eb764abd6a3f21a0",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#09",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_commander_shadow_write_failure_does_not_break_runtime",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "be46f846ae245e83c6df5ebca6fae0259e14ae6ed9933286c45c4f4e180e1c9b",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#03",
+   "source_test": "tests/test_canonical_agent_artifacts.py::test_commander_shadow_write_failure_does_not_break_runtime",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "8f55be18c71974322bee64aa4c7ac3a68ecf06f4d11b4d09b2bc7528ecb957ac",
+   "dependency_trace": [
+    "kst_day_str",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#01",
+   "source_test": "tests/test_canonical_artifact_validation.py::test_write_strategist_artifact_always_includes_validation",
+   "kind": "result",
+   "variants": 18,
+   "result_digest": "8b189dbb746c3b3b95c821c3e3b6c03ee85f373a6dabb3245e73cb15ca0cb2ef",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#02",
+   "source_test": "tests/test_canonical_artifact_validation.py::test_write_strategist_artifact_is_write_once_per_agent_path",
+   "kind": "result",
+   "variants": 20,
+   "result_digest": "d4092597b5359462b1a5a26a946cd43093b4267487933f00e499e60ea0ba2354",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#03",
+   "source_test": "tests/test_canonical_artifact_validation.py::test_write_strategist_artifact_is_write_once_per_agent_path",
+   "kind": "result",
+   "variants": 28,
+   "result_digest": "dc401f75a7d4407bb9d0b2a3cbbf5ea2212d88ee74f6e2ed3db4963cb34268a7",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#02",
+   "source_test": "tests/test_canonical_artifact_validation.py::test_write_scanner_artifact_overwrites_after_post_scanner_refresh",
+   "kind": "result",
+   "variants": 26,
+   "result_digest": "f3bd36567e89007037b1532b6ab6503f744144d81579b167563d6b8bac41d701",
+   "dependency_trace": [
+    "build_scanner_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#03",
+   "source_test": "tests/test_canonical_artifact_validation.py::test_write_scanner_artifact_overwrites_after_post_scanner_refresh",
+   "kind": "result",
+   "variants": 34,
+   "result_digest": "1541b2948e6c92fa74592e6af1dbd8a50270d87283330b52b5c9006496ea86e6",
+   "dependency_trace": [
+    "build_scanner_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#04",
+   "source_test": "tests/test_canonical_artifact_validation.py::test_write_scanner_artifact_keeps_commander_visible_candidate_scope",
+   "kind": "result",
+   "variants": 27,
+   "result_digest": "931affc6a715ed75b6fac18dbd9e5b520b4e889dab072e0ab24c99537b0484a9",
+   "dependency_trace": [
+    "build_scanner_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#04",
+   "source_test": "tests/test_canonical_artifact_validation.py::test_write_executor_artifact_classifies_llm_run_by_execution_result",
+   "kind": "result",
+   "variants": 14,
+   "result_digest": "7fc92652821ced7385605f7e796970712c9dc41c164ed0451f1bc4f2191ce717",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#04",
+   "source_test": "tests/test_canonical_artifact_validation.py::test_write_strategist_artifact_refreshes_llm_summary_after_canonical_detail",
+   "kind": "result",
+   "variants": 32,
+   "result_digest": "1c00ae56acd9933183943962ec56f47bb16d35e4255e72f07ef5d3c90d73dd5c",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#05",
+   "source_test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_strategist_scanner_monitor",
+   "kind": "result",
+   "variants": 245,
+   "result_digest": "2d5a6e5e8d8b65892bc9d1bfbaa344d7c58fc939bed4c817d7738b0b94f53d1e",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#05",
+   "source_test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_strategist_scanner_monitor",
+   "kind": "result",
+   "variants": 326,
+   "result_digest": "eba8e487adf5892220249e05b850edf7d11e9bd942715aa754a630670b6c655a",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#01",
+   "source_test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_strategist_scanner_monitor",
+   "kind": "result",
+   "variants": 399,
+   "result_digest": "5b5c304a8d063deb1d42bf658866aa029091240ddade33690dac4eb2a6c4111c",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#04",
+   "source_test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_supervisor_and_executor",
+   "kind": "result",
+   "variants": 64,
+   "result_digest": "455b725700db49e95a228fd95e1422ab812c90765c00e9a183f7a2e2f1c2df35",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#05",
+   "source_test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_supervisor_and_executor",
+   "kind": "result",
+   "variants": 70,
+   "result_digest": "dc8eed36378b08dcbdb3bbb652906af1beb94806a73f2127f52de4a0bcf9e727",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#02",
+   "source_test": "tests/test_entry_blocker_read_model.py::test_monitor_artifact_includes_entry_blocker_surface",
+   "kind": "result",
+   "variants": 46,
+   "result_digest": "a70706e9f6bdfce89a6b0d8e8a11ac806a4bcc93ca3b44af450a07381cfa9ca4",
+   "dependency_trace": [
+    "build_monitor_no_trade_surface",
+    "build_scanner_monitor_handoff_surface",
+    "build_entry_blocker_surface",
+    "build_monitor_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#06",
+   "source_test": "tests/test_evidence_ledger_trace_layer.py::test_strategist_trace_logging_writes_evidence_entries",
+   "kind": "result",
+   "variants": 239,
+   "result_digest": "c0c1a2bb9ec001e3b862233a39e3bf22d33db32f6e0a0bd0910afeb02addca37",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#06",
+   "source_test": "tests/test_evidence_ledger_trace_layer.py::test_scanner_trace_logging_writes_evidence_entries",
+   "kind": "result",
+   "variants": 147,
+   "result_digest": "0235599c0181ca6f38af773d2db6194d7ecfba9e1a7ffdca0dc6470f7d69e173",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#03",
+   "source_test": "tests/test_evidence_ledger_trace_layer.py::test_monitor_trace_logging_writes_evidence_entries",
+   "kind": "result",
+   "variants": 137,
+   "result_digest": "9a510d55b137eebceaebcb8779a1b45864e02565929f5bbebb7959b2c941a0da",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#05",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_mock",
+   "kind": "result",
+   "variants": 64,
+   "result_digest": "a56dc8790a071599f4adaa6a0ddcfbc7d1f37920a6d964755e23591250f80e8b",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#06",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_mock",
+   "kind": "result",
+   "variants": 70,
+   "result_digest": "6b85e93b9142e272fbe9f1bb3c5d0acd2cfd0993e7a9dbb6b5890bc51fa49d44",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#06",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_blocks_new_buy_inside_entry_closeout_buffer",
+   "kind": "result",
+   "variants": 64,
+   "result_digest": "1634583307041cd2f58f1f13cafd2731bbfaca9f20d6cd445e76d36aee5a6cc7",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#07",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_blocks_new_buy_inside_entry_closeout_buffer",
+   "kind": "result",
+   "variants": 73,
+   "result_digest": "e3ff717f1e2911a76c2971be2858c0d6b1544c46e14961953e1a32e8888bb3b2",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#07",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_skips_noop_intent",
+   "kind": "result",
+   "variants": 52,
+   "result_digest": "6bdbadd0f8d6749feda057b01e7a1092bebc418a7836c71010f85f79b6e6cb87",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#08",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_skips_noop_intent",
+   "kind": "result",
+   "variants": 64,
+   "result_digest": "02775c46d4288e9cd9a4584fb04e8b30751d6708e5882f0b8268c194a13c347b",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#08",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_blocks_symbol_not_allowlisted",
+   "kind": "result",
+   "variants": 56,
+   "result_digest": "9ca4b7b3b39f84e8e867b2ae97bf610da0eb23e1d76e5ceb483f5f741f14bb5f",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#09",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_blocks_symbol_not_allowlisted",
+   "kind": "result",
+   "variants": 67,
+   "result_digest": "cb7e0ef9289cc414b09413c188ea9f4f96e5ed3d9d58792ac27774a1ab581844",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#09",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_blocks_invalid_symbol_format",
+   "kind": "result",
+   "variants": 56,
+   "result_digest": "6ab4577fa7a1ee11fbaa6139e046def124fbb96191cd462d663628954f67a675",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_executor_output_artifact#10",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_blocks_invalid_symbol_format",
+   "kind": "result",
+   "variants": 67,
+   "result_digest": "ab217b0ee00c5e9a1f7318ee400d8b03ac93664cdd1bf2def9b1b5bb1fc89e16",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_supervisor_output_artifact#10",
+   "source_test": "tests/test_execute_from_packet.py::test_execute_from_packet_blocks_buy_when_asset_universe_policy_rejects_etf",
+   "kind": "result",
+   "variants": 64,
+   "result_digest": "b0c7d6b6b68717f3a70bf3b150a01f0a25c10b18fac4fdc92143d05820473fd6",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#07",
+   "source_test": "tests/test_llm_model_policy.py::test_strategist_policy_model_keeps_decision_surface_unchanged",
+   "kind": "result",
+   "variants": 242,
+   "result_digest": "bf58d04b525dae679ce7aa1b01454a03555babde85341dab20a4126b92589d24",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#10",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_commander_keeps_candidate_expansion_when_status_blocked_but_capacity_available",
+   "kind": "result",
+   "variants": 83,
+   "result_digest": "7f9134228cb70e4d64d7f8ff83aaee41a0eedf1dcad5f0e88d8567e1b0d5b767",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#11",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_defaults_to_graph_spine",
+   "kind": "result",
+   "variants": 131,
+   "result_digest": "b325346bded7f4d816dc90b3671630d3f542519f7ff2f6d2f538ace34b03843d",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#12",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_defaults_to_graph_spine",
+   "kind": "result",
+   "variants": 148,
+   "result_digest": "f79300bf79cb18434313ec135ddcad19331ad0a8bee9dc1897f702af1ea45d6c",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#04",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_defaults_to_graph_spine",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "cc7f8b3f3ced20ec907ba696b968859cdb6d1a1265ac3229edb637590cfeb7b1",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#13",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_runs_decision_packet_mode",
+   "kind": "result",
+   "variants": 134,
+   "result_digest": "2a274ca44497a8cfc2edfe766e7919fdb7db0387162dcc72b956ea4815222046",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#14",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_runs_decision_packet_mode",
+   "kind": "result",
+   "variants": 157,
+   "result_digest": "3276823a660336b5211d7e928d169d81030c0e5ab8bb65d7dcfc3ccf5a17dfc0",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#05",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_runs_decision_packet_mode",
+   "kind": "result",
+   "variants": 160,
+   "result_digest": "605175f09f7658eaf1bc63e05d0e3f2ea3dfb7a21e8c27944ad0f0f077f968c4",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#15",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_invalid_mode_falls_back_to_graph_spine",
+   "kind": "result",
+   "variants": 148,
+   "result_digest": "af8d3552bea83c6fe926d03ccb5d6360ad191304a3819ccec10646606ff757b4",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#06",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_invalid_mode_falls_back_to_graph_spine",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "3d83e384b60cd91c50f5a80425c73503ac1a980b22de73869906ee13bdaa5cbb",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#16",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_runs_integrated_chain_mode",
+   "kind": "result",
+   "variants": 131,
+   "result_digest": "0acac814de162a3ffc3b7e7331cc5fa44e4b87f7d42ff6a7401555ea89a1561a",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#17",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_runs_integrated_chain_mode",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "e3656c0b782277286218f1c62e22234ab5fc189b5e3144726b18c410ef3a362b",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#07",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_runs_integrated_chain_mode",
+   "kind": "result",
+   "variants": 157,
+   "result_digest": "b1365db8a39c56f4570bf38565d10d952f7cdc42c3eb200744f2624c25c28fca",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#18",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_seeds_commander_decision_for_downstream_agents",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "661648d0bf8bb1cb52702a51b17fbfa576255411c9f639a0d041f7ed455721e0",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#08",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_seeds_commander_decision_for_downstream_agents",
+   "kind": "result",
+   "variants": 157,
+   "result_digest": "9f0c1fd6990570f7e3d5518ee5d5de5b9dfbed1331598451b7fdeaa8197977bf",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#19",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_surfaces_commander_memory_policy_and_packets",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "404830b38d1cfbcfe70ccc1941c9378011cd926e9cae12e5f5f37bb6bad0cb40",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#20",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_surfaces_commander_memory_policy_and_packets",
+   "kind": "result",
+   "variants": 166,
+   "result_digest": "e43b2cb81550acc7ac80b687276b663aaff62df623267e4f8ae29bd1ffe45cda",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#09",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_surfaces_commander_memory_policy_and_packets",
+   "kind": "result",
+   "variants": 169,
+   "result_digest": "8cf135deb5cffab5e38a3f77b76c188849c8d6bf1a8c07a7ff9d2b74b6653cd4",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#21",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_integrates_shadow_commander_into_commander_decision",
+   "kind": "result",
+   "variants": 148,
+   "result_digest": "b9b2a373a9b8c82665c5507b67edbd88ef96c27a912739b84368fe45135a4dc5",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#22",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_integrates_shadow_commander_into_commander_decision",
+   "kind": "result",
+   "variants": 163,
+   "result_digest": "9b7b9c4fd4be4229f45f0256be812df1eff6fc74a8c9dd9202ff437d9ba729da",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#10",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_integrates_shadow_commander_into_commander_decision",
+   "kind": "result",
+   "variants": 166,
+   "result_digest": "3ec8b7e2fb60e7236f53ba0accc163a4f31fc6afafc66bd180a3c1c71d024b91",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#23",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_marks_strategist_fallback_when_shadow_and_runtime_lack_regime",
+   "kind": "result",
+   "variants": 135,
+   "result_digest": "d34e74f1ffa07b2ef5371d66198c52c9d50450ae166db5df51fcd6b59ee0bf53",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_shadow_artifact#24",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_marks_strategist_fallback_when_shadow_and_runtime_lack_regime",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "d7de88a6f7ae30bed2b0f8632253de935c7e1246b10ea39898a29e510f535ccb",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#11",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m31_runtime_entry_marks_strategist_fallback_when_shadow_and_runtime_lack_regime",
+   "kind": "result",
+   "variants": 157,
+   "result_digest": "af7b8ca7ce4114854017fc9213b4b7dabe71413423922e283a29d5572fb440ee",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#12",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_backfills_market_clock_for_closeout_guard_when_missing",
+   "kind": "result",
+   "variants": 160,
+   "result_digest": "361008e65363334449ca74b96fd2a751b8cb839ec422bb67aa066fc475536efb",
+   "dependency_trace": [
+    "kst_day_str",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#13",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_entry_uses_env_mode_when_state_missing",
+   "kind": "result",
+   "variants": 148,
+   "result_digest": "be825f339eb898f0189c659de7e175d8c2d4abd08f22706430313d4c1611eaf5",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#14",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_transition_cancel_short_circuits_run",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "dbe665e893bc3cff7a7f43b572747a20511ee43150643c141e188e47289445ed",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#15",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_transition_pause_short_circuits_run",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "42e5bdc7a5d120780c86e71720852d275bcf3e0f1cf30ee8a3a6b91bdc5cc963",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#16",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_transition_retry_marks_state_and_continues",
+   "kind": "result",
+   "variants": 160,
+   "result_digest": "fb01c7a807f7aa4f1bb82cb15e964b176aff75b55f492297dca201c23d12987f",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#17",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_preopen_phase_short_circuits_to_preopen_runner",
+   "kind": "result",
+   "variants": 157,
+   "result_digest": "61b53271a0bd05e8fcb92dc0bae646c05b754c9a8720b33fd75be20e29a204d9",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#18",
+   "source_test": "tests/test_m21_commander_runtime_entry.py::test_m21_runtime_closeout_phase_short_circuits_to_closeout_runner",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "527d3ffdbd8d20d0fa1c6c2097b4eeeef8c6fbefd1e83f6712c310be62024b1d",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#19",
+   "source_test": "tests/test_m21_runtime_once_script.py::test_m21_runtime_once_script_default_smoke_json",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "dbb2f2782ae0bf8c56a906070a677265665c61b4cf593d42c62d54818056e1ac",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#20",
+   "source_test": "tests/test_m21_runtime_once_script.py::test_m21_runtime_once_script_decision_packet_smoke_json",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "eea7827bfe9579837f70aecd5fc0091a8a7c19c3c262f04c28b60217f146dda4",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#21",
+   "source_test": "tests/test_m21_runtime_once_script.py::test_m31_runtime_once_script_integrated_chain_smoke_json",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "c36479ed8aec3085db650701973232bbe6daf41b7d57f51870800759b9faf4d3",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#22",
+   "source_test": "tests/test_m21_runtime_once_script.py::test_m21_runtime_once_script_pause_control",
+   "kind": "result",
+   "variants": 154,
+   "result_digest": "22cab7a6a9e3cc1de3fc30742e613313de766e07e52e4da89e09a11323b41566",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#23",
+   "source_test": "tests/test_m23_1_runtime_resilience_state_contract.py::test_m23_1_commander_runtime_injects_resilience_contract",
+   "kind": "result",
+   "variants": 148,
+   "result_digest": "ea9c06fcca2ff2fc56c9200e646fa8d4799361274059642508f65073dcf806f5",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#24",
+   "source_test": "tests/test_m23_4_commander_incident_cooldown_routing.py::test_m23_4_commander_opens_cooldown_when_incident_threshold_reached",
+   "kind": "result",
+   "variants": 157,
+   "result_digest": "2df1904608f2251596c8ccf16aae85eeef737b590cd309405f5597431bf141dc",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#25",
+   "source_test": "tests/test_m23_6_operator_intervention_resume.py::test_m23_6_runtime_once_cli_accepts_resume_control",
+   "kind": "result",
+   "variants": 160,
+   "result_digest": "c386303ed6948b8bab03fb258c1f8ed5586d5b3f795c98c87c484f850cbf92b9",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#26",
+   "source_test": "tests/test_m28_4_startup_preflight_check.py::test_m28_4_startup_preflight_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "c2b02567b1c0de8b1bb3d89b92a2596eade0269a946f213659d1e5f141f68a44",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#27",
+   "source_test": "tests/test_m28_5_scheduler_worker_launch_wrapper_check.py::test_m28_5_scheduler_worker_launch_wrapper_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "1226eeeb7cc0b0a3e20e7980d6a10ae9f23d7f13b47f78cd61db2c1e868c6520",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#28",
+   "source_test": "tests/test_m28_5_scheduler_worker_launch_wrapper_check.py::test_m28_5_scheduler_worker_launch_wrapper_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "c62b18dd06f7ee30e4dd7ea64389bd203f0d807feb10cbbacddcd4fcc398fc3d",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#29",
+   "source_test": "tests/test_m28_6_launch_hook_integration_check.py::test_m28_6_launch_hook_integration_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "6e0b8760523ac082bb813f09df307de427991a0ffa8db99f3569393f977f562b",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#30",
+   "source_test": "tests/test_m28_6_launch_hook_integration_check.py::test_m28_6_launch_hook_integration_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "5c9e3f46d8b8531189f74b97e01e79f43fca62725bb0acccadc79189cc84d564",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#31",
+   "source_test": "tests/test_m28_6_launch_hook_integration_check.py::test_m28_6_launch_hook_integration_check_fails_with_injected_case",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "6e0b8760523ac082bb813f09df307de427991a0ffa8db99f3569393f977f562b",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#32",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "c2b02567b1c0de8b1bb3d89b92a2596eade0269a946f213659d1e5f141f68a44",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#33",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "1226eeeb7cc0b0a3e20e7980d6a10ae9f23d7f13b47f78cd61db2c1e868c6520",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#34",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "c62b18dd06f7ee30e4dd7ea64389bd203f0d807feb10cbbacddcd4fcc398fc3d",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#35",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "6e0b8760523ac082bb813f09df307de427991a0ffa8db99f3569393f977f562b",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#36",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_passes_default",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "5c9e3f46d8b8531189f74b97e01e79f43fca62725bb0acccadc79189cc84d564",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#37",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_fails_with_injected_case",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "c2b02567b1c0de8b1bb3d89b92a2596eade0269a946f213659d1e5f141f68a44",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#38",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_fails_with_injected_case",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "1226eeeb7cc0b0a3e20e7980d6a10ae9f23d7f13b47f78cd61db2c1e868c6520",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#39",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_fails_with_injected_case",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "c62b18dd06f7ee30e4dd7ea64389bd203f0d807feb10cbbacddcd4fcc398fc3d",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#40",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_fails_with_injected_case",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "6e0b8760523ac082bb813f09df307de427991a0ffa8db99f3569393f977f562b",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#41",
+   "source_test": "tests/test_m28_9_closeout_check.py::test_m28_9_closeout_check_fails_with_injected_case",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "5c9e3f46d8b8531189f74b97e01e79f43fca62725bb0acccadc79189cc84d564",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#04",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_sell_records_exit_vs_strategy_intent_without_changing_sell_decision",
+   "kind": "result",
+   "variants": 157,
+   "result_digest": "7b70fc5b37130da483593f8d8d256f570afb364a790e6828e9ee821e5f92ecba",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#05",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_hold_cycle_runner_unavailable_keeps_observability",
+   "kind": "result",
+   "variants": 159,
+   "result_digest": "53c63fc60f3a8c0224a2deec7f5ff98c151bc672a4eab0e585142c4574baf944",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#06",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_crosschecks_account_unrealized_pnl_and_uses_more_conservative_exit_basis",
+   "kind": "result",
+   "variants": 149,
+   "result_digest": "c58eaf8ac7bbc63fb1eaf911524e8490c0189c1fdfe46867af2dfe66068d8093",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#07",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_prefers_direct_account_pnl_ratio_when_present",
+   "kind": "result",
+   "variants": 149,
+   "result_digest": "4e40deb5093a285e752a36917e0baedd77d903a2a57b3b59e1ff4f7a927710cd",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#08",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_flags_account_ratio_mark_anomaly_and_falls_back_before_exit",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "d2b892b31fa7f07434e4f61033328770177292f1bc12307688ed2a8129aa65b7",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#09",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_hold_block_reason_and_final_exit_thresholds_are_explicit",
+   "kind": "result",
+   "variants": 149,
+   "result_digest": "6e8ea2ad9a44b008da8cddcb77f337b24d2ca14c59a520ad97d0133882529274",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#10",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_artifact_surfaces_entry_minute_and_chart_fields_top_level",
+   "kind": "result",
+   "variants": 158,
+   "result_digest": "b0d683ba96685697a9b426c2fbed4bca4f1078c69a4b3a9051ba2592c21bffa2",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#11",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_artifact_surfaces_entry_minute_and_chart_fields_top_level",
+   "kind": "result",
+   "variants": 164,
+   "result_digest": "b0d683ba96685697a9b426c2fbed4bca4f1078c69a4b3a9051ba2592c21bffa2",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#12",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_peak_drawdown_exit_uses_persisted_peak",
+   "kind": "result",
+   "variants": 151,
+   "result_digest": "a2171666a5dbcedf5a781d2c0ae09bf20447ce95dac856b0d5612ed9abbc1182",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#13",
+   "source_test": "tests/test_monitor_exit_guard.py::test_monitor_falls_back_to_runner_up_when_top_pick_waits",
+   "kind": "result",
+   "variants": 143,
+   "result_digest": "d7cddd8d0b7ea3059f51b0e82e66fcdfa1e0a042c1bbfdad9fc5758d624d8719",
+   "dependency_trace": [
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#14",
+   "source_test": "tests/test_monitor_memory_bias.py::test_monitor_node_applies_commander_monitor_memory_bias",
+   "kind": "result",
+   "variants": 137,
+   "result_digest": "2295fff952224a2bcb713f6c3a98acda21775703927bc707473a8f822c322f06",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#08",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_strategist_artifact_contains_phase1_sections",
+   "kind": "result",
+   "variants": 73,
+   "result_digest": "a619e74acd36658914a8b55b45581667d7113ef927dcae1034639921bb465356",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#07",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_scanner_artifact_contains_filter_funnel_and_selection_reason_detail",
+   "kind": "result",
+   "variants": 70,
+   "result_digest": "3ae477ec2bb6cf5ec0b418705bfda2a5ee48a24874edb0f07ebc8e82dea123fb",
+   "dependency_trace": [
+    "build_scanner_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#09",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_strategist_artifact_records_policy_fallback_metadata",
+   "kind": "result",
+   "variants": 28,
+   "result_digest": "bcddbe249c9f3e754c3951ea06c460aed811eca98ac064eba828af27330a53e7",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#10",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_strategist_artifact_surfaces_memory_packet_visibility",
+   "kind": "result",
+   "variants": 57,
+   "result_digest": "02b721c6453c36f04ca38da608585c56bd90fd12f6dbe94a7fa8c76fa85134fe",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#11",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_strategist_artifact_memory_visibility_prefers_open_position_refresh_context",
+   "kind": "result",
+   "variants": 20,
+   "result_digest": "019598dd0b74ccd025a4e449e428e1a98fc06e914e1b7bc2d725ed12c15813c4",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#12",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_strategist_artifact_memory_visibility_includes_commander_memory_policy",
+   "kind": "result",
+   "variants": 19,
+   "result_digest": "7efd16a1998c09e5c85b1a5d2da62442505f21389acb42d17c32a4cf99df5e46",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#15",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_monitor_artifact_contains_evaluation_and_action_sections",
+   "kind": "result",
+   "variants": 57,
+   "result_digest": "8bbe0e00b39c75df9ccd564ca94513f395eb9d95f70cdf6385a3b7d445ca9d23",
+   "dependency_trace": [
+    "build_monitor_no_trade_surface",
+    "build_scanner_monitor_handoff_surface",
+    "build_entry_blocker_surface",
+    "build_monitor_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#16",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_monitor_artifact_marks_buy_intent_with_entry_phase",
+   "kind": "result",
+   "variants": 39,
+   "result_digest": "a703182ff32a7a30f9c1b8a97dc31125c77a52f5a919cf2a8d32a857ff7707c7",
+   "dependency_trace": [
+    "build_monitor_no_trade_surface",
+    "build_scanner_monitor_handoff_surface",
+    "build_entry_blocker_surface",
+    "build_monitor_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#17",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_monitor_artifact_marks_sell_intent_with_exit_phase",
+   "kind": "result",
+   "variants": 42,
+   "result_digest": "564fdda6cb2a0a8ff4dfac6ffbf8a92b468b8880e41a8e9f6b1a6c51a2cc3b8a",
+   "dependency_trace": [
+    "build_monitor_no_trade_surface",
+    "build_scanner_monitor_handoff_surface",
+    "build_entry_blocker_surface",
+    "build_monitor_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#18",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_monitor_artifact_mirrors_policy_trace_from_state_outputs",
+   "kind": "result",
+   "variants": 54,
+   "result_digest": "308b5bba59f6ae6a0374bca42ac33d4ed84d22181dea6fb0739fd5e76c65d47a",
+   "dependency_trace": [
+    "build_monitor_no_trade_surface",
+    "build_scanner_monitor_handoff_surface",
+    "build_entry_blocker_surface",
+    "build_monitor_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#19",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_monitor_artifact_no_intent_summary_is_human_readable",
+   "kind": "result",
+   "variants": 36,
+   "result_digest": "74b7cb21020c4ea864d0c9260c3c2c4653455b0fda1de99e5e3526d147daee8c",
+   "dependency_trace": [
+    "build_monitor_no_trade_surface",
+    "build_scanner_monitor_handoff_surface",
+    "build_entry_blocker_surface",
+    "build_monitor_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#20",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_monitor_artifact_prefers_entry_reason_when_flat_and_minute_data_missing",
+   "kind": "result",
+   "variants": 36,
+   "result_digest": "7e04ae0f2a84ba80ce4d8285824cc36c24e86f89a5c5a9a8fbc2e0c1c7addf7e",
+   "dependency_trace": [
+    "build_monitor_no_trade_surface",
+    "build_scanner_monitor_handoff_surface",
+    "build_entry_blocker_surface",
+    "build_monitor_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#21",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_monitor_artifact_does_not_label_structural_wait_as_price_unavailable",
+   "kind": "result",
+   "variants": 37,
+   "result_digest": "9d4f75e7de0d6f4b54dbc1fac098d8079f83f9f8996ad64f5dd6694321cc89bb",
+   "dependency_trace": [
+    "build_monitor_no_trade_surface",
+    "build_scanner_monitor_handoff_surface",
+    "build_entry_blocker_surface",
+    "build_monitor_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_monitor_output_artifact#22",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_monitor_artifact_surfaces_monitor_memory_bias_at_top_level",
+   "kind": "result",
+   "variants": 38,
+   "result_digest": "3d28368806deb93689cc105a1bfe0a8fb3340220ed8c6aa54981ac1ab8f38338",
+   "dependency_trace": [
+    "build_monitor_no_trade_surface",
+    "build_scanner_monitor_handoff_surface",
+    "build_entry_blocker_surface",
+    "build_monitor_commander_memory_application_trace",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#42",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_commander_artifact_uses_kst_day_for_utc_boundary_timestamp",
+   "kind": "result",
+   "variants": 66,
+   "result_digest": "897084070cd7f4586aa60d14f026837c51d52ed259b2b85147407e96cf3e9962",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_commander_route_observability_surface",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#43",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_commander_artifact_routes_monitor_only_and_tracks_flags",
+   "kind": "result",
+   "variants": 130,
+   "result_digest": "29bbfc047d386fdddf8a30bdb4418cff1053d6c00247061946d71692082ee1a1",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_commander_route_observability_surface",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#44",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_commander_artifact_surfaces_refresh_summary",
+   "kind": "result",
+   "variants": 127,
+   "result_digest": "df2e6ea549323898500e8317137c419a049eb060dd46c66cc143e2514c60235d",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_commander_route_observability_surface",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#45",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_commander_artifact_surfaces_cache_reuse_summary",
+   "kind": "result",
+   "variants": 127,
+   "result_digest": "33754c0c5ef97045663d50ce77cf1b06250a935abacf66c0c81db2bd6825b66c",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_commander_route_observability_surface",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_commander_output_artifact#46",
+   "source_test": "tests/test_phase1_agent_artifact_quality.py::test_commander_artifact_routes_blocked_with_cooldown",
+   "kind": "result",
+   "variants": 81,
+   "result_digest": "4e55039452dd02e73e9b32a2663134495d79d0ff0f3cf73a6d990cd426f6e1b9",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_commander_route_observability_surface",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#08",
+   "source_test": "tests/test_scanner_live_symbol_filter.py::test_scanner_filters_non_live_symbol_names_when_enforced",
+   "kind": "result",
+   "variants": 132,
+   "result_digest": "ca37d3b25512abad0e41732afc70fb603ad2e9239b439293ecb60d78ecea3c62",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#09",
+   "source_test": "tests/test_scanner_memory_bias.py::test_scanner_memory_bias_can_flip_near_tie_and_surfaces_artifact_fields",
+   "kind": "result",
+   "variants": 127,
+   "result_digest": "c95d1ab1e5d55bb6c84fc03f53f64efa400cb0564a7caa5965b6fdcdb304fd25",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#10",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_same_symbol_penalty_applied",
+   "kind": "result",
+   "variants": 138,
+   "result_digest": "5e2772a48ff5c961b4f70d7f9c1840b74f57861e1367c538a70c4fba078473d6",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#11",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_gap_threshold_exceeded",
+   "kind": "result",
+   "variants": 141,
+   "result_digest": "0283b06e57f931c208aad25c7acadddf39009c6339f50bca1d39eec356e0cc65",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#12",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_diversification_tie_break",
+   "kind": "result",
+   "variants": 135,
+   "result_digest": "361eb688c363d5a0ffaf9c2af5f0e8d94cf8d3083ce8803f9615cfb76011be53",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#13",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_regression_safety",
+   "kind": "result",
+   "variants": 141,
+   "result_digest": "74243cffc986429db99d5471291a396518724a43fa856f26a782ebb5b2167d02",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#14",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_market_representative_guard_promotes_confirmed_runner_up_when_top_value_only",
+   "kind": "result",
+   "variants": 138,
+   "result_digest": "06ae4d801602640be6ff2511a2023df6aa3062682d653736a41e279d40225b03",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#15",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_market_representative_guard_keeps_market_leader_when_confirmation_is_strong",
+   "kind": "result",
+   "variants": 138,
+   "result_digest": "6c32bd6fb1c99dd48bc887c5ad4bbe0a987e379560c4e90c7f9879ec40e6e2e6",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#16",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_entry_bias_cap_applied",
+   "kind": "result",
+   "variants": 138,
+   "result_digest": "add68127a7efc20756dadf9187c60e4936a86e7055435a35ca2967815cb82479",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#17",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_scanner_excludes_mock_broker_restricted_symbol_before_ranking",
+   "kind": "result",
+   "variants": 137,
+   "result_digest": "95c04cf6ca085a6df0dba10a3ee634c39ae84274e306bd964ba58e6a52440c74",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#18",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_blocker_family_concentration_promotes_alternative_family",
+   "kind": "result",
+   "variants": 135,
+   "result_digest": "0c51b64ef5c205b6db927fe66db3f800014ec16c4937d45accf41d31735cb697",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#19",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_blocker_family_concentration_does_not_null_selection_without_alternative_by_default",
+   "kind": "result",
+   "variants": 135,
+   "result_digest": "ad67442ee1dade9c2d6d9f28150a5a07995ef0f96e98b5c717818adaf5d1b6a3",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_scanner_output_artifact#20",
+   "source_test": "tests/test_scanner_policy_overlay.py::test_blocker_family_concentration_can_still_enforce_null_selection_when_configured",
+   "kind": "result",
+   "variants": 134,
+   "result_digest": "a2f9c6d5103f544ad2b9610ace21c1a60d31ad8d321db8b22489e5e4703c9bb0",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#13",
+   "source_test": "tests/test_strategist_explanation_contract.py::test_canonical_strategist_artifact_surfaces_explanation_contract",
+   "kind": "result",
+   "variants": 37,
+   "result_digest": "8c933598802534bbe47e0bfcfa4f62295fda8a646cc9bd4b921bfe191d5ac37c",
+   "dependency_trace": [
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#14",
+   "source_test": "tests/test_strategist_reasoning_quality.py::test_strategist_reasoning_uses_market_news_macro_context",
+   "kind": "result",
+   "variants": 252,
+   "result_digest": "d299752142cc46a65d84a2bd7c461f9dc4bfe50a161b1ae1ea6f7895ab4a57b5",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#15",
+   "source_test": "tests/test_strategist_reasoning_quality.py::test_strategist_collects_market_news_queries_without_candidate_symbols",
+   "kind": "result",
+   "variants": 233,
+   "result_digest": "ac505486bef90a420b030066f3640a2373f3f5784256ac062e1d85504a6e7cbf",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  },
+  {
+   "id": "build_strategist_output_artifact#16",
+   "source_test": "tests/test_strategist_reasoning_quality.py::test_strategist_news_collection_reuses_kiwoom_theme_component_pool",
+   "kind": "result",
+   "variants": 254,
+   "result_digest": "3b304b1b71cd0afbd45d2a189e947ed5578494a290f6fdf886bbc098c49d2c22",
+   "dependency_trace": [
+    "to_kst",
+    "kst_day_str",
+    "build_strategist_memory_packet_visibility",
+    "build_strategist_policy_resolution_surface",
+    "build_strategist_explanation_fields"
+   ]
+  }
+ ],
+ "counts": {
+  "build_strategist_output_artifact": 16,
+  "build_scanner_output_artifact": 20,
+  "build_monitor_output_artifact": 22,
+  "build_commander_output_artifact": 46,
+  "build_commander_shadow_artifact": 24,
+  "build_supervisor_output_artifact": 10,
+  "build_executor_output_artifact": 10
+ },
+ "variant_total": 18497
+}

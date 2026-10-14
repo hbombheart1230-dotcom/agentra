@@ -1,0 +1,30 @@
+{
+ "base_sha": "eb53dc1fe56c2a70a21271faf2f3c25c9711e309",
+ "signatures": {
+  "build_commander_output_artifact": "(state: 'Dict[str, Any]', *, mode: 'str', phase: 'str', path: 'str', status: 'str', reason: 'str' = '') -> 'Dict[str, Any]'",
+  "build_commander_shadow_artifact": "(state: 'Dict[str, Any]', *, mode: 'str', phase: 'str', path: 'str', status: 'str', reason: 'str' = '') -> 'Dict[str, Any]'",
+  "build_executor_output_artifact": "(state: 'Dict[str, Any]', *, execution: 'Dict[str, Any]', order: 'Dict[str, Any] | None' = None) -> 'Dict[str, Any]'",
+  "build_monitor_output_artifact": "(state: 'Dict[str, Any]') -> 'Dict[str, Any]'",
+  "build_scanner_output_artifact": "(state: 'Dict[str, Any]') -> 'Dict[str, Any]'",
+  "build_strategist_output_artifact": "(state: 'Dict[str, Any]') -> 'Dict[str, Any]'",
+  "build_supervisor_output_artifact": "(state: 'Dict[str, Any]', *, order: 'Dict[str, Any]', allowed: 'bool', reason: 'str', details: 'Dict[str, Any] | None' = None, strategy_policy_summary: 'Dict[str, Any] | None' = None) -> 'Dict[str, Any]'",
+  "validate_artifact": "(artifact: 'Dict[str, Any]') -> 'Dict[str, Any]'"
+ },
+ "public_names": [
+  "AGENT_OUTPUT_SCHEMA_VERSION",
+  "AGENT_VALIDATION_SCHEMA_VERSION",
+  "AgentOutput",
+  "build_commander_output_artifact",
+  "build_commander_shadow_artifact",
+  "build_executor_output_artifact",
+  "build_monitor_output_artifact",
+  "build_scanner_output_artifact",
+  "build_strategist_output_artifact",
+  "build_supervisor_output_artifact",
+  "validate_artifact"
+ ],
+ "constants": {
+  "AGENT_OUTPUT_SCHEMA_VERSION": "agent_output.v1",
+  "AGENT_VALIDATION_SCHEMA_VERSION": "agent_output_validation.v1"
+ }
+}
