@@ -8,6 +8,8 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
+
 
 def brief_market_candidate_hints_defensive_mode(strategist_raw_input, canonical_trade, strategist_summary, strategist, selected_symbol, strategist_trace, selected_candidate, *, facade):
     global_inputs = strategist_raw_input.get("global_sentiment_inputs") if isinstance(strategist_raw_input.get("global_sentiment_inputs"), dict) else {}
@@ -126,7 +128,36 @@ def brief_market_anomaly_note_anomaly_status(detected_themes, theme_match, selec
     return (anomaly_note, anomaly_status, chart_note, chart_status, liquidity_note, liquidity_status, priority_alignment, ranking_basis, risk_note, risk_status, sector_note, sector_status, sentiment_gate_note, sentiment_gate_status, spread_note, spread_status, theme_priority, turnover_note, turnover_status)
 
 
-def brief_market_active_exit_axis_avg_price_monitor(trade_story_input, canonical_trade, selected_why, quote_metrics, chart_status, sector_status, feature_coverage, feature_snapshot, sentiment_gate_status, thresholds, monitor_trace, monitor_summary, live_exit_reason, live_monitor_reason, exit_reason, monitor_reason, canonical_monitor_snapshot, shared_facts, *, facade):
+class BriefPositionExitAxisEvidence(NamedTuple):
+    """Result of `brief_position_exit_axis_evidence` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    active_exit_axis: Any
+    avg_price_monitor: Any
+    canonical_current_price: Any
+    canonical_holding_time: Any
+    canonical_posture: Any
+    chart_interpretation: Any
+    current_drawdown_raw: Any
+    current_price: Any
+    effective_stop_reason: Any
+    effective_stop_text: Any
+    holding_time: Any
+    missing_feature_names: Any
+    peak_drawdown_raw: Any
+    peak_price: Any
+    positive_factors: Any
+    present_feature_names: Any
+    scanner_selection_trace: Any
+    stop_loss: Any
+    stop_loss_text: Any
+    take_profit: Any
+    take_profit_text: Any
+    vwap_distance_raw: Any
+    watch_axes: Any
+    weak_factors: Any
+
+
+def brief_position_exit_axis_evidence(trade_story_input, canonical_trade, selected_why, quote_metrics, chart_status, sector_status, feature_coverage, feature_snapshot, sentiment_gate_status, thresholds, monitor_trace, monitor_summary, live_exit_reason, live_monitor_reason, exit_reason, monitor_reason, canonical_monitor_snapshot, shared_facts, *, facade):
     scanner_selection_trace = (
         trade_story_input.get("scanner_selection_trace")
         if isinstance(trade_story_input.get("scanner_selection_trace"), dict)
@@ -206,4 +237,4 @@ def brief_market_active_exit_axis_avg_price_monitor(trade_story_input, canonical
     ).strip()
     canonical_posture = str(canonical_monitor_snapshot.get("posture") or "").strip()
     canonical_current_price = str(canonical_monitor_snapshot.get("current_price") or "").strip()
-    return (active_exit_axis, avg_price_monitor, canonical_current_price, canonical_holding_time, canonical_posture, chart_interpretation, current_drawdown_raw, current_price, effective_stop_reason, effective_stop_text, holding_time, missing_feature_names, peak_drawdown_raw, peak_price, positive_factors, present_feature_names, scanner_selection_trace, stop_loss, stop_loss_text, take_profit, take_profit_text, vwap_distance_raw, watch_axes, weak_factors)
+    return BriefPositionExitAxisEvidence(active_exit_axis, avg_price_monitor, canonical_current_price, canonical_holding_time, canonical_posture, chart_interpretation, current_drawdown_raw, current_price, effective_stop_reason, effective_stop_text, holding_time, missing_feature_names, peak_drawdown_raw, peak_price, positive_factors, present_feature_names, scanner_selection_trace, stop_loss, stop_loss_text, take_profit, take_profit_text, vwap_distance_raw, watch_axes, weak_factors)

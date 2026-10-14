@@ -8,6 +8,8 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
+
 
 def decision_ctx_entry_capacity_available_market_regime(state, mode_value, phase_value, status_value, path_value, reason_text, *, facade):
     portfolio_snapshot = state.get("portfolio_snapshot") if isinstance(state.get("portfolio_snapshot"), dict) else {}
@@ -108,7 +110,34 @@ def decision_ctx_entry_capacity_available_market_regime(state, mode_value, phase
     return (entry_capacity_available, market_regime, market_regime_rail, max_positions, open_position_count, preflight, rail_risk_off, resilience, risk_mode, runtime_fast_path, session_bias, shadow_assessment, strategist_fallback_used, strategist_output, stress_flags)
 
 
-def decision_ctx_allowed_playbooks_applied_policy_meta(risk_mode, session_bias, path_value, phase_value, runtime_fast_path, shadow_assessment, open_position_count, entry_capacity_available, state, market_regime, strategist_fallback_used, *, facade):
+class DecisionPolicyContext(NamedTuple):
+    """Result of `decision_policy_context` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    allowed_playbooks: Any
+    applied_policy_meta: Any
+    banned_playbooks: Any
+    command_intent: Any
+    flow_instruction: Any
+    llm_policy: Any
+    monitor_mission: Any
+    no_trade_reason_code: Any
+    observations: Any
+    reporter_feedback_policy: Any
+    scanner_mission: Any
+    shadow_reason_summary: Any
+    shadow_used: Any
+    source_priority: Any
+    source_refs: Any
+    strategist_cache_preference_context: Any
+    strategist_cache_preference_reason: Any
+    strategist_cache_preferred: Any
+    strategist_invocation: Any
+    strategist_refresh_context: Any
+    strategist_refresh_reason: Any
+    strategist_refresh_requested: Any
+
+
+def decision_policy_context(risk_mode, session_bias, path_value, phase_value, runtime_fast_path, shadow_assessment, open_position_count, entry_capacity_available, state, market_regime, strategist_fallback_used, *, facade):
     if risk_mode == "blocked":
         allowed_playbooks = []
     elif risk_mode == "defensive":
@@ -221,4 +250,4 @@ def decision_ctx_allowed_playbooks_applied_policy_meta(risk_mode, session_bias, 
         if isinstance(state.get("commander_reporter_feedback_policy"), dict)
         else {}
     )
-    return (allowed_playbooks, applied_policy_meta, banned_playbooks, command_intent, flow_instruction, llm_policy, monitor_mission, no_trade_reason_code, observations, reporter_feedback_policy, scanner_mission, shadow_reason_summary, shadow_used, source_priority, source_refs, strategist_cache_preference_context, strategist_cache_preference_reason, strategist_cache_preferred, strategist_invocation, strategist_refresh_context, strategist_refresh_reason, strategist_refresh_requested)
+    return DecisionPolicyContext(allowed_playbooks, applied_policy_meta, banned_playbooks, command_intent, flow_instruction, llm_policy, monitor_mission, no_trade_reason_code, observations, reporter_feedback_policy, scanner_mission, shadow_reason_summary, shadow_used, source_priority, source_refs, strategist_cache_preference_context, strategist_cache_preference_reason, strategist_cache_preferred, strategist_invocation, strategist_refresh_context, strategist_refresh_reason, strategist_refresh_requested)

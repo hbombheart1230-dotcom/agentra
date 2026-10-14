@@ -8,8 +8,37 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 
-def decision_ctx_applied_policy_command_intent(applied_policy_meta, state, strategist_refresh_reason, strategist_refresh_context, open_position_count, observations, source_refs, source_priority, phase_value, strategist_refresh_requested, flow_instruction, command_intent, llm_policy, monitor_mission, scanner_mission, session_bias, strategist_invocation, *, facade):
+
+class AppliedPolicyCommandContext(NamedTuple):
+    """Result of `applied_policy_command_context` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    applied_policy: Any
+    command_intent: Any
+    commander_applied_policy_summary: Any
+    commander_behavior_policy: Any
+    commander_carry_risk_bias: Any
+    commander_carry_risk_reason: Any
+    commander_carry_state: Any
+    commander_override: Any
+    commander_session_open_recovery: Any
+    flow_instruction: Any
+    llm_policy: Any
+    monitor_mission: Any
+    observations: Any
+    open_position_refresh_context: Any
+    scanner_mission: Any
+    session_bias: Any
+    source_priority: Any
+    source_refs: Any
+    strategist_invocation: Any
+    strategist_refresh_context: Any
+    strategist_refresh_reason: Any
+    strategist_refresh_requested: Any
+
+
+def applied_policy_command_context(applied_policy_meta, state, strategist_refresh_reason, strategist_refresh_context, open_position_count, observations, source_refs, source_priority, phase_value, strategist_refresh_requested, flow_instruction, command_intent, llm_policy, monitor_mission, scanner_mission, session_bias, strategist_invocation, *, facade):
     applied_policy = dict(applied_policy_meta.get("applied_policy") or {})
     commander_behavior_policy = (
         dict(state.get("commander_behavior_policy") or {})
@@ -144,4 +173,4 @@ def decision_ctx_applied_policy_command_intent(applied_policy_meta, state, strat
         scanner_mission = "Review carried positions first and keep preopen candidate expansion narrow until carry risk is revalidated."
         monitor_mission = "Prepare session-open carry-risk response for held positions before allowing new entry exploration."
     commander_applied_policy_summary = dict(state.get("commander_applied_policy_summary") or {})
-    return (applied_policy, command_intent, commander_applied_policy_summary, commander_behavior_policy, commander_carry_risk_bias, commander_carry_risk_reason, commander_carry_state, commander_override, commander_session_open_recovery, flow_instruction, llm_policy, monitor_mission, observations, open_position_refresh_context, scanner_mission, session_bias, source_priority, source_refs, strategist_invocation, strategist_refresh_context, strategist_refresh_reason, strategist_refresh_requested)
+    return AppliedPolicyCommandContext(applied_policy, command_intent, commander_applied_policy_summary, commander_behavior_policy, commander_carry_risk_bias, commander_carry_risk_reason, commander_carry_state, commander_override, commander_session_open_recovery, flow_instruction, llm_policy, monitor_mission, observations, open_position_refresh_context, scanner_mission, session_bias, source_priority, source_refs, strategist_invocation, strategist_refresh_context, strategist_refresh_reason, strategist_refresh_requested)

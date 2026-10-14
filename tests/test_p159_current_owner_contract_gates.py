@@ -19,6 +19,7 @@ LEDGERS = {
     "t2": ("p1_5_third_pass_t2_moved_segments_ledger.json", "d4a5364bae817504c253e06b9150ee49c692e120"),
 }
 T3 = DOCS / "p1_5_third_pass_t3_owner_contract_ledger.json"
+T3_1 = DOCS / "p1_5_third_pass_t3_1_owner_contract_ledger.json"
 MAX_OWNER_LOC = 350
 ALLOWED_OWNER_IMPORTS = {"__future__": {"annotations"}, "typing": {"Any", "NamedTuple"}}
 FORBIDDEN_TOKENS = ("os.environ", "os.getenv", "getenv(", "time.time(", "datetime.now", "datetime.utcnow", "uuid.uuid",
@@ -34,7 +35,12 @@ def _segments():
 
 
 def _t3():
-    return json.loads(T3.read_text(encoding="utf-8"))
+    """T3 ledger plus the T3.1 ledger (its `changes` are appended; `module_removed` is the union)."""
+    base = json.loads(T3.read_text(encoding="utf-8"))
+    extra = json.loads(T3_1.read_text(encoding="utf-8"))
+    base["changes"] = base["changes"] + extra["changes"]
+    base["module_removed"] = base["module_removed"] + extra["module_removed"]
+    return base
 
 
 def _mapping():
@@ -287,3 +293,45 @@ def test_real_closed_sell_owner_matches_the_historical_tuple_and_alias_behavior(
     assert new.lifecycle["nested"] is nested_new and old[4]["nested"] is nested_old
     assert new.lifecycle_bundle["reconciled"] is True and old[5]["reconciled"] is True
     assert new.lifecycle_bundle is not args_new["live_trade_context"]["lifecycle_bundle"]  # dict() copy, as before
+
+
+# ---- T3.1: the eight converted Owner functions are the historical bodies, byte-for-byte at the AST level ------------
+T3_1_START_SHA = "9e312c9fec0d4eb09f0b729456509b0469c7470f"
+
+
+def _t3_1_changes():
+    return json.loads(T3_1.read_text(encoding="utf-8"))["changes"]
+
+
+def _unwrap_if_true(body):
+    if len(body) == 2 and isinstance(body[0], ast.If) and isinstance(body[0].test, ast.Constant) \
+            and body[0].test.value is True and not body[0].orelse:
+        return body[0].body + body[1:]
+    return body
+
+
+def test_t3_1_converted_functions_equal_their_pre_t3_1_bodies_modulo_record_wrapper():
+    changes = _t3_1_changes()
+    assert len(changes) == 8
+    for c in changes:
+        before = {n.name: n for n in ast.parse(_git_show(c["old_module"], T3_1_START_SHA)).body
+                  if isinstance(n, ast.FunctionDef)}[c["old_function"]]
+        after = {n.name: n for n in _tree(c["new_module"]).body if isinstance(n, ast.FunctionDef)}[c["new_function"]]
+        assert ast.dump(before.args) == ast.dump(after.args), c["new_function"]
+        b_body, a_body = _unwrap_if_true(before.body), after.body
+        assert [ast.dump(x) for x in b_body[:-1]] == [ast.dump(x) for x in a_body[:-1]], c["new_function"]
+        b_ret, a_ret = b_body[-1].value, a_body[-1].value
+        assert isinstance(b_ret, ast.Tuple) and isinstance(a_ret, ast.Call) and a_ret.func.id == c["record"]
+        assert [ast.dump(e) for e in b_ret.elts] == [ast.dump(e) for e in a_ret.args]
+        assert [e.id for e in b_ret.elts] == c["fields"] and len(c["fields"]) == c["arity"]
+        assert not a_ret.keywords
+
+
+def test_t3_1_old_names_are_gone_from_production_callers_and_new_names_are_imported():
+    for c in _t3_1_changes():
+        hits = subprocess.run(["git", "grep", "-l", "-w", c["old_function"], "--", "*.py", ":!tests/"], cwd=ROOT,
+                              capture_output=True, text=True).stdout.split()
+        assert hits == [], (c["old_function"], hits)
+        users = subprocess.run(["git", "grep", "-l", "-w", c["new_function"], "--", "*.py", ":!tests/"], cwd=ROOT,
+                               capture_output=True, text=True).stdout.split()
+        assert len(users) >= 2, (c["new_function"], users)  # the Owner and at least one real caller

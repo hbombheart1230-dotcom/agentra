@@ -8,8 +8,45 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 
-def memory_feedback_best_playbooks_commander_memory_policy_r(prompt_reporter_feedback, reporter_visibility, prompt_read_model_facts, read_model_visibility, prompt_commander_memory_policy, policy_visibility, reporter_feedback, selected_symbol_memory, prompt_selected_symbol_memory, memory_packets, prompt_memory_packets, commander_memory_policy, selected_visibility, prompt_symbol_packet, strategy_memory, strategy_visibility, *, facade):
+
+class RebuiltMemoryFeedbackFacts(NamedTuple):
+    """Result of `rebuilt_memory_feedback_facts` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    best_playbooks: Any
+    commander_memory_policy_rebuilt: Any
+    memory_packets_rebuilt: Any
+    prompt_active_layers: Any
+    prompt_priority_order: Any
+    prompt_read_model_daily_summary_present: Any
+    prompt_read_model_recent_trade_count: Any
+    prompt_read_model_symbol_pattern_count: Any
+    prompt_read_model_symbols: Any
+    prompt_reporter_confidence: Any
+    prompt_reporter_dominant_patterns: Any
+    prompt_reporter_gate_reason: Any
+    prompt_reporter_insight_summary: Any
+    prompt_reporter_recommendations: Any
+    prompt_reporter_source_reports: Any
+    prompt_reporter_trade_report_analysis: Any
+    prompt_symbol: Any
+    recent_failures: Any
+    recent_success_patterns: Any
+    reconstructed_notes: Any
+    reporter_feedback_rebuilt: Any
+    selected_blocker: Any
+    selected_playbook: Any
+    selected_symbol_memory_rebuilt: Any
+    selected_trade_count: Any
+    selected_win_rate: Any
+    strategy_requested_day: Any
+    strategy_resolved_day: Any
+    strategy_status: Any
+    worst_playbooks: Any
+
+
+def rebuilt_memory_feedback_facts(prompt_reporter_feedback, reporter_visibility, prompt_read_model_facts, read_model_visibility, prompt_commander_memory_policy, policy_visibility, reporter_feedback, selected_symbol_memory, prompt_selected_symbol_memory, memory_packets, prompt_memory_packets, commander_memory_policy, selected_visibility, prompt_symbol_packet, strategy_memory, strategy_visibility, *, facade):
     prompt_reporter_gate_reason = facade._text(
         prompt_reporter_feedback.get("feedback_gate_reason") or reporter_visibility.get("feedback_gate_reason"),
         max_len=40,
@@ -90,4 +127,4 @@ def memory_feedback_best_playbooks_commander_memory_policy_r(prompt_reporter_fee
         else selected_visibility.get("dominant_playbook"),
         max_len=40,
     )
-    return (best_playbooks, commander_memory_policy_rebuilt, memory_packets_rebuilt, prompt_active_layers, prompt_priority_order, prompt_read_model_daily_summary_present, prompt_read_model_recent_trade_count, prompt_read_model_symbol_pattern_count, prompt_read_model_symbols, prompt_reporter_confidence, prompt_reporter_dominant_patterns, prompt_reporter_gate_reason, prompt_reporter_insight_summary, prompt_reporter_recommendations, prompt_reporter_source_reports, prompt_reporter_trade_report_analysis, prompt_symbol, recent_failures, recent_success_patterns, reconstructed_notes, reporter_feedback_rebuilt, selected_blocker, selected_playbook, selected_symbol_memory_rebuilt, selected_trade_count, selected_win_rate, strategy_requested_day, strategy_resolved_day, strategy_status, worst_playbooks)
+    return RebuiltMemoryFeedbackFacts(best_playbooks, commander_memory_policy_rebuilt, memory_packets_rebuilt, prompt_active_layers, prompt_priority_order, prompt_read_model_daily_summary_present, prompt_read_model_recent_trade_count, prompt_read_model_symbol_pattern_count, prompt_read_model_symbols, prompt_reporter_confidence, prompt_reporter_dominant_patterns, prompt_reporter_gate_reason, prompt_reporter_insight_summary, prompt_reporter_recommendations, prompt_reporter_source_reports, prompt_reporter_trade_report_analysis, prompt_symbol, recent_failures, recent_success_patterns, reconstructed_notes, reporter_feedback_rebuilt, selected_blocker, selected_playbook, selected_symbol_memory_rebuilt, selected_trade_count, selected_win_rate, strategy_requested_day, strategy_resolved_day, strategy_status, worst_playbooks)

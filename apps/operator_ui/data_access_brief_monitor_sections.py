@@ -8,8 +8,39 @@ calls are present - those statements stay in the orchestrator).
 """
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 
-def brief_monitor_canonical_active_exit_axis_canonical_ave(canonical_monitor_snapshot, monitor_summary, monitor_trace, *, facade):
+
+class CanonicalMonitorSnapshotView(NamedTuple):
+    """Result of `canonical_monitor_snapshot_view` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    canonical_active_exit_axis: Any
+    canonical_average_price: Any
+    canonical_current_drawdown: Any
+    canonical_effective_stop: Any
+    canonical_effective_stop_reason: Any
+    canonical_exit_triggers: Any
+    canonical_feature_source: Any
+    canonical_hold_reasons: Any
+    canonical_peak_drawdown: Any
+    canonical_peak_price: Any
+    canonical_price_source: Any
+    canonical_price_source_policy: Any
+    canonical_stop_loss: Any
+    canonical_take_profit: Any
+    canonical_vwap_distance: Any
+    canonical_watch_axes: Any
+    entry_evaluated: Any
+    entry_guard_reason: Any
+    entry_metrics: Any
+    entry_pattern: Any
+    entry_reason_code: Any
+    entry_signal_chain: Any
+    entry_triggered: Any
+    hold_reasons: Any
+
+
+def canonical_monitor_snapshot_view(canonical_monitor_snapshot, monitor_summary, monitor_trace, *, facade):
     canonical_average_price = str(canonical_monitor_snapshot.get("average_price") or "").strip()
     canonical_peak_price = str(canonical_monitor_snapshot.get("peak_price") or "").strip()
     canonical_current_drawdown = str(canonical_monitor_snapshot.get("current_drawdown") or "").strip()
@@ -80,10 +111,39 @@ def brief_monitor_canonical_active_exit_axis_canonical_ave(canonical_monitor_sna
     ]
 
     hold_reasons: facade.List[str] = []
-    return (canonical_active_exit_axis, canonical_average_price, canonical_current_drawdown, canonical_effective_stop, canonical_effective_stop_reason, canonical_exit_triggers, canonical_feature_source, canonical_hold_reasons, canonical_peak_drawdown, canonical_peak_price, canonical_price_source, canonical_price_source_policy, canonical_stop_loss, canonical_take_profit, canonical_vwap_distance, canonical_watch_axes, entry_evaluated, entry_guard_reason, entry_metrics, entry_pattern, entry_reason_code, entry_signal_chain, entry_triggered, hold_reasons)
+    return CanonicalMonitorSnapshotView(canonical_active_exit_axis, canonical_average_price, canonical_current_drawdown, canonical_effective_stop, canonical_effective_stop_reason, canonical_exit_triggers, canonical_feature_source, canonical_hold_reasons, canonical_peak_drawdown, canonical_peak_price, canonical_price_source, canonical_price_source_policy, canonical_stop_loss, canonical_take_profit, canonical_vwap_distance, canonical_watch_axes, entry_evaluated, entry_guard_reason, entry_metrics, entry_pattern, entry_reason_code, entry_signal_chain, entry_triggered, hold_reasons)
 
 
-def brief_monitor_decision_reason_execution_quality(prefer_runtime_reporter, reporter, canonical_trade, execution_action, monitor_reason, exit_reason, final_action, selected_rank, universe_size, feature_coverage, selected_symbol, take_profit_text, stop_loss_text, vix_level, detected_themes, trade_report, scanner_summary, *, facade):
+class BriefDecisionReportLinkage(NamedTuple):
+    """Result of `brief_decision_report_linkage` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
+
+    decision_reason: Any
+    execution_quality: Any
+    focus_symbol: Any
+    key_finding: Any
+    monitor_consistency: Any
+    report_available: Any
+    report_lifecycle_status: Any
+    report_lifecycle_summary: Any
+    report_link: Any
+    report_mode: Any
+    report_model: Any
+    report_next_step: Any
+    report_reason: Any
+    report_status: Any
+    report_story_type: Any
+    report_summary: Any
+    report_trade_id: Any
+    reporter_reason: Any
+    reporter_status: Any
+    run_grade: Any
+    strategy_alignment: Any
+    thesis_invalidation: Any
+    trade_quality: Any
+    watch_next: Any
+
+
+def brief_decision_report_linkage(prefer_runtime_reporter, reporter, canonical_trade, execution_action, monitor_reason, exit_reason, final_action, selected_rank, universe_size, feature_coverage, selected_symbol, take_profit_text, stop_loss_text, vix_level, detected_themes, trade_report, scanner_summary, *, facade):
     reporter_found = bool(reporter.get("found")) if prefer_runtime_reporter else (
         bool(reporter.get("found")) or str(canonical_trade.get("reporter_status") or "").strip().lower() == "linked"
     )
@@ -189,7 +249,7 @@ def brief_monitor_decision_reason_execution_quality(prefer_runtime_reporter, rep
     report_summary = str(trade_report.get("report_summary") or "")
     report_link = str(trade_report.get("report_link") or "")
     focus_symbol = selected_symbol or facade._clean_brief_text(scanner_summary.get("top_stock") or "") or "-"
-    return (decision_reason, execution_quality, focus_symbol, key_finding, monitor_consistency, report_available, report_lifecycle_status, report_lifecycle_summary, report_link, report_mode, report_model, report_next_step, report_reason, report_status, report_story_type, report_summary, report_trade_id, reporter_reason, reporter_status, run_grade, strategy_alignment, thesis_invalidation, trade_quality, watch_next)
+    return BriefDecisionReportLinkage(decision_reason, execution_quality, focus_symbol, key_finding, monitor_consistency, report_available, report_lifecycle_status, report_lifecycle_summary, report_link, report_mode, report_model, report_next_step, report_reason, report_status, report_story_type, report_summary, report_trade_id, reporter_reason, reporter_status, run_grade, strategy_alignment, thesis_invalidation, trade_quality, watch_next)
 
 
 def brief_monitor_execution_status_label_next_expected_ste(verdict, execution, canonical_trade, thresholds, stop_loss, stop_loss_text, canonical_monitor_snapshot, effective_stop_text, take_profit, take_profit_text, canonical_effective_stop_reason, effective_stop_reason, watch_next, final_action, selected_symbol, active_exit_axis, playbook, global_score, vix_level, strategist_summary, selection_reasons, selected_why, *, facade):

@@ -33,6 +33,7 @@ LEDGERS = (("second_pass", "docs/refactor/p1_5_second_pass_moved_segments_ledger
            ("t1", "docs/refactor/p1_5_third_pass_t1_moved_segments_ledger.json"),
            ("t2", "docs/refactor/p1_5_third_pass_t2_moved_segments_ledger.json"))
 T3_LEDGER = "docs/refactor/p1_5_third_pass_t3_owner_contract_ledger.json"
+T3_1_LEDGER = "docs/refactor/p1_5_third_pass_t3_1_owner_contract_ledger.json"  # absent at pre-T3.1 SHAs
 SCOPE = ["libs/runtime/commander", "libs/runtime/strategist", "libs/runtime/scanner", "libs/runtime/monitor",
          "libs/runtime/monitor_exit", "libs/reporting/reporter_bundle_runtime_parts",
          "libs/reporting/trade_memory_projection_parts", "libs/reporting/trade_read_model_parts",
@@ -80,6 +81,11 @@ def generate(sha):
     full = git("rev-parse", "--verify", sha + "^{commit}").strip()
     ledgers = {tag: json.loads(_blob(full, p))["segments"] for tag, p in LEDGERS}
     t3 = json.loads(_blob(full, T3_LEDGER))
+    ledger_files = [T3_LEDGER]
+    if git("ls-tree", "--name-only", full, "--", T3_1_LEDGER, check=False).strip():
+        t3_1 = json.loads(_blob(full, T3_1_LEDGER))
+        t3 = {**t3, "changes": t3["changes"] + t3_1["changes"]}
+        ledger_files.append(T3_1_LEDGER)
     converted = {(c["old_module"], c["old_function"]) for c in t3["changes"]}
     new_pairs = {(c["new_module"], c["new_function"]) for c in t3["changes"]}
     renamed_old = {(c["old_module"], c["old_function"]) for c in t3["changes"] if c["old_function"] != c["new_function"]}
@@ -156,7 +162,7 @@ def generate(sha):
         summary["classes"][r["class"]] = summary["classes"].get(r["class"], 0) + 1
         for fl in r["flags"]:
             summary["flags"][fl] = summary["flags"].get(fl, 0) + 1
-    return {"source_sha": full, "rows": rows, "summary": summary, "ledger_inputs": [p for _t, p in LEDGERS] + [T3_LEDGER]}
+    return {"source_sha": full, "rows": rows, "summary": summary, "ledger_inputs": [p for _t, p in LEDGERS] + ledger_files}
 
 
 def tree_delta(source_sha, head="HEAD"):

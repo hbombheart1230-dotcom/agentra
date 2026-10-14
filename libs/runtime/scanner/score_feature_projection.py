@@ -99,61 +99,89 @@ def candidate_rank_inputs(candidate_meta, symbol, news_by_sym, news_signal_by_sy
     return CandidateRankInputs(candidate_rank_score, candidate_universe_score, deviation_signal, etf_deviation_bias, etf_deviation_entry_score, etf_deviation_premium_score, etf_deviation_tradeable, feature_regime, feature_row, feature_signal, ma120_gap, ma20_gap, ma60_gap, metrics, news_s, news_sig, open_orders, order_penalty, quote, quote_price, quote_price_num, return20, source_scores, trend_strength)
 
 
-def scan_feature_adx14_adx_component(feature_row, candidate_meta, row, metrics, source_scores, return20, ma20_gap, ma120_gap, ma60_gap, trend_strength, feature_signal, pool_meta, symbol, news_s, gs, *, facade):
-    if True:
-        adx14 = facade._to_float(feature_row.get("adx14"))
-        volume_spike20 = facade._to_float(feature_row.get("volume_spike20"))
-        volatility20 = facade._to_float(feature_row.get("volatility20"))
-        vwap_distance = facade._to_float(feature_row.get("vwap_distance"))
-        cross_section_rank = facade._to_float(feature_row.get("cross_section_rank"))
-        gap_pct = abs(facade._to_float(feature_row.get("gap_pct")))
-        base_risk_result = facade.resolve_candidate_base_risk(
-            candidate=candidate_meta,
-            scanner_row=row,
-            features=feature_row,
-            quote_metrics=metrics,
-        )
-        base_risk = float(base_risk_result.get("risk_score") or 0.0)
+class CandidateScoreComponents(NamedTuple):
+    """Result of `candidate_score_components` (positional order is the legacy tuple order; unpacking call-sites are unchanged)."""
 
-        trading_value_component = facade._norm01(facade._to_float(source_scores.get("top_value")), 0.0, 2.0)
-        momentum_raw = (0.65 * facade._signed01(return20, 0.10)) + (0.35 * facade._signed01(ma20_gap, 0.03))
-        momentum_component = max(0.0, momentum_raw)
-        ma_alignment_component = max(
-            0.0,
-            (
-                0.45 * facade._signed01(ma20_gap, 0.03)
-                + 0.35 * facade._signed01(ma60_gap, 0.05)
-                + 0.20 * facade._signed01(ma120_gap, 0.08)
-            ),
-        )
-        adx_component = facade._norm01(adx14, 15.0, 35.0)
-        trend_raw = trend_strength if trend_strength != 0.0 else feature_signal
-        trend_component = max(
-            0.0,
-            (
-                0.45 * max(0.0, facade._signed01(trend_raw, 1.0))
-                + 0.35 * ma_alignment_component
-                + 0.20 * adx_component
-            ),
-        )
-        volume_surge_component = facade._norm01(volume_spike20, 1.0, 3.0)
-        vwap_alignment_component = max(0.0, facade._signed01(vwap_distance, 0.02))
-        intraday_strength_component = max(
-            0.0,
-            (
-                0.70 * max(0.0, facade._signed01(facade._to_float(metrics.get("change_pct")), 5.0))
-                + 0.30 * vwap_alignment_component
-            ),
-        )
-        cross_section_rank_component = facade._norm01(cross_section_rank, 0.0, 1.0)
+    adx14: Any
+    adx_component: Any
+    avoid_theme_symbols: Any
+    base_risk: Any
+    base_risk_result: Any
+    cross_section_rank: Any
+    cross_section_rank_component: Any
+    gap_pct: Any
+    intraday_strength_component: Any
+    ma_alignment_component: Any
+    momentum_component: Any
+    momentum_raw: Any
+    sentiment_component: Any
+    theme_boost_component: Any
+    theme_matched_symbols: Any
+    trading_value_component: Any
+    trend_component: Any
+    trend_raw: Any
+    volatility20: Any
+    volatility_penalty: Any
+    volume_spike20: Any
+    volume_surge_component: Any
+    vwap_alignment_component: Any
+    vwap_distance: Any
 
-        theme_matched_symbols = set(facade._norm_symbol(x) for x in list(pool_meta.get("theme_matched_symbols") or []))
-        avoid_theme_symbols = set(facade._norm_symbol(x) for x in list(pool_meta.get("avoid_matched_symbols") or []))
-        theme_boost_component = 1.0 if (symbol in theme_matched_symbols and len(theme_matched_symbols) > 0) else 0.0
-        sentiment_component = max(0.0, (0.7 * news_s) + (0.3 * gs))
 
-        volatility_penalty = facade._norm01(volatility20, 0.03, 0.08)
-    return (adx14, adx_component, avoid_theme_symbols, base_risk, base_risk_result, cross_section_rank, cross_section_rank_component, gap_pct, intraday_strength_component, ma_alignment_component, momentum_component, momentum_raw, sentiment_component, theme_boost_component, theme_matched_symbols, trading_value_component, trend_component, trend_raw, volatility20, volatility_penalty, volume_spike20, volume_surge_component, vwap_alignment_component, vwap_distance)
+def candidate_score_components(feature_row, candidate_meta, row, metrics, source_scores, return20, ma20_gap, ma120_gap, ma60_gap, trend_strength, feature_signal, pool_meta, symbol, news_s, gs, *, facade):
+    adx14 = facade._to_float(feature_row.get("adx14"))
+    volume_spike20 = facade._to_float(feature_row.get("volume_spike20"))
+    volatility20 = facade._to_float(feature_row.get("volatility20"))
+    vwap_distance = facade._to_float(feature_row.get("vwap_distance"))
+    cross_section_rank = facade._to_float(feature_row.get("cross_section_rank"))
+    gap_pct = abs(facade._to_float(feature_row.get("gap_pct")))
+    base_risk_result = facade.resolve_candidate_base_risk(
+        candidate=candidate_meta,
+        scanner_row=row,
+        features=feature_row,
+        quote_metrics=metrics,
+    )
+    base_risk = float(base_risk_result.get("risk_score") or 0.0)
+
+    trading_value_component = facade._norm01(facade._to_float(source_scores.get("top_value")), 0.0, 2.0)
+    momentum_raw = (0.65 * facade._signed01(return20, 0.10)) + (0.35 * facade._signed01(ma20_gap, 0.03))
+    momentum_component = max(0.0, momentum_raw)
+    ma_alignment_component = max(
+        0.0,
+        (
+            0.45 * facade._signed01(ma20_gap, 0.03)
+            + 0.35 * facade._signed01(ma60_gap, 0.05)
+            + 0.20 * facade._signed01(ma120_gap, 0.08)
+        ),
+    )
+    adx_component = facade._norm01(adx14, 15.0, 35.0)
+    trend_raw = trend_strength if trend_strength != 0.0 else feature_signal
+    trend_component = max(
+        0.0,
+        (
+            0.45 * max(0.0, facade._signed01(trend_raw, 1.0))
+            + 0.35 * ma_alignment_component
+            + 0.20 * adx_component
+        ),
+    )
+    volume_surge_component = facade._norm01(volume_spike20, 1.0, 3.0)
+    vwap_alignment_component = max(0.0, facade._signed01(vwap_distance, 0.02))
+    intraday_strength_component = max(
+        0.0,
+        (
+            0.70 * max(0.0, facade._signed01(facade._to_float(metrics.get("change_pct")), 5.0))
+            + 0.30 * vwap_alignment_component
+        ),
+    )
+    cross_section_rank_component = facade._norm01(cross_section_rank, 0.0, 1.0)
+
+    theme_matched_symbols = set(facade._norm_symbol(x) for x in list(pool_meta.get("theme_matched_symbols") or []))
+    avoid_theme_symbols = set(facade._norm_symbol(x) for x in list(pool_meta.get("avoid_matched_symbols") or []))
+    theme_boost_component = 1.0 if (symbol in theme_matched_symbols and len(theme_matched_symbols) > 0) else 0.0
+    sentiment_component = max(0.0, (0.7 * news_s) + (0.3 * gs))
+
+    volatility_penalty = facade._norm01(volatility20, 0.03, 0.08)
+    return CandidateScoreComponents(adx14, adx_component, avoid_theme_symbols, base_risk, base_risk_result, cross_section_rank, cross_section_rank_component, gap_pct, intraday_strength_component, ma_alignment_component, momentum_component, momentum_raw, sentiment_component, theme_boost_component, theme_matched_symbols, trading_value_component, trend_component, trend_raw, volatility20, volatility_penalty, volume_spike20, volume_surge_component, vwap_alignment_component, vwap_distance)
 
 
 def scan_feature_avoid_theme_penalty_bias_result(gap_pct, order_penalty, symbol, avoid_theme_symbols, state, policy, practical_scale, cross_section_rank_component, candidate_universe_score, sentiment_component, candidate_rank_score, theme_boost_component, practical_w, intraday_strength_component, volume_surge_component, trend_component, trading_value_component, momentum_component, volatility_penalty, feature_signal, news_s, gs, w, intrinsic_control_w, feature_row, metrics, scanner_bias_context, scanner_memory_bias, candidate_meta, minute_rows_by_symbol, *, facade):
