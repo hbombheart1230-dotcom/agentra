@@ -543,8 +543,9 @@ EXPORT_EXECUTIONS = ("parallel", "sequential", "same_path")
 EXPORT_VERDICTS = ("PASS", "FAIL")
 EXPORT_MANIFEST_MODES = (MODE_STRICT, MODE_FAST)
 EXPORT_MAX_DIFFERENCES = 20
-_SHA1_HEX = re.compile(r"^[0-9a-f]{40}$")
-_DIGEST_HEX = re.compile(r"^[0-9a-f]{16}$")
+# exact full-string matching: `$` would also accept a trailing newline, so `.fullmatch()` is used everywhere
+_SHA1_HEX = re.compile(r"[0-9a-f]{40}")
+_DIGEST_HEX = re.compile(r"[0-9a-f]{16}")
 
 
 def _ex_int(value, hi=10 ** 9):
@@ -564,7 +565,22 @@ def _ex_bool(value):
 
 
 def _ex_sha(value):
-    return value if isinstance(value, str) and _SHA1_HEX.match(value) else None
+    return value if isinstance(value, str) and _SHA1_HEX.fullmatch(value) else None
+
+
+def _ex_digest(value):
+    return value if isinstance(value, str) and _DIGEST_HEX.fullmatch(value) else None
+
+
+def _ex_order(value):
+    """Exactly one occurrence of each session id, original order kept. Anything else (not a list, wrong length,
+    duplicate, missing, unknown or non-string entry) is `None`: it is never filtered or deduplicated into a
+    plausible-looking order."""
+    if not isinstance(value, list) or len(value) != len(EXPORT_SESSION_TAGS):
+        return None
+    if not all(isinstance(t, str) for t in value):
+        return None
+    return list(value) if sorted(value) == sorted(EXPORT_SESSION_TAGS) else None
 
 
 def build_export_safe_summary(internal):
@@ -581,8 +597,8 @@ def build_export_safe_summary(internal):
         raw = c.get("differences_export_safe") if isinstance(c.get("differences_export_safe"), list) else []
         for d in raw[:EXPORT_MAX_DIFFERENCES]:
             if isinstance(d, dict):
-                kind, dig = _ex_enum(d.get("kind"), DIFF_KINDS), d.get("path_digest")
-                if kind and isinstance(dig, str) and _DIGEST_HEX.match(dig):
+                kind, dig = _ex_enum(d.get("kind"), DIFF_KINDS), _ex_digest(d.get("path_digest"))
+                if kind and dig:
                     diffs.append({"kind": kind, "path_digest": dig})
         sessions[tag] = {
             "exit_code": _ex_code(c.get("exit_code")),
@@ -594,7 +610,6 @@ def build_export_safe_summary(internal):
         }
     failed = [t for t in EXPORT_SESSION_TAGS if sessions[t]["containment_verdict"] != "PASS"]
     verdicts = [sessions[t]["containment_verdict"] for t in EXPORT_SESSION_TAGS]
-    order = internal.get("execution_order")
     return {
         "schema": EXPORT_SCHEMA,
         "baseline_sha": _ex_sha(internal.get("baseline_sha")),
@@ -602,7 +617,7 @@ def build_export_safe_summary(internal):
         "mode": _ex_enum(internal.get("mode"), EXPORT_MODES),
         "execution": ("same_path" if internal.get("same_session_path") is True else
                       "sequential" if internal.get("sequential") is True else "parallel"),
-        "execution_order": [t for t in (order if isinstance(order, list) else []) if t in EXPORT_SESSION_TAGS],
+        "execution_order": _ex_order(internal.get("execution_order")),
         "containment": {
             "guarantee": CONTAINMENT_GUARANTEE,
             "manifest_mode": _ex_enum(iso.get("containment_manifest_mode"), EXPORT_MANIFEST_MODES),

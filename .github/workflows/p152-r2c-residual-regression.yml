@@ -323,8 +323,8 @@ jobs:
           cont = [(n, s) for n, s in rows if n.startswith(('test_containment_', 'test_security_', 'test_export_',
                                                            'test_retention_', 'test_cleanup_refuses'))]
           print('WINDOWS containment tests:', len(cont))
-          assert len(cont) >= 40, len(cont)
-          assert len([n for n, _ in cont if n.startswith('test_export_')]) >= 7
+          assert len(cont) >= 85, len(cont)
+          assert len([n for n, _ in cont if n.startswith('test_export_')]) >= 52
           assert all(s == 'PASSED' for _, s in cont), [r for r in cont if r[1] != 'PASSED']
           need = ['content_modified', 'file_deleted', 'empty_directory_deleted', 'mtime_only', 'same_size_content',
                   'same_size_content_restored_mtime', 'new_file', 'type_changed']

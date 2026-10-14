@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 235,
+  "entry_count": 236,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6344,6 +6344,29 @@
       "impact": "Test-harness and documentation only; no trading, LLM, ranking or report behavior changed.",
       "sources": [
         "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-2-1-CLAUDE-033.md",
+        "scripts/refactor/p156_parity_differential.py",
+        "tests/test_p156_parity_harness.py"
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "version": "P1.5 Third Pass T3.2.2",
+      "title": "T3.2.2: export validators use exact full-string matching and a strict execution_order",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "SAFETY",
+        "TESTING"
+      ],
+      "status": "current",
+      "summary": "The export-safe summary accepted a SHA or path digest followed by a trailing newline (regex $ with match) and silently filtered or kept duplicate session ids in execution_order. Validators now use fullmatch on exact 40/16 lowercase hex and require execution_order to be exactly the four session ids; anything else becomes null or the entry is omitted. Containment, retention and the allowlist are unchanged.",
+      "details": [
+        "31 new negative tests fail on the previous harness and all pass now (harness 63 -> 108); whole serialized export carries no synthetic marker.",
+        "Clean and contaminated four-session smokes behave as before (PASS / exit 2) with valid parallel and same-path orders exported unchanged.",
+        "File-body retention CLOSED; validator fix pending independent Codex audit; T3.5 blocked until security acceptance; NTFS P2 unresolved."
+      ],
+      "impact": "Test-harness and documentation only; no trading, LLM, ranking or report behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-2-2-CLAUDE-034.md",
         "scripts/refactor/p156_parity_differential.py",
         "tests/test_p156_parity_harness.py"
       ]

@@ -1,6 +1,7 @@
 """P1.5 Second Pass parity-evidence harness tests (harness only; no production code path is exercised)."""
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -950,3 +951,105 @@ def test_export_local_diagnostics_remain_after_failed_session_cleanup(tmp_path):
     local = json.loads((out / "local_evidence.json").read_text(encoding="utf-8"))
     assert local["reproduce"] and local["names"] and local["test_files"]  # full internal evidence stays available
     assert (out / "failed_sessions" / "f2" / "LOCAL_ONLY.txt").is_file() and (out / "LOCAL_ONLY.txt").is_file()
+
+
+# ---- T3.2.2 export validators: exact full-string matching and a strict execution_order -------------------------------
+_GOOD_SHA = "0123456789abcdef0123456789abcdef01234567"
+_GOOD_DIGEST = "0123456789abcdef"
+
+
+@pytest.mark.parametrize("value,ok", [
+    (_GOOD_SHA, True),
+    (_GOOD_SHA + chr(10), False),
+    (_GOOD_SHA + chr(13) + chr(10), False),
+    (_GOOD_SHA + " ", False),
+    (" " + _GOOD_SHA, False),
+    (_GOOD_SHA[:20] + chr(10) + _GOOD_SHA[20:], False),
+    (_GOOD_SHA + "0", False),
+    (_GOOD_SHA[:-1], False),
+    (_GOOD_SHA.upper(), False),
+    ("g" * 40, False),
+    (None, False),
+    (12345, False),
+    (["a" * 40], False),
+    (b"a" * 40, False),
+])
+def test_export_sha_validator_is_exact_full_string(value, ok):
+    assert P._ex_sha(value) == (value if ok else None)
+    out = P.build_export_safe_summary({"baseline_sha": value, "feature_sha": value})
+    assert out["baseline_sha"] == (value if ok else None) and out["feature_sha"] == (value if ok else None)
+
+
+@pytest.mark.parametrize("value,ok", [
+    (_GOOD_DIGEST, True),
+    (_GOOD_DIGEST + chr(10), False),
+    (_GOOD_DIGEST + chr(13) + chr(10), False),
+    (_GOOD_DIGEST + " ", False),
+    (chr(9) + _GOOD_DIGEST, False),
+    (_GOOD_DIGEST + "0", False),
+    (_GOOD_DIGEST[:-1], False),
+    (_GOOD_DIGEST.upper(), False),
+    ("z" * 16, False),
+    (None, False),
+    (1234567890123456, False),
+])
+def test_export_path_digest_validator_is_exact_full_string(value, ok):
+    assert P._ex_digest(value) == (value if ok else None)
+    internal = {"isolation": {"write_containment": {"f2": {"verdict": "FAIL", "differences_export_safe": [
+        {"kind": "CREATED", "path_digest": value}]}}}}
+    diffs = P.build_export_safe_summary(internal)["sessions"]["f2"]["differences"]
+    assert diffs == ([{"kind": "CREATED", "path_digest": value}] if ok else [])  # invalid entry is omitted
+
+
+@pytest.mark.parametrize("value,expected", [
+    (["b1", "b2", "f1", "f2"], ["b1", "b2", "f1", "f2"]),   # parallel order
+    (["b1", "f1", "b2", "f2"], ["b1", "f1", "b2", "f2"]),   # same-path order
+    (["f2", "f1", "b2", "b1"], ["f2", "f1", "b2", "b1"]),   # any permutation of the four ids keeps its order
+    (["b1", "b1", "f1", "f2"], None),                       # duplicate
+    (["b1", "f1", "f2"], None),                             # missing b2
+    (["b1", "b2", "f1", "x9"], None),                       # unknown id
+    (["b1", "b2", "f1", "f2", "b1"], None),                 # extra fifth id
+    (["b1", "b2", "f1", "f2", "zz"], None),
+    ("b1,b2,f1,f2", None),                                  # string instead of list
+    (("b1", "b2", "f1", "f2"), None),                       # tuple is not the documented list
+    ([], None),
+    ([None, "b2", "f1", "f2"], None),
+    (["b1", "b2", "f1", ["f2"]], None),
+    ([1, 2, 3, 4], None),
+    (["b1", "b2", "f1", "f2 "], None),
+    (["b1", "b2", "f1", "f2" + chr(10)], None),
+    (None, None),
+    ({"b1": 1, "b2": 2, "f1": 3, "f2": 4}, None),
+])
+def test_export_execution_order_is_exactly_the_four_sessions_or_null(value, expected):
+    assert P._ex_order(value) == expected
+    out = P.build_export_safe_summary({"execution_order": value})
+    assert out["execution_order"] == expected  # never filtered or deduplicated into a plausible order
+
+
+def test_export_validator_inputs_with_markers_never_reach_the_serialized_export():
+    internal = _hostile_internal()
+    internal["baseline_sha"] = "a" * 40 + chr(10) + EXPORT_MARK
+    internal["feature_sha"] = EXPORT_MARK + "a" * 40
+    internal["execution_order"] = ["b1", "b2", "f1", EXPORT_MARK + "_ID"]
+    internal["isolation"]["write_containment"]["f2"]["differences_export_safe"] = [
+        {"kind": "CREATED", "path_digest": "0123456789abcdef" + chr(10) + EXPORT_MARK}]
+    out = P.build_export_safe_summary(internal)
+    blob = json.dumps(out, indent=1)
+    assert EXPORT_MARK not in blob
+    assert out["baseline_sha"] is None and out["feature_sha"] is None and out["execution_order"] is None
+    assert out["sessions"]["f2"]["differences"] == []
+    assert out["containment"]["verdict"] == "FAIL" and out["failed_sessions"] == ["f2"]  # containment unchanged
+
+
+def test_export_real_runs_serialize_exact_validated_values(tmp_path):
+    r, out, _work = _run_export_e2e(tmp_path, contaminate=True)
+    assert r.returncode == 2
+    raw = (out / "summary.json").read_text(encoding="utf-8")
+    assert EXPORT_MARK not in raw
+    d = json.loads(raw)
+    assert re.fullmatch(r"[0-9a-f]{40}", d["baseline_sha"]) and re.fullmatch(r"[0-9a-f]{40}", d["feature_sha"])
+    assert sorted(d["execution_order"]) == ["b1", "b2", "f1", "f2"] and len(d["execution_order"]) == 4
+    for t in ("b1", "b2", "f1", "f2"):
+        for e in d["sessions"][t]["differences"]:
+            assert re.fullmatch(r"[0-9a-f]{16}", e["path_digest"])

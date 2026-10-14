@@ -3129,3 +3129,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 검증: 직렬화된 `summary.json` 전체에서 합성 마커 0건(단위 + 실제 4세션 2회), 보안 테스트 BASE 실패→통과(harness 56 → 63), Windows smoke는 export 테스트 실행을 요구합니다.
 - 상태: 파일 본문 복사 하위 문제 FIXED, export-safe summary는 독립 Codex 재감사 대기, 로컬 로그/manifest는 민감 가능·LOCAL ONLY, NTFS P2 미해결, T3.5는 보안 승인까지 BLOCKED.
 
+## 2026-10-14 · P1.5 Third Pass T3.2.2 (export validator 종결 작업)
+**Stage:** Architecture and Maintainability
+**Tags:** SAFETY · TESTING
+
+- 확인: export 요약의 SHA/경로 digest 검증이 `$` + `match`라 끝의 개행을 허용했고, `execution_order`는 유효 ID만 걸러 내거나 중복을 그대로 보존했습니다.
+- 수정: `fullmatch`로 정확히 40/16 소문자 hex만 허용(무효 SHA는 null, 무효 digest 항목은 제외), `execution_order`는 b1·b2·f1·f2가 각각 정확히 한 번 있는 리스트만 허용하고 그 외는 null입니다. 순서는 입력 그대로 유지합니다(parallel/same-path 모두 유효).
+- 검증: 신규 음성 테스트 31건이 이전 harness에서 실패하고 현재 통과(63 → 108), 직렬화된 export 전체에서 마커 0건, 4세션 clean/contaminated smoke 불변.
+- 상태: file-body retention CLOSED, validator 수정은 독립 Codex 재감사 대기, T3.5 BLOCKED, NTFS P2 미해결.
+
