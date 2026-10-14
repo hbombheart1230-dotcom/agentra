@@ -1,0 +1,18 @@
+{
+ "base_sha": "eb53dc1fe56c2a70a21271faf2f3c25c9711e309",
+ "captured_inputs_by_builder": {
+  "build_strategist_output_artifact": 16,
+  "build_scanner_output_artifact": 20,
+  "build_monitor_output_artifact": 22,
+  "build_commander_output_artifact": 46,
+  "build_commander_shadow_artifact": 24,
+  "build_supervisor_output_artifact": 10,
+  "build_executor_output_artifact": 10
+ },
+ "variant_total": 18497,
+ "full_corpus_replay_on_t35_code": {
+  "mismatches": 0,
+  "variants_checked": 18497,
+  "inputs_checked": 148
+ }
+}

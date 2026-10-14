@@ -1,0 +1,50 @@
+[
+ {
+  "test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_strategist_scanner_monitor",
+  "function": "agent_outputs.validate_artifact",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ],
+  "n_diffs": 2
+ },
+ {
+  "test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_strategist_scanner_monitor",
+  "function": "agent_outputs.build_strategist_output_artifact",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ],
+  "n_diffs": 6
+ },
+ {
+  "test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_strategist_scanner_monitor",
+  "function": "agent_outputs.build_scanner_output_artifact",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ],
+  "n_diffs": 6
+ },
+ {
+  "test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_strategist_scanner_monitor",
+  "function": "agent_outputs.build_monitor_output_artifact",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ],
+  "n_diffs": 6
+ },
+ {
+  "test": "tests/test_evidence_ledger_trace_layer.py::test_strategist_trace_logging_writes_evidence_entries",
+  "function": "agent_outputs.validate_artifact",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ],
+  "n_diffs": 2
+ },
+ {
+  "test": "tests/test_evidence_ledger_trace_layer.py::test_strategist_trace_logging_writes_evidence_entries",
+  "function": "agent_outputs.build_strategist_output_artifact",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ],
+  "n_diffs": 6
+ }
+]

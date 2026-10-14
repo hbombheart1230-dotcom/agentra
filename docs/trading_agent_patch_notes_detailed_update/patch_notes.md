@@ -3138,3 +3138,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 검증: 신규 음성 테스트 31건이 이전 harness에서 실패하고 현재 통과(63 → 108), 직렬화된 export 전체에서 마커 0건, 4세션 clean/contaminated smoke 불변.
 - 상태: file-body retention CLOSED, validator 수정은 독립 Codex 재감사 대기, T3.5 BLOCKED, NTFS P2 미해결.
 
+## 2026-10-14 · P1.5 Third Pass T3.5 (cross-agent output contract 리팩터)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · SAFETY
+
+- 변경: `libs/contracts/agent_outputs.py`의 대형 builder 4개(monitor 807 / strategist 528 / scanner 464 / commander 356 LOC)를 `libs/contracts/` 안의 응집된 projection stage 모듈로 분해했습니다. 공개 함수명·시그니처·출력 필드·key 순서·validation은 그대로이고, facade가 계약의 단일 권위입니다(현재 71 / 20 / 75 / 52 LOC).
+- 검증: 구현 전에 BASE에서 고정한 fixture(입력 148건 + 결정적 변형 18,497건)가 바이트 단위로 0 mismatch, 모든 stage를 인라인하면 BASE builder AST와 정확히 일치합니다. BASE×2/FEATURE×2 strict containment differential은 647 호출 중 641 byte-identical·6 justified(세션 경로 의존 memory packet id)·REAL_MISMATCH 0·UNRESOLVED 0입니다.
+- 유예: monitor decision-rule stage(201 LOC)와 scanner bias stage(155 LOC)는 평가 순서 변경 위험으로 SAFETY_LOCK 유지. Supervisor/Executor/Step5C 및 실제 Reporter parity(BLOCKED)는 변경 없음. 독립 Codex 검토 대기.
+

@@ -1,0 +1,102 @@
+{
+ "baseline_sha": "eb53dc1fe56c2a70a21271faf2f3c25c9711e309",
+ "feature_sha": "af12d46a83b1e894685cc4e21a89304dadbfb7cf",
+ "mode": "det",
+ "execution_order": [
+  "b1",
+  "b2",
+  "f1",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "exit_code": 0,
+   "pytest_summary": "1341 passed, 2 warnings in 389.55s (0:06:29)"
+  },
+  "b2": {
+   "exit_code": 0,
+   "pytest_summary": "1341 passed, 2 warnings in 399.69s (0:06:39)"
+  },
+  "f1": {
+   "exit_code": 0,
+   "pytest_summary": "1341 passed, 2 warnings in 395.76s (0:06:35)"
+  },
+  "f2": {
+   "exit_code": 0,
+   "pytest_summary": "1341 passed, 2 warnings in 384.06s (0:06:24)"
+  }
+ },
+ "containment": {
+  "verdict": "PASS",
+  "mode": "strict_sha256",
+  "content_equivalence_proven": true,
+  "failed_sessions": []
+ },
+ "summary": {
+  "total_calls": 647,
+  "BYTE_IDENTICAL": 641,
+  "JUSTIFIED_TOLERANCE": 6,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "agent_outputs.validate_artifact": {
+    "calls": 324,
+    "BYTE_IDENTICAL": 322,
+    "JUSTIFIED_TOLERANCE": 2,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "agent_outputs.build_commander_shadow_artifact": {
+    "calls": 212,
+    "BYTE_IDENTICAL": 212,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "agent_outputs.build_supervisor_output_artifact": {
+    "calls": 6,
+    "BYTE_IDENTICAL": 6,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "agent_outputs.build_executor_output_artifact": {
+    "calls": 7,
+    "BYTE_IDENTICAL": 7,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "agent_outputs.build_scanner_output_artifact": {
+    "calls": 25,
+    "BYTE_IDENTICAL": 24,
+    "JUSTIFIED_TOLERANCE": 1,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "agent_outputs.build_commander_output_artifact": {
+    "calls": 27,
+    "BYTE_IDENTICAL": 27,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "agent_outputs.build_strategist_output_artifact": {
+    "calls": 12,
+    "BYTE_IDENTICAL": 10,
+    "JUSTIFIED_TOLERANCE": 2,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "agent_outputs.build_monitor_output_artifact": {
+    "calls": 34,
+    "BYTE_IDENTICAL": 33,
+    "JUSTIFIED_TOLERANCE": 1,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true
+ },
+ "test_file_count": 42
+}

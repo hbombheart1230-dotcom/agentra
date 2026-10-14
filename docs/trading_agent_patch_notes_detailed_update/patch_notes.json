@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 236,
+  "entry_count": 237,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6369,6 +6369,32 @@
         "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-2-2-CLAUDE-034.md",
         "scripts/refactor/p156_parity_differential.py",
         "tests/test_p156_parity_harness.py"
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "version": "P1.5 Third Pass T3.5",
+      "title": "T3.5: agent output builders decomposed into contract-owned projection stages",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "The four large shared agent output builders (monitor 807, strategist 528, scanner 464, commander 356 lines) in libs/contracts/agent_outputs.py are now short orchestrators (71/20/75/52 lines) over verbatim, AST-proven projection stages in cohesive libs/contracts modules; public names, signatures, output fields, key order and validation are unchanged and the facade remains the single contract authority.",
+      "details": [
+        "Fixtures were frozen on BASE before implementation (148 captured inputs, 18,497 deterministic variants): the full corpus replays with zero byte mismatches, and every stage inlines back to the BASE builder AST exactly.",
+        "BASE x2 / FEATURE x2 strict-containment differential: 647 recorded builder/validation calls, 641 byte-identical, 6 justified session-path memory packet ids, 0 real mismatches, 0 unresolved.",
+        "The 201-line monitor decision-rule stage and the 155-line scanner bias stage are left whole as SAFETY_LOCK; supervisor/executor builders, Step5C and all authority paths untouched; real-report parity stays blocked; independent Codex review pending."
+      ],
+      "impact": "Code-structure and test evidence only: no trading, LLM, ranking, decision, report or UI behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-5-CLAUDE-035.md",
+        "docs/refactor/p1_5_third_pass_t35_moved_segments_ledger.json",
+        "libs/contracts/agent_outputs.py",
+        "tests/test_p161_t35_extraction_gates.py",
+        "tests/test_p161_agent_output_contract_freeze.py"
       ]
     }
   ]
