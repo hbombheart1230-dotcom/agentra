@@ -314,7 +314,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install --upgrade pip && python -m pip install pytest
+      # tzdata: Windows has no system IANA database; the Scanner q9 snapshot code needs ZoneInfo('Asia/Seoul')
+      # (a repo requirement via exchange-calendars)
+      - run: python -m pip install --upgrade pip && python -m pip install pytest tzdata
       - name: Windows parity-harness isolation tests (real session_env, interpreter preflight, placeholder fail-closed)
         shell: bash
         run: |

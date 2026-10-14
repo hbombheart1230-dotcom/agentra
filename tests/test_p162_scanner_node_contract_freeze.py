@@ -77,6 +77,11 @@ def test_golden_inventory_covers_selection_tie_empty_pool_and_scenarios():
 
 
 def test_replay_matches_frozen_base_state_effect_order_and_variants(tmp_path):
+    try:  # the Scanner q9 snapshot capture needs the IANA zone; without it the replay would silently differ
+        import zoneinfo
+        zoneinfo.ZoneInfo("Asia/Seoul")
+    except Exception as exc:  # noqa: BLE001
+        pytest.fail(f"tzdata prerequisite missing (pip install tzdata): {type(exc).__name__}: {exc}")
     golden = T.load(FIX)
     computed, prov = _compute(None, tmp_path, "feature")
     assert Path(prov["module_file"]).resolve().is_relative_to(ROOT.resolve()), prov
