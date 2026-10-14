@@ -163,6 +163,31 @@ def compute_digests(outdir, sample_mod=16, only_builders=None):
     return res
 
 
+def first_diff(a, b, path=""):
+    """First differing JSON path between two decoded values (diagnostic only; short snippets)."""
+    if type(a) is not type(b):
+        return f"{path}: type {type(a).__name__} != {type(b).__name__}"
+    if isinstance(a, dict):
+        ka, kb = list(a), list(b)
+        if ka != kb:
+            return (f"{path}: keys/order differ: only_a={[k for k in ka if k not in b][:3]} "
+                    f"only_b={[k for k in kb if k not in a][:3]}")
+        for k in ka:
+            d = first_diff(a[k], b[k], f"{path}.{k}")
+            if d:
+                return d
+        return ""
+    if isinstance(a, list):
+        if len(a) != len(b):
+            return f"{path}: len {len(a)} != {len(b)}"
+        for i, (x, y) in enumerate(zip(a, b)):
+            d = first_diff(x, y, f"{path}[{i}]")
+            if d:
+                return d
+        return ""
+    return "" if a == b else f"{path}: {str(a)[:80]!r} != {str(b)[:80]!r}"
+
+
 def load(outdir):
     outdir = Path(outdir)
     with gzip.open(outdir / "golden_inputs_outputs.json.gz", "rt", encoding="utf-8") as fh:
