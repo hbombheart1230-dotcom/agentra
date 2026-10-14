@@ -1,0 +1,858 @@
+{
+ "schema": "p159_t3_1_candidate_decisions.v1",
+ "source_sha": "ab8563b251c7a2fc8b0409fde36a05bc10918f04",
+ "converted_in_t3_1": [
+  {
+   "old_function": "memory_feedback_best_playbooks_commander_memory_policy_r",
+   "new_function": "rebuilt_memory_feedback_facts",
+   "record": "RebuiltMemoryFeedbackFacts",
+   "arity": 30,
+   "new_module": "libs/reporting/trade_memory_projection_parts/memory_feedback_rebuild.py"
+  },
+  {
+   "old_function": "brief_market_active_exit_axis_avg_price_monitor",
+   "new_function": "brief_position_exit_axis_evidence",
+   "record": "BriefPositionExitAxisEvidence",
+   "arity": 24,
+   "new_module": "apps/operator_ui/data_access_brief_market_sections.py"
+  },
+  {
+   "old_function": "brief_monitor_decision_reason_execution_quality",
+   "new_function": "brief_decision_report_linkage",
+   "record": "BriefDecisionReportLinkage",
+   "arity": 24,
+   "new_module": "apps/operator_ui/data_access_brief_monitor_sections.py"
+  },
+  {
+   "old_function": "brief_monitor_canonical_active_exit_axis_canonical_ave",
+   "new_function": "canonical_monitor_snapshot_view",
+   "record": "CanonicalMonitorSnapshotView",
+   "arity": 24,
+   "new_module": "apps/operator_ui/data_access_brief_monitor_sections.py"
+  },
+  {
+   "old_function": "signal_feature_average_volume_breakout_chase_extension",
+   "new_function": "volume_pullback_breakout_gate_features",
+   "record": "VolumePullbackBreakoutGateFeatures",
+   "arity": 24,
+   "new_module": "libs/runtime/monitor/signal_features_breakout_volume_gate.py"
+  },
+  {
+   "old_function": "scan_feature_adx14_adx_component",
+   "new_function": "candidate_score_components",
+   "record": "CandidateScoreComponents",
+   "arity": 24,
+   "new_module": "libs/runtime/scanner/score_feature_projection.py"
+  },
+  {
+   "old_function": "decision_ctx_allowed_playbooks_applied_policy_meta",
+   "new_function": "decision_policy_context",
+   "record": "DecisionPolicyContext",
+   "arity": 22,
+   "new_module": "libs/runtime/commander/decision_context_projection.py"
+  },
+  {
+   "old_function": "decision_ctx_applied_policy_command_intent",
+   "new_function": "applied_policy_command_context",
+   "record": "AppliedPolicyCommandContext",
+   "arity": 22,
+   "new_module": "libs/runtime/commander/decision_context_projection_applied_policy_command.py"
+  }
+ ],
+ "counts": {
+  "contract_candidates_remaining": 27,
+  "rename_candidates_remaining": 52
+ },
+ "rows": [
+  {
+   "module": "apps/operator_ui/data_access_brief_facts.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 121,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "brief_facts_confidence_execution_action",
+     "positional_arity": 10
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "apps/operator_ui/data_access_brief_input_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 143,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "brief_input_candidate_hints_market_headlines",
+     "positional_arity": 13
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "apps/operator_ui/data_access_brief_market_sections.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 241,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "brief_market_candidate_hints_defensive_mode",
+     "positional_arity": 12
+    },
+    {
+     "function": "brief_market_anomaly_note_anomaly_status",
+     "positional_arity": 19
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "apps/operator_ui/data_access_brief_monitor_sections.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 335,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "apps/operator_ui/data_access_brief_render_fallback.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 155,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "brief_fallback_comparison_reasons_display_symbol",
+     "positional_arity": 11
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "apps/operator_ui/data_access_brief_render_sections.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 199,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "brief_render_current_snapshot_entry",
+     "positional_arity": 17
+    },
+    {
+     "function": "brief_render_lines_market_headlines",
+     "positional_arity": 13
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/reporting/trade_memory_projection_parts/memory_status_summary.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 75,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "memory_status_active_layers_priority_order",
+     "positional_arity": 16
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/reporting/trade_memory_projection_parts/memory_surface_payload.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 328,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/reporting/trade_read_model_parts/read_display_context.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 226,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/reporting/trade_read_model_parts/read_truth_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 235,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "read_truth_blocker_trace_data_source_quality",
+     "positional_arity": 13
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/reporting/trade_report/ai_facade_parts/compact_input_facts.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 95,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "cp_facts_execution_bullets_execution_summary",
+     "positional_arity": 13
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/reporting/trade_report/ai_facade_parts/compact_input_payload.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 330,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/reporting/trade_report/ai_facade_parts/fallback_sections_schema.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 260,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/reporting/trade_report/ai_facade_parts/fallback_summary_status.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 77,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "fb_summary_effective_scanner_selection_trace_exit_s",
+     "positional_arity": 8
+    },
+    {
+     "function": "fb_summary_confidence_executive_reason",
+     "positional_arity": 10
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/commander/applied_policy_attach_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 129,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/commander/decision_context_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 254,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "decision_ctx_entry_capacity_available_market_regime",
+     "positional_arity": 15
+    }
+   ],
+   "decision": "SAFETY_LOCK_DEFER",
+   "reason": "function sits in the canonical ranking / decision-order / risk path; any contract change needs the dedicated authority review and ranking/decision differential (not part of T3.1's 6-8 function budget)"
+  },
+  {
+   "module": "libs/runtime/commander/decision_overlay_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 194,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "decision_overlay_applied_policy_commander_horizon_policy",
+     "positional_arity": 16
+    }
+   ],
+   "decision": "SAFETY_LOCK_DEFER",
+   "reason": "function sits in the canonical ranking / decision-order / risk path; any contract change needs the dedicated authority review and ranking/decision differential (not part of T3.1's 6-8 function budget)"
+  },
+  {
+   "module": "libs/runtime/commander/decision_rules_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 180,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/commander/open_position_assessment_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 164,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "open_pos_assess_force_exit_review_pending_open_position",
+     "positional_arity": 13
+    },
+    {
+     "function": "open_pos_assess_force_exit_review_pending_open_position_2",
+     "positional_arity": 13
+    }
+   ],
+   "decision": "SAFETY_LOCK_DEFER",
+   "reason": "function sits in the canonical ranking / decision-order / risk path; any contract change needs the dedicated authority review and ranking/decision differential (not part of T3.1's 6-8 function budget)"
+  },
+  {
+   "module": "libs/runtime/commander/open_position_inputs_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 172,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "open_pos_input_anomaly_found_last_exit_sweep_by_symbol",
+     "positional_arity": 19
+    },
+    {
+     "function": "open_pos_input_anomaly_found_hold_repeat_count",
+     "positional_arity": 19
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/commander/policy_inputs_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 159,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "behavior_input_allow_legacy_rule_allow_legacy_strategy",
+     "positional_arity": 10
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/commander/policy_normalizers_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 119,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "behavior_norm_carry_risk_bias_carry_risk_reason",
+     "positional_arity": 15
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/monitor/cycle_detail_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 193,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "cycle_detail_entry_candidate_symbol_entry_cost_filter",
+     "positional_arity": 8
+    }
+   ],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 272,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor/cycle_output_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 286,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor/cycle_output_projection_value_state_monitor.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 38,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor/cycle_posture_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 254,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor/entry_cascade_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 278,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "entry_cascade_buy_blocked_closeout_window_buy_blocked",
+     "positional_arity": 18
+    },
+    {
+     "function": "entry_cascade_buy_blocked_closeout_window_buy_blocked_2",
+     "positional_arity": 15
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/monitor/entry_context.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 65,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "entry_context_buy_blocked_post_exit_cooldown_closeout",
+     "positional_arity": 19
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/monitor/entry_cycle_context.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 134,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "entry_cycle_all_pos_map_monitor_policy",
+     "positional_arity": 8
+    },
+    {
+     "function": "entry_cycle_buy_blocked_closeout_window_buy_blocked",
+     "positional_arity": 22
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/monitor/entry_evidence.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 48,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor/entry_guard_evidence.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 87,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "entry_guard_base_entry_guard_blocked_base_entry_guar",
+     "positional_arity": 10
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/monitor/entry_quality_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 80,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor/exit_decision_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 175,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "exit_decision_confirm_count_confirm_key",
+     "positional_arity": 15
+    }
+   ],
+   "decision": "SAFETY_LOCK_DEFER",
+   "reason": "function sits in the canonical ranking / decision-order / risk path; any contract change needs the dedicated authority review and ranking/decision differential (not part of T3.1's 6-8 function budget)"
+  },
+  {
+   "module": "libs/runtime/monitor/exit_frame_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 136,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "exit_frame_avg_price_decision",
+     "positional_arity": 10
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/monitor/signal_explanation.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 64,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor/signal_features.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 294,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "signal_feature_asset_class_detected_breakout_distance_t",
+     "positional_arity": 22
+    },
+    {
+     "function": "signal_feature_etf_deviation_chart_ok_etf_deviation_dis",
+     "positional_arity": 12
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/monitor/signal_features_breakout_volume_gate.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 208,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor/signal_score_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 308,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "signal_score_entry_condition_path_entry_hard_gate_blo",
+     "positional_arity": 10
+    }
+   ],
+   "decision": "SAFETY_LOCK_DEFER",
+   "reason": "function sits in the canonical ranking / decision-order / risk path; any contract change needs the dedicated authority review and ranking/decision differential (not part of T3.1's 6-8 function budget)"
+  },
+  {
+   "module": "libs/runtime/monitor/signal_score_projection_chart_structure_decision.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 70,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor_exit/exit_policy_chart_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 273,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor_exit/exit_policy_pnl_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 255,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "exit_pnl_gross_pnl_ratio_gross_profit_floor_gap_p",
+     "positional_arity": 8
+    },
+    {
+     "function": "exit_pnl_effective_stop_candidates_effective_stop",
+     "positional_arity": 8
+    }
+   ],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/monitor_exit/exit_policy_trigger_inputs.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 111,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "exit_trigger_confirm_bars_required_confirmation_requi",
+     "positional_arity": 8
+    }
+   ],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/scanner/candidate_context_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 89,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "scan_context_commander_context_intrinsic_control_w",
+     "positional_arity": 16
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/scanner/score_feature_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 259,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "scan_feature_avoid_theme_penalty_bias_result",
+     "positional_arity": 21
+    }
+   ],
+   "decision": "SAFETY_LOCK_DEFER",
+   "reason": "function sits in the canonical ranking / decision-order / risk path; any contract change needs the dedicated authority review and ranking/decision differential (not part of T3.1's 6-8 function budget)"
+  },
+  {
+   "module": "libs/runtime/scanner/score_policy_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 141,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "scan_score_adj_risk_compatibility_bias",
+     "positional_arity": 13
+    }
+   ],
+   "decision": "SAFETY_LOCK_DEFER",
+   "reason": "function sits in the canonical ranking / decision-order / risk path; any contract change needs the dedicated authority review and ranking/decision differential (not part of T3.1's 6-8 function budget)"
+  },
+  {
+   "module": "libs/runtime/scanner/selection_evidence_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 252,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/scanner/selection_evidence_projection_value_te_scanner.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 124,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/strategist/context/node_context_projection.py",
+   "flags": [
+    "CONTRACT_CANDIDATE",
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 123,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "strat_ctx_avoid_themes_exit_policy",
+     "positional_arity": 18
+    }
+   ],
+   "decision": "NAMED_RESULT_DEFERRED",
+   "reason": "single production caller with positional unpacking, same mechanical recipe as T3.1; deferred only to stay inside the 6-8 evidence-backed function budget and keep the audit surface bounded"
+  },
+  {
+   "module": "libs/runtime/strategist/output/node_output_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 109,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/strategist/output/node_trace_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 112,
+   "unconverted_high_arity_functions": [],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  },
+  {
+   "module": "libs/runtime/strategist/policy/node_policy_projection.py",
+   "flags": [
+    "RENAME_CANDIDATE"
+   ],
+   "class": "CANONICAL_OWNER",
+   "loc": 252,
+   "unconverted_high_arity_functions": [
+    {
+     "function": "strat_policy_exit_policy_monitor_entry_policy",
+     "positional_arity": 8
+    }
+   ],
+   "decision": "SEMANTIC_RENAME_DEFERRED",
+   "reason": "generated name kept: renaming has no ABI or readability payoff without the paired contract record; batch with that module's NAMED_RESULT change after Codex audit"
+  }
+ ]
+}

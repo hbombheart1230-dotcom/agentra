@@ -1,10 +1,10 @@
 {
  "schema": "p159_t3_ownership_matrix.v2",
- "source_sha": "a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60",
+ "source_sha": "ab8563b251c7a2fc8b0409fde36a05bc10918f04",
  "generator": {
   "script": "scripts/refactor/p159_ownership_matrix.py",
-  "script_sha256": "dc3e64a766c6b9f0e5de61c4b4cdc80c8b4d8dbbc0fc4a86e223603c787728d0",
-  "command": "python scripts/refactor/p159_ownership_matrix.py --sha a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60 --write",
+  "script_sha256": "ce881243e2fe00a4476de99dacc65ebd34f53ca788664ffee70e0a4d4b02f211",
+  "command": "python scripts/refactor/p159_ownership_matrix.py --sha ab8563b251c7a2fc8b0409fde36a05bc10918f04 --write",
   "verify": "python scripts/refactor/p159_ownership_matrix.py --verify"
  },
  "summary": {
@@ -15,13 +15,13 @@
    "SAFETY_LOCK": 1
   },
   "flags": {
-   "CONTRACT_CANDIDATE": 30,
-   "RENAME_CANDIDATE": 54
+   "CONTRACT_CANDIDATE": 27,
+   "RENAME_CANDIDATE": 52
   }
  },
  "tree_delta": {
-  "from": "a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60",
-  "to": "a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60",
+  "from": "ab8563b251c7a2fc8b0409fde36a05bc10918f04",
+  "to": "ab8563b251c7a2fc8b0409fde36a05bc10918f04",
   "production_paths_changed": [],
   "other_paths_changed": []
  },
@@ -29,7 +29,8 @@
   "docs/refactor/p1_5_second_pass_moved_segments_ledger.json",
   "docs/refactor/p1_5_third_pass_t1_moved_segments_ledger.json",
   "docs/refactor/p1_5_third_pass_t2_moved_segments_ledger.json",
-  "docs/refactor/p1_5_third_pass_t3_owner_contract_ledger.json"
+  "docs/refactor/p1_5_third_pass_t3_owner_contract_ledger.json",
+  "docs/refactor/p1_5_third_pass_t3_1_owner_contract_ledger.json"
  ],
  "rows": [
   {
@@ -211,9 +212,9 @@
     "CONTRACT_CANDIDATE",
     "RENAME_CANDIDATE"
    ],
-   "role": "extracted Owner (second_pass)",
+   "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
    "responsibility": "Operator brief market/news/selected-rank/source and feature evidence sections.",
-   "loc": 210,
+   "loc": 241,
    "public_functions": 3,
    "functions": 3,
    "prod_consumers": 1,
@@ -221,12 +222,12 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_unconverted_output_arity": 24,
-   "named_record_functions": 0,
-   "generated_name_functions": 3,
+   "max_unconverted_output_arity": 19,
+   "named_record_functions": 1,
+   "generated_name_functions": 2,
    "facade_symbols": 13,
    "side_effect_tokens": [],
-   "action": "KEEP; named-record candidate (positional arity 24)"
+   "action": "KEEP; named-record candidate (positional arity 19)"
   },
   {
    "module": "apps/operator_ui/data_access_brief_monitor_notes.py",
@@ -253,12 +254,11 @@
    "module": "apps/operator_ui/data_access_brief_monitor_sections.py",
    "class": "CANONICAL_OWNER",
    "flags": [
-    "CONTRACT_CANDIDATE",
     "RENAME_CANDIDATE"
    ],
-   "role": "extracted Owner (second_pass)",
+   "role": "extracted Owner (second_pass); 2 function(s) return named records (T3)",
    "responsibility": "Operator brief monitor/position/exit/watch/guard/entry detail sections.",
-   "loc": 275,
+   "loc": 335,
    "public_functions": 3,
    "functions": 3,
    "prod_consumers": 1,
@@ -266,12 +266,12 @@
     "apps/operator_ui/data_access_core.py"
    ],
    "test_consumers": 0,
-   "max_unconverted_output_arity": 24,
-   "named_record_functions": 0,
-   "generated_name_functions": 3,
+   "max_unconverted_output_arity": 6,
+   "named_record_functions": 2,
+   "generated_name_functions": 1,
    "facade_symbols": 8,
    "side_effect_tokens": [],
-   "action": "KEEP; named-record candidate (positional arity 24)"
+   "action": "KEEP"
   },
   {
    "module": "apps/operator_ui/data_access_brief_prompts.py",
@@ -752,7 +752,7 @@
    "prod_consumer_sample": [
     "libs/reporting/live_execution_bundle_runner.py"
    ],
-   "test_consumers": 0,
+   "test_consumers": 1,
    "max_unconverted_output_arity": 0,
    "named_record_functions": 1,
    "generated_name_functions": 0,
@@ -887,13 +887,10 @@
   {
    "module": "libs/reporting/trade_memory_projection_parts/memory_feedback_rebuild.py",
    "class": "CANONICAL_OWNER",
-   "flags": [
-    "CONTRACT_CANDIDATE",
-    "RENAME_CANDIDATE"
-   ],
-   "role": "extracted Owner (t1)",
+   "flags": [],
+   "role": "extracted Owner (t1); 1 function(s) return named records (T3)",
    "responsibility": "Rebuilt memory packet / feedback and playbook projection.",
-   "loc": 94,
+   "loc": 131,
    "public_functions": 1,
    "functions": 1,
    "prod_consumers": 1,
@@ -901,12 +898,12 @@
     "libs/reporting/trade_memory_surface.py"
    ],
    "test_consumers": 0,
-   "max_unconverted_output_arity": 30,
-   "named_record_functions": 0,
-   "generated_name_functions": 1,
+   "max_unconverted_output_arity": 0,
+   "named_record_functions": 1,
+   "generated_name_functions": 0,
    "facade_symbols": 12,
    "side_effect_tokens": [],
-   "action": "KEEP; named-record candidate (positional arity 30)"
+   "action": "KEEP"
   },
   {
    "module": "libs/reporting/trade_memory_projection_parts/memory_input_visibility.py",
@@ -1648,9 +1645,9 @@
     "CONTRACT_CANDIDATE",
     "RENAME_CANDIDATE"
    ],
-   "role": "extracted Owner (second_pass)",
+   "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
    "responsibility": "Commander decision snapshots/preflight/risk-off/fast-path context (no hard veto changes).",
-   "loc": 225,
+   "loc": 254,
    "public_functions": 2,
    "functions": 2,
    "prod_consumers": 1,
@@ -1658,23 +1655,20 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_unconverted_output_arity": 22,
-   "named_record_functions": 0,
-   "generated_name_functions": 2,
+   "max_unconverted_output_arity": 15,
+   "named_record_functions": 1,
+   "generated_name_functions": 1,
    "facade_symbols": 6,
    "side_effect_tokens": [],
-   "action": "KEEP; named-record candidate (positional arity 22)"
+   "action": "KEEP; named-record candidate (positional arity 15)"
   },
   {
    "module": "libs/runtime/commander/decision_context_projection_applied_policy_command.py",
    "class": "CANONICAL_OWNER",
-   "flags": [
-    "CONTRACT_CANDIDATE",
-    "RENAME_CANDIDATE"
-   ],
-   "role": "extracted Owner (second_pass)",
+   "flags": [],
+   "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
    "responsibility": "Commander decision snapshots/preflight/risk-off/fast-path context (no hard veto changes).",
-   "loc": 148,
+   "loc": 177,
    "public_functions": 1,
    "functions": 1,
    "prod_consumers": 1,
@@ -1682,12 +1676,12 @@
     "graphs/commander_runtime.py"
    ],
    "test_consumers": 0,
-   "max_unconverted_output_arity": 22,
-   "named_record_functions": 0,
-   "generated_name_functions": 1,
+   "max_unconverted_output_arity": 0,
+   "named_record_functions": 1,
+   "generated_name_functions": 0,
    "facade_symbols": 1,
    "side_effect_tokens": [],
-   "action": "KEEP; named-record candidate (positional arity 22)"
+   "action": "KEEP"
   },
   {
    "module": "libs/runtime/commander/decision_overlay_projection.py",
@@ -2752,20 +2746,20 @@
    ],
    "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
    "responsibility": "Intraday entry-signal feature facts (price/volume/structure features before scoring).",
-   "loc": 341,
-   "public_functions": 6,
-   "functions": 6,
+   "loc": 294,
+   "public_functions": 5,
+   "functions": 5,
    "prod_consumers": 1,
    "prod_consumer_sample": [
     "libs/runtime/intraday_monitor_signals.py"
    ],
    "test_consumers": 0,
-   "max_unconverted_output_arity": 24,
+   "max_unconverted_output_arity": 22,
    "named_record_functions": 1,
-   "generated_name_functions": 5,
-   "facade_symbols": 33,
+   "generated_name_functions": 4,
+   "facade_symbols": 29,
    "side_effect_tokens": [],
-   "action": "KEEP; named-record candidate (positional arity 24)"
+   "action": "KEEP; named-record candidate (positional arity 22)"
   },
   {
    "module": "libs/runtime/monitor/signal_features_breakout_volume_gate.py",
@@ -2773,20 +2767,20 @@
    "flags": [
     "RENAME_CANDIDATE"
    ],
-   "role": "extracted Owner (second_pass)",
+   "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
    "responsibility": "Intraday entry-signal feature facts (price/volume/structure features before scoring).",
-   "loc": 130,
-   "public_functions": 1,
-   "functions": 1,
+   "loc": 208,
+   "public_functions": 2,
+   "functions": 2,
    "prod_consumers": 1,
    "prod_consumer_sample": [
     "libs/runtime/intraday_monitor_signals.py"
    ],
    "test_consumers": 0,
    "max_unconverted_output_arity": 7,
-   "named_record_functions": 0,
+   "named_record_functions": 1,
    "generated_name_functions": 1,
-   "facade_symbols": 2,
+   "facade_symbols": 9,
    "side_effect_tokens": [],
    "action": "KEEP"
   },
@@ -3812,9 +3806,9 @@
     "CONTRACT_CANDIDATE",
     "RENAME_CANDIDATE"
    ],
-   "role": "extracted Owner (second_pass); 1 function(s) return named records (T3)",
+   "role": "extracted Owner (second_pass); 2 function(s) return named records (T3)",
    "responsibility": "Scanner candidate feature projection and deterministic defaults (scale, floating order and risk cap unchanged).",
-   "loc": 231,
+   "loc": 259,
    "public_functions": 3,
    "functions": 3,
    "prod_consumers": 1,
@@ -3822,12 +3816,12 @@
     "graphs/nodes/scanner_node.py"
    ],
    "test_consumers": 0,
-   "max_unconverted_output_arity": 24,
-   "named_record_functions": 1,
-   "generated_name_functions": 2,
+   "max_unconverted_output_arity": 21,
+   "named_record_functions": 2,
+   "generated_name_functions": 1,
    "facade_symbols": 14,
    "side_effect_tokens": [],
-   "action": "KEEP; named-record candidate (positional arity 24)"
+   "action": "KEEP; named-record candidate (positional arity 21)"
   },
   {
    "module": "libs/runtime/scanner/score_policy_projection.py",

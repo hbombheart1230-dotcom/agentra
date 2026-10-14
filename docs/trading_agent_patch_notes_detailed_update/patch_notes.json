@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 232,
+  "entry_count": 233,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6273,6 +6273,32 @@
         "scripts/refactor/p156_parity_differential.py",
         "scripts/refactor/p160_ntfs_dir_mtime_diagnostics.py",
         "tests/test_p156_parity_harness.py"
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "version": "P1.5 Third Pass T3.1",
+      "title": "T3.1: semantic names and named result records for eight highest-arity Owner outputs",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Eight Owner functions with 22-30 positional outputs (Reporter memory feedback, Operator Brief market and monitor sections, Monitor volume/pullback/breakout gate, Scanner candidate score components, Commander decision policy context and applied policy command context) now have semantic names and positional-compatible NamedTuple records; bodies, signatures, facade symbols and call-site unpacking are unchanged, no file was created or deleted, and trading, ranking, decision and report behaviour did not change.",
+      "details": [
+        "Body/signature/returned-expression identity to BASE is proven at AST level; the 24-field Monitor record moved the function to the existing cohesive breakout-volume-gate Owner so signal_features.py stays under the 350-line limit.",
+        "BASE x2 / FEATURE x2 differential with strict SHA-256 write containment: 4 sessions x 1253 tests passed, 474 recorded orchestrator calls (Scanner 79, Commander 161, Monitor 191, Operator Brief 39, Reporter memory 4): 469 byte-identical, 5 justified session-path-dependent memory packet ids, 0 real mismatches, 0 unresolved.",
+        "Contract candidates 30 -> 27 and rename candidates 54 -> 52; remaining candidates have explicit KEEP/DEFER/SAFETY_LOCK decisions. Ranking, decision-order and risk-path modules were deliberately not touched.",
+        "Failed-evidence confidentiality P2 stays open (metadata-only retention is required before T3.5); T3.5, T4, T5 and Wave D not started; REAL_REPORT_PARITY_BLOCKED stays open; independent Codex audit pending."
+      ],
+      "impact": "Code-structure and documentation only: no trading, LLM, ranking, lock/queue, report output or UI behaviour changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-1-CLAUDE-031.md",
+        "docs/refactor/p1_5_third_pass_t3_1_owner_contract_ledger.json",
+        "docs/refactor/p1_5_third_pass_t3_1_candidate_decisions.json",
+        "tests/test_p159_current_owner_contract_gates.py"
       ]
     }
   ]

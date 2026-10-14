@@ -1,30 +1,30 @@
 # P1.5 Third Pass T3 - ownership matrix (source-grounded, reproducible)
 
-Source commit (reachable, immutable): `a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60`. Machine-readable: [p1_5_third_pass_t3_ownership_matrix.json](p1_5_third_pass_t3_ownership_matrix.json). Regenerate / prove:
+Source commit (reachable, immutable): `ab8563b251c7a2fc8b0409fde36a05bc10918f04`. Machine-readable: [p1_5_third_pass_t3_ownership_matrix.json](p1_5_third_pass_t3_ownership_matrix.json). Regenerate / prove:
 
-    python scripts/refactor/p159_ownership_matrix.py --sha a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60 --write
+    python scripts/refactor/p159_ownership_matrix.py --sha ab8563b251c7a2fc8b0409fde36a05bc10918f04 --write
     python scripts/refactor/p159_ownership_matrix.py --verify
 
-Classes: {'KEEP': 23, 'CANONICAL_OWNER': 169, 'COMPAT_FACADE': 14, 'SAFETY_LOCK': 1}. Flags (independent): {'CONTRACT_CANDIDATE': 30, 'RENAME_CANDIDATE': 54}. `CONTRACT_CANDIDATE` = unconverted positional return > 8 values; `RENAME_CANDIDATE` = mechanically generated Owner function name awaiting review. Neither flag is a claim that a name or contract is defective.
+Classes: {'KEEP': 23, 'CANONICAL_OWNER': 169, 'COMPAT_FACADE': 14, 'SAFETY_LOCK': 1}. Flags (independent): {'CONTRACT_CANDIDATE': 27, 'RENAME_CANDIDATE': 52}. `CONTRACT_CANDIDATE` = unconverted positional return > 8 values; `RENAME_CANDIDATE` = mechanically generated Owner function name awaiting review. Neither flag is a claim that a name or contract is defective.
 
 ## Summary by package
 
 | Package | modules | CANONICAL_OWNER | COMPAT_FACADE | CONTRACT_CANDIDATE | RENAME_CANDIDATE | max arity | LOC |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| `apps/operator_ui` | 25 | 13 | 1 | 6 | 6 | 24 | 8179 |
+| `apps/operator_ui` | 25 | 13 | 1 | 5 | 6 | 19 | 8270 |
 | `graphs` | 1 | 0 | 1 | 0 | 0 | 0 | 3495 |
 | `graphs/nodes` | 3 | 0 | 3 | 0 | 0 | 0 | 8588 |
 | `libs/reporting` | 8 | 0 | 7 | 0 | 0 | 0 | 9190 |
 | `libs/reporting/reporter_bundle_runtime_parts` | 7 | 6 | 0 | 0 | 0 | 5 | 329 |
-| `libs/reporting/trade_memory_projection_parts` | 5 | 4 | 0 | 2 | 3 | 30 | 761 |
+| `libs/reporting/trade_memory_projection_parts` | 5 | 4 | 0 | 1 | 2 | 16 | 798 |
 | `libs/reporting/trade_read_model_parts` | 4 | 3 | 0 | 1 | 2 | 13 | 567 |
 | `libs/reporting/trade_report/ai_facade_parts` | 15 | 15 | 0 | 2 | 4 | 13 | 1799 |
 | `libs/runtime` | 2 | 0 | 2 | 0 | 0 | 0 | 3919 |
-| `libs/runtime/commander` | 34 | 34 | 0 | 7 | 9 | 22 | 6407 |
-| `libs/runtime/monitor` | 20 | 19 | 0 | 8 | 18 | 24 | 3021 |
+| `libs/runtime/commander` | 34 | 34 | 0 | 6 | 8 | 19 | 6465 |
+| `libs/runtime/monitor` | 20 | 19 | 0 | 8 | 18 | 22 | 3052 |
 | `libs/runtime/monitor_exit` | 25 | 24 | 0 | 0 | 3 | 8 | 3435 |
 | `libs/runtime/monitor_exit/adapters` | 2 | 1 | 0 | 0 | 0 | 0 | 58 |
-| `libs/runtime/scanner` | 25 | 24 | 0 | 3 | 5 | 24 | 4758 |
+| `libs/runtime/scanner` | 25 | 24 | 0 | 3 | 5 | 21 | 4786 |
 | `libs/runtime/strategist` | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
 | `libs/runtime/strategist/context` | 13 | 12 | 0 | 1 | 1 | 18 | 2520 |
 | `libs/runtime/strategist/llm` | 5 | 4 | 0 | 0 | 0 | 0 | 928 |
@@ -55,14 +55,10 @@ Classes: {'KEEP': 23, 'CANONICAL_OWNER': 169, 'COMPAT_FACADE': 14, 'SAFETY_LOCK'
 
 | Module | max arity | facade symbols | LOC | prod consumers | tests |
 |---|---:|---:|---:|---:|---:|
-| `libs/reporting/trade_memory_projection_parts/memory_feedback_rebuild.py` | 30 | 12 | 94 | 1 | 0 |
-| `apps/operator_ui/data_access_brief_market_sections.py` | 24 | 13 | 210 | 1 | 0 |
-| `apps/operator_ui/data_access_brief_monitor_sections.py` | 24 | 8 | 275 | 1 | 0 |
-| `libs/runtime/monitor/signal_features.py` | 24 | 33 | 341 | 1 | 0 |
-| `libs/runtime/scanner/score_feature_projection.py` | 24 | 14 | 231 | 1 | 0 |
-| `libs/runtime/commander/decision_context_projection.py` | 22 | 6 | 225 | 1 | 0 |
-| `libs/runtime/commander/decision_context_projection_applied_policy_command.py` | 22 | 1 | 148 | 1 | 0 |
 | `libs/runtime/monitor/entry_cycle_context.py` | 22 | 9 | 134 | 1 | 0 |
+| `libs/runtime/monitor/signal_features.py` | 22 | 29 | 294 | 1 | 0 |
+| `libs/runtime/scanner/score_feature_projection.py` | 21 | 14 | 259 | 1 | 0 |
+| `apps/operator_ui/data_access_brief_market_sections.py` | 19 | 13 | 241 | 1 | 0 |
 | `libs/runtime/commander/open_position_inputs_projection.py` | 19 | 8 | 172 | 1 | 0 |
 | `libs/runtime/monitor/entry_context.py` | 19 | 10 | 65 | 1 | 0 |
 | `libs/runtime/monitor/entry_cascade_projection.py` | 18 | 6 | 278 | 1 | 0 |
@@ -70,3 +66,7 @@ Classes: {'KEEP': 23, 'CANONICAL_OWNER': 169, 'COMPAT_FACADE': 14, 'SAFETY_LOCK'
 | `apps/operator_ui/data_access_brief_render_sections.py` | 17 | 3 | 199 | 1 | 0 |
 | `libs/reporting/trade_memory_projection_parts/memory_status_summary.py` | 16 | 11 | 75 | 1 | 0 |
 | `libs/runtime/commander/decision_overlay_projection.py` | 16 | 13 | 194 | 1 | 0 |
+| `libs/runtime/scanner/candidate_context_projection.py` | 16 | 7 | 89 | 1 | 0 |
+| `libs/runtime/commander/decision_context_projection.py` | 15 | 6 | 254 | 1 | 0 |
+| `libs/runtime/commander/policy_normalizers_projection.py` | 15 | 4 | 119 | 1 | 0 |
+| `libs/runtime/monitor/exit_decision_projection.py` | 15 | 8 | 175 | 1 | 0 |

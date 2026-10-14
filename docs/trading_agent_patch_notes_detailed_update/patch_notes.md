@@ -3102,3 +3102,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 실패 세션 증거는 cleanup 전에 기록하며(경계·민감정보 제외·보존 개수/기간/용량 제한, task-owned 디렉터리만 삭제) 통제 실험: 동일 SHA 4세션 PASS(59/59 동일), 단일 세션 의도적 오염은 병렬·`--same-path` 모두 exit 2.
 - NTFS 디렉터리 mtime 문제는 P2 UNRESOLVED로 유지(로컬 재현 불가, 호스티드 진단 추가, 허용치 없음). 운영 코드·`sitecustomize.py`·`conftest.py` 변경 없음, 독립 Codex 감사 전까지 PENDING_CLOSURE.
 
+## 2026-10-14 · P1.5 Third Pass T3.1 (Owner 구조 정리)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · SAFETY
+
+- 변경: 위치 기반 반환값이 22~30개인 Owner 함수 8개(Reporter memory feedback, Operator Brief market/monitor 섹션 3개, Monitor volume/pullback/breakout gate, Scanner candidate score components, Commander decision policy/applied policy command)를 의미 있는 이름과 positional-compatible `NamedTuple` 결과로 정리했습니다. 함수 본문·시그니처·facade 심볼·호출부 unpacking은 그대로이며 파일 생성/삭제/이름변경은 없습니다.
+- 구조: 24개 필드 record로 `signal_features.py`가 350 LOC를 넘어, 해당 함수를 같은 책임의 기존 `signal_features_breakout_volume_gate.py`로 이동했습니다.
+- 검증: BASE×2/FEATURE×2 differential(strict SHA-256 containment 4/4 PASS, 세션당 1253 tests 통과, 기록 호출 474건 중 469 byte-identical·5 justified(session 경로 의존 memory packet id)·REAL_MISMATCH 0·UNRESOLVED 0). AST 본문 동일성, 과거/현재 Owner gate 모두 통과.
+- 후보: CONTRACT 30→27, RENAME 54→52. ranking/결정 순서/위험 경로 모듈은 SAFETY_LOCK로 유지. 실패 증거 기밀성 P2는 열려 있으며 T3.5 이전 metadata-only 보존이 필수 후속입니다. 독립 Codex 감사 전까지 PENDING.
+

@@ -1,0 +1,233 @@
+{
+ "schema": "p156_parity_differential.v1",
+ "mode": "det",
+ "baseline_sha": "9e312c9fec0d4eb09f0b729456509b0469c7470f",
+ "feature_sha": "ab8563b251c7a2fc8b0409fde36a05bc10918f04",
+ "execution_order": [
+  "b1",
+  "b2",
+  "f1",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "9e312c9fec0d4eb09f0b729456509b0469c7470f",
+   "exit_code": 0,
+   "log_sha256": "cdf5c22e1bba21dd0118eeab402e9dd1d146f213aa8385b54f47a034ae92385a",
+   "log_bytes": 92451368,
+   "pytest_summary": "1253 passed, 2 warnings in 409.40s (0:06:49)"
+  },
+  "b2": {
+   "sha": "9e312c9fec0d4eb09f0b729456509b0469c7470f",
+   "exit_code": 0,
+   "log_sha256": "12d2cf2c95a76303dc435aa13f0e940f7668d5441aa3e92b40a4c1172dca077e",
+   "log_bytes": 92451368,
+   "pytest_summary": "1253 passed, 2 warnings in 411.65s (0:06:51)"
+  },
+  "f1": {
+   "sha": "ab8563b251c7a2fc8b0409fde36a05bc10918f04",
+   "exit_code": 0,
+   "log_sha256": "d678260d125e64679026e13c9657ac944f649817bf717a695562e23c643bf94e",
+   "log_bytes": 92451368,
+   "pytest_summary": "1253 passed, 2 warnings in 401.52s (0:06:41)"
+  },
+  "f2": {
+   "sha": "ab8563b251c7a2fc8b0409fde36a05bc10918f04",
+   "exit_code": 0,
+   "log_sha256": "cbc5573b17e006d4351c406b5fcf46e0462fc2e554f1c5ecab3ec93530dcf3d7",
+   "log_bytes": 92451368,
+   "pytest_summary": "1253 passed, 2 warnings in 386.19s (0:06:26)"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "3b5fc537787a65469d03d1ffadf82ebf4626d51a7896de9c92b4f30c6c9d8617",
+    "manifest_sha256_after": "3b5fc537787a65469d03d1ffadf82ebf4626d51a7896de9c92b4f30c6c9d8617",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   },
+   "b2": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "13ba56983ed1bef8af85e3efb94f54097710e0cf5df4f41c73c4ce684edb8e7b",
+    "manifest_sha256_after": "13ba56983ed1bef8af85e3efb94f54097710e0cf5df4f41c73c4ce684edb8e7b",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   },
+   "f1": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "d14f9d22cd3da8fc41eb021b8c14ab5f4b4b2bcdff6e617740d28aef560cd20a",
+    "manifest_sha256_after": "d14f9d22cd3da8fc41eb021b8c14ab5f4b4b2bcdff6e617740d28aef560cd20a",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   },
+   "f2": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "new_paths_sample": [],
+    "manifest_sha256_before": "c2dea9d17d36b8549a18132f3fccadce8df1341f092dbf88bf8b9c12f0d33023",
+    "manifest_sha256_after": "c2dea9d17d36b8549a18132f3fccadce8df1341f092dbf88bf8b9c12f0d33023",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_sample": []
+   }
+  },
+  "containment_guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+  "containment_manifest_mode": "strict_sha256",
+  "content_equivalence_proven": true,
+  "containment_not_proven": [
+   "transient write-and-restore during execution",
+   "writes outside the session root",
+   "OS-wide write interception"
+  ],
+  "containment_verdict": "PASS",
+  "failed_sessions": []
+ },
+ "summary": {
+  "total_calls": 474,
+  "BYTE_IDENTICAL": 469,
+  "JUSTIFIED_TOLERANCE": 5,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "commander_runtime._build_commander_decision": {
+    "calls": 161,
+    "BYTE_IDENTICAL": 161,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "scanner_node.scanner_node": {
+    "calls": 79,
+    "BYTE_IDENTICAL": 74,
+    "JUSTIFIED_TOLERANCE": 5,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "intraday_monitor_signals.evaluate_intraday_entry_signal": {
+    "calls": 191,
+    "BYTE_IDENTICAL": 191,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "data_access_core._build_operator_brief_sections": {
+    "calls": 39,
+    "BYTE_IDENTICAL": 39,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "trade_memory_surface.build_trade_report_memory_surface": {
+    "calls": 4,
+    "BYTE_IDENTICAL": 4,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": []
+ },
+ "test_files": [
+  "tests/test_asset_universe_policy.py",
+  "tests/test_canonical_agent_artifacts.py",
+  "tests/test_commander_env_migration_phase2.py",
+  "tests/test_data_quality_state_propagation.py",
+  "tests/test_decision_trace_ledger.py",
+  "tests/test_evidence_ledger_trace_layer.py",
+  "tests/test_intraday_monitor_signals.py",
+  "tests/test_kiwoom_candidate_provider.py",
+  "tests/test_m18_4_scanner_sentiment_weighting.py",
+  "tests/test_m18_scanner_global_sentiment_contract.py",
+  "tests/test_m21_commander_runtime_entry.py",
+  "tests/test_m22_skill_hydration_node.py",
+  "tests/test_m22_skill_native_scanner_monitor.py",
+  "tests/test_m29_2_scanner_feature_integration.py",
+  "tests/test_m31_17_theme_candidate_flow_upgrade.py",
+  "tests/test_monitor_exit_guard.py",
+  "tests/test_monitor_feedback_adaptive_policy.py",
+  "tests/test_monitor_memory_bias.py",
+  "tests/test_operator_ui.py",
+  "tests/test_p153_operator_ui_moved_bodies.py",
+  "tests/test_p156_second_pass_extraction_gates.py",
+  "tests/test_p157_third_pass_t1_extraction_gates.py",
+  "tests/test_scanner_bias_integration.py",
+  "tests/test_scanner_candidate_risk.py",
+  "tests/test_scanner_fallback_policy.py",
+  "tests/test_scanner_live_symbol_filter.py",
+  "tests/test_scanner_memory_bias.py",
+  "tests/test_scanner_monitor_compatibility.py",
+  "tests/test_scanner_policy_overlay.py",
+  "tests/test_scanner_practical_selection_engine.py",
+  "tests/test_scanner_quote_hydration_runtime.py",
+  "tests/test_scanner_rank_plumbing_fix.py",
+  "tests/test_scanner_strategy_frame_integration.py",
+  "tests/test_scanner_universe_candidate_metadata.py",
+  "tests/test_trade_memory_surface.py"
+ ]
+}

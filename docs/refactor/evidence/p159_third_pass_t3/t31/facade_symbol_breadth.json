@@ -1,0 +1,81 @@
+{
+ "per_function": [
+  {
+   "function": "rebuilt_memory_feedback_facts",
+   "record": "RebuiltMemoryFeedbackFacts",
+   "old_function": "memory_feedback_best_playbooks_commander_memory_policy_r",
+   "arity": 30,
+   "facade_symbols_before": 11,
+   "facade_symbols_after": 11,
+   "identical_set": true
+  },
+  {
+   "function": "brief_position_exit_axis_evidence",
+   "record": "BriefPositionExitAxisEvidence",
+   "old_function": "brief_market_active_exit_axis_avg_price_monitor",
+   "arity": 24,
+   "facade_symbols_before": 7,
+   "facade_symbols_after": 7,
+   "identical_set": true
+  },
+  {
+   "function": "brief_decision_report_linkage",
+   "record": "BriefDecisionReportLinkage",
+   "old_function": "brief_monitor_decision_reason_execution_quality",
+   "arity": 24,
+   "facade_symbols_before": 5,
+   "facade_symbols_after": 5,
+   "identical_set": true
+  },
+  {
+   "function": "canonical_monitor_snapshot_view",
+   "record": "CanonicalMonitorSnapshotView",
+   "old_function": "brief_monitor_canonical_active_exit_axis_canonical_ave",
+   "arity": 24,
+   "facade_symbols_before": 1,
+   "facade_symbols_after": 1,
+   "identical_set": true
+  },
+  {
+   "function": "volume_pullback_breakout_gate_features",
+   "record": "VolumePullbackBreakoutGateFeatures",
+   "old_function": "signal_feature_average_volume_breakout_chase_extension",
+   "arity": 24,
+   "facade_symbols_before": 7,
+   "facade_symbols_after": 7,
+   "identical_set": true
+  },
+  {
+   "function": "candidate_score_components",
+   "record": "CandidateScoreComponents",
+   "old_function": "scan_feature_adx14_adx_component",
+   "arity": 24,
+   "facade_symbols_before": 5,
+   "facade_symbols_after": 5,
+   "identical_set": true
+  },
+  {
+   "function": "decision_policy_context",
+   "record": "DecisionPolicyContext",
+   "old_function": "decision_ctx_allowed_playbooks_applied_policy_meta",
+   "arity": 22,
+   "facade_symbols_before": 2,
+   "facade_symbols_after": 2,
+   "identical_set": true
+  },
+  {
+   "function": "applied_policy_command_context",
+   "record": "AppliedPolicyCommandContext",
+   "old_function": "decision_ctx_applied_policy_command_intent",
+   "arity": 22,
+   "facade_symbols_before": 0,
+   "facade_symbols_after": 0,
+   "identical_set": true
+  }
+ ],
+ "combined_signal_features_and_gate": {
+  "before": 33,
+  "after": 33,
+  "same_set": true
+ }
+}

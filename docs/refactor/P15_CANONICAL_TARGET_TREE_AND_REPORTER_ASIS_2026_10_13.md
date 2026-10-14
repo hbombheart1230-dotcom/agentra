@@ -311,13 +311,13 @@ Claude S1 Monitor → S2 Scanner → S3 Commander → S4 Operator UI → S5 Stra
 
 **Maintenance rule:** When new modules actually land, update this [E]/[P] map in the same code commit; never mark proposed paths as implemented before they exist. Update UI-linked patch_notes.json + patch_notes.md and concise daily patch for meaningful updates.
 
-## G. Current status overlay (verified against Git commit `a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60`)
+## G. Current status overlay (verified against Git commit `ab8563b251c7a2fc8b0409fde36a05bc10918f04`)
 
 *The sections above are a historical design snapshot and are intentionally not rewritten. This overlay describes
-exactly one immutable tree - commit `a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60` - and is reproducible with `scripts/refactor/p159_ownership_matrix.py`.
+exactly one immutable tree - commit `ab8563b251c7a2fc8b0409fde36a05bc10918f04` - and is reproducible with `scripts/refactor/p159_ownership_matrix.py`.
 Code that changed after that commit is recorded as a separate tree delta in the matrix JSON (`tree_delta`), never
 folded silently into this snapshot.* Matrix: [p1_5_third_pass_t3_ownership_matrix.json](p1_5_third_pass_t3_ownership_matrix.json)
-(207 modules; classes {'KEEP': 23, 'CANONICAL_OWNER': 169, 'COMPAT_FACADE': 14, 'SAFETY_LOCK': 1}; flags {'CONTRACT_CANDIDATE': 30, 'RENAME_CANDIDATE': 54}).
+(207 modules; classes {'KEEP': 23, 'CANONICAL_OWNER': 169, 'COMPAT_FACADE': 14, 'SAFETY_LOCK': 1}; flags {'CONTRACT_CANDIDATE': 27, 'RENAME_CANDIDATE': 52}).
 
 ### G.1 Packages at that commit
 - `libs/reporting/reporter_bundle_runtime_parts/` - T2 bundle-runner pure projections: EXISTS
