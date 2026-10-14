@@ -511,6 +511,8 @@ if __name__ == "__main__":
             ei = next((i for i, (u, v) in enumerate(zip(a["effects"], g["effects"])) if u != v), None)
             print("DIFF", rec["id"], "state:", d[:260], "| effects first diff idx:", ei,
                   (a["effects"][ei][0] if ei is not None else ""), "| exc:", a["exception"])
+            print("   q9_result:", json.dumps((a["state"].get("q9_scanner_snapshot_result") or {}))[:300])
+            print("   golden_q9:", json.dumps((g["state"].get("q9_scanner_snapshot_result") or {}))[:200])
             shown += 1
             if shown >= k:
                 break
