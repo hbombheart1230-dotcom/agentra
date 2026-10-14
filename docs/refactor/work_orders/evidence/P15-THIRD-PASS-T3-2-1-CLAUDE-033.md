@@ -58,4 +58,4 @@ Repository search for readers of the harness `summary.json` (`git grep` on `summ
 
 ## 6. CI
 
-Recorded after the hosted run (delivery commit).
+Run 38506076070 on `81a1429`: SUCCESS for Linux `regression` and the required `windows-harness-smoke`. Hosted Windows (Python 3.12.10): **62 passed, 1 skipped** (the skip is the Store-alias reproduction test; no Store alias on GitHub runners); the junit step requires >= 40 containment/security/export tests PASSED, including >= 7 `test_export_*`, and none skipped.
