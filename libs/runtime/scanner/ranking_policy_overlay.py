@@ -61,7 +61,7 @@ def apply_scanner_ranking_policy_overlay(commander_scanner_policy, enforce_block
     is_flat = open_position_count == 0
 
     ranking_before_policy = [{"symbol": r.get("symbol"), "score_total": r.get("score_total")} for r in scan_results_sorted]
-    
+
     reentry_penalty_applied = False
     reentry_penalty_value = 0.0
     diversification_applied = False
@@ -100,12 +100,12 @@ def apply_scanner_ranking_policy_overlay(commander_scanner_policy, enforce_block
         top1 = scan_results_sorted[0]
         top1_sym = facade._norm_symbol(top1.get("symbol"))
         top1_score = facade._to_float(top1.get("score_total"))
-        
+
         if len(scan_results_sorted) > 1:
             top2 = scan_results_sorted[1]
             top2_score = facade._to_float(top2.get("score_total"))
             score_gap = top1_score - top2_score
-            
+
             if avoid_recent_symbol and is_flat and last_trade_symbol == top1_sym and allow_same_symbol_reentry:
                 if score_gap <= reentry_score_gap_threshold:
                     top1["score_total"] = top1_score - recent_symbol_penalty

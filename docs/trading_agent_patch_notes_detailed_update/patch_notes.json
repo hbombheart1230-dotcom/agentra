@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 239,
+  "entry_count": 240,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6446,6 +6446,29 @@
         "docs/refactor/p1_5_third_pass_t4a_moved_segments_ledger.json",
         "graphs/nodes/scanner_node.py",
         "tests/test_p162_t4a_extraction_gates.py",
+        "tests/test_p162_scanner_node_contract_freeze.py"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-A.1",
+      "title": "T4-A.1: strict golden variant conservation in the Scanner contract comparators",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Codex showed that the Scanner frozen-contract comparators could not notice a variant that silently disappeared (both native and portable returned no mismatch). The comparators now derive the full variant inventory, compute the expected sampled IDs with the unchanged sampler, and require exact ID-set equality between expected, pinned-BASE and FEATURE evidence, plus manifest totals; omissions, extras, duplicates and malformed rows fail closed.",
+      "details": [
+        "The old false negative is reproduced with the verbatim old logic and rejected by both comparators; the full 73-record / 1,575-variant corpus replays with zero mismatches; committed golden fixtures are unchanged.",
+        "Cross-seed telemetry P2 recorded: rank-1/selected/score changes not reproduced; two States show element-order differences in an excluded-symbols list (pre-existing BASE behaviour, no change made).",
+        "Pending independent Codex audit; T4-B blocked until ACCEPT; real report parity blocked; NTFS P2 open."
+      ],
+      "impact": "Test tooling, CI accounting and documentation only; no trading, ranking, guard, State or event behaviour changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-T4-A-1-CLAUDE-038.md",
+        "scripts/refactor/p162_scanner_node_freeze_tool.py",
         "tests/test_p162_scanner_node_contract_freeze.py"
       ]
     }

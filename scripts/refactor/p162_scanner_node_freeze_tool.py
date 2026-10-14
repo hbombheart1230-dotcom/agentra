@@ -413,14 +413,77 @@ def _row(e):
     return [e["state_sha"], e["effects_sha"], e["exception"], e["returned_is_state"]]
 
 
-def compare_native(golden, computed):
-    """Committed golden (same OS) vs implementation digests (`computed` from `compute`). Exact."""
-    bad = []
+def variant_inventory(rec):
+    """Complete frozen variant-ID inventory of a record, re-derived deterministically from its State (no sampling)."""
+    return [vid for vid, _s in _variants(rec["state_in"], rec["id"])]
+
+
+def expected_sample_ids(rec, sample_mod):
+    """IDs that MUST be executed for `sample_mod` (the existing deterministic `_sampled` selection)."""
+    return {vid for vid in variant_inventory(rec) if _sampled(rec["id"], vid, sample_mod)}
+
+
+def _row_ok(v):
+    return (isinstance(v, list) and len(v) == 4 and isinstance(v[0], str) and len(v[0]) == 64 and set(v[0]) <= _HEX
+            and isinstance(v[1], str) and len(v[1]) == 64 and set(v[1]) <= _HEX and isinstance(v[3], bool))
+
+
+def inventory_errors(golden, manifest=None):
+    """Conservation of the COMMITTED golden: every record's variant ID set equals the deterministic inventory, no
+    duplicates, well-formed rows, and (when given) record/variant totals equal the manifest. Independent of sampling."""
+    errs = []
+    ids = [r["id"] for r in golden]
+    if len(ids) != len(set(ids)):
+        errs.append(("*", "duplicate_record_ids"))
+    total = 0
     for rec in golden:
-        c = computed.get(rec["id"])
-        if c is None:
-            bad.append((rec["id"], "not_computed"))
+        inv = variant_inventory(rec)
+        if len(inv) != len(set(inv)):
+            errs.append((rec["id"], "duplicate_variant_ids_in_inventory"))
+        got = rec.get("variants")
+        if not isinstance(got, dict):
+            errs.append((rec["id"], "variants_not_a_dict"))
             continue
+        total += len(got)
+        if set(got) != set(inv):
+            errs.append((rec["id"], "golden_variant_inventory_mismatch",
+                         sorted(set(inv) ^ set(got))[:3]))
+        for vid, v in got.items():
+            if not _row_ok(v):
+                errs.append((rec["id"], "golden_variant_row_malformed", vid))
+    if manifest is not None:
+        if manifest.get("records") != len(golden):
+            errs.append(("*", "manifest_record_count", manifest.get("records"), len(golden)))
+        if manifest.get("variants") != total:
+            errs.append(("*", "manifest_variant_count", manifest.get("variants"), total))
+    return errs
+
+
+def _computed_variant_errors(rid, vdict, expected, label):
+    errs = []
+    if not isinstance(vdict, dict):
+        return [(rid, f"{label}_variants_not_a_dict")]
+    got = set(vdict)
+    if got != expected:
+        errs.append((rid, f"{label}_variant_ids_ne_expected_sample",
+                     {"missing": sorted(expected - got)[:3], "extra": sorted(got - expected)[:3]}))
+    for vid, v in vdict.items():
+        if not _row_ok(v):
+            errs.append((rid, f"{label}_variant_row_malformed", vid))
+    return errs
+
+
+def compare_native(golden, computed, sample_mod, manifest=None):
+    """Committed golden (same OS) vs implementation digests (`computed` from `compute` run with `sample_mod`). Exact.
+    Variant conservation: the executed ID set must equal the deterministic expected sample (no silent omission), the
+    golden inventory must be complete, and manifest totals must match."""
+    bad = list(inventory_errors(golden, manifest))
+    if bad:
+        return bad
+    if not isinstance(computed, dict) or set(computed) != {r["id"] for r in golden}:
+        return [("*", "computed_record_ids_inconsistent")]
+    for rec in golden:
+        c = computed[rec["id"]]
         g = rec["golden"]
         if c["state_sha"] != g["state_sha"]:
             bad.append((rec["id"], "final_state"))
@@ -430,31 +493,40 @@ def compare_native(golden, computed):
             bad.append((rec["id"], "exception"))
         if c["returned_is_state"] != g["returned_is_state"]:
             bad.append((rec["id"], "returned_object_identity"))
+        errs = _computed_variant_errors(rec["id"], c.get("variants"), expected_sample_ids(rec, sample_mod), "feature")
+        bad.extend(errs)
+        if errs:
+            continue
         for vid, got in c["variants"].items():
-            if rec["variants"].get(vid) != got:
+            if rec["variants"][vid] != got:
                 bad.append((rec["id"], "variant", vid))
     return bad
 
 
-def compare_portable(golden, computed, oracle):
-    """Same-host pinned-BASE oracle vs implementation digests, exact for every record and sampled variant
-    (no normalisation). Fail closed on missing/malformed oracle evidence or missing computed records."""
-    bad = list(validate_oracle(golden, oracle))
+def compare_portable(golden, computed, oracle, sample_mod, manifest=None):
+    """Same-host pinned-BASE oracle vs implementation digests, exact for every record and sampled variant (no
+    normalisation). The expected sample, the BASE IDs and the FEATURE IDs must be exactly equal; fail closed on
+    missing/extra/duplicate/malformed variant or oracle evidence."""
+    bad = list(inventory_errors(golden, manifest))
+    bad.extend(validate_oracle(golden, oracle))
     if bad:
         return bad
+    if not isinstance(computed, dict) or set(computed) != {r["id"] for r in golden}:
+        return [("*", "computed_record_ids_inconsistent")]
     for rec in golden:
-        c, o = computed.get(rec["id"]), oracle[rec["id"]]
-        if c is None:
-            bad.append((rec["id"], "not_computed"))
-            continue
+        c, o = computed[rec["id"]], oracle[rec["id"]]
         if _row(c) != _row(o):
             bad.append((rec["id"], "feature_ne_base_on_this_host"))
         if c["effects"] != o["effects"]:
             bad.append((rec["id"], "effect_order_or_args"))
-        if set(o["variants"]) != set(c["variants"]):
-            bad.append((rec["id"], "variant_selection"))
+        expected = expected_sample_ids(rec, sample_mod)
+        errs = _computed_variant_errors(rec["id"], o.get("variants"), expected, "base")
+        errs += _computed_variant_errors(rec["id"], c.get("variants"), expected, "feature")
+        bad.extend(errs)
+        if errs:
+            continue
         for vid, got in c["variants"].items():
-            if o["variants"].get(vid) != got:
+            if o["variants"][vid] != got:
                 bad.append((rec["id"], "variant", vid))
     return bad
 
@@ -480,7 +552,10 @@ def verify(outdir, sample_mod=1, portable=False, oracle=None):
     """In-process convenience wrapper (run with PYTHONHASHSEED=0)."""
     golden = load(outdir)
     computed = compute(outdir, sample_mod)
-    return compare_portable(golden, computed, oracle) if portable else compare_native(golden, computed)
+    mf = Path(outdir) / "manifest.json"
+    manifest = json.loads(mf.read_text(encoding="utf-8")) if mf.is_file() else None
+    return (compare_portable(golden, computed, oracle, sample_mod, manifest) if portable
+            else compare_native(golden, computed, sample_mod, manifest))
 
 
 if __name__ == "__main__":
@@ -522,7 +597,8 @@ if __name__ == "__main__":
     elif cmd == "compute":
         res = compute(sys.argv[2], int(sys.argv[3]))
         import graphs.nodes.scanner_node as _sn
-        Path(sys.argv[4]).write_text(json.dumps({"provenance": {"module_file": str(Path(_sn.__file__).resolve()),
+        Path(sys.argv[4]).write_text(json.dumps({"sample_mod": int(sys.argv[3]),
+                                                 "provenance": {"module_file": str(Path(_sn.__file__).resolve()),
                                                                  "cwd": os.getcwd(), "python": sys.version.split()[0]},
                                                  "records": res}), encoding="utf-8")
         print("COMPUTED", len(res))

@@ -3164,3 +3164,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 발견: BASE의 Scanner ranking은 문자열 hash 순서에 의존하여 freeze는 `PYTHONHASHSEED=0`을 고정합니다(동작은 변경하지 않음). Windows native 재생과 같은 호스트 BASE oracle이 필수 CI gate입니다.
 - 상태: 독립 Codex 감사 대기, T4-B/T5/Wave D 미시작, REAL_REPORT_PARITY_BLOCKED·NTFS P2 유지.
 
+## 2026-10-15 · P1.5 T4-A.1 (golden variant conservation 종결 작업)
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY
+
+- 확인(Codex): Scanner 계약 비교기가 기대된 variant가 사라져도(누락) native/portable 모두 불일치를 보고하지 않는 false negative.
+- 수정: 전체 variant ID inventory를 결정적으로 재도출하고, 기존 `_sampled()`로 기대 샘플 ID를 계산하여 기대 샘플 == pinned BASE == FEATURE ID 집합을 정확히 요구합니다. 누락·추가·중복·형식 오류·manifest 합계 불일치는 fail-closed입니다. golden은 수정·재생성하지 않았습니다.
+- 검증: 기존 false negative 재현 및 두 비교기 모두 거부, 73 records / 1,575 variants 전체 replay 0 mismatch, T3.5 계약 gate 유지. P2: hash seed 간 rank-1/선택 변화는 재현되지 않았고 두 State의 제외 심볼 목록 순서 차이는 기존 BASE 동작(변경 없음).
+- 상태: 독립 Codex 감사 대기, T4-B는 ACCEPT까지 BLOCKED, REAL_REPORT_PARITY_BLOCKED·NTFS P2 유지.
+

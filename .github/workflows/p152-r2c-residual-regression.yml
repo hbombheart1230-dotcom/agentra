@@ -431,7 +431,7 @@ jobs:
             python -c "t=open('branch_output/t4a_windows_diag.txt',encoding='utf-8',errors='replace').read()[:3500];print('::error title=t4a-windows-diag::'+t.replace('%','%25').replace(chr(13),'%0D').replace(chr(10),'%0A'))"
           fi
           exit $rc
-      - name: T4-A native replay accounting (all five contract tests RAN and PASSED; skip/deselect/missing fails)
+      - name: T4-A native replay accounting (all eight contract tests RAN and PASSED; skip/deselect/missing fails)
         shell: bash
         run: |
           python - <<'PY'
@@ -444,7 +444,10 @@ jobs:
                       'test_golden_inventory_covers_selection_tie_empty_pool_and_scenarios',
                       'test_replay_matches_frozen_base_state_effect_order_and_variants',
                       'test_portable_oracle_rejects_separator_only_regression_and_fails_closed',
-                      'test_committed_golden_is_unchanged_since_the_freeze_commit']
+                      'test_committed_golden_is_unchanged_since_the_freeze_commit',
+                      'test_variant_conservation_old_false_negative_is_reproduced_and_rejected_by_both_comparators',
+                      'test_variant_inventory_rejects_missing_extra_malformed_and_manifest_mismatch',
+                      'test_valid_complete_fixture_and_full_sample_pass_variant_conservation']
           missing = [n for n in required if n not in rows]
           assert not missing, ('required T4-A tests missing', missing)
           bad = {n: rows[n] for n in required if rows[n] != 'PASSED'}
