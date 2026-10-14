@@ -72,6 +72,36 @@ Deterministic fixture parity is **not** real Reporter/production artifact parity
 
 Stage records still use `Any` field types; stage signatures list many explicit inputs (intentional, verbatim locals); `_build_strategist_trace_summary` (107), `_commander_shadow_actual_runtime` (84) and `_build_scanner_trace_summary` (83) helpers remain in the facade; semantic field-group names are mine and need review; the 201/155-LOC SAFETY_LOCK stages.
 
+
+## 7. Linux golden-replay failure diagnosis and repair (CI runs 38524807533, 38525941509)
+
+**Symptom.** Linux `regression` failed only at the T3.5 gate: `test_replay_matches_base_bytes_mutation_dependency_trace_and_variants`, 109 mismatch records, all `build_strategist_output_artifact` (`output_bytes` and `variant`); structural gates, historical T1/T2/T3 gates and the Windows smoke passed.
+
+**Evidence that the golden is the pristine BASE result.** The committed fixtures were created only by commit `44333fd`; `git diff eb53dc1 44333fd -- libs` is empty (no implementation change existed at freeze time) and `git log -- tests/fixtures/p1_5_t35_agent_outputs` shows that commit alone. The golden files were **not regenerated or edited** for this repair (an attempted local regeneration was discarded before commit; `git diff HEAD -- tests/fixtures` is empty).
+
+**Four-way replay of the committed fixtures** (`p161_agent_output_diagnose.py`, run from the pinned BASE tree and the FEATURE tree):
+
+| Tree / platform | Strategist output mismatches (16 records) |
+|---|---|
+| BASE (`eb53dc1`) / Windows 11, Python 3.13 | 0 |
+| FEATURE / Windows 11, Python 3.13 | 0 |
+| **BASE (`eb53dc1`) / Linux (ubuntu-latest), Python 3.12.15** | **16 / 16** |
+| FEATURE / Linux | 16 / 16 (identical difference) |
+
+**Root cause (first differing JSON field).** `.source_refs.evidence_log_path`: golden `data\evidence_ledger\events.jsonl` (str), actual on Linux `data/evidence_ledger/events.jsonl` (str). The strategist builder contains `evidence_log_path = str(Path("data/evidence_ledger/events.jsonl"))` (BASE line 793, unchanged by T3.5, in the public builder body): `str(Path(...))` renders the platform separator. The value appears in **every** strategist output, hence all 16 outputs and all strategist variant digests (the digest of the output includes the string) differ on a POSIX host. Nothing else differed in the sampled first-difference records; dependency trace and input mutation matched.
+
+**Classification: fixture portability issue, not a refactor regression.** The pristine BASE tree fails identically on Linux; FEATURE equals BASE on both platforms. (The diagnostic's "owner" hint for FEATURE named a scanner module only because of a heuristic key lookup; the field is produced by the strategist builder body / `strategist_artifact_refs_macro_fields`.)
+
+**Repair (methodology; immutable BASE evidence preserved, no tolerance rule, no case reduced, nothing skipped).**
+* Native mode (same OS as the golden, i.e. Windows) is unchanged: exact committed golden bytes and variant digests.
+* Portable mode (any other OS, or `T35_FIXTURE_MODE=portable`): the pinned BASE `libs/` tree (`git archive eb53dc1 libs`) is executed **on the same platform** in a subprocess and produces the BASE evidence for that platform; (1) the committed golden must equal that BASE evidence modulo a symmetric path-separator reading of path-like strings (proves fixture integrity: BASE/this-platform == golden), (2) FEATURE outputs must equal the committed golden under the same symmetric reading, (3) every sampled variant digest of FEATURE must equal the BASE-on-this-platform digest, (4) dependency traces and input non-mutation stay exact against the golden. Strategist tests are not skipped; all 148 inputs and 18,497 variants remain; the separator reading touches only strings made solely of path characters.
+* Negative check: with a one-literal mutation inside a strategist stage the portable replay fails (verified locally); the AST inline-reconstruction gate and byte gates are unchanged.
+* The Windows replay in portable mode (forced, `T35_FIXTURE_MODE=portable`) passes 9/9, exercising the BASE-tree subprocess path; the native Windows replay still passes.
+
+Diagnostics for future triage: `scripts/refactor/p161_agent_output_diagnose.py` prints builder id, variant id, first differing JSON path, golden/actual value and type, key-order differences, owner hint and Python/OS/TZ context in bounded form; the CI step "T3.5 Linux golden-replay diagnosis" runs it for the BASE tree and the FEATURE tree (continue-on-error, no raw payloads).
+
+Fixture hygiene note: the committed freeze commit contains developer temp-path strings (`C:\Users\<profile>\AppData\...`) inside captured states; they are not secrets but are noted. Scrubbing them would change the committed inputs and is therefore deliberately **not** done in this repair.
+
 ## 6. CI
 
 Recorded after the hosted run (delivery commit).

@@ -7,6 +7,7 @@ single-key perturbation digests. Deterministic fixture parity only - NOT real Re
 """
 import inspect
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -49,9 +50,52 @@ def test_golden_fixture_inventory_covers_all_four_large_builders():
     assert manifest["variant_total"] >= 10000
 
 
-def test_replay_matches_base_bytes_mutation_dependency_trace_and_variants():
-    bad = T.verify(FIX, sample_mod=SAMPLE_MOD)
-    assert bad == [], bad[:10]
+def _pinned_base_tree(tmp_path):
+    """The immutable BASE `libs/` tree (git archive of the pinned commit) - used only for portable replay."""
+    import io
+    import subprocess
+    import tarfile
+    data = subprocess.check_output(["git", "archive", "--format=tar", BASE_SHA, "libs"], cwd=ROOT)
+    tree = tmp_path / "base_tree"
+    tree.mkdir()
+    with tarfile.open(fileobj=io.BytesIO(data)) as tf:
+        try:
+            tf.extractall(tree, filter="data")
+        except TypeError:  # Python without the extraction-filter argument
+            tf.extractall(tree)
+    return tree
+
+
+BASE_SHA = "eb53dc1fe56c2a70a21271faf2f3c25c9711e309"
+# the golden fixtures were generated on Windows; any other host replays in portable mode (see verify() docstring)
+PORTABLE = (os.name != "nt") or os.environ.get("T35_FIXTURE_MODE") == "portable"
+
+
+def test_replay_matches_base_bytes_mutation_dependency_trace_and_variants(tmp_path):
+    base_digests = None
+    if PORTABLE:
+        import subprocess
+        tree = _pinned_base_tree(tmp_path)
+        out = tmp_path / "base_digests.json"
+        env = dict(os.environ, PYTHONPATH=str(tree))
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "refactor" / "p161_agent_output_freeze_tool.py"), "compute",
+                        str(FIX), str(SAMPLE_MOD), str(out)], cwd=str(tree), env=env, check=True, timeout=1800)
+        base_digests = json.loads(out.read_text(encoding="utf-8"))
+        # integrity of the committed golden on this platform: pinned BASE here == golden (modulo path separators)
+        base, _ = T.load(FIX)
+        import hashlib
+        for rec in base:
+            enc = rec["result"]
+            want = hashlib.sha256(F.canonical(T.norm_seps(enc)).encode()).hexdigest()
+            assert base_digests[rec["id"]]["result_norm"] == want, (rec["id"], "BASE on this platform != committed golden")
+            assert base_digests[rec["id"]]["trace"] == rec["dependency_trace"], rec["id"]
+    bad = T.verify(FIX, sample_mod=SAMPLE_MOD, portable=PORTABLE, base_digests=base_digests)
+    kinds = {}
+    for item in bad:
+        k = (item[0].split("#")[0], item[1])
+        kinds[k] = kinds.get(k, 0) + 1
+    hints = [item for item in bad if item[1] != "variant"][:6]
+    assert bad == [], f"{len(bad)} mismatches; by builder/kind={kinds}; first={hints}"
 
 
 def test_commander_route_grid_covers_every_selected_route_and_blocked_reason_class():

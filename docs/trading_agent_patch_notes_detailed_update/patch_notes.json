@@ -6386,7 +6386,8 @@
       "details": [
         "Fixtures were frozen on BASE before implementation (148 captured inputs, 18,497 deterministic variants): the full corpus replays with zero byte mismatches, and every stage inlines back to the BASE builder AST exactly.",
         "BASE x2 / FEATURE x2 strict-containment differential: 647 recorded builder/validation calls, 641 byte-identical, 6 justified session-path memory packet ids, 0 real mismatches, 0 unresolved.",
-        "The 201-line monitor decision-rule stage and the 155-line scanner bias stage are left whole as SAFETY_LOCK; supervisor/executor builders, Step5C and all authority paths untouched; real-report parity stays blocked; independent Codex review pending."
+        "The 201-line monitor decision-rule stage and the 155-line scanner bias stage are left whole as SAFETY_LOCK; supervisor/executor builders, Step5C and all authority paths untouched; real-report parity stays blocked; independent Codex review pending.",
+        "Linux CI failed the frozen replay: the pristine BASE tree fails identically on Linux (str(Path(...)) separator in source_refs.evidence_log_path), i.e. a fixture-portability issue and not a regression; the committed golden is untouched and portable replay now compares against the pinned BASE tree executed on the same platform."
       ],
       "impact": "Code-structure and test evidence only: no trading, LLM, ranking, decision, report or UI behavior changed.",
       "sources": [

@@ -119,6 +119,49 @@ def generate(capture, outdir):
     return manifest
 
 
+_BS = chr(92)
+_PATH_CHARS = frozenset("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ._:-/" + _BS)
+
+
+def norm_seps(obj):
+    """Portable-replay normalisation (POSIX hosts only, applied SYMMETRICALLY to the committed golden and to the
+    replayed output): a path-like string made only of path characters has `\\` read as `/`. The committed golden bytes
+    are never modified; nothing but the separator of such strings is considered equal."""
+    if isinstance(obj, str):
+        if _BS in obj and len(obj) < 400 and set(obj) <= _PATH_CHARS:
+            return obj.replace(_BS, "/")
+        return obj
+    if isinstance(obj, list):
+        return [norm_seps(x) for x in obj]
+    if isinstance(obj, dict):
+        return {norm_seps(k): norm_seps(v) for k, v in obj.items()}
+    return obj
+
+
+def compute_digests(outdir, sample_mod=16, only_builders=None):
+    """Digests of what the implementation importable NOW produces for every frozen input (used on the pinned BASE tree
+    to obtain platform-correct BASE evidence on a host other than the one that generated the golden files)."""
+    ao = _import_ao()
+    base, _variants = load(outdir)
+    res = {}
+    for rec in base:
+        if only_builders and rec["builder"] not in only_builders:
+            continue
+        args, kwargs = F.decode(rec["args"]), F.decode(rec["kwargs"])
+        trace = []
+        kind, payload, mutated = _call(ao, rec["builder"], args, kwargs, trace)
+        enc = F.encode(payload) if kind == "result" else payload
+        entry = {"kind": kind, "result_norm": hashlib.sha256(F.canonical(norm_seps(enc)).encode()).hexdigest(),
+                 "mutated": mutated, "trace": trace, "variants": {}}
+        for vid, va, vk in V.variants(rec["builder"], args, kwargs):
+            if not _sampled(rec["id"], vid, sample_mod):
+                continue
+            k2, p2, m2 = _call(ao, rec["builder"], va, vk)
+            entry["variants"][vid] = [k2, digest(p2), m2]
+        res[rec["id"]] = entry
+    return res
+
+
 def load(outdir):
     outdir = Path(outdir)
     with gzip.open(outdir / "golden_inputs_outputs.json.gz", "rt", encoding="utf-8") as fh:
@@ -132,8 +175,13 @@ def _sampled(rid, vid, mod):
     return mod <= 1 or int(hashlib.sha256((rid + "|" + vid).encode()).hexdigest()[:8], 16) % mod == 0
 
 
-def verify(outdir, only_builders=None, sample_mod=1):
-    """Returns a list of mismatch descriptions (empty == byte parity)."""
+def verify(outdir, only_builders=None, sample_mod=1, portable=False, base_digests=None):
+    """Returns a list of mismatch descriptions (empty == byte parity).
+
+    Native mode (default, same platform as the golden): exact committed golden bytes and variant digests.
+    Portable mode (golden generated on another OS): outputs are compared with the committed golden after a symmetric
+    path-separator normalisation, and variant digests are compared with `base_digests` computed from the PINNED BASE
+    tree on this very platform (immutable BASE evidence); input mutation and dependency traces stay exact."""
     ao = _import_ao()
     base, variants = load(outdir)
     bad = []
@@ -146,10 +194,13 @@ def verify(outdir, only_builders=None, sample_mod=1):
         if kind != rec["kind"]:
             bad.append((rec["id"], "kind", kind, rec["kind"]))
             continue
-        got = F.canonical(F.encode(payload)) if kind == "result" else F.canonical(payload)
-        want = F.canonical(rec["result"]) if kind == "result" else F.canonical(rec["result"])
+        enc = F.encode(payload) if kind == "result" else payload
+        if portable:
+            got, want = F.canonical(norm_seps(enc)), F.canonical(norm_seps(rec["result"]))
+        else:
+            got, want = F.canonical(enc), F.canonical(rec["result"])
         if got != want:
-            bad.append((rec["id"], "output_bytes"))
+            bad.append((rec["id"], "output_bytes", first_diff(json.loads(got), json.loads(want))))
         if mutated != rec["input_mutated"]:
             bad.append((rec["id"], "input_mutation"))
         if trace != rec["dependency_trace"]:
@@ -158,7 +209,10 @@ def verify(outdir, only_builders=None, sample_mod=1):
             if not _sampled(rec["id"], vid, sample_mod):
                 continue
             k2, p2, m2 = _call(ao, rec["builder"], va, vk)
-            want_v = variants[rec["id"]].get(vid)
+            if portable:
+                want_v = ((base_digests or {}).get(rec["id"], {}).get("variants") or {}).get(vid)
+            else:
+                want_v = variants[rec["id"]].get(vid)
             if want_v is None or [k2, digest(p2), m2] != want_v:
                 bad.append((rec["id"], "variant", vid))
         if set(variants[rec["id"]]) != {v[0] for v in V.variants(rec["builder"], args, kwargs)}:
@@ -171,6 +225,10 @@ if __name__ == "__main__":
     if cmd == "generate":
         m = generate(sys.argv[2], sys.argv[3])
         print(json.dumps(m["counts"]), m["variant_total"])
+    elif cmd == "compute":
+        out = compute_digests(sys.argv[2], sample_mod=int(sys.argv[3]))
+        Path(sys.argv[4]).write_text(json.dumps(out), encoding="utf-8")
+        print("COMPUTED", len(out))
     elif cmd == "verify":
         b = verify(sys.argv[2], sample_mod=int(sys.argv[3]) if len(sys.argv) > 3 else 1)
         print("MISMATCHES", len(b))
