@@ -1,0 +1,12 @@
+{
+ "records": 149,
+ "variants": 2879,
+ "by_target": {
+  "monitor_node": 50,
+  "entry_candidate": 50,
+  "exit_policy": 49
+ },
+ "exceptions": 0,
+ "bound": 16,
+ "effects_total": 1541
+}
