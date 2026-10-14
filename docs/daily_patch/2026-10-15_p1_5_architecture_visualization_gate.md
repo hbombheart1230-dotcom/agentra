@@ -1,0 +1,3 @@
+# 2026-10-15 — P1.5 mandatory post-T4 architecture convergence gate
+
+User decision: decompose T4 first; after independent T4 audits, generate source-pinned current seven-Agent Mermaid overview and module diagrams, real import dependency SVG, editable target draw.io, and consumer/authority gap matrix. GPT+user visually approve structural changes; Codex independently verifies before file reorganization/P1.5.10/Wave D/P1.6. No runtime changes or premature diagram generation. T4-A.1 Codex audit pending; T4-B blocked. Source: `docs/refactor/P15_POST_T4_ARCHITECTURE_VISUALIZATION_GATE_2026_10_15.md`.

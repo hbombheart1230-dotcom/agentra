@@ -6,6 +6,8 @@
 **Read first, no historical rereading:** [P1.5 Third Pass Reporter-inclusive design](../P15_THIRD_PASS_GPT_REPORTER_INCLUSIVE_DESIGN_2026_10_13.md), [before Wave D order](../P15_PRE_WAVE_D_STRUCTURAL_CLOSURE_ORDER_2026_10_13.md), then only directly relevant source/evidence. Prior work order/evidence [Claude second pass](evidence/P15-SECOND-PASS-CLAUDE-021.md), [parity closure](evidence/P15-PARITY-EVIDENCE-CLAUDE-022.md), [P1-fix](evidence/P15-PARITY-P1-FIX-CLAUDE-023.md) only when needed. P1.5.2 still OPEN; P1.5.3-P1.5.10 FIRST_PASS_WITH_DEBT; Wave D/P1.5.11 NOT STARTED.
 **Protected:** C:\Agentra live, dirty Q12 worktrees, main, broker, real LLM, production data/reports, scheduler, Docker, Supervisor/Executor/Step5C and UNKNOWN quarantine. Independent Codex auditor works in separate clean clone.
 
+**MANDATORY future architecture gate (user 2026-10-15):** After accepted T4 structural closure, before bulk folder realignment/P1.5.10/Wave D/P1.6, see [Post-T4 Architecture Visualization Gate](../P15_POST_T4_ARCHITECTURE_VISUALIZATION_GATE_2026_10_15.md). Deliver current 7-Agent Mermaid overview/module map, actual import SVG, editable target draw.io and consumer/authority gap matrix; GPT+user visually approve; Codex independently audits. **ARCH_CONVERGENCE_NOT_STARTED.** T4-A.1 Codex PENDING / T4-B BLOCKED unchanged.
+
 (Everything below is HISTORICAL context. Earlier "T0 first / T1 next / design ready, Claude not started" instructions are superseded and kept only for traceability.)
 
 ## Prior second-pass cursor (historical; skip unless needed)

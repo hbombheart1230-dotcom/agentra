@@ -3173,3 +3173,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 검증: 기존 false negative 재현 및 두 비교기 모두 거부, 73 records / 1,575 variants 전체 replay 0 mismatch, T3.5 계약 gate 유지. P2: hash seed 간 rank-1/선택 변화는 재현되지 않았고 두 State의 제외 심볼 목록 순서 차이는 기존 BASE 동작(변경 없음).
 - 상태: 독립 Codex 감사 대기, T4-B는 ACCEPT까지 BLOCKED, REAL_REPORT_PARITY_BLOCKED·NTFS P2 유지.
 
+## 2026-10-15 · P1.5 Architecture Visualization Gate — 사용자 확정
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · DOCUMENTATION · WORKFLOW
+
+- T4 전체 분해와 독립 검증을 먼저 완료하고, 그다음 실제 Git SHA 기반 7개 Agent/Owner Mermaid 현재 구조, import 의존성 SVG, 수정 가능한 draw.io 목표 구조, 경로별 consumer·권한 gap matrix를 필수로 생성하도록 문서 규칙을 고정했습니다.
+- GPT와 사용자가 실제 트리/목표를 눈으로 검토·승인해야 파일 이동·병합·이름 변경, P1.5.10 정리, Wave D 또는 P1.6로 넘어갈 수 있습니다. Codex 소비자/동적 의존성/SAFETY_LOCK 감사와 별도 동등성 검증 필수. 증거 부재 시 `ARCH_CONVERGENCE_BLOCKED`.
+- 규칙 연결: `AGENTS.md`, `CLAUDE.md`, `COMMON_RULES.md`, `CURRENT.md`, pre-Wave-D 순서. 현재 T4-A.1 Codex 감사 대기·T4-B BLOCKED 그대로. 이번 변경은 문서만, 다이어그램 생성·코드 재배치 미실시.
+- 근거: `docs/refactor/P15_POST_T4_ARCHITECTURE_VISUALIZATION_GATE_2026_10_15.md`, `docs/daily_patch/2026-10-15_p1_5_architecture_visualization_gate.md`.

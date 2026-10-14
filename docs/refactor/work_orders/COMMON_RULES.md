@@ -35,3 +35,8 @@
 - **Do not chase LOC.** Functions larger than one Owner (>350 LOC), façade wrappers and numbered Owners are SECOND_PASS_DEBT; record them, do not delete wrappers or pack source.
 - **Git only.** Git commit/push (single branch `refactor/p1.5`, isolated clone) is the sole deliverable. No ZIP, no download files unless the user asks. Both UI patch notes JSON+MD and a short daily patch are updated by the implementer.
 - **Wave C rule addendum (2026-10-12):** stage gates are pinned to their own end commits (Wave A `318015a0`, Wave B `cba2124a`); a later wave gets its own scope + trading-authority test. Executor-adjacent changes additionally require "every non-moved definition AST-identical to the baseline" evidence; without real immutable fixtures (EX1) only pure observability/read-model projections may move and the rest is recorded SAFETY_BLOCKED.
+
+## 2026-10-15 — Mandatory post-T4 visual architecture review (user decision)
+- Enforce [Post-T4 Architecture Visualization & Convergence Gate](../P15_POST_T4_ARCHITECTURE_VISUALIZATION_GATE_2026_10_15.md) after accepted T4 structural decomposition and before wholesale move/rename, P1.5.10 cleanup, Wave D final acceptance or P1.6 migration.
+- Generate SHA-pinned actual-source Mermaid current overview/modules, import dependency SVG, human-editable proposed draw.io target, and a consumer/authority gap matrix. User + GPT inspect and approve target; Codex independently audits direct/dynamic consumers and safety. No silent auto-application of a pretty tree.
+- If evidence or human decision is missing, `ARCH_CONVERGENCE_BLOCKED`. No change to T4-A.1 independent audit requirement, T4-B blocker or frozen trading semantics.

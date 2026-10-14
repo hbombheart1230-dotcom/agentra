@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 240,
+  "entry_count": 241,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6470,6 +6470,30 @@
         "docs/refactor/work_orders/evidence/P15-T4-A-1-CLAUDE-038.md",
         "scripts/refactor/p162_scanner_node_freeze_tool.py",
         "tests/test_p162_scanner_node_contract_freeze.py"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 Post-T4 Architecture Visualization Gate",
+      "title": "Require visual target-tree review after T4 before structural convergence or Wave D",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "DOCUMENTATION",
+        "WORKFLOW"
+      ],
+      "status": "planned",
+      "summary": "Git-track the mandatory post-T4 current/target architecture comparison and human review gate.",
+      "details": [
+        "After T4 independent acceptance generate pinned current seven-Agent Mermaid overview/modules, actual Python import graph SVG, editable target draw.io and consumer/safety gap matrix.",
+        "Require explicit GPT/user target approval and Codex consumer, dynamic call and protected-authority evidence; absent acceptance => ARCH_CONVERGENCE_BLOCKED.",
+        "No bulk file moves/renames, P1.5.10 wrapper cleanup, Wave D acceptance or P1.6 migration may bypass the architecture review; existing T4-A.1 pending / T4-B blocked unchanged.",
+        "Documentation-only decision; artifacts not yet generated, no runtime, golden, broker, LLM or CI changes."
+      ],
+      "impact": "Locks the deferred architecture convergence review so the target folder tree is not changed prematurely.",
+      "sources": [
+        "docs/refactor/P15_POST_T4_ARCHITECTURE_VISUALIZATION_GATE_2026_10_15.md",
+        "docs/daily_patch/2026-10-15_p1_5_architecture_visualization_gate.md"
       ]
     }
   ]
