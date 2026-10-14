@@ -37,4 +37,4 @@ T4-A.1 IMPLEMENTED / PENDING independent Codex audit. T4-B BLOCKED until ACCEPT.
 
 ## 5. CI
 
-Recorded after the hosted run (delivery commit).
+Run **38648709904 on `f6a52ea` SUCCESS**: Linux `regression` (T4-A structural gate + frozen contract with the portable same-host pinned-BASE oracle, T3.5 gates, historical/current gates) and the required `windows-harness-smoke` (native T4-A replay with 8/8 named contract tests accounted as PASSED, P156 containment/security gate unchanged).
