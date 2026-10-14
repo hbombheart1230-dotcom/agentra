@@ -1834,3 +1834,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Scheduled 16:45 Daily UEF: exit 0, one COMPLETE `UEF9RUN_559c27f2d0d1f62b`; UEF-7 14/14, UEF-8 91 pairs (0 COMPARABLE / 7 CONDITIONAL / 84 NOT_COMPARABLE), UEF-9 VALID; pointers and registry aligned; replay reproduced the run ids; freeze 11/11 MATCH.
 - Status: **P1.2 CLOSED; P1.3 FULL DOCKER FROZEN.** Backlog (non-blocking): Q9 compute-once/share, 20-day old-path equivalence NOT_AVAILABLE, monitor-exit-guard environment contamination. Next: P1.5 prework.
 - See `docs/daily_patch/2026-10-08_p1_2_p1_3_final_closure.md`.
+
+# 2026-10-15 - Reporting Target-Tree Relocation Batch 1
+
+- Relocated **12 Reporter helper modules** without changing their implementation bytes: `trade_report` (6), `trade_report_markdown` (2), `trade_story` (4).
+- Kept all previous import locations as identical module-object aliases for compatibility; existing runtime call sites and major reporting entrypoints remain untouched.
+- No T4 runtime files, order execution logic, guard, CAS or broker paths changed.
+- Added focused import-identity tests. Full pytest and UI build still needed before merge.
+- Details: `docs/daily_patch/2026-10-15_reporting_relocation_batch1.md`.

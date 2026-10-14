@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 114,
+  "entry_count": 115,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3054,6 +3054,31 @@
         "reports/evaluation/alpha_research_board/2026-10-08/generations/UEF9RUN_559c27f2d0d1f62b/COMPLETE.json",
         "data/logs/execution_readiness_evidence/2026-10-08.jsonl",
         "data/logs/events.jsonl"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Reporting-Target-Tree-Batch1",
+      "title": "Reporting modules relocated under final agent tree",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Move 12 unchanged Reporter helper module bodies to trade_report, trade_report_markdown and trade_story packages while keeping previous import locations as compatible aliases.",
+      "details": [
+        "6 trade_report, 2 trade_report_markdown and 4 trade_story modules are placed in role-aligned directories with byte-identical Git blobs.",
+        "Existing flat imports continue to resolve to the new module objects; no consumers or trading hot-path source files are changed.",
+        "Unit import-identity tests added. Full-checkout pytest and UI build remain merge prerequisites; draft PR remains unmerged.",
+        "Claude T4 Commander/Strategist/Scanner/Monitor/Executor/Supervisor scope is excluded."
+      ],
+      "impact": "Filesystem ownership improvement only; no deliberate trading, approval, broker, risk or report output semantics change.",
+      "sources": [
+        "docs/refactor/2026-10-15_reporting_relocation_batch1.md",
+        "tests/test_reporting_relocation_imports.py",
+        "docs/daily_patch/2026-10-15_reporting_relocation_batch1.md"
       ],
       "status": "current"
     }
