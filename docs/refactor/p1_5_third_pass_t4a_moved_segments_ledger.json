@@ -1,0 +1,246 @@
+{
+ "schema": "p162_t4a_moved_segments.v1",
+ "base_sha": "11a11df58f8d846cd9824fcb37eced521a57e887",
+ "node": "graphs/nodes/scanner_node.py",
+ "function": "scanner_node",
+ "segments": [
+  {
+   "function": "scanner_node",
+   "owner": "libs/runtime/scanner/candidate_row_projection.py",
+   "owner_function": "score_scanner_candidate_row",
+   "kind": "run",
+   "loc": 307,
+   "inputs": [
+    "candidate_meta",
+    "compatibility_bias_context",
+    "compatibility_policy",
+    "feature_map",
+    "gs",
+    "gs_signal",
+    "intrinsic_control_w",
+    "minute_rows_by_symbol",
+    "mock_by_sym",
+    "news_by_sym",
+    "news_signal_by_sym",
+    "ohlcv_by_symbol",
+    "playbook",
+    "policy",
+    "pool_meta",
+    "practical_scale",
+    "practical_w",
+    "risk_tone",
+    "scanner_bias_context",
+    "scanner_guidance",
+    "scanner_memory_bias",
+    "scanner_priority",
+    "skill_order_counts",
+    "skill_quotes",
+    "state",
+    "symbol",
+    "symbol_priors",
+    "trade_aggressiveness",
+    "w"
+   ],
+   "outputs": [
+    "row"
+   ],
+   "record": null,
+   "module": "graphs/nodes/scanner_node.py"
+  },
+  {
+   "function": "scanner_node",
+   "owner": "libs/runtime/scanner/ranking_policy_overlay.py",
+   "owner_function": "resolve_commander_scanner_policy",
+   "kind": "run",
+   "loc": 12,
+   "inputs": [
+    "state"
+   ],
+   "outputs": [
+    "commander_scanner_policy"
+   ],
+   "record": null,
+   "module": "graphs/nodes/scanner_node.py"
+  },
+  {
+   "function": "scanner_node",
+   "owner": "libs/runtime/scanner/ranking_policy_overlay.py",
+   "owner_function": "apply_scanner_ranking_policy_overlay",
+   "kind": "run",
+   "loc": 126,
+   "inputs": [
+    "commander_scanner_policy",
+    "enforce_blocker_family_veto",
+    "pool_meta",
+    "scan_results_sorted",
+    "state"
+   ],
+   "outputs": [
+    "blocker_family_overlay_meta",
+    "diversification_applied",
+    "diversification_bonus_value",
+    "market_representative_guard_meta",
+    "ranking_after_policy",
+    "ranking_before_policy",
+    "reentry_penalty_applied",
+    "reentry_penalty_value",
+    "scan_results_sorted",
+    "score_adjustment_trace",
+    "selected",
+    "selection_veto_enforced"
+   ],
+   "record": "ScannerRankingPolicyOverlay",
+   "module": "graphs/nodes/scanner_node.py"
+  },
+  {
+   "function": "scanner_node",
+   "owner": "libs/runtime/scanner/selection_output_projection.py",
+   "owner_function": "project_scanner_selection_evidence",
+   "kind": "run",
+   "loc": 130,
+   "inputs": [
+    "blocker_family_overlay_meta",
+    "candidate_visibility_limit",
+    "scan_results_sorted",
+    "scanner_memory_bias",
+    "scanner_policy_trace",
+    "score_adjustment_trace",
+    "selected",
+    "selection_veto_enforced"
+   ],
+   "outputs": [
+    "candidate_bias_adjustments",
+    "candidate_memory_bias_adjustments",
+    "candidate_symbol_prior_adjustments",
+    "commander_memory_application_trace",
+    "critical_negative_factors",
+    "critical_positive_factors",
+    "margin_vs_second",
+    "ranking_table",
+    "runner_up_reasons",
+    "scanner_bias_applied",
+    "scanner_bias_summary",
+    "scanner_memory_bias_applied",
+    "scanner_memory_bias_summary",
+    "selected_rank",
+    "selected_score_total",
+    "selected_snapshot",
+    "selected_symbol",
+    "selection_reason_with_bias",
+    "selection_summary"
+   ],
+   "record": "ScannerSelectionEvidence",
+   "module": "graphs/nodes/scanner_node.py"
+  },
+  {
+   "function": "scanner_node",
+   "owner": "libs/runtime/scanner/selection_output_projection.py",
+   "owner_function": "build_ranked_candidate_rows",
+   "kind": "builder",
+   "loc": 45,
+   "inputs": [
+    "scan_results_sorted"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/scanner_node.py"
+  },
+  {
+   "function": "scanner_node",
+   "owner": "libs/runtime/scanner/scanner_event_payloads.py",
+   "owner_function": "build_source_universe_snapshot",
+   "kind": "builder",
+   "loc": 30,
+   "inputs": [
+    "candidates",
+    "full_strategist_control_eligibility",
+    "pool_meta"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/scanner_node.py"
+  },
+  {
+   "function": "scanner_node",
+   "owner": "libs/runtime/scanner/scanner_event_payloads.py",
+   "owner_function": "build_scanner_ranking_event_payload",
+   "kind": "builder",
+   "loc": 41,
+   "inputs": [
+    "blocker_family_overlay_meta",
+    "market_representative_guard_meta",
+    "pool_meta",
+    "scan_results_sorted",
+    "selection_veto_enforced"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/scanner_node.py"
+  },
+  {
+   "function": "scanner_node",
+   "owner": "libs/runtime/scanner/scanner_event_payloads.py",
+   "owner_function": "build_scanner_summary_payload",
+   "kind": "builder",
+   "loc": 57,
+   "inputs": [
+    "blocker_family_overlay_meta",
+    "market_representative_guard_meta",
+    "playbook",
+    "pool_meta",
+    "ranking_table",
+    "risk_tone",
+    "scan_results_sorted",
+    "scanner_bias",
+    "scanner_bias_applied",
+    "scanner_bias_summary",
+    "scanner_memory_bias_applied",
+    "scanner_memory_bias_summary",
+    "scanner_priority",
+    "selected",
+    "selected_rank",
+    "selected_score_total",
+    "selected_symbol",
+    "selection_veto_enforced",
+    "state",
+    "top_score",
+    "trade_aggressiveness",
+    "visible_ranked_candidates"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/scanner_node.py"
+  },
+  {
+   "function": "scanner_node",
+   "owner": "libs/runtime/scanner/scanner_event_payloads.py",
+   "owner_function": "build_scanner_decision_trace_payload",
+   "kind": "builder",
+   "loc": 48,
+   "inputs": [
+    "blocker_family_overlay_meta",
+    "candidate_bias_adjustments",
+    "candidate_memory_bias_adjustments",
+    "commander_memory_application_trace",
+    "market_representative_guard_meta",
+    "playbook",
+    "pool_meta",
+    "scan_results_sorted",
+    "scanner_bias_applied",
+    "scanner_bias_summary",
+    "scanner_memory_bias",
+    "scanner_memory_bias_applied",
+    "scanner_memory_bias_summary",
+    "scanner_priority",
+    "selected",
+    "selection_reason_with_bias",
+    "selection_veto_enforced",
+    "state",
+    "top_candidates_summary"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/scanner_node.py"
+  }
+ ]
+}
