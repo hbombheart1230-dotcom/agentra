@@ -1,0 +1,32 @@
+{
+ "records": 73,
+ "variants": 1575,
+ "exceptions": 0,
+ "bound": 13,
+ "effects_total": 1131,
+ "sources": [
+  "tests/test_asset_universe_policy.py",
+  "tests/test_canonical_agent_artifacts.py",
+  "tests/test_data_quality_state_propagation.py",
+  "tests/test_decision_trace_ledger.py",
+  "tests/test_evidence_ledger_trace_layer.py",
+  "tests/test_kiwoom_candidate_provider.py",
+  "tests/test_m18_4_scanner_sentiment_weighting.py",
+  "tests/test_m18_scanner_global_sentiment_contract.py",
+  "tests/test_m22_skill_native_scanner_monitor.py",
+  "tests/test_m29_2_scanner_feature_integration.py",
+  "tests/test_m31_17_theme_candidate_flow_upgrade.py",
+  "tests/test_scanner_bias_integration.py",
+  "tests/test_scanner_candidate_risk.py",
+  "tests/test_scanner_fallback_policy.py",
+  "tests/test_scanner_live_symbol_filter.py",
+  "tests/test_scanner_memory_bias.py",
+  "tests/test_scanner_monitor_compatibility.py",
+  "tests/test_scanner_policy_overlay.py",
+  "tests/test_scanner_practical_selection_engine.py",
+  "tests/test_scanner_quote_hydration_runtime.py",
+  "tests/test_scanner_rank_plumbing_fix.py",
+  "tests/test_scanner_strategy_frame_integration.py",
+  "tests/test_scanner_universe_candidate_metadata.py"
+ ]
+}
