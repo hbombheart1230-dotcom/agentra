@@ -1834,3 +1834,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Scheduled 16:45 Daily UEF: exit 0, one COMPLETE `UEF9RUN_559c27f2d0d1f62b`; UEF-7 14/14, UEF-8 91 pairs (0 COMPARABLE / 7 CONDITIONAL / 84 NOT_COMPARABLE), UEF-9 VALID; pointers and registry aligned; replay reproduced the run ids; freeze 11/11 MATCH.
 - Status: **P1.2 CLOSED; P1.3 FULL DOCKER FROZEN.** Backlog (non-blocking): Q9 compute-once/share, 20-day old-path equivalence NOT_AVAILABLE, monitor-exit-guard environment contamination. Next: P1.5 prework.
 - See `docs/daily_patch/2026-10-08_p1_2_p1_3_final_closure.md`.
+
+# 2026-10-15 - P0 Strategist Contract Namespace (T4-isolated)
+
+- New target namespace: `libs/contracts/agents/strategist.py` exports the **identical** DTOs, type aliases and normalization function from `libs/strategies/contracts.py`.
+- Existing runtime imports, trading policy, Scanner/Monitor decisions, Supervisor approval, Executor guards, Step5C CAS and broker routing are unchanged.
+- Added focused identity, serialization, forward-extension and compatibility tests. Full-checkout pytest and UI production verification remain merge prerequisites.
+- Rollback: discard/revert this isolated additive branch; there is no runtime migration.
+- Details: `docs/daily_patch/2026-10-15_strategist_contract_namespace.md`.

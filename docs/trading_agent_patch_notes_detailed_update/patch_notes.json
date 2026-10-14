@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 114,
+  "entry_count": 115,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3054,6 +3054,31 @@
         "reports/evaluation/alpha_research_board/2026-10-08/generations/UEF9RUN_559c27f2d0d1f62b/COMPLETE.json",
         "data/logs/execution_readiness_evidence/2026-10-08.jsonl",
         "data/logs/events.jsonl"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P0-Strategist-Contract-Namespace",
+      "title": "T4-isolated Strategist contract import namespace",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "CONTRACTS",
+        "SAFETY"
+      ],
+      "summary": "Add the target libs/contracts/agents/strategist.py import path by re-exporting the original DTOs and coercion function without changing runtime callers.",
+      "details": [
+        "The new Strategist namespace aliases the exact existing Python class and function objects instead of copying DTO definitions.",
+        "Focused tests guard object identity, default serialization, additive fields and existing DTO compatibility.",
+        "Claude's T4 runtime files, order routing, approval, safety guards and Step5C CAS are unchanged.",
+        "Isolated review branch; full-checkout pytest and UI build remain merge prerequisites."
+      ],
+      "impact": "Additive refactor only. There is no intended trading, runtime, API, or operator UI behavior change.",
+      "sources": [
+        "libs/contracts/agents/strategist.py",
+        "tests/test_strategist_contract_namespace.py",
+        "docs/daily_patch/2026-10-15_strategist_contract_namespace.md"
       ],
       "status": "current"
     }
