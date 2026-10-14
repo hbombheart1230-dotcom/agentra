@@ -108,4 +108,4 @@ Fixture hygiene note: the committed freeze commit contains developer temp-path s
 
 ## 6. CI
 
-Recorded after the hosted run (delivery commit).
+History of the hosted gate: runs 38524807533 and 38525941509 (Linux T3.5 gate FAIL: fixture portability, see section 7), 38531563211 (diagnosis step: BASE/Linux and FEATURE/Linux identical failure), 38533766688 and 38534985652 (portable replay iteration 1/2: second portability finding), and **run 38536989001 on `4bae32b`: SUCCESS** for Linux `regression` (all pinned T1/T2/T3 gates, the T3.5 structural gate and the portable frozen-contract replay with no skip) and the required `windows-harness-smoke`. The T3.5 gate step on Linux executes: 11 structural AST gates + 9 frozen-contract tests (incl. the strategist replay, 148 inputs / sampled 1-in-16 of 18,497 variants against same-host pinned BASE evidence).
