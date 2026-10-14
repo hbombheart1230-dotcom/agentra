@@ -23,6 +23,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "eb53dc1fe56c2a70a21271faf2f3c25c9711e309"
+T35_END_SHA = "11a11df58f8d846cd9824fcb37eced521a57e887"  # accepted T3.5.1 end (= T4-A BASE)
 FACADE = "libs/contracts/agent_outputs.py"
 LEDGER = ROOT / "docs/refactor/p1_5_third_pass_t35_moved_segments_ledger.json"
 BUILDERS = ("build_strategist_output_artifact", "build_scanner_output_artifact", "build_monitor_output_artifact",
@@ -254,7 +255,8 @@ def test_stage_call_sites_pass_exactly_the_declared_inputs_and_facade_only_when_
 
 
 def test_t35_changed_paths_stay_inside_the_contract_scope_and_touch_no_authority_surface():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    # stage-pinned: T3.5 scope is fixed to its accepted end commit (later stages have their own scope gates)
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, T35_END_SHA], cwd=ROOT).decode().split(chr(0))
     allowed = ("libs/contracts/", "tests/", "docs/", "scripts/refactor/", ".github/workflows/", "CLAUDE.md", "AGENTS.md")
     for p in [x for x in out if x]:
         assert p.startswith(allowed), f"T3.5 touched an out-of-scope path: {p}"

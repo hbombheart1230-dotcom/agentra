@@ -483,7 +483,7 @@ def verify(outdir, sample_mod=1, portable=False, oracle=None):
 
 if __name__ == "__main__":
     cmd = sys.argv[1]
-    if cmd in ("generate", "compute") and os.environ.get("PYTHONHASHSEED") != "0":
+    if cmd in ("generate", "compute", "diagnose") and os.environ.get("PYTHONHASHSEED") != "0":
         raise SystemExit("run with PYTHONHASHSEED=0 (BASE scanner ranking depends on string-hash order)")
     if cmd == "generate":
         print(json.dumps(generate(sys.argv[2], sys.argv[3])))
@@ -495,6 +495,26 @@ if __name__ == "__main__":
         for x in b[:20]:
             print(x)
         sys.exit(1 if b else 0)
+    elif cmd == "diagnose":
+        import platform
+        k = int(sys.argv[3]) if len(sys.argv) > 3 else 3
+        print("CONTEXT", json.dumps({"python": platform.python_version(), "os": platform.platform(),
+                                      "tmp": tempfile.gettempdir(), "cwd": os.getcwd(),
+                                      "hashseed": os.environ.get("PYTHONHASHSEED")}))
+        shown = 0
+        for rec in load(sys.argv[2]):
+            a = replay(rec["state_in"])
+            g = rec["golden"]
+            if a["state_sha"] == g["state_sha"] and a["effects_sha"] == g["effects_sha"]:
+                continue
+            d = first_diff(a["state"], g["state"])
+            ei = next((i for i, (u, v) in enumerate(zip(a["effects"], g["effects"])) if u != v), None)
+            print("DIFF", rec["id"], "state:", d[:260], "| effects first diff idx:", ei,
+                  (a["effects"][ei][0] if ei is not None else ""), "| exc:", a["exception"])
+            shown += 1
+            if shown >= k:
+                break
+        print("DIAGNOSE_DONE", shown)
     elif cmd == "compute":
         res = compute(sys.argv[2], int(sys.argv[3]))
         import graphs.nodes.scanner_node as _sn
