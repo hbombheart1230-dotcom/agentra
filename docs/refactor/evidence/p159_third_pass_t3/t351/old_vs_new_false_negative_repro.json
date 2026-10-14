@@ -1,0 +1,13 @@
+{
+ "record": "build_strategist_output_artifact#08",
+ "old_verify_mismatches_output_bytes": [],
+ "old_verify_total": 5,
+ "new_verify_output_bytes": [
+  [
+   "build_strategist_output_artifact#08",
+   "output_bytes",
+   "FEATURE != pinned BASE on this host (exact canonical SHA-256)"
+  ]
+ ],
+ "exact_sha_equal": false
+}

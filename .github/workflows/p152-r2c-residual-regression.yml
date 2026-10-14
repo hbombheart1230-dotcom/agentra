@@ -294,11 +294,15 @@ jobs:
   windows-harness-smoke:
     name: Windows harness isolation smoke (required)
     runs-on: windows-latest
-    timeout-minutes: 15
+    # P156 harness suite ~20 s + settle/pip ~2 min + native T3.5 contract replay (full 148 records, 1/16 variant
+    # sample) measured locally at ~2 min on Windows; 30 min leaves headroom for a slower hosted runner.
+    timeout-minutes: 30
     env:
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -355,6 +359,54 @@ jobs:
           for k in need:
               assert any(n.endswith('[' + k + ']') for n in names), k
           PY
+      - name: T3.5 native contract replay on Windows (required; committed golden, no normalisation, no portable mode)
+        shell: bash
+        env:
+          T35_REQUIRE_NATIVE: '1'
+          T35_FIXTURE_MODE: native
+        run: |
+          mkdir -p branch_output
+          rc=0
+          python -m pytest -q -p no:cacheprovider tests/test_p161_agent_output_contract_freeze.py -rs --junitxml=branch_output/t35_windows_junit.xml > branch_output/t35_windows_pytest.log 2>&1 || rc=$?
+          cat branch_output/t35_windows_pytest.log
+          if [ "$rc" != "0" ]; then python -c "t=open('branch_output/t35_windows_pytest.log',encoding='utf-8',errors='replace').read()[-5000:];print('::error title=t35-windows-native-tail::'+t.replace('%','%25').replace(chr(13),'%0D').replace(chr(10),'%0A'))"; fi
+          exit $rc
+      - name: T3.5 native replay accounting (every required test RAN and PASSED; skip/deselect/missing is a failure)
+        shell: bash
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          root = ET.parse('branch_output/t35_windows_junit.xml').getroot()
+          rows = {}
+          for c in root.iter('testcase'):
+              st = 'SKIPPED' if c.find('skipped') is not None else 'FAILED' if (c.find('failure') is not None or c.find('error') is not None) else 'PASSED'
+              rows[c.get('name')] = st
+          required = [
+              'test_public_signatures_names_and_constants_are_frozen_to_base',
+              'test_golden_fixture_inventory_covers_all_four_large_builders',
+              'test_native_mode_is_used_on_windows_when_required',
+              'test_replay_matches_base_bytes_mutation_dependency_trace_and_variants',
+              'test_commander_route_grid_covers_every_selected_route_and_blocked_reason_class',
+              'test_use_time_runtime_dependencies_are_resolved_through_the_facade_module',
+              'test_validation_block_is_produced_by_the_canonical_validate_artifact[build_strategist_output_artifact]',
+              'test_validation_block_is_produced_by_the_canonical_validate_artifact[build_scanner_output_artifact]',
+              'test_validation_block_is_produced_by_the_canonical_validate_artifact[build_monitor_output_artifact]',
+              'test_validation_block_is_produced_by_the_canonical_validate_artifact[build_commander_output_artifact]',
+              'test_old_false_negative_is_closed_separator_only_regression_is_rejected',
+              'test_portable_oracle_uses_exact_equality_for_bound_and_non_bound_records[False]',
+              'test_portable_oracle_uses_exact_equality_for_bound_and_non_bound_records[True]',
+              'test_portable_oracle_rejects_changed_value_and_changed_key_order',
+              'test_portable_oracle_fails_closed_on_missing_or_malformed_base_evidence',
+              'test_committed_golden_files_are_unchanged_since_the_freeze_commit',
+          ]
+          print('T35 windows tests collected:', len(rows))
+          missing = [n for n in required if n not in rows]
+          assert not missing, ('required T3.5 tests missing (collection/deselection)', missing)
+          bad = {n: rows[n] for n in required if rows[n] != 'PASSED'}
+          assert not bad, ('required T3.5 tests not PASSED', bad)
+          assert len(rows) == len(required), ('unexpected test count', len(rows), len(required))
+          print('T35 native replay: %d/%d required tests PASSED on Windows' % (len(required), len(required)))
+          PY
       - name: Upload Windows harness JUnit
         if: always()
         uses: actions/upload-artifact@v4
@@ -366,6 +418,8 @@ jobs:
             branch_output/harness_windows_settle.log
             branch_output/ntfs_probe_before_settle.json
             branch_output/ntfs_settle_summary.json
+            branch_output/t35_windows_junit.xml
+            branch_output/t35_windows_pytest.log
           if-no-files-found: warn
   broad_remote_offline:
     name: Repo-wide mock/offline non-heavy regression (manual diagnostic only)

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 237,
+  "entry_count": 238,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6396,6 +6396,31 @@
         "libs/contracts/agent_outputs.py",
         "tests/test_p161_t35_extraction_gates.py",
         "tests/test_p161_agent_output_contract_freeze.py"
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "version": "P1.5 T3.5.1",
+      "title": "T3.5.1: exact portable BASE-FEATURE oracle and required Windows native contract gate",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "Codex found that the portable frozen-contract replay compared 80 records with a path-separator-normalised golden, so a separator-only FEATURE regression passed, and that the required Windows job did not execute the T3.5 contract test. The portable oracle now compares every record exactly with the pinned BASE tree executed on the same host (fail-closed on missing or malformed BASE evidence), golden integrity is accounted separately, and the required Windows job runs the native replay with explicit JUnit accounting.",
+      "details": [
+        "The old false negative was reproduced and is now rejected; changed value, changed key order, missing/malformed BASE evidence and equal outputs have focused tests; committed golden fixtures are unchanged.",
+        "Exact BASE-FEATURE equality for 148/148 records in portable mode; native Windows replay of the committed golden for all 148 records with the existing 1-in-16 variant sample; the 18,497-variant corpus stays verifiable.",
+        "Both P1 fixes pending independent Codex audit; T3.5 structural parity unchanged; REAL_REPORT_PARITY_BLOCKED open; NTFS P2 unresolved; T4/T5/Wave D not started."
+      ],
+      "impact": "Test tooling, CI and documentation only; no trading, LLM, ranking or report behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-T3-5-1-CLAUDE-036.md",
+        "scripts/refactor/p161_agent_output_freeze_tool.py",
+        "tests/test_p161_agent_output_contract_freeze.py",
+        ".github/workflows/p152-r2c-residual-regression.yml"
       ]
     }
   ]

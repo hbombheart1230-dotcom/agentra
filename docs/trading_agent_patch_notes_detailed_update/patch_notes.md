@@ -3147,3 +3147,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 유예: monitor decision-rule stage(201 LOC)와 scanner bias stage(155 LOC)는 평가 순서 변경 위험으로 SAFETY_LOCK 유지. Supervisor/Executor/Step5C 및 실제 Reporter parity(BLOCKED)는 변경 없음. 독립 Codex 검토 대기.
 - Linux CI 진단: 고정 fixture replay가 Linux에서 실패했으나 원본 BASE 트리도 Linux에서 동일하게 실패(`source_refs.evidence_log_path`의 `str(Path(...))` 경로 구분자 차이)하여 리팩터 회귀가 아닌 fixture 이식성 문제로 확인했습니다. 커밋된 golden은 수정하지 않았고, 비 Windows 환경에서는 고정 BASE 트리를 같은 플랫폼에서 실행한 증거와 비교합니다.
 
+## 2026-10-14 · P1.5 T3.5.1 (portable oracle · Windows native gate 종결 작업)
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY · WORKFLOW
+
+- 확인(Codex): portable replay가 80개 non-bound 레코드를 경로 구분자를 정규화한 golden과 비교하여 구분자만 바꾼 FEATURE 회귀를 통과시키는 false negative, 그리고 필수 Windows job이 T3.5 계약 테스트를 실행하지 않는 gap.
+- 수정: portable 모드에서 148개 전체 레코드를 고정 BASE 트리를 같은 호스트에서 실행한 결과와 canonical SHA-256 정확 일치로 비교(정규화 금지, BASE 증거 누락·형식 오류는 fail-closed)하고, golden 무결성은 별도 집계(80/68)합니다. 필수 Windows job에 native 계약 replay(16개 필수 테스트 JUnit 집계, skip/deselect/누락 금지)를 추가했습니다.
+- 검증: 기존 false negative 재현 및 현재 거부, committed golden 불변, 구조 AST gate 유지. 독립 Codex 재감사 대기, T3.5 구조 parity PASS 유지, REAL_REPORT_PARITY_BLOCKED·NTFS P2 유지, T4/T5/Wave D 미시작.
+
