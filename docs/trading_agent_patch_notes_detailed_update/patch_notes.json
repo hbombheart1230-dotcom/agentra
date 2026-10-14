@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 234,
+  "entry_count": 235,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6321,6 +6321,29 @@
       "impact": "Test-harness, CI check and documentation only; no trading, LLM, ranking or report behavior changed.",
       "sources": [
         "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-2-CLAUDE-032.md",
+        "scripts/refactor/p156_parity_differential.py",
+        "tests/test_p156_parity_harness.py"
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "version": "P1.5 Third Pass T3.2.1",
+      "title": "T3.2.1: summary.json is now a fixed-allowlist export-safe summary",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "SAFETY",
+        "TESTING"
+      ],
+      "status": "current",
+      "summary": "The parity harness wrote its whole internal evidence object to summary.json, so test names, test paths, pytest output tails, failed-test names, recorded function names and reproduce text could leave through the export file. summary.json is now built from a fixed allowlist with validated enums, SHAs, bounded counts and path digests; the full internal evidence moves to a LOCAL_ONLY local_evidence.json and strict containment is unchanged.",
+      "details": [
+        "Confirmed at BASE with synthetic markers: five uncontrolled inputs appeared in summary.json; after the fix none appears in the whole serialized file across unit and two real four-session runs.",
+        "Seven new/updated tests fail on BASE and 63 harness tests pass now; clean run exit 0, contaminated run exit 2 with correct counts; local diagnostics survive cleanup.",
+        "File-body copy sub-issue FIXED (T3.2); export-safe summary PENDING independent Codex re-audit; local logs and manifests stay potentially sensitive and LOCAL ONLY; NTFS settle P2 unresolved; T3.5 blocked until security acceptance."
+      ],
+      "impact": "Test-harness and documentation only; no trading, LLM, ranking or report behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-2-1-CLAUDE-033.md",
         "scripts/refactor/p156_parity_differential.py",
         "tests/test_p156_parity_harness.py"
       ]

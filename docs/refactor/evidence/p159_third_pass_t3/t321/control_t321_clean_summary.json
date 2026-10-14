@@ -1,0 +1,103 @@
+{
+ "schema": "p156_export_safe_summary.v1",
+ "baseline_sha": "df9401c61485b036aab6084fadcd7da4b55b8890",
+ "feature_sha": "df9401c61485b036aab6084fadcd7da4b55b8890",
+ "mode": "det",
+ "execution": "parallel",
+ "execution_order": [
+  "b1",
+  "b2",
+  "f1",
+  "f2"
+ ],
+ "containment": {
+  "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+  "manifest_mode": "strict_sha256",
+  "content_equivalence_proven": true,
+  "verdict": "PASS",
+  "not_proven": [
+   "transient write-and-restore during execution",
+   "writes outside the session root",
+   "OS-wide write interception"
+  ]
+ },
+ "comparison": {
+  "total_calls": 59,
+  "byte_identical": 59,
+  "justified_tolerance": 0,
+  "real_mismatch": 0,
+  "unresolved": 0,
+  "test_outcomes_identical": true
+ },
+ "failed_sessions": [],
+ "sessions": {
+  "b1": {
+   "exit_code": 0,
+   "containment_verdict": "PASS",
+   "differences_total": 0,
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "project_write_audit_banner": false
+  },
+  "b2": {
+   "exit_code": 0,
+   "containment_verdict": "PASS",
+   "differences_total": 0,
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "project_write_audit_banner": false
+  },
+  "f1": {
+   "exit_code": 0,
+   "containment_verdict": "PASS",
+   "differences_total": 0,
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "project_write_audit_banner": false
+  },
+  "f2": {
+   "exit_code": 0,
+   "containment_verdict": "PASS",
+   "differences_total": 0,
+   "difference_counts": {
+    "CREATED": 0,
+    "DELETED": 0,
+    "TYPE_CHANGED": 0,
+    "CONTENT_CHANGED": 0,
+    "METADATA_CHANGED": 0,
+    "SCAN_ERROR": 0
+   },
+   "differences": [],
+   "project_write_audit_banner": false
+  }
+ },
+ "local_only_files": [
+  "local_evidence.json",
+  "non_identical_details.json",
+  "containment_<tag>.json",
+  "pytest_<tag>.out",
+  "raw_calls_<tag>.json",
+  "failed_sessions/"
+ ]
+}

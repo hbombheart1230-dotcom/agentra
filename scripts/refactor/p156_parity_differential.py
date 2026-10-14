@@ -529,6 +529,102 @@ def preserve_failed_evidence(root, verdict, dest, before, after, caps=None):
     return summary
 
 
+# ---- export-safe summary (T3.2.1) ----------------------------------------------------------------------------------
+# A + B must never be confused:
+#   A. internal comparison evidence (`local_evidence.json`) - names, test paths, pytest tails, failed-test names,
+#      recorder-derived keys, reproduce text: may hold anything a fixture produced; LOCAL ONLY;
+#   B. export-safe summary (`summary.json`) - built from a FIXED ALLOWLIST below. Nothing is copied from the internal
+#      object structurally: every value is re-validated (enum / SHA / bounded int / bool / digest), so an unknown or
+#      uncontrolled field can never appear, and no arbitrary string can stand in for a validated value.
+EXPORT_SCHEMA = "p156_export_safe_summary.v1"
+EXPORT_SESSION_TAGS = ("b1", "b2", "f1", "f2")
+EXPORT_MODES = ("det", "natural")
+EXPORT_EXECUTIONS = ("parallel", "sequential", "same_path")
+EXPORT_VERDICTS = ("PASS", "FAIL")
+EXPORT_MANIFEST_MODES = (MODE_STRICT, MODE_FAST)
+EXPORT_MAX_DIFFERENCES = 20
+_SHA1_HEX = re.compile(r"^[0-9a-f]{40}$")
+_DIGEST_HEX = re.compile(r"^[0-9a-f]{16}$")
+
+
+def _ex_int(value, hi=10 ** 9):
+    return value if isinstance(value, int) and not isinstance(value, bool) and 0 <= value <= hi else None
+
+
+def _ex_code(value):
+    return value if isinstance(value, int) and not isinstance(value, bool) and -(10 ** 4) <= value <= 10 ** 4 else None
+
+
+def _ex_enum(value, allowed):
+    return value if isinstance(value, str) and value in allowed else None
+
+
+def _ex_bool(value):
+    return value if isinstance(value, bool) else None
+
+
+def _ex_sha(value):
+    return value if isinstance(value, str) and _SHA1_HEX.match(value) else None
+
+
+def build_export_safe_summary(internal):
+    """Fresh object from a fixed allowlist (no recursive copy, no blacklist). Invalid or unexpected values become
+    `None`; unknown input fields are ignored."""
+    iso = internal.get("isolation") if isinstance(internal.get("isolation"), dict) else {}
+    wc = iso.get("write_containment") if isinstance(iso.get("write_containment"), dict) else {}
+    comp = internal.get("summary") if isinstance(internal.get("summary"), dict) else {}
+    sessions = {}
+    for tag in EXPORT_SESSION_TAGS:
+        c = wc.get(tag) if isinstance(wc.get(tag), dict) else {}
+        counts = c.get("difference_counts") if isinstance(c.get("difference_counts"), dict) else {}
+        diffs = []
+        raw = c.get("differences_export_safe") if isinstance(c.get("differences_export_safe"), list) else []
+        for d in raw[:EXPORT_MAX_DIFFERENCES]:
+            if isinstance(d, dict):
+                kind, dig = _ex_enum(d.get("kind"), DIFF_KINDS), d.get("path_digest")
+                if kind and isinstance(dig, str) and _DIGEST_HEX.match(dig):
+                    diffs.append({"kind": kind, "path_digest": dig})
+        sessions[tag] = {
+            "exit_code": _ex_code(c.get("exit_code")),
+            "containment_verdict": _ex_enum(c.get("verdict"), EXPORT_VERDICTS),
+            "differences_total": _ex_int(c.get("differences_total")),
+            "difference_counts": {k: _ex_int(counts.get(k)) for k in DIFF_KINDS},
+            "differences": diffs,
+            "project_write_audit_banner": _ex_bool(c.get("project_write_audit_banner")),
+        }
+    failed = [t for t in EXPORT_SESSION_TAGS if sessions[t]["containment_verdict"] != "PASS"]
+    verdicts = [sessions[t]["containment_verdict"] for t in EXPORT_SESSION_TAGS]
+    order = internal.get("execution_order")
+    return {
+        "schema": EXPORT_SCHEMA,
+        "baseline_sha": _ex_sha(internal.get("baseline_sha")),
+        "feature_sha": _ex_sha(internal.get("feature_sha")),
+        "mode": _ex_enum(internal.get("mode"), EXPORT_MODES),
+        "execution": ("same_path" if internal.get("same_session_path") is True else
+                      "sequential" if internal.get("sequential") is True else "parallel"),
+        "execution_order": [t for t in (order if isinstance(order, list) else []) if t in EXPORT_SESSION_TAGS],
+        "containment": {
+            "guarantee": CONTAINMENT_GUARANTEE,
+            "manifest_mode": _ex_enum(iso.get("containment_manifest_mode"), EXPORT_MANIFEST_MODES),
+            "content_equivalence_proven": _ex_bool(iso.get("content_equivalence_proven")),
+            "verdict": "PASS" if all(v == "PASS" for v in verdicts) else "FAIL",
+            "not_proven": list(CONTAINMENT_NOT_PROVEN),
+        },
+        "comparison": {
+            "total_calls": _ex_int(comp.get("total_calls")),
+            "byte_identical": _ex_int(comp.get("BYTE_IDENTICAL")),
+            "justified_tolerance": _ex_int(comp.get("JUSTIFIED_TOLERANCE")),
+            "real_mismatch": _ex_int(comp.get("REAL_MISMATCH")),
+            "unresolved": _ex_int(comp.get("UNRESOLVED")),
+            "test_outcomes_identical": _ex_bool(comp.get("test_outcomes_identical_across_all_sessions")),
+        },
+        "failed_sessions": failed,
+        "sessions": sessions,
+        "local_only_files": ["local_evidence.json", "non_identical_details.json", "containment_<tag>.json",
+                             "pytest_<tag>.out", "raw_calls_<tag>.json", "failed_sessions/"],
+    }
+
+
 def prune_task_owned(parent, keep=5, max_age_days=14.0, max_total_bytes=64 << 20, now=None):
     """Finite retention for failed-evidence bundles: only DIRECT children of `parent` that carry TASK_OWNED_MARKER are
     ever considered; the newest `keep` survive, older than `max_age_days` or beyond `max_total_bytes` are removed.
@@ -594,7 +690,7 @@ def run_sessions(args):
     out.mkdir(parents=True, exist_ok=False)
     (work / TASK_OWNED_MARKER).write_text("p156 run-owned disposable work root\n", encoding="utf-8")
     (out / "LOCAL_ONLY.txt").write_text(
-        "LOCAL ONLY except summary.json. pytest_*.out, raw_calls_*.json, containment_*.json and failed_sessions/ may hold "
+        "LOCAL ONLY except summary.json. local_evidence.json, pytest_*.out, raw_calls_*.json, containment_*.json and failed_sessions/ may hold "
         "paths, digests or arbitrary test output and are never sanitized; do not upload or commit them.\n", encoding="utf-8")
     manifest_mode = MODE_FAST if getattr(args, "containment", "strict") == "fast" else MODE_STRICT
     harness = work / "_harness"
@@ -705,7 +801,10 @@ def run_sessions(args):
                                "--names", "<names.json>", "--tests", "<tests.txt>", "--work-root", "<empty dir>",
                                "--out-dir", "<new dir>", "--mode", args.mode] + (["--sequential"] if args.sequential else []) + (["--same-path"] if args.same_path else [])),
     }
-    (out / "summary.json").write_text(json.dumps(evidence, indent=1, ensure_ascii=False), encoding="utf-8")
+    # A. internal evidence: LOCAL ONLY (may contain names, test paths, pytest tails, reproduce text)
+    (out / "local_evidence.json").write_text(json.dumps(evidence, indent=1, ensure_ascii=False), encoding="utf-8")
+    # B. export-safe summary: fixed allowlist only
+    (out / "summary.json").write_text(json.dumps(build_export_safe_summary(evidence), indent=1), encoding="utf-8")
     (out / "non_identical_details.json").write_text(json.dumps(details, indent=1, ensure_ascii=False), encoding="utf-8")
     if not args.keep_sessions:
         for s in sessions.values():

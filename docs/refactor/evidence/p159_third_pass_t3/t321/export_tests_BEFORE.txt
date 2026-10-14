@@ -1,0 +1,14 @@
+>       assert summary["failed_sessions"] == ["f2"]
+E       KeyError: 'failed_sessions'
+        """Vectors 1-8: names JSON, test path, pytest output, failed-test name, recorder payload, dynamic key, raw path,
+______ test_export_local_diagnostics_remain_after_failed_session_cleanup ______
+    def test_export_local_diagnostics_remain_after_failed_session_cleanup(tmp_path):
+        diff = json.loads((out / "failed_sessions" / "f2" / "diff.json").read_text(encoding="utf-8"))
+FAILED tests/test_p156_parity_harness.py::test_security_end_to_end_default_run_exports_no_synthetic_payload
+FAILED tests/test_p156_parity_harness.py::test_export_summary_contains_no_uncontrolled_value_from_any_internal_field
+FAILED tests/test_p156_parity_harness.py::test_export_summary_schema_is_fixed_and_unknown_fields_are_not_exported
+FAILED tests/test_p156_parity_harness.py::test_export_summary_validates_types_enums_shas_and_bounds
+FAILED tests/test_p156_parity_harness.py::test_export_clean_four_session_run_passes_with_a_safe_summary
+FAILED tests/test_p156_parity_harness.py::test_export_contaminated_four_session_run_exits_2_with_correct_counts_and_safe_summary
+FAILED tests/test_p156_parity_harness.py::test_export_local_diagnostics_remain_after_failed_session_cleanup
+7 failed, 2 passed, 54 deselected, 1 warning in 30.65s

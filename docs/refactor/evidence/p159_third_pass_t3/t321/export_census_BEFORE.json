@@ -1,0 +1,10 @@
+{
+ "exit": 2,
+ "markers_present_in_summary_json_at_BASE": [
+  "EXPMARK_UNCONFIGURE_OUTPUT",
+  "dir_EXPMARK_TESTPATH",
+  "test_failing_EXPMARK_FAILED_NAME",
+  "test_probe_EXPMARK_TESTFILE",
+  "work_EXPMARK_FN"
+ ]
+}

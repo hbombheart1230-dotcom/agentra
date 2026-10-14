@@ -678,7 +678,7 @@ def test_security_end_to_end_default_run_exports_no_synthetic_payload(tmp_path):
     leaked = [str(q.relative_to(out)) for q in _all_files(out) if SYNTHETIC_SECRET.encode() in q.read_bytes()]
     assert leaked == [], leaked
     summary = json.loads((out / "summary.json").read_text(encoding="utf-8"))
-    assert summary["isolation"]["failed_sessions"] == ["f2"]
+    assert summary["failed_sessions"] == ["f2"]
     bundle = json.loads((out / "failed_sessions" / "f2" / "bundle.json").read_text(encoding="utf-8"))
     assert bundle["retention"] == "metadata_only" and not (out / "failed_sessions" / "f2" / "files").exists()
     text = (out / "summary.json").read_text(encoding="utf-8")
@@ -761,3 +761,192 @@ def test_containment_ntfs_diag_probe_is_read_only_and_never_tolerant(tmp_path):
     rec = _diag().probe(delays=(0.0, 0.0))
     assert rec["status"] == "UNRESOLVED" and "no tolerance" in rec["note"]
     assert P.audit_session(before, P.snapshot_manifest(_diag().ROOT.joinpath("scripts"), P.MODE_FAST), "ok", 0)["verdict"] == "PASS"
+
+
+# ---- T3.2.1 export-safe summary: fixed allowlist, nothing uncontrolled can reach summary.json ----------------------
+EXPORT_MARK = "EXPMARK"  # synthetic marker; every uncontrolled value below carries it
+
+
+def _hostile_internal():
+    """Internal evidence shaped like run_sessions() output, with a marker in every uncontrolled field."""
+    tag = lambda t: {"verdict": "FAIL" if t == "f2" else "PASS", "exit_code": 2 if t == "f2" else 0,  # noqa: E731
+                     "differences_total": 1 if t == "f2" else 0,
+                     "difference_counts": {"CREATED": 1 if t == "f2" else 0, "DELETED": 0, "TYPE_CHANGED": 0,
+                                           "CONTENT_CHANGED": 0, "METADATA_CHANGED": 0, "SCAN_ERROR": 0},
+                     "project_write_audit_banner": False,
+                     "differences_export_safe": ([{"kind": "CREATED", "path_digest": "0123456789abcdef"}] if t == "f2" else []),
+                     "differences": [{"path": f"/raw/{EXPORT_MARK}_RAW_PATH.txt", "kind": "CREATED"}],  # internal only
+                     "problems": [f"{EXPORT_MARK}_PROBLEM_TEXT"], "new_paths_sample": [f"{EXPORT_MARK}_SAMPLE"]}
+    sessions = {t: {"sha": "a" * 40, "exit_code": 0, "log_sha256": "b" * 64, "log_bytes": 1,
+                    "pytest_summary": f"{EXPORT_MARK}_PYTEST_TAIL_unconfigure"} for t in ("b1", "b2", "f1", "f2")}
+    return {
+        "schema": "p156_parity_differential.v1", "mode": "det", "sequential": False, "same_session_path": False,
+        "baseline_sha": "a" * 40, "feature_sha": "c" * 40, "repo_head_for_harness": "d" * 40,
+        "names": {f"mod_{EXPORT_MARK}_NAMES": [f"fn_{EXPORT_MARK}_DYNAMIC_KEY"]},
+        "test_files": [f"/tmp/{EXPORT_MARK}_TEST_PATH/test_x.py"], "execution_order": ["b1", "b2", "f1", "f2"],
+        "sessions": sessions,
+        "isolation": {"write_containment": {t: tag(t) for t in ("b1", "b2", "f1", "f2")},
+                      "containment_manifest_mode": "strict_sha256", "content_equivalence_proven": True,
+                      "containment_verdict": "FAIL", "failed_sessions": ["f2"]},
+        "tolerance_rules": {"R-X": {"keys": [f"{EXPORT_MARK}_KEY"], "why": f"{EXPORT_MARK}_WHY"}},
+        "summary": {"total_calls": 5, "BYTE_IDENTICAL": 4, "JUSTIFIED_TOLERANCE": 1, "REAL_MISMATCH": 0, "UNRESOLVED": 0,
+                    "test_outcomes_identical_across_all_sessions": True,
+                    "failed_tests": [f"tests/test_{EXPORT_MARK}_FAILED_NAME.py::test_x"],
+                    "per_function": {f"fn_{EXPORT_MARK}_DYNAMIC_KEY": {"calls": 5}}},
+        "reproduce": f"python p156 --names /x/{EXPORT_MARK}_REPRODUCE.json",
+        "unknown_future_field": f"{EXPORT_MARK}_UNKNOWN_FIELD", "debug": {"payload": f"{EXPORT_MARK}_RECORDER_PAYLOAD"},
+    }
+
+
+def test_export_summary_contains_no_uncontrolled_value_from_any_internal_field():
+    """Vectors 1-8: names JSON, test path, pytest output, failed-test name, recorder payload, dynamic key, raw path,
+    unknown field - the whole serialized bytes must not contain any of them."""
+    internal = _hostile_internal()
+    assert EXPORT_MARK in json.dumps(internal)  # the fixture really is hostile
+    blob = json.dumps(P.build_export_safe_summary(internal), indent=1)
+    assert EXPORT_MARK not in blob
+    for needle in ("names", "reproduce", "pytest_summary", "failed_tests", "per_function", "test_files", "unknown_future",
+                   "debug", "tolerance_rules", "/raw/", "log_sha256"):
+        assert needle not in blob, needle
+
+
+def test_export_summary_schema_is_fixed_and_unknown_fields_are_not_exported():
+    out = P.build_export_safe_summary(_hostile_internal())
+    assert set(out) == {"schema", "baseline_sha", "feature_sha", "mode", "execution", "execution_order", "containment",
+                        "comparison", "failed_sessions", "sessions", "local_only_files"}
+    assert out["schema"] == P.EXPORT_SCHEMA and set(out["sessions"]) == {"b1", "b2", "f1", "f2"}
+    assert set(out["containment"]) == {"guarantee", "manifest_mode", "content_equivalence_proven", "verdict", "not_proven"}
+    assert set(out["comparison"]) == {"total_calls", "byte_identical", "justified_tolerance", "real_mismatch",
+                                      "unresolved", "test_outcomes_identical"}
+    assert set(out["sessions"]["f2"]) == {"exit_code", "containment_verdict", "differences_total", "difference_counts",
+                                          "differences", "project_write_audit_banner"}
+    assert set(out["sessions"]["f2"]["difference_counts"]) == set(P.DIFF_KINDS)
+    internal = _hostile_internal()
+    internal["brand_new_field"] = "should-not-appear"
+    internal["isolation"]["write_containment"]["f2"]["brand_new_nested"] = "should-not-appear"
+    assert "should-not-appear" not in json.dumps(P.build_export_safe_summary(internal))
+    assert out["failed_sessions"] == ["f2"] and out["containment"]["verdict"] == "FAIL"
+
+
+def test_export_summary_validates_types_enums_shas_and_bounds():
+    internal = _hostile_internal()
+    internal["baseline_sha"] = f"{EXPORT_MARK}_NOT_A_SHA"
+    internal["feature_sha"] = "G" * 40
+    internal["mode"] = f"{EXPORT_MARK}_mode"
+    internal["summary"]["total_calls"] = f"{EXPORT_MARK}_not_int"
+    internal["summary"]["REAL_MISMATCH"] = True  # bool is not a count
+    internal["summary"]["UNRESOLVED"] = -3
+    internal["summary"]["test_outcomes_identical_across_all_sessions"] = f"{EXPORT_MARK}_str"
+    wc = internal["isolation"]["write_containment"]["f2"]
+    wc["exit_code"] = f"{EXPORT_MARK}_code"
+    wc["verdict"] = f"{EXPORT_MARK}_verdict"
+    wc["difference_counts"]["CREATED"] = f"{EXPORT_MARK}_n"
+    wc["differences_export_safe"] = [{"kind": f"{EXPORT_MARK}_kind", "path_digest": "0123456789abcdef"},
+                                     {"kind": "CREATED", "path_digest": f"{EXPORT_MARK}_digest"}] + \
+                                    [{"kind": "CREATED", "path_digest": "%016x" % i} for i in range(100)]
+    out = P.build_export_safe_summary(internal)
+    assert EXPORT_MARK not in json.dumps(out)
+    assert out["baseline_sha"] is None and out["feature_sha"] is None and out["mode"] is None
+    assert out["comparison"]["total_calls"] is None and out["comparison"]["real_mismatch"] is None
+    assert out["comparison"]["unresolved"] is None and out["comparison"]["test_outcomes_identical"] is None
+    f2 = out["sessions"]["f2"]
+    assert f2["exit_code"] is None and f2["containment_verdict"] is None and f2["difference_counts"]["CREATED"] is None
+    assert len(f2["differences"]) <= P.EXPORT_MAX_DIFFERENCES and all(
+        d["kind"] in P.DIFF_KINDS and len(d["path_digest"]) == 16 for d in f2["differences"])
+    assert out["containment"]["verdict"] == "FAIL" and "f2" in out["failed_sessions"]  # unknown verdict is not PASS
+
+
+def test_export_strict_containment_is_unchanged_by_the_export_boundary(tmp_path):
+    root = _tree(tmp_path)
+    before = P.snapshot_manifest(root)
+    _same_size_restored_mtime(root)
+    verdict = P.audit_session(before, P.snapshot_manifest(root), "ok", 0)
+    assert verdict["verdict"] == "FAIL" and verdict["difference_counts"]["CONTENT_CHANGED"] == 1
+    assert verdict["content_equivalence_proven"] is True
+
+
+def _run_export_e2e(tmp_path, contaminate):
+    """Four real sessions on a tiny disposable repository. Every uncontrolled input carries EXPMARK: the names JSON key
+    and function name, the test directory/file name, a failing test name, `pytest_unconfigure` output, the recorder
+    payload (return value of the recorded function), the raw work/out paths, and a contaminating file name."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    (repo / "README.md").write_text("tiny fixture repository" + chr(10), encoding="utf-8")
+    (repo / "m.py").write_text("def work_EXPMARK_FN(x):" + chr(10) + "    return 'EXPMARK_REC_OUT:' + str(x)" + chr(10),
+                               encoding="utf-8")
+    for cmd in (["init", "-q"], ["add", "-A"], ["-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit",
+                                                 "-qm", "init"]):
+        subprocess.run(["git", *cmd], cwd=repo, check=True, capture_output=True)
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip()
+    tdir = tmp_path / "dir_EXPMARK_TESTPATH"
+    tdir.mkdir()
+    (tdir / "conftest.py").write_text(
+        "def pytest_unconfigure(config):" + chr(10) + "    print('EXPMARK_UNCONFIGURE_OUTPUT')" + chr(10), encoding="utf-8")
+    body = [
+        "import os, pathlib, sys",
+        "sys.path.insert(0, os.getcwd())",
+        "import m",
+        "def test_recorded_EXPMARK_call():",
+        "    assert m.work_EXPMARK_FN(1).startswith('EXPMARK_REC_OUT')",
+        "def test_failing_EXPMARK_FAILED_NAME():",
+        "    if 's_b1' in os.environ.get('R3_LOG', ''):",
+        "        assert False, 'EXPMARK_ASSERT_TEXT'" if contaminate else "        pass",
+        "def test_contaminate_EXPMARK_f2():",
+        "    if 's_f2' in os.environ.get('R3_LOG', '') and " + ("True" if contaminate else "False") + ":",
+        "        root = pathlib.Path.cwd()",
+        "        (root / 'harmless_EXPMARK_FILENAME.txt').write_text('EXPMARK_BODY')",
+        "        (root / 'README.md').write_text('EXPMARK_CHANGED')",
+    ]
+    (tdir / "test_probe_EXPMARK_TESTFILE.py").write_text(chr(10).join(body) + chr(10), encoding="utf-8")
+    names = tmp_path / "names_EXPMARK.json"
+    names.write_text(json.dumps({"m": ["work_EXPMARK_FN"]}), encoding="utf-8")
+    tests = tmp_path / "tests.txt"
+    tests.write_text(str(tdir / "test_probe_EXPMARK_TESTFILE.py"), encoding="utf-8")
+    out = tmp_path / "out_EXPMARK_OUT"
+    work = tmp_path / "work_EXPMARK_WORK"
+    r = subprocess.run([sys.executable, str(ROOT / "scripts" / "refactor" / "p156_parity_differential.py"),
+                        "--repo", str(repo), "--baseline-sha", head, "--feature-sha", head, "--names", str(names),
+                        "--tests", str(tests), "--work-root", str(work), "--out-dir", str(out), "--mode", "det"],
+                       cwd=str(ROOT), capture_output=True, text=True, timeout=900)
+    return r, out, work
+
+
+def test_export_clean_four_session_run_passes_with_a_safe_summary(tmp_path):
+    r, out, work = _run_export_e2e(tmp_path, contaminate=False)
+    assert r.returncode == 0, (r.stdout[-300:], r.stderr[-300:])
+    raw = (out / "summary.json").read_bytes()
+    assert EXPORT_MARK.encode() not in raw  # whole serialized export
+    summary = json.loads(raw)
+    assert summary["containment"]["verdict"] == "PASS" and summary["failed_sessions"] == []
+    assert summary["comparison"]["total_calls"] >= 1 and summary["comparison"]["real_mismatch"] == 0
+    assert all(summary["sessions"][t]["exit_code"] == 0 for t in ("b1", "b2", "f1", "f2"))
+    # the fixture really was hostile: the markers are present in the LOCAL-only files (so the test can detect a leak)
+    assert EXPORT_MARK.encode() in (out / "local_evidence.json").read_bytes()
+    assert any(EXPORT_MARK.encode() in q.read_bytes() for q in out.glob("raw_calls_*.json"))
+    assert any(EXPORT_MARK.encode() in q.read_bytes() for q in out.glob("pytest_*.out"))
+
+
+def test_export_contaminated_four_session_run_exits_2_with_correct_counts_and_safe_summary(tmp_path):
+    r, out, work = _run_export_e2e(tmp_path, contaminate=True)
+    assert r.returncode == 2, (r.stdout[-300:], r.stderr[-300:])
+    raw = (out / "summary.json").read_bytes()
+    assert EXPORT_MARK.encode() not in raw
+    summary = json.loads(raw)
+    assert summary["containment"]["verdict"] == "FAIL"
+    assert summary["failed_sessions"] == ["b1", "f2"]  # b1: failing test (exit 1); f2: filesystem contamination
+    f2 = summary["sessions"]["f2"]
+    assert f2["difference_counts"]["CREATED"] == 1 and f2["difference_counts"]["CONTENT_CHANGED"] == 1
+    assert f2["differences_total"] == 2 and len(f2["differences"]) == 2
+    assert summary["sessions"]["b1"]["exit_code"] == 1 and summary["sessions"]["b2"]["exit_code"] == 0
+
+
+def test_export_local_diagnostics_remain_after_failed_session_cleanup(tmp_path):
+    r, out, work = _run_export_e2e(tmp_path, contaminate=True)
+    assert r.returncode == 2
+    assert sorted(q.name for q in work.iterdir() if q.name.startswith("s_")) == []  # disposable clones removed
+    diff = json.loads((out / "failed_sessions" / "f2" / "diff.json").read_text(encoding="utf-8"))
+    paths = {(d["path"], d["kind"]) for d in diff["differences"]}
+    assert ("harmless_EXPMARK_FILENAME.txt", "CREATED") in paths and ("README.md", "CONTENT_CHANGED") in paths
+    local = json.loads((out / "local_evidence.json").read_text(encoding="utf-8"))
+    assert local["reproduce"] and local["names"] and local["test_files"]  # full internal evidence stays available
+    assert (out / "failed_sessions" / "f2" / "LOCAL_ONLY.txt").is_file() and (out / "LOCAL_ONLY.txt").is_file()

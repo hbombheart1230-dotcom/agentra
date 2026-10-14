@@ -3120,3 +3120,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 검증: 보안 테스트 7건이 BASE에서 실패하고 현재 통과(harness 47 → 56), 4세션 strict containment 통과, 의도적 오염 세션은 exit 2 + metadata-only + 마커 미검출.
 - 잔여: pytest 출력/recorder 로그·경로명·저엔트로피 파일 digest는 로컬 전용·비정제 상태로 명시. NTFS P2 미해결, T3.5 미시작, 독립 보안 delta 감사 대기.
 
+## 2026-10-14 · P1.5 Third Pass T3.2.1 (export-safe summary 종결 작업)
+**Stage:** Architecture and Maintainability
+**Tags:** SAFETY · TESTING
+
+- 확인: `summary.json`이 내부 evidence 전체를 기록하여 테스트 경로·이름, pytest 출력 꼬리, 실패 테스트 이름, 기록 함수명, reproduce 명령이 그대로 내보내질 수 있었습니다(합성 마커로 재현).
+- 수정: `summary.json`은 고정 allowlist(검증된 enum·SHA·상한 있는 정수·경로 digest)에서 새로 만든 객체이며, 전체 내부 evidence는 LOCAL ONLY `local_evidence.json`으로 분리했습니다. strict containment·exit code 2·실패 메타데이터 보존은 그대로입니다.
+- 검증: 직렬화된 `summary.json` 전체에서 합성 마커 0건(단위 + 실제 4세션 2회), 보안 테스트 BASE 실패→통과(harness 56 → 63), Windows smoke는 export 테스트 실행을 요구합니다.
+- 상태: 파일 본문 복사 하위 문제 FIXED, export-safe summary는 독립 Codex 재감사 대기, 로컬 로그/manifest는 민감 가능·LOCAL ONLY, NTFS P2 미해결, T3.5는 보안 승인까지 BLOCKED.
+
