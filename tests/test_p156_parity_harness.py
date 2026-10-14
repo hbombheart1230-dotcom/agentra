@@ -523,28 +523,179 @@ def test_containment_guarantee_is_named_and_states_what_it_does_not_prove():
     assert "transient write-and-restore" in joined and "OS-wide write interception" in joined
 
 
-def test_failed_session_evidence_is_bounded_sanitized_and_recorded_before_cleanup(tmp_path):
+SYNTHETIC_SECRET = "FAKE_TEST_API_KEY_DO_NOT_USE"  # synthetic marker only; never a real credential
+
+
+def _contaminated(tmp_path):
+    """A tree with a benign-named secret-bearing new file, a secret-named file, a changed existing file and a deletion."""
     root = _tree(tmp_path)
     before = P.snapshot_manifest(root)
-    (root / "leak.txt").write_text("debris", encoding="utf-8")
-    (root / ".env.local").write_text("SECRET=1", encoding="utf-8")
-    (root / "big.bin").write_bytes(b"0" * 2048)
+    (root / "harmless.txt").write_text("api_key = " + SYNTHETIC_SECRET + chr(10), encoding="utf-8")
+    (root / ".env.local").write_text("SECRET=" + SYNTHETIC_SECRET + chr(10), encoding="utf-8")
+    (root / "sub" / "b.txt").write_text("0123456789 " + SYNTHETIC_SECRET, encoding="utf-8")  # changed existing file
     (root / "a.txt").unlink()
     after = P.snapshot_manifest(root)
-    verdict = P.audit_session(before, after, "ok", 0)
-    caps = {"max_files": 64, "max_file_bytes": 1024, "max_total_bytes": 4096}
+    return root, before, after, P.audit_session(before, after, "ok", 0)
+
+
+def _all_files(path):
+    return [q for q in Path(path).rglob("*") if q.is_file()]
+
+
+def test_security_failed_session_never_copies_file_bodies_whatever_the_name(tmp_path):
+    root, before, after, verdict = _contaminated(tmp_path)
     dest = tmp_path / "out" / "failed_sessions" / "b1"
-    summary = P.preserve_failed_evidence(root, verdict, dest, before, after, caps)
-    assert summary["copied"] == ["leak.txt"]
-    reasons = {x["path"]: x["reason"] for x in summary["skipped"]}
-    assert "secret" in reasons[".env.local"] and "max_file_bytes" in reasons["big.bin"]
-    assert not (dest / "files" / ".env.local").exists()
-    import shutil
-    shutil.rmtree(root)  # the disposable clone is gone; the bundle must still describe the deletion
+    summary = P.preserve_failed_evidence(root, verdict, dest, before, after)
+    assert summary["file_bodies_retained"] is False and summary["copied"] == []
+    assert not (dest / "files").exists()  # no body directory at all
+    for f in _all_files(dest):
+        assert SYNTHETIC_SECRET.encode() not in f.read_bytes(), f  # A (harmless.txt), B (.env.local), changed file
+    assert not any(f.name in ("harmless.txt", ".env.local") for f in _all_files(dest))
+
+
+def test_security_failed_evidence_keeps_classification_and_manifest_hashes(tmp_path):
+    root, before, after, verdict = _contaminated(tmp_path)
+    dest = tmp_path / "out" / "failed_sessions" / "b1"
+    P.preserve_failed_evidence(root, verdict, dest, before, after)
     d = json.loads((dest / "diff.json").read_text(encoding="utf-8"))
     kinds = {(x["path"], x["kind"]) for x in d["differences"]}
-    assert ("a.txt", "DELETED") in kinds and ("leak.txt", "CREATED") in kinds
-    assert (dest / "manifest_before.json").is_file() and (dest / "manifest_after.json").is_file()
+    assert {("harmless.txt", "CREATED"), (".env.local", "CREATED"), ("sub/b.txt", "CONTENT_CHANGED"),
+            ("a.txt", "DELETED")} <= kinds
+    assert d["difference_counts"]["CREATED"] == 2 and d["difference_counts"]["DELETED"] == 1
+    mb = json.loads((dest / "manifest_before.json").read_text(encoding="utf-8"))
+    ma = json.loads((dest / "manifest_after.json").read_text(encoding="utf-8"))
+    assert mb["entries"]["a.txt"]["sha256"] == before["entries"]["a.txt"]["sha256"]
+    assert ma["entries"]["harmless.txt"]["sha256"] == after["entries"]["harmless.txt"]["sha256"]
+    assert ma["entries"]["harmless.txt"]["size"] == after["entries"]["harmless.txt"]["size"]
+    assert mb["manifest_sha256"] == before["manifest_sha256"] and ma["manifest_sha256"] == after["manifest_sha256"]
+    assert (dest / "LOCAL_ONLY.txt").is_file() and (dest / P.TASK_OWNED_MARKER).is_file()
+
+
+def test_security_metadata_survives_deletion_of_the_clone_same_path_cleanup(tmp_path):
+    import shutil
+    root, before, after, verdict = _contaminated(tmp_path)
+    dest = tmp_path / "out" / "failed_sessions" / "f2"
+    P.preserve_failed_evidence(root, verdict, dest, before, after)
+    shutil.rmtree(root)  # --same-path removes the clone right after the run
+    d = json.loads((dest / "diff.json").read_text(encoding="utf-8"))
+    assert d["verdict"] == "FAIL" and d["differences_total_recorded"] == 4
+    assert json.loads((dest / "bundle.json").read_text(encoding="utf-8"))["retention"] == "metadata_only"
+
+
+def test_security_export_safe_view_has_no_path_text_hashes_or_payload(tmp_path):
+    _root, _before, _after, verdict = _contaminated(tmp_path)
+    export = P.export_safe_differences(verdict["differences"])
+    text = json.dumps(export)
+    assert export and all(set(e) == {"kind", "path_digest"} for e in export)
+    for needle in ("harmless", ".env", "a.txt", "b.txt", SYNTHETIC_SECRET, "sha256"):
+        assert needle not in text, needle
+    assert "new_paths_sample" not in verdict  # raw path sample removed from the verdict itself
+
+
+def test_security_failed_bundles_obey_the_finite_retention_limits(tmp_path):
+    import time as _t
+    parent = tmp_path / "evidence"
+    parent.mkdir()
+    root, before, after, verdict = _contaminated(tmp_path)
+    now = _t.time()
+    for i in range(5):
+        d = parent / f"run{i}_f2"
+        P.preserve_failed_evidence(root, verdict, d, before, after)
+        os.utime(d, (now - i * 60, now - i * 60))
+    removed = P.prune_task_owned(parent, keep=2, max_age_days=14, now=now)
+    assert sorted(removed) == ["run2_f2", "run3_f2", "run4_f2"]
+    assert sorted(q.name for q in parent.iterdir()) == ["run0_f2", "run1_f2"]
+
+
+def test_security_no_environment_switch_re_enables_body_copies(tmp_path, monkeypatch):
+    for key in ("P156_COPY_FILES", "P156_KEEP_FILE_BODIES", "P156_UNSAFE_EVIDENCE", "KEEP_FAILED_FILES"):
+        monkeypatch.setenv(key, "1")
+    root, before, after, verdict = _contaminated(tmp_path)
+    dest = tmp_path / "out" / "failed_sessions" / "b1"
+    P.preserve_failed_evidence(root, verdict, dest, before, after, {"max_files": 64, "max_file_bytes": 1 << 30})
+    assert not (dest / "files").exists()
+    assert not any(SYNTHETIC_SECRET.encode() in f.read_bytes() for f in _all_files(dest))
+
+
+def test_security_containment_still_reads_and_hashes_bodies_for_verification(tmp_path):
+    """Disabling body retention must not weaken strict verification: same-size restored-mtime still FAILs."""
+    root = _tree(tmp_path)
+    before = P.snapshot_manifest(root)
+    _same_size_restored_mtime(root)
+    after = P.snapshot_manifest(root)
+    assert before["entries"]["a.txt"]["sha256"] != after["entries"]["a.txt"]["sha256"]
+    verdict = P.audit_session(before, after, "ok", 0)
+    assert verdict["verdict"] == "FAIL" and verdict["content_equivalence_proven"] is True
+    dest = tmp_path / "o" / "f"
+    P.preserve_failed_evidence(root, verdict, dest, before, after)
+    assert not (dest / "files").exists()
+
+
+def test_security_ci_workflow_never_uploads_failed_session_bundles_or_run_outputs():
+    wf = (ROOT / ".github" / "workflows" / "p152-r2c-residual-regression.yml").read_text(encoding="utf-8")
+    for needle in ("failed_sessions", "harness_run_out", "raw_calls_", "containment_b1", "containment_f2", "pytest_b1", "pytest_f1"):
+        assert needle not in wf, f"workflow references a local-only harness output: {needle}"
+
+
+def _run_contaminated_e2e(tmp_path, print_secret=False):
+    """Real orchestrator, one contaminated session (benign-named file, .env.local, changed existing file): the run
+    FAILS (exit 2) and no file under the output directory contains the synthetic secret body."""
+    t = tmp_path / "test_contaminate.py"
+    t.write_text(
+        "import os, pathlib\n"
+        "def test_contaminate_f2_only():\n"
+        "    if 's_f2' not in os.environ.get('R3_LOG', ''):\n"
+        "        return\n"
+        "    root = pathlib.Path.cwd()\n"
+        f"    (root / 'harmless.txt').write_text('api_key = {SYNTHETIC_SECRET}')\n"
+        f"    (root / '.env.local').write_text('SECRET={SYNTHETIC_SECRET}')\n"
+        f"    (root / 'README.md').write_text(r'{SYNTHETIC_SECRET}', encoding='utf-8')\n"
+        + (f"    print('{SYNTHETIC_SECRET}')\n    assert False, 'printed'\n" if print_secret else ""), encoding="utf-8")
+    names = tmp_path / "names.json"
+    names.write_text("{}", encoding="utf-8")
+    tests = tmp_path / "tests.txt"
+    tests.write_text(str(t), encoding="utf-8")
+    repo = tmp_path / "tiny_repo"  # a tiny disposable repository keeps the four clones fast (no production tree)
+    repo.mkdir()
+    (repo / "README.md").write_text("tiny fixture repository"+chr(10), encoding="utf-8")
+    for cmd in (["init", "-q"], ["add", "-A"], ["-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-qm", "init"]):
+        subprocess.run(["git", *cmd], cwd=repo, check=True, capture_output=True)
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip()
+    out = tmp_path / "out"
+    r = subprocess.run([sys.executable, str(ROOT / "scripts" / "refactor" / "p156_parity_differential.py"),
+                        "--repo", str(repo), "--baseline-sha", head, "--feature-sha", head, "--names", str(names),
+                        "--tests", str(tests), "--work-root", str(tmp_path / "work"), "--out-dir", str(out),
+                        "--mode", "det"], cwd=str(ROOT), capture_output=True, text=True, timeout=900)
+    return r, out
+
+
+def test_security_end_to_end_default_run_exports_no_synthetic_payload(tmp_path):
+    """Real orchestrator, one contaminated session (benign-named file, .env.local, changed existing file): the run
+    FAILS (exit 2) and no file under the output directory contains the synthetic secret body."""
+    r, out = _run_contaminated_e2e(tmp_path)
+    assert r.returncode == 2, (r.stdout[-300:], r.stderr[-300:])  # contaminated session -> FAIL, nonzero exit
+    assert "ISOLATION_VERDICT=FAIL" in r.stdout
+    leaked = [str(q.relative_to(out)) for q in _all_files(out) if SYNTHETIC_SECRET.encode() in q.read_bytes()]
+    assert leaked == [], leaked
+    summary = json.loads((out / "summary.json").read_text(encoding="utf-8"))
+    assert summary["isolation"]["failed_sessions"] == ["f2"]
+    bundle = json.loads((out / "failed_sessions" / "f2" / "bundle.json").read_text(encoding="utf-8"))
+    assert bundle["retention"] == "metadata_only" and not (out / "failed_sessions" / "f2" / "files").exists()
+    text = (out / "summary.json").read_text(encoding="utf-8")
+    assert "harmless.txt" not in text and ".env.local" not in text  # no raw sensitive path in the export-safe file
+    assert sorted(q.name for q in (tmp_path / "work").iterdir() if q.name.startswith("s_")) == []  # clones cleaned
+
+
+def test_security_residual_exposure_arbitrary_test_output_is_local_only_not_sanitized(tmp_path):
+    """RESIDUAL (documented, not fixed): a test that PRINTS a secret lands in pytest_<tag>.out. Those local files are
+    not sanitized; only summary.json is export-safe and it never carries the payload."""
+    r, out = _run_contaminated_e2e(tmp_path, print_secret=True)
+    assert r.returncode == 2
+    leaked = sorted(str(q.relative_to(out)).replace("\\", "/") for q in _all_files(out)
+                    if SYNTHETIC_SECRET.encode() in q.read_bytes())
+    assert leaked and all(x.startswith("pytest_") for x in leaked), leaked  # only the unsanitized local pytest output
+    assert SYNTHETIC_SECRET not in (out / "summary.json").read_text(encoding="utf-8")
+    assert (out / "LOCAL_ONLY.txt").is_file()
 
 
 def test_retention_prunes_only_marked_task_owned_bundles(tmp_path):

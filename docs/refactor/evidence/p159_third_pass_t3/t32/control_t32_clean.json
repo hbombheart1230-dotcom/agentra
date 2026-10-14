@@ -1,0 +1,169 @@
+{
+ "baseline_sha": "b47d6ac731173de57abe63eae28d94f68b9dc009",
+ "feature_sha": "b47d6ac731173de57abe63eae28d94f68b9dc009",
+ "execution_order": [
+  "b1",
+  "b2",
+  "f1",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "sha": "b47d6ac731173de57abe63eae28d94f68b9dc009",
+   "exit_code": 0,
+   "log_sha256": "b8da9f9e7e4e959d8ed90ee23daf885ceeb96f88532bc576e101c3a949258eba",
+   "log_bytes": 1611529,
+   "pytest_summary": "69 passed, 1 warning in 15.50s"
+  },
+  "b2": {
+   "sha": "b47d6ac731173de57abe63eae28d94f68b9dc009",
+   "exit_code": 0,
+   "log_sha256": "b8da9f9e7e4e959d8ed90ee23daf885ceeb96f88532bc576e101c3a949258eba",
+   "log_bytes": 1611529,
+   "pytest_summary": "69 passed, 1 warning in 14.58s"
+  },
+  "f1": {
+   "sha": "b47d6ac731173de57abe63eae28d94f68b9dc009",
+   "exit_code": 0,
+   "log_sha256": "b8da9f9e7e4e959d8ed90ee23daf885ceeb96f88532bc576e101c3a949258eba",
+   "log_bytes": 1611529,
+   "pytest_summary": "69 passed, 1 warning in 16.15s"
+  },
+  "f2": {
+   "sha": "b47d6ac731173de57abe63eae28d94f68b9dc009",
+   "exit_code": 0,
+   "log_sha256": "b8da9f9e7e4e959d8ed90ee23daf885ceeb96f88532bc576e101c3a949258eba",
+   "log_bytes": 1611529,
+   "pytest_summary": "69 passed, 1 warning in 13.17s"
+  }
+ },
+ "isolation": {
+  "separate_session_roots": true,
+  "separate_temp_dirs": true,
+  "write_containment": {
+   "b1": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "manifest_sha256_before": "236201f54f9d98facac2f91217cd084a82e6c6e053932478028660028c7cf3d7",
+    "manifest_sha256_after": "236201f54f9d98facac2f91217cd084a82e6c6e053932478028660028c7cf3d7",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_export_safe": []
+   },
+   "b2": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "manifest_sha256_before": "e41246fba57a6d07677180ef9bebc616c41de9fa0e2d46c561b78a3c971e6dac",
+    "manifest_sha256_after": "e41246fba57a6d07677180ef9bebc616c41de9fa0e2d46c561b78a3c971e6dac",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_export_safe": []
+   },
+   "f1": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "manifest_sha256_before": "7bc3b9a39ea302dde3396cb8e262ee6168be5c8a4d59da01ce2de0fcb7a2b57d",
+    "manifest_sha256_after": "7bc3b9a39ea302dde3396cb8e262ee6168be5c8a4d59da01ce2de0fcb7a2b57d",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_export_safe": []
+   },
+   "f2": {
+    "guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+    "manifest_mode": "strict_sha256",
+    "content_equivalence_proven": true,
+    "differences_total": 0,
+    "difference_counts": {
+     "CREATED": 0,
+     "DELETED": 0,
+     "TYPE_CHANGED": 0,
+     "CONTENT_CHANGED": 0,
+     "METADATA_CHANGED": 0,
+     "SCAN_ERROR": 0
+    },
+    "new_paths_in_session_root": 0,
+    "manifest_sha256_before": "7aba73fb78a03c6f4a026f3e11aaec3388237bacd58605f7a4b8068272bf1598",
+    "manifest_sha256_after": "7aba73fb78a03c6f4a026f3e11aaec3388237bacd58605f7a4b8068272bf1598",
+    "project_write_audit_banner": false,
+    "exit_code": 0,
+    "problems": [],
+    "verdict": "PASS",
+    "differences_export_safe": []
+   }
+  },
+  "containment_guarantee": "PRE_POST_END_STATE_MANIFEST_EQUIVALENCE",
+  "containment_manifest_mode": "strict_sha256",
+  "content_equivalence_proven": true,
+  "containment_not_proven": [
+   "transient write-and-restore during execution",
+   "writes outside the session root",
+   "OS-wide write interception"
+  ],
+  "containment_verdict": "PASS",
+  "failed_sessions": []
+ },
+ "summary": {
+  "total_calls": 59,
+  "BYTE_IDENTICAL": 59,
+  "JUSTIFIED_TOLERANCE": 0,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "trade_lifecycle_builder._build_trade_lifecycles": {
+    "calls": 30,
+    "BYTE_IDENTICAL": 30,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   },
+   "live_execution_bundle_runner.main": {
+    "calls": 29,
+    "BYTE_IDENTICAL": 29,
+    "JUSTIFIED_TOLERANCE": 0,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true,
+  "failed_tests": []
+ }
+}

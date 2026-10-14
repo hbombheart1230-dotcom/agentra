@@ -1,0 +1,7 @@
+{
+ "exit": 2,
+ "marker_files": [
+  "failed_sessions/f2/files/README.md",
+  "failed_sessions/f2/files/harmless.txt"
+ ]
+}

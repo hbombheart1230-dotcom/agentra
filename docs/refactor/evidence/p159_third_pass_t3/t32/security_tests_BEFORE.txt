@@ -1,0 +1,30 @@
+___ test_security_failed_session_never_copies_file_bodies_whatever_the_name ___
+tmp_path = WindowsPath('C:/Users/ȫ��/AppData/Local/Temp/trading_agent_system/pytest/<tmp>
+    def test_security_failed_session_never_copies_file_bodies_whatever_the_name(tmp_path):
+        dest = tmp_path / "out" / "failed_sessions" / "b1"
+        summary = P.preserve_failed_evidence(root, verdict, dest, before, after)
+___ test_security_failed_evidence_keeps_classification_and_manifest_hashes ____
+tmp_path = WindowsPath('C:/Users/ȫ��/AppData/Local/Temp/trading_agent_system/pytest/<tmp>
+    def test_security_failed_evidence_keeps_classification_and_manifest_hashes(tmp_path):
+        dest = tmp_path / "out" / "failed_sessions" / "b1"
+        P.preserve_failed_evidence(root, verdict, dest, before, after)
+E        +    where is_file = (WindowsPath('C:/Users/ȫ��/AppData/Local/Temp/trading_agent_system/pytest/<tmp>
+        dest = tmp_path / "out" / "failed_sessions" / "f2"
+        P.preserve_failed_evidence(root, verdict, dest, before, after)
+        dest = tmp_path / "out" / "failed_sessions" / "b1"
+>       P.preserve_failed_evidence(root, verdict, dest, before, after, {"max_files": 64, "max_file_bytes": 1 << 30})
+dest = WindowsPath('C:/Users/ȫ��/AppData/Local/Temp/trading_agent_system/pytest/<tmp>
+    def preserve_failed_evidence(root, verdict, dest, before, after, caps=None):
+        (dest / TASK_OWNED_MARKER).write_text("p156 failed-session evidence bundle\n", encoding="utf-8")
+        P.preserve_failed_evidence(root, verdict, dest, before, after)
+E       AssertionError: ['failed_sessions\\f2\\files\\harmless.txt', 'failed_sessions\\f2\\files\\README.md']
+E       assert ['failed_sess...s\\README.md'] == []
+E         Left contains 2 more items, first extra item: 'failed_sessions\\f2\\files\\harmless.txt'
+FAILED tests/test_p156_parity_harness.py::test_security_failed_session_never_copies_file_bodies_whatever_the_name
+FAILED tests/test_p156_parity_harness.py::test_security_failed_evidence_keeps_classification_and_manifest_hashes
+FAILED tests/test_p156_parity_harness.py::test_security_metadata_survives_deletion_of_the_clone_same_path_cleanup
+FAILED tests/test_p156_parity_harness.py::test_security_export_safe_view_has_no_path_text_hashes_or_payload
+FAILED tests/test_p156_parity_harness.py::test_security_no_environment_switch_re_enables_body_copies
+FAILED tests/test_p156_parity_harness.py::test_security_containment_still_reads_and_hashes_bodies_for_verification
+FAILED tests/test_p156_parity_harness.py::test_security_end_to_end_default_run_exports_no_synthetic_payload
+7 failed, 2 passed, 46 deselected, 1 warning in 9.00s

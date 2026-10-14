@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 233,
+  "entry_count": 234,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6299,6 +6299,30 @@
         "docs/refactor/p1_5_third_pass_t3_1_owner_contract_ledger.json",
         "docs/refactor/p1_5_third_pass_t3_1_candidate_decisions.json",
         "tests/test_p159_current_owner_contract_gates.py"
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "version": "P1.5 Third Pass T3.2",
+      "title": "T3.2: failed-session evidence no longer copies file bodies (security P2)",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "SAFETY",
+        "TESTING",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "The parity harness copied the bodies of created or changed files into failed-session evidence guarded only by file-name patterns, so a benign-named file could carry a secret. The copy path is removed: failed sessions keep metadata only (classification, counts, path/size/mtime/SHA-256 manifests) locally, summary.json carries counts and path digests only, and no switch re-enables body copies; strict containment verification is unchanged.",
+      "details": [
+        "Confirmed at BASE with a synthetic marker: harmless.txt and a changed README were copied; seven new security tests fail on BASE and all pass now (harness tests 47 -> 56).",
+        "Four-session strict containment smoke passes (59/59 identical); a deliberately contaminated session fails with exit 2, metadata-only evidence, and the synthetic marker appears in no output file.",
+        "Residual exposure is classified, not hidden: pytest output, recorder logs, path names and digests of low-entropy files remain local-only and unsanitized. NTFS settle P2 unresolved; T3.5 not started; independent security delta-audit pending."
+      ],
+      "impact": "Test-harness, CI check and documentation only; no trading, LLM, ranking or report behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-THIRD-PASS-T3-2-CLAUDE-032.md",
+        "scripts/refactor/p156_parity_differential.py",
+        "tests/test_p156_parity_harness.py"
       ]
     }
   ]

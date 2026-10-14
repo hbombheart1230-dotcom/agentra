@@ -3111,3 +3111,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 검증: BASE×2/FEATURE×2 differential(strict SHA-256 containment 4/4 PASS, 세션당 1253 tests 통과, 기록 호출 474건 중 469 byte-identical·5 justified(session 경로 의존 memory packet id)·REAL_MISMATCH 0·UNRESOLVED 0). AST 본문 동일성, 과거/현재 Owner gate 모두 통과.
 - 후보: CONTRACT 30→27, RENAME 54→52. ranking/결정 순서/위험 경로 모듈은 SAFETY_LOCK로 유지. 실패 증거 기밀성 P2는 열려 있으며 T3.5 이전 metadata-only 보존이 필수 후속입니다. 독립 Codex 감사 전까지 PENDING.
 
+## 2026-10-14 · P1.5 Third Pass T3.2 (실패 증거 보안 P2 종결 작업)
+**Stage:** Architecture and Maintainability
+**Tags:** SAFETY · TESTING · WORKFLOW
+
+- 확인: 실패 세션 증거가 변경 파일의 본문을 파일명 필터만으로 복사하여, 평범한 이름의 파일에 담긴 비밀이 그대로 복사될 수 있었습니다(합성 마커로 재현).
+- 수정: 본문 복사 경로를 제거했습니다. 실패 세션은 분류·개수·경로/크기/mtime/SHA-256 manifest만 로컬에 보존하고, `summary.json`에는 개수와 경로 digest만 남깁니다. 본문 복사를 다시 켜는 스위치는 없습니다. strict containment 검증(파일 본문 읽기·해시)은 그대로입니다.
+- 검증: 보안 테스트 7건이 BASE에서 실패하고 현재 통과(harness 47 → 56), 4세션 strict containment 통과, 의도적 오염 세션은 exit 2 + metadata-only + 마커 미검출.
+- 잔여: pytest 출력/recorder 로그·경로명·저엔트로피 파일 digest는 로컬 전용·비정제 상태로 명시. NTFS P2 미해결, T3.5 미시작, 독립 보안 delta 감사 대기.
+

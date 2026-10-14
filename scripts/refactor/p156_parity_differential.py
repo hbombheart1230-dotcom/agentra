@@ -461,60 +461,70 @@ def audit_session(before, after, stdout_text, exit_code, expect_failures=0):
             "content_equivalence_proven": before["mode"] == MODE_STRICT,
             "differences_total": len(diffs), "difference_counts": counts,
             "new_paths_in_session_root": counts["CREATED"],
-            "new_paths_sample": [d["path"] for d in diffs if d["kind"] == "CREATED"][:20],
             "differences": diffs,
             "manifest_sha256_before": before["manifest_sha256"], "manifest_sha256_after": after["manifest_sha256"],
             "project_write_audit_banner": banner, "exit_code": exit_code, "problems": problems,
             "verdict": "FAIL" if problems else "PASS"}
 
 
-# ---- failed-session evidence: preserved BEFORE cleanup, bounded, sanitized, finite retention ------------------------
-FAILED_EVIDENCE_CAPS = {"max_files": 64, "max_file_bytes": 1 << 20, "max_total_bytes": 8 << 20}
-_SECRET_NAME = re.compile(
-    r"(^|[\\/])(\.env[^\\/]*|[^\\/]*\.(key|pem|pfx|p12)|[^\\/]*(secret|token|credential|password)[^\\/]*)$",
-    re.IGNORECASE)
+# ---- failed-session evidence (T3.2): METADATA ONLY -----------------------------------------------------------------
+# Three different things must not be confused:
+#   1. data READ for verification  - strict mode reads and SHA-256-hashes every file body in the session root;
+#   2. metadata RETAINED locally   - classification, counts, and (path, type, size, mtime_ns, sha256) manifests;
+#   3. files UPLOADED/COMMITTED    - nothing in `failed_sessions/` or the run output directory is ever exported
+#                                    automatically; the only export-safe file is `summary.json` (counts + path digests).
+# File BODIES of a failed session are never copied: a benign file name can carry any secret, and no name- or
+# pattern-based detector can prove otherwise. There is deliberately no switch that re-enables body copies.
+FAILED_EVIDENCE_CAPS = {"max_differences": 2000, "max_manifest_entries": 50000}
 TASK_OWNED_MARKER = ".p156_task_owned"
+LOCAL_ONLY_NOTICE = (
+    "LOCAL ONLY - do not upload, attach or commit this directory.\n"
+    "It holds paths, sizes, mtimes and SHA-256 digests of a FAILED parity session (no file bodies). Paths may reveal\n"
+    "sensitive names and a digest of a short/low-entropy file can be brute-forced; pytest output and call logs next to it\n"
+    "are NOT sanitized. Export only `summary.json` (counts and path digests).\n")
+
+
+def path_digest(path):
+    """Stable, non-reversible-by-inspection label for a path in export-safe evidence (not a secrecy guarantee for
+    guessable paths)."""
+    return hashlib.sha256(str(path).encode("utf-8")).hexdigest()[:16]
+
+
+def export_safe_differences(differences, limit=20):
+    """Export-safe view of a difference list: kind + path digest only (no path text, no hashes, no sizes)."""
+    return [{"kind": d["kind"], "path_digest": path_digest(d["path"])} for d in differences[:limit]]
 
 
 def preserve_failed_evidence(root, verdict, dest, before, after, caps=None):
-    """Write a compact, bounded bundle for a FAILED session BEFORE its disposable clone is cleaned: full difference
-    list, both manifests (paths + sizes + SHA-256), and a bounded copy of the created/changed files (never files whose
-    names look like secrets). Returns the bundle summary."""
-    caps = caps or FAILED_EVIDENCE_CAPS
+    """Write a compact, bounded, METADATA-ONLY bundle for a FAILED session BEFORE its disposable clone is cleaned:
+    the classified difference list and both manifests (paths, types, sizes, mtimes, SHA-256). `root` is accepted for
+    API compatibility and is never read: no file body is copied. Returns the bundle summary."""
+    caps = {**FAILED_EVIDENCE_CAPS, **(caps or {})}
     dest = Path(dest)
-    (dest / "files").mkdir(parents=True, exist_ok=True)
-    (dest / TASK_OWNED_MARKER).write_text("p156 failed-session evidence bundle\n", encoding="utf-8")
-    (dest / "diff.json").write_text(json.dumps(verdict, indent=1, ensure_ascii=False), encoding="utf-8")
+    dest.mkdir(parents=True, exist_ok=True)
+    (dest / TASK_OWNED_MARKER).write_text("p156 failed-session evidence bundle (metadata only)\n", encoding="utf-8")
+    (dest / "LOCAL_ONLY.txt").write_text(LOCAL_ONLY_NOTICE, encoding="utf-8")
+    diffs = verdict["differences"]
+    listed = diffs[:caps["max_differences"]]
+    body = {k: v for k, v in verdict.items() if k != "differences"}
+    body["differences"] = listed
+    body["differences_listed"] = len(listed)
+    body["differences_total_recorded"] = len(diffs)
+    (dest / "diff.json").write_text(json.dumps(body, indent=1, ensure_ascii=False), encoding="utf-8")
+    manifests = {}
     for tag, m in (("before", before), ("after", after)):
-        (dest / f"manifest_{tag}.json").write_text(json.dumps(m, indent=0, ensure_ascii=False), encoding="utf-8")
-    copied, skipped, total = [], [], 0
-    for d in verdict["differences"]:
-        if d["kind"] not in ("CREATED", "CONTENT_CHANGED", "METADATA_CHANGED", "TYPE_CHANGED"):
-            continue
-        a = d.get("after") or {}
-        if a.get("type") != "file":
-            continue
-        reason = None
-        if _SECRET_NAME.search(d["path"]):
-            reason = "name looks like a secret/credential file"
-        elif a["size"] > caps["max_file_bytes"]:
-            reason = "larger than max_file_bytes"
-        elif len(copied) >= caps["max_files"]:
-            reason = "max_files reached"
-        elif total + a["size"] > caps["max_total_bytes"]:
-            reason = "max_total_bytes reached"
-        if reason:
-            skipped.append({"path": d["path"], "reason": reason})
-            continue
-        try:
-            tgt = dest / "files" / d["path"]
-            tgt.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(Path(root) / d["path"], tgt)
-            copied.append(d["path"])
-            total += a["size"]
-        except OSError as exc:
-            skipped.append({"path": d["path"], "reason": f"copy failed: {exc}"})
-    summary = {"copied": copied, "skipped": skipped, "copied_bytes": total, "caps": caps}
+        entries = m["entries"]
+        keep = {k: v for k, v in m.items() if k != "entries"}
+        if len(entries) <= caps["max_manifest_entries"]:
+            keep["entries"] = entries
+            manifests[tag] = "full"
+        else:
+            keep["entries"] = {}
+            manifests[tag] = "digest_only (entries exceed max_manifest_entries)"
+        (dest / f"manifest_{tag}.json").write_text(json.dumps(keep, indent=0, ensure_ascii=False), encoding="utf-8")
+    summary = {"file_bodies_retained": False, "copied": [], "retention": "metadata_only", "manifests": manifests,
+               "differences_listed": len(listed), "differences_total_recorded": len(diffs), "caps": caps,
+               "export_safe_file": "summary.json", "local_only_notice": "LOCAL_ONLY.txt"}
     (dest / "bundle.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
     return summary
 
@@ -583,6 +593,9 @@ def run_sessions(args):
     work.mkdir(parents=True, exist_ok=True)
     out.mkdir(parents=True, exist_ok=False)
     (work / TASK_OWNED_MARKER).write_text("p156 run-owned disposable work root\n", encoding="utf-8")
+    (out / "LOCAL_ONLY.txt").write_text(
+        "LOCAL ONLY except summary.json. pytest_*.out, raw_calls_*.json, containment_*.json and failed_sessions/ may hold "
+        "paths, digests or arbitrary test output and are never sanitized; do not upload or commit them.\n", encoding="utf-8")
     manifest_mode = MODE_FAST if getattr(args, "containment", "strict") == "fast" else MODE_STRICT
     harness = work / "_harness"
     harness.mkdir()
@@ -634,8 +647,9 @@ def run_sessions(args):
         if s["contained"]["verdict"] != "PASS":
             s["failed_evidence"] = preserve_failed_evidence(s["root"], s["contained"], out / "failed_sessions" / s["tag"],
                                                             s["before"], after)
+        # export-safe view for summary.json: counts + kind/path-digest only (paths and hashes stay in the local files)
         s["contained"] = {k: v for k, v in s["contained"].items() if k != "differences"} | {
-            "differences_sample": s["contained"]["differences"][:20]}
+            "differences_export_safe": export_safe_differences(s["contained"]["differences"])}
         s["pytest_summary"] = _tail(s["stdout"])
         s["log_sha256"] = _sha256(s["log"])
         s["log_bytes"] = s["log"].stat().st_size
@@ -726,7 +740,8 @@ def main(argv=None):
                     help="sequential runs, each in a fresh disposable clone at the SAME path")
     ap.add_argument("--expect-failures", type=int, default=0,
                     help="number of known baseline test failures that make exit code 1 acceptable (0 = exit must be 0)")
-    ap.add_argument("--keep-sessions", action="store_true")
+    ap.add_argument("--keep-sessions", action="store_true",
+                    help="UNSAFE for real data: keeps the complete disposable clones (file bodies included) on local disk")
     ap.add_argument("--containment", choices=("strict", "fast"), default="strict",
                     help="strict: SHA-256 of every file (content equivalence proven); fast: size+mtime only "
                          "(content equivalence NOT proven, labelled in the evidence)")
