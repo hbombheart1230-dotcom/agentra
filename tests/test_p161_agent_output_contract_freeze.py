@@ -85,7 +85,12 @@ def test_replay_matches_base_bytes_mutation_dependency_trace_and_variants(tmp_pa
         base, _ = T.load(FIX)
         import hashlib
         integrity = []
+        # records embedding Windows drive paths in their captured inputs: golden is authoritative only on Windows;
+        # for them FEATURE is compared byte-for-byte with the pinned BASE tree executed on this platform
+        bound_ids = [r["id"] for r in base if base_digests[r["id"]]["bound"]]
         for rec in base:
+            if rec["id"] in bound_ids:
+                continue  # golden authoritative only on the generating OS; checked against BASE-here in verify()
             enc = rec["result"]
             want = hashlib.sha256(F.canonical(T.norm_seps(enc)).encode()).hexdigest()
             if base_digests[rec["id"]]["result_norm"] != want:

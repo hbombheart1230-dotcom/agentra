@@ -138,6 +138,19 @@ def norm_seps(obj):
     return obj
 
 
+def platform_bound(obj):
+    """True when a captured input embeds a Windows drive path string (`C:` + separator): path functions applied to it
+    by runtime code (e.g. `Path(x).name`) give different results on a POSIX host, so the committed golden output of such
+    a record is only authoritative on the platform that generated it."""
+    if isinstance(obj, str):
+        return len(obj) > 2 and obj[1] == ":" and obj[0].isalpha() and obj[2] in (_BS, "/")
+    if isinstance(obj, dict):
+        return any(platform_bound(k) or platform_bound(v) for k, v in obj.items())
+    if isinstance(obj, (list, tuple, set, frozenset)):
+        return any(platform_bound(x) for x in obj)
+    return False
+
+
 def compute_digests(outdir, sample_mod=16, only_builders=None):
     """Digests of what the implementation importable NOW produces for every frozen input (used on the pinned BASE tree
     to obtain platform-correct BASE evidence on a host other than the one that generated the golden files)."""
@@ -151,7 +164,8 @@ def compute_digests(outdir, sample_mod=16, only_builders=None):
         trace = []
         kind, payload, mutated = _call(ao, rec["builder"], args, kwargs, trace)
         enc = F.encode(payload) if kind == "result" else payload
-        entry = {"kind": kind, "result_norm_json": norm_seps(enc),
+        entry = {"kind": kind, "result_norm_json": norm_seps(enc), "bound": platform_bound([args, kwargs]),
+                 "result_sha": hashlib.sha256(F.canonical(enc).encode()).hexdigest(),
                  "result_norm": hashlib.sha256(F.canonical(norm_seps(enc)).encode()).hexdigest(),
                  "mutated": mutated, "trace": trace, "variants": {}}
         for vid, va, vk in V.variants(rec["builder"], args, kwargs):
@@ -221,12 +235,19 @@ def verify(outdir, only_builders=None, sample_mod=1, portable=False, base_digest
             bad.append((rec["id"], "kind", kind, rec["kind"]))
             continue
         enc = F.encode(payload) if kind == "result" else payload
-        if portable:
+        bound = portable and platform_bound([args, kwargs])
+        if bound:
+            # golden is authoritative only on the generating platform: FEATURE must equal the pinned BASE tree
+            # executed HERE, byte for byte (no separator reading)
+            ref = (base_digests or {}).get(rec["id"], {}).get("result_sha")
+            got, want = hashlib.sha256(F.canonical(enc).encode()).hexdigest(), ref
+        elif portable:
             got, want = F.canonical(norm_seps(enc)), F.canonical(norm_seps(rec["result"]))
         else:
             got, want = F.canonical(enc), F.canonical(rec["result"])
         if got != want:
-            bad.append((rec["id"], "output_bytes", first_diff(json.loads(got), json.loads(want))))
+            hint = "platform-bound record: FEATURE != BASE on this platform" if bound else first_diff(json.loads(got), json.loads(want))
+            bad.append((rec["id"], "output_bytes", hint))
         if mutated != rec["input_mutated"]:
             bad.append((rec["id"], "input_mutation"))
         if trace != rec["dependency_trace"]:
