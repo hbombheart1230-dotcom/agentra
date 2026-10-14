@@ -3181,3 +3181,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - GPT와 사용자가 실제 트리/목표를 눈으로 검토·승인해야 파일 이동·병합·이름 변경, P1.5.10 정리, Wave D 또는 P1.6로 넘어갈 수 있습니다. Codex 소비자/동적 의존성/SAFETY_LOCK 감사와 별도 동등성 검증 필수. 증거 부재 시 `ARCH_CONVERGENCE_BLOCKED`.
 - 규칙 연결: `AGENTS.md`, `CLAUDE.md`, `COMMON_RULES.md`, `CURRENT.md`, pre-Wave-D 순서. 현재 T4-A.1 Codex 감사 대기·T4-B BLOCKED 그대로. 이번 변경은 문서만, 다이어그램 생성·코드 재배치 미실시.
 - 근거: `docs/refactor/P15_POST_T4_ARCHITECTURE_VISUALIZATION_GATE_2026_10_15.md`, `docs/daily_patch/2026-10-15_p1_5_architecture_visualization_gate.md`.
+
+## 2026-10-15 · P1.5 T4-A.1 Codex ACCEPT / UI 노트 스키마 복구
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY · WORKFLOW
+
+- Codex 독립 검증으로 variant conservation P1 CLOSED, T4-A 최종 ACCEPT. 샘플 ID 개수는 mod=4: 396, mod=1: 1,575. Codex의 full-corpus PASS는 accounting이며 새 실 Scanner full replay 수행 증거는 아닙니다.
+- 최근 아키텍처 문서 커밋의 UI 노트 status=`planned` 오류를 기존 허용값 `current`로 수정했습니다. 규칙은 현재 유효하지만 시각화 산출물은 아직 시작하지 않았습니다.
+- T4-B Monitor는 최신 HEAD Linux/Windows 필수 CI SUCCESS 확인 이후에만 착수. 새 PYTHONPATH CLI P2 및 기존 telemetry/NTFS/Reporter parity 미해결은 별도 유지.
+- 증거: `docs/refactor/work_orders/evidence/P15-T4-A-1-CODEX-039.md`, `docs/daily_patch/2026-10-15_p1_5_t4_a_1_codex_accept.md`.

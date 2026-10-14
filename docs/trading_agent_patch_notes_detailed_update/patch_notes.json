@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 241,
+  "entry_count": 242,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6482,7 +6482,7 @@
         "DOCUMENTATION",
         "WORKFLOW"
       ],
-      "status": "planned",
+      "status": "current",
       "summary": "Git-track the mandatory post-T4 current/target architecture comparison and human review gate.",
       "details": [
         "After T4 independent acceptance generate pinned current seven-Agent Mermaid overview/modules, actual Python import graph SVG, editable target draw.io and consumer/safety gap matrix.",
@@ -6494,6 +6494,30 @@
       "sources": [
         "docs/refactor/P15_POST_T4_ARCHITECTURE_VISUALIZATION_GATE_2026_10_15.md",
         "docs/daily_patch/2026-10-15_p1_5_architecture_visualization_gate.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-A.1 Codex ACCEPT",
+      "title": "Independent audit closes variant conservation; Monitor gated on final CI",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "Codex ACCEPTS Scanner T4-A after the T4-A.1 variant conservation fix; next stage waits for current-HEAD required CI.",
+      "details": [
+        "73 records / 1,575 variants conserved; 396 sampled IDs with sample_mod=4. Native and portable comparisons reject missing, extra, malformed and changed digest evidence.",
+        "Codex full-corpus PASS covers inventory/comparator accounting only, not an additional actual Scanner full replay.",
+        "CODE CI 38648709904 SUCCESS; subsequent docs-only patch note used invalid status planned and failed test_patch_notes_sync. Fixed status to current; future architecture diagrams remain not started.",
+        "T4-B starts only after current HEAD Linux and Windows required CI are SUCCESS. New direct-tool PYTHONPATH P2 and other existing P2s remain separate."
+      ],
+      "impact": "Preserves explicit independent acceptance and CI gate without changing trading semantics.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-T4-A-1-CODEX-039.md",
+        "docs/daily_patch/2026-10-15_p1_5_t4_a_1_codex_accept.md"
       ]
     }
   ]
