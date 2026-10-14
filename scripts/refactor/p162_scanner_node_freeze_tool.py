@@ -35,7 +35,7 @@ ENV_PREFIXES = ("SCANNER_", "M22_", "TOP_N", "MIN_VOLUME", "MIN_TRADING", "EXCLU
                 "KIWOOM_", "STRATEGIST_", "COMMANDER_", "MONITOR_")
 VARIANTS_PER_RECORD = 24
 _BS = chr(92)
-_PATH_CHARS = frozenset("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ._:-/" + _BS)
+_PATH_CHARS = frozenset("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ._:-/<>~" + _BS)
 
 
 def sha(obj) -> str:
@@ -357,6 +357,7 @@ def compute(outdir, sample_mod=4):
                 x = replay(s)
                 v[vid] = [x["state_sha"], x["effects_sha"], x["exception"], x["returned_is_state"]]
         out[rec["id"]] = {"state_sha": a["state_sha"], "state_norm": sha(norm_seps(a["state"])),
+                          "state_norm_json": norm_seps(a["state"]),
                           "effects": a["effects"], "effects_sha": a["effects_sha"], "exception": a["exception"],
                           "returned_is_state": a["returned_is_state"], "bound": rec["bound"], "variants": v}
     return out
@@ -468,7 +469,8 @@ def golden_integrity(golden, oracle):
             continue
         checked += 1
         if oracle[rec["id"]]["state_norm"] != sha(norm_seps(rec["golden"]["state"])):
-            errors.append((rec["id"], "golden_vs_base_host_state"))
+            errors.append((rec["id"], "golden_vs_base_host_state",
+                           first_diff(oracle[rec["id"]]["state_norm_json"], norm_seps(rec["golden"]["state"]))[:220]))
         if [e[0] for e in oracle[rec["id"]]["effects"]] != [e[0] for e in rec["golden"]["effects"]]:
             errors.append((rec["id"], "golden_vs_base_host_effect_names"))
     return errors, checked, bound

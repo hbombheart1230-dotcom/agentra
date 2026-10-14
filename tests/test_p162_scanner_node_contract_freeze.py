@@ -96,7 +96,7 @@ def test_replay_matches_frozen_base_state_effect_order_and_variants(tmp_path):
         crlf = bytes([13, 10])
         assert Path(bprov["module_file"]).read_bytes().replace(crlf, bytes([10])) == pinned.replace(crlf, bytes([10]))
         errors, checked, bound = T.golden_integrity(golden, oracle)
-        assert errors == [], errors[:6]
+        assert errors == [], f"{len(errors)} golden-vs-BASE(host) integrity errors; first: {errors[:3]}"
         assert checked + bound == len(golden)
         bad = T.compare_portable(golden, computed, oracle)
     assert bad == [], f"{len(bad)} mismatches: {bad[:8]}"
