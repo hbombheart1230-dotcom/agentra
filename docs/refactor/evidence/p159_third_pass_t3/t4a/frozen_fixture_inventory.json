@@ -1,0 +1,12 @@
+{
+ "base_sha": "11a11df58f8d846cd9824fcb37eced521a57e887",
+ "freeze_commit": "c8a1131d9e3dc676b972548882c0e98bf91c284a",
+ "records": 73,
+ "variants_and_scenarios": 1575,
+ "effects_recorded": 1131,
+ "platform_bound_records": 13,
+ "hash_seed_pin": "PYTHONHASHSEED=0",
+ "full_corpus_replay_on_t4a_code": {
+  "mismatches": 0
+ }
+}

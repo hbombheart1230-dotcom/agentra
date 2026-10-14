@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 238,
+  "entry_count": 239,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6421,6 +6421,32 @@
         "scripts/refactor/p161_agent_output_freeze_tool.py",
         "tests/test_p161_agent_output_contract_freeze.py",
         ".github/workflows/p152-r2c-residual-regression.yml"
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "version": "P1.5 T4-A",
+      "title": "T4-A: scanner_node decomposed into four Scanner Owners (1,261 -> 474 lines)",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "The 1,261-line scanner_node was reduced to 474 lines by moving the per-candidate scoring row, the ranking policy overlay, the selection evidence projection and the event/trace payload builders into four cohesive Scanner Owners (verbatim statement runs, use-time facade, no second ranking implementation); State writes, event emission, persistence and the canonical rank sort stay in the node at their original boundaries.",
+      "details": [
+        "BASE-frozen contract (73 captured States, 1,575 variants and candidate-pool scenarios incl. ties and rank-1 flips, ordered effect evidence) replays with zero mismatches; every stage inlines back to the BASE AST exactly.",
+        "Scanner ranking depends on string-hash order at BASE; the freeze pins PYTHONHASHSEED=0. Native Windows replay and a same-host pinned-BASE portable oracle are both required CI gates.",
+        "Independent Codex audit pending; T4-B, T5 and Wave D not started; real report parity stays blocked; NTFS P2 unresolved."
+      ],
+      "impact": "Code-structure and test evidence only: no trading, ranking, guard, State or event behaviour changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-T4-A-CLAUDE-037.md",
+        "docs/refactor/p1_5_third_pass_t4a_moved_segments_ledger.json",
+        "graphs/nodes/scanner_node.py",
+        "tests/test_p162_t4a_extraction_gates.py",
+        "tests/test_p162_scanner_node_contract_freeze.py"
       ]
     }
   ]

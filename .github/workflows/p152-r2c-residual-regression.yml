@@ -116,7 +116,7 @@ jobs:
           if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
             git fetch --no-tags --unshallow origin refactor/p1.5 || git fetch --no-tags --depth=5000 origin refactor/p1.5
           fi
-          for sha in 60dfa1c4cd7ca62d127251a4051b3404a86f6932 bf59c4d2941442fc2dff41c3c2888f053b4b1577 4cb92916c976f947613f52e8b0c0790addac7eb5 67e0dc0ee0b91d45d242ccbfb3e1133d3a06e5ea af0a4489dc250d804854e27917d5e2d881261537 d4a5364bae817504c253e06b9150ee49c692e120 ede47324e8db4be12c45e0a09ca3dcd22c68c5c1 a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60 eb53dc1fe56c2a70a21271faf2f3c25c9711e309; do
+          for sha in 60dfa1c4cd7ca62d127251a4051b3404a86f6932 bf59c4d2941442fc2dff41c3c2888f053b4b1577 4cb92916c976f947613f52e8b0c0790addac7eb5 67e0dc0ee0b91d45d242ccbfb3e1133d3a06e5ea af0a4489dc250d804854e27917d5e2d881261537 d4a5364bae817504c253e06b9150ee49c692e120 ede47324e8db4be12c45e0a09ca3dcd22c68c5c1 a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60 eb53dc1fe56c2a70a21271faf2f3c25c9711e309 11a11df58f8d846cd9824fcb37eced521a57e887 c8a1131d9e3dc676b972548882c0e98bf91c284a; do
             git merge-base --is-ancestor "$sha" HEAD || { echo "::error::pinned stage SHA $sha is not an ancestor of HEAD"; exit 1; }
           done
       - name: Check 38 extracted function ASTs and <=350 LOC Owners
@@ -212,6 +212,14 @@ jobs:
           python -m pytest -q -p no:cacheprovider tests/test_p161_t35_extraction_gates.py tests/test_p161_agent_output_contract_freeze.py --junitxml=branch_output/gate_third_pass_t35_junit.xml > branch_output/gate_t35.log 2>&1 || rc=$?
           cat branch_output/gate_t35.log
           if [ "$rc" != "0" ]; then python -c "import re;t=open('branch_output/gate_t35.log',encoding='utf-8',errors='replace').read()[-6000:];print('::error title=t35-gate-tail::'+t.replace('%','%25').replace(chr(13),'%0D').replace(chr(10),'%0A'))"; fi
+          exit $rc
+      - name: Gate P1.5 T4-A - scanner_node structural gates and BASE-frozen State/effect-order contract (portable oracle)
+        run: |
+          mkdir -p branch_output
+          rc=0
+          python -m pytest -q -p no:cacheprovider tests/test_p162_t4a_extraction_gates.py tests/test_p162_scanner_node_contract_freeze.py --junitxml=branch_output/gate_t4a_junit.xml > branch_output/gate_t4a.log 2>&1 || rc=$?
+          cat branch_output/gate_t4a.log
+          if [ "$rc" != "0" ]; then python -c "t=open('branch_output/gate_t4a.log',encoding='utf-8',errors='replace').read()[-5000:];print('::error title=t4a-gate-tail::'+t.replace('%','%25').replace(chr(13),'%0D').replace(chr(10),'%0A'))"; fi
           exit $rc
       - name: Linux harness accounting (Windows-only tests are SKIPPED here and are NOT counted as Windows PASS)
         run: |
@@ -407,6 +415,38 @@ jobs:
           assert len(rows) == len(required), ('unexpected test count', len(rows), len(required))
           print('T35 native replay: %d/%d required tests PASSED on Windows' % (len(required), len(required)))
           PY
+      - name: T4-A native scanner_node contract replay on Windows (required; committed golden, no portable mode)
+        shell: bash
+        env:
+          T4A_REQUIRE_NATIVE: '1'
+        run: |
+          mkdir -p branch_output
+          rc=0
+          python -m pytest -q -p no:cacheprovider tests/test_p162_scanner_node_contract_freeze.py -rs --junitxml=branch_output/t4a_windows_junit.xml > branch_output/t4a_windows_pytest.log 2>&1 || rc=$?
+          cat branch_output/t4a_windows_pytest.log
+          if [ "$rc" != "0" ]; then python -c "t=open('branch_output/t4a_windows_pytest.log',encoding='utf-8',errors='replace').read()[-5000:];print('::error title=t4a-windows-native-tail::'+t.replace('%','%25').replace(chr(13),'%0D').replace(chr(10),'%0A'))"; fi
+          exit $rc
+      - name: T4-A native replay accounting (all five contract tests RAN and PASSED; skip/deselect/missing fails)
+        shell: bash
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          rows = {}
+          for c in ET.parse('branch_output/t4a_windows_junit.xml').getroot().iter('testcase'):
+              st = 'SKIPPED' if c.find('skipped') is not None else 'FAILED' if (c.find('failure') is not None or c.find('error') is not None) else 'PASSED'
+              rows[c.get('name')] = st
+          required = ['test_native_mode_is_used_on_windows_when_required',
+                      'test_golden_inventory_covers_selection_tie_empty_pool_and_scenarios',
+                      'test_replay_matches_frozen_base_state_effect_order_and_variants',
+                      'test_portable_oracle_rejects_separator_only_regression_and_fails_closed',
+                      'test_committed_golden_is_unchanged_since_the_freeze_commit']
+          missing = [n for n in required if n not in rows]
+          assert not missing, ('required T4-A tests missing', missing)
+          bad = {n: rows[n] for n in required if rows[n] != 'PASSED'}
+          assert not bad, ('required T4-A tests not PASSED', bad)
+          assert len(rows) == len(required), ('unexpected test count', len(rows))
+          print('T4-A native replay: %d/%d PASSED on Windows' % (len(required), len(required)))
+          PY
       - name: Upload Windows harness JUnit
         if: always()
         uses: actions/upload-artifact@v4
@@ -420,6 +460,8 @@ jobs:
             branch_output/ntfs_settle_summary.json
             branch_output/t35_windows_junit.xml
             branch_output/t35_windows_pytest.log
+            branch_output/t4a_windows_junit.xml
+            branch_output/t4a_windows_pytest.log
           if-no-files-found: warn
   broad_remote_offline:
     name: Repo-wide mock/offline non-heavy regression (manual diagnostic only)

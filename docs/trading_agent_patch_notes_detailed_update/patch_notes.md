@@ -3155,3 +3155,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 수정: portable 모드에서 148개 전체 레코드를 고정 BASE 트리를 같은 호스트에서 실행한 결과와 canonical SHA-256 정확 일치로 비교(정규화 금지, BASE 증거 누락·형식 오류는 fail-closed)하고, golden 무결성은 별도 집계(80/68)합니다. 필수 Windows job에 native 계약 replay(16개 필수 테스트 JUnit 집계, skip/deselect/누락 금지)를 추가했습니다.
 - 검증: 기존 false negative 재현 및 현재 거부, committed golden 불변, 구조 AST gate 유지. 독립 Codex 재감사 대기, T3.5 구조 parity PASS 유지, REAL_REPORT_PARITY_BLOCKED·NTFS P2 유지, T4/T5/Wave D 미시작.
 
+## 2026-10-14 · P1.5 T4-A (Scanner 구조 종결 작업)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · SAFETY
+
+- 변경: 1,261줄이던 `scanner_node`를 474줄로 줄였습니다. 후보별 점수 row, ranking policy overlay, selection evidence projection, 이벤트/trace payload builder를 `libs/runtime/scanner/`의 응집된 Owner 4개로 옮겼습니다(원문 그대로, use-time facade, 두 번째 ranking 구현 없음). State 쓰기·이벤트 발행·영속화·정식 rank 정렬은 노드의 원래 경계에 남겼습니다.
+- 검증: 구현 전에 BASE에서 고정한 계약(State 73건 + 변형/후보풀 시나리오 1,575건: 동점, rank-1 뒤집기, 순서/중복/빈 풀, 순서가 있는 effect 증거)이 0 mismatch이고, 모든 stage를 인라인하면 BASE AST와 정확히 일치합니다.
+- 발견: BASE의 Scanner ranking은 문자열 hash 순서에 의존하여 freeze는 `PYTHONHASHSEED=0`을 고정합니다(동작은 변경하지 않음). Windows native 재생과 같은 호스트 BASE oracle이 필수 CI gate입니다.
+- 상태: 독립 Codex 감사 대기, T4-B/T5/Wave D 미시작, REAL_REPORT_PARITY_BLOCKED·NTFS P2 유지.
+

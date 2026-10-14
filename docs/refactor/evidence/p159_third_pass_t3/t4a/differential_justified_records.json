@@ -1,0 +1,37 @@
+[
+ {
+  "test": "tests/test_decision_trace_ledger.py::test_decision_trace_ledger_collects_strategist_scanner_monitor",
+  "function": "scanner_node.scanner_node",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ]
+ },
+ {
+  "test": "tests/test_m18_scanner_global_sentiment_contract.py::test_scanner_consumes_global_sentiment_emitted_by_strategist",
+  "function": "scanner_node.scanner_node",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ]
+ },
+ {
+  "test": "tests/test_m31_17_theme_candidate_flow_upgrade.py::test_m31_17_kiwoom_theme_packet_drives_themes_and_sector_candidates",
+  "function": "scanner_node.scanner_node",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ]
+ },
+ {
+  "test": "tests/test_m31_17_theme_candidate_flow_upgrade.py::test_m31_17_llm_override_themes_enable_sector_theme_candidates",
+  "function": "scanner_node.scanner_node",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ]
+ },
+ {
+  "test": "tests/test_m31_17_theme_candidate_flow_upgrade.py::test_m31_17_runtime_theme_map_enables_sector_theme_candidates",
+  "function": "scanner_node.scanner_node",
+  "rules": [
+   "R-MEMORY-PACKET-ID"
+  ]
+ }
+]

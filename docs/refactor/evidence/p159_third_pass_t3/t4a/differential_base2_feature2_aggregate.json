@@ -1,0 +1,53 @@
+{
+ "baseline_sha": "11a11df58f8d846cd9824fcb37eced521a57e887",
+ "feature_sha": "171cc8adc303ee3914feec2918b6217c80e98f3c",
+ "mode": "det",
+ "execution_order": [
+  "b1",
+  "b2",
+  "f1",
+  "f2"
+ ],
+ "sessions": {
+  "b1": {
+   "exit_code": 0,
+   "pytest_summary": "1109 passed, 1 warning in 286.68s (0:04:46)"
+  },
+  "b2": {
+   "exit_code": 0,
+   "pytest_summary": "1109 passed, 1 warning in 293.82s (0:04:53)"
+  },
+  "f1": {
+   "exit_code": 0,
+   "pytest_summary": "1109 passed, 1 warning in 293.75s (0:04:53)"
+  },
+  "f2": {
+   "exit_code": 0,
+   "pytest_summary": "1109 passed, 1 warning in 292.28s (0:04:52)"
+  }
+ },
+ "containment": {
+  "verdict": "PASS",
+  "mode": "strict_sha256",
+  "content_equivalence_proven": true,
+  "failed_sessions": []
+ },
+ "summary": {
+  "total_calls": 79,
+  "BYTE_IDENTICAL": 74,
+  "JUSTIFIED_TOLERANCE": 5,
+  "REAL_MISMATCH": 0,
+  "UNRESOLVED": 0,
+  "per_function": {
+   "scanner_node.scanner_node": {
+    "calls": 79,
+    "BYTE_IDENTICAL": 74,
+    "JUSTIFIED_TOLERANCE": 5,
+    "REAL_MISMATCH": 0,
+    "UNRESOLVED": 0
+   }
+  },
+  "test_outcomes_identical_across_all_sessions": true
+ },
+ "test_file_count": 36
+}
