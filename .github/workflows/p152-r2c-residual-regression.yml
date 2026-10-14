@@ -193,7 +193,11 @@ jobs:
       - name: Gate P1.5 Third Pass T3.5 — agent output builders structural gates and BASE-frozen contract parity
         run: |
           mkdir -p branch_output
-          python -m pytest -q -p no:cacheprovider tests/test_p161_t35_extraction_gates.py tests/test_p161_agent_output_contract_freeze.py --junitxml=branch_output/gate_third_pass_t35_junit.xml
+          rc=0
+          python -m pytest -q -p no:cacheprovider tests/test_p161_t35_extraction_gates.py tests/test_p161_agent_output_contract_freeze.py --junitxml=branch_output/gate_third_pass_t35_junit.xml > branch_output/gate_t35.log 2>&1 || rc=$?
+          cat branch_output/gate_t35.log
+          if [ "$rc" != "0" ]; then python -c "import re;t=open('branch_output/gate_t35.log',encoding='utf-8',errors='replace').read()[-6000:];print('::error title=t35-gate-tail::'+t.replace('%','%25').replace(chr(13),'%0D').replace(chr(10),'%0A'))"; fi
+          exit $rc
       - name: Linux harness accounting (Windows-only tests are SKIPPED here and are NOT counted as Windows PASS)
         run: |
           mkdir -p branch_output
