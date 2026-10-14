@@ -58,6 +58,10 @@ Harness at `9e312c9`-era `p156_parity_differential.py` (strict SHA-256 containme
 
 A first attempt included the parity harness's own tests and two env-sensitive files; all four sessions (BASE included) failed identically and the run was FAIL by exit code; it was repeated with the list above and is not hidden here. Deterministic fixture parity is not real Reporter/production parity.
 
+## 6b. Hosted CI
+
+Final code state `e3d8338`: run **38559560879 SUCCESS** - Linux `regression` (all pinned T1/T2/T3 and T3.5 gates, the new T4-A structural gate and the portable frozen contract against the same-host pinned BASE) and the required `windows-harness-smoke` (native T4-A replay with 5/5 contract tests accounted as PASSED). Iterations, stated openly: (1) the T3.5 *scope* gate diffed `eb53dc1..HEAD` and so rejected the legitimate T4-A paths - it is now pinned to the T3.5 end commit `11a11df` (assertions unchanged; T3.5 fixtures/tests otherwise untouched); (2) hosted Windows replay differed because the runner lacks the IANA zone database (`ZoneInfoNotFoundError: Asia/Seoul` inside the Scanner q9 snapshot capture, swallowed by the node): `tzdata` is now installed in that job and the test fails closed when it is missing; (3) the portable golden-integrity check read `<REPLAY_ROOT>` placeholders as non-path text; `<`, `>` and `~` are now path characters (symmetric reading only, no tolerance on BASE<->FEATURE).
+
 ## 7. Remaining
 
 Independent Codex T4-A audit pending. T4-B (Monitor/Strategist/Commander/Operator UI functions) not started; T5 and Wave D not started. The platform-bound portion of the golden (13 records with Windows drive paths) is compared on foreign hosts only against same-host pinned BASE.
