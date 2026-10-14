@@ -1,0 +1,223 @@
+"""Monitor output artifact: decision trace, evaluation/action decision and evidence refs.
+
+T3.5 (P1.5 Third Pass): contiguous statement runs / dict item ranges of `libs/contracts/agent_outputs.py::build_monitor_output_artifact` moved verbatim into
+contract-owned projection stages. Locals enter as explicit parameters and leave as the returned record or dict; value
+helpers are imported from `libs.contracts.agent_output_values`; remaining module globals of the public facade are
+resolved at use time as `facade.NAME`. Final artifact assembly and `validate_artifact` stay in the public builder.
+"""
+from __future__ import annotations
+
+from libs.contracts.agent_output_values import (
+    _clip,
+    _dict,
+    _listify,
+    _safe_float,
+)
+
+
+def monitor_artifact_trace_evaluation_fields(blocked_rules, decision_reason_chain, entry_info, evidence_quality, exit_info, exit_vs_strategy_intent, first_intent, intents, missing_inputs, monitor_output, policy_trace, posture, thresholds, triggered_rules, watch_axes, *, facade):
+    return {
+            "decision_trace": {
+                "policy_ref": dict(policy_trace.get("policy_ref") or {}),
+                "entry_check_summary": str(policy_trace.get("entry_check_summary") or ""),
+                "entry_blockers": list(policy_trace.get("entry_blockers") or []),
+                "timing_assessment": dict(policy_trace.get("timing_assessment") or {}),
+                "exit_trigger_basis": dict(policy_trace.get("exit_trigger_basis") or {}),
+                "exit_vs_strategy_intent": dict(exit_vs_strategy_intent),
+                "commander_context_consumed": policy_trace.get("commander_context_consumed"),
+                "consumed_fields": list(policy_trace.get("consumed_fields") or []),
+                "flow_instruction_applied": policy_trace.get("flow_instruction_applied"),
+                "no_trade_reason_applied": policy_trace.get("no_trade_reason_applied"),
+                "shadow_used": policy_trace.get("shadow_used"),
+                "strategist_fallback_used": policy_trace.get("strategist_fallback_used"),
+                "received_policy": _dict(entry_info.get("received_policy")),
+                "received_policy_source": _clip(entry_info.get("received_policy_source"), max_len=120),
+                "effective_policy": _dict(entry_info.get("effective_policy")) or _dict(entry_info.get("applied_policy")) or _dict(entry_info.get("thresholds")),
+                "effective_policy_source": _clip(entry_info.get("effective_policy_source"), max_len=120),
+                "effective_policy_source_chain": _listify(entry_info.get("effective_policy_source_chain"), limit=6, max_len=80),
+                "policy_adjustments": _dict(entry_info.get("policy_adjustments")),
+                "policy_adjustment_summary": _clip(entry_info.get("policy_adjustment_summary"), max_len=220),
+                "policy_adjustment_reasoning": _clip(entry_info.get("policy_adjustment_reasoning"), max_len=260),
+                "effective_policy_deltas": [
+                    {
+                        "field": _clip((row or {}).get("field"), max_len=80),
+                        "from": (row or {}).get("from"),
+                        "to": (row or {}).get("to"),
+                    }
+                    for row in list(entry_info.get("effective_policy_deltas") or [])[:8]
+                    if isinstance(row, dict)
+                ],
+            },
+            "decision_reason_chain": decision_reason_chain,
+            "intent_emitted": bool(intents),
+            "intent_id": _clip(first_intent.get("intent_id") or first_intent.get("id"), max_len=120),
+            "evidence_quality": evidence_quality,
+            "missing_inputs": missing_inputs,
+            "generated_at": facade._utc_now_iso(),
+            "monitor_evaluation": {
+                "triggered_rules": triggered_rules,
+                "blocked_rules": blocked_rules[:8],
+                "posture": posture,
+                "active_exit_axis": _clip(exit_info.get("active_exit_axis"), max_len=120),
+                "entry_pattern": _clip(entry_info.get("pattern"), max_len=80),
+                "entry_passed_checks": list(entry_info.get("passed_checks") or []),
+                "entry_failed_checks": list(entry_info.get("failed_checks") or []),
+                "entry_threshold_margins": _dict(entry_info.get("threshold_margins")),
+                "entry_condition_path": _clip(entry_info.get("entry_condition_path"), max_len=80),
+                "entry_condition_paths_passed": _listify(entry_info.get("entry_condition_paths_passed"), limit=4, max_len=80),
+                "entry_condition_scores": _dict(entry_info.get("condition_scores")),
+                "entry_grouped_logic_trace": _dict(entry_info.get("grouped_logic_trace")),
+                "policy_ref": dict(policy_trace.get("policy_ref") or {}),
+                "entry_check_summary": str(policy_trace.get("entry_check_summary") or ""),
+                "entry_blockers": list(policy_trace.get("entry_blockers") or []),
+                "timing_assessment": dict(policy_trace.get("timing_assessment") or {}),
+                "commander_context_consumed": policy_trace.get("commander_context_consumed"),
+                "consumed_fields": list(policy_trace.get("consumed_fields") or []),
+                "flow_instruction_applied": policy_trace.get("flow_instruction_applied"),
+                "no_trade_reason_applied": policy_trace.get("no_trade_reason_applied"),
+                "shadow_used": policy_trace.get("shadow_used"),
+                "strategist_fallback_used": policy_trace.get("strategist_fallback_used"),
+            },
+            "monitor_action_decision": {
+                "decision": str(monitor_output.get("intent_side") or "NOOP").strip().upper(),
+                "action_reason_human": _clip(monitor_output.get("entry_exit_reason") or exit_info.get("monitor_reason") or exit_info.get("reason"), max_len=240),
+                "decision_reason_chain": decision_reason_chain,
+                "active_exit_axis": _clip(exit_info.get("active_exit_axis"), max_len=120),
+                "exit_vs_strategy_intent": dict(exit_vs_strategy_intent),
+                "confidence": _safe_float(entry_info.get("confidence"), 0.0),
+                "triggered_rules": triggered_rules,
+                "blocked_rules": blocked_rules[:8],
+                "policy_ref": dict(policy_trace.get("policy_ref") or {}),
+                "entry_check_summary": str(policy_trace.get("entry_check_summary") or ""),
+                "entry_blockers": list(policy_trace.get("entry_blockers") or []),
+                "entry_condition_path": _clip(entry_info.get("entry_condition_path"), max_len=80),
+                "entry_condition_paths_passed": _listify(entry_info.get("entry_condition_paths_passed"), limit=4, max_len=80),
+                "entry_condition_scores": _dict(entry_info.get("condition_scores")),
+                "entry_grouped_logic_trace": _dict(entry_info.get("grouped_logic_trace")),
+                "exit_trigger_basis": dict(policy_trace.get("exit_trigger_basis") or {}),
+                "commander_context_consumed": policy_trace.get("commander_context_consumed"),
+                "consumed_fields": list(policy_trace.get("consumed_fields") or []),
+                "shadow_used": policy_trace.get("shadow_used"),
+                "strategist_fallback_used": policy_trace.get("strategist_fallback_used"),
+            },
+            "trigger_details": {
+                "active_exit_axis": _clip(exit_info.get("active_exit_axis"), max_len=120),
+                "watch_axes": watch_axes[:8],
+                "exit_triggered": bool(exit_info.get("triggered")),
+                "sell_guard_blocked": bool(exit_info.get("sell_guard_blocked")),
+                "sell_guard_reason": _clip(exit_info.get("sell_guard_reason"), max_len=180),
+                "exit_vs_strategy_intent": dict(exit_vs_strategy_intent),
+            },
+            "evidence_refs": {
+                "event_names": [
+                    "monitor.threshold_snapshot",
+                    "monitor.state_transition",
+                    "monitor.exit_decision_detail",
+                    "monitor.cycle_summary",
+                ],
+                "watch_axes": watch_axes[:8],
+            },
+            # compatibility-rich fields for downstream readers
+            "entry_reason": _clip(monitor_output.get("entry_exit_reason"), max_len=160),
+            "monitor_reason": _clip(exit_info.get("monitor_reason"), max_len=160),
+            "exit_reason": _clip(exit_info.get("reason"), max_len=160),
+            "thresholds": thresholds
+    }
+
+
+def monitor_artifact_price_exit_metric_fields(exit_info, feature_source, price_source):
+    return {
+            "current_price": exit_info.get("price"),
+            "price": exit_info.get("price"),
+            "raw_price": exit_info.get("raw_price"),
+            "technical_price": exit_info.get("technical_price"),
+            "technical_price_source": _clip(exit_info.get("technical_price_source"), max_len=120),
+            "effective_price": exit_info.get("effective_price"),
+            "average_price": exit_info.get("avg_price"),
+            "avg_price": exit_info.get("avg_price"),
+            "peak_price": exit_info.get("peak_price"),
+            "account_current_price": exit_info.get("account_current_price"),
+            "account_mark_price": exit_info.get("account_mark_price"),
+            "account_mark_price_source": _clip(exit_info.get("account_mark_price_source"), max_len=120),
+            "account_unrealized_pnl": exit_info.get("account_unrealized_pnl"),
+            "account_pnl_ratio_source": _clip(exit_info.get("account_pnl_ratio_source"), max_len=120),
+            "current_drawdown": exit_info.get("current_drawdown"),
+            "peak_drawdown": exit_info.get("peak_drawdown"),
+            "final_peak_drawdown_ratio": exit_info.get("final_peak_drawdown_ratio"),
+            "peak_drawdown_source": _clip(exit_info.get("peak_drawdown_source"), max_len=120),
+            "exit_trigger_metric_name": _clip(exit_info.get("exit_trigger_metric_name"), max_len=120),
+            "exit_trigger_metric_value": exit_info.get("exit_trigger_metric_value"),
+            "exit_trigger_metric_source": _clip(exit_info.get("exit_trigger_metric_source"), max_len=120),
+            "risk_reward_take_profit_target_pct": exit_info.get("risk_reward_take_profit_target_pct"),
+            "risk_reward_take_profit_rung": exit_info.get("risk_reward_take_profit_rung"),
+            "resistance_price": exit_info.get("resistance_price"),
+            "resistance_price_source": _clip(exit_info.get("resistance_price_source"), max_len=120),
+            "resistance_distance_pct": exit_info.get("resistance_distance_pct"),
+            "profit_time_stop_peak_giveback_pct": exit_info.get("profit_time_stop_peak_giveback_pct"),
+            "partial_exit": bool(exit_info.get("partial_exit")),
+            "exit_qty": exit_info.get("exit_qty"),
+            "exit_qty_fraction": exit_info.get("exit_qty_fraction"),
+            "profit_ladder_level_pct": exit_info.get("profit_ladder_level_pct"),
+            "profit_ladder_level_index": exit_info.get("profit_ladder_level_index"),
+            "volume_ratio": exit_info.get("volume_ratio"),
+            "execution_strength": exit_info.get("execution_strength"),
+            "trade_strength": exit_info.get("trade_strength"),
+            "opening_gap_chase_observed": bool(exit_info.get("opening_gap_chase_observed")),
+            "open_gap_pct": exit_info.get("open_gap_pct"),
+            "prev_close_distance_pct": exit_info.get("prev_close_distance_pct"),
+            "vwap_distance": exit_info.get("vwap_distance"),
+            "position_age_seconds": exit_info.get("position_age_seconds"),
+            "price_source": price_source,
+            "effective_price_source": _clip(exit_info.get("effective_price_source"), max_len=120),
+            "price_source_policy": _clip(exit_info.get("price_source_policy"), max_len=260),
+            "feature_source": feature_source
+    }
+
+
+def monitor_artifact_pnl_hold_exit_fields(exit_info, watch_axes):
+    return {
+            "raw_pnl_ratio": exit_info.get("raw_pnl_ratio"),
+            "gross_pnl_ratio": exit_info.get("gross_pnl_ratio"),
+            "technical_pnl_ratio": exit_info.get("technical_pnl_ratio"),
+            "effective_pnl_ratio": exit_info.get("effective_pnl_ratio"),
+            "stop_pnl_ratio": exit_info.get("stop_pnl_ratio"),
+            "stop_pnl_ratio_source": _clip(exit_info.get("stop_pnl_ratio_source"), max_len=120),
+            "hard_stop_pnl_ratio": exit_info.get("hard_stop_pnl_ratio"),
+            "hard_stop_pnl_ratio_source": _clip(exit_info.get("hard_stop_pnl_ratio_source"), max_len=120),
+            "cost_drag_pressure": bool(exit_info.get("cost_drag_pressure")),
+            "cost_drag_pressure_pct": exit_info.get("cost_drag_pressure_pct"),
+            "cost_drag_pressure_reason": _clip(exit_info.get("cost_drag_pressure_reason"), max_len=180),
+            "stop_loss_cost_drag_blocked": bool(exit_info.get("stop_loss_cost_drag_blocked")),
+            "stop_loss_cost_drag_blocked_reason": _clip(
+                exit_info.get("stop_loss_cost_drag_blocked_reason"),
+                max_len=180,
+            ),
+            "account_pnl_ratio": exit_info.get("account_pnl_ratio"),
+            "pnl_crosscheck_applied": bool(exit_info.get("pnl_crosscheck_applied")),
+            "pnl_crosscheck_reason": _clip(exit_info.get("pnl_crosscheck_reason"), max_len=180),
+            "pnl_crosscheck_gap": exit_info.get("pnl_crosscheck_gap"),
+            "price_crosscheck_gap": exit_info.get("price_crosscheck_gap"),
+            "price_anomaly_flag": bool(exit_info.get("price_anomaly_flag")),
+            "price_anomaly_reason": _clip(exit_info.get("price_anomaly_reason"), max_len=180),
+            "pnl_fallback_applied": bool(exit_info.get("pnl_fallback_applied")),
+            "fallback_price_source": _clip(exit_info.get("fallback_price_source"), max_len=120),
+            "final_exit_thresholds": _dict(exit_info.get("final_exit_thresholds")),
+            "exit_threshold_source": _clip(exit_info.get("exit_threshold_source"), max_len=120),
+            "hold_block_reason": _clip(exit_info.get("hold_block_reason"), max_len=180),
+            "hold_limit_sec": exit_info.get("hold_limit_sec"),
+            "max_hold_reached": bool(exit_info.get("max_hold_reached")),
+            "time_stop_reached": bool(exit_info.get("time_stop_reached")),
+            "time_limit_reached": bool(exit_info.get("time_limit_reached")),
+            "time_limit_reason": _clip(exit_info.get("time_limit_reason"), max_len=80),
+            "time_limit_reassessment_required": bool(exit_info.get("time_limit_reassessment_required")),
+            "time_limit_reassessment_blocked": bool(exit_info.get("time_limit_reassessment_blocked")),
+            "time_limit_reassessment_blocked_reason": _clip(
+                exit_info.get("time_limit_reassessment_blocked_reason"),
+                max_len=180,
+            ),
+            "active_exit_axis": _clip(exit_info.get("active_exit_axis"), max_len=120),
+            "watch_axes": watch_axes[:8],
+            "exit_triggered": bool(exit_info.get("triggered")),
+            "min_hold_blocked": bool(exit_info.get("min_hold_blocked")),
+            "sell_cooldown_blocked": bool(exit_info.get("sell_cooldown_blocked"))
+    }
