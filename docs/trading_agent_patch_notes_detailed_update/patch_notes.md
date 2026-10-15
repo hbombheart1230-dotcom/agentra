@@ -3393,3 +3393,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - All141 wrappers retained; no T4/runtime/order/authority/Config/UI/scheduler changes. Existing date fallback functions and shared event reader unchanged.
 - Read-only diagnostics share one implementation per responsibility; trading and operational execution contracts unchanged.
 - Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_source_work_order03.md
+
+## 2026-10-15 · P1.5 T4 + PR #5 Integration Begin
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · SAFETY
+
+- Isolated two-parent merge `496d495` on `integration/p15-t4-pr5-convergence-20261015` preserves 264 previously unique JSON history entries and both Markdown change histories.
+- T4-D independent Codex evidence and required final Linux/Windows CI SUCCESS recorded (Windows T4-D 5/5), without claiming a new Codex verdict or integrated CI PASS.
+- New combined-branch Linux/Windows and Reporter/Web checks configured. Safety: no real orders/LLM, no production writes, no main merge or architecture relocation.
+- Remaining P2 and real-report parity limitations remain open. See `docs/daily_patch/2026-10-15_p15_t4_pr5_integration_start.md`.

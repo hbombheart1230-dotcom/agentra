@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 264,
+  "entry_count": 265,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7050,6 +7050,30 @@
         "docs/daily_patch/2026-10-15_source_work_order03.md"
       ],
       "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-PR5 Integration Begin",
+      "title": "Isolated T4 and PR #5 merge with audit CI closure and combined checks",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "SAFETY"
+      ],
+      "status": "in_progress",
+      "summary": "Created two-parent isolated merge of T4 and PR #5 with 264 historical UI entries preserved and Git blob tree verified; configured combined-branch Linux/Windows checks.",
+      "details": [
+        "T4-D independent Codex audit previously held only on FINAL CI; required final Linux and Windows CI including T4-D 5/5 Windows JUnit has since succeeded. A new post-CI Codex verdict was not claimed.",
+        "No unified-code validation results or architecture target approval are asserted; new integrated CI remains pending.",
+        "T4-C Reporter-feedback missing scenario and synthetic-only actual Report/LLM parity limits remain open; main, legacy branches, operational authority stay protected."
+      ],
+      "impact": "Integration branch only; workflow and docs evidence changes, no live trading, Broker or main mutation.",
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/evidence/P15-T4-D-CODEX-CI-CLOSURE-046.md",
+        "docs/daily_patch/2026-10-15_p15_t4_pr5_integration_start.md"
+      ]
     }
   ]
 }
