@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 245,
+  "entry_count": 246,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6593,6 +6593,32 @@
         "docs/refactor/p1_5_third_pass_t4c_moved_segments_ledger.json",
         "tests/test_p164_t4c_extraction_gates.py",
         "tests/test_p164_strategist_contract_freeze.py"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-C Codex ACCEPT / T4-D GO",
+      "title": "Strategist independent audit accepted; Commander/UI structural T4-D authorized",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "REFACTOR",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Codex independently confirms Strategist AST, fake LLM, offline frozen BASE/FEATURE replay and platform-bound oracle; records a lost Reporter-feedback fixture scenario as P2.",
+      "details": [
+        "T4-C FINAL ACCEPT: 22 segments/13 owners, structural 11 PASS, contract 5 PASS, 50 BASE/50 FEATURE records and 1,141 variants with 0 mismatches; hosted code and FINAL CI both SUCCESS.",
+        "Windows native archived BASE matches v3 golden; 50 bound cases use exact same-host pinned BASE in Linux, with effect-name and exception golden checks. No new P0/P1, REAL_LLM_PARITY_NOT_RUN.",
+        "P2 evidence loss: v1 fixture 29-variant Reporter-feedback analysis fallback scenario replaced by 23-variant max-token fallback; net -6 variants and 21→24 effects due to global sentiment and two news collections; separate fixture coverage restoration required before final P1.5 acceptance.",
+        "T4-D may begin pure Commander policy and Operator UI renderer extraction only after latest remote CI; no LLM/Broker/State-write authority changes. Post-T4 visual architecture user approval remains mandatory."
+      ],
+      "impact": "Keeps accepted refactor separated from historical fixture coverage debt and scopes the next safe structural wave.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-T4-C-CODEX-043.md",
+        "docs/refactor/work_orders/evidence/P15-T4-C-GOLDEN-SCENARIO-GAP-044.md",
+        "docs/refactor/work_orders/P15-T4-D-COMMANDER-UI-044.md",
+        "docs/daily_patch/2026-10-15_p1_5_t4_c_codex_accept_t4_d_go.md"
       ]
     }
   ]

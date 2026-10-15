@@ -3219,3 +3219,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 경계: Frame LLM 호출·프롬프트·모델/타임아웃/재시도/fallback, State 변경, 이벤트 발행, 영속화, 환경변수 읽기는 node에 유지, Broker/Supervisor/Executor/Step5C 변경 없음.
 - 상태: 독립 Codex 감사 대기, T4-D/T5/Wave D 미착수, REAL_LLM_PARITY_NOT_RUN, REAL_REPORT_PARITY_BLOCKED·NTFS P2 유지.
 
+## 2026-10-15 · P1.5 T4-C Codex ACCEPT / T4-D GO
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · REFACTOR · SAFETY
+
+- T4-C Strategist 독립 감사 최종 **ACCEPT**: 22 ledger/13 Owners AST 복원, 구조 11 PASS, 계약 5 PASS, archived BASE 50 + FEATURE 50 records 전체 1,141 variants/0 mismatch, mock LLM 5모드 호출/상태 동등. FINAL CI `38679851004` SUCCESS.
+- **P2**: golden v1→v2는 단순 6개 누락이 아니라 **Reporter 피드백 Fallback 29-variant 레코드**와 **max-token Fallback 23-variant 레코드**가 교체된 것. 상태 효과 21→24. 원래 시나리오 커버리지가 사라졌으므로 P1.5 최종 승인 전 별도 immutable BASE fixture로 복원·Codex 독립 감사 필수. v3 동등성 자체는 PASS.
+- `REAL_LLM_PARITY_NOT_RUN`, `REAL_REPORT_PARITY_BLOCKED`, NTFS/cross-seed/PYTHONPATH 및 BASE×2/FEATURE×2 P2 유지. T4-D는 Commander pure 정책 우선순위/Operator UI 정확 Markdown 렌더만 분리, 기존 LLM·권한·State/Event·영속화 동작은 보존.
+- 근거: `docs/refactor/work_orders/evidence/P15-T4-C-CODEX-043.md`, `docs/refactor/work_orders/evidence/P15-T4-C-GOLDEN-SCENARIO-GAP-044.md`, `docs/refactor/work_orders/P15-T4-D-COMMANDER-UI-044.md`.
