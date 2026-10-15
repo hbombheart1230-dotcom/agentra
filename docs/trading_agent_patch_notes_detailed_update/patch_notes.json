@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 117,
+  "entry_count": 118,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3126,6 +3126,26 @@
         "Pause Batch 3 and hold PR #5 in Draft/manual-review workflow. No merge or auto-merge. Draft state could not be independently rechecked because GitHub API returns Forbidden."
       ],
       "impact": "Integration planning and branch cleanup only. T4 Reporting implementations remain unchanged.",
+      "sources": [
+        "docs/refactor/2026-10-15_t4_pr5_reporting_conflict_report.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Reporting-T4-PR5-Snapshot-Recheck",
+      "title": "Concurrent T4 documentation update rechecked",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Recheck T4 at 4e242e5 after concurrent remote advancement; no Reporting implementation changed.",
+      "details": [
+        "Only five documentation paths changed since the conflict report baseline. The eleven overlapping paths and nine independent relocation candidates remain valid.",
+        "Record the latest two shared changelog blob SHAs in the conflict report. Batch 3 and merge remain on hold."
+      ],
+      "impact": "Report snapshot refresh only; no code or T4 branch changes.",
       "sources": [
         "docs/refactor/2026-10-15_t4_pr5_reporting_conflict_report.md"
       ],

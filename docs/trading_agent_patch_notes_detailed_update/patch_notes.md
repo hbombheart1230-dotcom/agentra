@@ -1864,3 +1864,7 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Nine byte-identical relocation pairs are selective integration candidates; no Reporting code moved or changed. Batch 3 remains paused; merge remains on hold.
 - PR #5 Draft workflow is retained; GitHub API Forbidden prevents independent isDraft verification. No Ready/merge/auto-merge operation performed.
 - Full report: `docs/refactor/2026-10-15_t4_pr5_reporting_conflict_report.md`.
+
+## 2026-10-15 - T4 conflict snapshot recheck
+
+- T4 advanced to `4e242e5`; only five documentation files changed. Eleven overlapping paths, nine independent relocation candidates and code preservation strategy remain valid. Latest shared changelog blob SHAs are recorded in the conflict report. No code moved; Batch 3 and merge remain on hold.

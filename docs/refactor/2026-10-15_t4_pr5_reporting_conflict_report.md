@@ -136,4 +136,13 @@ T4/PR5 목적지 충돌을 먼저 해소하고 최신 T4 SHA를 다시 비교한
 - 독립 후보 9쌍의 blob 동일성과 T4 목적지 부재 확인. 다음 후보 2개의 동일성/목적지 부재 확인.
 - 변경은 이 보고서와 UI 패치노트뿐. 전체 pytest 및 전체 빌드 반복 없음. 패치노트 JSON/append-only/필수 필드 및 표적 패치노트 검증만 수행.
 
-- 実行結果 / Result: patch-note targeted pytest **5 passed**; existing JSON entries preserved byte-semantically and new entry appended; `git diff --check` passed.
+- 검증 결과: patch-note targeted pytest **5 passed**; existing JSON entries preserved byte-semantically and new entry appended; `git diff --check` passed.
+
+## 원격 T4 동시 갱신 재확인
+
+최종 원격 확인 중 T4가 `4e242e5b1fc609b0ec012e0c6faed37b202e4aa0`로 진행되었다. 이전 분석 SHA에서 추가 변경은 문서 5개뿐이며 `libs/reporting` diff는 없다. 11개 교집합과 코드 9개 blob, 독립 이관 9쌍 및 다음 후보 2개에 대한 판단은 그대로 유효하다. 최신 T4에서 달라진 중복 blob은 공용 패치노트 2개다. 아래 최신 SHA도 통합 시 보존해야 한다.
+
+| 최신 T4 경로 | blob SHA | 행 수 |
+| --- | --- | --- |
+| `docs/trading_agent_patch_notes_detailed_update/patch_notes.json` | `c236c561bccad407bf47bfe71bc1ffffac4489b0` | 6549 |
+| `docs/trading_agent_patch_notes_detailed_update/patch_notes.md` | `5ca63a9ea1768d0a3507df4c3437ace48744c4b9` | 3201 |
