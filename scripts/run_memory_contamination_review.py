@@ -1,34 +1,14 @@
-from __future__ import annotations
+"""Compatibility entrypoint for scripts.research.run_memory_contamination_review."""
+import importlib as _importlib
+import runpy as _runpy
+import sys as _sys
+from pathlib import Path as _Path
 
-import argparse
-import json
-import sys
-from datetime import date
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from libs.reporting.evaluation.memory_review import build_memory_contamination_review
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Reclassify Q9 Stage-2 decisions by memory integrity.")
-    parser.add_argument("--start", default="2026-06-01")
-    parser.add_argument("--end", default=date.today().isoformat())
-    parser.add_argument("--reports-root", default="reports")
-    parser.add_argument("--evidence-path", default="data/evidence_ledger/events.jsonl")
-    args = parser.parse_args(argv)
-    result = build_memory_contamination_review(
-        reports_root=Path(args.reports_root),
-        evidence_path=Path(args.evidence_path),
-        start_day=args.start,
-        end_day=args.end,
-    )
-    print(json.dumps(result.get("artifact_paths") or {}, ensure_ascii=False, indent=2))
-    return 0
-
+_ROOT = _Path(__file__).resolve().parents[1]
+if str(_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_ROOT))
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _runpy.run_module("scripts.research.run_memory_contamination_review", run_name="__main__")
+else:
+    _sys.modules[__name__] = _importlib.import_module("scripts.research.run_memory_contamination_review")

@@ -1,36 +1,14 @@
-from __future__ import annotations
+"""Compatibility entrypoint for scripts.research.run_q9_evaluation."""
+import importlib as _importlib
+import runpy as _runpy
+import sys as _sys
+from pathlib import Path as _Path
 
-import argparse
-import json
-import sys
-from datetime import date
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from libs.reporting.evaluation import build_q9_evaluation
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Build read-only Q9 evaluation outputs.")
-    parser.add_argument("--date", default=date.today().isoformat())
-    parser.add_argument("--reports-root", default="reports")
-    parser.add_argument(
-        "--recover-forward",
-        action="store_true",
-        help="Fetch and persist closeout minute evidence before evaluation.",
-    )
-    args = parser.parse_args(argv)
-    result = build_q9_evaluation(
-        Path(args.reports_root),
-        args.date,
-        recover_forward=bool(args.recover_forward),
-    )
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0
-
+_ROOT = _Path(__file__).resolve().parents[1]
+if str(_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_ROOT))
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _runpy.run_module("scripts.research.run_q9_evaluation", run_name="__main__")
+else:
+    _sys.modules[__name__] = _importlib.import_module("scripts.research.run_q9_evaluation")

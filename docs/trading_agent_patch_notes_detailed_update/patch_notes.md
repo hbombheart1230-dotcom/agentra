@@ -1878,3 +1878,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Config 8 KEEP; no deletes, order submissions or strategy/config value changes. Reporting Batch 3 remains paused; T4 code conflict 0. Only the two shared changelog files use the approved append-only exception. Future integration must preserve both histories and check duplicate entries.
 - Evidence: docs/refactor/2026-10-15_scripts_config_migration.md and docs/refactor/2026-10-15_scripts_config_inventory.json.
 - Final combined targeted pytest: **26 passed**; one dependency deprecation warning. Existing JSON entries/order and Markdown prefix preservation verified.
+
+# 2026-10-15 - Scripts Bulk Target-Tree Migration
+
+- Processed 157 candidates; relocated **138** implementations: Research 53, Diagnostics 73, Maintenance 12. Held 19 with per-file evidence.
+- Kept legacy CLI/import paths with 138 thin wrappers (1,932 lines). Root Python: 42 local implementations, 8 existing forwarders, 141 total compatibility wrappers and one package marker.
+- Bootstrap-only changes; inverse edits recover byte-identical originals. No business logic, operational/trading policy, Config 8 or protected Reporting/runtime changes.
+- Validation: **276 import/signature/root checks**, **828 CLI parity checks**, **300 existing pytest tests passed**. Guarded temp-only validation; no orders or external collection.
+- Preserved Operations/T4 scripts; T4 code overlap zero. These two shared changelogs use the approved append-only exception; future integration preserves both histories and checks duplicate entries.
+- Reporting Batch 3 paused; PR #5 Draft workflow unchanged, no merge or auto-merge.
+- Report: docs/refactor/2026-10-15_scripts_bulk_migration.md; ledger: docs/refactor/2026-10-15_scripts_bulk_manifest.json.
+- Final UI patch-note checks: **5 passed**; append-only history integrity verified and successful temporary test/runtime artifacts cleaned.

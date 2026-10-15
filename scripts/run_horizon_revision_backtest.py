@@ -1,40 +1,14 @@
-from __future__ import annotations
+"""Compatibility entrypoint for scripts.research.run_horizon_revision_backtest."""
+import importlib as _importlib
+import runpy as _runpy
+import sys as _sys
+from pathlib import Path as _Path
 
-import argparse
-import json
-import sys
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from libs.research.horizon_revision_backtest import run_horizon_revision_backtest
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Compare historical exits with horizon-extension checkpoints.")
-    parser.add_argument("--start", required=True)
-    parser.add_argument("--end", required=True)
-    parser.add_argument("--reports-root", default="reports")
-    parser.add_argument("--output-dir", default="")
-    parser.add_argument("--live-cost-pct", type=float, default=0.28)
-    parser.add_argument("--mock-cost-pct", type=float, default=1.086849)
-    args = parser.parse_args()
-    output_dir = Path(args.output_dir) if args.output_dir else (
-        Path(args.reports_root) / "evaluation" / "horizon_revision" / args.end[:10]
-    )
-    result = run_horizon_revision_backtest(
-        reports_root=Path(args.reports_root),
-        start_day=args.start[:10],
-        end_day=args.end[:10],
-        output_dir=output_dir,
-        live_cost_pct=args.live_cost_pct,
-        mock_cost_pct=args.mock_cost_pct,
-    )
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0
-
+_ROOT = _Path(__file__).resolve().parents[1]
+if str(_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_ROOT))
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _runpy.run_module("scripts.research.run_horizon_revision_backtest", run_name="__main__")
+else:
+    _sys.modules[__name__] = _importlib.import_module("scripts.research.run_horizon_revision_backtest")

@@ -1,39 +1,14 @@
-from __future__ import annotations
+"""Compatibility entrypoint for scripts.research.run_q8_shadow_blocker_review."""
+import importlib as _importlib
+import runpy as _runpy
+import sys as _sys
+from pathlib import Path as _Path
 
-import argparse
-import json
-import sys
-from datetime import date
-from pathlib import Path
-from typing import List, Optional
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from libs.reporting.q8_shadow_blocker_review import generate_q8_shadow_blocker_review
-
-
-def main(argv: Optional[List[str]] = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Generate read-only Q8 shadow blocker forward-outcome review.",
-    )
-    parser.add_argument("--day", default=date.today().isoformat())
-    parser.add_argument("--reports-root", default="reports")
-    parser.add_argument("--json", action="store_true")
-    args = parser.parse_args(argv)
-
-    result = generate_q8_shadow_blocker_review(
-        reports_root=Path(str(args.reports_root)),
-        day=str(args.day)[:10],
-    )
-    if args.json:
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-    else:
-        print(f"Wrote: {result.get('report_md_path')}")
-        print(f"Wrote: {result.get('report_json_path')}")
-    return 0
-
+_ROOT = _Path(__file__).resolve().parents[1]
+if str(_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_ROOT))
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _runpy.run_module("scripts.research.run_q8_shadow_blocker_review", run_name="__main__")
+else:
+    _sys.modules[__name__] = _importlib.import_module("scripts.research.run_q8_shadow_blocker_review")

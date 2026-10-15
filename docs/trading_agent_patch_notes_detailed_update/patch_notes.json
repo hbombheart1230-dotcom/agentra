@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 119,
+  "entry_count": 120,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3174,6 +3174,32 @@
         "docs/daily_patch/2026-10-15_scripts_examples_migration.md",
         "docs/refactor/2026-10-15_scripts_config_migration.md",
         "docs/refactor/2026-10-15_scripts_config_inventory.json"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Bulk-Target-Tree-Migration",
+      "title": "Bulk Scripts migration with preserved CLI contracts",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "COMPATIBILITY"
+      ],
+      "summary": "Process all 157 inventory candidates; relocate 138 Research/Diagnostics/Maintenance implementations with preserved legacy CLI/import paths.",
+      "details": [
+        "Move Research 53, Diagnostics 73, Maintenance 12; hold 19 Windows, operational, baseline-failing or UEF5 integration candidates with per-file evidence.",
+        "Original implementation bytes match after reversing bootstrap changes; no business logic, trading policy, Config or protected Reporting/runtime code changed.",
+        "Preserve 138 thin wrappers (1,932 lines) because existing public/manual CLI paths have no retirement policy; root retains 42 local Python implementations, 8 existing forwarders and 141 total compatibility wrappers.",
+        "Validation: 276 import/signature/root checks, 828 CLI parity checks and 300 existing pytest tests passed. Unsafe commands use guarded help/import/static checks; no live orders or external data acquisition.",
+        "Latest T4 code overlap is zero. Only these two user-approved shared changelog files are append-only exceptions; preserve both histories and deduplicate entries on future integration. Reporting Batch 3 remains paused; no merge/auto-merge.",
+        "Final patch-note tests: 5 passed. Existing history content/order preserved, entry_count incremented once, and successful temporary test/runtime artifacts cleaned."
+      ],
+      "impact": "Canonical Scripts folder organization only; existing CLI/module, scheduler and deployment call paths remain available.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_scripts_bulk_migration.md",
+        "docs/refactor/2026-10-15_scripts_bulk_migration.md",
+        "docs/refactor/2026-10-15_scripts_bulk_manifest.json"
       ],
       "status": "current"
     }

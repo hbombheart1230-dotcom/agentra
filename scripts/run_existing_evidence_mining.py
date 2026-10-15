@@ -1,40 +1,14 @@
-from __future__ import annotations
+"""Compatibility entrypoint for scripts.research.run_existing_evidence_mining."""
+import importlib as _importlib
+import runpy as _runpy
+import sys as _sys
+from pathlib import Path as _Path
 
-import argparse
-import json
-import sys
-from pathlib import Path
-
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from libs.research.existing_evidence_mining import run_existing_evidence_mining
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Mine existing Q9-Q18 evidence offline.")
-    parser.add_argument("--start", default="2026-06-01")
-    parser.add_argument("--end", default="2026-07-30")
-    parser.add_argument("--allow-fetch", action="store_true")
-    parser.add_argument("--max-pages", type=int, default=18)
-    args = parser.parse_args()
-
-    def progress(index: int, total: int, symbol: str) -> None:
-        if index == 1 or index == total or index % 20 == 0:
-            print(f"history {index}/{total}: {symbol}", flush=True)
-
-    result = run_existing_evidence_mining(
-        start=args.start,
-        end=args.end,
-        allow_fetch=bool(args.allow_fetch),
-        max_pages=max(1, args.max_pages),
-        progress=progress,
-    )
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0
-
+_ROOT = _Path(__file__).resolve().parents[1]
+if str(_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_ROOT))
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _runpy.run_module("scripts.research.run_existing_evidence_mining", run_name="__main__")
+else:
+    _sys.modules[__name__] = _importlib.import_module("scripts.research.run_existing_evidence_mining")
