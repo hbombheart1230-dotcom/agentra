@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 275,
+  "entry_count": 276,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7314,6 +7314,30 @@
       "sources": [
         "docs/refactor/evidence/P15-TREE-MIGRATION-V1-052-CLAUDE.md",
         "docs/refactor/architecture/architecture_gap_matrix.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 V1 Accepted V2-053 Work Order Published",
+      "title": "Publish the blocked Scanner context migration work order in the single active integration branch",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "DOCS",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "Publish the V2-053 five-module Scanner context migration order and V1-052 independent acceptance record to Git so Claude can implement without missing chat ZIP attachments.",
+      "details": [
+        "V1 GPT acceptance recorded: Codex PASS_WITH_FINDINGS, 115/115 BASE-versus-final cases, 13/13 focused, three required hosted workflows green; two P2 Gap Matrix wording issues remain for V2 Step 0.",
+        "CURRENT.md and the active override in AGENTS.md/CLAUDE.md/COMMON_RULES.md now link the one V2-053 work order; V3 target remains frozen, no new design iteration.",
+        "This is a work-order publication only; no V2 module relocation, Scanner rank behavior change, Broker/LLM/safety authority modification or production write."
+      ],
+      "impact": "Claude can start the existing V2-053 implementation directly from Git; migration acceptance remains pending.",
+      "sources": [
+        "docs/daily_patch/2026-10-16_p15_v2_053_order_published.md",
+        "docs/refactor/work_orders/P15-TREE-MIGRATION-V2-053.md",
+        "docs/refactor/evidence/V1-052_GPT_ACCEPTANCE_2026-10-16.md"
       ]
     }
   ]

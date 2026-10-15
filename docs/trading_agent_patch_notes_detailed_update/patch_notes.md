@@ -3487,3 +3487,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 변경: Scanner `libs/runtime/scanner/candidate_risk.py`를 `libs/agents/scanner/candidate_risk.py`로 byte-identical 이동했습니다. 기존 경로는 `sys.modules` module-object identity shim이어서 두 import 경로는 같은 모듈 객체이며 구현은 하나입니다.
 - 검증: BASE 본문에서 실행한 115개 frozen 입력의 결과가 key 순서까지 동일, 유일한 소비자 `scanner_node.py`는 수정하지 않았고 T4-A frozen Scanner 계약과 stage gate 통과, old/new-first import identity 및 monkeypatch 공유 확인.
 - 경계: rank owner·Broker·LLM·Supervisor/Executor·State·운영 쓰기 변경 없음, 다른 Scanner 경로는 이동하지 않음. 독립 Codex 감사 후 V2.
+
+
+## 2026-10-16 · V1-052 ACCEPTED / V2-053 작업지시서 GitHub 등록
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · DOCS · WORKFLOW
+
+- V1-052: GPT 수용 `PASS_WITH_FINDINGS`; Blob 일치, old/new module identity, 115/115 BASE 사례, 13/13 집중 테스트, 필수 CI 3/3 SUCCESS. Codex 지적 P2 문서 표현 두 건은 V2 첫 작업에서 수정.
+- V2-053 작업지시서와 V1 승인 근거를 GitHub 통합 브랜치의 정식 문서 경로로 등록. `CURRENT.md`와 Claude/Codex 시작 지침은 활성 작업 V2-053 한 건만 지정.
+- 본 커밋은 문서와 UI 변경 이력만 반영하며 V2의 다섯 모듈은 아직 이동하지 않음. 운영 주문·Broker·LLM·Step5C·UEF·Q10/Q12 변경 없음.
