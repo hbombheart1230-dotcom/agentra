@@ -186,6 +186,32 @@ from apps.operator_ui.data_access_brief_render_fallback import (
     brief_fallback_comparison_reasons_display_symbol,
     brief_fallback_lines,
 )
+from apps.operator_ui.data_access_brief_render_helpers import (
+    operator_brief_text_helpers,
+)
+from apps.operator_ui.data_access_brief_render_narrative_helpers import (
+    operator_brief_narrative_helpers,
+)
+from apps.operator_ui.data_access_brief_render_summary_derivation import (
+    operator_brief_early_fallback,
+    derive_operator_summary_fallbacks,
+)
+from apps.operator_ui.data_access_brief_input_sections import (
+    build_brief_input_commander,
+    build_brief_input_strategist,
+    build_brief_input_scanner,
+    build_brief_input_monitor,
+    build_brief_input_trade_report,
+)
+from apps.operator_ui.data_access_brief_sections_projection import (
+    build_current_snapshot_section,
+    build_strategist_evidence_section,
+    build_monitor_guard_snapshot_section,
+    build_entry_timing_section,
+    build_position_monitor_reasoning_section,
+    build_exit_plan_section,
+    build_ai_trade_report_section,
+)
 
 
 KST = timezone(timedelta(hours=9), name="KST")
@@ -1571,30 +1597,8 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
             "selected_rank": selected_rank or None,
             "universe_size": universe_size or None,
         },
-        "current_snapshot": {
-            "summary": decision_reason,
-            "phase": phase,
-            "path": path_label,
-            "final_action": final_action,
-            "selected_symbol": focus_symbol,
-            "current_focus": focus_symbol,
-            "posture": canonical_posture or final_action or "-",
-            "monitor_reason": monitor_reason or live_monitor_reason or "-",
-            "guard_status": guard_status,
-            "execution_status": execution_status_summary,
-            "next_expected_step": next_expected_step or "-",
-        },
-        "strategist_evidence": {
-            "summary": strategist_evidence_summary,
-            "market_regime": str(canonical_trade.get("market_regime") or strategist_summary.get("market_regime") or "-"),
-            "playbook": playbook or "-",
-            "global_sentiment": _format_float(global_score, 2) if global_score is not None else "-",
-            "vix": _format_float(vix_level, 2) if vix_level is not None else "-",
-            "candidate_hints": _clean_brief_list(candidate_hints, limit=6),
-            "news_targets": _clean_brief_list(news_targets, limit=6),
-            "market_headlines": _clean_str_list(market_headlines, limit=3, max_len=160),
-            "symbol_headlines": _clean_str_list(symbol_headlines, limit=3, max_len=160),
-        },
+        "current_snapshot": build_current_snapshot_section(canonical_posture=canonical_posture, decision_reason=decision_reason, execution_status_summary=execution_status_summary, final_action=final_action, focus_symbol=focus_symbol, guard_status=guard_status, live_monitor_reason=live_monitor_reason, monitor_reason=monitor_reason, next_expected_step=next_expected_step, path_label=path_label, phase=phase),
+        "strategist_evidence": build_strategist_evidence_section(candidate_hints=candidate_hints, canonical_trade=canonical_trade, global_score=global_score, market_headlines=market_headlines, news_targets=news_targets, playbook=playbook, strategist_evidence_summary=strategist_evidence_summary, strategist_summary=strategist_summary, symbol_headlines=symbol_headlines, vix_level=vix_level, facade=_r3_sys.modules[__name__]),
         "scanner_focus": {
             "summary": selection_reason_text,
             "selected_symbol": focus_symbol,
@@ -1604,17 +1608,7 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
             "selection_reason": selection_reason_text,
             "score_drivers": score_driver_preview[:4],
         },
-        "monitor_guard_snapshot": {
-            "summary": monitor_guard_summary,
-            "monitor_reason": monitor_reason or live_monitor_reason or "-",
-            "entry_reason": entry_reason_code or "-",
-            "entry_guard_reason": entry_guard_reason or "-",
-            "active_exit_axis": active_exit_axis or "-",
-            "stop_policy_summary": stop_policy_summary[:4],
-            "guard_status": guard_status,
-            "guard_reason": supervisor_reason or "-",
-            "execution_status": execution_status_summary,
-        },
+        "monitor_guard_snapshot": build_monitor_guard_snapshot_section(active_exit_axis=active_exit_axis, entry_guard_reason=entry_guard_reason, entry_reason_code=entry_reason_code, execution_status_summary=execution_status_summary, guard_status=guard_status, live_monitor_reason=live_monitor_reason, monitor_guard_summary=monitor_guard_summary, monitor_reason=monitor_reason, stop_policy_summary=stop_policy_summary, supervisor_reason=supervisor_reason),
         "next_step": {
             "summary": next_expected_step or "-",
             "watch_next": watch_next[:4],
@@ -1628,17 +1622,7 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
             "comparison_reasons": comparison_reasons,
             "top_candidates": list(canonical_trade.get("top_candidates") or top_candidates[:3])[:3],
         },
-        "entry_timing": {
-            "decision": "BUY" if entry_triggered or final_action == "BUY" else "WAIT",
-            "evaluated": entry_evaluated,
-            "triggered": entry_triggered,
-            "reason_code": entry_reason_code,
-            "reason_text": str(canonical_trade.get("entry_reason") or ""),
-            "pattern": entry_pattern,
-            "signal_chain": entry_signal_chain[:5],
-            "metrics": dict(entry_metrics or {}),
-            "guard_reason": entry_guard_reason,
-        },
+        "entry_timing": build_entry_timing_section(canonical_trade=canonical_trade, entry_evaluated=entry_evaluated, entry_guard_reason=entry_guard_reason, entry_metrics=entry_metrics, entry_pattern=entry_pattern, entry_reason_code=entry_reason_code, entry_signal_chain=entry_signal_chain, entry_triggered=entry_triggered, final_action=final_action),
         "market_context": {
             "market_regime": str(canonical_trade.get("market_regime") or strategist_summary.get("market_regime") or strategist_trace.get("market_regime") or "-"),
             "global_sentiment": _format_float(global_score, 2) if global_score is not None else "-",
@@ -1670,43 +1654,8 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
             "missing_features": missing_feature_names,
             "interpretation": chart_interpretation,
         },
-        "position_monitor_reasoning": {
-            "posture": canonical_posture or final_action,
-            "holding_time": canonical_holding_time or holding_time,
-            "stop_loss": canonical_stop_loss or stop_loss_text,
-            "effective_stop": canonical_effective_stop or effective_stop_text,
-            "effective_stop_reason": (
-                canonical_effective_stop_reason
-                or (_friendly_exit_reason(effective_stop_reason or "stop_loss") if effective_stop_text != "-" else "-")
-            ),
-            "take_profit": canonical_take_profit or take_profit_text,
-            "current_price": canonical_current_price or (_format_float(current_price, 2) if current_price not in (None, "") else "-"),
-            "average_price": canonical_average_price or (_format_float(avg_price_monitor, 2) if avg_price_monitor not in (None, "") else "-"),
-            "peak_price": canonical_peak_price or (_format_float(peak_price, 2) if peak_price not in (None, "") else "-"),
-            "current_drawdown": canonical_current_drawdown or (_format_percent(current_drawdown_raw, 2) if current_drawdown_raw not in (None, "") else "-"),
-            "peak_drawdown": canonical_peak_drawdown or (_format_percent(peak_drawdown_raw, 2) if peak_drawdown_raw not in (None, "") else "-"),
-            "vwap_distance": canonical_vwap_distance or (_format_percent(vwap_distance_raw, 2) if vwap_distance_raw not in (None, "") else "-"),
-            "price_source": canonical_price_source or str(monitor_trace.get("price_source") or monitor_summary.get("price_source") or "-"),
-            "feature_source": canonical_feature_source or str(monitor_trace.get("feature_source") or monitor_summary.get("feature_source") or "-"),
-            "price_source_policy": canonical_price_source_policy or str(monitor_trace.get("price_source_policy") or monitor_summary.get("price_source_policy") or ""),
-            "active_exit_axis": (_friendly_exit_reason(canonical_active_exit_axis) if canonical_active_exit_axis else "") or active_exit_axis,
-            "watch_axes": canonical_watch_axes or watch_axes,
-            "hold_reasons": canonical_hold_reasons or hold_reasons[:4],
-            "exit_triggers": canonical_exit_triggers or exit_triggers[:3],
-        },
-        "exit_plan": {
-            "current_action": final_action,
-            "summary": str(canonical_trade.get("exit_reason") or exit_reason or monitor_reason or ""),
-            "effective_stop": canonical_effective_stop or effective_stop_text,
-            "effective_stop_reason": (
-                canonical_effective_stop_reason
-                or (_friendly_exit_reason(effective_stop_reason or "stop_loss") if effective_stop_text != "-" else "-")
-            ),
-            "take_profit": canonical_take_profit or take_profit_text,
-            "active_exit_axis": (_friendly_exit_reason(canonical_active_exit_axis) if canonical_active_exit_axis else "") or active_exit_axis,
-            "exit_triggers": canonical_exit_triggers or exit_triggers[:3],
-            "watch_axes": canonical_watch_axes or watch_axes,
-        },
+        "position_monitor_reasoning": build_position_monitor_reasoning_section(active_exit_axis=active_exit_axis, avg_price_monitor=avg_price_monitor, canonical_active_exit_axis=canonical_active_exit_axis, canonical_average_price=canonical_average_price, canonical_current_drawdown=canonical_current_drawdown, canonical_current_price=canonical_current_price, canonical_effective_stop=canonical_effective_stop, canonical_effective_stop_reason=canonical_effective_stop_reason, canonical_exit_triggers=canonical_exit_triggers, canonical_feature_source=canonical_feature_source, canonical_hold_reasons=canonical_hold_reasons, canonical_holding_time=canonical_holding_time, canonical_peak_drawdown=canonical_peak_drawdown, canonical_peak_price=canonical_peak_price, canonical_posture=canonical_posture, canonical_price_source=canonical_price_source, canonical_price_source_policy=canonical_price_source_policy, canonical_stop_loss=canonical_stop_loss, canonical_take_profit=canonical_take_profit, canonical_vwap_distance=canonical_vwap_distance, canonical_watch_axes=canonical_watch_axes, current_drawdown_raw=current_drawdown_raw, current_price=current_price, effective_stop_reason=effective_stop_reason, effective_stop_text=effective_stop_text, exit_triggers=exit_triggers, final_action=final_action, hold_reasons=hold_reasons, holding_time=holding_time, monitor_summary=monitor_summary, monitor_trace=monitor_trace, peak_drawdown_raw=peak_drawdown_raw, peak_price=peak_price, stop_loss_text=stop_loss_text, take_profit_text=take_profit_text, vwap_distance_raw=vwap_distance_raw, watch_axes=watch_axes, facade=_r3_sys.modules[__name__]),
+        "exit_plan": build_exit_plan_section(active_exit_axis=active_exit_axis, canonical_active_exit_axis=canonical_active_exit_axis, canonical_effective_stop=canonical_effective_stop, canonical_effective_stop_reason=canonical_effective_stop_reason, canonical_exit_triggers=canonical_exit_triggers, canonical_take_profit=canonical_take_profit, canonical_trade=canonical_trade, canonical_watch_axes=canonical_watch_axes, effective_stop_reason=effective_stop_reason, effective_stop_text=effective_stop_text, exit_reason=exit_reason, exit_triggers=exit_triggers, final_action=final_action, monitor_reason=monitor_reason, take_profit_text=take_profit_text, watch_axes=watch_axes, facade=_r3_sys.modules[__name__]),
         "reporter_evaluation": {
             "status": reporter_status,
             "reason": reporter_reason,
@@ -1717,22 +1666,7 @@ def _build_operator_brief_sections(detail: Dict[str, Any]) -> Dict[str, Any]:
             "trade_quality": trade_quality,
             "key_finding": key_finding,
         },
-        "ai_trade_report": {
-            "status": report_status,
-            "status_label": _report_status_label(report_status),
-            "status_badge_class": _report_status_badge_class(report_status),
-            "reason": report_reason or "AI report diagnostics were not captured.",
-            "next_step": report_next_step or "Continue with Operator Brief while report diagnostics are resolved.",
-            "model": report_model or "-",
-            "available": report_available,
-            "trade_id": report_trade_id,
-            "lifecycle_status": report_lifecycle_status or "-",
-            "lifecycle_summary": report_lifecycle_summary or "-",
-            "story_type": report_story_type,
-            "execution_mode_label": report_mode,
-            "summary": report_summary or "No per-trade AI report is linked to this run yet.",
-            "link": report_link,
-        },
+        "ai_trade_report": build_ai_trade_report_section(report_available=report_available, report_lifecycle_status=report_lifecycle_status, report_lifecycle_summary=report_lifecycle_summary, report_link=report_link, report_mode=report_mode, report_model=report_model, report_next_step=report_next_step, report_reason=report_reason, report_status=report_status, report_story_type=report_story_type, report_summary=report_summary, report_trade_id=report_trade_id, facade=_r3_sys.modules[__name__]),
         "operator_conclusion": {
             "current_action": final_action,
             "watch_next": watch_next[:4],
@@ -1860,210 +1794,10 @@ def _build_operator_brief_input(detail: Dict[str, Any]) -> Dict[str, Any]:
     commander_applied_policy, monitor_applied_policy, monitor_effective_policy, monitor_received_policy = brief_input_commander_applied_policy_monitor_applied(commander_artifact=commander_artifact, commander_decision=commander_decision, monitor_trace=monitor_trace, monitor_policy_ref=monitor_policy_ref, facade=_r3_sys.modules[__name__])
     return {
         "run_id": detail.get("run_id"),
-        "commander": {
-            "mode": commander.get("mode"),
-            "phase": commander.get("phase"),
-            "path": commander.get("path"),
-            "status": commander.get("status"),
-            "command_intent": commander_decision.get("command_intent"),
-            "strategist_invocation": commander_decision.get("strategist_invocation"),
-            "llm_policy": commander_decision.get("llm_policy") or commander_decision.get("llm_invocation_policy"),
-            "selected_route": commander_artifact.get("selected_route"),
-            "route_reason_text": commander_artifact.get("route_reason_text"),
-            "strategist_cache_used": commander_artifact.get("strategist_cache_used"),
-            "strategist_called": commander_artifact.get("strategist_called"),
-            "cooldown_applied": commander_artifact.get("cooldown_applied"),
-            "applied_policy": commander_applied_policy,
-            "policy_source": commander_artifact.get("policy_source") or commander_decision.get("policy_source"),
-            "policy_validation_status": commander_artifact.get("policy_validation_status")
-            or commander_decision.get("policy_validation_status"),
-            "policy_fallback_used": commander_artifact.get("policy_fallback_used")
-            if commander_artifact.get("policy_fallback_used") is not None
-            else commander_decision.get("policy_fallback_used"),
-            "policy_fallback_reason": commander_artifact.get("policy_fallback_reason")
-            or commander_decision.get("policy_fallback_reason"),
-            "policy_partial_normalized": commander_artifact.get("policy_partial_normalized")
-            if commander_artifact.get("policy_partial_normalized") is not None
-            else commander_decision.get("policy_partial_normalized"),
-            "policy_default_filled_fields": list(
-                commander_artifact.get("policy_default_filled_fields")
-                or commander_decision.get("policy_default_filled_fields")
-                or []
-            )[:12],
-            "policy_validation_missing_fields": list(
-                commander_artifact.get("policy_validation_missing_fields")
-                or commander_decision.get("policy_validation_missing_fields")
-                or []
-            )[:12],
-            "policy_validation_invalid_fields": list(
-                commander_artifact.get("policy_validation_invalid_fields")
-                or commander_decision.get("policy_validation_invalid_fields")
-                or []
-            )[:12],
-            "override_reason": commander_artifact.get("override_reason") or commander_decision.get("override_reason"),
-            "applied_policy_source_chain": list(
-                commander_artifact.get("applied_policy_source_chain")
-                or commander_decision.get("applied_policy_source_chain")
-                or []
-            )[:6],
-        },
-        "strategist": {
-            "market_regime": strategist_summary.get("market_regime") or canonical_trade.get("market_regime"),
-            "market_sentiment": strategist_summary.get("market_sentiment") or canonical_trade.get("market_sentiment"),
-            "themes": list(strategist_summary.get("themes") or canonical_trade.get("themes") or [])[:5],
-            "playbook": strategist_summary.get("playbook") or canonical_trade.get("playbook"),
-            "scanner_bias": strategist_summary.get("scanner_bias"),
-            "risk_tone": _strategist_risk_tone(strategist_summary)
-            or _strategist_risk_tone(strategist_artifact)
-            or _strategist_risk_tone(trade_story_input)
-            or _strategist_risk_tone(canonical_trade),
-            "monitor_guidance": _strategist_monitor_guidance(strategist_summary)
-            or _strategist_monitor_guidance(strategist_artifact)
-            or _strategist_monitor_guidance(trade_story_input)
-            or _strategist_monitor_guidance(canonical_trade),
-            "news_query_targets": list(strategist_summary.get("news_query_targets") or canonical_trade.get("news_query_targets") or [])[:8],
-            "news_query_reasoning": strategist_summary.get("news_query_reasoning"),
-            "global_sentiment_inputs": raw_input.get("global_sentiment_inputs") if isinstance(raw_input.get("global_sentiment_inputs"), dict) else {},
-            "candidate_hints": [str(x or "") for x in candidate_hints if str(x or "").strip()],
-            "market_headlines": [str(x or "") for x in market_headlines if str(x or "").strip()][:3],
-            "symbol_headlines": [str(x or "") for x in symbol_headlines if str(x or "").strip()][:3],
-            "market_news_titles": [str((x or {}).get("title") or "") for x in list(raw_input.get("collected_market_news") or [])[:4] if isinstance(x, dict)] or list(canonical_trade.get("market_news_titles") or [])[:4],
-            "candidate_news_titles": [str((x or {}).get("title") or "") for x in list(raw_input.get("collected_candidate_news") or [])[:4] if isinstance(x, dict)] or list(canonical_trade.get("candidate_news_titles") or [])[:4],
-            "llm_status": strategist_summary.get("llm_frame_status"),
-            "llm_low_confidence": strategist_summary.get("llm_frame_low_confidence"),
-            "canonical_summary": canonical_trade.get("market_context_summary"),
-            "canonical_bullets": list(canonical_trade.get("market_context_bullets") or [])[:6],
-        },
-        "scanner": {
-            "candidate_source": scanner.get("summary", {}).get("candidate_source") if isinstance(scanner.get("summary"), dict) else "",
-            "candidate_pool_before_filter": (scanner.get("summary") or {}).get("candidate_pool_before_filter") if isinstance(scanner.get("summary"), dict) else None,
-            "candidate_pool_after_filter": (scanner.get("summary") or {}).get("candidate_pool_after_filter") if isinstance(scanner.get("summary"), dict) else None,
-            "top_ranked_symbols": list(canonical_trade.get("top_candidates") or [])[:5]
-            or (
-                list((scanner.get("summary") or {}).get("top_ranked_symbols") or [])[:5]
-                if isinstance(scanner.get("summary"), dict)
-                else []
-            ),
-            "source_mix": scanner_trace.get("kiwoom_pool_source_mix") if isinstance(scanner_trace.get("kiwoom_pool_source_mix"), dict) else {},
-            "selected_symbol": scanner_trace.get("selected_symbol") or selected.get("symbol"),
-            "selected_reason": canonical_trade.get("selection_basis")
-            or canonical_trade.get("selection_summary")
-            or selected.get("why"),
-            "source_scores": selected.get("source_scores") if isinstance(selected.get("source_scores"), dict) else {},
-            "score_total": selected.get("score_total"),
-            "confidence": selected.get("confidence"),
-            "feature_coverage": feature_coverage,
-            "quote_metrics": scanner.get("quote_metrics") if isinstance(scanner.get("quote_metrics"), dict) else {},
-            "score_breakdown": score_breakdown,
-            "component_snapshot": component_snapshot,
-            "feature_snapshot": feature_snapshot,
-            "why_selected": list(canonical_trade.get("why_selected") or [])[:4],
-            "selection_trace": dict(scanner_selection_trace or {}),
-            "selected_symbol_score_drivers": dict(scanner_selection_trace.get("selected_symbol_score_drivers") or {}),
-            "tie_break_rule": canonical_trade.get("tie_break_rule"),
-            "runner_ups": list(canonical_trade.get("runner_ups") or [])[:3],
-            "runner_ups_lost": list(canonical_trade.get("runner_ups_lost") or [])[:3],
-            "playbook": scanner_trace.get("playbook") or canonical_trade.get("playbook"),
-            "policy_source": scanner_trace.get("policy_source") or canonical_trade.get("policy_source"),
-            "applied_policy_present": (
-                scanner_trace.get("applied_policy_present")
-                if scanner_trace.get("applied_policy_present") is not None
-                else canonical_trade.get("applied_policy_present")
-            ),
-            "monitor_entry_policy_summary": (
-                scanner_trace.get("monitor_entry_policy_summary")
-                if isinstance(scanner_trace.get("monitor_entry_policy_summary"), dict)
-                else (
-                    canonical_trade.get("monitor_entry_policy_summary")
-                    if isinstance(canonical_trade.get("monitor_entry_policy_summary"), dict)
-                    else {}
-                )
-            ),
-            "scanner_bias_applied": scanner_trace.get("scanner_bias_applied"),
-            "scanner_bias_summary": scanner_trace.get("scanner_bias_summary") if isinstance(scanner_trace.get("scanner_bias_summary"), dict) else {},
-            "candidate_bias_adjustments": list(scanner_trace.get("candidate_bias_adjustments") or [])[:5],
-            "selection_reason_with_bias": scanner_trace.get("selection_reason_with_bias") or selected.get("why"),
-            "canonical_bullets": canonical_selection_bullets,
-            "canonical_filters_summary": canonical_filters_summary,
-            "canonical_filter_bullets": canonical_filter_bullets,
-        },
-        "monitor": {
-            "monitor_reason": monitor_summary.get("monitor_reason") or monitor_trace.get("monitor_reason") or canonical_trade.get("monitor_summary"),
-            "exit_reason": monitor_summary.get("exit_reason") or monitor_trace.get("exit_reason") or canonical_trade.get("exit_reason"),
-            "position_age_seconds": monitor_summary.get("position_age_seconds"),
-            "entry_evaluated": monitor_summary.get("entry_evaluated"),
-            "entry_triggered": monitor_summary.get("entry_triggered"),
-            "entry_reason": monitor_summary.get("entry_reason") or monitor_trace.get("entry_reason"),
-            "entry_pattern": monitor_summary.get("entry_pattern") or monitor_trace.get("entry_pattern"),
-            "entry_guard_reason": monitor_summary.get("entry_guard_reason") or monitor_trace.get("entry_guard_reason"),
-            "entry_intent_submitted": monitor_summary.get("entry_intent_submitted"),
-            "entry_metrics": monitor_summary.get("entry_metrics") if isinstance(monitor_summary.get("entry_metrics"), dict) else {},
-            "entry_thresholds": monitor_summary.get("entry_thresholds") if isinstance(monitor_summary.get("entry_thresholds"), dict) else {},
-            "thresholds": monitor_trace.get("thresholds") if isinstance(monitor_trace.get("thresholds"), dict) else {},
-            "entry_check_summary": monitor_trace.get("entry_check_summary"),
-            "entry_blockers": list(monitor_trace.get("entry_blockers") or [])[:8],
-            "policy_ref": monitor_policy_ref,
-            "timing_assessment": monitor_timing_assessment,
-            "thresholds_guards_used": monitor_thresholds_used,
-            "threshold_shortfalls": _monitor_threshold_shortfall_notes(monitor_entry_metrics, monitor_entry_thresholds),
-            "stop_policy_trace": dict(monitor_stop_policy_trace or {}),
-            "received_policy": monitor_received_policy,
-            "received_policy_source": monitor_trace.get("received_policy_source") or monitor_policy_ref.get("received_policy_source"),
-            "effective_policy": monitor_effective_policy,
-            "effective_policy_source": monitor_trace.get("effective_policy_source") or monitor_policy_ref.get("effective_policy_source"),
-            "effective_policy_source_chain": list(
-                monitor_trace.get("effective_policy_source_chain")
-                or monitor_policy_ref.get("effective_policy_source_chain")
-                or []
-            )[:6],
-            "policy_adjustments": monitor_trace.get("policy_adjustments")
-            if isinstance(monitor_trace.get("policy_adjustments"), dict)
-            else (monitor_policy_ref.get("policy_adjustments") if isinstance(monitor_policy_ref.get("policy_adjustments"), dict) else {}),
-            "policy_adjustment_summary": monitor_trace.get("policy_adjustment_summary") or monitor_policy_ref.get("policy_adjustment_summary"),
-            "policy_adjustment_reasoning": monitor_trace.get("policy_adjustment_reasoning") or monitor_policy_ref.get("policy_adjustment_reasoning"),
-            "effective_policy_deltas": list(
-                monitor_trace.get("effective_policy_deltas")
-                or monitor_policy_ref.get("effective_policy_deltas")
-                or []
-            )[:8],
-            "applied_policy": monitor_applied_policy,
-            "policy_source": monitor_trace.get("policy_source") or monitor_policy_ref.get("policy_source"),
-            "policy_validation_status": monitor_trace.get("policy_validation_status")
-            or monitor_policy_ref.get("policy_validation_status"),
-            "policy_fallback_used": monitor_trace.get("policy_fallback_used")
-            if monitor_trace.get("policy_fallback_used") is not None
-            else monitor_policy_ref.get("policy_fallback_used"),
-            "policy_fallback_reason": monitor_trace.get("policy_fallback_reason")
-            or monitor_policy_ref.get("policy_fallback_reason"),
-            "policy_partial_normalized": monitor_trace.get("policy_partial_normalized")
-            if monitor_trace.get("policy_partial_normalized") is not None
-            else monitor_policy_ref.get("policy_partial_normalized"),
-            "policy_default_filled_fields": list(
-                monitor_trace.get("policy_default_filled_fields")
-                or monitor_policy_ref.get("policy_default_filled_fields")
-                or []
-            )[:12],
-            "policy_validation_missing_fields": list(
-                monitor_trace.get("policy_validation_missing_fields")
-                or monitor_policy_ref.get("policy_validation_missing_fields")
-                or []
-            )[:12],
-            "policy_validation_invalid_fields": list(
-                monitor_trace.get("policy_validation_invalid_fields")
-                or monitor_policy_ref.get("policy_validation_invalid_fields")
-                or []
-            )[:12],
-            "override_reason": monitor_trace.get("override_reason") or monitor_policy_ref.get("override_reason"),
-            "applied_policy_source_chain": list(
-                monitor_trace.get("applied_policy_source_chain")
-                or monitor_policy_ref.get("applied_policy_source_chain")
-                or []
-            )[:6],
-            "strategy_frame_adjustments": list(monitor_trace.get("strategy_frame_adjustments") or [])[:6],
-            "exit_policy_guard_adjustments": list(monitor_trace.get("exit_policy_guard_adjustments") or [])[:6],
-            "canonical_bullets": list(canonical_trade.get("monitor_bullets") or [])[:6],
-            "canonical_snapshot": dict(canonical_trade.get("monitor_snapshot") or {}),
-        },
+        "commander": build_brief_input_commander(commander=commander, commander_applied_policy=commander_applied_policy, commander_artifact=commander_artifact, commander_decision=commander_decision),
+        "strategist": build_brief_input_strategist(candidate_hints=candidate_hints, canonical_trade=canonical_trade, market_headlines=market_headlines, raw_input=raw_input, strategist_artifact=strategist_artifact, strategist_summary=strategist_summary, symbol_headlines=symbol_headlines, trade_story_input=trade_story_input, facade=_r3_sys.modules[__name__]),
+        "scanner": build_brief_input_scanner(canonical_filter_bullets=canonical_filter_bullets, canonical_filters_summary=canonical_filters_summary, canonical_selection_bullets=canonical_selection_bullets, canonical_trade=canonical_trade, component_snapshot=component_snapshot, feature_coverage=feature_coverage, feature_snapshot=feature_snapshot, scanner=scanner, scanner_selection_trace=scanner_selection_trace, scanner_trace=scanner_trace, score_breakdown=score_breakdown, selected=selected),
+        "monitor": build_brief_input_monitor(canonical_trade=canonical_trade, monitor_applied_policy=monitor_applied_policy, monitor_effective_policy=monitor_effective_policy, monitor_entry_metrics=monitor_entry_metrics, monitor_entry_thresholds=monitor_entry_thresholds, monitor_policy_ref=monitor_policy_ref, monitor_received_policy=monitor_received_policy, monitor_stop_policy_trace=monitor_stop_policy_trace, monitor_summary=monitor_summary, monitor_thresholds_used=monitor_thresholds_used, monitor_timing_assessment=monitor_timing_assessment, monitor_trace=monitor_trace, facade=_r3_sys.modules[__name__]),
         "supervisor": {
             **((((detail.get("supervisor") or {}).get("verdict") or {}) if isinstance(detail.get("supervisor"), dict) else {})),
             "canonical_summary": canonical_trade.get("guard_summary"),
@@ -2080,16 +1814,7 @@ def _build_operator_brief_input(detail: Dict[str, Any]) -> Dict[str, Any]:
             "status": canonical_trade.get("reporter_status"),
             "reason": reporter.get("reason"),
         },
-        "trade_report": {
-            "report_available": trade_report.get("report_available"),
-            "trade_id": trade_report.get("trade_id"),
-            "lifecycle_status": trade_report.get("lifecycle_status"),
-            "lifecycle_summary": trade_report.get("lifecycle_summary"),
-            "story_type": trade_report.get("story_type_label") or trade_report.get("story_type"),
-            "execution_mode_label": trade_report.get("execution_mode_label"),
-            "summary": trade_report.get("report_summary"),
-            "reporter_status_human": trade_report.get("reporter_status_human"),
-        },
+        "trade_report": build_brief_input_trade_report(trade_report=trade_report),
         "shared_facts": dict(canonical_trade.get("shared_facts") or {}),
         "canonical_trade": canonical_trade,
     }
@@ -2784,187 +2509,7 @@ def _save_operator_brief_input_artifact(detail: Dict[str, Any], prepared_input: 
 
 
 def _render_operator_brief_markdown(brief: Dict[str, Any]) -> str:
-    def _action_label(action: Any) -> str:
-        mapping = {
-            "BUY": "매수",
-            "SELL": "매도",
-            "HOLD": "보유 유지",
-            "WAIT": "진입 보류",
-        }
-        return mapping.get(str(action or "").strip().upper(), str(action or "-").strip() or "-")
-
-    def _metric_text(value: Any) -> str:
-        text = _sanitize_operator_brief_text(value)
-        return text or "-"
-
-    def _axis_label(value: Any) -> str:
-        raw = _sanitize_operator_brief_text(value)
-        lowered = raw.lower()
-        mapping = {
-            "고정 손절 기준": "고정 손절 기준",
-            "상황 대응형 손절 기준": "상황 대응형 손절 기준",
-            "목표 수익 실현 기준": "목표 수익 실현 기준",
-            "hard stop": "고정 손절 기준",
-            "adaptive stop": "상황 대응형 손절 기준",
-            "take profit": "목표 수익 실현 기준",
-            "vwap breakdown": "VWAP 이탈",
-            "vwap_breakdown": "VWAP 이탈",
-            "peak drawdown": "고점 대비 하락폭 확대",
-            "peak_drawdown": "고점 대비 하락폭 확대",
-            "prior low break": "직전 저점 이탈",
-            "prior_low_break": "직전 저점 이탈",
-            "intraday low break": "장중 저점 이탈",
-            "intraday_low_break": "장중 저점 이탈",
-            "confirmed_exit_signal": "청산 확인 신호",
-            "defensive exit": "방어형 청산 신호",
-            "defensive_exit": "방어형 청산 신호",
-            "방어형 청산": "방어형 청산 신호",
-            "기록되지 않음": "기록된 기준 축 없음",
-            "확인되지 않음": "기록된 기준 축 없음",
-            "판단 정보 없음": "기록된 기준 축 없음",
-            "포지션 없음": "포지션 없음",
-        }
-        return mapping.get(lowered, raw or "감시 조건 변화")
-
-    def _axis_is_explicit(value: str) -> bool:
-        return str(value or "").strip() not in {"", "-", "감시 조건 변화", "기록된 기준 축 없음", "포지션 없음", "판단 정보 없음"}
-
-    def _narrative_text(text: Any) -> str:
-        raw_source = _trim_text(text, max_len=1000)
-        cleaned = _sanitize_operator_brief_text(text)
-        if not cleaned:
-            return ""
-        raw_lower = raw_source.lower()
-        m = re.fullmatch(r"universe scanned\s*:\s*(\d+)", raw_lower)
-        if m:
-            return f"총 {m.group(1)}개 후보를 비교했습니다."
-        m = re.fullmatch(r"selected rank\s*:\s*#?(\d+)", raw_lower)
-        if m:
-            return f"비교 대상 중 {m.group(1)}순위로 선정되었습니다."
-        m = re.fullmatch(r"posture\s*:\s*(buy|sell|hold|wait)", raw_lower)
-        if m:
-            return f"현재 포지션 판단은 {_action_label(m.group(1))}입니다."
-        m = re.fullmatch(r"trigger\s*:\s*(.+)", raw_lower)
-        if m:
-            trigger = m.group(1).strip()
-            if trigger in {"-", "no", "none"}:
-                return "추가 진입 또는 청산을 확정할 신호는 아직 확인되지 않았습니다."
-            return f"현재 감시 신호는 {cleaned.split(':', 1)[-1].strip()}입니다."
-        m = re.fullmatch(r"exit trigger\s*:\s*(.+)", raw_lower)
-        if m:
-            trigger = m.group(1).strip()
-            if trigger in {"-", "no", "none"}:
-                return "아직 청산 신호는 확인되지 않았습니다."
-            return f"현재 확인된 청산 신호는 {cleaned.split(':', 1)[-1].strip()}입니다."
-        if raw_lower.startswith("runner-up symbols had weaker coverage"):
-            return "후순위 후보는 차트 완성도와 보조 신호가 더 약했습니다."
-        m = re.fullmatch(r"chart / feature coverage\s*:\s*(\d+)/(\d+)", raw_lower)
-        if m:
-            return f"차트와 피처 확인 항목은 {m.group(1)}/{m.group(2)} 수준으로 확보되었습니다."
-        m = re.fullmatch(r"chart completeness filter\s*:\s*pass\s*-\s*(.+)", raw_lower)
-        if m:
-            return f"차트 확인 조건은 {m.group(1).strip()} 수준으로 충족되었습니다."
-        if raw_lower.startswith("liquidity filter:"):
-            return "유동성 조건은 충족되었습니다."
-        if raw_lower.startswith("turnover filter:"):
-            return "거래대금 조건은 충족되었습니다."
-        if re.match(r"^[A-Za-z][A-Za-z0-9 /_-]*:\s*", raw_source):
-            return ""
-        return cleaned
-
-    def _append_list(lines: List[str], items: List[str], *, limit: int = 3) -> None:
-        appended = 0
-        for item in items:
-            text = _narrative_text(item)
-            if not text or _count_hangul_chars(text) <= 0:
-                continue
-            lines.append(f"- {text}")
-            appended += 1
-            if appended >= limit:
-                break
-
-    def _vwap_interpretation(value: Any) -> str:
-        raw = _safe_float(value, None)
-        if raw is None:
-            return "-"
-        if raw >= 0.02:
-            return f"{_format_percent(raw, 2)} (과도 확장으로 추격 진입에 주의가 필요한 구간입니다.)"
-        if raw >= 0.0:
-            return f"+{abs(raw) * 100:.2f}% (VWAP 위에서 흐름을 유지하고 있습니다.)"
-        if raw <= -0.01:
-            return f"{_format_percent(raw, 2)} (VWAP 아래로 밀리며 약세 압력이 커진 구간입니다.)"
-        return f"{_format_percent(raw, 2)} (중립 범위 안에서 움직이고 있습니다.)"
-
-    def _entry_reason_text(reason_code: str, pattern: str, metrics: Dict[str, Any], posture_action: str) -> str:
-        reason = str(reason_code or "").strip().lower()
-        metric_map = metrics if isinstance(metrics, dict) else {}
-        recent_high = metric_map.get("recent_high")
-        vwap = metric_map.get("vwap")
-        volume_ratio = metric_map.get("volume_ratio")
-        vwap_distance = metric_map.get("vwap_distance")
-        pullback_pct = metric_map.get("pullback_pct")
-        executed_trade = posture_action in {"BUY", "HOLD", "SELL"}
-        if pattern in {"breakout_vwap_hold", "breakout"}:
-            parts = ["분봉 기준으로 최근 고점 돌파와 VWAP 상회 유지, 거래량 확인이 함께 맞물려 진입했습니다."]
-            if recent_high not in (None, ""):
-                parts.append(f"최근 고점 기준값은 {_format_float(recent_high, 2)}였습니다.")
-            if vwap not in (None, ""):
-                parts.append(f"당시 VWAP 기준값은 {_format_float(vwap, 2)}였습니다.")
-            if volume_ratio not in (None, ""):
-                parts.append(f"거래량은 평시 대비 {_format_float(volume_ratio, 2)}배 수준으로 확인됐습니다.")
-            return " ".join(parts)
-        if pattern in {"pullback_rebound", "pullback_vwap_hold"}:
-            parts = ["분봉 기준으로 눌림 이후 반등이 확인됐고, VWAP 재안착 흐름까지 확인되어 진입했습니다."]
-            if pullback_pct not in (None, ""):
-                parts.append(f"눌림 폭은 {_format_percent(pullback_pct, 2)} 수준이었습니다.")
-            if volume_ratio not in (None, ""):
-                parts.append(f"거래량은 평시 대비 {_format_float(volume_ratio, 2)}배 수준으로 확인됐습니다.")
-            return " ".join(parts)
-        mapping = {
-            "minute_candle_missing": "이번 거래는 분봉 데이터가 확보되지 않아 진입 근거를 확인할 수 없었습니다. 따라서 신규 진입은 보류 대상으로 해석했습니다.",
-            "data_incomplete": "체결 이전 분봉 기록이 충분하지 않아 진입 시점을 확정하기 어렵습니다. 현재 문서는 보유 관리와 청산 기준 중심으로 정리했습니다.",
-            "no_breakout_signal": "저장된 분봉 범위에서는 최근 고점 돌파나 첫 눌림목 반등 신호가 확인되지 않았습니다. 따라서 진입은 보류 판단으로 정리했습니다.",
-            "vwap_not_confirmed": "분봉 흐름에서 VWAP 상회 유지나 재안착이 확인되지 않았습니다. 추격 진입 위험을 피하기 위해 진입 보류로 해석했습니다.",
-            "volume_insufficient": "분봉 거래량이 돌파 신호를 뒷받침할 만큼 충분하지 않았습니다. 따라서 이번 구간은 보수적으로 진입 보류로 판단했습니다.",
-            "too_extended_from_vwap": "VWAP 대비 과도하게 확장된 상태여서 추격 진입을 피했습니다.",
-            "post_exit_cooldown": "직전 청산 직후 재진입 쿨다운 구간이라 신규 진입을 보류했습니다.",
-            "buy_blocked_open_position": "기존 보유 포지션이 있어 신규 진입을 차단했습니다.",
-            "no_position": "저장된 데이터 범위 안에서는 체결 직전 분봉 진입 근거가 충분히 남아 있지 않았습니다. 이번 문서는 진입 해석보다 이후 보유 관리 기록을 중심으로 정리했습니다.",
-            "peak_drawdown": "이번 저장값에는 진입 근거보다 청산 관리 신호가 더 선명하게 남아 있습니다. 진입 시점의 분봉 근거는 별도로 확인되지 않아 보수적으로 정리했습니다.",
-            "hard_stop": "이번 저장값에는 진입 근거보다 손절 관리 신호가 더 분명하게 남아 있습니다. 진입 시점의 분봉 근거는 별도로 확인되지 않아 보수적으로 정리했습니다.",
-            "pullback_structure_above_vwap_with_confirmation": "분봉 기준으로 VWAP 상단 눌림 이후 재확인 신호가 확인되어 진입했습니다.",
-        }
-        if mapping.get(reason):
-            return mapping[reason]
-        if str(reason_code or "").strip():
-            reason_text = _sanitize_operator_brief_text(str(reason_code or "").strip())
-            if executed_trade:
-                return f"분봉 조건 점검 결과 {reason_text} 신호가 확인되어 진입했습니다."
-            return f"분봉 조건 점검 결과 {reason_text} 상태로 해석되어 진입을 보류했습니다."
-        if vwap_distance not in (None, ""):
-            return f"분봉 조건을 점검 중이며 현재 VWAP 이격은 {_format_percent(vwap_distance, 2)} 수준입니다. 추가 확인 전까지는 보수적으로 접근합니다."
-        return "분봉 데이터와 체결 근거를 보수적으로 점검한 결과, 당장 진입을 확정하기보다 추가 확인이 필요한 상태로 해석했습니다."
-
-    def _default_next_checkpoints(entry: Dict[str, Any], monitor: Dict[str, Any], exit_plan: Dict[str, Any], posture_action: str) -> List[str]:
-        metrics = entry.get("metrics") if isinstance(entry.get("metrics"), dict) else {}
-        watch_axes = [str(x or "").strip() for x in list(exit_plan.get("watch_axes") or monitor.get("watch_axes") or []) if str(x or "").strip()]
-        derived: List[str] = []
-        if posture_action == "WAIT":
-            if metrics.get("recent_high") not in (None, ""):
-                derived.append("분봉 기준으로 최근 고점 재돌파 여부를 다음 체크포인트로 확인합니다.")
-            if metrics.get("volume_ratio") not in (None, ""):
-                derived.append("거래량 증가가 다시 동반되는지 확인합니다.")
-            if not derived:
-                derived.append("분봉 기준으로 재돌파 여부와 거래량 증가 여부를 다음 체크포인트로 설정합니다.")
-        elif posture_action in {"BUY", "HOLD"}:
-            derived.append("분봉 기준으로 지지선 유지 여부와 거래량 둔화 여부를 먼저 확인합니다.")
-            if any("vwap" in axis.lower() for axis in watch_axes):
-                derived.append("VWAP 재이탈 여부와 거래량 감소 여부를 중심으로 모니터링합니다.")
-            derived.append("현재 보유 상태에서는 고점 대비 하락폭과 거래량 둔화를 주요 확인 지표로 봅니다.")
-        else:
-            derived.append("다음 거래에서는 분봉 진입 근거와 후보 비교 데이터가 충분히 남는지 먼저 확인합니다.")
-            derived.append("청산 이후에는 동일 종목의 재돌파 여부와 거래대금 회복 여부를 다시 확인합니다.")
-        return derived[:3]
+    _action_label, _append_list, _axis_is_explicit, _axis_label, _default_next_checkpoints, _entry_reason_text, _metric_text, _narrative_text, _vwap_interpretation = operator_brief_text_helpers(facade=_r3_sys.modules[__name__])
 
     valid_statuses = {"", "ok", "partial", "salvaged", "repaired", "fallback"}
     status = str(brief.get("status") or "").strip().lower()
@@ -2974,163 +2519,14 @@ def _render_operator_brief_markdown(brief: Dict[str, Any]) -> str:
 
     current_snapshot, entry, executive, exit_plan, final_action, headline, market, monitor, monitor_guard_snapshot, next_step_section, operator_conclusion, posture_action, risk_alerts, scanner_focus, selected_symbol, selection, strategist_evidence = brief_render_current_snapshot_entry(brief=brief, facade=_r3_sys.modules[__name__])
 
-    def _usable_narrative_text(text: Any) -> str:
-        cleaned = _narrative_text(text)
-        return cleaned if _count_hangul_chars(cleaned) >= 4 else ""
+    _compact_items, _summary_text, _usable_narrative_text = operator_brief_narrative_helpers(_narrative_text=_narrative_text, facade=_r3_sys.modules[__name__])
 
-    def _summary_text(section: Dict[str, Any], *extra: Any) -> str:
-        candidates: List[Any] = [section.get("summary")] if isinstance(section, dict) else []
-        candidates.extend(extra)
-        for candidate in candidates:
-            text = _usable_narrative_text(candidate) or _narrative_text(candidate)
-            if text:
-                return text
-        return ""
-
-    def _compact_items(values: Any, *, limit: int = 3, max_len: int = 180) -> List[str]:
-        items = _clean_str_list(values, limit=limit, max_len=max_len)
-        out: List[str] = []
-        for item in items:
-            text = _sanitize_operator_brief_text(item)
-            if text:
-                out.append(text)
-        return out
-
-    if any(
-        isinstance(section, dict) and section
-        for section in (
-            current_snapshot,
-            strategist_evidence,
-            scanner_focus,
-            monitor_guard_snapshot,
-            next_step_section,
-        )
-    ):
-        lines, market_headlines, monitor_reason, monitor_summary, next_step_summary, next_watch, scanner_summary, score_driver_items, selection_reason, stop_policy_summary, symbol_headlines, takeaways, top_candidates_summary = brief_render_lines_market_headlines(_summary_text=_summary_text, current_snapshot=current_snapshot, brief=brief, strategist_evidence=strategist_evidence, scanner_focus=scanner_focus, monitor_guard_snapshot=monitor_guard_snapshot, next_step_section=next_step_section, operator_conclusion=operator_conclusion, executive=executive, _compact_items=_compact_items, facade=_r3_sys.modules[__name__])
-        if market_headlines:
-            lines.append("- 시장 헤드라인:")
-            for item in market_headlines:
-                lines.append(f"  - {item}")
-        if symbol_headlines:
-            lines.append("- 선택 종목 관련 헤드라인:")
-            for item in symbol_headlines:
-                lines.append(f"  - {item}")
-
-        brief_render_effect_free_block_3748(lines=lines, scanner_summary=scanner_summary, scanner_focus=scanner_focus, top_candidates_summary=top_candidates_summary, selection_reason=selection_reason, score_driver_items=score_driver_items, monitor_summary=monitor_summary, monitor_reason=monitor_reason, facade=_r3_sys.modules[__name__])
-        if stop_policy_summary:
-            lines.append("- 활성 스톱 정책:")
-            for item in stop_policy_summary:
-                lines.append(f"  - {item}")
-
-        lines.extend([
-            "",
-            "## 5. 다음 예상 단계",
-            "",
-            f"- {next_step_summary}",
-        ])
-        for item in next_watch:
-            lines.append(f"- {item}")
-
-        lines.extend([
-            "",
-            "## 6. 운영자 포인트",
-            "",
-        ])
-        if takeaways:
-            for item in takeaways:
-                lines.append(f"- {item}")
-        else:
-            lines.append("- 현재 snapshot 기준 핵심 판단과 다음 체크포인트를 우선 확인합니다.")
-
-        if lines[-1] != "":
-            lines.append("")
-        return "\n".join(lines)
+    _t4_ret = operator_brief_early_fallback(_compact_items=_compact_items, _summary_text=_summary_text, brief=brief, current_snapshot=current_snapshot, executive=executive, monitor_guard_snapshot=monitor_guard_snapshot, next_step_section=next_step_section, operator_conclusion=operator_conclusion, scanner_focus=scanner_focus, strategist_evidence=strategist_evidence, facade=_r3_sys.modules[__name__])
+    if _t4_ret is not None:
+        return _t4_ret
 
     comparison_reasons, display_symbol, entry_summary, executive_summary, exit_plan_summary, holding_summary, next_checkpoints, risk_summary, scanner_reason, selection_reasons, takeaways = brief_fallback_comparison_reasons_display_symbol(selected_symbol=selected_symbol, _usable_narrative_text=_usable_narrative_text, _narrative_text=_narrative_text, brief=brief, status=status, headline=headline, posture_action=posture_action, selection=selection, facade=_r3_sys.modules[__name__])
-    if not entry_summary:
-        entry_reason_text = _narrative_text(str(entry.get("reason_text") or "").strip())
-        if _count_hangul_chars(entry_reason_text) > 0 and status != "fallback":
-            entry_summary = entry_reason_text
-        else:
-            entry_summary = _entry_reason_text(
-                str(entry.get("reason_code") or ""),
-                str(entry.get("pattern") or ""),
-                entry.get("metrics") if isinstance(entry.get("metrics"), dict) else {},
-                posture_action,
-            )
-
-    if not executive_summary:
-        if posture_action == "SELL":
-            executive_summary = f"{display_symbol} \uac70\ub798\ub294 \uccad\uc0b0\uae4c\uc9c0 \ub9c8\ubb34\ub9ac\ub418\uc5c8\uace0, \ud655\uc778\ub41c \uc190\uc775\uacfc \ud558\ub77d\ud3ed \uae30\uc900\uc73c\ub85c \ub9e4\ub3c4 \ud310\ub2e8\uc774 \uc2e4\ud589\ub418\uc5c8\uc2b5\ub2c8\ub2e4."
-        elif posture_action == "WAIT":
-            executive_summary = f"{display_symbol}\uc5d0 \ub300\ud574\uc11c\ub294 \uc2e0\uaddc \uc9c4\uc785\uc744 \ubcf4\ub958\ud558\uace0 \ucd94\uac00 \ud655\uc778\uc744 \uc774\uc5b4\uac00\ub294 \ud310\ub2e8\uc785\ub2c8\ub2e4."
-        else:
-            executive_summary = f"{display_symbol}\uc758 \ud604\uc7ac \ucd5c\uc885 \ud310\ub2e8\uc740 {_action_label(posture_action)}\uc785\ub2c8\ub2e4."
-
-    if not holding_summary:
-        if posture_action == "SELL":
-            holding_summary = (
-                f"{display_symbol} \uac70\ub798\ub294 \uc774\ubbf8 \ub9e4\ub3c4\ub85c \uc885\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud3c9\uade0 \ub9e4\uc218\uac00\ub294 {_metric_text(monitor.get('average_price'))}\uc600\uace0, "
-                f"\uccad\uc0b0 \ud310\ub2e8 \ub2f9\uc2dc \uac00\uaca9\uc740 {_metric_text(monitor.get('current_price'))}\uc600\uc2b5\ub2c8\ub2e4. "
-                f"\uace0\uc810 \ub300\ube44 \ud558\ub77d\ud3ed\uc740 {_metric_text(monitor.get('peak_drawdown'))} \uc218\uc900\uc73c\ub85c \ud655\uc778\ub429\ub2c8\ub2e4."
-            )
-        elif posture_action == "WAIT":
-            holding_summary = (
-                f"{display_symbol}\uc5d0 \ub300\ud574\uc11c\ub294 \uc544\uc9c1 \uc2e0\uaddc \uc9c4\uc785\uc744 \uc2e4\ud589\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. "
-                f"\ud604\uc7ac \ubb38\uc11c\ub294 \ubcf4\uc720 \uad00\ub9ac \uae30\ub85d\ubcf4\ub2e4 \uc9c4\uc785 \ubcf4\ub958 \uc0ac\uc720\uc640 \ub2e4\uc74c \ud655\uc778 \ud56d\ubaa9\uc744 \uc911\uc2ec\uc73c\ub85c \uc815\ub9ac\ud588\uc2b5\ub2c8\ub2e4."
-            )
-        else:
-            active_axis = _axis_label(monitor.get("active_exit_axis") or "-")
-            active_axis_text = (
-                f"현재 관리는 {active_axis} 기준으로 이어가고 있습니다."
-                if _axis_is_explicit(active_axis)
-                else "현재 관리는 저장된 손절·청산 기준을 중심으로 이어가고 있습니다."
-            )
-            holding_summary = (
-                f"{display_symbol}\uc740 \ud604\uc7ac {_action_label(monitor.get('posture') or final_action)} \uc0c1\ud0dc\uc785\ub2c8\ub2e4. "
-                f"\ud604\uc7ac\uac00\ub294 {_metric_text(monitor.get('current_price'))}, \ud3c9\uade0 \ub2e8\uac00\ub294 {_metric_text(monitor.get('average_price'))}\uc774\uba70, "
-                f"{active_axis_text}"
-            )
-
-    if not exit_plan_summary:
-        effective_stop = _metric_text(exit_plan.get("effective_stop") or monitor.get("effective_stop"))
-        effective_stop_reason = _axis_label(exit_plan.get("effective_stop_reason") or monitor.get("effective_stop_reason"))
-        take_profit = _metric_text(exit_plan.get("take_profit") or monitor.get("take_profit"))
-        watch_axes = [_axis_label(x) for x in list(exit_plan.get("watch_axes") or monitor.get("watch_axes") or [])[:2] if str(x or "").strip()]
-        axes_text = ", ".join(watch_axes) if watch_axes else "\uc8fc\uc694 \uac10\uc2dc \uc870\uac74 \ubcc0\ud654"
-        if posture_action == "SELL":
-            axis_prefix = (
-                f"{effective_stop_reason} 기준과"
-                if _axis_is_explicit(effective_stop_reason)
-                else "저장된 손절 기준과"
-            )
-            exit_plan_summary = (
-                f"\uc774\ubc88 \uac70\ub798\ub294 {axis_prefix} \uace0\uc810 \ub300\ube44 \ud558\ub77d\ud3ed \uc870\uac74\uc744 \uc6b0\uc120 \ud655\uc778\ud55c \ub4a4 \uccad\uc0b0\uc744 \uc2e4\ud589\ud588\uc2b5\ub2c8\ub2e4. "
-                f"\ucc38\uace0 \uc190\uc808 \uae30\uc900\uc740 {effective_stop} \uc218\uc900\uc774\uc5c8\uace0, \ubaa9\ud45c \uc218\uc775 \uc2e4\ud604 \uae30\uc900\uc740 {take_profit} \uc218\uc900\uc774\uc5c8\uc2b5\ub2c8\ub2e4."
-            )
-        elif posture_action == "WAIT":
-            exit_plan_summary = (
-                f"\uc2e0\uaddc \uc9c4\uc785 \uc804\uae4c\uc9c0\ub294 {axes_text}\ub97c \uba3c\uc800 \uc810\uac80\ud558\uace0, \ubd84\ubd09 \uae30\uc900\uc774 \ub2e4\uc2dc \ub9de\uc544\ub5a8\uc5b4\uc9c8 \ub54c\uae4c\uc9c0 \ubcf4\uc218\uc801\uc73c\ub85c \ub300\uae30\ud569\ub2c8\ub2e4."
-            )
-        else:
-            axis_prefix = (
-                f"\uc6b0\uc120 {effective_stop_reason}\uc744 \uae30\uc900\uc73c\ub85c \ub300\uc751\ud558\uace0"
-                if _axis_is_explicit(effective_stop_reason)
-                else "\uc6b0\uc120 \uc800\uc7a5\ub41c \uc190\uc808 \uae30\uc900\uc744 \uc911\uc2ec\uc73c\ub85c \ub300\uc751\ud558\uace0"
-            )
-            exit_plan_summary = (
-                f"{axis_prefix} \uae30\uc900\uac12\uc740 {effective_stop} \uc218\uc900\uc73c\ub85c \ubcf4\uace0 \uc788\uc2b5\ub2c8\ub2e4. "
-                f"\ubaa9\ud45c \uc218\uc775 \uc2e4\ud604 \uae30\uc900\uc740 {take_profit} \uc218\uc900\uc774\uba70, {axes_text}\uac00 \ud754\ub4e4\ub9ac\uba74 \ub2e4\uc2dc \ud310\ub2e8\ud569\ub2c8\ub2e4."
-            )
-
-    if not risk_summary:
-        weak_factors = [_narrative_text(x) for x in list(risk_alerts.get("weak_factors") or []) if _narrative_text(x)]
-        if weak_factors and status != "fallback":
-            risk_summary = " ".join(weak_factors[:3])
-        elif bool(risk_alerts.get("defensive_mode")):
-            risk_summary = "\uac70\uc2dc \uc2a4\ud2b8\ub808\uc2a4 \uc2e0\ud638\uac00 \ub192\uc544 \uc788\uc5b4 \ubc29\uc5b4\uc801\uc73c\ub85c \ub300\uc751\ud560 \ud544\uc694\uac00 \uc788\uc2b5\ub2c8\ub2e4."
-        else:
-            risk_summary = "\ud604\uc7ac \uc815\ubcf4 \ubc94\uc704\uc5d0\uc11c\ub294 \ucd94\uac00 \ub9ac\uc2a4\ud06c\uac00 \uc81c\ud55c\uc801\uc774\uc9c0\ub9cc \ubd84\ubd09 \uad6c\uc870 \ubcc0\ud654\uc640 \uac70\ub798\ub7c9 \ub454\ud654 \uc5ec\ubd80\ub97c \uacc4\uc18d \ud655\uc778\ud574\uc57c \ud569\ub2c8\ub2e4."
+    entry_summary, executive_summary, exit_plan_summary, holding_summary, risk_summary = derive_operator_summary_fallbacks(_action_label=_action_label, _axis_is_explicit=_axis_is_explicit, _axis_label=_axis_label, _entry_reason_text=_entry_reason_text, _metric_text=_metric_text, _narrative_text=_narrative_text, display_symbol=display_symbol, entry=entry, entry_summary=entry_summary, executive_summary=executive_summary, exit_plan=exit_plan, exit_plan_summary=exit_plan_summary, final_action=final_action, holding_summary=holding_summary, monitor=monitor, posture_action=posture_action, risk_alerts=risk_alerts, risk_summary=risk_summary, status=status, facade=_r3_sys.modules[__name__])
 
     lines = brief_fallback_lines(next_checkpoints=next_checkpoints, _narrative_text=_narrative_text, operator_conclusion=operator_conclusion, takeaways=takeaways, _default_next_checkpoints=_default_next_checkpoints, entry=entry, monitor=monitor, exit_plan=exit_plan, posture_action=posture_action, executive_summary=executive_summary, scanner_reason=scanner_reason, _append_list=_append_list, selection_reasons=selection_reasons, comparison_reasons=comparison_reasons, entry_summary=entry_summary, _vwap_interpretation=_vwap_interpretation, holding_summary=holding_summary, _action_label=_action_label, _metric_text=_metric_text, final_action=final_action, exit_plan_summary=exit_plan_summary, _axis_is_explicit=_axis_is_explicit, _axis_label=_axis_label, risk_summary=risk_summary, risk_alerts=risk_alerts, market=market, facade=_r3_sys.modules[__name__])[0]
     return "\n".join(lines)

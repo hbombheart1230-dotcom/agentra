@@ -25,6 +25,7 @@ LEDGER = ROOT / "docs/refactor/p1_5_third_pass_t4c_moved_segments_ledger.json"
 MODULES = {
     "graphs/nodes/strategist_node.py": ("strategist_node",),
 }
+T4C_END_SHA = "ac4642dc265811bf7ff56e32adbadf8203fed771"
 MAX_OWNER_LOC = 350
 FORBIDDEN_TOKENS = ("os.environ", "os.getenv", "getenv(", "time.time(", "datetime.now", "datetime.utcnow", "uuid.uuid",
                     "subprocess", "sqlite3", "requests.", "print(", "open(", "logging.", "random.")
@@ -318,7 +319,9 @@ def test_frame_llm_call_site_and_state_write_order_are_unchanged():
 
 
 def test_t4c_changed_paths_stay_in_strategist_scope_and_touch_no_authority_surface():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    # stage-pinned: T4-C scope is evaluated up to its accepted stage end (T4-D legitimately touches Commander/Operator UI)
+    assert subprocess.run(["git", "merge-base", "--is-ancestor", T4C_END_SHA, "HEAD"], cwd=ROOT).returncode == 0
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, T4C_END_SHA], cwd=ROOT).decode().split(chr(0))
     for p in [x for x in out if x]:
         assert p.startswith(ALLOWED_CHANGED), f"T4-C touched an out-of-scope path: {p}"
         assert not p.startswith(FORBIDDEN_PREFIXES), p

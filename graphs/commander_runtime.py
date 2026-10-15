@@ -257,6 +257,27 @@ from libs.runtime.commander.open_position_assessment_projection import (
     open_pos_assess_force_exit_review_pending_open_position,
     open_pos_assess_force_exit_review_pending_open_position_2,
 )
+from libs.runtime.commander.behavior_policy_carry_overrides import (
+    resolve_carry_exit_policy_overrides,
+)
+from libs.runtime.commander.behavior_policy_llm_profiles import (
+    build_llm_behavior_policy,
+    build_strategist_behavior_policy,
+)
+from libs.runtime.commander.behavior_policy_monitor_scanner import (
+    build_scanner_behavior_policy,
+    build_monitor_behavior_policy,
+)
+from libs.runtime.commander.behavior_policy_applied_summary import (
+    build_commander_applied_policy_summary,
+)
+from libs.runtime.commander.open_position_override_result import (
+    build_open_position_override_result,
+)
+from libs.runtime.commander.applied_policy_context_projection import (
+    build_commander_context_update,
+    build_commander_context_ref,
+)
 
 
 def _is_trueish(v: Any) -> bool:
@@ -635,57 +656,7 @@ def _resolve_commander_behavior_policy(
             1_000_000.0,
         )
     carry_risk_bias, carry_risk_reason, carry_state, default_execution_profile, hold_repeat_count_max, override_reason, position_sizing_lot_size, position_sizing_min_qty, reporter_daily_execution_profile, reporter_daily_llm, reporter_intraday_execution_profile, reporter_intraday_llm, strategist_execution_profile, strategist_llm, strategy_memory_recent_runs = behavior_norm_carry_risk_bias_carry_risk_reason(_existing_value=_existing_value, commander_override=commander_override, facade=_r3_sys.modules[__name__])
-    effective_loss_ratio_min = float(_runtime_float(commander_override.get("effective_loss_ratio_min"), 0.0))
-    session_open_recovery = (
-        dict(commander_override.get("session_open_recovery_assessment") or {})
-        if isinstance(commander_override.get("session_open_recovery_assessment"), dict)
-        else {}
-    )
-    market_context = state.get("market_context") if isinstance(state.get("market_context"), dict) else {}
-    raw_minutes_to_close = market_context.get("minutes_to_close")
-    minutes_to_close = None if raw_minutes_to_close in (None, "") else float(_runtime_float(raw_minutes_to_close, 0.0))
-    carry_exit_policy_overrides: Dict[str, Any] = {}
-    carry_policy_adjustments: list[str] = []
-    if carry_risk_bias == "urgent_exit_review":
-        carry_exit_policy_overrides = {
-            "vwap_break_requires_profit": False,
-            "hard_stop_pct": 0.015,
-            "intraday_low_break_pct": 0.001,
-            "trend_strength_floor": -0.10,
-        }
-        carry_policy_adjustments.append("carry_bias:urgent_exit_review->tighten_exit_policy")
-        if str(session_open_recovery.get("recovery_state") or "").strip().lower() == "failed":
-            carry_exit_policy_overrides["peak_drawdown_mode"] = "always_on"
-            carry_policy_adjustments.append("session_open_recovery:failed->always_on_peak_drawdown")
-    elif carry_risk_bias == "elevated" and carry_state in {"overnight_open", "multi_session_stale"}:
-        carry_exit_policy_overrides = {
-            "vwap_break_requires_profit": False,
-            "intraday_low_break_pct": 0.0015,
-            "trend_strength_floor": -0.12,
-        }
-        carry_policy_adjustments.append("carry_bias:elevated->narrow_exit_confirmation")
-    elif (
-        carry_risk_bias == "elevated"
-        and carry_state == "same_session"
-        and override_reason == "loss_threshold_exceeded"
-        and hold_repeat_count_max >= 6
-    ):
-        carry_exit_policy_overrides = {
-            "vwap_break_requires_profit": False,
-            "intraday_low_break_pct": 0.0012,
-            "trend_strength_floor": -0.11,
-        }
-        carry_policy_adjustments.append("carry_bias:elevated_same_session->tighten_loss_review")
-        if effective_loss_ratio_min <= -0.01:
-            carry_exit_policy_overrides["peak_drawdown_mode"] = "always_on"
-            carry_policy_adjustments.append("same_session_loss_threshold->always_on_peak_drawdown")
-        closeout_cutoff_min = max(15, _coerce_int(eod_flat_cutoff_min, 10))
-        if minutes_to_close is not None and minutes_to_close <= float(closeout_cutoff_min):
-            carry_exit_policy_overrides["use_eod_flat"] = True
-            carry_exit_policy_overrides["eod_flat_cutoff_min"] = closeout_cutoff_min
-            carry_policy_adjustments.append(
-                f"same_session_loss_near_close->eod_flat_cutoff:{int(closeout_cutoff_min)}"
-            )
+    carry_exit_policy_overrides, carry_policy_adjustments = resolve_carry_exit_policy_overrides(carry_risk_bias=carry_risk_bias, carry_state=carry_state, commander_override=commander_override, eod_flat_cutoff_min=eod_flat_cutoff_min, hold_repeat_count_max=hold_repeat_count_max, override_reason=override_reason, state=state, facade=_r3_sys.modules[__name__])
     return {
         "execution": {
             "cooldowns": {
@@ -694,84 +665,7 @@ def _resolve_commander_behavior_policy(
                 "policy_source": "commander_applied_policy",
             },
         },
-        "llm": {
-            "execution_profile": {
-                "profile_name": str(default_execution_profile.get("profile_name") or default_execution_profile.get("name") or "default_intraday"),
-                "name": str(default_execution_profile.get("name") or "default_intraday"),
-                "temperature": float(_runtime_float(default_execution_profile.get("temperature"), 0.2)),
-                "max_tokens": max(256, _coerce_int(default_execution_profile.get("max_tokens"), 8192)),
-                "timeout_sec": max(1, _coerce_int(default_execution_profile.get("timeout_sec"), 15)),
-                    "retry": {
-                        "max_attempts": max(0, _coerce_int((default_execution_profile.get("retry") or {}).get("max_attempts"), 2)),
-                        "backoff_sec": max(0.0, float(_runtime_float((default_execution_profile.get("retry") or {}).get("backoff_sec"), 0.0))),
-                    },
-                    "retry_max": max(0, _coerce_int((default_execution_profile.get("retry") or {}).get("max_attempts"), 2)),
-                    "retry_backoff_sec": max(0.0, float(_runtime_float((default_execution_profile.get("retry") or {}).get("backoff_sec"), 0.0))),
-                    "policy_source": "commander_applied_policy",
-                },
-            "strategist": {
-                "profile": str(strategist_llm.get("profile") or "balanced"),
-                "primary": str(strategist_llm.get("primary") or ""),
-                "fallback": str(strategist_llm.get("fallback") or ""),
-                "execution_profile": {
-                    "profile_name": str(strategist_execution_profile.get("profile_name") or strategist_execution_profile.get("name") or "balanced_reasoning"),
-                    "name": str(strategist_execution_profile.get("name") or "balanced_reasoning"),
-                    "temperature": float(_runtime_float(strategist_execution_profile.get("temperature"), 0.1)),
-                    "max_tokens": max(256, _coerce_int(strategist_execution_profile.get("max_tokens"), 8192)),
-                    "timeout_sec": max(1, _coerce_int(strategist_execution_profile.get("timeout_sec"), 15)),
-                    "retry": {
-                        "max_attempts": max(0, _coerce_int((strategist_execution_profile.get("retry") or {}).get("max_attempts"), 2)),
-                        "backoff_sec": max(0.0, float(_runtime_float((strategist_execution_profile.get("retry") or {}).get("backoff_sec"), 0.0))),
-                    },
-                    "retry_max": max(0, _coerce_int(strategist_execution_profile.get("retry_max"), 2)),
-                    "retry_backoff_sec": max(0.0, float(_runtime_float(strategist_execution_profile.get("retry_backoff_sec"), 0.0))),
-                    "policy_source": "commander_applied_policy",
-                },
-                "policy_source": "commander_applied_policy",
-            },
-            "reporter": {
-                "intraday": {
-                    "profile": str(reporter_intraday_llm.get("profile") or "fast_free"),
-                    "primary": str(reporter_intraday_llm.get("primary") or ""),
-                    "fallback": str(reporter_intraday_llm.get("fallback") or ""),
-                    "execution_profile": {
-                        "profile_name": str(reporter_intraday_execution_profile.get("profile_name") or reporter_intraday_execution_profile.get("name") or "concise_review"),
-                        "name": str(reporter_intraday_execution_profile.get("name") or "concise_review"),
-                        "temperature": float(_runtime_float(reporter_intraday_execution_profile.get("temperature"), 0.2)),
-                        "max_tokens": max(256, _coerce_int(reporter_intraday_execution_profile.get("max_tokens"), 8192)),
-                        "timeout_sec": max(1, _coerce_int(reporter_intraday_execution_profile.get("timeout_sec"), 15)),
-                        "retry": {
-                            "max_attempts": max(0, _coerce_int((reporter_intraday_execution_profile.get("retry") or {}).get("max_attempts"), 2)),
-                            "backoff_sec": max(0.0, float(_runtime_float((reporter_intraday_execution_profile.get("retry") or {}).get("backoff_sec"), 0.0))),
-                        },
-                        "retry_max": max(0, _coerce_int(reporter_intraday_execution_profile.get("retry_max"), 2)),
-                        "retry_backoff_sec": max(0.0, float(_runtime_float(reporter_intraday_execution_profile.get("retry_backoff_sec"), 0.0))),
-                        "policy_source": "commander_applied_policy",
-                    },
-                    "policy_source": "commander_applied_policy",
-                },
-                "daily": {
-                    "profile": str(reporter_daily_llm.get("profile") or "strong_reasoning"),
-                    "primary": str(reporter_daily_llm.get("primary") or ""),
-                    "fallback": str(reporter_daily_llm.get("fallback") or ""),
-                    "execution_profile": {
-                        "profile_name": str(reporter_daily_execution_profile.get("profile_name") or reporter_daily_execution_profile.get("name") or "deep_review"),
-                        "name": str(reporter_daily_execution_profile.get("name") or "deep_review"),
-                        "temperature": float(_runtime_float(reporter_daily_execution_profile.get("temperature"), 0.2)),
-                        "max_tokens": max(256, _coerce_int(reporter_daily_execution_profile.get("max_tokens"), 8192)),
-                        "timeout_sec": max(1, _coerce_int(reporter_daily_execution_profile.get("timeout_sec"), 15)),
-                        "retry": {
-                            "max_attempts": max(0, _coerce_int((reporter_daily_execution_profile.get("retry") or {}).get("max_attempts"), 2)),
-                            "backoff_sec": max(0.0, float(_runtime_float((reporter_daily_execution_profile.get("retry") or {}).get("backoff_sec"), 0.0))),
-                        },
-                        "retry_max": max(0, _coerce_int(reporter_daily_execution_profile.get("retry_max"), 2)),
-                        "retry_backoff_sec": max(0.0, float(_runtime_float(reporter_daily_execution_profile.get("retry_backoff_sec"), 0.0))),
-                        "policy_source": "commander_applied_policy",
-                    },
-                    "policy_source": "commander_applied_policy",
-                },
-            },
-        },
+        "llm": build_llm_behavior_policy(default_execution_profile=default_execution_profile, reporter_daily_execution_profile=reporter_daily_execution_profile, reporter_daily_llm=reporter_daily_llm, reporter_intraday_execution_profile=reporter_intraday_execution_profile, reporter_intraday_llm=reporter_intraday_llm, strategist_execution_profile=strategist_execution_profile, strategist_llm=strategist_llm, facade=_r3_sys.modules[__name__]),
         "reporter": {
             "ai_review": {
                 "enabled": bool(reporter_ai_review_enabled),
@@ -783,34 +677,7 @@ def _resolve_commander_behavior_policy(
                 "policy_source": "commander_applied_policy",
             },
         },
-        "strategist": {
-            "runtime": {
-                "strict_mode": bool(strict_mode),
-                "allow_legacy_rule": bool(allow_legacy_rule),
-                "allow_legacy_strategy_v1": bool(allow_legacy_strategy_v1),
-                "policy_source": "commander_applied_policy",
-            },
-            "memory_feedback": {
-                "enabled": bool(memory_feedback_enabled),
-                "recent_runs": max(1, _coerce_int(strategy_memory_recent_runs, 12)),
-                "policy_source": "commander_applied_policy",
-            },
-            "performance_memory": {
-                "enabled": bool(performance_memory_enabled),
-                "persist_enabled": bool(strategy_memory_persist_enabled),
-                "policy_source": "commander_applied_policy",
-            },
-            "memory_usage": {
-                "disabled": bool(strategist_memory_usage_disabled),
-                "policy_source": "commander_applied_policy",
-            },
-            "reporter_feedback_mode": str(feedback_policy.get("reporter_feedback_mode") or "auto"),
-            "reporter_feedback_mode_source": str(
-                feedback_policy.get("reporter_feedback_mode_source") or "commander_applied_policy"
-            ),
-            "reporter_feedback_mode_reason": str(feedback_policy.get("reporter_feedback_mode_reason") or ""),
-            "reporter_feedback_semantics": "advisory_only",
-        },
+        "strategist": build_strategist_behavior_policy(allow_legacy_rule=allow_legacy_rule, allow_legacy_strategy_v1=allow_legacy_strategy_v1, feedback_policy=feedback_policy, memory_feedback_enabled=memory_feedback_enabled, performance_memory_enabled=performance_memory_enabled, strategist_memory_usage_disabled=strategist_memory_usage_disabled, strategy_memory_persist_enabled=strategy_memory_persist_enabled, strategy_memory_recent_runs=strategy_memory_recent_runs, strict_mode=strict_mode, facade=_r3_sys.modules[__name__]),
         "commander": {
             "route": {
                 "monitor_only_when_holding": bool(monitor_only_when_holding),
@@ -828,96 +695,8 @@ def _resolve_commander_behavior_policy(
             "asset_type": str(universe_asset_type or "all_tradable").strip().lower() or "all_tradable",
             "policy_source": "commander_applied_policy",
         },
-        "scanner": {
-            "memory_bias": {
-                "observation_only": bool(memory_bias_observation_only),
-                "policy_source": "commander_applied_policy",
-            },
-            "source": {
-                "type": normalize_scanner_source_type(scanner_source_type),
-                "policy_source": "commander_applied_policy",
-            },
-            "candidate": {
-                "top_pool": max(1, _coerce_int(top_candidate_pool, 30)),
-                "policy_source": "commander_applied_policy",
-            },
-            "kiwoom": {
-                "condition_limit": max(0, _coerce_int(kiwoom_condition_limit, 200)),
-                "strict_only": bool(scanner_strict_only),
-                "live_fetch": bool(scanner_live_fetch),
-                "include_change_rate": bool(scanner_include_change_rate),
-                "policy_source": "commander_applied_policy",
-            },
-            "fallback": {
-                "block_static_when_empty": bool(scanner_block_static_when_empty),
-                "policy_source": "commander_applied_policy",
-            },
-        },
-        "monitor": {
-            "memory_bias": {
-                "observation_only": bool(memory_bias_observation_only),
-                "policy_source": "commander_applied_policy",
-            },
-            "hold": {
-                "min_hold_seconds": max(0, _coerce_int(min_hold_seconds, 600)),
-                "policy_source": "commander_applied_policy",
-            },
-            "exit": {
-                "enabled": bool(exit_policy_enabled),
-                "confirm_ticks": max(1, _coerce_int(exit_confirm_ticks, 2)),
-                "eod_flat": {
-                    "enabled": bool(exit_policy_use_eod_flat),
-                    "cutoff_min": max(0, _coerce_int(eod_flat_cutoff_min, 10)),
-                },
-                "policy_overrides": dict(carry_exit_policy_overrides),
-                "policy_adjustments": list(carry_policy_adjustments),
-                "carry_state": carry_state,
-                "carry_risk_bias": carry_risk_bias,
-                "carry_risk_reason": carry_risk_reason,
-                "policy_source": "commander_applied_policy",
-            },
-            "entry": {
-                "block_buy_when_open_position": bool(block_buy_when_open_position),
-                "multi_position": {
-                    "enabled": bool(risk_max_positions > 1),
-                    "max_positions": int(risk_max_positions),
-                    "same_symbol_reentry_allowed": False,
-                    "pending_buy_same_symbol_allowed": False,
-                    "open_position_gate_mode": "max_positions",
-                    "policy_source": "commander_applied_policy",
-                },
-                "buy_closeout_cutoff_min": max(
-                    _coerce_int(eod_flat_cutoff_min, 10),
-                    _coerce_int(buy_closeout_cutoff_min, _DEFAULT_BUY_CLOSEOUT_CUTOFF_MIN),
-                ),
-                "position_sizing": {
-                    "enabled": bool(position_sizing_enabled),
-                    "risk_per_trade_ratio": max(
-                        0.0,
-                        float(_runtime_float(position_sizing_risk_per_trade_ratio, 0.01)),
-                    ),
-                    "position_notional_ratio": max(
-                        0.0,
-                        float(_runtime_float(position_sizing_notional_ratio, 0.50)),
-                    ),
-                    "max_position_qty": max(1, _coerce_int(position_sizing_max_qty, 10)),
-                    "max_position_notional": max(
-                        0.0,
-                        float(_runtime_float(position_sizing_max_notional, 0.0)),
-                    ),
-                    "min_position_qty": max(1, _coerce_int(position_sizing_min_qty, 1)),
-                    "lot_size": max(1, _coerce_int(position_sizing_lot_size, 1)),
-                    "policy_source": "commander_applied_policy",
-                },
-                "scoring": {
-                    "enabled": bool(monitor_scoring_enabled),
-                    "shadow_mode": bool(monitor_scoring_shadow_mode),
-                    "threshold": max(0.0, float(_runtime_float(monitor_scoring_threshold, 3.0))),
-                    "entry_threshold": max(0.0, float(_runtime_float(monitor_scoring_threshold, 3.0))),
-                    "policy_source": "commander_applied_policy",
-                },
-            },
-        },
+        "scanner": build_scanner_behavior_policy(kiwoom_condition_limit=kiwoom_condition_limit, memory_bias_observation_only=memory_bias_observation_only, scanner_block_static_when_empty=scanner_block_static_when_empty, scanner_include_change_rate=scanner_include_change_rate, scanner_live_fetch=scanner_live_fetch, scanner_source_type=scanner_source_type, scanner_strict_only=scanner_strict_only, top_candidate_pool=top_candidate_pool, facade=_r3_sys.modules[__name__]),
+        "monitor": build_monitor_behavior_policy(block_buy_when_open_position=block_buy_when_open_position, buy_closeout_cutoff_min=buy_closeout_cutoff_min, carry_exit_policy_overrides=carry_exit_policy_overrides, carry_policy_adjustments=carry_policy_adjustments, carry_risk_bias=carry_risk_bias, carry_risk_reason=carry_risk_reason, carry_state=carry_state, eod_flat_cutoff_min=eod_flat_cutoff_min, exit_confirm_ticks=exit_confirm_ticks, exit_policy_enabled=exit_policy_enabled, exit_policy_use_eod_flat=exit_policy_use_eod_flat, memory_bias_observation_only=memory_bias_observation_only, min_hold_seconds=min_hold_seconds, monitor_scoring_enabled=monitor_scoring_enabled, monitor_scoring_shadow_mode=monitor_scoring_shadow_mode, monitor_scoring_threshold=monitor_scoring_threshold, position_sizing_enabled=position_sizing_enabled, position_sizing_lot_size=position_sizing_lot_size, position_sizing_max_notional=position_sizing_max_notional, position_sizing_max_qty=position_sizing_max_qty, position_sizing_min_qty=position_sizing_min_qty, position_sizing_notional_ratio=position_sizing_notional_ratio, position_sizing_risk_per_trade_ratio=position_sizing_risk_per_trade_ratio, risk_max_positions=risk_max_positions, facade=_r3_sys.modules[__name__]),
         "policy_sources": {
             "commander_owned_fields": list(_COMMANDER_OWNED_POLICY_FIELDS),
             "commander_owned_universe_fields": list(_COMMANDER_OWNED_UNIVERSE_POLICY_FIELDS),
@@ -926,158 +705,7 @@ def _resolve_commander_behavior_policy(
             "commander_owned_llm_fields": list(_COMMANDER_OWNED_LLM_POLICY_FIELDS),
             "commander_owned_llm_execution_fields": list(_COMMANDER_OWNED_LLM_EXECUTION_POLICY_FIELDS),
         },
-        "commander_applied_policy_summary": {
-            "selected_route": route,
-            "runtime_phase": phase_text,
-            "reporter_ai_review_enabled": bool(reporter_ai_review_enabled),
-            "trade_report_enabled": bool(trade_report_enabled),
-            "trade_report_generate_on_open": bool(trade_report_generate_on_open),
-            "strategist_strict_mode": bool(strict_mode),
-            "allow_legacy_rule": bool(allow_legacy_rule),
-            "allow_legacy_strategy_v1": bool(allow_legacy_strategy_v1),
-            "strategy_memory_feedback_enabled": bool(memory_feedback_enabled),
-            "strategy_performance_memory_enabled": bool(performance_memory_enabled),
-            "strategy_memory_persist_enabled": bool(strategy_memory_persist_enabled),
-            "commander_memory_usage_disabled": bool(commander_memory_usage_disabled),
-            "strategist_memory_usage_disabled": bool(strategist_memory_usage_disabled),
-            "memory_bias_observation_only": bool(memory_bias_observation_only),
-            "post_scanner_refresh_enabled": bool(post_scanner_refresh_enabled),
-            "pre_entry_exit_sweep_enabled": bool(pre_entry_exit_sweep_enabled),
-            "monitor_only_when_holding": bool(monitor_only_when_holding),
-            "cached_strategist_when_flat": bool(cached_strategist_when_flat),
-            "exit_policy_enabled": bool(exit_policy_enabled),
-            "exit_policy_use_eod_flat": bool(exit_policy_use_eod_flat),
-            "carry_state": carry_state,
-            "carry_risk_bias": carry_risk_bias,
-            "carry_risk_reason": carry_risk_reason,
-            "carry_exit_policy_overrides": dict(carry_exit_policy_overrides),
-            "carry_policy_adjustments": list(carry_policy_adjustments),
-            "block_buy_when_open_position": bool(block_buy_when_open_position),
-            "multi_position_enabled": bool(risk_max_positions > 1),
-            "max_positions": int(risk_max_positions),
-            "same_symbol_reentry_allowed": False,
-            "pending_buy_same_symbol_allowed": False,
-            "open_position_gate_mode": "max_positions",
-            "buy_closeout_cutoff_min": max(
-                _coerce_int(eod_flat_cutoff_min, 10),
-                _coerce_int(buy_closeout_cutoff_min, _DEFAULT_BUY_CLOSEOUT_CUTOFF_MIN),
-            ),
-            "monitor_scoring_enabled": bool(monitor_scoring_enabled),
-            "monitor_scoring_shadow_mode": bool(monitor_scoring_shadow_mode),
-            "position_sizing_enabled": bool(position_sizing_enabled),
-            "position_sizing_risk_per_trade_ratio": max(
-                0.0,
-                float(_runtime_float(position_sizing_risk_per_trade_ratio, 0.01)),
-            ),
-            "position_sizing_position_notional_ratio": max(
-                0.0,
-                float(_runtime_float(position_sizing_notional_ratio, 0.50)),
-            ),
-            "position_sizing_max_position_qty": max(1, _coerce_int(position_sizing_max_qty, 10)),
-            "position_sizing_max_position_notional": max(
-                0.0,
-                float(_runtime_float(position_sizing_max_notional, 0.0)),
-            ),
-            "reporter_feedback_mode": str(feedback_policy.get("reporter_feedback_mode") or "auto"),
-            "universe_fields": {
-                "asset_type": str(universe_asset_type or "all_tradable").strip().lower() or "all_tradable",
-            },
-            "scanner_fields": {
-                "source_type": normalize_scanner_source_type(scanner_source_type),
-                "strict_only": bool(scanner_strict_only),
-                "block_static_when_empty": bool(scanner_block_static_when_empty),
-                "live_fetch": bool(scanner_live_fetch),
-                "include_change_rate": bool(scanner_include_change_rate),
-            },
-            "llm_profiles": {
-                "strategist": {
-                    "profile": str(strategist_llm.get("profile") or "balanced"),
-                    "primary": str(strategist_llm.get("primary") or ""),
-                    "fallback": str(strategist_llm.get("fallback") or ""),
-                },
-                "reporter_intraday": {
-                    "profile": str(reporter_intraday_llm.get("profile") or "fast_free"),
-                    "primary": str(reporter_intraday_llm.get("primary") or ""),
-                    "fallback": str(reporter_intraday_llm.get("fallback") or ""),
-                },
-                "reporter_daily": {
-                    "profile": str(reporter_daily_llm.get("profile") or "strong_reasoning"),
-                    "primary": str(reporter_daily_llm.get("primary") or ""),
-                    "fallback": str(reporter_daily_llm.get("fallback") or ""),
-                },
-            },
-            "llm_execution_profiles": {
-                "default": {
-                    "profile_name": str(default_execution_profile.get("profile_name") or default_execution_profile.get("name") or "default_intraday"),
-                    "temperature": float(_runtime_float(default_execution_profile.get("temperature"), 0.2)),
-                    "max_tokens": max(256, _coerce_int(default_execution_profile.get("max_tokens"), 8192)),
-                    "timeout_sec": max(1, _coerce_int(default_execution_profile.get("timeout_sec"), 15)),
-                    "retry": {
-                        "max_attempts": max(0, _coerce_int((default_execution_profile.get("retry") or {}).get("max_attempts"), 2)),
-                        "backoff_sec": max(0.0, float(_runtime_float((default_execution_profile.get("retry") or {}).get("backoff_sec"), 0.0))),
-                    },
-                },
-                "strategist": {
-                    "profile_name": str(strategist_execution_profile.get("profile_name") or strategist_execution_profile.get("name") or "balanced_reasoning"),
-                    "temperature": float(_runtime_float(strategist_execution_profile.get("temperature"), 0.1)),
-                    "max_tokens": max(256, _coerce_int(strategist_execution_profile.get("max_tokens"), 8192)),
-                    "timeout_sec": max(1, _coerce_int(strategist_execution_profile.get("timeout_sec"), 15)),
-                    "retry": {
-                        "max_attempts": max(0, _coerce_int((strategist_execution_profile.get("retry") or {}).get("max_attempts"), 2)),
-                        "backoff_sec": max(0.0, float(_runtime_float((strategist_execution_profile.get("retry") or {}).get("backoff_sec"), 0.0))),
-                    },
-                },
-                "reporter_intraday": {
-                    "profile_name": str(reporter_intraday_execution_profile.get("profile_name") or reporter_intraday_execution_profile.get("name") or "concise_review"),
-                    "temperature": float(_runtime_float(reporter_intraday_execution_profile.get("temperature"), 0.2)),
-                    "max_tokens": max(256, _coerce_int(reporter_intraday_execution_profile.get("max_tokens"), 8192)),
-                    "timeout_sec": max(1, _coerce_int(reporter_intraday_execution_profile.get("timeout_sec"), 15)),
-                    "retry": {
-                        "max_attempts": max(0, _coerce_int((reporter_intraday_execution_profile.get("retry") or {}).get("max_attempts"), 2)),
-                        "backoff_sec": max(0.0, float(_runtime_float((reporter_intraday_execution_profile.get("retry") or {}).get("backoff_sec"), 0.0))),
-                    },
-                },
-                "reporter_daily": {
-                    "profile_name": str(reporter_daily_execution_profile.get("profile_name") or reporter_daily_execution_profile.get("name") or "deep_review"),
-                    "temperature": float(_runtime_float(reporter_daily_execution_profile.get("temperature"), 0.2)),
-                    "max_tokens": max(256, _coerce_int(reporter_daily_execution_profile.get("max_tokens"), 8192)),
-                    "timeout_sec": max(1, _coerce_int(reporter_daily_execution_profile.get("timeout_sec"), 15)),
-                    "retry": {
-                        "max_attempts": max(0, _coerce_int((reporter_daily_execution_profile.get("retry") or {}).get("max_attempts"), 2)),
-                        "backoff_sec": max(0.0, float(_runtime_float((reporter_daily_execution_profile.get("retry") or {}).get("backoff_sec"), 0.0))),
-                    },
-                },
-            },
-            "numeric_fields": {
-                "post_exit_cooldown_sec": max(0, _coerce_int(post_exit_cooldown_sec, 180)),
-                "sell_cooldown_sec": max(0, _coerce_int(sell_cooldown_sec, 300)),
-                "min_hold_seconds": max(0, _coerce_int(min_hold_seconds, 600)),
-                "exit_confirm_ticks": max(1, _coerce_int(exit_confirm_ticks, 2)),
-                "eod_flat_cutoff_min": max(0, _coerce_int(eod_flat_cutoff_min, 10)),
-                "buy_closeout_cutoff_min": max(
-                    _coerce_int(eod_flat_cutoff_min, 10),
-                    _coerce_int(buy_closeout_cutoff_min, _DEFAULT_BUY_CLOSEOUT_CUTOFF_MIN),
-                ),
-                "top_candidate_pool": max(1, _coerce_int(top_candidate_pool, 30)),
-                "kiwoom_condition_limit": max(0, _coerce_int(kiwoom_condition_limit, 200)),
-                "monitor_entry_scoring_threshold": max(0.0, float(_runtime_float(monitor_scoring_threshold, 3.0))),
-                "position_sizing_enabled": bool(position_sizing_enabled),
-                "position_sizing_risk_per_trade_ratio": max(
-                    0.0,
-                    float(_runtime_float(position_sizing_risk_per_trade_ratio, 0.01)),
-                ),
-                "position_sizing_position_notional_ratio": max(
-                    0.0,
-                    float(_runtime_float(position_sizing_notional_ratio, 0.50)),
-                ),
-                "position_sizing_max_position_qty": max(1, _coerce_int(position_sizing_max_qty, 10)),
-                "position_sizing_max_position_notional": max(
-                    0.0,
-                    float(_runtime_float(position_sizing_max_notional, 0.0)),
-                ),
-                "strategy_memory_recent_runs": max(1, _coerce_int(strategy_memory_recent_runs, 12)),
-            },
-        },
+        "commander_applied_policy_summary": build_commander_applied_policy_summary(allow_legacy_rule=allow_legacy_rule, allow_legacy_strategy_v1=allow_legacy_strategy_v1, block_buy_when_open_position=block_buy_when_open_position, buy_closeout_cutoff_min=buy_closeout_cutoff_min, cached_strategist_when_flat=cached_strategist_when_flat, carry_exit_policy_overrides=carry_exit_policy_overrides, carry_policy_adjustments=carry_policy_adjustments, carry_risk_bias=carry_risk_bias, carry_risk_reason=carry_risk_reason, carry_state=carry_state, commander_memory_usage_disabled=commander_memory_usage_disabled, default_execution_profile=default_execution_profile, eod_flat_cutoff_min=eod_flat_cutoff_min, exit_confirm_ticks=exit_confirm_ticks, exit_policy_enabled=exit_policy_enabled, exit_policy_use_eod_flat=exit_policy_use_eod_flat, feedback_policy=feedback_policy, kiwoom_condition_limit=kiwoom_condition_limit, memory_bias_observation_only=memory_bias_observation_only, memory_feedback_enabled=memory_feedback_enabled, min_hold_seconds=min_hold_seconds, monitor_only_when_holding=monitor_only_when_holding, monitor_scoring_enabled=monitor_scoring_enabled, monitor_scoring_shadow_mode=monitor_scoring_shadow_mode, monitor_scoring_threshold=monitor_scoring_threshold, performance_memory_enabled=performance_memory_enabled, phase_text=phase_text, position_sizing_enabled=position_sizing_enabled, position_sizing_max_notional=position_sizing_max_notional, position_sizing_max_qty=position_sizing_max_qty, position_sizing_notional_ratio=position_sizing_notional_ratio, position_sizing_risk_per_trade_ratio=position_sizing_risk_per_trade_ratio, post_exit_cooldown_sec=post_exit_cooldown_sec, post_scanner_refresh_enabled=post_scanner_refresh_enabled, pre_entry_exit_sweep_enabled=pre_entry_exit_sweep_enabled, reporter_ai_review_enabled=reporter_ai_review_enabled, reporter_daily_execution_profile=reporter_daily_execution_profile, reporter_daily_llm=reporter_daily_llm, reporter_intraday_execution_profile=reporter_intraday_execution_profile, reporter_intraday_llm=reporter_intraday_llm, risk_max_positions=risk_max_positions, route=route, scanner_block_static_when_empty=scanner_block_static_when_empty, scanner_include_change_rate=scanner_include_change_rate, scanner_live_fetch=scanner_live_fetch, scanner_source_type=scanner_source_type, scanner_strict_only=scanner_strict_only, sell_cooldown_sec=sell_cooldown_sec, strategist_execution_profile=strategist_execution_profile, strategist_llm=strategist_llm, strategist_memory_usage_disabled=strategist_memory_usage_disabled, strategy_memory_persist_enabled=strategy_memory_persist_enabled, strategy_memory_recent_runs=strategy_memory_recent_runs, strict_mode=strict_mode, top_candidate_pool=top_candidate_pool, trade_report_enabled=trade_report_enabled, trade_report_generate_on_open=trade_report_generate_on_open, universe_asset_type=universe_asset_type, facade=_r3_sys.modules[__name__]),
     }
 
 
@@ -1228,94 +856,7 @@ def _attach_commander_applied_policy(state: Dict[str, Any]) -> Dict[str, Any]:
             else {}
         )
     commander_context.update(
-        {
-            "source": str(commander_context.get("source") or "commander_decision"),
-            "market_regime": str(commander_decision.get("market_regime") or commander_context.get("market_regime") or ""),
-            "market_regime_rail": str(
-                commander_decision.get("market_regime_rail")
-                or commander_context.get("market_regime_rail")
-                or ""
-            ),
-            "market_regime_forced_by_rail": bool(
-                commander_decision.get("market_regime_forced_by_rail")
-                if commander_decision.get("market_regime_forced_by_rail") is not None
-                else commander_context.get("market_regime_forced_by_rail")
-            ),
-            "session_bias": str(commander_decision.get("session_bias") or commander_context.get("session_bias") or ""),
-            "risk_mode": str(commander_decision.get("risk_mode") or commander_context.get("risk_mode") or ""),
-            "allowed_playbooks": list(commander_decision.get("allowed_playbooks") or commander_context.get("allowed_playbooks") or []),
-            "banned_playbooks": list(commander_decision.get("banned_playbooks") or commander_context.get("banned_playbooks") or []),
-            "scanner_mission": str(commander_decision.get("scanner_mission") or commander_context.get("scanner_mission") or ""),
-            "monitor_mission": str(commander_decision.get("monitor_mission") or commander_context.get("monitor_mission") or ""),
-            "llm_policy": str(commander_decision.get("llm_policy") or commander_context.get("llm_policy") or ""),
-            "command_intent": str(commander_decision.get("command_intent") or commander_context.get("command_intent") or ""),
-            "strategist_invocation": str(commander_decision.get("strategist_invocation") or commander_context.get("strategist_invocation") or ""),
-            "flow_instruction": str(commander_decision.get("flow_instruction") or commander_context.get("flow_instruction") or ""),
-            "no_trade_reason_code": str(commander_decision.get("no_trade_reason_code") or commander_context.get("no_trade_reason_code") or ""),
-            "decision_summary": str(commander_decision.get("decision_summary") or commander_context.get("decision_summary") or ""),
-            "strategist_refresh_requested": bool(
-                commander_decision.get("strategist_refresh_requested")
-                if commander_decision.get("strategist_refresh_requested") is not None
-                else commander_context.get("strategist_refresh_requested")
-            ),
-            "strategist_refresh_reason": str(
-                commander_decision.get("strategist_refresh_reason")
-                or commander_context.get("strategist_refresh_reason")
-                or ""
-            ),
-            "strategist_refresh_context": dict(
-                commander_decision.get("strategist_refresh_context")
-                or commander_context.get("strategist_refresh_context")
-                or {}
-            ),
-            "carry_state": str(commander_decision.get("carry_state") or commander_context.get("carry_state") or ""),
-            "carry_risk_bias": str(
-                commander_decision.get("carry_risk_bias") or commander_context.get("carry_risk_bias") or ""
-            ),
-            "carry_risk_reason": str(
-                commander_decision.get("carry_risk_reason") or commander_context.get("carry_risk_reason") or ""
-            ),
-            "session_open_recovery_assessment": dict(
-                commander_decision.get("session_open_recovery_assessment")
-                or commander_context.get("session_open_recovery_assessment")
-                or {}
-            ),
-            "observations": dict(commander_decision.get("observations") or commander_context.get("observations") or {}),
-            "source_priority": list(commander_decision.get("source_priority") or commander_context.get("source_priority") or []),
-            "source_refs": dict(commander_decision.get("source_refs") or commander_context.get("source_refs") or {}),
-            "shadow_used": bool(
-                commander_decision.get("shadow_used")
-                if commander_decision.get("shadow_used") is not None
-                else commander_context.get("shadow_used")
-            ),
-            "strategist_fallback_used": bool(
-                commander_decision.get("strategist_fallback_used")
-                if commander_decision.get("strategist_fallback_used") is not None
-                else commander_context.get("strategist_fallback_used")
-            ),
-            "memory_packets": dict(memory_packets),
-            "commander_memory_policy": dict(commander_memory_policy),
-            "applied_policy": dict(applied_policy),
-            "policy_source": str(policy_meta.get("policy_source") or ""),
-            "policy_validation_status": str(policy_meta.get("policy_validation_status") or ""),
-            "policy_fallback_used": bool(policy_meta.get("policy_fallback_used")),
-            "policy_fallback_reason": str(policy_meta.get("policy_fallback_reason") or ""),
-            "policy_partial_normalized": bool(policy_meta.get("policy_partial_normalized")),
-            "policy_default_filled_fields": list(policy_meta.get("policy_default_filled_fields") or []),
-            "policy_validation_missing_fields": list(policy_meta.get("policy_validation_missing_fields") or []),
-            "policy_validation_invalid_fields": list(policy_meta.get("policy_validation_invalid_fields") or []),
-            "override_reason": str(policy_meta.get("override_reason") or ""),
-            "applied_policy_source_chain": list(policy_meta.get("applied_policy_source_chain") or []),
-            "monitor_entry_policy_summary": dict(policy_meta.get("monitor_entry_policy_summary") or {}),
-            "entry_control": dict(commander_entry_control),
-            "commander_entry_control": dict(commander_entry_control),
-            "scanner_bias": scanner_bias_context.to_dict(),
-            "scanner_bias_summary": dict(scanner_bias_summary),
-            "scanner_memory_bias": dict(scanner_memory_bias),
-            "scanner_memory_bias_summary": dict(scanner_memory_bias_summary),
-            "monitor_memory_bias": dict(monitor_memory_bias),
-            "monitor_memory_bias_summary": dict(monitor_memory_bias_summary),
-        }
+        build_commander_context_update(applied_policy=applied_policy, commander_context=commander_context, commander_decision=commander_decision, commander_entry_control=commander_entry_control, commander_memory_policy=commander_memory_policy, memory_packets=memory_packets, monitor_memory_bias=monitor_memory_bias, monitor_memory_bias_summary=monitor_memory_bias_summary, policy_meta=policy_meta, scanner_bias_context=scanner_bias_context, scanner_bias_summary=scanner_bias_summary, scanner_memory_bias=scanner_memory_bias, scanner_memory_bias_summary=scanner_memory_bias_summary)
     )
     commander_decision, commander_horizon_policy, horizon_context = attach_policy_commander_decision_commander_horizon_pol(strategist_output=strategist_output, strategy_policy=strategy_policy, commander_context=commander_context, memory_packets=memory_packets, state=state, commander_decision=commander_decision, facade=_r3_sys.modules[__name__])
     commander_decision["commander_horizon_policy"] = dict(commander_horizon_policy)
@@ -1345,42 +886,7 @@ def _attach_commander_applied_policy(state: Dict[str, Any]) -> Dict[str, Any]:
     provenance = attach_policy_provenance(commander_entry_control=commander_entry_control, scanner_policy=scanner_policy, strategy_policy=strategy_policy, policy_meta=policy_meta, scanner_bias_meta=scanner_bias_meta, facade=_r3_sys.modules[__name__])[0]
 
     strategist_output["strategy_policy"] = strategy_policy
-    strategist_output["commander_context_ref"] = {
-        **(
-            dict(strategist_output.get("commander_context_ref") or {})
-            if isinstance(strategist_output.get("commander_context_ref"), dict)
-            else {}
-        ),
-        "source": str(commander_context.get("source") or ""),
-        "market_regime": str(commander_context.get("market_regime") or ""),
-        "market_regime_rail": str(commander_context.get("market_regime_rail") or ""),
-        "market_regime_forced_by_rail": bool(commander_context.get("market_regime_forced_by_rail")),
-        "session_bias": str(commander_context.get("session_bias") or ""),
-        "risk_mode": str(commander_context.get("risk_mode") or ""),
-        "command_intent": str(commander_context.get("command_intent") or ""),
-        "strategist_invocation": str(commander_context.get("strategist_invocation") or ""),
-        "llm_policy": str(commander_context.get("llm_policy") or ""),
-        "no_trade_reason_code": str(commander_context.get("no_trade_reason_code") or ""),
-        "strategist_refresh_requested": bool(commander_context.get("strategist_refresh_requested")),
-        "strategist_refresh_reason": str(commander_context.get("strategist_refresh_reason") or ""),
-        "strategist_refresh_context": dict(commander_context.get("strategist_refresh_context") or {}),
-        "commander_horizon_policy": dict(commander_horizon_policy),
-        "horizon_context": dict(horizon_context),
-        "entry_control": dict(commander_entry_control),
-        "carry_state": str(commander_context.get("carry_state") or ""),
-        "carry_risk_bias": str(commander_context.get("carry_risk_bias") or ""),
-        "carry_risk_reason": str(commander_context.get("carry_risk_reason") or ""),
-        "session_open_recovery_assessment": dict(
-            commander_context.get("session_open_recovery_assessment") or {}
-        ),
-        "decision_summary": str(commander_context.get("decision_summary") or ""),
-        "source_priority": list(commander_context.get("source_priority") or []),
-        "policy_source": str(policy_meta.get("policy_source") or ""),
-        "policy_validation_status": str(policy_meta.get("policy_validation_status") or ""),
-        "policy_fallback_used": bool(policy_meta.get("policy_fallback_used")),
-        "override_reason": str(policy_meta.get("override_reason") or ""),
-        "applied_policy_present": bool(applied_policy),
-    }
+    strategist_output["commander_context_ref"] = build_commander_context_ref(applied_policy=applied_policy, commander_context=commander_context, commander_entry_control=commander_entry_control, commander_horizon_policy=commander_horizon_policy, horizon_context=horizon_context, policy_meta=policy_meta, strategist_output=strategist_output)
     strategist_output["policy_provenance"] = dict(provenance)
     strategist_output["scanner_bias_context"] = scanner_bias_context.to_dict()
     strategist_output["scanner_bias_summary"] = dict(scanner_bias_summary)
@@ -2519,33 +2025,7 @@ def _assess_open_position_commander_override(state: Dict[str, Any]) -> Dict[str,
         else {}
     )
 
-    return {
-        "override_triggered": bool(override_triggered),
-        "override_reason": str(override_reason),
-        "override_action": str(override_action),
-        "override_suppressed": bool(override_suppressed),
-        "override_suppressed_reason": str(override_suppressed_reason),
-        "reason_chain": list(reasons[:8]),
-        "hold_repeat_count_max": int(max_hold_repeat),
-        "effective_loss_ratio_min": min_effective_loss_ratio,
-        "price_anomaly_flag": bool(anomaly_found),
-        "closeout_unresolved_flatten_required": bool(closeout_unresolved_found),
-        "refresh_cooldown_sec": int(_OPEN_POSITION_STRATEGIST_REFRESH_COOLDOWN_SEC),
-        "refresh_cooldown_symbol": str(refresh_cooldown_symbol),
-        "refresh_cooldown_until": int(refresh_cooldown_until) if refresh_cooldown_until > 0 else None,
-        "refresh_cooldown_remaining_sec": int(refresh_cooldown_remaining_sec),
-        "position_refresh_due": bool(position_refresh_due),
-        "position_refresh_trigger": str(position_refresh_trigger),
-        "force_exit_review_pending": bool(force_exit_review_pending),
-        "open_position_risk_review_reason": str(open_position_risk_review_reason),
-        "strategist_refresh_context": dict(strategist_refresh_context),
-        "carry_state": str(carry_focus.get("carry_state") or ""),
-        "carry_risk_bias": str(carry_focus.get("carry_risk_bias") or ""),
-        "carry_risk_reason": str(carry_focus.get("carry_risk_reason") or ""),
-        "session_open_recovery_assessment": dict(carry_focus.get("session_open_recovery_assessment") or {}),
-        "policy_source": "commander_open_position_override",
-        "positions": rows_summary,
-    }
+    return build_open_position_override_result(anomaly_found=anomaly_found, carry_focus=carry_focus, closeout_unresolved_found=closeout_unresolved_found, force_exit_review_pending=force_exit_review_pending, max_hold_repeat=max_hold_repeat, min_effective_loss_ratio=min_effective_loss_ratio, open_position_risk_review_reason=open_position_risk_review_reason, override_action=override_action, override_reason=override_reason, override_suppressed=override_suppressed, override_suppressed_reason=override_suppressed_reason, override_triggered=override_triggered, position_refresh_due=position_refresh_due, position_refresh_trigger=position_refresh_trigger, reasons=reasons, refresh_cooldown_remaining_sec=refresh_cooldown_remaining_sec, refresh_cooldown_symbol=refresh_cooldown_symbol, refresh_cooldown_until=refresh_cooldown_until, rows_summary=rows_summary, strategist_refresh_context=strategist_refresh_context, facade=_r3_sys.modules[__name__])
 
 
 def _hydrate_monitor_symbol_features(state: Dict[str, Any]) -> Dict[str, Any]:
