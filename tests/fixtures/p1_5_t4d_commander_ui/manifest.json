@@ -1,11 +1,15 @@
 {
- "records": 88,
- "variants": 4176,
+ "records": 189,
+ "variants": 6456,
  "by_target": {
   "commander_policy": 47,
-  "operator_markdown": 41
+  "operator_markdown": 41,
+  "commander_attach": 50,
+  "commander_override": 22,
+  "brief_sections": 15,
+  "brief_input": 14
  },
  "exceptions": 0,
- "bound": 40,
- "effects_total": 666
+ "bound": 99,
+ "effects_total": 856
 }

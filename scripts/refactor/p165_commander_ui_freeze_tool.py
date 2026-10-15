@@ -1,4 +1,4 @@
-"""T4-D: BASE-frozen deterministic contract for the Commander behavior policy and the Operator brief renderer.
+"""T4-D: BASE-frozen deterministic contract for the Commander policy surfaces and the Operator brief builders/renderer.
 
 Targets (record `target`):
   commander_policy   graphs.commander_runtime._resolve_commander_behavior_policy(state, selected_route=, phase=) -> dict
@@ -45,10 +45,16 @@ FROZEN_EPOCH = int(F.FROZEN_BASE.timestamp())
 TARGETS = {
     "commander_policy": ("graphs.commander_runtime", "_resolve_commander_behavior_policy", "argskw"),
     "operator_markdown": ("apps.operator_ui.data_access_core", "_render_operator_brief_markdown", "arg0"),
+    "commander_attach": ("graphs.commander_runtime", "_attach_commander_applied_policy", "arg0"),
+    "commander_override": ("graphs.commander_runtime", "_assess_open_position_commander_override", "arg0"),
+    "brief_sections": ("apps.operator_ui.data_access_core", "_build_operator_brief_sections", "arg0"),
+    "brief_input": ("apps.operator_ui.data_access_core", "_build_operator_brief_input", "arg0"),
 }
 NODE_MODULES = ("graphs.commander_runtime", "apps.operator_ui.data_access_core")
 EFFECT_FUNCS = ("_env_bool", "_commander_default_bool", "_resolve_risk_max_positions", "brief_fallback_lines",
-                "_save_operator_brief_artifact", "_load_operator_brief")
+                "_save_operator_brief_artifact", "_load_operator_brief", "apply_strategist_horizon_revision",
+                "_resolve_commander_applied_policy", "_runtime_now_epoch", "_build_operator_brief_sections",
+                "_build_operator_brief_input")
 ENV_PREFIXES = ("EXIT_POLICY_", "KIWOOM_", "M22_", "MONITOR_", "OPENING_", "QUANT_", "RISK_", "USE_EXIT_POLICY",
                 "SCANNER_", "REPORTS_ROOT", "STRATEGIST_", "COMMANDER_", "LLM_", "OPENROUTER", "OPENAI", "DRY_RUN",
                 "NEWS_", "THEME_", "GLOBAL_", "MARKET_", "STRATEGY_", "REPORTER_", "TOP_N", "UNIVERSE_", "CANDIDATE_",
@@ -325,7 +331,7 @@ def _scenarios(target, inp):
                 "effective_loss_ratio_min": -0.02, "hold_repeat_count_max": 7,
                 "session_open_recovery_assessment": {"recovery_state": "failed"}}
             out.append(("scenario:state_loss_near_close", d))
-    else:
+    elif target == "operator_markdown":
         brief = inp["args"][0] if inp["args"] else {}
         if isinstance(brief, dict):
             for status in ("", "ok", "partial", "salvaged", "repaired", "fallback", "unexpected_status"):

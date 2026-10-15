@@ -1,8 +1,9 @@
 """T4-D: BASE-frozen deterministic contract of the Commander behavior policy and the Operator brief renderer.
 
 Golden (generated once on BASE `97934d2`, before any T4-D implementation change): inputs of
-`graphs.commander_runtime._resolve_commander_behavior_policy` and
-`apps.operator_ui.data_access_core._render_operator_brief_markdown` captured from the existing offline suite plus
+Commander `_resolve_commander_behavior_policy`, `_attach_commander_applied_policy`,
+`_assess_open_position_commander_override` and Operator UI `_render_operator_brief_markdown`,
+`_build_operator_brief_sections`, `_build_operator_brief_input` captured from the existing offline suite plus
 deterministic key perturbations and scenarios (route/phase grid, environment toggles, loss-near-close, brief status values,
 Unicode/Markdown suffix, empty/status-only brief). Frozen per record: the returned value (Markdown compared as the exact
 string), mutated inputs, ordered recorded seam calls, exception and returned-object identity. Native replay (Windows):
@@ -68,9 +69,11 @@ def test_native_mode_is_used_on_windows_when_required():
 
 def test_golden_inventory_covers_commander_policy_and_operator_markdown_scenarios():
     man = _manifest()
-    assert man["records"] >= 80 and man["variants"] >= 4000
-    for target in ("commander_policy", "operator_markdown"):
+    assert man["records"] >= 180 and man["variants"] >= 6000 and man["effects_total"] >= 800
+    for target in ("commander_policy", "operator_markdown", "commander_attach"):
         assert man["by_target"][target] >= 40, target
+    for target in ("commander_override", "brief_sections", "brief_input"):
+        assert man["by_target"][target] >= 10, target
     golden = T.load(FIX)
     ids = {vid for r in golden for vid in r["variants"]}
     for want in ("scenario:env_all_toggles", "scenario:route_entry_phase_open", "scenario:state_loss_near_close",
