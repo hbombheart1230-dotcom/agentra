@@ -138,6 +138,17 @@ def _freeze_globals():
     def _no_net(self, *a, **k):
         raise OSError("network disabled during T4-C replay")
     socket.socket.connect = _no_net
+    http_guard = []
+    try:  # uniform offline answer independent of whether `requests` is installed on the host
+        from libs.core import http_client as _hc
+        _orig_init = _hc.HttpClient.__init__
+
+        def _no_http(self, *a, **k):
+            raise _hc.HttpClientError("offline replay: HttpClient disabled")
+        _hc.HttpClient.__init__ = _no_http
+        http_guard.append((_hc.HttpClient, _orig_init))
+    except Exception:  # noqa: BLE001
+        pass
     curl_guard = []
     try:  # curl_cffi (used by yfinance) bypasses the Python socket layer: block its request entry point as well
         from curl_cffi.requests import session as _curl_session
@@ -175,6 +186,8 @@ def _freeze_globals():
         socket.socket.connect = orig_connect
         for _cls, _req in curl_guard:
             _cls.request = _req
+        for _cls, _init in http_guard:
+            _cls.__init__ = _init
         _dtmod.datetime = real
         for mod in swapped:
             mod.datetime = real
@@ -436,6 +449,24 @@ def norm_seps(obj):
     return obj
 
 
+_BASETEMP = __import__("re").compile(r"^(?:[A-Za-z]:)?[\\/].*?basetemp-\d+[\\/][^\\/]+(?:[\\/](.*))?$")
+
+
+def relocate(o):
+    """Captured absolute pytest tmp paths -> paths relative to the disposable replay cwd (no host writes, portable)."""
+    if isinstance(o, str):
+        m = _BASETEMP.match(o)
+        if m:
+            rest = (m.group(1) or "").replace(chr(92), "/")
+            return rest or "."
+        return o
+    if isinstance(o, list):
+        return [relocate(x) for x in o]
+    if isinstance(o, dict):
+        return {relocate(k): relocate(v) for k, v in o.items()}
+    return o
+
+
 def _inp_of(rec):
     return rec["input"]
 
@@ -456,6 +487,7 @@ def generate(capture, outdir, per_target_limit=50):
             inp = {"state": r["args"][0] if r["args"] else r["kwargs"].get("state")}
             if inp["state"] is None:
                 continue
+            inp = relocate(inp)
         else:
             if r["args"]:
                 continue
@@ -506,7 +538,8 @@ def compute(outdir, sample_mod=4):
             if _sampled(rec["id"], vid, sample_mod):
                 x = replay(rec["target"], d)
                 v[vid] = [x["out_sha"], x["effects_sha"], x["exception"], x["returned_is_input"]]
-        out[rec["id"]] = {"out_sha": a["out_sha"], "out_norm": sha(norm_seps(a["out"])), "effects": a["effects"],
+        out[rec["id"]] = {"out_sha": a["out_sha"], "out_norm": sha(norm_seps(a["out"])), "out_norm_full": norm_seps(a["out"]),
+                          "effects": a["effects"],
                           "effects_sha": a["effects_sha"], "exception": a["exception"],
                           "returned_is_input": a["returned_is_input"], "bound": rec["bound"], "variants": v}
     return out
@@ -671,7 +704,9 @@ def golden_integrity(golden, oracle):
             continue
         checked += 1
         if oracle[rec["id"]]["out_norm"] != sha(norm_seps(rec["golden"]["out"])):
-            errors.append((rec["id"], "golden_vs_base_host_out"))
+            full = oracle[rec["id"]].get("out_norm_full")
+            first = first_diff(norm_seps(rec["golden"]["out"]), full)[:260] if full is not None else ""
+            errors.append((rec["id"], "golden_vs_base_host_out", first))
         if [e[0] for e in oracle[rec["id"]]["effects"]] != [e[0] for e in rec["golden"]["effects"]]:
             errors.append((rec["id"], "golden_vs_base_host_effect_names"))
     return errors, checked, bound

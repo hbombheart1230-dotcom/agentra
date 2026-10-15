@@ -1,10 +1,10 @@
 {
  "records": 50,
- "variants": 1147,
+ "variants": 1141,
  "by_target": {
   "strategist_node": 50
  },
  "exceptions": 0,
- "bound": 4,
- "effects_total": 1115
+ "bound": 0,
+ "effects_total": 1118
 }
