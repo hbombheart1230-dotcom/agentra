@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 124,
+  "entry_count": 125,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3296,6 +3296,31 @@
       "sources": [
         ".github/workflows/scripts-target-tree-contract.yml",
         "docs/daily_patch/2026-10-15_scripts_contract_ci_handoff.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Continuation-Issue8",
+      "title": "Continue remaining Scripts disposition and strengthen source-only contracts",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "COMPATIBILITY"
+      ],
+      "summary": "Classify remaining root/launcher/held/wrapper contracts and fix proven static-auditor false acceptance without runtime changes. Scripts continuation remains in progress.",
+      "details": [
+        "Cover 42 implementations, 8 delegates, 20 Windows/shell launchers, 19 overlapping holds and 141 wrappers. No moves/deletions or external-usage assumptions.",
+        "Reject disconnected module aliases, non-main run_module dispatch and commented example main calls using AST checks. Existing 141 wrappers remain valid and unchanged.",
+        "Add read-only Windows reference/CWD/policy/task audit and native Windows syntax-only parsing for six PowerShell files in the existing Scripts CI. Twelve isolated fixtures passed locally; native Windows result is recorded by CI after push.",
+        "Held dispositions: KEEP 15, TEST_BLOCKED 3, relocation candidate after architecture gate 1. Retain 112 PRESERVE and 29 REVIEW_AFTER_ARCH_GATE wrappers; usage remains UNKNOWN for unobserved manual callers.",
+        "Record the existing two-Q12-task register/unregister asymmetry for operational owner review; no launcher/task/strategy/Config or T4/Reporting/runtime edits. Further moves/retirement require ARCH_CONVERGENCE_APPROVED. UI Issue #9 not started."
+      ],
+      "impact": "Source-only tooling and validation improvements; production entrypoints, external CLI contracts and live settings remain unchanged.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_scripts_continuation_issue8.md",
+        "docs/refactor/2026-10-15_scripts_continuation_issue8.md",
+        "docs/refactor/2026-10-15_scripts_remaining_dispositions.json"
       ],
       "status": "current"
     }

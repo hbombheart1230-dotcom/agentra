@@ -1918,3 +1918,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - First run: Linux 141 wrapper checks + four fixture pytest PASS; Windows 141 wrapper checks + four fixture pytest assertions PASS but repository conftest returned exit 1 on NTFS directory mtime change under data/originals and data/specs.
 - Keep the actual-checkout static audit; stage only synthetic source/unit fixtures in GitHub runner temporary workspace, outside the checkout. Production-write protections in repository unchanged.
 - New Linux/Windows CI evidence required; no changes to T4 or public CLI paths.
+
+# 2026-10-15 - Scripts continuation / Issue #8
+
+- Status **SCRIPTS_CONTINUATION_IN_PROGRESS**. Prior Issue #6 accepted the 138 migrated implementations only.
+- Classified remaining 42 implementations, 8 delegates, 20 Windows/shell launchers, 19 holds and 141 wrappers. Holds: KEEP 15 / TEST_BLOCKED 3 / relocation after gate 1. Wrappers: 112 PRESERVE / 29 review after gate, all retained.
+- Fixed source auditor false accepts: disconnected ABI alias, incorrect CLI run_name, commented example dispatch. All 141 wrappers pass unchanged.
+- Added source-only Windows invocation/CWD/policy/task graph and native Windows Parser.ParseFile checks for six PowerShell files in Scripts CI. Local isolated tests: **12 PASS**; native Windows evidence is recorded by the new CI job after push. No live launcher invoked.
+- Existing registration/unregistration leaves two Q12 task suffixes unmatched; operational-owner review only, no task-policy edit. No T4/Reporting/runtime/strategy/Config/deployment changes or physical moves/removals.
+- Future physical cleanup requires architecture approval and usage/retirement proof. Issue #9 UI work remains next, not executed here.
+- Details: docs/refactor/2026-10-15_scripts_continuation_issue8.md; evidence: docs/refactor/2026-10-15_scripts_remaining_dispositions.json.

@@ -36,6 +36,37 @@ def _module_path(path: str) -> str:
     return path[:-3].replace("/", ".")
 
 
+def _has_statement(statements: list[ast.stmt], source: str) -> bool:
+    expected = ast.dump(ast.parse(source).body[0])
+    return any(ast.dump(statement) == expected for statement in statements)
+
+
+def _dispatch_issues(tree: ast.Module, module: str, *, bulk: bool) -> list[str]:
+    """Check executable dispatch and ABI aliasing, not merely literal targets."""
+    condition = ast.dump(ast.parse("__name__ == '__main__'", mode="eval").body)
+    guards = [node for node in tree.body if isinstance(node, ast.If)
+              and ast.dump(node.test) == condition]
+    if len(guards) != 1:
+        return ["exactly one top-level __main__ guard required"]
+    guard = guards[0]
+    if bulk:
+        main = f"_runpy.run_module({module!r}, run_name='__main__')"
+        alias = f"_sys.modules[__name__] = _importlib.import_module({module!r})"
+    else:
+        main = "raise SystemExit(_impl.main())"
+        alias = "_sys.modules[__name__] = _impl"
+    issues = []
+    if not _has_statement(guard.body, main):
+        issues.append("executable __main__ dispatch missing or invalid")
+    if not _has_statement(guard.orelse, alias):
+        issues.append("module-object ABI alias missing or invalid")
+    if not bulk and not _has_statement(
+        tree.body, f"_impl = _importlib.import_module({module!r})"
+    ):
+        issues.append("example implementation binding missing or invalid")
+    return issues
+
+
 def audit(root: Path, manifest_path: Path | None = None) -> dict[str, Any]:
     """Validate that all declared moved implementations retain their public paths.
 
@@ -76,8 +107,8 @@ def audit(root: Path, manifest_path: Path | None = None) -> dict[str, Any]:
             invoked = _call_targets(legacy_ast, "_runpy", "run_module")
             if invoked != [expected_module]:
                 issues.append(f"legacy main target mismatch: {old_path}: {invoked!r} != {expected_module!r}")
-        elif "_impl.main()" not in legacy_source:
-            issues.append(f"example main dispatch missing: {old_path}")
+        issues.extend(f"{old_path}: {issue}" for issue in
+                      _dispatch_issues(legacy_ast, expected_module, bulk=bulk))
         checked += 1
 
     declared_old = set()

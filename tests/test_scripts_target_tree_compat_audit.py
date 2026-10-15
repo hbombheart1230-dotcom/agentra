@@ -79,3 +79,30 @@ def test_audit_does_not_execute_target_source(tmp_path: Path) -> None:
     canonical = tmp_path / "scripts/research/run_alpha.py"
     canonical.write_text("raise RuntimeError('must never execute')\n", encoding="utf-8")
     assert MOD.audit(tmp_path)["ok"]
+
+
+def test_import_target_without_module_alias_fails_closed(tmp_path: Path) -> None:
+    _fixture(tmp_path)
+    path = tmp_path / "scripts/run_alpha.py"
+    path.write_text(path.read_text().replace("_sys.modules[__name__] =", "_disconnected ="))
+    result = MOD.audit(tmp_path)
+    assert not result["ok"]
+    assert any("ABI alias" in issue for issue in result["issues"])
+
+
+def test_run_module_without_main_execution_fails_closed(tmp_path: Path) -> None:
+    _fixture(tmp_path)
+    path = tmp_path / "scripts/run_alpha.py"
+    path.write_text(path.read_text().replace("run_name='__main__'", "run_name='not_main'"))
+    result = MOD.audit(tmp_path)
+    assert not result["ok"]
+    assert any("executable __main__ dispatch" in issue for issue in result["issues"])
+
+
+def test_commented_example_dispatch_fails_closed(tmp_path: Path) -> None:
+    _fixture(tmp_path)
+    path = tmp_path / "scripts/demo_m22.py"
+    path.write_text(path.read_text().replace("raise SystemExit(_impl.main())", "pass  # _impl.main()"))
+    result = MOD.audit(tmp_path)
+    assert not result["ok"]
+    assert any("executable __main__ dispatch" in issue for issue in result["issues"])
