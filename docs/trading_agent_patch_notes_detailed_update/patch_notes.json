@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 267,
+  "entry_count": 268,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7122,6 +7122,32 @@
         "docs/refactor/architecture/dependencies.svg",
         "docs/refactor/architecture/target_architecture.drawio",
         "docs/refactor/architecture/architecture_gap_matrix.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-PR5 Consumer Inventory and Codex Audit Gate",
+      "title": "Read-only whole-tree consumers, operational root artifact references and safety-ranked cleanup gate",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCUMENTATION",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Run tracked-source AST audit on 2,226 Python files, identify 4,486 static internal edges and 58 nonliteral dynamic call sites, and capture real Reporter/Agent/Script dependencies before any relocation.",
+      "details": [
+        "Consumer inventory CI 38715884053 SUCCESS, root artifact reference audit CI 38716302208 SUCCESS; no imported app code or orders executed.",
+        "Reporter evaluation 133 imported modules and 327 cross-boundary static edges; libs/agent Reporter and Monitor still have consumers, so no bulk delete.",
+        "Preserve 141 public CLI wrappers and protect Supervisor/Executor/Step5C/UNKNOWN/UEF. Codex independent audit and user architecture gate still pending."
+      ],
+      "impact": "Evidence, tools and documentation only; no trading or architecture folder moves.",
+      "sources": [
+        "docs/refactor/architecture/consumer_inventory_findings_20261015.md",
+        "docs/refactor/work_orders/P15-INTEGRATION-CODEX-CONSUMER-AUDIT-047.md",
+        "scripts/refactor/inventory_p15_consumers.py",
+        "tests/test_p15_consumer_inventory.py"
       ]
     }
   ]

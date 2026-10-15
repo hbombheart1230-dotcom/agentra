@@ -3418,3 +3418,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Source-pinned seven-agent actual modules and proposed target tree; no code/file relocation.
 - Added 12-entrypoint static import matrix SVG, structured sample, reproducibility script, and risk-classified architecture gap matrix.
 - Dynamic/import consumer proof and trading authority remain SAFETY_LOCK / UNPROVEN; requires user/Codex approval.
+
+## 2026-10-15 · P1.5 T4+PR5 Consumer Inventory and Codex Audit Gate
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · DOCUMENTATION · SAFETY
+
+- Tracked Python 2,226, AST static edges 4,486, literal dynamic edges 162, unresolved dynamic sites 58; full consumer audit GitHub run `38715884053` SUCCESS.
+- Reporter evaluation 133 referenced modules and 327 cross-boundary static dependencies. Legacy Reporter/Monitor and operational script wrappers remain consumed; no blind folder delete.
+- Root b.jsonl and _health.json have textual references, so no automatic deletion. See `docs/refactor/architecture/consumer_inventory_findings_20261015.md` and independent Codex task `docs/refactor/work_orders/P15-INTEGRATION-CODEX-CONSUMER-AUDIT-047.md`.
+- Approval: architecture migration remains blocked pending scoped owner/consumer safety review and `ARCH_CONVERGENCE_APPROVED`.

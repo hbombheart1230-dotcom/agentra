@@ -5,6 +5,8 @@
 
 **Current 2026-10-15:** T4-A/B/C accepted. T4-D independently audited (15 structural+contract PASS, 93 focused PASS, 189 records/6,456 variants/0 mismatch), originally BLOCKED solely awaiting final CI. GitHub FINAL CI 38702590672 now SUCCESS including required Windows native accounting 5/5. GPT closes T4-D structural gate for integration; this does NOT declare P1.5 final acceptance or a new Codex final audit submission. Evidence: [T4-D Codex+CI closure](evidence/P15-T4-D-CODEX-CI-CLOSURE-046.md). Source branches frozen: refactor/p1.5 ad365913 and PR5 fe627978. Isolated merge 496d495 with 264 existing patch notes; integration CI pending.
 
+**Consumer dependency evidence:** [P1.5 tracked-source inventory](../architecture/consumer_inventory_findings_20261015.md); Codex independent review [task](P15-INTEGRATION-CODEX-CONSUMER-AUDIT-047.md). `ARCH_CONVERGENCE_NOT_APPROVED` until signed review.
+
 **One active work order:** T4+PR5 integrated validation and SHA-pinned architecture inventory on integration/p15-t4-pr5-convergence-20261015; not T4-D implementation. Main and original branches untouched.
 
 **Open/deferred:** T4-C BASE×2/FEATURE×2 session differential P2 NOT RUN; REAL_LLM_PARITY_NOT_RUN, REAL_REPORT_PARITY_BLOCKED, NTFS mtime P2, Scanner cross-seed telemetry P2, freeze CLI PYTHONPATH P2, and the Reporter-feedback fallback fixture-coverage P2. Historical unrelated UEF results replicated on pristine BASE (86 PASS, 20 FAIL, 2 ERROR); do not relabel as new Strategist regression. T5 / P1.5.10 / Wave D / P1.6 NOT STARTED or authorized; main and operational worktrees protected.
