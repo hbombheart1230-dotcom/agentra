@@ -9,7 +9,7 @@
 
 **Open/deferred:** T4-C BASE×2/FEATURE×2 session differential P2 NOT RUN; REAL_LLM_PARITY_NOT_RUN, REAL_REPORT_PARITY_BLOCKED, NTFS mtime P2, Scanner cross-seed telemetry P2, freeze CLI PYTHONPATH P2, and the Reporter-feedback fallback fixture-coverage P2. Historical unrelated UEF results replicated on pristine BASE (86 PASS, 20 FAIL, 2 ERROR); do not relabel as new Strategist regression. T5 / P1.5.10 / Wave D / P1.6 NOT STARTED or authorized; main and operational worktrees protected.
 
-**Mandatory architecture convergence:** integration must first pass Linux/Windows combined gates; then SHA-pinned current overview/modules/dependency SVG, editable target draw.io, gap matrix, and user/GPT approval. ARCH_CONVERGENCE_NOT_APPROVED; no folder moves or P1.5.10.
+**Mandatory architecture convergence:** integration must first pass Linux/Windows combined gates; then SHA-pinned current overview/modules/dependency SVG, editable target draw.io, gap matrix, and user/GPT approval. ARCH_CONVERGENCE_DRAFT_WRITTEN_NOT_APPROVED; no folder moves or P1.5.10.
 
 **CI compatibility anchor:** [historical Fast Track authority](P15_FAST_TRACK_WAVE_S_020.md) remains exactly one legacy link required by preexisting T4 CI. This is not an active work order and confers no Wave D permission.
 

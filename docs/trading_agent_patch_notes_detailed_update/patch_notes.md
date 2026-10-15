@@ -3410,3 +3410,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Combined Reporting checks initially: 346 PASS / 2 FAIL. One invalid status was introduced by the integration patch entry; fixed `in_progress` to `current` without rewriting historical entries.
 - A preexisting Windows-literal path test fails on Linux; match the existing T4 CI exact test-specific deselection in the additional Linux job. **NOT a Linux PASS; native Windows contracts remain mandatory.**
 - Evidence: `docs/daily_patch/2026-10-15_p15_integration_ci_preexisting_scope.md`. No application code changes.
+
+## 2026-10-15 · P1.5 Integrated Architecture Draft V1
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · DOCUMENTATION · REFACTOR
+
+- Source-pinned seven-agent actual modules and proposed target tree; no code/file relocation.
+- Added 12-entrypoint static import matrix SVG, structured sample, reproducibility script, and risk-classified architecture gap matrix.
+- Dynamic/import consumer proof and trading authority remain SAFETY_LOCK / UNPROVEN; requires user/Codex approval.

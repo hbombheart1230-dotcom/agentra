@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1510" height="610" viewBox="0 0 1510 610">
+<title>Agentra source-pinned partial direct import matrix</title>
+<desc>Static import snapshot at f555165b1abcf64b03e9c370844611dabe40c949. Twelve selected entry files, not exhaustive repo dependency/call graph.</desc>
+<rect width="1510" height="610" fill="#ffffff" rx="16"/>
+<text x="24" y="40" font-size="24" font-family="sans-serif" font-weight="bold" fill="#17243d">Agentra — measured import sample (not full DAG)</text>
+<text x="24" y="67" font-size="13" font-family="sans-serif" fill="#4f5e74">SHA f555165b1abc; 12 source entry files; direct absolute import prefixes only.</text>
+<text x="24" y="92" font-size="12" font-family="sans-serif" fill="#a34b31">Dynamic imports, relative imports, module aliases, State/event and runtime injection are NOT captured.</text>
+<text transform="translate(517.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Graph</text>
+<text transform="translate(612.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Commander</text>
+<text transform="translate(707.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Strategist</text>
+<text transform="translate(802.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Scanner</text>
+<text transform="translate(897.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Monitor</text>
+<text transform="translate(992.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Reporting</text>
+<text transform="translate(1087.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Safety</text>
+<text transform="translate(1182.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Operator UI</text>
+<text transform="translate(1277.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Shared</text>
+<text transform="translate(1372.5,139) rotate(-41)" font-family="sans-serif" font-size="11" fill="#334155">Legacy</text>
+<text x="462" y="170" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">graphs/trading_graph.py</text>
+<rect x="472" y="152" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="517.5" y="171" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">7</text>
+<rect x="567" y="152" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="662" y="152" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="152" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="852" y="152" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="947" y="152" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1042" y="152" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="152" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="152" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1327" y="152" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="462" y="200" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">graphs/commander_runtime.py</text>
+<rect x="472" y="182" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="517.5" y="201" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">3</text>
+<rect x="567" y="182" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="612.5" y="201" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">37</text>
+<rect x="662" y="182" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="182" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="802.5" y="201" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">3</text>
+<rect x="852" y="182" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="897.5" y="201" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">2</text>
+<rect x="947" y="182" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1042" y="182" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="182" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="182" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1277.5" y="201" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">10</text>
+<rect x="1327" y="182" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="462" y="230" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">graphs/nodes/strategist_node.py</text>
+<rect x="472" y="212" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="567" y="212" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="612.5" y="231" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="662" y="212" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="707.5" y="231" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">43</text>
+<rect x="757" y="212" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="802.5" y="231" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">2</text>
+<rect x="852" y="212" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="897.5" y="231" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">2</text>
+<rect x="947" y="212" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="992.5" y="231" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">3</text>
+<rect x="1042" y="212" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="212" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="212" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1277.5" y="231" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">26</text>
+<rect x="1327" y="212" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="462" y="260" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">graphs/nodes/scanner_node.py</text>
+<rect x="472" y="242" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="517.5" y="261" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="567" y="242" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="612.5" y="261" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="662" y="242" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="242" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="802.5" y="261" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">32</text>
+<rect x="852" y="242" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="897.5" y="261" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="947" y="242" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="992.5" y="261" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="1042" y="242" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="242" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="242" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1277.5" y="261" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">9</text>
+<rect x="1327" y="242" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="462" y="290" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">graphs/nodes/monitor_node.py</text>
+<rect x="472" y="272" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="517.5" y="291" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="567" y="272" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="612.5" y="291" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="662" y="272" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="272" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="852" y="272" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="897.5" y="291" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">53</text>
+<rect x="947" y="272" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1042" y="272" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="272" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="272" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1277.5" y="291" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">17</text>
+<rect x="1327" y="272" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="462" y="320" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">graphs/nodes/reporter_node.py</text>
+<rect x="472" y="302" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="567" y="302" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="662" y="302" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="302" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="852" y="302" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="947" y="302" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="992.5" y="321" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="1042" y="302" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="302" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="302" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1327" y="302" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="462" y="350" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">graphs/nodes/execute_from_packet.py</text>
+<rect x="472" y="332" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="567" y="332" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="662" y="332" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="332" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="852" y="332" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="947" y="332" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1042" y="332" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1087.5" y="351" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">6</text>
+<rect x="1137" y="332" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="332" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1277.5" y="351" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">6</text>
+<rect x="1327" y="332" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="462" y="380" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">apps/operator_ui/data_access_core.py</text>
+<rect x="472" y="362" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="567" y="362" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="662" y="362" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="362" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="852" y="362" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="947" y="362" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="992.5" y="381" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">3</text>
+<rect x="1042" y="362" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="362" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1182.5" y="381" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">25</text>
+<rect x="1232" y="362" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1277.5" y="381" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">4</text>
+<rect x="1327" y="362" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="462" y="410" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">libs/agent/commander.py</text>
+<rect x="472" y="392" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="567" y="392" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="662" y="392" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="392" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="852" y="392" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="947" y="392" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1042" y="392" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="392" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="392" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1327" y="392" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1372.5" y="411" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">5</text>
+<text x="462" y="440" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">libs/agent/reporter.py</text>
+<rect x="472" y="422" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="567" y="422" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="662" y="422" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="422" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="852" y="422" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="947" y="422" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="992.5" y="441" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="1042" y="422" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="422" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="422" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1327" y="422" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1372.5" y="441" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">2</text>
+<text x="462" y="470" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">libs/supervisor/two_phase.py</text>
+<rect x="472" y="452" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="567" y="452" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="662" y="452" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="452" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="852" y="452" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="947" y="452" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1042" y="452" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1087.5" y="471" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="1137" y="452" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="452" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1277.5" y="471" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">2</text>
+<rect x="1327" y="452" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="462" y="500" text-anchor="end" font-family="monospace" font-size="11" fill="#26344a">libs/reporting/intraday_trade_reports.py</text>
+<rect x="472" y="482" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="567" y="482" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="662" y="482" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="757" y="482" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="852" y="482" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="947" y="482" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="992.5" y="501" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">7</text>
+<rect x="1042" y="482" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1137" y="482" width="90" height="27" rx="4" fill="#edf1f5" />
+<rect x="1232" y="482" width="90" height="27" rx="4" fill="#85afd8" />
+<text x="1277.5" y="501" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#14243b">1</text>
+<rect x="1327" y="482" width="90" height="27" rx="4" fill="#edf1f5" />
+<text x="24" y="575" font-family="sans-serif" font-size="11" fill="#4b5563">Cell counts distinct import module targets by group. See import_sample.json for complete verified input paths.</text>
+</svg>

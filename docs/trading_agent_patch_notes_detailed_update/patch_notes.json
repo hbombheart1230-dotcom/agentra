@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 266,
+  "entry_count": 267,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7096,6 +7096,32 @@
       "sources": [
         ".github/workflows/p15-integration-crossbranch-compat.yml",
         "docs/daily_patch/2026-10-15_p15_integration_ci_preexisting_scope.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 Integrated Architecture Draft V1",
+      "title": "GPT integrated 7-agent architecture draft, reproducible import-sample SVG and target",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "DOCUMENTATION",
+        "REFACTOR"
+      ],
+      "status": "current",
+      "summary": "Authored source-pinned seven-agent overview/modules, explicit gap matrix, editable target.drawio, and verified twelve-entrypoint static import SVG.",
+      "details": [
+        "Snapshot is strictly scoped to twelve source files; dynamic imports and State dependency graph remain unproven and are not presented as a complete call graph.",
+        "All folder moves, migrations, Reporter real parity, Step5C, UEF and Broker paths remain blocked pending user/Codex review.",
+        "Integrated CI checks independently; documented preexisting Linux Windows-path test exclusion and T4-C Reporter-feedback P2 remain open."
+      ],
+      "impact": "Architecture evidence and review-ready logical target only, no application code relocation.",
+      "sources": [
+        "docs/refactor/architecture/current_overview.md",
+        "docs/refactor/architecture/current_modules.md",
+        "docs/refactor/architecture/dependencies.svg",
+        "docs/refactor/architecture/target_architecture.drawio",
+        "docs/refactor/architecture/architecture_gap_matrix.md"
       ]
     }
   ]
