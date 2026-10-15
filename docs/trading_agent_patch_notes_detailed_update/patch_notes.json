@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 126,
+  "entry_count": 127,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3343,6 +3343,29 @@
       "impact": "Offline research handles empty input; trading, scheduler, Reporting and T4 code unchanged.",
       "sources": [
         "docs/daily_patch/2026-10-15_scripts_issue8_followup.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Continuation-Issue8-Iteration3",
+      "title": "Freeze source task-name contract and make cleanup help safe",
+      "stage": "SCRIPTS_CONTINUATION_IN_PROGRESS",
+      "types": [
+        "TESTING",
+        "MAINTENANCE"
+      ],
+      "summary": "Resolve literal per-file task prefixes without shell expansion; parse cleanup CLI before deletion.",
+      "details": [
+        "Keep raw task fields; add resolved mismatches, unresolved evidence and optional strict six-create/four-delete baseline gate.",
+        "Report two Q12 unmatched tasks for owner review; scheduler policy and launchers unchanged.",
+        "Cleanup --help exits0 and unknown flags exit2 before glob/deletion; zero-argument behavior unchanged.",
+        "23 isolated fixture tests PASS; source audits141 wrappers and20 launchers PASS. Ubuntu/Windows gates retained; exact commit results in Actions.",
+        "Historical snapshot unchanged; held delta17 KEEP /1 TEST_BLOCKED /1 relocation after architecture gate. All141 wrappers retained."
+      ],
+      "impact": "Source-only contract hardening; no T4, Reporting, trading, Config or scheduler policy changes.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_scripts_issue8_iteration3.md"
       ],
       "status": "current"
     }

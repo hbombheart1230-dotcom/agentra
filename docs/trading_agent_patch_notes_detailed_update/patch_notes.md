@@ -1938,3 +1938,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Order-demo duplicate helpers, Q12 scheduler asymmetry, physical moves and wrapper retirement remain gated; all wrappers retained. Issue #9 not started.
 - Offline research handles empty input; trading, scheduler, Reporting and T4 code unchanged.
 - Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_scripts_issue8_followup.md
+
+# 2026-10-15 — Scripts continuation / Issue #8 iteration 3
+
+- Resolve literal per-file task prefixes without shell expansion; parse cleanup CLI before deletion.
+- Keep raw task fields; add resolved mismatches, unresolved evidence and optional strict six-create/four-delete baseline gate.
+- Report two Q12 unmatched tasks for owner review; scheduler policy and launchers unchanged.
+- Cleanup --help exits0 and unknown flags exit2 before glob/deletion; zero-argument behavior unchanged.
+- 23 isolated fixture tests PASS; source audits141 wrappers and20 launchers PASS. Ubuntu/Windows gates retained; exact commit results in Actions.
+- Historical snapshot unchanged; held delta17 KEEP /1 TEST_BLOCKED /1 relocation after architecture gate. All141 wrappers retained.
+- Source-only contract hardening; no T4, Reporting, trading, Config or scheduler policy changes.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_scripts_issue8_iteration3.md

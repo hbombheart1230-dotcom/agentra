@@ -8,6 +8,7 @@ on:
       - "scripts/**"
       - "tests/test_scripts_target_tree_compat_audit.py"
       - "tests/test_windows_launcher_contracts.py"
+      - "tests/test_cleanup_pytest_artifacts_cli.py"
       - "docs/refactor/2026-10-15_scripts_bulk_manifest.json"
       - ".github/workflows/scripts-target-tree-contract.yml"
   pull_request:
@@ -15,6 +16,7 @@ on:
       - "scripts/**"
       - "tests/test_scripts_target_tree_compat_audit.py"
       - "tests/test_windows_launcher_contracts.py"
+      - "tests/test_cleanup_pytest_artifacts_cli.py"
       - "docs/refactor/2026-10-15_scripts_bulk_manifest.json"
       - ".github/workflows/scripts-target-tree-contract.yml"
 
@@ -44,7 +46,7 @@ jobs:
         run: python scripts/diagnostics/audit_target_tree_compat.py --json
       - name: Audit all 20 Windows launcher references (no execution)
         shell: bash
-        run: python scripts/diagnostics/audit_windows_launchers.py --json
+        run: python scripts/diagnostics/audit_windows_launchers.py --json --assert-mockexam-known-contract
       - name: Parse PowerShell launcher syntax without executing launchers
         if: runner.os == 'Windows'
         shell: pwsh
@@ -77,6 +79,8 @@ jobs:
               'scripts/diagnostics/audit_windows_launchers.py',
               'tests/test_scripts_target_tree_compat_audit.py',
               'tests/test_windows_launcher_contracts.py',
+              'scripts/cleanup_pytest_artifacts.py',
+              'tests/test_cleanup_pytest_artifacts_cli.py',
           ):
               target = dst / relative
               target.parent.mkdir(parents=True, exist_ok=True)
