@@ -1,1 +1,1 @@
-"""trade_report canonical Reporter package; imports are intentionally explicit."""
+"""AI trade-report implementation owners used by the public reporting façade."""

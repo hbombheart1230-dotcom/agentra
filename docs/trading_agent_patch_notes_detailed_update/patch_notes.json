@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 120,
+  "entry_count": 121,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3200,6 +3200,31 @@
         "docs/daily_patch/2026-10-15_scripts_bulk_migration.md",
         "docs/refactor/2026-10-15_scripts_bulk_migration.md",
         "docs/refactor/2026-10-15_scripts_bulk_manifest.json"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "T4-PR5-Reporting-Conflict-Cleanup",
+      "title": "Remove T4-overlapping Reporting relocations from PR5",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Restore eight conflicted PR5 flat module paths to their original main Git blobs and drop eight outdated canonical copies; retain nine independent relocations and all Scripts moves.",
+      "details": [
+        "T4 owns the more advanced Reporting contract implementations. PR5 now excludes eight obsolete canonical copies and has eight original flat imports restored exactly.",
+        "Align trade_report package init with T4's current one-line owner definition to avoid an add/add conflict. Reduce import-identity regression scope from 17 to nine genuinely independent relocated modules.",
+        "Preserve 138 Scripts moved bodies and 141 existing old-path wrappers; do not delete public CLI entrypoints without an explicit retirement contract.",
+        "No T4 code changed and no branch merge performed. Combined T4/PR5 pytest and UI build remain required before integration approval."
+      ],
+      "impact": "Premerge branch isolation and conflict reduction only; no intentional operational/strategy or broker behavior change.",
+      "sources": [
+        "docs/refactor/2026-10-15_t4_pr5_reporting_cleanup.md",
+        "docs/daily_patch/2026-10-15_reporting_t4_pr5_cleanup.md",
+        "tests/test_reporting_relocation_imports.py"
       ],
       "status": "current"
     }

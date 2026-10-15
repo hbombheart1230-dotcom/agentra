@@ -1889,3 +1889,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Reporting Batch 3 paused; PR #5 Draft workflow unchanged, no merge or auto-merge.
 - Report: docs/refactor/2026-10-15_scripts_bulk_migration.md; ledger: docs/refactor/2026-10-15_scripts_bulk_manifest.json.
 - Final UI patch-note checks: **5 passed**; append-only history integrity verified and successful temporary test/runtime artifacts cleaned.
+
+# 2026-10-15 — T4 / PR #5 Reporting Conflict Cleanup
+
+- Restore eight T4-overlapping flat helpers to their exact main source blobs, remove eight corresponding stale PR5 canonical copies.
+- Match `trade_report/__init__.py` with T4, retain only nine independent Reporting relocation pairs.
+- All 138 Scripts canonical relocations and 141 public CLI wrappers preserved.
+- No T4 files or live trading policy changed. PR #5 Draft remains unmerged.
+- Regression on the combined T4 + PR5 checkout required before approval.
+- Detail: `docs/refactor/2026-10-15_t4_pr5_reporting_cleanup.md`.
