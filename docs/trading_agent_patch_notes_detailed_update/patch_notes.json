@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 247,
+  "entry_count": 248,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6643,6 +6643,31 @@
         "docs/refactor/work_orders/CURRENT.md",
         "docs/refactor/work_orders/P15-T4-D-COMMANDER-UI-044.md",
         "docs/refactor/work_orders/evidence/P15-T4-C-GOLDEN-SCENARIO-GAP-044.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-D",
+      "title": "T4-D: Commander policy and Operator brief structural decomposition under a BASE-frozen contract",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Six oversized pure functions (Commander behavior/applied policy and open-position override; Operator brief renderer, sections and input) were decomposed into 11 cohesive Owners; _render_operator_brief_markdown went 351 to 22 LOC and _resolve_commander_behavior_policy 528 to 135. The BASE behavior was frozen first (189 inputs, 6,456 variants, exact Markdown strings) and moves are verbatim.",
+      "details": [
+        "Full frozen replay has 0 mismatches and an AST inline-reconstruction gate reproduces all six BASE functions exactly; environment reads, State writes, the LLM-bound _load_operator_brief and the artifact writer stay untouched.",
+        "REAL_BRIEF_PARITY_NOT_RUN: renderer parity is proven on offline synthetic inputs only. The T4-C Reporter-feedback fallback coverage P2 is tracked separately.",
+        "Pending independent Codex audit; T5, Wave D and main merge not started."
+      ],
+      "impact": "Code structure, tests and CI accounting only; no policy, LLM, Broker, State, execution or rendered Markdown byte changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-T4-D-CLAUDE-045.md",
+        "docs/refactor/p1_5_third_pass_t4d_moved_segments_ledger.json",
+        "tests/test_p165_t4d_extraction_gates.py",
+        "tests/test_p165_commander_ui_contract_freeze.py"
       ]
     }
   ]

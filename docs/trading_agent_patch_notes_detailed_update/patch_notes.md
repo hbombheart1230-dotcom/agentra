@@ -3236,3 +3236,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 기존 `P15_FAST_TRACK_WAVE_S_020.md`는 CI 호환을 위한 *과거 링크*로만 유지합니다. **현행 활성 작업은 T4-D 하나**이며 T5/Wave D/main merge 권한은 부여하지 않습니다.
 - 새 HEAD의 Linux/Windows CI가 모두 SUCCESS일 때만 Claude의 T4-D 순수 구조 분리를 시작합니다. T4-C Reporter-feedback fallback coverage P2는 별도 복원·독립 검증 전까지 OPEN입니다.
 - 문서 전용 수정이며 주문/승인/LLM/State 동작 변경은 없습니다.
+
+## 2026-10-15 · P1.5 T4-D (Commander 정책 · Operator UI 구조 분해)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · SAFETY
+
+- 변경: Commander `_resolve_commander_behavior_policy`(528→135), `_attach_commander_applied_policy`(297→175), `_assess_open_position_commander_override`(155→129)와 Operator UI `_render_operator_brief_markdown`(351→22), `_build_operator_brief_sections`(341→249), `_build_operator_brief_input`(314→105)를 11개 Owner로 분해했습니다. 이동은 verbatim이며 모듈 전역은 use-time(`facade.NAME`)으로 해석됩니다.
+- 검증: 구현 전에 BASE 계약(189 입력, 6,456 variant, Markdown 정확 문자열)을 먼저 동결했고 전체 replay 0 mismatch, AST 재구성 gate가 6개 BASE 함수와 정확히 일치합니다.
+- 경계: 환경변수 읽기, State 변경, LLM 연동 `_load_operator_brief`, 아티팩트 저장은 변경하지 않았고 LLM/Broker/Supervisor/Executor 권한 변경 없음. REAL_BRIEF_PARITY_NOT_RUN(합성 offline 입력만 검증).
+- 상태: 독립 Codex 감사 대기, T5/Wave D/main 병합 미착수. T4-C Reporter fallback 커버리지 P2는 별도 유지.
+
