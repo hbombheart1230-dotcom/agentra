@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 244,
+  "entry_count": 245,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6568,6 +6568,31 @@
         "docs/refactor/work_orders/evidence/P15-T4-B-CODEX-040.md",
         "docs/refactor/work_orders/P15-T4-C-STRATEGIST-041.md",
         "docs/daily_patch/2026-10-15_p1_5_t4_b_codex_accept_t4_c_go.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-C",
+      "title": "T4-C: Strategist structural decomposition under a BASE-frozen contract",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "strategist_node (1,216 to 545 LOC) was decomposed into 13 cohesive Owners in the existing strategist context/policy/output packages. The BASE behavior was frozen first (50 inputs, 1,141 variants, mock LLM ok/error/timeout/raises/strict, news/global exceptions); moves are verbatim and name resolution stays at use time.",
+      "details": [
+        "The frame LLM call, prompts, provider/timeout/retry/fallback, State writes, event emission and persistence stay at the node boundary; full-corpus frozen replay has 0 mismatches and an AST inline-reconstruction gate reproduces the BASE function exactly.",
+        "Freezing the contract exposed that an unguarded offline replay could reach the market-news network through curl; the replay now blocks it and uses deterministic offline providers.",
+        "Pending independent Codex audit; T4-D, T5 and Wave D not started; real LLM/report parity not run; NTFS P2 open."
+      ],
+      "impact": "Code structure, tests and CI accounting only; no trading, ranking, LLM, guard, State or event behaviour changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-T4-C-CLAUDE-042.md",
+        "docs/refactor/p1_5_third_pass_t4c_moved_segments_ledger.json",
+        "tests/test_p164_t4c_extraction_gates.py",
+        "tests/test_p164_strategist_contract_freeze.py"
       ]
     }
   ]
