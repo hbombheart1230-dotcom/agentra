@@ -3190,3 +3190,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 최근 아키텍처 문서 커밋의 UI 노트 status=`planned` 오류를 기존 허용값 `current`로 수정했습니다. 규칙은 현재 유효하지만 시각화 산출물은 아직 시작하지 않았습니다.
 - T4-B Monitor는 최신 HEAD Linux/Windows 필수 CI SUCCESS 확인 이후에만 착수. 새 PYTHONPATH CLI P2 및 기존 telemetry/NTFS/Reporter parity 미해결은 별도 유지.
 - 증거: `docs/refactor/work_orders/evidence/P15-T4-A-1-CODEX-039.md`, `docs/daily_patch/2026-10-15_p1_5_t4_a_1_codex_accept.md`.
+
+## 2026-10-15 · P1.5 T4-B (Monitor 구조 분해)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · SAFETY
+
+- 변경: `monitor_node`(1,107→498 LOC), entry candidate 평가(449→250), `evaluate_exit_policy`(673→354), 계좌 PnL 교차검증(186→71)을 기존 `libs/runtime/monitor`, `libs/runtime/monitor_exit` 패키지의 15개 Owner로 분해했습니다. 이동은 verbatim이며 모듈 전역은 use-time(`facade.NAME`)으로 해석되어 monkeypatch seam이 유지됩니다.
+- 검증: 구현 전에 BASE 계약(149 입력, 2,879 variant, 순서 있는 effect)을 먼저 동결했고, 전체 corpus replay 0 mismatch, AST inline-reconstruction gate가 BASE 함수 AST와 정확히 일치합니다. 기존 Monitor 테스트 961건·역대 P1.5 gate 3,092건 통과.
+- 경계: State 변경·이벤트 발행·영속화·probe의 환경변수 읽기는 node 경계에 유지, Broker/LLM/Supervisor/Executor/Step5C 변경 없음.
+- 상태: 독립 Codex 감사 대기, T4-C/T5/Wave D 미착수, REAL_REPORT_PARITY_BLOCKED·NTFS P2 유지.
+

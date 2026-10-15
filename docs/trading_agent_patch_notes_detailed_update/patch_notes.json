@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 242,
+  "entry_count": 243,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6518,6 +6518,31 @@
       "sources": [
         "docs/refactor/work_orders/evidence/P15-T4-A-1-CODEX-039.md",
         "docs/daily_patch/2026-10-15_p1_5_t4_a_1_codex_accept.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-B",
+      "title": "T4-B: Monitor structural decomposition under a BASE-frozen contract",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "monitor_node (1,107 to 498 LOC), the entry candidate evaluation (449 to 250), evaluate_exit_policy (673 to 354) and the account PnL cross-check (186 to 71) were decomposed into 15 cohesive Owners in the existing monitor and monitor_exit packages. The BASE behavior was frozen first (149 inputs, 2,879 variants, ordered effects); moves are verbatim and name resolution stays at use time.",
+      "details": [
+        "Entry/exit guard precedence, cooldowns, the Rank-1 controlled probe, order-intent arbitration and event order are unchanged: full-corpus frozen replay has 0 mismatches and an AST inline-reconstruction gate reproduces the BASE functions exactly.",
+        "State mutation, event emission, persistence and the environment read of the probe stay at the node boundary; no Broker, LLM, Supervisor, Executor or Step5C change.",
+        "Pending independent Codex audit; T4-C, T5 and Wave D not started; real report parity blocked; NTFS P2 open."
+      ],
+      "impact": "Code structure, tests and CI accounting only; no trading, ranking, guard, State or event behaviour changed.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-T4-B-CLAUDE-039.md",
+        "docs/refactor/p1_5_third_pass_t4b_moved_segments_ledger.json",
+        "tests/test_p163_t4b_extraction_gates.py",
+        "tests/test_p163_monitor_contract_freeze.py"
       ]
     }
   ]
