@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 270,
+  "entry_count": 271,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7199,6 +7199,31 @@
         "libs/reporting/baseline_artifact_io.py",
         "docs/daily_patch/2026-10-15_p15_codex_rework_p1_p2_fix.md",
         "docs/refactor/work_orders/evidence/P15-INTEGRATION-CODEX-REWORK-048.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 Single Active Branch T4 Scope and Windows Full Audit",
+      "title": "Separate pinned T4-D scope from PR5 delta, retain order-authority gate, make Windows baseline audit full tier",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY",
+        "DOCUMENTATION"
+      ],
+      "status": "current",
+      "summary": "Correct false positive T4-D changed-path attribution after T4+PR5 merge while keeping original T4 whitelist and independently locking integration authority paths; switch isolated Windows baseline to full file-manifest audit after directory-only mtime failure.",
+      "details": [
+        "No new working branch created; protected main remains until integration acceptance, with final main-only consolidation planned.",
+        "Old integrated T4 Linux scope failure from PR5 libs/diagnostics is addressed without test skipping or broad allowlisting.",
+        "Windows native Q10/Q12 asserted both PASS but previous job exit failed due to directory-only mtime fast tier; retain finding and require full per-file audit success before acceptance."
+      ],
+      "impact": "Only T4-D test scoping, isolated Windows CI settings, daily patch and architecture evidence; no business runtime module changes.",
+      "sources": [
+        "tests/test_p165_t4d_extraction_gates.py",
+        ".github/workflows/p15-integration-crossbranch-compat.yml",
+        "docs/daily_patch/2026-10-15_p15_single_working_branch_scope_win_guard.md",
+        "docs/refactor/work_orders/evidence/P15-INTEGRATION-SCOPE-WINDOWS-FULL-AUDIT-049.md"
       ]
     }
   ]

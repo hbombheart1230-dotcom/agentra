@@ -311,7 +311,18 @@ def test_no_effect_llm_or_policy_second_source_moved_into_owners():
 
 
 def test_t4d_changed_paths_stay_in_commander_ui_scope_and_touch_no_authority_surface():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    # Distinguish the immutable T4-D implementation slice from subsequently
+    # integrated PR5 changes. Comparing BASE..integration HEAD as *T4-D scope*
+    # incorrectly attributes PR5 diagnostics/Reporting additions to T4-D.
+    t4_final = "ad3659131e804f9fa84b67f3bf6a0a0b2017a064"
+    merged = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", t4_final, "HEAD"],
+        cwd=ROOT, check=False,
+    ).returncode == 0
+    end = t4_final if merged else "HEAD"
+    out = subprocess.check_output(
+        ["git", "diff", "--name-only", "-z", BASE, end], cwd=ROOT
+    ).decode().split(chr(0))
     for p in [x for x in out if x]:
         assert p.startswith(ALLOWED_CHANGED), f"T4-D touched an out-of-scope path: {p}"
         assert not p.startswith(FORBIDDEN_PREFIXES), p
@@ -319,3 +330,20 @@ def test_t4d_changed_paths_stay_in_commander_ui_scope_and_touch_no_authority_sur
         assert not p.startswith("tests/fixtures/p1_5_t4a_scanner_node/"), "T4-A golden fixtures must stay unchanged"
         assert not p.startswith("tests/fixtures/p1_5_t4b_monitor/"), "T4-B golden fixtures must stay unchanged"
         assert not p.startswith("tests/fixtures/p1_5_t4c_strategist/"), "T4-C golden fixtures must stay unchanged"
+
+    if merged:
+        integration_paths = subprocess.check_output(
+            ["git", "diff", "--name-only", "-z", t4_final, "HEAD"], cwd=ROOT
+        ).decode().split(chr(0))
+        # Do not weaken scope enforcement: T4 owners and source facades must
+        # remain byte-unchanged at integration HEAD, and trading authority
+        # surfaces stay locked even if PR5 added other allowed owner packages.
+        pinned_t4 = (
+            "graphs/commander_runtime.py",
+            "libs/runtime/commander/",
+            "apps/operator_ui/",
+        )
+        for p in [x for x in integration_paths if x]:
+            assert not p.startswith(pinned_t4), "Integrated HEAD mutated pinned T4-D source: " + p
+            assert not p.startswith(FORBIDDEN_PREFIXES), "Integrated HEAD mutated authority surface: " + p
+            assert not p.startswith("tests/fixtures/p1_5_t4d_commander_ui/"), "T4-D frozen fixture changed"

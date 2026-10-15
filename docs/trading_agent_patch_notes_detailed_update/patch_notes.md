@@ -3443,3 +3443,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 - First P2 patch accidentally commented out `path.write_text()` by writing a literal backslash-n in a comment, resulting in FileNotFoundError on Linux and Windows. Explicitly acknowledged as a new regression.
 - Restored the active write statement on its own Python source line while preserving required LF bytes; new CI is mandatory before acceptance. See `docs/refactor/work_orders/evidence/P15-INTEGRATION-CODEX-REWORK-048.md`.
+
+## 2026-10-15 · P1.5 Single Active Branch T4 Scope and Windows Full Audit
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY · DOCUMENTATION
+
+- T4-D original BASE→T4 FINAL scope remains pinned; integration HEAD rechecks Commander/UI immutable source and forbidden order authority without mislabeling PR5 libraries as T4-D modifications.
+- Native Windows Q10/Q12 prior 2/2 PASS did not establish job PASS (data/originals and data/specs directory mtime fast-tier failure). Isolated native job now requires full file audit; unresolved directory-only metadata finding remains recorded.
+- Single active development branch; no main merge/branch deletion before verification. Evidence: `docs/refactor/work_orders/evidence/P15-INTEGRATION-SCOPE-WINDOWS-FULL-AUDIT-049.md`.
