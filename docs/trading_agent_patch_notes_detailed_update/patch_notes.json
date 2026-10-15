@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 121,
+  "entry_count": 122,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3225,6 +3225,30 @@
         "docs/refactor/2026-10-15_t4_pr5_reporting_cleanup.md",
         "docs/daily_patch/2026-10-15_reporting_t4_pr5_cleanup.md",
         "tests/test_reporting_relocation_imports.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Target-Tree-Compat-Audit-V1",
+      "title": "Read-only CLI wrapper compatibility audit",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "COMPATIBILITY",
+        "TESTING"
+      ],
+      "summary": "Add a no-side-effect, AST-only preflight to verify 138 moved implementations and 141 legacy Scripts wrappers remain mapped to the correct target modules.",
+      "details": [
+        "Use the existing 157-candidate manifest; verify legacy/canonical Python file existence, syntax, literal import and main dispatch targets, and moved/held counts without executing modules.",
+        "Add four synthetic fixture tests for valid mappings, wrong CLI target, missing canonical file, and non-execution of canonical source; locally 4/4 passed.",
+        "Keep all 141 wrappers and T4 work unchanged. Full actual-checkout and combined T4/PR5 regression remain separate integration gates."
+      ],
+      "impact": "Static audit utility only; no trading/runtime behavior, setting, import contract or order path changed.",
+      "sources": [
+        "docs/refactor/2026-10-15_scripts_wrapper_contract_audit.md",
+        "docs/daily_patch/2026-10-15_scripts_wrapper_contract_audit.md",
+        "tests/test_scripts_target_tree_compat_audit.py"
       ],
       "status": "current"
     }

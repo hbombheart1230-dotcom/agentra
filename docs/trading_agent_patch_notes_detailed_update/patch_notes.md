@@ -1898,3 +1898,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No T4 files or live trading policy changed. PR #5 Draft remains unmerged.
 - Regression on the combined T4 + PR5 checkout required before approval.
 - Detail: `docs/refactor/2026-10-15_t4_pr5_reporting_cleanup.md`.
+
+# 2026-10-15 — Scripts Target-Tree Compatibility Audit
+
+- Add static AST-based read-only preflight for all 138 relocated Scripts and 141 root compatibility wrappers.
+- Validate legacy/canonical path presence, Python syntax, CLI/import dispatch target literals and manifest conservation. No target script is invoked.
+- Four synthetic fixture tests PASS in GPT isolated environment. Full checkout and T4/PR5 combined tests not run.
+- Existing public CLI wrappers, T4 source, Config and trading authority untouched; PR #5 remains Draft.
+- Docs: `docs/refactor/2026-10-15_scripts_wrapper_contract_audit.md`.
