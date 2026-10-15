@@ -8,4 +8,6 @@
 
 **Mandatory architecture convergence:** after accepted T4 structural closure and any required Reporter structural completion, compare SHA-pinned current Mermaid overview/modules/import SVG against editable target draw.io + gap matrix, GPT+user manually approve; Codex independently checks actual consumers and safety. [Gate](../P15_POST_T4_ARCHITECTURE_VISUALIZATION_GATE_2026_10_15.md) `ARCH_CONVERGENCE_NOT_STARTED`. No bulk folder reorganization or premature Wave D.
 
+**CI compatibility anchor:** [P1.5 Fast Track historical wave authority](P15_FAST_TRACK_WAVE_S_020.md) — preserved solely for the required pre-existing one-link CI contract; **NOT** the current work order. The sole active task is [T4-D](P15-T4-D-COMMANDER-UI-044.md). Do not execute the historical wave or reread its archive. This link does not bypass the current-HEAD CI gate.
+
 **Read minimal context:** CURRENT → linked ONE T4-D work order → COMMON_RULES.md → T4-D lines only of third-pass design + direct target source/tests. No historical reread.
