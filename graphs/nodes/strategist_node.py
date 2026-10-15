@@ -262,6 +262,54 @@ from libs.runtime.strategist.output.node_trace_projection import (
     strat_trace_ranked_candidate_news_ranked_market_news,
     strat_trace_decision_frame_payload,
 )
+from libs.runtime.strategist.policy.global_risk_adjustment import (
+    adjust_policy_for_global_sentiment,
+)
+from libs.runtime.strategist.context.news_signal_fallbacks import (
+    news_exception_fallback_signals,
+    news_disabled_signals,
+    summarize_news_contexts,
+)
+from libs.runtime.strategist.context.candidate_rerank import (
+    rerank_candidates_by_news_and_global,
+)
+from libs.runtime.strategist.context.theme_candidate_projection import (
+    project_theme_candidate_inputs,
+)
+from libs.runtime.strategist.context.regime_scoring import (
+    score_market_regime_and_sentiment,
+)
+from libs.runtime.strategist.context.llm_input_payload import (
+    assemble_frame_llm_payload,
+    build_theme_selection_raw_input,
+)
+from libs.runtime.strategist.policy.llm_override_application import (
+    apply_ai_overrides_to_frame,
+)
+from libs.runtime.strategist.policy.strategy_policy_annotation import (
+    annotate_strategy_policy_market_scanner,
+    attach_horizon_to_commander_context,
+    attach_horizon_to_monitor_policy_and_plan,
+)
+from libs.runtime.strategist.output.strategist_output_core_fields import (
+    fill_strategist_output_core,
+)
+from libs.runtime.strategist.output.strategist_output_stage_reviews import (
+    fill_strategist_output_stage_reviews,
+)
+from libs.runtime.strategist.output.strategist_output_policy_commander_fields import (
+    fill_strategist_output_policy_and_commander,
+)
+from libs.runtime.strategist.output.strategist_output_explanations import (
+    fill_strategist_output_explanations,
+)
+from libs.runtime.strategist.output.node_event_payloads import (
+    build_market_context_snapshot_payload,
+    build_news_evidence_ranked_payload,
+    build_strategist_summary_log_payload,
+    build_strategic_frame_trace_payload,
+    build_strategist_decision_bridge_output,
+)
 
 
 def _is_trueish(v: Any) -> bool:
@@ -3571,20 +3619,7 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
     # policy adjustment based on global sentiment
     # - risk-off: max_risk decreases, min_confidence increases
     # - risk-on : max_risk increases, min_confidence decreases
-    base_max_risk = float(policy.get("max_risk", 0.7))
-    base_min_conf = float(policy.get("min_confidence", 0.6))
-    off_th = float(policy.get("candidate_risk_off_threshold", -0.5))
-    on_th = float(policy.get("candidate_risk_on_threshold", 0.5))
-
-    if gs <= off_th:
-        policy["max_risk"] = max(0.05, base_max_risk - 0.1)
-        policy["min_confidence"] = min(0.99, base_min_conf + 0.1)
-    elif gs >= on_th:
-        policy["max_risk"] = min(1.0, base_max_risk + 0.1)
-        policy["min_confidence"] = max(0.01, base_min_conf - 0.1)
-    else:
-        policy["max_risk"] = base_max_risk
-        policy["min_confidence"] = base_min_conf
+    adjust_policy_for_global_sentiment(gs=gs, policy=policy)
 
     # 3) News analysis (score + data-quality signal)
     news_items_by_symbol = {s: [] for s in news_collection_symbols}
@@ -3619,53 +3654,11 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
             else:
                 market_news_signal_map = {}
         except Exception:
-            news_signal_map = {
-                s: make_signal(
-                    score=0.0,
-                    status=SIGNAL_STATUS_FALLBACK,
-                    source="strategist_node",
-                    reason="news_sentiment_exception",
-                    ts=now,
-                )
-                for s in news_collection_symbols
-            }
-            market_news_signal_map = {
-                q: make_signal(
-                    score=0.0,
-                    status=SIGNAL_STATUS_FALLBACK,
-                    source="strategist_node",
-                    reason="market_news_sentiment_exception",
-                    ts=now,
-                )
-                for q in news_query_targets
-            }
+            market_news_signal_map, news_signal_map = news_exception_fallback_signals(news_collection_symbols=news_collection_symbols, news_query_targets=news_query_targets, now=now, facade=_r3_sys.modules[__name__])
     else:
-        news_signal_map = {
-            s: make_signal(
-                score=0.0,
-                status=SIGNAL_STATUS_FALLBACK,
-                source="news_policy",
-                reason="news_analysis_disabled",
-                ts=now,
-                )
-                for s in news_collection_symbols
-        }
-        market_news_signal_map = {
-            q: make_signal(
-                score=0.0,
-                status=SIGNAL_STATUS_FALLBACK,
-                source="news_policy",
-                reason="news_analysis_disabled",
-                ts=now,
-            )
-            for q in news_query_targets
-        }
+        market_news_signal_map, news_signal_map = news_disabled_signals(news_collection_symbols=news_collection_symbols, news_query_targets=news_query_targets, now=now, facade=_r3_sys.modules[__name__])
 
-    news_sent = {s: _signal_score(news_signal_map.get(s)) for s in news_collection_symbols}
-    candidate_news_ctx = _news_context_summary(news_signal_map, news_items_by_symbol)
-    market_news_ctx = _news_context_summary(market_news_signal_map, market_news_items_by_target)
-    news_ctx = _merge_news_contexts(candidate_news_ctx, market_news_ctx)
-    news_avg_score = _to_float(news_ctx.get("avg_score"), 0.0)
+    candidate_news_ctx, market_news_ctx, news_avg_score, news_ctx, news_sent = summarize_news_contexts(market_news_items_by_target=market_news_items_by_target, market_news_signal_map=market_news_signal_map, news_collection_symbols=news_collection_symbols, news_items_by_symbol=news_items_by_symbol, news_signal_map=news_signal_map, facade=_r3_sys.modules[__name__])
 
     state["policy"] = policy
     state["candidates"] = candidates
@@ -3681,56 +3674,10 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
     state["market_news_context"] = dict(market_news_ctx)
 
     # 4) Candidate rerank (M18-5): apply weights and negative-news filter, then risk-off count reduction
-    w_news = float(policy.get("candidate_news_weight", 0.2))
-    w_g = float(policy.get("candidate_global_weight", 0.1))
-    neg_th = float(policy.get("candidate_negative_news_threshold", -0.7))
-
-    # assign candidate_score
-    scored = []
-    candidate_meta = {str(c.get("symbol")): dict(c) for c in candidates if isinstance(c, dict)}
-    for idx, c in enumerate(candidates):
-        s = c["symbol"]
-        rank_bias = (len(candidates) - idx) / max(len(candidates), 1) * 0.01  # small deterministic tie-break
-        cs = rank_bias + (w_news * news_sent.get(s, 0.0)) + (w_g * gs)
-        scored.append((s, cs, news_sent.get(s, 0.0), c.get("why") or ""))
-
-    # filter overly negative news, but don't drop below 3 items if possible
-    filtered = [t for t in scored if t[2] >= neg_th]
-    if len(filtered) >= 3:
-        scored = filtered
-
-    scored.sort(key=lambda x: x[1], reverse=True)
-    candidates = []
-    for (s, cs, _ns, why) in scored:
-        base = dict(candidate_meta.get(s) or {})
-        base["symbol"] = s
-        base["why"] = why
-        base["rank_score"] = float(cs)
-        candidates.append(base)
-
-    # risk-off reduces count
-    if gs <= float(policy.get("candidate_risk_off_threshold", -0.5)):
-        max_cnt = int(policy.get("candidate_max_count_risk_off", 3))
-        candidates = candidates[: max(1, max_cnt)]
-    else:
-        candidates = candidates[:k]
+    candidates = rerank_candidates_by_news_and_global(candidates=candidates, gs=gs, k=k, news_sent=news_sent, policy=policy)
 
     state["candidates"] = candidates
-    themes = list(theme_hints)
-    pre_ai_overrides = _extract_ai_overrides(state, policy)
-    themes = _merge_override_text_list(themes, pre_ai_overrides.get("themes"), limit=5)
-    candidate_symbols = [str(c.get("symbol") or "") for c in candidates if str(c.get("symbol") or "").strip()]
-    theme_index = _extract_theme_symbol_index(state, policy)
-    theme_scores = state.get("theme_scores") if isinstance(state.get("theme_scores"), dict) else {}
-    theme_strength = _theme_strength_map(
-        themes=list(themes),
-        candidates=list(candidates),
-        theme_scores=theme_scores,
-        theme_index=theme_index,
-    )
-    if theme_strength:
-        ranked_theme_names = [k for k, _v in sorted(theme_strength.items(), key=lambda kv: kv[1], reverse=True)]
-        themes = _merge_override_text_list(ranked_theme_names, themes, limit=5)
+    candidate_symbols, theme_strength, themes = project_theme_candidate_inputs(candidates=candidates, policy=policy, state=state, theme_hints=theme_hints, facade=_r3_sys.modules[__name__])
 
     state["themes"] = themes
     state["candidate_symbols"] = list(candidate_symbols)
@@ -3747,22 +3694,7 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
         protect_existing_themes=_theme_packet_symbol_map_is_authoritative(theme_strength_packet),
     )
 
-    regime_score = _compose_regime_score(
-        global_score=gs,
-        news_score=news_avg_score,
-        market_context_inputs=market_context_inputs,
-    )
-    sentiment_score = float(
-        _clamp(
-            (0.60 * gs)
-            + (0.30 * _to_float(news_ctx.get("avg_score"), 0.0))
-            + (0.10 * _to_float(market_context_inputs.get("index_trend"), 0.0)),
-            -1.0,
-            1.0,
-        )
-    )
-    market_regime = _risk_regime_label(regime_score)
-    market_sentiment = _market_sentiment_label(sentiment_score)
+    market_regime, market_sentiment, regime_score, sentiment_score = score_market_regime_and_sentiment(gs=gs, market_context_inputs=market_context_inputs, news_avg_score=news_avg_score, news_ctx=news_ctx, facade=_r3_sys.modules[__name__])
     avoid_themes, exit_policy, market_structure, monitor_guidance, monitor_policy, playbook, pre_llm_market_regime, pre_llm_market_sentiment, pre_llm_market_structure, pre_llm_monitor_guidance, pre_llm_playbook, pre_llm_risk_tone, pre_llm_trade_aggressiveness, regime_factors, risk_tone, scanner_bias, scanner_priority, trade_aggressiveness = strat_ctx_avoid_themes_exit_policy(state=state, gs=gs, market_context_inputs=market_context_inputs, market_regime=market_regime, market_sentiment=market_sentiment, policy=policy, facade=_r3_sys.modules[__name__])
     macro_stress_overlay = _macro_stress_overlay(global_signal)
     report_focus = _report_focus(playbook=playbook, themes=themes)
@@ -3802,68 +3734,7 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
     state["read_model_facts_summary"] = dict(read_model_facts_summary)
     fallback_theme_hints, pre_llm_commander_context, selected_themes_hint = strat_ctx_fallback_theme_hints_pre_llm_commander_c(state=state, market_regime=market_regime, playbook=playbook, available_themes=available_themes, themes=themes, facade=_r3_sys.modules[__name__])
 
-    llm_payload = {
-        "global_sentiment_signal": dict(global_signal),
-        "news_context": dict(news_ctx),
-        "market_context_inputs": dict(market_context_inputs),
-        "recent_strategy_feedback": dict(recent_strategy_feedback),
-        "reporter_feedback_packet": dict(reporter_feedback_packet),
-        "strategy_memory": dict(strategy_memory_advisory),
-        "memory_packets": dict(pre_llm_commander_context.get("memory_packets") or {}),
-        "commander_memory_policy": dict(pre_llm_commander_context.get("commander_memory_policy") or {}),
-        "scanner_memory_bias": dict(pre_llm_commander_context.get("scanner_memory_bias") or {}),
-        "monitor_memory_bias": dict(pre_llm_commander_context.get("monitor_memory_bias") or {}),
-        "macro_stress_overlay_hint": dict(macro_stress_overlay),
-        "market_regime_hint": market_regime,
-        "market_sentiment_hint": market_sentiment,
-        "commander_refresh_context": _build_llm_commander_refresh_context(
-            pre_llm_commander_context,
-            read_model_facts,
-            reports_root,
-        ),
-        "read_model_facts": dict(read_model_facts),
-        "market_structure_hint": market_structure,
-        "playbook_hint": playbook,
-        "monitor_entry_policy_baseline": build_default_monitor_entry_policy().to_dict(),
-        "theme_strength": dict(theme_strength),
-        "theme_strength_packet": dict(theme_strength_packet),
-        "available_themes": list(available_themes),
-        "themes_hint": list(themes),
-        "selected_themes_hint": list(selected_themes_hint),
-        "fallback_theme_hints": list(fallback_theme_hints),
-        "news_collection_policy": dict(news_collection_policy),
-        "news_query_targets": list(news_query_targets),
-        "news_sentiment_signal": dict(news_signal_map),
-        "market_news_sentiment_signal": dict(market_news_signal_map),
-        "reports_root": str(reports_root),
-        "market_news_sample": _sample_news_for_evidence(
-            market_news_items_by_target,
-            max_symbols=6,
-            max_items_per_symbol=2,
-        ),
-        "candidate_news_sample": _sample_news_for_evidence(
-            news_items_by_symbol,
-            max_symbols=6,
-            max_items_per_symbol=2,
-        ),
-        "candidate_symbols_hint": list(candidate_symbols)[:10],
-        "key_events_hint": list(key_events),
-        "recent_monitor_blockers_hint": list(recent_strategy_feedback.get("recent_monitor_issues") or [])[:5],
-    }
-    news_event_intelligence = build_news_event_intelligence(
-        market_news_sample=llm_payload.get("market_news_sample"),
-        candidate_news_sample=llm_payload.get("candidate_news_sample"),
-        news_query_targets=news_query_targets,
-        theme_strength=theme_strength,
-        available_themes=available_themes,
-        candidate_symbols=candidate_symbols,
-    )
-    llm_payload["news_event_intelligence"] = dict(news_event_intelligence)
-    strategist_input_quality = build_strategist_input_quality_context(llm_payload)
-    llm_payload["market_regime_rail"] = dict(strategist_input_quality.get("market_regime_rail") or {})
-    llm_payload["news_quality"] = dict(strategist_input_quality.get("news_quality") or {})
-    llm_payload["risk_off_exception_policy"] = dict(strategist_input_quality.get("risk_off_exception_policy") or {})
-    llm_payload["strategist_input_quality"] = dict(strategist_input_quality)
+    llm_payload, news_event_intelligence, strategist_input_quality = assemble_frame_llm_payload(available_themes=available_themes, candidate_symbols=candidate_symbols, fallback_theme_hints=fallback_theme_hints, global_signal=global_signal, key_events=key_events, macro_stress_overlay=macro_stress_overlay, market_context_inputs=market_context_inputs, market_news_items_by_target=market_news_items_by_target, market_news_signal_map=market_news_signal_map, market_regime=market_regime, market_sentiment=market_sentiment, market_structure=market_structure, news_collection_policy=news_collection_policy, news_ctx=news_ctx, news_items_by_symbol=news_items_by_symbol, news_query_targets=news_query_targets, news_signal_map=news_signal_map, playbook=playbook, pre_llm_commander_context=pre_llm_commander_context, read_model_facts=read_model_facts, recent_strategy_feedback=recent_strategy_feedback, reporter_feedback_packet=reporter_feedback_packet, reports_root=reports_root, selected_themes_hint=selected_themes_hint, strategy_memory_advisory=strategy_memory_advisory, theme_strength=theme_strength, theme_strength_packet=theme_strength_packet, themes=themes, facade=_r3_sys.modules[__name__])
     candidate_news_sample = _sample_news_for_evidence(news_items_by_symbol)
     market_news_sample = _sample_news_for_evidence(market_news_items_by_target)
     try:
@@ -3871,30 +3742,7 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
             run_id=str(state.get("run_id") or "strategist-unknown"),
             agent="strategist",
             stage="theme_selection",
-            raw_input={
-                "collected_news": _merge_news_samples(market_news_sample, candidate_news_sample),
-                "collected_market_news": market_news_sample,
-                "collected_candidate_news": candidate_news_sample,
-                "news_event_intelligence": dict(news_event_intelligence),
-                "news_query_targets": list(news_query_targets),
-                "news_collection_policy": dict(news_collection_policy),
-                "global_sentiment_inputs": dict(global_signal),
-                "macro_indicators": dict(market_context_inputs),
-                "market_summary": {
-                    "market_regime_hint": market_regime,
-                    "market_sentiment_hint": market_sentiment,
-                    "market_structure_hint": market_structure,
-                    "news_query_targets": list(news_query_targets),
-                    "news_query_reasoning": news_query_reasoning,
-                    "candidate_symbols_hint": list(candidate_symbols)[:10],
-                },
-                "recent_strategy_feedback": dict(recent_strategy_feedback),
-                "reporter_feedback_packet": dict(reporter_feedback_packet),
-                "strategy_memory": dict(strategy_memory_advisory),
-                "theme_strength_packet": dict(theme_strength_packet),
-                "available_themes": list(available_themes),
-                "llm_payload": dict(llm_payload),
-            },
+            raw_input=build_theme_selection_raw_input(available_themes=available_themes, candidate_news_sample=candidate_news_sample, candidate_symbols=candidate_symbols, global_signal=global_signal, llm_payload=llm_payload, market_context_inputs=market_context_inputs, market_news_sample=market_news_sample, market_regime=market_regime, market_sentiment=market_sentiment, market_structure=market_structure, news_collection_policy=news_collection_policy, news_event_intelligence=news_event_intelligence, news_query_reasoning=news_query_reasoning, news_query_targets=news_query_targets, recent_strategy_feedback=recent_strategy_feedback, reporter_feedback_packet=reporter_feedback_packet, strategy_memory_advisory=strategy_memory_advisory, theme_strength_packet=theme_strength_packet, facade=_r3_sys.modules[__name__]),
             decision_link={"stage": "strategist_input_collection"},
         )
     except Exception:
@@ -3957,46 +3805,7 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
         _log_strategist_llm_result(state, llm_payload_log)
 
     # Optional AI overrides are additive and bounded to keep deterministic fallback.
-    market_regime = str(ai_overrides.get("market_regime") or market_regime).strip() or market_regime
-    market_sentiment = str(ai_overrides.get("market_sentiment") or market_sentiment).strip() or market_sentiment
-    playbook = str(ai_overrides.get("playbook") or playbook).strip() or playbook
-    trade_aggressiveness = str(ai_overrides.get("trade_aggressiveness") or trade_aggressiveness).strip() or trade_aggressiveness
-    risk_tone = str(ai_overrides.get("risk_tone") or risk_tone).strip() or risk_tone
-    if isinstance(ai_overrides.get("themes"), list) and list(ai_overrides.get("themes") or []):
-        themes = _merge_override_text_list([], ai_overrides.get("themes"), limit=5)
-    else:
-        themes = _merge_override_text_list(themes, ai_overrides.get("themes"), limit=5)
-    raw_theme_strategy = ai_overrides.get("theme_strategy") if isinstance(ai_overrides.get("theme_strategy"), dict) else {}
-    raw_selected_themes = ai_overrides.get("selected_themes")
-    if not raw_selected_themes and isinstance(raw_theme_strategy, dict):
-        raw_selected_themes = raw_theme_strategy.get("selected_themes")
-    selected_themes = (
-        _resolve_selected_themes_from_api(
-            available_themes=list(available_themes),
-            themes=list(themes),
-            raw_selected=raw_selected_themes,
-        )
-        if available_themes
-        else []
-    )
-    if selected_themes:
-        themes = _merge_override_text_list([], [*list(selected_themes), *list(themes)], limit=5)
-    key_events = _merge_override_text_list(key_events, ai_overrides.get("key_events"), limit=5)
-    avoid_themes = _merge_override_text_list(avoid_themes, ai_overrides.get("avoid_themes"), limit=6)
-    scanner_priority = _merge_override_text_list(scanner_priority, ai_overrides.get("scanner_priority"), limit=6)
-    report_focus = _merge_override_text_list(report_focus, ai_overrides.get("report_focus"), limit=6)
-    scanner_bias = str(ai_overrides.get("scanner_bias") or scanner_bias).strip().lower() or scanner_bias
-    monitor_guidance = str(ai_overrides.get("monitor_guidance") or monitor_guidance).strip().lower() or monitor_guidance
-    market_regime_summary = str(
-        ai_overrides.get("market_regime_summary")
-        or _build_market_regime_summary(
-            market_regime=market_regime,
-            market_sentiment=market_sentiment,
-            market_structure=market_structure,
-            playbook=playbook,
-            global_signal=global_signal,
-        )
-    ).strip()
+    avoid_themes, key_events, market_regime, market_regime_summary, market_sentiment, monitor_guidance, playbook, raw_theme_strategy, report_focus, risk_tone, scanner_bias, scanner_priority, selected_themes, themes, trade_aggressiveness = apply_ai_overrides_to_frame(ai_overrides=ai_overrides, available_themes=available_themes, avoid_themes=avoid_themes, global_signal=global_signal, key_events=key_events, market_regime=market_regime, market_sentiment=market_sentiment, market_structure=market_structure, monitor_guidance=monitor_guidance, playbook=playbook, report_focus=report_focus, risk_tone=risk_tone, scanner_bias=scanner_bias, scanner_priority=scanner_priority, themes=themes, trade_aggressiveness=trade_aggressiveness, facade=_r3_sys.modules[__name__])
     exit_policy, monitor_entry_policy, monitor_entry_policy_validation, monitor_policy, policy_confidence, policy_source, scanner_bias_context, scanner_bias_context_validation = strat_policy_exit_policy_monitor_entry_policy(ai_overrides=ai_overrides, monitor_policy=monitor_policy, state=state, policy=policy, monitor_guidance=monitor_guidance, trade_aggressiveness=trade_aggressiveness, risk_tone=risk_tone, playbook=playbook, market_regime=market_regime, scanner_bias=scanner_bias, exit_policy=exit_policy, facade=_r3_sys.modules[__name__])
     monitor_guidance, risk_tone, trade_aggressiveness, exit_policy, report_focus, macro_stress_overlay = _apply_macro_stress_to_monitor_frame(
         global_signal=global_signal,
@@ -4087,59 +3896,10 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
     strategy_policy["commander_context"] = dict(commander_context)
     strategy_policy["strategist_plan"] = dict(strategist_plan)
     strategy_policy["provenance"] = dict(policy_provenance)
-    market_policy = strategy_policy.get("market_policy") if isinstance(strategy_policy.get("market_policy"), dict) else {}
-    market_policy["pre_llm_playbook"] = pre_llm_playbook
-    market_policy["llm_requested_playbook"] = llm_requested_playbook
-    market_policy["requested_playbook"] = requested_playbook
-    market_policy["requested_playbook_source"] = requested_playbook_source
-    market_policy["final_playbook"] = playbook
-    market_policy["tactical_strategy"] = tactical_strategy
-    market_policy["tactical_subtype"] = tactical_subtype
-    market_policy["strategy_scores"] = dict(strategy_scores)
-    market_policy["rejected_strategy_reasons"] = dict(rejected_strategy_reasons)
-    strategy_policy["market_policy"] = dict(market_policy)
-    scanner_policy = strategy_policy.get("scanner_policy") if isinstance(strategy_policy.get("scanner_policy"), dict) else {}
-    scanner_policy["candidate_watch_policy"] = dict(candidate_watch_policy)
-    strategy_policy["scanner_policy"] = dict(scanner_policy)
+    annotate_strategy_policy_market_scanner(candidate_watch_policy=candidate_watch_policy, llm_requested_playbook=llm_requested_playbook, playbook=playbook, pre_llm_playbook=pre_llm_playbook, rejected_strategy_reasons=rejected_strategy_reasons, requested_playbook=requested_playbook, requested_playbook_source=requested_playbook_source, strategy_policy=strategy_policy, strategy_scores=strategy_scores, tactical_strategy=tactical_strategy, tactical_subtype=tactical_subtype)
     commander_context, commander_horizon_policy, horizon_context, strategist_horizon_proposal, strategist_refresh_context, strategy_horizon_feedback = strat_policy_commander_context_commander_horizon_poli(ai_overrides=ai_overrides, playbook=playbook, monitor_guidance=monitor_guidance, trade_aggressiveness=trade_aggressiveness, risk_tone=risk_tone, policy_source=policy_source, commander_context=commander_context, state=state, facade=_r3_sys.modules[__name__])
-    commander_context["strategist_refresh_context"] = strategist_refresh_context
-    open_position_refresh_context = (
-        dict(commander_context.get("open_position_refresh_context") or {})
-        if isinstance(commander_context.get("open_position_refresh_context"), dict)
-        else {}
-    )
-    if open_position_refresh_context:
-        open_position_refresh_context["commander_horizon_policy"] = dict(commander_horizon_policy)
-        open_position_refresh_context["horizon_context"] = dict(horizon_context)
-        commander_context["open_position_refresh_context"] = open_position_refresh_context
-    commander_context["commander_horizon_policy"] = dict(commander_horizon_policy)
-    commander_context["horizon_context"] = dict(horizon_context)
-    strategy_policy["commander_context"] = dict(commander_context)
-    if isinstance((strategic_answers.get("q15_commander_refresh_context") or {}), dict):
-        strategic_answers["q15_commander_refresh_context"] = {
-            **dict(strategic_answers.get("q15_commander_refresh_context") or {}),
-            "commander_horizon_policy": dict(commander_horizon_policy),
-            "horizon_context": dict(horizon_context),
-        }
-    strategy_monitor_policy = (
-        dict(strategy_policy.get("monitor_policy") or {})
-        if isinstance(strategy_policy.get("monitor_policy"), dict)
-        else {}
-    )
-    strategy_monitor_policy["strategy_horizon_feedback"] = dict(strategy_horizon_feedback)
-    strategy_monitor_policy["strategist_horizon_proposal"] = dict(strategist_horizon_proposal)
-    strategy_monitor_policy["commander_horizon_policy"] = dict(commander_horizon_policy)
-    strategy_monitor_policy["horizon_policy"] = dict(commander_horizon_policy)
-    strategy_monitor_policy["strategy_horizon"] = str(strategy_horizon_feedback.get("strategy_horizon") or "")
-    strategy_monitor_policy["expected_hold_window"] = dict(strategy_horizon_feedback.get("expected_hold_window") or {})
-    strategy_monitor_policy["exit_guidance"] = dict(strategy_horizon_feedback.get("exit_guidance") or {})
-    strategy_policy["monitor_policy"] = strategy_monitor_policy
-    strategy_policy["commander_horizon_policy"] = dict(commander_horizon_policy)
-    strategist_plan["strategy_horizon_feedback"] = dict(strategy_horizon_feedback)
-    strategist_plan["strategist_horizon_proposal"] = dict(strategist_horizon_proposal)
-    strategist_plan["commander_horizon_policy"] = dict(commander_horizon_policy)
-    strategist_plan["strategy_horizon"] = str(strategy_horizon_feedback.get("strategy_horizon") or "")
-    strategy_policy["strategist_plan"] = dict(strategist_plan)
+    attach_horizon_to_commander_context(commander_context=commander_context, commander_horizon_policy=commander_horizon_policy, horizon_context=horizon_context, strategic_answers=strategic_answers, strategist_refresh_context=strategist_refresh_context, strategy_policy=strategy_policy)
+    attach_horizon_to_monitor_policy_and_plan(commander_horizon_policy=commander_horizon_policy, strategist_horizon_proposal=strategist_horizon_proposal, strategist_plan=strategist_plan, strategy_horizon_feedback=strategy_horizon_feedback, strategy_policy=strategy_policy)
 
     state["market_regime"] = market_regime
     state["market_sentiment"] = market_sentiment
@@ -4169,237 +3929,10 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
     strategist_feedback = _compact_recent_strategy_feedback_for_llm(recent_strategy_feedback)
     compact_reporter_feedback = _compact_reporter_feedback_for_llm(reporter_feedback_packet)
     performance_summary, strategist_output = strat_output_performance_summary_strategist_output(recent_strategy_feedback=recent_strategy_feedback, strategist_feedback=strategist_feedback, market_regime=market_regime, market_sentiment=market_sentiment, playbook=playbook, trade_aggressiveness=trade_aggressiveness, key_events=key_events, themes=themes, avoid_themes=avoid_themes, scanner_bias=scanner_bias, scanner_bias_context=scanner_bias_context, scanner_priority=scanner_priority, scanner_source_policy=scanner_source_policy, risk_tone=risk_tone, monitor_guidance=monitor_guidance, strategy_policy=strategy_policy, report_focus=report_focus, strategic_answers=strategic_answers, state=state, facade=_r3_sys.modules[__name__])
-    strategist_output["monitor_policy"] = dict(monitor_policy)
-    strategist_output["exit_policy"] = dict(exit_policy)
-    strategist_output["macro_stress_overlay"] = dict(macro_stress_overlay)
-    strategist_output["market_structure"] = market_structure
-    strategist_output["regime_score"] = float(regime_score)
-    strategist_output["sentiment_score"] = float(sentiment_score)
-    strategist_output["news_context"] = dict(news_ctx)
-    strategist_output["candidate_news_context"] = dict(candidate_news_ctx)
-    strategist_output["market_news_context"] = dict(market_news_ctx)
-    strategist_output["news_query_targets"] = list(news_query_targets)
-    strategist_output["news_collection_policy"] = dict(news_collection_policy)
-    strategist_output["news_query_reasoning"] = news_query_reasoning
-    strategist_output["news_event_intelligence"] = dict(news_event_intelligence)
-    strategist_output["news_event_intelligence_usage"] = (
-        dict(ai_overrides.get("news_event_intelligence_usage") or {})
-        if isinstance(ai_overrides.get("news_event_intelligence_usage"), dict)
-        else {"status": "insufficient", "observation_only": True, "reason": "llm_usage_not_reported"}
-    )
-    strategist_output["market_regime_rail"] = str(
-        ai_overrides.get("market_regime_rail")
-        or (strategist_input_quality.get("market_regime_rail") or {}).get("market_regime_rail")
-        or ""
-    )
-    strategist_output["news_quality"] = (
-        dict(ai_overrides.get("news_quality") or {})
-        if isinstance(ai_overrides.get("news_quality"), dict)
-        else dict(strategist_input_quality.get("news_quality") or {})
-    )
-    strategist_output["risk_off_exception_policy"] = dict(
-        strategist_input_quality.get("risk_off_exception_policy") or {}
-    )
-    strategist_output["risk_off_exception_conditions"] = list(
-        ai_overrides.get("risk_off_exception_conditions")
-        or (strategist_input_quality.get("risk_off_exception_policy") or {}).get("allowed_exception_conditions")
-        or []
-    )
-    strategist_output["strategist_input_quality"] = dict(strategist_input_quality)
-    strategist_output["global_sentiment_signal"] = dict(global_signal)
-    strategist_output["korea_indices"] = dict(global_signal.get("korea_indices") or {})
-    strategist_output["market_context_inputs"] = dict(market_context_inputs)
-    strategist_output["theme_strength"] = dict(theme_strength)
-    strategist_output["theme_strength_packet"] = dict(theme_strength_packet)
-    strategist_output["available_themes"] = list(available_themes)
-    strategist_output["selected_themes"] = list(selected_themes)
-    strategist_output["theme_strategy"] = dict(theme_strategy)
-    strategist_output["theme_source"] = str(theme_strength_packet.get("source") or "")
-    strategist_output["theme_source_status"] = str(theme_strength_packet.get("status") or "")
-    strategist_output["theme_source_reason"] = str(theme_strength_packet.get("reason") or "")
-    strategist_output["theme_source_fallback_used"] = bool(theme_strength_packet.get("fallback_used"))
-    strategist_output["theme_fallback_used"] = bool(
-        not theme_hints
-        and any(str(theme or "").strip().lower() == "broad_market_leaders" for theme in list(themes or []))
-    )
-    strategist_output["recent_strategy_feedback"] = dict(recent_strategy_feedback)
-    strategist_output["strategy_memory"] = dict(strategy_memory_advisory)
-    strategist_output["strategy_memory_snapshot"] = dict(strategy_memory_advisory)
-    strategist_output["strategist_feedback"] = dict(strategist_feedback)
-    strategist_output["reporter_feedback_packet"] = dict(reporter_feedback_packet)
-    strategist_output["reporter_feedback_summary"] = dict(compact_reporter_feedback)
-    strategist_output["performance_summary"] = dict(performance_summary)
-    strategist_output["playbook"] = playbook
-    strategist_output["pre_llm_market_regime"] = pre_llm_market_regime
-    strategist_output["pre_llm_market_sentiment"] = pre_llm_market_sentiment
-    strategist_output["pre_llm_market_structure"] = pre_llm_market_structure
-    strategist_output["pre_llm_playbook"] = pre_llm_playbook
-    strategist_output["pre_llm_monitor_guidance"] = pre_llm_monitor_guidance
-    strategist_output["pre_llm_risk_tone"] = pre_llm_risk_tone
-    strategist_output["pre_llm_trade_aggressiveness"] = pre_llm_trade_aggressiveness
-    strategist_output["llm_requested_playbook"] = llm_requested_playbook
-    strategist_output["requested_playbook"] = requested_playbook
-    strategist_output["requested_playbook_source"] = requested_playbook_source
-    strategist_output["final_playbook"] = playbook
-    strategist_output["tactical_strategy"] = tactical_strategy
-    strategist_output["tactical_subtype"] = tactical_subtype
-    strategist_output["strategy_scores"] = dict(strategy_scores)
-    strategist_output["rejected_strategy_reasons"] = dict(rejected_strategy_reasons)
-    strategist_output["candidate_watch_policy"] = dict(candidate_watch_policy)
-    strategist_output["selected_playbook"] = strategist_plan.get("selected_playbook")
-    strategist_output["candidate_hypotheses"] = list(strategist_plan.get("candidate_hypotheses") or [])
-    strategist_output["symbol_constraints"] = dict(strategist_plan.get("symbol_constraints") or {})
-    strategist_output["symbol_plan"] = dict(strategist_plan.get("symbol_constraints") or {})
-    strategist_output["entry_plan"] = dict(strategist_plan.get("entry_plan") or {})
-    strategist_output["exit_plan"] = dict(strategist_plan.get("exit_plan") or {})
-    strategist_output["strategy_summary"] = str(strategist_plan.get("strategy_summary") or "")
-    strategist_output["policy_provenance"] = dict(policy_provenance)
-    strategist_output["market_regime_summary"] = market_regime_summary
-    strategist_output["monitor_entry_policy"] = dict(monitor_entry_policy)
-    strategist_output["strategy_horizon_feedback"] = dict(strategy_horizon_feedback)
-    strategist_output["strategist_horizon_proposal"] = dict(strategist_horizon_proposal)
-    strategist_output["commander_horizon_policy"] = dict(commander_horizon_policy)
-    strategist_output["horizon_context"] = dict(horizon_context)
-    strategist_output["strategy_horizon"] = str(strategy_horizon_feedback.get("strategy_horizon") or "")
-    strategist_output["expected_hold_window"] = dict(strategy_horizon_feedback.get("expected_hold_window") or {})
-    strategist_output["exit_guidance"] = dict(strategy_horizon_feedback.get("exit_guidance") or {})
-    strategist_output["invalidation_conditions"] = list(strategy_horizon_feedback.get("invalidation_conditions") or [])
-    strategist_output["scanner_bias_context"] = dict(scanner_bias_context)
-    strategist_output["scanner_bias_summary"] = dict(summarize_scanner_bias_context(scanner_bias_context))
-    strategist_output["scanner_bias_validation_status"] = str(scanner_bias_context_validation.get("status") or "ok")
-    strategist_output["scanner_bias_validation_issues"] = list(scanner_bias_context_validation.get("issues") or [])
-    strategist_output["policy_rationale"] = policy_rationale
-    strategist_output["policy_adjustment"] = dict(policy_adjustment)
-    strategist_output["strategy_adjustment_directives"] = dict(strategy_adjustment_directives)
-    for stage_output_key in (
-        "selected_symbol_tactical_review",
-        "stale_intraday_hold_review",
-        "end_of_day_carry_review",
-    ):
-        if isinstance(ai_overrides.get(stage_output_key), dict):
-            strategist_output[stage_output_key] = dict(ai_overrides.get(stage_output_key) or {})
-    if ai_overrides.get("selected_symbol_decision") not in (None, ""):
-        strategist_output["selected_symbol_decision"] = str(ai_overrides.get("selected_symbol_decision") or "")
-        strategist_output["target_symbol"] = str(ai_overrides.get("target_symbol") or "")
-        strategist_output["target_rank"] = int(ai_overrides.get("target_rank") or 0)
-        strategist_output["runner_up_order"] = list(ai_overrides.get("runner_up_order") or [])
-        strategist_output["monitor_instruction"] = dict(ai_overrides.get("monitor_instruction") or {})
-        strategist_output["entry_policy_delta"] = dict(ai_overrides.get("entry_policy_delta") or {})
-        strategist_output["memory_usage"] = dict(ai_overrides.get("memory_usage") or {})
-        strategist_output["market_regime_rail"] = str(
-            ai_overrides.get("market_regime_rail") or strategist_output.get("market_regime_rail") or ""
-        )
-        strategist_output["news_quality"] = (
-            dict(ai_overrides.get("news_quality") or {})
-            if isinstance(ai_overrides.get("news_quality"), dict)
-            else dict(strategist_output.get("news_quality") or {})
-        )
-        strategist_output["risk_off_exception_conditions"] = list(
-            ai_overrides.get("risk_off_exception_conditions")
-            or strategist_output.get("risk_off_exception_conditions")
-            or []
-        )
-        strategist_output["commander_actionability"] = str(ai_overrides.get("commander_actionability") or "")
-    if ai_overrides.get("hold_review_decision") not in (None, ""):
-        strategist_output["hold_review_decision"] = str(ai_overrides.get("hold_review_decision") or "")
-    if ai_overrides.get("portfolio_level_decision") not in (None, ""):
-        strategist_output["carry_review"] = list(ai_overrides.get("carry_review") or [])
-        strategist_output["portfolio_level_decision"] = str(ai_overrides.get("portfolio_level_decision") or "")
-    strategist_output["policy_source"] = policy_source
-    strategist_output["policy_validation_status"] = str(monitor_entry_policy_validation.get("status") or "ok")
-    strategist_output["policy_fallback_used"] = bool(monitor_entry_policy_validation.get("fallback_used"))
-    strategist_output["policy_fallback_reason"] = str(monitor_entry_policy_validation.get("fallback_reason") or "")
-    strategist_output["policy_partial_normalized"] = bool(monitor_entry_policy_validation.get("partial_normalized"))
-    strategist_output["policy_default_filled_fields"] = list(monitor_entry_policy_validation.get("default_filled_fields") or [])
-    strategist_output["policy_validation_issues"] = list(monitor_entry_policy_validation.get("issues") or [])
-    strategist_output["policy_validation_missing_fields"] = list(
-        monitor_entry_policy_validation.get("policy_validation_missing_fields")
-        or monitor_entry_policy_validation.get("missing_fields")
-        or []
-    )
-    strategist_output["policy_validation_invalid_fields"] = list(
-        monitor_entry_policy_validation.get("policy_validation_invalid_fields")
-        or monitor_entry_policy_validation.get("invalid_fields")
-        or []
-    )
-    strategist_output["confidence"] = policy_confidence
-    strategist_output["commander_context_ref"] = {
-        "source": str(commander_context.get("source") or ""),
-        "market_regime": str(commander_context.get("market_regime") or ""),
-        "session_bias": str(commander_context.get("session_bias") or ""),
-        "risk_mode": str(commander_context.get("risk_mode") or ""),
-        "command_intent": str(commander_context.get("command_intent") or ""),
-        "strategist_invocation": str(commander_context.get("strategist_invocation") or ""),
-        "llm_policy": str(commander_context.get("llm_policy") or ""),
-        "no_trade_reason_code": str(commander_context.get("no_trade_reason_code") or ""),
-        "strategist_refresh_requested": bool(commander_context.get("strategist_refresh_requested")),
-        "strategist_refresh_reason": str(commander_context.get("strategist_refresh_reason") or ""),
-        "strategist_refresh_context": dict(commander_context.get("strategist_refresh_context") or {}),
-        "open_position_refresh_context": dict(commander_context.get("open_position_refresh_context") or {}),
-        "commander_horizon_policy": dict(commander_horizon_policy),
-        "horizon_context": dict(horizon_context),
-        "memory_packets": dict(commander_context.get("memory_packets") or {}),
-        "commander_memory_policy": dict(commander_context.get("commander_memory_policy") or {}),
-        "scanner_memory_bias": dict(commander_context.get("scanner_memory_bias") or {}),
-        "scanner_memory_bias_summary": dict(commander_context.get("scanner_memory_bias_summary") or {}),
-        "monitor_memory_bias": dict(commander_context.get("monitor_memory_bias") or {}),
-        "monitor_memory_bias_summary": dict(commander_context.get("monitor_memory_bias_summary") or {}),
-        "decision_summary": str(commander_context.get("decision_summary") or ""),
-        "source_priority": list(commander_context.get("source_priority") or []),
-    }
-    strategist_output["commander_invocation_hint"] = str(commander_context.get("strategist_invocation") or "")
-    strategist_output["commander_llm_policy"] = str(commander_context.get("llm_policy") or "")
-    strategist_output["commander_no_trade_reason_code"] = str(commander_context.get("no_trade_reason_code") or "")
-    strategist_output["commander_refresh_requested"] = bool(commander_context.get("strategist_refresh_requested"))
-    strategist_output["commander_refresh_reason"] = str(commander_context.get("strategist_refresh_reason") or "")
-    strategist_output["commander_refresh_context"] = dict(commander_context.get("strategist_refresh_context") or {})
-    strategist_output["commander_open_position_refresh_context"] = dict(
-        commander_context.get("open_position_refresh_context") or {}
-    )
-    strategist_output["commander_horizon_policy"] = dict(commander_horizon_policy)
-    strategist_output["horizon_context"] = dict(horizon_context)
-    strategist_output["memory_packets"] = dict(commander_context.get("memory_packets") or {})
-    strategist_output["commander_memory_policy"] = dict(commander_context.get("commander_memory_policy") or {})
-    strategist_output["scanner_memory_bias"] = dict(commander_context.get("scanner_memory_bias") or {})
-    strategist_output["scanner_memory_bias_summary"] = dict(commander_context.get("scanner_memory_bias_summary") or {})
-    strategist_output["monitor_memory_bias"] = dict(commander_context.get("monitor_memory_bias") or {})
-    strategist_output["monitor_memory_bias_summary"] = dict(commander_context.get("monitor_memory_bias_summary") or {})
-    strategist_output["read_model_facts_summary"] = dict(read_model_facts_summary)
-    strategist_output["selected_symbol_memory"] = dict(
-        ((strategic_answers.get("q15_commander_refresh_context") or {}).get("selected_symbol_memory") or {})
-    )
-    strategist_output["shadow_used"] = bool(commander_context.get("shadow_used"))
-    strategist_output["strategist_fallback_used"] = bool(commander_context.get("strategist_fallback_used"))
-    strategist_output["llm_frame_status"] = str(llm_meta.get("status") or "disabled")
-    strategist_output["llm_frame_applied"] = bool(llm_overrides)
-    strategist_output["llm_frame_model"] = str(llm_meta.get("model") or "")
-    strategist_output["llm_frame_recovery_method"] = str(llm_meta.get("recovery_method") or "")
-    strategist_output["llm_frame_low_confidence"] = bool(llm_meta.get("repair_used"))
-    strategist_output["llm_frame_required"] = bool(llm_required)
-    strategist_output["llm_frame_strict"] = bool(llm_strict)
-    strategist_output["llm_frame_blocked"] = bool(strategist_llm_blocked)
-    strategist_output["llm_frame_blocked_reason"] = str(strategist_llm_block_reason or "")
-    strategist_output["llm_call_trace"] = dict(llm_meta.get("llm_call_trace") or {})
-    strategist_output["runtime_theme_map_keys"] = sorted(list((state.get("theme_map") or {}).keys()))
-    strategist_output["runtime_sector_map_keys"] = sorted(list((state.get("sector_map") or {}).keys()))
-    for explanation_key in (
-        "strategy_thesis",
-        "strategy_delta_trace",
-        "strategy_refresh_trace",
-        "memory_usage_trace",
-        "news_usage_trace",
-        "scanner_handoff",
-        "monitor_handoff",
-        "conflict_analysis",
-        "trade_permission_frame",
-        "responsibility_boundary",
-    ):
-        if isinstance(ai_overrides.get(explanation_key), dict):
-            strategist_output[explanation_key] = dict(ai_overrides.get(explanation_key) or {})
-    strategist_output["memory_packet_visibility"] = build_strategist_memory_packet_visibility(
-        state=state,
-        strategist_output=strategist_output,
-    )
+    fill_strategist_output_core(ai_overrides=ai_overrides, available_themes=available_themes, candidate_news_ctx=candidate_news_ctx, candidate_watch_policy=candidate_watch_policy, commander_horizon_policy=commander_horizon_policy, compact_reporter_feedback=compact_reporter_feedback, exit_policy=exit_policy, global_signal=global_signal, horizon_context=horizon_context, llm_requested_playbook=llm_requested_playbook, macro_stress_overlay=macro_stress_overlay, market_context_inputs=market_context_inputs, market_news_ctx=market_news_ctx, market_regime_summary=market_regime_summary, market_structure=market_structure, monitor_entry_policy=monitor_entry_policy, monitor_policy=monitor_policy, news_collection_policy=news_collection_policy, news_ctx=news_ctx, news_event_intelligence=news_event_intelligence, news_query_reasoning=news_query_reasoning, news_query_targets=news_query_targets, performance_summary=performance_summary, playbook=playbook, policy_adjustment=policy_adjustment, policy_provenance=policy_provenance, policy_rationale=policy_rationale, pre_llm_market_regime=pre_llm_market_regime, pre_llm_market_sentiment=pre_llm_market_sentiment, pre_llm_market_structure=pre_llm_market_structure, pre_llm_monitor_guidance=pre_llm_monitor_guidance, pre_llm_playbook=pre_llm_playbook, pre_llm_risk_tone=pre_llm_risk_tone, pre_llm_trade_aggressiveness=pre_llm_trade_aggressiveness, recent_strategy_feedback=recent_strategy_feedback, regime_score=regime_score, rejected_strategy_reasons=rejected_strategy_reasons, reporter_feedback_packet=reporter_feedback_packet, requested_playbook=requested_playbook, requested_playbook_source=requested_playbook_source, scanner_bias_context=scanner_bias_context, scanner_bias_context_validation=scanner_bias_context_validation, selected_themes=selected_themes, sentiment_score=sentiment_score, strategist_feedback=strategist_feedback, strategist_horizon_proposal=strategist_horizon_proposal, strategist_input_quality=strategist_input_quality, strategist_output=strategist_output, strategist_plan=strategist_plan, strategy_adjustment_directives=strategy_adjustment_directives, strategy_horizon_feedback=strategy_horizon_feedback, strategy_memory_advisory=strategy_memory_advisory, strategy_scores=strategy_scores, tactical_strategy=tactical_strategy, tactical_subtype=tactical_subtype, theme_hints=theme_hints, theme_strategy=theme_strategy, theme_strength=theme_strength, theme_strength_packet=theme_strength_packet, themes=themes, facade=_r3_sys.modules[__name__])
+    fill_strategist_output_stage_reviews(ai_overrides=ai_overrides, strategist_output=strategist_output)
+    fill_strategist_output_policy_and_commander(commander_context=commander_context, commander_horizon_policy=commander_horizon_policy, horizon_context=horizon_context, llm_meta=llm_meta, llm_overrides=llm_overrides, llm_required=llm_required, llm_strict=llm_strict, monitor_entry_policy_validation=monitor_entry_policy_validation, policy_confidence=policy_confidence, policy_source=policy_source, read_model_facts_summary=read_model_facts_summary, state=state, strategic_answers=strategic_answers, strategist_llm_block_reason=strategist_llm_block_reason, strategist_llm_blocked=strategist_llm_blocked, strategist_output=strategist_output)
+    fill_strategist_output_explanations(ai_overrides=ai_overrides, state=state, strategist_output=strategist_output, facade=_r3_sys.modules[__name__])
     state["strategist_output"] = strategist_output
     state["strategist_blocked"] = bool(strategist_llm_blocked)
     state["strategist_blocked_reason"] = str(strategist_llm_block_reason or "")
@@ -4417,22 +3950,7 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
     _emit_strategist_event(
         state,
         name="market_context_snapshot",
-        payload={
-            "market_structure": str(market_structure or ""),
-            "market_context_inputs": dict(market_context_inputs),
-            "regime_factors": dict(regime_factors),
-            "global_signal": {
-                "score": _round_optional(global_signal.get("score"), 4),
-                "status": str(global_signal.get("status") or ""),
-                "source": str(global_signal.get("source") or ""),
-                "index_moves": dict(global_signal.get("index_moves") or {}),
-                "korea_indices": dict(global_signal.get("korea_indices") or {}),
-                "macro_moves": dict(global_signal.get("macro_moves") or {}),
-                "fear_index": dict(global_signal.get("fear_index") or {}),
-            },
-            "macro_stress_overlay": dict(macro_stress_overlay),
-            "candidate_symbols_hint": list(state.get("candidate_symbols") or [])[:8],
-        },
+        payload=build_market_context_snapshot_payload(global_signal=global_signal, macro_stress_overlay=macro_stress_overlay, market_context_inputs=market_context_inputs, market_structure=market_structure, regime_factors=regime_factors, state=state, facade=_r3_sys.modules[__name__]),
     )
     global_sentiment_breakdown_payload = _global_sentiment_breakdown_payload(global_signal)
     state["strategist_global_sentiment_breakdown"] = dict(global_sentiment_breakdown_payload)
@@ -4441,14 +3959,7 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
         name="global_sentiment_breakdown",
         payload=global_sentiment_breakdown_payload,
     )
-    news_evidence_ranked_payload = {
-        "news_query_targets": list(news_query_targets),
-        "candidate_news_ranked": ranked_candidate_news,
-        "market_news_ranked": ranked_market_news,
-        "candidate_news_context": dict(candidate_news_ctx),
-        "market_news_context": dict(market_news_ctx),
-        "news_context": dict(news_ctx),
-    }
+    news_evidence_ranked_payload = build_news_evidence_ranked_payload(candidate_news_ctx=candidate_news_ctx, market_news_ctx=market_news_ctx, news_ctx=news_ctx, news_query_targets=news_query_targets, ranked_candidate_news=ranked_candidate_news, ranked_market_news=ranked_market_news)
     state["strategist_news_evidence_ranked"] = dict(news_evidence_ranked_payload)
     state["strategist_candidate_symbols_hint"] = list(state.get("candidate_symbols") or [])[:10]
     strategist_output["feedback_application_trace"] = build_feedback_application_trace(
@@ -4512,154 +4023,20 @@ def strategist_node(state: Dict[str, Any]) -> Dict[str, Any]:
     )
     _log_strategist_summary(
         state,
-        {
-            "market_regime": market_regime,
-            "market_sentiment": market_sentiment,
-            "themes": list(themes),
-            "avoid_themes": list(avoid_themes),
-            "playbook": playbook,
-            "scanner_bias": scanner_bias,
-            "scanner_priority": list(scanner_priority),
-            "scanner_source_policy": dict(scanner_source_policy),
-            "trade_aggressiveness": trade_aggressiveness,
-            "risk_tone": risk_tone,
-            "monitor_guidance": monitor_guidance,
-            "candidate_count": len(list(state["candidate_symbols"])),
-            "regime_score": float(regime_score),
-            "sentiment_score": float(sentiment_score),
-            "report_focus": list(report_focus)[:3],
-            "macro_stress_overlay": dict(macro_stress_overlay),
-            "feedback_window_size": int(recent_strategy_feedback.get("feedback_window_size") or 0),
-            "top_recent_strengths": list(recent_strategy_feedback.get("top_recent_strengths") or [])[:3],
-            "top_recent_weaknesses": list(recent_strategy_feedback.get("top_recent_weaknesses") or [])[:3],
-            "reporter_feedback_available": bool(reporter_feedback_packet.get("available")),
-            "reporter_feedback_packet_available": bool(reporter_feedback_packet.get("source_available")),
-            "reporter_feedback_status": str(reporter_feedback_packet.get("status") or ""),
-            "reporter_feedback_mode": str(reporter_feedback_packet.get("reporter_feedback_mode") or "auto"),
-            "reporter_feedback_mode_source": str(reporter_feedback_packet.get("reporter_feedback_mode_source") or "default_auto"),
-            "reporter_feedback_gate_reason": str(reporter_feedback_packet.get("feedback_gate_reason") or ""),
-            "reporter_feedback_consumed": bool(reporter_feedback_packet.get("consumed")),
-            "reporter_feedback_confidence": str(reporter_feedback_packet.get("confidence") or "none"),
-            "strategy_memory_status": str(strategy_memory_advisory.get("status") or ""),
-            "best_playbooks": list(strategy_memory_advisory.get("best_playbooks") or [])[:3],
-            "worst_playbooks": list(strategy_memory_advisory.get("worst_playbooks") or [])[:3],
-            "recent_failures": list(strategy_memory_advisory.get("recent_failures") or [])[:3],
-            "recent_success_patterns": list(strategy_memory_advisory.get("recent_success_patterns") or [])[:3],
-            "recent_playbook_performance": dict(strategy_memory_advisory.get("playbook_performance_snapshot") or {}),
-            "news_query_targets": list(news_query_targets)[:6],
-            "news_query_reasoning": news_query_reasoning,
-            "memory_packet_visibility": dict(strategist_output.get("memory_packet_visibility") or {}),
-            "llm_frame_status": str(llm_meta.get("status") or "disabled"),
-            "llm_frame_applied": bool(llm_overrides),
-            "llm_frame_model": str(llm_meta.get("model") or ""),
-            "llm_frame_recovery_method": str(llm_meta.get("recovery_method") or ""),
-            "llm_frame_low_confidence": bool(llm_meta.get("repair_used")),
-            "llm_frame_blocked": bool(strategist_llm_blocked),
-            "llm_frame_blocked_reason": str(strategist_llm_block_reason or ""),
-            "strategy_generation_mode": str(strategist_policy_resolution.get("strategy_generation_mode") or ""),
-            "fallback_used": bool(strategist_policy_resolution.get("fallback_used")),
-            "fallback_source": str(strategist_policy_resolution.get("fallback_source") or ""),
-            "effective_policy_source": str(strategist_policy_resolution.get("effective_policy_source") or ""),
-        },
+        build_strategist_summary_log_payload(avoid_themes=avoid_themes, llm_meta=llm_meta, llm_overrides=llm_overrides, macro_stress_overlay=macro_stress_overlay, market_regime=market_regime, market_sentiment=market_sentiment, monitor_guidance=monitor_guidance, news_query_reasoning=news_query_reasoning, news_query_targets=news_query_targets, playbook=playbook, recent_strategy_feedback=recent_strategy_feedback, regime_score=regime_score, report_focus=report_focus, reporter_feedback_packet=reporter_feedback_packet, risk_tone=risk_tone, scanner_bias=scanner_bias, scanner_priority=scanner_priority, scanner_source_policy=scanner_source_policy, sentiment_score=sentiment_score, state=state, strategist_llm_block_reason=strategist_llm_block_reason, strategist_llm_blocked=strategist_llm_blocked, strategist_output=strategist_output, strategist_policy_resolution=strategist_policy_resolution, strategy_memory_advisory=strategy_memory_advisory, themes=themes, trade_aggressiveness=trade_aggressiveness),
     )
     append_decision_trace(
         state,
         agent="strategist",
         event="strategic_frame",
-        payload={
-            "market_regime": market_regime,
-            "market_sentiment": market_sentiment,
-            "themes": list(themes)[:5],
-            "avoid_themes": list(avoid_themes)[:5],
-            "playbook": playbook,
-            "scanner_bias": scanner_bias,
-            "scanner_priority": list(scanner_priority)[:5],
-            "scanner_source_policy": dict(scanner_source_policy),
-            "trade_aggressiveness": trade_aggressiveness,
-            "risk_tone": risk_tone,
-            "monitor_guidance": monitor_guidance,
-            "report_focus": list(report_focus)[:5],
-            "macro_stress_overlay": dict(macro_stress_overlay),
-            "feedback_window_size": int(recent_strategy_feedback.get("feedback_window_size") or 0),
-            "top_recent_strengths": list(recent_strategy_feedback.get("top_recent_strengths") or [])[:3],
-            "top_recent_weaknesses": list(recent_strategy_feedback.get("top_recent_weaknesses") or [])[:3],
-            "recent_reporter_summary": list(recent_strategy_feedback.get("recent_reporter_summary") or [])[:2],
-            "reporter_feedback_available": bool(reporter_feedback_packet.get("available")),
-            "reporter_feedback_packet_available": bool(reporter_feedback_packet.get("source_available")),
-            "reporter_feedback_status": str(reporter_feedback_packet.get("status") or ""),
-            "reporter_feedback_mode": str(reporter_feedback_packet.get("reporter_feedback_mode") or "auto"),
-            "reporter_feedback_mode_source": str(reporter_feedback_packet.get("reporter_feedback_mode_source") or "default_auto"),
-            "reporter_feedback_gate_reason": str(reporter_feedback_packet.get("feedback_gate_reason") or ""),
-            "reporter_feedback_consumed": bool(reporter_feedback_packet.get("consumed")),
-            "reporter_feedback_confidence": str(reporter_feedback_packet.get("confidence") or "none"),
-            "reporter_feedback_insight_summary": str(reporter_feedback_packet.get("insight_summary") or ""),
-            "strategy_memory_status": str(strategy_memory_advisory.get("status") or ""),
-            "best_playbooks": list(strategy_memory_advisory.get("best_playbooks") or [])[:3],
-            "worst_playbooks": list(strategy_memory_advisory.get("worst_playbooks") or [])[:3],
-            "recent_failures": list(strategy_memory_advisory.get("recent_failures") or [])[:3],
-            "recent_success_patterns": list(strategy_memory_advisory.get("recent_success_patterns") or [])[:3],
-            "recent_playbook_performance": dict(strategy_memory_advisory.get("playbook_performance_snapshot") or {}),
-            "news_query_targets": list(news_query_targets)[:6],
-            "news_query_reasoning": news_query_reasoning,
-            "memory_packet_visibility": dict(strategist_output.get("memory_packet_visibility") or {}),
-            "regime_score": float(regime_score),
-            "sentiment_score": float(sentiment_score),
-            "key_events": list(key_events)[:3],
-            "llm_frame_status": str(llm_meta.get("status") or "disabled"),
-            "llm_frame_applied": bool(llm_overrides),
-            "llm_frame_model": str(llm_meta.get("model") or ""),
-            "llm_frame_low_confidence": bool(llm_meta.get("repair_used")),
-        },
+        payload=build_strategic_frame_trace_payload(avoid_themes=avoid_themes, key_events=key_events, llm_meta=llm_meta, llm_overrides=llm_overrides, macro_stress_overlay=macro_stress_overlay, market_regime=market_regime, market_sentiment=market_sentiment, monitor_guidance=monitor_guidance, news_query_reasoning=news_query_reasoning, news_query_targets=news_query_targets, playbook=playbook, recent_strategy_feedback=recent_strategy_feedback, regime_score=regime_score, report_focus=report_focus, reporter_feedback_packet=reporter_feedback_packet, risk_tone=risk_tone, scanner_bias=scanner_bias, scanner_priority=scanner_priority, scanner_source_policy=scanner_source_policy, sentiment_score=sentiment_score, strategist_output=strategist_output, strategy_memory_advisory=strategy_memory_advisory, themes=themes, trade_aggressiveness=trade_aggressiveness),
     )
     try:
         record_decision_bridge(
             run_id=str(state.get("run_id") or "strategist-unknown"),
             agent="strategist",
             stage="decision_bridge",
-            parsed_output={
-                "market_regime": market_regime,
-                "market_sentiment": market_sentiment,
-                "themes": list(themes),
-                "avoid_themes": list(avoid_themes),
-                "playbook": playbook,
-                "scanner_bias": scanner_bias,
-                "scanner_priority": list(scanner_priority),
-                "scanner_source_policy": dict(scanner_source_policy),
-                "trade_aggressiveness": trade_aggressiveness,
-                "risk_tone": risk_tone,
-                "monitor_guidance": monitor_guidance,
-                "report_focus": list(report_focus),
-                "macro_stress_overlay": dict(macro_stress_overlay),
-                "recent_strategy_feedback": {
-                    "feedback_window_size": int(recent_strategy_feedback.get("feedback_window_size") or 0),
-                    "top_recent_strengths": list(recent_strategy_feedback.get("top_recent_strengths") or [])[:3],
-                    "top_recent_weaknesses": list(recent_strategy_feedback.get("top_recent_weaknesses") or [])[:3],
-                },
-                "reporter_feedback_packet": {
-                    "available": bool(reporter_feedback_packet.get("available")),
-                    "status": str(reporter_feedback_packet.get("status") or ""),
-                    "reporter_feedback_mode": str(reporter_feedback_packet.get("reporter_feedback_mode") or "auto"),
-                    "reporter_feedback_mode_source": str(reporter_feedback_packet.get("reporter_feedback_mode_source") or "default_auto"),
-                    "consumed": bool(reporter_feedback_packet.get("consumed")),
-                    "feedback_gate_reason": str(reporter_feedback_packet.get("feedback_gate_reason") or ""),
-                    "confidence": str(reporter_feedback_packet.get("confidence") or "none"),
-                    "insight_summary": str(reporter_feedback_packet.get("insight_summary") or ""),
-                    "recommendation": list(reporter_feedback_packet.get("recommendation") or [])[:3],
-                    "route_analysis": dict((reporter_feedback_packet.get("route_analysis") or {})),
-                },
-                "strategy_memory": {
-                    "status": str(strategy_memory_advisory.get("status") or ""),
-                    "best_playbooks": list(strategy_memory_advisory.get("best_playbooks") or [])[:3],
-                    "worst_playbooks": list(strategy_memory_advisory.get("worst_playbooks") or [])[:3],
-                    "recent_failures": list(strategy_memory_advisory.get("recent_failures") or [])[:3],
-                    "recent_success_patterns": list(strategy_memory_advisory.get("recent_success_patterns") or [])[:3],
-                    "recent_playbook_performance": dict(strategy_memory_advisory.get("playbook_performance_snapshot") or {}),
-                },
-                "memory_packet_visibility": dict(strategist_output.get("memory_packet_visibility") or {}),
-                "news_query_targets": list(news_query_targets),
-                "news_query_reasoning": news_query_reasoning,
-                "candidate_symbols": list(state.get("candidate_symbols") or []),
-            },
+            parsed_output=build_strategist_decision_bridge_output(avoid_themes=avoid_themes, macro_stress_overlay=macro_stress_overlay, market_regime=market_regime, market_sentiment=market_sentiment, monitor_guidance=monitor_guidance, news_query_reasoning=news_query_reasoning, news_query_targets=news_query_targets, playbook=playbook, recent_strategy_feedback=recent_strategy_feedback, report_focus=report_focus, reporter_feedback_packet=reporter_feedback_packet, risk_tone=risk_tone, scanner_bias=scanner_bias, scanner_priority=scanner_priority, scanner_source_policy=scanner_source_policy, state=state, strategist_output=strategist_output, strategy_memory_advisory=strategy_memory_advisory, themes=themes, trade_aggressiveness=trade_aggressiveness),
             decision_link={
                 "decision_chain": {
                     "theme": (list(themes)[0] if list(themes) else ""),

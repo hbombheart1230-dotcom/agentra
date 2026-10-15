@@ -27,6 +27,7 @@ MODULES = {
     "graphs/nodes/monitor_node.py": ("monitor_node", "_evaluate_monitor_entry_candidate"),
     "libs/runtime/exit_policy.py": ("evaluate_exit_policy", "_build_account_pnl_crosscheck"),
 }
+T4B_END_SHA = "8acedae23e64c11b958556e7835b4ebf5e404e73"
 MAX_OWNER_LOC = 350
 FORBIDDEN_TOKENS = ("os.environ", "os.getenv", "getenv(", "time.time(", "datetime.now", "datetime.utcnow", "uuid.uuid",
                     "subprocess", "sqlite3", "requests.", "print(", "open(", "logging.", "random.")
@@ -308,7 +309,9 @@ def test_no_duplicate_exit_decision_authority_in_the_new_owners():
 
 
 def test_t4b_changed_paths_stay_in_monitor_scope_and_touch_no_authority_surface():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    # stage-pinned: T4-B scope is evaluated up to its accepted stage end (T4-C legitimately touches the Strategist scope)
+    assert subprocess.run(["git", "merge-base", "--is-ancestor", T4B_END_SHA, "HEAD"], cwd=ROOT).returncode == 0
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, T4B_END_SHA], cwd=ROOT).decode().split(chr(0))
     for p in [x for x in out if x]:
         assert p.startswith(ALLOWED_CHANGED), f"T4-B touched an out-of-scope path: {p}"
         assert not p.startswith(FORBIDDEN_PREFIXES), p
