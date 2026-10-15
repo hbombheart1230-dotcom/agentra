@@ -1,35 +1,14 @@
-from __future__ import annotations
+"""Compatibility entrypoint for scripts.research.run_post_reclaim_offline_research."""
+import importlib as _importlib
+import runpy as _runpy
+import sys as _sys
+from pathlib import Path as _Path
 
-import argparse
-import json
-import sys
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from libs.research.post_reclaim_alpha import run_post_reclaim_offline_research
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Reconstruct confirmed post-reclaim shadow episodes offline."
-    )
-    parser.add_argument("--start", default="2026-06-01")
-    parser.add_argument("--end", default="2026-07-30")
-    parser.add_argument("--max-pages", type=int, default=20)
-    parser.add_argument("--no-fetch", action="store_true")
-    args = parser.parse_args()
-    paths = run_post_reclaim_offline_research(
-        start=args.start,
-        end=args.end,
-        allow_fetch=not args.no_fetch,
-        max_pages=max(1, args.max_pages),
-    )
-    print(json.dumps(paths, ensure_ascii=False, indent=2))
-    return 0
-
+_ROOT = _Path(__file__).resolve().parents[1]
+if str(_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_ROOT))
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _runpy.run_module("scripts.research.run_post_reclaim_offline_research", run_name="__main__")
+else:
+    _sys.modules[__name__] = _importlib.import_module("scripts.research.run_post_reclaim_offline_research")

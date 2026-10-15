@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import shutil
 from pathlib import Path
 
@@ -16,7 +17,9 @@ def _remove_tree(path: Path) -> None:
             pass
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Clean repo-local legacy pytest scratch artifacts.")
+    parser.parse_args(argv)
     repo_root = Path(__file__).resolve().parents[1]
     keep = {
         repo_root / ".pytest-work",

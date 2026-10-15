@@ -3246,3 +3246,150 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 경계: 환경변수 읽기, State 변경, LLM 연동 `_load_operator_brief`, 아티팩트 저장은 변경하지 않았고 LLM/Broker/Supervisor/Executor 권한 변경 없음. REAL_BRIEF_PARITY_NOT_RUN(합성 offline 입력만 검증).
 - 상태: 독립 Codex 감사 대기, T5/Wave D/main 병합 미착수. T4-C Reporter fallback 커버리지 P2는 별도 유지.
 
+
+# 2026-10-15 - Reporting Target-Tree Relocation Batch 1
+
+- Relocated **12 Reporter helper modules** without changing their implementation bytes: `trade_report` (6), `trade_report_markdown` (2), `trade_story` (4).
+- Kept all previous import locations as identical module-object aliases for compatibility; existing runtime call sites and major reporting entrypoints remain untouched.
+- No T4 runtime files, order execution logic, guard, CAS or broker paths changed.
+- Added focused import-identity tests. Full pytest and UI build still needed before merge.
+- Details: `docs/daily_patch/2026-10-15_reporting_relocation_batch1.md`.
+
+# 2026-10-15 - Reporting Target-Tree Relocation Batch 2
+
+- Move five implementation bodies byte-for-byte, retaining legacy module-object aliases.
+- `trade_report_ai_merge_policy` -> `trade_report/merge_policy`
+- `trade_report_ai_prompting` -> `trade_report/prompting`
+- `trade_report_ai_shared_facts` -> `trade_report/shared_facts`
+- `trade_report_markdown_monitor` -> `trade_report_markdown/monitor`
+- `trade_report_markdown_scanner` -> `trade_report_markdown/scanner`
+- Existing call sites, top-level Reporting owners and all agent/runtime/execution paths remain untouched.
+- Batch 1 prerequisite: 14 import checks and 185 related tests passed.
+- Validation results are recorded in the Batch 2 refactor document.
+
+- Batch 2 validation: **272 pytest passed**, **16 web tests passed**, production build passed; five implementation byte comparisons and canonical-first import checks passed. Full repository suite/live trading not run.
+
+# 2026-10-15 - T4 / PR #5 Reporting Integration Hold
+
+- Deleted only retired `refactor/gpt-p0-strategist-contract-20261015` after user-confirmed PR #4 CLOSED/unmerged; verified full-history bundle retained locally.
+- Compared 11 overlapping paths by full Git blob SHA and content. Preserve T4 ownership, especially normalization/operator_text and expanded or separated flat helpers.
+- Nine byte-identical relocation pairs are selective integration candidates; no Reporting code moved or changed. Batch 3 remains paused; merge remains on hold.
+- PR #5 Draft workflow is retained; GitHub API Forbidden prevents independent isDraft verification. No Ready/merge/auto-merge operation performed.
+- Full report: `docs/refactor/2026-10-15_t4_pr5_reporting_conflict_report.md`.
+
+## 2026-10-15 - T4 conflict snapshot recheck
+
+- T4 advanced to `4e242e5`; only five documentation files changed. Eleven overlapping paths, nine independent relocation candidates and code preservation strategy remain valid. Latest shared changelog blob SHAs are recorded in the conflict report. No code moved; Batch 3 and merge remain on hold.
+
+# 2026-10-15 - Scripts / Config Inventory and Safe Example Relocation
+
+- Scripts 212 -> 216 files: classify all files and record import/subprocess/CI/Docker/Windows scheduler/docs references.
+- Move demo_m22_skill_flow, demo_m22_graph_with_hydration and demo_m7_dry_run_pipeline implementations into scripts/examples; legacy module/CLI paths remain wrappers.
+- Business logic unchanged: bootstrap +7/-2 lines, 45 wrapper lines, one package marker. Original implementation bytes recovered by reversing only bootstrap edits.
+- Related pytest 20 passed; original offline CLI 34/34, relocated CLI 68/68 equivalent after clock-only normalization; direct bootstrap 6/6 passed.
+- Config 8 KEEP; no deletes, order submissions or strategy/config value changes. Reporting Batch 3 remains paused; T4 code conflict 0. Only the two shared changelog files use the approved append-only exception. Future integration must preserve both histories and check duplicate entries.
+- Evidence: docs/refactor/2026-10-15_scripts_config_migration.md and docs/refactor/2026-10-15_scripts_config_inventory.json.
+- Final combined targeted pytest: **26 passed**; one dependency deprecation warning. Existing JSON entries/order and Markdown prefix preservation verified.
+
+# 2026-10-15 - Scripts Bulk Target-Tree Migration
+
+- Processed 157 candidates; relocated **138** implementations: Research 53, Diagnostics 73, Maintenance 12. Held 19 with per-file evidence.
+- Kept legacy CLI/import paths with 138 thin wrappers (1,932 lines). Root Python: 42 local implementations, 8 existing forwarders, 141 total compatibility wrappers and one package marker.
+- Bootstrap-only changes; inverse edits recover byte-identical originals. No business logic, operational/trading policy, Config 8 or protected Reporting/runtime changes.
+- Validation: **276 import/signature/root checks**, **828 CLI parity checks**, **300 existing pytest tests passed**. Guarded temp-only validation; no orders or external collection.
+- Preserved Operations/T4 scripts; T4 code overlap zero. These two shared changelogs use the approved append-only exception; future integration preserves both histories and checks duplicate entries.
+- Reporting Batch 3 paused; PR #5 Draft workflow unchanged, no merge or auto-merge.
+- Report: docs/refactor/2026-10-15_scripts_bulk_migration.md; ledger: docs/refactor/2026-10-15_scripts_bulk_manifest.json.
+- Final UI patch-note checks: **5 passed**; append-only history integrity verified and successful temporary test/runtime artifacts cleaned.
+
+# 2026-10-15 — T4 / PR #5 Reporting Conflict Cleanup
+
+- Restore eight T4-overlapping flat helpers to their exact main source blobs, remove eight corresponding stale PR5 canonical copies.
+- Match `trade_report/__init__.py` with T4, retain only nine independent Reporting relocation pairs.
+- All 138 Scripts canonical relocations and 141 public CLI wrappers preserved.
+- No T4 files or live trading policy changed. PR #5 Draft remains unmerged.
+- Regression on the combined T4 + PR5 checkout required before approval.
+- Detail: `docs/refactor/2026-10-15_t4_pr5_reporting_cleanup.md`.
+
+# 2026-10-15 — Scripts Target-Tree Compatibility Audit
+
+- Add static AST-based read-only preflight for all 138 relocated Scripts and 141 root compatibility wrappers.
+- Validate legacy/canonical path presence, Python syntax, CLI/import dispatch target literals and manifest conservation. No target script is invoked.
+- Four synthetic fixture tests PASS in GPT isolated environment. Full checkout and T4/PR5 combined tests not run.
+- Existing public CLI wrappers, T4 source, Config and trading authority untouched; PR #5 remains Draft.
+- Docs: `docs/refactor/2026-10-15_scripts_wrapper_contract_audit.md`.
+
+# 2026-10-15 — Scripts contract CI / Codex handoff
+
+- Add read-only wrapper auditing CI for Python 3.12 Linux and Windows; 141 path checks and four isolated fixture tests.
+- Independently re-ran isolated fixture tests: **4 PASS**. CI and full-checkout wrapper audit remain **PENDING**.
+- Register `docs/refactor/work_orders/PR5-CODEX-SCRIPTS-ACCEPTANCE-20261015.md` for Codex. Claude T4 remains independent; no wrapper retirement or T4/PR5 merge.
+
+# 2026-10-15 — Scripts CI Windows fixture isolation correction
+
+- First run: Linux 141 wrapper checks + four fixture pytest PASS; Windows 141 wrapper checks + four fixture pytest assertions PASS but repository conftest returned exit 1 on NTFS directory mtime change under data/originals and data/specs.
+- Keep the actual-checkout static audit; stage only synthetic source/unit fixtures in GitHub runner temporary workspace, outside the checkout. Production-write protections in repository unchanged.
+- New Linux/Windows CI evidence required; no changes to T4 or public CLI paths.
+
+# 2026-10-15 - Scripts continuation / Issue #8
+
+- Status **SCRIPTS_CONTINUATION_IN_PROGRESS**. Prior Issue #6 accepted the 138 migrated implementations only.
+- Classified remaining 42 implementations, 8 delegates, 20 Windows/shell launchers, 19 holds and 141 wrappers. Holds: KEEP 15 / TEST_BLOCKED 3 / relocation after gate 1. Wrappers: 112 PRESERVE / 29 review after gate, all retained.
+- Fixed source auditor false accepts: disconnected ABI alias, incorrect CLI run_name, commented example dispatch. All 141 wrappers pass unchanged.
+- Added source-only Windows invocation/CWD/policy/task graph and native Windows Parser.ParseFile checks for six PowerShell files in Scripts CI. Local isolated tests: **12 PASS**; native Windows evidence is recorded by the new CI job after push. No live launcher invoked.
+- Existing registration/unregistration leaves two Q12 task suffixes unmatched; operational-owner review only, no task-policy edit. No T4/Reporting/runtime/strategy/Config/deployment changes or physical moves/removals.
+- Future physical cleanup requires architecture approval and usage/retirement proof. Issue #9 UI work remains next, not executed here.
+- Details: docs/refactor/2026-10-15_scripts_continuation_issue8.md; evidence: docs/refactor/2026-10-15_scripts_remaining_dispositions.json.
+
+# 2026-10-15 — Scripts continuation / Issue #8 iteration 2
+
+- Fix empty research outlier analysis; validate held entrypoints without production execution.
+- Empty research top1 return is null instead of IndexError; nonempty values preserved.
+- Seven new held-entrypoint tests plus five research tests and one missing-authority test PASS.
+- Windows venv command contract mocked; empty historical no-write CLI is COMPLETE with zero units, not proof of historical authority.
+- Order-demo duplicate helpers, Q12 scheduler asymmetry, physical moves and wrapper retirement remain gated; all wrappers retained. Issue #9 not started.
+- Offline research handles empty input; trading, scheduler, Reporting and T4 code unchanged.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_scripts_issue8_followup.md
+
+# 2026-10-15 — Scripts continuation / Issue #8 iteration 3
+
+- Resolve literal per-file task prefixes without shell expansion; parse cleanup CLI before deletion.
+- Keep raw task fields; add resolved mismatches, unresolved evidence and optional strict six-create/four-delete baseline gate.
+- Report two Q12 unmatched tasks for owner review; scheduler policy and launchers unchanged.
+- Cleanup --help exits0 and unknown flags exit2 before glob/deletion; zero-argument behavior unchanged.
+- 23 isolated fixture tests PASS; source audits141 wrappers and20 launchers PASS. Ubuntu/Windows gates retained; exact commit results in Actions.
+- Historical snapshot unchanged; held delta17 KEEP /1 TEST_BLOCKED /1 relocation after architecture gate. All141 wrappers retained.
+- Source-only contract hardening; no T4, Reporting, trading, Config or scheduler policy changes.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_scripts_issue8_iteration3.md
+
+# 2026-10-15 — GPT Source Work Order01
+
+- Replace four duplicate JSONL loops with the existing reader; fix intent attribution and exact-zero broker observations.
+- Preserve _load_jsonl/_iter_rows, CLI entrypoints, JSON keys, output formatting, ordering and M25 UTC-day semantics. Shared reader unchanged.
+- Prefer execution.allowed including false/null; fallback verdict and verdict_reason require a matching explicit intent ID. Suppress ambiguous multi-order context.
+- Finite Decimal equality accepts exact numeric zero only; fractional, NaN, Infinity and tiny nonzero codes cannot count as success.
+- 77 targeted pytest PASS;80 fake-file CLI invocations across four entrypoint forms and8 baseline JSON/text comparisons PASS. No native Windows diagnostic-suite claim.
+- All141 wrappers retained; no T4, order/approval/broker runtime, UEF authority, scheduler, Config or UI code changed.
+- More accurate read-only trade diagnostics; trading authority and execution behavior unchanged.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_source_work_order01.md
+
+# 2026-10-15 — GPT Source Work Order02
+
+- Q10/Q12 share baseline_candle_reader and baseline_artifact_io while retaining legacy facades.
+- Move three candle functions to a shared owner; Q12 no longer depends directly on the Q10 provider. Q10 public signatures and local normalization/number monkeypatch seams retained.
+- Replace four local JSON I/O bodies with two shared implementations, removing two redundant copies. Keep UTF-8 formatting, newline, error behavior and all artifact paths/schemas.
+- 81 focused pytest PASS;13 baseline differential scenarios PASS. Q10 six/Q12 nine artifact files, including10 JSON, byte-identical with the existing Q12 generated_at clock fixed equally in test only.
+- No external collection/order calls, T4 code, strategy, returns/cost, decision cadence, authority, scheduler/Config or vnext publication changes. All141 wrappers retained.
+- Common data responsibility no longer belongs to a strategy-specific provider; reporting behavior preserved.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_source_work_order02.md
+
+# 2026-10-15 — GPT Source Work Order03
+
+- Share pure diagnostic owners and remove12 redundant copies; correct Ops broker-code truncation.
+- 18 local helper bodies delegate to shared owners or the existing JSONL reader. Broker implementations converge after the Ops exact-zero correction.
+- Preserve legacy function names, eager/lazy JSONL, percentile rounding, argv, stdout/stderr, JSON types, exit/exception behavior, 1MiB hashing and tolerant UTF-8 line counting.
+- 119 distinct targeted pytest PASS;63 baseline helper comparisons and22 CLI help/error comparisons PASS (110 subprocesses).
+- Closeout/Drill child bodies never executed; milestone seams tested only with stubs. No native Windows or full-workflow acceptance claim.
+- All141 wrappers retained; no T4/runtime/order/authority/Config/UI/scheduler changes. Existing date fallback functions and shared event reader unchanged.
+- Read-only diagnostics share one implementation per responsibility; trading and operational execution contracts unchanged.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_source_work_order03.md

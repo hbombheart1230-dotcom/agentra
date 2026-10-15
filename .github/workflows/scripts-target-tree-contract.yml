@@ -1,0 +1,93 @@
+name: Scripts Target Tree Contract
+
+on:
+  push:
+    branches:
+      - refactor/agentra-target-tree
+    paths:
+      - "scripts/**"
+      - "tests/test_scripts_target_tree_compat_audit.py"
+      - "tests/test_windows_launcher_contracts.py"
+      - "tests/test_cleanup_pytest_artifacts_cli.py"
+      - "docs/refactor/2026-10-15_scripts_bulk_manifest.json"
+      - ".github/workflows/scripts-target-tree-contract.yml"
+  pull_request:
+    paths:
+      - "scripts/**"
+      - "tests/test_scripts_target_tree_compat_audit.py"
+      - "tests/test_windows_launcher_contracts.py"
+      - "tests/test_cleanup_pytest_artifacts_cli.py"
+      - "docs/refactor/2026-10-15_scripts_bulk_manifest.json"
+      - ".github/workflows/scripts-target-tree-contract.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scripts-target-tree-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-contract:
+    name: Static CLI contract / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify all 141 legacy wrapper targets (no execution)
+        shell: bash
+        run: python scripts/diagnostics/audit_target_tree_compat.py --json
+      - name: Audit all 20 Windows launcher references (no execution)
+        shell: bash
+        run: python scripts/diagnostics/audit_windows_launchers.py --json --assert-mockexam-known-contract
+      - name: Parse PowerShell launcher syntax without executing launchers
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $files = @(Get-ChildItem -LiteralPath scripts -Filter '*.ps1' -File)
+          if ($files.Count -ne 6) { throw "Expected 6 PowerShell launchers, found $($files.Count)" }
+          foreach ($file in $files) {
+            $tokens = $null
+            $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$parseErrors) | Out-Null
+            if ($parseErrors.Count -gt 0) { throw "$($file.Name): $($parseErrors | Out-String)" }
+          }
+          Write-Host "Parsed $($files.Count) PowerShell launchers; none executed."
+      - name: Install isolated test runner
+        shell: bash
+        run: python -m pip install "pytest>=8,<9"
+      # Run the isolated, source-only fixture suite OUTSIDE the checkout.
+      # Repository conftest production-write snapshots can false-positive on
+      # Windows NTFS directory mtime for otherwise scratch-only static tests.
+      # The real repository's 141 wrappers were checked in the preceding step.
+      - name: Stage source-only unit fixtures in runner temp
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, pathlib, shutil
+          src = pathlib.Path.cwd()
+          dst = pathlib.Path(os.environ['RUNNER_TEMP']) / 'agentra-static-fixtures'
+          for relative in (
+              'scripts/diagnostics/audit_target_tree_compat.py',
+              'scripts/diagnostics/audit_windows_launchers.py',
+              'tests/test_scripts_target_tree_compat_audit.py',
+              'tests/test_windows_launcher_contracts.py',
+              'scripts/cleanup_pytest_artifacts.py',
+              'tests/test_cleanup_pytest_artifacts_cli.py',
+          ):
+              target = dst / relative
+              target.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(src / relative, target)
+          print(dst)
+          PY
+      - name: Run isolated AST auditor fixture tests
+        shell: bash
+        run: |
+          python -c "import os,pathlib,pytest,sys;p=pathlib.Path(os.environ['RUNNER_TEMP'])/'agentra-static-fixtures'/'tests';sys.exit(pytest.main([str(p),'-q','-p','no:cacheprovider']))"

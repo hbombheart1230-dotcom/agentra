@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 248,
+  "entry_count": 264,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6669,6 +6669,387 @@
         "tests/test_p165_t4d_extraction_gates.py",
         "tests/test_p165_commander_ui_contract_freeze.py"
       ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Reporting-Target-Tree-Batch1",
+      "title": "Reporting modules relocated under final agent tree",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Move 12 unchanged Reporter helper module bodies to trade_report, trade_report_markdown and trade_story packages while keeping previous import locations as compatible aliases.",
+      "details": [
+        "6 trade_report, 2 trade_report_markdown and 4 trade_story modules are placed in role-aligned directories with byte-identical Git blobs.",
+        "Existing flat imports continue to resolve to the new module objects; no consumers or trading hot-path source files are changed.",
+        "Unit import-identity tests added. Full-checkout pytest and UI build remain merge prerequisites; draft PR remains unmerged.",
+        "Claude T4 Commander/Strategist/Scanner/Monitor/Executor/Supervisor scope is excluded."
+      ],
+      "impact": "Filesystem ownership improvement only; no deliberate trading, approval, broker, risk or report output semantics change.",
+      "sources": [
+        "docs/refactor/2026-10-15_reporting_relocation_batch1.md",
+        "tests/test_reporting_relocation_imports.py",
+        "docs/daily_patch/2026-10-15_reporting_relocation_batch1.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Reporting-Target-Tree-Batch2",
+      "title": "Additional Reporting leaf helpers relocated",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Move five unchanged Reporting helpers into the existing target packages, preserving legacy module identity.",
+      "details": [
+        "Three trade_report helpers and two trade_report_markdown helpers retain byte-identical implementation bodies.",
+        "Legacy module aliases preserve private exports and monkeypatch targets; runtime call sites and top-level reporting entrypoints are unchanged.",
+        "Batch 1 import tests: 14 passed; related reporting and patch-note tests: 185 passed before Batch 2.",
+        "Commander, Strategist, Scanner, Monitor, Supervisor, Executor, broker and execution guards remain outside this change.",
+        "Batch 2 validation: 272 targeted pytest checks, 16 web unit tests and the TypeScript/Vite production build passed; all five moved implementation bodies match their original bytes.",
+        "T4 refactor/p1.5 overlap check excluded trade_report_ai_deterministic.py; remaining Batch 2 code paths do not overlap T4. Shared UI changelog files are append-only updates."
+      ],
+      "impact": "Reporting package organization only; no intended report or trading behavior change.",
+      "sources": [
+        "docs/refactor/2026-10-15_reporting_relocation_batch2.md",
+        "docs/daily_patch/2026-10-15_reporting_relocation_batch2.md",
+        "tests/test_reporting_relocation_imports.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Reporting-T4-PR5-Integration-Hold",
+      "title": "T4 Reporting ownership preserved; Batch 3 paused",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Record 11 overlapping T4/PR5 paths and defer integration in favor of T4 owners. No Reporting code changes.",
+      "details": [
+        "Remove only the retired GPT branch after user-confirmed PR #4 CLOSED/unmerged status; preserve its full history in a verified local bundle.",
+        "Preserve T4 normalization/operator_text owners and expanded or already separated flat helpers; identify nine byte-identical relocation pairs as selective integration candidates.",
+        "Pause Batch 3 and hold PR #5 in Draft/manual-review workflow. No merge or auto-merge. Draft state could not be independently rechecked because GitHub API returns Forbidden."
+      ],
+      "impact": "Integration planning and branch cleanup only. T4 Reporting implementations remain unchanged.",
+      "sources": [
+        "docs/refactor/2026-10-15_t4_pr5_reporting_conflict_report.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Reporting-T4-PR5-Snapshot-Recheck",
+      "title": "Concurrent T4 documentation update rechecked",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Recheck T4 at 4e242e5 after concurrent remote advancement; no Reporting implementation changed.",
+      "details": [
+        "Only five documentation paths changed since the conflict report baseline. The eleven overlapping paths and nine independent relocation candidates remain valid.",
+        "Record the latest two shared changelog blob SHAs in the conflict report. Batch 3 and merge remain on hold."
+      ],
+      "impact": "Report snapshot refresh only; no code or T4 branch changes.",
+      "sources": [
+        "docs/refactor/2026-10-15_t4_pr5_reporting_conflict_report.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Examples-Target-Tree-Batch1",
+      "title": "Inventory Scripts/Config and relocate safe examples",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "COMPATIBILITY"
+      ],
+      "summary": "Move three safe demo implementations into scripts/examples while preserving all old module/CLI entrypoints.",
+      "details": [
+        "Inventory 212 original Scripts files and 216 resulting files; trace imports, subprocesses, deployment/scheduler and documentation references.",
+        "Change bootstrap paths only; reverse those edits to recover byte-identical original implementations. No order, strategy or config policy changes.",
+        "Existing related pytest: 20 passed before and after; 34 original offline CLI cases and 68 relocated legacy/canonical cases equivalent with six explicit clock-only normalizations. Six no-repository-PYTHONPATH direct-script checks also passed.",
+        "Config 8/8 KEEP. Baseline JSON/YAML are not identical duplicates; skills are dynamically loaded. No safe deletion approved; absent static references remain UNKNOWN.",
+        "Reporting Batch 3 remains paused. No T4 code or launchers edited. The two mandatory shared changelog documents are user-approved append-only exceptions; future integration must preserve both branches’ histories and deduplicate new entries.",
+        "Final combined targeted pytest: 26 passed, 1 dependency deprecation warning. Original JSON entries/order and Markdown prefix preservation verified."
+      ],
+      "impact": "Repository layout and compatibility only; no trading behavior or operational command migration.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_scripts_examples_migration.md",
+        "docs/refactor/2026-10-15_scripts_config_migration.md",
+        "docs/refactor/2026-10-15_scripts_config_inventory.json"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Bulk-Target-Tree-Migration",
+      "title": "Bulk Scripts migration with preserved CLI contracts",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "COMPATIBILITY"
+      ],
+      "summary": "Process all 157 inventory candidates; relocate 138 Research/Diagnostics/Maintenance implementations with preserved legacy CLI/import paths.",
+      "details": [
+        "Move Research 53, Diagnostics 73, Maintenance 12; hold 19 Windows, operational, baseline-failing or UEF5 integration candidates with per-file evidence.",
+        "Original implementation bytes match after reversing bootstrap changes; no business logic, trading policy, Config or protected Reporting/runtime code changed.",
+        "Preserve 138 thin wrappers (1,932 lines) because existing public/manual CLI paths have no retirement policy; root retains 42 local Python implementations, 8 existing forwarders and 141 total compatibility wrappers.",
+        "Validation: 276 import/signature/root checks, 828 CLI parity checks and 300 existing pytest tests passed. Unsafe commands use guarded help/import/static checks; no live orders or external data acquisition.",
+        "Latest T4 code overlap is zero. Only these two user-approved shared changelog files are append-only exceptions; preserve both histories and deduplicate entries on future integration. Reporting Batch 3 remains paused; no merge/auto-merge.",
+        "Final patch-note tests: 5 passed. Existing history content/order preserved, entry_count incremented once, and successful temporary test/runtime artifacts cleaned."
+      ],
+      "impact": "Canonical Scripts folder organization only; existing CLI/module, scheduler and deployment call paths remain available.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_scripts_bulk_migration.md",
+        "docs/refactor/2026-10-15_scripts_bulk_migration.md",
+        "docs/refactor/2026-10-15_scripts_bulk_manifest.json"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "T4-PR5-Reporting-Conflict-Cleanup",
+      "title": "Remove T4-overlapping Reporting relocations from PR5",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Restore eight conflicted PR5 flat module paths to their original main Git blobs and drop eight outdated canonical copies; retain nine independent relocations and all Scripts moves.",
+      "details": [
+        "T4 owns the more advanced Reporting contract implementations. PR5 now excludes eight obsolete canonical copies and has eight original flat imports restored exactly.",
+        "Align trade_report package init with T4's current one-line owner definition to avoid an add/add conflict. Reduce import-identity regression scope from 17 to nine genuinely independent relocated modules.",
+        "Preserve 138 Scripts moved bodies and 141 existing old-path wrappers; do not delete public CLI entrypoints without an explicit retirement contract.",
+        "No T4 code changed and no branch merge performed. Combined T4/PR5 pytest and UI build remain required before integration approval."
+      ],
+      "impact": "Premerge branch isolation and conflict reduction only; no intentional operational/strategy or broker behavior change.",
+      "sources": [
+        "docs/refactor/2026-10-15_t4_pr5_reporting_cleanup.md",
+        "docs/daily_patch/2026-10-15_reporting_t4_pr5_cleanup.md",
+        "tests/test_reporting_relocation_imports.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Target-Tree-Compat-Audit-V1",
+      "title": "Read-only CLI wrapper compatibility audit",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "COMPATIBILITY",
+        "TESTING"
+      ],
+      "summary": "Add a no-side-effect, AST-only preflight to verify 138 moved implementations and 141 legacy Scripts wrappers remain mapped to the correct target modules.",
+      "details": [
+        "Use the existing 157-candidate manifest; verify legacy/canonical Python file existence, syntax, literal import and main dispatch targets, and moved/held counts without executing modules.",
+        "Add four synthetic fixture tests for valid mappings, wrong CLI target, missing canonical file, and non-execution of canonical source; locally 4/4 passed.",
+        "Keep all 141 wrappers and T4 work unchanged. Full actual-checkout and combined T4/PR5 regression remain separate integration gates."
+      ],
+      "impact": "Static audit utility only; no trading/runtime behavior, setting, import contract or order path changed.",
+      "sources": [
+        "docs/refactor/2026-10-15_scripts_wrapper_contract_audit.md",
+        "docs/daily_patch/2026-10-15_scripts_wrapper_contract_audit.md",
+        "tests/test_scripts_target_tree_compat_audit.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "PR5-Scripts-Contract-CI-Handoff",
+      "title": "Scripts compatibility CI and Codex acceptance task",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "COMPATIBILITY",
+        "TESTING",
+        "CI"
+      ],
+      "summary": "Add an isolated Linux/Windows static contract workflow and delegated full-checkout verification work order for the 141 Scripts compatibility entrypoints.",
+      "details": [
+        "GitHub Actions checks 141 wrapper target paths without module execution or external service use, then runs four isolated auditor fixtures.",
+        "Local isolated test re-run: 4 passed. GitHub CI and full-checkout real repository run pending separate verification.",
+        "Codex is tasked with static acceptance and representative safe CLI parity. No T4 convergence or wrapper retirement until post-T4 architecture approval."
+      ],
+      "impact": "Read-only CI and handoff documentation only; no trading behavior, config, or branch merge.",
+      "sources": [
+        "docs/refactor/work_orders/PR5-CODEX-SCRIPTS-ACCEPTANCE-20261015.md",
+        "docs/daily_patch/2026-10-15_scripts_contract_ci_handoff.md",
+        ".github/workflows/scripts-target-tree-contract.yml"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "PR5-Scripts-CI-Windows-Isolation-Fix",
+      "title": "Isolate static fixture CI from Windows checkout mtime guard",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "TESTING",
+        "CI",
+        "COMPATIBILITY"
+      ],
+      "summary": "Keep the full-checkout 141-wrapper static audit and move only synthetic AST fixture tests to runner temporary directory to avoid a Windows NTFS directory-mtime production-path isolation false positive.",
+      "details": [
+        "First CI run: Linux 141/141 static audit and four fixture tests PASS; Windows 141/141 static audit and four pytest assertions PASS but session exited 1 because unrelated checkout data directory mtimes were reported by the repository-wide production write watchdog.",
+        "The Windows checkout's data/originals and data/specs directory mtime changed without attributable direct file writes by these four temp-path-only fixtures. The watchdog itself remains unchanged.",
+        "Run the synthetic source-only test files in RUNNER_TEMP, outside repository conftest; retain full-checkout 141-wrapper static audit as a separate CI step. Confirm fresh Linux/Windows runs before claiming both PASS."
+      ],
+      "impact": "CI fixture isolation only. No runtime, production artifacts, guard bypass in repository, or trading policy changed.",
+      "sources": [
+        ".github/workflows/scripts-target-tree-contract.yml",
+        "docs/daily_patch/2026-10-15_scripts_contract_ci_handoff.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Continuation-Issue8",
+      "title": "Continue remaining Scripts disposition and strengthen source-only contracts",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "COMPATIBILITY"
+      ],
+      "summary": "Classify remaining root/launcher/held/wrapper contracts and fix proven static-auditor false acceptance without runtime changes. Scripts continuation remains in progress.",
+      "details": [
+        "Cover 42 implementations, 8 delegates, 20 Windows/shell launchers, 19 overlapping holds and 141 wrappers. No moves/deletions or external-usage assumptions.",
+        "Reject disconnected module aliases, non-main run_module dispatch and commented example main calls using AST checks. Existing 141 wrappers remain valid and unchanged.",
+        "Add read-only Windows reference/CWD/policy/task audit and native Windows syntax-only parsing for six PowerShell files in the existing Scripts CI. Twelve isolated fixtures passed locally; native Windows result is recorded by CI after push.",
+        "Held dispositions: KEEP 15, TEST_BLOCKED 3, relocation candidate after architecture gate 1. Retain 112 PRESERVE and 29 REVIEW_AFTER_ARCH_GATE wrappers; usage remains UNKNOWN for unobserved manual callers.",
+        "Record the existing two-Q12-task register/unregister asymmetry for operational owner review; no launcher/task/strategy/Config or T4/Reporting/runtime edits. Further moves/retirement require ARCH_CONVERGENCE_APPROVED. UI Issue #9 not started."
+      ],
+      "impact": "Source-only tooling and validation improvements; production entrypoints, external CLI contracts and live settings remain unchanged.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_scripts_continuation_issue8.md",
+        "docs/refactor/2026-10-15_scripts_continuation_issue8.md",
+        "docs/refactor/2026-10-15_scripts_remaining_dispositions.json"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Continuation-Issue8-Iteration2",
+      "title": "Resolve isolated research and test-runner validation blocks",
+      "stage": "SCRIPTS_CONTINUATION_IN_PROGRESS",
+      "types": [
+        "RESEARCH",
+        "TESTING"
+      ],
+      "summary": "Fix empty research outlier analysis; validate held entrypoints without production execution.",
+      "details": [
+        "Empty research top1 return is null instead of IndexError; nonempty values preserved.",
+        "Seven new held-entrypoint tests plus five research tests and one missing-authority test PASS.",
+        "Windows venv command contract mocked; empty historical no-write CLI is COMPLETE with zero units, not proof of historical authority.",
+        "Order-demo duplicate helpers, Q12 scheduler asymmetry, physical moves and wrapper retirement remain gated; all wrappers retained. Issue #9 not started."
+      ],
+      "impact": "Offline research handles empty input; trading, scheduler, Reporting and T4 code unchanged.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_scripts_issue8_followup.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Continuation-Issue8-Iteration3",
+      "title": "Freeze source task-name contract and make cleanup help safe",
+      "stage": "SCRIPTS_CONTINUATION_IN_PROGRESS",
+      "types": [
+        "TESTING",
+        "MAINTENANCE"
+      ],
+      "summary": "Resolve literal per-file task prefixes without shell expansion; parse cleanup CLI before deletion.",
+      "details": [
+        "Keep raw task fields; add resolved mismatches, unresolved evidence and optional strict six-create/four-delete baseline gate.",
+        "Report two Q12 unmatched tasks for owner review; scheduler policy and launchers unchanged.",
+        "Cleanup --help exits0 and unknown flags exit2 before glob/deletion; zero-argument behavior unchanged.",
+        "23 isolated fixture tests PASS; source audits141 wrappers and20 launchers PASS. Ubuntu/Windows gates retained; exact commit results in Actions.",
+        "Historical snapshot unchanged; held delta17 KEEP /1 TEST_BLOCKED /1 relocation after architecture gate. All141 wrappers retained."
+      ],
+      "impact": "Source-only contract hardening; no T4, Reporting, trading, Config or scheduler policy changes.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_scripts_issue8_iteration3.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Source-Work-Order01",
+      "title": "Consolidate diagnostic JSONL readers and correct trade observations",
+      "stage": "SCRIPTS_CONTINUATION_IN_PROGRESS",
+      "types": [
+        "DIAGNOSTICS",
+        "CORRECTNESS"
+      ],
+      "summary": "Replace four duplicate JSONL loops with the existing reader; fix intent attribution and exact-zero broker observations.",
+      "details": [
+        "Preserve _load_jsonl/_iter_rows, CLI entrypoints, JSON keys, output formatting, ordering and M25 UTC-day semantics. Shared reader unchanged.",
+        "Prefer execution.allowed including false/null; fallback verdict and verdict_reason require a matching explicit intent ID. Suppress ambiguous multi-order context.",
+        "Finite Decimal equality accepts exact numeric zero only; fractional, NaN, Infinity and tiny nonzero codes cannot count as success.",
+        "77 targeted pytest PASS;80 fake-file CLI invocations across four entrypoint forms and8 baseline JSON/text comparisons PASS. No native Windows diagnostic-suite claim.",
+        "All141 wrappers retained; no T4, order/approval/broker runtime, UEF authority, scheduler, Config or UI code changed."
+      ],
+      "impact": "More accurate read-only trade diagnostics; trading authority and execution behavior unchanged.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_source_work_order01.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Source-Work-Order02",
+      "title": "Share baseline candle ownership and JSON artifact I/O",
+      "stage": "SCRIPTS_CONTINUATION_IN_PROGRESS",
+      "types": [
+        "REFACTOR",
+        "TESTING"
+      ],
+      "summary": "Q10/Q12 share baseline_candle_reader and baseline_artifact_io while retaining legacy facades.",
+      "details": [
+        "Move three candle functions to a shared owner; Q12 no longer depends directly on the Q10 provider. Q10 public signatures and local normalization/number monkeypatch seams retained.",
+        "Replace four local JSON I/O bodies with two shared implementations, removing two redundant copies. Keep UTF-8 formatting, newline, error behavior and all artifact paths/schemas.",
+        "81 focused pytest PASS;13 baseline differential scenarios PASS. Q10 six/Q12 nine artifact files, including10 JSON, byte-identical with the existing Q12 generated_at clock fixed equally in test only.",
+        "No external collection/order calls, T4 code, strategy, returns/cost, decision cadence, authority, scheduler/Config or vnext publication changes. All141 wrappers retained."
+      ],
+      "impact": "Common data responsibility no longer belongs to a strategy-specific provider; reporting behavior preserved.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_source_work_order02.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Source-Work-Order03",
+      "title": "Consolidate diagnostic observation, CLI capture and archive helpers",
+      "stage": "SCRIPTS_CONTINUATION_IN_PROGRESS",
+      "types": [
+        "DIAGNOSTICS",
+        "REFACTOR",
+        "CORRECTNESS"
+      ],
+      "summary": "Share pure diagnostic owners and remove12 redundant copies; correct Ops broker-code truncation.",
+      "details": [
+        "18 local helper bodies delegate to shared owners or the existing JSONL reader. Broker implementations converge after the Ops exact-zero correction.",
+        "Preserve legacy function names, eager/lazy JSONL, percentile rounding, argv, stdout/stderr, JSON types, exit/exception behavior, 1MiB hashing and tolerant UTF-8 line counting.",
+        "119 distinct targeted pytest PASS;63 baseline helper comparisons and22 CLI help/error comparisons PASS (110 subprocesses).",
+        "Closeout/Drill child bodies never executed; milestone seams tested only with stubs. No native Windows or full-workflow acceptance claim.",
+        "All141 wrappers retained; no T4/runtime/order/authority/Config/UI/scheduler changes. Existing date fallback functions and shared event reader unchanged."
+      ],
+      "impact": "Read-only diagnostics share one implementation per responsibility; trading and operational execution contracts unchanged.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_source_work_order03.md"
+      ],
+      "status": "current"
     }
   ]
 }

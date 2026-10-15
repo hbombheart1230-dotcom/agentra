@@ -1,37 +1,14 @@
-from __future__ import annotations
+"""Compatibility entrypoint for scripts.research.run_evaluation_lens_report."""
+import importlib as _importlib
+import runpy as _runpy
+import sys as _sys
+from pathlib import Path as _Path
 
-import argparse
-import json
-import sys
-from pathlib import Path
-
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from libs.reporting.evaluation.evaluation_lens_report import write_evaluation_lens_report
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Generate an evaluation-only lens report over Q8/Q9/trade artifacts."
-    )
-    parser.add_argument("--reports-root", default="reports")
-    parser.add_argument("--start", required=True)
-    parser.add_argument("--end", required=True)
-    parser.add_argument("--output-dir", default="")
-    args = parser.parse_args(argv)
-
-    result = write_evaluation_lens_report(
-        reports_root=Path(args.reports_root),
-        start=args.start,
-        end=args.end,
-        output_dir=Path(args.output_dir) if args.output_dir else None,
-    )
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0
-
+_ROOT = _Path(__file__).resolve().parents[1]
+if str(_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_ROOT))
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _runpy.run_module("scripts.research.run_evaluation_lens_report", run_name="__main__")
+else:
+    _sys.modules[__name__] = _importlib.import_module("scripts.research.run_evaluation_lens_report")

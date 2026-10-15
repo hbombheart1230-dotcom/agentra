@@ -1,36 +1,14 @@
-from __future__ import annotations
+"""Compatibility entrypoint for scripts.research.run_q13_q14_validation."""
+import importlib as _importlib
+import runpy as _runpy
+import sys as _sys
+from pathlib import Path as _Path
 
-import argparse
-import json
-import sys
-from pathlib import Path
-
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from libs.reporting.evaluation.q13_q14_validation import write_q13_q14_validation_report
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Build frozen Q13/Q14 5-trading-day validation report.")
-    parser.add_argument("--reports-root", default="reports")
-    parser.add_argument("--validation-id", required=True)
-    parser.add_argument("--start")
-    parser.add_argument("--end")
-    parser.add_argument("--days", nargs="*")
-    args = parser.parse_args()
-    result = write_q13_q14_validation_report(
-        reports_root=Path(args.reports_root),
-        validation_id=str(args.validation_id),
-        days=args.days if args.days else None,
-        start=args.start,
-        end=args.end,
-    )
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0
-
+_ROOT = _Path(__file__).resolve().parents[1]
+if str(_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_ROOT))
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _runpy.run_module("scripts.research.run_q13_q14_validation", run_name="__main__")
+else:
+    _sys.modules[__name__] = _importlib.import_module("scripts.research.run_q13_q14_validation")

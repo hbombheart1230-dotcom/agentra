@@ -1,33 +1,14 @@
-from __future__ import annotations
+"""Compatibility entrypoint for scripts.maintenance.sync_openrouter_model_catalog."""
+import importlib as _importlib
+import runpy as _runpy
+import sys as _sys
+from pathlib import Path as _Path
 
-import argparse
-import json
-from pathlib import Path
-import sys
-
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from libs.llm.model_catalog_store import DEFAULT_CATALOG_DIR, sync_openrouter_model_catalog
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Fetch OpenRouter model metadata and build local model cards.")
-    parser.add_argument("--catalog-dir", default=str(DEFAULT_CATALOG_DIR), help="Target catalog directory")
-    parser.add_argument("--timeout-sec", type=float, default=20.0, help="OpenRouter fetch timeout in seconds")
-    parser.add_argument("--no-cache-fallback", action="store_true", help="Fail instead of using cached raw model list")
-    args = parser.parse_args()
-
-    result = sync_openrouter_model_catalog(
-        catalog_dir=Path(str(args.catalog_dir)),
-        timeout_sec=float(args.timeout_sec),
-        allow_cached_fallback=not bool(args.no_cache_fallback),
-    )
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0
-
+_ROOT = _Path(__file__).resolve().parents[1]
+if str(_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_ROOT))
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _runpy.run_module("scripts.maintenance.sync_openrouter_model_catalog", run_name="__main__")
+else:
+    _sys.modules[__name__] = _importlib.import_module("scripts.maintenance.sync_openrouter_model_catalog")
