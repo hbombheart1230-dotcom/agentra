@@ -1,6 +1,6 @@
 # ACTIVE — Agentra P1.5 THIRD PASS: T4-C Codex ACCEPT / T4-D Commander+Operator UI READY
 
-**State:** T4-D READY_NOT_IMPLEMENTED / MAIN_FROZEN / No ZIP (historical Fast Track CI compatibility only; no T5/Wave D authority)
+**State:** refactor/p1.5 — T4-D READY_NOT_IMPLEMENTED / MAIN_FROZEN / No ZIP (historical Fast Track CI compatibility only; no T5/Wave D authority)
 
 **Current 2026-10-15:** T4-A, T4-B, **T4-C Strategist independent Codex ACCEPT** (BASE `8acedae` → FINAL `ac4642d`; CODE CI `38678362869` SUCCESS, FINAL CI `38679851004` SUCCESS). T4-C: 22 ledger segments / 13 Owners reconstruct BASE AST; 11 structural PASS, 5 contract PASS, full archived BASE vs FEATURE 50 records/1,141 variants/0 mismatches; Windows archived BASE exact v3 golden 0 mismatches; mock LLM five modes match. [Codex audit](evidence/P15-T4-C-CODEX-043.md). New P0/P1 NONE. **NEW P2 OPEN: one Reporter-feedback fallback scenario (29 variants) was replaced by max-token fallback (23), -6 net variants; details and mandatory pre-Wave-D coverage closure**: [scenario gap](evidence/P15-T4-C-GOLDEN-SCENARIO-GAP-044.md). Do not misstate as six independent variant omissions or call original scenario preserved.
 
