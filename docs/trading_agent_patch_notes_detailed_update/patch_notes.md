@@ -1868,3 +1868,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 ## 2026-10-15 - T4 conflict snapshot recheck
 
 - T4 advanced to `4e242e5`; only five documentation files changed. Eleven overlapping paths, nine independent relocation candidates and code preservation strategy remain valid. Latest shared changelog blob SHAs are recorded in the conflict report. No code moved; Batch 3 and merge remain on hold.
+
+# 2026-10-15 - Scripts / Config Inventory and Safe Example Relocation
+
+- Scripts 212 -> 216 files: classify all files and record import/subprocess/CI/Docker/Windows scheduler/docs references.
+- Move demo_m22_skill_flow, demo_m22_graph_with_hydration and demo_m7_dry_run_pipeline implementations into scripts/examples; legacy module/CLI paths remain wrappers.
+- Business logic unchanged: bootstrap +7/-2 lines, 45 wrapper lines, one package marker. Original implementation bytes recovered by reversing only bootstrap edits.
+- Related pytest 20 passed; original offline CLI 34/34, relocated CLI 68/68 equivalent after clock-only normalization; direct bootstrap 6/6 passed.
+- Config 8 KEEP; no deletes, order submissions or strategy/config value changes. Reporting Batch 3 remains paused; T4 code conflict 0. Only the two shared changelog files use the approved append-only exception. Future integration must preserve both histories and check duplicate entries.
+- Evidence: docs/refactor/2026-10-15_scripts_config_migration.md and docs/refactor/2026-10-15_scripts_config_inventory.json.
+- Final combined targeted pytest: **26 passed**; one dependency deprecation warning. Existing JSON entries/order and Markdown prefix preservation verified.

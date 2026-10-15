@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 118,
+  "entry_count": 119,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3148,6 +3148,32 @@
       "impact": "Report snapshot refresh only; no code or T4 branch changes.",
       "sources": [
         "docs/refactor/2026-10-15_t4_pr5_reporting_conflict_report.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Examples-Target-Tree-Batch1",
+      "title": "Inventory Scripts/Config and relocate safe examples",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "COMPATIBILITY"
+      ],
+      "summary": "Move three safe demo implementations into scripts/examples while preserving all old module/CLI entrypoints.",
+      "details": [
+        "Inventory 212 original Scripts files and 216 resulting files; trace imports, subprocesses, deployment/scheduler and documentation references.",
+        "Change bootstrap paths only; reverse those edits to recover byte-identical original implementations. No order, strategy or config policy changes.",
+        "Existing related pytest: 20 passed before and after; 34 original offline CLI cases and 68 relocated legacy/canonical cases equivalent with six explicit clock-only normalizations. Six no-repository-PYTHONPATH direct-script checks also passed.",
+        "Config 8/8 KEEP. Baseline JSON/YAML are not identical duplicates; skills are dynamically loaded. No safe deletion approved; absent static references remain UNKNOWN.",
+        "Reporting Batch 3 remains paused. No T4 code or launchers edited. The two mandatory shared changelog documents are user-approved append-only exceptions; future integration must preserve both branches’ histories and deduplicate new entries.",
+        "Final combined targeted pytest: 26 passed, 1 dependency deprecation warning. Original JSON entries/order and Markdown prefix preservation verified."
+      ],
+      "impact": "Repository layout and compatibility only; no trading behavior or operational command migration.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_scripts_examples_migration.md",
+        "docs/refactor/2026-10-15_scripts_config_migration.md",
+        "docs/refactor/2026-10-15_scripts_config_inventory.json"
       ],
       "status": "current"
     }
