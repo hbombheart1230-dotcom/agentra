@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 116,
+  "entry_count": 117,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3106,6 +3106,28 @@
         "docs/refactor/2026-10-15_reporting_relocation_batch2.md",
         "docs/daily_patch/2026-10-15_reporting_relocation_batch2.md",
         "tests/test_reporting_relocation_imports.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Reporting-T4-PR5-Integration-Hold",
+      "title": "T4 Reporting ownership preserved; Batch 3 paused",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Record 11 overlapping T4/PR5 paths and defer integration in favor of T4 owners. No Reporting code changes.",
+      "details": [
+        "Remove only the retired GPT branch after user-confirmed PR #4 CLOSED/unmerged status; preserve its full history in a verified local bundle.",
+        "Preserve T4 normalization/operator_text owners and expanded or already separated flat helpers; identify nine byte-identical relocation pairs as selective integration candidates.",
+        "Pause Batch 3 and hold PR #5 in Draft/manual-review workflow. No merge or auto-merge. Draft state could not be independently rechecked because GitHub API returns Forbidden."
+      ],
+      "impact": "Integration planning and branch cleanup only. T4 Reporting implementations remain unchanged.",
+      "sources": [
+        "docs/refactor/2026-10-15_t4_pr5_reporting_conflict_report.md"
       ],
       "status": "current"
     }

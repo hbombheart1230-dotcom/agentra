@@ -1856,3 +1856,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Validation results are recorded in the Batch 2 refactor document.
 
 - Batch 2 validation: **272 pytest passed**, **16 web tests passed**, production build passed; five implementation byte comparisons and canonical-first import checks passed. Full repository suite/live trading not run.
+
+# 2026-10-15 - T4 / PR #5 Reporting Integration Hold
+
+- Deleted only retired `refactor/gpt-p0-strategist-contract-20261015` after user-confirmed PR #4 CLOSED/unmerged; verified full-history bundle retained locally.
+- Compared 11 overlapping paths by full Git blob SHA and content. Preserve T4 ownership, especially normalization/operator_text and expanded or separated flat helpers.
+- Nine byte-identical relocation pairs are selective integration candidates; no Reporting code moved or changed. Batch 3 remains paused; merge remains on hold.
+- PR #5 Draft workflow is retained; GitHub API Forbidden prevents independent isDraft verification. No Ready/merge/auto-merge operation performed.
+- Full report: `docs/refactor/2026-10-15_t4_pr5_reporting_conflict_report.md`.
