@@ -1,0 +1,11 @@
+{
+ "records": 88,
+ "variants": 4176,
+ "by_target": {
+  "commander_policy": 47,
+  "operator_markdown": 41
+ },
+ "exceptions": 0,
+ "bound": 40,
+ "effects_total": 666
+}
