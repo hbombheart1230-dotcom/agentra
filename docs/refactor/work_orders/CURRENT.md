@@ -2,6 +2,7 @@
 
 **State:** integration/p15-t4-pr5-convergence-20261015 (baseline refactor/p1.5) — INTEGRATION_VERIFYING / T4-D STRUCTURAL_GATE_CLOSED / MAIN_FROZEN / No ZIP (CI packaging forbidden; user patch archive external only).
 **Stage markers (CI guard):** P1.5.2 OPEN (final acceptance); P1.5.3-P1.5.6 FIRST_PASS_WITH_DEBT; Wave D/P1.5.11 NOT STARTED.
+**CI main transition (2026-10-15):** required regression/contract workflows now also run on `main` pushes and PRs to `main` (integration trigger kept); branch-history-only checks classified, none deleted; hosted PR-to-main run BLOCKED until a Draft PR is observed. See [ci_main_transition_2026_10_15.md](../ci_main_transition_2026_10_15.md).
 
 **Current 2026-10-15:** T4-A/B/C accepted. T4-D independently audited (15 structural+contract PASS, 93 focused PASS, 189 records/6,456 variants/0 mismatch), originally BLOCKED solely awaiting final CI. GitHub FINAL CI 38702590672 now SUCCESS including required Windows native accounting 5/5. GPT closes T4-D structural gate for integration; this does NOT declare P1.5 final acceptance or a new Codex final audit submission. Evidence: [T4-D Codex+CI closure](evidence/P15-T4-D-CODEX-CI-CLOSURE-046.md). Source branches frozen: refactor/p1.5 ad365913 and PR5 fe627978. Isolated merge 496d495 with 264 existing patch notes; integration CI pending.
 

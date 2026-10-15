@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - refactor/agentra-target-tree
+      - main
     paths:
       - "scripts/**"
       - "tests/test_scripts_target_tree_compat_audit.py"

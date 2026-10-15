@@ -3459,3 +3459,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Preserved 9 unique documents from `design/p1.6-orchestration` and 14 from `design/p2plus-architecture` (23 Markdown blobs; 138,450 bytes) in integration by original Git blob SHA.
 - No application code or CI from these legacy branches was imported. All historic proposals remain unapproved. Branch deletion and main merge remain blocked until fresh integrated Linux/Windows CI + Codex audit.
 - Original SHA map: `docs/refactor/branch_convergence/2026-10-15_preserved_design_branch_materials.md`.
+
+## 2026-10-15 · P1.5 CI Main Transition
+**Stage:** Architecture and Maintainability
+**Tags:** CI · SAFETY · DOCS
+
+- 변경: 통합 워크플로 4종과 PR #5 scripts contract가 `main` push 및 `main` 대상 PR에서도 실행되도록 트리거를 추가했습니다(통합 브랜치 트리거는 최종 승인까지 유지). 브랜치 삭제 후에도 T4 frozen-contract 회귀, Reporting/Web 호환, 141 wrapper, consumer inventory 검증이 유지됩니다.
+- 분류: 브랜치 이력 전용 검사는 삭제하지 않고 분리했습니다 — CURRENT.md 단일 브랜치/MAIN_FROZEN 문장은 통합 브랜치에서 그대로 단언하고 main에서는 분류만 출력, CI-ZIP 금지는 모든 워크플로 대상으로 강화, ancestry fetch에서 `refactor/p1.5` 참조 제거.
+- 제약: 고정된 stage SHA ancestry 검사는 엄격하게 유지되므로 main에는 merge commit으로 반영해야 합니다. hosted `pull_request -> main` 실행은 아직 관측되지 않아 BLOCKED로 기록했습니다.
+- 안전: Guard/Approval/Step5C CAS/Broker 권한 및 런타임 코드 변경 없음, 레거시 p152 워크플로 파일 변경 없음.
+

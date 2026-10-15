@@ -3,6 +3,14 @@ on:
   push:
     branches:
       - integration/p15-t4-pr5-convergence-20261015
+      - main
+    paths:
+      - scripts/refactor/inventory_p15_consumers.py
+      - tests/test_p15_consumer_inventory.py
+      - .github/workflows/p15-integration-consumer-inventory.yml
+  pull_request:
+    branches:
+      - main
     paths:
       - scripts/refactor/inventory_p15_consumers.py
       - tests/test_p15_consumer_inventory.py

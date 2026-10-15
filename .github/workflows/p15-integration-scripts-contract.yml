@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - integration/p15-t4-pr5-convergence-20261015
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:

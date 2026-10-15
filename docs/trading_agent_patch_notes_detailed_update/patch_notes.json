@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 272,
+  "entry_count": 273,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7247,6 +7247,28 @@
       "sources": [
         "docs/refactor/branch_convergence/2026-10-15_preserved_design_branch_materials.md",
         "docs/daily_patch/2026-10-15_preserve_branch_unique_design_materials.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 CI Main Transition",
+      "title": "Required regression and contract workflows made runnable on main and main-targeted pull requests",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "CI",
+        "SAFETY",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "The four integration workflows and the PR #5 scripts contract now also trigger on pushes to main and (except the PR #5 original) on pull requests targeting main, so the T4 frozen-contract regression, Reporting/Web compatibility, 141-wrapper contract and consumer inventory keep running after the refactor and integration branches are retired. The integration branch trigger stays until final approval.",
+      "details": [
+        "Branch-history-only checks are classified, not deleted: the CURRENT.md single-branch/MAIN_FROZEN statement is still asserted on the integration branch and only classified on main; the CI-ZIP prohibition now scans every workflow; the ancestry fetch no longer names refactor/p1.5.",
+        "Pinned stage SHA ancestry checks stay strict, so main must receive the line through a true merge commit. A hosted pull_request-to-main run is not yet observed and is recorded as BLOCKED.",
+        "No Guard, Approval, Step5C CAS, Broker authority or runtime code changed; the legacy p152 workflow file is untouched."
+      ],
+      "impact": "CI configuration and documentation only.",
+      "sources": [
+        "docs/refactor/ci_main_transition_2026_10_15.md"
       ]
     }
   ]

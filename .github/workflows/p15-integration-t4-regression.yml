@@ -3,7 +3,14 @@ on:
   push:
     branches:
       - integration/p15-t4-pr5-convergence-20261015
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
+concurrency:
+  group: p15-t4-regression-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   regression:
     runs-on: ubuntu-latest
@@ -14,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -73,12 +80,19 @@ jobs:
           state = re.search(r"^\*\*State:\*\*(.*)$", cur, flags=re.M)
           assert state, "CURRENT.md has no **State:** line"
           assert "FINAL_ACCEPTED" not in state.group(1), state.group(1)
-          assert "refactor/p1.5" in cur and ("MAIN_FROZEN" in cur or "main` frozen" in cur)
+          import os
+          main_ctx = os.environ.get("GITHUB_REF_NAME") == "main" or os.environ.get("GITHUB_BASE_REF") == "main"
+          if main_ctx:
+              # main context: the historical single-branch / MAIN_FROZEN statement is branch history, not a main invariant
+              print("CURRENT.md branch-freeze statement: historical-branch check classified, not applied on main")
+          else:
+              assert "refactor/p1.5" in cur and ("MAIN_FROZEN" in cur or "main` frozen" in cur)
           assert "No ZIP" in cur or "no ZIP" in cur
           assert "FIRST_PASS_WITH_DEBT" in plan and "Fast Track execution rules" in rules
           assert "No ZIP" in rules or "no ZIP" in rules
-          wf = Path(".github/workflows/p152-r2c-residual-regression.yml").read_text(encoding="utf-8")
-          assert ("Zip" + "File") not in wf and ("." + "zip") not in wf, "ZIP packaging must not exist in CI"
+          for wfp in sorted(Path(".github/workflows").glob("*.yml")):
+              wf = wfp.read_text(encoding="utf-8")
+              assert ("Zip" + "File") not in wf and ("." + "zip") not in wf, f"ZIP packaging must not exist in CI: {wfp}"
           notes = json.loads(Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.json").read_text(encoding="utf-8"))
           assert notes["entry_count"] == len(notes["entries"])
           for entry in notes["entries"][-5:]:
@@ -114,7 +128,7 @@ jobs:
       - name: Ensure full commit ancestry for stage-pinned gates (shallow-history robustness)
         run: |
           if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
-            git fetch --no-tags --unshallow origin refactor/p1.5 || git fetch --no-tags --depth=5000 origin refactor/p1.5
+            git fetch --no-tags --unshallow origin || git fetch --no-tags --depth=5000 origin
           fi
           for sha in 60dfa1c4cd7ca62d127251a4051b3404a86f6932 bf59c4d2941442fc2dff41c3c2888f053b4b1577 4cb92916c976f947613f52e8b0c0790addac7eb5 67e0dc0ee0b91d45d242ccbfb3e1133d3a06e5ea af0a4489dc250d804854e27917d5e2d881261537 d4a5364bae817504c253e06b9150ee49c692e120 ede47324e8db4be12c45e0a09ca3dcd22c68c5c1 a5cffb9048d31d0b1394fd4fbfbea0d8e2ea5c60 eb53dc1fe56c2a70a21271faf2f3c25c9711e309 11a11df58f8d846cd9824fcb37eced521a57e887 c8a1131d9e3dc676b972548882c0e98bf91c284a c338ba34276566b0b5f6de1e7f556778ec917968 c50db1749dbad7058fe0c45ab44a9c84cb12fb34 8acedae23e64c11b958556e7835b4ebf5e404e73 c61caab0a94d6e40b015709b720d0266cf0f1d9a 97934d2509cee2593a5978a8f46b48860f293907 dcca2be1b6dd0a01c8ed3deceb0fa1621e82eca6 ac4642dc265811bf7ff56e32adbadf8203fed771; do
             git merge-base --is-ancestor "$sha" HEAD || { echo "::error::pinned stage SHA $sha is not an ancestor of HEAD"; exit 1; }
