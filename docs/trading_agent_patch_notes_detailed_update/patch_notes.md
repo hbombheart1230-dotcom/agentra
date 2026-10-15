@@ -1960,3 +1960,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - All141 wrappers retained; no T4, order/approval/broker runtime, UEF authority, scheduler, Config or UI code changed.
 - More accurate read-only trade diagnostics; trading authority and execution behavior unchanged.
 - Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_source_work_order01.md
+
+# 2026-10-15 — GPT Source Work Order02
+
+- Q10/Q12 share baseline_candle_reader and baseline_artifact_io while retaining legacy facades.
+- Move three candle functions to a shared owner; Q12 no longer depends directly on the Q10 provider. Q10 public signatures and local normalization/number monkeypatch seams retained.
+- Replace four local JSON I/O bodies with two shared implementations, removing two redundant copies. Keep UTF-8 formatting, newline, error behavior and all artifact paths/schemas.
+- 81 focused pytest PASS;13 baseline differential scenarios PASS. Q10 six/Q12 nine artifact files, including10 JSON, byte-identical with the existing Q12 generated_at clock fixed equally in test only.
+- No external collection/order calls, T4 code, strategy, returns/cost, decision cadence, authority, scheduler/Config or vnext publication changes. All141 wrappers retained.
+- Common data responsibility no longer belongs to a strategy-specific provider; reporting behavior preserved.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_source_work_order02.md

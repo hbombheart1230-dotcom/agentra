@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
 from libs.runtime.broker_cost_profile import load_broker_cost_profile
+from libs.reporting.baseline_artifact_io import read_json_dict, write_json_dict
 
 from .contracts import (
     DECISIONS_SCHEMA,
@@ -30,16 +30,11 @@ from .unified_comparison import write_unified_comparison
 
 
 def _read(path: Path) -> dict[str, Any]:
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        return payload if isinstance(payload, dict) else {}
-    except Exception:
-        return {}
+    return read_json_dict(path)
 
 
 def _write(path: Path, payload: Mapping[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(dict(payload), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_json_dict(path, payload)
 
 
 def _complete_fixed_universe_decision(row: Mapping[str, Any]) -> bool:

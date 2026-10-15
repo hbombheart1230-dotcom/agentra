@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 128,
+  "entry_count": 129,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3389,6 +3389,28 @@
       "impact": "More accurate read-only trade diagnostics; trading authority and execution behavior unchanged.",
       "sources": [
         "docs/daily_patch/2026-10-15_source_work_order01.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Source-Work-Order02",
+      "title": "Share baseline candle ownership and JSON artifact I/O",
+      "stage": "SCRIPTS_CONTINUATION_IN_PROGRESS",
+      "types": [
+        "REFACTOR",
+        "TESTING"
+      ],
+      "summary": "Q10/Q12 share baseline_candle_reader and baseline_artifact_io while retaining legacy facades.",
+      "details": [
+        "Move three candle functions to a shared owner; Q12 no longer depends directly on the Q10 provider. Q10 public signatures and local normalization/number monkeypatch seams retained.",
+        "Replace four local JSON I/O bodies with two shared implementations, removing two redundant copies. Keep UTF-8 formatting, newline, error behavior and all artifact paths/schemas.",
+        "81 focused pytest PASS;13 baseline differential scenarios PASS. Q10 six/Q12 nine artifact files, including10 JSON, byte-identical with the existing Q12 generated_at clock fixed equally in test only.",
+        "No external collection/order calls, T4 code, strategy, returns/cost, decision cadence, authority, scheduler/Config or vnext publication changes. All141 wrappers retained."
+      ],
+      "impact": "Common data responsibility no longer belongs to a strategy-specific provider; reporting behavior preserved.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_source_work_order02.md"
       ],
       "status": "current"
     }

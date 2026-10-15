@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
 from libs.runtime.broker_cost_profile import load_broker_cost_profile
+from libs.reporting.baseline_artifact_io import read_json_dict, write_json_dict
 
 from .comparison import build_comparison
 from .contracts import (
@@ -29,16 +29,11 @@ from .strategy import build_decision_snapshot
 
 
 def _read(path: Path) -> dict[str, Any]:
-    try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-        return value if isinstance(value, dict) else {}
-    except Exception:
-        return {}
+    return read_json_dict(path)
 
 
 def _write(path: Path, payload: Mapping[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(dict(payload), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_json_dict(path, payload)
 
 
 def _decision_epochs(candles: list[Mapping[str, Any]]) -> list[int]:

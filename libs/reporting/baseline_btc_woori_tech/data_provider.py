@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from libs.market.yfinance_support import DataSourceDependencyError, require_yfinance
-from libs.reporting.baseline_samsung_hynix.data_provider import load_existing_candles
+from libs.reporting.baseline_candle_reader import load_existing_candles
 
 from .contracts import TARGET_SYMBOL, TARGET_TICKER
 from .trend_context import build_recent_btc_trend_context
