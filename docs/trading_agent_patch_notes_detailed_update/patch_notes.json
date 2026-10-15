@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 246,
+  "entry_count": 247,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6619,6 +6619,30 @@
         "docs/refactor/work_orders/evidence/P15-T4-C-GOLDEN-SCENARIO-GAP-044.md",
         "docs/refactor/work_orders/P15-T4-D-COMMANDER-UI-044.md",
         "docs/daily_patch/2026-10-15_p1_5_t4_c_codex_accept_t4_d_go.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-D preflight CI document-contract repair",
+      "title": "Restore current-work-order state markers for Fast Track legacy CI",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "DOCUMENTATION",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Reinstate mandatory State, MAIN_FROZEN and No ZIP markers in CURRENT.md for the existing CI contract without changing T4-D active authority or any runtime code.",
+      "details": [
+        "Run 38689842640 rejected CURRENT.md because the **State:** line was missing after the historical Fast Track link was restored.",
+        "The sole active work order remains T4-D Commander/Operator UI; the Fast Track Wave S link is a historical CI compatibility anchor only.",
+        "Current HEAD Linux/Windows SUCCESS remains mandatory before T4-D implementation; T4-C Reporter-feedback fallback scenario gap stays P2 OPEN."
+      ],
+      "impact": "Documentation-only CI preflight fix; no agent logic, broker access, trading authority or UI renderer behavior changed.",
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/P15-T4-D-COMMANDER-UI-044.md",
+        "docs/refactor/work_orders/evidence/P15-T4-C-GOLDEN-SCENARIO-GAP-044.md"
       ]
     }
   ]
