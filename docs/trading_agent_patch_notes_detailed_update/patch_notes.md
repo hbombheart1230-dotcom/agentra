@@ -3469,3 +3469,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 제약: 고정된 stage SHA ancestry 검사는 엄격하게 유지되므로 main에는 merge commit으로 반영해야 합니다. hosted `pull_request -> main` 실행은 아직 관측되지 않아 BLOCKED로 기록했습니다.
 - 안전: Guard/Approval/Step5C CAS/Broker 권한 및 런타임 코드 변경 없음, 레거시 p152 워크플로 파일 변경 없음.
 
+
+
+## 2026-10-16 · P1.5 HYBRID-7 V3 Frozen and V1 Implementation Kickoff
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · DOCS · SAFETY
+
+- 사용자 결정: HYBRID-7 V3 폴더 목표를 고정하고 설계 재반복 없이 실제 구현을 시작합니다. `libs/agents/` 7개 역할 표면을 최종 목표로 지정하되 빈 장식 폴더나 중복 실행 권한은 만들지 않습니다.
+- 시작 작업지시서: `docs/refactor/work_orders/P15-TREE-MIGRATION-V1-052.md`. Scanner의 순수 `candidate_risk.py` 단일 모듈 이동을 소비자/ABI/monkeypatch 증명과 정확한 동작 동일성 조건으로 승인했습니다.
+- 현재 커밋은 지시·정책·문서만 갱신합니다. 실제 파일 이동, Codex 독립 승인, P1.5 최종 완료를 의미하지 않습니다.
+- 활성 개발 브랜치는 `integration/p15-t4-pr5-convergence-20261015`; `main`과 실거래·Broker·CAS·UEF 권한은 그대로 보존합니다.

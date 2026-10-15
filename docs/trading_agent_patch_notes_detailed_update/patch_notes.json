@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 273,
+  "entry_count": 274,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7269,6 +7269,30 @@
       "impact": "CI configuration and documentation only.",
       "sources": [
         "docs/refactor/ci_main_transition_2026_10_15.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 HYBRID-7 V3 Frozen and V1 Implementation Kickoff",
+      "title": "Freeze seven-agent folder target and authorize first guarded Scanner module relocation",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "DOCS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Operator fixes HYBRID-7 V3 as the target; GPT activates a tightly scoped actual Scanner candidate-risk pure-module relocation work order on the existing integration branch, without more architecture redraws.",
+      "details": [
+        "Single canonical work order V1-052: old Scanner candidate_risk body relocation is conditioned on focused consumer/monkeypatch proofs and exact parity; no real source module moved by this documentation commit.",
+        "Old branch instructions have current-branch override; main remains untouched and the historical active CURRENT is archived.",
+        "Broker/approval/Step5C/UEF/Q10/Q12, real LLM, Docker, operational writes and rank authority remain unchanged. No CI ZIP; externally delivered ZIP includes only changed files."
+      ],
+      "impact": "Execution-ready first migration task; physical relocation and independent Codex PASS remain pending.",
+      "sources": [
+        "docs/daily_patch/2026-10-16_p15_tree_v3_freeze_and_v1_kickoff.md",
+        "docs/refactor/work_orders/P15-TREE-MIGRATION-V1-052.md",
+        "docs/refactor/architecture/TREE_V3_FROZEN.md"
       ]
     }
   ]

@@ -1,25 +1,18 @@
-# ACTIVE — Agentra P1.5 T4 + PR #5 isolated convergence and integrated CI
+# ACTIVE — P1.5 HYBRID-7 V3 tree migration, first implementation V1-052
 
-**State:** integration/p15-t4-pr5-convergence-20261015 (baseline refactor/p1.5) — INTEGRATION_VERIFYING / T4-D STRUCTURAL_GATE_CLOSED / MAIN_FROZEN / No ZIP (CI packaging forbidden; user patch archive external only).
-**Stage markers (CI guard):** P1.5.2 OPEN (final acceptance); P1.5.3-P1.5.6 FIRST_PASS_WITH_DEBT; Wave D/P1.5.11 NOT STARTED.
-**CI main transition (2026-10-15):** required regression/contract workflows now also run on `main` pushes and PRs to `main` (integration trigger kept); branch-history-only checks classified, none deleted; hosted PR-to-main run BLOCKED until a Draft PR is observed. See [ci_main_transition_2026_10_15.md](../ci_main_transition_2026_10_15.md).
+**State:** `integration/p15-t4-pr5-convergence-20261015` — V3_USER_TARGET_FROZEN / V1_IMPLEMENTATION_AUTHORIZED / FIRST_PASS_WITH_DEBT / MAIN_FROZEN / No ZIP in CI (user-facing changed-files-only ZIP allowed outside CI). Not FINAL_ACCEPTED.
+**ACTIVE ONE WORK ORDER:** [P15-TREE-MIGRATION-V1-052.md](P15-TREE-MIGRATION-V1-052.md). Read it and [COMMON_RULES.md](COMMON_RULES.md) only; no historical reread.
+**Architecture authority:** [TREE_V3_FROZEN.md](../architecture/TREE_V3_FROZEN.md). No further new target design; focus on actual safe physical module relocation and tests.
 
-**Current 2026-10-15:** T4-A/B/C accepted. T4-D independently audited (15 structural+contract PASS, 93 focused PASS, 189 records/6,456 variants/0 mismatch), originally BLOCKED solely awaiting final CI. GitHub FINAL CI 38702590672 now SUCCESS including required Windows native accounting 5/5. GPT closes T4-D structural gate for integration; this does NOT declare P1.5 final acceptance or a new Codex final audit submission. Evidence: [T4-D Codex+CI closure](evidence/P15-T4-D-CODEX-CI-CLOSURE-046.md). Source branches frozen: refactor/p1.5 ad365913 and PR5 fe627978. Isolated merge 496d495 with 264 existing patch notes; integration CI pending.
+**Roles:** GPT architecture/decisions; Claude implementation; Codex independent pinned-SHA audit; GPT+user acceptance. Single development branch: `integration/p15-t4-pr5-convergence-20261015`, no other new task branch. Keep `main` unchanged. The historical source `refactor/p1.5` is an ancestor/retired branch, **not a writable target**.
 
-**Codex REWORK disposition (2026-10-15):** P1 CI-ZIP policy conflict corrected by deleting `.github/workflows/p15-integration-changed-files-bundle.yml`; `No ZIP / CI packaging forbidden` remains binding. P2 Windows baseline CRLF mismatch addressed with explicit LF in `libs/reporting/baseline_artifact_io.py` and new Windows-native two-case CI. Required Q10/Q12 Windows byte assertions now 2/2 PASS on 8405ed8, but that native-Windows job still failed the fast-tier production-write audit for directory-only mtime changes. New full-tier production FILE audit is required to avoid directory-mtime-only false positives, without disabling write checks. Scope guard now checks original T4-D slice and separately guards merged HEAD T4 source/authority paths. Final ACCEPT remains blocked until CI and independent review. [Fix/evidence](evidence/P15-INTEGRATION-CODEX-REWORK-048.md).
+**Stage markers:** P1.5.2 OPEN for final acceptance; P1.5.3–P1.5.6 FIRST_PASS_WITH_DEBT; T4-D structural gate closed; P1.5.10 wrapper cleanup, Wave D/P1.5.11 and P1.6 runtime migration NOT AUTHORIZED. Current V1-052 is one strictly bounded pure-helper pilot and does not waive the broader architecture safety gate.
+**CI guard compatibility:** Preserve the legacy historical link [P15_FAST_TRACK_WAVE_S_020.md](P15_FAST_TRACK_WAVE_S_020.md) once for historical T4 frozen-contract assertions. This is NOT an active order. Keep `refactor/p1.5` and `MAIN_FROZEN` textual provenance for existing frozen CI; remove stale active-branch directives from actual execution logic.
 
-**Consumer dependency evidence:** [P1.5 tracked-source inventory](../architecture/consumer_inventory_findings_20261015.md); Codex independent review [task](P15-INTEGRATION-CODEX-CONSUMER-AUDIT-047.md). `ARCH_CONVERGENCE_NOT_APPROVED` until signed review.
+**Known deferred:** real report and LLM parity, T4-C session differential and Reporter-feedback fallback fixture, NTFS mtime causality, Scanner cross-seed telemetry. None automatically resolved by V1 tree movement.
+**Protected authority:** `graphs/nodes/execute_from_packet.py`, Supervisor/Executor/Broker, Step5C, UEF, Q10/Q12, operational Docker/write paths, UI LLM brief and Reporter queue/lock/artifact effects.
 
-**One active work order:** T4+PR5 integrated validation and SHA-pinned architecture inventory on integration/p15-t4-pr5-convergence-20261015; not T4-D implementation. Main and original branches untouched.
+**Branch event:** old feature branches are integrated, design refs retained, and closed draft PR #10 is NOT a main merge approval. This branch remains the ongoing workspace, not a release candidate.
+**Artifacts:** update BOTH `docs/trading_agent_patch_notes_detailed_update/patch_notes.json` and `patch_notes.md` for substantive changes, daily evidence, and changed-files-only user ZIP (NO ZIP CI workflow). No live trading/LLM/production writes.
 
-**Open/deferred:** T4-C BASE×2/FEATURE×2 session differential P2 NOT RUN; REAL_LLM_PARITY_NOT_RUN, REAL_REPORT_PARITY_BLOCKED, NTFS mtime P2, Scanner cross-seed telemetry P2, freeze CLI PYTHONPATH P2, and the Reporter-feedback fallback fixture-coverage P2. Historical unrelated UEF results replicated on pristine BASE (86 PASS, 20 FAIL, 2 ERROR); do not relabel as new Strategist regression. T5 / P1.5.10 / Wave D / P1.6 NOT STARTED or authorized; main and operational worktrees protected.
-
-**Mandatory architecture convergence:** integration must first pass Linux/Windows combined gates; then SHA-pinned current overview/modules/dependency SVG, editable target draw.io, gap matrix, and user/GPT approval. ARCH_CONVERGENCE_DRAFT_WRITTEN_NOT_APPROVED; no folder moves or P1.5.10.
-
-**CI compatibility anchor:** [historical Fast Track authority](P15_FAST_TRACK_WAVE_S_020.md) remains exactly one legacy link required by preexisting T4 CI. This is not an active work order and confers no Wave D permission.
-
-**Read minimal context:** this CURRENT + integration daily patch and evidence + touched files only. Do not reread completed T0–T4 archives. Integration Owner: GPT design/integration; Claude implementation on request; Codex independent validation.
-
-**Branch policy (user 2026-10-15):** ONE active development branch only (`integration/p15-t4-pr5-convergence-20261015`). Do not create new branches. `main` remains protected as default until independent acceptance; legacy design/feature branches are retirement candidates after preservation of unique work. Final state must be `main` only, not an unverified direct merge.
-
-**One-branch design preservation:** 23 unique P1.6/P2+ historical Markdown documents carried verbatim into integration; [SHA/paths](../branch_convergence/2026-10-15_preserved_design_branch_materials.md). Not an approval to implement those designs. Two design branch refs retained pending integration acceptance and main assimilation.
+Historical current and completed T4/PR5 acceptance records archived in `archive/CURRENT_2026-10-15_INTEGRATION.md`; do not reread them except when investigating a specific dependency or failed gate.
