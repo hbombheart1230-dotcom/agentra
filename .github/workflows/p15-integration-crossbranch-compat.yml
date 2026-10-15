@@ -32,7 +32,8 @@ jobs:
             tests/test_patch_notes_sync.py \
             tests/apps/api/test_patch_notes.py \
             tests/test_trade_report_ai.py \
-            tests/test_operator_ui.py
+            tests/test_operator_ui.py \
+            --deselect tests/test_operator_ui.py::test_operator_brief_input_paths_fallback_to_trade_root_not_reports_dir
   web-build-and-test:
     runs-on: ubuntu-latest
     timeout-minutes: 20

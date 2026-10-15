@@ -3402,3 +3402,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - T4-D independent Codex evidence and required final Linux/Windows CI SUCCESS recorded (Windows T4-D 5/5), without claiming a new Codex verdict or integrated CI PASS.
 - New combined-branch Linux/Windows and Reporter/Web checks configured. Safety: no real orders/LLM, no production writes, no main merge or architecture relocation.
 - Remaining P2 and real-report parity limitations remain open. See `docs/daily_patch/2026-10-15_p15_t4_pr5_integration_start.md`.
+
+## 2026-10-15 · P1.5 Integration CI Initial-Run Correction
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · DOCUMENTATION · SAFETY
+
+- Combined Reporting checks initially: 346 PASS / 2 FAIL. One invalid status was introduced by the integration patch entry; fixed `in_progress` to `current` without rewriting historical entries.
+- A preexisting Windows-literal path test fails on Linux; match the existing T4 CI exact test-specific deselection in the additional Linux job. **NOT a Linux PASS; native Windows contracts remain mandatory.**
+- Evidence: `docs/daily_patch/2026-10-15_p15_integration_ci_preexisting_scope.md`. No application code changes.

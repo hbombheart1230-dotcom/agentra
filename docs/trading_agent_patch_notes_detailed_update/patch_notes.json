@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 265,
+  "entry_count": 266,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7061,7 +7061,7 @@
         "TESTING",
         "SAFETY"
       ],
-      "status": "in_progress",
+      "status": "current",
       "summary": "Created two-parent isolated merge of T4 and PR #5 with 264 historical UI entries preserved and Git blob tree verified; configured combined-branch Linux/Windows checks.",
       "details": [
         "T4-D independent Codex audit previously held only on FINAL CI; required final Linux and Windows CI including T4-D 5/5 Windows JUnit has since succeeded. A new post-CI Codex verdict was not claimed.",
@@ -7073,6 +7073,29 @@
         "docs/refactor/work_orders/CURRENT.md",
         "docs/refactor/work_orders/evidence/P15-T4-D-CODEX-CI-CLOSURE-046.md",
         "docs/daily_patch/2026-10-15_p15_t4_pr5_integration_start.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 Integration CI Initial-Run Correction",
+      "title": "Correct newly authored patch-note schema and pin known Linux-only Operator UI test limitation",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "DOCUMENTATION",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "First combined Reporting compatibility run observed 346 passed and two failures: invalid status in newly authored UI entry and a preexisting Linux Windows-path interpretation case explicitly deselected by the already-green T4 workflow.",
+      "details": [
+        "Correct the new UI status field to the accepted enum 'current' (historical entries unchanged).",
+        "Keep the Windows-style path test unchanged and explicitly deselect this one Linux-only inherited failure in the additional integration reporting job, matching the existing T4 workflow; do NOT misstate it as PASS.",
+        "Retain Windows T4 native replay and complete integrated gates; no source or trading-policy modification."
+      ],
+      "impact": "CI config and evidence only; no runtime change.",
+      "sources": [
+        ".github/workflows/p15-integration-crossbranch-compat.yml",
+        "docs/daily_patch/2026-10-15_p15_integration_ci_preexisting_scope.md"
       ]
     }
   ]
