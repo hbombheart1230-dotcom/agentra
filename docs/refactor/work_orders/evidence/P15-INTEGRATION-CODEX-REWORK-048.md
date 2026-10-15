@@ -19,3 +19,8 @@ Codex found two parametrized failures in `tests/test_baseline_shared_owners.py:1
 ## Still open / not asserted
 
 Integration acceptance: **BLOCKED until SHA-specific required CI + Codex independent audit**. Reporter/real LLM parity, T4-C displaced Reporter-feedback fallback and safety authority remain separate gates. Main, T5, Wave D, P1.5.10 and bulk folder moves forbidden.
+
+## Correction after failed CI on `c1f7323bb6187cc78bfb053c04d1205712a8dd29`
+
+- Updated Linux [38718952518](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/38718952518) showed two FileNotFoundError exceptions in Q10/Q12 baseline fixture. Native Windows test failed identically. Root cause: accidental literal `\\n` embedded in Python comment at `baseline_artifact_io.py:19` caused the actual `path.write_text` expression to be commented out. It was introduced by the first P2 fix.
+- Second commit restores separate executable call line while retaining explicit newline. Do not treat fix as PASS until rerun on both OS.

@@ -3436,3 +3436,10 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Normalized Q10/Q12 baseline JSON writer on native Windows to explicit LF bytes matching `test_baseline_shared_owners.py` contract. Added native-Windows two-parameter pytest job; SUCCESS remains to be verified on new HEAD.
 - Historical audit findings (106 PASS / 2 Windows FAIL, current T4 required CI pending at audit time) are preserved and not mislabeled ACCEPT.
 - See `docs/refactor/work_orders/evidence/P15-INTEGRATION-CODEX-REWORK-048.md` and `docs/daily_patch/2026-10-15_p15_codex_rework_p1_p2_fix.md`.
+
+## 2026-10-15 · P1.5 Integration P2 Writer-Line Correction
+**Stage:** Architecture and Maintainability
+**Tags:** BUGFIX · TESTING · DOCUMENTATION
+
+- First P2 patch accidentally commented out `path.write_text()` by writing a literal backslash-n in a comment, resulting in FileNotFoundError on Linux and Windows. Explicitly acknowledged as a new regression.
+- Restored the active write statement on its own Python source line while preserving required LF bytes; new CI is mandatory before acceptance. See `docs/refactor/work_orders/evidence/P15-INTEGRATION-CODEX-REWORK-048.md`.

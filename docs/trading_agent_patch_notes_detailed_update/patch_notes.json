@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 269,
+  "entry_count": 270,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7173,6 +7173,30 @@
       "sources": [
         "libs/reporting/baseline_artifact_io.py",
         ".github/workflows/p15-integration-crossbranch-compat.yml",
+        "docs/daily_patch/2026-10-15_p15_codex_rework_p1_p2_fix.md",
+        "docs/refactor/work_orders/evidence/P15-INTEGRATION-CODEX-REWORK-048.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 Integration P2 Writer-Line Correction",
+      "title": "Restore baseline JSON writer call obscured by accidental literal backslash-n in comment",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "BUGFIX",
+        "TESTING",
+        "DOCUMENTATION"
+      ],
+      "status": "current",
+      "summary": "Repair P2 fix implementation: actual writer call was inadvertently commented out by a literal backslash-n in source comment, producing Q10/Q12 FileNotFoundError on Linux/Windows.",
+      "details": [
+        "Correct real Python line break and preserve explicit newline='\\n' for canonical LF JSON bytes.",
+        "Prior SHA CI 38718952518 failed Linux and native Windows Q10/Q12 cases: NOT ACCEPTED.",
+        "Await both native Windows baseline cases and Linux crossbranch regression at corrected SHA."
+      ],
+      "impact": "Restore Q10/Q12 baseline writer runtime call; no strategy/authority/real Broker changes.",
+      "sources": [
+        "libs/reporting/baseline_artifact_io.py",
         "docs/daily_patch/2026-10-15_p15_codex_rework_p1_p2_fix.md",
         "docs/refactor/work_orders/evidence/P15-INTEGRATION-CODEX-REWORK-048.md"
       ]

@@ -7,3 +7,9 @@ Integration base under audit: `e207b612ec9ad6aae3b89d4eb2b507f30c7d0dcd` (merge 
 - Add `baseline-lf-windows-native` required job in `.github/workflows/p15-integration-crossbranch-compat.yml` executing the same parametrized test under native Windows. Prior audit 106 PASS / 2 FAIL and patch-note 5 PASS were observed on old HEAD; do not claim rerun results until updated CI is SUCCESS.
 - Trading/UEF/Step5C/UNKNOWN/real Broker/LLM paths, T4 fixtures and `main` unchanged; no large folder moves. 
 - T4 full integrated Linux/Windows CI must be SUCCESS at the code SHA before integration acceptance; after that local Codex independent recheck required.
+
+## Immediate correction after first updated SHA CI
+
+- Previous SHA `c1f7323bb6187cc78bfb053c04d1205712a8dd29` introduced a literal backslash-n in a comment, accidentally commenting out the writer invocation. Linux and Windows Q10/Q12 baseline tests failed with FileNotFoundError; this was NOT a newline comparison failure. This error was introduced by GPT and is not an inherited project defect.
+- Corrective change restores a real source newline before the active `path.write_text(..., newline="\\n")` call. No change to other source modules. First updated CI failure remains in evidence as failed, not PASS.
+- Required next test: both Q10/Q12 native-Windows parameterizations and Linux Reporting compatibility PASS at corrective SHA. P1 policy removal remains intact. No extra ZIP CI.

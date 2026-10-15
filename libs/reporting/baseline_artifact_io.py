@@ -16,4 +16,5 @@ def read_json_dict(path: Path) -> dict[str, Any]:
 
 def write_json_dict(path: Path, payload: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    # Explicit LF guarantees identical bytes on Linux and Windows.\n    path.write_text(json.dumps(dict(payload), ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+    # Explicit LF guarantees identical bytes on Linux and Windows.
+    path.write_text(json.dumps(dict(payload), ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
