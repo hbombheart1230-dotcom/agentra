@@ -20,7 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "8acedae23e64c11b958556e7835b4ebf5e404e73"
-FREEZE = "c61caab0a94d6e40b015709b720d0266cf0f1d9a"
+FREEZE = "7a35ba149842992b959f1b701fe8f384593e75fb"
 LEDGER = ROOT / "docs/refactor/p1_5_third_pass_t4c_moved_segments_ledger.json"
 MODULES = {
     "graphs/nodes/strategist_node.py": ("strategist_node",),

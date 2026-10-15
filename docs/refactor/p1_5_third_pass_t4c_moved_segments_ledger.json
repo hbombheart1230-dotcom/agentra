@@ -1,7 +1,7 @@
 {
  "stage": "P1.5 T4-C",
  "base_commit": "8acedae23e64c11b958556e7835b4ebf5e404e73",
- "freeze_commit": "c61caab0a94d6e40b015709b720d0266cf0f1d9a",
+ "freeze_commit": "7a35ba149842992b959f1b701fe8f384593e75fb",
  "note": "Moved segments of the Strategist structural decomposition (statement runs and value builders). Verbatim moves; names resolve at use time through the module facade. LLM call, news/global providers, State writes, event emission and persistence stay at their original node boundaries.",
  "segments": [
   {
