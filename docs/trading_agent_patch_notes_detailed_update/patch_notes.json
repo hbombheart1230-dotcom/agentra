@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 115,
+  "entry_count": 116,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3079,6 +3079,32 @@
         "docs/refactor/2026-10-15_reporting_relocation_batch1.md",
         "tests/test_reporting_relocation_imports.py",
         "docs/daily_patch/2026-10-15_reporting_relocation_batch1.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Reporting-Target-Tree-Batch2",
+      "title": "Additional Reporting leaf helpers relocated",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "REFACTOR",
+        "REPORTING",
+        "COMPATIBILITY"
+      ],
+      "summary": "Move six unchanged Reporting helpers into the existing target packages, preserving legacy module identity.",
+      "details": [
+        "Four trade_report helpers and two trade_report_markdown helpers retain byte-identical implementation bodies.",
+        "Legacy module aliases preserve private exports and monkeypatch targets; runtime call sites and top-level reporting entrypoints are unchanged.",
+        "Batch 1 import tests: 14 passed; related reporting and patch-note tests: 185 passed before Batch 2.",
+        "Commander, Strategist, Scanner, Monitor, Supervisor, Executor, broker and execution guards remain outside this change.",
+        "Batch 2 validation: 273 targeted pytest checks, 16 web unit tests and the TypeScript/Vite production build passed; all six moved implementation bodies match their original bytes."
+      ],
+      "impact": "Reporting package organization only; no intended report or trading behavior change.",
+      "sources": [
+        "docs/refactor/2026-10-15_reporting_relocation_batch2.md",
+        "docs/daily_patch/2026-10-15_reporting_relocation_batch2.md",
+        "tests/test_reporting_relocation_imports.py"
       ],
       "status": "current"
     }

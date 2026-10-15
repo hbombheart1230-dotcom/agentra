@@ -13,6 +13,12 @@ import pytest
 
 
 RELOCATIONS = [
+    ("libs.reporting.trade_report_ai_deterministic", "libs.reporting.trade_report.deterministic"),
+    ("libs.reporting.trade_report_ai_merge_policy", "libs.reporting.trade_report.merge_policy"),
+    ("libs.reporting.trade_report_ai_prompting", "libs.reporting.trade_report.prompting"),
+    ("libs.reporting.trade_report_ai_shared_facts", "libs.reporting.trade_report.shared_facts"),
+    ("libs.reporting.trade_report_markdown_monitor", "libs.reporting.trade_report_markdown.monitor"),
+    ("libs.reporting.trade_report_markdown_scanner", "libs.reporting.trade_report_markdown.scanner"),
     ("libs.reporting.trade_report_common", "libs.reporting.trade_report.normalization"),
     ("libs.reporting.trade_reporter_status_text", "libs.reporting.trade_report.operator_text"),
     ("libs.reporting.trade_report_ai_summary_adapter", "libs.reporting.trade_report.summary_adapter"),
