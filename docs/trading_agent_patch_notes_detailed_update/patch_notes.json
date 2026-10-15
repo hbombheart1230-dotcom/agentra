@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 123,
+  "entry_count": 124,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3273,6 +3273,29 @@
         "docs/refactor/work_orders/PR5-CODEX-SCRIPTS-ACCEPTANCE-20261015.md",
         "docs/daily_patch/2026-10-15_scripts_contract_ci_handoff.md",
         ".github/workflows/scripts-target-tree-contract.yml"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "PR5-Scripts-CI-Windows-Isolation-Fix",
+      "title": "Isolate static fixture CI from Windows checkout mtime guard",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "TESTING",
+        "CI",
+        "COMPATIBILITY"
+      ],
+      "summary": "Keep the full-checkout 141-wrapper static audit and move only synthetic AST fixture tests to runner temporary directory to avoid a Windows NTFS directory-mtime production-path isolation false positive.",
+      "details": [
+        "First CI run: Linux 141/141 static audit and four fixture tests PASS; Windows 141/141 static audit and four pytest assertions PASS but session exited 1 because unrelated checkout data directory mtimes were reported by the repository-wide production write watchdog.",
+        "The Windows checkout's data/originals and data/specs directory mtime changed without attributable direct file writes by these four temp-path-only fixtures. The watchdog itself remains unchanged.",
+        "Run the synthetic source-only test files in RUNNER_TEMP, outside repository conftest; retain full-checkout 141-wrapper static audit as a separate CI step. Confirm fresh Linux/Windows runs before claiming both PASS."
+      ],
+      "impact": "CI fixture isolation only. No runtime, production artifacts, guard bypass in repository, or trading policy changed.",
+      "sources": [
+        ".github/workflows/scripts-target-tree-contract.yml",
+        "docs/daily_patch/2026-10-15_scripts_contract_ci_handoff.md"
       ],
       "status": "current"
     }

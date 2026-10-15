@@ -43,6 +43,15 @@ jobs:
       - name: Install isolated test runner
         shell: bash
         run: python -m pip install "pytest>=8,<9"
-      - name: Run AST auditor fixture tests
+      # Run the isolated, source-only fixture suite OUTSIDE the checkout.
+      # Repository conftest production-write snapshots can false-positive on
+      # Windows NTFS directory mtime for otherwise scratch-only static tests.
+      # The real repository's 141 wrappers were checked in the preceding step.
+      - name: Stage source-only unit fixtures in runner temp
         shell: bash
-        run: python -m pytest tests/test_scripts_target_tree_compat_audit.py -q -p no:cacheprovider
+        run: |
+          python -c "import os,pathlib,shutil;src=pathlib.Path.cwd();dst=pathlib.Path(os.environ['RUNNER_TEMP'])/'agentra-static-fixtures';(dst/'scripts'/'diagnostics').mkdir(parents=True,exist_ok=True);(dst/'tests').mkdir(parents=True,exist_ok=True);shutil.copy2(src/'scripts'/'diagnostics'/'audit_target_tree_compat.py',dst/'scripts'/'diagnostics'/'audit_target_tree_compat.py');shutil.copy2(src/'tests'/'test_scripts_target_tree_compat_audit.py',dst/'tests'/'test_scripts_target_tree_compat_audit.py');print(dst)"
+      - name: Run isolated AST auditor fixture tests
+        shell: bash
+        run: |
+          python -c "import os,pathlib,pytest,sys;p=pathlib.Path(os.environ['RUNNER_TEMP'])/'agentra-static-fixtures'/'tests'/'test_scripts_target_tree_compat_audit.py';sys.exit(pytest.main([str(p),'-q','-p','no:cacheprovider']))"

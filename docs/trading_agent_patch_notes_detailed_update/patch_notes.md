@@ -1912,3 +1912,9 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Add read-only wrapper auditing CI for Python 3.12 Linux and Windows; 141 path checks and four isolated fixture tests.
 - Independently re-ran isolated fixture tests: **4 PASS**. CI and full-checkout wrapper audit remain **PENDING**.
 - Register `docs/refactor/work_orders/PR5-CODEX-SCRIPTS-ACCEPTANCE-20261015.md` for Codex. Claude T4 remains independent; no wrapper retirement or T4/PR5 merge.
+
+# 2026-10-15 — Scripts CI Windows fixture isolation correction
+
+- First run: Linux 141 wrapper checks + four fixture pytest PASS; Windows 141 wrapper checks + four fixture pytest assertions PASS but repository conftest returned exit 1 on NTFS directory mtime change under data/originals and data/specs.
+- Keep the actual-checkout static audit; stage only synthetic source/unit fixtures in GitHub runner temporary workspace, outside the checkout. Production-write protections in repository unchanged.
+- New Linux/Windows CI evidence required; no changes to T4 or public CLI paths.
