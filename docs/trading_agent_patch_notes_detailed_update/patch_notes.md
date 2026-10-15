@@ -1928,3 +1928,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Existing registration/unregistration leaves two Q12 task suffixes unmatched; operational-owner review only, no task-policy edit. No T4/Reporting/runtime/strategy/Config/deployment changes or physical moves/removals.
 - Future physical cleanup requires architecture approval and usage/retirement proof. Issue #9 UI work remains next, not executed here.
 - Details: docs/refactor/2026-10-15_scripts_continuation_issue8.md; evidence: docs/refactor/2026-10-15_scripts_remaining_dispositions.json.
+
+# 2026-10-15 — Scripts continuation / Issue #8 iteration 2
+
+- Fix empty research outlier analysis; validate held entrypoints without production execution.
+- Empty research top1 return is null instead of IndexError; nonempty values preserved.
+- Seven new held-entrypoint tests plus five research tests and one missing-authority test PASS.
+- Windows venv command contract mocked; empty historical no-write CLI is COMPLETE with zero units, not proof of historical authority.
+- Order-demo duplicate helpers, Q12 scheduler asymmetry, physical moves and wrapper retirement remain gated; all wrappers retained. Issue #9 not started.
+- Offline research handles empty input; trading, scheduler, Reporting and T4 code unchanged.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_scripts_issue8_followup.md

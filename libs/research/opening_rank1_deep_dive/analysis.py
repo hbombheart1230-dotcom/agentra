@@ -133,7 +133,7 @@ def outlier_sensitivity(rows: list[dict[str, Any]]) -> dict[str, Any]:
     positive = sum(value for value in returns if value > 0)
     result["contribution"] = {
         "total_net_return_sum_pct": round(total, 4),
-        "top1_return_pct": round(descending[0], 4),
+        "top1_return_pct": round(descending[0], 4) if descending else None,
         "top3_return_sum_pct": round(sum(descending[:3]), 4),
         "top5_return_sum_pct": round(sum(descending[:5]), 4),
         "top3_share_of_positive_gains": round(sum(descending[:3]) / positive, 4) if positive else None,
