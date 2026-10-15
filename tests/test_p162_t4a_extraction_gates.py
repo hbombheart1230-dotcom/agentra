@@ -24,6 +24,7 @@ BASE = "11a11df58f8d846cd9824fcb37eced521a57e887"
 NODE = "graphs/nodes/scanner_node.py"
 FUNC = "scanner_node"
 LEDGER = ROOT / "docs/refactor/p1_5_third_pass_t4a_moved_segments_ledger.json"
+T4A_END_SHA = "c338ba34276566b0b5f6de1e7f556778ec917968"
 MAX_OWNER_LOC = 350
 FORBIDDEN_TOKENS = ("os.environ", "os.getenv", "getenv(", "time.time(", "datetime.now", "datetime.utcnow", "uuid.uuid",
                     "subprocess", "sqlite3", "requests.", "print(", "open(", "logging.", "random.")
@@ -230,7 +231,9 @@ def test_call_sites_pass_exactly_the_declared_inputs():
 
 
 def test_t4a_changed_paths_stay_in_scanner_scope_and_touch_no_authority_surface():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    # stage-pinned: T4-A scope is evaluated up to the T4-A.1 closing commit (T4-B legitimately touches the Monitor scope)
+    assert subprocess.run(["git", "merge-base", "--is-ancestor", T4A_END_SHA, "HEAD"], cwd=ROOT).returncode == 0
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, T4A_END_SHA], cwd=ROOT).decode().split(chr(0))
     for p in [x for x in out if x]:
         assert p.startswith(ALLOWED_CHANGED), f"T4-A touched an out-of-scope path: {p}"
         assert not p.startswith(FORBIDDEN_PREFIXES), p

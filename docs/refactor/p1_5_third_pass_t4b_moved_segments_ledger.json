@@ -1,0 +1,965 @@
+{
+ "stage": "P1.5 T4-B",
+ "base_commit": "c338ba34276566b0b5f6de1e7f556778ec917968",
+ "freeze_commit": "c50db1749dbad7058fe0c45ab44a9c84cb12fb34",
+ "note": "Moved segments of the Monitor structural decomposition (statement runs, value builders, monitor_output projections). Verbatim moves; names resolve at use time through the module facade.",
+ "segments": [
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_trigger_ladder.py",
+   "owner_function": "stop_loss_exit_check",
+   "kind": "run",
+   "loc": 23,
+   "inputs": [
+    "_finalize",
+    "hard_sl",
+    "out",
+    "pnl_ratio",
+    "sl"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_trigger_ladder.py",
+   "owner_function": "profit_target_exit_check",
+   "kind": "run",
+   "loc": 26,
+   "inputs": [
+    "_finalize",
+    "_mark_profit_floor_blocked",
+    "_profit_floor_blocks_current_profit",
+    "_profit_threshold",
+    "etf_deviation_pct",
+    "etf_deviation_source",
+    "out",
+    "profit_exit_pnl_ratio",
+    "tp"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_trigger_ladder.py",
+   "owner_function": "vwap_breakdown_exit_check",
+   "kind": "run",
+   "loc": 32,
+   "inputs": [
+    "_block_protective_exit_below_floor",
+    "_finalize",
+    "apx",
+    "gross_pnl_ratio",
+    "hs",
+    "out",
+    "p",
+    "peak_price"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_trigger_ladder.py",
+   "owner_function": "intraday_low_break_exit_check",
+   "kind": "run",
+   "loc": 24,
+   "inputs": [
+    "_block_protective_exit_below_floor",
+    "_finalize",
+    "_protective_exit_hard_invalidation",
+    "hs",
+    "out",
+    "p",
+    "technical_px"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_trigger_ladder.py",
+   "owner_function": "trend_strength_exit_check",
+   "kind": "run",
+   "loc": 8,
+   "inputs": [
+    "_finalize",
+    "out",
+    "p"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_profit_ladder.py",
+   "owner_function": "opening_gap_profit_take_exit_check",
+   "kind": "run",
+   "loc": 22,
+   "inputs": [
+    "_finalize",
+    "_mark_exit_sizing",
+    "_profit_floor_blocks_current_profit",
+    "_profit_threshold",
+    "hs",
+    "out",
+    "p",
+    "profit_exit_metric_name",
+    "profit_exit_pnl_ratio"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_profit_ladder.py",
+   "owner_function": "volume_exhaustion_exit_check",
+   "kind": "run",
+   "loc": 31,
+   "inputs": [
+    "_finalize",
+    "_profit_floor_blocks_current_profit",
+    "_profit_threshold",
+    "out",
+    "p",
+    "profit_exit_pnl_ratio"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_profit_ladder.py",
+   "owner_function": "partial_take_profit_exit_check",
+   "kind": "run",
+   "loc": 17,
+   "inputs": [
+    "_finalize",
+    "_mark_exit_sizing",
+    "_profit_floor_blocks_current_profit",
+    "out",
+    "partial_take_profit_effective_pct",
+    "partial_take_profit_pct",
+    "partial_take_profit_taken",
+    "profit_exit_metric_name",
+    "profit_exit_pnl_ratio"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_profit_ladder.py",
+   "owner_function": "profit_ladder_exit_check",
+   "kind": "run",
+   "loc": 26,
+   "inputs": [
+    "_finalize",
+    "_mark_exit_sizing",
+    "_profit_floor_blocks_current_profit",
+    "_profit_threshold",
+    "out",
+    "p",
+    "partial_take_profit_pct",
+    "profit_exit_metric_name",
+    "profit_exit_pnl_ratio"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_profit_ladder.py",
+   "owner_function": "risk_reward_exit_check",
+   "kind": "run",
+   "loc": 34,
+   "inputs": [
+    "_finalize",
+    "_mark_exit_sizing",
+    "_profit_floor_blocks_current_profit",
+    "_profit_threshold",
+    "effective_stop_pct",
+    "out",
+    "p",
+    "profit_exit_metric_name",
+    "profit_exit_pnl_ratio"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_profit_ladder.py",
+   "owner_function": "resistance_target_exit_check",
+   "kind": "run",
+   "loc": 74,
+   "inputs": [
+    "_finalize",
+    "_profit_floor_blocks_current_profit",
+    "_profit_threshold",
+    "hs",
+    "out",
+    "p",
+    "peak_drawdown",
+    "peak_price",
+    "profit_exit_metric_name",
+    "profit_exit_pnl_ratio",
+    "technical_px"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_trigger_ladder.py",
+   "owner_function": "trailing_stop_exit_check",
+   "kind": "run",
+   "loc": 7,
+   "inputs": [
+    "_finalize",
+    "_profit_floor_blocks_current_profit",
+    "out",
+    "peak_price",
+    "technical_px"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "evaluate_exit_policy",
+   "owner": "libs/runtime/monitor_exit/exit_trigger_ladder.py",
+   "owner_function": "time_limit_exit_check",
+   "kind": "run",
+   "loc": 34,
+   "inputs": [
+    "_finalize",
+    "_mark_profit_floor_blocked",
+    "expected_exit_floor_blocked",
+    "gross_pnl_ratio",
+    "hs",
+    "out",
+    "profit_floor_enabled",
+    "time_limit_reached",
+    "time_limit_reason"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "libs/runtime/exit_policy.py",
+   "returns": true
+  },
+  {
+   "function": "_build_account_pnl_crosscheck",
+   "owner": "libs/runtime/monitor_exit/account_pnl_crosscheck.py",
+   "owner_function": "resolve_account_pnl_evidence",
+   "kind": "run",
+   "loc": 38,
+   "inputs": [
+    "avg",
+    "policy",
+    "q",
+    "raw_price"
+   ],
+   "outputs": [
+    "account_current_price",
+    "account_pnl_ratio",
+    "account_pnl_ratio_source",
+    "account_ratio_mark_price",
+    "account_unrealized_mark_price",
+    "account_unrealized_pnl",
+    "reference_price"
+   ],
+   "record": "AccountPnlEvidence",
+   "module": "libs/runtime/exit_policy.py",
+   "returns": false
+  },
+  {
+   "function": "_build_account_pnl_crosscheck",
+   "owner": "libs/runtime/monitor_exit/account_pnl_crosscheck.py",
+   "owner_function": "resolve_account_mark_price",
+   "kind": "run",
+   "loc": 34,
+   "inputs": [
+    "_price_anomaly_reason",
+    "account_ratio_mark_price",
+    "account_unrealized_mark_price",
+    "raw_price"
+   ],
+   "outputs": [
+    "account_mark_price",
+    "account_mark_price_source",
+    "fallback_price_source",
+    "pnl_fallback_applied",
+    "price_anomaly_flag",
+    "price_anomaly_reason"
+   ],
+   "record": "AccountMarkPrice",
+   "module": "libs/runtime/exit_policy.py",
+   "returns": false
+  },
+  {
+   "function": "_build_account_pnl_crosscheck",
+   "owner": "libs/runtime/monitor_exit/account_pnl_crosscheck.py",
+   "owner_function": "resolve_effective_price",
+   "kind": "run",
+   "loc": 46,
+   "inputs": [
+    "account_mark_price",
+    "account_mark_price_source",
+    "account_pnl_ratio",
+    "fallback_price_source",
+    "pnl_fallback_applied",
+    "policy",
+    "raw_pnl_ratio",
+    "raw_price"
+   ],
+   "outputs": [
+    "applied",
+    "effective_price",
+    "effective_source",
+    "reason"
+   ],
+   "record": "EffectivePriceResolution",
+   "module": "libs/runtime/exit_policy.py",
+   "returns": false
+  },
+  {
+   "function": "_evaluate_monitor_entry_candidate",
+   "owner": "libs/runtime/monitor/entry_candidate_policy.py",
+   "owner_function": "resolve_entry_memory_bias_policy",
+   "kind": "run",
+   "loc": 35,
+   "inputs": [
+    "commander_context",
+    "entry_policy_input",
+    "monitor_policy",
+    "state",
+    "strategy_frame",
+    "strategy_monitor_policy"
+   ],
+   "outputs": [
+    "commander_entry_control",
+    "entry_policy",
+    "entry_policy_input",
+    "entry_received_policy",
+    "monitor_memory_bias",
+    "monitor_memory_bias_observation_only",
+    "monitor_memory_bias_observed_entry_result",
+    "monitor_memory_bias_result",
+    "monitor_memory_bias_summary"
+   ],
+   "record": "MemoryBiasPolicyResolution",
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "_evaluate_monitor_entry_candidate",
+   "owner": "libs/runtime/monitor/entry_candidate_policy.py",
+   "owner_function": "build_entry_effective_policy_trace",
+   "kind": "run",
+   "loc": 25,
+   "inputs": [
+    "entry_applied_policy",
+    "entry_policy_origin",
+    "entry_received_policy",
+    "monitor_memory_bias_result",
+    "strategy_frame"
+   ],
+   "outputs": [
+    "effective_policy_trace"
+   ],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "_evaluate_monitor_entry_candidate",
+   "owner": "libs/runtime/monitor/entry_candidate_annotation.py",
+   "owner_function": "annotate_entry_policy_fields",
+   "kind": "run",
+   "loc": 29,
+   "inputs": [
+    "effective_policy_trace",
+    "entry_info",
+    "entry_policy_contract",
+    "monitor_memory_bias",
+    "monitor_memory_bias_observation_only",
+    "monitor_memory_bias_observed_entry_result",
+    "monitor_memory_bias_result",
+    "monitor_memory_bias_summary"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "_evaluate_monitor_entry_candidate",
+   "owner": "libs/runtime/monitor/entry_candidate_annotation.py",
+   "owner_function": "annotate_entry_minute_metrics",
+   "kind": "run",
+   "loc": 24,
+   "inputs": [
+    "entry_info",
+    "entry_row_source",
+    "entry_rows",
+    "minute_fetch_meta",
+    "minute_ohlcv_meta"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "_evaluate_monitor_entry_candidate",
+   "owner": "libs/runtime/monitor/entry_candidate_guards.py",
+   "owner_function": "apply_market_rail_translation_to_quant_decision",
+   "kind": "run",
+   "loc": 14,
+   "inputs": [
+    "market_rail_translation",
+    "quant_entry_decision"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "_evaluate_monitor_entry_candidate",
+   "owner": "libs/runtime/monitor/entry_candidate_guards.py",
+   "owner_function": "resolve_entry_intent_cooldown",
+   "kind": "run",
+   "loc": 9,
+   "inputs": [
+    "all_pos_map",
+    "entry_cooldown_map",
+    "entry_info",
+    "entry_intent_cooldown_sec",
+    "now_epoch_for_entry",
+    "symbol"
+   ],
+   "outputs": [
+    "cooldown_until"
+   ],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "_evaluate_monitor_entry_candidate",
+   "owner": "libs/runtime/monitor/entry_candidate_guards.py",
+   "owner_function": "apply_entry_guard_overrides",
+   "kind": "run",
+   "loc": 39,
+   "inputs": [
+    "entry_guard_blocked",
+    "entry_guard_reason",
+    "entry_info",
+    "market_rail_translation",
+    "qty",
+    "quant_entry_enforcement",
+    "risk_off_defensive_policy",
+    "sizing_info"
+   ],
+   "outputs": [
+    "entry_guard_blocked",
+    "entry_guard_reason",
+    "qty"
+   ],
+   "record": "EntryGuardOverrides",
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "_evaluate_monitor_entry_candidate",
+   "owner": "libs/runtime/monitor/entry_candidate_probe.py",
+   "owner_function": "resolve_opening_probe_context",
+   "kind": "run",
+   "loc": 32,
+   "inputs": [
+    "_probe_minutes",
+    "allow_opening_rank1_controlled_probe",
+    "entry_rows",
+    "last_trade_epoch",
+    "last_trade_side",
+    "last_trade_symbol",
+    "now_epoch_for_entry",
+    "probe_day",
+    "quote_for_entry",
+    "selected",
+    "state",
+    "symbol"
+   ],
+   "outputs": [
+    "observation_price",
+    "opening_probe_selection_authority",
+    "probe_selected",
+    "same_symbol_reentry_detected"
+   ],
+   "record": "OpeningProbeContext",
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/entry_cascade_selection.py",
+   "owner_function": "build_entry_cascade_plan_for_selection",
+   "kind": "run",
+   "loc": 19,
+   "inputs": [
+    "entry_candidate_cascade",
+    "entry_cascade_config",
+    "entry_cascade_max_runner_ups",
+    "entry_guard_blocked",
+    "entry_guard_reason",
+    "entry_info",
+    "held_symbols_for_entry",
+    "max_positions",
+    "open_position_count",
+    "pending_buy_symbols_for_entry",
+    "state",
+    "symbol"
+   ],
+   "outputs": [
+    "cascade_plan"
+   ],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/entry_cascade_selection.py",
+   "owner_function": "resolve_entry_order_price",
+   "kind": "run",
+   "loc": 24,
+   "inputs": [
+    "entry_info",
+    "selected",
+    "sizing_info"
+   ],
+   "outputs": [
+    "order_price",
+    "order_price_source"
+   ],
+   "record": "OrderPriceResolution",
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/entry_cascade_selection.py",
+   "owner_function": "annotate_entry_intent_meta",
+   "kind": "run",
+   "loc": 11,
+   "inputs": [
+    "entry_info",
+    "intent",
+    "post_exit_cooldown_sec",
+    "sizing_info"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor_exit/exit_policy_bias.py",
+   "owner_function": "apply_exit_policy_memory_bias",
+   "kind": "run",
+   "loc": 43,
+   "inputs": [
+    "effective_exit_policy_base",
+    "exit_policy_guard_adjustments",
+    "frame_applied",
+    "hold_bias_result",
+    "monitor_memory_bias",
+    "monitor_memory_bias_observation_only",
+    "pos_map",
+    "selected_snapshot",
+    "selected_symbol",
+    "state"
+   ],
+   "outputs": [
+    "effective_exit_policy_base",
+    "exit_bias_observed_result",
+    "exit_bias_result"
+   ],
+   "record": "ExitPolicyBiasResolution",
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor_exit/exit_cycle_guards.py",
+   "owner_function": "load_exit_cycle_maps",
+   "kind": "run",
+   "loc": 12,
+   "inputs": [
+    "state"
+   ],
+   "outputs": [
+    "confirm_map",
+    "cooldown_map",
+    "pending_exit_lock",
+    "prev_qty_map"
+   ],
+   "record": "ExitCycleMaps",
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor_exit/exit_cycle_guards.py",
+   "owner_function": "resolve_exit_cooldown_and_lock",
+   "kind": "run",
+   "loc": 14,
+   "inputs": [
+    "cooldown_map",
+    "now_epoch",
+    "pending_exit_lock",
+    "prev_qty_map",
+    "qty",
+    "sell_cooldown_sec",
+    "symbol"
+   ],
+   "outputs": [
+    "cooldown_until",
+    "lock_until"
+   ],
+   "record": "ExitCooldownLock",
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor_exit/exit_cycle_guards.py",
+   "owner_function": "evaluate_exit_sell_guards",
+   "kind": "run",
+   "loc": 52,
+   "inputs": [
+    "confirm_count",
+    "confirm_key",
+    "confirm_map",
+    "cooldown_until",
+    "decision",
+    "effective_confirm_ticks",
+    "emergency_exit",
+    "entry_info",
+    "eod_carry",
+    "eod_flat_exit",
+    "exit_signal_detected",
+    "hard_exit",
+    "hold_block_reason",
+    "hold_sec",
+    "lock_until",
+    "min_hold_blocked",
+    "min_hold_sec",
+    "monitor_reason",
+    "now_epoch",
+    "qty",
+    "selected_pending_order_for_exit",
+    "sell_cooldown_blocked",
+    "sell_cooldown_sec",
+    "sell_guard_blocked",
+    "sell_guard_reason",
+    "state",
+    "symbol"
+   ],
+   "outputs": [
+    "confirm_count",
+    "hold_block_reason",
+    "min_hold_blocked",
+    "monitor_reason",
+    "sell_cooldown_blocked",
+    "sell_guard_blocked",
+    "sell_guard_reason"
+   ],
+   "record": "SellGuardResolution",
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor_exit/exit_cycle_guards.py",
+   "owner_function": "commit_exit_signal_lock",
+   "kind": "run",
+   "loc": 18,
+   "inputs": [
+    "confirm_count",
+    "confirm_map",
+    "cooldown_map",
+    "cooldown_until",
+    "effective_confirm_ticks",
+    "emergency_exit",
+    "exit_signal_detected",
+    "hard_exit",
+    "lock_until",
+    "monitor_reason",
+    "now_epoch",
+    "pending_exit_lock",
+    "qty",
+    "sell_cooldown_sec",
+    "sell_guard_blocked",
+    "symbol"
+   ],
+   "outputs": [
+    "confirm_count",
+    "cooldown_until",
+    "lock_until",
+    "monitor_reason"
+   ],
+   "record": "ExitSignalLock",
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor_exit/exit_cycle_guards.py",
+   "owner_function": "build_overnight_carry_decision_payload",
+   "kind": "builder",
+   "loc": 15,
+   "inputs": [
+    "eod_carry",
+    "now_epoch",
+    "symbol"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/scanner_monitor_handoff_projection.py",
+   "owner_function": "build_scanner_monitor_handoff_for_cycle",
+   "kind": "run",
+   "loc": 10,
+   "inputs": [
+    "entry_candidate_cascade",
+    "entry_info",
+    "final_entry_decision",
+    "monitor_no_trade_surface",
+    "scanner_selected_snapshot",
+    "selected",
+    "state"
+   ],
+   "outputs": [
+    "scanner_monitor_handoff"
+   ],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/cycle_event_payloads.py",
+   "owner_function": "build_monitor_raw_input_snapshot",
+   "kind": "builder",
+   "loc": 48,
+   "inputs": [
+    "all_pos_map",
+    "commander_context",
+    "commander_entry_control",
+    "monitor_policy",
+    "open_position_count",
+    "selected",
+    "strategist_output",
+    "strategist_plan"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/cycle_event_payloads.py",
+   "owner_function": "build_state_transition_event_payload",
+   "kind": "builder",
+   "loc": 17,
+   "inputs": [
+    "current_posture",
+    "current_reason",
+    "entry_info",
+    "entry_transition_trace",
+    "exit_info",
+    "previous_monitor_state",
+    "previous_posture",
+    "previous_reason",
+    "state_changed"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/cycle_event_payloads.py",
+   "owner_function": "build_cycle_summary_event_payload",
+   "kind": "builder",
+   "loc": 29,
+   "inputs": [
+    "buy_blocked_closeout_window",
+    "buy_blocked_open_position",
+    "buy_blocked_post_exit_cooldown",
+    "current_posture",
+    "current_reason",
+    "entry_blocker_surface",
+    "entry_info",
+    "exit_info",
+    "intents",
+    "monitor_symbol",
+    "open_position_count",
+    "selected",
+    "state"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/cycle_event_payloads.py",
+   "owner_function": "build_decision_bridge_raw_input",
+   "kind": "builder",
+   "loc": 17,
+   "inputs": [
+    "intents",
+    "monitor_policy",
+    "selected"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/cycle_log_trace_payloads.py",
+   "owner_function": "build_monitor_summary_log_payload",
+   "kind": "builder",
+   "loc": 85,
+   "inputs": [
+    "block_buy_open_position",
+    "buy_blocked_closeout_window",
+    "buy_blocked_open_position",
+    "buy_blocked_post_exit_cooldown",
+    "entry_blocker_surface",
+    "entry_info",
+    "exit_info",
+    "fallback_reasons",
+    "final_entry_decision",
+    "intents",
+    "monitor_no_trade_surface",
+    "open_position_count",
+    "post_exit_cooldown_remaining_sec",
+    "post_exit_cooldown_sec",
+    "scanner_monitor_handoff",
+    "selected",
+    "sizing_info"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/cycle_log_trace_payloads.py",
+   "owner_function": "build_entry_exit_decision_trace_payload",
+   "kind": "builder",
+   "loc": 69,
+   "inputs": [
+    "entry_applied_policy",
+    "entry_info",
+    "entry_policy_origin",
+    "entry_received_policy",
+    "exit_info",
+    "monitor_policy_trace",
+    "selected",
+    "state"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/entry_focus_output_projection.py",
+   "owner_function": "build_entry_focus_monitor_output",
+   "kind": "projection",
+   "loc": 21,
+   "inputs": [
+    "entry_blocker_surface",
+    "entry_candidate_symbol",
+    "entry_cost_filter_snapshot",
+    "entry_final_symbol",
+    "entry_info",
+    "final_entry_decision",
+    "monitor_focus_context",
+    "monitor_focus_mode",
+    "monitor_output_symbol",
+    "position_focus_symbol",
+    "scanner_selected_symbol"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  },
+  {
+   "function": "monitor_node",
+   "owner": "libs/runtime/monitor/policy_output_projection.py",
+   "owner_function": "build_policy_monitor_output",
+   "kind": "projection",
+   "loc": 123,
+   "inputs": [
+    "commander_memory_application_trace",
+    "entry_applied_policy",
+    "entry_info",
+    "entry_policy_contract",
+    "entry_policy_origin",
+    "entry_received_policy",
+    "exit_info",
+    "monitor_no_trade_surface",
+    "monitor_policy_trace",
+    "scanner_monitor_handoff"
+   ],
+   "outputs": [],
+   "record": null,
+   "module": "graphs/nodes/monitor_node.py",
+   "returns": false
+  }
+ ]
+}
