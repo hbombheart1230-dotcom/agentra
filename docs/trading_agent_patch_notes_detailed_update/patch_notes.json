@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 122,
+  "entry_count": 123,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3249,6 +3249,30 @@
         "docs/refactor/2026-10-15_scripts_wrapper_contract_audit.md",
         "docs/daily_patch/2026-10-15_scripts_wrapper_contract_audit.md",
         "tests/test_scripts_target_tree_compat_audit.py"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "PR5-Scripts-Contract-CI-Handoff",
+      "title": "Scripts compatibility CI and Codex acceptance task",
+      "stage": "Architecture Refactoring",
+      "types": [
+        "COMPATIBILITY",
+        "TESTING",
+        "CI"
+      ],
+      "summary": "Add an isolated Linux/Windows static contract workflow and delegated full-checkout verification work order for the 141 Scripts compatibility entrypoints.",
+      "details": [
+        "GitHub Actions checks 141 wrapper target paths without module execution or external service use, then runs four isolated auditor fixtures.",
+        "Local isolated test re-run: 4 passed. GitHub CI and full-checkout real repository run pending separate verification.",
+        "Codex is tasked with static acceptance and representative safe CLI parity. No T4 convergence or wrapper retirement until post-T4 architecture approval."
+      ],
+      "impact": "Read-only CI and handoff documentation only; no trading behavior, config, or branch merge.",
+      "sources": [
+        "docs/refactor/work_orders/PR5-CODEX-SCRIPTS-ACCEPTANCE-20261015.md",
+        "docs/daily_patch/2026-10-15_scripts_contract_ci_handoff.md",
+        ".github/workflows/scripts-target-tree-contract.yml"
       ],
       "status": "current"
     }

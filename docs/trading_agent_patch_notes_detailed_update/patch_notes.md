@@ -1906,3 +1906,9 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Four synthetic fixture tests PASS in GPT isolated environment. Full checkout and T4/PR5 combined tests not run.
 - Existing public CLI wrappers, T4 source, Config and trading authority untouched; PR #5 remains Draft.
 - Docs: `docs/refactor/2026-10-15_scripts_wrapper_contract_audit.md`.
+
+# 2026-10-15 — Scripts contract CI / Codex handoff
+
+- Add read-only wrapper auditing CI for Python 3.12 Linux and Windows; 141 path checks and four isolated fixture tests.
+- Independently re-ran isolated fixture tests: **4 PASS**. CI and full-checkout wrapper audit remain **PENDING**.
+- Register `docs/refactor/work_orders/PR5-CODEX-SCRIPTS-ACCEPTANCE-20261015.md` for Codex. Claude T4 remains independent; no wrapper retirement or T4/PR5 merge.

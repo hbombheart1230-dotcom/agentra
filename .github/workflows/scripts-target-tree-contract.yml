@@ -1,0 +1,48 @@
+name: Scripts Target Tree Contract
+
+on:
+  push:
+    branches:
+      - refactor/agentra-target-tree
+    paths:
+      - "scripts/**"
+      - "tests/test_scripts_target_tree_compat_audit.py"
+      - "docs/refactor/2026-10-15_scripts_bulk_manifest.json"
+      - ".github/workflows/scripts-target-tree-contract.yml"
+  pull_request:
+    paths:
+      - "scripts/**"
+      - "tests/test_scripts_target_tree_compat_audit.py"
+      - "docs/refactor/2026-10-15_scripts_bulk_manifest.json"
+      - ".github/workflows/scripts-target-tree-contract.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scripts-target-tree-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-contract:
+    name: Static CLI contract / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify all 141 legacy wrapper targets (no execution)
+        shell: bash
+        run: python scripts/diagnostics/audit_target_tree_compat.py --json
+      - name: Install isolated test runner
+        shell: bash
+        run: python -m pip install "pytest>=8,<9"
+      - name: Run AST auditor fixture tests
+        shell: bash
+        run: python -m pytest tests/test_scripts_target_tree_compat_audit.py -q -p no:cacheprovider
