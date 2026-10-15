@@ -3227,3 +3227,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - **P2**: golden v1→v2는 단순 6개 누락이 아니라 **Reporter 피드백 Fallback 29-variant 레코드**와 **max-token Fallback 23-variant 레코드**가 교체된 것. 상태 효과 21→24. 원래 시나리오 커버리지가 사라졌으므로 P1.5 최종 승인 전 별도 immutable BASE fixture로 복원·Codex 독립 감사 필수. v3 동등성 자체는 PASS.
 - `REAL_LLM_PARITY_NOT_RUN`, `REAL_REPORT_PARITY_BLOCKED`, NTFS/cross-seed/PYTHONPATH 및 BASE×2/FEATURE×2 P2 유지. T4-D는 Commander pure 정책 우선순위/Operator UI 정확 Markdown 렌더만 분리, 기존 LLM·권한·State/Event·영속화 동작은 보존.
 - 근거: `docs/refactor/work_orders/evidence/P15-T4-C-CODEX-043.md`, `docs/refactor/work_orders/evidence/P15-T4-C-GOLDEN-SCENARIO-GAP-044.md`, `docs/refactor/work_orders/P15-T4-D-COMMANDER-UI-044.md`.
+
+## 2026-10-15 · P1.5 T4-D preflight CI 문서 계약 복구
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · DOCUMENTATION · SAFETY
+
+- 최신 CI `38689842640`의 기존 Fast Track 계약 단계에서 `CURRENT.md`의 `**State:**` 선언 누락으로 실패한 것을 확인하고, `MAIN_FROZEN` 및 `No ZIP` 상태를 활성 T4-D 문서에 복구했습니다.
+- 기존 `P15_FAST_TRACK_WAVE_S_020.md`는 CI 호환을 위한 *과거 링크*로만 유지합니다. **현행 활성 작업은 T4-D 하나**이며 T5/Wave D/main merge 권한은 부여하지 않습니다.
+- 새 HEAD의 Linux/Windows CI가 모두 SUCCESS일 때만 Claude의 T4-D 순수 구조 분리를 시작합니다. T4-C Reporter-feedback fallback coverage P2는 별도 복원·독립 검증 전까지 OPEN입니다.
+- 문서 전용 수정이며 주문/승인/LLM/State 동작 변경은 없습니다.
