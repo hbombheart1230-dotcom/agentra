@@ -427,6 +427,18 @@ def _scenarios(target, inp):
     return out
 
 
+def has_backslash(obj) -> bool:
+    """True when any string of the frozen output carries a Windows separator: such outputs feed stable evidence ids
+    (hash of a packet containing the path), which cannot be compared across platforms without masking."""
+    if isinstance(obj, str):
+        return _BS in obj
+    if isinstance(obj, dict):
+        return any(has_backslash(k) or has_backslash(v) for k, v in obj.items())
+    if isinstance(obj, (list, tuple)):
+        return any(has_backslash(x) for x in obj)
+    return False
+
+
 def platform_bound(obj) -> bool:
     if isinstance(obj, str):
         return len(obj) > 2 and obj[1] == ":" and obj[0].isalpha() and obj[2] in (_BS, "/")
@@ -508,7 +520,7 @@ def generate(capture, outdir, per_target_limit=50):
             x = replay(tgt, d)
             v[vid] = [x["out_sha"], x["effects_sha"], x["exception"], x["returned_is_input"]]
         recs.append({"id": rid, "target": tgt, "source_test": r["test"], "input": inp,
-                     "bound": platform_bound(inp), "golden": a, "variants": v})
+                     "bound": platform_bound(inp) or has_backslash(a["out"]), "golden": a, "variants": v})
     with gzip.open(outdir / "strategist_golden.json.gz", "wt", encoding="utf-8", compresslevel=9) as fh:
         json.dump(recs, fh, ensure_ascii=False)
     man = {"records": len(recs), "variants": sum(len(r["variants"]) for r in recs),
@@ -701,6 +713,12 @@ def golden_integrity(golden, oracle):
     for rec in golden:
         if rec["bound"]:
             bound += 1
+            # platform-bound output (ids hash Windows separators): the ordered effect names and the exception are still
+            # compared across hosts; the output digest is compared FEATURE == same-host BASE only
+            if [e[0] for e in oracle[rec["id"]]["effects"]] != [e[0] for e in rec["golden"]["effects"]]:
+                errors.append((rec["id"], "golden_vs_base_host_effect_names_bound"))
+            if oracle[rec["id"]].get("exception") != rec["golden"]["exception"]:
+                errors.append((rec["id"], "golden_vs_base_host_exception_bound"))
             continue
         checked += 1
         if oracle[rec["id"]]["out_norm"] != sha(norm_seps(rec["golden"]["out"])):
