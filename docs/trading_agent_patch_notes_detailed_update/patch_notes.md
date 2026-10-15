@@ -3427,3 +3427,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Reporter evaluation 133 referenced modules and 327 cross-boundary static dependencies. Legacy Reporter/Monitor and operational script wrappers remain consumed; no blind folder delete.
 - Root b.jsonl and _health.json have textual references, so no automatic deletion. See `docs/refactor/architecture/consumer_inventory_findings_20261015.md` and independent Codex task `docs/refactor/work_orders/P15-INTEGRATION-CODEX-CONSUMER-AUDIT-047.md`.
 - Approval: architecture migration remains blocked pending scoped owner/consumer safety review and `ARCH_CONVERGENCE_APPROVED`.
+
+## 2026-10-15 · P1.5 Integration Codex REWORK P1 / P2 Fix
+**Stage:** Architecture and Maintainability
+**Tags:** SAFETY · TESTING · BUGFIX · DOCUMENTATION
+
+- Codex independent audit returned REWORK on integration `e207b612`. Deleted prohibited CI changed-files ZIP workflow; user-facing updated-files-only ZIP remains external to repo CI.
+- Normalized Q10/Q12 baseline JSON writer on native Windows to explicit LF bytes matching `test_baseline_shared_owners.py` contract. Added native-Windows two-parameter pytest job; SUCCESS remains to be verified on new HEAD.
+- Historical audit findings (106 PASS / 2 Windows FAIL, current T4 required CI pending at audit time) are preserved and not mislabeled ACCEPT.
+- See `docs/refactor/work_orders/evidence/P15-INTEGRATION-CODEX-REWORK-048.md` and `docs/daily_patch/2026-10-15_p15_codex_rework_p1_p2_fix.md`.

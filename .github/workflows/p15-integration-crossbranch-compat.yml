@@ -34,6 +34,21 @@ jobs:
             tests/test_trade_report_ai.py \
             tests/test_operator_ui.py \
             --deselect tests/test_operator_ui.py::test_operator_brief_input_paths_fallback_to_trade_root_not_reports_dir
+  baseline-lf-windows-native:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTEST_ADDOPTS: '-p no:cacheprovider'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install offline reporting test dependencies
+        run: python -m pip install "pytest>=8,<10" -r requirements.txt
+      - name: Required native-Windows Q10/Q12 baseline LF byte contract (two parameterizations)
+        run: python -m pytest -q -p no:cacheprovider tests/test_baseline_shared_owners.py::test_pipeline_io_facades_preserve_bytes_and_error_contract
   web-build-and-test:
     runs-on: ubuntu-latest
     timeout-minutes: 20

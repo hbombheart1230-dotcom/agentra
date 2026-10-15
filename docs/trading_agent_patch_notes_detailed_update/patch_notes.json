@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 268,
+  "entry_count": 269,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7148,6 +7148,33 @@
         "docs/refactor/work_orders/P15-INTEGRATION-CODEX-CONSUMER-AUDIT-047.md",
         "scripts/refactor/inventory_p15_consumers.py",
         "tests/test_p15_consumer_inventory.py"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 Integration Codex REWORK P1 P2 Fix",
+      "title": "Remove prohibited CI ZIP packaging and normalize Q10/Q12 baseline LF on Windows",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "SAFETY",
+        "TESTING",
+        "BUGFIX",
+        "DOCUMENTATION"
+      ],
+      "status": "current",
+      "summary": "Resolve Codex REWORK P1 by removing the integration changed-files ZIP GitHub Actions workflow, keeping user-facing ZIP downloads outside repo CI. Resolve Windows baseline exact-LF P2 with explicit newline and a required native-Windows byte-contract test.",
+      "details": [
+        "Previously observed CI artifact 11962108925 is historical evidence only; no new packaging/upload workflow is allowed. CURRENT.md No ZIP policy remains unchanged.",
+        "baseline_artifact_io.write_json_dict sets newline='\\n' explicitly, preserving required JSON content + terminal LF bytes across platforms; no Q10/Q12 strategy, live data, authority or publication paths changed.",
+        "Add native Windows pytest for both Q10/Q12 baseline pipeline parameterizations under integrated Reporting/Web workflow. Verification must be recorded from the new HEAD run; prior 106 PASS / 2 FAIL audit remains historical until rerun.",
+        "Leave T4-C feedback fallback P2, real Reporter/LLM parity gaps, main, folder moves and safety locks unchanged."
+      ],
+      "impact": "One read-only baseline report writer byte-contract correction, CI removal and Windows test addition; no production trading authority.",
+      "sources": [
+        "libs/reporting/baseline_artifact_io.py",
+        ".github/workflows/p15-integration-crossbranch-compat.yml",
+        "docs/daily_patch/2026-10-15_p15_codex_rework_p1_p2_fix.md",
+        "docs/refactor/work_orders/evidence/P15-INTEGRATION-CODEX-REWORK-048.md"
       ]
     }
   ]
