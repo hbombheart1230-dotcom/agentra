@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 274,
+  "entry_count": 275,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7293,6 +7293,27 @@
         "docs/daily_patch/2026-10-16_p15_tree_v3_freeze_and_v1_kickoff.md",
         "docs/refactor/work_orders/P15-TREE-MIGRATION-V1-052.md",
         "docs/refactor/architecture/TREE_V3_FROZEN.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 Tree Migration V1-052",
+      "title": "First physical relocation: Scanner candidate_risk to libs/agents/scanner with module-identity shim",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING"
+      ],
+      "status": "current",
+      "summary": "libs/runtime/scanner/candidate_risk.py was moved byte-for-byte to libs/agents/scanner/candidate_risk.py (the first HYBRID-7 V3 target-tree module). The old path is a sys.modules shim, so both import paths are the same module object, private names and use-time monkeypatching are shared, and there is a single implementation.",
+      "details": [
+        "115 frozen inputs executed on the BASE body give exactly equal outputs (including key order); the only consumer, graphs/nodes/scanner_node.py, is untouched and binds the canonical function; the T4-A frozen Scanner contract and all stage gates still pass.",
+        "No rank owner, Broker, LLM, Supervisor/Executor, State or production-write path changed. All other Scanner modules stay unmoved; independent Codex audit pending before V2."
+      ],
+      "impact": "Module location and tests only; no scoring or ranking behavior changed.",
+      "sources": [
+        "docs/refactor/evidence/P15-TREE-MIGRATION-V1-052-CLAUDE.md",
+        "docs/refactor/architecture/architecture_gap_matrix.md"
       ]
     }
   ]

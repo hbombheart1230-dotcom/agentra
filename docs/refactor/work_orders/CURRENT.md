@@ -1,6 +1,6 @@
 # ACTIVE — P1.5 HYBRID-7 V3 tree migration, first implementation V1-052
 
-**State:** `integration/p15-t4-pr5-convergence-20261015` — V3_USER_TARGET_FROZEN / V1_IMPLEMENTATION_AUTHORIZED / FIRST_PASS_WITH_DEBT / MAIN_FROZEN / No ZIP in CI (user-facing changed-files-only ZIP allowed outside CI). Not FINAL_ACCEPTED.
+**State:** `integration/p15-t4-pr5-convergence-20261015` — V3_USER_TARGET_FROZEN / V1_IMPLEMENTATION_AUTHORIZED / FIRST_PASS_WITH_DEBT / MAIN_FROZEN / No ZIP in CI (user-facing changed-files-only ZIP allowed outside CI). Final acceptance NOT granted.
 **ACTIVE ONE WORK ORDER:** [P15-TREE-MIGRATION-V1-052.md](P15-TREE-MIGRATION-V1-052.md). Read it and [COMMON_RULES.md](COMMON_RULES.md) only; no historical reread.
 **Architecture authority:** [TREE_V3_FROZEN.md](../architecture/TREE_V3_FROZEN.md). No further new target design; focus on actual safe physical module relocation and tests.
 
@@ -9,6 +9,7 @@
 **Stage markers:** P1.5.2 OPEN for final acceptance; P1.5.3–P1.5.6 FIRST_PASS_WITH_DEBT; T4-D structural gate closed; P1.5.10 wrapper cleanup, Wave D/P1.5.11 and P1.6 runtime migration NOT AUTHORIZED. Current V1-052 is one strictly bounded pure-helper pilot and does not waive the broader architecture safety gate.
 **CI guard compatibility:** Preserve the legacy historical link [P15_FAST_TRACK_WAVE_S_020.md](P15_FAST_TRACK_WAVE_S_020.md) once for historical T4 frozen-contract assertions. This is NOT an active order. Keep `refactor/p1.5` and `MAIN_FROZEN` textual provenance for existing frozen CI; remove stale active-branch directives from actual execution logic.
 
+**V1-052 status (2026-10-16):** IMPLEMENTED / PENDING CODEX AUDIT — `candidate_risk` moved to `libs/agents/scanner/` with a module-identity shim; evidence [P15-TREE-MIGRATION-V1-052-CLAUDE.md](../evidence/P15-TREE-MIGRATION-V1-052-CLAUDE.md). No other module moved; V2 not started.
 **Known deferred:** real report and LLM parity, T4-C session differential and Reporter-feedback fallback fixture, NTFS mtime causality, Scanner cross-seed telemetry. None automatically resolved by V1 tree movement.
 **Protected authority:** `graphs/nodes/execute_from_packet.py`, Supervisor/Executor/Broker, Step5C, UEF, Q10/Q12, operational Docker/write paths, UI LLM brief and Reporter queue/lock/artifact effects.
 

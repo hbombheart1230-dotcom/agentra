@@ -3479,3 +3479,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 시작 작업지시서: `docs/refactor/work_orders/P15-TREE-MIGRATION-V1-052.md`. Scanner의 순수 `candidate_risk.py` 단일 모듈 이동을 소비자/ABI/monkeypatch 증명과 정확한 동작 동일성 조건으로 승인했습니다.
 - 현재 커밋은 지시·정책·문서만 갱신합니다. 실제 파일 이동, Codex 독립 승인, P1.5 최종 완료를 의미하지 않습니다.
 - 활성 개발 브랜치는 `integration/p15-t4-pr5-convergence-20261015`; `main`과 실거래·Broker·CAS·UEF 권한은 그대로 보존합니다.
+
+## 2026-10-16 · P1.5 Tree Migration V1-052 (첫 물리 이동)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING
+
+- 변경: Scanner `libs/runtime/scanner/candidate_risk.py`를 `libs/agents/scanner/candidate_risk.py`로 byte-identical 이동했습니다. 기존 경로는 `sys.modules` module-object identity shim이어서 두 import 경로는 같은 모듈 객체이며 구현은 하나입니다.
+- 검증: BASE 본문에서 실행한 115개 frozen 입력의 결과가 key 순서까지 동일, 유일한 소비자 `scanner_node.py`는 수정하지 않았고 T4-A frozen Scanner 계약과 stage gate 통과, old/new-first import identity 및 monkeypatch 공유 확인.
+- 경계: rank owner·Broker·LLM·Supervisor/Executor·State·운영 쓰기 변경 없음, 다른 Scanner 경로는 이동하지 않음. 독립 Codex 감사 후 V2.

@@ -1,0 +1,2639 @@
+{
+ "base_commit": "860207682dc02080260e768587ac5f401f8c902a",
+ "base_blob_sha1": "8dea30aebd811d8d9f214c8bca7bef8ea41fa3f9",
+ "cases": [
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": null
+    },
+    "candidate": {
+     "risk_score": null
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": null
+    },
+    "candidate": {
+     "risk_score": ""
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": null
+    },
+    "candidate": {
+     "risk_score": 0
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": null
+    },
+    "candidate": {
+     "risk_score": 0.35
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": null
+    },
+    "candidate": {
+     "risk_score": "0.5"
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": null
+    },
+    "candidate": {
+     "risk_score": 1.7
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": null
+    },
+    "candidate": {
+     "risk_score": -0.4
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": null
+    },
+    "candidate": {
+     "risk_score": "abc"
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": null
+    },
+    "candidate": {
+     "risk_score": true
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": ""
+    },
+    "candidate": {
+     "risk_score": null
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": ""
+    },
+    "candidate": {
+     "risk_score": ""
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": ""
+    },
+    "candidate": {
+     "risk_score": 0
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": ""
+    },
+    "candidate": {
+     "risk_score": 0.35
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": ""
+    },
+    "candidate": {
+     "risk_score": "0.5"
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": ""
+    },
+    "candidate": {
+     "risk_score": 1.7
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": ""
+    },
+    "candidate": {
+     "risk_score": -0.4
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": ""
+    },
+    "candidate": {
+     "risk_score": "abc"
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": ""
+    },
+    "candidate": {
+     "risk_score": true
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0
+    },
+    "candidate": {
+     "risk_score": null
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0
+    },
+    "candidate": {
+     "risk_score": ""
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0
+    },
+    "candidate": {
+     "risk_score": 0
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0
+    },
+    "candidate": {
+     "risk_score": 0.35
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0
+    },
+    "candidate": {
+     "risk_score": "0.5"
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0
+    },
+    "candidate": {
+     "risk_score": 1.7
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0
+    },
+    "candidate": {
+     "risk_score": -0.4
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0
+    },
+    "candidate": {
+     "risk_score": "abc"
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0
+    },
+    "candidate": {
+     "risk_score": true
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0.35
+    },
+    "candidate": {
+     "risk_score": null
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0.35
+    },
+    "candidate": {
+     "risk_score": ""
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0.35
+    },
+    "candidate": {
+     "risk_score": 0
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0.35
+    },
+    "candidate": {
+     "risk_score": 0.35
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0.35
+    },
+    "candidate": {
+     "risk_score": "0.5"
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0.35
+    },
+    "candidate": {
+     "risk_score": 1.7
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0.35
+    },
+    "candidate": {
+     "risk_score": -0.4
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0.35
+    },
+    "candidate": {
+     "risk_score": "abc"
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 0.35
+    },
+    "candidate": {
+     "risk_score": true
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "0.5"
+    },
+    "candidate": {
+     "risk_score": null
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "0.5"
+    },
+    "candidate": {
+     "risk_score": ""
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "0.5"
+    },
+    "candidate": {
+     "risk_score": 0
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "0.5"
+    },
+    "candidate": {
+     "risk_score": 0.35
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "0.5"
+    },
+    "candidate": {
+     "risk_score": "0.5"
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "0.5"
+    },
+    "candidate": {
+     "risk_score": 1.7
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "0.5"
+    },
+    "candidate": {
+     "risk_score": -0.4
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "0.5"
+    },
+    "candidate": {
+     "risk_score": "abc"
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "0.5"
+    },
+    "candidate": {
+     "risk_score": true
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 1.7
+    },
+    "candidate": {
+     "risk_score": null
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 1.7
+    },
+    "candidate": {
+     "risk_score": ""
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 1.7
+    },
+    "candidate": {
+     "risk_score": 0
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 1.7
+    },
+    "candidate": {
+     "risk_score": 0.35
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 1.7
+    },
+    "candidate": {
+     "risk_score": "0.5"
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 1.7
+    },
+    "candidate": {
+     "risk_score": 1.7
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 1.7
+    },
+    "candidate": {
+     "risk_score": -0.4
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 1.7
+    },
+    "candidate": {
+     "risk_score": "abc"
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": 1.7
+    },
+    "candidate": {
+     "risk_score": true
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": -0.4
+    },
+    "candidate": {
+     "risk_score": null
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": -0.4
+    },
+    "candidate": {
+     "risk_score": ""
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": -0.4
+    },
+    "candidate": {
+     "risk_score": 0
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": -0.4
+    },
+    "candidate": {
+     "risk_score": 0.35
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": -0.4
+    },
+    "candidate": {
+     "risk_score": "0.5"
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": -0.4
+    },
+    "candidate": {
+     "risk_score": 1.7
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": -0.4
+    },
+    "candidate": {
+     "risk_score": -0.4
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": -0.4
+    },
+    "candidate": {
+     "risk_score": "abc"
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": -0.4
+    },
+    "candidate": {
+     "risk_score": true
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "abc"
+    },
+    "candidate": {
+     "risk_score": null
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "abc"
+    },
+    "candidate": {
+     "risk_score": ""
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "abc"
+    },
+    "candidate": {
+     "risk_score": 0
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "abc"
+    },
+    "candidate": {
+     "risk_score": 0.35
+    }
+   },
+   "output": {
+    "risk_score": 0.35,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.35
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "abc"
+    },
+    "candidate": {
+     "risk_score": "0.5"
+    }
+   },
+   "output": {
+    "risk_score": 0.5,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.5
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "abc"
+    },
+    "candidate": {
+     "risk_score": 1.7
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "abc"
+    },
+    "candidate": {
+     "risk_score": -0.4
+    }
+   },
+   "output": {
+    "risk_score": 0.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "abc"
+    },
+    "candidate": {
+     "risk_score": "abc"
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": "abc"
+    },
+    "candidate": {
+     "risk_score": true
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "candidate",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": true
+    },
+    "candidate": {
+     "risk_score": null
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": true
+    },
+    "candidate": {
+     "risk_score": ""
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": true
+    },
+    "candidate": {
+     "risk_score": 0
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": true
+    },
+    "candidate": {
+     "risk_score": 0.35
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": true
+    },
+    "candidate": {
+     "risk_score": "0.5"
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": true
+    },
+    "candidate": {
+     "risk_score": 1.7
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": true
+    },
+    "candidate": {
+     "risk_score": -0.4
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": true
+    },
+    "candidate": {
+     "risk_score": "abc"
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "scanner_row": {
+     "risk_score": true
+    },
+    "candidate": {
+     "risk_score": true
+    }
+   },
+   "output": {
+    "risk_score": 1.0,
+    "source": "scanner_row",
+    "components": {
+     "explicit_risk_score": 1.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "features": {},
+    "quote_metrics": {}
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {},
+    "quote_metrics": {
+     "spread_bps": 10,
+     "volume": 1000,
+     "trading_value": 5000000.0
+    }
+   },
+   "output": {
+    "risk_score": 0.256,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.016,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.12
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {},
+    "quote_metrics": {
+     "spread_bps": -5,
+     "volume": 0,
+     "trading_value": null
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {},
+    "quote_metrics": {
+     "spread_bps": 80,
+     "volume": "12",
+     "trading_value": "7"
+    }
+   },
+   "output": {
+    "risk_score": 0.32,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.08,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.12
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 100,
+     "atr14": 2
+    },
+    "quote_metrics": {}
+   },
+   "output": {
+    "risk_score": 0.39,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.09,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 100,
+     "atr14": 2
+    },
+    "quote_metrics": {
+     "spread_bps": 10,
+     "volume": 1000,
+     "trading_value": 5000000.0
+    }
+   },
+   "output": {
+    "risk_score": 0.316,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.09,
+     "drawdown": 0.0,
+     "spread": 0.016,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "volatility",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 100,
+     "atr14": 2
+    },
+    "quote_metrics": {
+     "spread_bps": -5,
+     "volume": 0,
+     "trading_value": null
+    }
+   },
+   "output": {
+    "risk_score": 0.36,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.09,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.15
+    },
+    "missing_inputs": [
+     "volatility",
+     "drawdown",
+     "gap",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 100,
+     "atr14": 2
+    },
+    "quote_metrics": {
+     "spread_bps": 80,
+     "volume": "12",
+     "trading_value": "7"
+    }
+   },
+   "output": {
+    "risk_score": 0.38,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.09,
+     "drawdown": 0.0,
+     "spread": 0.08,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "volatility",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "engine_close_last": 50,
+     "engine_atr14": "1.5"
+    },
+    "quote_metrics": {}
+   },
+   "output": {
+    "risk_score": 0.435,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.135,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "engine_close_last": 50,
+     "engine_atr14": "1.5"
+    },
+    "quote_metrics": {
+     "spread_bps": 10,
+     "volume": 1000,
+     "trading_value": 5000000.0
+    }
+   },
+   "output": {
+    "risk_score": 0.361,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.135,
+     "drawdown": 0.0,
+     "spread": 0.016,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "volatility",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "engine_close_last": 50,
+     "engine_atr14": "1.5"
+    },
+    "quote_metrics": {
+     "spread_bps": -5,
+     "volume": 0,
+     "trading_value": null
+    }
+   },
+   "output": {
+    "risk_score": 0.405,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.135,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.15
+    },
+    "missing_inputs": [
+     "volatility",
+     "drawdown",
+     "gap",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "engine_close_last": 50,
+     "engine_atr14": "1.5"
+    },
+    "quote_metrics": {
+     "spread_bps": 80,
+     "volume": "12",
+     "trading_value": "7"
+    }
+   },
+   "output": {
+    "risk_score": 0.425,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.135,
+     "drawdown": 0.0,
+     "spread": 0.08,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "volatility",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 0,
+     "atr14": 1
+    },
+    "quote_metrics": {}
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 0,
+     "atr14": 1
+    },
+    "quote_metrics": {
+     "spread_bps": 10,
+     "volume": 1000,
+     "trading_value": 5000000.0
+    }
+   },
+   "output": {
+    "risk_score": 0.256,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.016,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.12
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 0,
+     "atr14": 1
+    },
+    "quote_metrics": {
+     "spread_bps": -5,
+     "volume": 0,
+     "trading_value": null
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 0,
+     "atr14": 1
+    },
+    "quote_metrics": {
+     "spread_bps": 80,
+     "volume": "12",
+     "trading_value": "7"
+    }
+   },
+   "output": {
+    "risk_score": 0.32,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.08,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.12
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 100,
+     "atr14": 2,
+     "volatility20": 0.05,
+     "rolling_drawdown20": -0.04,
+     "gap_pct": 0.03
+    },
+    "quote_metrics": {}
+   },
+   "output": {
+    "risk_score": 0.425,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.09,
+     "drawdown": 0.06,
+     "spread": 0.0,
+     "volatility": 0.05,
+     "gap": 0.015,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 100,
+     "atr14": 2,
+     "volatility20": 0.05,
+     "rolling_drawdown20": -0.04,
+     "gap_pct": 0.03
+    },
+    "quote_metrics": {
+     "spread_bps": 10,
+     "volume": 1000,
+     "trading_value": 5000000.0
+    }
+   },
+   "output": {
+    "risk_score": 0.351,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.09,
+     "drawdown": 0.06,
+     "spread": 0.016,
+     "volatility": 0.05,
+     "gap": 0.015,
+     "missing_data": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 100,
+     "atr14": 2,
+     "volatility20": 0.05,
+     "rolling_drawdown20": -0.04,
+     "gap_pct": 0.03
+    },
+    "quote_metrics": {
+     "spread_bps": -5,
+     "volume": 0,
+     "trading_value": null
+    }
+   },
+   "output": {
+    "risk_score": 0.395,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.09,
+     "drawdown": 0.06,
+     "spread": 0.0,
+     "volatility": 0.05,
+     "gap": 0.015,
+     "missing_data": 0.06
+    },
+    "missing_inputs": [
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": 100,
+     "atr14": 2,
+     "volatility20": 0.05,
+     "rolling_drawdown20": -0.04,
+     "gap_pct": 0.03
+    },
+    "quote_metrics": {
+     "spread_bps": 80,
+     "volume": "12",
+     "trading_value": "7"
+    }
+   },
+   "output": {
+    "risk_score": 0.415,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.09,
+     "drawdown": 0.06,
+     "spread": 0.08,
+     "volatility": 0.05,
+     "gap": 0.015,
+     "missing_data": 0.0
+    },
+    "missing_inputs": []
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": "x",
+     "atr14": null,
+     "engine_volatility20": 0.2,
+     "engine_rolling_drawdown20": -0.3,
+     "engine_gap_pct": -0.5
+    },
+    "quote_metrics": {}
+   },
+   "output": {
+    "risk_score": 0.49,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.12,
+     "spread": 0.0,
+     "volatility": 0.08,
+     "gap": 0.05,
+     "missing_data": 0.12
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": "x",
+     "atr14": null,
+     "engine_volatility20": 0.2,
+     "engine_rolling_drawdown20": -0.3,
+     "engine_gap_pct": -0.5
+    },
+    "quote_metrics": {
+     "spread_bps": 10,
+     "volume": 1000,
+     "trading_value": 5000000.0
+    }
+   },
+   "output": {
+    "risk_score": 0.416,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.12,
+     "spread": 0.016,
+     "volatility": 0.08,
+     "gap": 0.05,
+     "missing_data": 0.03
+    },
+    "missing_inputs": [
+     "atr_ratio"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": "x",
+     "atr14": null,
+     "engine_volatility20": 0.2,
+     "engine_rolling_drawdown20": -0.3,
+     "engine_gap_pct": -0.5
+    },
+    "quote_metrics": {
+     "spread_bps": -5,
+     "volume": 0,
+     "trading_value": null
+    }
+   },
+   "output": {
+    "risk_score": 0.45999999999999996,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.12,
+     "spread": 0.0,
+     "volatility": 0.08,
+     "gap": 0.05,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "close_last": "x",
+     "atr14": null,
+     "engine_volatility20": 0.2,
+     "engine_rolling_drawdown20": -0.3,
+     "engine_gap_pct": -0.5
+    },
+    "quote_metrics": {
+     "spread_bps": 80,
+     "volume": "12",
+     "trading_value": "7"
+    }
+   },
+   "output": {
+    "risk_score": 0.48,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.12,
+     "spread": 0.08,
+     "volatility": 0.08,
+     "gap": 0.05,
+     "missing_data": 0.03
+    },
+    "missing_inputs": [
+     "atr_ratio"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "realized_volatility": 0.01
+    },
+    "quote_metrics": {}
+   },
+   "output": {
+    "risk_score": 0.31,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.01,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "realized_volatility": 0.01
+    },
+    "quote_metrics": {
+     "spread_bps": 10,
+     "volume": 1000,
+     "trading_value": 5000000.0
+    }
+   },
+   "output": {
+    "risk_score": 0.236,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.016,
+     "volatility": 0.01,
+     "gap": 0.0,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "realized_volatility": 0.01
+    },
+    "quote_metrics": {
+     "spread_bps": -5,
+     "volume": 0,
+     "trading_value": null
+    }
+   },
+   "output": {
+    "risk_score": 0.27999999999999997,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.01,
+     "gap": 0.0,
+     "missing_data": 0.15
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "drawdown",
+     "gap",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "realized_volatility": 0.01
+    },
+    "quote_metrics": {
+     "spread_bps": 80,
+     "volume": "12",
+     "trading_value": "7"
+    }
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.08,
+     "volatility": 0.01,
+     "gap": 0.0,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "engine_realized_volatility": "0.07",
+     "gap_pct": ""
+    },
+    "quote_metrics": {}
+   },
+   "output": {
+    "risk_score": 0.37,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.07,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "engine_realized_volatility": "0.07",
+     "gap_pct": ""
+    },
+    "quote_metrics": {
+     "spread_bps": 10,
+     "volume": 1000,
+     "trading_value": 5000000.0
+    }
+   },
+   "output": {
+    "risk_score": 0.296,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.016,
+     "volatility": 0.07,
+     "gap": 0.0,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "engine_realized_volatility": "0.07",
+     "gap_pct": ""
+    },
+    "quote_metrics": {
+     "spread_bps": -5,
+     "volume": 0,
+     "trading_value": null
+    }
+   },
+   "output": {
+    "risk_score": 0.33999999999999997,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.07,
+     "gap": 0.0,
+     "missing_data": 0.15
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "drawdown",
+     "gap",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "features": {
+     "engine_realized_volatility": "0.07",
+     "gap_pct": ""
+    },
+    "quote_metrics": {
+     "spread_bps": 80,
+     "volume": "12",
+     "trading_value": "7"
+    }
+   },
+   "output": {
+    "risk_score": 0.36,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.08,
+     "volatility": 0.07,
+     "gap": 0.0,
+     "missing_data": 0.09
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "drawdown",
+     "gap"
+    ]
+   }
+  },
+  {
+   "input": {},
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  },
+  {
+   "input": {
+    "candidate": null,
+    "scanner_row": null,
+    "features": null,
+    "quote_metrics": null
+   },
+   "output": {
+    "risk_score": 0.3,
+    "source": "market_data_fallback",
+    "components": {
+     "anchor": 0.12,
+     "atr_ratio": 0.0,
+     "drawdown": 0.0,
+     "spread": 0.0,
+     "volatility": 0.0,
+     "gap": 0.0,
+     "missing_data": 0.18
+    },
+    "missing_inputs": [
+     "atr_ratio",
+     "volatility",
+     "drawdown",
+     "gap",
+     "spread",
+     "volume",
+     "trading_value"
+    ]
+   }
+  }
+ ]
+}

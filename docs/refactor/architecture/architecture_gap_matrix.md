@@ -59,3 +59,9 @@ Prefer one real callable Agent core per role, with graphs/nodes acting as stable
 Approval sequence: GPT architecture evidence → user edits target_architecture.drawio → Codex dependency/consumer audit → explicit ARCH_CONVERGENCE_APPROVED → Claude batch implementation → Codex audit → GPT/user acceptance.
 
 Current decision: ARCH_CONVERGENCE_NOT_APPROVED; no paths have been moved.
+
+## 7. Migration dispositions (V1-052)
+
+| Module | Disposition | Canonical owner | Compatibility | Evidence |
+|---|---|---|---|---|
+| `libs/runtime/scanner/candidate_risk.py` | **MOVED** (body byte-identical, blob `8dea30ae`) | `libs/agents/scanner/candidate_risk.py` | `sys.modules` module-object identity shim at the old path (old-first/new-first identical, private names and use-time monkeypatch shared) | `tests/test_p166_v1052_candidate_risk_migration.py` (13 contract/consumer tests with 115 frozen inputs) and `docs/refactor/evidence/P15-TREE-MIGRATION-V1-052-CLAUDE.md`; every other Scanner path stays unmoved/BLOCKED |
