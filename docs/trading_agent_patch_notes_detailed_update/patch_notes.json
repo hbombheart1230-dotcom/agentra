@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 271,
+  "entry_count": 272,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7224,6 +7224,29 @@
         ".github/workflows/p15-integration-crossbranch-compat.yml",
         "docs/daily_patch/2026-10-15_p15_single_working_branch_scope_win_guard.md",
         "docs/refactor/work_orders/evidence/P15-INTEGRATION-SCOPE-WINDOWS-FULL-AUDIT-049.md"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 Single-Branch Design Source Preservation",
+      "title": "Preserve twenty-three unique P1.6/P2–P8 design documents before topic-branch retirement",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "DOCUMENTATION",
+        "ARCHITECTURE",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Copy exactly 23 unique historical design Markdown files, 138450 bytes, via immutable blobs from two dormant design branches into the single integration working branch, without touching runtime or CI content.",
+      "details": [
+        "Source heads 4a5c933 and c7475fa; branch-specific design and daily patch documents retained without overwriting integrated contracts.",
+        "Source documents are historical/unapproved design proposals; no authorization for P1.6/P2+ development or branch deletion before CI, independent audit and final main assimilation.",
+        "One active development branch; main protected until acceptance, PR5 closed, no extra working branches created."
+      ],
+      "impact": "Documentation preservation only, no trading/State/effects/file move.",
+      "sources": [
+        "docs/refactor/branch_convergence/2026-10-15_preserved_design_branch_materials.md",
+        "docs/daily_patch/2026-10-15_preserve_branch_unique_design_materials.md"
       ]
     }
   ]

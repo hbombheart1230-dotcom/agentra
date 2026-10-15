@@ -20,3 +20,5 @@
 **Read minimal context:** this CURRENT + integration daily patch and evidence + touched files only. Do not reread completed T0–T4 archives. Integration Owner: GPT design/integration; Claude implementation on request; Codex independent validation.
 
 **Branch policy (user 2026-10-15):** ONE active development branch only (`integration/p15-t4-pr5-convergence-20261015`). Do not create new branches. `main` remains protected as default until independent acceptance; legacy design/feature branches are retirement candidates after preservation of unique work. Final state must be `main` only, not an unverified direct merge.
+
+**One-branch design preservation:** 23 unique P1.6/P2+ historical Markdown documents carried verbatim into integration; [SHA/paths](../branch_convergence/2026-10-15_preserved_design_branch_materials.md). Not an approval to implement those designs. Two design branch refs retained pending integration acceptance and main assimilation.

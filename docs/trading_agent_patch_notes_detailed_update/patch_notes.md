@@ -3451,3 +3451,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - T4-D original BASE→T4 FINAL scope remains pinned; integration HEAD rechecks Commander/UI immutable source and forbidden order authority without mislabeling PR5 libraries as T4-D modifications.
 - Native Windows Q10/Q12 prior 2/2 PASS did not establish job PASS (data/originals and data/specs directory mtime fast-tier failure). Isolated native job now requires full file audit; unresolved directory-only metadata finding remains recorded.
 - Single active development branch; no main merge/branch deletion before verification. Evidence: `docs/refactor/work_orders/evidence/P15-INTEGRATION-SCOPE-WINDOWS-FULL-AUDIT-049.md`.
+
+## 2026-10-15 · P1.5 Single-Branch Design Source Preservation
+**Stage:** Architecture and Maintainability
+**Tags:** DOCUMENTATION · ARCHITECTURE · SAFETY
+
+- Preserved 9 unique documents from `design/p1.6-orchestration` and 14 from `design/p2plus-architecture` (23 Markdown blobs; 138,450 bytes) in integration by original Git blob SHA.
+- No application code or CI from these legacy branches was imported. All historic proposals remain unapproved. Branch deletion and main merge remain blocked until fresh integrated Linux/Windows CI + Codex audit.
+- Original SHA map: `docs/refactor/branch_convergence/2026-10-15_preserved_design_branch_materials.md`.
