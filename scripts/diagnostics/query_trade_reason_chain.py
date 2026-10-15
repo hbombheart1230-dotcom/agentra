@@ -12,11 +12,10 @@ import json
 import os
 import sys
 from collections import Counter
-from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-
 from libs.reporting.event_log_reader import iter_jsonl_events
+from libs.diagnostics.observations import broker_code_success
 
 
 def _load_jsonl(path: Path) -> List[Dict[str, Any]]:
@@ -24,22 +23,7 @@ def _load_jsonl(path: Path) -> List[Dict[str, Any]]:
 
 
 def _broker_code_success(value: Any) -> Optional[bool]:
-    if value is None:
-        return None
-    s = str(value).strip()
-    if not s:
-        return None
-    try:
-        code = Decimal(s)
-        return code.is_finite() and code == 0
-    except (InvalidOperation, ValueError):
-        pass
-    t = s.lower()
-    if t in ("ok", "success", "accepted"):
-        return True
-    if t in ("error", "failed", "rejected"):
-        return False
-    return False
+    return broker_code_success(value)
 
 
 def _event_intent_id(payload: Dict[str, Any]) -> Optional[str]:

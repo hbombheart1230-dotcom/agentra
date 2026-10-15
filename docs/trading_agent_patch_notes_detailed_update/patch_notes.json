@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 129,
+  "entry_count": 130,
   "entries": [
     {
       "date": "2026-09-08",
@@ -3411,6 +3411,30 @@
       "impact": "Common data responsibility no longer belongs to a strategy-specific provider; reporting behavior preserved.",
       "sources": [
         "docs/daily_patch/2026-10-15_source_work_order02.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-15",
+      "version": "Scripts-Source-Work-Order03",
+      "title": "Consolidate diagnostic observation, CLI capture and archive helpers",
+      "stage": "SCRIPTS_CONTINUATION_IN_PROGRESS",
+      "types": [
+        "DIAGNOSTICS",
+        "REFACTOR",
+        "CORRECTNESS"
+      ],
+      "summary": "Share pure diagnostic owners and remove12 redundant copies; correct Ops broker-code truncation.",
+      "details": [
+        "18 local helper bodies delegate to shared owners or the existing JSONL reader. Broker implementations converge after the Ops exact-zero correction.",
+        "Preserve legacy function names, eager/lazy JSONL, percentile rounding, argv, stdout/stderr, JSON types, exit/exception behavior, 1MiB hashing and tolerant UTF-8 line counting.",
+        "119 distinct targeted pytest PASS;63 baseline helper comparisons and22 CLI help/error comparisons PASS (110 subprocesses).",
+        "Closeout/Drill child bodies never executed; milestone seams tested only with stubs. No native Windows or full-workflow acceptance claim.",
+        "All141 wrappers retained; no T4/runtime/order/authority/Config/UI/scheduler changes. Existing date fallback functions and shared event reader unchanged."
+      ],
+      "impact": "Read-only diagnostics share one implementation per responsibility; trading and operational execution contracts unchanged.",
+      "sources": [
+        "docs/daily_patch/2026-10-15_source_work_order03.md"
       ],
       "status": "current"
     }

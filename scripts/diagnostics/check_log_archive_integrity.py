@@ -8,30 +8,19 @@ if str(_migration_root) not in _migration_sys.path:
     _migration_sys.path.insert(0, str(_migration_root))
 
 import argparse
-import hashlib
 import json
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from libs.diagnostics.archive_inspection import sha256_file, line_count
 
 
 def _sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        while True:
-            chunk = f.read(1024 * 1024)
-            if not chunk:
-                break
-            h.update(chunk)
-    return h.hexdigest()
+    return sha256_file(path)
 
 
 def _line_count(path: Path) -> int:
-    n = 0
-    with path.open("r", encoding="utf-8", errors="ignore") as f:
-        for _ in f:
-            n += 1
-    return n
+    return line_count(path)
 
 
 def _load_manifest(path: Path) -> Dict[str, Any]:

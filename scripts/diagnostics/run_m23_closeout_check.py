@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import argparse
-import io
 import json
 import sys
-from contextlib import redirect_stdout
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -15,6 +13,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.generate_metrics_report import generate_metrics_report
 from scripts.run_m23_resilience_closeout_check import main as resilience_closeout_main
+from libs.diagnostics.cli_capture import capture_cli_json
 
 
 def _run_resilience_closeout_json(
@@ -29,16 +28,7 @@ def _run_resilience_closeout_json(
     if skip_error_case:
         argv.append("--skip-error-case")
 
-    buf = io.StringIO()
-    with redirect_stdout(buf):
-        rc = resilience_closeout_main(argv)
-    out = buf.getvalue().strip()
-    if not out:
-        return int(rc), {}
-    try:
-        return int(rc), json.loads(out)
-    except Exception:
-        return int(rc), {}
+    return capture_cli_json(resilience_closeout_main, argv)
 
 
 def _build_parser() -> argparse.ArgumentParser:

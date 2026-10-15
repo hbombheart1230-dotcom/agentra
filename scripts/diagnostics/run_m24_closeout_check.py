@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import argparse
-import io
 import json
 import sqlite3
 import sys
-from contextlib import redirect_stdout
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -15,6 +13,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.query_intent_state_store import main as query_state_main
 from scripts.run_m24_guard_precedence_check import main as guard_main
+from libs.diagnostics.cli_capture import capture_cli_json
 
 
 def _run_guard_json(
@@ -36,16 +35,7 @@ def _run_guard_json(
     if skip_duplicate_case:
         argv.append("--skip-duplicate-case")
 
-    buf = io.StringIO()
-    with redirect_stdout(buf):
-        rc = guard_main(argv)
-    out = buf.getvalue().strip()
-    if not out:
-        return int(rc), {}
-    try:
-        return int(rc), json.loads(out)
-    except Exception:
-        return int(rc), {}
+    return capture_cli_json(guard_main, argv)
 
 
 def _run_state_query_json(
@@ -67,16 +57,7 @@ def _run_state_query_json(
         "50",
     ]
 
-    buf = io.StringIO()
-    with redirect_stdout(buf):
-        rc = query_state_main(argv)
-    out = buf.getvalue().strip()
-    if not out:
-        return int(rc), {}
-    try:
-        return int(rc), json.loads(out)
-    except Exception:
-        return int(rc), {}
+    return capture_cli_json(query_state_main, argv)
 
 
 def _inject_stuck_executing(db_path: Path) -> None:

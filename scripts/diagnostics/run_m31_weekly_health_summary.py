@@ -13,6 +13,7 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
+from libs.reporting.event_log_reader import iter_jsonl_events
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
@@ -48,23 +49,7 @@ def _utc_day(ts: Any) -> Optional[str]:
 
 
 def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-
-    def _gen() -> Iterable[Dict[str, Any]]:
-        with path.open("r", encoding="utf-8") as f:
-            for raw in f:
-                line = raw.strip()
-                if not line:
-                    continue
-                try:
-                    obj = json.loads(line)
-                except Exception:
-                    continue
-                if isinstance(obj, dict):
-                    yield obj
-
-    return _gen()
+    return iter_jsonl_events(path)
 
 
 def _read_json(path: Path) -> Dict[str, Any]:

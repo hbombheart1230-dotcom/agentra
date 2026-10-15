@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import argparse
-import io
 import json
 import shutil
 import sys
-from contextlib import redirect_stdout
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -17,19 +15,11 @@ from scripts.run_m29_audit_trail_check import main as m29_5_main
 from scripts.run_m29_disaster_recovery_drill import main as m29_8_main
 from scripts.run_m29_incident_timeline_check import main as m29_7_main
 from scripts.run_m29_log_archive_integrity_check import main as m29_6_main
+from libs.diagnostics.cli_capture import capture_cli_json
 
 
 def _run_json(main_fn, argv: List[str]) -> Tuple[int, Dict[str, Any]]:  # type: ignore[no-untyped-def]
-    buf = io.StringIO()
-    with redirect_stdout(buf):
-        rc = main_fn(argv)
-    out = buf.getvalue().strip()
-    if not out:
-        return int(rc), {}
-    try:
-        return int(rc), json.loads(out)
-    except Exception:
-        return int(rc), {}
+    return capture_cli_json(main_fn, argv)
 
 
 def _build_parser() -> argparse.ArgumentParser:

@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import argparse
-import io
 import json
 import shutil
 import sys
-from contextlib import redirect_stdout
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -18,6 +16,7 @@ from scripts.run_m26_dataset_manifest_check import main as manifest_main
 from scripts.run_m26_promotion_gate_check import main as gate_main
 from scripts.run_m26_replay_runner import main as replay_main
 from scripts.run_m26_scorecard import main as scorecard_main
+from libs.diagnostics.cli_capture import capture_cli_json
 
 
 def _write_jsonl(path: Path, rows: List[Dict[str, Any]]) -> None:
@@ -28,16 +27,7 @@ def _write_jsonl(path: Path, rows: List[Dict[str, Any]]) -> None:
 
 
 def _run_json(main_fn, argv: List[str]) -> Tuple[int, Dict[str, Any]]:  # type: ignore[no-untyped-def]
-    buf = io.StringIO()
-    with redirect_stdout(buf):
-        rc = main_fn(argv)
-    out = buf.getvalue().strip()
-    if not out:
-        return int(rc), {}
-    try:
-        return int(rc), json.loads(out)
-    except Exception:
-        return int(rc), {}
+    return capture_cli_json(main_fn, argv)
 
 
 def _run_manifest_json(*, dataset_root: Path, seed_demo: bool) -> Tuple[int, Dict[str, Any]]:

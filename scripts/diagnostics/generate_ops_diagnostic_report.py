@@ -14,26 +14,13 @@ from collections import Counter
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
+from libs.diagnostics.observations import broker_code_success
+from libs.diagnostics.observations import numeric_summary
+from libs.reporting.event_log_reader import iter_jsonl_events
 
 
 def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-
-    def _gen() -> Iterable[Dict[str, Any]]:
-        with path.open("r", encoding="utf-8") as f:
-            for line in f:
-                s = line.strip()
-                if not s:
-                    continue
-                try:
-                    obj = json.loads(s)
-                except Exception:
-                    continue
-                if isinstance(obj, dict):
-                    yield obj
-
-    return _gen()
+    return iter_jsonl_events(path)
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
@@ -78,44 +65,11 @@ def _to_float(v: Any) -> Optional[float]:
 
 
 def _numeric_summary(values: List[float]) -> Dict[str, float]:
-    vals = sorted(float(v) for v in values if float(v) >= 0.0)
-    if not vals:
-        return {"count": 0.0, "avg": 0.0, "p50": 0.0, "p95": 0.0, "max": 0.0}
-
-    n = len(vals)
-
-    def _pct(p: float) -> float:
-        if n == 1:
-            return float(vals[0])
-        idx = int(round((n - 1) * p))
-        idx = max(0, min(n - 1, idx))
-        return float(vals[idx])
-
-    return {
-        "count": float(n),
-        "avg": float(sum(vals) / float(n)),
-        "p50": _pct(0.50),
-        "p95": _pct(0.95),
-        "max": float(vals[-1]),
-    }
+    return numeric_summary(values)
 
 
 def _broker_code_success(value: Any) -> Optional[bool]:
-    if value is None:
-        return None
-    s = str(value).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s)) == 0
-    except Exception:
-        pass
-    t = s.lower()
-    if t in ("ok", "success", "accepted"):
-        return True
-    if t in ("error", "failed", "rejected"):
-        return False
-    return False
+    return broker_code_success(value)
 
 
 def _extract_noop_reason(payload: Dict[str, Any]) -> str:

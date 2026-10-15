@@ -1,11 +1,8 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
-import io
 import json
 import sys
-from contextlib import redirect_stdout
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -15,25 +12,16 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.check_log_archive_integrity import main as integrity_main
+from libs.diagnostics.cli_capture import capture_cli_json
+from libs.diagnostics.archive_inspection import sha256_file, line_count
 
 
 def _sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        while True:
-            chunk = f.read(1024 * 1024)
-            if not chunk:
-                break
-            h.update(chunk)
-    return h.hexdigest()
+    return sha256_file(path)
 
 
 def _line_count(path: Path) -> int:
-    n = 0
-    with path.open("r", encoding="utf-8", errors="ignore") as f:
-        for _ in f:
-            n += 1
-    return n
+    return line_count(path)
 
 
 def _write_jsonl(path: Path, rows: List[Dict[str, Any]]) -> None:
@@ -44,16 +32,7 @@ def _write_jsonl(path: Path, rows: List[Dict[str, Any]]) -> None:
 
 
 def _run_json(argv: List[str]) -> Tuple[int, Dict[str, Any]]:
-    buf = io.StringIO()
-    with redirect_stdout(buf):
-        rc = integrity_main(argv)
-    out = buf.getvalue().strip()
-    if not out:
-        return int(rc), {}
-    try:
-        return int(rc), json.loads(out)
-    except Exception:
-        return int(rc), {}
+    return capture_cli_json(integrity_main, argv)
 
 
 def _build_parser() -> argparse.ArgumentParser:

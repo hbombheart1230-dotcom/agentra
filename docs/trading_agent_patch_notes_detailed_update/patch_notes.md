@@ -1970,3 +1970,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - No external collection/order calls, T4 code, strategy, returns/cost, decision cadence, authority, scheduler/Config or vnext publication changes. All141 wrappers retained.
 - Common data responsibility no longer belongs to a strategy-specific provider; reporting behavior preserved.
 - Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_source_work_order02.md
+
+# 2026-10-15 — GPT Source Work Order03
+
+- Share pure diagnostic owners and remove12 redundant copies; correct Ops broker-code truncation.
+- 18 local helper bodies delegate to shared owners or the existing JSONL reader. Broker implementations converge after the Ops exact-zero correction.
+- Preserve legacy function names, eager/lazy JSONL, percentile rounding, argv, stdout/stderr, JSON types, exit/exception behavior, 1MiB hashing and tolerant UTF-8 line counting.
+- 119 distinct targeted pytest PASS;63 baseline helper comparisons and22 CLI help/error comparisons PASS (110 subprocesses).
+- Closeout/Drill child bodies never executed; milestone seams tested only with stubs. No native Windows or full-workflow acceptance claim.
+- All141 wrappers retained; no T4/runtime/order/authority/Config/UI/scheduler changes. Existing date fallback functions and shared event reader unchanged.
+- Read-only diagnostics share one implementation per responsibility; trading and operational execution contracts unchanged.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_source_work_order03.md

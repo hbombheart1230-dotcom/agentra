@@ -12,6 +12,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from libs.diagnostics.observations import numeric_summary
+from libs.reporting.event_log_reader import iter_jsonl_events
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
@@ -45,43 +47,11 @@ def _utc_day(ts: Any) -> str:
 
 
 def _iter_rows(path: Path) -> List[Dict[str, Any]]:
-    if not path.exists():
-        return []
-    out: List[Dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            s = line.strip()
-            if not s:
-                continue
-            try:
-                obj = json.loads(s)
-            except Exception:
-                continue
-            if isinstance(obj, dict):
-                out.append(obj)
-    return out
+    return list(iter_jsonl_events(path))
 
 
 def _numeric_summary(values: List[float]) -> Dict[str, float]:
-    vals = sorted(float(v) for v in values if float(v) >= 0.0)
-    if not vals:
-        return {"count": 0.0, "avg": 0.0, "p50": 0.0, "p95": 0.0, "max": 0.0}
-    n = len(vals)
-
-    def pct(p: float) -> float:
-        if n == 1:
-            return vals[0]
-        idx = int(round((n - 1) * p))
-        idx = max(0, min(n - 1, idx))
-        return vals[idx]
-
-    return {
-        "count": float(n),
-        "avg": float(sum(vals) / n),
-        "p50": float(pct(0.50)),
-        "p95": float(pct(0.95)),
-        "max": float(vals[-1]),
-    }
+    return numeric_summary(values)
 
 
 def _incident_trigger(row: Dict[str, Any]) -> Tuple[bool, str]:
