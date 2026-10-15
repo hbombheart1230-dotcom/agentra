@@ -1,0 +1,5 @@
+# 2026-10-15 — T4-B Codex ACCEPT / T4-C Strategist GO
+
+User-delivered Codex independent audit on FINAL 4e242e5: STRUCTURAL/DECISION/EXIT_PRECEDENCE/STATE_EVENT/GOLDEN_ORACLE PASS, no new P0/P1; 42 ledger segments/15 Owners; AST gates 13 PASS and focused Monitor 139 PASS. Portable full sample_mod=1 same-host pinned BASE vs FEATURE: 149 records each / 2,879 variants / 0 mismatches, integrity 133 checked + 16 platform-bound. FINAL hosted CI 38664980307 SUCCESS, Linux + Windows 5-test native JUnit gate. BASE×2/FEATURE×2 independent session differential NOT RUN / P2 OPEN.
+
+Next ACTIVE work order: `docs/refactor/work_orders/P15-T4-C-STRATEGIST-041.md` (READY, NOT IMPLEMENTED). T4-C freezes Strategist BASE then extracts only deterministic/pure responsibilities, LLM/State/event effects protected. Unresolved Reporter parity, NTFS, cross-seed telemetry, Scanner freeze CLI PYTHONPATH tracked separately. Post-T4 visual architecture approval gate unchanged. Docs-only change; no runtime/golden/test changes.

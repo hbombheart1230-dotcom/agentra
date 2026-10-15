@@ -3200,3 +3200,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 경계: State 변경·이벤트 발행·영속화·probe의 환경변수 읽기는 node 경계에 유지, Broker/LLM/Supervisor/Executor/Step5C 변경 없음.
 - 상태: 독립 Codex 감사 대기, T4-C/T5/Wave D 미착수, REAL_REPORT_PARITY_BLOCKED·NTFS P2 유지.
 
+## 2026-10-15 · P1.5 T4-B Codex ACCEPT / T4-C Strategist GO
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · WORKFLOW
+
+- T4-B 독립 감사 **ACCEPT**: AST 42 segment·15 Owner 복원, 구조 gate 13 PASS, Monitor 집중 회귀 139 PASS, pinned BASE/FEATURE 149개씩 full portable 2,879 variant 0 mismatch, golden 무결성 133 non-bound / 16 bound PASS.
+- FINAL `4e242e5` CI `38664980307` Linux/Windows 네이티브 replay 및 JUnit accounting 모두 SUCCESS; CI 제한 20→35분 확대는 21m18s 실제 실행시간으로 정당화됨.
+- 신규 P0/P1 없음. BASE×2/FEATURE×2 별도 세션 differential은 **NOT RUN / P2** 유지. Reporter 실증 parity, NTFS mtime, cross-seed telemetry, Scanner 도구 PYTHONPATH P2 미해결.
+- 다음 한 건의 활성 명세는 `docs/refactor/work_orders/P15-T4-C-STRATEGIST-041.md`. T4-C는 기존 `strategist_node` 결정적/pure 부분만 분리, LLM prompt/provider/재시도/timeout 및 호출 수, State/Event·Broker 경계는 변경 금지. T4-D/T5/Wave D 아직 불허, 사용자 승인 전 구조 트리 변경 금지.
+- 근거: `docs/refactor/work_orders/evidence/P15-T4-B-CODEX-040.md`, `docs/daily_patch/2026-10-15_p1_5_t4_b_codex_accept_t4_c_go.md`.

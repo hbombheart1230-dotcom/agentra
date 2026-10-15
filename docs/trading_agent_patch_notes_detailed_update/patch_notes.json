@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 243,
+  "entry_count": 244,
   "entries": [
     {
       "date": "2026-09-08",
@@ -6543,6 +6543,31 @@
         "docs/refactor/p1_5_third_pass_t4b_moved_segments_ledger.json",
         "tests/test_p163_t4b_extraction_gates.py",
         "tests/test_p163_monitor_contract_freeze.py"
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "version": "P1.5 T4-B Codex ACCEPT / T4-C GO",
+      "title": "Monitor structural parity independently accepted; Strategist extraction authorized",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "Codex T4-B independent review accepts Monitor structural and decision/exit parity, and opens the next pure Strategist structural batch.",
+      "details": [
+        "Codex reported 42 segments and 15 new Owners, BASE AST reconstruction 13 PASS, focused Monitor regressions 139 PASS, 149-record and 2,879-variant same-host pinned BASE portable full replay with 0 mismatches.",
+        "CI run 38664980307 on FINAL 4e242e5 passed Linux regression, Windows native replay and five required JUnit test accounting; 35-minute job timeout justified by 21m18s regression duration.",
+        "No new P0/P1; P2 BASE×2/FEATURE×2 session differential NOT RUN remains for broad acceptance. Existing Reporter parity, NTFS mtime, cross-seed telemetry and CLI PYTHONPATH P2 remain separate.",
+        "T4-C Strategist may perform only BASE-frozen deterministic/pure structural extraction; existing frame-LLM prompt/provider/retry/timeout/call count, Broker/Executor/Supervisor and State/event effect boundaries are SAFETY_LOCK. Post-T4 architecture target visual review remains mandatory."
+      ],
+      "impact": "Records independent acceptance and a scoped, non-production next work order without prematurely granting T4-C implementation acceptance.",
+      "sources": [
+        "docs/refactor/work_orders/evidence/P15-T4-B-CODEX-040.md",
+        "docs/refactor/work_orders/P15-T4-C-STRATEGIST-041.md",
+        "docs/daily_patch/2026-10-15_p1_5_t4_b_codex_accept_t4_c_go.md"
       ]
     }
   ]
