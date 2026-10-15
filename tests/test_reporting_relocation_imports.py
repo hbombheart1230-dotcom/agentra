@@ -13,7 +13,6 @@ import pytest
 
 
 RELOCATIONS = [
-    ("libs.reporting.trade_report_ai_deterministic", "libs.reporting.trade_report.deterministic"),
     ("libs.reporting.trade_report_ai_merge_policy", "libs.reporting.trade_report.merge_policy"),
     ("libs.reporting.trade_report_ai_prompting", "libs.reporting.trade_report.prompting"),
     ("libs.reporting.trade_report_ai_shared_facts", "libs.reporting.trade_report.shared_facts"),
