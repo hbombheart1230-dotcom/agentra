@@ -15,6 +15,8 @@ if str(ROOT) not in sys.path:
 
 from libs.core.settings import load_env_file
 
+from libs.reporting.event_log_reader import iter_jsonl_events
+
 
 def _env_str(name: str, default: str) -> str:
     raw = str(os.getenv(name, "") or "").strip()
@@ -52,21 +54,7 @@ def _utc_day(ts: Any) -> str:
 
 
 def _iter_rows(path: Path) -> List[Dict[str, Any]]:
-    if not path.exists():
-        return []
-    out: List[Dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            s = line.strip()
-            if not s:
-                continue
-            try:
-                obj = json.loads(s)
-            except Exception:
-                continue
-            if isinstance(obj, dict):
-                out.append(obj)
-    return out
+    return list(iter_jsonl_events(path))
 
 
 def _build_parser() -> argparse.ArgumentParser:

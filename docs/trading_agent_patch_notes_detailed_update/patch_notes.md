@@ -1949,3 +1949,14 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Historical snapshot unchanged; held delta17 KEEP /1 TEST_BLOCKED /1 relocation after architecture gate. All141 wrappers retained.
 - Source-only contract hardening; no T4, Reporting, trading, Config or scheduler policy changes.
 - Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_scripts_issue8_iteration3.md
+
+# 2026-10-15 — GPT Source Work Order01
+
+- Replace four duplicate JSONL loops with the existing reader; fix intent attribution and exact-zero broker observations.
+- Preserve _load_jsonl/_iter_rows, CLI entrypoints, JSON keys, output formatting, ordering and M25 UTC-day semantics. Shared reader unchanged.
+- Prefer execution.allowed including false/null; fallback verdict and verdict_reason require a matching explicit intent ID. Suppress ambiguous multi-order context.
+- Finite Decimal equality accepts exact numeric zero only; fractional, NaN, Infinity and tiny nonzero codes cannot count as success.
+- 77 targeted pytest PASS;80 fake-file CLI invocations across four entrypoint forms and8 baseline JSON/text comparisons PASS. No native Windows diagnostic-suite claim.
+- All141 wrappers retained; no T4, order/approval/broker runtime, UEF authority, scheduler, Config or UI code changed.
+- More accurate read-only trade diagnostics; trading authority and execution behavior unchanged.
+- Status: SCRIPTS_CONTINUATION_IN_PROGRESS. Details: docs/daily_patch/2026-10-15_source_work_order01.md

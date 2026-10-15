@@ -11,26 +11,16 @@ import argparse
 import json
 import os
 import sys
+from collections import Counter
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from libs.reporting.event_log_reader import iter_jsonl_events
+
 
 def _load_jsonl(path: Path) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
-    if not path.exists():
-        return out
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            s = line.strip()
-            if not s:
-                continue
-            try:
-                obj = json.loads(s)
-            except Exception:
-                continue
-            if isinstance(obj, dict):
-                out.append(obj)
-    return out
+    return list(iter_jsonl_events(path))
 
 
 def _broker_code_success(value: Any) -> Optional[bool]:
@@ -40,8 +30,9 @@ def _broker_code_success(value: Any) -> Optional[bool]:
     if not s:
         return None
     try:
-        return int(float(s)) == 0
-    except Exception:
+        code = Decimal(s)
+        return code.is_finite() and code == 0
+    except (InvalidOperation, ValueError):
         pass
     t = s.lower()
     if t in ("ok", "success", "accepted"):
@@ -49,6 +40,18 @@ def _broker_code_success(value: Any) -> Optional[bool]:
     if t in ("error", "failed", "rejected"):
         return False
     return False
+
+
+def _event_intent_id(payload: Dict[str, Any]) -> Optional[str]:
+    packet = payload.get("decision_packet")
+    packet = packet if isinstance(packet, dict) else {}
+    intent = packet.get("intent")
+    intent = intent if isinstance(intent, dict) else {}
+    ids = {str(value).strip() for value in (
+        payload.get("intent_id"), packet.get("intent_id"), intent.get("intent_id")
+    ) if value is not None and str(value).strip()}
+    # Conflicting IDs are not an attribution basis; empty means legacy ID-less.
+    return next(iter(ids)) if len(ids) == 1 else None if ids else ""
 
 
 def _build_rows(
@@ -60,6 +63,8 @@ def _build_rows(
 ) -> List[Dict[str, Any]]:
     by_run: Dict[str, Dict[str, Any]] = {}
     out: List[Dict[str, Any]] = []
+    execution_counts = Counter(str(rec.get("run_id") or "").strip() for rec in events
+                               if rec.get("stage") == "execute_from_packet" and rec.get("event") == "execution")
 
     for rec in events:
         run_id = str(rec.get("run_id") or "").strip()
@@ -74,15 +79,21 @@ def _build_rows(
         payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
 
         if stage == "strategist_llm" and event == "result":
-            ctx["llm"] = payload
+            intent_id = _event_intent_id(payload)
+            if intent_id is not None:
+                ctx.setdefault("llm", {})[intent_id] = payload
             continue
 
         if stage == "decision" and event == "trace":
-            ctx["decision"] = payload
+            intent_id = _event_intent_id(payload)
+            if intent_id is not None:
+                ctx.setdefault("decision", {})[intent_id] = payload
             continue
 
         if stage == "execute_from_packet" and event == "verdict":
-            ctx["verdict"] = payload
+            intent_id = _event_intent_id(payload)
+            if intent_id is not None:
+                ctx.setdefault("verdict", {})[intent_id] = payload
             continue
 
         if stage == "execute_from_packet" and event == "execution":
@@ -101,12 +112,25 @@ def _build_rows(
             if only_broker_success and broker_ok is not True:
                 continue
 
-            llm = ctx.get("llm") if isinstance(ctx.get("llm"), dict) else {}
-            decision = ctx.get("decision") if isinstance(ctx.get("decision"), dict) else {}
+            intent_id = _event_intent_id(payload)
+
+            def context(kind: str) -> Dict[str, Any]:
+                candidates = ctx.get(kind, {})
+                if intent_id:
+                    return candidates.get(intent_id, {})
+                # Preserve legacy single-execution decision/LLM context only.
+                # Verdict attribution always requires a matching explicit ID.
+                if (intent_id == "" and kind != "verdict" and execution_counts[run_id] == 1
+                        and set(candidates) == {""}):
+                    return candidates[""]
+                return {}
+
+            llm = context("llm")
+            decision = context("decision")
             decision_trace = decision.get("trace") if isinstance(decision.get("trace"), dict) else {}
             decision_packet = decision.get("decision_packet") if isinstance(decision.get("decision_packet"), dict) else {}
             decision_intent = decision_packet.get("intent") if isinstance(decision_packet.get("intent"), dict) else {}
-            verdict = ctx.get("verdict") if isinstance(ctx.get("verdict"), dict) else {}
+            verdict = context("verdict")
             decision_rationale = str(decision_trace.get("rationale") or "")
             if not decision_rationale:
                 decision_rationale = str(decision_intent.get("rationale") or "")
@@ -123,7 +147,7 @@ def _build_rows(
                 "price": order.get("price"),
                 "order_type": order.get("order_type"),
                 "execution_reason": str(payload.get("reason") or ""),
-                "allowed": verdict.get("allowed"),
+                "allowed": payload["allowed"] if "allowed" in payload else verdict.get("allowed"),
                 "verdict_reason": str(verdict.get("reason") or ""),
                 "broker_code": str(ex_payload.get("broker_code") or ""),
                 "broker_ok": broker_ok,

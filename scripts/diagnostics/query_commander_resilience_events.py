@@ -14,23 +14,11 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from libs.reporting.event_log_reader import iter_jsonl_events
+
 
 def _load_jsonl(path: Path) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
-    if not path.exists():
-        return out
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            s = line.strip()
-            if not s:
-                continue
-            try:
-                rec = json.loads(s)
-            except Exception:
-                continue
-            if isinstance(rec, dict):
-                out.append(rec)
-    return out
+    return list(iter_jsonl_events(path))
 
 
 def _is_incident_event(rec: Dict[str, Any]) -> bool:
