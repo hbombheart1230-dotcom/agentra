@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 284,
+  "entry_count": 285,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7523,6 +7523,28 @@
       "sources": [
         "docs/refactor/evidence/P15-TREE-MIGRATION-V4-056-CLAUDE.md",
         "docs/refactor/architecture/architecture_gap_matrix.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 P15-058 V4+S1 Integration",
+      "title": "Scanner V4 closure and selective Strategist S1 integration with a 15-pair strict shim allowlist",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "SAFETY",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Gate A added a separate BASE-first repeat_guard fixture that uses the real recent_monitor_blocks history and the nested scanner_repeat_guard policy (repeat_count > 0), restored an exact versioned agent-package check and recorded a bounded write-audit diagnosis. Gate B imported only the 16 approved Strategist S1 paths and extended the Wave B strict AST allowlist from 10 to 15 pairs, keeping the exact-set, wrong-shim and python -O negatives.",
+      "details": [
+        "The S1 branch was not merged and its shared documents were not copied; the 16 former Wave B Strategist failures are resolved by the five exact pairs, not by weakening assertions.",
+        "The auditor's write-audit directory-mtime shift was not reproduced in bounded fresh-clone runs and stays an unresolved metadata-only item (NTFS mtime P2). No Reporter or Monitor work started; no main merge."
+      ],
+      "impact": "Tests, fixtures, module locations and documentation only; no Scanner/Strategist behavior, order, LLM, Step5C or UEF path changed.",
+      "sources": [
+        "docs/refactor/evidence/P15-INTEGRATE-V4-S1-058-CLAUDE.md"
       ]
     }
   ]

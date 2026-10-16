@@ -1,0 +1,6329 @@
+{
+ "schema": "s1057.frozen.v1",
+ "producer_sha": "0a3a224c2da8f8305cdf7f9c296cb0e7fea46766",
+ "start_sha": "d82dd126fd0c818101c5aca1472ed2c8adb6f3c1",
+ "source_blobs": {
+  "context/theme_strength": "0268ed0e32b337f41606a6897b6a7bbbe23aad24",
+  "context/market_key_events": "3b09d58c283cec5e87792ada8214b361805e2668",
+  "context/symbol_read_models": "91316b5136d1a14a74eb0dc809e979f0f51c04c6",
+  "context/news_compaction": "c4ba0ddfb70b34b681f3043f897d19803dde3b25",
+  "output/strategic_answers": "1c84a7ffae545e24747570d798511dc1afd10771"
+ },
+ "python": "3.14.2",
+ "oracle": "Pinned BASE source plus deterministic test-only facade; no real LLM/report parity.",
+ "cases": [
+  {
+   "module": "context/theme_strength",
+   "function": "_theme_strength_map_r3_impl",
+   "args": [],
+   "kwargs": {
+    "themes": [
+     "반도체",
+     "AI",
+     ""
+    ],
+    "candidates": [
+     {
+      "symbol": "AAA"
+     },
+     {
+      "symbol": "BBB"
+     }
+    ],
+    "theme_scores": {},
+    "theme_index": {
+     "반도체": [
+      "AAA"
+     ],
+     "ai": [
+      "BBB"
+     ]
+    }
+   },
+   "expected": {
+    "result": {
+     "ok": {
+      "반도체": 0.15,
+      "AI": 0.15
+     }
+    },
+    "utf8_sha256": "6c10c1f352cca86c930e42b7a6357e6baffc9d0615af2893bbeba6deabf6bb15",
+    "input_after": [
+     [],
+     {
+      "themes": [
+       "반도체",
+       "AI",
+       ""
+      ],
+      "candidates": [
+       {
+        "symbol": "AAA"
+       },
+       {
+        "symbol": "BBB"
+       }
+      ],
+      "theme_scores": {},
+      "theme_index": {
+       "반도체": [
+        "AAA"
+       ],
+       "ai": [
+        "BBB"
+       ]
+      }
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_theme_strength_map_r3_impl",
+   "args": [],
+   "kwargs": {
+    "themes": [
+     "반도체",
+     "AI",
+     ""
+    ],
+    "candidates": [
+     {
+      "symbol": "AAA"
+     },
+     {
+      "symbol": "BBB"
+     }
+    ],
+    "theme_scores": {
+     "반도체": 0.0,
+     "AI": -40
+    },
+    "theme_index": {
+     "반도체": [
+      "AAA"
+     ],
+     "ai": [
+      "BBB"
+     ]
+    }
+   },
+   "expected": {
+    "result": {
+     "ok": {
+      "반도체": 0.15,
+      "AI": -0.12999999999999998
+     }
+    },
+    "utf8_sha256": "a24a5b96a926ad1be53d4f81ebd07826b847412c3f9ad958c6b9a3a948b32711",
+    "input_after": [
+     [],
+     {
+      "themes": [
+       "반도체",
+       "AI",
+       ""
+      ],
+      "candidates": [
+       {
+        "symbol": "AAA"
+       },
+       {
+        "symbol": "BBB"
+       }
+      ],
+      "theme_scores": {
+       "반도체": 0.0,
+       "AI": -40
+      },
+      "theme_index": {
+       "반도체": [
+        "AAA"
+       ],
+       "ai": [
+        "BBB"
+       ]
+      }
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_theme_strength_map_r3_impl",
+   "args": [],
+   "kwargs": {
+    "themes": [
+     "반도체",
+     "AI",
+     ""
+    ],
+    "candidates": [
+     {
+      "symbol": "AAA"
+     },
+     {
+      "symbol": "BBB"
+     }
+    ],
+    "theme_scores": {
+     "반도체": "bad",
+     "ai": 0.5
+    },
+    "theme_index": {
+     "반도체": [
+      "AAA"
+     ],
+     "ai": [
+      "BBB"
+     ]
+    }
+   },
+   "expected": {
+    "result": {
+     "ok": {
+      "반도체": 0.15,
+      "AI": 0.5
+     }
+    },
+    "utf8_sha256": "4ed1436e1779c559a4bc792c99a78c15305f96c5a0c8112f921d2a1bf8996fbe",
+    "input_after": [
+     [],
+     {
+      "themes": [
+       "반도체",
+       "AI",
+       ""
+      ],
+      "candidates": [
+       {
+        "symbol": "AAA"
+       },
+       {
+        "symbol": "BBB"
+       }
+      ],
+      "theme_scores": {
+       "반도체": "bad",
+       "ai": 0.5
+      },
+      "theme_index": {
+       "반도체": [
+        "AAA"
+       ],
+       "ai": [
+        "BBB"
+       ]
+      }
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_theme_strength_map_r3_impl",
+   "args": [],
+   "kwargs": {
+    "themes": [
+     "반도체",
+     "AI",
+     ""
+    ],
+    "candidates": [
+     {
+      "symbol": "AAA"
+     },
+     {
+      "symbol": "BBB"
+     }
+    ],
+    "theme_scores": {
+     "반도체": 50,
+     "AI": 50
+    },
+    "theme_index": {
+     "반도체": [
+      "AAA"
+     ],
+     "ai": [
+      "BBB"
+     ]
+    }
+   },
+   "expected": {
+    "result": {
+     "ok": {
+      "반도체": 0.5,
+      "AI": 0.5
+     }
+    },
+    "utf8_sha256": "971d2d9f211ba81c9bb749a5e3d95a449437d8bf0f0f3e79556b6599460534ed",
+    "input_after": [
+     [],
+     {
+      "themes": [
+       "반도체",
+       "AI",
+       ""
+      ],
+      "candidates": [
+       {
+        "symbol": "AAA"
+       },
+       {
+        "symbol": "BBB"
+       }
+      ],
+      "theme_scores": {
+       "반도체": 50,
+       "AI": 50
+      },
+      "theme_index": {
+       "반도체": [
+        "AAA"
+       ],
+       "ai": [
+        "BBB"
+       ]
+      }
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_theme_strength_map_r3_impl",
+   "args": [],
+   "kwargs": {
+    "themes": [],
+    "candidates": [],
+    "theme_scores": {},
+    "theme_index": {}
+   },
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [],
+     {
+      "themes": [],
+      "candidates": [],
+      "theme_scores": {},
+      "theme_index": {}
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_theme_strength_map_r3_impl",
+   "args": [],
+   "kwargs": {
+    "themes": [
+     "x"
+    ],
+    "candidates": [
+     "bad"
+    ],
+    "theme_scores": {},
+    "theme_index": {}
+   },
+   "expected": {
+    "result": {
+     "exc": "AttributeError",
+     "message": "'str' object has no attribute 'get'"
+    },
+    "utf8_sha256": "8ff729eea237666edafe9f74d1e52ae19cbcfa646975ead62a985a1f6277f355",
+    "input_after": [
+     [],
+     {
+      "themes": [
+       "x"
+      ],
+      "candidates": [
+       "bad"
+      ],
+      "theme_scores": {},
+      "theme_index": {}
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_theme_strength_map_r3_impl",
+   "args": [],
+   "kwargs": {
+    "themes": [
+     "x"
+    ],
+    "candidates": [],
+    "theme_scores": null,
+    "theme_index": {}
+   },
+   "expected": {
+    "result": {
+     "exc": "AttributeError",
+     "message": "'NoneType' object has no attribute 'get'"
+    },
+    "utf8_sha256": "e336ea42e1388cb0e47402351636fb6e03b756d0374c2c358eb63d26eabd5952",
+    "input_after": [
+     [],
+     {
+      "themes": [
+       "x"
+      ],
+      "candidates": [],
+      "theme_scores": null,
+      "theme_index": {}
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_avoid_themes_r3_impl",
+   "args": [],
+   "kwargs": {
+    "market_sentiment": "bearish",
+    "playbook": "x"
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "illiquid_microcap",
+      "headline_only_momentum",
+      "high_gap_speculative"
+     ]
+    },
+    "utf8_sha256": "f2ff415bfdc7b57abbc8fc364fbcdeb1f100dee7205c3f2ff7ae34ff8569feab",
+    "input_after": [
+     [],
+     {
+      "market_sentiment": "bearish",
+      "playbook": "x"
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_avoid_themes_r3_impl",
+   "args": [],
+   "kwargs": {
+    "market_sentiment": "neutral",
+    "playbook": "defensive"
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "illiquid_microcap",
+      "headline_only_momentum",
+      "high_gap_speculative"
+     ]
+    },
+    "utf8_sha256": "f2ff415bfdc7b57abbc8fc364fbcdeb1f100dee7205c3f2ff7ae34ff8569feab",
+    "input_after": [
+     [],
+     {
+      "market_sentiment": "neutral",
+      "playbook": "defensive"
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_avoid_themes_r3_impl",
+   "args": [],
+   "kwargs": {
+    "market_sentiment": "bullish",
+    "playbook": "reversal"
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "overextended_breakout_without_volume",
+      "late_chasing_moves"
+     ]
+    },
+    "utf8_sha256": "ca0f97a8481d1624e5dfcc437f8df5a09a20124082a0abce2fa0ad5a6a1484cb",
+    "input_after": [
+     [],
+     {
+      "market_sentiment": "bullish",
+      "playbook": "reversal"
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_avoid_themes_r3_impl",
+   "args": [],
+   "kwargs": {
+    "market_sentiment": "",
+    "playbook": "pullback"
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "counter_trend_low_liquidity"
+     ]
+    },
+    "utf8_sha256": "c3c912821f5c1be1010b2a4b25f10d4a7415989b9defe83144151e1a8f785d46",
+    "input_after": [
+     [],
+     {
+      "market_sentiment": "",
+      "playbook": "pullback"
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/theme_strength",
+   "function": "_avoid_themes_r3_impl",
+   "args": [],
+   "kwargs": {
+    "market_sentiment": null,
+    "playbook": null
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "thin_liquidity_names"
+     ]
+    },
+    "utf8_sha256": "d182fb24ccd794d93e69f297b7df4824f9b8c08756abefa8bdda09aeb55debc1",
+    "input_after": [
+     [],
+     {
+      "market_sentiment": null,
+      "playbook": null
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/market_key_events",
+   "function": "_key_events_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {},
+    "global_signal": {},
+    "news_signal_map": {},
+    "market_regime": "중립",
+    "playbook": "pullback",
+    "market_context_inputs": {},
+    "news_ctx": {},
+    "theme_strength": {}
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "global_sentiment score=0.000 status= source=",
+      "market_context index_trend=0.000 breadth=0.000 realized_vol=0.000 macro_risk=0.000",
+      "news_signal_health ok=0 unavailable=0 fallback=0 avg_score=0.000",
+      "market_regime=중립",
+      "playbook=pullback"
+     ]
+    },
+    "utf8_sha256": "78e73874bf1fbc0ed244866a75ce96cdf77ba811774c5796b6b2002666f98970",
+    "input_after": [
+     [],
+     {
+      "state": {},
+      "global_signal": {},
+      "news_signal_map": {},
+      "market_regime": "중립",
+      "playbook": "pullback",
+      "market_context_inputs": {},
+      "news_ctx": {},
+      "theme_strength": {}
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/market_key_events",
+   "function": "_key_events_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "macro_events": [
+      "한국",
+      "한국",
+      "미국",
+      "유가",
+      "환율",
+      "금리",
+      "금",
+      "끝"
+     ]
+    },
+    "global_signal": {},
+    "news_signal_map": {},
+    "market_regime": "중립",
+    "playbook": "pullback",
+    "market_context_inputs": {},
+    "news_ctx": {},
+    "theme_strength": {}
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "한국",
+      "미국",
+      "유가",
+      "환율",
+      "금리"
+     ]
+    },
+    "utf8_sha256": "126ff677bbabbbace6732fb4872c8235fd465868ab7acb8f6f7de437f7a7aa4b",
+    "input_after": [
+     [],
+     {
+      "state": {
+       "macro_events": [
+        "한국",
+        "한국",
+        "미국",
+        "유가",
+        "환율",
+        "금리",
+        "금",
+        "끝"
+       ]
+      },
+      "global_signal": {},
+      "news_signal_map": {},
+      "market_regime": "중립",
+      "playbook": "pullback",
+      "market_context_inputs": {},
+      "news_ctx": {},
+      "theme_strength": {}
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/market_key_events",
+   "function": "_key_events_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "macro_events": [],
+     "global_events": [
+      "ignored"
+     ]
+    },
+    "global_signal": {},
+    "news_signal_map": {},
+    "market_regime": "중립",
+    "playbook": "pullback",
+    "market_context_inputs": {},
+    "news_ctx": {},
+    "theme_strength": {}
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "global_sentiment score=0.000 status= source=",
+      "market_context index_trend=0.000 breadth=0.000 realized_vol=0.000 macro_risk=0.000",
+      "news_signal_health ok=0 unavailable=0 fallback=0 avg_score=0.000",
+      "market_regime=중립",
+      "playbook=pullback"
+     ]
+    },
+    "utf8_sha256": "78e73874bf1fbc0ed244866a75ce96cdf77ba811774c5796b6b2002666f98970",
+    "input_after": [
+     [],
+     {
+      "state": {
+       "macro_events": [],
+       "global_events": [
+        "ignored"
+       ]
+      },
+      "global_signal": {},
+      "news_signal_map": {},
+      "market_regime": "중립",
+      "playbook": "pullback",
+      "market_context_inputs": {},
+      "news_ctx": {},
+      "theme_strength": {}
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/market_key_events",
+   "function": "_key_events_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {},
+    "global_signal": {
+     "score": 0.3,
+     "components": {
+      "sp500_ret": 0.01234,
+      "nasdaq_ret": -0.02
+     },
+     "korea_indices": {
+      "indices": {
+       "KOSPI": {
+        "current": 2500.235,
+        "previous_close": 2490,
+        "change_pct": 0.411
+       }
+      }
+     }
+    },
+    "news_signal_map": {},
+    "market_regime": "중립",
+    "playbook": "pullback",
+    "market_context_inputs": {},
+    "news_ctx": {},
+    "theme_strength": {}
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "global_sentiment score=0.300 status= source=",
+      "us_indices sp500=1.23% nasdaq=-2.00% dow=0.00%",
+      "korea_indices kospi=2500.24/prev=2490.00/chg=+0.41%",
+      "market_context index_trend=0.000 breadth=0.000 realized_vol=0.000 macro_risk=0.000",
+      "news_signal_health ok=0 unavailable=0 fallback=0 avg_score=0.000"
+     ]
+    },
+    "utf8_sha256": "2fff6e13eb0b050c2a7ada31e75c0cee27c40ee86f19cadc2982b291df883869",
+    "input_after": [
+     [],
+     {
+      "state": {},
+      "global_signal": {
+       "score": 0.3,
+       "components": {
+        "sp500_ret": 0.01234,
+        "nasdaq_ret": -0.02
+       },
+       "korea_indices": {
+        "indices": {
+         "KOSPI": {
+          "current": 2500.235,
+          "previous_close": 2490,
+          "change_pct": 0.411
+         }
+        }
+       }
+      },
+      "news_signal_map": {},
+      "market_regime": "중립",
+      "playbook": "pullback",
+      "market_context_inputs": {},
+      "news_ctx": {},
+      "theme_strength": {}
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/market_key_events",
+   "function": "_key_events_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {},
+    "global_signal": {
+     "fear_index": {
+      "level": 30,
+      "level_pressure": 0.5
+     }
+    },
+    "news_signal_map": {},
+    "market_regime": "중립",
+    "playbook": "pullback",
+    "market_context_inputs": {},
+    "news_ctx": {},
+    "theme_strength": {
+     "B": 0.5,
+     "A": 0.5
+    }
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "global_sentiment score=0.000 status= source=",
+      "fear_index vix=30.00 change=0.00% pressure=0.500",
+      "market_context index_trend=0.000 breadth=0.000 realized_vol=0.000 macro_risk=0.000",
+      "news_signal_health ok=0 unavailable=0 fallback=0 avg_score=0.000",
+      "theme_strength top=B score=0.500"
+     ]
+    },
+    "utf8_sha256": "b5adefb620cefa6e683b77391cfc78beb009c4c9a495a3db55b83e8d96b202d7",
+    "input_after": [
+     [],
+     {
+      "state": {},
+      "global_signal": {
+       "fear_index": {
+        "level": 30,
+        "level_pressure": 0.5
+       }
+      },
+      "news_signal_map": {},
+      "market_regime": "중립",
+      "playbook": "pullback",
+      "market_context_inputs": {},
+      "news_ctx": {},
+      "theme_strength": {
+       "B": 0.5,
+       "A": 0.5
+      }
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/market_key_events",
+   "function": "_key_events_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": null,
+    "global_signal": {},
+    "news_signal_map": {},
+    "market_regime": "중립",
+    "playbook": "pullback",
+    "market_context_inputs": {},
+    "news_ctx": {},
+    "theme_strength": {}
+   },
+   "expected": {
+    "result": {
+     "exc": "AttributeError",
+     "message": "'NoneType' object has no attribute 'get'"
+    },
+    "utf8_sha256": "e336ea42e1388cb0e47402351636fb6e03b756d0374c2c358eb63d26eabd5952",
+    "input_after": [
+     [],
+     {
+      "state": null,
+      "global_signal": {},
+      "news_signal_map": {},
+      "market_regime": "중립",
+      "playbook": "pullback",
+      "market_context_inputs": {},
+      "news_ctx": {},
+      "theme_strength": {}
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_symbol_read_model_for_llm_r3_impl",
+   "args": [
+    null
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [
+      null
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": [
+     "scalar:120",
+     "patterns:3",
+     "patterns:3"
+    ]
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_symbol_read_model_for_llm_r3_impl",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [
+      {}
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": [
+     "scalar:120",
+     "patterns:3",
+     "patterns:3"
+    ]
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_symbol_read_model_for_llm_r3_impl",
+   "args": [
+    {
+     "symbol": "AAA",
+     "trade_count": 0,
+     "override_eligible": false,
+     "status": "한글",
+     "ignored": "secret-free",
+     "repeated_failure_pattern": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "data_quality": {
+      "status": "ok"
+     }
+    }
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "symbol": "AAA",
+      "trade_count": 0,
+      "override_eligible": false,
+      "status": "한글",
+      "repeated_failure_pattern": [
+       0,
+       1,
+       2
+      ],
+      "data_quality": {
+       "status": "ok"
+      }
+     }
+    },
+    "utf8_sha256": "777cc7045508ab72577e5b5ce773a2c62752a9740a72417303ee744815a4d244",
+    "input_after": [
+     [
+      {
+       "symbol": "AAA",
+       "trade_count": 0,
+       "override_eligible": false,
+       "status": "한글",
+       "ignored": "secret-free",
+       "repeated_failure_pattern": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+       ],
+       "data_quality": {
+        "status": "ok"
+       }
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": [
+     "scalar:120",
+     "patterns:3",
+     "patterns:3",
+     "scalar:80"
+    ]
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_symbol_read_model_for_llm_r3_impl",
+   "args": [
+    [
+     1
+    ]
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [
+      [
+       1
+      ]
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": [
+     "scalar:120",
+     "patterns:3",
+     "patterns:3"
+    ]
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_read_model_facts_for_llm_r3_impl",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "recent_trades": [],
+      "recent_trade_count": 0,
+      "daily_summary": {},
+      "symbol_patterns": {},
+      "symbol_pattern_count": 0
+     }
+    },
+    "utf8_sha256": "d493aab0e6bce57a9a3a62da64b71c5f158d082faaf76d04f6bc08b4fa5909c9",
+    "input_after": [
+     [
+      {}
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": [
+     "operator_summary"
+    ]
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_read_model_facts_for_llm_r3_impl",
+   "args": [
+    null
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "recent_trades": [],
+      "recent_trade_count": 0,
+      "daily_summary": {},
+      "symbol_patterns": {},
+      "symbol_pattern_count": 0
+     }
+    },
+    "utf8_sha256": "d493aab0e6bce57a9a3a62da64b71c5f158d082faaf76d04f6bc08b4fa5909c9",
+    "input_after": [
+     [
+      null
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": [
+     "operator_summary"
+    ]
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_read_model_facts_for_llm_r3_impl",
+   "args": [
+    {
+     "recent_trades": [
+      {
+       "symbol": "AAA",
+       "n": 0
+      },
+      {
+       "symbol": "AAA",
+       "n": 1
+      },
+      {
+       "symbol": "AAA",
+       "n": 2
+      },
+      {
+       "symbol": "AAA",
+       "n": 3
+      },
+      {
+       "symbol": "AAA",
+       "n": 4
+      },
+      {
+       "symbol": "AAA",
+       "n": 5
+      }
+     ],
+     "symbol_patterns": {
+      "0": {
+       "symbol": "0",
+       "trade_count": 0
+      },
+      "1": {
+       "symbol": "1",
+       "trade_count": 1
+      },
+      "2": {
+       "symbol": "2",
+       "trade_count": 2
+      },
+      "3": {
+       "symbol": "3",
+       "trade_count": 3
+      },
+      "4": {
+       "symbol": "4",
+       "trade_count": 4
+      },
+      "5": {
+       "symbol": "5",
+       "trade_count": 5
+      },
+      "6": {
+       "symbol": "6",
+       "trade_count": 6
+      },
+      "7": {
+       "symbol": "7",
+       "trade_count": 7
+      }
+     },
+     "daily_summary": {
+      "status": "한글"
+     }
+    }
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "recent_trades": [
+       {
+        "symbol": "AAA",
+        "n": 0
+       },
+       {
+        "symbol": "AAA",
+        "n": 1
+       },
+       {
+        "symbol": "AAA",
+        "n": 2
+       }
+      ],
+      "recent_trade_count": 6,
+      "daily_summary": {
+       "status": "한글"
+      },
+      "symbol_patterns": {
+       "0": {
+        "symbol": "0",
+        "trade_count": 0
+       },
+       "1": {
+        "symbol": "1",
+        "trade_count": 1
+       },
+       "2": {
+        "symbol": "2",
+        "trade_count": 2
+       },
+       "3": {
+        "symbol": "3",
+        "trade_count": 3
+       },
+       "4": {
+        "symbol": "4",
+        "trade_count": 4
+       }
+      },
+      "symbol_pattern_count": 8
+     }
+    },
+    "utf8_sha256": "a0a9275117d20664df7ea40dbeaff7b27f2f488ac5ad3f8e9e8b370d4f319e43",
+    "input_after": [
+     [
+      {
+       "recent_trades": [
+        {
+         "symbol": "AAA",
+         "n": 0
+        },
+        {
+         "symbol": "AAA",
+         "n": 1
+        },
+        {
+         "symbol": "AAA",
+         "n": 2
+        },
+        {
+         "symbol": "AAA",
+         "n": 3
+        },
+        {
+         "symbol": "AAA",
+         "n": 4
+        },
+        {
+         "symbol": "AAA",
+         "n": 5
+        }
+       ],
+       "symbol_patterns": {
+        "0": {
+         "symbol": "0",
+         "trade_count": 0
+        },
+        "1": {
+         "symbol": "1",
+         "trade_count": 1
+        },
+        "2": {
+         "symbol": "2",
+         "trade_count": 2
+        },
+        "3": {
+         "symbol": "3",
+         "trade_count": 3
+        },
+        "4": {
+         "symbol": "4",
+         "trade_count": 4
+        },
+        "5": {
+         "symbol": "5",
+         "trade_count": 5
+        },
+        "6": {
+         "symbol": "6",
+         "trade_count": 6
+        },
+        "7": {
+         "symbol": "7",
+         "trade_count": 7
+        }
+       },
+       "daily_summary": {
+        "status": "한글"
+       }
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": [
+     "trade",
+     "trade",
+     "trade",
+     "scalar:120",
+     "patterns:3",
+     "patterns:3",
+     "scalar:120",
+     "patterns:3",
+     "patterns:3",
+     "scalar:120",
+     "patterns:3",
+     "patterns:3",
+     "scalar:120",
+     "patterns:3",
+     "patterns:3",
+     "scalar:120",
+     "patterns:3",
+     "patterns:3",
+     "operator_summary"
+    ]
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_read_model_facts_for_llm_r3_impl",
+   "args": [
+    {
+     "recent_trades": 17
+    }
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "exc": "TypeError",
+     "message": "'int' object is not iterable"
+    },
+    "utf8_sha256": "b1a8ea37287e928cfbec473a46d8ca7446c97c99f371b9325c6f8a051efd998d",
+    "input_after": [
+     [
+      {
+       "recent_trades": 17
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_candidate_context_for_refresh_r3_impl",
+   "args": [
+    null
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [
+      null
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_candidate_context_for_refresh_r3_impl",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [
+      {}
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_candidate_context_for_refresh_r3_impl",
+   "args": [
+    {
+     "symbol": "AAA",
+     "rank": 1,
+     "score": 0.73456,
+     "confidence": 0,
+     "status": false,
+     "ignored": [
+      1
+     ],
+     "score_breakdown": {
+      "a": 0.123456,
+      "b": "텍스트",
+      "c": null,
+      "d": 1,
+      "e": 2,
+      "f": 3
+     }
+    }
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "symbol": "AAA",
+      "rank": 1,
+      "score": 0.73456,
+      "confidence": 0,
+      "status": false,
+      "score_breakdown": {
+       "a": 0.1235,
+       "b": "텍스트",
+       "c": "",
+       "d": 1.0,
+       "e": 2.0
+      }
+     }
+    },
+    "utf8_sha256": "847a05613aff9149bd0f8595448f4acd4aa30b47b9f534c6365448f3047c3003",
+    "input_after": [
+     [
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_compact_candidate_context_for_refresh_r3_impl",
+   "args": [
+    {
+     "score_breakdown": "bad"
+    }
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [
+      {
+       "score_breakdown": "bad"
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_slim_refresh_context_for_llm_r3_impl",
+   "args": [
+    null
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "feedback_id": "feedback-44136fa355b3678a",
+      "scanner_primary_candidate": {},
+      "actual_selected_candidate": {},
+      "scanner_rank1_candidate": {},
+      "scanner_runner_ups": [],
+      "scanner_top_candidates": []
+     }
+    },
+    "utf8_sha256": "ff177ffd7b17c9e81d2585656e006e5c64d75a2ace6b8dd43d0041b532b144ad",
+    "input_after": [
+     [
+      null
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_slim_refresh_context_for_llm_r3_impl",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "feedback_id": "feedback-44136fa355b3678a",
+      "scanner_primary_candidate": {},
+      "actual_selected_candidate": {},
+      "scanner_rank1_candidate": {},
+      "scanner_runner_ups": [],
+      "scanner_top_candidates": []
+     }
+    },
+    "utf8_sha256": "ff177ffd7b17c9e81d2585656e006e5c64d75a2ace6b8dd43d0041b532b144ad",
+    "input_after": [
+     [
+      {}
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_slim_refresh_context_for_llm_r3_impl",
+   "args": [
+    {
+     "feedback_id": "fixed",
+     "scanner_primary_candidate": {
+      "symbol": "AAA",
+      "rank": 1,
+      "score": 0.73456,
+      "confidence": 0,
+      "status": false,
+      "ignored": [
+       1
+      ],
+      "score_breakdown": {
+       "a": 0.123456,
+       "b": "텍스트",
+       "c": null,
+       "d": 1,
+       "e": 2,
+       "f": 3
+      }
+     },
+     "scanner_runner_ups": [
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      }
+     ],
+     "scanner_top_candidates": [
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      }
+     ],
+     "selected_symbol_memory": {
+      "symbol": "AAA",
+      "trade_count": 4,
+      "override_eligible": false,
+      "operator_summary": {
+       "x": 1
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "feedback_id": "fixed",
+      "scanner_primary_candidate": {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "score_breakdown": {
+        "a": 0.1235,
+        "b": "텍스트",
+        "c": "",
+        "d": 1.0,
+        "e": 2.0
+       }
+      },
+      "scanner_runner_ups": [
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "score_breakdown": {
+         "a": 0.1235,
+         "b": "텍스트",
+         "c": "",
+         "d": 1.0,
+         "e": 2.0
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "score_breakdown": {
+         "a": 0.1235,
+         "b": "텍스트",
+         "c": "",
+         "d": 1.0,
+         "e": 2.0
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "score_breakdown": {
+         "a": 0.1235,
+         "b": "텍스트",
+         "c": "",
+         "d": 1.0,
+         "e": 2.0
+        }
+       }
+      ],
+      "scanner_top_candidates": [
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "score_breakdown": {
+         "a": 0.1235,
+         "b": "텍스트",
+         "c": "",
+         "d": 1.0,
+         "e": 2.0
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "score_breakdown": {
+         "a": 0.1235,
+         "b": "텍스트",
+         "c": "",
+         "d": 1.0,
+         "e": 2.0
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "score_breakdown": {
+         "a": 0.1235,
+         "b": "텍스트",
+         "c": "",
+         "d": 1.0,
+         "e": 2.0
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "score_breakdown": {
+         "a": 0.1235,
+         "b": "텍스트",
+         "c": "",
+         "d": 1.0,
+         "e": 2.0
+        }
+       }
+      ],
+      "selected_symbol_memory": {
+       "status": "",
+       "symbol": "AAA",
+       "trade_count": 4,
+       "override_eligible": false,
+       "operator_summary": {
+        "x": 1
+       }
+      },
+      "actual_selected_candidate": {},
+      "scanner_rank1_candidate": {}
+     }
+    },
+    "utf8_sha256": "adfe5d91057066c5bdd8745ec50dcc8e1e2015213a859f47bdc2674b7649615f",
+    "input_after": [
+     [
+      {
+       "feedback_id": "fixed",
+       "scanner_primary_candidate": {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       "scanner_runner_ups": [
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        }
+       ],
+       "scanner_top_candidates": [
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        }
+       ],
+       "selected_symbol_memory": {
+        "symbol": "AAA",
+        "trade_count": 4,
+        "override_eligible": false,
+        "operator_summary": {
+         "x": 1
+        }
+       }
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": [
+     "operator_summary"
+    ]
+   }
+  },
+  {
+   "module": "context/symbol_read_models",
+   "function": "_slim_refresh_context_for_llm_r3_impl",
+   "args": [
+    {
+     "selected_symbol_memory": {
+      "trade_count": "bad"
+     }
+    }
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "exc": "ValueError",
+     "message": "invalid literal for int() with base 10: 'bad'"
+    },
+    "utf8_sha256": "183175f49049b83fccdeb6ff2b8c57902268bd0669d8d390bdf1b9559814bd95",
+    "input_after": [
+     [
+      {
+       "selected_symbol_memory": {
+        "trade_count": "bad"
+       }
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_news_sample_for_llm_r3_impl",
+   "args": [
+    null
+   ],
+   "kwargs": {
+    "max_symbols": 2,
+    "max_titles": 2,
+    "max_title_len": 18
+   },
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [
+      null
+     ],
+     {
+      "max_symbols": 2,
+      "max_titles": 2,
+      "max_title_len": 18
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_news_sample_for_llm_r3_impl",
+   "args": [
+    {}
+   ],
+   "kwargs": {
+    "max_symbols": 2,
+    "max_titles": 2,
+    "max_title_len": 18
+   },
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [
+      {}
+     ],
+     {
+      "max_symbols": 2,
+      "max_titles": 2,
+      "max_title_len": 18
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_news_sample_for_llm_r3_impl",
+   "args": [
+    {
+     "BBB": {
+      "sample": [
+       {
+        "title": "한글 제목 한글 제목 한글 제목 한글 제목 한글 제목 한글 제목 한글 제목 한글 제목 "
+       },
+       "둘째",
+       "셋째"
+      ],
+      "count": 0
+     },
+     "AAA": {
+      "sample": [
+       null
+      ]
+     },
+     "C": null
+    }
+   ],
+   "kwargs": {
+    "max_symbols": 2,
+    "max_titles": 2,
+    "max_title_len": 18
+   },
+   "expected": {
+    "result": {
+     "ok": {
+      "BBB": {
+       "count": 3,
+       "titles": [
+        "한글 제목 한글 제목 한글 ...",
+        "둘째"
+       ]
+      },
+      "AAA": {
+       "count": 1,
+       "titles": []
+      }
+     }
+    },
+    "utf8_sha256": "08f7ac2d5a49d7ed1b31438686e73bc12d2540535262dd528971067be2b26289",
+    "input_after": [
+     [
+      {
+       "BBB": {
+        "sample": [
+         {
+          "title": "한글 제목 한글 제목 한글 제목 한글 제목 한글 제목 한글 제목 한글 제목 한글 제목 "
+         },
+         "둘째",
+         "셋째"
+        ],
+        "count": 0
+       },
+       "AAA": {
+        "sample": [
+         null
+        ]
+       },
+       "C": null
+      }
+     ],
+     {
+      "max_symbols": 2,
+      "max_titles": 2,
+      "max_title_len": 18
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_news_sample_for_llm_r3_impl",
+   "args": [
+    {
+     "A": {
+      "count": "bad",
+      "sample": []
+     }
+    }
+   ],
+   "kwargs": {
+    "max_symbols": 2,
+    "max_titles": 2,
+    "max_title_len": 18
+   },
+   "expected": {
+    "result": {
+     "exc": "ValueError",
+     "message": "invalid literal for int() with base 10: 'bad'"
+    },
+    "utf8_sha256": "183175f49049b83fccdeb6ff2b8c57902268bd0669d8d390bdf1b9559814bd95",
+    "input_after": [
+     [
+      {
+       "A": {
+        "count": "bad",
+        "sample": []
+       }
+      }
+     ],
+     {
+      "max_symbols": 2,
+      "max_titles": 2,
+      "max_title_len": 18
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_global_signal_for_llm_r3_impl",
+   "args": [
+    null
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "score": null,
+      "status": "",
+      "source": "",
+      "index_moves": {
+       "sp500_pct": null,
+       "nasdaq_pct": null,
+       "dow_pct": null,
+       "kospi_pct": null,
+       "kosdaq_pct": null,
+       "kospi200_pct": null,
+       "krx_night_futures_pct": null
+      },
+      "korea_indices": {
+       "source": "",
+       "status": "",
+       "average_change_pct": null,
+       "breadth": null,
+       "indices": {
+        "KOSPI": {},
+        "KOSDAQ": {},
+        "KOSPI200": {}
+       }
+      },
+      "krx_night_futures": {
+       "status": "",
+       "source": "",
+       "reason": "",
+       "current": null,
+       "previous": null,
+       "change": null,
+       "change_pct": null,
+       "basis": null,
+       "direction_pressure": "",
+       "behavior_effect": "observation_only",
+       "trading_action_allowed": false
+      },
+      "macro_moves": {
+       "vix_pct": null,
+       "vix_level": null,
+       "vix_level_pressure": null,
+       "dxy_pct": null,
+       "tnx_delta": null
+      },
+      "fear_index": {
+       "level": null,
+       "change_pct": null,
+       "level_pressure": null
+      },
+      "macro_indicators": {}
+     }
+    },
+    "utf8_sha256": "339179ea5d8a56e75b54a11c20286e7351af9766d591de0e41839f50dae8d7be",
+    "input_after": [
+     [
+      null
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_global_signal_for_llm_r3_impl",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "score": null,
+      "status": "",
+      "source": "",
+      "index_moves": {
+       "sp500_pct": null,
+       "nasdaq_pct": null,
+       "dow_pct": null,
+       "kospi_pct": null,
+       "kosdaq_pct": null,
+       "kospi200_pct": null,
+       "krx_night_futures_pct": null
+      },
+      "korea_indices": {
+       "source": "",
+       "status": "",
+       "average_change_pct": null,
+       "breadth": null,
+       "indices": {
+        "KOSPI": {},
+        "KOSDAQ": {},
+        "KOSPI200": {}
+       }
+      },
+      "krx_night_futures": {
+       "status": "",
+       "source": "",
+       "reason": "",
+       "current": null,
+       "previous": null,
+       "change": null,
+       "change_pct": null,
+       "basis": null,
+       "direction_pressure": "",
+       "behavior_effect": "observation_only",
+       "trading_action_allowed": false
+      },
+      "macro_moves": {
+       "vix_pct": null,
+       "vix_level": null,
+       "vix_level_pressure": null,
+       "dxy_pct": null,
+       "tnx_delta": null
+      },
+      "fear_index": {
+       "level": null,
+       "change_pct": null,
+       "level_pressure": null
+      },
+      "macro_indicators": {}
+     }
+    },
+    "utf8_sha256": "339179ea5d8a56e75b54a11c20286e7351af9766d591de0e41839f50dae8d7be",
+    "input_after": [
+     [
+      {}
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_global_signal_for_llm_r3_impl",
+   "args": [
+    {
+     "score": 0.123456,
+     "status": "정상",
+     "source": "mock",
+     "index_moves": {
+      "sp500_pct": 1.23456
+     },
+     "korea_indices": {
+      "indices": {
+       "KOSPI": {
+        "current": 2500.235,
+        "change_pct": -0.123456
+       }
+      }
+     },
+     "krx_night_futures": {
+      "trading_action_allowed": false
+     },
+     "macro_indicators": {
+      "usdkrw": {
+       "current": 1300.123456,
+       "role": "관측"
+      },
+      "ignored": {
+       "current": 7
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "score": 0.1235,
+      "status": "정상",
+      "source": "mock",
+      "index_moves": {
+       "sp500_pct": 1.235,
+       "nasdaq_pct": null,
+       "dow_pct": null,
+       "kospi_pct": null,
+       "kosdaq_pct": null,
+       "kospi200_pct": null,
+       "krx_night_futures_pct": null
+      },
+      "korea_indices": {
+       "source": "",
+       "status": "",
+       "average_change_pct": null,
+       "breadth": null,
+       "indices": {
+        "KOSPI": {
+         "current": 2500.24,
+         "previous_close": null,
+         "change_pct": -0.123,
+         "change": null,
+         "current_date": "",
+         "previous_date": ""
+        },
+        "KOSDAQ": {},
+        "KOSPI200": {}
+       }
+      },
+      "krx_night_futures": {
+       "status": "",
+       "source": "",
+       "reason": "",
+       "current": null,
+       "previous": null,
+       "change": null,
+       "change_pct": null,
+       "basis": null,
+       "direction_pressure": "",
+       "behavior_effect": "observation_only",
+       "trading_action_allowed": false
+      },
+      "macro_moves": {
+       "vix_pct": null,
+       "vix_level": null,
+       "vix_level_pressure": null,
+       "dxy_pct": null,
+       "tnx_delta": null
+      },
+      "fear_index": {
+       "level": null,
+       "change_pct": null,
+       "level_pressure": null
+      },
+      "macro_indicators": {}
+     }
+    },
+    "utf8_sha256": "f7a9596f64ad1f66e4c3a3ab6c1c3529f53baddec1bbc1c8ff7b76ee71992e14",
+    "input_after": [
+     [
+      {
+       "score": 0.123456,
+       "status": "정상",
+       "source": "mock",
+       "index_moves": {
+        "sp500_pct": 1.23456
+       },
+       "korea_indices": {
+        "indices": {
+         "KOSPI": {
+          "current": 2500.235,
+          "change_pct": -0.123456
+         }
+        }
+       },
+       "krx_night_futures": {
+        "trading_action_allowed": false
+       },
+       "macro_indicators": {
+        "usdkrw": {
+         "current": 1300.123456,
+         "role": "관측"
+        },
+        "ignored": {
+         "current": 7
+        }
+       }
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_global_signal_for_llm_r3_impl",
+   "args": [
+    {
+     "index_moves": null,
+     "macro_indicators": {
+      "indicators": {
+       "usdkrw": {
+        "current": 1300.123456
+       },
+       "ignored": {
+        "current": 7
+       }
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "score": null,
+      "status": "",
+      "source": "",
+      "index_moves": {
+       "sp500_pct": null,
+       "nasdaq_pct": null,
+       "dow_pct": null,
+       "kospi_pct": null,
+       "kosdaq_pct": null,
+       "kospi200_pct": null,
+       "krx_night_futures_pct": null
+      },
+      "korea_indices": {
+       "source": "",
+       "status": "",
+       "average_change_pct": null,
+       "breadth": null,
+       "indices": {
+        "KOSPI": {},
+        "KOSDAQ": {},
+        "KOSPI200": {}
+       }
+      },
+      "krx_night_futures": {
+       "status": "",
+       "source": "",
+       "reason": "",
+       "current": null,
+       "previous": null,
+       "change": null,
+       "change_pct": null,
+       "basis": null,
+       "direction_pressure": "",
+       "behavior_effect": "observation_only",
+       "trading_action_allowed": false
+      },
+      "macro_moves": {
+       "vix_pct": null,
+       "vix_level": null,
+       "vix_level_pressure": null,
+       "dxy_pct": null,
+       "tnx_delta": null
+      },
+      "fear_index": {
+       "level": null,
+       "change_pct": null,
+       "level_pressure": null
+      },
+      "macro_indicators": {
+       "usdkrw": {
+        "status": "",
+        "current": 1300.1235,
+        "previous": null,
+        "change_pct": null,
+        "delta": null,
+        "current_yield_pct": null,
+        "role": "",
+        "source": "",
+        "ticker": "",
+        "reason": ""
+       }
+      }
+     }
+    },
+    "utf8_sha256": "93587855631fab7704dd635cb6fa922609c450c4995e3c368899ec6146b031c5",
+    "input_after": [
+     [
+      {
+       "index_moves": null,
+       "macro_indicators": {
+        "indicators": {
+         "usdkrw": {
+          "current": 1300.123456
+         },
+         "ignored": {
+          "current": 7
+         }
+        }
+       }
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_global_signal_for_llm_r3_impl",
+   "args": [
+    {
+     "score": 0.123456,
+     "status": "정상",
+     "source": "mock",
+     "index_moves": {
+      "sp500_pct": 1.23456
+     },
+     "korea_indices": {
+      "indices": {
+       "KOSPI": {
+        "current": 2500.235,
+        "change_pct": -0.123456
+       }
+      }
+     },
+     "krx_night_futures": {
+      "trading_action_allowed": false
+     },
+     "macro_indicators": {
+      "usdkrw": {
+       "current": 1300.123456,
+       "role": "관측"
+      },
+      "ignored": {
+       "current": 7
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "repatch": true,
+   "expected": {
+    "result": {
+     "ok": {
+      "score": 0.1235,
+      "status": "정상",
+      "source": "mock",
+      "index_moves": {
+       "sp500_pct": 0.125,
+       "nasdaq_pct": null,
+       "dow_pct": null,
+       "kospi_pct": null,
+       "kosdaq_pct": null,
+       "kospi200_pct": null,
+       "krx_night_futures_pct": null
+      },
+      "korea_indices": {
+       "source": "",
+       "status": "",
+       "average_change_pct": null,
+       "breadth": null,
+       "indices": {
+        "KOSPI": {
+         "current": 0.125,
+         "previous_close": null,
+         "change_pct": 0.125,
+         "change": null,
+         "current_date": "",
+         "previous_date": ""
+        },
+        "KOSDAQ": {},
+        "KOSPI200": {}
+       }
+      },
+      "krx_night_futures": {
+       "status": "",
+       "source": "",
+       "reason": "",
+       "current": null,
+       "previous": null,
+       "change": null,
+       "change_pct": null,
+       "basis": null,
+       "direction_pressure": "",
+       "behavior_effect": "observation_only",
+       "trading_action_allowed": false
+      },
+      "macro_moves": {
+       "vix_pct": null,
+       "vix_level": null,
+       "vix_level_pressure": null,
+       "dxy_pct": null,
+       "tnx_delta": null
+      },
+      "fear_index": {
+       "level": null,
+       "change_pct": null,
+       "level_pressure": null
+      },
+      "macro_indicators": {}
+     }
+    },
+    "utf8_sha256": "684584f09b5e137bfc07eac33102f3ef72891e2cc71620824a01985e2c52a127",
+    "input_after": [
+     [
+      {
+       "score": 0.123456,
+       "status": "정상",
+       "source": "mock",
+       "index_moves": {
+        "sp500_pct": 1.23456
+       },
+       "korea_indices": {
+        "indices": {
+         "KOSPI": {
+          "current": 2500.235,
+          "change_pct": -0.123456
+         }
+        }
+       },
+       "krx_night_futures": {
+        "trading_action_allowed": false
+       },
+       "macro_indicators": {
+        "usdkrw": {
+         "current": 1300.123456,
+         "role": "관측"
+        },
+        "ignored": {
+         "current": 7
+        }
+       }
+      }
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": [
+     "round:rebind"
+    ]
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_signal_label_r3_impl",
+   "args": [
+    -0.251
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": "negative"
+    },
+    "utf8_sha256": "11f1d2e11591bc9faa7a8b72aba91c6dcb107961c6a388128c657ee391d42c7a",
+    "input_after": [
+     [
+      -0.251
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_signal_label_r3_impl",
+   "args": [
+    -0.25
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": "negative"
+    },
+    "utf8_sha256": "11f1d2e11591bc9faa7a8b72aba91c6dcb107961c6a388128c657ee391d42c7a",
+    "input_after": [
+     [
+      -0.25
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_signal_label_r3_impl",
+   "args": [
+    0
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": "neutral"
+    },
+    "utf8_sha256": "4b3ec64630ded3fe4e44082a32732bb7b0ebd22ed719ce503a2052df1347a799",
+    "input_after": [
+     [
+      0
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_signal_label_r3_impl",
+   "args": [
+    0.2499
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": "neutral"
+    },
+    "utf8_sha256": "4b3ec64630ded3fe4e44082a32732bb7b0ebd22ed719ce503a2052df1347a799",
+    "input_after": [
+     [
+      0.2499
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_signal_label_r3_impl",
+   "args": [
+    0.25
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": "positive"
+    },
+    "utf8_sha256": "13b20f68351fb3cb2a6cc0969ac9706527b6cc842fdcca0f43341be89eb23a0c",
+    "input_after": [
+     [
+      0.25
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_signal_label_r3_impl",
+   "args": [
+    "bad"
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": "neutral"
+    },
+    "utf8_sha256": "4b3ec64630ded3fe4e44082a32732bb7b0ebd22ed719ce503a2052df1347a799",
+    "input_after": [
+     [
+      "bad"
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_signal_label_r3_impl",
+   "args": [
+    null
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": "neutral"
+    },
+    "utf8_sha256": "4b3ec64630ded3fe4e44082a32732bb7b0ebd22ed719ce503a2052df1347a799",
+    "input_after": [
+     [
+      null
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_item_title_for_llm_r3_impl",
+   "args": [
+    {
+     "title": "<b>한글</b> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+   ],
+   "kwargs": {
+    "max_len": 16
+   },
+   "expected": {
+    "result": {
+     "ok": "한글 xxxxxxxxxx..."
+    },
+    "utf8_sha256": "69ac1e601d61dfbf4553ee4a9f44fbe9143bb8b3de261e70c1716994185e0421",
+    "input_after": [
+     [
+      {
+       "title": "<b>한글</b> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+     ],
+     {
+      "max_len": 16
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_item_title_for_llm_r3_impl",
+   "args": [
+    {
+     "headline": "대체 제목"
+    }
+   ],
+   "kwargs": {
+    "max_len": 16
+   },
+   "expected": {
+    "result": {
+     "ok": "대체 제목"
+    },
+    "utf8_sha256": "1182aaedc6854c916e5544e2724d113e71f0d1c0614f8afd44abd34f9fe09ad9",
+    "input_after": [
+     [
+      {
+       "headline": "대체 제목"
+      }
+     ],
+     {
+      "max_len": 16
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_item_title_for_llm_r3_impl",
+   "args": [
+    "News(title='한국 성장')"
+   ],
+   "kwargs": {
+    "max_len": 16
+   },
+   "expected": {
+    "result": {
+     "ok": "한국 성장"
+    },
+    "utf8_sha256": "b71d1ebde01f514d76dd0f4a170c339fa8d8058f5fade943aec3a0f26536784e",
+    "input_after": [
+     [
+      "News(title='한국 성장')"
+     ],
+     {
+      "max_len": 16
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_news_item_title_for_llm_r3_impl",
+   "args": [
+    null
+   ],
+   "kwargs": {
+    "max_len": 16
+   },
+   "expected": {
+    "result": {
+     "ok": ""
+    },
+    "utf8_sha256": "ffc5290e38210ab5d6c6c5be737287f9646645f50f9755631c2c1175ae684487",
+    "input_after": [
+     [
+      null
+     ],
+     {
+      "max_len": 16
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_news_signal_summary_for_llm_r3_impl",
+   "args": [],
+   "kwargs": {
+    "signal_map": {},
+    "sample": {},
+    "symbols": [],
+    "limit": 3
+   },
+   "expected": {
+    "result": {
+     "ok": []
+    },
+    "utf8_sha256": "79f889f1b8ec725e8664679b972e031a687ac0b0ef9c489f183be0a8b83e39d4",
+    "input_after": [
+     [],
+     {
+      "signal_map": {},
+      "sample": {},
+      "symbols": [],
+      "limit": 3
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_news_signal_summary_for_llm_r3_impl",
+   "args": [],
+   "kwargs": {
+    "signal_map": {
+     "B": {
+      "score": -0.333333,
+      "status": "ok"
+     },
+     "A": {}
+    },
+    "sample": {
+     "A": {
+      "sample": [
+       "첫 뉴스",
+       "둘째"
+      ]
+     }
+    },
+    "symbols": [
+     "B",
+     "B",
+     ""
+    ],
+    "limit": 2
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      {
+       "symbol": "B",
+       "score": -0.3333,
+       "label": "negative",
+       "status": "ok",
+       "headline_count": 0,
+       "top_evidence": []
+      },
+      {
+       "symbol": "A",
+       "score": null,
+       "label": "neutral",
+       "status": "",
+       "headline_count": 2,
+       "top_evidence": [
+        "첫 뉴스",
+        "둘째"
+       ]
+      }
+     ]
+    },
+    "utf8_sha256": "5956ae5e41969a2024cfadd9263456d055a7f990eb228cd739137eb0ceb25825",
+    "input_after": [
+     [],
+     {
+      "signal_map": {
+       "B": {
+        "score": -0.333333,
+        "status": "ok"
+       },
+       "A": {}
+      },
+      "sample": {
+       "A": {
+        "sample": [
+         "첫 뉴스",
+         "둘째"
+        ]
+       }
+      },
+      "symbols": [
+       "B",
+       "B",
+       ""
+      ],
+      "limit": 2
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_compact_news_signal_summary_for_llm_r3_impl",
+   "args": [],
+   "kwargs": {
+    "signal_map": {},
+    "sample": {
+     "A": {
+      "count": "bad"
+     }
+    },
+    "symbols": [
+     "A"
+    ],
+    "limit": 1
+   },
+   "expected": {
+    "result": {
+     "exc": "ValueError",
+     "message": "invalid literal for int() with base 10: 'bad'"
+    },
+    "utf8_sha256": "183175f49049b83fccdeb6ff2b8c57902268bd0669d8d390bdf1b9559814bd95",
+    "input_after": [
+     [],
+     {
+      "signal_map": {},
+      "sample": {
+       "A": {
+        "count": "bad"
+       }
+      },
+      "symbols": [
+       "A"
+      ],
+      "limit": 1
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_selected_symbol_news_signal_for_llm_r3_impl",
+   "args": [
+    [],
+    ""
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {}
+    },
+    "utf8_sha256": "f80d3cae860302eed3559358aa900336ad501b72c2f5175a32fd9538757ae1fd",
+    "input_after": [
+     [
+      [],
+      ""
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_selected_symbol_news_signal_for_llm_r3_impl",
+   "args": [
+    [],
+    "AAA"
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "symbol": "AAA",
+      "score": null,
+      "label": "unavailable",
+      "status": "missing",
+      "headline_count": 0,
+      "top_evidence": []
+     }
+    },
+    "utf8_sha256": "260a017a5f29c50dc9db8e2957002826612fe9b295c29e49d8cd621eacc4e62e",
+    "input_after": [
+     [
+      [],
+      "AAA"
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_selected_symbol_news_signal_for_llm_r3_impl",
+   "args": [
+    [
+     {
+      "symbol": "AAA",
+      "top_evidence": [
+       "한글"
+      ]
+     }
+    ],
+    "AAA"
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "ok": {
+      "symbol": "AAA",
+      "top_evidence": [
+       "한글"
+      ]
+     }
+    },
+    "utf8_sha256": "e42094ec5215014dc8cd038b2ce0b24a97f43ed008eb56d5344fb266613a8e5c",
+    "input_after": [
+     [
+      [
+       {
+        "symbol": "AAA",
+        "top_evidence": [
+         "한글"
+        ]
+       }
+      ],
+      "AAA"
+     ],
+     {}
+    ],
+    "aliases": [
+     [
+      "result/top_evidence",
+      "input/0/0/0/top_evidence"
+     ]
+    ],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_selected_symbol_news_signal_for_llm_r3_impl",
+   "args": [
+    [
+     "bad"
+    ],
+    "AAA"
+   ],
+   "kwargs": {},
+   "expected": {
+    "result": {
+     "exc": "AttributeError",
+     "message": "'str' object has no attribute 'get'"
+    },
+    "utf8_sha256": "8ff729eea237666edafe9f74d1e52ae19cbcfa646975ead62a985a1f6277f355",
+    "input_after": [
+     [
+      [
+       "bad"
+      ],
+      "AAA"
+     ],
+     {}
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_merge_news_collection_symbols_r3_impl",
+   "args": [],
+   "kwargs": {
+    "base_symbols": [
+     " aaa ",
+     "BBB",
+     "AAA"
+    ],
+    "theme_symbols": [
+     "CCC",
+     "bbb"
+    ],
+    "limit": 0
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "AAA"
+     ]
+    },
+    "utf8_sha256": "476f141f2f2f966627524a077d2e317841fc66a6481ef10c40a7b98f60f32b95",
+    "input_after": [
+     [],
+     {
+      "base_symbols": [
+       " aaa ",
+       "BBB",
+       "AAA"
+      ],
+      "theme_symbols": [
+       "CCC",
+       "bbb"
+      ],
+      "limit": 0
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_merge_news_collection_symbols_r3_impl",
+   "args": [],
+   "kwargs": {
+    "base_symbols": [
+     " aaa ",
+     "BBB",
+     "AAA"
+    ],
+    "theme_symbols": [
+     "CCC",
+     "bbb"
+    ],
+    "limit": 2
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "AAA",
+      "BBB"
+     ]
+    },
+    "utf8_sha256": "dc95623c49c2c461b1c1d66f1c584ab70b2172275d6200a46f2fd61ca035394a",
+    "input_after": [
+     [],
+     {
+      "base_symbols": [
+       " aaa ",
+       "BBB",
+       "AAA"
+      ],
+      "theme_symbols": [
+       "CCC",
+       "bbb"
+      ],
+      "limit": 2
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_merge_news_collection_symbols_r3_impl",
+   "args": [],
+   "kwargs": {
+    "base_symbols": [
+     " aaa ",
+     "BBB",
+     "AAA"
+    ],
+    "theme_symbols": [
+     "CCC",
+     "bbb"
+    ],
+    "limit": 10
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "AAA",
+      "BBB",
+      "CCC"
+     ]
+    },
+    "utf8_sha256": "6e0448780e15e3a1f50e907966f9662860036d11089155b27650e38212eb5633",
+    "input_after": [
+     [],
+     {
+      "base_symbols": [
+       " aaa ",
+       "BBB",
+       "AAA"
+      ],
+      "theme_symbols": [
+       "CCC",
+       "bbb"
+      ],
+      "limit": 10
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_merge_news_collection_symbols_r3_impl",
+   "args": [],
+   "kwargs": {
+    "base_symbols": [
+     " aaa ",
+     "BBB",
+     "AAA"
+    ],
+    "theme_symbols": [
+     "CCC",
+     "bbb"
+    ],
+    "limit": "bad"
+   },
+   "expected": {
+    "result": {
+     "exc": "ValueError",
+     "message": "invalid literal for int() with base 10: 'bad'"
+    },
+    "utf8_sha256": "183175f49049b83fccdeb6ff2b8c57902268bd0669d8d390bdf1b9559814bd95",
+    "input_after": [
+     [],
+     {
+      "base_symbols": [
+       " aaa ",
+       "BBB",
+       "AAA"
+      ],
+      "theme_symbols": [
+       "CCC",
+       "bbb"
+      ],
+      "limit": "bad"
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_build_market_news_query_targets_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "news_query_targets": [
+      "명시",
+      "명시"
+     ]
+    },
+    "policy": {
+     "strategist_news_query_limit": 8
+    },
+    "global_signal": {},
+    "market_context_inputs": {},
+    "theme_hints": []
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "명시",
+      "코스피",
+      "코스닥",
+      "미국 증시",
+      "증시 전망",
+      "거시경제",
+      "하락 종목 수",
+      "약세 업종"
+     ]
+    },
+    "utf8_sha256": "6c688ac96d32836329df69082c5c473c74ccf486bcb1700a62410f96de21e651",
+    "input_after": [
+     [],
+     {
+      "state": {
+       "news_query_targets": [
+        "명시",
+        "명시"
+       ]
+      },
+      "policy": {
+       "strategist_news_query_limit": 8
+      },
+      "global_signal": {},
+      "market_context_inputs": {},
+      "theme_hints": []
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_build_market_news_query_targets_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "news_query_targets": [
+      "명시",
+      "명시"
+     ]
+    },
+    "policy": {
+     "strategist_news_query_limit": 8
+    },
+    "global_signal": {
+     "score": -0.3
+    },
+    "market_context_inputs": {
+     "macro_risk": 0.8,
+     "market_breadth": 0.3
+    },
+    "theme_hints": [
+     "반도체"
+    ]
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "명시",
+      "테마 반도체",
+      "코스피",
+      "미국 증시",
+      "국제유가",
+      "환율",
+      "중동",
+      "하락 종목 수"
+     ]
+    },
+    "utf8_sha256": "93c598b0a7e79b95c2ba1c781a0d5ca0b0baa20639048419812d53c65b10b36d",
+    "input_after": [
+     [],
+     {
+      "state": {
+       "news_query_targets": [
+        "명시",
+        "명시"
+       ]
+      },
+      "policy": {
+       "strategist_news_query_limit": 8
+      },
+      "global_signal": {
+       "score": -0.3
+      },
+      "market_context_inputs": {
+       "macro_risk": 0.8,
+       "market_breadth": 0.3
+      },
+      "theme_hints": [
+       "반도체"
+      ]
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_build_market_news_query_targets_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "news_query_targets": [
+      "명시",
+      "명시"
+     ]
+    },
+    "policy": {
+     "strategist_news_query_limit": 8
+    },
+    "global_signal": {
+     "score": 0.4
+    },
+    "market_context_inputs": {
+     "index_trend": 0.2,
+     "market_breadth": 0.7
+    },
+    "theme_hints": []
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "명시",
+      "코스피",
+      "코스닥",
+      "미국 증시",
+      "위험선호",
+      "주도주",
+      "상승 종목 수",
+      "주도 섹터"
+     ]
+    },
+    "utf8_sha256": "48e1e5b4893cc3085934829d63420a89e9c7a6f2d001ec5bf5298d1393406b1c",
+    "input_after": [
+     [],
+     {
+      "state": {
+       "news_query_targets": [
+        "명시",
+        "명시"
+       ]
+      },
+      "policy": {
+       "strategist_news_query_limit": 8
+      },
+      "global_signal": {
+       "score": 0.4
+      },
+      "market_context_inputs": {
+       "index_trend": 0.2,
+       "market_breadth": 0.7
+      },
+      "theme_hints": []
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_build_market_news_query_targets_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "news_query_targets": [
+      "명시",
+      "명시"
+     ]
+    },
+    "policy": {
+     "strategist_news_query_limit": 8
+    },
+    "global_signal": {
+     "fear_index": {
+      "level": 30
+     }
+    },
+    "market_context_inputs": {
+     "realized_volatility": 0.04
+    },
+    "theme_hints": [
+     "AI"
+    ]
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "명시",
+      "테마 AI",
+      "코스피",
+      "미국 증시",
+      "국제유가",
+      "환율",
+      "중동",
+      "변동성 확대"
+     ]
+    },
+    "utf8_sha256": "a801b8f7e3b575744338595d8f8ef542d8369dde4590312a5c70294c16ffc17e",
+    "input_after": [
+     [],
+     {
+      "state": {
+       "news_query_targets": [
+        "명시",
+        "명시"
+       ]
+      },
+      "policy": {
+       "strategist_news_query_limit": 8
+      },
+      "global_signal": {
+       "fear_index": {
+        "level": 30
+       }
+      },
+      "market_context_inputs": {
+       "realized_volatility": 0.04
+      },
+      "theme_hints": [
+       "AI"
+      ]
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "context/news_compaction",
+   "function": "_build_market_news_query_targets_r3_impl",
+   "args": [],
+   "kwargs": {
+    "state": {},
+    "policy": {},
+    "global_signal": {},
+    "market_context_inputs": {},
+    "theme_hints": []
+   },
+   "env": {
+    "STRATEGIST_NEWS_QUERY_LIMIT": "3",
+    "NEWS_QUERY_TARGETS": "환경, 환경,뉴스"
+   },
+   "expected": {
+    "result": {
+     "ok": [
+      "환경",
+      "뉴스",
+      "코스피"
+     ]
+    },
+    "utf8_sha256": "9517076c1b0a73346c3c71fadd8e063810c0b4e0a3f5061516f1dbda2e6113fc",
+    "input_after": [
+     [],
+     {
+      "state": {},
+      "policy": {},
+      "global_signal": {},
+      "market_context_inputs": {},
+      "theme_hints": []
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  },
+  {
+   "module": "output/strategic_answers",
+   "function": "_build_strategic_answers_r3_impl",
+   "args": [],
+   "kwargs": {
+    "commander_context": {},
+    "market_regime": "중립",
+    "market_sentiment": "neutral",
+    "key_events": [
+     "한국 이벤트"
+    ],
+    "themes": [
+     "AI"
+    ],
+    "avoid_themes": [],
+    "playbook": "pullback",
+    "scanner_bias": {
+     "kind": {
+      "score": 0.5
+     }
+    },
+    "scanner_priority": [
+     "AAA"
+    ],
+    "trade_aggressiveness": "low",
+    "risk_tone": "guarded",
+    "monitor_guidance": {
+     "nested": [
+      1
+     ]
+    },
+    "report_focus": [
+     "관측"
+    ],
+    "recent_strategy_feedback": {},
+    "strategy_memory": {},
+    "read_model_facts": {},
+    "reports_root": "MOCK_ONLY"
+   },
+   "expected": {
+    "result": {
+     "ok": {
+      "q1_market_mode": "중립",
+      "q2_global_macro_events": [
+       "한국 이벤트"
+      ],
+      "q3_leading_themes": [
+       "AI"
+      ],
+      "q4_theme_strength_check": "use_scanner_score_breakdown_and_theme_boost",
+      "q5_preferred_playbook": "pullback",
+      "q6_scanner_priority_stocks": [
+       "AAA"
+      ],
+      "q7_avoid_conditions": [],
+      "q8_trade_aggressiveness": "low",
+      "q9_risk_tone": "guarded",
+      "q10_scanner_ranking_priority": [
+       "AAA"
+      ],
+      "q11_monitor_exit_guidance": {
+       "nested": [
+        1
+       ]
+      },
+      "q12_reporter_focus": [
+       "관측"
+      ],
+      "q13_recent_strategy_feedback": {
+       "feedback_window_size": 0,
+       "top_recent_strengths": [],
+       "top_recent_weaknesses": [],
+       "recent_reporter_summary": []
+      },
+      "q14_strategy_memory_advisory": {
+       "status": "",
+       "best_playbooks": [],
+       "worst_playbooks": [],
+       "recent_failures": [],
+       "recent_success_patterns": [],
+       "recent_playbook_performance": {},
+       "reporter_analysis_digest": {}
+      },
+      "q15_commander_refresh_context": {
+       "requested": false,
+       "reason": "",
+       "refresh_scope": "",
+       "selected_symbol": "",
+       "hold_repeat_count_max": 0,
+       "selected_hold_repeat_count": 0,
+       "monitor_reason": "",
+       "active_exit_axis": "",
+       "refresh_summary": "",
+       "selected_rank": 0,
+       "selected_score": null,
+       "scanner_primary_candidate": {},
+       "actual_selected_candidate": {},
+       "scanner_rank1_candidate": {},
+       "scanner_runner_ups": [],
+       "scanner_top_candidates": [],
+       "selected_symbol_was_rank1": false,
+       "stage2_context_quality": "",
+       "stage2_context_quality_reasons": [],
+       "entry_state": {},
+       "carry_state": "",
+       "carry_risk_bias": "",
+       "carry_risk_reason": "",
+       "session_open_recovery_assessment": {},
+       "prior_monitor_entry_policy_summary": {},
+       "current_monitor_entry_policy_summary": {},
+       "selected_symbol_memory": {
+        "symbol": "",
+        "status": "mock_only",
+        "facts_count": 0
+       },
+       "commander_horizon_policy": {},
+       "horizon_context": {
+        "owner": "",
+        "strategy_horizon": "",
+        "source_strategy_horizon": "",
+        "observability_only": true,
+        "do_not_force_hold": true
+       }
+      },
+      "scanner_bias": {
+       "kind": {
+        "score": 0.5
+       }
+      }
+     }
+    },
+    "utf8_sha256": "48f493f9ace9872d9b20509228199193b408c9a51e5dec086d3560568115aaee",
+    "input_after": [
+     [],
+     {
+      "commander_context": {},
+      "market_regime": "중립",
+      "market_sentiment": "neutral",
+      "key_events": [
+       "한국 이벤트"
+      ],
+      "themes": [
+       "AI"
+      ],
+      "avoid_themes": [],
+      "playbook": "pullback",
+      "scanner_bias": {
+       "kind": {
+        "score": 0.5
+       }
+      },
+      "scanner_priority": [
+       "AAA"
+      ],
+      "trade_aggressiveness": "low",
+      "risk_tone": "guarded",
+      "monitor_guidance": {
+       "nested": [
+        1
+       ]
+      },
+      "report_focus": [
+       "관측"
+      ],
+      "recent_strategy_feedback": {},
+      "strategy_memory": {},
+      "read_model_facts": {},
+      "reports_root": "MOCK_ONLY"
+     }
+    ],
+    "aliases": [
+     [
+      "result/q11_monitor_exit_guidance",
+      "input/1/monitor_guidance"
+     ],
+     [
+      "result/q11_monitor_exit_guidance/nested",
+      "input/1/monitor_guidance/nested"
+     ],
+     [
+      "result/scanner_bias",
+      "input/1/scanner_bias"
+     ],
+     [
+      "result/scanner_bias/kind",
+      "input/1/scanner_bias/kind"
+     ]
+    ],
+    "calls": [
+     [
+      "memory_stub",
+      "",
+      "MOCK_ONLY"
+     ]
+    ]
+   }
+  },
+  {
+   "module": "output/strategic_answers",
+   "function": "_build_strategic_answers_r3_impl",
+   "args": [],
+   "kwargs": {
+    "commander_context": {
+     "open_position_refresh_context": {
+      "selected_symbol": "AAA",
+      "selected_rank": 1,
+      "selected_score": 0.123456,
+      "scanner_primary_candidate": {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      "scanner_runner_ups": [
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       }
+      ],
+      "scanner_top_candidates": [
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       }
+      ],
+      "entry_state": {
+       "nested": [
+        1
+       ]
+      },
+      "selected_symbol_was_rank1": false,
+      "prior_monitor_entry_policy_summary": {
+       "nested": [
+        2
+       ]
+      }
+     },
+     "commander_horizon_policy": {
+      "strategy_horizon": "intraday",
+      "do_not_force_hold": true
+     }
+    },
+    "market_regime": "중립",
+    "market_sentiment": "neutral",
+    "key_events": [
+     "한국 이벤트"
+    ],
+    "themes": [
+     "AI"
+    ],
+    "avoid_themes": [],
+    "playbook": "pullback",
+    "scanner_bias": {
+     "kind": {
+      "score": 0.5
+     }
+    },
+    "scanner_priority": [
+     "AAA"
+    ],
+    "trade_aggressiveness": "low",
+    "risk_tone": "guarded",
+    "monitor_guidance": {
+     "nested": [
+      1
+     ]
+    },
+    "report_focus": [
+     "관측"
+    ],
+    "recent_strategy_feedback": {},
+    "strategy_memory": {},
+    "read_model_facts": {},
+    "reports_root": "MOCK_ONLY"
+   },
+   "expected": {
+    "result": {
+     "ok": {
+      "q1_market_mode": "중립",
+      "q2_global_macro_events": [
+       "한국 이벤트"
+      ],
+      "q3_leading_themes": [
+       "AI"
+      ],
+      "q4_theme_strength_check": "use_scanner_score_breakdown_and_theme_boost",
+      "q5_preferred_playbook": "pullback",
+      "q6_scanner_priority_stocks": [
+       "AAA"
+      ],
+      "q7_avoid_conditions": [],
+      "q8_trade_aggressiveness": "low",
+      "q9_risk_tone": "guarded",
+      "q10_scanner_ranking_priority": [
+       "AAA"
+      ],
+      "q11_monitor_exit_guidance": {
+       "nested": [
+        1
+       ]
+      },
+      "q12_reporter_focus": [
+       "관측"
+      ],
+      "q13_recent_strategy_feedback": {
+       "feedback_window_size": 0,
+       "top_recent_strengths": [],
+       "top_recent_weaknesses": [],
+       "recent_reporter_summary": []
+      },
+      "q14_strategy_memory_advisory": {
+       "status": "",
+       "best_playbooks": [],
+       "worst_playbooks": [],
+       "recent_failures": [],
+       "recent_success_patterns": [],
+       "recent_playbook_performance": {},
+       "reporter_analysis_digest": {}
+      },
+      "q15_commander_refresh_context": {
+       "requested": false,
+       "reason": "",
+       "refresh_scope": "",
+       "selected_symbol": "AAA",
+       "hold_repeat_count_max": 0,
+       "selected_hold_repeat_count": 0,
+       "monitor_reason": "",
+       "active_exit_axis": "",
+       "refresh_summary": "",
+       "selected_rank": 1,
+       "selected_score": 0.1235,
+       "scanner_primary_candidate": {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       "actual_selected_candidate": {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       "scanner_rank1_candidate": {},
+       "scanner_runner_ups": [
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        }
+       ],
+       "scanner_top_candidates": [
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        }
+       ],
+       "selected_symbol_was_rank1": false,
+       "stage2_context_quality": "",
+       "stage2_context_quality_reasons": [],
+       "entry_state": {
+        "nested": [
+         1
+        ]
+       },
+       "carry_state": "",
+       "carry_risk_bias": "",
+       "carry_risk_reason": "",
+       "session_open_recovery_assessment": {},
+       "prior_monitor_entry_policy_summary": {
+        "nested": [
+         2
+        ]
+       },
+       "current_monitor_entry_policy_summary": {},
+       "selected_symbol_memory": {
+        "symbol": "AAA",
+        "status": "mock_only",
+        "facts_count": 0
+       },
+       "commander_horizon_policy": {
+        "strategy_horizon": "intraday",
+        "do_not_force_hold": true
+       },
+       "horizon_context": {
+        "owner": "commander",
+        "strategy_horizon": "intraday",
+        "source_strategy_horizon": "",
+        "observability_only": true,
+        "do_not_force_hold": true
+       }
+      },
+      "scanner_bias": {
+       "kind": {
+        "score": 0.5
+       }
+      }
+     }
+    },
+    "utf8_sha256": "2ac3798ffd85f551396dde1b3e7bb113545f9e34b56b205eafdd98c941481d2c",
+    "input_after": [
+     [],
+     {
+      "commander_context": {
+       "open_position_refresh_context": {
+        "selected_symbol": "AAA",
+        "selected_rank": 1,
+        "selected_score": 0.123456,
+        "scanner_primary_candidate": {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        "scanner_runner_ups": [
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         }
+        ],
+        "scanner_top_candidates": [
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         }
+        ],
+        "entry_state": {
+         "nested": [
+          1
+         ]
+        },
+        "selected_symbol_was_rank1": false,
+        "prior_monitor_entry_policy_summary": {
+         "nested": [
+          2
+         ]
+        }
+       },
+       "commander_horizon_policy": {
+        "strategy_horizon": "intraday",
+        "do_not_force_hold": true
+       }
+      },
+      "market_regime": "중립",
+      "market_sentiment": "neutral",
+      "key_events": [
+       "한국 이벤트"
+      ],
+      "themes": [
+       "AI"
+      ],
+      "avoid_themes": [],
+      "playbook": "pullback",
+      "scanner_bias": {
+       "kind": {
+        "score": 0.5
+       }
+      },
+      "scanner_priority": [
+       "AAA"
+      ],
+      "trade_aggressiveness": "low",
+      "risk_tone": "guarded",
+      "monitor_guidance": {
+       "nested": [
+        1
+       ]
+      },
+      "report_focus": [
+       "관측"
+      ],
+      "recent_strategy_feedback": {},
+      "strategy_memory": {},
+      "read_model_facts": {},
+      "reports_root": "MOCK_ONLY"
+     }
+    ],
+    "aliases": [
+     [
+      "result/q11_monitor_exit_guidance",
+      "input/1/monitor_guidance"
+     ],
+     [
+      "result/q11_monitor_exit_guidance/nested",
+      "input/1/monitor_guidance/nested"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_primary_candidate/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_primary_candidate/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_primary_candidate/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_primary_candidate/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/actual_selected_candidate/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_primary_candidate/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/actual_selected_candidate/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_primary_candidate/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/0/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_runner_ups/0/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/0/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_runner_ups/0/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/1/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_runner_ups/1/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/1/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_runner_ups/1/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/2/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_runner_ups/2/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/2/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_runner_ups/2/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/3/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_runner_ups/3/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/3/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_runner_ups/3/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/0/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/0/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/0/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/0/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/1/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/1/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/1/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/1/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/2/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/2/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/2/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/2/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/3/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/3/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/3/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/3/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/4/ignored",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/4/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/4/score_breakdown",
+      "input/1/commander_context/open_position_refresh_context/scanner_top_candidates/4/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/entry_state/nested",
+      "input/1/commander_context/open_position_refresh_context/entry_state/nested"
+     ],
+     [
+      "result/q15_commander_refresh_context/prior_monitor_entry_policy_summary/nested",
+      "input/1/commander_context/open_position_refresh_context/prior_monitor_entry_policy_summary/nested"
+     ],
+     [
+      "result/scanner_bias",
+      "input/1/scanner_bias"
+     ],
+     [
+      "result/scanner_bias/kind",
+      "input/1/scanner_bias/kind"
+     ]
+    ],
+    "calls": [
+     [
+      "memory_stub",
+      "AAA",
+      "MOCK_ONLY"
+     ]
+    ]
+   }
+  },
+  {
+   "module": "output/strategic_answers",
+   "function": "_build_strategic_answers_r3_impl",
+   "args": [],
+   "kwargs": {
+    "commander_context": {
+     "strategist_refresh_context": {
+      "selected_symbol": "AAA",
+      "selected_rank": 1,
+      "selected_score": 0.123456,
+      "scanner_primary_candidate": {
+       "symbol": "AAA",
+       "rank": 1,
+       "score": 0.73456,
+       "confidence": 0,
+       "status": false,
+       "ignored": [
+        1
+       ],
+       "score_breakdown": {
+        "a": 0.123456,
+        "b": "텍스트",
+        "c": null,
+        "d": 1,
+        "e": 2,
+        "f": 3
+       }
+      },
+      "scanner_runner_ups": [
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       }
+      ],
+      "scanner_top_candidates": [
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       }
+      ],
+      "entry_state": {
+       "nested": [
+        1
+       ]
+      },
+      "selected_symbol_was_rank1": false,
+      "prior_monitor_entry_policy_summary": {
+       "nested": [
+        2
+       ]
+      }
+     }
+    },
+    "market_regime": "중립",
+    "market_sentiment": "neutral",
+    "key_events": [
+     "한국 이벤트"
+    ],
+    "themes": [
+     "AI"
+    ],
+    "avoid_themes": [],
+    "playbook": "pullback",
+    "scanner_bias": {
+     "kind": {
+      "score": 0.5
+     }
+    },
+    "scanner_priority": [
+     "AAA"
+    ],
+    "trade_aggressiveness": "low",
+    "risk_tone": "guarded",
+    "monitor_guidance": {
+     "nested": [
+      1
+     ]
+    },
+    "report_focus": [
+     "관측"
+    ],
+    "recent_strategy_feedback": {},
+    "strategy_memory": {},
+    "read_model_facts": {},
+    "reports_root": "MOCK_ONLY"
+   },
+   "expected": {
+    "result": {
+     "ok": {
+      "q1_market_mode": "중립",
+      "q2_global_macro_events": [
+       "한국 이벤트"
+      ],
+      "q3_leading_themes": [
+       "AI"
+      ],
+      "q4_theme_strength_check": "use_scanner_score_breakdown_and_theme_boost",
+      "q5_preferred_playbook": "pullback",
+      "q6_scanner_priority_stocks": [
+       "AAA"
+      ],
+      "q7_avoid_conditions": [],
+      "q8_trade_aggressiveness": "low",
+      "q9_risk_tone": "guarded",
+      "q10_scanner_ranking_priority": [
+       "AAA"
+      ],
+      "q11_monitor_exit_guidance": {
+       "nested": [
+        1
+       ]
+      },
+      "q12_reporter_focus": [
+       "관측"
+      ],
+      "q13_recent_strategy_feedback": {
+       "feedback_window_size": 0,
+       "top_recent_strengths": [],
+       "top_recent_weaknesses": [],
+       "recent_reporter_summary": []
+      },
+      "q14_strategy_memory_advisory": {
+       "status": "",
+       "best_playbooks": [],
+       "worst_playbooks": [],
+       "recent_failures": [],
+       "recent_success_patterns": [],
+       "recent_playbook_performance": {},
+       "reporter_analysis_digest": {}
+      },
+      "q15_commander_refresh_context": {
+       "requested": false,
+       "reason": "",
+       "refresh_scope": "",
+       "selected_symbol": "AAA",
+       "hold_repeat_count_max": 0,
+       "selected_hold_repeat_count": 0,
+       "monitor_reason": "",
+       "active_exit_axis": "",
+       "refresh_summary": "",
+       "selected_rank": 1,
+       "selected_score": 0.1235,
+       "scanner_primary_candidate": {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       "actual_selected_candidate": {
+        "symbol": "AAA",
+        "rank": 1,
+        "score": 0.73456,
+        "confidence": 0,
+        "status": false,
+        "ignored": [
+         1
+        ],
+        "score_breakdown": {
+         "a": 0.123456,
+         "b": "텍스트",
+         "c": null,
+         "d": 1,
+         "e": 2,
+         "f": 3
+        }
+       },
+       "scanner_rank1_candidate": {},
+       "scanner_runner_ups": [
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        }
+       ],
+       "scanner_top_candidates": [
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        }
+       ],
+       "selected_symbol_was_rank1": false,
+       "stage2_context_quality": "",
+       "stage2_context_quality_reasons": [],
+       "entry_state": {
+        "nested": [
+         1
+        ]
+       },
+       "carry_state": "",
+       "carry_risk_bias": "",
+       "carry_risk_reason": "",
+       "session_open_recovery_assessment": {},
+       "prior_monitor_entry_policy_summary": {
+        "nested": [
+         2
+        ]
+       },
+       "current_monitor_entry_policy_summary": {},
+       "selected_symbol_memory": {
+        "symbol": "AAA",
+        "status": "mock_only",
+        "facts_count": 0
+       },
+       "commander_horizon_policy": {},
+       "horizon_context": {
+        "owner": "",
+        "strategy_horizon": "",
+        "source_strategy_horizon": "",
+        "observability_only": true,
+        "do_not_force_hold": true
+       }
+      },
+      "scanner_bias": {
+       "kind": {
+        "score": 0.5
+       }
+      }
+     }
+    },
+    "utf8_sha256": "9587b09978373b44f9eda7889de5920752a1978b16f04fd0394a2469a686a464",
+    "input_after": [
+     [],
+     {
+      "commander_context": {
+       "strategist_refresh_context": {
+        "selected_symbol": "AAA",
+        "selected_rank": 1,
+        "selected_score": 0.123456,
+        "scanner_primary_candidate": {
+         "symbol": "AAA",
+         "rank": 1,
+         "score": 0.73456,
+         "confidence": 0,
+         "status": false,
+         "ignored": [
+          1
+         ],
+         "score_breakdown": {
+          "a": 0.123456,
+          "b": "텍스트",
+          "c": null,
+          "d": 1,
+          "e": 2,
+          "f": 3
+         }
+        },
+        "scanner_runner_ups": [
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         }
+        ],
+        "scanner_top_candidates": [
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         },
+         {
+          "symbol": "AAA",
+          "rank": 1,
+          "score": 0.73456,
+          "confidence": 0,
+          "status": false,
+          "ignored": [
+           1
+          ],
+          "score_breakdown": {
+           "a": 0.123456,
+           "b": "텍스트",
+           "c": null,
+           "d": 1,
+           "e": 2,
+           "f": 3
+          }
+         }
+        ],
+        "entry_state": {
+         "nested": [
+          1
+         ]
+        },
+        "selected_symbol_was_rank1": false,
+        "prior_monitor_entry_policy_summary": {
+         "nested": [
+          2
+         ]
+        }
+       }
+      },
+      "market_regime": "중립",
+      "market_sentiment": "neutral",
+      "key_events": [
+       "한국 이벤트"
+      ],
+      "themes": [
+       "AI"
+      ],
+      "avoid_themes": [],
+      "playbook": "pullback",
+      "scanner_bias": {
+       "kind": {
+        "score": 0.5
+       }
+      },
+      "scanner_priority": [
+       "AAA"
+      ],
+      "trade_aggressiveness": "low",
+      "risk_tone": "guarded",
+      "monitor_guidance": {
+       "nested": [
+        1
+       ]
+      },
+      "report_focus": [
+       "관측"
+      ],
+      "recent_strategy_feedback": {},
+      "strategy_memory": {},
+      "read_model_facts": {},
+      "reports_root": "MOCK_ONLY"
+     }
+    ],
+    "aliases": [
+     [
+      "result/q11_monitor_exit_guidance",
+      "input/1/monitor_guidance"
+     ],
+     [
+      "result/q11_monitor_exit_guidance/nested",
+      "input/1/monitor_guidance/nested"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_primary_candidate/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_primary_candidate/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_primary_candidate/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_primary_candidate/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/actual_selected_candidate/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_primary_candidate/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/actual_selected_candidate/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_primary_candidate/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/0/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_runner_ups/0/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/0/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_runner_ups/0/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/1/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_runner_ups/1/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/1/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_runner_ups/1/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/2/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_runner_ups/2/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/2/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_runner_ups/2/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/3/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_runner_ups/3/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_runner_ups/3/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_runner_ups/3/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/0/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/0/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/0/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/0/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/1/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/1/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/1/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/1/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/2/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/2/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/2/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/2/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/3/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/3/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/3/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/3/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/4/ignored",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/4/ignored"
+     ],
+     [
+      "result/q15_commander_refresh_context/scanner_top_candidates/4/score_breakdown",
+      "input/1/commander_context/strategist_refresh_context/scanner_top_candidates/4/score_breakdown"
+     ],
+     [
+      "result/q15_commander_refresh_context/entry_state/nested",
+      "input/1/commander_context/strategist_refresh_context/entry_state/nested"
+     ],
+     [
+      "result/q15_commander_refresh_context/prior_monitor_entry_policy_summary/nested",
+      "input/1/commander_context/strategist_refresh_context/prior_monitor_entry_policy_summary/nested"
+     ],
+     [
+      "result/scanner_bias",
+      "input/1/scanner_bias"
+     ],
+     [
+      "result/scanner_bias/kind",
+      "input/1/scanner_bias/kind"
+     ]
+    ],
+    "calls": [
+     [
+      "memory_stub",
+      "AAA",
+      "MOCK_ONLY"
+     ]
+    ]
+   }
+  },
+  {
+   "module": "output/strategic_answers",
+   "function": "_build_strategic_answers_r3_impl",
+   "args": [],
+   "kwargs": {
+    "commander_context": {
+     "open_position_refresh_context": {
+      "selected_rank": "bad"
+     }
+    },
+    "market_regime": "중립",
+    "market_sentiment": "neutral",
+    "key_events": [
+     "한국 이벤트"
+    ],
+    "themes": [
+     "AI"
+    ],
+    "avoid_themes": [],
+    "playbook": "pullback",
+    "scanner_bias": {
+     "kind": {
+      "score": 0.5
+     }
+    },
+    "scanner_priority": [
+     "AAA"
+    ],
+    "trade_aggressiveness": "low",
+    "risk_tone": "guarded",
+    "monitor_guidance": {
+     "nested": [
+      1
+     ]
+    },
+    "report_focus": [
+     "관측"
+    ],
+    "recent_strategy_feedback": {},
+    "strategy_memory": {},
+    "read_model_facts": {},
+    "reports_root": "MOCK_ONLY"
+   },
+   "expected": {
+    "result": {
+     "exc": "ValueError",
+     "message": "invalid literal for int() with base 10: 'bad'"
+    },
+    "utf8_sha256": "183175f49049b83fccdeb6ff2b8c57902268bd0669d8d390bdf1b9559814bd95",
+    "input_after": [
+     [],
+     {
+      "commander_context": {
+       "open_position_refresh_context": {
+        "selected_rank": "bad"
+       }
+      },
+      "market_regime": "중립",
+      "market_sentiment": "neutral",
+      "key_events": [
+       "한국 이벤트"
+      ],
+      "themes": [
+       "AI"
+      ],
+      "avoid_themes": [],
+      "playbook": "pullback",
+      "scanner_bias": {
+       "kind": {
+        "score": 0.5
+       }
+      },
+      "scanner_priority": [
+       "AAA"
+      ],
+      "trade_aggressiveness": "low",
+      "risk_tone": "guarded",
+      "monitor_guidance": {
+       "nested": [
+        1
+       ]
+      },
+      "report_focus": [
+       "관측"
+      ],
+      "recent_strategy_feedback": {},
+      "strategy_memory": {},
+      "read_model_facts": {},
+      "reports_root": "MOCK_ONLY"
+     }
+    ],
+    "aliases": [],
+    "calls": []
+   }
+  }
+ ]
+}

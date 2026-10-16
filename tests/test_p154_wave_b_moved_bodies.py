@@ -35,7 +35,7 @@ FORBIDDEN = ("graphs.nodes.strategist_node", "graphs.nodes.scanner_node", "graph
 
 # HYBRID-7 V3 identity shims accepted by this gate (versioned allowlist, V2-053 / rework 054). The canonical path is
 # taken ONLY from this table, never from the shim text. Any other owner keeps the original behavior (no auto-follow).
-SHIM_ALLOWLIST_VERSION = "V2-053/054+V4-056"
+SHIM_ALLOWLIST_VERSION = "V2-053/054+V4-056+S1-057"
 SHIM_ALLOWLIST = {
     "libs/runtime/scanner/feature_coverage.py": "libs/agents/scanner/context/feature_coverage.py",
     "libs/runtime/scanner/sentiment_inputs.py": "libs/agents/scanner/context/sentiment_inputs.py",
@@ -48,6 +48,12 @@ SHIM_ALLOWLIST = {
     "libs/runtime/scanner/repeat_guard.py": "libs/agents/scanner/policy/repeat_guard.py",
     "libs/runtime/scanner/guidance.py": "libs/agents/scanner/policy/guidance.py",
     "libs/runtime/scanner/compatibility.py": "libs/agents/scanner/policy/compatibility.py",
+    # S1-057 (exact Strategist pairs; same strict AST shape and canonical-path derivation)
+    "libs/runtime/strategist/context/theme_strength.py": "libs/agents/strategist/context/theme_strength.py",
+    "libs/runtime/strategist/context/market_key_events.py": "libs/agents/strategist/context/market_key_events.py",
+    "libs/runtime/strategist/context/symbol_read_models.py": "libs/agents/strategist/context/symbol_read_models.py",
+    "libs/runtime/strategist/context/news_compaction.py": "libs/agents/strategist/context/news_compaction.py",
+    "libs/runtime/strategist/output/strategic_answers.py": "libs/agents/strategist/output/strategic_answers.py",
 }
 
 

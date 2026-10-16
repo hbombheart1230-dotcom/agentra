@@ -130,9 +130,9 @@ def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():
 def test_target_tree_discipline_and_no_forbidden_surface():
     assert sorted(p.name for p in (ROOT / "libs/agents/scanner/projections").glob("*.py")) == \
         sorted(["__init__.py"] + [f"{m}.py" for m in MODULES])
-    assert sorted(p.name for p in (ROOT / "libs/agents").iterdir() if p.is_dir() and p.name != "__pycache__") == ["scanner"]
-    # later migration batches (V4 `policy`) may add sibling packages; V3 owns exactly `projections`
-    assert {"context", "projections"} <= {p.name for p in (ROOT / "libs/agents/scanner").iterdir() if p.is_dir()}
+    import p15_agent_tree_allowlist as AL
+    assert AL.actual_dirs(ROOT / "libs/agents") == set(AL.AGENT_PACKAGES)
+    assert AL.actual_dirs(ROOT / "libs/agents/scanner") == set(AL.SCANNER_PACKAGES)  # exact, versioned ownership
     out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
     forbidden = ("graphs/nodes/scanner_node.py", "graphs/nodes/execute_from_packet.py", "graphs/commander_runtime.py",
                  "libs/execution/", "libs/supervisor/", "libs/approval/", "libs/risk/", "libs/llm/", "libs/kiwoom/",

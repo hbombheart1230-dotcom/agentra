@@ -110,7 +110,8 @@ def test_frozen_base_cases_are_reproduced_exactly():
 def test_target_tree_discipline_and_no_forbidden_surface():
     assert sorted(p.name for p in (ROOT / "libs/agents/scanner/context").glob("*.py")) == \
         sorted(["__init__.py"] + [f"{m}.py" for m in MODULES])
-    assert sorted(p.name for p in (ROOT / "libs/agents").iterdir() if p.is_dir() and p.name != "__pycache__") == ["scanner"]
+    import p15_agent_tree_allowlist as AL
+    assert AL.actual_dirs(ROOT / "libs/agents") == set(AL.AGENT_PACKAGES)
     assert (ROOT / "libs/agents/scanner/candidate_risk.py").is_file()
     out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
     forbidden = ("graphs/nodes/scanner_node.py", "graphs/nodes/execute_from_packet.py", "libs/execution/",

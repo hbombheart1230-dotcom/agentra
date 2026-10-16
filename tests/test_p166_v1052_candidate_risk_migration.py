@@ -92,7 +92,8 @@ def test_single_implementation_shim_without_code_and_no_rank_owner_added():
     assert defs == ["libs/agents/scanner/candidate_risk.py"], defs
     names = sorted(p.name for p in (ROOT / "libs/agents/scanner").glob("*.py"))
     assert names == ["__init__.py", "candidate_risk.py"], names
-    assert sorted(p.name for p in (ROOT / "libs/agents").iterdir() if p.is_dir() and p.name != "__pycache__") == ["scanner"]
+    import p15_agent_tree_allowlist as AL
+    assert AL.actual_dirs(ROOT / "libs/agents") == set(AL.AGENT_PACKAGES)
 
 
 def test_pilot_touches_no_forbidden_surface():

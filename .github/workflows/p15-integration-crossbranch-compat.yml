@@ -43,6 +43,8 @@ jobs:
             tests/test_p168_wave_b_shim_verifier_negatives.py \
             tests/test_p171_v3055_scanner_projection_migration.py \
             tests/test_p172_v4056_scanner_policy_migration.py \
+            tests/test_p172_strategist_s1_057_migration.py \
+            tests/test_p173_p058_integration_contracts.py \
             tests/test_p169_broad_failure_evidence.py \
             tests/test_scanner_candidate_risk.py \
             tests/test_operator_ui.py \

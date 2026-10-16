@@ -24,13 +24,17 @@ FRM = "from libs.agents.scanner.context import macro_focus as _canonical"
 ASG = "_sys.modules[__name__] = _canonical"
 
 
-def test_allowlist_is_exactly_the_five_v2_and_five_v4_mappings():
-    assert WB.SHIM_ALLOWLIST_VERSION == "V2-053/054+V4-056"
+def test_allowlist_is_exactly_the_scanner_ten_and_strategist_five_mappings():
+    assert WB.SHIM_ALLOWLIST_VERSION == "V2-053/054+V4-056+S1-057"
     v2 = {f"libs/runtime/scanner/{m}.py": f"libs/agents/scanner/context/{m}.py"
           for m in ("feature_coverage", "sentiment_inputs", "scoring_inputs", "macro_focus", "macro_chart_fit")}
     v4 = {f"libs/runtime/scanner/{m}.py": f"libs/agents/scanner/policy/{m}.py"
           for m in ("symbol_prior", "blocker_family_overlay", "repeat_guard", "guidance", "compatibility")}
-    assert WB.SHIM_ALLOWLIST == {**v2, **v4} and len(WB.SHIM_ALLOWLIST) == 10
+    s1 = {f"libs/runtime/strategist/context/{m}.py": f"libs/agents/strategist/context/{m}.py"
+          for m in ("theme_strength", "market_key_events", "symbol_read_models", "news_compaction")}
+    s1["libs/runtime/strategist/output/strategic_answers.py"] = "libs/agents/strategist/output/strategic_answers.py"
+    assert len(v2) == len(v4) == len(s1) == 5
+    assert WB.SHIM_ALLOWLIST == {**v2, **v4, **s1} and len(WB.SHIM_ALLOWLIST) == 15
 
 
 @pytest.mark.parametrize("legacy", sorted(WB.SHIM_ALLOWLIST))
@@ -123,3 +127,42 @@ print('OPTIMIZED_REJECTED=' + str(len(ns['MUTATIONS'])))
                             capture_output=True, text=True)
     assert result.returncode == 0, result.stdout + result.stderr
     assert result.stdout.strip() == f"OPTIMIZED_REJECTED={len(MUTATIONS)}"
+
+
+STRATEGIST = sorted(k for k in WB.SHIM_ALLOWLIST if k.startswith("libs/runtime/strategist/"))
+
+
+@pytest.mark.parametrize("legacy", STRATEGIST)
+def test_strategist_shim_mutations_are_rejected(legacy):
+    canon = WB.SHIM_ALLOWLIST[legacy]
+    good = (ROOT / legacy).read_text(encoding="utf-8")
+    base = canon[:-3].rsplit("/", 1)[1]
+    pkg = canon[:-3].rsplit("/", 1)[0].replace("/", ".")
+    other_pkg = "libs.agents.strategist.output" if ".context" in pkg else "libs.agents.strategist.context"
+    other_name = "strategic_answers" if base != "strategic_answers" else "theme_strength"
+    mutations = {
+        "wrong_package_agent": good.replace("libs.agents.strategist", "libs.agents.scanner"),
+        "wrong_subpackage": good.replace(pkg, other_pkg),
+        "wrong_canonical_filename": good.replace(f"import {base} as", f"import {other_name} as"),
+        "extra_import": good + "\nimport subprocess\n",
+        "extra_raise": good + "\nraise RuntimeError(123)\n",
+        "extra_statement": good + "\nX = 1\n",
+        "bad_sys_modules_key": good.replace("_sys.modules[__name__]", "_sys.modules['x']"),
+        "bad_sys_modules_value": good.replace("= _canonical", "= _sys"),
+        "alias_mismatch": good.replace("as _canonical", "as c"),
+        "relative_import": good.replace(pkg.replace("libs.agents.strategist", "", 1) and f"from {pkg} import", "from . import"),
+        "malformed": good + "\ndef (:\n",
+    }
+    for name, src in mutations.items():
+        if name == "relative_import" and src == good:
+            continue
+        with pytest.raises(AssertionError):
+            WB._verify_identity_shim_source(src, legacy, canon)
+    assert WB._verify_identity_shim_source(good, legacy, canon) == canon
+
+
+def test_strategist_shim_cannot_be_validated_against_a_scanner_mapping():
+    legacy = "libs/runtime/strategist/context/theme_strength.py"
+    with pytest.raises(AssertionError):
+        WB._verify_identity_shim_source((ROOT / legacy).read_text(encoding="utf-8"), legacy,
+                                        "libs/agents/scanner/context/theme_strength.py")

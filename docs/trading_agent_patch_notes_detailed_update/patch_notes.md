@@ -3565,3 +3565,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 변경: `symbol_prior`, `blocker_family_overlay`, `repeat_guard`, `guidance`, `compatibility`를 `libs/runtime/scanner`에서 `libs/agents/scanner/policy`로 byte-identical 이동했습니다. 기존 경로는 3문장 module-identity shim이며, Wave B fail-closed 허용목록은 정확히 이 5쌍만 확장했고 엄격 AST 검증과 `python -O` 음성 테스트를 유지합니다.
 - 검증: 공개 Scanner wrapper로 BASE 트리에서 생성한 318개 케이스(시계 고정, SCANNER_* 환경 통제, 예외·입력 변경 기록)를 key 순서까지 정확히 재현, T4-A Scanner 계약·Wave B 768·T3 gate 통과.
 - 경계: `scanner_node.py`, 랭킹/선택, Broker, LLM, Supervisor/Executor, 운영 쓰기 변경 없음. SAFETY_BLOCKED 없음. 독립 Codex 감사 대기.
+
+## 2026-10-16 · P1.5 P15-058 Scanner V4 + Strategist S1 통합
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · SAFETY · DOCS
+
+- Gate A: repeat_guard가 실제로 읽는 `persisted_state.recent_monitor_blocks`와 중첩 `scanner_repeat_guard` 정책으로 repeat_count > 0 케이스를 BASE에서 먼저 생성한 별도 fixture(286)로 추가하고 FINAL과 완전 일치함을 확인했습니다. V3 디렉터리 검사는 버전 allowlist 기반 정확 일치로 복원, 쓰기 감사 mtime은 재현되지 않아 UNRESOLVED(메타데이터 한정)로 기록했습니다.
+- Gate B: Strategist S1 승인 경로 16개만 선택 통합(브랜치 병합·공통 문서 복사 없음), Wave B 엄격 AST allowlist를 Scanner 10 + Strategist 5 = 15쌍으로 확장하고 exact-set·잘못된 shim 거부·`python -O` 음성 테스트를 유지했습니다.
+- 경계: 주문·LLM·Step5C·UEF 변경 없음, Reporter/Monitor 미착수, main 병합 없음. 독립 감사 대기.
