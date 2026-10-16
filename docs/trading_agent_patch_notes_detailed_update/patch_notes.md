@@ -3504,4 +3504,3 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 변경: `feature_coverage`, `sentiment_inputs`, `scoring_inputs`, `macro_focus`, `macro_chart_fit`를 `libs/runtime/scanner`에서 `libs/agents/scanner/context`로 byte-identical 이동했습니다. 기존 경로는 module-identity shim이며 구현은 하나입니다. V1-052 Gap Matrix 문구(P2)도 먼저 정정했습니다.
 - 검증: BASE 트리에서 공개 Scanner wrapper로 생성한 136개 frozen case를 예외·key 순서까지 정확히 재현, T4-A Scanner frozen 계약과 stage gate 통과.
 - 경계: `scanner_node.py`, 랭킹/선택, Broker, LLM, Supervisor/Executor, 운영 쓰기 변경 없음. V3 전 독립 Codex 감사 대기.
-
