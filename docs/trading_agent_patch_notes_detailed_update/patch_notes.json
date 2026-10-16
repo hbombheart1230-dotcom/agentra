@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 282,
+  "entry_count": 283,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7477,6 +7477,30 @@
       "sources": [
         "docs/refactor/evidence/P15-TREE-MIGRATION-V3-055-CLAUDE.md",
         "docs/refactor/architecture/architecture_gap_matrix.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "V3-055 Scoped Acceptance and V4-056 Policy Helper Authorization",
+      "title": "Accept five V3 read-only Scanner Projection owners; authorize guarded migration of five Scanner policy helpers",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "DOCS",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "GPT accepts V3-055 structural scope after Codex PASS_WITH_FINDINGS and required CI. P2 skip lineage, capture label provenance and large fixture optimization remain open. A new V4-056 order authorizes only five individually gated Scanner R3 helper candidates without changing the user-frozen V3 target tree.",
+      "details": [
+        "Five V3 modules have exact BASE canonical blobs, module-object identity, 218/218 frozen BASE cases, Wave B 768 and T4-A Rank-1 safety; Codex 864 PASS, no P0/P1; GitHub diff inventory is 22 files.",
+        "P2: skipped node/reason unknown; 82 captured module labels need normalization map/raw hash; large 6,512,156-byte fixture can be compacted later. Original 37 broad-suite failures and unauthenticated historical SHA/env are unresolved quality debts.",
+        "V4-056 is only a Git-published work order; no V4 source has yet been moved, and real Broker, LLM, Step5C, UEF, Q10/Q12, protected runtime and main are unchanged."
+      ],
+      "impact": "Implementation agents can start V4-056 from CURRENT.md with a fixed bounded safety scope; no deployment or final release approval.",
+      "sources": [
+        "docs/refactor/evidence/P15-V3-055-GPT-SCOPED-ACCEPTANCE.md",
+        "docs/refactor/work_orders/P15-TREE-MIGRATION-V4-056.md",
+        "docs/daily_patch/2026-10-16_v3_scoped_acceptance_v4_056_authorized.md"
       ]
     }
   ]

@@ -3548,3 +3548,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 변경: `candidate_context_projection`, `control_eligibility`, `output_payloads`, `output_snapshots`, `selection_evidence_projection`을 `libs/runtime/scanner`에서 `libs/agents/scanner/projections`로 byte-identical 이동했습니다. 기존 경로는 module-identity shim(엄격 AST 검증 통과)이며 구현은 하나입니다.
 - 검증: BASE 트리에서 기록한 218개 케이스(실제 호출 입력 + 엣지)를 JSON key 순서까지 정확히 재현, T4-A Scanner 계약·second-pass·Wave B 768/768 통과, 엄격 검증 음성 테스트는 `python -O`에서도 통과.
 - 경계: `scanner_node.py`, 랭킹/선택, Broker, LLM, Supervisor/Executor, 운영 쓰기 변경 없음. SAFETY_BLOCKED 없음. V4 전 독립 Codex 감사 대기.
+
+
+## 2026-10-16 · V3-055 구조 범위 한정 승인 / V4-056 구현 지시 등록
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · DOCS · WORKFLOW
+
+- V3-055: Codex PASS_WITH_FINDINGS를 수용하여 Scanner Projection 구현 5개 이동을 구조 범위 내 승인. BASE 구현 Blob 5/5 동일, 218개 BASE Frozen 결과, T3·Wave B·T4-A 검증, 필수 CI 성공. 실제 Git diff는 22개 경로.
+- P2 부채: 로컬 SKIP 1건 이유 미검증, BASE caller 캡처의 모듈 라벨 82건 보정 근거/원본 hash 보강 필요, 6.2 MiB fixture 중복 입력 1건/축소 후보. 기존 광역 오류 37건 미해결, 과거 실행 SHA·환경 출처 BLOCKED.
+- V4-056: 동결된 HYBRID-7 V3 트리를 바꾸지 않고 Scanner policy R3 helper 5개만 개별 안전 검증 후 이동하도록 GitHub 작업 지시. 이번 커밋에는 실제 V4 소스 이동 없고 Broker/LLM/Step5C/UEF·main 변화 없음.
