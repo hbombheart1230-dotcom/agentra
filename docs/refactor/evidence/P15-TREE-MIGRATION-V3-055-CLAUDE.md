@@ -29,3 +29,13 @@ WAVE_B: 768/768 unchanged; strict-verifier negatives and V3 tests also pass unde
 The Wave B allowlist was NOT extended: none of the five owners appears in the Wave B ledger, so the fail-closed allowlist and
 its 768 cases are untouched. `libs/agents/scanner/` now holds `candidate_risk.py`, `context/` and `projections/`; no other
 agent packages were created.
+
+## Addendum — hosted failure on 4df172e and fix
+
+The first push (`4df172e`) failed the hosted T4 Linux job at "T3 current Owner contracts": `test_p159_current_owner_contract_gates.py`
+resolves historical owner modules by path at HEAD and the two ledgered V3 owners (`candidate_context_projection`,
+`selection_evidence_projection`) were now shims. That gate was not in my first local batch. Fix: the gate follows ONLY those two
+hard-coded legacy->canonical pairs after the shim source passes the same strict AST verifier as Wave B (never imported to validate);
+every other owner is untouched and no assertion was removed. New test `test_t3_current_owner_gate_follows_only_exact_verified_shims`
+rejects an extra `raise`, an extra import and a wrong canonical target. All 20 gate files used by the Linux job were then run
+locally in full: 3,611 passed, 1 skipped.

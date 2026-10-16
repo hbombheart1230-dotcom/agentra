@@ -142,3 +142,24 @@ def test_target_tree_discipline_and_no_forbidden_surface():
                  "libs/runtime/scanner/practical_filters.py", "libs/agents/scanner/candidate_risk.py", "libs/agents/scanner/context/")
     for p in [x for x in out if x]:
         assert not p.startswith(forbidden), p
+
+
+def test_t3_current_owner_gate_follows_only_exact_verified_shims(tmp_path, monkeypatch):
+    spec = importlib.util.spec_from_file_location("_p159_gate", ROOT / "tests" / "test_p159_current_owner_contract_gates.py")
+    gate = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(gate)
+    assert set(gate.V3_SHIM_ALLOWLIST) == {"libs/runtime/scanner/candidate_context_projection.py",
+                                           "libs/runtime/scanner/selection_evidence_projection.py"}
+    for legacy, canonical in gate.V3_SHIM_ALLOWLIST.items():
+        assert gate._follow(legacy) == canonical
+    assert gate._follow("libs/runtime/scanner/output_payloads.py") == "libs/runtime/scanner/output_payloads.py"
+    legacy = "libs/runtime/scanner/candidate_context_projection.py"
+    good = (ROOT / legacy).read_text(encoding="utf-8")
+    for bad in (good + "\nraise RuntimeError(123)\n", good + "\nimport subprocess\n",
+                good.replace("projections import candidate_context_projection", "projections import control_eligibility")):
+        fake = tmp_path / "root"
+        (fake / legacy).parent.mkdir(parents=True, exist_ok=True)
+        (fake / legacy).write_text(bad, encoding="utf-8")
+        monkeypatch.setattr(gate, "ROOT", fake)
+        with pytest.raises(AssertionError):
+            gate._follow(legacy)

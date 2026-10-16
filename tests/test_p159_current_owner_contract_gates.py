@@ -65,9 +65,30 @@ def _git_show(path, sha):
     return subprocess.check_output(["git", "show", f"{sha}:{path}"], cwd=ROOT).decode("utf-8-sig")
 
 
+# V3-055: two historical Scanner owners are now strict identity shims. Only these exact, hard-coded pairs are followed,
+# and only after the shim source passes the same fail-closed AST verifier as the Wave B gate (never imported to validate).
+V3_SHIM_ALLOWLIST = {
+    "libs/runtime/scanner/candidate_context_projection.py": "libs/agents/scanner/projections/candidate_context_projection.py",
+    "libs/runtime/scanner/selection_evidence_projection.py": "libs/agents/scanner/projections/selection_evidence_projection.py",
+}
+
+
+def _follow(module):
+    if module not in V3_SHIM_ALLOWLIST:
+        return module
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("_wave_b_gate_p159", Path(__file__).resolve().parent / "test_p154_wave_b_moved_bodies.py")
+    wb = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(wb)
+    canonical = V3_SHIM_ALLOWLIST[module]
+    wb._verify_identity_shim_source((ROOT / module).read_text(encoding="utf-8"), module, canonical)
+    return canonical
+
+
 def test_every_historical_owner_function_resolves_at_head_through_the_t3_mapping():
     for tag, _end, s in _segments():
         module, function, _ = _current(s["owner_module"], s["owner_function"])
+        module = _follow(module)
         path = ROOT / module
         assert path.is_file(), f"{tag}: owner module missing at HEAD: {s['owner_module']} -> {module}"
         funcs = {n.name: n for n in _tree(module).body if isinstance(n, ast.FunctionDef)}
@@ -104,9 +125,9 @@ def test_result_records_are_positional_compatible_named_tuples():
 def test_all_owner_modules_import_and_obey_authority_restrictions_at_head():
     owners = set()
     for _tag, _end, s in _segments():
-        owners.add(_current(s["owner_module"], s["owner_function"])[0])
+        owners.add(_follow(_current(s["owner_module"], s["owner_function"])[0]))
     for c in _t3()["changes"]:
-        owners.add(c["new_module"])
+        owners.add(_follow(c["new_module"]))
     assert owners
     for owner in sorted(owners):
         importlib.import_module(owner[:-3].replace("/", "."))  # import resolution / no cycles at import time
