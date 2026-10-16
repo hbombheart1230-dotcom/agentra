@@ -3504,3 +3504,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 변경: `feature_coverage`, `sentiment_inputs`, `scoring_inputs`, `macro_focus`, `macro_chart_fit`를 `libs/runtime/scanner`에서 `libs/agents/scanner/context`로 byte-identical 이동했습니다. 기존 경로는 module-identity shim이며 구현은 하나입니다. V1-052 Gap Matrix 문구(P2)도 먼저 정정했습니다.
 - 검증: BASE 트리에서 공개 Scanner wrapper로 생성한 136개 frozen case를 예외·key 순서까지 정확히 재현, T4-A Scanner frozen 계약과 stage gate 통과.
 - 경계: `scanner_node.py`, 랭킹/선택, Broker, LLM, Supervisor/Executor, 운영 쓰기 변경 없음. V3 전 독립 Codex 감사 대기.
+
+
+## 2026-10-16 · V2-053 Codex FAIL / 재작업 054 활성화
+**Stage:** Architecture and Maintainability
+**Tags:** SAFETY · TESTING · DOCS
+
+- Codex 판정: **FAIL**. 실제 이동된 Scanner 5개 본문 Blob과 136개 BASE/FINAL 사례 및 필수 CI는 성공했지만, Wave B `_owner_file()` 검증기가 추가 실행문과 잘못된 import 대상이 포함된 Shim을 허용하는 P1 결함 발견.
+- 기존 전체 회귀의 37개 FAIL/ERROR가 BASE에서도 같다는 주장은 테스트 ID·명령·로그 비교 자료 부족으로 **BLOCKED**. 기저 결함으로 확정하지 않음.
+- `docs/refactor/work_orders/P15-V2-053-REWORK-054.md` 작업 하나만 활성화. 수정은 AST fail-closed 게이트 + 음성 테스트 + 동일 환경 BASE/FINAL 실패 매니페스트 + CURRENT 문서 정정 범위로 제한.
+- 이 커밋은 코드 실행 경로 변경 없이 지시서·사용자 UI 노트만 업데이트. V2 최종 승인, V3 구현, main 병합 모두 보류.

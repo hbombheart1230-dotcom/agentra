@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 277,
+  "entry_count": 278,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7360,6 +7360,30 @@
       "sources": [
         "docs/refactor/evidence/P15-TREE-MIGRATION-V2-053-CLAUDE.md",
         "docs/refactor/architecture/architecture_gap_matrix.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 V2-053 Codex FAIL and Rework 054 Activated",
+      "title": "Require strict fail-closed Wave B shim tests and reproducible broad BASE failure classification",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "SAFETY",
+        "TESTING",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Independent Codex audit rejected V2-053 despite five byte-identical module moves, 136 matching frozen cases and green CI, because shim validation accepted executable payloads and the claimed 37 baseline failures lacked evidence.",
+      "details": [
+        "P1: AST-only exact allowlist verification with negative mutation tests needed; `_owner_file()` substring/regex approach permits extra statements and wrong target.",
+        "P1: The 37 broad-suite fail/error items are unverified as pre-existing until matching commands, pinned BASE/FINAL test node IDs and normalized cause signatures are produced; no automatic V2 acceptance.",
+        "P2: Correct CURRENT.md stale V1 wording; V3 and main release remain blocked. This commit is only the scoped rework instruction and synced UI note, with no runtime source changes."
+      ],
+      "impact": "V2 Codex FAIL is explicitly recorded; one active bounded rework task replaces forward migration.",
+      "sources": [
+        "docs/refactor/work_orders/P15-V2-053-REWORK-054.md",
+        "docs/refactor/evidence/P15-V2-053-CODEX-FAIL-2026-10-16.md",
+        "docs/daily_patch/2026-10-16_p15_v2_codex_fail_rework_054.md"
       ]
     }
   ]
