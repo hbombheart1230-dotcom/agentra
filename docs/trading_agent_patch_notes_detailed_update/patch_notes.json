@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 281,
+  "entry_count": 282,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7455,6 +7455,28 @@
         "docs/refactor/evidence/P15-V2-053-054-GPT-SCOPED-ACCEPTANCE.md",
         "docs/refactor/work_orders/P15-TREE-MIGRATION-V3-055.md",
         "docs/daily_patch/2026-10-16_v2_scoped_acceptance_v3_055_authorized.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 Tree Migration V3-055",
+      "title": "Scanner read-only projections: five modules relocated to libs/agents/scanner/projections",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "candidate_context_projection, control_eligibility, output_payloads, output_snapshots and selection_evidence_projection were moved byte-for-byte from libs/runtime/scanner to libs/agents/scanner/projections. Each old path is a three-statement sys.modules identity shim verified by the same strict AST check as the V2 shims, so both paths are one module object with a single body.",
+      "details": [
+        "218 cases recorded on the pinned BASE tree (real caller inputs plus edge inputs) are reproduced exactly with identical JSON key order; the T4-A frozen Scanner contract, the second-pass and Wave B (768/768) gates pass unchanged and the strict-verifier negatives also pass under python -O.",
+        "scanner_node.py, ranking/selection, Broker, LLM, Supervisor/Executor and production writes are untouched; no module was SAFETY_BLOCKED. Independent Codex audit pending before V4."
+      ],
+      "impact": "Module location, tests and documentation only; no projection, score or ranking behavior changed.",
+      "sources": [
+        "docs/refactor/evidence/P15-TREE-MIGRATION-V3-055-CLAUDE.md",
+        "docs/refactor/architecture/architecture_gap_matrix.md"
       ]
     }
   ]

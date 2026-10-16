@@ -79,3 +79,15 @@ Current decision: ARCH_CONVERGENCE_NOT_APPROVED for the architectural proposal i
 | `libs/runtime/scanner/macro_chart_fit.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/context/macro_chart_fit.py` | macro chart-fit soft-bias projection | `7a5828c8` |
 
 None of the five was SAFETY_BLOCKED: each had a single static consumer (`graphs/nodes/scanner_node.py`, unmodified, binding the `_r3_impl` bodies and injecting `facade`), no string/dynamic import, no `__file__`/pickle/introspection dependency in source; env and cwd reads happen through the injected facade exactly as before. Evidence: `docs/refactor/evidence/P15-TREE-MIGRATION-V2-053-CLAUDE.md`.
+
+## 9. Migration dispositions (V3-055)
+
+| Module | Disposition | Canonical owner | Responsibility | Blob (BASE = canonical) |
+|---|---|---|---|---|
+| `libs/runtime/scanner/candidate_context_projection.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/projections/candidate_context_projection.py` | candidate source/context/policy projection (facade bodies) | `15fd6fc2` |
+| `libs/runtime/scanner/control_eligibility.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/projections/control_eligibility.py` | observation-only full-Strategist control eligibility | `d4701304` |
+| `libs/runtime/scanner/output_payloads.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/projections/output_payloads.py` | candidate ranking-table / selection-reason payloads | `fe5e34d5` |
+| `libs/runtime/scanner/output_snapshots.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/projections/output_snapshots.py` | selected / feature / ranking snapshot read model | `02ef48a4` |
+| `libs/runtime/scanner/selection_evidence_projection.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/projections/selection_evidence_projection.py` | selection evidence and reasons projection (facade bodies) | `bf20e9af` |
+
+None of the five was SAFETY_BLOCKED: no `__file__`/`__module__`/pickle/serialization dependency, no dynamic import, no circular import (the canonical bodies import only `libs.runtime.quant.factors` and the still-unmoved `theme_filter`), no I/O, logging, events, State writes or broker/LLM calls. Real callers: `graphs/nodes/scanner_node.py` (unmodified) and four tests. `selection_output_projection`, `score_feature_projection`, `score_policy_projection`, `theme_filter`, `practical_filters`, `candidate_risk` and the V2 `context/` modules are unchanged. Evidence: `docs/refactor/evidence/P15-TREE-MIGRATION-V3-055-CLAUDE.md`.

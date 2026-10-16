@@ -3540,3 +3540,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - V2-053/054: 코드 이동과 모듈 동일성, BASE 기반 136개 사례, 엄격 AST/-O 검증, 필수 CI가 통과해 **구조 변경만 조건부 수용**. 광역 테스트 37건의 실패는 미해결이고 원본 실행 SHA/환경 출처는 BLOCKED. 이전 커밋 작성 참여로 인해 감사 독립성에 한계가 있다는 점도 명시.
 - V3-055: 기존 동결 목표 트리 아래 Scanner read-only Projection 모듈 후보 5개를 안전 입증된 경우에만 물리적으로 이동하도록 GitHub 작업지시 등록.
 - 이 커밋에는 V3 코드 이동이 없으며 실거래, Rank-1, Broker/LLM/Step5C/UEF, main 병합 모두 금지 유지.
+
+## 2026-10-16 · P1.5 Tree Migration V3-055 (Scanner projection 5개 이동)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · DOCS
+
+- 변경: `candidate_context_projection`, `control_eligibility`, `output_payloads`, `output_snapshots`, `selection_evidence_projection`을 `libs/runtime/scanner`에서 `libs/agents/scanner/projections`로 byte-identical 이동했습니다. 기존 경로는 module-identity shim(엄격 AST 검증 통과)이며 구현은 하나입니다.
+- 검증: BASE 트리에서 기록한 218개 케이스(실제 호출 입력 + 엣지)를 JSON key 순서까지 정확히 재현, T4-A Scanner 계약·second-pass·Wave B 768/768 통과, 엄격 검증 음성 테스트는 `python -O`에서도 통과.
+- 경계: `scanner_node.py`, 랭킹/선택, Broker, LLM, Supervisor/Executor, 운영 쓰기 변경 없음. SAFETY_BLOCKED 없음. V4 전 독립 Codex 감사 대기.
