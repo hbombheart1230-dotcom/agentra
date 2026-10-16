@@ -35,13 +35,19 @@ FORBIDDEN = ("graphs.nodes.strategist_node", "graphs.nodes.scanner_node", "graph
 
 # HYBRID-7 V3 identity shims accepted by this gate (versioned allowlist, V2-053 / rework 054). The canonical path is
 # taken ONLY from this table, never from the shim text. Any other owner keeps the original behavior (no auto-follow).
-SHIM_ALLOWLIST_VERSION = "V2-053/054"
+SHIM_ALLOWLIST_VERSION = "V2-053/054+V4-056"
 SHIM_ALLOWLIST = {
     "libs/runtime/scanner/feature_coverage.py": "libs/agents/scanner/context/feature_coverage.py",
     "libs/runtime/scanner/sentiment_inputs.py": "libs/agents/scanner/context/sentiment_inputs.py",
     "libs/runtime/scanner/scoring_inputs.py": "libs/agents/scanner/context/scoring_inputs.py",
     "libs/runtime/scanner/macro_focus.py": "libs/agents/scanner/context/macro_focus.py",
     "libs/runtime/scanner/macro_chart_fit.py": "libs/agents/scanner/context/macro_chart_fit.py",
+    # V4-056 (exact pairs; the verifier's canonical package is derived from the allowlisted canonical path only)
+    "libs/runtime/scanner/symbol_prior.py": "libs/agents/scanner/policy/symbol_prior.py",
+    "libs/runtime/scanner/blocker_family_overlay.py": "libs/agents/scanner/policy/blocker_family_overlay.py",
+    "libs/runtime/scanner/repeat_guard.py": "libs/agents/scanner/policy/repeat_guard.py",
+    "libs/runtime/scanner/guidance.py": "libs/agents/scanner/policy/guidance.py",
+    "libs/runtime/scanner/compatibility.py": "libs/agents/scanner/policy/compatibility.py",
 }
 
 

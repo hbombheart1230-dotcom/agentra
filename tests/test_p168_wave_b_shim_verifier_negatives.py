@@ -24,12 +24,13 @@ FRM = "from libs.agents.scanner.context import macro_focus as _canonical"
 ASG = "_sys.modules[__name__] = _canonical"
 
 
-def test_allowlist_is_exactly_the_five_v2_mappings():
-    assert WB.SHIM_ALLOWLIST_VERSION == "V2-053/054"
-    assert WB.SHIM_ALLOWLIST == {
-        f"libs/runtime/scanner/{m}.py": f"libs/agents/scanner/context/{m}.py"
-        for m in ("feature_coverage", "sentiment_inputs", "scoring_inputs", "macro_focus", "macro_chart_fit")
-    }
+def test_allowlist_is_exactly_the_five_v2_and_five_v4_mappings():
+    assert WB.SHIM_ALLOWLIST_VERSION == "V2-053/054+V4-056"
+    v2 = {f"libs/runtime/scanner/{m}.py": f"libs/agents/scanner/context/{m}.py"
+          for m in ("feature_coverage", "sentiment_inputs", "scoring_inputs", "macro_focus", "macro_chart_fit")}
+    v4 = {f"libs/runtime/scanner/{m}.py": f"libs/agents/scanner/policy/{m}.py"
+          for m in ("symbol_prior", "blocker_family_overlay", "repeat_guard", "guidance", "compatibility")}
+    assert WB.SHIM_ALLOWLIST == {**v2, **v4} and len(WB.SHIM_ALLOWLIST) == 10
 
 
 @pytest.mark.parametrize("legacy", sorted(WB.SHIM_ALLOWLIST))

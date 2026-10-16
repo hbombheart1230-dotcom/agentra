@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 283,
+  "entry_count": 284,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7501,6 +7501,28 @@
         "docs/refactor/evidence/P15-V3-055-GPT-SCOPED-ACCEPTANCE.md",
         "docs/refactor/work_orders/P15-TREE-MIGRATION-V4-056.md",
         "docs/daily_patch/2026-10-16_v3_scoped_acceptance_v4_056_authorized.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 Tree Migration V4-056",
+      "title": "Scanner pure policy helpers: five modules relocated to libs/agents/scanner/policy",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "symbol_prior, blocker_family_overlay, repeat_guard, guidance and compatibility were moved byte-for-byte from libs/runtime/scanner to libs/agents/scanner/policy. Each old path is a three-statement sys.modules identity shim; the Wave B fail-closed allowlist was extended by exactly these five pairs and keeps its strict AST verification and python -O negatives.",
+      "details": [
+        "318 cases generated through the public Scanner wrappers on the pinned BASE tree (frozen clock, controlled SCANNER_* env, exceptions and input-mutation recorded) are reproduced exactly with identical key order; the T4-A frozen Scanner contract, Wave B 768 and T3 gates pass.",
+        "scanner_node.py, ranking/selection, Broker, LLM, Supervisor/Executor and production writes are untouched; no module was SAFETY_BLOCKED. Independent Codex audit pending before the next batch."
+      ],
+      "impact": "Module location, tests and documentation only; no scoring, ranking or compatibility behavior changed.",
+      "sources": [
+        "docs/refactor/evidence/P15-TREE-MIGRATION-V4-056-CLAUDE.md",
+        "docs/refactor/architecture/architecture_gap_matrix.md"
       ]
     }
   ]

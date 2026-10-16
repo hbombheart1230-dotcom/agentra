@@ -42,6 +42,7 @@ jobs:
             tests/test_p167_v2053_scanner_context_migration.py \
             tests/test_p168_wave_b_shim_verifier_negatives.py \
             tests/test_p171_v3055_scanner_projection_migration.py \
+            tests/test_p172_v4056_scanner_policy_migration.py \
             tests/test_p169_broad_failure_evidence.py \
             tests/test_scanner_candidate_risk.py \
             tests/test_operator_ui.py \

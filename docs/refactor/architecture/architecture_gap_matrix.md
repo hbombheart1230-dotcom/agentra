@@ -91,3 +91,15 @@ None of the five was SAFETY_BLOCKED: each had a single static consumer (`graphs/
 | `libs/runtime/scanner/selection_evidence_projection.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/projections/selection_evidence_projection.py` | selection evidence and reasons projection (facade bodies) | `bf20e9af` |
 
 None of the five was SAFETY_BLOCKED: no `__file__`/`__module__`/pickle/serialization dependency, no dynamic import, no circular import (the canonical bodies import only `libs.runtime.quant.factors` and the still-unmoved `theme_filter`), no I/O, logging, events, State writes or broker/LLM calls. Real callers: `graphs/nodes/scanner_node.py` (unmodified) and four tests. `selection_output_projection`, `score_feature_projection`, `score_policy_projection`, `theme_filter`, `practical_filters`, `candidate_risk` and the V2 `context/` modules are unchanged. Evidence: `docs/refactor/evidence/P15-TREE-MIGRATION-V3-055-CLAUDE.md`.
+
+## 10. Migration dispositions (V4-056)
+
+| Module | Disposition | Canonical owner | Responsibility | Blob (BASE = canonical) |
+|---|---|---|---|---|
+| `libs/runtime/scanner/symbol_prior.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/policy/symbol_prior.py` | symbol prior adjustment (facade body) | `9bbc39ae` |
+| `libs/runtime/scanner/blocker_family_overlay.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/policy/blocker_family_overlay.py` | blocker-family concentration soft overlay | `81d59515` |
+| `libs/runtime/scanner/repeat_guard.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/policy/repeat_guard.py` | recent selection / blocker cooldown penalty (env defaults and clock only via facade) | `5f794e54` |
+| `libs/runtime/scanner/guidance.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/policy/guidance.py` | Strategist guidance extraction and soft bias weights | `3318a80a` |
+| `libs/runtime/scanner/compatibility.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/policy/compatibility.py` | Monitor-compatible entry signal projection | `323d5a54` |
+
+None of the five was SAFETY_BLOCKED. `repeat_guard`: the only environment reads are `facade.os.getenv` defaults for policy keys, the clock is `facade._resolve_now_epoch(state)` (state-injected `now_epoch`), history comes from State read-only; `compatibility`: `facade.evaluate_intraday_entry_signal` is a pure scoring function (no I/O, env, clock, logging or network tokens) and stays a use-time facade lookup. All five are only consumed by `graphs/nodes/scanner_node.py` (unmodified). Evidence: `docs/refactor/evidence/P15-TREE-MIGRATION-V4-056-CLAUDE.md`.
