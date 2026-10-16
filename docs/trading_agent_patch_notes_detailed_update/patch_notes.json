@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 280,
+  "entry_count": 281,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7414,7 +7414,11 @@
       "version": "P1.5 Rework 054 Optimized Verifier and Observed Failure Evidence",
       "title": "Keep shim validation active under -O and extract observed failure traceback facts",
       "stage": "Architecture and Maintainability",
-      "types": ["TESTING", "SAFETY", "DOCS"],
+      "types": [
+        "TESTING",
+        "SAFETY",
+        "DOCS"
+      ],
       "status": "current",
       "summary": "Explicit exceptions preserve shim rejection under optimized Python; retained JUnit provides exception class and terminal location for all BASE 38 and FINAL 37 failures/errors.",
       "details": [
@@ -7423,7 +7427,35 @@
         "Implementation supplement only; independent 054 delta audit and V3 remain pending. Scanner bodies/shims and all protected runtime paths unchanged."
       ],
       "impact": "Tests, evidence extractor, CI coverage and documentation only.",
-      "sources": ["docs/refactor/evidence/P15-V2-053-REWORK-054-CLAUDE.md", "docs/daily_patch/2026-10-16_p15_v2_053_rework_054.md", "scripts/refactor/p169_broad_failure_evidence.py"]
+      "sources": [
+        "docs/refactor/evidence/P15-V2-053-REWORK-054-CLAUDE.md",
+        "docs/daily_patch/2026-10-16_p15_v2_053_rework_054.md",
+        "scripts/refactor/p169_broad_failure_evidence.py"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "V2 Scoped Acceptance and V3-055 Projection Implementation Authorization",
+      "title": "Accept V2 structural equivalence with retained debt and authorize the next bounded Scanner Projection migration",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "ARCHITECTURE",
+        "DOCS",
+        "WORKFLOW"
+      ],
+      "status": "current",
+      "summary": "V2-053/054 is accepted only as a structurally equivalent Scanner context module migration. The 37 observed broad failures, unknown historical test-run SHA/environment provenance and reviewer partial author overlap are retained findings. V3-055 authorizes exactly five read-only Scanner Projection candidates with per-module safety gates.",
+      "details": [
+        "Exact BASE-vs-canonical blobs and 136 pinned-BASE public Scanner cases matched; module-object identities and monkeypatch contracts maintained; fail-closed AST/-O tests and hosted CI passed.",
+        "Recorded 37 common broad fail/error signatures remain unfixed and the archived run provenance is still BLOCKED; this does not amount to P1.5 release acceptance.",
+        "Current commit publishes the concrete V3-055 work order only; no actual V3 implementation file, Broker, LLM, ranking authority, Step5C or main branch changed."
+      ],
+      "impact": "Single Git-linked V3-055 task becomes active, with no redesign or deployment.",
+      "sources": [
+        "docs/refactor/evidence/P15-V2-053-054-GPT-SCOPED-ACCEPTANCE.md",
+        "docs/refactor/work_orders/P15-TREE-MIGRATION-V3-055.md",
+        "docs/daily_patch/2026-10-16_v2_scoped_acceptance_v3_055_authorized.md"
+      ]
     }
   ]
 }

@@ -3531,3 +3531,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Explicit raises keep shim validation active under Python -O. Original 31 tests retained; optimized-child regression rejects all 21 source mutations including the three Codex counterexamples.
 - Preserved JUnit provides exception/location for BASE 38 and FINAL 37 records, with 37 equal observed signatures. No broad reruns. Raw hashes identify retained evidence; complete semantic causes and original SHA/environment provenance are not established and remain BLOCKED.
 - Codex implementation supplement under user instruction; a separate independent 054 delta audit is required. Scanner implementation/shims and protected runtime paths unchanged. V3 BLOCKED.
+
+
+## 2026-10-16 · V2 구조 한정 승인 / V3-055 구현 시작
+**Stage:** Architecture and Maintainability
+**Tags:** ARCHITECTURE · DOCS · WORKFLOW
+
+- V2-053/054: 코드 이동과 모듈 동일성, BASE 기반 136개 사례, 엄격 AST/-O 검증, 필수 CI가 통과해 **구조 변경만 조건부 수용**. 광역 테스트 37건의 실패는 미해결이고 원본 실행 SHA/환경 출처는 BLOCKED. 이전 커밋 작성 참여로 인해 감사 독립성에 한계가 있다는 점도 명시.
+- V3-055: 기존 동결 목표 트리 아래 Scanner read-only Projection 모듈 후보 5개를 안전 입증된 경우에만 물리적으로 이동하도록 GitHub 작업지시 등록.
+- 이 커밋에는 V3 코드 이동이 없으며 실거래, Rank-1, Broker/LLM/Step5C/UEF, main 병합 모두 금지 유지.
