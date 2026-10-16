@@ -58,10 +58,24 @@ Prefer one real callable Agent core per role, with graphs/nodes acting as stable
 
 Approval sequence: GPT architecture evidence → user edits target_architecture.drawio → Codex dependency/consumer audit → explicit ARCH_CONVERGENCE_APPROVED → Claude batch implementation → Codex audit → GPT/user acceptance.
 
-Current decision: ARCH_CONVERGENCE_NOT_APPROVED; no paths have been moved.
+Current decision: ARCH_CONVERGENCE_NOT_APPROVED for the architectural proposal itself, which does not authorize additional moves; V1-052 has already moved one approved module and V2-053 moves the five modules listed in section 8 under their own work orders.
 
 ## 7. Migration dispositions (V1-052)
 
 | Module | Disposition | Canonical owner | Compatibility | Evidence |
 |---|---|---|---|---|
-| `libs/runtime/scanner/candidate_risk.py` | **MOVED** (body byte-identical, blob `8dea30ae`) | `libs/agents/scanner/candidate_risk.py` | `sys.modules` module-object identity shim at the old path (old-first/new-first identical, private names and use-time monkeypatch shared) | `tests/test_p166_v1052_candidate_risk_migration.py` (13 contract/consumer tests with 115 frozen inputs) and `docs/refactor/evidence/P15-TREE-MIGRATION-V1-052-CLAUDE.md`; every other Scanner path stays unmoved/BLOCKED |
+| `libs/runtime/scanner/candidate_risk.py` | **MOVED** (body byte-identical, blob `8dea30ae`) | `libs/agents/scanner/candidate_risk.py` | `sys.modules` module-object identity shim at the old path (old-first/new-first identical, private names and use-time monkeypatch shared) | `tests/test_p166_v1052_candidate_risk_migration.py` (8 V1 migration tests incl. 115 frozen inputs) + `tests/test_scanner_candidate_risk.py` (5 existing tests) = **13 combined** and `docs/refactor/evidence/P15-TREE-MIGRATION-V1-052-CLAUDE.md`; every other Scanner path stays unmoved/BLOCKED |
+
+**V1-052 acceptance note (2026-10-16):** GPT_ACCEPTED_WITH_P2_DOC_FINDINGS at `1eb5fa1`, Codex PASS_WITH_FINDINGS (blob, identity, monkeypatch, 115/115 frozen cases, 13/13 focused, 3 hosted CI SUCCESS). Only P2 = this matrix's wording, corrected above.
+
+## 8. Migration dispositions (V2-053)
+
+| Module | Disposition | Canonical owner | Responsibility | Blob (BASE = canonical) |
+|---|---|---|---|---|
+| `libs/runtime/scanner/feature_coverage.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/context/feature_coverage.py` | quote-metric coverage / feature refresh read-model | `32ad1370` |
+| `libs/runtime/scanner/sentiment_inputs.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/context/sentiment_inputs.py` | news/global sentiment input projection | `f514156e` |
+| `libs/runtime/scanner/scoring_inputs.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/context/scoring_inputs.py` | score/context policy normalization | `b436430e` |
+| `libs/runtime/scanner/macro_focus.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/context/macro_focus.py` | macro focus weights projection | `24170e43` |
+| `libs/runtime/scanner/macro_chart_fit.py` | **MOVED** (identity shim at old path) | `libs/agents/scanner/context/macro_chart_fit.py` | macro chart-fit soft-bias projection | `7a5828c8` |
+
+None of the five was SAFETY_BLOCKED: each had a single static consumer (`graphs/nodes/scanner_node.py`, unmodified, binding the `_r3_impl` bodies and injecting `facade`), no string/dynamic import, no `__file__`/pickle/introspection dependency in source; env and cwd reads happen through the injected facade exactly as before. Evidence: `docs/refactor/evidence/P15-TREE-MIGRATION-V2-053-CLAUDE.md`.

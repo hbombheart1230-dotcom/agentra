@@ -3496,3 +3496,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - V1-052: GPT 수용 `PASS_WITH_FINDINGS`; Blob 일치, old/new module identity, 115/115 BASE 사례, 13/13 집중 테스트, 필수 CI 3/3 SUCCESS. Codex 지적 P2 문서 표현 두 건은 V2 첫 작업에서 수정.
 - V2-053 작업지시서와 V1 승인 근거를 GitHub 통합 브랜치의 정식 문서 경로로 등록. `CURRENT.md`와 Claude/Codex 시작 지침은 활성 작업 V2-053 한 건만 지정.
 - 본 커밋은 문서와 UI 변경 이력만 반영하며 V2의 다섯 모듈은 아직 이동하지 않음. 운영 주문·Broker·LLM·Step5C·UEF·Q10/Q12 변경 없음.
+
+## 2026-10-16 · P1.5 Tree Migration V2-053 (Scanner context 5개 이동)
+**Stage:** Architecture and Maintainability
+**Tags:** REFACTOR · TESTING · DOCS
+
+- 변경: `feature_coverage`, `sentiment_inputs`, `scoring_inputs`, `macro_focus`, `macro_chart_fit`를 `libs/runtime/scanner`에서 `libs/agents/scanner/context`로 byte-identical 이동했습니다. 기존 경로는 module-identity shim이며 구현은 하나입니다. V1-052 Gap Matrix 문구(P2)도 먼저 정정했습니다.
+- 검증: BASE 트리에서 공개 Scanner wrapper로 생성한 136개 frozen case를 예외·key 순서까지 정확히 재현, T4-A Scanner frozen 계약과 stage gate 통과.
+- 경계: `scanner_node.py`, 랭킹/선택, Broker, LLM, Supervisor/Executor, 운영 쓰기 변경 없음. V3 전 독립 Codex 감사 대기.
+

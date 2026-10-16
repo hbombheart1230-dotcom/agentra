@@ -11,7 +11,7 @@
 
 **V1-052 status (2026-10-16):** GPT_ACCEPTED_WITH_P2_DOC_FINDINGS, 13 focused PASS and hosted CI 3/3 SUCCESS — `candidate_risk` moved to `libs/agents/scanner/` with a module-identity shim; evidence [P15-TREE-MIGRATION-V1-052-CLAUDE.md](../evidence/P15-TREE-MIGRATION-V1-052-CLAUDE.md). No other module moved; V2 not started.
 **V1 independent acceptance:** [Codex findings and V1 acceptance](../evidence/V1-052_GPT_ACCEPTANCE_2026-10-16.md); first action of V2-053 must fix the P2 Gap Matrix text and the 8+5=13 test count. No source change was made in the present work-order activation commit.
-**V2-053 status:** IMPLEMENTATION AUTHORIZED; no migrated V2 modules yet. Starting code base is 1eb5fa1fd8dc6154743ef3855305663e34a83281.
+**V2-053 status:** IMPLEMENTED / PENDING CODEX AUDIT — 5/5 Scanner context/scoring modules moved to `libs/agents/scanner/context/` with identity shims; V1 P2 matrix wording fixed; evidence [P15-TREE-MIGRATION-V2-053-CLAUDE.md](../evidence/P15-TREE-MIGRATION-V2-053-CLAUDE.md). V3 not started.
 **Known deferred:** real report and LLM parity, T4-C session differential and Reporter-feedback fallback fixture, NTFS mtime causality, Scanner cross-seed telemetry. None automatically resolved by V1 tree movement.
 **Protected authority:** `graphs/nodes/execute_from_packet.py`, Supervisor/Executor/Broker, Step5C, UEF, Q10/Q12, operational Docker/write paths, UI LLM brief and Reporter queue/lock/artifact effects.
 

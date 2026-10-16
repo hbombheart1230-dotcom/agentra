@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 276,
+  "entry_count": 277,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7338,6 +7338,28 @@
         "docs/daily_patch/2026-10-16_p15_v2_053_order_published.md",
         "docs/refactor/work_orders/P15-TREE-MIGRATION-V2-053.md",
         "docs/refactor/evidence/V1-052_GPT_ACCEPTANCE_2026-10-16.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 Tree Migration V2-053",
+      "title": "Scanner context/scoring inputs: five modules relocated to libs/agents/scanner/context",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "feature_coverage, sentiment_inputs, scoring_inputs, macro_focus and macro_chart_fit were moved byte-for-byte from libs/runtime/scanner to libs/agents/scanner/context. Each old path is a sys.modules identity shim, so both paths are one module object with a single body; the V1-052 gap-matrix wording finding was corrected first.",
+      "details": [
+        "136 frozen cases generated through the public Scanner wrappers on the pinned BASE tree are reproduced exactly (including exceptions and key order); the T4-A frozen Scanner contract and all stage gates pass.",
+        "scanner_node.py, ranking/selection, Broker, LLM, Supervisor/Executor and production writes are untouched; independent Codex audit pending before V3."
+      ],
+      "impact": "Module location, tests and documentation only; no scoring or ranking behavior changed.",
+      "sources": [
+        "docs/refactor/evidence/P15-TREE-MIGRATION-V2-053-CLAUDE.md",
+        "docs/refactor/architecture/architecture_gap_matrix.md"
       ]
     }
   ]

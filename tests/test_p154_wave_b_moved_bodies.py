@@ -33,6 +33,20 @@ BUILTINS = set(dir(builtins))
 FORBIDDEN = ("graphs.nodes.strategist_node", "graphs.nodes.scanner_node", "graphs.nodes.monitor_node", "graphs.nodes")
 
 
+def _owner_file(owner):
+    """Ledger owner path, following a HYBRID-7 V3 module-identity shim (V1-052/V2-053) to its single canonical body.
+
+    A shim is accepted only in its exact form (no code, `from <pkg> import <mod> as _canonical` +
+    `sys.modules[__name__] = _canonical`); the gate then checks the one real body, never a copy."""
+    import re
+    src = (ROOT / owner).read_text(encoding="utf-8")
+    if "_sys.modules[__name__] = _canonical" in src:
+        m = re.search(r"^from ([\w.]+) import (\w+) as _canonical$", src, flags=re.M)
+        assert m and "def " not in src and "class " not in src, owner
+        return (m.group(1) + "." + m.group(2)).replace(".", "/") + ".py"
+    return owner
+
+
 def _base_source(path):
     return subprocess.check_output(["git", "show", f"{BASE}:{path}"], cwd=ROOT).decode("utf-8-sig")
 
@@ -122,7 +136,7 @@ def test_use_site_qualification_is_the_only_body_change(path, name, owner):
     base_src = _base_source(path)
     base_tree = ast.parse(base_src)
     base_fn = _func(base_tree, name)
-    owner_src = (ROOT / owner).read_text(encoding="utf-8")
+    owner_src = (ROOT / _owner_file(owner)).read_text(encoding="utf-8")
     impl = _func(ast.parse(owner_src), f"{name}_r3_impl")
     for n in impl.body:
         assert not (isinstance(n, ast.Assign) and _is_fa(n.value)), (path, name, "entry-time capture")
@@ -142,7 +156,7 @@ def test_use_site_qualification_is_the_only_body_change(path, name, owner):
 
 @pytest.mark.parametrize("owner", sorted({o for _, _, o in MOVES}))
 def test_owner_bounded_and_never_imports_original_module(owner):
-    src = (ROOT / owner).read_text(encoding="utf-8")
+    src = (ROOT / _owner_file(owner)).read_text(encoding="utf-8")
     assert len(src.splitlines()) <= 350, owner
     for n in ast.walk(ast.parse(src)):
         mods = [a.name for a in n.names] if isinstance(n, ast.Import) else ([n.module or ""] if isinstance(n, ast.ImportFrom) else [])

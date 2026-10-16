@@ -1,0 +1,3296 @@
+{
+ "cases": [
+  {
+   "fn": "_get_global_sentiment_score",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": 0.0
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_map",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {}
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_signal",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "status": "fallback",
+     "source": "scanner_node",
+     "reason": "missing_global_signal"
+    }
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_signal_map",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {}
+   }
+  },
+  {
+   "fn": "_memory_bias_observation_only",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": false
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {},
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {},
+    {
+     "scanner_weights": {
+      "news": 0.3,
+      "global": 0.1
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {},
+    {
+     "w_news": "0.5",
+     "w_global": -1
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {},
+    {
+     "scanner_score_weights": {
+      "momentum": 2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {},
+    {
+     "enforce_live_equity_symbols": true
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_resolve_compatibility_bias_context",
+   "args": [
+    {}
+   ],
+   "kwargs": {
+    "limit": 5
+   },
+   "result": {
+    "ok": {
+     "dominant_block_reason": "mixed",
+     "dominant_block_reason_ratio": 0.0,
+     "bias_scale": 0.1,
+     "sample_size": 0
+    }
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_score",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": 0.4
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_map",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "005930": -0.3
+    }
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_signal",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "score": 0.4,
+     "status": "ok"
+    }
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_signal_map",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "005930": {
+      "score": -0.3
+     }
+    }
+   }
+  },
+  {
+   "fn": "_memory_bias_observation_only",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": false
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    },
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    },
+    {
+     "scanner_weights": {
+      "news": 0.3,
+      "global": 0.1
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    },
+    {
+     "w_news": "0.5",
+     "w_global": -1
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    },
+    {
+     "scanner_score_weights": {
+      "momentum": 2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    },
+    {
+     "enforce_live_equity_symbols": true
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_resolve_compatibility_bias_context",
+   "args": [
+    {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    }
+   ],
+   "kwargs": {
+    "limit": 5
+   },
+   "result": {
+    "ok": {
+     "dominant_block_reason": "mixed",
+     "dominant_block_reason_ratio": 0.0,
+     "bias_scale": 0.1,
+     "sample_size": 0
+    }
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_score",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": 1.0
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_map",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "005930": 0.7,
+     "000660": 0.0
+    }
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_signal",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "status": "ok",
+     "source": "mock_global_sentiment",
+     "reason": ""
+    }
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_signal_map",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "005930": {
+      "status": "fallback",
+      "source": "legacy_news_sentiment",
+      "reason": "signal_missing"
+     },
+     "000660": {
+      "status": "fallback",
+      "source": "legacy_news_sentiment",
+      "reason": "signal_missing"
+     }
+    }
+   }
+  },
+  {
+   "fn": "_memory_bias_observation_only",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": false
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    },
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    },
+    {
+     "scanner_weights": {
+      "news": 0.3,
+      "global": 0.1
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    },
+    {
+     "w_news": "0.5",
+     "w_global": -1
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    },
+    {
+     "scanner_score_weights": {
+      "momentum": 2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    },
+    {
+     "enforce_live_equity_symbols": true
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_resolve_compatibility_bias_context",
+   "args": [
+    {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    }
+   ],
+   "kwargs": {
+    "limit": 5
+   },
+   "result": {
+    "ok": {
+     "dominant_block_reason": "mixed",
+     "dominant_block_reason_ratio": 0.0,
+     "bias_scale": 0.1,
+     "sample_size": 0
+    }
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_score",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": -1.0
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_map",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {}
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_signal",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "status": "fallback",
+     "source": "legacy_global_sentiment",
+     "reason": "signal_missing"
+    }
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_signal_map",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {}
+   }
+  },
+  {
+   "fn": "_memory_bias_observation_only",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": false
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    },
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    },
+    {
+     "scanner_weights": {
+      "news": 0.3,
+      "global": 0.1
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    },
+    {
+     "w_news": "0.5",
+     "w_global": -1
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    },
+    {
+     "scanner_score_weights": {
+      "momentum": 2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    },
+    {
+     "enforce_live_equity_symbols": true
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_resolve_compatibility_bias_context",
+   "args": [
+    {
+     "global_sentiment": {
+      "score": -1.7
+     },
+     "policy": {
+      "global_sentiment": 0.2
+     }
+    }
+   ],
+   "kwargs": {
+    "limit": 5
+   },
+   "result": {
+    "ok": {
+     "dominant_block_reason": "mixed",
+     "dominant_block_reason_ratio": 0.0,
+     "bias_scale": 0.1,
+     "sample_size": 0
+    }
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_score",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": 0.1
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_map",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {}
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_signal",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "status": "fallback",
+     "source": "scanner_node",
+     "reason": "missing_global_signal"
+    }
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_signal_map",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {}
+   }
+  },
+  {
+   "fn": "_memory_bias_observation_only",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    },
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    },
+    {
+     "scanner_weights": {
+      "news": 0.3,
+      "global": 0.1
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    },
+    {
+     "w_news": "0.5",
+     "w_global": -1
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    },
+    {
+     "scanner_score_weights": {
+      "momentum": 2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    },
+    {
+     "enforce_live_equity_symbols": true
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_resolve_compatibility_bias_context",
+   "args": [
+    {
+     "global_sentiment": 0.1,
+     "memory_bias_observation_only": "true",
+     "scanner_policy": {
+      "enforce_live_equity_symbols": "0"
+     }
+    }
+   ],
+   "kwargs": {
+    "limit": 5
+   },
+   "result": {
+    "ok": {
+     "dominant_block_reason": "mixed",
+     "dominant_block_reason_ratio": 0.0,
+     "bias_scale": 0.1,
+     "sample_size": 0
+    }
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_score",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": 0.9
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_map",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "A": 0.0
+    }
+   }
+  },
+  {
+   "fn": "_get_global_sentiment_signal",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "status": "fallback",
+     "source": "scanner_node",
+     "reason": "missing_global_signal"
+    }
+   }
+  },
+  {
+   "fn": "_get_news_sentiment_signal_map",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "A": {
+      "score": "bad"
+     }
+    }
+   }
+  },
+  {
+   "fn": "_memory_bias_observation_only",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": false
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    },
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    },
+    {
+     "scanner_weights": {
+      "news": 0.3,
+      "global": 0.1
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    },
+    {
+     "w_news": "0.5",
+     "w_global": -1
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    },
+    {
+     "scanner_score_weights": {
+      "momentum": 2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_enforce_live_equity_symbols",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    },
+    {
+     "enforce_live_equity_symbols": true
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "fn": "_resolve_compatibility_bias_context",
+   "args": [
+    {
+     "policy": {
+      "global_sentiment": {
+       "score": 0.9
+      }
+     },
+     "news_sentiment_signal": {
+      "A": {
+       "score": "bad"
+      }
+     }
+    }
+   ],
+   "kwargs": {
+    "limit": 5
+   },
+   "result": {
+    "ok": {
+     "dominant_block_reason": "mixed",
+     "dominant_block_reason_ratio": 0.0,
+     "bias_scale": 0.1,
+     "sample_size": 0
+    }
+   }
+  },
+  {
+   "fn": "_get_scanner_weights",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "weight_news": 0.2,
+     "weight_global": 0.1,
+     "risk_news_penalty": 0.3,
+     "risk_global_penalty": 0.2,
+     "confidence_news_boost": 0.05,
+     "feature_score_weight": 0.0,
+     "feature_risk_penalty": 0.0,
+     "high_vol_risk_penalty": 0.0
+    }
+   }
+  },
+  {
+   "fn": "_resolve_scanner_score_weights",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "trading_value": 0.2,
+     "momentum": 0.22,
+     "trend": 0.2,
+     "volume_surge": 0.14,
+     "intraday_strength": 0.12,
+     "theme_boost": 0.06,
+     "sentiment": 0.06,
+     "volatility_penalty": 0.1,
+     "gap_penalty": 0.07,
+     "open_order_penalty": 0.04
+    }
+   }
+  },
+  {
+   "fn": "_get_scanner_weights",
+   "args": [
+    {
+     "scanner_weights": {
+      "news": 0.3,
+      "global": 0.1
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "weight_news": 0.2,
+     "weight_global": 0.1,
+     "risk_news_penalty": 0.3,
+     "risk_global_penalty": 0.2,
+     "confidence_news_boost": 0.05,
+     "feature_score_weight": 0.0,
+     "feature_risk_penalty": 0.0,
+     "high_vol_risk_penalty": 0.0
+    }
+   }
+  },
+  {
+   "fn": "_resolve_scanner_score_weights",
+   "args": [
+    {
+     "scanner_weights": {
+      "news": 0.3,
+      "global": 0.1
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "trading_value": 0.2,
+     "momentum": 0.22,
+     "trend": 0.2,
+     "volume_surge": 0.14,
+     "intraday_strength": 0.12,
+     "theme_boost": 0.06,
+     "sentiment": 0.06,
+     "volatility_penalty": 0.1,
+     "gap_penalty": 0.07,
+     "open_order_penalty": 0.04
+    }
+   }
+  },
+  {
+   "fn": "_get_scanner_weights",
+   "args": [
+    {
+     "w_news": "0.5",
+     "w_global": -1
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "weight_news": 0.2,
+     "weight_global": 0.1,
+     "risk_news_penalty": 0.3,
+     "risk_global_penalty": 0.2,
+     "confidence_news_boost": 0.05,
+     "feature_score_weight": 0.0,
+     "feature_risk_penalty": 0.0,
+     "high_vol_risk_penalty": 0.0
+    }
+   }
+  },
+  {
+   "fn": "_resolve_scanner_score_weights",
+   "args": [
+    {
+     "w_news": "0.5",
+     "w_global": -1
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "trading_value": 0.2,
+     "momentum": 0.22,
+     "trend": 0.2,
+     "volume_surge": 0.14,
+     "intraday_strength": 0.12,
+     "theme_boost": 0.06,
+     "sentiment": 0.06,
+     "volatility_penalty": 0.1,
+     "gap_penalty": 0.07,
+     "open_order_penalty": 0.04
+    }
+   }
+  },
+  {
+   "fn": "_get_scanner_weights",
+   "args": [
+    {
+     "scanner_score_weights": {
+      "momentum": 2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "weight_news": 0.2,
+     "weight_global": 0.1,
+     "risk_news_penalty": 0.3,
+     "risk_global_penalty": 0.2,
+     "confidence_news_boost": 0.05,
+     "feature_score_weight": 0.0,
+     "feature_risk_penalty": 0.0,
+     "high_vol_risk_penalty": 0.0
+    }
+   }
+  },
+  {
+   "fn": "_resolve_scanner_score_weights",
+   "args": [
+    {
+     "scanner_score_weights": {
+      "momentum": 2
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "trading_value": 0.2,
+     "momentum": 0.22,
+     "trend": 0.2,
+     "volume_surge": 0.14,
+     "intraday_strength": 0.12,
+     "theme_boost": 0.06,
+     "sentiment": 0.06,
+     "volatility_penalty": 0.1,
+     "gap_penalty": 0.07,
+     "open_order_penalty": 0.04
+    }
+   }
+  },
+  {
+   "fn": "_get_scanner_weights",
+   "args": [
+    {
+     "enforce_live_equity_symbols": true
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "weight_news": 0.2,
+     "weight_global": 0.1,
+     "risk_news_penalty": 0.3,
+     "risk_global_penalty": 0.2,
+     "confidence_news_boost": 0.05,
+     "feature_score_weight": 0.0,
+     "feature_risk_penalty": 0.0,
+     "high_vol_risk_penalty": 0.0
+    }
+   }
+  },
+  {
+   "fn": "_resolve_scanner_score_weights",
+   "args": [
+    {
+     "enforce_live_equity_symbols": true
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "trading_value": 0.2,
+     "momentum": 0.22,
+     "trend": 0.2,
+     "volume_surge": 0.14,
+     "intraday_strength": 0.12,
+     "theme_boost": 0.06,
+     "sentiment": 0.06,
+     "volatility_penalty": 0.1,
+     "gap_penalty": 0.07,
+     "open_order_penalty": 0.04
+    }
+   }
+  },
+  {
+   "fn": "_filter_live_equity_candidates",
+   "args": [
+    []
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": [
+     [],
+     {
+      "live_equity_symbol_filter_enabled": true,
+      "live_equity_symbol_excluded_count": 0,
+      "live_equity_symbol_excluded_symbols": [],
+      "candidate_pool_after_live_equity_symbol_filter": 0
+     }
+    ]
+   }
+  },
+  {
+   "fn": "_summarize_quote_metric_coverage",
+   "args": [
+    []
+   ],
+   "kwargs": {
+    "skill_quotes": {
+     "005930": {
+      "price": 70000
+     },
+     "000660": {
+      "cur": 0
+     }
+    },
+    "state": {}
+   },
+   "result": {
+    "ok": {
+     "live_equity_candidates": 0,
+     "quote_rows_present": 0,
+     "quote_rows_with_price": 0,
+     "quote_rows_with_activity": 0,
+     "zero_quote_metric_symbols": []
+    }
+   }
+  },
+  {
+   "fn": "_should_refresh_scanner_features",
+   "args": [],
+   "kwargs": {
+    "state": {},
+    "candidates": [],
+    "quote_metric_coverage": {
+     "live_equity_candidates": 2,
+     "quote_rows_with_activity": 0
+    }
+   },
+   "result": {
+    "ok": [
+     false,
+     ""
+    ]
+   }
+  },
+  {
+   "fn": "_summarize_quote_metric_coverage",
+   "args": [
+    []
+   ],
+   "kwargs": {
+    "skill_quotes": {
+     "005930": {
+      "price": 70000
+     },
+     "000660": {
+      "cur": 0
+     }
+    },
+    "state": {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    }
+   },
+   "result": {
+    "ok": {
+     "live_equity_candidates": 0,
+     "quote_rows_present": 0,
+     "quote_rows_with_price": 0,
+     "quote_rows_with_activity": 0,
+     "zero_quote_metric_symbols": []
+    }
+   }
+  },
+  {
+   "fn": "_should_refresh_scanner_features",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    },
+    "candidates": [],
+    "quote_metric_coverage": {
+     "live_equity_candidates": 2,
+     "quote_rows_with_activity": 0
+    }
+   },
+   "result": {
+    "ok": [
+     false,
+     ""
+    ]
+   }
+  },
+  {
+   "fn": "_summarize_quote_metric_coverage",
+   "args": [
+    []
+   ],
+   "kwargs": {
+    "skill_quotes": {
+     "005930": {
+      "price": 70000
+     },
+     "000660": {
+      "cur": 0
+     }
+    },
+    "state": {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    }
+   },
+   "result": {
+    "ok": {
+     "live_equity_candidates": 0,
+     "quote_rows_present": 0,
+     "quote_rows_with_price": 0,
+     "quote_rows_with_activity": 0,
+     "zero_quote_metric_symbols": []
+    }
+   }
+  },
+  {
+   "fn": "_should_refresh_scanner_features",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    },
+    "candidates": [],
+    "quote_metric_coverage": {
+     "live_equity_candidates": 2,
+     "quote_rows_with_activity": 0
+    }
+   },
+   "result": {
+    "ok": [
+     false,
+     ""
+    ]
+   }
+  },
+  {
+   "fn": "_filter_live_equity_candidates",
+   "args": [
+    [
+     "005930",
+     {
+      "symbol": "000660"
+     },
+     "SPY",
+     "",
+     null,
+     {
+      "symbol": "KRW-BTC"
+     }
+    ]
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": [
+     [
+      "005930",
+      {
+       "symbol": "000660"
+      }
+     ],
+     {
+      "live_equity_symbol_filter_enabled": true,
+      "live_equity_symbol_excluded_count": 1,
+      "live_equity_symbol_excluded_symbols": [
+       "SPY"
+      ],
+      "candidate_pool_after_live_equity_symbol_filter": 2
+     }
+    ]
+   }
+  },
+  {
+   "fn": "_summarize_quote_metric_coverage",
+   "args": [
+    [
+     "005930",
+     {
+      "symbol": "000660"
+     },
+     "SPY",
+     "",
+     null,
+     {
+      "symbol": "KRW-BTC"
+     }
+    ]
+   ],
+   "kwargs": {
+    "skill_quotes": {
+     "005930": {
+      "price": 70000
+     },
+     "000660": {
+      "cur": 0
+     }
+    },
+    "state": {}
+   },
+   "result": {
+    "ok": {
+     "live_equity_candidates": 2,
+     "quote_rows_present": 2,
+     "quote_rows_with_price": 1,
+     "quote_rows_with_activity": 0,
+     "zero_quote_metric_symbols": [
+      "005930",
+      "000660"
+     ]
+    }
+   }
+  },
+  {
+   "fn": "_should_refresh_scanner_features",
+   "args": [],
+   "kwargs": {
+    "state": {},
+    "candidates": [
+     "005930",
+     {
+      "symbol": "000660"
+     },
+     "SPY",
+     "",
+     null,
+     {
+      "symbol": "KRW-BTC"
+     }
+    ],
+    "quote_metric_coverage": {
+     "live_equity_candidates": 2,
+     "quote_rows_with_activity": 0
+    }
+   },
+   "result": {
+    "ok": [
+     false,
+     ""
+    ]
+   }
+  },
+  {
+   "fn": "_summarize_quote_metric_coverage",
+   "args": [
+    [
+     "005930",
+     {
+      "symbol": "000660"
+     },
+     "SPY",
+     "",
+     null,
+     {
+      "symbol": "KRW-BTC"
+     }
+    ]
+   ],
+   "kwargs": {
+    "skill_quotes": {
+     "005930": {
+      "price": 70000
+     },
+     "000660": {
+      "cur": 0
+     }
+    },
+    "state": {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    }
+   },
+   "result": {
+    "ok": {
+     "live_equity_candidates": 2,
+     "quote_rows_present": 2,
+     "quote_rows_with_price": 1,
+     "quote_rows_with_activity": 0,
+     "zero_quote_metric_symbols": [
+      "005930",
+      "000660"
+     ]
+    }
+   }
+  },
+  {
+   "fn": "_should_refresh_scanner_features",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    },
+    "candidates": [
+     "005930",
+     {
+      "symbol": "000660"
+     },
+     "SPY",
+     "",
+     null,
+     {
+      "symbol": "KRW-BTC"
+     }
+    ],
+    "quote_metric_coverage": {
+     "live_equity_candidates": 2,
+     "quote_rows_with_activity": 0
+    }
+   },
+   "result": {
+    "ok": [
+     false,
+     ""
+    ]
+   }
+  },
+  {
+   "fn": "_summarize_quote_metric_coverage",
+   "args": [
+    [
+     "005930",
+     {
+      "symbol": "000660"
+     },
+     "SPY",
+     "",
+     null,
+     {
+      "symbol": "KRW-BTC"
+     }
+    ]
+   ],
+   "kwargs": {
+    "skill_quotes": {
+     "005930": {
+      "price": 70000
+     },
+     "000660": {
+      "cur": 0
+     }
+    },
+    "state": {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    }
+   },
+   "result": {
+    "ok": {
+     "live_equity_candidates": 2,
+     "quote_rows_present": 2,
+     "quote_rows_with_price": 1,
+     "quote_rows_with_activity": 0,
+     "zero_quote_metric_symbols": [
+      "005930",
+      "000660"
+     ]
+    }
+   }
+  },
+  {
+   "fn": "_should_refresh_scanner_features",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    },
+    "candidates": [
+     "005930",
+     {
+      "symbol": "000660"
+     },
+     "SPY",
+     "",
+     null,
+     {
+      "symbol": "KRW-BTC"
+     }
+    ],
+    "quote_metric_coverage": {
+     "live_equity_candidates": 2,
+     "quote_rows_with_activity": 0
+    }
+   },
+   "result": {
+    "ok": [
+     false,
+     ""
+    ]
+   }
+  },
+  {
+   "fn": "_filter_live_equity_candidates",
+   "args": [
+    [
+     {
+      "symbol": "035420",
+      "risk_score": 0.2
+     }
+    ]
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": [
+     [
+      {
+       "symbol": "035420",
+       "risk_score": 0.2
+      }
+     ],
+     {
+      "live_equity_symbol_filter_enabled": true,
+      "live_equity_symbol_excluded_count": 0,
+      "live_equity_symbol_excluded_symbols": [],
+      "candidate_pool_after_live_equity_symbol_filter": 1
+     }
+    ]
+   }
+  },
+  {
+   "fn": "_summarize_quote_metric_coverage",
+   "args": [
+    [
+     {
+      "symbol": "035420",
+      "risk_score": 0.2
+     }
+    ]
+   ],
+   "kwargs": {
+    "skill_quotes": {
+     "005930": {
+      "price": 70000
+     },
+     "000660": {
+      "cur": 0
+     }
+    },
+    "state": {}
+   },
+   "result": {
+    "ok": {
+     "live_equity_candidates": 1,
+     "quote_rows_present": 0,
+     "quote_rows_with_price": 0,
+     "quote_rows_with_activity": 0,
+     "zero_quote_metric_symbols": [
+      "035420"
+     ]
+    }
+   }
+  },
+  {
+   "fn": "_should_refresh_scanner_features",
+   "args": [],
+   "kwargs": {
+    "state": {},
+    "candidates": [
+     {
+      "symbol": "035420",
+      "risk_score": 0.2
+     }
+    ],
+    "quote_metric_coverage": {
+     "live_equity_candidates": 2,
+     "quote_rows_with_activity": 0
+    }
+   },
+   "result": {
+    "ok": [
+     false,
+     ""
+    ]
+   }
+  },
+  {
+   "fn": "_summarize_quote_metric_coverage",
+   "args": [
+    [
+     {
+      "symbol": "035420",
+      "risk_score": 0.2
+     }
+    ]
+   ],
+   "kwargs": {
+    "skill_quotes": {
+     "005930": {
+      "price": 70000
+     },
+     "000660": {
+      "cur": 0
+     }
+    },
+    "state": {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    }
+   },
+   "result": {
+    "ok": {
+     "live_equity_candidates": 1,
+     "quote_rows_present": 0,
+     "quote_rows_with_price": 0,
+     "quote_rows_with_activity": 0,
+     "zero_quote_metric_symbols": [
+      "035420"
+     ]
+    }
+   }
+  },
+  {
+   "fn": "_should_refresh_scanner_features",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "global_sentiment_signal": {
+      "score": 0.4,
+      "status": "ok"
+     },
+     "news_sentiment_signal": {
+      "005930": {
+       "score": -0.3
+      }
+     }
+    },
+    "candidates": [
+     {
+      "symbol": "035420",
+      "risk_score": 0.2
+     }
+    ],
+    "quote_metric_coverage": {
+     "live_equity_candidates": 2,
+     "quote_rows_with_activity": 0
+    }
+   },
+   "result": {
+    "ok": [
+     false,
+     ""
+    ]
+   }
+  },
+  {
+   "fn": "_summarize_quote_metric_coverage",
+   "args": [
+    [
+     {
+      "symbol": "035420",
+      "risk_score": 0.2
+     }
+    ]
+   ],
+   "kwargs": {
+    "skill_quotes": {
+     "005930": {
+      "price": 70000
+     },
+     "000660": {
+      "cur": 0
+     }
+    },
+    "state": {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    }
+   },
+   "result": {
+    "ok": {
+     "live_equity_candidates": 1,
+     "quote_rows_present": 0,
+     "quote_rows_with_price": 0,
+     "quote_rows_with_activity": 0,
+     "zero_quote_metric_symbols": [
+      "035420"
+     ]
+    }
+   }
+  },
+  {
+   "fn": "_should_refresh_scanner_features",
+   "args": [],
+   "kwargs": {
+    "state": {
+     "mock_global_sentiment": 2.5,
+     "news_sentiment": {
+      "005930": 0.7,
+      "000660": "x"
+     }
+    },
+    "candidates": [
+     {
+      "symbol": "035420",
+      "risk_score": 0.2
+     }
+    ],
+    "quote_metric_coverage": {
+     "live_equity_candidates": 2,
+     "quote_rows_with_activity": 0
+    }
+   },
+   "result": {
+    "ok": [
+     false,
+     ""
+    ]
+   }
+  },
+  {
+   "fn": "_stable_unit_hash",
+   "args": [
+    ""
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": 0.0
+   }
+  },
+  {
+   "fn": "_stable_unit_hash",
+   "args": [
+    "005930"
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": 0.3185
+   }
+  },
+  {
+   "fn": "_stable_unit_hash",
+   "args": [
+    "한글-테마"
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": 0.9309
+   }
+  },
+  {
+   "fn": "_stable_unit_hash",
+   "args": [
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": 0.4
+   }
+  },
+  {
+   "fn": "_normalize_priority_list",
+   "args": [
+    null
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": []
+   }
+  },
+  {
+   "fn": "_normalize_priority_list",
+   "args": [
+    []
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": []
+   }
+  },
+  {
+   "fn": "_normalize_priority_list",
+   "args": [
+    [
+     "Momentum",
+     " value ",
+     "",
+     null,
+     "momentum"
+    ]
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": [
+     "momentum",
+     "value"
+    ]
+   }
+  },
+  {
+   "fn": "_normalize_priority_list",
+   "args": [
+    "breakout,theme"
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": []
+   }
+  },
+  {
+   "fn": "_normalize_priority_list",
+   "args": [
+    {
+     "a": 1
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": []
+   }
+  },
+  {
+   "fn": "_calc_reclaim_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": null,
+    "minimum": null
+   },
+   "result": {
+    "ok": 0.5
+   }
+  },
+  {
+   "fn": "_calc_breakout_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": null,
+    "minimum": null
+   },
+   "result": {
+    "ok": 0.5
+   }
+  },
+  {
+   "fn": "_calc_reclaim_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": 1.0,
+    "minimum": 1.0
+   },
+   "result": {
+    "ok": 1.0
+   }
+  },
+  {
+   "fn": "_calc_breakout_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": 1.0,
+    "minimum": 1.0
+   },
+   "result": {
+    "ok": 1.0
+   }
+  },
+  {
+   "fn": "_calc_reclaim_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": 0.98,
+    "minimum": 1.0
+   },
+   "result": {
+    "ok": 0.9933333333333333
+   }
+  },
+  {
+   "fn": "_calc_breakout_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": 0.98,
+    "minimum": 1.0
+   },
+   "result": {
+    "ok": 0.0
+   }
+  },
+  {
+   "fn": "_calc_reclaim_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": "x",
+    "minimum": 1
+   },
+   "result": {
+    "exc": "ValueError",
+    "msg": "could not convert string to float: 'x'"
+   }
+  },
+  {
+   "fn": "_calc_breakout_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": "x",
+    "minimum": 1
+   },
+   "result": {
+    "exc": "ValueError",
+    "msg": "could not convert string to float: 'x'"
+   }
+  },
+  {
+   "fn": "_calc_reclaim_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": 3,
+    "minimum": 0
+   },
+   "result": {
+    "ok": 1.0
+   }
+  },
+  {
+   "fn": "_calc_breakout_proximity",
+   "args": [],
+   "kwargs": {
+    "actual": 3,
+    "minimum": 0
+   },
+   "result": {
+    "ok": 1.0
+   }
+  },
+  {
+   "fn": "_scanner_chart_fit_from_entry_result",
+   "args": [
+    {}
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "available": false,
+     "chart_context_score": 0.5,
+     "exit_risk_score": 0.0,
+     "late_entry_risk": "",
+     "soft_penalty": 0.0,
+     "components": {}
+    }
+   }
+  },
+  {
+   "fn": "_scanner_chart_fit_from_entry_result",
+   "args": [
+    {
+     "chart_structure_features": {
+      "human_chart_context": {
+       "exit_risk_score": 0.7,
+       "entry_chart_score": 0.4
+      }
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "available": false,
+     "chart_context_score": 0.5,
+     "exit_risk_score": 0.0,
+     "late_entry_risk": "",
+     "soft_penalty": 0.0,
+     "components": {}
+    }
+   }
+  },
+  {
+   "fn": "_scanner_chart_fit_from_entry_result",
+   "args": [
+    {
+     "chart_structure_features": {
+      "human_chart_context": "bad"
+     }
+    }
+   ],
+   "kwargs": {},
+   "result": {
+    "ok": {
+     "available": false,
+     "chart_context_score": 0.5,
+     "exit_risk_score": 0.0,
+     "late_entry_risk": "",
+     "soft_penalty": 0.0,
+     "components": {}
+    }
+   }
+  },
+  {
+   "fn": "_scanner_chart_fit_from_entry_result",
+   "args": [
+    null
+   ],
+   "kwargs": {},
+   "result": {
+    "exc": "AttributeError",
+    "msg": "'NoneType' object has no attribute 'get'"
+   }
+  },
+  {
+   "fn": "_scanner_macro_focus",
+   "args": [],
+   "kwargs": {
+    "playbook": "",
+    "scanner_priority": null,
+    "risk_tone": "",
+    "trade_aggressiveness": ""
+   },
+   "result": {
+    "ok": {
+     "trend_alignment": 1.0,
+     "relative_strength": 1.0,
+     "adx_trend": 1.0,
+     "volume_accumulation": 1.0,
+     "breakout_base": 1.0,
+     "risk_balance": 1.0
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {},
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "",
+    "scanner_priority": null,
+    "risk_tone": "",
+    "trade_aggressiveness": "",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.5,
+     "scanner_macro_chart_fit_bias": 0.0,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only_insufficient_feature_coverage",
+     "scanner_macro_chart_fit_components": {
+      "feature_coverage_count": 0,
+      "focus": {
+       "trend_alignment": 1.0,
+       "relative_strength": 1.0,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.0,
+       "breakout_base": 1.0,
+       "risk_balance": 1.0
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.0,
+      "relative_strength": 1.0,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.0,
+      "breakout_base": 1.0,
+      "risk_balance": 1.0
+     }
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {
+     "return20": 0.05,
+     "ma20_gap": 0.02,
+     "adx14": 30,
+     "rolling_drawdown20": -0.04
+    },
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "",
+    "scanner_priority": null,
+    "risk_tone": "",
+    "trade_aggressiveness": "",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.61024,
+     "scanner_macro_chart_fit_bias": 0.0132288,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only",
+     "scanner_macro_chart_fit_components": {
+      "trend_alignment_score": 0.516,
+      "relative_strength_score": 0.8,
+      "adx_trend_score": 0.46499999999999997,
+      "volume_accumulation_score": 0.7,
+      "breakout_base_score": 0.3416666666666667,
+      "risk_balance_score": 0.9425,
+      "overextension_risk": 0.1,
+      "rolling_drawdown20": 0.04,
+      "focus": {
+       "trend_alignment": 1.0,
+       "relative_strength": 1.0,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.0,
+       "breakout_base": 1.0,
+       "risk_balance": 1.0
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.0,
+      "relative_strength": 1.0,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.0,
+      "breakout_base": 1.0,
+      "risk_balance": 1.0
+     }
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {
+     "return20": -0.2,
+     "ma20_gap": 0.2,
+     "ma60_gap": 0.1,
+     "ma120_gap": 0.1,
+     "trend_strength": 0.6,
+     "adx14": 12,
+     "volume_spike20": 3,
+     "cross_section_rank": 0.9,
+     "rolling_drawdown20": -0.3,
+     "volatility20": 0.09,
+     "gap_pct": 0.05
+    },
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "",
+    "scanner_priority": null,
+    "risk_tone": "",
+    "trade_aggressiveness": "",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.58624,
+     "scanner_macro_chart_fit_bias": 0.010348799999999998,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only",
+     "scanner_macro_chart_fit_components": {
+      "trend_alignment_score": 0.516,
+      "relative_strength_score": 0.8,
+      "adx_trend_score": 0.46499999999999997,
+      "volume_accumulation_score": 0.7,
+      "breakout_base_score": 0.375,
+      "risk_balance_score": 0.6925,
+      "overextension_risk": 1.0,
+      "rolling_drawdown20": 0.3,
+      "focus": {
+       "trend_alignment": 1.0,
+       "relative_strength": 1.0,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.0,
+       "breakout_base": 1.0,
+       "risk_balance": 1.0
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.0,
+      "relative_strength": 1.0,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.0,
+      "breakout_base": 1.0,
+      "risk_balance": 1.0
+     }
+    }
+   }
+  },
+  {
+   "fn": "_scanner_macro_focus",
+   "args": [],
+   "kwargs": {
+    "playbook": "breakout",
+    "scanner_priority": [
+     "momentum",
+     "theme"
+    ],
+    "risk_tone": "risk_off",
+    "trade_aggressiveness": "high"
+   },
+   "result": {
+    "ok": {
+     "trend_alignment": 1.0,
+     "relative_strength": 1.2000000000000002,
+     "adx_trend": 1.0,
+     "volume_accumulation": 1.15,
+     "breakout_base": 1.4500000000000002,
+     "risk_balance": 1.0
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {},
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "breakout",
+    "scanner_priority": [
+     "momentum",
+     "theme"
+    ],
+    "risk_tone": "risk_off",
+    "trade_aggressiveness": "high",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.5,
+     "scanner_macro_chart_fit_bias": 0.0,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only_insufficient_feature_coverage",
+     "scanner_macro_chart_fit_components": {
+      "feature_coverage_count": 0,
+      "focus": {
+       "trend_alignment": 1.0,
+       "relative_strength": 1.2000000000000002,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.15,
+       "breakout_base": 1.4500000000000002,
+       "risk_balance": 1.0
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.0,
+      "relative_strength": 1.2000000000000002,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.15,
+      "breakout_base": 1.4500000000000002,
+      "risk_balance": 1.0
+     }
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {
+     "return20": 0.05,
+     "ma20_gap": 0.02,
+     "adx14": 30,
+     "rolling_drawdown20": -0.04
+    },
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "breakout",
+    "scanner_priority": [
+     "momentum",
+     "theme"
+    ],
+    "risk_tone": "risk_off",
+    "trade_aggressiveness": "high",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.5990490797546012,
+     "scanner_macro_chart_fit_bias": 0.011885889570552144,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only",
+     "scanner_macro_chart_fit_components": {
+      "trend_alignment_score": 0.516,
+      "relative_strength_score": 0.8,
+      "adx_trend_score": 0.46499999999999997,
+      "volume_accumulation_score": 0.7,
+      "breakout_base_score": 0.3416666666666667,
+      "risk_balance_score": 0.9425,
+      "overextension_risk": 0.1,
+      "rolling_drawdown20": 0.04,
+      "focus": {
+       "trend_alignment": 1.0,
+       "relative_strength": 1.2000000000000002,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.15,
+       "breakout_base": 1.4500000000000002,
+       "risk_balance": 1.0
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.0,
+      "relative_strength": 1.2000000000000002,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.15,
+      "breakout_base": 1.4500000000000002,
+      "risk_balance": 1.0
+     }
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {
+     "return20": -0.2,
+     "ma20_gap": 0.2,
+     "ma60_gap": 0.1,
+     "ma120_gap": 0.1,
+     "trend_strength": 0.6,
+     "adx14": 12,
+     "volume_spike20": 3,
+     "cross_section_rank": 0.9,
+     "rolling_drawdown20": -0.3,
+     "volatility20": 0.09,
+     "gap_pct": 0.05
+    },
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "breakout",
+    "scanner_priority": [
+     "momentum",
+     "theme"
+    ],
+    "risk_tone": "risk_off",
+    "trade_aggressiveness": "high",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.5803812445223488,
+     "scanner_macro_chart_fit_bias": 0.009645749342681862,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only",
+     "scanner_macro_chart_fit_components": {
+      "trend_alignment_score": 0.516,
+      "relative_strength_score": 0.8,
+      "adx_trend_score": 0.46499999999999997,
+      "volume_accumulation_score": 0.7,
+      "breakout_base_score": 0.375,
+      "risk_balance_score": 0.6925,
+      "overextension_risk": 1.0,
+      "rolling_drawdown20": 0.3,
+      "focus": {
+       "trend_alignment": 1.0,
+       "relative_strength": 1.2000000000000002,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.15,
+       "breakout_base": 1.4500000000000002,
+       "risk_balance": 1.0
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.0,
+      "relative_strength": 1.2000000000000002,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.15,
+      "breakout_base": 1.4500000000000002,
+      "risk_balance": 1.0
+     }
+    }
+   }
+  },
+  {
+   "fn": "_scanner_macro_focus",
+   "args": [],
+   "kwargs": {
+    "playbook": "pullback",
+    "scanner_priority": [
+     "value"
+    ],
+    "risk_tone": "neutral",
+    "trade_aggressiveness": "low"
+   },
+   "result": {
+    "ok": {
+     "trend_alignment": 1.2,
+     "relative_strength": 1.0,
+     "adx_trend": 1.0,
+     "volume_accumulation": 1.0,
+     "breakout_base": 0.9,
+     "risk_balance": 1.2999999999999998
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {},
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "pullback",
+    "scanner_priority": [
+     "value"
+    ],
+    "risk_tone": "neutral",
+    "trade_aggressiveness": "low",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.5,
+     "scanner_macro_chart_fit_bias": 0.0,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only_insufficient_feature_coverage",
+     "scanner_macro_chart_fit_components": {
+      "feature_coverage_count": 0,
+      "focus": {
+       "trend_alignment": 1.2,
+       "relative_strength": 1.0,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.0,
+       "breakout_base": 0.9,
+       "risk_balance": 1.2999999999999998
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.2,
+      "relative_strength": 1.0,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.0,
+      "breakout_base": 0.9,
+      "risk_balance": 1.2999999999999998
+     }
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {
+     "return20": 0.05,
+     "ma20_gap": 0.02,
+     "adx14": 30,
+     "rolling_drawdown20": -0.04
+    },
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "pullback",
+    "scanner_priority": [
+     "value"
+    ],
+    "risk_tone": "neutral",
+    "trade_aggressiveness": "low",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.6217523452157598,
+     "scanner_macro_chart_fit_bias": 0.01461028142589118,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only",
+     "scanner_macro_chart_fit_components": {
+      "trend_alignment_score": 0.516,
+      "relative_strength_score": 0.8,
+      "adx_trend_score": 0.46499999999999997,
+      "volume_accumulation_score": 0.7,
+      "breakout_base_score": 0.3416666666666667,
+      "risk_balance_score": 0.9425,
+      "overextension_risk": 0.1,
+      "rolling_drawdown20": 0.04,
+      "focus": {
+       "trend_alignment": 1.2,
+       "relative_strength": 1.0,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.0,
+       "breakout_base": 0.9,
+       "risk_balance": 1.2999999999999998
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.2,
+      "relative_strength": 1.0,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.0,
+      "breakout_base": 0.9,
+      "risk_balance": 1.2999999999999998
+     }
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {
+     "return20": -0.2,
+     "ma20_gap": 0.2,
+     "ma60_gap": 0.1,
+     "ma120_gap": 0.1,
+     "trend_strength": 0.6,
+     "adx14": 12,
+     "volume_spike20": 3,
+     "cross_section_rank": 0.9,
+     "rolling_drawdown20": -0.3,
+     "volatility20": 0.09,
+     "gap_pct": 0.05
+    },
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "pullback",
+    "scanner_priority": [
+     "value"
+    ],
+    "risk_tone": "neutral",
+    "trade_aggressiveness": "low",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.5902326454033772,
+     "scanner_macro_chart_fit_bias": 0.01082791744840526,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only",
+     "scanner_macro_chart_fit_components": {
+      "trend_alignment_score": 0.516,
+      "relative_strength_score": 0.8,
+      "adx_trend_score": 0.46499999999999997,
+      "volume_accumulation_score": 0.7,
+      "breakout_base_score": 0.375,
+      "risk_balance_score": 0.6925,
+      "overextension_risk": 1.0,
+      "rolling_drawdown20": 0.3,
+      "focus": {
+       "trend_alignment": 1.2,
+       "relative_strength": 1.0,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.0,
+       "breakout_base": 0.9,
+       "risk_balance": 1.2999999999999998
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.2,
+      "relative_strength": 1.0,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.0,
+      "breakout_base": 0.9,
+      "risk_balance": 1.2999999999999998
+     }
+    }
+   }
+  },
+  {
+   "fn": "_scanner_macro_focus",
+   "args": [],
+   "kwargs": {
+    "playbook": "defensive",
+    "scanner_priority": "x",
+    "risk_tone": "risk_on",
+    "trade_aggressiveness": "balanced"
+   },
+   "result": {
+    "ok": {
+     "trend_alignment": 1.1,
+     "relative_strength": 1.0,
+     "adx_trend": 1.0,
+     "volume_accumulation": 1.0,
+     "breakout_base": 1.0,
+     "risk_balance": 1.25
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {},
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "defensive",
+    "scanner_priority": "x",
+    "risk_tone": "risk_on",
+    "trade_aggressiveness": "balanced",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.5,
+     "scanner_macro_chart_fit_bias": 0.0,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only_insufficient_feature_coverage",
+     "scanner_macro_chart_fit_components": {
+      "feature_coverage_count": 0,
+      "focus": {
+       "trend_alignment": 1.1,
+       "relative_strength": 1.0,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.0,
+       "breakout_base": 1.0,
+       "risk_balance": 1.25
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.1,
+      "relative_strength": 1.0,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.0,
+      "breakout_base": 1.0,
+      "risk_balance": 1.25
+     }
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {
+     "return20": 0.05,
+     "ma20_gap": 0.02,
+     "adx14": 30,
+     "rolling_drawdown20": -0.04
+    },
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "defensive",
+    "scanner_priority": "x",
+    "risk_tone": "risk_on",
+    "trade_aggressiveness": "balanced",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.6175512333965845,
+     "scanner_macro_chart_fit_bias": 0.014106148007590136,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only",
+     "scanner_macro_chart_fit_components": {
+      "trend_alignment_score": 0.516,
+      "relative_strength_score": 0.8,
+      "adx_trend_score": 0.46499999999999997,
+      "volume_accumulation_score": 0.7,
+      "breakout_base_score": 0.3416666666666667,
+      "risk_balance_score": 0.9425,
+      "overextension_risk": 0.1,
+      "rolling_drawdown20": 0.04,
+      "focus": {
+       "trend_alignment": 1.1,
+       "relative_strength": 1.0,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.0,
+       "breakout_base": 1.0,
+       "risk_balance": 1.25
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.1,
+      "relative_strength": 1.0,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.0,
+      "breakout_base": 1.0,
+      "risk_balance": 1.25
+     }
+    }
+   }
+  },
+  {
+   "fn": "_compute_scanner_macro_chart_fit",
+   "args": [],
+   "kwargs": {
+    "feature_row": {
+     "return20": -0.2,
+     "ma20_gap": 0.2,
+     "ma60_gap": 0.1,
+     "ma120_gap": 0.1,
+     "trend_strength": 0.6,
+     "adx14": 12,
+     "volume_spike20": 3,
+     "cross_section_rank": 0.9,
+     "rolling_drawdown20": -0.3,
+     "volatility20": 0.09,
+     "gap_pct": 0.05
+    },
+    "ma_alignment_component": 0.6,
+    "trend_component": 0.4,
+    "adx_component": 0.5,
+    "momentum_component": 0.3,
+    "volume_surge_component": 0.7,
+    "vwap_alignment_component": 0.2,
+    "cross_section_rank_component": 0.8,
+    "volatility_penalty": 0.1,
+    "gap_penalty": 0.05,
+    "playbook": "defensive",
+    "scanner_priority": "x",
+    "risk_tone": "risk_on",
+    "trade_aggressiveness": "balanced",
+    "bias_cap": 0.06
+   },
+   "result": {
+    "ok": {
+     "scanner_macro_chart_fit_score": 0.5876650853889943,
+     "scanner_macro_chart_fit_bias": 0.010519810246679317,
+     "scanner_macro_chart_fit_authority": "soft_rank_bias_only",
+     "scanner_macro_chart_fit_components": {
+      "trend_alignment_score": 0.516,
+      "relative_strength_score": 0.8,
+      "adx_trend_score": 0.46499999999999997,
+      "volume_accumulation_score": 0.7,
+      "breakout_base_score": 0.375,
+      "risk_balance_score": 0.6925,
+      "overextension_risk": 1.0,
+      "rolling_drawdown20": 0.3,
+      "focus": {
+       "trend_alignment": 1.1,
+       "relative_strength": 1.0,
+       "adx_trend": 1.0,
+       "volume_accumulation": 1.0,
+       "breakout_base": 1.0,
+       "risk_balance": 1.25
+      }
+     },
+     "scanner_macro_chart_fit_focus": {
+      "trend_alignment": 1.1,
+      "relative_strength": 1.0,
+      "adx_trend": 1.0,
+      "volume_accumulation": 1.0,
+      "breakout_base": 1.0,
+      "risk_balance": 1.25
+     }
+    }
+   }
+  }
+ ]
+}
