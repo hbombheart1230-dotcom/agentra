@@ -33,18 +33,61 @@ BUILTINS = set(dir(builtins))
 FORBIDDEN = ("graphs.nodes.strategist_node", "graphs.nodes.scanner_node", "graphs.nodes.monitor_node", "graphs.nodes")
 
 
-def _owner_file(owner):
-    """Ledger owner path, following a HYBRID-7 V3 module-identity shim (V1-052/V2-053) to its single canonical body.
+# HYBRID-7 V3 identity shims accepted by this gate (versioned allowlist, V2-053 / rework 054). The canonical path is
+# taken ONLY from this table, never from the shim text. Any other owner keeps the original behavior (no auto-follow).
+SHIM_ALLOWLIST_VERSION = "V2-053/054"
+SHIM_ALLOWLIST = {
+    "libs/runtime/scanner/feature_coverage.py": "libs/agents/scanner/context/feature_coverage.py",
+    "libs/runtime/scanner/sentiment_inputs.py": "libs/agents/scanner/context/sentiment_inputs.py",
+    "libs/runtime/scanner/scoring_inputs.py": "libs/agents/scanner/context/scoring_inputs.py",
+    "libs/runtime/scanner/macro_focus.py": "libs/agents/scanner/context/macro_focus.py",
+    "libs/runtime/scanner/macro_chart_fit.py": "libs/agents/scanner/context/macro_chart_fit.py",
+}
 
-    A shim is accepted only in its exact form (no code, `from <pkg> import <mod> as _canonical` +
-    `sys.modules[__name__] = _canonical`); the gate then checks the one real body, never a copy."""
-    import re
-    src = (ROOT / owner).read_text(encoding="utf-8")
-    if "_sys.modules[__name__] = _canonical" in src:
-        m = re.search(r"^from ([\w.]+) import (\w+) as _canonical$", src, flags=re.M)
-        assert m and "def " not in src and "class " not in src, owner
-        return (m.group(1) + "." + m.group(2)).replace(".", "/") + ".py"
-    return owner
+
+def _verify_identity_shim_source(src, legacy, canonical):
+    """Fail-closed source-AST check of an allowlisted shim (never imports/executes it).
+
+    Accepted module body: an optional docstring, then EXACTLY
+        import sys as _sys
+        from libs.agents.scanner.context import <basename> as _canonical
+        _sys.modules[__name__] = _canonical
+    Raises AssertionError on anything else (extra statement, wrong target, alias, order, syntax)."""
+    try:
+        tree = ast.parse(src)
+    except SyntaxError as exc:
+        raise AssertionError(f"{legacy}: shim is not valid Python: {exc}") from None
+    body = list(tree.body)
+    if body and isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Constant) \
+            and isinstance(body[0].value.value, str):
+        body = body[1:]
+    assert len(body) == 3, f"{legacy}: shim must contain exactly 3 statements after the docstring, got {len(body)}"
+    imp, frm, asg = body
+    assert type(imp) is ast.Import and len(imp.names) == 1 and imp.names[0].name == "sys" \
+        and imp.names[0].asname == "_sys", f"{legacy}: statement 1 must be `import sys as _sys`"
+    pkg, base = canonical[:-3].rsplit("/", 1)
+    assert type(frm) is ast.ImportFrom and frm.level == 0 and frm.module == pkg.replace("/", ".") \
+        and len(frm.names) == 1 and frm.names[0].name == base and frm.names[0].asname == "_canonical", \
+        f"{legacy}: statement 2 must be `from {pkg.replace('/', '.')} import {base} as _canonical`"
+    assert base == legacy.rsplit("/", 1)[1][:-3], f"{legacy}: canonical basename differs from legacy basename"
+    assert type(asg) is ast.Assign and len(asg.targets) == 1, f"{legacy}: statement 3 must be one assignment"
+    tgt, val = asg.targets[0], asg.value
+    assert type(tgt) is ast.Subscript and type(tgt.value) is ast.Attribute and type(tgt.value.value) is ast.Name \
+        and tgt.value.value.id == "_sys" and tgt.value.attr == "modules" and type(tgt.slice) is ast.Name \
+        and tgt.slice.id == "__name__", f"{legacy}: assignment target must be `_sys.modules[__name__]`"
+    assert type(val) is ast.Name and val.id == "_canonical", f"{legacy}: assigned value must be `_canonical`"
+    return canonical
+
+
+def _owner_file(owner):
+    """Ledger owner path. Allowlisted legacy owners must be a strictly verified identity shim and resolve to the
+    allowlisted canonical body; every other owner is returned unchanged (original Wave B behavior)."""
+    if owner not in SHIM_ALLOWLIST:
+        return owner
+    canonical = SHIM_ALLOWLIST[owner]
+    _verify_identity_shim_source((ROOT / owner).read_text(encoding="utf-8"), owner, canonical)
+    assert (ROOT / canonical).is_file(), canonical
+    return canonical
 
 
 def _base_source(path):
