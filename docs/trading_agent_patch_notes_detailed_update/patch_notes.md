@@ -3514,3 +3514,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 기존 전체 회귀의 37개 FAIL/ERROR가 BASE에서도 같다는 주장은 테스트 ID·명령·로그 비교 자료 부족으로 **BLOCKED**. 기저 결함으로 확정하지 않음.
 - `docs/refactor/work_orders/P15-V2-053-REWORK-054.md` 작업 하나만 활성화. 수정은 AST fail-closed 게이트 + 음성 테스트 + 동일 환경 BASE/FINAL 실패 매니페스트 + CURRENT 문서 정정 범위로 제한.
 - 이 커밋은 코드 실행 경로 변경 없이 지시서·사용자 UI 노트만 업데이트. V2 최종 승인, V3 구현, main 병합 모두 보류.
+
+## 2026-10-16 · P1.5 V2-053 Rework 054
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING · SAFETY · DOCS
+
+- 변경: Wave B moved-body gate가 허용목록의 V2 identity shim 5개만 따라가며, shim 소스 AST를 import 없이 정확히 검증합니다. 추가 실행문·잘못된 import 대상·순서 변경은 모두 실패합니다.
+- 검증: Codex 반례 3개를 포함한 22개 변이 전부 거부(기존 헬퍼는 12개 통과), Wave B 768/768 유지. V2 이전/재작업 트리를 같은 명령으로 광역 실행한 결과 FINAL 전용 실패 0, 원인 상이 0, 동일 서명 37, BASE 전용 1(초 경계 flake).
+- 상태: Scanner 구현·shim·랭킹·거래 권한 변경 없음. V2 승인과 V3는 Codex 델타 감사 대기.

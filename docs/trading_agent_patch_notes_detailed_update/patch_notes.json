@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 278,
+  "entry_count": 279,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7384,6 +7384,29 @@
         "docs/refactor/work_orders/P15-V2-053-REWORK-054.md",
         "docs/refactor/evidence/P15-V2-053-CODEX-FAIL-2026-10-16.md",
         "docs/daily_patch/2026-10-16_p15_v2_codex_fail_rework_054.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 V2-053 Rework 054",
+      "title": "Fail-closed Wave B shim verifier and proven broad-test baseline comparison",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "TESTING",
+        "SAFETY",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "The Wave B moved-body gate now follows only the five allowlisted V2 identity shims and verifies their source AST exactly without importing them; any extra statement, wrong import target or reordered shim fails. A broad offline run of the pre-V2 and reworked trees with the same command shows no new or changed failures.",
+      "details": [
+        "22 disposable mutations, including the three Codex counterexamples, are rejected (the old helper accepted 12); Wave B still passes 768/768.",
+        "Broad comparison: FINAL-only 0, same ID with different cause 0, identical signatures 37; one BASE-only clock-second flake. The 37 remain pre-existing debt.",
+        "No Scanner implementation, shim, ranking, trading or protected runtime change; V2 acceptance and V3 remain pending the Codex delta audit."
+      ],
+      "impact": "Tests and evidence only.",
+      "sources": [
+        "docs/refactor/evidence/P15-V2-053-REWORK-054-CLAUDE.md",
+        "docs/refactor/evidence/P15-V2-053-REWORK-054-broad-failure-manifest.json"
       ]
     }
   ]

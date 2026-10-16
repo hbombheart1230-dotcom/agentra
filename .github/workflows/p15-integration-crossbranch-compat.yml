@@ -40,6 +40,7 @@ jobs:
             tests/test_trade_report_ai.py \
             tests/test_p166_v1052_candidate_risk_migration.py \
             tests/test_p167_v2053_scanner_context_migration.py \
+            tests/test_p168_wave_b_shim_verifier_negatives.py \
             tests/test_scanner_candidate_risk.py \
             tests/test_operator_ui.py \
             --deselect tests/test_operator_ui.py::test_operator_brief_input_paths_fallback_to_trade_root_not_reports_dir
