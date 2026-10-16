@@ -61,21 +61,27 @@ def _verify_identity_shim_source(src, legacy, canonical):
     if body and isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Constant) \
             and isinstance(body[0].value.value, str):
         body = body[1:]
-    assert len(body) == 3, f"{legacy}: shim must contain exactly 3 statements after the docstring, got {len(body)}"
+    if len(body) != 3:
+        raise AssertionError(f"{legacy}: shim must contain exactly 3 statements after the docstring, got {len(body)}")
     imp, frm, asg = body
-    assert type(imp) is ast.Import and len(imp.names) == 1 and imp.names[0].name == "sys" \
-        and imp.names[0].asname == "_sys", f"{legacy}: statement 1 must be `import sys as _sys`"
+    if not (type(imp) is ast.Import and len(imp.names) == 1 and imp.names[0].name == "sys"
+            and imp.names[0].asname == "_sys"):
+        raise AssertionError(f"{legacy}: statement 1 must be `import sys as _sys`")
     pkg, base = canonical[:-3].rsplit("/", 1)
-    assert type(frm) is ast.ImportFrom and frm.level == 0 and frm.module == pkg.replace("/", ".") \
-        and len(frm.names) == 1 and frm.names[0].name == base and frm.names[0].asname == "_canonical", \
-        f"{legacy}: statement 2 must be `from {pkg.replace('/', '.')} import {base} as _canonical`"
-    assert base == legacy.rsplit("/", 1)[1][:-3], f"{legacy}: canonical basename differs from legacy basename"
-    assert type(asg) is ast.Assign and len(asg.targets) == 1, f"{legacy}: statement 3 must be one assignment"
+    if not (type(frm) is ast.ImportFrom and frm.level == 0 and frm.module == pkg.replace("/", ".")
+            and len(frm.names) == 1 and frm.names[0].name == base and frm.names[0].asname == "_canonical"):
+        raise AssertionError(f"{legacy}: statement 2 must be `from {pkg.replace('/', '.')} import {base} as _canonical`")
+    if base != legacy.rsplit("/", 1)[1][:-3]:
+        raise AssertionError(f"{legacy}: canonical basename differs from legacy basename")
+    if not (type(asg) is ast.Assign and len(asg.targets) == 1):
+        raise AssertionError(f"{legacy}: statement 3 must be one assignment")
     tgt, val = asg.targets[0], asg.value
-    assert type(tgt) is ast.Subscript and type(tgt.value) is ast.Attribute and type(tgt.value.value) is ast.Name \
-        and tgt.value.value.id == "_sys" and tgt.value.attr == "modules" and type(tgt.slice) is ast.Name \
-        and tgt.slice.id == "__name__", f"{legacy}: assignment target must be `_sys.modules[__name__]`"
-    assert type(val) is ast.Name and val.id == "_canonical", f"{legacy}: assigned value must be `_canonical`"
+    if not (type(tgt) is ast.Subscript and type(tgt.value) is ast.Attribute and type(tgt.value.value) is ast.Name
+            and tgt.value.value.id == "_sys" and tgt.value.attr == "modules" and type(tgt.slice) is ast.Name
+            and tgt.slice.id == "__name__"):
+        raise AssertionError(f"{legacy}: assignment target must be `_sys.modules[__name__]`")
+    if not (type(val) is ast.Name and val.id == "_canonical"):
+        raise AssertionError(f"{legacy}: assigned value must be `_canonical`")
     return canonical
 
 
@@ -86,7 +92,8 @@ def _owner_file(owner):
         return owner
     canonical = SHIM_ALLOWLIST[owner]
     _verify_identity_shim_source((ROOT / owner).read_text(encoding="utf-8"), owner, canonical)
-    assert (ROOT / canonical).is_file(), canonical
+    if not (ROOT / canonical).is_file():
+        raise AssertionError(canonical)
     return canonical
 
 

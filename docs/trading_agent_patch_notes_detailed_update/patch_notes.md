@@ -3522,3 +3522,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 변경: Wave B moved-body gate가 허용목록의 V2 identity shim 5개만 따라가며, shim 소스 AST를 import 없이 정확히 검증합니다. 추가 실행문·잘못된 import 대상·순서 변경은 모두 실패합니다.
 - 검증: Codex 반례 3개를 포함한 22개 변이 전부 거부(기존 헬퍼는 12개 통과), Wave B 768/768 유지. V2 이전/재작업 트리를 같은 명령으로 광역 실행한 결과 FINAL 전용 실패 0, 원인 상이 0, 동일 서명 37, BASE 전용 1(초 경계 flake).
 - 상태: Scanner 구현·shim·랭킹·거래 권한 변경 없음. V2 승인과 V3는 Codex 델타 감사 대기.
+
+
+## 2026-10-16 ? P1.5 Rework 054 Optimized Verifier and Observed Failure Evidence
+**Stage:** Architecture and Maintainability
+**Tags:** TESTING ? SAFETY ? DOCS
+
+- Explicit raises keep shim validation active under Python -O. Original 31 tests retained; optimized-child regression rejects all 21 source mutations including the three Codex counterexamples.
+- Preserved JUnit provides exception/location for BASE 38 and FINAL 37 records, with 37 equal observed signatures. No broad reruns. Raw hashes identify retained evidence; complete semantic causes and original SHA/environment provenance are not established and remain BLOCKED.
+- Codex implementation supplement under user instruction; a separate independent 054 delta audit is required. Scanner implementation/shims and protected runtime paths unchanged. V3 BLOCKED.

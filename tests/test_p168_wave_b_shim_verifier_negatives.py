@@ -6,6 +6,7 @@ disk is modified) must all be rejected, including the three Codex counterexample
 """
 import importlib.util
 import sys
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -98,3 +99,26 @@ def test_verifier_does_not_import_the_shim():
         sys.modules.pop(m)
     WB._verify_identity_shim_source(GOOD, LEGACY, CANON)
     assert "libs.runtime.scanner.macro_focus" not in sys.modules
+
+
+def test_optimized_python_rejects_all_mutations_without_assert_statements():
+    # Import plain source under -O, outside pytest assertion rewriting. Explicit
+    # raises in the child also ensure the test itself cannot pass through -O.
+    code = """
+import runpy
+ns = runpy.run_path('tests/test_p168_wave_b_shim_verifier_negatives.py')
+wb = ns['WB']
+for legacy, canonical in wb.SHIM_ALLOWLIST.items():
+    wb._verify_identity_shim_source((ns['ROOT'] / legacy).read_text(encoding='utf-8'), legacy, canonical)
+for name, source in ns['MUTATIONS'].items():
+    try:
+        wb._verify_identity_shim_source(source, ns['LEGACY'], ns['CANON'])
+    except AssertionError:
+        continue
+    raise RuntimeError('optimized verifier accepted ' + name)
+print('OPTIMIZED_REJECTED=' + str(len(ns['MUTATIONS'])))
+"""
+    result = subprocess.run([sys.executable, "-O", "-c", code], cwd=ROOT,
+                            capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert result.stdout.strip() == f"OPTIMIZED_REJECTED={len(MUTATIONS)}"

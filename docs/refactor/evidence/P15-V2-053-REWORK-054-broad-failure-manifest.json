@@ -1,238 +1,353 @@
 {
  "base": {
   "tests/apps/api/test_isolation.py::test_api_routes_are_get_only": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/apps/api/test_isolation.py:77",
    "msg": "assert []",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/apps/api/test_isolation.py:77",
+   "type": "AssertionError"
   },
   "tests/test_closeout_memory_bounds.py::test_daily_summary_payload_identical_with_streamed_and_materialised_rows": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_closeout_memory_bounds.py:379",
    "msg": "AssertionError: assert {'schema_vers...nt': 151, ...} == {'schema_vers...nt': 151, ...}",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_closeout_memory_bounds.py:379",
+   "type": "AssertionError"
   },
   "tests/test_diagnostic_queries_work_order01.py::test_all_four_public_cli_forms_match[json-query_m25_notification_events]": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "<PYTHON>/Lib/json/__init__.py:345",
    "msg": "TypeError: the JSON object must be str, bytes or bytearray, not NoneType",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_diagnostic_queries_work_order01.py:140",
+   "type": "TypeError"
   },
   "tests/test_step5b_fix4.py::test_t1_real_executor_post_response_parser_exception_returns_unknown_not_raise": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:156",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t1_real_executor_token_invalid_check_exception_also_returns_unknown_not_raise": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:176",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t2_runner_blocks_second_mutation_after_real_post_response_parse_exception": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:224",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t3_upper_limit_cancel_real_post_response_parser_exception": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_step5b_fix4.py:263",
    "msg": "assert 0 == 1",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:263",
+   "type": "AssertionError"
   },
   "tests/test_step5b_fix4.py::test_t4_unfilled_order_recovery_cancel_real_post_response_parser_exception": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_step5b_fix4.py:305",
    "msg": "assert 0 == 1",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:305",
+   "type": "AssertionError"
   },
   "tests/test_step5b_fix4.py::test_t5_explicit_accepted_unaffected_by_fix4": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:335",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t6_explicit_rejected_unaffected_by_fix4": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:343",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t8_post_dispatch_transport_failure_is_unknown_one_physical_call": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:371",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_12_opening_shadow_entry_and_forward_price_chains_differ": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\opening_rank1_shadow\\\\<v>-09-11\\\\opening_rank1_shadow",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/opening_rank1_shadow/2026-09-11/opening_rank1_shadow_daily.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_14_opening_shadow_d1_d3_d5_bounded_sessions_and_insufficient_future": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\offline_alpha\\\\opening_rank1_longitudinal\\\\opening_ra",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/offline_alpha/opening_rank1_longitudinal/opening_rank1_longitudinal.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_1_horizon_exit_exact_price_chain_and_session_close_fallback": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\trades\\\\<v>-05-15\\\\<v>\\\\TRD_<v>_<v>_01\\\\reports\\\\post_exit_shadow",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/trades/2026-05-15/0900/TRD_20260515_066570_01/reports/post_exit_shadow_recap.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_8_q11_zero_offset_eod_no_excursion_and_cost_semantics": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\opportunity_engine_shadow\\\\<v>-09-11\\\\opportunity_eng",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/opportunity_engine_shadow/2026-09-11/opportunity_engine_virtual_trades.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_9_q12_shared_engine_reuse_produces_all_seven_checkpoints": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\baseline_btc_woori_tech\\\\<v>-09-11\\\\baseline_btc_woor",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/baseline_btc_woori_tech/2026-09-11/baseline_btc_woori_forward_returns.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculators_2_3_4_q10_semiconductor_reference_fallback_and_exact_windows": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\baseline_samsung_hynix\\\\<v>-09-11\\\\baseline_samsung_h",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/baseline_samsung_hynix/2026-09-11/baseline_samsung_hynix_forward_returns.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculators_5_6_q10_index_single_authorities_and_collector_three_states": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\baseline_samsung_hynix\\\\<v>-09-11\\\\q10_forward_valida",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/baseline_samsung_hynix/2026-09-11/q10_forward_validation/q10_actual_market_reactions.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_opening_controlled_has_no_program_specific_forward_policy": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\data\\\\logs\\\\opening_rank1_controlled_probe\\\\<v>-09-10\\\\probe_submissions.j",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/data/logs/opening_rank1_controlled_probe/2026-09-10/probe_submissions.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef5_1_clean_evidence_registry.py::test_freeze_manifest_stays_11_of_11": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_1_clean_evidence_registry.py:730",
    "msg": "AssertionError: MISMATCH  [UEF-1] libs/reporting/evaluation/canonical/contracts.py",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_1_clean_evidence_registry.py:730",
+   "type": "AssertionError"
   },
   "tests/test_uef5_1_clean_evidence_registry.py::test_uef5_package_is_stdlib_only_and_not_imported_by_production_or_core": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_1_clean_evidence_registry.py:724",
    "msg": "AssertionError: ['libs/reporting/evaluation/uef6/validation_replay.py']",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_1_clean_evidence_registry.py:724",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_clean_and_eligible_is_recomputed": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:683",
    "msg": "assert 0 > 0",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:683",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_identity_collision_fails_closed": {
+   "evidence_status": "OBSERVED",
    "kind": "error",
-   "loc": "",
-   "msg": "failed on setup with \"FileNotFoundError: [WinError 3] ? ? ? ? ?: '<TREE_PATH>'\"",
-   "type": ""
+   "loc": "<PYTHON>/Lib/shutil.py:591",
+   "msg": "failed on setup with \"FileNotFoundError: [WinError 3] \uc9c0\uc815\ub41c \uacbd\ub85c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: '<TREE>/reports/evaluation/opportunity_engine_shadow'\"",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:619",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_invalid_required_field_prevents_recompute": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:704",
    "msg": "assert (0 == 0 and 0 > 0)",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:704",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_isolated_snapshot_determinism": {
+   "evidence_status": "OBSERVED",
    "kind": "error",
-   "loc": "",
-   "msg": "failed on setup with \"FileNotFoundError: [WinError 3] ? ? ? ? ?: '<TREE_PATH>'\"",
-   "type": ""
+   "loc": "<PYTHON>/Lib/shutil.py:591",
+   "msg": "failed on setup with \"FileNotFoundError: [WinError 3] \uc9c0\uc815\ub41c \uacbd\ub85c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: '<TREE>/reports/evaluation/opportunity_engine_shadow'\"",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:619",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_missing_and_excluded_are_not_zero": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:866",
    "msg": "assert (False)",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:866",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_missing_candle_file_gaps_stay_fail_closed": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:805",
    "msg": "assert 0 > 0",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:805",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_no_frozen_uef_mutation": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:716",
    "msg": "AssertionError: MISMATCH  [UEF-1] libs/reporting/evaluation/canonical/contracts.py",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:716",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_no_production_imports": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "AssertionError: <TREE>\\libs\\reporting\\evaluation\\uef6\\validation_replay.py imports ['libs.reporting.evaluation.uef5']",
-   "type": ""
+   "loc": "tests/test_uef5_2_historical_recompute.py:742",
+   "msg": "AssertionError: <TREE>/libs/reporting/evaluation/uef6/validation_replay.py imports ['libs.reporting.evaluation.uef5']",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:742",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q10_index_fg_creates_no_cost_policy_and_calls_no_costed_entrypoint": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:828",
    "msg": "assert 0 > 0",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:828",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q10_index_fg_episodes_produced_but_no_fg_aggregate": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:834",
    "msg": "assert (0 > 0)",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:834",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q10_index_fg_partial_stage_model_never_complete": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:841",
    "msg": "AssertionError: assert ('COMPLETE' == 'PARTIAL'",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:841",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q10_index_h_unchanged_and_no_double_cost": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:847",
    "msg": "assert []",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:847",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q11_v2_preserved": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:871",
    "msg": "assert 0 > 0",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:871",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_untracked_member_counts_are_flagged": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:810",
    "msg": "assert True is False",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:810",
+   "type": "AssertionError"
   },
   "tests/test_uef6c_historical_validation.py::test_e_baseline_vs_instrumented_canonical_parity": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [WinError 3] ? ? ? ? ?: 'reports\\\\evaluation\\\\opportunity_engine_shadow\\\\<v>-09-22'",
-   "type": ""
+   "loc": "<PYTHON>/Lib/shutil.py:591",
+   "msg": "FileNotFoundError: [WinError 3] \uc9c0\uc815\ub41c \uacbd\ub85c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: 'reports/evaluation/opportunity_engine_shadow/2026-09-22'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef6c_historical_validation.py:65",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef6c_historical_validation.py::test_f_witness_to_output_aggregate_mapping": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [WinError 3] ? ? ? ? ?: 'reports\\\\evaluation\\\\opportunity_engine_shadow\\\\<v>-09-22'",
-   "type": ""
+   "loc": "<PYTHON>/Lib/shutil.py:591",
+   "msg": "FileNotFoundError: [WinError 3] \uc9c0\uc815\ub41c \uacbd\ub85c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: 'reports/evaluation/opportunity_engine_shadow/2026-09-22'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef6c_historical_validation.py:65",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef9_formal_authority.py::test_a_valid_current_authority": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef9_formal_authority.py:62",
    "msg": "AssertionError: assert {'COMPARABLE'...MPARABLE': 91} == {'COMPARABLE'...MPARABLE': 84}",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef9_formal_authority.py:62",
+   "type": "AssertionError"
   }
  },
  "diff": {
   "BASE_ONLY": [
    "tests/test_closeout_memory_bounds.py::test_daily_summary_payload_identical_with_streamed_and_materialised_rows"
   ],
+  "BLOCKED": [],
   "FINAL_ONLY": [],
   "SAME_FAILURE_SIGNATURE": [
    "tests/apps/api/test_isolation.py::test_api_routes_are_get_only",
@@ -277,226 +392,365 @@
  },
  "final": {
   "tests/apps/api/test_isolation.py::test_api_routes_are_get_only": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/apps/api/test_isolation.py:77",
    "msg": "assert []",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/apps/api/test_isolation.py:77",
+   "type": "AssertionError"
   },
   "tests/test_diagnostic_queries_work_order01.py::test_all_four_public_cli_forms_match[json-query_m25_notification_events]": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "<PYTHON>/Lib/json/__init__.py:345",
    "msg": "TypeError: the JSON object must be str, bytes or bytearray, not NoneType",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_diagnostic_queries_work_order01.py:140",
+   "type": "TypeError"
   },
   "tests/test_step5b_fix4.py::test_t1_real_executor_post_response_parser_exception_returns_unknown_not_raise": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:156",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t1_real_executor_token_invalid_check_exception_also_returns_unknown_not_raise": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:176",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t2_runner_blocks_second_mutation_after_real_post_response_parse_exception": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:224",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t3_upper_limit_cancel_real_post_response_parser_exception": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_step5b_fix4.py:263",
    "msg": "assert 0 == 1",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:263",
+   "type": "AssertionError"
   },
   "tests/test_step5b_fix4.py::test_t4_unfilled_order_recovery_cancel_real_post_response_parser_exception": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_step5b_fix4.py:305",
    "msg": "assert 0 == 1",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:305",
+   "type": "AssertionError"
   },
   "tests/test_step5b_fix4.py::test_t5_explicit_accepted_unaffected_by_fix4": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:335",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t6_explicit_rejected_unaffected_by_fix4": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:343",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_step5b_fix4.py::test_t8_post_dispatch_transport_failure_is_unknown_one_physical_call": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "libs/execution/executors/real_executor.py:244",
    "msg": "libs.execution.executors.base.ExecutionDisabledError: [EXECUTION_DISABLED] Execution is disabled. Set EXECUTION_ENABLED=true to allow real calls.",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_step5b_fix4.py:371",
+   "type": "ExecutionDisabledError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_12_opening_shadow_entry_and_forward_price_chains_differ": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\opening_rank1_shadow\\\\<v>-09-11\\\\opening_rank1_shadow",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/opening_rank1_shadow/2026-09-11/opening_rank1_shadow_daily.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_14_opening_shadow_d1_d3_d5_bounded_sessions_and_insufficient_future": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\offline_alpha\\\\opening_rank1_longitudinal\\\\opening_ra",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/offline_alpha/opening_rank1_longitudinal/opening_rank1_longitudinal.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_1_horizon_exit_exact_price_chain_and_session_close_fallback": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\trades\\\\<v>-05-15\\\\<v>\\\\TRD_<v>_<v>_01\\\\reports\\\\post_exit_shadow",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/trades/2026-05-15/0900/TRD_20260515_066570_01/reports/post_exit_shadow_recap.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_8_q11_zero_offset_eod_no_excursion_and_cost_semantics": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\opportunity_engine_shadow\\\\<v>-09-11\\\\opportunity_eng",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/opportunity_engine_shadow/2026-09-11/opportunity_engine_virtual_trades.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculator_9_q12_shared_engine_reuse_produces_all_seven_checkpoints": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\baseline_btc_woori_tech\\\\<v>-09-11\\\\baseline_btc_woor",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/baseline_btc_woori_tech/2026-09-11/baseline_btc_woori_forward_returns.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculators_2_3_4_q10_semiconductor_reference_fallback_and_exact_windows": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\baseline_samsung_hynix\\\\<v>-09-11\\\\baseline_samsung_h",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/baseline_samsung_hynix/2026-09-11/baseline_samsung_hynix_forward_returns.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_calculators_5_6_q10_index_single_authorities_and_collector_three_states": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\reports\\\\evaluation\\\\baseline_samsung_hynix\\\\<v>-09-11\\\\q10_forward_valida",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/reports/evaluation/baseline_samsung_hynix/2026-09-11/q10_forward_validation/q10_actual_market_reactions.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef2a_forward_policy_contract.py::test_opening_controlled_has_no_program_specific_forward_policy": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>\\\\data\\\\logs\\\\opening_rank1_controlled_probe\\\\<v>-09-10\\\\probe_submissions.j",
-   "type": ""
+   "loc": "<PYTHON>/Lib/pathlib/_local.py:537",
+   "msg": "FileNotFoundError: [Errno 2] No such file or directory: '<TREE>/data/logs/opening_rank1_controlled_probe/2026-09-10/probe_submissions.json'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef2a_forward_policy_contract.py:81",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef5_1_clean_evidence_registry.py::test_freeze_manifest_stays_11_of_11": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_1_clean_evidence_registry.py:730",
    "msg": "AssertionError: MISMATCH  [UEF-1] libs/reporting/evaluation/canonical/contracts.py",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_1_clean_evidence_registry.py:730",
+   "type": "AssertionError"
   },
   "tests/test_uef5_1_clean_evidence_registry.py::test_uef5_package_is_stdlib_only_and_not_imported_by_production_or_core": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_1_clean_evidence_registry.py:724",
    "msg": "AssertionError: ['libs/reporting/evaluation/uef6/validation_replay.py']",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_1_clean_evidence_registry.py:724",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_clean_and_eligible_is_recomputed": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:683",
    "msg": "assert 0 > 0",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:683",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_identity_collision_fails_closed": {
+   "evidence_status": "OBSERVED",
    "kind": "error",
-   "loc": "",
-   "msg": "failed on setup with \"FileNotFoundError: [WinError 3] ? ? ? ? ?: '<TREE_PATH>'\"",
-   "type": ""
+   "loc": "<PYTHON>/Lib/shutil.py:591",
+   "msg": "failed on setup with \"FileNotFoundError: [WinError 3] \uc9c0\uc815\ub41c \uacbd\ub85c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: '<TREE>/reports/evaluation/opportunity_engine_shadow'\"",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:619",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_invalid_required_field_prevents_recompute": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:704",
    "msg": "assert (0 == 0 and 0 > 0)",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:704",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_isolated_snapshot_determinism": {
+   "evidence_status": "OBSERVED",
    "kind": "error",
-   "loc": "",
-   "msg": "failed on setup with \"FileNotFoundError: [WinError 3] ? ? ? ? ?: '<TREE_PATH>'\"",
-   "type": ""
+   "loc": "<PYTHON>/Lib/shutil.py:591",
+   "msg": "failed on setup with \"FileNotFoundError: [WinError 3] \uc9c0\uc815\ub41c \uacbd\ub85c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: '<TREE>/reports/evaluation/opportunity_engine_shadow'\"",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:619",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_missing_and_excluded_are_not_zero": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:866",
    "msg": "assert (False)",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:866",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_missing_candle_file_gaps_stay_fail_closed": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:805",
    "msg": "assert 0 > 0",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:805",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_no_frozen_uef_mutation": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:716",
    "msg": "AssertionError: MISMATCH  [UEF-1] libs/reporting/evaluation/canonical/contracts.py",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:716",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_no_production_imports": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "AssertionError: <TREE>\\libs\\reporting\\evaluation\\uef6\\validation_replay.py imports ['libs.reporting.evaluation.uef5']",
-   "type": ""
+   "loc": "tests/test_uef5_2_historical_recompute.py:742",
+   "msg": "AssertionError: <TREE>/libs/reporting/evaluation/uef6/validation_replay.py imports ['libs.reporting.evaluation.uef5']",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:742",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q10_index_fg_creates_no_cost_policy_and_calls_no_costed_entrypoint": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:828",
    "msg": "assert 0 > 0",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:828",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q10_index_fg_episodes_produced_but_no_fg_aggregate": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:834",
    "msg": "assert (0 > 0)",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:834",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q10_index_fg_partial_stage_model_never_complete": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:841",
    "msg": "AssertionError: assert ('COMPLETE' == 'PARTIAL'",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:841",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q10_index_h_unchanged_and_no_double_cost": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:847",
    "msg": "assert []",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:847",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_q11_v2_preserved": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:871",
    "msg": "assert 0 > 0",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:871",
+   "type": "AssertionError"
   },
   "tests/test_uef5_2_historical_recompute.py::test_untracked_member_counts_are_flagged": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef5_2_historical_recompute.py:810",
    "msg": "assert True is False",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef5_2_historical_recompute.py:810",
+   "type": "AssertionError"
   },
   "tests/test_uef6c_historical_validation.py::test_e_baseline_vs_instrumented_canonical_parity": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [WinError 3] ? ? ? ? ?: 'reports\\\\evaluation\\\\opportunity_engine_shadow\\\\<v>-09-22'",
-   "type": ""
+   "loc": "<PYTHON>/Lib/shutil.py:591",
+   "msg": "FileNotFoundError: [WinError 3] \uc9c0\uc815\ub41c \uacbd\ub85c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: 'reports/evaluation/opportunity_engine_shadow/2026-09-22'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef6c_historical_validation.py:65",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef6c_historical_validation.py::test_f_witness_to_output_aggregate_mapping": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
-   "msg": "FileNotFoundError: [WinError 3] ? ? ? ? ?: 'reports\\\\evaluation\\\\opportunity_engine_shadow\\\\<v>-09-22'",
-   "type": ""
+   "loc": "<PYTHON>/Lib/shutil.py:591",
+   "msg": "FileNotFoundError: [WinError 3] \uc9c0\uc815\ub41c \uacbd\ub85c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: 'reports/evaluation/opportunity_engine_shadow/2026-09-22'",
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef6c_historical_validation.py:65",
+   "type": "FileNotFoundError"
   },
   "tests/test_uef9_formal_authority.py::test_a_valid_current_authority": {
+   "evidence_status": "OBSERVED",
    "kind": "failure",
-   "loc": "",
+   "loc": "tests/test_uef9_formal_authority.py:62",
    "msg": "AssertionError: assert {'COMPARABLE'...MPARABLE': 91} == {'COMPARABLE'...MPARABLE': 84}",
-   "type": ""
+   "terminal_frame_in_log": true,
+   "test_location": "tests/test_uef9_formal_authority.py:62",
+   "type": "AssertionError"
   }
- }
+ },
+ "historical_run_provenance": {
+  "basis": "Original operator report only; not embedded in JUnit or authenticated by the retained logs.",
+  "reported_base_sha": "73f2277bfe95fda6d548572e48764966d01661e4",
+  "reported_final_sha": "f476f160fa66d778b576e48a630cfa1f5878db93",
+  "status": "BLOCKED"
+ },
+ "normalization": "Known b_base/b_final checkout roots, user TEMP, interpreter Lib root, hex object addresses only; no line-number or general numeric tolerance.",
+ "provenance_limit": "JUnit does not embed Git SHA or dependency fingerprint; original SHA/env association is operator-reported.",
+ "raw_evidence": {
+  "broad_base.log": {
+   "bytes": 100015,
+   "sha256": "4c71ca3b69008981070a0078b8be95eb655cbfac5a28aa9a18ea1cb5b8c0608f"
+  },
+  "broad_base.xml": {
+   "bytes": 1542859,
+   "sha256": "7e89c18fce3ab50d69c50f95d2187cbebb7fa6cde44aad29cfa86fa0d2aad4bc"
+  },
+  "broad_final.log": {
+   "bytes": 97888,
+   "sha256": "e9b1a2491d328da31cda869d4afee993de5fcf509335e1abd31657121ea15dfe"
+  },
+  "broad_final.xml": {
+   "bytes": 1548849,
+   "sha256": "04f5bf513946fd70d833c3007b8ada233bf3dd24bf3d5cf1c4f0178898137226"
+  }
+ },
+ "schema": "p169_observed_failure_evidence.v1",
+ "scope": "Observed terminal exception, location and first cause line; not proof of all semantic causes."
 }

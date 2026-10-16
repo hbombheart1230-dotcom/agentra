@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 279,
+  "entry_count": 280,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7408,6 +7408,22 @@
         "docs/refactor/evidence/P15-V2-053-REWORK-054-CLAUDE.md",
         "docs/refactor/evidence/P15-V2-053-REWORK-054-broad-failure-manifest.json"
       ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 Rework 054 Optimized Verifier and Observed Failure Evidence",
+      "title": "Keep shim validation active under -O and extract observed failure traceback facts",
+      "stage": "Architecture and Maintainability",
+      "types": ["TESTING", "SAFETY", "DOCS"],
+      "status": "current",
+      "summary": "Explicit exceptions preserve shim rejection under optimized Python; retained JUnit provides exception class and terminal location for all BASE 38 and FINAL 37 failures/errors.",
+      "details": [
+        "Original 31 verifier tests retained; new child -O regression rejects all 21 source mutations including the three Codex counterexamples.",
+        "37 observed signatures match; no broad reruns. Raw hashes identify retained evidence; full semantic causality and original SHA/environment provenance are not established and remain BLOCKED.",
+        "Implementation supplement only; independent 054 delta audit and V3 remain pending. Scanner bodies/shims and all protected runtime paths unchanged."
+      ],
+      "impact": "Tests, evidence extractor, CI coverage and documentation only.",
+      "sources": ["docs/refactor/evidence/P15-V2-053-REWORK-054-CLAUDE.md", "docs/daily_patch/2026-10-16_p15_v2_053_rework_054.md", "scripts/refactor/p169_broad_failure_evidence.py"]
     }
   ]
 }
