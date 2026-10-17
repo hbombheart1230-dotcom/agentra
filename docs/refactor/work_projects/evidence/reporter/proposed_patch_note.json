@@ -1,7 +1,7 @@
 {
  "date": "2026-10-17",
- "version": "Reporter Role R-3",
- "title": "Reporter whole-role: 12 moves plus 3 named decompositions (symbol metadata, story news, story scanner)",
+ "version": "Reporter Role R-7",
+ "title": "Reporter whole-role: 264 facade bodies moved to libs/agents/reporter with the R3 facade-injection pattern",
  "stage": "Architecture and Maintainability",
  "types": [
   "REFACTOR",
@@ -9,7 +9,7 @@
   "DOCS"
  ],
  "status": "current",
- "summary": "Twelve pure owners relocated and three oversize Reporter modules (377/433/392 LOC) decomposed into 11 owners of at most 178 LOC with AST-identical bodies and import-only legacy facades; 2565 BASE-first replay cases reproduce exactly.",
+ "summary": "On top of 12 relocated modules and 3 decompositions, 264 pure function bodies from 21 Reporter modules now live in libs/agents/reporter owners (<=350 LOC) behind unchanged facade wrappers; BASE-body equality, use-time patch sequences and ABI are proven per function. LLM routing/execution, file I/O, truth precedence, broker and feedback code stay in place.",
  "details": [
   "controlled_mock_lane_report BLOCKED (operational ledger read, Q10/Q12 lanes); trade_report_symbol_metadata kept (377 LOC > 350).",
   "Shared exact agent-package gates need Work to add reporter: {narrative, read_models}. No report disabled, no LLM/writer/queue change."

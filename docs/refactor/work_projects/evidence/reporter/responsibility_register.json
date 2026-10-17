@@ -205,6 +205,11 @@
    "path": "libs/reporting/trade_report_markdown_clean.py, trade_report_ai.py (14 bodies)",
    "disposition": "MOVE (R-4 facade injection)",
    "reason": "see REPORTER_R4_FACADE_BODIES.md; remaining bodies are thin delegations or LLM/effect/authority-token functions"
+  },
+  {
+   "path": "R-5..R-7 facade-injection batches (22 modules, 264 bodies total incl. R-4)",
+   "disposition": "MOVE (facade injection)",
+   "reason": "REPORTER_R4_FACADE_BODIES.md; remaining bodies per function in function_blockers.json"
   }
  ]
 }

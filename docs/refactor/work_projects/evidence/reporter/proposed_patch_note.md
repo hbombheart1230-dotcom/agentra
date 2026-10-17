@@ -1,7 +1,7 @@
-## 2026-10-17 · Reporter Role R-3
+## 2026-10-17 · Reporter Role R-7
 **Stage:** Architecture and Maintainability
 **Tags:** REFACTOR · TESTING · DOCS
 
-- 순수 Reporter 모듈 12개 이동 + 350 LOC 초과 3개(trade_report_symbol_metadata, trade_story_pipeline_news, trade_story_pipeline_scanner)를 11개 owner로 분해(본문 AST 동일, 기존 경로는 re-export facade).
-- BASE 기준 2565 사례 동일, 리포트 20종 결정 자료(변경 없음).
-- 공유 ledger로 고정된 facade·T1 대상과 I/O 혼합 모듈은 BLOCKED/KEEP로 기록.
+- R3 facade 주입 패턴으로 Reporter 모듈 21개의 순수 함수 본문 264개를 `libs/agents/reporter` owner로 이동(기존 함수 서명·wrapper 유지, 호출 시점 조회).
+- 함수별 BASE 본문 동일성, monkeypatch 호출 순서, ABI 검증. LLM 라우팅·실행, 파일 I/O, truth precedence, broker, feedback 코드는 이동하지 않음.
+- 공유 T3 검사 변경안(패치 v4)은 Work 통합 단계에서 적용.
