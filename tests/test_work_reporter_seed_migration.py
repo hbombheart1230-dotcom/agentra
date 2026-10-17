@@ -31,6 +31,9 @@ REGISTRY = {
     "chart_structure_decision_hint_summary": ("read_models", "16a5d887bc3a49efb6280cb6ea1693f9c3255949"),
     "policy_surface_summary": ("read_models", "4a3aa078fefa2e83fac1d0b610a2b667befb851c"),
     "report_metadata": ("read_models", "d0fffd0097d55f37d1038bf20bb79bd8780ed654"),
+    "trade_reporter_status_text": ("narrative", "ce3578e8d2e6e7036a9f1f48085516a73905fca3"),
+    "truth_source_labels": ("narrative", "5a30f3df03c13468b8c81e083212d4063fd0ea0d"),
+    "trade_pnl_estimate": ("read_models", "614f79242d78f4cdd536062bc0f0fe49c067c9ba"),
 }
 REPORTER_PACKAGES = {"narrative", "read_models"}  # exact, versioned by this project (shared allowlist is Work-owned)
 OLD, NEW = "libs.reporting.{}", "libs.agents.reporter.{}.{}"
@@ -125,7 +128,7 @@ def test_shim_has_no_code_and_exactly_one_body_exists(name):
 def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():
     doc = json.loads(gzip.decompress(FIX.read_bytes()))
     cases = doc["cases"]
-    assert len(cases) == 1007
+    assert len(cases) == 1216
     sys.path.insert(0, str(ROOT / "scripts" / "refactor"))
     try:
         import work_reporter_capture as cap

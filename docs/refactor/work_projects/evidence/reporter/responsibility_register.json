@@ -1,0 +1,147 @@
+{
+ "schema": "agentra.work.reporter.register.v1",
+ "runtime_base": "d773709ba2f70471fad9badba4f92400f7818319",
+ "start": "eeb742a33b16f6271ff364a904e187b470561c7e",
+ "entries": [
+  {
+   "path": "libs/reporting/narrative_axes.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/narrative/narrative_axes.py",
+   "base_blob": "8eee2c502ed8f1646c0008e7979a6c438a01972a",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/trade_fallback_text.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/narrative/trade_fallback_text.py",
+   "base_blob": "de225b4556c9780ec84a7a3ee321c8659aea9373",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/reasoning_trace.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/narrative/reasoning_trace.py",
+   "base_blob": "0807b9f3a94238f73c7617e1e0e8d8f514e9e676",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/trade_execution_outcome_text.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/narrative/trade_execution_outcome_text.py",
+   "base_blob": "ca7ff430a44cea2dcbf2a1a1b3adccde13b354c1",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/trade_reporter_status_text.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/narrative/trade_reporter_status_text.py",
+   "base_blob": "ce3578e8d2e6e7036a9f1f48085516a73905fca3",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/truth_source_labels.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/narrative/truth_source_labels.py",
+   "base_blob": "5a30f3df03c13468b8c81e083212d4063fd0ea0d",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/chart_structure_decision_hint_summary.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/read_models/chart_structure_decision_hint_summary.py",
+   "base_blob": "16a5d887bc3a49efb6280cb6ea1693f9c3255949",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/policy_surface_summary.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/read_models/policy_surface_summary.py",
+   "base_blob": "4a3aa078fefa2e83fac1d0b610a2b667befb851c",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/report_metadata.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/read_models/report_metadata.py",
+   "base_blob": "d0fffd0097d55f37d1038bf20bb79bd8780ed654",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/trade_pnl_estimate.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/read_models/trade_pnl_estimate.py",
+   "base_blob": "614f79242d78f4cdd536062bc0f0fe49c067c9ba",
+   "effects": "none (stdlib typing/collections/re only; no I/O, env, clock, logging)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay"
+  },
+  {
+   "path": "libs/reporting/controlled_mock_lane_report.py",
+   "disposition": "BLOCKED",
+   "reason": "Seed #8: reads data/logs/controlled_mock_lanes/<day>/lane_submissions.json (operational ledger read) and encodes Q10/Q12 lane labels + kiwoom_mock_only scope; Reporter vs Research/Q-series ownership needs a Work decision"
+  },
+  {
+   "path": "libs/reporting/trade_report_symbol_metadata.py",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "pure, but 377 LOC > 350 owner policy; a byte-identical move cannot comply -> needs a separately named decomposition batch with semantic parity (move was attempted and reverted, blob unchanged)"
+  },
+  {
+   "path": "libs/reporting/trade_symbol_context.py",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "mutates target dicts to re-anchor scanner selection fields for the executed symbol (selection/state semantics); alias/mutation proof required first"
+  },
+  {
+   "path": "libs/reporting/trade_scanner_fallback_anchor.py",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "rewrites scanner reason/trace for monitor fallback (cross-role Scanner/Monitor semantics, state mutation)"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline.py + trade_story_pipeline_* + trade_story_*_parts/** + trade_story_facade*_parts/**",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "existing R3 facade decomposition with late-bound `_facade` seams/dependency maps; any further move = named facade batch with parity, not free wildcard"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai*.py, trade_report_markdown_clean.py, trade_report/** (ai_facade*_parts, markdown_clean*_parts, section*_parts, summary*_parts)",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "Reporter-owned narrative/formatting but coupled through existing facade ABI ledgers (p1_5_2 facade symbol ledger, R3 moved bodies); LLM payload/retry contracts; candidate for named follow-up batches"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py, trade_read_model_parts/**, trade_memory_surface.py, trade_memory_application_surface.py, trade_memory_projection_parts/**",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "mixes pure projections with truth-source selection and persisted memory/feedback effects; no truth-precedence change allowed"
+  },
+  {
+   "path": "libs/reporting/execution_truth_surface.py, report_truth_surface.py, trade_price_truth.py, trade_truth_resolver.py, trade_execution_truth_merge.py, trade_regeneration_truth.py, trade_report_markdown_truth.py",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "truth-source precedence owners; pure but authority-bearing; separate scope decision"
+  },
+  {
+   "path": "libs/reporting/live_execution_bundle_runner.py, reporter_bundle_runtime_parts/**, report writers/queue/lock, live_execution_llm_artifacts.py",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "SAFETY_LOCK: writer/queue/lock/LLM execution effects (ACTIVATION protected)"
+  },
+  {
+   "path": "graphs/nodes/reporter_node.py, apps/** reporter endpoints",
+   "disposition": "OUT_OF_ROLE",
+   "reason": "protected shared path; read-only consumer checks only (reporter node/service tests pass)"
+  },
+  {
+   "path": "libs/reporting/evaluation/**, baseline_*/**, short_alpha_discriminator/**, alpha_research_board/**, opening_rank1_shadow/**, scheduled_intelligence/**, quant_*, strategist_llm_evaluation.py, strategist_quant_context_report.py, kiwoom_day_trade_match_estimate.py, trade_report_post_exit_shadow.py",
+   "disposition": "OUT_OF_ROLE",
+   "reason": "Research/UEF/Q-series/evaluation; excluded by ACTIVATION"
+  },
+  {
+   "path": "libs/reporting/daily_report_*, metrics_report*, operator_visibility*, operator_period_summary*, phase_runtime_health.py, report_source_helpers.py",
+   "disposition": "SHARED",
+   "reason": "operator/daily reporting infrastructure reading report sources; no mass move of shared reporting infrastructure; report-proliferation review pending"
+  }
+ ]
+}

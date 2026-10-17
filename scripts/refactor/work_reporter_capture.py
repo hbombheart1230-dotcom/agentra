@@ -26,13 +26,16 @@ MODULES = [
     "libs.reporting.chart_structure_decision_hint_summary",
     "libs.reporting.policy_surface_summary",
     "libs.reporting.report_metadata",
+    "libs.reporting.trade_reporter_status_text",
+    "libs.reporting.truth_source_labels",
+    "libs.reporting.trade_pnl_estimate",
 ]
 MAX_KEYS = 160
 
 
 def _literal_keys(path: Path) -> list[str]:
     keys: list[str] = []
-    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8-sig"))):
         if isinstance(node, ast.Constant) and isinstance(node.value, str) and 0 < len(node.value) <= 48 and "\n" not in node.value:
             if node.value not in keys:
                 keys.append(node.value)
@@ -51,18 +54,30 @@ def _payloads(keys: list[str]) -> list:
     return out
 
 
+def _identity_callback(value):
+    return str(value or "")
+
+
+def _upper_callback(value):
+    return str(value or "").upper() + "!"
+
+
 def _calls(fn, payloads):
     sig = inspect.signature(fn)
     params = [p for p in sig.parameters.values() if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD, p.KEYWORD_ONLY)]
     required = [p for p in params if p.default is p.empty and p.kind is not p.KEYWORD_ONLY]
     kwonly_required = [p for p in params if p.default is p.empty and p.kind is p.KEYWORD_ONLY]
     out = []
+    is_cb = lambda p: "Callable" in str(p.annotation)  # noqa: E731 - injected text/metadata callbacks get real callables
     for i, pl in enumerate(payloads):
-        args = [pl] * len(required)
-        kwargs = {p.name: pl for p in kwonly_required}
-        out.append((args, kwargs))
+        for cb in (_identity_callback, _upper_callback) if any(is_cb(p) for p in params) else (None,):
+            args = [(cb if is_cb(p) else copy.deepcopy(pl)) for p in required]  # distinct objects: no accidental self-aliasing
+            kwargs = {p.name: (cb if is_cb(p) else copy.deepcopy(pl)) for p in kwonly_required}
+            out.append((args, kwargs))
+            if not any(is_cb(p) for p in params):
+                break
         if len(required) >= 2:  # mixed: first payload rotates against a fixed empty mapping
-            out.append(([pl] + [payloads[(i + j) % len(payloads)] for j in range(1, len(required))], dict(kwargs)))
+            out.append(([copy.deepcopy(pl)] + [copy.deepcopy(payloads[(i + j) % len(payloads)]) for j in range(1, len(required))], dict(kwargs)))
     return out
 
 
@@ -79,6 +94,8 @@ def compute() -> list[dict]:
                 before = copy.deepcopy((a, k))
                 try:
                     res = fn(*a, **k)
+                    if inspect.isgenerator(res):  # materialise lazily-produced results (repr would carry an address)
+                        res = list(res)
                     rec = {"ok": json.loads(json.dumps(res, ensure_ascii=False, default=repr)),
                            "alias": any(res is x for x in a) or any(res is x for x in k.values())}
                 except Exception as exc:  # noqa: BLE001
