@@ -11,6 +11,35 @@ from libs.runtime.strategy_horizon_feedback import (
     build_post_exit_shadow_placeholder,
     update_post_exit_shadow_with_price_observations,
 )
+import sys as _r3_sys
+from libs.agents.reporter.narrative.post_exit_recap_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _symbol_candidates_r4_impl,
+    _rows_from_record_r4_impl,
+    _latest_epoch_r4_impl,
+    _epoch_seconds_r4_impl,
+    _shadow_latest_required_epoch_r4_impl,
+    _minute_row_key_r4_impl,
+    merge_minute_rows_r4_impl,
+    fetch_fresh_minute_rows_for_symbol_r4_impl,
+    minute_rows_for_symbol_from_state_r4_impl,
+    _parse_exit_kst_date_r4_impl,
+    _row_kst_date_r4_impl,
+    _row_kst_hhmmss_r4_impl,
+    same_day_closeout_rows_for_shadow_r4_impl,
+    _checkpoint_target_after_regular_close_r4_impl,
+    _fill_regular_close_bound_pending_checkpoints_r4_impl,
+    _post_exit_shadow_from_report_r4_impl,
+    _checkpoint_summary_r4_impl,
+    _render_trade_recap_markdown_r4_impl,
+)
+from libs.agents.reporter.narrative.post_exit_recap_bodies_02 import (  # R-4 owner bodies (facade-injected)
+    _render_daily_recap_markdown_r4_impl,
+)
+from libs.agents.reporter.narrative.post_exit_shadow_recap_r8_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _post_exit_shadow_from_lifecycle_r4_impl,
+    _trade_label_r4_impl,
+    build_post_exit_shadow_recap_r4_impl,
+)
 
 
 CHECKPOINT_LABELS = ("+5m", "+15m", "+30m", "+60m", "EOD")
@@ -70,67 +99,19 @@ def _as_list(value: Any) -> List[Any]:
 
 
 def _symbol_candidates(symbol: str) -> List[str]:
-    normalized = normalize_symbol(symbol or "", allow_test_symbols=True)
-    out = [normalized] if normalized else []
-    if normalized and not normalized.startswith("A"):
-        out.append(f"A{normalized}")
-    return out
+    return _symbol_candidates_r4_impl(symbol, facade=_r3_sys.modules[__name__])
 
 
 def _rows_from_record(record: Any, candidates: List[str]) -> List[Dict[str, Any]]:
-    if isinstance(record, list):
-        return [dict(row) for row in record if isinstance(row, dict)]
-    if not isinstance(record, dict):
-        return []
-    rows = record.get("rows")
-    if isinstance(rows, list):
-        return [dict(row) for row in rows if isinstance(row, dict)]
-    result = record.get("result") if isinstance(record.get("result"), dict) else {}
-    data = result.get("data") if isinstance(result.get("data"), dict) else record.get("data")
-    if isinstance(data, dict):
-        nested_rows = data.get("rows")
-        if isinstance(nested_rows, list):
-            return [dict(row) for row in nested_rows if isinstance(row, dict)]
-        for candidate in candidates:
-            found = _rows_from_record(data.get(candidate), candidates)
-            if found:
-                return found
-    for candidate in candidates:
-        found = _rows_from_record(record.get(candidate), candidates)
-        if found:
-            return found
-    return []
+    return _rows_from_record_r4_impl(record, candidates, facade=_r3_sys.modules[__name__])
 
 
 def _latest_epoch(rows: Iterable[Mapping[str, Any]]) -> int:
-    best = 0
-    for row in rows:
-        try:
-            best = max(best, int(float(row.get("ts"))))
-        except Exception:
-            continue
-    return best
+    return _latest_epoch_r4_impl(rows, facade=_r3_sys.modules[__name__])
 
 
 def _epoch_seconds(value: Any) -> float | None:
-    if value in (None, ""):
-        return None
-    try:
-        raw = float(value)
-        if raw > 0:
-            return raw
-    except Exception:
-        pass
-    try:
-        text = str(value).strip()
-        if not text:
-            return None
-        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return float(dt.timestamp())
-    except Exception:
-        return None
+    return _epoch_seconds_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _fresh_minute_fetch_enabled() -> bool:
@@ -139,20 +120,7 @@ def _fresh_minute_fetch_enabled() -> bool:
 
 
 def _shadow_latest_required_epoch(shadow: Mapping[str, Any]) -> float | None:
-    exit_epoch = _epoch_seconds(shadow.get("exit_ts"))
-    if exit_epoch is None:
-        return None
-    checkpoints = _as_dict(shadow.get("checkpoints"))
-    best: float | None = None
-    for label, minutes in (("+5m", 5), ("+15m", 15), ("+30m", 30), ("+60m", 60)):
-        row = _as_dict(checkpoints.get(label))
-        if str(row.get("status") or "").strip().lower() == "observed":
-            continue
-        target_epoch = _epoch_seconds(row.get("target_ts"))
-        if target_epoch is None:
-            target_epoch = exit_epoch + (minutes * 60)
-        best = target_epoch if best is None else max(best, target_epoch)
-    return best
+    return _shadow_latest_required_epoch_r4_impl(shadow, facade=_r3_sys.modules[__name__])
 
 
 def _rows_reach_epoch(rows: Iterable[Mapping[str, Any]], target_epoch: float | None) -> bool:
@@ -188,30 +156,11 @@ def _post_exit_shadow_needs_fresh_minutes(shadow: Mapping[str, Any], rows: List[
 
 
 def _minute_row_key(row: Mapping[str, Any]) -> str:
-    raw_ts = str(row.get("raw_ts") or "").strip()
-    if raw_ts:
-        return f"raw:{raw_ts}"
-    ts = _epoch_seconds(row.get("ts"))
-    if ts is not None:
-        return f"ts:{int(ts)}"
-    return ""
+    return _minute_row_key_r4_impl(row, facade=_r3_sys.modules[__name__])
 
 
 def merge_minute_rows(*row_groups: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
-    merged: Dict[str, Dict[str, Any]] = {}
-    anonymous: List[Dict[str, Any]] = []
-    for rows in row_groups:
-        for row in rows or []:
-            if not isinstance(row, Mapping):
-                continue
-            item = dict(row)
-            key = _minute_row_key(item)
-            if key:
-                merged[key] = item
-            else:
-                anonymous.append(item)
-    out = list(merged.values()) + anonymous
-    return sorted(out, key=lambda row: (_epoch_seconds(row.get("ts")) or 0.0, str(row.get("raw_ts") or "")))
+    return merge_minute_rows_r4_impl(*row_groups, facade=_r3_sys.modules[__name__])
 
 
 def opening_rank1_eod_fallback_row(
@@ -271,166 +220,32 @@ def opening_rank1_eod_fallback_row(
 
 
 def fetch_fresh_minute_rows_for_symbol(symbol: str, *, run_id: str = "post_exit_shadow_recap") -> tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    normalized = normalize_symbol(symbol or "", allow_test_symbols=True)
-    meta: Dict[str, Any] = {
-        "attempted": True,
-        "ok": False,
-        "symbol": normalized,
-        "rows": 0,
-        "source": "market.minute_ohlcv",
-    }
-    if not normalized:
-        meta["reason"] = "missing_symbol"
-        return [], meta
-    try:
-        from libs.runtime.monitor_minute_ohlcv import (
-            _extract_monitor_minute_rows,
-            _fresh_monitor_skill_runner,
-            _run_monitor_minute_skill,
-        )
-
-        runner, source = _fresh_monitor_skill_runner()
-        meta["runner_source"] = source
-        if runner is None:
-            meta["reason"] = "runner_unavailable"
-            return [], meta
-        rec = _run_monitor_minute_skill(
-            runner=runner,
-            run_id=run_id,
-            symbol=normalized,
-            timeframe_minutes=1,
-        )
-        _result, rows = _extract_monitor_minute_rows(rec)
-        clean_rows = [dict(row) for row in rows if isinstance(row, dict)]
-        meta["ok"] = bool(clean_rows)
-        meta["rows"] = len(clean_rows)
-        meta["reason"] = "" if clean_rows else "no_rows_returned"
-        return clean_rows, meta
-    except Exception as exc:
-        meta["reason"] = "fresh_minute_fetch_failed"
-        meta["error"] = str(exc)
-        return [], meta
+    return fetch_fresh_minute_rows_for_symbol_r4_impl(symbol, run_id=run_id, facade=_r3_sys.modules[__name__])
 
 
 def minute_rows_for_symbol_from_state(state: Mapping[str, Any], symbol: str) -> List[Dict[str, Any]]:
-    candidates = _symbol_candidates(symbol)
-    if not candidates:
-        return []
-
-    found: List[List[Dict[str, Any]]] = []
-
-    def collect(container: Mapping[str, Any]) -> None:
-        for key in (
-            "recent_minute_ohlcv_by_symbol",
-            "minute_ohlcv_by_symbol",
-            "monitor_minute_ohlcv_by_symbol",
-            "intraday_ohlcv_by_symbol",
-            "ohlcv_by_symbol",
-        ):
-            root = container.get(key)
-            if not isinstance(root, dict):
-                continue
-            for candidate in candidates:
-                rows = _rows_from_record(root.get(candidate), candidates)
-                if rows:
-                    found.append(rows)
-
-    collect(state)
-    persisted = state.get("persisted_state")
-    if isinstance(persisted, dict):
-        collect(persisted)
-
-    skill_results = state.get("skill_results") if isinstance(state.get("skill_results"), dict) else {}
-    for key in ("market.minute_ohlcv_by_symbol", "market.minute_ohlcv", "market.minute_candles", "market.candles"):
-        raw = skill_results.get(key)
-        if isinstance(raw, dict):
-            for candidate in candidates:
-                rows = _rows_from_record(raw.get(candidate), candidates)
-                if rows:
-                    found.append(rows)
-            if normalize_symbol(raw.get("symbol") or "", allow_test_symbols=True) in candidates:
-                rows = _rows_from_record(raw, candidates)
-                if rows:
-                    found.append(rows)
-
-    history = state.get("skill_results_history") if isinstance(state.get("skill_results_history"), dict) else {}
-    minute_history = history.get("market.minute_ohlcv")
-    if isinstance(minute_history, list):
-        for item in minute_history:
-            if not isinstance(item, dict):
-                continue
-            if normalize_symbol(item.get("symbol") or "", allow_test_symbols=True) not in candidates:
-                continue
-            rows = _rows_from_record(item.get("record"), candidates)
-            if rows:
-                found.append(rows)
-
-    if not found:
-        return []
-    found.sort(key=lambda rows: (_latest_epoch(rows), len(rows)), reverse=True)
-    return [dict(row) for row in found[0] if isinstance(row, dict)]
+    return minute_rows_for_symbol_from_state_r4_impl(state, symbol, facade=_r3_sys.modules[__name__])
 
 
 def _parse_exit_kst_date(exit_ts: Any) -> str:
-    raw = str(exit_ts or "").strip()
-    if not raw:
-        return ""
-    try:
-        dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
-    except Exception:
-        return ""
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
-    return dt.astimezone(KST).strftime("%Y%m%d")
+    return _parse_exit_kst_date_r4_impl(exit_ts, facade=_r3_sys.modules[__name__])
 
 
 def _row_kst_date(row: Mapping[str, Any]) -> str:
-    raw_ts = str(row.get("raw_ts") or "").strip()
-    if len(raw_ts) >= 8 and raw_ts[:8].isdigit():
-        return raw_ts[:8]
-    try:
-        ts = float(row.get("ts"))
-    except Exception:
-        return ""
-    return datetime.fromtimestamp(ts, tz=timezone.utc).astimezone(KST).strftime("%Y%m%d")
+    return _row_kst_date_r4_impl(row, facade=_r3_sys.modules[__name__])
 
 
 def _row_kst_hhmmss(row: Mapping[str, Any]) -> str:
-    raw_ts = str(row.get("raw_ts") or "").strip()
-    if len(raw_ts) >= 14 and raw_ts[8:14].isdigit():
-        return raw_ts[8:14]
-    try:
-        ts = float(row.get("ts"))
-    except Exception:
-        return ""
-    return datetime.fromtimestamp(ts, tz=timezone.utc).astimezone(KST).strftime("%H%M%S")
+    return _row_kst_hhmmss_r4_impl(row, facade=_r3_sys.modules[__name__])
 
 
 def same_day_closeout_rows_for_shadow(shadow: Mapping[str, Any], rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Keep the recap scoped to the sell date and full close, not T+1 drift."""
-
-    exit_day = _parse_exit_kst_date(shadow.get("exit_ts"))
-    if not exit_day:
-        return [dict(row) for row in rows]
-    out: List[Dict[str, Any]] = []
-    for row in rows:
-        if not isinstance(row, dict):
-            continue
-        if _row_kst_date(row) != exit_day:
-            continue
-        hhmmss = _row_kst_hhmmss(row)
-        if hhmmss and hhmmss > "160000":
-            continue
-        out.append(dict(row))
-    return out
+    return same_day_closeout_rows_for_shadow_r4_impl(shadow, rows, facade=_r3_sys.modules[__name__])
 
 
 def _checkpoint_target_after_regular_close(row: Mapping[str, Any]) -> bool:
-    target_epoch = _epoch_seconds(row.get("target_ts"))
-    if target_epoch is None:
-        return False
-    hhmmss = datetime.fromtimestamp(target_epoch, tz=timezone.utc).astimezone(KST).strftime("%H%M%S")
-    return hhmmss > "153000"
+    return _checkpoint_target_after_regular_close_r4_impl(row, facade=_r3_sys.modules[__name__])
 
 
 def _fill_regular_close_bound_pending_checkpoints(shadow: Mapping[str, Any]) -> Dict[str, Any]:
@@ -441,106 +256,19 @@ def _fill_regular_close_bound_pending_checkpoints(shadow: Mapping[str, Any]) -> 
     forever even after the 16:00 recap. In that case the regular close is the
     final same-session observation for the report.
     """
-
-    out = dict(shadow)
-    checkpoints = _as_dict(out.get("checkpoints"))
-    eod = _as_dict(checkpoints.get("EOD"))
-    if str(eod.get("status") or "").strip().lower() != "observed":
-        return out
-    eod_price = eod.get("price") if eod.get("price") is not None else eod.get("close")
-    eod_ts = eod.get("observed_ts")
-    exit_price = None
-    try:
-        exit_price = float(out.get("exit_price"))
-    except Exception:
-        exit_price = None
-    for label in ("+5m", "+15m", "+30m", "+60m"):
-        row = _as_dict(checkpoints.get(label))
-        if str(row.get("status") or "").strip().lower() == "observed":
-            continue
-        if not _checkpoint_target_after_regular_close(row):
-            continue
-        row.update(
-            {
-                "status": "observed",
-                "observed_ts": eod_ts,
-                "raw_ts": eod.get("raw_ts") or "",
-                "price": eod_price,
-                "observed_price": eod_price,
-                "closeout_substitute": True,
-                "closeout_substitute_reason": "checkpoint_target_after_regular_session_close",
-            }
-        )
-        if exit_price and eod_price not in (None, ""):
-            try:
-                row["return_pct"] = (float(eod_price) / float(exit_price)) - 1.0
-            except Exception:
-                pass
-        for key in ("high_since_exit", "low_since_exit", "max_upside_pct", "max_drawdown_pct", "observation_count"):
-            if eod.get(key) is not None:
-                row[key] = eod.get(key)
-        checkpoints[label] = row
-    out["checkpoints"] = checkpoints
-    return out
+    return _fill_regular_close_bound_pending_checkpoints_r4_impl(shadow, facade=_r3_sys.modules[__name__])
 
 
 def _post_exit_shadow_from_report(report: Mapping[str, Any]) -> Dict[str, Any]:
-    fact_payload = _as_dict(report.get("fact_payload"))
-    fact_trade = _as_dict(fact_payload.get("trade"))
-    lifecycle = _as_dict(report.get("trade_lifecycle"))
-    lifecycle_exit = _as_dict(lifecycle.get("exit"))
-    lifecycle_bundle = _as_dict(report.get("lifecycle_bundle"))
-    for candidate in (
-        report.get("post_exit_shadow"),
-        fact_trade.get("post_exit_shadow"),
-        lifecycle.get("post_exit_shadow"),
-        lifecycle_exit.get("post_exit_shadow"),
-        lifecycle_bundle.get("post_exit_shadow"),
-    ):
-        if isinstance(candidate, dict) and candidate:
-            return dict(candidate)
-    return {}
+    return _post_exit_shadow_from_report_r4_impl(report, facade=_r3_sys.modules[__name__])
 
 
 def _post_exit_shadow_from_lifecycle(report_path: Path) -> Dict[str, Any]:
-    trade_dir = report_path.parents[1]
-    bundle = _read_json(trade_dir / "lifecycle_bundle.json")
-    if not bundle:
-        return {}
-    lifecycle = _as_dict(bundle.get("lifecycle")) or bundle
-    status = str(
-        bundle.get("trade_lifecycle_status")
-        or lifecycle.get("status")
-        or bundle.get("status")
-        or ""
-    ).strip()
-    exit_ctx = _as_dict(lifecycle.get("exit")) or _as_dict(bundle.get("exit"))
-    exit_details = (
-        _as_dict(exit_ctx.get("execution_details"))
-        or _as_dict(bundle.get("exit_execution_details"))
-        or _as_dict(bundle.get("execution_details"))
-    )
-    return build_post_exit_shadow_placeholder(
-        lifecycle_bundle=bundle,
-        lifecycle=lifecycle,
-        status=status,
-        exit_execution_details=exit_details,
-    )
+    return _post_exit_shadow_from_lifecycle_r4_impl(report_path, facade=_r3_sys.modules[__name__])
 
 
 def _checkpoint_summary(shadow: Mapping[str, Any]) -> Dict[str, Any]:
-    checkpoints = _as_dict(shadow.get("checkpoints"))
-    out: Dict[str, Any] = {}
-    for label in CHECKPOINT_LABELS:
-        row = _as_dict(checkpoints.get(label))
-        out[label] = {
-            "status": str(row.get("status") or "pending"),
-            "price": row.get("price") if row.get("price") is not None else row.get("close"),
-            "return_pct": row.get("return_pct"),
-            "observed_ts": row.get("observed_ts"),
-            "latest_observed_ts": row.get("latest_observed_ts"),
-        }
-    return out
+    return _checkpoint_summary_r4_impl(shadow, facade=_r3_sys.modules[__name__])
 
 
 def _pct(value: Any) -> str:
@@ -558,11 +286,7 @@ def _price(value: Any) -> str:
 
 
 def _trade_label(path: Path, report: Mapping[str, Any], shadow: Mapping[str, Any]) -> str:
-    trade_id = str(report.get("trade_id") or report.get("story_id") or path.parents[1].name).strip()
-    symbol = str(shadow.get("symbol") or report.get("symbol") or "").strip()
-    if symbol:
-        return f"{trade_id} / {symbol}"
-    return trade_id
+    return _trade_label_r4_impl(path, report, shadow, facade=_r3_sys.modules[__name__])
 
 
 def iter_trade_report_json_paths(reports_root: Path, day: str) -> List[Path]:
@@ -579,101 +303,7 @@ def build_post_exit_shadow_recap(
     state: Mapping[str, Any] | None = None,
     generated_at: str | None = None,
 ) -> Dict[str, Any]:
-    state_obj = state if isinstance(state, Mapping) else {}
-    trades: List[Dict[str, Any]] = []
-    fresh_minute_cache: Dict[str, tuple[List[Dict[str, Any]], Dict[str, Any]]] = {}
-    for report_path in iter_trade_report_json_paths(reports_root, day):
-        report = _read_json(report_path)
-        shadow = _post_exit_shadow_from_report(report)
-        if not shadow:
-            shadow = _post_exit_shadow_from_lifecycle(report_path)
-        if not shadow:
-            continue
-        symbol = str(shadow.get("symbol") or report.get("symbol") or "").strip()
-        rows = minute_rows_for_symbol_from_state(state_obj, symbol) if symbol else []
-        rows = same_day_closeout_rows_for_shadow(shadow, rows)
-        fresh_minute_fetch: Dict[str, Any] = {"attempted": False}
-        if symbol and _fresh_minute_fetch_enabled() and _post_exit_shadow_needs_fresh_minutes(shadow, rows):
-            cached = fresh_minute_cache.get(symbol)
-            if cached is None:
-                fresh_rows, fresh_minute_fetch = fetch_fresh_minute_rows_for_symbol(
-                    symbol,
-                    run_id=f"post_exit_shadow_recap:{day}:{symbol}",
-                )
-                fresh_minute_cache[symbol] = (list(fresh_rows), dict(fresh_minute_fetch))
-                fresh_minute_fetch = {**fresh_minute_fetch, "cache_hit": False}
-            else:
-                cached_rows, cached_fetch = cached
-                fresh_rows = list(cached_rows)
-                fresh_minute_fetch = {**cached_fetch, "cache_hit": True}
-            fresh_rows = same_day_closeout_rows_for_shadow(shadow, fresh_rows)
-            rows = merge_minute_rows(rows, fresh_rows)
-        eod_fallback: Dict[str, Any] = {"applied": False}
-        if symbol and not _rows_reach_regular_close(rows):
-            fallback_row, eod_fallback = opening_rank1_eod_fallback_row(
-                reports_root=reports_root,
-                day=day,
-                symbol=symbol,
-            )
-            if fallback_row:
-                rows = merge_minute_rows(rows, [fallback_row])
-        updated_shadow = (
-            update_post_exit_shadow_with_price_observations(shadow, minute_rows=rows)
-            if rows
-            else dict(shadow)
-        )
-        updated_shadow = _fill_regular_close_bound_pending_checkpoints(updated_shadow)
-        checkpoints = _checkpoint_summary(updated_shadow)
-        trades.append(
-            {
-                "trade_id": str(report.get("trade_id") or report.get("story_id") or report_path.parents[1].name),
-                "symbol": symbol,
-                "report_path": str(report_path),
-                "recap_json_path": str(report_path.with_name("post_exit_shadow_recap.json")),
-                "recap_md_path": str(report_path.with_name("post_exit_shadow_recap.md")),
-                "price_observation_status": str(updated_shadow.get("price_observation_status") or "pending"),
-                "price_observation_reason": str(updated_shadow.get("price_observation_reason") or ""),
-                "latest_observed_ts": updated_shadow.get("latest_observed_ts"),
-                "best_exit_offset": str(updated_shadow.get("best_exit_offset") or ""),
-                "best_exit_price": updated_shadow.get("best_exit_price"),
-                "max_post_exit_upside_pct": updated_shadow.get("max_post_exit_upside_pct"),
-                "max_post_exit_drawdown_pct": updated_shadow.get("max_post_exit_drawdown_pct"),
-                "checkpoints": checkpoints,
-                "post_exit_shadow": updated_shadow,
-                "label": _trade_label(report_path, report, updated_shadow),
-                "source_minute_rows": len(rows),
-                "fresh_minute_fetch": fresh_minute_fetch,
-                "eod_fallback": eod_fallback,
-            }
-        )
-
-    observed_count = sum(1 for trade in trades if trade.get("price_observation_status") == "observed")
-    eod_observed_count = sum(
-        1
-        for trade in trades
-        if _as_dict(_as_dict(trade.get("checkpoints")).get("EOD")).get("status") == "observed"
-    )
-    return {
-        "schema_version": "post_exit_shadow_recap.v1",
-        "observability_only": True,
-        "day": str(day),
-        "generated_at": str(generated_at or _utc_now_iso()),
-        "policy": {
-            "bulk_update_time_kst": "stage4_closeout_review + 16:00",
-            "trigger": "runtime.stage4_carry_review|runtime.closeout_guard_after_sweep|closeout.post_exit_shadow_recap",
-            "schedule_semantics": "Refreshes after the runtime stage4 carry review, again after the closeout sweep, and through the 16:00 closeout recap task.",
-            "rewrite_trade_reports": False,
-            "refresh_trade_summary": True,
-            "note": "ai_trade_report.json is kept immutable; recap artifacts and ai_trade_summary artifacts are refreshed.",
-        },
-        "summary": {
-            "total": len(trades),
-            "observed": observed_count,
-            "pending": len(trades) - observed_count,
-            "eod_observed": eod_observed_count,
-        },
-        "trades": trades,
-    }
+    return build_post_exit_shadow_recap_r4_impl(reports_root=reports_root, day=day, state=state, generated_at=generated_at, facade=_r3_sys.modules[__name__])
 
 
 def render_post_exit_shadow_trade_recap_md(trade: Mapping[str, Any]) -> str:
@@ -791,60 +421,11 @@ def render_post_exit_shadow_daily_recap_md(recap: Mapping[str, Any]) -> str:
 
 
 def _render_trade_recap_markdown(trade: Mapping[str, Any]) -> str:
-    lines = [
-        f"# 매도 후 가격 추적 Recap - {trade.get('label')}",
-        "",
-        "- 기준: 실제 매도 후 같은 종목을 가상 보유했다고 가정한 관측 전용 결과입니다.",
-        "- 적용: 기존 ai_trade_report 본문은 수정하지 않고 recap과 summary 산출물만 갱신합니다.",
-        f"- 가격 관측 상태: {trade.get('price_observation_status')}",
-        f"- 사유: {trade.get('price_observation_reason') or '-'}",
-        f"- 마지막 관측 시각: {trade.get('latest_observed_ts') or '-'}",
-        f"- 최선 관측 지점: {trade.get('best_exit_offset') or '-'} / {_price(trade.get('best_exit_price'))}",
-        f"- 최대 매도 후 상승: {_pct(trade.get('max_post_exit_upside_pct'))}",
-        f"- 최대 매도 후 하락: {_pct(trade.get('max_post_exit_drawdown_pct'))}",
-        "",
-        "| 지점 | 상태 | 가격 | 수익률 | 관측 시각 |",
-        "| --- | --- | ---: | ---: | --- |",
-    ]
-    checkpoints = _as_dict(trade.get("checkpoints"))
-    for label in CHECKPOINT_LABELS:
-        row = _as_dict(checkpoints.get(label))
-        lines.append(
-            f"| {label} | {row.get('status') or 'pending'} | {_price(row.get('price'))} | "
-            f"{_pct(row.get('return_pct'))} | {row.get('observed_ts') or row.get('latest_observed_ts') or '-'} |"
-        )
-    return "\n".join(lines) + "\n"
+    return _render_trade_recap_markdown_r4_impl(trade, facade=_r3_sys.modules[__name__])
 
 
 def _render_daily_recap_markdown(recap: Mapping[str, Any]) -> str:
-    summary = _as_dict(recap.get("summary"))
-    lines = [
-        f"# 매도 후 가격 추적 일괄 Recap ({recap.get('day')})",
-        "",
-        "- 기준: stage4 closeout review와 16:00 closeout에서 당일 매도 후 가격 추적을 일괄 갱신합니다.",
-        "- 적용: 기존 ai_trade_report 본문은 수정하지 않고 recap과 ai_trade_summary 산출물만 갱신합니다.",
-        f"- 총 대상: {summary.get('total', 0)}건",
-        f"- 관측 완료: {summary.get('observed', 0)}건",
-        f"- EOD 관측 완료: {summary.get('eod_observed', 0)}건",
-        f"- 대기: {summary.get('pending', 0)}건",
-        "",
-        "| 거래 | 상태 | +5m | +15m | +30m | +60m | EOD | 최선 지점 | 최대 상승 |",
-        "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- | ---: |",
-    ]
-    for trade in _as_list(recap.get("trades")):
-        if not isinstance(trade, dict):
-            continue
-        checkpoints = _as_dict(trade.get("checkpoints"))
-        returns = []
-        for label in CHECKPOINT_LABELS:
-            row = _as_dict(checkpoints.get(label))
-            returns.append(_pct(row.get("return_pct")) if row.get("status") == "observed" else "-")
-        lines.append(
-            f"| {trade.get('label')} | {trade.get('price_observation_status')} | "
-            f"{returns[0]} | {returns[1]} | {returns[2]} | {returns[3]} | {returns[4]} | "
-            f"{trade.get('best_exit_offset') or '-'} | {_pct(trade.get('max_post_exit_upside_pct'))} |"
-        )
-    return "\n".join(lines) + "\n"
+    return _render_daily_recap_markdown_r4_impl(recap, facade=_r3_sys.modules[__name__])
 
 
 def write_post_exit_shadow_recap_outputs(

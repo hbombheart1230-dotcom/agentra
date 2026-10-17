@@ -1,0 +1,26 @@
+{
+ "date": "2026-10-17",
+ "version": "Reporter Role R-11",
+ "title": "Reporter whole-role: 313 moved bodies (incl. READ_VIA_CALLBACK) + offline BASE-vs-HEAD contracts for all retained I/O functions",
+ "stage": "Architecture and Maintainability",
+ "types": [
+  "REFACTOR",
+  "TESTING",
+  "DOCS"
+ ],
+ "status": "proposal_NOT_PUBLISHED",
+ "summary": "313 function bodies (23 facade paths, 41 owner files) moved with the R3 facade-injection pattern (R-4..R-9); they are not all pure: the R-8 batch includes READ_VIA_CALLBACK readers whose I/O stays in the facade-supplied callback, proven by read-contract and callback-parity tests. R-10 adds offline BASE-vs-HEAD contracts for all 47 retained I/O functions (read/write/clock/identity/redefinition), producer->artifact->API parity, frozen-clock raw-byte parity and a read-only authority map for 22 LLM/broker/truth functions. R-11 adds repository artefact-hygiene prevention. No I/O or authority function was moved.",
+ "details": [
+  "controlled_mock_lane_report: retained intentionally at its legacy path as a Reporter presentation/read adapter (Work decision); no Q10/Q12 change. trade_report_symbol_metadata kept (377 LOC > 350).",
+  "Shared exact agent-package gates need Work to add reporter: {narrative, read_models}. No report disabled, no LLM/writer/queue change.",
+  "R10-002 accidentally committed 4 Windows OS cache files (c5d004b); removed from the tree in 359ef16, still reachable in history (no rewrite without owner approval); R-11 adds a per-commit hygiene check."
+ ],
+ "impact": "Module location and tests only; no report text, payload or behavior change.",
+ "sources": [
+  "docs/refactor/work_projects/evidence/reporter/R11_CHECKPOINTS.md",
+  "docs/refactor/work_projects/evidence/reporter/R10_CHECKPOINTS.md",
+  "docs/refactor/work_projects/evidence/reporter/REPORTER_ROLE_R10_FREEZE.md",
+  "docs/refactor/work_projects/evidence/reporter/R8_CHECKPOINTS.md"
+ ],
+ "ui_source": "apps/api/adapters/patch_notes.py reads docs/trading_agent_patch_notes_detailed_update/patch_notes.json (Work-owned); this entry is NOT_PUBLISHED"
+}

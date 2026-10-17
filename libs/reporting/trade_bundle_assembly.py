@@ -41,6 +41,27 @@ from libs.runtime.strategy_horizon_feedback import (
     build_post_exit_shadow_placeholder,
     update_post_exit_shadow_with_price_observations,
 )
+import sys as _r3_sys
+from libs.agents.reporter.read_models.bundle_assembly_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _latest_exit_monitor_context_from_timeline_r4_impl,
+    apply_latest_exit_monitor_context_from_timeline_r4_impl,
+    _resolve_trade_day_hint_r4_impl,
+    _normalize_broker_lookup_side_r4_impl,
+    _attach_broker_order_status_r4_impl,
+    build_execution_details_from_bundle_r4_impl,
+    _has_meaningful_payload_r4_impl,
+    _prefer_canonical_payload_r4_impl,
+    preferred_run_ids_for_agent_r4_impl,
+    _is_placeholder_entry_reason_r4_impl,
+    build_strategist_trace_summary_mirror_r4_impl,
+    build_scanner_trace_summary_mirror_r4_impl,
+    apply_trace_summary_context_r4_impl,
+)
+from libs.agents.reporter.read_models.trade_bundle_assembly_r8_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    resolve_lifecycle_bundle_sources_r4_impl,
+    hydrate_live_run_bundle_context_r4_impl,
+    derive_trade_recovery_metadata_r4_impl,
+)
 
 
 def _coalesce_non_empty(*values: Any) -> Any:
@@ -56,130 +77,18 @@ def _latest_exit_monitor_context_from_timeline(
     exit_run_id: str,
     symbol: str,
 ) -> Dict[str, Any]:
-    if not exit_run_id:
-        return {}
-    timeline = dict(monitor_timeline or {})
-    rows_by_ts: Dict[str, List[tuple[str, Dict[str, Any]]]] = {}
-    collection_order = (
-        "threshold_snapshots",
-        "exit_decision_details",
-        "cycle_summaries",
-        "state_transitions",
-    )
-    for collection_name in collection_order:
-        for row in list(timeline.get(collection_name) or []):
-            if not isinstance(row, dict):
-                continue
-            if str(row.get("run_id") or "").strip() != exit_run_id:
-                continue
-            payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-            if not payload:
-                continue
-            ts = str(row.get("ts") or "").strip()
-            if not ts:
-                continue
-            rows_by_ts.setdefault(ts, []).append((collection_name, dict(payload)))
-    if not rows_by_ts:
-        return {}
-
-    latest_ts = sorted(rows_by_ts.keys())[-1]
-    merged: Dict[str, Any] = {}
-    for collection_name in collection_order:
-        for row_collection, payload in rows_by_ts.get(latest_ts, []):
-            if row_collection == collection_name:
-                merged.update(payload)
-
-    final_thresholds = merged.get("final_exit_thresholds")
-    if isinstance(final_thresholds, dict) and not isinstance(merged.get("thresholds"), dict):
-        merged["thresholds"] = dict(final_thresholds)
-    triggered_rule = str(merged.get("triggered_rule") or "").strip()
-    if triggered_rule:
-        merged.setdefault("exit_reason", triggered_rule)
-        merged.setdefault("trigger_type", triggered_rule)
-        merged.setdefault("reason", triggered_rule)
-    if bool(merged.get("exit_triggered")) and not str(merged.get("monitor_reason") or "").strip():
-        merged["monitor_reason"] = "confirmed_exit_signal"
-    if str(merged.get("intent_side") or "").strip().upper() == "SELL":
-        merged.setdefault("posture", "SELL")
-    if str(merged.get("current_posture") or "").strip().upper() == "SELL":
-        merged.setdefault("posture", "SELL")
-    merged.setdefault("run_id", exit_run_id)
-    merged.setdefault("ts", latest_ts)
-    if symbol:
-        merged.setdefault("symbol", symbol)
-        merged.setdefault("selected_symbol", symbol)
-        merged.setdefault("monitor_symbol", symbol)
-    merged["source"] = "monitor_timeline.latest_exit_run"
-    return merged
+    return _latest_exit_monitor_context_from_timeline_r4_impl(monitor_timeline, exit_run_id=exit_run_id, symbol=symbol, facade=_r3_sys.modules[__name__])
 
 
 def apply_latest_exit_monitor_context_from_timeline(
     lifecycle_bundle: Mapping[str, Any] | None,
     monitor_timeline: Mapping[str, Any] | None,
 ) -> Dict[str, Any]:
-    out = dict(lifecycle_bundle or {})
-    exit_obj = out.get("exit") if isinstance(out.get("exit"), dict) else {}
-    if not exit_obj:
-        return out
-    exit_run_id = str(exit_obj.get("run_id") or "").strip()
-    symbol = normalize_symbol(
-        out.get("symbol") or exit_obj.get("symbol") or "",
-        allow_test_symbols=True,
-    )
-    latest_exit_monitor_context = _latest_exit_monitor_context_from_timeline(
-        monitor_timeline,
-        exit_run_id=exit_run_id,
-        symbol=symbol,
-    )
-    if not latest_exit_monitor_context:
-        return out
-
-    exit_obj = dict(exit_obj)
-    monitor_context = (
-        dict(exit_obj.get("monitor_context") or {})
-        if isinstance(exit_obj.get("monitor_context"), dict)
-        else {}
-    )
-    monitor_context = {**monitor_context, **latest_exit_monitor_context}
-    exit_obj["monitor_context"] = monitor_context
-    out["monitor"] = {
-        **(out.get("monitor") if isinstance(out.get("monitor"), dict) else {}),
-        **latest_exit_monitor_context,
-    }
-    monitor_reason_human = build_monitor_reason_human(
-        monitor_context,
-        {"action": str(exit_obj.get("action") or "SELL").strip().upper() or "SELL"},
-    )
-    out["monitor_reason_human"] = monitor_reason_human
-    summary = str(monitor_reason_human.get("summary") or "").strip()
-    if summary:
-        exit_obj["reason_human"] = summary
-        exit_obj["summary"] = summary
-        trade_outcome = out.get("trade_outcome") if isinstance(out.get("trade_outcome"), dict) else {}
-        if trade_outcome:
-            trade_outcome = dict(trade_outcome)
-            trade_outcome["exit_reason"] = summary
-            out["trade_outcome"] = trade_outcome
-    out["exit"] = exit_obj
-    lifecycle_obj = out.get("lifecycle") if isinstance(out.get("lifecycle"), dict) else {}
-    if lifecycle_obj:
-        lifecycle_obj = dict(lifecycle_obj)
-        lifecycle_obj["exit"] = exit_obj
-        out["lifecycle"] = lifecycle_obj
-    return out
+    return apply_latest_exit_monitor_context_from_timeline_r4_impl(lifecycle_bundle, monitor_timeline, facade=_r3_sys.modules[__name__])
 
 
 def _resolve_trade_day_hint(*values: Any) -> str:
-    for value in values:
-        raw = str(value or "").strip()
-        if not raw:
-            continue
-        if len(raw) >= 10 and raw[4] == "-" and raw[7] == "-":
-            return raw[:10].replace("-", "")
-        digits = "".join(ch for ch in raw if ch.isdigit())
-        if len(digits) >= 8:
-            return digits[:8]
-    return ""
+    return _resolve_trade_day_hint_r4_impl(*values, facade=_r3_sys.modules[__name__])
 
 
 def _broker_fill_lookup_enabled(context_obj: Mapping[str, Any]) -> bool:
@@ -192,15 +101,7 @@ def _broker_fill_lookup_enabled(context_obj: Mapping[str, Any]) -> bool:
 
 
 def _normalize_broker_lookup_side(value: Any) -> str:
-    text = str(value or "").strip().lower()
-    if not text:
-        return "all"
-    compact = text.replace("_", "").replace("-", "").replace(" ", "")
-    if compact in {"sell", "s", "1"} or "매도" in text:
-        return "sell"
-    if compact in {"buy", "b", "2"} or "매수" in text:
-        return "buy"
-    return "all"
+    return _normalize_broker_lookup_side_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _broker_order_status_payload(dto: Any) -> Dict[str, Any]:
@@ -225,133 +126,7 @@ def _attach_broker_order_status(
     *,
     context: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    bundle_obj = dict(bundle or {})
-    context_obj = dict(context or {})
-    execution_context = (
-        dict(context_obj.get("execution_context") or {})
-        if isinstance(context_obj.get("execution_context"), dict)
-        else {}
-    )
-    execution_details = (
-        dict(context_obj.get("execution_details") or {})
-        if isinstance(context_obj.get("execution_details"), dict)
-        else {}
-    )
-    bundle_execution_details = (
-        dict(bundle_obj.get("execution_details") or {})
-        if isinstance(bundle_obj.get("execution_details"), dict)
-        else {}
-    )
-    if isinstance(execution_context.get("broker_order_status"), dict) and execution_context.get("broker_order_status"):
-        context_obj["execution_context"] = execution_context
-        return context_obj
-
-    execution = bundle_obj.get("execution") if isinstance(bundle_obj.get("execution"), dict) else {}
-    executor = bundle_obj.get("executor") if isinstance(bundle_obj.get("executor"), dict) else {}
-    broker_result = executor.get("broker_result") if isinstance(executor.get("broker_result"), dict) else {}
-    order_request = executor.get("order_request_summary") if isinstance(executor.get("order_request_summary"), dict) else {}
-
-    order_id = str(
-        _coalesce_non_empty(
-            execution_details.get("order_id"),
-            execution_details.get("ord_no"),
-            bundle_execution_details.get("order_id"),
-            bundle_execution_details.get("ord_no"),
-            execution.get("ord_no"),
-            execution.get("order_id"),
-            broker_result.get("ord_no"),
-            broker_result.get("order_id"),
-            executor.get("ord_no"),
-            executor.get("order_id"),
-            order_request.get("ord_no"),
-            order_request.get("order_id"),
-            execution_context.get("order_id"),
-            execution_context.get("ord_no"),
-        )
-        or ""
-    ).strip()
-    symbol = normalize_symbol(
-        _coalesce_non_empty(
-            context_obj.get("symbol"),
-            execution_details.get("symbol"),
-            bundle_execution_details.get("symbol"),
-            execution.get("symbol"),
-            broker_result.get("symbol"),
-            executor.get("symbol"),
-            order_request.get("symbol"),
-            execution_context.get("symbol"),
-        )
-        or "",
-        allow_test_symbols=True,
-    )
-    side = _normalize_broker_lookup_side(
-        _coalesce_non_empty(
-            context_obj.get("action"),
-            context_obj.get("side"),
-            execution_details.get("action"),
-            execution_details.get("side"),
-            bundle_execution_details.get("action"),
-            bundle_execution_details.get("side"),
-            execution.get("action"),
-            broker_result.get("action"),
-            executor.get("action"),
-            order_request.get("action"),
-            execution_context.get("action"),
-        )
-        or ""
-    )
-    ord_dt = _resolve_trade_day_hint(
-        context_obj.get("trade_day"),
-        context_obj.get("ts"),
-        execution_details.get("ts"),
-        bundle_execution_details.get("ts"),
-        execution_context.get("ts"),
-        execution.get("ts"),
-        broker_result.get("ts"),
-        executor.get("ts"),
-        bundle_obj.get("ts"),
-    )
-    if not (order_id and symbol and ord_dt):
-        context_obj["execution_context"] = execution_context
-        return context_obj
-
-    reader = context_obj.get("broker_fill_reader")
-    if reader is None:
-        if not _broker_fill_lookup_enabled(context_obj):
-            context_obj["execution_context"] = execution_context
-            return context_obj
-        try:
-            from libs.read.kiwoom_order_fill_reader import KiwoomOrderFillReader
-
-            reader = KiwoomOrderFillReader.from_env()
-        except Exception as exc:
-            execution_context["broker_order_status_error"] = str(exc)
-            context_obj["execution_context"] = execution_context
-            return context_obj
-
-    try:
-        dto = reader.get_order_status(
-            ord_no=order_id,
-            symbol=symbol,
-            ord_dt=ord_dt,
-            side=side or "all",
-        )
-    except Exception as exc:
-        execution_context["broker_order_status_error"] = str(exc)
-        context_obj["execution_context"] = execution_context
-        return context_obj
-
-    payload = _broker_order_status_payload(dto)
-    if payload.get("order_id") in (None, ""):
-        payload["order_id"] = order_id
-        payload["ord_no"] = order_id
-    if (
-        payload.get("order_id") not in (None, "")
-        and any(payload.get(key) not in (None, "", 0) for key in ("filled_qty", "filled_price", "status"))
-    ):
-        execution_context["broker_order_status"] = payload
-    context_obj["execution_context"] = execution_context
-    return context_obj
+    return _attach_broker_order_status_r4_impl(bundle, context=context, facade=_r3_sys.modules[__name__])
 
 
 def build_execution_details_from_bundle(
@@ -359,28 +134,11 @@ def build_execution_details_from_bundle(
     *,
     context: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    bundle_obj = dict(bundle or {})
-    context_obj = dict(context or {})
-    if not isinstance(context_obj.get("monitor_context"), dict):
-        monitor_payload = bundle_obj.get("monitor") if isinstance(bundle_obj.get("monitor"), dict) else {}
-        if monitor_payload:
-            context_obj["monitor_context"] = dict(monitor_payload)
-    context_obj = _attach_broker_order_status(bundle_obj, context=context_obj)
-    context_obj = attach_broker_day_pnl(bundle_obj, context=context_obj)
-    return build_execution_details(bundle_obj, context=context_obj)
+    return build_execution_details_from_bundle_r4_impl(bundle, context=context, facade=_r3_sys.modules[__name__])
 
 
 def _has_meaningful_payload(payload: Any) -> bool:
-    if not isinstance(payload, dict) or not payload:
-        return False
-    for value in payload.values():
-        if isinstance(value, dict) and _has_meaningful_payload(value):
-            return True
-        if isinstance(value, list) and any(item not in ({}, [], None, "") for item in value):
-            return True
-        if value not in ({}, [], None, ""):
-            return True
-    return False
+    return _has_meaningful_payload_r4_impl(payload, facade=_r3_sys.modules[__name__])
 
 
 def _prefer_canonical_payload(
@@ -392,25 +150,7 @@ def _prefer_canonical_payload(
     normalized_payload: Mapping[str, Any] | None = None,
     normalized_path: str = "",
 ) -> Dict[str, Any]:
-    canonical_sources = dict(canonical_sources or {})
-    canonical_payload = (
-        (canonical_sources.get("artifacts") or {}).get(agent)
-        if isinstance(canonical_sources.get("artifacts"), dict)
-        else {}
-    )
-    canonical_path = (
-        str(((canonical_sources.get("paths") or {}).get(agent) or "")).strip()
-        if isinstance(canonical_sources.get("paths"), dict)
-        else ""
-    )
-    merged = dict(fallback or {})
-    if _has_meaningful_payload(normalized_payload):
-        merged.update(dict(normalized_payload or {}))
-        return {"payload": merged, "source": "normalized_trade_artifact", "path": str(normalized_path or "")}
-    if _has_meaningful_payload(canonical_payload):
-        merged.update(dict(canonical_payload or {}))
-        return {"payload": merged, "source": "canonical", "path": canonical_path}
-    return {"payload": dict(fallback or {}), "source": str(fallback_source or "fallback"), "path": canonical_path}
+    return _prefer_canonical_payload_r4_impl(canonical_sources, agent, fallback, fallback_source=fallback_source, normalized_payload=normalized_payload, normalized_path=normalized_path, facade=_r3_sys.modules[__name__])
 
 
 def preferred_run_ids_for_agent(
@@ -420,18 +160,7 @@ def preferred_run_ids_for_agent(
     entry_run_id: str,
     exit_run_id: str,
 ) -> List[str]:
-    if agent in {"strategist", "scanner"}:
-        ordered = [entry_run_id, anchor_run_id, exit_run_id]
-    elif agent in {"monitor", "supervisor", "executor"}:
-        ordered = [exit_run_id, anchor_run_id, entry_run_id]
-    else:
-        ordered = [anchor_run_id, entry_run_id, exit_run_id]
-    out: List[str] = []
-    for item in ordered:
-        rid = str(item or "").strip()
-        if rid and rid not in out:
-            out.append(rid)
-    return out
+    return preferred_run_ids_for_agent_r4_impl(agent, anchor_run_id=anchor_run_id, entry_run_id=entry_run_id, exit_run_id=exit_run_id, facade=_r3_sys.modules[__name__])
 
 
 def resolve_lifecycle_bundle_sources(
@@ -443,72 +172,7 @@ def resolve_lifecycle_bundle_sources(
     entry_run_id: str,
     exit_run_id: str,
 ) -> Dict[str, Any]:
-    agents = ("commander", "strategist", "scanner", "monitor", "supervisor", "executor")
-    artifacts = dict((anchor_bundle.get("artifacts") if isinstance(anchor_bundle.get("artifacts"), dict) else {}) or {})
-    canonical_agent_artifacts = dict(
-        (anchor_bundle.get("canonical_agent_artifacts") if isinstance(anchor_bundle.get("canonical_agent_artifacts"), dict) else {}) or {}
-    )
-    evidence_provenance = dict(
-        (anchor_bundle.get("evidence_provenance") if isinstance(anchor_bundle.get("evidence_provenance"), dict) else {}) or {}
-    )
-    resolved_agents: Dict[str, Dict[str, Any]] = {
-        agent: dict(anchor_bundle.get(agent) or {}) if isinstance(anchor_bundle.get(agent), dict) else {}
-        for agent in agents
-    }
-    run_cache: Dict[str, Dict[str, Any]] = {}
-
-    def _load_sources(run_id: str) -> Dict[str, Any]:
-        rid = str(run_id or "").strip()
-        if not rid:
-            return {}
-        if rid not in run_cache:
-            run_cache[rid] = load_run_canonical_artifacts(
-                reports_root=reports_root,
-                run_id=rid,
-                day_hint=day,
-            )
-        return run_cache[rid]
-
-    for agent in agents:
-        canonical_key = f"canonical_{agent}_json"
-        for rid in preferred_run_ids_for_agent(
-            agent,
-            anchor_run_id=anchor_run_id,
-            entry_run_id=entry_run_id,
-            exit_run_id=exit_run_id,
-        ):
-            sources = _load_sources(rid)
-            paths = dict(sources.get("paths") or {}) if isinstance(sources.get("paths"), dict) else {}
-            payloads = dict(sources.get("artifacts") or {}) if isinstance(sources.get("artifacts"), dict) else {}
-            if not str(artifacts.get(canonical_key) or "").strip():
-                resolved_path = str(paths.get(agent) or "").strip()
-                if resolved_path:
-                    artifacts[canonical_key] = resolved_path
-            if not (
-                isinstance(canonical_agent_artifacts.get(agent), dict) and bool(canonical_agent_artifacts.get(agent))
-            ):
-                resolved_payload = payloads.get(agent)
-                if isinstance(resolved_payload, dict) and bool(resolved_payload):
-                    canonical_agent_artifacts[agent] = dict(resolved_payload)
-            if not resolved_agents.get(agent):
-                if isinstance(canonical_agent_artifacts.get(agent), dict) and bool(canonical_agent_artifacts.get(agent)):
-                    resolved_agents[agent] = dict(canonical_agent_artifacts.get(agent) or {})
-            if resolved_agents.get(agent) and str(artifacts.get(canonical_key) or "").strip():
-                break
-        if not str(evidence_provenance.get(agent) or "").strip():
-            if str(artifacts.get(canonical_key) or "").strip() or (
-                isinstance(canonical_agent_artifacts.get(agent), dict) and bool(canonical_agent_artifacts.get(agent))
-            ):
-                evidence_provenance[agent] = "canonical"
-            elif resolved_agents.get(agent):
-                evidence_provenance[agent] = "direct_artifact"
-
-    return {
-        "artifacts": artifacts,
-        "canonical_agent_artifacts": canonical_agent_artifacts,
-        "evidence_provenance": evidence_provenance,
-        "agents": resolved_agents,
-    }
+    return resolve_lifecycle_bundle_sources_r4_impl(reports_root=reports_root, day=day, anchor_bundle=anchor_bundle, anchor_run_id=anchor_run_id, entry_run_id=entry_run_id, exit_run_id=exit_run_id, facade=_r3_sys.modules[__name__])
 
 
 def attach_strategy_anchor(
@@ -741,244 +405,25 @@ def hydrate_live_run_bundle_context(
     operator_summary_md_path: Path,
     bundle_ts: str,
 ) -> Dict[str, Any]:
-    execution_payload = (
-        dict(execution_row.get("payload") or {})
-        if isinstance(execution_row, Mapping) and isinstance(execution_row.get("payload"), dict)
-        else dict(execution_row or {})
-        if isinstance(execution_row, Mapping)
-        else {}
-    )
-    canonical_sources = load_run_canonical_artifacts(
-        reports_root=reports_root,
-        run_id=run_id,
-        day_hint=day,
-    )
-    commander_preferred = _prefer_canonical_payload(
-        canonical_sources,
-        "commander",
-        dict((trace_out or {}).get("commander") or {}),
-        fallback_source="direct_artifact",
-    )
-    strategist_preferred = _prefer_canonical_payload(
-        canonical_sources,
-        "strategist",
-        dict((trace_out or {}).get("strategist") or {}),
-        fallback_source="direct_artifact",
-    )
-    scanner_preferred = _prefer_canonical_payload(
-        canonical_sources,
-        "scanner",
-        dict((trace_out or {}).get("scanner") or {}),
-        fallback_source="direct_artifact",
-    )
-    monitor_preferred = _prefer_canonical_payload(
-        canonical_sources,
-        "monitor",
-        dict((trace_out or {}).get("monitor") or {}),
-        fallback_source="direct_artifact",
-    )
-    supervisor_preferred = _prefer_canonical_payload(
-        canonical_sources,
-        "supervisor",
-        dict((trace_out or {}).get("supervisor") or {}),
-        fallback_source="direct_artifact",
-    )
-    executor_preferred = _prefer_canonical_payload(
-        canonical_sources,
-        "executor",
-        dict((trace_out or {}).get("executor") or {}),
-        fallback_source="direct_artifact",
-    )
-    merged_execution = build_execution_snapshot(
-        candidates=[
-            execution_payload,
-            dict(executor_preferred.get("payload") or {}),
-        ],
-        run_id=run_id,
-        ts=str((execution_row or {}).get("ts") or "") if isinstance(execution_row, Mapping) else "",
-    )
-    bundle_build = build_live_run_bundle(
-        day=day,
-        run_id=run_id,
-        merged_execution=merged_execution,
-        commander_payload=commander_preferred.get("payload") or {},
-        strategist_payload=strategist_preferred.get("payload") or {},
-        scanner_payload=scanner_preferred.get("payload") or {},
-        monitor_payload=monitor_preferred.get("payload") or {},
-        supervisor_payload=supervisor_preferred.get("payload") or {},
-        executor_payload=executor_preferred.get("payload") or {},
-        reporter_trace_payload=dict((trace_out or {}).get("reporter") or {}),
-        reporter_obj=reporter_obj,
-        trade_obj=trade_obj,
-        trace_json_path=trace_json_path,
-        trace_md_path=trace_md_path,
-        trade_json_path=trade_json_path,
-        trade_md_path=trade_md_path,
-        reporter_json_path=reporter_json_path,
-        reporter_md_path=reporter_md_path,
-        operator_summary_json_path=operator_summary_json_path,
-        operator_summary_md_path=operator_summary_md_path,
-        commander_path=str(commander_preferred.get("path") or ""),
-        strategist_path=str(strategist_preferred.get("path") or ""),
-        scanner_path=str(scanner_preferred.get("path") or ""),
-        monitor_path=str(monitor_preferred.get("path") or ""),
-        supervisor_path=str(supervisor_preferred.get("path") or ""),
-        executor_path=str(executor_preferred.get("path") or ""),
-        canonical_sources=canonical_sources,
-    )
-    bundle_out = dict(bundle_build.get("bundle_out") or {})
-    bundle_out["ts"] = str(bundle_ts or "")
-    bundle_out["evidence_provenance"] = {
-        "commander": str(commander_preferred.get("source") or ""),
-        "strategist": str(strategist_preferred.get("source") or ""),
-        "scanner": str(scanner_preferred.get("source") or ""),
-        "monitor": str(monitor_preferred.get("source") or ""),
-        "supervisor": str(supervisor_preferred.get("source") or ""),
-        "executor": str(executor_preferred.get("source") or ""),
-        "reporter": "direct_artifact",
-    }
-    return {
-        "bundle_out": bundle_out,
-        "story_contract": dict(bundle_build.get("story_contract") or {}),
-        "story_id": str(bundle_build.get("story_id") or ""),
-        "story_type": str(bundle_build.get("story_type") or "unknown"),
-        "canonical_sources": dict(canonical_sources or {}),
-    }
+    return hydrate_live_run_bundle_context_r4_impl(reports_root=reports_root, day=day, run_id=run_id, execution_row=execution_row, trace_out=trace_out, reporter_obj=reporter_obj, trade_obj=trade_obj, trace_json_path=trace_json_path, trace_md_path=trace_md_path, trade_json_path=trade_json_path, trade_md_path=trade_md_path, reporter_json_path=reporter_json_path, reporter_md_path=reporter_md_path, operator_summary_json_path=operator_summary_json_path, operator_summary_md_path=operator_summary_md_path, bundle_ts=bundle_ts, facade=_r3_sys.modules[__name__])
 
 
 def _is_placeholder_entry_reason(value: Any) -> bool:
-    raw = str(value or "").strip().lower()
-    return raw in {
-        "",
-        "no_position",
-        "entry reasoning was not captured.",
-        "entry reasoning was not captured",
-        "-",
-        "n/a",
-    }
+    return _is_placeholder_entry_reason_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def build_strategist_trace_summary_mirror(
     strategist_summary: Mapping[str, Any] | None,
     market_context_human: Mapping[str, Any] | None,
 ) -> Dict[str, Any]:
-    strategist = dict(strategist_summary or {})
-    trace = strategist.get("trace_summary") if isinstance(strategist.get("trace_summary"), dict) else {}
-    market_context = dict(market_context_human or {})
-    strategy_frame = strategist.get("strategy_frame") if isinstance(strategist.get("strategy_frame"), dict) else {}
-    policy_selected = strategist.get("policy_selected") if isinstance(strategist.get("policy_selected"), dict) else {}
-    if trace:
-        out = dict(trace)
-        if not out.get("risk_tone"):
-            out["risk_tone"] = str(
-                strategist.get("risk_tone")
-                or strategy_frame.get("risk_tone")
-                or policy_selected.get("risk_tone")
-                or market_context.get("risk_tone")
-                or ""
-            )
-        if not out.get("trade_aggressiveness"):
-            out["trade_aggressiveness"] = str(
-                strategist.get("trade_aggressiveness")
-                or strategy_frame.get("trade_aggressiveness")
-                or policy_selected.get("trade_aggressiveness")
-                or market_context.get("trade_aggressiveness")
-                or ""
-            )
-        if not out.get("monitor_guidance"):
-            out["monitor_guidance"] = str(
-                strategist.get("monitor_guidance")
-                or strategy_frame.get("monitor_guidance")
-                or policy_selected.get("monitor_guidance")
-                or market_context.get("monitor_guidance")
-                or ""
-            )
-        return out
-    highlights = [
-        str(x or "")
-        for x in list(market_context.get("bullets") or [])
-        if str(x or "").strip()
-    ][:4]
-    return {
-        "summary": str(market_context.get("summary") or strategist.get("market_context_summary") or ""),
-        "highlights": highlights,
-        "market_regime": str(strategist.get("market_regime") or market_context.get("regime") or ""),
-        "market_sentiment": str(strategist.get("market_sentiment") or market_context.get("market_sentiment") or ""),
-        "playbook": str(strategist.get("playbook") or market_context.get("playbook") or ""),
-        "risk_tone": str(strategist.get("risk_tone") or strategy_frame.get("risk_tone") or policy_selected.get("risk_tone") or market_context.get("risk_tone") or ""),
-        "trade_aggressiveness": str(
-            strategist.get("trade_aggressiveness")
-            or strategy_frame.get("trade_aggressiveness")
-            or policy_selected.get("trade_aggressiveness")
-            or market_context.get("trade_aggressiveness")
-            or ""
-        ),
-        "monitor_guidance": str(
-            strategist.get("monitor_guidance")
-            or strategy_frame.get("monitor_guidance")
-            or policy_selected.get("monitor_guidance")
-            or market_context.get("monitor_guidance")
-            or ""
-        ),
-        "themes": list(strategist.get("themes") or market_context.get("themes") or []),
-        "global_sentiment_score": strategist.get("global_sentiment_score", market_context.get("global_sentiment_score")),
-        "vix_level": (strategist.get("fear_index") or {}).get("level") if isinstance(strategist.get("fear_index"), dict) else market_context.get("vix_level"),
-        "headline_count": market_context.get("headline_count"),
-        "news_query_count": market_context.get("news_query_count"),
-        "reason_chain": list((strategist.get("strategy_frame") or {}).get("reason_chain") or []),
-        "missing_flags": ["trace_summary_missing"],
-    }
+    return build_strategist_trace_summary_mirror_r4_impl(strategist_summary, market_context_human, facade=_r3_sys.modules[__name__])
 
 
 def build_scanner_trace_summary_mirror(
     scanner_summary: Mapping[str, Any] | None,
     scanner_reason_human: Mapping[str, Any] | None,
 ) -> Dict[str, Any]:
-    scanner = dict(scanner_summary or {})
-    trace = scanner.get("trace_summary") if isinstance(scanner.get("trace_summary"), dict) else {}
-    if trace:
-        return dict(trace)
-    reason = dict(scanner_reason_human or {})
-    highlights = [
-        str(x or "")
-        for x in list(reason.get("bullets") or [])
-        if str(x or "").strip()
-    ][:4]
-    selected_symbol = str(scanner.get("selected_symbol") or reason.get("selected_symbol") or "")
-    selected_rank = safe_int(scanner.get("selected_rank"), safe_int(reason.get("selected_rank"), 0))
-    universe_size = safe_int(scanner.get("universe_size"), safe_int(reason.get("universe_size"), 0))
-    detail = scanner.get("selection_reason_detail") if isinstance(scanner.get("selection_reason_detail"), dict) else {}
-    runner_up_symbol = ""
-    ranked_rows: List[Dict[str, Any]] = []
-    for candidate_key in ("candidate_ranking_table", "ranking_table", "ranked_candidates"):
-        candidate_value = scanner.get(candidate_key)
-        if isinstance(candidate_value, dict):
-            ranked_rows = [row for row in list(candidate_value.get("rows") or []) if isinstance(row, dict)]
-        elif isinstance(candidate_value, list):
-            ranked_rows = [row for row in list(candidate_value or []) if isinstance(row, dict)]
-        if ranked_rows:
-            break
-    if len(ranked_rows) > 1:
-        runner_up_symbol = str(ranked_rows[1].get("symbol") or "")
-    if not runner_up_symbol:
-        runner_up_symbol = str((list(reason.get("runner_ups") or [{}])[:1][0] or {}).get("symbol") or "")
-    return {
-        "summary": str(reason.get("summary") or scanner.get("selection_reason") or ""),
-        "highlights": highlights,
-        "selected_symbol": selected_symbol,
-        "runner_up_symbol": runner_up_symbol,
-        "selected_rank": selected_rank,
-        "universe_size": universe_size,
-        "candidate_count": universe_size,
-        "selected_score_total": detail.get("selected_score_total", reason.get("selected_score")),
-        "margin_vs_second": detail.get("margin_vs_second"),
-        "selection_basis": list(reason.get("ranking_basis") or []),
-        "critical_positive_factors": list(detail.get("critical_positive_factors") or []),
-        "critical_negative_factors": list(detail.get("critical_negative_factors") or []),
-        "top_candidates": list(reason.get("top_candidates") or []),
-        "runner_ups": list(reason.get("runner_ups") or []),
-        "missing_flags": ["trace_summary_missing"],
-    }
+    return build_scanner_trace_summary_mirror_r4_impl(scanner_summary, scanner_reason_human, facade=_r3_sys.modules[__name__])
 
 
 def apply_trace_summary_context(
@@ -987,53 +432,7 @@ def apply_trace_summary_context(
     lifecycle_bundle: Dict[str, Any],
     scanner_evidence: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    strategist_trace_summary = build_strategist_trace_summary_mirror(
-        lifecycle_bundle.get("strategist") if isinstance(lifecycle_bundle.get("strategist"), dict) else {},
-        trade_story_input.get("market_context_human") if isinstance(trade_story_input.get("market_context_human"), dict) else {},
-    )
-    scanner_trace_summary = build_scanner_trace_summary_mirror(
-        lifecycle_bundle.get("scanner") if isinstance(lifecycle_bundle.get("scanner"), dict) else {},
-        trade_story_input.get("scanner_reason_human") if isinstance(trade_story_input.get("scanner_reason_human"), dict) else {},
-    )
-    if not str(scanner_trace_summary.get("runner_up_symbol") or "").strip():
-        ranking_tables = (
-            list(scanner_evidence.get("candidate_ranking_tables") or [])
-            if isinstance(scanner_evidence, dict)
-            else []
-        )
-        if ranking_tables:
-            payload = ranking_tables[0].get("payload") if isinstance(ranking_tables[0], dict) else {}
-            rows = list(payload.get("rows") or []) if isinstance(payload, dict) else []
-            if len(rows) > 1 and isinstance(rows[1], dict):
-                scanner_trace_summary["runner_up_symbol"] = str(rows[1].get("symbol") or "")
-
-    selected_symbol = str(
-        scanner_trace_summary.get("selected_symbol") or lifecycle_bundle.get("symbol") or ""
-    )
-    runner_up_symbol = str(scanner_trace_summary.get("runner_up_symbol") or "")
-    candidate_count = safe_int(
-        scanner_trace_summary.get("candidate_count"),
-        safe_int(scanner_trace_summary.get("universe_size"), 0),
-    )
-
-    trade_story_input["strategist_trace_summary"] = dict(strategist_trace_summary)
-    trade_story_input["scanner_trace_summary"] = dict(scanner_trace_summary)
-    trade_story_input["selected_symbol"] = selected_symbol
-    trade_story_input["runner_up_symbol"] = runner_up_symbol
-    trade_story_input["candidate_count"] = candidate_count
-
-    lifecycle_bundle["strategist_trace_summary"] = dict(strategist_trace_summary)
-    lifecycle_bundle["scanner_trace_summary"] = dict(scanner_trace_summary)
-    lifecycle_bundle["selected_symbol"] = selected_symbol
-    lifecycle_bundle["runner_up_symbol"] = runner_up_symbol
-    lifecycle_bundle["candidate_count"] = candidate_count
-
-    return {
-        "strategist_trace_summary": strategist_trace_summary,
-        "scanner_trace_summary": scanner_trace_summary,
-        "trade_story_input": trade_story_input,
-        "lifecycle_bundle": lifecycle_bundle,
-    }
+    return apply_trace_summary_context_r4_impl(trade_story_input=trade_story_input, lifecycle_bundle=lifecycle_bundle, scanner_evidence=scanner_evidence, facade=_r3_sys.modules[__name__])
 
 
 def apply_entry_exit_holding_enrichment(
@@ -1624,71 +1023,7 @@ def derive_trade_recovery_metadata(
     section_provenance: Mapping[str, Any] | None,
     has_substantive_entry_evidence_fn: Any,
 ) -> Dict[str, Any]:
-    lifecycle_obj = dict(lifecycle or {})
-    status = str(lifecycle_obj.get("status") or "").strip().lower()
-    entry = lifecycle_obj.get("entry") if isinstance(lifecycle_obj.get("entry"), dict) else {}
-    exit_ctx = lifecycle_obj.get("exit") if isinstance(lifecycle_obj.get("exit"), dict) else {}
-    entry_present = bool(entry)
-    exit_present = bool(exit_ctx)
-    missing_sections = {
-        str(x or "")
-        for x in list((evidence_completeness or {}).get("missing_sections") or [])
-        if str(x or "").strip()
-    }
-    provenance_sources = {
-        str((value or {}).get("source") or "").strip().lower()
-        for value in dict(section_provenance or {}).values()
-        if isinstance(value, dict)
-    }
-    scanner_context = entry.get("scanner_context") if isinstance(entry.get("scanner_context"), dict) else {}
-    strategist_context = entry.get("strategist_context") if isinstance(entry.get("strategist_context"), dict) else {}
-    inferred_entry = bool(entry.get("inferred_entry"))
-    entry_evidence_complete = bool(has_substantive_entry_evidence_fn(entry))
-    scanner_selected_symbol = str(scanner_context.get("selected_symbol") or "").strip()
-    scanner_summary = str(scanner_context.get("summary") or "").strip().lower()
-    strategist_summary = str(strategist_context.get("market_context_summary") or "").strip()
-    lifecycle_recovered = (
-        status == "partial"
-        or (not entry_present)
-        or (status not in {"open"} and not exit_present)
-        or (status not in {"open"} and not entry_evidence_complete)
-    )
-    recovery_sources = {
-        src for src in provenance_sources if src in {"event_log", "fallback", "normalized_trade_artifact"}
-    }
-    if lifecycle_recovered:
-        recovery_sources.add("partial_lifecycle")
-    if not entry_present:
-        missing_sections.add("entry")
-        recovery_sources.add("entry_missing")
-    if status not in {"open"} and not exit_present:
-        missing_sections.add("exit")
-        recovery_sources.add("exit_missing")
-    if inferred_entry:
-        missing_sections.add("entry_evidence")
-        recovery_sources.add("inferred_entry")
-    if entry_present and not entry_evidence_complete:
-        missing_sections.add("entry_evidence")
-        recovery_sources.add("entry_evidence_thin")
-    if entry_present and (
-        not scanner_selected_symbol
-        or not scanner_summary
-        or "not captured" in scanner_summary
-        or "did not record" in scanner_summary
-    ):
-        missing_sections.add("scanner_context")
-        recovery_sources.add("scanner_context_missing")
-    if entry_present and not strategist_summary:
-        missing_sections.add("strategist_context")
-        recovery_sources.add("strategist_context_missing")
-    evidence_recovery_used = bool(lifecycle_recovered or missing_sections or recovery_sources)
-    return {
-        "trade_origin": "recovered_partial" if lifecycle_recovered else "normal_lifecycle",
-        "lifecycle_completeness": "partial" if evidence_recovery_used else "complete",
-        "evidence_recovery_used": bool(evidence_recovery_used),
-        "recovery_missing_sections": sorted(missing_sections),
-        "recovery_sources": sorted(recovery_sources),
-    }
+    return derive_trade_recovery_metadata_r4_impl(lifecycle=lifecycle, evidence_completeness=evidence_completeness, section_provenance=section_provenance, has_substantive_entry_evidence_fn=has_substantive_entry_evidence_fn, facade=_r3_sys.modules[__name__])
 
 
 def apply_final_trade_report_context(

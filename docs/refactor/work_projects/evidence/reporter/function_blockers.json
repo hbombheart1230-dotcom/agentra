@@ -1,0 +1,133 @@
+{
+ "schema": "agentra.work.reporter.function_blockers.v1",
+ "note": "remaining non-trivial bodies per facade and the exact reason they were not moved; thin delegations and <6-line helpers omitted",
+ "blockers": {
+  "libs/reporting/trade_report_markdown_clean.py": {},
+  "libs/reporting/trade_report_ai.py": {
+   "_resolve_intraday_report_model": "excluded by caller",
+   "_router_chat_with_hard_timeout": "effect/authority token: timeout",
+   "build_separated_ai_trade_report": "excluded by caller",
+   "_build_skipped_separated_report": "effect/authority token: llm",
+   "_load_trade_read_model_hint": "effect/authority token: Path",
+   "render_trade_summary_markdown_with_evaluation": "excluded by caller"
+  },
+  "libs/reporting/trade_report_ai_deterministic.py": {
+   "failure_report": "effect/authority token: retry",
+   "fallback_report": "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
+  },
+  "libs/reporting/trade_report_ai_compact_input.py": {
+   "compact_story_input_for_llm": "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
+  },
+  "libs/reporting/trade_read_model.py": {
+   "build_trade_report_detail_view": "effect/authority token: open",
+   "load_reporter_snippet_for_run": "effect/authority token: Path",
+   "load_trade_report_detail_payloads": "effect/authority token: Path",
+   "load_operator_brief_detail_payloads": "effect/authority token: Path",
+   "load_trade_report_payloads": "effect/authority token: Path",
+   "build_trade_read_model": "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
+  },
+  "libs/reporting/trade_memory_surface.py": {
+   "_load_json_artifact": "effect/authority token: Path",
+   "_build_symbol_memory_from_persisted": "effect/authority token: Path",
+   "build_trade_report_memory_surface": "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
+  },
+  "libs/reporting/trade_memory_application_surface.py": {
+   "_load_json_artifact": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_explain.py": {
+   "_iter_jsonl": "effect/authority token: Path",
+   "_latest_day": "effect/authority token: Path",
+   "_canonical_report_root": "effect/authority token: Path",
+   "build_trade_explain_output_path_metadata": "effect/authority token: Path",
+   "_report_inventory": "effect/authority token: Path",
+   "_to_markdown": "effect/authority token: Path",
+   "generate_trade_explain_report": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_bundle_assembly.py": {
+   "_broker_fill_lookup_enabled": "effect/authority token: os.",
+   "_broker_order_status_payload": "effect/authority token: kiwoom",
+   "resolve_lifecycle_bundle_sources": "effect/authority token: Path",
+   "attach_strategy_anchor": "effect/authority token: Path",
+   "apply_strategy_anchor_metadata": "effect/authority token: Path",
+   "build_live_run_bundle": "effect/authority token: Path",
+   "hydrate_live_run_bundle_context": "effect/authority token: Path",
+   "apply_entry_exit_holding_enrichment": "effect/authority token: Path",
+   "apply_live_trade_context": "effect/authority token: Path",
+   "derive_trade_recovery_metadata": "effect/authority token: open",
+   "apply_final_trade_report_context": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_bundle_state.py": {
+   "build_live_trade_bundle_payloads": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_lifecycle_builder.py": {
+   "_read_json_if_exists": "effect/authority token: Path",
+   "_load_existing_open_lifecycle_candidates": "effect/authority token: Path",
+   "_add_existing_open_lifecycle_candidate": "effect/authority token: Path",
+   "_build_lifecycle_from_seed": "effect/authority token: open",
+   "_build_trade_lifecycles": "effect/authority token: open"
+  },
+  "libs/reporting/single_trade_report.py": {
+   "_load_json_dict": "effect/authority token: Path",
+   "_resolve_trade_day": "effect/authority token: Path",
+   "_same_day_reporter_paths": "effect/authority token: Path",
+   "_build_canonical_context": "effect/authority token: Path",
+   "_read_json": "effect/authority token: Path",
+   "_matching_trade_dirs": "effect/authority token: Path",
+   "_find_open_trade_id": "effect/authority token: Path",
+   "build_single_trade_report_id": "effect/authority token: Path",
+   "_build_trade_report_inputs": "effect/authority token: Path",
+   "generate_single_trade_report": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_story_pipeline_provenance.py": {},
+  "libs/reporting/reporter_analysis.py": {
+   "_iter_jsonl": "effect/authority token: Path",
+   "_latest_day": "effect/authority token: Path",
+   "_read_json": "effect/authority token: Path",
+   "_build_intent_flow_analysis": "effect/authority token: Path",
+   "generate_reporter_analysis_report": "effect/authority token: Path",
+   "_canonical_reports_root": "effect/authority token: Path"
+  },
+  "libs/reporting/strategy_read_model.py": {},
+  "libs/reporting/entry_blocker_read_model.py": {
+   "_read_json": "effect/authority token: Path",
+   "load_entry_blocker_rows": "effect/authority token: Path",
+   "build_entry_blocker_day_summary": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_report_markdown_strategy_memory.py": {},
+  "libs/reporting/post_exit_shadow_recap.py": {
+   "_read_json": "effect/authority token: Path",
+   "resolve_post_exit_state_path": "effect/authority token: Path",
+   "_post_exit_shadow_needs_fresh_minutes": "effect/authority token: datetime.now",
+   "opening_rank1_eod_fallback_row": "effect/authority token: Path",
+   "_post_exit_shadow_from_lifecycle": "effect/authority token: Path",
+   "_trade_label": "effect/authority token: Path",
+   "build_post_exit_shadow_recap": "effect/authority token: Path",
+   "render_post_exit_shadow_trade_recap_md": "name defined more than once in the module (redefinition)",
+   "render_post_exit_shadow_daily_recap_md": "name defined more than once in the module (redefinition)",
+   "write_post_exit_shadow_recap_outputs": "effect/authority token: Path",
+   "_refresh_trade_summary_from_recap": "effect/authority token: Path",
+   "generate_post_exit_shadow_recap": "effect/authority token: Path"
+  },
+  "libs/reporting/symbol_trade_report.py": {
+   "_read_json": "effect/authority token: Path",
+   "_iter_jsonl": "effect/authority token: Path",
+   "_iter_trade_lifecycles": "effect/authority token: Path",
+   "_iter_trade_lifecycles_for_day": "effect/authority token: Path",
+   "_clean_symbol_reason": "effect/authority token: open",
+   "_actual_entry_reason_from_artifacts": "effect/authority token: Path",
+   "_extract_trade_artifact_snapshot": "effect/authority token: Path",
+   "_build_history_index": "effect/authority token: Path",
+   "_collect_symbol_event_insights": "effect/authority token: Path",
+   "build_symbol_trade_summary": "effect/authority token: Path",
+   "build_daily_trade_index": "effect/authority token: Path",
+   "collect_symbols_for_day": "effect/authority token: Path",
+   "generate_symbol_trade_report": "effect/authority token: Path"
+  },
+  "libs/reporting/agent_pipeline_trace.py": {
+   "_iter_jsonl": "effect/authority token: Path",
+   "_read_json": "effect/authority token: Path",
+   "_build_markdown": "effect/authority token: llm",
+   "generate_agent_pipeline_trace_report": "effect/authority token: Path"
+  }
+ }
+}

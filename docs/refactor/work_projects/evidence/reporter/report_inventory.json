@@ -1,0 +1,323 @@
+{
+ "schema": "agentra.work.reporter.report_inventory.v1",
+ "basis": "git grep of scripts/ producers at d773709-derived tree; NO scheduler, cron, workflow-dispatch or external-consumer check performed; extended (Phase E): grep of deploy/, config/, .github/, apps/ and *.ps1/*.bat/*.cmd/*.xml/*.toml/*.yaml/Makefile for each producer name; OS Task Scheduler and external callers outside the repo remain unchecked",
+ "decision_rule": "no report is disabled/deleted/changed by this project; STOP_CANDIDATE requires scheduler+external consumer proof and is NOT assigned to any report; docs/test-only references stay UNVERIFIED",
+ "entries": [
+  {
+   "report_producer": "scripts/generate_daily_report.py",
+   "classification": "KEEP",
+   "evidence": "wired: graphs/pipelines/m13_eod_report.py, libs/agent/reporter.py",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 20,
+    "lib": 6,
+    "script": 2,
+    "test": 5
+   },
+   "non_test_non_doc_consumers": [
+    "graphs/pipelines/m13_eod_report.py",
+    "libs/agent/reporter.py",
+    "libs/reporting/__init__.py",
+    "libs/reporting/daily_report.py",
+    "libs/reporting/daily_report_generator.py",
+    "libs/runtime/mock_exam_day/closeout_phase.py"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/generate_metrics_report.py",
+   "classification": "KEEP",
+   "evidence": "wired: libs/agent/reporter.py, operator_visibility, metrics_report_generator",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 29,
+    "lib": 5,
+    "script": 5,
+    "test": 7
+   },
+   "non_test_non_doc_consumers": [
+    "libs/agent/reporter.py",
+    "libs/reporting/metrics_report_generator.py",
+    "libs/reporting/operator_visibility.py",
+    "libs/reporting/reporter_feedback.py",
+    "libs/runtime/mock_exam_day/closeout_phase.py",
+    "scripts/diagnostics/check_alert_policy_v1.py"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/generate_operator_summary_report.py",
+   "classification": "CONSOLIDATE_CANDIDATE",
+   "evidence": "docs-only references; overlaps run_operator_daily_summary and run_operator_summary_mining (same operator summary family)",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 5
+   },
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/generate_ops_diagnostic_report.py",
+   "classification": "CONSOLIDATE_CANDIDATE",
+   "evidence": "two copies: scripts/generate_ops_diagnostic_report.py and scripts/diagnostics/generate_ops_diagnostic_report.py referenced from each other/tests; unify to one entry point",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 6,
+    "script": 1,
+    "test": 2
+   },
+   "non_test_non_doc_consumers": [
+    "scripts/diagnostics/generate_ops_diagnostic_report.py"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/generate_strategist_llm_summary.py",
+   "classification": "KEEP",
+   "evidence": "lib consumers (llm_artifacts, canonical_artifacts); LLM cost source — keep, cost review only",
+   "llm_in_source": true,
+   "reference_counts": {
+    "docs": 6,
+    "lib": 3,
+    "test": 1
+   },
+   "non_test_non_doc_consumers": [
+    "libs/reporting/llm_artifacts.py",
+    "libs/reporting/strategist_llm_summary.py",
+    "libs/runtime/canonical_artifacts.py"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/generate_symbol_trade_report.py",
+   "classification": "KEEP",
+   "evidence": "wired: daily_report_runtime/symbol_refresh, operator_summary_refresh",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 5,
+    "lib": 4,
+    "script": 2,
+    "test": 3
+   },
+   "non_test_non_doc_consumers": [
+    "libs/reporting/__init__.py",
+    "libs/reporting/daily_report_runtime/symbol_refresh.py",
+    "libs/reporting/operator_summary_refresh.py",
+    "libs/reporting/symbol_trade_report.py",
+    "scripts/research/run_phase5_validation_bundle.py",
+    "scripts/run_ai_trade_report_batch.py"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/organize_llm_reports.py",
+   "classification": "UNVERIFIED",
+   "evidence": "docs only; LLM-report housekeeping; external/manual use possible",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 6
+   },
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_agent_pipeline_trace_report.py",
+   "classification": "KEEP",
+   "evidence": "lib consumer libs/reporting/agent_pipeline_trace.py; README entry",
+   "llm_in_source": false,
+   "reference_counts": {
+    "other": 1,
+    "docs": 8,
+    "lib": 1,
+    "test": 1
+   },
+   "non_test_non_doc_consumers": [
+    "libs/reporting/agent_pipeline_trace.py",
+    "README.md"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_ai_trade_report_batch.py",
+   "classification": "KEEP",
+   "evidence": "consumed by check_trade_report_runtime_regression; LLM cost source (AI trade report)",
+   "llm_in_source": true,
+   "reference_counts": {
+    "docs": 16,
+    "script": 1,
+    "test": 2
+   },
+   "non_test_non_doc_consumers": [
+    "scripts/diagnostics/check_trade_report_runtime_regression.py"
+   ],
+   "scheduler_deploy_api_refs": [
+    ".github/workflows/p15-integration-t4-regression.yml",
+    ".github/workflows/p152-r2c-residual-regression.yml"
+   ]
+  },
+  {
+   "report_producer": "scripts/run_decision_story_report.py",
+   "classification": "KEEP",
+   "evidence": "wired: mock_exam_day/closeout_phase",
+   "llm_in_source": false,
+   "reference_counts": {
+    "other": 1,
+    "docs": 10,
+    "lib": 1,
+    "test": 2
+   },
+   "non_test_non_doc_consumers": [
+    "libs/runtime/mock_exam_day/closeout_phase.py",
+    "README.md"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_evaluation_lens_report.py",
+   "classification": "UNVERIFIED",
+   "evidence": "docs only; evaluation lens = Research/evaluation family (OUT_OF_ROLE for moves)",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 6
+   },
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_live_execution_bundle_report.py",
+   "classification": "KEEP",
+   "evidence": "wired: intraday_trade_reports, live_execution_bundle_runner, mock_exam_day closeout (SAFETY_LOCK owner)",
+   "llm_in_source": false,
+   "reference_counts": {
+    "other": 1,
+    "docs": 32,
+    "lib": 3,
+    "script": 1,
+    "test": 6
+   },
+   "non_test_non_doc_consumers": [
+    "libs/reporting/intraday_trade_reports.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/runtime/mock_exam_day/closeout_phase.py",
+    "scripts/diagnostics/check_trade_report_runtime_regression.py",
+    "README.md"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_live_session_summary.py",
+   "classification": "UNVERIFIED",
+   "evidence": "docs + 1 test only; scheduler/external consumption unchecked",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 8,
+    "test": 1
+   },
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_m31_weekly_health_summary.py",
+   "classification": "UNVERIFIED",
+   "evidence": "docs + 2 tests only; weekly cadence may be external",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 9,
+    "test": 2
+   },
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_operator_daily_summary.py",
+   "classification": "KEEP",
+   "evidence": "wired: mock_exam_day/closeout_phase",
+   "llm_in_source": false,
+   "reference_counts": {
+    "other": 1,
+    "docs": 10,
+    "lib": 1,
+    "test": 2
+   },
+   "non_test_non_doc_consumers": [
+    "libs/runtime/mock_exam_day/closeout_phase.py",
+    "README.md"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_operator_summary_mining.py",
+   "classification": "CONSOLIDATE_CANDIDATE",
+   "evidence": "docs-only references; overlaps operator daily/period summary family",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 6
+   },
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_report_maintenance.py",
+   "classification": "KEEP",
+   "evidence": "wired: mock_exam_day/closeout_phase (maintenance of report artifacts)",
+   "llm_in_source": false,
+   "reference_counts": {
+    "docs": 7,
+    "lib": 1
+   },
+   "non_test_non_doc_consumers": [
+    "libs/runtime/mock_exam_day/closeout_phase.py"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_reporter_analysis_report.py",
+   "classification": "KEEP",
+   "evidence": "wired: mock_exam_day/closeout_phase",
+   "llm_in_source": false,
+   "reference_counts": {
+    "other": 1,
+    "docs": 7,
+    "lib": 1,
+    "test": 1
+   },
+   "non_test_non_doc_consumers": [
+    "libs/runtime/mock_exam_day/closeout_phase.py",
+    "README.md"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_run_card_report.py",
+   "classification": "KEEP",
+   "evidence": "wired: mock_exam_day/closeout_phase",
+   "llm_in_source": false,
+   "reference_counts": {
+    "other": 1,
+    "docs": 10,
+    "lib": 1,
+    "test": 2
+   },
+   "non_test_non_doc_consumers": [
+    "libs/runtime/mock_exam_day/closeout_phase.py",
+    "README.md"
+   ],
+   "scheduler_deploy_api_refs": []
+  },
+  {
+   "report_producer": "scripts/run_trade_explain_report.py",
+   "classification": "UNVERIFIED",
+   "evidence": "README + 2 tests only; overlaps run_decision_story_report / single trade report; scheduler/external consumption unchecked",
+   "llm_in_source": false,
+   "reference_counts": {
+    "other": 1,
+    "docs": 7,
+    "test": 2
+   },
+   "non_test_non_doc_consumers": [
+    "README.md"
+   ],
+   "scheduler_deploy_api_refs": []
+  }
+ ]
+}

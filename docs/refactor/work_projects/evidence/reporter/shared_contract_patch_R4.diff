@@ -1,0 +1,127 @@
+diff --git a/.github/workflows/p15-integration-crossbranch-compat.yml b/.github/workflows/p15-integration-crossbranch-compat.yml
+index 62f64a80..14a3bbc1 100644
+--- a/.github/workflows/p15-integration-crossbranch-compat.yml
++++ b/.github/workflows/p15-integration-crossbranch-compat.yml
+@@ -45,6 +45,8 @@ jobs:
+             tests/test_p172_v4056_scanner_policy_migration.py \
+             tests/test_p172_strategist_s1_057_migration.py \
+             tests/test_p173_p058_integration_contracts.py \
++            tests/test_work_reporter_seed_migration.py \
++            tests/test_work_monitor_role_contracts.py \
+             tests/test_p169_broad_failure_evidence.py \
+             tests/test_scanner_candidate_risk.py \
+             tests/test_operator_ui.py \
+diff --git a/tests/p15_agent_tree_allowlist.py b/tests/p15_agent_tree_allowlist.py
+index aa82311e..805e5a49 100644
+--- a/tests/p15_agent_tree_allowlist.py
++++ b/tests/p15_agent_tree_allowlist.py
+@@ -2,9 +2,11 @@
+ 
+ A new package may appear ONLY by adding an entry here together with the batch's own contract test; the per-batch
+ discipline tests compare the actual directory set for equality (no unrestricted subset), so a stray package fails."""
+-AGENT_PACKAGES = {"scanner": "V1-052", "strategist": "S1-057"}
++AGENT_PACKAGES = {"scanner": "V1-052", "strategist": "S1-057", "reporter": "R-1", "monitor": "M-1"}
+ SCANNER_PACKAGES = {"context": "V2-053", "projections": "V3-055", "policy": "V4-056"}
+ STRATEGIST_PACKAGES = {"context": "S1-057", "output": "S1-057"}
++REPORTER_PACKAGES = {"narrative": "R-1", "read_models": "R-1"}
++MONITOR_PACKAGES = {"events": "M-1", "projections": "M-1"}
+ 
+ 
+ def actual_dirs(path):
+diff --git a/tests/test_p159_current_owner_contract_gates.py b/tests/test_p159_current_owner_contract_gates.py
+index f748eff4..d0a889b2 100644
+--- a/tests/test_p159_current_owner_contract_gates.py
++++ b/tests/test_p159_current_owner_contract_gates.py
+@@ -73,14 +73,25 @@ V3_SHIM_ALLOWLIST = {
+ }
+ 
+ 
++# Monitor role M-1 (exact pairs; same strict source-AST shim verifier, no suffix/auto-follow)
++MONITOR_T3_SHIM_ALLOWLIST = {
++    "libs/runtime/monitor/cycle_detail_projection.py": "libs/agents/monitor/projections/cycle_detail_projection.py",
++    "libs/runtime/monitor/cycle_output_projection.py": "libs/agents/monitor/projections/cycle_output_projection.py",
++    "libs/runtime/monitor/cycle_output_projection_value_state_monitor.py": "libs/agents/monitor/projections/cycle_output_projection_value_state_monitor.py",
++    "libs/runtime/monitor/cycle_posture_projection.py": "libs/agents/monitor/projections/cycle_posture_projection.py",
++    "libs/runtime/monitor/signal_explanation.py": "libs/agents/monitor/projections/signal_explanation.py",
++    "libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py": "libs/agents/monitor/projections/cycle_detail_projection_exit_decision_detail.py",
++}
++
++
+ def _follow(module):
+-    if module not in V3_SHIM_ALLOWLIST:
++    if module not in V3_SHIM_ALLOWLIST and module not in MONITOR_T3_SHIM_ALLOWLIST:
+         return module
+     import importlib.util
+     spec = importlib.util.spec_from_file_location("_wave_b_gate_p159", Path(__file__).resolve().parent / "test_p154_wave_b_moved_bodies.py")
+     wb = importlib.util.module_from_spec(spec)
+     spec.loader.exec_module(wb)
+-    canonical = V3_SHIM_ALLOWLIST[module]
++    canonical = V3_SHIM_ALLOWLIST.get(module) or MONITOR_T3_SHIM_ALLOWLIST[module]
+     wb._verify_identity_shim_source((ROOT / module).read_text(encoding="utf-8"), module, canonical)
+     return canonical
+ 
+diff --git a/tests/test_p163_t4b_extraction_gates.py b/tests/test_p163_t4b_extraction_gates.py
+index a738f380..8ebeddef 100644
+--- a/tests/test_p163_t4b_extraction_gates.py
++++ b/tests/test_p163_t4b_extraction_gates.py
+@@ -87,8 +87,31 @@ class _OutToMonitorOutput(ast.NodeTransformer):
+         return node
+ 
+ 
++# Monitor role M-1: exact legacy-shim -> canonical owner pairs. A listed legacy owner must be a strictly verified
++# 3-statement identity shim (Wave B source-AST verifier); every assertion then runs against the canonical body.
++MONITOR_T4B_SHIM_ALLOWLIST = {
++    "libs/runtime/monitor/cycle_event_payloads.py": "libs/agents/monitor/events/cycle_event_payloads.py",
++    "libs/runtime/monitor/cycle_log_trace_payloads.py": "libs/agents/monitor/events/cycle_log_trace_payloads.py",
++    "libs/runtime/monitor/entry_focus_output_projection.py": "libs/agents/monitor/projections/entry_focus_output_projection.py",
++    "libs/runtime/monitor/policy_output_projection.py": "libs/agents/monitor/projections/policy_output_projection.py",
++    "libs/runtime/monitor/scanner_monitor_handoff_projection.py": "libs/agents/monitor/projections/scanner_monitor_handoff_projection.py",
++}
++
++
++def _owner_path(rel):
++    if rel not in MONITOR_T4B_SHIM_ALLOWLIST:
++        return rel
++    import importlib.util
++    spec = importlib.util.spec_from_file_location("_wave_b_gate_p163", ROOT / "tests" / "test_p154_wave_b_moved_bodies.py")
++    wb = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(wb)
++    canonical = MONITOR_T4B_SHIM_ALLOWLIST[rel]
++    wb._verify_identity_shim_source((ROOT / rel).read_text(encoding="utf-8"), rel, canonical)
++    return canonical
++
++
+ def _owner_fn(seg):
+-    return _funcs(ast.parse((ROOT / seg["owner"]).read_text(encoding="utf-8-sig")))[seg["owner_function"]]
++    return _funcs(ast.parse((ROOT / _owner_path(seg["owner"])).read_text(encoding="utf-8-sig")))[seg["owner_function"]]
+ 
+ 
+ def _call_name(call):
+@@ -217,7 +240,7 @@ def test_owner_modules_are_small_pure_and_resolve_only_allowed_names():
+     mods = sorted({s["owner"] for s in _ledger()["segments"]})
+     assert len(mods) >= 10
+     for rel in mods:
+-        text = (ROOT / rel).read_text(encoding="utf-8-sig")
++        text = (ROOT / _owner_path(rel)).read_text(encoding="utf-8-sig")
+         assert len(text.splitlines()) <= MAX_OWNER_LOC, rel
+         for tok in FORBIDDEN_TOKENS:
+             assert tok not in text, (rel, tok)
+@@ -303,7 +326,7 @@ def test_no_duplicate_exit_decision_authority_in_the_new_owners():
+     # the trigger ladder windows return `_finalize(...)` results of the orchestrator closure; no Owner defines its own
+     # policy defaults or re-implements `evaluate_exit_policy`
+     for rel in sorted({s["owner"] for s in _ledger()["segments"]}):
+-        text = (ROOT / rel).read_text(encoding="utf-8-sig")
++        text = (ROOT / _owner_path(rel)).read_text(encoding="utf-8-sig")
+         assert "def evaluate_exit_policy" not in text and "def monitor_node" not in text, rel
+         assert "DEFAULT_" not in text, rel
+ 
+diff --git a/tests/test_p173_p058_integration_contracts.py b/tests/test_p173_p058_integration_contracts.py
+index 7f2361ff..189e5a74 100644
+--- a/tests/test_p173_p058_integration_contracts.py
++++ b/tests/test_p173_p058_integration_contracts.py
+@@ -52,3 +52,5 @@ def test_combined_agent_tree_is_exactly_the_versioned_allowlist():
+     assert AL.actual_dirs(ROOT / "libs/agents") == set(AL.AGENT_PACKAGES)
+     assert AL.actual_dirs(ROOT / "libs/agents/scanner") == set(AL.SCANNER_PACKAGES)
+     assert AL.actual_dirs(ROOT / "libs/agents/strategist") == set(AL.STRATEGIST_PACKAGES)
++    assert AL.actual_dirs(ROOT / "libs/agents/reporter") == set(AL.REPORTER_PACKAGES)
++    assert AL.actual_dirs(ROOT / "libs/agents/monitor") == set(AL.MONITOR_PACKAGES)

@@ -1,0 +1,686 @@
+{
+ "schema": "agentra.work.reporter.r10d_authority_map.v1",
+ "rows": [
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "_resolve_intraday_report_model",
+   "loc": 7,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "get",
+    "isinstance",
+    "normalize_openrouter_model_name",
+    "resolve_policy_llm_slot",
+    "str",
+    "strip"
+   ],
+   "callers": [
+    "libs/reporting/trade_report/services/ai_report.py",
+    "libs/reporting/trade_report/services/trade_summary.py"
+   ],
+   "why_retained": "LLM routing / reporter agent / cross-facade import: keep until separately approved",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "_router_chat_with_hard_timeout",
+   "loc": 30,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "Event",
+    "Thread",
+    "TimeoutError",
+    "chat",
+    "float",
+    "get",
+    "max",
+    "set",
+    "start",
+    "str",
+    "wait"
+   ],
+   "callers": [
+    "libs/reporting/trade_report/services/ai_report.py",
+    "libs/reporting/trade_report/services/trade_summary.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "build_separated_ai_trade_report",
+   "loc": 59,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "_resolve_intraday_report_execution_profile",
+    "_resolve_intraday_report_model",
+    "build_separated_report",
+    "build_trade_read_model",
+    "dict",
+    "get",
+    "isinstance",
+    "lower",
+    "run_reporter_agent",
+    "setdefault",
+    "startswith",
+    "str",
+    "strip"
+   ],
+   "callers": [
+    "tests/test_llm_model_policy.py",
+    "tests/test_trade_report_ai_separated_adapter.py"
+   ],
+   "why_retained": "LLM routing / reporter agent / cross-facade import: keep until separately approved",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "_build_skipped_separated_report",
+   "loc": 16,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "build_fact_payload"
+   ],
+   "callers": [
+    "libs/reporting/trade_report/ai_facade_r3_parts/bodies_05.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "_load_trade_read_model_hint",
+   "loc": 15,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "Path",
+    "build_trade_read_model",
+    "exists",
+    "get",
+    "isinstance",
+    "str"
+   ],
+   "callers": [
+    "libs/reporting/trade_report/sections.py",
+    "tests/test_trade_report_ai.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "render_trade_summary_markdown_with_evaluation",
+   "loc": 7,
+   "authority_categories": [
+    "NAME_ONLY"
+   ],
+   "callees": [
+    "render_trade_summary_markdown_with_evaluation_clean"
+   ],
+   "callers": [
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/post_exit_shadow_recap.py",
+    "libs/reporting/single_trade_report.py",
+    "scripts/run_ai_trade_report_batch.py",
+    "tests/test_trade_report_ai.py"
+   ],
+   "why_retained": "LLM routing / reporter agent / cross-facade import: keep until separately approved",
+   "decision_required": "Work: explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "failure_report",
+   "loc": 126,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "actual_lifecycle_action",
+    "build_monitor_snapshot_fn",
+    "build_report_strategist_refresh_trace",
+    "build_shared_summary_seed",
+    "clip",
+    "dict",
+    "get",
+    "isinstance",
+    "list",
+    "listify",
+    "lower",
+    "normalize_trade_report_output",
+    "utc_now_iso"
+   ],
+   "callers": [
+    "libs/reporting/trade_report/services/ai_report.py",
+    "libs/reporting/trade_report_ai.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_memory_surface.py",
+   "name": "_build_symbol_memory_from_persisted",
+   "loc": 19,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "_safe_float",
+    "_safe_int",
+    "build_symbol_read_model",
+    "get",
+    "isinstance",
+    "str",
+    "strip"
+   ],
+   "callers": [
+    "libs/agents/reporter/read_models/memory_surface_bodies_01.py",
+    "tests/test_trade_memory_surface.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "attach_strategy_anchor",
+   "loc": 20,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "dict",
+    "str"
+   ],
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_strategy_anchor_metadata",
+   "loc": 48,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "attach_strategy_anchor",
+    "get",
+    "isinstance",
+    "str"
+   ],
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_entry_exit_holding_enrichment",
+   "loc": 426,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST",
+    "EXECUTION_NAMES"
+   ],
+   "callees": [
+    "_is_placeholder_entry_reason",
+    "_latest_exit_monitor_context_from_timeline",
+    "add",
+    "append",
+    "attach_strategy_anchor",
+    "build_monitor_reason_human",
+    "dict",
+    "entry_reason_missing_in_summary",
+    "get",
+    "isinstance",
+    "items",
+    "list",
+    "lower",
+    "normalize_scanner_context_for_executed_symbol",
+    "normalize_symbol",
+    "safe_int",
+    "set",
+    "setdefault",
+    "sorted",
+    "str",
+    "strip",
+    "update"
+   ],
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_live_trade_context",
+   "loc": 151,
+   "authority_categories": [
+    "BROKER_TRUTH",
+    "TRUTH_PRECEDENCE"
+   ],
+   "callees": [
+    "bool",
+    "build_execution_details_from_bundle",
+    "build_holding_phase_observability",
+    "build_post_exit_shadow_placeholder",
+    "build_same_day_reporter_linkage",
+    "dict",
+    "get",
+    "isinstance",
+    "list",
+    "lower",
+    "str",
+    "strip",
+    "update_broker_cost_profile_from_execution_details",
+    "update_post_exit_shadow_with_price_observations"
+   ],
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_trade_bundle_assembly.py"
+   ],
+   "why_retained": "broker/truth/execution related names",
+   "decision_required": "Work (truth/broker authority owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_final_trade_report_context",
+   "loc": 197,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "build_trade_memory_application_surface",
+    "build_trade_report_memory_surface",
+    "compute_evidence_completeness",
+    "derive_trade_recovery_metadata",
+    "dict",
+    "get",
+    "isinstance",
+    "setdefault",
+    "str",
+    "update"
+   ],
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_state.py",
+   "name": "build_live_trade_bundle_payloads",
+   "loc": 383,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST",
+    "EXECUTION_NAMES"
+   ],
+   "callees": [
+    "_backfill_execution_fields",
+    "_utc_now_iso",
+    "bool",
+    "build_lifecycle_bundle",
+    "build_trade_bundle_state",
+    "dict",
+    "endswith",
+    "exists",
+    "float",
+    "get",
+    "int",
+    "isinstance",
+    "items",
+    "list",
+    "merge_preferred_execution_details",
+    "normalize_trade_payload_symbol_context",
+    "safe_int",
+    "setdefault",
+    "startswith",
+    "str",
+    "strip",
+    "update"
+   ],
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_trade_bundle_state.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_build_trade_lifecycles",
+   "loc": 532,
+   "authority_categories": [
+    "BROKER_TRUTH",
+    "TRUTH_PRECEDENCE",
+    "EXECUTION_NAMES"
+   ],
+   "callees": [
+    "_build_lifecycle_from_seed",
+    "_build_trade_id",
+    "_bundle_mode_label",
+    "_bundle_story_type",
+    "_classify_story_type",
+    "_entry_context",
+    "_exit_closure_quantity_state",
+    "_exit_context",
+    "_format_duration_human",
+    "_has_substantive_entry_evidence",
+    "_holding_partial_exit_total",
+    "_infer_story_contract_from_snapshot",
+    "_is_placeholder_entry_reason",
+    "_next_trade_id",
+    "_record_partial_exit",
+    "_resolve_story_contract",
+    "_snapshot_execution_debug",
+    "_to_epoch",
+    "add",
+    "append",
+    "bool",
+    "dict",
+    "execution_mode_label",
+    "float",
+    "get"
+   ],
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_live_execution_bundle_report_runtime_recovery.py"
+   ],
+   "why_retained": "broker/truth/execution related names",
+   "decision_required": "Work (truth/broker authority owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_resolve_trade_day",
+   "loc": 28,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST"
+   ],
+   "callees": [
+    "Path",
+    "_execution_payload",
+    "_root_dir",
+    "astimezone",
+    "date",
+    "exists",
+    "fullmatch",
+    "get",
+    "group",
+    "is_dir",
+    "isinstance",
+    "isoformat",
+    "iterdir",
+    "match",
+    "now",
+    "sorted",
+    "str",
+    "strip"
+   ],
+   "callers": [],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "generate_single_trade_report",
+   "loc": 161,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST",
+    "WRITES"
+   ],
+   "callees": [
+    "Path",
+    "_build_trade_report_inputs",
+    "_execution_action",
+    "_execution_ok",
+    "_execution_symbol",
+    "_json_sha256",
+    "_resolve_trade_day",
+    "_root_dir",
+    "_trade_report_policy",
+    "_utc_iso",
+    "attach_controlled_lane_report_surface",
+    "bool",
+    "build_ai_trade_report",
+    "build_ai_trade_report_compact_input",
+    "build_compact_input_artifact",
+    "build_trade_summary_input",
+    "build_trade_summary_report",
+    "dict",
+    "dumps",
+    "get",
+    "isinstance",
+    "mkdir",
+    "persist_llm_artifact_refs",
+    "render_trade_report_markdown",
+    "render_trade_summary_markdown_with_evaluation"
+   ],
+   "callers": [
+    "tests/test_m21_commander_runtime_entry.py",
+    "tests/test_single_trade_report.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_intent_flow_analysis",
+   "loc": 71,
+   "authority_categories": [
+    "EXECUTION_NAMES"
+   ],
+   "callees": [
+    "Counter",
+    "_iter_jsonl",
+    "_reason_text",
+    "_safe_int",
+    "_utc_day",
+    "bool",
+    "dict",
+    "exists",
+    "get",
+    "int",
+    "isinstance",
+    "lower",
+    "most_common",
+    "str",
+    "strip"
+   ],
+   "callers": [],
+   "why_retained": "broker/truth/execution related names",
+   "decision_required": "Work: explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "generate_reporter_analysis_report",
+   "loc": 298,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST",
+    "EXECUTION_NAMES",
+    "WRITES"
+   ],
+   "callees": [
+    "_build_ai_evidence_catalog",
+    "_build_decision_chains",
+    "_build_decision_trace_chain_summary",
+    "_build_improvement_suggestions",
+    "_build_incident_postmortem",
+    "_build_intent_flow_analysis",
+    "_build_market_context",
+    "_build_monitor_evaluation",
+    "_build_overtrading_diagnostics",
+    "_build_report_views",
+    "_build_scanner_evaluation",
+    "_build_strategist_evaluation",
+    "_build_strategy_effectiveness",
+    "_build_strategy_frame_summary",
+    "_build_supervisor_activity",
+    "_build_trade_decision_summaries",
+    "_build_trade_summary_section",
+    "_canonical_reports_root",
+    "_ensure_min_ai_review_payload",
+    "_extract_report_focus_targets",
+    "_hydrate_ai_evidence_details",
+    "_latest_day",
+    "_read_json",
+    "_safe_int",
+    "_to_markdown"
+   ],
+   "callers": [
+    "libs/agent/reporter.py",
+    "libs/reporting/__init__.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "scripts/diagnostics/run_offhours_full_trace_bundle.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_offhours_full_trace_bundle.py",
+    "tests/test_reporter_analysis_report.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "collect_symbols_for_day",
+   "loc": 35,
+   "authority_categories": [
+    "EXECUTION_NAMES"
+   ],
+   "callees": [
+    "_to_epoch",
+    "add",
+    "append",
+    "build_daily_trade_index",
+    "fromtimestamp",
+    "get",
+    "isinstance",
+    "iter_jsonl_events",
+    "set",
+    "str",
+    "strftime",
+    "strip",
+    "upper"
+   ],
+   "callers": [
+    "libs/reporting/daily_report_generator.py",
+    "scripts/research/run_phase5_validation_bundle.py",
+    "scripts/run_ai_trade_report_batch.py",
+    "tests/test_run_phase5_validation_bundle.py"
+   ],
+   "why_retained": "broker/truth/execution related names",
+   "decision_required": "Work: explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "generate_agent_pipeline_trace_report",
+   "loc": 442,
+   "authority_categories": [
+    "LLM_ROUTING_RETRY_COST",
+    "BROKER_TRUTH",
+    "EXECUTION_NAMES",
+    "WRITES"
+   ],
+   "callees": [
+    "Path",
+    "RuntimeError",
+    "_build_markdown",
+    "_build_reasoning_provenance",
+    "_build_reasoning_trace",
+    "_iter_jsonl",
+    "_latest_decision_trace_payload",
+    "_latest_row",
+    "_pick_run_id",
+    "_read_json",
+    "_reporter_analysis_has_run",
+    "_safe_float",
+    "_safe_int",
+    "_summarize_collected_news",
+    "_summarize_scanner_sources",
+    "_to_epoch",
+    "_utc_day",
+    "bool",
+    "build_news_symbol_linkage_view",
+    "dict",
+    "dumps",
+    "exists",
+    "get",
+    "isinstance",
+    "list"
+   ],
+   "callers": [
+    "libs/reporting/__init__.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "scripts/diagnostics/run_agent_pipeline_trace_report.py",
+    "scripts/diagnostics/run_offhours_full_trace_bundle.py",
+    "scripts/research/run_phase5_validation_bundle.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_offhours_full_trace_bundle.py",
+    "tests/test_run_phase5_validation_bundle.py"
+   ],
+   "why_retained": "LLM routing/retry/cost related names",
+   "decision_required": "Work+user (LLM policy owner): explicit narrow approval to relocate this body; behaviour must stay identical (no policy change)",
+   "tests_invoked": "NONE (read-only static map; no LLM/broker/production call)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_broker_order_status_payload",
+   "loc": 15,
+   "authority_categories": [
+    "BROKER_TRUTH"
+   ],
+   "callees": [
+    "dict",
+    "getattr",
+    "normalize_symbol",
+    "str",
+    "strip"
+   ],
+   "callers": [],
+   "why_retained": "broker order-status payload; excluded from R-8 by name",
+   "decision_required": "Work (truth/broker authority owner): explicit narrow approval to relocate; no behaviour change",
+   "tests_invoked": "NONE"
+  }
+ ],
+ "controlled_mock_lane_report": "retained at libs/reporting/controlled_mock_lane_report.py as Reporter presentation/read adapter (Work decision); no Q10/Q12 lane/truth change",
+ "note": "22 rows = the 21 triage NEEDS_AUTHORITY rows + _broker_order_status_payload (triage SAFE_MOVE_CANDIDATE, excluded from R-8 by name; now reclassified NEEDS_AUTHORITY)"
+}

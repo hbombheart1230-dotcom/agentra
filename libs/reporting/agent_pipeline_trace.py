@@ -11,6 +11,22 @@ from libs.reporting.reasoning_trace import (
     build_reasoning_trace_from_summaries,
 )
 from libs.reporting.strategy_read_model import build_news_symbol_linkage_view
+import sys as _r3_sys
+from libs.agents.reporter.narrative.pipeline_trace_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _to_epoch_r4_impl,
+    _latest_decision_trace_payload_r4_impl,
+    _pick_run_id_r4_impl,
+    _extract_title_r4_impl,
+    _summarize_collected_news_r4_impl,
+    _summarize_scanner_sources_r4_impl,
+    _format_strategist_directives_summary_r4_impl,
+    _reporter_analysis_has_run_r4_impl,
+    _build_reasoning_trace_r4_impl,
+    _build_reasoning_provenance_r4_impl,
+)
+from libs.agents.reporter.narrative.agent_pipeline_trace_r8_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _build_markdown_r4_impl,
+)
 
 
 def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
@@ -32,25 +48,7 @@ def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
-    if ts is None:
-        return None
-    if isinstance(ts, (int, float)):
-        return int(ts)
-    raw = str(ts).strip()
-    if not raw:
-        return None
-    try:
-        return int(float(raw))
-    except Exception:
-        pass
-    s = raw[:-1] + "+00:00" if raw.endswith("Z") else raw
-    try:
-        dt = datetime.fromisoformat(s)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
-    except Exception:
-        return None
+    return _to_epoch_r4_impl(ts, facade=_r3_sys.modules[__name__])
 
 
 def _utc_day(ts: Any) -> Optional[str]:
@@ -82,82 +80,23 @@ def _latest_row(rows: List[Dict[str, Any]], *, stage: str, event: str) -> Dict[s
 
 
 def _latest_decision_trace_payload(rows: List[Dict[str, Any]], *, event: str, agent: str) -> Dict[str, Any]:
-    for row in reversed(rows):
-        if str(row.get("stage") or "").strip() != "decision_trace":
-            continue
-        if str(row.get("event") or "").strip() != event:
-            continue
-        payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-        row_agent = str(payload.get("agent") or "").strip().lower()
-        if row_agent != agent:
-            continue
-        agent_payload = payload.get("payload") if isinstance(payload.get("payload"), dict) else {}
-        return dict(agent_payload or {})
-    return {}
+    return _latest_decision_trace_payload_r4_impl(rows, event=event, agent=agent, facade=_r3_sys.modules[__name__])
 
 
 def _pick_run_id(rows: List[Dict[str, Any]], *, run_id: Optional[str], day: Optional[str]) -> str:
-    if run_id:
-        return str(run_id).strip()
-
-    target_day = str(day or "").strip()
-    for row in reversed(rows):
-        rid = str(row.get("run_id") or "").strip()
-        if not rid:
-            continue
-        if target_day and _utc_day(row.get("ts")) != target_day:
-            continue
-        if str(row.get("stage") or "") == "commander_router" and str(row.get("event") or "") == "route":
-            return rid
-
-    for row in reversed(rows):
-        rid = str(row.get("run_id") or "").strip()
-        if rid and (not target_day or _utc_day(row.get("ts")) == target_day):
-            return rid
-    return ""
+    return _pick_run_id_r4_impl(rows, run_id=run_id, day=day, facade=_r3_sys.modules[__name__])
 
 
 def _extract_title(sample_row: str) -> str:
-    s = str(sample_row or "")
-    m = re.search(r"title='([^']+)'", s)
-    if m:
-        return m.group(1)
-    return s[:120]
+    return _extract_title_r4_impl(sample_row, facade=_r3_sys.modules[__name__])
 
 
 def _summarize_collected_news(raw_input: Dict[str, Any], *, key: str = "collected_news", max_titles: int = 5) -> Dict[str, Any]:
-    collected = raw_input.get(key) if isinstance(raw_input.get(key), dict) else {}
-    by_symbol: Dict[str, Dict[str, Any]] = {}
-    total_headline_count = 0
-    sample_titles: List[str] = []
-    for symbol, row in collected.items():
-        item = row if isinstance(row, dict) else {}
-        count = _safe_int(item.get("count"), 0)
-        total_headline_count += count
-        sample = item.get("sample") if isinstance(item.get("sample"), list) else []
-        titles = [_extract_title(x) for x in sample[:max_titles]]
-        by_symbol[str(symbol)] = {"count": count, "sample_titles": titles}
-        for t in titles:
-            if len(sample_titles) < max_titles:
-                sample_titles.append(t)
-    return {
-        "total_headline_count": int(total_headline_count),
-        "symbol_count": int(len(by_symbol)),
-        "by_symbol": by_symbol,
-        "sample_titles": sample_titles,
-    }
+    return _summarize_collected_news_r4_impl(raw_input, key=key, max_titles=max_titles, facade=_r3_sys.modules[__name__])
 
 
 def _summarize_scanner_sources(candidates: List[Dict[str, Any]]) -> Dict[str, int]:
-    counts: Dict[str, int] = {}
-    for row in candidates:
-        srcs = row.get("sources") if isinstance(row.get("sources"), list) else []
-        for src in srcs:
-            key = str(src or "").strip()
-            if not key:
-                continue
-            counts[key] = int(counts.get(key, 0) + 1)
-    return counts
+    return _summarize_scanner_sources_r4_impl(candidates, facade=_r3_sys.modules[__name__])
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
@@ -171,402 +110,23 @@ def _read_json(path: Path) -> Dict[str, Any]:
 
 
 def _format_strategist_directives_summary(directives: Dict[str, Any]) -> str:
-    if not isinstance(directives, dict) or not directives:
-        return ""
-    parts: List[str] = []
-    for key in (
-        "playbook_action",
-        "entry_policy_action",
-        "monitor_focus_action",
-        "selected_symbol_bias_action",
-        "refresh_action",
-    ):
-        row = directives.get(key) if isinstance(directives.get(key), dict) else {}
-        action = str(row.get("action") or "").strip()
-        if not action:
-            continue
-        target = row.get("target")
-        target_fields = row.get("target_fields") if isinstance(row.get("target_fields"), list) else []
-        target_axes = row.get("target_axes") if isinstance(row.get("target_axes"), list) else []
-        reason = str(row.get("reason") or "").strip()
-        detail = ""
-        if isinstance(target, str) and target.strip():
-            detail = target.strip()
-        elif target_fields:
-            detail = ",".join(str(x).strip() for x in target_fields if str(x).strip())
-        elif target_axes:
-            detail = ",".join(str(x).strip() for x in target_axes if str(x).strip())
-        segment = f"{key}={action}"
-        if detail:
-            segment += f"({detail})"
-        if reason:
-            segment += f": {reason}"
-        parts.append(segment)
-    return " | ".join(parts)
+    return _format_strategist_directives_summary_r4_impl(directives, facade=_r3_sys.modules[__name__])
 
 
 def _reporter_analysis_has_run(report_obj: Dict[str, Any], run_id: str) -> bool:
-    rid = str(run_id or "").strip()
-    if not rid:
-        return False
-
-    trace_summary = report_obj.get("decision_trace_chain_summary")
-    if isinstance(trace_summary, dict):
-        chains = trace_summary.get("chains")
-        if isinstance(chains, list):
-            for row in chains:
-                if isinstance(row, dict) and str(row.get("run_id") or "").strip() == rid:
-                    return True
-
-    decision_chains = report_obj.get("decision_chains")
-    if isinstance(decision_chains, dict):
-        chains = decision_chains.get("chains")
-        if isinstance(chains, list):
-            for row in chains:
-                if isinstance(row, dict) and str(row.get("run_id") or "").strip() == rid:
-                    return True
-
-    trade_summaries = report_obj.get("trade_decision_summaries")
-    if isinstance(trade_summaries, dict):
-        summaries = trade_summaries.get("trade_summaries")
-        if isinstance(summaries, list):
-            for row in summaries:
-                if not isinstance(row, dict):
-                    continue
-                buy_run = str(row.get("buy_run_id") or "").strip()
-                sell_run = str(row.get("sell_run_id") or "").strip()
-                if buy_run == rid or sell_run == rid:
-                    return True
-
-    return False
+    return _reporter_analysis_has_run_r4_impl(report_obj, run_id, facade=_r3_sys.modules[__name__])
 
 
 def _build_reasoning_trace(out: Dict[str, Any]) -> Dict[str, Any]:
-    commander = out.get("commander") if isinstance(out.get("commander"), dict) else {}
-    strategist = out.get("strategist") if isinstance(out.get("strategist"), dict) else {}
-    news_symbol_linkage = out.get("news_symbol_linkage") if isinstance(out.get("news_symbol_linkage"), dict) else {}
-    scanner = out.get("scanner") if isinstance(out.get("scanner"), dict) else {}
-    monitor = out.get("monitor") if isinstance(out.get("monitor"), dict) else {}
-    return build_reasoning_trace_from_summaries(
-        commander_summary={
-            "summary": str(commander.get("decision_summary") or commander.get("shadow_assessment_summary") or commander.get("path") or ""),
-            "command_intent": str(commander.get("command_intent") or ""),
-            "strategist_invocation": str(commander.get("strategist_invocation") or ""),
-            "llm_policy": str(commander.get("llm_policy") or ""),
-            "no_trade_reason_code": str(commander.get("shadow_reason_code") or commander.get("no_trade_reason_code") or ""),
-            "source_priority": list(commander.get("source_priority") or []),
-            "applied_policy": dict(commander.get("applied_policy") or {}),
-            "policy_source": str(commander.get("policy_source") or ""),
-            "policy_validation_status": str(commander.get("policy_validation_status") or ""),
-            "policy_fallback_used": bool(commander.get("policy_fallback_used")),
-            "policy_fallback_reason": str(commander.get("policy_fallback_reason") or ""),
-            "policy_partial_normalized": bool(commander.get("policy_partial_normalized")),
-            "policy_default_filled_fields": list(commander.get("policy_default_filled_fields") or []),
-            "policy_validation_missing_fields": list(commander.get("policy_validation_missing_fields") or []),
-            "policy_validation_invalid_fields": list(commander.get("policy_validation_invalid_fields") or []),
-            "override_reason": str(commander.get("override_reason") or ""),
-            "applied_policy_source_chain": list(commander.get("applied_policy_source_chain") or []),
-        },
-        strategist_summary={
-            "summary": str(strategist.get("strategy_summary") or strategist.get("news_query_reasoning") or strategist.get("playbook") or ""),
-            "selected_playbook": str(strategist.get("selected_playbook") or strategist.get("playbook") or ""),
-            "themes": list(strategist.get("themes") or []),
-            "monitor_guidance": str(strategist.get("monitor_guidance") or ""),
-        },
-        scanner_summary={
-            "summary": str(
-                ((scanner.get("selection_basis") or {}).get("summary") if isinstance(scanner.get("selection_basis"), dict) else "")
-                or ((scanner.get("selected_candidate") or {}).get("selection_summary") if isinstance(scanner.get("selected_candidate"), dict) else "")
-                or scanner.get("top_stock")
-                or ""
-            ),
-            "selected_symbol": str(scanner.get("top_stock") or ""),
-            "runner_up_symbol": str(scanner.get("runner_up_symbol") or ""),
-            "ranking_factors": list(scanner.get("ranking_factors") or []),
-            "rejected_candidates": list(scanner.get("rejected_candidates") or []),
-            "playbook": str(scanner.get("playbook") or ""),
-            "policy_source": str(scanner.get("policy_source") or ""),
-            "applied_policy_present": bool(scanner.get("applied_policy_present")),
-            "monitor_entry_policy_summary": dict(scanner.get("monitor_entry_policy_summary") or {}),
-            "scanner_bias_applied": bool(scanner.get("scanner_bias_applied")),
-            "scanner_bias_summary": dict(scanner.get("scanner_bias_summary") or {}),
-            "candidate_bias_adjustments": list(scanner.get("candidate_bias_adjustments") or []),
-            "selection_reason_with_bias": str(
-                scanner.get("selection_reason_with_bias")
-                or ((scanner.get("selection_basis") or {}).get("summary") if isinstance(scanner.get("selection_basis"), dict) else "")
-                or ""
-            ),
-        },
-        monitor_summary={
-            "summary": str(
-                monitor.get("entry_check_summary")
-                or monitor.get("monitor_reason")
-                or monitor.get("entry_reason")
-                or monitor.get("exit_reason")
-                or ""
-            ),
-            "decision": str(monitor.get("decision") or ""),
-            "action": str(monitor.get("action") or ""),
-            "entry_blockers": list(monitor.get("entry_blockers") or []),
-            "timing_assessment": dict(monitor.get("timing_assessment") or {}),
-            "exit_trigger_basis": dict(monitor.get("exit_trigger_basis") or {}),
-            "received_policy": dict(monitor.get("received_policy") or {}),
-            "received_policy_source": str(monitor.get("received_policy_source") or ""),
-            "effective_policy": dict(monitor.get("effective_policy") or monitor.get("applied_policy") or {}),
-            "effective_policy_source": str(monitor.get("effective_policy_source") or ""),
-            "effective_policy_source_chain": list(monitor.get("effective_policy_source_chain") or []),
-            "policy_adjustments": dict(monitor.get("policy_adjustments") or {}),
-            "policy_adjustment_summary": str(monitor.get("policy_adjustment_summary") or ""),
-            "policy_adjustment_reasoning": str(monitor.get("policy_adjustment_reasoning") or ""),
-            "effective_policy_deltas": list(monitor.get("effective_policy_deltas") or []),
-            "policy_source": str(monitor.get("policy_source") or ""),
-            "policy_validation_status": str(monitor.get("policy_validation_status") or ""),
-            "policy_fallback_used": bool(monitor.get("policy_fallback_used")),
-            "policy_partial_normalized": bool(monitor.get("policy_partial_normalized")),
-            "policy_default_filled_fields": list(monitor.get("policy_default_filled_fields") or []),
-            "policy_validation_missing_fields": list(monitor.get("policy_validation_missing_fields") or []),
-            "policy_validation_invalid_fields": list(monitor.get("policy_validation_invalid_fields") or []),
-            "override_reason": str(monitor.get("override_reason") or ""),
-            "applied_policy": dict(monitor.get("applied_policy") or {}),
-        },
-    )
+    return _build_reasoning_trace_r4_impl(out, facade=_r3_sys.modules[__name__])
 
 
 def _build_reasoning_provenance(out: Dict[str, Any]) -> Dict[str, Any]:
-    commander = out.get("commander") if isinstance(out.get("commander"), dict) else {}
-    strategist = out.get("strategist") if isinstance(out.get("strategist"), dict) else {}
-    news_symbol_linkage = out.get("news_symbol_linkage") if isinstance(out.get("news_symbol_linkage"), dict) else {}
-    scanner = out.get("scanner") if isinstance(out.get("scanner"), dict) else {}
-    monitor = out.get("monitor") if isinstance(out.get("monitor"), dict) else {}
-    return build_reasoning_provenance(
-        commander_context_source="event_payload" if commander else "missing",
-        strategist_plan_source="event_payload" if strategist else "missing",
-        scanner_reason_source="event_payload" if scanner else "missing",
-        monitor_reason_source="event_payload" if monitor else "missing",
-        commander_source_ref="commander_router.route/end",
-        strategist_source_ref="strategist.summary",
-        scanner_source_ref="scanner.summary/decision_trace.candidate_selection",
-        monitor_source_ref="monitor.summary/decision_trace.entry_exit_decision",
-        shadow_used=bool(commander.get("shadow_used") or strategist.get("shadow_used")),
-        strategist_fallback_used=bool(
-            commander.get("strategist_fallback_used") or strategist.get("strategist_fallback_used")
-        ),
-        source_priority=list(commander.get("source_priority") or []),
-    )
+    return _build_reasoning_provenance_r4_impl(out, facade=_r3_sys.modules[__name__])
 
 
 def _build_markdown(out: Dict[str, Any]) -> str:
-    commander = out.get("commander") if isinstance(out.get("commander"), dict) else {}
-    strategist = out.get("strategist") if isinstance(out.get("strategist"), dict) else {}
-    news_symbol_linkage = out.get("news_symbol_linkage") if isinstance(out.get("news_symbol_linkage"), dict) else {}
-    scanner = out.get("scanner") if isinstance(out.get("scanner"), dict) else {}
-    monitor = out.get("monitor") if isinstance(out.get("monitor"), dict) else {}
-    supervisor = out.get("supervisor") if isinstance(out.get("supervisor"), dict) else {}
-    executor = out.get("executor") if isinstance(out.get("executor"), dict) else {}
-    reporter = out.get("reporter") if isinstance(out.get("reporter"), dict) else {}
-    reasoning_trace = out.get("reasoning_trace") if isinstance(out.get("reasoning_trace"), dict) else {}
-    reasoning_provenance = out.get("reasoning_provenance") if isinstance(out.get("reasoning_provenance"), dict) else {}
-
-    lines: List[str] = []
-    lines.append(f"# Agent Pipeline Trace ({out.get('run_id')})")
-    lines.append("")
-    lines.append(f"- day: **{out.get('day')}**")
-    lines.append(f"- event_log_path: `{out.get('event_log_path')}`")
-    lines.append(f"- evidence_log_path: `{out.get('evidence_log_path')}`")
-    lines.append("")
-    lines.append("## Commander")
-    lines.append(f"- mode: **{commander.get('mode')}**")
-    lines.append(f"- agents: `{json.dumps(commander.get('agents') or [], ensure_ascii=False)}`")
-    lines.append(f"- route_ts: `{commander.get('route_ts')}`")
-    lines.append(f"- end_status: **{commander.get('end_status')}**")
-    lines.append("")
-    lines.append("## Strategist")
-    lines.append(
-        f"- news_source: **{strategist.get('news_source')}** "
-        f"headlines={_safe_int(strategist.get('news_total_headlines'), 0)} "
-        f"symbols={_safe_int(strategist.get('news_symbol_count'), 0)}"
-    )
-    if strategist.get("news_query_targets"):
-        lines.append(
-            f"- news_query_targets: `{json.dumps(strategist.get('news_query_targets') or [], ensure_ascii=False)}`"
-        )
-    if strategist.get("news_query_reasoning"):
-        lines.append(f"- news_query_reasoning: {strategist.get('news_query_reasoning')}")
-    lines.append(
-        f"- global_sentiment: score={_safe_float(strategist.get('global_sentiment_score'), 0.0):.4f} "
-        f"status={strategist.get('global_sentiment_status')} source={strategist.get('global_sentiment_source')}"
-    )
-    if strategist.get("global_index_moves"):
-        lines.append(
-            f"- global_index_moves: `{json.dumps(strategist.get('global_index_moves') or {}, ensure_ascii=False)}`"
-        )
-    if strategist.get("fear_index"):
-        lines.append(
-            f"- fear_index: `{json.dumps(strategist.get('fear_index') or {}, ensure_ascii=False)}`"
-        )
-    if strategist.get("macro_stress_overlay"):
-        overlay = strategist.get("macro_stress_overlay") or {}
-        lines.append(
-            f"- macro_stress: active={bool(overlay.get('active'))} "
-            f"flags=`{json.dumps(overlay.get('stress_flags') or [], ensure_ascii=False)}` "
-            f"reason=`{overlay.get('reason')}`"
-        )
-    lines.append(
-        f"- llm: provider={strategist.get('llm_provider')} model={strategist.get('llm_model')} "
-        f"ok={strategist.get('llm_ok')} latency_ms={strategist.get('llm_latency_ms')}"
-    )
-    lines.append(f"- llm_prompt_captured: **{bool(strategist.get('llm_prompt'))}**")
-    lines.append(f"- llm_response_captured: **{bool(strategist.get('llm_response'))}**")
-    lines.append(f"- themes: `{json.dumps(strategist.get('themes') or [], ensure_ascii=False)}`")
-    lines.append(f"- playbook: **{strategist.get('playbook')}**")
-    if strategist.get("scanner_source_policy"):
-        lines.append(
-            f"- scanner_source_policy: `{json.dumps(strategist.get('scanner_source_policy') or {}, ensure_ascii=False)}`"
-        )
-    if strategist.get("news_sample_titles"):
-        lines.append(
-            f"- news_sample_titles: `{json.dumps(strategist.get('news_sample_titles') or [], ensure_ascii=False)}`"
-        )
-    directives = strategist.get("strategy_adjustment_directives") if isinstance(strategist.get("strategy_adjustment_directives"), dict) else {}
-    directives_summary = _format_strategist_directives_summary(directives)
-    if directives:
-        lines.append(f"- strategy_adjustment_directives: `{json.dumps(directives, ensure_ascii=False)}`")
-    if directives_summary:
-        lines.append(f"- strategy_adjustment_summary: {directives_summary}")
-    if strategist.get("memory_packet_visibility"):
-        lines.append(
-            f"- memory_packet_visibility: `{json.dumps(strategist.get('memory_packet_visibility') or {}, ensure_ascii=False)}`"
-        )
-    lines.append("")
-    lines.append("## News -> Symbol Linkage")
-    lines.append(f"- linkage_strength: **{news_symbol_linkage.get('linkage_strength') or 'unknown'}**")
-    if news_symbol_linkage.get("summary"):
-        lines.append(f"- summary: {news_symbol_linkage.get('summary')}")
-    if news_symbol_linkage.get("candidate_symbols_hint"):
-        lines.append(
-            f"- candidate_symbols_hint: `{json.dumps(news_symbol_linkage.get('candidate_symbols_hint') or [], ensure_ascii=False)}`"
-        )
-    if news_symbol_linkage.get("news_query_targets"):
-        lines.append(
-            f"- linkage_news_query_targets: `{json.dumps(news_symbol_linkage.get('news_query_targets') or [], ensure_ascii=False)}`"
-        )
-    if news_symbol_linkage.get("selected_symbol"):
-        lines.append(
-            f"- selected_symbol_linkage: symbol={news_symbol_linkage.get('selected_symbol')} "
-            f"in_candidate_hints={bool(news_symbol_linkage.get('selected_symbol_in_candidate_hints'))}"
-        )
-    if news_symbol_linkage.get("runner_up_symbol"):
-        lines.append(
-            f"- runner_up_symbol_linkage: symbol={news_symbol_linkage.get('runner_up_symbol')} "
-            f"in_candidate_hints={bool(news_symbol_linkage.get('runner_up_symbol_in_candidate_hints'))}"
-        )
-    if news_symbol_linkage.get("selected_symbol_headlines"):
-        lines.append(
-            f"- selected_symbol_headlines: `{json.dumps(news_symbol_linkage.get('selected_symbol_headlines') or [], ensure_ascii=False)}`"
-        )
-    if news_symbol_linkage.get("runner_up_symbol_headlines"):
-        lines.append(
-            f"- runner_up_symbol_headlines: `{json.dumps(news_symbol_linkage.get('runner_up_symbol_headlines') or [], ensure_ascii=False)}`"
-        )
-    comparison = news_symbol_linkage.get("selected_vs_runner_up") if isinstance(news_symbol_linkage.get("selected_vs_runner_up"), dict) else {}
-    if comparison.get("comparison_summary"):
-        lines.append(f"- selected_vs_runner_up: {comparison.get('comparison_summary')}")
-    if news_symbol_linkage.get("market_headlines"):
-        lines.append(
-            f"- linkage_market_headlines: `{json.dumps(news_symbol_linkage.get('market_headlines') or [], ensure_ascii=False)}`"
-        )
-    lines.append("")
-    lines.append("## Scanner")
-    lines.append(f"- candidate_source: **{scanner.get('candidate_source')}**")
-    lines.append(
-        f"- pool: before={_safe_int(scanner.get('candidate_pool_before_filter'), 0)} "
-        f"after={_safe_int(scanner.get('candidate_pool_after_filter'), 0)}"
-    )
-    lines.append(f"- kiwoom_source_mix: `{json.dumps(scanner.get('kiwoom_source_mix') or {}, ensure_ascii=False)}`")
-    if scanner.get("condition_search_status") or scanner.get("condition_search_reason"):
-        lines.append(
-            f"- condition_search: status={scanner.get('condition_search_status')} "
-            f"source={scanner.get('condition_search_source')} "
-            f"reason={scanner.get('condition_search_reason')}"
-        )
-    if scanner.get("scanner_source_policy"):
-        lines.append(
-            f"- scanner_source_policy: `{json.dumps(scanner.get('scanner_source_policy') or {}, ensure_ascii=False)}`"
-        )
-    lines.append(f"- top_stock: **{scanner.get('top_stock')}** top_score={scanner.get('top_score')}")
-    lines.append(f"- top_ranked_symbols: `{json.dumps(scanner.get('top_ranked_symbols') or [], ensure_ascii=False)}`")
-    lines.append(
-        f"- score_breakdown_summary: `{json.dumps(scanner.get('score_breakdown_summary') or {}, ensure_ascii=False)}`"
-    )
-    if scanner.get("selected_candidate"):
-        lines.append(
-            f"- selected_candidate: `{json.dumps(scanner.get('selected_candidate') or {}, ensure_ascii=False)}`"
-        )
-    lines.append("")
-    lines.append("## Monitor")
-    lines.append(f"- selected_symbol: **{monitor.get('selected_symbol')}**")
-    lines.append(
-        f"- entry_reason={monitor.get('entry_reason')} exit_reason={monitor.get('exit_reason')} "
-        f"monitor_reason={monitor.get('monitor_reason')}"
-    )
-    lines.append(
-        f"- position_age_seconds={monitor.get('position_age_seconds')} "
-        f"min_hold_blocked={monitor.get('min_hold_blocked')} "
-        f"sell_cooldown_blocked={monitor.get('sell_cooldown_blocked')}"
-    )
-    lines.append(
-        f"- thresholds: `{json.dumps(monitor.get('thresholds') or {}, ensure_ascii=False)}` "
-        f"min_hold={_safe_int(monitor.get('min_hold_sec'), 0)} "
-        f"sell_cooldown={_safe_int(monitor.get('sell_cooldown_sec'), 0)} "
-        f"confirm_ticks={_safe_int(monitor.get('exit_confirm_ticks'), 0)}"
-    )
-    if monitor.get("strategy_frame_adjustments"):
-        lines.append(
-            f"- strategy_frame_adjustments: `{json.dumps(monitor.get('strategy_frame_adjustments') or [], ensure_ascii=False)}`"
-        )
-    lines.append("")
-    if reasoning_trace:
-        lines.append("## Reasoning Trace")
-        for key in ("commander_summary", "strategist_summary", "scanner_summary", "monitor_summary"):
-            row = reasoning_trace.get(key) if isinstance(reasoning_trace.get(key), dict) else {}
-            if row:
-                lines.append(f"- {key}: {row.get('summary') or '-'}")
-        if reasoning_provenance:
-            lines.append(
-                f"- provenance: shadow_used={reasoning_provenance.get('shadow_used')} "
-                f"strategist_fallback_used={reasoning_provenance.get('strategist_fallback_used')}"
-            )
-        lines.append("")
-    lines.append("## Supervisor")
-    lines.append(
-        f"- verdict={supervisor.get('verdict')} allow={supervisor.get('supervisor_allow')} "
-        f"reason={supervisor.get('supervisor_reason') or supervisor.get('guard_reason')}"
-    )
-    lines.append("")
-    lines.append("## Executor")
-    lines.append(
-        f"- execution_attempted={executor.get('execution_attempted')} "
-        f"ok={executor.get('execution_ok')} broker_code={executor.get('broker_code')}"
-    )
-    lines.append(
-        f"- execution_mode={executor.get('execution_mode')} kiwoom_mode={executor.get('kiwoom_mode')} "
-        f"broker_env={executor.get('broker_env')} effective_mode={executor.get('effective_mode')}"
-    )
-    lines.append(
-        f"- api_id={executor.get('order_api_id')} url={executor.get('order_url')} "
-        f"action={executor.get('order_action')} symbol={executor.get('order_symbol')} qty={executor.get('order_qty')}"
-    )
-    lines.append("")
-    lines.append("## Reporter")
-    lines.append(f"- in_run_trace_available: **{reporter.get('in_run_trace_available')}**")
-    lines.append(f"- reporter_analysis_day_file_found: **{reporter.get('reporter_analysis_day_file_found')}**")
-    lines.append(f"- reporter_analysis_found: **{reporter.get('reporter_analysis_found')}**")
-    lines.append(f"- reporter_analysis_path: `{reporter.get('reporter_analysis_path')}`")
-    lines.append("")
-    lines.append("## Next Command")
-    lines.append(f"- `python scripts/run_agent_pipeline_trace_report.py --run-id {out.get('run_id')} --json`")
-    lines.append(f"- `python scripts/query_trade_reason_chain.py --run-id {out.get('run_id')} --only-broker-success`")
-    return "\n".join(lines)
+    return _build_markdown_r4_impl(out, facade=_r3_sys.modules[__name__])
 
 
 def generate_agent_pipeline_trace_report(
