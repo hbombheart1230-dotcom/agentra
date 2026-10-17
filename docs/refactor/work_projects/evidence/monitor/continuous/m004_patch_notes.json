@@ -1,0 +1,1 @@
+{"date":"2026-10-17","version":"Monitor continuous M-004","summary":"Extract exit display labels/watch-list only; preserve reason priority and hard/soft/emergency classifiers, exact original ABI and use-time scalar callbacks. 97 BASE cases; focused 227 PASS, review pending.","official_ui_owner":"Work","checkpoint":"CP-004-exit-label-views.md"}

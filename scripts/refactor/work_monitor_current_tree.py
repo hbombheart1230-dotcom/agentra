@@ -20,6 +20,10 @@ WHOLE_MOVES = {
 
 # Explicit function sets only; no wildcard facade or generic shim following.
 BODY_MOVES = {
+    "libs/runtime/monitor_exit/reasons.py": {
+        "owner": "libs/agents/monitor/projections/exit_axis_labels.py",
+        "functions": {"friendly_exit_axis": (), "monitor_watch_axes": ("to_float", "_is_trueish")},
+    },
     "libs/runtime/intraday_monitor_signals.py": {
         "owner": "libs/agents/monitor/projections/signal_evidence_defaults.py",
         "functions": {"_empty_entry_transition_trace": (),
