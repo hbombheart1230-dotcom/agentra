@@ -1,5 +1,8 @@
 # P1.5 Continuous Engineering Loop — operating contract
 
+> **2026-10-17 authority update:** Active [two-worker + GPT architect on-demand policy](assignments/11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md). Claude Reporter -> independent shared-integrator reviewer; Codex Monitor -> isolated shared T3/T4/CI integrator; GPT architecture decisions on demand. `AUDIT_PASS` is by the OTHER worker, never self-certified by Codex's own integration tests. Recurring Work monitor is disabled. Older three-role/Work approval passages below are historical only.
+
+
 ## 1. Two independent loops
 
 **Implementation loop (developer-owned):** pick next ready batch -> implement -> targeted test -> repair -> commit/push -> append checkpoint -> poll review inbox -> incorporate valid findings -> pick next ready batch. **Never stop merely because a commit completed or a reviewer has not responded.**
