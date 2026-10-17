@@ -1,0 +1,1400 @@
+{
+  "schema": "agentra.reporter.independent_audit.v1",
+  "verdict": "PASS_WITH_FINDINGS",
+  "audited_sha": "81f6a691eefd8699c68c6e66668d1bfc756d39ef",
+  "runtime_base": "d773709ba2f70471fad9badba4f92400f7818319",
+  "scope_start": "eeb742a33b16f6271ff364a904e187b470561c7e",
+  "source_branch": "work/reporter-role-20261017",
+  "handoff_sha": "754366db976ce9fffb5288bbb8c234efa12773f9",
+  "handoff_only_delta_verified": true,
+  "remote_tip_observed_later_not_audit_target": "e8aa7e3da34e3354cdf699333e6179fcaf40f767",
+  "audit_workspace": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691",
+  "evidence_branch": "work/monitor-role-20261017",
+  "changed_paths": [
+    "docs/refactor/work_projects/evidence/reporter/proposed_patch_note.json",
+    "docs/refactor/work_projects/evidence/reporter/responsibility_register.json",
+    "libs/agents/reporter/__init__.py",
+    "libs/agents/reporter/narrative/__init__.py",
+    "libs/agents/reporter/narrative/narrative_axes.py",
+    "libs/agents/reporter/narrative/reasoning_trace.py",
+    "libs/agents/reporter/narrative/trade_execution_outcome_text.py",
+    "libs/agents/reporter/narrative/trade_fallback_text.py",
+    "libs/agents/reporter/narrative/trade_reporter_status_text.py",
+    "libs/agents/reporter/narrative/truth_source_labels.py",
+    "libs/agents/reporter/read_models/__init__.py",
+    "libs/agents/reporter/read_models/chart_structure_decision_hint_summary.py",
+    "libs/agents/reporter/read_models/policy_surface_summary.py",
+    "libs/agents/reporter/read_models/report_metadata.py",
+    "libs/agents/reporter/read_models/trade_pnl_estimate.py",
+    "libs/reporting/chart_structure_decision_hint_summary.py",
+    "libs/reporting/narrative_axes.py",
+    "libs/reporting/policy_surface_summary.py",
+    "libs/reporting/reasoning_trace.py",
+    "libs/reporting/report_metadata.py",
+    "libs/reporting/trade_execution_outcome_text.py",
+    "libs/reporting/trade_fallback_text.py",
+    "libs/reporting/trade_pnl_estimate.py",
+    "libs/reporting/trade_reporter_status_text.py",
+    "libs/reporting/truth_source_labels.py",
+    "scripts/refactor/work_reporter_capture.py",
+    "tests/fixtures/work_reporter/seed_cases.json.gz",
+    "tests/test_work_reporter_seed_migration.py"
+  ],
+  "blob_parity": {
+    "owners": 10,
+    "LOC": 1416,
+    "maximum_owner_LOC": 240,
+    "BASE_equals_canonical": 10,
+    "owners_detail": [
+      {
+        "legacy": "libs/reporting/narrative_axes.py",
+        "canonical": "libs/agents/reporter/narrative/narrative_axes.py",
+        "git_blob": "8eee2c502ed8f1646c0008e7979a6c438a01972a",
+        "loc": 181,
+        "function_count": 4
+      },
+      {
+        "legacy": "libs/reporting/trade_fallback_text.py",
+        "canonical": "libs/agents/reporter/narrative/trade_fallback_text.py",
+        "git_blob": "de225b4556c9780ec84a7a3ee321c8659aea9373",
+        "loc": 32,
+        "function_count": 2
+      },
+      {
+        "legacy": "libs/reporting/reasoning_trace.py",
+        "canonical": "libs/agents/reporter/narrative/reasoning_trace.py",
+        "git_blob": "0807b9f3a94238f73c7617e1e0e8d8f514e9e676",
+        "loc": 229,
+        "function_count": 6
+      },
+      {
+        "legacy": "libs/reporting/trade_execution_outcome_text.py",
+        "canonical": "libs/agents/reporter/narrative/trade_execution_outcome_text.py",
+        "git_blob": "ca7ff430a44cea2dcbf2a1a1b3adccde13b354c1",
+        "loc": 202,
+        "function_count": 11
+      },
+      {
+        "legacy": "libs/reporting/trade_reporter_status_text.py",
+        "canonical": "libs/agents/reporter/narrative/trade_reporter_status_text.py",
+        "git_blob": "ce3578e8d2e6e7036a9f1f48085516a73905fca3",
+        "loc": 77,
+        "function_count": 2
+      },
+      {
+        "legacy": "libs/reporting/truth_source_labels.py",
+        "canonical": "libs/agents/reporter/narrative/truth_source_labels.py",
+        "git_blob": "5a30f3df03c13468b8c81e083212d4063fd0ea0d",
+        "loc": 83,
+        "function_count": 7
+      },
+      {
+        "legacy": "libs/reporting/chart_structure_decision_hint_summary.py",
+        "canonical": "libs/agents/reporter/read_models/chart_structure_decision_hint_summary.py",
+        "git_blob": "16a5d887bc3a49efb6280cb6ea1693f9c3255949",
+        "loc": 240,
+        "function_count": 10
+      },
+      {
+        "legacy": "libs/reporting/policy_surface_summary.py",
+        "canonical": "libs/agents/reporter/read_models/policy_surface_summary.py",
+        "git_blob": "4a3aa078fefa2e83fac1d0b610a2b667befb851c",
+        "loc": 225,
+        "function_count": 10
+      },
+      {
+        "legacy": "libs/reporting/report_metadata.py",
+        "canonical": "libs/agents/reporter/read_models/report_metadata.py",
+        "git_blob": "d0fffd0097d55f37d1038bf20bb79bd8780ed654",
+        "loc": 94,
+        "function_count": 5
+      },
+      {
+        "legacy": "libs/reporting/trade_pnl_estimate.py",
+        "canonical": "libs/agents/reporter/read_models/trade_pnl_estimate.py",
+        "git_blob": "614f79242d78f4cdd536062bc0f0fe49c067c9ba",
+        "loc": 53,
+        "function_count": 2
+      }
+    ]
+  },
+  "module_identity": {
+    "fresh_import_order_package_checks": "10/10 parametrized tests PASS (30 fresh subprocesses)",
+    "private_public_and_patch_tests": "10/10 PASS plus independent private helper use-time output check",
+    "strict_shim_normal": "10 valid / 60 mutated shims rejected inside role tests",
+    "strict_shim_python_O": "10 valid / 60 independent mutated shims rejected with explicit exceptions",
+    "BASE_signature_comparisons": 59,
+    "new_owner_import_DAG": "Only __future__, typing and collections imports; package initializers docstrings only; no canonical->legacy/graph/facade edge or new cycle"
+  },
+  "frozen_fixture": {
+    "physical_bytes": 22701,
+    "decompressed_bytes": 530536,
+    "cases": 1216,
+    "functions": 59,
+    "normal_returns": 988,
+    "exceptions": 228,
+    "sha256_compressed": "129f37b1a175bffce63edeb6f62b2a7c9704ca2d95796f41d180f1f096bae9b1",
+    "fixture_keys": [
+      "cases"
+    ],
+    "producer_tool_git_blob": "3e7ab628fe220de7ff56a00a0a1d21df16d219d8",
+    "python313": {
+      "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+      "count": 1216,
+      "base_equal_fixture": true,
+      "feature_equal_base": true,
+      "base_payload_sha256": "1381e460ef414cc32fa0460dcb6902c5a9c0f2d6e1ca75cdaf7f5e414776fb15",
+      "feature_payload_sha256": "1381e460ef414cc32fa0460dcb6902c5a9c0f2d6e1ca75cdaf7f5e414776fb15",
+      "fixture_payload_sha256": "1381e460ef414cc32fa0460dcb6902c5a9c0f2d6e1ca75cdaf7f5e414776fb15",
+      "module_provenance": {
+        "base": {
+          "libs.reporting.narrative_axes": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\narrative_axes.py",
+          "libs.reporting.trade_fallback_text": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\trade_fallback_text.py",
+          "libs.reporting.reasoning_trace": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\reasoning_trace.py",
+          "libs.reporting.trade_execution_outcome_text": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\trade_execution_outcome_text.py",
+          "libs.reporting.chart_structure_decision_hint_summary": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\chart_structure_decision_hint_summary.py",
+          "libs.reporting.policy_surface_summary": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\policy_surface_summary.py",
+          "libs.reporting.report_metadata": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\report_metadata.py",
+          "libs.reporting.trade_reporter_status_text": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\trade_reporter_status_text.py",
+          "libs.reporting.truth_source_labels": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\truth_source_labels.py",
+          "libs.reporting.trade_pnl_estimate": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\trade_pnl_estimate.py"
+        },
+        "feature": {
+          "libs.reporting.narrative_axes": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\narrative_axes.py",
+          "libs.reporting.trade_fallback_text": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\trade_fallback_text.py",
+          "libs.reporting.reasoning_trace": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\reasoning_trace.py",
+          "libs.reporting.trade_execution_outcome_text": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\trade_execution_outcome_text.py",
+          "libs.reporting.chart_structure_decision_hint_summary": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\read_models\\chart_structure_decision_hint_summary.py",
+          "libs.reporting.policy_surface_summary": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\read_models\\policy_surface_summary.py",
+          "libs.reporting.report_metadata": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\read_models\\report_metadata.py",
+          "libs.reporting.trade_reporter_status_text": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\trade_reporter_status_text.py",
+          "libs.reporting.truth_source_labels": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\truth_source_labels.py",
+          "libs.reporting.trade_pnl_estimate": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\read_models\\trade_pnl_estimate.py"
+        }
+      }
+    },
+    "python314": {
+      "runtime_base": "d773709ba2f70471fad9badba4f92400f7818319",
+      "feature_sha": "81f6a691eefd8699c68c6e66668d1bfc756d39ef",
+      "base_calls": 1216,
+      "feature_calls": 1216,
+      "fixture_cases": 1216,
+      "base_equal_committed_fixture": false,
+      "feature_equal_base": true,
+      "base_payload_sha256": "1fdcffc83d2391e4091f9129149bc4f14c181c47ebf8101eaaa1467c2d4b67df",
+      "feature_payload_sha256": "1fdcffc83d2391e4091f9129149bc4f14c181c47ebf8101eaaa1467c2d4b67df",
+      "fixture_compressed_sha256": "129f37b1a175bffce63edeb6f62b2a7c9704ca2d95796f41d180f1f096bae9b1",
+      "fixture_bytes": 22701,
+      "fixture_keys": [
+        "cases"
+      ],
+      "producer_tool_git_blob": "3e7ab628fe220de7ff56a00a0a1d21df16d219d8",
+      "module_provenance": {
+        "base": {
+          "libs.reporting.narrative_axes": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\narrative_axes.py",
+            "source_lf_sha256": "9932f1913058c788fa30212856592efc20c15b8dae27ae7043752e1de09d9ef9"
+          },
+          "libs.reporting.trade_fallback_text": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\trade_fallback_text.py",
+            "source_lf_sha256": "e643ce34d4ee7b33e1f323567abfa91bb2225e9d326ce448d4e4b04f749d71f5"
+          },
+          "libs.reporting.reasoning_trace": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\reasoning_trace.py",
+            "source_lf_sha256": "11d75a8e0d9acc3f5bad2d423e67cb3be0c81271e5dbda7ae7b2b49cac471eb1"
+          },
+          "libs.reporting.trade_execution_outcome_text": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\trade_execution_outcome_text.py",
+            "source_lf_sha256": "0fd6a5264fcafa223b61839da51592bd2d97d62ba19cd5af31fcc42bfd7324ed"
+          },
+          "libs.reporting.chart_structure_decision_hint_summary": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\chart_structure_decision_hint_summary.py",
+            "source_lf_sha256": "03fa5405cd45e71beb3319b2507526016bd75f38cbd2016651f83d8292fcffc6"
+          },
+          "libs.reporting.policy_surface_summary": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\policy_surface_summary.py",
+            "source_lf_sha256": "1e19eb842a8dd031c41b46dc972e1758fae779c4f0040ff340a9bea082b40c3b"
+          },
+          "libs.reporting.report_metadata": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\report_metadata.py",
+            "source_lf_sha256": "7f754736ea917f95f7f3fbc87f70b6291b5adc15bebdfb3551a939fc5fb4b3ea"
+          },
+          "libs.reporting.trade_reporter_status_text": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\trade_reporter_status_text.py",
+            "source_lf_sha256": "a7c55444d168c96dbbc23b0f02d8aebef548c92045723718f3ab089b73eca16c"
+          },
+          "libs.reporting.truth_source_labels": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\truth_source_labels.py",
+            "source_lf_sha256": "ec11b51eaad682d451ce167aa957383911bb877a73d9174f0a052b3968e140e4"
+          },
+          "libs.reporting.trade_pnl_estimate": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\base_tree\\libs\\reporting\\trade_pnl_estimate.py",
+            "source_lf_sha256": "7009b0a360dec2167e347f08db474ae2fa9ebc5f74e11233f746ea1d057f3062"
+          }
+        },
+        "feature": {
+          "libs.reporting.narrative_axes": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\narrative_axes.py",
+            "source_lf_sha256": "9932f1913058c788fa30212856592efc20c15b8dae27ae7043752e1de09d9ef9"
+          },
+          "libs.reporting.trade_fallback_text": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\trade_fallback_text.py",
+            "source_lf_sha256": "e643ce34d4ee7b33e1f323567abfa91bb2225e9d326ce448d4e4b04f749d71f5"
+          },
+          "libs.reporting.reasoning_trace": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\reasoning_trace.py",
+            "source_lf_sha256": "11d75a8e0d9acc3f5bad2d423e67cb3be0c81271e5dbda7ae7b2b49cac471eb1"
+          },
+          "libs.reporting.trade_execution_outcome_text": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\trade_execution_outcome_text.py",
+            "source_lf_sha256": "0fd6a5264fcafa223b61839da51592bd2d97d62ba19cd5af31fcc42bfd7324ed"
+          },
+          "libs.reporting.chart_structure_decision_hint_summary": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\read_models\\chart_structure_decision_hint_summary.py",
+            "source_lf_sha256": "03fa5405cd45e71beb3319b2507526016bd75f38cbd2016651f83d8292fcffc6"
+          },
+          "libs.reporting.policy_surface_summary": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\read_models\\policy_surface_summary.py",
+            "source_lf_sha256": "1e19eb842a8dd031c41b46dc972e1758fae779c4f0040ff340a9bea082b40c3b"
+          },
+          "libs.reporting.report_metadata": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\read_models\\report_metadata.py",
+            "source_lf_sha256": "7f754736ea917f95f7f3fbc87f70b6291b5adc15bebdfb3551a939fc5fb4b3ea"
+          },
+          "libs.reporting.trade_reporter_status_text": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\trade_reporter_status_text.py",
+            "source_lf_sha256": "a7c55444d168c96dbbc23b0f02d8aebef548c92045723718f3ab089b73eca16c"
+          },
+          "libs.reporting.truth_source_labels": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\narrative\\truth_source_labels.py",
+            "source_lf_sha256": "ec11b51eaad682d451ce167aa957383911bb877a73d9174f0a052b3968e140e4"
+          },
+          "libs.reporting.trade_pnl_estimate": {
+            "file": "C:\\AgentraWork\\tmp\\reporter_role_audit_81f6a691\\libs\\agents\\reporter\\read_models\\trade_pnl_estimate.py",
+            "source_lf_sha256": "7009b0a360dec2167e347f08db474ae2fa9ebc5f74e11233f746ea1d057f3062"
+          }
+        }
+      },
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "exceptions": 228,
+      "normal_returns": 988,
+      "function_count": 59,
+      "root": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd"
+    },
+    "version_differences": [
+      {
+        "index": 31,
+        "module": "libs.reporting.narrative_axes",
+        "function": "_first_text",
+        "local": {
+          "exc": "ValueError",
+          "msg": "too many values to unpack (expected 2, got 44)",
+          "mutated": false
+        },
+        "fixture": {
+          "exc": "ValueError",
+          "msg": "too many values to unpack (expected 2)",
+          "mutated": false
+        }
+      },
+      {
+        "index": 33,
+        "module": "libs.reporting.narrative_axes",
+        "function": "_first_text",
+        "local": {
+          "exc": "ValueError",
+          "msg": "too many values to unpack (expected 2, got 44)",
+          "mutated": false
+        },
+        "fixture": {
+          "exc": "ValueError",
+          "msg": "too many values to unpack (expected 2)",
+          "mutated": false
+        }
+      },
+      {
+        "index": 35,
+        "module": "libs.reporting.narrative_axes",
+        "function": "_first_text",
+        "local": {
+          "exc": "ValueError",
+          "msg": "too many values to unpack (expected 2, got 44)",
+          "mutated": false
+        },
+        "fixture": {
+          "exc": "ValueError",
+          "msg": "too many values to unpack (expected 2)",
+          "mutated": false
+        }
+      },
+      {
+        "index": 37,
+        "module": "libs.reporting.narrative_axes",
+        "function": "_first_text",
+        "local": {
+          "exc": "ValueError",
+          "msg": "too many values to unpack (expected 2, got 44)",
+          "mutated": false
+        },
+        "fixture": {
+          "exc": "ValueError",
+          "msg": "too many values to unpack (expected 2)",
+          "mutated": false
+        }
+      }
+    ],
+    "BASE_provenance": "git archive -c core.autocrlf=false of exact d773709 libs; capture tool loaded from audited SHA, all ten implementation module files asserted below extracted BASE, source LF hashes recorded; FEATURE checked below pinned checkout. Network denied.",
+    "supplemental_cases": 20,
+    "supplemental_digests": [
+      {
+        "module": "narrative_axes",
+        "function": "build_narrative_explanation",
+        "input": {
+          "action": "BUY",
+          "entry_reason": "mock_entry",
+          "exit_reason": "mock_exit",
+          "no_trade_reason_summary": "missing_context",
+          "dominant_blocker": "risk_off",
+          "decision_reason": "mock_policy"
+        },
+        "sha256": "caed282d58d1ea731160bd3e38dfabc34f15a4e683ab9ff65e88f703aba11d2f"
+      },
+      {
+        "module": "narrative_axes",
+        "function": "build_narrative_explanation",
+        "input": {
+          "action": "SELL",
+          "entry_reason": "mock_entry",
+          "exit_reason": "mock_exit",
+          "no_trade_reason_summary": "missing_context",
+          "dominant_blocker": "risk_off",
+          "decision_reason": "mock_policy"
+        },
+        "sha256": "ac67731e7b0cd651e37bea391b9cce430ed2ef38c625a4e42db23ea5586b0e00"
+      },
+      {
+        "module": "narrative_axes",
+        "function": "build_narrative_explanation",
+        "input": {
+          "action": "WAIT",
+          "entry_reason": "mock_entry",
+          "exit_reason": "mock_exit",
+          "no_trade_reason_summary": "missing_context",
+          "dominant_blocker": "risk_off",
+          "decision_reason": "mock_policy"
+        },
+        "sha256": "caed282d58d1ea731160bd3e38dfabc34f15a4e683ab9ff65e88f703aba11d2f"
+      },
+      {
+        "module": "narrative_axes",
+        "function": "build_narrative_explanation",
+        "input": {
+          "action": "",
+          "entry_reason": "mock_entry",
+          "exit_reason": "mock_exit",
+          "no_trade_reason_summary": "missing_context",
+          "dominant_blocker": "risk_off",
+          "decision_reason": "mock_policy"
+        },
+        "sha256": "caed282d58d1ea731160bd3e38dfabc34f15a4e683ab9ff65e88f703aba11d2f"
+      },
+      {
+        "module": "report_metadata",
+        "function": "build_data_freshness",
+        "input": {
+          "generated_at": "2026-10-17T00:00:00Z",
+          "source_run_count": 1,
+          "latest_run_id": "mock",
+          "latest_run_ts": "fixed",
+          "stale": true
+        },
+        "sha256": "e1fdfcf2008f9cfa1a85c19f50975091e5a1c8a877f7f77d0cc983bbae2dc7aa"
+      },
+      {
+        "module": "report_metadata",
+        "function": "build_data_freshness",
+        "input": {
+          "generated_at": "2026-10-17T00:00:00Z",
+          "source_run_count": 1,
+          "latest_run_id": "mock",
+          "latest_run_ts": "fixed",
+          "stale": false
+        },
+        "sha256": "c8f1f03c958b3ebb02c79191bf7622604160e097a5e2d48b694b256a4294becb"
+      },
+      {
+        "module": "report_metadata",
+        "function": "build_data_freshness",
+        "input": {
+          "generated_at": "2026-10-17T00:00:00Z",
+          "source_run_count": 1,
+          "latest_run_id": "mock",
+          "latest_run_ts": "fixed",
+          "freshness_status": "custom",
+          "stale_reason": "controlled",
+          "source_window_summary": "Unicode ??"
+        },
+        "sha256": "78047e5064e687abc17df0a0a54bfe7eb0fe5ef9934347fb94c14c2db38c09d6"
+      },
+      {
+        "module": "reasoning_trace",
+        "function": "normalize_reasoning_trace_aliases",
+        "input": {
+          "source": {
+            "latest_reasoning_trace": {
+              "commander_summary": {
+                "summary": "LATEST",
+                "nested": {
+                  "x": [
+                    1
+                  ]
+                }
+              }
+            },
+            "reasoning_trace": {
+              "commander_summary": {
+                "summary": "LEGACY"
+              }
+            }
+          },
+          "fallback": {
+            "commander_summary": {
+              "summary": "FALLBACK",
+              "extra": [
+                1
+              ]
+            }
+          }
+        },
+        "sha256": "e22a814ce2da563632e9deeac28f57100791dfae2173bed381193f453d73b198"
+      },
+      {
+        "module": "reasoning_trace",
+        "function": "normalize_reasoning_trace_aliases",
+        "input": {
+          "source": {
+            "latest_reasoning_trace": {},
+            "reasoning_trace": {
+              "commander_summary": {
+                "summary": "LEGACY"
+              }
+            }
+          },
+          "fallback": {
+            "commander_summary": {
+              "summary": "FALLBACK",
+              "extra": [
+                1
+              ]
+            }
+          }
+        },
+        "sha256": "922bb199dd7e66f6fee163a1c9406c88f0838c5d4f31c7f3f5cdbc78bba994ec"
+      },
+      {
+        "module": "reasoning_trace",
+        "function": "normalize_reasoning_trace_aliases",
+        "input": {
+          "source": {},
+          "fallback": {
+            "commander_summary": {
+              "summary": "FALLBACK",
+              "extra": [
+                1
+              ]
+            }
+          }
+        },
+        "sha256": "0503ae9cebb30a805ead117cfe197cf10eed496ff9043bf71d96b983bb6e849b"
+      },
+      {
+        "module": "reasoning_trace",
+        "function": "normalize_reasoning_provenance_aliases",
+        "input": {
+          "source": {
+            "latest_reasoning_trace_provenance": {
+              "shadow_used": false,
+              "source_priority": []
+            },
+            "reasoning_provenance": {
+              "shadow_used": true,
+              "source_priority": [
+                "legacy"
+              ]
+            }
+          },
+          "fallback": {
+            "source_priority": [
+              "fallback"
+            ],
+            "strategist_fallback_used": true
+          }
+        },
+        "sha256": "007c268293dd6ee4c03d054561fac0597544bd2aa1f966bc544cc4bd21d2041e"
+      },
+      {
+        "module": "reasoning_trace",
+        "function": "normalize_reasoning_provenance_aliases",
+        "input": {
+          "source": {
+            "reasoning_provenance": {
+              "strategist_fallback_used": false
+            }
+          },
+          "fallback": {
+            "source_priority": [
+              "fallback"
+            ],
+            "strategist_fallback_used": true
+          }
+        },
+        "sha256": "533dc2b89f2c350faea4ba4671a48138997b3ab324c095136e0de2212a6770c8"
+      },
+      {
+        "module": "reasoning_trace",
+        "function": "normalize_reasoning_provenance_aliases",
+        "input": {
+          "source": {
+            "latest_reasoning_trace_provenance": {
+              "commander_source_ref": "L"
+            }
+          },
+          "fallback": {
+            "source_priority": [
+              "fallback"
+            ],
+            "strategist_fallback_used": true
+          }
+        },
+        "sha256": "465afca78a198996ce29a2d393c8203bf588d34364e575fa2c4b991940cf6525"
+      },
+      {
+        "module": "trade_execution_outcome_text",
+        "function": "build_execution_outcome_human_payload",
+        "input": {
+          "execution": {
+            "action": "BUY",
+            "symbol": "MOCK",
+            "qty": 2,
+            "filled_price": 100
+          },
+          "executor": {},
+          "story_type": "simulation",
+          "mode_label": "mock"
+        },
+        "sha256": "097a8e96f8e67dce18d1325244e838f1c1619168d394ad3777e256d931810d63"
+      },
+      {
+        "module": "trade_execution_outcome_text",
+        "function": "build_execution_outcome_human_payload",
+        "input": {
+          "execution": {
+            "action": "BUY",
+            "symbol": "MOCK",
+            "qty": 2,
+            "filled_price": 100
+          },
+          "executor": {},
+          "story_type": "failed_execution",
+          "mode_label": "mock"
+        },
+        "sha256": "8f6e0ce9a9df8a274a5f7c643ad81e828aea9436a910970ca2b4e42e1c6502cf"
+      },
+      {
+        "module": "trade_execution_outcome_text",
+        "function": "build_execution_outcome_human_payload",
+        "input": {
+          "execution": {
+            "action": "BUY",
+            "symbol": "MOCK",
+            "qty": 2,
+            "filled_price": 100
+          },
+          "executor": {},
+          "story_type": "live_trade",
+          "mode_label": "mock"
+        },
+        "sha256": "629d171e4170745a1fce05699e7961f4031665dbc7291b30106b8b5253023954"
+      },
+      {
+        "module": "trade_execution_outcome_text",
+        "function": "build_execution_outcome_human_payload",
+        "input": {
+          "execution": {
+            "action": "BUY",
+            "symbol": "MOCK",
+            "qty": 2,
+            "filled_price": 100
+          },
+          "executor": {},
+          "story_type": "decision_only",
+          "mode_label": "mock"
+        },
+        "sha256": "c0e0e6a3599ffc6b32876dc5211c80fa92e804d8e1af985c974103a5b9286902"
+      },
+      {
+        "module": "trade_pnl_estimate",
+        "function": "infer_exit_fill_pnl_pct_from_account_snapshot",
+        "input": {
+          "story_input": {}
+        },
+        "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "module": "trade_pnl_estimate",
+        "function": "infer_exit_fill_pnl_pct_from_account_snapshot",
+        "input": {
+          "story_input": {
+            "exit_execution_details": {
+              "filled_price": 105
+            },
+            "canonical_monitor": {
+              "current_price": 110,
+              "account_pnl_ratio": 0.1
+            }
+          }
+        },
+        "sha256": "574fd6bc8babe085872ea1a2743fb5b1cf97cf71129d268932f1c4b8d9782c11"
+      },
+      {
+        "module": "trade_pnl_estimate",
+        "function": "infer_exit_fill_pnl_pct_from_account_snapshot",
+        "input": {
+          "story_input": {
+            "exit_execution_details": {
+              "filled_price": 105
+            },
+            "canonical_monitor": {
+              "current_price": 0,
+              "account_pnl_ratio": 0.1
+            }
+          }
+        },
+        "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      }
+    ],
+    "nested_alias_probe": [
+      {
+        "tree": "BASE",
+        "nested_identity": true,
+        "bidirectional_mutation_visible": true
+      },
+      {
+        "tree": "FEATURE",
+        "nested_identity": true,
+        "bidirectional_mutation_visible": true
+      }
+    ]
+  },
+  "tests": {
+    "CPython_3_14_2_final": {
+      "PASS": 323,
+      "FAIL": 5,
+      "SKIP": 0,
+      "ERROR": 0,
+      "seconds": 29.05,
+      "by_file": {
+        "tests.test_work_reporter_seed_migration": {
+          "PASS": 51,
+          "FAIL": 1,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_chart_structure_decision_hint_summary": {
+          "PASS": 4,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_policy_surface_summary": {
+          "PASS": 4,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_reasoning_trace": {
+          "PASS": 1,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_reporter_node": {
+          "PASS": 4,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_reporter_service": {
+          "PASS": 4,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_reporter_agent_trade_entrypoint": {
+          "PASS": 2,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_reporter_analysis_report": {
+          "PASS": 8,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_reporter_feedback": {
+          "PASS": 8,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_reporter_commander_hooks": {
+          "PASS": 3,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_reporter_script_wrappers": {
+          "PASS": 6,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_trade_report_ai": {
+          "PASS": 130,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_trade_report_ai_separated_adapter": {
+          "PASS": 2,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_trade_story_pipeline_enrichment": {
+          "PASS": 35,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_reporting_relocation_imports": {
+          "PASS": 10,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p152_facade_symbol_ledger": {
+          "PASS": 1,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p152_facade_abi_and_authority_boundary": {
+          "PASS": 4,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p159_current_owner_contract_gates": {
+          "PASS": 14,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_daily_report": {
+          "PASS": 12,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_operator_visibility_reports": {
+          "PASS": 11,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_generate_metrics_report": {
+          "PASS": 9,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p166_v1052_candidate_risk_migration": {
+          "PASS": 0,
+          "FAIL": 1,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p167_v2053_scanner_context_migration": {
+          "PASS": 0,
+          "FAIL": 1,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p171_v3055_scanner_projection_migration": {
+          "PASS": 0,
+          "FAIL": 1,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p173_p058_integration_contracts": {
+          "PASS": 0,
+          "FAIL": 1,
+          "SKIP": 0,
+          "ERROR": 0
+        }
+      },
+      "failures": [
+        {
+          "id": "tests/test_work_reporter_seed_migration.py::test_recorded_base_cases_are_reproduced_exactly_through_both_paths",
+          "assertion": "tests\\test_work_reporter_seed_migration.py:139: in test_recorded_base_cases_are_reproduced_exactly_through_both_paths\n    assert json.dumps(got, ensure_ascii=False, separators=(\",\", \":\")) == json.dumps(cases, ensure_ascii=False, separators=(\",\", \":\"))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError",
+          "classification": "PYTHON_VERSION_EXCEPTION_TEXT"
+        },
+        {
+          "id": "tests/test_p166_v1052_candidate_risk_migration.py::test_single_implementation_shim_without_code_and_no_rank_owner_added",
+          "assertion": "tests\\test_p166_v1052_candidate_risk_migration.py:96: in test_single_implementation_shim_without_code_and_no_rank_owner_added\n    assert AL.actual_dirs(ROOT / \"libs/agents\") == set(AL.AGENT_PACKAGES)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError",
+          "classification": "SHARED_PACKAGE_SET_MISMATCH"
+        },
+        {
+          "id": "tests/test_p167_v2053_scanner_context_migration.py::test_target_tree_discipline_and_no_forbidden_surface",
+          "assertion": "tests\\test_p167_v2053_scanner_context_migration.py:114: in test_target_tree_discipline_and_no_forbidden_surface\n    assert AL.actual_dirs(ROOT / \"libs/agents\") == set(AL.AGENT_PACKAGES)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError",
+          "classification": "SHARED_PACKAGE_SET_MISMATCH"
+        },
+        {
+          "id": "tests/test_p171_v3055_scanner_projection_migration.py::test_target_tree_discipline_and_no_forbidden_surface",
+          "assertion": "tests\\test_p171_v3055_scanner_projection_migration.py:134: in test_target_tree_discipline_and_no_forbidden_surface\n    assert AL.actual_dirs(ROOT / \"libs/agents\") == set(AL.AGENT_PACKAGES)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError",
+          "classification": "SHARED_PACKAGE_SET_MISMATCH"
+        },
+        {
+          "id": "tests/test_p173_p058_integration_contracts.py::test_combined_agent_tree_is_exactly_the_versioned_allowlist",
+          "assertion": "tests\\test_p173_p058_integration_contracts.py:52: in test_combined_agent_tree_is_exactly_the_versioned_allowlist\n    assert AL.actual_dirs(ROOT / \"libs/agents\") == set(AL.AGENT_PACKAGES)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError",
+          "classification": "SHARED_PACKAGE_SET_MISMATCH"
+        }
+      ],
+      "mode": "pytest --assert=plain under normal non-optimized Python; all assertion expressions execute unchanged, no test files/expectations altered. Network denied, mock credentials empty, external TEMP/TMP/cache/basetemp and full unchanged conftest production-path audit."
+    },
+    "CPython_3_13_14_targeted_fixture": {
+      "PASS": 1,
+      "FAIL": 0,
+      "SKIP": 0,
+      "seconds": 0.5
+    },
+    "independent_non_pytest_probes": {
+      "ABI": 59,
+      "optional_precedence_cases": 20,
+      "optimized_invalid_shims": 60,
+      "optimized_valid_shims": 10,
+      "nested_alias_cases": 2,
+      "actual_private_late_patch": 1
+    },
+    "interrupted_invocation": {
+      "path": "C:/AgentraWork/tmp/reporter_audit_proof_9be51cea255d4b0a986dedfb7f3a71d7",
+      "status": "INTERRUPTED after prolonged assertion-rewrite run; no JUnit and no completed count accepted. Empty log retained; subsequent plain-mode run completed. Root cause not stack-proven, not a PERF benchmark."
+    },
+    "implementer_claims_not_independent_final_counts": {
+      "1829": "Reported before symbol_metadata move revert; earlier proof reused, not a final-tree execution count.",
+      "426": "Reported rerun after revert but no raw JUnit/manifest supplied in committed role evidence; not promoted to independent PASS.",
+      "52_normal_and_52_O": "Reported role runs. Independent normal run here is 51 PASS/1 Python-version fixture FAIL on 3.14; the failing test separately PASS on 3.13. Optimized proof here is explicit 60-negative verifier checks, not a claimed full 52-test optimized rerun."
+    }
+  },
+  "consumer_edges": [
+    {
+      "consumer": "graphs/nodes/update_state_after_execution.py",
+      "line": 8,
+      "legacy": "libs.reporting.reasoning_trace",
+      "names": [
+        "build_reasoning_provenance",
+        "build_reasoning_trace_from_summaries"
+      ]
+    },
+    {
+      "consumer": "tests/test_chart_structure_decision_hint_summary.py",
+      "line": 1,
+      "legacy": "libs.reporting.chart_structure_decision_hint_summary",
+      "names": [
+        "build_chart_structure_decision_hint_executive_line",
+        "build_chart_structure_decision_hint_executive_summary",
+        "build_chart_structure_decision_hint_summary"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_pipeline_story_assembly.py",
+      "line": 6,
+      "legacy": "libs.reporting.trade_reporter_status_text",
+      "names": [
+        "normalize_reporter_status_human"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_pipeline_human_payloads.py",
+      "line": 11,
+      "legacy": "libs.reporting.trade_execution_outcome_text",
+      "names": [
+        "build_execution_outcome_human_payload"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_pipeline.py",
+      "line": 7,
+      "legacy": "libs.reporting.reasoning_trace",
+      "names": [
+        "build_reasoning_provenance",
+        "build_reasoning_trace_from_summaries",
+        "normalize_reasoning_provenance_aliases",
+        "normalize_reasoning_trace_aliases"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_pipeline.py",
+      "line": 53,
+      "legacy": "libs.reporting.trade_fallback_text",
+      "names": [
+        "EXECUTION_OUTCOME_NOT_CAPTURED",
+        "LIFECYCLE_CONCLUSION_NOT_CAPTURED",
+        "REPORTER_LINKAGE_NOT_CAPTURED",
+        "lifecycle_conclusion_summary_is_placeholder"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_pipeline.py",
+      "line": 59,
+      "legacy": "libs.reporting.trade_execution_outcome_text",
+      "names": [
+        "build_execution_outcome_fallback_from_lifecycle",
+        "execution_outcome_summary_is_placeholder"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_pipeline.py",
+      "line": 63,
+      "legacy": "libs.reporting.trade_reporter_status_text",
+      "names": [
+        "normalize_reporter_status_human"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_human_parts/scanner_reason.py",
+      "line": 5,
+      "legacy": "libs.reporting.trade_execution_outcome_text",
+      "names": [
+        "build_execution_outcome_human_payload"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/phase_runtime_health.py",
+      "line": 39,
+      "legacy": "libs.reporting.chart_structure_decision_hint_summary",
+      "names": [
+        "build_chart_structure_decision_hint_summary"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/phase_runtime_health.py",
+      "line": 45,
+      "legacy": "libs.reporting.chart_structure_decision_hint_summary",
+      "names": [
+        "build_chart_structure_decision_hint_executive_line"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/phase_runtime_health.py",
+      "line": 51,
+      "legacy": "libs.reporting.policy_surface_summary",
+      "names": [
+        "build_policy_surface_quality_summary"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/execution_truth_surface.py",
+      "line": 5,
+      "legacy": "libs.reporting.truth_source_labels",
+      "names": [
+        "pnl_truth_source_label",
+        "price_truth_source_label",
+        "with_ro_particle"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/agent_pipeline_trace.py",
+      "line": 9,
+      "legacy": "libs.reporting.reasoning_trace",
+      "names": [
+        "build_reasoning_provenance",
+        "build_reasoning_trace_from_summaries"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_human_parts/market_context.py",
+      "line": 5,
+      "legacy": "libs.reporting.trade_execution_outcome_text",
+      "names": [
+        "build_execution_outcome_human_payload"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/operator_visibility.py",
+      "line": 14,
+      "legacy": "libs.reporting.narrative_axes",
+      "names": [
+        "build_narrative_explanation",
+        "narrative_axis_policy"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/operator_visibility.py",
+      "line": 20,
+      "legacy": "libs.reporting.report_metadata",
+      "names": [
+        "build_data_freshness",
+        "build_route_provenance",
+        "render_data_freshness_markdown"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/metrics_report_generator.py",
+      "line": 11,
+      "legacy": "libs.reporting.report_metadata",
+      "names": [
+        "build_data_freshness",
+        "build_route_provenance"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/metrics_report/markdown.py",
+      "line": 6,
+      "legacy": "libs.reporting.report_metadata",
+      "names": [
+        "render_data_freshness_markdown"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/live_execution_bundle_runner.py",
+      "line": 173,
+      "legacy": "libs.reporting.trade_fallback_text",
+      "names": [
+        "lifecycle_conclusion_summary_is_placeholder"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_bundle_assembly.py",
+      "line": 13,
+      "legacy": "libs.reporting.trade_fallback_text",
+      "names": [
+        "EXIT_REASON_NOT_CAPTURED",
+        "entry_reason_missing_in_summary"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/daily_report_runtime/markdown.py",
+      "line": 7,
+      "legacy": "libs.reporting.narrative_axes",
+      "names": [
+        "narrative_axis_policy"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/daily_report_runtime/markdown.py",
+      "line": 8,
+      "legacy": "libs.reporting.report_metadata",
+      "names": [
+        "render_data_freshness_markdown"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/daily_report_runtime/freshness.py",
+      "line": 6,
+      "legacy": "libs.reporting.report_metadata",
+      "names": [
+        "build_data_freshness"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/daily_report_generator.py",
+      "line": 11,
+      "legacy": "libs.reporting.narrative_axes",
+      "names": [
+        "narrative_axis_policy"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/daily_report_generator.py",
+      "line": 18,
+      "legacy": "libs.reporting.report_metadata",
+      "names": [
+        "build_data_freshness",
+        "build_route_provenance"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_assembly_parts/timeline.py",
+      "line": 6,
+      "legacy": "libs.reporting.trade_reporter_status_text",
+      "names": [
+        "normalize_reporter_status_human"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_assembly_parts/report_seeds.py",
+      "line": 6,
+      "legacy": "libs.reporting.trade_reporter_status_text",
+      "names": [
+        "normalize_reporter_status_human"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_assembly_parts/lifecycle_normalization.py",
+      "line": 6,
+      "legacy": "libs.reporting.trade_reporter_status_text",
+      "names": [
+        "normalize_reporter_status_human"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_story_assembly_parts/lifecycle_bundle.py",
+      "line": 6,
+      "legacy": "libs.reporting.trade_reporter_status_text",
+      "names": [
+        "normalize_reporter_status_human"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/report_source_helpers.py",
+      "line": 9,
+      "legacy": "libs.reporting.chart_structure_decision_hint_summary",
+      "names": [
+        "build_chart_structure_decision_hint_executive_summary",
+        "build_chart_structure_decision_hint_summary"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/report_source_helpers.py",
+      "line": 13,
+      "legacy": "libs.reporting.policy_surface_summary",
+      "names": [
+        "build_policy_surface_quality_executive_summary",
+        "build_policy_surface_quality_summary"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_report_ai_compact_input.py",
+      "line": 5,
+      "legacy": "libs.reporting.trade_execution_outcome_text",
+      "names": [
+        "execution_outcome_summary_is_placeholder"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_report_ai.py",
+      "line": 62,
+      "legacy": "libs.reporting.trade_execution_outcome_text",
+      "names": [
+        "execution_outcome_summary_is_placeholder"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_report_ai.py",
+      "line": 63,
+      "legacy": "libs.reporting.trade_reporter_status_text",
+      "names": [
+        "normalize_reporter_text"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_report_ai.py",
+      "line": 167,
+      "legacy": "libs.reporting.truth_source_labels",
+      "names": [
+        "monitor_price_source_label",
+        "pnl_truth_source_label",
+        "price_truth_source_label",
+        "truth_availability_line"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_explain.py",
+      "line": 10,
+      "legacy": "libs.reporting.narrative_axes",
+      "names": [
+        "build_narrative_explanation",
+        "narrative_axis_policy"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_explain.py",
+      "line": 11,
+      "legacy": "libs.reporting.report_metadata",
+      "names": [
+        "build_data_freshness",
+        "build_route_provenance",
+        "render_data_freshness_markdown"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_lifecycle_builder.py",
+      "line": 10,
+      "legacy": "libs.reporting.trade_fallback_text",
+      "names": [
+        "ENTRY_REASON_NOT_CAPTURED",
+        "EXIT_REASON_NOT_CAPTURED",
+        "HOLDING_DURATION_UNAVAILABLE",
+        "OPEN_POSITION_WATCHING",
+        "PARTIAL_EXIT_EVIDENCE_MISSING"
+      ]
+    },
+    {
+      "consumer": "libs/reporting/trade_report/shared_facts.py",
+      "line": 7,
+      "legacy": "libs.reporting.trade_pnl_estimate",
+      "names": [
+        "infer_exit_fill_pnl_pct_from_account_snapshot"
+      ]
+    },
+    {
+      "consumer": "tests/test_policy_surface_summary.py",
+      "line": 1,
+      "legacy": "libs.reporting.policy_surface_summary",
+      "names": [
+        "build_policy_surface_quality_executive_line",
+        "build_policy_surface_quality_executive_summary",
+        "build_policy_surface_quality_summary"
+      ]
+    },
+    {
+      "consumer": "tests/test_reasoning_trace.py",
+      "line": 1,
+      "legacy": "libs.reporting.reasoning_trace",
+      "names": [
+        "build_reasoning_trace_from_summaries"
+      ]
+    }
+  ],
+  "consumer_limits": "Targeted static module/package imports and concrete consumers tested; arbitrary external/scheduler/dynamic nonliteral consumers are not proven absent. Existing paths remain identity shims.",
+  "findings": [
+    {
+      "id": "R-P2-1",
+      "severity": "P2",
+      "title": "Shared exact package-set integration gate is not reconciled",
+      "locations": [
+        "tests/p15_agent_tree_allowlist.py:5",
+        "tests/test_p166_v1052_candidate_risk_migration.py:96",
+        "tests/test_p167_v2053_scanner_context_migration.py:114",
+        "tests/test_p171_v3055_scanner_projection_migration.py:134",
+        "tests/test_p173_p058_integration_contracts.py:52"
+      ],
+      "reproducer": "actual packages = {reporter, scanner, strategist}; expected = {scanner, strategist}; extra reporter, no missing package. Four exact assertions FAIL at the audited SHA.",
+      "classification": "Structural gate/ownership registration mismatch, not an observed report/runtime regression. Integration acceptance remains gated.",
+      "required_action": "Work adds only reporter/R-1 and the exact narrative/read_models package registration, wires the role tests and preserves equality/negative checks. Reconcile Monitor separately/serially; do not add wildcard/subset acceptance.",
+      "owner": "Work"
+    },
+    {
+      "id": "R-P2-2",
+      "severity": "P2",
+      "title": "Frozen fixture lacks producer metadata and is Python-exception-text bound",
+      "locations": [
+        "tests/fixtures/work_reporter/seed_cases.json.gz",
+        "tests/test_work_reporter_seed_migration.py:139",
+        "scripts/refactor/work_reporter_capture.py:101"
+      ],
+      "reproducer": "On CPython 3.14.2 four _first_text records (31,33,35,37) say too many values to unpack (expected 2, got 44), versus expected 2 in the CPython 3.13 fixture. BASE and FEATURE match all 1216 on each interpreter. CPython 3.13.14 independently reproduces the committed fixture exactly.",
+      "classification": "Environment portability/evidence issue, NOT refactor behavior regression. Fixture JSON contains only cases; original capture time/producer SHA cannot be retrospectively authenticated from it alone.",
+      "required_action": "Record runtime BASE, producer tool blob/hash, Python/OS, inventory and payload hashes; define the tested interpreter/CI contract or a fail-closed same-host BASE comparison plus separate golden integrity. Do not broadly ignore exception messages or regenerate expected values to hide differences.",
+      "owner": "Reporter implementer + Work"
+    },
+    {
+      "id": "R-P2-3",
+      "severity": "P2",
+      "title": "New worker scope gate admits shared and Monitor work-project paths",
+      "locations": [
+        "tests/test_work_reporter_seed_migration.py:153",
+        "tests/test_work_reporter_seed_migration.py:155"
+      ],
+      "reproducer": "The allowed_prefix literal accepts docs/refactor/work_projects/ACTIVATION.md, STATUS.json and evidence/monitor/HANDOFF.md. No files were changed to reproduce this: pure prefix evaluation from the AST.",
+      "classification": "Latent scope-test coverage gap. Actual 28-path delta was independently checked and contains no such out-of-scope write.",
+      "required_action": "In a separately authorized own-test fix, remove the broad docs/refactor/work_projects/ prefix; retain only Reporter-owned exact evidence paths. Do not change shared gates in this audit.",
+      "owner": "Reporter implementer / Work"
+    },
+    {
+      "id": "R-P2-4",
+      "severity": "P2",
+      "title": "1216 calls do not establish exhaustive semantic coverage; prior test counts lack attached raw proof",
+      "locations": [
+        "scripts/refactor/work_reporter_capture.py:68",
+        "scripts/refactor/work_reporter_capture.py:69",
+        "scripts/refactor/work_reporter_capture.py:100",
+        "scripts/refactor/work_reporter_capture.py:103",
+        "docs/refactor/work_projects/evidence/reporter/REPORTER_ROLE_HANDOFF.md (handoff-only 754366d)"
+      ],
+      "reproducer": "Default-valued parameters are omitted. build_narrative_explanation and build_reasoning_provenance each repeat the same default result 19 times. Alias flag covers only whole arguments, mutation uses equality rather than mutation/key-order event history; 0 mutated=True and 30 alias=True in the corpus. Handoff 1829 precedes a revert, 426 is reported post-revert, but no corresponding JUnit/manifest is committed. Fixture is 22701 bytes compressed (530536 decompressed), not the stated 43 KB.",
+      "classification": "Evidence/coverage limits, not a demonstrated new behavior defect. Auditor independently added 20 optional/precedence cases, 59 BASE ABI comparisons, nested-alias probes and a private use-time patch test.",
+      "required_action": "Do not call the battery exhaustive or count the earlier 1829 as a final rerun. Keep final versus reused proof explicit; retain the audit producer manifest and correct handoff size. Expand targeted default/alias cases before future semantic rewrites, not by another broad rerun.",
+      "owner": "Reporter implementer / Work"
+    }
+  ],
+  "safety": {
+    "production_runtime_protected_diff": [],
+    "shared_existing_tests_workflows_and_official_notes_changed": false,
+    "Broker_LLM_Supervisor_Executor_Step5C_UEF_Q10_Q12": "No changed authority paths or new such imports/calls in owners; no live actions performed. Pure display references to execution/truth labels do not execute trades.",
+    "production_write_observation": "Completed pytest sessions full production-path audit reported no violation; network denied in pytest driver and oracle; external isolated writes only apart from an auditor-generated ignored cache noted below. Not an OS sandbox or global transient-write proof.",
+    "real_report_parity": "REAL_REPORT_PARITY_BLOCKED / NOT RUN",
+    "whole_role": "PARTIAL as handoff states; controlled_mock_lane_report blocked, symbol_metadata 377 LOC retained, effect/mixed owners kept, report proliferation NOT STARTED."
+  },
+  "unrun": [
+    "Hosted CI (handoff says NOT RUN; not independently queried)",
+    "Full repository pytest",
+    "Full Wave B rerun at this SHA",
+    "Full 52-test optimized pytest rerun",
+    "Implementer 1829/426 original raw logs",
+    "Original fixture generation timestamp",
+    "Real frozen report/LLM parity",
+    "Docker/UEF/Wave D/main merge/deployment"
+  ],
+  "audit_hygiene": {
+    "tracked_checkout_status": "Clean, detached at exact audited SHA",
+    "ignored_cache": "One auditor metadata invocation generated scripts/refactor/__pycache__/work_reporter_capture.cpython-314.pyc (10851 bytes). Exact-file removal denied by execution policy; no alternate deletion used. This is audit scratch, not a Reporter implementation write.",
+    "external_scratch": "Oracle trees/calls and pytest failure evidence retained in uniquely owned external paths; no deletion of other workers or Q12; broad cleanup not attempted after policy denial.",
+    "no_implementation_or_shared_gate_edit": true
+  },
+  "raw_evidence": [
+    {
+      "path": "C:\\AgentraWork\\tmp\\reporter_audit_final_e0765e1b474e4627a745a4a221751022\\junit.xml",
+      "bytes": 51959,
+      "sha256": "984167cddb2e4232d45ff8c1e27535cb3a1d4711f86d5c5100a62e95868b6896"
+    },
+    {
+      "path": "C:\\AgentraWork\\tmp\\reporter_audit_final_e0765e1b474e4627a745a4a221751022\\pytest.log",
+      "bytes": 7184,
+      "sha256": "528509e391c6bf7d3f70af5373c0e3055ffd69acaf8f125031ab066e9267badf"
+    },
+    {
+      "path": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\pytest313\\junit.xml",
+      "bytes": 402,
+      "sha256": "01587ffda5d10dc98a2e6646b8553b9b494076dfa9ac73899845789e9964e8a2"
+    },
+    {
+      "path": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\oracle313_results.json",
+      "bytes": 3938,
+      "sha256": "71680c0d6ba6c0a4b2158185a5202bcb3a96b75721925567ee2008ddb273d423"
+    },
+    {
+      "path": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\oracle_results.json",
+      "bytes": 6930,
+      "sha256": "f209e3bcba9210961f2a9b1a12f09a771e4c7426ef572bd7ef1d04cf71816edb"
+    },
+    {
+      "path": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\fixture_differences.json",
+      "bytes": 1531,
+      "sha256": "ca6286e0b996fe00c5c1556b38af9191bfdefacb1ecdbd3235808fb202162e9b"
+    },
+    {
+      "path": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\boundary_results.json",
+      "bytes": 12744,
+      "sha256": "932d05b505f9242a2cbad49b19fb37b9992b31910075ad83e0a102bb3ac6342f"
+    },
+    {
+      "path": "C:\\AgentraWork\\tmp\\reporter_oracle_7bf37c6a9c994930947cb75689d219bd\\scope_results.json",
+      "bytes": 482,
+      "sha256": "508574092ac73c5336bd0e23b58712f47a0f54de759ec6eac2f22d3ad4ef57ab"
+    }
+  ]
+}
