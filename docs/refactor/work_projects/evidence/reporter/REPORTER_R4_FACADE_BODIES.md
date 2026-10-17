@@ -42,3 +42,16 @@ Closed scope set extended explicitly by R5_FACADE_FILES/R5_OWNER_FILES; ledger t
 | trade_story_pipeline_provenance.py | 12 | 227 -> 83 | narrative/story_provenance_bodies_01.py |
 R-5 final LOC: deterministic 749->440, compact_input 418->95, read_model 1356->741, memory_surface 393->249, memory_application 392->108.
 Proof: R-4..R-6 proof suite 696 PASS (136 moves). Focused consumers + facade/T1/T2 gates: 1845 PASS / 0 FAIL. T3 patch v3 (adds R-6 owners) verified 15/15 in isolated clone.
+
+## R-7 — Reporter read-model / analysis / markdown modules (128 bodies)
+| Module | Bodies | LOC before -> after |
+|---|---|---|
+| reporter_analysis.py | 27 | 2035 -> 670 |
+| strategy_read_model.py | 22 | 803 -> 194 |
+| entry_blocker_read_model.py | 17 | 877 -> 275 |
+| trade_report_markdown_strategy_memory.py | 10 | 732 -> 90 |
+| post_exit_shadow_recap.py | 19 | 956 -> 651 |
+| symbol_trade_report.py | 23 | 1138 -> 767 |
+| agent_pipeline_trace.py | 10 | 1016 -> 782 |
+Extractor hardening: names defined twice in a module (post_exit_shadow_recap redefines two render functions) are skipped; every generated body is re-parsed and must reproduce the original AST after stripping `facade.` (else skipped). Proof suite 1351 PASS (264 moves). Consumers + facade/T1/T2 gates: 1533 PASS / 2 FAIL (`test_uef5_1_clean_evidence_registry` x2, identical without R-7 => pre-existing). T3 patch v4 verified 15/15.
+Excluded modules (deliberately not touched): reporter_feedback (feedback seam), phase_runtime_health / operator_* (shared), q8_* (Research), *truth* / broker / kiwoom reconcilers (truth precedence / broker), trade_symbol_context / trade_scanner_fallback_anchor (selection-state semantics), llm_artifacts / intraday_trade_reports / live_execution_* (LLM/report writes), alert_notifier.

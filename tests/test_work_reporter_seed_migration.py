@@ -231,8 +231,31 @@ R6_OWNER_FILES = {"libs/agents/reporter/narrative/trade_explain_bodies_01.py",
                   "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py",
                   "libs/agents/reporter/narrative/single_trade_report_bodies_01.py",
                   "libs/agents/reporter/narrative/story_provenance_bodies_01.py"}
-R4_FACADE_FILES = R4_FACADE_FILES | R5_FACADE_FILES | R6_FACADE_FILES
-R4_OWNER_FILES = R4_OWNER_FILES | R5_OWNER_FILES | R6_OWNER_FILES
+# R-7 batch (Reporter read-model / analysis / markdown modules; same proof): CLOSED explicit set
+R7_FACADE_FILES = {"libs/reporting/agent_pipeline_trace.py",
+                   "libs/reporting/entry_blocker_read_model.py",
+                   "libs/reporting/post_exit_shadow_recap.py",
+                   "libs/reporting/reporter_analysis.py",
+                   "libs/reporting/strategy_read_model.py",
+                   "libs/reporting/symbol_trade_report.py",
+                   "libs/reporting/trade_report_markdown_strategy_memory.py"}
+R7_OWNER_FILES = {"libs/agents/reporter/narrative/pipeline_trace_bodies_01.py",
+                   "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py",
+                   "libs/agents/reporter/narrative/post_exit_recap_bodies_02.py",
+                   "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py",
+                   "libs/agents/reporter/narrative/strategy_memory_md_bodies_02.py",
+                   "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py",
+                   "libs/agents/reporter/narrative/symbol_trade_report_bodies_02.py",
+                   "libs/agents/reporter/read_models/entry_blocker_bodies_01.py",
+                   "libs/agents/reporter/read_models/entry_blocker_bodies_02.py",
+                   "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py",
+                   "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py",
+                   "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py",
+                   "libs/agents/reporter/read_models/reporter_analysis_bodies_04.py",
+                   "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py",
+                   "libs/agents/reporter/read_models/strategy_read_model_bodies_02.py"}
+R4_FACADE_FILES = R4_FACADE_FILES | R5_FACADE_FILES | R6_FACADE_FILES | R7_FACADE_FILES
+R4_OWNER_FILES = R4_OWNER_FILES | R5_OWNER_FILES | R6_OWNER_FILES | R7_OWNER_FILES
 
 
 def _scope_violations(paths, *, merged=False):
@@ -257,7 +280,7 @@ def test_scope_checker_still_rejects_unexpected_and_forbidden_paths():
 def test_r4_ledger_cannot_grant_paths_outside_the_closed_r4_set():
     doc = json.loads((ROOT / "docs/refactor/work_projects/evidence/reporter/r4_facade_ledger.json").read_text(encoding="utf-8"))
     assert doc["schema"] == "agentra.work.reporter.r4_ledger.v1" and doc["base"] == BASE
-    assert doc["expected_moves"] == len(doc["moves"]) == 136  # R-4 14 + R-5 56 + R-6 66
+    assert doc["expected_moves"] == len(doc["moves"]) == 264  # R-4 14 + R-5 56 + R-6 66 + R-7 128
     assert {m["path"] for m in doc["moves"]} == R4_FACADE_FILES
     assert {m["r4_owner"] for m in doc["moves"]} == R4_OWNER_FILES
     pairs = {(m["path"], m["r4_owner"]) for m in doc["moves"]}
@@ -274,7 +297,22 @@ def test_r4_ledger_cannot_grant_paths_outside_the_closed_r4_set():
                      ("libs/reporting/trade_bundle_state.py", "libs/agents/reporter/read_models/bundle_state_bodies_01.py"),
                      ("libs/reporting/trade_lifecycle_builder.py", "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"),
                      ("libs/reporting/single_trade_report.py", "libs/agents/reporter/narrative/single_trade_report_bodies_01.py"),
-                     ("libs/reporting/trade_story_pipeline_provenance.py", "libs/agents/reporter/narrative/story_provenance_bodies_01.py")}
+                     ("libs/reporting/trade_story_pipeline_provenance.py", "libs/agents/reporter/narrative/story_provenance_bodies_01.py"),
+                     ("libs/reporting/agent_pipeline_trace.py", "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"),
+                     ("libs/reporting/entry_blocker_read_model.py", "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"),
+                     ("libs/reporting/entry_blocker_read_model.py", "libs/agents/reporter/read_models/entry_blocker_bodies_02.py"),
+                     ("libs/reporting/post_exit_shadow_recap.py", "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"),
+                     ("libs/reporting/post_exit_shadow_recap.py", "libs/agents/reporter/narrative/post_exit_recap_bodies_02.py"),
+                     ("libs/reporting/reporter_analysis.py", "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"),
+                     ("libs/reporting/reporter_analysis.py", "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"),
+                     ("libs/reporting/reporter_analysis.py", "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py"),
+                     ("libs/reporting/reporter_analysis.py", "libs/agents/reporter/read_models/reporter_analysis_bodies_04.py"),
+                     ("libs/reporting/strategy_read_model.py", "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"),
+                     ("libs/reporting/strategy_read_model.py", "libs/agents/reporter/read_models/strategy_read_model_bodies_02.py"),
+                     ("libs/reporting/symbol_trade_report.py", "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"),
+                     ("libs/reporting/symbol_trade_report.py", "libs/agents/reporter/narrative/symbol_trade_report_bodies_02.py"),
+                     ("libs/reporting/trade_report_markdown_strategy_memory.py", "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"),
+                     ("libs/reporting/trade_report_markdown_strategy_memory.py", "libs/agents/reporter/narrative/strategy_memory_md_bodies_02.py")}
 
 
 @pytest.mark.parametrize("facade", sorted(DECOMPOSED))

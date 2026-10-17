@@ -72,6 +72,14 @@ class Qualify(ast.NodeTransformer):
         return node
 
 
+class _Unqualify(ast.NodeTransformer):
+    def visit_Attribute(self, node):
+        self.generic_visit(node)
+        if isinstance(node.value, ast.Name) and node.value.id == "facade" and isinstance(node.ctx, ast.Load):
+            return ast.copy_location(ast.Name(id=node.attr, ctx=ast.Load()), node)
+        return node
+
+
 def is_thin_delegation(fn):
     body = [n for n in fn.body if not (isinstance(n, ast.Expr) and isinstance(n.value, ast.Constant))]
     return len(body) == 1 and isinstance(body[0], ast.Return) and isinstance(body[0].value, ast.Call)
@@ -120,10 +128,14 @@ def main():
     lines = src.split("\n")
     excluded = set(filter(None, ns.exclude.split(",")))
     chosen, skipped = [], {}
+    import collections
+    dup = {k for k, v in collections.Counter(n.name for n in tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))).items() if v > 1}
     for fn in [n for n in tree.body if isinstance(n, ast.FunctionDef)]:
         seg = "\n".join(lines[fn.lineno - 1:fn.end_lineno])
         reason = None
-        if fn.name in excluded:
+        if fn.name in dup:
+            reason = "name defined more than once in the module (redefinition)"
+        elif fn.name in excluded:
             reason = "excluded by caller"
         elif fn.decorator_list:
             reason = "decorated"
@@ -166,6 +178,11 @@ def main():
                                type_params=[])
         ast.fix_missing_locations(impl)
         text = ast.unparse(impl)
+        # self-check: re-parse, strip ``facade.`` and require the exact original body AST (unparse round-trip safety)
+        back = [_Unqualify().visit(x) for x in ast.parse(text).body[0].body]
+        if [ast.dump(x) for x in back] != [ast.dump(x) for x in fn.body]:
+            skipped[fn.name] = "unparse round-trip does not reproduce the original AST"
+            continue
         n = len(text.split("\n")) + 2
         if cur and cur_lines + n > OWNER_MAX:
             owners[f"{ns.owner_stem}_{idx:02d}"] = cur

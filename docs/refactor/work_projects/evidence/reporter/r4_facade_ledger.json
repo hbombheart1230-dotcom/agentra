@@ -681,6 +681,646 @@
    "path": "libs/reporting/trade_story_pipeline_provenance.py",
    "name": "build_report_section_provenance_seeds",
    "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_to_epoch",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_top_chain_run_ids",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_make_evidence_ref",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_decision_trace_agent_payload",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_execution_rows_by_run",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_trade_decision_summaries",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_strategy_effectiveness",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_overtrading_diagnostics",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_incident_postmortem",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_market_context",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_extract_report_focus_targets",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_decision_chains",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_decision_trace_chain_summary",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_trade_summary_section",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_ai_evidence_catalog",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_infer_ai_evidence_keys",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_hydrate_ai_evidence_details",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_first_nonempty_str",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_ensure_min_ai_review_payload",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_strategy_frame_summary",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_strategist_evaluation",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_scanner_evaluation",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_monitor_evaluation",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_supervisor_activity",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_report_views",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_improvement_suggestions",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py"
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "name": "_to_markdown",
+   "r4_owner": "libs/agents/reporter/read_models/reporter_analysis_bodies_04.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_list_text",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_headline_text",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_headline_matches_symbol",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_collect_top_headlines",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_rows_from_news_like",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_candidate_hypotheses",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_hypothesis_for_symbol",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_collect_text_fragments",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_entry_pattern_type",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_entry_timing_quality",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_entry_confirmation_quality",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_exit_pattern_type",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_exit_quality",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_thesis_invalidation_code",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_safe_float",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_compact_recent_trade_ref",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_improvement_tags",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "_review_flags",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "build_news_symbol_linkage_view",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "build_strategist_feedback_input_view",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "normalize_strategist_feedback_input",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "name": "build_recent_strategist_feedback_window",
+   "r4_owner": "libs/agents/reporter/read_models/strategy_read_model_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_to_float",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_list_text",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_normalize_blocker_family",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "explain_raw_blocker",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_build_blocker_families",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_build_family_raw_breakdown",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_infer_scanner_quality_suspected",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_scanner_quality_reason_explanation",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_parse_ts",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "classify_entry_time_bucket",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_resolve_structure_state",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_resolve_threshold_actual",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "build_entry_blocker_row",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "build_symbol_entry_blocker_sequence",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_counter_to_dict",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "summarize_entry_blocker_rows",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "render_entry_blocker_summary_markdown",
+   "r4_owner": "libs/agents/reporter/read_models/entry_blocker_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "strategy_horizon_label",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "strategy_horizon_reason_label",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "strategy_horizon_alignment_label",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "duration_label_compact",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "hold_window_label",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "strategy_horizon_report_surface",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "build_strategy_horizon_lines",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "carryover_context",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "build_prompt_proven_memory",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "name": "build_memory_application",
+   "r4_owner": "libs/agents/reporter/narrative/strategy_memory_md_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_symbol_candidates",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_rows_from_record",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_latest_epoch",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_epoch_seconds",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_shadow_latest_required_epoch",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_minute_row_key",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "merge_minute_rows",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "fetch_fresh_minute_rows_for_symbol",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "minute_rows_for_symbol_from_state",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_parse_exit_kst_date",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_row_kst_date",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_row_kst_hhmmss",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "same_day_closeout_rows_for_shadow",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_checkpoint_target_after_regular_close",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_fill_regular_close_bound_pending_checkpoints",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_post_exit_shadow_from_report",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_checkpoint_summary",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_render_trade_recap_markdown",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_render_daily_recap_markdown",
+   "r4_owner": "libs/agents/reporter/narrative/post_exit_recap_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_safe_float",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_normalize_pct_like",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_pick_result_pct",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_safe_int",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_normalize_ts",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_to_epoch",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_normalize_lifecycle_bundle",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_result_pct_from_lifecycle",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_list_text",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_clean_symbol_pattern",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_clean_symbol_free_text",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_classify_entry_pattern",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_classify_exit_pattern",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_dict_at",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_should_prefer_artifact_entry_reason",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_clean_lifecycle_summary",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_hold_seconds_from_lifecycle",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_pattern_rows",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_derive_playbook_stats",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_derive_dominant_exit_failure_axis",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_derive_bias_recommendation",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "build_symbol_memory_payload",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "name": "_render_symbol_trade_markdown",
+   "r4_owner": "libs/agents/reporter/narrative/symbol_trade_report_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_to_epoch",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_latest_decision_trace_payload",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_pick_run_id",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_extract_title",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_summarize_collected_news",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_summarize_scanner_sources",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_format_strategist_directives_summary",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_reporter_analysis_has_run",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_build_reasoning_trace",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_build_reasoning_provenance",
+   "r4_owner": "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py"
   }
  ],
  "skipped": {
@@ -1178,7 +1818,93 @@
   },
   "libs/reporting/trade_story_pipeline_provenance.py": {
    "_safe_path_text": "already thin delegation"
+  },
+  "libs/reporting/reporter_analysis.py": {
+   "_safe_int": "short",
+   "_safe_float": "short",
+   "_normalize_live_symbol": "already thin delegation",
+   "_utc_day": "short",
+   "_iter_jsonl": "effect/authority token: Path",
+   "_latest_day": "effect/authority token: Path",
+   "_read_json": "effect/authority token: Path",
+   "_reason_text": "short",
+   "_build_intent_flow_analysis": "effect/authority token: Path",
+   "generate_reporter_analysis_report": "effect/authority token: Path",
+   "_canonical_reports_root": "effect/authority token: Path"
+  },
+  "libs/reporting/strategy_read_model.py": {
+   "_clip": "short",
+   "_norm_symbol": "already thin delegation",
+   "_candidate_hints": "short",
+   "_contains_any": "short",
+   "_append_unique": "short",
+   "_normalize_counter_key": "short",
+   "_ordered_counter_dict": "short"
+  },
+  "libs/reporting/entry_blocker_read_model.py": {
+   "_read_json": "effect/authority token: Path",
+   "_to_int": "short",
+   "_text": "already thin delegation",
+   "explain_blocker_family": "short",
+   "_nested_counter_to_dict": "short",
+   "load_entry_blocker_rows": "effect/authority token: Path",
+   "build_entry_blocker_day_summary": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_report_markdown_strategy_memory.py": {},
+  "libs/reporting/post_exit_shadow_recap.py": {
+   "_utc_now_iso": "already thin delegation",
+   "_read_json": "effect/authority token: Path",
+   "resolve_post_exit_state_path": "effect/authority token: Path",
+   "_write_json": "short",
+   "_write_text": "short",
+   "_as_dict": "short",
+   "_as_list": "short",
+   "_fresh_minute_fetch_enabled": "short",
+   "_rows_reach_epoch": "short",
+   "_rows_reach_regular_close": "already thin delegation",
+   "_post_exit_shadow_needs_fresh_minutes": "effect/authority token: datetime.now",
+   "opening_rank1_eod_fallback_row": "effect/authority token: Path",
+   "_post_exit_shadow_from_lifecycle": "effect/authority token: Path",
+   "_pct": "short",
+   "_price": "short",
+   "_trade_label": "effect/authority token: Path",
+   "iter_trade_report_json_paths": "short",
+   "build_post_exit_shadow_recap": "effect/authority token: Path",
+   "render_post_exit_shadow_trade_recap_md": "name defined more than once in the module (redefinition)",
+   "render_post_exit_shadow_daily_recap_md": "name defined more than once in the module (redefinition)",
+   "write_post_exit_shadow_recap_outputs": "effect/authority token: Path",
+   "_refresh_trade_summary_from_recap": "effect/authority token: Path",
+   "generate_post_exit_shadow_recap": "effect/authority token: Path"
+  },
+  "libs/reporting/symbol_trade_report.py": {
+   "_read_json": "effect/authority token: Path",
+   "_iter_jsonl": "effect/authority token: Path",
+   "_iter_trade_lifecycles": "effect/authority token: Path",
+   "_iter_trade_lifecycles_for_day": "effect/authority token: Path",
+   "_contains_any": "short",
+   "_clean_symbol_reason": "effect/authority token: open",
+   "_clean_symbol_code": "short",
+   "_summary_input_path_for_report": "already thin delegation",
+   "_actual_entry_reason_from_artifacts": "effect/authority token: Path",
+   "_extract_trade_artifact_snapshot": "effect/authority token: Path",
+   "_build_history_index": "effect/authority token: Path",
+   "_collect_symbol_event_insights": "effect/authority token: Path",
+   "_ratio": "short",
+   "build_symbol_trade_summary": "effect/authority token: Path",
+   "build_daily_trade_index": "effect/authority token: Path",
+   "collect_symbols_for_day": "effect/authority token: Path",
+   "generate_symbol_trade_report": "effect/authority token: Path"
+  },
+  "libs/reporting/agent_pipeline_trace.py": {
+   "_iter_jsonl": "effect/authority token: Path",
+   "_utc_day": "short",
+   "_safe_int": "short",
+   "_safe_float": "short",
+   "_latest_row": "short",
+   "_read_json": "effect/authority token: Path",
+   "_build_markdown": "effect/authority token: llm",
+   "generate_agent_pipeline_trace_report": "effect/authority token: Path"
   }
  },
- "expected_moves": 136
+ "expected_moves": 264
 }
