@@ -1,3 +1,5 @@
+> **ROLE CORRECTION (2026-10-17):** Claude owns Reporter, Codex owns Monitor, Work independently reviews both and coordinates shared T3/T4 and final integration. The authoritative current work orders are docs/dev-team/assignments/00–06. Any older Codex-as-Reporter-auditor/Runner text below is superseded.
+
 # Agentra role boots — single-copy assignments
 
 Do not start another worker from a vague one-line prompt. Each run reads only the current control documents and its role issue, then resumes from the last remote checkpoint. **No prior completed chat transcript reread by default.**
@@ -21,10 +23,10 @@ One cohesive internal batch at a time; a commit is a recovery point, not a stop 
 Terminate only at full ROLE_READY (request independent audit) or genuine total exhaustion of safe authorized scope/runtime/credits, leaving exact resumable checkpoint. Do not describe unexecuted tests as PASS. If session exits, the external supervisor or a manually restarted CLI must resume; your prompt alone does not keep a process running.
 ~~~
 
-## Codex — independent audit and feedback (copy into Codex CLI)
+## HISTORICAL — superseded Codex audit prompt (DO NOT USE; Codex now owns Monitor)
 
 ~~~text
-AGENTRA P1.5 — INDEPENDENT REVIEWER
+SUPERSEDED HISTORICAL PROMPT — DO NOT EXECUTE
 
 Repo: hbombheart1230-dotcom/agentra
 Design ref: origin/design/agentra-dev-team-loop-20261017
