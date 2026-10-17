@@ -1,5 +1,8 @@
 # CODEX — MONITOR Whole-Role Principal Implementer (Corrected Assignment)
 
+> **CURRENT CODEX ASSIGNMENT (2026-10-17):** Read [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md) BEFORE older tasks. Continue Monitor M9 from actual branch HEAD. After Monitor local-safe work is finished, Codex is now **AUTHORIZED to implement Reporter+Monitor shared T3/T4 strict AST resolver, package gates, CI and UI notes in an ISOLATED integration candidate**, subject to independent Claude verification. Never edit active Claude/Monitor branches for shared changes; no main merge or trading authority edits. Work-only integration prohibitions in older sections below are superseded. GPT remains architect on demand, NOT hourly Work.
+
+
 ## 2026-10-17 WHOLE-P1.5 RELAY — M9 ACTIVE, then Scanner planning
 
 Read [10_P15_CONTINUOUS_ROLE_RELAY.md](10_P15_CONTINUOUS_ROLE_RELAY.md). Latest Monitor M9 CP-008 `4bc4250844093050438d8a9c29f5842991ad1c3a` has additional runtime test evidence and a partly completed 359-row retained symbol analysis; current status ACTIVE, not parked. Continue M9 and Work finding responses without redoing M001-M008. After Work acknowledges MONITOR_LOCAL_READY_FOR_INTEGRATION and no Monitor-local READY tasks remain, continue **Scanner read-only next-role scope/consumer/test design** on a separate evidence branch; actual Scanner source edits require Work's signed exact whole-role charter. Do not change ranking, scoring, strategy, broker or guard behavior. Work alone handles shared T3/T4 and Reporter integration. A CLI session ending cannot be automatically resumed from this document; use authorized runner. Never consume credits by repetitive no-op tests.
