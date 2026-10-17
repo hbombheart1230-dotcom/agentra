@@ -1,0 +1,422 @@
+{
+  "schema": "agentra.work.independent_review.v1",
+  "date": "2026-10-17",
+  "actor": "WORK_REVIEW",
+  "reviewed_sha": {
+    "reporter": "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b",
+    "monitor": "a33c28780592917481eb610a3d69c3948e4a4ead"
+  },
+  "base_sha": "d773709ba2f70471fad9badba4f92400f7818319",
+  "environment": {
+    "platform": "Linux",
+    "python": "3.12.14",
+    "pytest": "9.1.1",
+    "pyyaml": "6.0.3"
+  },
+  "reporter_counts": {
+    "moved_functions": 264,
+    "distinct_facade_paths": 20,
+    "distinct_r4_owner_files": 29,
+    "handoff_21_modules_denominator": "UNRESOLVED"
+  },
+  "runs": [
+    {
+      "name": "reporter_role",
+      "sha": "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b",
+      "command": "python -m pytest -q tests/test_work_reporter_seed_migration.py tests/test_work_reporter_r4_facade_bodies.py",
+      "passed": 1423,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 0,
+      "seconds": 41.19,
+      "notes": null
+    },
+    {
+      "name": "reporter_role_optimized",
+      "sha": "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b",
+      "command": "python -O -m pytest -q tests/test_work_reporter_seed_migration.py tests/test_work_reporter_r4_facade_bodies.py",
+      "passed": 1423,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 0,
+      "seconds": 44.86,
+      "notes": "pytest rewriting remains active; explicit child-verifier negatives also exercised"
+    },
+    {
+      "name": "reporter_consumers",
+      "sha": "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b",
+      "command": "python -m pytest -q tests/test_p152_facade_symbol_ledger.py tests/test_p152_facade_abi_and_authority_boundary.py tests/test_trade_report_ai.py tests/test_reporter_node.py tests/test_reporter_service.py tests/test_trade_story_pipeline_enrichment.py --tb=short",
+      "passed": 179,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 0,
+      "seconds": 1.39,
+      "notes": null
+    },
+    {
+      "name": "reporter_current_t3",
+      "sha": "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b",
+      "command": "python -m pytest -q tests/test_p159_current_owner_contract_gates.py::test_t3_changed_paths_contain_no_authority_surface --tb=short",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 1,
+      "seconds": 0.12,
+      "notes": "numbered body touched: markdown_clean_bodies_01.py"
+    },
+    {
+      "name": "monitor_role_shared",
+      "sha": "a33c28780592917481eb610a3d69c3948e4a4ead",
+      "command": "python -m pytest -q tests/test_work_monitor_role_contracts.py tests/test_p159_current_owner_contract_gates.py tests/test_p163_t4b_extraction_gates.py",
+      "passed": 167,
+      "failed": 5,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 1,
+      "seconds": 5.95,
+      "notes": null
+    },
+    {
+      "name": "monitor_wave_b_optimized_isolated",
+      "sha": "a33c28780592917481eb610a3d69c3948e4a4ead",
+      "command": "python -O -m pytest -q tests/test_work_monitor_role_contracts.py tests/test_p154_wave_b_moved_bodies.py --tb=short",
+      "passed": 916,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 0,
+      "seconds": 48.33,
+      "notes": "unique pre-created TMPDIR,TEMP,TMP set before interpreter launch"
+    },
+    {
+      "name": "monitor_consumers",
+      "sha": "a33c28780592917481eb610a3d69c3948e4a4ead",
+      "command": "python -m pytest -q tests/test_m17_monitor_emits_intent_only.py tests/test_monitor_candidate_cascade.py tests/test_monitor_exit_guard.py tests/test_monitor_exit_price_freshness.py tests/test_monitor_price_source_resolution.py tests/test_scanner_monitor_compatibility.py --tb=short",
+      "passed": 151,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 0,
+      "seconds": 2.56,
+      "notes": null
+    },
+    {
+      "name": "uef_same_environment",
+      "sha": "d773709ba2f70471fad9badba4f92400f7818319",
+      "command": "python -m pytest -q tests/test_uef2a_boundary_closure_profiles.py tests/test_uef2a_forward_policy_contract.py tests/test_uef5_1_clean_evidence_registry.py --tb=short",
+      "passed": 119,
+      "failed": 9,
+      "skipped": 1,
+      "errors": 0,
+      "exit": 1,
+      "seconds": 1.32,
+      "notes": "same failure IDs; eight missing persisted fixtures plus existing uef6 import boundary; existing q9 artifact skip"
+    },
+    {
+      "name": "uef_same_environment",
+      "sha": "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b",
+      "command": "python -m pytest -q tests/test_uef2a_boundary_closure_profiles.py tests/test_uef2a_forward_policy_contract.py tests/test_uef5_1_clean_evidence_registry.py --tb=short",
+      "passed": 119,
+      "failed": 9,
+      "skipped": 1,
+      "errors": 0,
+      "exit": 1,
+      "seconds": 1.38,
+      "notes": "same failure IDs; eight missing persisted fixtures plus existing uef6 import boundary; existing q9 artifact skip"
+    },
+    {
+      "name": "proposed_facade_guard",
+      "sha": "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b",
+      "command": "AGENTRA_REVIEW_ROOT=<reporter-checkout> python docs/dev-team/proposals/test_reporter_facade_guard.py -v",
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 0,
+      "seconds": 1.807,
+      "notes": "one positive plus twelve mutation negatives; no role source edited"
+    },
+    {
+      "name": "proposed_facade_guard",
+      "sha": "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b",
+      "command": "AGENTRA_REVIEW_ROOT=<reporter-checkout> python -O docs/dev-team/proposals/test_reporter_facade_guard.py -v",
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 0,
+      "seconds": 1.807,
+      "notes": "one positive plus twelve mutation negatives; no role source edited"
+    },
+    {
+      "name": "old_t3_mutation_escape",
+      "sha": "LOCAL_ONLY_2001c008",
+      "command": "python -m pytest -q tests/test_p159_current_owner_contract_gates.py::test_t3_protected_facades_after_base_only_change_by_approved_r4 tests/test_work_reporter_r4_facade_bodies.py::test_use_site_qualification_is_the_only_body_change --tb=short",
+      "passed": 265,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 0,
+      "seconds": 6.42,
+      "notes": "R7 + stored T3 v4 patch + unmoved _build_skipped_separated_report returns changed dict; local detached commit not pushed"
+    },
+    {
+      "name": "new_guard_rejects_same_mutant",
+      "sha": "LOCAL_ONLY_2001c008",
+      "command": "python docs/dev-team/proposals/reporter_facade_guard.py <mutant-checkout>",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 1,
+      "seconds": null,
+      "notes": "expected rejection: unmoved definition/module statement/order differs from BASE"
+    },
+    {
+      "name": "invalid_shared_temp_attempt",
+      "sha": "a33c28780592917481eb610a3d69c3948e4a4ead",
+      "command": "python -O -m pytest -q tests/test_work_monitor_role_contracts.py tests/test_p154_wave_b_moved_bodies.py",
+      "passed": 526,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 390,
+      "exit": 1,
+      "seconds": 103.91,
+      "notes": "setup errors: shared /tmp/.../basetemp-5 disappeared; superseded by isolated run, not a runtime FAIL waiver"
+    },
+    {
+      "name": "reporter_r8_role",
+      "sha": "523dd9ac227a33eb9e5aa9bed82957e4111c5d9b",
+      "command": "python -m pytest -q tests/test_work_reporter_seed_migration.py tests/test_work_reporter_r4_facade_bodies.py --tb=short",
+      "passed": 1542,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "exit": 0,
+      "seconds": 46.37
+    },
+    {
+      "name": "reporter_r8_guard",
+      "sha": "523dd9ac227a33eb9e5aa9bed82957e4111c5d9b",
+      "command": "AGENTRA_REVIEW_ROOT=<R8 checkout> AGENTRA_REVIEW_SHA=523dd9ac227a33eb9e5aa9bed82957e4111c5d9b python docs/dev-team/proposals/test_reporter_facade_guard.py -v",
+      "passed": 13,
+      "exit": 0,
+      "seconds": 1.956
+    },
+    {
+      "name": "reporter_r8_guard",
+      "sha": "523dd9ac227a33eb9e5aa9bed82957e4111c5d9b",
+      "command": "AGENTRA_REVIEW_ROOT=<R8 checkout> AGENTRA_REVIEW_SHA=523dd9ac227a33eb9e5aa9bed82957e4111c5d9b python -O docs/dev-team/proposals/test_reporter_facade_guard.py -v",
+      "passed": 13,
+      "exit": 0,
+      "seconds": 1.871
+    },
+    {
+      "name": "reporter_r9_role",
+      "sha": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "command": "python -m pytest -q tests/test_work_reporter_seed_migration.py tests/test_work_reporter_r4_facade_bodies.py --tb=short",
+      "passed": 1680,
+      "failed": 0,
+      "exit": 0,
+      "seconds": 48.44
+    },
+    {
+      "name": "monitor_m2_own_role",
+      "sha": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1",
+      "command": "python -m pytest -q tests/test_work_monitor_role_contracts.py tests/test_work_monitor_continuous.py tests/test_work_monitor_body_views.py --tb=short",
+      "passed": 273,
+      "failed": 0,
+      "exit": 0,
+      "seconds": 6.75
+    },
+    {
+      "name": "monitor_m2_shared_consumers",
+      "sha": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1",
+      "command": "python -m pytest -q tests/test_p159_current_owner_contract_gates.py tests/test_p163_t4b_extraction_gates.py tests/test_m17_monitor_emits_intent_only.py tests/test_monitor_candidate_cascade.py tests/test_monitor_exit_guard.py tests/test_monitor_exit_price_freshness.py tests/test_monitor_price_source_resolution.py tests/test_scanner_monitor_compatibility.py --tb=short",
+      "passed": 170,
+      "failed": 5,
+      "exit": 1,
+      "seconds": 5.4
+    },
+    {
+      "name": "reporter_r9_guard",
+      "sha": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "command": "AGENTRA_REVIEW_ROOT=<R9 checkout> AGENTRA_REVIEW_SHA=dd0b378b46dff0c2ecf6699a4b08776fd4412b76 python docs/dev-team/proposals/test_reporter_facade_guard.py -v",
+      "passed": 13,
+      "exit": 0,
+      "seconds": 2.248
+    },
+    {
+      "name": "reporter_r9_guard",
+      "sha": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "command": "AGENTRA_REVIEW_ROOT=<R9 checkout> AGENTRA_REVIEW_SHA=dd0b378b46dff0c2ecf6699a4b08776fd4412b76 python -O docs/dev-team/proposals/test_reporter_facade_guard.py -v",
+      "passed": 13,
+      "exit": 0,
+      "seconds": 2.219
+    },
+    {
+      "name": "reporter_feedback_read_contracts",
+      "sha": "93943097f5627a423e5150e62b9634d63118a51b",
+      "command": "python -m pytest -q tests/test_work_reporter_r8_read_contracts.py tests/test_work_reporter_r8_read_via_callback_parity.py --tb=short",
+      "passed": 26,
+      "failed": 0,
+      "exit": 0,
+      "seconds": 1.19
+    },
+    {
+      "name": "monitor_m003_targeted",
+      "sha": "ce8703c378cfb171893462750b257012f809187a",
+      "command": "python -m pytest -q tests/test_work_monitor_observation_views.py tests/test_work_monitor_role_contracts.py::test_all_retained_role_owners_and_protected_runtime_stay_byte_identical --tb=short",
+      "passed": 21,
+      "failed": 0,
+      "exit": 0,
+      "seconds": 4.74
+    },
+    {
+      "name": "monitor_wave_b_empty_selection",
+      "sha": "ce8703c378cfb171893462750b257012f809187a",
+      "command": "python -m pytest -q tests/test_p154_wave_b_moved_bodies.py -k intraday_monitor_signals --tb=short",
+      "passed": 0,
+      "deselected": 768,
+      "exit": 5,
+      "seconds": 0.11,
+      "notes": "NO_TESTS_SELECTED_NOT_PASS"
+    }
+  ],
+  "uef_identical_failure_ids": [
+    "tests/test_uef2a_forward_policy_contract.py::test_calculator_1_horizon_exit_exact_price_chain_and_session_close_fallback",
+    "tests/test_uef2a_forward_policy_contract.py::test_calculators_2_3_4_q10_semiconductor_reference_fallback_and_exact_windows",
+    "tests/test_uef2a_forward_policy_contract.py::test_calculators_5_6_q10_index_single_authorities_and_collector_three_states",
+    "tests/test_uef2a_forward_policy_contract.py::test_calculator_8_q11_zero_offset_eod_no_excursion_and_cost_semantics",
+    "tests/test_uef2a_forward_policy_contract.py::test_calculator_9_q12_shared_engine_reuse_produces_all_seven_checkpoints",
+    "tests/test_uef2a_forward_policy_contract.py::test_calculator_12_opening_shadow_entry_and_forward_price_chains_differ",
+    "tests/test_uef2a_forward_policy_contract.py::test_calculator_14_opening_shadow_d1_d3_d5_bounded_sessions_and_insufficient_future",
+    "tests/test_uef2a_forward_policy_contract.py::test_opening_controlled_has_no_program_specific_forward_policy",
+    "tests/test_uef5_1_clean_evidence_registry.py::test_uef5_package_is_stdlib_only_and_not_imported_by_production_or_core"
+  ],
+  "hosted_ci": {
+    "reporter_exact_sha_runs": 0,
+    "monitor_exact_sha_runs": 0,
+    "reporter_r9_exact_sha_runs": 0,
+    "monitor_m2_exact_sha_runs": 0
+  },
+  "protected_path_diff": "EMPTY for both role HEADs against BASE: graphs,execution,broker,supervisor,risk,llm,kiwoom,controlled_mock_lanes",
+  "not_run": [
+    "full pytest",
+    "native Windows independent rerun",
+    "Python 3.13/3.14 independent rerun",
+    "real LLM/persisted-report parity",
+    "assembled cross-role integration CI"
+  ],
+  "guard_files": {
+    "docs/dev-team/proposals/reporter_facade_guard.py": "b4a05bf572e92e50ea377cdb457ca91cc6b1ac8d28dcb3876f579d329c7276b7",
+    "docs/dev-team/proposals/test_reporter_facade_guard.py": "02b6e200347f26e0aefa3f5bb2fe3fd04f460269e4ea66f5e100613e04b05713"
+  },
+  "worker_running": "UNVERIFIED",
+  "credits_remaining": "UNKNOWN",
+  "overall_progress_percent": null,
+  "merge_authorized": false,
+  "latest_reviewed_sha": {
+    "reporter": "93943097f5627a423e5150e62b9634d63118a51b",
+    "monitor": "ce8703c378cfb171893462750b257012f809187a"
+  },
+  "delta_reviews": [
+    {
+      "role": "reporter",
+      "sha": "523dd9ac227a33eb9e5aa9bed82957e4111c5d9b",
+      "previous": "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b",
+      "files": 25,
+      "new_moved_functions": 22,
+      "total_functions": 286,
+      "facades": 20,
+      "body_owner_files": 38,
+      "method": "STATIC_REVIEW_AND_EXECUTED_TEST"
+    },
+    {
+      "role": "monitor",
+      "sha": "6b2a91340262e1e7e221582646da2beb0b1965f8",
+      "previous": "a33c28780592917481eb610a3d69c3948e4a4ead",
+      "files": 4,
+      "runtime_changes": false,
+      "method": "STATIC_REVIEW_DOCS_ONLY_RUNTIME_PROOFS_REUSED",
+      "inventory_files": 92,
+      "inventory_symbol_entries": 408
+    },
+    {
+      "role": "reporter",
+      "sha": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "previous": "523dd9ac227a33eb9e5aa9bed82957e4111c5d9b",
+      "files": 12,
+      "new_moved_functions": 27,
+      "total_functions": 313,
+      "facades": 23,
+      "body_owner_files": 41,
+      "method": "STATIC_REVIEW_AND_EXECUTED_TEST"
+    },
+    {
+      "role": "monitor",
+      "sha": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1",
+      "previous": "6b2a91340262e1e7e221582646da2beb0b1965f8",
+      "commits": 2,
+      "added_full_blobs": 3,
+      "added_named_bodies": 5,
+      "method": "STATIC_REVIEW_AND_EXECUTED_TEST"
+    },
+    {
+      "role": "reporter",
+      "sha": "93943097f5627a423e5150e62b9634d63118a51b",
+      "previous": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "commits": 2,
+      "files": 6,
+      "runtime_changes": false,
+      "method": "STATIC_REVIEW_AND_EXECUTED_NEW_TESTS"
+    },
+    {
+      "role": "monitor",
+      "sha": "ce8703c378cfb171893462750b257012f809187a",
+      "previous": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1",
+      "files": 11,
+      "new_moved_functions": 8,
+      "method": "STATIC_REVIEW_AND_EXECUTED_NEW_TESTS"
+    }
+  ],
+  "findings": [
+    {
+      "id": "P15-WORK-001",
+      "priority": "P1",
+      "state": "PROPOSAL_VERIFIED_INTEGRATION_OPEN"
+    },
+    {
+      "id": "P15-WORK-002",
+      "priority": "P2",
+      "state": "OPERATIONAL_MITIGATION_VERIFIED"
+    },
+    {
+      "id": "P15-WORK-003",
+      "priority": "P2",
+      "state": "VERIFIED_THREE_REQUESTED_PATHS_AT_93943097"
+    },
+    {
+      "id": "P15-WORK-004",
+      "priority": "P2",
+      "state": "OPEN_GENERIC_SUCCESS_CASES_AND_TIMESTAMP_NORMALIZATION",
+      "sha": "93943097f5627a423e5150e62b9634d63118a51b",
+      "reproducer": {
+        "daily_index_day_vectors": [
+          "dict:{}",
+          "dict:payload",
+          "str:005930",
+          "None"
+        ],
+        "input_timestamp_plus_one_minute_collapses": true
+      }
+    }
+  ],
+  "additional_shared_mapping": {
+    "libs/runtime/monitor/entry_evidence.py": "libs/agents/monitor/projections/entry_evidence.py"
+  }
+}
