@@ -202,6 +202,9 @@ def test_target_tree_discipline_and_no_forbidden_surface():
     allowed_exact = {f"libs/reporting/{n}.py" for n in [*REGISTRY, *DECOMPOSED]}
     allowed_prefix = ("libs/agents/reporter/", "tests/test_work_reporter_", "tests/fixtures/work_reporter/",
                       "scripts/refactor/work_reporter_", "docs/refactor/work_projects/evidence/reporter/")
+    merged = subprocess.check_output(["git", "rev-list", "--merges", f"{START}..HEAD"], cwd=ROOT).decode().split()
+    if merged:  # integration checkout: other lanes/Work also change files; still police every Reporter-surface path
+        out = [p for p in out if p.startswith(("libs/reporting/", "libs/agents/reporter/"))]
     for p in out:
         assert p in allowed_exact or p.startswith(allowed_prefix), p
 

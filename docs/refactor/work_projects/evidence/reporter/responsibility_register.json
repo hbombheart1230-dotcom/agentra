@@ -195,6 +195,11 @@
    "path": "libs/reporting/trade_story/evidence.py, trade_story_evidence_parts/**",
    "disposition": "KEEP_WITH_REASON",
    "reason": "already relocated in an earlier pass with an alias chain pinned by p152 owner-parity scripts"
+  },
+  {
+   "path": "shared contracts (allowlist, T3, T4-B, CI wiring)",
+   "disposition": "PROPOSED_PATCH",
+   "reason": "shared_contract_patch_R4.diff verified on isolated Reporter+Monitor combined copy; Work applies"
   }
  ]
 }

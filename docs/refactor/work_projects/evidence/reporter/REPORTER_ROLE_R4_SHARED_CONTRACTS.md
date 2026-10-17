@@ -1,0 +1,20 @@
+# Reporter R-4 — compatibility restore + proposed shared-contract patch (NOT applied; Work applies at integration)
+
+## Phase 1 (committed on this branch)
+The 3 decomposed legacy facades (`trade_report_symbol_metadata`, `trade_story_pipeline_news`, `trade_story_pipeline_scanner`) again carry their BASE module-level imports verbatim (`re`, typing names, `html`, `normalize_symbol`, `clip`, `_list_text`, `format_pct`, `safe_float`, `safe_int`) so every BASE module attribute name exists with the same object. New role test `test_decomposed_facade_keeps_every_base_module_attribute_with_the_same_objects` (3 PASS). No importer used them; restored for dynamic/getattr compatibility. Signatures/exceptions/identity unchanged (AST-identical owners, same objects).
+Own role scope test: on an integration checkout (merge commits since START) it still polices every `libs/reporting/**` and `libs/agents/reporter/**` path, ignoring other lanes' files; on the lane it remains the full exact check.
+
+## Phase 2 — `shared_contract_patch_R4.diff` (apply in this order)
+| # | File | Purpose kept | Change | Negative proof |
+|---|---|---|---|---|
+| 1 | `tests/p15_agent_tree_allowlist.py` | exact, versioned agent package set | AGENT_PACKAGES += reporter R-1, monitor M-1; new REPORTER_PACKAGES {narrative, read_models}, MONITOR_PACKAGES {events, projections} | stray `libs/agents/reporter/stray` -> p173 FAIL |
+| 2 | `tests/test_p173_p058_integration_contracts.py` | combined tree exactness | +2 equality asserts (reporter, monitor subpackages); nothing removed | same |
+| 3 | `tests/test_p159_current_owner_contract_gates.py` (T3) | historical owner functions resolve at HEAD + owner purity | new exact `MONITOR_T3_SHIM_ALLOWLIST` (6 pairs); `_follow` consults it with the SAME strict Wave B shim verifier; V3_SHIM_ALLOWLIST and its p171 exact-set assertion untouched | tampered `cycle_detail_projection` shim -> both T3 tests FAIL |
+| 4 | `tests/test_p163_t4b_extraction_gates.py` (T4-B) | AST inlining reproduces BASE monitor_node, owner purity, call-site inputs, no exit authority | exact `MONITOR_T4B_SHIM_ALLOWLIST` (5 pairs) + `_owner_path` (strict verifier) used by `_owner_fn` and the two owner-text reads; all assertions unchanged, now against canonical bodies | tampered `cycle_event_payloads` shim -> 4 T4-B tests FAIL |
+| 5 | `.github/workflows/p15-integration-crossbranch-compat.yml` | required Linux regression list | + `tests/test_work_reporter_seed_migration.py`, `tests/test_work_monitor_role_contracts.py` | n/a (wiring) |
+Facade symbol ledger: no change required for R-1..R-4 (ledger tests PASS); a change is required only for the BLOCKED facade splits below.
+
+Isolated verification: scratch clone of this branch merged with `origin/work/monitor-role-20261017` (a33c2878), patch applied: 17 gate/role files -> **2002 PASS / 2 FAIL** before my own scope-test fix; after it, Reporter role test PASS on the combined copy. Remaining FAIL: `tests/test_work_monitor_role_contracts.py::test_all_retained_role_owners_and_protected_runtime_stay_byte_identical` (Monitor lane test treats Reporter's `libs/reporting/*` changes as forbidden on a combined tree) -> **Codex/Monitor follow-up**, analogous to my scope fix. Unpatched combined copy: 11 FAIL (4 package-set, 3 T4-B, 2 T3, 2 lane-scope).
+
+## Phase 3 — facade decomposition: BLOCKED
+`trade_story_pipeline` (498), `trade_report_ai` (1656), `trade_report_markdown_clean` (1325): bodies call each other by direct module globals and are themselves the late-binding target (`_facade.*`) for all parts; tests/production monkeypatch facade attributes. Moving definitions out changes which global a direct call resolves at use time, so monkeypatch equivalence cannot be proven by AST equality, and the facade symbol ledger (Work) pins every top-level definition. T1-pinned read models (`trade_read_model`, `trade_memory_*`, `trade_report_ai_deterministic`, `trade_report_ai_compact_input`) require a T1 ledger rewrite plus the same late-binding proof. Recorded BLOCKED; no implementation started.
