@@ -5,6 +5,9 @@ from typing import Any, Dict
 from libs.runtime.monitor_policy import summarize_monitor_policy_deltas
 
 
+import sys as _monitor_view_sys
+import libs.agents.monitor.projections.policy_trace_views as _monitor_views
+
 def _to_float(value: Any, default: float = 0.0) -> float:
     try:
         return float(value)
@@ -129,62 +132,8 @@ def monitor_policy_adjustment_inputs(frame: Dict[str, Any]) -> Dict[str, str]:
     }
 
 
-def build_monitor_effective_policy_trace(
-    *,
-    received_policy: Dict[str, Any],
-    effective_policy: Dict[str, Any],
-    frame: Dict[str, Any],
-    received_policy_source: str,
-) -> Dict[str, Any]:
-    adjustment_inputs = monitor_policy_adjustment_inputs(frame)
-    deltas = summarize_monitor_policy_deltas(received_policy, effective_policy)
-    changed_fields = [str((row or {}).get("field") or "") for row in deltas if str((row or {}).get("field") or "").strip()]
-    applied_rules = [str(x or "").strip() for x in list(effective_policy.get("adjustments") or []) if str(x or "").strip()]
-    frame_labels = [
-        str(adjustment_inputs.get("playbook") or "").strip(),
-        str(adjustment_inputs.get("monitor_guidance") or "").strip(),
-        str(adjustment_inputs.get("risk_tone") or "").strip(),
-        str(adjustment_inputs.get("trade_aggressiveness") or "").strip(),
-    ]
-    frame_labels = [x for x in frame_labels if x]
-    if deltas:
-        if frame_labels:
-            summary = f"{' + '.join(frame_labels)} adjusted {', '.join(changed_fields[:4])}"
-        else:
-            summary = f"strategy frame adjusted {', '.join(changed_fields[:4])}"
-        reasoning = (
-            f"Monitor used an effective policy derived from the commander-confirmed baseline after "
-            f"strategy-frame adjustment. Changed fields: {', '.join(changed_fields[:6])}."
-        )
-        effective_policy_source = "monitor_frame_adjusted"
-        effective_policy_source_chain = [
-            str(received_policy_source or "monitor_received_policy"),
-            "strategy_frame_adjustment",
-            "monitor_effective_policy",
-        ]
-    else:
-        summary = "Monitor used the received policy without strategy-frame threshold changes."
-        reasoning = "Monitor used the received baseline policy directly because strategy-frame adjustments did not change threshold fields."
-        effective_policy_source = "monitor_received_policy"
-        effective_policy_source_chain = [
-            str(received_policy_source or "monitor_received_policy"),
-            "monitor_effective_policy",
-        ]
-    return {
-        "received_policy": dict(received_policy),
-        "effective_policy": dict(effective_policy),
-        "received_policy_source": str(received_policy_source or ""),
-        "effective_policy_source": effective_policy_source,
-        "effective_policy_source_chain": [str(x) for x in effective_policy_source_chain if str(x or "").strip()],
-        "policy_adjustments": {
-            "inputs": adjustment_inputs,
-            "applied_rules": applied_rules,
-            "changed_fields": changed_fields,
-        },
-        "policy_adjustment_summary": summary,
-        "policy_adjustment_reasoning": reasoning,
-        "effective_policy_deltas": deltas,
-    }
+def build_monitor_effective_policy_trace(*, received_policy: Dict[str, Any], effective_policy: Dict[str, Any], frame: Dict[str, Any], received_policy_source: str) -> Dict[str, Any]:
+    return _monitor_views.build_monitor_effective_policy_trace(received_policy=received_policy, effective_policy=effective_policy, frame=frame, received_policy_source=received_policy_source, facade=_monitor_view_sys.modules[__name__])
 
 
 def resolve_monitor_entry_scoring_config(state: Dict[str, Any], policy: Dict[str, Any]) -> Dict[str, Any]:

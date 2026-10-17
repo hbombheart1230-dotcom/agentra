@@ -10,6 +10,9 @@ from __future__ import annotations
 from typing import Any, NamedTuple
 
 
+import sys as _monitor_view_sys
+import libs.agents.monitor.projections.policy_trace_views as _monitor_views
+
 class MemoryBiasPolicyResolution(NamedTuple):
     """Result of `resolve_entry_memory_bias_policy` (positional order = sorted output names)."""
 
@@ -62,29 +65,4 @@ def resolve_entry_memory_bias_policy(commander_context, entry_policy_input, moni
     return MemoryBiasPolicyResolution(commander_entry_control, entry_policy, entry_policy_input, entry_received_policy, monitor_memory_bias, monitor_memory_bias_observation_only, monitor_memory_bias_observed_entry_result, monitor_memory_bias_result, monitor_memory_bias_summary)
 
 def build_entry_effective_policy_trace(entry_applied_policy, entry_policy_origin, entry_received_policy, monitor_memory_bias_result, strategy_frame, *, facade):
-    effective_policy_trace = facade._build_monitor_effective_policy_trace(
-        received_policy=entry_received_policy,
-        effective_policy=entry_applied_policy,
-        frame=strategy_frame,
-        received_policy_source=entry_policy_origin,
-    )
-    if bool(monitor_memory_bias_result.get("applied")):
-        source_chain = list(effective_policy_trace.get("effective_policy_source_chain") or [])
-        effective_policy_trace["effective_policy_source_chain"] = (
-            [source_chain[0], "commander_memory_bias", *source_chain[1:]]
-            if source_chain
-            else ["commander_memory_bias", "monitor_effective_policy"]
-        )
-        effective_policy_trace["effective_policy_source"] = "monitor_memory_bias_adjusted"
-        policy_adjustment_summary = str(effective_policy_trace.get("policy_adjustment_summary") or "").strip()
-        effective_policy_trace["policy_adjustment_summary"] = (
-            f"{policy_adjustment_summary} | memory_bias=commander"
-            if policy_adjustment_summary
-            else "commander memory bias adjusted entry policy"
-        )
-        policy_adjustment_reasoning = str(effective_policy_trace.get("policy_adjustment_reasoning") or "").strip()
-        prefix = "Commander-approved memory bias adjusted the entry baseline before strategy-frame normalization."
-        effective_policy_trace["policy_adjustment_reasoning"] = (
-            f"{prefix} {policy_adjustment_reasoning}".strip()
-        )
-    return effective_policy_trace
+    return _monitor_views.build_entry_effective_policy_trace(entry_applied_policy, entry_policy_origin, entry_received_policy, monitor_memory_bias_result, strategy_frame, facade=facade)

@@ -20,6 +20,21 @@ WHOLE_MOVES = {
 
 # Explicit function sets only; no wildcard facade or generic shim following.
 BODY_MOVES = {
+    "libs/runtime/monitor_strategy_frame.py": {
+        "owner": "libs/agents/monitor/projections/policy_trace_views.py",
+        "typing": ("Any", "Dict", "List"),
+        "functions": {"build_monitor_policy_trace": ()},
+    },
+    "libs/runtime/monitor_entry_policy_context.py": {
+        "owner": "libs/agents/monitor/projections/policy_trace_views.py",
+        "typing": ("Any", "Dict", "List"),
+        "functions": {"build_monitor_effective_policy_trace": ("monitor_policy_adjustment_inputs", "summarize_monitor_policy_deltas")},
+    },
+    "libs/runtime/monitor/entry_candidate_policy.py": {
+        "owner": "libs/agents/monitor/projections/policy_trace_views.py",
+        "typing": ("Any", "Dict", "List"),
+        "functions": {"build_entry_effective_policy_trace": ()},
+    },
     "libs/runtime/monitor_exit/reasons.py": {
         "owner": "libs/agents/monitor/projections/exit_axis_labels.py",
         "functions": {"friendly_exit_axis": (), "monitor_watch_axes": ("to_float", "_is_trueish")},
@@ -56,7 +71,7 @@ def _tree(text):
     return ast.parse(text.lstrip("\ufeff"))
 
 
-def body_templates(path):
+def body_templates(path, *, _single=False):
     """Generate the only permitted facade and Owner AST from immutable BASE.
 
     Every original module statement/unmoved function is retained. Selected body
@@ -68,7 +83,7 @@ def body_templates(path):
     base = _tree(base_source(path))
     facade = copy.deepcopy(base)
     owner = ast.parse('"""Monitor observation views; policy/effects remain at the facade."""\n'
-                      'from __future__ import annotations\nfrom typing import Any, Dict\n')
+                      'from __future__ import annotations\nfrom typing import ' + ', '.join(spec.get("typing", ("Any", "Dict"))) + '\n')
     module = spec["owner"][:-3].replace("/", ".")
     imports = ast.parse(f"import sys as _monitor_view_sys\nimport {module} as _monitor_views\n").body
     index = next(i for i, node in enumerate(facade.body) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)))
@@ -88,18 +103,26 @@ def body_templates(path):
                     return ast.copy_location(ast.Attribute(value=ast.Name(id="facade", ctx=ast.Load()), attr=value.id, ctx=ast.Load()), value)
                 return value
         moved.body = [Qualify().visit(statement) for statement in moved.body]
-        moved.args.kwonlyargs.append(ast.arg(arg="facade"))
-        moved.args.kw_defaults.append(None)
+        has_facade = any(a.arg == "facade" for a in moved.args.posonlyargs + moved.args.args + moved.args.kwonlyargs)
+        if not has_facade:
+            moved.args.kwonlyargs.append(ast.arg(arg="facade"))
+            moved.args.kw_defaults.append(None)
         owner.body.append(moved)
         args = [ast.Name(id=a.arg, ctx=ast.Load()) for a in node.args.posonlyargs + node.args.args]
         keywords = [ast.keyword(arg=a.arg, value=ast.Name(id=a.arg, ctx=ast.Load())) for a in node.args.kwonlyargs]
         facade_value = ast.Subscript(value=ast.Attribute(value=ast.Name(id="_monitor_view_sys", ctx=ast.Load()), attr="modules", ctx=ast.Load()), slice=ast.Name(id="__name__", ctx=ast.Load()), ctx=ast.Load())
-        keywords.append(ast.keyword(arg="facade", value=facade_value))
+        if not has_facade:
+            keywords.append(ast.keyword(arg="facade", value=facade_value))
         call = ast.Call(func=ast.Attribute(value=ast.Name(id="_monitor_views", ctx=ast.Load()), attr=node.name, ctx=ast.Load()), args=args, keywords=keywords)
         doc = node.body[:1] if node.body and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Constant) and isinstance(node.body[0].value.value, str) else []
         node.body = doc + [ast.Return(value=call)]
     if found != set(spec["functions"]):
         raise AssertionError("missing BASE function")
+    if not _single:
+        # One cohesive observation Owner can contain explicitly listed bodies
+        # from several facades. Each facade still reconstructs independently.
+        grouped = [p for p, s in BODY_MOVES.items() if s["owner"] == spec["owner"]]
+        owner.body[3:] = [node for p in grouped for node in body_templates(p, _single=True)[1].body[3:]]
     return ast.fix_missing_locations(facade), ast.fix_missing_locations(owner)
 
 
