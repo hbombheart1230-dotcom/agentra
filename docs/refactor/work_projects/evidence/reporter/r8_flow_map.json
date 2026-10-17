@@ -1,0 +1,292 @@
+{
+ "schema": "agentra.work.reporter.flow_map.v1",
+ "flows": {
+  "scripts/generate_daily_report.py": {
+   "role": "producer",
+   "modules": 245,
+   "by_category": {
+    "AGENTS_OWNER": 58,
+    "REPORTER_RETAINED": 20,
+    "REPORTER_FACADE": 20,
+    "EXTERNAL_AUTHORITY": 37,
+    "REPORTER_CANONICAL": 20,
+    "BLOCKED_WITH_PROOF": 1,
+    "OPS_SCHEDULER": 29,
+    "RESEARCH_EVALUATION": 7,
+    "SHARED_CONTRACT": 53
+   },
+   "renderers": [
+    "libs/agents/reporter/narrative/markdown_clean_bodies_01.py",
+    "libs/reporting/daily_report_runtime/markdown.py",
+    "libs/reporting/metrics_report/markdown.py",
+    "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py",
+    "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py",
+    "libs/reporting/trade_report/markdown_clean_dependency_maps.py",
+    "libs/reporting/trade_report/markdown_clean_operator_narrative.py",
+    "libs/reporting/trade_report/markdown_clean_parts/memory_policy_phases.py",
+    "libs/reporting/trade_report/markdown_clean_parts/monitor_artifact_resolution.py",
+    "libs/reporting/trade_report/markdown_clean_parts/news_headlines.py",
+    "libs/reporting/trade_report/markdown_clean_parts/operator_labels.py",
+    "libs/reporting/trade_report/markdown_clean_parts/report_paths_and_time.py"
+   ]
+  },
+  "scripts/generate_metrics_report.py": {
+   "role": "producer",
+   "modules": 14,
+   "by_category": {
+    "AGENTS_OWNER": 4,
+    "REPORTER_CANONICAL": 3,
+    "REPORTER_RETAINED": 1,
+    "OPS_SCHEDULER": 6
+   },
+   "renderers": [
+    "libs/reporting/metrics_report/markdown.py"
+   ]
+  },
+  "scripts/generate_operator_summary_report.py": {
+   "role": "producer",
+   "modules": 24,
+   "by_category": {
+    "REPORTER_RETAINED": 4,
+    "EXTERNAL_AUTHORITY": 3,
+    "OPS_SCHEDULER": 10,
+    "RESEARCH_EVALUATION": 7
+   },
+   "renderers": [
+    "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py",
+    "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py"
+   ]
+  },
+  "scripts/generate_ops_diagnostic_report.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/generate_strategist_llm_summary.py": {
+   "role": "producer",
+   "modules": 1,
+   "by_category": {
+    "REPORTER_RETAINED": 1
+   },
+   "renderers": []
+  },
+  "scripts/generate_symbol_trade_report.py": {
+   "role": "producer",
+   "modules": 29,
+   "by_category": {
+    "AGENTS_OWNER": 3,
+    "REPORTER_RETAINED": 5,
+    "EXTERNAL_AUTHORITY": 3,
+    "OPS_SCHEDULER": 10,
+    "RESEARCH_EVALUATION": 7,
+    "REPORTER_FACADE": 1
+   },
+   "renderers": [
+    "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py",
+    "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py"
+   ]
+  },
+  "scripts/organize_llm_reports.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_agent_pipeline_trace_report.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_ai_trade_report_batch.py": {
+   "role": "producer",
+   "modules": 236,
+   "by_category": {
+    "AGENTS_OWNER": 58,
+    "REPORTER_RETAINED": 20,
+    "REPORTER_FACADE": 20,
+    "EXTERNAL_AUTHORITY": 37,
+    "REPORTER_CANONICAL": 20,
+    "BLOCKED_WITH_PROOF": 1,
+    "OPS_SCHEDULER": 20,
+    "RESEARCH_EVALUATION": 7,
+    "SHARED_CONTRACT": 53
+   },
+   "renderers": [
+    "libs/agents/reporter/narrative/markdown_clean_bodies_01.py",
+    "libs/reporting/metrics_report/markdown.py",
+    "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py",
+    "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py",
+    "libs/reporting/trade_report/markdown_clean_dependency_maps.py",
+    "libs/reporting/trade_report/markdown_clean_operator_narrative.py",
+    "libs/reporting/trade_report/markdown_clean_parts/memory_policy_phases.py",
+    "libs/reporting/trade_report/markdown_clean_parts/monitor_artifact_resolution.py",
+    "libs/reporting/trade_report/markdown_clean_parts/news_headlines.py",
+    "libs/reporting/trade_report/markdown_clean_parts/operator_labels.py",
+    "libs/reporting/trade_report/markdown_clean_parts/report_paths_and_time.py",
+    "libs/reporting/trade_report/markdown_clean_parts/strategist_language.py"
+   ]
+  },
+  "scripts/run_decision_story_report.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_evaluation_lens_report.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_live_execution_bundle_report.py": {
+   "role": "producer",
+   "modules": 236,
+   "by_category": {
+    "AGENTS_OWNER": 58,
+    "REPORTER_RETAINED": 20,
+    "REPORTER_FACADE": 20,
+    "EXTERNAL_AUTHORITY": 37,
+    "REPORTER_CANONICAL": 20,
+    "BLOCKED_WITH_PROOF": 1,
+    "OPS_SCHEDULER": 20,
+    "RESEARCH_EVALUATION": 7,
+    "SHARED_CONTRACT": 53
+   },
+   "renderers": [
+    "libs/agents/reporter/narrative/markdown_clean_bodies_01.py",
+    "libs/reporting/metrics_report/markdown.py",
+    "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py",
+    "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py",
+    "libs/reporting/trade_report/markdown_clean_dependency_maps.py",
+    "libs/reporting/trade_report/markdown_clean_operator_narrative.py",
+    "libs/reporting/trade_report/markdown_clean_parts/memory_policy_phases.py",
+    "libs/reporting/trade_report/markdown_clean_parts/monitor_artifact_resolution.py",
+    "libs/reporting/trade_report/markdown_clean_parts/news_headlines.py",
+    "libs/reporting/trade_report/markdown_clean_parts/operator_labels.py",
+    "libs/reporting/trade_report/markdown_clean_parts/report_paths_and_time.py",
+    "libs/reporting/trade_report/markdown_clean_parts/strategist_language.py"
+   ]
+  },
+  "scripts/run_live_session_summary.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_m31_weekly_health_summary.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_operator_daily_summary.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_operator_summary_mining.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_report_maintenance.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_reporter_analysis_report.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_run_card_report.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "scripts/run_trade_explain_report.py": {
+   "role": "producer",
+   "modules": 0,
+   "by_category": {},
+   "renderers": []
+  },
+  "graphs/nodes/reporter_node.py": {
+   "role": "producer",
+   "modules": 236,
+   "by_category": {
+    "AGENTS_OWNER": 58,
+    "REPORTER_RETAINED": 20,
+    "REPORTER_FACADE": 20,
+    "EXTERNAL_AUTHORITY": 37,
+    "REPORTER_CANONICAL": 20,
+    "BLOCKED_WITH_PROOF": 1,
+    "OPS_SCHEDULER": 20,
+    "RESEARCH_EVALUATION": 7,
+    "SHARED_CONTRACT": 53
+   },
+   "renderers": [
+    "libs/agents/reporter/narrative/markdown_clean_bodies_01.py",
+    "libs/reporting/metrics_report/markdown.py",
+    "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py",
+    "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py",
+    "libs/reporting/trade_report/markdown_clean_dependency_maps.py",
+    "libs/reporting/trade_report/markdown_clean_operator_narrative.py",
+    "libs/reporting/trade_report/markdown_clean_parts/memory_policy_phases.py",
+    "libs/reporting/trade_report/markdown_clean_parts/monitor_artifact_resolution.py",
+    "libs/reporting/trade_report/markdown_clean_parts/news_headlines.py",
+    "libs/reporting/trade_report/markdown_clean_parts/operator_labels.py",
+    "libs/reporting/trade_report/markdown_clean_parts/report_paths_and_time.py",
+    "libs/reporting/trade_report/markdown_clean_parts/strategist_language.py"
+   ]
+  }
+ },
+ "modules_shared_by_4plus_entrypoints": {
+  "libs/reporting/strategist_llm_summary.py": 7,
+  "libs/reporting/controlled_validation_daily.py": 6,
+  "libs/reporting/event_log_reader.py": 6,
+  "libs/reporting/json_array_stream.py": 6,
+  "libs/reporting/kiwoom_day_trade_diary_truth.py": 6,
+  "libs/reporting/llm_artifacts.py": 6,
+  "libs/reporting/market_regime_rail_review.py": 6,
+  "libs/reporting/operator_period_summary.py": 6,
+  "libs/reporting/operator_period_summary_parts/closeout_reconciliation.py": 6,
+  "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py": 6,
+  "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py": 6,
+  "libs/reporting/operator_period_summary_parts/operator_readouts.py": 6,
+  "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py": 6,
+  "libs/reporting/operator_period_summary_parts/pattern_naming.py": 6,
+  "libs/reporting/operator_period_summary_parts/period_payloads.py": 6,
+  "libs/reporting/operator_period_summary_parts/residual_positions.py": 6,
+  "libs/reporting/operator_period_summary_parts/trade_decision_fields.py": 6,
+  "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py": 6,
+  "libs/reporting/q8_evaluation_contract.py": 6,
+  "libs/reporting/q8_shadow_blocker_review.py": 6,
+  "libs/reporting/quant_shadow_candidate_evaluation.py": 6,
+  "libs/reporting/quant_shadow_forward_outcomes.py": 6,
+  "libs/reporting/quant_tactic_evaluation.py": 6,
+  "libs/reporting/quant_tactic_report.py": 6,
+  "libs/reporting/strategist_llm_evaluation.py": 6,
+  "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py": 5,
+  "libs/agents/reporter/narrative/symbol_trade_report_bodies_02.py": 5,
+  "libs/agents/reporter/narrative/symbol_trade_report_r8_bodies_01.py": 5,
+  "libs/agents/reporter/read_models/__init__.py": 5,
+  "libs/agents/reporter/read_models/chart_structure_decision_hint_summary.py": 5,
+  "libs/agents/reporter/read_models/policy_surface_summary.py": 5,
+  "libs/agents/reporter/read_models/report_metadata.py": 5,
+  "libs/reporting/chart_structure_decision_hint_summary.py": 5,
+  "libs/reporting/metrics_report/aggregators.py": 5,
+  "libs/reporting/metrics_report/event_extractors.py": 5,
+  "libs/reporting/metrics_report/markdown.py": 5,
+  "libs/reporting/metrics_report_generator.py": 5,
+  "libs/reporting/phase_runtime_health.py": 5,
+  "libs/reporting/policy_surface_summary.py": 5,
+  "libs/reporting/report_metadata.py": 5
+ }
+}

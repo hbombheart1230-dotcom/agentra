@@ -1,0 +1,638 @@
+{
+ "schema": "agentra.work.c6_readonly_inventory.v1",
+ "note": "READ-ONLY input for Work's next whole-role assignment; no code change; no implementation branch started",
+ "graph_nodes_loc": {
+  "strategist_node": 4053,
+  "scanner_node": 1222
+ },
+ "files": [
+  {
+   "path": "libs/runtime/strategist/__init__.py",
+   "loc": 0,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/context/__init__.py",
+   "loc": 0,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/context/candidate_rerank.py",
+   "loc": 45,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/runtime/strategist/context/commander_refresh_context.py",
+   "loc": 298,
+   "identity_shim": false,
+   "defs": 7
+  },
+  {
+   "path": "libs/runtime/strategist/context/common_values.py",
+   "loc": 75,
+   "identity_shim": false,
+   "defs": 5
+  },
+  {
+   "path": "libs/runtime/strategist/context/llm_input_payload.py",
+   "loc": 111,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/runtime/strategist/context/market_inputs.py",
+   "loc": 305,
+   "identity_shim": false,
+   "defs": 11
+  },
+  {
+   "path": "libs/runtime/strategist/context/market_key_events.py",
+   "loc": 4,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/context/memory.py",
+   "loc": 310,
+   "identity_shim": false,
+   "defs": 8
+  },
+  {
+   "path": "libs/runtime/strategist/context/news_compaction.py",
+   "loc": 4,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/context/news_context.py",
+   "loc": 270,
+   "identity_shim": false,
+   "defs": 7
+  },
+  {
+   "path": "libs/runtime/strategist/context/news_signal_fallbacks.py",
+   "loc": 86,
+   "identity_shim": false,
+   "defs": 6
+  },
+  {
+   "path": "libs/runtime/strategist/context/node_context_projection.py",
+   "loc": 122,
+   "identity_shim": false,
+   "defs": 4
+  },
+  {
+   "path": "libs/runtime/strategist/context/regime_scoring.py",
+   "loc": 38,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/runtime/strategist/context/symbol_read_models.py",
+   "loc": 4,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/context/theme_candidate_projection.py",
+   "loc": 36,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/runtime/strategist/context/theme_compaction.py",
+   "loc": 248,
+   "identity_shim": false,
+   "defs": 8
+  },
+  {
+   "path": "libs/runtime/strategist/context/theme_packet.py",
+   "loc": 298,
+   "identity_shim": false,
+   "defs": 5
+  },
+  {
+   "path": "libs/runtime/strategist/context/theme_strength.py",
+   "loc": 4,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/llm/__init__.py",
+   "loc": 0,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/llm/adjustment_directives.py",
+   "loc": 311,
+   "identity_shim": false,
+   "defs": 6
+  },
+  {
+   "path": "libs/runtime/strategist/llm/candidate_watch_overrides.py",
+   "loc": 104,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/runtime/strategist/llm/override_normalization.py",
+   "loc": 290,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/runtime/strategist/llm/stage_reviews.py",
+   "loc": 218,
+   "identity_shim": false,
+   "defs": 6
+  },
+  {
+   "path": "libs/runtime/strategist/output/__init__.py",
+   "loc": 0,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/output/commander_context_and_plan.py",
+   "loc": 279,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/runtime/strategist/output/node_event_payloads.py",
+   "loc": 190,
+   "identity_shim": false,
+   "defs": 5
+  },
+  {
+   "path": "libs/runtime/strategist/output/node_output_projection.py",
+   "loc": 108,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/runtime/strategist/output/node_trace_projection.py",
+   "loc": 111,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategic_answers.py",
+   "loc": 4,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategist_output_core_fields.py",
+   "loc": 114,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategist_output_explanations.py",
+   "loc": 30,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategist_output_policy_commander_fields.py",
+   "loc": 89,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategist_output_stage_reviews.py",
+   "loc": 46,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategy_scores_and_summary.py",
+   "loc": 206,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/runtime/strategist/policy/__init__.py",
+   "loc": 0,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/strategist/policy/exit_and_defaults.py",
+   "loc": 226,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/runtime/strategist/policy/global_risk_adjustment.py",
+   "loc": 26,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/runtime/strategist/policy/llm_override_application.py",
+   "loc": 73,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/runtime/strategist/policy/monitor_entry_policy.py",
+   "loc": 308,
+   "identity_shim": false,
+   "defs": 8
+  },
+  {
+   "path": "libs/runtime/strategist/policy/monitor_entry_policy_seed.py",
+   "loc": 74,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/runtime/strategist/policy/node_policy_projection.py",
+   "loc": 251,
+   "identity_shim": false,
+   "defs": 4
+  },
+  {
+   "path": "libs/runtime/strategist/policy/scanner_policy.py",
+   "loc": 201,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/runtime/strategist/policy/strategy_policy_annotation.py",
+   "loc": 77,
+   "identity_shim": false,
+   "defs": 4
+  },
+  {
+   "path": "libs/agents/strategist/__init__.py",
+   "loc": 1,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/agents/strategist/context/__init__.py",
+   "loc": 1,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/agents/strategist/context/market_key_events.py",
+   "loc": 101,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/agents/strategist/context/news_compaction.py",
+   "loc": 312,
+   "identity_shim": false,
+   "defs": 8
+  },
+  {
+   "path": "libs/agents/strategist/context/symbol_read_models.py",
+   "loc": 126,
+   "identity_shim": false,
+   "defs": 4
+  },
+  {
+   "path": "libs/agents/strategist/context/theme_strength.py",
+   "loc": 42,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/agents/strategist/output/__init__.py",
+   "loc": 1,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/agents/strategist/output/strategic_answers.py",
+   "loc": 177,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/runtime/scanner/__init__.py",
+   "loc": 1,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/blocker_family_overlay.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/candidate_context_projection.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/candidate_risk.py",
+   "loc": 11,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/candidate_row_projection.py",
+   "loc": 319,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/runtime/scanner/candidate_selection.py",
+   "loc": 454,
+   "identity_shim": false,
+   "defs": 16
+  },
+  {
+   "path": "libs/runtime/scanner/compatibility.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/control_eligibility.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/evidence.py",
+   "loc": 267,
+   "identity_shim": false,
+   "defs": 4
+  },
+  {
+   "path": "libs/runtime/scanner/feature_coverage.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/guidance.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/macro_chart_fit.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/macro_focus.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/market_representative_guard.py",
+   "loc": 328,
+   "identity_shim": false,
+   "defs": 14
+  },
+  {
+   "path": "libs/runtime/scanner/output_payloads.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/output_snapshots.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/practical_filters.py",
+   "loc": 265,
+   "identity_shim": false,
+   "defs": 8
+  },
+  {
+   "path": "libs/runtime/scanner/ranking_policy_overlay.py",
+   "loc": 171,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/runtime/scanner/repeat_guard.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/scanner_event_payloads.py",
+   "loc": 201,
+   "identity_shim": false,
+   "defs": 4
+  },
+  {
+   "path": "libs/runtime/scanner/score_feature_projection.py",
+   "loc": 258,
+   "identity_shim": false,
+   "defs": 5
+  },
+  {
+   "path": "libs/runtime/scanner/score_policy_projection.py",
+   "loc": 140,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/runtime/scanner/scoring_inputs.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/selection_evidence_projection.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/selection_evidence_projection_value_te_scanner.py",
+   "loc": 123,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/runtime/scanner/selection_output_projection.py",
+   "loc": 216,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/runtime/scanner/sentiment_inputs.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/symbol_prior.py",
+   "loc": 10,
+   "identity_shim": true,
+   "defs": 0
+  },
+  {
+   "path": "libs/runtime/scanner/theme_filter.py",
+   "loc": 267,
+   "identity_shim": false,
+   "defs": 9
+  },
+  {
+   "path": "libs/agents/scanner/__init__.py",
+   "loc": 1,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/agents/scanner/candidate_risk.py",
+   "loc": 112,
+   "identity_shim": false,
+   "defs": 4
+  },
+  {
+   "path": "libs/agents/scanner/context/__init__.py",
+   "loc": 1,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/agents/scanner/context/feature_coverage.py",
+   "loc": 69,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/agents/scanner/context/macro_chart_fit.py",
+   "loc": 200,
+   "identity_shim": false,
+   "defs": 4
+  },
+  {
+   "path": "libs/agents/scanner/context/macro_focus.py",
+   "loc": 63,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/agents/scanner/context/scoring_inputs.py",
+   "loc": 183,
+   "identity_shim": false,
+   "defs": 8
+  },
+  {
+   "path": "libs/agents/scanner/context/sentiment_inputs.py",
+   "loc": 126,
+   "identity_shim": false,
+   "defs": 4
+  },
+  {
+   "path": "libs/agents/scanner/policy/__init__.py",
+   "loc": 1,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/agents/scanner/policy/blocker_family_overlay.py",
+   "loc": 98,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/agents/scanner/policy/compatibility.py",
+   "loc": 288,
+   "identity_shim": false,
+   "defs": 5
+  },
+  {
+   "path": "libs/agents/scanner/policy/guidance.py",
+   "loc": 285,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/agents/scanner/policy/repeat_guard.py",
+   "loc": 265,
+   "identity_shim": false,
+   "defs": 7
+  },
+  {
+   "path": "libs/agents/scanner/policy/symbol_prior.py",
+   "loc": 109,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/agents/scanner/projections/__init__.py",
+   "loc": 1,
+   "identity_shim": false,
+   "defs": 0
+  },
+  {
+   "path": "libs/agents/scanner/projections/candidate_context_projection.py",
+   "loc": 88,
+   "identity_shim": false,
+   "defs": 2
+  },
+  {
+   "path": "libs/agents/scanner/projections/control_eligibility.py",
+   "loc": 55,
+   "identity_shim": false,
+   "defs": 1
+  },
+  {
+   "path": "libs/agents/scanner/projections/output_payloads.py",
+   "loc": 230,
+   "identity_shim": false,
+   "defs": 3
+  },
+  {
+   "path": "libs/agents/scanner/projections/output_snapshots.py",
+   "loc": 236,
+   "identity_shim": false,
+   "defs": 5
+  },
+  {
+   "path": "libs/agents/scanner/projections/selection_evidence_projection.py",
+   "loc": 251,
+   "identity_shim": false,
+   "defs": 4
+  }
+ ],
+ "summary": {
+  "libs/runtime/strategist": {
+   "files": 44,
+   "loc": 5594,
+   "shims": 5
+  },
+  "libs/agents/strategist": {
+   "files": 8,
+   "loc": 761,
+   "shims": 0
+  },
+  "libs/runtime/scanner": {
+   "files": 29,
+   "loc": 3171,
+   "shims": 16
+  },
+  "libs/agents/scanner": {
+   "files": 20,
+   "loc": 2662,
+   "shims": 0
+  }
+ }
+}
