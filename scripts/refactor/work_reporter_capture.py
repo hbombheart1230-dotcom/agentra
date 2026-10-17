@@ -29,6 +29,8 @@ MODULES = [
     "libs.reporting.trade_reporter_status_text",
     "libs.reporting.truth_source_labels",
     "libs.reporting.trade_pnl_estimate",
+    "libs.reporting.strategist_quant_context_report",
+    "libs.reporting.trade_report_post_exit_shadow",
 ]
 MAX_KEYS = 160
 
@@ -62,6 +64,13 @@ def _upper_callback(value):
     return str(value or "").upper() + "!"
 
 
+def _num_callback(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def _calls(fn, payloads):
     sig = inspect.signature(fn)
     params = [p for p in sig.parameters.values() if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD, p.KEYWORD_ONLY)]
@@ -69,10 +78,11 @@ def _calls(fn, payloads):
     kwonly_required = [p for p in params if p.default is p.empty and p.kind is p.KEYWORD_ONLY]
     out = []
     is_cb = lambda p: "Callable" in str(p.annotation)  # noqa: E731 - injected text/metadata callbacks get real callables
+    cb_for = lambda p, cb: _num_callback if "Optional[float]" in str(p.annotation) else cb  # noqa: E731
     for i, pl in enumerate(payloads):
         for cb in (_identity_callback, _upper_callback) if any(is_cb(p) for p in params) else (None,):
-            args = [(cb if is_cb(p) else copy.deepcopy(pl)) for p in required]  # distinct objects: no accidental self-aliasing
-            kwargs = {p.name: (cb if is_cb(p) else copy.deepcopy(pl)) for p in kwonly_required}
+            args = [(cb_for(p, cb) if is_cb(p) else copy.deepcopy(pl)) for p in required]  # distinct objects: no accidental self-aliasing
+            kwargs = {p.name: (cb_for(p, cb) if is_cb(p) else copy.deepcopy(pl)) for p in kwonly_required}
             out.append((args, kwargs))
             if not any(is_cb(p) for p in params):
                 break

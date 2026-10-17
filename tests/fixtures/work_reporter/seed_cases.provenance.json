@@ -1,0 +1,10 @@
+{
+ "schema": "agentra.work.reporter.fixture_provenance.v1",
+ "fixture": "seed_cases.json.gz",
+ "produced_on_python": "3.13",
+ "produced_with": "3.13.14 / Windows-11 / scripts/refactor/work_reporter_capture.py generate on git archive of d773709ba2f70471fad9badba4f92400f7818319",
+ "gz_sha256": "b4722f229a5e1fc9fafd4514fd677d57f65ffe803cea63e6089b2cfe58bdf4ee",
+ "payload_sha256": "f35f2312835baac40bd62b33c581cf66287918d72d8ace0fca63b7307617a36c",
+ "cases": 1463,
+ "note": "Exception message texts of ValueError unpack failures are CPython-version specific; on other interpreters the contract is same-interpreter BASE==FINAL (archive replay), never a rewritten golden."
+}

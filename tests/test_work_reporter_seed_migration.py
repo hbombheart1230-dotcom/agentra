@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = "d773709ba2f70471fad9badba4f92400f7818319"  # pinned runtime BASE (blobs, replay)
 START = "eeb742a33b16f6271ff364a904e187b470561c7e"  # activation commit (docs only over BASE); scope diff origin
 FIX = ROOT / "tests" / "fixtures" / "work_reporter" / "seed_cases.json.gz"
+PROV = ROOT / "tests" / "fixtures" / "work_reporter" / "seed_cases.provenance.json"
 # legacy module -> (canonical subpackage, pinned BASE blob)
 REGISTRY = {
     "narrative_axes": ("narrative", "8eee2c502ed8f1646c0008e7979a6c438a01972a"),
@@ -34,6 +35,8 @@ REGISTRY = {
     "trade_reporter_status_text": ("narrative", "ce3578e8d2e6e7036a9f1f48085516a73905fca3"),
     "truth_source_labels": ("narrative", "5a30f3df03c13468b8c81e083212d4063fd0ea0d"),
     "trade_pnl_estimate": ("read_models", "614f79242d78f4cdd536062bc0f0fe49c067c9ba"),
+    "strategist_quant_context_report": ("narrative", "7068f16019b1c7c171cc35652bfc9748296abbd2"),
+    "trade_report_post_exit_shadow": ("narrative", "040c582f99654778312216fe7ffbc1e6ccd3ea9c"),
 }
 REPORTER_PACKAGES = {"narrative", "read_models"}  # exact, versioned by this project (shared allowlist is Work-owned)
 OLD, NEW = "libs.reporting.{}", "libs.agents.reporter.{}.{}"
@@ -125,21 +128,62 @@ def test_shim_has_no_code_and_exactly_one_body_exists(name):
     assert unique >= 1
 
 
-def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():
-    doc = json.loads(gzip.decompress(FIX.read_bytes()))
-    cases = doc["cases"]
-    assert len(cases) == 1216
+def _cap():
     sys.path.insert(0, str(ROOT / "scripts" / "refactor"))
     try:
         import work_reporter_capture as cap
     finally:
         sys.path.pop(0)
+    return cap
+
+
+def _dump(rows):
+    return json.dumps(rows, ensure_ascii=False, separators=(",", ":"))
+
+
+def test_fixture_provenance_manifest_matches_the_fixture_bytes():
+    prov = json.loads(PROV.read_text(encoding="utf-8"))
+    raw = FIX.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == prov["gz_sha256"]
+    assert hashlib.sha256(gzip.decompress(raw)).hexdigest() == prov["payload_sha256"]
+    assert len(json.loads(gzip.decompress(raw))["cases"]) == prov["cases"] == 1463
+
+
+def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():
+    prov = json.loads(PROV.read_text(encoding="utf-8"))
+    cases = json.loads(gzip.decompress(FIX.read_bytes()))["cases"]
+    cap = _cap()
     assert {c["mod"] for c in cases} == {OLD.format(n) for n in REGISTRY} == set(cap.MODULES)
     got = cap.compute()  # drives the LEGACY import path of every module
-    assert json.dumps(got, ensure_ascii=False, separators=(",", ":")) == json.dumps(cases, ensure_ascii=False, separators=(",", ":"))
-    # canonical path: same module objects, so same functions
+    if f"{sys.version_info[0]}.{sys.version_info[1]}" == prov["produced_on_python"]:
+        assert _dump(got) == _dump(cases)  # recorded interpreter: byte-exact against the frozen fixture
+    else:
+        # other interpreter: only CPython-worded unpack ValueError messages may differ from the frozen fixture
+        assert len(got) == len(cases)
+        for g, c in zip(got, cases):
+            if g != c:
+                gr, cr = dict(g["result"]), dict(c["result"])
+                assert gr.get("exc") == cr.get("exc") == "ValueError" and "unpack" in gr.get("msg", "") and "unpack" in cr.get("msg", ""), (g, c)
+                gr.pop("msg"); cr.pop("msg")
+                assert {**g, "result": gr} == {**c, "result": cr}
     for n, (sub, _b) in REGISTRY.items():
         assert importlib.import_module(OLD.format(n)) is importlib.import_module(NEW.format(sub, n))
+
+
+def test_same_interpreter_base_archive_replay_equals_final(tmp_path):
+    """Strict same-environment BASE-vs-FINAL contract, independent of the interpreter's message wording."""
+    arc = subprocess.run(["git", "archive", BASE], cwd=ROOT, capture_output=True, check=True).stdout
+    import io
+    import tarfile
+    base_root = tmp_path / "base"
+    base_root.mkdir()
+    with tarfile.open(fileobj=io.BytesIO(arc)) as tf:
+        tf.extractall(base_root)
+    out = tmp_path / "base_cases.json"
+    subprocess.run([sys.executable, str(ROOT / "scripts/refactor/work_reporter_capture.py"), "generate", str(out), "--root", str(base_root)],
+                   cwd=str(base_root), check=True, capture_output=True,
+                   env={**os.environ, "PYTHONPATH": str(base_root), "PYTHONDONTWRITEBYTECODE": "1"})
+    assert _dump(json.loads(out.read_text(encoding="utf-8"))["cases"]) == _dump(_cap().compute())
 
 
 def test_target_tree_discipline_and_no_forbidden_surface():
@@ -151,7 +195,6 @@ def test_target_tree_discipline_and_no_forbidden_surface():
     out = [x for x in subprocess.check_output(["git", "diff", "--name-only", "-z", START, "HEAD"], cwd=ROOT).decode().split(chr(0)) if x]
     allowed_exact = {f"libs/reporting/{n}.py" for n in REGISTRY}
     allowed_prefix = ("libs/agents/reporter/", "tests/test_work_reporter_", "tests/fixtures/work_reporter/",
-                      "scripts/refactor/work_reporter_", "docs/refactor/work_projects/evidence/reporter/",
-                      "docs/refactor/work_projects/")
+                      "scripts/refactor/work_reporter_", "docs/refactor/work_projects/evidence/reporter/")
     for p in out:
         assert p in allowed_exact or p.startswith(allowed_prefix), p

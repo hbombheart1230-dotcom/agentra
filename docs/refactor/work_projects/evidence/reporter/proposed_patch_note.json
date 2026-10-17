@@ -1,7 +1,7 @@
 {
  "date": "2026-10-17",
- "version": "Reporter Role R-1",
- "title": "Reporter whole-role first pass: 10 pure narrative/read-model owners relocated to libs/agents/reporter",
+ "version": "Reporter Role R-2",
+ "title": "Reporter whole-role: 12 pure narrative/read-model owners relocated; report inventory ledger",
  "stage": "Architecture and Maintainability",
  "types": [
   "REFACTOR",
@@ -9,7 +9,7 @@
   "DOCS"
  ],
  "status": "current",
- "summary": "Ten pure Reporter owners moved byte-for-byte to libs/agents/reporter/{narrative,read_models} behind strict sys.modules identity shims; 1216 BASE-first replay cases reproduced exactly through the legacy path.",
+ "summary": "Twelve pure Reporter owners live under libs/agents/reporter/{narrative,read_models} behind strict identity shims; 1463 BASE-first replay cases reproduced exactly. Test scope fail-open and interpreter-message provenance fixed. A report-inventory ledger classifies 20 producers (no report changed).",
  "details": [
   "controlled_mock_lane_report BLOCKED (operational ledger read, Q10/Q12 lanes); trade_report_symbol_metadata kept (377 LOC > 350).",
   "Shared exact agent-package gates need Work to add reporter: {narrative, read_models}. No report disabled, no LLM/writer/queue change."

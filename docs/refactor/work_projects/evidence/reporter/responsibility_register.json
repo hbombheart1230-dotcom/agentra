@@ -142,6 +142,27 @@
    "path": "libs/reporting/daily_report_*, metrics_report*, operator_visibility*, operator_period_summary*, phase_runtime_health.py, report_source_helpers.py",
    "disposition": "SHARED",
    "reason": "operator/daily reporting infrastructure reading report sources; no mass move of shared reporting infrastructure; report-proliferation review pending"
+  },
+  {
+   "path": "libs/reporting/strategist_quant_context_report.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/narrative/strategist_quant_context_report.py",
+   "base_blob": "7068f16019b1c7c171cc35652bfc9748296abbd2",
+   "effects": "none (typing/Mapping only; builds markdown lines from report dicts; injected formatting callbacks)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay incl. numeric/text callbacks"
+  },
+  {
+   "path": "libs/reporting/trade_report_post_exit_shadow.py",
+   "disposition": "MOVE",
+   "canonical": "libs/agents/reporter/narrative/trade_report_post_exit_shadow.py",
+   "base_blob": "040c582f99654778312216fe7ffbc1e6ccd3ea9c",
+   "effects": "none (typing/Mapping only; builds markdown lines from report dicts; injected formatting callbacks)",
+   "proof": "blob, strict shim AST+mutations, -O, import order, monkeypatch, one body, BASE-first replay incl. numeric/text callbacks"
+  },
+  {
+   "path": "report proliferation review",
+   "disposition": "DECISION_LEDGER",
+   "reason": "report_inventory.json: classification per producer; no report changed or disabled"
   }
  ]
 }
