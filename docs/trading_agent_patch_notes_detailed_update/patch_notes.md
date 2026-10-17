@@ -3590,3 +3590,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - BASE parity: 411 records / 10,910 variants, sample_mod=1/4; new equivalence 15 PASS. Existing paired negatives 3 PASS before/after, 111.78s -> 7.00s locally (93.74%); optimized Python 3 PASS. Not whole-CI timing.
 - Only perf/p15-perf2a-20261017 is published. PERF-1/common runtime/workflows unchanged. Claude audit and combined integration review pending; no main merge or next project.
 - Evidence: docs/daily_patch/2026-10-17_p15_perf2a.md.
+
+
+## 2026-10-17 · Agentra Work Reporter Monitor Whole-Role Activation 2026-10-17
+**Stage:** Architecture and Maintainability
+**Tags:** DOCS
+
+- 사용자 착수 승인에 따라 Reporter(Claude)/Monitor(Codex) 역할 전체 프로젝트와 교차 감사를 활성화했습니다. Runtime BASE d773709, 18개 seed blob 재사용.
+- 공통 파일은 Work 단일 담당, 역할 내부 순수 범위는 원장 기록 후 연속 진행. 기존 6시간 보고 유지, Auto-review 권한 심사와 코드 감사를 구분합니다.
+- 로컬 작업자는 아직 NOT_STARTED입니다. 코드·테스트·workflow·기존 통합/main 변경 없음. 근거: `docs/refactor/work_projects/ACTIVATION.md`.

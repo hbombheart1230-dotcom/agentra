@@ -1,0 +1,189 @@
+{
+  "schema": "agentra.work.seed.v1",
+  "preparation_base": "d773709ba2f70471fad9badba4f92400f7818319",
+  "authority": "seed candidates reused from 07151d7; whole-role continuous scope governed by ACTIVATION.md; not whole-role completion",
+  "implementation_authorized": true,
+  "modules": [
+    {
+      "role": "reporter",
+      "source": "libs/reporting/narrative_axes.py",
+      "destination": "libs/agents/reporter/narrative/narrative_axes.py",
+      "base_blob": "8eee2c502ed8f1646c0008e7979a6c438a01972a",
+      "loc": 181,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "reporter",
+      "source": "libs/reporting/trade_fallback_text.py",
+      "destination": "libs/agents/reporter/narrative/trade_fallback_text.py",
+      "base_blob": "de225b4556c9780ec84a7a3ee321c8659aea9373",
+      "loc": 32,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "reporter",
+      "source": "libs/reporting/reasoning_trace.py",
+      "destination": "libs/agents/reporter/narrative/reasoning_trace.py",
+      "base_blob": "0807b9f3a94238f73c7617e1e0e8d8f514e9e676",
+      "loc": 229,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "reporter",
+      "source": "libs/reporting/trade_execution_outcome_text.py",
+      "destination": "libs/agents/reporter/narrative/trade_execution_outcome_text.py",
+      "base_blob": "ca7ff430a44cea2dcbf2a1a1b3adccde13b354c1",
+      "loc": 202,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "reporter",
+      "source": "libs/reporting/chart_structure_decision_hint_summary.py",
+      "destination": "libs/agents/reporter/read_models/chart_structure_decision_hint_summary.py",
+      "base_blob": "16a5d887bc3a49efb6280cb6ea1693f9c3255949",
+      "loc": 240,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "reporter",
+      "source": "libs/reporting/policy_surface_summary.py",
+      "destination": "libs/agents/reporter/read_models/policy_surface_summary.py",
+      "base_blob": "4a3aa078fefa2e83fac1d0b610a2b667befb851c",
+      "loc": 225,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "reporter",
+      "source": "libs/reporting/report_metadata.py",
+      "destination": "libs/agents/reporter/read_models/report_metadata.py",
+      "base_blob": "d0fffd0097d55f37d1038bf20bb79bd8780ed654",
+      "loc": 94,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "reporter",
+      "source": "libs/reporting/controlled_mock_lane_report.py",
+      "destination": "libs/agents/reporter/read_models/controlled_mock_lane_report.py",
+      "base_blob": "362d3ce13c7d5b48eb02b40274115345a2d7dddd",
+      "loc": 267,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "REQUIRED_REPORTER_VS_RESEARCH"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_event_payloads.py",
+      "destination": "libs/agents/monitor/events/cycle_event_payloads.py",
+      "base_blob": "633f9afbb422c6970cb1597aecb5e24b358d5481",
+      "loc": 136,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_log_trace_payloads.py",
+      "destination": "libs/agents/monitor/events/cycle_log_trace_payloads.py",
+      "base_blob": "51fa078349e005052afb0e3f83ac3c84780bbcf2",
+      "loc": 171,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_detail_projection.py",
+      "destination": "libs/agents/monitor/projections/cycle_detail_projection.py",
+      "base_blob": "9630c66ffd9b34c3e7a99804f158ecb6f6d2bf18",
+      "loc": 192,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_output_projection.py",
+      "destination": "libs/agents/monitor/projections/cycle_output_projection.py",
+      "base_blob": "26db1a162a9e55fc8ea9b187bcd74f3576308d40",
+      "loc": 285,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_output_projection_value_state_monitor.py",
+      "destination": "libs/agents/monitor/projections/cycle_output_projection_value_state_monitor.py",
+      "base_blob": "97831983e7d5ab78b0b90e89a10298f16be45510",
+      "loc": 37,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_posture_projection.py",
+      "destination": "libs/agents/monitor/projections/cycle_posture_projection.py",
+      "base_blob": "2ed727fb946b3055e64d1745f80fae61808cee6a",
+      "loc": 253,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/entry_focus_output_projection.py",
+      "destination": "libs/agents/monitor/projections/entry_focus_output_projection.py",
+      "base_blob": "21326cb26e5997d15b1b993052be6f33f6967f19",
+      "loc": 33,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/policy_output_projection.py",
+      "destination": "libs/agents/monitor/projections/policy_output_projection.py",
+      "base_blob": "fe6c9ebf5668e0a679d3122a6c041c5d78d9aeb1",
+      "loc": 135,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/scanner_monitor_handoff_projection.py",
+      "destination": "libs/agents/monitor/projections/scanner_monitor_handoff_projection.py",
+      "base_blob": "d7c3f8afd63f512420c54338ed6f6dce113d3e57",
+      "loc": 22,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/signal_explanation.py",
+      "destination": "libs/agents/monitor/projections/signal_explanation.py",
+      "base_blob": "be74bc5f7ea677e159416ac2d4c78a319d69f3bb",
+      "loc": 63,
+      "status": "AUTHORIZED_CANDIDATE_REQUIRES_PREFLIGHT",
+      "consumer_effect_review": "PENDING",
+      "ownership_review": "PENDING"
+    }
+  ],
+  "activation_authority": "user 2026-10-17 11:09 KST"
+}

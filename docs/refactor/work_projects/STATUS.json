@@ -1,0 +1,37 @@
+{
+  "schema": "agentra.work.status.v1",
+  "as_of": "2026-10-17T11:09:10+09:00",
+  "runtime_base": "d773709ba2f70471fad9badba4f92400f7818319",
+  "phase": "AUTHORIZED_AWAITING_LOCAL_START",
+  "implementation_executed_by_work": false,
+  "controller_branch": "integration/p15-t4-pr5-convergence-20261015",
+  "report_schedule": "existing Asia/Seoul 00/06/12/18; no new task",
+  "roles": [
+    {
+      "role": "reporter",
+      "implementer": "Claude",
+      "reviewer": "Codex",
+      "branch": "work/reporter-role-20261017",
+      "state": "NOT_STARTED",
+      "runtime_progress_percent": 0,
+      "startup_evidence": null,
+      "implementation_sha": null,
+      "audit_sha": null,
+      "ci_status": "NOT_RUN",
+      "next_action": "User delivers one-time startup instruction to existing local worker"
+    },
+    {
+      "role": "monitor",
+      "implementer": "Codex",
+      "reviewer": "Claude",
+      "branch": "work/monitor-role-20261017",
+      "state": "NOT_STARTED",
+      "runtime_progress_percent": 0,
+      "startup_evidence": null,
+      "implementation_sha": null,
+      "audit_sha": null,
+      "ci_status": "NOT_RUN",
+      "next_action": "User delivers one-time startup instruction to existing local worker"
+    }
+  ]
+}
