@@ -1,5 +1,10 @@
 # CODEX — MONITOR Whole-Role Principal Implementer (Corrected Assignment)
 
+## 2026-10-17 WHOLE-P1.5 RELAY — M9 ACTIVE, then Scanner planning
+
+Read [10_P15_CONTINUOUS_ROLE_RELAY.md](10_P15_CONTINUOUS_ROLE_RELAY.md). Latest Monitor M9 CP-008 `4bc4250844093050438d8a9c29f5842991ad1c3a` has additional runtime test evidence and a partly completed 359-row retained symbol analysis; current status ACTIVE, not parked. Continue M9 and Work finding responses without redoing M001-M008. After Work acknowledges MONITOR_LOCAL_READY_FOR_INTEGRATION and no Monitor-local READY tasks remain, continue **Scanner read-only next-role scope/consumer/test design** on a separate evidence branch; actual Scanner source edits require Work's signed exact whole-role charter. Do not change ranking, scoring, strategy, broker or guard behavior. Work alone handles shared T3/T4 and Reporter integration. A CLI session ending cannot be automatically resumed from this document; use authorized runner. Never consume credits by repetitive no-op tests.
+
+
 ## M9 CONTINUATION — supersedes CP-007 as global stop condition (2026-10-17)
 
 Read [08_CODEX_MONITOR_M9_CONTINUATION.md](08_CODEX_MONITOR_M9_CONTINUATION.md) before re-running M0–M5. Real HEAD observed efdab64f33b34be6ab26fd8edb9aba9ec4ebd479; REFRESH before edit. CP-007 freezes the CURRENT SAFE MOVE inventory (14 exact whole modules, 20 named bodies), not all independent Monitor development opportunities. Resume M9-A exhaustive evidence-based retained-boundary classification, M9-B only proven safe structural batches, M9-C valuable still-NOT_RUN native full mod1 / CI Python3.12 / synthetic persisted-output parity / negative policy gates, M9-D Work shared T3/T4 feedback, M9-E truthful local readiness. Remaining protected symbols are not automatically dangerous; require actual consumer/effect proof before any move. Do not invent work and do not change trade or policy authority. Codex remains Monitor only; Work fixes shared T3/T4. GitHub instructions cannot relaunch a terminated CLI.
