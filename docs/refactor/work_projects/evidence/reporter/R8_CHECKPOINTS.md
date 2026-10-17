@@ -59,3 +59,7 @@
 - New `tests/test_work_reporter_renderer_bytes.py`: every moved renderer-like function (53 of 313: markdown/render/_md/lines/text/label/summary) — BASE body on live facade globals vs current wrapper, 3 report-shaped payloads (incl. CRLF inside input text, Korean, malformed types); exact UTF-8 bytes / JSON bytes / exception type+message, no line-ending normalisation. 54 PASS. Negative: changing `'\n'.join(lines)` to `'\r\n'.join(lines)` in reporter_analysis `_to_markdown` owner -> 1 FAIL (reverted).
 - ACK Work R9 review: READ_VIA_CALLBACK vs pure formatting distinguished in triage (R8-003/004); notes reconciled (R8-003). The C6 read-only inventory from R8-005 is kept only as raw input; per Work, no further Strategist inventory until Reporter role freeze.
 - NEXT_READY: (1) role-freeze evidence pack (counts, retained/blocked list, tests list for CI wiring) for Work; (2) API DTO/path consumer map completion (apps/api reads artifacts by path); (3) decision-dependent: I/O-bearing RETAIN_FACADE relocation.
+
+## R8-007 — role-freeze pack (START_SHA c24d683a7a28990ed05e525f3b1555d8a2bd9d5a)
+- REPORTER_ROLE_FREEZE_PACK_R8.md: counts, tests for CI wiring, API artifact consumer map (path-based), intentional wrappers, known failures. Safe structural scope exhausted; remaining work is decision/Work-owned.
+- NEXT_READY (decision/Work): shared guard candidate + CI wiring; independent audit of final SHA; optional I/O-bearing RETAIN_FACADE relocation scope.
