@@ -1,6 +1,6 @@
 {
  "schema": "agentra.work.reporter.report_inventory.v1",
- "basis": "git grep of scripts/ producers at d773709-derived tree; NO scheduler, cron, workflow-dispatch or external-consumer check performed",
+ "basis": "git grep of scripts/ producers at d773709-derived tree; NO scheduler, cron, workflow-dispatch or external-consumer check performed; extended (Phase E): grep of deploy/, config/, .github/, apps/ and *.ps1/*.bat/*.cmd/*.xml/*.toml/*.yaml/Makefile for each producer name; OS Task Scheduler and external callers outside the repo remain unchecked",
  "decision_rule": "no report is disabled/deleted/changed by this project; STOP_CANDIDATE requires scheduler+external consumer proof and is NOT assigned to any report; docs/test-only references stay UNVERIFIED",
  "entries": [
   {
@@ -21,7 +21,8 @@
     "libs/reporting/daily_report.py",
     "libs/reporting/daily_report_generator.py",
     "libs/runtime/mock_exam_day/closeout_phase.py"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/generate_metrics_report.py",
@@ -41,7 +42,8 @@
     "libs/reporting/reporter_feedback.py",
     "libs/runtime/mock_exam_day/closeout_phase.py",
     "scripts/diagnostics/check_alert_policy_v1.py"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/generate_operator_summary_report.py",
@@ -51,7 +53,8 @@
    "reference_counts": {
     "docs": 5
    },
-   "non_test_non_doc_consumers": []
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/generate_ops_diagnostic_report.py",
@@ -65,7 +68,8 @@
    },
    "non_test_non_doc_consumers": [
     "scripts/diagnostics/generate_ops_diagnostic_report.py"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/generate_strategist_llm_summary.py",
@@ -81,7 +85,8 @@
     "libs/reporting/llm_artifacts.py",
     "libs/reporting/strategist_llm_summary.py",
     "libs/runtime/canonical_artifacts.py"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/generate_symbol_trade_report.py",
@@ -101,7 +106,8 @@
     "libs/reporting/symbol_trade_report.py",
     "scripts/research/run_phase5_validation_bundle.py",
     "scripts/run_ai_trade_report_batch.py"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/organize_llm_reports.py",
@@ -111,7 +117,8 @@
    "reference_counts": {
     "docs": 6
    },
-   "non_test_non_doc_consumers": []
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_agent_pipeline_trace_report.py",
@@ -127,7 +134,8 @@
    "non_test_non_doc_consumers": [
     "libs/reporting/agent_pipeline_trace.py",
     "README.md"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_ai_trade_report_batch.py",
@@ -141,6 +149,10 @@
    },
    "non_test_non_doc_consumers": [
     "scripts/diagnostics/check_trade_report_runtime_regression.py"
+   ],
+   "scheduler_deploy_api_refs": [
+    ".github/workflows/p15-integration-t4-regression.yml",
+    ".github/workflows/p152-r2c-residual-regression.yml"
    ]
   },
   {
@@ -157,7 +169,8 @@
    "non_test_non_doc_consumers": [
     "libs/runtime/mock_exam_day/closeout_phase.py",
     "README.md"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_evaluation_lens_report.py",
@@ -167,7 +180,8 @@
    "reference_counts": {
     "docs": 6
    },
-   "non_test_non_doc_consumers": []
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_live_execution_bundle_report.py",
@@ -187,7 +201,8 @@
     "libs/runtime/mock_exam_day/closeout_phase.py",
     "scripts/diagnostics/check_trade_report_runtime_regression.py",
     "README.md"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_live_session_summary.py",
@@ -198,7 +213,8 @@
     "docs": 8,
     "test": 1
    },
-   "non_test_non_doc_consumers": []
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_m31_weekly_health_summary.py",
@@ -209,7 +225,8 @@
     "docs": 9,
     "test": 2
    },
-   "non_test_non_doc_consumers": []
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_operator_daily_summary.py",
@@ -225,7 +242,8 @@
    "non_test_non_doc_consumers": [
     "libs/runtime/mock_exam_day/closeout_phase.py",
     "README.md"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_operator_summary_mining.py",
@@ -235,7 +253,8 @@
    "reference_counts": {
     "docs": 6
    },
-   "non_test_non_doc_consumers": []
+   "non_test_non_doc_consumers": [],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_report_maintenance.py",
@@ -248,7 +267,8 @@
    },
    "non_test_non_doc_consumers": [
     "libs/runtime/mock_exam_day/closeout_phase.py"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_reporter_analysis_report.py",
@@ -264,7 +284,8 @@
    "non_test_non_doc_consumers": [
     "libs/runtime/mock_exam_day/closeout_phase.py",
     "README.md"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_run_card_report.py",
@@ -280,7 +301,8 @@
    "non_test_non_doc_consumers": [
     "libs/runtime/mock_exam_day/closeout_phase.py",
     "README.md"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   },
   {
    "report_producer": "scripts/run_trade_explain_report.py",
@@ -294,7 +316,8 @@
    },
    "non_test_non_doc_consumers": [
     "README.md"
-   ]
+   ],
+   "scheduler_deploy_api_refs": []
   }
  ]
 }

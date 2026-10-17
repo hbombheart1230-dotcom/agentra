@@ -165,6 +165,36 @@
    "path": "report proliferation review",
    "disposition": "DECISION_LEDGER",
    "reason": "report_inventory.json: classification per producer; no report changed or disabled"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_news.py",
+   "disposition": "DECOMPOSED",
+   "reason": "433 LOC -> narrative/news_text (116), news_headlines (143), news_scanner_contribution (178); bodies AST-identical; all cross-calls already late-bound via _facade (trade_story_pipeline); legacy = import-only re-export facade; facade import site/ledger unchanged"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_scanner.py",
+   "disposition": "DECOMPOSED",
+   "reason": "392 LOC -> narrative/scanner_basis (119), scanner_selection_trace (114), scanner_evidence_fit (163); AST-identical; note: unused legacy-module attributes clip/format_pct/safe_float/safe_int (never referenced by bodies or importers) are no longer present on the legacy module"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline.py, trade_report_ai.py, trade_report_markdown_clean.py (facades >350 LOC)",
+   "disposition": "BLOCKED",
+   "reason": "every top-level definition is pinned by the shared facade symbol ledger / R3 moved-body gates (Work-owned); splitting requires a Work ledger update"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py, trade_report_ai_compact_input.py, trade_read_model.py, trade_memory_surface.py, trade_memory_application_surface.py",
+   "disposition": "BLOCKED",
+   "reason": "pinned by shared T1 extraction gates (unmoved definitions must stay baseline-identical) and/or Path-based memory reads"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py, trade_bundle_state.py, trade_bundle_persistence.py, trade_lifecycle_builder.py, single_trade_report.py, trade_explain.py",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "oversize but mix Path/json/datetime file I/O with formatting (artifact reading/writing); separating effects is a behavior-boundary change outside the bulk approval"
+  },
+  {
+   "path": "libs/reporting/trade_story/evidence.py, trade_story_evidence_parts/**",
+   "disposition": "KEEP_WITH_REASON",
+   "reason": "already relocated in an earlier pass with an alias chain pinned by p152 owner-parity scripts"
   }
  ]
 }
