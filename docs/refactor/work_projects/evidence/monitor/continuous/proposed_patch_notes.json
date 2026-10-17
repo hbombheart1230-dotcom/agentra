@@ -1,0 +1,9 @@
+{
+  "owner": "Work appends both official UI note formats; role branch proposed only",
+  "entries": [{
+    "date": "2026-10-17",
+    "version": "Monitor continuous M0",
+    "summary": "Rebaseline the Monitor branch and register a function-level whole-role inventory plus four READY safe batches; reuse verified existing evidence without claiming a fresh 1213-test run.",
+    "sources": ["docs/dev-team/checkpoints/monitor/CP-000-rebaseline-and-ready-queue.md", "docs/refactor/work_projects/evidence/monitor/continuous/program.json"]
+  }]
+}
