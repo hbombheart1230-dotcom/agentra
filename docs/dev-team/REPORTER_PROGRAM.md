@@ -1,3 +1,5 @@
+> **ROLE CORRECTION (2026-10-17):** Claude owns Reporter, Codex owns Monitor, Work independently reviews both and coordinates shared T3/T4 and final integration. The authoritative current work orders are docs/dev-team/assignments/00–06. Any older Codex-as-Reporter-auditor/Runner text below is superseded.
+
 # Agentra P1.5 Reporter — whole-role continuous refactor
 
 **Assignment:** Reporter entire role, not merely 12 relocated modules.  
@@ -86,6 +88,6 @@ Test examples (discover exact environment first): python -m pytest -q tests/test
 
 ## 6. Done means ROLE_READY, not subset-complete
 
-RP0–RP8 covered with explicit disposition of every in-scope file; movable logic relocated and equivalence checked; facade LOC and remaining wrappers documented; all active tests PASS, or each FAIL/NOT_RUN characterized; UI note state documented; final SHA + changed-file-only ZIP prepared; independent Codex audit requested for the final SHA. Main stays untouched. This is the *only* default terminal state for the whole-role work order.
+RP0–RP8 covered with explicit disposition of every in-scope file; movable logic relocated and equivalence checked; facade LOC and remaining wrappers documented; all active tests PASS, or each FAIL/NOT_RUN characterized; UI note state documented; final SHA + changed-file-only ZIP prepared; independent Work audit requested for the final SHA. Main stays untouched. This is the *only* default terminal state for the whole-role work order.
 
 If credits/context/session actually end: push a checkpoint and issue comment with final SHA, next READY batch and blockers; the external runner (if configured) or next manually initiated CLI must resume from that point, without re-reading completed work or repeating entire test history.
