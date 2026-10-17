@@ -1,3 +1,5 @@
+> **ROLE CORRECTION (2026-10-17):** Claude owns Reporter, Codex owns Monitor, Work independently reviews both and coordinates shared T3/T4 and final integration. The authoritative current work orders are docs/dev-team/assignments/00–06. Any older Codex-as-Reporter-auditor/Runner text below is superseded.
+
 # Agentra development-team baseline snapshot
 
 **Observed:** 2026-10-17 KST. This is a **static snapshot**, not a heartbeat or evidence that workers are running. Review the GitHub branch/issue when reading later.
@@ -28,7 +30,7 @@ Branch listing observed four existing branches before the new design branch. Do 
 - Monitor: **branch exists / active process status UNKNOWN**. Independent owner needs inventory/contract-based work order and issue.
 - Strategist and Scanner: subsequent full-role batches; no new implementation assignment from this documentation.
 - Work reviewer: review window not automatically active by this document.
-- Codex: independent audit role proposed; no audit was executed in this documentation change.
+- Codex: **now assigned Monitor full-role implementation**, not Reporter audit or runner. Work is independent reviewer of both.
 - Production/live-trading behavior: not modified.
 - Tests for this documentation-only proposal: NOT_RUN. No tests represented as passing.
 
@@ -36,7 +38,7 @@ Branch listing observed four existing branches before the new design branch. Do 
 
 1. Create/link one GitHub role issue for Reporter and one for Monitor; attach scoped design and branch.
 2. Give Claude the Reporter boot prompt; ensure CLI is genuinely running.
-3. Configure a separately invoked independent Codex/Work reviewer; post first SHA-bound feedback to role issue.
+3. Invoke Work as independent reviewer for both active role SHAs; Codex continues Monitor implementation.
 4. Observe whether long-running Claude actually proceeds across several checkpoints without stopping. If not, implement persistent runner before claiming unattended operation.
 5. At full P1.5 role readiness, independently audit and integrate through the controlled integration branch; do not merge main early.
 
