@@ -1,5 +1,8 @@
 # Agentra P1.5 — Continuous Role Relay, Not Per-Checkpoint Chat Stopping
 
+> **OVERRIDE / WORK DISABLED (2026-10-17):** This earlier relay document includes obsolete claims that hourly Work monitoring is active and Work exclusively owns T3/T4 code. Those claims are NOW FALSE. Read [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md) as authoritative: GPT chat on-demand remains architect; Codex implements shared integration AFTER Monitor-local completion; Claude independently audits it; hourly automation remains DISABLED. Existing runner prototype is not activated.
+
+
 **Active from 2026-10-17 KST.** Overall target is the P1.5 structural refactor and safe integration across the seven LangGraph roles. A role-local freeze is NOT project completion. **Owner routing remains** Claude=Reporter, Codex=Monitor, Work=architect/reviewer/shared T3/T4/integration. After local closure, a next role requires a separately approved whole-role scope and isolated writer branch.
 
 ## Actual checkpoints; refresh every session
