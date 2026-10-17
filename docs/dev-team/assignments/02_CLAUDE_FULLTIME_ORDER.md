@@ -1,5 +1,8 @@
 # CLAUDE — Principal Reporter Owner, Continuous Whole-Role Refactoring
 
+> **CURRENT CLAUDE ASSIGNMENT (2026-10-17):** The source of truth is [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md). Reporter remains on its own branch; after R10 local-ready it independently reviews **Codex's isolated combined T3/T4/CI candidate** and posts SHA-bound issues. Claude does not edit Codex's integration branch. Read-only Strategist planning is allowed; source edits need a GPT-authored whole-role charter. Work is NOT an active reviewer/approval dependency, and no hourly review runs. Prior clauses assigning all shared integration exclusively to Work below are superseded.
+
+
 ## 2026-10-17 WHOLE-P1.5 RELAY — do not end at Reporter local freeze
 
 Read [10_P15_CONTINUOUS_ROLE_RELAY.md](10_P15_CONTINUOUS_ROLE_RELAY.md). Reporter remote R10 local-ready snapshot `de99c8f0fa66bfc3e6be9a229f04fc6aad5ca06e` (refresh). While waiting on Work T3/CI, act on any new Reporter-local findings. If none, continue **Strategist read-only next-role ownership/caller/testing inventory** in a separate evidence branch, only after checking existing source/ledgers so you do not redo prior work. Work must approve exact Strategist whole-role implementation scope and branch before source modifications. Do not change strategy decisions, thresholds, truth precedence or trade authority. Lack of another safe Reporter move is NOT a global stop. No unsafe make-work; a terminated Claude CLI needs a separate authorized runner to restart.
