@@ -1,5 +1,8 @@
 # P1.5 Remaining-Roles Architecture Backlog — GPT as On-Demand Architect
 
+> **SCOPE UPDATE (2026-10-17):** [Strategist S1/S2 EVIDENCE/TESTS ONLY charter](13_STRATEGIST_S1_S2_SCOPED_CHARTER_20261017.md) is now authorized. Claude may verify ownership and build initial 3–5 mock-only context/output contract fixtures on isolated evidence branch; **no Strategist runtime source/owner relocation or policy changes**. S3-S6 still require separate GPT charter. Codex remains Monitor then shared integrator and Scanner READ-ONLY planning. No Work automation.
+
+
 **Author:** GPT (ordinary chat, on-demand), 2026-10-17. **Stage:** design/analysis only. No new-role source migration is authorized by this file. **Current policy:** [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md).
 
 ## Architecture sequence
