@@ -1,0 +1,3790 @@
+{
+ "schema": "agentra.p15.strategist_readonly_inventory.v1",
+ "tree_sha": "d773709ba2f70471fad9badba4f92400f7818319",
+ "node": {
+  "path": "graphs/nodes/strategist_node.py",
+  "physical_loc": 4053,
+  "loc": 3625,
+  "top_level_defs": 156,
+  "imports_from": [
+   "__future__",
+   "datetime",
+   "libs.ai.strategist_config",
+   "libs.core.evidence_identity",
+   "libs.core.path_isolation",
+   "libs.data_quality.signal_contract",
+   "libs.llm.llm_router",
+   "libs.llm.model_names",
+   "libs.market.global_sentiment",
+   "libs.news.news_pipeline",
+   "libs.performance.strategy_memory",
+   "libs.read.kiwoom_theme_reader",
+   "libs.reporting.reporter_feedback",
+   "libs.reporting.symbol_read_model",
+   "libs.reporting.trade_read_model",
+   "libs.research.evidence_ledger",
+   "libs.research.strategy_feedback_builder",
+   "libs.runtime.canonical_artifacts",
+   "libs.runtime.commander_memory_policy",
+   "libs.runtime.decision_observability",
+   "libs.runtime.decision_trace",
+   "libs.runtime.memory_packet_loader",
+   "libs.runtime.monitor_memory_bias",
+   "libs.runtime.monitor_policy",
+   "libs.runtime.news_event_intelligence",
+   "libs.runtime.quant.context",
+   "libs.runtime.quant.contracts",
+   "libs.runtime.quant.tactics",
+   "libs.runtime.regime",
+   "libs.runtime.scanner_bias",
+   "libs.runtime.scanner_memory_bias",
+   "libs.runtime.strategist.context.candidate_rerank",
+   "libs.runtime.strategist.context.commander_refresh_context",
+   "libs.runtime.strategist.context.common_values",
+   "libs.runtime.strategist.context.llm_input_payload",
+   "libs.runtime.strategist.context.market_inputs",
+   "libs.runtime.strategist.context.market_key_events",
+   "libs.runtime.strategist.context.memory",
+   "libs.runtime.strategist.context.news_compaction",
+   "libs.runtime.strategist.context.news_context",
+   "libs.runtime.strategist.context.news_signal_fallbacks",
+   "libs.runtime.strategist.context.node_context_projection",
+   "libs.runtime.strategist.context.regime_scoring",
+   "libs.runtime.strategist.context.symbol_read_models",
+   "libs.runtime.strategist.context.theme_candidate_projection",
+   "libs.runtime.strategist.context.theme_compaction",
+   "libs.runtime.strategist.context.theme_packet",
+   "libs.runtime.strategist.context.theme_strength",
+   "libs.runtime.strategist.llm.adjustment_directives",
+   "libs.runtime.strategist.llm.candidate_watch_overrides",
+   "libs.runtime.strategist.llm.override_normalization",
+   "libs.runtime.strategist.llm.stage_reviews",
+   "libs.runtime.strategist.output.commander_context_and_plan",
+   "libs.runtime.strategist.output.node_event_payloads",
+   "libs.runtime.strategist.output.node_output_projection",
+   "libs.runtime.strategist.output.node_trace_projection",
+   "libs.runtime.strategist.output.strategic_answers",
+   "libs.runtime.strategist.output.strategist_output_core_fields",
+   "libs.runtime.strategist.output.strategist_output_explanations",
+   "libs.runtime.strategist.output.strategist_output_policy_commander_fields",
+   "libs.runtime.strategist.output.strategist_output_stage_reviews",
+   "libs.runtime.strategist.output.strategy_scores_and_summary",
+   "libs.runtime.strategist.policy.exit_and_defaults",
+   "libs.runtime.strategist.policy.global_risk_adjustment",
+   "libs.runtime.strategist.policy.llm_override_application",
+   "libs.runtime.strategist.policy.monitor_entry_policy",
+   "libs.runtime.strategist.policy.monitor_entry_policy_seed",
+   "libs.runtime.strategist.policy.node_policy_projection",
+   "libs.runtime.strategist.policy.scanner_policy",
+   "libs.runtime.strategist.policy.strategy_policy_annotation",
+   "libs.runtime.strategist_explanation",
+   "libs.runtime.strategist_feedback_trace",
+   "libs.runtime.strategist_input_quality",
+   "libs.runtime.strategist_packet_visibility",
+   "libs.runtime.strategy_horizon_feedback",
+   "libs.strategies.candidates.fallback_pool",
+   "libs.strategies.candidates.market_rank",
+   "libs.strategies.contracts",
+   "libs.strategies.universe_builder",
+   "pathlib",
+   "typing"
+  ],
+  "module_level_statements": [
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign",
+   "Assign"
+  ],
+  "functions": [
+   {
+    "name": "_is_trueish",
+    "kind": "FunctionDef",
+    "line": 315,
+    "loc": 2,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_env_bool",
+    "kind": "FunctionDef",
+    "line": 319,
+    "loc": 5,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "ENV"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_strategy_memory_usage_disabled",
+    "kind": "FunctionDef",
+    "line": 326,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_strategy_memory_usage_disabled_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_to_int",
+    "kind": "FunctionDef",
+    "line": 331,
+    "loc": 5,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_env_int",
+    "kind": "FunctionDef",
+    "line": 338,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_env_int_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_nested_mapping_value",
+    "kind": "FunctionDef",
+    "line": 342,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_nested_mapping_value_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_neutralize_ambiguous_playbook_memory",
+    "kind": "FunctionDef",
+    "line": 346,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_neutralize_ambiguous_playbook_memory_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_m31_17_theme_candidate_flow_upgrade.py"
+    ]
+   },
+   {
+    "name": "_load_recent_strategy_feedback",
+    "kind": "FunctionDef",
+    "line": 350,
+    "loc": 61,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_commander_env_migration_phase2.py"
+    ]
+   },
+   {
+    "name": "_iso_day_from_value",
+    "kind": "FunctionDef",
+    "line": 413,
+    "loc": 11,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "CLOCK"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_resolve_state_day",
+    "kind": "FunctionDef",
+    "line": 426,
+    "loc": 5,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "CLOCK"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_load_strategy_memory_advisory",
+    "kind": "FunctionDef",
+    "line": 433,
+    "loc": 91,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "ENV",
+     "FILE_READ"
+    ],
+    "redefined": false,
+    "external_users": [
+     "tests/test_strategy_performance_feedback.py"
+    ]
+   },
+   {
+    "name": "_resolve_top_n_candidates",
+    "kind": "FunctionDef",
+    "line": 529,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_resolve_top_n_candidates_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_strip_fenced_block",
+    "kind": "FunctionDef",
+    "line": 533,
+    "loc": 11,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_parse_text_list_fragment",
+    "kind": "FunctionDef",
+    "line": 546,
+    "loc": 20,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_extract_contract_from_prose",
+    "kind": "FunctionDef",
+    "line": 568,
+    "loc": 108,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_extract_json_object",
+    "kind": "FunctionDef",
+    "line": 686,
+    "loc": 74,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_classify_llm_parse_failure",
+    "kind": "FunctionDef",
+    "line": 763,
+    "loc": 7,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_resolve_strategist_frame_llm_enabled",
+    "kind": "FunctionDef",
+    "line": 772,
+    "loc": 7,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "ENV"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_resolve_strategist_frame_llm_strict_enabled",
+    "kind": "FunctionDef",
+    "line": 781,
+    "loc": 2,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_stage_text_list",
+    "kind": "FunctionDef",
+    "line": 785,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_stage_text_list_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_stage_bool",
+    "kind": "FunctionDef",
+    "line": 789,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_stage_bool_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_stage_float",
+    "kind": "FunctionDef",
+    "line": 793,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_stage_float_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_stage2_selected_symbol_review",
+    "kind": "FunctionDef",
+    "line": 797,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_normalize_stage2_selected_symbol_review_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_stage3_hold_review",
+    "kind": "FunctionDef",
+    "line": 801,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_normalize_stage3_hold_review_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_stage4_carry_review",
+    "kind": "FunctionDef",
+    "line": 805,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_normalize_stage4_carry_review_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_derive_stage_specific_common_overrides",
+    "kind": "FunctionDef",
+    "line": 809,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_derive_stage_specific_common_overrides_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_stage_specific_role_boundary",
+    "kind": "FunctionDef",
+    "line": 813,
+    "loc": 17,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "BROKER_EXECUTION"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_stage_specific_task_requirement",
+    "kind": "FunctionDef",
+    "line": 832,
+    "loc": 20,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_stage_specific_user_requirement",
+    "kind": "FunctionDef",
+    "line": 854,
+    "loc": 26,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "BROKER_EXECUTION",
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_stage_specific_llm_contract",
+    "kind": "FunctionDef",
+    "line": 882,
+    "loc": 86,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_llm_overrides",
+    "kind": "FunctionDef",
+    "line": 970,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_normalize_llm_overrides_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_summarize_monitor_entry_policy_for_adjustment",
+    "kind": "FunctionDef",
+    "line": 991,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_summarize_monitor_entry_policy_for_adjustment_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_monitor_entry_policy_adjustment_delta_fields",
+    "kind": "FunctionDef",
+    "line": 996,
+    "loc": 6,
+    "r3_wrapper": true,
+    "wrapper_target": "_monitor_entry_policy_adjustment_delta_fields_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_infer_policy_adjustment_direction",
+    "kind": "FunctionDef",
+    "line": 1004,
+    "loc": 6,
+    "r3_wrapper": true,
+    "wrapper_target": "_infer_policy_adjustment_direction_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_symbol_memory_model_has_signal",
+    "kind": "FunctionDef",
+    "line": 1012,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_symbol_memory_model_has_signal_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_symbol_refresh_memory_excerpt",
+    "kind": "FunctionDef",
+    "line": 1016,
+    "loc": 64,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_llm_commander_refresh_context",
+    "kind": "FunctionDef",
+    "line": 1086,
+    "loc": 7,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_llm_commander_refresh_context_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_policy_adjustment_surface",
+    "kind": "FunctionDef",
+    "line": 1095,
+    "loc": 12,
+    "r3_wrapper": true,
+    "wrapper_target": "_normalize_policy_adjustment_surface_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_clean_directive_reason",
+    "kind": "FunctionDef",
+    "line": 1118,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_clean_directive_reason_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_focus_axes_from_strings",
+    "kind": "FunctionDef",
+    "line": 1122,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_focus_axes_from_strings_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_strategy_adjustment_directives",
+    "kind": "FunctionDef",
+    "line": 1126,
+    "loc": 13,
+    "r3_wrapper": true,
+    "wrapper_target": "_normalize_strategy_adjustment_directives_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_strategist_llm_messages",
+    "kind": "FunctionDef",
+    "line": 1141,
+    "loc": 275,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "BROKER_EXECUTION",
+     "NETWORK_DATA",
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": [
+     "tests/test_strategist_frame_llm_integration.py"
+    ]
+   },
+   {
+    "name": "_compact_news_sample_for_llm",
+    "kind": "FunctionDef",
+    "line": 1418,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_news_sample_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_round_optional",
+    "kind": "FunctionDef",
+    "line": 1423,
+    "loc": 5,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_global_signal_for_llm",
+    "kind": "FunctionDef",
+    "line": 1430,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_global_signal_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_top_metric_map",
+    "kind": "FunctionDef",
+    "line": 1434,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_top_metric_map_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_performance_summary_map",
+    "kind": "FunctionDef",
+    "line": 1439,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_performance_summary_map_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_recent_strategy_feedback_for_llm",
+    "kind": "FunctionDef",
+    "line": 1444,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_recent_strategy_feedback_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_strategy_feedback_builder.py"
+    ]
+   },
+   {
+    "name": "_load_reporter_feedback_packet",
+    "kind": "FunctionDef",
+    "line": 1449,
+    "loc": 207,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "ENV"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_reporter_feedback_for_llm",
+    "kind": "FunctionDef",
+    "line": 1668,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_reporter_feedback_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_strategy_memory_for_llm",
+    "kind": "FunctionDef",
+    "line": 1672,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_strategy_memory_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_pattern_performance_for_llm",
+    "kind": "FunctionDef",
+    "line": 1676,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_pattern_performance_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_news_signal_label",
+    "kind": "FunctionDef",
+    "line": 1680,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_news_signal_label_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_news_item_title_for_llm",
+    "kind": "FunctionDef",
+    "line": 1684,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_news_item_title_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_news_signal_summary_for_llm",
+    "kind": "FunctionDef",
+    "line": 1688,
+    "loc": 9,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_news_signal_summary_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_selected_symbol_news_signal_for_llm",
+    "kind": "FunctionDef",
+    "line": 1699,
+    "loc": 6,
+    "r3_wrapper": true,
+    "wrapper_target": "_selected_symbol_news_signal_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_clip_text_for_llm",
+    "kind": "FunctionDef",
+    "line": 1707,
+    "loc": 5,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_scalar_mapping_for_llm",
+    "kind": "FunctionDef",
+    "line": 1714,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_scalar_mapping_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_pattern_rows_for_llm",
+    "kind": "FunctionDef",
+    "line": 1719,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_pattern_rows_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_operator_summary_for_llm",
+    "kind": "FunctionDef",
+    "line": 1724,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_operator_summary_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_trade_read_model_for_llm",
+    "kind": "FunctionDef",
+    "line": 1728,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_trade_read_model_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_symbol_read_model_for_llm",
+    "kind": "FunctionDef",
+    "line": 1732,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_symbol_read_model_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_read_model_facts_for_llm",
+    "kind": "FunctionDef",
+    "line": 1736,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_read_model_facts_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_load_deterministic_read_models",
+    "kind": "FunctionDef",
+    "line": 1740,
+    "loc": 30,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "ENV",
+     "FILE_READ"
+    ],
+    "redefined": false,
+    "external_users": [
+     "tests/test_phase_6_2_consumption.py"
+    ]
+   },
+   {
+    "name": "_resolve_strategist_llm_call_kind",
+    "kind": "FunctionDef",
+    "line": 1776,
+    "loc": 40,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_hide_stage1_symbol_memory",
+    "kind": "FunctionDef",
+    "line": 1818,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_hide_stage1_symbol_memory_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_monitor_entry_policy_baseline_for_llm",
+    "kind": "FunctionDef",
+    "line": 1822,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_monitor_entry_policy_baseline_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_theme_strength_for_llm",
+    "kind": "FunctionDef",
+    "line": 1827,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_theme_strength_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_theme_packet_summary_for_llm",
+    "kind": "FunctionDef",
+    "line": 1832,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_theme_packet_summary_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compact_candidate_context_for_refresh",
+    "kind": "FunctionDef",
+    "line": 1836,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_compact_candidate_context_for_refresh_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_slim_refresh_context_for_llm",
+    "kind": "FunctionDef",
+    "line": 1840,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_slim_refresh_context_for_llm_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_apply_strategist_llm_token_budget",
+    "kind": "FunctionDef",
+    "line": 1844,
+    "loc": 97,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_compact_strategist_llm_payload",
+    "kind": "FunctionDef",
+    "line": 1944,
+    "loc": 330,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": [
+     "tests/test_korea_market_indices_context.py",
+     "tests/test_operator_summary_memory_linkage.py",
+     "tests/test_strategist_frame_llm_integration.py"
+    ]
+   },
+   {
+    "name": "_quant_trace_stage_for_call_kind",
+    "kind": "FunctionDef",
+    "line": 2276,
+    "loc": 11,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_quant_trace_label_for_stage",
+    "kind": "FunctionDef",
+    "line": 2289,
+    "loc": 10,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_attach_quant_context_to_strategy_refresh_trace",
+    "kind": "FunctionDef",
+    "line": 2301,
+    "loc": 6,
+    "r3_wrapper": true,
+    "wrapper_target": "_attach_quant_context_to_strategy_refresh_trace_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_strategist_frame_llm_integration.py"
+    ]
+   },
+   {
+    "name": "_build_strategist_llm_repair_messages",
+    "kind": "FunctionDef",
+    "line": 2309,
+    "loc": 110,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "NETWORK_DATA",
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_messages_to_prompt_text",
+    "kind": "FunctionDef",
+    "line": 2421,
+    "loc": 7,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_run_strategist_frame_llm",
+    "kind": "FunctionDef",
+    "line": 2430,
+    "loc": 326,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "ENV",
+     "IDENTITY",
+     "LLM",
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": [
+     "tests/test_llm_model_policy.py",
+     "tests/test_strategist_frame_llm_integration.py"
+    ]
+   },
+   {
+    "name": "_extract_themes",
+    "kind": "FunctionDef",
+    "line": 2780,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_extract_themes_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_append_unique_text",
+    "kind": "FunctionDef",
+    "line": 2784,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_append_unique_text_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_theme_to_news_queries",
+    "kind": "FunctionDef",
+    "line": 2788,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_theme_to_news_queries_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_theme_news_query_terms",
+    "kind": "FunctionDef",
+    "line": 2792,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_theme_news_query_terms_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_theme_component_symbols_for_news",
+    "kind": "FunctionDef",
+    "line": 2797,
+    "loc": 9,
+    "r3_wrapper": true,
+    "wrapper_target": "_theme_component_symbols_for_news_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_merge_news_collection_symbols",
+    "kind": "FunctionDef",
+    "line": 2808,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_merge_news_collection_symbols_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_market_news_query_targets",
+    "kind": "FunctionDef",
+    "line": 2813,
+    "loc": 11,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_market_news_query_targets_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_market_news_query_reasoning",
+    "kind": "FunctionDef",
+    "line": 2827,
+    "loc": 11,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_market_news_query_reasoning_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_default_policy",
+    "kind": "FunctionDef",
+    "line": 2841,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_default_policy_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_data_quality_state_propagation.py"
+    ]
+   },
+   {
+    "name": "_candidates_from_state",
+    "kind": "FunctionDef",
+    "line": 2845,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_candidates_from_state_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_signal_score",
+    "kind": "FunctionDef",
+    "line": 2850,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_signal_score_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_to_float",
+    "kind": "FunctionDef",
+    "line": 2854,
+    "loc": 5,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_clamp",
+    "kind": "FunctionDef",
+    "line": 2861,
+    "loc": 2,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_risk_regime_label",
+    "kind": "FunctionDef",
+    "line": 2865,
+    "loc": 6,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_market_sentiment_label",
+    "kind": "FunctionDef",
+    "line": 2873,
+    "loc": 6,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_extract_market_context_inputs",
+    "kind": "FunctionDef",
+    "line": 2881,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_extract_market_context_inputs_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_korea_market_indices_context.py"
+    ]
+   },
+   {
+    "name": "_market_structure_label",
+    "kind": "FunctionDef",
+    "line": 2885,
+    "loc": 8,
+    "r3_wrapper": true,
+    "wrapper_target": "_market_structure_label_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_extract_theme_symbol_index",
+    "kind": "FunctionDef",
+    "line": 2895,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_extract_theme_symbol_index_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_merge_theme_symbol_map",
+    "kind": "FunctionDef",
+    "line": 2899,
+    "loc": 10,
+    "r3_wrapper": true,
+    "wrapper_target": "_merge_theme_symbol_map_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_theme_packet_symbol_map_is_authoritative",
+    "kind": "FunctionDef",
+    "line": 2911,
+    "loc": 4,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_merge_theme_packet_into_state",
+    "kind": "FunctionDef",
+    "line": 2917,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_merge_theme_packet_into_state_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_extract_theme_names_from_any",
+    "kind": "FunctionDef",
+    "line": 2921,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_extract_theme_names_from_any_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_theme_packet_available_themes",
+    "kind": "FunctionDef",
+    "line": 2925,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_theme_packet_available_themes_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_resolve_selected_themes_from_api",
+    "kind": "FunctionDef",
+    "line": 2930,
+    "loc": 9,
+    "r3_wrapper": true,
+    "wrapper_target": "_resolve_selected_themes_from_api_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_theme_strategy_surface",
+    "kind": "FunctionDef",
+    "line": 2941,
+    "loc": 12,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_theme_strategy_surface_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_news_context_summary",
+    "kind": "FunctionDef",
+    "line": 2955,
+    "loc": 6,
+    "r3_wrapper": true,
+    "wrapper_target": "_news_context_summary_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_merge_news_contexts",
+    "kind": "FunctionDef",
+    "line": 2963,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_merge_news_contexts_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_theme_strength_map",
+    "kind": "FunctionDef",
+    "line": 2967,
+    "loc": 9,
+    "r3_wrapper": true,
+    "wrapper_target": "_theme_strength_map_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_compose_regime_score",
+    "kind": "FunctionDef",
+    "line": 2978,
+    "loc": 8,
+    "r3_wrapper": true,
+    "wrapper_target": "_compose_regime_score_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_pick_playbook",
+    "kind": "FunctionDef",
+    "line": 2988,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_pick_playbook_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_scanner_priority",
+    "kind": "FunctionDef",
+    "line": 2993,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_scanner_priority_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_scanner_bias",
+    "kind": "FunctionDef",
+    "line": 2997,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_scanner_bias_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_scanner_bias_context_seed",
+    "kind": "FunctionDef",
+    "line": 3002,
+    "loc": 8,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_scanner_bias_context_seed_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_avoid_themes",
+    "kind": "FunctionDef",
+    "line": 3012,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_avoid_themes_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_trade_aggressiveness",
+    "kind": "FunctionDef",
+    "line": 3017,
+    "loc": 6,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_risk_tone",
+    "kind": "FunctionDef",
+    "line": 3025,
+    "loc": 6,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_monitor_guidance",
+    "kind": "FunctionDef",
+    "line": 3033,
+    "loc": 6,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_norm_playbook",
+    "kind": "FunctionDef",
+    "line": 3078,
+    "loc": 2,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_default_tactical_strategy",
+    "kind": "FunctionDef",
+    "line": 3082,
+    "loc": 2,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_tactical_strategy",
+    "kind": "FunctionDef",
+    "line": 3086,
+    "loc": 2,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_tactical_subtype",
+    "kind": "FunctionDef",
+    "line": 3090,
+    "loc": 2,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_unit_score",
+    "kind": "FunctionDef",
+    "line": 3094,
+    "loc": 5,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_deterministic_strategy_scores",
+    "kind": "FunctionDef",
+    "line": 3101,
+    "loc": 11,
+    "r3_wrapper": true,
+    "wrapper_target": "_deterministic_strategy_scores_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_strategy_scores",
+    "kind": "FunctionDef",
+    "line": 3114,
+    "loc": 12,
+    "r3_wrapper": true,
+    "wrapper_target": "_normalize_strategy_scores_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_rejected_strategy_reasons",
+    "kind": "FunctionDef",
+    "line": 3128,
+    "loc": 8,
+    "r3_wrapper": true,
+    "wrapper_target": "_normalize_rejected_strategy_reasons_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_sanitize_reason_list",
+    "kind": "FunctionDef",
+    "line": 3138,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_sanitize_reason_list_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_normalize_candidate_watch_policy",
+    "kind": "FunctionDef",
+    "line": 3142,
+    "loc": 12,
+    "r3_wrapper": true,
+    "wrapper_target": "_normalize_candidate_watch_policy_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_macro_stress_overlay",
+    "kind": "FunctionDef",
+    "line": 3156,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_macro_stress_overlay_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_apply_macro_stress_to_monitor_frame",
+    "kind": "FunctionDef",
+    "line": 3160,
+    "loc": 13,
+    "r3_wrapper": true,
+    "wrapper_target": "_apply_macro_stress_to_monitor_frame_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_condition_search_source_enabled",
+    "kind": "FunctionDef",
+    "line": 3175,
+    "loc": 2,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "NETWORK_DATA"
+    ],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_monitor_policy",
+    "kind": "FunctionDef",
+    "line": 3179,
+    "loc": 11,
+    "r3_wrapper": true,
+    "wrapper_target": "_monitor_policy_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_exit_policy",
+    "kind": "FunctionDef",
+    "line": 3192,
+    "loc": 10,
+    "r3_wrapper": true,
+    "wrapper_target": "_exit_policy_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_strategist_reasoning_quality.py"
+    ]
+   },
+   {
+    "name": "_scanner_source_policy",
+    "kind": "FunctionDef",
+    "line": 3204,
+    "loc": 12,
+    "r3_wrapper": true,
+    "wrapper_target": "_scanner_source_policy_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_strategist_reasoning_quality.py"
+    ]
+   },
+   {
+    "name": "_strategy_policy_score_weights",
+    "kind": "FunctionDef",
+    "line": 3218,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_strategy_policy_score_weights_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_strategy_policy_entry_policy",
+    "kind": "FunctionDef",
+    "line": 3222,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_strategy_policy_entry_policy_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_strategy_policy",
+    "kind": "FunctionDef",
+    "line": 3226,
+    "loc": 32,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_strategy_policy_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_commander_context_summary",
+    "kind": "FunctionDef",
+    "line": 3260,
+    "loc": 11,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_commander_context_summary_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_strategist_frame_llm_integration.py"
+    ]
+   },
+   {
+    "name": "_build_strategist_plan",
+    "kind": "FunctionDef",
+    "line": 3273,
+    "loc": 21,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_strategist_plan_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_market_regime_summary",
+    "kind": "FunctionDef",
+    "line": 3296,
+    "loc": 11,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_market_regime_summary_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_strategist_monitor_entry_policy_seed",
+    "kind": "FunctionDef",
+    "line": 3309,
+    "loc": 11,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_strategist_monitor_entry_policy_seed_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_monitor_entry_policy_rationale",
+    "kind": "FunctionDef",
+    "line": 3322,
+    "loc": 15,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_monitor_entry_policy_rationale_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_strategy_policy_provenance",
+    "kind": "FunctionDef",
+    "line": 3339,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_strategy_policy_provenance_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_report_focus",
+    "kind": "FunctionDef",
+    "line": 3344,
+    "loc": 6,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_augment_strategy_fields",
+    "kind": "FunctionDef",
+    "line": 3352,
+    "loc": 13,
+    "r3_wrapper": true,
+    "wrapper_target": "_augment_strategy_fields_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_key_events",
+    "kind": "FunctionDef",
+    "line": 3367,
+    "loc": 15,
+    "r3_wrapper": true,
+    "wrapper_target": "_key_events_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_extract_ai_overrides",
+    "kind": "FunctionDef",
+    "line": 3384,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_extract_ai_overrides_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_merge_override_text_list",
+    "kind": "FunctionDef",
+    "line": 3389,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_merge_override_text_list_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_build_strategic_answers",
+    "kind": "FunctionDef",
+    "line": 3394,
+    "loc": 28,
+    "r3_wrapper": true,
+    "wrapper_target": "_build_strategic_answers_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_make_event_logger",
+    "kind": "FunctionDef",
+    "line": 3424,
+    "loc": 6,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_emit_strategist_event",
+    "kind": "FunctionDef",
+    "line": 3433,
+    "loc": 24,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_log_strategist_summary",
+    "kind": "FunctionDef",
+    "line": 3460,
+    "loc": 7,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_log_strategist_llm_result",
+    "kind": "FunctionDef",
+    "line": 3469,
+    "loc": 7,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_sample_news_for_evidence",
+    "kind": "FunctionDef",
+    "line": 3478,
+    "loc": 8,
+    "r3_wrapper": true,
+    "wrapper_target": "_sample_news_for_evidence_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_rank_news_evidence_rows",
+    "kind": "FunctionDef",
+    "line": 3488,
+    "loc": 10,
+    "r3_wrapper": true,
+    "wrapper_target": "_rank_news_evidence_rows_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "_global_sentiment_breakdown_payload",
+    "kind": "FunctionDef",
+    "line": 3500,
+    "loc": 3,
+    "r3_wrapper": true,
+    "wrapper_target": "_global_sentiment_breakdown_payload_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": [
+     "tests/test_strategist_reasoning_quality.py"
+    ]
+   },
+   {
+    "name": "_merge_news_samples",
+    "kind": "FunctionDef",
+    "line": 3505,
+    "loc": 2,
+    "r3_wrapper": true,
+    "wrapper_target": "_merge_news_samples_r3_impl",
+    "effects": [],
+    "redefined": false,
+    "external_users": []
+   },
+   {
+    "name": "strategist_node",
+    "kind": "FunctionDef",
+    "line": 3509,
+    "loc": 502,
+    "r3_wrapper": false,
+    "wrapper_target": null,
+    "effects": [
+     "CLOCK",
+     "ENV",
+     "FILE_WRITE",
+     "IDENTITY",
+     "LLM",
+     "NETWORK_DATA",
+     "POLICY_THRESHOLD"
+    ],
+    "redefined": false,
+    "external_users": [
+     "graphs/commander_runtime.py",
+     "graphs/pipelines/offhours_validation.py",
+     "graphs/trading_graph.py",
+     "libs/runtime/commander/nodes.py",
+     "scripts/refactor/p164_strategist_capture_plugin.py",
+     "scripts/refactor/p164_strategist_freeze_tool.py",
+     "tests/test_asset_universe_policy.py",
+     "tests/test_canonical_agent_artifacts.py",
+     "tests/test_commander_env_migration_phase1.py",
+     "tests/test_commander_env_migration_phase2.py",
+     "tests/test_data_quality_state_propagation.py",
+     "tests/test_decision_trace_ledger.py",
+     "tests/test_evidence_ledger_trace_layer.py",
+     "tests/test_llm_model_policy.py",
+     "tests/test_m18_3_global_sentiment_policy_adjust.py",
+     "tests/test_m18_3_news_sentiment_pass_through.py",
+     "tests/test_m18_5_candidate_rerank_by_news.py",
+     "tests/test_m18_5_risk_off_candidate_count.py",
+     "tests/test_m18_market_scan_candidates.py",
+     "tests/test_m18_scanner_global_sentiment_contract.py",
+     "tests/test_m18_top_picks_candidates.py",
+     "tests/test_m21_commander_runtime_entry.py",
+     "tests/test_m31_17_theme_candidate_flow_upgrade.py",
+     "tests/test_news_pipeline_provider_shape_compat.py",
+     "tests/test_scanner_fallback_policy.py",
+     "tests/test_stage3_horizon_lineage.py",
+     "tests/test_strategist_frame_llm_integration.py",
+     "tests/test_strategist_reasoning_quality.py",
+     "tests/test_strategy_performance_feedback.py",
+     "tests/test_strategy_universe_builder.py"
+    ]
+   }
+  ]
+ },
+ "packages": [
+  {
+   "path": "libs/runtime/strategist/__init__.py",
+   "loc": 0,
+   "physical_loc": 0,
+   "identity_shim": false,
+   "defs": 0,
+   "effects": [],
+   "importers": [],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/context/__init__.py",
+   "loc": 0,
+   "physical_loc": 0,
+   "identity_shim": false,
+   "defs": 0,
+   "effects": [],
+   "importers": [],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/context/candidate_rerank.py",
+   "loc": 35,
+   "physical_loc": 45,
+   "identity_shim": false,
+   "defs": 1,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "rerank_candidates_by_news_and_global",
+     "loc": 28,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/commander_refresh_context.py",
+   "loc": 283,
+   "physical_loc": 298,
+   "identity_shim": false,
+   "defs": 7,
+   "effects": [
+    "NETWORK_DATA",
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_build_llm_commander_refresh_context_r3_impl",
+     "loc": 129,
+     "effects": []
+    },
+    {
+     "name": "_compact_top_metric_map_r3_impl",
+     "loc": 18,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_compact_performance_summary_map_r3_impl",
+     "loc": 31,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_compact_pattern_performance_for_llm_r3_impl",
+     "loc": 26,
+     "effects": []
+    },
+    {
+     "name": "_compact_scalar_mapping_for_llm_r3_impl",
+     "loc": 17,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_compact_pattern_rows_for_llm_r3_impl",
+     "loc": 26,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_compact_trade_read_model_for_llm_r3_impl",
+     "loc": 29,
+     "effects": [
+      "NETWORK_DATA",
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/common_values.py",
+   "loc": 64,
+   "physical_loc": 75,
+   "identity_shim": false,
+   "defs": 5,
+   "effects": [
+    "ENV"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_env_int_r3_impl",
+     "loc": 8,
+     "effects": [
+      "ENV"
+     ]
+    },
+    {
+     "name": "_nested_mapping_value_r3_impl",
+     "loc": 7,
+     "effects": []
+    },
+    {
+     "name": "_attach_quant_context_to_strategy_refresh_trace_r3_impl",
+     "loc": 26,
+     "effects": []
+    },
+    {
+     "name": "_append_unique_text_r3_impl",
+     "loc": 9,
+     "effects": []
+    },
+    {
+     "name": "_signal_score_r3_impl",
+     "loc": 7,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/llm_input_payload.py",
+   "loc": 104,
+   "physical_loc": 111,
+   "identity_shim": false,
+   "defs": 3,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "FrameLlmPayload",
+     "loc": 5,
+     "effects": []
+    },
+    {
+     "name": "assemble_frame_llm_payload",
+     "loc": 64,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "build_theme_selection_raw_input",
+     "loc": 27,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/market_inputs.py",
+   "loc": 264,
+   "physical_loc": 305,
+   "identity_shim": false,
+   "defs": 11,
+   "effects": [
+    "NETWORK_DATA",
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_resolve_top_n_candidates_r3_impl",
+     "loc": 12,
+     "effects": []
+    },
+    {
+     "name": "_candidates_from_state_r3_impl",
+     "loc": 14,
+     "effects": []
+    },
+    {
+     "name": "_extract_market_context_inputs_r3_impl",
+     "loc": 58,
+     "effects": [
+      "NETWORK_DATA"
+     ]
+    },
+    {
+     "name": "_market_structure_label_r3_impl",
+     "loc": 21,
+     "effects": []
+    },
+    {
+     "name": "_compose_regime_score_r3_impl",
+     "loc": 6,
+     "effects": []
+    },
+    {
+     "name": "_scanner_priority_r3_impl",
+     "loc": 11,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_scanner_bias_r3_impl",
+     "loc": 10,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_build_scanner_bias_context_seed_r3_impl",
+     "loc": 18,
+     "effects": []
+    },
+    {
+     "name": "_macro_stress_overlay_r3_impl",
+     "loc": 23,
+     "effects": []
+    },
+    {
+     "name": "_apply_macro_stress_to_monitor_frame_r3_impl",
+     "loc": 68,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_build_market_regime_summary_r3_impl",
+     "loc": 16,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/market_key_events.py",
+   "loc": 4,
+   "physical_loc": 4,
+   "identity_shim": true,
+   "defs": 0,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/context/memory.py",
+   "loc": 292,
+   "physical_loc": 310,
+   "identity_shim": false,
+   "defs": 8,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_strategy_memory_usage_disabled_r3_impl",
+     "loc": 30,
+     "effects": []
+    },
+    {
+     "name": "_neutralize_ambiguous_playbook_memory_r3_impl",
+     "loc": 17,
+     "effects": []
+    },
+    {
+     "name": "_symbol_memory_model_has_signal_r3_impl",
+     "loc": 18,
+     "effects": []
+    },
+    {
+     "name": "_compact_recent_strategy_feedback_for_llm_r3_impl",
+     "loc": 55,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_compact_reporter_feedback_for_llm_r3_impl",
+     "loc": 43,
+     "effects": []
+    },
+    {
+     "name": "_compact_strategy_memory_for_llm_r3_impl",
+     "loc": 85,
+     "effects": []
+    },
+    {
+     "name": "_hide_stage1_symbol_memory_r3_impl",
+     "loc": 27,
+     "effects": []
+    },
+    {
+     "name": "_pick_playbook_r3_impl",
+     "loc": 10,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/news_compaction.py",
+   "loc": 4,
+   "physical_loc": 4,
+   "identity_shim": true,
+   "defs": 0,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/context/news_context.py",
+   "loc": 245,
+   "physical_loc": 270,
+   "identity_shim": false,
+   "defs": 7,
+   "effects": [
+    "ENV",
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_build_market_news_query_reasoning_r3_impl",
+     "loc": 61,
+     "effects": [
+      "ENV"
+     ]
+    },
+    {
+     "name": "_news_context_summary_r3_impl",
+     "loc": 35,
+     "effects": []
+    },
+    {
+     "name": "_merge_news_contexts_r3_impl",
+     "loc": 22,
+     "effects": []
+    },
+    {
+     "name": "_sample_news_for_evidence_r3_impl",
+     "loc": 18,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_rank_news_evidence_rows_r3_impl",
+     "loc": 35,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_global_sentiment_breakdown_payload_r3_impl",
+     "loc": 54,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_merge_news_samples_r3_impl",
+     "loc": 13,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/news_signal_fallbacks.py",
+   "loc": 74,
+   "physical_loc": 86,
+   "identity_shim": false,
+   "defs": 6,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "NewsFallbackSignals",
+     "loc": 4,
+     "effects": []
+    },
+    {
+     "name": "NewsDisabledSignals",
+     "loc": 4,
+     "effects": []
+    },
+    {
+     "name": "NewsContextSummary",
+     "loc": 7,
+     "effects": []
+    },
+    {
+     "name": "news_exception_fallback_signals",
+     "loc": 22,
+     "effects": []
+    },
+    {
+     "name": "news_disabled_signals",
+     "loc": 22,
+     "effects": []
+    },
+    {
+     "name": "summarize_news_contexts",
+     "loc": 7,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/node_context_projection.py",
+   "loc": 111,
+   "physical_loc": 122,
+   "identity_shim": false,
+   "defs": 4,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "strat_ctx_candidates_universe_candidates",
+     "loc": 20,
+     "effects": []
+    },
+    {
+     "name": "strat_ctx_news_collection_policy_news_collection_s",
+     "loc": 22,
+     "effects": []
+    },
+    {
+     "name": "strat_ctx_avoid_themes_exit_policy",
+     "loc": 38,
+     "effects": []
+    },
+    {
+     "name": "strat_ctx_fallback_theme_hints_pre_llm_commander_c",
+     "loc": 23,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/regime_scoring.py",
+   "loc": 32,
+   "physical_loc": 38,
+   "identity_shim": false,
+   "defs": 2,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "RegimeSentimentScores",
+     "loc": 6,
+     "effects": []
+    },
+    {
+     "name": "score_market_regime_and_sentiment",
+     "loc": 18,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/symbol_read_models.py",
+   "loc": 4,
+   "physical_loc": 4,
+   "identity_shim": true,
+   "defs": 0,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/context/theme_candidate_projection.py",
+   "loc": 30,
+   "physical_loc": 36,
+   "identity_shim": false,
+   "defs": 2,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "ThemeCandidateInputs",
+     "loc": 5,
+     "effects": []
+    },
+    {
+     "name": "project_theme_candidate_inputs",
+     "loc": 17,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/theme_compaction.py",
+   "loc": 218,
+   "physical_loc": 248,
+   "identity_shim": false,
+   "defs": 8,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_compact_theme_strength_for_llm_r3_impl",
+     "loc": 10,
+     "effects": []
+    },
+    {
+     "name": "_theme_packet_summary_for_llm_r3_impl",
+     "loc": 12,
+     "effects": []
+    },
+    {
+     "name": "_extract_themes_r3_impl",
+     "loc": 38,
+     "effects": []
+    },
+    {
+     "name": "_theme_to_news_queries_r3_impl",
+     "loc": 45,
+     "effects": []
+    },
+    {
+     "name": "_theme_news_query_terms_r3_impl",
+     "loc": 13,
+     "effects": []
+    },
+    {
+     "name": "_theme_component_symbols_for_news_r3_impl",
+     "loc": 37,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_extract_theme_symbol_index_r3_impl",
+     "loc": 20,
+     "effects": []
+    },
+    {
+     "name": "_merge_theme_symbol_map_r3_impl",
+     "loc": 36,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/theme_packet.py",
+   "loc": 272,
+   "physical_loc": 298,
+   "identity_shim": false,
+   "defs": 5,
+   "effects": [
+    "NETWORK_DATA"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_merge_theme_packet_into_state_r3_impl",
+     "loc": 90,
+     "effects": [
+      "NETWORK_DATA"
+     ]
+    },
+    {
+     "name": "_extract_theme_names_from_any_r3_impl",
+     "loc": 19,
+     "effects": []
+    },
+    {
+     "name": "_theme_packet_available_themes_r3_impl",
+     "loc": 60,
+     "effects": []
+    },
+    {
+     "name": "_resolve_selected_themes_from_api_r3_impl",
+     "loc": 39,
+     "effects": []
+    },
+    {
+     "name": "_build_theme_strategy_surface_r3_impl",
+     "loc": 57,
+     "effects": [
+      "NETWORK_DATA"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/context/theme_strength.py",
+   "loc": 4,
+   "physical_loc": 4,
+   "identity_shim": true,
+   "defs": 0,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/llm/__init__.py",
+   "loc": 0,
+   "physical_loc": 0,
+   "identity_shim": false,
+   "defs": 0,
+   "effects": [],
+   "importers": [],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/llm/adjustment_directives.py",
+   "loc": 284,
+   "physical_loc": 311,
+   "identity_shim": false,
+   "defs": 6,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_infer_policy_adjustment_direction_r3_impl",
+     "loc": 32,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_normalize_policy_adjustment_surface_r3_impl",
+     "loc": 43,
+     "effects": []
+    },
+    {
+     "name": "_clean_directive_reason_r3_impl",
+     "loc": 8,
+     "effects": []
+    },
+    {
+     "name": "_normalize_strategy_adjustment_directives_r3_impl",
+     "loc": 155,
+     "effects": []
+    },
+    {
+     "name": "_normalize_rejected_strategy_reasons_r3_impl",
+     "loc": 30,
+     "effects": []
+    },
+    {
+     "name": "_sanitize_reason_list_r3_impl",
+     "loc": 9,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/llm/candidate_watch_overrides.py",
+   "loc": 93,
+   "physical_loc": 104,
+   "identity_shim": false,
+   "defs": 3,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_normalize_candidate_watch_policy_r3_impl",
+     "loc": 65,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_extract_ai_overrides_r3_impl",
+     "loc": 7,
+     "effects": []
+    },
+    {
+     "name": "_merge_override_text_list_r3_impl",
+     "loc": 14,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/llm/override_normalization.py",
+   "loc": 283,
+   "physical_loc": 290,
+   "identity_shim": false,
+   "defs": 2,
+   "effects": [
+    "BROKER_EXECUTION",
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_derive_stage_specific_common_overrides_r3_impl",
+     "loc": 161,
+     "effects": [
+      "BROKER_EXECUTION",
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_normalize_llm_overrides_r3_impl",
+     "loc": 115,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/llm/stage_reviews.py",
+   "loc": 205,
+   "physical_loc": 218,
+   "identity_shim": false,
+   "defs": 6,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_stage_text_list_r3_impl",
+     "loc": 15,
+     "effects": []
+    },
+    {
+     "name": "_stage_bool_r3_impl",
+     "loc": 9,
+     "effects": []
+    },
+    {
+     "name": "_stage_float_r3_impl",
+     "loc": 7,
+     "effects": []
+    },
+    {
+     "name": "_normalize_stage2_selected_symbol_review_r3_impl",
+     "loc": 86,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_normalize_stage3_hold_review_r3_impl",
+     "loc": 44,
+     "effects": []
+    },
+    {
+     "name": "_normalize_stage4_carry_review_r3_impl",
+     "loc": 37,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/output/__init__.py",
+   "loc": 0,
+   "physical_loc": 0,
+   "identity_shim": false,
+   "defs": 0,
+   "effects": [],
+   "importers": [],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/output/commander_context_and_plan.py",
+   "loc": 267,
+   "physical_loc": 279,
+   "identity_shim": false,
+   "defs": 3,
+   "effects": [
+    "FILE_READ"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_build_commander_context_summary_r3_impl",
+     "loc": 140,
+     "effects": [
+      "FILE_READ"
+     ]
+    },
+    {
+     "name": "_build_strategist_plan_r3_impl",
+     "loc": 85,
+     "effects": []
+    },
+    {
+     "name": "_augment_strategy_fields_r3_impl",
+     "loc": 35,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/output/node_event_payloads.py",
+   "loc": 183,
+   "physical_loc": 190,
+   "identity_shim": false,
+   "defs": 5,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "build_market_context_snapshot_payload",
+     "loc": 19,
+     "effects": []
+    },
+    {
+     "name": "build_news_evidence_ranked_payload",
+     "loc": 11,
+     "effects": []
+    },
+    {
+     "name": "build_strategist_summary_log_payload",
+     "loc": 52,
+     "effects": []
+    },
+    {
+     "name": "build_strategic_frame_trace_payload",
+     "loc": 47,
+     "effects": []
+    },
+    {
+     "name": "build_strategist_decision_bridge_output",
+     "loc": 47,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/output/node_output_projection.py",
+   "loc": 101,
+   "physical_loc": 108,
+   "identity_shim": false,
+   "defs": 3,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "strat_output_value_state_scanner_guidance",
+     "loc": 20,
+     "effects": []
+    },
+    {
+     "name": "strat_output_performance_summary_strategist_output",
+     "loc": 37,
+     "effects": []
+    },
+    {
+     "name": "strat_output_value_state_strategist_llm",
+     "loc": 36,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/output/node_trace_projection.py",
+   "loc": 106,
+   "physical_loc": 111,
+   "identity_shim": false,
+   "defs": 2,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "strat_trace_ranked_candidate_news_ranked_market_news",
+     "loc": 35,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "strat_trace_decision_frame_payload",
+     "loc": 63,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategic_answers.py",
+   "loc": 4,
+   "physical_loc": 4,
+   "identity_shim": true,
+   "defs": 0,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategist_output_core_fields.py",
+   "loc": 111,
+   "physical_loc": 114,
+   "identity_shim": false,
+   "defs": 1,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "fill_strategist_output_core",
+     "loc": 104,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategist_output_explanations.py",
+   "loc": 27,
+   "physical_loc": 30,
+   "identity_shim": false,
+   "defs": 1,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "fill_strategist_output_explanations",
+     "loc": 20,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategist_output_policy_commander_fields.py",
+   "loc": 86,
+   "physical_loc": 89,
+   "identity_shim": false,
+   "defs": 1,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "fill_strategist_output_policy_and_commander",
+     "loc": 79,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategist_output_stage_reviews.py",
+   "loc": 43,
+   "physical_loc": 46,
+   "identity_shim": false,
+   "defs": 1,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "fill_strategist_output_stage_reviews",
+     "loc": 36,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/output/strategy_scores_and_summary.py",
+   "loc": 196,
+   "physical_loc": 206,
+   "identity_shim": false,
+   "defs": 3,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_operator_summary_for_llm_r3_impl",
+     "loc": 128,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_deterministic_strategy_scores_r3_impl",
+     "loc": 38,
+     "effects": []
+    },
+    {
+     "name": "_normalize_strategy_scores_r3_impl",
+     "loc": 23,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/policy/__init__.py",
+   "loc": 0,
+   "physical_loc": 0,
+   "identity_shim": false,
+   "defs": 0,
+   "effects": [],
+   "importers": [],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/runtime/strategist/policy/exit_and_defaults.py",
+   "loc": 208,
+   "physical_loc": 226,
+   "identity_shim": false,
+   "defs": 2,
+   "effects": [
+    "ENV",
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_default_policy_r3_impl",
+     "loc": 31,
+     "effects": [
+      "ENV"
+     ]
+    },
+    {
+     "name": "_exit_policy_r3_impl",
+     "loc": 170,
+     "effects": [
+      "ENV",
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/policy/global_risk_adjustment.py",
+   "loc": 22,
+   "physical_loc": 26,
+   "identity_shim": false,
+   "defs": 1,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "adjust_policy_for_global_sentiment",
+     "loc": 15,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/policy/llm_override_application.py",
+   "loc": 67,
+   "physical_loc": 73,
+   "identity_shim": false,
+   "defs": 2,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "AiOverrideFrame",
+     "loc": 17,
+     "effects": []
+    },
+    {
+     "name": "apply_ai_overrides_to_frame",
+     "loc": 42,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/policy/monitor_entry_policy.py",
+   "loc": 284,
+   "physical_loc": 308,
+   "identity_shim": false,
+   "defs": 8,
+   "effects": [
+    "BROKER_EXECUTION",
+    "ENV",
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_summarize_monitor_entry_policy_for_adjustment_r3_impl",
+     "loc": 12,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_monitor_entry_policy_adjustment_delta_fields_r3_impl",
+     "loc": 13,
+     "effects": []
+    },
+    {
+     "name": "_focus_axes_from_strings_r3_impl",
+     "loc": 22,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_compact_monitor_entry_policy_baseline_for_llm_r3_impl",
+     "loc": 16,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_monitor_policy_r3_impl",
+     "loc": 70,
+     "effects": [
+      "BROKER_EXECUTION",
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_strategy_policy_score_weights_r3_impl",
+     "loc": 13,
+     "effects": [
+      "ENV"
+     ]
+    },
+    {
+     "name": "_strategy_policy_entry_policy_r3_impl",
+     "loc": 18,
+     "effects": [
+      "ENV",
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_build_strategy_policy_r3_impl",
+     "loc": 113,
+     "effects": [
+      "ENV",
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/policy/monitor_entry_policy_seed.py",
+   "loc": 67,
+   "physical_loc": 74,
+   "identity_shim": false,
+   "defs": 3,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_build_strategist_monitor_entry_policy_seed_r3_impl",
+     "loc": 19,
+     "effects": []
+    },
+    {
+     "name": "_build_monitor_entry_policy_rationale_r3_impl",
+     "loc": 21,
+     "effects": []
+    },
+    {
+     "name": "_build_strategy_policy_provenance_r3_impl",
+     "loc": 20,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/policy/node_policy_projection.py",
+   "loc": 242,
+   "physical_loc": 251,
+   "identity_shim": false,
+   "defs": 4,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "strat_policy_exit_policy_monitor_entry_policy",
+     "loc": 74,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "strat_policy_candidate_watch_policy_rejected_strategy",
+     "loc": 28,
+     "effects": []
+    },
+    {
+     "name": "strat_policy_commander_context_policy_adjustment",
+     "loc": 82,
+     "effects": []
+    },
+    {
+     "name": "strat_policy_commander_context_commander_horizon_poli",
+     "loc": 50,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/policy/scanner_policy.py",
+   "loc": 193,
+   "physical_loc": 201,
+   "identity_shim": false,
+   "defs": 1,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_scanner_source_policy_r3_impl",
+     "loc": 186,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/runtime/strategist/policy/strategy_policy_annotation.py",
+   "loc": 68,
+   "physical_loc": 77,
+   "identity_shim": false,
+   "defs": 4,
+   "effects": [],
+   "importers": [
+    "graphs/nodes/strategist_node.py"
+   ],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "HorizonMonitorPolicy",
+     "loc": 2,
+     "effects": []
+    },
+    {
+     "name": "annotate_strategy_policy_market_scanner",
+     "loc": 16,
+     "effects": []
+    },
+    {
+     "name": "attach_horizon_to_commander_context",
+     "loc": 21,
+     "effects": []
+    },
+    {
+     "name": "attach_horizon_to_monitor_policy_and_plan",
+     "loc": 21,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/agents/strategist/__init__.py",
+   "loc": 1,
+   "physical_loc": 1,
+   "identity_shim": false,
+   "defs": 0,
+   "effects": [],
+   "importers": [],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/agents/strategist/context/__init__.py",
+   "loc": 1,
+   "physical_loc": 1,
+   "identity_shim": false,
+   "defs": 0,
+   "effects": [],
+   "importers": [
+    "libs/runtime/strategist/context/market_key_events.py",
+    "libs/runtime/strategist/context/news_compaction.py",
+    "libs/runtime/strategist/context/symbol_read_models.py",
+    "libs/runtime/strategist/context/theme_strength.py"
+   ],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/agents/strategist/context/market_key_events.py",
+   "loc": 93,
+   "physical_loc": 101,
+   "identity_shim": false,
+   "defs": 1,
+   "effects": [],
+   "importers": [],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_key_events_r3_impl",
+     "loc": 86,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/agents/strategist/context/news_compaction.py",
+   "loc": 286,
+   "physical_loc": 312,
+   "identity_shim": false,
+   "defs": 8,
+   "effects": [
+    "ENV",
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_compact_news_sample_for_llm_r3_impl",
+     "loc": 24,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_compact_global_signal_for_llm_r3_impl",
+     "loc": 107,
+     "effects": []
+    },
+    {
+     "name": "_news_signal_label_r3_impl",
+     "loc": 7,
+     "effects": []
+    },
+    {
+     "name": "_news_item_title_for_llm_r3_impl",
+     "loc": 11,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_compact_news_signal_summary_for_llm_r3_impl",
+     "loc": 30,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_selected_symbol_news_signal_for_llm_r3_impl",
+     "loc": 8,
+     "effects": []
+    },
+    {
+     "name": "_merge_news_collection_symbols_r3_impl",
+     "loc": 12,
+     "effects": []
+    },
+    {
+     "name": "_build_market_news_query_targets_r3_impl",
+     "loc": 80,
+     "effects": [
+      "ENV"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "libs/agents/strategist/context/symbol_read_models.py",
+   "loc": 117,
+   "physical_loc": 126,
+   "identity_shim": false,
+   "defs": 4,
+   "effects": [
+    "POLICY_THRESHOLD"
+   ],
+   "importers": [],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_compact_symbol_read_model_for_llm_r3_impl",
+     "loc": 33,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_compact_read_model_facts_for_llm_r3_impl",
+     "loc": 21,
+     "effects": []
+    },
+    {
+     "name": "_compact_candidate_context_for_refresh_r3_impl",
+     "loc": 30,
+     "effects": [
+      "POLICY_THRESHOLD"
+     ]
+    },
+    {
+     "name": "_slim_refresh_context_for_llm_r3_impl",
+     "loc": 26,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/agents/strategist/context/theme_strength.py",
+   "loc": 35,
+   "physical_loc": 42,
+   "identity_shim": false,
+   "defs": 2,
+   "effects": [],
+   "importers": [],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_theme_strength_map_r3_impl",
+     "loc": 20,
+     "effects": []
+    },
+    {
+     "name": "_avoid_themes_r3_impl",
+     "loc": 8,
+     "effects": []
+    }
+   ]
+  },
+  {
+   "path": "libs/agents/strategist/output/__init__.py",
+   "loc": 1,
+   "physical_loc": 1,
+   "identity_shim": false,
+   "defs": 0,
+   "effects": [],
+   "importers": [
+    "libs/runtime/strategist/output/strategic_answers.py"
+   ],
+   "test_importers": [],
+   "functions": []
+  },
+  {
+   "path": "libs/agents/strategist/output/strategic_answers.py",
+   "loc": 174,
+   "physical_loc": 177,
+   "identity_shim": false,
+   "defs": 1,
+   "effects": [],
+   "importers": [],
+   "test_importers": [],
+   "functions": [
+    {
+     "name": "_build_strategic_answers_r3_impl",
+     "loc": 167,
+     "effects": []
+    }
+   ]
+  }
+ ],
+ "tests_mentioning_strategist": [
+  "tests/apps/api/artifact_fixtures.py",
+  "tests/apps/api/test_llm_operations.py",
+  "tests/apps/api/test_runtime_status.py",
+  "tests/p15_agent_tree_allowlist.py",
+  "tests/test_agent_effectiveness_scorecard.py",
+  "tests/test_agent_pipeline_trace_report.py",
+  "tests/test_ai_effectiveness_provenance.py",
+  "tests/test_ai_strategy_v1_bridge.py",
+  "tests/test_asset_universe_policy.py",
+  "tests/test_baseline_samsung_hynix.py",
+  "tests/test_canonical_agent_artifacts.py",
+  "tests/test_canonical_artifact_validation.py",
+  "tests/test_check_phase_5_2_5_3_runtime_health.py",
+  "tests/test_check_reporter_upgrade_regression.py",
+  "tests/test_check_reports_trades_health.py",
+  "tests/test_closeout_memory_bounds.py",
+  "tests/test_closeout_payload_projection.py",
+  "tests/test_commander_contract.py",
+  "tests/test_commander_env_migration_phase1.py",
+  "tests/test_commander_env_migration_phase2.py",
+  "tests/test_commander_memory_policy.py",
+  "tests/test_conditional_alpha_diagnosis.py",
+  "tests/test_conditional_alpha_quant_bridge.py",
+  "tests/test_conditional_alpha_reactivation.py",
+  "tests/test_controlled_mock_lane_execution_integration.py",
+  "tests/test_cost_basis_comparison.py",
+  "tests/test_cumulative_improvement_review.py",
+  "tests/test_daily_report.py",
+  "tests/test_daily_strategy_memory_packet.py",
+  "tests/test_data_quality_state_propagation.py",
+  "tests/test_decision_observability.py",
+  "tests/test_decision_trace_ledger.py",
+  "tests/test_diagnostic_queries_work_order01.py",
+  "tests/test_entry_blocker_read_model.py",
+  "tests/test_entry_timing_attribution.py",
+  "tests/test_evaluation_lens_report.py",
+  "tests/test_event_logger.py",
+  "tests/test_evidence_ledger_trace_layer.py",
+  "tests/test_existing_evidence_mining.py",
+  "tests/test_full_chain_component_review.py",
+  "tests/test_generate_metrics_report.py",
+  "tests/test_generate_ops_diagnostic_report.py",
+  "tests/test_historical_q9_prior.py",
+  "tests/test_integrated_trade_diagnosis.py",
+  "tests/test_intraday_monitor_signals.py",
+  "tests/test_intraday_trade_reports.py",
+  "tests/test_kiwoom_candidate_provider.py",
+  "tests/test_korea_market_indices_context.py",
+  "tests/test_live_execution_bundle_report.py",
+  "tests/test_live_execution_bundle_report_runtime_recovery.py",
+  "tests/test_llm_model_policy.py",
+  "tests/test_llm_status_semantics.py",
+  "tests/test_m12_1_provider_routing.py",
+  "tests/test_m12_2_openai_http_provider.py",
+  "tests/test_m12_strategist_hook.py",
+  "tests/test_m13_live_loop.py",
+  "tests/test_m17_candidates_to_selected.py",
+  "tests/test_m17_risk_decision.py",
+  "tests/test_m18_3_global_sentiment_policy_adjust.py",
+  "tests/test_m18_3_news_sentiment_pass_through.py",
+  "tests/test_m18_5_candidate_rerank_by_news.py",
+  "tests/test_m18_5_risk_off_candidate_count.py",
+  "tests/test_m18_market_scan_candidates.py",
+  "tests/test_m18_scanner_global_sentiment_contract.py",
+  "tests/test_m18_top_picks_candidates.py",
+  "tests/test_m20_1_openai_provider_smoke.py",
+  "tests/test_m20_2_decide_trade_llm_flow.py",
+  "tests/test_m20_3_legacy_llm_router_compat.py",
+  "tests/test_m20_3_llm_event_logging.py",
+  "tests/test_m20_4_llm_ops_scripts.py",
+  "tests/test_m21_commander_runtime_entry.py",
+  "tests/test_m21_graph_spine_parity.py",
+  "tests/test_m21_runtime_once_script.py",
+  "tests/test_m22_graph_hydration_wiring.py",
+  "tests/test_m23_1_runtime_resilience_state_contract.py",
+  "tests/test_m23_2_runtime_circuit_breaker_core.py",
+  "tests/test_m23_3_decide_trade_runtime_circuit_integration.py",
+  "tests/test_m25_1_metrics_schema_freeze_v1.py",
+  "tests/test_m25_2_alert_policy_threshold_gate.py",
+  "tests/test_m27_4_runtime_portfolio_guard_integration.py",
+  "tests/test_m27_6_portfolio_guard_alert_policy.py",
+  "tests/test_m27_7_portfolio_guard_notify_context.py",
+  "tests/test_m31_17_theme_candidate_flow_upgrade.py",
+  "tests/test_memory_contamination_review.py",
+  "tests/test_model_catalog_store.py",
+  "tests/test_monitor_directional_edge.py",
+  "tests/test_monitor_exit_guard.py",
+  "tests/test_monitor_fallback_quality_gate.py",
+  "tests/test_monitor_feedback_adaptive_policy.py",
+  "tests/test_monitor_memory_bias.py",
+  "tests/test_news_pipeline_provider_shape_compat.py",
+  "tests/test_no_trade_attribution.py",
+  "tests/test_offhours_full_trace_bundle.py",
+  "tests/test_offhours_validation_loop.py",
+  "tests/test_opening_rank1_controlled_probe.py",
+  "tests/test_opening_rank1_deep_dive.py",
+  "tests/test_opening_rank1_longitudinal.py",
+  "tests/test_opening_rank1_shadow.py",
+  "tests/test_operator_summary_memory_linkage.py",
+  "tests/test_operator_summary_mining.py",
+  "tests/test_operator_summary_reports.py",
+  "tests/test_operator_ui.py",
+  "tests/test_operator_ui_data_access_phase2.py",
+  "tests/test_operator_visibility_reports.py",
+  "tests/test_p0a_e2e_open_order_guard_integrated_chain.py",
+  "tests/test_p0a_open_order_reconciliation_guard.py",
+  "tests/test_p152_facade_abi_and_authority_boundary.py",
+  "tests/test_p152_lifecycle_evidence_owner.py",
+  "tests/test_p152_markdown_clean_operator_labels_owners.py",
+  "tests/test_p152_monitor_trace_wrappers.py",
+  "tests/test_p152_new_owner_dependency_gate.py",
+  "tests/test_p152_r2c_helper_seams.py",
+  "tests/test_p152_render_diagnostics_owner.py",
+  "tests/test_p152_story_facade_compatible_owners.py",
+  "tests/test_p152_story_reasoning_owner.py",
+  "tests/test_p152_summary_findings_owner.py",
+  "tests/test_p154_wave_b_moved_bodies.py",
+  "tests/test_p154_wave_b_scope_and_authority_boundary.py",
+  "tests/test_p155_wave_c_scope_and_authority_boundary.py",
+  "tests/test_p156_second_pass_extraction_gates.py",
+  "tests/test_p161_agent_output_contract_freeze.py",
+  "tests/test_p161_t35_extraction_gates.py",
+  "tests/test_p164_strategist_contract_freeze.py",
+  "tests/test_p164_t4c_extraction_gates.py",
+  "tests/test_p165_t4d_extraction_gates.py",
+  "tests/test_p168_wave_b_shim_verifier_negatives.py",
+  "tests/test_p172_strategist_s1_057_migration.py",
+  "tests/test_p173_p058_integration_contracts.py",
+  "tests/test_p1_e2e_execution_readiness_integrated_chain.py",
+  "tests/test_paper_trading_execution_finalization.py",
+  "tests/test_phase1_agent_artifact_quality.py",
+  "tests/test_phase3_lifecycle_bundle.py",
+  "tests/test_phase_6_2_consumption.py",
+  "tests/test_policy_surface_summary.py",
+  "tests/test_position_horizon_revision.py",
+  "tests/test_q9_artifact_repair.py",
+  "tests/test_q9_day_validity.py",
+  "tests/test_q9_decision_snapshots.py",
+  "tests/test_q9_evaluation.py",
+  "tests/test_q9_scanner_quality.py",
+  "tests/test_q9_start_gate.py",
+  "tests/test_quant_context.py",
+  "tests/test_quant_memory_scorecard.py",
+  "tests/test_quant_shadow_candidates.py",
+  "tests/test_quant_tactic_report.py",
+  "tests/test_quant_trade_diagnosis.py",
+  "tests/test_query_trade_reason_chain.py",
+  "tests/test_rank1_feature_mart.py",
+  "tests/test_reasoning_trace.py",
+  "tests/test_report_metadata_alignment.py",
+  "tests/test_reporter_analysis_report.py",
+  "tests/test_reporter_commander_hooks.py",
+  "tests/test_reporter_feedback.py",
+  "tests/test_reporter_service.py",
+  "tests/test_reporting_provenance_preference.py",
+  "tests/test_run_ai_trade_report_batch.py",
+  "tests/test_run_live_session_summary.py",
+  "tests/test_run_live_session_watch.py",
+  "tests/test_same_symbol_sequences.py",
+  "tests/test_scanner_bias_integration.py",
+  "tests/test_scanner_fallback_policy.py",
+  "tests/test_scanner_memory_bias.py",
+  "tests/test_scanner_monitor_compatibility.py",
+  "tests/test_scanner_quote_hydration_runtime.py",
+  "tests/test_scanner_rank_plumbing_fix.py",
+  "tests/test_scanner_strategy_frame_integration.py",
+  "tests/test_scheduled_intelligence.py",
+  "tests/test_short_alpha_discriminator.py",
+  "tests/test_single_trade_report.py",
+  "tests/test_stage3_horizon_lineage.py",
+  "tests/test_start_trading_day.py",
+  "tests/test_strategist_explanation_contract.py",
+  "tests/test_strategist_frame_llm_integration.py",
+  "tests/test_strategist_input_quality_risk_off.py",
+  "tests/test_strategist_llm_summary.py",
+  "tests/test_strategist_output_schema.py",
+  "tests/test_strategist_quant_context_report.py",
+  "tests/test_strategist_reasoning_quality.py",
+  "tests/test_strategist_refresh_decision.py",
+  "tests/test_strategy_feedback_builder.py",
+  "tests/test_strategy_horizon_feedback.py",
+  "tests/test_strategy_horizon_operational_policy.py",
+  "tests/test_strategy_memory_store.py",
+  "tests/test_strategy_memory_window_packets.py",
+  "tests/test_strategy_performance_feedback.py",
+  "tests/test_strategy_policy_contract.py",
+  "tests/test_strategy_read_model.py",
+  "tests/test_strategy_universe_builder.py",
+  "tests/test_strategy_v1_multi_strategy_selection.py",
+  "tests/test_strategy_v1_regime_momentum.py",
+  "tests/test_structural_alpha_batch1.py",
+  "tests/test_symbol_read_model.py",
+  "tests/test_symbol_trade_report.py",
+  "tests/test_trade_bundle_assembly.py",
+  "tests/test_trade_bundle_persistence.py",
+  "tests/test_trade_bundle_state.py",
+  "tests/test_trade_explain_report.py",
+  "tests/test_trade_memory_application_surface.py",
+  "tests/test_trade_memory_surface.py",
+  "tests/test_trade_read_model.py",
+  "tests/test_trade_report_ai.py",
+  "tests/test_trade_story_pipeline_enrichment.py",
+  "tests/test_trade_summary_symbol_metadata.py",
+  "tests/test_uef1_work_package_a_canonical_contract.py",
+  "tests/test_uef2a_forward_policy_contract.py",
+  "tests/test_uef5_2_historical_recompute.py",
+  "tests/test_update_state_after_execution.py"
+ ],
+ "node_importers": [
+  "graphs/commander_runtime.py",
+  "graphs/pipelines/offhours_validation.py",
+  "graphs/trading_graph.py",
+  "libs/runtime/commander/nodes.py",
+  "scripts/refactor/p164_strategist_freeze_tool.py",
+  "tests/test_canonical_agent_artifacts.py",
+  "tests/test_commander_env_migration_phase2.py",
+  "tests/test_data_quality_state_propagation.py",
+  "tests/test_decision_trace_ledger.py",
+  "tests/test_evidence_ledger_trace_layer.py",
+  "tests/test_korea_market_indices_context.py",
+  "tests/test_llm_model_policy.py",
+  "tests/test_m18_3_global_sentiment_policy_adjust.py",
+  "tests/test_m18_3_news_sentiment_pass_through.py",
+  "tests/test_m18_5_candidate_rerank_by_news.py",
+  "tests/test_m18_5_risk_off_candidate_count.py",
+  "tests/test_m18_market_scan_candidates.py",
+  "tests/test_m18_scanner_global_sentiment_contract.py",
+  "tests/test_m18_top_picks_candidates.py",
+  "tests/test_m21_commander_runtime_entry.py",
+  "tests/test_m31_17_theme_candidate_flow_upgrade.py",
+  "tests/test_news_pipeline_provider_shape_compat.py",
+  "tests/test_operator_summary_memory_linkage.py",
+  "tests/test_p0a_e2e_open_order_guard_integrated_chain.py",
+  "tests/test_p1_e2e_execution_readiness_integrated_chain.py",
+  "tests/test_paper_trading_execution_finalization.py",
+  "tests/test_phase_6_2_consumption.py",
+  "tests/test_strategist_frame_llm_integration.py",
+  "tests/test_strategist_reasoning_quality.py",
+  "tests/test_strategy_feedback_builder.py",
+  "tests/test_strategy_performance_feedback.py",
+  "tests/test_strategy_universe_builder.py"
+ ]
+}
