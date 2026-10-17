@@ -85,3 +85,50 @@ WAITING_ON_WORK_ID: P15-WORK-001 (shared T3), P15-WORK-005 (blob triage decision
 NEXT_APPROVED_ROLE: Strategist READ-ONLY ownership/consumer/test design on a separate evidence branch (relay doc 10)
 PATCH_NOTES: NOT_PUBLISHED (proposal only) · BUDGET: UNKNOWN
 PUSHED_SHA: recorded in the next checkpoint (a file cannot contain its own commit SHA).
+
+## R11-002 — pushed SHA, pre-audit evidence, Strategist read-only handoff (START_SHA d0a32c29)
+
+- R11-001 PUSHED_SHA: `d0a32c29` (work/reporter-role-20261017, fast-forward from de99c8f). Post-push: hygiene + scope tests
+  36 PASS at d0a32c29.
+- Issue #11 polled 11:44Z: new canonical policy `11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md` (GPT architect on
+  demand; Codex builds shared T3/T4/CI candidate; Claude audits it independently). No new SHA-bound Reporter defect.
+- **Codex shared integration candidate: NOT_RUN / not found.** No candidate branch exists on origin at 2026-10-17 ~12:00Z
+  (latest refs: monitor 4bc42508, integration d269c906). Audit starts when Codex posts an exact SHA on Issue #14.
+- **Pre-audit evidence (design proposal, run unmodified from design ea3b6c8d):** `docs/dev-team/proposals/test_reporter_facade_guard.py`
+  13 cases with `AGENTRA_REVIEW_SHA=de99c8f`: checkout de99c8f -> 13 PASS normal, 13 PASS `-O` (CPython 3.13.14);
+  checkout d0a32c29 -> 13 PASS normal / `-O` (3.13.14) and 13 PASS (3.14.2). `git diff 3b549d7 d0a32c29 -- libs <R4 ledger>
+  <v2 ledger>` = 0 paths, so the R10 pin is valid for R11. This closes the "R10 13-case suite NOT rerun" note in the Work gate
+  doc for the Reporter side; shared T3 wiring remains Codex's.
+- **Strategist READ-ONLY:** branch `evidence/p15-strategist-readonly-20261017` @ `d8b34e66` (from integration d269c906; docs only):
+  `docs/refactor/work_projects/evidence/strategist/{STRATEGIST_WHOLE_ROLE_ORDER_DRAFT.md, strategist_readonly_inventory.json,
+  strategist_readonly_inventory.py}` — inventory byte-reproduced from a fresh `git archive d773709`. No Strategist source edits;
+  implementation waits for a GPT whole-role charter.
+- Local prevention: the clone-wide pre-commit hook now resolves the repository top level, so it also guards other worktrees;
+  negative probe (staged `%SystemDrive%/ProgramData/c.db`) -> commit rejected, exit 1.
+- Housekeeping: an earlier push of the evidence branch went out before its commit (hook failure) and briefly pointed at
+  d269c906 (identical to integration); the next push fast-forwarded it to d8b34e66. No force push.
+
+### Issue-ready text (#11 / #14; this lane has no GitHub write credential, so it is versioned here)
+```
+REPORTER R11 — exact SHA d0a32c29 (+ this checkpoint commit)
+P15-WORK-005: prevention added (per-commit/staged/worktree hygiene checker + 34-case test; c5d004b allowed only for its
+  4 exact paths; temp-cwd/os.environ AST guard on every Reporter test interpreter launch). History NOT rewritten; blob
+  triage remains an owner decision.
+P15-WORK-006: proposal wording fixed (controlled_mock_lane_report = retained Reporter presentation/read adapter;
+  313 bodies incl. READ_VIA_CALLBACK). NOT_PUBLISHED.
+R10 retained contracts: 54 PASS / 0 SKIP (was 53/3).
+Full Reporter+p152 set: 3.13 2953 PASS/1 SKIP/1 FAIL normal and -O; 3.14 same after a narrow CPython-message allowance.
+  The FAIL is shared R11-F1 (eeb742a CURRENT.md lost "P1.5.2 OPEN"; PASS at d773709, FAIL at eeb742a).
+FastAPI tests: 73 PASS/1 SKIP/1 FAIL on fastapi 0.143 (3.13 + 3.14); FAIL pre-existing at BASE = R11-F2.
+Facade guard proposal 13/13 PASS normal/-O at de99c8f and d0a32c29.
+Codex integration candidate audit: NOT_RUN (no candidate SHA yet).
+Strategist read-only: evidence/p15-strategist-readonly-20261017 @ d8b34e66 (draft order for GPT).
+Linux Py3.12 / hosted CI: NOT_RUN.
+```
+
+### STATUS
+CURRENT_ROLE: REPORTER (local frozen) -> STRATEGIST read-only (draft delivered) · LOCAL_STATE: REPORTER_LOCAL_READY_FOR_INTEGRATION
+WAITING_ON: Codex shared candidate SHA (audit), GPT Strategist charter, owner decision on c5d004b blobs, R11-F1/F2 owner
+NEXT_READY: (1) audit Codex candidate from a clean checkout when posted (T3/T4, R8/R10, Monitor intent-only, negatives normal/-O);
+(2) on GPT charter: Strategist S-1/S-2 (triage rows + owner contract tests) on the designated branch.
+TESTS: see R11-001; BUDGET: UNKNOWN. PUSHED_SHA of this checkpoint: next checkpoint / issue.
