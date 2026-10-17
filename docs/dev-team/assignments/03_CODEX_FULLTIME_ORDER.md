@@ -1,5 +1,8 @@
 # CODEX — MONITOR Whole-Role Principal Implementer (Corrected Assignment)
 
+> **GPT R11 SHARED DECISION 2026-10-17:** After Monitor M9 local-safe completion, Codex owns isolated shared Reporter+Monitor T3/T4/CI/UI integration as already authorized; additionally handle Reporter R11-F1 (historical `CURRENT.md` **both** P1.5.2 OPEN and P1.5.3 markers) and R11-F2 (FastAPI 0.143 GET-only route enumeration with POST-negative) ONLY on integration candidate. Read [F1/F2 scope decision](../integration/R11_SHARED_FAILURES_F1_F2_ARCHITECT_DECISION.md). Prioritize shared T3/T4 P1 before these P2. Claude independent auditor. No policy changes, CI bypass or main merge. No Work hourly monitoring.
+
+
 > **CURRENT CODEX ASSIGNMENT (2026-10-17):** Read [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md) BEFORE older tasks. Continue Monitor M9 from actual branch HEAD. After Monitor local-safe work is finished, Codex is now **AUTHORIZED to implement Reporter+Monitor shared T3/T4 strict AST resolver, package gates, CI and UI notes in an ISOLATED integration candidate**, subject to independent Claude verification. Never edit active Claude/Monitor branches for shared changes; no main merge or trading authority edits. Work-only integration prohibitions in older sections below are superseded. GPT remains architect on demand, NOT hourly Work.
 
 
