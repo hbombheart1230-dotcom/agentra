@@ -20,6 +20,17 @@ WHOLE_MOVES = {
 
 # Explicit function sets only; no wildcard facade or generic shim following.
 BODY_MOVES = {
+    "libs/runtime/intraday_monitor_signals.py": {
+        "owner": "libs/agents/monitor/projections/signal_evidence_defaults.py",
+        "functions": {"_empty_entry_transition_trace": (),
+                      "_empty_monitor_signal_evidence": ("_build_monitor_signal_evidence",),
+                      "_empty_monitor_policy_interpretation": (),
+                      "_empty_monitor_policy_interpreter_trace": (),
+                      "_empty_monitor_policy_alignment_summary": (),
+                      "_empty_monitor_policy_aware_gating": ("_RECLAIM_TUNING_VERSION", "_RECLAIM_TUNING_SCOPE", "_RECLAIM_NEAR_READY_DISTANCE_MIN_BASE"),
+                      "_empty_chart_structure_decision_hint": (),
+                      "_empty_human_chart_detail_context": ()},
+    },
     "libs/runtime/monitor_exit/selected_snapshot.py": {
         "owner": "libs/agents/monitor/projections/feature_context_views.py",
         "functions": {"feature_alias_map": (), "feature_context_from_state": ()},
