@@ -1,3 +1,5 @@
+> **CURRENT (2026-10-17):** [GPT architect on-demand + two worker delivery](assignments/11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md) replaces the three-role Work-runner plan. Claude owns Reporter and reviews Codex's shared integration, Codex owns Monitor then isolated T3/T4/CI/UI integration, GPT in ordinary chat designs/arbitrates **when invoked**. Hourly Work automation is OFF; no main merge. Older Work-owned shared-integration / Work-daily-digest passages below are historical and NOT current responsibilities.
+
 > **ROLE CORRECTION (2026-10-17):** Claude owns Reporter, Codex owns Monitor, Work independently reviews both and coordinates shared T3/T4 and final integration. The authoritative current work orders are docs/dev-team/assignments/00–06. Any older Codex-as-Reporter-auditor/Runner text below is superseded.
 
 # Agentra AI Development Team — control plane
