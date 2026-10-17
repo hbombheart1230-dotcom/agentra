@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 285,
+  "entry_count": 286,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7545,6 +7545,29 @@
       "impact": "Tests, fixtures, module locations and documentation only; no Scanner/Strategist behavior, order, LLM, Step5C or UEF path changed.",
       "sources": [
         "docs/refactor/evidence/P15-INTEGRATE-V4-S1-058-CLAUDE.md"
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "version": "P1.5 Test Harness Performance First Slice",
+      "title": "Immutable Wave B metadata caching and non-destructive Windows TEMP cleanup",
+      "stage": "Test Infrastructure",
+      "types": [
+        "TESTING",
+        "SAFETY",
+        "PERFORMANCE",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Identical Wave B 768 + T3 14: 782 PASS, 0 FAIL/ERROR/SKIP; 157.67s before, 49.07s after with fresh bytecode prefix (68.88% reduction). Not whole-suite timing.",
+      "details": [
+        "Bounded process-local caches hold pinned Git text and immutable metadata, not mutable ASTs, current Owner/shim files or verdicts. All 20 assertions and test identities preserved.",
+        "Windows PID checks use read-only APIs instead of os.kill(pid, 0). Query uncertainty retains directories. No runtime/golden/expected-value/skip or CI changes.",
+        "Reporter R1-059 and Monitor M1-060 deferred. Focused/Integration/Full tiers proposed; broad parallel, Linux and hosted changes unverified."
+      ],
+      "impact": "PERF-1 publication authorized on perf/p15-harness-perf1-20261016 only. Existing 782/63-case evidence reused; no direct integration/main change or merge. PERF-2 CI changes require a separate commit and equivalent-coverage measurements.",
+      "sources": [
+        "docs/daily_patch/2026-10-16_p15_test_harness_performance.md"
       ]
     }
   ]

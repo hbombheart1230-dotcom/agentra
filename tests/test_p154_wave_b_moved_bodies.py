@@ -18,6 +18,7 @@ import json
 import subprocess
 import symtable
 import types
+from functools import lru_cache
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -110,7 +111,24 @@ def _owner_file(owner):
 
 
 def _base_source(path):
-    return subprocess.check_output(["git", "show", f"{BASE}:{path}"], cwd=ROOT).decode("utf-8-sig")
+    return _git_source_at(BASE, path)
+
+
+@lru_cache(maxsize=8)
+def _git_source_at(sha, path):
+    # Immutable Git objects only; never cache current Owner/shim files or verdicts.
+    return subprocess.check_output(["git", "show", f"{sha}:{path}"], cwd=ROOT).decode("utf-8-sig")
+
+
+@lru_cache(maxsize=8)
+def _source_bound(src):
+    return frozenset(_bound(ast.parse(src)))
+
+
+@lru_cache(maxsize=256)
+def _function_source(src, name):
+    # Cache text, not AST nodes (the restoration transformer mutates AST nodes).
+    return ast.get_source_segment(src, _func(ast.parse(src), name))
 
 
 def _func(tree, name):
@@ -132,6 +150,7 @@ def _bound(tree):
     return s
 
 
+@lru_cache(maxsize=512)
 def _globals(src, fname):
     tb = symtable.symtable(src, "<p153>", "exec")
     top = next(c for c in tb.get_children() if c.get_name() == fname and c.get_type() == "function")
@@ -145,7 +164,7 @@ def _globals(src, fname):
             walk(c)
 
     walk(top)
-    return out
+    return frozenset(out)
 
 
 def _is_fa(node):
@@ -248,7 +267,7 @@ def test_wrapper_injects_its_own_module(path, name, owner, monkeypatch):
 
 def _reference(path, name, module):
     src = _base_source(path)
-    seg = ast.get_source_segment(src, _func(ast.parse(src), name))
+    seg = _function_source(src, name)
     ns = dict(module.__dict__)
     exec(compile("from __future__ import annotations" + chr(10) + seg, "<p153-base-%s>" % name, "exec"), ns)
     f = ns[name]
@@ -297,7 +316,7 @@ def test_use_time_resolution_matches_baseline_before_and_within_call(path, name,
            if p.default is p.empty and p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)]
     kwreq = [p for p in sig.parameters.values() if p.default is p.empty and p.kind == p.KEYWORD_ONLY]
     src = _base_source(path)
-    bound = _bound(ast.parse(src))
+    bound = _source_bound(src)
     targets = [g for g in sorted(_globals(src, name)) if g in bound and g != name and callable(getattr(module, g, None))
                and not inspect.ismodule(getattr(module, g)) and not isinstance(getattr(module, g), type)]
     mk = {"empty_dict": dict, "mock": MagicMock, "text": lambda: "abc"}[shape]

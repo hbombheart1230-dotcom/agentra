@@ -158,24 +158,45 @@ def _cleanup_own_basetemp_if_clean(config, *, clean: bool) -> None:
     shutil.rmtree(path, ignore_errors=True)
 
 
+def _windows_pid_still_alive(pid: int) -> bool:
+    """Read-only process query. Failure/denied access means alive/uncertain.
+
+    Never use os.kill(pid, 0) on Windows: it can signal a console process
+    group or terminate a process; it is not a read-only liveness probe.
+    """
+    import ctypes
+    from ctypes import wintypes
+
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+    kernel.OpenProcess.restype = wintypes.HANDLE
+    kernel.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+    kernel.GetExitCodeProcess.restype = wintypes.BOOL
+    kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel.CloseHandle.restype = wintypes.BOOL
+    handle = kernel.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+    if not handle:
+        return ctypes.get_last_error() != 87  # ERROR_INVALID_PARAMETER: nonexistent PID
+    try:
+        code = wintypes.DWORD()
+        if not kernel.GetExitCodeProcess(handle, ctypes.byref(code)):
+            return True
+        return code.value == 259  # STILL_ACTIVE; ambiguity retains rather than deletes
+    finally:
+        kernel.CloseHandle(handle)
+
+
 def _owning_pid_still_alive(pid: int) -> bool:
-    """No new dependency (psutil is not installed in this venv) -- uses
-    os.kill(pid, 0) directly. POSIX: raises ProcessLookupError (ESRCH) for
-    a genuinely dead pid, no exception for a live one -- the standard
-    pattern. Windows (verified directly in this environment, Python 3.14):
-    os.kill(own_pid, 0) raises NOTHING for a live pid, but a dead/invalid
-    pid raises a PLAIN OSError with winerror==87 ("the parameter is
-    incorrect"), never ProcessLookupError -- catching only
-    ProcessLookupError here would silently never detect a dead PID on
-    Windows and this cleanup would never run. Any OTHER OSError (e.g.
-    PermissionError for a live pid this user cannot signal) is treated as
-    "alive/uncertain" -- the conservative answer, since this function's
-    only use is deciding whether it is safe to delete a directory, and a
-    false "alive" only costs a skipped cleanup, never a wrongly-deleted
-    live process's own temp directory."""
+    """POSIX uses signal zero; Windows uses a non-mutating process query.
+
+    Permission/query uncertainty retains the directory. No signal is sent
+    on Windows and no process is terminated to decide cleanup eligibility.
+    """
 
     if pid <= 0:
         return False
+    if os.name == "nt":
+        return _windows_pid_still_alive(pid)
     try:
         os.kill(pid, 0)
         return True

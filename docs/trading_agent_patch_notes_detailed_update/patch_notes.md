@@ -3573,3 +3573,12 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Gate A: repeat_guard가 실제로 읽는 `persisted_state.recent_monitor_blocks`와 중첩 `scanner_repeat_guard` 정책으로 repeat_count > 0 케이스를 BASE에서 먼저 생성한 별도 fixture(286)로 추가하고 FINAL과 완전 일치함을 확인했습니다. V3 디렉터리 검사는 버전 allowlist 기반 정확 일치로 복원, 쓰기 감사 mtime은 재현되지 않아 UNRESOLVED(메타데이터 한정)로 기록했습니다.
 - Gate B: Strategist S1 승인 경로 16개만 선택 통합(브랜치 병합·공통 문서 복사 없음), Wave B 엄격 AST allowlist를 Scanner 10 + Strategist 5 = 15쌍으로 확장하고 exact-set·잘못된 shim 거부·`python -O` 음성 테스트를 유지했습니다.
 - 경계: 주문·LLM·Step5C·UEF 변경 없음, Reporter/Monitor 미착수, main 병합 없음. 독립 감사 대기.
+## 2026-10-16 - P1.5 Test Harness Performance First Slice
+**Stage:** Test Infrastructure
+**Tags:** TESTING / SAFETY / PERFORMANCE / DOCS
+
+- Identical Wave B 768 + T3 14: 782 PASS, 0 FAIL/ERROR/SKIP. 157.67s -> 49.07s with fresh bytecode prefix, 68.88% reduction. Not whole-suite timing.
+- Cache immutable pinned Git text/metadata only; no current Owner/shim, mutable AST or verdict cache. Existing assertions unchanged.
+- Windows TEMP cleanup queries status without os.kill(pid, 0). No runtime/golden/expected-value/skip/CI changes.
+- Reporter R1-059 and Monitor M1-060 deferred. PERF-1 publication authorized on perf/p15-harness-perf1-20261016 only; integration/main unchanged. PERF-2 analysis follows, with CI implementation in a separate commit after equivalent-coverage proof. Linux and hosted post-change validation pending.
+- Evidence: docs/daily_patch/2026-10-16_p15_test_harness_performance.md.
