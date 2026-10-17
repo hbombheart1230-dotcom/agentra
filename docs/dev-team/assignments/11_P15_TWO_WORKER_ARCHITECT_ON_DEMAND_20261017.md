@@ -1,5 +1,8 @@
 # Agentra P1.5 — GPT Architect on Demand + Claude/Codex Two-Worker Delivery
 
+> **R11 architecture delta (2026-10-17):** Reporter `443f90362ad5970a4731685311a45e8e0f6b55e4` and Strategist read-only draft `d8b34e669e1c43342eadd80b13ea43aac4bc255b` were inspected. GPT approved only [Strategist S1/S2 evidence and bounded offline tests](13_STRATEGIST_S1_S2_SCOPED_CHARTER_20261017.md), not S3-S6 source refactors. Reporter R11 shared F1/F2 owned by Codex on isolated integration as [architect-designated](../integration/R11_SHARED_FAILURES_F1_F2_ARCHITECT_DECISION.md), Claude independently audits. Reporter full suite still has reported historical/shared 1 FAIL; Linux CI NOT_RUN. Hourly Work automation remains DISABLED.
+
+
 **Effective:** 2026-10-17 KST. **Authority:** supersedes contradictory Work-as-always-on / Work-shared-implementer clauses in older `00`, `01`, `02`, `03`, `05`, `10`, and docs/dev-team/DEVELOPMENT_LOOP.md. Old records remain historical evidence, not active instructions.
 **Repo:** hbombheart1230-dotcom/agentra. **Design reference:** design/agentra-dev-team-loop-20261017.
 **Operating premise:** ChatGPT Work's hourly monitoring automation was explicitly disabled on operator request; do NOT recreate/schedule it or treat Work as a live process. GPT in **ordinary chat on demand** remains architect, technical lead, design owner and final architecture judge. This does not mean that a ChatGPT chat continues working between user requests.
