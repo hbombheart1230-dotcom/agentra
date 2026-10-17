@@ -43,3 +43,9 @@ Branch listing observed four existing branches before the new design branch. Do 
 ## Delivery/credit promises
 
 One user check per day is a *human interaction target*, not a guarantee of 24-hour compute. Stop/resume semantics depend on installed runner, paid credits and actual sessions. Development must preserve evidence and precise next step on any interruption.
+
+## Coordination artifacts created with this design
+
+- Reporter role issue: https://github.com/hbombheart1230-dotcom/agentra/issues/11
+- Monitor role issue: https://github.com/hbombheart1230-dotcom/agentra/issues/12
+- These issues are initialized; worker process startup and automated review delivery remain **NOT_VERIFIED**.
