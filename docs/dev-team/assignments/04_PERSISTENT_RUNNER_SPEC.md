@@ -1,7 +1,7 @@
 # Persistent Development Runner — Mock-First Specification
 
 **Goal:** Make Claude and Codex CLI work resume from GitHub checkpoints after normal session completion/crash; allow Work to review queued evidence in an expressly launched or supported scheduled Work session. Documents and GitHub issues cannot themselves launch a process.
-**Owner:** Codex in its isolated non-trading runner branch. Work independently reviews it.
+**Owner:** FUTURE separately assigned infrastructure worker (not Codex, who owns Monitor). Work independently reviews any future implementation. This specification is not an active task for Claude or Codex.
 **Current state:** SPEC ONLY — not implemented, activated or deployed by this documentation.
 
 ## Isolation
@@ -37,9 +37,9 @@ Expected modules:
         branch: work/reporter-role-20261017
         issue: 11
         adapter: claude_cli
-      audit:
-        branch_prefix: audit/p15-
-        issue: 14
+      monitor:
+        branch: work/monitor-role-20261017
+        issue: 12
         adapter: codex_cli
     max_concurrent_sessions: OPERATOR_REQUIRED
     max_daily_cost_usd: OPERATOR_REQUIRED
