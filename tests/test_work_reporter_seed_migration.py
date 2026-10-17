@@ -39,8 +39,9 @@ REGISTRY = {
     "trade_report_post_exit_shadow": ("narrative", "040c582f99654778312216fe7ffbc1e6ccd3ea9c"),
 }
 # named decomposition (Phase B): legacy facade module -> owner modules in libs/agents/reporter/read_models (bodies verbatim)
-DECOMPOSED = {"trade_report_symbol_metadata": ["symbol_metadata_fallbacks", "symbol_metadata_text", "symbol_metadata_sources",
-                                               "symbol_metadata_name_inference", "symbol_metadata_resolution"]}
+DECOMPOSED = {"trade_report_symbol_metadata": ("read_models", ["symbol_metadata_fallbacks", "symbol_metadata_text", "symbol_metadata_sources",
+                                                                "symbol_metadata_name_inference", "symbol_metadata_resolution"]),
+              "trade_story_pipeline_news": ("narrative", ["news_text", "news_headlines", "news_scanner_contribution"])}
 REPORTER_PACKAGES = {"narrative", "read_models"}  # exact, versioned by this project (shared allowlist is Work-owned)
 OLD, NEW = "libs.reporting.{}", "libs.agents.reporter.{}.{}"
 
@@ -149,7 +150,7 @@ def test_fixture_provenance_manifest_matches_the_fixture_bytes():
     raw = FIX.read_bytes()
     assert hashlib.sha256(raw).hexdigest() == prov["gz_sha256"]
     assert hashlib.sha256(gzip.decompress(raw)).hexdigest() == prov["payload_sha256"]
-    assert len(json.loads(gzip.decompress(raw))["cases"]) == prov["cases"] == 1919
+    assert len(json.loads(gzip.decompress(raw))["cases"]) == prov["cases"] == 2318
 
 
 def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():
@@ -195,7 +196,7 @@ def test_target_tree_discipline_and_no_forbidden_surface():
     for sub in REPORTER_PACKAGES:
         assert sorted(p.name for p in (base / sub).glob("*.py")) == \
             sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]
-                   + ([f"{o}.py" for owners in DECOMPOSED.values() for o in owners] if sub == "read_models" else [])), sub
+                   + [f"{o}.py" for d_sub, owners in DECOMPOSED.values() if d_sub == sub for o in owners]), sub
     out = [x for x in subprocess.check_output(["git", "diff", "--name-only", "-z", START, "HEAD"], cwd=ROOT).decode().split(chr(0)) if x]
     allowed_exact = {f"libs/reporting/{n}.py" for n in [*REGISTRY, *DECOMPOSED]}
     allowed_prefix = ("libs/agents/reporter/", "tests/test_work_reporter_", "tests/fixtures/work_reporter/",
@@ -208,15 +209,16 @@ def test_target_tree_discipline_and_no_forbidden_surface():
 def test_decomposed_owners_keep_every_base_definition_ast_identical_and_the_facade_reexports_the_same_objects(facade):
     import ast
     base_src = subprocess.check_output(["git", "show", f"{BASE}:libs/reporting/{facade}.py"], cwd=ROOT).decode("utf-8-sig")
-    keep = (ast.FunctionDef, ast.AnnAssign)
-    nm = lambda n: n.name if isinstance(n, ast.FunctionDef) else n.target.id  # noqa: E731
+    keep = (ast.FunctionDef, ast.AnnAssign, ast.Assign)
+    nm = lambda n: n.name if isinstance(n, ast.FunctionDef) else (n.targets[0].id if isinstance(n, ast.Assign) else n.target.id)  # noqa: E731
     base = {nm(n): ast.dump(n) for n in ast.parse(base_src).body if isinstance(n, keep)}
     owners, found = {}, {}
-    for o in DECOMPOSED[facade]:
-        path = ROOT / "libs/agents/reporter/read_models" / f"{o}.py"
+    d_sub, d_owners = DECOMPOSED[facade]
+    for o in d_owners:
+        path = ROOT / "libs/agents/reporter" / d_sub / f"{o}.py"
         text = path.read_text(encoding="utf-8")
         assert len(text.splitlines()) <= 350
-        mod = importlib.import_module(f"libs.agents.reporter.read_models.{o}")
+        mod = importlib.import_module(f"libs.agents.reporter.{d_sub}.{o}")
         for n in ast.parse(text).body:
             if isinstance(n, keep):
                 assert nm(n) not in found, nm(n)  # exactly one body
