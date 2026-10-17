@@ -181,7 +181,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/trade_read_model.py",
@@ -439,7 +439,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/trade_explain.py",
@@ -480,7 +480,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/trade_explain.py",
@@ -551,7 +551,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",
@@ -618,7 +618,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",
@@ -669,7 +669,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",
@@ -781,7 +781,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
@@ -846,7 +846,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -910,7 +910,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -941,7 +941,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -1233,7 +1233,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1246,7 +1246,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1261,7 +1261,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1424,7 +1424,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1439,7 +1439,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1480,7 +1480,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1495,7 +1495,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1512,7 +1512,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1621,7 +1621,7 @@
    "disposition": "MOVED_R8",
    "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
    "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
-   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
+   "proof": "tests/test_work_reporter_r8_read_via_callback_parity.py (BASE-vs-current on temp report tree: 4 argument sets incl. missing/dir/file paths and callbacks; outcome bytes, ordered open/read_text file reads, no writes; wall-clock timestamps normalised only within 10 min of now) + R4 proof"
   },
   {
    "legacy_path": "libs/reporting/agent_pipeline_trace.py",
