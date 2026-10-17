@@ -1,5 +1,8 @@
 # CLAUDE — Principal Reporter Owner, Continuous Whole-Role Refactoring
 
+> **GPT R11 DECISION 2026-10-17:** Reporter HEAD `443f90362ad5970a4731685311a45e8e0f6b55e4`; R11 local implementation/test-prevention checkpoint submitted, **not** whole suite green. Claude's next safe packets are (a) independent review of Codex shared integration candidate when an exact SHA exists, and (b) **Strategist S1/S2 EVIDENCE/TESTS ONLY** under [13_STRATEGIST_S1_S2_SCOPED_CHARTER_20261017.md](13_STRATEGIST_S1_S2_SCOPED_CHARTER_20261017.md). S3-S6 source moves are NOT approved. Shared R11-F1/F2 belong to Codex's isolated integration, not Reporter active branch. [F1/F2 design](../integration/R11_SHARED_FAILURES_F1_F2_ARCHITECT_DECISION.md). No automatic Work review or main merge.
+
+
 > **CURRENT CLAUDE ASSIGNMENT (2026-10-17):** The source of truth is [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md). Reporter remains on its own branch; after R10 local-ready it independently reviews **Codex's isolated combined T3/T4/CI candidate** and posts SHA-bound issues. Claude does not edit Codex's integration branch. Read-only Strategist planning is allowed; source edits need a GPT-authored whole-role charter. Work is NOT an active reviewer/approval dependency, and no hourly review runs. Prior clauses assigning all shared integration exclusively to Work below are superseded.
 
 
