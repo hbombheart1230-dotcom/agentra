@@ -1,5 +1,10 @@
 # Agentra P1.5 — Three-Role Continuous Development Charter (Corrected)
 
+## 2026-10-17 — PROJECT-WIDE CONTINUATION OVERRIDE
+
+Read [10_P15_CONTINUOUS_ROLE_RELAY.md](10_P15_CONTINUOUS_ROLE_RELAY.md). Finishing one's Reporter or Monitor implementation is **not** finishing the P1.5 program. After Work accepts local role proof, Claude transitions to **read-only Strategist** design/evidence, Codex to **read-only Scanner** design/evidence on separately isolated branches. Source edits in new roles require Work's exact whole-role charter first; do not invent authorization for policy, trade or guard changes. Work continues shared T3/T4 integration concurrently. Only the external, opt-in local CLI supervisor can relaunch ended CLI sessions. GitHub updates and Work hourly automation do not launch developer CLIs. No main merge. Never run useless repeat tasks merely to stay busy.
+
+
 **Updated 2026-10-17 KST:** Codex = MONITOR IMPLEMENTER. Claude = REPORTER IMPLEMENTER. Work = ARCHITECT / TECHNICAL LEAD / CROSS-ROLE REVIEW & FINAL INTEGRATION. Earlier Codex-as-Reporter-auditor/runner wording is superseded and must NOT be followed.
 Repository: hbombheart1230-dotcom/agentra
 Design ref: origin/design/agentra-dev-team-loop-20261017
