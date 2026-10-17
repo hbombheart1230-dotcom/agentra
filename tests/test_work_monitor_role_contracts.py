@@ -171,10 +171,13 @@ def test_handoff_mutates_exact_callback_result_and_preserves_nested_alias():
 
 
 def test_all_retained_role_owners_and_protected_runtime_stay_byte_identical():
+    spec = importlib.util.spec_from_file_location("monitor_current_tree", ROOT / "scripts/refactor/work_monitor_current_tree.py")
+    current = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(current)
     for row in C.ledger()["responsibility_register"]:
         if "base_blob" not in row or row["disposition"] == "MOVE":
             continue
-        data = (ROOT / row["path"]).read_bytes().replace(b"\r\n", b"\n")
+        data = current.verified_current_source(row["path"]).encode("utf-8")
         assert data == C.git_bytes(row["path"]), row["path"]
     paths = ["graphs", "apps", "libs/execution", "libs/kiwoom", "libs/llm", "libs/risk", "libs/supervisor",
              "libs/agents/scanner", "libs/agents/strategist", "libs/runtime/scanner", "libs/runtime/strategist",
