@@ -1,1 +1,1 @@
-{"state":"ACTIVE_PARTIAL_NOT_ROLE_READY","M-001":"IMPLEMENTED_REVIEW_PENDING","M-002":"READY","M-003":"READY","M-004":"READY","next_ready":"M-002","checkpoint":"CP-001","initial_inventory":"program.json"}
+{"state":"ACTIVE_PARTIAL_NOT_ROLE_READY","M-001":"IMPLEMENTED_REVIEW_PENDING","M-002":"IMPLEMENTED_REVIEW_PENDING","M-003":"READY","M-004":"READY","next_ready":"M-003","checkpoint":"CP-002","initial_inventory":"program.json"}
