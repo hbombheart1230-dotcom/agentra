@@ -214,7 +214,8 @@ def freeze():
                                 "expected": observe(fn, inp)})
     doc = {"schema": "work.monitor.synthetic_frozen.v1", "base_sha": BASE,
            "producer": {"python": sys.version, "platform": platform.platform(),
-                        "tool_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()},
+                        "tool_sha256": hashlib.sha256(Path(__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
+                        "tool_hash_encoding": "Git-style LF UTF-8 source bytes"},
            "source_sha256": sources, "records": records}
     FIXTURE.parent.mkdir(parents=True, exist_ok=True)
     FIXTURE.write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")

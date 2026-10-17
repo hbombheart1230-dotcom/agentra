@@ -113,7 +113,7 @@ print(count)
 
 def test_frozen_inventory_and_baseline_provenance_are_fail_closed():
     assert FROZEN["base_sha"] == C.BASE
-    assert FROZEN["producer"]["tool_sha256"] == hashlib.sha256(Path(C.__file__).read_bytes()).hexdigest()
+    assert FROZEN["producer"]["tool_sha256"] == hashlib.sha256(Path(C.__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
     expected = set()
     for row in MAPS:
         data = C.git_bytes(row["source"])
