@@ -8,6 +8,22 @@ from typing import Any, Dict, Iterable, Mapping, MutableMapping, Optional
 from libs.reporting.trade_execution_truth_merge import merge_preferred_execution_details
 from libs.reporting.trade_story_pipeline import build_lifecycle_bundle, safe_int
 from libs.reporting.trade_symbol_context import normalize_trade_payload_symbol_context
+import sys as _r3_sys
+from libs.agents.reporter.read_models.bundle_state_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _safe_float_r4_impl,
+    _first_positive_r4_impl,
+    _exit_monitor_reference_price_r4_impl,
+    _backfill_execution_fields_r4_impl,
+    build_component_fingerprint_r4_impl,
+    build_ai_trade_report_generation_component_r4_impl,
+    build_operator_brief_generation_component_r4_impl,
+    build_generation_state_r4_impl,
+    _source_type_r4_impl,
+    build_bundle_provenance_r4_impl,
+    build_bundle_health_r4_impl,
+    finalize_bundle_health_r4_impl,
+    build_trade_bundle_state_r4_impl,
+)
 
 
 def _utc_now_iso() -> str:
@@ -15,36 +31,15 @@ def _utc_now_iso() -> str:
 
 
 def _safe_float(value: Any) -> Optional[float]:
-    if value in (None, ""):
-        return None
-    try:
-        return float(value)
-    except Exception:
-        return None
+    return _safe_float_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _first_positive(*values: Any) -> Optional[float]:
-    for value in values:
-        num = _safe_float(value)
-        if num is not None and num > 0:
-            return float(num)
-    return None
+    return _first_positive_r4_impl(*values, facade=_r3_sys.modules[__name__])
 
 
 def _exit_monitor_reference_price(payload: Mapping[str, Any], execution_details: Mapping[str, Any]) -> Optional[float]:
-    monitor_context = payload.get("monitor_context") if isinstance(payload.get("monitor_context"), Mapping) else {}
-    quote_snapshot = (
-        execution_details.get("quote_snapshot")
-        if isinstance(execution_details.get("quote_snapshot"), Mapping)
-        else {}
-    )
-    return _first_positive(
-        monitor_context.get("current_price"),
-        monitor_context.get("price"),
-        quote_snapshot.get("current_price"),
-        quote_snapshot.get("best_bid"),
-        quote_snapshot.get("best_ask"),
-    )
+    return _exit_monitor_reference_price_r4_impl(payload, execution_details, facade=_r3_sys.modules[__name__])
 
 
 def stable_json_text(payload: Any) -> str:
@@ -58,48 +53,7 @@ def payload_fingerprint(payload: Any) -> str:
 
 
 def _backfill_execution_fields(payload: Dict[str, Any], execution_details: Mapping[str, Any]) -> Dict[str, Any]:
-    out = dict(payload or {})
-    details = dict(execution_details or {})
-    for key in ("order_id", "order_status", "filled_qty", "avg_price", "filled_price"):
-        if out.get(key) in (None, "") and details.get(key) not in (None, ""):
-            out[key] = details.get(key)
-    is_sell = str(out.get("action") or details.get("action") or "").strip().upper() == "SELL"
-    monitor_exit_price = _exit_monitor_reference_price(out, details) if is_sell else None
-    broker_fill_price = _first_positive(details.get("filled_price"), details.get("broker_fill_price"))
-    if out.get("price") in (None, ""):
-        if broker_fill_price is not None:
-            out["price"] = broker_fill_price
-        elif is_sell and monitor_exit_price is not None:
-            out["price"] = monitor_exit_price
-            out.setdefault("price_basis", "monitor_current_price_fallback")
-        else:
-            for key in ("avg_price", "broker_buy_price"):
-                if details.get(key) not in (None, ""):
-                    out["price"] = details.get(key)
-                    break
-    elif is_sell and broker_fill_price is None and monitor_exit_price is not None:
-        existing_price = _safe_float(out.get("price"))
-        avg_price = _safe_float(details.get("avg_price") if details.get("avg_price") not in (None, "") else out.get("avg_price"))
-        if (
-            existing_price is not None
-            and avg_price is not None
-            and abs(existing_price - avg_price) < 0.5
-            and abs(existing_price - monitor_exit_price) >= 0.5
-        ):
-            out["price"] = monitor_exit_price
-            out.setdefault("price_basis", "monitor_current_price_fallback")
-    for key in (
-        "broker_realized_pnl",
-        "broker_realized_pnl_pct",
-        "broker_fee",
-        "broker_tax",
-        "broker_day_truth_source",
-        "broker_day_match_mode",
-        "broker_day_authoritative",
-    ):
-        if out.get(key) in (None, "") and details.get(key) not in (None, ""):
-            out[key] = details.get(key)
-    return out
+    return _backfill_execution_fields_r4_impl(payload, execution_details, facade=_r3_sys.modules[__name__])
 
 
 _AI_REPORT_FINGERPRINT_IGNORED_STORY_KEYS = {
@@ -131,26 +85,7 @@ def build_component_fingerprint(
     story_input: Mapping[str, Any] | None,
     compact_input: Mapping[str, Any] | None,
 ) -> Dict[str, Any]:
-    story_hash = payload_fingerprint(_normalize_story_input_for_fingerprint(story_input))
-    compact_hash = payload_fingerprint(dict(compact_input or {}))
-    payload = {
-        "component": str(component or ""),
-        "trade_id": str(trade_id or ""),
-        "run_id": str(run_id or ""),
-        "lifecycle_status": str(lifecycle_status or ""),
-        "story_type": str(story_type or ""),
-        "model": str(model or ""),
-        "story_input_sha256": story_hash,
-        "compact_input_sha256": compact_hash,
-    }
-    return {
-        "fingerprint": payload_fingerprint(payload),
-        "source_inputs": {
-            "story_input_sha256": story_hash,
-            "compact_input_sha256": compact_hash,
-        },
-        "payload": payload,
-    }
+    return build_component_fingerprint_r4_impl(component=component, trade_id=trade_id, run_id=run_id, lifecycle_status=lifecycle_status, story_type=story_type, model=model, story_input=story_input, compact_input=compact_input, facade=_r3_sys.modules[__name__])
 
 
 def build_ai_trade_report_generation_component(
@@ -168,25 +103,7 @@ def build_ai_trade_report_generation_component(
     source_inputs: Mapping[str, Any] | None = None,
     updated_at: str = "",
 ) -> Dict[str, Any]:
-    return {
-        "fingerprint": str(fingerprint or ""),
-        "component": "ai_trade_report",
-        "status": str(status or "skipped"),
-        "report_status": str(report_status or ""),
-        "skip_reason": (
-            "fingerprint_match_existing_success"
-            if str(report_generation_reason or "") == "fingerprint_match_existing_success"
-            else ""
-        ),
-        "trade_id": str(trade_id or ""),
-        "run_id": str(run_id or ""),
-        "updated_at": str(updated_at or _utc_now_iso()),
-        "model": str(model or ""),
-        "report_json_path": str(report_json_path or ""),
-        "report_md_path": str(report_md_path or ""),
-        "llm_response_path": str(llm_response_path or ""),
-        "source_inputs": dict(source_inputs or {}),
-    }
+    return build_ai_trade_report_generation_component_r4_impl(fingerprint=fingerprint, trade_id=trade_id, run_id=run_id, status=status, report_status=report_status, report_generation_reason=report_generation_reason, model=model, report_json_path=report_json_path, report_md_path=report_md_path, llm_response_path=llm_response_path, source_inputs=source_inputs, updated_at=updated_at, facade=_r3_sys.modules[__name__])
 
 
 def build_operator_brief_generation_component(
@@ -202,31 +119,7 @@ def build_operator_brief_generation_component(
     brief_llm_exists: bool,
     updated_at: str = "",
 ) -> Dict[str, Any]:
-    fingerprint_payload = {
-        "component": "operator_brief",
-        "trade_id": str(trade_id or ""),
-        "run_id": str(run_id or ""),
-        "brief_json_exists": bool(brief_json_exists),
-        "brief_md_exists": bool(brief_md_exists),
-        "brief_llm_exists": bool(brief_llm_exists),
-        "brief_llm_status": str(llm_brief_status or "skipped"),
-    }
-    return {
-        "fingerprint": payload_fingerprint(fingerprint_payload),
-        "component": "operator_brief",
-        "status": str(llm_brief_status or "skipped"),
-        "skip_reason": (
-            "existing_artifact_state_reused"
-            if brief_json_exists or brief_md_exists or brief_llm_exists
-            else "missing_brief_artifact"
-        ),
-        "trade_id": str(trade_id or ""),
-        "run_id": str(run_id or ""),
-        "updated_at": str(updated_at or _utc_now_iso()),
-        "report_json_path": str(report_json_path or ""),
-        "report_md_path": str(report_md_path or ""),
-        "llm_response_path": str(llm_response_path or ""),
-    }
+    return build_operator_brief_generation_component_r4_impl(trade_id=trade_id, run_id=run_id, llm_brief_status=llm_brief_status, report_json_path=report_json_path, report_md_path=report_md_path, llm_response_path=llm_response_path, brief_json_exists=brief_json_exists, brief_md_exists=brief_md_exists, brief_llm_exists=brief_llm_exists, updated_at=updated_at, facade=_r3_sys.modules[__name__])
 
 
 def build_generation_state(
@@ -235,27 +128,11 @@ def build_generation_state(
     ai_trade_report_component: Mapping[str, Any],
     operator_brief_component: Mapping[str, Any],
 ) -> Dict[str, Any]:
-    state = dict(current_state or {})
-    state["schema_version"] = str(state.get("schema_version") or "report_generation_state.v1")
-    components = dict(state.get("components") or {}) if isinstance(state.get("components"), Mapping) else {}
-    components["ai_trade_report"] = dict(ai_trade_report_component or {})
-    components["operator_brief"] = dict(operator_brief_component or {})
-    state["components"] = components
-    return state
+    return build_generation_state_r4_impl(current_state=current_state, ai_trade_report_component=ai_trade_report_component, operator_brief_component=operator_brief_component, facade=_r3_sys.modules[__name__])
 
 
 def _source_type(raw_source: Any, source_path: Any) -> str:
-    src = str(raw_source or "").strip().lower()
-    path_text = str(source_path or "").strip()
-    if src == "canonical":
-        return "canonical"
-    if src in {"normalized_trade_artifact", "normalized_trade", "direct_artifact", "direct"}:
-        return "trade"
-    if src in {"event_log"}:
-        return "events"
-    if path_text:
-        return "trade"
-    return "missing"
+    return _source_type_r4_impl(raw_source, source_path, facade=_r3_sys.modules[__name__])
 
 
 def build_bundle_provenance(
@@ -271,45 +148,7 @@ def build_bundle_provenance(
     section_provenance: Mapping[str, Any] | None,
     artifacts: Mapping[str, Any] | None,
 ) -> Dict[str, Any]:
-    section_map = dict(section_provenance or {})
-    artifact_map = dict(artifacts or {})
-    recovery = dict(recovery_metadata or {})
-    return {
-        "schema_version": "trade_provenance.v1",
-        "trade_id": str(trade_id or ""),
-        "run_id": str(run_id or ""),
-        "day": str(day or ""),
-        "lifecycle_status": str(lifecycle_status or ""),
-        "trade_origin": str(recovery.get("trade_origin") or ""),
-        "lifecycle_completeness": str(recovery.get("lifecycle_completeness") or ""),
-        "evidence_recovery_used": bool(recovery.get("evidence_recovery_used")),
-        "recovery_missing_sections": list(recovery.get("recovery_missing_sections") or []),
-        "recovery_sources": list(recovery.get("recovery_sources") or []),
-        "entry_strategist_run_id": str(strategy_anchor_run_id or ""),
-        "strategy_anchor_run_id": str(strategy_anchor_run_id or ""),
-        "evidence_source": str(evidence_source or "fallback"),
-        "agent_sources": dict(agent_sources or {}),
-        "section_provenance": section_map,
-        "read_precedence": [
-            "normalized_trade_artifact",
-            "canonical_artifact",
-            "event_log",
-            "missing",
-        ],
-        "section_resolution": {
-            str(key): {
-                "source_type": _source_type((value or {}).get("source"), (value or {}).get("artifact_path")),
-                "source_path": str((value or {}).get("artifact_path") or ""),
-                "confidence": str((value or {}).get("confidence") or "low"),
-            }
-            for key, value in section_map.items()
-        },
-        "canonical_agent_artifact_paths": {
-            key: str(value or "")
-            for key, value in artifact_map.items()
-            if str(key).startswith("canonical_") and str(key).endswith("_json")
-        },
-    }
+    return build_bundle_provenance_r4_impl(trade_id=trade_id, run_id=run_id, day=day, lifecycle_status=lifecycle_status, recovery_metadata=recovery_metadata, strategy_anchor_run_id=strategy_anchor_run_id, evidence_source=evidence_source, agent_sources=agent_sources, section_provenance=section_provenance, artifacts=artifacts, facade=_r3_sys.modules[__name__])
 
 
 def build_bundle_health(
@@ -331,52 +170,7 @@ def build_bundle_health(
     monitor_event_count: int,
     operator_brief_json_exists: bool,
 ) -> Dict[str, Any]:
-    recovery = dict(recovery_metadata or {})
-    diagnostics_obj = dict(diagnostics or {})
-    llm_artifact = dict(ai_trade_report_llm_artifact or {})
-    missing_sections = [
-        str(x or "")
-        for x in list(phase3_missing_sections or [])
-        + [str(x or "") for x in list(evidence_completeness_missing_sections or []) if str(x or "").strip()]
-        if str(x or "").strip()
-    ]
-    return {
-        "schema_version": "trade_health.v1",
-        "trade_id": str(trade_id or ""),
-        "run_id": str(run_id or ""),
-        "day": str(day or ""),
-        "lifecycle_status": str(lifecycle_status or ""),
-        "trade_origin": str(recovery.get("trade_origin") or ""),
-        "lifecycle_completeness": str(recovery.get("lifecycle_completeness") or ""),
-        "evidence_recovery_used": bool(recovery.get("evidence_recovery_used")),
-        "recovery_missing_sections": list(recovery.get("recovery_missing_sections") or []),
-        "recovery_sources": list(recovery.get("recovery_sources") or []),
-        "ai_report_diagnostics": diagnostics_obj,
-        "report_generation": dict(report_generation or {}),
-        "deterministic_report_status": str(diagnostics_obj.get("deterministic_report_status") or "skipped"),
-        "llm_brief_status": str(diagnostics_obj.get("llm_brief_status") or "skipped"),
-        "ai_trade_report_status": str(diagnostics_obj.get("ai_trade_report_status") or "skipped"),
-        "llm_trade_report_status": str(diagnostics_obj.get("ai_trade_report_status") or "skipped"),
-        "report_generation_status": str(diagnostics_obj.get("report_status") or "skipped"),
-        "operator_brief_status": (
-            str(diagnostics_obj.get("llm_brief_status") or "skipped")
-            if bool(operator_brief_json_exists)
-            else "missing"
-        ),
-        "report_generation_reason": str(diagnostics_obj.get("report_generation_reason") or diagnostics_obj.get("report_reason_human") or ""),
-        "missing_sections": missing_sections,
-        "completeness_score": float(phase3_completeness_score or 0.0),
-        "artifact_presence": dict(artifact_presence or {}),
-        "llm_response_status": str(llm_artifact.get("status") or ""),
-        "llm_parse_mode": str(llm_artifact.get("parse_mode") or ""),
-        "llm_completeness_score": float(llm_artifact.get("completeness_score") or 0.0),
-        "llm_required_keys_missing": [str(x or "") for x in list(llm_artifact.get("required_keys_missing") or []) if str(x or "").strip()],
-        "evidence_counts": {
-            "strategist_events": int(strategist_event_count or 0),
-            "scanner_events": int(scanner_event_count or 0),
-            "monitor_events": int(monitor_event_count or 0),
-        },
-    }
+    return build_bundle_health_r4_impl(trade_id=trade_id, run_id=run_id, day=day, lifecycle_status=lifecycle_status, recovery_metadata=recovery_metadata, diagnostics=diagnostics, report_generation=report_generation, evidence_completeness_missing_sections=evidence_completeness_missing_sections, phase3_missing_sections=phase3_missing_sections, phase3_completeness_score=phase3_completeness_score, artifact_presence=artifact_presence, ai_trade_report_llm_artifact=ai_trade_report_llm_artifact, strategist_event_count=strategist_event_count, scanner_event_count=scanner_event_count, monitor_event_count=monitor_event_count, operator_brief_json_exists=operator_brief_json_exists, facade=_r3_sys.modules[__name__])
 
 
 def finalize_bundle_health(
@@ -385,32 +179,7 @@ def finalize_bundle_health(
     artifact_presence: Mapping[str, Any] | None,
     diagnostics: Mapping[str, Any] | None,
 ) -> Dict[str, Any]:
-    out = dict(health_payload or {})
-    diagnostics_obj = dict(diagnostics or {})
-    presence = dict(artifact_presence or {})
-    out["artifact_presence"] = presence
-    out["llm_trade_report_status"] = str(
-        diagnostics_obj.get("ai_trade_report_status")
-        or out.get("ai_trade_report_status")
-        or "skipped"
-    )
-    out["report_generation_status"] = (
-        "available"
-        if bool(presence.get("ai_trade_report_json")) or bool(presence.get("ai_trade_report_md"))
-        else str(diagnostics_obj.get("report_status") or "skipped")
-    )
-    out["operator_brief_status"] = (
-        str(diagnostics_obj.get("llm_brief_status") or "skipped")
-        if bool(presence.get("operator_brief_json"))
-        else "missing"
-    )
-    out["llm_brief_status"] = str(
-        out.get("operator_brief_status") or diagnostics_obj.get("llm_brief_status") or "skipped"
-    )
-    out["ai_trade_report_status"] = str(
-        out.get("llm_trade_report_status") or diagnostics_obj.get("ai_trade_report_status") or "skipped"
-    )
-    return out
+    return finalize_bundle_health_r4_impl(health_payload, artifact_presence=artifact_presence, diagnostics=diagnostics, facade=_r3_sys.modules[__name__])
 
 
 def build_trade_bundle_state(
@@ -418,12 +187,7 @@ def build_trade_bundle_state(
     provenance_kwargs: Mapping[str, Any],
     health_kwargs: Mapping[str, Any],
 ) -> Dict[str, Any]:
-    provenance = build_bundle_provenance(**dict(provenance_kwargs or {}))
-    health = build_bundle_health(**dict(health_kwargs or {}))
-    return {
-        "provenance": provenance,
-        "health": health,
-    }
+    return build_trade_bundle_state_r4_impl(provenance_kwargs=provenance_kwargs, health_kwargs=health_kwargs, facade=_r3_sys.modules[__name__])
 
 
 def build_live_trade_bundle_payloads(

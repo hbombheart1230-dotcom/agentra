@@ -30,3 +30,15 @@ Reproduction (isolated clone): committing `libs/reporting/stray_r4_probe.py` -> 
 T1 gates evaluate historical T1_END snapshots, so they are unaffected (PASS). Extractor now also skips module-identity dependent bodies (`__name__` / `_r3_sys` would bind to the owner): a first attempt without that rule broke 70+ consumer tests (memory parts received the owner module as facade) and was reverted before commit.
 Focused run after fix: R-4/R-5 proof 360+ PASS; 1722 PASS / 11 FAIL = scope-negative example + v2 ledger (both test maintenance, fixed: 74 PASS) + T3 window (shared, patch v2 verified 15/15 in isolated clone) + 8 `test_uef2a_forward_policy_contract` failures that are identical on d17d33c/aaeb8a0 (pre-existing, unrelated).
 Closed scope set extended explicitly by R5_FACADE_FILES/R5_OWNER_FILES; ledger test pins 70 moves and the exact 8 facade-owner pairs; negative example now `single_trade_report.py`.
+
+## R-6 — pure bodies of I/O-mixed Reporter modules (66 bodies; effect/identity-dependent bodies stay)
+| Module | Bodies | LOC before -> after | Owner |
+|---|---|---|---|
+| trade_explain.py | 8 | 904 -> 556 | narrative/trade_explain_bodies_01.py |
+| trade_bundle_assembly.py | 13 | 1890 -> 1451 | read_models/bundle_assembly_bodies_01.py |
+| trade_bundle_state.py | 13 | 826 -> 590 | read_models/bundle_state_bodies_01.py |
+| trade_lifecycle_builder.py | 12 | 973 -> 801 | read_models/lifecycle_builder_bodies_01.py |
+| single_trade_report.py | 8 | 920 -> 857 | narrative/single_trade_report_bodies_01.py |
+| trade_story_pipeline_provenance.py | 12 | 227 -> 83 | narrative/story_provenance_bodies_01.py |
+R-5 final LOC: deterministic 749->440, compact_input 418->95, read_model 1356->741, memory_surface 393->249, memory_application 392->108.
+Proof: R-4..R-6 proof suite 696 PASS (136 moves). Focused consumers + facade/T1/T2 gates: 1845 PASS / 0 FAIL. T3 patch v3 (adds R-6 owners) verified 15/15 in isolated clone.

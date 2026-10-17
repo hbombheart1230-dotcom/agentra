@@ -1,5 +1,5 @@
 diff --git a/tests/test_p159_current_owner_contract_gates.py b/tests/test_p159_current_owner_contract_gates.py
-index f748eff4..988880a3 100644
+index f748eff4..da14edcf 100644
 --- a/tests/test_p159_current_owner_contract_gates.py
 +++ b/tests/test_p159_current_owner_contract_gates.py
 @@ -181,8 +181,10 @@ def test_facade_symbol_breadth_did_not_increase_for_converted_owners():
@@ -15,7 +15,7 @@ index f748eff4..988880a3 100644
      forbidden = ("libs/execution/", "libs/broker/", "libs/supervisor/", "libs/risk/", "libs/llm/",
                   "graphs/nodes/execute_from_packet.py", "graphs/nodes/decide_trade.py",
                   "graphs/nodes/update_state_after_execution.py", "libs/runtime/controlled_mock_lanes/",
-@@ -193,6 +195,33 @@ def test_t3_changed_paths_contain_no_authority_surface():
+@@ -193,6 +195,40 @@ def test_t3_changed_paths_contain_no_authority_surface():
          assert not re.search(r"bodies_0\d\.py$", p), f"numbered body touched: {p}"
  
  
@@ -28,7 +28,14 @@ index f748eff4..988880a3 100644
 +                          "libs/agents/reporter/read_models/read_model_bodies_01.py",
 +                          "libs/agents/reporter/read_models/read_model_bodies_02.py",
 +                          "libs/agents/reporter/read_models/memory_surface_bodies_01.py",
-+                          "libs/agents/reporter/read_models/memory_application_bodies_01.py"}
++                          "libs/agents/reporter/read_models/memory_application_bodies_01.py",
++                          # R-6 (pure bodies of I/O-mixed Reporter modules; same proof)
++                          "libs/agents/reporter/narrative/trade_explain_bodies_01.py",
++                          "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py",
++                          "libs/agents/reporter/read_models/bundle_state_bodies_01.py",
++                          "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py",
++                          "libs/agents/reporter/narrative/single_trade_report_bodies_01.py",
++                          "libs/agents/reporter/narrative/story_provenance_bodies_01.py"}
 +
 +
 +def test_t3_protected_facades_after_base_only_change_by_approved_r4():

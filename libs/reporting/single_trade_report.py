@@ -46,6 +46,17 @@ from libs.reporting.trade_story_pipeline import (
     build_timeline,
     build_trade_story_input_from_bundle,
 )
+import sys as _r3_sys
+from libs.agents.reporter.narrative.single_trade_report_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _safe_float_r4_impl,
+    _safe_int_r4_impl,
+    _trade_report_policy_r4_impl,
+    _null_execution_details_r4_impl,
+    _execution_details_from_state_r4_impl,
+    _entry_strategist_context_r4_impl,
+    _build_monitor_snapshot_r4_impl,
+    _format_duration_r4_impl,
+)
 
 
 def _root_dir() -> Path:
@@ -61,21 +72,11 @@ def _normalize_symbol(value: Any) -> str:
 
 
 def _safe_float(value: Any) -> float | None:
-    try:
-        if value in (None, "", []):
-            return None
-        return float(value)
-    except Exception:
-        return None
+    return _safe_float_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _safe_int(value: Any) -> int | None:
-    try:
-        if value in (None, "", []):
-            return None
-        return int(float(value))
-    except Exception:
-        return None
+    return _safe_int_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _json_sha256(payload: Any) -> str:
@@ -220,48 +221,15 @@ def _execution_ok(state: Dict[str, Any]) -> bool:
 
 
 def _trade_report_policy(state: Dict[str, Any]) -> Dict[str, Any]:
-    applied_policy = state.get("applied_policy") if isinstance(state.get("applied_policy"), dict) else {}
-    reporter = applied_policy.get("reporter") if isinstance(applied_policy.get("reporter"), dict) else {}
-    trade_report = reporter.get("trade_report") if isinstance(reporter.get("trade_report"), dict) else {}
-    if trade_report:
-        return dict(trade_report)
-    commander = state.get("commander_decision") if isinstance(state.get("commander_decision"), dict) else {}
-    commander_policy = commander.get("applied_policy") if isinstance(commander.get("applied_policy"), dict) else {}
-    commander_reporter = commander_policy.get("reporter") if isinstance(commander_policy.get("reporter"), dict) else {}
-    commander_trade_report = (
-        commander_reporter.get("trade_report")
-        if isinstance(commander_reporter.get("trade_report"), dict)
-        else {}
-    )
-    return dict(commander_trade_report or {})
+    return _trade_report_policy_r4_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _null_execution_details() -> Dict[str, Any]:
-    return {
-        "order_status": None,
-        "order_id": None,
-        "execution_mode": None,
-        "broker_env": None,
-        "filled_qty": None,
-        "avg_price": None,
-    }
+    return _null_execution_details_r4_impl(facade=_r3_sys.modules[__name__])
 
 
 def _execution_details_from_state(state: Dict[str, Any]) -> Dict[str, Any]:
-    execution = _execution_payload(state)
-    monitor = state.get("monitor_output") if isinstance(state.get("monitor_output"), dict) else {}
-    synthetic_bundle = {
-        "execution": dict(execution),
-        "executor": dict(execution),
-        "monitor": dict(monitor),
-    }
-    return build_execution_details(
-        synthetic_bundle,
-        context={
-            "monitor_context": dict(monitor),
-            "execution_context": dict(execution),
-        },
-    )
+    return _execution_details_from_state_r4_impl(state, facade=_r3_sys.modules[__name__])
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
@@ -324,46 +292,15 @@ def build_single_trade_report_id(state: Dict[str, Any], *, root: Path | None = N
 
 
 def _entry_strategist_context(state: Dict[str, Any], symbol: str) -> Dict[str, Any]:
-    persisted = state.get("persisted_state") if isinstance(state.get("persisted_state"), dict) else {}
-    strategy_map = (
-        persisted.get("position_strategy_context")
-        if isinstance(persisted.get("position_strategy_context"), dict)
-        else {}
-    )
-    stored = strategy_map.get(symbol) if isinstance(strategy_map.get(symbol), dict) else {}
-    output = stored.get("output") if isinstance(stored.get("output"), dict) else {}
-    if output:
-        return dict(output)
-    strategist = state.get("strategist_output") if isinstance(state.get("strategist_output"), dict) else {}
-    return dict(strategist)
+    return _entry_strategist_context_r4_impl(state, symbol, facade=_r3_sys.modules[__name__])
 
 
 def _build_monitor_snapshot(monitor: Dict[str, Any], *, symbol: str, run_id: str, ts: str) -> Dict[str, Any]:
-    return {
-        "run_id": str(run_id or ""),
-        "ts": str(ts or ""),
-        "symbol": str(symbol or ""),
-        "decision": str(monitor.get("decision") or ""),
-        "decision_summary": str(monitor.get("decision_summary") or ""),
-        "primary_reason_code": str(monitor.get("primary_reason_code") or monitor.get("no_trade_reason_code") or ""),
-        "current_price": monitor.get("current_price"),
-        "avg_price": (
-            ((monitor.get("position_snapshot") or {}) if isinstance(monitor.get("position_snapshot"), dict) else {}).get("avg_price")
-        ),
-        "qty": (
-            ((monitor.get("position_snapshot") or {}) if isinstance(monitor.get("position_snapshot"), dict) else {}).get("qty")
-        ),
-        "position_age_seconds": monitor.get("position_age_seconds"),
-    }
+    return _build_monitor_snapshot_r4_impl(monitor, symbol=symbol, run_id=run_id, ts=ts, facade=_r3_sys.modules[__name__])
 
 
 def _format_duration(seconds: int | None) -> str:
-    total = max(0, int(seconds or 0))
-    mins, sec = divmod(total, 60)
-    hours, mins = divmod(mins, 60)
-    if hours:
-        return f"{hours:02d}:{mins:02d}:{sec:02d}"
-    return f"00:{mins:02d}:{sec:02d}"
+    return _format_duration_r4_impl(seconds, facade=_r3_sys.modules[__name__])
 
 
 def _build_trade_report_inputs(

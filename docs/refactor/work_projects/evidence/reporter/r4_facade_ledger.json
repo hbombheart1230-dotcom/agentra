@@ -351,6 +351,336 @@
    "path": "libs/reporting/trade_memory_application_surface.py",
    "name": "build_trade_memory_application_surface",
    "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_explain.py",
+   "name": "_to_epoch",
+   "r4_owner": "libs/agents/reporter/narrative/trade_explain_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_explain.py",
+   "name": "_extract_news_items",
+   "r4_owner": "libs/agents/reporter/narrative/trade_explain_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_explain.py",
+   "name": "_extract_decision_context",
+   "r4_owner": "libs/agents/reporter/narrative/trade_explain_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_explain.py",
+   "name": "_run_context_default",
+   "r4_owner": "libs/agents/reporter/narrative/trade_explain_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_explain.py",
+   "name": "_build_run_contexts",
+   "r4_owner": "libs/agents/reporter/narrative/trade_explain_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_explain.py",
+   "name": "_apply_commander_route_overlay",
+   "r4_owner": "libs/agents/reporter/narrative/trade_explain_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_explain.py",
+   "name": "_build_execution_rows",
+   "r4_owner": "libs/agents/reporter/narrative/trade_explain_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_explain.py",
+   "name": "_build_sell_pairs_fifo",
+   "r4_owner": "libs/agents/reporter/narrative/trade_explain_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_latest_exit_monitor_context_from_timeline",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_latest_exit_monitor_context_from_timeline",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_resolve_trade_day_hint",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_normalize_broker_lookup_side",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_attach_broker_order_status",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "build_execution_details_from_bundle",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_has_meaningful_payload",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_prefer_canonical_payload",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "preferred_run_ids_for_agent",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_is_placeholder_entry_reason",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "build_strategist_trace_summary_mirror",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "build_scanner_trace_summary_mirror",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_trace_summary_context",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "_safe_float",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "_first_positive",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "_exit_monitor_reference_price",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "_backfill_execution_fields",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "build_component_fingerprint",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "build_ai_trade_report_generation_component",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "build_operator_brief_generation_component",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "build_generation_state",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "_source_type",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "build_bundle_provenance",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "build_bundle_health",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "finalize_bundle_health",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "name": "build_trade_bundle_state",
+   "r4_owner": "libs/agents/reporter/read_models/bundle_state_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_is_placeholder_entry_reason",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_to_epoch",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_format_duration_human",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_trade_id_sequence",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_extract_lifecycle_entry",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_extract_lifecycle_exit",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_extract_lifecycle_holding",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_snapshot_execution_debug",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_has_substantive_entry_evidence",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_holding_partial_exit_total",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_exit_closure_quantity_state",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_record_partial_exit",
+   "r4_owner": "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/single_trade_report.py",
+   "name": "_safe_float",
+   "r4_owner": "libs/agents/reporter/narrative/single_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/single_trade_report.py",
+   "name": "_safe_int",
+   "r4_owner": "libs/agents/reporter/narrative/single_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/single_trade_report.py",
+   "name": "_trade_report_policy",
+   "r4_owner": "libs/agents/reporter/narrative/single_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/single_trade_report.py",
+   "name": "_null_execution_details",
+   "r4_owner": "libs/agents/reporter/narrative/single_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/single_trade_report.py",
+   "name": "_execution_details_from_state",
+   "r4_owner": "libs/agents/reporter/narrative/single_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/single_trade_report.py",
+   "name": "_entry_strategist_context",
+   "r4_owner": "libs/agents/reporter/narrative/single_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/single_trade_report.py",
+   "name": "_build_monitor_snapshot",
+   "r4_owner": "libs/agents/reporter/narrative/single_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/single_trade_report.py",
+   "name": "_format_duration",
+   "r4_owner": "libs/agents/reporter/narrative/single_trade_report_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "_source_confidence_label",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "_is_present",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "compute_evidence_completeness",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "_safe_ref_map",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "_resolve_commander_source_ref",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "_commander_reasoning_flag",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "_commander_reasoning_source_priority",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "build_commander_evidence",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "_section_source_entry",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "build_section_provenance",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "_section_seed_provenance_entry",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "name": "build_report_section_provenance_seeds",
+   "r4_owner": "libs/agents/reporter/narrative/story_provenance_bodies_01.py"
   }
  ],
  "skipped": {
@@ -778,7 +1108,77 @@
    "_load_json_artifact": "effect/authority token: Path",
    "_first_non_empty_dict": "short",
    "_monitor_bias_carrier": "already thin delegation"
+  },
+  "libs/reporting/trade_explain.py": {
+   "_safe_int": "short",
+   "_safe_float": "short",
+   "_normalize_live_symbol": "already thin delegation",
+   "_utc_day": "short",
+   "_iter_jsonl": "effect/authority token: Path",
+   "_latest_day": "effect/authority token: Path",
+   "_canonical_report_root": "effect/authority token: Path",
+   "official_trade_explain_report_dir": "short",
+   "build_trade_explain_output_path_metadata": "effect/authority token: Path",
+   "_report_inventory": "effect/authority token: Path",
+   "_to_markdown": "effect/authority token: Path",
+   "generate_trade_explain_report": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_bundle_assembly.py": {
+   "_coalesce_non_empty": "short",
+   "_broker_fill_lookup_enabled": "effect/authority token: os.",
+   "_broker_order_status_payload": "effect/authority token: kiwoom",
+   "resolve_lifecycle_bundle_sources": "effect/authority token: Path",
+   "attach_strategy_anchor": "effect/authority token: Path",
+   "apply_strategy_anchor_metadata": "effect/authority token: Path",
+   "build_live_run_bundle": "effect/authority token: Path",
+   "hydrate_live_run_bundle_context": "effect/authority token: Path",
+   "apply_entry_exit_holding_enrichment": "effect/authority token: Path",
+   "apply_live_trade_context": "effect/authority token: Path",
+   "derive_trade_recovery_metadata": "effect/authority token: open",
+   "apply_final_trade_report_context": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_bundle_state.py": {
+   "_utc_now_iso": "already thin delegation",
+   "stable_json_text": "already thin delegation",
+   "payload_fingerprint": "short",
+   "_normalize_story_input_for_fingerprint": "short",
+   "build_live_trade_bundle_payloads": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_lifecycle_builder.py": {
+   "_read_json_if_exists": "effect/authority token: Path",
+   "_build_trade_id": "short",
+   "_load_existing_open_lifecycle_candidates": "effect/authority token: Path",
+   "_add_existing_open_lifecycle_candidate": "effect/authority token: Path",
+   "_build_lifecycle_from_seed": "effect/authority token: open",
+   "_build_trade_lifecycles": "effect/authority token: open",
+   "has_substantive_entry_evidence": "already thin delegation",
+   "load_existing_open_lifecycle_candidates": "already thin delegation",
+   "build_trade_lifecycles": "already thin delegation"
+  },
+  "libs/reporting/single_trade_report.py": {
+   "_root_dir": "short",
+   "_utc_iso": "already thin delegation",
+   "_normalize_symbol": "already thin delegation",
+   "_json_sha256": "already thin delegation",
+   "_execution_payload": "short",
+   "_execution_order": "short",
+   "_execution_action": "short",
+   "_execution_symbol": "short",
+   "_load_json_dict": "effect/authority token: Path",
+   "_resolve_trade_day": "effect/authority token: Path",
+   "_same_day_reporter_paths": "effect/authority token: Path",
+   "_build_canonical_context": "effect/authority token: Path",
+   "_execution_ok": "short",
+   "_read_json": "effect/authority token: Path",
+   "_matching_trade_dirs": "effect/authority token: Path",
+   "_find_open_trade_id": "effect/authority token: Path",
+   "build_single_trade_report_id": "effect/authority token: Path",
+   "_build_trade_report_inputs": "effect/authority token: Path",
+   "generate_single_trade_report": "effect/authority token: Path"
+  },
+  "libs/reporting/trade_story_pipeline_provenance.py": {
+   "_safe_path_text": "already thin delegation"
   }
  },
- "expected_moves": 70
+ "expected_moves": 136
 }
