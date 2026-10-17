@@ -1,5 +1,8 @@
 # WORK — P1.5 Architect, Technical Lead, Reviewer and Integrator (Corrected)
 
+> **ARCHIVED AS ACTIVE EXECUTION ORDER (2026-10-17):** This document is retained for Work-era evidence/history. It does NOT prescribe an always-on/scheduled Work process or block worker progress. Active workflow: [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md): ordinary ChatGPT is architect on demand, Codex owns shared integration once Monitor safe local work finishes, Claude independent reviewer. Hourly Work automation has been DISABLED by operator; do NOT re-enable.
+
+
 ## 2026-10-17 PROGRAM RELAY AND HOURLY REVIEW
 
 Read [10_P15_CONTINUOUS_ROLE_RELAY.md](10_P15_CONTINUOUS_ROLE_RELAY.md) as the latest P1.5 continuation policy. Work must not define project completion as Reporter R10 or Monitor M9 local safe-scope complete. Progress the actual shared T3/T4/CI+UI integration candidate while Reporter/Monitor finish verification, then prepare whole-role Strategist and Scanner narrow implementation charters. Claude/Strategist and Codex/Scanner may perform read-only design on isolated evidence branches after local role acceptance, but no new-role policy source changes until exact Work scope agreement. Work's hourly review automation is an independent recurring GitHub review attempt, not a Work-cloud-computer or Claude/Codex process launch. The standalone local CLI runner prototype is not deployed; see infra/p15-continuity-runner-20261017 delivery manifest and the changed-only ZIP. Do not assert '24/7 worker' from docs. STOP for P0 and approved budget limits, NOT for every checkpoint.
