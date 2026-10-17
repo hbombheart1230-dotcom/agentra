@@ -1,0 +1,1377 @@
+{
+  "schema": "work.monitor.path_ledger.v1",
+  "runtime_base": "d773709ba2f70471fad9badba4f92400f7818319",
+  "start_sha": "eeb742a33b16f6271ff364a904e187b470561c7e",
+  "branch": "work/monitor-role-20261017",
+  "status": "IMPLEMENTING",
+  "maps": [
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_event_payloads.py",
+      "destination": "libs/agents/monitor/events/cycle_event_payloads.py",
+      "base_blob": "633f9afbb422c6970cb1597aecb5e24b358d5481",
+      "loc": 136,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "build_monitor_raw_input_snapshot",
+        "build_state_transition_event_payload",
+        "build_cycle_summary_event_payload",
+        "build_decision_bridge_raw_input"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:275:from libs.runtime.monitor.cycle_event_payloads import (",
+        "graphs\\nodes\\monitor_node.py:276:    build_monitor_raw_input_snapshot,",
+        "graphs\\nodes\\monitor_node.py:277:    build_state_transition_event_payload,",
+        "graphs\\nodes\\monitor_node.py:278:    build_cycle_summary_event_payload,",
+        "graphs\\nodes\\monitor_node.py:279:    build_decision_bridge_raw_input,",
+        "graphs\\nodes\\monitor_node.py:705:            raw_input=build_monitor_raw_input_snapshot(all_pos_map=all_pos_map, commander_context=commander_context, commander_entry_control=commander_entry_control, monitor_policy=monitor_policy, open_position_count=open_position_count, selected=selected, strategist_output=strategist_output, strategist_plan=strategist_plan, facade=_r3_sys.modules[__name__]),",
+        "graphs\\nodes\\monitor_node.py:983:        payload=build_state_transition_event_payload(current_posture=current_posture, current_reason=current_reason, entry_info=entry_info, entry_transition_trace=entry_transition_trace, exit_info=exit_info, previous_monitor_state=previous_monitor_state, previous_posture=previous_posture, previous_reason=previous_reason, state_changed=state_changed),",
+        "graphs\\nodes\\monitor_node.py:1072:        payload=build_cycle_summary_event_payload(buy_blocked_closeout_window=buy_blocked_closeout_window, buy_blocked_open_position=buy_blocked_open_position, buy_blocked_post_exit_cooldown=buy_blocked_post_exit_cooldown, current_posture=current_posture, current_reason=current_reason, entry_blocker_surface=entry_blocker_surface, entry_info=entry_info, exit_info=exit_info, intents=intents, monitor_symbol=monitor_symbol, open_position_count=open_position_count, selected=selected, state=state),",
+        "graphs\\nodes\\monitor_node.py:1090:            raw_input=build_decision_bridge_raw_input(intents=intents, monitor_policy=monitor_policy, selected=selected, facade=_r3_sys.modules[__name__]),",
+        "libs\\runtime\\monitor\\cycle_event_payloads.py:11:def build_monitor_raw_input_snapshot(all_pos_map, commander_context, commander_entry_control, monitor_policy, open_position_count, selected, strategist_output, strategist_plan, *, facade):",
+        "libs\\runtime\\monitor\\cycle_event_payloads.py:63:def build_state_transition_event_payload(current_posture, current_reason, entry_info, entry_transition_trace, exit_info, previous_monitor_state, previous_posture, previous_reason, state_changed):",
+        "libs\\runtime\\monitor\\cycle_event_payloads.py:84:def build_cycle_summary_event_payload(buy_blocked_closeout_window, buy_blocked_open_position, buy_blocked_post_exit_cooldown, current_posture, current_reason, entry_blocker_surface, entry_info, exit_info, intents, monitor_symbol, open_position_count, selected, state):",
+        "libs\\runtime\\monitor\\cycle_event_payloads.py:117:def build_decision_bridge_raw_input(intents, monitor_policy, selected, *, facade):"
+      ],
+      "facade_lookups": [
+        "_to_int"
+      ],
+      "effects": "Fresh output construction and existing facade lookups at use time. No IO/env/clock import, persistence, intent creation or Broker/LLM calls added; complete implementation blob unchanged.",
+      "alias_contract": "Shallow copies/direct nested aliases preserved, NOT deep immutability; frozen hashes include alias paths and input mutation.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_log_trace_payloads.py",
+      "destination": "libs/agents/monitor/events/cycle_log_trace_payloads.py",
+      "base_blob": "51fa078349e005052afb0e3f83ac3c84780bbcf2",
+      "loc": 171,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "build_monitor_summary_log_payload",
+        "build_entry_exit_decision_trace_payload"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:281:from libs.runtime.monitor.cycle_log_trace_payloads import (",
+        "graphs\\nodes\\monitor_node.py:282:    build_monitor_summary_log_payload,",
+        "graphs\\nodes\\monitor_node.py:283:    build_entry_exit_decision_trace_payload,",
+        "graphs\\nodes\\monitor_node.py:1077:        build_monitor_summary_log_payload(block_buy_open_position=block_buy_open_position, buy_blocked_closeout_window=buy_blocked_closeout_window, buy_blocked_open_position=buy_blocked_open_position, buy_blocked_post_exit_cooldown=buy_blocked_post_exit_cooldown, entry_blocker_surface=entry_blocker_surface, entry_info=entry_info, exit_info=exit_info, fallback_reasons=fallback_reasons, final_entry_decision=final_entry_decision, intents=intents, monitor_no_trade_surface=monitor_no_trade_surface, open_position_count=open_position_count, post_exit_cooldown_remaining_sec=post_exit_cooldown_remaining_sec, post_exit_cooldown_sec=post_exit_cooldown_sec, scanner_monitor_handoff=scanner_monitor_handoff, selected=selected, sizing_info=sizing_info),",
+        "graphs\\nodes\\monitor_node.py:1083:        payload=build_entry_exit_decision_trace_payload(entry_applied_policy=entry_applied_policy, entry_info=entry_info, entry_policy_origin=entry_policy_origin, entry_received_policy=entry_received_policy, exit_info=exit_info, monitor_policy_trace=monitor_policy_trace, selected=selected, state=state),",
+        "libs\\runtime\\monitor\\cycle_log_trace_payloads.py:11:def build_monitor_summary_log_payload(block_buy_open_position, buy_blocked_closeout_window, buy_blocked_open_position, buy_blocked_post_exit_cooldown, entry_blocker_surface, entry_info, exit_info, fallback_reasons, final_entry_decision, intents, monitor_no_trade_surface, open_position_count, post_exit_cooldown_remaining_sec, post_exit_cooldown_sec, scanner_monitor_handoff, selected, sizing_info):",
+        "libs\\runtime\\monitor\\cycle_log_trace_payloads.py:100:def build_entry_exit_decision_trace_payload(entry_applied_policy, entry_info, entry_policy_origin, entry_received_policy, exit_info, monitor_policy_trace, selected, state):"
+      ],
+      "facade_lookups": [],
+      "effects": "Fresh output construction and existing facade lookups at use time. No IO/env/clock import, persistence, intent creation or Broker/LLM calls added; complete implementation blob unchanged.",
+      "alias_contract": "Shallow copies/direct nested aliases preserved, NOT deep immutability; frozen hashes include alias paths and input mutation.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_detail_projection.py",
+      "destination": "libs/agents/monitor/projections/cycle_detail_projection.py",
+      "base_blob": "9630c66ffd9b34c3e7a99804f158ecb6f6d2bf18",
+      "loc": 192,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "cycle_detail_entry_candidate_symbol_entry_cost_filter",
+        "cycle_detail_entry_decision_detail",
+        "cycle_detail_scoring_event_payload"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:210:from libs.runtime.monitor.cycle_detail_projection import (",
+        "graphs\\nodes\\monitor_node.py:211:    cycle_detail_entry_candidate_symbol_entry_cost_filter,",
+        "graphs\\nodes\\monitor_node.py:212:    cycle_detail_entry_decision_detail,",
+        "graphs\\nodes\\monitor_node.py:213:    cycle_detail_scoring_event_payload,",
+        "graphs\\nodes\\monitor_node.py:215:from libs.runtime.monitor.cycle_detail_projection_exit_decision_detail import (",
+        "graphs\\nodes\\monitor_node.py:1005:    entry_candidate_symbol, entry_cost_filter_snapshot, entry_final_symbol, monitor_focus_context, monitor_focus_mode, monitor_output_symbol, position_focus_symbol, scanner_selected_symbol = cycle_detail_entry_candidate_symbol_entry_cost_filter(scanner_monitor_handoff=scanner_monitor_handoff, scanner_selected_snapshot=scanner_selected_snapshot, entry_info=entry_info, selected=selected, entry_candidate_cascade=entry_candidate_cascade, exit_info=exit_info, monitor_symbol=monitor_symbol, final_entry_decision=final_entry_decision, open_position_count=open_position_count, max_positions=max_positions, held_symbols_for_entry=held_symbols_for_entry, pending_buy_symbols_for_entry=pending_buy_symbols_for_entry, buy_submitted=buy_submitted, facade=_r3_sys.modules[__name__])",
+        "graphs\\nodes\\monitor_node.py:1022:    entry_decision_detail = cycle_detail_entry_decision_detail(final_entry_decision=final_entry_decision, buy_skipped_reason=buy_skipped_reason, entry_event_metrics=entry_event_metrics, scanner_selected_symbol=scanner_selected_symbol, entry_candidate_symbol=entry_candidate_symbol, entry_final_symbol=entry_final_symbol, position_focus_symbol=position_focus_symbol, monitor_output_symbol=monitor_output_symbol, monitor_focus_mode=monitor_focus_mode, buy_submitted=buy_submitted, entry_applied_policy=entry_applied_policy, monitor_no_trade_surface=monitor_no_trade_surface, scanner_monitor_handoff=scanner_monitor_handoff, entry_candidate_cascade=entry_candidate_cascade, entry_blocker_surface=entry_blocker_surface, quant_entry_factor_snapshot=quant_entry_factor_snapshot, quant_entry_decision=quant_entry_decision, quant_entry_enforcement=quant_entry_enforcement, monitor_focus_context=monitor_focus_context, entry_policy_contract=entry_policy_contract, entry_info=entry_info, monitor_policy_trace=monitor_policy_trace, facade=_r3_sys.modules[__name__])[0]",
+        "graphs\\nodes\\monitor_node.py:1031:    scoring_event_payload = cycle_detail_scoring_event_payload(final_entry_decision=final_entry_decision, monitor_no_trade_surface=monitor_no_trade_surface, scanner_monitor_handoff=scanner_monitor_handoff, entry_blocker_surface=entry_blocker_surface, monitor_symbol=monitor_symbol, entry_symbol=entry_symbol, entry_info=entry_info, state=state, facade=_r3_sys.modules[__name__])[0]",
+        "libs\\runtime\\monitor\\cycle_detail_projection.py:12:def cycle_detail_entry_candidate_symbol_entry_cost_filter(scanner_monitor_handoff, scanner_selected_snapshot, entry_info, selected, entry_candidate_cascade, exit_info, monitor_symbol, final_entry_decision, open_position_count, max_positions, held_symbols_for_entry, pending_buy_symbols_for_entry, buy_submitted, *, facade):",
+        "libs\\runtime\\monitor\\cycle_detail_projection.py:79:def cycle_detail_entry_decision_detail(final_entry_decision, buy_skipped_reason, entry_event_metrics, scanner_selected_symbol, entry_candidate_symbol, entry_final_symbol, position_focus_symbol, monitor_output_symbol, monitor_focus_mode, buy_submitted, entry_applied_policy, monitor_no_trade_surface, scanner_monitor_handoff, entry_candidate_cascade, entry_blocker_surface, quant_entry_factor_snapshot, quant_entry_decision, quant_entry_enforcement, monitor_focus_context, entry_policy_contract, entry_info, monitor_policy_trace, *, facade):",
+        "libs\\runtime\\monitor\\cycle_detail_projection.py:164:def cycle_detail_scoring_event_payload(final_entry_decision, monitor_no_trade_surface, scanner_monitor_handoff, entry_blocker_surface, monitor_symbol, entry_symbol, entry_info, state, *, facade):"
+      ],
+      "facade_lookups": [],
+      "effects": "Fresh output construction and existing facade lookups at use time. No IO/env/clock import, persistence, intent creation or Broker/LLM calls added; complete implementation blob unchanged.",
+      "alias_contract": "Shallow copies/direct nested aliases preserved, NOT deep immutability; frozen hashes include alias paths and input mutation.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_output_projection.py",
+      "destination": "libs/agents/monitor/projections/cycle_output_projection.py",
+      "base_blob": "26db1a162a9e55fc8ea9b187bcd74f3576308d40",
+      "loc": 285,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "cycle_output_value_state_monitor",
+        "cycle_output_monitor_entry_exit_reason_quant_entry_de"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:197:from libs.runtime.monitor.cycle_output_projection import (",
+        "graphs\\nodes\\monitor_node.py:198:    cycle_output_value_state_monitor,",
+        "graphs\\nodes\\monitor_node.py:199:    cycle_output_monitor_entry_exit_reason_quant_entry_de,",
+        "graphs\\nodes\\monitor_node.py:201:from libs.runtime.monitor.cycle_output_projection_value_state_monitor import (",
+        "graphs\\nodes\\monitor_node.py:202:    cycle_output_value_state_monitor_output,",
+        "graphs\\nodes\\monitor_node.py:908:    state[\"monitor\"] = cycle_output_value_state_monitor(order_status=order_status, fallback_reasons=fallback_reasons, order_lifecycle=order_lifecycle, intents=intents, open_position_count=open_position_count, max_positions=max_positions, block_buy_open_position=block_buy_open_position, buy_blocked_open_position=buy_blocked_open_position, buy_blocked_same_symbol=buy_blocked_same_symbol, buy_blocked_pending_buy=buy_blocked_pending_buy, max_positions_reached=max_positions_reached, buy_blocked_closeout_window=buy_blocked_closeout_window, post_exit_cooldown_sec=post_exit_cooldown_sec, buy_blocked_post_exit_cooldown=buy_blocked_post_exit_cooldown, post_exit_cooldown_remaining_sec=post_exit_cooldown_remaining_sec, entry_applied_policy=entry_applied_policy, commander_memory_application_trace=commander_memory_application_trace, entry_candidate_cascade=entry_candidate_cascade, selected=selected, exit_info=exit_info, entry_info=entry_info, entry_received_policy=entry_received_policy, entry_policy_origin=entry_policy_origin, entry_policy_contract=entry_policy_contract, order_status_meta=order_status_meta, sizing_info=sizing_info, state=state, facade=_r3_sys.modules[__name__])",
+        "graphs\\nodes\\monitor_node.py:909:    monitor_entry_exit_reason, quant_entry_decision, quant_entry_enforcement, quant_entry_factor_snapshot, quant_exit_decision = cycle_output_monitor_entry_exit_reason_quant_entry_de(buy_blocked_post_exit_cooldown=buy_blocked_post_exit_cooldown, buy_blocked_closeout_window=buy_blocked_closeout_window, exit_info=exit_info, buy_blocked_pending_buy=buy_blocked_pending_buy, buy_blocked_same_symbol=buy_blocked_same_symbol, max_positions_reached=max_positions_reached, buy_blocked_open_position=buy_blocked_open_position, entry_info=entry_info, strategist_output=strategist_output, strategist_plan=strategist_plan, selected=selected, state=state, facade=_r3_sys.modules[__name__])",
+        "graphs\\nodes\\monitor_node.py:914:    state[\"monitor_output\"] = cycle_output_value_state_monitor_output(monitor_entry_exit_reason=monitor_entry_exit_reason, intents=intents, entry_candidate_cascade=entry_candidate_cascade, quant_entry_factor_snapshot=quant_entry_factor_snapshot, quant_entry_decision=quant_entry_decision, quant_entry_enforcement=quant_entry_enforcement, quant_exit_decision=quant_exit_decision, selected=selected, entry_info=entry_info, exit_info=exit_info, facade=_r3_sys.modules[__name__])",
+        "libs\\runtime\\monitor\\cycle_output_projection_value_state_monitor.py:12:def cycle_output_value_state_monitor_output(monitor_entry_exit_reason, intents, entry_candidate_cascade, quant_entry_factor_snapshot, quant_entry_decision, quant_entry_enforcement, quant_exit_decision, selected, entry_info, exit_info, *, facade):",
+        "libs\\runtime\\monitor\\cycle_output_projection.py:12:def cycle_output_value_state_monitor(order_status, fallback_reasons, order_lifecycle, intents, open_position_count, max_positions, block_buy_open_position, buy_blocked_open_position, buy_blocked_same_symbol, buy_blocked_pending_buy, max_positions_reached, buy_blocked_closeout_window, post_exit_cooldown_sec, buy_blocked_post_exit_cooldown, post_exit_cooldown_remaining_sec, entry_applied_policy, commander_memory_application_trace, entry_candidate_cascade, selected, exit_info, entry_info, entry_received_policy, entry_policy_origin, entry_policy_contract, order_status_meta, sizing_info, state, *, facade):",
+        "libs\\runtime\\monitor\\cycle_output_projection.py:222:def cycle_output_monitor_entry_exit_reason_quant_entry_de(buy_blocked_post_exit_cooldown, buy_blocked_closeout_window, exit_info, buy_blocked_pending_buy, buy_blocked_same_symbol, max_positions_reached, buy_blocked_open_position, entry_info, strategist_output, strategist_plan, selected, state, *, facade):"
+      ],
+      "facade_lookups": [
+        "SKILL_CONTRACT_VERSION",
+        "build_entry_quant_decision",
+        "build_entry_quant_enforcement",
+        "build_exit_quant_decision",
+        "build_factor_snapshot_from_monitor_entry"
+      ],
+      "effects": "Output/reason precedence and existing quant DTO callbacks unchanged. Does not create OrderIntent or execute admission, guard, broker or persistence. Callbacks and their existing decision/read-model authority stay at their current owners.",
+      "alias_contract": "order_status/order_lifecycle/fallback_reasons direct aliases and quant callback returns unchanged.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_output_projection_value_state_monitor.py",
+      "destination": "libs/agents/monitor/projections/cycle_output_projection_value_state_monitor.py",
+      "base_blob": "97831983e7d5ab78b0b90e89a10298f16be45510",
+      "loc": 37,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "cycle_output_value_state_monitor_output"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:201:from libs.runtime.monitor.cycle_output_projection_value_state_monitor import (",
+        "graphs\\nodes\\monitor_node.py:202:    cycle_output_value_state_monitor_output,",
+        "graphs\\nodes\\monitor_node.py:914:    state[\"monitor_output\"] = cycle_output_value_state_monitor_output(monitor_entry_exit_reason=monitor_entry_exit_reason, intents=intents, entry_candidate_cascade=entry_candidate_cascade, quant_entry_factor_snapshot=quant_entry_factor_snapshot, quant_entry_decision=quant_entry_decision, quant_entry_enforcement=quant_entry_enforcement, quant_exit_decision=quant_exit_decision, selected=selected, entry_info=entry_info, exit_info=exit_info, facade=_r3_sys.modules[__name__])",
+        "libs\\runtime\\monitor\\cycle_output_projection_value_state_monitor.py:12:def cycle_output_value_state_monitor_output(monitor_entry_exit_reason, intents, entry_candidate_cascade, quant_entry_factor_snapshot, quant_entry_decision, quant_entry_enforcement, quant_exit_decision, selected, entry_info, exit_info, *, facade):"
+      ],
+      "facade_lookups": [],
+      "effects": "Fresh output construction and existing facade lookups at use time. No IO/env/clock import, persistence, intent creation or Broker/LLM calls added; complete implementation blob unchanged.",
+      "alias_contract": "Shallow copies/direct nested aliases preserved, NOT deep immutability; frozen hashes include alias paths and input mutation.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/cycle_posture_projection.py",
+      "destination": "libs/agents/monitor/projections/cycle_posture_projection.py",
+      "base_blob": "2ed727fb946b3055e64d1745f80fae61808cee6a",
+      "loc": 253,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "cycle_posture_entry_applied_policy_entry_metrics",
+        "cycle_posture_threshold_snapshot",
+        "cycle_posture_value_te_monitor_state_transition",
+        "cycle_posture_buy_skipped_reason_entry_event_metrics"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:204:from libs.runtime.monitor.cycle_posture_projection import (",
+        "graphs\\nodes\\monitor_node.py:205:    cycle_posture_entry_applied_policy_entry_metrics,",
+        "graphs\\nodes\\monitor_node.py:206:    cycle_posture_threshold_snapshot,",
+        "graphs\\nodes\\monitor_node.py:207:    cycle_posture_value_te_monitor_state_transition,",
+        "graphs\\nodes\\monitor_node.py:208:    cycle_posture_buy_skipped_reason_entry_event_metrics,",
+        "graphs\\nodes\\monitor_node.py:954:    entry_applied_policy, entry_metrics, entry_thresholds, monitor_policy_trace, policy_ref, thresholds = cycle_posture_entry_applied_policy_entry_metrics(exit_info=exit_info, entry_info=entry_info, entry_applied_policy=entry_applied_policy, commander_context=commander_context, strategy_monitor_policy=strategy_monitor_policy, strategist_plan=strategist_plan, policy_provenance=policy_provenance, current_reason=current_reason, entry_received_policy=entry_received_policy, entry_policy_origin=entry_policy_origin, commander_memory_application_trace=commander_memory_application_trace, facade=_r3_sys.modules[__name__])",
+        "graphs\\nodes\\monitor_node.py:956:    threshold_snapshot = cycle_posture_threshold_snapshot(exit_info=exit_info, entry_applied_policy=entry_applied_policy, thresholds=thresholds, entry_metrics=entry_metrics, entry_received_policy=entry_received_policy, entry_policy_origin=entry_policy_origin, entry_policy_contract=entry_policy_contract, entry_thresholds=entry_thresholds, entry_info=entry_info, facade=_r3_sys.modules[__name__])[0]",
+        "graphs\\nodes\\monitor_node.py:973:    state[\"monitor_state_transition\"] = cycle_posture_value_te_monitor_state_transition(previous_posture=previous_posture, current_posture=current_posture, previous_reason=previous_reason, current_reason=current_reason, state_changed=state_changed, entry_transition_trace=entry_transition_trace, exit_info=exit_info, entry_info=entry_info, previous_monitor_state=previous_monitor_state, facade=_r3_sys.modules[__name__])",
+        "graphs\\nodes\\monitor_node.py:987:    buy_skipped_reason, entry_event_metrics, final_entry_decision, monitor_no_trade_surface = cycle_posture_buy_skipped_reason_entry_event_metrics(buy_submitted=buy_submitted, entry_info=entry_info, state=state, facade=_r3_sys.modules[__name__])",
+        "libs\\runtime\\monitor\\cycle_posture_projection.py:12:def cycle_posture_entry_applied_policy_entry_metrics(exit_info, entry_info, entry_applied_policy, commander_context, strategy_monitor_policy, strategist_plan, policy_provenance, current_reason, entry_received_policy, entry_policy_origin, commander_memory_application_trace, *, facade):",
+        "libs\\runtime\\monitor\\cycle_posture_projection.py:55:def cycle_posture_threshold_snapshot(exit_info, entry_applied_policy, thresholds, entry_metrics, entry_received_policy, entry_policy_origin, entry_policy_contract, entry_thresholds, entry_info, *, facade):",
+        "libs\\runtime\\monitor\\cycle_posture_projection.py:209:def cycle_posture_value_te_monitor_state_transition(previous_posture, current_posture, previous_reason, current_reason, state_changed, entry_transition_trace, exit_info, entry_info, previous_monitor_state, *, facade):",
+        "libs\\runtime\\monitor\\cycle_posture_projection.py:232:def cycle_posture_buy_skipped_reason_entry_event_metrics(buy_submitted, entry_info, state, *, facade):"
+      ],
+      "facade_lookups": [
+        "_build_monitor_policy_trace",
+        "_to_float",
+        "build_monitor_no_trade_surface"
+      ],
+      "effects": "Fresh output construction and existing facade lookups at use time. No IO/env/clock import, persistence, intent creation or Broker/LLM calls added; complete implementation blob unchanged.",
+      "alias_contract": "Shallow copies/direct nested aliases preserved, NOT deep immutability; frozen hashes include alias paths and input mutation.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/entry_focus_output_projection.py",
+      "destination": "libs/agents/monitor/projections/entry_focus_output_projection.py",
+      "base_blob": "21326cb26e5997d15b1b993052be6f33f6967f19",
+      "loc": 33,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "build_entry_focus_monitor_output"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:269:from libs.runtime.monitor.entry_focus_output_projection import (",
+        "graphs\\nodes\\monitor_node.py:270:    build_entry_focus_monitor_output,",
+        "graphs\\nodes\\monitor_node.py:1014:        state[\"monitor_output\"].update(build_entry_focus_monitor_output(entry_blocker_surface=entry_blocker_surface, entry_candidate_symbol=entry_candidate_symbol, entry_cost_filter_snapshot=entry_cost_filter_snapshot, entry_final_symbol=entry_final_symbol, entry_info=entry_info, final_entry_decision=final_entry_decision, monitor_focus_context=monitor_focus_context, monitor_focus_mode=monitor_focus_mode, monitor_output_symbol=monitor_output_symbol, position_focus_symbol=position_focus_symbol, scanner_selected_symbol=scanner_selected_symbol))",
+        "libs\\runtime\\monitor\\entry_focus_output_projection.py:10:def build_entry_focus_monitor_output(entry_blocker_surface, entry_candidate_symbol, entry_cost_filter_snapshot, entry_final_symbol, entry_info, final_entry_decision, monitor_focus_context, monitor_focus_mode, monitor_output_symbol, position_focus_symbol, scanner_selected_symbol):"
+      ],
+      "facade_lookups": [],
+      "effects": "Fresh output construction and existing facade lookups at use time. No IO/env/clock import, persistence, intent creation or Broker/LLM calls added; complete implementation blob unchanged.",
+      "alias_contract": "Shallow copies/direct nested aliases preserved, NOT deep immutability; frozen hashes include alias paths and input mutation.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/policy_output_projection.py",
+      "destination": "libs/agents/monitor/projections/policy_output_projection.py",
+      "base_blob": "fe6c9ebf5668e0a679d3122a6c041c5d78d9aeb1",
+      "loc": 135,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "build_policy_monitor_output"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:272:from libs.runtime.monitor.policy_output_projection import (",
+        "graphs\\nodes\\monitor_node.py:273:    build_policy_monitor_output,",
+        "graphs\\nodes\\monitor_node.py:1066:        state[\"monitor_output\"].update(build_policy_monitor_output(commander_memory_application_trace=commander_memory_application_trace, entry_applied_policy=entry_applied_policy, entry_info=entry_info, entry_policy_contract=entry_policy_contract, entry_policy_origin=entry_policy_origin, entry_received_policy=entry_received_policy, exit_info=exit_info, monitor_no_trade_surface=monitor_no_trade_surface, monitor_policy_trace=monitor_policy_trace, scanner_monitor_handoff=scanner_monitor_handoff))",
+        "libs\\runtime\\monitor\\policy_output_projection.py:10:def build_policy_monitor_output(commander_memory_application_trace, entry_applied_policy, entry_info, entry_policy_contract, entry_policy_origin, entry_received_policy, exit_info, monitor_no_trade_surface, monitor_policy_trace, scanner_monitor_handoff):"
+      ],
+      "facade_lookups": [],
+      "effects": "Fresh output construction and existing facade lookups at use time. No IO/env/clock import, persistence, intent creation or Broker/LLM calls added; complete implementation blob unchanged.",
+      "alias_contract": "Shallow copies/direct nested aliases preserved, NOT deep immutability; frozen hashes include alias paths and input mutation.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/scanner_monitor_handoff_projection.py",
+      "destination": "libs/agents/monitor/projections/scanner_monitor_handoff_projection.py",
+      "base_blob": "d7c3f8afd63f512420c54338ed6f6dce113d3e57",
+      "loc": 22,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "build_scanner_monitor_handoff_for_cycle"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:266:from libs.runtime.monitor.scanner_monitor_handoff_projection import (",
+        "graphs\\nodes\\monitor_node.py:267:    build_scanner_monitor_handoff_for_cycle,",
+        "graphs\\nodes\\monitor_node.py:988:    scanner_monitor_handoff = build_scanner_monitor_handoff_for_cycle(entry_candidate_cascade=entry_candidate_cascade, entry_info=entry_info, final_entry_decision=final_entry_decision, monitor_no_trade_surface=monitor_no_trade_surface, scanner_selected_snapshot=scanner_selected_snapshot, selected=selected, state=state, facade=_r3_sys.modules[__name__])",
+        "libs\\runtime\\monitor\\scanner_monitor_handoff_projection.py:11:def build_scanner_monitor_handoff_for_cycle(entry_candidate_cascade, entry_info, final_entry_decision, monitor_no_trade_surface, scanner_selected_snapshot, selected, state, *, facade):"
+      ],
+      "facade_lookups": [
+        "build_scanner_monitor_handoff_surface"
+      ],
+      "effects": "Calls existing facade.build_scanner_monitor_handoff_surface at use time, then mutates callback-returned mapping. Real callback creates a fresh return mapping; monkeypatched mapping identity remains observable. Does not recalculate rank.",
+      "alias_contract": "Return identity equals callback result; cascade shallow copied, nested aliases retained.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "role": "monitor",
+      "source": "libs/runtime/monitor/signal_explanation.py",
+      "destination": "libs/agents/monitor/projections/signal_explanation.py",
+      "base_blob": "be74bc5f7ea677e159416ac2d4c78a319d69f3bb",
+      "loc": 63,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "signal_explain_effect_free_block_3479"
+      ],
+      "consumers": [
+        "libs\\runtime\\monitor\\signal_explanation.py:12:def signal_explain_effect_free_block_3479(entry_condition_path, grouped_logic_trace, scoring_settings, score_breakdown, policy_aware_gating, chart_structure_decision_hint, chart_human_context, human_chart_entry_setup, human_chart_detail_context, human_chart_buy_guard, entry_quality_score, entry_quality_tier, entry_quality_path, entry_hard_gate_passed, entry_hard_gate_blockers, entry_quality_vs_gate_summary, breakout_score, etf_deviation_entry_score, *, facade):",
+        "libs\\runtime\\intraday_monitor_signals.py:44:from libs.runtime.monitor.signal_explanation import (",
+        "libs\\runtime\\intraday_monitor_signals.py:45:    signal_explain_effect_free_block_3479,",
+        "libs\\runtime\\intraday_monitor_signals.py:2780:    signal_explain_effect_free_block_3479(entry_condition_path=entry_condition_path, grouped_logic_trace=grouped_logic_trace, scoring_settings=scoring_settings, score_breakdown=score_breakdown, policy_aware_gating=policy_aware_gating, chart_structure_decision_hint=chart_structure_decision_hint, chart_human_context=chart_human_context, human_chart_entry_setup=human_chart_entry_setup, human_chart_detail_context=human_chart_detail_context, human_chart_buy_guard=human_chart_buy_guard, entry_quality_score=entry_quality_score, entry_quality_tier=entry_quality_tier, entry_quality_path=entry_quality_path, entry_hard_gate_passed=entry_hard_gate_passed, entry_hard_gate_blockers=entry_hard_gate_blockers, entry_quality_vs_gate_summary=entry_quality_vs_gate_summary, breakout_score=breakout_score, etf_deviation_entry_score=etf_deviation_entry_score, facade=_r3_sys.modules[__name__])"
+      ],
+      "facade_lookups": [
+        "_to_float"
+      ],
+      "effects": "Mutates caller grouped_logic_trace; fresh production dict originates at signal_score_projection.py:112 and is later exposed in signal output. Same externally visible mutation/alias and exception order, NOT strict functional purity.",
+      "alias_contract": "Mutates caller grouped_logic_trace; fresh per signal_score_projection.py:112 production call, but external caller alias remains observable and MUST be preserved. NOT strictly pure.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    },
+    {
+      "source": "libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py",
+      "destination": "libs/agents/monitor/projections/cycle_detail_projection_exit_decision_detail.py",
+      "base_blob": "fe67e0012d72ec08ce66fcc89c53de517cec0e1b",
+      "loc": 271,
+      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "batch": "event_projection_blobs_v1",
+      "symbols": [
+        "cycle_detail_exit_decision_detail",
+        "cycle_detail_blocked_rules_reason_chain",
+        "cycle_detail_value_state_monitor_evaluation",
+        "cycle_detail_value_ate_monitor_action_decision"
+      ],
+      "consumers": [
+        "graphs\\nodes\\monitor_node.py:215:from libs.runtime.monitor.cycle_detail_projection_exit_decision_detail import (",
+        "graphs\\nodes\\monitor_node.py:216:    cycle_detail_exit_decision_detail,",
+        "graphs\\nodes\\monitor_node.py:217:    cycle_detail_blocked_rules_reason_chain,",
+        "graphs\\nodes\\monitor_node.py:218:    cycle_detail_value_state_monitor_evaluation,",
+        "graphs\\nodes\\monitor_node.py:219:    cycle_detail_value_ate_monitor_action_decision,",
+        "graphs\\nodes\\monitor_node.py:1055:    exit_decision_detail = cycle_detail_exit_decision_detail(sell_submitted=sell_submitted, exit_info=exit_info, current_reason=current_reason, quant_exit_decision=quant_exit_decision, monitor_policy_trace=monitor_policy_trace, facade=_r3_sys.modules[__name__])[0]",
+        "graphs\\nodes\\monitor_node.py:1064:    blocked_rules, reason_chain, triggered_rules = cycle_detail_blocked_rules_reason_chain(exit_info=exit_info, entry_info=entry_info, state=state, facade=_r3_sys.modules[__name__])",
+        "graphs\\nodes\\monitor_node.py:1067:    state[\"monitor_evaluation\"] = cycle_detail_value_state_monitor_evaluation(current_posture=current_posture, triggered_rules=triggered_rules, monitor_no_trade_surface=monitor_no_trade_surface, scanner_monitor_handoff=scanner_monitor_handoff, entry_info=entry_info, entry_received_policy=entry_received_policy, entry_policy_contract=entry_policy_contract, entry_applied_policy=entry_applied_policy, blocked_rules=blocked_rules, monitor_policy_trace=monitor_policy_trace, exit_info=exit_info, facade=_r3_sys.modules[__name__])",
+        "graphs\\nodes\\monitor_node.py:1068:    state[\"monitor_action_decision\"] = cycle_detail_value_ate_monitor_action_decision(reason_chain=reason_chain, triggered_rules=triggered_rules, entry_applied_policy=entry_applied_policy, monitor_no_trade_surface=monitor_no_trade_surface, scanner_monitor_handoff=scanner_monitor_handoff, current_reason=current_reason, entry_received_policy=entry_received_policy, entry_policy_contract=entry_policy_contract, entry_info=entry_info, blocked_rules=blocked_rules, monitor_policy_trace=monitor_policy_trace, exit_info=exit_info, state=state, facade=_r3_sys.modules[__name__])",
+        "libs\\runtime\\monitor\\cycle_detail_projection_exit_decision_detail.py:12:def cycle_detail_exit_decision_detail(sell_submitted, exit_info, current_reason, quant_exit_decision, monitor_policy_trace, *, facade):",
+        "libs\\runtime\\monitor\\cycle_detail_projection_exit_decision_detail.py:139:def cycle_detail_blocked_rules_reason_chain(exit_info, entry_info, state, *, facade):",
+        "libs\\runtime\\monitor\\cycle_detail_projection_exit_decision_detail.py:161:def cycle_detail_value_state_monitor_evaluation(current_posture, triggered_rules, monitor_no_trade_surface, scanner_monitor_handoff, entry_info, entry_received_policy, entry_policy_contract, entry_applied_policy, blocked_rules, monitor_policy_trace, exit_info, *, facade):",
+        "libs\\runtime\\monitor\\cycle_detail_projection_exit_decision_detail.py:219:def cycle_detail_value_ate_monitor_action_decision(reason_chain, triggered_rules, entry_applied_policy, monitor_no_trade_surface, scanner_monitor_handoff, current_reason, entry_received_policy, entry_policy_contract, entry_info, blocked_rules, monitor_policy_trace, exit_info, state, *, facade):"
+      ],
+      "facade_lookups": [
+        "_to_float"
+      ],
+      "effects": "Fresh output construction and existing facade lookups at use time. No IO/env/clock import, persistence, intent creation or Broker/LLM calls added; complete implementation blob unchanged.",
+      "alias_contract": "Shallow copies/direct nested aliases preserved, NOT deep immutability; frozen hashes include alias paths and input mutation.",
+      "proof_plan": [
+        "BASE blob",
+        "strict shim AST and -O negatives",
+        "fresh-process import both orders and monkeypatch",
+        "BASE-frozen synthetic results/exceptions/order/mutation/alias",
+        "T4-B replay and ordered effects",
+        "current T3/Wave B gate classification"
+      ]
+    }
+  ],
+  "responsibility_register": [
+    {
+      "path": "libs/runtime/monitor/__init__.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Existing package identity; do not remove.",
+      "safety_lock": false,
+      "base_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "prior_matrix": {
+        "class": "KEEP",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [],
+      "consumer_limit": "No exact literal module import found; retained, NOT classified dead. Aliased/package/dynamic consumers are not disproven."
+    },
+    {
+      "path": "libs/runtime/monitor/cycle_detail_projection.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "9630c66ffd9b34c3e7a99804f158ecb6f6d2bf18",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor focus, entry/exit decision detail and evaluation projections."
+      }
+    },
+    {
+      "path": "libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "fe67e0012d72ec08ce66fcc89c53de517cec0e1b",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor focus, entry/exit decision detail and evaluation projections."
+      }
+    },
+    {
+      "path": "libs/runtime/monitor/cycle_event_payloads.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "633f9afbb422c6970cb1597aecb5e24b358d5481"
+    },
+    {
+      "path": "libs/runtime/monitor/cycle_log_trace_payloads.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "51fa078349e005052afb0e3f83ac3c84780bbcf2"
+    },
+    {
+      "path": "libs/runtime/monitor/cycle_output_projection.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "26db1a162a9e55fc8ea9b187bcd74f3576308d40",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor cycle output projection: monitor_output, sizing, quant result and entry/exit snapshots."
+      }
+    },
+    {
+      "path": "libs/runtime/monitor/cycle_output_projection_value_state_monitor.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "97831983e7d5ab78b0b90e89a10298f16be45510",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor cycle output projection: monitor_output, sizing, quant result and entry/exit snapshots."
+      }
+    },
+    {
+      "path": "libs/runtime/monitor/cycle_posture_projection.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "2ed727fb946b3055e64d1745f80fae61808cee6a",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor posture, threshold, handoff and blocker surface projections."
+      }
+    },
+    {
+      "path": "libs/runtime/monitor/entry_candidate_annotation.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Writes caller entry_info and nested metrics; entry_candidate_* explicitly protected.",
+      "safety_lock": true,
+      "base_blob": "71f42a3fe215b65d6c1445326c65bf26860b3b7b",
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:239:from libs.runtime.monitor.entry_candidate_annotation import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_candidate_guards.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Applies market rail, intent cooldown and guard overrides.",
+      "safety_lock": true,
+      "base_blob": "260ec04e84740d363e5213dec90ad234c93f66dc",
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:243:from libs.runtime.monitor.entry_candidate_guards import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_candidate_policy.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Resolves/applies entry memory-bias policy.",
+      "safety_lock": true,
+      "base_blob": "b14392e950771849d8f55b54f83e21a2ee919a21",
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:235:from libs.runtime.monitor.entry_candidate_policy import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_candidate_probe.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Opening Rank-1 clock/probe control boundary.",
+      "safety_lock": true,
+      "base_blob": "d258a5a200c4032109d326bca7e7e68a94b6da41",
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:248:from libs.runtime.monitor.entry_candidate_probe import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_carry_guard.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Open-carry blocking and observation-only policy authority.",
+      "safety_lock": true,
+      "base_blob": "0b38d174ee3b4a50898dfc28061fd14f1373b025",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "Monitor open-carry forced entry-block reason and memory-bias observation flag (pure policy helpers; intent-only role unchanged)."
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:172:from libs.runtime.monitor.entry_carry_guard import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_cascade_projection.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Invokes candidate evaluation and fallback cascade; projection filename is not purity.",
+      "safety_lock": true,
+      "base_blob": "8dfaa5184be988a50e433d1b1a89d8812f865add",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "CONTRACT_CANDIDATE",
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor entry candidate cascade and intent-selection evidence (evidence only; no ordering or intent creation change)."
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:180:from libs.runtime.monitor.entry_cascade_projection import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_cascade_selection.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Chooses cascade plan/order price and annotates intent.",
+      "safety_lock": true,
+      "base_blob": "db8b243f694dd44fc0ebca50fd9f6f17fcbb33f2",
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:251:from libs.runtime.monitor.entry_cascade_selection import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_context.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Resolves pending buys and closeout window eligibility.",
+      "safety_lock": true,
+      "base_blob": "b75523ccbf5927a870efa179464ea0d1c0a00fd2",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "CONTRACT_CANDIDATE",
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor entry-candidate context facts (selected/position/pending/cooldown/memory-bias/Commander control)."
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:221:from libs.runtime.monitor.entry_context import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_cycle_context.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Selects entry policy precedence and initializes position-capacity guard state; not observation-only.",
+      "safety_lock": true,
+      "base_blob": "295d06ced47bc1803253782f17dfc8c77d55347f",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "CONTRACT_CANDIDATE",
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor entry-cycle context: portfolio/strategy/policy-contract snapshots derived before the entry cascade."
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:176:from libs.runtime.monitor.entry_cycle_context import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_evidence.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Resolves scoring configuration and ETF entry/exit scores through shared callbacks; retained as mixed policy/evidence pending separately scoped proof.",
+      "safety_lock": false,
+      "base_blob": "fa5a9a66e799a4dd260d104d6dff482c1de4f33d",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor entry signal evidence views (minute OHLCV meta, ETF deviation, signal trace and sizing inputs)."
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:224:from libs.runtime.monitor.entry_evidence import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_focus_output_projection.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "21326cb26e5997d15b1b993052be6f33f6967f19"
+    },
+    {
+      "path": "libs/runtime/monitor/entry_guard_evidence.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Calls evaluate_entry_guard/evaluate_market_rail_translation.",
+      "safety_lock": true,
+      "base_blob": "e202b6e6858d0e6fb0dc3d236a7d8f61e417c5a2",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "CONTRACT_CANDIDATE",
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor entry-guard evidence facts (Commander rail, risk-off, re-entry, rank-1 authority input)."
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:231:from libs.runtime.monitor.entry_guard_evidence import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/entry_quality_projection.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Invokes evaluate_position_size and quant enforcement.",
+      "safety_lock": true,
+      "base_blob": "a89377fa3220fcee700b29fb5d3303a1b0451225",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor entry sizing/cost/quality/quant constraint summaries."
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:227:from libs.runtime.monitor.entry_quality_projection import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/exit_decision_projection.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Exit confirmation counters, strategy intent and intent construction boundary.",
+      "safety_lock": true,
+      "base_blob": "8d6b25a64db13d5b57498de70480dca995220379",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "CONTRACT_CANDIDATE",
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor exit decision evidence: same-symbol suppression, pending orders, hold/stop/confirm and SELL construction inputs."
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:192:from libs.runtime.monitor.exit_decision_projection import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/exit_frame_projection.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Selects exit symbol and harmonizes guarded exit policy.",
+      "safety_lock": true,
+      "base_blob": "94364273e750a0e65bdb0f209dada3762e0b7408",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "CONTRACT_CANDIDATE",
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Monitor exit selected-symbol/frame/policy/carry projections computed once per cycle."
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:187:from libs.runtime.monitor.exit_frame_projection import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/policy_output_projection.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "fe6c9ebf5668e0a679d3122a6c041c5d78d9aeb1"
+    },
+    {
+      "path": "libs/runtime/monitor/scanner_monitor_handoff_projection.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "d7c3f8afd63f512420c54338ed6f6dce113d3e57"
+    },
+    {
+      "path": "libs/runtime/monitor/signal_explanation.py",
+      "disposition": "MOVE",
+      "reason": "Approved whole-blob event/output projection move; effects/aliases explicitly preserved.",
+      "safety_lock": false,
+      "base_blob": "be74bc5f7ea677e159416ac2d4c78a319d69f3bb",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Intraday entry-signal reason/explanation views (read-only)."
+      }
+    },
+    {
+      "path": "libs/runtime/monitor/signal_features.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Signal calculations feed trigger gates; protected intraday signal semantics.",
+      "safety_lock": true,
+      "base_blob": "6d58c717290fd95ada679000b79a505c8d3eea6d",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "CONTRACT_CANDIDATE",
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Intraday entry-signal feature facts (price/volume/structure features before scoring)."
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\intraday_monitor_signals.py:25:from libs.runtime.monitor.signal_features import (",
+        "libs\\runtime\\intraday_monitor_signals.py:32:from libs.runtime.monitor.signal_features_breakout_volume_gate import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/signal_features_breakout_volume_gate.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Breakout/pullback gate and signal-chain decisions.",
+      "safety_lock": true,
+      "base_blob": "9b1ad3d2fc310b1b61be3fd4dcf4a8e04cdbccdd",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Intraday entry-signal feature facts (price/volume/structure features before scoring)."
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\intraday_monitor_signals.py:32:from libs.runtime.monitor.signal_features_breakout_volume_gate import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/signal_score_projection.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Entry condition paths, hard gates and score calculations.",
+      "safety_lock": true,
+      "base_blob": "a1a293581795681fb69626b2f880580a48b56c0e",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "CONTRACT_CANDIDATE",
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Intraday entry-signal score components and caps (pure projections of features)."
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\intraday_monitor_signals.py:36:from libs.runtime.monitor.signal_score_projection import (",
+        "libs\\runtime\\intraday_monitor_signals.py:41:from libs.runtime.monitor.signal_score_projection_chart_structure_decision import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor/signal_score_projection_chart_structure_decision.py",
+      "disposition": "KEEP_WITH_REASON",
+      "reason": "Calculates scoring BUY/WAIT and policy-aware gating; not a read-only chart view.",
+      "safety_lock": true,
+      "base_blob": "1464297872b4ff1bfc92ee359ec0637e1807e081",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Intraday entry-signal score components and caps (pure projections of features)."
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\intraday_monitor_signals.py:41:from libs.runtime.monitor.signal_score_projection_chart_structure_decision import ("
+      ]
+    },
+    {
+      "path": "graphs/nodes/monitor_node.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Stable intent-only graph/facade; state/effect/OrderIntent ordering stays here.",
+      "base_blob": "ea5e589053b3ff0aab4838db5faa1d2cb6e8e1a6",
+      "prior_matrix": {
+        "class": "COMPAT_FACADE",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [],
+      "consumer_limit": "No exact literal module import found; retained, NOT classified dead. Aliased/package/dynamic consumers are not disproven."
+    },
+    {
+      "path": "libs/runtime/intraday_monitor_signals.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Public signal facade; trigger and score authority remains.",
+      "base_blob": "0a62df1253197a4995ffee5c170df331d2f52f3f",
+      "prior_matrix": {
+        "class": "COMPAT_FACADE",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [],
+      "consumer_limit": "No exact literal module import found; retained, NOT classified dead. Aliased/package/dynamic consumers are not disproven."
+    },
+    {
+      "path": "libs/runtime/exit_policy.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Exit trigger precedence and early returns are protected.",
+      "base_blob": "f58d750c9393b7257f24c0e35e58e7a17480d0f5",
+      "prior_matrix": {
+        "class": "COMPAT_FACADE",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [],
+      "consumer_limit": "No exact literal module import found; retained, NOT classified dead. Aliased/package/dynamic consumers are not disproven."
+    },
+    {
+      "path": "libs/runtime/monitor_exit/__init__.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "262a76c27d5106bdb3ffa9bd1810158dc0ddfae7",
+      "prior_matrix": {
+        "class": "KEEP",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [],
+      "consumer_limit": "No exact literal module import found; retained, NOT classified dead. Aliased/package/dynamic consumers are not disproven."
+    },
+    {
+      "path": "libs/runtime/monitor_exit/account_pnl_crosscheck.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "2819e7cf9615765aa42f58c5f0841b2f74905bc9",
+      "module_consumer_evidence": [
+        "libs\\runtime\\exit_policy.py:45:from libs.runtime.monitor_exit.account_pnl_crosscheck import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/exit_cycle_guards.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "223c02d918cd3af65b5daf6e42d829f7ae1cc035",
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:259:from libs.runtime.monitor_exit.exit_cycle_guards import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/exit_policy_bias.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "dea68b985516060f4f177b31b0d534d364cce5f6",
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:256:from libs.runtime.monitor_exit.exit_policy_bias import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/exit_policy_chart_projection.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "e7f5c2b412848493ea77761697853a71a61c2c9d",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Exit-policy chart/pnl/candidate condition projections (pure; trigger precedence stays in evaluate_exit_policy)."
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\exit_policy.py:13:from libs.runtime.monitor_exit.exit_policy_chart_projection import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/exit_policy_pnl_projection.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "c0f4d8661bcd1adb7c18607019234cb6f035b102",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Exit-policy pnl/guard evidence projections (pure; trigger precedence stays in evaluate_exit_policy)."
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\exit_policy.py:16:from libs.runtime.monitor_exit.exit_policy_pnl_projection import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/exit_policy_trigger_inputs.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "a8d485e831a95c064c560c7eac25491be4a95a00",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [
+          "RENAME_CANDIDATE"
+        ],
+        "responsibility": "Exit-policy trigger input/result-interpretation projections (pure; no trigger selection)."
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\exit_policy.py:23:from libs.runtime.monitor_exit.exit_policy_trigger_inputs import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/exit_profit_ladder.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "7f21f3f2ea87fcc9c1e6000ed71fdb5daa387e8e",
+      "module_consumer_evidence": [
+        "libs\\runtime\\exit_policy.py:37:from libs.runtime.monitor_exit.exit_profit_ladder import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/exit_trigger_ladder.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "8fd56365526542c96dc206c78eb41b5b56033604",
+      "module_consumer_evidence": [
+        "libs\\runtime\\exit_policy.py:28:from libs.runtime.monitor_exit.exit_trigger_ladder import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/hold_controls.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "5b30396608c5d99ba458e7583c9be16508b80bc9",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:97:from libs.runtime.monitor_exit.hold_controls import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/market_enrichment.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "2356c4bb3ddffcb1b7eaa3369f43600c47724b65",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\monitor_exit\\policy_map_builder.py:6:from libs.runtime.monitor_exit.market_enrichment import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/numeric.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "8d70ca32605c40f8f27ec62fc0ccc9b7915e5427",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\monitor_exit\\vwap_confirmation.py:5:from libs.runtime.monitor_exit.numeric import to_float",
+        "libs\\runtime\\monitor_exit\\session_vwap.py:7:from libs.runtime.monitor_exit.numeric import to_float",
+        "libs\\runtime\\monitor_exit\\selected_snapshot.py:8:from libs.runtime.monitor_exit.numeric import to_float",
+        "libs\\runtime\\monitor_exit\\reasons.py:5:from libs.runtime.monitor_exit.numeric import to_float",
+        "libs\\runtime\\monitor_exit\\price_resolution.py:7:from libs.runtime.monitor_exit.numeric import to_float",
+        "libs\\runtime\\monitor_exit\\position_tracking.py:7:from libs.runtime.monitor_exit.numeric import to_float",
+        "libs\\runtime\\monitor_exit\\position_risk.py:6:from libs.runtime.monitor_exit.numeric import to_float",
+        "libs\\runtime\\monitor_exit\\market_enrichment.py:8:from libs.runtime.monitor_exit.numeric import to_float",
+        "libs\\runtime\\monitor_exit\\adapters\\state_data.py:7:from libs.runtime.monitor_exit.numeric import to_float"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/observability.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "66fdfb39f5b26be763e148d84b042063d5acf233",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:104:from libs.runtime.monitor_exit.observability import build_monitor_exit_payload",
+        "tests\\test_monitor_exit_price_freshness.py:3:from libs.runtime.monitor_exit.observability import build_monitor_exit_payload"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/order_lifecycle.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "e87b0c2c8044fbceda71208b5701f16426e942fd",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:110:from libs.runtime.monitor_exit.order_lifecycle import derive_order_lifecycle as _derive_order_lifecycle"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/overnight_carry.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "8bc8b9e127386f58dc9d4d4b2c9234049bd74800",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:105:from libs.runtime.monitor_exit.overnight_carry import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/policy_config.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "b5cde7052d91c76205a05c1629d4c16c98c874bc",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:111:from libs.runtime.monitor_exit.policy_config import resolve_exit_policy_config as _resolve_exit_policy_config",
+        "libs\\runtime\\monitor_entry_controls.py:8:from libs.runtime.monitor_exit.policy_config import resolve_exit_policy_config"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/policy_map_builder.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "a94cf82b88a12bd22f13465cb7fc201a91be960a",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\monitor_exit_inputs.py:3:from libs.runtime.monitor_exit.policy_map_builder import build_monitor_exit_policy_map",
+        "libs\\runtime\\monitor_exit\\__init__.py:3:from libs.runtime.monitor_exit.policy_map_builder import build_monitor_exit_policy_map",
+        "libs\\runtime\\monitor_exit\\preview.py:8:from libs.runtime.monitor_exit.policy_map_builder import build_monitor_exit_policy_map"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/position_risk.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "e497a55b54424bcc6a0a2cbe17e0362b64decb43",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\monitor_exit\\policy_map_builder.py:10:from libs.runtime.monitor_exit.position_risk import apply_position_entry_risk_to_exit_policy"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/position_state_enrichment.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "0a21686cd3f75ec737cd1949fd4ac93d036ae282",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\monitor_exit\\policy_map_builder.py:11:from libs.runtime.monitor_exit.position_state_enrichment import enrich_exit_policy_with_position_state"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/position_tracking.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "18f781849b6e03f7776c251330eaac26da559339",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:116:from libs.runtime.monitor_exit.position_tracking import (",
+        "libs\\runtime\\monitor_exit\\preview.py:9:from libs.runtime.monitor_exit.position_tracking import position_hold_seconds, update_position_peak_price",
+        "libs\\runtime\\monitor_exit\\overnight_carry.py:8:from libs.runtime.monitor_exit.position_tracking import position_hold_seconds",
+        "tests\\test_q10_incident_price_integrity.py:3:from libs.runtime.monitor_exit.position_tracking import update_position_peak_price"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/post_exit_shadow.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "f538960155b3be9f5c5815950eea3ad06c5b8f38",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:112:from libs.runtime.monitor_exit.post_exit_shadow import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/preview.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "8dd251be805a3fb82854291ba61b0611f473c158",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:124:from libs.runtime.monitor_exit.preview import preview_exit_decision_for_symbol",
+        "tests\\test_monitor_exit_price_freshness.py:4:from libs.runtime.monitor_exit.preview import (",
+        "libs\\runtime\\monitor_exit\\selection.py:7:from libs.runtime.monitor_exit.preview import preview_exit_decision_for_symbol",
+        "libs\\runtime\\monitor_exit\\overnight_carry.py:9:from libs.runtime.monitor_exit.preview import preview_exit_decision_for_symbol"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/price_resolution.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "f130d2dcc54d1dbd12e34e1d6937d7b3f5495ee9",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:120:from libs.runtime.monitor_exit.price_resolution import (",
+        "libs\\runtime\\monitor_strategy_frame.py:7:from libs.runtime.monitor_exit.price_resolution import position_mark_price, resolve_price",
+        "libs\\runtime\\monitor_exit\\selected_snapshot.py:9:from libs.runtime.monitor_exit.price_resolution import quote_observed_epoch, resolve_price_with_source",
+        "libs\\runtime\\monitor_exit\\preview.py:10:from libs.runtime.monitor_exit.price_resolution import (",
+        "libs\\runtime\\monitor_exit\\market_enrichment.py:9:from libs.runtime.monitor_exit.price_resolution import quote_observed_epoch",
+        "libs\\runtime\\monitor_entry_sizing.py:6:from libs.runtime.monitor_exit.price_resolution import resolve_price",
+        "tests\\test_q10_incident_price_integrity.py:4:from libs.runtime.monitor_exit.price_resolution import resolve_price_with_source"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/reasons.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "a5586018b02ccd9bbd49abc6d9a9db4d31f30d08",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:125:from libs.runtime.monitor_exit.reasons import (",
+        "libs\\runtime\\quant\\decision.py:5:from libs.runtime.monitor_exit.reasons import is_emergency_exit_reason, is_hard_exit_reason",
+        "libs\\runtime\\monitor_exit\\selection.py:8:from libs.runtime.monitor_exit.reasons import exit_reason_priority",
+        "libs\\runtime\\monitor_exit\\overnight_carry.py:10:from libs.runtime.monitor_exit.reasons import is_soft_profit_exit_reason"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/runtime_clock.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "aec71bda5fef2280e2ed52a41240fde404b406bb",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\monitor_exit\\overnight_carry.py:11:from libs.runtime.monitor_exit.runtime_clock import carry_calendar_context",
+        "libs\\runtime\\monitor_entry_controls.py:9:from libs.runtime.monitor_exit.runtime_clock import ensure_entry_market_context_clock_fields"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/selected_snapshot.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "920cee148cf9acea9655753b3da358e32b556570",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:132:from libs.runtime.monitor_exit.selected_snapshot import (",
+        "libs\\runtime\\monitor_exit\\preview.py:15:from libs.runtime.monitor_exit.selected_snapshot import monitor_selected_snapshot_for_symbol"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/selection.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "54f3e145d24dd41807382c8af2bef89d1bbd2dae",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "graphs\\nodes\\monitor_node.py:131:from libs.runtime.monitor_exit.selection import select_exit_symbol"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/session_vwap.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "0372ee9feec0b8f3ec1d53e92deb331aaf425ac9",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\monitor_exit\\vwap_confirmation.py:6:from libs.runtime.monitor_exit.session_vwap import rows_with_session_vwap",
+        "libs\\runtime\\monitor_exit\\adapters\\state_data.py:8:from libs.runtime.monitor_exit.session_vwap import rows_with_session_vwap"
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/vwap_confirmation.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "784c8a084bfee1d6f6fee85c0f67e7af22fde48a",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\monitor_exit\\vwap_state_adapter.py:10:from libs.runtime.monitor_exit.vwap_confirmation import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/monitor_exit/vwap_state_adapter.py",
+      "disposition": "KEEP_WITH_REASON",
+      "safety_lock": true,
+      "reason": "Explicit monitor_exit protected boundary: existing exit policy/position/clock/guard owners; consumed through monitor_node and exit_policy. No physical move authorized.",
+      "base_blob": "ca98740cfac92e8a7fea32434766bb9509e72fda",
+      "prior_matrix": {
+        "class": "CANONICAL_OWNER",
+        "flags": [],
+        "responsibility": "(no module docstring)"
+      },
+      "module_consumer_evidence": [
+        "libs\\runtime\\monitor_exit_confirmation.py:3:from libs.runtime.monitor_exit.vwap_state_adapter import vwap_breakdown_confirmation_for_symbol",
+        "libs\\runtime\\monitor_exit\\market_enrichment.py:10:from libs.runtime.monitor_exit.vwap_state_adapter import ("
+      ]
+    },
+    {
+      "path": "libs/runtime/decision_observability.py",
+      "disposition": "SHARED",
+      "reason": "Shared Scanner/Monitor handoff DTO builder, no new ranking authority."
+    },
+    {
+      "path": "libs/runtime/quant/",
+      "disposition": "SHARED",
+      "reason": "Shared quant decision read models remain in canonical runtime owner."
+    },
+    {
+      "path": "libs/reporting/",
+      "disposition": "SHARED",
+      "reason": "Reporter consumes Monitor payloads; separate Claude lane."
+    },
+    {
+      "path": "tests/test_p154_wave_b_moved_bodies.py",
+      "disposition": "SHARED",
+      "reason": "Work owns exact shim mappings; submit failures, do not edit."
+    },
+    {
+      "path": "tests/test_p159_current_owner_contract_gates.py",
+      "disposition": "SHARED",
+      "reason": "Work owns historical/current owner resolution."
+    },
+    {
+      "path": "tests/test_p163_t4b_extraction_gates.py",
+      "disposition": "SHARED",
+      "reason": "Work owns historical stage AST checks."
+    },
+    {
+      "path": "libs/execution/",
+      "disposition": "SHARED",
+      "reason": "SAFETY_LOCK: no execution or submission permission change."
+    },
+    {
+      "path": "libs/supervisor/",
+      "disposition": "SHARED",
+      "reason": "SAFETY_LOCK: approval, Step5C and UNKNOWN unchanged."
+    }
+  ],
+  "limits": [
+    "This is authorized safe structural scope, not full Monitor redesign or final P1.5 acceptance.",
+    "Protected, mixed-policy and shared responsibilities remain explicit debt; no inferred purity from filenames.",
+    "Official notes/shared gates belong exclusively to Work."
+  ],
+  "inventory_provenance": {
+    "file": "docs/refactor/p1_5_third_pass_t3_ownership_matrix.json",
+    "source_sha": "ab8563b251c7a2fc8b0409fde36a05bc10918f04",
+    "method": "Reuse only Monitor rows; newer T4-B files reconciled with START Git tree, no global inventory rerun."
+  },
+  "scope_assessment": {
+    "move_modules": 11,
+    "implementation_loc": 1598,
+    "additional_exact_mapping": "libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py -> libs/agents/monitor/projections/cycle_detail_projection_exit_decision_detail.py",
+    "additional_reason": "Reflects already-computed exit/entry decisions into detail/evaluation/action read models; fresh triggered/blocked lists, no trigger or approval generation. Reuses approved projections package.",
+    "safety_lock": "Actual entry/exit, sizing, cooldown, policy selection and trigger owners individually retained. Mixed scoring-policy/ETF callbacks in entry_evidence are not force-classified pure.",
+    "whole_role_status": "All identified responsibilities dispositioned; authorized safe structural scope implemented. Protected/mixed-policy work, independent audit and combined CI remain open."
+  }
+}
