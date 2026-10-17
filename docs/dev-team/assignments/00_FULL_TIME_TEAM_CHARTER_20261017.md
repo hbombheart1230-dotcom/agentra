@@ -1,5 +1,8 @@
 # Agentra P1.5 — Three-Role Continuous Development Charter (Corrected)
 
+> **CURRENT OVERRIDE (2026-10-17):** Read [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md) first. GPT (ordinary ChatGPT, on demand) is architect/tech lead; Codex remains Monitor owner and subsequently owns isolated T3/T4/CI integration; Claude remains Reporter owner and independently reviews Codex's integration. ChatGPT Work recurring review is disabled. Older Work-required approval / Work-only shared-test clauses below are historical, not binding. No main merge.
+
+
 ## 2026-10-17 — PROJECT-WIDE CONTINUATION OVERRIDE
 
 Read [10_P15_CONTINUOUS_ROLE_RELAY.md](10_P15_CONTINUOUS_ROLE_RELAY.md). Finishing one's Reporter or Monitor implementation is **not** finishing the P1.5 program. After Work accepts local role proof, Claude transitions to **read-only Strategist** design/evidence, Codex to **read-only Scanner** design/evidence on separately isolated branches. Source edits in new roles require Work's exact whole-role charter first; do not invent authorization for policy, trade or guard changes. Work continues shared T3/T4 integration concurrently. Only the external, opt-in local CLI supervisor can relaunch ended CLI sessions. GitHub updates and Work hourly automation do not launch developer CLIs. No main merge. Never run useless repeat tasks merely to stay busy.
