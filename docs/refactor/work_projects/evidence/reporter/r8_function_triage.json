@@ -178,8 +178,10 @@
     "apps/operator_ui/data_access_core.py",
     "tests/test_operator_ui_data_access_phase2.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/trade_read_model.py",
@@ -192,8 +194,10 @@
     "apps/operator_ui/data_access_core.py",
     "tests/test_operator_ui_data_access_phase2.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r8_read_contracts.py (BASE-vs-current temp-dir content/missing/malformed/CRLF/dir, callback order, mid-call re-patch; 2 negative mutations detected)"
   },
   {
    "legacy_path": "libs/reporting/trade_read_model.py",
@@ -417,8 +421,10 @@
     "libs/reporting/reporter_analysis.py",
     "scripts/diagnostics/check_audit_trail_completeness.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r8_read_contracts.py (BASE-vs-current temp-dir content/missing/malformed/CRLF/dir, callback order, mid-call re-patch; 2 negative mutations detected)"
   },
   {
    "legacy_path": "libs/reporting/trade_explain.py",
@@ -430,8 +436,10 @@
    "callers": [
     "libs/reporting/operator_visibility.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/trade_explain.py",
@@ -469,8 +477,10 @@
    "callers": [
     "libs/reporting/reporter_analysis.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/trade_explain.py",
@@ -538,8 +548,10 @@
     "libs/reporting/live_execution_bundle_runner.py",
     "tests/test_live_execution_bundle_report.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",
@@ -603,8 +615,10 @@
     "tests/test_live_execution_bundle_report.py",
     "tests/test_trade_bundle_assembly.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",
@@ -652,8 +666,10 @@
    "callers": [
     "scripts/run_live_execution_bundle_report.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",
@@ -762,8 +778,10 @@
    "authority_names": [],
    "module_identity": false,
    "callers": [],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
@@ -825,8 +843,10 @@
    "authority_names": [],
    "module_identity": false,
    "callers": [],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -887,8 +907,10 @@
    "authority_names": [],
    "module_identity": false,
    "callers": [],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -916,8 +938,10 @@
    ],
    "module_identity": false,
    "callers": [],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -978,8 +1002,10 @@
     "libs/reporting/trade_explain.py",
     "scripts/diagnostics/check_audit_trail_completeness.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r8_read_contracts.py (BASE-vs-current temp-dir content/missing/malformed/CRLF/dir, callback order, mid-call re-patch; 2 negative mutations detected)"
   },
   {
    "legacy_path": "libs/reporting/reporter_analysis.py",
@@ -1204,8 +1230,10 @@
    "callers": [
     "libs/reporting/live_execution_bundle_runner.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1215,8 +1243,10 @@
    "authority_names": [],
    "module_identity": false,
    "callers": [],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1228,8 +1258,10 @@
    "callers": [
     "libs/reporting/evaluation/canonical/adapters/q9_horizon_exit_adapter.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1389,8 +1421,10 @@
    "callers": [
     "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1402,8 +1436,10 @@
    ],
    "module_identity": false,
    "callers": [],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1441,8 +1477,10 @@
    "authority_names": [],
    "module_identity": false,
    "callers": [],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1454,8 +1492,10 @@
    "callers": [
     "tests/test_symbol_trade_report.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1469,8 +1509,10 @@
     "tests/test_carryover_exit_reconciler.py",
     "tests/test_closeout_residual_positions.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1576,8 +1618,10 @@
     "scripts/diagnostics/check_audit_trail_completeness.py",
     "scripts/diagnostics/generate_ops_diagnostic_report.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "MOVED_R8",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof",
+   "effect_class": "READ_VIA_CALLBACK (no direct I/O in body; any read happens in late-bound facade helpers / injected callbacks, unchanged)",
+   "proof": "tests/test_work_reporter_r4_facade_bodies.py (AST/lazy-binding); transitive read characterization NOT yet fixture-proven"
   },
   {
    "legacy_path": "libs/reporting/agent_pipeline_trace.py",

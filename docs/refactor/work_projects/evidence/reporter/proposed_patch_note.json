@@ -1,7 +1,7 @@
 {
  "date": "2026-10-17",
- "version": "Reporter Role R-7",
- "title": "Reporter whole-role: 264 facade bodies moved to libs/agents/reporter with the R3 facade-injection pattern",
+ "version": "Reporter Role R-9",
+ "title": "Reporter whole-role: 313 facade bodies moved (23 facade paths, 41 owner files) with the R3 facade-injection pattern",
  "stage": "Architecture and Maintainability",
  "types": [
   "REFACTOR",
@@ -9,13 +9,14 @@
   "DOCS"
  ],
  "status": "current",
- "summary": "On top of 12 relocated modules and 3 decompositions, 264 pure function bodies from 21 Reporter modules now live in libs/agents/reporter owners (<=350 LOC) behind unchanged facade wrappers; BASE-body equality, use-time patch sequences and ABI are proven per function. LLM routing/execution, file I/O, truth precedence, broker and feedback code stay in place.",
+ "summary": "313 pure function bodies from 23 Reporter modules live in 41 libs/agents/reporter owner files (<=350 LOC) behind unchanged facade wrappers (R-4..R-9), on top of 12 relocated modules and 3 decompositions. controlled_mock_lane_report stays at its path as the Reporter presentation/read adapter (Work decision). The earlier T3 v4 proposal is superseded by Work's guard (P15-WORK-001).",
  "details": [
   "controlled_mock_lane_report BLOCKED (operational ledger read, Q10/Q12 lanes); trade_report_symbol_metadata kept (377 LOC > 350).",
   "Shared exact agent-package gates need Work to add reporter: {narrative, read_models}. No report disabled, no LLM/writer/queue change."
  ],
  "impact": "Module location and tests only; no report text, payload or behavior change.",
  "sources": [
+  "docs/refactor/work_projects/evidence/reporter/R8_CHECKPOINTS.md",
   "docs/refactor/work_projects/evidence/reporter/REPORTER_ROLE_HANDOFF_R7.md",
   "docs/refactor/work_projects/evidence/reporter/REPORTER_R4_FACADE_BODIES.md"
  ]
