@@ -1,0 +1,58 @@
+{
+  "schema": "agentra.branch_retirement.v1",
+  "preserved_against": "eeb742a33b16f6271ff364a904e187b470561c7e",
+  "bundle_sha256": "326563a320ae2dccd4361666b5793ba086ffd2fdb3d763ae6ef027693705c452",
+  "bundle_bytes": 76134,
+  "branches": [
+    {
+      "branch": "design/p1.6-orchestration",
+      "head_sha": "4a5c9339a2432344ebbfc0d17be4d67363291829",
+      "bundle_ref": "refs/remotes/origin/design/p1.6-orchestration",
+      "status": "PRESERVED_RECOVERY_VERIFIED"
+    },
+    {
+      "branch": "design/p2plus-architecture",
+      "head_sha": "c7475fa0b72f0c7aed2d8b9129c9c0ca52370ac5",
+      "bundle_ref": "refs/remotes/origin/design/p2plus-architecture",
+      "status": "PRESERVED_RECOVERY_VERIFIED"
+    },
+    {
+      "branch": "parallel/p15-strategist-s1-057-20261016",
+      "head_sha": "b1ce964627c71f67c5255546898c784f434e64d9",
+      "bundle_ref": "refs/remotes/origin/parallel/p15-strategist-s1-057-20261016",
+      "status": "PRESERVED_RECOVERY_VERIFIED"
+    },
+    {
+      "branch": "perf/p15-harness-perf1-20261016",
+      "head_sha": "9303850daf8b7e38e8eee4c28c5618d1b7f6a2f7",
+      "bundle_ref": "refs/remotes/origin/perf/p15-harness-perf1-20261016",
+      "status": "PRESERVED_RECOVERY_VERIFIED"
+    },
+    {
+      "branch": "perf/p15-perf2a-20261017",
+      "head_sha": "208931a9d387b07229f96b0da4fc09f7d534a0f4",
+      "bundle_ref": "refs/remotes/origin/perf/p15-perf2a-20261017",
+      "status": "PRESERVED_RECOVERY_VERIFIED"
+    },
+    {
+      "branch": "plan/p15-next-parallel-reporter-monitor-20261016",
+      "head_sha": "07151d7d2bf841ae9491a9e882564e04854eccea",
+      "bundle_ref": "refs/remotes/origin/plan/p15-next-parallel-reporter-monitor-20261016",
+      "status": "PRESERVED_RECOVERY_VERIFIED"
+    },
+    {
+      "branch": "plan/work-role-projects-20261017",
+      "head_sha": "1275377f553fafd853e45808e48fdffd1d858d41",
+      "bundle_ref": "refs/remotes/origin/plan/work-role-projects-20261017",
+      "status": "PRESERVED_RECOVERY_VERIFIED"
+    }
+  ],
+  "retain": [
+    "main",
+    "integration/p15-t4-pr5-convergence-20261015",
+    "work/reporter-role-20261017",
+    "work/monitor-role-20261017"
+  ],
+  "scope": "Preserve all seven exact historical heads and their unique Git objects; no runtime source import, no main merge. Branch deletion is a separate verified UI step.",
+  "recovery_test": "PASS: independent bare repository fetched only retained integration BASE, then verified/unbundled all 7 retired heads."
+}

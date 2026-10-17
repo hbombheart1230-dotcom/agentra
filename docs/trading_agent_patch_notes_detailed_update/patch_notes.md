@@ -3599,3 +3599,13 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 사용자 착수 승인에 따라 Reporter(Claude)/Monitor(Codex) 역할 전체 프로젝트와 교차 감사를 활성화했습니다. Runtime BASE d773709, 18개 seed blob 재사용.
 - 공통 파일은 Work 단일 담당, 역할 내부 순수 범위는 원장 기록 후 연속 진행. 기존 6시간 보고 유지, Auto-review 권한 심사와 코드 감사를 구분합니다.
 - 로컬 작업자는 아직 NOT_STARTED입니다. 코드·테스트·workflow·기존 통합/main 변경 없음. 근거: `docs/refactor/work_projects/ACTIVATION.md`.
+
+
+## 2026-10-17 · Agentra Retired Branch History Preservation 2026-10-17
+**Stage:** Architecture and Maintainability
+**Tags:** DOCS
+
+- 종료된 설계·계획·S1·PERF 브랜치 7개의 고유 Git 이력을 76KB 증분 bundle로 보존하고 별도 bare 저장소에서 복구 검증했습니다.
+- main·통합·Reporter·Monitor는 유지합니다. 보존 이후 오래된 ref만 원격 SHA와 PR 재확인 후 삭제하는 작업입니다.
+- 런타임 코드·테스트·workflow 변경이나 main 병합은 없습니다. 삭제 결과는 실제 원격 목록으로 확인합니다.
+- 근거: `docs/refactor/retired_branches/2026-10-17/manifest.json`.

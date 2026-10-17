@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 288,
+  "entry_count": 289,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7614,6 +7614,26 @@
         "docs/refactor/work_projects/ACTIVATION.md",
         "docs/refactor/work_projects/OPERATING_RULES.md",
         "docs/refactor/work_projects/STATUS.json"
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "version": "Agentra Retired Branch History Preservation 2026-10-17",
+      "title": "Preserve seven retired branch histories before deleting stale refs",
+      "stage": "Architecture and Maintainability",
+      "types": [
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Preserved seven exact historical heads in a 76 KB incremental Git bundle; recovery tested in an independent bare repository. Keep main, integration, Reporter and Monitor.",
+      "details": [
+        "Selected S1/PERF implementation paths are blob-equivalent to integration; original branch-only evidence/designs remain recoverable from the bundle.",
+        "Deletion is a separate UI step after fresh SHA/PR checks; no runtime source import or main merge."
+      ],
+      "impact": "Documentation, binary history archive and synchronized UI notes only. No protected code/test/workflow changes.",
+      "sources": [
+        "docs/refactor/retired_branches/2026-10-17/README.md",
+        "docs/refactor/retired_branches/2026-10-17/manifest.json"
       ]
     }
   ]
