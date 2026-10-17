@@ -43,6 +43,15 @@ def _tree(root):
     (trade / "story_input.json").write_text('{"symbol": "005930", "trade_id": "TRD_20261017_005930_01"}', encoding="utf-8")
     (trade / "reports" / "broken.json").write_text("{not json", encoding="utf-8")
     (root / "events.jsonl").write_text('{"ts": "2026-10-17T01:00:00Z", "symbol": "005930"}\n{bad}\n', encoding="utf-8")
+    life = root / "trades" / "2026-10-17" / "0930" / "TRD_20261017_005930_01" / "lifecycle"
+    life.mkdir(parents=True)
+    (life / "trade_lifecycle.json").write_text(json.dumps({
+        "trade_id": "TRD_20261017_005930_01", "symbol": "005930", "day": "2026-10-17", "status": "closed",
+        "input_timestamp": "2026-10-17T00:30:00+00:00",
+        "entry": {"run_id": "e1"}, "exit": {"run_id": "x1"},
+        "summary": {"entry_reason_human": "VWAP 돌파 확인", "exit_reason_human": "목표가 도달"}}, ensure_ascii=False), encoding="utf-8")
+    (root / "trades" / "2026-10-17" / "carryover_exit_index.json").write_text(
+        json.dumps({"rows": [{"trade_id": "TRD_20261016_000660_01", "symbol": "000660"}, "bad"]}), encoding="utf-8")
     return root
 
 
@@ -64,6 +73,10 @@ def _arg_sets(fn, tmp):
     payloads = [{}, {"symbol": "005930", "trade_id": "TRD_20261017_005930_01", "day": "2026-10-17"}, "005930", None]
     for i in range(4):
         def val(p, i=i):
+            if p.name == "day" or (p.name.endswith("_day") and "root" not in p.name):
+                return ["2026-10-17", "", "2026-10-16", None][i]
+            if p.name == "symbol":
+                return ["005930", "", "000660", None][i]
             if "Callable" in str(p.annotation):
                 return (lambda *a, **k: {}) if i % 2 == 0 else (lambda *a, **k: {"status": "ok"})
             return paths[i] if _is_pathlike(p) else payloads[i]
@@ -71,25 +84,28 @@ def _arg_sets(fn, tmp):
     return out
 
 
-_ISO = __import__("re").compile(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:\+00:00|Z)?")
+FROZEN = "2026-10-17T09:00:00+00:00"
 
 
-def _wallclock_normalized(text):
-    """Only timestamps produced by the wall clock during this call (within 10 minutes of now) are normalised;
-    fixture/input timestamps are compared verbatim."""
-    from datetime import datetime, timezone
-    now = datetime.now(timezone.utc)
+class _FrozenDatetime(__import__("datetime").datetime):
+    @classmethod
+    def now(cls, tz=None):
+        base = cls.fromisoformat(FROZEN)
+        return base.astimezone(tz) if tz is not None else base.replace(tzinfo=None)
 
-    def sub(m):
-        raw = m.group(0).replace("Z", "+00:00")
-        try:
-            ts = datetime.fromisoformat(raw)
-        except ValueError:
-            return m.group(0)
-        if ts.tzinfo is None:
-            ts = ts.replace(tzinfo=timezone.utc)
-        return "<WALLCLOCK>" if abs((now - ts).total_seconds()) < 600 else m.group(0)
-    return _ISO.sub(sub, text)
+    @classmethod
+    def utcnow(cls):
+        return cls.fromisoformat(FROZEN).replace(tzinfo=None)
+
+
+def _freeze_clock(monkeypatch):
+    """P15-WORK-004: every loaded libs/graphs module attribute bound to ``datetime.datetime`` -> frozen subclass, so
+    generated timestamps are deterministic and outputs are compared as RAW bytes (no timestamp normalisation)."""
+    import datetime as _dt
+    import sys
+    for mod in list(sys.modules.values()):
+        if getattr(mod, "__name__", "").startswith(("libs.", "graphs.")) and getattr(mod, "datetime", None) is _dt.datetime:
+            monkeypatch.setattr(mod, "datetime", _FrozenDatetime)
 
 
 def _run(fn, args, kwargs, monkeypatch):
@@ -107,7 +123,7 @@ def _run(fn, args, kwargs, monkeypatch):
     monkeypatch.setattr(Path, "read_text", spy_read_text)
     try:
         try:
-            res = ("ok", _wallclock_normalized(json.dumps(fn(*args, **kwargs), ensure_ascii=False, default=repr)))
+            res = ("ok", json.dumps(fn(*args, **kwargs), ensure_ascii=False, default=repr))
         except Exception as exc:  # noqa: BLE001
             res = ("exc", type(exc).__name__, str(exc))
     finally:
@@ -124,10 +140,51 @@ def test_r8_set_is_the_22_recorded_moves():
 def test_read_via_callback_move_is_runtime_base_equal(path, name, tmp_path, monkeypatch):
     module, ref = _base_fn(path, name)
     cur = getattr(module, name)
+    _freeze_clock(monkeypatch)
     root = _tree(tmp_path)
     before = _snapshot(root)
+    results = []
     for args, kwargs in _arg_sets(cur, root):
         got = _run(cur, args, kwargs, monkeypatch)
         want = _run(ref, args, kwargs, monkeypatch)
         assert got == want, (name, args)
+        results.append(got)
     assert _snapshot(root) == before, "no writes"
+    if name in POSITIVE:  # the populated success branch must actually be exercised
+        assert any(r[0][0] == "ok" and POSITIVE[name] in r[0][1] for r in results), (name, [r[0][:2] for r in results])
+
+
+# readers whose populated success path is pinned by an expected token in the output
+POSITIVE = {"build_daily_trade_index": "TRD_20261017_005930_01"}
+
+
+def test_populated_daily_index_success_path_and_input_timestamp_sensitivity(tmp_path, monkeypatch):
+    module, ref = _base_fn("libs/reporting/symbol_trade_report.py", "build_daily_trade_index")
+    _freeze_clock(monkeypatch)
+    root = _tree(tmp_path)
+    out = module.build_daily_trade_index(root, "2026-10-17")
+    assert [r["trade_id"] for r in out] == ["TRD_20261016_000660_01", "TRD_20261017_005930_01"]
+    assert json.dumps(out, ensure_ascii=False) == json.dumps(ref(root, "2026-10-17"), ensure_ascii=False)
+    # changing an input timestamp by one minute must change the compared bytes (no blanket normalisation)
+    lc = next(root.rglob("trade_lifecycle.json"))
+    data = json.loads(lc.read_text(encoding="utf-8"))
+    outs = []
+    for minute in ("31", "32"):
+        data["summary"]["entry_reason_human"] = f"VWAP 돌파 확인 2026-10-17T00:{minute}:00+00:00"
+        lc.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        outs.append(_run(module.build_daily_trade_index, [root, "2026-10-17"], {}, monkeypatch)[0])
+    assert outs[0] != outs[1]
+
+
+def test_frozen_clock_makes_generated_timestamps_byte_stable(tmp_path, monkeypatch):
+    module, _ref = _base_fn("libs/reporting/post_exit_shadow_recap.py", "build_post_exit_shadow_recap")
+    _freeze_clock(monkeypatch)
+    root = _tree(tmp_path)
+    oks = []
+    for args, kwargs in _arg_sets(module.build_post_exit_shadow_recap, root):
+        a = _run(module.build_post_exit_shadow_recap, args, kwargs, monkeypatch)[0]
+        b = _run(module.build_post_exit_shadow_recap, args, kwargs, monkeypatch)[0]
+        assert a == b
+        if a[0] == "ok":
+            oks.append(a[1])
+    assert oks and any("2026-10-17T09:00:00" in o for o in oks), oks[:1]
