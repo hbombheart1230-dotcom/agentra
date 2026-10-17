@@ -11,9 +11,11 @@ import importlib
 import importlib.util
 import inspect
 import json
+import re
 import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -56,7 +58,8 @@ def _blob(data):
 
 
 def _run(code):
-    return subprocess.run([sys.executable, "-c", code], cwd=str(ROOT), check=True, capture_output=True, text=True,
+    # temp cwd, inherited env (R11 hygiene: a child interpreter never runs with the repository as its cwd)
+    return subprocess.run([sys.executable, "-c", code], cwd=tempfile.gettempdir(), check=True, capture_output=True, text=True,
                           env={**os.environ, "PYTHONPATH": str(ROOT)}).stdout.strip()
 
 
@@ -154,6 +157,32 @@ def test_fixture_provenance_manifest_matches_the_fixture_bytes():
     assert len(json.loads(gzip.decompress(raw))["cases"]) == prov["cases"] == 2565
 
 
+_IN_TYPEERROR = re.compile(r"argument of type '([A-Za-z_][A-Za-z0-9_.]*)' is not (?:a container or )?iterable")
+
+
+def _is_cpython_message_rewording(got, rec):
+    exc, gm, rm = got.get("exc"), got.get("msg", ""), rec.get("msg", "")
+    if exc != rec.get("exc"):
+        return False
+    if exc == "ValueError":
+        return "unpack" in gm and "unpack" in rm
+    if exc == "TypeError":  # 3.14: "... is not iterable" -> "... is not a container or iterable"
+        g, r = _IN_TYPEERROR.fullmatch(gm), _IN_TYPEERROR.fullmatch(rm)
+        return bool(g and r) and g.group(1) == r.group(1)
+    return False
+
+
+def test_cpython_message_rewording_allowance_is_exact():
+    old, new = "argument of type 'NoneType' is not iterable", "argument of type 'NoneType' is not a container or iterable"
+    assert _is_cpython_message_rewording({"exc": "TypeError", "msg": new}, {"exc": "TypeError", "msg": old})
+    assert not _is_cpython_message_rewording({"exc": "TypeError", "msg": new.replace("NoneType", "int")}, {"exc": "TypeError", "msg": old})
+    assert not _is_cpython_message_rewording({"exc": "ValueError", "msg": new}, {"exc": "TypeError", "msg": old})
+    assert not _is_cpython_message_rewording({"exc": "TypeError", "msg": "unsupported operand"}, {"exc": "TypeError", "msg": old})
+    assert not _is_cpython_message_rewording({"exc": "KeyError", "msg": "x"}, {"exc": "KeyError", "msg": "y"})
+    assert _is_cpython_message_rewording({"exc": "ValueError", "msg": "too many values to unpack (expected 2, got 44)"},
+                                         {"exc": "ValueError", "msg": "too many values to unpack (expected 2)"})
+
+
 def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():
     prov = json.loads(PROV.read_text(encoding="utf-8"))
     cases = json.loads(gzip.decompress(FIX.read_bytes()))["cases"]
@@ -163,12 +192,14 @@ def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():
     if f"{sys.version_info[0]}.{sys.version_info[1]}" == prov["produced_on_python"]:
         assert _dump(got) == _dump(cases)  # recorded interpreter: byte-exact against the frozen fixture
     else:
-        # other interpreter: only CPython-worded unpack ValueError messages may differ from the frozen fixture
+        # other interpreter: only CPython-worded messages may differ from the frozen fixture — unpack ValueError, and the
+        # exact 3.14 rewording of the `in` TypeError (same operand type). Same-interpreter BASE parity is
+        # test_same_interpreter_base_archive_replay_equals_final.
         assert len(got) == len(cases)
         for g, c in zip(got, cases):
             if g != c:
                 gr, cr = dict(g["result"]), dict(c["result"])
-                assert gr.get("exc") == cr.get("exc") == "ValueError" and "unpack" in gr.get("msg", "") and "unpack" in cr.get("msg", ""), (g, c)
+                assert _is_cpython_message_rewording(gr, cr), (g, c)
                 gr.pop("msg"); cr.pop("msg")
                 assert {**g, "result": gr} == {**c, "result": cr}
     for n, (sub, _b) in REGISTRY.items():
@@ -183,7 +214,7 @@ def test_same_interpreter_base_archive_replay_equals_final(tmp_path):
     base_root = tmp_path / "base"
     base_root.mkdir()
     with tarfile.open(fileobj=io.BytesIO(arc)) as tf:
-        tf.extractall(base_root)
+        tf.extractall(base_root, filter="data")  # explicit: same result on 3.12-3.14, no DeprecationWarning
     out = tmp_path / "base_cases.json"
     subprocess.run([sys.executable, str(ROOT / "scripts/refactor/work_reporter_capture.py"), "generate", str(out), "--root", str(base_root)],
                    cwd=str(base_root), check=True, capture_output=True,

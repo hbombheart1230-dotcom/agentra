@@ -76,7 +76,7 @@ def base_tree(tmp_path_factory):
     root = tmp_path_factory.mktemp("base_tree_b")
     data = subprocess.run(["git", "archive", BASE, "libs", "graphs"], cwd=ROOT, capture_output=True, check=True).stdout
     with tarfile.open(fileobj=io.BytesIO(data)) as tf:
-        tf.extractall(root)
+        tf.extractall(root, filter="data")  # explicit: same result on 3.12-3.14, no DeprecationWarning
     return root
 
 

@@ -24,6 +24,9 @@ BASE = "d773709ba2f70471fad9badba4f92400f7818319"
 RUNNER = ROOT / "scripts/refactor/work_reporter_contract_runner.py"
 TRIAGE = json.loads((ROOT / "docs/refactor/work_projects/evidence/reporter/r8_function_triage.json").read_text(encoding="utf-8"))
 READ_ONLY = [(r["legacy_path"], r["name"]) for r in TRIAGE["rows"] if r.get("r10_class") == "READ_ONLY"]
+# Readers that take a Python callable argument: they are NOT generated into the generic parametrisations (no skipped
+# cases); each runs through a hand-written fixture in test_callback_reader_fixture_base_equals_head instead.
+CALLBACK_NAMES = frozenset({"load_trade_report_detail_payloads", "load_trade_report_payloads", "load_operator_brief_detail_payloads"})
 
 
 def _base_tree(tmp_root):
@@ -31,7 +34,7 @@ def _base_tree(tmp_root):
         raise AssertionError(f"pinned BASE {BASE} not in this clone: fetch with full history (fetch-depth: 0)")
     data = subprocess.run(["git", "archive", BASE, "libs", "graphs"], cwd=ROOT, capture_output=True, check=True).stdout
     with tarfile.open(fileobj=io.BytesIO(data)) as tf:
-        tf.extractall(tmp_root)
+        tf.extractall(tmp_root, filter="data")  # explicit: same result on 3.12-3.14, no DeprecationWarning
     return tmp_root
 
 
@@ -112,14 +115,12 @@ def test_read_only_subset_is_classified_and_non_empty():
     assert len(set(READ_ONLY)) == len(READ_ONLY)
 
 
-@pytest.mark.parametrize("path,name", READ_ONLY)
+@pytest.mark.parametrize("path,name", [r for r in READ_ONLY if r[1] not in CALLBACK_NAMES])
 def test_retained_read_only_function_base_equals_head(path, name, base_tree, tmp_path):
     module = path[:-3].replace("/", ".")
     fn = getattr(importlib.import_module(module), name)
     calls = build_calls(fn)
-    if calls is None:
-        assert name in CALLBACK_FIXTURES, f"{name}: callable argument without a hand-written fixture"
-        pytest.skip("callable argument: covered by test_callback_reader_fixture_base_equals_head")
+    assert calls is not None, f"{name}: callable argument without a hand-written fixture (add it to CALLBACK_NAMES)"
     data = make_data(tmp_path / "data")  # same tree for both runs; it must stay byte-identical (read-only claim)
     before = snapshot(data)
     base_obs = observe(base_tree, module, name, calls, data, tmp_path)
@@ -169,16 +170,14 @@ def test_observed_classes_are_the_13_non_read_only_rows():
     assert len(OBSERVED) == 13
 
 
-@pytest.mark.parametrize("path,name,klass", OBSERVED)
+@pytest.mark.parametrize("path,name,klass", [o for o in OBSERVED if o[1] not in CALLBACK_NAMES])
 def test_retained_side_effect_function_base_equals_head_by_observation(path, name, klass, base_tree, tmp_path):
     """Observation only (no production paths): BASE and HEAD each run on a fresh copy of the same pristine temp tree at
     the SAME absolute location (frozen clock). Outcomes, ordered fs log and the resulting temp tree must be identical."""
     module = path[:-3].replace("/", ".")
     fn = getattr(importlib.import_module(module), name)
     calls = build_calls(fn)
-    if calls is None:
-        assert name in CALLBACK_FIXTURES, f"{name}: callable argument without a hand-written fixture"
-        pytest.skip("callable argument: covered by test_callback_reader_fixture_base_equals_head")
+    assert calls is not None, f"{name}: callable argument without a hand-written fixture (add it to CALLBACK_NAMES)"
     pristine = make_data(tmp_path / "pristine")
     data = tmp_path / "data"
     obs = []
@@ -223,6 +222,16 @@ CALLBACK_FIXTURES = {
     "load_operator_brief_detail_payloads": lambda meta: {"args": [meta], "kwargs": {"read_json": "$FN:libs.reporting.single_trade_report:_read_json",
                                                                                     "allow_saved_brief": True}},
 }
+
+
+def test_callback_exclusions_are_exactly_the_callable_argument_readers():
+    """The generic parametrisations exclude CALLBACK_NAMES; prove that set is exactly the retained rows whose signature
+    needs a callable, and that each of them has a hand-written fixture (no silent coverage gap)."""
+    assert set(CALLBACK_FIXTURES) == CALLBACK_NAMES
+    rows = [(p, n) for p, n in READ_ONLY] + [(p, n) for p, n, _k in OBSERVED]
+    needs_callable = {n for p, n in rows if build_calls(getattr(importlib.import_module(p[:-3].replace("/", ".")), n)) is None}
+    assert needs_callable == CALLBACK_NAMES
+    assert len(rows) == 47 and len(set(rows)) == len(rows)
 
 
 @pytest.mark.parametrize("name", sorted(CALLBACK_FIXTURES))

@@ -1,5 +1,7 @@
 # Reporter role — R10 freeze packet (REPORTER_LOCAL_READY_FOR_INTEGRATION / WAITING_ON_WORK; role status PARTIAL_WITH_BLOCKERS until Work acceptance)
 
+> R-11 update: test matrix, 3.14 / FastAPI results, hygiene prevention and Work findings R11-F1/F2 are in `R11_CHECKPOINTS.md` (R10 suites now 54 PASS / 0 SKIP).
+
 Current pushed SHA: see branch head after this file (previous: 359ef16). BASE d773709. No main merge.
 
 ## Totals
