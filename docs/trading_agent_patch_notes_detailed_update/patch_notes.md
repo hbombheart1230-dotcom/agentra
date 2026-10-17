@@ -3599,3 +3599,6 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - 사용자 착수 승인에 따라 Reporter(Claude)/Monitor(Codex) 역할 전체 프로젝트와 교차 감사를 활성화했습니다. Runtime BASE d773709, 18개 seed blob 재사용.
 - 공통 파일은 Work 단일 담당, 역할 내부 순수 범위는 원장 기록 후 연속 진행. 기존 6시간 보고 유지, Auto-review 권한 심사와 코드 감사를 구분합니다.
 - 로컬 작업자는 아직 NOT_STARTED입니다. 코드·테스트·workflow·기존 통합/main 변경 없음. 근거: `docs/refactor/work_projects/ACTIVATION.md`.
+
+## 2026-10-18 · P1.5 isolated shared candidate
+Monitor retained-boundary checkpoint: 359 retained definitions excluded from additional moves. Static evidence only; shared gates, hosted CI and independent review pending. No deployment or whole-role acceptance.

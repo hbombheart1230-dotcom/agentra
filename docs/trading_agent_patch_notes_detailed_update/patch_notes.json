@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 288,
+  "entry_count": 289,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7615,6 +7615,27 @@
         "docs/refactor/work_projects/OPERATING_RULES.md",
         "docs/refactor/work_projects/STATUS.json"
       ]
+    },
+    {
+      "date": "2026-10-18",
+      "version": "P1.5 isolated shared candidate",
+      "title": "Monitor retained-boundary checkpoint",
+      "stage": "Local candidate / independent review pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "summary": "359 retained Monitor definitions excluded from additional moves with reproducible static evidence.",
+      "details": [
+        "Existing 14 module and 20 named moves unchanged.",
+        "Static call/write/control-flow evidence does not establish purity or exhaustive dynamic consumers.",
+        "Shared integration and CI remain pending; no deployment or whole-role acceptance."
+      ],
+      "impact": "Compatibility and authority remain at their current boundaries.",
+      "sources": [
+        "docs/daily_patch/2026-10-18_monitor_shared_candidate.md"
+      ],
+      "status": "current"
     }
   ]
 }
