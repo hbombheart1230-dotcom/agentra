@@ -16,6 +16,7 @@ REVIEWED = "8ce327ecc71c4c92074c1fa5fb6f00428ba9279b"
 PINNED_INVENTORIES = {
     REVIEWED: 264,
     "523dd9ac227a33eb9e5aa9bed82957e4111c5d9b": 286,
+    "dd0b378b46dff0c2ecf6699a4b08776fd4412b76": 313,
 }
 LEDGER = "docs/refactor/work_projects/evidence/reporter/r4_facade_ledger.json"
 

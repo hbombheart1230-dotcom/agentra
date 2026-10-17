@@ -26,7 +26,7 @@ class FacadeGuardTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             G.verify_facade(self.base, ast.unparse(tree), self.rows, PATH)
 
-    def test_all_twenty_facades_restore_to_base(self):
+    def test_all_registered_facades_restore_to_base(self):
         self.assertEqual(G.verify_tree(ROOT, reviewed=REVIEWED)["moves"],
                          G.PINNED_INVENTORIES[REVIEWED])
 

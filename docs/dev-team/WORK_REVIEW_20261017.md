@@ -108,6 +108,50 @@ No normalized-only equivalence claim is needed. The five failures reproduce
 the exact two T3 + three T4-B legacy-owner/shim resolution failures reported
 by the worker, not a newly observed policy regression.
 
+## Second live delta review — R9 and Monitor CP-001/002
+
+**Reporter dd0b378b46dff0c2ecf6699a4b08776fd4412b76** after 523dd9a:
+12 changed files; 27 additional bodies from intraday_trade_reports,
+trade_report_common and symbol_read_model; three owner files. Total now
+**313 functions /23 facade paths /41 R4-R9 body-owner files**. Work ran the
+updated seed + body proof: **1680 PASS, exit0, 48.44s**, Linux Python3.12.14.
+The proposed full facade guard supports this third literal inventory SHA:
+all23 facade modules reconstruct to unchanged d773709, **13 PASS normal
+(2.248s), 13 PASS -O (2.219s)**. R9 role-suite -O is NOT_RUN; no extrapolation
+from R7. Source diff excludes graph/authority/controlled-lane execution paths.
+New file inventory is developer classification evidence, not a new complete
+independent architecture inventory. Work did not regenerate the 500-file scan.
+
+**Monitor a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1** after 6b2a913:
+two commits, CP-001 0735c67 and CP-002 a0ea6ff. Three new whole BASE blobs
+(entry_evidence/observability/order_lifecycle, 415 LOC, 5 functions) plus five
+named observation bodies in feature_context_views and entry_state_views.
+Work independently verified raw equality for all three added whole blobs,
+inspected the body-template verifier and negative tests, and ran original
+role + continuous + body-view tests: **273 PASS, exit0, 6.75s**. Whole-module
+AST templates protect unmoved definitions/statements AND generated owner AST;
+normal/-O child negatives and legacy/canonical pickle/import identity pass.
+Source diff leaves graphs, authority paths and workflows unchanged.
+
+Work reran impacted Monitor consumers plus original T3/T4-B:
+**170 PASS /5 FAIL, exit1, 5.40s**. The same two T3 /three T4-B tests fail at
+their first unmapped legacy owners. This is not proof that no later owner
+would fail after the first error is repaired. Shared queue must additionally
+register **libs/runtime/monitor/entry_evidence.py →
+libs/agents/monitor/projections/entry_evidence.py** with strict identity checks.
+Keep the five exact M-002 function transfers in work_monitor_current_tree.py
+as separately proved whole-module reconstruction, not facade/path exemptions.
+
+These snapshots show substantive commits during this review. They are not a
+promise of running workers after this session. Both roles remain intermediate;
+P15-WORK-001 integration open and P15-WORK-003 characterization open.
+Next Reporter packets: transitive-read/missing/malformed/offline byte fixtures,
+consumer/DTO/API map and synchronized current proposed notes. Next Monitor
+packets: M-003 defaults, M-004 display, then complete role responsibility and
+broader parity/negative proof. Do not start a fresh full Strategist inventory
+while Reporter safe scope/acceptance is open; next-role program belongs to
+Work after role freeze and reuses existing frozen-tree evidence.
+
 The UEF failure IDs match between BASE and Reporter: eight UEF2A failures
 read absent reports/data files; one UEF5_1 failure flags the same
 libs/reporting/evaluation/uef6/validation_replay.py import boundary. Existing
@@ -274,8 +318,8 @@ audit Reporter or build a persistent runner under this assignment.
 
 ## Session exit / daily digest contract
 
-Last reviewed heads: Reporter 523dd9a (executed role tests and guard), Monitor
-6b2a913 (docs-only delta; prior runtime test evidence reused). Next review is
+Last reviewed heads: Reporter dd0b378 (1680 role tests and guard), Monitor
+a0ea6ff (273 own-role tests, impacted consumers and shared failures). Next review is
 only the diff since those heads plus changed contracts/consumers and new
 Issue ACKs. Commits/checkpoints show work during this review window; they do
 not prove a process will continue after session exit. No scheduler was created

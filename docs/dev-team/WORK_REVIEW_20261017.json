@@ -214,6 +214,49 @@
       "passed": 13,
       "exit": 0,
       "seconds": 1.871
+    },
+    {
+      "name": "reporter_r9_role",
+      "sha": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "command": "python -m pytest -q tests/test_work_reporter_seed_migration.py tests/test_work_reporter_r4_facade_bodies.py --tb=short",
+      "passed": 1680,
+      "failed": 0,
+      "exit": 0,
+      "seconds": 48.44
+    },
+    {
+      "name": "monitor_m2_own_role",
+      "sha": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1",
+      "command": "python -m pytest -q tests/test_work_monitor_role_contracts.py tests/test_work_monitor_continuous.py tests/test_work_monitor_body_views.py --tb=short",
+      "passed": 273,
+      "failed": 0,
+      "exit": 0,
+      "seconds": 6.75
+    },
+    {
+      "name": "monitor_m2_shared_consumers",
+      "sha": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1",
+      "command": "python -m pytest -q tests/test_p159_current_owner_contract_gates.py tests/test_p163_t4b_extraction_gates.py tests/test_m17_monitor_emits_intent_only.py tests/test_monitor_candidate_cascade.py tests/test_monitor_exit_guard.py tests/test_monitor_exit_price_freshness.py tests/test_monitor_price_source_resolution.py tests/test_scanner_monitor_compatibility.py --tb=short",
+      "passed": 170,
+      "failed": 5,
+      "exit": 1,
+      "seconds": 5.4
+    },
+    {
+      "name": "reporter_r9_guard",
+      "sha": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "command": "AGENTRA_REVIEW_ROOT=<R9 checkout> AGENTRA_REVIEW_SHA=dd0b378b46dff0c2ecf6699a4b08776fd4412b76 python docs/dev-team/proposals/test_reporter_facade_guard.py -v",
+      "passed": 13,
+      "exit": 0,
+      "seconds": 2.248
+    },
+    {
+      "name": "reporter_r9_guard",
+      "sha": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "command": "AGENTRA_REVIEW_ROOT=<R9 checkout> AGENTRA_REVIEW_SHA=dd0b378b46dff0c2ecf6699a4b08776fd4412b76 python -O docs/dev-team/proposals/test_reporter_facade_guard.py -v",
+      "passed": 13,
+      "exit": 0,
+      "seconds": 2.219
     }
   ],
   "uef_identical_failure_ids": [
@@ -240,16 +283,16 @@
     "assembled cross-role integration CI"
   ],
   "guard_files": {
-    "docs/dev-team/proposals/reporter_facade_guard.py": "92e578f5d627d89948e56a1b91982c6e881121bfd4037f7a4b45d96d20873969",
-    "docs/dev-team/proposals/test_reporter_facade_guard.py": "ba15d4bf78f76128b691c3c3271764ec256c7b0d18bcb20643fddf3f274bb6f4"
+    "docs/dev-team/proposals/reporter_facade_guard.py": "b4a05bf572e92e50ea377cdb457ca91cc6b1ac8d28dcb3876f579d329c7276b7",
+    "docs/dev-team/proposals/test_reporter_facade_guard.py": "02b6e200347f26e0aefa3f5bb2fe3fd04f460269e4ea66f5e100613e04b05713"
   },
   "worker_running": "UNVERIFIED",
   "credits_remaining": "UNKNOWN",
   "overall_progress_percent": null,
   "merge_authorized": false,
   "latest_reviewed_sha": {
-    "reporter": "523dd9ac227a33eb9e5aa9bed82957e4111c5d9b",
-    "monitor": "6b2a91340262e1e7e221582646da2beb0b1965f8"
+    "reporter": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+    "monitor": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1"
   },
   "delta_reviews": [
     {
@@ -272,6 +315,26 @@
       "method": "STATIC_REVIEW_DOCS_ONLY_RUNTIME_PROOFS_REUSED",
       "inventory_files": 92,
       "inventory_symbol_entries": 408
+    },
+    {
+      "role": "reporter",
+      "sha": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "previous": "523dd9ac227a33eb9e5aa9bed82957e4111c5d9b",
+      "files": 12,
+      "new_moved_functions": 27,
+      "total_functions": 313,
+      "facades": 23,
+      "body_owner_files": 41,
+      "method": "STATIC_REVIEW_AND_EXECUTED_TEST"
+    },
+    {
+      "role": "monitor",
+      "sha": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1",
+      "previous": "6b2a91340262e1e7e221582646da2beb0b1965f8",
+      "commits": 2,
+      "added_full_blobs": 3,
+      "added_named_bodies": 5,
+      "method": "STATIC_REVIEW_AND_EXECUTED_TEST"
     }
   ],
   "findings": [
@@ -290,5 +353,8 @@
       "priority": "P2",
       "state": "OPEN_TRANSITIVE_IO_CHARACTERIZATION"
     }
-  ]
+  ],
+  "additional_shared_mapping": {
+    "libs/runtime/monitor/entry_evidence.py": "libs/agents/monitor/projections/entry_evidence.py"
+  }
 }
