@@ -231,3 +231,22 @@ def test_decomposed_owners_keep_every_base_definition_ast_identical_and_the_faca
     assert not [n for n in legacy_tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef, ast.Assign, ast.AnnAssign))]
     for name, mod in owners.items():
         assert getattr(legacy, name) is getattr(mod, name), name
+
+
+@pytest.mark.parametrize("facade", sorted(DECOMPOSED))
+def test_decomposed_facade_keeps_every_base_module_attribute_with_the_same_objects(facade):
+    """BASE run in a fresh interpreter: every public/private module attribute name of the BASE module must exist on the
+    facade; imported helpers must be the very same objects as the ones the canonical owners/legacy code use."""
+    import ast
+    src = subprocess.check_output(["git", "show", f"{BASE}:libs/reporting/{facade}.py"], cwd=ROOT).decode("utf-8-sig")
+    names = set()
+    for n in ast.parse(src).body:
+        if isinstance(n, (ast.Import, ast.ImportFrom)):
+            names |= {a.asname or a.name.split(".")[0] for a in n.names if a.name != "annotations"}
+        elif isinstance(n, ast.FunctionDef):
+            names.add(n.name)
+        elif isinstance(n, ast.AnnAssign):
+            names.add(n.target.id)
+    mod = importlib.import_module(f"libs.reporting.{facade}")
+    missing = sorted(x for x in names if not hasattr(mod, x))
+    assert not missing, missing

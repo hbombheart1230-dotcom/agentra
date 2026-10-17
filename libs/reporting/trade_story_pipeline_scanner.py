@@ -1,4 +1,7 @@
 """Compatibility facade: implementations live in ``libs.agents.reporter.narrative``; names re-exported as the same objects (no code here)."""
+# BASE module-level imports kept verbatim for attribute compatibility (same objects as at BASE)
+from typing import Any, Dict, List, Mapping  # noqa: F401
+from libs.reporting.trade_report_common import clip_text as clip, format_pct, safe_float, safe_int  # noqa: F401
 from libs.agents.reporter.narrative.scanner_basis import (  # noqa: F401
     _korea_indices_bullet,
     _top_numeric_drivers,

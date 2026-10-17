@@ -1,6 +1,9 @@
 """Compatibility facade: Reporter symbol-metadata helpers live in ``libs.agents.reporter.read_models.symbol_metadata_*``.
 
 Public names are re-exported (same function/dict objects); there is no second implementation here."""
+# BASE module-level imports kept verbatim for attribute compatibility (same objects as at BASE)
+import re  # noqa: F401
+from typing import Any, Callable, Dict, Iterable, List  # noqa: F401
 from libs.agents.reporter.read_models.symbol_metadata_fallbacks import (  # noqa: F401
     SYMBOL_NAME_FALLBACKS,
     SYMBOL_THEME_FALLBACKS,
