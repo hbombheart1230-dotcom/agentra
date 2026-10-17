@@ -83,10 +83,11 @@ def base_tree(tmp_path_factory):
 def produce(tree, tmp):
     script = tmp / "chain.py"
     script.write_text(CHAIN, encoding="utf-8")
-    r = subprocess.run([sys.executable, str(script)], cwd=str(tree), input=json.dumps(STORIES, ensure_ascii=False).encode("utf-8"),
-                       capture_output=True, env={"PYTHONPATH": str(tree), "PYTHONDONTWRITEBYTECODE": "1", "PYTHONHASHSEED": "0",
-                                                 "PATH": __import__("os").environ.get("PATH", ""),
-                                                 "SYSTEMROOT": __import__("os").environ.get("SYSTEMROOT", "")})
+    # full inherited environment (Windows needs SYSTEMDRIVE etc.; a stripped env makes the OS create a literal
+    # "%SystemDrive%" folder in the cwd) and a temp cwd so nothing can ever be created inside the repository
+    env = dict(__import__("os").environ, PYTHONPATH=str(tree), PYTHONDONTWRITEBYTECODE="1", PYTHONHASHSEED="0")
+    r = subprocess.run([sys.executable, str(script)], cwd=str(tmp), input=json.dumps(STORIES, ensure_ascii=False).encode("utf-8"),
+                       capture_output=True, env=env)
     assert r.returncode == 0, r.stderr.decode("utf-8", "replace")[-2000:]
     return json.loads(r.stdout.decode("utf-8"))
 

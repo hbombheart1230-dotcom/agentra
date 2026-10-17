@@ -548,8 +548,8 @@
    "callers": [
     "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
    ],
-   "disposition": "SAFE_MOVE_CANDIDATE",
-   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "broker order-status payload (name + kiwoom fields); kept in facade; relocation needs Work broker/truth decision"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",

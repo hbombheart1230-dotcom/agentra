@@ -100,9 +100,9 @@ def build_calls(fn):
 def observe(tree, module, function, calls, data_root, tmp):
     spec = tmp / f"spec_{abs(hash((str(tree), function)))}.json"
     spec.write_text(json.dumps({"module": module, "function": function, "calls": calls, "data_root": str(data_root)}), encoding="utf-8")
-    r = subprocess.run([sys.executable, str(RUNNER), str(tree), str(spec)], cwd=str(tmp), capture_output=True,
-                       env={"PYTHONDONTWRITEBYTECODE": "1", "PYTHONHASHSEED": "0", "PATH": __import__("os").environ.get("PATH", ""),
-                            "SYSTEMROOT": __import__("os").environ.get("SYSTEMROOT", "")})
+    env = dict(__import__("os").environ, PYTHONDONTWRITEBYTECODE="1", PYTHONHASHSEED="0")
+    env.pop("PYTHONPATH", None)  # the runner puts exactly the tree under test first on sys.path
+    r = subprocess.run([sys.executable, str(RUNNER), str(tree), str(spec)], cwd=str(tmp), capture_output=True, env=env)
     assert r.returncode == 0, r.stderr.decode("utf-8", "replace")[-2000:]
     return r.stdout.decode("utf-8")
 
