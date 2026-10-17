@@ -1,5 +1,10 @@
 # CLAUDE — Principal Reporter Owner, Continuous Whole-Role Refactoring
 
+## 2026-10-17 WHOLE-P1.5 RELAY — do not end at Reporter local freeze
+
+Read [10_P15_CONTINUOUS_ROLE_RELAY.md](10_P15_CONTINUOUS_ROLE_RELAY.md). Reporter remote R10 local-ready snapshot `de99c8f0fa66bfc3e6be9a229f04fc6aad5ca06e` (refresh). While waiting on Work T3/CI, act on any new Reporter-local findings. If none, continue **Strategist read-only next-role ownership/caller/testing inventory** in a separate evidence branch, only after checking existing source/ledgers so you do not redo prior work. Work must approve exact Strategist whole-role implementation scope and branch before source modifications. Do not change strategy decisions, thresholds, truth precedence or trade authority. Lack of another safe Reporter move is NOT a global stop. No unsafe make-work; a terminated Claude CLI needs a separate authorized runner to restart.
+
+
 ## 2026-10-17 R10 RESUME ADDENDUM — latest authority, read before C0-C6
 
 The R7 baseline in the original section below is historical, NOT the live start point. The newly committed source-of-truth for the next batch is [07_CLAUDE_REPORTER_R10_CONTINUATION.md](07_CLAUDE_REPORTER_R10_CONTINUATION.md), beginning at actual Reporter remote SHA (previously 3b549d753f3cebbb2f7d843318e38e494bb698a8). R8/R9 moved 313 bodies total. **SAFE STRUCTURAL EXTRACTOR EXHAUSTION IS NOT THE SAME AS COMPLETION OF REPORTER-LOCAL OFFLINE TEST/CONSUMER WORK.**
