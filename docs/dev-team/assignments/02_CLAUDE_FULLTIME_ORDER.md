@@ -7,7 +7,7 @@
 **Last reported Windows worktree:** C:\AgentraEvidence\reporter_role — verify remote, branch, dirty status and files before actions.
 **Design (read only):** origin/design/agentra-dev-team-loop-20261017
 **Shared review inbox:** https://github.com/hbombheart1230-dotcom/agentra/issues/11
-**Independent audit:** https://github.com/hbombheart1230-dotcom/agentra/issues/14
+**Cross-role shared review queue (Work):** https://github.com/hbombheart1230-dotcom/agentra/issues/14
 
 ## Startup: minimal context, actual state
 
@@ -15,7 +15,7 @@
 2. Read full-time team charter, this work order and docs/dev-team/REPORTER_PROGRAM.md from the design ref through git show or approved GitHub read access. Do not merge design branch into live implementation branch.
 3. Read current Reporter Issue #11 and newest branch checkpoint, not all historical chats. If Issue access is unavailable, use most recent committed handoff; do not extract credentials from git credential helpers.
 4. Inspect R7 ledgers and function-level blockers and actual remote HEAD, then write at least three NEXT_READY packets; start the first without a new user confirmation.
-5. Explicitly acknowledge P1 finding F-R7-01: T3 shared contract fix belongs to Codex/integration, not the active Claude implementation branch.
+5. Explicitly acknowledge P1 finding F-R7-01: T3 shared contract fix and cross-role coordination belong to Work in a separate integration proposal, not to the active Claude or Codex implementation branches.
 
 ## Baseline: do not redo previously completed work
 
@@ -110,7 +110,7 @@ A checkpoint file committed alongside a change cannot know its own SHA; put the 
 
 ## C6 — Work continuity after Reporter safe scope
 
-If safe Reporter work is truly exhausted while shared tests await Codex, prepare **read-only** ownership/consumer/test inventory for next whole-role Strategist then Scanner in versioned design/evidence docs, NOT code changes to those roles. Work must publish a clear whole-role scoped assignment before you start the next role's implementation branch. No Monitor edits.
+If safe Reporter work is truly exhausted while shared tests await Work's shared-contract integration, prepare **read-only** ownership/consumer/test inventory for next whole-role Strategist then Scanner in versioned design/evidence docs, NOT code changes to those roles. Work must publish a clear whole-role scoped assignment before you start the next role's implementation branch. No Monitor edits.
 
 ## Hard authorization boundaries
 
