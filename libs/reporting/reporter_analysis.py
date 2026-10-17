@@ -57,6 +57,9 @@ from libs.agents.reporter.read_models.reporter_analysis_bodies_03 import (  # R-
 from libs.agents.reporter.read_models.reporter_analysis_bodies_04 import (  # R-4 owner bodies (facade-injected)
     _to_markdown_r4_impl,
 )
+from libs.agents.reporter.read_models.reporter_analysis_r8_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _latest_day_r4_impl,
+)
 
 
 def _safe_int(v: Any, default: int = 0) -> int:
@@ -107,14 +110,7 @@ def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
 
 
 def _latest_day(path: Path) -> Optional[str]:
-    best: Optional[str] = None
-    for row in _iter_jsonl(path):
-        day = _utc_day(row.get("ts"))
-        if not day:
-            continue
-        if best is None or day > best:
-            best = day
-    return best
+    return _latest_day_r4_impl(path, facade=_r3_sys.modules[__name__])
 
 
 def _read_json(path: Path) -> Dict[str, Any]:

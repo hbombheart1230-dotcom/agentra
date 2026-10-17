@@ -1,0 +1,1615 @@
+{
+ "schema": "agentra.work.reporter.r8_triage.v1",
+ "rows": [
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "_resolve_intraday_report_model",
+   "scanner_reason": "excluded by caller",
+   "real_effect_calls": [],
+   "authority_names": [
+    "explicit_model",
+    "normalize_openrouter_model_name",
+    "resolve_policy_llm_slot"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/trade_report/services/ai_report.py",
+    "libs/reporting/trade_report/services/trade_summary.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing / reporter agent / cross-facade import: keep until separately approved"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "_router_chat_with_hard_timeout",
+   "scanner_reason": "effect/authority token: timeout",
+   "real_effect_calls": [],
+   "authority_names": [
+    "LLMRouter"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/trade_report/services/ai_report.py",
+    "libs/reporting/trade_report/services/trade_summary.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "build_separated_ai_trade_report",
+   "scanner_reason": "excluded by caller",
+   "real_effect_calls": [],
+   "authority_names": [
+    "_resolve_intraday_report_model",
+    "build_trade_read_model",
+    "chosen_model",
+    "model",
+    "trade_model"
+   ],
+   "module_identity": false,
+   "callers": [
+    "tests/test_llm_model_policy.py",
+    "tests/test_trade_report_ai_separated_adapter.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing / reporter agent / cross-facade import: keep until separately approved"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "_build_skipped_separated_report",
+   "scanner_reason": "effect/authority token: llm",
+   "real_effect_calls": [],
+   "authority_names": [
+    "trade_model"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/trade_report/ai_facade_r3_parts/bodies_05.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "_load_trade_read_model_hint",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "trade_root.exists"
+   ],
+   "authority_names": [
+    "build_trade_read_model",
+    "trade_model"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/trade_report/sections.py",
+    "tests/test_trade_report_ai.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai.py",
+   "name": "render_trade_summary_markdown_with_evaluation",
+   "scanner_reason": "excluded by caller",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/post_exit_shadow_recap.py",
+    "libs/reporting/single_trade_report.py",
+    "scripts/run_ai_trade_report_batch.py",
+    "tests/test_trade_report_ai.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing / reporter agent / cross-facade import: keep until separately approved"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "failure_report",
+   "scanner_reason": "effect/authority token: retry",
+   "real_effect_calls": [],
+   "authority_names": [
+    "model"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/trade_report/services/ai_report.py",
+    "libs/reporting/trade_report_ai.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "fallback_report",
+   "scanner_reason": "module-identity dependent (__name__/_r3_sys would bind to the owner module)",
+   "real_effect_calls": [],
+   "authority_names": [
+    "build_trade_report_truth_surface",
+    "model",
+    "reporter_feedback_packet"
+   ],
+   "module_identity": true,
+   "callers": [
+    "libs/agents/reporter/read_models/report_deterministic_bodies_01.py",
+    "libs/reporting/trade_report/services/ai_report.py",
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_p157_third_pass_t1_extraction_gates.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "module identity is a contract (passes its own module as facade to parts)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai_compact_input.py",
+   "name": "compact_story_input_for_llm",
+   "scanner_reason": "module-identity dependent (__name__/_r3_sys would bind to the owner module)",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": true,
+   "callers": [
+    "libs/agents/reporter/read_models/compact_input_bodies_01.py",
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_p157_third_pass_t1_extraction_gates.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "module identity is a contract (passes its own module as facade to parts)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "build_trade_report_detail_view",
+   "scanner_reason": "effect/authority token: open",
+   "real_effect_calls": [],
+   "authority_names": [
+    "build_trade_report_recent_feedback_view",
+    "normalize_strategist_feedback_input",
+    "recent_feedback_items",
+    "recent_feedback_window_size",
+    "strategist_feedback_input",
+    "strategist_feedback_recent_window"
+   ],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "tests/test_operator_ui_data_access_phase2.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "load_reporter_snippet_for_run",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "tests/test_operator_ui_data_access_phase2.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "load_trade_report_detail_payloads",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "bundle_path.exists",
+    "lifecycle_path.exists",
+    "report_md_path.exists",
+    "report_path.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "tests/test_operator_ui_data_access_phase2.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "load_operator_brief_detail_payloads",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "json_path.exists",
+    "md_path.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "tests/test_operator_ui_data_access_phase2.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "load_trade_report_payloads",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "aggregated_bundle_path.exists",
+    "legacy_lifecycle.exists",
+    "lifecycle_path.exists",
+    "normalized_lifecycle.exists",
+    "report_json_path.exists",
+    "story_input_path.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_reports.py",
+    "tests/test_operator_ui_data_access_phase2.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "build_trade_read_model",
+   "scanner_reason": "module-identity dependent (__name__/_r3_sys would bind to the owner module)",
+   "real_effect_calls": [
+    "Path",
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [
+    "blocker_trace",
+    "read_truth_blocker_trace_data_source_quality"
+   ],
+   "module_identity": true,
+   "callers": [
+    "graphs/nodes/strategist_node.py",
+    "libs/agent/reporter.py",
+    "libs/reporting/evaluation/trade_read_model.py",
+    "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py",
+    "libs/reporting/symbol_read_model.py",
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_llm_model_policy.py",
+    "tests/test_p157_third_pass_t1_extraction_gates.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "module identity is a contract (passes its own module as facade to parts)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_memory_surface.py",
+   "name": "_load_json_artifact",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/agents/reporter/read_models/memory_application_bodies_01.py",
+    "libs/agents/reporter/read_models/memory_surface_bodies_01.py",
+    "libs/reporting/trade_memory_application_surface.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_memory_surface.py",
+   "name": "_build_symbol_memory_from_persisted",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [
+    "build_symbol_read_model",
+    "model"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/agents/reporter/read_models/memory_surface_bodies_01.py",
+    "tests/test_trade_memory_surface.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_memory_surface.py",
+   "name": "build_trade_report_memory_surface",
+   "scanner_reason": "module-identity dependent (__name__/_r3_sys would bind to the owner module)",
+   "real_effect_calls": [],
+   "authority_names": [
+    "llm_output",
+    "memory_status_active_layers_priority_order",
+    "priority_order",
+    "prompt_priority_order",
+    "prompt_read_model_daily_summary_present",
+    "prompt_read_model_facts",
+    "prompt_read_model_present",
+    "prompt_read_model_recent_trade_count",
+    "prompt_read_model_symbol_pattern_count",
+    "prompt_read_model_symbols",
+    "prompt_reporter_feedback",
+    "prompt_selected_blocker",
+    "read_model_daily_summary_present",
+    "read_model_facts",
+    "read_model_present",
+    "read_model_recent_trade_count",
+    "read_model_symbol_pattern_count",
+    "read_model_symbols",
+    "read_model_visibility",
+    "rebuilt_memory_feedback_facts",
+    "recent_feedback_visibility",
+    "reporter_feedback",
+    "reporter_feedback_rebuilt",
+    "selected_blocker"
+   ],
+   "module_identity": true,
+   "callers": [
+    "libs/reporting/trade_bundle_assembly.py",
+    "libs/reporting/trade_report/ai_facade_parts/fallback_seed_context.py",
+    "libs/reporting/trade_report/normalization.py",
+    "libs/reporting/trade_report_ai.py",
+    "libs/reporting/trade_report_ai_deterministic.py",
+    "tests/test_p157_third_pass_t1_extraction_gates.py",
+    "tests/test_trade_memory_surface.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "module identity is a contract (passes its own module as facade to parts)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_load_json_artifact",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/agents/reporter/read_models/memory_application_bodies_01.py",
+    "libs/agents/reporter/read_models/memory_surface_bodies_01.py",
+    "libs/reporting/trade_memory_surface.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "_iter_jsonl",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.open"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_run_read_models.py",
+    "apps/operator_ui/data_access_symbol_run_chain.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/read/kiwoom_order_fill_reader.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/operator_visibility.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "_latest_day",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/reporter_analysis.py",
+    "scripts/diagnostics/check_audit_trail_completeness.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "_canonical_report_root",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/operator_visibility.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "build_trade_explain_output_path_metadata",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "_report_inventory",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "p.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "_to_markdown",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/reporter_analysis.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "generate_trade_explain_report",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "js_path.write_text",
+    "md_path.write_text",
+    "report_dir.mkdir"
+   ],
+   "authority_names": [
+    "dominant_blocker",
+    "dominant_blocker_total"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/agent/reporter.py",
+    "libs/reporting/__init__.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/reporter_analysis.py",
+    "scripts/diagnostics/run_offhours_full_trace_bundle.py",
+    "scripts/research/run_phase5_validation_bundle.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_offhours_full_trace_bundle.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_broker_fill_lookup_enabled",
+   "scanner_reason": "effect/authority token: os.",
+   "real_effect_calls": [
+    "os.getenv"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_broker_order_status_payload",
+   "scanner_reason": "effect/authority token: kiwoom",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "resolve_lifecycle_bundle_sources",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "attach_strategy_anchor",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [
+    "strategist_llm_response_path"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_strategy_anchor_metadata",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [
+    "strategist_llm_response_path"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "build_live_run_bundle",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Call.exists",
+    "Path"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_trade_bundle_assembly.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "hydrate_live_run_bundle_context",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_trade_bundle_assembly.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_entry_exit_holding_enrichment",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [
+    "normalize_scanner_context_for_executed_symbol",
+    "strategist_llm_response_path"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_live_trade_context",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [
+    "broker_cost_details",
+    "broker_cost_profile",
+    "update_broker_cost_profile_from_execution_details"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_trade_bundle_assembly.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "broker/truth/execution related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "derive_trade_recovery_metadata",
+   "scanner_reason": "effect/authority token: open",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "scripts/run_live_execution_bundle_report.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "apply_final_trade_report_context",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [
+    "ai_trade_report_llm_response_written",
+    "brief_llm_response_path",
+    "strategist_llm_response_path"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_state.py",
+   "name": "build_live_trade_bundle_payloads",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "brief_llm_response_path.exists",
+    "commander_evidence_path.exists",
+    "entry_artifact_path.exists",
+    "exit_artifact_path.exists",
+    "hold_artifact_path.exists",
+    "lifecycle_bundle_path.exists",
+    "monitor_evidence_path.exists",
+    "scanner_evidence_path.exists",
+    "story_compact_input_path.exists",
+    "story_input_path.exists",
+    "strategist_evidence_path.exists",
+    "strategist_llm_response_path.exists"
+   ],
+   "authority_names": [
+    "ai_trade_report_llm_artifact",
+    "ai_trade_report_llm_response_written",
+    "brief_llm_response_path",
+    "existing_brief_llm_artifact",
+    "resolved_brief_llm_response_json",
+    "strategist_llm_artifact",
+    "strategist_llm_response_path"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_trade_bundle_state.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_read_json_if_exists",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_load_existing_open_lifecycle_candidates",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "day_root.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_add_existing_open_lifecycle_candidate",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "lifecycle_path.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_build_lifecycle_from_seed",
+   "scanner_reason": "effect/authority token: open",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_build_trade_lifecycles",
+   "scanner_reason": "effect/authority token: open",
+   "real_effect_calls": [],
+   "authority_names": [
+    "fill_truth_confirmed",
+    "fill_truth_required"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_live_execution_bundle_report_runtime_recovery.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "broker/truth/execution related names"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_load_json_dict",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_resolve_trade_day",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "BinOp.exists",
+    "Path",
+    "canonical_root.exists",
+    "canonical_root.iterdir",
+    "datetime.now",
+    "day_dir.is_dir"
+   ],
+   "authority_names": [
+    "fullmatch"
+   ],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_same_day_reporter_paths",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_build_canonical_context",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "agent_trace_path.exists",
+    "path.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_read_json",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/agent/reporter.py",
+    "libs/llm/model_catalog_store.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/closeout_residual_positions.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_matching_trade_dirs",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.is_dir",
+    "trade_day_root.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_find_open_trade_id",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "build_single_trade_report_id",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "tests/test_single_trade_report.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_build_trade_report_inputs",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [
+    "_build_monitor_blocker_trace",
+    "monitor_blocker_trace"
+   ],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "generate_single_trade_report",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "Subscript.mkdir",
+    "Subscript.write_text"
+   ],
+   "authority_names": [
+    "compact_llm",
+    "llm_artifact",
+    "llm_written",
+    "persist_llm_artifact_refs",
+    "summary_llm_artifact",
+    "summary_llm_compact"
+   ],
+   "module_identity": false,
+   "callers": [
+    "tests/test_m21_commander_runtime_entry.py",
+    "tests/test_single_trade_report.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "_iter_jsonl",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.open"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_run_read_models.py",
+    "apps/operator_ui/data_access_symbol_run_chain.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/read/kiwoom_order_fill_reader.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/operator_visibility.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "_latest_day",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/trade_explain.py",
+    "scripts/diagnostics/check_audit_trail_completeness.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "_read_json",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/agent/reporter.py",
+    "libs/llm/model_catalog_store.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/closeout_residual_positions.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "_build_intent_flow_analysis",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "intents_path.exists"
+   ],
+   "authority_names": [
+    "blocked",
+    "executed"
+   ],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "broker/truth/execution related names"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "generate_reporter_analysis_report",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "ds_md.exists",
+    "js_path.write_text",
+    "md_path.write_text",
+    "rc_md.exists",
+    "report_dir.mkdir"
+   ],
+   "authority_names": [
+    "ai_review_model",
+    "save_strategy_feedback"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/agent/reporter.py",
+    "libs/reporting/__init__.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "scripts/diagnostics/run_offhours_full_trace_bundle.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_offhours_full_trace_bundle.py",
+    "tests/test_reporter_analysis_report.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "_canonical_reports_root",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_read_json",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/agent/reporter.py",
+    "libs/llm/model_catalog_store.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/closeout_residual_positions.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "load_entry_blocker_rows",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "day_root.exists",
+    "day_root.iterdir",
+    "path.is_dir"
+   ],
+   "authority_names": [
+    "build_entry_blocker_row"
+   ],
+   "module_identity": false,
+   "callers": [
+    "tests/test_entry_blocker_read_model.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "build_entry_blocker_day_summary",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path"
+   ],
+   "authority_names": [
+    "load_entry_blocker_rows",
+    "summarize_entry_blocker_rows"
+   ],
+   "module_identity": false,
+   "callers": [
+    "scripts/diagnostics/analyze_entry_blockers.py",
+    "tests/test_entry_blocker_read_model.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_read_json",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/agent/reporter.py",
+    "libs/llm/model_catalog_store.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/closeout_residual_positions.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "resolve_post_exit_state_path",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "BinOp.resolve",
+    "Path",
+    "os.getenv",
+    "path.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/closeout_maintenance.py",
+    "scripts/research/run_post_exit_shadow_recap.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_post_exit_shadow_needs_fresh_minutes",
+   "scanner_reason": "effect/authority token: datetime.now",
+   "real_effect_calls": [
+    "datetime.now"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "tests/test_post_exit_shadow_recap.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "opening_rank1_eod_fallback_row",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "tests/test_post_exit_shadow_recap.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_post_exit_shadow_from_lifecycle",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_trade_label",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "build_post_exit_shadow_recap",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/evaluation/canonical/adapters/q9_horizon_exit_adapter.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "render_post_exit_shadow_trade_recap_md",
+   "scanner_reason": "name defined more than once in the module (redefinition)",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "redefinition: effective last definition is the facade behavior; dead first def kept for ABI/history"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "render_post_exit_shadow_daily_recap_md",
+   "scanner_reason": "name defined more than once in the module (redefinition)",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "redefinition: effective last definition is the facade behavior; dead first def kept for ABI/history"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "write_post_exit_shadow_recap_outputs",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "report_dir.mkdir"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/evaluation/canonical/adapters/q9_horizon_exit_adapter.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_refresh_trade_summary_from_recap",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "report_path.exists",
+    "summary_input_path.exists",
+    "summary_json_path.exists",
+    "summary_md_path.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "generate_post_exit_shadow_recap",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "resolved_state_path.exists"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "graphs/commander_runtime.py",
+    "libs/reporting/closeout_maintenance.py",
+    "libs/reporting/evaluation/canonical/adapters/q9_horizon_exit_adapter.py",
+    "scripts/research/run_post_exit_shadow_recap.py",
+    "tests/test_post_exit_shadow_recap.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_read_json",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/agent/reporter.py",
+    "libs/llm/model_catalog_store.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/closeout_residual_positions.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_iter_jsonl",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.open"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_run_read_models.py",
+    "apps/operator_ui/data_access_symbol_run_chain.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/read/kiwoom_order_fill_reader.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/operator_visibility.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_iter_trade_lifecycles",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "trades_root.exists",
+    "trades_root.rglob"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_iter_trade_lifecycles_for_day",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "day_root.exists",
+    "day_root.rglob"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_clean_symbol_reason",
+   "scanner_reason": "effect/authority token: open",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_actual_entry_reason_from_artifacts",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [
+    "feedback"
+   ],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_extract_trade_artifact_snapshot",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path"
+   ],
+   "authority_names": [
+    "feedback"
+   ],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_build_history_index",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_collect_symbol_event_insights",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "build_symbol_trade_summary",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "tests/test_symbol_trade_report.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "build_daily_trade_index",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/daily_report_generator.py",
+    "tests/test_carryover_exit_reconciler.py",
+    "tests/test_closeout_residual_positions.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "collect_symbols_for_day",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [],
+   "authority_names": [
+    "order"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/daily_report_generator.py",
+    "scripts/research/run_phase5_validation_bundle.py",
+    "scripts/run_ai_trade_report_batch.py",
+    "tests/test_run_phase5_validation_bundle.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "broker/truth/execution related names"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "generate_symbol_trade_report",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Subscript.write_text",
+    "root_dir.mkdir"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/__init__.py",
+    "libs/reporting/daily_report_runtime/symbol_refresh.py",
+    "libs/reporting/operator_summary_refresh.py",
+    "scripts/generate_symbol_trade_report.py",
+    "scripts/research/run_phase5_validation_bundle.py",
+    "scripts/run_ai_trade_report_batch.py",
+    "tests/test_operator_summary_refresh.py",
+    "tests/test_run_phase5_validation_bundle.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_iter_jsonl",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.open"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_run_read_models.py",
+    "apps/operator_ui/data_access_symbol_run_chain.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/read/kiwoom_order_fill_reader.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/operator_visibility.py",
+    "libs/reporting/phase_runtime_health.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_read_json",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "path.exists",
+    "path.read_text"
+   ],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_trade_read_models.py",
+    "libs/agent/reporter.py",
+    "libs/llm/model_catalog_store.py",
+    "libs/reporting/broker_closed_trade_reconciler.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/closeout_residual_positions.py",
+    "libs/reporting/entry_blocker_read_model.py"
+   ],
+   "disposition": "RETAIN_FACADE",
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+  },
+  {
+   "legacy_path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_build_markdown",
+   "scanner_reason": "effect/authority token: llm",
+   "real_effect_calls": [],
+   "authority_names": [],
+   "module_identity": false,
+   "callers": [
+    "libs/runtime/entrypoints/live_session_watch.py",
+    "libs/runtime/entrypoints/m28_deploy_launch_template_check.py",
+    "libs/runtime/entrypoints/m28_launch_hook_integration_check.py",
+    "libs/runtime/entrypoints/m28_registration_helper_check.py",
+    "libs/runtime/entrypoints/m28_scheduler_worker_launch_wrapper_check.py",
+    "libs/runtime/entrypoints/m28_startup_preflight_check.py",
+    "scripts/diagnostics/check_audit_trail_completeness.py",
+    "scripts/diagnostics/generate_ops_diagnostic_report.py"
+   ],
+   "disposition": "SAFE_MOVE_CANDIDATE",
+   "next_action": "token false positive (no I/O/authority call in AST); move with R4 proof"
+  },
+  {
+   "legacy_path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "generate_agent_pipeline_trace_report",
+   "scanner_reason": "effect/authority token: Path",
+   "real_effect_calls": [
+    "Path",
+    "candidate.exists",
+    "js_path.write_text",
+    "md_path.write_text",
+    "report_dir.mkdir"
+   ],
+   "authority_names": [
+    "execution_order",
+    "kiwoom_source_mix",
+    "llm_payload",
+    "strategist_llm",
+    "strategist_llm_payload"
+   ],
+   "module_identity": false,
+   "callers": [
+    "libs/reporting/__init__.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "scripts/diagnostics/run_agent_pipeline_trace_report.py",
+    "scripts/diagnostics/run_offhours_full_trace_bundle.py",
+    "scripts/research/run_phase5_validation_bundle.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_offhours_full_trace_bundle.py",
+    "tests/test_run_phase5_validation_bundle.py"
+   ],
+   "disposition": "NEEDS_AUTHORITY",
+   "next_action": "LLM routing/retry/cost related names"
+  }
+ ]
+}

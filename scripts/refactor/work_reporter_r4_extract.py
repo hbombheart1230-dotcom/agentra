@@ -116,6 +116,7 @@ def main():
     ap.add_argument("ledger")
     ap.add_argument("--min-lines", type=int, default=6)
     ap.add_argument("--exclude", default="")
+    ap.add_argument("--only", default="", help="R8: move ONLY these names; token filter waived for them after per-function triage")
     ns = ap.parse_args()
     facade = Path(ns.facade)
     raw = facade.read_bytes()
@@ -127,6 +128,7 @@ def main():
     bound = module_bound_names(tree)
     lines = src.split("\n")
     excluded = set(filter(None, ns.exclude.split(",")))
+    only = set(filter(None, ns.only.split(",")))
     chosen, skipped = [], {}
     import collections
     dup = {k for k, v in collections.Counter(n.name for n in tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))).items() if v > 1}
@@ -145,7 +147,9 @@ def main():
             reason = "short"
         elif "__name__" in seg or "_r3_sys" in seg:
             reason = "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
-        elif EFFECT_TOKENS.search(seg):
+        elif only and fn.name not in only:
+            reason = "not selected (--only)"
+        elif not only and EFFECT_TOKENS.search(seg):
             reason = "effect/authority token: " + EFFECT_TOKENS.search(seg).group(0)
         else:
             try:
@@ -245,7 +249,11 @@ def main():
                                                                              "base": "d773709ba2f70471fad9badba4f92400f7818319",
                                                                              "moves": [], "skipped": {}}
     doc["moves"].extend(moved)
-    doc["skipped"][facade.as_posix()] = skipped
+    if only:  # keep earlier triage reasons; drop only the names moved now
+        moved_names = {m["name"] for m in moved}
+        doc["skipped"][facade.as_posix()] = {k: v for k, v in doc["skipped"].get(facade.as_posix(), {}).items() if k not in moved_names}
+    else:
+        doc["skipped"][facade.as_posix()] = skipped
     led.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     print(f"moved {len(moved)} into {len(owners)} owners; skipped {len(skipped)}")
 

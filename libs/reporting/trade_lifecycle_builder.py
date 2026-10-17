@@ -30,6 +30,9 @@ from libs.agents.reporter.read_models.lifecycle_builder_bodies_01 import (  # R-
     _exit_closure_quantity_state_r4_impl,
     _record_partial_exit_r4_impl,
 )
+from libs.agents.reporter.read_models.trade_lifecycle_builder_r8_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _build_lifecycle_from_seed_r4_impl,
+)
 
 def _is_placeholder_entry_reason(value: Any) -> bool:
     return _is_placeholder_entry_reason_r4_impl(value, facade=_r3_sys.modules[__name__])
@@ -198,28 +201,7 @@ def _build_lifecycle_from_seed(
     execution_mode_label_text: str,
     story_type: str,
 ) -> Dict[str, Any]:
-    return {
-        "trade_id": trade_id,
-        "symbol": symbol,
-        "day": day,
-        "status": "open",
-        "execution_mode_label": execution_mode_label_text,
-        "story_type": story_type,
-        "entry": {},
-        "holding": {
-            "run_ids": [],
-            "holding_events": [],
-            "posture_history": [],
-            "monitor_updates": [],
-            "noteworthy_changes": [],
-        },
-        "exit": {},
-        "run_ids_all": [],
-        "summary": {},
-        "reporter": {},
-        "timeline": [],
-        "warnings": [],
-    }
+    return _build_lifecycle_from_seed_r4_impl(trade_id=trade_id, symbol=symbol, day=day, execution_mode_label_text=execution_mode_label_text, story_type=story_type, facade=_r3_sys.modules[__name__])
 
 
 def _has_substantive_entry_evidence(entry: Dict[str, Any]) -> bool:

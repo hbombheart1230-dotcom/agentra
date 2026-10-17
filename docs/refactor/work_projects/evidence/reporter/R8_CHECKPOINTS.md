@@ -1,0 +1,25 @@
+# Reporter R8 checkpoints (issue-ready; this session has no GitHub write access — no credential scraping)
+
+## R8-000 — integrity (START_SHA 8ce327ecc71c4c92074c1fa5fb6f00428ba9279b, clean tree, origin = hbombheart1230-dotcom/agentra)
+- Ledger: 264 moves, 264 unique (facade,function) pairs, expected_moves 264; 29 owners, max 324 LOC; every moved name still defined exactly once in its facade.
+- UEF pre-existing check (same interpreter Python 3.13.14): `git archive d773709` tree and HEAD fail the IDENTICAL 10 tests (8 test_uef2a_forward_policy_contract, 2 test_uef5_1_clean_evidence_registry); cause = missing operational data, e.g. reports/trades/2026-05-15/.../post_exit_shadow_recap.json (FileNotFoundError). Not Reporter-caused; not waived, just reproduced.
+- REVIEW_ACK: F-R7-01 (P1) acknowledged — T3 shared-contract fix and cross-role coordination belong to Work on a separate integration proposal; Reporter branch will not carry or bypass it. My earlier T3 v4 diff is superseded input only; note R-8 adds owners named *_r8_bodies_01.py which the historical bodies_0N rule also matches. F-R7-02 acknowledged (Work: stage Monitor parts only on a combined candidate; add BOTH Reporter tests to CI). F-R7-03 fixed: proposed_patch_note.json sources now point to REPORTER_ROLE_HANDOFF_R7.md + REPORTER_R4_FACADE_BODIES.md; still a proposal, UI source not verified.
+
+## R8-001 — C1 triage + C2 safe moves
+- C1: scripts/refactor/work_reporter_triage.py -> r8_function_triage.json: 91 remaining non-trivial functions, rows with real effect calls (AST), authority names, module identity, callers, disposition. Result: 23 SAFE_MOVE_CANDIDATE (scanner token false positives: no direct I/O/authority call; any reads happen in late-bound facade helpers), 47 RETAIN_FACADE (direct read/write/time/log calls, module identity, redefinitions), 21 NEEDS_AUTHORITY (LLM routing/retry/model, broker/truth/execution names).
+- C2: 22 of 23 moved (`_broker_order_status_payload` excluded by name: broker). Extractor gained `--only` (token filter waived only for triaged names; all other eligibility checks + unparse round-trip self-check kept; earlier triage reasons preserved in ledger). Owners: libs/agents/reporter/{narrative,read_models}/<module>_r8_bodies_01.py (9 files). MOVES total 286.
+- FACADE_LOC (after R-8):
+     544 libs/reporting/trade_read_model.py
+     411 libs/reporting/trade_explain.py
+    1225 libs/reporting/trade_bundle_assembly.py
+     783 libs/reporting/trade_lifecycle_builder.py
+     466 libs/reporting/single_trade_report.py
+     666 libs/reporting/reporter_analysis.py
+     536 libs/reporting/post_exit_shadow_recap.py
+     562 libs/reporting/symbol_trade_report.py
+     575 libs/reporting/agent_pipeline_trace.py
+    5768 total
+- TESTS: tests/test_work_reporter_r4_facade_bodies.py 1470 PASS (286 moves); seed/scope + p152 ledger/ABI/R3 + T1/T2 gates + 40 consumer files 1397 PASS / 0 FAIL (fastapi-dependent tests excluded: NOT_RUN). Closed scope set extended by explicit R8_OWNER_FILES; ledger test pins 286 moves and exact pairs.
+- BLOCKERS: 47 RETAIN_FACADE + 21 NEEDS_AUTHORITY rows (see triage JSON); controlled_mock_lane_report ownership (Work); shared T3 (Work, F-R7-01).
+- NEXT_READY: (1) C1-D read-only I/O characterization for RETAIN_FACADE rows with temp-dir parity fixtures; (2) C3 producer/consumer/DTO map + offline byte fixtures; (3) C4 trade_report/ subtree classification; (4) controlled_mock_lane_report consumer evidence for Work.
+- PATCH_NOTES: NOT_PUBLISHED (proposal only). BUDGET: UNKNOWN.

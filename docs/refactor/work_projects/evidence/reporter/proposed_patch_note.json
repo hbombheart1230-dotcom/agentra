@@ -16,6 +16,7 @@
  ],
  "impact": "Module location and tests only; no report text, payload or behavior change.",
  "sources": [
-  "docs/refactor/work_projects/evidence/reporter/REPORTER_ROLE_HANDOFF.md"
+  "docs/refactor/work_projects/evidence/reporter/REPORTER_ROLE_HANDOFF_R7.md",
+  "docs/refactor/work_projects/evidence/reporter/REPORTER_R4_FACADE_BODIES.md"
  ]
 }
