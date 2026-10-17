@@ -3,7 +3,7 @@
   "runtime_base": "d773709ba2f70471fad9badba4f92400f7818319",
   "start_sha": "eeb742a33b16f6271ff364a904e187b470561c7e",
   "branch": "work/monitor-role-20261017",
-  "status": "IMPLEMENTING",
+  "status": "READY_FOR_AUDIT_SHARED_GATE_MAPPING_PENDING",
   "maps": [
     {
       "role": "monitor",
@@ -11,7 +11,7 @@
       "destination": "libs/agents/monitor/events/cycle_event_payloads.py",
       "base_blob": "633f9afbb422c6970cb1597aecb5e24b358d5481",
       "loc": 136,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "build_monitor_raw_input_snapshot",
@@ -54,7 +54,7 @@
       "destination": "libs/agents/monitor/events/cycle_log_trace_payloads.py",
       "base_blob": "51fa078349e005052afb0e3f83ac3c84780bbcf2",
       "loc": 171,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "build_monitor_summary_log_payload",
@@ -87,7 +87,7 @@
       "destination": "libs/agents/monitor/projections/cycle_detail_projection.py",
       "base_blob": "9630c66ffd9b34c3e7a99804f158ecb6f6d2bf18",
       "loc": 192,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "cycle_detail_entry_candidate_symbol_entry_cost_filter",
@@ -125,7 +125,7 @@
       "destination": "libs/agents/monitor/projections/cycle_output_projection.py",
       "base_blob": "26db1a162a9e55fc8ea9b187bcd74f3576308d40",
       "loc": 285,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "cycle_output_value_state_monitor",
@@ -168,7 +168,7 @@
       "destination": "libs/agents/monitor/projections/cycle_output_projection_value_state_monitor.py",
       "base_blob": "97831983e7d5ab78b0b90e89a10298f16be45510",
       "loc": 37,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "cycle_output_value_state_monitor_output"
@@ -197,7 +197,7 @@
       "destination": "libs/agents/monitor/projections/cycle_posture_projection.py",
       "base_blob": "2ed727fb946b3055e64d1745f80fae61808cee6a",
       "loc": 253,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "cycle_posture_entry_applied_policy_entry_metrics",
@@ -242,7 +242,7 @@
       "destination": "libs/agents/monitor/projections/entry_focus_output_projection.py",
       "base_blob": "21326cb26e5997d15b1b993052be6f33f6967f19",
       "loc": 33,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "build_entry_focus_monitor_output"
@@ -271,7 +271,7 @@
       "destination": "libs/agents/monitor/projections/policy_output_projection.py",
       "base_blob": "fe6c9ebf5668e0a679d3122a6c041c5d78d9aeb1",
       "loc": 135,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "build_policy_monitor_output"
@@ -300,7 +300,7 @@
       "destination": "libs/agents/monitor/projections/scanner_monitor_handoff_projection.py",
       "base_blob": "d7c3f8afd63f512420c54338ed6f6dce113d3e57",
       "loc": 22,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "build_scanner_monitor_handoff_for_cycle"
@@ -331,7 +331,7 @@
       "destination": "libs/agents/monitor/projections/signal_explanation.py",
       "base_blob": "be74bc5f7ea677e159416ac2d4c78a319d69f3bb",
       "loc": 63,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "signal_explain_effect_free_block_3479"
@@ -361,7 +361,7 @@
       "destination": "libs/agents/monitor/projections/cycle_detail_projection_exit_decision_detail.py",
       "base_blob": "fe67e0012d72ec08ce66fcc89c53de517cec0e1b",
       "loc": 271,
-      "status": "REGISTERED_BEFORE_SOURCE_EDIT",
+      "status": "MOVED_BASE_BLOB_AND_LOCAL_CONTRACT_VERIFIED",
       "batch": "event_projection_blobs_v1",
       "symbols": [
         "cycle_detail_exit_decision_detail",
@@ -1373,5 +1373,6 @@
     "additional_reason": "Reflects already-computed exit/entry decisions into detail/evaluation/action read models; fresh triggered/blocked lists, no trigger or approval generation. Reuses approved projections package.",
     "safety_lock": "Actual entry/exit, sizing, cooldown, policy selection and trigger owners individually retained. Mixed scoring-policy/ETF callbacks in entry_evidence are not force-classified pure.",
     "whole_role_status": "All identified responsibilities dispositioned; authorized safe structural scope implemented. Protected/mixed-policy work, independent audit and combined CI remain open."
-  }
+  },
+  "code_sha": "cf2e6622cced71cb39bfcb3b48fd5b3dc0708a48"
 }

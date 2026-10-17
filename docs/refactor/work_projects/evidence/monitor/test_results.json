@@ -1,0 +1,267 @@
+{
+  "schema": "work.monitor.test_evidence.v1",
+  "code_sha": "cf2e6622cced71cb39bfcb3b48fd5b3dc0708a48",
+  "runtime_base": "d773709ba2f70471fad9badba4f92400f7818319",
+  "start_sha": "eeb742a33b16f6271ff364a904e187b470561c7e",
+  "runs": [
+    {
+      "run": "consumers",
+      "command": "python -m pytest tests/test_intraday_monitor_signals.py tests/test_m17_monitor_emits_intent_only.py tests/test_monitor_exit_guard.py tests/test_monitor_candidate_cascade.py tests/test_monitor_memory_bias.py tests/test_monitor_directional_edge.py -q --tb=short -p no:cacheprovider --basetemp <unique-run>/basetemp --junitxml <unique-run>/junit.xml",
+      "exit_code": 0,
+      "totals": {
+        "PASS": 222,
+        "FAIL": 0,
+        "SKIP": 0,
+        "ERROR": 0
+      },
+      "by_file": {
+        "tests.test_intraday_monitor_signals": {
+          "PASS": 76,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_m17_monitor_emits_intent_only": {
+          "PASS": 2,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_monitor_exit_guard": {
+          "PASS": 114,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_monitor_candidate_cascade": {
+          "PASS": 14,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_monitor_memory_bias": {
+          "PASS": 8,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_monitor_directional_edge": {
+          "PASS": 8,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        }
+      },
+      "failures": [],
+      "junit_suite_seconds": 10.238,
+      "local_artifacts": [
+        {
+          "path": "C:\\AgentraWork\\tmp\\monitor_role_proof_6ca3508470ab48b5a0893407e15d45ee\\consumers_16374885280d43adad00c91e7aaa8b16\\junit.xml",
+          "sha256": "50222e47ed119d933adc0da3f6af503bae2789d9ae579400eac9e9b544b9eeca",
+          "bytes": 32618
+        },
+        {
+          "path": "C:\\AgentraWork\\tmp\\monitor_role_proof_6ca3508470ab48b5a0893407e15d45ee\\consumers_16374885280d43adad00c91e7aaa8b16\\pytest.log",
+          "sha256": "494743aaa2199f3fc77750fa9fb6006f133dd00e8b85be8a24728fb59dcc995c",
+          "bytes": 1568
+        }
+      ]
+    },
+    {
+      "run": "own",
+      "command": "python -m pytest tests/test_work_monitor_role_contracts.py -q -p no:cacheprovider --basetemp <unique-run>/basetemp --junitxml <unique-run>/junit.xml",
+      "exit_code": 0,
+      "totals": {
+        "PASS": 148,
+        "FAIL": 0,
+        "SKIP": 0,
+        "ERROR": 0
+      },
+      "by_file": {
+        "tests.test_work_monitor_role_contracts": {
+          "PASS": 148,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        }
+      },
+      "failures": [],
+      "junit_suite_seconds": 16.917,
+      "local_artifacts": [
+        {
+          "path": "C:\\AgentraWork\\tmp\\monitor_role_proof_6ca3508470ab48b5a0893407e15d45ee\\own_22c9f37f144545d8bd2781b5c8772809\\junit.xml",
+          "sha256": "95a9f3b103804bddf31d2f45c04ebb415581ad7d6a21390aa69d919cdb176003",
+          "bytes": 32729
+        }
+      ]
+    },
+    {
+      "run": "provenance",
+      "command": "python -m pytest tests/test_work_monitor_role_contracts.py::test_frozen_inventory_and_baseline_provenance_are_fail_closed tests/test_work_monitor_role_contracts.py::test_fixture_recomputes_only_from_immutable_base_not_feature -q -p no:cacheprovider --basetemp <unique-run>/basetemp --junitxml <unique-run>/junit.xml",
+      "exit_code": 0,
+      "totals": {
+        "PASS": 2,
+        "FAIL": 0,
+        "SKIP": 0,
+        "ERROR": 0
+      },
+      "by_file": {
+        "tests.test_work_monitor_role_contracts": {
+          "PASS": 2,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        }
+      },
+      "failures": [],
+      "junit_suite_seconds": 2.023,
+      "local_artifacts": [
+        {
+          "path": "C:\\AgentraWork\\tmp\\monitor_role_proof_6ca3508470ab48b5a0893407e15d45ee\\provenance_d9618fa0610b47df93a381566020e89b\\junit.xml",
+          "sha256": "fb3b92ae86de4b82641ae1d9140871b81938c7fa630bf20edc16c109e6e72e2b",
+          "bytes": 540
+        }
+      ]
+    },
+    {
+      "run": "shared",
+      "command": "python -m pytest tests/test_p163_t4b_extraction_gates.py tests/test_p163_monitor_contract_freeze.py tests/test_p159_current_owner_contract_gates.py tests/test_p154_wave_b_moved_bodies.py tests/test_p154_wave_b_scope_and_authority_boundary.py tests/test_p168_wave_b_shim_verifier_negatives.py -q --tb=short -p no:cacheprovider --basetemp <unique-run>/basetemp --junitxml <unique-run>/junit.xml",
+      "exit_code": 1,
+      "totals": {
+        "PASS": 843,
+        "FAIL": 5,
+        "SKIP": 0,
+        "ERROR": 0
+      },
+      "by_file": {
+        "tests.test_p163_t4b_extraction_gates": {
+          "PASS": 7,
+          "FAIL": 3,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p163_monitor_contract_freeze": {
+          "PASS": 5,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p159_current_owner_contract_gates": {
+          "PASS": 12,
+          "FAIL": 2,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p154_wave_b_moved_bodies": {
+          "PASS": 768,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p154_wave_b_scope_and_authority_boundary": {
+          "PASS": 3,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        },
+        "tests.test_p168_wave_b_shim_verifier_negatives": {
+          "PASS": 48,
+          "FAIL": 0,
+          "SKIP": 0,
+          "ERROR": 0
+        }
+      },
+      "failures": [
+        {
+          "test_id": "tests/test_p163_t4b_extraction_gates.py::test_inlining_every_owner_reproduces_the_base_monitor_function_asts_exactly",
+          "message": "KeyError: 'build_scanner_monitor_handoff_for_cycle'",
+          "trace": "tests\\test_p163_t4b_extraction_gates.py:184: in test_inlining_every_owner_reproduces_the_base_monitor_function_asts_exactly\n    runs, builders, projections = _stage_maps(module)\n                                  ^^^^^^^^^^^^^^^^^^^\ntests\\test_p163_t4b_extraction_gates.py:177: in _stage_maps\n    target[seg[\"owner_function\"]] = _owner_fn(seg)\n                                    ^^^^^^^^^^^^^^\ntests\\test_p163_t4b_extraction_gates.py:91: in _owner_fn\n    return _funcs(ast.parse((ROOT / seg[\"owner\"]).read_text(encoding=\"utf-8-sig\")))[seg[\"owner_function\"]]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   KeyError: 'build_scanner_monitor_handoff_for_cycle'",
+          "classification": "SHARED_GATE_MAPPING_CONFLICT",
+          "not_a_pass": true
+        },
+        {
+          "test_id": "tests/test_p163_t4b_extraction_gates.py::test_owner_modules_are_small_pure_and_resolve_only_allowed_names",
+          "message": "AssertionError: libs/runtime/monitor/cycle_event_payloads.py: plain import",
+          "trace": "tests\\test_p163_t4b_extraction_gates.py:228: in test_owner_modules_are_small_pure_and_resolve_only_allowed_names\n    raise AssertionError(f\"{rel}: plain import\")\nE   AssertionError: libs/runtime/monitor/cycle_event_payloads.py: plain import",
+          "classification": "SHARED_GATE_MAPPING_CONFLICT",
+          "not_a_pass": true
+        },
+        {
+          "test_id": "tests/test_p163_t4b_extraction_gates.py::test_call_sites_pass_exactly_the_declared_inputs",
+          "message": "KeyError: 'build_scanner_monitor_handoff_for_cycle'",
+          "trace": "tests\\test_p163_t4b_extraction_gates.py:282: in test_call_sites_pass_exactly_the_declared_inputs\n    owner = _owner_fn(seg)\n            ^^^^^^^^^^^^^^\ntests\\test_p163_t4b_extraction_gates.py:91: in _owner_fn\n    return _funcs(ast.parse((ROOT / seg[\"owner\"]).read_text(encoding=\"utf-8-sig\")))[seg[\"owner_function\"]]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   KeyError: 'build_scanner_monitor_handoff_for_cycle'",
+          "classification": "SHARED_GATE_MAPPING_CONFLICT",
+          "not_a_pass": true
+        },
+        {
+          "test_id": "tests/test_p159_current_owner_contract_gates.py::test_every_historical_owner_function_resolves_at_head_through_the_t3_mapping",
+          "message": "AssertionError: second_pass: cycle_output_value_state_monitor -> cycle_output_value_state_monitor missing in libs/runtime/monitor/cycle_output_projection.py\nassert 'cycle_output_value_state_monitor' in {}",
+          "trace": "tests\\test_p159_current_owner_contract_gates.py:95: in test_every_historical_owner_function_resolves_at_head_through_the_t3_mapping\n    assert function in funcs, f\"{tag}: {s['owner_function']} -> {function} missing in {module}\"\nE   AssertionError: second_pass: cycle_output_value_state_monitor -> cycle_output_value_state_monitor missing in libs/runtime/monitor/cycle_output_projection.py\nE   assert 'cycle_output_value_state_monitor' in {}",
+          "classification": "SHARED_GATE_MAPPING_CONFLICT",
+          "not_a_pass": true
+        },
+        {
+          "test_id": "tests/test_p159_current_owner_contract_gates.py::test_all_owner_modules_import_and_obey_authority_restrictions_at_head",
+          "message": "AssertionError: libs/runtime/monitor/cycle_detail_projection.py: plain import not allowed in a pure Owner",
+          "trace": "tests\\test_p159_current_owner_contract_gates.py:139: in test_all_owner_modules_import_and_obey_authority_restrictions_at_head\n    raise AssertionError(f\"{owner}: plain import not allowed in a pure Owner\")\nE   AssertionError: libs/runtime/monitor/cycle_detail_projection.py: plain import not allowed in a pure Owner",
+          "classification": "SHARED_GATE_MAPPING_CONFLICT",
+          "not_a_pass": true
+        }
+      ],
+      "junit_suite_seconds": 130.26,
+      "local_artifacts": [
+        {
+          "path": "C:\\AgentraWork\\tmp\\monitor_role_proof_6ca3508470ab48b5a0893407e15d45ee\\shared_3b867464e2954f0081f0c4e34f179351\\junit.xml",
+          "sha256": "6b72a8b51f8383b04507a37b67f621ab528f92245cc15d0825aab7fc5354f814",
+          "bytes": 205043
+        },
+        {
+          "path": "C:\\AgentraWork\\tmp\\monitor_role_proof_6ca3508470ab48b5a0893407e15d45ee\\shared_3b867464e2954f0081f0c4e34f179351\\pytest.log",
+          "sha256": "d6fe2891ee1b6cf7e0a6ca036c27f43ce2f16723f4bb207886132b693e249e30",
+          "bytes": 9684
+        }
+      ]
+    }
+  ],
+  "unique_tests": {
+    "PASS": 1213,
+    "FAIL": 5,
+    "SKIP": 0,
+    "ERROR": 0
+  },
+  "additional_reexecutions": {
+    "PASS": 2,
+    "reason": "Only provenance checks rerun after LF-stable producer hash fix; 108 input/expected records verified unchanged."
+  },
+  "synthetic_frozen": {
+    "records": 108,
+    "returned_without_exception": 88,
+    "exception_cases": 20,
+    "mismatches": 0,
+    "bytes": 150032,
+    "sha256": "c8a1a9992fc6f3dbf721b65d8ba22224f6745a78a79c84769327a74f214c9f79",
+    "producer": {
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "tool_sha256": "3311f922d6614f0db87a3eff914101286373e1f776aef7823cd9789c52efe981",
+      "tool_hash_encoding": "Git-style LF UTF-8 source bytes"
+    }
+  },
+  "t4b_native": {
+    "test_count": 5,
+    "PASS": 5,
+    "record_count": 149,
+    "variant_inventory": 2879,
+    "sample_mod": 4,
+    "variants_executed": 689,
+    "ordered_effects": 1541,
+    "feature_compute_sha256": "7b1978594e819a39b9c9a950c403b26311526b411a4f8824a233e3adc7198f4e",
+    "full_sample_mod_1": "NOT RUN"
+  },
+  "production_write_audit": {
+    "status": "No violation reported in completed pytest sessions",
+    "mechanism": "Unchanged repository conftest.py production-path manifest audit in isolated clone; existing T4-B offline replay and pytest write redirection",
+    "limits": "Not an OS sandbox, not a claim that all ephemeral writes are traced, and not real live artifact/LLM parity."
+  },
+  "warning": "pytest cacheprovider disabled while pytest.ini defines cache_dir: one Unknown config option warning per run; no skip or assertion weakened."
+}
