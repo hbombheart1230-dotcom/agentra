@@ -1,5 +1,12 @@
 # WORK — P1.5 Architect, Technical Lead, Reviewer and Integrator (Corrected)
 
+## Reporter R10 queue handoff (2026-10-17; supersedes R7-as-current summaries)
+
+Reporter remote was verified at 3b549d753f3cebbb2f7d843318e38e494bb698a8 (refresh before review); R4-R9 moved **313 bodies / 23 facade paths / 41 owner files**. R8-007 marks STRUCTURAL MOVE EXHAUSTED, not Reporter local-offline-verification exhausted. Read [07_CLAUDE_REPORTER_R10_CONTINUATION.md](07_CLAUDE_REPORTER_R10_CONTINUATION.md). Claude is now explicitly assigned 47 retained I/O function classifications/isolated baseline parity (NO automatic moves), artifact API byte/path consumer fixtures, Python 3.12/CI role-local readiness, and 21 authority-function READ-ONLY boundary maps; continue in coherent batches without review permission per batch.
+
+**Work, not Codex**, must continue/shared-fix T3 fully-facade same-path negatives, package-gate exact allowlist, required Reporter test CI wiring and UI-linked patch-note publication via isolated integration candidate. Review every new Claude SHA and record integration-specific blockers on Issue #11; do NOT tell Claude to stop because a function-extractor found zero more eligible moves. When R10 local verification is genuinely complete, accept REPORTER_LOCAL_READY_FOR_INTEGRATION while P1.5/main remain blocked until all roles finish. Do not create artificial perpetual work and do not claim automatic Work session restarts.
+
+
 **Team:** Claude owns Reporter implementation; Codex owns Monitor implementation; Work owns architecture, review, shared-contract decisions and integration readiness. Work must NOT assign Codex to R7 Reporter audit/Runner implementation as its primary job.
 **Repo:** hbombheart1230-dotcom/agentra
 **Design:** origin/design/agentra-dev-team-loop-20261017
