@@ -3582,3 +3582,11 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 - Windows TEMP cleanup queries status without os.kill(pid, 0). No runtime/golden/expected-value/skip/CI changes.
 - Reporter R1-059 and Monitor M1-060 deferred. PERF-1 publication authorized on perf/p15-harness-perf1-20261016 only; integration/main unchanged. PERF-2 analysis follows, with CI implementation in a separate commit after equivalent-coverage proof. Linux and hosted post-change validation pending.
 - Evidence: docs/daily_patch/2026-10-16_p15_test_harness_performance.md.
+## 2026-10-17 - P1.5 PERF-2A Variant ID Inventory
+**Stage:** Test Infrastructure
+**Tags:** TESTING / PERFORMANCE / SAFETY / DOCS
+
+- Canonical IDs/order retained without payload deepcopy; default replay payloads, sampling, existing negatives and frozen fixtures unchanged. No execution-result cache.
+- BASE parity: 411 records / 10,910 variants, sample_mod=1/4; new equivalence 15 PASS. Existing paired negatives 3 PASS before/after, 111.78s -> 7.00s locally (93.74%); optimized Python 3 PASS. Not whole-CI timing.
+- Only perf/p15-perf2a-20261017 is published. PERF-1/common runtime/workflows unchanged. Claude audit and combined integration review pending; no main merge or next project.
+- Evidence: docs/daily_patch/2026-10-17_p15_perf2a.md.

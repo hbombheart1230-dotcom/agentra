@@ -270,7 +270,7 @@ def replay(target, inp):
             "returned_is_input": bool(first is not None and returned is first)}
 
 
-def _variants(target, inp, rid):
+def _variants(target, inp, rid, *, ids_only=False):
     """Deterministic bounded perturbations: key drop/none/empty of the subject dict, plus scenarios."""
     subject = inp["args"][0] if inp["args"] else {}
     keys = [k for k in subject if k != "event_logger"] if isinstance(subject, dict) else []
@@ -282,18 +282,21 @@ def _variants(target, inp, rid):
     cand.sort()
     res = []
     for _h, vid, knd, k in cand[:VARIANTS_PER_RECORD]:
-        d = copy.deepcopy(inp)
-        tgt = d["args"][0]
-        if knd == "drop":
-            tgt.pop(k, None)
-        elif knd == "none":
-            tgt[k] = None
+        if ids_only:
+            res.append((vid, None))
         else:
-            v = tgt[k]
-            tgt[k] = {} if isinstance(v, dict) else [] if isinstance(v, list) else "" if isinstance(v, str) else \
-                (0 if isinstance(v, (int, float)) and not isinstance(v, bool) else None)
-        res.append((vid, d))
-    return res + _scenarios(target, inp)
+            d = copy.deepcopy(inp)
+            tgt = d["args"][0]
+            if knd == "drop":
+                tgt.pop(k, None)
+            elif knd == "none":
+                tgt[k] = None
+            else:
+                v = tgt[k]
+                tgt[k] = {} if isinstance(v, dict) else [] if isinstance(v, list) else "" if isinstance(v, str) else \
+                    (0 if isinstance(v, (int, float)) and not isinstance(v, bool) else None)
+            res.append((vid, d))
+    return res + _scenarios(target, inp, ids_only=ids_only)
 
 
 _ENV_TOGGLES = (("USE_STRATEGY_MEMORY_FEEDBACK", "0"), ("USE_STRATEGY_PERFORMANCE_MEMORY", "0"),
@@ -302,53 +305,80 @@ _ENV_TOGGLES = (("USE_STRATEGY_MEMORY_FEEDBACK", "0"), ("USE_STRATEGY_PERFORMANC
                 ("MEMORY_BIAS_OBSERVATION_ONLY", "0"), ("MAX_ORDER_QTY", "3"), ("MAX_ORDER_NOTIONAL", "250000"))
 
 
-def _scenarios(target, inp):
+def _scenarios(target, inp, *, ids_only=False):
     out = []
     if target == "commander_policy":
         for route in ("", "entry", "monitor", "exit_sweep", "unknown_route"):
             for phase in ("", "pre_open", "open", "midday", "closeout"):
                 if (route, phase) == ("", ""):
                     continue
-                d = copy.deepcopy(inp)
-                d["kwargs"] = dict(d.get("kwargs") or {}, selected_route=route, phase=phase)
-                out.append((f"scenario:route_{route or 'none'}_phase_{phase or 'none'}", d))
+                if ids_only:
+                    out.append((f"scenario:route_{route or 'none'}_phase_{phase or 'none'}", None))
+                else:
+                    d = copy.deepcopy(inp)
+                    d["kwargs"] = dict(d.get("kwargs") or {}, selected_route=route, phase=phase)
+                    out.append((f"scenario:route_{route or 'none'}_phase_{phase or 'none'}", d))
         for name, val in _ENV_TOGGLES:
+            if ids_only:
+                out.append((f"scenario:env_{name.lower()}", None))
+            else:
+                d = copy.deepcopy(inp)
+                d["env"] = {name: val}
+                out.append((f"scenario:env_{name.lower()}", d))
+        if ids_only:
+            out.append(("scenario:env_all_toggles", None))
+        else:
             d = copy.deepcopy(inp)
-            d["env"] = {name: val}
-            out.append((f"scenario:env_{name.lower()}", d))
-        d = copy.deepcopy(inp)
-        d["env"] = {n: v for n, v in _ENV_TOGGLES}
-        out.append(("scenario:env_all_toggles", d))
+            d["env"] = {n: v for n, v in _ENV_TOGGLES}
+            out.append(("scenario:env_all_toggles", d))
         st = inp["args"][0] if inp["args"] else {}
         if isinstance(st, dict):
             for key in ("applied_policy", "commander_open_position_override", "market_context"):
+                if ids_only:
+                    out.append((f"scenario:state_{key}_empty", None))
+                else:
+                    d = copy.deepcopy(inp)
+                    d["args"][0][key] = {}
+                    out.append((f"scenario:state_{key}_empty", d))
+            if ids_only:
+                out.append(("scenario:state_loss_near_close", None))
+            else:
                 d = copy.deepcopy(inp)
-                d["args"][0][key] = {}
-                out.append((f"scenario:state_{key}_empty", d))
-            d = copy.deepcopy(inp)
-            d["args"][0]["market_context"] = {"minutes_to_close": 5}
-            d["args"][0]["commander_open_position_override"] = {
-                "effective_loss_ratio_min": -0.02, "hold_repeat_count_max": 7,
-                "session_open_recovery_assessment": {"recovery_state": "failed"}}
-            out.append(("scenario:state_loss_near_close", d))
+                d["args"][0]["market_context"] = {"minutes_to_close": 5}
+                d["args"][0]["commander_open_position_override"] = {
+                    "effective_loss_ratio_min": -0.02, "hold_repeat_count_max": 7,
+                    "session_open_recovery_assessment": {"recovery_state": "failed"}}
+                out.append(("scenario:state_loss_near_close", d))
     elif target == "operator_markdown":
         brief = inp["args"][0] if inp["args"] else {}
         if isinstance(brief, dict):
             for status in ("", "ok", "partial", "salvaged", "repaired", "fallback", "unexpected_status"):
+                if ids_only:
+                    out.append((f"scenario:status_{status or 'blank'}", None))
+                else:
+                    d = copy.deepcopy(inp)
+                    d["args"][0]["status"] = status
+                    out.append((f"scenario:status_{status or 'blank'}", d))
+            if ids_only:
+                out.append(("scenario:unicode_markdown_suffix", None))
+            else:
                 d = copy.deepcopy(inp)
-                d["args"][0]["status"] = status
-                out.append((f"scenario:status_{status or 'blank'}", d))
-            d = copy.deepcopy(inp)
-            for kk, vv in list(d["args"][0].items()):
-                if isinstance(vv, str) and kk != "status":
-                    d["args"][0][kk] = vv + " \u2603 \ud55c\uae00 `x` | **b**\n\n- y"
-            out.append(("scenario:unicode_markdown_suffix", d))
-            d = copy.deepcopy(inp)
-            d["args"][0] = {"status": brief.get("status")}
-            out.append(("scenario:status_only_brief", d))
-            d = copy.deepcopy(inp)
-            d["args"][0] = {}
-            out.append(("scenario:empty_brief", d))
+                for kk, vv in list(d["args"][0].items()):
+                    if isinstance(vv, str) and kk != "status":
+                        d["args"][0][kk] = vv + " \u2603 \ud55c\uae00 `x` | **b**\n\n- y"
+                out.append(("scenario:unicode_markdown_suffix", d))
+            if ids_only:
+                out.append(("scenario:status_only_brief", None))
+            else:
+                d = copy.deepcopy(inp)
+                d["args"][0] = {"status": brief.get("status")}
+                out.append(("scenario:status_only_brief", d))
+            if ids_only:
+                out.append(("scenario:empty_brief", None))
+            else:
+                d = copy.deepcopy(inp)
+                d["args"][0] = {}
+                out.append(("scenario:empty_brief", d))
     return out
 
 
@@ -494,8 +524,34 @@ def first_diff(a, b, path=""):
 
 
 # ---- strict variant conservation (T4-A.1 design) --------------------------------------------------------------------
+def _inventory_ids_safe(value):
+    """Fast metadata path only for plain JSON trees; alias/custom inputs use legacy materialization."""
+    pending, seen = [value], set()
+    while pending:
+        obj = pending.pop()
+        if type(obj) in (dict, list):
+            identity = id(obj)
+            if identity in seen:
+                return False
+            seen.add(identity)
+            if type(obj) is dict:
+                if any(type(k) is not str for k in obj):
+                    return False
+                pending.extend(obj.values())
+            else:
+                pending.extend(obj)
+        elif type(obj) not in (str, int, float, bool, type(None)):
+            return False
+    return True
+
+
 def variant_inventory(rec):
-    return [vid for vid, _d in _variants(rec["target"], rec["input"], rec["id"])]
+    target, value = rec["target"], rec["input"]
+    fast = (type(value) is dict and type(rec["id"]) is str and target in TARGETS
+            and type(value.get("args")) is list and len(value["args"]) > 0
+            and type(value["args"][0]) is dict and type(value.get("kwargs", {})) is dict
+            and _inventory_ids_safe(value))
+    return [vid for vid, _d in _variants(target, value, rec["id"], ids_only=fast)]
 
 
 def expected_sample_ids(rec, sample_mod):

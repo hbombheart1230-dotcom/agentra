@@ -249,7 +249,7 @@ def replay(target, inp):
             "returned_is_input": (returned is inputs_obj) if kind == "state" else False}
 
 
-def _variants(target, inp, rid):
+def _variants(target, inp, rid, *, ids_only=False):
     """Deterministic bounded perturbations: key drop/none/empty (State for the node, kwargs for the functions)."""
     kind = TARGETS[target][2]
     base = inp["state"] if kind == "state" else inp["kwargs"]
@@ -263,21 +263,24 @@ def _variants(target, inp, rid):
     cand.sort()
     res = []
     for _h, vid, knd, k in cand[:VARIANTS_PER_RECORD]:
-        d = copy.deepcopy(inp)
-        tgt = d["state"] if kind == "state" else d["kwargs"]
-        if knd == "drop":
-            tgt.pop(k, None)
-        elif knd == "none":
-            tgt[k] = None
+        if ids_only:
+            res.append((vid, None))
         else:
-            v = tgt[k]
-            tgt[k] = {} if isinstance(v, dict) else [] if isinstance(v, list) else "" if isinstance(v, str) else \
-                (0 if isinstance(v, (int, float)) and not isinstance(v, bool) else None)
-        res.append((vid, d))
-    return res + _scenarios(target, inp)
+            d = copy.deepcopy(inp)
+            tgt = d["state"] if kind == "state" else d["kwargs"]
+            if knd == "drop":
+                tgt.pop(k, None)
+            elif knd == "none":
+                tgt[k] = None
+            else:
+                v = tgt[k]
+                tgt[k] = {} if isinstance(v, dict) else [] if isinstance(v, list) else "" if isinstance(v, str) else \
+                    (0 if isinstance(v, (int, float)) and not isinstance(v, bool) else None)
+            res.append((vid, d))
+    return res + _scenarios(target, inp, ids_only=ids_only)
 
 
-def _scenarios(target, inp):
+def _scenarios(target, inp, *, ids_only=False):
     """Monitor-specific deterministic scenarios (exit/entry guard flips) built from the captured input."""
     out = []
     kind = TARGETS[target][2]
@@ -285,32 +288,50 @@ def _scenarios(target, inp):
         st = inp["state"]
         for key, val, name in (("execution_pending", True, "execution_pending"), ("use_exit_policy", False, "use_exit_policy_off"),
                                ("block_buy_open_position", True, "block_buy_open_position")):
+            if ids_only:
+                out.append((f"scenario:{name}", None))
+            else:
+                d = copy.deepcopy(inp)
+                d["state"][key] = val
+                out.append((f"scenario:{name}", d))
+        if ids_only:
+            out.append(("scenario:clock_plus_1h", None))
+        else:
             d = copy.deepcopy(inp)
-            d["state"][key] = val
-            out.append((f"scenario:{name}", d))
-        d = copy.deepcopy(inp)
-        d["state"]["now_epoch"] = FROZEN_EPOCH + 3600
-        out.append(("scenario:clock_plus_1h", d))
+            d["state"]["now_epoch"] = FROZEN_EPOCH + 3600
+            out.append(("scenario:clock_plus_1h", d))
         pf = st.get("portfolio_snapshot")
         if isinstance(pf, dict):
-            d = copy.deepcopy(inp)
-            d["state"]["portfolio_snapshot"] = {}
-            out.append(("scenario:empty_portfolio", d))
+            if ids_only:
+                out.append(("scenario:empty_portfolio", None))
+            else:
+                d = copy.deepcopy(inp)
+                d["state"]["portfolio_snapshot"] = {}
+                out.append(("scenario:empty_portfolio", d))
     else:
         kw = inp["kwargs"]
         if "price" in kw and isinstance(kw["price"], (int, float)) and not isinstance(kw["price"], bool):
             for mult, name in ((0.5, "price_halved"), (1.5, "price_x1_5")):
-                d = copy.deepcopy(inp)
-                d["kwargs"]["price"] = float(kw["price"]) * mult
-                out.append((f"scenario:{name}", d))
+                if ids_only:
+                    out.append((f"scenario:{name}", None))
+                else:
+                    d = copy.deepcopy(inp)
+                    d["kwargs"]["price"] = float(kw["price"]) * mult
+                    out.append((f"scenario:{name}", d))
         if "qty" in kw and isinstance(kw["qty"], int) and not isinstance(kw["qty"], bool):
-            d = copy.deepcopy(inp)
-            d["kwargs"]["qty"] = 0
-            out.append(("scenario:qty_zero", d))
+            if ids_only:
+                out.append(("scenario:qty_zero", None))
+            else:
+                d = copy.deepcopy(inp)
+                d["kwargs"]["qty"] = 0
+                out.append(("scenario:qty_zero", d))
         if "hold_sec" in kw:
-            d = copy.deepcopy(inp)
-            d["kwargs"]["hold_sec"] = 10 ** 7
-            out.append(("scenario:hold_very_long", d))
+            if ids_only:
+                out.append(("scenario:hold_very_long", None))
+            else:
+                d = copy.deepcopy(inp)
+                d["kwargs"]["hold_sec"] = 10 ** 7
+                out.append(("scenario:hold_very_long", d))
     return out
 
 
@@ -435,8 +456,33 @@ def first_diff(a, b, path=""):
 
 
 # ---- strict variant conservation (T4-A.1 design) --------------------------------------------------------------------
+def _inventory_ids_safe(value):
+    """Fast metadata path only for plain JSON trees; alias/custom inputs use legacy materialization."""
+    pending, seen = [value], set()
+    while pending:
+        obj = pending.pop()
+        if type(obj) in (dict, list):
+            identity = id(obj)
+            if identity in seen:
+                return False
+            seen.add(identity)
+            if type(obj) is dict:
+                if any(type(k) is not str for k in obj):
+                    return False
+                pending.extend(obj.values())
+            else:
+                pending.extend(obj)
+        elif type(obj) not in (str, int, float, bool, type(None)):
+            return False
+    return True
+
+
 def variant_inventory(rec):
-    return [vid for vid, _d in _variants(rec["target"], rec["input"], rec["id"])]
+    target, value = rec["target"], rec["input"]
+    fast = (type(value) is dict and type(rec["id"]) is str and target in TARGETS
+            and type(value.get("state" if TARGETS[target][2] == "state" else "kwargs")) is dict
+            and _inventory_ids_safe(value))
+    return [vid for vid, _d in _variants(target, value, rec["id"], ids_only=fast)]
 
 
 def expected_sample_ids(rec, sample_mod):

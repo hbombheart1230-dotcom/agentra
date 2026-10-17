@@ -218,7 +218,7 @@ def replay(state_enc):
             "returned_is_state": returned is state}
 
 
-def _variants(state_enc, rid):
+def _variants(state_enc, rid, *, ids_only=False):
     """Deterministic single-key perturbations (bounded): drop / none / empty of top-level keys, hash-selected."""
     keys = [k for k in state_enc if k != "event_logger"]
     out = []
@@ -229,57 +229,84 @@ def _variants(state_enc, rid):
     out.sort()
     res = []
     for _h, vid, kind, k in out[:VARIANTS_PER_RECORD]:
-        s = copy.deepcopy(state_enc)
-        if kind == "drop":
-            s.pop(k, None)
-        elif kind == "none":
-            s[k] = None
+        if ids_only:
+            res.append((vid, None))
         else:
-            v = s[k]
-            s[k] = {} if isinstance(v, dict) else [] if isinstance(v, list) else "" if isinstance(v, str) else (0 if isinstance(v, (int, float)) and not isinstance(v, bool) else None)
-        res.append((vid, s))
-    res.extend(_scenarios(state_enc))
+            s = copy.deepcopy(state_enc)
+            if kind == "drop":
+                s.pop(k, None)
+            elif kind == "none":
+                s[k] = None
+            else:
+                v = s[k]
+                s[k] = {} if isinstance(v, dict) else [] if isinstance(v, list) else "" if isinstance(v, str) else (0 if isinstance(v, (int, float)) and not isinstance(v, bool) else None)
+            res.append((vid, s))
+    res.extend(_scenarios(state_enc, ids_only=ids_only))
     return res
 
 
-def _scenarios(state_enc):
+def _scenarios(state_enc, *, ids_only=False):
     """Deterministic candidate-pool scenarios (ties, rank-1 flip, order, duplicates, single/empty pool)."""
     out = []
     cands = state_enc.get("candidates")
     mock = state_enc.get("mock_scan_results")
     if isinstance(cands, list) and len(cands) >= 2:
-        s = copy.deepcopy(state_enc)
-        s["candidates"] = list(reversed(cands))
-        out.append(("scenario:reverse_candidates", s))
-        s = copy.deepcopy(state_enc)
-        s["candidates"] = cands[1:] + cands[:1]
-        out.append(("scenario:rotate_candidates", s))
-        s = copy.deepcopy(state_enc)
-        s["candidates"] = cands[:1] + cands
-        out.append(("scenario:duplicate_first_candidate", s))
-        s = copy.deepcopy(state_enc)
-        s["candidates"] = cands[:1]
-        out.append(("scenario:single_candidate", s))
+        if ids_only:
+            out.append(("scenario:reverse_candidates", None))
+        else:
+            s = copy.deepcopy(state_enc)
+            s["candidates"] = list(reversed(cands))
+            out.append(("scenario:reverse_candidates", s))
+        if ids_only:
+            out.append(("scenario:rotate_candidates", None))
+        else:
+            s = copy.deepcopy(state_enc)
+            s["candidates"] = cands[1:] + cands[:1]
+            out.append(("scenario:rotate_candidates", s))
+        if ids_only:
+            out.append(("scenario:duplicate_first_candidate", None))
+        else:
+            s = copy.deepcopy(state_enc)
+            s["candidates"] = cands[:1] + cands
+            out.append(("scenario:duplicate_first_candidate", s))
+        if ids_only:
+            out.append(("scenario:single_candidate", None))
+        else:
+            s = copy.deepcopy(state_enc)
+            s["candidates"] = cands[:1]
+            out.append(("scenario:single_candidate", s))
     if isinstance(cands, list):
-        s = copy.deepcopy(state_enc)
-        s["candidates"] = []
-        out.append(("scenario:empty_candidates", s))
+        if ids_only:
+            out.append(("scenario:empty_candidates", None))
+        else:
+            s = copy.deepcopy(state_enc)
+            s["candidates"] = []
+            out.append(("scenario:empty_candidates", s))
     if isinstance(mock, dict) and len(mock) >= 2 and all(isinstance(v, dict) for v in mock.values()):
         keys = list(mock)
-        s = copy.deepcopy(state_enc)
-        first = {k: v for k, v in s["mock_scan_results"][keys[0]].items() if k in ("score", "confidence", "risk_score")}
-        for k in keys:
-            s["mock_scan_results"][k].update(first)
-        out.append(("scenario:all_scores_tied", s))
-        s = copy.deepcopy(state_enc)
-        a, b = s["mock_scan_results"][keys[0]], s["mock_scan_results"][keys[1]]
-        for f in ("score", "confidence", "risk_score"):
-            if f in a and f in b:
-                a[f], b[f] = b[f], a[f]
-        out.append(("scenario:swap_top_two_scores", s))
-        s = copy.deepcopy(state_enc)
-        s["mock_scan_results"] = {}
-        out.append(("scenario:no_mock_rows", s))
+        if ids_only:
+            out.append(("scenario:all_scores_tied", None))
+        else:
+            s = copy.deepcopy(state_enc)
+            first = {k: v for k, v in s["mock_scan_results"][keys[0]].items() if k in ("score", "confidence", "risk_score")}
+            for k in keys:
+                s["mock_scan_results"][k].update(first)
+            out.append(("scenario:all_scores_tied", s))
+        if ids_only:
+            out.append(("scenario:swap_top_two_scores", None))
+        else:
+            s = copy.deepcopy(state_enc)
+            a, b = s["mock_scan_results"][keys[0]], s["mock_scan_results"][keys[1]]
+            for f in ("score", "confidence", "risk_score"):
+                if f in a and f in b:
+                    a[f], b[f] = b[f], a[f]
+            out.append(("scenario:swap_top_two_scores", s))
+        if ids_only:
+            out.append(("scenario:no_mock_rows", None))
+        else:
+            s = copy.deepcopy(state_enc)
+            s["mock_scan_results"] = {}
+            out.append(("scenario:no_mock_rows", s))
     return out
 
 
@@ -413,9 +440,31 @@ def _row(e):
     return [e["state_sha"], e["effects_sha"], e["exception"], e["returned_is_state"]]
 
 
+def _inventory_ids_safe(value):
+    """Fast metadata path only for plain JSON trees; alias/custom inputs use legacy materialization."""
+    pending, seen = [value], set()
+    while pending:
+        obj = pending.pop()
+        if type(obj) in (dict, list):
+            identity = id(obj)
+            if identity in seen:
+                return False
+            seen.add(identity)
+            if type(obj) is dict:
+                if any(type(k) is not str for k in obj):
+                    return False
+                pending.extend(obj.values())
+            else:
+                pending.extend(obj)
+        elif type(obj) not in (str, int, float, bool, type(None)):
+            return False
+    return True
+
+
 def variant_inventory(rec):
-    """Complete frozen variant-ID inventory of a record, re-derived deterministically from its State (no sampling)."""
-    return [vid for vid, _s in _variants(rec["state_in"], rec["id"])]
+    value = rec["state_in"]
+    fast = type(value) is dict and type(rec["id"]) is str and _inventory_ids_safe(value)
+    return [vid for vid, _s in _variants(value, rec["id"], ids_only=fast)]
 
 
 def expected_sample_ids(rec, sample_mod):

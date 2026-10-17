@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 286,
+  "entry_count": 287,
   "entries": [
     {
       "date": "2026-09-08",
@@ -7568,6 +7568,29 @@
       "impact": "PERF-1 publication authorized on perf/p15-harness-perf1-20261016 only. Existing 782/63-case evidence reused; no direct integration/main change or merge. PERF-2 CI changes require a separate commit and equivalent-coverage measurements.",
       "sources": [
         "docs/daily_patch/2026-10-16_p15_test_harness_performance.md"
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "version": "P1.5 PERF-2A Variant ID Inventory",
+      "title": "Avoid payload deepcopy during canonical T4 variant-ID validation",
+      "stage": "Test Infrastructure",
+      "types": [
+        "TESTING",
+        "PERFORMANCE",
+        "SAFETY",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Three unchanged A/B/D negative tests: 3 PASS before/after; local paired pytest time 111.78s -> 7.00s (93.74% reduction), not whole-CI timing. BASE-equivalent ordered IDs and payload digests across 411 records / 10,910 variants, sample_mod=1/4.",
+      "details": [
+        "One canonical _variants/_scenarios path: metadata mode omits payload copies; default replay payload code reconstructs exactly to BASE. Non-plain, alias and malformed inputs use the legacy materializing path. No outcome cache.",
+        "New equivalence suite 15 PASS; optimized-Python existing negatives 3 PASS. Existing tests, frozen fixtures, comparisons, sampling policy, runtime, PERF-1 code and workflows unchanged.",
+        "Published only to perf/p15-perf2a-20261017 from c5aa8db. Claude independent audit and subsequent combined integration review remain pending external evidence. No main merge or next project."
+      ],
+      "impact": "Bounded test-tool optimization only. Integration owner replays this entry without overwriting intervening PERF-1 notes.",
+      "sources": [
+        "docs/daily_patch/2026-10-17_p15_perf2a.md"
       ]
     }
   ]
