@@ -34,11 +34,13 @@ MODULES = [
     "libs.reporting.trade_report_post_exit_shadow",
     "libs.reporting.trade_report_symbol_metadata",
     "libs.reporting.trade_story_pipeline_news",
+    "libs.reporting.trade_story_pipeline_scanner",
 ]
 BASE = "d773709ba2f70471fad9badba4f92400f7818319"
 # decomposed facades: functions are taken from the named owner package instead of the facade module itself
 DECOMPOSED = {"libs.reporting.trade_report_symbol_metadata": "libs.agents.reporter.read_models.symbol_metadata_",
-              "libs.reporting.trade_story_pipeline_news": "libs.agents.reporter.narrative.news_"}
+              "libs.reporting.trade_story_pipeline_news": "libs.agents.reporter.narrative.news_",
+              "libs.reporting.trade_story_pipeline_scanner": "libs.agents.reporter.narrative.scanner_"}
 MAX_KEYS = 160
 
 

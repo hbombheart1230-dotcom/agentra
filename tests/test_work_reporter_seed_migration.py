@@ -41,7 +41,8 @@ REGISTRY = {
 # named decomposition (Phase B): legacy facade module -> owner modules in libs/agents/reporter/read_models (bodies verbatim)
 DECOMPOSED = {"trade_report_symbol_metadata": ("read_models", ["symbol_metadata_fallbacks", "symbol_metadata_text", "symbol_metadata_sources",
                                                                 "symbol_metadata_name_inference", "symbol_metadata_resolution"]),
-              "trade_story_pipeline_news": ("narrative", ["news_text", "news_headlines", "news_scanner_contribution"])}
+              "trade_story_pipeline_news": ("narrative", ["news_text", "news_headlines", "news_scanner_contribution"]),
+              "trade_story_pipeline_scanner": ("narrative", ["scanner_basis", "scanner_selection_trace", "scanner_evidence_fit"])}
 REPORTER_PACKAGES = {"narrative", "read_models"}  # exact, versioned by this project (shared allowlist is Work-owned)
 OLD, NEW = "libs.reporting.{}", "libs.agents.reporter.{}.{}"
 
@@ -150,7 +151,7 @@ def test_fixture_provenance_manifest_matches_the_fixture_bytes():
     raw = FIX.read_bytes()
     assert hashlib.sha256(raw).hexdigest() == prov["gz_sha256"]
     assert hashlib.sha256(gzip.decompress(raw)).hexdigest() == prov["payload_sha256"]
-    assert len(json.loads(gzip.decompress(raw))["cases"]) == prov["cases"] == 2318
+    assert len(json.loads(gzip.decompress(raw))["cases"]) == prov["cases"] == 2565
 
 
 def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():
