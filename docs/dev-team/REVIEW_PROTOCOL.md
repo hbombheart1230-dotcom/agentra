@@ -1,3 +1,5 @@
+> **CURRENT REVIEW RULE (2026-10-17):** Read [two-worker architecture/peer audit policy](assignments/11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md). Claude independently audits Codex's shared T3/T4/CI integration at exact SHA; Codex fixes its own integration work, does NOT certify itself. GPT ordinary chat adjudicates architecture on demand, not automatic Work daily/hourly review. Historic Work-exclusive audit clauses below are superseded. Operator retains main and any live-risk approval.
+
 > **ROLE CORRECTION (2026-10-17):** Claude owns Reporter, Codex owns Monitor, Work independently reviews both and coordinates shared T3/T4 and final integration. The authoritative current work orders are docs/dev-team/assignments/00–06. Any older Codex-as-Reporter-auditor/Runner text below is superseded.
 
 # Continuous review, feedback, acceptance, and integration protocol
