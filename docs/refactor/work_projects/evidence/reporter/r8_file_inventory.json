@@ -1,0 +1,5380 @@
+{
+ "schema": "agentra.work.reporter.r8_inventory.v1",
+ "rows": [
+  {
+   "path": "libs/reporting/__init__.py",
+   "loc": 62,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/agent_pipeline_trace.py",
+   "loc": 575,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 7,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/agent_pipeline_trace_r8_bodies_01.py",
+    "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "scripts/diagnostics/run_agent_pipeline_trace_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/alert_notifier.py",
+   "loc": 539,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 5,
+   "sample_consumers": [
+    "scripts/diagnostics/run_m27_portfolio_guard_notify_check.py",
+    "scripts/diagnostics/run_m27_portfolio_guard_notify_routing_check.py",
+    "scripts/run_m25_ops_batch.py",
+    "tests/test_m25_6_alert_notification_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/__init__.py",
+   "loc": 3,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/builder.py",
+   "loc": 701,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "tests/test_daily_uef_pipeline.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/canonical.py",
+   "loc": 555,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef7/run_identity.py",
+    "tests/test_alpha_research_board.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/contracts.py",
+   "loc": 156,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef7/alpha_board_normalization.py",
+    "tests/test_alpha_research_board.py",
+    "tests/test_uef7_alpha_board_normalization.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/large_cap_review.py",
+   "loc": 86,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/loaders.py",
+   "loc": 85,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/remaining_reviews.py",
+   "loc": 302,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_alpha_research_board.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/report.py",
+   "loc": 143,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "scripts/research/run_alpha_research_board.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/runtime_validation.py",
+   "loc": 202,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_alpha_research_board.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/alpha_research_board/sensitivity.py",
+   "loc": 323,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_alpha_research_board.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_artifact_io.py",
+   "loc": 20,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/baseline_btc_woori_tech/pipeline.py",
+    "libs/reporting/baseline_samsung_hynix/pipeline.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/__init__.py",
+   "loc": 4,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/comparison.py",
+   "loc": 115,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/contracts.py",
+   "loc": 39,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 6,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/q12_baseline_btc_woori.py",
+    "libs/reporting/evaluation/canonical/forward/profiles.py",
+    "tests/test_baseline_btc_woori_tech.py",
+    "tests/test_uef1_work_package_a_canonical_contract.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/crypto_fear_greed.py",
+   "loc": 102,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/data_provider.py",
+   "loc": 328,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_baseline_btc_woori_tech.py",
+    "tests/test_yfinance_dependency_integrity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/forward_returns.py",
+   "loc": 74,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/q12_baseline_btc_woori.py",
+    "libs/reporting/evaluation/canonical/forward/profiles.py",
+    "tests/test_baseline_btc_woori_tech.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/historical_review.py",
+   "loc": 438,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_q12_historical_policy_review.py",
+    "tests/test_q12_historical_policy_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/hypothesis_features.py",
+   "loc": 379,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "tests/test_q12_btc_0855_capture.py",
+    "tests/test_q12_btc_woori_hypothesis_validation.py",
+    "tests/test_q12_vnext.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/hypothesis_forward.py",
+   "loc": 108,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/hypothesis_forward_adapter.py",
+    "libs/reporting/evaluation/canonical/forward/profiles.py",
+    "tests/test_q12_btc_woori_hypothesis_validation.py",
+    "tests/test_uef4b2_q12_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/hypothesis_pipeline.py",
+   "loc": 371,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_q12_btc_woori_hypothesis_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/input_delivery.py",
+   "loc": 80,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/session_policy.py",
+    "libs/runtime/controlled_mock_lanes/coordinator.py",
+    "tests/test_q12_delivery_alignment.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/input_worker.py",
+   "loc": 51,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/run_baseline_btc_woori_tech.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/pipeline.py",
+   "loc": 296,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_baseline_btc_woori_tech.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/point_in_time_capture.py",
+   "loc": 264,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 4,
+   "sample_consumers": [
+    "scripts/capture_q12_btc_0855_snapshot.py",
+    "tests/test_q12_btc_0855_capture.py",
+    "tests/test_q12_delivery_alignment.py",
+    "tests/test_yfinance_dependency_integrity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/report.py",
+   "loc": 161,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/strategy.py",
+   "loc": 199,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/q12_baseline_btc_woori.py",
+    "tests/test_baseline_btc_woori_tech.py",
+    "tests/test_q12_btc_woori_hypothesis_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/trend_context.py",
+   "loc": 202,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/vnext/__init__.py",
+   "loc": 1,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/vnext/contract.py",
+   "loc": 40,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_q12_delivery_alignment.py",
+    "tests/test_q12_vnext.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/vnext/equities.py",
+   "loc": 57,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_q12_delivery_alignment.py",
+    "tests/test_q12_vnext.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/vnext/features.py",
+   "loc": 118,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "tests/test_q12_vnext.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/vnext/outcomes.py",
+   "loc": 44,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/vnext_completeness_adapter.py",
+    "libs/reporting/evaluation/canonical/forward/profiles.py",
+    "tests/test_q12_vnext.py",
+    "tests/test_uef4b2_q12_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/vnext/pipeline.py",
+   "loc": 106,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_q12_delivery_alignment.py",
+    "tests/test_q12_vnext.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/vnext/report.py",
+   "loc": 49,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/vnext/storage.py",
+   "loc": 40,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_q12_delivery_alignment.py",
+    "tests/test_q12_vnext.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_btc_woori_tech/vnext/time_alignment.py",
+   "loc": 66,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_q12_delivery_alignment.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_candle_reader.py",
+   "loc": 124,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/baseline_btc_woori_tech/data_provider.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/__init__.py",
+   "loc": 5,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/contracts.py",
+   "loc": 24,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_baseline_samsung_hynix.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/data_provider.py",
+   "loc": 129,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/opening_rank1_shadow/candle_provider.py",
+    "libs/reporting/q9_forward_candles.py",
+    "tests/test_baseline_samsung_hynix.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_returns.py",
+   "loc": 227,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/baseline_btc_woori_tech/forward_returns.py",
+    "libs/reporting/evaluation/canonical/adapters/q10_semiconductor.py",
+    "libs/reporting/evaluation/canonical/forward/profiles.py",
+    "libs/reporting/evaluation/canonical/metrics/contracts.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/__init__.py",
+   "loc": 3,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/contracts.py",
+   "loc": 75,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/q10_index_directional_shadow_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/q10_index_reaction_adapter.py",
+    "tests/test_q10_lead_market_forward_validation.py",
+    "tests/test_uef4b4_q10_index_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/cumulative.py",
+   "loc": 70,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/expected_actual.py",
+   "loc": 62,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_q10_lead_market_forward_validation.py",
+    "tests/test_uef4b4_q10_index_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/market_inputs.py",
+   "loc": 227,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_q10_lead_market_forward_validation.py",
+    "tests/test_yfinance_dependency_integrity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/pipeline.py",
+   "loc": 199,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/q10_index_reaction_adapter.py",
+    "tests/test_q10_lead_market_forward_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/reaction_reader.py",
+   "loc": 467,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 8,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/q10_index_directional_shadow_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/q10_index_reaction_adapter.py",
+    "libs/reporting/evaluation/canonical/forward/profiles.py",
+    "tests/test_pre_step5c_owner_regressions.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/report.py",
+   "loc": 126,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/scoring.py",
+   "loc": 165,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_q10_lead_market_forward_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/forward_validation/shadow_comparison.py",
+   "loc": 138,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/q10_index_directional_shadow_adapter.py",
+    "libs/reporting/evaluation/canonical/forward/profiles.py",
+    "libs/reporting/evaluation/canonical/metrics/contracts.py",
+    "tests/test_q10_lead_market_forward_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/pipeline.py",
+   "loc": 279,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_baseline_samsung_hynix.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/q9_comparison.py",
+   "loc": 179,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/baseline_btc_woori_tech/comparison.py",
+    "tests/test_baseline_samsung_hynix.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/report.py",
+   "loc": 91,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_baseline_samsung_hynix.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/strategy.py",
+   "loc": 144,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/q10_semiconductor.py",
+    "tests/test_baseline_samsung_hynix.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/baseline_samsung_hynix/unified_comparison.py",
+   "loc": 304,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_q9_baseline_comparison.py",
+    "tests/test_baseline_samsung_hynix.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/broker_alignment.py",
+   "loc": 193,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/daily_report_generator.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_broker_alignment.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/broker_closed_trade_reconciler.py",
+   "loc": 1025,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/closeout_maintenance.py",
+    "libs/reporting/evaluation/pipeline.py",
+    "tests/test_broker_closed_trade_reconciler.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/carryover_exit_reconciler.py",
+   "loc": 399,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/broker_alignment.py",
+    "libs/reporting/closeout_maintenance.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/chart_structure_decision_hint_summary.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/phase_runtime_health.py",
+    "libs/reporting/report_source_helpers.py",
+    "scripts/refactor/work_reporter_capture.py",
+    "tests/test_chart_structure_decision_hint_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/closeout_completion_authority.py",
+   "loc": 165,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "tests/test_closeout_durable_completion_authority.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/closeout_maintenance.py",
+   "loc": 935,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 9,
+   "sample_consumers": [
+    "libs/reporting/closeout_completion_authority.py",
+    "libs/runtime/market_status_closeout.py",
+    "scripts/run_closeout_maintenance.py",
+    "tests/test_closeout_diagnostic_hardening.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/closeout_residual_positions.py",
+   "loc": 452,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "tests/test_closeout_residual_positions.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/controlled_mock_lane_report.py",
+   "loc": 267,
+   "category": "BLOCKED_WITH_PROOF",
+   "reason": "reads controlled_mock_lanes ledger + Q10/Q12 lane labels; ownership decision for Work",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/single_trade_report.py",
+    "libs/reporting/trade_report_markdown_clean.py",
+    "scripts/run_ai_trade_report_batch.py",
+    "tests/test_controlled_mock_lane_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/controlled_validation_daily.py",
+   "loc": 200,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py",
+    "libs/reporting/operator_visibility.py",
+    "tests/test_controlled_validation_daily_submission_provenance.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/daily_report.py",
+   "loc": 52,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 6,
+   "sample_consumers": [
+    "graphs/pipelines/m13_eod_report.py",
+    "libs/agent/reporter.py",
+    "libs/reporting/daily_report_generator.py",
+    "scripts/generate_daily_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/daily_report_generator.py",
+   "loc": 430,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/agent/reporter.py",
+    "libs/reporting/daily_report.py",
+    "scripts/generate_daily_report.py",
+    "tests/test_daily_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/daily_report_runtime/__init__.py",
+   "loc": 1,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/daily_report_runtime/build_model.py",
+   "loc": 177,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/daily_report_generator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/daily_report_runtime/freshness.py",
+   "loc": 115,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/daily_report_generator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/daily_report_runtime/markdown.py",
+   "loc": 340,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/daily_report_generator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/daily_report_runtime/symbol_refresh.py",
+   "loc": 105,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/daily_report_generator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/entry_blocker_read_model.py",
+   "loc": 275,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/entry_blocker_bodies_01.py",
+    "libs/agents/reporter/read_models/entry_blocker_bodies_02.py",
+    "scripts/diagnostics/analyze_entry_blockers.py",
+    "tests/test_entry_blocker_read_model.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/__init__.py",
+   "loc": 6,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/agent_effectiveness_scorecard.py",
+   "loc": 302,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_agent_effectiveness_scorecard.py",
+    "tests/test_agent_effectiveness_scorecard.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/artifact_inventory.py",
+   "loc": 426,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 8,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "libs/reporting/evaluation/evaluation_lens_report.py",
+    "libs/reporting/evaluation/monitor_noop_attribution/episodes.py",
+    "libs/reporting/evaluation/no_trade_attribution.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/attribution_score_range.py",
+   "loc": 264,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_attribution_score_range.py",
+    "tests/test_attribution_score_range.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/attribution_score_v0.py",
+   "loc": 348,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_attribution_score_v0.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/attribution_score_window.py",
+   "loc": 256,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_attribution_score_window.py",
+    "tests/test_attribution_score_window.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/__init__.py",
+   "loc": 159,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/__init__.py",
+   "loc": 24,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/already_net_shadow_adapter.py",
+   "loc": 537,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "tests/test_uef4b3_opening_shadow_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/forward_measurement_adapter.py",
+   "loc": 267,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef4b1_q10_semiconductor_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/hypothesis_forward_adapter.py",
+   "loc": 336,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef4b2_q12_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/opening_rank1_shadow.py",
+   "loc": 570,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "tests/test_uef4b3_opening_shadow_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/q10_index_directional_shadow_adapter.py",
+   "loc": 420,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef4b4_q10_index_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/q10_index_reaction_adapter.py",
+   "loc": 506,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef4b4_q10_index_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/q10_semiconductor.py",
+   "loc": 545,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef4b1_q10_semiconductor_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/q12_baseline_btc_woori.py",
+   "loc": 308,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef4b2_q12_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/q9_horizon_exit_adapter.py",
+   "loc": 427,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "tests/test_uef4b6_q9_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/virtual_probe_adapter.py",
+   "loc": 522,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef4b5_q11_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/adapters/vnext_completeness_adapter.py",
+   "loc": 363,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef4b2_q12_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/contracts.py",
+   "loc": 262,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 30,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/already_net_shadow_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/forward_measurement_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/hypothesis_forward_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/forward/__init__.py",
+   "loc": 88,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/forward/contracts.py",
+   "loc": 309,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 10,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/forward_measurement_adapter.py",
+    "libs/reporting/evaluation/canonical/metrics/contracts.py",
+    "tests/test_uef2b_engine_primitives.py",
+    "tests/test_uef2b_fix1_regressions.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/forward/engine.py",
+   "loc": 752,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 15,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/already_net_shadow_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/forward_measurement_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/hypothesis_forward_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/forward/policy.py",
+   "loc": 644,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "tests/test_uef2a_boundary_closure_profiles.py",
+    "tests/test_uef2b_engine_primitives.py",
+    "tests/test_uef2b_fix1_regressions.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/forward/profiles.py",
+   "loc": 685,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 11,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/already_net_shadow_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/hypothesis_forward_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/opening_rank1_shadow.py",
+    "libs/reporting/evaluation/canonical/adapters/q10_index_reaction_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/identity.py",
+   "loc": 720,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 17,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/already_net_shadow_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/forward_measurement_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/hypothesis_forward_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/metrics/__init__.py",
+   "loc": 79,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/metrics/aggregation.py",
+   "loc": 389,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 21,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/already_net_shadow_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/forward_measurement_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/hypothesis_forward_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/metrics/contracts.py",
+   "loc": 343,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 6,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "libs/reporting/evaluation/uef5_3/canonical_run.py",
+    "tests/test_uef4b1_q10_semiconductor_adapter.py",
+    "tests/test_uef4b3_opening_shadow_adapter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/metrics/engine.py",
+   "loc": 457,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef3b_cost_metric_engine.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/metrics/policy.py",
+   "loc": 1002,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef6/lineage_witness.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/record.py",
+   "loc": 1169,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 21,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/adapters/already_net_shadow_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/forward_measurement_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/hypothesis_forward_adapter.py",
+    "libs/reporting/evaluation/canonical/adapters/opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/canonical/relations.py",
+   "loc": 204,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef1_work_package_a_canonical_contract.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/contracts.py",
+   "loc": 68,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_q9_evaluation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/cost_basis_comparison.py",
+   "loc": 236,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 6,
+   "sample_consumers": [
+    "libs/reporting/evaluation/monitor_noop_attribution/pipeline.py",
+    "libs/reporting/evaluation/q16_proxy_rejection_review.py",
+    "libs/reporting/opening_rank1_shadow/latent_forward.py",
+    "tests/test_closeout_memory_bounds.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/counterfactuals.py",
+   "loc": 58,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/quant_trade_diagnosis/writer.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/cumulative_improvement_review.py",
+   "loc": 473,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_cumulative_improvement_review.py",
+    "tests/test_cumulative_improvement_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/daily_scorecard.py",
+   "loc": 120,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/daily_uef_pipeline.py",
+   "loc": 892,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "scripts/research/run_alpha_research_board.py",
+    "scripts/run_daily_uef_evaluation.py",
+    "tests/test_closeout_maintenance.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/day_validity.py",
+   "loc": 217,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "libs/reporting/evaluation/uef5/clean_evidence_coverage.py",
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "tests/test_q9_day_validity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/entry_timing_attribution.py",
+   "loc": 488,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+    "tests/test_entry_timing_attribution.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/episode_scanner_review.py",
+   "loc": 358,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_cumulative_improvement_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/evaluation_lens_report.py",
+   "loc": 610,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/frozen_window_closeout.py",
+    "scripts/research/run_evaluation_lens_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/feedback_effectiveness.py",
+   "loc": 71,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_ai_effectiveness_provenance.py",
+    "tests/test_closeout_memory_bounds.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/five_day_freeze.py",
+   "loc": 66,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_baseline_samsung_hynix.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/frozen_window_closeout.py",
+   "loc": 368,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "scripts/research/run_frozen_q9_baseline_closeout.py",
+    "tests/test_q9_evaluation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/full_chain_component_review.py",
+   "loc": 1031,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/evaluation/stage2_authority/pipeline.py",
+    "scripts/research/run_full_chain_component_review.py",
+    "tests/test_closeout_memory_bounds.py",
+    "tests/test_full_chain_component_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/historical_prior.py",
+   "loc": 313,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_historical_q9_prior.py",
+    "tests/test_historical_q9_prior.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/horizon_alignment.py",
+   "loc": 368,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_horizon_alignment_review.py",
+    "tests/test_horizon_alignment.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/horizon_compliance_report.py",
+   "loc": 181,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/horizon_contract.py",
+   "loc": 293,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_strategy_horizon_operational_policy.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/loss_decomposition.py",
+   "loc": 549,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_loss_decomposition.py",
+    "tests/test_loss_decomposition.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/markdown.py",
+   "loc": 84,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/memory_review/__init__.py",
+   "loc": 3,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/memory_review/classifier.py",
+   "loc": 247,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_memory_contamination_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/memory_review/contracts.py",
+   "loc": 16,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_memory_contamination_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/memory_review/forward.py",
+   "loc": 220,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_memory_contamination_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/memory_review/loaders.py",
+   "loc": 164,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/memory_review/pipeline.py",
+   "loc": 130,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/memory_review/report.py",
+   "loc": 154,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/metrics.py",
+   "loc": 31,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 18,
+   "sample_consumers": [
+    "libs/reporting/baseline_btc_woori_tech/comparison.py",
+    "libs/reporting/baseline_btc_woori_tech/historical_review.py",
+    "libs/reporting/baseline_btc_woori_tech/hypothesis_forward.py",
+    "libs/reporting/baseline_samsung_hynix/forward_returns.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/monitor_noop_attribution/__init__.py",
+   "loc": 3,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/monitor_noop_attribution/contracts.py",
+   "loc": 30,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/monitor_noop_attribution/episodes.py",
+   "loc": 141,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_monitor_noop_attribution.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/monitor_noop_attribution/pipeline.py",
+   "loc": 103,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_monitor_noop_attribution.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/monitor_noop_attribution/report.py",
+   "loc": 159,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_monitor_noop_attribution.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/no_trade_attribution.py",
+   "loc": 376,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_no_trade_attribution.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/operator_summary_mining.py",
+   "loc": 492,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_operator_summary_mining.py",
+    "tests/test_operator_summary_mining.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/pipeline.py",
+   "loc": 360,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 6,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "libs/reporting/evaluation/frozen_window_closeout.py",
+    "tests/test_closeout_maintenance.py",
+    "tests/test_closeout_memory_bounds.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/post_reclaim_shadow_review.py",
+   "loc": 105,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_cumulative_improvement_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/q13_q14_validation.py",
+   "loc": 328,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/metrics/contracts.py",
+    "scripts/research/run_q13_q14_validation.py",
+    "tests/test_q13_q14_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/q16_proxy_rejection_review.py",
+   "loc": 587,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/metrics/contracts.py",
+    "tests/test_q16_proxy_rejection_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/q9_artifact_repair.py",
+   "loc": 478,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/frozen_window_closeout.py",
+    "scripts/maintenance/repair_q9_day_artifacts.py",
+    "tests/test_q9_artifact_repair.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/rolling_scorecard.py",
+   "loc": 59,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_q9_evaluation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/same_symbol_sequences/__init__.py",
+   "loc": 3,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/same_symbol_sequences/builder.py",
+   "loc": 184,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_same_symbol_sequences.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/same_symbol_sequences/pipeline.py",
+   "loc": 98,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_same_symbol_sequences.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/scanner_alignment_root_cause.py",
+   "loc": 521,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_scanner_alignment_root_cause_range.py",
+    "tests/test_scanner_alignment_root_cause.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/scanner_quality.py",
+   "loc": 216,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "tests/test_closeout_memory_bounds.py",
+    "tests/test_cost_basis_comparison.py",
+    "tests/test_q9_scanner_quality.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/scanner_score_decomposition.py",
+   "loc": 122,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/selection_authority_audit.py",
+   "loc": 145,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/stage2_authority/__init__.py",
+   "loc": 3,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/stage2_authority/builder.py",
+   "loc": 355,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_stage2_authority_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/stage2_authority/contracts.py",
+   "loc": 83,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/stage2_authority/deep_dive.py",
+   "loc": 438,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_stage2_authority_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/stage2_authority/deep_dive_report.py",
+   "loc": 181,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/stage2_authority/loaders.py",
+   "loc": 86,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_closeout_memory_bounds.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/stage2_authority/pipeline.py",
+   "loc": 150,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/stage2_authority/report.py",
+   "loc": 70,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/start_gate.py",
+   "loc": 332,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "tests/test_q9_decision_snapshots.py",
+    "tests/test_q9_evaluation.py",
+    "tests/test_q9_start_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/strategist_effectiveness.py",
+   "loc": 97,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_ai_effectiveness_provenance.py",
+    "tests/test_closeout_memory_bounds.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/trade_evaluator.py",
+   "loc": 126,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/quant_trade_diagnosis/writer.py",
+    "tests/test_q9_evaluation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/trade_read_model.py",
+   "loc": 769,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/evaluation/evaluation_lens_report.py",
+    "libs/reporting/evaluation/memory_review/loaders.py",
+    "libs/reporting/quant_trade_diagnosis/writer.py",
+    "tests/test_q9_evaluation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5/__init__.py",
+   "loc": 6,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef5_2_historical_recompute.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5/candle_authority.py",
+   "loc": 387,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/market_data/__init__.py",
+    "libs/market_data/receipts.py",
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef5_2_historical_recompute.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5/clean_evidence_coverage.py",
+   "loc": 424,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "scripts/build_uef5_clean_evidence_coverage.py",
+    "tests/test_uef5_1_clean_evidence_registry.py",
+    "tests/test_uef5_2_historical_recompute.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5/clean_evidence_registry.py",
+   "loc": 751,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef5_1_clean_evidence_registry.py",
+    "tests/test_uef5_2_historical_recompute.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5/clean_evidence_rules.py",
+   "loc": 814,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "libs/reporting/evaluation/uef5_3/legacy_opportunity_engine.py",
+    "tests/test_uef5_2_historical_recompute.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5/historical_recompute.py",
+   "loc": 1457,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5_3/legacy_forward_returns.py",
+    "scripts/run_uef5_historical_recompute.py",
+    "tests/test_uef5_2_historical_recompute.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5/session_policy.py",
+   "loc": 119,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef5/historical_recompute.py",
+    "tests/test_uef5_2_session_policy.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5_3/__init__.py",
+   "loc": 22,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5_3/canonical_run.py",
+   "loc": 325,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef5_3_dual_run.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5_3/comparison_unit.py",
+   "loc": 116,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef5_3_dual_run.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5_3/divergence_classifier.py",
+   "loc": 808,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef5_3_dual_run.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5_3/dual_run.py",
+   "loc": 492,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_uef5_3_dual_run.py",
+    "tests/test_uef5_3_dual_run.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5_3/legacy_forward_returns.py",
+   "loc": 167,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef5_3_dual_run.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5_3/legacy_opportunity_engine.py",
+   "loc": 131,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/uef5_3/taxonomy.py",
+   "loc": 52,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef5_3_dual_run.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/__init__.py",
+   "loc": 17,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/lineage_coverage.py",
+   "loc": 359,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_uef6_historical_validation.py",
+    "tests/test_uef6c_historical_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/lineage_model.py",
+   "loc": 169,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_uef6_lineage_sidecar.py",
+    "tests/test_uef6c_historical_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/lineage_verify.py",
+   "loc": 88,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef6_lineage_sidecar.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/lineage_witness.py",
+   "loc": 241,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "scripts/research/run_uef6_historical_validation.py",
+    "tests/test_uef6_lineage_sidecar.py",
+    "tests/test_uef6c_historical_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/loader.py",
+   "loc": 64,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_uef6_dedup_detection.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/population_dedup.py",
+   "loc": 314,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_uef6_dedup_detection.py",
+    "tests/test_uef6_lineage_sidecar.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/report_model.py",
+   "loc": 107,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/reporter.py",
+   "loc": 79,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_uef6_dedup_detection.py",
+    "tests/test_uef6_dedup_detection.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/run_identity.py",
+   "loc": 70,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_uef6_historical_validation.py",
+    "tests/test_uef6_dedup_detection.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/run_uef6a.py",
+   "loc": 76,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "scripts/research/run_uef6_dedup_detection.py",
+    "scripts/research/run_uef6_historical_validation.py",
+    "tests/test_uef6_dedup_detection.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef6/validation_replay.py",
+   "loc": 365,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_uef6_historical_validation.py",
+    "tests/test_uef6c_historical_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef7/__init__.py",
+   "loc": 14,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef7/alpha_board_normalization.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef7/alpha_board_normalization.py",
+   "loc": 360,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 8,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py",
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/tamper_tests.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "scripts/research/run_uef7_alpha_board_normalization.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef7/model.py",
+   "loc": 252,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef9/authority.py",
+    "tests/test_uef7_alpha_board_normalization.py",
+    "tests/test_uef8_fair_comparison_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef7/reporter.py",
+   "loc": 61,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "scripts/research/run_uef7_alpha_board_normalization.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef7/run_identity.py",
+   "loc": 105,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 9,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py",
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/tamper_tests.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "libs/reporting/evaluation/uef9/authority.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef8/__init__.py",
+   "loc": 15,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/uef8/fair_comparison.py",
+   "loc": 315,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 6,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py",
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/tamper_tests.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "scripts/research/run_uef8_fair_comparison_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef8/model.py",
+   "loc": 222,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/uef9/authority.py",
+    "tests/test_uef8_fair_comparison_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef8/reporter.py",
+   "loc": 62,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "scripts/research/run_uef8_fair_comparison_validation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef8/run_identity.py",
+   "loc": 72,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 7,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py",
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/tamper_tests.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "libs/reporting/evaluation/uef9/authority.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef9/__init__.py",
+   "loc": 5,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/evaluation/uef9/authority.py",
+   "loc": 238,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 5,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py",
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/tamper_tests.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "scripts/research/run_uef9_formal_authority.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef9/model.py",
+   "loc": 85,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/tamper_tests.py",
+    "tests/test_uef9_formal_authority.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef9/reporter.py",
+   "loc": 57,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "scripts/research/run_uef9_formal_authority.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/evaluation/uef9/run_identity.py",
+   "loc": 83,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 4,
+   "sample_consumers": [
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/run_chain.py",
+    "docs/research/evidence/p1_1_real_run_acceptance_2026-09-29/tamper_tests.py",
+    "libs/reporting/evaluation/daily_uef_pipeline.py",
+    "scripts/research/run_uef9_formal_authority.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/event_log_reader.py",
+   "loc": 276,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 15,
+   "sample_consumers": [
+    "libs/reporting/daily_report_generator.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/metrics_report_generator.py",
+    "libs/reporting/operator_visibility.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/execution_truth_surface.py",
+   "loc": 93,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/fact_narrative_report.py",
+   "loc": 137,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 11,
+   "sample_consumers": [
+    "libs/agent/reporter.py",
+    "libs/reporting/daily_report.py",
+    "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py",
+    "libs/reporting/trade_report/ai_facade_r3_parts/bodies_05.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/intraday_trade_reports.py",
+   "loc": 1849,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 10,
+   "sample_consumers": [
+    "graphs/nodes/reporter_node.py",
+    "libs/reporting/carryover_exit_reconciler.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/single_trade_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/json_array_stream.py",
+   "loc": 128,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 11,
+   "sample_consumers": [
+    "libs/reporting/evaluation/artifact_inventory.py",
+    "libs/reporting/evaluation/no_trade_attribution.py",
+    "libs/reporting/evaluation/pipeline.py",
+    "libs/reporting/evaluation/q9_artifact_repair.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/kiwoom_day_trade_diary_truth.py",
+   "loc": 112,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/kiwoom_day_trade_truth.py",
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/kiwoom_day_trade_match_estimate.py",
+   "loc": 117,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/kiwoom_day_trade_truth.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/kiwoom_day_trade_truth.py",
+   "loc": 582,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_bundle_assembly.py",
+    "tests/test_kiwoom_day_trade_truth.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_bundle_runner.py",
+   "loc": 2787,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 13,
+   "sample_consumers": [
+    "libs/reporting/intraday_trade_reports.py",
+    "libs/reporting/reporter_bundle_runtime_parts/closed_sell_reconciliation.py",
+    "libs/reporting/reporter_bundle_runtime_parts/lifecycle_evidence_context.py",
+    "libs/reporting/reporter_bundle_runtime_parts/lifecycle_human_summaries.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_event_evidence.py",
+   "loc": 282,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/live_execution_trade_evidence.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_execution_runs.py",
+   "loc": 166,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_lifecycle_recovery.py",
+   "loc": 214,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_llm_artifacts.py",
+   "loc": 136,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_open_monitor.py",
+   "loc": 145,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/live_execution_event_evidence.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_post_exit.py",
+   "loc": 134,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_report_artifacts.py",
+   "loc": 146,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/live_execution_strategist_artifacts.py",
+    "libs/reporting/live_execution_trade_evidence.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_report_context.py",
+   "loc": 114,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/live_execution_event_evidence.py",
+    "libs/reporting/live_execution_execution_runs.py",
+    "libs/reporting/live_execution_trade_evidence.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_scanner_evidence.py",
+   "loc": 441,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_strategist_artifacts.py",
+   "loc": 366,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/live_execution_llm_artifacts.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/live_execution_trade_evidence.py",
+   "loc": 231,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/llm_artifacts.py",
+   "loc": 776,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 42,
+   "sample_consumers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_linkage.py",
+    "graphs/pipelines/m13_eod_report.py",
+    "libs/reporting/carryover_exit_reconciler.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/llm_daily_summary.py",
+   "loc": 266,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 4,
+   "sample_consumers": [
+    "graphs/pipelines/m13_eod_report.py",
+    "libs/llm/llm_router.py",
+    "tests/test_llm_model_policy.py",
+    "tests/test_m19_6_llm_daily_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/market_regime_rail_review.py",
+   "loc": 262,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py",
+    "libs/reporting/q8_shadow_blocker_review.py",
+    "scripts/research/run_market_regime_rail_review.py",
+    "tests/test_market_regime_rail_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/metrics_report/__init__.py",
+   "loc": 1,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/metrics_report/aggregators.py",
+   "loc": 188,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/metrics_report_generator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/metrics_report/event_extractors.py",
+   "loc": 162,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/metrics_report/aggregators.py",
+    "libs/reporting/metrics_report_generator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/metrics_report/markdown.py",
+   "loc": 234,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/metrics_report_generator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/metrics_report_generator.py",
+   "loc": 545,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/agent/reporter.py",
+    "libs/reporting/operator_visibility.py",
+    "libs/reporting/reporter_feedback.py",
+    "scripts/generate_metrics_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/monitor_timeline_reconciliation.py",
+   "loc": 125,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/intraday_trade_reports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/narrative_axes.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/daily_report_generator.py",
+    "libs/reporting/daily_report_runtime/markdown.py",
+    "libs/reporting/operator_visibility.py",
+    "libs/reporting/trade_explain.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/__init__.py",
+   "loc": 3,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/candle_provider.py",
+   "loc": 118,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/market_data/receipts.py",
+    "libs/reporting/evaluation/monitor_noop_attribution/pipeline.py",
+    "tests/test_opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/contracts.py",
+   "loc": 27,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/episodes.py",
+   "loc": 108,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/extraction.py",
+   "loc": 110,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/five_session_review.py",
+   "loc": 179,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/latent_forward.py",
+   "loc": 283,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/canonical/forward/profiles.py",
+    "tests/test_latent_reactivation_forward.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/latent_watch.py",
+   "loc": 313,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/market_snapshot.py",
+   "loc": 147,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_opening_rank1_market_snapshot.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/metrics.py",
+   "loc": 199,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/observability.py",
+   "loc": 398,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/pipeline.py",
+   "loc": 251,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_opening_rank1_shadow.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/report.py",
+   "loc": 191,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/opening_rank1_shadow/symbol_metadata.py",
+   "loc": 73,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/operator_candidate_decisions.py",
+   "loc": 69,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/operator_visibility.py",
+    "tests/test_closeout_memory_bounds.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary.py",
+   "loc": 1195,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 11,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "libs/reporting/daily_report_generator.py",
+    "libs/reporting/operator_summary_refresh.py",
+    "libs/reporting/symbol_trade_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/closeout_reconciliation.py",
+   "loc": 178,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/markdown_daily_summary.py",
+   "loc": 333,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py",
+   "loc": 180,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/operator_readouts.py",
+   "loc": 83,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py",
+   "loc": 312,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/pattern_naming.py",
+   "loc": 230,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/period_payloads.py",
+   "loc": 258,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/residual_positions.py",
+   "loc": 301,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/trade_decision_fields.py",
+   "loc": 304,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py",
+   "loc": 272,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_summary_refresh.py",
+   "loc": 135,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_visibility.py",
+   "loc": 1520,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 12,
+   "sample_consumers": [
+    "graphs/pipelines/m13_eod_report.py",
+    "libs/agent/reporter.py",
+    "libs/reporting/daily_report_generator.py",
+    "scripts/diagnostics/benchmark_operator_visibility_memory.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_visibility_parts/reason_text_and_time.py",
+   "loc": 214,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_visibility.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py",
+   "loc": 291,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/operator_visibility.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/phase_runtime_health.py",
+   "loc": 1361,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/report_source_helpers.py",
+    "scripts/diagnostics/check_phase_5_2_5_3_runtime_health.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/policy_surface_summary.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/phase_runtime_health.py",
+    "libs/reporting/report_source_helpers.py",
+    "scripts/refactor/work_reporter_capture.py",
+    "tests/test_policy_surface_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/post_exit_shadow_recap.py",
+   "loc": 536,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 14,
+   "sample_consumers": [
+    "graphs/commander_runtime.py",
+    "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py",
+    "libs/agents/reporter/narrative/post_exit_recap_bodies_02.py",
+    "libs/agents/reporter/narrative/post_exit_shadow_recap_r8_bodies_01.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/profitability_recovery_day1.py",
+   "loc": 443,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 3,
+   "sample_consumers": [
+    "scripts/diagnostics/check_profitability_recovery_day1.py",
+    "scripts/research/daily_profitability_scorecard.py",
+    "tests/test_profitability_recovery_day1.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/q8_evaluation_contract.py",
+   "loc": 154,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 15,
+   "sample_consumers": [
+    "libs/reporting/evaluation/episode_scanner_review.py",
+    "libs/reporting/evaluation/evaluation_lens_report.py",
+    "libs/reporting/evaluation/full_chain_component_review.py",
+    "libs/reporting/evaluation/horizon_alignment.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/q8_historical_review.py",
+   "loc": 926,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/evaluation/cumulative_improvement_review.py",
+    "scripts/research/run_q8_historical_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/q8_lane_decision_table.py",
+   "loc": 263,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/research/run_q8_lane_decision_table.py",
+    "tests/test_q8_lane_decision_table.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/q8_shadow_blocker_review.py",
+   "loc": 344,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 6,
+   "sample_consumers": [
+    "libs/reporting/closeout_maintenance.py",
+    "libs/reporting/operator_period_summary.py",
+    "scripts/research/run_q8_shadow_blocker_review.py",
+    "tests/test_closeout_payload_projection.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/q8_trusted_reaggregation.py",
+   "loc": 240,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/q9_forward_candles.py",
+   "loc": 65,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/baseline_samsung_hynix/q9_comparison.py",
+    "libs/reporting/evaluation/cost_basis_comparison.py",
+    "libs/reporting/evaluation/pipeline.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/quant_shadow_candidate_evaluation.py",
+   "loc": 1425,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 15,
+   "sample_consumers": [
+    "libs/reporting/evaluation/cost_basis_comparison.py",
+    "libs/reporting/evaluation/cumulative_improvement_review.py",
+    "libs/reporting/evaluation/evaluation_lens_report.py",
+    "libs/reporting/evaluation/full_chain_component_review.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/quant_shadow_forward_outcomes.py",
+   "loc": 386,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 18,
+   "sample_consumers": [
+    "libs/reporting/baseline_samsung_hynix/forward_returns.py",
+    "libs/reporting/baseline_samsung_hynix/q9_comparison.py",
+    "libs/reporting/evaluation/artifact_inventory.py",
+    "libs/reporting/evaluation/canonical/adapters/q10_semiconductor.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/quant_tactic_evaluation.py",
+   "loc": 217,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py",
+    "tests/test_quant_tactic_evaluation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/quant_tactic_report.py",
+   "loc": 363,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py",
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_quant_tactic_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/quant_trade_diagnosis/__init__.py",
+   "loc": 13,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/quant_trade_diagnosis/builder.py",
+   "loc": 624,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/quant_trade_diagnosis/conditional_alpha.py",
+   "loc": 92,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_conditional_alpha_quant_bridge.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/quant_trade_diagnosis/markdown.py",
+   "loc": 344,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/quant_trade_diagnosis/writer.py",
+   "loc": 134,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/evaluation/pipeline.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reasoning_trace.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 5,
+   "sample_consumers": [
+    "graphs/nodes/update_state_after_execution.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/trade_story_pipeline.py",
+    "scripts/refactor/work_reporter_capture.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/report_maintenance.py",
+   "loc": 367,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/maintenance/run_report_maintenance.py",
+    "tests/test_report_maintenance.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/report_metadata.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 8,
+   "sample_consumers": [
+    "libs/reporting/daily_report_generator.py",
+    "libs/reporting/daily_report_runtime/freshness.py",
+    "libs/reporting/daily_report_runtime/markdown.py",
+    "libs/reporting/metrics_report/markdown.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/report_source_helpers.py",
+   "loc": 290,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/daily_report_generator.py",
+    "libs/reporting/metrics_report_generator.py",
+    "libs/reporting/operator_visibility.py",
+    "libs/reporting/trade_explain.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/report_truth_surface.py",
+   "loc": 98,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "libs/reporting/trade_report_markdown_truth.py",
+    "tests/test_trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_ai_review.py",
+   "loc": 499,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/llm/llm_router.py",
+    "tests/test_commander_env_migration_phase1.py",
+    "tests/test_evidence_ledger_trace_layer.py",
+    "tests/test_llm_model_policy.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_analysis.py",
+   "loc": 666,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 10,
+   "sample_consumers": [
+    "libs/agent/reporter.py",
+    "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py",
+    "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py",
+    "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_bundle_runtime_parts/__init__.py",
+   "loc": 1,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_p158_third_pass_t2_extraction_gates.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_bundle_runtime_parts/closed_sell_reconciliation.py",
+   "loc": 46,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_p159_current_owner_contract_gates.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_evidence_context.py",
+   "loc": 76,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_human_summaries.py",
+   "loc": 47,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_bundle_runtime_parts/lifecycle_story_context.py",
+   "loc": 73,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_bundle_runtime_parts/report_generation_policy.py",
+   "loc": 53,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_bundle_runtime_parts/targeted_run_projection.py",
+   "loc": 26,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/reporter_feedback.py",
+   "loc": 618,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 4,
+   "sample_consumers": [
+    "graphs/nodes/strategist_node.py",
+    "libs/agent/reporter.py",
+    "libs/reporting/trade_memory_surface.py",
+    "tests/test_reporter_feedback.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/scheduled_intelligence/__init__.py",
+   "loc": 4,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/scheduled_intelligence/artifacts.py",
+   "loc": 69,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/scheduled_intelligence/closeout.py",
+   "loc": 98,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/scheduled_intelligence/preopen.py",
+   "loc": 175,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/__init__.py",
+   "loc": 9,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/cohorts.py",
+   "loc": 283,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_short_alpha_discriminator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/contracts.py",
+   "loc": 24,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/metrics.py",
+   "loc": 73,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/opening_casebook.py",
+   "loc": 243,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_short_alpha_discriminator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/opening_policy_matrix.py",
+   "loc": 130,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_short_alpha_discriminator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/pipeline.py",
+   "loc": 186,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_short_alpha_discriminator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/profit_lock.py",
+   "loc": 94,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_short_alpha_discriminator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/report.py",
+   "loc": 185,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/scanner_diagnostics.py",
+   "loc": 115,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/short_alpha_discriminator/strategist_roi.py",
+   "loc": 66,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_short_alpha_discriminator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/single_trade_report.py",
+   "loc": 466,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/single_trade_report_bodies_01.py",
+    "libs/agents/reporter/narrative/single_trade_report_r8_bodies_01.py",
+    "tests/test_m21_commander_runtime_entry.py",
+    "tests/test_single_trade_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/strategist_llm_evaluation.py",
+   "loc": 225,
+   "category": "RESEARCH_EVALUATION",
+   "reason": "Research/evaluation/UEF/Q-series family (out of role)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/operator_period_summary.py",
+    "tests/test_closeout_payload_projection.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/strategist_llm_summary.py",
+   "loc": 1700,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/llm_artifacts.py",
+    "libs/runtime/canonical_artifacts.py",
+    "scripts/generate_strategist_llm_summary.py",
+    "tests/test_strategist_llm_summary.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/strategist_quant_context_report.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "scripts/refactor/work_reporter_capture.py",
+    "tests/test_strategist_quant_context_report.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/strategy_read_model.py",
+   "loc": 194,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 7,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py",
+    "libs/agents/reporter/read_models/strategy_read_model_bodies_02.py",
+    "libs/reporting/agent_pipeline_trace.py",
+    "libs/reporting/trade_read_model.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/symbol_read_model.py",
+   "loc": 418,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 6,
+   "sample_consumers": [
+    "graphs/nodes/scanner_node.py",
+    "graphs/nodes/strategist_node.py",
+    "libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py",
+    "libs/reporting/trade_memory_surface.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/symbol_trade_report.py",
+   "loc": 562,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 13,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py",
+    "libs/agents/reporter/narrative/symbol_trade_report_bodies_02.py",
+    "libs/agents/reporter/narrative/symbol_trade_report_r8_bodies_01.py",
+    "libs/reporting/daily_report_generator.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_bundle_assembly.py",
+   "loc": 1225,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 8,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py",
+    "libs/agents/reporter/read_models/trade_bundle_assembly_r8_bodies_01.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/trade_regeneration_truth.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_bundle_persistence.py",
+   "loc": 313,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_live_execution_bundle_report.py",
+    "tests/test_trade_bundle_persistence.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_bundle_state.py",
+   "loc": 590,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 7,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/bundle_state_bodies_01.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/trade_bundle_persistence.py",
+    "libs/reporting/trade_report_runtime_generation.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_execution_outcome_text.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 7,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "libs/reporting/trade_report_ai_compact_input.py",
+    "libs/reporting/trade_story_human_parts/market_context.py",
+    "libs/reporting/trade_story_human_parts/scanner_reason.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_execution_snapshot.py",
+   "loc": 512,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/live_execution_execution_runs.py",
+    "libs/reporting/single_trade_report.py",
+    "libs/reporting/trade_bundle_assembly.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_execution_truth_merge.py",
+   "loc": 70,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_bundle_state.py",
+    "libs/reporting/trade_regeneration_truth.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_explain.py",
+   "loc": 411,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 11,
+   "sample_consumers": [
+    "libs/agent/reporter.py",
+    "libs/agents/reporter/narrative/trade_explain_bodies_01.py",
+    "libs/agents/reporter/narrative/trade_explain_r8_bodies_01.py",
+    "libs/reporting/live_execution_bundle_runner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_fallback_text.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/live_execution_bundle_runner.py",
+    "libs/reporting/trade_bundle_assembly.py",
+    "libs/reporting/trade_lifecycle_builder.py",
+    "libs/reporting/trade_story_pipeline.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_fill_aggregator.py",
+   "loc": 63,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/kiwoom_day_trade_truth.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_lifecycle_builder.py",
+   "loc": 783,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py",
+    "libs/agents/reporter/read_models/trade_lifecycle_builder_r8_bodies_01.py",
+    "libs/reporting/live_execution_bundle_runner.py",
+    "tests/test_trade_lifecycle_builder.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "loc": 108,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/memory_application_bodies_01.py",
+    "libs/reporting/trade_bundle_assembly.py",
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_trade_memory_application_surface.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_memory_projection_parts/__init__.py",
+   "loc": 1,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_p157_third_pass_t1_extraction_gates.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_memory_projection_parts/memory_feedback_rebuild.py",
+   "loc": 130,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_memory_surface.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_memory_projection_parts/memory_input_visibility.py",
+   "loc": 261,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_memory_surface.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_memory_projection_parts/memory_status_summary.py",
+   "loc": 74,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_memory_surface.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_memory_projection_parts/memory_surface_payload.py",
+   "loc": 327,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_memory_surface.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "loc": 249,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 11,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/memory_surface_bodies_01.py",
+    "libs/reporting/trade_bundle_assembly.py",
+    "libs/reporting/trade_memory_projection_parts/memory_feedback_rebuild.py",
+    "libs/reporting/trade_memory_projection_parts/memory_input_visibility.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_pnl_estimate.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report/shared_facts.py",
+    "scripts/refactor/work_reporter_capture.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_price_truth.py",
+   "loc": 72,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "loc": 544,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 25,
+   "sample_consumers": [
+    "apps/operator_ui/data_access_core.py",
+    "apps/operator_ui/data_access_reports.py",
+    "graphs/nodes/strategist_node.py",
+    "libs/agent/reporter.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_read_model_parts/__init__.py",
+   "loc": 1,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_p157_third_pass_t1_extraction_gates.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_read_model_parts/read_artifact_selection.py",
+   "loc": 103,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_read_model.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_read_model_parts/read_display_context.py",
+   "loc": 225,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_read_model.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_read_model_parts/read_truth_projection.py",
+   "loc": 234,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_read_model.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_regeneration_truth.py",
+   "loc": 172,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/intraday_trade_reports.py",
+    "scripts/run_ai_trade_report_batch.py",
+    "tests/test_trade_regeneration_truth.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/__init__.py",
+   "loc": 1,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/compact_input_facts.py",
+   "loc": 94,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_compact_input.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/compact_input_payload.py",
+   "loc": 329,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_compact_input.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/dependency_maps.py",
+   "loc": 89,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/duration_language.py",
+   "loc": 89,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/entry_gate_snapshots.py",
+   "loc": 68,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/fallback_sections_schema.py",
+   "loc": 259,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_deterministic.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/fallback_seed_context.py",
+   "loc": 101,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_deterministic.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/fallback_summary_status.py",
+   "loc": 76,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_deterministic.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/holding_memory_compaction.py",
+   "loc": 79,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/lifecycle_status_labels.py",
+   "loc": 86,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/market_context_text.py",
+   "loc": 95,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/market_labels.py",
+   "loc": 117,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/scanner_labels.py",
+   "loc": 166,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/scanner_selection.py",
+   "loc": 89,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_parts/text_helpers.py",
+   "loc": 47,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_r3_parts/bodies_01.py",
+   "loc": 226,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_r3_parts/bodies_02.py",
+   "loc": 236,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_r3_parts/bodies_03.py",
+   "loc": 257,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_r3_parts/bodies_04.py",
+   "loc": 219,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/ai_facade_r3_parts/bodies_05.py",
+   "loc": 80,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/compact_helpers.py",
+   "loc": 175,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_compact_helpers.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/context.py",
+   "loc": 209,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/llm.py",
+   "loc": 240,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_llm.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_dependency_maps.py",
+   "loc": 268,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_operator_narrative.py",
+   "loc": 264,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_parts/memory_policy_phases.py",
+   "loc": 165,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_parts/monitor_artifact_resolution.py",
+   "loc": 88,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_parts/news_headlines.py",
+   "loc": 111,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_parts/operator_labels.py",
+   "loc": 227,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_parts/report_paths_and_time.py",
+   "loc": 104,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_parts/strategist_language.py",
+   "loc": 79,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_parts/summary_language.py",
+   "loc": 140,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_r3_parts/bodies_01.py",
+   "loc": 207,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_r3_parts/bodies_02.py",
+   "loc": 234,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_r3_parts/bodies_03.py",
+   "loc": 241,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_r3_parts/bodies_04.py",
+   "loc": 214,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_clean_r3_parts/bodies_05.py",
+   "loc": 53,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_diagnostics.py",
+   "loc": 346,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_signal_parts/entry_metrics.py",
+   "loc": 200,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_signal_parts/entry_watch.py",
+   "loc": 324,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_signal_parts/exit.py",
+   "loc": 298,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_signals.py",
+   "loc": 20,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_strategy.py",
+   "loc": 379,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py",
+    "libs/agents/reporter/narrative/strategy_memory_md_bodies_02.py",
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_work_reporter_seed_migration.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_summary.py",
+   "loc": 60,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_p152_markdown_render_section_owners.py",
+    "tests/test_p152_summary_input_part_owners.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/markdown_translation.py",
+   "loc": 182,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/merge_policy.py",
+   "loc": 369,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_merge_policy.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/normalization.py",
+   "loc": 275,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/operator_parts/__init__.py",
+   "loc": 1,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/trade_report/operator_parts/context_patterns.py",
+   "loc": 156,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_operator_phrase_owners.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/operator_parts/exact_phrases.py",
+   "loc": 67,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_operator_phrase_owners.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/operator_parts/language.py",
+   "loc": 136,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_operator_language_owner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/operator_parts/lifecycle_patterns.py",
+   "loc": 189,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_operator_phrase_owners.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/operator_text.py",
+   "loc": 320,
+   "category": "OPS_SCHEDULER",
+   "reason": "operator/daily/metrics/maintenance reporting infrastructure (shared)",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_p152_operator_language_owner.py",
+    "tests/test_p152_operator_phrase_owners.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/prompting.py",
+   "loc": 267,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_prompting.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_parts/entry_bullets.py",
+   "loc": 157,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_parts/entry_decision.py",
+   "loc": 224,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_parts/execution_quality.py",
+   "loc": 98,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_parts/lifecycle_bullets.py",
+   "loc": 143,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_parts/market_context.py",
+   "loc": 173,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_parts/reporter_evaluation.py",
+   "loc": 241,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_parts/scanner_selection.py",
+   "loc": 310,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_parts/strategist.py",
+   "loc": 205,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_seed_parts/commander.py",
+   "loc": 105,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_seed_parts/monitor.py",
+   "loc": 198,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_seed_parts/scanner.py",
+   "loc": 115,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/section_seed_parts/strategist.py",
+   "loc": 171,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/sections.py",
+   "loc": 251,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/service.py",
+   "loc": 4,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/services/ai_report.py",
+   "loc": 347,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/services/trade_summary.py",
+   "loc": 234,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/shared_facts.py",
+   "loc": 471,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_shared_facts.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_adapter.py",
+   "loc": 144,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai_summary_adapter.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_input_parts/broker_alignment.py",
+   "loc": 26,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_summary_input_part_owners.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_input_parts/decision_flow.py",
+   "loc": 92,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_summary_input_part_owners.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_input_parts/main_builder.py",
+   "loc": 328,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_input_parts/market_and_strategy.py",
+   "loc": 34,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_summary_input_part_owners.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_parts/findings.py",
+   "loc": 84,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_summary_findings_owner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_parts/render_diagnostics.py",
+   "loc": 150,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_render_diagnostics_owner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_render_parts/closing.py",
+   "loc": 90,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_markdown_render_section_owners.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_render_parts/decision_lifecycle.py",
+   "loc": 144,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_markdown_render_section_owners.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_render_parts/main_renderer.py",
+   "loc": 326,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_markdown_render_section_owners.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_render_parts/market_news.py",
+   "loc": 93,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_markdown_render_section_owners.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_render_parts/overview.py",
+   "loc": 98,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_markdown_render_section_owners.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report/summary_render_parts/render_helpers.py",
+   "loc": 130,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_markdown_render_section_owners.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_ai.py",
+   "loc": 1597,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 50,
+   "sample_consumers": [
+    "apps/operator_ui/data_access_core.py",
+    "libs/agents/reporter/narrative/report_ai_bodies_01.py",
+    "libs/agents/reporter/read_models/compact_input_bodies_01.py",
+    "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_compact_helpers.py",
+   "loc": 9,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_compact_input.py",
+   "loc": 95,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 7,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/compact_input_bodies_01.py",
+    "libs/reporting/trade_report/ai_facade_parts/compact_input_facts.py",
+    "libs/reporting/trade_report/ai_facade_parts/compact_input_payload.py",
+    "libs/reporting/trade_report_ai.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "loc": 440,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 8,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/report_deterministic_bodies_01.py",
+    "libs/reporting/trade_report/ai_facade_parts/fallback_sections_schema.py",
+    "libs/reporting/trade_report/ai_facade_parts/fallback_seed_context.py",
+    "libs/reporting/trade_report/ai_facade_parts/fallback_summary_status.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_llm.py",
+   "loc": 9,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/trade_report/services/ai_report.py",
+    "libs/reporting/trade_report/services/trade_summary.py",
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_merge_policy.py",
+   "loc": 9,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_prompting.py",
+   "loc": 9,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_shared_facts.py",
+   "loc": 9,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_summary_adapter.py",
+   "loc": 9,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_common.py",
+   "loc": 174,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 24,
+   "sample_consumers": [
+    "libs/reporting/trade_report/compact_helpers.py",
+    "libs/reporting/trade_report/merge_policy.py",
+    "libs/reporting/trade_report/operator_text.py",
+    "libs/reporting/trade_report/prompting.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown/__init__.py",
+   "loc": 1,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown/monitor.py",
+   "loc": 294,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "libs/reporting/trade_report_markdown_monitor.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown/scanner.py",
+   "loc": 326,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "libs/reporting/trade_report_markdown_scanner.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_clean.py",
+   "loc": 1284,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 19,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/markdown_clean_bodies_01.py",
+    "libs/reporting/trade_report_ai.py",
+    "scripts/refactor/p152_facade_consumer_scan.py",
+    "scripts/refactor/p152_integration_acceptance.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_monitor.py",
+   "loc": 9,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_scanner.py",
+   "loc": 9,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_strategy_memory.py",
+   "loc": 90,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py",
+    "libs/agents/reporter/narrative/strategy_memory_md_bodies_02.py",
+    "libs/reporting/trade_report_markdown_clean.py",
+    "tests/test_work_reporter_seed_migration.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_truth.py",
+   "loc": 397,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_post_exit_shadow.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/trade_report_markdown_clean.py",
+    "scripts/refactor/work_reporter_capture.py",
+    "tests/test_post_exit_shadow_recap.py",
+    "tests/test_work_reporter_seed_migration.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_runtime_generation.py",
+   "loc": 383,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/intraday_trade_reports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_runtime_policy.py",
+   "loc": 183,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/intraday_trade_reports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_report_symbol_metadata.py",
+   "loc": 30,
+   "category": "REPORTER_FACADE",
+   "reason": "import-only compatibility facade (R-2/R-3 decomposition)",
+   "consumers": 8,
+   "sample_consumers": [
+    "libs/agents/reporter/read_models/symbol_metadata_fallbacks.py",
+    "libs/agents/reporter/read_models/symbol_metadata_name_inference.py",
+    "libs/agents/reporter/read_models/symbol_metadata_resolution.py",
+    "libs/agents/reporter/read_models/symbol_metadata_sources.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_reporter_status_text.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 9,
+   "sample_consumers": [
+    "libs/reporting/trade_report_ai.py",
+    "libs/reporting/trade_story_assembly_parts/lifecycle_bundle.py",
+    "libs/reporting/trade_story_assembly_parts/lifecycle_normalization.py",
+    "libs/reporting/trade_story_assembly_parts/report_seeds.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_scanner_fallback_anchor.py",
+   "loc": 291,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py",
+    "tests/test_trade_story_pipeline_enrichment.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story/__init__.py",
+   "loc": 1,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 0,
+   "sample_consumers": []
+  },
+  {
+   "path": "libs/reporting/trade_story/evidence.py",
+   "loc": 76,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/reporting/trade_story_evidence.py",
+    "libs/reporting/trade_story_pipeline.py",
+    "libs/reporting/trade_story_pipeline_provenance.py",
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_assembly_parts/direct_story.py",
+   "loc": 246,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_direct_story_owner.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_assembly_parts/lifecycle_bundle.py",
+   "loc": 259,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_assembly_parts/lifecycle_evidence.py",
+   "loc": 169,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_lifecycle_evidence_owner.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_assembly_parts/lifecycle_human.py",
+   "loc": 116,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_lifecycle_human_owner.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_assembly_parts/lifecycle_normalization.py",
+   "loc": 118,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_assembly_parts/reasoning_provenance.py",
+   "loc": 85,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 3,
+   "sample_consumers": [
+    "tests/test_p152_direct_story_owner.py",
+    "tests/test_p152_new_owner_dependency_gate.py",
+    "tests/test_p152_story_reasoning_owner.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_assembly_parts/report_seeds.py",
+   "loc": 115,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_assembly_parts/timeline.py",
+   "loc": 80,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_evidence.py",
+   "loc": 9,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py",
+    "libs/reporting/trade_story_pipeline_provenance.py",
+    "scripts/refactor/p152_owner_parity.py",
+    "tests/test_reporting_relocation_imports.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_evidence_parts/canonical.py",
+   "loc": 89,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_evidence_parts/filters.py",
+   "loc": 269,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_evidence_parts/scanner.py",
+   "loc": 323,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_facade_parts/dependency_maps.py",
+   "loc": 89,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_facade_parts/filter_checklist.py",
+   "loc": 73,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_facade_parts/human_judgments.py",
+   "loc": 110,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_facade_parts/story_contracts.py",
+   "loc": 162,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_facade_parts/strategist_evidence.py",
+   "loc": 103,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_facade_r3_parts/bodies_01.py",
+   "loc": 101,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_human_parts/market_context.py",
+   "loc": 224,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_human_parts/monitor_context.py",
+   "loc": 258,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_monitor_context_owner.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_human_parts/monitor_diagnostics.py",
+   "loc": 75,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_monitor_diagnostics_owner.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_human_parts/monitor_entry_review.py",
+   "loc": 146,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_monitor_entry_review_owner.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_human_parts/monitor_policy_bullets.py",
+   "loc": 89,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_monitor_policy_bullets_owner.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_human_parts/monitor_traces.py",
+   "loc": 107,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 2,
+   "sample_consumers": [
+    "tests/test_p152_monitor_trace_wrappers.py",
+    "tests/test_p152_new_owner_dependency_gate.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_human_parts/scanner_reason.py",
+   "loc": 281,
+   "category": "SHARED_CONTRACT",
+   "reason": "earlier-pass owner parts pinned by R3/T1/T2 ledgers (path is part of historical contracts)",
+   "consumers": 1,
+   "sample_consumers": [
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline.py",
+   "loc": 498,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 41,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/news_headlines.py",
+    "libs/agents/reporter/narrative/news_scanner_contribution.py",
+    "libs/agents/reporter/narrative/news_text.py",
+    "libs/agents/reporter/narrative/scanner_basis.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_evidence_hydration.py",
+   "loc": 23,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py",
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_human_payloads.py",
+   "loc": 350,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py",
+    "scripts/refactor/p152_owner_parity.py",
+    "tests/test_p152_monitor_context_owner.py",
+    "tests/test_p152_monitor_trace_wrappers.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_news.py",
+   "loc": 29,
+   "category": "REPORTER_FACADE",
+   "reason": "import-only compatibility facade (R-2/R-3 decomposition)",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/news_headlines.py",
+    "libs/agents/reporter/narrative/news_scanner_contribution.py",
+    "libs/agents/reporter/narrative/news_text.py",
+    "libs/reporting/trade_story_pipeline.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_provenance.py",
+   "loc": 83,
+   "category": "REPORTER_FACADE",
+   "reason": "facade wrappers delegating R4..R8 moved bodies; remaining bodies in r8_function_triage.json",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/story_provenance_bodies_01.py",
+    "libs/reporting/trade_story_pipeline.py",
+    "tests/test_work_reporter_seed_migration.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_scanner.py",
+   "loc": 21,
+   "category": "REPORTER_FACADE",
+   "reason": "import-only compatibility facade (R-2/R-3 decomposition)",
+   "consumers": 5,
+   "sample_consumers": [
+    "libs/agents/reporter/narrative/scanner_basis.py",
+    "libs/agents/reporter/narrative/scanner_evidence_fit.py",
+    "libs/agents/reporter/narrative/scanner_selection_trace.py",
+    "libs/reporting/trade_story_pipeline.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_story_pipeline_story_assembly.py",
+   "loc": 331,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 2,
+   "sample_consumers": [
+    "libs/reporting/trade_story_pipeline.py",
+    "scripts/refactor/p152_owner_parity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_symbol_context.py",
+   "loc": 320,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 4,
+   "sample_consumers": [
+    "libs/reporting/trade_bundle_assembly.py",
+    "libs/reporting/trade_bundle_state.py",
+    "libs/reporting/trade_symbol_integrity.py",
+    "tests/test_trade_symbol_context.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_symbol_integrity.py",
+   "loc": 154,
+   "category": "REPORTER_RETAINED",
+   "reason": "Reporter module not moved in this pass (no proven move batch); see triage/function blockers",
+   "consumers": 2,
+   "sample_consumers": [
+    "scripts/maintenance/repair_trade_symbol_context.py",
+    "tests/test_trade_symbol_integrity.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/trade_truth_resolver.py",
+   "loc": 116,
+   "category": "EXTERNAL_AUTHORITY",
+   "reason": "truth precedence / broker / LLM artifact / feedback / bundle runtime (protected)",
+   "consumers": 1,
+   "sample_consumers": [
+    "libs/reporting/report_truth_surface.py"
+   ]
+  },
+  {
+   "path": "libs/reporting/truth_source_labels.py",
+   "loc": 10,
+   "category": "REPORTER_CANONICAL",
+   "reason": "identity shim / alias to canonical owner",
+   "consumers": 3,
+   "sample_consumers": [
+    "libs/reporting/execution_truth_surface.py",
+    "libs/reporting/trade_report_ai.py",
+    "scripts/refactor/work_reporter_capture.py"
+   ]
+  }
+ ]
+}

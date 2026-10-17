@@ -264,8 +264,15 @@ R8_OWNER_FILES = {"libs/agents/reporter/narrative/agent_pipeline_trace_r8_bodies
                   "libs/agents/reporter/read_models/trade_bundle_assembly_r8_bodies_01.py",
                   "libs/agents/reporter/read_models/trade_lifecycle_builder_r8_bodies_01.py",
                   "libs/agents/reporter/read_models/trade_read_model_r8_bodies_01.py"}
-R4_FACADE_FILES = R4_FACADE_FILES | R5_FACADE_FILES | R6_FACADE_FILES | R7_FACADE_FILES
-R4_OWNER_FILES = R4_OWNER_FILES | R5_OWNER_FILES | R6_OWNER_FILES | R7_OWNER_FILES | R8_OWNER_FILES
+# R-9 batch (pure bodies of retained Reporter modules; truth/LLM/effect bodies stay): CLOSED explicit set
+R9_FACADE_FILES = {"libs/reporting/intraday_trade_reports.py",
+                   "libs/reporting/symbol_read_model.py",
+                   "libs/reporting/trade_report_common.py"}
+R9_OWNER_FILES = {"libs/agents/reporter/narrative/trade_report_common_r9_bodies_01.py",
+                   "libs/agents/reporter/read_models/intraday_trade_reports_r9_bodies_01.py",
+                   "libs/agents/reporter/read_models/symbol_read_model_r9_bodies_01.py"}
+R4_FACADE_FILES = R4_FACADE_FILES | R5_FACADE_FILES | R6_FACADE_FILES | R7_FACADE_FILES | R9_FACADE_FILES
+R4_OWNER_FILES = R4_OWNER_FILES | R5_OWNER_FILES | R6_OWNER_FILES | R7_OWNER_FILES | R8_OWNER_FILES | R9_OWNER_FILES
 
 
 def _scope_violations(paths, *, merged=False):
@@ -290,7 +297,7 @@ def test_scope_checker_still_rejects_unexpected_and_forbidden_paths():
 def test_r4_ledger_cannot_grant_paths_outside_the_closed_r4_set():
     doc = json.loads((ROOT / "docs/refactor/work_projects/evidence/reporter/r4_facade_ledger.json").read_text(encoding="utf-8"))
     assert doc["schema"] == "agentra.work.reporter.r4_ledger.v1" and doc["base"] == BASE
-    assert doc["expected_moves"] == len(doc["moves"]) == 286  # R-4 14 + R-5 56 + R-6 66 + R-7 128 + R-8 22
+    assert doc["expected_moves"] == len(doc["moves"]) == 313  # R-4 14 + R-5 56 + R-6 66 + R-7 128 + R-8 22 + R-9 27
     assert {m["path"] for m in doc["moves"]} == R4_FACADE_FILES
     assert {m["r4_owner"] for m in doc["moves"]} == R4_OWNER_FILES
     pairs = {(m["path"], m["r4_owner"]) for m in doc["moves"]}
@@ -331,7 +338,10 @@ def test_r4_ledger_cannot_grant_paths_outside_the_closed_r4_set():
                      ("libs/reporting/trade_bundle_assembly.py", "libs/agents/reporter/read_models/trade_bundle_assembly_r8_bodies_01.py"),
                      ("libs/reporting/trade_explain.py", "libs/agents/reporter/narrative/trade_explain_r8_bodies_01.py"),
                      ("libs/reporting/trade_lifecycle_builder.py", "libs/agents/reporter/read_models/trade_lifecycle_builder_r8_bodies_01.py"),
-                     ("libs/reporting/trade_read_model.py", "libs/agents/reporter/read_models/trade_read_model_r8_bodies_01.py")}
+                     ("libs/reporting/trade_read_model.py", "libs/agents/reporter/read_models/trade_read_model_r8_bodies_01.py"),
+                     ("libs/reporting/intraday_trade_reports.py", "libs/agents/reporter/read_models/intraday_trade_reports_r9_bodies_01.py"),
+                     ("libs/reporting/symbol_read_model.py", "libs/agents/reporter/read_models/symbol_read_model_r9_bodies_01.py"),
+                     ("libs/reporting/trade_report_common.py", "libs/agents/reporter/narrative/trade_report_common_r9_bodies_01.py")}
 
 
 @pytest.mark.parametrize("facade", sorted(DECOMPOSED))

@@ -23,3 +23,14 @@
 - BLOCKERS: 47 RETAIN_FACADE + 21 NEEDS_AUTHORITY rows (see triage JSON); controlled_mock_lane_report ownership (Work); shared T3 (Work, F-R7-01).
 - NEXT_READY: (1) C1-D read-only I/O characterization for RETAIN_FACADE rows with temp-dir parity fixtures; (2) C3 producer/consumer/DTO map + offline byte fixtures; (3) C4 trade_report/ subtree classification; (4) controlled_mock_lane_report consumer evidence for Work.
 - PATCH_NOTES: NOT_PUBLISHED (proposal only). BUDGET: UNKNOWN.
+
+## R8-002 — C4 inventory + R-9 moves (START_SHA 523dd9ac227a33eb9e5aa9bed82957e4111c5d9b)
+- C4: scripts/refactor/work_reporter_inventory.py -> r8_file_inventory.json, all 500 libs/reporting files: RESEARCH_EVALUATION 236, SHARED_CONTRACT 108 (earlier-pass parts pinned by R3/T1/T2 ledgers, incl. trade_report/**), OPS_SCHEDULER 42, EXTERNAL_AUTHORITY 39, REPORTER_RETAINED 30, REPORTER_FACADE 23, REPORTER_CANONICAL 21, BLOCKED_WITH_PROOF 1 (controlled_mock_lane_report; decision input CONTROLLED_MOCK_LANE_REPORT_DECISION_INPUT.md).
+- R-9: 27 pure bodies (default filter, no --only) from intraday_trade_reports (12), trade_report_common (9), symbol_read_model (6; truth-token bodies stay). MOVES total 313. LOC after:
+ 1576 libs/reporting/intraday_trade_reports.py
+  100 libs/reporting/trade_report_common.py
+  285 libs/reporting/symbol_read_model.py
+ 1961 total
+
+- TESTS: proof suite 1608 PASS (313 moves); seed/scope + p152 + T1/T2 + consumers 1098 PASS / 0 FAIL. Closed set R9_FACADE_FILES/R9_OWNER_FILES; ledger test pins 313.
+- NEXT_READY: (1) C1-D temp-dir characterization of RETAIN_FACADE rows; (2) C3 offline byte fixtures for markdown/JSON renderers incl. CRLF; (3) C6 read-only Strategist inventory once Reporter safe scope exhausted.

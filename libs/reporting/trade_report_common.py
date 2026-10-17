@@ -2,6 +2,18 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import Any, Dict, List
+import sys as _r3_sys
+from libs.agents.reporter.narrative.trade_report_common_r9_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    list_text_r4_impl,
+    listify_r4_impl,
+    dedupe_list_r4_impl,
+    compact_named_rows_r4_impl,
+    compact_scalar_dict_r4_impl,
+    merge_missing_values_r4_impl,
+    is_empty_placeholder_r4_impl,
+    fmt_pct_r4_impl,
+    fmt_price_r4_impl,
+)
 
 
 def utc_now_iso() -> str:
@@ -34,109 +46,31 @@ def report_clip(value: Any, *, max_len: int = 400) -> str:
 
 
 def list_text(values: Any, *, limit: int = 6, max_len: int = 220) -> List[str]:
-    if not isinstance(values, list):
-        return []
-    out: List[str] = []
-    for value in values:
-        text = clip_text(value, max_len=max_len)
-        if not text:
-            continue
-        out.append(text)
-        if len(out) >= max(1, int(limit)):
-            break
-    return out
+    return list_text_r4_impl(values, limit=limit, max_len=max_len, facade=_r3_sys.modules[__name__])
 
 
 def listify(values: Any, *, max_items: int = 6, max_len: int = 240) -> List[str]:
-    out: List[str] = []
-    if not isinstance(values, list):
-        return out
-    for value in values:
-        text = report_clip(value, max_len=max_len)
-        if text:
-            out.append(text)
-        if len(out) >= max_items:
-            break
-    return out
+    return listify_r4_impl(values, max_items=max_items, max_len=max_len, facade=_r3_sys.modules[__name__])
 
 
 def dedupe_list(values: List[str], *, max_items: int = 12, max_len: int = 260) -> List[str]:
-    out: List[str] = []
-    seen: set[str] = set()
-    for value in values:
-        text = report_clip(value, max_len=max_len)
-        if not text or text in seen:
-            continue
-        out.append(text)
-        seen.add(text)
-        if len(out) >= max_items:
-            break
-    return out
+    return dedupe_list_r4_impl(values, max_items=max_items, max_len=max_len, facade=_r3_sys.modules[__name__])
 
 
 def compact_named_rows(values: Any, *, max_items: int = 3) -> List[Dict[str, Any]]:
-    if not isinstance(values, list):
-        return []
-    out: List[Dict[str, Any]] = []
-    for value in values:
-        if len(out) >= max(1, int(max_items)):
-            break
-        if not isinstance(value, dict):
-            continue
-        row = {
-            "rank": value.get("rank"),
-            "symbol": report_clip(value.get("symbol"), max_len=24),
-            "score_total": value.get("score_total"),
-            "risk_score": value.get("risk_score"),
-            "confidence": value.get("confidence"),
-            "why": report_clip(value.get("why"), max_len=180),
-        }
-        row = {key: item for key, item in row.items() if item not in ("", None, [])}
-        if row.get("symbol"):
-            out.append(row)
-    return out
+    return compact_named_rows_r4_impl(values, max_items=max_items, facade=_r3_sys.modules[__name__])
 
 
 def compact_scalar_dict(values: Any, *, max_items: int = 8, max_len: int = 160) -> Dict[str, Any]:
-    if not isinstance(values, dict):
-        return {}
-    out: Dict[str, Any] = {}
-    for key, value in values.items():
-        if len(out) >= max(1, int(max_items)):
-            break
-        if isinstance(value, (int, float, bool)) or value is None:
-            out[str(key)] = value
-            continue
-        text = report_clip(value, max_len=max_len)
-        if text:
-            out[str(key)] = text
-    return out
+    return compact_scalar_dict_r4_impl(values, max_items=max_items, max_len=max_len, facade=_r3_sys.modules[__name__])
 
 
 def merge_missing_values(base: Dict[str, Any], fallback: Dict[str, Any]) -> Dict[str, Any]:
-    out = dict(base or {})
-    for key, value in dict(fallback or {}).items():
-        if key not in out or out.get(key) in (None, "", [], {}):
-            out[key] = value
-    return out
+    return merge_missing_values_r4_impl(base, fallback, facade=_r3_sys.modules[__name__])
 
 
 def is_empty_placeholder(value: Any) -> bool:
-    if value is None:
-        return True
-    if isinstance(value, bool):
-        return value is False
-    if isinstance(value, (int, float)):
-        return value == 0
-    if isinstance(value, str):
-        return not value.strip()
-    if isinstance(value, list):
-        return len(value) == 0
-    if isinstance(value, dict):
-        if not value:
-            return True
-        return all(is_empty_placeholder(item) for item in value.values())
-    return False
+    return is_empty_placeholder_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def format_pct(value: Any) -> str:
@@ -159,16 +93,8 @@ def format_exit_label(value: Any) -> str:
 
 
 def fmt_pct(value: Any) -> str:
-    try:
-        number = float(value)
-    except Exception:
-        return "-"
-    return f"{number * 100.0:.2f}%"
+    return fmt_pct_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def fmt_price(value: Any) -> str:
-    try:
-        number = float(value)
-    except Exception:
-        return "-"
-    return f"{number:.2f}"
+    return fmt_price_r4_impl(value, facade=_r3_sys.modules[__name__])

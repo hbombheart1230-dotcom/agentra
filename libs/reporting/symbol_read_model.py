@@ -9,6 +9,15 @@ from typing import Any, Dict, List
 
 from libs.reporting.llm_artifacts import symbol_artifact_paths
 from libs.reporting.trade_read_model import build_trade_read_model
+import sys as _r3_sys
+from libs.agents.reporter.read_models.symbol_read_model_r9_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _get_dominant_r4_impl,
+    _is_unknown_quality_field_r4_impl,
+    _safe_float_r4_impl,
+    _date_from_trade_id_r4_impl,
+    _empty_symbol_read_model_r4_impl,
+    _aggregate_symbol_trades_r4_impl,
+)
 
 
 def _safe_div(num: float, den: float, default: float = 0.0) -> float:
@@ -18,24 +27,11 @@ def _safe_div(num: float, den: float, default: float = 0.0) -> float:
 
 
 def _get_dominant(items: List[str], exclude: str = "unknown") -> str:
-    valid_items = [str(x).strip() for x in items if str(x).strip() and str(x).strip().lower() != exclude]
-    if not valid_items:
-        return exclude
-    counter = Counter(valid_items)
-    if not counter:
-        return exclude
-    return counter.most_common(1)[0][0]
+    return _get_dominant_r4_impl(items, exclude, facade=_r3_sys.modules[__name__])
 
 
 def _is_unknown_quality_field(field_name: str, value: Any) -> bool:
-    text = str(value or "").strip().lower()
-    if not text or text == "unknown":
-        return True
-    # Raw lifecycle-only sourcing is still a sparse evidence state for the
-    # cumulative symbol model, so keep counting it as incomplete quality.
-    if field_name == "data_source" and text == "lifecycle_bundle":
-        return True
-    return False
+    return _is_unknown_quality_field_r4_impl(field_name, value, facade=_r3_sys.modules[__name__])
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
@@ -49,21 +45,11 @@ def _read_json(path: Path) -> Dict[str, Any]:
 
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
-    try:
-        if value is None or value == "":
-            return default
-        return float(value)
-    except Exception:
-        return default
+    return _safe_float_r4_impl(value, default, facade=_r3_sys.modules[__name__])
 
 
 def _date_from_trade_id(value: Any) -> str:
-    text = str(value or "").strip()
-    match = re.search(r"TRD_(\d{8})_", text)
-    if not match:
-        return ""
-    raw = match.group(1)
-    return f"{raw[:4]}-{raw[4:6]}-{raw[6:8]}"
+    return _date_from_trade_id_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _derive_symbol_read_model_from_memory(reports_root: Path, symbol: str) -> Dict[str, Any]:
@@ -292,127 +278,8 @@ def build_symbol_read_model(trades_root: str, symbol: str, *, persisted_only: bo
 
 
 def _empty_symbol_read_model(symbol: str) -> Dict[str, Any]:
-    return {
-        "symbol": symbol,
-        "trade_count": 0,
-        "closed_trade_count": 0,
-        "win_count": 0,
-        "loss_count": 0,
-        "win_rate": 0.0,
-        "total_pnl": 0.0,
-        "avg_pnl": 0.0,
-        "avg_pnl_pct": 0.0,
-        "avg_hold_duration_sec": 0.0,
-        "last_trade_date": "",
-        "last_status": "",
-        "dominant_playbook": "unknown",
-        "dominant_entry_reason": "unknown",
-        "dominant_exit_reason": "unknown",
-        "dominant_monitor_blocker": "unknown",
-        "recent_success_pattern": [],
-        "repeated_failure_pattern": [],
-        "data_quality": {
-            "unknown_fields_ratio": 0.0
-        }
-    }
+    return _empty_symbol_read_model_r4_impl(symbol, facade=_r3_sys.modules[__name__])
 
 
 def _aggregate_symbol_trades(symbol: str, trades: List[Dict[str, Any]]) -> Dict[str, Any]:
-    trade_count = len(trades)
-    
-    playbooks = []
-    entry_reasons = []
-    exit_reasons = []
-    blockers = []
-    
-    closed_trade_count = 0
-    win_count = 0
-    loss_count = 0
-    total_pnl = 0.0
-    total_pnl_pct = 0.0
-    total_hold_sec = 0
-    last_trade_date = ""
-    
-    success_patterns_counter = Counter()
-    failure_patterns_counter = Counter()
-    
-    total_fields_checked = 0
-    unknown_fields_count = 0
-
-    fields_to_check = ["playbook", "entry_reason", "exit_reason", "primary_blocker_if_no_buy", "execution_label", "data_source"]
-
-    for t in trades:
-        # Collect for dominant calculation
-        playbooks.append(t.get("playbook"))
-        entry_reasons.append(t.get("entry_reason"))
-        exit_reasons.append(t.get("exit_reason"))
-        blockers.append(t.get("primary_blocker_if_no_buy"))
-
-        # Data quality tracking
-        for f in fields_to_check:
-            total_fields_checked += 1
-            if _is_unknown_quality_field(f, t.get(f)):
-                unknown_fields_count += 1
-
-        pnl = float(t.get("pnl") or 0.0)
-        pnl_pct = float(t.get("pnl_pct") or 0.0)
-        
-        # Execution labeling or presence of exit reason indicates a closed trade or a fully blocked cycle.
-        # We count it as closed if it had an entry and an exit, or if pnl is non-zero.
-        is_closed = str(t.get("exit_reason") or "unknown").lower() != "unknown" or pnl != 0.0
-        
-        if is_closed:
-            closed_trade_count += 1
-            total_pnl += pnl
-            total_pnl_pct += pnl_pct
-            total_hold_sec += int(t.get("hold_duration_sec") or 0)
-            
-            if pnl > 0:
-                win_count += 1
-                pattern = f"{t.get('playbook')}|{t.get('entry_reason')}|{t.get('exit_reason')}"
-                success_patterns_counter[pattern] += 1
-            elif pnl < 0:
-                loss_count += 1
-                failure_patterns_counter[("exit_reason", str(t.get("exit_reason")))] += 1
-        
-        blocker = str(t.get("primary_blocker_if_no_buy") or "unknown")
-        if blocker.lower() != "unknown":
-            failure_patterns_counter[("blocker", blocker)] += 1
-        candidate_trade_date = str(t.get("trade_date") or t.get("date") or _date_from_trade_id(t.get("trade_id")) or "").strip()
-        if candidate_trade_date and candidate_trade_date > last_trade_date:
-            last_trade_date = candidate_trade_date
-
-    # Format success patterns (Top 3)
-    recent_success_pattern = []
-    for pat, count in success_patterns_counter.most_common(3):
-        pb, ent, ext = pat.split("|")
-        recent_success_pattern.append({"playbook": pb, "entry_reason": ent, "exit_reason": ext, "count": count})
-
-    # Format failure patterns (Top 3)
-    repeated_failure_pattern = []
-    for (ptype, pval), count in failure_patterns_counter.most_common(3):
-        repeated_failure_pattern.append({"type": ptype, "value": pval, "count": count})
-
-    return {
-        "symbol": symbol,
-        "trade_count": trade_count,
-        "closed_trade_count": closed_trade_count,
-        "win_count": win_count,
-        "loss_count": loss_count,
-        "win_rate": _safe_div(float(win_count), float(win_count + loss_count)),
-        "total_pnl": float(total_pnl),
-        "avg_pnl": _safe_div(total_pnl, float(closed_trade_count)),
-        "avg_pnl_pct": _safe_div(total_pnl_pct, float(closed_trade_count)),
-        "avg_hold_duration_sec": _safe_div(float(total_hold_sec), float(closed_trade_count)),
-        "last_trade_date": last_trade_date,
-        "last_status": "",
-        "dominant_playbook": _get_dominant(playbooks),
-        "dominant_entry_reason": _get_dominant(entry_reasons),
-        "dominant_exit_reason": _get_dominant(exit_reasons),
-        "dominant_monitor_blocker": _get_dominant(blockers),
-        "recent_success_pattern": recent_success_pattern,
-        "repeated_failure_pattern": repeated_failure_pattern,
-        "data_quality": {
-            "unknown_fields_ratio": _safe_div(float(unknown_fields_count), float(total_fields_checked))
-        }
-    }
+    return _aggregate_symbol_trades_r4_impl(symbol, trades, facade=_r3_sys.modules[__name__])
