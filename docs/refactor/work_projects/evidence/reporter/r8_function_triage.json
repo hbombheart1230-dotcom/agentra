@@ -143,7 +143,8 @@
     "tests/test_p157_third_pass_t1_extraction_gates.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "module identity is a contract (passes its own module as facade to parts)"
+   "next_action": "module identity is a contract (passes its own module as facade to parts)",
+   "r10_class": "MODULE_IDENTITY"
   },
   {
    "legacy_path": "libs/reporting/trade_report_ai_compact_input.py",
@@ -158,7 +159,8 @@
     "tests/test_p157_third_pass_t1_extraction_gates.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "module identity is a contract (passes its own module as facade to parts)"
+   "next_action": "module identity is a contract (passes its own module as facade to parts)",
+   "r10_class": "MODULE_IDENTITY"
   },
   {
    "legacy_path": "libs/reporting/trade_read_model.py",
@@ -218,7 +220,8 @@
     "tests/test_operator_ui_data_access_phase2.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_read_model.py",
@@ -236,7 +239,8 @@
     "tests/test_operator_ui_data_access_phase2.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_read_model.py",
@@ -259,7 +263,8 @@
     "tests/test_operator_ui_data_access_phase2.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_read_model.py",
@@ -286,7 +291,8 @@
     "tests/test_p157_third_pass_t1_extraction_gates.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "module identity is a contract (passes its own module as facade to parts)"
+   "next_action": "module identity is a contract (passes its own module as facade to parts)",
+   "r10_class": "MODULE_IDENTITY"
   },
   {
    "legacy_path": "libs/reporting/trade_memory_surface.py",
@@ -305,7 +311,8 @@
     "libs/reporting/trade_memory_application_surface.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_memory_surface.py",
@@ -366,7 +373,8 @@
     "tests/test_trade_memory_surface.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "module identity is a contract (passes its own module as facade to parts)"
+   "next_action": "module identity is a contract (passes its own module as facade to parts)",
+   "r10_class": "MODULE_IDENTITY"
   },
   {
    "legacy_path": "libs/reporting/trade_memory_application_surface.py",
@@ -385,7 +393,8 @@
     "libs/reporting/trade_memory_surface.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_explain.py",
@@ -408,7 +417,8 @@
     "libs/reporting/operator_visibility.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_explain.py",
@@ -452,7 +462,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_explain.py",
@@ -465,7 +476,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_explain.py",
@@ -507,7 +519,8 @@
     "tests/test_offhours_full_trace_bundle.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "WRITER"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",
@@ -522,7 +535,8 @@
     "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "CLOCK_LOG_ENV"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",
@@ -601,7 +615,8 @@
     "tests/test_trade_bundle_assembly.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_bundle_assembly.py",
@@ -739,7 +754,8 @@
     "libs/reporting/live_execution_bundle_runner.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
@@ -755,7 +771,8 @@
     "libs/reporting/live_execution_bundle_runner.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
@@ -768,7 +785,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
@@ -813,7 +831,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -860,7 +879,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -883,7 +903,8 @@
     "libs/reporting/closeout_residual_positions.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -897,7 +918,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -925,7 +947,8 @@
     "tests/test_single_trade_report.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/single_trade_report.py",
@@ -989,7 +1012,8 @@
     "libs/reporting/operator_visibility.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/reporter_analysis.py",
@@ -1028,7 +1052,8 @@
     "libs/reporting/closeout_residual_positions.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/reporter_analysis.py",
@@ -1085,7 +1110,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/entry_blocker_read_model.py",
@@ -1108,7 +1134,8 @@
     "libs/reporting/closeout_residual_positions.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/entry_blocker_read_model.py",
@@ -1128,7 +1155,8 @@
     "tests/test_entry_blocker_read_model.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/entry_blocker_read_model.py",
@@ -1147,7 +1175,8 @@
     "tests/test_entry_blocker_read_model.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1169,7 +1198,8 @@
     "libs/reporting/closeout_residual_positions.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1188,7 +1218,8 @@
     "scripts/research/run_post_exit_shadow_recap.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "CLOCK_LOG_ENV"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1203,7 +1234,8 @@
     "tests/test_post_exit_shadow_recap.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "CLOCK_LOG_ENV"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1218,7 +1250,8 @@
     "tests/test_post_exit_shadow_recap.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1272,7 +1305,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "redefinition: effective last definition is the facade behavior; dead first def kept for ABI/history"
+   "next_action": "redefinition: effective last definition is the facade behavior; dead first def kept for ABI/history",
+   "r10_class": "REDEFINITION"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1283,7 +1317,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "redefinition: effective last definition is the facade behavior; dead first def kept for ABI/history"
+   "next_action": "redefinition: effective last definition is the facade behavior; dead first def kept for ABI/history",
+   "r10_class": "REDEFINITION"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1299,7 +1334,8 @@
     "libs/reporting/evaluation/canonical/adapters/q9_horizon_exit_adapter.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "WRITER"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1316,7 +1352,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
@@ -1335,7 +1372,9 @@
     "tests/test_post_exit_shadow_recap.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "WRITER",
+   "r10_note": "observed: writes into the temp data tree during R10-A characterization (read-only claim refuted)"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1358,7 +1397,8 @@
     "libs/reporting/closeout_residual_positions.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1381,7 +1421,8 @@
     "libs/reporting/operator_visibility.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1395,7 +1436,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1409,7 +1451,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1454,7 +1497,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1467,7 +1511,8 @@
    "module_identity": false,
    "callers": [],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/symbol_trade_report.py",
@@ -1553,7 +1598,8 @@
     "tests/test_run_phase5_validation_bundle.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "WRITER"
   },
   {
    "legacy_path": "libs/reporting/agent_pipeline_trace.py",
@@ -1576,7 +1622,8 @@
     "libs/reporting/phase_runtime_health.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/agent_pipeline_trace.py",
@@ -1599,7 +1646,8 @@
     "libs/reporting/entry_blocker_read_model.py"
    ],
    "disposition": "RETAIN_FACADE",
-   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move"
+   "next_action": "real read/write/time/log call: needs temp-dir parity fixture before any move",
+   "r10_class": "READ_ONLY"
   },
   {
    "legacy_path": "libs/reporting/agent_pipeline_trace.py",

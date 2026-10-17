@@ -1,0 +1,429 @@
+{
+ "schema": "agentra.work.reporter.r10a_coverage.v1",
+ "base": "d773709ba2f70471fad9badba4f92400f7818319",
+ "rows": [
+  {
+   "legacy_path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "fallback_report",
+   "r10_class": "MODULE_IDENTITY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_report_ai_compact_input.py",
+   "name": "compact_story_input_for_llm",
+   "r10_class": "MODULE_IDENTITY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "load_trade_report_detail_payloads",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_callback_reader_fixture_base_equals_head",
+   "reason": "hand-written meta fixtures (full/partial/broken/missing/empty); read_json = module-level single_trade_report._read_json from each tree (production caller passes an equivalent local reader)",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "load_operator_brief_detail_payloads",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_callback_reader_fixture_base_equals_head",
+   "reason": "hand-written meta fixtures (full/partial/broken/missing/empty); read_json = module-level single_trade_report._read_json from each tree (production caller passes an equivalent local reader)",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "load_trade_report_payloads",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_callback_reader_fixture_base_equals_head",
+   "reason": "hand-written meta fixtures (full/partial/broken/missing/empty); read_json = module-level single_trade_report._read_json from each tree (production caller passes an equivalent local reader)",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_read_model.py",
+   "name": "build_trade_read_model",
+   "r10_class": "MODULE_IDENTITY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_memory_surface.py",
+   "name": "_load_json_artifact",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_memory_surface.py",
+   "name": "build_trade_report_memory_surface",
+   "r10_class": "MODULE_IDENTITY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_load_json_artifact",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "_iter_jsonl",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "build_trade_explain_output_path_metadata",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "_report_inventory",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_explain.py",
+   "name": "generate_trade_explain_report",
+   "r10_class": "WRITER",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "_broker_fill_lookup_enabled",
+   "r10_class": "CLOCK_LOG_ENV",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_bundle_assembly.py",
+   "name": "build_live_run_bundle",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_read_json_if_exists",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_load_existing_open_lifecycle_candidates",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/trade_lifecycle_builder.py",
+   "name": "_add_existing_open_lifecycle_candidate",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_load_json_dict",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_build_canonical_context",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_read_json",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "_matching_trade_dirs",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/single_trade_report.py",
+   "name": "build_single_trade_report_id",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "_iter_jsonl",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "_read_json",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/reporter_analysis.py",
+   "name": "_canonical_reports_root",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "_read_json",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "load_entry_blocker_rows",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/entry_blocker_read_model.py",
+   "name": "build_entry_blocker_day_summary",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_read_json",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "resolve_post_exit_state_path",
+   "r10_class": "CLOCK_LOG_ENV",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_post_exit_shadow_needs_fresh_minutes",
+   "r10_class": "CLOCK_LOG_ENV",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "opening_rank1_eod_fallback_row",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "render_post_exit_shadow_trade_recap_md",
+   "r10_class": "REDEFINITION",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "plus effective-last-definition AST test",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "render_post_exit_shadow_daily_recap_md",
+   "r10_class": "REDEFINITION",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "plus effective-last-definition AST test",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "write_post_exit_shadow_recap_outputs",
+   "r10_class": "WRITER",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "_refresh_trade_summary_from_recap",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/post_exit_shadow_recap.py",
+   "name": "generate_post_exit_shadow_recap",
+   "r10_class": "WRITER",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_read_json",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_iter_jsonl",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_iter_trade_lifecycles",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_iter_trade_lifecycles_for_day",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_extract_trade_artifact_snapshot",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "_build_history_index",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/symbol_trade_report.py",
+   "name": "generate_symbol_trade_report",
+   "r10_class": "WRITER",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_side_effect_function_base_equals_head_by_observation",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_iter_jsonl",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  },
+  {
+   "legacy_path": "libs/reporting/agent_pipeline_trace.py",
+   "name": "_read_json",
+   "r10_class": "READ_ONLY",
+   "coverage": "COVERED",
+   "test": "tests/test_work_reporter_r10_retained_io_contracts.py::test_retained_read_only_function_base_equals_head",
+   "reason": "",
+   "relocation": "NOT AUTHORIZED (needs narrow Work decision)"
+  }
+ ]
+}
