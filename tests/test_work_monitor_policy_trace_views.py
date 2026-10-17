@@ -42,10 +42,10 @@ def test_m005_one_cohesive_owner_three_views_no_decision_authority():
     source = (ROOT / owner_path).read_text(encoding="utf-8")
     assert len(source.splitlines()) <= 350
     tree = ast.parse(source)
-    assert {n.name for n in tree.body if isinstance(n, ast.FunctionDef)} == set(R.NAMES)
+    assert {n.name for n in tree.body if isinstance(n, ast.FunctionDef)} == set(R.NAMES) | {"annotate_entry_policy_fields", "annotate_entry_minute_metrics"}
     assert not any(isinstance(n, ast.Import) for n in tree.body)
     assert {n.module for n in tree.body if isinstance(n, ast.ImportFrom)} == {"typing", "__future__"}
-    assert {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name) and n.value.id == "facade"} == {"monitor_policy_adjustment_inputs", "summarize_monitor_policy_deltas", "_build_monitor_effective_policy_trace"}
+    assert {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name) and n.value.id == "facade"} == {"monitor_policy_adjustment_inputs", "summarize_monitor_policy_deltas", "_build_monitor_effective_policy_trace", "build_monitor_commander_memory_application_trace"}
 
 
 @pytest.mark.parametrize("row", FROZEN["records"], ids=lambda r: r["id"])

@@ -20,6 +20,11 @@ WHOLE_MOVES = {
 
 # Explicit function sets only; no wildcard facade or generic shim following.
 BODY_MOVES = {
+    "libs/runtime/monitor/entry_candidate_annotation.py": {
+        "owner": "libs/agents/monitor/projections/policy_trace_views.py",
+        "typing": ("Any", "Dict", "List"),
+        "functions": {"annotate_entry_policy_fields": (), "annotate_entry_minute_metrics": ()},
+    },
     "libs/runtime/monitor_strategy_frame.py": {
         "owner": "libs/agents/monitor/projections/policy_trace_views.py",
         "typing": ("Any", "Dict", "List"),
