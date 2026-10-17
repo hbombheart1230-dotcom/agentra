@@ -1,5 +1,10 @@
 # WORK — P1.5 Architect, Technical Lead, Reviewer and Integrator (Corrected)
 
+## 2026-10-17 Monitor CP-007 correction — Work owns unblocking, Codex may do M9 safe audit
+
+Monitor current GitHub HEAD efdab64f33b34be6ab26fd8edb9aba9ec4ebd479 (refresh), last runtime 800841f229606c419dae67b0d6f794b9238676e9. 14 whole-module moves and 20 named moves are real intermediate work, not independent proof the entire Monitor role is complete. Labels such as SAFETY_LOCK are conservative classifications, **not a detected incident**. Review actual retained 59 modules and significant 302 locked symbol entries, with precise consumer/effect/AST basis, and accept or challenge Codex's per-symbol classification. [M9 continuation](08_CODEX_MONITOR_M9_CONTINUATION.md) allows read-only review and offline parity without changing trade policy. Continue Work-owned I1-I5 shared T3/T4 repair on separate isolated candidate **now**; old current tests have 5 RED. Codex should not be told to stop all Monitor-safe work awaiting a shared patch, and must not be reassigned to Reporter/Runner. Neither agent should manufacture pointless work to stay busy. P1.5 main merge remains forbidden.
+
+
 ## Reporter R10 queue handoff (2026-10-17; supersedes R7-as-current summaries)
 
 Reporter remote was verified at 3b549d753f3cebbb2f7d843318e38e494bb698a8 (refresh before review); R4-R9 moved **313 bodies / 23 facade paths / 41 owner files**. R8-007 marks STRUCTURAL MOVE EXHAUSTED, not Reporter local-offline-verification exhausted. Read [07_CLAUDE_REPORTER_R10_CONTINUATION.md](07_CLAUDE_REPORTER_R10_CONTINUATION.md). Claude is now explicitly assigned 47 retained I/O function classifications/isolated baseline parity (NO automatic moves), artifact API byte/path consumer fixtures, Python 3.12/CI role-local readiness, and 21 authority-function READ-ONLY boundary maps; continue in coherent batches without review permission per batch.
