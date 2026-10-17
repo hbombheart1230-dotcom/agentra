@@ -200,6 +200,11 @@
    "path": "shared contracts (allowlist, T3, T4-B, CI wiring)",
    "disposition": "PROPOSED_PATCH",
    "reason": "shared_contract_patch_R4.diff verified on isolated Reporter+Monitor combined copy; Work applies"
+  },
+  {
+   "path": "libs/reporting/trade_report_markdown_clean.py, trade_report_ai.py (14 bodies)",
+   "disposition": "MOVE (R-4 facade injection)",
+   "reason": "see REPORTER_R4_FACADE_BODIES.md; remaining bodies are thin delegations or LLM/effect/authority-token functions"
   }
  ]
 }

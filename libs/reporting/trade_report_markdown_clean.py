@@ -246,6 +246,18 @@ from libs.reporting.trade_report.markdown_clean_parts.monitor_artifact_resolutio
     _resolve_entry_monitor_artifact_r3_impl,
     _candidate_cascade_matches_trade_r3_impl,
 )
+from libs.agents.reporter.narrative.markdown_clean_bodies_01 import (  # R-4 owner bodies (facade-injected)
+    _first_report_path_r4_impl,
+    _listify_r4_impl,
+    _has_payload_r4_impl,
+    _merge_preferred_r4_impl,
+    _num_opt_r4_impl,
+    _fmt_signed_pct_r4_impl,
+    _summary_money_r4_impl,
+    _resolve_strategy_refresh_trace_r4_impl,
+    _looks_corrupted_r4_impl,
+    _dedupe_r4_impl,
+)
 
 
 def _same_day_current_result(report: Dict[str, Any]) -> Dict[str, Any]:
@@ -417,11 +429,7 @@ def _build_strategy_horizon_lines(report: Dict[str, Any], *, compact: bool = Fal
 
 
 def _first_report_path(root: Dict[str, Any], paths: Iterable[str]) -> Any:
-    for path in paths:
-        value = _get_report_path(root, path)
-        if value not in (None, "", [], {}):
-            return value
-    return None
+    return _first_report_path_r4_impl(root, paths, facade=_r3_sys.modules[__name__])
 
 
 def _get_report_path(root: Any, path: str) -> Any:
@@ -511,13 +519,7 @@ def _as_dict(value: Any) -> Dict[str, Any]:
 
 
 def _listify(value: Any) -> List[Any]:
-    if value is None:
-        return []
-    if isinstance(value, list):
-        return value
-    if isinstance(value, tuple):
-        return list(value)
-    return [value]
+    return _listify_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _append_unique_text(out: List[str], value: Any, *, max_len: int = 80) -> None:
@@ -636,21 +638,11 @@ def _entry_watch_summary_lines(report: Dict[str, Any], *, require_trade_symbol_m
     return _entry_watch_summary_lines_impl(report, require_trade_symbol_match=require_trade_symbol_match, deps=_markdown_signal_deps())
 
 def _has_payload(value: Any) -> bool:
-    if value is None:
-        return False
-    if isinstance(value, str):
-        return bool(value.strip())
-    if isinstance(value, (list, tuple, set, dict)):
-        return len(value) > 0
-    return True
+    return _has_payload_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _merge_preferred(primary: Dict[str, Any], fallback: Dict[str, Any]) -> Dict[str, Any]:
-    merged = dict(fallback or {})
-    for key, value in (primary or {}).items():
-        if _has_payload(value):
-            merged[key] = value
-    return merged
+    return _merge_preferred_r4_impl(primary, fallback, facade=_r3_sys.modules[__name__])
 
 
 def _resolve_market_context(report: Dict[str, Any]) -> Dict[str, Any]:
@@ -658,12 +650,7 @@ def _resolve_market_context(report: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _num_opt(value: Any) -> Optional[float]:
-    try:
-        if value in (None, ""):
-            return None
-        return float(value)
-    except Exception:
-        return None
+    return _num_opt_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _fmt_price(value: Any) -> str:
@@ -681,11 +668,7 @@ def _fmt_pct(value: Any) -> str:
 
 
 def _fmt_signed_pct(value: Any) -> str:
-    num = _num_opt(value)
-    if num is None:
-        return "-"
-    sign = "+" if num > 0 else ""
-    return f"{sign}{num * 100.0:.2f}%"
+    return _fmt_signed_pct_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _fmt_multiple(value: Any) -> str:
@@ -771,12 +754,7 @@ def _build_post_exit_shadow_summary_lines(report: Dict[str, Any]) -> List[str]:
     )
 
 def _summary_money(value: Any) -> str:
-    num = _num_opt(value)
-    if num is None:
-        return "-"
-    if abs(num) >= 100:
-        return f"{num:,.0f}"
-    return f"{num:,.2f}".rstrip("0").rstrip(".")
+    return _summary_money_r4_impl(value, facade=_r3_sys.modules[__name__])
 
 
 def _summary_decimal(value: Any, digits: int = 3) -> str:
@@ -1087,11 +1065,7 @@ def _append_strategy_output_line(lines: List[str], label: str, text: str) -> Non
 
 
 def _resolve_strategy_refresh_trace(report: Dict[str, Any]) -> Dict[str, Any]:
-    direct = _as_dict(report.get("strategist_refresh_trace"))
-    if direct:
-        return direct
-    output = _resolve_strategist_output_surface(report)
-    return _as_dict(output.get("strategy_refresh_trace"))
+    return _resolve_strategy_refresh_trace_r4_impl(report, facade=_r3_sys.modules[__name__])
 
 
 def _build_strategist_refresh_trace(report: Dict[str, Any]) -> List[str]:
@@ -1303,23 +1277,8 @@ def _monitor_delta_interpretation(rows: List[Any]) -> str:
 
 
 def _looks_corrupted(text: str) -> bool:
-    if not text:
-        return False
-    if "?" in text:
-        return True
-    if any(0xF900 <= ord(ch) <= 0xFAFF for ch in text):
-        return True
-    weird_markers = ["?꾨", "留ㅻ", "媛먯", "鍮꾪", "湲곗", "蹂댁", "吏꾩", "嫄곕", "理쒖", "泥?궛", "??"]
-    return sum(marker in text for marker in weird_markers) >= 2
+    return _looks_corrupted_r4_impl(text, facade=_r3_sys.modules[__name__])
 
 
 def _dedupe(lines: List[str]) -> List[str]:
-    seen = set()
-    out: List[str] = []
-    for line in lines:
-        key = line.strip()
-        if not key or key in seen:
-            continue
-        seen.add(key)
-        out.append(line)
-    return out
+    return _dedupe_r4_impl(lines, facade=_r3_sys.modules[__name__])

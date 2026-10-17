@@ -1,0 +1,44 @@
+diff --git a/tests/test_p159_current_owner_contract_gates.py b/tests/test_p159_current_owner_contract_gates.py
+index f748eff4..f6113ab0 100644
+--- a/tests/test_p159_current_owner_contract_gates.py
++++ b/tests/test_p159_current_owner_contract_gates.py
+@@ -181,8 +181,10 @@ def test_facade_symbol_breadth_did_not_increase_for_converted_owners():
+ 
+ 
+ def test_t3_changed_paths_contain_no_authority_surface():
+-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1", "HEAD"],
+-                                  cwd=ROOT).decode().split(chr(0))
++    # historical T3 window pinned to the role-project runtime BASE (unchanged forbidden list / numbered-body rule);
++    # later Reporter R-4 facade-body work is policed by test_t3_protected_facades_after_base_only_change_by_approved_r4 below.
++    out = subprocess.check_output(["git", "diff", "--name-only", "-z", "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1",
++                                   "d773709ba2f70471fad9badba4f92400f7818319"], cwd=ROOT).decode().split(chr(0))
+     forbidden = ("libs/execution/", "libs/broker/", "libs/supervisor/", "libs/risk/", "libs/llm/",
+                  "graphs/nodes/execute_from_packet.py", "graphs/nodes/decide_trade.py",
+                  "graphs/nodes/update_state_after_execution.py", "libs/runtime/controlled_mock_lanes/",
+@@ -193,6 +195,26 @@ def test_t3_changed_paths_contain_no_authority_surface():
+         assert not re.search(r"bodies_0\d\.py$", p), f"numbered body touched: {p}"
+ 
+ 
++R4_APPROVED_AFTER_BASE = {"libs/reporting/trade_report_ai.py", "libs/reporting/trade_report_markdown_clean.py",
++                          "libs/agents/reporter/narrative/markdown_clean_bodies_01.py",
++                          "libs/agents/reporter/narrative/report_ai_bodies_01.py"}
++
++
++def test_t3_protected_facades_after_base_only_change_by_approved_r4():
++    out = subprocess.check_output(["git", "diff", "--name-only", "-z", "d773709ba2f70471fad9badba4f92400f7818319", "HEAD"],
++                                  cwd=ROOT).decode().split(chr(0))
++    forbidden = ("libs/execution/", "libs/broker/", "libs/supervisor/", "libs/risk/", "libs/llm/",
++                 "graphs/nodes/execute_from_packet.py", "graphs/nodes/decide_trade.py",
++                 "graphs/nodes/update_state_after_execution.py", "libs/runtime/controlled_mock_lanes/",
++                 "libs/reporting/trade_report_ai.py", "libs/reporting/trade_report_markdown_clean.py",
++                 "libs/reporting/trade_story_pipeline.py")
++    for p in [x for x in out if x]:
++        if p in R4_APPROVED_AFTER_BASE:
++            continue  # exact R-4 pairs; body equivalence/late binding proven by tests/test_work_reporter_r4_facade_bodies.py
++        assert not p.startswith(forbidden), f"protected surface touched after BASE: {p}"
++        assert not re.search(r"bodies_0\d\.py$", p), f"numbered body touched after BASE: {p}"
++
++
+ # ---- T3-0.1: real-object payload / alias tests for the converted records -------------------------------------------
+ import copy  # noqa: E402
+ import types  # noqa: E402

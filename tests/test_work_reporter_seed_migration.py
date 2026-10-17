@@ -197,16 +197,50 @@ def test_target_tree_discipline_and_no_forbidden_surface():
     for sub in REPORTER_PACKAGES:
         assert sorted(p.name for p in (base / sub).glob("*.py")) == \
             sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]
-                   + [f"{o}.py" for d_sub, owners in DECOMPOSED.values() if d_sub == sub for o in owners]), sub
+                   + [f"{o}.py" for d_sub, owners in DECOMPOSED.values() if d_sub == sub for o in owners]
+                   + [Path(o).name for o in sorted(R4_OWNER_FILES) if Path(o).parent.name == sub]), sub
     out = [x for x in subprocess.check_output(["git", "diff", "--name-only", "-z", START, "HEAD"], cwd=ROOT).decode().split(chr(0)) if x]
-    allowed_exact = {f"libs/reporting/{n}.py" for n in [*REGISTRY, *DECOMPOSED]}
+    merged = subprocess.check_output(["git", "rev-list", "--merges", f"{START}..HEAD"], cwd=ROOT).decode().split()
+    violations = _scope_violations(out, merged=bool(merged))
+    assert not violations, violations
+
+
+# R-4 facade-body batch (Issue #11 decision, Option 1): CLOSED, independently defined set of the exact extra paths this
+# batch changes. It is NOT derived from any ledger; the R-4 ledger is checked against it (it cannot grant paths).
+R4_FACADE_FILES = {"libs/reporting/trade_report_markdown_clean.py", "libs/reporting/trade_report_ai.py"}
+R4_OWNER_FILES = {"libs/agents/reporter/narrative/markdown_clean_bodies_01.py",
+                  "libs/agents/reporter/narrative/report_ai_bodies_01.py"}
+R4_SHARED_CONTRACT_FILES = {"tests/test_p152_facade_symbol_ledger.py"}  # authorised facade-contract edit (v1 kept at BASE)
+
+
+def _scope_violations(paths, *, merged=False):
+    allowed_exact = {f"libs/reporting/{n}.py" for n in [*REGISTRY, *DECOMPOSED]} | R4_FACADE_FILES | R4_SHARED_CONTRACT_FILES
     allowed_prefix = ("libs/agents/reporter/", "tests/test_work_reporter_", "tests/fixtures/work_reporter/",
                       "scripts/refactor/work_reporter_", "docs/refactor/work_projects/evidence/reporter/")
-    merged = subprocess.check_output(["git", "rev-list", "--merges", f"{START}..HEAD"], cwd=ROOT).decode().split()
     if merged:  # integration checkout: other lanes/Work also change files; still police every Reporter-surface path
-        out = [p for p in out if p.startswith(("libs/reporting/", "libs/agents/reporter/"))]
-    for p in out:
-        assert p in allowed_exact or p.startswith(allowed_prefix), p
+        paths = [p for p in paths if p.startswith(("libs/reporting/", "libs/agents/reporter/"))]
+    return [p for p in paths if not (p in allowed_exact or p.startswith(allowed_prefix))]
+
+
+def test_scope_checker_still_rejects_unexpected_and_forbidden_paths():
+    bad = ["libs/reporting/trade_read_model.py", "libs/reporting/trade_story_pipeline.py", "tests/test_p152_r3_moved_bodies.py",
+           "tests/p15_agent_tree_allowlist.py", "graphs/nodes/reporter_node.py", "libs/execution/x.py", ".github/workflows/a.yml",
+           "docs/refactor/work_projects/ACTIVATION.md", "docs/refactor/work_projects/evidence/monitor/x.md",
+           "libs/runtime/monitor/cycle_event_payloads.py", "docs/refactor/p1_5_2_facade_symbol_ledger_2026-10-09.json"]
+    assert _scope_violations(bad) == bad
+    assert _scope_violations(["libs/reporting/trade_read_model.py"], merged=True) == ["libs/reporting/trade_read_model.py"]
+    assert _scope_violations(sorted(R4_FACADE_FILES | R4_OWNER_FILES | R4_SHARED_CONTRACT_FILES)) == []
+
+
+def test_r4_ledger_cannot_grant_paths_outside_the_closed_r4_set():
+    doc = json.loads((ROOT / "docs/refactor/work_projects/evidence/reporter/r4_facade_ledger.json").read_text(encoding="utf-8"))
+    assert doc["schema"] == "agentra.work.reporter.r4_ledger.v1" and doc["base"] == BASE
+    assert doc["expected_moves"] == len(doc["moves"]) == 14
+    assert {m["path"] for m in doc["moves"]} == R4_FACADE_FILES
+    assert {m["r4_owner"] for m in doc["moves"]} == R4_OWNER_FILES
+    pairs = {(m["path"], m["r4_owner"]) for m in doc["moves"]}
+    assert pairs == {("libs/reporting/trade_report_markdown_clean.py", "libs/agents/reporter/narrative/markdown_clean_bodies_01.py"),
+                     ("libs/reporting/trade_report_ai.py", "libs/agents/reporter/narrative/report_ai_bodies_01.py")}
 
 
 @pytest.mark.parametrize("facade", sorted(DECOMPOSED))
