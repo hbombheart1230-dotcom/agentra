@@ -1,5 +1,12 @@
 # CLAUDE — Principal Reporter Owner, Continuous Whole-Role Refactoring
 
+## 2026-10-17 R10 RESUME ADDENDUM — latest authority, read before C0-C6
+
+The R7 baseline in the original section below is historical, NOT the live start point. The newly committed source-of-truth for the next batch is [07_CLAUDE_REPORTER_R10_CONTINUATION.md](07_CLAUDE_REPORTER_R10_CONTINUATION.md), beginning at actual Reporter remote SHA (previously 3b549d753f3cebbb2f7d843318e38e494bb698a8). R8/R9 moved 313 bodies total. **SAFE STRUCTURAL EXTRACTOR EXHAUSTION IS NOT THE SAME AS COMPLETION OF REPORTER-LOCAL OFFLINE TEST/CONSUMER WORK.**
+
+Claude shall FIRST run the R10-A..E read-only characterization, 47 retained function coverage, 21 authority-function static ownership evidence, report/API artifact fixture parity, and Python/CI readiness queue. A normal offline test/fixture batch is within current authorization; 47 retained I/O and 21 authority *moves/semantic changes* are NOT authorized. After batch checkpoint, poll Issue #11 and continue. Only when those concrete safe packets are done/blocked with proof may the role park awaiting Work shared T3/CI integration. Work owns integration; Codex remains Monitor. This addendum supersedes older 'no safe moves -> role stop' interpretations and does not grant any new trading/LLM authority.
+
+
 **Mission:** Execute the entire remaining safe Reporter P1.5 role scope, not a single file batch. Continue through recovery commits and checkpoint handoffs without per-batch user prompts.
 **Repository:** hbombheart1230-dotcom/agentra
 **Sole owned implementation branch:** work/reporter-role-20261017
