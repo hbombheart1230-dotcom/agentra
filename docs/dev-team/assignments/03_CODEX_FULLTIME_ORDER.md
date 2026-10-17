@@ -1,5 +1,10 @@
 # CODEX — MONITOR Whole-Role Principal Implementer (Corrected Assignment)
 
+## M9 CONTINUATION — supersedes CP-007 as global stop condition (2026-10-17)
+
+Read [08_CODEX_MONITOR_M9_CONTINUATION.md](08_CODEX_MONITOR_M9_CONTINUATION.md) before re-running M0–M5. Real HEAD observed efdab64f33b34be6ab26fd8edb9aba9ec4ebd479; REFRESH before edit. CP-007 freezes the CURRENT SAFE MOVE inventory (14 exact whole modules, 20 named bodies), not all independent Monitor development opportunities. Resume M9-A exhaustive evidence-based retained-boundary classification, M9-B only proven safe structural batches, M9-C valuable still-NOT_RUN native full mod1 / CI Python3.12 / synthetic persisted-output parity / negative policy gates, M9-D Work shared T3/T4 feedback, M9-E truthful local readiness. Remaining protected symbols are not automatically dangerous; require actual consumer/effect proof before any move. Do not invent work and do not change trade or policy authority. Codex remains Monitor only; Work fixes shared T3/T4. GitHub instructions cannot relaunch a terminated CLI.
+
+
 **AUTHORITATIVE RESPONSIBILITY:** Codex develops Monitor for the entire P1.5 role, continuously and independently of Claude Reporter. Codex is NOT assigned Reporter R7 audit, the shared T3 integrator job, or persistent Runner implementation under this assignment. Those mistaken earlier assignments are superseded by this file and the team charter.
 **Repository:** hbombheart1230-dotcom/agentra
 **Sole owner branch:** work/monitor-role-20261017
