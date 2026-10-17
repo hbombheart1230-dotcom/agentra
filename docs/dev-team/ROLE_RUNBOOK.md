@@ -1,3 +1,5 @@
+> **CURRENT BOOT (2026-10-17):** Paste current commands from [05_LAUNCH_PROMPTS.md](assignments/05_LAUNCH_PROMPTS.md) only; the detailed authority is [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](assignments/11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md). Claude Reporter + independent shared-integrator audit; Codex Monitor then shared integration; GPT architect only when user asks; Work hourly review is DISABLED. Original boot blocks below are historical.
+
 > **ROLE CORRECTION (2026-10-17):** Claude owns Reporter, Codex owns Monitor, Work independently reviews both and coordinates shared T3/T4 and final integration. The authoritative current work orders are docs/dev-team/assignments/00–06. Any older Codex-as-Reporter-auditor/Runner text below is superseded.
 
 # Agentra role boots — single-copy assignments
