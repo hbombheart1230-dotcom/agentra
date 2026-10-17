@@ -257,6 +257,34 @@
       "passed": 13,
       "exit": 0,
       "seconds": 2.219
+    },
+    {
+      "name": "reporter_feedback_read_contracts",
+      "sha": "93943097f5627a423e5150e62b9634d63118a51b",
+      "command": "python -m pytest -q tests/test_work_reporter_r8_read_contracts.py tests/test_work_reporter_r8_read_via_callback_parity.py --tb=short",
+      "passed": 26,
+      "failed": 0,
+      "exit": 0,
+      "seconds": 1.19
+    },
+    {
+      "name": "monitor_m003_targeted",
+      "sha": "ce8703c378cfb171893462750b257012f809187a",
+      "command": "python -m pytest -q tests/test_work_monitor_observation_views.py tests/test_work_monitor_role_contracts.py::test_all_retained_role_owners_and_protected_runtime_stay_byte_identical --tb=short",
+      "passed": 21,
+      "failed": 0,
+      "exit": 0,
+      "seconds": 4.74
+    },
+    {
+      "name": "monitor_wave_b_empty_selection",
+      "sha": "ce8703c378cfb171893462750b257012f809187a",
+      "command": "python -m pytest -q tests/test_p154_wave_b_moved_bodies.py -k intraday_monitor_signals --tb=short",
+      "passed": 0,
+      "deselected": 768,
+      "exit": 5,
+      "seconds": 0.11,
+      "notes": "NO_TESTS_SELECTED_NOT_PASS"
     }
   ],
   "uef_identical_failure_ids": [
@@ -272,7 +300,9 @@
   ],
   "hosted_ci": {
     "reporter_exact_sha_runs": 0,
-    "monitor_exact_sha_runs": 0
+    "monitor_exact_sha_runs": 0,
+    "reporter_r9_exact_sha_runs": 0,
+    "monitor_m2_exact_sha_runs": 0
   },
   "protected_path_diff": "EMPTY for both role HEADs against BASE: graphs,execution,broker,supervisor,risk,llm,kiwoom,controlled_mock_lanes",
   "not_run": [
@@ -291,8 +321,8 @@
   "overall_progress_percent": null,
   "merge_authorized": false,
   "latest_reviewed_sha": {
-    "reporter": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
-    "monitor": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1"
+    "reporter": "93943097f5627a423e5150e62b9634d63118a51b",
+    "monitor": "ce8703c378cfb171893462750b257012f809187a"
   },
   "delta_reviews": [
     {
@@ -335,6 +365,23 @@
       "added_full_blobs": 3,
       "added_named_bodies": 5,
       "method": "STATIC_REVIEW_AND_EXECUTED_TEST"
+    },
+    {
+      "role": "reporter",
+      "sha": "93943097f5627a423e5150e62b9634d63118a51b",
+      "previous": "dd0b378b46dff0c2ecf6699a4b08776fd4412b76",
+      "commits": 2,
+      "files": 6,
+      "runtime_changes": false,
+      "method": "STATIC_REVIEW_AND_EXECUTED_NEW_TESTS"
+    },
+    {
+      "role": "monitor",
+      "sha": "ce8703c378cfb171893462750b257012f809187a",
+      "previous": "a0ea6ff31eaebd90f9414d34fd7c6858b1ab3aa1",
+      "files": 11,
+      "new_moved_functions": 8,
+      "method": "STATIC_REVIEW_AND_EXECUTED_NEW_TESTS"
     }
   ],
   "findings": [
@@ -351,7 +398,22 @@
     {
       "id": "P15-WORK-003",
       "priority": "P2",
-      "state": "OPEN_TRANSITIVE_IO_CHARACTERIZATION"
+      "state": "VERIFIED_THREE_REQUESTED_PATHS_AT_93943097"
+    },
+    {
+      "id": "P15-WORK-004",
+      "priority": "P2",
+      "state": "OPEN_GENERIC_SUCCESS_CASES_AND_TIMESTAMP_NORMALIZATION",
+      "sha": "93943097f5627a423e5150e62b9634d63118a51b",
+      "reproducer": {
+        "daily_index_day_vectors": [
+          "dict:{}",
+          "dict:payload",
+          "str:005930",
+          "None"
+        ],
+        "input_timestamp_plus_one_minute_collapses": true
+      }
     }
   ],
   "additional_shared_mapping": {

@@ -257,6 +257,47 @@ Each packet ends with exact pushed SHA, focused proof, finding ACKs and at
 least two subsequent safe packets where possible. Check the role Issue for
 new comments at checkpoints. A commit is not a reason to stop a live session.
 
+### Third live delta / review-feedback verification
+
+Reporter **93943097f5627a423e5150e62b9634d63118a51b** adds two commits after
+dd0b378: six test/evidence paths, no runtime/ledger change. New read-contract
+selections independently execute **26 PASS, exit0, 1.19s**. R9's 1680 PASS
+and facade guard remain reused production-tree evidence, not fresh test runs.
+**P15-WORK-003 VERIFIED** for the three requested read-callback paths: valid,
+missing/malformed/empty/CRLF/directory inputs, exception/read order and mid-call
+patch behavior. Controlled-lane ownership and paired proposed-note ACKs are
+recorded. Worker identifies the second Windows UEF5_1 failure as
+test_freeze_manifest_stays_11_of_11 with LF→CRLF raw-hash differences; this is
+developer Windows evidence, not independently reproduced/waived by Work.
+
+**P15-WORK-004 / P2 OPEN:** the new broad read harness still cannot claim
+successful-path exact-byte coverage of all22 moves. Work executed two probes:
+build_daily_trade_index's generated day arguments are {}, a payload dict,
+"005930", None, none matching its populated fixture day "2026-10-17";
+two different serialized input_timestamp values one minute apart normalize
+to the same text. The regex sees the entire serialized result, not only
+generated clock fields. Repair with explicit valid populated success cases
+and observable branch/read assertions; freeze the original facade clock and
+compare exact raw bytes (or narrowly typed generated-field exclusions plus
+negative input-timestamp mutation). This is test-strength/evidence debt,
+not an observed production regression. Other safe work continues.
+
+Monitor **ce8703c378cfb171893462750b257012f809187a** after a0ea6ff:
+11-file CP-003 delta, eight empty builders in173-line signal_evidence_defaults.
+Work reviewed exact whole facade/owner templates and independently executed
+new observation-view tests plus the retained-source/authority test:
+**21 PASS, exit0, 4.74s**. Includes normal/-O child negatives, retained
+guard/setup/scoring AST, closed capability traps, 28 callback kwargs/result
+identity and fresh nested containers. Prior273 and170/5 results remain
+a0ea6ff evidence, not fresh whole-role green. A Wave B name-filter probe
+selected ZERO cases (768 deselected, exit5); it is explicitly NOT a PASS.
+
+GitHub feedback is direct: Reporter review6232295543 verifies003 and queues
+004; Monitor review6232295660 accepts bounded CP-003 evidence. Work did not
+require a user courier or a per-batch approval. Continue Reporter producer/
+DTO/API and exact byte fixtures; Monitor M-004 then retained-policy/consumer
+and role freeze proof. No new Strategist/Scanner implementation activation.
+
 ### Claude / Reporter — Issue #11, own branch only
 
 **R8-A READY: evidence-based remainder triage and safe deterministic bodies.**
@@ -318,8 +359,8 @@ audit Reporter or build a persistent runner under this assignment.
 
 ## Session exit / daily digest contract
 
-Last reviewed heads: Reporter dd0b378 (1680 role tests and guard), Monitor
-a0ea6ff (273 own-role tests, impacted consumers and shared failures). Next review is
+Last reviewed heads: Reporter 9394309 (26 new tests; runtime proof reused from
+dd0b378), Monitor ce8703c (21 new tests; prior273 bound to a0ea6ff). Next review is
 only the diff since those heads plus changed contracts/consumers and new
 Issue ACKs. Commits/checkpoints show work during this review window; they do
 not prove a process will continue after session exit. No scheduler was created
