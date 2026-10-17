@@ -1,3 +1,5 @@
+> **ROLE CORRECTION (2026-10-17):** Claude owns Reporter, Codex owns Monitor, Work independently reviews both and coordinates shared T3/T4 and final integration. The authoritative current work orders are docs/dev-team/assignments/00–06. Any older Codex-as-Reporter-auditor/Runner text below is superseded.
+
 # Agentra AI Development Team — control plane
 
 **Status:** PROPOSED / documentation only, 2026-10-17 (KST)  
@@ -32,10 +34,10 @@ Run Agentra P1.5 as a genuine multi-contributor engineering program, not a chat-
 
 - **Human operator:** objectives, budget, risk envelope, final production and main merge approval; daily check only by default.
 - **Architect (ChatGPT):** design, acceptance tests, conflict resolution, stop/go decisions; cannot claim 24/7 execution.
-- **Reviewer (ChatGPT Work when invoked):** review exact SHA, observe diffs/tests/logs, record findings with evidence, propose repairs. Not a per-batch permission gate.
+- **Reviewer (ChatGPT Work when invoked):** independent SHA reviews of BOTH Reporter (Claude) and Monitor (Codex), shared T3/T4 design/integration; no per-batch gate.
 - **Claude — Reporter owner:** Reporter implementation, focused tests, commits, checkpoint evidence, review fixes; no Monitor branch edits.
 - **Claude or another allocated worker — Monitor owner:** same for Monitor in its isolated branch; never issues orders from Monitor.
-- **Codex — independent audit / shared-contract integrator:** checks claimed proofs, reproduces regressions, handles explicitly assigned integration changes. Do not ask it to rubber-stamp an owner claim.
+- **Codex — Monitor whole-role implementer:** sole writer on work/monitor-role-20261017; Work independently reviews Codex's Monitor code. Shared-contract integration is coordinated by Work.
 - **Future owners:** Strategist, Scanner, Commander, Supervisor, Executor—separately scoped before activation. Supervisor/Executor are higher-risk; no order/guard semantic changes under a refactor-only authorization.
 
 ## Authority order
