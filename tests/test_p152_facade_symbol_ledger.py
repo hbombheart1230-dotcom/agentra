@@ -53,4 +53,4 @@ def test_current_head_facade_ledger_v2_covers_every_definition_and_records_every
                 seen.add(key)
                 assert (ROOT / e["r4_owner"]).is_file()
         assert all(e["disposition"] not in ("DEAD", "COMPLETE") for e in row["symbols"])
-    assert seen == set(moves)
+    assert seen == {k for k in moves if k[0] in {r['path'] for r in v1['files']}}  # other R-4/R-5 facades: r4 proof test

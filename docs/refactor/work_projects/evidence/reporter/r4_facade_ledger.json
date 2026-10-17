@@ -71,6 +71,286 @@
    "path": "libs/reporting/trade_report_ai.py",
    "name": "_trade_report_language_meta",
    "r4_owner": "libs/agents/reporter/narrative/report_ai_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "build_shared_facts",
+   "r4_owner": "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "attach_backward_compatible_aliases",
+   "r4_owner": "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "fallback_section_seeds",
+   "r4_owner": "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "append_news_scanner_choice_details",
+   "r4_owner": "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "build_monitor_snapshot",
+   "r4_owner": "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "enrich_market_context_for_fallback",
+   "r4_owner": "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "enrich_scanner_reason_for_fallback",
+   "r4_owner": "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "merge_trade_report_candidate",
+   "r4_owner": "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_deterministic.py",
+   "name": "build_deterministic_trade_report",
+   "r4_owner": "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_compact_input.py",
+   "name": "compact_section_seed_for_llm",
+   "r4_owner": "libs/agents/reporter/read_models/compact_input_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_report_ai_compact_input.py",
+   "name": "sparse_story_input_for_llm",
+   "r4_owner": "libs/agents/reporter/read_models/compact_input_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "_section_value_quality",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "prefer_richer_trade_report_section",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "normalize_trade_report_section",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "normalize_trade_report_detail_sections",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "normalize_trade_report_detail_meta",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "collect_strategist_feedback_inputs",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "build_trade_report_recent_feedback_pack",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "load_trade_report_recent_feedback_pack",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "load_time_bucketed_trade_report_recent_feedback_pack",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "build_linked_trade_report_card",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "build_unlinked_trade_report_card",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "normalize_operator_brief_detail_payload",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "build_operator_brief_detail_view",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "extract_labeled_bullet",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "extract_labeled_int",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "parse_canonical_filter_bullets",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "normalize_canonical_monitor_snapshot",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "brief_headline_text",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "brief_headline_matches_symbol",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "brief_collect_top_headlines",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/trade_read_model.py",
+   "name": "brief_top_numeric_drivers",
+   "r4_owner": "libs/agents/reporter/read_models/read_model_bodies_02.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_join_text",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_strategy_anchor_artifacts",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_strategist_input_artifact_paths",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_resolve_strategist_input_artifact",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_symbol_pattern_memory",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_packet_symbol_memory",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_read_model_recent_trade_count",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_read_model_symbol_pattern_count",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_read_model_symbols",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_read_model_daily_summary_present",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_nested_memory_sources",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_resolve_day",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_reporter_feedback_strength",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_resolve_reporter_feedback_packet",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_surface.py",
+   "name": "_build_fallback_memory_context",
+   "r4_owner": "libs/agents/reporter/read_models/memory_surface_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_first_non_empty_text",
+   "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_normalize_adjustments",
+   "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_scanner_bias_carrier",
+   "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_walk_dicts",
+   "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_is_application_trace",
+   "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_application_trace_score",
+   "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_select_application_trace",
+   "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "_select_symbol_adjustment",
+   "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
+  },
+  {
+   "path": "libs/reporting/trade_memory_application_surface.py",
+   "name": "build_trade_memory_application_surface",
+   "r4_owner": "libs/agents/reporter/read_models/memory_application_bodies_01.py"
   }
  ],
  "skipped": {
@@ -454,7 +734,51 @@
    "build_trade_summary_report": "already thin delegation",
    "render_trade_summary_markdown": "short",
    "render_trade_summary_markdown_with_evaluation": "excluded by caller"
+  },
+  "libs/reporting/trade_report_ai_deterministic.py": {
+   "failure_report": "effect/authority token: retry",
+   "fallback_report": "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
+  },
+  "libs/reporting/trade_report_ai_compact_input.py": {
+   "as_dict": "short",
+   "compact_story_input_for_llm": "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
+  },
+  "libs/reporting/trade_read_model.py": {
+   "_pick_first_existing": "short",
+   "trade_report_artifact_payload": "short",
+   "trade_report_section_summary": "short",
+   "trade_report_section_bullets": "short",
+   "build_trade_report_detail_view": "effect/authority token: open",
+   "build_recent_trade_feedback_summary_input": "already thin delegation",
+   "build_trade_report_recent_feedback_view": "already thin delegation",
+   "load_reporter_snippet_for_run": "effect/authority token: Path",
+   "load_trade_report_detail_payloads": "effect/authority token: Path",
+   "load_operator_brief_detail_payloads": "effect/authority token: Path",
+   "brief_norm_symbol_text": "already thin delegation",
+   "load_trade_report_payloads": "effect/authority token: Path",
+   "build_trade_read_model": "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
+  },
+  "libs/reporting/trade_memory_surface.py": {
+   "_dict": "short",
+   "_list": "short",
+   "_text": "short",
+   "_safe_int": "short",
+   "_safe_float": "short",
+   "_first_dict": "short",
+   "_load_json_artifact": "effect/authority token: Path",
+   "_resolve_reports_root": "short",
+   "_build_symbol_memory_from_persisted": "effect/authority token: Path",
+   "build_trade_report_memory_surface": "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
+  },
+  "libs/reporting/trade_memory_application_surface.py": {
+   "_dict": "short",
+   "_list": "short",
+   "_text": "short",
+   "_safe_float": "short",
+   "_load_json_artifact": "effect/authority token: Path",
+   "_first_non_empty_dict": "short",
+   "_monitor_bias_carrier": "already thin delegation"
   }
  },
- "expected_moves": 14
+ "expected_moves": 70
 }

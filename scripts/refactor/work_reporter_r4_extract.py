@@ -131,6 +131,8 @@ def main():
             reason = "already thin delegation"
         elif fn.end_lineno - fn.lineno + 1 < ns.min_lines:
             reason = "short"
+        elif "__name__" in seg or "_r3_sys" in seg:
+            reason = "module-identity dependent (__name__/_r3_sys would bind to the owner module)"
         elif EFFECT_TOKENS.search(seg):
             reason = "effect/authority token: " + EFFECT_TOKENS.search(seg).group(0)
         else:

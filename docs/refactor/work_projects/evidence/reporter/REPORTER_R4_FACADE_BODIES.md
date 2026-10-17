@@ -18,3 +18,15 @@ Reproduction (isolated clone): committing `libs/reporting/stray_r4_probe.py` -> 
 
 ## Shared-gate effect
 `tests/test_p159_current_owner_contract_gates.py::test_t3_changed_paths_contain_no_authority_surface` diffs ede47324..HEAD and forbids any change to the two facades and any `bodies_0N.py` -> FAIL on this branch (not authorised to edit). Proposed patch `shared_contract_patch_R4_T3.diff`: pin that historical window to BASE d773709 (unchanged rules) + new current-head test allowing only the closed R-4 set after BASE. Verified in an isolated clone: 15/15 PASS with R-4; an unapproved edit to `trade_story_pipeline.py` -> FAIL.
+
+## R-5 — T1-pinned read models / deterministic helpers (56 more bodies, same proof)
+| Module | Bodies | LOC before -> after | Owner(s) |
+|---|---|---|---|
+| trade_report_ai_deterministic.py | 9 | 749 -> see wc in final report | read_models/report_deterministic_bodies_01.py |
+| trade_report_ai_compact_input.py | 2 | 418 -> | read_models/compact_input_bodies_01.py |
+| trade_read_model.py | 21 | 1356 -> | read_models/read_model_bodies_01.py, _02.py |
+| trade_memory_surface.py | 15 | 393 -> | read_models/memory_surface_bodies_01.py |
+| trade_memory_application_surface.py | 9 | 392 -> | read_models/memory_application_bodies_01.py |
+T1 gates evaluate historical T1_END snapshots, so they are unaffected (PASS). Extractor now also skips module-identity dependent bodies (`__name__` / `_r3_sys` would bind to the owner): a first attempt without that rule broke 70+ consumer tests (memory parts received the owner module as facade) and was reverted before commit.
+Focused run after fix: R-4/R-5 proof 360+ PASS; 1722 PASS / 11 FAIL = scope-negative example + v2 ledger (both test maintenance, fixed: 74 PASS) + T3 window (shared, patch v2 verified 15/15 in isolated clone) + 8 `test_uef2a_forward_policy_contract` failures that are identical on d17d33c/aaeb8a0 (pre-existing, unrelated).
+Closed scope set extended explicitly by R5_FACADE_FILES/R5_OWNER_FILES; ledger test pins 70 moves and the exact 8 facade-owner pairs; negative example now `single_trade_report.py`.

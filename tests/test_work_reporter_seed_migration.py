@@ -211,6 +211,18 @@ R4_FACADE_FILES = {"libs/reporting/trade_report_markdown_clean.py", "libs/report
 R4_OWNER_FILES = {"libs/agents/reporter/narrative/markdown_clean_bodies_01.py",
                   "libs/agents/reporter/narrative/report_ai_bodies_01.py"}
 R4_SHARED_CONTRACT_FILES = {"tests/test_p152_facade_symbol_ledger.py"}  # authorised facade-contract edit (v1 kept at BASE)
+# R-5 batch (T1-pinned read models / deterministic helpers; same facade-injection proof): CLOSED explicit set
+R5_FACADE_FILES = {"libs/reporting/trade_report_ai_deterministic.py", "libs/reporting/trade_report_ai_compact_input.py",
+                   "libs/reporting/trade_read_model.py", "libs/reporting/trade_memory_surface.py",
+                   "libs/reporting/trade_memory_application_surface.py"}
+R5_OWNER_FILES = {"libs/agents/reporter/read_models/report_deterministic_bodies_01.py",
+                  "libs/agents/reporter/read_models/compact_input_bodies_01.py",
+                  "libs/agents/reporter/read_models/read_model_bodies_01.py",
+                  "libs/agents/reporter/read_models/read_model_bodies_02.py",
+                  "libs/agents/reporter/read_models/memory_surface_bodies_01.py",
+                  "libs/agents/reporter/read_models/memory_application_bodies_01.py"}
+R4_FACADE_FILES = R4_FACADE_FILES | R5_FACADE_FILES
+R4_OWNER_FILES = R4_OWNER_FILES | R5_OWNER_FILES
 
 
 def _scope_violations(paths, *, merged=False):
@@ -223,24 +235,30 @@ def _scope_violations(paths, *, merged=False):
 
 
 def test_scope_checker_still_rejects_unexpected_and_forbidden_paths():
-    bad = ["libs/reporting/trade_read_model.py", "libs/reporting/trade_story_pipeline.py", "tests/test_p152_r3_moved_bodies.py",
+    bad = ["libs/reporting/single_trade_report.py", "libs/reporting/trade_story_pipeline.py", "tests/test_p152_r3_moved_bodies.py",
            "tests/p15_agent_tree_allowlist.py", "graphs/nodes/reporter_node.py", "libs/execution/x.py", ".github/workflows/a.yml",
            "docs/refactor/work_projects/ACTIVATION.md", "docs/refactor/work_projects/evidence/monitor/x.md",
            "libs/runtime/monitor/cycle_event_payloads.py", "docs/refactor/p1_5_2_facade_symbol_ledger_2026-10-09.json"]
     assert _scope_violations(bad) == bad
-    assert _scope_violations(["libs/reporting/trade_read_model.py"], merged=True) == ["libs/reporting/trade_read_model.py"]
+    assert _scope_violations(["libs/reporting/single_trade_report.py"], merged=True) == ["libs/reporting/single_trade_report.py"]
     assert _scope_violations(sorted(R4_FACADE_FILES | R4_OWNER_FILES | R4_SHARED_CONTRACT_FILES)) == []
 
 
 def test_r4_ledger_cannot_grant_paths_outside_the_closed_r4_set():
     doc = json.loads((ROOT / "docs/refactor/work_projects/evidence/reporter/r4_facade_ledger.json").read_text(encoding="utf-8"))
     assert doc["schema"] == "agentra.work.reporter.r4_ledger.v1" and doc["base"] == BASE
-    assert doc["expected_moves"] == len(doc["moves"]) == 14
+    assert doc["expected_moves"] == len(doc["moves"]) == 70  # R-4 14 + R-5 56
     assert {m["path"] for m in doc["moves"]} == R4_FACADE_FILES
     assert {m["r4_owner"] for m in doc["moves"]} == R4_OWNER_FILES
     pairs = {(m["path"], m["r4_owner"]) for m in doc["moves"]}
     assert pairs == {("libs/reporting/trade_report_markdown_clean.py", "libs/agents/reporter/narrative/markdown_clean_bodies_01.py"),
-                     ("libs/reporting/trade_report_ai.py", "libs/agents/reporter/narrative/report_ai_bodies_01.py")}
+                     ("libs/reporting/trade_report_ai.py", "libs/agents/reporter/narrative/report_ai_bodies_01.py"),
+                     ("libs/reporting/trade_report_ai_deterministic.py", "libs/agents/reporter/read_models/report_deterministic_bodies_01.py"),
+                     ("libs/reporting/trade_report_ai_compact_input.py", "libs/agents/reporter/read_models/compact_input_bodies_01.py"),
+                     ("libs/reporting/trade_read_model.py", "libs/agents/reporter/read_models/read_model_bodies_01.py"),
+                     ("libs/reporting/trade_read_model.py", "libs/agents/reporter/read_models/read_model_bodies_02.py"),
+                     ("libs/reporting/trade_memory_surface.py", "libs/agents/reporter/read_models/memory_surface_bodies_01.py"),
+                     ("libs/reporting/trade_memory_application_surface.py", "libs/agents/reporter/read_models/memory_application_bodies_01.py")}
 
 
 @pytest.mark.parametrize("facade", sorted(DECOMPOSED))
