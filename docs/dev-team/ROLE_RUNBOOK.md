@@ -43,3 +43,10 @@ Use connected GitHub repository hbombheart1230-dotcom/agentra and design branch 
 ## Real automation bootstrap — separate task after documents
 
 Assign a separate infrastructure worker to implement a *non-trading* runner with (1) authenticated persistent sessions for each role, (2) bounded tokens/credits/CPU, (3) role issue comment polling and idempotent acknowledgements, (4) crash resume, (5) safety stop flags, (6) isolated test outputs, (7) daily digest. Do not put API keys in repo or allow issue comments to execute arbitrary code. Test in mock-only mode. Get explicit operator approval before enabling any unattended runner.
+
+## Canonical role issue IDs
+
+Reporter = https://github.com/hbombheart1230-dotcom/agentra/issues/11
+Monitor = https://github.com/hbombheart1230-dotcom/agentra/issues/12
+
+Use issue comments for asynchronous cross-branch reviewer findings; do not mistake a documentation-only design PR for executable orchestration.
