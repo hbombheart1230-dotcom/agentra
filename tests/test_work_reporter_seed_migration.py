@@ -38,6 +38,9 @@ REGISTRY = {
     "strategist_quant_context_report": ("narrative", "7068f16019b1c7c171cc35652bfc9748296abbd2"),
     "trade_report_post_exit_shadow": ("narrative", "040c582f99654778312216fe7ffbc1e6ccd3ea9c"),
 }
+# named decomposition (Phase B): legacy facade module -> owner modules in libs/agents/reporter/read_models (bodies verbatim)
+DECOMPOSED = {"trade_report_symbol_metadata": ["symbol_metadata_fallbacks", "symbol_metadata_text", "symbol_metadata_sources",
+                                               "symbol_metadata_name_inference", "symbol_metadata_resolution"]}
 REPORTER_PACKAGES = {"narrative", "read_models"}  # exact, versioned by this project (shared allowlist is Work-owned)
 OLD, NEW = "libs.reporting.{}", "libs.agents.reporter.{}.{}"
 
@@ -146,14 +149,14 @@ def test_fixture_provenance_manifest_matches_the_fixture_bytes():
     raw = FIX.read_bytes()
     assert hashlib.sha256(raw).hexdigest() == prov["gz_sha256"]
     assert hashlib.sha256(gzip.decompress(raw)).hexdigest() == prov["payload_sha256"]
-    assert len(json.loads(gzip.decompress(raw))["cases"]) == prov["cases"] == 1463
+    assert len(json.loads(gzip.decompress(raw))["cases"]) == prov["cases"] == 1919
 
 
 def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():
     prov = json.loads(PROV.read_text(encoding="utf-8"))
     cases = json.loads(gzip.decompress(FIX.read_bytes()))["cases"]
     cap = _cap()
-    assert {c["mod"] for c in cases} == {OLD.format(n) for n in REGISTRY} == set(cap.MODULES)
+    assert {c["mod"] for c in cases} == {OLD.format(n) for n in [*REGISTRY, *DECOMPOSED]} == set(cap.MODULES)
     got = cap.compute()  # drives the LEGACY import path of every module
     if f"{sys.version_info[0]}.{sys.version_info[1]}" == prov["produced_on_python"]:
         assert _dump(got) == _dump(cases)  # recorded interpreter: byte-exact against the frozen fixture
@@ -191,10 +194,37 @@ def test_target_tree_discipline_and_no_forbidden_surface():
     assert {p.name for p in base.iterdir() if p.is_dir() and p.name != "__pycache__"} == REPORTER_PACKAGES
     for sub in REPORTER_PACKAGES:
         assert sorted(p.name for p in (base / sub).glob("*.py")) == \
-            sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]), sub
+            sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]
+                   + ([f"{o}.py" for owners in DECOMPOSED.values() for o in owners] if sub == "read_models" else [])), sub
     out = [x for x in subprocess.check_output(["git", "diff", "--name-only", "-z", START, "HEAD"], cwd=ROOT).decode().split(chr(0)) if x]
-    allowed_exact = {f"libs/reporting/{n}.py" for n in REGISTRY}
+    allowed_exact = {f"libs/reporting/{n}.py" for n in [*REGISTRY, *DECOMPOSED]}
     allowed_prefix = ("libs/agents/reporter/", "tests/test_work_reporter_", "tests/fixtures/work_reporter/",
                       "scripts/refactor/work_reporter_", "docs/refactor/work_projects/evidence/reporter/")
     for p in out:
         assert p in allowed_exact or p.startswith(allowed_prefix), p
+
+
+@pytest.mark.parametrize("facade", sorted(DECOMPOSED))
+def test_decomposed_owners_keep_every_base_definition_ast_identical_and_the_facade_reexports_the_same_objects(facade):
+    import ast
+    base_src = subprocess.check_output(["git", "show", f"{BASE}:libs/reporting/{facade}.py"], cwd=ROOT).decode("utf-8-sig")
+    keep = (ast.FunctionDef, ast.AnnAssign)
+    nm = lambda n: n.name if isinstance(n, ast.FunctionDef) else n.target.id  # noqa: E731
+    base = {nm(n): ast.dump(n) for n in ast.parse(base_src).body if isinstance(n, keep)}
+    owners, found = {}, {}
+    for o in DECOMPOSED[facade]:
+        path = ROOT / "libs/agents/reporter/read_models" / f"{o}.py"
+        text = path.read_text(encoding="utf-8")
+        assert len(text.splitlines()) <= 350
+        mod = importlib.import_module(f"libs.agents.reporter.read_models.{o}")
+        for n in ast.parse(text).body:
+            if isinstance(n, keep):
+                assert nm(n) not in found, nm(n)  # exactly one body
+                found[nm(n)] = ast.dump(n)
+                owners[nm(n)] = mod
+    assert found == base  # same names, same AST (signatures, defaults, bodies)
+    legacy = importlib.import_module(f"libs.reporting.{facade}")
+    legacy_tree = ast.parse((ROOT / f"libs/reporting/{facade}.py").read_text(encoding="utf-8"))
+    assert not [n for n in legacy_tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef, ast.Assign, ast.AnnAssign))]
+    for name, mod in owners.items():
+        assert getattr(legacy, name) is getattr(mod, name), name

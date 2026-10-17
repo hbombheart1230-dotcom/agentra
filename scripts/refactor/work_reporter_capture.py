@@ -15,6 +15,7 @@ import copy
 import importlib
 import inspect
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -31,13 +32,24 @@ MODULES = [
     "libs.reporting.trade_pnl_estimate",
     "libs.reporting.strategist_quant_context_report",
     "libs.reporting.trade_report_post_exit_shadow",
+    "libs.reporting.trade_report_symbol_metadata",
 ]
+BASE = "d773709ba2f70471fad9badba4f92400f7818319"
+# decomposed facades: functions are taken from the named owner package instead of the facade module itself
+DECOMPOSED = {"libs.reporting.trade_report_symbol_metadata": "libs.agents.reporter.read_models.symbol_metadata_"}
 MAX_KEYS = 160
 
 
-def _literal_keys(path: Path) -> list[str]:
+def _base_source(modname: str) -> str:
+    """Literal-key source is always the pinned BASE blob, so keys are identical before and after any relocation/decomposition."""
+    root = Path(__file__).resolve().parents[2]
+    rel = modname.replace(".", "/") + ".py"
+    return subprocess.check_output(["git", "show", f"{BASE}:{rel}"], cwd=root).decode("utf-8-sig")
+
+
+def _literal_keys(source: str) -> list[str]:
     keys: list[str] = []
-    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8-sig"))):
+    for node in ast.walk(ast.parse(source)):
         if isinstance(node, ast.Constant) and isinstance(node.value, str) and 0 < len(node.value) <= 48 and "\n" not in node.value:
             if node.value not in keys:
                 keys.append(node.value)
@@ -95,9 +107,8 @@ def compute() -> list[dict]:
     rows = []
     for name in MODULES:
         mod = importlib.import_module(name)
-        src = Path(inspect.getsourcefile(mod))
-        payloads = _payloads(_literal_keys(src))
-        fns = [(k, v) for k, v in vars(mod).items() if inspect.isfunction(v) and v.__module__ == mod.__name__]
+        payloads = _payloads(_literal_keys(_base_source(name)))
+        fns = [(k, v) for k, v in vars(mod).items() if inspect.isfunction(v) and (v.__module__ == mod.__name__ or v.__module__.startswith(DECOMPOSED.get(name, "~")))]
         for fname, fn in sorted(fns):
             for args, kwargs in _calls(fn, payloads):
                 a, k = copy.deepcopy(args), copy.deepcopy(kwargs)

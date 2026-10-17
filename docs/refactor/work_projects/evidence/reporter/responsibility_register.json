@@ -90,8 +90,9 @@
   },
   {
    "path": "libs/reporting/trade_report_symbol_metadata.py",
-   "disposition": "KEEP_WITH_REASON",
-   "reason": "pure, but 377 LOC > 350 owner policy; a byte-identical move cannot comply -> needs a separately named decomposition batch with semantic parity (move was attempted and reverted, blob unchanged)"
+   "disposition": "DECOMPOSED",
+   "reason": "Phase B named decomposition: 5 verbatim-body owners in libs/agents/reporter/read_models/symbol_metadata_*.py (<=97 LOC each); legacy path is an import-only facade re-exporting the same function/dict objects; all 14 BASE definitions AST-identical; consumers trade_report_markdown_clean + broker_closed_trade_reconciler unchanged",
+   "proof": "AST equality vs BASE, one-body, facade object identity, BASE-first replay (456 cases), consumers 1810 PASS"
   },
   {
    "path": "libs/reporting/trade_symbol_context.py",
@@ -134,9 +135,10 @@
    "reason": "protected shared path; read-only consumer checks only (reporter node/service tests pass)"
   },
   {
-   "path": "libs/reporting/evaluation/**, baseline_*/**, short_alpha_discriminator/**, alpha_research_board/**, opening_rank1_shadow/**, scheduled_intelligence/**, quant_*, strategist_llm_evaluation.py, strategist_quant_context_report.py, kiwoom_day_trade_match_estimate.py, trade_report_post_exit_shadow.py",
+   "path": "libs/reporting/evaluation/**, baseline_*/**, short_alpha_discriminator/**, alpha_research_board/**, opening_rank1_shadow/**, scheduled_intelligence/**, quant_*, strategist_llm_evaluation.py, kiwoom_day_trade_match_estimate.py",
    "disposition": "OUT_OF_ROLE",
-   "reason": "Research/UEF/Q-series/evaluation; excluded by ACTIVATION"
+   "reason": "Research/UEF/Q-series/evaluation; excluded by ACTIVATION",
+   "correction": "R-2 Phase A: strategist_quant_context_report and trade_report_post_exit_shadow removed from this row; real consumers are trade_report_markdown_clean (+own tests) -> MOVE entries below"
   },
   {
    "path": "libs/reporting/daily_report_*, metrics_report*, operator_visibility*, operator_period_summary*, phase_runtime_health.py, report_source_helpers.py",
