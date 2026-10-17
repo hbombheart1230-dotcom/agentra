@@ -1,3 +1,5 @@
+> **ROLE CORRECTION (2026-10-17):** Claude owns Reporter, Codex owns Monitor, Work independently reviews both and coordinates shared T3/T4 and final integration. The authoritative current work orders are docs/dev-team/assignments/00–06. Any older Codex-as-Reporter-auditor/Runner text below is superseded.
+
 # Continuous review, feedback, acceptance, and integration protocol
 
 ## 1. GitHub shared review inbox
@@ -62,7 +64,7 @@ At the end of each checkpoint:
 
 ## 4. Audits and shared-contract integration
 
-**Independent Codex audit** is required at a meaningful major milestone and ROLE_READY; reviewer selection must not turn it into an approval-per-file bottleneck. Codex compares code, fixtures, negative-path coverage and authority boundaries against scoped design at exact SHA.
+**Independent Work audit** of both Claude Reporter and Codex Monitor is required at substantial milestones and ROLE_READY. Work compares code, fixtures, negative-path coverage and authority boundaries against scoped design at exact SHA; additional independent reviewer may be separately allocated, but Codex is not a Reporter auditor under the active assignment.
 
 Shared-tests/CI that touch multiple role branches go into a **separate integration change queue**, not arbitrary edits on the active other branch. Role owners may modify only tests explicitly authorized for their scope while preserving pinned historical rules. Integration maintainer cherry-picks only verified, dependency-safe changes and resolves overlap after all roles are ready.
 
@@ -71,7 +73,7 @@ Final integration gate:
 2. Rebase/merge only into dedicated integration branch; record all source SHAs.
 3. Run contract/negative/trading-authority leak tests and representative full regression in mock conditions.
 4. Inspect UI patch notes, temporary artifact hygiene, changed-path manifest, rollback.
-5. Independent Codex audit + operator authorization.
+5. Independent Work audit of both role branches + operator authorization.
 6. Only then merge integration result into main. Never auto-enable live trading.
 
 ## 5. Daily operator digest (single update)
