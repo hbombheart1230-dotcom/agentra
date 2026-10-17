@@ -1,23 +1,24 @@
 {
  "date": "2026-10-17",
- "version": "Reporter Role R-9",
- "title": "Reporter whole-role: 313 facade bodies moved (23 facade paths, 41 owner files) with the R3 facade-injection pattern",
+ "version": "Reporter Role R-10",
+ "title": "Reporter whole-role: 313 moved bodies + offline BASE-vs-HEAD contracts for all retained I/O functions",
  "stage": "Architecture and Maintainability",
  "types": [
   "REFACTOR",
   "TESTING",
   "DOCS"
  ],
- "status": "current",
- "summary": "313 pure function bodies from 23 Reporter modules live in 41 libs/agents/reporter owner files (<=350 LOC) behind unchanged facade wrappers (R-4..R-9), on top of 12 relocated modules and 3 decompositions. controlled_mock_lane_report stays at its path as the Reporter presentation/read adapter (Work decision). The earlier T3 v4 proposal is superseded by Work's guard (P15-WORK-001).",
+ "status": "proposal_NOT_PUBLISHED",
+ "summary": "313 pure function bodies (23 facade paths, 41 owner files) moved with the R3 facade-injection pattern (R-4..R-9). R-10 adds offline BASE-vs-HEAD contracts for all 47 retained I/O functions (read/write/clock/identity/redefinition), producer->artifact->API parity, frozen-clock raw-byte parity and a read-only authority map for 22 LLM/broker/truth functions. No I/O or authority function was moved.",
  "details": [
   "controlled_mock_lane_report BLOCKED (operational ledger read, Q10/Q12 lanes); trade_report_symbol_metadata kept (377 LOC > 350).",
   "Shared exact agent-package gates need Work to add reporter: {narrative, read_models}. No report disabled, no LLM/writer/queue change."
  ],
  "impact": "Module location and tests only; no report text, payload or behavior change.",
  "sources": [
-  "docs/refactor/work_projects/evidence/reporter/R8_CHECKPOINTS.md",
-  "docs/refactor/work_projects/evidence/reporter/REPORTER_ROLE_HANDOFF_R7.md",
-  "docs/refactor/work_projects/evidence/reporter/REPORTER_R4_FACADE_BODIES.md"
- ]
+  "docs/refactor/work_projects/evidence/reporter/R10_CHECKPOINTS.md",
+  "docs/refactor/work_projects/evidence/reporter/REPORTER_ROLE_R10_FREEZE.md",
+  "docs/refactor/work_projects/evidence/reporter/R8_CHECKPOINTS.md"
+ ],
+ "ui_source": "apps/api/adapters/patch_notes.py reads docs/trading_agent_patch_notes_detailed_update/patch_notes.json (Work-owned); this entry is NOT_PUBLISHED"
 }
