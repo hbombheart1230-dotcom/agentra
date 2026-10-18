@@ -2,7 +2,9 @@
 
 A new package may appear ONLY by adding an entry here together with the batch's own contract test; the per-batch
 discipline tests compare the actual directory set for equality (no unrestricted subset), so a stray package fails."""
-AGENT_PACKAGES = {"scanner": "V1-052", "strategist": "S1-057"}
+AGENT_PACKAGES = {"scanner": "V1-052", "strategist": "S1-057", "reporter": "R11", "monitor": "M9"}
+REPORTER_PACKAGES = {"narrative": "R11", "read_models": "R11"}
+MONITOR_PACKAGES = {"events": "M9", "projections": "M9"}
 SCANNER_PACKAGES = {"context": "V2-053", "projections": "V3-055", "policy": "V4-056"}
 STRATEGIST_PACKAGES = {"context": "S1-057", "output": "S1-057"}
 

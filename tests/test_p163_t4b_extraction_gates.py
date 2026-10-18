@@ -18,6 +18,10 @@ import importlib
 import json
 import subprocess
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts/refactor"))
+import shared_role_contracts as SHARED
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "c338ba34276566b0b5f6de1e7f556778ec917968"
@@ -88,7 +92,7 @@ class _OutToMonitorOutput(ast.NodeTransformer):
 
 
 def _owner_fn(seg):
-    return _funcs(ast.parse((ROOT / seg["owner"]).read_text(encoding="utf-8-sig")))[seg["owner_function"]]
+    return _funcs(ast.parse(SHARED.source(seg["owner"]).lstrip("\ufeff")))[seg["owner_function"]]
 
 
 def _call_name(call):
@@ -217,7 +221,7 @@ def test_owner_modules_are_small_pure_and_resolve_only_allowed_names():
     mods = sorted({s["owner"] for s in _ledger()["segments"]})
     assert len(mods) >= 10
     for rel in mods:
-        text = (ROOT / rel).read_text(encoding="utf-8-sig")
+        text = SHARED.source(rel).lstrip("\ufeff")
         assert len(text.splitlines()) <= MAX_OWNER_LOC, rel
         for tok in FORBIDDEN_TOKENS:
             assert tok not in text, (rel, tok)

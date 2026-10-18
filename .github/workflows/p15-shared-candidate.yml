@@ -1,0 +1,77 @@
+name: P1.5 Shared Candidate Required Contracts
+on:
+  push:
+    branches:
+      - integration/p15-monitor-shared-20261018
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: p15-shared-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  contracts:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: '3.12'
+            mode: normal
+            flags: ''
+          - os: ubuntu-latest
+            python: '3.12'
+            mode: optimized
+            flags: '--optimized'
+          - os: windows-latest
+            python: '3.13'
+            mode: normal
+            flags: ''
+          - os: windows-latest
+            python: '3.13'
+            mode: optimized
+            flags: '--optimized'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - name: Reporter R8 R10 R11, Monitor M9, all structural T3 T4, authority and mutations
+        id: tests
+        run: python scripts/refactor/shared_candidate_tests.py --suite all ${{ matrix.flags }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: contracts-${{ matrix.os }}-${{ matrix.python }}-${{ matrix.mode }}
+          path: ${{ steps.tests.outputs.evidence }}
+          retention-days: 7
+  api-router-compat:
+    strategy:
+      fail-fast: false
+      matrix:
+        fastapi: ['0.142.2', '0.143.0']
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt fastapi==${{ matrix.fastapi }}
+      - name: Actual GET endpoints and rejected POST PUT mounted endpoints
+        id: tests
+        run: python scripts/refactor/shared_candidate_tests.py --suite api
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-router-${{ matrix.fastapi }}
+          path: ${{ steps.tests.outputs.evidence }}
+          retention-days: 7

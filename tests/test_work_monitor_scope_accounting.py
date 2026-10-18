@@ -72,4 +72,8 @@ def test_m007_generator_source_and_no_workflow_or_trade_authority_changes():
     source = ROOT / "scripts/refactor/work_monitor_scope_accounting.py"
     assert hashlib.sha256(source.read_bytes().replace(b"\r\n", b"\n")).hexdigest() == doc["producer_sha256"]
     import work_monitor_scope_accounting as S
-    assert subprocess.check_output(["git", "diff", "--name-only", doc["program_start"], "--", *S.PROTECTED], cwd=ROOT).strip() == b""
+    import shared_role_contracts as shared
+    # Preserve the Monitor-lane restriction; shared candidate has separately
+    # authorized Reporter/workflow changes, verified against exact role inputs.
+    assert subprocess.check_output(["git", "diff", "--name-only", doc["program_start"], shared.MONITOR, "--", *S.PROTECTED], cwd=ROOT).strip() == b""
+    shared.verify_runtime()

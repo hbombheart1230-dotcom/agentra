@@ -9,3 +9,8 @@
 **Previous cycle:** [Handoff](../work_projects/PRIOR_CYCLE_HANDOFF.md); P15-058/PERF work not repeated. Existing P2/P3 and P1.5 final acceptance remain open.
 **Reports:** existing 00/06/12/18 Asia/Seoul; report does not stop development; no new automation or external controller.
 **Historical CI provenance only:** [P15_FAST_TRACK_WAVE_S_020.md](P15_FAST_TRACK_WAVE_S_020.md), `refactor/p1.5`, MAIN_FROZEN. This preserves historical test links; it is NOT an active task/branch.
+
+**Historical stage-state provenance only:** The pinned acceptance inventory records
+`P1.5.2 OPEN` and `P1.5.3 NOT_AUTHORIZED`. These historical markers preserve the
+original stage checks; they do not reactivate an old work order, replace the
+whole-role activation above, or authorize any stage transition or main merge.

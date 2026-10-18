@@ -52,3 +52,5 @@ def test_combined_agent_tree_is_exactly_the_versioned_allowlist():
     assert AL.actual_dirs(ROOT / "libs/agents") == set(AL.AGENT_PACKAGES)
     assert AL.actual_dirs(ROOT / "libs/agents/scanner") == set(AL.SCANNER_PACKAGES)
     assert AL.actual_dirs(ROOT / "libs/agents/strategist") == set(AL.STRATEGIST_PACKAGES)
+    assert AL.actual_dirs(ROOT / "libs/agents/reporter") == set(AL.REPORTER_PACKAGES)
+    assert AL.actual_dirs(ROOT / "libs/agents/monitor") == set(AL.MONITOR_PACKAGES)

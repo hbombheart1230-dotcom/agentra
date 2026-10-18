@@ -10,6 +10,10 @@ import json
 import re
 import subprocess
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts/refactor"))
+import shared_role_contracts as SHARED
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs/refactor"
@@ -74,6 +78,7 @@ V3_SHIM_ALLOWLIST = {
 
 
 def _follow(module):
+    module = SHARED.follow(module)
     if module not in V3_SHIM_ALLOWLIST:
         return module
     import importlib.util
@@ -181,7 +186,10 @@ def test_facade_symbol_breadth_did_not_increase_for_converted_owners():
 
 
 def test_t3_changed_paths_contain_no_authority_surface():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1", "HEAD"],
+    # Preserve the historical prohibition through the frozen whole-role BASE.
+    # Every later runtime delta must exactly match a pinned role input AND restore its facade AST.
+    SHARED.verify_runtime()
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1", SHARED.BASE],
                                   cwd=ROOT).decode().split(chr(0))
     forbidden = ("libs/execution/", "libs/broker/", "libs/supervisor/", "libs/risk/", "libs/llm/",
                  "graphs/nodes/execute_from_packet.py", "graphs/nodes/decide_trade.py",

@@ -43,8 +43,9 @@ def test_m9_native_entire_variant_inventory_exact_and_offline(tmp_path):
                 "fixture_sha256": hashlib.sha256((fix / "monitor_golden.json.gz").read_bytes()).hexdigest(),
                 "claim": "Synthetic native contract/effect parity; NOT real report/LLM parity."}
     output = Path(os.environ.get("MONITOR_M9_EVIDENCE", str(tmp_path / "m9_full_summary.json")))
-    if not output.is_absolute() or output.is_relative_to(ROOT):
-        raise AssertionError("M9 evidence must be externally isolated")
+    scratch = (ROOT / ".agentra-worktmp").resolve()
+    if not output.is_absolute() or not output.resolve().is_relative_to(scratch):
+        raise AssertionError("M9 evidence must be in verified isolated worktree scratch")
     output.write_text(json.dumps(evidence, separators=(",", ":")), encoding="utf-8")
     assert Path(provenance["module_file"]).resolve().is_relative_to(ROOT)
     assert counts == {"records": 149, "variants": 2879, "effects": 1541}

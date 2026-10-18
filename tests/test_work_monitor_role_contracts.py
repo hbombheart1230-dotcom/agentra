@@ -182,4 +182,7 @@ def test_all_retained_role_owners_and_protected_runtime_stay_byte_identical():
     paths = ["graphs", "apps", "libs/execution", "libs/kiwoom", "libs/llm", "libs/risk", "libs/supervisor",
              "libs/agents/scanner", "libs/agents/strategist", "libs/runtime/scanner", "libs/runtime/strategist",
              "libs/reporting", ".github", "sitecustomize.py", "conftest.py", "tests/fixtures/p1_5_t4b_monitor"]
-    assert subprocess.check_output(["git", "diff", "--name-only", START, "--", *paths], cwd=ROOT).strip() == b""
+    sys.path.insert(0, str(ROOT / "scripts/refactor"))
+    import shared_role_contracts as shared
+    assert subprocess.check_output(["git", "diff", "--name-only", START, shared.MONITOR, "--", *paths], cwd=ROOT).strip() == b""
+    shared.verify_runtime()

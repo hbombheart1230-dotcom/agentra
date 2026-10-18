@@ -3602,3 +3602,7 @@ limitations: docs/evaluation/q12_vnext_crypto_equity_confirmation.md.
 
 ## 2026-10-18 · P1.5 isolated shared candidate
 Monitor retained-boundary checkpoint: 359 retained definitions excluded from additional moves. Static evidence only; shared gates, hosted CI and independent review pending. No deployment or whole-role acceptance.
+
+Shared candidate: strict Reporter 313-body facade restoration, Monitor 14-module/20-body mappings, F1 historical provenance and F2 router discovery implemented. Shared contracts 45 PASS normal/-O; FastAPI 0.143 API 9 PASS. Whole selected matrix: 2865 PASS / 1 FAIL / 24 SKIP; UEF9 failure under investigation, CI and independent review pending. No final acceptance.
+
+Expanded direct negative gates: 75 PASS under -O. UEF9 failure reproduced unchanged on BASE; no waiver. Final test scratch constrained to ignored candidate .agentra-worktmp under sandbox policy 15.
