@@ -1,5 +1,8 @@
 # CLAUDE — Principal Reporter Owner, Continuous Whole-Role Refactoring
 
+> **WORKSPACE RULE 2026-10-18:** Apply [Agentra-only sandbox policy](15_P15_WORKSPACE_SANDBOX_POLICY_20261018.md) at each resumed Claude session. Only actual verified Agentra Reporter or Strategist evidence worktrees writable; other role branches read-only. Use ignored per-session scratch. `acceptEdits` for in-worktree file changes if configured, not `bypassPermissions`. Record exact writable roots/permission mode in checkpoint; no global/full-host privilege.
+
+
 > **GPT R11 DECISION 2026-10-17:** Reporter HEAD `443f90362ad5970a4731685311a45e8e0f6b55e4`; R11 local implementation/test-prevention checkpoint submitted, **not** whole suite green. Claude's next safe packets are (a) independent review of Codex shared integration candidate when an exact SHA exists, and (b) **Strategist S1/S2 EVIDENCE/TESTS ONLY** under [13_STRATEGIST_S1_S2_SCOPED_CHARTER_20261017.md](13_STRATEGIST_S1_S2_SCOPED_CHARTER_20261017.md). S3-S6 source moves are NOT approved. Shared R11-F1/F2 belong to Codex's isolated integration, not Reporter active branch. [F1/F2 design](../integration/R11_SHARED_FAILURES_F1_F2_ARCHITECT_DECISION.md). No automatic Work review or main merge.
 
 
