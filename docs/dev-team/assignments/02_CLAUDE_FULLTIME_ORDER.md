@@ -1,5 +1,8 @@
 # CLAUDE — Principal Reporter Owner, Continuous Whole-Role Refactoring
 
+> **NEW GPT SOURCE CHARTER 2026-10-18:** The earlier “S3–S6 not authorized” restriction remains except for a newly approved **closed eight-helper S5 source lane** documented at [16_CLAUDE_STRATEGIST_SOURCE_SAFE_LANE_20261018.md](16_CLAUDE_STRATEGIST_SOURCE_SAFE_LANE_20261018.md). Existing Claude DEVELOPER may implement only those 8 helper moves in an isolated `work/strategist-role-20261018`; separate Claude AUDITOR independently reviews Codex candidate `95c11cac`. No S3/S4 mass relocation, policy/rank/LLM changes, shared T3/T4 edits or main merge.
+
+
 > **WORKSPACE RULE 2026-10-18:** Apply [Agentra-only sandbox policy](15_P15_WORKSPACE_SANDBOX_POLICY_20261018.md) at each resumed Claude session. Only actual verified Agentra Reporter or Strategist evidence worktrees writable; other role branches read-only. Use ignored per-session scratch. `acceptEdits` for in-worktree file changes if configured, not `bypassPermissions`. Record exact writable roots/permission mode in checkpoint; no global/full-host privilege.
 
 
