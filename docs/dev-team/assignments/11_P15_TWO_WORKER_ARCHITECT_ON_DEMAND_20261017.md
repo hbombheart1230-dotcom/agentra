@@ -1,5 +1,8 @@
 # Agentra P1.5 — GPT Architect on Demand + Claude/Codex Two-Worker Delivery
 
+> **SANDBOX AUTHORITY 2026-10-18:** Every Claude/Codex instruction is now subject to [verified Agentra checkout/worktree/scratch restrictions](15_P15_WORKSPACE_SANDBOX_POLICY_20261018.md). Scope to existing Agentra checkout and verified registered worktrees; no global Windows disk/user-profile write access, no other project, no extra permissions for convenience. Agents verify `git remote`, worktree registry, dirty status and temp isolation before write. This supplements and does not replace role safety policy.
+
+
 > **R11 architecture delta (2026-10-17):** Reporter `443f90362ad5970a4731685311a45e8e0f6b55e4` and Strategist read-only draft `d8b34e669e1c43342eadd80b13ea43aac4bc255b` were inspected. GPT approved only [Strategist S1/S2 evidence and bounded offline tests](13_STRATEGIST_S1_S2_SCOPED_CHARTER_20261017.md), not S3-S6 source refactors. Reporter R11 shared F1/F2 owned by Codex on isolated integration as [architect-designated](../integration/R11_SHARED_FAILURES_F1_F2_ARCHITECT_DECISION.md), Claude independently audits. Reporter full suite still has reported historical/shared 1 FAIL; Linux CI NOT_RUN. Hourly Work automation remains DISABLED.
 
 
