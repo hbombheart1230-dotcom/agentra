@@ -1,5 +1,8 @@
 # GPT Architect Review — Strategist S1/S2 Evidence at 48a1a45d
 
+> **NEW GPT SOURCE CHARTER 2026-10-18:** The earlier “S3–S6 not authorized” restriction remains except for a newly approved **closed eight-helper S5 source lane** documented at [16_CLAUDE_STRATEGIST_SOURCE_SAFE_LANE_20261018.md](16_CLAUDE_STRATEGIST_SOURCE_SAFE_LANE_20261018.md). Existing Claude DEVELOPER may implement only those 8 helper moves in an isolated `work/strategist-role-20261018`; separate Claude AUDITOR independently reviews Codex candidate `95c11cac`. No S3/S4 mass relocation, policy/rank/LLM changes, shared T3/T4 edits or main merge.
+
+
 **Date:** 2026-10-18 KST  
 **ROLE:** GPT, Agentra P1.5 chief architect on-demand  
 **REVIEWED_SHA:** `48a1a45d9c96780eae242888096fc57f2d8f9625`  
