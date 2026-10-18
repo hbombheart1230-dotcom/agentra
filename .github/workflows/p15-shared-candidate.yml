@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - integration/p15-monitor-shared-20261018
+      - work/codex-p15-20261018
   workflow_dispatch:
 permissions:
   contents: read

@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts/refactor"))
 import work_monitor_current_tree as T
+from scripts.refactor.monitor_evidence_ast import evidence_dump
 
 PATH = ROOT / "docs/refactor/work_projects/evidence/monitor/continuous/current_scope.json"
 
@@ -64,7 +65,7 @@ def test_m007_recorded_symbol_ast_is_the_current_source_not_a_fabricated_invento
         assert set(found) == {s["symbol"] for s in row["symbols"]}
         for symbol in row["symbols"]:
             node = found[symbol["symbol"]]
-            assert hashlib.sha256(T._dump(node).encode()).hexdigest() == symbol["ast_sha256"]
+            assert hashlib.sha256(evidence_dump(node).encode()).hexdigest() == symbol["ast_sha256"]
 
 
 def test_m007_generator_source_and_no_workflow_or_trade_authority_changes():

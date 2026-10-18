@@ -185,4 +185,6 @@ def test_all_retained_role_owners_and_protected_runtime_stay_byte_identical():
     sys.path.insert(0, str(ROOT / "scripts/refactor"))
     import shared_role_contracts as shared
     assert subprocess.check_output(["git", "diff", "--name-only", START, shared.MONITOR, "--", *paths], cwd=ROOT).strip() == b""
+    # S5.current_contract supplies only the exact two Owners + node, gated by
+    # an independently evidenced admission pin; all other paths stay protected.
     shared.verify_runtime()

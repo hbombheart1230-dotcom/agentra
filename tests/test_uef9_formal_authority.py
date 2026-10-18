@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import copy
+import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -18,22 +22,25 @@ from libs.reporting.evaluation.uef8.run_identity import (
 )
 from libs.reporting.evaluation.uef9.authority import verify_formal_evaluation_authority
 from libs.reporting.evaluation.uef9.model import UEF9AuthorityError, VALID
+from uef9_synthetic_reports import FIXTURE, materialize_reports, validate_reports
 
 
 ROOT = Path(__file__).resolve().parents[1]
 IMPL = "uef9-test-implementation"
 
 
-def _base_inputs():
-    board = build_alpha_research_board(reports_root=ROOT / "reports", through_day="2026-09-25")
+def _base_inputs(*, reports_root):
+    validate_reports(reports_root)
+    board = build_alpha_research_board(reports_root=reports_root, through_day="2026-09-25")
     uef7 = normalize_alpha_board(board, normalizer_implementation_digest_value=normalizer_implementation_digest()).to_dict()
     uef8 = analyze_fair_comparisons(uef7, uef8_implementation_digest_value=uef8_implementation_digest()).to_dict()
     return uef7, uef8
 
 
 @pytest.fixture()
-def inputs():
-    return _base_inputs()
+def inputs(tmp_path):
+    reports_root = materialize_reports(tmp_path / "synthetic-reports")
+    return _base_inputs(reports_root=reports_root)
 
 
 def _verify(uef7, uef8, *, impl=IMPL):
@@ -159,3 +166,89 @@ def test_g_uef8_native_digest_is_explicitly_unavailable(inputs):
     authority = _verify(*inputs)
     assert authority.source_uef8_native_semantic_digest_available is False
     assert authority.uef9_derived_uef8_authority_digest
+
+
+@pytest.mark.parametrize("damage", ["missing", "changed", "extra"])
+def test_h_raw_fixture_damage_fails_before_authority(tmp_path, damage):
+    root = materialize_reports(tmp_path / "reports")
+    target = next(root.rglob("*.json"))
+    if damage == "missing":
+        target.unlink()
+    elif damage == "changed":
+        target.write_text("{}", encoding="utf-8")
+    else:
+        (root / "unexpected.json").write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="UEF9 synthetic reports"):
+        _base_inputs(reports_root=root)
+
+
+@pytest.mark.parametrize("damage", ["missing", "changed"])
+def test_i_fixture_package_missing_or_changed_never_falls_back(tmp_path, damage):
+    source = tmp_path / "fixture.json"
+    if damage == "changed":
+        source.write_bytes(FIXTURE.read_bytes() + b" ")
+    with pytest.raises((FileNotFoundError, ValueError)):
+        materialize_reports(tmp_path / "reports", fixture_path=source)
+    assert not (tmp_path / "reports").exists()
+
+
+def test_j_unreadable_fixture_fails_closed(tmp_path, monkeypatch):
+    original = Path.read_bytes
+
+    def denied(path):
+        if path == FIXTURE:
+            raise PermissionError("synthetic read denial")
+        return original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", denied)
+    with pytest.raises(PermissionError):
+        materialize_reports(tmp_path / "reports")
+    assert not (tmp_path / "reports").exists()
+
+
+@pytest.mark.parametrize("relative", ["../escape.json", "/escape.json", "C:\\escape.json"])
+def test_k_fixture_cannot_escape_injected_root(tmp_path, monkeypatch, relative):
+    import uef9_synthetic_reports as synthetic
+    # Exercise defense beyond the package digest without modifying the fixture.
+    monkeypatch.setattr(synthetic, "fixture_payload", lambda path=FIXTURE: {"artifacts": {relative: {}}})
+    with pytest.raises(ValueError, match="path escape"):
+        materialize_reports(tmp_path / "reports")
+    assert not (tmp_path / "reports").exists()
+
+
+def test_l_existing_root_cannot_supply_ambient_reports(tmp_path):
+    root = tmp_path / "reports"
+    root.mkdir()
+    with pytest.raises(ValueError, match="fresh nonsymlink"):
+        materialize_reports(root)
+
+
+def test_m_production_inputs_really_depend_on_raw_evidence(tmp_path):
+    root = materialize_reports(tmp_path / "reports")
+    # Bypass only our test-package integrity check to show the real upstream
+    # computation changes when evidence is absent; no result is synthesized.
+    empty = tmp_path / "absent-reports"
+    board = build_alpha_research_board(reports_root=empty, through_day="2026-09-25")
+    u7 = normalize_alpha_board(board, normalizer_implementation_digest_value=normalizer_implementation_digest()).to_dict()
+    u8 = analyze_fair_comparisons(u7, uef8_implementation_digest_value=uef8_implementation_digest()).to_dict()
+    with pytest.raises(AssertionError):
+        test_a_valid_current_authority((u7, u8))
+    test_a_valid_current_authority(_base_inputs(reports_root=root))
+
+
+def test_n_clock_and_hash_seed_do_not_change_authority(tmp_path):
+    root = materialize_reports(tmp_path / "reports")
+    code = ("import sys,time,json;sys.path[:0]=" + repr([str(ROOT), str(ROOT / "tests")]) + ";"
+            "time.time=lambda:float(sys.argv[2]);"
+            "from test_uef9_formal_authority import _base_inputs,_verify;"
+            "a=_verify(*_base_inputs(reports_root=__import__('pathlib').Path(sys.argv[1])));"
+            "print(json.dumps([a.uef9_run_id,a.comparison_status_counts],sort_keys=True))")
+    values = []
+    for seed, clock in [("0", "0"), ("17", "2000000000")]:
+        env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONDONTWRITEBYTECODE="1")
+        command = [sys.executable] + (["-O"] if sys.flags.optimize else [])
+        result = subprocess.run(command + ["-c", code, str(root), clock], cwd=tmp_path,
+                                env=env, check=True, capture_output=True, text=True, timeout=60)
+        values.append(json.loads(result.stdout))
+    assert values[0] == values[1]
+    assert values[0][1] == {"COMPARABLE": 0, "CONDITIONAL": 7, "NOT_COMPARABLE": 84}

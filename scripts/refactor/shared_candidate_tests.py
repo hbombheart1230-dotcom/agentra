@@ -14,7 +14,10 @@ SUITES = {
     "shared": [
         "test_shared_reporter_facade_guard.py", "test_shared_role_contracts.py", "test_shared_stage_provenance.py",
         "test_p152_integration_acceptance_inventory.py", "test_patch_notes_sync.py", "apps/api/test_patch_notes.py",
-        "apps/api/test_isolation.py", "test_p173_p058_integration_contracts.py",
+        "apps/api/test_isolation.py",  # Keep API paths together: pytest 9.1 conftest fixture visibility.
+        "test_shared_strategist_contracts.py", "test_p172_strategist_s1_057_migration.py",
+        "test_p15_strategist_s5_helper_moves.py", "test_p164_strategist_contract_freeze.py",
+        "test_p173_p058_integration_contracts.py",
     ],
     "reporter": [
         "test_work_reporter_seed_migration.py", "test_work_reporter_r4_facade_bodies.py",
@@ -28,6 +31,7 @@ SUITES = {
         "test_work_monitor_observation_views.py", "test_work_monitor_exit_labels.py", "test_work_monitor_policy_trace_views.py",
         "test_work_monitor_annotation_views.py", "test_work_monitor_scope_accounting.py",
         "test_work_monitor_retained_boundary.py", "test_work_monitor_m9_offline.py",
+        "test_monitor_evidence_ast.py",
         "test_m17_monitor_emits_intent_only.py", "test_monitor_candidate_cascade.py",
         "test_m29_4_monitor_position_sizing.py", "test_monitor_exit_guard.py",
         "test_monitor_exit_price_freshness.py", "test_monitor_price_source_resolution.py",
@@ -68,6 +72,8 @@ def main():
             stream.write("evidence=" + str(output) + "\n")
     env = dict(os.environ, TEMP=str(output), TMP=str(output), TMPDIR=str(output),
                DRY_RUN="1", TRADING_MODE="mock", PYTHONDONTWRITEBYTECODE="1")
+    if args.optimized:
+        env["PYTHONOPTIMIZE"] = "1"  # Also exercise fresh child interpreters under -O.
     for key in ("TRADING_AGENT_PYTEST_ROOT", "TRADING_AGENT_PYTEST"):
         env.pop(key, None)
     command = [sys.executable] + (["-O"] if args.optimized else [])

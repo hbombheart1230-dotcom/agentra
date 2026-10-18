@@ -3636,3 +3636,55 @@ Shared candidate: strict Reporter 313-body facade restoration, Monitor 14-module
 Expanded direct negative gates: 75 PASS under -O. UEF9 failure reproduced unchanged on BASE; no waiver. Final test scratch constrained to ignored candidate .agentra-worktmp under sandbox policy 15.
 
 Exact code SHA 95c11cacb9c73ae3d97d89e2061372762efff12b: Windows normal and -O each 2895 PASS / 1 FAIL / 24 SKIP (2920 tests, zero setup ERROR). FastAPI 0.143 normal/-O each 9 PASS. No full PASS; baseline-reproduced UEF9 failure and missing real-artifact skips retained. Hosted CI and independent Claude audit NOT_RUN.
+
+## 2026-10-18 · P1.5 Codex P2 CI portability candidate
+
+Reporter 예외 비교는 같은 too-many 방향과 expected 값에서 선택적인 got 상세만 허용합니다. Monitor 기록 해시는 Python 버전 간 동일한 증거 직렬화 형식으로 검증하며 원본 fixture와 런타임은 보존합니다. Codex 브랜치의 필수 CI와 자식 인터프리터 최적화 검증을 연결했습니다.
+
+기존 호스팅 CI는 실제 FAIL이었습니다. Linux에는 증거 직렬화 2건과 UEF9 1건, Windows에는 UEF9 1건이 남았습니다. 새 SHA의 CI 및 Claude 독립 감사는 별도 확인해야 하며 전체 통합 PASS를 선언하지 않습니다. 실데이터 검증과 Web build·desktop/mobile visual smoke는 NOT_RUN입니다.
+
+근거: `docs/daily_patch/2026-10-18_codex_p15_p2_ci_portability.md`, `docs/dev-team/integration/CODEX_P2_CI_CHECKPOINT_20261018.md`.
+
+
+## 2026-10-18 · P1.5 S5 shared gate preparation
+
+Strategist 보조 함수 8개와 Owner 2개의 정확한 본문·ABI·import 복원 계약, p164/p172/Monitor 공유 게이트, 통합 기준 SHA의 닫힌 범위 검사를 준비했습니다. 이 준비 시점에는 독립 감사 전이라 S5 소스·테스트를 미적용하고 admission 잠금을 유지했습니다. 이후 동일 후보의 아래 S5 적용 항목에서 승인된 소스를 반영했습니다. 임의 import, 미이동 본문, Broker/Executor/Supervisor 변경을 거부하는 부정 검사를 유지합니다.
+
+현재 변경은 게이트 준비이며 S5 런타임 동등성이나 통합 승인을 뜻하지 않습니다. UEF9 전체 FAIL과 실데이터 SKIP을 유지합니다. 새 CI·전체 저장소·실데이터·UI build는 실제 결과를 별도 기록합니다.
+
+근거: `docs/daily_patch/2026-10-18_s5_shared_gate_preparation.md`, `docs/dev-team/integration/CODEX_S5_GATE_PREPARATION_20261018.md`.
+
+
+## 2026-10-18 · P1.5 audited S5 shared candidate
+
+독립 Codex 감사의 c4960c53 S5 구현 PASS 후, S5-A를 포함한 정확한 4개 소스·테스트 커밋만 Codex 개발 후보에 반영했습니다. 수치·텍스트 helper 8개를 Owner 2개로 옮긴 원본과 ABI·사용 시점 facade 조회를 보존하며, 정책·LLM 요청·거래 권한은 변경하지 않습니다. 정확한 공유 계약과 브랜치 범위 검사, S5 런타임·T4-C 고정 CI를 연결했습니다.
+
+이 후보는 Claude 공동 감사와 별도 통합 승인 대기 상태입니다. 통합·main 반영은 없으며 UEF9 실패는 면제하지 않습니다. 실행 결과와 NOT_RUN 항목은 S5 공유 체크포인트와 Issue #14에 기록합니다.
+
+근거: `docs/daily_patch/2026-10-18_s5_shared_gate_preparation.md`, `docs/dev-team/integration/CODEX_S5_GATE_PREPARATION_20261018.md`.
+
+전체 CI에서 API 파일 재진입 시 발생한 fixture 설정 오류는 API 파일의 원래 연속 배치를 복원하고 실제 CLI 회귀 검사로 검증했습니다. endpoint 검사·fixture·기대값을 축소하지 않았습니다.
+
+
+## 2026-10-18 · P1.5 UEF9 synthetic input isolation
+
+UEF9 필수 계약은 고정된 비민감 합성 원천 JSON 4개를 명시적 reports_root로 전달합니다. 기존 생산 로직과 7 CONDITIONAL / 84 NOT_COMPARABLE 기대값을 유지하며, 운영 보고서·실거래 자료는 복사하지 않았습니다. 누락·변조·추가 파일, 읽기 거부·경로 탈출, 시계·hash seed 차이를 검증합니다.
+
+실행한 normal/-O·CI 결과는 Issue16/18과 체크포인트에 기록합니다. 합성 계약 검증은 실데이터 동등성이나 P1.5 최종 수용을 뜻하지 않으며 integration/main은 변경하지 않습니다.
+
+근거: `docs/daily_patch/2026-10-18_uef9_synthetic_fixture.md`, `docs/dev-team/integration/CODEX_UEF9_FIXTURE_CHECKPOINT_20261018.md`.
+
+합성 fixture 해시는 LF Git blob 바이트를 기준으로 고정해 Windows checkout과 CI의 줄바꿈 차이를 제거했습니다.
+
+
+## 2026-10-18 · P1.5 S5 및 UEF9 선택 통합 (지팀장)
+**Stage:** Maintainability · Evaluation
+**Tags:** REFACTOR · AUDIT · EVALUATION
+
+- `f8232e10` 독립 감사 PASS 변경을 통합 브랜치에 선택 적용합니다. Git 경로 34개 중 충돌하지 않는 32개는 기존 blob을 재사용, UI 패치노트 JSON/MD 2개는 루트 아키텍처 및 영구 운영 원칙 이력과 병합합니다.
+- S5 여덟 helper의 기존 ABI·호출 시점 facade 보존, UEF9 기존 생산 로직의 합성 원천 입력 0/7/84 검증을 유지합니다.
+- 코개발 필수 CI는 Linux/Windows normal/-O 각각 3144 PASS/0 FAIL/24 SKIP, API 2×9 PASS. 클검 Windows normal/-O 3168 수집·0 FAIL·0 ERROR·24 SKIP.
+- 지팀장 루트 설계 문서 13개 경로는 S5 스코프의 별도 명시적 예외로 처리하되 거래 실행/정책 허용 경로는 확장하지 않습니다.
+- **새 통합 SHA의 CI 결과는 아직 없음.** 실데이터 24 SKIP, 전체 저장소, UI 시각 검증 및 P1.5 최종 수용은 미완료. `main` 미변경.
+
+근거: `docs/daily_patch/2026-10-18_uef9_synthetic_fixture.md`, `docs/refactor/architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md`, GitHub Actions 39123404564.

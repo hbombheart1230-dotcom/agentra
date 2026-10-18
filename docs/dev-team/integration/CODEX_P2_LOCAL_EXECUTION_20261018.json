@@ -1,0 +1,203 @@
+{
+  "status": "DEVELOPMENT_DELTA_NORMAL_PASS__OVERALL_INTEGRATION_FAIL",
+  "start_sha": "5cb90b39d00cee483be292272b893d8e8a4c6e78",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "write_audit": "full; no violations in completed normal executions",
+  "optimized_at_code_commit": "IN_PROGRESS; final outcome to be posted on Issue #14",
+  "independent_verdict": "NOT_RUN",
+  "runs": {
+    "normal_focused": {
+      "counts": {
+        "tests": 330,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 330
+      },
+      "junit_sha256": "7027be27c773f4e410e8a11b0419649bf95cda52c17ed9849e319d806b85e184",
+      "junit_path": ".agentra-worktmp\\p2-monitor-focused\\normal.xml",
+      "by_module": {
+        "tests.test_work_reporter_seed_migration": {
+          "PASS": 105,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_work_reporter_r10_retained_io_contracts": {
+          "PASS": 54,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_work_reporter_r10_artifact_parity": {
+          "PASS": 3,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_work_reporter_r11_repo_hygiene": {
+          "PASS": 34,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_work_monitor_scope_accounting": {
+          "PASS": 5,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_work_monitor_retained_boundary": {
+          "PASS": 2,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_monitor_evidence_ast": {
+          "PASS": 8,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_shared_reporter_facade_guard.FacadeGuardTests": {
+          "PASS": 13,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_shared_role_contracts": {
+          "PASS": 40,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_shared_stage_provenance": {
+          "PASS": 2,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_p159_current_owner_contract_gates": {
+          "PASS": 14,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_p161_t35_extraction_gates": {
+          "PASS": 11,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_p162_t4a_extraction_gates": {
+          "PASS": 8,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_p163_t4b_extraction_gates": {
+          "PASS": 10,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_p164_t4c_extraction_gates": {
+          "PASS": 11,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.test_p165_t4d_extraction_gates": {
+          "PASS": 10,
+          "FAIL": 0,
+          "SKIP": 0
+        }
+      }
+    },
+    "normal_ui_api": {
+      "counts": {
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 14
+      },
+      "junit_sha256": "54dc17e55e73b42ad38213120e230743c1b578ca1be81af1b5ccf9d25c2b6d4b",
+      "junit_path": ".agentra-worktmp\\p2-patchnotes-normal\\normal.xml",
+      "by_module": {
+        "tests.test_patch_notes_sync": {
+          "PASS": 2,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.apps.api.test_patch_notes": {
+          "PASS": 3,
+          "FAIL": 0,
+          "SKIP": 0
+        },
+        "tests.apps.api.test_isolation": {
+          "PASS": 9,
+          "FAIL": 0,
+          "SKIP": 0
+        }
+      }
+    },
+    "p2_before_fix": {
+      "counts": {
+        "tests": 32,
+        "failures": 28,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 4
+      },
+      "junit_sha256": "ade25023a0fccd8d0009d575411e65f228eebc32632b08cefb0100db8b729cad",
+      "junit_path": ".agentra-worktmp\\p2-repro\\repro.xml",
+      "by_module": {
+        "tests.test_work_reporter_seed_migration": {
+          "PASS": 4,
+          "FAIL": 28,
+          "SKIP": 0
+        }
+      }
+    },
+    "p2_after_fix": {
+      "counts": {
+        "tests": 33,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 33
+      },
+      "junit_sha256": "b5b51a984fc999e0fb12934b1b57464326821b88261a5ae4c8697a47ba61809a",
+      "junit_path": ".agentra-worktmp\\p2-fixed\\fixed.xml",
+      "by_module": {
+        "tests.test_work_reporter_seed_migration": {
+          "PASS": 33,
+          "FAIL": 0,
+          "SKIP": 0
+        }
+      }
+    }
+  },
+  "prior_hosted_run": {
+    "id": 39088517687,
+    "sha": "5cb90b39d00cee483be292272b893d8e8a4c6e78",
+    "linux_normal": {
+      "PASS": 2893,
+      "FAIL": 3,
+      "SKIP": 24,
+      "job": 117560050230
+    },
+    "linux_optimized": {
+      "PASS": 2893,
+      "FAIL": 3,
+      "SKIP": 24,
+      "job": 117560050318
+    },
+    "windows_normal": {
+      "PASS": 2895,
+      "FAIL": 1,
+      "SKIP": 24,
+      "job": 117560050388
+    },
+    "windows_optimized": {
+      "PASS": 2895,
+      "FAIL": 1,
+      "SKIP": 24,
+      "job": 117560050313
+    }
+  },
+  "runtime_fixture_and_inventory_diff": "NONE relative to START_SHA",
+  "NOT_RUN": [
+    "new-SHA hosted CI at code-commit time",
+    "whole repository pytest",
+    "genuine historical persisted-artifact parity",
+    "web production build and desktop/mobile visual smoke",
+    "independent Claude audit"
+  ]
+}

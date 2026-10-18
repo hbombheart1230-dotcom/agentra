@@ -3,6 +3,7 @@ import ast
 import hashlib
 import json
 from pathlib import Path
+from scripts.refactor.monitor_evidence_ast import evidence_dump
 
 ROOT = Path(__file__).resolve().parents[2]
 INVENTORY = "docs/refactor/work_projects/evidence/monitor/continuous/current_scope.json"
@@ -40,7 +41,7 @@ def produce():
             name = symbol["symbol"].split(".")[-1]
             callers = sorted(references.get(name, set()))
             rows.append({"path": module["path"], "symbol": symbol["symbol"],
-                         "ast_sha256": hashlib.sha256(ast.dump(node, include_attributes=False).encode()).hexdigest(),
+                         "ast_sha256": hashlib.sha256(evidence_dump(node).encode()).hexdigest(),
                          "LOC": symbol["LOC"], "disposition": symbol["disposition"],
                          "decision": "EXCLUDE_FROM_FURTHER_MOVES", "reason": symbol["reason"],
                          "calls": calls, "attribute_or_subscript_writes": stores,

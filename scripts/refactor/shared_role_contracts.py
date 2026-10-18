@@ -7,6 +7,7 @@ from functools import lru_cache
 
 import reporter_facade_guard as R
 import work_monitor_current_tree as M
+from scripts.refactor import shared_strategist_contracts as S5
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = R.BASE
@@ -71,12 +72,14 @@ def verify_runtime(overrides=None):
     overrides = overrides or {}
     reporter, monitor = role_paths(REPORTER), role_paths(MONITOR)
     require(not reporter & monitor, "ambiguous runtime overlap")
+    strategist = S5.current_contract(overrides)["runtime_paths"]
+    require(not (reporter | monitor) & strategist, "ambiguous S5 runtime overlap")
     actual = set(subprocess.check_output(["git", "diff", "--name-only", BASE, "--", "libs", "graphs", "apps"], cwd=ROOT, text=True).splitlines())
     actual |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard", "--", "libs", "graphs", "apps"], cwd=ROOT, text=True).splitlines())
     actual |= {p for p in overrides if p.startswith(("libs/", "graphs/", "apps/"))}
-    expected = reporter | monitor
+    expected = reporter | monitor | strategist
     require(actual == expected, "unexpected/missing runtime path: " + repr(actual ^ expected))
-    for sha, paths in ((REPORTER, reporter), (MONITOR, monitor)):
+    for sha, paths in ((REPORTER, reporter), (MONITOR, monitor), (S5.CANDIDATE_CODE, strategist)):
         for path in sorted(paths):
             current = overrides.get(path)
             if current is None:

@@ -1,0 +1,10 @@
+--- a/tests/test_p15_strategist_s5_helper_moves.py
++++ b/tests/test_p15_strategist_s5_helper_moves.py
+@@ -304,5 +304,3 @@
+ def test_diff_against_pinned_source_touches_only_the_closed_path_set():
+-    changed = _git("diff", "--name-only", SRC, "HEAD").decode().split()
+-    untracked = _git("ls-files", "--others", "--exclude-standard").decode().split()
+-    bad = [p for p in changed + untracked if p not in CLOSED_PATHS and not p.startswith(CLOSED_PREFIX)]
+-    assert bad == [], bad
++    from scripts.refactor.shared_strategist_contracts import verify_integration_scope
++    verify_integration_scope()  # Pinned integrated parent; exact closed paths, including untracked files.

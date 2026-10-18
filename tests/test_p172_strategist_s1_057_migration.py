@@ -14,6 +14,7 @@ import sys
 import pytest
 
 from scripts.refactor import p172_strategist_s1_057_capture as C
+from scripts.refactor import shared_strategist_contracts as S5
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests/fixtures/p1_5_strategist_s1_057/cases.json"
@@ -159,5 +160,6 @@ def test_original_node_consumers_bind_canonical_implementations_and_source_is_un
                 assert getattr(node, name) is fn
                 count += 1
     assert count == 16
-    data = (ROOT / "graphs/nodes/strategist_node.py").read_bytes().replace(b"\r\n", b"\n")
-    assert data == subprocess.check_output(["git", "show", C.PINNED_BASE + ":graphs/nodes/strategist_node.py"], cwd=ROOT)
+    restored = S5.current_contract()["restored"]
+    pinned = subprocess.check_output(["git", "show", C.PINNED_BASE + ":graphs/nodes/strategist_node.py"], cwd=ROOT).decode("utf-8-sig")
+    assert ast.dump(restored) == ast.dump(ast.parse(pinned))

@@ -110,6 +110,18 @@ from libs.runtime.strategist.context.common_values import (
     _append_unique_text_r3_impl,
     _signal_score_r3_impl,
 )
+from libs.runtime.strategist.llm.text_fragment_helpers import (
+    _strip_fenced_block_r3_impl,
+    _parse_text_list_fragment_r3_impl,
+)
+from libs.runtime.strategist.context.value_helpers import (
+    _clamp_r3_impl,
+    _to_float_r3_impl,
+    _to_int_r3_impl,
+    _round_optional_r3_impl,
+    _unit_score_r3_impl,
+    _is_trueish_r3_impl,
+)
 from libs.runtime.strategist.context.market_inputs import (
     _resolve_top_n_candidates_r3_impl,
     _candidates_from_state_r3_impl,
@@ -313,7 +325,7 @@ from libs.runtime.strategist.output.node_event_payloads import (
 
 
 def _is_trueish(v: Any) -> bool:
-    return str(v or "").strip().lower() in ("1", "true", "yes", "y", "on")
+    return _is_trueish_r3_impl(v, facade=_r3_sys.modules[__name__])
 
 
 def _env_bool(name: str, default: bool = False) -> bool:
@@ -329,10 +341,7 @@ def _strategy_memory_usage_disabled(policy_or_payload: Any | None = None) -> boo
 
 
 def _to_int(v: Any, default: int) -> int:
-    try:
-        return int(float(v))
-    except Exception:
-        return int(default)
+    return _to_int_r3_impl(v, default, facade=_r3_sys.modules[__name__])
 
 
 def _env_int(key: str) -> int | None:
@@ -531,38 +540,11 @@ def _resolve_top_n_candidates(policy: Dict[str, Any]) -> int:
 
 
 def _strip_fenced_block(text: str) -> str:
-    s = str(text or "").strip()
-    if not s.startswith("```"):
-        return s
-    lines = s.splitlines()
-    if not lines:
-        return s
-    lines = lines[1:]
-    if lines and lines[-1].strip().startswith("```"):
-        lines = lines[:-1]
-    return "\n".join(lines).strip()
+    return _strip_fenced_block_r3_impl(text, facade=_r3_sys.modules[__name__])
 
 
 def _parse_text_list_fragment(raw: Any) -> List[str]:
-    if raw is None:
-        return []
-    if isinstance(raw, (list, tuple, set)):
-        return [str(x or "").strip() for x in list(raw or []) if str(x or "").strip()]
-    s = str(raw or "").strip()
-    if not s:
-        return []
-    decoded = None
-    for parser in (json.loads, ast.literal_eval):
-        try:
-            decoded = parser(s)
-            break
-        except Exception:
-            decoded = None
-    if isinstance(decoded, (list, tuple, set)):
-        return [str(x or "").strip() for x in list(decoded or []) if str(x or "").strip()]
-    if any(sep in s for sep in ("\n", ",", ";", "|")):
-        return [str(x or "").strip() for x in re.split(r"[\n,;|]+", s) if str(x or "").strip()]
-    return [s]
+    return _parse_text_list_fragment_r3_impl(raw, facade=_r3_sys.modules[__name__])
 
 
 def _extract_contract_from_prose(text: str) -> Dict[str, Any]:
@@ -1421,10 +1403,7 @@ def _compact_news_sample_for_llm(sample: Any, *, max_symbols: int = 6, max_title
 
 
 def _round_optional(value: Any, digits: int = 4) -> Any:
-    try:
-        return round(float(value), int(digits))
-    except Exception:
-        return value
+    return _round_optional_r3_impl(value, digits, facade=_r3_sys.modules[__name__])
 
 
 def _compact_global_signal_for_llm(signal: Any) -> Dict[str, Any]:
@@ -2852,14 +2831,11 @@ def _signal_score(sig: Any) -> float:
 
 
 def _to_float(v: Any, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return float(default)
+    return _to_float_r3_impl(v, default, facade=_r3_sys.modules[__name__])
 
 
 def _clamp(x: float, lo: float, hi: float) -> float:
-    return lo if x < lo else hi if x > hi else x
+    return _clamp_r3_impl(x, lo, hi, facade=_r3_sys.modules[__name__])
 
 
 def _risk_regime_label(score: float) -> str:
@@ -3092,10 +3068,7 @@ def _normalize_tactical_subtype(value: Any, *, tactical_strategy: str) -> str:
 
 
 def _unit_score(value: Any, default: float = 0.0) -> float:
-    try:
-        return float(_clamp(float(value), 0.0, 1.0))
-    except Exception:
-        return float(_clamp(default, 0.0, 1.0))
+    return _unit_score_r3_impl(value, default, facade=_r3_sys.modules[__name__])
 
 
 def _deterministic_strategy_scores(

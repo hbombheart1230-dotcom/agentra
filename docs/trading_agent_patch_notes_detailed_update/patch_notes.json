@@ -1,8 +1,131 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 291,
+  "entry_count": 296,
   "entries": [
+    {
+      "date": "2026-10-18",
+      "version": "P1.5 S5 UEF9 selective integration 20261018",
+      "title": "Selectively integrate independently audited S5 and UEF9 contract repairs",
+      "stage": "Maintainability",
+      "types": [
+        "REFACTOR",
+        "AUDIT",
+        "EVALUATION"
+      ],
+      "summary": "Promote exact audited S5 helper modules and UEF9 hermetic fixtures to the root-design integration lane while preserving broker/strategy/UEF production behavior and both histories.",
+      "details": [
+        "Exact Codex developer SHA f8232e10, independent Claude AUDIT_PASS. 34 changed paths relative 5cb90b39: 32 non-conflicting Git paths plus merged patchnote JSON/MD; one integration-only scope alignment is restricted to 13 named Tech Lead documents.",
+        "UEF9 unchanged Board→UEF7→UEF8→UEF9 yields 0/7/84 from non-sensitive raw synthetic inputs; no production reports, results-as-fixture, golden/skip/xfail changes.",
+        "Source SHA CI 39123404564: four OS/mode selected contract jobs 3144 PASS/0 FAIL/24 SKIP each and two API jobs 9 PASS each. Claude local normal/-O each 3168 collected, 0 FAIL/0 ERROR/24 SKIP, SHA f8232e10.",
+        "Newly composed integration SHA CI and freeze gates have NOT_RUN status at commit creation; 24 real-data tests, full repository, UI build/visual and main merge are NOT complete.",
+        "Root architecture and delivery-first standing governance files remain as on integration c28a31d1. No live Broker/Supervisor/Executor/order-policy/production-write changes."
+      ],
+      "impact": "Audited candidate included on integration, awaiting fresh integration-SHA CI. Not final P1.5 acceptance.",
+      "sources": [
+        "docs/dev-team/integration/CODEX_UEF9_FIXTURE_CHECKPOINT_20261018.md",
+        "docs/refactor/architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md",
+        "https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39123404564"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-18",
+      "version": "P1.5 Codex P2 CI portability candidate",
+      "title": "Stricter exception parity and portable Monitor evidence",
+      "stage": "Independent Audit Pending",
+      "types": [
+        "TESTING",
+        "CI",
+        "EVIDENCE"
+      ],
+      "summary": "Narrow Reporter exception wording and reproduce historical Monitor evidence across supported Python versions.",
+      "details": [
+        "Reject changed unpack direction, expected arity, actual count and malformed suffixes while retaining the fixed fixture.",
+        "Preserve recorded AST hashes using a frozen evidence serialization profile; retain body, import and constant mutation detection.",
+        "Run required contracts on the Codex development branch; propagate optimized mode to child interpreters.",
+        "Prior hosted CI actually ran and failed: Linux had two evidence portability failures plus UEF9; Windows had UEF9 only. New exact-SHA results and independent review remain pending."
+      ],
+      "impact": "Candidate evidence only. Overall integration remains FAIL; no UEF waiver or runtime policy change.",
+      "sources": [
+        "docs/daily_patch/2026-10-18_codex_p15_p2_ci_portability.md",
+        "docs/dev-team/integration/CODEX_P2_CI_CHECKPOINT_20261018.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-18",
+      "version": "P1.5 S5 shared gate preparation",
+      "title": "Prepare exact Strategist helper contracts pending independent audit",
+      "stage": "Independent Audit Pending",
+      "types": [
+        "TESTING",
+        "EVIDENCE",
+        "CI"
+      ],
+      "summary": "Prepare the exact eight-helper shared contract without adopting unaudited S5 source.",
+      "details": [
+        "Validate original signatures, exact wrappers, eight import names and two pinned Owners; reject unrelated body/import/authority mutations.",
+        "Prepare p164/p172/Monitor mappings and integrated-base closed scope; admission stays locked until exact-SHA independent PASS.",
+        "Source/test-only dry-run applies cleanly; no Claude branch merge or runtime/fixture change.",
+        "S5 runtime parity and new-SHA hosted CI are not established by these preparation tests. UEF9 remains an unwaived overall FAIL.",
+        "후속 동일 Codex 후보의 S5 적용 항목에서 독립 감사 PASS 소스를 반영했습니다. 이전 미적용 표현은 준비 단계만 가리킵니다."
+      ],
+      "impact": "Reviewable gate preparation only; no Strategist runtime adoption or integration promotion.",
+      "sources": [
+        "docs/daily_patch/2026-10-18_s5_shared_gate_preparation.md",
+        "docs/dev-team/integration/CODEX_S5_GATE_PREPARATION_20261018.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-18",
+      "version": "P1.5 audited S5 shared candidate",
+      "title": "Selectively compose eight audited Strategist helpers",
+      "stage": "Combined Candidate Audit Pending",
+      "types": [
+        "REFACTOR",
+        "TESTING",
+        "CI"
+      ],
+      "summary": "Adopt independently audited S5 helper source into the Codex development candidate with exact shared contracts.",
+      "details": [
+        "Independent Codex Auditor passed S5 code c4960c53; selectively apply the four source/test commits including S5-A, without merging Claude ancestry.",
+        "Preserve eight helper bodies and original ABI/use-time facade lookup in two exact pinned Owners. No trading-policy, LLM request or execution-authority changes.",
+        "Activate bounded p164/p172/Monitor admission and integrated scope; mandatory CI includes S5 runtime parity and frozen T4-C tests.",
+        "The joint candidate still requires Claude independent audit and separate integration promotion approval. UEF9 remains unwaived.",
+        "Repair API fixture setup in the full CI collection by retaining the original contiguous API block; a real configured-CLI before/after regression verifies all endpoint checks still run."
+      ],
+      "impact": "Development candidate only; integration and main are unchanged.",
+      "sources": [
+        "docs/daily_patch/2026-10-18_s5_shared_gate_preparation.md",
+        "docs/dev-team/integration/CODEX_S5_GATE_PREPARATION_20261018.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-18",
+      "version": "P1.5 UEF9 synthetic input isolation",
+      "title": "Make UEF9 required contracts independent of ambient reports",
+      "stage": "Candidate independent audit pending",
+      "types": [
+        "TESTING",
+        "CI"
+      ],
+      "summary": "Inject fixed synthetic raw reports into unchanged UEF production logic; preserve7/84 expectations.",
+      "details": [
+        "Four hand-authored non-sensitive raw artifacts exercise the actual Board/UEF7/UEF8/UEF9 pipeline; no production reports or result labels copied.",
+        "Package digest and exact materialized bytes reject missing/corrupt/extra inputs; explicit reports_root, permission/path and clock/hash-seed negatives cover isolation.",
+        "Required CI retains the existing authority tests and runs the new negatives. Genuine real-data skips and unrun release gates remain separate.",
+        "Pin the fixture digest to canonical LF Git bytes, matching its fixture-local eol attribute on every host."
+      ],
+      "impact": "Test/environment repair only; no trading policy, authority or integration/main change.",
+      "sources": [
+        "docs/daily_patch/2026-10-18_uef9_synthetic_fixture.md",
+        "docs/dev-team/integration/CODEX_UEF9_FIXTURE_CHECKPOINT_20261018.md"
+      ],
+      "status": "current"
+    },
     {
       "date": "2026-10-18",
       "version": "ENGINEERING-DELIVERY-FIRST-20261018",

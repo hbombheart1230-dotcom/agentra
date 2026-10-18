@@ -17,6 +17,7 @@ import importlib
 import json
 import subprocess
 from pathlib import Path
+from scripts.refactor import shared_strategist_contracts as S5
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "8acedae23e64c11b958556e7835b4ebf5e404e73"
@@ -190,7 +191,7 @@ def test_inlining_every_owner_reproduces_the_base_monitor_function_asts_exactly(
 
 def test_non_moved_definitions_are_ast_identical_to_base():
     for module, names in MODULES.items():
-        base_t, cur_t = _base_tree(module), _cur_tree(module)
+        base_t, cur_t = _base_tree(module), S5.current_contract()["restored"]
         base, cur = _funcs(base_t), _funcs(cur_t)
         assert set(base) == set(cur), module
         for name, fn in base.items():
@@ -203,10 +204,13 @@ def test_non_moved_definitions_are_ast_identical_to_base():
 
 def test_new_import_lines_are_only_the_ledger_owner_names():
     for module in MODULES:
+        s5 = S5.current_contract()
         base_names = {(n.module, a.name) for n in _base_tree(module).body if isinstance(n, ast.ImportFrom) for a in n.names}
         cur_names = {(n.module, a.name) for n in _cur_tree(module).body if isinstance(n, ast.ImportFrom) for a in n.names}
         added = cur_names - base_names
         expected = {(s["owner"][:-3].replace("/", "."), s["owner_function"]) for s in _segments(module)}
+        if s5["runtime_paths"]:
+            expected |= S5.import_pairs()  # Exact eight pairs; aliases/duplicates checked before admission.
         assert added == expected and base_names <= cur_names, module
 
 

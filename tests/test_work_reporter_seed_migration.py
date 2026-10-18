@@ -158,6 +158,7 @@ def test_fixture_provenance_manifest_matches_the_fixture_bytes():
 
 
 _IN_TYPEERROR = re.compile(r"argument of type '([A-Za-z_][A-Za-z0-9_.]*)' is not (?:a container or )?iterable")
+_TOO_MANY_UNPACK = re.compile(r"too many values to unpack \(expected (0|[1-9][0-9]*)(?:, got (0|[1-9][0-9]*))?\)")
 
 
 def _is_cpython_message_rewording(got, rec):
@@ -165,7 +166,12 @@ def _is_cpython_message_rewording(got, rec):
     if exc != rec.get("exc"):
         return False
     if exc == "ValueError":
-        return "unpack" in gm and "unpack" in rm
+        # Only CPython's optional ', got M' detail may differ. Direction,
+        # expected arity and any got count present on both sides stay exact.
+        g, r = _TOO_MANY_UNPACK.fullmatch(gm), _TOO_MANY_UNPACK.fullmatch(rm)
+        return bool(g and r) and g.group(1) == r.group(1) and (
+            g.group(2) is None or r.group(2) is None or g.group(2) == r.group(2)
+        )
     if exc == "TypeError":  # 3.14: "... is not iterable" -> "... is not a container or iterable"
         g, r = _IN_TYPEERROR.fullmatch(gm), _IN_TYPEERROR.fullmatch(rm)
         return bool(g and r) and g.group(1) == r.group(1)
@@ -181,6 +187,41 @@ def test_cpython_message_rewording_allowance_is_exact():
     assert not _is_cpython_message_rewording({"exc": "KeyError", "msg": "x"}, {"exc": "KeyError", "msg": "y"})
     assert _is_cpython_message_rewording({"exc": "ValueError", "msg": "too many values to unpack (expected 2, got 44)"},
                                          {"exc": "ValueError", "msg": "too many values to unpack (expected 2)"})
+
+
+@pytest.mark.parametrize("got,recorded", [
+    ("too many values to unpack (expected 2, got 44)", "too many values to unpack (expected 2)"),
+    ("too many values to unpack (expected 2)", "too many values to unpack (expected 2, got 44)"),
+    ("too many values to unpack (expected 3, got 4)", "too many values to unpack (expected 3)"),
+    ("too many values to unpack (expected 2, got 44)", "too many values to unpack (expected 2, got 44)"),
+])
+def test_cpython_unpack_allowance_accepts_only_the_optional_observed_detail(got, recorded):
+    assert _is_cpython_message_rewording({"exc": "ValueError", "msg": got},
+                                        {"exc": "ValueError", "msg": recorded})
+
+
+@pytest.mark.parametrize("got,recorded", [
+    ("not enough values to unpack (expected 99, got 0)", "too many values to unpack (expected 2)"),
+    ("too many values to unpack (expected 2)", "not enough values to unpack (expected 99, got 0)"),
+    ("too many values to unpack (expected 3, got 44)", "too many values to unpack (expected 2)"),
+    ("too many values to unpack (expected 2, got 44)", "too many values to unpack (expected 3)"),
+    ("too many values to unpack (expected 2, got 44)", "too many values to unpack (expected 2, got 45)"),
+    ("not enough values to unpack (expected 2, got 0)", "not enough values to unpack (expected 2, got 1)"),
+    ("too many values to unpack (expected 2, got 44) extra", "too many values to unpack (expected 2)"),
+    ("too many values to unpack (expected 2)\n", "too many values to unpack (expected 2)"),
+    ("prefix too many values to unpack (expected 2)", "too many values to unpack (expected 2)"),
+    ("too many values to unpack (expected 2, got 44, got 45)", "too many values to unpack (expected 2)"),
+    ("too many values to unpack (expected 02, got 44)", "too many values to unpack (expected 2)"),
+    ("too many values to unpack (expected 2, got -1)", "too many values to unpack (expected 2)"),
+    ("cannot unpack non-iterable NoneType object", "too many values to unpack (expected 2)"),
+    ("unpack unrelated failure", "unpack unrelated failure"),
+])
+@pytest.mark.parametrize("reverse", [False, True])
+def test_cpython_unpack_allowance_rejects_semantic_or_malformed_changes(got, recorded, reverse):
+    if reverse:
+        got, recorded = recorded, got
+    assert not _is_cpython_message_rewording({"exc": "ValueError", "msg": got},
+                                            {"exc": "ValueError", "msg": recorded})
 
 
 def test_recorded_base_cases_are_reproduced_exactly_through_both_paths():

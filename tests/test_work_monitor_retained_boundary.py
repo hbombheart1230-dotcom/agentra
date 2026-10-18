@@ -18,7 +18,13 @@ def test_retained_exclusions_are_complete_and_match_actual_sources():
 
 
 def test_changed_retained_source_is_detected_without_executing_it(monkeypatch):
-    original = boundary.ast.dump
-    monkeypatch.setattr(boundary.ast, "dump", lambda *a, **k: original(*a, **k) + "changed")
+    original = boundary.ast.parse
+    def changed_source(*args, **kwargs):
+        tree = original(*args, **kwargs)
+        for node in boundary.ast.walk(tree):
+            if isinstance(node, boundary.ast.Constant) and isinstance(node.value, str):
+                node.value += "changed"
+        return tree
+    monkeypatch.setattr(boundary.ast, "parse", changed_source)
     recorded = json.loads((ROOT / "docs/refactor/work_projects/evidence/monitor/continuous/m9_retained_boundary.json").read_text())
     assert boundary.produce() != recorded

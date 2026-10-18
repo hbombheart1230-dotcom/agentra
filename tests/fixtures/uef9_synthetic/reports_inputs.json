@@ -1,0 +1,91 @@
+{
+  "schema_version": "agentra.synthetic.uef9-inputs.v1",
+  "through_day": "2026-09-25",
+  "notice": "Hand-authored synthetic test-only evidence. No real reports, symbols, accounts or trading authority.",
+  "artifacts": {
+    "evaluation/baseline_btc_woori_tech/historical/q12_v1_v2_historical_review.json": {
+      "episode_horizons": [
+        {
+          "horizon": "+30m",
+          "real_net": {
+            "sample_count": 4,
+            "win_rate": 0.5,
+            "avg_net_return_pct": 0.1
+          }
+        }
+      ],
+      "episodes": [
+        {
+          "day": "2026-09-01",
+          "btc": {
+            "market_regime": "strong_bull"
+          },
+          "returns": {
+            "+30m": {
+              "return_pct": 1.0
+            }
+          }
+        },
+        {
+          "day": "2026-09-02",
+          "btc": {
+            "market_regime": "strong_bull"
+          },
+          "returns": {
+            "+30m": {
+              "return_pct": -0.5
+            }
+          }
+        }
+      ]
+    },
+    "evaluation/feature_mart/opening_rank1/fresh_change_activation/fresh_change_activation_cumulative.json": {
+      "branch": {
+        "horizons": {
+          "+30m": {
+            "sample_count": 4,
+            "win_rate": 0.5,
+            "avg_net_return_pct": 0.1
+          }
+        }
+      }
+    },
+    "evaluation/opening_rank1_shadow/latent_watch/latent_reactivation_forward.json": {
+      "summary": {
+        "horizons": {
+          "+30m": {
+            "live_net": {
+              "sample_count": 4,
+              "win_rate": 0.5,
+              "avg_net_return_pct": 0.1
+            }
+          }
+        }
+      }
+    },
+    "evaluation/opening_rank1_shadow/opening_rank1_shadow_cumulative.json": {
+      "summary": {
+        "conditional_lane_summaries": {
+          "CONFIRMED_RECURRENT_RANK": {
+            "horizons": {
+              "+30m": {
+                "live_net": {
+                  "sample_count": 4,
+                  "win_rate": 0.5,
+                  "avg_net_return_pct": 0.1
+                }
+              }
+            }
+          }
+        }
+      },
+      "promotion_decision": {
+        "values": {
+          "observed_count": 4,
+          "win_rate": 0.5,
+          "average_net_return_pct": 0.1
+        }
+      }
+    }
+  }
+}
