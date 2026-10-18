@@ -1,5 +1,8 @@
 # CODEX — MONITOR Whole-Role Principal Implementer (Corrected Assignment)
 
+> **WORKSPACE RULE 2026-10-18:** Apply [Agentra-only sandbox policy](15_P15_WORKSPACE_SANDBOX_POLICY_20261018.md) before Monitor/shared integration work. Use verified Agentra Monitor or isolated integration worktrees, exact paths only; no unknown extra directories. Codex `workspace-write` with explicitly configured writable worktree roots is recommended, NOT `danger-full-access`. Sandbox or Remote settings may override file preferences and Git/network approval may still occur. Record `SANDBOX_ROOT`, exact Git registration and observed permission mode.
+
+
 > **GPT R11 SHARED DECISION 2026-10-17:** After Monitor M9 local-safe completion, Codex owns isolated shared Reporter+Monitor T3/T4/CI/UI integration as already authorized; additionally handle Reporter R11-F1 (historical `CURRENT.md` **both** P1.5.2 OPEN and P1.5.3 markers) and R11-F2 (FastAPI 0.143 GET-only route enumeration with POST-negative) ONLY on integration candidate. Read [F1/F2 scope decision](../integration/R11_SHARED_FAILURES_F1_F2_ARCHITECT_DECISION.md). Prioritize shared T3/T4 P1 before these P2. Claude independent auditor. No policy changes, CI bypass or main merge. No Work hourly monitoring.
 
 
