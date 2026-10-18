@@ -1,5 +1,8 @@
 # Strategist P1.5 — GPT Architecture Decision: S1/S2 only
 
+> **NEW GPT SOURCE CHARTER 2026-10-18:** The earlier “S3–S6 not authorized” restriction remains except for a newly approved **closed eight-helper S5 source lane** documented at [16_CLAUDE_STRATEGIST_SOURCE_SAFE_LANE_20261018.md](16_CLAUDE_STRATEGIST_SOURCE_SAFE_LANE_20261018.md). Existing Claude DEVELOPER may implement only those 8 helper moves in an isolated `work/strategist-role-20261018`; separate Claude AUDITOR independently reviews Codex candidate `95c11cac`. No S3/S4 mass relocation, policy/rank/LLM changes, shared T3/T4 edits or main merge.
+
+
 **Date:** 2026-10-17 KST  
 **Author:** GPT (ordinary ChatGPT, architect on demand).  
 **Status:** S1/S2 TEST_AND_EVIDENCE_ONLY_APPROVED; S3-S6 SOURCE_CHANGES_NOT_AUTHORIZED.  
