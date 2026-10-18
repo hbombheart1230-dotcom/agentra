@@ -1,5 +1,16 @@
 ﻿# Trading Agent System - Agentra
 
+## 2026-10-18 · Current P1.5 source-of-truth (ROOT-TO-LEAF)
+
+> **Current analysis, not a deployable release:** integration code snapshot `5cb90b39` (before architecture-only documentation commits), final P1.5 **NOT_ACCEPTED**. The M20 overview below is **historical project description**, not evidence that all current 7 roles have independent public callable owners. Broker/approval/order authority remains at its existing SAFETY_LOCK locations.
+>
+> **Direct Tech Lead root-wide review:** [Root-to-leaf architecture, exact main/integration size comparison, cleanup policy](docs/refactor/architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md) · [Current target/actual ownership](docs/refactor/architecture/P15_TECHLEAD_MASTER_20261018.md) · [all 3,908 tracked paths](docs/refactor/architecture/P15_TREE_ALL_PATHS_PINNED_20261018.txt) · [file-by-file disposition candidates](docs/refactor/architecture/P15_ALL_FILES_OWNERSHIP_CANDIDATES_20261018.csv) · [migration & safety gates](docs/refactor/architecture/P15_MIGRATION_LEDGER_20261018.md) · [branch-retirement evidence](docs/refactor/architecture/P15_BRANCH_RETIREMENT_20261018.md).
+>
+> **Read this instead of stale 2026-10-17 NOT_STARTED snapshots:** [P1.5 control issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Old `docs/refactor/work_projects/STATUS.json` is a historic activation snapshot and is not current module-completion truth. Original operational source/timing and protected authority must not be relocated to satisfy a diagram.
+
+---
+
+
 ## Enterprise Architecture Overview (M20)
 
 Generated: 2026-02-14 13:29:06
