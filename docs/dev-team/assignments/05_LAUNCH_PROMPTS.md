@@ -1,5 +1,8 @@
 # Agentra P1.5 — Boot Prompts (GPT architect on demand / two worker lanes)
 
+> **MANDATORY SANDBOX / PERMISSION STARTUP (2026-10-18):** Read [Agentra-only Git worktree sandbox policy](15_P15_WORKSPACE_SANDBOX_POLICY_20261018.md) before any filesystem write. Run `git worktree list --porcelain` and verify real existing checkout roots, only permit approved Agentra role/worktree paths and scoped per-run ignored scratch, not whole `C:\` / user home / Agentco. Codex: prefer `workspace-write`, per-session exact writable roots, `on-request` rather than global full access. Claude: `acceptEdits` within verified worktree; no bypassPermissions. These tools may still ask for protected Git/network escalation; do not auto-elevate. Any older prompt contradicting this policy is superseded.
+
+
 **Current and authoritative:** [11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md](11_P15_TWO_WORKER_ARCHITECT_ON_DEMAND_20261017.md).  
 **No recurring Work automation.** Work is optional only if operator explicitly starts one. Normal ChatGPT acts as architect **on demand**, not in background. GitHub is the source of truth.
 
