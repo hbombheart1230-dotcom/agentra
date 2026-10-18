@@ -1,24 +1,26 @@
-> **STANDING USER-APPROVED DEVELOPMENT RULE (2026-10-18):** [docs/ENGINEERING_DELIVERY_POLICY.md](../../ENGINEERING_DELIVERY_POLICY.md) controls all four dev/audit roles. **Do not reopen prior tests/inventories/analyzer repairs without a changed-risk scope**. Integrate audited commits promptly, with one pinned integration SHA and proportionate tests; whole-repo/real-evidence/UI final gates are stage-level. Stop after verdict, do not expand into permanent LONG-RUN queues. Below historical task descriptions are superseded where inconsistent.
+# Agentra P1.5 — CURRENT (active pointer only)
 
----
+> **Authority:** [GitHub P1.5 Master #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Read its **top new-chat checkpoint first**, then verify live GitHub refs and CI. This is a pointer, NOT an independently editable second status board.
 
-> **SUPERSEDING CURRENT STATUS (2026-10-18):** The 2026-10-17 Reporter/Monitor activation order below is retained as **historical evidence only**. Its `WORKERS_NOT_STARTED`/older integration branch pointers **must not be used as current status**. P1.5 currently uses protected main, `integration/p15-monitor-shared-20261018`, `work/codex-p15-20261018`, `work/strategist-role-20261018`. User priority is whole-root structure & UEF9 clean CI, **not** more Commander static classifier repairs. Source of truth: [current master #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20), [whole-repo root audit](../architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md), and [frozen V3 target](../architecture/TREE_V3_FROZEN.md). The actual 2026-10-18 issue instructions #16–#19 override conflicting old queue items; they do not trigger CLI processes themselves. `main` merge, broker authority changes, new unverified migrations and branch deletion remain on hold.
+## How to start and who can command work
+1. Root [AGENTS.md](../../../AGENTS.md) (Codex) or [CLAUDE.md](../../../CLAUDE.md) (Claude) → [DELIVERY FIRST policy](../../ENGINEERING_DELIVERY_POLICY.md) → #20 → this pointer → ONLY an explicitly reactivated developer/auditor issue.
+2. Latest explicit user decision and frozen Broker/Supervisor/Executor/Step5C/UNKNOWN/UEF/production-write safety outrank all historical instructions. No auto-start from GitHub edits; local worker sessions must be deliberately launched.
+3. No active implementation task has been issued for the NEXT code slice yet. The previous #16 Codex Dev, #17 Claude Dev, #18 Claude Auditor and #19 Codex Auditor tasks have completed and are **historical until explicitly reactivated**. Do not restart them from their old issue body or auto-run old LONG-RUN queues.
+4. [Previous 2026-10-17 Reporter/Monitor ACTIVATION](../work_projects/ACTIVATION.md) and [STATUS.json](../work_projects/STATUS.json) are snapshots, not live tasks. The prior `WORKERS_NOT_STARTED`, one-branch `refactor/p1.5` and old T4 orders are superseded.
 
----
+## Pinned completed milestone — source SHA, not moving HEAD
+- Integration code: `integration/p15-monitor-shared-20261018` @ `c5fe8a9a59788cd7cf1eb1d72f9aa8b22a40f7ca`. Main @ `2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb` remains unchanged at checkpoint.
+- S5 Strategist + UEF9 synthetic fixture: Codex Dev `f8232e10` independent Claude AUDIT_PASS; **34 selective paths INTEGRATED**. [CI 39133879389](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39133879389) at exact code SHA **6/6 SUCCESS**.
+- Current work-order documents are being consolidated on top of the tested code SHA; a documentation-only commit does not alter the already-validated trading code and must NOT be presented as a newly tested runtime SHA.
+- **P1.5 overall NOT_ACCEPTED:** 24 genuine-data tests still SKIP; full repository and Web build/visual stage gates remain separate.
+- Developer branch heads preserved: `work/codex-p15-20261018` @ `f8232e10`, `work/strategist-role-20261018` @ `3a44bed2`. Frozen old analyzer REWORK; no wholesale merge.
 
-# ACTIVE — Agentra whole-role Reporter + Monitor projects
+## NEXT SINGLE ACTION (Tech Lead; worker implementation NOT_STARTED)
+Pin exact nonoverlapping callable/consumer scopes for two actual source reductions based on the [whole-root assessment](../architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md) and [migration ledger](../architecture/P15_MIGRATION_LEDGER_20261018.md).
+- **Claude developer:** `graphs/nodes/strategist_node.py` bounded pure extraction; preserve caller ABI, prompt/LLM count/timing, State, imports, use-time monkeypatch.
+- **Codex developer:** `apps/operator_ui/data_access_core.py` readonly projection/formatting extraction; preserve bytes for API/UI HTML/JSON and lazy LLM behavior.
+- **Codex Auditor ⇄ Claude Developer** and **Claude Auditor ⇄ Codex Developer** independently audit only changed risk boundaries; GPT chooses selective integration and verifies the new integration SHA.
+- No new analyzer, duplicate test-matrix runs or new branches by default; trading authority paths remain SAFETY_LOCK. Only user-authorized `main` promotion and branch cleanup.
 
-**State:** V3_USER_TARGET_FROZEN / ROLE_PROJECTS_AUTHORIZED / WORKERS_NOT_STARTED / FIRST_PASS_WITH_DEBT / MAIN_FROZEN / No ZIP in CI (changed-files-only user ZIP outside CI).
-**ACTIVE ONE CONTROL ORDER:** [ACTIVATION.md](../work_projects/ACTIVATION.md) covering the two isolated role lanes. Each lane reads its assigned role project only; no separate small-file approval checkpoints.
-**Runtime BASE:** `d773709ba2f70471fad9badba4f92400f7818319`. **User authorization:** 2026-10-17 11:09 KST, "진행시켜".
-**Next:** deliver one-time instructions to local Claude/Codex; no worker process has been started by Work. [Actual evidence status](../work_projects/STATUS.json).
-**Branches:** Claude `work/reporter-role-20261017`; Codex `work/monitor-role-20261017`; Work `integration/p15-t4-pr5-convergence-20261015`. Source/test writes disjoint; shared docs/gates/CI/UI notes integrator-only. Both workers start from the same documentation activation commit.
-**Architecture:** [TREE_V3_FROZEN.md](../architecture/TREE_V3_FROZEN.md) unchanged. No orders, live LLM, production writes, protected authority changes or main merge.
-**Previous cycle:** [Handoff](../work_projects/PRIOR_CYCLE_HANDOFF.md); P15-058/PERF work not repeated. Existing P2/P3 and P1.5 final acceptance remain open.
-**Reports:** existing 00/06/12/18 Asia/Seoul; report does not stop development; no new automation or external controller.
-**Historical CI provenance only:** [P15_FAST_TRACK_WAVE_S_020.md](P15_FAST_TRACK_WAVE_S_020.md), `refactor/p1.5`, MAIN_FROZEN. This preserves historical test links; it is NOT an active task/branch.
-
-**Historical stage-state provenance only:** The pinned acceptance inventory records
-`P1.5.2 OPEN` and `P1.5.3 NOT_AUTHORIZED`. These historical markers preserve the
-original stage checks; they do not reactivate an old work order, replace the
-whole-role activation above, or authorize any stage transition or main merge.
+## Historical sources
+Prior versions of CURRENT, COMMON_RULES and work-order README are permanently available at Git SHA `c5fe8a9a`; older `archive/`, `evidence/`, `P15-*.md` and `work_projects/` are provenance, **not operating orders**.

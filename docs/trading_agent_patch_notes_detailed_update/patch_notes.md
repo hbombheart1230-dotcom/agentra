@@ -4,6 +4,17 @@
 
 총 **45개 릴리즈/변경 구간**을 수록한다. 작은 버그 수정 하나하나를 전부 카드화하기보다, UI에서 의미가 있는 기능·정책·평가 단위로 묶되 각 카드 안에서 실제 세부 변경을 보여주는 방식이다.
 
+## 2026-10-18 · P1.5 작업지시 문서 단일화 (운영 규칙·문서만)
+**Stage:** Maintainability
+**Tags:** DOCS · GOVERNANCE
+
+- `CURRENT.md`, `COMMON_RULES.md`, `work_orders/README.md`에서 이전 Reporter/Monitor `ACTIVE / WORKERS_NOT_STARTED`, 옛 단일 `refactor/p1.5` 브랜치, 고정 Claude 구현·Codex 감사 지시를 현재 명령에서 제거했습니다.
+- **실시간 실행 상태는 Issue #20 하나**, `ENGINEERING_DELIVERY_POLICY.md`는 상시 절차, `AGENTS.md`/`CLAUDE.md`는 각 도구 진입점으로 역할을 구분했습니다. 이전 문서 전문은 Git `c5fe8a9a` 및 기존 기록에 보존했습니다.
+- S5+UEF9 통합 코드 `c5fe8a9a`의 필수 CI [39133879389](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39133879389)는 **6/6 성공** 확인. 다음 리팩터링 구현과 P1.5 전체 최종 수용은 별개이며, 코드/테스트/거래 권한은 이번에 변경하지 않았습니다.
+- 개발자/감사자 Issue #16~#19의 기존 과제는 종료하고 차기 명시적 SHA 범위가 승인될 때만 다시 할당하도록 안내합니다. `main`, 브랜치와 운영 작업 트리는 변경하지 않았습니다.
+
+근거: `docs/refactor/work_orders/CURRENT.md`, `COMMON_RULES.md`, [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20).
+
 ## 2026-10-18 · Permanent delivery-first engineering rule (설계/운영 규칙만)
 **Stage:** Architecture Freeze
 **Tags:** ARCHITECTURE · AUDIT · REFACTOR

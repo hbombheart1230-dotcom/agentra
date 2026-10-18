@@ -1,8 +1,34 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 296,
+  "entry_count": 297,
   "entries": [
+    {
+      "date": "2026-10-18",
+      "version": "P1.5 WORK ORDER CANONICALIZATION 20261018",
+      "title": "Retire stale ACTIVE orders and unify current Agentra developer/auditor handoff",
+      "stage": "Maintainability",
+      "types": [
+        "DOCS",
+        "GOVERNANCE"
+      ],
+      "status": "current",
+      "summary": "Rewrite CURRENT, COMMON_RULES and work_orders README as a single-authority current instruction chain: live Issue #20, delivery-first policy, paused role lanes and verified S5+UEF9 integration; archive old activation and single-branch claims through immutable Git history.",
+      "details": [
+        "Stop old Reporter/Monitor NOT_STARTED activation, old refactor/p1.5 one-branch and Claude-only-development / Codex-only-audit assertions from being read as active commands; preserve the previous exact full documents in Git commit c5fe8a9a.",
+        "Verify c5fe8a9a integration GitHub Actions run 39133879389 6/6 SUCCESS. Previous Codex f8232e10 independent audit PASS; these docs-only edits DO NOT change trading runtime or requalify P1.5 final release.",
+        "Single current master issue #20 is the only mutable status surface; #16–#19 previous tasks complete and should remain inactive until next explicit SHA-scoped assignment. No new active analyzer or other meta-tooling.",
+        "No code/guard/production writes, main merge or branch deletion. Preserve existing UI patchnotes and update both JSON + Markdown."
+      ],
+      "impact": "Documentation-only cleanup; improves correct worker startup and chat-to-chat continuity while preserving old Git evidence; no trading behavior change.",
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/COMMON_RULES.md",
+        "docs/refactor/work_orders/README.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "https://github.com/hbombheart1230-dotcom/agentra/issues/20"
+      ]
+    },
     {
       "date": "2026-10-18",
       "version": "P1.5 S5 UEF9 selective integration 20261018",
