@@ -105,3 +105,43 @@ The **seven** `libs.agents` paths are only stable public role interfaces. No sec
 - P1.5 not yet FINAL_ACCEPTED, UEF9 was blocked on clean-clone fixture at older reviewed candidate, 24 real-data SKIP separate.
 - Root source/tree analysis here is structural; **not a full AST function proof or live runtime/parity test**.
 - Branch evidence and retirement decisions are in `P15_BRANCH_RETIREMENT_20261018.md`. Remote has 11 branches including 7 historical; currently 2 historical are confirmed ancestors, but deletion remains blocked by local worktree/user safety and absent connector delete-ref.
+
+## G. Dependency direction and operational reality
+
+```mermaid
+flowchart TD
+  EXT["Scheduler / CLI scripts / API / Operator UI"] --> CR["graphs/commander_runtime.py<br/>operational Commander"]
+  EXT --> READ["apps/api + apps/operator_ui<br/>read-only queries / render"]
+  CR --> S["Strategist: frame / LLM context"]
+  S --> SC["Scanner: candidate rank/Top-1"]
+  SC --> M["Monitor: entry/exit OrderIntent"]
+  M --> D["Decision/Guard/Portfolio"]
+  D --> APPROVE["Supervisor: risk + approval / intent CAS"]
+  APPROVE --> EX["graphs/nodes/execute_from_packet.py<br/>guarded Executor"]
+  EX --> K["libs/execution + libs/kiwoom<br/>broker order mutation"]
+  CR --> REP["Reporter: read models / persisted reporting"]
+  REP --> READ
+  REP --> UEF["libs/reporting/evaluation/daily_uef_pipeline.py<br/>single canonical UEF publisher"]
+  SC -. candidate inputs .-> STR["libs/strategies + read / market_data"]
+  S -. evidence .-> RESEARCH["libs/research / strategy feedback"]
+  M -. telemetry .-> REP
+  EX -. execution evidence .-> REP
+```
+
+**Caution:** Arrows above show intended *logical responsibility* based on sampled source imports and known operational flow, not a traced all-path runtime call graph. Supervisor rejection must occur **before** Executor broker submit. The decision and portfolio nodes are not permission to bypass approval. `graphs/trading_graph.py` and its `executor_node.py` remain M17 graph-shaped/test STUBs separate from the `execute_from_packet` operational route.
+
+```mermaid
+flowchart LR
+  UI["apps/ UI+API"] --> RM["read models / immutable contracts"]
+  GRAPH["graphs/ adapters"] --> ROLES["libs/agents/ role public interfaces"]
+  ROLES --> OWN["existing role runtime owners"]
+  OWN --> CT["libs/contracts/"]
+  OWN --> DOM["strategies / market / research"]
+  SAFE["Supervisor + Executor SAFETY_LOCK"] --> BROKER["kiwoom / durable order ownership"]
+  OWN -. "OrderIntent only" .-> SAFE
+  RM -. "must never import broker" .-x BROKER
+```
+
+**Observed inversion to repair later:** `libs/contracts/agent_outputs.py` currently imports `libs/runtime/decision_observability.py` and other runtime enrichers. A true pure-DTO contract layer must not depend on runtime side effects; work toward separation with output-byte and import-identity parity, not sudden import rewrite.
+
+**Root closure owner:** GPT Tech Lead owns final root-folder boundaries and explicit per-path moves; developers implement only approved exact leaf slices; auditors verify code behavior and effects. No static classifier perfection loop.
