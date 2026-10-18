@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 290,
+  "entry_count": 291,
   "entries": [
+    {
+      "date": "2026-10-18",
+      "version": "ENGINEERING-DELIVERY-FIRST-20261018",
+      "title": "Standing delivery-first, integration-owned engineering policy",
+      "stage": "Architecture Freeze",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "AUDIT"
+      ],
+      "summary": "Permanent team operating policy: finish accepted changes on integration, eliminate recursive analyzer/audit/test loops, distinguish developer/independent/integration/final gates, and maintain whole-root architecture ownership without changing trading safeguards.",
+      "details": [
+        "Replace conflicting dated root AGENTS.md/CLAUDE.md role instructions with a single stable policy and current task links; GPT Tech Lead owns architecture, merge readiness, and project closure.",
+        "Developers test changed contracts, independent auditors test changed risk boundaries, stage integrator verifies composed integration SHA; do not duplicate 3,100+ full tests on every developer branch without a demonstrated new risk.",
+        "Define IMPLEMENTED, AUDITED, INTEGRATED and RELEASE_ACCEPTED separately; unknown/unrun gates are never described as PASS.",
+        "Preserve all trading safety authority, UEF golden, Step5C, broker guards, immutable evidence; keep unsafe classifier REWORK/FROZEN and no unapproved code/helper moves.",
+        "Restrict new branches/meta-tools, retain unique historical history, update both UI notes for relevant changes and deliver only changed-file ZIPs."
+      ],
+      "impact": "Governance/documentation only: no trading runtime, broker, strategy, CI, expected values or test code changed. P1.5 not final accepted.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/CURRENT.md"
+      ],
+      "status": "current"
+    },
     {
       "date": "2026-10-18",
       "version": "P1.5 ROOT ARCHITECTURE TECHLEAD 20261018",

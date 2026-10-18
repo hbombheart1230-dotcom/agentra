@@ -4,6 +4,20 @@
 
 총 **45개 릴리즈/변경 구간**을 수록한다. 작은 버그 수정 하나하나를 전부 카드화하기보다, UI에서 의미가 있는 기능·정책·평가 단위로 묶되 각 카드 안에서 실제 세부 변경을 보여주는 방식이다.
 
+## 2026-10-18 · Permanent delivery-first engineering rule (설계/운영 규칙만)
+**Stage:** Architecture Freeze
+**Tags:** ARCHITECTURE · AUDIT · REFACTOR
+
+- 개발자를 위한 규칙과 감사자를 위한 규칙을 분리하고, **작업 SHA 확인 → 변경분 독립 검증 → 지팀장 선택 통합 → 통합 SHA 검사 → 단계 종료**를 상시 순서로 고정했습니다.
+- 기존 3천 건 이상 전체 테스트의 무조건적 재실행, 정적 분석기 재감사/반례 공장, 새 브랜치·문서·인벤토리 무한 증식을 금지했습니다. 다만 변경된 위험 경계·안전 회귀는 반드시 검증합니다.
+- `IMPLEMENTED/AUDITED/INTEGRATED/RELEASE_ACCEPTED`를 분리해 개발 브랜치 PASS를 통합 완료로 포장하지 않습니다.
+- 프로젝트 **루트 전체**의 Owner/중복/호환성 정리가 목표이며, 실제 거래 권한·Step5C/UNKNOWN·UEF oracle·실데이터/고위험 조건은 그대로 보호합니다.
+- 공통 정책: `docs/ENGINEERING_DELIVERY_POLICY.md`. 루트 `AGENTS.md`, `CLAUDE.md`, `README.md`, 현재 작업 안내에서 이 규칙을 바로 찾을 수 있게 연결했습니다.
+
+**영향:** 문서/팀 운영 기준만 바뀌었으며 거래 코드·정책·테스트 기대값·CI 구성은 바뀌지 않았습니다. P1.5 최종 PASS를 뜻하지 않습니다.
+
+---
+
 ## 2026-10-18 · P1.5 전체 루트 아키텍처 직접 실사 (설계·문서 변경만)
 **Stage:** Architecture Freeze
 **Tags:** ARCHITECTURE · REFACTOR · AUDIT

@@ -1,5 +1,9 @@
 ﻿# Trading Agent System - Agentra
 
+## Standing development/verification/integration rule
+
+All GPT, Codex and Claude developer/auditor work follows **[DELIVERY FIRST / NO RECURSIVE AUDIT](docs/ENGINEERING_DELIVERY_POLICY.md)**. Finish verified source changes on integration before generating new analyzer/tooling/checklist loops. Targeted independent audit and exact-SHA CI are complementary; do not repeat full developer-branch pytest needlessly. This rule is permanent across P1.5–P8 and does not weaken safety gates.
+
 ## 2026-10-18 · Current P1.5 source-of-truth (ROOT-TO-LEAF)
 
 > **Current analysis, not a deployable release:** integration code snapshot `5cb90b39` (before architecture-only documentation commits), final P1.5 **NOT_ACCEPTED**. The M20 overview below is **historical project description**, not evidence that all current 7 roles have independent public callable owners. Broker/approval/order authority remains at its existing SAFETY_LOCK locations.

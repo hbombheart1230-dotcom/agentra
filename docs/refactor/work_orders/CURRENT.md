@@ -1,3 +1,7 @@
+> **STANDING USER-APPROVED DEVELOPMENT RULE (2026-10-18):** [docs/ENGINEERING_DELIVERY_POLICY.md](../../ENGINEERING_DELIVERY_POLICY.md) controls all four dev/audit roles. **Do not reopen prior tests/inventories/analyzer repairs without a changed-risk scope**. Integrate audited commits promptly, with one pinned integration SHA and proportionate tests; whole-repo/real-evidence/UI final gates are stage-level. Stop after verdict, do not expand into permanent LONG-RUN queues. Below historical task descriptions are superseded where inconsistent.
+
+---
+
 > **SUPERSEDING CURRENT STATUS (2026-10-18):** The 2026-10-17 Reporter/Monitor activation order below is retained as **historical evidence only**. Its `WORKERS_NOT_STARTED`/older integration branch pointers **must not be used as current status**. P1.5 currently uses protected main, `integration/p15-monitor-shared-20261018`, `work/codex-p15-20261018`, `work/strategist-role-20261018`. User priority is whole-root structure & UEF9 clean CI, **not** more Commander static classifier repairs. Source of truth: [current master #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20), [whole-repo root audit](../architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md), and [frozen V3 target](../architecture/TREE_V3_FROZEN.md). The actual 2026-10-18 issue instructions #16–#19 override conflicting old queue items; they do not trigger CLI processes themselves. `main` merge, broker authority changes, new unverified migrations and branch deletion remain on hold.
 
 ---
