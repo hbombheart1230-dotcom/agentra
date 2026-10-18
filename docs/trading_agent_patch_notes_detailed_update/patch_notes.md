@@ -3606,3 +3606,5 @@ Monitor retained-boundary checkpoint: 359 retained definitions excluded from add
 Shared candidate: strict Reporter 313-body facade restoration, Monitor 14-module/20-body mappings, F1 historical provenance and F2 router discovery implemented. Shared contracts 45 PASS normal/-O; FastAPI 0.143 API 9 PASS. Whole selected matrix: 2865 PASS / 1 FAIL / 24 SKIP; UEF9 failure under investigation, CI and independent review pending. No final acceptance.
 
 Expanded direct negative gates: 75 PASS under -O. UEF9 failure reproduced unchanged on BASE; no waiver. Final test scratch constrained to ignored candidate .agentra-worktmp under sandbox policy 15.
+
+Exact code SHA 95c11cacb9c73ae3d97d89e2061372762efff12b: Windows normal and -O each 2895 PASS / 1 FAIL / 24 SKIP (2920 tests, zero setup ERROR). FastAPI 0.143 normal/-O each 9 PASS. No full PASS; baseline-reproduced UEF9 failure and missing real-artifact skips retained. Hosted CI and independent Claude audit NOT_RUN.

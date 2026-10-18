@@ -1,0 +1,864 @@
+{
+  "status": "FAIL",
+  "acceptance": "NOT_SELF_APPROVED / CLAUDE_INDEPENDENT_AUDIT_PENDING / MAIN_FROZEN",
+  "code_sha": "95c11cacb9c73ae3d97d89e2061372762efff12b",
+  "base_sha": "d773709ba2f70471fad9badba4f92400f7818319",
+  "inputs": {
+    "reporter": "443f90362ad5970a4731685311a45e8e0f6b55e4",
+    "monitor": "4bc4250844093050438d8a9c29f5842991ad1c3a"
+  },
+  "runs": {
+    "normal": {
+      "command": [
+        "C:\\Agentra\\venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_shared_reporter_facade_guard.py",
+        "tests/test_shared_role_contracts.py",
+        "tests/test_shared_stage_provenance.py",
+        "tests/test_p152_integration_acceptance_inventory.py",
+        "tests/test_patch_notes_sync.py",
+        "tests/apps/api/test_patch_notes.py",
+        "tests/apps/api/test_isolation.py",
+        "tests/test_p173_p058_integration_contracts.py",
+        "tests/test_work_reporter_seed_migration.py",
+        "tests/test_work_reporter_r4_facade_bodies.py",
+        "tests/test_work_reporter_r8_read_contracts.py",
+        "tests/test_work_reporter_r8_read_via_callback_parity.py",
+        "tests/test_work_reporter_renderer_bytes.py",
+        "tests/test_work_reporter_r10_retained_io_contracts.py",
+        "tests/test_work_reporter_r10_artifact_parity.py",
+        "tests/test_work_reporter_r11_repo_hygiene.py",
+        "tests/test_p152_facade_symbol_ledger.py",
+        "tests/test_work_monitor_role_contracts.py",
+        "tests/test_work_monitor_continuous.py",
+        "tests/test_work_monitor_body_views.py",
+        "tests/test_work_monitor_observation_views.py",
+        "tests/test_work_monitor_exit_labels.py",
+        "tests/test_work_monitor_policy_trace_views.py",
+        "tests/test_work_monitor_annotation_views.py",
+        "tests/test_work_monitor_scope_accounting.py",
+        "tests/test_work_monitor_retained_boundary.py",
+        "tests/test_work_monitor_m9_offline.py",
+        "tests/test_m17_monitor_emits_intent_only.py",
+        "tests/test_monitor_candidate_cascade.py",
+        "tests/test_m29_4_monitor_position_sizing.py",
+        "tests/test_monitor_exit_guard.py",
+        "tests/test_monitor_exit_price_freshness.py",
+        "tests/test_monitor_price_source_resolution.py",
+        "tests/test_p157_third_pass_t1_extraction_gates.py",
+        "tests/test_p158_third_pass_t2_extraction_gates.py",
+        "tests/test_p159_current_owner_contract_gates.py",
+        "tests/test_p159_static_purity_closure.py",
+        "tests/test_p159_ownership_matrix_provenance.py",
+        "tests/test_p161_t35_extraction_gates.py",
+        "tests/test_p162_t4a_extraction_gates.py",
+        "tests/test_p163_t4b_extraction_gates.py",
+        "tests/test_p164_t4c_extraction_gates.py",
+        "tests/test_p165_t4d_extraction_gates.py",
+        "tests/test_uef1_work_package_a_canonical_contract.py",
+        "tests/test_uef9_formal_authority.py",
+        "tests/test_scanner_candidate_risk.py",
+        "tests/test_p168_wave_b_shim_verifier_negatives.py",
+        "tests/test_work_monitor_m9_native.py",
+        "--junitxml=C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp\\shared-48xuo1pd\\junit.xml"
+      ],
+      "exit": 1,
+      "suite": "all",
+      "optimized": false,
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "fastapi": "0.142.2",
+      "sha": "95c11cacb9c73ae3d97d89e2061372762efff12b",
+      "scratch": "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp\\shared-48xuo1pd",
+      "retention": "Failed evidence retained for at most seven days; owner cleanup only.",
+      "counts": {
+        "tests": 2920,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 24,
+        "passed": 2895
+      },
+      "junit_sha256": "6c7ec00d56628a8f6627221963a26551740d7c76efe8733f806ccce792553d34",
+      "failures": [
+        {
+          "test": "tests.test_uef9_formal_authority::test_a_valid_current_authority",
+          "message": "AssertionError: assert {'COMPARABLE'...MPARABLE': 91} == {'COMPARABLE'...MPARABLE': 84}\n  \n  Omitting 1 identical items, use -vv to show\n  Differing items:\n  {'NOT_COMPARABLE': 91} != {'NOT_COMPARABLE': 84}\n  {'CONDITIONAL': 0} != {'CONDITIONAL': 7}\n  Use -v to get more diff"
+        }
+      ],
+      "skip_reasons": {
+        "real artifact not present in this checkout: reports/evaluation/same_symbol_sequences/2026-07-10/same_symbol_sequence.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/same_symbol_sequences/2026-07-02/same_symbol_sequence.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/baseline_samsung_hynix/2026-09-11/q10_forward_validation/q10_forward_validation_report.md": 2,
+        "real artifact not present in this checkout: reports/evaluation/baseline_samsung_hynix/2026-09-11/baseline_samsung_hynix_forward_returns.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/opportunity_engine_shadow/2026-09-11/opportunity_engine_virtual_trades.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/baseline_btc_woori_tech/2026-09-11/q12_candidate_input.json": 1,
+        "real artifact not present in this checkout: data/logs/opening_rank1_controlled_probe/2026-09-10/probe_submissions.json": 11,
+        "real artifact not present in this checkout: reports/evaluation/opening_rank1_shadow/opening_rank1_shadow_cumulative.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/agent_effectiveness/2026-09-11/strategist_stage2_authority_review.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/daily/2026-09-11/no_trade_attribution_report.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/daily/2026-09-09/horizon_compliance_report.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/daily/2026-09-11/attribution_score_v0.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/alpha_research_board/2026-09-11/alpha_research_board.json": 1
+      },
+      "by_module": {
+        "tests.test_shared_reporter_facade_guard.FacadeGuardTests": {
+          "PASS": 13
+        },
+        "tests.test_shared_role_contracts": {
+          "PASS": 40
+        },
+        "tests.test_shared_stage_provenance": {
+          "PASS": 2
+        },
+        "tests.test_p152_integration_acceptance_inventory": {
+          "PASS": 3
+        },
+        "tests.test_patch_notes_sync": {
+          "PASS": 2
+        },
+        "tests.apps.api.test_patch_notes": {
+          "PASS": 3
+        },
+        "tests.apps.api.test_isolation": {
+          "PASS": 9
+        },
+        "tests.test_p173_p058_integration_contracts": {
+          "PASS": 3
+        },
+        "tests.test_work_reporter_seed_migration": {
+          "PASS": 73
+        },
+        "tests.test_work_reporter_r4_facade_bodies": {
+          "PASS": 1608
+        },
+        "tests.test_work_reporter_r8_read_contracts": {
+          "PASS": 3
+        },
+        "tests.test_work_reporter_r8_read_via_callback_parity": {
+          "PASS": 25
+        },
+        "tests.test_work_reporter_renderer_bytes": {
+          "PASS": 54
+        },
+        "tests.test_work_reporter_r10_retained_io_contracts": {
+          "PASS": 54
+        },
+        "tests.test_work_reporter_r10_artifact_parity": {
+          "PASS": 3
+        },
+        "tests.test_work_reporter_r11_repo_hygiene": {
+          "PASS": 34
+        },
+        "tests.test_p152_facade_symbol_ledger": {
+          "PASS": 2
+        },
+        "tests.test_work_monitor_role_contracts": {
+          "PASS": 148
+        },
+        "tests.test_work_monitor_continuous": {
+          "PASS": 73
+        },
+        "tests.test_work_monitor_body_views": {
+          "PASS": 52
+        },
+        "tests.test_work_monitor_observation_views": {
+          "PASS": 20
+        },
+        "tests.test_work_monitor_exit_labels": {
+          "PASS": 102
+        },
+        "tests.test_work_monitor_policy_trace_views": {
+          "PASS": 63
+        },
+        "tests.test_work_monitor_annotation_views": {
+          "PASS": 49
+        },
+        "tests.test_work_monitor_scope_accounting": {
+          "PASS": 5
+        },
+        "tests.test_work_monitor_retained_boundary": {
+          "PASS": 2
+        },
+        "tests.test_work_monitor_m9_offline": {
+          "PASS": 17
+        },
+        "tests.test_m17_monitor_emits_intent_only": {
+          "PASS": 2
+        },
+        "tests.test_monitor_candidate_cascade": {
+          "PASS": 14
+        },
+        "tests.test_m29_4_monitor_position_sizing": {
+          "PASS": 5
+        },
+        "tests.test_monitor_exit_guard": {
+          "PASS": 114
+        },
+        "tests.test_monitor_exit_price_freshness": {
+          "PASS": 9
+        },
+        "tests.test_monitor_price_source_resolution": {
+          "PASS": 1
+        },
+        "tests.test_p157_third_pass_t1_extraction_gates": {
+          "PASS": 9
+        },
+        "tests.test_p158_third_pass_t2_extraction_gates": {
+          "PASS": 11
+        },
+        "tests.test_p159_current_owner_contract_gates": {
+          "PASS": 14
+        },
+        "tests.test_p159_static_purity_closure": {
+          "PASS": 24
+        },
+        "tests.test_p159_ownership_matrix_provenance": {
+          "PASS": 5
+        },
+        "tests.test_p161_t35_extraction_gates": {
+          "PASS": 11
+        },
+        "tests.test_p162_t4a_extraction_gates": {
+          "PASS": 8
+        },
+        "tests.test_p163_t4b_extraction_gates": {
+          "PASS": 10
+        },
+        "tests.test_p164_t4c_extraction_gates": {
+          "PASS": 11
+        },
+        "tests.test_p165_t4d_extraction_gates": {
+          "PASS": 10
+        },
+        "tests.test_uef1_work_package_a_canonical_contract": {
+          "PASS": 102,
+          "SKIP": 24
+        },
+        "tests.test_uef9_formal_authority": {
+          "FAIL": 1,
+          "PASS": 19
+        },
+        "tests.test_scanner_candidate_risk": {
+          "PASS": 5
+        },
+        "tests.test_p168_wave_b_shim_verifier_negatives": {
+          "PASS": 48
+        },
+        "tests.test_work_monitor_m9_native": {
+          "PASS": 1
+        }
+      },
+      "native_full": {
+        "records": 149,
+        "variants": 2879,
+        "effects": 1541,
+        "mismatches": 0,
+        "sample_mod": 1,
+        "seconds": 243.04556749999756,
+        "fixture_sha256": "9dd0db47b52433c871e4e153b0b3b24102cb8eef0ead96e896dde3a005b8d6bd",
+        "claim": "Synthetic native contract/effect parity; NOT real report/LLM parity."
+      }
+    },
+    "optimized": {
+      "command": [
+        "C:\\Agentra\\venv\\Scripts\\python.exe",
+        "-O",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_shared_reporter_facade_guard.py",
+        "tests/test_shared_role_contracts.py",
+        "tests/test_shared_stage_provenance.py",
+        "tests/test_p152_integration_acceptance_inventory.py",
+        "tests/test_patch_notes_sync.py",
+        "tests/apps/api/test_patch_notes.py",
+        "tests/apps/api/test_isolation.py",
+        "tests/test_p173_p058_integration_contracts.py",
+        "tests/test_work_reporter_seed_migration.py",
+        "tests/test_work_reporter_r4_facade_bodies.py",
+        "tests/test_work_reporter_r8_read_contracts.py",
+        "tests/test_work_reporter_r8_read_via_callback_parity.py",
+        "tests/test_work_reporter_renderer_bytes.py",
+        "tests/test_work_reporter_r10_retained_io_contracts.py",
+        "tests/test_work_reporter_r10_artifact_parity.py",
+        "tests/test_work_reporter_r11_repo_hygiene.py",
+        "tests/test_p152_facade_symbol_ledger.py",
+        "tests/test_work_monitor_role_contracts.py",
+        "tests/test_work_monitor_continuous.py",
+        "tests/test_work_monitor_body_views.py",
+        "tests/test_work_monitor_observation_views.py",
+        "tests/test_work_monitor_exit_labels.py",
+        "tests/test_work_monitor_policy_trace_views.py",
+        "tests/test_work_monitor_annotation_views.py",
+        "tests/test_work_monitor_scope_accounting.py",
+        "tests/test_work_monitor_retained_boundary.py",
+        "tests/test_work_monitor_m9_offline.py",
+        "tests/test_m17_monitor_emits_intent_only.py",
+        "tests/test_monitor_candidate_cascade.py",
+        "tests/test_m29_4_monitor_position_sizing.py",
+        "tests/test_monitor_exit_guard.py",
+        "tests/test_monitor_exit_price_freshness.py",
+        "tests/test_monitor_price_source_resolution.py",
+        "tests/test_p157_third_pass_t1_extraction_gates.py",
+        "tests/test_p158_third_pass_t2_extraction_gates.py",
+        "tests/test_p159_current_owner_contract_gates.py",
+        "tests/test_p159_static_purity_closure.py",
+        "tests/test_p159_ownership_matrix_provenance.py",
+        "tests/test_p161_t35_extraction_gates.py",
+        "tests/test_p162_t4a_extraction_gates.py",
+        "tests/test_p163_t4b_extraction_gates.py",
+        "tests/test_p164_t4c_extraction_gates.py",
+        "tests/test_p165_t4d_extraction_gates.py",
+        "tests/test_uef1_work_package_a_canonical_contract.py",
+        "tests/test_uef9_formal_authority.py",
+        "tests/test_scanner_candidate_risk.py",
+        "tests/test_p168_wave_b_shim_verifier_negatives.py",
+        "tests/test_work_monitor_m9_native.py",
+        "--junitxml=C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp\\shared-qmpa0j8b\\junit.xml"
+      ],
+      "exit": 1,
+      "suite": "all",
+      "optimized": true,
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "fastapi": "0.142.2",
+      "sha": "95c11cacb9c73ae3d97d89e2061372762efff12b",
+      "scratch": "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp\\shared-qmpa0j8b",
+      "retention": "Failed evidence retained for at most seven days; owner cleanup only.",
+      "counts": {
+        "tests": 2920,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 24,
+        "passed": 2895
+      },
+      "junit_sha256": "c411b26841d7473f3a25169cdbce2037f92327d42c14f414167914c1508cfe28",
+      "failures": [
+        {
+          "test": "tests.test_uef9_formal_authority::test_a_valid_current_authority",
+          "message": "AssertionError: assert {'COMPARABLE'...MPARABLE': 91} == {'COMPARABLE'...MPARABLE': 84}\n  \n  Omitting 1 identical items, use -vv to show\n  Differing items:\n  {'NOT_COMPARABLE': 91} != {'NOT_COMPARABLE': 84}\n  {'CONDITIONAL': 0} != {'CONDITIONAL': 7}\n  Use -v to get more diff"
+        }
+      ],
+      "skip_reasons": {
+        "real artifact not present in this checkout: reports/evaluation/same_symbol_sequences/2026-07-10/same_symbol_sequence.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/same_symbol_sequences/2026-07-02/same_symbol_sequence.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/baseline_samsung_hynix/2026-09-11/q10_forward_validation/q10_forward_validation_report.md": 2,
+        "real artifact not present in this checkout: reports/evaluation/baseline_samsung_hynix/2026-09-11/baseline_samsung_hynix_forward_returns.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/opportunity_engine_shadow/2026-09-11/opportunity_engine_virtual_trades.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/baseline_btc_woori_tech/2026-09-11/q12_candidate_input.json": 1,
+        "real artifact not present in this checkout: data/logs/opening_rank1_controlled_probe/2026-09-10/probe_submissions.json": 11,
+        "real artifact not present in this checkout: reports/evaluation/opening_rank1_shadow/opening_rank1_shadow_cumulative.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/agent_effectiveness/2026-09-11/strategist_stage2_authority_review.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/daily/2026-09-11/no_trade_attribution_report.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/daily/2026-09-09/horizon_compliance_report.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/daily/2026-09-11/attribution_score_v0.json": 1,
+        "real artifact not present in this checkout: reports/evaluation/alpha_research_board/2026-09-11/alpha_research_board.json": 1
+      },
+      "by_module": {
+        "tests.test_shared_reporter_facade_guard.FacadeGuardTests": {
+          "PASS": 13
+        },
+        "tests.test_shared_role_contracts": {
+          "PASS": 40
+        },
+        "tests.test_shared_stage_provenance": {
+          "PASS": 2
+        },
+        "tests.test_p152_integration_acceptance_inventory": {
+          "PASS": 3
+        },
+        "tests.test_patch_notes_sync": {
+          "PASS": 2
+        },
+        "tests.apps.api.test_patch_notes": {
+          "PASS": 3
+        },
+        "tests.apps.api.test_isolation": {
+          "PASS": 9
+        },
+        "tests.test_p173_p058_integration_contracts": {
+          "PASS": 3
+        },
+        "tests.test_work_reporter_seed_migration": {
+          "PASS": 73
+        },
+        "tests.test_work_reporter_r4_facade_bodies": {
+          "PASS": 1608
+        },
+        "tests.test_work_reporter_r8_read_contracts": {
+          "PASS": 3
+        },
+        "tests.test_work_reporter_r8_read_via_callback_parity": {
+          "PASS": 25
+        },
+        "tests.test_work_reporter_renderer_bytes": {
+          "PASS": 54
+        },
+        "tests.test_work_reporter_r10_retained_io_contracts": {
+          "PASS": 54
+        },
+        "tests.test_work_reporter_r10_artifact_parity": {
+          "PASS": 3
+        },
+        "tests.test_work_reporter_r11_repo_hygiene": {
+          "PASS": 34
+        },
+        "tests.test_p152_facade_symbol_ledger": {
+          "PASS": 2
+        },
+        "tests.test_work_monitor_role_contracts": {
+          "PASS": 148
+        },
+        "tests.test_work_monitor_continuous": {
+          "PASS": 73
+        },
+        "tests.test_work_monitor_body_views": {
+          "PASS": 52
+        },
+        "tests.test_work_monitor_observation_views": {
+          "PASS": 20
+        },
+        "tests.test_work_monitor_exit_labels": {
+          "PASS": 102
+        },
+        "tests.test_work_monitor_policy_trace_views": {
+          "PASS": 63
+        },
+        "tests.test_work_monitor_annotation_views": {
+          "PASS": 49
+        },
+        "tests.test_work_monitor_scope_accounting": {
+          "PASS": 5
+        },
+        "tests.test_work_monitor_retained_boundary": {
+          "PASS": 2
+        },
+        "tests.test_work_monitor_m9_offline": {
+          "PASS": 17
+        },
+        "tests.test_m17_monitor_emits_intent_only": {
+          "PASS": 2
+        },
+        "tests.test_monitor_candidate_cascade": {
+          "PASS": 14
+        },
+        "tests.test_m29_4_monitor_position_sizing": {
+          "PASS": 5
+        },
+        "tests.test_monitor_exit_guard": {
+          "PASS": 114
+        },
+        "tests.test_monitor_exit_price_freshness": {
+          "PASS": 9
+        },
+        "tests.test_monitor_price_source_resolution": {
+          "PASS": 1
+        },
+        "tests.test_p157_third_pass_t1_extraction_gates": {
+          "PASS": 9
+        },
+        "tests.test_p158_third_pass_t2_extraction_gates": {
+          "PASS": 11
+        },
+        "tests.test_p159_current_owner_contract_gates": {
+          "PASS": 14
+        },
+        "tests.test_p159_static_purity_closure": {
+          "PASS": 24
+        },
+        "tests.test_p159_ownership_matrix_provenance": {
+          "PASS": 5
+        },
+        "tests.test_p161_t35_extraction_gates": {
+          "PASS": 11
+        },
+        "tests.test_p162_t4a_extraction_gates": {
+          "PASS": 8
+        },
+        "tests.test_p163_t4b_extraction_gates": {
+          "PASS": 10
+        },
+        "tests.test_p164_t4c_extraction_gates": {
+          "PASS": 11
+        },
+        "tests.test_p165_t4d_extraction_gates": {
+          "PASS": 10
+        },
+        "tests.test_uef1_work_package_a_canonical_contract": {
+          "PASS": 102,
+          "SKIP": 24
+        },
+        "tests.test_uef9_formal_authority": {
+          "FAIL": 1,
+          "PASS": 19
+        },
+        "tests.test_scanner_candidate_risk": {
+          "PASS": 5
+        },
+        "tests.test_p168_wave_b_shim_verifier_negatives": {
+          "PASS": 48
+        },
+        "tests.test_work_monitor_m9_native": {
+          "PASS": 1
+        }
+      },
+      "native_full": {
+        "records": 149,
+        "variants": 2879,
+        "effects": 1541,
+        "mismatches": 0,
+        "sample_mod": 1,
+        "seconds": 242.66979680000804,
+        "fixture_sha256": "9dd0db47b52433c871e4e153b0b3b24102cb8eef0ead96e896dde3a005b8d6bd",
+        "claim": "Synthetic native contract/effect parity; NOT real report/LLM parity."
+      }
+    },
+    "fastapi_0143": {
+      "command": [
+        "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.venv-f143\\Scripts\\python.exe",
+        "-c",
+        "import sys; sys.path.append('C:/Agentra/venv/Lib/site-packages'); import pytest; raise SystemExit(pytest.main(sys.argv[1:]))",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/apps/api/test_isolation.py",
+        "--junitxml=C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp\\shared-phqe3pxh\\junit.xml"
+      ],
+      "exit": 0,
+      "suite": "api",
+      "optimized": false,
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "fastapi": "0.143.0",
+      "sha": "95c11cacb9c73ae3d97d89e2061372762efff12b",
+      "scratch": "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp\\shared-phqe3pxh",
+      "retention": "Failed evidence retained for at most seven days; owner cleanup only.",
+      "counts": {
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 9
+      },
+      "junit_sha256": "e311223de13707398fee057906d15a47b95188b092e82d7fa9f7d67253568bb2",
+      "failures": [],
+      "skip_reasons": {},
+      "by_module": {
+        "tests.apps.api.test_isolation": {
+          "PASS": 9
+        }
+      }
+    },
+    "fastapi_0143_optimized": {
+      "command": [
+        "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.venv-f143\\Scripts\\python.exe",
+        "-O",
+        "-c",
+        "import sys; sys.path.append('C:/Agentra/venv/Lib/site-packages'); import pytest; raise SystemExit(pytest.main(sys.argv[1:]))",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/apps/api/test_isolation.py",
+        "--junitxml=C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp\\shared-wm4j93s2\\junit.xml"
+      ],
+      "exit": 0,
+      "suite": "api",
+      "optimized": true,
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "fastapi": "0.143.0",
+      "sha": "95c11cacb9c73ae3d97d89e2061372762efff12b",
+      "scratch": "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp\\shared-wm4j93s2",
+      "retention": "Failed evidence retained for at most seven days; owner cleanup only.",
+      "counts": {
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 9
+      },
+      "junit_sha256": "ad18ec59d2bee30e09497c83604468bec82323101b9095736c590298f5ba9c31",
+      "failures": [],
+      "skip_reasons": {},
+      "by_module": {
+        "tests.apps.api.test_isolation": {
+          "PASS": 9
+        }
+      }
+    },
+    "uef9_same_env_base": {
+      "base": "d773709ba2f70471fad9badba4f92400f7818319",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "command": [
+        "C:\\Agentra\\venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_uef9_formal_authority.py",
+        "--junitxml=C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp\\uef-baseline-h6jeavuh\\baseline.xml"
+      ],
+      "exit": 1,
+      "fixture_policy": "Unmodified frozen Git archive; no production reports copied or fabricated.",
+      "counts": {
+        "tests": 20,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 19
+      },
+      "junit_sha256": "30ba9d148f69921c1e1b57b21c8738c83fe16ba9ea2dfe708a49d2cf01ad89a5",
+      "failures": [
+        {
+          "test": "tests.test_uef9_formal_authority::test_a_valid_current_authority",
+          "message": "AssertionError: assert {'COMPARABLE'...MPARABLE': 91} == {'COMPARABLE'...MPARABLE': 84}\n  \n  Omitting 1 identical items, use -vv to show\n  Differing items:\n  {'NOT_COMPARABLE': 91} != {'NOT_COMPARABLE': 84}\n  {'CONDITIONAL': 0} != {'CONDITIONAL': 7}\n  Use -v to get more diff"
+        }
+      ],
+      "skip_reasons": {},
+      "by_module": {
+        "tests.test_uef9_formal_authority": {
+          "FAIL": 1,
+          "PASS": 19
+        }
+      }
+    }
+  },
+  "optimization_limit": "Whole pytest processes invoked with -O; pre-existing replay tests retain their own child bootstrap flags. Dedicated shared mutation child and FastAPI 0.143 probes explicitly invoke -O.",
+  "write_audit": "Existing conftest production-path manifest audit uses its default fast tier; no violation reported in completed runs. Exhaustive full-tier production-path audit NOT_RUN.",
+  "file_loc": {
+    "libs/agents/monitor/events/cycle_event_payloads.py": 136,
+    "libs/agents/monitor/events/cycle_log_trace_payloads.py": 171,
+    "libs/agents/monitor/projections/cycle_detail_projection.py": 192,
+    "libs/agents/monitor/projections/cycle_detail_projection_exit_decision_detail.py": 271,
+    "libs/agents/monitor/projections/cycle_output_projection.py": 285,
+    "libs/agents/monitor/projections/cycle_output_projection_value_state_monitor.py": 37,
+    "libs/agents/monitor/projections/cycle_posture_projection.py": 253,
+    "libs/agents/monitor/projections/entry_evidence.py": 47,
+    "libs/agents/monitor/projections/entry_focus_output_projection.py": 33,
+    "libs/agents/monitor/projections/entry_state_views.py": 123,
+    "libs/agents/monitor/projections/exit_axis_labels.py": 62,
+    "libs/agents/monitor/projections/feature_context_views.py": 69,
+    "libs/agents/monitor/projections/observability.py": 290,
+    "libs/agents/monitor/projections/order_lifecycle.py": 78,
+    "libs/agents/monitor/projections/policy_output_projection.py": 135,
+    "libs/agents/monitor/projections/policy_trace_views.py": 337,
+    "libs/agents/monitor/projections/scanner_monitor_handoff_projection.py": 22,
+    "libs/agents/monitor/projections/signal_evidence_defaults.py": 173,
+    "libs/agents/monitor/projections/signal_explanation.py": 63,
+    "libs/agents/reporter/__init__.py": 1,
+    "libs/agents/reporter/narrative/__init__.py": 1,
+    "libs/agents/reporter/narrative/agent_pipeline_trace_r8_bodies_01.py": 136,
+    "libs/agents/reporter/narrative/markdown_clean_bodies_01.py": 100,
+    "libs/agents/reporter/narrative/narrative_axes.py": 181,
+    "libs/agents/reporter/narrative/news_headlines.py": 143,
+    "libs/agents/reporter/narrative/news_scanner_contribution.py": 178,
+    "libs/agents/reporter/narrative/news_text.py": 116,
+    "libs/agents/reporter/narrative/pipeline_trace_bodies_01.py": 180,
+    "libs/agents/reporter/narrative/post_exit_recap_bodies_01.py": 320,
+    "libs/agents/reporter/narrative/post_exit_recap_bodies_02.py": 22,
+    "libs/agents/reporter/narrative/post_exit_shadow_recap_r8_bodies_01.py": 68,
+    "libs/agents/reporter/narrative/reasoning_trace.py": 229,
+    "libs/agents/reporter/narrative/report_ai_bodies_01.py": 66,
+    "libs/agents/reporter/narrative/scanner_basis.py": 119,
+    "libs/agents/reporter/narrative/scanner_evidence_fit.py": 163,
+    "libs/agents/reporter/narrative/scanner_selection_trace.py": 114,
+    "libs/agents/reporter/narrative/single_trade_report_bodies_01.py": 73,
+    "libs/agents/reporter/narrative/single_trade_report_r8_bodies_01.py": 128,
+    "libs/agents/reporter/narrative/story_provenance_bodies_01.py": 135,
+    "libs/agents/reporter/narrative/strategist_quant_context_report.py": 125,
+    "libs/agents/reporter/narrative/strategy_memory_md_bodies_01.py": 284,
+    "libs/agents/reporter/narrative/strategy_memory_md_bodies_02.py": 127,
+    "libs/agents/reporter/narrative/symbol_trade_report_bodies_01.py": 315,
+    "libs/agents/reporter/narrative/symbol_trade_report_bodies_02.py": 51,
+    "libs/agents/reporter/narrative/symbol_trade_report_r8_bodies_01.py": 138,
+    "libs/agents/reporter/narrative/trade_execution_outcome_text.py": 202,
+    "libs/agents/reporter/narrative/trade_explain_bodies_01.py": 224,
+    "libs/agents/reporter/narrative/trade_explain_r8_bodies_01.py": 123,
+    "libs/agents/reporter/narrative/trade_fallback_text.py": 32,
+    "libs/agents/reporter/narrative/trade_report_common_r9_bodies_01.py": 122,
+    "libs/agents/reporter/narrative/trade_report_post_exit_shadow.py": 161,
+    "libs/agents/reporter/narrative/trade_reporter_status_text.py": 77,
+    "libs/agents/reporter/narrative/truth_source_labels.py": 83,
+    "libs/agents/reporter/read_models/__init__.py": 1,
+    "libs/agents/reporter/read_models/bundle_assembly_bodies_01.py": 298,
+    "libs/agents/reporter/read_models/bundle_state_bodies_01.py": 136,
+    "libs/agents/reporter/read_models/chart_structure_decision_hint_summary.py": 240,
+    "libs/agents/reporter/read_models/compact_input_bodies_01.py": 54,
+    "libs/agents/reporter/read_models/entry_blocker_bodies_01.py": 324,
+    "libs/agents/reporter/read_models/entry_blocker_bodies_02.py": 103,
+    "libs/agents/reporter/read_models/intraday_trade_reports_r9_bodies_01.py": 229,
+    "libs/agents/reporter/read_models/lifecycle_builder_bodies_01.py": 172,
+    "libs/agents/reporter/read_models/memory_application_bodies_01.py": 122,
+    "libs/agents/reporter/read_models/memory_surface_bodies_01.py": 170,
+    "libs/agents/reporter/read_models/policy_surface_summary.py": 225,
+    "libs/agents/reporter/read_models/read_model_bodies_01.py": 317,
+    "libs/agents/reporter/read_models/read_model_bodies_02.py": 45,
+    "libs/agents/reporter/read_models/report_deterministic_bodies_01.py": 179,
+    "libs/agents/reporter/read_models/report_metadata.py": 94,
+    "libs/agents/reporter/read_models/reporter_analysis_bodies_01.py": 264,
+    "libs/agents/reporter/read_models/reporter_analysis_bodies_02.py": 320,
+    "libs/agents/reporter/read_models/reporter_analysis_bodies_03.py": 190,
+    "libs/agents/reporter/read_models/reporter_analysis_bodies_04.py": 206,
+    "libs/agents/reporter/read_models/reporter_analysis_r8_bodies_01.py": 18,
+    "libs/agents/reporter/read_models/strategy_read_model_bodies_01.py": 284,
+    "libs/agents/reporter/read_models/strategy_read_model_bodies_02.py": 206,
+    "libs/agents/reporter/read_models/symbol_metadata_fallbacks.py": 43,
+    "libs/agents/reporter/read_models/symbol_metadata_name_inference.py": 97,
+    "libs/agents/reporter/read_models/symbol_metadata_resolution.py": 93,
+    "libs/agents/reporter/read_models/symbol_metadata_sources.py": 96,
+    "libs/agents/reporter/read_models/symbol_metadata_text.py": 78,
+    "libs/agents/reporter/read_models/symbol_read_model_r9_bodies_01.py": 106,
+    "libs/agents/reporter/read_models/trade_bundle_assembly_r8_bodies_01.py": 108,
+    "libs/agents/reporter/read_models/trade_lifecycle_builder_r8_bodies_01.py": 11,
+    "libs/agents/reporter/read_models/trade_pnl_estimate.py": 53,
+    "libs/agents/reporter/read_models/trade_read_model_r8_bodies_01.py": 66,
+    "libs/reporting/agent_pipeline_trace.py": 575,
+    "libs/reporting/chart_structure_decision_hint_summary.py": 10,
+    "libs/reporting/entry_blocker_read_model.py": 275,
+    "libs/reporting/intraday_trade_reports.py": 1576,
+    "libs/reporting/narrative_axes.py": 10,
+    "libs/reporting/policy_surface_summary.py": 10,
+    "libs/reporting/post_exit_shadow_recap.py": 536,
+    "libs/reporting/reasoning_trace.py": 10,
+    "libs/reporting/report_metadata.py": 10,
+    "libs/reporting/reporter_analysis.py": 666,
+    "libs/reporting/single_trade_report.py": 466,
+    "libs/reporting/strategist_quant_context_report.py": 10,
+    "libs/reporting/strategy_read_model.py": 194,
+    "libs/reporting/symbol_read_model.py": 285,
+    "libs/reporting/symbol_trade_report.py": 562,
+    "libs/reporting/trade_bundle_assembly.py": 1225,
+    "libs/reporting/trade_bundle_state.py": 590,
+    "libs/reporting/trade_execution_outcome_text.py": 10,
+    "libs/reporting/trade_explain.py": 411,
+    "libs/reporting/trade_fallback_text.py": 10,
+    "libs/reporting/trade_lifecycle_builder.py": 783,
+    "libs/reporting/trade_memory_application_surface.py": 108,
+    "libs/reporting/trade_memory_surface.py": 249,
+    "libs/reporting/trade_pnl_estimate.py": 10,
+    "libs/reporting/trade_read_model.py": 544,
+    "libs/reporting/trade_report_ai.py": 1597,
+    "libs/reporting/trade_report_ai_compact_input.py": 95,
+    "libs/reporting/trade_report_ai_deterministic.py": 440,
+    "libs/reporting/trade_report_common.py": 100,
+    "libs/reporting/trade_report_markdown_clean.py": 1284,
+    "libs/reporting/trade_report_markdown_strategy_memory.py": 90,
+    "libs/reporting/trade_report_post_exit_shadow.py": 10,
+    "libs/reporting/trade_report_symbol_metadata.py": 30,
+    "libs/reporting/trade_reporter_status_text.py": 10,
+    "libs/reporting/trade_story_pipeline_news.py": 29,
+    "libs/reporting/trade_story_pipeline_provenance.py": 83,
+    "libs/reporting/trade_story_pipeline_scanner.py": 21,
+    "libs/reporting/truth_source_labels.py": 10,
+    "libs/runtime/intraday_monitor_signals.py": 2725,
+    "libs/runtime/monitor/cycle_detail_projection.py": 4,
+    "libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py": 4,
+    "libs/runtime/monitor/cycle_event_payloads.py": 4,
+    "libs/runtime/monitor/cycle_log_trace_payloads.py": 4,
+    "libs/runtime/monitor/cycle_output_projection.py": 4,
+    "libs/runtime/monitor/cycle_output_projection_value_state_monitor.py": 4,
+    "libs/runtime/monitor/cycle_posture_projection.py": 4,
+    "libs/runtime/monitor/entry_candidate_annotation.py": 18,
+    "libs/runtime/monitor/entry_candidate_policy.py": 68,
+    "libs/runtime/monitor/entry_evidence.py": 4,
+    "libs/runtime/monitor/entry_focus_output_projection.py": 4,
+    "libs/runtime/monitor/policy_output_projection.py": 4,
+    "libs/runtime/monitor/scanner_monitor_handoff_projection.py": 4,
+    "libs/runtime/monitor/signal_explanation.py": 4,
+    "libs/runtime/monitor_entry_policy_context.py": 162,
+    "libs/runtime/monitor_entry_state.py": 75,
+    "libs/runtime/monitor_exit/observability.py": 4,
+    "libs/runtime/monitor_exit/order_lifecycle.py": 4,
+    "libs/runtime/monitor_exit/reasons.py": 87,
+    "libs/runtime/monitor_exit/selected_snapshot.py": 106,
+    "libs/runtime/monitor_strategy_frame.py": 749,
+    "scripts/refactor/reporter_facade_guard.py": 153,
+    "scripts/refactor/shared_candidate_tests.py": 97,
+    "scripts/refactor/shared_role_contracts.py": 99,
+    "scripts/refactor/shared_uef_baseline.py": 47,
+    "scripts/refactor/work_monitor_annotation_replay.py": 94,
+    "scripts/refactor/work_monitor_body_replay.py": 89,
+    "scripts/refactor/work_monitor_continuous_replay.py": 164,
+    "scripts/refactor/work_monitor_contracts.py": 245,
+    "scripts/refactor/work_monitor_current_tree.py": 201,
+    "scripts/refactor/work_monitor_observation_replay.py": 92,
+    "scripts/refactor/work_monitor_policy_trace_replay.py": 119,
+    "scripts/refactor/work_monitor_retained_boundary.py": 56,
+    "scripts/refactor/work_monitor_scope_accounting.py": 144,
+    "scripts/refactor/work_reporter_capture.py": 138,
+    "scripts/refactor/work_reporter_contract_runner.py": 101,
+    "scripts/refactor/work_reporter_facade_ledger_v2.py": 31,
+    "scripts/refactor/work_reporter_flow_map.py": 76,
+    "scripts/refactor/work_reporter_hygiene_check.py": 107,
+    "scripts/refactor/work_reporter_inventory.py": 58,
+    "scripts/refactor/work_reporter_r4_extract.py": 262,
+    "scripts/refactor/work_reporter_split.py": 85,
+    "scripts/refactor/work_reporter_triage.py": 82,
+    "tests/apps/api/test_isolation.py": 166,
+    "tests/p15_agent_tree_allowlist.py": 13,
+    "tests/test_p152_facade_symbol_ledger.py": 56,
+    "tests/test_p159_current_owner_contract_gates.py": 366,
+    "tests/test_p163_t4b_extraction_gates.py": 323,
+    "tests/test_p173_p058_integration_contracts.py": 56,
+    "tests/test_shared_reporter_facade_guard.py": 114,
+    "tests/test_shared_role_contracts.py": 82,
+    "tests/test_shared_stage_provenance.py": 19,
+    "tests/test_work_monitor_annotation_views.py": 105,
+    "tests/test_work_monitor_body_views.py": 111,
+    "tests/test_work_monitor_continuous.py": 162,
+    "tests/test_work_monitor_exit_labels.py": 90,
+    "tests/test_work_monitor_m9_native.py": 52,
+    "tests/test_work_monitor_m9_offline.py": 246,
+    "tests/test_work_monitor_observation_views.py": 114,
+    "tests/test_work_monitor_policy_trace_views.py": 141,
+    "tests/test_work_monitor_retained_boundary.py": 24,
+    "tests/test_work_monitor_role_contracts.py": 188,
+    "tests/test_work_monitor_scope_accounting.py": 79,
+    "tests/test_work_reporter_r10_artifact_parity.py": 184,
+    "tests/test_work_reporter_r10_retained_io_contracts.py": 249,
+    "tests/test_work_reporter_r11_repo_hygiene.py": 142,
+    "tests/test_work_reporter_r4_facade_bodies.py": 298,
+    "tests/test_work_reporter_r8_read_contracts.py": 106,
+    "tests/test_work_reporter_r8_read_via_callback_parity.py": 190,
+    "tests/test_work_reporter_renderer_bytes.py": 85,
+    "tests/test_work_reporter_seed_migration.py": 421
+  },
+  "max_role_owner_loc": 337,
+  "sandbox": {
+    "SANDBOX_ROOT": "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018",
+    "WORKTREES_ALLOWED_FOR_WRITES": [
+      "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018"
+    ],
+    "SESSION_WRITABLE_ROOT_FROM_HOST": "C:/Agentra",
+    "OPERATIONAL_WRITE_LIMIT": "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018",
+    "HOST_PERMISSION_CONFIGURATION": "Not changed; operational scope restricted to the verified candidate",
+    "GIT_COMMON_DIR": "C:\\Agentra\\.git",
+    "SCRATCH_ROOT": "C:\\Agentra\\.worktrees\\p15-monitor-shared-20261018\\.agentra-worktmp",
+    "PERMISSION_MODE_EFFECTIVE": "workspace-write",
+    "dirty_code": false,
+    "policy": "15_P15_WORKSPACE_SANDBOX_POLICY_20261018.md",
+    "retention": "Three failed run roots, seven days maximum; successful API scratch removed after evidence capture."
+  },
+  "not_run": [
+    "Linux Python 3.12 hosted CI (GitHub returned no candidate workflow run)",
+    "Windows 3.12/3.13 hosted CI",
+    "Entire repository pytest",
+    "Real persisted report and captured LLM parity: genuine inputs absent",
+    "Independent Claude audit: request on Issue 14"
+  ],
+  "independent_request": "https://github.com/hbombheart1230-dotcom/agentra/issues/14#issuecomment-6243959476",
+  "final_ui_full_audit_probe": {
+    "status": "INCOMPLETE_NOT_RUN",
+    "completed_before_interrupt": 2,
+    "detail": "Final isolated UI-only probe with full manifest mode stalled in API TestClient after the two patch-note schema/freshness tests completed; interrupted after >120 seconds. No result inferred for remaining API tests or full-tier audit. Those API tests passed in both completed 2920-test runs at the pinned code SHA.",
+    "scratch": "ui-final-f0026c660bb542ce85903d0f6cf550e9"
+  }
+}

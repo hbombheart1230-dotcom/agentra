@@ -104,3 +104,10 @@ unchanged; discard candidate adoption. No reset/clean/worktree deletion is requi
 Deliver only task-modified paths since shared BASE; exclude venv/caches/untracked
 operational data and deleted historical binary caches. Artifact packaging is local,
 never performed in CI.
+
+Exact code SHA 95c11cacb9c73ae3d97d89e2061372762efff12b: Windows normal and -O each 2895 PASS / 1 FAIL / 24 SKIP (2920 tests, zero setup ERROR). FastAPI 0.143 normal/-O each 9 PASS. No full PASS; baseline-reproduced UEF9 failure and missing real-artifact skips retained. Hosted CI and independent Claude audit NOT_RUN.
+
+Final UI full-manifest probe: two patch-note schema/freshness tests completed,
+then no API test completion for over 120s; interrupted. Remaining subset and
+full-tier audit NOT_RUN. The same API tests PASS in both completed exact-code-SHA
+matrices using the default fast audit. No full-audit claim.

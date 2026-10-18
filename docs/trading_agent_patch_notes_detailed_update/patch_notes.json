@@ -7629,7 +7629,8 @@
       "details": [
         "Existing 14 module and 20 named moves unchanged.",
         "Static call/write/control-flow evidence does not establish purity or exhaustive dynamic consumers.",
-        "Strict Reporter facade restoration, Monitor mappings and R11 shared F1/F2 repairs implemented on isolated candidate. Shared contracts 45 PASS normal and optimized; FastAPI 0.143 API 9 PASS. Whole matrix has one unresolved same-environment BASE-reproduced UEF9 failure and 24 missing-real-artifact skips; CI and independent review pending."
+        "Strict Reporter facade restoration, Monitor mappings and R11 shared F1/F2 repairs implemented on isolated candidate. Shared contracts 45 PASS normal and optimized; FastAPI 0.143 API 9 PASS. Whole matrix has one unresolved same-environment BASE-reproduced UEF9 failure and 24 missing-real-artifact skips; CI and independent review pending.",
+        "Exact code SHA 95c11cacb9c73ae3d97d89e2061372762efff12b: Windows normal and -O each 2895 PASS / 1 FAIL / 24 SKIP (2920 tests, zero setup ERROR). FastAPI 0.143 normal/-O each 9 PASS. No full PASS; baseline-reproduced UEF9 failure and missing real-artifact skips retained. Hosted CI and independent Claude audit NOT_RUN."
       ],
       "impact": "Compatibility and authority remain at their current boundaries.",
       "sources": [
