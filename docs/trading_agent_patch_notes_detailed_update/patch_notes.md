@@ -4,6 +4,20 @@
 
 총 **45개 릴리즈/변경 구간**을 수록한다. 작은 버그 수정 하나하나를 전부 카드화하기보다, UI에서 의미가 있는 기능·정책·평가 단위로 묶되 각 카드 안에서 실제 세부 변경을 보여주는 방식이다.
 
+## 2026-10-18 · P1.5 전체 루트 아키텍처 직접 실사 (설계·문서 변경만)
+**Stage:** Architecture Freeze
+**Tags:** ARCHITECTURE · REFACTOR · AUDIT
+
+- `main` 2,610개와 통합 소스 3,908개 파일을 비교하여 루트 전체(10개 폴더 + 11개 직속 파일), `libs/` 26개 폴더와 모든 추적 경로를 구조·책임 후보로 정리했습니다.
+- 원본 거대 파일은 일부 50~85% 감소했지만 1,298개 신규 파일·0개 삭제로 인해 호환 facade, 증거 문서, 스크립트·테스트 증가와 소유권 수렴 미완료를 별도 문제로 구분했습니다.
+- Commander의 실제 주문 경로, UEF 단일 발행, Supervisor·Executor·Broker·Step5C 안전 권한은 그대로 보호하며 관련 구조 이전 승인은 내리지 않았습니다.
+- 7개 과거 브랜치 가운데 통합 조상 2개는 삭제 **후보**일 뿐 원격 삭제하지 않았고, 고유 커밋이 있는 나머지 5개는 보존합니다.
+- 자세한 근거: `docs/refactor/architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md`, `P15_TECHLEAD_MASTER_20261018.md` 및 3,908개 전체 경로·후보 CSV.
+
+**영향:** 이번 변경은 설계 문서/증거/운영 이력에 한정됩니다. 거래 코드, 배포 실행, 실제 전략·주문 권한, UEF 기대값, CI 테스트 변경은 없습니다. P1.5 최종 수용 아님.
+
+---
+
 ## 2026-08-31 · Opening Alpha 및 Q10/Q12 시각 정합성 복구
 **Stage:** Controlled Mock Validation
 **Tags:** OPENING_ALPHA · Q10 · Q12 · SCHEDULER · KIWOOM_MOCK

@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 289,
+  "entry_count": 290,
   "entries": [
+    {
+      "date": "2026-10-18",
+      "version": "P1.5 ROOT ARCHITECTURE TECHLEAD 20261018",
+      "title": "Agentra complete root-to-leaf architecture and branch-preservation audit",
+      "stage": "Architecture Freeze",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "AUDIT"
+      ],
+      "summary": "Direct source-pinned review of all root folders, 26 libs packages and every one of the 3,908 tracked integration paths; design and evidence only, with no trading runtime or CI behavior change.",
+      "details": [
+        "Main 2,610 files versus integration source snapshot 3,908: +1,298 new, 237 modified, 0 removed; tracked paths and proposed ownership reviewed at root-to-leaf levels.",
+        "Original large files demonstrably shrank, e.g. trade_report_ai.py 440032 to 64646 bytes, strategist_node.py 422309 to 202774 bytes; remaining facades, legacy imports and effects still need separate convergence.",
+        "Preserve the operational Commander to execute_from_packet protected order path, sole UEF daily publisher, Step5C/Supervisor/Broker safety locks; do not conflate executor_node M17 stub with live order route.",
+        "Seven historical branches classified; two are integration ancestors, five have nonintegrated commits. No remote branch was deleted and no branch was force moved.",
+        "Source files, run logic, CI contracts, UEF baselines, strategy decisions and trade-authority paths unchanged by this architecture documentation-only update."
+      ],
+      "impact": "Architecture/evidence/management only. P1.5 NOT_ACCEPTED; no operational trading change or permission for bulk relocation.",
+      "sources": [
+        "docs/refactor/architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md",
+        "docs/refactor/architecture/P15_TECHLEAD_MASTER_20261018.md",
+        "docs/refactor/architecture/P15_TREE_ALL_PATHS_PINNED_20261018.txt",
+        "docs/refactor/architecture/P15_ALL_FILES_OWNERSHIP_CANDIDATES_20261018.csv"
+      ],
+      "status": "current"
+    },
     {
       "date": "2026-09-08",
       "version": "Opening Alpha Provenance Correction",
