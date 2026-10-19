@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 LEGACY CI DOC CONTRACT ALIGNMENT 20261019
+**Stage:** Documentation governance · **Tags:** DOCS · CI · SAFETY
+
+- 오래된 Fast Track 실행 역할·단일 활성 Wave·`CURRENT State` 문자열을 강제하던 2개 워크플로의 문서 권한 검사만 D00/#20/DOC_FIRST 조건으로 대체했습니다.
+- 원래 파이썬 pytest, Golden, Broker/Step5C/UEF 안전 검사, stage-pinned 근거, CI 트리거는 변경하지 않았습니다.
+- 339개 원본 등록부 경로·구 작업 비활성·TREE_V3·패치노트 JSON/MD 일치 및 CI 내 ZIP 금지 조건을 검증합니다.
+- GitHub Actions 새 SHA 실행 결과와 독립 검수는 아직 NOT_RUN. DOC_FREEZE와 main 승격은 HOLD.
+
+Sources: `.github/workflows/p15-integration-t4-regression.yml`, `.github/workflows/p152-r2c-residual-regression.yml`, `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
 ## 2026-10-19 · P1.5 ROOT AND LEGACY ROADMAP QUARANTINE 20261019
 **Stage:** Documentation governance · **Tags:** DOCS · GOVERNANCE
 

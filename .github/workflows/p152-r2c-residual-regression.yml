@@ -46,46 +46,62 @@ jobs:
           assert "P1.5 Small-Owner and Executor v1.2" in (root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
           print("P1.5 DESIGN GUARD PASS —", j["entry_count"], "patch note entries")
           PY
-      - name: Validate Fast Track active work-order contract and independent roles
+      - name: Validate live D00 DOC-FIRST contract and historical preservation
         run: |
           python - <<'PY'
-          import json, re
+          import csv, json
           from pathlib import Path
-          for name in ["CLAUDE.md", "AGENTS.md", "docs/refactor/P15_EXECUTION_PROTOCOL.md",
-                       "docs/refactor/work_orders/README.md", "docs/refactor/work_orders/CURRENT.md",
-                       "docs/refactor/work_orders/COMMON_RULES.md",
-                       "docs/refactor/P15_FAST_TRACK_FIRST_PASS_2026_10_12.md"]:
-              assert Path(name).is_file(), name
-          cl = Path("CLAUDE.md").read_text(encoding="utf-8")
-          cx = Path("AGENTS.md").read_text(encoding="utf-8")
-          cur = Path("docs/refactor/work_orders/CURRENT.md").read_text(encoding="utf-8")
-          rules = Path("docs/refactor/work_orders/COMMON_RULES.md").read_text(encoding="utf-8")
-          plan = Path("docs/refactor/P15_FAST_TRACK_FIRST_PASS_2026_10_12.md").read_text(encoding="utf-8")
-          protocol = Path("docs/refactor/P15_EXECUTION_PROTOCOL.md").read_text(encoding="utf-8")
-          assert "docs/refactor/work_orders/CURRENT.md" in cl and "docs/refactor/work_orders/CURRENT.md" in cx
-          assert "CLAUDE IMPLEMENTS" in cx and "CODEX INDEPENDENT" in cx and "CLAUDE PRIMARY IMPLEMENTER" in cl
-          assert "CODEX" in protocol and "CLAUDE" in protocol and "GPT_ACCEPTED" in protocol
-          # ONE active Fast Track work order: CURRENT links exactly one existing P15_FAST_TRACK_WAVE_*.md
-          links = sorted(set(re.findall(r"\(?(P15_FAST_TRACK_WAVE_[A-Z]_\d+\.md)\)?", cur)))
-          assert len(links) == 1, links
-          assert (Path("docs/refactor/work_orders") / links[0]).is_file(), links[0]
-          # approved scope + state: single branch, main frozen, no ZIP, never a FINAL acceptance claim
-          state = re.search(r"^\*\*State:\*\*(.*)$", cur, flags=re.M)
-          assert state, "CURRENT.md has no **State:** line"
-          assert "FINAL_ACCEPTED" not in state.group(1), state.group(1)
-          assert "refactor/p1.5" in cur and ("MAIN_FROZEN" in cur or "main` frozen" in cur)
-          assert "No ZIP" in cur or "no ZIP" in cur
-          assert "FIRST_PASS_WITH_DEBT" in plan and "Fast Track execution rules" in rules
-          assert "No ZIP" in rules or "no ZIP" in rules
-          wf = Path(".github/workflows/p152-r2c-residual-regression.yml").read_text(encoding="utf-8")
-          assert ("Zip" + "File") not in wf and ("." + "zip") not in wf, "ZIP packaging must not exist in CI"
-          notes = json.loads(Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.json").read_text(encoding="utf-8"))
-          assert notes["entry_count"] == len(notes["entries"])
+          root=Path(".")
+          paths={
+              "d00": "docs/ENGINEERING_DELIVERY_POLICY.md",
+              "codex": "AGENTS.md",
+              "claude": "CLAUDE.md",
+              "readme": "docs/refactor/README.md",
+              "current": "docs/refactor/work_orders/CURRENT.md",
+              "rules": "docs/refactor/work_orders/COMMON_RULES.md",
+              "target": "docs/refactor/architecture/TREE_V3_FROZEN.md",
+              "registry": "docs/refactor/DOC_REGISTRY.csv",
+              "protocol": "docs/refactor/P15_EXECUTION_PROTOCOL.md",
+              "size": "docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md",
+              "roadmap": "docs/refactor/p1_5_p1_6_master_plan.md",
+          }
+          for item in paths.values():
+              assert (root/item).is_file(), item
+          read=lambda name:(root/paths[name]).read_text(encoding="utf-8")
+          d00,cl,cx=read("d00"),read("claude"),read("codex")
+          overview,current,rules=read("readme"),read("current"),read("rules")
+          target,protocol,size=read("target"),read("protocol"),read("size")
+          assert "D00" in d00 and "DELIVERY FIRST" in d00
+          for cli in (cl,cx):
+              assert "docs/refactor/work_orders/CURRENT.md" in cli
+              assert "Issues #16–#19 are CLOSED" in cli, "closed historical work queue must not reactivate"
+              assert "DOC_FREEZE" in cli, "CLI must enforce docs-first"
+          assert "integration/p1.5" in current and "DOC-A" in current
+          assert "No live developer implementation issue" in current
+          assert "DOC_FREEZE" in overview and "DOC_FREEZE" in rules
+          assert "docs/ENGINEERING_DELIVERY_POLICY.md" in d00
+          assert "libs/agents/{commander,strategist,scanner,monitor,reporter,supervisor,executor}/" in target
+          assert "HISTORICAL PROCEDURE / NOT A LIVE WORK ORDER" in protocol
+          assert "HISTORICAL IMPLEMENTATION ACCEPTANCE POLICY" in size
+          assert "P1.5.2 OPEN" in current and "P1.5.3" in current, "pinned provenance markers lost"
+          with (root/paths["registry"]).open(encoding="utf-8",newline="") as handle:
+              rows=list(csv.DictReader(handle))
+          assert len(rows)==339, "original 339 document registry must remain conserved"
+          registered=[row["path"] for row in rows]
+          assert len(set(registered))==339, "duplicate original registry path"
+          assert all((root/path).is_file() for path in registered), "registered source missing"
+          assert all(row["activation"]=="NO" for row in rows), "historical work reactivated"
+          notes=json.loads((root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.json").read_text(encoding="utf-8"))
+          assert notes["entry_count"]==len(notes["entries"]), "patchnote entry_count"
           for entry in notes["entries"][-5:]:
-              assert all(Path(src).is_file() for src in entry["sources"]), entry["version"]
-          md = Path("docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
-          assert notes["entries"][-1]["date"] in md
-          print("P1.5 FAST TRACK CONTRACT GUARD PASS", links[0], notes["entry_count"])
+              assert all((root/src).is_file() for src in entry["sources"]), entry["version"]
+          md=(root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
+          assert notes["entries"][-1]["date"] in md, "historical entry not in Markdown"
+          assert notes["entries"][0]["date"] in md, "current entry not in Markdown"
+          for wfp in sorted((root/".github/workflows").glob("*.yml")):
+              wf=wfp.read_text(encoding="utf-8")
+              assert ("Zip"+"File") not in wf and ("."+"zip") not in wf, f"CI ZIP packaging forbidden: {wfp}"
+          print("DOC-FIRST AUTHORITY & HISTORICAL CONTRACT PASS",len(rows),notes["entry_count"])
           PY
       - name: Fetch pinned P1.5.2 before-source for deterministic owner parity
         run: git fetch --no-tags --depth=1 origin 2fb4b8fcbaa68c34e80fbdbeb8e009c66d0cbc7c

@@ -1,8 +1,34 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 303,
+  "entry_count": 304,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 LEGACY CI DOC CONTRACT ALIGNMENT 20261019",
+      "title": "Replace retired Fast Track active-work-order assertions with D00 DOC-FIRST invariants in two legacy workflows",
+      "stage": "Documentation governance",
+      "types": [
+        "DOCS",
+        "CI",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Two pre-existing CI metadata steps asserted closed fixed-role queues and old State/Fast Track wave strings. Replace only those document authority predicates; retain all downstream regression/Golden/UEF/Step5C tests and workflow triggers.",
+      "details": [
+        "Retain workflow setup, owner-size historical design guard, all runtime pytest stages, source fetch pin, concurrency and triggers unchanged.",
+        "Assert D00/current CLI startup, 7-peer frozen target, inactive historic protocol, 339 original registry conservation, pinned CURRENT historical stage markers, UI patchnote schema/parity and the existing no-CI-ZIP rule.",
+        "Before change old metadata predicates were incompatible with already approved DOC_FIRST entrypoints; no current doc was backdated merely to satisfy literals.",
+        "This CI configuration change is source-independent. New workflow execution/independent auditing and full DOC_FREEZE approval remain pending."
+      ],
+      "impact": "Only two CI workflow documentation-governance inline checks changed; tests/requirements/production, safety authority and main unchanged. No GitHub Actions PASS claimed for new SHA.",
+      "sources": [
+        ".github/workflows/p15-integration-t4-regression.yml",
+        ".github/workflows/p152-r2c-residual-regression.yml",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 ROOT AND LEGACY ROADMAP QUARANTINE 20261019",
