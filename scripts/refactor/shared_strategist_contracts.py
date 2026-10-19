@@ -193,8 +193,14 @@ def verify_integration_scope(changed=None, untracked=None):
             ["git", "diff", "--name-only", INTEGRATION_BASE, HISTORICAL_STAGE],
             cwd=ROOT, text=True,
         ).splitlines())
-        require(stage_paths & HISTORICAL_PARALLEL_STAGE_PATHS == HISTORICAL_PARALLEL_STAGE_PATHS,
-                "pinned historical parallel stage inventory changed")
+        # git diff compares the two exact trees; a GitHub compare view of
+        # divergent refs may instead report merge-base..head changes.
+        # The frozen parallel inventory is an upper bound, not eleven mandatory
+        # entries in the direct two-tree diff.
+        historical_extra = stage_paths - (S5_PATHS | SHARED_PATHS | INTEGRATION_DOC_PATHS)
+        require(historical_extra <= HISTORICAL_PARALLEL_STAGE_PATHS,
+                "unapproved path in pinned historical S5 stage: " +
+                repr(historical_extra - HISTORICAL_PARALLEL_STAGE_PATHS))
         # Only partition the immutable *historical* diff; never give caller
         # changes or untracked paths permission to modify these eleven files.
         changed = stage_paths - HISTORICAL_PARALLEL_STAGE_PATHS

@@ -1,8 +1,34 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 312,
+  "entry_count": 313,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 SHARED CI NONSHALLOW ANCESTRY AND FAST SMOKE 20261019",
+      "title": "Repair shallow Git DAG regression and fast-fail historical scope defects without disabling any full contract test",
+      "stage": "CI historical DAG and test quality",
+      "types": [
+        "CI",
+        "TEST",
+        "SAFETY",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Shared Candidate run 39259157565 at e66a82a6: four matrix variants each 3296 PASS/11 FAIL/24 SKIP and two API PASS. Explicit --depth=1 fetch against a full checkout can mark an existing ancestor shallow, causing six false ancestry failures and T4-D's erroneous HEAD fallback. The historical parallel eleven-path 'must all appear' requirement was also invalid for direct git diff between divergent refs.",
+      "details": [
+        "Replace git fetch --no-tags --depth=1 origin SHA with nonshallow git fetch --no-tags origin SHA; fail early if git reports shallow and require seven original T1/T2/ownership/T4-A..D ancestors before pytest. GitHub compare confirms all seven are real ancestors of the active branch.",
+        "Repair the historical S5 default comparison so the eleven exact frozen parallel paths are the maximum allowed historical exception, not falsely mandatory. Unexpected paths still fail closed; external caller changed/untracked paths retain original unmodified allowlist.",
+        "Add an eleven-test focused fail-fast job step (same Linux/Windows, Python normal/-O matrix) before the unchanged full 3331-case suite, preventing repeat 15-20 minute cycles on known historical-scope failures. No skip, xfail, golden mutation, test deselection or relaxed full-suite requirement.",
+        "Guard contract artifact upload by presence of steps.tests.outputs.evidence to avoid uploading the entire checkout when fast smoke fails and the full-suite step never sets an artifact path. Existing actual failed-suite artifacts continue to upload.",
+        "This CI-only verification update does not fix the independent historical Reporter scope test; its scope semantics require separate review rather than modifying SHA-pinned frozen tests opportunistically. All 24 real-data skips, DOC_FREEZE and main promotion remain HOLD."
+      ],
+      "impact": "Keep the entire required contracts matrix and fail closed on incomplete historical provenance, while reducing unnecessary repeated full suites. New SHA CI and independent audit remain unverified.",
+      "sources": [
+        ".github/workflows/p15-shared-candidate.yml",
+        "scripts/refactor/shared_strategist_contracts.py"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 SHARED CI HISTORICAL PARALLEL STAGE PARTITION 20261019",

@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 SHARED CI NONSHALLOW ANCESTRY AND FAST SMOKE 20261019
+**Stage:** CI historical DAG and test quality · **Tags:** CI · TEST · SAFETY · DOCS
+
+- [Shared Candidate #39259157565](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39259157565)에서 Linux/Windows 4개 Job 각각 3,296 PASS / 11 FAIL / 24 SKIP, API 2/2 PASS 확인. SHA 객체 조회 자체는 성공했으나, `git fetch --depth=1`이 runner의 완전한 이력을 shallow로 바꿔 T1/T2/T4 조상 검증을 깨는 원인을 로컬 Git 재현으로 검증했습니다.
+- 과거 SHA 7개의 실제 조상 관계는 GitHub 원본에서 확인했습니다. `--depth=1`을 제거하고 비shallow 상태 및 각 SHA 조상 검사를 pytest 이전 fail-closed로 수행합니다.
+- 역사가 갈라진 두 SHA에서 `git diff`는 양쪽 트리를 직접 비교하지만 GitHub compare는 merge-base 기준이므로, 과거 병렬 11개를 **전부 존재해야 하는 목록이 아닌 정확히 허용된 상한 목록**으로 교정했습니다. 외부 changed/untracked 경로의 기존 금지는 유지합니다.
+- 실패했던 11개 테스트를 빠른 초기 검사로 실행한 뒤에만 기존 전체 suite를 실행합니다. fast gate 실패로 evidence output이 없으면 artifact upload를 건너뛰어 빈 경로 업로드를 방지합니다. 기존 failed full-suite evidence는 유지합니다.
+- Broker/UEF/Step5C/golden/pytest 원본 동등성 및 실거래 권한은 변경 없음. Reporter 범위 검사와 24 SKIP는 별도 미해결로 남아 있으며 신규 SHA CI PASS 미검증, DOC_FREEZE/main HOLD.
+
+Sources: `.github/workflows/p15-shared-candidate.yml`, `scripts/refactor/shared_strategist_contracts.py`.
+
 ## 2026-10-19 · P1.5 SHARED CI HISTORICAL PARALLEL STAGE PARTITION 20261019
 **Stage:** CI contract historical scope proof · **Tags:** CI · TEST · SAFETY · DOCS
 
