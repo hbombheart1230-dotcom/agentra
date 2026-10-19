@@ -19,6 +19,7 @@
 | Architecture responsibilities | [P1.5 constitution](p1_5_refactor_constitution.md) and [stage alignment](p1_5_1_to_11_responsibility_alignment_v1_1.md). |
 | Previous architecture state | [Tech Lead snapshot](architecture/P15_TECHLEAD_MASTER_20261018.md) and [root-to-leaf](architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md), pinned at prior source `5cb90b39`. NOT today's HEAD. |
 | P1.5 work-order status | [work_orders/README](work_orders/README.md) + [CURRENT](work_orders/CURRENT.md). All dated orders are inert unless newly issued. |
+| Historical patchnote source availability | [14-missing-path provenance table](DOC_PATCHNOTE_SOURCE_PROVENANCE_20261019.md); original UI entries remain unchanged, not a new source. |
 | Original 339-file governance registry | [DOC_REGISTRY.csv](DOC_REGISTRY.csv). Path classification only; content/link review is not yet complete. |
 | Retired Reporter/Monitor work projects | [work_projects/README](work_projects/README.md), **historical / do not restart**. |
 | P1.6 orchestration comparison | [P1.6 master](p1_6/MASTER_PLAN.md), future design only until P1.5 freeze. |

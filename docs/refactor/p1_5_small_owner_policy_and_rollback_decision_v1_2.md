@@ -1,3 +1,5 @@
+> **HISTORICAL IMPLEMENTATION ACCEPTANCE POLICY (2026-10-09):** The former `refactor/p1.5`, single local-Claude workflow and **350 physical LOC HARD MAX** below are stage-pinned rules/evidence, NOT a new blanket gate or permission to restart work. Current D00 [delivery policy](../ENGINEERING_DELIVERY_POLICY.md), [#20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) and accepted *exact stage* decide which acceptance assertions still apply. Never weaken retained golden/test checks, compatibility, Broker, Step5C, Supervisor/Executor or UEF; do not infer acceptance from file size alone.
+
 # P1.5 Implementation Policy v1.2 — Strict Small Owners, No Blanket Rollback
 
 Date: 2026-10-09

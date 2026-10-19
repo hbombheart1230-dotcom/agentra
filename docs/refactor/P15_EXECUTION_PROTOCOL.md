@@ -1,3 +1,5 @@
+> **HISTORICAL PROCEDURE / NOT A LIVE WORK ORDER (2026-10-19):** The 2026-10-09/12 fixed `Claude implements → Codex audits`, R3-active, `feature/p152-facades-r3`, `refactor/p1.5` and one-work-order startup clauses below are original evidence only. **DO NOT execute or create/clean branches based on this file.** D00 [current delivery policy](../ENGINEERING_DELIVERY_POLICY.md), [current #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20), and [current work pointer](work_orders/CURRENT.md) supersede its operating instructions. The old historical test/guard contracts are retained as origin evidence; no new development before DOC_FREEZE acceptance.
+
 # P1.5 Git-Driven Claude/Codex Execution Protocol v1.0
 
 Date: 2026-10-09

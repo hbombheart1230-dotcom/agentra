@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 HISTORIC SOURCE PROVENANCE DOC-A 20261019
+**Stage:** Documentation governance · **Tags:** DOCS · AUDIT
+
+- 과거 UI 패치노트 sources[]를 실제 Git 트리와 대조하여 **고유 14경로/참조 16회**가 저장소 밖의 역사적 소스임을 분류했습니다. 추적 디렉터리 두 개는 누락으로 취급하지 않았습니다.
+- 기존 패치노트의 원본 sources[]와 역사적 주장, 출력물/로그/비밀 파일은 일절 복구하거나 덮어쓰지 않았습니다.
+- 구 R3 개발 프로토콜과 기존 350 LOC 지침 상단에 역사적 참조 전용 표시를 추가했습니다. CI 워크플로에 남은 과거 요구는 별도 정확 범위 수정·검증 대상으로 기록합니다.
+- 거래 소스·테스트·CI·운영 환경·main 변경 없음. DOC_FREEZE 아직 미승인.
+
+Sources: `docs/refactor/DOC_PATCHNOTE_SOURCE_PROVENANCE_20261019.md`, `docs/refactor/P15_EXECUTION_PROTOCOL.md`, `docs/refactor/p1_5_small_owner_policy_and_rollback_decision_v1_2.md`.
+
 ## 2026-10-19 · P1.5 DOC REWORK P1 P2 RESOLUTION 20261019
 **Stage:** Documentation governance · **Tags:** DOCS · SAFETY · MAINTAINABILITY
 
