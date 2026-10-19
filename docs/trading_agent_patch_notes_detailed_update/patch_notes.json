@@ -1,8 +1,38 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 313,
+  "entry_count": 314,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 T3 PINNED SOURCE HYDRATION AND SCANNER HISTORICAL STAGE FREEZE 20261020",
+      "title": "Hydrate T3/Strategist pinned blobs and freeze V2/V3/V4 Scanner migration scope at original committed stages",
+      "stage": "P1.5 integration CI and historical contract repair",
+      "types": [
+        "CI",
+        "TEST",
+        "SAFETY",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "At 6fecc8e0, Shared Candidate required contracts were green (3307 PASS/24 SKIP in each 4-platform job, 2 API PASS), but T4 and Reporter workflows failed on unavailable retired-branch historic Git blobs; crossbranch reporting failed on later Operator UI changes incorrectly counted in Scanner's historical migration scopes.",
+      "details": [
+        "Add exact two original T3/Strategist commits 6849bed4 and 613a945d to the affected three existing CI workflows through non-shallow read-only git fetch and Git blob existence preflight. Their exact path/tree entries were independently verified using raw Git tree traversal.",
+        "Scanner V2-053, V3-055, V4-056 stage scope now uses the original migration commit SHA ca835e9d, 4df172e1 and 9eec995c respectively, preserving original BASE, complete frozen-stage disallowed path prefixes, current-tree module/hash/shim/cases tests, and explicit stage ancestry requirement. Original stage diffs (21,21,24 paths) contain no forbidden runtime/trading/Operator UI changes.",
+        "The three modified frozen Scanner test files are admitted into the strict post-a50 CI proof checker ONLY with exact newly reviewed Git blob SHAs; any later variation of their committed or worktree content fails closed. Existing original two CI-proof paths, audited a50 source integration, 19-path NEXT source stage, user broker/executor/Step5C/UEF/golden restrictions and other tests remain unchanged.",
+        "Original Shared Candidate Python normal/-O 4-job suite, T3/T4 native Windows/golden tests, real-data 24 SKIPs and web/API build contracts are not skipped, deselected or weakened. This fix does not prove new-SHA hosted CI green, DOC_FREEZE, independent audit or main promotion."
+      ],
+      "impact": "Correct provenance and historical scope without treating newer Operator UI work as a Scanner change or granting new runtime/trading authority. Subject to new-hosted exact SHA CI and independent bounded audit.",
+      "sources": [
+        ".github/workflows/p15-integration-t4-regression.yml",
+        ".github/workflows/p152-r2c-residual-regression.yml",
+        ".github/workflows/p15-integration-crossbranch-compat.yml",
+        "scripts/refactor/shared_strategist_contracts.py",
+        "tests/test_p167_v2053_scanner_context_migration.py",
+        "tests/test_p171_v3055_scanner_projection_migration.py",
+        "tests/test_p172_v4056_scanner_policy_migration.py"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 SHARED CI NONSHALLOW ANCESTRY AND FAST SMOKE 20261019",

@@ -19,6 +19,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "9735c81c29f5aaf2b98a44a03b9c73e30b473f19"
+STAGE_END = "4df172e1c61db16636fcc135cd9f9f30e3d93d59"
 FIX = ROOT / "tests" / "fixtures" / "p1_5_v3055_scanner_projections" / "cases.json"
 MODULES = {
     "candidate_context_projection": "15fd6fc26a511cf648d886e9c7668e8b019f13e0",
@@ -133,7 +134,15 @@ def test_target_tree_discipline_and_no_forbidden_surface():
     import p15_agent_tree_allowlist as AL
     assert AL.actual_dirs(ROOT / "libs/agents") == set(AL.AGENT_PACKAGES)
     assert AL.actual_dirs(ROOT / "libs/agents/scanner") == set(AL.SCANNER_PACKAGES)  # exact, versioned ownership
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    # Historical Scanner migration scope ends at the original pinned stage,
+    # not at HEAD after subsequently admitted Operator UI and other role work.
+    assert subprocess.run(
+        ["git", "merge-base", "--is-ancestor", STAGE_END, "HEAD"],
+        cwd=ROOT, check=False,
+    ).returncode == 0, "historical Scanner migration stage is not ancestral"
+    out = subprocess.check_output(
+        ["git", "diff", "--name-only", "-z", BASE, STAGE_END], cwd=ROOT,
+    ).decode().split(chr(0))
     forbidden = ("graphs/nodes/scanner_node.py", "graphs/nodes/execute_from_packet.py", "graphs/commander_runtime.py",
                  "libs/execution/", "libs/supervisor/", "libs/approval/", "libs/risk/", "libs/llm/", "libs/kiwoom/",
                  "libs/runtime/commander/", "apps/", "config/", "deploy/",

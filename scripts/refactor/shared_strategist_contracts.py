@@ -312,23 +312,31 @@ def verify_next_stage(overrides=None):
     return frozenset(NEXT_RUNTIME)
 
 
-# This is the frozen S5/new-stage *source* admission. Only the two
-# traceable CI-contract proof files changed after a50d6e47; all other
-# runtime, scripts, tests and fixtures must remain untouched. A later
-# modification to this guard requires a new independent diff-only review.
+# Frozen S5 source admission: only two earlier CI proof files and the three
+# independently stage-pinned Scanner *test* files below can differ from a50d6e47.
+# Scanner changes are locked to exact Git blob SHA-1, NOT a wildcard test allowlist.
+# All runtime sources, other tests, fixtures, broker/approval/UEF remain frozen.
 POST_ACCEPTANCE_CODE_ROOTS = ("libs", "graphs", "apps", "scripts", "tests")
 POST_ACCEPTANCE_PROOF_PIN = "cfac9b715dcf59aa04df926f5671d36934c1a1b4"
 POST_ACCEPTANCE_PROOF_PATHS = frozenset({
     "scripts/refactor/shared_strategist_contracts.py",
     "tests/test_shared_strategist_contracts.py",
 })
+HISTORICAL_SCANNER_SCOPE_TEST_BLOBS = {
+    "tests/test_p167_v2053_scanner_context_migration.py": "4fafef4ae4ec1fcf960244beef12ec66e8e9cbac",
+    "tests/test_p171_v3055_scanner_projection_migration.py": "2c948370f2ac792dc93d7d4e96b4444b62e3d5b3",
+    "tests/test_p172_v4056_scanner_policy_migration.py": "f436fbcf147fa834ab0adb316ba7b5d0520e160b",
+}
+POST_ACCEPTANCE_ALLOWED_SOURCE_PATHS = (
+    POST_ACCEPTANCE_PROOF_PATHS | frozenset(HISTORICAL_SCANNER_SCOPE_TEST_BLOBS)
+)
 
 
 def verify_post_acceptance_source_scope(changed):
     paths = set(changed)
-    require(paths <= POST_ACCEPTANCE_PROOF_PATHS,
+    require(paths <= POST_ACCEPTANCE_ALLOWED_SOURCE_PATHS,
             "post-accepted source/test drift (requires new independent source audit): " +
-            repr(paths - POST_ACCEPTANCE_PROOF_PATHS))
+            repr(paths - POST_ACCEPTANCE_ALLOWED_SOURCE_PATHS))
     return frozenset(paths)
 
 
@@ -368,9 +376,22 @@ def verify_next_scope(changed=None, untracked=None):
         # The cfac proof repair had two reviewed files, including its unit test.
         # Reject every other source or test edit, and pin the unit test to the
         # subsequent exact revision so future test weakening cannot slip through.
-        require(set(since_proof) <= POST_ACCEPTANCE_PROOF_PATHS,
+        require(set(since_proof) <= POST_ACCEPTANCE_ALLOWED_SOURCE_PATHS,
                 "new post-proof source/test drift: " +
-                repr(set(since_proof) - POST_ACCEPTANCE_PROOF_PATHS))
+                repr(set(since_proof) - POST_ACCEPTANCE_ALLOWED_SOURCE_PATHS))
+        # The three Scanner migration *test* repairs are fixed Git objects.
+        # A future modification to even one test must fail before S5 admission.
+        for test_path, blob_sha in HISTORICAL_SCANNER_SCOPE_TEST_BLOBS.items():
+            head_blob = subprocess.check_output(
+                ["git", "rev-parse", "HEAD:" + test_path],
+                cwd=ROOT, text=True,
+            ).strip()
+            worktree_blob = subprocess.check_output(
+                ["git", "hash-object", "--", test_path],
+                cwd=ROOT, text=True,
+            ).strip()
+            require(head_blob == blob_sha and worktree_blob == blob_sha,
+                    "unreviewed historical Scanner scope-test bytes: " + test_path)
         test_pin = "05e91ea0e53f296f3507445706901f9b389ad9fd"
         require(subprocess.run(
             ["git", "merge-base", "--is-ancestor", test_pin, "HEAD"],

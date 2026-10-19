@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 T3 PINNED SOURCE HYDRATION AND SCANNER HISTORICAL STAGE FREEZE 20261020
+**Stage:** P1.5 integration CI and historical contract repair · **Tags:** CI · TEST · SAFETY · DOCS
+
+- [Shared Candidate #26](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39264502074) 정상 PASS(4개 contracts Job 각 3,307 PASS/24 SKIP, API 2개 PASS) 확인. T4·Reporting 2개의 T3 원본 조회 2건과 Reporting/Web의 Scanner 범위 오류 3건 및 S1 원본 조회 1건이 다른 워크플로에 남아 있었습니다.
+- T3 및 S1에서 참조하는 `6849bed4`(Strategist node), `613a945d`(Operator UI 입력 projection)의 원본 Git 트리 blob 존재를 확인하고, 세 관련 CI 워크플로에서 **얕은 fetch 없이** 명시적으로 확보·검사합니다.
+- Scanner V2-053·V3-055·V4-056은 원래 이관 종료 커밋 `ca835e9d`, `4df172e1`, `9eec995c`에서 각 BASE 대비 변경 범위 검사를 수행합니다. 기존 금지 경로/원본 byte hash/alias/golden 비교를 유지하며 단계 종료 SHA의 HEAD 조상 관계도 확인합니다.
+- 기존 `a50d6e47` 소스 동결 검사를 확장 허용하지 않고, 변경된 Scanner 테스트 3개만 **정확한 Git blob SHA**로 봉인합니다. 나머지 런타임·테스트·Broker/UEF/Step5C 보호, 실거래 차단, 24 real-data SKIP는 그대로 유지합니다.
+- 새 SHA의 Linux/Windows 호스팅 CI 및 독립 감사는 아직 완료되지 않았으며 DOC_FREEZE/main은 HOLD입니다.
+
+Sources: `.github/workflows/p15-integration-t4-regression.yml`, `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflows/p15-integration-crossbranch-compat.yml`, `scripts/refactor/shared_strategist_contracts.py`, `tests/test_p167_v2053_scanner_context_migration.py`, `tests/test_p171_v3055_scanner_projection_migration.py`, `tests/test_p172_v4056_scanner_policy_migration.py`.
+
 ## 2026-10-19 · P1.5 SHARED CI NONSHALLOW ANCESTRY AND FAST SMOKE 20261019
 **Stage:** CI historical DAG and test quality · **Tags:** CI · TEST · SAFETY · DOCS
 

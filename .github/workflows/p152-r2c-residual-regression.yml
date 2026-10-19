@@ -203,6 +203,14 @@ jobs:
         run: |
           mkdir -p branch_output
           python -m pytest -q tests/test_p158_third_pass_t2_extraction_gates.py --junitxml=branch_output/gate_third_pass_t2_junit.xml
+      - name: Hydrate exact T3 historical source blobs (read-only, fail-closed)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin 6849bed4af358c214f63011a0d58ef760ca79fa0 613a945d2b27e735d4019cdc85b4660f2c891d8f
+          git cat-file -e '6849bed4af358c214f63011a0d58ef760ca79fa0:graphs/nodes/strategist_node.py'
+          git cat-file -e '613a945d2b27e735d4019cdc85b4660f2c891d8f:apps/operator_ui/data_access_brief_input_projection.py'
+          test "$(git rev-parse --is-shallow-repository)" = false
       - name: Gate P1.5 Third Pass T3 — current Owner contracts and static purity checker
         run: |
           mkdir -p branch_output

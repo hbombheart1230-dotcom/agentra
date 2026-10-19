@@ -20,6 +20,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "0a3a224c2da8f8305cdf7f9c296cb0e7fea46766"
+STAGE_END = "9eec995cf7f91ab842bafbb61106f52722cf3f50"
 FIX = ROOT / "tests" / "fixtures" / "p1_5_v4056_scanner_policy" / "cases.json"
 MODULES = {
     "symbol_prior": "9bbc39ae6c00d56fad056be3eec6962a726fae29",
@@ -144,7 +145,15 @@ def test_recorded_base_cases_are_reproduced_exactly():
 def test_target_tree_discipline_and_no_forbidden_surface():
     assert sorted(p.name for p in (ROOT / "libs/agents/scanner/policy").glob("*.py")) ==         sorted(["__init__.py"] + [f"{m}.py" for m in MODULES])
     assert sorted(p.name for p in (ROOT / "libs/agents/scanner").iterdir() if p.is_dir() and p.name != "__pycache__") ==         ["context", "policy", "projections"]
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", BASE, "HEAD"], cwd=ROOT).decode().split(chr(0))
+    # Historical Scanner migration scope ends at the original pinned stage,
+    # not at HEAD after subsequently admitted Operator UI and other role work.
+    assert subprocess.run(
+        ["git", "merge-base", "--is-ancestor", STAGE_END, "HEAD"],
+        cwd=ROOT, check=False,
+    ).returncode == 0, "historical Scanner migration stage is not ancestral"
+    out = subprocess.check_output(
+        ["git", "diff", "--name-only", "-z", BASE, STAGE_END], cwd=ROOT,
+    ).decode().split(chr(0))
     forbidden = ("graphs/nodes/scanner_node.py", "graphs/nodes/execute_from_packet.py", "graphs/commander_runtime.py",
                  "libs/execution/", "libs/supervisor/", "libs/approval/", "libs/risk/", "libs/llm/", "libs/kiwoom/",
                  "libs/runtime/commander/", "apps/", "config/", "deploy/", "libs/agents/scanner/context/",

@@ -26,6 +26,14 @@ jobs:
           python-version: '3.12'
           cache: pip
       - run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Hydrate exact T3 / S1 historical source blobs (read-only, fail-closed)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin 6849bed4af358c214f63011a0d58ef760ca79fa0 613a945d2b27e735d4019cdc85b4660f2c891d8f
+          git cat-file -e '6849bed4af358c214f63011a0d58ef760ca79fa0:graphs/nodes/strategist_node.py'
+          git cat-file -e '613a945d2b27e735d4019cdc85b4660f2c891d8f:apps/operator_ui/data_access_brief_input_projection.py'
+          test "$(git rev-parse --is-shallow-repository)" = false
       - name: Combined T4 PR5 Reporting, Scripts and UI API regression (no live execution)
         run: |
           python -m pytest -q -p no:cacheprovider \
