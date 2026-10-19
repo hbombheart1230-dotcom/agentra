@@ -1,8 +1,32 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 309,
+  "entry_count": 310,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 SOURCE CONTRACT PROOF PIN SELF-DRIFT CLOSURE 20261019",
+      "title": "Pin accepted CI contract proof files to prevent self-drift in strict post-acceptance source guard",
+      "stage": "CI contract verification hardening",
+      "types": [
+        "CI",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Correct an immediately detected self-referential fail-closed check in the prior source-scope reanchor: the two CI proof files modified by that reanchor are now explicitly bounded by prior commit cfac9b71, while any other later source/test/runtime drift remains forbidden.",
+      "details": [
+        "Latest source a50d6e47..cfac9b71 comparison contains exactly two source/test changed paths: scripts/refactor/shared_strategist_contracts.py and tests/test_shared_strategist_contracts.py. All libs/graphs/apps and all other scripts/tests remain unchanged.",
+        "Require the accepted source SHA and prior exact proof SHA cfac9b71 as ancestors; require all actual post-a50 code/test paths to be within only those two exact files; after cfac9b71 allow only the one subsequent checker-file correction, and require zero tracked worktree source/test modifications.",
+        "Preserve original NEXT_BASE..a50 19-path stage scope, original NEXT_PATHS, test negative-path assertions, untracked-file checks, source SHA pinning, Broker/UEF/Step5C authority prohibitions. Add one unit contract assertion recording the proof pin/paths; keep 7 hostile path mutations.",
+        "This correction was identified by static self-review before promoting any new CI PASS. Both commits are CI-test contract adjustments only; hosted green, independent diff audit, 24 real-data SKIPs, DOC_FREEZE and main promotion remain HOLD."
+      ],
+      "impact": "Prevents false failure caused by the contract's own bounded migration while disallowing unrelated source/test changes. Not a waiver of mutation, authority, golden, or runtime checks.",
+      "sources": [
+        "scripts/refactor/shared_strategist_contracts.py",
+        "tests/test_shared_strategist_contracts.py"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 SHARED SOURCE SCOPE PINNED ADMISSION REANCHOR 20261019",

@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 SOURCE CONTRACT PROOF PIN SELF-DRIFT CLOSURE 20261019
+**Stage:** CI contract verification hardening · **Tags:** CI · TEST · SAFETY
+
+- 직전 커밋 `cfac9b71`의 자체 검토에서 post-a50 소스/테스트 차단 검사가 CI 계약 검증 코드·테스트 2개 파일의 바로 그 수정까지 차단하는 자기 참조 결함을 확인했습니다.
+- `a50d6e47`부터 `cfac9b71`까지 실제 변경된 `libs/graphs/apps/scripts/tests` 경로는 정확히 CI 증명 파일 2개입니다. 해당 2개만 명시적으로 기록하고, `cfac9b71` 이후에는 검증기 자체 보정 파일 1개 이외의 모든 runtime/script/test/fixture 변경을 거부합니다. tracked worktree 소스 변경도 거부합니다.
+- 기존 source 19-path 고정, NEXT_PATHS 금지 목록, hostile path mutations, 실거래 Broker/UEF/Step5C 금지, untracked 검사는 그대로 유지합니다.
+- 호스팅 CI PASS 미검증, 24 real-data SKIP·독립 감사·DOC_FREEZE·main 병합 HOLD.
+
+Sources: `scripts/refactor/shared_strategist_contracts.py`, `tests/test_shared_strategist_contracts.py`.
+
 ## 2026-10-19 · P1.5 SHARED SOURCE SCOPE PINNED ADMISSION REANCHOR 20261019
 **Stage:** CI contract verification · **Tags:** CI · TEST · SAFETY · DOCS
 

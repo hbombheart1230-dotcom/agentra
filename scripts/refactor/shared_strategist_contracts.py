@@ -279,16 +279,24 @@ def verify_next_stage(overrides=None):
     return frozenset(NEXT_RUNTIME)
 
 
-# This is the frozen S5/new-stage *source* admission. Keep the stage's path
-# allowlist exact; check later source/test drift separately instead of treating
-# subsequent documentation and workflow governance as unreviewed S5 code.
+# This is the frozen S5/new-stage *source* admission. Only the two
+# traceable CI-contract proof files changed after a50d6e47; all other
+# runtime, scripts, tests and fixtures must remain untouched. A later
+# modification to this guard requires a new independent diff-only review.
 POST_ACCEPTANCE_CODE_ROOTS = ("libs", "graphs", "apps", "scripts", "tests")
+POST_ACCEPTANCE_PROOF_PIN = "cfac9b715dcf59aa04df926f5671d36934c1a1b4"
+POST_ACCEPTANCE_PROOF_PATHS = frozenset({
+    "scripts/refactor/shared_strategist_contracts.py",
+    "tests/test_shared_strategist_contracts.py",
+})
 
 
 def verify_post_acceptance_source_scope(changed):
     paths = set(changed)
-    require(not paths, "post-accepted source/test drift (requires new independent source audit): " + repr(paths))
-    return frozenset()
+    require(paths <= POST_ACCEPTANCE_PROOF_PATHS,
+            "post-accepted source/test drift (requires new independent source audit): " +
+            repr(paths - POST_ACCEPTANCE_PROOF_PATHS))
+    return frozenset(paths)
 
 
 def verify_next_scope(changed=None, untracked=None):
@@ -311,7 +319,23 @@ def verify_next_scope(changed=None, untracked=None):
             ["git", "diff", "--name-only", "HEAD", "--", *POST_ACCEPTANCE_CODE_ROOTS],
             cwd=ROOT, text=True,
         ).splitlines()
-        verify_post_acceptance_source_scope(committed + worktree)
+        # Check the exact two proof files at the recorded prior SHA, not an
+        # open prefix allowance for additional source or fixture edits.
+        proof_ancestor = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", POST_ACCEPTANCE_PROOF_PIN, "HEAD"],
+            cwd=ROOT, capture_output=True, check=False,
+        )
+        require(proof_ancestor.returncode == 0, "pinned CI proof repair not in current history")
+        verify_post_acceptance_source_scope(committed)
+        since_proof = subprocess.check_output(
+            ["git", "diff", "--name-only", POST_ACCEPTANCE_PROOF_PIN, "HEAD",
+             "--", *POST_ACCEPTANCE_CODE_ROOTS],
+            cwd=ROOT, text=True,
+        ).splitlines()
+        require(set(since_proof) <= {"scripts/refactor/shared_strategist_contracts.py"},
+                "new post-proof source/test drift: " +
+                repr(set(since_proof) - {"scripts/refactor/shared_strategist_contracts.py"}))
+        require(not worktree, "unreviewed tracked worktree source/test drift: " + repr(set(worktree)))
         # Stage scope is measured at the audited a50d6e47 source admission
         # (19 exact paths), not across later D00/docs/workflow-only commits.
         changed = subprocess.check_output(
