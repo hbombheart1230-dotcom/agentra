@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 308,
+  "entry_count": 309,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 SHARED SOURCE SCOPE PINNED ADMISSION REANCHOR 20261019",
+      "title": "Anchor S5 shared contract scope at audited integration and reject subsequent source or test drift",
+      "stage": "CI contract verification",
+      "types": [
+        "CI",
+        "TEST",
+        "SAFETY",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Fix four shared-candidate matrix failures caused by historical S5 scope validation treating post-audit D00/docs/workflow governance changes as part of the earlier source migration. Retain the exact 19-path historical stage allowlist, verify accepted SHA ancestry, and independently fail closed on all later runtime/script/test/fixture changes.",
+      "details": [
+        "On Shared Candidate run 39246312258 at af7ca4cf, the five historical SHA hydration step passed in four contract matrix jobs; all 4 matrix variants reported exactly 3295 PASS / 4 FAIL / 24 SKIP, 0 errors, and both API compatibility jobs passed. Three direct failures arise from comparing NEXT_BASE against current HEAD with 93 later governance-only paths; the nested three-test fixture surfaces the same failure.",
+        "Use exact a50d6e4780ddccd810fb0708e756e1bf63d8ede0 source admission as stage endpoint for NEXT_BASE diff, not mutable HEAD; assert this accepted SHA is an ancestor and keep NEXT_PATHS and Broker/UEF/Step5C/other deny rules unchanged.",
+        "Add separate fail-closed post-admission git diff from the accepted SHA through HEAD, and tracked working tree through HEAD, covering every path under libs, graphs, apps, scripts and tests (including frozen fixtures). Any drift requires new source audit. Preserve untracked path check and negative changed/untracked-path allowlist tests.",
+        "Add unit assertions that exact accepted stage yields expected NEXT_PATHS, and seven injected post-admission forbidden runtime/script/test/fixture paths raise even in source-only checker. No test deselection, skip, xfail or historical re-pin.",
+        "This adjustment does not claim runtime/broker authority, full 339-doc semantic certification, hosted CI acceptance, independent code audit, DOC_FREEZE acceptance or main promotion. The existing 24 real-data SKIPs remain open."
+      ],
+      "impact": "Separate frozen source-admission scope from subsequent documentation governance while preserving stronger fail-closed source/test drift detection. Four original test failure causes are addressed by contract reanchoring, but new CI result remains NOT_VERIFIED.",
+      "sources": [
+        "scripts/refactor/shared_strategist_contracts.py",
+        "tests/test_shared_strategist_contracts.py",
+        ".github/workflows/p15-shared-candidate.yml"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 SHARED CANDIDATE PINNED HISTORICAL GIT OBJECT HYDRATION 20261019",

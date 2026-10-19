@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 SHARED SOURCE SCOPE PINNED ADMISSION REANCHOR 20261019
+**Stage:** CI contract verification · **Tags:** CI · TEST · SAFETY · DOCS
+
+- GitHub Actions [#39246312258](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39246312258)에서 과거 SHA 확보 step은 Linux/Windows 일반·-O 4개 Job 모두 PASS. 각 계약 Job 3,295 PASS / 4 FAIL / 24 SKIP, API 2/2 PASS로 좁혀졌습니다.
+- 옛 NEXT_BASE 개발 변경 범위를 현재 HEAD 전체와 비교해 후속 D00·문서·CI 파일 93개를 소스 단계 변경으로 오판한 문제를 고쳤습니다. 독립 검증된 source integration `a50d6e4780ddccd810fb0708e756e1bf63d8ede0`에 19-path 단계 검증을 고정하고, SHA 조상 관계를 검사합니다.
+- **완화가 아니라 추가 안전 검증:** a50 SHA 이후 모든 `libs/`, `graphs/`, `apps/`, `scripts/`, `tests/` (golden/fixture 포함) 변경을 HEAD 및 tracked worktree 기준 fail-closed로 검사합니다. 기존 `NEXT_PATHS`와 Broker·UEF·Step5C 금지, untracked 검사, 실제 매매 권한은 변경하지 않습니다.
+- 기존 테스트 통과 수치를 새 SHA의 PASS로 주장하지 않습니다. 신규 CI/독립 리뷰는 대기, real-data 24 SKIP와 DOC_FREEZE/main HOLD 유지.
+
+Sources: `scripts/refactor/shared_strategist_contracts.py`, `tests/test_shared_strategist_contracts.py`, `.github/workflows/p15-shared-candidate.yml`.
+
 ## 2026-10-19 · P1.5 SHARED CANDIDATE PINNED HISTORICAL GIT OBJECT HYDRATION 20261019
 **Stage:** CI evidence and provenance recovery · **Tags:** CI · TEST · DOCS
 

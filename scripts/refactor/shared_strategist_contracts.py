@@ -182,6 +182,8 @@ def verify_integration_scope(changed=None, untracked=None):
 # CI-accepted stage; new-stage admission is exact, not a prefix allowlist.
 HISTORICAL_STAGE = "c5fe8a9a59788cd7cf1eb1d72f9aa8b22a40f7ca"
 NEXT_BASE = "90ec23837c2b42d37e645ea3026e98247695d89f"
+# Last independently audited source integration. Later document/CI governance is not an S5 source-scope expansion.
+ACCEPTED_SOURCE_INTEGRATION = "a50d6e4780ddccd810fb0708e756e1bf63d8ede0"
 PARSING_PIN = "6849bed4af358c214f63011a0d58ef760ca79fa0"
 UI_PIN = "613a945d2b27e735d4019cdc85b4660f2c891d8f"
 PARSING = "libs/runtime/strategist/llm/response_contract_parsing.py"
@@ -277,11 +279,49 @@ def verify_next_stage(overrides=None):
     return frozenset(NEXT_RUNTIME)
 
 
+# This is the frozen S5/new-stage *source* admission. Keep the stage's path
+# allowlist exact; check later source/test drift separately instead of treating
+# subsequent documentation and workflow governance as unreviewed S5 code.
+POST_ACCEPTANCE_CODE_ROOTS = ("libs", "graphs", "apps", "scripts", "tests")
+
+
+def verify_post_acceptance_source_scope(changed):
+    paths = set(changed)
+    require(not paths, "post-accepted source/test drift (requires new independent source audit): " + repr(paths))
+    return frozenset()
+
+
 def verify_next_scope(changed=None, untracked=None):
     if changed is None:
-        changed = subprocess.check_output(["git", "diff", "--name-only", NEXT_BASE], cwd=ROOT, text=True).splitlines()
+        # Reject a rewritten/rebased unrelated HEAD rather than silently
+        # selecting a different historical baseline or widening the allowlist.
+        ancestor = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", ACCEPTED_SOURCE_INTEGRATION, "HEAD"],
+            cwd=ROOT, capture_output=True, check=False,
+        )
+        require(ancestor.returncode == 0, "independently audited source integration is not an ancestor")
+        # Current committed source and any tracked worktree edits must remain
+        # byte-identical to the independently accepted integration for *all*
+        # actual runtime, scripts, tests and frozen fixture paths.
+        committed = subprocess.check_output(
+            ["git", "diff", "--name-only", ACCEPTED_SOURCE_INTEGRATION, "HEAD", "--", *POST_ACCEPTANCE_CODE_ROOTS],
+            cwd=ROOT, text=True,
+        ).splitlines()
+        worktree = subprocess.check_output(
+            ["git", "diff", "--name-only", "HEAD", "--", *POST_ACCEPTANCE_CODE_ROOTS],
+            cwd=ROOT, text=True,
+        ).splitlines()
+        verify_post_acceptance_source_scope(committed + worktree)
+        # Stage scope is measured at the audited a50d6e47 source admission
+        # (19 exact paths), not across later D00/docs/workflow-only commits.
+        changed = subprocess.check_output(
+            ["git", "diff", "--name-only", NEXT_BASE, ACCEPTED_SOURCE_INTEGRATION],
+            cwd=ROOT, text=True,
+        ).splitlines()
     if untracked is None:
-        untracked = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True).splitlines()
+        untracked = subprocess.check_output(
+            ["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True,
+        ).splitlines()
     paths = set(changed) | set(untracked)
     require(paths <= NEXT_PATHS, "out-of-scope integration completion path: " + repr(paths - NEXT_PATHS))
     return paths

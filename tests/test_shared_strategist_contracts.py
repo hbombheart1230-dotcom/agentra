@@ -115,7 +115,23 @@ def test_reanchored_scope_keeps_changed_and_untracked_path_limits(path):
 
 def test_prepared_integrated_scope_uses_exact_source_and_shared_paths():
     assert S5.verify_integration_scope(sorted(S5.S5_PATHS | S5.SHARED_PATHS), []) == S5.S5_PATHS | S5.SHARED_PATHS
-    S5.verify_integration_scope()  # Actual staged/worktree/untracked state, not HEAD only.
+    S5.verify_integration_scope()  # Pinned S5 source stage plus post-acceptance code freeze.
+
+
+def test_latest_documents_do_not_reclassify_historical_source_changes():
+    assert S5.verify_next_scope() == S5.NEXT_PATHS
+    assert S5.ACCEPTED_SOURCE_INTEGRATION == "a50d6e4780ddccd810fb0708e756e1bf63d8ede0"
+
+
+@pytest.mark.parametrize("path", [
+    "libs/broker/rogue.py", "libs/supervisor/rogue.py", "libs/executor/rogue.py",
+    "graphs/nodes/execute_from_packet.py", "apps/operator_ui/rogue.py",
+    "scripts/refactor/rogue.py", "tests/fixtures/p1_5_t4d_commander_ui/golden.json",
+])
+def test_post_accepted_source_or_evidence_drift_fails_closed(path):
+    with pytest.raises(AssertionError, match="post-accepted source/test drift"):
+        S5.verify_post_acceptance_source_scope([path])
+    assert S5.verify_post_acceptance_source_scope([]) == frozenset()
 
 
 def test_unreviewed_source_and_broker_rejection_survive_optimized_python(tmp_path):
