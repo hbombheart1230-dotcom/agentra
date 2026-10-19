@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 SHARED CANDIDATE PINNED HISTORICAL GIT OBJECT HYDRATION 20261019
+**Stage:** CI evidence and provenance recovery · **Tags:** CI · TEST · DOCS
+
+- Shared Candidate 실행 [#39219563198](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39219563198)에서 일반 Linux 3,126 PASS / 116 FAIL / 57 ERROR / 24 SKIP, 계약 4개 실패·API 2개 성공을 직접 확인했습니다.
+- 삭제된 브랜치의 과거 SHA 5개는 GitHub에 원본 파일과 함께 존재하나, CI checkout에서 `git show` / `git archive`로 접근되지 않았습니다. 따라서 기존 고정 기준을 바꾸지 않고 workflow 안에서 정확한 SHA를 명시적으로 fetch하고 SHA:path의 Git blob 존재 여부를 fail-closed로 확인합니다.
+- 테스트 코드·검증 조건·안전 게이트를 수정하거나 skip/xfail하지 않았습니다. 본 변경의 CI PASS는 **아직 확인되지 않았으며**, 별도 DOC/CI 범위 검사 실패도 여전히 OPEN입니다.
+- 거래 운영환경·브로커·UEF·Step5C·main 변경 없음. DOC_FREEZE HOLD.
+
+Sources: `.github/workflows/p15-shared-candidate.yml`, `scripts/refactor/shared_candidate_tests.py`, `scripts/refactor/shared_strategist_contracts.py`.
+
 ## 2026-10-19 · P1.5 HISTORICAL DIRECT-ENTRY BANNERS 20261019
 **Stage:** Documentation governance · **Tags:** DOCS · AUDIT
 

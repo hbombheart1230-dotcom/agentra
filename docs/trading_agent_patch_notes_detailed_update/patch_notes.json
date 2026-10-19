@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 307,
+  "entry_count": 308,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 SHARED CANDIDATE PINNED HISTORICAL GIT OBJECT HYDRATION 20261019",
+      "title": "Restore availability of deleted-branch historical Git source oracles for shared candidate CI",
+      "stage": "CI evidence and provenance recovery",
+      "types": [
+        "CI",
+        "TEST",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "In Shared Candidate Required Contracts workflow, fetch five exact historical source SHA commits required by stage-pinned parity and mutation tests, then fail closed if the referenced original Git file blobs remain unavailable. Do not alter any source oracle, test assertion, or runtime behavior.",
+      "details": [
+        "GitHub Actions run 39219563198 on 5c679223: four contract matrix jobs failed, two API jobs passed. Linux normal: 3126 PASS / 116 FAIL / 57 ERROR / 24 SKIP. Most observed failures involve git show/git archive paths at retired-branch SHA pins unavailable in checkout.",
+        "GitHub connector independently confirmed the five pinned commit objects and representative file paths are still available in the repository at their exact SHA; do not rewrite pins or weaken source parity and mutation contracts.",
+        "Add one shell=bash preflight only to the existing contracts matrix: fetch five SHA commits explicitly with --depth=1, require the SHA commit objects, and require each pinned SHA:path tree blob before invoking unchanged tests. This is a hypothesis-backed CI environment repair; hosted outcome still NOT_VERIFIED.",
+        "Two existing S5/next-stage historical scope tests independently reject later docs/workflow paths; they are not exempted or downgraded in this commit. FastAPI warning in nested test is not by itself a confirmed application error.",
+        "No real data, trade permission, Broker, Step5C, UEF, golden, source test weakening, test exclusion, main branch, or production changes."
+      ],
+      "impact": "Preserve historical source parity while making missing retired-branch git objects an explicit deterministic CI prerequisite. New-SHA hosted run and independent validation pending; DOC_FREEZE and main merge remain HOLD.",
+      "sources": [
+        ".github/workflows/p15-shared-candidate.yml",
+        "scripts/refactor/shared_candidate_tests.py",
+        "scripts/refactor/shared_strategist_contracts.py",
+        "tests/test_shared_strategist_contracts.py"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 HISTORICAL DIRECT-ENTRY BANNERS 20261019",
