@@ -206,7 +206,7 @@ def test_new_import_lines_are_only_the_ledger_owner_names():
     for module in MODULES:
         s5 = S5.current_contract()
         base_names = {(n.module, a.name) for n in _base_tree(module).body if isinstance(n, ast.ImportFrom) for a in n.names}
-        cur_names = {(n.module, a.name) for n in _cur_tree(module).body if isinstance(n, ast.ImportFrom) for a in n.names}
+        cur_names = {(n.module, a.name) for n in s5["tree"].body if isinstance(n, ast.ImportFrom) for a in n.names}
         added = cur_names - base_names
         expected = {(s["owner"][:-3].replace("/", "."), s["owner_function"]) for s in _segments(module)}
         if s5["runtime_paths"]:

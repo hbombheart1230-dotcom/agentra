@@ -2476,3 +2476,32 @@ def test_operator_brief_sections_surface_canonical_scanner_reasoning_details(tmp
     assert any("confidence 0.84 and lower risk 0.18" in row for row in sections["why_symbol_chosen"]["selection_reasons"])
     assert sections["why_symbol_chosen"]["comparison_reasons"][0].startswith("000660 was weaker:")
     assert sections["scanner_ranking_explanation"]["tie_break_rule"] == "score_total desc -> confidence desc -> risk_score asc"
+
+
+def test_operator_brief_projection_facades_keep_use_time_dependencies(monkeypatch) -> None:
+    import inspect
+    import apps.operator_ui.data_access_core as core
+
+    for name in ("_build_operator_brief_sections", "_build_operator_brief_input"):
+        assert getattr(data_access, name) is getattr(core, name)
+        assert list(inspect.signature(getattr(core, name)).parameters) == ["detail"]
+
+    class ProjectionBoundaryReached(Exception):
+        pass
+
+    def stop_at_canonical(detail):
+        raise ProjectionBoundaryReached("patched canonical dependency")
+
+    def forbidden_effect(*args, **kwargs):
+        raise AssertionError("projection attempted LLM or persistence")
+
+    monkeypatch.setattr(core.LLMRouter, "from_env", staticmethod(forbidden_effect))
+    monkeypatch.setattr(core, "_save_operator_brief_input_artifact", forbidden_effect)
+    monkeypatch.setattr(core, "_build_canonical_trade_brief_input", stop_at_canonical)
+    for name in ("_build_operator_brief_sections", "_build_operator_brief_input"):
+        try:
+            getattr(data_access, name)({})
+        except ProjectionBoundaryReached as exc:
+            assert str(exc) == "patched canonical dependency"
+        else:
+            raise AssertionError(f"{name} bypassed the facade dependency")

@@ -4,6 +4,19 @@
 
 총 **45개 릴리즈/변경 구간**을 수록한다. 작은 버그 수정 하나하나를 전부 카드화하기보다, UI에서 의미가 있는 기능·정책·평가 단위로 묶되 각 카드 안에서 실제 세부 변경을 보여주는 방식이다.
 
+## 2026-10-19 · P1.5 SELECTIVE STRATEGIST OPERATOR UI INTEGRATION 20261019
+**Stage:** Integration
+**Tags:** REFACTOR · TEST · INTEGRATION
+
+- integration `90ec2383` 위에 감사된 Strategist `6849bed4`의 parsing helper 3개·새 Owner·집중 테스트와 Operator UI `613a945d`의 brief 조립 함수 2개·기존 Owner·테스트만 선택 반영합니다. 개발 브랜치 전체와 기존 S5 테스트 파일의 분기 내용은 가져오지 않습니다.
+- Strategist 원본은 187줄, UI core는 348줄 줄었습니다. 공개 ABI·facade use-time lookup·응답 순서·예외·읽기 전용 권한·lazy LLM 동작은 보존합니다. 387줄 sections Owner를 숫자만 맞추기 위해 재분리하지 않습니다.
+- 과거 S5/T3/T4-D의 import·350줄·AST 검사는 수용된 `c5fe8a9a` 단계 소스에 보존합니다. 실제 현재 파일이 감사된 blob과 정확히 일치해야만 역사적 source view를 얻습니다. 새 단계는 정확한 5개 런타임 파일·함수·import·wrapper/ABI 복원 및 허용 경로를 검사하고, 동적 import·State·추가 LLM·Broker 권한 변이를 거부합니다.
+- frozen golden·음성 검사를 삭제하거나 skip/xfail/waiver하지 않습니다. 패치노트 커밋 시 신규 통합 SHA의 필수 CI와 독립 게이트 감사는 아직 대기 상태입니다. 전체 pytest·실운영 JSON/HTML frozen parity·UI build는 NOT_RUN입니다. `main` 및 최종 P1.5 수용은 사용자 승인 사항입니다.
+
+- 로컬 Windows Python3.14.2 집중 소스·동작·단계 게이트: normal은 집중 수정 후 고유421개 PASS, `-O`는 단일 실행421개 PASS. 초기 실패 로그도 보존합니다. 신규 통합 SHA의 Linux3.12/Windows3.13 필수6개 CI는 아직 대기 상태입니다.
+
+근거: [Operator UI 감사 #18](https://github.com/hbombheart1230-dotcom/agentra/issues/18), [Strategist 감사 #19](https://github.com/hbombheart1230-dotcom/agentra/issues/19), `tests/test_p15_integration_completion.py`.
+
 ## 2026-10-18 · P1.5 작업지시 문서 단일화 (운영 규칙·문서만)
 **Stage:** Maintainability
 **Tags:** DOCS · GOVERNANCE

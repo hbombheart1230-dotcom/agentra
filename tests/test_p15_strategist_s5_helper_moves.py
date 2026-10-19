@@ -71,7 +71,8 @@ def _defs(src):
 
 
 def _head_node_src():
-    return (ROOT / NODE).read_text(encoding="utf-8-sig")
+    from scripts.refactor.shared_strategist_contracts import historical_source
+    return historical_source(NODE)
 
 
 def observe(tree, tmp):

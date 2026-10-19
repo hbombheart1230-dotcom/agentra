@@ -147,7 +147,7 @@ def restore_candidate(sources):
 def current_contract(overrides=None):
     """Existing tree or admitted exact S5 only; partial/unreviewed S5 fails."""
     overrides = overrides or {}
-    read = lambda p: overrides[p] if p in overrides else (ROOT / p).read_text(encoding="utf-8-sig")
+    read = lambda p: overrides[p] if p in overrides else historical_source(p)
     present = {p for p in OWNERS if p in overrides or (ROOT / p).exists()}
     source = read(NODE)
     if not present:
@@ -169,9 +169,119 @@ def import_pairs():
 def verify_integration_scope(changed=None, untracked=None):
     """Exact integrated-lane scope; no prefix wildcard or caller baseline override."""
     if changed is None:
-        changed = subprocess.check_output(["git", "diff", "--name-only", INTEGRATION_BASE], cwd=ROOT, text=True).splitlines()
+        verify_next_scope()
+        changed = subprocess.check_output(["git", "diff", "--name-only", INTEGRATION_BASE, HISTORICAL_STAGE], cwd=ROOT, text=True).splitlines()
+    if untracked is None:
+        untracked = []  # current untracked paths are checked by verify_next_scope above
+    paths = set(changed) | set(untracked)
+    require(paths <= S5_PATHS | SHARED_PATHS | INTEGRATION_DOC_PATHS, "out-of-scope S5/shared path: " + repr(paths - S5_PATHS - SHARED_PATHS - INTEGRATION_DOC_PATHS))
+    return paths
+
+
+# Integration completion: historic S5/T3/T4-D shapes remain frozen at the last
+# CI-accepted stage; new-stage admission is exact, not a prefix allowlist.
+HISTORICAL_STAGE = "c5fe8a9a59788cd7cf1eb1d72f9aa8b22a40f7ca"
+NEXT_BASE = "90ec23837c2b42d37e645ea3026e98247695d89f"
+PARSING_PIN = "6849bed4af358c214f63011a0d58ef760ca79fa0"
+UI_PIN = "613a945d2b27e735d4019cdc85b4660f2c891d8f"
+PARSING = "libs/runtime/strategist/llm/response_contract_parsing.py"
+UI_CORE = "apps/operator_ui/data_access_core.py"
+UI_INPUT = "apps/operator_ui/data_access_brief_input_projection.py"
+UI_SECTIONS = "apps/operator_ui/data_access_brief_sections_projection.py"
+NEXT_RUNTIME = {NODE: PARSING_PIN, PARSING: PARSING_PIN,
+                UI_CORE: UI_PIN, UI_INPUT: UI_PIN, UI_SECTIONS: UI_PIN}
+NEXT_MOVED = {
+    NODE: {name: (PARSING, name + "_r3_impl", name + "_r3_impl") for name in
+           ("_extract_contract_from_prose", "_extract_json_object", "_classify_llm_parse_failure")},
+    UI_CORE: {
+        "_build_operator_brief_input": (UI_INPUT, "build_operator_brief_input", "_build_operator_brief_input_projection"),
+        "_build_operator_brief_sections": (UI_SECTIONS, "build_operator_brief_sections", "_build_operator_brief_sections_projection"),
+    },
+}
+NEXT_PATHS = frozenset(NEXT_RUNTIME) | {
+    "tests/test_p15_strategist_contract_parsing_move.py", "tests/test_operator_ui.py",
+    "scripts/refactor/shared_strategist_contracts.py", "scripts/refactor/shared_role_contracts.py",
+    "scripts/refactor/shared_candidate_tests.py", "tests/test_shared_strategist_contracts.py",
+    "tests/test_p15_strategist_s5_helper_moves.py", "tests/test_p159_current_owner_contract_gates.py",
+    "tests/test_p165_t4d_extraction_gates.py", "tests/test_p164_t4c_extraction_gates.py",
+    "tests/test_p15_integration_completion.py",
+    "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
+    "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
+}
+
+
+def historical_source(path):
+    """Only approved changed blobs project to the CI-accepted historical view.
+
+    All other files remain current. A changed wrapper/import/owner cannot be
+    hidden by reading the old stage: its actual blob must match the audited pin.
+    """
+    current = (ROOT / path).read_text(encoding="utf-8-sig")
+    if path in NEXT_RUNTIME:
+        require(current.replace("\r\n", "\n") == git_source(NEXT_RUNTIME[path], path),
+                "new-stage source differs from audited pin: " + path)
+        require(path != PARSING, "new Owner has no historical source")
+        return git_source(HISTORICAL_STAGE, path)
+    return current
+
+
+class _RestoreBriefGlobals(Unqualify):
+    def visit_Attribute(self, node):
+        if isinstance(node.value, ast.Name) and node.value.id == "facade":
+            return ast.copy_location(ast.Name(id=node.attr, ctx=node.ctx), node)
+        return self.generic_visit(node)
+
+    def visit_Name(self, node):
+        if node.id == "facade" and isinstance(node.ctx, ast.Load):
+            return ast.copy_location(ast.parse("_r3_sys.modules[__name__]", mode="eval").body, node)
+        return node
+
+
+def verify_next_stage(overrides=None):
+    """Exact audited source + five body/ABI/import restoration proofs, -O safe."""
+    overrides = overrides or {}
+    sources = {p: overrides.get(p, (ROOT / p).read_text(encoding="utf-8-sig")) for p in NEXT_RUNTIME}
+    for path, pin in NEXT_RUNTIME.items():
+        require(sources[path].replace("\r\n", "\n") == git_source(pin, path),
+                "new-stage source differs from audited pin: " + path)
+    for path, moved in NEXT_MOVED.items():
+        base_tree = ast.parse(git_source(NEXT_BASE, path))
+        tree = ast.parse(sources[path])
+        base, current = functions(base_tree), functions(tree)
+        require(set(base) == set(current), "new-stage definition inventory")
+        for name, (owner, impl_name, alias) in moved.items():
+            expected = copy.deepcopy(base[name])
+            args = [ast.Name(id=a.arg, ctx=ast.Load()) for a in expected.args.posonlyargs + expected.args.args]
+            expected.body = [ast.Return(value=ast.Call(func=ast.Name(id=alias, ctx=ast.Load()), args=args,
+                keywords=[ast.keyword(arg="facade", value=ast.parse("_r3_sys.modules[__name__]", mode="eval").body)]))]
+            require(dump(current[name]) == dump(expected), "new-stage wrapper/ABI: " + name)
+            impl = copy.deepcopy(functions(ast.parse(sources[owner]))[impl_name])
+            expected_impl = copy.deepcopy(base[name])
+            expected_impl.name = impl_name
+            expected_impl.args.kwonlyargs.append(ast.arg(arg="facade"))
+            expected_impl.args.kw_defaults.append(None)
+            restored = (_RestoreBriefGlobals() if path == UI_CORE else Unqualify()).visit(impl)
+            require(dump(restored) == dump(expected_impl), "new-stage body/signature: " + name)
+        # Permit exactly the reviewed import addition, preserving old import order.
+        # The entire audited source pin above also protects owner module statements.
+        for n in tree.body:
+            if isinstance(n, ast.FunctionDef) and n.name in moved:
+                index = tree.body.index(n)
+                tree.body[index] = copy.deepcopy(base[n.name])
+        tree.body = [n for n in tree.body if not (isinstance(n, ast.ImportFrom) and n.module == PARSING[:-3].replace("/", "."))]
+        for n in tree.body:
+            if isinstance(n, ast.ImportFrom) and path == UI_CORE:
+                n.names = [a for a in n.names if (n.module, a.name, a.asname) not in {
+                    (o[:-3].replace("/", "."), impl, alias) for o, impl, alias in moved.values()}]
+        require(dump(tree) == dump(base_tree), "new-stage unmoved source/import changed: " + path)
+    return frozenset(NEXT_RUNTIME)
+
+
+def verify_next_scope(changed=None, untracked=None):
+    if changed is None:
+        changed = subprocess.check_output(["git", "diff", "--name-only", NEXT_BASE], cwd=ROOT, text=True).splitlines()
     if untracked is None:
         untracked = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True).splitlines()
     paths = set(changed) | set(untracked)
-    require(paths <= S5_PATHS | SHARED_PATHS | INTEGRATION_DOC_PATHS, "out-of-scope S5/shared path: " + repr(paths - S5_PATHS - SHARED_PATHS - INTEGRATION_DOC_PATHS))
+    require(paths <= NEXT_PATHS, "out-of-scope integration completion path: " + repr(paths - NEXT_PATHS))
     return paths

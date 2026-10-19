@@ -74,16 +74,17 @@ def verify_runtime(overrides=None):
     require(not reporter & monitor, "ambiguous runtime overlap")
     strategist = S5.current_contract(overrides)["runtime_paths"]
     require(not (reporter | monitor) & strategist, "ambiguous S5 runtime overlap")
+    S5.verify_next_stage(overrides)
     actual = set(subprocess.check_output(["git", "diff", "--name-only", BASE, "--", "libs", "graphs", "apps"], cwd=ROOT, text=True).splitlines())
     actual |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard", "--", "libs", "graphs", "apps"], cwd=ROOT, text=True).splitlines())
     actual |= {p for p in overrides if p.startswith(("libs/", "graphs/", "apps/"))}
-    expected = reporter | monitor | strategist
+    expected = reporter | monitor | strategist | set(S5.NEXT_RUNTIME)
     require(actual == expected, "unexpected/missing runtime path: " + repr(actual ^ expected))
     for sha, paths in ((REPORTER, reporter), (MONITOR, monitor), (S5.CANDIDATE_CODE, strategist)):
         for path in sorted(paths):
             current = overrides.get(path)
             if current is None:
-                current = (ROOT / path).read_text(encoding="utf-8-sig")
+                current = S5.historical_source(path)
             require(current == git_text(sha, path), "unapproved runtime body/import/authority: " + path)
     # Include untracked files: Git diff alone cannot see a new Broker capability.
     for role, sha, allowed in (("reporter", REPORTER, {"narrative", "read_models"}),

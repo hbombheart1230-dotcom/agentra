@@ -1,11 +1,11 @@
-"""Operator brief sections: current_snapshot section.
+"""Read-only operator brief section assembly and projections.
 
-T4-A (P1.5 Third Pass): contiguous statement run / value expression of `apps/operator_ui/data_access_core.py::_build_operator_brief_sections` moved verbatim into a
-scanner projection Owner. Locals enter as explicit parameters and leave as the returned record; module globals of the
-Scanner node are resolved at use time as `facade.NAME`. State writes, event emission, logging and persistence stay in the
-orchestrator at their original boundaries.
+Dependencies resolve through the caller facade at use time to preserve monkeypatch
+seams. These projections perform no LLM calls or persistence.
 """
 from __future__ import annotations
+
+from typing import Any, Dict, List
 
 
 def build_current_snapshot_section(canonical_posture, decision_reason, execution_status_summary, final_action, focus_symbol, guard_status, live_monitor_reason, monitor_reason, next_expected_step, path_label, phase):
@@ -134,3 +134,254 @@ def build_ai_trade_report_section(report_available, report_lifecycle_status, rep
             "link": report_link,
         }
     )
+
+
+def build_operator_brief_sections(detail: Dict[str, Any], *, facade) -> Dict[str, Any]:
+    strategist = detail.get("strategist") if isinstance(detail.get("strategist"), dict) else {}
+    scanner = detail.get("scanner") if isinstance(detail.get("scanner"), dict) else {}
+    monitor = detail.get("monitor") if isinstance(detail.get("monitor"), dict) else {}
+    supervisor = detail.get("supervisor") if isinstance(detail.get("supervisor"), dict) else {}
+    executor = detail.get("executor") if isinstance(detail.get("executor"), dict) else {}
+    reporter = detail.get("reporter") if isinstance(detail.get("reporter"), dict) else {}
+    trade_report = detail.get("trade_report") if isinstance(detail.get("trade_report"), dict) else {}
+    trade_report_data = trade_report.get("report_data") if isinstance(trade_report.get("report_data"), dict) else {}
+    trade_story_input = trade_report_data.get("trade_story_input") if isinstance(trade_report_data.get("trade_story_input"), dict) else {}
+    canonical_trade = facade._build_canonical_trade_brief_input(trade_report)
+    canonical_monitor_snapshot, execution, feature_coverage, feature_snapshot, live_exit_reason, live_monitor_reason, monitor_summary, monitor_trace, path_label, phase, quote_metrics, scanner_summary, scanner_trace, score_breakdown, selected_candidate, selected_symbol, source_scores, strategist_raw_input, strategist_summary, strategist_trace, supervisor_reason, thresholds, top_candidates, verdict = facade.operator_brief_canonical_facts(canonical_trade=canonical_trade, strategist=strategist, scanner=scanner, monitor=monitor, supervisor=supervisor, executor=executor, detail=detail, facade=facade)
+    selected_rank = facade._safe_int(
+        canonical_trade.get("selected_rank"),
+        next((int(row.get("rank") or 0) for row in top_candidates if str(row.get("symbol") or "") == selected_symbol), 0),
+    )
+    confidence, execution_action, exit_reason, final_action, monitor_reason, report_lifecycle_status, selected_why, selection_reasons, shared_facts, universe_size = facade.brief_facts_confidence_execution_action(canonical_trade=canonical_trade, scanner_summary=scanner_summary, top_candidates=top_candidates, scanner_trace=scanner_trace, execution=execution, live_monitor_reason=live_monitor_reason, live_exit_reason=live_exit_reason, selected_candidate=selected_candidate, facade=facade)
+    for reason in list(canonical_trade.get("why_selected") or [])[:4]:
+        cleaned = facade._clean_brief_text(reason)
+        if cleaned and cleaned not in selection_reasons:
+            selection_reasons.append(cleaned)
+    if selected_why and selected_why not in selection_reasons:
+        selection_reasons.append(selected_why)
+    for bullet in list(canonical_trade.get("selection_bullets") or [])[:4]:
+        text = str(bullet or "").strip()
+        if text.lower().startswith("chart / feature coverage:"):
+            continue
+        if text and text not in selection_reasons:
+            selection_reasons.append(text)
+    if feature_coverage.get("total"):
+        selection_reasons.append(
+            f"chart feature coverage {feature_coverage.get('present')}/{feature_coverage.get('total')} ({feature_coverage.get('quality') or '-'})"
+        )
+    if quote_metrics.get("quote_trading_value") is not None:
+        selection_reasons.append("acceptable turnover and tradability")
+    if strategist_summary.get("playbook"):
+        selection_reasons.append(f"aligned with playbook {strategist_summary.get('playbook')}")
+
+    comparison_reasons: List[str] = []
+    canonical_runner_ups_lost = [dict(row) for row in list(canonical_trade.get("runner_ups_lost") or []) if isinstance(row, dict)]
+    if canonical_runner_ups_lost:
+        for row in canonical_runner_ups_lost[:3]:
+            symbol = str(row.get("symbol") or "").strip()
+            summary = facade._clean_brief_text(row.get("summary") or "; ".join(list(row.get("why_lost") or [])))
+            if symbol and summary:
+                comparison_reasons.append(f"{symbol} was weaker: {summary}")
+    elif len(top_candidates) >= 2:
+        for row in top_candidates[1:3]:
+            reason = facade._clean_brief_text(row.get("reason"))
+            if reason:
+                comparison_reasons.append(f"{row.get('symbol')} was weaker: {reason}")
+        if not comparison_reasons:
+            comparison_reasons.append("other candidates had lower composite rank or weaker feature coverage")
+    else:
+        comparison_reasons.append("only one ranked candidate was persisted for this run")
+
+    candidate_hints, defensive_mode, detected_themes, global_score, macro_moves, market_headlines, news_summary, news_targets, playbook, symbol_headlines, theme_match, vix_level = facade.brief_market_candidate_hints_defensive_mode(strategist_raw_input=strategist_raw_input, canonical_trade=canonical_trade, strategist_summary=strategist_summary, strategist=strategist, selected_symbol=selected_symbol, strategist_trace=strategist_trace, selected_candidate=selected_candidate, facade=facade)
+    if not theme_match and selected_why and detected_themes:
+        lowered = selected_why.lower()
+        for theme in detected_themes:
+            if str(theme).lower() in lowered:
+                theme_match = theme
+                break
+    anomaly_note, anomaly_status, chart_note, chart_status, liquidity_note, liquidity_status, priority_alignment, ranking_basis, risk_note, risk_status, sector_note, sector_status, sentiment_gate_note, sentiment_gate_status, spread_note, spread_status, theme_priority, turnover_note, turnover_status = facade.brief_market_anomaly_note_anomaly_status(detected_themes=detected_themes, theme_match=theme_match, selected_symbol=selected_symbol, feature_snapshot=feature_snapshot, global_score=global_score, quote_metrics=quote_metrics, feature_coverage=feature_coverage, verdict=verdict, selected_candidate=selected_candidate, facade=facade)
+    for key in list(score_breakdown.keys())[:6]:
+        ranking_basis.append(facade._friendly_feature_name(key))
+    if not ranking_basis:
+        for key in list(source_scores.keys())[:6]:
+            ranking_basis.append(str(key).replace("_", " "))
+    if not ranking_basis:
+        ranking_basis = ["trading value", "volume", "sector strength", "chart feature coverage"]
+
+    component_scores: List[str] = []
+    for key, value in list(score_breakdown.items())[:6]:
+        component_scores.append(f"{facade._friendly_feature_name(str(key))}: {facade._format_float(value, 3)}")
+    if not component_scores:
+        for key, value in list(source_scores.items())[:6]:
+            component_scores.append(f"{str(key).replace('_', ' ')}: {facade._format_float(value, 3)}")
+    active_exit_axis, avg_price_monitor, canonical_current_price, canonical_holding_time, canonical_posture, chart_interpretation, current_drawdown_raw, current_price, effective_stop_reason, effective_stop_text, holding_time, missing_feature_names, peak_drawdown_raw, peak_price, positive_factors, present_feature_names, scanner_selection_trace, stop_loss, stop_loss_text, take_profit, take_profit_text, vwap_distance_raw, watch_axes, weak_factors = facade.brief_position_exit_axis_evidence(trade_story_input=trade_story_input, canonical_trade=canonical_trade, selected_why=selected_why, quote_metrics=quote_metrics, chart_status=chart_status, sector_status=sector_status, feature_coverage=feature_coverage, feature_snapshot=feature_snapshot, sentiment_gate_status=sentiment_gate_status, thresholds=thresholds, monitor_trace=monitor_trace, monitor_summary=monitor_summary, live_exit_reason=live_exit_reason, live_monitor_reason=live_monitor_reason, exit_reason=exit_reason, monitor_reason=monitor_reason, canonical_monitor_snapshot=canonical_monitor_snapshot, shared_facts=shared_facts, facade=facade)
+    canonical_active_exit_axis, canonical_average_price, canonical_current_drawdown, canonical_effective_stop, canonical_effective_stop_reason, canonical_exit_triggers, canonical_feature_source, canonical_hold_reasons, canonical_peak_drawdown, canonical_peak_price, canonical_price_source, canonical_price_source_policy, canonical_stop_loss, canonical_take_profit, canonical_vwap_distance, canonical_watch_axes, entry_evaluated, entry_guard_reason, entry_metrics, entry_pattern, entry_reason_code, entry_signal_chain, entry_triggered, hold_reasons = facade.canonical_monitor_snapshot_view(canonical_monitor_snapshot=canonical_monitor_snapshot, monitor_summary=monitor_summary, monitor_trace=monitor_trace, facade=facade)
+    if final_action == "HOLD":
+        hold_reasons.append("no explicit exit trigger was hit yet")
+        hold_reasons.append(f"monitor reason: {monitor_reason or '-'} / exit reason: {exit_reason or '-'}")
+    elif final_action == "WAIT":
+        hold_reasons.append("entry is waiting because no active position or execution signal is confirmed")
+        hold_reasons.append(f"monitor reason: {monitor_reason or '-'}")
+    elif final_action == "BUY":
+        hold_reasons.append("scanner selection passed gating and execution was approved")
+    elif final_action == "SELL":
+        hold_reasons.append("monitor/supervisor flow reached sell execution condition")
+    if chart_status in {"PASS", "PARTIAL"}:
+        hold_reasons.append(f"chart coverage state: {feature_coverage.get('quality') or '-'}")
+
+    exit_triggers = [
+        "stop-loss breach",
+        "take-profit hit",
+        "monitor quality deterioration",
+    ]
+    if stop_loss_text != "-" or take_profit_text != "-":
+        exit_triggers = [
+            f"stop-loss trigger ({stop_loss_text})" if stop_loss_text != "-" else "stop-loss trigger",
+            f"take-profit trigger ({take_profit_text})" if take_profit_text != "-" else "take-profit trigger",
+            "risk gate failure or abnormal volatility expansion",
+        ]
+
+    prefer_runtime_reporter = facade._prefer_runtime_reporter_state(reporter)
+    decision_reason, execution_quality, focus_symbol, key_finding, monitor_consistency, report_available, report_lifecycle_status, report_lifecycle_summary, report_link, report_mode, report_model, report_next_step, report_reason, report_status, report_story_type, report_summary, report_trade_id, reporter_reason, reporter_status, run_grade, strategy_alignment, thesis_invalidation, trade_quality, watch_next = facade.brief_decision_report_linkage(prefer_runtime_reporter=prefer_runtime_reporter, reporter=reporter, canonical_trade=canonical_trade, execution_action=execution_action, monitor_reason=monitor_reason, exit_reason=exit_reason, final_action=final_action, selected_rank=selected_rank, universe_size=universe_size, feature_coverage=feature_coverage, selected_symbol=selected_symbol, take_profit_text=take_profit_text, stop_loss_text=stop_loss_text, vix_level=vix_level, detected_themes=detected_themes, trade_report=trade_report, scanner_summary=scanner_summary, facade=facade)
+    execution_status_label, next_expected_step, selection_reason_text, stop_policy_summary, strategist_evidence_summary, supervisor_allowed = facade.brief_monitor_execution_status_label_next_expected_ste(verdict=verdict, execution=execution, canonical_trade=canonical_trade, thresholds=thresholds, stop_loss=stop_loss, stop_loss_text=stop_loss_text, canonical_monitor_snapshot=canonical_monitor_snapshot, effective_stop_text=effective_stop_text, take_profit=take_profit, take_profit_text=take_profit_text, canonical_effective_stop_reason=canonical_effective_stop_reason, effective_stop_reason=effective_stop_reason, watch_next=watch_next, final_action=final_action, selected_symbol=selected_symbol, active_exit_axis=active_exit_axis, playbook=playbook, global_score=global_score, vix_level=vix_level, strategist_summary=strategist_summary, selection_reasons=selection_reasons, selected_why=selected_why, facade=facade)
+    score_driver_preview = list(component_scores[:4]) or [
+        f"{key}={value}"
+        for key, value in list((scanner_selection_trace.get("selected_symbol_score_drivers") or {}).items())[:4]
+    ]
+    top_monitor_blocker = (
+        entry_guard_reason
+        or monitor_reason
+        or live_monitor_reason
+        or live_exit_reason
+        or "No explicit blocker or trigger was persisted."
+    )
+    monitor_guard_summary = top_monitor_blocker if final_action == "WAIT" else (live_exit_reason or monitor_reason or top_monitor_blocker)
+    guard_status = "approved" if supervisor_allowed else "blocked"
+    execution_status_summary = execution_status_label or str(canonical_trade.get("execution_summary") or "not captured")
+    operator_takeaway_items = watch_next[:3] or weak_factors[:3] or thesis_invalidation[:3]
+
+    macro_summary: List[str] = []
+    if macro_moves.get("dxy_pct") is not None:
+        macro_summary.append(f"DXY change {facade._format_percent(macro_moves.get('dxy_pct'), 2)}")
+    if macro_moves.get("tnx_delta") is not None:
+        macro_summary.append(f"US10Y delta {facade._format_float(macro_moves.get('tnx_delta'), 3)}")
+    for bullet in list(canonical_trade.get("market_context_bullets") or [])[:4]:
+        if bullet not in macro_summary:
+            macro_summary.append(bullet)
+
+    filter_rows = [dict(row) for row in list(canonical_trade.get("filter_rows") or []) if isinstance(row, dict)]
+    if filter_rows:
+        for row in filter_rows:
+            name = str(row.get("name") or "").strip().lower()
+            if name == "chart completeness filter":
+                row["status"] = chart_status
+                row["note"] = chart_note
+                break
+    if filter_rows:
+        filters_and_gates = filter_rows[:8]
+    else:
+        filters_and_gates = [
+            {"name": "Liquidity filter", "status": liquidity_status, "note": liquidity_note},
+            {"name": "Turnover filter", "status": turnover_status, "note": turnover_note},
+            {"name": "Sector strength filter", "status": sector_status, "note": sector_note},
+            {"name": "Chart completeness filter", "status": chart_status, "note": chart_note},
+            {"name": "Sentiment gate", "status": sentiment_gate_status, "note": sentiment_gate_note},
+            {"name": "Risk gate", "status": risk_status, "note": risk_note},
+            {"name": "Price anomaly filter", "status": anomaly_status, "note": anomaly_note},
+            {"name": "Spread/slippage filter", "status": spread_status, "note": spread_note},
+        ]
+
+    hold_reason_rows = list(canonical_trade.get("monitor_bullets") or [])
+    if hold_reason_rows:
+        hold_reasons = hold_reason_rows[:4]
+
+    return {
+        "executive_decision": {
+            "final_action": final_action,
+            "symbol": selected_symbol or "-",
+            "reason": decision_reason,
+            "confidence": confidence,
+            "selected_rank": selected_rank or None,
+            "universe_size": universe_size or None,
+        },
+        "current_snapshot": facade.build_current_snapshot_section(canonical_posture=canonical_posture, decision_reason=decision_reason, execution_status_summary=execution_status_summary, final_action=final_action, focus_symbol=focus_symbol, guard_status=guard_status, live_monitor_reason=live_monitor_reason, monitor_reason=monitor_reason, next_expected_step=next_expected_step, path_label=path_label, phase=phase),
+        "strategist_evidence": facade.build_strategist_evidence_section(candidate_hints=candidate_hints, canonical_trade=canonical_trade, global_score=global_score, market_headlines=market_headlines, news_targets=news_targets, playbook=playbook, strategist_evidence_summary=strategist_evidence_summary, strategist_summary=strategist_summary, symbol_headlines=symbol_headlines, vix_level=vix_level, facade=facade),
+        "scanner_focus": {
+            "summary": selection_reason_text,
+            "selected_symbol": focus_symbol,
+            "selected_rank": selected_rank or None,
+            "universe_size": universe_size or None,
+            "top_candidates": list(canonical_trade.get("top_candidates") or top_candidates[:3])[:3],
+            "selection_reason": selection_reason_text,
+            "score_drivers": score_driver_preview[:4],
+        },
+        "monitor_guard_snapshot": facade.build_monitor_guard_snapshot_section(active_exit_axis=active_exit_axis, entry_guard_reason=entry_guard_reason, entry_reason_code=entry_reason_code, execution_status_summary=execution_status_summary, guard_status=guard_status, live_monitor_reason=live_monitor_reason, monitor_guard_summary=monitor_guard_summary, monitor_reason=monitor_reason, stop_policy_summary=stop_policy_summary, supervisor_reason=supervisor_reason),
+        "next_step": {
+            "summary": next_expected_step or "-",
+            "watch_next": watch_next[:4],
+            "operator_takeaways": operator_takeaway_items[:4],
+        },
+        "why_symbol_chosen": {
+            "selected": bool(selected_symbol),
+            "universe_size": universe_size or None,
+            "selected_rank": selected_rank or None,
+            "selection_reasons": selection_reasons or ["selection rationale was not explicitly persisted"],
+            "comparison_reasons": comparison_reasons,
+            "top_candidates": list(canonical_trade.get("top_candidates") or top_candidates[:3])[:3],
+        },
+        "entry_timing": facade.build_entry_timing_section(canonical_trade=canonical_trade, entry_evaluated=entry_evaluated, entry_guard_reason=entry_guard_reason, entry_metrics=entry_metrics, entry_pattern=entry_pattern, entry_reason_code=entry_reason_code, entry_signal_chain=entry_signal_chain, entry_triggered=entry_triggered, final_action=final_action),
+        "market_context": {
+            "market_regime": str(canonical_trade.get("market_regime") or strategist_summary.get("market_regime") or strategist_trace.get("market_regime") or "-"),
+            "global_sentiment": facade._format_float(global_score, 2) if global_score is not None else "-",
+            "vix": facade._format_float(vix_level, 2) if vix_level is not None else "-",
+            "macro_summary": macro_summary,
+            "news_summary": news_summary,
+            "news_targets": facade._clean_brief_list(news_targets, limit=6),
+            "defensive_mode": "enabled" if defensive_mode else "disabled",
+        },
+        "theme_detection": {
+            "detected_themes": detected_themes,
+            "symbol_theme_match": theme_match or "not explicitly tagged",
+            "priority_alignment": priority_alignment,
+            "theme_priority_bucket": theme_priority,
+        },
+        "filters_and_gates": filters_and_gates,
+        "scanner_ranking_explanation": {
+            "ranking_basis": ranking_basis,
+            "component_scores": component_scores,
+            "tie_break_rule": str(canonical_trade.get("tie_break_rule") or scanner_trace.get("tie_break_rule") or "higher composite score, then stronger feature coverage"),
+            "positive_factors": positive_factors[:5],
+            "weak_factors": weak_factors[:4],
+        },
+        "chart_feature_coverage": {
+            "present": facade._safe_int(feature_coverage.get("present"), 0),
+            "total": facade._safe_int(feature_coverage.get("total"), 0),
+            "quality": str(feature_coverage.get("quality") or "missing"),
+            "confirmed_features": present_feature_names,
+            "missing_features": missing_feature_names,
+            "interpretation": chart_interpretation,
+        },
+        "position_monitor_reasoning": facade.build_position_monitor_reasoning_section(active_exit_axis=active_exit_axis, avg_price_monitor=avg_price_monitor, canonical_active_exit_axis=canonical_active_exit_axis, canonical_average_price=canonical_average_price, canonical_current_drawdown=canonical_current_drawdown, canonical_current_price=canonical_current_price, canonical_effective_stop=canonical_effective_stop, canonical_effective_stop_reason=canonical_effective_stop_reason, canonical_exit_triggers=canonical_exit_triggers, canonical_feature_source=canonical_feature_source, canonical_hold_reasons=canonical_hold_reasons, canonical_holding_time=canonical_holding_time, canonical_peak_drawdown=canonical_peak_drawdown, canonical_peak_price=canonical_peak_price, canonical_posture=canonical_posture, canonical_price_source=canonical_price_source, canonical_price_source_policy=canonical_price_source_policy, canonical_stop_loss=canonical_stop_loss, canonical_take_profit=canonical_take_profit, canonical_vwap_distance=canonical_vwap_distance, canonical_watch_axes=canonical_watch_axes, current_drawdown_raw=current_drawdown_raw, current_price=current_price, effective_stop_reason=effective_stop_reason, effective_stop_text=effective_stop_text, exit_triggers=exit_triggers, final_action=final_action, hold_reasons=hold_reasons, holding_time=holding_time, monitor_summary=monitor_summary, monitor_trace=monitor_trace, peak_drawdown_raw=peak_drawdown_raw, peak_price=peak_price, stop_loss_text=stop_loss_text, take_profit_text=take_profit_text, vwap_distance_raw=vwap_distance_raw, watch_axes=watch_axes, facade=facade),
+        "exit_plan": facade.build_exit_plan_section(active_exit_axis=active_exit_axis, canonical_active_exit_axis=canonical_active_exit_axis, canonical_effective_stop=canonical_effective_stop, canonical_effective_stop_reason=canonical_effective_stop_reason, canonical_exit_triggers=canonical_exit_triggers, canonical_take_profit=canonical_take_profit, canonical_trade=canonical_trade, canonical_watch_axes=canonical_watch_axes, effective_stop_reason=effective_stop_reason, effective_stop_text=effective_stop_text, exit_reason=exit_reason, exit_triggers=exit_triggers, final_action=final_action, monitor_reason=monitor_reason, take_profit_text=take_profit_text, watch_axes=watch_axes, facade=facade),
+        "reporter_evaluation": {
+            "status": reporter_status,
+            "reason": reporter_reason,
+            "strategy_alignment": strategy_alignment,
+            "execution_quality": execution_quality,
+            "monitor_consistency": monitor_consistency,
+            "run_grade": run_grade or "-",
+            "trade_quality": trade_quality,
+            "key_finding": key_finding,
+        },
+        "ai_trade_report": facade.build_ai_trade_report_section(report_available=report_available, report_lifecycle_status=report_lifecycle_status, report_lifecycle_summary=report_lifecycle_summary, report_link=report_link, report_mode=report_mode, report_model=report_model, report_next_step=report_next_step, report_reason=report_reason, report_status=report_status, report_story_type=report_story_type, report_summary=report_summary, report_trade_id=report_trade_id, facade=facade),
+        "operator_conclusion": {
+            "current_action": final_action,
+            "watch_next": watch_next[:4],
+            "thesis_invalidation": thesis_invalidation,
+        },
+        "risk_alerts": {
+            "defensive_mode": defensive_mode,
+            "weak_factors": weak_factors[:4],
+            "thesis_invalidation": thesis_invalidation[:3],
+        },
+    }

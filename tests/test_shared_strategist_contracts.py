@@ -95,12 +95,13 @@ def test_future_exact_admission_branch_is_exercised_only_in_memory(monkeypatch):
     # Simulate a future approval to test contracts; never writes the pin or sources.
     monkeypatch.setattr(S5, "ADMITTED_CODE", S5.CANDIDATE_CODE)
     sources = S5.candidate_sources()
-    result = SHARED.verify_runtime(sources)
+    S5.current_contract(sources)  # immutable historic candidate still independently admitted
+    result = SHARED.verify_runtime()  # actual new stage, not an old-node override
     assert result["moves"] == 313 and result["monitor_bodies"] == 20
     for path in ["libs/broker/rogue.py", "libs/executor/rogue.py", "libs/supervisor/rogue.py",
                  "libs/runtime/strategist/context/rogue.py"]:
         with pytest.raises(AssertionError):
-            SHARED.verify_runtime({**sources, path: "CAPABILITY = True\n"})
+            SHARED.verify_runtime({path: "CAPABILITY = True\n"})
 
 
 @pytest.mark.parametrize("path", ["libs/broker/rogue.py", "libs/executor/rogue.py", "libs/supervisor/rogue.py",

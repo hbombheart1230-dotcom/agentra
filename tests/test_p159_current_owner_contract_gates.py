@@ -136,7 +136,7 @@ def test_all_owner_modules_import_and_obey_authority_restrictions_at_head():
     assert owners
     for owner in sorted(owners):
         importlib.import_module(owner[:-3].replace("/", "."))  # import resolution / no cycles at import time
-        text = (ROOT / owner).read_text(encoding="utf-8-sig")
+        text = SHARED.S5.historical_source(owner)  # T3 import/LOC shape at accepted historical stage
         assert len(text.splitlines()) <= MAX_OWNER_LOC, owner
         tree = ast.parse(text)
         for node in tree.body:

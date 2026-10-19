@@ -18,6 +18,8 @@ SUITES = {
         "test_shared_strategist_contracts.py", "test_p172_strategist_s1_057_migration.py",
         "test_p15_strategist_s5_helper_moves.py", "test_p164_strategist_contract_freeze.py",
         "test_p173_p058_integration_contracts.py",
+        "test_p15_strategist_contract_parsing_move.py", "test_p15_integration_completion.py",
+        "test_operator_ui.py", "test_operator_ui_data_access_phase2.py",
     ],
     "reporter": [
         "test_work_reporter_seed_migration.py", "test_work_reporter_r4_facade_bodies.py",

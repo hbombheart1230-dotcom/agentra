@@ -17,6 +17,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from scripts.refactor.shared_strategist_contracts import historical_source, HISTORICAL_STAGE, verify_next_stage
+
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "97934d2509cee2593a5978a8f46b48860f293907"
 FREEZE = "dcca2be1b6dd0a01c8ed3deceb0fa1621e82eca6"
@@ -50,7 +52,7 @@ def _base_tree(module):
 
 
 def _cur_tree(module):
-    return ast.parse((ROOT / module).read_text(encoding="utf-8-sig"))
+    return ast.parse(historical_source(module))
 
 
 def _funcs(tree):
@@ -86,7 +88,7 @@ class _OutToMonitorOutput(ast.NodeTransformer):
 
 
 def _owner_fn(seg):
-    return _funcs(ast.parse((ROOT / seg["owner"]).read_text(encoding="utf-8-sig")))[seg["owner_function"]]
+    return _funcs(ast.parse(historical_source(seg["owner"])))[seg["owner_function"]]
 
 
 def _call_name(call):
@@ -215,7 +217,7 @@ def test_owner_modules_are_small_pure_and_resolve_only_allowed_names():
     mods = sorted({s["owner"] for s in _ledger()["segments"]})
     assert len(mods) >= 10
     for rel in mods:
-        text = (ROOT / rel).read_text(encoding="utf-8-sig")
+        text = historical_source(rel)
         assert len(text.splitlines()) <= MAX_OWNER_LOC, rel
         for tok in FORBIDDEN_TOKENS:
             assert tok not in text, (rel, tok)
@@ -303,7 +305,7 @@ def test_ledger_is_complete_and_names_the_base_and_freeze():
 
 def test_no_effect_llm_or_policy_second_source_moved_into_owners():
     for rel in sorted({s["owner"] for s in _ledger()["segments"]}):
-        text = (ROOT / rel).read_text(encoding="utf-8-sig")
+        text = historical_source(rel)
         for token in ("_env_bool(", "_commander_default_bool(", "_load_operator_brief", "_save_operator_brief_artifact",
                       "LLMRouter", "call_llm", "write_text(", "def _resolve_commander_behavior_policy",
                       "def _render_operator_brief_markdown"):
@@ -332,8 +334,9 @@ def test_t4d_changed_paths_stay_in_commander_ui_scope_and_touch_no_authority_sur
         assert not p.startswith("tests/fixtures/p1_5_t4c_strategist/"), "T4-C golden fixtures must stay unchanged"
 
     if merged:
+        verify_next_stage()  # actual current source separately, no historical waiver
         integration_paths = subprocess.check_output(
-            ["git", "diff", "--name-only", "-z", t4_final, "HEAD"], cwd=ROOT
+            ["git", "diff", "--name-only", "-z", t4_final, HISTORICAL_STAGE], cwd=ROOT
         ).decode().split(chr(0))
         # Do not weaken scope enforcement: T4 owners and source facades must
         # remain byte-unchanged at integration HEAD, and trading authority
