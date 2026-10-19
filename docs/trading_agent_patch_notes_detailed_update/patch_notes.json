@@ -1,8 +1,32 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 310,
+  "entry_count": 311,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 SOURCE SCOPE EXACT TEST PIN CORRECTION 20261019",
+      "title": "Pin post-audit scope unit tests after prior proof correction; retain all source freeze checks",
+      "stage": "CI contract exact-scope correction",
+      "types": [
+        "CI",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "The prior cfac9b71..05e91ea0 test addition legitimately touched the same two approved proof files, so a one-file-only post-proof delta rule was self-contradictory. Permit only those two exact proof paths, then independently pin the scope unit test at 05e91ea0 to prohibit subsequent test weakening.",
+      "details": [
+        "Retain accepted original source SHA a50d6e47 and the exact 19-path historical source admission; 05e91ea0 is the scope unit-test proof revision and must remain ancestral.",
+        "Require the full a50..HEAD libs/graphs/apps/scripts/tests scope to contain only the two exact existing proof files; require cfac..HEAD likewise; require the test file byte-identical to 05e91ea0 via git diff and zero tracked worktree source/test drift.",
+        "Seven hostile code/test/fixture mutation tests, existing NEXT_PATHS disallowed source list, staged historic inputs, real broker/executor/Step5C/UEF guards and all original pytests remain intact. This is a CI contract proof repair and NOT a green hosted run.",
+        "Do not restart development, waive historical tests, create broker orders, alter main or claim DOC_FREEZE accepted."
+      ],
+      "impact": "Correct checker/test self-drift without any runtime code changes or broad prefix allowlists. Required matrix hosted CI still pending for this new SHA.",
+      "sources": [
+        "scripts/refactor/shared_strategist_contracts.py",
+        "tests/test_shared_strategist_contracts.py"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 SOURCE CONTRACT PROOF PIN SELF-DRIFT CLOSURE 20261019",

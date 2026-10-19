@@ -1,5 +1,14 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 SOURCE SCOPE EXACT TEST PIN CORRECTION 20261019
+**Stage:** CI contract exact-scope correction · **Tags:** CI · TEST · SAFETY
+
+- `cfac9b71..05e91ea0`에서 승인된 proof-code 변경 대상은 소스 계약 검사 파일과 검증 단위 테스트 **2개**였는데, 직전 조건이 1개만 허용해 자기참조 충돌이 발생하는 것을 검토 과정에서 확인했습니다.
+- 이전 `a50d6e47`의 source 19개 경로 승인 스냅샷을 그대로 보존하고, 해당 두 증명 파일만 이후 수정 대상으로 명시합니다. 추가로 테스트 파일을 정확한 `05e91ea0` SHA에 핀 고정하여 테스트 훼손을 차단합니다. 나머지 전체 `libs/graphs/apps/scripts/tests` 및 tracked 작업공간 drift는 fail-closed입니다.
+- 기존 Broker·Supervisor·Executor·Step5C·UEF 안전, negative mutation tests, 24 real-data SKIP, main HOLD 보존. 새 SHA 호스팅 CI는 검증 전이므로 PASS 주장 없음.
+
+Sources: `scripts/refactor/shared_strategist_contracts.py`, `tests/test_shared_strategist_contracts.py`.
+
 ## 2026-10-19 · P1.5 SOURCE CONTRACT PROOF PIN SELF-DRIFT CLOSURE 20261019
 **Stage:** CI contract verification hardening · **Tags:** CI · TEST · SAFETY
 

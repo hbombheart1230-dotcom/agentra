@@ -332,9 +332,22 @@ def verify_next_scope(changed=None, untracked=None):
              "--", *POST_ACCEPTANCE_CODE_ROOTS],
             cwd=ROOT, text=True,
         ).splitlines()
-        require(set(since_proof) <= {"scripts/refactor/shared_strategist_contracts.py"},
+        # The cfac proof repair had two reviewed files, including its unit test.
+        # Reject every other source or test edit, and pin the unit test to the
+        # subsequent exact revision so future test weakening cannot slip through.
+        require(set(since_proof) <= POST_ACCEPTANCE_PROOF_PATHS,
                 "new post-proof source/test drift: " +
-                repr(set(since_proof) - {"scripts/refactor/shared_strategist_contracts.py"}))
+                repr(set(since_proof) - POST_ACCEPTANCE_PROOF_PATHS))
+        test_pin = "05e91ea0e53f296f3507445706901f9b389ad9fd"
+        require(subprocess.run(
+            ["git", "merge-base", "--is-ancestor", test_pin, "HEAD"],
+            cwd=ROOT, capture_output=True, check=False,
+        ).returncode == 0, "reviewed scope unit test pin not ancestral")
+        require(not subprocess.check_output(
+            ["git", "diff", "--name-only", test_pin, "HEAD", "--",
+             "tests/test_shared_strategist_contracts.py"],
+            cwd=ROOT, text=True,
+        ).strip(), "post-pin source scope unit test has been modified")
         require(not worktree, "unreviewed tracked worktree source/test drift: " + repr(set(worktree)))
         # Stage scope is measured at the audited a50d6e47 source admission
         # (19 exact paths), not across later D00/docs/workflow-only commits.
