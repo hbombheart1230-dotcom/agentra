@@ -2,7 +2,7 @@
 
 **Owner:** Claude implementation and tests → Codex independent audit → GPT/user integration decision.
 **Single Git branch:** `refactor/p1.5`, no new branch ever. Use isolated **separate clone** from latest `origin/refactor/p1.5`, not the live checkout. Preserve Q12 worktrees; do not reset/force-clean unknown files.
-**Source of truth:** [Claude evidence 002](docs/refactor/work_orders/evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md) and pinned R3 baseline `ba6618d483e6d617f4ee56b2cb5647392c777071`. Inspect only affected façade/Owner/test files.
+**Source of truth:** [Claude evidence 002](evidence/P15-R3-CLAUDE-ACCEPTANCE-EVIDENCE-002.md) and pinned R3 baseline `ba6618d483e6d617f4ee56b2cb5647392c777071`. Inspect only affected façade/Owner/test files.
 
 ## Architectural decision
 - **REJECT** treating call-entry global capture as acceptable compatibility drift. In 36/57 moved functions, callback-triggered within-call façade-global monkeypatching behaves differently from original module-level late lookup.

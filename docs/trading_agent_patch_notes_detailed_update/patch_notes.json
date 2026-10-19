@@ -1,8 +1,31 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 299,
+  "entry_count": 300,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 HISTORICAL DOC LINK REPAIR 20261019",
+      "title": "Repair twelve historical archived-work-order Markdown links",
+      "stage": "Documentation governance",
+      "types": [
+        "DOCS",
+        "MAINTAINABILITY"
+      ],
+      "status": "current",
+      "summary": "Correct twelve pre-existing relative links in three historical work orders without changing their task activation status or recorded evidence.",
+      "details": [
+        "Archive-relative link targets are corrected to actual canonical repository files.",
+        "Only links in old work orders were edited. No trading logic, frozen code fixtures, order pathways or main were touched.",
+        "DOC_FREEZE remains pending full review."
+      ],
+      "impact": "Historical links resolve; no runtime effects.",
+      "sources": [
+        "docs/refactor/work_orders/P15_R3_SEAM_RESTORATION_003.md",
+        "docs/refactor/work_orders/archive/CURRENT_2026-10-15_INTEGRATION.md",
+        "docs/refactor/work_orders/archive/CURRENT_R3_CODEX_HANDOFF_THROUGH_923D1E2_2026-10-12.md"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 DOC AUTHORITY CONVERGENCE 20261019",

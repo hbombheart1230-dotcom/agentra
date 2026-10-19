@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 과거 작업지시 상대링크 12건 수정
+**Stage:** Documentation governance
+**Tags:** DOCS · MAINTAINABILITY
+
+- 이동된 이전 작업지시 3개 Markdown의 기존 상대링크 12개만 실제 파일 위치로 수정합니다. 기록된 실행 결과·검증 의미 및 과거 작업 격리 상태는 유지합니다.
+- 거래 코드, main, 운영 경로 변경 없음. DOC_FREEZE PENDING.
+
+근거: `docs/refactor/work_orders/P15_R3_SEAM_RESTORATION_003.md`, `docs/refactor/work_orders/archive/CURRENT_2026-10-15_INTEGRATION.md`, `docs/refactor/work_orders/archive/CURRENT_R3_CODEX_HANDOFF_THROUGH_923D1E2_2026-10-12.md`.
+
+
 ## 2026-10-19 · P1.5 문서 정합성 및 과거 작업 격리 (DOC FIRST)
 **Stage:** Documentation governance
 **Tags:** DOCS · GOVERNANCE
