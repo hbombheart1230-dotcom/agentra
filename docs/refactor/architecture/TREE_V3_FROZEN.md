@@ -1,7 +1,9 @@
 # Agentra HYBRID-7 V3 — TARGET TREE FROZEN
 
 **Authority:** GPT architecture + user explicit freeze/implementation instruction, 2026-10-16.
-**Baseline:** `e9a9a854c2696889da8af1f6f7ec02e936f7d924`; work branch `integration/p15-t4-pr5-convergence-20261015`; `main` remains untouched.
+**HISTORICAL EXECUTION CONTEXT ONLY:** The baseline branch and V1-052 rollout below document the 2026-10-16 design-freeze event, **not** current branches or startup work. The seven-role target and SAFETY_LOCK guarantees remain frozen. All current execution sequencing, owner roles and branch assignments come ONLY from [D00](../../ENGINEERING_DELIVERY_POLICY.md) and [#20](https://github.com/hbombheart1230-dotcom/agentra/issues/20); #16–#19 and V1-052 are completed historical evidence.
+
+**Baseline (historical):** `e9a9a854c2696889da8af1f6f7ec02e936f7d924`; work branch `integration/p15-t4-pr5-convergence-20261015`; `main` remains untouched.
 **State:** `USER_TARGET_FROZEN` / `MIGRATION_IN_PROGRESS` / **not** P1.5 FINAL_ACCEPTED.
 **Design policy:** DO NOT propose V4, re-draw from scratch, or redo the completed 2,226-file AST inventory. The remaining work is implementation and differential safety verification.
 
@@ -28,7 +30,10 @@ Aesthetics are an ACCEPTANCE CRITERION: a developer can find role, owner and sta
 - Historical V3 detailed design and 57-row path ledger are retained in the GPT-provided changed-files-only package; this in-repo frozen specification is authoritative for implementation.
 - The consumer inventory is incomplete for dynamic external/scheduler/monkeypatch behavior. For **each selected physical move only**, verify those exact consumers and ABIs before proceeding.
 
-## Delivery sequence is fixed
+## Historical delivery sequence (2026-10-16; not a current task)
+
+> **NON-EXECUTABLE HISTORY:** V1-052 Scanner pilot, subsequent step order and the fixed Claude→Codex workflow below record the original implementation sequence. These are **not** pending work orders; for new tasks use D00 + latest #20 only.
+
 
 1. **V1 first REAL file movement:** the one-module Scanner pilot in `P15-TREE-MIGRATION-V1-052.md`, with compatibility, targeted safety and exact parity proof. No global scan or further target-tree debate.
 2. Next migrate coherent verified pure role functions by responsibility, in one active integration branch only. Each group: source-to-target ledger, wrappers, role-callability, parity, CI, write isolation.
@@ -36,6 +41,6 @@ Aesthetics are an ACCEPTANCE CRITERION: a developer can find role, owner and sta
 4. Scanner/Strategist/Monitor/Commander main surfaces then gradual compatibility debt removal; independent Supervisor/Executor authority changes remain out of scope.
 5. Wave D/P1.5 freeze is separate and not implied by successful folder moves.
 
-**Workflow:** GPT fixes target/scope → Claude implements on the existing branch in an isolated clone → Codex independent pinned-SHA audit → GPT/user acceptance. Approval of the V3 visual target is not blanket approval of high-risk code moves.
+**Workflow (historical 2026-10-16):** GPT fixes target/scope → Claude implements on the existing branch in an isolated clone → Codex independent pinned-SHA audit → GPT/user acceptance. Approval of the V3 visual target is not blanket approval of high-risk code moves.
 
 **Artifacts:** every meaningful commit updates BOTH UI patch-note JSON and MD plus daily evidence. No ZIP packaging in CI; user delivery bundles are **changed-files-only ZIP** outside CI, excluding secrets and production data.

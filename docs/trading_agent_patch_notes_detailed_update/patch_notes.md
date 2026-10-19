@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 DOC REWORK P1 P2 RESOLUTION 20261019
+**Stage:** Documentation governance · **Tags:** DOCS · SAFETY · MAINTAINABILITY
+
+- D01/D02에서 종료된 #16–#19을 현재 작업 큐로 읽지 않도록 변경. 신규 업무는 #20의 최신 승인에 한함.
+- HYBRID-7 V3의 구조·안전 목표는 그대로 보존하고, V1-052·삭제된 구 브랜치·고정 Claude→Codex 인계는 **역사적 실행 순서**로 명시.
+- Constitution §12/§15의 과거 담당자·전체 pytest cadence·브랜치 지시는 D00/#20이 대체하며, §13/§14의 안전 금지 및 과거 테스트 수용 증거는 유지.
+- `main`은 **정책상 변경 금지**이나 GitHub에서 물리적 보호가 확인된 상태라고 주장하지 않음. 관리자가 실제 보호 여부를 검증해야 함.
+- 이번 작업은 문서만 수정. DOC_FREEZE **PENDING**, 339개 본문/패치노트 출처/독립 재감사 및 사용자 승인 미완. 소스·운영·main 변경 없음.
+
+Sources: `AGENTS.md`, `CLAUDE.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/architecture/TREE_V3_FROZEN.md`, `docs/refactor/p1_5_refactor_constitution.md`.
+
 ## 2026-10-19 · P1.5 과거 작업지시 상대링크 12건 수정
 **Stage:** Documentation governance
 **Tags:** DOCS · MAINTAINABILITY

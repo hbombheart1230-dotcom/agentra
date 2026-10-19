@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 300,
+  "entry_count": 301,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 DOC REWORK P1 P2 RESOLUTION 20261019",
+      "title": "Clarify closed work queues, frozen target historical sequence, and actual main protection status",
+      "stage": "Documentation governance",
+      "types": [
+        "DOCS",
+        "SAFETY",
+        "MAINTAINABILITY"
+      ],
+      "status": "current",
+      "summary": "Resolve DOC audit P1-01/P1-02 and P2-01/P2-02 with no change to original frozen design goal or safety contracts.",
+      "details": [
+        "D01/D02 mark previous issues #16–#19 CLOSED evidence and allow next roles only through new operator-authorized #20 assignment.",
+        "TREE_V3_FROZEN labels original V1-052 implementation order, deleted original branch and fixed Claude/Codex roles as 2026-10-16 historical context; seven-peer HYBRID-7 V3 and SAFETY_LOCK remain immutable.",
+        "P1.5 Constitution §§12/15 legacy role/test cadence/branch rules are not current; §§13/14 trading safety/forbidden operations and pinned historical test evidence remain preserved.",
+        "D00 and both CLI entry files distinguish policy-protected main from unverified GitHub-enforced protection. DOC_FREEZE still pending: 339 content/link validation, missing historical patchnote sources, fresh reviewer gate and user signoff."
+      ],
+      "impact": "Documentation-only clarification, no Python runtime/source, tests, broker, approval, main, branch topology or production data mutation; CI NOT_RUN for this docs SHA.",
+      "sources": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "docs/refactor/architecture/TREE_V3_FROZEN.md",
+        "docs/refactor/p1_5_refactor_constitution.md"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 HISTORICAL DOC LINK REPAIR 20261019",

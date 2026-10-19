@@ -5,6 +5,8 @@
 **Adopted by operator / GPT Tech Lead: 2026-10-18. Standing policy for all future P1.5–P8 work.**
 **Purpose:** finish verified trading-system improvements in a single integrated codebase, rather than endlessly generating tools, inventories, evidence documents, and branch-specific PASS labels.
 
+> **CURRENT SAFETY / BRANCH TRUTH (2026-10-19):** `main` is **policy-protected / user-approval-only**, but GitHub branch-protection enforcement was **reported absent (`protected:false`, no active ruleset) in the 2026-10-19 read**, and has **not been independently reverified** in this docs-only change. References below to "protected main" describe a **must-not-edit policy**, NOT confirmed GitHub enforcement. Do not merge/push to `main`; request explicit operator-admin setup and verified rules before release promotion. Only `integration/p1.5` is active for document convergence. Closed #16–#19 are historic only. No code task is authorized until DOC_FREEZE plus user acceptance.
+
 ## 0. Authority order and handoff
 1. Trading safety/fail-closed invariants and explicit latest operator authorization always take precedence. Never weaken broker gates, Step5C CAS/UNKNOWN quarantine, UEF oracle, production-write isolation, credentials, or approval control for speed.
 2. This standing delivery policy governs HOW all four workers operate. The CURRENT task issue supplies the *specific exact SHA, paths, scope and reviewer*. Historical work orders, dated overrides, stale branch pointers and old NOT_STARTED checklists are **evidence, not active instructions** when they conflict.
