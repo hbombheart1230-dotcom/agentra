@@ -1,8 +1,30 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 304,
+  "entry_count": 305,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 LEGACY CI PINNED FETCH CORRECTION 20261019",
+      "title": "Replace retired refactor/p1.5 ancestry fetch in dormant P1.5 residual workflow",
+      "stage": "Documentation governance",
+      "types": [
+        "CI",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Update one stale git fetch path in retained historic regression workflow to existing integration/p1.5 so workflow_dispatch is not blocked by deleted remote branch; historical pinned test checks and branch triggers are otherwise untouched.",
+      "details": [
+        "Changed only one line's two occurrences of origin refactor/p1.5 to origin integration/p1.5 for shallow ancestry fetch fallback.",
+        "No workflow trigger changes. Legacy workflow remains dormant on the deleted historical push branch and may only execute via existing workflow_dispatch; it is NOT an accepted integration CI gate.",
+        "All pinned ancestry, golden/UEF/pytest and negative guards kept verbatim. No GitHub CI execution on this commit and no guarantee whole legacy suite succeeds; manual audit required."
+      ],
+      "impact": "No runtime/live trading/main change; docs-related CI text only. DOC_FREEZE remains HOLD.",
+      "sources": [
+        ".github/workflows/p152-r2c-residual-regression.yml",
+        "docs/refactor/work_orders/CURRENT.md"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 LEGACY CI DOC CONTRACT ALIGNMENT 20261019",

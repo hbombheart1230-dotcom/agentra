@@ -1,5 +1,14 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 LEGACY CI PINNED FETCH CORRECTION 20261019
+**Stage:** Documentation governance · **Tags:** CI / DOCS
+
+- 과거 회귀 workflow가 이미 삭제된 `origin refactor/p1.5`를 fetch하던 1개 명령(동일 행의 두 분기)을 현재 존재하는 `origin integration/p1.5`로 변경.
+- workflow trigger·stage-pinned 이전 커밋·테스트 및 UEF/golden 안전 검증은 그대로 유지. 현재 브랜치 HEAD에 대한 CI 실행/PASS는 아직 없음.
+- 역사 workflow를 P1.5 최신 필수 게이트로 승격하거나 runtime/main을 변경한 것은 아님. DOC_FREEZE HOLD.
+
+Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `docs/refactor/work_orders/CURRENT.md`.
+
 ## 2026-10-19 · P1.5 LEGACY CI DOC CONTRACT ALIGNMENT 20261019
 **Stage:** Documentation governance · **Tags:** DOCS · CI · SAFETY
 
