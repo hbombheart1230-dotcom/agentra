@@ -2,7 +2,7 @@ name: P1.5 Integration Readonly Consumer Inventory
 on:
   push:
     branches:
-      - integration/p15-t4-pr5-convergence-20261015
+      - integration/p1.5
       - main
     paths:
       - scripts/refactor/inventory_p15_consumers.py

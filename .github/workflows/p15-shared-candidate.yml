@@ -2,8 +2,7 @@ name: P1.5 Shared Candidate Required Contracts
 on:
   push:
     branches:
-      - integration/p15-monitor-shared-20261018
-      - work/codex-p15-20261018
+      - integration/p1.5
   workflow_dispatch:
 permissions:
   contents: read

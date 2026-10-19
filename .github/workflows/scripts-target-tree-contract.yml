@@ -3,7 +3,7 @@ name: Scripts Target Tree Contract
 on:
   push:
     branches:
-      - refactor/agentra-target-tree
+      - integration/p1.5
       - main
     paths:
       - "scripts/**"

@@ -3,7 +3,7 @@ name: P1.5 Integration Scripts Linux Windows Contract
 on:
   push:
     branches:
-      - integration/p15-t4-pr5-convergence-20261015
+      - integration/p1.5
       - main
   pull_request:
     branches:

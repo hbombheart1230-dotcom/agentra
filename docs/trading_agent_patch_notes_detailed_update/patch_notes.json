@@ -1,8 +1,36 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 305,
+  "entry_count": 306,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 INTEGRATION CI PUSH TRIGGER RESTORE 20261019",
+      "title": "Reactivate seven existing CI workflows on integration/p1.5 and restore no-premature-final-acceptance guard",
+      "stage": "Documentation and CI governance",
+      "types": [
+        "CI",
+        "DOCS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Replace seven retired on.push.branches filters with the active integration/p1.5 branch while preserving existing main/PR/dispatch/path filters, tests, pinned sources, and broker/UEF/Step5C safety. Reinstate FINAL_ACCEPTED negative validation in the existing two document authority steps.",
+      "details": [
+        "Seven workflow push branch filters now recognize integration/p1.5; legacy removed branch names no longer trigger these workflows. Existing main and pull_request triggers, workflow_dispatch where present, and paths filters are retained.",
+        "Two existing D00 document authority checks again reject FINAL_ACCEPTED in docs/refactor/work_orders/CURRENT.md; all other script statements and regression steps are unchanged.",
+        "This commit changes CI configuration only, not tests or runtime code. GitHub-hosted results on the new SHA and independent delta review are pending; DOC_FREEZE and main promotion remain HOLD."
+      ],
+      "impact": "Restores automatic CI trigger eligibility for active integration branch. No real orders, production data, broker authority, UEF oracle, or main change; no claim of CI PASS until hosted runs complete.",
+      "sources": [
+        ".github/workflows/p15-integration-consumer-inventory.yml",
+        ".github/workflows/p15-integration-crossbranch-compat.yml",
+        ".github/workflows/p15-integration-scripts-contract.yml",
+        ".github/workflows/p15-integration-t4-regression.yml",
+        ".github/workflows/p152-r2c-residual-regression.yml",
+        ".github/workflows/p15-shared-candidate.yml",
+        ".github/workflows/scripts-target-tree-contract.yml"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 LEGACY CI PINNED FETCH CORRECTION 20261019",

@@ -2,7 +2,7 @@ name: P1.5 Reporting Regression + P1.5 Design Guard
 on:
   push:
     branches:
-      - refactor/p1.5
+      - integration/p1.5
   workflow_dispatch:
 jobs:
   regression:
@@ -78,6 +78,7 @@ jobs:
               assert "DOC_FREEZE" in cli, "CLI must enforce docs-first"
           assert "integration/p1.5" in current and "DOC-A" in current
           assert "No live developer implementation issue" in current
+          assert "FINAL_ACCEPTED" not in current, "CURRENT must not claim release acceptance before DOC_FREEZE"
           assert "DOC_FREEZE" in overview and "DOC_FREEZE" in rules
           assert "docs/ENGINEERING_DELIVERY_POLICY.md" in d00
           assert "libs/agents/{commander,strategist,scanner,monitor,reporter,supervisor,executor}/" in target

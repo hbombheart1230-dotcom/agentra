@@ -1,5 +1,14 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 INTEGRATION CI PUSH TRIGGER RESTORE 20261019
+**Stage:** Documentation and CI governance · **Tags:** CI · DOCS · SAFETY
+
+- 삭제된 개발 브랜치를 가리키던 GitHub Actions 7개 워크플로의 push 트리거를 현행 `integration/p1.5`로 변경했습니다. 기존 main/PR/수동 실행 및 paths 필터는 유지했습니다.
+- 기존 D00 문서 권한 검사 2곳에 `FINAL_ACCEPTED` 조기 선언 거부 조건을 복구했습니다. pytest·기존 회귀/골든/Step5C/UEF/브로커 안전 게이트는 수정하지 않았습니다.
+- 이 변경은 CI 실행 조건 복구이며 새 SHA 호스팅 CI PASS나 독립 감사 PASS를 뜻하지 않습니다. `DOC_FREEZE`와 `main` 병합은 여전히 HOLD입니다.
+
+Sources: `.github/workflows/p15-integration-consumer-inventory.yml`, `.github/workflows/p15-integration-crossbranch-compat.yml`, `.github/workflows/p15-integration-scripts-contract.yml`, `.github/workflows/p15-integration-t4-regression.yml`, `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflows/p15-shared-candidate.yml`, `.github/workflows/scripts-target-tree-contract.yml`.
+
 ## 2026-10-19 · P1.5 LEGACY CI PINNED FETCH CORRECTION 20261019
 **Stage:** Documentation governance · **Tags:** CI / DOCS
 
