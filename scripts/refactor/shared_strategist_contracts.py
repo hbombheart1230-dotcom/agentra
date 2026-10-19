@@ -204,7 +204,7 @@ NEXT_PATHS = frozenset(NEXT_RUNTIME) | {
     "scripts/refactor/shared_candidate_tests.py", "tests/test_shared_strategist_contracts.py",
     "tests/test_p15_strategist_s5_helper_moves.py", "tests/test_p159_current_owner_contract_gates.py",
     "tests/test_p165_t4d_extraction_gates.py", "tests/test_p164_t4c_extraction_gates.py",
-    "tests/test_p15_integration_completion.py",
+    "tests/test_p15_integration_completion.py", "docs/refactor/work_orders/CURRENT.md",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
 }

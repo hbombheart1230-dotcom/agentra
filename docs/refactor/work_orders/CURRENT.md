@@ -24,3 +24,7 @@ Pin exact nonoverlapping callable/consumer scopes for two actual source reductio
 
 ## Historical sources
 Prior versions of CURRENT, COMMON_RULES and work-order README are permanently available at Git SHA `c5fe8a9a`; older `archive/`, `evidence/`, `P15-*.md` and `work_projects/` are provenance, **not operating orders**.
+
+
+### Historical stage markers (provenance only; not active orders)
+`P1.5.2 OPEN` and `P1.5.3` are retained verbatim for the original offline inventory's fail-closed provenance check. They describe the historical stage, grant no current work or promotion authority, and do not authorize P1.5.3/main. Current instructions remain the live top checkpoint of Issue #20.

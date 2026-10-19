@@ -1508,20 +1508,19 @@ def test_operator_brief_save_syncs_trade_health_mirror(tmp_path: Path, monkeypat
     assert health["artifact_presence"]["operator_brief_md"] is True
 
 
-def test_operator_brief_input_paths_fallback_to_trade_root_not_reports_dir() -> None:
+def test_operator_brief_input_paths_fallback_to_trade_root_not_reports_dir(tmp_path: Path) -> None:
+    # Exercise the unchanged native-Path contract on each CI OS; a Windows
+    # backslash literal is a single filename to PosixPath, not a directory tree.
+    trade_root = tmp_path / "reports" / "trades" / "2026-04-19" / "TRD_20260419_005930_01"
     detail = {
         "trade_report": {
             "trade_root_path": "",
-            "operator_brief_json_path": r"C:\repo\reports\trades\2026-04-19\TRD_20260419_005930_01\reports\operator_brief.json",
-            "operator_brief_md_path": r"C:\repo\reports\trades\2026-04-19\TRD_20260419_005930_01\reports\operator_brief.md",
+            "operator_brief_json_path": str(trade_root / "reports" / "operator_brief.json"),
+            "operator_brief_md_path": str(trade_root / "reports" / "operator_brief.md"),
         }
     }
-    assert data_access._operator_brief_input_artifact_path(detail) == Path(
-        r"C:\repo\reports\trades\2026-04-19\TRD_20260419_005930_01\brief_input.json"
-    )
-    assert data_access._operator_brief_compact_input_artifact_path(detail) == Path(
-        r"C:\repo\reports\trades\2026-04-19\TRD_20260419_005930_01\brief_compact_input.json"
-    )
+    assert data_access._operator_brief_input_artifact_path(detail) == trade_root / "brief_input.json"
+    assert data_access._operator_brief_compact_input_artifact_path(detail) == trade_root / "brief_compact_input.json"
 
 
 def test_operator_brief_saved_artifact_is_reused(tmp_path: Path, monkeypatch) -> None:

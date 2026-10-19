@@ -15,6 +15,8 @@
 
 - 로컬 Windows Python3.14.2 집중 소스·동작·단계 게이트: normal은 집중 수정 후 고유421개 PASS, `-O`는 단일 실행421개 PASS. 초기 실패 로그도 보존합니다. 신규 통합 SHA의 Linux3.12/Windows3.13 필수6개 CI는 아직 대기 상태입니다.
 
+- CI 수정1회차: `884318ee` Linux normal/`-O` 각각 3295 PASS / 4 FAIL / 24 SKIP. 3개 inventory 실패는 docs-only `90ec2383`에서 역사적 표식이 사라진 원인으로, `CURRENT.md`에 `P1.5.2 OPEN`·`P1.5.3`을 비활성 provenance로 복원합니다. UI fallback 테스트는 Windows 고정 문자열 대신 격리된 native 경로를 쓰며 동일한 상위 디렉터리·출력 파일명을 요구합니다. 런타임 코드는 변경하지 않았습니다. 수정 집중 검사 normal/`-O` 각각63 PASS; 새 SHA 필수6개 CI는 대기 중입니다.
+
 근거: [Operator UI 감사 #18](https://github.com/hbombheart1230-dotcom/agentra/issues/18), [Strategist 감사 #19](https://github.com/hbombheart1230-dotcom/agentra/issues/19), `tests/test_p15_integration_completion.py`.
 
 ## 2026-10-18 · P1.5 작업지시 문서 단일화 (운영 규칙·문서만)
