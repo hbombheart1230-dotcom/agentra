@@ -67,6 +67,25 @@ INTEGRATION_DOC_PATHS = frozenset({
 })
 
 
+# The exact historical 1e1e78a9..c5fe8a9a diff includes eleven
+# independently parallel Reporter/Monitor and CI/evidence changes. This
+# closed inventory is relevant only to that pinned historical Git diff.
+# It is NEVER a general S5 path allowlist for caller-supplied changes.
+HISTORICAL_PARALLEL_STAGE_PATHS = frozenset({
+    ".github/workflows/p15-shared-candidate.yml",
+    "docs/daily_patch/2026-10-18_codex_p15_p2_ci_portability.md",
+    "docs/dev-team/integration/CODEX_P2_CI_CHECKPOINT_20261018.md",
+    "docs/dev-team/integration/CODEX_P2_LOCAL_EXECUTION_20261018.json",
+    "scripts/refactor/monitor_evidence_ast.py",
+    "scripts/refactor/work_monitor_retained_boundary.py",
+    "tests/fixtures/uef9_synthetic/.gitattributes",
+    "tests/test_monitor_evidence_ast.py",
+    "tests/test_work_monitor_retained_boundary.py",
+    "tests/test_work_monitor_scope_accounting.py",
+    "tests/test_work_reporter_seed_migration.py",
+})
+
+
 def require(value, message):
     if not value:
         raise AssertionError(message)
@@ -170,7 +189,15 @@ def verify_integration_scope(changed=None, untracked=None):
     """Exact integrated-lane scope; no prefix wildcard or caller baseline override."""
     if changed is None:
         verify_next_scope()
-        changed = subprocess.check_output(["git", "diff", "--name-only", INTEGRATION_BASE, HISTORICAL_STAGE], cwd=ROOT, text=True).splitlines()
+        stage_paths = set(subprocess.check_output(
+            ["git", "diff", "--name-only", INTEGRATION_BASE, HISTORICAL_STAGE],
+            cwd=ROOT, text=True,
+        ).splitlines())
+        require(stage_paths & HISTORICAL_PARALLEL_STAGE_PATHS == HISTORICAL_PARALLEL_STAGE_PATHS,
+                "pinned historical parallel stage inventory changed")
+        # Only partition the immutable *historical* diff; never give caller
+        # changes or untracked paths permission to modify these eleven files.
+        changed = stage_paths - HISTORICAL_PARALLEL_STAGE_PATHS
     if untracked is None:
         untracked = []  # current untracked paths are checked by verify_next_scope above
     paths = set(changed) | set(untracked)

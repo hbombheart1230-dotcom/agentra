@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 SHARED CI HISTORICAL PARALLEL STAGE PARTITION 20261019
+**Stage:** CI contract historical scope proof · **Tags:** CI · TEST · SAFETY · DOCS
+
+- [GitHub Actions 실행 #39254507133](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39254507133)에서 모든 계약 Job은 3,304 PASS / 3 FAIL / 24 SKIP, API Job 2/2 PASS였습니다. 남은 3건 모두 삭제된 역사 브랜치 SHA `1e1e78a9` 기준 `git diff` 실패로 수렴했습니다.
+- 정확한 과거 SHA `1e1e78a9061f9a56c3ce1410202ce5193c6af679`, `c5fe8a9a59788cd7cf1eb1d72f9aa8b22a40f7ca`를 명시적으로 fetch하고 커밋/차이 계산 여부를 pytest 이전에 검사합니다.
+- 과거 분기 간 diff 47개 중 기존 S5/공유/문서 허용 36개와 별도 Reporter·Monitor·CI 작업 11개를 분리했습니다. **11개는 과거 고정 비교에서만 인정되며 외부 changed/untracked 입력에는 여전히 불허**합니다.
+- SHA 고정된 공유 계약 테스트 파일·기존 negative mutation·19-path 승인 source·Broker·Supervisor·Executor·Step5C·UEF·golden·real-trade 안전 및 CI matrix는 수정하지 않았습니다. 24 SKIP, DOC_FREEZE, main HOLD 유지.
+- 신규 SHA CI PASS는 **아직 확인되지 않았습니다**.
+
+Sources: `.github/workflows/p15-shared-candidate.yml`, `scripts/refactor/shared_strategist_contracts.py`.
+
 ## 2026-10-19 · P1.5 SOURCE SCOPE EXACT TEST PIN CORRECTION 20261019
 **Stage:** CI contract exact-scope correction · **Tags:** CI · TEST · SAFETY
 

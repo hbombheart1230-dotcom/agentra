@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 311,
+  "entry_count": 312,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 SHARED CI HISTORICAL PARALLEL STAGE PARTITION 20261019",
+      "title": "Fetch two historical S5 diff SHA endpoints and account for eleven pinned parallel CI/Monitor/Reporter paths",
+      "stage": "CI contract historical scope proof",
+      "types": [
+        "CI",
+        "TEST",
+        "SAFETY",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Shared Candidate Actions run 39254507133 on 46e6b499 confirmed four matrix failures (3304 PASS / 3 FAIL / 24 SKIP each; two API PASS). The remaining three tests all fail because retired-branch SHA 1e1e78a9 is unavailable for git diff to c5fe8a9a. The true pinned historical pair contains eleven parallel-lane paths outside S5 scope, so mere SHA hydration would be insufficient.",
+      "details": [
+        "Workflow fail-closed source hydration now fetches the two exact GitHub-verified commit SHAs 1e1e78a9061f9a56c3ce1410202ce5193c6af679 and c5fe8a9a59788cd7cf1eb1d72f9aa8b22a40f7ca and preflights both commit objects and the original git diff before any test execution.",
+        "Independently verified git comparison: 47 changed paths across the divergent pinned branches; 36 belong to the preexisting exact S5/SHARED/INTEGRATION_DOC_PATHS set, and eleven additional paths reflect historical parallel Monitor, Reporter, CI and evidence changes. Do not change the pinned references.",
+        "Only inside the no-arguments historical diff verifier, require all eleven exact parallel paths to appear and partition them out of the S5 source admission set. Caller-supplied changed/untracked scopes still reject all eleven under the unchanged exact allowlist; no wildcard, broad prefix or new source authority.",
+        "Do not modify the already SHA-pinned shared-strategist unit test: its existing seven deny mutations and earlier source/test drift guard remain intact. The frozen original NEXT_BASE..a50d6e47 19-path stage scope and broker/UEF/Step5C/golden controls are unchanged.",
+        "No hosted PASS is claimed for the new SHA. Independent inspection, DOC_FREEZE and the 24 real-data skips remain pending; no real orders, runtime/source code refactor or main merge."
+      ],
+      "impact": "Restore genuine historical comparison and explicitly separate frozen parallel development evidence, rather than expanding S5 caller authorization or weakening tests.",
+      "sources": [
+        ".github/workflows/p15-shared-candidate.yml",
+        "scripts/refactor/shared_strategist_contracts.py",
+        "tests/test_shared_strategist_contracts.py"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 SOURCE SCOPE EXACT TEST PIN CORRECTION 20261019",
