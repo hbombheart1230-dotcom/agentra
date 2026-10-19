@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 HISTORICAL DIRECT-ENTRY BANNERS 20261019
+**Stage:** Documentation governance · **Tags:** DOCS · AUDIT
+
+- DOC-A 독립 감사의 실질적 REWORK 30개 과거 작업지시 + Reporter/Monitor 옛 프로젝트 정의 2개, 총 32개 문서 최상단에 HISTORY/NOT CURRENT AUTHORIZATION 표시를 추가했습니다.
+- 기존 ACTIVE/READY/ASSIGNED 문구, 원본 본문, 기록된 SHA/PASS/FAIL/SKIP, 안전 규칙, 레지스트리의 최초 blob SHA는 변경하지 않았습니다. 기존 PASS 4개 파일은 그대로 유지했습니다.
+- 현재 CI 트리거 설정은 이전 커밋 10dde6d3에서 복구했지만 실제 GitHub-hosted PASS는 아직 미확인입니다. 전체 339개 본문/내부 참조 검증, 최신 SHA 독립 검수, 사용자 DOC_FREEZE 수용은 남아 있습니다.
+- 거래 소스·테스트·CI 정의·실거래·운영 데이터·main은 변경하지 않았습니다.
+
+Sources: `docs/refactor/work_orders/archive/CURRENT_2026-10-15_INTEGRATION.md`, `docs/refactor/work_orders/P15_FAST_TRACK_WAVE_A_013.md`, `docs/refactor/work_projects/MONITOR_PROJECT.md`, `docs/refactor/work_projects/REPORTER_PROJECT.md`.
+
 ## 2026-10-19 · P1.5 INTEGRATION CI PUSH TRIGGER RESTORE 20261019
 **Stage:** Documentation and CI governance · **Tags:** CI · DOCS · SAFETY
 

@@ -1,3 +1,5 @@
+> **HISTORICAL WORK ORDER — NOT CURRENT AUTHORIZATION.** ACTIVE/READY/pending statuses, role assignments, branch/worktree cleanup commands, and next steps below describe the original pinned historical task only. Do **not** restart implementation or audit, create/delete branches/worktrees, or run operational checks from this page. Current authority: [D00](../../ENGINEERING_DELIVERY_POLICY.md) + [CURRENT](CURRENT.md) + [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Original safety restrictions and recorded SHA/PASS/FAIL/SKIP evidence remain intact.
+
 # P15 TREE MIGRATION V1 — 052 (IMPLEMENTATION, NOT DESIGN)
 
 **ACTIVE WORK ORDER.** Target: `integration/p15-t4-pr5-convergence-20261015`. Expected starting HEAD: `e9a9a854c2696889da8af1f6f7ec02e936f7d924` (or fast-forward descendant containing this work order). Governing target: [HYBRID-7 V3 FROZEN](../architecture/TREE_V3_FROZEN.md).

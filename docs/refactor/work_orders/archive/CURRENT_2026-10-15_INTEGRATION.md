@@ -1,3 +1,5 @@
+> **HISTORICAL WORK ORDER — NOT CURRENT AUTHORIZATION.** ACTIVE/READY/pending statuses, role assignments, branch/worktree cleanup commands, and next steps below describe the original pinned historical task only. Do **not** restart implementation or audit, create/delete branches/worktrees, or run operational checks from this page. Current authority: [D00](../../../ENGINEERING_DELIVERY_POLICY.md) + [CURRENT](../CURRENT.md) + [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Original safety restrictions and recorded SHA/PASS/FAIL/SKIP evidence remain intact.
+
 # ACTIVE — Agentra P1.5 T4 + PR #5 isolated convergence and integrated CI
 
 **State:** integration/p15-t4-pr5-convergence-20261015 (baseline refactor/p1.5) — INTEGRATION_VERIFYING / T4-D STRUCTURAL_GATE_CLOSED / MAIN_FROZEN / No ZIP (CI packaging forbidden; user patch archive external only).

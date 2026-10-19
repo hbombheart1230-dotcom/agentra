@@ -1,3 +1,5 @@
+> **HISTORICAL PROJECT — NOT CURRENT AUTHORIZATION.** AUTHORIZED/WORKER_NOT_STARTED statuses, assigned roles, branches, implementation registers and next steps below are a historical snapshot, **not** permission to restart Reporter/Monitor development or audits. Current authority: [D00](../../ENGINEERING_DELIVERY_POLICY.md) + [CURRENT](../work_orders/CURRENT.md) + [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Original role history, SHAs, registers, recorded results and safety limits remain intact.
+
 # Reporter — whole-role refactoring project (AUTHORIZED, WORKER_NOT_STARTED)
 
 Assigned implementation: Claude. Independent audit: Codex. Integration/technical judgment: Work. User activation: 2026-10-17 11:09 KST, "진행시켜". Preceding implementation cycle is handed off; its recorded findings remain open. Read ACTIVATION.md before executing. Preparation BASE: d773709ba2f70471fad9badba4f92400f7818319; refresh at activation.

@@ -1,3 +1,5 @@
+> **HISTORICAL WORK ORDER — NOT CURRENT AUTHORIZATION.** ACTIVE/READY/pending statuses, role assignments, branch/worktree cleanup commands, and next steps below describe the original pinned historical task only. Do **not** restart implementation or audit, create/delete branches/worktrees, or run operational checks from this page. Current authority: [D00](../../../ENGINEERING_DELIVERY_POLICY.md) + [CURRENT](../CURRENT.md) + [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Original safety restrictions and recorded SHA/PASS/FAIL/SKIP evidence remain intact.
+
 # P1.5 CURRENT Work Order — P15-R2-GPT-CLOSEOUT-003
 
 Status: GPT FAST HANDOFF KIT IMPLEMENTED; 709 CORE + CONSERVATIVE GUARDS, BROAD DIAGNOSTIC FAILURES PRESERVED; ACTUAL LOCAL PARITY/INDEPENDENT REVIEW NOT RUN; P1.5.2 OPEN, NO P1.5.3

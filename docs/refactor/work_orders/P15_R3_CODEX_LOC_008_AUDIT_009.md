@@ -1,3 +1,5 @@
+> **HISTORICAL WORK ORDER — NOT CURRENT AUTHORIZATION.** ACTIVE/READY/pending statuses, role assignments, branch/worktree cleanup commands, and next steps below describe the original pinned historical task only. Do **not** restart implementation or audit, create/delete branches/worktrees, or run operational checks from this page. Current authority: [D00](../../ENGINEERING_DELIVERY_POLICY.md) + [CURRENT](CURRENT.md) + [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Original safety restrictions and recorded SHA/PASS/FAIL/SKIP evidence remain intact.
+
 # P15-R3-CODEX-LOC-008-AUDIT-009 — independent pinned SHA audit
 
 **Auditor:** Codex. **READ ONLY / NO COMMIT.** Audit `3d85085011de8ed2cbeb720ddce8e55cf7a60d9d` on sole `refactor/p1.5`; diff base `6760ab4abaf1a9bc6ec168f6c1daf9a727e19dfb`. No new branches, implementation, merge, live tests, real LLM/broker, Docker or production data access.

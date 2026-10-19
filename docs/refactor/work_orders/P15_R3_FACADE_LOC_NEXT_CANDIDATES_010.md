@@ -1,3 +1,5 @@
+> **HISTORICAL WORK ORDER — NOT CURRENT AUTHORIZATION.** ACTIVE/READY/pending statuses, role assignments, branch/worktree cleanup commands, and next steps below describe the original pinned historical task only. Do **not** restart implementation or audit, create/delete branches/worktrees, or run operational checks from this page. Current authority: [D00](../../ENGINEERING_DELIVERY_POLICY.md) + [CURRENT](CURRENT.md) + [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Original safety restrictions and recorded SHA/PASS/FAIL/SKIP evidence remain intact.
+
 # P15-R3-FACADE-LOC-NEXT-CANDIDATES-010 — ACTIVE: maximum safe reduction
 
 **Scope:** Claude implements **ONE bounded, coherent** façade reduction slice then STOPS for Codex independent audit. No further prompt needed to choose among the candidates. Start at `119c68f58cfcd44b64c48ce8383edbc1311b2d5e` on `refactor/p1.5` only. Work in separate isolated clone; DO NOT modify live `C:\Agentra` or Q12 worktrees. No new branches, main merge, trading runtime or real LLM/broker.

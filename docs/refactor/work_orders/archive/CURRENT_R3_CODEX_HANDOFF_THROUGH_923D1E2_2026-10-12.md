@@ -1,3 +1,5 @@
+> **HISTORICAL WORK ORDER — NOT CURRENT AUTHORIZATION.** ACTIVE/READY/pending statuses, role assignments, branch/worktree cleanup commands, and next steps below describe the original pinned historical task only. Do **not** restart implementation or audit, create/delete branches/worktrees, or run operational checks from this page. Current authority: [D00](../../../ENGINEERING_DELIVERY_POLICY.md) + [CURRENT](../CURRENT.md) + [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Original safety restrictions and recorded SHA/PASS/FAIL/SKIP evidence remain intact.
+
 # ACTIVE WORK ORDER — P1.5.2 R3 Codex independent audit
 
 **State:** CLAUDE_R3_A_B_C_SUBMITTED; CODEX_INDEPENDENT_AUDIT_PENDING. P1.5.2 OPEN, P1.5.3 NOT AUTHORIZED.

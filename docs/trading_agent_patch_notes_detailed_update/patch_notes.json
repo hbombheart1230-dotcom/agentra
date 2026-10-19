@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 306,
+  "entry_count": 307,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 HISTORICAL DIRECT-ENTRY BANNERS 20261019",
+      "title": "Quarantine 30 retired work orders and two Reporter/Monitor project definitions without rewriting historical evidence",
+      "stage": "Documentation governance / DOC-A remediation",
+      "types": [
+        "DOCS",
+        "AUDIT"
+      ],
+      "status": "current",
+      "summary": "Address DOC-A direct-entry authority REWORK by prepending non-executable banners to exactly 30 historical work orders and two retired role-project definitions. Four already-safe read-only checklist pages remain unchanged.",
+      "details": [
+        "Preserve every preexisting body as a byte-identical suffix: 30 old work orders now prominently reject ACTIVE/READY/pending task reactivation; archived pages link to current D00/CURRENT/#20 via correct relative paths.",
+        "Two old Reporter/Monitor project definitions now reject historical AUTHORIZED/WORKER_NOT_STARTED labels as present authorization; no changes to their status/seed-ledger JSON records, archived evidence or task SHA references.",
+        "Leave DOC_REGISTRY.csv original_blob_sha and all 339 registry entries unchanged; old blobs remain Git history. No source/runtime, test/CI workflows, Broker, Step5C, UEF, production data, real-order path, or main mutation.",
+        "The preexisting CI trigger restoration at 10dde6d3 is committed but its hosted push-run status remains NOT_VERIFIED; these document banners are not independent DOC_FREEZE acceptance, not whole-339 factual certification, and not permission to restart P1.5 source work."
+      ],
+      "impact": "Removes 32 known direct-entry historical instruction ambiguities without changing functionality; latest-SHA independent review, hosted CI, full 339 semantic/inbound evidence, and operator DOC_FREEZE signoff remain pending.",
+      "sources": [
+        "docs/refactor/work_orders/README.md",
+        "docs/refactor/work_projects/README.md",
+        "docs/refactor/work_orders/archive/CURRENT_2026-10-15_INTEGRATION.md",
+        "docs/refactor/work_orders/P15_FAST_TRACK_WAVE_A_013.md",
+        "docs/refactor/work_projects/MONITOR_PROJECT.md",
+        "docs/refactor/work_projects/REPORTER_PROJECT.md"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 INTEGRATION CI PUSH TRIGGER RESTORE 20261019",
