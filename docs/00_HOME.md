@@ -1,5 +1,7 @@
 # Trading Agent System
 
+> **CURRENT 2026-10-19:** [P1.5 documentation entry](refactor/README.md) governs the DOC-FIRST phase; [#20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) is the only live work checkpoint. Existing R2/UEF/NEXT paragraphs below are a historical navigation snapshot, NOT commands. [D00](ENGINEERING_DELIVERY_POLICY.md) · [frozen target](refactor/architecture/TREE_V3_FROZEN.md) · [roadmap](refactor/p1_5_p1_6_master_plan.md).
+
 ## Current State
 
 - Production runtime: separate from this documentation vault.

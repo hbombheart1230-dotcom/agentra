@@ -1,3 +1,5 @@
+> **PINNED 2026-10-18 DESIGN SNAPSHOT @ 5cb90b39:** Numbers, work states, deleted branch names and G0 phases below describe prior evidence, NOT current implementation tasks. Current state and DOC-FIRST gate: [refactor README](../README.md) + [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). The frozen target remains [TREE_V3](TREE_V3_FROZEN.md). Original text follows unchanged.
+
 # Agentra P1.5 — TECH LEAD CANONICAL ARCHITECTURE DECISION (2026-10-18)
 
 **Authored by:** GPT Tech Lead, direct source/tree review; **read snapshot:** integration `5cb90b39d00cee483be292272b893d8e8a4c6e78`. **State:** DESIGN_BASELINE_FROZEN_FOR_REVIEW, **NOT** source migration approval or P1.5 acceptance. Codex/Claude ongoing branch tips must be selectively rechecked at integration time. Current pinned historical target: `TREE_V3_FROZEN.md` (HYBRID-7 V3); this **refines but does not replace** that target. Old user-provided Trading_Agent_System M15 project_tree describes historical interfaces, not the 2026-10-18 Agentra tree.

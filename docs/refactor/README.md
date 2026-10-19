@@ -1,159 +1,64 @@
-# Agentra P1.5 / P1.6 Refactor Design
+# Agentra P1.5/P1.6 — canonical document entry
 
-> **Active P1.5.2 R3 task (2026-10-12):** [CURRENT.md](work_orders/CURRENT.md) → [COMMON_RULES.md](work_orders/COMMON_RULES.md) → linked work order. **Agentra Claude implementation → Codex independent audit → GPT/user acceptance**, unlike Agentco. One isolated feature worktree authorized for R3 only. Historical workflow paragraphs below are retained for design traceability, not as a substitute for CURRENT.
+**CURRENT NAVIGATION · 2026-10-19 · DOC_FREEZE PENDING.** This is a navigation document, **not a task that can launch itself**. Latest user decision: complete ALL documentation convergence and approval before creating new Codex/Claude development branches or resuming P1.5 code refactoring.
 
-Status: IMPLEMENTATION — LOCAL FIRST (as of 2026-10-09)  
-Canonical development branch: `refactor/p1.5`  
-Frozen baseline: `main` at `2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb`
+## Single authority chain
 
-This directory holds original frozen design records and the current versioned implementation guidance for the Agentra structural refactor.
+1. Non-negotiable trading safety: [AGENT_RULES.md](../ground_rules/AGENT_RULES.md).
+2. **D00** common engineering rules: [ENGINEERING_DELIVERY_POLICY.md](../ENGINEERING_DELIVERY_POLICY.md).
+3. **D01** Codex [AGENTS.md](../../AGENTS.md) / **D02** Claude [CLAUDE.md](../../CLAUDE.md) — CLI startup entrypoints, not alternate D-number filenames.
+4. The sole live work and integration tracker: [GitHub #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) with real GitHub SHA/CI.
+5. [CURRENT.md](work_orders/CURRENT.md) is a short pointer, not a second live work-order queue. Old Issues #16–#19 are closed source/audit evidence, not fresh authorization.
 
-**Git-driven agent work orders (2026-10-09):** [P1.5 Execution Protocol](P15_EXECUTION_PROTOCOL.md) specifies the GPT → local Claude → independent local Codex → GPT decision sequence. [CURRENT work order](work_orders/CURRENT.md) is the ONE active task. The root `CLAUDE.md` and `AGENTS.md` direct the respective local agents to these docs; do not paste long task prompts into chat. Work-order acceptance and findings are recorded under `docs/refactor/work_orders/evidence/`.
+## Canonical goals, design and historical evidence
 
-**2026-10-09 UPDATED IMPLEMENTATION AUTHORITY:** [strict small-Owner / continue-not-rollback v1.2](p1_5_small_owner_policy_and_rollback_decision_v1_2.md), [Reporting owner continuation v1.2](p1_5_reporting_implementation_packet_v1_2.md), [Executor safe size reduction v1.1](p1_5_executor_safe_decomposition_packet_v1_1.md). New implementation owners <=350 physical LOC. Original v1.0/v1.1 packets and their safety gates remain intact.
+| Question | Use this **one** source |
+|---|---|
+| Frozen target structure | [HYBRID-7 V3 TREE_V3_FROZEN](architecture/TREE_V3_FROZEN.md). Never create a cosmetically new V4. |
+| P1.5.0–11 / P1.6–P8 program order | [P1.5/P1.6 master plan](p1_5_p1_6_master_plan.md). This plan is NOT live progress. |
+| Architecture responsibilities | [P1.5 constitution](p1_5_refactor_constitution.md) and [stage alignment](p1_5_1_to_11_responsibility_alignment_v1_1.md). |
+| Previous architecture state | [Tech Lead snapshot](architecture/P15_TECHLEAD_MASTER_20261018.md) and [root-to-leaf](architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md), pinned at prior source `5cb90b39`. NOT today's HEAD. |
+| P1.5 work-order status | [work_orders/README](work_orders/README.md) + [CURRENT](work_orders/CURRENT.md). All dated orders are inert unless newly issued. |
+| Original 339-file governance registry | [DOC_REGISTRY.csv](DOC_REGISTRY.csv). Path classification only; content/link review is not yet complete. |
+| Retired Reporter/Monitor work projects | [work_projects/README](work_projects/README.md), **historical / do not restart**. |
+| P1.6 orchestration comparison | [P1.6 master](p1_6/MASTER_PLAN.md), future design only until P1.5 freeze. |
 
-**Whole-program P1.5.1–P1.5.11 design audit (2026-10-08):** [p1_5_1_to_11_responsibility_alignment_v1_1.md](p1_5_1_to_11_responsibility_alignment_v1_1.md). This is a cross-stage ACCEPTANCE ADDENDUM: one canonical Owner per responsibility, minimal façades, explicit adapter/Agent contract boundaries, verified wrapper consumers and freeze evidence. Preserve all original v1.0 packets as the detailed authority and the Reporting v1.1 residual packet. Executor safety-chain size exception remains authoritative.
+The older `architecture/target_architecture.drawio` is PROPOSAL_ONLY, not the frozen target. Frozen stage-specific acceptance, goldens and historical refs stay intact.
 
-**Current branch policy:** `main` and `refactor/p1.5` are the only active remote branches. Former `design/*` and `codex/*` branches are historical references only, not checkout or deployment instructions. All implementation is local-first at `C:\Agentra` with Claude implementing and Codex independently verifying.
+## 7-role structure versus actual operational authority
 
-**Reporting implementation design revision (2026-10-08):** For remaining P1.5.2 work use **p1_5_reporting_implementation_packet_v1_1.md**, which rebaselines responsibility-minimal ownership and acceptance against the pushed R2-A/B/C implementation. Retain **p1_5_reporting_implementation_packet_v1_0.md** as the original frozen design record. This revision does not authorize runtime changes or bypass the P1.2/P1.3 baseline gate.
+| Role | libs/agents/<role>/ code exists at source snapshot? | Actual authority and final acceptance |
+|---|---|---|
+| Commander | NO | Real `graphs/commander_runtime.py`; public callable contract **NOT_VERIFIED** |
+| Strategist | YES | Node and runtime implementation, PARTIAL; full callable contract **NOT_VERIFIED** |
+| Scanner | YES | Rank/Top-1 unique authority, PARTIAL; full callable contract **NOT_VERIFIED** |
+| Monitor | YES | OrderIntent ONLY, PARTIAL; full callable contract **NOT_VERIFIED** |
+| Reporter | YES | Reporting and evidence, PARTIAL; full callable contract **NOT_VERIFIED** |
+| Supervisor | NO | Existing risk/approval SAFETY_LOCK; public callable contract **NOT_VERIFIED** |
+| Executor | NO | Actual order path `execute_from_packet.py` SAFETY_LOCK; public callable contract **NOT_VERIFIED** |
 
-## Documents
+Absent public role directory does NOT mean existing operational role is absent. Never duplicate order, approval, rank, Step5C or UEF authority for visual symmetry. Graph stub is not an operational broker executor.
 
-1. `p1_5_p1_6_master_plan.md`
-   - overall roadmap
-   - P1.2/P1.3 gates
-   - P1.5/P1.6 scope
-   - relation to 2.E6, Safety 5D/5E/6, Q100, Reporter v2, memory, self-improvement, paper experiments
+## P1.5 stages — verified scope, NOT invented stage completion
 
-2. `p1_5_refactor_constitution.md`
-   - non-negotiable invariants
-   - agent modularity
-   - LLM boundaries
-   - naming policy
-   - test architecture
-   - Codex Cloud / Claude Cloud workflow
-   - compatibility and migration policy
+| Stage | Evidence-aware status | Frozen detailed source |
+|---|---|---|
+| P1.5.0 | Baseline exists in older history; overall final verification NOT_DONE | [master plan](p1_5_p1_6_master_plan.md) |
+| P1.5.1–2 Reporter | Source extraction exists; stage-wide acceptance NOT_VERIFIED | [Reporter v1.2](p1_5_reporting_implementation_packet_v1_2.md) |
+| P1.5.3 Operator UI | `a50d6e47` scoped UI delta INTEGRATED / AUDITED; full stage NOT_VERIFIED | [Operator UI packet](p1_5_operator_ui_brief_implementation_packet_v1_0.md) |
+| P1.5.4 Strategist | `a50d6e47` scoped parsing INTEGRATED / AUDITED; full stage NOT_VERIFIED | [Strategist packet](p1_5_strategist_implementation_packet_v1_0.md) |
+| P1.5.5 Scanner | Physical moves documented; stage-wide acceptance NOT_VERIFIED | [Scanner packet](p1_5_scanner_implementation_packet_v1_0.md) |
+| P1.5.6 Monitor | Physical moves documented; stage-wide acceptance NOT_VERIFIED | [Monitor packet](p1_5_monitor_implementation_packet_v1_0.md) |
+| P1.5.7 Commander | Large module decomposition exists; full contract acceptance NOT_VERIFIED | [Commander packet](p1_5_commander_runtime_implementation_packet_v1_0.md) |
+| P1.5.8 Naming | Historical work exists, stage acceptance NOT_VERIFIED | [Naming packet](p1_5_runtime_naming_implementation_packet_v1_0.md) |
+| P1.5.9 Executor | SAFETY_LOCK; stage acceptance NOT_VERIFIED | [Executor packet](p1_5_executor_low_risk_implementation_packet_v1_0.md) |
+| P1.5.10 Compatibility | Wrappers retained where needed; stage acceptance NOT_VERIFIED | [Compatibility packet](p1_5_compatibility_wrapper_cleanup_implementation_packet_v1_0.md) |
+| P1.5.11 Freeze | **HOLD** full repo pytest, 24 real-data SKIPs, production JSON/HTML byte parity, UI build/visual, Docker lifecycle and final human acceptance | [Freeze packet](p1_5_full_regression_docker_uef_freeze_implementation_packet_v1_0.md) |
 
-3. `p1_5_strategist_decomposition.md`
-   - Strategist detailed-design seed
-   - current known hotspots
-   - target responsibilities
-   - required analysis before implementation
-   - implementation-packet format
+**Completed slice, do not redo:** exact source `a50d6e4780ddccd810fb0708e756e1bf63d8ede0`, approved 19-path Strategist/Operator UI selection, #18/#19 independent audit PASS, [CI 6/6](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39180253182). The newer docs commits do not inherit an automatic new CI PASS. User-provided analysis of that source snapshot observed six source groups 53,695→18,052 LOC (66.4% reduction), 7 role directories 4/7 and tracked files 2,610 main → 3,940 integration. These are historical snapshot metrics, NOT moving HEAD metrics.
 
-## Critical Gate
+## Documentation quarantine, no speculative deletion
 
-This branch is for design and preparation only.
+Every **original** path under `docs/refactor/` is listed in [DOC_REGISTRY.csv](DOC_REGISTRY.csv) with its exact blob, classification, passive activation rule and pending reference checks. All original 339 files are preserved at their existing paths. Past `work_projects/`, `work_orders/P15-*.md`, `archive/` and `evidence/` cannot launch work; historical PASS/REWORK belongs to its SHA only. The old 2026-10-07 inventory is [here](documentation_inventory.md). Physical moves await inbound Markdown/CI/Python/patchnote source proof.
 
-Do **not** begin P1.5 runtime implementation until:
-- P1.2 cross-day acceptance is frozen,
-- P1.3 Docker/operational acceptance is frozen,
-- required regression suite is green,
-- production-write leakage is NONE,
-- trading-authority leakage is NONE,
-- a baseline SHA/tag is recorded.
-
-The implementation branch must be cut from that frozen baseline, not automatically from this design branch.
-
-
-4. `p1_5_documentation_refactor_plan.md`
-   - documentation authority model
-   - patch-note preservation rules
-   - staged navigation/archive/link cleanup
-
-5. `documentation_inventory.md`
-   - current documentation size/inventory
-   - patch-note source-of-truth map
-   - migration risks and classification rules
-
-
-6. `p1_5_strategist_implementation_packet_v0_1.md`
-   - 156-function ownership inventory
-   - compatibility/monkeypatch seams
-   - target Strategist package tree
-   - staged S1-S5 implementation plan
-   - GPT-first implementation and Cloud escalation policy
-
-
-6. `p1_5_strategist_implementation_packet_v0_1.md`
-   - detailed Strategist discovery inventory and first ownership map
-
-7. `p1_5_strategist_implementation_packet_v1_0.md`
-   - finalized Strategist P1.5 design authority
-   - AgentInput/Result boundary
-   - 66-key state adapter compatibility surface
-   - target package tree
-   - compatibility seams
-   - S1-S5 implementation sequence
-   - pytest gates
-
-
-6. `p1_5_reporting_implementation_packet_v1_0.md`
-   - P1.5.1 definite dead-code cleanup
-   - P1.5.2 Reporting decomposition
-   - existing helper ownership, compatibility seams, test architecture, and gates
-
-8. p1_5_operator_ui_brief_implementation_packet_v1_0.md
-   - P1.5.3 Operator UI / Operator Brief decomposition authority
-   - existing Phase-2 owner map and compatibility facade rules
-   - canonical Brief truth boundary and artifact-version freeze
-   - O1-O6 staged implementation sequence
-   - private/public test seams and pytest gates
-
-9. p1_5_scanner_implementation_packet_v1_0.md
-   - P1.5.5 Scanner decomposition authority
-   - canonical scanner_node inventory and legacy-wrapper classification
-   - Scanner/Monitor soft-vs-hard authority freeze
-   - ScannerAgentInput/ScannerAgentResult boundary and 21-key compatibility state surface
-   - SC1-SC7 staged implementation sequence and pytest gates
-
-10. p1_5_monitor_implementation_packet_v1_0.md
-   - P1.5.6 Monitor decomposition authority
-   - canonical monitor_node and intraday signal-engine inventory
-   - intent-only / hard-timing authority freeze
-   - MonitorAgentInput/MonitorAgentResult boundary and 27-key compatibility state surface
-   - MO1-MO8 staged implementation sequence and pytest gates
-
-11. p1_5_commander_runtime_implementation_packet_v1_0.md
-   - P1.5.7 Commander/runtime decomposition authority
-   - 6,298-line runtime inventory and existing owner map
-   - deterministic/no-LLM Commander role freeze
-   - runtime modes/phases, fast paths, Supervisor/Executor and ownership safety boundaries
-   - CommanderRuntimeInput/Result design and C1-C10 staged implementation sequence
-
-12. p1_5_runtime_naming_implementation_packet_v1_0.md
-   - P1.5.8 milestone/runtime naming cleanup authority
-   - repo-wide milestone-name inventory and classification policy
-   - canonical M13/M28/M31 runtime mappings with compatibility wrappers
-   - state/env alias migration rules and historical/contract/safety no-rename rules
-   - N1-N7 staged implementation sequence and P1.5.10 wrapper-removal gates
-
-13. p1_5_executor_low_risk_implementation_packet_v1_0.md
-   - P1.5.9 Executor low-risk extraction authority
-   - execute_from_packet safety inventory and exact guard/mutation ordering freeze
-   - Supervisor/readiness/evidence/Step5C/BrokerOutcome/UNKNOWN quarantine safety locks
-   - observability/artifact-only extraction targets
-   - EX1-EX6 staged implementation sequence and safety regression gates
-
-14. p1_5_compatibility_wrapper_cleanup_implementation_packet_v1_0.md
-   - P1.5.10 compatibility-wrapper cleanup authority
-   - proof-based REMOVE/MIGRATE/KEEP/HISTORICAL/SAFETY classification
-   - cross-P1.5 wrapper inventory and consumer-proof manifest requirements
-   - canonical-owner migration order with stable facade and safety exceptions
-   - CW1-CW7 staged cleanup sequence and P1.5 freeze acceptance gates
-
-15. p1_5_full_regression_docker_uef_freeze_implementation_packet_v1_0.md
-   - P1.5.11 final regression / Docker / UEF replay / formal-freeze authority
-   - candidate-SHA locking, layered acceptance gates and artifact-hygiene policy
-   - UEF frozen-manifest, replay determinism, conservation/binding and cross-day rules
-   - Docker source-parity, ownership, restart/recovery, SIGTERM and paper-read acceptance
-   - FZ1-FZ9 freeze sequence, independent audit, human approval and freeze-manifest/tag policy
-
-16. p1_5_prep_closure_report.md
-   - formal P1.5 PREP / DESIGN closure authority
-   - quantified giant-file inventory and façade shrink targets
-   - before/after target package tree and Agent responsibility map
-   - explicit separation of design-target LOC reduction vs actual runtime LOC reduction
-   - implementation gate: runtime remains untouched until the upstream baseline is frozen
-
+**DOC_FREEZE_PENDING:** exhaustive per-file content checks, cross-document inbound links, independent new-session review and user acceptance have not been performed. Until then NO P1.5 development restart or main promotion.

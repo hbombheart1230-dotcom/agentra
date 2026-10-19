@@ -1,4 +1,6 @@
-# Agentra engineering constitution — DELIVERY FIRST, NO RECURSIVE AUDIT
+# D00 — Agentra engineering constitution: DELIVERY FIRST / NO RECURSIVE AUDIT
+
+**Stable alias:** D00 = `docs/ENGINEERING_DELIVERY_POLICY.md`; D01 = root `AGENTS.md` (Codex), D02 = root `CLAUDE.md` (Claude). Trading safety source: `docs/ground_rules/AGENT_RULES.md`. No alternate D00/D01/D02 filenames.
 
 **Adopted by operator / GPT Tech Lead: 2026-10-18. Standing policy for all future P1.5–P8 work.**
 **Purpose:** finish verified trading-system improvements in a single integrated codebase, rather than endlessly generating tools, inventories, evidence documents, and branch-specific PASS labels.
@@ -64,7 +66,7 @@ GPT fixes owner/target + exact change scope
   → Stage/FREEZE whole-repo + real-data + UI checks
   → User approves protected-main promotion
 ```
-For P1.5, order: independent audit of UEF9 `f8232e10` → selective inclusion of already-audited S5 and UEF9 on current integration baseline → integration SHA tests → scoped functional module/legacy cleanup across the **entire root**. Commander/decide_trade static classifier stays REWORK/FROZEN, helper moves HOLD. The P1.5 phase is not release-accepted until explicit stage gate.
+**2026-10-19 user override — DOC FIRST:** 339-file `docs/refactor` classification, canonical authority consolidation, historical instruction quarantine, full link/reference verification, independent audit and user DOC_FREEZE acceptance precede **all further P1.5 code tasks and new Codex/Claude development branches**. Prior S5/UEF9/Strategist/Operator UI work at `a50d6e47` is completed scoped evidence, not a new task. GitHub Issue comments do NOT launch terminated CLI sessions. Do not mistake previous SHA CI PASS for full release acceptance.
 
 ## 7. Anti-loop exit question
 Before asking for another audit, plan, tool, branch, inventory or test run, answer:

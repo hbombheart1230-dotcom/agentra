@@ -1,3 +1,5 @@
+> **FUTURE DESIGN ONLY:** P1.6 custom vs LangGraph vs pydantic-graph evaluation is NOT authorized to run before P1.5 formal freeze and fresh user approval. Current priority: [P1.5 DOC-FIRST](../README.md). Historical contents remain for reference.
+
 # P1.6 — Orchestration Modernization (DESIGN ONLY)
 
 **Status:** DESIGN/PREPARED, NOT IMPLEMENTED, NOT ACCEPTED (2026-10-12)  

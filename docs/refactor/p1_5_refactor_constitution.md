@@ -1,3 +1,5 @@
+> **FROZEN TECHNICAL DESIGN, NOT A WORK ORDER:** Legacy LOC size guidance and stage-specific test gates remain historically pinned; a blanket 350 LOC rule does not override later accepted stage-specific admission/owner exceptions. Current D00 is [here](../ENGINEERING_DELIVERY_POLICY.md), live issue [#20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) and target [HYBRID-7 V3](architecture/TREE_V3_FROZEN.md). No original safety contract can be waived cosmetically.
+
 # P1.5 Refactor Constitution
 
 Status: DESIGN AUTHORITY  

@@ -1,5 +1,7 @@
 # Agentra P1.5 / P1.6 Master Plan
 
+> **PROGRAM ROADMAP, NOT A LIVE TASK (2026-10-19).** Historic fixed Cloud developer roles, old `refactor/p1.5` branch, NOW/FAST_TRACK statuses below are preserved as dated design; latest [#20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) and [refactor README](README.md) control current task. User mandated complete `docs/refactor` DOC_FREEZE before any remaining code work.
+
 Status: P1.5 PREP CLOSED / DESIGN FROZEN / IMPLEMENTATION GATED  
 Date: 2026-10-07
 
@@ -265,7 +267,7 @@ Rationale:
 
 Research-question, methodology, metric and ablation design may proceed earlier; final empirical claims should use the stable system.
 
-## 13. Cloud Delivery Model
+## 13. Cloud Delivery Model (historical assignment only)
 
 ```text
 GPT

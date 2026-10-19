@@ -1,3 +1,5 @@
+> **PINNED 2026-10-18 DESIGN SNAPSHOT @ 5cb90b39:** Numbers, work states, deleted branch names and G0 phases below describe prior evidence, NOT current implementation tasks. Current state and DOC-FIRST gate: [refactor README](../README.md) + [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). The frozen target remains [TREE_V3](TREE_V3_FROZEN.md). Original text follows unchanged.
+
 # Agentra P1.5 — ROOT→LEAF REALITY, unfinished decompositions and cleanup sequence
 **As-of:** 2026-10-18; **Code snapshot:** main `2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb` vs integration `5cb90b39d00cee483be292272b893d8e8a4c6e78` (before Tech Lead documentation commits). GitHub recursive trees both nontruncated. This is **FULL REPO scope**, not `libs/`-only. **DESIGN**, not behavior/runtime approval. For 3,908 individual paths and dispositions see `P15_TREE_ALL_PATHS_PINNED_20261018.txt` and `P15_ALL_FILES_OWNERSHIP_CANDIDATES_20261018.csv`.
 

@@ -1,3 +1,5 @@
+> **CURRENT 2026-10-19:** This October 7 baseline count is a historical snapshot, NOT today. For the complete **339 original file** path/sha/class/authority and patch-source registry at `81942044`, see [DOC_REGISTRY.csv](DOC_REGISTRY.csv). It is a first-pass metadata classification; individual content/inbound references remain NOT_FULLY_CHECKED and DOC_FREEZE is pending.
+
 # P1.5 Documentation Inventory
 
 Status: BASELINE INVENTORY  

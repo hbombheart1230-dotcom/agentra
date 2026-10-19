@@ -1,3 +1,5 @@
+> **HISTORICAL RECORD ONLY:** 2026-10-17 activation text below is NOT authorization for a new CLI, Reporter/Monitor session, branch, production order, or code change. Consult [work_projects README](README.md), [CURRENT](../work_orders/CURRENT.md), and [#20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Original record follows unchanged.
+
 # Agentra role projects — activation and worker handoff
 
 User authority: "진행시켜", 2026-10-17 11:09 Asia/Seoul. IMPLEMENTATION AUTHORIZED for the bounded whole-role structural projects below; external workers NOT_STARTED until observed startup evidence. No user approval required per internal batch, normal test repair or normal role-scope continuation.

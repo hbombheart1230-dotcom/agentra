@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 298,
+  "entry_count": 299,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 DOC AUTHORITY CONVERGENCE 20261019",
+      "title": "Document authority alignment and historical work quarantine",
+      "stage": "Documentation governance",
+      "types": [
+        "DOCS",
+        "GOVERNANCE"
+      ],
+      "status": "current",
+      "summary": "Route D00–D02 and #20 through canonical P1.5 README/CURRENT, classify all 339 original docs by Git tree path, and quarantine historical Reporter/Monitor/R3 instructions without moving evidence.",
+      "details": [
+        "Documentation-only: no runtime, Broker, Supervisor, Executor, Step5C, UEF, main or live-order mutations.",
+        "Registry is path/blob metadata and does not claim verified inbound links, every file's content, independent auditor PASS or DOC_FREEZE.",
+        "Previously audited source slice a50d6e47 retains exact original scope and hosted CI 6/6; whole-repo/UI/real-data/Docker final stage tests remain NOT_RUN or HOLD.",
+        "User requires all documentation convergence and acceptance before remaining P1.5 code development."
+      ],
+      "impact": "No trading/runtime change. Current work-order routing is DOC_FIRST; historical tasks inert.",
+      "sources": [
+        "docs/refactor/README.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/DOC_REGISTRY.csv",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 SELECTIVE STRATEGIST OPERATOR UI INTEGRATION 20261019",

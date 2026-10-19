@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 문서 정합성 및 과거 작업 격리 (DOC FIRST)
+**Stage:** Documentation governance
+**Tags:** DOCS · GOVERNANCE
+
+- D00 정책, D01 Codex, D02 Claude의 유일한 경로와 #20 실시간 권한을 통일하고, 최초 339개 문서의 SHA·분류 장부를 추가합니다.
+- 과거 Reporter/Monitor/R3 문서를 비활성 참고 자료로 격리합니다. 원본은 이동·삭제하지 않습니다. 완료된 a50d6e47 코드·CI와 P1.5 전체 HOLD를 구분합니다.
+- 경로별 분류는 본문/외부 링크의 전수 검증이 아닙니다. **DOC_FREEZE PENDING**. 거래 코드, 브로커 권한, main 수정 없음.
+
+근거: `docs/refactor/README.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/DOC_REGISTRY.csv`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+
 > UI 노출용 상세 프로젝트 변경 이력. 저장소에 남아 있는 milestone 문서, daily patch, evaluation/research 문서를 시간순으로 재구성했다. Git commit metadata가 ZIP에 포함되지 않은 초기 구간은 정확한 일자를 임의 생성하지 않고 milestone 순서/범위로 표기했다.
 
 총 **45개 릴리즈/변경 구간**을 수록한다. 작은 버그 수정 하나하나를 전부 카드화하기보다, UI에서 의미가 있는 기능·정책·평가 단위로 묶되 각 카드 안에서 실제 세부 변경을 보여주는 방식이다.
