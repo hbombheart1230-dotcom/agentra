@@ -1,3 +1,5 @@
+> **HISTORICAL ROADMAP / NON-EXECUTABLE (2026-10-19):** This document records an earlier phase/design/decision and is NOT today's work order or project status. Current P1.5â€“P8 program roadmap: [master plan](../refactor/p1_5_p1_6_master_plan.md); live approval and task: [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Retained original stage-specific safety/evidence requirements are not waived.
+
 # Phase 5-2-1 Close Note
 
 ## Summary
@@ -59,7 +61,7 @@ Targeted regression coverage currently passes for the implemented slice:
 - `tests/test_phase1_agent_artifact_quality.py`
 
 ## Next Step
-The next roadmap step should be `5-2-2: °¡½ÃÈ­ (´º½º -> Á¾¸ñ ¿¬°á)`.
+The next roadmap step should be `5-2-2: Â°Â¡Â½ÃƒÃˆÂ­ (Â´ÂºÂ½Âº -> ÃÂ¾Â¸Ã± Â¿Â¬Â°Ã¡)`.
 That step is a better place to make the strategist refresh behavior legible in downstream inspection surfaces, without expanding `5-2-1` into a larger policy project.
 
 ## Practical Read

@@ -1,4 +1,6 @@
-﻿# Phase 5-2-3 Close Note
+﻿> **HISTORICAL ROADMAP / NON-EXECUTABLE (2026-10-19):** This document records an earlier phase/design/decision and is NOT today's work order or project status. Current P1.5–P8 program roadmap: [master plan](../refactor/p1_5_p1_6_master_plan.md); live approval and task: [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Retained original stage-specific safety/evidence requirements are not waived.
+
+# Phase 5-2-3 Close Note
 
 ## Purpose
 This note freezes the current contract and responsibility boundary for the

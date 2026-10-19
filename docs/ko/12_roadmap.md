@@ -1,4 +1,6 @@
-﻿# 12. 로드맵 (M16+)
+﻿> **역사적 로드맵 / 현재 작업지시 아님 (2026-10-19):** 아래 M16~M30은 작성 당시의 계획·상태 기록입니다. 현행 P1.5~P8 기준은 [마스터플랜](../refactor/p1_5_p1_6_master_plan.md), 현재 실행 승인과 상태는 [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20)만 따릅니다. 기존 안전 규칙·검증 증거는 유지됩니다.
+
+# 12. 로드맵 (M16+)
 
 ## M16: 승인 API 정식화
 - approve(intent_id) / reject(intent_id) / preview(intent_id)

@@ -1,4 +1,6 @@
-﻿# 12. Roadmap (M16+)
+﻿> **HISTORICAL ROADMAP / NOT A LIVE TASK (2026-10-19):** The M16–M30 roadmap below documents its original period, not current P1.5–P8 delivery status. Current plan: [master roadmap](../refactor/p1_5_p1_6_master_plan.md); live status and authorization: [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). All historically pinned safety/evidence contracts remain intact.
+
+# 12. Roadmap (M16+)
 
 ## M16: Formal approval API
 - approve(intent_id) / reject(intent_id) / preview(intent_id)

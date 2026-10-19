@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 302,
+  "entry_count": 303,
   "entries": [
+    {
+      "date": "2026-10-19",
+      "version": "P1.5 ROOT AND LEGACY ROADMAP QUARANTINE 20261019",
+      "title": "Mark obsolete root M-series and 30 historical roadmaps non-executable",
+      "stage": "Documentation governance",
+      "types": [
+        "DOCS",
+        "GOVERNANCE"
+      ],
+      "status": "current",
+      "summary": "Repair DOC-E P2-03/P2-04 by demoting stale root current-source label and adding historical non-executable warnings to every file under docs/roadmap plus the two language-localized M16+ roadmaps.",
+      "details": [
+        "Root README 2026-10-18 snapshot at 5cb90b39 and M20-M22 roadmap explicitly refer to history; canonical live navigation remains D00/docs-refactor/#20.",
+        "All 28 docs/roadmap files and both docs/en and docs/ko 12_roadmap.md pages visibly identify older status as NOT current execution authority without altering original body, architecture or frozen safety contracts.",
+        "This documentation-only correction is not DOC_FREEZE; original 339 docs/refactor classification, legacy workflow active-order checks, and source provenance 14 absent historical paths remain distinct validation gates."
+      ],
+      "impact": "Documentation-only. No source/CI/test, trading, production, main, UEF, broker or frozen target structure touched. No new runtime CI PASS claimed.",
+      "sources": [
+        "README.md",
+        "docs/roadmap/trading_agent_phase_roadmap.md",
+        "docs/roadmap/unified_roadmap.md",
+        "docs/en/12_roadmap.md",
+        "docs/ko/12_roadmap.md"
+      ]
+    },
     {
       "date": "2026-10-19",
       "version": "P1.5 HISTORIC SOURCE PROVENANCE DOC-A 20261019",

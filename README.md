@@ -4,7 +4,9 @@
 
 All GPT, Codex and Claude developer/auditor work follows **[DELIVERY FIRST / NO RECURSIVE AUDIT](docs/ENGINEERING_DELIVERY_POLICY.md)**. Finish verified source changes on integration before generating new analyzer/tooling/checklist loops. Targeted independent audit and exact-SHA CI are complementary; do not repeat full developer-branch pytest needlessly. This rule is permanent across P1.5–P8 and does not weaken safety gates.
 
-## 2026-10-18 · Current P1.5 source-of-truth (ROOT-TO-LEAF)
+## 2026-10-18 · Historical P1.5 source snapshot (ROOT-TO-LEAF)
+
+> **CURRENT 2026-10-19 / DOC_FIRST / DOC_FREEZE_PENDING:** This 2026-10-18 analysis is historical at source SHA `5cb90b39`, NOT today's source-of-truth, runnable task or release approval. Current authority: [D00 delivery rules](docs/ENGINEERING_DELIVERY_POLICY.md) → [refactor navigation](docs/refactor/README.md) → [GitHub #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). No code work/developer branches/P1.6 until DOC_FREEZE and user approval. Current integration branch is `integration/p1.5`; the latest SHA must always be checked on GitHub.
 
 > **Current analysis, not a deployable release:** integration code snapshot `5cb90b39` (before architecture-only documentation commits), final P1.5 **NOT_ACCEPTED**. The M20 overview below is **historical project description**, not evidence that all current 7 roles have independent public callable owners. Broker/approval/order authority remains at its existing SAFETY_LOCK locations.
 >
@@ -565,7 +567,9 @@ Phase 4: Metrics + alerting + circuit breaker
 
 ------------------------------------------------------------------------
 
-# 11. Roadmap
+# 11. Roadmap — Historical M20–M22 series (not the current program)
+
+> **HISTORICAL / NON-EXECUTABLE:** The following M20–M22 project-era intentions are not current P1.5/P1.6/P2–P8 backlog assignments or verified present status. Current roadmap: [P1.5/P1.6 master plan](docs/refactor/p1_5_p1_6_master_plan.md); approved work/actual status: [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20).
 
 M20:
 - LangGraph orchestration

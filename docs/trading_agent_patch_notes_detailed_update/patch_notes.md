@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-19 · P1.5 ROOT AND LEGACY ROADMAP QUARANTINE 20261019
+**Stage:** Documentation governance · **Tags:** DOCS · GOVERNANCE
+
+- 클검 DOC-E 지적 P2-03/P2-04를 반영하여 루트 README의 2026-10-18 snapshot 및 M20~M22 로드맵을 역사적 상태로 표시했습니다.
+- `docs/roadmap/` 28개와 `docs/en/12_roadmap.md`, `docs/ko/12_roadmap.md` 2개에 현행 작업지시가 아님을 표시했습니다. 원문 내용과 과거 설계·안전 증거는 유지했습니다.
+- 현재 로드맵은 P1.5/P1.6 마스터플랜, 활성 상태는 GitHub #20입니다. DOC_FREEZE는 여전히 PENDING입니다.
+- 거래 코드·테스트·CI·브로커·UEF·main 변경 없음. 새로운 릴리스/CI PASS 주장 없음.
+
+Sources: `README.md`, `docs/roadmap/trading_agent_phase_roadmap.md`, `docs/roadmap/unified_roadmap.md`, `docs/en/12_roadmap.md`, `docs/ko/12_roadmap.md`.
+
 ## 2026-10-19 · P1.5 HISTORIC SOURCE PROVENANCE DOC-A 20261019
 **Stage:** Documentation governance · **Tags:** DOCS · AUDIT
 
