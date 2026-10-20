@@ -3928,3 +3928,15 @@ UEF9 필수 계약은 고정된 비민감 합성 원천 JSON 4개를 명시적 r
 - **새 통합 SHA의 CI 결과는 아직 없음.** 실데이터 24 SKIP, 전체 저장소, UI 시각 검증 및 P1.5 최종 수용은 미완료. `main` 미변경.
 
 근거: `docs/daily_patch/2026-10-18_uef9_synthetic_fixture.md`, `docs/refactor/architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md`, GitHub Actions 39123404564.
+
+
+## 2026-10-20 · P1.5 CODE BATCH 01 DEV B LIVE OVERVIEW PROJECTION 20261020
+**Stage:** P1.5 CODE BATCH 01 developer candidate; integration pending
+**Tags:** REFACTOR · TEST
+
+- BASE `4b0c3e0b`의 `load_overview(config)` 실시간 집계·stale daily/reporter/reconciliation 보정을 신규 순수 `data_access_overview_projection.py`로 분리했습니다. 함수는 282→139줄, core는 2754→2612줄입니다. 이미 읽은 입력만 전달하며 IO·경로 우선순위·최종 공개 응답 구성은 기존 facade에 유지합니다.
+- strict `allowed is True/False`, NOOP 우선순위, `ts_kst` 우선 날짜 선택, action/key 순서, same-day fallback·reporter snapshot·reconciliation 최대값 우선순위와 helper use-time lookup을 보존합니다. Monitor 동결 Owner·fixture·권한 코드는 변경하지 않습니다.
+- Windows Python3.14.2 집중 normal/`-O` 각각98 PASS(기존 UI/read-model81 + 신규17); 분류·날짜·stale 변이4종을 메모리에서 탐지합니다. 고정 BASE와7개 시나리오의 JSON bytes·호출 순서·예외·공개 signature/import를 비교하며 운영 golden을 새로 만들지 않았습니다. 첫 신규 fixture의 operator_summary 부재로 나타난 기존 fallback 분기 실패는 올바른 fixture 문맥으로 수정했고 로그를 보존합니다.
+- 커밋 작성 시 새 Claude CLI 독립 읽기 전용 검토는 대기 중입니다. 실제 종료 코드·정확한 candidate SHA·PASS/REWORK/BLOCKED를 별도 인계합니다. 통합 CI·전체 pytest·실데이터24SKIP·운영 HTML/JSON parity·UI build는 NOT_RUN. main·Docker·실거래·운영 배포 승인 없음.
+
+근거: `apps/operator_ui/data_access_core.py`, `apps/operator_ui/data_access_overview_projection.py`, `tests/test_p15_overview_live_projection.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.

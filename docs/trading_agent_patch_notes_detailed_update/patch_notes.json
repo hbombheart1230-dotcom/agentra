@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 319,
+  "entry_count": 320,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8421,6 +8421,32 @@
         "docs/daily_patch/2026-10-18_monitor_shared_candidate.md"
       ],
       "status": "current"
+    },
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 CODE BATCH 01 DEV B LIVE OVERVIEW PROJECTION 20261020",
+      "title": "Extract pure Operator UI live overview aggregation and stale-report reconciliation",
+      "stage": "P1.5 CODE BATCH 01 developer candidate; integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Move load_overview's deterministic live event classification and stale snapshot reconciliation into an independently callable read-only projection; retain IO, path priority and public output assembly in the existing facade.",
+      "details": [
+        "CODEX_DEV_B base4b0c3e0b:load_overview282 to139 lines; core2754 to2612. New cohesive212-line overview Owner receives already-read inputs; no new log reader, scan, clock, LLM or write.",
+        "Preserve strict allowed=True/False identity, NOOP precedence, ts_kst-before-ts day choice, input/action/key ordering, same-day fallback, reporter snapshot status and maximum reconciliation-count precedence. Existing date/integer helpers remain facade lookups at use time.",
+        "Focused Windows Python3.14.2 UI/read-model and new17-case suite:normal98PASS, optimized98PASS; four in-memory hostile classification/day/stale mutants detected. Pinned BASE JSON bytes, read/helper call trace, public signature/compat import and exceptions compared in seven scenarios; synthetic fixtures only.",
+        "Initial new-test fixture omitted operator_summary and correctly triggered a different existing fallback; fixture context corrected with original assertion retained, initial failure evidence retained. Frozen Monitor owners/ledgers/goldens and safety authority unchanged.",
+        "Fresh Claude CLI read-only independent review is pending at candidate authoring; receipt must contain exact SHA, real exit and PASS/REWORK/BLOCKED. Integration-SHA CI, full pytest, real-data24SKIP, production HTML/JSON parity and UI build NOT_RUN. No main, Docker, production deployment or trading-policy change."
+      ],
+      "impact": "Remove embedded live-summary interpretation from the IO coordinator while preserving read-only Operator UI behavior. Developer candidate only; no release or integration approval.",
+      "sources": [
+        "apps/operator_ui/data_access_core.py",
+        "apps/operator_ui/data_access_overview_projection.py",
+        "tests/test_p15_overview_live_projection.py",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
     }
   ]
 }
