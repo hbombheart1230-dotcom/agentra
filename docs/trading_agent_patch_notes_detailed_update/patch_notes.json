@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 321,
+  "entry_count": 322,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8473,6 +8473,36 @@
         "apps/operator_ui/data_access_run_detail_projection.py",
         "tests/test_p15_operator_trade_index_projection.py",
         "tests/test_p15_operator_run_detail_projection.py",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 B SHARED CONTRACT V2 HISTORICAL AND CURRENT ADMISSION 20261020",
+      "title": "Admit only pinned B projections through a separate strict current contract stage",
+      "stage": "CODEX_DEV_B contract developer candidate; peer and GPT selective integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Separate immutable historical S5 scope/five-function proofs from exact B source admission and current whole-source/test scope; prevent vacuous hostile mutation claims.",
+      "details": [
+        "Developer base and unchanged B source pin54bebe5ece0ac34c4f45df55c44889c9ce323e95; historical pre-B tree4b0c3e0b5f8f24fa3c10d9082b85fab63f15c4c3. No Operator UI runtime, Reporter/Monitor/Strategist source, Broker/UEF/Step5C or safety policy changes.",
+        "Preserve original NEXT_RUNTIME/NEXT_PATHS, S5 eight helper and five parsing/brief function restoration logic. Historical scope uses immutable pre-B Git objects; current scope checks actual tracked/staged/untracked source, tests and fixtures separately. No open package wildcard, skip, xfail or oracle replacement.",
+        "Exact B runtime4 and regression3 paths are pinned to reviewed Git contents. Restore only three named UI definitions and three Owner imports to the pre-B entire AST; require pre-B core equals original UI_PIN. Runtime admission adds only three pinned B Owners. Unknown app/Broker/fixture/test paths and all unauthorized unchanged-file drift fail closed.",
+        "Normal unmutated runtime/stage passed before hostile probes. Existing eight shared runtime mutations now require unmodified PASS and mutation-path-specific rejection. Dedicated19-case suite covers historical/current mutual rejection, fourteen current hostile probes and three actual Owner-read tampering cases; final Windows Python3.14.2 focused normal620PASS plus paired-notes2PASS and optimized622PASS, zero FAIL/SKIP. Includes existing UI/API, Reporter seed/facade, Monitor role and S5 helper regressions. Final paired-note text validation recorded separately.",
+        "Five missing immutable source commits fetched by exact SHA, never replaced with invented historical bytes. Fresh directly invoked read-only Claude CLI review pending candidate authoring; actual exit and exact-SHA structured verdict recorded after commit. No direct integration or separate primary-Claude review window.",
+        "Hosted composed-SHA CI, whole repository pytest, Linux, production goldens/real-data24SKIP and UI build/visual acceptance NOT_RUN. Existing historical321 patchnote records preserved; new candidate note322 requires GPT serial reconciliation against newer integration documentation notes."
+      ],
+      "impact": "Enable exact B admission without pretending the historical stage accepted new source, while retaining fail-closed Reporter313/Monitor14+20 and S5 proofs. Developer evidence is not integration/final acceptance.",
+      "sources": [
+        "scripts/refactor/shared_strategist_contracts.py",
+        "scripts/refactor/shared_role_contracts.py",
+        "tests/test_shared_strategist_contracts.py",
+        "tests/test_p15_integration_completion.py",
+        "tests/test_shared_role_contracts.py",
+        "tests/test_p15_b_versioned_contract.py",
         "docs/ENGINEERING_DELIVERY_POLICY.md"
       ]
     }

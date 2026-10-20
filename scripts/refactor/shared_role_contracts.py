@@ -70,6 +70,8 @@ def role_paths(sha):
 def verify_runtime(overrides=None):
     """No arbitrary path allowlist: all runtime deltas must equal an immutable input."""
     overrides = overrides or {}
+    S5.verify_b_scope({p: value for p, value in overrides.items()
+                       if not p.startswith(("libs/", "graphs/", "apps/"))})
     reporter, monitor = role_paths(REPORTER), role_paths(MONITOR)
     require(not reporter & monitor, "ambiguous runtime overlap")
     strategist = S5.current_contract(overrides)["runtime_paths"]
@@ -78,7 +80,9 @@ def verify_runtime(overrides=None):
     actual = set(subprocess.check_output(["git", "diff", "--name-only", BASE, "--", "libs", "graphs", "apps"], cwd=ROOT, text=True).splitlines())
     actual |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard", "--", "libs", "graphs", "apps"], cwd=ROOT, text=True).splitlines())
     actual |= {p for p in overrides if p.startswith(("libs/", "graphs/", "apps/"))}
-    expected = reporter | monitor | strategist | set(S5.NEXT_RUNTIME)
+    # B's three Owners are admitted only by their exact reviewed content. The
+    # historical Reporter/Monitor/Strategist inputs and inventories stay fixed.
+    expected = reporter | monitor | strategist | set(S5.NEXT_RUNTIME) | S5.B_RUNTIME
     require(actual == expected, "unexpected/missing runtime path: " + repr(actual ^ expected))
     for sha, paths in ((REPORTER, reporter), (MONITOR, monitor), (S5.CANDIDATE_CODE, strategist)):
         for path in sorted(paths):

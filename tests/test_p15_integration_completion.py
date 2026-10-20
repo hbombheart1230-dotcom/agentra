@@ -15,6 +15,12 @@ import pytest
 from scripts.refactor import shared_strategist_contracts as S
 
 
+@pytest.fixture(scope="module", autouse=True)
+def exact_current_stage_is_green_before_mutation_tests():
+    S.verify_next_stage()
+    S.verify_b_scope()
+
+
 def test_current_source_restores_only_the_five_approved_definitions():
     assert S.verify_next_stage() == frozenset(S.NEXT_RUNTIME)
     S.verify_next_scope()

@@ -3951,3 +3951,15 @@ UEF9 필수 계약은 고정된 비민감 합성 원천 JSON 4개를 명시적 r
 - Fresh read-only Claude CLI exact-SHA review pending candidate authoring. Hosted integration CI, full pytest, real production frozen snapshots/real-data evidence and UI visual/build **NOT_RUN**. Not final acceptance, deployment or main integration.
 
 Sources: `apps/operator_ui/data_access_core.py`, `apps/operator_ui/data_access_trade_index_projection.py`, `apps/operator_ui/data_access_run_detail_projection.py`, `tests/test_p15_operator_trade_index_projection.py`, `tests/test_p15_operator_run_detail_projection.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+
+## 2026-10-20 - P1.5 B SHARED CONTRACT V2 HISTORICAL AND CURRENT ADMISSION 20261020
+**Stage:** Developer contract candidate, peer/GPT selective integration pending. **Tags:** REFACTOR / TEST
+
+- Unchanged reviewed B source and developer base `54bebe5ece0ac34c4f45df55c44889c9ce323e95`; historical pre-B tree `4b0c3e0b5f8f24fa3c10d9082b85fab63f15c4c3`. Existing S5/Reporter/Monitor/Broker/UEF/Step5C source and policies remain unchanged.
+- Keep original historical source inventories and five-function/eight-helper proofs; separately admit exactly four runtime and three regression paths from B. Validate actual B contents before historic projection; restore three named UI definitions/import groups to the entire pre-B AST. Current scope rejects unapproved source/test/fixture paths and byte drift, including staged/untracked changes.
+- Require actual unmutated current stage/runtime PASS before eight old hostile mutations; assert rejection identifies the injected path. Dedicated19 cases add historical/current mutual rejection, fourteen current hostile probes and three real Owner-read mutations. Windows Python3.14.2 final normal620PASS plus paired-note2PASS; optimized622PASS, zero FAIL/SKIP. Includes UI/API, Reporter/Monitor/S5 regressions; final note-text schema checks recorded separately. No test oracle weakening or vacuous PASS.
+- Five missing immutable commits fetched by exact SHA. Fresh local read-only `claude -p` review pending candidate authoring; actual SHA/exit/verdict recorded externally after commit. No direct integration, main, Docker, live LLM, production data or alternate reviewer window.
+- Hosted composed-SHA CI, full pytest, Linux, genuine production goldens/real-data evidence and UI build/visual acceptance **NOT_RUN**. Prior321 candidate records preserved, new note322; GPT reconciles newer integration notes serially.
+
+Sources: `scripts/refactor/shared_strategist_contracts.py`, `scripts/refactor/shared_role_contracts.py`, `tests/test_shared_strategist_contracts.py`, `tests/test_p15_integration_completion.py`, `tests/test_shared_role_contracts.py`, `tests/test_p15_b_versioned_contract.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.

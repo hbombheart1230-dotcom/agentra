@@ -252,6 +252,11 @@ def historical_source(path):
     hidden by reading the old stage: its actual blob must match the audited pin.
     """
     current = (ROOT / path).read_text(encoding="utf-8-sig")
+    if path == UI_CORE:
+        # B is a separate admission, never a replacement for the five-function
+        # historical proof. Validate all actual B blobs before projecting it.
+        verify_b_sources()
+        current = git_source(UI_PIN, path)
     if path in NEXT_RUNTIME:
         require(current.replace("\r\n", "\n") == git_source(NEXT_RUNTIME[path], path),
                 "new-stage source differs from audited pin: " + path)
@@ -272,7 +277,7 @@ class _RestoreBriefGlobals(Unqualify):
         return node
 
 
-def verify_next_stage(overrides=None):
+def _verify_five_function_stage(overrides=None):
     """Exact audited source + five body/ABI/import restoration proofs, -O safe."""
     overrides = overrides or {}
     sources = {p: overrides.get(p, (ROOT / p).read_text(encoding="utf-8-sig")) for p in NEXT_RUNTIME}
@@ -340,36 +345,36 @@ def verify_post_acceptance_source_scope(changed):
     return frozenset(paths)
 
 
-def verify_next_scope(changed=None, untracked=None):
+def verify_historical_next_scope(changed=None, untracked=None):
+    """Original post-acceptance proof on the immutable pre-B Git tree.
+
+    Current worktree drift is a separate V2 check; it is never described as
+    passing this historical stage. Explicit caller path probes stay legacy-only.
+    """
     if changed is None:
         # Reject a rewritten/rebased unrelated HEAD rather than silently
         # selecting a different historical baseline or widening the allowlist.
         ancestor = subprocess.run(
-            ["git", "merge-base", "--is-ancestor", ACCEPTED_SOURCE_INTEGRATION, "HEAD"],
+            ["git", "merge-base", "--is-ancestor", ACCEPTED_SOURCE_INTEGRATION, B_PRE_SOURCE],
             cwd=ROOT, capture_output=True, check=False,
         )
         require(ancestor.returncode == 0, "independently audited source integration is not an ancestor")
-        # Current committed source and any tracked worktree edits must remain
-        # byte-identical to the independently accepted integration for *all*
-        # actual runtime, scripts, tests and frozen fixture paths.
+        # Historical committed source/test inventory from accepted integration
+        # through the final pre-B tree, including the exact proof/test repairs.
         committed = subprocess.check_output(
-            ["git", "diff", "--name-only", ACCEPTED_SOURCE_INTEGRATION, "HEAD", "--", *POST_ACCEPTANCE_CODE_ROOTS],
-            cwd=ROOT, text=True,
-        ).splitlines()
-        worktree = subprocess.check_output(
-            ["git", "diff", "--name-only", "HEAD", "--", *POST_ACCEPTANCE_CODE_ROOTS],
+            ["git", "diff", "--name-only", ACCEPTED_SOURCE_INTEGRATION, B_PRE_SOURCE, "--", *POST_ACCEPTANCE_CODE_ROOTS],
             cwd=ROOT, text=True,
         ).splitlines()
         # Check the exact two proof files at the recorded prior SHA, not an
         # open prefix allowance for additional source or fixture edits.
         proof_ancestor = subprocess.run(
-            ["git", "merge-base", "--is-ancestor", POST_ACCEPTANCE_PROOF_PIN, "HEAD"],
+            ["git", "merge-base", "--is-ancestor", POST_ACCEPTANCE_PROOF_PIN, B_PRE_SOURCE],
             cwd=ROOT, capture_output=True, check=False,
         )
         require(proof_ancestor.returncode == 0, "pinned CI proof repair not in current history")
         verify_post_acceptance_source_scope(committed)
         since_proof = subprocess.check_output(
-            ["git", "diff", "--name-only", POST_ACCEPTANCE_PROOF_PIN, "HEAD",
+            ["git", "diff", "--name-only", POST_ACCEPTANCE_PROOF_PIN, B_PRE_SOURCE,
              "--", *POST_ACCEPTANCE_CODE_ROOTS],
             cwd=ROOT, text=True,
         ).splitlines()
@@ -383,26 +388,21 @@ def verify_next_scope(changed=None, untracked=None):
         # A future modification to even one test must fail before S5 admission.
         for test_path, blob_sha in HISTORICAL_SCANNER_SCOPE_TEST_BLOBS.items():
             head_blob = subprocess.check_output(
-                ["git", "rev-parse", "HEAD:" + test_path],
+                ["git", "rev-parse", B_PRE_SOURCE + ":" + test_path],
                 cwd=ROOT, text=True,
             ).strip()
-            worktree_blob = subprocess.check_output(
-                ["git", "hash-object", "--", test_path],
-                cwd=ROOT, text=True,
-            ).strip()
-            require(head_blob == blob_sha and worktree_blob == blob_sha,
+            require(head_blob == blob_sha,
                     "unreviewed historical Scanner scope-test bytes: " + test_path)
         test_pin = "05e91ea0e53f296f3507445706901f9b389ad9fd"
         require(subprocess.run(
-            ["git", "merge-base", "--is-ancestor", test_pin, "HEAD"],
+            ["git", "merge-base", "--is-ancestor", test_pin, B_PRE_SOURCE],
             cwd=ROOT, capture_output=True, check=False,
         ).returncode == 0, "reviewed scope unit test pin not ancestral")
         require(not subprocess.check_output(
-            ["git", "diff", "--name-only", test_pin, "HEAD", "--",
+            ["git", "diff", "--name-only", test_pin, B_PRE_SOURCE, "--",
              "tests/test_shared_strategist_contracts.py"],
             cwd=ROOT, text=True,
         ).strip(), "post-pin source scope unit test has been modified")
-        require(not worktree, "unreviewed tracked worktree source/test drift: " + repr(set(worktree)))
         # Stage scope is measured at the audited a50d6e47 source admission
         # (19 exact paths), not across later D00/docs/workflow-only commits.
         changed = subprocess.check_output(
@@ -410,9 +410,111 @@ def verify_next_scope(changed=None, untracked=None):
             cwd=ROOT, text=True,
         ).splitlines()
     if untracked is None:
-        untracked = subprocess.check_output(
-            ["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True,
-        ).splitlines()
+        untracked = []  # Immutable historical tree; current disk checked by V2.
     paths = set(changed) | set(untracked)
     require(paths <= NEXT_PATHS, "out-of-scope integration completion path: " + repr(paths - NEXT_PATHS))
     return paths
+
+
+# P1.5-B V2 is intentionally separate from NEXT_RUNTIME/NEXT_PATHS. Their
+# original shapes, five functions and original forbidden-path tests stay fixed.
+B_PRE_SOURCE = "4b0c3e0b5f8f24fa3c10d9082b85fab63f15c4c3"
+B_SOURCE = "54bebe5ece0ac34c4f45df55c44889c9ce323e95"
+B_OWNERS = frozenset({
+    "apps/operator_ui/data_access_overview_projection.py",
+    "apps/operator_ui/data_access_trade_index_projection.py",
+    "apps/operator_ui/data_access_run_detail_projection.py",
+})
+B_RUNTIME = B_OWNERS | {UI_CORE}
+B_TESTS = frozenset({
+    "tests/test_p15_overview_live_projection.py",
+    "tests/test_p15_operator_trade_index_projection.py",
+    "tests/test_p15_operator_run_detail_projection.py",
+})
+B_SOURCE_PATHS = B_RUNTIME | B_TESTS
+B_CONTRACT_PATHS = frozenset({
+    "scripts/refactor/shared_strategist_contracts.py",
+    "scripts/refactor/shared_role_contracts.py",
+    "tests/test_shared_strategist_contracts.py",
+    "tests/test_p15_integration_completion.py",
+    "tests/test_shared_role_contracts.py",
+    "tests/test_p15_b_versioned_contract.py",
+})
+B_DEFINITIONS = frozenset({"load_overview", "_trade_report_index", "load_run_detail"})
+
+
+def verify_b_sources(overrides=None):
+    """Exact reviewed B blobs, restored pre-B imports/exports/ABI and AST.
+
+    No source is executed. Existing differential runtime suites prove effect
+    order; this admission cannot silently accept any change to those blobs.
+    """
+    overrides = overrides or {}
+    sources = {}
+    for path in sorted(B_RUNTIME):
+        source = overrides[path] if path in overrides else (ROOT / path).read_text(encoding="utf-8-sig")
+        require(source.replace("\r\n", "\n") == git_source(B_SOURCE, path),
+                "new-stage source differs from reviewed B pin: " + path)
+        sources[path] = source
+    base = ast.parse(git_source(B_PRE_SOURCE, UI_CORE))
+    tree = ast.parse(sources[UI_CORE])
+    base_defs, current_defs = functions(base), functions(tree)
+    require(set(base_defs) == set(current_defs), "B-stage definition inventory")
+    for name in B_DEFINITIONS:
+        before, after = copy.deepcopy(base_defs[name]), copy.deepcopy(current_defs[name])
+        before.body, after.body = [], []
+        require(dump(before) == dump(after), "B-stage ABI: " + name)
+    owner_modules = {p[:-3].replace("/", ".") for p in B_OWNERS}
+    imports = [n for n in tree.body if isinstance(n, ast.ImportFrom) and n.module in owner_modules]
+    # The source pin above protects exact aliases, order and call arguments.
+    require({n.module for n in imports} == owner_modules and len(imports) == 3,
+            "B-stage exact Owner imports")
+    tree.body = [copy.deepcopy(base_defs[n.name])
+                 if isinstance(n, ast.FunctionDef) and n.name in B_DEFINITIONS else n
+                 for n in tree.body if n not in imports]
+    require(dump(tree) == dump(base), "B-stage unmoved source/import changed")
+    require(git_source(B_PRE_SOURCE, UI_CORE) == git_source(UI_PIN, UI_CORE),
+            "B pre-source does not match original five-function stage")
+    return frozenset(sources)
+
+
+def verify_next_stage(overrides=None):
+    """Current B admission followed by the unchanged five-function proof."""
+    verify_b_sources(overrides)
+    projected = dict(overrides or {})
+    projected[UI_CORE] = git_source(UI_PIN, UI_CORE)
+    return _verify_five_function_stage(projected)
+
+
+def verify_b_scope(overrides=None):
+    """Closed current source/test delta; no wildcard or editable baseline."""
+    overrides = overrides or {}
+    require(subprocess.run(["git", "merge-base", "--is-ancestor", B_PRE_SOURCE, "HEAD"],
+                           cwd=ROOT, capture_output=True).returncode == 0,
+            "B-stage baseline not ancestral")
+    pinned_delta = set(subprocess.check_output(
+        ["git", "diff", "--name-only", B_PRE_SOURCE, B_SOURCE, "--", *POST_ACCEPTANCE_CODE_ROOTS],
+        cwd=ROOT, text=True).splitlines())
+    require(pinned_delta == B_SOURCE_PATHS, "B-stage pinned seven-path inventory")
+    changed = set(subprocess.check_output(
+        ["git", "diff", "--name-only", B_PRE_SOURCE, "--", *POST_ACCEPTANCE_CODE_ROOTS],
+        cwd=ROOT, text=True).splitlines())
+    changed |= set(subprocess.check_output(
+        ["git", "ls-files", "--others", "--exclude-standard", "--", *POST_ACCEPTANCE_CODE_ROOTS],
+        cwd=ROOT, text=True).splitlines())
+    changed |= set(overrides)
+    require(changed <= B_SOURCE_PATHS | B_CONTRACT_PATHS,
+            "B-stage unapproved source/test/fixture path: " + repr(changed - B_SOURCE_PATHS - B_CONTRACT_PATHS))
+    for path in sorted(B_SOURCE_PATHS):
+        current = overrides[path] if path in overrides else (ROOT / path).read_text(encoding="utf-8-sig")
+        require(current.replace("\r\n", "\n") == git_source(B_SOURCE, path),
+                "B-stage source/test differs from reviewed pin: " + path)
+    return frozenset(changed)
+
+
+def verify_next_scope(changed=None, untracked=None):
+    """Legacy explicit-scope API plus historical and strict current V2 checks."""
+    # An explicit legacy probe must not suppress validation of the actual V2
+    # worktree (including untracked capabilities or modified frozen fixtures).
+    verify_b_scope()
+    return verify_historical_next_scope(changed, untracked)

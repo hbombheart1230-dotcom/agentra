@@ -14,6 +14,13 @@ sys.path.insert(0, str(ROOT / "scripts/refactor"))
 import shared_role_contracts as SHARED
 
 
+@pytest.fixture(scope="module", autouse=True)
+def unmutated_stage_precondition():
+    # A mutation failing on an already-red candidate is not a valid proof.
+    S5.verify_next_stage()
+    SHARED.verify_runtime()
+
+
 @pytest.mark.parametrize("newline", ["\n", "\r\n"])
 def test_exact_candidate_restores_the_entire_original_ast_without_installing_it(newline):
     sources = {p: s.replace("\n", newline) for p, s in S5.candidate_sources().items()}
@@ -120,6 +127,8 @@ def test_prepared_integrated_scope_uses_exact_source_and_shared_paths():
 
 def test_latest_documents_do_not_reclassify_historical_source_changes():
     assert S5.verify_next_scope() == S5.NEXT_PATHS
+    assert S5.verify_historical_next_scope() == S5.NEXT_PATHS
+    assert S5.verify_b_scope() <= S5.B_SOURCE_PATHS | S5.B_CONTRACT_PATHS
     assert S5.ACCEPTED_SOURCE_INTEGRATION == "a50d6e4780ddccd810fb0708e756e1bf63d8ede0"
     assert S5.POST_ACCEPTANCE_PROOF_PIN == "cfac9b715dcf59aa04df926f5671d36934c1a1b4"
     assert S5.verify_post_acceptance_source_scope(S5.POST_ACCEPTANCE_PROOF_PATHS) == S5.POST_ACCEPTANCE_PROOF_PATHS
