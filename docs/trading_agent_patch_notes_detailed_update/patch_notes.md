@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 D7 OPERATOR ACCEPTED DOC FREEZE 20261020
+**Stage:** P1.5 D7 문서 기준선 동결 · **Tags:** DOCS · PROCESS · SAFETY
+
+- 운영자가 `d89cc136a72efea76fe4da67d1c851f418011312` 기준의 **문서 동결을 명시 승인**했습니다. 해당 SHA의 GitHub 5개 워크플로 5/5 성공 및 사용자가 제공한 Codex DOC-E 독립 검토 6파일 한정 PASS를 근거로 합니다.
+- 14개 누락 역사적 로컬 경로의 16회 인용, 339 원본 문서의 미검증 전체 inbound 참조, Windows 상호 CLI smoke 미실행, 패치노트 자동 append 도구 보류를 **예외로 수락했을 뿐 PASS로 바꾸지 않았습니다.**
+- 동결된 검토 기준 SHA와 이번 동결 기록 커밋은 구별합니다. 이번 커밋 CI는 별도 확인이 필요합니다. 기존 318개 UI 기록은 그대로 두고 본 항목을 추가해 **319/319**로 동기화했습니다.
+- [D7 승인 기록](../refactor/DOC_D7_FREEZE_ACCEPTANCE_20261020.md) · [현재 업무 포인터](../refactor/work_orders/CURRENT.md). **`DOC_FREEZE_ACCEPTED`는 `FINAL_ACCEPTED`나 실거래/배포/메인 병합 승인이 아닙니다.** 개발 세션·브랜치 시작도 별도 범위/운영자 지시가 필요합니다.
+
+Sources: `docs/refactor/DOC_D7_FREEZE_ACCEPTANCE_20261020.md`, `docs/refactor/DOC_D7_RELEASE_READINESS_20261020.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
 ## 2026-10-20 · P1.5 D6 FULL SOURCE EXCEPTION GUARD AND D7 REVIEW READY 20261020
 **Stage:** P1.5 D6 품질 게이트 및 D7 독립 검토 준비 · **Tags:** DOCS · TEST · CI · SAFETY
 

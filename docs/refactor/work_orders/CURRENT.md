@@ -1,8 +1,10 @@
 # Agentra P1.5 — CURRENT (pointer, DOC FIRST)
 
+> **D7 GATE UPDATED — 2026-10-20:** **`DOC_FREEZE_ACCEPTED`** on reviewed source `d89cc136a72efea76fe4da67d1c851f418011312` following operator-supplied independent Codex DOC-E PASS, exact-SHA CI 5/5, and explicit user acceptance of all four bounded exceptions. [Freeze receipt](../DOC_D7_FREEZE_ACCEPTANCE_20261020.md). **DOCUMENTATION FREEZE ONLY; final source release approval is NOT declared.** Source developer sessions/branches have not been launched and require separate approved work packets and operator launch. GitHub Issue #20 remains the live SHA/ownership tracker.
+
 **Master authority:** [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20), actual `integration/p1.5` SHA and CI. This file cannot independently activate developer or auditor tasks.
 
-## Active user decision — 2026-10-19
+## Historical DOC-FIRST instruction — 2026-10-19 (fulfilled by 2026-10-20 bounded freeze)
 
 **DOC-A→DOC-E document convergence before all remaining code development.** Inventory 339 original files; align D00–D02 and canonical target/roadmap; quarantine obsolete Reporter/Monitor/R3; check links, patchnote sources and frozen records; independent doc audit; operator DOC_FREEZE acceptance. **No live developer implementation issue.** Do not create new Codex/Claude branches or open former work orders yet. GitHub comments do not launch a CLI.
 

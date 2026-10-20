@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 318,
+  "entry_count": 319,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 D7 OPERATOR ACCEPTED DOC FREEZE 20261020",
+      "title": "Accept bounded documentation freeze at independently reviewed d89cc136; preserve all trading and release gates",
+      "stage": "P1.5 D7 documentation governance acceptance, not P1.5 source release",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "User explicitly accepted the four disclosed D7 documentation exceptions after independent Codex DOC-E PASS and 5/5 SHA-matched hosted CI at d89cc136.",
+      "details": [
+        "Immutable reviewed documentation source baseline: d89cc136a72efea76fe4da67d1c851f418011312; freeze receipt and paired UI changelog are a subsequent administrative recording commit; exact record-commit CI must be checked separately.",
+        "Codex CLI report provided by operator: bounded 6-file DOC-E PASS, no new P0/P1/P2, 8 negative mutations across each of two workflow document gates 16/16 rejected; this agent did not launch that independent CLI.",
+        "Reviewed SHA patchnotes 318 entries and 1,022 sources: 1,002 available local references, four GitHub URLs, 14 unavailable historic local paths cited 16 times; old source records and original 339 refactor paths retained.",
+        "Operator accepts unverified full 339-document semantics/global inbound graph, unrun Windows reciprocal CLI smoke, and deferred standalone changelog helper; they are not relabeled PASS.",
+        "DOC_FREEZE_ACCEPTED is explicitly narrower than FINAL_ACCEPTED or release: no local developer sessions, source refactor, main promotion, Docker production, live broker orders, Step5C/UEF authority or golden contract changes."
+      ],
+      "impact": "Closes D7 documentation acceptance with narrow recorded exceptions so owner-scoped development packets can be planned without restarting document audit loops; preserves all downstream stage safety gates.",
+      "sources": [
+        "docs/refactor/DOC_D7_FREEZE_ACCEPTANCE_20261020.md",
+        "docs/refactor/DOC_D7_RELEASE_READINESS_20261020.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 D6 FULL SOURCE EXCEPTION GUARD AND D7 REVIEW READY 20261020",

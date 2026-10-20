@@ -1,6 +1,8 @@
 # Agentra P1.5 — D7 documentation-freeze decision packet (2026-10-20)
 
-**State: REVIEW_READY / NOT_ACCEPTED.** This packet is a decision aid only; it is not DOC_FREEZE approval, code-development authorization, a CLI launch, or a broker operation. The authoritative live SHA and check results are tracked in [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). The pre-remediation baseline inspected here is `integration/p1.5@974eb9d1bd1155091282cac02162735ebaa589a0`.
+**CURRENT RESOLUTION (2026-10-20): `DOC_FREEZE_ACCEPTED` for reviewed baseline `d89cc136a72efea76fe4da67d1c851f418011312`.** [Signed bounded-exception receipt](DOC_D7_FREEZE_ACCEPTANCE_20261020.md) records external Codex DOC-E PASS and explicit operator acceptance. The remaining original decision analysis below is the **pre-signoff snapshot**, not current status.
+
+**PRE-DECISION STATE: REVIEW_READY / NOT_ACCEPTED.** This packet was a decision aid only; it is not DOC_FREEZE approval, code-development authorization, a CLI launch, or a broker operation. The authoritative live SHA and check results are tracked in [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). The pre-remediation baseline inspected here is `integration/p1.5@974eb9d1bd1155091282cac02162735ebaa589a0`.
 
 ## D0–D7 disposition
 
