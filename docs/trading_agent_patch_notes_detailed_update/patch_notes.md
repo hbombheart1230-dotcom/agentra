@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH02 DEV-A A2 CLASSIFIER BLOCK OWNERSHIP DECISION 20261020
+**Stage:** P1.5 source ownership and safety gate arbitration; no source code changed · **Tags:** DOCS · PROCESS · SAFETY
+
+- DEV-A가 기존 Reporter 계약 수정 중 보안 분류기의 `CI Bypass`·`Security Test Removal` 거부를 보고했습니다. **지팀장 결정은 Option 2**: 권한 우회 없이 Claude는 이미 허용된 facade 가드 초안만 normal/`-O` 검사 후 `BLOCKED` 부분 후보로 보존하고, GPT 통합 담당이 공유 계약과 기존 seed 목록, 비공허(nonvacuous) 변이 가드의 최종 책임을 맡습니다.
+- BASE 158 PASS 대 A 후보 3 FAIL은 사용자 제공 개발자 결과이며, 변이 테스트 8건은 기본 검사 자체가 실패해 **허위 PASS(검증 불성립)**였으므로 완료로 인정하지 않습니다.
+- 기존 R7 313, Monitor/Strategist 계약, Broker/UEF/Step5C 및 구 historical 불변 oracle은 완화/skip/xfail하지 않습니다. GPT 소유 계약은 **A 코드와 함께** 통합 검증해야 하고 별도 파일만 먼저 main/integration에 넣지 않습니다.
+- DEV-B의 Operator UI 개발 지시는 유지됩니다. 새 소스 코드는 이번 문서 커밋에 포함되지 않았으며, UI JSON/MD **323/323** 동기화만 수행합니다.
+
+Sources: `docs/refactor/work_orders/P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+
 ## 2026-10-20 · P1.5 GPT TEAM LEAD COMPACT START INFO RULE 20261020
 **Stage:** P1.5 standing operator/developer handoff governance (docs only) · **Tags:** DOCS · PROCESS
 

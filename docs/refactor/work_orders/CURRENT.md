@@ -9,6 +9,11 @@
 
 **[P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md](P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md)** is the executable **two-lane code work order** for the already-created Claude A and Codex B branches; it supersedes the old "design slots only" paragraph in P15_SUBSTANTIVE_DEV_LOOP for these two specifically authorized slices. Each is one connected 60–120-minute-class scope, with direct in-session progress/peer review, source allowlist, exact candidate SHA and hard safety gates. **Do not wait for the entire docs-only CI before executing disjoint development**, but do not integrate until required gates resolve. This pointer does **not** launch Windows CLI sessions.
 
+## BATCH02 A2 permission blocker — GPT ownership arbitration
+
+The operator's Claude DEV-A report shows `BLOCKED` after primary auto-mode denied edits to `shared_role_contracts.py`. The authoritative [BATCH02 work-order decision](P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md#tech-lead-decision--dev-a-a2-local-edit-guard-blocked-operator-report-2026-10-20) selects **Option 2**: Claude may preserve/test/commit only the already-local strict facade guard as an **incomplete checkpoint**, while **GPT owns the shared contract + seed inventory + nonvacuous mutation tests** as a separately gated integration responsibility. No bypass of denied edits, broad permission switches, auto-remedied security check, code merge or negative-test PASS claim; existing DEV-B work continues independently. Remote DEV-A HEAD is still `ad4eed21` until its own proven commit/push.
+
+
 ## Current developer candidates and substantive-block directive (2026-10-20)
 
 - **DEV-A Reporter:** `ad4eed21d8303d4d8cb99f4097b4812cf2522f97`, read-only Codex first review `REWORK` → new SHA `PASS` reported; **2 frozen Reporter guards fail** (target-tree inventory; facade-restoration contract). **PEER_PASS_WITH_INTEGRATION_BLOCKER**, not integration-ready.
