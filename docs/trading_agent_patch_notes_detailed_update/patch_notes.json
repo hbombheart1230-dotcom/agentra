@@ -1,8 +1,32 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 324,
+  "entry_count": 325,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 DEV-A REPORTER FEEDBACK PROJECTION 20261020",
+      "title": "Move deterministic strategist feedback aggregation and packet assembly into a read-only projection owner",
+      "stage": "P1.5 BATCH03 approved Reporter Feedback slice, DEV-A source candidate; integration pending GPT owner admission",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "8 pure feedback functions and the evidence selection/packet assembly before feedback_id moved from reporter_feedback.py (619 to 341 lines) to the new reporter_feedback_projection.py (371 lines); reads, metrics generation, trade-report reads and stable_evidence_id stay in reporter_feedback.py.",
+      "details": [
+        "Legacy names and signatures are kept as forwarders; helpers resolve on reporter_feedback at call time, so late patching behaves as before. The projection imports only __future__ and typing.",
+        "Parity tests against the frozen 41ca719a module cover 10 report-tree cases (payload modes, metrics/analysis/trade-report fallbacks, malformed files, no day, Korean mode, bad counts) for full packet bytes and feedback_id, report read order, each moved function on hostile inputs, and late patching of _ratio/_build_confidence/stable_evidence_id.",
+        "Injected changes are detected: string-literal corruption fails 8 tests and a confidence threshold change fails 1. Swapping the metrics/trade-explain route precedence is behaviour-equivalent (the trade-explain route is the payload route) and is not detectable by design.",
+        "Related suites 376 passed under normal and python -O."
+      ],
+      "impact": "Separates feedback presentation from report I/O and evidence identity with byte-identical packets; no Strategist runtime behaviour change.",
+      "sources": [
+        "libs/reporting/reporter_feedback.py",
+        "libs/reporting/reporter_feedback_projection.py",
+        "tests/test_p15_reporter_feedback_projection.py"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 BATCH03-A A-P3 QUANT SHADOW POLICY BOUNDARY REWORK 20261020",

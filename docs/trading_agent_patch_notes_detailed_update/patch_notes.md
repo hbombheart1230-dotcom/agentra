@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 DEV-A REPORTER FEEDBACK PROJECTION 20261020
+**Stage:** P1.5 승인된 Reporter Feedback 작업, DEV-A 소스 후보 (GPT owner 승인 전 통합 대기) · **Tags:** REFACTOR · TEST
+
+- 순수 feedback 함수 8개와 `feedback_id` 직전의 근거 선택·패킷 조립을 `reporter_feedback.py`(619→341줄)에서 새 `reporter_feedback_projection.py`(371줄)로 옮겼습니다. 보고서 읽기, metrics 생성, 거래 보고서 읽기, `stable_evidence_id`는 그대로 남아 있습니다.
+- 기존 이름·시그니처는 전달 함수로 유지하고 보조 함수는 호출 시점에 기존 모듈에서 찾습니다. 새 모듈은 `__future__`/`typing`만 import합니다.
+- 고정된 `41ca719a` 모듈과 비교해 10개 보고서 트리 경우(입력 모드, metrics/분석/거래 보고서 대체 경로, 깨진 파일, 날짜 없음, 한국어 모드, 잘못된 수치)의 패킷 바이트와 `feedback_id`, 파일 읽기 순서, 이동 함수별 적대적 입력, 늦은 monkeypatch가 같음을 확인했습니다. 문자열 변조(8개 실패)와 confidence 기준 변경(1개 실패)을 잡아내며, metrics/trade-explain 경로 우선순위 교체는 동작상 동등해 원리적으로 구분되지 않습니다.
+- 관련 테스트 376개 normal/`-O` 통과. Strategist 런타임 동작 변화 없음.
+
+Sources: `libs/reporting/reporter_feedback.py`, `libs/reporting/reporter_feedback_projection.py`, `tests/test_p15_reporter_feedback_projection.py`.
+
 ## 2026-10-20 · P1.5 BATCH03-A A-P3 QUANT SHADOW POLICY BOUNDARY REWORK 20261020
 **Stage:** P1.5 BATCH03-A A-P3 개선 1/3회차 (성공, 통합 대기) · **Tags:** REFACTOR · TEST · SAFETY
 
