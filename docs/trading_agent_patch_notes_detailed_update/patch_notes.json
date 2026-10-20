@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 326,
+  "entry_count": 327,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 PERMANENT MINIMUM IDLE MAXIMUM SUBSTANTIVE PARALLELISM 20261020",
+      "title": "Institutionalize active parallel Claude/Codex source engineering with self-invoked local peer CLI and no fabricated filler work",
+      "stage": "D00/D01/D02 permanent engineering operating rule, docs-only",
+      "types": [
+        "DOCS",
+        "PROCESS"
+      ],
+      "summary": "Tech Lead will maximize productive parallelism by giving each standing developer a distinct approved coding slice while the other builds or locally invokes a reviewer, minimizing idle time without violating source ownership or safety.",
+      "details": [
+        "Codex and Claude remain two active development teams, not one coder plus a standing manual reviewer. Each primary developer independently runs the opposite CLI as a new read-only local child after its own code candidate.",
+        "Tech Lead maintains a non-overlapping READY queue, advances actual integration of peer-PASS source with composed-SHA CI while independent source development continues, and avoids repeated microtasks, audits and artificial wait.",
+        "If there is no separate approved safe coding scope or policy denies editing, a lane explicitly reports BLOCKED or NO_MORE_AUTHORIZED_READY_SCOPE rather than inventing work or silently expanding authorization.",
+        "Changed the standing D00 §3B policy and both developer entrypoint documents only; no trade authority, source change, new runner, or CLI process automatically launched."
+      ],
+      "impact": "Minimize avoidable waiting while preserving substantial independent engineering, strict file ownership, direct local child reviews, fail-closed safety and integrator accountability.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md"
+      ],
+      "status": "current"
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 CLAUDE REPORTER ACTIVE PARALLEL A-P2 20261020",

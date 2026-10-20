@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 PERMANENT MINIMUM IDLE MAXIMUM SUBSTANTIVE PARALLELISM 20261020
+**Stage:** D00/D01/D02 상시 운영 원칙 · **Tags:** DOCS · PROCESS
+
+- 지팀장은 코덱스·클로드 **양쪽 개발 파트의 실제 작업 병렬성 최적화**를 상시 책임집니다. 한쪽이 개발·테스트·교차 검증 중이면 다른 쪽에는 범위와 작성 파일이 겹치지 않는 승인된 READY 개발을 배정합니다. 개발자는 상대 주 개발창이 아니라 자기 로컬 셸에서 `claude -p` / `codex exec`를 직접 호출합니다.
+- 인위적 대기·짧은 마이크로 태스크·서류 반복 검증을 줄이고, 실질적인 소스 구현·독립 검증·지팀장의 통합/정확한 SHA CI로 이어가도록 합니다.
+- 승인된 독립 작업이 없거나 보안/CI가 차단하면 `NO_MORE_AUTHORIZED_READY_SCOPE` / `BLOCKED`로 명확히 보고합니다. 미승인 코드 수정·파일 충돌·권한 우회·억지 작업 또는 백그라운드 실행 주장은 허용하지 않습니다.
+- D00·D01·D02 상시 룰과 UI 패치노트 JSON/MD만 수정, 기존 326건 보존 후 **327/327** 동기화. 소스/트레이딩/메인 변경 없음.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
+
+
 ## 2026-10-20 · P1.5 CLAUDE REPORTER ACTIVE PARALLEL A-P2 20261020
 **Stage:** P1.5 source work-order authorization (docs only) · **Tags:** DOCS · PROCESS
 
