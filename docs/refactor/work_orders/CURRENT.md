@@ -1,4 +1,8 @@
-# Agentra P1.5 — CURRENT (D7 frozen, B source CI blocked, BATCH03 two-lane active)
+# Agentra P1.5 — CURRENT (D7 frozen, B source CI blocked, BATCH03 active, next work preplanned)
+
+## FORWARD DELIVERY QUEUE — next vetted candidate per developer
+
+[**P15_FORWARD_DELIVERY_QUEUE_20261020.md**](P15_FORWARD_DELIVERY_QUEUE_20261020.md) records the exact current CI blocker, BATCH03 dependent integration order, and **ready-designed but NOT yet authorized** next source packets: Claude Reporter feedback pure aggregation and Codex Commander decision-context read-model. On every fresh SHA handoff, GPT should consult this queue, avoid a fresh planning delay, perform an ownership/authorization gate and immediately dispatch only properly approved independent source work. This queue cannot restart local CLIs or bypass a denied GitHub CI write. **Current BATCH03 work order remains executable authority.**
 
 ## ACTIVE P1.5 BATCH03 — parallel real coding (operator authorized 2026-10-20)
 

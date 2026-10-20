@@ -1,8 +1,32 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 332,
+  "entry_count": 333,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 PROACTIVE TWO LANE FORWARD DELIVERY QUEUE 20261020",
+      "title": "Keep next substantive Claude and Codex owner packets preplanned with exact CI and integration dependencies",
+      "stage": "P1.5 proactive Tech Lead planning only; no new developer authorization",
+      "types": [
+        "DOCS",
+        "PROCESS"
+      ],
+      "status": "current",
+      "summary": "Introduce one-ahead event-triggered roadmap queue: current Batch03 work, exact CI T3 blocker, reporter and quant integration chain, future disjoint source work for both primary developers, and P1.5.11 release gates.",
+      "details": [
+        "Current hosted composed B source integration 2f159b6 had 5/6 workflows success; later docs SHA 42314ed had four successful and one failed, exact T3 bad git object 54bebe5 remains; blocked workflow edit not bypassed.",
+        "BATCH03 Claude quant shadow and Codex Reporter A strict contract remain current authorized source work, each primary locally self-invokes fresh opposite CLI peer subprocess after commit and handles real REWORK/new SHA.",
+        "Next two source candidates vetted from actual Git are reporter_feedback 619-line pure projection for Claude and build_decision_context 545-line safe pure DTO/cache projection for Codex, each READY_DESIGNED only with exact scope and contract checks at later operator-authorized dispatch.",
+        "Queue includes integration order, no-idle event handling, B-only CI remediation subject to lawful permitted write route, P1.5.11 regression/UEF/Docker/UI gates and P2 preparation without premature trading or main activation."
+      ],
+      "impact": "Reduce handoff latency and proactive planning lag without fabricating background execution or unauthorized source scope.",
+      "sources": [
+        "docs/refactor/work_orders/P15_FORWARD_DELIVERY_QUEUE_20261020.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/p1_5_p1_6_master_plan.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 BATCH03 PARALLEL CONTRACT AND QUANT WORK ORDER 20261020",

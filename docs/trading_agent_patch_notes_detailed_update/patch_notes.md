@@ -1,5 +1,17 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 PROACTIVE TWO LANE FORWARD DELIVERY QUEUE 20261020
+**Stage:** 지팀장 선행 준비 큐 (개별 실행 승인 아님) · **Tags:** DOCS · PROCESS
+
+- 지팀장은 매번 개발 결과를 받은 후 계획하지 않고 **현재 ACTIVE → 후속 후보 READY_DESIGNED → 승인 확인 AUTHORIZED_READY → 실제 PEER_PASS/INTEGRATION → 새로운 SHA CI**가 연결되도록 상시 큐를 준비합니다. 현재 BATCH03 양 파트 소스 개발은 유지합니다.
+- 기존 B 통합 SHA `2f159b6`의 hosted CI 5/6 성공, 이후 문서 SHA `42314ed`의 4/5 성공과 동일 T3 1개 `fatal: bad object 54bebe5` 병목을 명확히 구분합니다. 보안 정책이 거부한 CI 워크플로 수정을 다른 경로로 우회하지 않습니다.
+- **Claude 다음 후보:** `reporter_feedback.py` (619줄) 순수 피드백 집계 / Writer·IO 분리. **Codex 다음 후보:** `build_decision_context.py` (545줄) 캐시 메타데이터·상태 뷰 분리(뉴스/시드/시계/정책 효과 보존). **두 후보는 사전 설계 상태이며 실제 코드 수정은 별도 승인 후에만** 진행합니다.
+- Reporter A 계약 수용 → Reporter 소스 선별 통합 → quant shadow 신규 owner 별도 검증 → P1.5.11 전체 회귀/UEF/Docker/UI → 사용자 승인 후 후속 단계라는 의존성을 정리했습니다. 개발자 자신의 로컬 `claude -p`/`codex exec` 검증은 필수이며 메인/실거래 권한은 없음.
+- 작업큐·CURRENT·패치노트만 수정, 기존 332건 보존 후 **333/333**.
+
+Sources: `docs/refactor/work_orders/P15_FORWARD_DELIVERY_QUEUE_20261020.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/p1_5_p1_6_master_plan.md`.
+
+
 ## 2026-10-20 · P1.5 BATCH03 PARALLEL CONTRACT AND QUANT WORK ORDER 20261020
 **Stage:** P1.5 BATCH03 개발 지시 (양 개발 파트 병렬) · **Tags:** DOCS · PROCESS · TEST
 
