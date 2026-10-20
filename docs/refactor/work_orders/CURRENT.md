@@ -5,6 +5,10 @@
 **Master authority:** [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20), actual `integration/p1.5` SHA and CI. This file cannot independently activate developer or auditor tasks.
 
 
+## ACTIVE PARALLEL CODE — CLAUDE A-P2 AND CODEX B-CONTRACT
+
+**Claude DEV-A** is authorized for actual independent Reporter source A-P2 work in its existing `f7a00d7` branch, extracting remaining deterministic report section assembly into the existing Reporter read-model owner, preserving baseline byte/IO/effect parity and pinned facade guard, and self-calling local `codex exec` for exact-SHA independent review. **Codex DEV-B** continues B contract V2 on its existing B branch with its own local `claude -p`. The two primary developers have disjoint writer paths; Claude must not edit previously denied shared contract/seed files. Reporter is still integration BLOCKED until the integrator reconciles strict shared source gates; code-peer PASS is not integration acceptance. [Full exact A-P2 file allowlist and outcomes](P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md).
+
 ## LATEST TIKI-TAKA MECHANICS — SELF-INVOKED OPPOSITE CLI
 
 **Operator's binding clarification:** only **Codex DEV-B** receives a pasteable start instruction for current contract coding. Once done, Codex itself directly executes **`claude -p` via its own local shell**, captures reviewer response/exit and handles real REWORK→new SHA→new `claude -p` locally. No operator-pasted Claude review instruction and no handoff to the other persistent Claude developer conversation. Reporter Claude-authored code similarly self-invokes `codex exec` in its own shell. See [current exact work order](P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md#latest-operator-clarification--direct-local-child-review-is-the-tiki-taka-2026-10-20). GPT reviews source-verified PASS and owns integration CI only thereafter.

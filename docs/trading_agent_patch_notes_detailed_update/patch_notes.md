@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 CLAUDE REPORTER ACTIVE PARALLEL A-P2 20261020
+**Stage:** P1.5 source work-order authorization (docs only) · **Tags:** DOCS · PROCESS
+
+- 클로드 주 개발 파트는 대기가 아닙니다. 기존 A 브랜치에서 Reporter 분석 섹션 조립 부분을 기존 read-model owner로 분리하는 **실제 소스 개발**을 병렬로 진행합니다.
+- Claude 허용 범위는 기존 Reporter facade/owner, 기존 테스트 2개, 정확한 기존 SHA256 facade guard, UI JSON/MD입니다. 파일 읽기·LLM·메모리 저장·브리지 기록 순서와 JSON/MD 바이트 동등성, normal/-O, 악의적 변형 탐지를 검증합니다.
+- Claude가 직접 로컬 `codex exec`를 호출해 검증받고 진짜 REWORK면 새 SHA로 다시 호출합니다. Codex는 별도 B 공통 계약 작업과 로컬 `claude -p`를 계속합니다.
+- 양 개발자가 공통 계약에 동시 쓰지 않습니다. 기존 Reporter 글로벌 계약은 여전히 BLOCKED이며 이번 커밋은 소스가 아닌 지시서/CURRENT/패치노트 **326/326**만 수정합니다.
+
+Sources: `docs/refactor/work_orders/P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md`, `docs/refactor/work_orders/CURRENT.md`.
+
+
 ## 2026-10-20 · P1.5 TIKI TAKA PRIMARY DEVELOPER LOCAL CLI SELF INVOCATION 20261020
 **Stage:** P1.5 permanent instruction correction, DOCS ONLY · **Tags:** DOCS · PROCESS
 
