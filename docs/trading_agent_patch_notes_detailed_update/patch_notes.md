@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH03-A QUANT SHADOW EVALUATION PROJECTION 20261020
+**Stage:** P1.5 BATCH03-A DEV-A 소스 후보 (별도 버전 단계·통합 대기) · **Tags:** REFACTOR · TEST
+
+- `quant_shadow_candidate_evaluation.py`(1425→1048줄)의 순수 계산 함수 11개(`_mean`~`_shadow_readiness`)를 새 `quant_shadow_candidate_projection.py`로 옮겼습니다. 기존 모듈은 모든 이름·시그니처를 전달 함수로 유지하고, 스트리밍 로더·Q9 윈도·Q8 신뢰 게이트(`_evaluation_trust_gate`)·경로 탐색·빌드/렌더 조립은 그대로 둡니다.
+- 새 모듈은 `__future__`/`collections`/`typing`만 import하며, 보조 함수·상수·형제 함수는 호출 시점에 기존 모듈에서 찾으므로 `_forward_outcome_summary` 등 외부 import와 monkeypatch가 이전과 같습니다.
+- 신규 테스트는 고정된 `e92950d4` 모듈과 현재 모듈을 나란히 실행해 5개 시나리오×심볼 필터 2종(no-trade, would-enter, 단일일, 빈 값, 중복, 한국어, 누락/미래/잘못된 체크포인트)의 평가 JSON·렌더 줄, 이동 함수별 직접·잘못된 입력과 예외, 늦은 monkeypatch, 3,000행 스트리밍 로더의 메모리 상한, scorecard 동점 순서를 비교합니다. 지표 변경(13개 실패)·상태 분기 변경(2개)·동점 기준 제거(2개)를 실제로 잡아냅니다.
+- 기존 Reporter A 버전 계약 범위 밖이므로 통합 전에 별도의 정확한 소스 단계가 필요합니다. Q8/Q9·runtime quant·브로커·실거래 동작 변화 없음.
+
+Sources: `libs/reporting/quant_shadow_candidate_evaluation.py`, `libs/reporting/quant_shadow_candidate_projection.py`, `tests/test_p15_quant_shadow_projection.py`.
+
 ## 2026-10-20 · P1.5 A-P2 REPORTER ANALYSIS SECTION ASSEMBLY PROJECTION 20261020
 **Stage:** P1.5 A-P2 DEV-A 소스 후보 (공유 계약으로 통합 차단) · **Tags:** REFACTOR · TEST
 

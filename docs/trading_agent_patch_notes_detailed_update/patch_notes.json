@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 322,
+  "entry_count": 323,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 BATCH03-A QUANT SHADOW EVALUATION PROJECTION 20261020",
+      "title": "Move quant shadow forward-outcome, scorecard and promotion/readiness calculations into a read-only projection owner",
+      "stage": "P1.5 BATCH03-A DEV-A source candidate; separate versioned source stage and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "11 pure calculation functions (_mean through _shadow_readiness) moved from quant_shadow_candidate_evaluation.py (1425 to 1048 lines) to the new quant_shadow_candidate_projection.py; the legacy module keeps every name and signature as a forwarder, and the streaming loader, Q9 windows, Q8 trust gate and path discovery stay in place.",
+      "details": [
+        "The projection imports only __future__, collections and typing; helpers, constants and sibling calls resolve on the legacy module at call time, so existing imports such as _forward_outcome_summary and monkeypatches behave as before.",
+        "Not moved: _evaluation_trust_gate (Q8 gate), loaders/iterators, _read_json, q9 augmentation and build/render orchestration.",
+        "New tests run the frozen e92950d4 module beside the current one: full evaluation JSON and rendered lines across 5 scenarios x 2 symbol filters (no-trade, would-enter, single-day, empty, duplicates, Korean text, missing/future/invalid checkpoints), each moved function on direct and invalid inputs with exception parity, late patching of helpers/constants, a 3,000-row streamed loader fixture with a tracemalloc peak bound, and scorecard tie order.",
+        "Injected changes are detected: a changed metric fails 13 tests, a changed status branch 2, a dropped tie-break 2.",
+        "Not covered by the existing Reporter A versioned contract; a separate exact source stage is needed before integration."
+      ],
+      "impact": "Reduces the quant shadow evaluation module by 377 lines with byte-identical evaluation and rendered output; no Q8/Q9, runtime quant, Broker or trading behaviour change.",
+      "sources": [
+        "libs/reporting/quant_shadow_candidate_evaluation.py",
+        "libs/reporting/quant_shadow_candidate_projection.py",
+        "tests/test_p15_quant_shadow_projection.py"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 A-P2 REPORTER ANALYSIS SECTION ASSEMBLY PROJECTION 20261020",
