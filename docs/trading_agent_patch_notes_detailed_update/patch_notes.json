@@ -22,6 +22,7 @@
         "During development the primary CLI conversation displays plan/edit/test/peer request/peer response/fix/handoff; no local status watchers/ZIP/code instrumentation, no background execution.",
         "Source refactor, test contracts, CI, main, broker, Q10/Q12, Step5C, UEF and production safety remain unchanged."
       ],
+      "impact": "Operator-visible developer work sizing and cross-CLI handoffs are now explicit in D00/D01/D02; developer candidate integration gates and trading-authority locks stay unchanged.",
       "sources": [
         "docs/ENGINEERING_DELIVERY_POLICY.md",
         "AGENTS.md",

@@ -9,6 +9,7 @@
 - Codex DEV-B `c0c3f808`는 독립 Claude 검토 PASS 보고·통합 대기, Claude DEV-A `ad4eed21`은 1차 REWORK→수정→2차 PASS 보고이나 **기존 Reporter 목록·facade 가드 2개 실패**가 있어 아직 통합 허가되지 않습니다.
 - 가드 변경은 첫 개발 배치 허용 범위 밖이므로 별도 계약 변경 승인/증거가 필요합니다. 이전 고정 계약을 무조건 약화하거나 skip/xfail 처리할 수 없습니다. 미래 개발 배치 범위도 별도 승인 없이는 활성화하지 않습니다.
 - `DOC_FREEZE_ACCEPTED` 역사와 기존 319개 패치노트를 그대로 보존하며 이번 문서 정책 추가로 JSON/MD **320/320** 동기화합니다. 실거래·도커·main 변경, 새 통합 SHA CI 검증은 수행하지 않았습니다.
+- 후속 동기화 수정: UI JSON 필수 필드 `impact`가 신규 항목에서 누락되어 GitHub reporting-compat pytest 591 PASS/1 FAIL을 발생시켰고, 본 후속 커밋에서 **기존 스키마 요구사항 그대로 복구**했습니다. 기존 테스트/워크플로/예전 패치 항목은 변경하지 않았습니다.
 
 Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/work_orders/P15_SUBSTANTIVE_DEV_LOOP_20261020.md`.
 
