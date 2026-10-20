@@ -1,5 +1,14 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH02 DEV-A PARTIAL REPORTER FACADE GUARD TRANSITION 20261020
+**Stage:** P1.5 BATCH02 DEV-A 부분 체크포인트 (BLOCKED, 통합 불가) · **Tags:** TEST · CI · SAFETY
+
+- `reporter_facade_guard.py`에 해시로 고정한 P1.5 전환을 추가했습니다. BATCH01의 `reporter_analysis` import 1개·함수 1개 변경과 projection owner 파일만 허용하고, 그 변경을 BASE로 되돌린 뒤 기존 313개 R7 복원 검사를 그대로 적용합니다.
+- 기존 엄격 단계는 `4b0c3e0b` 바이트에서 통과하고 현재 facade를 거부합니다. 현재 단계는 전환 이전 facade와 변조된 owner 바이트를 거부합니다. 가드 테스트 13개 normal/`-O` 통과.
+- **미완료/BLOCKED:** `shared_role_contracts.verify_runtime`과 seed-migration `read_models` 목록 검사는 여전히 실패하며 해당 파일은 GPT 소유로 이관됐습니다. 그 전까지 계약 mutation 테스트는 무의미합니다. 이 체크포인트는 Codex 교차 검토를 받지 않았습니다.
+
+Sources: `scripts/refactor/reporter_facade_guard.py`, `tests/test_shared_reporter_facade_guard.py`.
+
 ## 2026-10-20 · P1.5 CODE BATCH 01 DEV-A REPORTER ANALYSIS PROJECTION 20261020
 **Stage:** P1.5 CODE BATCH 01 DEV-A 개발 후보 (독립 검토·통합 대기) · **Tags:** REFACTOR · TEST
 

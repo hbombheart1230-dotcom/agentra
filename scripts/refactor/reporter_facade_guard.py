@@ -6,6 +6,7 @@ R4 owner-body/lazy-binding proof; this checks the previously uncovered facade.
 """
 import ast
 import copy
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -22,6 +23,21 @@ PINNED_INVENTORIES = {
     "de99c8f0fa66bfc3e6be9a229f04fc6aad5ca06e": 313,
 }
 LEDGER = "docs/refactor/work_projects/evidence/reporter/r4_facade_ledger.json"
+# P1.5 CODE BATCH01 DEV-A (Issue #20, peer PASS at ad4eed21d8303d4d8cb99f4097b4812cf2522f97): versioned, content-pinned
+# Reporter transition. Exactly one owner import and one function body may differ; after reverting that delta to BASE the
+# strict R7 restoration below must still hold. Any other facade/owner change, or an extra owner file, fails closed.
+P15_TRANSITION_PROVENANCE = "ad4eed21d8303d4d8cb99f4097b4812cf2522f97"
+P15_TRANSITIONS = {
+    "libs/reporting/reporter_analysis.py": {
+        "import": "from libs.agents.reporter.read_models import analysis_report_projection as _analysis_projection",
+        "function": "generate_reporter_analysis_report",
+        "function_ast_sha256": "0ffda4674e0457476a4cf069f9ed9dd5608a89af92f614c4f69aa4e8901421f7",
+    },
+}
+P15_OWNERS = {
+    "libs/agents/reporter/read_models/analysis_report_projection.py":
+        "05fee281f89df834e52edf2a22338359c9069daab55fd6cc4957b3a0f02ad5e9",
+}
 
 
 def require(condition, message):
@@ -76,7 +92,8 @@ def wrapper_bodies(fn):
 
 
 def verify_facade(base_text, current_text, rows, path):
-    base, current = ast.parse(base_text), ast.parse(current_text)
+    base = ast.parse(base_text)
+    current = current_text if isinstance(current_text, ast.Module) else ast.parse(current_text)
     expected = {}
     for r in rows:
         module = r["r4_owner"][:-3].replace("/", ".")
@@ -134,18 +151,56 @@ def verify_facade(base_text, current_text, rows, path):
             f"{path}: unmoved definition/module statement/order differs from BASE")
 
 
-def verify_tree(root, overrides=None, reviewed=REVIEWED):
+def revert_p15_transition(base_text, current_text, path, transitions=P15_TRANSITIONS):
+    """Return the facade AST with its pinned P1.5 delta replaced by BASE; reject any other form of that delta."""
+    current = ast.parse(current_text)
+    spec = transitions.get(path)
+    if spec is None:
+        return current
+    allowed = dump(ast.parse(spec["import"]).body[0])
+    first_def = next(i for i, n in enumerate(current.body)
+                     if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)))
+    hits = [i for i, n in enumerate(current.body) if dump(n) == allowed]
+    require(len(hits) == 1 and hits[0] < first_def, f"{path}: P1.5 transition import missing/duplicate/late")
+    fns = [i for i, n in enumerate(current.body) if isinstance(n, ast.FunctionDef) and n.name == spec["function"]]
+    require(len(fns) == 1, f"{path}: P1.5 transition function missing/duplicate")
+    digest = hashlib.sha256(dump(current.body[fns[0]]).encode("utf-8")).hexdigest()
+    require(digest == spec["function_ast_sha256"], f"{path}:{spec['function']}: P1.5 transition body/ABI changed")
+    original = [n for n in ast.parse(base_text).body if isinstance(n, ast.FunctionDef) and n.name == spec["function"]]
+    require(len(original) == 1, f"{path}: P1.5 transition function absent at BASE")
+    current.body[fns[0]] = copy.deepcopy(original[0])
+    del current.body[hits[0]]
+    return current
+
+
+def verify_p15_owner(text, path, owners=P15_OWNERS):
+    require(path in owners, f"{path}: unregistered P1.5 Reporter owner")
+    digest = hashlib.sha256(text.replace("\r\n", "\n").encode("utf-8")).hexdigest()
+    require(digest == owners[path], f"{path}: P1.5 owner bytes differ from the pinned transition")
+
+
+def verify_tree(root, overrides=None, reviewed=REVIEWED, transitions=P15_TRANSITIONS, owners=P15_OWNERS):
+    """Current stage: R7 restoration after the pinned P1.5 delta. ``transitions={}, owners={}`` is the strict
+    historical R7 stage, which must still hold on the pre-transition facade bytes."""
     root = Path(root)
     overrides = overrides or {}
     rows = moves(root, reviewed)
     paths = sorted({r["path"] for r in rows})
+    require(set(transitions) <= set(paths), "P1.5 transition outside the registered R7 facades")
     for path in paths:
         text = overrides.get(path)
         if text is None:
             text = (root / path).read_text(encoding="utf-8-sig")
-        verify_facade(git_text(root, BASE, path), text,
+        base_text = git_text(root, BASE, path)
+        verify_facade(base_text, revert_p15_transition(base_text, text, path, transitions),
                       [r for r in rows if r["path"] == path], path)
-    return {"base": BASE, "reviewed": reviewed, "facades": len(paths), "moves": len(rows)}
+    for path in sorted(owners):
+        text = overrides.get(path)
+        if text is None:
+            text = (root / path).read_text(encoding="utf-8-sig")
+        verify_p15_owner(text, path, owners)
+    return {"base": BASE, "reviewed": reviewed, "facades": len(paths), "moves": len(rows),
+            "p15_transitions": len(transitions), "p15_owners": len(owners)}
 
 
 if __name__ == "__main__":

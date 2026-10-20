@@ -1,8 +1,32 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 320,
+  "entry_count": 321,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 BATCH02 DEV-A PARTIAL REPORTER FACADE GUARD TRANSITION 20261020",
+      "title": "INCOMPLETE/BLOCKED partial checkpoint: content-pinned P1.5 transition in the Reporter facade guard",
+      "stage": "P1.5 BATCH02 DEV-A partial checkpoint, BLOCKED, not integration-ready",
+      "types": [
+        "TEST",
+        "CI",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "reporter_facade_guard admits only the hash-pinned BATCH01 reporter_analysis import/function delta and projection owner, while the strict historical R7 stage still holds on the pre-transition bytes.",
+      "details": [
+        "The pinned delta is reverted to BASE and the original 313-move R7 restoration is then enforced; the owner file is SHA-256 pinned.",
+        "Strict stage (transitions={}, owners={}) passes on 4b0c3e0b facade bytes and rejects the current facade; the current stage rejects the pre-transition facade and altered owner bytes.",
+        "tests/test_shared_reporter_facade_guard.py: 13 passed under normal and python -O.",
+        "BLOCKED: shared_role_contracts.verify_runtime and the seed-migration read_models inventory still fail on this branch; those paths moved to GPT ownership. Contract mutation tests are vacuous until then. No Codex peer review was run for this checkpoint."
+      ],
+      "impact": "Partial guard work preserved; the DEV-A candidate must not be integrated until the shared role and inventory contracts are resolved and reviewed.",
+      "sources": [
+        "scripts/refactor/reporter_facade_guard.py",
+        "tests/test_shared_reporter_facade_guard.py"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 CODE BATCH 01 DEV-A REPORTER ANALYSIS PROJECTION 20261020",
