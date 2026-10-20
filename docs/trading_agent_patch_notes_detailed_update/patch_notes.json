@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 331,
+  "entry_count": 332,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 BATCH03 PARALLEL CONTRACT AND QUANT WORK ORDER 20261020",
+      "title": "Authorize independent Reporter A strict-contract migration and quant shadow projection while investigating B integration T3 missing Git object",
+      "stage": "P1.5 BATCH03 two-lane source development dispatch; current B CI 5/6 only",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Codex B receives strict versioned Reporter A current/historical shared-contract code work; Claude A receives disjoint quant shadow evaluation pure projection refactor. Both developers self-launch fresh opposite CLI peer reviews. B integration CI remains red due missing original B Git object in T3 Linux.",
+      "details": [
+        "Latest composed B source integration SHA 2f159b6 hosted CI 5 of 6 workflows successful and Reporting Regression/T3 1 failing: git diff cannot locate 54bebe5 B source commit in CI clone (fatal bad object, exit 128). Earlier CI direct write request denied by safety policy; do not bypass it or weaken tests.",
+        "Codex existing branch cd5a7f5 may modify only pinned shared Reporter A acceptance contracts/tests and paired UI notes. A runtime source SHA e92950d is immutable; historical 313 Reporter/Monitor 14+20/B S5 safety and baseline-green hostile test rules remain.",
+        "Claude existing branch e92950d independently refactors quant shadow candidate evaluation pure calculation into one new read-only owner, with bounded memory streaming, exact output/exception parity and normal/-O source tests. No shared contracts or prior Reporter A guard/source modifications.",
+        "Both original primary coding CLIs run fresh read-only peer subprocesses locally (`claude -p` by Codex, `codex exec` by Claude), and real REWORK demands a new SHA/review. GPT integrates after successful gates and exact composed-SHA CI, main/live/trading remain locked."
+      ],
+      "impact": "Keep substantive parallel development moving while accurately tracking separate hosted CI blocker and Reporter integration contract debt.",
+      "sources": [
+        "docs/refactor/work_orders/P15_BATCH03_PARALLEL_CONTRACT_AND_QUANT_20261020.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        ".github/workflows/p152-r2c-residual-regression.yml"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 B PEER VERIFIED SELECTIVE INTEGRATION CANDIDATE CI PENDING 20261020",

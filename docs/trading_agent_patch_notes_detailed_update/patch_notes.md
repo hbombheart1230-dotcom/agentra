@@ -1,5 +1,17 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH03 PARALLEL CONTRACT AND QUANT WORK ORDER 20261020
+**Stage:** P1.5 BATCH03 개발 지시 (양 개발 파트 병렬) · **Tags:** DOCS · PROCESS · TEST
+
+- `integration/p1.5@2f159b6`의 필수 CI 6개는 **5 PASS / 1 FAIL**입니다. Reporting Regression T3에서 immutable 원본 `54bebe5` Git 객체 부재로 `git diff` 종료 128이 확인되었습니다. 지팀장의 직접 CI 쓰기는 보안 정책으로 거부되어 정상 승인 경로가 확정되기 전까지 수정 완료를 주장하지 않습니다.
+- **Codex DEV-B** (기존 `cd5a7f5`)는 Claude A `e92950d`의 최신 Reporter 소스를 정확한 버전으로 수용할 공유 계약과 정상/변형 회귀 테스트를 개발합니다. 기존 역사적 R7 313, Monitor 14/20, S5/B 동결 안전 검증은 유지합니다.
+- **Claude DEV-A** (기존 `e92950d`)는 1,426줄 규모 quant shadow candidate Reporter 평가의 결정론적 계산 일부를 한 개의 새 read-only projection owner로 이동하고, 입출력/JSON·Markdown 바이트 및 streaming OOM 경계를 보존하는 회귀 테스트를 구현합니다.
+- 각 주 개발자는 자기 로컬 CLI에서 상대 CLI를 직접 실행해 실제 교차 검증하고 REWORK시 새 SHA로 재검토합니다. 공통 파일 동시 쓰기는 금지하며 UI 패치노트는 지팀장이 통합 시 병합합니다. 기존 331건 기록 보존 후 **332/332**.
+- 이 문서 변경은 코드 구현/로컬 개발 실행/새 CI PASS가 아닙니다. `main`/실거래/배포 승인 없음.
+
+Sources: `docs/refactor/work_orders/P15_BATCH03_PARALLEL_CONTRACT_AND_QUANT_20261020.md`, `docs/refactor/work_orders/CURRENT.md`, `.github/workflows/p152-r2c-residual-regression.yml`.
+
+
 ## 2026-10-20 · P1.5 B PEER VERIFIED SELECTIVE INTEGRATION CANDIDATE CI PENDING 20261020
 **Stage:** P1.5 B source selection, composed-SHA CI pending · **Tags:** REFACTOR · INTEGRATION · TEST
 

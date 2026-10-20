@@ -1,4 +1,9 @@
-# Agentra P1.5 — CURRENT (D7 frozen, CODE BATCH01 candidate gate)
+# Agentra P1.5 — CURRENT (D7 frozen, B source CI blocked, BATCH03 two-lane active)
+
+## ACTIVE P1.5 BATCH03 — parallel real coding (operator authorized 2026-10-20)
+
+[**P15_BATCH03_PARALLEL_CONTRACT_AND_QUANT_20261020.md**](P15_BATCH03_PARALLEL_CONTRACT_AND_QUANT_20261020.md) is the latest work order for two non-overlapping, existing developer CLI lanes: **Codex B shared Reporter A strict historical/current stage** and **Claude A read-only quant shadow evaluation projection**, each developing source and self-invoking the *other* CLI locally for independent review. Exact developer SHAs at dispatch: B `cd5a7f5`, A `e92950d`. Previous B source selection `integration/p1.5@2f159b6` is **not yet INTEGRATED**: hosted CI **5/6 success and 1 FAIL**, T3 Linux `fatal: bad object 54bebe5` [failure run](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39396207960). The integrator attempted a direct workflow correction but the safety guard denied the write: CI repair is **BLOCKED pending an explicitly permitted approval path**, not permission to reroute/evade. Continue independent authorized BATCH03 work; never mislabel B CI as PASS. No `main` or trading change.
+
 
 > **D7 GATE UPDATED — 2026-10-20:** **`DOC_FREEZE_ACCEPTED`** on reviewed source `d89cc136a72efea76fe4da67d1c851f418011312` following operator-supplied independent Codex DOC-E PASS, exact-SHA CI 5/5, and explicit user acceptance of all four bounded exceptions. [Freeze receipt](../DOC_D7_FREEZE_ACCEPTANCE_20261020.md). **DOCUMENTATION FREEZE ONLY; final source release approval is NOT declared.** The separate operator-approved CODE BATCH01 developer branches have produced exact candidate SHAs; there is **no integration acceptance yet**. The operator, not GitHub, launches local CLI sessions. GitHub Issue #20 remains the live SHA/ownership tracker.
 
