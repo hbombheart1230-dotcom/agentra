@@ -98,6 +98,17 @@ RISK_BLOCKERS / NOT_RUN / NEXT_SINGLE_ACTION
 - When handing user a file bundle, ZIP **only actually changed files** with their relative repository paths; never include secrets, production data, caches, untracked evidence piles or unchanged files. No ZIP generation in CI.
 - Test scratch must be session-isolated; successful scratch auto-cleaned, failed evidence bounded retention. Do not grow files/dirs every full test rerun.
 
+## 5A. GPT Tech Lead → operator: SHORT UPDATE + TWO COPY/PASTE START INFOS (standing rule, 2026-10-20)
+
+**Operator preference, mandatory for this project:** User controls the primary Claude/Codex developers from a remote app and must NOT be asked to inspect local PC files to find the job. GPT Tech Lead **writes the detailed technical instructions, exact allowlist, BASE SHA, risks, tests and review criteria into a versioned Git work order and posts the authoritative Issue #20 checkpoint**, then responds **briefly in Korean**. Do not deliver full-size developer prompts, large status tables or verbose explanations to the operator by default. An explicit user request for analysis or a consequential safety blocker merits the necessary extra detail.
+
+**Default operator-facing reply after creating/updating a two-lane task:**
+1. One compact status sentence: `Git 작업지시 반영: <commit/link> · <CI PASS/RUNNING/FAIL accurately if checked>`; note any concrete blocker in one further sentence.
+2. **Exactly two ready-to-paste, independently usable short code blocks**, labeled `Claude DEV-A — 시작 인폼` and `Codex DEV-B — 시작 인폼` (for a one-lane authorization, show only that lane). Each typically 4–6 lines, containing the current batch/lane, `git fetch` instruction, **exact repository-relative work-order path**, `Issue #20`, existing approved branch/workspace retention, in-session progress and opposite-CLI review visibility, and short completion evidence (SHA/tests/review/blockers). No long implementation plan inside these blocks; the linked Git work order is the actual instruction.
+3. End. Avoid extra suggested tools, downloadables, multi-page reports or repeated restatement. The user may paste either block into the matching *already-running or manually resumed* primary CLI session.
+
+**Authoring discipline:** The start info is merely a **pointer**, not a substitute for the committed Git work order or an independent source-write authorization. Check newest exact branch refs and Issue #20 status before preparing each new task. **Do not claim** Git/Issue updates launched, resumed or live-streamed a local CLI, or imply an uncompleted CI/review has PASSed. Keep `main`, production-write and all trading SAFETY_LOCK restrictions in force. Long receipts and integration details stay in Git Issue, not the operator's chat. The primary developer may produce richer *in-session* progress visible through the remote app, as required by §3B.
+
 ## 6. Required integration-first sequence
 ```text
 GPT issues TWO concurrent approved developer area work packets

@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 321,
+  "entry_count": 322,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 GPT TEAM LEAD COMPACT START INFO RULE 20261020",
+      "title": "Mandate concise GPT Tech Lead status and copy/paste startup instructions per active developer lane, with full work orders in Git",
+      "stage": "P1.5 standing operator/developer handoff governance (docs only)",
+      "types": [
+        "DOCS",
+        "PROCESS"
+      ],
+      "status": "current",
+      "summary": "User asked all future Agentra lead reports to be brief and to include individual paste-ready Claude/Codex startup messages, while retaining the full technical instructions as versioned Git issues/work orders.",
+      "details": [
+        "D00 §5A defines one short Korean status with SHA/CI as actually verified, followed by one short code block per authorized developer lane (Claude DEV-A and Codex DEV-B).",
+        "Each starter text points to the exact repository-relative work order and GitHub Issue #20 after git fetch, retains the authorized branch/workspace, requests visible CLI stages and peer-review, and returns SHA/tests/review/blockers only.",
+        "D01 and D02 point developers to the team lead's compact operator handoff convention; original exact allowlist, source safety, review and integration gates remain unchanged.",
+        "This instruction does not launch or resume local CLI processes, create scripts, widen any code authorization or declare pending CI PASS."
+      ],
+      "impact": "Future user-facing development dispatches become consistently short and immediately copy/paste-ready; detailed implementation and reviewer contracts remain in Git, with no trading safety impact.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/CURRENT.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 CODE BATCH02 DUAL SUBSTANTIVE ASSIGNMENT 20261020",

@@ -1,5 +1,17 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 GPT TEAM LEAD COMPACT START INFO RULE 20261020
+**Stage:** P1.5 standing operator/developer handoff governance (docs only) · **Tags:** DOCS · PROCESS
+
+- 운영자 요청에 따라 **팀장 인폼은 간략히, 세부 지시사항은 Git 정식 워크오더 및 Issue #20에 기록**하는 상시 규칙을 D00 §5A에 추가했습니다.
+- 앞으로 개발 지시를 내린 뒤에는 짧은 커밋/CI 사실 요약 다음 **Claude DEV-A·Codex DEV-B용 각각 독립적인 복붙용 시작 인폼**만 제공합니다. 단일 파트면 해당 파트만 제공합니다.
+- 시작 인폼은 `git fetch`, 정확한 Git 작업 지시 경로, Issue #20, 기존 브랜치 유지, 원격 대화창의 진행/교차 검토 표시, 완료 시 SHA·테스트·판정·차단 사항만 보고할 것을 담습니다.
+- Git 지시 등록은 로컬 개발 CLI 실행·재개나 실거래 권한 부여가 아닙니다. 기존 Batch02의 변경 허용 목록, 고정 테스트, Broker/UEF/Step5C, `main` 잠금은 그대로입니다.
+- D00/D01/D02와 UI 패치노트만 문서 갱신했고 JSON/MD 322/322 동기화를 유지합니다. 새로운 CI의 실행 결과는 별도 SHA 기준 확인 대상입니다.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/work_orders/CURRENT.md`.
+
+
 ## 2026-10-20 · P1.5 CODE BATCH02 DUAL SUBSTANTIVE ASSIGNMENT 20261020
 **Stage:** P1.5 authorized active developer work order; NO merged code
 **Tags:** DOCS · PROCESS · SAFETY
