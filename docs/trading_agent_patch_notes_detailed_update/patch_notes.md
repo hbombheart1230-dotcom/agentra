@@ -1,5 +1,18 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 COHERENT 1-2H DEV WORK BLOCK POLICY 20261020
+**Stage:** P1.5 developer work-order governance; Batch01 candidates remain outside integration
+**Tags:** DOCS · PROCESS · SAFETY
+
+- 운영자 지시에 따라 Claude/Codex 각 개발 파트의 단일 업무를 **60~120분급의 실질 코드 개발 범위(2~4개의 인과적으로 연결된 성과)**로 설계합니다. 시간 채우기나 억지 리뷰가 아니라, 코드의 실제 책임/호출자 검토→구현→원본 동등성/적대적 테스트→서로의 CLI 검토→실제 결함 수정까지 일관된 흐름을 요구합니다.
+- 원격 앱에서 직접 보는 기본 개발 CLI 대화창에 단계별 진행과 상대 검토 결과를 표시합니다. 별도 상태 관찰기/PowerShell 프로그램/ZIP은 필요 없고 개발 세션 실행·지속 여부를 허위로 표시하지 않습니다.
+- Codex DEV-B `c0c3f808`는 독립 Claude 검토 PASS 보고·통합 대기, Claude DEV-A `ad4eed21`은 1차 REWORK→수정→2차 PASS 보고이나 **기존 Reporter 목록·facade 가드 2개 실패**가 있어 아직 통합 허가되지 않습니다.
+- 가드 변경은 첫 개발 배치 허용 범위 밖이므로 별도 계약 변경 승인/증거가 필요합니다. 이전 고정 계약을 무조건 약화하거나 skip/xfail 처리할 수 없습니다. 미래 개발 배치 범위도 별도 승인 없이는 활성화하지 않습니다.
+- `DOC_FREEZE_ACCEPTED` 역사와 기존 319개 패치노트를 그대로 보존하며 이번 문서 정책 추가로 JSON/MD **320/320** 동기화합니다. 실거래·도커·main 변경, 새 통합 SHA CI 검증은 수행하지 않았습니다.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/work_orders/P15_SUBSTANTIVE_DEV_LOOP_20261020.md`.
+
+
 ## 2026-10-20 · P1.5 D7 OPERATOR ACCEPTED DOC FREEZE 20261020
 **Stage:** P1.5 D7 문서 기준선 동결 · **Tags:** DOCS · PROCESS · SAFETY
 

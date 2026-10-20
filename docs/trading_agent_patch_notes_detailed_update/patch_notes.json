@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 319,
+  "entry_count": 320,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 COHERENT 1-2H DEV WORK BLOCK POLICY 20261020",
+      "title": "Require substantive 60-120-minute-class developer scopes and visible direct reciprocal CLI review; isolate Reporter contract blocker",
+      "stage": "P1.5 developer work-order governance; Batch01 candidates remain outside integration",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Operator requested larger meaningful Claude/Codex development chunks and peer-review dialogue visible in the existing remote-viewed CLI, with all work instructions stored in Git rather than pasted as ad-hoc prompts.",
+      "details": [
+        "Updated D00/D01/D02 and current work pointer to require cohesive 2–4 outcome engineering work packets with 60–120-minute-class estimated substance, not minimum elapsed time or padded audits.",
+        "Preserved exact Batch01 candidate facts: DEV-B c0c3f808 peer PASS integration pending; DEV-A ad4eed21 after REWORK/PASS but historical Reporter guard tests still fail; no candidate is declared integrated.",
+        "New work-order isolates strict Reporter inventory and AST facade contract conflicts; test/oracle changes need scoped authorization, no blanket waiver and no new source tasks or local CLI sessions launched.",
+        "During development the primary CLI conversation displays plan/edit/test/peer request/peer response/fix/handoff; no local status watchers/ZIP/code instrumentation, no background execution.",
+        "Source refactor, test contracts, CI, main, broker, Q10/Q12, Step5C, UEF and production safety remain unchanged."
+      ],
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/P15_SUBSTANTIVE_DEV_LOOP_20261020.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 D7 OPERATOR ACCEPTED DOC FREEZE 20261020",
