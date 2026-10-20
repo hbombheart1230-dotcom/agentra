@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH05 FOLDER SCALE FOUR DELIVERABLES AND LOCAL CI 20261020
+**Stage:** BATCH05 개발 범위 승인 (DOCS ONLY) · **Tags:** PROCESS · REFACTOR · TEST · SAFETY
+
+- 지팀장 사용자 승인: Claude/ Codex 각각 **3~4건이 아닌 4개 연결된 실질 개발 묶음**, 이전의 약 2~3배 폴더 단위 분해. Claude는 Reporter 운영 화면·상태·기간·메트릭 약 4,625줄, Codex는 Operator Brief 입력·Monitor/Market·섹션·압축/정제의 4개 묶음(9개 명시 파일)을 서로 충돌 없이 진행. 정확한 경로와 중단 조건은 `docs/refactor/work_orders/P15_BATCH05_FOLDER_SCALE_REPORTING_AND_OPERATOR_BRIEF_20261020.md`.
+- **두 개발자 최종 보고 양식 통일:** Claude BATCH04-A 형식의 SHA/변경 경로/4개 산출물/전후 코드 크기/입출력 동등성/normal·-O/적대적 변형/LOCAL_CI·차단/NOT_RUN을 담고 마지막에 반드시 실제 호출별 `티키타카 실행 리스트` 표를 출력. Codex의 간략 보고만으로 핸드오프 종료 금지.
+- 지난 Claude `4dbbfa34`: 원본 AST·문자열 및 출력 바이트 증명, normal344/-O344, Codex child exit0 소스 PASS, 검토자 pytest NOT_RUN, Owner 545/524줄 SIZE_DEFERRED, GPT source admission pending. 지난 Codex `57e588d6`: 자체 normal113/-O113, Claude child exit0 소스 PASS/독립79/-O79, 보조 JSON 검사 권한 거부1, 독립 patchnote 리뷰 미완료로 **REVIEW_COMPLETION_BLOCKED** 별도 유지.
+- **로컬 CI 문제를 분리하여 진단:** reviewer Python/JSON 명령 차단은 안전하게 승인된 원형 pytest 명령 또는 NOT_RUN/BLOCKED로 기록하고 권한 거부를 우회하지 않음. Hosted Reporting T3 Linux는 SHA `54bebe5` 객체 누락으로 5/6 상태 유지. 이전 거부된 workflow 수정·우회 불허. 읽기 전용 진단은 hosted CI PASS가 아님.
+- **docs-only commit:** CURRENT, D00/D01/D02, 새 BATCH05 지시서, forward queue, UI JSON/MD 패치노트 **337/337** 기록. 신규 로컬 CLI·소스 개발·통합 CI는 이 커밋으로 실행되지 않았음. main·실거래 불변.
+
+Sources: `docs/refactor/work_orders/P15_BATCH05_FOLDER_SCALE_REPORTING_AND_OPERATOR_BRIEF_20261020.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/work_orders/P15_FORWARD_DELIVERY_QUEUE_20261020.md`.
+
 ## 2026-10-20 · P1.5 BATCH04 BIG PARALLEL REPORTING AND CONTEXT 20261020
 **Stage:** BATCH04 두 파트 대형 개발 승인 (DOCS ONLY) · **Tags:** PROCESS · REFACTOR · TEST · DOCS
 

@@ -1,8 +1,38 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 336,
+  "entry_count": 337,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 BATCH05 FOLDER SCALE FOUR DELIVERABLES AND LOCAL CI 20261020",
+      "title": "Approve two 4-group folder-scale reporting and operator-brief batches, unified Claude-style receipts, and safe local CI diagnosis",
+      "stage": "P1.5 BATCH05 two local primary coding lanes AUTHORIZED_READY; Git docs only",
+      "types": [
+        "PROCESS",
+        "REFACTOR",
+        "TEST",
+        "DOCS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Operator authorized 4 substantial related folder-level deliverable groups per Claude and Codex lane, with identical detailed Claude-style final reports, direct reciprocal child verification and separately diagnosable local-review and hosted T3 failures.",
+      "details": [
+        "A source 4dbbfa34 peer static PASS and author normal/-O 344/344, SIZE_DEFERRED and SOURCE_ADMISSION_PENDING_GPT. New Reporter operational visibility/health/period/metrics ~4625-line source surface in 4 groups, exact writable allowlist and old R3 gate preservation.",
+        "B source 57e588d6 self113/-O113 and reviewer source PASS normal79/-O79 but one denied supplementary JSON command and incomplete independent patchnote inspection: REVIEW_COMPLETION_BLOCKED. New B 4 operator-brief folder clusters across 9 named modules, preserve old exact pinned Owners/UI Core.",
+        "Both developer final reports must use same detailed Claude format, full BASE/CANDIDATE SHA, 4 groups' meaningful code results, normal/-O, nonvacuous mutation, actor-attributed note review, local CI/sandbox/hosted NOT_RUN, and last 티키타카 실행 리스트 table with real attempts/exits/verdicts/reviewer tests.",
+        "Existing hosted T3 Linux 5/6 failure missing immutable 54bebe5 Git object; earlier direct CI YAML write rejected by policy, no workaround permission. Read-only local diagnosis distinct from hosted CI; main, live broker and safety guards remain unchanged."
+      ],
+      "impact": "Larger substantial development packages with nonoverlapping folder-level source ownership, higher reporting transparency, strict safety and no invented local CI PASS.",
+      "sources": [
+        "docs/refactor/work_orders/P15_BATCH05_FOLDER_SCALE_REPORTING_AND_OPERATOR_BRIEF_20261020.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/P15_FORWARD_DELIVERY_QUEUE_20261020.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 BATCH04 BIG PARALLEL REPORTING AND CONTEXT 20261020",
