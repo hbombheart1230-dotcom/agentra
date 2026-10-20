@@ -1,5 +1,18 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH05-A REPORTER OPERATIONAL OBSERVABILITY PROJECTIONS 20261020
+**Stage:** P1.5 BATCH05-A DEV-A 소스 후보 · A2/A4 SIZE_DEFERRED · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- Reporter 운영 보고 4개 모듈의 결정적 로직을 새 `libs/reporting/*_p15` owner 4개로 옮겼습니다. 읽기·이벤트 순회·시계·외부 정책·파일 기록은 원래 모듈에 남겼습니다. 줄 수: operator_visibility 1520→1339, phase_runtime_health 1361→931, operator_period_summary 1195→1142, metrics_report_generator 545→132.
+- A1: 순회가 끝난 뒤의 일일 readout(건강도 상향, 이슈, 권고, 요약 줄, `operator_summary.v1` 본문). 두 번의 day-row 순회, `_build_run_contexts`, metrics/산출물/거래 건강도 읽기, 정책 스냅샷은 facade에 남습니다.
+- A2: 정책 인지 gating deadness, 정책 출처 요약, compact run view, 의심 플래그, 텍스트/표 렌더러 10개 함수(AST 동일). JSON/JSONL 읽기, `_iter_run_dirs`, 이벤트 선택, `normalize_monitor_entry_policy_schema` 호출부, `main`은 유지.
+- A3: runtime activity 출력 형태 4개와 CRITICAL 잔여 포지션 readout 덮어쓰기. 스트리밍 q9 읽기, live summary 조회, 고정된 R3 owner·ledger wrapper는 손대지 않았습니다(R3 gate 통과).
+- A4: 이벤트별 카운터 집계와 `metrics.v1` 조립. `resolve_runtime_write_path`, 이벤트 리더, `build_commander_route_summary`, 시계(route summary 이후·`_epoch_to_iso` 이전), freshness/provenance, 렌더링, 파일 기록은 유지.
+- 고정 `4dbbfa34` 모듈과 나란히 실행해 기존 테스트의 실제 entry-point 호출을 기록·재생하고 합성 분기 fixture를 추가해 JSON/Markdown 바이트·예외·호출 순서가 같음을 확인했습니다. 승인 목록 810개 normal/`-O` 통과. 적대적 변형 12개 중 11개 탐지, q9 누락 수 clamp는 동작상 동등해 원리적으로 구분되지 않습니다.
+- **SIZE_DEFERRED:** runtime health owner 485줄, metrics owner 594줄(나눌 수 없는 집계 1개 + dict 1개). **SOURCE_ADMISSION_PENDING_GPT.**
+
+Sources: `libs/reporting/operator_visibility.py`, `libs/reporting/operator_visibility_projection_p15.py`, `libs/reporting/phase_runtime_health.py`, `libs/reporting/phase_runtime_health_projection_p15.py`, `libs/reporting/operator_period_summary.py`, `libs/reporting/operator_period_projection_p15.py`, `libs/reporting/metrics_report_generator.py`, `libs/reporting/metrics_generator_projection_p15.py`, `tests/test_p15_reporting_operational_projections.py`, `tests/test_p15_reporting_operational_parity.py`.
+
 ## 2026-10-20 · P1.5 BATCH05 FOLDER SCALE FOUR DELIVERABLES AND LOCAL CI 20261020
 **Stage:** BATCH05 개발 범위 승인 (DOCS ONLY) · **Tags:** PROCESS · REFACTOR · TEST · SAFETY
 

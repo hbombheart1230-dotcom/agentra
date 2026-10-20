@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 338,
+  "entry_count": 339,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8921,6 +8921,40 @@
         ".github/workflows/p15-integration-t4-regression.yml",
         "tests/test_p159_current_owner_contract_gates.py",
         "scripts/refactor/shared_strategist_contracts.py"
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 BATCH05-A REPORTER OPERATIONAL OBSERVABILITY PROJECTIONS 20261020",
+      "title": "Four Reporter operational reports (daily visibility, runtime health, period summary, metrics) gain read-only projection owners",
+      "stage": "P1.5 BATCH05-A DEV-A source candidate; SIZE_DEFERRED (A2/A4); SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Deterministic report logic moves into four new libs/reporting/*_p15 owners while reads, event traversal, clocks, external policy and writes stay in the original modules: operator_visibility 1520->1339, phase_runtime_health 1361->931, operator_period_summary 1195->1142, metrics_report_generator 545->132 lines.",
+      "details": [
+        "A1: the post-traversal daily readout (health escalation, issues, actions, summary lines, operator_summary.v1 body) is operator_visibility_projection_p15.build_daily_summary_readout; both day-row passes, _build_run_contexts, metrics/artifact/trading-health reads and the policy snapshot stay in the facade.",
+        "A2: policy-aware gating deadness, policy source summary, compact run view, suspicious flags and all text/table renderers (10 functions, AST-identical) move; JSON/JSONL reads, _iter_run_dirs, event selection, normalize_monitor_entry_policy_schema callers and main stay.",
+        "A3: the four runtime-activity output shapes and the CRITICAL residual-closeout readout overlay move; the streamed q9_decision_windows read, live summary lookup and every pinned R3 operator_period_summary_parts owner and ledger wrapper are untouched (R3 gate green).",
+        "A4: the per-event counter fold and the metrics.v1 assembly move; resolve_runtime_write_path, the event reader, build_commander_route_summary, the clock (generated_at taken after the route summary, before _epoch_to_iso), freshness/provenance, rendering and both writes stay.",
+        "Parity: frozen 4dbbfa34 modules exec'd beside current ones; upstream test entry-point calls recorded and replayed with a fixed clock, plus synthetic branch fixtures; full JSON/Markdown bytes, exceptions and call order equal. Approved list 810 passed under normal and python -O.",
+        "Hostile mutations: 11 of 12 detected (threshold, line order, status, truncation, header, source id, action text, schema id, top-N, clock schedule, effect injection); the q9 missing-count clamp is behaviour-equivalent and undetectable by design.",
+        "SIZE_DEFERRED: phase_runtime_health_projection_p15 (485) and metrics_generator_projection_p15 (594) exceed 350 lines; A2 is ten whole functions incl. a 143-line renderer, and A4 is one indivisible counter fold plus one dict."
+      ],
+      "impact": "Separates deterministic operational report presentation from I/O and traversal with byte-identical reports; no trading, broker, Supervisor, Executor, UEF or Step5C change.",
+      "sources": [
+        "libs/reporting/operator_visibility.py",
+        "libs/reporting/operator_visibility_projection_p15.py",
+        "libs/reporting/phase_runtime_health.py",
+        "libs/reporting/phase_runtime_health_projection_p15.py",
+        "libs/reporting/operator_period_summary.py",
+        "libs/reporting/operator_period_projection_p15.py",
+        "libs/reporting/metrics_report_generator.py",
+        "libs/reporting/metrics_generator_projection_p15.py",
+        "tests/test_p15_reporting_operational_projections.py",
+        "tests/test_p15_reporting_operational_parity.py"
       ]
     }
   ]
