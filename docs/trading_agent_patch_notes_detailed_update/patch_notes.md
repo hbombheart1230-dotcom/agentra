@@ -3975,3 +3975,16 @@ Sources: `scripts/refactor/shared_strategist_contracts.py`, `scripts/refactor/sh
 - Known integration2f159b6 hosted CI5/6: missing immutable Git source object. CI repair remains blocked pending permitted approval; no YAML edits or integration claim. Full pytest, hosted candidate CI, Linux, production golden/real-data and UI build NOT_RUN.
 
 Sources: `scripts/refactor/shared_role_contracts.py`, `scripts/refactor/shared_strategist_contracts.py`, `tests/test_p15_reporter_a_versioned_contract.py`, `tests/test_shared_role_contracts.py`, `tests/test_work_reporter_seed_migration.py`, `tests/test_shared_reporter_facade_guard.py`.
+
+
+## 2026-10-20 - P1.5 BATCH04 B DECISION CONTEXT AND SKILL PROJECTIONS 20261020
+**Stage:** Developer candidate; independent peer and GPT source-stage admission pending. **Tags:** REFACTOR / TEST
+
+- BASE 8fd49ddf958574f0f505249c3370314ffc06aeac. Decision context facade545 to447 lines; skill hydration323 to239. New context Owner123 lines; skill Owner119 lines. Original callable names/signatures remain. Existing Commander runtime Owner covers separate preflight/behavior-policy responsibilities, not node-cache materialization.
+- Context cache selection/restoration, fallback signals and fresh state/cache/meta projection move to one Owner. Keep time/env, feature/yfinance seed and feature map, global/news fetch/scoring in original module and original sequence. Preserve state identity, nested aliases, per-symbol cache mutation, early no-symbol return and exact JSON/key order.
+- Skill dedupe/held symbols, recursive dataclass/plain records, ready/error classification and summary counts/errors move to one Owner. Keep runner resolution/run calls, UTC timestamps, logger and order-reference checks in original node; no new trade authority or broker calls. Facade helper names remain use-time monkeypatch seams.
+- Windows Python3.14.2 final focused normal111PASS plus paired-note2PASS; optimized113PASS including notes, zero FAIL/SKIP, full production-write audit. New54 cases compare pinned Git BASE JSON bytes, full ordered container identity graph, state snapshots at clock/env/feature/news/runner/log calls, malformed/missing and stale-cache/order data, callback and runner exceptions, direct Owner/ABI and late patches. Seven hostile runtime mutations require real green baseline before detecting cache/status/order/count/extra-effect differences.
+- Existing M10/M22/skill graph and native Scanner/Monitor consumers, focused frozen Monitor/T4D proofs and execution preflight authority negatives pass with full production-write audit. Entire current source inventory intentionally not admitted: new exact stage belongs to GPT; shared validators and CI YAML remain unchanged.
+- Fresh directly called read-only Claude CLI review pending candidate authoring. Linux, full pytest, production goldens/real-data, hosted candidate/composed CI, UI build and deployment NOT_RUN. Existing T3 immutable Git-object CI blocker remains CI_REPAIR_BLOCKED_PENDING_PERMITTED_APPROVAL. No integration/main/Docker/live activity.
+
+Sources: `graphs/nodes/build_decision_context.py`, `graphs/nodes/decision_context_projection.py`, `graphs/nodes/hydrate_skill_results_node.py`, `graphs/nodes/skill_result_projection.py`, `tests/test_p15_decision_context_skill_projection.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
