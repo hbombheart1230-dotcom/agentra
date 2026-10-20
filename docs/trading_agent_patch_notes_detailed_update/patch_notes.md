@@ -1,5 +1,17 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 TIKI TAKA STRICT TWO DEV PEER RELAY CORRECTION 20261020
+**Stage:** P1.5 operative developer review handoff rule; no source change · **Tags:** DOCS · PROCESS · SAFETY
+
+- 지팀장 기존 지시의 **“Codex 직접 통합 → Claude 단발 검토”** 해석을 폐기하고 D00 §3A의 **티키타카 교차 검증**을 적용합니다.
+- **Codex 기존 개발 브랜치**에서 승인된 B 소스 및 버전별 엄격 계약을 구현·테스트→커밋하고, 자기 CLI가 **새 읽기 전용 Claude CLI**를 호출합니다. 실제 지적이 나오면 Codex가 수정·새 SHA로 다시 Claude 검토를 요청합니다. **실제 결함 없는 PASS에는 인위적 재검토를 강요하지 않습니다.**
+- 장기 실행 중인 **Claude 주 개발 파트는 단순 대기가 아니라 독립적인 읽기 전용 계약 검토에 참여**하고, Reporter 쓰기는 이전 거부를 우회하지 않습니다. Reporter A의 계약 완성 후에는 반대 `codex exec` 검토와 REWORK 루프를 동일하게 적용합니다.
+- **GPT만 최종 통합 판단**, 이후 새 통합 코드 SHA 필수 CI를 확인합니다. 허위 변이 테스트 PASS, 기존 S5/R7/Monitor/Strategist/UEF/Step5C 검증 완화 및 `main`·실거래 변경은 불허합니다.
+- 변경은 작업 지시서/CURRENT/패치노트 JSON·MD 문서에만 국한되며, 기존 323건 이력 보존→**324/324**.
+
+Sources: `docs/refactor/work_orders/P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+
 ## 2026-10-20 · P1.5 BATCH02 DEV-A A2 CLASSIFIER BLOCK OWNERSHIP DECISION 20261020
 **Stage:** P1.5 source ownership and safety gate arbitration; no source code changed · **Tags:** DOCS · PROCESS · SAFETY
 

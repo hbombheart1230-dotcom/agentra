@@ -5,6 +5,10 @@
 **Master authority:** [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20), actual `integration/p1.5` SHA and CI. This file cannot independently activate developer or auditor tasks.
 
 
+## P1.5 integration reciprocal-review correction (latest operator override)
+
+**Before any new composed source integration**, the two developer parts must follow the exact [BATCH02 TIKI-TAKA override](P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md#overriding-owner-correction--mandatory-devpeer-tiki-taka-before-integration-operator-clarification-2026-10-20). Codex codes the **versioned B+strict contract on its existing B dev branch**, invokes a fresh independent read-only Claude child; real REWORK → new SHA → new Claude review; on genuine PASS, GPT—not Codex—selectively integrates and proves the newly composed SHA with required CI. Primary Claude is **not “standby” or Codex's private write-worker**; it can perform read-only independent contract critique, while its Reporter A source remains BLOCKED. Exact two-part remote-visible CLI feedback required. **Earlier Issue #20 direct-on-integration coding/one-shot integration phrasing is superseded.** No forced repeat review on no-finding PASS.
+
 ## New active CODE BATCH02 assignment — operator authorized 2026-10-20
 
 **[P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md](P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md)** is the executable **two-lane code work order** for the already-created Claude A and Codex B branches; it supersedes the old "design slots only" paragraph in P15_SUBSTANTIVE_DEV_LOOP for these two specifically authorized slices. Each is one connected 60–120-minute-class scope, with direct in-session progress/peer review, source allowlist, exact candidate SHA and hard safety gates. **Do not wait for the entire docs-only CI before executing disjoint development**, but do not integrate until required gates resolve. This pointer does **not** launch Windows CLI sessions.

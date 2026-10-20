@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 323,
+  "entry_count": 324,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 TIKI TAKA STRICT TWO DEV PEER RELAY CORRECTION 20261020",
+      "title": "Enforce actual Codex↔Claude reciprocal independent critique and rework before GPT integration",
+      "stage": "P1.5 operative developer review handoff rule; no source change",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Operator corrected a one-way Codex-does-integration/Claude-standby interpretation: actual candidate-on-developer-branch, strict normal/-O baseline and hostile proofs, new read-only opposite CLI review, real finding-driven REWORK/new SHA/re-review, then GPT selective integration and CI.",
+      "details": [
+        "Codex must not switch early to integration/p1.5 to commit B source/contract before peer PASS; work remains in the already-owned B developer branch.",
+        "Codex's primary visible CLI invokes new read-only Claude CLI review; on actual REWORK only, fix approved files, commit a new SHA and repeat a fresh challenge. Exit 0 alone is not PASS; do not fabricate round trips.",
+        "Existing primary Claude lane stays a meaningful independent developer / read-only source-contract critique participant; it does not circumvent previously denied writes. A gets fresh codex exec review only after its complete contract is ready.",
+        "GPT alone resolves shared-source contract and integrates reviewed, exact source receipts to integration branch; composed-code SHA mandatory CI, unchanged trading locks and original safety gates."
+      ],
+      "impact": "Restores mandatory two-part interactive development and robust independent tic-tac loop; prevents unilateral direct integration or superficial one-pass audit from substituting for contract correctness.",
+      "sources": [
+        "docs/refactor/work_orders/P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 BATCH02 DEV-A A2 CLASSIFIER BLOCK OWNERSHIP DECISION 20261020",
