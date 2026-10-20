@@ -1,8 +1,34 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 320,
+  "entry_count": 321,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 CODE BATCH02 DUAL SUBSTANTIVE ASSIGNMENT 20261020",
+      "title": "Authorize parallel Reporter strict-contract transition and Operator UI trade-index/run-detail projections on existing branches",
+      "stage": "P1.5 authorized active developer work order; NO merged code",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Operator requested immediate continuation in 60–120-minute-class Claude/Codex development blocks without waiting for all docs-only CI; defines disjoint exact SHA owner packets, contract safeguards, review and merge gates.",
+      "details": [
+        "Claude DEV-A reuses ad4eed21: scoped versioned Reporter strict guard transition with old R7/313/moved-body and hostile mutation invariants preserved; no blanket skips or arbitrary allowlist.",
+        "Codex DEV-B reuses c0c3f808: substantive read-only trade-report index and run-detail projection separation, exact old-reader/effects/serialization/7-role ABI parity and hostile negative cases.",
+        "Both primary local CLI sessions must show step and cross-CLI reviewer requests/findings/dispositions directly in the remote-viewed terminal; this Git checkpoint does not launch a Windows CLI session.",
+        "Two original candidate units remain distinct and not yet integrated. Docs-only CI runs can execute concurrently with permitted source development; composed integration SHA required CI cannot be skipped.",
+        "Existing production Broker/Step5C/UEF/Q10/Q12, Supervisor/Executor and main safety guards remain unchanged; paired UI notes retain original 320 entries."
+      ],
+      "impact": "Substantive concurrent development work is precisely owner-scoped and visible to the operator, without authorizing frozen-oracle weakening, live trading, deployment or premature integration.",
+      "sources": [
+        "docs/refactor/work_orders/P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 COHERENT 1-2H DEV WORK BLOCK POLICY 20261020",

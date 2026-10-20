@@ -5,6 +5,10 @@
 **Master authority:** [GitHub Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20), actual `integration/p1.5` SHA and CI. This file cannot independently activate developer or auditor tasks.
 
 
+## New active CODE BATCH02 assignment — operator authorized 2026-10-20
+
+**[P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md](P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md)** is the executable **two-lane code work order** for the already-created Claude A and Codex B branches; it supersedes the old "design slots only" paragraph in P15_SUBSTANTIVE_DEV_LOOP for these two specifically authorized slices. Each is one connected 60–120-minute-class scope, with direct in-session progress/peer review, source allowlist, exact candidate SHA and hard safety gates. **Do not wait for the entire docs-only CI before executing disjoint development**, but do not integrate until required gates resolve. This pointer does **not** launch Windows CLI sessions.
+
 ## Current developer candidates and substantive-block directive (2026-10-20)
 
 - **DEV-A Reporter:** `ad4eed21d8303d4d8cb99f4097b4812cf2522f97`, read-only Codex first review `REWORK` → new SHA `PASS` reported; **2 frozen Reporter guards fail** (target-tree inventory; facade-restoration contract). **PEER_PASS_WITH_INTEGRATION_BLOCKER**, not integration-ready.

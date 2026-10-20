@@ -1,5 +1,18 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 CODE BATCH02 DUAL SUBSTANTIVE ASSIGNMENT 20261020
+**Stage:** P1.5 authorized active developer work order; NO merged code
+**Tags:** DOCS · PROCESS · SAFETY
+
+- 운영자 지시에 따라 **기존 격리 개발 브랜치에서** Claude/CodeX 두 파트의 60~120분급 실질적인 후속 작업을 즉시 병렬 배정했습니다. 새 로컬 감시기·워치·워크트리·브랜치는 만들지 않습니다.
+- **CLAUDE_DEV_A** `ad4eed21`: Reporter 기존 가드 2개와 전체 shared 역할 계약을 증거 기반으로 재현하고, 원본 R7/313/불변 body/위험 경로 차단을 유지한 채 정밀 버전별 수용 계약으로 전환합니다. 기존 테스트 우회·skip/xfail/의미 없는 allowlist 확장은 불허합니다.
+- **CODEX_DEV_B** `c0c3f808`: Operator UI의 trade-report index·run-detail 읽기/표현 영역을 실제 owner로 모듈화합니다. 중복 인덱스 우선순위·같은 타임스탬프·경로 판단·7역할 표기·JSON 바이트·읽기/쓰기 순서를 검증하고 LLM/캐시 쓰기는 원래 호출자에 보존합니다.
+- **CI 전량 완료는 소스 개발 시작 조건이 아닙니다.** CI 실패가 있으면 통합 전 조치하며, **선별 통합 후 새 합성 SHA의 필수 CI**가 통합 완료 판정 조건입니다. 두 개발자 후보 PASS와 통합 PASS를 구별합니다.
+- 운영자의 원격 앱 화면에 개발·테스트·상호 CLI 검토 요청·지적·실제 수정 과정을 개발자 본인 CLI 대화창으로 표시합니다. 현재 Git 문서 작업은 소스 실행/로컬 세션 시작·main/실거래·Docker 승인이 아닙니다.
+
+Sources: `docs/refactor/work_orders/P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+
 ## 2026-10-20 · P1.5 COHERENT 1-2H DEV WORK BLOCK POLICY 20261020
 **Stage:** P1.5 developer work-order governance; Batch01 candidates remain outside integration
 **Tags:** DOCS · PROCESS · SAFETY
