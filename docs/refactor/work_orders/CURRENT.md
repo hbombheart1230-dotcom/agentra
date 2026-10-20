@@ -1,4 +1,8 @@
-# Agentra P1.5 — CURRENT (D7 frozen, B source CI blocked, BATCH03 active, next work preplanned)
+# Agentra P1.5 — CURRENT (D7 frozen, B source CI blocked, BATCH03 active with bounded follow-on)
+
+## LATEST DEV-A TRANSITION — three tries max, size debt is not a shutdown
+
+On `work/p15-a-reporter-analysis-projection-20261020@2e47a887`, existing primary Claude is authorized to perform up to **three meaningful** structure/LOC reductions; restore environment-dependent quant `_promotion_candidate` and `_shadow_readiness` to the facade when parity-safe rather than force a new extra module. New owner ~443 lines on Git; historical v1.2 350-line target applies only where supported by exact stage. Normal/`-O`, immutable BASE parity, hostile mutations and a **fresh primary-Claude-local `codex exec`** for every actual committed candidate remain mandatory. After 3 attempts if only size remains, record `SIZE_DEFERRED`; if actual effect/safety fails, record `BLOCKED_SAFETY_OR_PARITY` and never integrate the unsafe candidate. **Then proceed to the explicitly conditionally authorized Reporter feedback pure projection source slice in the same existing A primary developer session**, exact paths and tests in [BATCH03 work order](P15_BATCH03_PARALLEL_CONTRACT_AND_QUANT_20261020.md), no extra user paste. Codex B contract remains separately active. GPT handles strict source admission and CI.
 
 ## FORWARD DELIVERY QUEUE — next vetted candidate per developer
 

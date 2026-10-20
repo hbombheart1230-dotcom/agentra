@@ -1,5 +1,17 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH03 A THREE IMPROVEMENT ATTEMPTS AND AUTO CONTINUE 20261020
+**Stage:** Claude BATCH03-A 구조 개선 3회 제한과 후속 개발 연결 · **Tags:** PROCESS · DOCS · SAFETY
+
+- Claude 최신 `2e47a887` 소스는 로컬 normal/-O 각 246 PASS, 자체 로컬 `codex exec` PASS 보고. 새 projection Owner 약 443 physical LOC이며 `_promotion_candidate` 내 환경 정책 조회가 순수 계산 책임에 혼입되어 있어 지팀장이 구조 개선을 지시했습니다.
+- **최대 3번** 실질적인 구조 개선을 시도합니다. 1차는 `_promotion_candidate`/연관 `_shadow_readiness`를 기존 facade로 복원해 실제 환경변수 조회와 호출 순서를 유지하고, 순수한 9개 계산기만 새 Owner에 남기는 방안입니다. 개선 후 테스트 normal/-O, BASE 바이트/예외/호출/효과 동등성, 적대적 변형 검출 및 개발자 본인 CLI의 `codex exec` 읽기 전용 재검증은 유지합니다.
+- 세 번 시도 후 **크기만 미달이면 `SIZE_DEFERRED`**, 안전·동작·계약 자체가 실패하면 `BLOCKED_SAFETY_OR_PARITY`로 정확히 표기하고 미검증 소스는 통합하지 않습니다. 성공하면 세 번을 억지로 채우지 않습니다.
+- **그 다음 Claude는 기존 CLI/브랜치에서 독립적인 Reporter feedback pure aggregation 개발로 진행**합니다(사용자 '마킹하고 넘어가' 승인에 따른 조건부 READY, 허용 경로/테스트는 BATCH03 지시서에 고정). Codex B 공동 계약 개발은 계속 병렬입니다. 별도 Codex 검토 인폼 없음.
+- 지시서/CURRENT/사전 작업큐/패치노트 JSON·MD만 수정하며 기존 333건 보존 후 **334/334**로 갱신했습니다. 소스·실거래·main·CI 계약 변경 없음.
+
+Sources: `docs/refactor/work_orders/P15_BATCH03_PARALLEL_CONTRACT_AND_QUANT_20261020.md`, `docs/refactor/work_orders/P15_FORWARD_DELIVERY_QUEUE_20261020.md`, `docs/refactor/work_orders/CURRENT.md`.
+
+
 ## 2026-10-20 · P1.5 PROACTIVE TWO LANE FORWARD DELIVERY QUEUE 20261020
 **Stage:** 지팀장 선행 준비 큐 (개별 실행 승인 아님) · **Tags:** DOCS · PROCESS
 

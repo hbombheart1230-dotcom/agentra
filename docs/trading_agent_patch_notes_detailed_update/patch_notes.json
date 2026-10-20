@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 333,
+  "entry_count": 334,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 BATCH03 A THREE IMPROVEMENT ATTEMPTS AND AUTO CONTINUE 20261020",
+      "title": "Bound quant projection rework to three real attempts, mark size debt, and continue ready Reporter development",
+      "stage": "P1.5 DEV-A bounded 3-try source-architecture review and conditional next development authority",
+      "types": [
+        "PROCESS",
+        "DOCS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Operator instructed keep reducing rather than stopping; limit meaningful architecture improvement passes to three, record SIZE_DEFERRED if only size target remains, and continue approved independent Reporter feedback work in the same Claude primary CLI.",
+      "details": [
+        "Actual A-P3 commit 2e47a887: existing evaluation facade approximately 1048 LOC, new quant shadow projection approximately 443 physical LOC, 246 normal/246 -O local PASS with local codex exec PASS reported; no source integrated.",
+        "Tech Lead spotted environment/policy coupling: projection promotion helper calls facade.build_entry_quant_enforcement which reads environment via quant enforcement mode/blocker settings; first safe improvement restores promotion/readiness coupled responsibility to existing facade, retains nine remaining pure forwarders and preserves effect/output order.",
+        "At most three substantive attempts; each actually changed code passes normal/-O byte/effect parity and direct caller-local codex exec independent review. If unresolved size-only after three, record SIZE_DEFERRED, not size PASS; if safety/regression unresolved, BLOCKED_SAFETY_OR_PARITY and no integration.",
+        "Next previously vetted Reporter feedback pure aggregation is conditionally authorized by user's 'mark and move on' instruction, with exact non-overlapping paths and normal/-O/independent CLI proof in BATCH03. No new branch/worktree, no user-pasted auditor prompt. Codex active contract scope unchanged."
+      ],
+      "impact": "Avoid unnecessary idle waiting and endless re-audits without weakening behavior, source-contract or trade-safety acceptance.",
+      "sources": [
+        "docs/refactor/work_orders/P15_BATCH03_PARALLEL_CONTRACT_AND_QUANT_20261020.md",
+        "docs/refactor/work_orders/P15_FORWARD_DELIVERY_QUEUE_20261020.md",
+        "docs/refactor/work_orders/CURRENT.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 PROACTIVE TWO LANE FORWARD DELIVERY QUEUE 20261020",
