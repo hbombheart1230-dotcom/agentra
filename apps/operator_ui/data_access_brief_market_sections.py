@@ -238,3 +238,39 @@ def brief_position_exit_axis_evidence(trade_story_input, canonical_trade, select
     canonical_posture = str(canonical_monitor_snapshot.get("posture") or "").strip()
     canonical_current_price = str(canonical_monitor_snapshot.get("current_price") or "").strip()
     return BriefPositionExitAxisEvidence(active_exit_axis, avg_price_monitor, canonical_current_price, canonical_holding_time, canonical_posture, chart_interpretation, current_drawdown_raw, current_price, effective_stop_reason, effective_stop_text, holding_time, missing_feature_names, peak_drawdown_raw, peak_price, positive_factors, present_feature_names, scanner_selection_trace, stop_loss, stop_loss_text, take_profit, take_profit_text, vwap_distance_raw, watch_axes, weak_factors)
+
+
+def build_market_readout(macro_moves, canonical_trade, chart_status, chart_note, liquidity_status, liquidity_note, turnover_status, turnover_note, sector_status, sector_note, sentiment_gate_status, sentiment_gate_note, risk_status, risk_note, anomaly_status, anomaly_note, spread_status, spread_note, *, facade):
+    """Compose display-only macro evidence and filter rows; existing guard results are inputs."""
+    macro_summary = []
+    if macro_moves.get("dxy_pct") is not None:
+        macro_summary.append(f"DXY change {facade._format_percent(macro_moves.get('dxy_pct'), 2)}")
+    if macro_moves.get("tnx_delta") is not None:
+        macro_summary.append(f"US10Y delta {facade._format_float(macro_moves.get('tnx_delta'), 3)}")
+    for bullet in list(canonical_trade.get("market_context_bullets") or [])[:4]:
+        if bullet not in macro_summary:
+            macro_summary.append(bullet)
+
+    filter_rows = [dict(row) for row in list(canonical_trade.get("filter_rows") or []) if isinstance(row, dict)]
+    if filter_rows:
+        for row in filter_rows:
+            name = str(row.get("name") or "").strip().lower()
+            if name == "chart completeness filter":
+                row["status"] = chart_status
+                row["note"] = chart_note
+                break
+    if filter_rows:
+        filters_and_gates = filter_rows[:8]
+    else:
+        filters_and_gates = [
+            {"name": "Liquidity filter", "status": liquidity_status, "note": liquidity_note},
+            {"name": "Turnover filter", "status": turnover_status, "note": turnover_note},
+            {"name": "Sector strength filter", "status": sector_status, "note": sector_note},
+            {"name": "Chart completeness filter", "status": chart_status, "note": chart_note},
+            {"name": "Sentiment gate", "status": sentiment_gate_status, "note": sentiment_gate_note},
+            {"name": "Risk gate", "status": risk_status, "note": risk_note},
+            {"name": "Price anomaly filter", "status": anomaly_status, "note": anomaly_note},
+            {"name": "Spread/slippage filter", "status": spread_status, "note": spread_note},
+        ]
+
+    return macro_summary, filters_and_gates

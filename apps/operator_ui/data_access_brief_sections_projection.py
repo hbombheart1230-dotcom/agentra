@@ -6,6 +6,8 @@ seams. These projections perform no LLM calls or persistence.
 from __future__ import annotations
 
 from typing import Any, Dict, List
+from apps.operator_ui import data_access_brief_market_sections as _market
+from apps.operator_ui import data_access_brief_presentation_projection_p15 as _presentation
 
 
 def build_current_snapshot_section(canonical_posture, decision_reason, execution_status_summary, final_action, focus_symbol, guard_status, live_monitor_reason, monitor_reason, next_expected_step, path_label, phase):
@@ -260,128 +262,32 @@ def build_operator_brief_sections(detail: Dict[str, Any], *, facade) -> Dict[str
     execution_status_summary = execution_status_label or str(canonical_trade.get("execution_summary") or "not captured")
     operator_takeaway_items = watch_next[:3] or weak_factors[:3] or thesis_invalidation[:3]
 
-    macro_summary: List[str] = []
-    if macro_moves.get("dxy_pct") is not None:
-        macro_summary.append(f"DXY change {facade._format_percent(macro_moves.get('dxy_pct'), 2)}")
-    if macro_moves.get("tnx_delta") is not None:
-        macro_summary.append(f"US10Y delta {facade._format_float(macro_moves.get('tnx_delta'), 3)}")
-    for bullet in list(canonical_trade.get("market_context_bullets") or [])[:4]:
-        if bullet not in macro_summary:
-            macro_summary.append(bullet)
-
-    filter_rows = [dict(row) for row in list(canonical_trade.get("filter_rows") or []) if isinstance(row, dict)]
-    if filter_rows:
-        for row in filter_rows:
-            name = str(row.get("name") or "").strip().lower()
-            if name == "chart completeness filter":
-                row["status"] = chart_status
-                row["note"] = chart_note
-                break
-    if filter_rows:
-        filters_and_gates = filter_rows[:8]
-    else:
-        filters_and_gates = [
-            {"name": "Liquidity filter", "status": liquidity_status, "note": liquidity_note},
-            {"name": "Turnover filter", "status": turnover_status, "note": turnover_note},
-            {"name": "Sector strength filter", "status": sector_status, "note": sector_note},
-            {"name": "Chart completeness filter", "status": chart_status, "note": chart_note},
-            {"name": "Sentiment gate", "status": sentiment_gate_status, "note": sentiment_gate_note},
-            {"name": "Risk gate", "status": risk_status, "note": risk_note},
-            {"name": "Price anomaly filter", "status": anomaly_status, "note": anomaly_note},
-            {"name": "Spread/slippage filter", "status": spread_status, "note": spread_note},
-        ]
+    macro_summary, filters_and_gates = _market.build_market_readout(
+        macro_moves, canonical_trade, chart_status, chart_note, liquidity_status, liquidity_note, turnover_status, turnover_note, sector_status, sector_note, sentiment_gate_status, sentiment_gate_note, risk_status, risk_note, anomaly_status, anomaly_note, spread_status, spread_note, facade=facade,
+    )
 
     hold_reason_rows = list(canonical_trade.get("monitor_bullets") or [])
     if hold_reason_rows:
         hold_reasons = hold_reason_rows[:4]
 
     return {
-        "executive_decision": {
-            "final_action": final_action,
-            "symbol": selected_symbol or "-",
-            "reason": decision_reason,
-            "confidence": confidence,
-            "selected_rank": selected_rank or None,
-            "universe_size": universe_size or None,
-        },
+        "executive_decision": _presentation.executive_decision(confidence, decision_reason, final_action, selected_rank, selected_symbol, universe_size),
         "current_snapshot": facade.build_current_snapshot_section(canonical_posture=canonical_posture, decision_reason=decision_reason, execution_status_summary=execution_status_summary, final_action=final_action, focus_symbol=focus_symbol, guard_status=guard_status, live_monitor_reason=live_monitor_reason, monitor_reason=monitor_reason, next_expected_step=next_expected_step, path_label=path_label, phase=phase),
         "strategist_evidence": facade.build_strategist_evidence_section(candidate_hints=candidate_hints, canonical_trade=canonical_trade, global_score=global_score, market_headlines=market_headlines, news_targets=news_targets, playbook=playbook, strategist_evidence_summary=strategist_evidence_summary, strategist_summary=strategist_summary, symbol_headlines=symbol_headlines, vix_level=vix_level, facade=facade),
-        "scanner_focus": {
-            "summary": selection_reason_text,
-            "selected_symbol": focus_symbol,
-            "selected_rank": selected_rank or None,
-            "universe_size": universe_size or None,
-            "top_candidates": list(canonical_trade.get("top_candidates") or top_candidates[:3])[:3],
-            "selection_reason": selection_reason_text,
-            "score_drivers": score_driver_preview[:4],
-        },
+        "scanner_focus": _presentation.scanner_focus(canonical_trade, focus_symbol, score_driver_preview, selected_rank, selection_reason_text, top_candidates, universe_size),
         "monitor_guard_snapshot": facade.build_monitor_guard_snapshot_section(active_exit_axis=active_exit_axis, entry_guard_reason=entry_guard_reason, entry_reason_code=entry_reason_code, execution_status_summary=execution_status_summary, guard_status=guard_status, live_monitor_reason=live_monitor_reason, monitor_guard_summary=monitor_guard_summary, monitor_reason=monitor_reason, stop_policy_summary=stop_policy_summary, supervisor_reason=supervisor_reason),
-        "next_step": {
-            "summary": next_expected_step or "-",
-            "watch_next": watch_next[:4],
-            "operator_takeaways": operator_takeaway_items[:4],
-        },
-        "why_symbol_chosen": {
-            "selected": bool(selected_symbol),
-            "universe_size": universe_size or None,
-            "selected_rank": selected_rank or None,
-            "selection_reasons": selection_reasons or ["selection rationale was not explicitly persisted"],
-            "comparison_reasons": comparison_reasons,
-            "top_candidates": list(canonical_trade.get("top_candidates") or top_candidates[:3])[:3],
-        },
+        "next_step": _presentation.next_step(next_expected_step, operator_takeaway_items, watch_next),
+        "why_symbol_chosen": _presentation.why_symbol_chosen(canonical_trade, comparison_reasons, selected_rank, selected_symbol, selection_reasons, top_candidates, universe_size),
         "entry_timing": facade.build_entry_timing_section(canonical_trade=canonical_trade, entry_evaluated=entry_evaluated, entry_guard_reason=entry_guard_reason, entry_metrics=entry_metrics, entry_pattern=entry_pattern, entry_reason_code=entry_reason_code, entry_signal_chain=entry_signal_chain, entry_triggered=entry_triggered, final_action=final_action),
-        "market_context": {
-            "market_regime": str(canonical_trade.get("market_regime") or strategist_summary.get("market_regime") or strategist_trace.get("market_regime") or "-"),
-            "global_sentiment": facade._format_float(global_score, 2) if global_score is not None else "-",
-            "vix": facade._format_float(vix_level, 2) if vix_level is not None else "-",
-            "macro_summary": macro_summary,
-            "news_summary": news_summary,
-            "news_targets": facade._clean_brief_list(news_targets, limit=6),
-            "defensive_mode": "enabled" if defensive_mode else "disabled",
-        },
-        "theme_detection": {
-            "detected_themes": detected_themes,
-            "symbol_theme_match": theme_match or "not explicitly tagged",
-            "priority_alignment": priority_alignment,
-            "theme_priority_bucket": theme_priority,
-        },
+        "market_context": _presentation.market_context(canonical_trade, defensive_mode, global_score, macro_summary, news_summary, news_targets, strategist_summary, strategist_trace, vix_level, facade=facade),
+        "theme_detection": _presentation.theme_detection(detected_themes, priority_alignment, theme_match, theme_priority),
         "filters_and_gates": filters_and_gates,
-        "scanner_ranking_explanation": {
-            "ranking_basis": ranking_basis,
-            "component_scores": component_scores,
-            "tie_break_rule": str(canonical_trade.get("tie_break_rule") or scanner_trace.get("tie_break_rule") or "higher composite score, then stronger feature coverage"),
-            "positive_factors": positive_factors[:5],
-            "weak_factors": weak_factors[:4],
-        },
-        "chart_feature_coverage": {
-            "present": facade._safe_int(feature_coverage.get("present"), 0),
-            "total": facade._safe_int(feature_coverage.get("total"), 0),
-            "quality": str(feature_coverage.get("quality") or "missing"),
-            "confirmed_features": present_feature_names,
-            "missing_features": missing_feature_names,
-            "interpretation": chart_interpretation,
-        },
+        "scanner_ranking_explanation": _presentation.scanner_ranking_explanation(canonical_trade, component_scores, positive_factors, ranking_basis, scanner_trace, weak_factors),
+        "chart_feature_coverage": _presentation.chart_feature_coverage(chart_interpretation, feature_coverage, missing_feature_names, present_feature_names, facade=facade),
         "position_monitor_reasoning": facade.build_position_monitor_reasoning_section(active_exit_axis=active_exit_axis, avg_price_monitor=avg_price_monitor, canonical_active_exit_axis=canonical_active_exit_axis, canonical_average_price=canonical_average_price, canonical_current_drawdown=canonical_current_drawdown, canonical_current_price=canonical_current_price, canonical_effective_stop=canonical_effective_stop, canonical_effective_stop_reason=canonical_effective_stop_reason, canonical_exit_triggers=canonical_exit_triggers, canonical_feature_source=canonical_feature_source, canonical_hold_reasons=canonical_hold_reasons, canonical_holding_time=canonical_holding_time, canonical_peak_drawdown=canonical_peak_drawdown, canonical_peak_price=canonical_peak_price, canonical_posture=canonical_posture, canonical_price_source=canonical_price_source, canonical_price_source_policy=canonical_price_source_policy, canonical_stop_loss=canonical_stop_loss, canonical_take_profit=canonical_take_profit, canonical_vwap_distance=canonical_vwap_distance, canonical_watch_axes=canonical_watch_axes, current_drawdown_raw=current_drawdown_raw, current_price=current_price, effective_stop_reason=effective_stop_reason, effective_stop_text=effective_stop_text, exit_triggers=exit_triggers, final_action=final_action, hold_reasons=hold_reasons, holding_time=holding_time, monitor_summary=monitor_summary, monitor_trace=monitor_trace, peak_drawdown_raw=peak_drawdown_raw, peak_price=peak_price, stop_loss_text=stop_loss_text, take_profit_text=take_profit_text, vwap_distance_raw=vwap_distance_raw, watch_axes=watch_axes, facade=facade),
         "exit_plan": facade.build_exit_plan_section(active_exit_axis=active_exit_axis, canonical_active_exit_axis=canonical_active_exit_axis, canonical_effective_stop=canonical_effective_stop, canonical_effective_stop_reason=canonical_effective_stop_reason, canonical_exit_triggers=canonical_exit_triggers, canonical_take_profit=canonical_take_profit, canonical_trade=canonical_trade, canonical_watch_axes=canonical_watch_axes, effective_stop_reason=effective_stop_reason, effective_stop_text=effective_stop_text, exit_reason=exit_reason, exit_triggers=exit_triggers, final_action=final_action, monitor_reason=monitor_reason, take_profit_text=take_profit_text, watch_axes=watch_axes, facade=facade),
-        "reporter_evaluation": {
-            "status": reporter_status,
-            "reason": reporter_reason,
-            "strategy_alignment": strategy_alignment,
-            "execution_quality": execution_quality,
-            "monitor_consistency": monitor_consistency,
-            "run_grade": run_grade or "-",
-            "trade_quality": trade_quality,
-            "key_finding": key_finding,
-        },
+        "reporter_evaluation": _presentation.reporter_evaluation(execution_quality, key_finding, monitor_consistency, reporter_reason, reporter_status, run_grade, strategy_alignment, trade_quality),
         "ai_trade_report": facade.build_ai_trade_report_section(report_available=report_available, report_lifecycle_status=report_lifecycle_status, report_lifecycle_summary=report_lifecycle_summary, report_link=report_link, report_mode=report_mode, report_model=report_model, report_next_step=report_next_step, report_reason=report_reason, report_status=report_status, report_story_type=report_story_type, report_summary=report_summary, report_trade_id=report_trade_id, facade=facade),
-        "operator_conclusion": {
-            "current_action": final_action,
-            "watch_next": watch_next[:4],
-            "thesis_invalidation": thesis_invalidation,
-        },
-        "risk_alerts": {
-            "defensive_mode": defensive_mode,
-            "weak_factors": weak_factors[:4],
-            "thesis_invalidation": thesis_invalidation[:3],
-        },
+        "operator_conclusion": _presentation.operator_conclusion(final_action, thesis_invalidation, watch_next),
+        "risk_alerts": _presentation.risk_alerts(defensive_mode, thesis_invalidation, weak_factors),
     }
