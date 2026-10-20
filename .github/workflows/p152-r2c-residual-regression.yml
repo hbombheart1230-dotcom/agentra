@@ -245,9 +245,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git fetch --no-tags origin 6849bed4af358c214f63011a0d58ef760ca79fa0 613a945d2b27e735d4019cdc85b4660f2c891d8f
+          git fetch --no-tags origin 6849bed4af358c214f63011a0d58ef760ca79fa0 613a945d2b27e735d4019cdc85b4660f2c891d8f 54bebe5ece0ac34c4f45df55c44889c9ce323e95
           git cat-file -e '6849bed4af358c214f63011a0d58ef760ca79fa0:graphs/nodes/strategist_node.py'
           git cat-file -e '613a945d2b27e735d4019cdc85b4660f2c891d8f:apps/operator_ui/data_access_brief_input_projection.py'
+          git cat-file -e '54bebe5ece0ac34c4f45df55c44889c9ce323e95^{commit}'
           test "$(git rev-parse --is-shallow-repository)" = false
       - name: Gate P1.5 Third Pass T3 — current Owner contracts and static purity checker
         run: |

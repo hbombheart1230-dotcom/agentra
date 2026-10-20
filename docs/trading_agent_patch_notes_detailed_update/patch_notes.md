@@ -4134,3 +4134,15 @@ UEF9 필수 계약은 고정된 비민감 합성 원천 JSON 4개를 명시적 r
 - **새 통합 SHA의 CI 결과는 아직 없음.** 실데이터 24 SKIP, 전체 저장소, UI 시각 검증 및 P1.5 최종 수용은 미완료. `main` 미변경.
 
 근거: `docs/daily_patch/2026-10-18_uef9_synthetic_fixture.md`, `docs/refactor/architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md`, GitHub Actions 39123404564.
+
+
+## 2026-10-20 - P1.5 T3 IMMUTABLE GIT OBJECT HYDRATION HOTFIX 20261020
+**Stage:** Dedicated CI hotfix PR candidate; independent review and integrated-SHA hosted checks pending. **Tags:** FIX / CI
+
+- Integration BASE9b83ac6d4549eb8f5e0c0f9273ea011e4bf0709a. Dedicated hotfix branch contains only two workflow and paired UI note changes. Developer B source d9e77a3f remains on its original branch, not selected or merged.
+- Both existing git fetch --no-tags origin commands additionally fetch 54bebe5ece0ac34c4f45df55c44889c9ce323e95. Immediately after the two original source-blob checks, git cat-file -e verifies the exact commit object. Existing set -euo pipefail, shallow-history check, original T3 pytest, pins and security guards remain unchanged.
+- Original hosted run39396207960 had42PASS/1FAIL at T3: git diff of the pinned B source exited128 because the immutable object was absent from the runner. Remote/local object availability alone was not hosted success.
+- Latest operator HOTFIX authorization clarifies normal Codex CLI editing and Git PR route are separately supported from the previous ordinary ChatGPT connector write limitation. No dangerous permission flags, policy changes or alternate path after an actual Codex denial.
+- Actual local validation and exact-SHA fresh read-only Claude receipt are recorded in PR/Issue20 after commit. Required hosted checks on the resulting integration SHA remain pending GPT review/merge. No automatic integration/main merge, source/test/oracle modification, live trading or deployment.
+
+Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflows/p15-integration-t4-regression.yml`, `tests/test_p159_current_owner_contract_gates.py`, `scripts/refactor/shared_strategist_contracts.py`.
