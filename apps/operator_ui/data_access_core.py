@@ -34,6 +34,7 @@ from libs.reporting.trade_read_model import (
     trade_report_section_bullets as _read_model_trade_report_section_bullets,
     trade_report_section_summary as _read_model_trade_report_section_summary,
 )
+from apps.operator_ui.data_access_overview_projection import project_live_overview as _project_live_overview
 from apps.operator_ui.data_access_runs import load_run_canonical_sources, prefer_canonical_agent_payload
 from apps.operator_ui.data_access_linkage import (
     existing_trade_path as _link_existing_trade_path,
@@ -83,6 +84,16 @@ from libs.reporting.llm_artifacts import (
 )
 from libs.reporting.trade_report_ai import resolve_shared_trade_facts
 import sys as _r3_sys
+from apps.operator_ui.data_access_run_detail_projection import (
+    _project_canonical_run,
+    _project_run_presentation
+)
+from apps.operator_ui.data_access_trade_index_projection import (
+    _project_trade_identity,
+    _project_trade_summary,
+    _project_trade_record,
+    _project_trade_indexes
+)
 from apps.operator_ui.data_access_brief_canonical_input import (
     _build_canonical_trade_brief_input_r3_impl,
 )
@@ -647,39 +658,22 @@ def _trade_report_index(config: OperatorUIConfig) -> Dict[str, Dict[str, Any]]:
             "legacy_trade_lifecycle_json",
         )
         lifecycle = _read_json(lifecycle_path) if lifecycle_path.exists() else {}
-        trade_id = str(
-            lifecycle.get("trade_id")
-            or bundle.get("trade_id")
-            or bundle.get("story_id")
-            or paths.get("trade_root", bundle_path.parent).name
-        ).strip()
-        story_id = trade_id
-        run_id = str(bundle.get("run_id") or "").strip()
-        linked_run_ids: List[str] = []
-        for rid in list(bundle.get("linked_run_ids") or []):
-            text = str(rid or "").strip()
-            if text:
-                linked_run_ids.append(text)
-        if isinstance(lifecycle, dict):
-            for rid in list(lifecycle.get("run_ids_all") or []):
-                text = str(rid or "").strip()
-                if text and text not in linked_run_ids:
-                    linked_run_ids.append(text)
-            entry = lifecycle.get("entry") if isinstance(lifecycle.get("entry"), dict) else {}
-            exit_ctx = lifecycle.get("exit") if isinstance(lifecycle.get("exit"), dict) else {}
-            for rid in (entry.get("run_id"), exit_ctx.get("run_id")):
-                text = str(rid or "").strip()
-                if text and text not in linked_run_ids:
-                    linked_run_ids.append(text)
-        if run_id and run_id not in linked_run_ids:
-            linked_run_ids.append(run_id)
-
-        execution = bundle.get("execution") if isinstance(bundle.get("execution"), dict) else {}
-        story_contract = bundle.get("story_contract") if isinstance(bundle.get("story_contract"), dict) else {}
-        reporter_status_human = bundle.get("reporter_status_human") if isinstance(bundle.get("reporter_status_human"), dict) else {}
-        operator_conclusion_human = bundle.get("operator_conclusion_human") if isinstance(bundle.get("operator_conclusion_human"), dict) else {}
-        execution_outcome_human = bundle.get("execution_outcome_human") if isinstance(bundle.get("execution_outcome_human"), dict) else {}
-
+        (
+            trade_id,
+            story_id,
+            run_id,
+            linked_run_ids,
+            execution,
+            story_contract,
+            reporter_status_human,
+            operator_conclusion_human,
+            execution_outcome_human,
+        ) = _project_trade_identity(
+            lifecycle=lifecycle,
+            bundle=bundle,
+            paths=paths,
+            bundle_path=bundle_path,
+        )
         report_json_path = _existing_trade_path(paths, "ai_trade_report_json", "legacy_trade_report_json")
         report_md_path = _existing_trade_path(paths, "ai_trade_report_md", "legacy_trade_report_md")
         story_input_path = _existing_trade_path(paths, "ai_trade_report_input_json", "legacy_trade_story_input_json")
@@ -694,32 +688,16 @@ def _trade_report_index(config: OperatorUIConfig) -> Dict[str, Dict[str, Any]]:
         trade_provenance = _read_json(trade_provenance_path) if trade_provenance_path.exists() else {}
         trade_health = _read_json(trade_health_path) if trade_health_path.exists() else {}
         report = _read_json(report_json_path)
-        executive = report.get("executive_summary") if isinstance(report.get("executive_summary"), dict) else {}
-        reporter_eval = report.get("reporter_evaluation") if isinstance(report.get("reporter_evaluation"), dict) else {}
-        final_conclusion = report.get("final_operator_conclusion") if isinstance(report.get("final_operator_conclusion"), dict) else {}
-        generation = report.get("generation") if isinstance(report.get("generation"), dict) else {}
-        lifecycle_summary_obj = lifecycle.get("summary") if isinstance(lifecycle.get("summary"), dict) else {}
-        lifecycle_status = str(lifecycle.get("status") or bundle.get("trade_lifecycle_status") or report.get("status") or "").strip().lower()
-        lifecycle_summary = (
-            _trim_text(lifecycle_summary_obj.get("lifecycle_summary_human"), max_len=260)
-            or _trim_text(bundle.get("trade_lifecycle_summary"), max_len=260)
-            or _trim_text(final_conclusion.get("summary"), max_len=260)
+        generation, lifecycle_status, lifecycle_summary, story_type, execution_mode_label, report_summary, reporter_summary = _project_trade_summary(
+            report=report,
+            lifecycle=lifecycle,
+            bundle=bundle,
+            operator_conclusion_human=operator_conclusion_human,
+            execution_outcome_human=execution_outcome_human,
+            reporter_status_human=reporter_status_human,
+            story_contract=story_contract,
+            facade=_r3_sys.modules[__name__],
         )
-
-        story_type = str(story_contract.get("story_type") or lifecycle.get("story_type") or report.get("story_type") or "").strip().lower()
-        execution_mode_label = str(story_contract.get("execution_mode_label") or lifecycle.get("execution_mode_label") or report.get("execution_mode_label") or "").strip()
-        report_summary = (
-            _trim_text(executive.get("summary"), max_len=260)
-            or _trim_text(final_conclusion.get("summary"), max_len=260)
-            or _trim_text(operator_conclusion_human.get("summary"), max_len=260)
-            or _trim_text(execution_outcome_human.get("summary"), max_len=260)
-        )
-        reporter_summary = (
-            _trim_text(reporter_eval.get("summary"), max_len=220)
-            or _trim_text(reporter_status_human.get("summary"), max_len=220)
-            or "Reporter linkage summary is not available yet."
-        )
-
         ts_epoch = _to_epoch(bundle.get("ts"))
         if ts_epoch is None:
             ts_epoch = int(bundle_path.stat().st_mtime)
@@ -730,58 +708,29 @@ def _trade_report_index(config: OperatorUIConfig) -> Dict[str, Dict[str, Any]]:
         )
         action = str(execution.get("action") or report.get("action") or "").upper()
         report_exists = bool(report_json_path.exists() or report_md_path.exists())
-        raw_diagnostics = (
-            report.get("ai_report_diagnostics")
-            if isinstance(report.get("ai_report_diagnostics"), dict)
-            else bundle.get("ai_report_diagnostics")
-            if isinstance(bundle.get("ai_report_diagnostics"), dict)
-            else lifecycle.get("ai_report_diagnostics")
-            if isinstance(lifecycle.get("ai_report_diagnostics"), dict)
-            else trade_health.get("ai_report_diagnostics")
-            if isinstance(trade_health.get("ai_report_diagnostics"), dict)
-            else {}
-        )
-        diagnostics = _normalize_ai_report_diagnostics(
-            raw_diagnostics,
+        record = _project_trade_record(
             report_exists=report_exists,
-            lifecycle_status=lifecycle_status,
+            trade_id=trade_id,
+            story_id=story_id,
+            run_id=run_id,
+            linked_run_ids=linked_run_ids,
+            symbol=symbol,
+            action=action,
             story_type=story_type,
-            model_hint=generation.get("model"),
+            reporter_summary=reporter_summary,
+            lifecycle_status=lifecycle_status,
             generation=generation,
+            lifecycle_summary=lifecycle_summary,
+            execution_mode_label=execution_mode_label,
+            report_summary=report_summary,
+            report=report,
+            bundle=bundle,
+            lifecycle=lifecycle,
+            trade_health=trade_health,
+            facade=_r3_sys.modules[__name__],
         )
-        report_available = bool(report_exists)
-        record = {
-            "trade_id": trade_id,
-            "story_id": story_id,
-            "run_id": run_id,
-            "run_id_short": _short_run_id(run_id),
-            "linked_run_ids": linked_run_ids,
-            "symbol": symbol,
-            "action": action,
-            "story_type": story_type,
-            "story_type_label": _story_type_label(story_type),
-            "story_type_badge_class": _story_type_badge_class(story_type),
-            "lifecycle_status": lifecycle_status or "unknown",
-            "lifecycle_status_label": (lifecycle_status or "unknown").upper(),
-            "lifecycle_summary": lifecycle_summary or "Lifecycle summary is not available yet.",
-            "execution_mode_label": execution_mode_label or "not captured",
-            "report_available": report_available,
-            "report_status": str(diagnostics.get("report_status") or ""),
-            "report_status_label": str(diagnostics.get("report_status_label") or _report_status_label("")),
-            "report_status_badge_class": str(diagnostics.get("report_status_badge_class") or "status-badge"),
-            "report_reason_code": str(diagnostics.get("report_reason_code") or ""),
-            "report_reason_human": str(diagnostics.get("report_reason_human") or ""),
-            "report_next_expected_step": str(diagnostics.get("next_expected_step") or ""),
-            "report_generation_attempted": bool(diagnostics.get("generation_attempted")),
-            "report_generation_ts": str(diagnostics.get("generation_ts") or ""),
-            "report_generation_model": str(diagnostics.get("llm_model_used") or ""),
-            "report_generation_provider": str(diagnostics.get("llm_provider") or "OpenRouter"),
-            "ai_report_diagnostics": diagnostics,
-            "report_summary": report_summary or "Per-trade report summary was not generated yet.",
-            "reporter_status_human": reporter_summary,
-            "report_link": f"/reports/trade/{trade_id}" if trade_id and report_exists else "",
-            "operator_brief_available": bool(trade_id),
-            "operator_brief_link": f"/reports/trade/{trade_id}/brief" if trade_id else "",
+        # Keep existence probes after formatting, including repeated probes.
+        record.update({
             "trade_report_json_path": str(report_json_path) if report_json_path.exists() else "",
             "trade_report_md_path": str(report_md_path) if report_md_path.exists() else "",
             "trade_story_input_path": str(story_input_path) if story_input_path.exists() else "",
@@ -806,29 +755,17 @@ def _trade_report_index(config: OperatorUIConfig) -> Dict[str, Dict[str, Any]]:
             "trade_root_path": str(paths.get("trade_root") or ""),
             "ts_epoch": ts_epoch,
             "_path_priority": path_priority,
-        }
+        })
 
-        if story_id:
-            current_story = by_story_id.get(story_id)
-            if (not current_story) or (
-                int(record.get("_path_priority") or 0) > int(current_story.get("_path_priority") or 0)
-                or (
-                    int(record.get("_path_priority") or 0) == int(current_story.get("_path_priority") or 0)
-                    and int(record.get("ts_epoch") or 0) >= int(current_story.get("ts_epoch") or 0)
-                )
-            ):
-                by_story_id[story_id] = record
-        for rid in linked_run_ids:
-            current = by_run_id.get(rid)
-            if (not current) or (
-                int(record.get("_path_priority") or 0) > int(current.get("_path_priority") or 0)
-                or (
-                    int(record.get("_path_priority") or 0) == int(current.get("_path_priority") or 0)
-                    and int(record.get("ts_epoch") or 0) >= int(current.get("ts_epoch") or 0)
-                )
-            ):
-                by_run_id[rid] = record
-
+        run_updates, story_updates = _project_trade_indexes(
+            story_id=story_id,
+            linked_run_ids=linked_run_ids,
+            record=record,
+            by_story_id=by_story_id,
+            by_run_id=by_run_id,
+        )
+        by_run_id.update(run_updates)
+        by_story_id.update(story_updates)
     return {"by_run_id": by_run_id, "by_story_id": by_story_id}
 
 
@@ -885,166 +822,23 @@ def load_overview(config: OperatorUIConfig) -> Dict[str, Any]:
     overtrading_warning = build_overtrading_warning(all_today_trades, traded_symbol_summary, reporter)
     latest_prompt = load_latest_strategist_prompt_summary(config, latest_day)
     today_rows = list(_iter_jsonl(config.event_log_path))
-    today_rows = [row for row in today_rows if not latest_day or _event_day(row.get("ts_kst") or row.get("ts")) == latest_day]
-    live_route_rows = [
-        row
-        for row in today_rows
-        if str(row.get("stage") or "") == "commander_router"
-        and str(row.get("event") or "") == "route"
-    ]
-    live_verdict_rows = [
-        row
-        for row in today_rows
-        if str(row.get("stage") or "") == "execute_from_packet"
-        and str(row.get("event") or "") == "verdict"
-        and isinstance(row.get("payload"), dict)
-    ]
-    live_allowed_total = 0
-    live_blocked_total = 0
-    live_noop_total = 0
-    live_block_reason_top: Dict[str, int] = {}
-    for row in live_verdict_rows:
-        payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-        allowed = payload.get("allowed")
-        reason = str(payload.get("reason") or "").strip()
-        if allowed is True:
-            live_allowed_total += 1
-            continue
-        if reason == "noop_intent_skipped":
-            live_noop_total += 1
-            continue
-        if allowed is False:
-            live_blocked_total += 1
-            if reason:
-                live_block_reason_top[reason] = _safe_int(live_block_reason_top.get(reason), 0) + 1
-    live_run_total = len(live_route_rows)
-    live_execution_total = len(all_today_trades)
-    live_action_counts: Dict[str, int] = {}
-    for row in all_today_trades:
-        action = str(row.get("action") or "").upper().strip()
-        if not action:
-            continue
-        live_action_counts[action] = _safe_int(live_action_counts.get(action), 0) + 1
-    live_events_total = live_run_total
-    live_symbols_traded = [str(row.get("symbol") or "") for row in traded_symbol_summary[:8] if str(row.get("symbol") or "").strip()]
-
-    reported_run_total = _safe_int(trading.get("run_total"), 0)
-    reported_exec_total = _safe_int(trading.get("executions_total"), 0)
-    reported_blocked_total = _safe_int(trading.get("blocked_total"), 0)
-    reported_daily_events = _safe_int(daily.get("events"), 0)
-    reported_daily_approvals = _safe_int(daily.get("approvals"), 0)
-    reported_daily_blocks = _safe_int(daily.get("blocks"), 0)
-    reported_reporter_trade_count = _safe_int(trade_summary.get("trade_count"), 0)
-    reported_reporter_symbols = [str(v or "") for v in list(trade_summary.get("symbols_traded") or []) if str(v or "").strip()]
-    live_snapshot_mismatch = any(
-        [
-            live_run_total > reported_run_total,
-            live_execution_total > reported_exec_total,
-            live_allowed_total > reported_daily_approvals,
-            live_blocked_total != reported_blocked_total and live_execution_total > 0,
-            live_events_total > reported_daily_events,
-            live_execution_total > reported_reporter_trade_count,
-            live_symbols_traded != reported_reporter_symbols[: len(live_symbols_traded)],
-        ]
+    (daily, executive, health, trading, reporter, reconciliation, recon_summary, ai_review, trade_summary) = _project_live_overview(
+        latest_day=latest_day,
+        today_rows=today_rows,
+        daily=daily,
+        operator_summary=operator_summary,
+        reporter=reporter,
+        reconciliation=reconciliation,
+        executive=executive,
+        health=health,
+        trading=trading,
+        recon_summary=recon_summary,
+        trade_summary=trade_summary,
+        all_today_trades=all_today_trades,
+        traded_symbol_summary=traded_symbol_summary,
+        overtrading_warning=overtrading_warning,
+        facade=_r3_sys.modules[__name__],
     )
-
-    if latest_day and live_snapshot_mismatch:
-        top_block_reason = ""
-        if live_block_reason_top:
-            top_block_reason = sorted(live_block_reason_top.items(), key=lambda item: (-_safe_int(item[1]), str(item[0])))[0][0]
-        executive = {
-            "system_status": str(executive.get("system_status") or health.get("system_health_level") or "LIVE"),
-            "summary_lines": [
-                f"[LIVE] runs={live_run_total}, executions={live_execution_total} (approved={live_allowed_total}, blocked={live_blocked_total}, noop={live_noop_total}).",
-                f"Top guard block: {top_block_reason or 'none'}",
-            ] + list(executive.get("summary_lines") or []),
-        }
-        trading = {
-            **trading,
-            "run_total": live_run_total,
-            "executions_total": live_execution_total,
-            "blocked_total": live_blocked_total,
-        }
-        daily = {
-            **daily,
-            "events": live_events_total,
-            "decision_actions": live_action_counts,
-            "approvals": live_allowed_total,
-            "blocks": live_blocked_total,
-        }
-        if reporter:
-            reporter = {
-                **reporter,
-                "trade_summary": {
-                    **trade_summary,
-                    "trade_count": live_execution_total,
-                    "symbols_traded": live_symbols_traded,
-                },
-            }
-            ai_review = reporter.get("ai_review") if isinstance(reporter.get("ai_review"), dict) else {}
-            trade_summary = reporter.get("trade_summary") if isinstance(reporter.get("trade_summary"), dict) else {}
-            if ai_review:
-                reporter["ai_review"] = {
-                    **ai_review,
-                    "status": "snapshot" if str(ai_review.get("status") or "").strip().lower() == "ok" else ai_review.get("status"),
-                }
-
-    reported_recon_local = _safe_int(recon_summary.get("local_total"), 0)
-    reported_recon_broker = _safe_int(recon_summary.get("broker_total"), 0)
-    reported_recon_matched = _safe_int(recon_summary.get("matched_by_ord_no"), 0)
-    recon_stale_vs_live = live_execution_total > max(reported_recon_local, reported_recon_broker, reported_recon_matched)
-    if latest_day and live_execution_total > 0 and (not reconciliation or recon_stale_vs_live):
-        reconciliation = {
-            "summary": {
-                "local_total": live_execution_total,
-                "broker_total": reported_recon_broker,
-                "matched_by_ord_no": reported_recon_matched,
-                "broker_window_limited": bool(recon_summary.get("broker_window_limited")),
-                "pending": True,
-                "sentence": "Intraday reconciliation has not been generated yet. Local executions are ahead of broker matching.",
-            }
-        }
-        recon_summary = reconciliation.get("summary") if isinstance(reconciliation.get("summary"), dict) else {}
-
-    if not operator_summary and latest_day:
-        operator_summary_live_lines: List[str] = []
-        if live_run_total:
-            operator_summary_live_lines.append(f"live event log fallback active for {latest_day}")
-        if live_execution_total:
-            operator_summary_live_lines.append(f"today executions observed in log: {live_execution_total}")
-        if live_blocked_total:
-            operator_summary_live_lines.append(f"today blocked verdicts observed in log: {live_blocked_total}")
-        live_status = "LIVE" if (live_run_total or live_execution_total or live_blocked_total) else "UNKNOWN"
-        executive = {
-            "system_status": live_status,
-            "summary_lines": operator_summary_live_lines[:4],
-        }
-        health = {
-            "system_health_level": live_status,
-            "recommended_action": (
-                [f"review same-day overtrading warning: {overtrading_warning.get('level')}"]
-                if str(overtrading_warning.get("level") or "normal") in {"elevated", "high"}
-                else ["generate operator summary after closeout to replace live fallback"]
-            )[:4],
-        }
-        trading = {
-            "run_total": live_run_total,
-            "executions_total": live_execution_total,
-            "blocked_total": live_blocked_total,
-        }
-
-    if not reporter and latest_day:
-        reporter = {
-            "ai_review": {"status": "not_generated_yet"},
-            "ai_run_grade": "-",
-            "ai_summary": "Same-day reporter analysis has not been generated yet.",
-            "trade_summary": {
-                "trade_count": live_execution_total,
-                "symbols_traded": [str(row.get("symbol") or "") for row in traded_symbol_summary[:8]],
-            },
-        }
-    ai_review = reporter.get("ai_review") if isinstance(reporter.get("ai_review"), dict) else {}
-    trade_summary = reporter.get("trade_summary") if isinstance(reporter.get("trade_summary"), dict) else {}
     recent_runs = load_recent_runs(config, limit=200)
     latest_run_sync = next(
         (
@@ -2509,93 +2303,40 @@ def load_run_detail(config: OperatorUIConfig, run_id: str) -> Dict[str, Any]:
     first_dt = _to_datetime(all_rows[0].get("ts"))
     run_day = first_dt.strftime("%Y-%m-%d") if first_dt else ""
     canonical_sources = load_run_canonical_sources(config.reports_root, str(run_id or ""), run_day)
-    commander_summary, commander_provenance = prefer_canonical_agent_payload(
-        canonical_sources,
-        "commander",
-        {
-            "mode": str((route_row.get("payload") or {}).get("mode") or ""),
-            "phase": str((route_row.get("payload") or {}).get("phase") or ""),
-            "status": str((end_row.get("payload") or {}).get("status") or ""),
-            "path": str((end_row.get("payload") or {}).get("path") or ""),
-        },
-        fallback_source="event_log",
+    (
+        commander_summary,
+        commander_provenance,
+        strategist_summary,
+        strategist_provenance,
+        scanner_summary,
+        scanner_provenance,
+        monitor_summary,
+        monitor_provenance,
+        verdict_payload,
+        supervisor_provenance,
+        execution_payload,
+        executor_provenance,
+        normalized_execution,
+        strategist_llm,
+        strategic_frame,
+        candidate_selection,
+        entry_exit_decision,
+        primary_symbol,
+    ) = _project_canonical_run(
+        canonical_sources=canonical_sources,
+        route_row=route_row,
+        end_row=end_row,
+        strategist_summary=strategist_summary,
+        scanner_summary=scanner_summary,
+        monitor_summary=monitor_summary,
+        verdict_payload=verdict_payload,
+        execution_payload=execution_payload,
+        strategist_llm=strategist_llm,
+        strategic_frame=strategic_frame,
+        candidate_selection=candidate_selection,
+        entry_exit_decision=entry_exit_decision,
+        facade=_r3_sys.modules[__name__],
     )
-    strategist_summary, strategist_provenance = prefer_canonical_agent_payload(
-        canonical_sources,
-        "strategist",
-        strategist_summary if isinstance(strategist_summary, dict) else {},
-        fallback_source="event_log",
-    )
-    scanner_summary, scanner_provenance = prefer_canonical_agent_payload(
-        canonical_sources,
-        "scanner",
-        scanner_summary if isinstance(scanner_summary, dict) else {},
-        fallback_source="event_log",
-    )
-    monitor_summary, monitor_provenance = prefer_canonical_agent_payload(
-        canonical_sources,
-        "monitor",
-        monitor_summary if isinstance(monitor_summary, dict) else {},
-        fallback_source="event_log",
-    )
-    verdict_payload, supervisor_provenance = prefer_canonical_agent_payload(
-        canonical_sources,
-        "supervisor",
-        verdict_payload if isinstance(verdict_payload, dict) else {},
-        fallback_source="event_log",
-    )
-    execution_payload, executor_provenance = prefer_canonical_agent_payload(
-        canonical_sources,
-        "executor",
-        execution_payload if isinstance(execution_payload, dict) else {},
-        fallback_source="event_log",
-    )
-    normalized_execution = _normalize_execution_payload(execution_payload if isinstance(execution_payload, dict) else {})
-    if not strategist_llm and isinstance(strategist_summary.get("llm_metadata_summary"), dict):
-        strategist_llm = dict(strategist_summary.get("llm_metadata_summary") or {})
-    if not isinstance(strategic_frame, dict) or not strategic_frame:
-        strategic_frame = dict(strategist_summary or {})
-    if (not isinstance(candidate_selection, dict) or not candidate_selection) and isinstance(scanner_summary.get("selected_candidate"), dict):
-        candidate_selection = {
-            "selected_symbol": scanner_summary.get("selected_symbol") or scanner_summary.get("top_stock"),
-            "candidate_pool_size": scanner_summary.get("candidate_pool_after_filter") or scanner_summary.get("universe_size"),
-            "selected_candidate": dict(scanner_summary.get("selected_candidate") or {}),
-        }
-    elif scanner_provenance == "canonical":
-        candidate_selection = dict(candidate_selection or {})
-        selected_candidate = (
-            candidate_selection.get("selected_candidate")
-            if isinstance(candidate_selection.get("selected_candidate"), dict)
-            else {}
-        )
-        merged_selected_candidate = dict(selected_candidate or {})
-        merged_selected_candidate.update(
-            dict(scanner_summary.get("selected_candidate") or {})
-            if isinstance(scanner_summary.get("selected_candidate"), dict)
-            else {}
-        )
-        candidate_selection["selected_symbol"] = (
-            scanner_summary.get("selected_symbol")
-            or scanner_summary.get("top_stock")
-            or candidate_selection.get("selected_symbol")
-        )
-        candidate_selection["candidate_pool_size"] = (
-            scanner_summary.get("candidate_pool_after_filter")
-            or scanner_summary.get("universe_size")
-            or candidate_selection.get("candidate_pool_size")
-        )
-        candidate_selection["selected_candidate"] = merged_selected_candidate
-    if not isinstance(entry_exit_decision, dict) or not entry_exit_decision:
-        entry_exit_decision = dict(monitor_summary or {})
-    elif monitor_provenance == "canonical":
-        entry_exit_decision = {**dict(entry_exit_decision or {}), **dict(monitor_summary or {})}
-    primary_symbol = normalize_symbol(
-        normalized_execution.get("symbol")
-        or scanner_summary.get("top_stock")
-        or candidate_selection.get("selected_symbol")
-        or "",
-        allow_test_symbols=True,
-    ).strip()
     same_day_symbol_trades = []
     if primary_symbol:
         same_day_symbol_trades = [
@@ -2624,67 +2365,39 @@ def load_run_detail(config: OperatorUIConfig, run_id: str) -> Dict[str, Any]:
             report_next_step=_report_next_step,
         )
 
-    detail = {
-        "found": True,
-        "run_id": str(run_id or ""),
-        "started_at": _iso_to_display(route_row.get("ts")),
-        "completed_at": _iso_to_display(end_row.get("ts")),
-        "commander": {
-            "mode": str(commander_summary.get("mode") or commander_summary.get("command") or (route_row.get("payload") or {}).get("mode") or ""),
-            "phase": str(commander_summary.get("phase") or ((commander_summary.get("blocked_allowed_details") or {}) if isinstance(commander_summary.get("blocked_allowed_details"), dict) else {}).get("phase") or (route_row.get("payload") or {}).get("phase") or ""),
-            "agents": list(commander_summary.get("invoked_agents") or (route_row.get("payload") or {}).get("agents") or []),
-            "status": str(commander_summary.get("status") or (end_row.get("payload") or {}).get("status") or ""),
-            "path": str(commander_summary.get("path") or commander_summary.get("decision") or (end_row.get("payload") or {}).get("path") or ""),
-            "reason": str(commander_summary.get("reason") or ""),
-            "provenance": commander_provenance,
-            "artifact": commander_summary if isinstance(commander_summary, dict) else {},
-        },
-        "strategist": {
-            "summary": strategist_summary,
-            "llm": strategist_llm,
-            "decision_trace": strategic_frame if isinstance(strategic_frame, dict) else {},
-            "provenance": strategist_provenance,
-            "evidence": {
-                "raw_input": strategist_evidence.get("raw_input") if isinstance(strategist_evidence.get("raw_input"), dict) else {},
-                "llm_prompt": str(strategist_evidence.get("llm_prompt") or ""),
-                "llm_response": str(strategist_evidence.get("llm_response") or ""),
-                "parsed_output": strategist_evidence.get("parsed_output") if isinstance(strategist_evidence.get("parsed_output"), dict) else {},
-            },
-        },
-        "scanner": {
-            "summary": scanner_summary,
-            "decision_trace": candidate_selection if isinstance(candidate_selection, dict) else {},
-            "feature_coverage": feature_coverage,
-            "quote_metrics": quote_metrics,
-            "provenance": scanner_provenance,
-        },
-        "monitor": {
-            "summary": monitor_summary,
-            "decision_trace": entry_exit_decision if isinstance(entry_exit_decision, dict) else {},
-            "provenance": monitor_provenance,
-        },
-        "supervisor": {
-            "verdict": verdict_payload,
-            "provenance": supervisor_provenance,
-        },
-        "executor": {
-            "execution": execution_payload,
-            "provenance": executor_provenance,
-        },
-        "portfolio_sync": portfolio_sync,
-        "same_day_symbol_trade_history": {
-            "day": run_day,
-            "symbol": primary_symbol,
-            "trade_count": len(same_day_symbol_trades),
-            "trades": same_day_symbol_trades[:20],
-        },
-        "same_day_symbol_run_chain": {
-            "day": run_day,
-            "symbol": primary_symbol,
-            "run_count": len(same_day_symbol_run_chain),
-            "runs": same_day_symbol_run_chain,
-        },
-        "trade_report": trade_report_card,
+    detail = _project_run_presentation(
+        portfolio_sync=portfolio_sync,
+        trade_report_card=trade_report_card,
+        commander_provenance=commander_provenance,
+        strategist_summary=strategist_summary,
+        strategist_llm=strategist_llm,
+        strategist_provenance=strategist_provenance,
+        scanner_summary=scanner_summary,
+        feature_coverage=feature_coverage,
+        quote_metrics=quote_metrics,
+        scanner_provenance=scanner_provenance,
+        monitor_summary=monitor_summary,
+        monitor_provenance=monitor_provenance,
+        verdict_payload=verdict_payload,
+        supervisor_provenance=supervisor_provenance,
+        execution_payload=execution_payload,
+        executor_provenance=executor_provenance,
+        run_day=run_day,
+        primary_symbol=primary_symbol,
+        same_day_symbol_run_chain=same_day_symbol_run_chain,
+        run_id=run_id,
+        commander_summary=commander_summary,
+        strategic_frame=strategic_frame,
+        candidate_selection=candidate_selection,
+        entry_exit_decision=entry_exit_decision,
+        same_day_symbol_trades=same_day_symbol_trades,
+        route_row=route_row,
+        end_row=end_row,
+        strategist_evidence=strategist_evidence,
+        facade=_r3_sys.modules[__name__],
+    )
+    # Reporter remains an IO boundary between role formatting and event preview.
+    detail.update({
         "reporter": _reporter_snippet_for_run(config, str(run_id or ""), run_day),
         "canonical_sources": canonical_sources,
         "artifact_provenance": {
@@ -2707,7 +2420,7 @@ def load_run_detail(config: OperatorUIConfig, run_id: str) -> Dict[str, Any]:
             }
             for row in all_rows[:120]
         ],
-    }
+    })
     detail["operator_brief"] = _load_operator_brief_with_cache(config, detail)
     trade_report = detail.get("trade_report") if isinstance(detail.get("trade_report"), dict) else {}
     if trade_report:

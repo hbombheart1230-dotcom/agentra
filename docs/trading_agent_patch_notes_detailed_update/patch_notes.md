@@ -1,5 +1,48 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 B PEER VERIFIED SELECTIVE INTEGRATION CANDIDATE CI PENDING 20261020
+**Stage:** P1.5 B source selection, composed-SHA CI pending · **Tags:** REFACTOR · INTEGRATION · TEST
+
+- 지팀장은 Codex `cd5a7f59e1d374617cc668e6e82c32f3284cde43`에서 검증된 **B Operator UI 4개 런타임, 공유 계약과 테스트 9개, 총 13개 코드/테스트 파일**만 실제 Git blob 그대로 `integration/p1.5`에 선별 반영했습니다. Reporter A 소스·main·거래 권한은 제외합니다.
+- 개발자 보고 증거는 normal/`-O` 각각 622 PASS, Codex 자체 로컬 `claude -p` 검토 PASS(실제 종료 0, 독립 19건과 기존 음성 8건 PASS, 정보성 지적 3건)이며 통합 CI의 결과와는 구분합니다.
+- 기존 통합 UI 기록 327건과 B 고유 기록 3건을 모두 보존해 **331/331**로 갱신했습니다. 기존 S5/R7/Monitor, UEF/Step5C 및 실행 안전 불변 조건을 완화하지 않습니다.
+- **실제 새로운 통합 SHA 필수 GitHub CI가 PASS하기 전에는 INTEGRATED라고 판정하지 않습니다.** 전체 pytest, 실데이터, UI 시각 검증, Docker 릴리스는 별도입니다.
+
+Sources: `apps/operator_ui/data_access_core.py`, `apps/operator_ui/data_access_overview_projection.py`, `apps/operator_ui/data_access_trade_index_projection.py`, `apps/operator_ui/data_access_run_detail_projection.py`, `scripts/refactor/shared_strategist_contracts.py`, `scripts/refactor/shared_role_contracts.py`, `tests/test_p15_b_versioned_contract.py`.
+
+## 2026-10-20 · P1.5 CODE BATCH 01 DEV B LIVE OVERVIEW PROJECTION 20261020
+**Stage:** P1.5 CODE BATCH 01 developer candidate; integration pending
+**Tags:** REFACTOR · TEST
+
+- BASE `4b0c3e0b`의 `load_overview(config)` 실시간 집계·stale daily/reporter/reconciliation 보정을 신규 순수 `data_access_overview_projection.py`로 분리했습니다. 함수는 282→139줄, core는 2754→2612줄입니다. 이미 읽은 입력만 전달하며 IO·경로 우선순위·최종 공개 응답 구성은 기존 facade에 유지합니다.
+- strict `allowed is True/False`, NOOP 우선순위, `ts_kst` 우선 날짜 선택, action/key 순서, same-day fallback·reporter snapshot·reconciliation 최대값 우선순위와 helper use-time lookup을 보존합니다. Monitor 동결 Owner·fixture·권한 코드는 변경하지 않습니다.
+- Windows Python3.14.2 집중 normal/`-O` 각각98 PASS(기존 UI/read-model81 + 신규17); 분류·날짜·stale 변이4종을 메모리에서 탐지합니다. 고정 BASE와7개 시나리오의 JSON bytes·호출 순서·예외·공개 signature/import를 비교하며 운영 golden을 새로 만들지 않았습니다. 첫 신규 fixture의 operator_summary 부재로 나타난 기존 fallback 분기 실패는 올바른 fixture 문맥으로 수정했고 로그를 보존합니다.
+- 커밋 작성 시 새 Claude CLI 독립 읽기 전용 검토는 대기 중입니다. 실제 종료 코드·정확한 candidate SHA·PASS/REWORK/BLOCKED를 별도 인계합니다. 통합 CI·전체 pytest·실데이터24SKIP·운영 HTML/JSON parity·UI build는 NOT_RUN. main·Docker·실거래·운영 배포 승인 없음.
+
+근거: `apps/operator_ui/data_access_core.py`, `apps/operator_ui/data_access_overview_projection.py`, `tests/test_p15_overview_live_projection.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+## 2026-10-20 - P1.5 CODE BATCH 02 DEV B TRADE INDEX AND RUN DETAIL PROJECTIONS 20261020
+**Stage:** Developer candidate, selective integration pending. **Tags:** REFACTOR / TEST
+
+- BASE `c0c3f808967dc921a956d01a879fe489674cad71`: core 2612 -> 2467 lines; `_trade_report_index` 226 -> 152; `load_run_detail` 272 -> 191. Pure index Owner 225 lines and run-detail Owner 230 lines reuse existing read-model/status helpers through use-time facade lookups.
+- Keep discovery, file reads and all path/stat probes in the coordinator, with original priority/ties, linked-record identity, field ordering and exception timing. Reporter lookup, cached brief generation, LLM prompts/call counts and artifact writers stay at their existing boundaries. No change to BATCH01 or Monitor11 owners, safety locks or transaction authority.
+- Windows Python 3.14.2 focused normal **116 PASS** (81 existing + 35 new): pinned BASE synthetic JSON/call/exception equality, synthetic HTML bytes, offline real cold/warm generation/cache/file-byte parity and **10 hostile mutations rejected**. Callback addresses, clock/latency and restored fixture mtime were controlled explicitly rather than normalized out of expected outputs. Optimized focused run **118 PASS** includes the paired-note2 checks; normal notes validation is recorded separately.
+- Fresh read-only Claude CLI exact-SHA review pending candidate authoring. Hosted integration CI, full pytest, real production frozen snapshots/real-data evidence and UI visual/build **NOT_RUN**. Not final acceptance, deployment or main integration.
+
+Sources: `apps/operator_ui/data_access_core.py`, `apps/operator_ui/data_access_trade_index_projection.py`, `apps/operator_ui/data_access_run_detail_projection.py`, `tests/test_p15_operator_trade_index_projection.py`, `tests/test_p15_operator_run_detail_projection.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+## 2026-10-20 - P1.5 B SHARED CONTRACT V2 HISTORICAL AND CURRENT ADMISSION 20261020
+**Stage:** Developer contract candidate, peer/GPT selective integration pending. **Tags:** REFACTOR / TEST
+
+- Unchanged reviewed B source and developer base `54bebe5ece0ac34c4f45df55c44889c9ce323e95`; historical pre-B tree `4b0c3e0b5f8f24fa3c10d9082b85fab63f15c4c3`. Existing S5/Reporter/Monitor/Broker/UEF/Step5C source and policies remain unchanged.
+- Keep original historical source inventories and five-function/eight-helper proofs; separately admit exactly four runtime and three regression paths from B. Validate actual B contents before historic projection; restore three named UI definitions/import groups to the entire pre-B AST. Current scope rejects unapproved source/test/fixture paths and byte drift, including staged/untracked changes.
+- Require actual unmutated current stage/runtime PASS before eight old hostile mutations; assert rejection identifies the injected path. Dedicated19 cases add historical/current mutual rejection, fourteen current hostile probes and three real Owner-read mutations. Windows Python3.14.2 final normal620PASS plus paired-note2PASS; optimized622PASS, zero FAIL/SKIP. Includes UI/API, Reporter/Monitor/S5 regressions; final note-text schema checks recorded separately. No test oracle weakening or vacuous PASS.
+- Five missing immutable commits fetched by exact SHA. Fresh local read-only `claude -p` review pending candidate authoring; actual SHA/exit/verdict recorded externally after commit. No direct integration, main, Docker, live LLM, production data or alternate reviewer window.
+- Hosted composed-SHA CI, full pytest, Linux, genuine production goldens/real-data evidence and UI build/visual acceptance **NOT_RUN**. Prior321 candidate records preserved, new note322; GPT reconciles newer integration notes serially.
+
+Sources: `scripts/refactor/shared_strategist_contracts.py`, `scripts/refactor/shared_role_contracts.py`, `tests/test_shared_strategist_contracts.py`, `tests/test_p15_integration_completion.py`, `tests/test_shared_role_contracts.py`, `tests/test_p15_b_versioned_contract.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+
 ## 2026-10-20 · P1.5 PERMANENT MINIMUM IDLE MAXIMUM SUBSTANTIVE PARALLELISM 20261020
 **Stage:** D00/D01/D02 상시 운영 원칙 · **Tags:** DOCS · PROCESS
 

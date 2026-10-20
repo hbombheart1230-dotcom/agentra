@@ -20,6 +20,8 @@ def test_exact_combined_runtime_inputs_and_restoration():
 @pytest.mark.parametrize("kind", ["shim_import", "shim_duplicate", "shim_redirect", "owner_body",
                                   "unmoved", "wrapper", "broker", "numbered_owner"])
 def test_real_source_mutations_fail_closed(kind):
+    # A rejected mutant is evidence only when the exact unmodified input passes.
+    assert S.verify_runtime()["moves"] == 313
     path = next(iter(S.whole_moves()))
     source = (ROOT / path).read_text(encoding="utf-8-sig")
     if kind == "shim_import":
@@ -41,14 +43,18 @@ def test_real_source_mutations_fail_closed(kind):
     else:
         path = "libs/broker/shared_candidate_rogue.py" if kind == "broker" else "libs/agents/reporter/narrative/rogue_bodies_09.py"
         changes = {path: "BROKER_CAPABILITY = True\n"}
-    with pytest.raises(AssertionError):
+    message = "unexpected/missing runtime path" if kind in {"broker", "numbered_owner"} else "unapproved runtime body/import/authority"
+    with pytest.raises(AssertionError, match=message) as rejected:
         S.verify_runtime(changes)
+    assert next(iter(changes)) in str(rejected.value)
 
 
 def test_shared_checker_rejects_mutation_under_optimized_python():
     code = '''import sys
 sys.path.insert(0, 'scripts/refactor')
 import shared_role_contracts as S
+if S.verify_runtime()['moves'] != 313:
+    raise SystemExit('unmutated runtime did not pass')
 try:
     S.verify_runtime({'libs/broker/rogue.py': 'pass'})
 except AssertionError:

@@ -1,8 +1,121 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 327,
+  "entry_count": 331,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 B PEER VERIFIED SELECTIVE INTEGRATION CANDIDATE CI PENDING 20261020",
+      "title": "Select peer-reviewed Codex B Operator UI sources and strict V2 contracts for integration CI",
+      "stage": "P1.5 B source selection; composed source SHA CI pending",
+      "types": [
+        "REFACTOR",
+        "INTEGRATION",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Exact 13 peer-reviewed B runtime/contract/test source blobs selected from cd5a7f59 into integration/p1.5, pending required new-SHA hosted CI.",
+      "details": [
+        "Code SHA cd5a7f59e1d374617cc668e6e82c32f3284cde43; developer reported 622 normal/622 -O PASS, independent Claude CLI PASS exit 0, reviewer 19 and 8 historical negative PASS, 3 informational findings.",
+        "Current integration history 327 records and B branch 3 unique records preserved as 331/331, exact source contents selected by existing Git blob SHA, no unrelated files changed.",
+        "B V2 current-stage source-pin contracts retain historical S5 five-function and Reporter/Monitor old-stage safety tests, no Broker/UEF/Step5C authority changes.",
+        "Composed-SHA hosted required CI, full repo pytest, real production artifacts, visual UI smoke, Docker and main/release remain separately gated."
+      ],
+      "impact": "B candidate staged on integration for hosted verification, not INTEGRATED until all required workflows pass.",
+      "sources": [
+        "apps/operator_ui/data_access_core.py",
+        "apps/operator_ui/data_access_overview_projection.py",
+        "apps/operator_ui/data_access_trade_index_projection.py",
+        "apps/operator_ui/data_access_run_detail_projection.py",
+        "scripts/refactor/shared_strategist_contracts.py",
+        "scripts/refactor/shared_role_contracts.py",
+        "tests/test_p15_b_versioned_contract.py"
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 CODE BATCH 01 DEV B LIVE OVERVIEW PROJECTION 20261020",
+      "title": "Extract pure Operator UI live overview aggregation and stale-report reconciliation",
+      "stage": "P1.5 CODE BATCH 01 developer candidate; integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Move load_overview's deterministic live event classification and stale snapshot reconciliation into an independently callable read-only projection; retain IO, path priority and public output assembly in the existing facade.",
+      "details": [
+        "CODEX_DEV_B base4b0c3e0b:load_overview282 to139 lines; core2754 to2612. New cohesive212-line overview Owner receives already-read inputs; no new log reader, scan, clock, LLM or write.",
+        "Preserve strict allowed=True/False identity, NOOP precedence, ts_kst-before-ts day choice, input/action/key ordering, same-day fallback, reporter snapshot status and maximum reconciliation-count precedence. Existing date/integer helpers remain facade lookups at use time.",
+        "Focused Windows Python3.14.2 UI/read-model and new17-case suite:normal98PASS, optimized98PASS; four in-memory hostile classification/day/stale mutants detected. Pinned BASE JSON bytes, read/helper call trace, public signature/compat import and exceptions compared in seven scenarios; synthetic fixtures only.",
+        "Initial new-test fixture omitted operator_summary and correctly triggered a different existing fallback; fixture context corrected with original assertion retained, initial failure evidence retained. Frozen Monitor owners/ledgers/goldens and safety authority unchanged.",
+        "Fresh Claude CLI read-only independent review is pending at candidate authoring; receipt must contain exact SHA, real exit and PASS/REWORK/BLOCKED. Integration-SHA CI, full pytest, real-data24SKIP, production HTML/JSON parity and UI build NOT_RUN. No main, Docker, production deployment or trading-policy change."
+      ],
+      "impact": "Remove embedded live-summary interpretation from the IO coordinator while preserving read-only Operator UI behavior. Developer candidate only; no release or integration approval.",
+      "sources": [
+        "apps/operator_ui/data_access_core.py",
+        "apps/operator_ui/data_access_overview_projection.py",
+        "tests/test_p15_overview_live_projection.py",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 CODE BATCH 02 DEV B TRADE INDEX AND RUN DETAIL PROJECTIONS 20261020",
+      "title": "Extract pure linked-trade indexing and run-detail canonical/presentation responsibilities",
+      "stage": "P1.5 CODE BATCH 02 developer candidate; selective integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Separate already-read report identity, summaries, diagnostics, index selection and canonical run/role presentation from the existing Operator UI IO coordinator.",
+      "details": [
+        "Pinned CODEX_DEV_B BASE c0c3f808967dc921a956d01a879fe489674cad71. Core2612 to2467 lines; trade index226 to152; run detail272 to191. Cohesive index225-line and run-detail230-line Owners; only the two assigned existing function bodies changed.",
+        "Keep directory discovery, candidate mtime ordering, resolve/stat/exists probes (including short circuit and repeated probes), all readers and Reporter/brief/cache/artifact/LLM boundaries in the original coordinator. Preserve lifecycle priority, >= timestamp ties, duplicate linked aliases and identity, canonical overrides, deterministic trace fallbacks, response order and use-time facade helper lookups.",
+        "Focused Windows Python3.14.2 existing UI/API/read-model81 plus new35 cases: normal116PASS; optimized118PASS including paired-note2 checks. Includes pinned BASE synthetic full JSON/call/exception parity, exact synthetic HTML bytes, real offline generation cold/warm cache and all synthetic file bytes, and ten hostile index/canonical/fallback/IO mutations. Normal paired-note validation is recorded separately; no production golden invented.",
+        "Differential test setup corrected callback address nondeterminism and restored source mtime as well as bytes; clocks and local latency are fixed for exact offline artifact comparison. Initial failed logs retained in bounded ignored scratch. No oracle weakening or production report copy.",
+        "Fresh read-only Claude CLI review is pending candidate authoring; verdict requires exact SHA and actual CLI exit, recorded externally after commit. Integration-SHA CI, full repository pytest, genuine production frozen snapshots/real-data gates and UI visual/build NOT_RUN. No BATCH01, Monitor11, Broker, Supervisor, Executor, Step5C, UEF, policies, main or Docker change."
+      ],
+      "impact": "Reduce embedded data interpretation in the IO facade without transferring read/write or trading authority. Candidate only, not integrated or accepted.",
+      "sources": [
+        "apps/operator_ui/data_access_core.py",
+        "apps/operator_ui/data_access_trade_index_projection.py",
+        "apps/operator_ui/data_access_run_detail_projection.py",
+        "tests/test_p15_operator_trade_index_projection.py",
+        "tests/test_p15_operator_run_detail_projection.py",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 B SHARED CONTRACT V2 HISTORICAL AND CURRENT ADMISSION 20261020",
+      "title": "Admit only pinned B projections through a separate strict current contract stage",
+      "stage": "CODEX_DEV_B contract developer candidate; peer and GPT selective integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Separate immutable historical S5 scope/five-function proofs from exact B source admission and current whole-source/test scope; prevent vacuous hostile mutation claims.",
+      "details": [
+        "Developer base and unchanged B source pin54bebe5ece0ac34c4f45df55c44889c9ce323e95; historical pre-B tree4b0c3e0b5f8f24fa3c10d9082b85fab63f15c4c3. No Operator UI runtime, Reporter/Monitor/Strategist source, Broker/UEF/Step5C or safety policy changes.",
+        "Preserve original NEXT_RUNTIME/NEXT_PATHS, S5 eight helper and five parsing/brief function restoration logic. Historical scope uses immutable pre-B Git objects; current scope checks actual tracked/staged/untracked source, tests and fixtures separately. No open package wildcard, skip, xfail or oracle replacement.",
+        "Exact B runtime4 and regression3 paths are pinned to reviewed Git contents. Restore only three named UI definitions and three Owner imports to the pre-B entire AST; require pre-B core equals original UI_PIN. Runtime admission adds only three pinned B Owners. Unknown app/Broker/fixture/test paths and all unauthorized unchanged-file drift fail closed.",
+        "Normal unmutated runtime/stage passed before hostile probes. Existing eight shared runtime mutations now require unmodified PASS and mutation-path-specific rejection. Dedicated19-case suite covers historical/current mutual rejection, fourteen current hostile probes and three actual Owner-read tampering cases; final Windows Python3.14.2 focused normal620PASS plus paired-notes2PASS and optimized622PASS, zero FAIL/SKIP. Includes existing UI/API, Reporter seed/facade, Monitor role and S5 helper regressions. Final paired-note text validation recorded separately.",
+        "Five missing immutable source commits fetched by exact SHA, never replaced with invented historical bytes. Fresh directly invoked read-only Claude CLI review pending candidate authoring; actual exit and exact-SHA structured verdict recorded after commit. No direct integration or separate primary-Claude review window.",
+        "Hosted composed-SHA CI, whole repository pytest, Linux, production goldens/real-data24SKIP and UI build/visual acceptance NOT_RUN. Existing historical321 patchnote records preserved; new candidate note322 requires GPT serial reconciliation against newer integration documentation notes."
+      ],
+      "impact": "Enable exact B admission without pretending the historical stage accepted new source, while retaining fail-closed Reporter313/Monitor14+20 and S5 proofs. Developer evidence is not integration/final acceptance.",
+      "sources": [
+        "scripts/refactor/shared_strategist_contracts.py",
+        "scripts/refactor/shared_role_contracts.py",
+        "tests/test_shared_strategist_contracts.py",
+        "tests/test_p15_integration_completion.py",
+        "tests/test_shared_role_contracts.py",
+        "tests/test_p15_b_versioned_contract.py",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 PERMANENT MINIMUM IDLE MAXIMUM SUBSTANTIVE PARALLELISM 20261020",
