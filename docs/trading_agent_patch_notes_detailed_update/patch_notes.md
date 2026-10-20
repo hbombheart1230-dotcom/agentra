@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH04-A STRATEGIST LLM SUMMARY QUALITY AND MARKDOWN PROJECTIONS 20261020
+**Stage:** P1.5 BATCH04-A DEV-A 소스 후보 · SIZE_DEFERRED · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- `strategist_llm_summary.py`를 1,700줄에서 825줄로 줄였습니다. 품질·readout 함수 12개와 `strategist_llm_summary.v1` 페이로드 조립은 `strategist_llm_summary_quality_projection.py`로, 실제로 쓰이는(마지막에 바인딩된) Markdown 렌더러와 서식 보조 함수 14개는 `strategist_llm_summary_markdown_projection.py`로 옮겼습니다.
+- 응답/meta/canonical/strategist_input 읽기, 시계(`generated_at`은 원래 시점에 계산), `classify_market_regime_rail`, `build_risk_off_exception_policy`는 facade에 남겼습니다. 먼저 정의되어 가려진 첫 번째 렌더러와 그 전용 보조 함수 8개는 손대지 않았고, 모듈의 최종 바인딩은 그대로 두 번째 정의(이제 전달 함수)입니다.
+- 이동한 본문은 `facade.<이름>` 참조를 빼면 `ead33ca7`과 AST가 같고 문자열 상수도 모두 같습니다. 고정 BASE 모듈과 12개 산출물 배치(단계 2/3/4, attempts, 잘못된 응답, strategist_input 대체, 깨진 canonical 등)의 페이로드 JSON·Markdown 바이트, generate 파일, 읽기 실패 예외, 외부 정책·시계·보조 함수 호출 순서, 늦은 monkeypatch, 품질 감사 경계값을 비교합니다.
+- 적대적 변형을 모두 잡아냅니다: 한국어 헤더(12개 실패), 줄바꿈(3), 뉴스 품질 기준(1), 페이로드 키 순서(14), 시계 호출 위치(1), 단계 meta 출처(3). 관련 테스트 344개 normal/`-O` 통과.
+- **SIZE_DEFERRED:** 품질 owner 545줄, Markdown owner 524줄로 350줄 목표를 넘습니다. 대부분 긴 한국어 줄 목록과 dict 조립이며, 허용된 두 파일 안에서 동작을 바꾸지 않는 축소 방법이 없었습니다. **SOURCE_ADMISSION_PENDING_GPT:** 새 owner는 아직 승인된 소스 단계 pin에 없습니다.
+
+Sources: `libs/reporting/strategist_llm_summary.py`, `libs/reporting/strategist_llm_summary_quality_projection.py`, `libs/reporting/strategist_llm_summary_markdown_projection.py`, `tests/test_p15_strategist_summary_projection.py`.
+
 ## 2026-10-20 · P1.5 DEV-A REPORTER FEEDBACK PROJECTION 20261020
 **Stage:** P1.5 승인된 Reporter Feedback 작업, DEV-A 소스 후보 (GPT owner 승인 전 통합 대기) · **Tags:** REFACTOR · TEST
 

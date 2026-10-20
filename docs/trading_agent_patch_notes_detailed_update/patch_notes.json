@@ -1,8 +1,36 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 325,
+  "entry_count": 326,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 BATCH04-A STRATEGIST LLM SUMMARY QUALITY AND MARKDOWN PROJECTIONS 20261020",
+      "title": "Split Strategist LLM summary quality/readout and effective Markdown rendering into two read-only projection owners",
+      "stage": "P1.5 BATCH04-A DEV-A source candidate; SIZE_DEFERRED; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "strategist_llm_summary.py shrinks from 1,700 to 825 lines: 12 quality/readout functions plus the strategist_llm_summary.v1 payload assembly move to strategist_llm_summary_quality_projection.py, and the effective (last-bound) Markdown renderer with 14 formatting helpers moves to strategist_llm_summary_markdown_projection.py.",
+      "details": [
+        "Response/meta/canonical and strategist_input reads, the clock (generated_at taken at the original point), classify_market_regime_rail and build_risk_off_exception_policy stay in the facade; projections import only __future__/typing (+json for inline values).",
+        "The shadowed first render_strategist_llm_summary_markdown and its 8 legacy-only helpers are untouched; the module's final binding is still the second definition, now a forwarder.",
+        "Every moved body is AST-identical to ead33ca7 apart from facade.<name> lookups, and all string constants are unchanged (token-based rewrite).",
+        "Parity tests exec the frozen ead33ca7 module: 12 artifact layouts (flat, llm, category stage 2/3/4, attempts, invalid text, strategist_input fallback, malformed canonical) for payload JSON and Markdown bytes, generate() files, read failures, external policy/clock/helper call order, late patching, and boundary grids for the quality audits.",
+        "Hostile mutations all detected: Korean header (12 failures), newline join (3), news-quality threshold (1), payload key order (14), clock moved earlier (1), stage meta source (3). Consumer suites 344 passed under normal and python -O.",
+        "SIZE_DEFERRED: quality owner 545 and Markdown owner 524 physical lines exceed the 350 target; the size is long literal Korean line lists and dict assemblies, and no behaviour-preserving reduction within the two allowed files was available.",
+        "SOURCE_ADMISSION_PENDING_GPT: the new owners are not in any accepted source-stage pin."
+      ],
+      "impact": "Separates deterministic quality/readout and Markdown presentation from artifact I/O, clock and external policy with byte-identical summaries.",
+      "sources": [
+        "libs/reporting/strategist_llm_summary.py",
+        "libs/reporting/strategist_llm_summary_quality_projection.py",
+        "libs/reporting/strategist_llm_summary_markdown_projection.py",
+        "tests/test_p15_strategist_summary_projection.py"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 DEV-A REPORTER FEEDBACK PROJECTION 20261020",
