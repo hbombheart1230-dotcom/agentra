@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 D6 FULL SOURCE EXCEPTION GUARD AND D7 REVIEW READY 20261020
+**Stage:** P1.5 D6 품질 게이트 및 D7 독립 검토 준비 · **Tags:** DOCS · TEST · CI · SAFETY
+
+- 이전 HEAD `974eb9d1`의 패치노트 317개 항목·출처 1,017건 전수를 확인했습니다. 기존 트리 확인 가능 997건, 역사적 누락 로컬 경로 14개에 대한 16회 인용, GitHub 외부 URL 4건이며 신규 미분류 누락은 없습니다.
+- 기존 T4·R2C 워크플로의 문서 검증 단계만 보강합니다. 모든 출처를 검사하고 허용되는 과거 14/16 예외 외 신규 누락, 경로 탈출, 허용되지 않은 외부 URL, 버전/제목 중복에 실패하도록 구성했습니다. 기존 UEF·Step5C·브로커·회귀 테스트는 그대로 유지합니다.
+- D00/D01/D02의 상호 `claude -p` / `codex exec` 및 비재귀 읽기 전용 리뷰 계약도 확인합니다. 낡은 개발 미착수 문구 자체에 CI를 묶지 않고, Issue #20/DOC_FREEZE의 실제 게이트를 검사합니다.
+- [D7 판정표](../refactor/DOC_D7_RELEASE_READINESS_20261020.md)와 현행 진입점을 정리했습니다. **REVIEW_READY ≠ DOC_FREEZE_ACCEPTED**이며 독립 검토, 신규 SHA CI, 운영자 명시 승인이 남아 있습니다. 현재 `main`·실거래·소스 개발은 변동 없습니다.
+
+Sources: `docs/refactor/DOC_D7_RELEASE_READINESS_20261020.md`, `docs/refactor/DOC_PATCHNOTE_SOURCE_PROVENANCE_20261019.md`, `.github/workflows/p15-integration-t4-regression.yml`, `.github/workflows/p152-r2c-residual-regression.yml`, `docs/refactor/README.md`.
+
 ## 2026-10-20 · P1.5 D4 HIGH RISK FAMILY AUTHORITY QUARANTINE 20261020
 **Stage:** P1.5 DOC D4–D6 risk-based convergence · **Tags:** DOCS · PROCESS · SAFETY
 

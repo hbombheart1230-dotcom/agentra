@@ -75,12 +75,15 @@ jobs:
           for cli in (cl,cx):
               assert "docs/refactor/work_orders/CURRENT.md" in cli
               assert "Issues #16–#19 are CLOSED" in cli, "closed historical work queue must not reactivate"
+              assert "REVIEW_ONLY_NO_NESTED_CLI" in cli, "read-only peer-review gate missing"
               assert "DOC_FREEZE" in cli, "CLI must enforce docs-first"
           assert "integration/p1.5" in current and "DOC-A" in current
-          assert "No live developer implementation issue" in current
+          assert "DOC_FREEZE" in current and "Issue #20" in current, "current pointer must honor phase gate and issue authority"
           assert "FINAL_ACCEPTED" not in current, "CURRENT must not claim release acceptance before DOC_FREEZE"
           assert "DOC_FREEZE" in overview and "DOC_FREEZE" in rules
           assert "docs/ENGINEERING_DELIVERY_POLICY.md" in d00
+          assert "DIRECT CROSS-CLI RELAY" in d00, "D00 dual-development protocol missing"
+          assert "claude -p" in cx and "codex exec" in cl, "D01/D02 direct opposite-CLI review missing"
           assert "libs/agents/{commander,strategist,scanner,monitor,reporter,supervisor,executor}/" in target
           assert "HISTORICAL PROCEDURE / NOT A LIVE WORK ORDER" in protocol
           assert "HISTORICAL IMPLEMENTATION ACCEPTANCE POLICY" in size
@@ -94,11 +97,46 @@ jobs:
           assert all(row["activation"]=="NO" for row in rows), "historical work reactivated"
           notes=json.loads((root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.json").read_text(encoding="utf-8"))
           assert notes["entry_count"]==len(notes["entries"]), "patchnote entry_count"
-          for entry in notes["entries"][-5:]:
-              assert all((root/src).is_file() for src in entry["sources"]), entry["version"]
+          known_historical_missing = {
+              "data/logs/events.jsonl",
+              "data/logs/execution_readiness_evidence/2026-10-08.jsonl",
+              "deploy/compose/.env",
+              "docs/01_overview.md",
+              "docs/02_principles.md",
+              "docs/05_runtime_flow.md",
+              "docs/07_execution_and_guards.md",
+              "docs/08_observability.md",
+              "libs/event_logger.py",
+              "reports/evaluation/alpha_research_board/2026-10-08/generations/UEF9RUN_559c27f2d0d1f62b/COMPLETE.json",
+              "reports/evaluation/baseline_btc_woori",
+              "reports/evaluation/baseline_samsung_hynix",
+              "reports/operator_summary/daily/2026-10-06/daily_report.md",
+              "reports/operator_summary/daily/2026-10-08/closeout_maintenance.json",
+          }
+          versions = [e.get("version") for e in notes["entries"]]
+          titles = [e.get("title") for e in notes["entries"]]
+          assert all(isinstance(x, str) and x for x in versions + titles), "empty patch-note identity"
+          assert len(set(versions)) == len(versions), "duplicate patch-note version"
+          assert len(set(titles)) == len(titles), "duplicate patch-note title"
+          absent = []
+          for entry in notes["entries"]:
+              assert isinstance(entry.get("sources"), list), entry.get("version")
+              for src in entry["sources"]:
+                  assert isinstance(src, str) and src, entry.get("version")
+                  if src.startswith("https://"):
+                      assert src.startswith("https://github.com/hbombheart1230-dotcom/agentra/"), src
+                      continue
+                  assert not Path(src).is_absolute() and ".." not in Path(src).parts, src
+                  if not (root / src).exists():
+                      absent.append((entry["version"], src))
+                      assert src in known_historical_missing, ("new missing patch-note source", entry["version"], src)
+          assert len(absent) == 16, ("historical missing-source occurrence drift", absent)
+          assert {src for _, src in absent} == known_historical_missing, "historical provenance set drift"
+          assert (root / "docs/refactor/DOC_PATCHNOTE_SOURCE_PROVENANCE_20261019.md").is_file()
           md=(root/"docs/trading_agent_patch_notes_detailed_update/patch_notes.md").read_text(encoding="utf-8")
           assert notes["entries"][-1]["date"] in md, "historical entry not in Markdown"
           assert notes["entries"][0]["date"] in md, "current entry not in Markdown"
+          assert notes["entries"][0]["version"] in md, "latest JSON/Markdown version mismatch"
           for wfp in sorted((root/".github/workflows").glob("*.yml")):
               wf=wfp.read_text(encoding="utf-8")
               assert ("Zip"+"File") not in wf and ("."+"zip") not in wf, f"CI ZIP packaging forbidden: {wfp}"

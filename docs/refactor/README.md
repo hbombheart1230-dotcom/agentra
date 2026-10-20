@@ -1,5 +1,7 @@
 # Agentra P1.5/P1.6 — canonical document entry
 
+> **D7 signoff-ready evidence (2026-10-20):** [Bounded DOC_FREEZE decision packet](DOC_D7_RELEASE_READINESS_20261020.md) consolidates D0–D6, 317-entry/1,017-source validation and the exact remaining independent-review/operator gates. **REVIEW_READY is not DOC_FREEZE_ACCEPTED**; Issue #20 controls the active SHA and CI.
+
 > **2026-10-20 D4–D6 scoped evidence:** [Current-authority family matrix, 339-path preservation, 19-page/86-link spot audit and D7 holds](DOC_D4_D6_CONVERGENCE_EVIDENCE_20261020.md). Historical work orders and documents stay at their paths; this receipt does not grant source development or DOC_FREEZE approval.
 
 **CURRENT NAVIGATION · 2026-10-19 · DOC_FREEZE PENDING.** This is a navigation document, **not a task that can launch itself**. Latest user decision: complete ALL documentation convergence and approval before creating new Codex/Claude development branches or resuming P1.5 code refactoring.

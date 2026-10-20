@@ -1,8 +1,37 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 317,
+  "entry_count": 318,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 D6 FULL SOURCE EXCEPTION GUARD AND D7 REVIEW READY 20261020",
+      "title": "Enforce full historical patch-note source conservation and prepare exact D7 documentation signoff boundary",
+      "stage": "P1.5 D6 quality gate / D7 review packet; not code-release approval",
+      "types": [
+        "DOCS",
+        "TEST",
+        "CI",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Strengthen two preexisting P1.5 workflow documentation assertions from legacy five-row source spot checks to all-rows source validation with 14 exact historical exceptions; retain D00/D01/D02 mutual CLI review and safe archive policy.",
+      "details": [
+        "Read Git tree and patch-note JSON at 974eb9d1: 317 entries, 317 distinct versions, 317 distinct titles and 1,017 source references, of which 997 point to present local paths/trackable directory prefixes, 16 to 14 documented missing historical local sources, and four to GitHub URLs.",
+        "Allow precisely the historical 14 missing paths / 16 occurrences while rejecting any newly missing source, absolute/parent-escaping path and unexpected external HTTP URL; require no additional missing historical references beyond this ledger.",
+        "Enforce duplicate-version/title invariants, D00 reciprocal review rule and nonrecursive mode in existing workflow inline documentation gates without relaxing Step5C, UEF, test collection, real-data SKIP, production-write, immutable source or broker restrictions.",
+        "Leave historic current-phase task lock and original 339 registry conservation in place; no P1.5 role source, broker operation or main branch modified.",
+        "D7 remains REVIEW_READY / NOT_ACCEPTED until CI on the exact new commit and a new independent read-only review PASS, with operator explicit acceptance of source exceptions. No local Claude/Codex cross-CLI handshake has run."
+      ],
+      "impact": "Turns known historic patch-note source debt into an auditable narrow exception while fail-closing on new missing evidence, and prevents stale documentation task strings from obstructing later authorized developer phases.",
+      "sources": [
+        "docs/refactor/DOC_D7_RELEASE_READINESS_20261020.md",
+        "docs/refactor/DOC_PATCHNOTE_SOURCE_PROVENANCE_20261019.md",
+        ".github/workflows/p15-integration-t4-regression.yml",
+        ".github/workflows/p152-r2c-residual-regression.yml",
+        "docs/refactor/README.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 D4 HIGH RISK FAMILY AUTHORITY QUARANTINE 20261020",
