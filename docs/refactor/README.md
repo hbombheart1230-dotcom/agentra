@@ -1,5 +1,7 @@
 # Agentra P1.5/P1.6 — canonical document entry
 
+> **2026-10-20 D4–D6 scoped evidence:** [Current-authority family matrix, 339-path preservation, 19-page/86-link spot audit and D7 holds](DOC_D4_D6_CONVERGENCE_EVIDENCE_20261020.md). Historical work orders and documents stay at their paths; this receipt does not grant source development or DOC_FREEZE approval.
+
 **CURRENT NAVIGATION · 2026-10-19 · DOC_FREEZE PENDING.** This is a navigation document, **not a task that can launch itself**. Latest user decision: complete ALL documentation convergence and approval before creating new Codex/Claude development branches or resuming P1.5 code refactoring.
 
 ## Single authority chain

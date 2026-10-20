@@ -1,8 +1,37 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 315,
+  "entry_count": 316,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 DOC D4 D6 CANONICAL AUTHORITY AND BOUNDED LINK AUDIT 20261020",
+      "title": "Reconcile current-vs-historic documentation authority and record bounded D4–D6 reference evidence",
+      "stage": "P1.5 documentation convergence; D7 remains on hold",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Preserve 339 registered historic docs, clarify stale engineering/Q9/patchnote entrypoints without erasing original bodies, verify a bounded 19-document/86-link navigation sample, and explicitly retain incomplete D4–D6/D7 proof gaps.",
+      "details": [
+        "Tree at base 75a79da7 contains all 339 registered paths, 292 matching the original blob SHA and 47 later changed; content and full inbound review remain NOT_FULLY_CHECKED for all 339.",
+        "Selected 19 canonical/refactor/architectural/evaluation documents expose 86 conventional relative Markdown targets; all 86 resolve to current tree entries. This is not a full Wiki/HTML/anchor/code-reference audit.",
+        "UI JSON at base was 315 declared/315 actual with 315 unique version identifiers. Source provenance identifies 14 distinct missing local historical paths in 16 citations; 4 external GitHub URLs are not missing Git local paths.",
+        "Current engineering policy resides in D00/D01/D02, live SHA/CI/scope in Issue #20; archive history and dated Q9 material remain in place. No repo/source/CI/workflow/broker changes or local CLI runs.",
+        "DOC_FREEZE remains NOT_ACCEPTED pending risk-class semantic and incoming reference checks, selective duplicate family signoff, fresh independent review and explicit operator acceptance. Main retains policy hold and GitHub branch protection must be addressed before release."
+      ],
+      "impact": "D4 current-authority precedence is less ambiguous and D5/D6 have evidence scoped to actual reads, without pretending all 339 semantic/backlink checks or runtime production parity passed.",
+      "sources": [
+        "docs/refactor/DOC_D4_D6_CONVERGENCE_EVIDENCE_20261020.md",
+        "docs/refactor/README.md",
+        "docs/00_HOME.md",
+        "docs/dev/workflow.md",
+        "docs/PATCH_NOTES.md",
+        "docs/evaluation/README.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "D00 D01 D02 DIRECT CROSS CLI DEVELOPMENT RELAY RULE 20261020",

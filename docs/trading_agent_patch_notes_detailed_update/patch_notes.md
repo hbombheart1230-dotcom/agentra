@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 DOC D4 D6 CANONICAL AUTHORITY AND BOUNDED LINK AUDIT 20261020
+**Stage:** P1.5 documentation convergence · **Tags:** DOCS · PROCESS · SAFETY
+
+- D4 현재 권한: D00/D01/D02와 Issue #20의 우선순위를 유지하고, 구 `docs/dev/workflow.md`의 Codex→Gemini 작업 절차는 역사적 기록으로만 분류했습니다. `docs/PATCH_NOTES.md`와 Q9-era `docs/evaluation/README.md`도 현재 UI 소스/활성 작업지시로 오인되지 않도록 출처를 명시했습니다.
+- D5 보존: 339개 원본 경로 모두 현재 트리에 있으며 292개는 원본 blob과 같고 47개는 이후 변경됐습니다. 339개 전체의 내용·유입 참조 검증은 미완료입니다. 14개/16회 과거 누락된 로컬 출처와 외부 GitHub URL 4개를 분리하고 원문을 보존합니다.
+- D6 범위형 점검: 현행 문서 19개에서 일반 Markdown 상대링크 86건을 확인했으며 현재 트리 기준 누락 대상 0건입니다. 모든 링크 형식/앵커/코드 유입 참조 검증이나 새 SHA의 CI PASS를 주장하지 않습니다.
+- D7 `DOC_FREEZE`는 아직 HOLD이며 독립 검증·예외 수용·사용자 승인 전에는 새 코드 개발 워크트리, main 병합, 실거래 권한을 열지 않습니다.
+
+Sources: `docs/refactor/DOC_D4_D6_CONVERGENCE_EVIDENCE_20261020.md`, `docs/refactor/README.md`, `docs/00_HOME.md`, `docs/dev/workflow.md`, `docs/PATCH_NOTES.md`, `docs/evaluation/README.md`.
+
 ## 2026-10-20 · D00 D01 D02 DIRECT CROSS CLI DEVELOPMENT RELAY RULE 20261020
 **Stage:** Documentation governance and developer operating contract · **Tags:** DOCS · PROCESS · SAFETY
 

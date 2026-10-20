@@ -1,3 +1,5 @@
+> **Q9-EPOCH HISTORICAL OPERATING SNAPSHOT (2026-06-23) — NOT THE 2026-10-20 P1.5 TASK QUEUE.** The "Current Authority" and "next Day 1" text below is relative to the dated Q9 protocol, not a live instruction to restart Q9 or revise frozen UEF. For formal UEF authority see [UEF foundations](../research/unified_evaluation_foundation.md) and its freeze records; for P1.5 current work and release gates use [refactor entry](../refactor/README.md), [D00](../ENGINEERING_DELIVERY_POLICY.md) and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Preserve the original Q9 research and dates.
+
 # Q9 Evaluation Layer
 
 Current compact Q9-Q18 authority map:

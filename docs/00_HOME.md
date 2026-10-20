@@ -1,5 +1,7 @@
 # Trading Agent System
 
+> **D4–D6 UPDATE 2026-10-20 (bounded):** [Documentation authority and reference evidence](refactor/DOC_D4_D6_CONVERGENCE_EVIDENCE_20261020.md) documents 339 original path preservation, 19-page/86-link targeted pass, current/legacy owner matrix and unresolved gates. **D7 DOC_FREEZE remains HOLD**; `integration/p1.5` + [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) control actual latest SHA/CI. Do not interpret dated snapshots below as live developer authorization.
+
 > **CURRENT 2026-10-19:** [P1.5 documentation entry](refactor/README.md) governs the DOC-FIRST phase; [#20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) is the only live work checkpoint. Existing R2/UEF/NEXT paragraphs below are a historical navigation snapshot, NOT commands. [D00](ENGINEERING_DELIVERY_POLICY.md) · [frozen target](refactor/architecture/TREE_V3_FROZEN.md) · [roadmap](refactor/p1_5_p1_6_master_plan.md).
 
 ## Current State

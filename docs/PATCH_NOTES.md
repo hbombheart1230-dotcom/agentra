@@ -1,3 +1,5 @@
+> **HISTORICAL PHASE SUMMARY — NOT THE PATCH NOTES UI SOURCE (2026-10-20).** Keep the original phase narrative below for provenance. Current UI/API changelog authority is [patch_notes.json](trading_agent_patch_notes_detailed_update/patch_notes.json) paired with [patch_notes.md](trading_agent_patch_notes_detailed_update/patch_notes.md); dated technical audit evidence lives under [daily_patch/](daily_patch/README.md). Do not append a new UI entry to this legacy page.
+
 # Phase 1 Patch Notes (Storage Policy + Canonical Artifact Quality)
 
 ## What Changed
