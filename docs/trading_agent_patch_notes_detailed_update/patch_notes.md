@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH04 BIG PARALLEL REPORTING AND CONTEXT 20261020
+**Stage:** BATCH04 두 파트 대형 개발 승인 (DOCS ONLY) · **Tags:** PROCESS · REFACTOR · TEST · DOCS
+
+- 사용자 승인으로 기존 Claude `ead33ca`와 Codex `8fd49dd` 브랜치의 다음 실질 개발을 동시에 활성화합니다. Claude는 약 1,700줄 Strategist LLM Summary의 품질/읽기 모델과 Markdown 출력을, Codex는 545줄 Commander Decision Context와 323줄 Skill Hydration의 순수 Projection을 함께 담당합니다. 각 파트 2개의 연계 책임 경계, 테스트, 실제 교차검증을 한 묶음으로 수행합니다.
+- 파일 소유권과 계약은 `docs/refactor/work_orders/P15_BATCH04_LARGE_PARALLEL_REPORTING_AND_CONTEXT_20261020.md`에 정확히 고정합니다. 외부 API·시간·환경·뉴스/LLM/거래 판단 및 Executor·Supervisor·Broker·UEF/Step5C 안전 책임은 이동/완화하지 않습니다. normal/`-O` 및 BASE 동등성/변형 검출, 기존 CLI에서 직접 상대 검토 CLI 호출, 마지막 `티키타카 실행 리스트` 보고를 의무화합니다.
+- Codex 이전 `8fd49dd`는 실제 Claude 23/23 normal/-O, exit0 PASS로 독립 검증 완료했으나 **통합 완료는 아닙니다**. 기존 B 통합 CI 5/6, T3 Git SHA `54bebe5` 객체 누락은 그대로 남고 거부된 workflow 수정을 우회하지 않습니다. main·실거래는 불허합니다.
+- 이 커밋은 CURRENT/작업 큐/새 BATCH04 지시서/패치노트 JSON·MD만 작성합니다. 로컬 CLI 세션을 실행하거나 소스·통합 CI를 통과시킨 것이 아닙니다. UI 패치노트 **336/336**.
+
+Sources: `docs/refactor/work_orders/P15_BATCH04_LARGE_PARALLEL_REPORTING_AND_CONTEXT_20261020.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/work_orders/P15_FORWARD_DELIVERY_QUEUE_20261020.md`.
+
 ## 2026-10-20 · P1.5 PEER CLI NO PROMPT ISOLATED REVIEW AND TIKI TAKA LEDGER 20261020
 **Stage:** D00/D01/D02 개발 운영 규칙 · **Tags:** PROCESS · DOCS · SAFETY
 

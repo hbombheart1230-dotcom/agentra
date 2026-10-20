@@ -1,5 +1,15 @@
 # Agentra P1.5 — CURRENT (D7 frozen, B source CI blocked, BATCH03 active with bounded follow-on)
 
+## LATEST OPERATOR SOURCE AUTHORIZATION — BATCH04 MULTI-DELIVERABLE PARALLEL (2026-10-20)
+
+**Explicit Product Owner:** "응 진행하고 작업을 더 크게 계속 몇분 몇십분이면 끝나자나 지팀잠". **New executable [BATCH04 work order](P15_BATCH04_LARGE_PARALLEL_REPORTING_AND_CONTEXT_20261020.md)** grants precisely two larger, disjoint developer bundles on **existing** branches/primary CLI sessions, including multiple linked source boundaries, baseline-byte/effect tests and self-run opposite child review:
+- **DEV-A:** `ead33ca78e7ee8eb17123fbd25bc129dbc042902` → Strategist LLM Summary quality/readout + Markdown projection, two new read-only Owner files, existing focused tests and new parity suite; no Reporter A/B contracts.
+- **DEV-B:** `8fd49ddf958574f0f505249c3370314ffc06aeac` → Commander decision-context cache/meta projection **plus** skill-hydration pure record/summary projection, two new Owners and M10/M22 parity suite; no Broker/live fetch execution changes.
+**DEV-B BATCH03-B previous review blocker now closed:** same `8fd49ddf` was reviewed by direct local Claude child, real exit0/PASS, native strict `dontAsk`, denied commands0, independent normal23/`-O`23 PASS; GPT source accepted in Issue #20 comment 6289917784. DEV-A `ead33ca` source peer PASS reported and fixed local 128/128 normal/-O confirmation, but source integration pending. No redundant child on unchanged SHA. Existing selected-B CI `2f159b6` 5/6 still fails T3 missing immutable `54bebe5` Git object; prior attempted workflow edit was denied, no permission-bypass route authorized. **NO SOURCE INTEGRATION, main or live trade authority.**
+
+**Work sizing is the connected engineering outcomes, not wall-clock minimum:** fully complete both domain slices plus source acceptance regressions, rather than one function and exit. If a true risk/permission contract stops one slice, record exact blocker; don't open unapproved unrelated code. All final developer replies end with actual `티키타카 실행 리스트`. Dispatch user pastes two PRIMARY DEVELOPMENT starts only; self-spawn fresh read-only opposite CLI from each primary. Future queue outside BATCH04 remains DESIGN_ONLY until separately authorized.
+
+
 ## LATEST OPERATOR CROSS-CLI RULE — 2026-10-20 (actual source HEAD verified)
 
 - **CLAUDE_DEV_A:** `work/p15-a-reporter-analysis-projection-20261020@ead33ca78e7ee8eb17123fbd25bc129dbc042902`. A-P3 quant projection after 1 real improvement `41ca719a` is 335 lines, facade 1149; developer reports normal/-O 219/219 and direct Codex reviewer exit0 PASS. Reporter feedback new owner at `ead33ca` ~371 lines, facade 341; developer reports normal/-O 376/376 and direct Codex reviewer exit0 PASS. Source peer PASS is **developer-reported**, not GPT-run CI or owner/strict contract integration approval. No redundant size-only block.

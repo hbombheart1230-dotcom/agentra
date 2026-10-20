@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 335,
+  "entry_count": 336,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 BATCH04 BIG PARALLEL REPORTING AND CONTEXT 20261020",
+      "title": "Authorize substantive two-boundary Claude Strategist summary and Codex Commander context plus skill hydration packages",
+      "stage": "P1.5 BATCH04 AUTHORIZED_PARALLEL_CODING, docs only",
+      "types": [
+        "PROCESS",
+        "REFACTOR",
+        "TEST",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Operator authorized larger continuous two-lane coding work. Claude A handles Strategist summary quality/readout and deterministic Markdown; Codex B handles Commander decision context plus skill hydration pure projections. Each requires byte/effect parity, hostile tests, actual direct local reciprocal review.",
+      "details": [
+        "Current developer SHAs A ead33ca78e7ee8eb17123fbd25bc129dbc042902 and B 8fd49ddf958574f0f505249c3370314ffc06aeac. B existing source peer PASS on reauthorized strict child, independent normal23/-O23, exit0; neither branch integrated.",
+        "Exact owner/file allowlists in BATCH04: A one existing 1700-line summary facade, up to two deterministic projection Owners and focused tests; B existing decision context545 and skill hydration323 with two pure owners and M10/M22 tests. No sharing contract/guard/runtime files or new CI YAML authority.",
+        "Developer must complete both linked source outcomes, normal/-O differential baseline and meaningful mutations, direct read-only opposite CLI with exact SHA; every final reply ends 티키타카 실행 리스트 including actual attempts, exit, verdict and reviewer tests.",
+        "P1.5 selected B source CI T3 Linux 5/6 remains failing due missing immutable 54bebe5 Git object; earlier workflow edit denied. No bypass, test weakening or source integration/main/live trading grant. Work orders alone do not start local CLI."
+      ],
+      "impact": "Increase real parallel source delivery per handoff without turning short microtasks into artificial delays or loosening safety/integration gates.",
+      "sources": [
+        "docs/refactor/work_orders/P15_BATCH04_LARGE_PARALLEL_REPORTING_AND_CONTEXT_20261020.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/P15_FORWARD_DELIVERY_QUEUE_20261020.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 PEER CLI NO PROMPT ISOLATED REVIEW AND TIKI TAKA LEDGER 20261020",
