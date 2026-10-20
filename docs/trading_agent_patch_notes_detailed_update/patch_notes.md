@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 PEER CLI NO PROMPT ISOLATED REVIEW AND TIKI TAKA LEDGER 20261020
+**Stage:** D00/D01/D02 개발 운영 규칙 · **Tags:** PROCESS · DOCS · SAFETY
+
+- 제품 책임자 지시에 따라 개발자가 자기 CLI에서 상대 검토 CLI를 직접 호출할 때, **OS 수준 소스 읽기 전용 격리·자격증명 제거·테스트 임시 경로 분리**가 실제로 확인된 경우에 한해서 승인 프롬프트 생략 플래그를 사용하도록 명시합니다. Claude 검토는 `--dangerously-skip-permissions`, Codex 검토는 `--dangerously-bypass-approvals-and-sandbox`를 사용할 수 있으나 운영 Windows나 writable/source/trading 자격증명이 있는 환경에서 무제한 호출할 수 없습니다. 검토자는 코드 수정/커밋/푸시/중첩 CLI 호출 금지입니다.
+- CODEX B `8fd49ddf`는 기존 Claude 하위 검토에서 pytest 명령 파이프라인이 거부되어 **BLOCKED**, 종료 코드 0만으로 PASS가 아닙니다. 이번 명시적 승인 아래 안전 격리 확인 후 1회 새 독립검토만 허용합니다.
+- CLAUDE A `41ca719a` quant projection 335줄 및 `ead33ca` Reporter Feedback projection 371줄은 개발자 보고에 따른 로컬 Codex 검토 PASS로 기록하되 통합 CI 및 owner contract 승인과 구분합니다.
+- **모든 주 개발자 최종 응답 마지막에는 `티키타카 실행 리스트`**: 실제 CLI 호출 회차/정확한 SHA/옵션/프로세스 exit/명시 판정/독립 테스트/NOT_RUN/실제 REWORK 및 새 SHA. 과거 차단도 표시하고 인위적인 재검증은 금지합니다.
+- 앞으로 승인된 개발 묶음은 2–4개의 연결된 실질 구현 산출물로 설계합니다. CI T3 원본 Git object 누락, 워크플로 변경 거부, main/실거래 금지는 그대로 유지됩니다. 현재 커밋은 문서·UI 패치노트만 변경합니다.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/work_orders/CURRENT.md`.
+
 ## 2026-10-20 · P1.5 BATCH03 A THREE IMPROVEMENT ATTEMPTS AND AUTO CONTINUE 20261020
 **Stage:** Claude BATCH03-A 구조 개선 3회 제한과 후속 개발 연결 · **Tags:** PROCESS · DOCS · SAFETY
 

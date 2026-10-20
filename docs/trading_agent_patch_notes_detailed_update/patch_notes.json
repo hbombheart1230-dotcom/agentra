@@ -1,8 +1,36 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 334,
+  "entry_count": 335,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 PEER CLI NO PROMPT ISOLATED REVIEW AND TIKI TAKA LEDGER 20261020",
+      "title": "Authorize isolated no-prompt reciprocal CLI review and require actual final tiki-taka invocation ledger",
+      "stage": "P1.5 D00/D01/D02 development process; docs-only",
+      "types": [
+        "PROCESS",
+        "DOCS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Operator asks to remove child CLI review permission friction, enlarge substantive work blocks and show all actual reciprocal CLI invocation outcomes at the end of every developer report.",
+      "details": [
+        "Conditional, externally OS-enforced read-only review snapshot permits Claude --dangerously-skip-permissions or Codex --dangerously-bypass-approvals-and-sandbox to avoid prompts; unisolated operational or credentialed runner stays prohibited; source edit/commit/push/nested reviewer remain forbidden.",
+        "Claude A final ead33ca: quant A-P3 at 41ca719a 335 LOC with developer-reported local peer PASS; reporter feedback projection at ead33ca 371 LOC and developer-reported 376/376 and peer PASS. NOT independently confirmed by GPT local CLI or hosted CI.",
+        "Codex B candidate 8fd49dd remains independent Claude peer BLOCKED, despite exit 0: decorated pytest pipeline denied. One newly operator-approved strictly isolated direct child review permitted, with exact BASE/CANDIDATE SHA and explicit verdict; no silent PASS.",
+        "Required last report section 티키타카 실행 리스트 enumerates every real child invocation, flags, exact SHA, exit, verdict, reviewer-run tests or NOT_RUN, findings/REWORK. Work batches target 2–4 meaningful connected outcomes with no artificial extra review cycles.",
+        "Previously missing immutable B git object in hosted T3 Linux remains unresolved; no CI workflow bypass, source changes, main promotion or real broker permission granted."
+      ],
+      "impact": "Reduce blocked independent testing and unnecessary microtask churn while keeping actual safety and source write restrictions verifiable.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/P15_BATCH03_PARALLEL_CONTRACT_AND_QUANT_20261020.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 BATCH03 A THREE IMPROVEMENT ATTEMPTS AND AUTO CONTINUE 20261020",

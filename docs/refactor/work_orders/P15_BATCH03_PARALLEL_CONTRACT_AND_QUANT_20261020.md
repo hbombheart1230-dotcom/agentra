@@ -2,6 +2,10 @@
 
 **Date:** 2026-10-20. **Authority:** operator's “다음 작업 지시하자 지팀장”; D00/D01/D02 and Issue #20. **Status:** `AUTHORIZED_PARALLEL_CODING` with branch-specific scoped ownership. Git work order does NOT launch local CLI processes. Use the operator's EXISTING two primary developer terminals, each with isolated writer workspace, no new branch/worktree, no `main`/trading deployment.
 
+## Latest operator peer-CLI permission/reporting override (2026-10-20)
+
+D00 §3A is authoritative for **conditional, OS-isolated no-prompt child reviewer** options and the mandatory final `티키타카 실행 리스트`. Follow exact newest source SHAs in CURRENT: Claude A `ead33ca7` (A-P3 `41ca719a` plus Reporter Feedback); Codex B `8fd49ddf` source candidate, child Claude review **BLOCKED** (exit0 but denied decorated pytest). One freshly authorized bounded reviewer call is permitted when externally read-only isolated; never switch approvals to evade a CI policy denial or run unsafe full access on unisolated operational Windows. No new runtime scope is granted. Next future authorized batches should have 2–4 connected real outputs, not repeated microtasks.
+
 ## Exact Git checkpoint (verify again with git fetch)
 
 - `integration/p1.5@2f159b6447f5c3f07a82a254eee4f2eeee3dcf02`: selectively selected peer-reviewed B Operator UI and B strict contract code. This SHA's hosted six workflows **5 success, 1 failure**, **not INTEGRATED**. [Failing workflow #39396207960](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39396207960) `P1.5 Reporting Regression + P1.5 Design Guard`, job `regression`, step `Gate P1.5 Third Pass T3`: **42 PASS + 1 FAIL**; `tests/test_p159_current_owner_contract_gates.py::test_t3_changed_paths_contain_no_authority_surface` attempts `git diff 4b0c3e0...54bebe5...` and fails exit 128, `fatal: bad object 54bebe5ece0ac34c4f45df55c44889c9ce323e95`, because that unmerged developer ref is missing from the hosted checkout. This is an actual *Git object hydration* failure, not evidence the source parity test rejected a changed body.
