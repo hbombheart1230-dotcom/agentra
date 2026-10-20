@@ -3940,3 +3940,14 @@ UEF9 필수 계약은 고정된 비민감 합성 원천 JSON 4개를 명시적 r
 - 커밋 작성 시 새 Claude CLI 독립 읽기 전용 검토는 대기 중입니다. 실제 종료 코드·정확한 candidate SHA·PASS/REWORK/BLOCKED를 별도 인계합니다. 통합 CI·전체 pytest·실데이터24SKIP·운영 HTML/JSON parity·UI build는 NOT_RUN. main·Docker·실거래·운영 배포 승인 없음.
 
 근거: `apps/operator_ui/data_access_core.py`, `apps/operator_ui/data_access_overview_projection.py`, `tests/test_p15_overview_live_projection.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+
+## 2026-10-20 - P1.5 CODE BATCH 02 DEV B TRADE INDEX AND RUN DETAIL PROJECTIONS 20261020
+**Stage:** Developer candidate, selective integration pending. **Tags:** REFACTOR / TEST
+
+- BASE `c0c3f808967dc921a956d01a879fe489674cad71`: core 2612 -> 2467 lines; `_trade_report_index` 226 -> 152; `load_run_detail` 272 -> 191. Pure index Owner 225 lines and run-detail Owner 230 lines reuse existing read-model/status helpers through use-time facade lookups.
+- Keep discovery, file reads and all path/stat probes in the coordinator, with original priority/ties, linked-record identity, field ordering and exception timing. Reporter lookup, cached brief generation, LLM prompts/call counts and artifact writers stay at their existing boundaries. No change to BATCH01 or Monitor11 owners, safety locks or transaction authority.
+- Windows Python 3.14.2 focused normal **116 PASS** (81 existing + 35 new): pinned BASE synthetic JSON/call/exception equality, synthetic HTML bytes, offline real cold/warm generation/cache/file-byte parity and **10 hostile mutations rejected**. Callback addresses, clock/latency and restored fixture mtime were controlled explicitly rather than normalized out of expected outputs. Optimized focused run **118 PASS** includes the paired-note2 checks; normal notes validation is recorded separately.
+- Fresh read-only Claude CLI exact-SHA review pending candidate authoring. Hosted integration CI, full pytest, real production frozen snapshots/real-data evidence and UI visual/build **NOT_RUN**. Not final acceptance, deployment or main integration.
+
+Sources: `apps/operator_ui/data_access_core.py`, `apps/operator_ui/data_access_trade_index_projection.py`, `apps/operator_ui/data_access_run_detail_projection.py`, `tests/test_p15_operator_trade_index_projection.py`, `tests/test_p15_operator_run_detail_projection.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.

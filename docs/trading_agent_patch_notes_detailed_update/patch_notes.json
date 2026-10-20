@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 320,
+  "entry_count": 321,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8445,6 +8445,34 @@
         "apps/operator_ui/data_access_core.py",
         "apps/operator_ui/data_access_overview_projection.py",
         "tests/test_p15_overview_live_projection.py",
+        "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 CODE BATCH 02 DEV B TRADE INDEX AND RUN DETAIL PROJECTIONS 20261020",
+      "title": "Extract pure linked-trade indexing and run-detail canonical/presentation responsibilities",
+      "stage": "P1.5 CODE BATCH 02 developer candidate; selective integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Separate already-read report identity, summaries, diagnostics, index selection and canonical run/role presentation from the existing Operator UI IO coordinator.",
+      "details": [
+        "Pinned CODEX_DEV_B BASE c0c3f808967dc921a956d01a879fe489674cad71. Core2612 to2467 lines; trade index226 to152; run detail272 to191. Cohesive index225-line and run-detail230-line Owners; only the two assigned existing function bodies changed.",
+        "Keep directory discovery, candidate mtime ordering, resolve/stat/exists probes (including short circuit and repeated probes), all readers and Reporter/brief/cache/artifact/LLM boundaries in the original coordinator. Preserve lifecycle priority, >= timestamp ties, duplicate linked aliases and identity, canonical overrides, deterministic trace fallbacks, response order and use-time facade helper lookups.",
+        "Focused Windows Python3.14.2 existing UI/API/read-model81 plus new35 cases: normal116PASS; optimized118PASS including paired-note2 checks. Includes pinned BASE synthetic full JSON/call/exception parity, exact synthetic HTML bytes, real offline generation cold/warm cache and all synthetic file bytes, and ten hostile index/canonical/fallback/IO mutations. Normal paired-note validation is recorded separately; no production golden invented.",
+        "Differential test setup corrected callback address nondeterminism and restored source mtime as well as bytes; clocks and local latency are fixed for exact offline artifact comparison. Initial failed logs retained in bounded ignored scratch. No oracle weakening or production report copy.",
+        "Fresh read-only Claude CLI review is pending candidate authoring; verdict requires exact SHA and actual CLI exit, recorded externally after commit. Integration-SHA CI, full repository pytest, genuine production frozen snapshots/real-data gates and UI visual/build NOT_RUN. No BATCH01, Monitor11, Broker, Supervisor, Executor, Step5C, UEF, policies, main or Docker change."
+      ],
+      "impact": "Reduce embedded data interpretation in the IO facade without transferring read/write or trading authority. Candidate only, not integrated or accepted.",
+      "sources": [
+        "apps/operator_ui/data_access_core.py",
+        "apps/operator_ui/data_access_trade_index_projection.py",
+        "apps/operator_ui/data_access_run_detail_projection.py",
+        "tests/test_p15_operator_trade_index_projection.py",
+        "tests/test_p15_operator_run_detail_projection.py",
         "docs/ENGINEERING_DELIVERY_POLICY.md"
       ]
     }
