@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 CODE BATCH 01 DEV-A REPORTER ANALYSIS PROJECTION 20261020
+**Stage:** P1.5 CODE BATCH 01 DEV-A 개발 후보 (독립 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- `generate_reporter_analysis_report()`의 결정적 기본 리포트, AI 리뷰 오류 대체 payload, AI 근거 projection을 새 Reporter read-model `analysis_report_projection.py`로 분리했습니다. 새 모듈은 `typing`만 import하며 I/O·LLM·메모리/원장 기록을 하지 않습니다.
+- 공개 시그니처, `reporter_analysis.v1` JSON/Markdown 바이트, 대체 경로, LLM 호출 횟수/인자, 전략 메모리·decision bridge·파일 기록 순서는 그대로입니다. 보조 함수는 호출 시점에 facade 모듈에서 찾으므로 늦은 monkeypatch도 BASE와 동일하게 동작합니다.
+- 신규 테스트는 BASE `4b0c3e0b`의 함수를 현재 facade 위에서 실행해 AI 정상/예외/빈 값/부분 값, 메모리·원장 실패, 로그 누락, story/card 활성 7개 시나리오의 바이트·반환값·부수효과 순서가 같음을 확인하고, stub facade 단독 호출과 적대적 입력도 검사합니다.
+- 기존 Reporter 트리/facade 고정 가드는 이전 BASE의 `reporter_analysis.py`와 `read_models` 파일 목록을 고정하므로 이 후보를 거부합니다. **가드는 약화하지 않았으며** 통합 시 승인된 계약 갱신이 필요합니다. 실거래·브로커·Supervisor·Executor·스키마 변화 없음.
+
+Sources: `libs/reporting/reporter_analysis.py`, `libs/agents/reporter/read_models/analysis_report_projection.py`, `tests/test_p15_reporter_analysis_projection.py`.
+
 ## 2026-10-20 · P1.5 D7 OPERATOR ACCEPTED DOC FREEZE 20261020
 **Stage:** P1.5 D7 문서 기준선 동결 · **Tags:** DOCS · PROCESS · SAFETY
 

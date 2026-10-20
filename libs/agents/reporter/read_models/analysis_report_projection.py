@@ -1,0 +1,162 @@
+"""Deterministic Reporter analysis read-model projection (P1.5 CODE BATCH 01, DEV-A).
+
+Owns the pure result/evidence presentation of ``generate_reporter_analysis_report``:
+the ``reporter_analysis.v1`` base report, the degraded AI-review fallback payload and the
+AI evidence projection. No log reads, LLM calls, memory/ledger writes or report files here;
+those stay in the ``libs.reporting.reporter_analysis`` orchestrator.
+
+Helpers (``_safe_int``, ``_build_ai_evidence_catalog``, ``_ensure_min_ai_review_payload``,
+``_hydrate_ai_evidence_details``) are resolved on the injected ``facade`` at call time so a
+late monkeypatch of the facade module is honoured exactly as before the extraction.
+"""
+from __future__ import annotations
+
+from typing import Any, Dict, List
+
+
+def build_daily_operator_report(
+    *,
+    op_obj: Dict[str, Any],
+    market_context: Dict[str, Any],
+    incident: Dict[str, Any],
+    facade: Any,
+) -> Dict[str, Any]:
+    trading_activity = (
+        op_obj.get("trading_activity_summary") if isinstance(op_obj.get("trading_activity_summary"), dict) else {}
+    )
+    return {
+        "market_context": market_context,
+        "trades_executed": facade._safe_int(trading_activity.get("executions_total"), 0),
+        "trades_blocked": facade._safe_int(trading_activity.get("blocked_total"), 0),
+        "major_decisions": list((trading_activity.get("strategy_counts") or {}).keys())[:5]
+        if isinstance(trading_activity.get("strategy_counts"), dict)
+        else [],
+        "anomalies": [i.get("type") for i in (incident.get("incidents") or []) if isinstance(i, dict)],
+    }
+
+
+def build_base_report(
+    *,
+    target_day: str,
+    trade_summary: Dict[str, Any],
+    decision_chains: Dict[str, Any],
+    decision_trace_chain_summary: Dict[str, Any],
+    trade_decision: Dict[str, Any],
+    strategy_frame_summary: Dict[str, Any],
+    strategist_eval: Dict[str, Any],
+    scanner_eval: Dict[str, Any],
+    monitor_eval: Dict[str, Any],
+    supervisor_activity: Dict[str, Any],
+    intent_flow: Dict[str, Any],
+    strategy_eff: Dict[str, Any],
+    overtrading: Dict[str, Any],
+    daily_operator: Dict[str, Any],
+    incident: Dict[str, Any],
+    improvement_suggestions: List[str],
+    report_views: Dict[str, Any],
+    market_context: Dict[str, Any],
+    report_focus_targets: List[str],
+    trade_js: Any,
+    trade_md: Any,
+    op_js: Any,
+    op_md: Any,
+    generate_decision_story: bool,
+    generate_run_cards: bool,
+    decision_story_md: str,
+    run_cards_md: str,
+    ds_obj: Dict[str, Any],
+    rc_obj: Dict[str, Any],
+    js_path: Any,
+    md_path: Any,
+    facade: Any,
+) -> Dict[str, Any]:
+    """Return the pre-AI report dict (key order is the serialized contract) plus its evidence catalog.
+
+    ``decision_story_md``/``run_cards_md`` are the already-resolved strings: the caller keeps the
+    filesystem existence check so this projection performs no I/O.
+    """
+    out: Dict[str, Any] = {
+        "schema_version": "reporter_analysis.v1",
+        "day": target_day,
+        "trade_summary": trade_summary,
+        "decision_chains": decision_chains,
+        "decision_trace_chain_summary": decision_trace_chain_summary,
+        "trade_decision_summaries": trade_decision,
+        "strategy_frame_summary": strategy_frame_summary,
+        "strategist_evaluation": strategist_eval,
+        "scanner_evaluation": scanner_eval,
+        "monitor_evaluation": monitor_eval,
+        "supervisor_activity": supervisor_activity,
+        "intent_flow_analysis": intent_flow,
+        "strategy_effectiveness": strategy_eff,
+        "overtrading_diagnostics": overtrading,
+        "daily_operator_report": daily_operator,
+        "incident_postmortem": incident,
+        "incidents": incident,
+        "improvement_suggestions": improvement_suggestions,
+        "operator_facing_summary": report_views.get("operator_facing_summary", {}),
+        "developer_facing_summary": report_views.get("developer_facing_summary", {}),
+        "market_context": market_context,
+        "report_focus_targets": list(report_focus_targets),
+        "source_reports": {
+            "trade_explain_json": str(trade_js),
+            "trade_explain_md": str(trade_md),
+            "operator_summary_json": str(op_js),
+            "operator_summary_md": str(op_md),
+            "decision_story_enabled": bool(generate_decision_story),
+            "run_cards_enabled": bool(generate_run_cards),
+            "decision_story_md": decision_story_md,
+            "run_cards_md": run_cards_md,
+            "decision_story_total": int(ds_obj.get("story_total") or 0),
+            "run_card_total": int(rc_obj.get("card_total") or 0),
+        },
+        "report_json_path": str(js_path),
+        "report_md_path": str(md_path),
+    }
+    out["ai_evidence_catalog"] = facade._build_ai_evidence_catalog(out)
+    return out
+
+
+def ai_review_error_payload(exc: BaseException, *, enabled: Any, model: Any) -> Dict[str, Any]:
+    """Degraded AI-review payload used when the review call raises."""
+    return {
+        "enabled": bool(enabled),
+        "status": "error",
+        "reason": f"ai_review_exception:{exc}",
+        "model": str(model or ""),
+        "ai_summary": "",
+        "ai_findings": [],
+        "ai_root_causes": [],
+        "ai_improvement_suggestions": [],
+        "ai_run_grade": "N/A",
+        "ai_agent_evaluations": {},
+    }
+
+
+def apply_ai_review_projection(out: Dict[str, Any], ai_review: Any, *, facade: Any) -> Dict[str, Any]:
+    """Normalize ``ai_review`` and project it plus hydrated evidence links into ``out`` (in place, same key order)."""
+    ai_review = facade._ensure_min_ai_review_payload(out=out, ai_review=dict(ai_review or {}))
+    out["ai_review"] = dict(ai_review)
+    out["ai_summary"] = str(ai_review.get("ai_summary") or "")
+    out["ai_findings"] = list(ai_review.get("ai_findings") or [])
+    out["ai_root_causes"] = list(ai_review.get("ai_root_causes") or [])
+    out["ai_improvement_suggestions"] = list(ai_review.get("ai_improvement_suggestions") or [])
+    out["ai_run_grade"] = str(ai_review.get("ai_run_grade") or "N/A")
+    out["ai_agent_evaluations"] = dict(ai_review.get("ai_agent_evaluations") or {})
+    out["ai_evidence_links"] = dict(ai_review.get("ai_evidence_links") or {})
+    out["ai_findings_detailed"] = facade._hydrate_ai_evidence_details(
+        out["ai_findings"],
+        (out.get("ai_evidence_links") or {}).get("findings"),
+        out["ai_evidence_catalog"],
+    )
+    out["ai_root_causes_detailed"] = facade._hydrate_ai_evidence_details(
+        out["ai_root_causes"],
+        (out.get("ai_evidence_links") or {}).get("root_causes"),
+        out["ai_evidence_catalog"],
+    )
+    out["ai_improvement_suggestions_detailed"] = facade._hydrate_ai_evidence_details(
+        out["ai_improvement_suggestions"],
+        (out.get("ai_evidence_links") or {}).get("improvements"),
+        out["ai_evidence_catalog"],
+    )
+    return out

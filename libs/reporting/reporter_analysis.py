@@ -60,6 +60,7 @@ from libs.agents.reporter.read_models.reporter_analysis_bodies_04 import (  # R-
 from libs.agents.reporter.read_models.reporter_analysis_r8_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _latest_day_r4_impl,
 )
+from libs.agents.reporter.read_models import analysis_report_projection as _analysis_projection  # P1.5 DEV-A read-model
 
 
 def _safe_int(v: Any, default: int = 0) -> int:
@@ -498,60 +499,46 @@ def generate_reporter_analysis_report(
         improvement_suggestions=improvement_suggestions,
     )
 
-    trading_activity = (
-        op_obj.get("trading_activity_summary") if isinstance(op_obj.get("trading_activity_summary"), dict) else {}
+    daily_operator = _analysis_projection.build_daily_operator_report(
+        op_obj=op_obj, market_context=market_context, incident=incident, facade=_r3_sys.modules[__name__]
     )
-    daily_operator = {
-        "market_context": market_context,
-        "trades_executed": _safe_int(trading_activity.get("executions_total"), 0),
-        "trades_blocked": _safe_int(trading_activity.get("blocked_total"), 0),
-        "major_decisions": list((trading_activity.get("strategy_counts") or {}).keys())[:5]
-        if isinstance(trading_activity.get("strategy_counts"), dict)
-        else [],
-        "anomalies": [i.get("type") for i in (incident.get("incidents") or []) if isinstance(i, dict)],
-    }
     js_path = report_dir / f"reporter_analysis_{target_day}.json"
     md_path = report_dir / f"reporter_analysis_{target_day}.md"
 
-    out: Dict[str, Any] = {
-        "schema_version": "reporter_analysis.v1",
-        "day": target_day,
-        "trade_summary": trade_summary,
-        "decision_chains": decision_chains,
-        "decision_trace_chain_summary": decision_trace_chain_summary,
-        "trade_decision_summaries": trade_decision,
-        "strategy_frame_summary": strategy_frame_summary,
-        "strategist_evaluation": strategist_eval,
-        "scanner_evaluation": scanner_eval,
-        "monitor_evaluation": monitor_eval,
-        "supervisor_activity": supervisor_activity,
-        "intent_flow_analysis": intent_flow,
-        "strategy_effectiveness": strategy_eff,
-        "overtrading_diagnostics": overtrading,
-        "daily_operator_report": daily_operator,
-        "incident_postmortem": incident,
-        "incidents": incident,
-        "improvement_suggestions": improvement_suggestions,
-        "operator_facing_summary": report_views.get("operator_facing_summary", {}),
-        "developer_facing_summary": report_views.get("developer_facing_summary", {}),
-        "market_context": market_context,
-        "report_focus_targets": list(report_focus_targets),
-        "source_reports": {
-            "trade_explain_json": str(trade_js),
-            "trade_explain_md": str(trade_md),
-            "operator_summary_json": str(op_js),
-            "operator_summary_md": str(op_md),
-            "decision_story_enabled": bool(generate_decision_story),
-            "run_cards_enabled": bool(generate_run_cards),
-            "decision_story_md": str(ds_md) if bool(generate_decision_story) and ds_md.exists() else "",
-            "run_cards_md": str(rc_md) if bool(generate_run_cards) and rc_md.exists() else "",
-            "decision_story_total": int(ds_obj.get("story_total") or 0),
-            "run_card_total": int(rc_obj.get("card_total") or 0),
-        },
-        "report_json_path": str(js_path),
-        "report_md_path": str(md_path),
-    }
-    out["ai_evidence_catalog"] = _build_ai_evidence_catalog(out)
+    out = _analysis_projection.build_base_report(
+        target_day=target_day,
+        trade_summary=trade_summary,
+        decision_chains=decision_chains,
+        decision_trace_chain_summary=decision_trace_chain_summary,
+        trade_decision=trade_decision,
+        strategy_frame_summary=strategy_frame_summary,
+        strategist_eval=strategist_eval,
+        scanner_eval=scanner_eval,
+        monitor_eval=monitor_eval,
+        supervisor_activity=supervisor_activity,
+        intent_flow=intent_flow,
+        strategy_eff=strategy_eff,
+        overtrading=overtrading,
+        daily_operator=daily_operator,
+        incident=incident,
+        improvement_suggestions=improvement_suggestions,
+        report_views=report_views,
+        market_context=market_context,
+        report_focus_targets=report_focus_targets,
+        trade_js=trade_js,
+        trade_md=trade_md,
+        op_js=op_js,
+        op_md=op_md,
+        generate_decision_story=generate_decision_story,
+        generate_run_cards=generate_run_cards,
+        decision_story_md=str(ds_md) if bool(generate_decision_story) and ds_md.exists() else "",
+        run_cards_md=str(rc_md) if bool(generate_run_cards) and rc_md.exists() else "",
+        ds_obj=ds_obj,
+        rc_obj=rc_obj,
+        js_path=js_path,
+        md_path=md_path,
+        facade=_r3_sys.modules[__name__],
+    )
 
     try:
         ai_review = build_ai_reporter_review(
@@ -563,42 +550,8 @@ def generate_reporter_analysis_report(
             max_tokens=max(256, int(ai_review_max_tokens)),
         )
     except Exception as e:
-        ai_review = {
-            "enabled": bool(ai_review_enabled),
-            "status": "error",
-            "reason": f"ai_review_exception:{e}",
-            "model": str(ai_review_model or ""),
-            "ai_summary": "",
-            "ai_findings": [],
-            "ai_root_causes": [],
-            "ai_improvement_suggestions": [],
-            "ai_run_grade": "N/A",
-            "ai_agent_evaluations": {},
-        }
-    ai_review = _ensure_min_ai_review_payload(out=out, ai_review=dict(ai_review or {}))
-    out["ai_review"] = dict(ai_review)
-    out["ai_summary"] = str(ai_review.get("ai_summary") or "")
-    out["ai_findings"] = list(ai_review.get("ai_findings") or [])
-    out["ai_root_causes"] = list(ai_review.get("ai_root_causes") or [])
-    out["ai_improvement_suggestions"] = list(ai_review.get("ai_improvement_suggestions") or [])
-    out["ai_run_grade"] = str(ai_review.get("ai_run_grade") or "N/A")
-    out["ai_agent_evaluations"] = dict(ai_review.get("ai_agent_evaluations") or {})
-    out["ai_evidence_links"] = dict(ai_review.get("ai_evidence_links") or {})
-    out["ai_findings_detailed"] = _hydrate_ai_evidence_details(
-        out["ai_findings"],
-        (out.get("ai_evidence_links") or {}).get("findings"),
-        out["ai_evidence_catalog"],
-    )
-    out["ai_root_causes_detailed"] = _hydrate_ai_evidence_details(
-        out["ai_root_causes"],
-        (out.get("ai_evidence_links") or {}).get("root_causes"),
-        out["ai_evidence_catalog"],
-    )
-    out["ai_improvement_suggestions_detailed"] = _hydrate_ai_evidence_details(
-        out["ai_improvement_suggestions"],
-        (out.get("ai_evidence_links") or {}).get("improvements"),
-        out["ai_evidence_catalog"],
-    )
+        ai_review = _analysis_projection.ai_review_error_payload(e, enabled=ai_review_enabled, model=ai_review_model)
+    _analysis_projection.apply_ai_review_projection(out, ai_review, facade=_r3_sys.modules[__name__])
     try:
         memory_record = save_strategy_feedback(run_id=reporter_run_id, reporter_output=out)
         memory_meta = (

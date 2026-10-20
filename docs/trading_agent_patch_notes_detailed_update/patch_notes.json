@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 319,
+  "entry_count": 320,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 CODE BATCH 01 DEV-A REPORTER ANALYSIS PROJECTION 20261020",
+      "title": "Extract deterministic Reporter analysis report and AI evidence projection into an independently callable read-model",
+      "stage": "P1.5 CODE BATCH 01 DEV-A developer candidate, independent review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "generate_reporter_analysis_report keeps its public signature, reporter_analysis.v1 output bytes, fallbacks, LLM call and memory/ledger write order while its deterministic base report, degraded AI-review payload and AI evidence projection move to a new Reporter read-model.",
+      "details": [
+        "New libs/agents/reporter/read_models/analysis_report_projection.py: build_daily_operator_report, build_base_report, ai_review_error_payload and apply_ai_review_projection; imports only typing, performs no I/O, LLM, memory or ledger effects.",
+        "Facade helpers (_safe_int, _build_ai_evidence_catalog, _ensure_min_ai_review_payload, _hydrate_ai_evidence_details) are resolved on the injected facade module at call time, so late monkeypatching behaves exactly as at BASE.",
+        "The orchestrator keeps log reading, source report generation, the decision-story/run-card existence checks, the LLM try/except, strategy memory save, decision bridge and JSON/Markdown writes in the original order.",
+        "New tests exec the BASE 4b0c3e0b function against the live facade and require identical JSON/Markdown bytes, returned dict and effect order across 7 scenarios (AI ok/exception/empty/partial, memory+bridge failure, missing log, story/cards on), plus pure stub-facade and hostile-input cases.",
+        "Frozen Reporter tree/facade guards pin reporter_analysis.py and the read_models file list at their earlier BASE; they reject this candidate and need an authorized contract update at integration. They were not weakened here."
+      ],
+      "impact": "generate_reporter_analysis_report shrinks by 48 lines (298 to 250) and the report/evidence presentation becomes callable without the log, LLM or write path; no trading, broker, Supervisor, Executor or schema behaviour changes.",
+      "sources": [
+        "libs/reporting/reporter_analysis.py",
+        "libs/agents/reporter/read_models/analysis_report_projection.py",
+        "tests/test_p15_reporter_analysis_projection.py"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 D7 OPERATOR ACCEPTED DOC FREEZE 20261020",
