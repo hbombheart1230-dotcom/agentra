@@ -1,3 +1,5 @@
+> **HISTORICAL REPORTER IMPLEMENTATION PLAN (2026-04-15), NOT ACTIVE P1.5 TASK AUTHORITY.** This document records the original Reporter agentification sequence and requirements. New implementation is scoped only through [current P1.5 navigation](../refactor/README.md), [D00](../ENGINEERING_DELIVERY_POLICY.md) and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). The existing fact-versus-narrative requirements remain historical design evidence; no source move or CLI session is authorized by this page.
+
 # Reporter 재구조화 및 운영 실행 계획
 기준일: 2026-04-15
 

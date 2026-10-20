@@ -1,3 +1,5 @@
+> **HISTORICAL REPORTER PROGRESS SNAPSHOT (2026-10-09).** “Active code branch” and pinned candidate SHA statements below apply to the dated `refactor/p1.5` development window, not active `integration/p1.5` at 2026-10-20. For latest integrated work and doc-freeze/no-code gate see [P1.5 navigation](README.md), [D00](../ENGINEERING_DELIVERY_POLICY.md) and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Original evidence remains unchanged.
+
 # P1.5.2 GPT Reporting Refactor — Implementation Evidence and Closure Gate
 
 Date: 2026-10-09

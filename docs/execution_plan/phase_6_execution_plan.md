@@ -1,3 +1,5 @@
+> **LEGACY PHASE-6 KICKOFF (HISTORICAL).** The implementation order and runtime descriptions below belong to an earlier phase; they are not a command to restart it or bypass the current P1.5 DOC-FIRST gate. Current task authority: [D00](../ENGINEERING_DELIVERY_POLICY.md), [P1.5 navigation](../refactor/README.md), and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Existing safety contracts, including Supervisor approval and broker guards, remain authoritative regardless of this historical wording.
+
 # Phase 6 Kickoff — Read Model & Consumption Layer
 
 ## 목적

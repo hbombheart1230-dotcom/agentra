@@ -1,3 +1,5 @@
+> **HISTORICAL ARCHITECTURE DRAFT (source f555165b) — NOT A CURRENT REFACTOR ORDER.** The proposed tree, gaps and migration suggestions below were scoped to the former T4/PR5 revision; they neither supersede frozen [TREE_V3](TREE_V3_FROZEN.md) nor authorize developer work while DOC_FREEZE is pending. See [D00](../../ENGINEERING_DELIVERY_POLICY.md) and live [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20).
+
 # Current-to-target architecture gap matrix
 
 Source SHA: f555165b1abcf64b03e9c370844611dabe40c949

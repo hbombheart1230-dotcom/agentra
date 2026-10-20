@@ -1,3 +1,5 @@
+> **Q13–Q18 DATED EVALUATION HISTORY, NOT A CURRENT Q15 START COMMAND (2026-10-20).** “Q15 patching has started” and the later `Current operating phase` below describe the 2026-07 evidence window. Do not restart patches, reopen frozen Q13/Q14, or treat stale statuses as P1.5 release acceptance. [Q9–Q18 status at 2026-08-05](../evaluation/q9_q18_operating_status_2026-08-05.md) and [UEF authority](../research/uef9_formal_evaluation_authority_freeze.md) govern their original evidence, while [D00](../ENGINEERING_DELIVERY_POLICY.md)/[Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) govern current development.
+
 # Q13/Q14 Validation and Q15 Patch
 
 ## Status

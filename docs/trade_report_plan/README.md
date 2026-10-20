@@ -1,3 +1,5 @@
+> **REPORT-DOMAIN REFERENCE, NOT P1.5 WORK ORDER (2026-10-20).** The trade-report contracts and implementation descriptions below are scoped technical documentation from the report-plan history, not independent certification of today’s Reporter callable owner or actual production HTML/JSON byte parity. [D00](../ENGINEERING_DELIVERY_POLICY.md) and [P1.5 refactor entry](../refactor/README.md) define current engineering authority; [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) defines active gate and exact SHA. Preserve underlying report-domain rules pending source-level verification.
+
 # Trade Report Plan
 
 ## Scope

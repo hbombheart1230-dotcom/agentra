@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 D4 HIGH RISK FAMILY AUTHORITY QUARANTINE 20261020
+**Stage:** P1.5 DOC D4–D6 risk-based convergence · **Tags:** DOCS · PROCESS · SAFETY
+
+- P1.5 현재 권한·스냅샷 등 주요 리팩터링 문서 35개 및 관련 개발·평가·리포트·실행 문서 17개를 실제로 읽고 혼동 위험이 있는 문서 14개에 **상단 주석만 추가**했습니다. 기존 본문과 과거 명령/평가 증거는 모두 보존했습니다.
+- 구 Gemini 검증 체크리스트, 2026-06 Q8/Q9 “current” 기록, `--mode live` 구 명령 예시, Reporter 예전 구현 계획, f555/5cb 고정 아키텍처 스냅샷을 현재 작업지시·실거래 권한으로 사용하지 않도록 분리했습니다. 현재 운영 원칙은 D00/D01/D02, 안전 규칙 및 Issue #20 우선입니다.
+- 신규 안내문 14개의 내부 상대링크 32건은 원격 트리에서 대상 경로 모두 확인했습니다. 339개 원본 전체 의미/유입 참조 완료 주장이나 문서 동결 승인은 하지 않습니다.
+- 직전 SHA `781aec98`의 관측된 5개 CI 워크플로는 5/5 성공했으나 Target Tree 별도 워크플로는 해당 SHA에서 미실행이며, **이번 신규 커밋 CI는 별도 검증** 대상입니다.
+- **D7 DOC_FREEZE HOLD / main HOLD / 실거래 HOLD**. 전체 교차참조·독립 감사·운영자 명시 승인은 여전히 남아 있습니다.
+
+Sources: `docs/refactor/DOC_D4_D6_CONVERGENCE_EVIDENCE_20261020.md`, `docs/dev/gemini_review.md`, `docs/evaluation/current_operating_baseline.md`, `docs/execution_plan/runtime_entrypoint_unification.md`, `docs/report_plan/report_plan.md`, `docs/refactor/architecture/current_overview.md`, `docs/q13_q14_validation/README.md`.
+
 ## 2026-10-20 · P1.5 DOC D4 D6 CANONICAL AUTHORITY AND BOUNDED LINK AUDIT 20261020
 **Stage:** P1.5 documentation convergence · **Tags:** DOCS · PROCESS · SAFETY
 

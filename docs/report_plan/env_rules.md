@@ -1,3 +1,5 @@
+> **HISTORICAL COMMANDER CONFIGURATION DESIGN PRINCIPLE — NOT AN APPROVAL/GUARD BYPASS.** The text below records the direction toward Commander-owned runtime configuration; it is not evidence that existing broker mode, max-notional, allowlist or supervisor gates may be removed. Frozen [trading safety](../ground_rules/AGENT_RULES.md), [D00](../ENGINEERING_DELIVERY_POLICY.md) and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) retain priority. No runtime config is modified by this document.
+
 # Env Rules
 
 ## Principle

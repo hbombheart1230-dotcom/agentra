@@ -1,4 +1,6 @@
-﻿# Report Agentization Plan
+﻿> **APRIL REPORTER PLAN — HISTORICAL, NOT A CURRENT IMPLEMENTATION ORDER (2026-10-20).** Descriptions of what Reporter “will” own reflect the original planning period, not an updated verification of today’s source. [P1.5 Reporter scope](../refactor/README.md), [D00](../ENGINEERING_DELIVERY_POLICY.md) and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) control the active owner, exact source SHA and approvals. Preserve the detailed plan for provenance; no automatic Reporter work starts here.
+
+# Report Agentization Plan
 
 ## Purpose
 We are evolving the current deterministic report pipeline into a Reporter-owned service layer.

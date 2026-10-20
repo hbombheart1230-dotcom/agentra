@@ -1,3 +1,5 @@
+> **PINNED ARCHITECTURE SNAPSHOT — NOT CURRENT RUNTIME VERIFICATION (2026-10-20).** Source `f555165b` and the draft seven-agent diagram below describe their inspected revision, not an implementation guarantee at today’s HEAD. For current navigation use [refactor entry](../README.md), frozen target [TREE_V3](TREE_V3_FROZEN.md), [D00](../../ENGINEERING_DELIVERY_POLICY.md) and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). No architecture migration or execution authority follows from this snapshot.
+
 # Agentra — current integrated seven-agent architecture
 
 Source SHA: f555165b1abcf64b03e9c370844611dabe40c949

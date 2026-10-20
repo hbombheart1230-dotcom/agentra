@@ -1,3 +1,5 @@
+> **HISTORICAL RUNTIME ENTRYPOINT NOTE — NOT A VERIFIED LIVE START RUNBOOK (2026-10-20).** The `--mode live` commands below are preserved historical examples, **not** permission to execute them or proof that paths still match the current operational environment. For real-mode permission, broker guards and operator-controlled change windows use [trading safety](../ground_rules/AGENT_RULES.md), [D00](../ENGINEERING_DELIVERY_POLICY.md), and the current operator runbook; [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) retains P1.5 source freeze and no-live-trading HOLD. Do not execute this page during documentation convergence.
+
 # Runtime Entrypoint Unification
 
 ## Goal

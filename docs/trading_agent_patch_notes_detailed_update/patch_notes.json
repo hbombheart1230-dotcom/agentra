@@ -1,8 +1,38 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 316,
+  "entry_count": 317,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 D4 HIGH RISK FAMILY AUTHORITY QUARANTINE 20261020",
+      "title": "Quarantine stale CLI, Q-window, report and runtime-entry documentation authority while retaining historical bodies",
+      "stage": "P1.5 documentation D4-D6 risk-targeted convergence, not D7 approval",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Read 35 high-priority refactor-registry Markdown documents plus 17 representative cross-domain pages; add historical/current scope banners to 14 misleading entrypoints while retaining their entire text.",
+      "details": [
+        "Legacy Gemini review, June Q8/Q9 current-baseline status, live command examples, Reporter plans and pinned f555/5cb role snapshots are marked historical or scoped domain evidence, with D00/D01/D02, trading safety and #20 named as present task authority.",
+        "All 14 staged document blobs preserve original bodies; 32 new-header relative links resolve to current tree paths, 0 missing in this bounded check.",
+        "Previously audited 339 original registry paths remain at their original locations; their content/inbound statuses are not upgraded by this targeted risk-based review.",
+        "At previous 781aec98 exact commit, five observed push-triggered CI workflows completed SUCCESS; sixth Target Tree workflow was not triggered, and new-commit CI remains to be read separately.",
+        "D7 DOC_FREEZE is still HOLD pending residual full-source inbound/semantic and independent audit plus explicit operator exception/signoff. No trading, source refactor, new developer branch/worktree or main merge authorization."
+      ],
+      "impact": "Prevents historical instructions in high-risk development/evaluation/execution-plan pages from being mistaken for current Agentra engineering or trading authority.",
+      "sources": [
+        "docs/refactor/DOC_D4_D6_CONVERGENCE_EVIDENCE_20261020.md",
+        "docs/dev/gemini_review.md",
+        "docs/evaluation/current_operating_baseline.md",
+        "docs/execution_plan/runtime_entrypoint_unification.md",
+        "docs/report_plan/report_plan.md",
+        "docs/refactor/architecture/current_overview.md",
+        "docs/q13_q14_validation/README.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 DOC D4 D6 CANONICAL AUTHORITY AND BOUNDED LINK AUDIT 20261020",

@@ -1,3 +1,5 @@
+> **PINNED MODULE SNAPSHOT (source f555165b) — HISTORICAL INVENTORY, NOT CURRENT IMPORT/CALLABLE PASS.** Verify current modules at exact active SHA before moving code. The [frozen V3 role target](TREE_V3_FROZEN.md), [D00](../../ENGINEERING_DELIVERY_POLICY.md) and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20) determine present task boundaries. This original table is preserved, not promoted to current source truth.
+
 # Current modules — Agentra T4 + PR #5
 
 Source SHA: f555165b1abcf64b03e9c370844611dabe40c949

@@ -1,3 +1,5 @@
+> **PINNED SOURCE-MIGRATION DESIGN LEDGER — NOT A CURRENT TASK LIST (2026-10-20).** Callable/path claims in this ledger were sampled at `5cb90b39`, and are not independently verified at latest integration HEAD. Actual migration slices require a new exact-SHA work packet under [D00](../../ENGINEERING_DELIVERY_POLICY.md), [TREE_V3](TREE_V3_FROZEN.md), and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Preserve the ledger as historical design evidence.
+
 # P1.5 — TECH LEAD migration ledger (actionable paths; NOT automated migration)
 
 **Evidence:** source headers, imports and top-level callable declarations from integration `5cb90b39d00cee483be292272b893d8e8a4c6e78`; old V1..V4 Scanner approvals and frozen V3; commit-specific tests still required. **This is scoped design authority, not a claim of exhaustive Python AST edges.**

@@ -43,3 +43,32 @@
 **Decision: DOC_FREEZE HOLD.** Remaining signoff blockers: (1) source-specific/representative risk-class **content and inbound review**, with a documented acceptance/defer matrix rather than 339 invented checkmarks; (2) unresolved report-plan/Q-family canonical ownership and exact references as material; (3) latest SHA CI and independently reviewed D00/D01/D02+this batch; (4) operator explicit freeze SHA/exceptions acceptance. The DOC_FREEZE gate is distinct from later P1.5 code release gates and is **not** authorization for local developer CLI launch, worktree creation, main promotion or real trading.
 
 **Other release risks kept visible:** `main` GitHub branch read back as `protected:false`, although D00 policy forbids unapproved main modification; the 24 real-data test SKIPs are not production parity. Runtime/approval/guard code, production data and developer CLI were not touched in this documentation batch.
+
+
+## 6. D4 risk-class follow-up and new-header link audit — 2026-10-20
+
+**Evidence reference:** This follow-up reads the **pre-change** `integration/p1.5@781aec98727b807980d26bccd4c8c925f952e249` tree and stages add-only annotations for current/legacy ambiguity. It is not a new freeze acceptance claim.
+
+### 6.1 Source-specific, risk-first content selection
+
+- **35/35 registry-listed high-priority Markdown pages read successfully** in the classes `CURRENT_INDEX`, `CURRENT_POINTER`, `DOCUMENT_POLICY`, `PROGRAM_ROADMAP`, `DESIGN_CONSTRAINT`, `FROZEN_TARGET`, `PROCESS_ONLY`, `SUPPORTING_REFERENCE`, `PINNED_ARCH_SNAPSHOT`, and `FUTURE_DESIGN`. Reviewed top-of-page active-vs-pinned role claims and conflicting implementation assignment language. Not all 339 historical/ledger/evidence bodies were semantically reviewed, and no static HEAD import proof was performed.
+- **17 additional cross-family Markdown sources were read** in `dev/`, `report_plan/`, `report_upgrade_plan/`, `trade_report_plan/`, `execution_plan/`, `q13/`, `q14/`, `q13_q14_validation/`, `evaluation/` and `architecture/`. The legacy `docs/dev/gemini_review.md` still offered the old Gemini review checklist; `docs/evaluation/current_operating_baseline.md` still called 2026-06 Q8/Q9 instructions “current”; `docs/execution_plan/runtime_entrypoint_unification.md` still listed live runtime invocation examples. These are time-scoped historical statements, not permission to launch/execute.
+- Add-only historical/current authority headers are staged for **14 source documents** from these risk classes, preserving the original complete bodies (including leading BOM where applicable). Included are four dated/pinned P1.5 architecture and source-status references, earlier Reporter plan/config entrypoints, older Q-family/evaluation status and live command examples. **No old milestone instruction is reactivated; safety guards and immutable historical evidence remain authoritative.**
+- GitHub blob readback of **all 14 staged document versions** verified all **32 new-header relative Markdown links** resolve to tracked paths at the pre-change tree; **0 absent**, and the source bodies remained suffix-identical during staging. Earlier 19-page/86-link pass covered separate bounded conventional links. Neither pass establishes full inbound, wiki/HTML dynamic, fragment or semantic link closure.
+
+### 6.2 Resolved D4 decision precedence (not full deduplication)
+
+| Overlapping claim | Decision in current P1.5 DOC-FIRST context | Historical material retained |
+|---|---|---|
+| Gemini-only reviewer vs equal Claude/Codex peer review | **D00/D01/D02** define new review-mode CLI subprocesses. No other `docs/dev/` review page can override this. | `docs/dev/gemini_review.md`; `docs/dev/workflow.md` |
+| 2026-06 Q8/Q9 “current” evaluation commands vs UEF frozen evaluation | Q-window text is dated protocol; **formal UEF freeze records** control evidence contracts and D00/#20 controls new engineering authorization. | `docs/evaluation/current_operating_baseline.md`; `docs/evaluation/README.md`; `docs/q13_q14_validation/README.md` |
+| Old `--mode live` documentation vs trading approval/guards | Historical start examples cannot activate a broker. **Trading safety rules + actual runtime controls and operator change window** override examples. | `docs/execution_plan/runtime_entrypoint_unification.md` |
+| Reporter plan/upgrade/report surface vs new P1.5 Reporter developer scope | Plan pages are historic or domain-specific support; **P1.5 work packet and D00/#20** control any new callable/owner source work. | `docs/report_plan/`; `docs/report_upgrade_plan/`; `docs/trade_report_plan/` |
+| Pinned f555/5cb architecture modules vs current P1.5 integrated HEAD | Pinned source snapshots are **not** proof of current callable compliance. Frozen target is `TREE_V3_FROZEN.md`; latest exact SHA decides code evidence. | `docs/refactor/architecture/{current_modules,current_overview,architecture_gap_matrix,P15_MIGRATION_LEDGER_20261018}.md` |
+
+### 6.3 Hosted CI and further gates
+
+- At exact `781aec98727b807980d26bccd4c8c925f952e249` the **five observed push-triggered workflows** had all become **SUCCESS**: Shared Candidate, T4 Linux/Windows Regression, Reporting Regression + Design Guard, Reporting/Web Compatibility, and Scripts Linux/Windows Contract. The distinct **Scripts Target Tree** workflow was not triggered for this SHA; therefore this is a truthful **5/5 observed**, *not* an inherited 6/6 status.
+- **This follow-up's own eventual commit requires its own CI readback**; do not transpose the above prior-SHA result to a new commit.
+- D6 remaining: full semantic/inbound checks for unreviewed original classes and repo-wide Python/CI/HTML/Wiki consumers, dynamic/anchor/case-sensitive references, comprehensive patch-note validation, independent final document review and actual two-way Windows CLI handshake if the next development stage is authorized. A tool-level document check is not an independent Claude/Codex reviewer receipt.
+- **D7 remains HOLD** until the operator explicitly signs the final SHA and clearly listed accepted historical exceptions. `main` and live-order authority are unchanged; production data, runtime code, code-test or CI gate logic were not modified in this batch.

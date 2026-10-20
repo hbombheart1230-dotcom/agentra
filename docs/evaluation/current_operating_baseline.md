@@ -1,3 +1,5 @@
+> **DATED Q8/Q9 SNAPSHOT (2026-06-22), NOT PRESENT-DAY P1.5 DELIVERY AUTHORITY.** This page's “current authority” claim applies to its then-active Q8/Q9 evaluation window and its original frozen contracts. Do not use its “next actions” to restart historical evaluation, change UEF freeze, or authorize trading. For dated Q9–Q18 scope see [2026-08-05 Q-program map](q9_q18_operating_status_2026-08-05.md); for current P1.5 development decisions use [D00](../ENGINEERING_DELIVERY_POLICY.md), [P1.5 navigation](../refactor/README.md), and [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Historical contract details below remain intact.
+
 # Evaluation Operating Baseline
 
 Date: 2026-06-22
