@@ -1,8 +1,34 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 324,
+  "entry_count": 325,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 TIKI TAKA PRIMARY DEVELOPER LOCAL CLI SELF INVOCATION 20261020",
+      "title": "Clarify that developers invoke opposite read-only CLI subprocess themselves; no separate reviewer prompt",
+      "stage": "P1.5 permanent instruction correction, DOCS ONLY",
+      "types": [
+        "DOCS",
+        "PROCESS"
+      ],
+      "status": "current",
+      "summary": "Operator corrected previous erroneous two-chat review instructions: Codex's primary developer directly invokes local claude -p after coding and consumes its output, including real finding-driven rework loops; reverse for Claude with codex exec.",
+      "details": [
+        "Codex primary session must locally execute claude -p for each exact committed candidate, capture its actual stdout, exit code and structured PASS/REWORK/BLOCKED; on real REWORK fix/commit new SHA and call a new claude -p subprocess.",
+        "Claude primary session directly invokes codex exec when Claude is the author. Neither primary reviewer receives an operator-pasted separate review start prompt; the subprocess reviewer is never the standing opposite developer chat.",
+        "Updated D00 3A and 5A, AGENTS D01, CLAUDE D02, BATCH02 and CURRENT to eliminate conflicting instructions. Only the actually coding primary CLI receives a starting info unless the other lane has an independent coding task.",
+        "No source, security policy, CLI permissions, safety contracts, trading, main, Docker or integration acceptance changed."
+      ],
+      "impact": "Restores the user's required autonomous local cross-CLI implementation and independent review loop, eliminating manual duplicate reviewer prompts.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md",
+        "docs/refactor/work_orders/CURRENT.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 TIKI TAKA STRICT TWO DEV PEER RELAY CORRECTION 20261020",

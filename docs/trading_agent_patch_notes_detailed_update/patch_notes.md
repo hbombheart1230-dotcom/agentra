@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 TIKI TAKA PRIMARY DEVELOPER LOCAL CLI SELF INVOCATION 20261020
+**Stage:** P1.5 permanent instruction correction, DOCS ONLY · **Tags:** DOCS · PROCESS
+
+- 코개발에서 개발을 마친 뒤 **코덱스 주 세션이 로컬 셸에서 직접 `claude -p` 실행**→실제 stdout/종료 코드 및 판정 확인→진짜 REWORK이면 코덱스 수정·새 SHA·새 `claude -p` 검토를 수행하는 것이 필수 티키타카 절차입니다. Claude가 개발한 코드는 Claude 주 세션이 직접 `codex exec`를 호출합니다.
+- **검토용 별도 Claude 주 개발창 시작 인폼은 금지**합니다. 하위 검토 CLI 프로세스는 호출한 개발자 세션에 결과를 반환하고 종료하며, 검토 중 재귀 CLI를 호출하지 않습니다.
+- 팀장은 작업 담당 **개발자 CLI에만** 간단한 복붙용 시작 인폼을 제공합니다. 다른 파트에 독립적인 개발 과제가 실제로 있을 때만 두 번째 시작 인폼을 제공합니다.
+- 관련 D00·D01·D02 및 현재 작업 지시서·CURRENT를 정정하고 UI JSON/MD 기록을 기존 324→**325/325**로 보존했습니다. 소스나 거래 안전 계약 수정은 없습니다.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/work_orders/P15_BATCH02_DUAL_SUBSTANTIVE_20261020.md`, `docs/refactor/work_orders/CURRENT.md`.
+
+
 ## 2026-10-20 · P1.5 TIKI TAKA STRICT TWO DEV PEER RELAY CORRECTION 20261020
 **Stage:** P1.5 operative developer review handoff rule; no source change · **Tags:** DOCS · PROCESS · SAFETY
 
