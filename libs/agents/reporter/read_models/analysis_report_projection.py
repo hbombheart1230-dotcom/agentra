@@ -11,7 +11,7 @@ late monkeypatch of the facade module is honoured exactly as before the extracti
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 
 def build_daily_operator_report(
@@ -62,8 +62,9 @@ def build_base_report(
     op_md: Any,
     generate_decision_story: bool,
     generate_run_cards: bool,
-    decision_story_md: str,
-    run_cards_md: str,
+    ds_md: Any,
+    rc_md: Any,
+    path_exists: Callable[[Any], bool],
     ds_obj: Dict[str, Any],
     rc_obj: Dict[str, Any],
     js_path: Any,
@@ -72,8 +73,8 @@ def build_base_report(
 ) -> Dict[str, Any]:
     """Return the pre-AI report dict (key order is the serialized contract) plus its evidence catalog.
 
-    ``decision_story_md``/``run_cards_md`` are the already-resolved strings: the caller keeps the
-    filesystem existence check so this projection performs no I/O.
+    ``path_exists`` is the caller-injected existence check for the decision-story/run-card files; it is
+    evaluated at the same point (and short-circuited the same way) as in the original dict literal.
     """
     out: Dict[str, Any] = {
         "schema_version": "reporter_analysis.v1",
@@ -105,8 +106,8 @@ def build_base_report(
             "operator_summary_md": str(op_md),
             "decision_story_enabled": bool(generate_decision_story),
             "run_cards_enabled": bool(generate_run_cards),
-            "decision_story_md": decision_story_md,
-            "run_cards_md": run_cards_md,
+            "decision_story_md": str(ds_md) if bool(generate_decision_story) and path_exists(ds_md) else "",
+            "run_cards_md": str(rc_md) if bool(generate_run_cards) and path_exists(rc_md) else "",
             "decision_story_total": int(ds_obj.get("story_total") or 0),
             "run_card_total": int(rc_obj.get("card_total") or 0),
         },

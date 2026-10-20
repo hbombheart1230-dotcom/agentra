@@ -17,11 +17,11 @@
       "details": [
         "New libs/agents/reporter/read_models/analysis_report_projection.py: build_daily_operator_report, build_base_report, ai_review_error_payload and apply_ai_review_projection; imports only typing, performs no I/O, LLM, memory or ledger effects.",
         "Facade helpers (_safe_int, _build_ai_evidence_catalog, _ensure_min_ai_review_payload, _hydrate_ai_evidence_details) are resolved on the injected facade module at call time, so late monkeypatching behaves exactly as at BASE.",
-        "The orchestrator keeps log reading, source report generation, the decision-story/run-card existence checks, the LLM try/except, strategy memory save, decision bridge and JSON/Markdown writes in the original order.",
-        "New tests exec the BASE 4b0c3e0b function against the live facade and require identical JSON/Markdown bytes, returned dict and effect order across 7 scenarios (AI ok/exception/empty/partial, memory+bridge failure, missing log, story/cards on), plus pure stub-facade and hostile-input cases.",
+        "The decision-story/run-card existence checks run through a caller-injected path_exists at their original position inside source_reports; the orchestrator keeps log reading, source report generation, the LLM try/except, strategy memory save, decision bridge and JSON/Markdown writes in the original order.",
+        "New tests exec the BASE 4b0c3e0b function against the live facade and require identical JSON/Markdown bytes, returned dict and effect order across 7 scenarios (AI ok/exception/empty/partial, memory+bridge failure, missing log, story/cards on), plus Path.exists/helper call-order parity, pure stub-facade and hostile-input cases.",
         "Frozen Reporter tree/facade guards pin reporter_analysis.py and the read_models file list at their earlier BASE; they reject this candidate and need an authorized contract update at integration. They were not weakened here."
       ],
-      "impact": "generate_reporter_analysis_report shrinks by 48 lines (298 to 250) and the report/evidence presentation becomes callable without the log, LLM or write path; no trading, broker, Supervisor, Executor or schema behaviour changes.",
+      "impact": "generate_reporter_analysis_report shrinks by 47 lines (298 to 251) and the report/evidence presentation becomes callable without the log, LLM or write path; no trading, broker, Supervisor, Executor or schema behaviour changes.",
       "sources": [
         "libs/reporting/reporter_analysis.py",
         "libs/agents/reporter/read_models/analysis_report_projection.py",

@@ -133,6 +133,27 @@ def test_current_facade_matches_base_bytes_effects_and_order(scenario, tmp_path,
         assert doc["strategy_memory_record"]["error"] == "strategy_memory_save_failed:disk full"
 
 
+@pytest.mark.parametrize("flags", [False, True])
+def test_exists_checks_keep_base_position_and_short_circuit(flags, tmp_path, monkeypatch):
+    seqs = []
+    for fn in (_base_generate(), ra.generate_reporter_analysis_report):
+        seq = []
+        real_exists, real_cat = Path.exists, ra._build_ai_evidence_catalog
+        monkeypatch.setattr(Path, "exists", lambda p, _s=seq, _r=real_exists: (
+            _s.append(("exists", p.name)) if p.name.startswith(("decision_story_", "run_cards_")) else None, _r(p))[1])
+        monkeypatch.setattr(ra, "_safe_int", lambda v, d=0, _s=seq, _o=ra._safe_int: (_s.append(("int", v)), _o(v, d))[1])
+        monkeypatch.setattr(ra, "_build_ai_evidence_catalog", lambda out, _s=seq, _r=real_cat: (_s.append(("cat",)), _r(out))[1])
+        _run(fn, tmp_path / "w", monkeypatch, ai=AI_OK, flags=flags)
+        monkeypatch.undo()
+        seqs.append(seq)
+    assert seqs[0] == seqs[1]
+    # daily-operator _safe_int pair, then (only when enabled) the two existence checks, then the evidence catalog
+    head = seqs[1][:seqs[1].index(("cat",)) + 1]
+    checks = [("exists", f"decision_story_{DAY}.md"), ("exists", f"run_cards_{DAY}.md")] if flags else []
+    assert [e[0] for e in head[-3 - len(checks):-1 - len(checks)]] == ["int", "int"]
+    assert head[-1 - len(checks):] == checks + [("cat",)]
+
+
 def test_late_monkeypatch_of_facade_helpers_is_honoured_like_base(tmp_path, monkeypatch):
     results = []
     for fn in (_base_generate(), ra.generate_reporter_analysis_report):
@@ -180,8 +201,8 @@ def _base_kwargs(**over):
                          "ds_obj", "rc_obj")}
     kw.update(target_day=DAY, improvement_suggestions=["s"], report_views={"operator_facing_summary": {"o": 1}},
               report_focus_targets=("t1",), trade_js=Path("a.json"), trade_md=Path("a.md"), op_js=Path("b.json"),
-              op_md=Path("b.md"), generate_decision_story=0, generate_run_cards="yes", decision_story_md="",
-              run_cards_md="rc.md", js_path=Path("r.json"), md_path=Path("r.md"))
+              op_md=Path("b.md"), generate_decision_story=0, generate_run_cards="yes", ds_md=Path("ds.md"),
+              rc_md=Path("rc.md"), path_exists=lambda p: True, js_path=Path("r.json"), md_path=Path("r.md"))
     kw.update(over)
     return kw
 
