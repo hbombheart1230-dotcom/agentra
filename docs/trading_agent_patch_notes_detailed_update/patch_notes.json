@@ -1,8 +1,34 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 323,
+  "entry_count": 324,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 BATCH03-A A-P3 QUANT SHADOW POLICY BOUNDARY REWORK 20261020",
+      "title": "Keep env-policy promotion/readiness in the quant shadow facade; projection owner holds only pure calculations",
+      "stage": "P1.5 BATCH03-A A-P3 attempt 1 of 3 (succeeded); integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "_promotion_candidate (calls build_entry_quant_enforcement, which reads QUANT_ENTRY_DECISION_MODE / QUANT_ENTRY_ENFORCED_BLOCKERS) and _shadow_readiness are restored to quant_shadow_candidate_evaluation.py with their exact BASE bodies; quant_shadow_candidate_projection.py keeps 9 pure functions at 335 lines.",
+      "details": [
+        "Restored functions are AST-identical to e92950d4, so environment reads and their timing are the original ones.",
+        "The projection no longer references build_entry_quant_enforcement or the policy functions (asserted by test).",
+        "New env-policy parity test: decision mode unset/observe/enforce x enforced blockers unset/cost_edge_fail/other match the frozen BASE for the full evaluation and for both policy functions.",
+        "Focused quant shadow suites 219 passed under normal and python -O; a projection metric change fails 22 tests and a facade policy threshold change fails 1.",
+        "Size target met on attempt 1 (335 < 350); no SIZE_DEFERRED needed. Facade 1425 to 1149 lines."
+      ],
+      "impact": "Removes runtime-policy coupling from the new read-only owner while keeping byte-identical evaluation output.",
+      "sources": [
+        "libs/reporting/quant_shadow_candidate_evaluation.py",
+        "libs/reporting/quant_shadow_candidate_projection.py",
+        "tests/test_p15_quant_shadow_projection.py"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 BATCH03-A QUANT SHADOW EVALUATION PROJECTION 20261020",

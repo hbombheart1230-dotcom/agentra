@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 BATCH03-A A-P3 QUANT SHADOW POLICY BOUNDARY REWORK 20261020
+**Stage:** P1.5 BATCH03-A A-P3 개선 1/3회차 (성공, 통합 대기) · **Tags:** REFACTOR · TEST · SAFETY
+
+- `QUANT_ENTRY_DECISION_MODE`/`QUANT_ENTRY_ENFORCED_BLOCKERS` 환경 정책을 읽는 `build_entry_quant_enforcement`를 호출하는 `_promotion_candidate`와 `_shadow_readiness`를 BASE `e92950d4`와 AST가 같은 본문으로 기존 facade에 복원했습니다. 환경 변수 읽기와 그 시점은 원래와 같습니다.
+- `quant_shadow_candidate_projection.py`에는 순수 계산 함수 9개만 남아 335줄이며, 정책 함수나 `build_entry_quant_enforcement`를 참조하지 않음을 테스트로 고정했습니다.
+- 정책 모드(미설정/observe/enforce)×차단 목록(미설정/cost_edge_fail/기타) 조합에서 전체 평가와 두 정책 함수 결과가 고정 BASE와 같음을 확인했습니다. quant shadow 관련 테스트 219개 normal/`-O` 통과, projection 지표 변경(22개 실패)과 facade 정책 기준 변경(1개 실패)을 잡아냅니다.
+- 1회차에서 350줄 목표를 충족해 `SIZE_DEFERRED`는 필요 없습니다. facade는 1425→1149줄입니다.
+
+Sources: `libs/reporting/quant_shadow_candidate_evaluation.py`, `libs/reporting/quant_shadow_candidate_projection.py`, `tests/test_p15_quant_shadow_projection.py`.
+
 ## 2026-10-20 · P1.5 BATCH03-A QUANT SHADOW EVALUATION PROJECTION 20261020
 **Stage:** P1.5 BATCH03-A DEV-A 소스 후보 (별도 버전 단계·통합 대기) · **Tags:** REFACTOR · TEST
 

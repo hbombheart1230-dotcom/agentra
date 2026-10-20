@@ -1,8 +1,9 @@
 """Read-only quant shadow candidate evaluation projection (P1.5 BATCH03-A, DEV-A).
 
-Owns the deterministic forward-outcome summaries, entry-lane forward groups, no-trade scorecard and
-promotion/readiness calculations moved from ``libs.reporting.quant_shadow_candidate_evaluation``. No file,
-stream, environment-dependent loader or report writes live here. Every helper, constant and sibling
+Owns the deterministic forward-outcome summaries, entry-lane forward groups and no-trade scorecard moved from
+``libs.reporting.quant_shadow_candidate_evaluation``. No file, stream, environment-dependent policy (the
+promotion/readiness path that consults ``build_entry_quant_enforcement`` stays in the facade) or report writes
+live here. Every helper, constant and sibling
 calculation is resolved on the injected ``facade`` module at call time, so a monkeypatch of the legacy
 module keeps behaving exactly as before the move.
 """
@@ -331,113 +332,4 @@ def _no_trade_scorecard(
             if missed or watchlist
             else "retain_current_guards_and_continue_observation"
         ),
-    }
-
-
-def _promotion_candidate(candidates: Sequence[Mapping[str, Any]], *, facade: Any) -> Dict[str, Any]:
-    if not candidates:
-        return {
-            "candidate": "hold",
-            "confidence": "none",
-            "reason": "no_shadow_candidates",
-            "counts": {},
-            "promotion_scope": "none",
-            "recommended_action": "hold",
-        }
-    cost_edge = facade._count_reason(
-        candidates,
-        {"cost_edge_fail", "cost_filter_failed", "not_met", "cost_floor_not_met", "cost"},
-    )
-    entry_guard = sum(1 for row in candidates if facade._actionable_entry_guard_block(row))
-    runner_up = facade._runner_up_risk_count(candidates)
-    counts = {
-        "cost_edge": cost_edge,
-        "runner_up": runner_up,
-        "entry_guard": entry_guard,
-    }
-    candidate, count = max(counts.items(), key=lambda item: item[1])
-    if count <= 0:
-        return {
-            "candidate": "hold",
-            "confidence": "low",
-            "reason": "no_dominant_shadow_blocker",
-            "counts": counts,
-            "promotion_scope": "none",
-            "recommended_action": "hold",
-        }
-    total = max(1, len(candidates))
-    share = float(count) / float(total)
-    confidence = "high" if count >= 5 and share >= 0.35 else "medium" if count >= 3 else "low"
-    reason_by_candidate = {
-        "cost_edge": "cost_edge_or_cost_floor_is_the_largest_shadow_blocker",
-        "runner_up": "runner_up_fallback_quality_is_the_largest_shadow_issue",
-        "entry_guard": "entry_guard_blocks_are_the_largest_shadow_issue",
-    }
-    promotion_scope = "pre_entry_filter" if candidate == "cost_edge" else "candidate_selection"
-    recommended_action = "manual_review_before_live_change"
-    promotion_state = "candidate_review"
-    behavior_effect = "recommendation_only"
-    active_guard_reason = ""
-    if candidate == "cost_edge" and confidence in {"high", "medium"}:
-        enforcement = facade.build_entry_quant_enforcement(
-            {"decision": "block_recommended", "blockers": ["cost_edge_fail"]}
-        )
-        if bool(enforcement.get("blocked")):
-            recommended_action = "already_promoted_monitor_hard_gate"
-            promotion_state = "active"
-            behavior_effect = str(enforcement.get("behavior_effect") or "entry_guard_enforced")
-            active_guard_reason = "quant_entry_block:cost_edge_fail"
-        else:
-            recommended_action = "promote_shadow_validated_guard"
-            promotion_state = "recommended"
-    return {
-        "candidate": candidate,
-        "confidence": confidence,
-        "reason": reason_by_candidate.get(candidate, "dominant_shadow_blocker"),
-        "counts": counts,
-        "share": share,
-        "behavior_effect": behavior_effect,
-        "promotion_scope": promotion_scope,
-        "recommended_action": recommended_action,
-        "promotion_state": promotion_state,
-        "active_guard_reason": active_guard_reason,
-    }
-
-
-def _shadow_readiness(candidates: Sequence[Mapping[str, Any]], promotion: Mapping[str, Any], *, facade: Any) -> Dict[str, Any]:
-    candidate_count = len(candidates)
-    evaluated_count = sum(1 for row in candidates if facade._bool(row.get("evaluated")))
-    evaluated_ratio = float(evaluated_count) / float(candidate_count) if candidate_count else 0.0
-    candidate = facade._text(promotion.get("candidate"))
-    confidence = facade._text(promotion.get("confidence"))
-    action = facade._text(promotion.get("recommended_action")) or "hold"
-    ready = bool(
-        candidate_count >= facade.TRUSTED_FORWARD_MIN_COUNT
-        and evaluated_count >= facade.PROMOTION_CANDIDATE_MIN_OBSERVED
-        and evaluated_ratio >= facade.TRUSTED_FORWARD_MIN_COVERAGE
-        and candidate not in {"", "hold"}
-        and confidence in {"medium", "high"}
-    )
-    if not candidate_count:
-        status = "hold_no_shadow_candidates"
-    elif ready:
-        status = "ready"
-    elif evaluated_count < facade.PROMOTION_CANDIDATE_MIN_OBSERVED:
-        status = "hold_shadow_sample_insufficient"
-    elif evaluated_ratio < facade.TRUSTED_FORWARD_MIN_COVERAGE:
-        status = "hold_shadow_coverage_insufficient"
-    else:
-        status = "review_shadow_signal_weak"
-    return {
-        "status": status,
-        "action": action if ready else "hold",
-        "candidate_count": candidate_count,
-        "evaluated_count": evaluated_count,
-        "evaluated_ratio": evaluated_ratio,
-        "sample_floor": facade.TRUSTED_FORWARD_MIN_COUNT,
-        "evaluated_floor": facade.PROMOTION_CANDIDATE_MIN_OBSERVED,
-        "coverage_floor": facade.TRUSTED_FORWARD_MIN_COVERAGE,
-        "candidate": candidate or "hold",
-        "confidence": confidence or "none",
-        "promotion_scope": facade._text(promotion.get("promotion_scope")) or "none",
     }

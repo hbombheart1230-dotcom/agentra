@@ -24,8 +24,8 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = "e92950d41aa8dd08c643377b3527fa0b77f51106"
 PATH = "libs/reporting/quant_shadow_candidate_evaluation.py"
 MOVED = ("_mean", "_checkpoint_value", "_forward_outcome_summary", "_top_forward_groups", "_entry_lane_forward_outcomes",
-         "_scorecard_return_signal", "_scorecard_rows", "_named_forward_rows", "_no_trade_scorecard",
-         "_promotion_candidate", "_shadow_readiness")
+         "_scorecard_return_signal", "_scorecard_rows", "_named_forward_rows", "_no_trade_scorecard")
+POLICY = ("_promotion_candidate", "_shadow_readiness")  # env-policy coupled: kept in the facade with BASE bodies
 
 
 def _base_module():
@@ -232,7 +232,7 @@ def test_facade_keeps_signatures_io_and_only_forwards_moved_bodies():
             assert len(node.body) == 1 and f"_qsce_projection.{name}(" in ast.unparse(node.body[0])
         else:
             assert ast.dump(node) == ast.dump(base_fns[name]), name
-    assert len(cur_src.splitlines()) < len(base_src.splitlines()) - 300
+    assert len(cur_src.splitlines()) < len(base_src.splitlines()) - 250
 
 
 def test_projection_has_no_io_or_runtime_authority_imports():
@@ -241,7 +241,8 @@ def test_projection_has_no_io_or_runtime_authority_imports():
         {a.name for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names}
     assert mods_ == {"__future__", "collections", "typing"}
     names = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)} | {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)}
-    assert not names & {"open", "read_text", "write_text", "_read_json", "iter_json_array", "getenv", "environ", "Path"}
+    assert not names & {"open", "read_text", "write_text", "_read_json", "iter_json_array", "getenv", "environ", "Path",
+                        "build_entry_quant_enforcement", *POLICY}
     assert sorted(n.name for n in tree.body if isinstance(n, ast.FunctionDef)) == sorted(MOVED)
 
 
@@ -266,3 +267,21 @@ def test_scorecard_ties_keep_base_secondary_order(mode, mods):
     got = current._scorecard_rows(rows, mode=mode, limit=4)
     assert got == base._scorecard_rows(rows, mode=mode, limit=4)
     assert [r["name"] for r in got] == (["g1", "g2", "g0", "g3"] if mode == "missed" else ["g0", "g3", "g2", "g1"])
+
+
+@pytest.mark.parametrize("mode", [None, "observe", "enforce"])
+@pytest.mark.parametrize("blockers", [None, "cost_edge_fail", "other_blocker"])
+def test_env_policy_promotion_path_stays_in_facade_and_reads_env_at_call_time(mode, blockers, mods, monkeypatch):
+    base, current = mods
+    for name, value in (("QUANT_ENTRY_DECISION_MODE", mode), ("QUANT_ENTRY_ENFORCED_BLOCKERS", blockers)):
+        if value is None:
+            monkeypatch.delenv(name, raising=False)
+        else:
+            monkeypatch.setenv(name, value)
+    rows = _rows(seed=31, n=150)
+    for name in POLICY:
+        assert current.__dict__[name].__code__.co_filename.endswith("quant_shadow_candidate_evaluation.py")
+    assert _run(current, rows) == _run(base, rows)
+    promo = current._promotion_candidate(current.attach_forward_outcomes(rows))
+    assert promo == base._promotion_candidate(base.attach_forward_outcomes(rows))
+    assert current._shadow_readiness(rows, promo) == base._shadow_readiness(rows, promo)
