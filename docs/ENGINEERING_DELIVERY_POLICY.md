@@ -35,6 +35,34 @@
 - Resource contention can cause false failures: report hardware/OS/Python and rerun isolated *failing case* first. Parallel or serial full matrices should be a reasoned exceptional choice, not a default reviewer ritual.
 - CI success is **not** independent source review, and independent review is **not** a second copy of the entire CI.
 
+## 3A. Two equal development parts — DIRECT CROSS-CLI RELAY (operator policy, 2026-10-20)
+
+**Standing team structure for all approved Agentra refactor work (P1.5 onward):** On the operator's **one Windows PC**, two long-lived **developer** CLI sessions operate concurrently, with independent writer-owned workspaces and an approved exact-SHA work packet for each. **CLAUDE_DEV_A** owns Reporter / Strategist / Scanner and their proven pure analysis, policy and read-model boundaries; **CODEX_DEV_B** owns Monitor / Commander / Operator UI and pure State/integration projections. These are two substantive implementation teams. Neither CLI is permanently assigned as the other's auditor. Shared contracts and graph/effectful paths remain under GPT integration arbitration and the safety rules below. Roles and per-slice file ownership are restated in the current work order, not inferred as unrestricted path access.
+
+**Peer review is a direct child CLI call, NOT a separate orchestration service:**
+1. Each developer initially **develops its own approved batch**. After a coherent batch is implemented, run focused positive/negative tests, record exact `BASE_SHA`, `CANDIDATE_SHA`, changed paths and actual NOT_RUN, and commit the candidate in its own isolated lane.
+2. **Codex developer calls Claude CLI:** `claude -p "<self-contained read-only review request>"`. **Claude developer calls Codex CLI:** `codex exec "<self-contained read-only review request>"`. The calling developer invokes the opposite installed CLI **from its own available shell/tool** as a **new, noninteractive reviewer process**. The recipient is NOT the other developer's existing long-running developer session. Confirm the installed command syntax and permissions on the actual PC; NEVER bypass sandbox/approval controls merely to force review.
+3. A reviewer starts in `REVIEW_ONLY_NO_NESTED_CLI` mode: inspect only the pinned diff and relevant consumers, safety/state/UEF/Step5C/golden impacts; run narrow, safe, read-only focused checks as permitted. **Never edit source, commit/push, dispatch a third CLI, or recursively invoke a reviewer.** Return a concise `PASS / REWORK / BLOCKED` verdict with exact SHA, findings and genuine test/evidence details through stdout or an explicitly permitted bounded per-session receipt.
+4. The **calling developer must consume** the peer CLI exit code **and** the structured verdict (exit zero alone is not PASS). On `REWORK`, fix only its own files, create a **new candidate SHA**, re-invoke a **new opposite-CLI review session** and repeat. On `PASS`, publish the SHA-bound receipt and immediately continue its next independently READY batch, while the other primary developer continues its own area. On `BLOCKED`, preserve state, stop unsafe or overlapping work and escalate the concrete blocker; never fabricate PASS or wait indefinitely.
+5. **The GPT Tech Lead owns both durable work orders**, shared owner/consumer contracts, inter-part collision arbitration, bounded retry/cost policy, review receipts and selective integration onto the approved integration branch. Only required hosted CI on the **composed integration SHA** establishes integration regression evidence. The operator supervises interrupted CLI sessions and explicitly authorizes any later re-launch, new workspace/branch, DOC_FREEZE, protected-main promotion or actual broker operation.
+6. CLI subprocess invocation is **conditional on actual local capability**, not guaranteed by a prompt. No persistent runner, daemon, scheduler, server, GitHub-comment-triggered invocation, auto-resume claim or cross-review infinite recursion. Reuse ordinary CLI shell capabilities and restrict per-run test scratch/output retention.
+
+**Minimal peer review receipt:**
+```yaml
+protocol: AGENTRA_CROSS_CLI_REVIEW_V1
+review_mode: REVIEW_ONLY_NO_NESTED_CLI
+origin_developer: CLAUDE_DEV_A | CODEX_DEV_B
+peer_reviewer: CODEX_CLI | CLAUDE_CLI
+base_sha: EXACT_40_HEX
+candidate_sha: EXACT_40_HEX
+changed_paths: [EXACT_CHANGED_FILES]
+verdict: PASS | REWORK | BLOCKED
+findings: [CONCRETE_PATH_AND_LINE_OR_NONE]
+tests: [ACTUALLY_RUN_COMMAND_AND_EXIT_OR_NOT_RUN]
+return_to: ORIGINAL_DEVELOPER_SESSION
+```
+**Phase gate:** The 2026-10-19 DOC-FIRST override in §6 remains binding. This establishes HOW the two parts develop **after** operator DOC_FREEZE acceptance, not permission to start refactoring before it. Document convergence may follow this review protocol when both CLI sessions are explicitly started. In every mode preserve Broker, Supervisor, Executor, Step5C CAS/UNKNOWN quarantine, UEF canonical evidence, real market data and production-write SAFETY_LOCKs. The reviewer is read-only; there is no live trading authority transfer.
+
 ## 4. Branches, scope, and integration
 - Keep only user-approved active branch lanes: protected `main`, **one integration branch**, and the minimum needed developer branches; read-only auditors use isolated detached SHAs. No new branches for incremental tasks/ZIPs/re-audits without authorization.
 - **Selective audited change promotion only.** Never merge a whole diverged developer branch just to pick a document or tiny source slice. Check actual integration HEAD and ensure notes/paths stay coherent.
@@ -59,12 +87,13 @@ RISK_BLOCKERS / NOT_RUN / NEXT_SINGLE_ACTION
 
 ## 6. Required integration-first sequence
 ```text
-GPT fixes owner/target + exact change scope
-  → Developer implements and commits
-  → Independent reviewer checks DELTA and decides
-  → GPT selectively integrates accepted changes
+GPT issues TWO concurrent approved developer area work packets
+  → Claude DEV-A and Codex DEV-B independently implement own slices
+  → Each developer invokes the OTHER CLI as a NEW read-only review session
+  → Each developer consumes PASS / REWORK / BLOCKED and fixes or continues
+  → GPT resolves shared contracts and selectively integrates peer-PASS slices
   → Integration-SHA required CI and compatibility
-  → Mark INTEGRATED; close old task and move to next root-wide slice
+  → Mark INTEGRATED; both development parts continue next READY slices
   → Stage/FREEZE whole-repo + real-data + UI checks
   → User approves protected-main promotion
 ```

@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · D00 D01 D02 DIRECT CROSS CLI DEVELOPMENT RELAY RULE 20261020
+**Stage:** Documentation governance and developer operating contract · **Tags:** DOCS · PROCESS · SAFETY
+
+- 운영자 지시를 **D00·D01·D02 상시 규칙**으로 격상했습니다. 한 PC에 장기 실행 중인 두 주 개발 세션은 모두 개발자입니다: Claude DEV-A(Reporter/Strategist/Scanner), Codex DEV-B(Monitor/Commander/Operator UI). 작업 영역은 별도 승인된 writer 경계로 구분합니다.
+- 개발 배치 완료 시 각 개발자는 반대편 CLI를 **새 비대화형 검증 세션**으로 직접 호출합니다: Codex 개발자 → `claude -p`, Claude 개발자 → `codex exec`. 상대의 상주 개발 세션을 중단하거나 새 runner/daemon/scheduler를 만들어 호출하지 않습니다.
+- 검증자는 정확한 BASE/CANDIDATE SHA만 읽기 전용으로 검증하고 `PASS/REWORK/BLOCKED`와 실제 테스트 근거를 원 개발자에게 반환한 뒤 종료합니다. 검증자가 다시 CLI를 중첩 호출하는 재귀는 금지하며 REWORK는 개발자의 신규 SHA 수정/재검증으로 처리합니다.
+- D00의 이전 한 방향 개발→감사 순서를 양방향 동시 개발→상대 새 CLI 검증으로 대체했고, D01과 D02에 각각 개발 모드 및 상대 호출로 들어온 검증 전용 모드를 명시했습니다.
+- **DOC_FIRST 및 DOC_FREEZE 미승인 상태는 변경 없음**, 승인된 소스 개발 착수/작업공간 생성·삭제/실거래 권한/메인 병합으로 간주하지 않습니다. PC에서 실제 CLI 왕복 호출은 NOT_RUN이며, 새 커밋 CI도 검증 전입니다.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
+
 ## 2026-10-20 · P1.5 T3 PINNED SOURCE HYDRATION AND SCANNER HISTORICAL STAGE FREEZE 20261020
 **Stage:** P1.5 integration CI and historical contract repair · **Tags:** CI · TEST · SAFETY · DOCS
 

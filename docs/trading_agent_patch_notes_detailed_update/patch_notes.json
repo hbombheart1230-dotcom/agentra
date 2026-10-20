@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 314,
+  "entry_count": 315,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "D00 D01 D02 DIRECT CROSS CLI DEVELOPMENT RELAY RULE 20261020",
+      "title": "Codify two equal development parts and direct opposite-CLI new-session peer review in D00/D01/D02",
+      "stage": "Documentation governance and developer operating contract",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Make the user's one-PC, two concurrent coequal developer CLI loop a standing root development rule: Claude develops Reporter/Strategist/Scanner; Codex develops Monitor/Commander/Operator UI. Each developer directly launches the opposite CLI for a fresh bounded read-only SHA review at candidate completion, receives PASS/REWORK/BLOCKED and repeats or continues. No runner, daemon, fixed one-way auditor or nested reviewer invocation.",
+      "details": [
+        "D00 §3A defines team owners, operator's same-PC with separate writer workspaces, direct CLI invocation by each developer, read-only nonrecursive review role and result receipt, fail-closed BLOCKED and Tech Lead shared-contract/integration obligations; §6's old one-way developer-to-auditor chain is replaced by the two simultaneous development lanes and symmetrical review.",
+        "D01/AGENTS.md requires primary Codex developer to invoke Claude CLI as a fresh reviewer and consume its structured result; when invoked by Claude it instead behaves as read-only Codex reviewer, returns and stops.",
+        "D02/CLAUDE.md mirrors this behavior: primary Claude developer invokes Codex CLI; a Claude peer-review subprocess performs bounded read-only review, returns and stops.",
+        "Actual local CLI execution and command availability on the user's PC remain NOT_RUN until the operator starts and tests both directions. No local runner/scheduler/GitHub-triggered invocation implied. The 2026-10-19 DOC-FIRST source-development hold, GitHub Issue #20 as current task authority, broker/approval/UEF/Step5C lock and main no-promotion policy are preserved.",
+        "This docs-only commitment does not certify DOC_FREEZE acceptance, the 339-file semantic/inbound audit, 24 live-data skips, all later source refactor work or hosted new-SHA CI."
+      ],
+      "impact": "Prevents D00/D01/D02 primary CLI sessions reverting to the obsolete Codex-developer/Claude-only-auditor assignment; enables reciprocal subprocess review in the future approved development loop without changing runtime authority.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/CURRENT.md"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 T3 PINNED SOURCE HYDRATION AND SCANNER HISTORICAL STAGE FREEZE 20261020",

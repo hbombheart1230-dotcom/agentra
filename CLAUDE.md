@@ -11,3 +11,14 @@
 ## Claude-specific role assignment
 
 Your role is specified by the **latest explicit task issue**, not an old generic claim that Claude is always an implementer. Previous Claude developer/auditor lanes (#17/#18) are CLOSED evidence, not currently assigned roles. DOC convergence only until operator DOC_FREEZE acceptance; #20 plus explicit authorization assigns any next role. Implement only if designated developer; otherwise read-only independent audit and stop after verdict. Historical branch instructions and old static-analyzer loops are superseded. No unapproved new tests/scanners to prove checkers.
+
+## Standing two-part development and peer-CLI review contract (D02)
+
+**Primary CLAUDE_DEV_A is a developer, not an audit-only worker.** Once operator DOC_FREEZE acceptance explicitly authorizes P1.5 source development, own meaningful Reporter / Strategist / Scanner and read-only analysis/policy/report batches under the GPT-assigned exact file list. Continue independent development between reviewed batches. Read the current #20 work order for per-slice scope/SHA; no automatic revival of old branches or fixed Runner/Python orchestration.
+
+**At the end of each substantive committed candidate** (after focused positive and hostile/negative tests), **Claude itself calls the Codex CLI as a NEW independent review process** using its normal available shell interface. Typical shape: `codex exec "<read-only request with exact BASE/CANDIDATE SHA, paths and tests>"`. The review uses `REVIEW_ONLY_NO_NESTED_CLI`, an isolated read-only checkout and the receipt defined in D00 §3A; never the concurrently running `CODEX_DEV_B` developer session. Capture the actual process exit and `PASS | REWORK | BLOCKED`, not a made-up successful receipt. On REWORK, repair own code, commit a new SHA and invoke another fresh Codex CLI review. On PASS, record peer evidence and continue the next owned development batch. On BLOCKED or denied CLI execution, preserve the checkpoint and ask the operator to resume; do not invent a background worker.
+
+**When invoked as `CLAUDE_CLI` reviewer by `CODEX_DEV_B`**, execute only the read-only bounded review against the supplied exact SHA; report concrete findings/test evidence to the Codex caller and EXIT. Do **not** implement, push, call Codex/another CLI again, or treat the review subprocess as a second standing developer session. Review mode always overrides the developer continuation instructions for that subprocess.
+
+**One PC, separate writer isolation:** both primary developers operate on the operator's same computer, but MUST NOT write to one dirty working tree concurrently. Validate actual installed CLI commands, credentials, shell permissions and approved workspace/branch before first handoff. No runner/daemon/scheduler, unsafe skip approvals, live orders or automatic main merge. The preceding DOC-FIRST restriction stays in force until explicit operator approval.
+
