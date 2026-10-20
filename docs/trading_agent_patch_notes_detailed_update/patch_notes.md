@@ -3963,3 +3963,15 @@ Sources: `apps/operator_ui/data_access_core.py`, `apps/operator_ui/data_access_t
 - Hosted composed-SHA CI, full pytest, Linux, genuine production goldens/real-data evidence and UI build/visual acceptance **NOT_RUN**. Prior321 candidate records preserved, new note322; GPT reconciles newer integration notes serially.
 
 Sources: `scripts/refactor/shared_strategist_contracts.py`, `scripts/refactor/shared_role_contracts.py`, `tests/test_shared_strategist_contracts.py`, `tests/test_p15_integration_completion.py`, `tests/test_shared_role_contracts.py`, `tests/test_p15_b_versioned_contract.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+
+## 2026-10-20 - P1.5 BATCH03 B REPORTER A STRICT VERSIONED CONTRACT 20261020
+**Stage:** Developer candidate; independent peer and selective integration pending. **Tags:** REFACTOR / TEST
+
+- BASE cd5a7f59e1d374617cc668e6e82c32f3284cde43; A pin e92950d41aa8dd08c643377b3527fa0b77f51106; B source remains pinned54bebe5ece0ac34c4f45df55c44889c9ce323e95. No runtime source or frozen guard changed.
+- Historical source inventory and original restoration proofs remain separate. Current admission requires exact facade, Owner and guard bytes, public ABI, full restored AST and closed path inventory. Hostile probes require a green exact-A baseline before mutation rejection.
+- AST transition digest is computed from immutable approved Git reference using the running interpreter serializer; never from candidate input. Original guard literal and old historical proof remain unchanged. Cross-serializer probe covers optional-empty AST formatting; actual Linux execution NOT_RUN.
+- Windows Python3.14.2: broad normal454PASS before portability change, final post-change focused normal84PASS plus notes2PASS, final optimized457PASS including paired notes; zero FAIL/SKIP. Distinct scopes, not additive case totals. Fresh direct read-only Claude review pending commit. A source is tested in memory, not installed on this B branch.
+- Known integration2f159b6 hosted CI5/6: missing immutable Git source object. CI repair remains blocked pending permitted approval; no YAML edits or integration claim. Full pytest, hosted candidate CI, Linux, production golden/real-data and UI build NOT_RUN.
+
+Sources: `scripts/refactor/shared_role_contracts.py`, `scripts/refactor/shared_strategist_contracts.py`, `tests/test_p15_reporter_a_versioned_contract.py`, `tests/test_shared_role_contracts.py`, `tests/test_work_reporter_seed_migration.py`, `tests/test_shared_reporter_facade_guard.py`.

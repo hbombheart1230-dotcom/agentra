@@ -264,13 +264,25 @@ def test_same_interpreter_base_archive_replay_equals_final(tmp_path):
 
 
 def test_target_tree_discipline_and_no_forbidden_surface():
+    sys.path.insert(0, str(ROOT / "scripts/refactor"))
+    import shared_role_contracts as shared
+    from scripts.refactor import shared_strategist_contracts as stages
+    admitted = stages.verify_a_sources()
+    current_inventory = shared.reporter_inventory()
+    historical_inventory = set(subprocess.check_output(
+        ["git", "ls-tree", "-r", "--name-only", shared.REPORTER, "--", "libs/agents/reporter"],
+        cwd=ROOT, text=True).splitlines())
     base = ROOT / "libs/agents/reporter"
     assert {p.name for p in base.iterdir() if p.is_dir() and p.name != "__pycache__"} == REPORTER_PACKAGES
     for sub in REPORTER_PACKAGES:
-        assert sorted(p.name for p in (base / sub).glob("*.py")) == \
-            sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]
+        historical = sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]
                    + [f"{o}.py" for d_sub, owners in DECOMPOSED.values() if d_sub == sub for o in owners]
-                   + [Path(o).name for o in sorted(R4_OWNER_FILES) if Path(o).parent.name == sub]), sub
+                   + [Path(o).name for o in sorted(R4_OWNER_FILES) if Path(o).parent.name == sub])
+        # Original exact list remains a live assertion on immutable R7 bytes.
+        assert historical == sorted(Path(p).name for p in historical_inventory if Path(p).parent.name == sub), sub
+        current = historical + ([Path(stages.A_OWNER).name] if admitted and sub == "read_models" else [])
+        assert sorted(p.name for p in (base / sub).glob("*.py")) == sorted(current), sub
+        assert sorted(Path(p).name for p in current_inventory if Path(p).parent.name == sub) == sorted(current), sub
     out = [x for x in subprocess.check_output(["git", "diff", "--name-only", "-z", START, "HEAD"], cwd=ROOT).decode().split(chr(0)) if x]
     merged = subprocess.check_output(["git", "rev-list", "--merges", f"{START}..HEAD"], cwd=ROOT).decode().split()
     violations = _scope_violations(out, merged=bool(merged))

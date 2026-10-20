@@ -30,7 +30,9 @@ class FacadeGuardTests(unittest.TestCase):
             G.verify_facade(self.base, ast.unparse(tree), self.rows, PATH)
 
     def test_all_registered_facades_restore_to_base(self):
-        self.assertEqual(G.verify_tree(ROOT, reviewed=REVIEWED)["moves"],
+        import shared_role_contracts as shared
+        self.assertEqual(shared.verify_historical_reporter()["moves"], 313)
+        self.assertEqual(shared.reporter_stage()[0]["moves"],
                          G.PINNED_INVENTORIES[REVIEWED])
 
     def test_same_path_unmoved_function_body_change(self):

@@ -19,9 +19,12 @@ def test_exact_combined_runtime_inputs_and_restoration():
 
 @pytest.mark.parametrize("kind", ["shim_import", "shim_duplicate", "shim_redirect", "owner_body",
                                   "unmoved", "wrapper", "broker", "numbered_owner"])
-def test_real_source_mutations_fail_closed(kind):
+@pytest.mark.parametrize("stage", ["B", "A-preview"])
+def test_real_source_mutations_fail_closed(kind, stage):
     # A rejected mutant is evidence only when the exact unmodified input passes.
-    assert S.verify_runtime()["moves"] == 313
+    baseline = ({p: S.S5.git_source(S.S5.A_SOURCE, p) for p in S.S5.A_STAGE_PATHS}
+                if stage == "A-preview" else {})
+    assert S.verify_runtime(baseline)["moves"] == 313
     path = next(iter(S.whole_moves()))
     source = (ROOT / path).read_text(encoding="utf-8-sig")
     if kind == "shim_import":
@@ -45,7 +48,7 @@ def test_real_source_mutations_fail_closed(kind):
         changes = {path: "BROKER_CAPABILITY = True\n"}
     message = "unexpected/missing runtime path" if kind in {"broker", "numbered_owner"} else "unapproved runtime body/import/authority"
     with pytest.raises(AssertionError, match=message) as rejected:
-        S.verify_runtime(changes)
+        S.verify_runtime(baseline | changes)
     assert next(iter(changes)) in str(rejected.value)
 
 

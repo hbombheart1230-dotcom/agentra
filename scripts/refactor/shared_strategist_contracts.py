@@ -442,6 +442,36 @@ B_CONTRACT_PATHS = frozenset({
 })
 B_DEFINITIONS = frozenset({"load_overview", "_trade_report_index", "load_run_detail"})
 
+# Reporter A is a distinct three-blob stage, never an expansion of B's pins.
+A_SOURCE = "e92950d41aa8dd08c643377b3527fa0b77f51106"
+A_PRE_SOURCE = "cd5a7f59e1d374617cc668e6e82c32f3284cde43"
+A_FACADE = "libs/reporting/reporter_analysis.py"
+A_OWNER = "libs/agents/reporter/read_models/analysis_report_projection.py"
+A_GUARD = "scripts/refactor/reporter_facade_guard.py"
+A_STAGE_PATHS = frozenset({A_FACADE, A_OWNER, A_GUARD})
+A_CONTRACT_PATHS = frozenset({
+    "tests/test_work_reporter_seed_migration.py",
+    "tests/test_shared_reporter_facade_guard.py",
+    "tests/test_p15_reporter_a_versioned_contract.py",
+})
+
+
+def verify_a_sources(overrides=None):
+    """B-only or exact A installation/preview, including its immutable guard.
+
+    Partial installation is rejected. Git reads may supply the three sources
+    in memory; this neither installs them nor approves integration.
+    """
+    overrides = overrides or {}
+    installed = A_OWNER in overrides or (ROOT / A_OWNER).exists()
+    paths = A_STAGE_PATHS if installed else A_STAGE_PATHS - {A_OWNER}
+    for path in sorted(paths):
+        current = overrides[path] if path in overrides else (ROOT / path).read_text(encoding="utf-8")
+        pin = A_SOURCE if installed else A_PRE_SOURCE
+        require(current.replace("\r\n", "\n") == git_source(pin, path),
+                "A-stage source/guard differs from exact " + ("A" if installed else "B-only (missing/partial " + A_OWNER + ")") + " pin: " + path)
+    return A_STAGE_PATHS if installed else frozenset()
+
 
 def verify_b_sources(overrides=None):
     """Exact reviewed B blobs, restored pre-B imports/exports/ABI and AST.
@@ -489,6 +519,7 @@ def verify_next_stage(overrides=None):
 def verify_b_scope(overrides=None):
     """Closed current source/test delta; no wildcard or editable baseline."""
     overrides = overrides or {}
+    admitted_a = verify_a_sources(overrides)
     require(subprocess.run(["git", "merge-base", "--is-ancestor", B_PRE_SOURCE, "HEAD"],
                            cwd=ROOT, capture_output=True).returncode == 0,
             "B-stage baseline not ancestral")
@@ -503,13 +534,16 @@ def verify_b_scope(overrides=None):
         ["git", "ls-files", "--others", "--exclude-standard", "--", *POST_ACCEPTANCE_CODE_ROOTS],
         cwd=ROOT, text=True).splitlines())
     changed |= set(overrides)
-    require(changed <= B_SOURCE_PATHS | B_CONTRACT_PATHS,
-            "B-stage unapproved source/test/fixture path: " + repr(changed - B_SOURCE_PATHS - B_CONTRACT_PATHS))
+    allowed = B_SOURCE_PATHS | B_CONTRACT_PATHS | A_CONTRACT_PATHS | admitted_a
+    require(changed <= allowed,
+            "B-stage unapproved source/test/fixture path: " + repr(changed - allowed))
     for path in sorted(B_SOURCE_PATHS):
         current = overrides[path] if path in overrides else (ROOT / path).read_text(encoding="utf-8-sig")
         require(current.replace("\r\n", "\n") == git_source(B_SOURCE, path),
                 "B-stage source/test differs from reviewed pin: " + path)
-    return frozenset(changed)
+    # Preserve the B-stage result ABI after checking the ENTIRE actual delta.
+    # A has its own exact stage result; filtering is never used for admission.
+    return frozenset(changed - A_CONTRACT_PATHS - admitted_a)
 
 
 def verify_next_scope(changed=None, untracked=None):
