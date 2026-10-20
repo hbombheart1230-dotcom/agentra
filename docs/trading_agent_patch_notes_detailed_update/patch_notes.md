@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-20 · P1.5 A-P2 REPORTER ANALYSIS SECTION ASSEMBLY PROJECTION 20261020
+**Stage:** P1.5 A-P2 DEV-A 소스 후보 (공유 계약으로 통합 차단) · **Tags:** REFACTOR · TEST
+
+- intent-flow 분석 이후의 결정적 섹션 빌더 15개를 기존 `analysis_report_projection.build_analysis_sections`로 옮겼습니다. 실행 순서는 BASE와 같고, 빌더는 호출 시점에 facade에서 찾습니다. `intents_path`를 읽는 `_build_intent_flow_analysis`와 읽기·LLM·메모리·원장·파일 기록은 모두 기존 함수에 남아 있으며, 함수는 251줄에서 212줄로 줄었습니다.
+- BASE `4b0c3e0b` 대비 테스트에 AI 비활성, 한국어/이모지, 완전 중복·전일·no-op 이벤트, 늦은 monkeypatch를 포함한 18개 빌더 호출 순서, 잘못된 threshold 예외 시점(이후 효과·기록 없음)을 추가했습니다. 빌더 순서 교체(2개 실패)와 threshold 하한 변경(1개 실패)을 실제로 잡아냅니다.
+- `reporter_facade_guard`는 기존 함수 AST·owner SHA-256 고정값 두 개만 갱신했고 엄격 과거 단계와 현재 단계의 상호 거부는 유지됩니다.
+- **KNOWN_BLOCKED:** seed-migration 트리 검사와 `shared_role_contracts` 런타임 목록 검사는 여전히 실패하며 수정하지 않았습니다.
+
+Sources: `libs/reporting/reporter_analysis.py`, `libs/agents/reporter/read_models/analysis_report_projection.py`, `tests/test_p15_reporter_analysis_projection.py`, `scripts/refactor/reporter_facade_guard.py`.
+
 ## 2026-10-20 · P1.5 BATCH02 DEV-A PARTIAL REPORTER FACADE GUARD TRANSITION 20261020
 **Stage:** P1.5 BATCH02 DEV-A 부분 체크포인트 (BLOCKED, 통합 불가) · **Tags:** TEST · CI · SAFETY
 

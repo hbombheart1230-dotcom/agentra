@@ -464,67 +464,28 @@ def generate_reporter_analysis_report(
         day=target_day,
         operator_summary_obj=op_obj,
     )
-    strategy_eff = _build_strategy_effectiveness(day_rows=day_rows, trade_explain_obj=trade_obj)
-    report_focus_targets = _extract_report_focus_targets(day_rows)
-    overtrading = _build_overtrading_diagnostics(
-        trade_explain_obj=trade_obj,
+    sections = _analysis_projection.build_analysis_sections(
+        day_rows=day_rows,
+        trade_obj=trade_obj,
+        trade_decision=trade_decision,
         intent_flow=intent_flow,
-        rapid_threshold_sec=max(1, int(rapid_cycle_threshold_sec)),
+        target_day=target_day,
+        rapid_cycle_threshold_sec=rapid_cycle_threshold_sec,
+        facade=_r3_sys.modules[__name__],
     )
-    incident = _build_incident_postmortem(overtrading=overtrading, intent_flow=intent_flow, day_rows=day_rows)
-    market_context = _build_market_context(trade_explain_obj=trade_obj, day_rows=day_rows)
-    strategy_frame_summary = _build_strategy_frame_summary(day_rows)
-    decision_chains = _build_decision_chains(day_rows, limit=200)
-    decision_trace_chain_summary = _build_decision_trace_chain_summary(day_rows, limit=200)
-    trade_summary = _build_trade_summary_section(trade_decision=trade_decision, decision_chains=decision_chains)
-    strategist_eval = _build_strategist_evaluation(day_rows)
-    scanner_eval = _build_scanner_evaluation(day_rows)
-    monitor_eval = _build_monitor_evaluation(day_rows=day_rows, overtrading=overtrading)
-    supervisor_activity = _build_supervisor_activity(day_rows, intent_flow=intent_flow)
-    improvement_suggestions = _build_improvement_suggestions(
-        strategist_eval=strategist_eval,
-        scanner_eval=scanner_eval,
-        monitor_eval=monitor_eval,
-        supervisor_activity=supervisor_activity,
-        incidents=incident,
-        report_focus_targets=report_focus_targets,
-    )
-    report_views = _build_report_views(
-        day=target_day,
-        trade_summary=trade_summary,
-        monitor_eval=monitor_eval,
-        scanner_eval=scanner_eval,
-        supervisor_activity=supervisor_activity,
-        incidents=incident,
-        improvement_suggestions=improvement_suggestions,
-    )
-
     daily_operator = _analysis_projection.build_daily_operator_report(
-        op_obj=op_obj, market_context=market_context, incident=incident, facade=_r3_sys.modules[__name__]
+        op_obj=op_obj, market_context=sections["market_context"], incident=sections["incident"],
+        facade=_r3_sys.modules[__name__],
     )
     js_path = report_dir / f"reporter_analysis_{target_day}.json"
     md_path = report_dir / f"reporter_analysis_{target_day}.md"
 
     out = _analysis_projection.build_base_report(
         target_day=target_day,
-        trade_summary=trade_summary,
-        decision_chains=decision_chains,
-        decision_trace_chain_summary=decision_trace_chain_summary,
         trade_decision=trade_decision,
-        strategy_frame_summary=strategy_frame_summary,
-        strategist_eval=strategist_eval,
-        scanner_eval=scanner_eval,
-        monitor_eval=monitor_eval,
-        supervisor_activity=supervisor_activity,
         intent_flow=intent_flow,
-        strategy_eff=strategy_eff,
-        overtrading=overtrading,
         daily_operator=daily_operator,
-        incident=incident,
-        improvement_suggestions=improvement_suggestions,
-        report_views=report_views,
-        market_context=market_context,
-        report_focus_targets=report_focus_targets,
+        **sections,
         trade_js=trade_js,
         trade_md=trade_md,
         op_js=op_js,

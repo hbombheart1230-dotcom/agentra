@@ -40,9 +40,9 @@ def _write_jsonl(path: Path, rows) -> None:
     path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
 
 
-def _events(tmp: Path) -> Path:
+def _events(tmp: Path, extra=()) -> Path:
     ev = tmp / "events.jsonl"
-    _write_jsonl(ev, [
+    _write_jsonl(ev, [*extra,
         {"run_id": "r1", "ts": f"{DAY}T00:00:00+00:00", "stage": "strategist", "event": "summary",
          "payload": {"themes": ["semiconductor"], "report_focus": ["Check monitor exit quality"]}},
         {"run_id": "r1", "ts": f"{DAY}T00:00:01+00:00", "stage": "scanner", "event": "summary",
@@ -67,7 +67,8 @@ AI_OK = {"enabled": True, "status": "ok", "model": "fake", "ai_summary": "summar
                                "improvements": [{"keys": ["monitor_evaluation"]}]}}
 
 
-def _run(fn, tmp: Path, monkeypatch, *, ai, memory="ok", bridge="ok", events_present=True, flags=False):
+def _run(fn, tmp: Path, monkeypatch, *, ai, memory="ok", bridge="ok", events_present=True, flags=False, extra=(),
+         threshold=120, ai_enabled=True):
     """Run ``fn`` with recording fakes for every effect; return (json bytes, md bytes, out, effect log)."""
     log = []
     for name in ("EVIDENCE_LEDGER_PATH", "STRATEGY_MEMORY_PATH", "STRATEGY_MEMORY_DAILY_DIR"):
@@ -98,12 +99,24 @@ def _run(fn, tmp: Path, monkeypatch, *, ai, memory="ok", bridge="ok", events_pre
     monkeypatch.setattr(ra, "save_strategy_feedback", fake_memory)
     monkeypatch.setattr(ra, "record_raw_input", fake_raw)
     monkeypatch.setattr(ra, "record_decision_bridge", fake_bridge)
-    ev = _events(tmp) if events_present else tmp / "missing_events.jsonl"
+    ev = _events(tmp, extra) if events_present else tmp / "missing_events.jsonl"
     reports_root = tmp / "reports"
     md, js, out = fn(ev, reports_root / "reporter_analysis", day=DAY, reports_root=reports_root,
-                     ai_review_enabled=True, ai_review_model="fake", ai_review_temperature=0.1, ai_review_max_tokens=10,
+                     ai_review_enabled=ai_enabled, ai_review_model="fake", ai_review_temperature=0.1, ai_review_max_tokens=10,
+                     rapid_cycle_threshold_sec=threshold,
                      generate_decision_story=flags, generate_run_cards=flags)
     return js.read_bytes(), md.read_bytes(), json.dumps(out, ensure_ascii=False), log
+
+
+UNICODE_ROWS = (
+    {"run_id": "r2", "ts": f"{DAY}T00:00:06+00:00", "stage": "strategist", "event": "summary",
+     "payload": {"themes": ["반도체", "AI 🚀"], "report_focus": ["모니터 청산 품질 점검"]}},
+    {"run_id": "r2", "ts": f"{DAY}T00:00:06+00:00", "stage": "strategist", "event": "summary",
+     "payload": {"themes": ["반도체", "AI 🚀"], "report_focus": ["모니터 청산 품질 점검"]}},  # exact duplicate
+    {"run_id": "r0", "ts": "2026-03-09T23:59:59+00:00", "stage": "execute_from_packet", "event": "verdict",
+     "payload": {"allowed": False, "reason": "전일 이벤트"}},  # cross-day: must be filtered identically
+    {"run_id": "r2", "ts": f"{DAY}T00:00:07+00:00", "stage": "noop", "event": "noop", "payload": {}},
+)
 
 
 SCENARIOS = {
@@ -114,6 +127,8 @@ SCENARIOS = {
     "memory_and_bridge_fail": dict(ai=AI_OK, memory="raise", bridge="raise"),
     "missing_event_log": dict(ai=AI_OK, events_present=False),
     "story_and_cards_enabled": dict(ai=AI_OK, flags=True),
+    "ai_disabled": dict(ai={"enabled": False, "status": "disabled"}, ai_enabled=False),
+    "unicode_cross_day_duplicate_rows": dict(ai=AI_OK, threshold=0, extra=UNICODE_ROWS),
 }
 
 
@@ -275,3 +290,74 @@ def test_facade_generate_signature_and_delegation_are_kept():
         assert f"_analysis_projection.{name}(" in seg
     assert ra._analysis_projection is proj
     assert len(seg.splitlines()) < len(ast.get_source_segment(base_src, base).splitlines())
+
+
+BUILDERS = ("_build_trade_decision_summaries", "_build_intent_flow_analysis", "_build_strategy_effectiveness",
+            "_extract_report_focus_targets", "_build_overtrading_diagnostics", "_build_incident_postmortem",
+            "_build_market_context", "_build_strategy_frame_summary", "_build_decision_chains",
+            "_build_decision_trace_chain_summary", "_build_trade_summary_section", "_build_strategist_evaluation",
+            "_build_scanner_evaluation", "_build_monitor_evaluation", "_build_supervisor_activity",
+            "_build_improvement_suggestions", "_build_report_views", "_build_ai_evidence_catalog")
+
+
+def _spy_builders(monkeypatch, seq, *, override=None):
+    for name in BUILDERS:
+        real = getattr(ra, name)
+
+        def spy(*a, _n=name, _r=real, **k):
+            seq.append(_n)
+            if override and _n == override[0]:
+                return override[1]
+            return _r(*a, **k)
+        monkeypatch.setattr(ra, name, spy)
+
+
+def test_section_builders_run_in_base_order_and_honour_late_patch(tmp_path, monkeypatch):
+    results = []
+    for fn in (_base_generate(), ra.generate_reporter_analysis_report):
+        seq = []
+        _spy_builders(monkeypatch, seq, override=("_build_market_context", {"regime": "패치됨"}))
+        res = _run(fn, tmp_path / "w", monkeypatch, ai=AI_OK, extra=UNICODE_ROWS)
+        monkeypatch.undo()
+        results.append((seq, res))
+    assert results[0] == results[1]
+    seq, (js, _md, _out, _log) = results[1]
+    assert seq == list(BUILDERS)
+    doc = json.loads(js)
+    assert doc["market_context"] == {"regime": "패치됨"} == doc["daily_operator_report"]["market_context"]
+
+
+@pytest.mark.parametrize("threshold", ["not-a-number", None])
+def test_invalid_threshold_raises_at_the_base_point(threshold, tmp_path, monkeypatch):
+    outcomes = []
+    for fn in (_base_generate(), ra.generate_reporter_analysis_report):
+        seq = []
+        _spy_builders(monkeypatch, seq)
+        with pytest.raises((ValueError, TypeError)) as exc:
+            _run(fn, tmp_path / "w", monkeypatch, ai=AI_OK, threshold=threshold)
+        monkeypatch.undo()
+        outcomes.append((type(exc.value), str(exc.value), seq))
+    assert outcomes[0] == outcomes[1]
+    assert outcomes[1][2] == list(BUILDERS[:4])  # raised before overtrading; no LLM/memory/bridge/write afterwards
+    assert not list((tmp_path / "w" / "reports" / "reporter_analysis").glob("reporter_analysis_*"))
+
+
+def test_section_projection_is_independently_callable():
+    calls = []
+
+    class Fac:
+        def __getattr__(self, name):
+            def f(*a, **k):
+                calls.append(name)
+                return {"from": name}
+            return f
+    sec = proj.build_analysis_sections(day_rows=[], trade_obj={}, trade_decision={}, intent_flow={}, target_day=DAY,
+                                       rapid_cycle_threshold_sec="5", facade=Fac())
+    assert calls == list(BUILDERS[2:17])
+    assert list(sec) == ["strategy_eff", "report_focus_targets", "overtrading", "incident", "market_context",
+                         "strategy_frame_summary", "decision_chains", "decision_trace_chain_summary", "trade_summary",
+                         "strategist_eval", "scanner_eval", "monitor_eval", "supervisor_activity",
+                         "improvement_suggestions", "report_views"]
+    with pytest.raises(ValueError):
+        proj.build_analysis_sections(day_rows=[], trade_obj={}, trade_decision={}, intent_flow={}, target_day=DAY,
+                                     rapid_cycle_threshold_sec="x", facade=Fac())

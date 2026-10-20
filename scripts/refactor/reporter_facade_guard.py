@@ -31,12 +31,12 @@ P15_TRANSITIONS = {
     "libs/reporting/reporter_analysis.py": {
         "import": "from libs.agents.reporter.read_models import analysis_report_projection as _analysis_projection",
         "function": "generate_reporter_analysis_report",
-        "function_ast_sha256": "0ffda4674e0457476a4cf069f9ed9dd5608a89af92f614c4f69aa4e8901421f7",
+        "function_ast_sha256": "b04fba4904282f51e9daa2249de95aa0dd77557f6f62367d914f950902481c89",
     },
 }
 P15_OWNERS = {
     "libs/agents/reporter/read_models/analysis_report_projection.py":
-        "05fee281f89df834e52edf2a22338359c9069daab55fd6cc4957b3a0f02ad5e9",
+        "69e9e6cf0e94d877bd17e80279d0f771edbb95ae5bc84d02c254a2915045dcd3",
 }
 
 

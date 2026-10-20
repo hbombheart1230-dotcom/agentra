@@ -1,8 +1,34 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 321,
+  "entry_count": 322,
   "entries": [
+    {
+      "date": "2026-10-20",
+      "version": "P1.5 A-P2 REPORTER ANALYSIS SECTION ASSEMBLY PROJECTION 20261020",
+      "title": "Move Reporter analysis deterministic section assembly into the existing analysis projection read-model",
+      "stage": "P1.5 A-P2 DEV-A source candidate; integration blocked by shared Reporter contract",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "The 15 deterministic section builders after intent-flow analysis now run in analysis_report_projection.build_analysis_sections in the BASE order; generate_reporter_analysis_report keeps every read, LLM, memory, ledger and write step and shrinks from 251 to 212 lines.",
+      "details": [
+        "_build_intent_flow_analysis (reads intents_path) and _build_trade_decision_summaries stay in the caller before the projection; builders resolve on the facade at call time.",
+        "Parity tests against BASE 4b0c3e0b add AI-disabled, Korean/emoji, exact-duplicate, cross-day and no-op rows, the full 18-builder call order with a late monkeypatch, and invalid-threshold exception timing with no later effects or writes.",
+        "Injected changes are detected: swapping two builders fails 2 tests; changing the threshold floor fails 1.",
+        "reporter_facade_guard: only the existing one-function AST digest and owner SHA-256 pins were refreshed; strict historical and current stages still reject each other.",
+        "KNOWN_BLOCKED: test_work_reporter_seed_migration tree discipline and shared_role_contracts runtime inventory still fail and were not modified."
+      ],
+      "impact": "Further Reporter orchestration reduction with byte-identical output; still INTEGRATION_BLOCKED_BY_SHARED_CONTRACT.",
+      "sources": [
+        "libs/reporting/reporter_analysis.py",
+        "libs/agents/reporter/read_models/analysis_report_projection.py",
+        "tests/test_p15_reporter_analysis_projection.py",
+        "scripts/refactor/reporter_facade_guard.py"
+      ]
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 BATCH02 DEV-A PARTIAL REPORTER FACADE GUARD TRANSITION 20261020",

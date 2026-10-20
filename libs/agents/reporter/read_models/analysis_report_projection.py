@@ -1,6 +1,6 @@
-"""Deterministic Reporter analysis read-model projection (P1.5 CODE BATCH 01, DEV-A).
+"""Deterministic Reporter analysis read-model projection (P1.5 CODE BATCH 01/02, DEV-A).
 
-Owns the pure result/evidence presentation of ``generate_reporter_analysis_report``:
+Owns the deterministic section assembly and the pure result/evidence presentation of ``generate_reporter_analysis_report``:
 the ``reporter_analysis.v1`` base report, the degraded AI-review fallback payload and the
 AI evidence projection. No log reads, LLM calls, memory/ledger writes or report files here;
 those stay in the ``libs.reporting.reporter_analysis`` orchestrator.
@@ -12,6 +12,74 @@ late monkeypatch of the facade module is honoured exactly as before the extracti
 from __future__ import annotations
 
 from typing import Any, Callable, Dict, List
+
+
+def build_analysis_sections(
+    *,
+    day_rows: List[Dict[str, Any]],
+    trade_obj: Dict[str, Any],
+    trade_decision: Dict[str, Any],
+    intent_flow: Dict[str, Any],
+    target_day: str,
+    rapid_cycle_threshold_sec: Any,
+    facade: Any,
+) -> Dict[str, Any]:
+    """Compute the deterministic report sections in the original order from already-read inputs.
+
+    ``intent_flow`` (which may read ``intents_path``) and ``trade_decision`` are computed by the caller first.
+    Keys match ``build_base_report`` keyword names.
+    """
+    strategy_eff = facade._build_strategy_effectiveness(day_rows=day_rows, trade_explain_obj=trade_obj)
+    report_focus_targets = facade._extract_report_focus_targets(day_rows)
+    overtrading = facade._build_overtrading_diagnostics(
+        trade_explain_obj=trade_obj,
+        intent_flow=intent_flow,
+        rapid_threshold_sec=max(1, int(rapid_cycle_threshold_sec)),
+    )
+    incident = facade._build_incident_postmortem(overtrading=overtrading, intent_flow=intent_flow, day_rows=day_rows)
+    market_context = facade._build_market_context(trade_explain_obj=trade_obj, day_rows=day_rows)
+    strategy_frame_summary = facade._build_strategy_frame_summary(day_rows)
+    decision_chains = facade._build_decision_chains(day_rows, limit=200)
+    decision_trace_chain_summary = facade._build_decision_trace_chain_summary(day_rows, limit=200)
+    trade_summary = facade._build_trade_summary_section(trade_decision=trade_decision, decision_chains=decision_chains)
+    strategist_eval = facade._build_strategist_evaluation(day_rows)
+    scanner_eval = facade._build_scanner_evaluation(day_rows)
+    monitor_eval = facade._build_monitor_evaluation(day_rows=day_rows, overtrading=overtrading)
+    supervisor_activity = facade._build_supervisor_activity(day_rows, intent_flow=intent_flow)
+    improvement_suggestions = facade._build_improvement_suggestions(
+        strategist_eval=strategist_eval,
+        scanner_eval=scanner_eval,
+        monitor_eval=monitor_eval,
+        supervisor_activity=supervisor_activity,
+        incidents=incident,
+        report_focus_targets=report_focus_targets,
+    )
+    report_views = facade._build_report_views(
+        day=target_day,
+        trade_summary=trade_summary,
+        monitor_eval=monitor_eval,
+        scanner_eval=scanner_eval,
+        supervisor_activity=supervisor_activity,
+        incidents=incident,
+        improvement_suggestions=improvement_suggestions,
+    )
+    return {
+        "strategy_eff": strategy_eff,
+        "report_focus_targets": report_focus_targets,
+        "overtrading": overtrading,
+        "incident": incident,
+        "market_context": market_context,
+        "strategy_frame_summary": strategy_frame_summary,
+        "decision_chains": decision_chains,
+        "decision_trace_chain_summary": decision_trace_chain_summary,
+        "trade_summary": trade_summary,
+        "strategist_eval": strategist_eval,
+        "scanner_eval": scanner_eval,
+        "monitor_eval": monitor_eval,
+        "supervisor_activity": supervisor_activity,
+        "improvement_suggestions": improvement_suggestions,
+        "report_views": report_views,
+    }
 
 
 def build_daily_operator_report(
