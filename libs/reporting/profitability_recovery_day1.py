@@ -87,62 +87,51 @@ def _resolve_same_day_linkage(lifecycle_bundle: Dict[str, Any], trade_dir: Path)
 
 def _resolve_holding_evidence(lifecycle_bundle: Dict[str, Any], trade_dir: Path) -> Dict[str, Any]:
     hold_payload = _read_hold_payload(trade_dir)
-    monitor_context_snapshots = [
-        dict(row)
-        for row in list(lifecycle_bundle.get("monitor_context_snapshots") or [])
-        if isinstance(row, dict)
-    ]
+    hold_events = _sp.list_of(hold_payload.get("holding_events"))
+
+    # Recorded holding evidence always wins; an entry/exit monitor context is only a last resort.
+    monitor_context_source = ""
+    monitor_context_snapshots = _sp.dict_rows(lifecycle_bundle.get("monitor_context_snapshots"))
+    if monitor_context_snapshots:
+        monitor_context_source = "bundle"
     if not monitor_context_snapshots:
         monitor_context_snapshots = [
-            dict((row.get("monitor_context") or {}))
-            for row in list(hold_payload.get("holding_events") or [])
-            if isinstance(row, dict) and isinstance(row.get("monitor_context"), dict)
+            dict(row["monitor_context"]) for row in hold_events if isinstance(row, dict) and isinstance(row.get("monitor_context"), dict)
         ]
-
+        if monitor_context_snapshots:
+            monitor_context_source = "hold_payload"
     if not monitor_context_snapshots:
-        exit_ctx = lifecycle_bundle.get("exit", {}) if isinstance(lifecycle_bundle.get("exit"), dict) else {}
-        entry_ctx = lifecycle_bundle.get("entry", {}) if isinstance(lifecycle_bundle.get("entry"), dict) else {}
+        exit_ctx = _sp.dict_of(lifecycle_bundle.get("exit"))
+        entry_ctx = _sp.dict_of(lifecycle_bundle.get("entry"))
         fallback_monitor = exit_ctx.get("monitor_context") or entry_ctx.get("monitor_context")
         if fallback_monitor and isinstance(fallback_monitor, dict):
             monitor_context_snapshots.append(dict(fallback_monitor))
-            if not holding_phase_summary:
-                holding_phase_summary = "Hold evidence recovered from execution context."
+            monitor_context_source = "entry_exit_context"
 
-    hold_events_count = int(lifecycle_bundle.get("hold_events_count") or 0)
+    hold_events_count = _sp.safe_int(lifecycle_bundle.get("hold_events_count"))
     if hold_events_count <= 0:
-        hold_events_count = len(list(hold_payload.get("holding_events") or []))
+        hold_events_count = len(hold_events)
     if hold_events_count <= 0:
         hold_events_count = sum(
             1
-            for row in list(lifecycle_bundle.get("timeline") or [])
+            for row in _sp.list_of(lifecycle_bundle.get("timeline"))
             if isinstance(row, dict) and str(row.get("event") or "").strip().lower() == "holding"
         )
 
-    holding_phase_summary = str(lifecycle_bundle.get("holding_phase_summary") or "").strip()
-    if not holding_phase_summary:
-        holding_summary = str(hold_payload.get("summary") or "").strip()
-        if holding_summary:
-            holding_phase_summary = holding_summary
-        elif hold_events_count > 0:
-            reasons = []
-            for row in list(hold_payload.get("holding_events") or []):
-                if not isinstance(row, dict):
-                    continue
-                reason = str(row.get("monitor_reason") or row.get("exit_reason") or "").strip()
-                if reason:
-                    reasons.append(reason)
-            if reasons:
-                deduped = ", ".join(dict.fromkeys(reasons))
-                holding_phase_summary = f"Holding observed across {hold_events_count} monitor updates: {deduped}."
-            else:
-                holding_phase_summary = f"Holding observed across {hold_events_count} monitor updates."
+    holding_phase_summary, holding_summary_source = _sp.recorded_holding_summary(
+        bundle_summary=lifecycle_bundle.get("holding_phase_summary"),
+        hold_summary=hold_payload.get("summary"),
+        hold_events_count=hold_events_count,
+        hold_events=hold_events,
+    )
+    if not holding_phase_summary and monitor_context_source == "entry_exit_context":
+        # Provenance label only: it records where the context came from and adds no hold events or facts.
+        holding_phase_summary = _sp.ENTRY_EXIT_CONTEXT_SUMMARY
+        holding_summary_source = "entry_exit_context_fallback"
 
     hold_duration = str(lifecycle_bundle.get("hold_duration") or "").strip()
     if not hold_duration:
-        hold_duration = str(
-            ((lifecycle_bundle.get("trade_outcome") or {}) if isinstance(lifecycle_bundle.get("trade_outcome"), dict) else {}).get("holding_time")
-            or ""
-        ).strip()
+        hold_duration = str(_sp.dict_of(lifecycle_bundle.get("trade_outcome")).get("holding_time") or "").strip()
 
     hold_duration_sec = lifecycle_bundle.get("hold_duration_sec")
     if hold_duration_sec in (None, ""):
@@ -154,6 +143,8 @@ def _resolve_holding_evidence(lifecycle_bundle: Dict[str, Any], trade_dir: Path)
         "hold_events_count": hold_events_count,
         "monitor_context_snapshots": monitor_context_snapshots,
         "holding_phase_summary": holding_phase_summary,
+        "monitor_context_source": monitor_context_source,
+        "holding_summary_source": holding_summary_source,
     }
 
 
@@ -177,7 +168,7 @@ def _resolve_execution_details(lifecycle_bundle: Dict[str, Any], trade_dir: Path
     )
 
     if order_id in (None, ""):
-        for ctx in (lifecycle_bundle.get("exit_execution_details", {}), lifecycle_bundle.get("entry_execution_details", {})):
+        for ctx in (_sp.dict_of(lifecycle_bundle.get("exit_execution_details")), _sp.dict_of(lifecycle_bundle.get("entry_execution_details"))):
             if ctx.get("order_id") not in (None, ""):
                 order_id = ctx.get("order_id")
                 break
@@ -200,15 +191,15 @@ def _resolve_execution_details(lifecycle_bundle: Dict[str, Any], trade_dir: Path
         or None
     )
     if avg_price in (None, ""):
-        for ctx in (lifecycle_bundle.get("exit_execution_details", {}), lifecycle_bundle.get("entry_execution_details", {})):
+        for ctx in (_sp.dict_of(lifecycle_bundle.get("exit_execution_details")), _sp.dict_of(lifecycle_bundle.get("entry_execution_details"))):
             if ctx.get("avg_price") not in (None, ""):
                 avg_price = ctx.get("avg_price")
                 break
     if avg_price in (None, ""):
         avg_price = (
-            _safe_float(lifecycle_bundle.get("exit", {}).get("price")) or
-            _safe_float(lifecycle_bundle.get("entry", {}).get("price")) or
-            _safe_float(lifecycle_bundle.get("monitor_snapshot", {}).get("average_price"))
+            _safe_float(_sp.dict_of(lifecycle_bundle.get("exit")).get("price")) or
+            _safe_float(_sp.dict_of(lifecycle_bundle.get("entry")).get("price")) or
+            _safe_float(_sp.dict_of(lifecycle_bundle.get("monitor_snapshot")).get("average_price"))
         )
 
     order_status = execution.get("status")

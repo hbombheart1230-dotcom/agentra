@@ -1,8 +1,36 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 337,
+  "entry_count": 338,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 A9 REPORTER FALLBACK CORRECTNESS AND PROVENANCE 20261021",
+      "title": "Holding-evidence fallback no longer crashes, malformed evidence degrades safely, and the broker-day flag contradiction is flagged",
+      "stage": "P1.5 A9 DEV-A source checkpoint (Issue #26); focused normal and python -O; trade-truth pct-basis repair CONTRACT_BLOCKED (v2 proposed)",
+      "types": [
+        "FIX",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "profitability_recovery_day1._resolve_holding_evidence no longer reads holding_phase_summary before assignment when only an entry/exit monitor context exists. Recorded holding evidence keeps precedence, the fallback adds a provenance label but no hold events or facts, malformed evidence reads as absent instead of aborting the diagnosis, and diagnostic rows gain monitor_context_source and holding_summary_source. trade_truth_resolver adds one additive warning for a broker-day flag with a pct but no PnL value or truth source.",
+      "details": [
+        "Group 1 fixed: the repaired path previously raised UnboundLocalError and its value was overwritten anyway. Summary precedence is now bundle, then hold payload summary, then hold-event derived text, and only then the entry/exit context label (which never changes hold_events_count or the thin-evidence flag). The FAST08 characterization that asserted the crash is replaced by deterministic expectations.",
+        "Group 2: absent snapshot, present-but-empty snapshot, confirmed hold, exit-only and entry-only context (exit preferred), malformed types (string exit/entry/execution, non-list timeline/holding_events, non-numeric hold_events_count, non-dict execution detail blocks) and corrupt or missing artifacts are exercised. Execution fields are never invented; the diagnosis is read-only (a file-tree snapshot is byte-identical before and after).",
+        "Group 3 (bounded, additive): when broker_day_authoritative is true and a pct exists but there is no PnL value, no named truth source and the pct is not a fallback, warnings gains broker_day_flag_without_pnl_value_or_truth_source. v1 schema and every existing field meaning, authority, confidence and pct basis are unchanged.",
+        "CONTRACT_BLOCKED: making that case stop reporting pct_basis=truth (or reporting authority=broker_day_flag_unbacked) is a semantic change to v1 fields consumed by report_truth_surface. Proposed v2: add pct_basis=unbacked_broker_flag with authoritative_pct=null and keep the current v1 payload behind schema_version trade_truth_resolution.v1 until consumers migrate.",
+        "Checks: shadow-context 30 and trade-truth 19 focused cases plus profitability and trade-report tests, 176 passed under both normal and python -O; scratch comparison against 4384af93 over inputs outside the repaired paths: 30 comparisons equal apart from the two new row keys and the single additive warning."
+      ],
+      "impact": "No broker, order, execution, persistence or live-trade effect; recorded evidence is never overridden and no fact is invented.",
+      "sources": [
+        "libs/reporting/profitability_recovery_day1.py",
+        "libs/reporting/fast08_shadow_projection.py",
+        "libs/reporting/trade_truth_resolver.py",
+        "tests/test_p15_fast08_a_shadow_context_smoke.py",
+        "tests/test_p15_fast08_a_trade_truth_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST08-A8.6 SYMBOL AND TRADE EXPLANATION READOUT 20261021",

@@ -82,10 +82,32 @@ def test_account_snapshot_estimate_without_valid_fill_price_is_treated_as_fallba
 
 
 def test_broker_day_flag_without_a_value_or_source_is_not_authority() -> None:
-    # Characterized current behavior (flagged for review, intentionally not changed): the broker-day flag
-    # alone never yields broker authority or confidence, yet the pct stays on the "truth" basis because the
-    # pct is not marked unconfirmed when broker_day_authoritative is set.
+    # v1 field meanings are unchanged (authority/confidence stay low, pct keeps the "truth" basis);
+    # A9 only adds a warning that makes the contradiction visible.
     result = resolve_trade_truth({"pnl_pct": 0.03, "broker_day_authoritative": True})
     assert result["authority"] == "unavailable" and result["confidence"] == "low"
     assert result["broker_pnl_present"] is False and result["pnl_value_present"] is False
-    assert result["pct_basis"] == "truth" and result["authoritative_pct"] == 0.03 and result["warnings"] == []
+    assert result["pct_basis"] == "truth" and result["authoritative_pct"] == 0.03
+    assert result["warnings"] == ["broker_day_flag_without_pnl_value_or_truth_source"]
+    assert result["schema_version"] == "trade_truth_resolution.v1"
+
+
+def test_a9_warning_is_absent_when_backed_or_not_claimed() -> None:
+    code = "broker_day_flag_without_pnl_value_or_truth_source"
+    backed_by_value = resolve_trade_truth({"pnl": 10, "pnl_pct": 0.01, "broker_day_authoritative": True})
+    backed_by_source = resolve_trade_truth({"pnl_pct": 0.01, "broker_day_authoritative": True, "pnl_truth_source": "kiwoom"})
+    not_claimed = resolve_trade_truth({"pnl_pct": 0.01, "pnl_truth_source": "kiwoom"})
+    no_pct = resolve_trade_truth({"broker_day_authoritative": True})
+    fallback = resolve_trade_truth({"broker_day_authoritative": True, "pnl_pct": 0.5, "data_source": {"pnl_pct": "fallback"},
+                                    "broker_buy_price": 100, "account_mark_price": 101})
+    for result in (backed_by_value, backed_by_source, not_claimed, no_pct, fallback):
+        assert code not in result["warnings"]
+    assert backed_by_source["authority"] == "broker_day" and backed_by_value["confidence"] == "high"
+
+
+def test_a9_only_the_warning_list_differs_from_the_v1_contract() -> None:
+    result = resolve_trade_truth({"pnl_pct": 0.03, "broker_day_authoritative": True})
+    assert set(result) == {"schema_version", "authoritative_pnl_krw", "authoritative_pct", "pct_basis", "authority",
+                           "fallback_pct", "fallback_role", "confidence", "warnings", "broker_pnl_present",
+                           "pnl_value_present", "pnl_pct", "pnl_pct_display", "pnl_pct_display_role",
+                           "pnl_pct_is_fallback", "pnl_pct_is_unconfirmed"}

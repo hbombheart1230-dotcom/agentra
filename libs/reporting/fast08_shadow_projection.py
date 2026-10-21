@@ -14,6 +14,62 @@ from collections import Counter
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
 
+# --- A9: malformed-evidence-safe readers ---------------------------------------------------
+
+
+def dict_of(value: Any) -> Dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def list_of(value: Any) -> List[Any]:
+    return value if isinstance(value, list) else []
+
+
+def dict_rows(value: Any) -> List[Dict[str, Any]]:
+    return [dict(row) for row in list_of(value) if isinstance(row, dict)]
+
+
+def safe_int(value: Any, default: int = 0) -> int:
+    """int() that reads absent or malformed values as ``default`` instead of aborting the diagnosis."""
+    try:
+        if value in (None, ""):
+            return default
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def recorded_holding_summary(
+    *, bundle_summary: Any, hold_summary: Any, hold_events_count: int, hold_events: Any
+) -> tuple[str, str]:
+    """Holding summary from recorded evidence only, in precedence order, with its source label.
+
+    Returns ("", "") when nothing was recorded; callers must not invent a summary from that.
+    """
+    recorded = str(bundle_summary or "").strip()
+    if recorded:
+        return recorded, "bundle"
+    from_payload = str(hold_summary or "").strip()
+    if from_payload:
+        return from_payload, "hold_payload_summary"
+    if hold_events_count > 0:
+        reasons = []
+        for row in list_of(hold_events):
+            if not isinstance(row, dict):
+                continue
+            reason = str(row.get("monitor_reason") or row.get("exit_reason") or "").strip()
+            if reason:
+                reasons.append(reason)
+        if reasons:
+            deduped = ", ".join(dict.fromkeys(reasons))
+            return f"Holding observed across {hold_events_count} monitor updates: {deduped}.", "hold_events_derived"
+        return f"Holding observed across {hold_events_count} monitor updates.", "hold_events_derived"
+    return "", ""
+
+
+ENTRY_EXIT_CONTEXT_SUMMARY = "Hold evidence recovered from execution context."
+
+
 # --- A8.5a: profitability recovery diagnostics -----------------------------------------
 
 
@@ -103,7 +159,7 @@ def diagnostic_row(
     required_execution_fields: Sequence[str],
 ) -> Dict[str, Any]:
     holding_phase_summary = str(holding_evidence.get("holding_phase_summary") or "").strip()
-    hold_events_count = int(holding_evidence.get("hold_events_count") or 0)
+    hold_events_count = safe_int(holding_evidence.get("hold_events_count"))
     monitor_context_snapshots = [
         dict(row) for row in list(holding_evidence.get("monitor_context_snapshots") or []) if isinstance(row, dict)
     ]
@@ -132,6 +188,8 @@ def diagnostic_row(
         "holding_phase_summary": holding_phase_summary,
         "hold_events_count": hold_events_count,
         "monitor_context_snapshots_count": len(monitor_context_snapshots),
+        "monitor_context_source": str(holding_evidence.get("monitor_context_source") or ""),
+        "holding_summary_source": str(holding_evidence.get("holding_summary_source") or ""),
         "same_day_linkage_status": str(same_day_linkage.get("status") or ""),
         "same_day_linkage_reason": str(same_day_linkage.get("linkage_reason") or ""),
         "same_day_linkage_missing": not linkage_surface_present(same_day_linkage),

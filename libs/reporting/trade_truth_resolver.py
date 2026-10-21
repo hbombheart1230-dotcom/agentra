@@ -84,6 +84,17 @@ def resolve_trade_truth(shared_facts: Dict[str, Any] | None) -> Dict[str, Any]:
     if not broker_day_authoritative and _has_truth_value(raw_pnl_pct) and not pnl_value_present:
         warnings.append("broker_day_pct_observation_only")
 
+    if (
+        broker_day_authoritative
+        and _has_truth_value(raw_pnl_pct)
+        and not pnl_value_present
+        and not broker_pnl_present
+        and not pnl_pct_is_fallback
+    ):
+        # Additive clarification only: the flag claims broker-day authority but there is no PnL value or
+        # named truth source to back it, so authority and confidence stay low. Fields keep their v1 meaning.
+        warnings.append("broker_day_flag_without_pnl_value_or_truth_source")
+
     authority = "broker_day" if broker_day_authoritative and broker_pnl_present else ""
     if not authority and pnl_value_present:
         authority = str(pnl_truth_source or "local_realized")

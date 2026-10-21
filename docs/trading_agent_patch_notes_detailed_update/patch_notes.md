@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 A9 REPORTER FALLBACK CORRECTNESS AND PROVENANCE 20261021
+**Stage:** P1.5 A9 DEV-A 소스 체크포인트(Issue #26) · 일반·`python -O` 집중 테스트 · trade truth pct 기준 변경은 CONTRACT_BLOCKED(v2 제안) · **Tags:** FIX · TEST · SAFETY
+
+- `profitability_recovery_day1._resolve_holding_evidence`가 entry/exit monitor 컨텍스트만 있을 때 `holding_phase_summary`를 할당 전에 읽던 문제를 고쳤습니다(이전에는 `UnboundLocalError`, 값도 곧 덮어써졌음). 요약 우선순위는 번들 기록, hold 파일 요약, hold 이벤트 파생 문구 순이고, 마지막에만 entry/exit 컨텍스트 라벨을 씁니다. 라벨은 hold 이벤트 수와 얇은 증거 표시를 바꾸지 않아 없는 사실을 만들지 않습니다. FAST08에서 크래시를 고정했던 특성 테스트는 확정된 기대 동작으로 교체했습니다.
+- 스냅샷 없음, 있지만 비어 있음, 확인된 보유, exit-only·entry-only 컨텍스트(exit 우선), 잘못된 타입(문자열 exit/entry/execution, 비목록 timeline/holding_events, 숫자 아닌 hold_events_count, 비dict 체결 블록), 손상·누락 산출물을 검증했습니다. 체결 필드는 만들어내지 않고, 진단은 읽기 전용입니다(파일 트리가 전후 바이트 동일). 진단 행에는 `monitor_context_source`, `holding_summary_source`가 추가됩니다.
+- `trade_truth_resolver`: `broker_day_authoritative`가 참이고 pct는 있지만 PnL 값·진실 출처가 없고 pct가 fallback도 아닐 때 경고 `broker_day_flag_without_pnl_value_or_truth_source`를 추가합니다. v1 스키마와 기존 필드 의미·authority·confidence·pct 기준은 그대로입니다.
+- **CONTRACT_BLOCKED:** 이 경우 `pct_basis=truth`를 바꾸는 것은 `report_truth_surface`가 쓰는 v1 필드의 의미 변경입니다. v2 제안: `pct_basis=unbacked_broker_flag`와 `authoritative_pct=null`을 추가하고, 소비처가 이전할 때까지 현재 v1 동작은 `trade_truth_resolution.v1` 아래 유지합니다.
+- 검증: shadow-context 30건·trade-truth 19건과 관련 테스트가 일반·`-O` 모두 176건 통과, 수리 경로 밖 입력은 `4384af93` 대비 30건 비교에서 새 행 키 2개와 경고 1건 외 동일.
+
+Sources: `libs/reporting/profitability_recovery_day1.py`, `libs/reporting/fast08_shadow_projection.py`, `libs/reporting/trade_truth_resolver.py`, `tests/test_p15_fast08_a_shadow_context_smoke.py`, `tests/test_p15_fast08_a_trade_truth_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST08-A8.6 SYMBOL AND TRADE EXPLANATION READOUT 20261021
 **Stage:** P1.5 FAST08 A8.6 DEV-A 체크포인트 · 테스트 전용 · symbol_read_model / trade_explain / strategy_read_model STAGE_CONTRACT_BLOCKED · **Tags:** TEST · SAFETY
 

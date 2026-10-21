@@ -66,12 +66,15 @@ def test_predicates_do_not_invent_state() -> None:
     assert sp.execution_missing_fields({"order_id": []}, ("order_id", "avg_price")) == ["order_id", "avg_price"]
 
 
-def test_missing_monitor_context_fallback_keeps_documented_unbound_name_behavior(tmp_path: Path) -> None:
-    # Preserved quirk: the recovery branch reads holding_phase_summary before it is assigned.
+def test_entry_exit_monitor_context_fallback_no_longer_crashes_and_invents_nothing(tmp_path: Path) -> None:
+    # A9: this path used to raise UnboundLocalError (holding_phase_summary read before assignment).
     root = tmp_path / "reports"
-    tdir = trade(root, "T9", {"entry": {"monitor_context": {"k": 1}}})
-    with pytest.raises(UnboundLocalError):
-        recovery.read_trade_diagnostic_row(tdir)
+    row = recovery.read_trade_diagnostic_row(trade(root, "T9", {"entry": {"monitor_context": {"k": 1}}}))
+    assert row["monitor_context_snapshots_count"] == 1 and row["monitor_context_source"] == "entry_exit_context"
+    assert row["holding_summary_source"] == "entry_exit_context_fallback"
+    assert row["holding_phase_summary"] == sp.ENTRY_EXIT_CONTEXT_SUMMARY
+    assert row["hold_events_count"] == 0 and row["holding_evidence_thin"] is True  # no hold facts were invented
+    assert row["hold_duration"] == "" and row["hold_duration_sec"] is None
 
 
 def snapshot(**over: Any) -> Dict[str, Any]:
@@ -115,3 +118,113 @@ def test_a85_helper_is_pure() -> None:
     assert all(line.split()[1] in {"__future__", "collections", "typing"} for line in imports), imports
     for banned in ("open(", "write_text", "read_text", "read_json", "os.environ", "subprocess", "now(", "Path("):
         assert banned not in source, banned
+
+
+# --- A9: holding / execution evidence correctness and fallback provenance -----------------------------
+
+
+def _hold_file(tdir: Path, payload: Any) -> None:
+    _write(tdir / "hold.json", payload)
+
+
+def _snapshot_tree(root: Path) -> Dict[str, bytes]:
+    return {str(p.relative_to(root)): p.read_bytes() for p in sorted(root.rglob("*")) if p.is_file()}
+
+
+def test_a9_absent_versus_present_but_empty_snapshot(tmp_path: Path) -> None:
+    root = tmp_path / "reports"
+    absent = recovery.read_trade_diagnostic_row(trade(root, "T1", {"status": "closed"}))
+    empty = recovery.read_trade_diagnostic_row(trade(root, "T2", {"status": "closed", "monitor_context_snapshots": [],
+                                                                  "entry": {"monitor_context": {}}, "exit": {"monitor_context": None}}))
+    junk = recovery.read_trade_diagnostic_row(trade(root, "T3", {"status": "closed", "monitor_context_snapshots": ["x", 3, None]}))
+    for row in (absent, empty, junk):
+        assert row["monitor_context_snapshots_count"] == 0 and row["monitor_context_source"] == ""
+        assert row["holding_summary_source"] == "" and row["holding_phase_summary"] == "" and row["holding_evidence_thin"] is True
+
+
+def test_a9_confirmed_hold_precedence_over_entry_exit_context(tmp_path: Path) -> None:
+    root = tmp_path / "reports"
+    bundle = {"status": "closed", "monitor_context_snapshots": [{"a": 1}], "hold_events_count": 4, "holding_phase_summary": " recorded ",
+              "hold_duration": "5m", "hold_duration_sec": 300, "exit": {"monitor_context": {"b": 2}}}
+    row = recovery.read_trade_diagnostic_row(trade(root, "T1", bundle))
+    assert (row["monitor_context_source"], row["holding_summary_source"]) == ("bundle", "bundle")
+    assert row["holding_phase_summary"] == "recorded" and row["hold_events_count"] == 4 and row["holding_evidence_thin"] is False
+    assert (row["hold_duration"], row["hold_duration_sec"]) == ("5m", 300)
+    tdir = trade(root, "T2", {"status": "closed", "exit": {"monitor_context": {"b": 2}}})
+    _hold_file(tdir, {"summary": "from hold file", "holding_events": [{"monitor_reason": "r1", "monitor_context": {"c": 3}}], "hold_duration_sec": 90})
+    row2 = recovery.read_trade_diagnostic_row(tdir)
+    assert (row2["monitor_context_source"], row2["holding_summary_source"]) == ("hold_payload", "hold_payload_summary")
+    assert row2["holding_phase_summary"] == "from hold file" and row2["hold_events_count"] == 1 and row2["hold_duration_sec"] == 90
+    tdir3 = trade(root, "T3", {"status": "closed"})
+    _hold_file(tdir3, {"holding_events": [{"monitor_reason": "a"}, {"exit_reason": "a"}, {"monitor_reason": "b"}, "bad"]})
+    row3 = recovery.read_trade_diagnostic_row(tdir3)
+    assert row3["holding_summary_source"] == "hold_events_derived" and row3["hold_events_count"] == 4
+    assert row3["holding_phase_summary"] == "Holding observed across 4 monitor updates: a, b."
+
+
+def test_a9_exit_only_and_entry_only_context_prefers_exit(tmp_path: Path) -> None:
+    root = tmp_path / "reports"
+    both = recovery._resolve_holding_evidence({"exit": {"monitor_context": {"side": "exit"}}, "entry": {"monitor_context": {"side": "entry"}}},
+                                              trade(root, "T1", {}))
+    assert both["monitor_context_snapshots"] == [{"side": "exit"}]
+    entry_only = recovery._resolve_holding_evidence({"entry": {"monitor_context": {"side": "entry"}}}, trade(root, "T2", {}))
+    assert entry_only["monitor_context_snapshots"] == [{"side": "entry"}] and entry_only["monitor_context_source"] == "entry_exit_context"
+    with_events = recovery._resolve_holding_evidence({"exit": {"monitor_context": {"x": 1}}, "timeline": [{"event": "Holding"}, {"event": "exit"}]},
+                                                     trade(root, "T3", {}))
+    assert with_events["hold_events_count"] == 1 and with_events["holding_summary_source"] == "hold_events_derived"
+    assert with_events["holding_phase_summary"] == "Holding observed across 1 monitor updates."
+
+
+@pytest.mark.parametrize("bundle", [
+    {"status": "closed", "hold_events_count": "many", "timeline": "oops", "monitor_context_snapshots": "oops"},
+    {"status": "closed", "exit": "SELL", "entry": ["x"], "trade_outcome": "bad", "execution": "bad", "story_contract": 7},
+    {"status": "closed", "exit_execution_details": "x", "entry_execution_details": [1], "monitor_snapshot": "x"},
+    {"status": "closed", "hold_events_count": 2.7, "execution_details": "not-a-dict", "same_day_reporter_linkage": "bad"},
+])
+def test_a9_malformed_evidence_degrades_instead_of_aborting(tmp_path: Path, bundle: Dict[str, Any]) -> None:
+    root = tmp_path / "reports"
+    tdir = trade(root, "T1", bundle)
+    _hold_file(tdir, {"holding_events": "oops", "summary": ["x"]})
+    row = recovery.read_trade_diagnostic_row(tdir)
+    assert row["closed_trade"] is True
+    # 2.7 is read as int(2.7) == 2 recorded hold events, exactly as before; every other case has no usable hold evidence.
+    assert row["hold_events_count"] == (2 if bundle.get("hold_events_count") == 2.7 else 0)
+    assert row["holding_evidence_thin"] is (bundle.get("hold_events_count") != 2.7)
+    assert row["execution_missing_fields_count"] == 6  # nothing invented for the required execution fields
+    assert recovery.audit_profitability_recovery_day(root, "2026-07-01")["trade_count"] == 1
+
+
+def test_a9_execution_details_precedence_and_no_invented_values(tmp_path: Path) -> None:
+    root = tmp_path / "reports"
+    explicit = recovery._resolve_execution_details({"execution_details": FULL_EXECUTION, "execution": {"qty": 9}}, trade(root, "T1", {}))
+    assert explicit == FULL_EXECUTION
+    from_ctx = recovery._resolve_execution_details({"exit_execution_details": {"order_id": "E1", "avg_price": 7}}, trade(root, "T2", {}))
+    assert from_ctx["order_id"] == "E1" and from_ctx["avg_price"] == 7 and from_ctx["order_status"] is None
+    from_exit = recovery._resolve_execution_details({"exit": {"price": "12.5"}, "execution": {"qty": 3, "action": "SELL"}}, trade(root, "T3", {}))
+    assert from_exit["avg_price"] == 12.5 and from_exit["order_status"] == "filled" and from_exit["filled_qty"] == 3
+    assert from_exit["order_id"] is None and from_exit["execution_mode"] is None and from_exit["broker_env"] is None
+    bare = recovery._resolve_execution_details({}, trade(root, "T4", {}))
+    assert all(value is None for value in bare.values())
+
+
+def test_a9_diagnosis_is_read_only(tmp_path: Path) -> None:
+    root = tmp_path / "reports"
+    tdir = trade(root, "T1", {"status": "closed", "exit": {"monitor_context": {"k": 1}}})
+    _hold_file(tdir, {"holding_events": []})
+    before = _snapshot_tree(tmp_path)
+    recovery.read_trade_diagnostic_row(tdir)
+    recovery.audit_profitability_recovery_day(root, "2026-07-01")
+    recovery.build_daily_profitability_scorecard(root, "2026-07-01")
+    assert _snapshot_tree(tmp_path) == before
+
+
+def test_a9_error_paths_missing_and_corrupt_artifacts(tmp_path: Path) -> None:
+    root = tmp_path / "reports"
+    tdir = root / "trades" / "2026-07-01" / "RUN" / "TBAD"
+    tdir.mkdir(parents=True)
+    (tdir / "lifecycle_bundle.json").write_text("{not json", encoding="utf-8")
+    (tdir / "hold.json").write_text("[1, 2]", encoding="utf-8")
+    row = recovery.read_trade_diagnostic_row(tdir)
+    assert row["trade_id"] == "TBAD" and row["closed_trade"] is False and row["holding_evidence_thin"] is True
+    assert row["monitor_context_source"] == "" and row["execution_missing_fields_count"] == 6
+    assert recovery.read_trade_diagnostic_row(tmp_path / "does_not_exist")["trade_id"] == "does_not_exist"
