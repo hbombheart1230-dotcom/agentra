@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST07-A7.3 FULL-CHAIN REPORTER UTILITY PROJECTIONS 20261021
+**Stage:** P1.5 FAST07 A7.3 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- full-chain 리뷰의 역할별 지표, top-pick/runner-up 쌍 비교, 선택 가용성, A/B/R1/R2/C 의사결정 창 귀속을 `fast07_attribution_projection.py`로, mining 행 구성·scorecard 조립·렌더러 3개를 `fast07_chain_render_projection.py`로 옮겼습니다. 줄 수: full_chain_component_review 1031→674, operator_summary_mining 492→178, agent_effectiveness_scorecard 302→173.
+- 데이터 로딩, 비용·슬리피지, forward 부착(`_q9_decision_candidate_rows`), 역할 점수와 판정(`_classify_root_cause`, `_attribution_component`, `_scanner_decision`, 진입/청산/전체 시스템), mining `_readiness`, scorecard `_delta_state`·`_decision_state`는 원래 모듈에 남겼습니다.
+- 검증: 신규 smoke 8건(FAST07 smoke 전체 28건)과 관련 평가 테스트 192건 통과, 변경 전 모듈 대비 동등성 A7.3 31/31(A7.1 41/41, A7.2 64/64 재확인).
+- **SIZE:** 두 owner가 각각 1012·1080줄(그중 약 460줄은 그대로 옮긴 렌더러). 승인된 owner 3개 안에서 유지했습니다.
+
+Sources: `libs/reporting/evaluation/full_chain_component_review.py`, `libs/reporting/evaluation/operator_summary_mining.py`, `libs/reporting/evaluation/agent_effectiveness_scorecard.py`, `libs/reporting/evaluation/fast07_attribution_projection.py`, `libs/reporting/evaluation/fast07_chain_render_projection.py`, `tests/test_p15_fast07_a_chain_smoke.py`, `tests/test_p15_fast07_a_evidence_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST07-A7.2 LOSS AND NO-TRADE ATTRIBUTION PROJECTIONS 20261021
 **Stage:** P1.5 FAST07 A7.2 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 

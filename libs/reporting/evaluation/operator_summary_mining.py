@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import json
-from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+from . import fast07_chain_render_projection as _render
 
 
 SCHEMA_VERSION = "operator_summary_mining.v1"
@@ -19,34 +20,11 @@ def _load_json(path: Path) -> Any:
         return {"__error__": str(exc)}
 
 
-def _dict(value: Any) -> dict[str, Any]:
-    return value if isinstance(value, dict) else {}
-
-
-def _list(value: Any) -> list[Any]:
-    return value if isinstance(value, list) else []
-
-
-def _safe_int(value: Any, default: int = 0) -> int:
-    try:
-        if value is None or value == "":
-            return default
-        return int(value)
-    except (TypeError, ValueError):
-        return default
-
-
-def _safe_float(value: Any) -> float | None:
-    try:
-        if value is None or value == "":
-            return None
-        return float(value)
-    except (TypeError, ValueError):
-        return None
-
-
-def _avg(values: list[float]) -> float | None:
-    return round(sum(values) / len(values), 4) if values else None
+_dict = _render.mining_dict
+_list = _render.mining_list
+_safe_int = _render.mining_safe_int
+_safe_float = _render.mining_safe_float
+_avg = _render.mining_avg
 
 
 @dataclass(frozen=True)
@@ -84,193 +62,34 @@ def _daily_artifacts(day_dir: Path) -> DailyArtifacts:
     )
 
 
-def _presence_report(days: list[DailyArtifacts]) -> dict[str, Any]:
-    fields = {
-        "daily_summary": "daily_summary",
-        "operator_summary": "operator_summary",
-        "q8_shadow_blocker_review": "q8_review",
-        "q9_decision_windows": "q9_windows",
-        "closeout_maintenance": "closeout",
-        "trade_index": "trade_index",
-        "daily_report": "daily_report",
-    }
-    counts: dict[str, int] = {}
-    for name, attr in fields.items():
-        count = 0
-        for row in days:
-            value = getattr(row, attr)
-            if isinstance(value, list):
-                if value:
-                    count += 1
-            elif value:
-                count += 1
-        counts[name] = count
-    total = len(days)
-    return {
-        "daily_count": total,
-        "first_day": days[0].day if days else "",
-        "last_day": days[-1].day if days else "",
-        "presence_counts": counts,
-        "presence_ratio": {
-            name: round(value / total, 4) if total else 0.0
-            for name, value in counts.items()
-        },
-        "json_error_count": sum(len(row.errors) for row in days),
-        "json_errors": [
-            {"day": row.day, "error": error}
-            for row in days
-            for error in row.errors
-        ][:25],
-    }
-
-
-def _daily_quality(days: list[DailyArtifacts]) -> dict[str, Any]:
-    recent = days[-20:]
-    rows: list[dict[str, Any]] = []
-    for row in recent:
-        metrics = _dict(row.daily_summary.get("metrics"))
-        shadow = _dict(row.daily_summary.get("quant_shadow_candidate_evaluation"))
-        q8_gate = _dict(row.q8_review.get("evaluation_trust_gate"))
-        q9_windows = _list(row.q9_windows.get("windows"))
-        rows.append({
-            "day": row.day,
-            "trade_count": _safe_int(metrics.get("trade_count")),
-            "closed_trade_count": _safe_int(metrics.get("closed_trade_count")),
-            "win_rate": _safe_float(metrics.get("win_rate")),
-            "avg_return_pct": _safe_float(metrics.get("avg_return_pct")),
-            "trade_index_count": len(row.trade_index),
-            "q8_candidate_count": _safe_int(row.q8_review.get("candidate_count")),
-            "q8_trusted_forward_count": _safe_int(q8_gate.get("trusted_forward_count")),
-            "q8_promotion_allowed": q8_gate.get("promotion_allowed"),
-            "q9_window_count": _safe_int(row.q9_windows.get("window_count"), len(q9_windows)),
-            "q9_has_recovery": bool(row.q9_windows.get("recovery")),
-            "shadow_candidate_count": _safe_int(shadow.get("deduped_candidate_count") or shadow.get("candidate_count")),
-            "shadow_forward_coverage": _safe_float(shadow.get("forward_outcome_coverage")),
-            "closeout_ok": row.closeout.get("ok"),
-            "has_daily_report": bool(row.daily_report),
-            "has_trade_index": bool(row.trade_index),
-        })
-    mismatches = [
-        {
-            "day": row["day"],
-            "daily_trade_count": row["trade_count"],
-            "trade_index_count": row["trade_index_count"],
-        }
-        for row in rows
-        if row["trade_count"] != row["trade_index_count"] and row["has_trade_index"]
-    ]
-    missing_runtime_surface = [
-        row["day"]
-        for row in rows
-        if row["trade_count"] > 0 and (not row["has_daily_report"] or not row["has_trade_index"])
-    ]
-    q9_counts = [row["q9_window_count"] for row in rows if row["q9_window_count"]]
-    shadow_coverages = [
-        row["shadow_forward_coverage"]
-        for row in rows
-        if row["shadow_forward_coverage"] is not None
-    ]
-    return {
-        "recent_days": rows,
-        "trade_index_mismatch_examples": mismatches[:20],
-        "missing_runtime_surface_days": missing_runtime_surface,
-        "q9_window_count_average_recent": _avg([float(v) for v in q9_counts]),
-        "shadow_forward_coverage_average_recent": _avg([float(v) for v in shadow_coverages]),
-    }
+_presence_report = _render.mining_presence_report
+_daily_quality = _render.mining_daily_quality
 
 
 def _weekly_quality(root: Path) -> dict[str, Any]:
     weekly_root = root / "weekly"
     weeks = [p for p in sorted(weekly_root.glob("*")) if p.is_dir()] if weekly_root.exists() else []
-    rows: list[dict[str, Any]] = []
-    for week_dir in weeks:
-        summary = _dict(_load_json(week_dir / "weekly_summary.json"))
-        metrics = _dict(summary.get("metrics"))
-        rows.append({
-            "week": week_dir.name,
-            "has_summary": bool(summary),
-            "trade_count": _safe_int(metrics.get("trade_count")),
-            "win_rate": _safe_float(metrics.get("win_rate")),
-            "avg_return_pct": _safe_float(metrics.get("avg_return_pct")),
-            "has_pattern_performance": bool(summary.get("pattern_performance")),
-            "has_quant_tactic_evaluation": bool(summary.get("quant_tactic_evaluation")),
-            "has_shadow_evaluation": bool(summary.get("quant_shadow_candidate_evaluation")),
-            "has_strategist_llm_evaluation": bool(summary.get("strategist_llm_evaluation")),
-        })
-    recent = rows[-6:]
-    return {
-        "weekly_count": len(rows),
-        "recent_weeks": recent,
-        "usable_week_count": sum(
-            1
-            for row in rows
-            if row["has_pattern_performance"]
-            and row["has_quant_tactic_evaluation"]
-            and row["has_shadow_evaluation"]
-        ),
-    }
+    return _render.mining_weekly_quality(
+        [_render.mining_weekly_row(week_dir.name, _dict(_load_json(week_dir / "weekly_summary.json"))) for week_dir in weeks]
+    )
 
 
 def _symbol_quality(root: Path) -> dict[str, Any]:
     symbol_root = root / "symbols"
     symbols = [p for p in sorted(symbol_root.glob("*")) if p.is_dir()] if symbol_root.exists() else []
-    rows: list[dict[str, Any]] = []
-    for symbol_dir in symbols:
-        summary = _dict(_load_json(symbol_dir / "symbol_summary.json"))
-        memory = _dict(_load_json(symbol_dir / "symbol_memory.json"))
-        metrics = _dict(summary.get("metrics"))
-        trade_stats = _dict(_dict(memory.get("symbol_memory")).get("trade_stats") or memory.get("trade_stats"))
-        trade_count = _safe_int(metrics.get("trade_count") or trade_stats.get("trade_count"))
-        rows.append({
-            "symbol": symbol_dir.name,
-            "trade_count": trade_count,
-            "closed_trade_count": _safe_int(metrics.get("closed_trade_count") or trade_stats.get("completed_trade_count")),
-            "win_rate": _safe_float(metrics.get("win_rate") if metrics else trade_stats.get("win_rate")),
-            "avg_return_pct": _safe_float(metrics.get("avg_return_pct") if metrics else trade_stats.get("avg_return_pct")),
-            "has_pattern_performance": bool(summary.get("pattern_performance")),
-            "has_shadow_evaluation": bool(summary.get("quant_shadow_candidate_evaluation")),
-            "has_strategist_llm_evaluation": bool(summary.get("strategist_llm_evaluation")),
-        })
-    rows.sort(key=lambda row: (row["trade_count"], row["symbol"]), reverse=True)
-    return {
-        "symbol_count": len(rows),
-        "symbols_with_trade_count_ge_2": sum(1 for row in rows if row["trade_count"] >= 2),
-        "symbols_with_trade_count_ge_5": sum(1 for row in rows if row["trade_count"] >= 5),
-        "top_symbols": rows[:25],
-    }
+    return _render.mining_symbol_quality(
+        [
+            _render.mining_symbol_row(
+                symbol_dir.name,
+                _dict(_load_json(symbol_dir / "symbol_summary.json")),
+                _dict(_load_json(symbol_dir / "symbol_memory.json")),
+            )
+            for symbol_dir in symbols
+        ]
+    )
 
 
-def _q9_overlap(days: list[DailyArtifacts]) -> dict[str, Any]:
-    q9_days = [row for row in days if row.q9_windows]
-    q8_days = [row for row in days if row.q8_review]
-    daily_summary_days = [row for row in days if row.daily_summary]
-    outside_q9_fields = [
-        "weekly pattern_performance",
-        "weekly strategist_llm_evaluation",
-        "symbol-level pattern_performance",
-        "symbol-level quant_shadow_candidate_evaluation",
-        "operator_readout recurring issues",
-        "market_regime_rail_review joined to realized symbol performance",
-    ]
-    q9_direct_fields = [
-        "daily q9_decision_windows",
-        "daily q8_shadow_blocker_review",
-        "daily artifact availability/inventory",
-        "realized trade scorecards under reports/evaluation",
-    ]
-    window_counts = [
-        _safe_int(row.q9_windows.get("window_count"), len(_list(row.q9_windows.get("windows"))))
-        for row in q9_days
-    ]
-    return {
-        "q9_operator_summary_day_count": len(q9_days),
-        "q8_operator_summary_day_count": len(q8_days),
-        "daily_summary_day_count": len(daily_summary_days),
-        "q9_window_count_total": sum(window_counts),
-        "q9_window_count_average": _avg([float(v) for v in window_counts]),
-        "already_consumed_by_q9": q9_direct_fields,
-        "not_fully_consumed_by_q9": outside_q9_fields,
-    }
+_q9_overlap = _render.mining_q9_overlap
 
 
 def _readiness(payload: dict[str, Any]) -> dict[str, Any]:
@@ -332,141 +151,8 @@ def build_operator_summary_mining(reports_root: Path | str = "reports") -> dict[
     return payload
 
 
-def _fmt(value: Any) -> str:
-    if value is None:
-        return ""
-    if isinstance(value, float):
-        return f"{value:.4f}"
-    return str(value)
-
-
-def render_operator_summary_mining_markdown(payload: dict[str, Any]) -> str:
-    presence = _dict(payload.get("daily_presence"))
-    daily = _dict(payload.get("daily_quality"))
-    weekly = _dict(payload.get("weekly_quality"))
-    symbols = _dict(payload.get("symbol_quality"))
-    q9 = _dict(payload.get("q9_overlap"))
-    readiness = _dict(payload.get("readiness"))
-    lines = [
-        "# Operator Summary Mining Report",
-        "",
-        f"- Schema: `{payload.get('schema_version')}`",
-        f"- Behavior effect: `{payload.get('behavior_effect')}`",
-        f"- Source: `{payload.get('source')}`",
-        f"- Readiness: **{readiness.get('status', '')}**",
-        "",
-        "## Coverage",
-        "",
-        f"- Daily range: {presence.get('first_day', '')} to {presence.get('last_day', '')}",
-        f"- Daily directories: {presence.get('daily_count', 0)}",
-        f"- Weekly summaries: {weekly.get('weekly_count', 0)}",
-        f"- Symbol summaries: {symbols.get('symbol_count', 0)}",
-        f"- Symbols with >=5 trades: {symbols.get('symbols_with_trade_count_ge_5', 0)}",
-        f"- Q9-linked operator days: {q9.get('q9_operator_summary_day_count', 0)}",
-        f"- Q9 decision windows total: {q9.get('q9_window_count_total', 0)}",
-        "",
-        "## Daily Artifact Presence",
-        "",
-        "| Artifact | Count | Ratio |",
-        "|---|---:|---:|",
-    ]
-    counts = _dict(presence.get("presence_counts"))
-    ratios = _dict(presence.get("presence_ratio"))
-    for name in sorted(counts):
-        lines.append(f"| `{name}` | {counts[name]} | {_fmt(ratios.get(name))} |")
-    lines.extend([
-        "",
-        "## Recent Daily Quality",
-        "",
-        "| Day | Trades | Trade Index | Q8 Candidates | Q9 Windows | Shadow Forward Coverage | Closeout |",
-        "|---|---:|---:|---:|---:|---:|---|",
-    ])
-    for row in _list(daily.get("recent_days")):
-        lines.append(
-            "| {day} | {trades} | {trade_index} | {q8} | {q9w} | {coverage} | {closeout} |".format(
-                day=row.get("day", ""),
-                trades=row.get("trade_count", 0),
-                trade_index=row.get("trade_index_count", 0),
-                q8=row.get("q8_candidate_count", 0),
-                q9w=row.get("q9_window_count", 0),
-                coverage=_fmt(row.get("shadow_forward_coverage")),
-                closeout=_fmt(row.get("closeout_ok")),
-            )
-        )
-    lines.extend([
-        "",
-        "## Weekly Evidence",
-        "",
-        "| Week | Trades | Win Rate | Avg Return % | Pattern | Quant | Shadow | Strategist LLM |",
-        "|---|---:|---:|---:|---|---|---|---|",
-    ])
-    for row in _list(weekly.get("recent_weeks")):
-        lines.append(
-            "| {week} | {trades} | {win} | {avg} | {pattern} | {quant} | {shadow} | {llm} |".format(
-                week=row.get("week", ""),
-                trades=row.get("trade_count", 0),
-                win=_fmt(row.get("win_rate")),
-                avg=_fmt(row.get("avg_return_pct")),
-                pattern=row.get("has_pattern_performance"),
-                quant=row.get("has_quant_tactic_evaluation"),
-                shadow=row.get("has_shadow_evaluation"),
-                llm=row.get("has_strategist_llm_evaluation"),
-            )
-        )
-    lines.extend([
-        "",
-        "## Top Symbol Evidence",
-        "",
-        "| Symbol | Trades | Closed | Win Rate | Avg Return % | Pattern | Shadow | Strategist LLM |",
-        "|---|---:|---:|---:|---:|---|---|---|",
-    ])
-    for row in _list(symbols.get("top_symbols"))[:15]:
-        lines.append(
-            "| {symbol} | {trades} | {closed} | {win} | {avg} | {pattern} | {shadow} | {llm} |".format(
-                symbol=row.get("symbol", ""),
-                trades=row.get("trade_count", 0),
-                closed=row.get("closed_trade_count", 0),
-                win=_fmt(row.get("win_rate")),
-                avg=_fmt(row.get("avg_return_pct")),
-                pattern=row.get("has_pattern_performance"),
-                shadow=row.get("has_shadow_evaluation"),
-                llm=row.get("has_strategist_llm_evaluation"),
-            )
-        )
-    lines.extend([
-        "",
-        "## Q9 Overlap",
-        "",
-        "Already consumed by Q9:",
-    ])
-    for item in _list(q9.get("already_consumed_by_q9")):
-        lines.append(f"- {item}")
-    lines.append("")
-    lines.append("Not fully consumed by Q9:")
-    for item in _list(q9.get("not_fully_consumed_by_q9")):
-        lines.append(f"- {item}")
-    lines.extend([
-        "",
-        "## Readiness Notes",
-        "",
-        "Strengths:",
-    ])
-    for item in _list(readiness.get("strengths")):
-        lines.append(f"- {item}")
-    lines.append("")
-    lines.append("Issues:")
-    issues = _list(readiness.get("issues"))
-    if issues:
-        for item in issues:
-            lines.append(f"- {item}")
-    else:
-        lines.append("- none")
-    lines.append("")
-    lines.append("Recommended use:")
-    for item in _list(readiness.get("recommended_use")):
-        lines.append(f"- {item}")
-    lines.append("")
-    return "\n".join(lines)
+_fmt = _render.mining_fmt
+render_operator_summary_mining_markdown = _render.render_operator_summary_mining_markdown
 
 
 def write_operator_summary_mining(

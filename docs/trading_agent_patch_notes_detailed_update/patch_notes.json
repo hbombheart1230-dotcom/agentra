@@ -1,8 +1,37 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 330,
+  "entry_count": 331,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST07-A7.3 FULL-CHAIN REPORTER UTILITY PROJECTIONS 20261021",
+      "title": "Full-chain component review, operator summary mining and agent effectiveness scorecard separate role measurement and summary construction from artifact I/O",
+      "stage": "P1.5 FAST07 A7.3 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT; owner SIZE noted",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Role metrics, paired top-pick/runner-up deltas, selection availability and A/B/R1/R2/C decision-window attribution move to fast07_attribution_projection.py; mining presence/quality/overlap rows, scorecard assembly and the three renderers move to fast07_chain_render_projection.py: full_chain_component_review 1031->674, operator_summary_mining 492->178, agent_effectiveness_scorecard 302->173 lines.",
+      "details": [
+        "full_chain_component_review: payload/trade-model loading, cost profile and Q9_EVALUATION_SLIPPAGE_PCT, _q9_decision_candidate_rows (forward attachment; still imported by stage2_authority and tests), and every role score/decision (_classify_root_cause, _attribution_component, _scanner_decision, monitor entry/exit, full-system, post-refresh) stay in the facade; A7.2 loss helpers are reused for checkpoints.",
+        "operator_summary_mining: JSON loading, directory walks, DailyArtifacts and _readiness thresholds stay; presence/daily/weekly/symbol/Q9-overlap row construction and rendering move.",
+        "agent_effectiveness_scorecard: _delta_state and _decision_state (materiality thresholds) and scanner state mapping stay; legacy overlay-key fallback, static runtime/state/control contract assembly and rendering move.",
+        "Checks: tests/test_p15_fast07_a_chain_smoke.py 8 passed (attribution roles and missing refresh pairs, thresholds still in facade, paired/availability/exclusion, end-to-end review + scorecard + render, legacy overlay fallback, mining errors/mismatch/empty root, owner purity); all three FAST07 smokes 28 passed; 192 focused evaluation tests passed (normal); scratch baseline parity A7.3 31/31 with A7.1 41/41 and A7.2 64/64 re-run.",
+        "SIZE: fast07_attribution_projection 1012 and fast07_chain_render_projection 1080 lines (of which ~460 verbatim renderers); kept to the three authorized owners rather than adding modules."
+      ],
+      "impact": "Historical role scoring, row sorting, accepted/rejected evidence, counterfactual and no-trade labels unchanged; no trading, broker, Q8 contract, threshold or promotion change.",
+      "sources": [
+        "libs/reporting/evaluation/full_chain_component_review.py",
+        "libs/reporting/evaluation/operator_summary_mining.py",
+        "libs/reporting/evaluation/agent_effectiveness_scorecard.py",
+        "libs/reporting/evaluation/fast07_attribution_projection.py",
+        "libs/reporting/evaluation/fast07_chain_render_projection.py",
+        "tests/test_p15_fast07_a_chain_smoke.py",
+        "tests/test_p15_fast07_a_evidence_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST07-A7.2 LOSS AND NO-TRADE ATTRIBUTION PROJECTIONS 20261021",

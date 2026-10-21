@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from collections import defaultdict
 import os
 from pathlib import Path
 from typing import Any, Mapping
@@ -22,13 +21,13 @@ from .contracts import (
 )
 from .loss_decomposition import (
     _candidate_rows,
-    _checkpoint_return,
     _entry_timing_summary,
     _exit_hold_summary,
     _load_trade_models,
     _realized_trade_summary,
 )
-from .metrics import performance_metrics
+from . import fast07_attribution_projection as _attr
+from . import fast07_chain_render_projection as _render
 from .scanner_quality import build_scanner_quality_review
 
 
@@ -36,10 +35,7 @@ HORIZONS = ("+5m", "+15m", "+30m", "+60m")
 MIN_MATERIAL_RANKING_DELTA_PCT = 0.30
 MIN_POSITIVE_RANKING_DELTA_RATE = 0.55
 DEFAULT_Q9_SLIPPAGE_PCT = 0.05
-BEHAVIOR_METRIC_EXCLUSION_DEFECTS = {
-    "broker_day_partial_exit_duplicate",
-    "confirmed_runtime_defect",
-}
+BEHAVIOR_METRIC_EXCLUSION_DEFECTS = _attr.BEHAVIOR_METRIC_EXCLUSION_DEFECTS
 
 
 def _number(value: Any) -> float | None:
@@ -51,10 +47,7 @@ def _number(value: Any) -> float | None:
         return None
 
 
-def _behavior_metric_eligible(model: Mapping[str, Any]) -> bool:
-    integrity = model.get("integrity") if isinstance(model.get("integrity"), Mapping) else {}
-    defects = {str(value) for value in (integrity.get("defects") or [])}
-    return not bool(defects & BEHAVIOR_METRIC_EXCLUSION_DEFECTS)
+_behavior_metric_eligible = _attr.behavior_metric_eligible
 
 
 def _topk_metric(
@@ -197,27 +190,7 @@ def _role_metrics(
     horizon: str,
     cost_pct: float,
 ) -> dict[str, Any]:
-    values: list[float] = []
-    days: set[str] = set()
-    for row in candidates:
-        if str(row.get("shadow_role") or "") != role:
-            continue
-        value = _checkpoint_return(row, horizon)
-        if value is None:
-            continue
-        values.append(value - cost_pct)
-        day = candidate_day(row)
-        if day:
-            days.add(day)
-    return {
-        "role": role,
-        "horizon": horizon,
-        "evidence_class": "TRUSTED_SHADOW",
-        "observed_count": len(values),
-        "observed_day_count": len(days),
-        "cost_adjusted": True,
-        **performance_metrics(values),
-    }
+    return _attr.role_metrics(candidates, role=role, horizon=horizon, cost_pct=cost_pct, day_of=candidate_day)
 
 
 def _paired_role_deltas(
@@ -225,84 +198,10 @@ def _paired_role_deltas(
     *,
     horizon: str,
 ) -> dict[str, Any]:
-    windows: dict[str, dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
-    window_days: dict[str, str] = {}
-    for row in candidates:
-        role = str(row.get("shadow_role") or "")
-        if role not in {"top_pick", "runner_up_evaluated"}:
-            continue
-        value = _checkpoint_return(row, horizon)
-        if value is None:
-            continue
-        window = str(row.get("_payload_generated_at") or "")
-        if not window:
-            continue
-        windows[window][role].append(value)
-        window_days[window] = candidate_day(row) or ""
-    deltas: list[float] = []
-    days: set[str] = set()
-    for window, roles in windows.items():
-        top = roles.get("top_pick") or []
-        runner = roles.get("runner_up_evaluated") or []
-        if not top or not runner:
-            continue
-        deltas.append((sum(top) / len(top)) - (sum(runner) / len(runner)))
-        if window_days.get(window):
-            days.add(window_days[window])
-    return {
-        "horizon": horizon,
-        "comparison": "top_pick_minus_runner_up_evaluated",
-        "evidence_class": "TRUSTED_SHADOW",
-        "paired_window_count": len(deltas),
-        "observed_day_count": len(days),
-        "average_delta_pct": round(sum(deltas) / len(deltas), 4) if deltas else None,
-        "positive_delta_rate": round(sum(value > 0 for value in deltas) / len(deltas), 4) if deltas else None,
-        "delta_distribution": performance_metrics(deltas),
-    }
+    return _attr.paired_role_deltas(candidates, horizon=horizon, day_of=candidate_day)
 
 
-def _selection_availability(models: list[dict[str, Any]]) -> dict[str, Any]:
-    raw_controls = 0
-    strategist_snapshots = 0
-    commander_snapshots = 0
-    comparable_strategist = 0
-    comparable_commander = 0
-    missing: dict[str, int] = defaultdict(int)
-    for model in models:
-        selection = model.get("selection") if isinstance(model.get("selection"), Mapping) else {}
-        raw_rows = selection.get("raw_scanner_top10")
-        raw_control = bool(
-            selection.get("raw_scanner_snapshot_source")
-            in {"control_snapshot", "scanner_intrinsic_control_snapshot"}
-            and isinstance(raw_rows, list)
-            and raw_rows
-        )
-        strategist = bool(
-            selection.get("strategist_run_id")
-            and isinstance(selection.get("post_strategist_top10"), list)
-            and selection.get("post_strategist_top10")
-        )
-        commander = bool(selection.get("commander_final_explicit"))
-        raw_controls += int(raw_control)
-        strategist_snapshots += int(strategist)
-        commander_snapshots += int(commander)
-        comparable_strategist += int(raw_control and strategist)
-        comparable_commander += int(strategist and commander)
-        if not raw_control:
-            missing["trusted_raw_scanner_top10"] += 1
-        if not strategist:
-            missing["strategist_run_and_post_ranking"] += 1
-        if not commander:
-            missing["explicit_commander_selection_or_veto"] += 1
-    return {
-        "trade_model_count": len(models),
-        "raw_scanner_control_count": raw_controls,
-        "strategist_snapshot_count": strategist_snapshots,
-        "commander_snapshot_count": commander_snapshots,
-        "scanner_vs_strategist_comparable_count": comparable_strategist,
-        "strategist_vs_commander_comparable_count": comparable_commander,
-        "missing_fields": dict(sorted(missing.items())),
-    }
+_selection_availability = _attr.selection_availability
 
 
 def _q9_decision_candidate_rows(payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -317,20 +216,7 @@ def _q9_decision_candidate_rows(payloads: list[dict[str, Any]]) -> list[dict[str
     return attach_forward_outcomes(rows)
 
 
-def _q9_role_row(
-    roles: Mapping[str, list[dict[str, Any]]],
-    role: str,
-) -> dict[str, Any]:
-    rows = roles.get(role) or []
-    if role == "B_STRATEGIST_RANKED":
-        selected = next((row for row in rows if row.get("q9_selected")), None)
-        if selected:
-            return selected
-    return min(
-        rows,
-        key=lambda row: int(float(row.get("rank") or 999)),
-        default={},
-    )
+_q9_role_row = _attr.q9_role_row
 
 
 def _decision_window_attribution(
@@ -338,126 +224,9 @@ def _decision_window_attribution(
     *,
     cost_pct: float,
 ) -> dict[str, Any]:
-    grouped: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(
-        lambda: defaultdict(list)
+    return _attr.decision_window_attribution(
+        _q9_decision_candidate_rows(payloads), cost_pct=cost_pct, day_of=candidate_day
     )
-    for row in _q9_decision_candidate_rows(payloads):
-        decision_id = str(row.get("q9_decision_id") or "")
-        role = str(row.get("q9_decision_role") or "")
-        if decision_id and role:
-            grouped[decision_id][role].append(row)
-    by_horizon: list[dict[str, Any]] = []
-    for horizon in HORIZONS:
-        strategist_deltas: list[float] = []
-        refresh_deltas: list[float] = []
-        commander_deltas: list[float] = []
-        strategist_days: set[str] = set()
-        refresh_days: set[str] = set()
-        commander_days: set[str] = set()
-        for roles in grouped.values():
-            a_row = _q9_role_row(roles, "A_SCANNER_CONTROL")
-            b_row = _q9_role_row(roles, "B_STRATEGIST_RANKED")
-            r1_row = _q9_role_row(roles, "R1_PRE_REFRESH_SCANNER")
-            r2_row = _q9_role_row(roles, "R2_POST_REFRESH_SCANNER")
-            c_row = _q9_role_row(roles, "C_COMMANDER_FINAL")
-            a_value = _checkpoint_return(a_row, horizon) if a_row else None
-            b_value = _checkpoint_return(b_row, horizon) if b_row else None
-            if a_value is not None and b_value is not None:
-                strategist_deltas.append(b_value - a_value)
-                day = candidate_day(b_row)
-                if day:
-                    strategist_days.add(day)
-            r1_value = _checkpoint_return(r1_row, horizon) if r1_row else None
-            r2_value = _checkpoint_return(r2_row, horizon) if r2_row else None
-            if r1_value is not None and r2_value is not None:
-                refresh_deltas.append(r2_value - r1_value)
-                day = candidate_day(r2_row)
-                if day:
-                    refresh_days.add(day)
-            if b_value is None or not c_row:
-                continue
-            if c_row.get("q9_commander_no_trade"):
-                c_net = 0.0
-            else:
-                c_value = _checkpoint_return(c_row, horizon)
-                if c_value is None:
-                    continue
-                c_net = c_value - cost_pct
-            b_net = b_value - cost_pct
-            commander_deltas.append(c_net - b_net)
-            day = candidate_day(c_row)
-            if day:
-                commander_days.add(day)
-        by_horizon.append(
-            {
-                "horizon": horizon,
-                "strategist_comparison_count": len(strategist_deltas),
-                "strategist_day_count": len(strategist_days),
-                "average_strategist_delta_pct": (
-                    round(sum(strategist_deltas) / len(strategist_deltas), 4)
-                    if strategist_deltas
-                    else None
-                ),
-                "strategist_positive_delta_rate": (
-                    round(sum(value > 0 for value in strategist_deltas) / len(strategist_deltas), 4)
-                    if strategist_deltas
-                    else None
-                ),
-                "strategy_ranking_overlay_comparison_count": len(strategist_deltas),
-                "strategy_ranking_overlay_day_count": len(strategist_days),
-                "average_strategy_ranking_overlay_delta_pct": (
-                    round(sum(strategist_deltas) / len(strategist_deltas), 4)
-                    if strategist_deltas
-                    else None
-                ),
-                "strategy_ranking_overlay_positive_delta_rate": (
-                    round(sum(value > 0 for value in strategist_deltas) / len(strategist_deltas), 4)
-                    if strategist_deltas
-                    else None
-                ),
-                "post_scanner_refresh_comparison_count": len(refresh_deltas),
-                "post_scanner_refresh_day_count": len(refresh_days),
-                "average_post_scanner_refresh_delta_pct": (
-                    round(sum(refresh_deltas) / len(refresh_deltas), 4)
-                    if refresh_deltas
-                    else None
-                ),
-                "post_scanner_refresh_positive_delta_rate": (
-                    round(sum(value > 0 for value in refresh_deltas) / len(refresh_deltas), 4)
-                    if refresh_deltas
-                    else None
-                ),
-                "commander_comparison_count": len(commander_deltas),
-                "commander_day_count": len(commander_days),
-                "average_commander_delta_pct": (
-                    round(sum(commander_deltas) / len(commander_deltas), 4)
-                    if commander_deltas
-                    else None
-                ),
-                "commander_positive_delta_rate": (
-                    round(sum(value > 0 for value in commander_deltas) / len(commander_deltas), 4)
-                    if commander_deltas
-                    else None
-                ),
-            }
-        )
-    return {
-        "schema_version": "q9_decision_window_attribution.v1",
-        "role_semantics": {
-            "A_SCANNER_CONTROL": "same-universe intrinsic Scanner ranking; not a full pre-Strategist control",
-            "B_STRATEGIST_RANKED": "strategy-weighted Scanner ranking",
-            "R1_PRE_REFRESH_SCANNER": "first Scanner result before optional tactical refresh",
-            "R2_POST_REFRESH_SCANNER": "Scanner result after optional tactical refresh",
-            "C_COMMANDER_FINAL": "Commander final approval or veto",
-        },
-        "full_strategist_contribution_status": "NOT_MEASURABLE",
-        "full_strategist_missing_control": "strategy-neutral candidate sourcing and ranking shadow",
-        "decision_window_count": len(grouped),
-        "candidate_row_count": sum(
-            len(rows) for roles in grouped.values() for rows in roles.values()
-        ),
-        "by_horizon": by_horizon,
-    }
 
 
 def _attribution_component(
@@ -880,133 +649,7 @@ def build_full_chain_component_review(
     }
 
 
-def render_full_chain_component_review(payload: Mapping[str, Any]) -> str:
-    date_range = payload.get("range") or {}
-    components = payload.get("component_decisions") or {}
-    lines = [
-        f"# Q9 Full-Chain Component Review ({date_range.get('start')} ~ {date_range.get('end')})",
-        "",
-        "Evaluation-only. No runtime or trading policy change is authorized.",
-        "",
-        "## Final Component Decisions",
-        "",
-        "| Component | Decision | Finding / Missing Comparison |",
-        "|---|---|---|",
-    ]
-    for key in ("scanner", "strategist", "commander", "monitor_entry", "monitor_exit", "full_system"):
-        row = components.get(key) or {}
-        detail = row.get("missing_comparison") or row.get("finding") or ""
-        lines.append(f"| {key} | `{row.get('decision')}` | {detail} |")
-    scanner = components.get("scanner") or {}
-    lines += [
-        "",
-        "## Scanner: Cost-Adjusted Role Metrics",
-        "",
-        "| Role | Horizon | Count/Days | Expectancy | Win Rate | PF |",
-        "|---|---|---:|---:|---:|---:|",
-    ]
-    for row in scanner.get("role_cost_adjusted_metrics") or []:
-        lines.append(
-            f"| {row.get('role')} | {row.get('horizon')} | "
-            f"{row.get('observed_count')}/{row.get('observed_day_count')} | "
-            f"{row.get('expectancy_pct')}% | {float(row.get('win_rate') or 0):.1%} | "
-            f"{row.get('profit_factor')} |"
-        )
-    lines += [
-        "",
-        "## Scanner: Paired Ranking Effect",
-        "",
-        "| Horizon | Paired Windows/Days | Top-pick Minus Runner-up | Positive Rate |",
-        "|---|---:|---:|---:|",
-    ]
-    for row in scanner.get("paired_role_comparisons") or []:
-        lines.append(
-            f"| {row.get('horizon')} | {row.get('paired_window_count')}/{row.get('observed_day_count')} | "
-            f"{row.get('average_delta_pct')}% | {float(row.get('positive_delta_rate') or 0):.1%} |"
-        )
-    scanner_quality = ((payload.get("evidence") or {}).get("scanner_quality") or {})
-    lines += [
-        "",
-        "## Scanner: Same-Universe Intrinsic Top-K Forward Performance",
-        "",
-        "| Top-K | Horizon | Windows/Days | Gross Expectancy | Net Expectancy |",
-        "|---:|---|---:|---:|---:|",
-    ]
-    for row in (scanner_quality.get("topk_forward_performance") or {}).get("rows") or []:
-        lines.append(
-            f"| {row.get('top_k')} | {row.get('horizon')} | "
-            f"{row.get('window_count')}/{row.get('observed_day_count')} | "
-            f"{(row.get('gross') or {}).get('expectancy_pct')}% | "
-            f"{(row.get('net') or {}).get('expectancy_pct')}% |"
-        )
-    lines += [
-        "",
-        "## Scanner: Candidate Source Performance",
-        "",
-        "| Source | Horizon | Count/Days | Net Expectancy | Win Rate |",
-        "|---|---|---:|---:|---:|",
-    ]
-    for row in (scanner_quality.get("source_performance") or {}).get("rows") or []:
-        lines.append(
-            f"| {row.get('source')} | {row.get('horizon')} | "
-            f"{row.get('count')}/{row.get('observed_day_count')} | "
-            f"{row.get('expectancy_pct')}% | {float(row.get('win_rate') or 0):.1%} |"
-        )
-    problem = payload.get("problem_segment") or {}
-    lines += [
-        "",
-        "## Problem Segment",
-        "",
-        f"- primary root cause: **{problem.get('primary_root_cause')}**",
-        f"- statuses: `{json.dumps(problem.get('statuses') or {}, ensure_ascii=False, sort_keys=True)}`",
-    ]
-    entry = (components.get("monitor_entry") or {}).get("metrics") or {}
-    exit_row = (components.get("monitor_exit") or {}).get("metrics") or {}
-    realized = ((components.get("full_system") or {}).get("metrics") or {}).get("performance") or {}
-    availability = (payload.get("evidence") or {}).get("selection_availability") or {}
-    attribution = (payload.get("evidence") or {}).get("decision_window_attribution") or {}
-    lines += [
-        "",
-        "## Attribution Availability",
-        "",
-        f"- trade models: {availability.get('trade_model_count')}",
-        f"- same-universe intrinsic Scanner controls: {availability.get('raw_scanner_control_count')}",
-        f"- Strategist snapshots: {availability.get('strategist_snapshot_count')}",
-        f"- Commander snapshots: {availability.get('commander_snapshot_count')}",
-        f"- intrinsic vs strategy-weighted comparable: {availability.get('scanner_vs_strategist_comparable_count')}",
-        f"- Strategist vs Commander comparable: {availability.get('strategist_vs_commander_comparable_count')}",
-        f"- Q9 decision windows with forward candidates: {attribution.get('decision_window_count')}",
-        f"- Q9 A/B/C forward candidate rows: {attribution.get('candidate_row_count')}",
-        "",
-        "## Monitor Entry",
-        "",
-        f"- matched trades/days: {entry.get('matched_trade_count')} / {entry.get('matched_day_count')}",
-        f"- average entry-price delta: {entry.get('average_entry_price_delta_pct')}%",
-        f"- median entry-price delta: {entry.get('median_entry_price_delta_pct')}%",
-        "",
-        "## Monitor Exit",
-        "",
-        f"- observed exits/days: {exit_row.get('observed_trade_count')} / {exit_row.get('observed_day_count')}",
-        f"- +5m average improvement: {next((row.get('average_improvement_pct') for row in exit_row.get('by_hold_offset') or [] if row.get('offset') == '+5m'), None)}%",
-        "",
-        "## Realized Full System",
-        "",
-        f"- trades: {realized.get('count')}",
-        f"- win rate: {float(realized.get('win_rate') or 0):.1%}",
-        f"- expectancy: {realized.get('expectancy_pct')}%",
-        f"- profit factor: {realized.get('profit_factor')}",
-        f"- maximum drawdown: {realized.get('maximum_drawdown_pct')}%",
-        "",
-        "## Overall Decision",
-        "",
-        f"- decision: **{(payload.get('overall_decision') or {}).get('decision')}**",
-        f"- first actionable component: `{(payload.get('overall_decision') or {}).get('first_actionable_component')}`",
-        f"- reason: {(payload.get('overall_decision') or {}).get('reason')}",
-        "- historical review complete: **True**",
-        "- open-ended extension authorized: **False**",
-        "- behavior change authorized: **False**",
-    ]
-    return "\n".join(lines) + "\n"
+render_full_chain_component_review = _render.render_full_chain_component_review
 
 
 def write_full_chain_component_review(
