@@ -9,62 +9,7 @@ calls are present - those statements stay in the orchestrator).
 from __future__ import annotations
 
 
-def decision_rules_adaptive_feedback_allowed_adaptive_polic(blocker_counts, total_wait, avg_distance, near_ready_count, state, market_regime, market_regime_rail, risk_mode, open_position_count, preflight, stress_flags, resilience, applied_policy, max_positions, strategist_output, intraday_performance_circuit, *, facade):
-    dominant_blocker = ""
-    blocker_count = 0
-    if blocker_counts:
-        dominant_blocker = max(blocker_counts, key=blocker_counts.get)
-        blocker_count = blocker_counts[dominant_blocker]
-        
-    avg_distance_to_ready = avg_distance / total_wait if total_wait > 0 else 0.0
-    near_ready_flag = near_ready_count > 0
-    failure_streak = blocker_count
-    
-    injected_feedback = state.get("mock_monitor_feedback")
-    if isinstance(injected_feedback, dict):
-        dominant_blocker = injected_feedback.get("dominant_blocker", dominant_blocker)
-        blocker_count = injected_feedback.get("blocker_count", blocker_count)
-        failure_streak = injected_feedback.get("failure_streak", failure_streak)
-        near_ready_flag = injected_feedback.get("near_ready_flag", near_ready_flag)
-        avg_distance_to_ready = injected_feedback.get("avg_distance_to_ready", avg_distance_to_ready)
-
-    monitor_feedback = {
-        "dominant_blocker": str(dominant_blocker),
-        "blocker_count": int(blocker_count),
-        "failure_streak": int(failure_streak),
-        "near_ready_flag": bool(near_ready_flag),
-        "avg_distance_to_ready": float(avg_distance_to_ready),
-    }
-    entry_control = facade._build_commander_entry_control(
-        market_regime=market_regime,
-        market_regime_rail=market_regime_rail,
-        risk_mode=risk_mode,
-        open_position_count=open_position_count,
-        preflight=preflight,
-        stress_flags=stress_flags,
-        resilience=resilience,
-        monitor_feedback=monitor_feedback,
-        applied_policy=applied_policy,
-        max_positions=max_positions,
-        strategist_output=strategist_output,
-        performance_circuit=intraday_performance_circuit,
-    )
-
-    adaptive_policy = {
-        "entry_bias_adjustment": 0.0,
-        "diversification_adjustment": 0.0,
-        "reentry_penalty_adjustment": 0.0,
-        "scan_aggressiveness": 0.0,
-    }
-    policy_adjustment_trace = []
-    adaptive_feedback_allowed = str(entry_control.get("mode") or "") not in {
-        "blocked_no_entry_expansion",
-        "position_management_no_entry_expansion",
-        "preserve_defensive_no_trade_ok",
-        "preserve_guardrail_no_trade_ok",
-        "risk_off_no_entry_expansion",
-    }
-    return (adaptive_feedback_allowed, adaptive_policy, entry_control, monitor_feedback, policy_adjustment_trace)
+from libs.agents.commander.projections.decision_context_read_model import decision_rules_adaptive_feedback_allowed_adaptive_polic
 
 
 def decision_rules_decision_summary_observations(policy_adjustment_trace, entry_control, adaptive_policy, adaptive_feedback_allowed, observations, open_position_count, max_positions, source_refs, source_priority, decision_summary, *, facade):

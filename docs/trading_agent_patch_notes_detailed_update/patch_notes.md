@@ -4146,3 +4146,11 @@ UEF9 필수 계약은 고정된 비민감 합성 원천 JSON 4개를 명시적 r
 - Actual local validation and exact-SHA fresh read-only Claude receipt are recorded in PR/Issue20 after commit. Required hosted checks on the resulting integration SHA remain pending GPT review/merge. No automatic integration/main merge, source/test/oracle modification, live trading or deployment.
 
 Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflows/p15-integration-t4-regression.yml`, `tests/test_p159_current_owner_contract_gates.py`, `scripts/refactor/shared_strategist_contracts.py`.
+
+## 2026-10-21 - P1.5 COMMANDER MONITOR PURE OWNERS 20261021
+**Stage:** B1/B2 developer candidate; B3/B4 STAGE_CONTRACT_BLOCKED; peer/integration pending.
+
+- Commander context/cache readiness pure bodies move to two canonical Owners, preserving runtime calls, environment/clock/memory IO, original threshold lookup, aliases and callbacks.
+- Monitor B3/B4 attempts were rejected by the existing byte-identical protected-runtime gate (entry_cascade_projection.py was the first failure). All six approved Monitor sources remain exact BASE; attempted unused Owners removed. No safety/oracle/CI/gate edit.
+- BASE normal193PASS/-O193PASS; exact candidate parity/negative/peer receipts in Issue20. Complete Commander runtime, Monitor migrations, real-data golden, full suite, CI and release are not claimed.
+- Final normal455PASS/1FAIL and -O455PASS/1FAIL: historical shared_strategist_contracts.verify_b_scope rejects new Commander/test paths. Same retained-runtime test on exact BASE passes1/exit0. B1/B2 are source checkpoints only; B1-B4 STAGE_CONTRACT_BLOCKED, no gate/allowlist update or integration approval.

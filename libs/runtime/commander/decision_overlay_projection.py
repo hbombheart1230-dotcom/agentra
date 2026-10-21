@@ -150,44 +150,4 @@ def decision_overlay_cached_output_for_state_decision_summary(commander_carry_ri
     return (cached_output_for_state, decision_summary, generated_epoch_for_state, strategist_call_decision, strategist_call_reason, strategist_skip_reason)
 
 
-def decision_overlay_blocker_counts_monitor_last_states(cache_age_sec_for_state, reuse_sec_for_state, cached_output_for_state, strategist_refresh_requested, state, open_position_count, entry_capacity_available, *, facade):
-    is_cache_stale = cache_age_sec_for_state > reuse_sec_for_state
-
-    if not cached_output_for_state:
-        strategy_state = "INVALID"
-    elif strategist_refresh_requested:
-        strategy_state = "REBUILD_REQUIRED"
-    elif is_cache_stale:
-        strategy_state = "STALE"
-    else:
-        strategy_state = "ACTIVE"
-
-    if facade._is_trueish(state.get("force_refresh_strategist")):
-        strategy_selection_mode = "force_fresh"
-    elif strategist_refresh_requested:
-        strategy_selection_mode = "prefer_fresh"
-    else:
-        strategy_selection_mode = "prefer_cache"
-
-    if open_position_count > 0 and not entry_capacity_available:
-        strategist_invocation_mode = "SKIP_MONITOR_ONLY"
-    elif not cached_output_for_state:
-        strategist_invocation_mode = "RUN"
-    elif strategist_refresh_requested and is_cache_stale:
-        strategist_invocation_mode = "RUN_REFRESH"
-    elif strategist_refresh_requested and not is_cache_stale:
-        strategist_invocation_mode = "SKIP_USE_CACHE"
-    elif open_position_count == 0 and is_cache_stale:
-        strategist_invocation_mode = "RUN"
-    else:
-        strategist_invocation_mode = "SKIP_USE_CACHE"
-
-    # Task 4: Monitor feedback and adaptive policy
-    persisted = state.get("persisted_state") if isinstance(state.get("persisted_state"), dict) else {}
-    monitor_last_states = persisted.get("monitor_last_state_by_symbol") if isinstance(persisted.get("monitor_last_state_by_symbol"), dict) else {}
-    
-    recent_feedback = state.get("recent_strategy_feedback") if isinstance(state.get("recent_strategy_feedback"), dict) else {}
-    recent_monitor_issues = list(recent_feedback.get("recent_monitor_issues") or [])
-    
-    blocker_counts = {}
-    return (blocker_counts, monitor_last_states, recent_monitor_issues, strategist_invocation_mode, strategy_selection_mode, strategy_state)
+from libs.agents.commander.projections.decision_context_read_model import decision_overlay_blocker_counts_monitor_last_states

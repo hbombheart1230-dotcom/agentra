@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import sys as _sys
+import libs.agents.commander.projections.cache_refresh_read_model as _pure_read_model
+
 import os
 from typing import Any, Dict
 
@@ -12,26 +15,15 @@ from libs.runtime.commander.strategist_cache_decision import (
 
 
 def runtime_float(value: Any, default: float = 0.0) -> float:
-    try:
-        return float(value)
-    except Exception:
-        return float(default)
+    return _pure_read_model.runtime_float(value, default, facade=_sys.modules[__name__])
 
 
 def shadow_float(value: Any) -> float | None:
-    try:
-        if value in (None, ""):
-            return None
-        return float(value)
-    except Exception:
-        return None
+    return _pure_read_model.shadow_float(value, facade=_sys.modules[__name__])
 
 
 def shadow_text(value: Any, *, max_len: int = 120) -> str:
-    text = str(value or "").strip()
-    if not text:
-        return ""
-    return text[: max(1, int(max_len))]
+    return _pure_read_model.shadow_text(value, max_len=max_len, facade=_sys.modules[__name__])
 
 
 def portfolio_open_position_symbols(state: Dict[str, Any]) -> list[str]:
@@ -59,224 +51,35 @@ def portfolio_open_position_symbols(state: Dict[str, Any]) -> list[str]:
 
 
 def post_scanner_selected_symbol(state: Dict[str, Any]) -> str:
-    selected = state.get("selected") if isinstance(state.get("selected"), dict) else {}
-    if bool(selected.get("_monitor_synthetic_selected")) or bool(selected.get("_closeout_guard_selected")):
-        return ""
-    scanner_output = state.get("scanner_output") if isinstance(state.get("scanner_output"), dict) else {}
-    return str(
-        selected.get("symbol")
-        or scanner_output.get("top_stock")
-        or scanner_output.get("selected_symbol")
-        or ""
-    ).strip().upper()
+    return _pure_read_model.post_scanner_selected_symbol(state, facade=_sys.modules[__name__])
 
 
 def score_bucket(value: Any, *, step: float = 0.10) -> str:
-    numeric = shadow_float(value)
-    if numeric is None:
-        return "unknown"
-    if step <= 0.0:
-        step = 0.10
-    bucket = int(float(numeric) / float(step))
-    return f"{round(bucket * step, 4):.2f}-{round((bucket + 1) * step, 4):.2f}"
+    return _pure_read_model.score_bucket(value, step=step, facade=_sys.modules[__name__])
 
 
 def rank_bucket(value: Any) -> str:
-    rank = coerce_int(value, 0)
-    if rank <= 0:
-        return "unknown"
-    if rank == 1:
-        return "rank1"
-    if rank <= 3:
-        return "rank2_3"
-    if rank <= 10:
-        return "rank4_10"
-    return "rank11_plus"
+    return _pure_read_model.rank_bucket(value, facade=_sys.modules[__name__])
 
 
 def entry_gate_bucket(state: Dict[str, Any]) -> str:
-    monitor_output = state.get("monitor_output") if isinstance(state.get("monitor_output"), dict) else {}
-    monitor = state.get("monitor") if isinstance(state.get("monitor"), dict) else {}
-    entry_detail = state.get("monitor_entry_decision_detail") if isinstance(state.get("monitor_entry_decision_detail"), dict) else {}
-    for key in ("entry_guard_reason", "entry_exit_reason", "primary_reason_code", "reason"):
-        value = (
-            monitor_output.get(key)
-            if monitor_output.get(key) not in (None, "")
-            else monitor.get(key)
-            if monitor.get(key) not in (None, "")
-            else entry_detail.get(key)
-        )
-        text = str(value or "").strip().lower()
-        if text:
-            return text[:80]
-    intent = str(monitor_output.get("intent_side") or monitor.get("intent_side") or "").strip().upper()
-    if intent == "BUY":
-        return "buy_ready"
-    return "unknown"
+    return _pure_read_model.entry_gate_bucket(state, facade=_sys.modules[__name__])
 
 
 def candidate_theme_tokens(row: Dict[str, Any]) -> list[str]:
-    raw_values: list[Any] = []
-    for key in ("theme", "primary_theme", "sector", "industry"):
-        raw_values.append(row.get(key))
-    for key in ("themes", "theme_names", "theme_tags", "matched_themes"):
-        value = row.get(key)
-        if isinstance(value, (list, tuple, set)):
-            raw_values.extend(list(value))
-        else:
-            raw_values.append(value)
-    out: list[str] = []
-    for value in raw_values:
-        if value in (None, ""):
-            continue
-        for token in str(value).replace("|", ",").replace("/", ",").split(","):
-            text = token.strip().lower()
-            if text and text not in out:
-                out.append(text[:80])
-    return out[:5]
+    return _pure_read_model.candidate_theme_tokens(row, facade=_sys.modules[__name__])
 
 
 def candidate_chart_fit_value(row: Dict[str, Any]) -> Any:
-    for key in ("scanner_chart_fit_score", "scanner_macro_chart_fit_score", "entry_compatibility_score", "confidence"):
-        if row.get(key) not in (None, ""):
-            return row.get(key)
-    return None
+    return _pure_read_model.candidate_chart_fit_value(row, facade=_sys.modules[__name__])
 
 
 def candidate_edge_bucket(row: Dict[str, Any], state: Dict[str, Any]) -> str:
-    for key in (
-        "cost_adjusted_edge_pct",
-        "estimated_gross_edge_pct",
-        "expected_edge_pct",
-        "expected_move_pct",
-        "expected_return_pct",
-    ):
-        if row.get(key) not in (None, ""):
-            value = shadow_float(row.get(key))
-            if value is None:
-                continue
-            if value < 0.0:
-                return "negative"
-            if value < 0.003:
-                return "tiny"
-            if value < 0.012:
-                return "below_cost_floor"
-            if value < 0.025:
-                return "tradable"
-            return "strong"
-    gate = entry_gate_bucket(state)
-    if "cost" in gate and ("fail" in gate or "not" in gate or "below" in gate):
-        return "below_cost_floor"
-    if "ready" in gate or "buy" in gate:
-        return "tradable"
-    return "unknown"
+    return _pure_read_model.candidate_edge_bucket(row, state, facade=_sys.modules[__name__])
 
 
 def compact_post_scanner_candidate_row(row: Dict[str, Any], *, fallback_rank: int = 0) -> Dict[str, Any]:
-    if not isinstance(row, dict):
-        return {}
-    symbol = str(row.get("symbol") or row.get("code") or row.get("ticker") or "").strip().upper()
-    if not symbol:
-        return {}
-    score = None
-    score_source = ""
-    for key in (
-        "score_total",
-        "post_adjust_score_total",
-        "selected_score_total",
-        "scanner_score_total",
-        "score",
-        "final_score",
-        "rank_score",
-        "pre_adjust_score_total",
-    ):
-        score = shadow_float(row.get(key))
-        if score is not None:
-            score_source = key
-            break
-    reason = str(
-        row.get("selection_reason")
-        or row.get("selection_reason_with_bias")
-        or row.get("why")
-        or row.get("reason")
-        or row.get("reason_text")
-        or row.get("source_reason")
-        or ""
-    ).strip()
-    rank = coerce_int(row.get("rank"), fallback_rank)
-    score_breakdown: Dict[str, Any] = {}
-    if isinstance(row.get("score_breakdown"), dict):
-        for key, value in list(dict(row.get("score_breakdown") or {}).items())[:10]:
-            numeric = shadow_float(value)
-            score_breakdown[str(key)[:50]] = (
-                round(float(numeric), 6)
-                if numeric is not None
-                else shadow_text(value, max_len=80)
-            )
-    compact = {
-        "symbol": symbol,
-        "rank": int(rank if rank > 0 else fallback_rank),
-        "score": round(float(score), 6) if score is not None else None,
-        "score_total": round(float(score), 6) if score is not None else None,
-        "score_source": score_source,
-        "reason": reason[:180],
-        "source": str(row.get("source") or row.get("source_name") or "").strip()[:80],
-    }
-    if score_breakdown:
-        compact["score_breakdown"] = score_breakdown
-    for key in (
-        "risk_score",
-        "confidence",
-        "entry_compatibility_score",
-        "compatibility_bias",
-        "scanner_chart_fit_score",
-        "scanner_chart_fit_penalty",
-        "scanner_macro_chart_fit_score",
-        "scanner_macro_chart_fit_bias",
-        "bias_adjustment",
-        "pre_adjust_score_total",
-        "post_adjust_score_total",
-        "raw_entry_compatibility_bias",
-        "effective_entry_compatibility_bias",
-    ):
-        value = shadow_float(row.get(key))
-        if value is not None:
-            compact[key] = round(float(value), 6)
-    chart_fit_components: Dict[str, Any] = {}
-    if isinstance(row.get("scanner_chart_fit_components"), dict):
-        for key, value in list(dict(row.get("scanner_chart_fit_components") or {}).items())[:10]:
-            numeric = shadow_float(value)
-            chart_fit_components[str(key)[:50]] = (
-                round(float(numeric), 6)
-                if numeric is not None
-                else shadow_text(value, max_len=80)
-            )
-    if chart_fit_components:
-        compact["scanner_chart_fit_components"] = chart_fit_components
-    macro_chart_fit_components: Dict[str, Any] = {}
-    if isinstance(row.get("scanner_macro_chart_fit_components"), dict):
-        for key, value in list(dict(row.get("scanner_macro_chart_fit_components") or {}).items())[:10]:
-            numeric = shadow_float(value)
-            macro_chart_fit_components[str(key)[:50]] = (
-                round(float(numeric), 6)
-                if numeric is not None
-                else shadow_text(value, max_len=80)
-            )
-    if macro_chart_fit_components:
-        compact["scanner_macro_chart_fit_components"] = macro_chart_fit_components
-    for key in (
-        "expected_monitor_block_reason",
-        "dominant_block_reason",
-        "scanner_chart_fit_authority",
-        "scanner_macro_chart_fit_authority",
-        "market_representative_guard_reason",
-        "selection_reason_with_bias",
-        "status",
-    ):
-        text = shadow_text(row.get(key), max_len=160)
-        if text:
-            compact[key] = text
-    return compact
+    return _pure_read_model.compact_post_scanner_candidate_row(row, fallback_rank=fallback_rank, facade=_sys.modules[__name__])
 
 
 def post_scanner_context_quality(

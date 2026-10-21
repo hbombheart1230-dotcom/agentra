@@ -9,6 +9,7 @@ calls are present - those statements stay in the orchestrator).
 from __future__ import annotations
 
 from typing import Any, NamedTuple
+from libs.agents.commander.projections import decision_context_read_model as _context_read_model
 
 
 def decision_ctx_entry_capacity_available_market_regime(state, mode_value, phase_value, status_value, path_value, reason_text, *, facade):
@@ -30,84 +31,7 @@ def decision_ctx_entry_capacity_available_market_regime(state, mode_value, phase
     max_positions = facade._resolve_risk_max_positions(state)
     entry_capacity_available = open_position_count < max_positions
     market_regime, strategist_fallback_used = facade._derive_commander_market_regime(state, shadow_assessment=shadow_assessment)
-    strategist_rail_raw = strategist_output.get("market_regime_rail")
-    strategist_rail_shadow = (
-        strategist_output.get("market_regime_rail_shadow")
-        if isinstance(strategist_output.get("market_regime_rail_shadow"), dict)
-        else {}
-    )
-    strategist_input_quality = (
-        strategist_output.get("strategist_input_quality")
-        if isinstance(strategist_output.get("strategist_input_quality"), dict)
-        else {}
-    )
-    input_quality_rail = (
-        strategist_input_quality.get("market_regime_rail")
-        if isinstance(strategist_input_quality.get("market_regime_rail"), dict)
-        else {}
-    )
-    risk_off_policy = (
-        strategist_output.get("risk_off_exception_policy")
-        if isinstance(strategist_output.get("risk_off_exception_policy"), dict)
-        else {}
-    )
-    if isinstance(strategist_rail_raw, dict):
-        market_regime_rail = str(
-            strategist_rail_raw.get("market_regime_rail")
-            or strategist_rail_raw.get("rail_id")
-            or strategist_rail_raw.get("rail")
-            or ""
-        )
-    else:
-        market_regime_rail = str(strategist_rail_raw or "")
-    market_regime_rail = str(
-        market_regime_rail
-        or strategist_rail_shadow.get("market_regime_rail")
-        or strategist_rail_shadow.get("rail_id")
-        or input_quality_rail.get("market_regime_rail")
-        or input_quality_rail.get("rail_id")
-        or risk_off_policy.get("market_regime_rail")
-        or state.get("market_regime_rail")
-        or ""
-    ).strip()
-    rail_l = market_regime_rail.lower()
-    rail_risk_off = bool("risk_off" in rail_l or "gap_down" in rail_l or "breadth_collapse" in rail_l)
-    if rail_risk_off and market_regime != "risk_off":
-        market_regime = "risk_off"
-    macro_stress_overlay = (
-        strategist_output.get("macro_stress_overlay")
-        if isinstance(strategist_output.get("macro_stress_overlay"), dict)
-        else {}
-    )
-    raw_stress_flags = list(macro_stress_overlay.get("stress_flags") or [])
-    macro_stress_active = bool(macro_stress_overlay.get("active"))
-    stress_flags = raw_stress_flags if macro_stress_active else []
-    if str(phase_value or "").strip() == "preopen":
-        session_bias = "preopen_context"
-    elif str(phase_value or "").strip() == "closeout":
-        session_bias = "closeout_control"
-    elif open_position_count > 0 and not entry_capacity_available:
-        session_bias = "position_management"
-    elif open_position_count > 0 and entry_capacity_available:
-        session_bias = "multi_position_selection"
-    elif "cached" in str(path_value or ""):
-        session_bias = "context_reuse"
-    else:
-        session_bias = "active_selection"
-
-    runtime_status_blocked = str(status_value or "").strip().lower() in {"blocked", "preflight_blocked"}
-    hard_runtime_blocked = bool(preflight.get("blocked")) or (
-        bool(runtime_status_blocked) and not bool(entry_capacity_available)
-    )
-    if hard_runtime_blocked:
-        risk_mode = "blocked"
-    elif market_regime == "risk_off" or rail_risk_off or bool(stress_flags) or str(resilience.get("degrade_mode") or "").strip():
-        risk_mode = "defensive"
-    elif market_regime == "risk_on":
-        risk_mode = "offensive"
-    else:
-        risk_mode = "balanced"
-    return (entry_capacity_available, market_regime, market_regime_rail, max_positions, open_position_count, preflight, rail_risk_off, resilience, risk_mode, runtime_fast_path, session_bias, shadow_assessment, strategist_fallback_used, strategist_output, stress_flags)
+    return _context_read_model.decision_context_readout(state, phase_value, status_value, path_value, preflight, runtime_fast_path, strategist_output, resilience, shadow_assessment, open_position_count, max_positions, entry_capacity_available, market_regime, strategist_fallback_used)
 
 
 class DecisionPolicyContext(NamedTuple):

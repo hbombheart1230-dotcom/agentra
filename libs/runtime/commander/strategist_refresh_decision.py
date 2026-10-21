@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import sys as _sys
+import libs.agents.commander.projections.cache_refresh_read_model as _pure_read_model
+
 import os
 from typing import Any, Dict
 
@@ -42,63 +45,11 @@ def resolve_risk_max_positions(state: Dict[str, Any] | None = None) -> int:
 
 
 def _cached_candidate_hints(cached_output: Dict[str, Any]) -> list[str]:
-    hints: list[str] = []
-    for value in list(cached_output.get("candidate_hints") or []):
-        symbol = str(value or "").strip().upper()
-        if symbol and symbol not in hints:
-            hints.append(symbol)
-    for value in list(cached_output.get("candidate_symbols_hint") or []):
-        symbol = str(value or "").strip().upper()
-        if symbol and symbol not in hints:
-            hints.append(symbol)
-    for row in list(cached_output.get("candidates") or []):
-        if not isinstance(row, dict):
-            continue
-        symbol = str(row.get("symbol") or "").strip().upper()
-        if symbol and symbol not in hints:
-            hints.append(symbol)
-    return hints
+    return _pure_read_model._cached_candidate_hints(cached_output, facade=_sys.modules[__name__])
 
 
 def _monitor_entry_readiness_context(state: Dict[str, Any]) -> Dict[str, Any]:
-    monitor_output = state.get("monitor_output") if isinstance(state.get("monitor_output"), dict) else {}
-    monitor_state = state.get("monitor") if isinstance(state.get("monitor"), dict) else {}
-    entry_detail = state.get("monitor_entry_decision_detail") if isinstance(state.get("monitor_entry_decision_detail"), dict) else {}
-    transition_trace = entry_detail.get("transition_trace") if isinstance(entry_detail.get("transition_trace"), dict) else {}
-    readiness_score = shadow_float(
-        monitor_output.get("entry_transition_readiness_score")
-        if monitor_output.get("entry_transition_readiness_score") not in (None, "")
-        else monitor_state.get("entry_transition_readiness_score")
-        if monitor_state.get("entry_transition_readiness_score") not in (None, "")
-        else transition_trace.get("transition_readiness_score")
-    )
-    became_ready = bool(
-        monitor_output.get("entry_became_ready_this_cycle")
-        or monitor_state.get("entry_became_ready_this_cycle")
-        or transition_trace.get("became_ready_this_cycle")
-    )
-    prior_intent = str(monitor_output.get("intent_side") or monitor_state.get("intent_side") or "").strip().upper()
-    prior_reason = str(
-        monitor_output.get("entry_exit_reason")
-        or entry_detail.get("primary_reason_code")
-        or entry_detail.get("reason")
-        or ""
-    ).strip()
-    actionable = bool(
-        prior_intent == "BUY"
-        or became_ready
-        or (
-            readiness_score is not None
-            and readiness_score >= float(PRE_BUY_STRATEGIST_REFRESH_READINESS_THRESHOLD)
-        )
-    )
-    return {
-        "actionable": bool(actionable),
-        "transition_readiness_score": readiness_score,
-        "became_ready_this_cycle": bool(became_ready),
-        "prior_intent_side": prior_intent,
-        "prior_reason": prior_reason,
-    }
+    return _pure_read_model._monitor_entry_readiness_context(state, facade=_sys.modules[__name__])
 
 
 def assess_pre_buy_strategist_refresh_need(
