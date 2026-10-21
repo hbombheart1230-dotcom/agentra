@@ -4091,3 +4091,10 @@ Sources: `apps/operator_ui/static/operator.css`, `tests/test_p15_fast07_b_access
 - Restore recorded Decision / intent and Reader source, preserving zero/False and escaping. Require confirmed availability plus a safe local link for OBSERVED. Distinguish saved brief content from metadata and derived sections. Translate recognized filesystem and JSON failures only at six source-loader boundaries; rendering and programming errors propagate.
 - Issue #27 exact scope. No trading, frozen Owner, CI, integration or release change. Test evidence and scope blockers are reported separately.
 - BLOCKED_SCOPE: existing test_p15_fast08_b_brief.py expects SAVED for status-only raw metadata with derived sections; B9 returns DERIVED. That file is outside the writable list and remains unchanged; no waiver.
+
+## 2026-10-21 - P1.5 FAST10 B10 20261021
+**Stage:** Developer candidate; peer and integration acceptance pending.
+
+- Separate recorded fills from generic ok/allowed intents, NOOP, guarded, pending and unknown observations. Share pure list/detail classification; count only displayed records, preserve zero/False and flag stale/missing/error sources without claiming freshness or broker verification.
+- Safe internal drilldown, keyboard targets and 480/780 structure; malformed rows/coverage/flags and missing detail JSON handled explicitly. No new routes, forms, orders, permissions or source probes.
+- PR24 preview252b442e local combined A8/A9+B8/B9 and notes smoke: normal/-O each174PASS exit0. Hosted CI, browser/mobile/real-data and release acceptance NOT_RUN; B10 final evidence in Issue29.

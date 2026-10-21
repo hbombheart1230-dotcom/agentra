@@ -25,7 +25,16 @@
 {% set execution = detail.executor.execution or {} %}
 {% set verdict = detail.supervisor.verdict or {} %}
 {% set detail_view = ui_run_detail(detail) %}
+<nav class="trace-navigation" aria-label="Run evidence navigation">
+  <a class="link-action" href="/runs">Back to recorded runs</a>
+  <a class="link-action" href="#run-source-status">Inspect source observations</a>
+</nav>
 {{ evidence_panel(detail_view, "Recorded Run Evidence") }}
+<section class="card" id="run-source-status" tabindex="-1" aria-labelledby="run-source-title">
+  <h2 id="run-source-title">Source observations</h2>
+  <p class="source-confidence" data-source-state="{{ detail_view.source_status }}">Reader: {{ detail_view.source_status }}. Source labels do not establish freshness.</p>
+  <ul class="trace-sources">{% for source in detail_view.sources %}<li data-source-state="{{ source.health }}">{{ source.role }}: {{ source.source }} / {{ source.health }}</li>{% endfor %}</ul>
+</section>
 
 <section class="card card--attention report-summary-card">
   <h2>AI Report Status</h2>
@@ -230,7 +239,7 @@
     {% if detail.reporter.chain %}
     <details class="details-block">
       <summary>Reporter Chain</summary>
-      <pre class="code">{{ detail.reporter.chain | tojson(indent=2) }}</pre>
+      <pre class="code">{{ detail.reporter.chain | default(none) | tojson(indent=2) }}</pre>
     </details>
     {% endif %}
     <details class="details-block">
@@ -241,15 +250,15 @@
 
   <article class="card">
     <h2>Commander</h2>
-    <pre class="code">{{ detail.commander | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.commander | default(none) | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Strategist</h2>
-    <pre class="code">{{ detail.strategist.summary | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.strategist.summary | default(none) | tojson(indent=2) }}</pre>
     <h3>LLM</h3>
-    <pre class="code">{{ detail.strategist.llm | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.strategist.llm | default(none) | tojson(indent=2) }}</pre>
     <h3>Decision Trace</h3>
-    <pre class="code">{{ detail.strategist.decision_trace | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.strategist.decision_trace | default(none) | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Strategist Evidence</h2>
@@ -260,37 +269,37 @@
   </article>
   <article class="card">
     <h2>Scanner</h2>
-    <pre class="code">{{ detail.scanner.summary | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.scanner.summary | default(none) | tojson(indent=2) }}</pre>
     <h3>Decision Trace</h3>
-    <pre class="code">{{ detail.scanner.decision_trace | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.scanner.decision_trace | default(none) | tojson(indent=2) }}</pre>
     <h3>Feature Coverage</h3>
     <p class="meta-line">
       quality={{ detail.scanner.feature_coverage.quality }}
       present={{ detail.scanner.feature_coverage.present }}/{{ detail.scanner.feature_coverage.total }}
       ratio={% if detail.scanner.feature_coverage.coverage_ratio is number %}{{ "%.0f"|format(detail.scanner.feature_coverage.coverage_ratio * 100) }}%{% else %}UNKNOWN{% endif %}
     </p>
-    <pre class="code">{{ detail.scanner.feature_coverage | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.scanner.feature_coverage | default(none) | tojson(indent=2) }}</pre>
     <h3>Quote Metrics</h3>
     <p class="meta-line">
       present={{ detail.scanner.quote_metrics.present }}
       price={{ detail.scanner.quote_metrics.skill_quote_price or "-" }}
       change_pct={{ detail.scanner.quote_metrics.intraday_change_pct or "-" }}
     </p>
-    <pre class="code">{{ detail.scanner.quote_metrics | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.scanner.quote_metrics | default(none) | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Monitor</h2>
-    <pre class="code">{{ detail.monitor.summary | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.monitor.summary | default(none) | tojson(indent=2) }}</pre>
     <h3>Decision Trace</h3>
-    <pre class="code">{{ detail.monitor.decision_trace | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.monitor.decision_trace | default(none) | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Supervisor</h2>
-    <pre class="code">{{ detail.supervisor.verdict | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.supervisor.verdict | default(none) | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Executor</h2>
-    <pre class="code">{{ detail.executor.execution | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.executor.execution | default(none) | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Same-Day Symbol Trade History</h2>
@@ -328,7 +337,7 @@
   </article>
   <article class="card">
     <h2>Raw Event Preview</h2>
-    <pre class="code tall">{{ detail.event_preview | tojson(indent=2) }}</pre>
+    <pre class="code tall">{{ detail.event_preview | default(none) | tojson(indent=2) }}</pre>
   </article>
 </section>
 {% endblock %}

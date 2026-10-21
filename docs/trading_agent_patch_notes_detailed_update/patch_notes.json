@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 337,
+  "entry_count": 338,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8869,6 +8869,34 @@
         "apps/operator_ui/templates/_fast08_evidence.html",
         "tests/test_p15_fast08_b_provenance.py",
         "tests/test_p15_fast08_b_service.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST10 B10 20261021",
+      "title": "Improve read-only run trace trust and safe drilldown",
+      "stage": "Developer candidate; peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Separate recorded fills from generic ok/allowed intents, NOOP, guarded, pending and unknown observations. Share pure list/detail classification; count only displayed records, preserve zero/False and flag stale/missing/error sources without claiming freshness or broker verification.",
+      "details": [
+        "Separate recorded fills from generic ok/allowed intents, NOOP, guarded, pending and unknown observations. Share pure list/detail classification; count only displayed records, preserve zero/False and flag stale/missing/error sources without claiming freshness or broker verification.",
+        "Run/report/brief drilldown uses safe local links; keyboard targets and compact 480/780 layouts retain existing GET routes. Malformed records, coverage/flags and missing detail JSON render explicitly without creating execution authority.",
+        "PR24 preview252b442e source-only targeted A8/A9+B8/B9 and notes smoke normal/-O each174PASS exit0; local composed-SHA evidence only, not hosted CI or release acceptance. B10 final tests and peer verdict are recorded in Issue29."
+      ],
+      "impact": "Read-only UI only. Core, R3 Owner, main/integration, trading, safety and CI unchanged.",
+      "sources": [
+        "apps/operator_ui/fast08_dashboard_view.py",
+        "apps/operator_ui/fast08_detail_view.py",
+        "apps/operator_ui/templates/overview.html",
+        "apps/operator_ui/templates/runs.html",
+        "apps/operator_ui/templates/run_detail.html",
+        "apps/operator_ui/static/operator.css",
+        "tests/test_p15_fast10_b_operator_traces.py"
       ]
     }
   ]
