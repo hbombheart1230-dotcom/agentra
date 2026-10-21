@@ -80,6 +80,11 @@ def trade_paths_from_bundle(bundle_path: Path, *, day_hint: str = "", trade_id_h
 def existing_trade_path(paths: Dict[str, Path], *keys: str) -> Path:
     for key in keys:
         path = paths.get(key)
-        if isinstance(path, Path) and path.exists():
-            return path
+        if not isinstance(path, Path):
+            continue
+        try:
+            if path.is_file():
+                return path
+        except OSError:
+            continue
     return Path()

@@ -1,51 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="overview">
-  {% set system_status_value = (overview.operator_summary.system_status or "") | upper %}
-  {% if system_status_value in ["GREEN", "OK", "HEALTHY", "SUCCESS"] %}
-    {% set status_label, status_tone = "SUCCESS", "ok" %}
-  {% elif system_status_value in ["RED", "FAILED", "FAIL", "ERROR", "CRITICAL"] %}
-    {% set status_label, status_tone = "FAILED", "critical" %}
-  {% elif system_status_value in ["GUARDED", "BLOCKED", "DENIED", "YELLOW", "WARN", "WARNING", "AMBER"] %}
-    {% set status_label, status_tone = "GUARDED", "warn" %}
-  {% elif system_status_value == "PENDING" %}
-    {% set status_label, status_tone = "PENDING", "warn" %}
-  {% else %}
-    {% set status_label, status_tone = ("UNKNOWN" if system_status_value else "NO_DATA"), "neutral" %}
-  {% endif %}
-  {% set exec_captured = overview.operator_summary.executions_total is number and overview.operator_summary.executions_total is not boolean and overview.operator_summary.executions_total >= 0 %}
-  {% set exec_total = overview.operator_summary.executions_total if exec_captured else 0 %}
+  {% set view = ui_dashboard(overview) %}
+  {% set status_label, status_tone = view.system.state, view.system.tone %}
+  {% set exec_captured = view.executions.value is not none %}
+  {% set exec_total = view.executions.value if exec_captured else 0 %}
   {% set blocked_total = overview.operator_summary.blocked_total if overview.operator_summary.blocked_total is number else (overview.daily.blocks or 0) %}
-  {% set recon_local = overview.reconciliation.local_total or 0 %}
-  {% set recon_broker = overview.reconciliation.broker_total or 0 %}
-  {% set recon_matched = overview.reconciliation.matched_by_ord_no or 0 %}
-  {% set recon_pending = overview.reconciliation.pending %}
   {% set portfolio_sync = overview.portfolio_sync or {} %}
   {% set portfolio_sync_summary = overview.portfolio_sync_summary or {} %}
-  {% set recon_captured = overview.reconciliation.local_total is number and overview.reconciliation.broker_total is number and overview.reconciliation.matched_by_ord_no is number and recon_local is not boolean and recon_broker is not boolean and recon_matched is not boolean and recon_local >= 0 and recon_broker >= 0 and recon_matched >= 0 %}
-  {% set recon_base = [recon_local, recon_broker] | max %}
-  {% if recon_pending is sameas true %}
-    {% set recon_status, recon_tone = "PENDING", "warn" %}
-    {% set recon_sentence = overview.reconciliation.sentence or "Intraday reconciliation is still pending." %}
-  {% elif not recon_captured %}
-    {% set recon_status, recon_tone = "NO_DATA", "neutral" %}
-    {% set recon_sentence = "Reconciliation evidence was not captured; alignment is unknown." %}
-  {% elif recon_pending is not sameas false %}
-    {% set recon_status, recon_tone = "UNKNOWN", "neutral" %}
-    {% set recon_sentence = "Reconciliation completion was not explicitly recorded." %}
-  {% elif recon_base == 0 %}
-    {% set recon_status, recon_tone = "NO_EXECUTIONS", "neutral" %}
-    {% set recon_sentence = "No executions to reconcile for the latest day." %}
-  {% elif recon_matched == recon_base and recon_local == recon_broker %}
-    {% set recon_status, recon_tone = "SUCCESS", "ok" %}
-    {% set recon_sentence = "Local and broker executions are fully aligned." %}
-  {% elif recon_matched > 0 %}
-    {% set recon_status, recon_tone = "PENDING", "warn" %}
-    {% set recon_sentence = "Partial reconciliation. Verify unmatched executions." %}
-  {% else %}
-    {% set recon_status, recon_tone = "FAILED", "critical" %}
-    {% set recon_sentence = "No matches found. Reconciliation needs review." %}
-  {% endif %}
+  {% set recon_status, recon_tone, recon_sentence = view.reconciliation.state, view.reconciliation.tone, view.reconciliation.sentence %}
+  {% set recon_local, recon_broker, recon_matched, recon_base = view.reconciliation.local, view.reconciliation.broker, view.reconciliation.matched, view.reconciliation.base %}
   {% set over_level = (overview.overtrading_warning.level or "unknown") | lower %}
   {% set over_is_alert = over_level in ["elevated", "high", "warning", "critical"] %}
   {% set round_trip_symbols = overview.overtrading_warning.round_trip_symbols or [] %}
@@ -91,6 +55,7 @@
     <article class="card card--hero">
       <h2>Today Executions</h2>
       <p class="kpi-value">{{ exec_total if exec_captured else "NO_DATA" }}</p>
+      <p class="source-confidence">Execution source: {{ view.executions.source }}; counters alone do not verify a fill.</p>
       <p class="subtle-meta">Approved today: {{ overview.daily.approvals or 0 }}</p>
     </article>
 
@@ -240,11 +205,12 @@
 
     <article class="card card--muted card--status-{{ recon_tone }}">
       <h2>Broker Reconciliation</h2>
+      <p class="source-confidence">Source confidence: {{ view.reconciliation.source }}</p>
       <div class="status-badge status-badge--{{ recon_tone }}" data-reconciliation-state="{{ recon_status }}">{{ recon_status }}</div>
       <div class="recon-grid">
-        <div><span>Matched</span><strong>{{ recon_matched }} / {{ recon_base }}</strong></div>
-        <div><span>Local</span><strong>{{ recon_local }}</strong></div>
-        <div><span>Broker</span><strong>{{ recon_broker }}</strong></div>
+        <div><span>Matched</span><strong>{{ recon_matched if recon_matched is not none else "not captured" }} / {{ recon_base }}</strong></div>
+        <div><span>Local</span><strong>{{ recon_local if recon_local is not none else "not captured" }}</strong></div>
+        <div><span>Broker</span><strong>{{ recon_broker if recon_broker is not none else "not captured" }}</strong></div>
       </div>
       <p class="subtle-meta">{{ recon_sentence }}</p>
       {% if overview.reconciliation.broker_window_limited %}

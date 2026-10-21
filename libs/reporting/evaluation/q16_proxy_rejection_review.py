@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import json
 from collections import Counter
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
 from libs.reporting.evaluation.cost_basis_comparison import build_evaluation_cost_bases
-from libs.reporting.evaluation.metrics import performance_metrics
+from libs.reporting.evaluation import fast08_qwindow_projection as _qw
 from libs.reporting.quant_shadow_forward_outcomes import (
     attach_forward_outcomes,
     load_minute_rows_from_state,
@@ -125,94 +125,12 @@ def _load_day_rows(reports_root: Path, day: str) -> list[dict[str, Any]]:
     )
 
 
-def _metric_bundle(rows: list[dict[str, Any]], drag_pct: float, horizon: str) -> dict[str, Any]:
-    gross: list[float] = []
-    for row in rows:
-        outcome = row.get("shadow_forward_outcome")
-        outcome = outcome if isinstance(outcome, Mapping) else {}
-        checkpoint = (outcome.get("checkpoints") or {}).get(horizon)
-        checkpoint = checkpoint if isinstance(checkpoint, Mapping) else {}
-        if checkpoint.get("status") != "observed":
-            continue
-        try:
-            gross.append(float(checkpoint.get("return_pct")))
-        except (TypeError, ValueError):
-            continue
-    return {
-        "gross": performance_metrics(gross),
-        "net": performance_metrics(value - drag_pct for value in gross),
-    }
-
-
-def _observed_rows(rows: list[dict[str, Any]], horizon: str) -> list[dict[str, Any]]:
-    observed: list[dict[str, Any]] = []
-    for row in rows:
-        outcome = row.get("shadow_forward_outcome")
-        outcome = outcome if isinstance(outcome, Mapping) else {}
-        checkpoint = (outcome.get("checkpoints") or {}).get(horizon)
-        if isinstance(checkpoint, Mapping) and checkpoint.get("status") == "observed":
-            observed.append(row)
-    return observed
-
-
-def _epoch_day(value: Any) -> str:
-    try:
-        epoch = int(float(value))
-    except Exception:
-        return ""
-    if epoch <= 0:
-        return ""
-    try:
-        return datetime.fromtimestamp(epoch, tz=KST).strftime("%Y%m%d")
-    except (OSError, OverflowError, ValueError):
-        return ""
-
-
-def _timestamp_day(value: Any) -> str:
-    text = str(value or "").strip()
-    if len(text) == 8 and text.isdigit():
-        return text
-    if len(text) in {12, 14} and text.isdigit():
-        try:
-            datetime.strptime(text[:8], "%Y%m%d")
-            return text[:8]
-        except ValueError:
-            return ""
-    if len(text) >= 10 and text[4:5] == "-" and text[7:8] == "-":
-        return text[:10].replace("-", "")
-    return _epoch_day(value)
-
-
-def _forward_integrity(row: Mapping[str, Any]) -> tuple[str, list[str]]:
-    expected_day = str(row.get("q16_day") or "").replace("-", "")
-    base = row.get("shadow_forward_base")
-    base = base if isinstance(base, Mapping) else {}
-    base_day = _timestamp_day(base.get("baseline_raw_ts")) or _timestamp_day(
-        base.get("baseline_epoch")
-    )
-    reasons: list[str] = []
-    if not expected_day or not base_day:
-        reasons.append("baseline_day_missing")
-    elif expected_day != base_day:
-        reasons.append("baseline_day_mismatch")
-    outcome = row.get("shadow_forward_outcome")
-    outcome = outcome if isinstance(outcome, Mapping) else {}
-    for horizon, checkpoint in (outcome.get("checkpoints") or {}).items():
-        if not isinstance(checkpoint, Mapping) or checkpoint.get("status") != "observed":
-            continue
-        observed_day = _timestamp_day(checkpoint.get("observed_ts"))
-        if observed_day and expected_day and observed_day != expected_day:
-            reasons.append(f"{horizon}:observed_day_mismatch")
-    return ("TRUSTED" if not reasons else "INVALID", reasons)
-
-
-def _expected_horizon(row: Mapping[str, Any]) -> str:
-    estimate = row.get("directional_edge_estimate")
-    estimate = estimate if isinstance(estimate, Mapping) else {}
-    value = str(estimate.get("forward_horizon") or "").strip().lower()
-    if not value:
-        return ""
-    return value if value.startswith("+") else f"+{value}"
+_metric_bundle = _qw.metric_bundle
+_observed_rows = _qw.observed_rows
+_epoch_day = _qw.epoch_day
+_timestamp_day = _qw.timestamp_day
+_forward_integrity = _qw.forward_integrity
+_expected_horizon = _qw.expected_horizon
 
 
 def _q17_expected_horizon_rows(
@@ -221,23 +139,9 @@ def _q17_expected_horizon_rows(
     live_drag: float,
     mock_drag: float,
 ) -> list[dict[str, Any]]:
-    grouped: dict[tuple[str, str], list[dict[str, Any]]] = {}
-    for row in rows:
-        horizon = _expected_horizon(row)
-        estimate = row.get("directional_edge_estimate")
-        estimate = estimate if isinstance(estimate, Mapping) else {}
-        strategy_horizon = str(estimate.get("strategy_horizon") or "unknown")
-        grouped.setdefault((horizon or "unknown", strategy_horizon), []).append(row)
-    return [
-        {
-            "expected_forward_horizon": horizon,
-            "strategy_horizon": strategy_horizon,
-            "candidate_count": len(group),
-            "live": _metric_bundle(group, live_drag, horizon) if horizon in Q17_OBSERVATION_HORIZONS else {},
-            "mock": _metric_bundle(group, mock_drag, horizon) if horizon in Q17_OBSERVATION_HORIZONS else {},
-        }
-        for (horizon, strategy_horizon), group in sorted(grouped.items())
-    ]
+    return _qw.expected_horizon_rows(
+        rows, live_drag=live_drag, mock_drag=mock_drag, observation_horizons=Q17_OBSERVATION_HORIZONS
+    )
 
 
 def _daily_exact_metrics(rows: list[dict[str, Any]], live_drag: float) -> list[dict[str, Any]]:
@@ -327,57 +231,19 @@ def build_q16_proxy_rejection_review(
         if str(row.get("q16_day") or "") >= Q17_START_DAY
         and str(row.get("q17_candidate_class") or "")
     ]
-    q17_class_counts = Counter(
-        str(row.get("q17_candidate_class") or "") for row in q17_rows
-    )
-    q17_unavailable_reasons = Counter(
-        str(
-            (
-                row.get("directional_edge_estimate")
-                if isinstance(row.get("directional_edge_estimate"), Mapping)
-                else {}
-            ).get("reason")
-            or "artifact_missing"
-        )
-        for row in q17_rows
-        if str(row.get("q17_candidate_class") or "")
-        in {
-            "DIRECTIONAL_EVIDENCE_UNAVAILABLE",
-            "DIRECTIONAL_ESTIMATE_ARTIFACT_MISSING",
-        }
-    )
-    q17_below_cost = [
-        row
-        for row in q17_rows
-        if row.get("q17_candidate_class") == "DIRECTIONAL_BELOW_COST_REJECTION"
-    ]
-    q17_admitted = [
-        row
-        for row in q17_rows
-        if row.get("q17_candidate_class") == "DIRECTIONAL_ADMITTED"
-    ]
     bases = build_evaluation_cost_bases(load_broker_cost_profile(None))
     live_drag = float(bases["live_deployment_equity"]["total_drag_with_slippage_pct"])
     mock_drag = float(bases["mock_observed"]["total_drag_with_slippage_pct"])
-    horizons = []
-    for horizon in Q16_HORIZONS:
-        horizons.append(
-            {
-                "horizon": horizon,
-                "exact_proxy_only": {
-                    "live": _metric_bundle(exact, live_drag, horizon),
-                    "mock": _metric_bundle(exact, mock_drag, horizon),
-                },
-                "legacy_unattributed_cost_rejection": {
-                    "live": _metric_bundle(legacy, live_drag, horizon),
-                    "mock": _metric_bundle(legacy, mock_drag, horizon),
-                },
-                "directional_admitted": {
-                    "live": _metric_bundle(directional_admitted, live_drag, horizon),
-                    "mock": _metric_bundle(directional_admitted, mock_drag, horizon),
-                },
-            }
-        )
+    horizons = _qw.cohort_horizons(
+        {
+            "exact_proxy_only": exact,
+            "legacy_unattributed_cost_rejection": legacy,
+            "directional_admitted": directional_admitted,
+        },
+        Q16_HORIZONS,
+        live_drag=live_drag,
+        mock_drag=mock_drag,
+    )
     observed_30m = int(
         next(row for row in horizons if row["horizon"] == "+30m")["exact_proxy_only"]["live"]["gross"]["count"]
     )
@@ -432,156 +298,19 @@ def build_q16_proxy_rejection_review(
         "cost_bases": bases,
         "horizons": horizons,
         "daily_exact_proxy_only": daily_exact,
-        "q17_directional_edge_validation": {
-            "schema_version": "q17_directional_edge_validation.v1",
-            "measurement_contract_version": "q17_expected_horizon.v2",
-            "behavior_effect": "evaluation_only",
-            "start_day": Q17_START_DAY,
-            "class_counts": dict(q17_class_counts),
-            "unavailable_reasons": dict(q17_unavailable_reasons),
-            "below_cost_horizons": [
-                {
-                    "horizon": horizon,
-                    "live": _metric_bundle(q17_below_cost, live_drag, horizon),
-                    "mock": _metric_bundle(q17_below_cost, mock_drag, horizon),
-                }
-                for horizon in Q17_OBSERVATION_HORIZONS
-            ],
-            "admitted_horizons": [
-                {
-                    "horizon": horizon,
-                    "live": _metric_bundle(q17_admitted, live_drag, horizon),
-                    "mock": _metric_bundle(q17_admitted, mock_drag, horizon),
-                }
-                for horizon in Q17_OBSERVATION_HORIZONS
-            ],
-            "below_cost_expected_horizon": _q17_expected_horizon_rows(
-                q17_below_cost,
-                live_drag=live_drag,
-                mock_drag=mock_drag,
-            ),
-            "admitted_expected_horizon": _q17_expected_horizon_rows(
-                q17_admitted,
-                live_drag=live_drag,
-                mock_drag=mock_drag,
-            ),
-        },
+        "q17_directional_edge_validation": _qw.q17_validation_block(
+            q17_rows,
+            start_day=Q17_START_DAY,
+            live_drag=live_drag,
+            mock_drag=mock_drag,
+            observation_horizons=Q17_OBSERVATION_HORIZONS,
+        ),
         "samples": rows,
     }
 
 
 def render_q16_proxy_rejection_review(payload: Mapping[str, Any]) -> str:
-    counts = payload.get("counts") or {}
-    authority = payload.get("decision_authority") or {}
-    lines = [
-        "# Q16 Proxy-Only Rejection Review",
-        "",
-        f"- Window: `{payload.get('start_day')}` to `{payload.get('end_day')}`",
-        f"- Evidence: **{payload.get('evidence_status')}**",
-        f"- Decision: **{payload.get('decision')}**",
-        f"- Decision authority: `{authority.get('status', 'LEGACY')}`",
-        f"- Rolling diagnostic decision: `{authority.get('rolling_diagnostic_decision', payload.get('decision'))}`",
-        f"- Exact proxy-only rejections: {counts.get('exact_proxy_only_rejection_count', 0)}",
-        f"- Trusted forward rows: {counts.get('exact_trusted_forward_count', 0)}",
-        f"- Invalid forward rows: {counts.get('forward_integrity_invalid_count', 0)}",
-        f"- Exact +30m observations: {counts.get('exact_observed_30m_count', 0)}",
-        f"- Exact observed days: {counts.get('exact_observed_day_count', 0)}",
-        f"- Positive +30m days: {counts.get('positive_30m_day_count', 0)}",
-        f"- Directional admitted candidates: {counts.get('directional_admitted_count', 0)}",
-        f"- Legacy cost rejections without proxy attribution: {counts.get('legacy_cost_rejection_unattributed_count', 0)}",
-        "",
-        "| Horizon | Cohort | Basis | Count | Win Rate | Avg Return | Profit Factor | MDD |",
-        "|---|---|---|---:|---:|---:|---:|---:|",
-    ]
-    integrity_reasons = payload.get("forward_integrity_reason_counts") or {}
-    if integrity_reasons:
-        lines.insert(
-            10,
-            "- Invalid reasons: "
-            + ", ".join(
-                f"`{name}`={count}" for name, count in sorted(integrity_reasons.items())
-            ),
-        )
-    for horizon in payload.get("horizons") or []:
-        for cohort in ("exact_proxy_only", "directional_admitted", "legacy_unattributed_cost_rejection"):
-            for basis in ("live", "mock"):
-                metric = ((horizon.get(cohort) or {}).get(basis) or {}).get("net") or {}
-                lines.append(
-                    f"| {horizon.get('horizon')} | {cohort} | {basis} | {metric.get('count', 0)} | "
-                    f"{float(metric.get('win_rate') or 0):.2%} | {float(metric.get('average_return_pct') or 0):.4f}% | "
-                    f"{float(metric.get('profit_factor') or 0):.4f} | {float(metric.get('maximum_drawdown_pct') or 0):.4f}% |"
-                )
-    lines += [
-        "",
-        "## Daily Exact Proxy-Only Decision Evidence",
-        "",
-        "| Day | Rejections | +30m Observed | Live Win Rate | Live Avg Return | Profit Factor | Positive Day |",
-        "|---|---:|---:|---:|---:|---:|---|",
-    ]
-    for row in payload.get("daily_exact_proxy_only") or []:
-        metric = row.get("live_net_30m") or {}
-        lines.append(
-            f"| {row.get('day')} | {row.get('exact_rejection_count', 0)} | "
-            f"{row.get('observed_30m_count', 0)} | {float(metric.get('win_rate') or 0):.2%} | "
-            f"{float(metric.get('average_return_pct') or 0):.4f}% | "
-            f"{float(metric.get('profit_factor') or 0):.4f} | "
-            f"{'yes' if row.get('positive_30m_day') else 'no'} |"
-        )
-    lines += [
-        "",
-        "Legacy rows are shown for context only. They cannot prove that the rejected edge was proxy-only.",
-    ]
-    if payload.get("evidence_status") == "DECISION_READY":
-        if authority.get("status") == "FINAL_CLOSED":
-            lines.append(
-                "Q16 is closed. Later samples update diagnostics only; the authoritative "
-                f"policy decision remains **{payload.get('decision')}**."
-            )
-        else:
-            lines.append(f"Q16 decision is final under the fixed sample contract: **{payload.get('decision')}**.")
-    else:
-        lines.append("Q16 RETAIN/ROLL_BACK is unavailable until exact post-patch fields meet the sample contract.")
-    q17 = payload.get("q17_directional_edge_validation") or {}
-    lines += [
-        "",
-        "## Q17 Directional Edge Validation",
-        "",
-        f"- Start day: `{q17.get('start_day', Q17_START_DAY)}`",
-        f"- Measurement contract: `{q17.get('measurement_contract_version', 'legacy')}`",
-    ]
-    class_counts = q17.get("class_counts") or {}
-    if class_counts:
-        for name, count in sorted(class_counts.items()):
-            lines.append(f"- `{name}`: {count}")
-    else:
-        lines.append("- No classified Q17 candidates.")
-    unavailable_reasons = q17.get("unavailable_reasons") or {}
-    if unavailable_reasons:
-        lines.append("- Unavailable reasons:")
-        for name, count in sorted(unavailable_reasons.items()):
-            lines.append(f"  - `{name}`: {count}")
-    expected_rows = q17.get("below_cost_expected_horizon") or []
-    if expected_rows:
-        lines += [
-            "",
-            "### Below-Cost Results At Intended Horizon",
-            "",
-            "| Strategy Horizon | Forward Horizon | Candidates | Observed | Live Net Avg |",
-            "|---|---|---:|---:|---:|",
-        ]
-        for row in expected_rows:
-            live = row.get("live") or {}
-            net = live.get("net") or {}
-            lines.append(
-                f"| {row.get('strategy_horizon')} | {row.get('expected_forward_horizon')} | "
-                f"{row.get('candidate_count', 0)} | {net.get('count', 0)} | "
-                f"{float(net.get('average_return_pct') or 0):.4f}% |"
-            )
-    lines += [
-        "",
-        "Q17 fields are additive and do not change the final Q16 RETAIN/ROLL_BACK decision.",
-    ]
-    return "\n".join(lines) + "\n"
+    return _qw.render_q16_proxy_rejection_review(payload, default_q17_start=Q17_START_DAY)
 
 
 __all__ = ["build_q16_proxy_rejection_review", "render_q16_proxy_rejection_review"]

@@ -11,6 +11,7 @@ from libs.reporting.quant_shadow_candidate_evaluation import (
 from libs.reporting.quant_shadow_forward_outcomes import attach_forward_outcomes
 from libs.runtime.broker_cost_profile import load_broker_cost_profile
 
+from . import fast08_cumulative_projection as _cp
 from .cost_basis_comparison import build_evaluation_cost_bases
 from .episode_scanner_review import (
     build_episode_scanner_review,
@@ -37,81 +38,19 @@ def _strategist_weighting_review(
     start: str,
     end: str,
 ) -> dict[str, Any]:
-    daily_deltas: dict[str, list[float]] = {
-        "+5m": [],
-        "+15m": [],
-        "+30m": [],
-        "EOD": [],
-    }
+    daily_deltas: dict[str, list[float]] = {name: [] for name in _cp.DELTA_HORIZONS}
     source_root = reports_root / "evaluation" / "baseline_samsung_hynix"
     if source_root.exists():
         for day_dir in sorted(path for path in source_root.iterdir() if path.is_dir()):
             if not start <= day_dir.name <= end:
                 continue
             payload = _read_json(day_dir / "q9_vs_samsung_hynix_daily_comparison.json")
-            for horizon in payload.get("horizons") or []:
-                if not isinstance(horizon, Mapping):
-                    continue
-                name = str(horizon.get("horizon") or "")
-                if name not in daily_deltas:
-                    continue
-                performers = {
-                    str(row.get("performer") or ""): row
-                    for row in horizon.get("performers") or []
-                    if isinstance(row, Mapping)
-                }
-                scanner = performers.get("A_SCANNER_CONTROL")
-                strategist = performers.get("B_STRATEGIST_RANKED")
-                if not scanner or not strategist:
-                    continue
-                if not int(scanner.get("trade_count") or 0) or not int(
-                    strategist.get("trade_count") or 0
-                ):
-                    continue
-                daily_deltas[name].append(
-                    float(strategist.get("avg_return_pct") or 0.0)
-                    - float(scanner.get("avg_return_pct") or 0.0)
-                )
-    rows = []
-    for horizon, values in daily_deltas.items():
-        rows.append(
-            {
-                "horizon": horizon,
-                "observed_day_count": len(values),
-                "strategist_better_day_count": sum(value > 0 for value in values),
-                "strategist_worse_day_count": sum(value < 0 for value in values),
-                "avg_strategist_minus_scanner_pct": (
-                    round(sum(values) / len(values), 4) if values else None
-                ),
-            }
-        )
-    return {
-        "schema_version": "strategist_weighting_cumulative_review.v1",
-        "behavior_effect": "evaluation_only",
-        "rows": rows,
-        "interpretation": (
-            "Paired daily B minus A deltas measure strategy-weighted ranking versus "
-            "the same Scanner candidate universe. They do not measure candidate sourcing."
-        ),
-    }
+            for name, delta in _cp.strategist_day_delta(payload).items():
+                daily_deltas[name].append(delta)
+    return _cp.strategist_weighting_review(daily_deltas)
 
 
-def _rank_row(
-    review: Mapping[str, Any],
-    *,
-    bucket: str,
-    horizon: str,
-) -> Mapping[str, Any]:
-    return next(
-        (
-            row
-            for row in review.get("rank_horizon_rows") or []
-            if isinstance(row, Mapping)
-            and row.get("rank_bucket") == bucket
-            and row.get("horizon") == horizon
-        ),
-        {},
-    )
+_rank_row = _cp.rank_row
 
 
 def _candidate_rows(
@@ -301,12 +240,7 @@ def build_cumulative_improvement_review(
         post_reclaim_review=post_reclaim_review,
         strategist_review=strategist_review,
     )
-    outcome_conditioned_count = sum(
-        int(row.get("trade_count") or 0)
-        for row in q14.get("cause_summary") or []
-        if isinstance(row, Mapping)
-        and row.get("diagnostic_kind") == "outcome_conditioned"
-    )
+    outcome_conditioned_count = _cp.outcome_conditioned_trade_count(q14)
     return {
         "schema_version": "cumulative_improvement_review.v1",
         "behavior_effect": "evaluation_only",
@@ -341,101 +275,7 @@ def build_cumulative_improvement_review(
     }
 
 
-def render_cumulative_improvement_review(payload: Mapping[str, Any]) -> str:
-    date_range = payload.get("range") or {}
-    q14 = payload.get("q14_causal_interpretation") or {}
-    episode = payload.get("episode_scanner_review") or {}
-    reentry = payload.get("same_symbol_reentry_review") or {}
-    reclaim = payload.get("post_reclaim_shadow_review") or {}
-    lines = [
-        f"# Cumulative Improvement Review - {date_range.get('start')} to {date_range.get('end')}",
-        "",
-        f"- Behavior effect: `{payload.get('behavior_effect')}`",
-        f"- Active validation: `{payload.get('active_validation')}`",
-        f"- Behavior patch authorized: `{payload.get('behavior_patch_authorized')}`",
-        f"- Scanner rows/episodes: {episode.get('raw_candidate_row_count', 0)} / {episode.get('episode_count', 0)}",
-        f"- Score component coverage: {float((episode.get('score_component_review') or {}).get('coverage') or 0):.1%}",
-        "",
-        "## Q14 Causal Interpretation",
-        "",
-        f"- Legacy outcome-conditioned result: `{(q14.get('largest_legacy_behavior_root_cause') or {}).get('root_cause') or 'NONE'}`",
-        f"- Largest structural result: `{(q14.get('largest_structural_root_cause') or {}).get('root_cause') or 'NONE'}`",
-        f"- Outcome-conditioned trades: {q14.get('outcome_conditioned_trade_count', 0)}",
-        f"- Rule: {q14.get('rule') or 'N/A'}",
-        "",
-        "## Episode-Level Scanner Ranking",
-        "",
-        "| Rank | Horizon | Episodes | Observed | Days | Gross | Live Net | Mock Net |",
-        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
-    ]
-    for row in episode.get("rank_horizon_rows") or []:
-        if not isinstance(row, Mapping) or row.get("rank_bucket") == "unknown":
-            continue
-        lines.append(
-            f"| {row.get('rank_bucket')} | {row.get('horizon')} | "
-            f"{row.get('episode_count')} | {row.get('observed_count')} | "
-            f"{row.get('observed_day_count')} | "
-            f"{float((row.get('gross') or {}).get('expectancy_pct') or 0):.4f}% | "
-            f"{float((row.get('live_net') or {}).get('expectancy_pct') or 0):.4f}% | "
-            f"{float((row.get('mock_net') or {}).get('expectancy_pct') or 0):.4f}% |"
-        )
-    lines += [
-        "",
-        "## Same-Symbol Reentry",
-        "",
-        "| Cohort | Count | Win Rate | Expectancy | Profit Factor |",
-        "| --- | ---: | ---: | ---: | ---: |",
-    ]
-    for label, key in (
-        ("First", "first_entry"),
-        ("Repeat", "repeat_entry"),
-        ("Repeat after loss", "repeat_after_loss"),
-        ("Repeat after non-loss", "repeat_after_non_loss"),
-    ):
-        row = reentry.get(key) or {}
-        lines.append(
-            f"| {label} | {row.get('count', 0)} | "
-            f"{float(row.get('win_rate') or 0):.1%} | "
-            f"{float(row.get('expectancy_pct') or 0):.4f}% | "
-            f"{float(row.get('profit_factor') or 0):.4f} |"
-        )
-    lines += [
-        "",
-        "## Confirmed Post-Reclaim Shadow",
-        "",
-        f"- Status: `{reclaim.get('promotion_status')}`",
-        f"- Observed: {reclaim.get('observed_count', 0)} across {reclaim.get('observed_day_count', 0)} days",
-        "",
-        "| Horizon | Gross | Live Net | Mock Net |",
-        "| --- | ---: | ---: | ---: |",
-    ]
-    for row in reclaim.get("rows") or []:
-        lines.append(
-            f"| {row.get('horizon')} | "
-            f"{float(row.get('gross_expectancy_pct') or 0):.4f}% | "
-            f"{float(row.get('live_net_expectancy_pct') or 0):.4f}% | "
-            f"{float(row.get('mock_net_expectancy_pct') or 0):.4f}% |"
-        )
-    lines += [
-        "",
-        "## Improvement Candidates",
-        "",
-        "| Priority | Candidate | Class | Status |",
-        "| ---: | --- | --- | --- |",
-    ]
-    for row in payload.get("improvement_candidates") or []:
-        lines.append(
-            f"| {row.get('priority')} | {row.get('candidate')} | "
-            f"{row.get('class')} | {row.get('status')} |"
-        )
-    lines += [
-        "",
-        "## Decision Boundary",
-        "",
-        f"- {payload.get('next_decision')}",
-        "",
-    ]
-    return "\n".join(lines)
+render_cumulative_improvement_review = _cp.render_cumulative_improvement_review
 
 
 def write_cumulative_improvement_review(

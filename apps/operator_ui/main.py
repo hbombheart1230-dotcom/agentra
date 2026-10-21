@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import errno
+import json
 from pathlib import Path
 from typing import Optional
 
@@ -7,6 +9,10 @@ from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+
+from .fast08_dashboard_view import project_dashboard
+from .fast08_detail_view import project_run, project_trade, saved_brief_observation
+from .fast08_observation_view import execution_observation, safe_trace_link
 
 from .data_access import (
     OperatorUIConfig,
@@ -19,10 +25,24 @@ from .data_access import (
 )
 
 
+
+def _read_source(loader, *args, **kwargs):
+    """Translate only source-loader read/parse failures, never rendering errors."""
+    try:
+        return loader(*args, **kwargs)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=503, detail="Read-only source temporarily unavailable.") from exc
+    except OSError as exc:
+        if exc.errno not in {errno.ENOENT, errno.EACCES, errno.EPERM, errno.EIO,
+                             errno.ENOTDIR, errno.EISDIR, errno.ESTALE}:
+            raise
+        raise HTTPException(status_code=503, detail="Read-only source temporarily unavailable.") from exc
+
 def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
     cfg = config or OperatorUIConfig.from_env()
     base_dir = Path(__file__).resolve().parent
     templates = Jinja2Templates(directory=str(base_dir / "templates"))
+    templates.env.globals.update(ui_dashboard=project_dashboard, ui_execution=execution_observation, ui_link=safe_trace_link, ui_run_detail=project_run, ui_trade_detail=project_trade, ui_saved_brief=saved_brief_observation)
 
     app = FastAPI(
         title="Trading Agent Operator UI",
@@ -31,6 +51,14 @@ def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
         redoc_url=None,
         openapi_url=None,
     )
+    @app.middleware("http")
+    async def observation_headers(request: Request, call_next):
+        response = await call_next(request)
+        if request.method == "GET" and not request.url.path.startswith("/static/"):
+            response.headers.setdefault("Cache-Control", "no-store")
+            response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        return response
+
     app.state.operator_ui_config = cfg
     app.mount("/static", StaticFiles(directory=str(base_dir / "static")), name="static")
 
@@ -42,7 +70,7 @@ def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
             context={
                 "page_title": "Operator Console",
                 "section": "overview",
-                "overview": load_overview(cfg),
+                "overview": _read_source(load_overview, cfg),
             },
         )
 
@@ -62,7 +90,7 @@ def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
             context={
                 "page_title": "Recent Runs",
                 "section": "runs",
-                "runs": load_recent_runs(cfg, limit=limit, mismatch_only=mismatch_only, activity_view=activity_view_normalized),
+                "runs": _read_source(load_recent_runs, cfg, limit=limit, mismatch_only=mismatch_only, activity_view=activity_view_normalized),
                 "limit": int(limit),
                 "mismatch_only": bool(mismatch_only),
                 "activity_view": activity_view_normalized,
@@ -71,7 +99,7 @@ def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
 
     @app.get("/runs/{run_id}", response_class=HTMLResponse)
     def run_detail(request: Request, run_id: str) -> HTMLResponse:
-        detail = load_run_detail(cfg, run_id)
+        detail = _read_source(load_run_detail, cfg, run_id)
         if not detail.get("found"):
             raise HTTPException(status_code=404, detail=f"run_id not found: {run_id}")
         return templates.TemplateResponse(
@@ -86,7 +114,7 @@ def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
 
     @app.get("/reports/trade/{story_id}", response_class=HTMLResponse)
     def trade_report_detail(request: Request, story_id: str) -> HTMLResponse:
-        report = load_trade_report_detail(cfg, story_id)
+        report = _read_source(load_trade_report_detail, cfg, story_id)
         if not report.get("found"):
             raise HTTPException(status_code=404, detail=f"trade report not found: {story_id}")
         return templates.TemplateResponse(
@@ -101,7 +129,7 @@ def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
 
     @app.get("/reports/trade/{story_id}/brief", response_class=HTMLResponse)
     def operator_brief_detail(request: Request, story_id: str) -> HTMLResponse:
-        brief = load_operator_brief_detail(cfg, story_id)
+        brief = _read_source(load_operator_brief_detail, cfg, story_id)
         if not brief.get("found"):
             raise HTTPException(status_code=404, detail=f"operator brief not found: {story_id}")
         return templates.TemplateResponse(
@@ -116,7 +144,7 @@ def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
 
     @app.get("/healthz")
     def healthz() -> JSONResponse:
-        return JSONResponse(load_health(cfg))
+        return JSONResponse(_read_source(load_health, cfg))
 
     return app
 

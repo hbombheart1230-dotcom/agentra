@@ -4,19 +4,7 @@ from __future__ import annotations
 from typing import Any, Dict
 
 
-def _observed_bool(value: Any) -> bool | None:
-    """Decode recorded JSON booleans without treating unknown text as success."""
-    if isinstance(value, bool):
-        return value
-    if isinstance(value, (int, float)) and value in (0, 1):
-        return bool(value)
-    if isinstance(value, str):
-        raw = value.strip().lower()
-        if raw in {"true", "1"}:
-            return True
-        if raw in {"false", "0"}:
-            return False
-    return None
+from .fast08_observation_view import observed_bool as _observed_bool
 
 
 def _safe_int(v: Any, default: int = 0) -> int:

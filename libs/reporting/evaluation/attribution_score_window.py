@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import json
-from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping
+
+from . import fast08_qwindow_projection as _qw
 
 
 SCORE_KEYS = (
@@ -23,21 +24,11 @@ def _read_json(path: Path) -> dict[str, Any]:
         return {}
 
 
-def _mapping(value: Any) -> Mapping[str, Any]:
-    return value if isinstance(value, Mapping) else {}
+_mapping = _qw.mapping
 
 
 def _score_value(row: Mapping[str, Any], key: str) -> int | None:
-    item = _mapping(_mapping(row.get("scores")).get(key))
-    if item.get("status") == "INSUFFICIENT_EVIDENCE":
-        return None
-    value = item.get("score")
-    if value is None:
-        return None
-    try:
-        return int(round(float(value)))
-    except (TypeError, ValueError):
-        return None
+    return _qw.axis_score(row.get("scores"), key)
 
 
 def _ledger_days(freeze_root: Path) -> list[dict[str, Any]]:
@@ -61,88 +52,26 @@ def build_attribution_score_window(
     for ledger in ledger_rows:
         day = str(ledger.get("day") or "")
         payload = _day_payload(reports_root, day)
-        if not payload:
-            day_rows.append({
-                "day": day,
-                "counts_as_valid_day": bool(ledger.get("counts_as_valid_day")),
-                "available": False,
-                "reason": "attribution_score_missing",
-                "scores": {},
-                "weakest_observed_axis": {},
-                "trade_count": 0,
-            })
-            continue
-        day_rows.append({
-            "day": day,
-            "counts_as_valid_day": bool(ledger.get("counts_as_valid_day")),
-            "available": True,
-            "reason": "",
-            "scores": dict(payload.get("scores") or {}),
-            "weakest_observed_axis": dict(payload.get("weakest_observed_axis") or {}),
-            "trade_count": _read_json(
-                reports_root / "evaluation" / "daily" / day / "daily_scorecard.json"
-            ).get("artifact_integrity", {}).get("trade_count", 0),
-        })
+        day_rows.append(
+            _qw.score_day_row(
+                day,
+                valid=bool(ledger.get("counts_as_valid_day")),
+                payload=payload,
+                trade_count=(
+                    _read_json(reports_root / "evaluation" / "daily" / day / "daily_scorecard.json")
+                    .get("artifact_integrity", {})
+                    .get("trade_count", 0)
+                    if payload
+                    else 0
+                ),
+            )
+        )
 
     valid_rows = [row for row in day_rows if row.get("counts_as_valid_day")]
-    axis_summary: dict[str, Any] = {}
-    for key in SCORE_KEYS:
-        values: list[int] = []
-        status_counts: Counter[str] = Counter()
-        reason_counts: Counter[str] = Counter()
-        for row in valid_rows:
-            item = _mapping(_mapping(row.get("scores")).get(key))
-            status = str(item.get("status") or "MISSING")
-            status_counts[status] += 1
-            value = _score_value(row, key)
-            if value is not None:
-                values.append(value)
-            for reason in item.get("reasons") or []:
-                reason_counts[str(reason)] += 1
-        axis_summary[key] = {
-            "valid_day_count": len(valid_rows),
-            "scored_day_count": len(values),
-            "insufficient_day_count": status_counts.get("INSUFFICIENT_EVIDENCE", 0),
-            "average_score": round(sum(values) / len(values), 2) if values else None,
-            "min_score": min(values) if values else None,
-            "max_score": max(values) if values else None,
-            "status_counts": dict(status_counts),
-            "top_reasons": [
-                {"reason": reason, "count": count}
-                for reason, count in reason_counts.most_common(10)
-            ],
-        }
-
-    weakest_counts: Counter[str] = Counter()
-    for row in valid_rows:
-        weakest = str(_mapping(row.get("weakest_observed_axis")).get("name") or "")
-        if weakest:
-            weakest_counts[weakest] += 1
-
-    daily_table = []
-    for row in day_rows:
-        daily_table.append({
-            "day": row.get("day"),
-            "valid": bool(row.get("counts_as_valid_day")),
-            "available": bool(row.get("available")),
-            "trade_count": row.get("trade_count"),
-            "weakest_axis": _mapping(row.get("weakest_observed_axis")).get("name") or "",
-            **{
-                key: _score_value(row, key)
-                for key in SCORE_KEYS
-            },
-        })
-
-    scored_axis_averages = {
-        key: item.get("average_score")
-        for key, item in axis_summary.items()
-        if item.get("average_score") is not None
-    }
-    weakest_average_axis = (
-        min(scored_axis_averages.items(), key=lambda item: float(item[1]))
-        if scored_axis_averages
-        else ("", None)
-    )
+    axis_summary = _qw.axis_summary(valid_rows, SCORE_KEYS)
+    weakest_counts = _qw.weakest_axis_counts(valid_rows)
+    daily_table = _qw.score_day_table(day_rows, SCORE_KEYS)
+    weakest_average = _qw.weakest_average_axis(axis_summary)
     return {
         "schema_version": "attribution_score_window.v1",
         "evaluation_program_id": "Q13_ATTRIBUTION_SCORE_WINDOW",
@@ -154,10 +83,7 @@ def build_attribution_score_window(
         "total_trade_count_valid_days": sum(int(row.get("trade_count") or 0) for row in valid_rows),
         "axis_summary": axis_summary,
         "weakest_axis_distribution": dict(weakest_counts),
-        "weakest_axis_by_average_score": {
-            "name": weakest_average_axis[0],
-            "average_score": weakest_average_axis[1],
-        },
+        "weakest_axis_by_average_score": weakest_average,
         "daily_rows": daily_table,
         "interpretation_rule": (
             "Use valid days for aggregate conclusions. Invalid days are shown for audit "
@@ -166,71 +92,7 @@ def build_attribution_score_window(
     }
 
 
-def render_attribution_score_window(payload: Mapping[str, Any]) -> str:
-    lines = [
-        f"# Q13 Attribution Score Window - {payload.get('window_id', '')}",
-        "",
-        f"- Behavior effect: `{payload.get('behavior_effect', '')}`",
-        f"- Days: {payload.get('day_count', 0)} total / {payload.get('valid_day_count', 0)} valid",
-        f"- Available attribution days: {payload.get('available_day_count', 0)}",
-        f"- Valid-day trades: {payload.get('total_trade_count_valid_days', 0)}",
-        f"- Weakest by average score: `{_mapping(payload.get('weakest_axis_by_average_score')).get('name') or '-'}` "
-        f"({_mapping(payload.get('weakest_axis_by_average_score')).get('average_score')})",
-        "",
-        "## Axis Summary",
-        "",
-        "| Axis | Avg Score | Min | Max | Scored Days | Insufficient Days | Top Reasons |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | --- |",
-    ]
-    for key, item in _mapping(payload.get("axis_summary")).items():
-        obj = _mapping(item)
-        reasons = ", ".join(
-            f"{row.get('reason')} ({row.get('count')})"
-            for row in obj.get("top_reasons") or []
-        ) or "-"
-        lines.append(
-            f"| {key} | {obj.get('average_score')} | {obj.get('min_score')} | "
-            f"{obj.get('max_score')} | {obj.get('scored_day_count')} | "
-            f"{obj.get('insufficient_day_count')} | {reasons} |"
-        )
-    lines.extend([
-        "",
-        "## Weakest Axis Distribution",
-        "",
-    ])
-    distribution = _mapping(payload.get("weakest_axis_distribution"))
-    if distribution:
-        for key, count in sorted(distribution.items(), key=lambda item: (-int(item[1]), item[0])):
-            lines.append(f"- `{key}`: {count}")
-    else:
-        lines.append("- No valid scored days.")
-    lines.extend([
-        "",
-        "## Daily Rows",
-        "",
-        "| Day | Valid | Trades | Weakest | Selection | Scanner | Entry | Exit/Horizon | Evidence |",
-        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |",
-    ])
-    for row in payload.get("daily_rows") or []:
-        if not isinstance(row, Mapping):
-            continue
-        lines.append(
-            f"| {row.get('day')} | {row.get('valid')} | {row.get('trade_count')} | "
-            f"{row.get('weakest_axis') or '-'} | "
-            f"{row.get('selection_integrity_score')} | "
-            f"{row.get('scanner_alignment_score')} | "
-            f"{row.get('entry_timing_score')} | "
-            f"{row.get('exit_horizon_score')} | "
-            f"{row.get('evidence_quality_score')} |"
-        )
-    lines.extend([
-        "",
-        "## Interpretation Rule",
-        "",
-        f"- {payload.get('interpretation_rule', '')}",
-        "",
-    ])
-    return "\n".join(lines)
+render_attribution_score_window = _qw.render_attribution_score_window
 
 
 def write_attribution_score_window(

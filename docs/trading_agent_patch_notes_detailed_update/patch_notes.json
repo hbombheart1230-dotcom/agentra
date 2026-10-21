@@ -1,8 +1,195 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 349,
+  "entry_count": 363,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 A9 REPORTER FALLBACK CORRECTNESS AND PROVENANCE 20261021",
+      "title": "Holding-evidence fallback no longer crashes, malformed evidence degrades safely, and the broker-day flag contradiction is flagged",
+      "stage": "P1.5 A9 DEV-A source checkpoint (Issue #26); focused normal and python -O; trade-truth pct-basis repair CONTRACT_BLOCKED (v2 proposed)",
+      "types": [
+        "FIX",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "profitability_recovery_day1._resolve_holding_evidence no longer reads holding_phase_summary before assignment when only an entry/exit monitor context exists. Recorded holding evidence keeps precedence, the fallback adds a provenance label but no hold events or facts, malformed evidence (including list/dict summaries and durations and a malformed exit monitor context) reads as absent instead of aborting the diagnosis or being stringified into a claimed fact, and diagnostic rows gain monitor_context_source and holding_summary_source. trade_truth_resolver adds one additive warning for a broker-day flag with a pct but no PnL value or truth source.",
+      "details": [
+        "Group 1 fixed: the repaired path previously raised UnboundLocalError and its value was overwritten anyway. Summary precedence is now bundle, then hold payload summary, then hold-event derived text, and only then the entry/exit context label (which never changes hold_events_count or the thin-evidence flag). The FAST08 characterization that asserted the crash is replaced by deterministic expectations.",
+        "Group 2: absent snapshot, present-but-empty snapshot, confirmed hold, exit-only and entry-only context (exit preferred), malformed types (string exit/entry/execution, non-list timeline/holding_events, non-numeric hold_events_count, non-dict execution detail blocks) and corrupt or missing artifacts are exercised. Execution fields are never invented; the diagnosis is read-only (a file-tree snapshot is byte-identical before and after).",
+        "Group 3 (bounded, additive): when broker_day_authoritative is true and a pct exists but there is no PnL value, no named truth source and the pct is not a fallback, warnings gains broker_day_flag_without_pnl_value_or_truth_source. v1 schema and every existing field meaning, authority, confidence and pct basis are unchanged.",
+        "CONTRACT_BLOCKED: making that case stop reporting pct_basis=truth (or reporting authority=broker_day_flag_unbacked) is a semantic change to v1 fields consumed by report_truth_surface. Proposed v2: add pct_basis=unbacked_broker_flag with authoritative_pct=null and keep the current v1 payload behind schema_version trade_truth_resolution.v1 until consumers migrate.",
+        "Independent read-only review of the first candidate (985a82ef) returned REWORK for two real defects, fixed here: a malformed list/dict summary or duration was stringified into a recorded value, and a malformed truthy exit monitor_context blocked a valid entry context; both now read as absent, covered by reproducing tests that failed first. Checks: shadow-context 32 and trade-truth 19 focused cases plus profitability and trade-report tests, 178 passed under both normal and python -O; scratch comparison against 4384af93 over inputs outside the repaired paths: 30 comparisons equal apart from the two new row keys and the single additive warning."
+      ],
+      "impact": "No broker, order, execution, persistence or live-trade effect; recorded evidence is never overridden and no fact is invented.",
+      "sources": [
+        "libs/reporting/profitability_recovery_day1.py",
+        "libs/reporting/fast08_shadow_projection.py",
+        "libs/reporting/trade_truth_resolver.py",
+        "tests/test_p15_fast08_a_shadow_context_smoke.py",
+        "tests/test_p15_fast08_a_trade_truth_smoke.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.6 SYMBOL AND TRADE EXPLANATION READOUT 20261021",
+      "title": "A8.6 targets are pinned or already pure: three STAGE_CONTRACT_BLOCKED facades and a characterization test for trade_truth_resolver",
+      "stage": "P1.5 FAST08 A8.6 DEV-A checkpoint; test-only; symbol_read_model / trade_explain / strategy_read_model STAGE_CONTRACT_BLOCKED",
+      "types": [
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "No source file was changed in A8.6. symbol_read_model, trade_explain and strategy_read_model are facades in the closed R-6/R-7/R-9 sets whose bodies already live in facade-injected owners and are pinned by test_work_reporter_seed_migration (trade_explain also by test_work_reporter_r8_read_contracts), so they were left byte-identical. trade_truth_resolver (116 lines) is already one pure function with no I/O, so no responsibility was moved. A new characterization test pins its canonical/fill provenance semantics.",
+      "details": [
+        "STAGE_CONTRACT_BLOCKED: libs/reporting/symbol_read_model.py (R-9), libs/reporting/trade_explain.py (R-6/R-8) and libs/reporting/strategy_read_model.py (R-7). No pin, validator or test was relaxed.",
+        "trade_truth_resolver: no separable I/O or presentation exists; restructuring truth/fallback branching for line count alone was rejected as risk without benefit.",
+        "tests/test_p15_fast08_a_trade_truth_smoke.py (16 cases): empty/non-mapping facts read as fallback_mark_only, never zero; broker-day authority is high confidence only with a value or named source; pct-only observations never become truth; placeholder PnL strings are absent; fallback pct is recomputed from buy and account/monitor marks and left empty without valid prices; an account-snapshot estimate without a valid fill price is a fallback.",
+        "Flagged, not changed: with broker_day_authoritative=True and no PnL value or source, authority is unavailable while the pct keeps the truth basis; this is pinned as current behavior for review.",
+        "Also noted in A8.5: libs/reporting/post_exit_shadow_recap.py is STAGE_CONTRACT_BLOCKED (R-4/R-8 pinned owner bodies)."
+      ],
+      "impact": "No behavior, threshold, broker or persistence change; adds regression coverage for trade truth provenance.",
+      "sources": [
+        "tests/test_p15_fast08_a_trade_truth_smoke.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.5 SHADOW AND EXIT CONTEXT PROJECTIONS 20261021",
+      "title": "Profitability recovery diagnostics and market regime rail gain a pure projection helper; post-exit recap is STAGE_CONTRACT_BLOCKED",
+      "stage": "P1.5 FAST08 A8.5 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT; post_exit_shadow_recap STAGE_CONTRACT_BLOCKED",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Trade diagnostic predicates, row assembly and day audit/scorecard roll-ups, plus macro-input extraction, the unavailable payload and the Markdown renderer, move to libs/reporting/fast08_shadow_projection.py: profitability_recovery_day1 443->281, market_regime_rail_review 262->155 lines. libs/reporting/post_exit_shadow_recap.py is left byte-identical.",
+      "details": [
+        "profitability_recovery_day1: every file read, same-day linkage resolution, holding-evidence recovery, execution-detail resolution, REQUIRED_EXECUTION_FIELDS and the closed-trade / regression rules stay in the facade (predicates are shared and passed the field list); row assembly, top weakness and the audit/scorecard roll-ups move. The existing read-before-assign path in the holding-evidence monitor-context fallback is preserved and now covered by a test, not fixed.",
+        "market_regime_rail_review: the macro snapshot load, korea_index_sanity call, every regime threshold and the rail/behavior/focus branches stay in classify_market_regime_rail; input extraction (missing values read as 0.0), the unavailable payload and rendering move.",
+        "post_exit_shadow_recap: STAGE_CONTRACT_BLOCKED. Its R-4/R-8 owner bodies are facade-injected and pinned by test_work_reporter_seed_migration and the R8 read-via-callback parity test, so it was not edited and no gate was relaxed.",
+        "Checks: tests/test_p15_fast08_a_shadow_context_smoke.py 14 passed (nine regime rails, closed/loss/regression/thin-evidence rows, predicates, preserved fallback quirk, sandboxed generation, purity) plus existing market-regime/profitability/Q8/closeout tests (29 passed); scratch baseline parity 35/35."
+      ],
+      "impact": "Market-source reads, regime and exit threshold logic and trading decisions are unchanged; no broker, persistence or live action change.",
+      "sources": [
+        "libs/reporting/profitability_recovery_day1.py",
+        "libs/reporting/market_regime_rail_review.py",
+        "libs/reporting/fast08_shadow_projection.py",
+        "tests/test_p15_fast08_a_shadow_context_smoke.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.4 CUMULATIVE PERFORMANCE AND HORIZON PROJECTIONS 20261021",
+      "title": "Cumulative improvement review, horizon compliance, attribution score range and feedback effectiveness share a pure projection helper",
+      "stage": "P1.5 FAST08 A8.4 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Cross-day strategist B-minus-A deltas, rank-row lookup, horizon-compliance row/group aggregation, attribution-score range axes, feedback exposure records and the Markdown renderers move to libs/reporting/evaluation/fast08_cumulative_projection.py: cumulative_improvement_review 473->313, horizon_compliance_report 181->55, attribution_score_range 264->146, feedback_effectiveness 71->57 lines. The range report now reuses the A8.3 weakest-axis helpers.",
+      "details": [
+        "cumulative_improvement_review: artifact reads, cost bases, input assembly, _candidate_rows (every candidate status), behavior_patch_authorized and next_decision stay in the facade; the strategist weighting fold, outcome-conditioned count and renderer move.",
+        "horizon_compliance_report: promotion/exit-incident exclusions stay in the facade; per-trade rows, grouping and rendering move.",
+        "attribution_score_range: day iteration, source-artifact and trade-count discovery stay; score rows, axis summary with MISSING vs INSUFFICIENT vs MISSING_SCORE statuses, day table and renderer move. Missing scores stay None, never 0.",
+        "feedback_effectiveness: decision_class, causal_claim_allowed=False and the paired-control requirement stay in the facade; exposure record construction moves. No causal attribution or adoption is invented.",
+        "Checks: tests/test_p15_fast08_a_cumulative_smoke.py 7 passed plus existing cumulative/horizon/score/Q9 tests (62 passed); scratch baseline parity 23/23."
+      ],
+      "impact": "Historical comparators, chronology and statuses unchanged; no forward-validity claim, policy promotion, trading or broker change.",
+      "sources": [
+        "libs/reporting/evaluation/cumulative_improvement_review.py",
+        "libs/reporting/evaluation/horizon_compliance_report.py",
+        "libs/reporting/evaluation/attribution_score_range.py",
+        "libs/reporting/evaluation/feedback_effectiveness.py",
+        "libs/reporting/evaluation/fast08_cumulative_projection.py",
+        "tests/test_p15_fast08_a_cumulative_smoke.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.3 Q13 Q14 Q16 AND COST COMPARISON PROJECTIONS 20261021",
+      "title": "Q13/Q14 validation, Q16/Q17 review, cost-basis comparison and attribution score window share a pure projection helper",
+      "stage": "P1.5 FAST08 A8.3 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Daily Q13/Q14/horizon row projection, root-cause totals, Q13 axis summaries, Q16/Q17 cohort metric bundles, forward integrity, cost-basis top-K comparison rows and the Markdown renderers move to libs/reporting/evaluation/fast08_qwindow_projection.py: q13_q14_validation 328->196, q16_proxy_rejection_review 587->316, cost_basis_comparison 236->159, attribution_score_window 256->118 lines.",
+      "details": [
+        "q13_q14_validation: REQUIRED_VALIDATION_DAYS, missing-evidence ratios, GO/NO_GO/IN_PROGRESS decision and reasons, artifact reads and writes stay in the facade; row projection, totals and the renderer move. The Exit Horizon comparison (against an actionable set that includes itself) is preserved exactly as before.",
+        "q16_proxy_rejection_review: Q16_START/CLOSE days, minimum samples/days, candidate classes (_candidate_class, _q17_candidate_class), the positive-day rule, _q16_decision, the frozen RETAIN authority and shadow row loading stay in the facade; metric bundles, forward-integrity day checks, cohort horizons, the Q17 block and the renderer move.",
+        "cost_basis_comparison: fee/tax constants, build_evaluation_cost_bases and forward candle loading stay; top-K comparison rows and rendering move. No cost assumption changes.",
+        "attribution_score_window: freeze ledger and artifact reads stay; axis summaries, weakest-axis counts and rendering move. INSUFFICIENT_EVIDENCE and unparsable scores stay None and never read as 0.",
+        "Checks: tests/test_p15_fast08_a_qwindow_smoke.py 11 passed plus existing Q13/Q14/Q16/cost-basis/score/Q9/cumulative tests (41 passed); scratch baseline parity 32/32."
+      ],
+      "impact": "Immutable Q-window thresholds, proxy-rejection denominators, fees and coverage facts unchanged; no trading, broker or policy change.",
+      "sources": [
+        "libs/reporting/evaluation/q13_q14_validation.py",
+        "libs/reporting/evaluation/q16_proxy_rejection_review.py",
+        "libs/reporting/evaluation/cost_basis_comparison.py",
+        "libs/reporting/evaluation/attribution_score_window.py",
+        "libs/reporting/evaluation/fast08_qwindow_projection.py",
+        "tests/test_p15_fast08_a_qwindow_smoke.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.2 SCANNER AND SELECTION ATTRIBUTION PROJECTIONS 20261021",
+      "title": "Q14 root cause, selection authority, Scanner quality and episode review share a pure attribution read-model",
+      "stage": "P1.5 FAST08 A8.2 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Selection-path symbol deltas, Q14 root-cause rows and the cause summary (previously duplicated between the daily and range reports), episode de-duplication, score-component correlation, top-K/source forward performance and renderers move to libs/reporting/evaluation/fast08_scanner_attribution.py: scanner_alignment_root_cause 521->344, episode_scanner_review 358->151, scanner_quality 216->137, selection_authority_audit 145->48 lines.",
+      "details": [
+        "scanner_alignment_root_cause: classify_scanner_alignment_root_cause, diagnostic kinds, OUTCOME_CONDITIONED/EVIDENCE_GAP sets, patch candidates and artifact reads stay in the facade; the daily and range reports now build one cause summary and largest-cause block through the same helper.",
+        "selection_authority_audit: duplicate/defect exclusions stay in the facade; symbol path deltas and change counters move unchanged (authority facts are not recomputed).",
+        "scanner_quality / episode_scanner_review: forward attachment and pre-Strategist extraction stay; top-K/source/episode/component math moves, while the READY (20 episodes, 70% coverage) and re-entry behavior-candidate thresholds stay in the facade. No Scanner rank or selection policy is touched.",
+        "Checks: tests/test_p15_fast08_a_scanner_attribution_smoke.py 7 passed plus existing Q14/Q9 scanner/full-chain/cumulative tests (40 passed); scratch baseline parity 20/20."
+      ],
+      "impact": "Root-cause labels, rank buckets, cost drag and authority facts unchanged; no trading or Scanner behavior change.",
+      "sources": [
+        "libs/reporting/evaluation/scanner_alignment_root_cause.py",
+        "libs/reporting/evaluation/episode_scanner_review.py",
+        "libs/reporting/evaluation/scanner_quality.py",
+        "libs/reporting/evaluation/selection_authority_audit.py",
+        "libs/reporting/evaluation/fast08_scanner_attribution.py",
+        "tests/test_p15_fast08_a_scanner_attribution_smoke.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.1 EVIDENCE INVENTORY AND TRADE TRUTH PROJECTIONS 20261021",
+      "title": "Q9 evidence inventory, day validity, trade evaluation and historical prior gain a pure evidence-classification helper",
+      "stage": "P1.5 FAST08 A8.1 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Window and forward-outcome classification, session-coverage derivation, inventory coverage, day-validity check readout, trade exit-quality evidence and the historical-prior summary/markdown move to libs/reporting/evaluation/fast08_evidence_inventory.py: artifact_inventory 426->210, day_validity 217->171, trade_evaluator 126->111, historical_prior 313->157 lines.",
+      "details": [
+        "artifact_inventory: windows file and shadow payloads are still streamed and read by the facade; Q9WindowTally classifies synthetic / post-session / trusted windows, forward_outcome_tally keeps observed, pending, unavailable and invalid distinct, and session_coverage derives the post-close override from the closeout proof.",
+        "day_validity: blocker/warning rules, MIN_* thresholds, PREOPEN/IN_PROGRESS/VALID/INVALID status and the clock stay in the facade; signal extraction and the checks block move.",
+        "trade_evaluator: eligibility, result labels, watch items and horizon evaluation stay; observed post-exit checkpoints and the exit-quality block move.",
+        "historical_prior: trade discovery, read-model/evaluation builds, error capture, file writes and the wall clock stay; summary aggregation and markdown move.",
+        "Checks: tests/test_p15_fast08_a_evidence_inventory_smoke.py 10 passed plus existing closeout/day-validity/Q9/start-gate/historical-prior tests; scratch baseline parity 48/48. Pre-existing UEF5 pin-hash failures (14 failed, 2 errors) reproduce identically on clean f1f6af6c and are unrelated."
+      ],
+      "impact": "Unknown vs invalid vs no-data, timestamps and authoritative classifications unchanged; no threshold, trading or broker change.",
+      "sources": [
+        "libs/reporting/evaluation/artifact_inventory.py",
+        "libs/reporting/evaluation/day_validity.py",
+        "libs/reporting/evaluation/trade_evaluator.py",
+        "libs/reporting/evaluation/historical_prior.py",
+        "libs/reporting/evaluation/fast08_evidence_inventory.py",
+        "tests/test_p15_fast08_a_evidence_inventory_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST07-A7.3 FULL-CHAIN REPORTER UTILITY PROJECTIONS 20261021",
@@ -9218,6 +9405,164 @@
         "tests/test_p15_operator_brief_folder_parity.py",
         "tests/test_p15_operator_brief_folder_mutations.py",
         "docs/ENGINEERING_DELIVERY_POLICY.md"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.1 20261021",
+      "title": "Normalize observed source evidence",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Canonical priority preserved; nested empty payloads no longer override real facts, false/zero remain evidence, directory paths are not artifacts. Share pure boolean/finite-number/execution/link presentation, add saved-brief observation without LLM parsing changes.",
+      "details": [
+        "Canonical priority preserved; nested empty payloads no longer override real facts, false/zero remain evidence, directory paths are not artifacts. Share pure boolean/finite-number/execution/link presentation, add saved-brief observation without LLM parsing changes.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.2 20261021",
+      "title": "Drive dashboard and run index from observed view models",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Read-only view context distinguishes coerced zero from verified source presence, shares execution/guard classification, preserves existing loaders and query/link schema. No source path is treated as proof that a file exists.",
+      "details": [
+        "Read-only view context distinguishes coerced zero from verified source presence, shares execution/guard classification, preserves existing loaders and query/link schema. No source path is treated as proof that a file exists.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.3 20261021",
+      "title": "Unify detail provenance and safe artifact links",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Shared escaped macro shows source class, actual artifact and guard/execution evidence. Only internal run/report URL families are clickable; no operation or permission is added.",
+      "details": [
+        "Shared escaped macro shows source class, actual artifact and guard/execution evidence. Only internal run/report URL families are clickable; no operation or permission is added.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.4 20261021",
+      "title": "Organize saved brief evidence and navigation",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Pure saved-brief state and shared navigation macro make missing/stale/fallback evidence explicit, keyboard/screen-reader context preserved. Saved decisions do not claim execution success.",
+      "details": [
+        "Pure saved-brief state and shared navigation macro make missing/stale/fallback evidence explicit, keyboard/screen-reader context preserved. Saved decisions do not claim execution success.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.5 20261021",
+      "title": "Harden existing GET-only rendering",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Existing six GET routes retain loader order and source authority; controlled rendering handles errors and invalid/missing identifiers with read-only diagnostics. No POST/action/control endpoint introduced.",
+      "details": [
+        "Existing six GET routes retain loader order and source authority; controlled rendering handles errors and invalid/missing identifiers with read-only diagnostics. No POST/action/control endpoint introduced.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.6 20261021",
+      "title": "Finish responsive evidence readability",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Improve compact screen layout, trace paths and source-confidence labels with integrated normal Jinja/GET smoke. Pixel/mobile-device acceptance, full pytest and CI remain deferred.",
+      "details": [
+        "Improve compact screen layout, trace paths and source-confidence labels with integrated normal Jinja/GET smoke. Pixel/mobile-device acceptance, full pytest and CI remain deferred.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 B9 SOURCE TRUST REPAIR 20261021",
+      "title": "Repair Operator UI evidence trust and source error boundaries",
+      "stage": "Developer candidate; independent review and integration pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Restore recorded Decision / intent and Reader source, preserving zero/False and escaping. Require confirmed availability plus a safe local link for OBSERVED. Distinguish saved brief content from metadata and derived sections. Translate recognized filesystem and JSON failures only at six source-loader boundaries; rendering and programming errors propagate.",
+      "details": [
+        "Restore recorded Decision / intent and Reader source, preserving zero/False and escaping. Require confirmed availability plus a safe local link for OBSERVED. Distinguish saved brief content from metadata and derived sections. Translate recognized filesystem and JSON failures only at six source-loader boundaries; rendering and programming errors propagate.",
+        "Issue #27 exact writable scope; no frozen Owner, safety, route permission, trading or CI changes. Focused normal/optimized results and any scope blockers are reported separately.",
+        "BLOCKED_SCOPE: unchanged tests/test_p15_fast08_b_brief.py expects SAVED for status-only raw payload plus derived sections. B9 correctly labels DERIVED; this test file is outside Issue #27 writable paths. No oracle edit or waiver applied."
+      ],
+      "impact": "Read-only presentation and error classification only; no integration or release claim.",
+      "sources": [
+        "apps/operator_ui/fast08_detail_view.py",
+        "apps/operator_ui/main.py",
+        "apps/operator_ui/templates/_fast08_evidence.html",
+        "tests/test_p15_fast08_b_provenance.py",
+        "tests/test_p15_fast08_b_service.py"
       ]
     }
   ]

@@ -5,30 +5,12 @@ from pathlib import Path
 from typing import Any, Dict, Mapping
 
 from libs.market.korea_index_sanity import korea_index_sanity
+from libs.reporting import fast08_shadow_projection as _sp
 
 
-def _to_float(value: Any, default: float = 0.0) -> float:
-    try:
-        if value in (None, ""):
-            return float(default)
-        return float(value)
-    except Exception:
-        return float(default)
-
-
-def _indicator(snapshot: Mapping[str, Any], key: str) -> Mapping[str, Any]:
-    macro = snapshot.get("macro_indicators") if isinstance(snapshot.get("macro_indicators"), Mapping) else {}
-    indicators = macro.get("indicators") if isinstance(macro.get("indicators"), Mapping) else {}
-    row = indicators.get(key) if isinstance(indicators.get(key), Mapping) else {}
-    return row
-
-
-def _change_pct(snapshot: Mapping[str, Any], key: str) -> float:
-    index_moves = snapshot.get("index_moves") if isinstance(snapshot.get("index_moves"), Mapping) else {}
-    move_key = f"{key}_pct"
-    if move_key in index_moves:
-        return _to_float(index_moves.get(move_key), 0.0)
-    return _to_float(_indicator(snapshot, key).get("change_pct"), 0.0)
+_to_float = _sp.to_float
+_indicator = _sp.indicator
+_change_pct = _sp.change_pct
 
 
 def load_latest_macro_snapshot(day: str, *, root: Path = Path("data/logs/macro_indicators")) -> Dict[str, Any]:
@@ -42,43 +24,11 @@ def load_latest_macro_snapshot(day: str, *, root: Path = Path("data/logs/macro_i
 
 def classify_market_regime_rail(snapshot: Mapping[str, Any]) -> Dict[str, Any]:
     if not bool(snapshot.get("available", True)) and not snapshot.get("schema_version"):
-        return {
-            "schema_version": "market_regime_rail_observation.v1",
-            "behavior_effect": "evaluation_only",
-            "available": False,
-            "rail_id": "not_available",
-            "rail_confidence": "none",
-            "rationale": "macro snapshot unavailable",
-            "market_inputs": {},
-            "expected_tactical_behavior": [],
-            "q8_review_focus": [],
-        }
+        return _sp.unavailable_rail()
 
     korea = snapshot.get("korea_indices") if isinstance(snapshot.get("korea_indices"), Mapping) else {}
     sanity = korea_index_sanity(korea) if korea else {"status": "ok", "warning_count": 0, "warnings": [], "extreme_move_requires_confirmation": False}
-    macro_moves = snapshot.get("macro_moves") if isinstance(snapshot.get("macro_moves"), Mapping) else {}
-    global_sentiment = snapshot.get("global_sentiment") if isinstance(snapshot.get("global_sentiment"), Mapping) else {}
-
-    inputs = {
-        "kospi_pct": _change_pct(snapshot, "kospi"),
-        "kosdaq_pct": _change_pct(snapshot, "kosdaq"),
-        "kospi200_pct": _change_pct(snapshot, "kospi200"),
-        "krx_night_futures_pct": _change_pct(snapshot, "krx_night_futures"),
-        "breadth": _to_float(korea.get("breadth"), 0.0),
-        "nasdaq_pct": _change_pct(snapshot, "nasdaq"),
-        "sp500_pct": _change_pct(snapshot, "sp500"),
-        "dxy_pct": _to_float(macro_moves.get("dxy_pct"), _to_float(_indicator(snapshot, "dxy").get("change_pct"), 0.0)),
-        "usdkrw_pct": _to_float(_indicator(snapshot, "usdkrw").get("change_pct"), 0.0),
-        "vix_level": _to_float(macro_moves.get("vix_level"), 0.0),
-        "vix_pct": _to_float(macro_moves.get("vix_pct"), 0.0),
-        "us_10y_delta": _to_float(_indicator(snapshot, "us_10y_yield").get("delta"), 0.0),
-        "global_sentiment_score": _to_float(global_sentiment.get("score"), 0.0),
-    }
-    night = snapshot.get("krx_night_futures") if isinstance(snapshot.get("krx_night_futures"), Mapping) else {}
-    inputs["krx_night_futures_status"] = str(night.get("status") or _indicator(snapshot, "krx_night_futures").get("status") or "")
-    inputs["krx_night_futures_pressure"] = str(
-        night.get("direction_pressure") or _indicator(snapshot, "krx_night_futures").get("direction_pressure") or ""
-    )
+    inputs = _sp.market_inputs(snapshot)
 
     korea_weak = inputs["kosdaq_pct"] <= -1.0 or inputs["kospi_pct"] <= -0.7 or inputs["breadth"] <= -0.35
     night_gap_down = inputs["krx_night_futures_pct"] <= -1.0
@@ -182,64 +132,7 @@ def classify_market_regime_rail(snapshot: Mapping[str, Any]) -> Dict[str, Any]:
     }
 
 
-def render_market_regime_rail_markdown(rail: Mapping[str, Any], *, day: str) -> str:
-    inputs = rail.get("market_inputs") if isinstance(rail.get("market_inputs"), Mapping) else {}
-    lines = [
-        f"# Market Regime Rail Review ({day})",
-        "",
-        "This report is read-only evaluation output. It does not change trading behavior.",
-        "",
-        "## Rail",
-        "",
-        f"- rail_id: `{rail.get('rail_id') or 'not_available'}`",
-        f"- confidence: `{rail.get('rail_confidence') or 'none'}`",
-        f"- behavior_effect: `{rail.get('behavior_effect') or 'evaluation_only'}`",
-        f"- source: `{rail.get('source') or '-'}`",
-        f"- rationale: {rail.get('rationale') or '-'}",
-        "",
-        "## Market Inputs",
-        "",
-    ]
-    for key in (
-        "kospi_pct",
-        "kosdaq_pct",
-        "kospi200_pct",
-        "krx_night_futures_pct",
-        "breadth",
-        "nasdaq_pct",
-        "sp500_pct",
-        "usdkrw_pct",
-        "dxy_pct",
-        "vix_level",
-        "vix_pct",
-        "global_sentiment_score",
-    ):
-        lines.append(f"- {key}: **{float(inputs.get(key) or 0.0):.4f}**")
-    if inputs.get("krx_night_futures_status") or inputs.get("krx_night_futures_pressure"):
-        lines.append(f"- krx_night_futures_status: `{inputs.get('krx_night_futures_status') or '-'}`")
-        lines.append(f"- krx_night_futures_pressure: `{inputs.get('krx_night_futures_pressure') or '-'}`")
-    sanity = rail.get("market_input_sanity") if isinstance(rail.get("market_input_sanity"), Mapping) else {}
-    warnings = sanity.get("warnings") if isinstance(sanity.get("warnings"), list) else []
-    if warnings:
-        lines += ["", "## Market Input Sanity", ""]
-        lines.append(f"- status: `{sanity.get('status') or 'warning'}`")
-        lines.append(f"- extreme_move_requires_confirmation: `{bool(sanity.get('extreme_move_requires_confirmation'))}`")
-        for row in warnings[:8]:
-            if not isinstance(row, Mapping):
-                continue
-            lines.append(
-                "- warning: "
-                f"`{row.get('code')}` {row.get('index') or '-'} "
-                f"change_pct={float(row.get('change_pct') or 0.0):.4f} "
-                f"severity=`{row.get('severity') or '-'}`"
-            )
-    lines += ["", "## Expected Tactical Behavior", ""]
-    for item in list(rail.get("expected_tactical_behavior") or []):
-        lines.append(f"- {item}")
-    lines += ["", "## Q8 Review Focus", ""]
-    for item in list(rail.get("q8_review_focus") or []):
-        lines.append(f"- `{item}`")
-    return "\n".join(lines).rstrip() + "\n"
+render_market_regime_rail_markdown = _sp.render_market_regime_rail_markdown
 
 
 def generate_market_regime_rail_review(*, reports_root: Path, day: str) -> Dict[str, Any]:
