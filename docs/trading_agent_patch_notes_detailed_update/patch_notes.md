@@ -4002,3 +4002,17 @@ Sources: `graphs/nodes/build_decision_context.py`, `graphs/nodes/decision_contex
 - Only approved folder/new tests/paired notes changed, prior324 notes preserved and own branch325. GPT serially reconciles newer integration notes and new exact source-stage admission. Linux, full repository pytest, hosted composed CI, production frozen/real-data parity, UI build/deploy NOT_RUN; no main, Docker, live LLM or broker activity.
 
 Sources: `apps/operator_ui/data_access_brief_input_projection.py`, `apps/operator_ui/data_access_brief_market_sections.py`, `apps/operator_ui/data_access_brief_sections_projection.py`, `apps/operator_ui/data_access_brief_evidence_projection_p15.py`, `apps/operator_ui/data_access_brief_presentation_projection_p15.py`, `tests/test_p15_operator_brief_folder_parity.py`, `tests/test_p15_operator_brief_folder_mutations.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+## 2026-10-21 - P1.5 FAST06 B OBSERVED STATUS FACTS 20261021
+**Stage:** FAST_DEV source candidate; frozen projection groups blocked; integration acceptance deferred. **Tags:** FIX / REFACTOR / TEST
+
+- BASE d9e77a3f39e435edd10d09498cc0ade2d1232585 on existing DEV-B branch. FAST06 Issue20 comment6305775426 authorizes only named UI paths, focused smoke and fresh direct peer CLI; no new branch, shared contract, CI or old-PR revalidation.
+- STAGE_CONTRACT_BLOCKED: input_sections is a T4-D Owner and frozen-file fixture; facts and render_fallback are Second-pass ledger Owners, and render_summary_derivation is a T4-D Owner. All four source files remain unchanged. Canonical/compaction/sanitation and BATCH05 B1-B3 also remain exact BASE; no claim that all five approved modules were modified.
+- Implement available status boundary: only JSON boolean/0/1 and true/false text constitute observed boolean evidence; unknown text and missing mismatch facts cannot yield aligned or reconciled badges. Reader errors take display precedence, actual guard reasons remain visible, invalid/negative position counts render as zero. Empty and valid-card JSON keys/order unchanged; duplicate empty-return schema removed.
+- AI diagnostics no longer treat false text or pending generation as an attempted call. Missing story-input evidence is false rather than fabricated availability. The actual linked-artifact observation controls both output-availability flags despite stale diagnostic flags; existing report status inference, explicit reason codes and next-step text are retained. No LLM request, read/write, broker or control endpoint is added.
+- Focused normal smoke18PASS, exit0:16 new synthetic display cases plus two existing facade/status-page tests. Includes empty/unknown/string false, actual reconciliation, stale flags, denial/NOOP Korean text, schema/key order and valid immutable-BASE equality. In-memory no-I/O/network/process test passes. Patchnote sync and fresh exact-SHA peer results are recorded in Issue20; no invented production golden.
+- FAST_DEFERRED: optimized mode, full repository pytest, historical R3/T4/admission suites, hosted CI, Linux, UI build and production real-data parity. Existing B4 obstruction and stage admission debt stay open. Old HOTFIX T3 missing-object defect was already fixed separately; no repeated CI or contract repair in FAST06.
+
+Sources: `apps/operator_ui/data_access_status.py`, `tests/test_p15_operator_brief_status_fast_smoke.py`.
+
+FAST06 status: Implemented focused source change; peer verification and integration pending.
