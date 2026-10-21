@@ -1,8 +1,36 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 331,
+  "entry_count": 332,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.1 EVIDENCE INVENTORY AND TRADE TRUTH PROJECTIONS 20261021",
+      "title": "Q9 evidence inventory, day validity, trade evaluation and historical prior gain a pure evidence-classification helper",
+      "stage": "P1.5 FAST08 A8.1 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Window and forward-outcome classification, session-coverage derivation, inventory coverage, day-validity check readout, trade exit-quality evidence and the historical-prior summary/markdown move to libs/reporting/evaluation/fast08_evidence_inventory.py: artifact_inventory 426->210, day_validity 217->171, trade_evaluator 126->111, historical_prior 313->157 lines.",
+      "details": [
+        "artifact_inventory: windows file and shadow payloads are still streamed and read by the facade; Q9WindowTally classifies synthetic / post-session / trusted windows, forward_outcome_tally keeps observed, pending, unavailable and invalid distinct, and session_coverage derives the post-close override from the closeout proof.",
+        "day_validity: blocker/warning rules, MIN_* thresholds, PREOPEN/IN_PROGRESS/VALID/INVALID status and the clock stay in the facade; signal extraction and the checks block move.",
+        "trade_evaluator: eligibility, result labels, watch items and horizon evaluation stay; observed post-exit checkpoints and the exit-quality block move.",
+        "historical_prior: trade discovery, read-model/evaluation builds, error capture, file writes and the wall clock stay; summary aggregation and markdown move.",
+        "Checks: tests/test_p15_fast08_a_evidence_inventory_smoke.py 10 passed plus existing closeout/day-validity/Q9/start-gate/historical-prior tests; scratch baseline parity 48/48. Pre-existing UEF5 pin-hash failures (14 failed, 2 errors) reproduce identically on clean f1f6af6c and are unrelated."
+      ],
+      "impact": "Unknown vs invalid vs no-data, timestamps and authoritative classifications unchanged; no threshold, trading or broker change.",
+      "sources": [
+        "libs/reporting/evaluation/artifact_inventory.py",
+        "libs/reporting/evaluation/day_validity.py",
+        "libs/reporting/evaluation/trade_evaluator.py",
+        "libs/reporting/evaluation/historical_prior.py",
+        "libs/reporting/evaluation/fast08_evidence_inventory.py",
+        "tests/test_p15_fast08_a_evidence_inventory_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST07-A7.3 FULL-CHAIN REPORTER UTILITY PROJECTIONS 20261021",

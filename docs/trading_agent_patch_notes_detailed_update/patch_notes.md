@@ -1,5 +1,14 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST08-A8.1 EVIDENCE INVENTORY AND TRADE TRUTH PROJECTIONS 20261021
+**Stage:** P1.5 FAST08 A8.1 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- Q9 window·forward outcome 분류, 세션 커버리지 계산, inventory 커버리지, day validity 점검표, 청산 품질 증거, historical prior 요약·렌더를 `fast08_evidence_inventory.py`로 옮겼습니다. 줄 수: artifact_inventory 426→210, day_validity 217→171, trade_evaluator 126→111, historical_prior 313→157.
+- 파일 스트리밍·읽기, forward 부착, 시계, validity 판정(blocker·임계값·상태), 평가 eligibility는 원래 모듈에 남겼습니다. pending/unavailable/invalid 구분은 그대로입니다.
+- 검증: 신규 smoke 10건과 기존 관련 테스트 통과, 동등성 48/48. UEF5 고정 해시 실패(14건, 오류 2건)는 변경 전 `f1f6af6c`에서도 동일하게 재현되는 기존 문제입니다.
+
+Sources: `libs/reporting/evaluation/artifact_inventory.py`, `libs/reporting/evaluation/day_validity.py`, `libs/reporting/evaluation/trade_evaluator.py`, `libs/reporting/evaluation/historical_prior.py`, `libs/reporting/evaluation/fast08_evidence_inventory.py`, `tests/test_p15_fast08_a_evidence_inventory_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST07-A7.3 FULL-CHAIN REPORTER UTILITY PROJECTIONS 20261021
 **Stage:** P1.5 FAST07 A7.3 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 
