@@ -1,3 +1,4 @@
+import errno
 import json
 import pytest
 from fastapi.routing import APIRoute
@@ -21,7 +22,7 @@ def test_missing_ids_remain_404_not_fake_empty_success(monkeypatch):
         assert c.get(path).status_code==404
 
 
-@pytest.mark.parametrize('error', [PermissionError('secret/source/path'),json.JSONDecodeError('sensitive corruption','{}',1)])
+@pytest.mark.parametrize('error', [PermissionError(errno.EACCES, 'secret/source/path'),json.JSONDecodeError('sensitive corruption','{}',1)])
 def test_known_source_read_errors_are_explicit_and_sanitized(monkeypatch,error):
     c=client_for(monkeypatch)
     def fail(*args,**kwargs):raise error
@@ -51,3 +52,46 @@ def test_no_new_action_routes_or_method_permissions(monkeypatch):
     monkeypatch.setattr(ui,'load_overview',forbidden)
     for method in ['post','put','patch','delete']:
         assert getattr(c,method)('/').status_code==405
+
+
+@pytest.mark.parametrize('name,path', [
+    ('load_overview','/'), ('load_recent_runs','/runs'), ('load_run_detail','/runs/R1'),
+    ('load_trade_report_detail','/reports/trade/T1'),
+    ('load_operator_brief_detail','/reports/trade/T1/brief'), ('load_health','/healthz')])
+@pytest.mark.parametrize('corrupt', [False, True])
+def test_actual_source_read_or_parse_failure_on_each_loader(monkeypatch, tmp_path, name, path, corrupt):
+    c = client_for(monkeypatch)
+    source = tmp_path / 'source.json'
+    if corrupt:
+        source.write_text('{broken', encoding='utf-8')
+    def read(*args, **kwargs):
+        return json.loads(source.read_text(encoding='utf-8'))
+    monkeypatch.setattr(ui, name, read)
+    response = c.get(path)
+    assert response.status_code == 503
+    assert response.json() == {'detail': 'Read-only source temporarily unavailable.'}
+    assert str(tmp_path) not in response.text
+    assert response.headers['cache-control'] == 'no-store'
+    assert response.headers['x-content-type-options'] == 'nosniff'
+
+
+@pytest.mark.parametrize('error', [TypeError('program defect'), ValueError('program defect'),
+    OSError('no filesystem errno'), OSError(errno.EINVAL, 'invalid programming argument')])
+def test_programming_errors_are_not_source_unavailability(monkeypatch, error):
+    c = client_for(monkeypatch)
+    def fail(*args, **kwargs):
+        raise error
+    monkeypatch.setattr(ui, 'load_overview', fail)
+    with pytest.raises(type(error), match=str(error).replace('[', r'\[').replace(']', r'\]')):
+        c.get('/')
+
+
+@pytest.mark.parametrize('error', [OSError(errno.EACCES, 'template defect'),
+    json.JSONDecodeError('template defect', '{}', 1)])
+def test_rendering_errors_are_never_reclassified(monkeypatch, error):
+    c = client_for(monkeypatch)
+    def fail(*args, **kwargs):
+        raise error
+    monkeypatch.setattr(ui.Jinja2Templates, 'TemplateResponse', fail)
+    with pytest.raises(type(error)):
+        c.get('/')

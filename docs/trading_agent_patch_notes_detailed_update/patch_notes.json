@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 336,
+  "entry_count": 337,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8843,6 +8843,32 @@
       "sources": [
         "apps/operator_ui/",
         "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 B9 SOURCE TRUST REPAIR 20261021",
+      "title": "Repair Operator UI evidence trust and source error boundaries",
+      "stage": "Developer candidate; independent review and integration pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Restore recorded Decision / intent and Reader source, preserving zero/False and escaping. Require confirmed availability plus a safe local link for OBSERVED. Distinguish saved brief content from metadata and derived sections. Translate recognized filesystem and JSON failures only at six source-loader boundaries; rendering and programming errors propagate.",
+      "details": [
+        "Restore recorded Decision / intent and Reader source, preserving zero/False and escaping. Require confirmed availability plus a safe local link for OBSERVED. Distinguish saved brief content from metadata and derived sections. Translate recognized filesystem and JSON failures only at six source-loader boundaries; rendering and programming errors propagate.",
+        "Issue #27 exact writable scope; no frozen Owner, safety, route permission, trading or CI changes. Focused normal/optimized results and any scope blockers are reported separately.",
+        "BLOCKED_SCOPE: unchanged tests/test_p15_fast08_b_brief.py expects SAVED for status-only raw payload plus derived sections. B9 correctly labels DERIVED; this test file is outside Issue #27 writable paths. No oracle edit or waiver applied."
+      ],
+      "impact": "Read-only presentation and error classification only; no integration or release claim.",
+      "sources": [
+        "apps/operator_ui/fast08_detail_view.py",
+        "apps/operator_ui/main.py",
+        "apps/operator_ui/templates/_fast08_evidence.html",
+        "tests/test_p15_fast08_b_provenance.py",
+        "tests/test_p15_fast08_b_service.py"
       ]
     }
   ]

@@ -11,6 +11,8 @@
     <div><dt>Run trace</dt><dd>{{ view.trace or "not captured" }}</dd></div>
     <div><dt>Actual linked AI artifact</dt><dd data-artifact-state="{{ view.artifact.state }}">{{ view.artifact.label }}</dd></div>
     {% if view.execution %}
+    <div><dt>Decision / intent</dt><dd>{{ view.decision_intent if view.decision_intent is not none and view.decision_intent != "" else "not captured" }}</dd></div>
+    <div><dt>Reader source</dt><dd>{{ view.reader_source if view.reader_source is not none and view.reader_source != "" else "not captured" }}</dd></div>
     <div><dt>Execution observation</dt><dd><span class="status-badge status-badge--{{ view.execution.tone }}" data-execution-state="{{ view.execution.state }}">{{ view.execution.state }}</span> {{ view.execution.action or "UNKNOWN" }} / {{ view.execution.raw_status or "not captured" }}</dd></div>
     <div><dt>Guard reason</dt><dd>{{ view.execution.reason or "not captured" }}</dd></div>
     {% endif %}
