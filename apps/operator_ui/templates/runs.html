@@ -118,16 +118,10 @@
         </td>
         <td>{{ row.guard_reason or "-" }}</td>
         <td>
-          {% set action = (row.execution_action or "") | upper %}
-          {% set execution = (row.execution_status or "") | lower %}
-          {% if execution in ["denied", "blocked", "guarded"] %}{% set state, tone = "GUARDED", "warn" %}
-          {% elif execution in ["failed", "error", "rejected", "cancelled"] %}{% set state, tone = "FAILED", "critical" %}
-          {% elif action in ["NOOP", "WAIT", "HOLD"] %}{% set state, tone = "NO_EXECUTION", "neutral" %}
-          {% elif execution in ["pending", "accepted", "submitted", "partially_filled"] %}{% set state, tone = "PENDING", "warn" %}
-          {% elif action in ["BUY", "SELL"] and execution in ["ok", "success", "filled", "executed", "completed"] %}{% set state, tone = "SUCCESS", "ok" %}
-          {% else %}{% set state, tone = ("UNKNOWN" if action or execution else "NO_DATA"), "neutral" %}{% endif %}
-          <span class="status-badge status-badge--{{ tone }}" data-execution-state="{{ state }}">{{ state }}</span>
-          <div class="subtle-meta">{{ action or "-" }} / {{ row.execution_status or "not captured" }}</div>
+          {% set execution_view = ui_execution(row.execution_action|default(none), row.execution_status|default(none), row.supervisor_allowed|default(none), row.guard_reason|default("")) %}
+          <span class="status-badge status-badge--{{ execution_view.tone }}" data-execution-state="{{ execution_view.state }}">{{ execution_view.state }}</span>
+          <div class="subtle-meta">{{ execution_view.action or "-" }} / {{ execution_view.raw_status or "not captured" }}</div>
+          {% if execution_view.reason %}<div class="subtle-meta">{{ execution_view.reason }}</div>{% endif %}
         </td>
       </tr>
       {% else %}

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 331,
+  "entry_count": 332,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8727,6 +8727,28 @@
       "summary": "Canonical priority preserved; nested empty payloads no longer override real facts, false/zero remain evidence, directory paths are not artifacts. Share pure boolean/finite-number/execution/link presentation, add saved-brief observation without LLM parsing changes.",
       "details": [
         "Canonical priority preserved; nested empty payloads no longer override real facts, false/zero remain evidence, directory paths are not artifacts. Share pure boolean/finite-number/execution/link presentation, add saved-brief observation without LLM parsing changes.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.2 20261021",
+      "title": "Drive dashboard and run index from observed view models",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Read-only view context distinguishes coerced zero from verified source presence, shares execution/guard classification, preserves existing loaders and query/link schema. No source path is treated as proof that a file exists.",
+      "details": [
+        "Read-only view context distinguishes coerced zero from verified source presence, shares execution/guard classification, preserves existing loaders and query/link schema. No source path is treated as proof that a file exists.",
         "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
       ],
       "impact": "Read-only UI/service development only; not integrated or released.",
