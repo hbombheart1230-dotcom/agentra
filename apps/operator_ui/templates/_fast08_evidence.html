@@ -1,0 +1,23 @@
+{% macro observed_link(value, label, missing="Link unavailable or unsafe") -%}
+{% set target = ui_link(value) %}
+{% if target %}<a class="link-action" href="{{ target }}">{{ label }}</a>{% else %}<span class="subtle-meta">{{ missing }}</span>{% endif %}
+{%- endmacro %}
+
+{% macro evidence_panel(view, title) -%}
+<section class="card observation-context" aria-label="{{ title }}">
+  <h2>{{ title }}</h2>
+  <p class="subtle-meta">{{ view.notice }}</p>
+  <dl class="provenance-grid">
+    <div><dt>Run trace</dt><dd>{{ view.trace or "not captured" }}</dd></div>
+    <div><dt>Actual linked AI artifact</dt><dd data-artifact-state="{{ view.artifact.state }}">{{ view.artifact.label }}</dd></div>
+    {% if view.execution %}
+    <div><dt>Execution observation</dt><dd><span class="status-badge status-badge--{{ view.execution.tone }}" data-execution-state="{{ view.execution.state }}">{{ view.execution.state }}</span> {{ view.execution.action or "UNKNOWN" }} / {{ view.execution.raw_status or "not captured" }}</dd></div>
+    <div><dt>Guard reason</dt><dd>{{ view.execution.reason or "not captured" }}</dd></div>
+    {% endif %}
+  </dl>
+  {% if view.reader_error %}<p class="reader-error">Reader error: {{ view.reader_error }}</p>{% endif %}
+  <details class="source-details"><summary>Recorded source classes</summary><ul class="summary-list">
+  {% for row in view.sources %}<li data-source-class="{{ row.source }}"><strong>{{ row.role }}</strong>: {{ row.source }}{% if row.source == "UNKNOWN" and row.declared %} (recorded: {{ row.declared }}){% endif %}</li>{% endfor %}
+  </ul></details>
+</section>
+{%- endmacro %}

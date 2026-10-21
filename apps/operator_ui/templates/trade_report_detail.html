@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_fast08_evidence.html" import evidence_panel, observed_link with context %}
 {% block content %}
 <section class="hero">
   <div>
@@ -19,22 +20,15 @@
 </section>
 
 {% set diag = report.ai_report_diagnostics or {} %}
-<section class="card observation-context" aria-label="AI report provenance">
-  <h2>Artifact Provenance</h2>
-  <p class="subtle-meta">Saved report observations, not an order approval or execution receipt.</p>
-  <dl class="provenance-grid">
-    <div><dt>Story / trade</dt><dd>{{ report.story_id or report.trade_id or "not captured" }}</dd></div>
-    <div><dt>Run trace</dt><dd>{{ report.run_id or "not captured" }}</dd></div>
-    <div><dt>Linked AI artifact</dt><dd data-artifact-state="{{ 'OBSERVED' if report.report_available is sameas true else 'NO_DATA' }}">{{ "OBSERVED" if report.report_available is sameas true else "NO_DATA — No linked AI report artifact" }}</dd></div>
-  </dl>
-  {% if report.paths %}<details><summary>Recorded artifact paths</summary><dl class="provenance-grid">{% for key, path in report.paths.items() %}<div><dt>{{ key }}</dt><dd class="path">{{ path or "not captured" }}</dd></div>{% endfor %}</dl></details>{% endif %}
-</section>
+{% set report_view = ui_trade_detail(report) %}
+{{ evidence_panel(report_view, "Artifact Provenance") }}
+{% if report.paths %}<details class="card"><summary>Recorded paths (not proof of existence)</summary><dl class="provenance-grid">{% for key,path in report.paths.items() %}<div><dt>{{ key }}</dt><dd class="path">{{ path or "not captured" }}</dd></div>{% endfor %}</dl></details>{% endif %}
 
 <section class="grid grid-2">
   <article class="card card--attention">
     <h2>Lifecycle Review</h2>
     <div class="chip-list">
-      <span class="{{ diag.report_status_badge_class if report.report_available is sameas true else 'status-badge' }}">{{ diag.report_status_label or "AI Report" }}</span>
+      <span class="{{ diag.report_status_badge_class if report.report_available is sameas true else 'status-badge' }}">{{ diag.report_status_label if report.report_available is sameas true or diag.report_status in ["pending", "failed", "skipped"] else report_view.artifact.label }}</span>
       <span class="{{ report.story_type_badge_class or 'status-badge' }}">{{ report.story_type_label or "-" }}</span>
       <span class="chip">{{ report.execution_mode_label or "-" }}</span>
       {% if report.status %}
@@ -53,7 +47,7 @@
       <li>Improve next time: {{ (report.review_focus or {}).get("improvement_focus") or "-" }}</li>
     </ul>
     {% if report.run_link %}
-    <p><a class="link-action" href="{{ report.run_link }}">Open linked run detail</a></p>
+    <p>{{ observed_link(report.run_link, "Open linked run detail") }}</p>
     {% endif %}
   </article>
 

@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from .fast08_dashboard_view import project_dashboard
+from .fast08_detail_view import project_run, project_trade
 from .fast08_observation_view import execution_observation, safe_trace_link
 
 from .data_access import (
@@ -26,7 +27,7 @@ def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
     cfg = config or OperatorUIConfig.from_env()
     base_dir = Path(__file__).resolve().parent
     templates = Jinja2Templates(directory=str(base_dir / "templates"))
-    templates.env.globals.update(ui_dashboard=project_dashboard, ui_execution=execution_observation, ui_link=safe_trace_link)
+    templates.env.globals.update(ui_dashboard=project_dashboard, ui_execution=execution_observation, ui_link=safe_trace_link, ui_run_detail=project_run, ui_trade_detail=project_trade)
 
     app = FastAPI(
         title="Trading Agent Operator UI",

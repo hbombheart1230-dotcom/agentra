@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 332,
+  "entry_count": 333,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8749,6 +8749,28 @@
       "summary": "Read-only view context distinguishes coerced zero from verified source presence, shares execution/guard classification, preserves existing loaders and query/link schema. No source path is treated as proof that a file exists.",
       "details": [
         "Read-only view context distinguishes coerced zero from verified source presence, shares execution/guard classification, preserves existing loaders and query/link schema. No source path is treated as proof that a file exists.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.3 20261021",
+      "title": "Unify detail provenance and safe artifact links",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Shared escaped macro shows source class, actual artifact and guard/execution evidence. Only internal run/report URL families are clickable; no operation or permission is added.",
+      "details": [
+        "Shared escaped macro shows source class, actual artifact and guard/execution evidence. Only internal run/report URL families are clickable; no operation or permission is added.",
         "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
       ],
       "impact": "Read-only UI/service development only; not integrated or released.",

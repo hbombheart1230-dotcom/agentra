@@ -4060,3 +4060,9 @@ Sources: `apps/operator_ui/static/operator.css`, `tests/test_p15_fast07_b_access
 
 - Read-only view context distinguishes coerced zero from verified source presence, shares execution/guard classification, preserves existing loaders and query/link schema. No source path is treated as proof that a file exists.
 - Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification.
+
+## 2026-10-21 - P1.5 FAST08 B8.3 20261021
+**Stage:** FAST_DEV checkpoint; final peer and integration acceptance pending.
+
+- Shared escaped macro shows source class, actual artifact and guard/execution evidence. Only internal run/report URL families are clickable; no operation or permission is added.
+- Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification.
