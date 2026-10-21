@@ -6,6 +6,9 @@ This does not promote the developer branch or waive any integration failure.
 """
 import ast
 import copy
+import hashlib
+import json
+import re
 from functools import lru_cache
 from pathlib import Path
 import subprocess
@@ -486,7 +489,7 @@ def verify_next_stage(overrides=None):
     return _verify_five_function_stage(projected)
 
 
-def verify_b_scope(overrides=None):
+def verify_legacy_b_scope(overrides=None):
     """Closed current source/test delta; no wildcard or editable baseline."""
     overrides = overrides or {}
     require(subprocess.run(["git", "merge-base", "--is-ancestor", B_PRE_SOURCE, "HEAD"],
@@ -518,3 +521,184 @@ def verify_next_scope(changed=None, untracked=None):
     # worktree (including untracked capabilities or modified frozen fixtures).
     verify_b_scope()
     return verify_historical_next_scope(changed, untracked)
+
+
+# Separately authorized Commander V1. No historical S5/B set or pin is extended.
+COMMANDER_V1 = "P15_COMMANDER_PURE_V1"
+COMMANDER_V1_BASE = "d7ab82940deaa05810b28ef78fc0be88e201f9b6"
+COMMANDER_V1_SOURCE = "e4a597886f21f1655de170f54e863c2e74910d29"
+COMMANDER_V1_PATHS = frozenset({
+    "libs/agents/commander/__init__.py",
+    "libs/agents/commander/projections/__init__.py",
+    "libs/agents/commander/projections/cache_refresh_read_model.py",
+    "libs/agents/commander/projections/decision_context_read_model.py",
+    "libs/runtime/commander/decision_context_projection.py",
+    "libs/runtime/commander/decision_overlay_projection.py",
+    "libs/runtime/commander/decision_rules_projection.py",
+    "libs/runtime/commander/strategist_fingerprint.py",
+    "libs/runtime/commander/strategist_refresh_decision.py",
+    "tests/test_p15_b_commander_monitor_boundaries.py",
+    "tests/test_p15_b_commander_monitor_pure_parity.py",
+})
+COMMANDER_V1_RUNTIME = frozenset(p for p in COMMANDER_V1_PATHS if p.startswith("libs/"))
+COMMANDER_V1_CONTRACT_FILES = frozenset({
+    "scripts/refactor/shared_strategist_contracts.py", "scripts/refactor/shared_role_contracts.py",
+    "tests/test_shared_strategist_contracts.py", "tests/test_shared_role_contracts.py",
+    "tests/test_p15_b_versioned_contract.py", "tests/test_p15_integration_completion.py",
+    "tests/test_p15_commander_pure_v1_admission.py",
+})
+COMMANDER_V1_CONTRACT_DELTA = frozenset({
+    "scripts/refactor/shared_strategist_contracts.py", "scripts/refactor/shared_role_contracts.py",
+    "tests/test_shared_strategist_contracts.py", "tests/test_p15_commander_pure_v1_admission.py",
+})
+COMMANDER_V1_NOTES = frozenset({
+    "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
+    "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
+})
+# Exact proof bytes, including the unchanged old tests. Only the literal values
+# of this data-only manifest are canonicalized for its own non-circular digest.
+# This is drift detection, not a claim that executing tampered checkers is safe.
+COMMANDER_V1_PROOF_HASHES = {'scripts/refactor/shared_role_contracts.py': 'a163c61f095a50539b13ac6daceba29a24967d678e708c3c591b3600fa4704d5', 'scripts/refactor/shared_strategist_contracts.py': '2763eec7d6ec3a5d508c30e9b19881458d1c15f96517354d9f7933481ea3a7ad', 'tests/test_p15_b_versioned_contract.py': '4869bbec3813ad2250c08c4fe8f2c71ea86416c507817d89c94d27daab507f3a', 'tests/test_p15_commander_pure_v1_admission.py': '1c760435407407cdc76055a06cff710f51b8496d4446bfe1ad5f2013e5cbc288', 'tests/test_p15_integration_completion.py': '2764e489b911f28354527c1ec00bfb867ab6f08d8d948d7531d5de42ea663293', 'tests/test_shared_role_contracts.py': '6a5c3789536f6d9c2d775e68435bc100a3087b9b35330da8dc13f6d697ec805e', 'tests/test_shared_strategist_contracts.py': '9e069059344da7c36d779d2581df17b6d7332fba0997b4467b7866c755c38f90'}
+
+
+@lru_cache(maxsize=None)
+def _commander_pinned_delta(start, end):
+    # Cache immutable object pairs only. Current disk/index/inventory is NEVER cached.
+    require(all(re.fullmatch(r"[0-9a-f]{40}", value) for value in (start, end)),
+            "Commander V1 immutable diff object IDs")
+    return frozenset(subprocess.check_output(
+        ["git", "diff", "--name-only", start, end], cwd=ROOT, text=True).splitlines())
+
+
+def _commander_delta(start, end=None):
+    if end is not None:
+        return set(_commander_pinned_delta(start, end))
+    return set(subprocess.check_output(
+        ["git", "diff", "--name-only", start], cwd=ROOT, text=True).splitlines())
+
+
+def _commander_read(path, overrides):
+    if path in overrides:
+        text = overrides[path]
+        require(isinstance(text, str), "B-stage Commander V1 missing source: " + path)
+        return text.replace("\r\n", "\n")
+    require((ROOT / path).is_file(), "B-stage Commander V1 missing source: " + path)
+    return (ROOT / path).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+
+
+def commander_v1_selected(overrides=None):
+    # A deleted new file must not silently fall back to old-stage admission.
+    return ((ROOT / "tests/test_p15_commander_pure_v1_admission.py").exists()
+            or (ROOT / "libs/agents/commander").exists()
+            or bool(set(overrides or {}) & COMMANDER_V1_PATHS)
+            or subprocess.run(["git", "merge-base", "--is-ancestor", COMMANDER_V1_SOURCE, "HEAD"],
+                              cwd=ROOT, capture_output=True).returncode == 0)
+
+
+@lru_cache(maxsize=None)
+def _commander_historical_proof(base, pre, source, paths, contracts):
+    # Inputs are immutable Git object IDs and frozen inventories. Mutant sources
+    # never enter this cache; they take the explicit-overrides branch below.
+    require((base, pre, source, paths, contracts) ==
+            (COMMANDER_V1_BASE, B_PRE_SOURCE, B_SOURCE, B_SOURCE_PATHS, B_CONTRACT_PATHS),
+            "Commander V1 historical proof inputs")
+    return verify_historical_b_scope({})
+
+
+def verify_historical_b_scope(overrides=None):
+    """Authentic old B predicate on its immutable integration tree, not V1 disk."""
+    if overrides is None:
+        return _commander_historical_proof(COMMANDER_V1_BASE, B_PRE_SOURCE, B_SOURCE,
+                                           B_SOURCE_PATHS, B_CONTRACT_PATHS)
+    overrides = overrides or {}
+    pinned = _commander_delta(B_PRE_SOURCE, B_SOURCE)
+    pinned = {p for p in pinned if p.startswith(tuple(r + "/" for r in POST_ACCEPTANCE_CODE_ROOTS))}
+    require(pinned == B_SOURCE_PATHS, "B-stage pinned seven-path inventory")
+    changed = _commander_delta(B_PRE_SOURCE, COMMANDER_V1_BASE)
+    changed = {p for p in changed if p.startswith(tuple(r + "/" for r in POST_ACCEPTANCE_CODE_ROOTS))} | set(overrides)
+    require(changed <= B_SOURCE_PATHS | B_CONTRACT_PATHS,
+            "historical B-stage unapproved path: " + repr(changed - B_SOURCE_PATHS - B_CONTRACT_PATHS))
+    for path in sorted(B_SOURCE_PATHS):
+        current = overrides.get(path, git_source(COMMANDER_V1_BASE, path))
+        require(isinstance(current, str) and current.replace("\r\n", "\n") == git_source(B_SOURCE, path),
+                "historical B-stage source differs: " + path)
+    verify_b_sources({p: git_source(COMMANDER_V1_BASE, p) for p in B_RUNTIME})
+    return frozenset(changed)
+
+
+def commander_proof_digest(path, text):
+    if path == "scripts/refactor/shared_strategist_contracts.py":
+        rows = [n for n in ast.parse(text).body if isinstance(n, ast.Assign)
+                and any(isinstance(t, ast.Name) and t.id == "COMMANDER_V1_PROOF_HASHES" for t in n.targets)]
+        require(len(rows) == 1, "Commander V1 proof manifest definition")
+        manifest = ast.literal_eval(rows[0].value)
+        require(isinstance(manifest, dict), "Commander V1 literal proof manifest")
+        require(manifest == COMMANDER_V1_PROOF_HASHES, "B-stage Commander V1 checker/test drift: " + path)
+        require(rows[0].lineno == rows[0].end_lineno, "Commander V1 manifest layout")
+        lines = text.splitlines(keepends=True)
+        # Canonicalize only the literal value, never a same-line statement or
+        # comment. AST columns are UTF-8 byte offsets, including Unicode probes.
+        value = rows[0].value
+        require(value.lineno == value.end_lineno, "Commander V1 manifest value layout")
+        line = lines[value.lineno - 1].encode("utf-8")
+        lines[value.lineno - 1] = (line[:value.col_offset] + b"<exact proof values>" +
+                                   line[value.end_col_offset:]).decode("utf-8")
+        text = "".join(lines)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def verify_commander_pure_v1(overrides=None, *, inventory=None):
+    """Exact new-stage sources, proof bytes and complete repo delta; no prefix grant."""
+    overrides = overrides or {}
+    require(COMMANDER_V1 == "P15_COMMANDER_PURE_V1" and
+            COMMANDER_V1_BASE == "d7ab82940deaa05810b28ef78fc0be88e201f9b6" and
+            COMMANDER_V1_SOURCE == "e4a597886f21f1655de170f54e863c2e74910d29", "Commander V1 immutable pins")
+    pinned = _commander_delta(COMMANDER_V1_BASE, COMMANDER_V1_SOURCE)
+    require(pinned == COMMANDER_V1_PATHS | COMMANDER_V1_NOTES, "Commander V1 exact eleven-path pin")
+    expected = COMMANDER_V1_PATHS | COMMANDER_V1_CONTRACT_DELTA | COMMANDER_V1_NOTES
+    changed = _commander_delta(COMMANDER_V1_BASE)
+    changed |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True).splitlines())
+    changed |= set(overrides)
+    require(changed == expected, "B-stage Commander V1 unexpected/missing inventory: " + repr(changed ^ expected))
+    if inventory is not None:
+        require(set(inventory) == expected, "B-stage Commander V1 unexpected/missing inventory: " + repr(set(inventory) ^ expected))
+    package = ROOT / "libs/agents/commander"
+    disk = {p.relative_to(ROOT).as_posix() for p in package.rglob("*.py")}
+    allowed = {p for p in COMMANDER_V1_PATHS if p.startswith("libs/agents/commander/")}
+    require(disk == allowed, "B-stage Commander V1 unexpected/missing package file: " + repr(disk ^ allowed))
+    for path in sorted(COMMANDER_V1_PATHS):
+        require(_commander_read(path, overrides) == git_source(COMMANDER_V1_SOURCE, path),
+                "B-stage Commander V1 source/ABI/body differs from pin: " + path)
+    require(set(COMMANDER_V1_PROOF_HASHES) == COMMANDER_V1_CONTRACT_FILES,
+            "Commander V1 exact proof inventory")
+    for path in sorted(COMMANDER_V1_CONTRACT_FILES):
+        require(commander_proof_digest(path, _commander_read(path, overrides)) == COMMANDER_V1_PROOF_HASHES[path],
+                "B-stage Commander V1 checker/test drift: " + path)
+    test_text = _commander_read("tests/test_p15_commander_pure_v1_admission.py", overrides)
+    anchors = [n for n in ast.parse(test_text).body if isinstance(n, ast.Assign)
+               and any(isinstance(t, ast.Name) and t.id == "EXPECTED_STAGE_CHECKER_SHA256" for t in n.targets)]
+    require(len(anchors) == 1 and ast.literal_eval(anchors[0].value) == COMMANDER_V1_PROOF_HASHES[
+        "scripts/refactor/shared_strategist_contracts.py"], "Commander V1 checker anchor")
+    note_path = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
+    old = json.loads(git_source(COMMANDER_V1_SOURCE, note_path))
+    current = json.loads(_commander_read(note_path, overrides))
+    require(current["entries"][:-1] == old["entries"] and len(current["entries"]) == len(old["entries"]) + 1,
+            "Commander V1 historical patch notes changed")
+    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}),
+            "Commander V1 patchnote count/version")
+    require(current["entries"][-1]["version"] == COMMANDER_V1 and
+            current["entries"][-1]["title"] not in {r["title"] for r in old["entries"]}, "Commander V1 note version/title")
+    md_path = "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+    md = _commander_read(md_path, overrides)
+    require(md.startswith(git_source(COMMANDER_V1_SOURCE, md_path)) and COMMANDER_V1 in md,
+            "Commander V1 historical Markdown changed")
+    verify_historical_b_scope()
+    return {"version": COMMANDER_V1, "runtime_paths": COMMANDER_V1_RUNTIME,
+            "changed_paths": frozenset(changed - COMMANDER_V1_NOTES)}
+
+
+def verify_b_scope(overrides=None):
+    """Version dispatch; the historical predicate and its closed sets stay intact."""
+    if commander_v1_selected(overrides):
+        return verify_commander_pure_v1(overrides)["changed_paths"]
+    return verify_legacy_b_scope(overrides)

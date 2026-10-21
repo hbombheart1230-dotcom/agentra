@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 339,
+  "entry_count": 340,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8949,6 +8949,30 @@
         "libs/agents/commander/projections/cache_refresh_read_model.py",
         "tests/test_p15_b_commander_monitor_pure_parity.py",
         "tests/test_p15_b_commander_monitor_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P15_COMMANDER_PURE_V1",
+      "title": "Add exact versioned Commander V1 contract without widening historical S5/B",
+      "stage": "Contract candidate; self tests and independent review reported on exact SHA in Issue20; not integrated",
+      "types": [
+        "TEST",
+        "REFACTOR",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Add isolated P15_COMMANDER_PURE_V1 exact-source admission for unchanged e4a59788 Commander B1/B2. Historical S5/B pins, source inventories, Reporter313/23 and Monitor14/20 proofs remain intact; both shared scope and runtime boundaries require the new version before admitting its nine runtime paths.",
+      "details": [
+        "Add isolated P15_COMMANDER_PURE_V1 exact-source admission for unchanged e4a59788 Commander B1/B2. Historical S5/B pins, source inventories, Reporter313/23 and Monitor14/20 proofs remain intact; both shared scope and runtime boundaries require the new version before admitting its nine runtime paths.",
+        "All eleven reviewed source/test blobs remain pinned to e4a597886f21f1655de170f54e863c2e74910d29; no B1/B2 production or test source changes. Exact enumerated proof-file hashes and complete stage inventory reject checker drift, omitted/extra paths, authority/LLM/write capability, and old pinned-source mutations.",
+        "Monitor B3/B4 remain STAGE_CONTRACT_BLOCKED and unchanged. Previous339 note entries retained. No gate skip, wildcard, old pin change, new trading authority, CI/main/integration/PR action. Actual self and peer results, failures and NOT_RUN are reported separately."
+      ],
+      "impact": "New stage admission only; not historical gate relaxation, source behavior change or merge approval.",
+      "sources": [
+        "scripts/refactor/shared_strategist_contracts.py",
+        "scripts/refactor/shared_role_contracts.py",
+        "tests/test_p15_commander_pure_v1_admission.py"
       ]
     }
   ]

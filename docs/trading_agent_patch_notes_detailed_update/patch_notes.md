@@ -4155,3 +4155,10 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - BASE normal193PASS/-O193PASS; exact candidate parity/negative/peer receipts in Issue20. Complete Commander runtime, Monitor migrations, real-data golden, full suite, CI and release are not claimed.
 - Final normal455PASS/1FAIL and -O455PASS/1FAIL: historical shared_strategist_contracts.verify_b_scope rejects new Commander/test paths. Same retained-runtime test on exact BASE passes1/exit0. B1/B2 are source checkpoints only; B1-B4 STAGE_CONTRACT_BLOCKED, no gate/allowlist update or integration approval.
 - Canonical Owner source whitespace normalized; no literal, logic or historical source/gate changes.
+
+## 2026-10-21 - P15_COMMANDER_PURE_V1
+**Stage:** Exact versioned contract candidate; peer and integration pending.
+
+- Add isolated P15_COMMANDER_PURE_V1 exact-source admission for unchanged e4a59788 Commander B1/B2. Historical S5/B pins, source inventories, Reporter313/23 and Monitor14/20 proofs remain intact; both shared scope and runtime boundaries require the new version before admitting its nine runtime paths.
+- All11 Commander source/test blobs pinned unchanged; exact closed source/proof inventory, checker hashes and paired notes preserve old339 records. Missing/extra files, byte/ABI drift, historical role mutations and new trading/LLM/write capability reject before admission.
+- Monitor B3/B4 remain blocked. No historical allowlist/pin change, skip/waiver, new runtime behavior, CI/main/integration or PR modification. Actual normal/-O and independent results in Issue20.
