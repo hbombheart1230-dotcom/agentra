@@ -4040,3 +4040,11 @@ Sources: `apps/operator_ui/templates/run_detail.html`, `apps/operator_ui/templat
 - Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
 
 Sources: `apps/operator_ui/templates/operator_brief_detail.html`, `apps/operator_ui/templates/base.html`, `tests/test_p15_fast07_b_detail_render_smoke.py`.
+
+## 2026-10-21 - P1.5 FAST07 B7.4 20261021
+**Stage:** FAST_DEV implementation checkpoint; final peer and composed integration pending.
+
+- Small-screen grids, scrollable evidence tables, wrapped trace IDs/JSON, keyboard focus, neutral versus warning/critical badges and reduced-motion support. Normal rendered HTML/style smoke; pixel visual acceptance deferred.
+- Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
+
+Sources: `apps/operator_ui/static/operator.css`, `tests/test_p15_fast07_b_accessibility_smoke.py`.

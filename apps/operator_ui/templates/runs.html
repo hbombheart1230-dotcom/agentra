@@ -15,31 +15,33 @@
 </section>
 
 <section class="run-filters" aria-label="Run filters">
-  <a href="/runs?limit={{ limit }}&activity_view=all&amp;mismatch_only={{ 'true' if mismatch_only else 'false' }}" class="link-action {% if activity_view == 'all' %}link-action--active{% endif %}">All runs</a>
-  <a href="/runs?limit={{ limit }}&activity_view=trades&amp;mismatch_only={{ 'true' if mismatch_only else 'false' }}" class="link-action {% if activity_view == 'trades' %}link-action--active{% endif %}">Trades</a>
-  <a href="/runs?limit={{ limit }}&activity_view=monitoring&amp;mismatch_only={{ 'true' if mismatch_only else 'false' }}" class="link-action {% if activity_view == 'monitoring' %}link-action--active{% endif %}">Monitoring</a>
+  <a href="/runs?limit={{ limit }}&amp;activity_view=all&amp;mismatch_only={{ 'true' if mismatch_only else 'false' }}" class="link-action {% if activity_view == 'all' %}link-action--active{% endif %}">All runs</a>
+  <a href="/runs?limit={{ limit }}&amp;activity_view=trades&amp;mismatch_only={{ 'true' if mismatch_only else 'false' }}" class="link-action {% if activity_view == 'trades' %}link-action--active{% endif %}">Trades</a>
+  <a href="/runs?limit={{ limit }}&amp;activity_view=monitoring&amp;mismatch_only={{ 'true' if mismatch_only else 'false' }}" class="link-action {% if activity_view == 'monitoring' %}link-action--active{% endif %}">Monitoring</a>
   <a href="/runs?limit={{ limit }}&amp;activity_view={{ activity_view }}&amp;mismatch_only={{ 'false' if mismatch_only else 'true' }}" class="link-action {% if mismatch_only %}link-action--active{% endif %}">Mismatch only</a>
 </section>
 
-<section class="card table-card">
+<section class="card table-card" tabindex="0" role="region" aria-label="Recent runs evidence table">
+  <p class="table-hint">Scroll horizontally to inspect all evidence columns.</p>
   <table>
+    <caption class="sr-only">Recorded runs, guard observations and linked artifact availability</caption>
     <thead>
       <tr>
-        <th>ts</th>
-        <th>run_id</th>
-        <th>phase</th>
-        <th>playbook</th>
-        <th>top stock</th>
-        <th>story type</th>
-        <th>activity</th>
-        <th>execution label</th>
-        <th>AI report</th>
-        <th>portfolio sync</th>
-        <th>macro stress</th>
-        <th>feature coverage</th>
-        <th>monitor</th>
-        <th>guard</th>
-        <th>execution</th>
+        <th scope="col">ts</th>
+        <th scope="col">run_id</th>
+        <th scope="col">phase</th>
+        <th scope="col">playbook</th>
+        <th scope="col">top stock</th>
+        <th scope="col">story type</th>
+        <th scope="col">activity</th>
+        <th scope="col">execution label</th>
+        <th scope="col">AI report</th>
+        <th scope="col">portfolio sync</th>
+        <th scope="col">macro stress</th>
+        <th scope="col">feature coverage</th>
+        <th scope="col">monitor</th>
+        <th scope="col">guard</th>
+        <th scope="col">execution</th>
       </tr>
     </thead>
     <tbody>
