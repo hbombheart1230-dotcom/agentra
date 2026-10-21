@@ -11,7 +11,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 from libs.runtime.monitor_policy import normalize_monitor_entry_policy_schema
 import sys as _health_sys
+from libs.agents.reporter.read_models import phase_health_policy_views as _health_views
 from libs.agents.reporter.read_models import phase_health_projection as _health_projection
+from libs.agents.reporter.read_models import phase_health_text_rendering as _health_text
 
 STRUCTURE_KEYS: Tuple[str, ...] = (
     "entry_policy_contract",
@@ -231,7 +233,7 @@ def _persisted_grouped_logic_trace(monitor: Mapping[str, Any]) -> Dict[str, Any]
 
 
 def _persisted_monitor_surfaces(monitor: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
-    return _health_projection._persisted_monitor_surfaces(monitor, facade=_health_sys.modules[__name__])
+    return _health_views._persisted_monitor_surfaces(monitor, facade=_health_sys.modules[__name__])
 
 
 def _failed_check_names(rows: Any, *, fail_statuses: Sequence[str]) -> List[str]:
@@ -380,19 +382,19 @@ def _extract_policy_source_inspection(
 
 
 def _build_policy_aware_gating_deadness(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    return _health_projection._build_policy_aware_gating_deadness(rows, facade=_health_sys.modules[__name__])
+    return _health_views._build_policy_aware_gating_deadness(rows, facade=_health_sys.modules[__name__])
 
 
 def _build_policy_source_summary(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Dict[str, Any]]:
-    return _health_projection._build_policy_source_summary(rows, facade=_health_sys.modules[__name__])
+    return _health_views._build_policy_source_summary(rows, facade=_health_sys.modules[__name__])
 
 
 def _compact_run_view(row: Mapping[str, Any]) -> Dict[str, Any]:
-    return _health_projection._compact_run_view(row, facade=_health_sys.modules[__name__])
+    return _health_views._compact_run_view(row, facade=_health_sys.modules[__name__])
 
 
 def _build_suspicious_flags(*, final_decision: str, alignment_summary: Mapping[str, Any], trace: Mapping[str, Any], gating: Mapping[str, Any]) -> List[str]:
-    return _health_projection._build_suspicious_flags(final_decision=final_decision, alignment_summary=alignment_summary, trace=trace, gating=gating, facade=_health_sys.modules[__name__])
+    return _health_views._build_suspicious_flags(final_decision=final_decision, alignment_summary=alignment_summary, trace=trace, gating=gating, facade=_health_sys.modules[__name__])
 
 
 def _extract_run_health(run_dir: Path, event_payloads: Mapping[str, Dict[str, Any]]) -> Dict[str, Any]:
@@ -422,27 +424,27 @@ def build_phase_5_2_5_3_runtime_health(
 
 
 def _render_text_table(rows: Sequence[Mapping[str, Any]]) -> str:
-    return _health_projection._render_text_table(rows, facade=_health_sys.modules[__name__])
+    return _health_text._render_text_table(rows, facade=_health_sys.modules[__name__])
 
 
 def _render_compact_run_table(rows: Sequence[Mapping[str, Any]]) -> str:
-    return _health_projection._render_compact_run_table(rows, facade=_health_sys.modules[__name__])
+    return _health_text._render_compact_run_table(rows, facade=_health_sys.modules[__name__])
 
 
 def _render_reclaim_table(rows: Sequence[Mapping[str, Any]]) -> str:
-    return _health_projection._render_reclaim_table(rows, facade=_health_sys.modules[__name__])
+    return _health_text._render_reclaim_table(rows, facade=_health_sys.modules[__name__])
 
 
 def render_phase_5_2_5_3_runtime_health_text(payload: Mapping[str, Any]) -> str:
-    return _health_projection.render_phase_5_2_5_3_runtime_health_text(payload, facade=_health_sys.modules[__name__])
+    return _health_text.render_phase_5_2_5_3_runtime_health_text(payload, facade=_health_sys.modules[__name__])
 
 
 def render_policy_surface_quality_summary_text(day: str, summary: Mapping[str, Any] | None) -> str:
-    return _health_projection.render_policy_surface_quality_summary_text(day, summary, facade=_health_sys.modules[__name__])
+    return _health_text.render_policy_surface_quality_summary_text(day, summary, facade=_health_sys.modules[__name__])
 
 
 def render_chart_structure_decision_hint_summary_text(day: str, summary: Mapping[str, Any] | None) -> str:
-    return _health_projection.render_chart_structure_decision_hint_summary_text(day, summary, facade=_health_sys.modules[__name__])
+    return _health_text.render_chart_structure_decision_hint_summary_text(day, summary, facade=_health_sys.modules[__name__])
 
 
 def _build_parser() -> argparse.ArgumentParser:

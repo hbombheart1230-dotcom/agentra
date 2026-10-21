@@ -9,7 +9,9 @@ row building and day selection, ``build_commander_route_summary`` (reads report 
 from __future__ import annotations
 
 from collections import Counter
-from typing import Any, Dict, List
+from typing import Any, Dict
+
+from libs.agents.reporter.read_models import metrics_event_fold as _event_fold
 
 
 def aggregate_day_metrics(
@@ -27,20 +29,7 @@ def aggregate_day_metrics(
     blocks_by_reason: Counter[str] = Counter()
     api_errors_by_id: Counter[str] = Counter()
     api_429_total = 0
-    llm_total = 0
-    llm_ok_total = 0
-    llm_fail_total = 0
-    llm_error_by_type: Counter[str] = Counter()
-    llm_prompt_version_total: Counter[str] = Counter()
-    llm_schema_version_total: Counter[str] = Counter()
-    llm_circuit_state_total: Counter[str] = Counter()
-    llm_circuit_open_total = 0
-    llm_latency_ms_values: List[float] = []
-    llm_attempt_values: List[float] = []
-    llm_prompt_tokens_total = 0
-    llm_completion_tokens_total = 0
-    llm_total_tokens_total = 0
-    llm_estimated_cost_usd_total = 0.0
+    llm_fold = _event_fold.new_llm_fold()
     skill_hydration_total = 0
     skill_hydration_used_runner_total = 0
     skill_hydration_fallback_hint_total = 0
@@ -117,71 +106,7 @@ def aggregate_day_metrics(
                 api_429_total += 1
 
         if stage == "strategist_llm" and event == "result":
-            payload = r.get("payload") if isinstance(r.get("payload"), dict) else {}
-            llm_total += 1
-            ok = payload.get("ok") is True
-            if ok:
-                llm_ok_total += 1
-            else:
-                llm_fail_total += 1
-                llm_error_by_type[str(payload.get("error_type") or "unknown")] += 1
-
-            c_state = str(payload.get("circuit_state") or "").strip().lower()
-            if c_state:
-                llm_circuit_state_total[c_state] += 1
-            if c_state == "open" or str(payload.get("error_type") or "") == "CircuitOpen":
-                llm_circuit_open_total += 1
-
-            llm_prompt_version_total[str(payload.get("prompt_version") or "unknown")] += 1
-            llm_schema_version_total[str(payload.get("schema_version") or "unknown")] += 1
-
-            latency_ms = payload.get("latency_ms")
-            try:
-                latency_val = float(latency_ms)
-                if latency_val >= 0:
-                    llm_latency_ms_values.append(latency_val)
-            except Exception:
-                pass
-
-            attempts = payload.get("attempts")
-            try:
-                attempts_val = float(attempts)
-                if attempts_val >= 0:
-                    llm_attempt_values.append(attempts_val)
-            except Exception:
-                pass
-
-            prompt_tokens = payload.get("prompt_tokens")
-            try:
-                prompt_tokens_val = int(float(prompt_tokens))
-                if prompt_tokens_val >= 0:
-                    llm_prompt_tokens_total += prompt_tokens_val
-            except Exception:
-                pass
-
-            completion_tokens = payload.get("completion_tokens")
-            try:
-                completion_tokens_val = int(float(completion_tokens))
-                if completion_tokens_val >= 0:
-                    llm_completion_tokens_total += completion_tokens_val
-            except Exception:
-                pass
-
-            total_tokens = payload.get("total_tokens")
-            try:
-                total_tokens_val = int(float(total_tokens))
-                if total_tokens_val >= 0:
-                    llm_total_tokens_total += total_tokens_val
-            except Exception:
-                pass
-
-            estimated_cost_usd = payload.get("estimated_cost_usd")
-            try:
-                estimated_cost_usd_val = float(estimated_cost_usd)
-                if estimated_cost_usd_val >= 0.0:
-                    llm_estimated_cost_usd_total += estimated_cost_usd_val
-            except Exception:
-                pass
+            _event_fold.fold_llm_result(r, llm_fold=llm_fold)
 
         if stage == "strategist" and event == "policy_resolution":
             payload = r.get("payload") if isinstance(r.get("payload"), dict) else {}
@@ -321,6 +246,20 @@ def aggregate_day_metrics(
             if sizing_reason:
                 monitor_position_sizing_reason_total[sizing_reason] += 1
 
+    llm_total = llm_fold["llm_total"]
+    llm_ok_total = llm_fold["llm_ok_total"]
+    llm_fail_total = llm_fold["llm_fail_total"]
+    llm_circuit_open_total = llm_fold["llm_circuit_open_total"]
+    llm_prompt_tokens_total = llm_fold["llm_prompt_tokens_total"]
+    llm_completion_tokens_total = llm_fold["llm_completion_tokens_total"]
+    llm_total_tokens_total = llm_fold["llm_total_tokens_total"]
+    llm_estimated_cost_usd_total = llm_fold["llm_estimated_cost_usd_total"]
+    llm_error_by_type = llm_fold["llm_error_by_type"]
+    llm_prompt_version_total = llm_fold["llm_prompt_version_total"]
+    llm_schema_version_total = llm_fold["llm_schema_version_total"]
+    llm_circuit_state_total = llm_fold["llm_circuit_state_total"]
+    llm_latency_ms_values = llm_fold["llm_latency_ms_values"]
+    llm_attempt_values = llm_fold["llm_attempt_values"]
     latency = facade._latency_summary(day_rows)
     llm_latency_ms = facade._numeric_summary(llm_latency_ms_values)
     llm_attempts = facade._numeric_summary(llm_attempt_values)
@@ -401,194 +340,3 @@ def aggregate_day_metrics(
         "api_429_total": api_429_total,
         "api_429_rate": api_429_rate,
     }
-
-
-def assemble_metrics_summary(
-    *,
-    route_summary: Any,
-    day: Any,
-    generated_at: Any,
-    run_ids: Any,
-    latest_run_id: Any,
-    latest_run_epoch: Any,
-    day_rows: Any,
-    intents_created: Any,
-    intents_approved: Any,
-    intents_blocked: Any,
-    intents_executed: Any,
-    blocks_by_reason: Any,
-    latency: Any,
-    llm_total: Any,
-    llm_ok_total: Any,
-    llm_fail_total: Any,
-    llm_success_rate: Any,
-    llm_circuit_open_total: Any,
-    llm_circuit_open_rate: Any,
-    llm_circuit_state_total: Any,
-    llm_latency_ms: Any,
-    llm_attempts: Any,
-    llm_error_by_type: Any,
-    llm_prompt_version_total: Any,
-    llm_schema_version_total: Any,
-    llm_prompt_tokens_total: Any,
-    llm_completion_tokens_total: Any,
-    llm_total_tokens_total: Any,
-    llm_estimated_cost_usd_total: Any,
-    skill_hydration_total: Any,
-    skill_hydration_used_runner_total: Any,
-    skill_hydration_fallback_hint_total: Any,
-    skill_hydration_fallback_rate: Any,
-    skill_hydration_errors_total_sum: Any,
-    skill_hydration_runner_source_total: Any,
-    skill_hydration_attempted_total: Any,
-    skill_hydration_ready_total: Any,
-    skill_hydration_errors_by_skill: Any,
-    commander_total: Any,
-    commander_cooldown_transition_total: Any,
-    commander_intervention_total: Any,
-    commander_error_total: Any,
-    commander_transition_total: Any,
-    commander_runtime_status_total: Any,
-    commander_cooldown_reason_total: Any,
-    portfolio_guard_total: Any,
-    portfolio_guard_applied_total: Any,
-    portfolio_guard_approved_total_sum: Any,
-    portfolio_guard_blocked_total_sum: Any,
-    portfolio_guard_reason_total: Any,
-    monitor_total: Any,
-    monitor_exit_policy_enabled_total: Any,
-    monitor_exit_evaluated_total: Any,
-    monitor_exit_trigger_total: Any,
-    monitor_exit_reason_total: Any,
-    monitor_position_sizing_enabled_total: Any,
-    monitor_position_sizing_evaluated_total: Any,
-    monitor_position_sizing_computed_qty_sum: Any,
-    monitor_position_sizing_zero_qty_total: Any,
-    monitor_position_sizing_reason_total: Any,
-    no_trade_reason_total: Any,
-    dominant_blocker_total: Any,
-    near_ready_total: Any,
-    scanner_monitor_alignment_total: Any,
-    pre_intent_wait_total: Any,
-    pre_intent_noop_total: Any,
-    guard_block_total: Any,
-    api_errors_by_id: Any,
-    api_429_total: Any,
-    api_429_rate: Any,
-    facade: Any,
-) -> Any:
-    """Assemble the metrics.v1 summary (before data_freshness/route_provenance) from aggregated day counters."""
-    canonical_route_selected_total = dict(route_summary.get("route_selected_total") or {})
-    canonical_strategy_mode_total = dict(route_summary.get("strategy_generation_mode_total") or {})
-    canonical_fallback_total = int(route_summary.get("strategist_fallback_total") or 0)
-
-    summary = {
-        "schema_version": "metrics.v1",
-        "day": day,
-        "generated_at": generated_at,
-        "source_run_count": int(len(run_ids)),
-        "latest_run_id": latest_run_id,
-        "latest_run_ts": facade._epoch_to_iso(latest_run_epoch),
-        "events": len(day_rows),
-        "runs": len(run_ids),
-        "intents_created_total": intents_created,
-        "intents_approved_total": intents_approved,
-        "intents_blocked_total": intents_blocked,
-        "intents_executed_total": intents_executed,
-        "intents_blocked_by_reason": dict(blocks_by_reason),
-        "execution": {
-            "intents_created": int(intents_created),
-            "intents_approved": int(intents_approved),
-            "intents_blocked": int(intents_blocked),
-            "intents_executed": int(intents_executed),
-            "blocked_reason_topN": [
-                {"reason": str(reason), "count": int(cnt)}
-                for reason, cnt in blocks_by_reason.most_common(5)
-            ],
-        },
-        "execution_latency_seconds": latency,
-        "strategist_llm": {
-            "total": llm_total,
-            "ok_total": llm_ok_total,
-            "fail_total": llm_fail_total,
-            "success_rate": llm_success_rate,
-            "circuit_open_total": int(llm_circuit_open_total),
-            "circuit_open_rate": float(llm_circuit_open_rate),
-            "circuit_state_total": dict(llm_circuit_state_total),
-            "latency_ms": llm_latency_ms,
-            "attempts": llm_attempts,
-            "error_type_total": dict(llm_error_by_type),
-            "prompt_version_total": dict(llm_prompt_version_total),
-            "schema_version_total": dict(llm_schema_version_total),
-            "token_usage": {
-                "prompt_tokens_total": int(llm_prompt_tokens_total),
-                "completion_tokens_total": int(llm_completion_tokens_total),
-                "total_tokens_total": int(llm_total_tokens_total),
-                "estimated_cost_usd_total": float(llm_estimated_cost_usd_total),
-            },
-        },
-        "skill_hydration": {
-            "total": int(skill_hydration_total),
-            "used_runner_total": int(skill_hydration_used_runner_total),
-            "fallback_hint_total": int(skill_hydration_fallback_hint_total),
-            "fallback_hint_rate": float(skill_hydration_fallback_rate),
-            "errors_total_sum": int(skill_hydration_errors_total_sum),
-            "runner_source_total": dict(skill_hydration_runner_source_total),
-            "attempted_total_by_skill": dict(skill_hydration_attempted_total),
-            "ready_total_by_skill": dict(skill_hydration_ready_total),
-            "errors_total_by_skill": dict(skill_hydration_errors_by_skill),
-        },
-        "commander_resilience": {
-            "total": int(commander_total),
-            "cooldown_transition_total": int(commander_cooldown_transition_total),
-            "intervention_total": int(commander_intervention_total),
-            "error_total": int(commander_error_total),
-            "transition_total": dict(commander_transition_total),
-            "runtime_status_total": dict(commander_runtime_status_total),
-            "cooldown_reason_total": dict(commander_cooldown_reason_total),
-        },
-        "portfolio_guard": {
-            "total": int(portfolio_guard_total),
-            "applied_total": int(portfolio_guard_applied_total),
-            "approved_total_sum": int(portfolio_guard_approved_total_sum),
-            "blocked_total_sum": int(portfolio_guard_blocked_total_sum),
-            "blocked_reason_total": dict(portfolio_guard_reason_total),
-            "blocked_reason_topN": [
-                {"reason": str(reason), "count": int(cnt)}
-                for reason, cnt in portfolio_guard_reason_total.most_common(5)
-            ],
-        },
-        "monitor_agent": {
-            "total": int(monitor_total),
-            "exit_policy_enabled_total": int(monitor_exit_policy_enabled_total),
-            "exit_evaluated_total": int(monitor_exit_evaluated_total),
-            "exit_trigger_total": int(monitor_exit_trigger_total),
-            "exit_reason_total": dict(monitor_exit_reason_total),
-            "position_sizing_enabled_total": int(monitor_position_sizing_enabled_total),
-            "position_sizing_evaluated_total": int(monitor_position_sizing_evaluated_total),
-            "position_sizing_computed_qty_sum": int(monitor_position_sizing_computed_qty_sum),
-            "position_sizing_zero_qty_total": int(monitor_position_sizing_zero_qty_total),
-            "position_sizing_reason_total": dict(monitor_position_sizing_reason_total),
-        },
-        "no_trade_reason_total": dict(no_trade_reason_total),
-        "dominant_blocker_total": dict(dominant_blocker_total),
-        "near_ready_total": int(near_ready_total),
-        "strategist_fallback_total": int(canonical_fallback_total),
-        "strategist_mode_total": dict(canonical_strategy_mode_total),
-        "route_selected_total": dict(canonical_route_selected_total),
-        "route_source": str(route_summary.get("route_source") or "canonical_commander_preferred"),
-        "route_source_run_count": int(route_summary.get("route_source_run_count") or 0),
-        "route_source_missing_count": int(route_summary.get("route_source_missing_count") or 0),
-        "route_source_breakdown": dict(route_summary.get("route_source_breakdown") or {}),
-        "scanner_monitor_alignment_total": dict(scanner_monitor_alignment_total),
-        "pre_intent_wait_total": int(pre_intent_wait_total),
-        "pre_intent_noop_total": int(pre_intent_noop_total),
-        "guard_block_total": int(guard_block_total),
-        "broker_api": {
-            "api_error_total_by_api_id": dict(api_errors_by_id),
-            "api_429_total": int(api_429_total),
-            "api_429_rate": float(api_429_rate),
-        },
-        "api_error_total_by_api_id": dict(api_errors_by_id),
-    }
-    return summary

@@ -37,6 +37,7 @@ from libs.reporting.report_source_helpers import build_commander_route_summary
 from libs.core.path_isolation import resolve_runtime_write_path
 import sys as _metrics_sys
 from libs.agents.reporter.read_models import metrics_projection as _metrics_projection
+from libs.agents.reporter.read_models import metrics_summary_projection as _metrics_summary
 
 
 def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
@@ -89,7 +90,7 @@ def generate_metrics_report(events_path: Path, out_dir: Path, day: str | None = 
         day_rows=day_rows,
     )
     generated_at = _utc_now_iso()
-    summary = _metrics_projection.assemble_metrics_summary(
+    summary = _metrics_summary.assemble_metrics_summary(
         route_summary=route_summary,
         day=day,
         generated_at=generated_at,

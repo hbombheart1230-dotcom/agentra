@@ -55,6 +55,7 @@ from libs.reporting.operator_visibility_parts.reason_text_and_time import (
 )
 import sys as _visibility_sys
 from libs.agents.reporter.read_models import operator_daily_projection as _visibility_projection
+from libs.agents.reporter.read_models import operator_run_context_projection as _run_context_projection
 
 
 _REASON_LABELS: Dict[str, str] = {
@@ -357,7 +358,7 @@ class _RestreamedDayRows:
 
 
 def _build_run_contexts(day_rows: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    return _visibility_projection.build_run_contexts(day_rows, facade=_visibility_sys.modules[__name__])
+    return _run_context_projection.build_run_contexts(day_rows, facade=_visibility_sys.modules[__name__])
 
 
 def build_operator_daily_summary_payload(

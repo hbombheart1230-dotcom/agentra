@@ -1,5 +1,12 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 DEV-A REPORTER PURE OWNER RESPONSIBILITY SPLIT 20261021
+**Stage:** 309e3a48 이후 구조 리팩터링 후보 (BASE d7ab8294, 독립 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- 큰 Reporter 순수 owner 3개를 책임별 9개 모듈(각 350줄 이하)로 분할: `operator_run_context_projection`, `phase_health_policy_views`, `phase_health_text_rendering`, `metrics_summary_projection`, `metrics_event_fold` 추가. `period_summary_projection`은 변경 없음. facade의 읽기·시계·쓰기·호출 순서와 출력은 동일.
+- 폴더 목록 게이트(`test_work_reporter_seed_migration.py`의 1개 테스트)만 수정: 고정된 역사 목록을 BASE Git 트리와 대조하고, 현재 폴더는 역사 목록 + 승인된 owner 이름과 정확히 일치해야 함. 공유 계약 검증 파일은 무수정.
+- 패치노트 JSON은 원래 338개 이력을 순서대로 유지하고 앞선 DEV-A 기록과 이번 기록을 뒤에 추가(340개).
+
 ## 2026-10-21 · P1.5 DEV-A A1-A4 REPORTER PURE PROJECTION OWNERS 20261021
 **Stage:** 구조 리팩터링 후보 (BASE d7ab8294, 독립 검토·통합 대기) · **Tags:** REFACTOR · TEST
 

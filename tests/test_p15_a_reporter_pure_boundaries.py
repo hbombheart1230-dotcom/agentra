@@ -17,22 +17,31 @@ import pytest
 import libs.agents.reporter.read_models.metrics_projection as metrics_proj
 import libs.agents.reporter.read_models.period_summary_projection as period_proj
 import libs.agents.reporter.read_models.operator_daily_projection as visibility_proj
-import libs.agents.reporter.read_models.phase_health_projection as health_proj
+import libs.agents.reporter.read_models.phase_health_text_rendering as health_proj
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "d7ab82940deaa05810b28ef78fc0be88e201f9b6"
-A2_MOVED = ("_build_policy_aware_gating_deadness", "_build_policy_source_summary", "_compact_run_view", "_build_suspicious_flags",
-            "_render_text_table", "_render_compact_run_table", "_render_reclaim_table", "render_phase_5_2_5_3_runtime_health_text",
-            "render_policy_surface_quality_summary_text", "render_chart_structure_decision_hint_summary_text")
+A2_VIEWS = {"_build_policy_aware_gating_deadness", "_build_policy_source_summary", "_compact_run_view", "_build_suspicious_flags",
+            "_persisted_monitor_surfaces"}
+A2_TEXT = {"_render_text_table", "_render_compact_run_table", "_render_reclaim_table", "render_phase_5_2_5_3_runtime_health_text",
+           "render_policy_surface_quality_summary_text", "render_chart_structure_decision_hint_summary_text"}
+A2_MOVED = tuple(sorted(A2_VIEWS | A2_TEXT))
 A2_EXTRA_OWNER = {"_persisted_monitor_surfaces", "_extract_run_health_surfaces", "_assemble_run_health", "build_runtime_health_aggregate"}
+RM = "libs/agents/reporter/read_models/"
+SIBLING = "libs.agents.reporter.read_models"
 OWNERS = {
-    "libs/agents/reporter/read_models/operator_daily_projection.py": ({"build_daily_summary_readout", "build_run_contexts"}, {"__future__", "json", "typing"}),
-    "libs/agents/reporter/read_models/phase_health_projection.py": (set(A2_MOVED) | A2_EXTRA_OWNER, {"__future__", "json", "collections", "typing"}),
-    "libs/agents/reporter/read_models/period_summary_projection.py": ({"runtime_activity_from_q9_windows", "runtime_activity_from_daily_payload",
-                                                          "runtime_activity_not_available", "runtime_activity_from_live_summary",
-                                                          "apply_critical_closeout_readout"}, {"__future__", "typing"}),
-    "libs/agents/reporter/read_models/metrics_projection.py": ({"aggregate_day_metrics", "assemble_metrics_summary"},
-                                                           {"__future__", "collections", "typing"}),
+    RM + "operator_daily_projection.py": ({"build_daily_summary_readout"}, {"__future__", "json", "typing"}),
+    RM + "operator_run_context_projection.py": ({"build_run_contexts"}, {"__future__", "typing"}),
+    RM + "phase_health_projection.py": ({"_extract_run_health_surfaces", "_assemble_run_health", "build_runtime_health_aggregate"},
+                                        {"__future__", "collections", "typing"}),
+    RM + "phase_health_policy_views.py": (set(A2_VIEWS), {"__future__", "collections", "typing"}),
+    RM + "phase_health_text_rendering.py": (set(A2_TEXT), {"__future__", "json", "typing"}),
+    RM + "period_summary_projection.py": ({"runtime_activity_from_q9_windows", "runtime_activity_from_daily_payload",
+                                           "runtime_activity_not_available", "runtime_activity_from_live_summary",
+                                           "apply_critical_closeout_readout"}, {"__future__", "typing"}),
+    RM + "metrics_projection.py": ({"aggregate_day_metrics"}, {"__future__", "collections", "typing", SIBLING}),
+    RM + "metrics_summary_projection.py": ({"assemble_metrics_summary"}, {"__future__", "typing"}),
+    RM + "metrics_event_fold.py": ({"new_llm_fold", "fold_llm_result"}, {"__future__", "collections", "typing"}),
 }
 FACADES = {
     "libs/reporting/operator_visibility.py": {"build_operator_daily_summary_payload", "_build_run_contexts"},
@@ -69,7 +78,7 @@ def test_owner_is_effect_free_and_holds_exactly_the_moved_code(path):
     body_strings = [c for f in tree.body if isinstance(f, ast.FunctionDef) for c in ast.walk(f)
                     if isinstance(c, ast.Constant) and isinstance(c.value, str) and "facade." in c.value]
     assert not body_strings
-    assert len((ROOT / path).read_text(encoding="utf-8").splitlines()) < 1000
+    assert len((ROOT / path).read_text(encoding="utf-8").splitlines()) <= 350
 
 
 @pytest.mark.parametrize("path", sorted(FACADES))
@@ -89,7 +98,7 @@ def test_facade_declarations_untouched_except_designated_orchestrators(path):
     assert set(changed) == FACADES[path]
     for c in cdefs:
         if c.name in A2_MOVED and path.endswith("phase_runtime_health.py"):
-            assert len(c.body) == 1 and f"_health_projection.{c.name}(" in ast.unparse(c.body[0])
+            assert len(c.body) == 1 and any(f"{m}.{c.name}(" in ast.unparse(c.body[0]) for m in ("_health_views", "_health_text"))
     other = [ast.dump(n) for n in base.body if not isinstance(n, (ast.FunctionDef, ast.ClassDef, ast.Import, ast.ImportFrom))]
     assert other == [ast.dump(n) for n in cur.body if not isinstance(n, (ast.FunctionDef, ast.ClassDef, ast.Import, ast.ImportFrom))]
 

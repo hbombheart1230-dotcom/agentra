@@ -45,6 +45,13 @@ DECOMPOSED = {"trade_report_symbol_metadata": ("read_models", ["symbol_metadata_
                                                                 "symbol_metadata_name_inference", "symbol_metadata_resolution"]),
               "trade_story_pipeline_news": ("narrative", ["news_text", "news_headlines", "news_scanner_contribution"]),
               "trade_story_pipeline_scanner": ("narrative", ["scanner_basis", "scanner_selection_trace", "scanner_evidence_fit"])}
+P15_A_HISTORICAL_TREE = "d7ab82940deaa05810b28ef78fc0be88e201f9b6"  # integration/p1.5 BASE: exact historical folder inventory
+P15_A_FACADES = {"libs/reporting/operator_visibility.py", "libs/reporting/phase_runtime_health.py",
+                 "libs/reporting/operator_period_summary.py", "libs/reporting/metrics_report_generator.py"}
+P15_A_PURE_OWNERS = {("read_models", n + ".py") for n in (
+    "operator_daily_projection", "operator_run_context_projection", "phase_health_projection", "phase_health_policy_views",
+    "phase_health_text_rendering", "period_summary_projection", "metrics_projection", "metrics_summary_projection",
+    "metrics_event_fold")}
 REPORTER_PACKAGES = {"narrative", "read_models"}  # exact, versioned by this project (shared allowlist is Work-owned)
 OLD, NEW = "libs.reporting.{}", "libs.agents.reporter.{}.{}"
 
@@ -267,11 +274,16 @@ def test_target_tree_discipline_and_no_forbidden_surface():
     base = ROOT / "libs/agents/reporter"
     assert {p.name for p in base.iterdir() if p.is_dir() and p.name != "__pycache__"} == REPORTER_PACKAGES
     for sub in REPORTER_PACKAGES:
-        assert sorted(p.name for p in (base / sub).glob("*.py")) == \
-            sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]
-                   + [f"{o}.py" for d_sub, owners in DECOMPOSED.values() if d_sub == sub for o in owners]
-                   + [Path(o).name for o in sorted(R4_OWNER_FILES) if Path(o).parent.name == sub]), sub
+        historical = sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]
+                            + [f"{o}.py" for d_sub, owners in DECOMPOSED.values() if d_sub == sub for o in owners]
+                            + [Path(o).name for o in sorted(R4_OWNER_FILES) if Path(o).parent.name == sub])
+        # the pinned historical inventory is proven against the real historical Git tree (integration BASE), while the
+        # current folder is that inventory plus the exact approved P1.5 DEV-A Reporter pure owners (no prefix wildcard)
+        tree = subprocess.check_output(["git", "ls-tree", "--name-only", P15_A_HISTORICAL_TREE, f"libs/agents/reporter/{sub}/"], cwd=ROOT).decode().split()
+        assert sorted(Path(x).name for x in tree if x.endswith(".py")) == historical, sub
+        assert sorted(p.name for p in (base / sub).glob("*.py")) ==             sorted(historical + [n for d_sub, n in P15_A_PURE_OWNERS if d_sub == sub]), sub
     out = [x for x in subprocess.check_output(["git", "diff", "--name-only", "-z", START, "HEAD"], cwd=ROOT).decode().split(chr(0)) if x]
+    out = [x for x in out if x not in P15_A_FACADES]  # exact closed P1.5 DEV-A facade import/wrapper edits; helper stays strict
     merged = subprocess.check_output(["git", "rev-list", "--merges", f"{START}..HEAD"], cwd=ROOT).decode().split()
     violations = _scope_violations(out, merged=bool(merged))
     assert not violations, violations

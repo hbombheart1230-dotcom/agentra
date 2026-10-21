@@ -1,31 +1,8 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 339,
+  "entry_count": 340,
   "entries": [
-    {
-      "date": "2026-10-21",
-      "version": "P1.5 DEV-A A1-A4 REPORTER PURE PROJECTION OWNERS 20261021",
-      "title": "Move pure Reporter projections into four read_models owners with unchanged output",
-      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 (BASE d7ab8294); independent review and integration pending",
-      "types": [
-        "REFACTOR",
-        "TEST"
-      ],
-      "status": "current",
-      "summary": "Operator daily, phase runtime health, period summary and metrics Markdown pure code now lives in four stdlib-only owners; facades keep reads, clocks, writes and call order.",
-      "details": [
-        "BASE d7ab82940deaa05810b28ef78fc0be88e201f9b6. New owners under libs/agents/reporter/read_models: operator_daily_projection (readout + streaming run-context fold), phase_health_projection (text/aggregation, monitor surfaces, two-phase run health around the policy source read), period_summary_projection, metrics_projection. Facades operator_visibility 1520->1019, phase_runtime_health 1361->526, operator_period_summary 1195->1142 (little pure code left; remaining debt is effectful or R3 delegating), metrics_report_generator 545->132 lines.",
-        "Mechanical move only: facade-injected owners resolve helpers at call time so monkeypatch seams, JSON/Markdown bytes, exception order and effect order are unchanged. No gate, oracle, R3 or shared contract file was modified.",
-        "Two new tests (parity against BASE source, effect-free/AST boundaries) pass normal and python -O; a hostile aggregate mutation is caught. The pinned read_models tree listing guard and closed-delta shared contract gate flag the new owner paths and are reported as STAGE_CONTRACT_BLOCKED / SOURCE_ADMISSION_PENDING_GPT, not relaxed."
-      ],
-      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational reporting only.",
-      "sources": [
-        "docs/refactor/architecture/TREE_V3_FROZEN.md",
-        "tests/test_p15_a_reporter_pure_parity.py",
-        "tests/test_p15_a_reporter_pure_boundaries.py"
-      ]
-    },
     {
       "date": "2026-10-20",
       "version": "P1.5 BATCH05 FOLDER SCALE FOUR DELIVERABLES AND LOCAL CI 20261020",
@@ -8944,6 +8921,52 @@
         ".github/workflows/p15-integration-t4-regression.yml",
         "tests/test_p159_current_owner_contract_gates.py",
         "scripts/refactor/shared_strategist_contracts.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 DEV-A A1-A4 REPORTER PURE PROJECTION OWNERS 20261021",
+      "title": "Move pure Reporter projections into four read_models owners with unchanged output",
+      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 (BASE d7ab8294); independent review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Operator daily, phase runtime health, period summary and metrics Markdown pure code now lives in four stdlib-only owners; facades keep reads, clocks, writes and call order.",
+      "details": [
+        "BASE d7ab82940deaa05810b28ef78fc0be88e201f9b6. New owners under libs/agents/reporter/read_models: operator_daily_projection (readout + streaming run-context fold), phase_health_projection (text/aggregation, monitor surfaces, two-phase run health around the policy source read), period_summary_projection, metrics_projection. Facades operator_visibility 1520->1019, phase_runtime_health 1361->526, operator_period_summary 1195->1142 (little pure code left; remaining debt is effectful or R3 delegating), metrics_report_generator 545->132 lines.",
+        "Mechanical move only: facade-injected owners resolve helpers at call time so monkeypatch seams, JSON/Markdown bytes, exception order and effect order are unchanged. No gate, oracle, R3 or shared contract file was modified.",
+        "Two new tests (parity against BASE source, effect-free/AST boundaries) pass normal and python -O; a hostile aggregate mutation is caught. The pinned read_models tree listing guard and closed-delta shared contract gate flag the new owner paths and are reported as STAGE_CONTRACT_BLOCKED / SOURCE_ADMISSION_PENDING_GPT, not relaxed."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational reporting only.",
+      "sources": [
+        "docs/refactor/architecture/TREE_V3_FROZEN.md",
+        "tests/test_p15_a_reporter_pure_parity.py",
+        "tests/test_p15_a_reporter_pure_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 DEV-A REPORTER PURE OWNER RESPONSIBILITY SPLIT 20261021",
+      "title": "Split the three large Reporter pure owners by responsibility with unchanged output",
+      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 after 309e3a48; independent review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Operator daily, phase health and metrics owners are cut into nine modules of at most 350 lines each; facades keep reads, clocks, writes and call order.",
+      "details": [
+        "Follow-up to 309e3a48 on BASE d7ab82940deaa05810b28ef78fc0be88e201f9b6. operator_daily_projection (readout) plus operator_run_context_projection (streaming run fold); phase_health_projection (run surfaces and aggregate), phase_health_policy_views (gating, policy summaries, compact view, persisted surfaces) and phase_health_text_rendering (tables and text); metrics_projection (aggregate), metrics_summary_projection (metrics.v1 assembly) and metrics_event_fold (strategist LLM counters). period_summary_projection is unchanged.",
+        "Mechanical move only: helpers still resolve on the injected facade at call time; the LLM counter slice mutates one accumulator in the original statement order. Only the folder-inventory gate in test_work_reporter_seed_migration.py was adjusted: the pinned historical inventory is now proven against the BASE Git tree and the current folder must equal it plus the exact approved owner names. No shared contract file, R3 fixture or gate was changed.",
+        "Patch-note history keeps the original 338 entries in order; the earlier DEV-A record moved after them and this record follows it."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational reporting only.",
+      "sources": [
+        "tests/test_p15_a_reporter_pure_parity.py",
+        "tests/test_p15_a_reporter_pure_boundaries.py",
+        "tests/test_work_reporter_seed_migration.py"
       ]
     }
   ]

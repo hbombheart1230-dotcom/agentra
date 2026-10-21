@@ -157,7 +157,8 @@ def _metrics_events(path: Path, day="2026-03-10"):
         {"ok": True, "latency_ms": 812, "attempts": 1, "prompt_tokens": 100, "completion_tokens": "40", "total_tokens": 140,
          "estimated_cost_usd": 0.0012, "circuit_state": "closed", "prompt_version": "p3", "schema_version": "s2"},
         {"ok": False, "error_type": "CircuitOpen", "latency_ms": "bad", "attempts": -1, "prompt_tokens": None, "circuit_state": "OPEN"},
-        {"ok": False, "latency_ms": -5, "estimated_cost_usd": "x"}]):
+        {"ok": False, "latency_ms": -5, "estimated_cost_usd": "x"},
+        {"ok": True, "latency_ms": 0, "attempts": 0, "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0, "estimated_cost_usd": 0}]):
         add("strategist_llm", "result", payload, dt=10 + i)
     add("strategist", "policy_resolution", {"strategy_generation_mode": "llm", "fallback_used": True}, dt=20)
     add("monitor", "entry_decision_detail", {"no_trade_surface": {"no_trade_reason_code": "vwap_wait", "dominant_blocker": "reclaim",
@@ -194,7 +195,7 @@ def test_metrics_report_bytes_match_base_on_branch_fixture(day, tmp_path, monkey
     assert got == want
     if got[0] == "ok" and day == "2026-03-10":
         doc = json.loads(got[1][1][1])
-        assert doc["strategist_llm"]["total"] == 3 and doc["portfolio_guard"]["total"] == 1 and doc["broker_api"]["api_429_total"] == 1
+        assert doc["strategist_llm"]["total"] == 4 and doc["portfolio_guard"]["total"] == 1 and doc["broker_api"]["api_429_total"] == 1
 
 
 def test_metrics_write_path_resolution_clock_and_route_order_match_base(tmp_path, monkeypatch):
