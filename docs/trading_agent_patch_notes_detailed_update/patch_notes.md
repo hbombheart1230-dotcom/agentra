@@ -1,5 +1,14 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST08-A8.3 Q13 Q14 Q16 AND COST COMPARISON PROJECTIONS 20261021
+**Stage:** P1.5 FAST08 A8.3 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- Q13/Q14 일별 행·원인 합계, Q13 축 요약, Q16/Q17 코호트 지표·forward 무결성, 비용 기준 top-K 비교 행, 렌더러를 `fast08_qwindow_projection.py`로 옮겼습니다. 줄 수: q13_q14_validation 328→196, q16_proxy_rejection_review 587→316, cost_basis_comparison 236→159, attribution_score_window 256→118.
+- 검증 일수·누락 증거 비율·GO/NO_GO 판정, Q16 기간·최소 표본·후보 분류·양수일 규칙·확정 RETAIN, 수수료·세금 상수, 산출물 읽기는 원래 모듈에 남겼습니다. INSUFFICIENT_EVIDENCE와 해석 불가 점수는 0이 아니라 None으로 유지됩니다.
+- 검증: 신규 smoke 11건과 기존 관련 테스트 41건 통과, 동등성 32/32.
+
+Sources: `libs/reporting/evaluation/q13_q14_validation.py`, `libs/reporting/evaluation/q16_proxy_rejection_review.py`, `libs/reporting/evaluation/cost_basis_comparison.py`, `libs/reporting/evaluation/attribution_score_window.py`, `libs/reporting/evaluation/fast08_qwindow_projection.py`, `tests/test_p15_fast08_a_qwindow_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST08-A8.2 SCANNER AND SELECTION ATTRIBUTION PROJECTIONS 20261021
 **Stage:** P1.5 FAST08 A8.2 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 

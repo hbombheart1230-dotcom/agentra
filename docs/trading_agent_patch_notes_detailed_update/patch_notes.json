@@ -1,8 +1,36 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 333,
+  "entry_count": 334,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.3 Q13 Q14 Q16 AND COST COMPARISON PROJECTIONS 20261021",
+      "title": "Q13/Q14 validation, Q16/Q17 review, cost-basis comparison and attribution score window share a pure projection helper",
+      "stage": "P1.5 FAST08 A8.3 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Daily Q13/Q14/horizon row projection, root-cause totals, Q13 axis summaries, Q16/Q17 cohort metric bundles, forward integrity, cost-basis top-K comparison rows and the Markdown renderers move to libs/reporting/evaluation/fast08_qwindow_projection.py: q13_q14_validation 328->196, q16_proxy_rejection_review 587->316, cost_basis_comparison 236->159, attribution_score_window 256->118 lines.",
+      "details": [
+        "q13_q14_validation: REQUIRED_VALIDATION_DAYS, missing-evidence ratios, GO/NO_GO/IN_PROGRESS decision and reasons, artifact reads and writes stay in the facade; row projection, totals and the renderer move. The Exit Horizon comparison (against an actionable set that includes itself) is preserved exactly as before.",
+        "q16_proxy_rejection_review: Q16_START/CLOSE days, minimum samples/days, candidate classes (_candidate_class, _q17_candidate_class), the positive-day rule, _q16_decision, the frozen RETAIN authority and shadow row loading stay in the facade; metric bundles, forward-integrity day checks, cohort horizons, the Q17 block and the renderer move.",
+        "cost_basis_comparison: fee/tax constants, build_evaluation_cost_bases and forward candle loading stay; top-K comparison rows and rendering move. No cost assumption changes.",
+        "attribution_score_window: freeze ledger and artifact reads stay; axis summaries, weakest-axis counts and rendering move. INSUFFICIENT_EVIDENCE and unparsable scores stay None and never read as 0.",
+        "Checks: tests/test_p15_fast08_a_qwindow_smoke.py 11 passed plus existing Q13/Q14/Q16/cost-basis/score/Q9/cumulative tests (41 passed); scratch baseline parity 32/32."
+      ],
+      "impact": "Immutable Q-window thresholds, proxy-rejection denominators, fees and coverage facts unchanged; no trading, broker or policy change.",
+      "sources": [
+        "libs/reporting/evaluation/q13_q14_validation.py",
+        "libs/reporting/evaluation/q16_proxy_rejection_review.py",
+        "libs/reporting/evaluation/cost_basis_comparison.py",
+        "libs/reporting/evaluation/attribution_score_window.py",
+        "libs/reporting/evaluation/fast08_qwindow_projection.py",
+        "tests/test_p15_fast08_a_qwindow_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST08-A8.2 SCANNER AND SELECTION ATTRIBUTION PROJECTIONS 20261021",
