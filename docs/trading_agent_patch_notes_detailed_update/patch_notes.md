@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST08-A8.5 SHADOW AND EXIT CONTEXT PROJECTIONS 20261021
+**Stage:** P1.5 FAST08 A8.5 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · post_exit_shadow_recap STAGE_CONTRACT_BLOCKED · **Tags:** REFACTOR · TEST
+
+- 수익성 복구 진단의 판정 보조·행 조립·일 audit/scorecard 집계와 시장 regime의 입력 추출·미가용 payload·렌더러를 `fast08_shadow_projection.py`로 옮겼습니다. 줄 수: profitability_recovery_day1 443→281, market_regime_rail_review 262→155.
+- 파일 읽기, 연결·보유 증거·체결 정보 복구, 필수 체결 필드 목록, 종료 거래·회귀 규칙, 시장 데이터 읽기, regime 임계값과 분기는 원래 모듈에 남겼습니다. 보유 증거 복구 분기의 기존 변수 선참조 동작은 고치지 않고 그대로 보존했으며 테스트로 고정했습니다.
+- **STAGE_CONTRACT_BLOCKED:** `post_exit_shadow_recap.py`는 R-4/R-8 owner 본문이 facade에 주입되고 `test_work_reporter_seed_migration`·R8 parity 테스트가 고정하고 있어 수정하지 않았습니다. 게이트는 완화하지 않았습니다.
+- 검증: 신규 smoke 14건과 기존 관련 테스트 29건 통과, 동등성 35/35.
+
+Sources: `libs/reporting/profitability_recovery_day1.py`, `libs/reporting/market_regime_rail_review.py`, `libs/reporting/fast08_shadow_projection.py`, `tests/test_p15_fast08_a_shadow_context_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST08-A8.4 CUMULATIVE PERFORMANCE AND HORIZON PROJECTIONS 20261021
 **Stage:** P1.5 FAST08 A8.4 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 

@@ -1,8 +1,33 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 335,
+  "entry_count": 336,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.5 SHADOW AND EXIT CONTEXT PROJECTIONS 20261021",
+      "title": "Profitability recovery diagnostics and market regime rail gain a pure projection helper; post-exit recap is STAGE_CONTRACT_BLOCKED",
+      "stage": "P1.5 FAST08 A8.5 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT; post_exit_shadow_recap STAGE_CONTRACT_BLOCKED",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Trade diagnostic predicates, row assembly and day audit/scorecard roll-ups, plus macro-input extraction, the unavailable payload and the Markdown renderer, move to libs/reporting/fast08_shadow_projection.py: profitability_recovery_day1 443->281, market_regime_rail_review 262->155 lines. libs/reporting/post_exit_shadow_recap.py is left byte-identical.",
+      "details": [
+        "profitability_recovery_day1: every file read, same-day linkage resolution, holding-evidence recovery, execution-detail resolution, REQUIRED_EXECUTION_FIELDS and the closed-trade / regression rules stay in the facade (predicates are shared and passed the field list); row assembly, top weakness and the audit/scorecard roll-ups move. The existing read-before-assign path in the holding-evidence monitor-context fallback is preserved and now covered by a test, not fixed.",
+        "market_regime_rail_review: the macro snapshot load, korea_index_sanity call, every regime threshold and the rail/behavior/focus branches stay in classify_market_regime_rail; input extraction (missing values read as 0.0), the unavailable payload and rendering move.",
+        "post_exit_shadow_recap: STAGE_CONTRACT_BLOCKED. Its R-4/R-8 owner bodies are facade-injected and pinned by test_work_reporter_seed_migration and the R8 read-via-callback parity test, so it was not edited and no gate was relaxed.",
+        "Checks: tests/test_p15_fast08_a_shadow_context_smoke.py 14 passed (nine regime rails, closed/loss/regression/thin-evidence rows, predicates, preserved fallback quirk, sandboxed generation, purity) plus existing market-regime/profitability/Q8/closeout tests (29 passed); scratch baseline parity 35/35."
+      ],
+      "impact": "Market-source reads, regime and exit threshold logic and trading decisions are unchanged; no broker, persistence or live action change.",
+      "sources": [
+        "libs/reporting/profitability_recovery_day1.py",
+        "libs/reporting/market_regime_rail_review.py",
+        "libs/reporting/fast08_shadow_projection.py",
+        "tests/test_p15_fast08_a_shadow_context_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST08-A8.4 CUMULATIVE PERFORMANCE AND HORIZON PROJECTIONS 20261021",
