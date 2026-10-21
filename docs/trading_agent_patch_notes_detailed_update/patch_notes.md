@@ -1,5 +1,12 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 DEV-A A1-A4 REPORTER PURE PROJECTION OWNERS 20261021
+**Stage:** 구조 리팩터링 후보 (BASE d7ab8294, 독립 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- 운영 일일·phase 런타임 헬스·기간 요약·메트릭 Markdown의 순수 코드를 `libs/agents/reporter/read_models/`의 4개 stdlib 전용 owner(`operator_daily_projection`, `phase_health_projection`, `period_summary_projection`, `metrics_projection`)로 이동. 읽기·시계·쓰기·호출 순서는 facade 유지.
+- facade 줄 수: operator_visibility 1520→1019, phase_runtime_health 1361→526, operator_period_summary 1195→1142(순수 코드 거의 없음, 잔여는 부수효과/R3 위임), metrics_report_generator 545→132. 출력 바이트·예외·효과 순서 동일, 게이트/오라클/R3 파일 무수정.
+- 신규 테스트 2개(BASE 동등성, 경계/무부수효과) normal·-O 통과, 적대적 변형 검출. 고정된 read_models 트리 목록 가드와 closed-delta 공유 계약 게이트는 신규 경로를 차단하며 완화하지 않고 STAGE_CONTRACT_BLOCKED / SOURCE_ADMISSION_PENDING_GPT로 보고.
+
 ## 2026-10-20 · P1.5 BATCH05 FOLDER SCALE FOUR DELIVERABLES AND LOCAL CI 20261020
 **Stage:** BATCH05 개발 범위 승인 (DOCS ONLY) · **Tags:** PROCESS · REFACTOR · TEST · SAFETY
 
