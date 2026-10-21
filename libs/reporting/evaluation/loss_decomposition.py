@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from bisect import bisect_right
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -17,6 +18,7 @@ from libs.reporting.quant_shadow_forward_outcomes import attach_forward_outcomes
 from .artifact_inventory import iter_trade_dirs
 from . import fast07_attribution_projection as _attr
 from . import fast07_chain_render_projection as _render
+from . import fast07_trade_projection as _tp
 from .trade_read_model import build_q9_trade_read_model
 
 
@@ -64,37 +66,39 @@ def _entry_timing_summary(
     models: list[dict[str, Any]],
     candidates: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    by_symbol: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    # Shadow baselines per symbol, ordered by baseline epoch (read once as a number; a string epoch such as
+    # "1780909200.0" used to pass the filter and then crash the sort).
+    by_symbol: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
     for row in candidates:
         base = row.get("shadow_forward_base")
         base = base if isinstance(base, Mapping) else {}
-        epoch = int(_to_float(base.get("baseline_epoch")) or 0)
+        epoch = _to_float(base.get("baseline_epoch")) or 0.0
         price = _to_float(base.get("baseline_price"))
         if epoch > 0 and price and price > 0:
-            by_symbol[str(row.get("symbol") or "")].append(row)
-    for rows in by_symbol.values():
-        rows.sort(key=lambda row: int((row.get("shadow_forward_base") or {}).get("baseline_epoch") or 0))
+            by_symbol[str(row.get("symbol") or "")].append((epoch, row))
+    epochs_by_symbol: dict[str, list[float]] = {}
+    rows_by_symbol: dict[str, list[dict[str, Any]]] = {}
+    for symbol, pairs in by_symbol.items():
+        pairs.sort(key=lambda pair: pair[0])
+        epochs_by_symbol[symbol] = [pair[0] for pair in pairs]
+        rows_by_symbol[symbol] = [pair[1] for pair in pairs]
 
     deltas: list[float] = []
     matched: list[dict[str, Any]] = []
     matched_days: set[str] = set()
     for model in models:
         entry = model.get("entry") or {}
-        entry_ts = _parse_ts(entry.get("timestamp"))
+        entry_epoch = _tp.epoch(entry.get("timestamp"))  # ISO or numeric epoch; unparsable reads as 0
         entry_price = _to_float(entry.get("price"))
         symbol = str(model.get("symbol") or "")
-        if entry_ts is None or entry_price is None or entry_price <= 0:
+        if entry_epoch <= 0 or entry_price is None or entry_price <= 0:
             continue
-        epoch = int(entry_ts.timestamp())
-        eligible = []
-        for row in by_symbol.get(symbol, []):
-            base = row.get("shadow_forward_base") or {}
-            base_epoch = int(base.get("baseline_epoch") or 0)
-            if 0 <= epoch - base_epoch <= 15 * 60:
-                eligible.append(row)
-        if not eligible:
+        # The last baseline at or before the fill, if it is within 15 minutes (same choice as scanning every row).
+        epochs = epochs_by_symbol.get(symbol, [])
+        index = bisect_right(epochs, entry_epoch) - 1
+        if index < 0 or entry_epoch - epochs[index] > 15 * 60:
             continue
-        candidate = eligible[-1]
+        candidate = rows_by_symbol[symbol][index]
         base = candidate.get("shadow_forward_base") or {}
         baseline_price = _to_float(base.get("baseline_price"))
         if baseline_price is None or baseline_price <= 0:
@@ -123,7 +127,13 @@ def _entry_timing_summary(
     }
 
 
-_exit_hold_summary = _attr.exit_hold_summary
+def _exit_hold_summary(models: list[dict[str, Any]]) -> dict[str, Any]:
+    """Post-exit price observations of trades that really exited; a price path with no realized exit is not an exit."""
+    realized = [m for m in models if m.get("evidence_class") != "UNAVAILABLE"]
+    summary = _attr.exit_hold_summary(realized)
+    if len(realized) != len(models):
+        summary["unrealized_exit_excluded_count"] = len(models) - len(realized)
+    return summary
 
 
 def _diagnosis(

@@ -11,7 +11,7 @@ load and all labelling/eligibility thresholds stay in the original
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Mapping, Sequence
 
 from .contracts import CONTRACT_VERSION, EvidenceClass, IntegrityStatus
@@ -19,6 +19,15 @@ from .metrics import performance_metrics
 
 
 # --- shared normalization ----------------------------------------------------
+
+# Naive timestamps carry no zone. They used to inherit the host's local zone, which made results depend on
+# the machine and made naive-vs-aware comparisons raise TypeError; they are now read as Korea time.
+KST = timezone(timedelta(hours=9))
+
+
+def _aware(value: datetime) -> datetime:
+    return value if value.tzinfo is not None else value.replace(tzinfo=KST)
+
 
 
 def mapping(value: Any) -> Mapping[str, Any]:
@@ -47,7 +56,7 @@ def parse_ts(value: Any) -> datetime | None:
     except (TypeError, ValueError, OSError):
         pass
     try:
-        return datetime.fromisoformat(text.replace("Z", "+00:00"))
+        return _aware(datetime.fromisoformat(text.replace("Z", "+00:00")))
     except ValueError:
         return None
 
@@ -65,7 +74,7 @@ def epoch(value: Any) -> int:
     except ValueError:
         pass
     try:
-        return int(datetime.fromisoformat(text.replace("Z", "+00:00")).timestamp())
+        return int(_aware(datetime.fromisoformat(text.replace("Z", "+00:00"))).timestamp())
     except ValueError:
         return 0
 
@@ -265,12 +274,14 @@ def classify_trade_integrity(
         watch_items.extend(f"missing:{name}" for name in inventory["missing_required"])
     if not entry:
         defects.append("entry_missing")
-    if realized_exit and not parse_ts(exit_ts):
+    entry_dt = parse_ts(entry_ts)
+    exit_dt = parse_ts(exit_ts)
+    if realized_exit and not exit_dt:
         if broker_exit_authoritative:
             watch_items.append("broker_exit_timestamp_unavailable")
         else:
             defects.append("exit_timestamp_invalid")
-    if parse_ts(entry_ts) and parse_ts(exit_ts) and parse_ts(exit_ts) < parse_ts(entry_ts):
+    if entry_dt and exit_dt and exit_dt < entry_dt:
         defects.append("exit_before_entry")
     if realized_exit and not str(pnl_source or "").startswith(("lifecycle", "broker", "ai_trade_report", "exit.")):
         watch_items.append("pnl_authority_weak")
@@ -609,6 +620,13 @@ def windows_by_decision_id(payload: Mapping[str, Any]) -> dict[str, dict[str, An
     return out
 
 
+def kst_day(at_epoch: int) -> str:
+    try:
+        return datetime.fromtimestamp(int(at_epoch), tz=KST).strftime("%Y%m%d")
+    except (OverflowError, OSError, ValueError):
+        return ""
+
+
 def row_at_or_before(rows: Sequence[Mapping[str, Any]], at_epoch: int) -> Mapping[str, Any] | None:
     prior = [row for row in rows if int(row.get("ts") or 0) <= at_epoch]
     return prior[-1] if prior else None
@@ -626,6 +644,9 @@ def pre_entry_move_pct(
     base = row_at_or_before(list(minute_rows_by_symbol.get(symbol) or []), decision_epoch)
     if not base:
         return None, {"available": False, "reason": "minute_row_before_decision_unavailable"}
+    if kst_day(int(base.get("ts") or 0)) != kst_day(decision_epoch):
+        # A price from an earlier trading day is not a pre-decision baseline; leave the move unknown.
+        return None, {"available": False, "reason": "decision_base_row_cross_day"}
     base_price = num(base.get("close") or base.get("price"))
     if base_price is None or base_price <= 0:
         return None, {"available": False, "reason": "decision_base_price_unavailable"}
@@ -690,8 +711,34 @@ def entry_stage_timing(model: Mapping[str, Any], window: Mapping[str, Any]) -> d
     }
 
 
-def _delay(entry_epoch: int, stage: int) -> int | None:
+def raw_delay(entry_epoch: int, stage: int) -> int | None:
     return int(entry_epoch - stage) if entry_epoch > 0 and stage > 0 else None
+
+
+def delay_seconds(entry_epoch: int, stage: int) -> int | None:
+    """Stage-to-entry delay; a stage stamped after the fill is a mismatch and reads as unknown, never negative."""
+    value = raw_delay(entry_epoch, stage)
+    return value if value is not None and value >= 0 else None
+
+
+def entry_evidence_basis(
+    timing: Mapping[str, Any], forward: Mapping[str, Any], anomalies: Sequence[str]
+) -> dict[str, str]:
+    """Separates the actual fill, the observed forward price path and the decision-time shadow anchor."""
+    price = timing["entry_price"]
+    filled = timing["entry_epoch"] > 0 and price is not None and price > 0
+    if not forward.get("available"):
+        observed = "UNAVAILABLE"
+    elif int(forward.get("observed_checkpoint_count") or 0) >= len(ENTRY_TIMING_HORIZONS):
+        observed = "OBSERVED"
+    else:
+        observed = "PARTIAL"
+    return {
+        "actual_entry": "FILLED" if filled else "NO_FILL",
+        "observed_forward_path": observed if filled else "NOT_APPLICABLE",
+        "shadow_anchor": "AVAILABLE" if timing["decision_epoch"] > 0 else "UNAVAILABLE",
+        "timing_integrity": "MISMATCH:" + ",".join(anomalies) if anomalies else "OK",
+    }
 
 
 def entry_timing_row(
@@ -733,7 +780,17 @@ def entry_timing_row(
             "forward_available": bool(forward.get("available")),
         }
     )
-    return {
+    anomalies = [
+        name
+        for name, stage in (
+            ("scanner_after_entry", scanner_time),
+            ("strategist_after_entry", strategist_time),
+            ("selected_after_entry", selected_time),
+            ("decision_window_after_entry", decision_epoch),
+        )
+        if (raw_delay(entry_epoch, stage) or 0) < 0
+    ]
+    row = {
         "trade_id": str(model.get("trade_id") or ""),
         "symbol": str(model.get("symbol") or ""),
         "label": label,
@@ -757,15 +814,19 @@ def entry_timing_row(
         "strategist_confirm_time": iso(strategist_time),
         "selected_candidate_time": iso(selected_time),
         "actual_entry_time": iso(entry_epoch),
-        "scanner_to_entry_delay_sec": _delay(entry_epoch, scanner_time),
-        "strategist_to_entry_delay_sec": _delay(entry_epoch, strategist_time),
-        "selected_to_entry_delay_sec": _delay(entry_epoch, selected_time),
-        "decision_window_to_entry_delay_sec": _delay(entry_epoch, decision_epoch),
+        "scanner_to_entry_delay_sec": delay_seconds(entry_epoch, scanner_time),
+        "strategist_to_entry_delay_sec": delay_seconds(entry_epoch, strategist_time),
+        "selected_to_entry_delay_sec": delay_seconds(entry_epoch, selected_time),
+        "decision_window_to_entry_delay_sec": delay_seconds(entry_epoch, decision_epoch),
         "pre_entry_move_pct": pre_move,
         "pre_entry_move_meta": pre_move_meta,
         "entry_return_pct": outcome.get("net_return_pct"),
         "entry_forward_quality": quality,
+        "evidence_basis": entry_evidence_basis(timing, forward, anomalies),
     }
+    if anomalies:
+        row["timing_anomalies"] = anomalies
+    return row
 
 
 def _mean_or_none(values: Sequence[float | None], digits: int) -> float | None:

@@ -1,8 +1,39 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 338,
+  "entry_count": 339,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 A10 REPORTER EXIT AND HOLDING HORIZON EVIDENCE 20261021",
+      "title": "Entry/exit timing evidence is separated from price paths and shadow anchors, five demonstrated timing defects are fixed, and two hot paths are faster",
+      "stage": "P1.5 A10 DEV-A source checkpoint (Issue #28); focused normal and python -O; trade_truth v2 deferred as instructed",
+      "types": [
+        "FIX",
+        "REFACTOR",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Entry timing rows now carry an additive evidence_basis (actual entry FILLED/NO_FILL, observed forward path OBSERVED/PARTIAL/UNAVAILABLE/NOT_APPLICABLE, shadow anchor, timing integrity) and an optional timing_anomalies list. Naive timestamps are read as Korea time, a baseline price from another trading day is unknown, a stage stamped after the fill is unknown instead of a negative delay, and a post-exit price path with no realized exit is no longer counted as an exit. Entry-baseline matching and the horizon combination review do one conversion per row.",
+      "details": [
+        "Demonstrated defects at BASE e57923b2, all reproduced before the change: naive-vs-aware timestamps raised TypeError in holding_seconds and trade integrity; a baseline_epoch recorded as '1780909200.0' passed the filter then raised ValueError in the entry-baseline sort; a three-day-old minute price produced a +102% pre-entry move; numeric epoch entry timestamps were silently dropped from the entry-baseline match; trades whose evidence_class is UNAVAILABLE (no realized exit) were counted in observed_trade_count of the exit-hold summary.",
+        "fast07_trade_projection: parse_ts/epoch read naive strings as KST (previously host-local, which also made naive-vs-aware comparisons fail); integrity parses each timestamp once; pre_entry_move_pct returns unknown with reason decision_base_row_cross_day when the base row is from another KST day; delay_seconds turns a stage stamped after the fill into unknown and the row lists it in timing_anomalies; entry_evidence_basis separates fill, observed path and shadow anchor.",
+        "loss_decomposition: entry-baseline matching reads the epoch as a number, accepts ISO and numeric entry timestamps, and uses a sorted bisect (same last-within-15-minutes choice, checked against an independent brute-force reference including ties and the 900 s boundary); the exit-hold summary skips trades whose evidence_class is explicitly UNAVAILABLE and reports unrealized_exit_excluded_count only when it is non-zero. Unlabeled trades keep the old behavior.",
+        "horizon_alignment: _combo_rows reads each row's day and per-horizon returns once (shared by all three combinations in the review) instead of repeatedly; MIN_*, decisions and ordering are untouched.",
+        "Measured on 20000 candidates / 3000 models / 30000 shadow baselines: combination review 0.927 s to 0.500 s (about 1.9x); entry-baseline matching 0.278 s to 0.030 s (about 9x) with identical matches (3000) and averages.",
+        "Parity: 26 outputs compared between BASE and this candidate on inputs outside the repaired paths; every one is identical after removing the two additive keys, except rows that are intentionally different (a fill stamped before its decision window now reads delay as unknown and leaves the average). No threshold, DecisionClass or Q9/Q13/Q14/Q16 classification changed.",
+        "Checks: tests/test_p15_fast10_a_exit_horizon_smoke.py 26 cases plus FAST07 smokes and related Q9/loss/timing/horizon/trade-model tests, 162 passed under both normal and python -O. A STAGE_CONTRACT_BLOCKED file was not needed: none of the named files is a frozen R3/R4/R6-R9 body."
+      ],
+      "impact": "Read-only evaluation readouts only; no execution, approval, risk, UEF, Step5C, DTO schema, threshold or live-path change; missing or mismatched evidence reads as unknown/INSUFFICIENT_EVIDENCE and never as a favorable score or a fill.",
+      "sources": [
+        "libs/reporting/evaluation/fast07_trade_projection.py",
+        "libs/reporting/evaluation/entry_timing_attribution.py",
+        "libs/reporting/evaluation/loss_decomposition.py",
+        "libs/reporting/evaluation/horizon_alignment.py",
+        "tests/test_p15_fast10_a_exit_horizon_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 A9 REPORTER FALLBACK CORRECTNESS AND PROVENANCE 20261021",

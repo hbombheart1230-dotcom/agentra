@@ -163,11 +163,7 @@ def build_entry_timing_attribution_report(
             entry_price=timing["entry_price"],
             minute_rows_by_symbol=rows_by_symbol,
         )
-        scanner_delay = (
-            int(timing["entry_epoch"] - timing["scanner_time"])
-            if timing["entry_epoch"] > 0 and timing["scanner_time"] > 0
-            else None
-        )
+        scanner_delay = _proj.delay_seconds(timing["entry_epoch"], timing["scanner_time"])
         label, reasons = _label(
             scanner_to_entry_delay_sec=scanner_delay,
             pre_entry_move_pct=pre_move,
