@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 326,
+  "entry_count": 327,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8620,6 +8620,30 @@
         "tests/test_p15_operator_brief_status_fast_smoke.py"
       ],
       "status": "current"
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST07 B7.1 20261021",
+      "title": "Truthful dashboard and run index",
+      "stage": "FAST_DEV implementation checkpoint; final peer and composed integration pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Explicit SUCCESS/FAILED/GUARDED/PENDING/UNKNOWN/NO_DATA execution badges, no NOOP success badge or truthy-string report link; zero executions distinct from successful reconciliation; incomplete reconciliation and portfolio snapshots stay neutral. Preserve filters/run trace and escaping; no endpoint, loader or trading changes.",
+      "details": [
+        "Explicit SUCCESS/FAILED/GUARDED/PENDING/UNKNOWN/NO_DATA execution badges, no NOOP success badge or truthy-string report link; zero executions distinct from successful reconciliation; incomplete reconciliation and portfolio snapshots stay neutral. Preserve filters/run trace and escaping; no endpoint, loader or trading changes.",
+        "Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged."
+      ],
+      "impact": "Read-only observation UX; not INTEGRATED or RELEASE_ACCEPTED.",
+      "sources": [
+        "apps/operator_ui/templates/overview.html",
+        "apps/operator_ui/templates/runs.html",
+        "apps/operator_ui/data_access_status.py",
+        "tests/test_p15_fast07_b_overview_render_smoke.py"
+      ]
     }
   ]
 }

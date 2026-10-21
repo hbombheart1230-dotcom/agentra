@@ -14,11 +14,11 @@
   </div>
 </section>
 
-<section class="run-filters">
-  <a href="/runs?limit={{ limit }}&activity_view=all" class="link-action {% if activity_view == 'all' and not mismatch_only %}link-action--active{% endif %}">All runs</a>
-  <a href="/runs?limit={{ limit }}&activity_view=trades" class="link-action {% if activity_view == 'trades' and not mismatch_only %}link-action--active{% endif %}">Trades</a>
-  <a href="/runs?limit={{ limit }}&activity_view=monitoring" class="link-action {% if activity_view == 'monitoring' and not mismatch_only %}link-action--active{% endif %}">Monitoring</a>
-  <a href="/runs?limit={{ limit }}&mismatch_only=true" class="link-action {% if mismatch_only %}link-action--active{% endif %}">Mismatch only</a>
+<section class="run-filters" aria-label="Run filters">
+  <a href="/runs?limit={{ limit }}&activity_view=all&amp;mismatch_only={{ 'true' if mismatch_only else 'false' }}" class="link-action {% if activity_view == 'all' %}link-action--active{% endif %}">All runs</a>
+  <a href="/runs?limit={{ limit }}&activity_view=trades&amp;mismatch_only={{ 'true' if mismatch_only else 'false' }}" class="link-action {% if activity_view == 'trades' %}link-action--active{% endif %}">Trades</a>
+  <a href="/runs?limit={{ limit }}&activity_view=monitoring&amp;mismatch_only={{ 'true' if mismatch_only else 'false' }}" class="link-action {% if activity_view == 'monitoring' %}link-action--active{% endif %}">Monitoring</a>
+  <a href="/runs?limit={{ limit }}&amp;activity_view={{ activity_view }}&amp;mismatch_only={{ 'false' if mismatch_only else 'true' }}" class="link-action {% if mismatch_only %}link-action--active{% endif %}">Mismatch only</a>
 </section>
 
 <section class="card table-card">
@@ -47,7 +47,7 @@
       <tr>
         <td>{{ row.ts }}</td>
         <td>
-          <a href="/runs/{{ row.run_id }}">{{ row.run_id_short or row.run_id }}</a>
+          <a href="/runs/{{ row.run_id | urlencode }}">{{ row.run_id_short or row.run_id }}</a>
           {% if row.run_id_short and row.run_id_short != row.run_id %}
           <div class="meta-line">full: {{ row.run_id }}</div>
           {% endif %}
@@ -71,14 +71,14 @@
         <td>{{ row.execution_mode_label or "-" }}</td>
         <td>
           <div class="chip-list">
-            <span class="{{ row.report_status_badge_class or 'status-badge' }}">{{ row.report_status_label or "AI Report" }}</span>
+            {% if row.report_available is sameas true %}<span class="{{ row.report_status_badge_class or 'status-badge' }}">{{ row.report_status_label or "AI Report Available" }}</span>{% else %}<span class="status-badge">{{ row.report_status_label if row.report_status in ["failed", "pending", "skipped"] else "NO_DATA — no linked report" }}</span>{% endif %}
             {% if row.lifecycle_status %}
             <span class="chip">Lifecycle {{ row.lifecycle_status | upper }}</span>
             {% endif %}
-            {% if row.report_available and row.report_link %}
+            {% if row.report_available is sameas true and row.report_link %}
             <a class="link-action" href="{{ row.report_link }}">Open report</a>
             {% endif %}
-            {% if row.operator_brief_available and row.operator_brief_link %}
+            {% if row.operator_brief_available is sameas true and row.operator_brief_link %}
             <a class="link-action" href="{{ row.operator_brief_link }}">Open brief</a>
             {% endif %}
           </div>
@@ -99,13 +99,13 @@
           {% endif %}
         </td>
         <td>
-          {% if row.macro_stress_active %}
+          {% if row.macro_stress_active is sameas true %}
           active {{ row.macro_stress_flags | join(", ") }}
           {% else %}
-          normal
+          {{ "normal" if row.macro_stress_active is sameas false else "UNKNOWN" }}
           {% endif %}
         </td>
-        <td>{{ row.feature_coverage_quality }} ({{ "%.0f"|format(row.feature_coverage_ratio * 100) }}%)</td>
+        <td>{{ row.feature_coverage_quality }} ({% if row.feature_coverage_ratio is number %}{{ "%.0f"|format(row.feature_coverage_ratio * 100) }}%{% else %}UNKNOWN{% endif %})</td>
         <td>
           <div>{{ row.monitor_reason or row.exit_reason or "-" }}</div>
           <div class="subtle-meta">axis: {{ row.active_exit_axis or "-" }}</div>
@@ -115,8 +115,21 @@
           {% endif %}
         </td>
         <td>{{ row.guard_reason or "-" }}</td>
-        <td>{{ row.execution_action or "-" }} {{ row.execution_status or "" }}</td>
+        <td>
+          {% set action = (row.execution_action or "") | upper %}
+          {% set execution = (row.execution_status or "") | lower %}
+          {% if execution in ["denied", "blocked", "guarded"] %}{% set state, tone = "GUARDED", "warn" %}
+          {% elif execution in ["failed", "error", "rejected", "cancelled"] %}{% set state, tone = "FAILED", "critical" %}
+          {% elif action in ["NOOP", "WAIT", "HOLD"] %}{% set state, tone = "NO_EXECUTION", "neutral" %}
+          {% elif execution in ["pending", "accepted", "submitted", "partially_filled"] %}{% set state, tone = "PENDING", "warn" %}
+          {% elif action in ["BUY", "SELL"] and execution in ["ok", "success", "filled", "executed", "completed"] %}{% set state, tone = "SUCCESS", "ok" %}
+          {% else %}{% set state, tone = ("UNKNOWN" if action or execution else "NO_DATA"), "neutral" %}{% endif %}
+          <span class="status-badge status-badge--{{ tone }}" data-execution-state="{{ state }}">{{ state }}</span>
+          <div class="subtle-meta">{{ action or "-" }} / {{ row.execution_status or "not captured" }}</div>
+        </td>
       </tr>
+      {% else %}
+      <tr><td colspan="15" class="empty-state">NO_DATA — No runs match these filters.</td></tr>
       {% endfor %}
     </tbody>
   </table>

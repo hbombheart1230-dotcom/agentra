@@ -1,48 +1,52 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="overview">
-  {% set system_status_value = (overview.operator_summary.system_status or "UNKNOWN") | upper %}
-  {% if system_status_value in ["GREEN", "OK", "LIVE", "HEALTHY"] %}
-    {% set status_label = "OK" %}
-    {% set status_tone = "ok" %}
-  {% elif system_status_value in ["YELLOW", "WARN", "WARNING", "AMBER", "UNKNOWN"] %}
-    {% set status_label = "WARNING" %}
-    {% set status_tone = "warn" %}
+  {% set system_status_value = (overview.operator_summary.system_status or "") | upper %}
+  {% if system_status_value in ["GREEN", "OK", "HEALTHY", "SUCCESS"] %}
+    {% set status_label, status_tone = "SUCCESS", "ok" %}
+  {% elif system_status_value in ["RED", "FAILED", "FAIL", "ERROR", "CRITICAL"] %}
+    {% set status_label, status_tone = "FAILED", "critical" %}
+  {% elif system_status_value in ["GUARDED", "BLOCKED", "DENIED", "YELLOW", "WARN", "WARNING", "AMBER"] %}
+    {% set status_label, status_tone = "GUARDED", "warn" %}
+  {% elif system_status_value == "PENDING" %}
+    {% set status_label, status_tone = "PENDING", "warn" %}
   {% else %}
-    {% set status_label = "CRITICAL" %}
-    {% set status_tone = "critical" %}
+    {% set status_label, status_tone = ("UNKNOWN" if system_status_value else "NO_DATA"), "neutral" %}
   {% endif %}
-  {% set exec_total = [overview.operator_summary.executions_total or 0, (overview.today_trades | length)] | max %}
-  {% set blocked_total = overview.operator_summary.blocked_total or overview.daily.blocks %}
+  {% set exec_captured = overview.operator_summary.executions_total is number and overview.operator_summary.executions_total is not boolean and overview.operator_summary.executions_total >= 0 %}
+  {% set exec_total = overview.operator_summary.executions_total if exec_captured else 0 %}
+  {% set blocked_total = overview.operator_summary.blocked_total if overview.operator_summary.blocked_total is number else (overview.daily.blocks or 0) %}
   {% set recon_local = overview.reconciliation.local_total or 0 %}
   {% set recon_broker = overview.reconciliation.broker_total or 0 %}
   {% set recon_matched = overview.reconciliation.matched_by_ord_no or 0 %}
   {% set recon_pending = overview.reconciliation.pending %}
   {% set portfolio_sync = overview.portfolio_sync or {} %}
   {% set portfolio_sync_summary = overview.portfolio_sync_summary or {} %}
+  {% set recon_captured = overview.reconciliation.local_total is number and overview.reconciliation.broker_total is number and overview.reconciliation.matched_by_ord_no is number and recon_local is not boolean and recon_broker is not boolean and recon_matched is not boolean and recon_local >= 0 and recon_broker >= 0 and recon_matched >= 0 %}
   {% set recon_base = [recon_local, recon_broker] | max %}
-  {% if recon_pending %}
-    {% set recon_status = "PENDING" %}
-    {% set recon_tone = "warn" %}
+  {% if recon_pending is sameas true %}
+    {% set recon_status, recon_tone = "PENDING", "warn" %}
     {% set recon_sentence = overview.reconciliation.sentence or "Intraday reconciliation is still pending." %}
+  {% elif not recon_captured %}
+    {% set recon_status, recon_tone = "NO_DATA", "neutral" %}
+    {% set recon_sentence = "Reconciliation evidence was not captured; alignment is unknown." %}
+  {% elif recon_pending is not sameas false %}
+    {% set recon_status, recon_tone = "UNKNOWN", "neutral" %}
+    {% set recon_sentence = "Reconciliation completion was not explicitly recorded." %}
   {% elif recon_base == 0 %}
-    {% set recon_status = "OK" %}
-    {% set recon_tone = "ok" %}
+    {% set recon_status, recon_tone = "NO_EXECUTIONS", "neutral" %}
     {% set recon_sentence = "No executions to reconcile for the latest day." %}
-  {% elif recon_matched >= recon_base %}
-    {% set recon_status = "OK" %}
-    {% set recon_tone = "ok" %}
+  {% elif recon_matched == recon_base and recon_local == recon_broker %}
+    {% set recon_status, recon_tone = "SUCCESS", "ok" %}
     {% set recon_sentence = "Local and broker executions are fully aligned." %}
   {% elif recon_matched > 0 %}
-    {% set recon_status = "WARNING" %}
-    {% set recon_tone = "warn" %}
+    {% set recon_status, recon_tone = "PENDING", "warn" %}
     {% set recon_sentence = "Partial reconciliation. Verify unmatched executions." %}
   {% else %}
-    {% set recon_status = "FAIL" %}
-    {% set recon_tone = "critical" %}
-    {% set recon_sentence = "No matches found. Reconciliation needs immediate review." %}
+    {% set recon_status, recon_tone = "FAILED", "critical" %}
+    {% set recon_sentence = "No matches found. Reconciliation needs review." %}
   {% endif %}
-  {% set over_level = (overview.overtrading_warning.level or "normal") | lower %}
+  {% set over_level = (overview.overtrading_warning.level or "unknown") | lower %}
   {% set over_is_alert = over_level in ["elevated", "high", "warning", "critical"] %}
   {% set round_trip_symbols = overview.overtrading_warning.round_trip_symbols or [] %}
   {% set over_round_trip_count = round_trip_symbols | length %}
@@ -65,9 +69,9 @@
   <section class="kpi-strip">
     <article class="card card--hero card--status-{{ status_tone }}">
       <h2>System Status</h2>
-      <div class="status-badge status-badge--{{ status_tone }}">{{ status_label }}</div>
+      <div class="status-badge status-badge--{{ status_tone }}" data-system-state="{{ status_label }}">{{ status_label }}</div>
       <p class="operator-sentence">
-        {{ exec_total }} executions today.
+        {{ exec_total if exec_captured else "UNKNOWN" }} executions today.
         {% if blocked_total > 0 %}
           {{ blocked_total }} blocked.
         {% else %}
@@ -86,7 +90,7 @@
 
     <article class="card card--hero">
       <h2>Today Executions</h2>
-      <p class="kpi-value">{{ exec_total }}</p>
+      <p class="kpi-value">{{ exec_total if exec_captured else "NO_DATA" }}</p>
       <p class="subtle-meta">Approved today: {{ overview.daily.approvals or 0 }}</p>
     </article>
 
@@ -98,11 +102,11 @@
 
     <article class="card card--hero card--status-{{ recon_tone }}">
       <h2>Reconciliation</h2>
-      <div class="status-badge status-badge--{{ recon_tone }}">{{ recon_status }}</div>
+      <div class="status-badge status-badge--{{ recon_tone }}" data-reconciliation-state="{{ recon_status }}">{{ recon_status }}</div>
       <p class="subtle-meta">{{ recon_sentence }}</p>
     </article>
 
-    <article class="card card--hero {% if (portfolio_sync_summary.alert_total or 0) > 0 %}card--status-critical{% else %}card--status-ok{% endif %}">
+    <article class="card card--hero {% if (portfolio_sync_summary.alert_total or 0) > 0 %}card--status-critical{% elif portfolio_sync.status in ["aligned", "reconciled"] %}card--status-ok{% else %}card--muted{% endif %}">
       <h2>Portfolio Sync</h2>
       <div class="{{ portfolio_sync.badge_class or 'status-badge' }}">{{ portfolio_sync.status_label or "Sync status unavailable" }}</div>
       <p class="subtle-meta">
@@ -176,16 +180,18 @@
 
     <article class="card card--attention {% if over_is_alert %}card--status-critical{% else %}card--muted{% endif %}">
       <h2>Overtrading Warning</h2>
-      <div class="status-badge status-badge--{% if over_is_alert %}critical{% else %}ok{% endif %}">
-        {% if over_is_alert %}ATTENTION{% else %}NORMAL{% endif %}
+      <div class="status-badge status-badge--{% if over_is_alert %}critical{% elif over_level == "normal" %}ok{% else %}neutral{% endif %}">
+        {% if over_is_alert %}ATTENTION{% elif over_level == "normal" %}NORMAL{% else %}UNKNOWN{% endif %}
       </div>
       <p class="operator-sentence">
         {% if over_level in ["high", "critical"] %}
           Elevated trading frequency detected.
         {% elif over_level in ["elevated", "warning"] %}
           Trading frequency is above the normal range.
-        {% else %}
+        {% elif over_level == "normal" %}
           Trading pace is normal today.
+        {% else %}
+          Trading pace evidence was not captured.
         {% endif %}
       </p>
       <p class="subtle-meta">Executions today: {{ over_exec_total }}</p>
@@ -234,7 +240,7 @@
 
     <article class="card card--muted card--status-{{ recon_tone }}">
       <h2>Broker Reconciliation</h2>
-      <div class="status-badge status-badge--{{ recon_tone }}">{{ recon_status }}</div>
+      <div class="status-badge status-badge--{{ recon_tone }}" data-reconciliation-state="{{ recon_status }}">{{ recon_status }}</div>
       <div class="recon-grid">
         <div><span>Matched</span><strong>{{ recon_matched }} / {{ recon_base }}</strong></div>
         <div><span>Local</span><strong>{{ recon_local }}</strong></div>
@@ -248,7 +254,7 @@
   </section>
 
   <section class="grid grid-2 section-activity">
-    <article class="card {% if portfolio_sync.status in ['aligned', 'reconciled'] %}card--status-ok{% elif portfolio_sync.status == 'unavailable' %}card--muted{% else %}card--status-critical{% endif %}">
+    <article class="card {% if portfolio_sync.status in ['aligned', 'reconciled'] %}card--status-ok{% elif portfolio_sync.status in ['mismatch', 'reader_error'] %}card--status-critical{% else %}card--muted{% endif %}">
       <h2>Portfolio Sync</h2>
       <div class="chip-list">
         <span class="{{ portfolio_sync.badge_class or 'status-badge' }}">{{ portfolio_sync.status_label or "Sync status unavailable" }}</span>

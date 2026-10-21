@@ -72,7 +72,7 @@ def report_status_label(status: Any) -> str:
         return "AI Report Failed"
     if raw == "skipped":
         return "AI Report Skipped"
-    return "AI Report"
+    return "AI Report Unknown" if str(status or "").strip() else "AI Report No Data"
 
 
 def report_status_badge_class(status: Any) -> str:

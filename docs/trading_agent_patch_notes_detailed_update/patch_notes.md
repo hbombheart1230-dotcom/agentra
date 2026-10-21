@@ -4016,3 +4016,11 @@ Sources: `apps/operator_ui/data_access_brief_input_projection.py`, `apps/operato
 Sources: `apps/operator_ui/data_access_status.py`, `tests/test_p15_operator_brief_status_fast_smoke.py`.
 
 FAST06 status: Implemented focused source change; peer verification and integration pending.
+
+## 2026-10-21 - P1.5 FAST07 B7.1 20261021
+**Stage:** FAST_DEV implementation checkpoint; final peer and composed integration pending.
+
+- Explicit SUCCESS/FAILED/GUARDED/PENDING/UNKNOWN/NO_DATA execution badges, no NOOP success badge or truthy-string report link; zero executions distinct from successful reconciliation; incomplete reconciliation and portfolio snapshots stay neutral. Preserve filters/run trace and escaping; no endpoint, loader or trading changes.
+- Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
+
+Sources: `apps/operator_ui/templates/overview.html`, `apps/operator_ui/templates/runs.html`, `apps/operator_ui/data_access_status.py`, `tests/test_p15_fast07_b_overview_render_smoke.py`.
