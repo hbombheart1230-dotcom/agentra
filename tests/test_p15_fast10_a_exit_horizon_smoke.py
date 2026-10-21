@@ -188,15 +188,16 @@ def _entry_model(trade_id: str, ts: Any, price: Any = 101.0, symbol: str = "A") 
 def _reference_match(models: List[Dict[str, Any]], candidates: List[Dict[str, Any]]) -> Dict[str, str]:
     """Independent brute force: last (in stable epoch order) same-symbol baseline within 0..900s of the fill."""
     out: Dict[str, str] = {}
-    ordered = sorted(
-        (c for c in candidates if float(c["shadow_forward_base"]["baseline_epoch"] or 0) > 0 and (c["shadow_forward_base"]["baseline_price"] or 0) > 0),
-        key=lambda c: float(c["shadow_forward_base"]["baseline_epoch"]))
+    def whole(c: Dict[str, Any]) -> int:
+        return int(float(c["shadow_forward_base"]["baseline_epoch"] or 0))  # whole seconds, truncated like the original
+
+    ordered = sorted((c for c in candidates if whole(c) > 0 and (c["shadow_forward_base"]["baseline_price"] or 0) > 0), key=whole)
     for model in models:
         epoch = tp.epoch(model["entry"]["timestamp"])
         price = model["entry"]["price"]
         if epoch <= 0 or not price or price <= 0:
             continue
-        eligible = [c for c in ordered if c["symbol"] == model["symbol"] and 0 <= epoch - float(c["shadow_forward_base"]["baseline_epoch"]) <= 900]
+        eligible = [c for c in ordered if c["symbol"] == model["symbol"] and 0 <= epoch - whole(c) <= 900]
         if eligible:
             out[model["trade_id"]] = eligible[-1]["reason"]
     return out
@@ -215,10 +216,26 @@ def test_entry_baseline_matching_boundaries_and_numeric_forms() -> None:
     assert summary["matched_trade_count"] == len(matched)
 
 
+def test_entry_baseline_epoch_is_truncated_to_whole_seconds_like_the_original() -> None:
+    fill = DECISION + 900
+    cands = [_shadow("A", DECISION + 0.9, 100.0)]          # truncates to DECISION: exactly 900 s before the fill, eligible
+    assert loss._entry_timing_summary([_entry_model("X", fill)], cands)["matched_trade_count"] == 1
+    assert loss._entry_timing_summary([_entry_model("X", fill + 1)], cands)["matched_trade_count"] == 0  # 901 s
+    assert loss._entry_timing_summary([_entry_model("X", DECISION)], [_shadow("A", DECISION + 0.9)])["matched_trade_count"] == 1
+    assert loss._entry_timing_summary([_entry_model("X", DECISION - 1)], [_shadow("A", DECISION + 0.9)])["matched_trade_count"] == 0
+    assert loss._entry_timing_summary([_entry_model("X", 100)], [_shadow("A", 100.9)])["matched_trade_count"] == 1
+    assert loss._entry_timing_summary([_entry_model("X", 100)], [_shadow("A", 0.9)])["matched_trade_count"] == 0  # truncates to 0: no baseline
+    # two baselines that truncate to the same second keep the later one in input order
+    pair = [_shadow("A", DECISION + 0.2, 100.0), _shadow("A", DECISION + 0.8, 100.0)]
+    example = loss._entry_timing_summary([_entry_model("X", DECISION + 5)], pair)["examples"][0]
+    assert example["candidate_reason"] == f"A@{DECISION + 0.8}"
+    assert example["candidate_reason"] == _reference_match([_entry_model("X", DECISION + 5)], pair)["X"]
+
+
 def test_entry_baseline_matching_equals_reference_on_random_data() -> None:
     rng = random.Random(1010)
     symbols = ["A", "B", "C"]
-    cands = [_shadow(rng.choice(symbols), DECISION + rng.randrange(0, 4000, 7), rng.choice([100.0, 50.5, 0, None])) for _ in range(300)]
+    cands = [_shadow(rng.choice(symbols), DECISION + rng.randrange(0, 4000, 7) + rng.choice([0, 0.25, 0.5, 0.99]), rng.choice([100.0, 50.5, 0, None])) for _ in range(300)]
     cands += [_shadow("A", DECISION + 100), _shadow("A", DECISION + 100)]  # equal epochs: the later duplicate wins
     models = [_entry_model(f"T{i}", DECISION + rng.randrange(-300, 4500), rng.choice([101.0, 99.5, 0, None]), rng.choice(symbols)) for i in range(400)]
     summary = loss._entry_timing_summary(models, cands)

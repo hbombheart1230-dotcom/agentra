@@ -66,17 +66,18 @@ def _entry_timing_summary(
     models: list[dict[str, Any]],
     candidates: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    # Shadow baselines per symbol, ordered by baseline epoch (read once as a number; a string epoch such as
-    # "1780909200.0" used to pass the filter and then crash the sort).
-    by_symbol: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
+    # Shadow baselines per symbol, ordered by whole-second baseline epoch. The epoch is read once as a number and
+    # truncated to an integer exactly as before (100.9 -> 100); a string epoch such as "1780909200.0" used to pass
+    # the filter and then crash the sort.
+    by_symbol: dict[str, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
     for row in candidates:
         base = row.get("shadow_forward_base")
         base = base if isinstance(base, Mapping) else {}
-        epoch = _to_float(base.get("baseline_epoch")) or 0.0
+        epoch = int(_to_float(base.get("baseline_epoch")) or 0)
         price = _to_float(base.get("baseline_price"))
         if epoch > 0 and price and price > 0:
             by_symbol[str(row.get("symbol") or "")].append((epoch, row))
-    epochs_by_symbol: dict[str, list[float]] = {}
+    epochs_by_symbol: dict[str, list[int]] = {}
     rows_by_symbol: dict[str, list[dict[str, Any]]] = {}
     for symbol, pairs in by_symbol.items():
         pairs.sort(key=lambda pair: pair[0])

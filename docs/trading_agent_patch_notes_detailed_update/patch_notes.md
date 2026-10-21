@@ -6,9 +6,10 @@
 - 진입 타이밍 행에 추가 필드 `evidence_basis`(실제 진입 FILLED/NO_FILL, 관측 가격 경로 OBSERVED/PARTIAL/UNAVAILABLE/NOT_APPLICABLE, shadow 기준점, 타이밍 무결성)와 선택 필드 `timing_anomalies`를 넣어 실제 체결, 사후 관측 가격 경로, 반사실 shadow를 구분합니다. 근거가 없거나 시각·출처가 어긋나면 호의적 점수나 체결이 아니라 unknown/INSUFFICIENT_EVIDENCE로 읽습니다.
 - **BASE `e57923b2`에서 재현한 결함 5건을 고쳤습니다:** (1) naive/aware 시각 혼합 시 `TypeError`, (2) `baseline_epoch`가 `"1780909200.0"` 문자열이면 정렬에서 `ValueError`, (3) 3일 전 분봉 가격으로 +102% 진입 전 변동 계산, (4) 숫자 epoch 진입 시각이 조용히 누락, (5) 실현 청산이 없는 거래(`evidence_class=UNAVAILABLE`)의 사후 가격이 청산 관측 수에 합산.
 - naive 시각은 한국 시간으로 읽고(호스트 시간대 의존 제거), 다른 거래일의 기준 가격은 unknown(`decision_base_row_cross_day`), 체결 이후로 찍힌 단계 시각은 음수 지연이 아니라 unknown이며 `timing_anomalies`에 기록합니다. 청산 요약은 `evidence_class`가 명시적으로 UNAVAILABLE인 거래만 제외하고 0이 아닐 때만 `unrealized_exit_excluded_count`를 보고하며, 표시가 없는 거래의 동작은 그대로입니다.
-- 성능: 진입-기준선 매칭은 정렬 후 bisect(독립 브루트포스 기준과 동점·900초 경계까지 일치), horizon 조합 검토는 행당 한 번만 변환합니다. 후보 20000건·거래 3000건·shadow 30000건 측정에서 조합 검토 0.927초→0.500초(약 1.9배), 진입-기준선 매칭 0.278초→0.030초(약 9배), 매칭 3000건과 평균은 동일합니다.
+- 성능: 진입-기준선 매칭은 정렬 후 bisect(기준선 epoch는 원본처럼 정수 초로 절단하며, 독립 정수 초 브루트포스 기준과 소수 epoch·동점·900초 경계까지 일치), horizon 조합 검토는 행당 한 번만 변환합니다. 후보 20000건·거래 3000건·shadow 30000건 측정에서 조합 검토 0.927초→0.500초(약 1.9배), 진입-기준선 매칭 0.278초→0.030초(약 9배), 매칭 3000건과 평균은 동일합니다.
 - 동등성: 수리 경로 밖 입력 26개 출력을 BASE와 비교해, 추가 키 2개를 제외하면 모두 동일합니다(의도한 예외는 결정 창보다 먼저 체결된 행의 지연이 unknown이 되어 평균에서 빠지는 경우). 임계값·DecisionClass·Q9/Q13/Q14/Q16 분류는 바뀌지 않았습니다.
-- 검증: 신규 26건과 FAST07 smoke·관련 Q9/손실/타이밍/horizon/거래 모델 테스트 162건이 일반·`-O` 모두 통과. 지명된 파일 중 동결된 R3/R4/R6~R9 본문은 없어 STAGE_CONTRACT_BLOCKED 대상은 없었습니다.
+- 첫 후보(`6afe28cc`)의 독립 읽기 전용 검토가 REWORK를 반환했습니다. bisect가 소수 baseline epoch를 원본의 절단된 정수 초가 아니라 실수로 비교했고, 테스트 기준 구현이 같은 동작을 반복해 이를 잡지 못했습니다. 재현(원본 1건 대비 0건)한 뒤 수정하고 기준 구현을 독립적인 정수 초 방식으로 다시 작성했습니다.
+- 검증: 신규 27건과 FAST07 smoke·관련 Q9/손실/타이밍/horizon/거래 모델 테스트 163건이 일반·`-O` 모두 통과. 지명된 파일 중 동결된 R3/R4/R6~R9 본문은 없어 STAGE_CONTRACT_BLOCKED 대상은 없었습니다.
 
 Sources: `libs/reporting/evaluation/fast07_trade_projection.py`, `libs/reporting/evaluation/entry_timing_attribution.py`, `libs/reporting/evaluation/loss_decomposition.py`, `libs/reporting/evaluation/horizon_alignment.py`, `tests/test_p15_fast10_a_exit_horizon_smoke.py`.
 
