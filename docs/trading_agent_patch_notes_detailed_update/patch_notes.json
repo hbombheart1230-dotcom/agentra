@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 335,
+  "entry_count": 336,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8815,6 +8815,28 @@
       "summary": "Existing six GET routes retain loader order and source authority; controlled rendering handles errors and invalid/missing identifiers with read-only diagnostics. No POST/action/control endpoint introduced.",
       "details": [
         "Existing six GET routes retain loader order and source authority; controlled rendering handles errors and invalid/missing identifiers with read-only diagnostics. No POST/action/control endpoint introduced.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.6 20261021",
+      "title": "Finish responsive evidence readability",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Improve compact screen layout, trace paths and source-confidence labels with integrated normal Jinja/GET smoke. Pixel/mobile-device acceptance, full pytest and CI remain deferred.",
+      "details": [
+        "Improve compact screen layout, trace paths and source-confidence labels with integrated normal Jinja/GET smoke. Pixel/mobile-device acceptance, full pytest and CI remain deferred.",
         "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
       ],
       "impact": "Read-only UI/service development only; not integrated or released.",

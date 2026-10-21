@@ -4078,3 +4078,9 @@ Sources: `apps/operator_ui/static/operator.css`, `tests/test_p15_fast07_b_access
 
 - Existing six GET routes retain loader order and source authority; controlled rendering handles errors and invalid/missing identifiers with read-only diagnostics. No POST/action/control endpoint introduced.
 - Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification.
+
+## 2026-10-21 - P1.5 FAST08 B8.6 20261021
+**Stage:** FAST_DEV checkpoint; final peer and integration acceptance pending.
+
+- Improve compact screen layout, trace paths and source-confidence labels with integrated normal Jinja/GET smoke. Pixel/mobile-device acceptance, full pytest and CI remain deferred.
+- Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification.

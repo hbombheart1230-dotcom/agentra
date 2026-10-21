@@ -813,3 +813,56 @@ a:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* FAST08: compact provenance and long-trace readability across screen/print. */
+.source-confidence {
+  color: #475569;
+  background: #f8fafc;
+  border-left: 3px solid #94a3b8;
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.source-details { margin-top: 16px; }
+.source-details summary { padding: 10px 4px; cursor: pointer; }
+.source-details ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 20px;
+  padding-left: 20px;
+}
+.source-details li { min-width: 0; overflow-wrap: anywhere; line-height: 1.6; }
+[data-source-class="UNKNOWN"], [data-source-class="MISSING"] { color: #713f12; }
+.reader-error {
+  color: #7f1d1d;
+  background: #fff1f2;
+  border-left: 4px solid #9f1239;
+  padding: 12px;
+  overflow-wrap: anywhere;
+}
+.provenance-grid dd { line-height: 1.6; }
+[id^="brief-"]:target { outline: 2px solid #1263a0; outline-offset: 6px; }
+@media (max-width: 780px) {
+  .source-details ul { grid-template-columns: 1fr; }
+  .observation-context .provenance-grid { gap: 16px; }
+  .hero-meta .metric { flex: 1 1 9rem; }
+}
+@media (max-width: 480px) {
+  .nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nav-link { text-align: center; padding: 10px 8px; line-height: 1.5; }
+  .page-jumps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .page-jumps a { justify-content: center; padding: 8px; }
+  .source-confidence { font-size: 12px; padding: 8px; }
+  .provenance-grid dd { margin-top: 6px; }
+}
+@media print {
+  .rail, .skip-link, .page-jumps { display: none; }
+  .shell { display: block; }
+  .content { padding: 0; }
+  .card { box-shadow: none; break-inside: avoid; }
+  .code { max-height: none; }
+  .table-card { overflow: visible; }
+  .table-card table { min-width: 0; }
+  a { color: #000; }
+}
