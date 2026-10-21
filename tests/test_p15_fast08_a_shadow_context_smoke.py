@@ -228,3 +228,34 @@ def test_a9_error_paths_missing_and_corrupt_artifacts(tmp_path: Path) -> None:
     assert row["trade_id"] == "TBAD" and row["closed_trade"] is False and row["holding_evidence_thin"] is True
     assert row["monitor_context_source"] == "" and row["execution_missing_fields_count"] == 6
     assert recovery.read_trade_diagnostic_row(tmp_path / "does_not_exist")["trade_id"] == "does_not_exist"
+
+
+def test_a9_malformed_summary_and_duration_read_as_absent_not_stringified(tmp_path: Path) -> None:
+    root = tmp_path / "reports"
+    tdir = trade(root, "T1", {"status": "closed", "holding_phase_summary": ["x"], "hold_duration": {"a": 1},
+                              "trade_outcome": {"holding_time": ["5m"]}})
+    _hold_file(tdir, {"summary": {"k": "v"}, "holding_events": []})
+    evidence = recovery._resolve_holding_evidence(
+        {"holding_phase_summary": ["x"], "hold_duration": {"a": 1}, "trade_outcome": {"holding_time": ["5m"]}}, tdir)
+    assert evidence["holding_phase_summary"] == "" and evidence["holding_summary_source"] == ""
+    assert evidence["hold_duration"] == ""
+    row = recovery.read_trade_diagnostic_row(tdir)
+    assert row["holding_phase_summary"] == "" and row["hold_duration"] == "" and row["holding_evidence_thin"] is True
+    # a malformed bundle summary must not outrank a valid recorded hold-file summary
+    tdir2 = trade(root, "T2", {"status": "closed", "holding_phase_summary": 7})
+    _hold_file(tdir2, {"summary": "recorded in hold file"})
+    row2 = recovery.read_trade_diagnostic_row(tdir2)
+    assert row2["holding_phase_summary"] == "recorded in hold file" and row2["holding_summary_source"] == "hold_payload_summary"
+    # numeric durations that used to read fine keep reading fine
+    assert recovery._resolve_holding_evidence({"hold_duration": 90}, tdir2)["hold_duration"] == "90"
+
+
+def test_a9_malformed_exit_context_does_not_block_valid_entry_context(tmp_path: Path) -> None:
+    root = tmp_path / "reports"
+    for bad in ("garbage", ["x"], 5, {}, None):
+        evidence = recovery._resolve_holding_evidence(
+            {"exit": {"monitor_context": bad}, "entry": {"monitor_context": {"side": "entry"}}}, trade(root, "T%s" % abs(hash(str(bad))), {}))
+        assert evidence["monitor_context_snapshots"] == [{"side": "entry"}], bad
+        assert evidence["monitor_context_source"] == "entry_exit_context"
+    both_bad = recovery._resolve_holding_evidence({"exit": {"monitor_context": "x"}, "entry": {"monitor_context": ["y"]}}, trade(root, "TB", {}))
+    assert both_bad["monitor_context_snapshots"] == [] and both_bad["monitor_context_source"] == "" and both_bad["holding_phase_summary"] == ""

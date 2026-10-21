@@ -39,6 +39,27 @@ def safe_int(value: Any, default: int = 0) -> int:
         return default
 
 
+def text_of(value: Any, *, scalars: bool = False) -> str:
+    """Stripped text of a recorded string; lists, dicts and other malformed values read as absent.
+
+    ``scalars=True`` additionally accepts plain numbers (e.g. a duration recorded as 90).
+    """
+    if isinstance(value, str):
+        return value.strip()
+    if scalars and isinstance(value, (int, float)) and not isinstance(value, bool):
+        return str(value).strip()
+    return ""
+
+
+def first_monitor_context(*holders: Any) -> Dict[str, Any]:
+    """First non-empty dict ``monitor_context`` among the holders, in order; malformed values are skipped."""
+    for holder in holders:
+        context = dict_of(holder).get("monitor_context")
+        if isinstance(context, dict) and context:
+            return dict(context)
+    return {}
+
+
 def recorded_holding_summary(
     *, bundle_summary: Any, hold_summary: Any, hold_events_count: int, hold_events: Any
 ) -> tuple[str, str]:
@@ -46,10 +67,10 @@ def recorded_holding_summary(
 
     Returns ("", "") when nothing was recorded; callers must not invent a summary from that.
     """
-    recorded = str(bundle_summary or "").strip()
+    recorded = text_of(bundle_summary)
     if recorded:
         return recorded, "bundle"
-    from_payload = str(hold_summary or "").strip()
+    from_payload = text_of(hold_summary)
     if from_payload:
         return from_payload, "hold_payload_summary"
     if hold_events_count > 0:
@@ -57,7 +78,7 @@ def recorded_holding_summary(
         for row in list_of(hold_events):
             if not isinstance(row, dict):
                 continue
-            reason = str(row.get("monitor_reason") or row.get("exit_reason") or "").strip()
+            reason = text_of(row.get("monitor_reason")) or text_of(row.get("exit_reason"))
             if reason:
                 reasons.append(reason)
         if reasons:

@@ -101,11 +101,10 @@ def _resolve_holding_evidence(lifecycle_bundle: Dict[str, Any], trade_dir: Path)
         if monitor_context_snapshots:
             monitor_context_source = "hold_payload"
     if not monitor_context_snapshots:
-        exit_ctx = _sp.dict_of(lifecycle_bundle.get("exit"))
-        entry_ctx = _sp.dict_of(lifecycle_bundle.get("entry"))
-        fallback_monitor = exit_ctx.get("monitor_context") or entry_ctx.get("monitor_context")
-        if fallback_monitor and isinstance(fallback_monitor, dict):
-            monitor_context_snapshots.append(dict(fallback_monitor))
+        # exit is preferred over entry, but only a usable (non-empty dict) context counts as present
+        fallback_monitor = _sp.first_monitor_context(lifecycle_bundle.get("exit"), lifecycle_bundle.get("entry"))
+        if fallback_monitor:
+            monitor_context_snapshots.append(fallback_monitor)
             monitor_context_source = "entry_exit_context"
 
     hold_events_count = _sp.safe_int(lifecycle_bundle.get("hold_events_count"))
@@ -129,9 +128,9 @@ def _resolve_holding_evidence(lifecycle_bundle: Dict[str, Any], trade_dir: Path)
         holding_phase_summary = _sp.ENTRY_EXIT_CONTEXT_SUMMARY
         holding_summary_source = "entry_exit_context_fallback"
 
-    hold_duration = str(lifecycle_bundle.get("hold_duration") or "").strip()
+    hold_duration = _sp.text_of(lifecycle_bundle.get("hold_duration"), scalars=True)
     if not hold_duration:
-        hold_duration = str(_sp.dict_of(lifecycle_bundle.get("trade_outcome")).get("holding_time") or "").strip()
+        hold_duration = _sp.text_of(_sp.dict_of(lifecycle_bundle.get("trade_outcome")).get("holding_time"), scalars=True)
 
     hold_duration_sec = lifecycle_bundle.get("hold_duration_sec")
     if hold_duration_sec in (None, ""):
