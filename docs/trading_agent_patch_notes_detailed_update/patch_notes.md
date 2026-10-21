@@ -1,5 +1,31 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST06-A Q8 EVALUATION AND REVIEW REPORT PROJECTIONS 20261021
+**Stage:** P1.5 FAST06-A DEV-A 소스 후보 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- Q8 평가·리뷰 보고서 4개의 결정적 집계는 `q8_historical_projection_fast06.py`로, Markdown 렌더러 4개는 `q8_review_render_fast06.py`로 옮겼습니다. 파일 읽기·날짜 순회·보고서 기록·trust gate/dedupe 계약 호출·판정 임계값은 원래 모듈에 남겼습니다. 줄 수: q8_historical_review 926→273, q8_shadow_blocker_review 344→178, q8_trusted_reaggregation 240→94, q8_lane_decision_table 263→132.
+- A1: 과거 리뷰 누적기, 거래/일일 행 투영, shadow 요약 집계, 패턴 집계, 페이로드 조립. `_decision_for_reclaim_subtype`, `_promotion_recommendations`, 후보 fallback 읽기는 facade에 남습니다.
+- A2: shadow blocker 체크포인트·사유별 그룹 집계. dedupe, trust gate, `_decision_for_row`, gate 차단 시 retain_under_observation 강등은 그대로입니다. `_candidate_rows`는 기존 테스트가 고정하고 있어 facade에 그대로 둡니다.
+- A3: trusted reaggregation 일별·누적 readout과 watchlist. 누락 소스는 not_available로 유지하고 Decision Rule 임계값은 facade가 계약 모듈에서 읽어 넘깁니다.
+- A4: lane 행, shadow 수 결합, 판정 정렬. `_verdict`(임계값·근거 문구)는 facade에 남고 실제 정책 활성화 문구는 변경 없습니다.
+- 검증: 신규 smoke 9건 + 기존 Q8/closeout/operator summary 테스트 58건 통과(normal), 변경 전 모듈 대비 JSON/Markdown 바이트 동등 45/45. **FAST_DEFERRED:** `-O`, 전체 pytest, 적대적 변형, CI, 신규 owner 소스 승인.
+
+Sources: `libs/reporting/q8_historical_review.py`, `libs/reporting/q8_shadow_blocker_review.py`, `libs/reporting/q8_trusted_reaggregation.py`, `libs/reporting/q8_lane_decision_table.py`, `libs/reporting/q8_historical_projection_fast06.py`, `libs/reporting/q8_review_render_fast06.py`, `tests/test_p15_q8_reporting_fast_smoke.py`.
+
+## 2026-10-21 - P1.5 FAST06 B OBSERVED STATUS FACTS 20261021
+**Stage:** FAST_DEV source candidate; frozen projection groups blocked; integration acceptance deferred. **Tags:** FIX / REFACTOR / TEST
+
+- BASE d9e77a3f39e435edd10d09498cc0ade2d1232585 on existing DEV-B branch. FAST06 Issue20 comment6305775426 authorizes only named UI paths, focused smoke and fresh direct peer CLI; no new branch, shared contract, CI or old-PR revalidation.
+- STAGE_CONTRACT_BLOCKED: input_sections is a T4-D Owner and frozen-file fixture; facts and render_fallback are Second-pass ledger Owners, and render_summary_derivation is a T4-D Owner. All four source files remain unchanged. Canonical/compaction/sanitation and BATCH05 B1-B3 also remain exact BASE; no claim that all five approved modules were modified.
+- Implement available status boundary: only JSON boolean/0/1 and true/false text constitute observed boolean evidence; unknown text and missing mismatch facts cannot yield aligned or reconciled badges. Reader errors take display precedence, actual guard reasons remain visible, invalid/negative position counts render as zero. Empty and valid-card JSON keys/order unchanged; duplicate empty-return schema removed.
+- AI diagnostics no longer treat false text or pending generation as an attempted call. Missing story-input evidence is false rather than fabricated availability. The actual linked-artifact observation controls both output-availability flags despite stale diagnostic flags; existing report status inference, explicit reason codes and next-step text are retained. No LLM request, read/write, broker or control endpoint is added.
+- Focused normal smoke18PASS, exit0:16 new synthetic display cases plus two existing facade/status-page tests. Includes empty/unknown/string false, actual reconciliation, stale flags, denial/NOOP Korean text, schema/key order and valid immutable-BASE equality. In-memory no-I/O/network/process test passes. Patchnote sync and fresh exact-SHA peer results are recorded in Issue20; no invented production golden.
+- FAST_DEFERRED: optimized mode, full repository pytest, historical R3/T4/admission suites, hosted CI, Linux, UI build and production real-data parity. Existing B4 obstruction and stage admission debt stay open. Old HOTFIX T3 missing-object defect was already fixed separately; no repeated CI or contract repair in FAST06.
+
+Sources: `apps/operator_ui/data_access_status.py`, `tests/test_p15_operator_brief_status_fast_smoke.py`.
+
+FAST06 status: Implemented focused source change; peer verification and integration pending.
+
 ## 2026-10-20 · P1.5 BATCH05-A REPORTER OPERATIONAL OBSERVABILITY PROJECTIONS 20261020
 **Stage:** P1.5 BATCH05-A DEV-A 소스 후보 · A2/A4 SIZE_DEFERRED · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 

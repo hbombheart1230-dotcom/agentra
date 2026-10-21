@@ -1,6 +1,22 @@
+"""Observation-only UI status cards; no execution, reconciliation or report generation."""
 from __future__ import annotations
 
 from typing import Any, Dict
+
+
+def _observed_bool(value: Any) -> bool | None:
+    """Decode recorded JSON booleans without treating unknown text as success."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)) and value in (0, 1):
+        return bool(value)
+    if isinstance(value, str):
+        raw = value.strip().lower()
+        if raw in {"true", "1"}:
+            return True
+        if raw in {"false", "0"}:
+            return False
+    return None
 
 
 def _safe_int(v: Any, default: int = 0) -> int:
@@ -110,9 +126,9 @@ def portfolio_sync_badge_class(status: Any) -> str:
     raw = str(status or "").strip().lower()
     if raw in {"aligned", "reconciled"}:
         return "status-badge status-badge--ok"
-    if raw == "unavailable":
-        return "status-badge"
-    return "status-badge status-badge--critical"
+    if raw in {"mismatch", "reader_error"}:
+        return "status-badge status-badge--critical"
+    return "status-badge"
 
 
 def portfolio_sync_label(status: Any) -> str:
@@ -165,55 +181,39 @@ def portfolio_reconciliation_label(value: Any) -> str:
 
 def build_portfolio_sync_card(raw: Any) -> Dict[str, Any]:
     guard = raw if isinstance(raw, dict) else {}
-    if not guard:
-        status = "unavailable"
-        return {
-            "available": False,
-            "status": status,
-            "status_label": portfolio_sync_label(status),
-            "badge_class": portfolio_sync_badge_class(status),
-            "sentence": portfolio_sync_sentence(status),
-            "note": "",
-            "positions_source": "",
-            "positions_source_label": "",
-            "reconciliation_status": "",
-            "reconciliation_label": "",
-            "reader_ok": None,
-            "reader_error": "",
-            "reader_positions_authoritative": False,
-            "positions_mismatch_detected": False,
-            "reconciliation_applied": False,
-            "reader_positions_count": 0,
-            "persisted_positions_count": 0,
-        }
-
-    reader_ok = bool(guard.get("reader_ok"))
-    mismatch = bool(guard.get("positions_mismatch_detected"))
-    reconciled = bool(guard.get("reconciliation_applied"))
-    if not reader_ok:
+    reader_ok = _observed_bool(guard.get("reader_ok"))
+    mismatch = _observed_bool(guard.get("positions_mismatch_detected"))
+    reconciled = _observed_bool(guard.get("reconciliation_applied"))
+    reader_error = str(guard.get("reader_error") or "")
+    # Missing evidence is not an aligned portfolio. This is display-only:
+    # no account query, reconciliation or approval is performed here.
+    if reader_ok is False or reader_error.strip():
         status = "reader_error"
-    elif mismatch and reconciled:
-        status = "reconciled"
-    elif mismatch:
-        status = "mismatch"
-    else:
+    elif mismatch is True:
+        status = "reconciled" if reader_ok is True and reconciled is True else "mismatch"
+    elif reader_ok is True and mismatch is False:
         status = "aligned"
+    else:
+        status = "unavailable"
 
     positions_source = str(guard.get("positions_source") or "")
     reconciliation_status = str(guard.get("reconciliation_status") or "")
-    counts_note = f"Reader {_safe_int(guard.get('reader_positions_count'), 0)} / local {_safe_int(guard.get('persisted_positions_count'), 0)}"
+    reader_count = max(0, _safe_int(guard.get("reader_positions_count"), 0))
+    persisted_count = max(0, _safe_int(guard.get("persisted_positions_count"), 0))
+    counts_note = f"Reader {reader_count} / local {persisted_count}" if guard else ""
     note_bits = [
         bit
         for bit in [
             portfolio_positions_source_label(positions_source),
             portfolio_reconciliation_label(reconciliation_status),
             counts_note,
+            _trim_text(guard.get("guard_reason") or guard.get("reason")),
         ]
         if bit
     ]
 
     return {
-        "available": True,
+        "available": bool(guard),
         "status": status,
         "status_label": portfolio_sync_label(status),
         "badge_class": portfolio_sync_badge_class(status),
@@ -224,12 +224,12 @@ def build_portfolio_sync_card(raw: Any) -> Dict[str, Any]:
         "reconciliation_status": reconciliation_status,
         "reconciliation_label": portfolio_reconciliation_label(reconciliation_status),
         "reader_ok": reader_ok,
-        "reader_error": str(guard.get("reader_error") or ""),
-        "reader_positions_authoritative": bool(guard.get("reader_positions_authoritative")),
-        "positions_mismatch_detected": mismatch,
-        "reconciliation_applied": reconciled,
-        "reader_positions_count": _safe_int(guard.get("reader_positions_count"), 0),
-        "persisted_positions_count": _safe_int(guard.get("persisted_positions_count"), 0),
+        "reader_error": reader_error,
+        "reader_positions_authoritative": _observed_bool(guard.get("reader_positions_authoritative")) is True,
+        "positions_mismatch_detected": mismatch is True,
+        "reconciliation_applied": reconciled is True,
+        "reader_positions_count": reader_count,
+        "persisted_positions_count": persisted_count,
     }
 
 
@@ -244,6 +244,7 @@ def normalize_ai_report_diagnostics(
 ) -> Dict[str, Any]:
     diag = raw if isinstance(raw, dict) else {}
     generation_obj = generation if isinstance(generation, dict) else {}
+    report_exists = _observed_bool(report_exists) is True
     lifecycle = str(lifecycle_status or "").strip().lower()
     story = str(story_type or "").strip().lower()
 
@@ -288,22 +289,20 @@ def normalize_ai_report_diagnostics(
     )
     provider = _trim_text(diag.get("llm_provider"), max_len=64) or "OpenRouter"
 
-    generation_attempted = bool(diag.get("generation_attempted"))
-    if not generation_attempted and str(generation_obj.get("status") or "").strip():
-        generation_attempted = True
+    attempted = _observed_bool(diag.get("generation_attempted"))
+    generation_status = str(generation_obj.get("status") or "").strip().lower()
+    generation_attempted = attempted if attempted is not None else generation_status in {
+        "running", "generating", "ok", "success", "available", "failed", "error",
+    }
     generation_ts = _trim_text(diag.get("generation_ts"), max_len=64)
     last_error_message = _trim_text(diag.get("last_error_message"), max_len=260)
     if not last_error_message and status == "failed":
         last_error_message = _trim_text(generation_obj.get("reason"), max_len=260)
 
-    story_input_available = bool(diag.get("story_input_available")) if "story_input_available" in diag else True
-    report_output_available = (
-        bool(diag.get("report_output_available"))
-        if "report_output_available" in diag
-        else bool(diag.get("report_artifact_available"))
-        if "report_artifact_available" in diag
-        else report_exists
-    )
+    story_input_available = _observed_bool(diag.get("story_input_available")) is True
+    # The caller's actual linked-artifact observation wins over stale diagnostic
+    # flags. Missing/unknown evidence must never invent a report or story input.
+    report_output_available = report_exists
 
     return {
         "report_status": status,

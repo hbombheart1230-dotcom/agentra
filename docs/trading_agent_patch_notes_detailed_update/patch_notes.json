@@ -1,8 +1,64 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 340,
+  "entry_count": 342,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST06-A Q8 EVALUATION AND REVIEW REPORT PROJECTIONS 20261021",
+      "title": "Q8 historical, shadow-blocker, trusted-reaggregation and lane-decision reports gain pure projection and render owners",
+      "stage": "P1.5 FAST06-A DEV-A source candidate; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Deterministic Q8 report aggregation moves to q8_historical_projection_fast06 and the four Markdown renderers to q8_review_render_fast06; file reads, day iteration, report writes, trust-gate/dedupe contract calls and every decision threshold stay in the original modules: q8_historical_review 926->273, q8_shadow_blocker_review 344->178, q8_trusted_reaggregation 240->94, q8_lane_decision_table 263->132 lines.",
+      "details": [
+        "A1: historical GroupAccumulator/ForwardAccumulator, trade and daily row projection, shadow summary fold, pattern aggregation and payload assembly move; the four daily_summary.json passes, the quant-shadow candidate fallback read, classify_below_vwap_reclaim_observation, _decision_for_reclaim_subtype and _promotion_recommendations stay in the facade and are passed in.",
+        "A2: shadow blocker checkpoint readout, per-reason group rollup and trusted-forward count move; dedupe_q8_candidates, build_q8_trust_gate, _decision_for_row and the trust-gate downgrade to retain_under_observation are unchanged. _candidate_rows stays in the facade because the closeout payload-projection test pins its key reads.",
+        "A3: per-day and cumulative trusted-reaggregation readouts and watchlist rows move; missing scorecard/gate keep not_available, and the Decision Rule thresholds are still read from q8_evaluation_contract by the facade.",
+        "A4: lane rows, shadow-count join, verdict ordering and payload assembly move; _verdict (all lane thresholds and rationale text) stays in the facade, and the table still states no behavior patch is implied without trust-gate promotion.",
+        "Checks: new smoke test (9 cases: gate on/off, empty window, sandboxed writes, missing sources, ordering, owner purity) plus existing Q8/closeout/operator-summary tests 58 passed (normal); scratch byte parity against the pre-change modules 45/45 JSON+Markdown equal.",
+        "FAST_DEFERRED: python -O, full pytest, hostile mutations, hosted CI and strict source admission of the two new owners."
+      ],
+      "impact": "Separates Q8 report presentation from I/O with byte-identical outputs; no evaluation criteria, promotion threshold, q8_evaluation_contract, trading, broker, UEF or Step5C change.",
+      "sources": [
+        "libs/reporting/q8_historical_review.py",
+        "libs/reporting/q8_shadow_blocker_review.py",
+        "libs/reporting/q8_trusted_reaggregation.py",
+        "libs/reporting/q8_lane_decision_table.py",
+        "libs/reporting/q8_historical_projection_fast06.py",
+        "libs/reporting/q8_review_render_fast06.py",
+        "tests/test_p15_q8_reporting_fast_smoke.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST06 B OBSERVED STATUS FACTS 20261021",
+      "title": "Keep unknown portfolio and AI diagnostic evidence distinct from successful observed facts",
+      "stage": "FAST_DEV source candidate; frozen projection groups blocked; integration acceptance deferred",
+      "types": [
+        "FIX",
+        "REFACTOR",
+        "TEST"
+      ],
+      "summary": "Decode explicit boolean evidence, retain guard reasons, and prefer actual linked-artifact presence without adding authority.",
+      "details": [
+        "BASE d9e77a3f39e435edd10d09498cc0ade2d1232585 on existing DEV-B branch. FAST06 Issue20 comment6305775426 authorizes only named UI paths, focused smoke and fresh direct peer CLI; no new branch, shared contract, CI or old-PR revalidation.",
+        "STAGE_CONTRACT_BLOCKED: input_sections is a T4-D Owner and frozen-file fixture; facts and render_fallback are Second-pass ledger Owners, and render_summary_derivation is a T4-D Owner. All four source files remain unchanged. Canonical/compaction/sanitation and BATCH05 B1-B3 also remain exact BASE; no claim that all five approved modules were modified.",
+        "Implement available status boundary: only JSON boolean/0/1 and true/false text constitute observed boolean evidence; unknown text and missing mismatch facts cannot yield aligned or reconciled badges. Reader errors take display precedence, actual guard reasons remain visible, invalid/negative position counts render as zero. Empty and valid-card JSON keys/order unchanged; duplicate empty-return schema removed.",
+        "AI diagnostics no longer treat false text or pending generation as an attempted call. Missing story-input evidence is false rather than fabricated availability. The actual linked-artifact observation controls both output-availability flags despite stale diagnostic flags; existing report status inference, explicit reason codes and next-step text are retained. No LLM request, read/write, broker or control endpoint is added.",
+        "Focused normal smoke18PASS, exit0:16 new synthetic display cases plus two existing facade/status-page tests. Includes empty/unknown/string false, actual reconciliation, stale flags, denial/NOOP Korean text, schema/key order and valid immutable-BASE equality. In-memory no-I/O/network/process test passes. Patchnote sync and fresh exact-SHA peer results are recorded in Issue20; no invented production golden.",
+        "FAST_DEFERRED: optimized mode, full repository pytest, historical R3/T4/admission suites, hosted CI, Linux, UI build and production real-data parity. Existing B4 obstruction and stage admission debt stay open. Old HOTFIX T3 missing-object defect was already fixed separately; no repeated CI or contract repair in FAST06."
+      ],
+      "impact": "Observation-only correctness; FAST_DEV_UNVERIFIED until exact-SHA peer receipt, not INTEGRATED or RELEASE_ACCEPTED. No trading, risk, approval or execution authority changes.",
+      "sources": [
+        "apps/operator_ui/data_access_status.py",
+        "tests/test_p15_operator_brief_status_fast_smoke.py"
+      ],
+      "status": "current"
+    },
     {
       "date": "2026-10-20",
       "version": "P1.5 BATCH05 FOLDER SCALE FOUR DELIVERABLES AND LOCAL CI 20261020",
