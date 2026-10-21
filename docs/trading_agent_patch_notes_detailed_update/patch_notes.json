@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 332,
+  "entry_count": 333,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.2 SCANNER AND SELECTION ATTRIBUTION PROJECTIONS 20261021",
+      "title": "Q14 root cause, selection authority, Scanner quality and episode review share a pure attribution read-model",
+      "stage": "P1.5 FAST08 A8.2 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Selection-path symbol deltas, Q14 root-cause rows and the cause summary (previously duplicated between the daily and range reports), episode de-duplication, score-component correlation, top-K/source forward performance and renderers move to libs/reporting/evaluation/fast08_scanner_attribution.py: scanner_alignment_root_cause 521->344, episode_scanner_review 358->151, scanner_quality 216->137, selection_authority_audit 145->48 lines.",
+      "details": [
+        "scanner_alignment_root_cause: classify_scanner_alignment_root_cause, diagnostic kinds, OUTCOME_CONDITIONED/EVIDENCE_GAP sets, patch candidates and artifact reads stay in the facade; the daily and range reports now build one cause summary and largest-cause block through the same helper.",
+        "selection_authority_audit: duplicate/defect exclusions stay in the facade; symbol path deltas and change counters move unchanged (authority facts are not recomputed).",
+        "scanner_quality / episode_scanner_review: forward attachment and pre-Strategist extraction stay; top-K/source/episode/component math moves, while the READY (20 episodes, 70% coverage) and re-entry behavior-candidate thresholds stay in the facade. No Scanner rank or selection policy is touched.",
+        "Checks: tests/test_p15_fast08_a_scanner_attribution_smoke.py 7 passed plus existing Q14/Q9 scanner/full-chain/cumulative tests (40 passed); scratch baseline parity 20/20."
+      ],
+      "impact": "Root-cause labels, rank buckets, cost drag and authority facts unchanged; no trading or Scanner behavior change.",
+      "sources": [
+        "libs/reporting/evaluation/scanner_alignment_root_cause.py",
+        "libs/reporting/evaluation/episode_scanner_review.py",
+        "libs/reporting/evaluation/scanner_quality.py",
+        "libs/reporting/evaluation/selection_authority_audit.py",
+        "libs/reporting/evaluation/fast08_scanner_attribution.py",
+        "tests/test_p15_fast08_a_scanner_attribution_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST08-A8.1 EVIDENCE INVENTORY AND TRADE TRUTH PROJECTIONS 20261021",

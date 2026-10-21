@@ -1,5 +1,14 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST08-A8.2 SCANNER AND SELECTION ATTRIBUTION PROJECTIONS 20261021
+**Stage:** P1.5 FAST08 A8.2 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- 선택 경로 종목 변화, Q14 원인 행과 원인 요약(일별·기간별 중복 제거), episode 중복 제거, 점수 요소 상관, top-K·source forward 성과, 렌더러를 `fast08_scanner_attribution.py`로 옮겼습니다. 줄 수: scanner_alignment_root_cause 521→344, episode_scanner_review 358→151, scanner_quality 216→137, selection_authority_audit 145→48.
+- 원인 분류 함수, 패치 후보, READY·재진입 후보 임계값, forward 부착, 산출물 읽기는 원래 모듈에 남겼습니다. Scanner 순위·선택 정책과 authority 사실은 바꾸지 않았습니다.
+- 검증: 신규 smoke 7건과 기존 관련 테스트 40건 통과, 동등성 20/20.
+
+Sources: `libs/reporting/evaluation/scanner_alignment_root_cause.py`, `libs/reporting/evaluation/episode_scanner_review.py`, `libs/reporting/evaluation/scanner_quality.py`, `libs/reporting/evaluation/selection_authority_audit.py`, `libs/reporting/evaluation/fast08_scanner_attribution.py`, `tests/test_p15_fast08_a_scanner_attribution_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST08-A8.1 EVIDENCE INVENTORY AND TRADE TRUTH PROJECTIONS 20261021
 **Stage:** P1.5 FAST08 A8.1 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 
