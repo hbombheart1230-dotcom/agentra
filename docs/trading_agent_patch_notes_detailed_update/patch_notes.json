@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 329,
+  "entry_count": 330,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST07-A7.2 LOSS AND NO-TRADE ATTRIBUTION PROJECTIONS 20261021",
+      "title": "Loss decomposition, no-trade attribution and evaluation lens gain a pure aggregation owner",
+      "stage": "P1.5 FAST07 A7.2 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Forward-window bucketing, realized/post-exit summaries, Q9 decision-surface counters, baseline readouts and the streaming lens accumulators move to libs/reporting/evaluation/fast07_attribution_projection.py; the three renderers move to fast07_chain_render_projection.py: loss_decomposition 549->298, no_trade_attribution 376->158, evaluation_lens_report 610->157 lines.",
+      "details": [
+        "loss_decomposition: rank buckets, per-group forward returns/coverage, realized summary, post-exit hold summary and payload assembly move; payload/trade-model loading, dedupe, forward attachment, the 15-minute / +-0.3% entry-delay cutoffs (_entry_timing_summary), _diagnosis and _next_action stay in the facade.",
+        "no_trade_attribution: Q9 window view, decision-surface counters and Q10/Q11/Q12 baseline readouts move; streamed window read, artifact reads and every no_trade_class / shadow_opportunity classification stay in the facade.",
+        "evaluation_lens_report: checkpoint/rail/blocker helpers, forward groups, blocker and strategist-delta reviews, exit counterfactuals and the three streaming accumulators move; cost-floor profile load, daily payload streaming and forward attachment stay. Missing forward checkpoints remain unobserved and are never counted as gain.",
+        "Checks: tests/test_p15_fast07_a_attribution_smoke.py 11 passed (end-to-end loss incl. entry-delay path, missing-forward, five no-trade classes, unreadable windows, accumulator vs batch equality, lens build/render, owner purity) plus existing loss/no-trade/lens/horizon tests; scratch baseline parity 64/64."
+      ],
+      "impact": "No evaluation cutoff, counterfactual/trusted denominator, trade/no-trade classification, Q8 policy or promotion change; no trading or broker change.",
+      "sources": [
+        "libs/reporting/evaluation/loss_decomposition.py",
+        "libs/reporting/evaluation/no_trade_attribution.py",
+        "libs/reporting/evaluation/evaluation_lens_report.py",
+        "libs/reporting/evaluation/fast07_attribution_projection.py",
+        "libs/reporting/evaluation/fast07_chain_render_projection.py",
+        "tests/test_p15_fast07_a_attribution_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST07-A7.1 Q9 EVIDENCE TRUTH PROJECTIONS 20261021",

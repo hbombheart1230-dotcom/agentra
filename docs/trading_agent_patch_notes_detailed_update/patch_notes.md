@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST07-A7.2 LOSS AND NO-TRADE ATTRIBUTION PROJECTIONS 20261021
+**Stage:** P1.5 FAST07 A7.2 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- 손실 분해, 비거래 원인, 평가 렌즈의 forward window 버킷팅·실현/청산 후 요약·Q9 의사결정 카운터·기준선 readout·스트리밍 누적기를 `fast07_attribution_projection.py`로, 렌더러를 `fast07_chain_render_projection.py`로 옮겼습니다. 줄 수: loss_decomposition 549→298, no_trade_attribution 376→158, evaluation_lens_report 610→157.
+- 데이터 로딩, dedupe, forward 부착, 비용 하한, 진입 지연 컷오프(15분·±0.3%), `_diagnosis`·`_next_action`, 비거래 분류(no_trade_class·shadow_opportunity)는 원래 모듈에 남겼습니다.
+- forward 관측이 없는 경우는 계속 미관측으로 남고 수익으로 계산되지 않습니다.
+- 검증: 신규 smoke 11건과 기존 손실·비거래·렌즈·horizon 테스트 통과, 변경 전 모듈 대비 동등성 64/64.
+
+Sources: `libs/reporting/evaluation/loss_decomposition.py`, `libs/reporting/evaluation/no_trade_attribution.py`, `libs/reporting/evaluation/evaluation_lens_report.py`, `libs/reporting/evaluation/fast07_attribution_projection.py`, `libs/reporting/evaluation/fast07_chain_render_projection.py`, `tests/test_p15_fast07_a_attribution_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST07-A7.1 Q9 EVIDENCE TRUTH PROJECTIONS 20261021
 **Stage:** P1.5 FAST07 A7.1 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 
