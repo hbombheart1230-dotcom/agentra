@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -12,6 +12,8 @@ from libs.reporting.quant_shadow_candidate_evaluation import (
 from libs.runtime.broker_cost_profile import load_broker_cost_profile
 
 from .loss_decomposition import _candidate_rows, _checkpoint_return
+from . import fast07_chain_render_projection as _render
+from . import fast07_trade_projection as _proj
 from .metrics import performance_metrics
 
 
@@ -34,24 +36,8 @@ def _lane_observation(row: Mapping[str, Any]) -> dict[str, Any]:
     return dict(value) if isinstance(value, Mapping) else {}
 
 
-def _group_key(row: Mapping[str, Any], dimensions: tuple[str, ...]) -> tuple[str, ...]:
-    lane = _lane_observation(row)
-    values = {
-        "time_bucket": _text(lane.get("time_bucket")),
-        "tactic": _text(row.get("quant_tactic_id")),
-        "primary_lane": _text(lane.get("primary_lane")),
-        "market_regime_rail": _text(lane.get("market_regime_rail")),
-        "selection_role": _text(row.get("shadow_role")),
-    }
-    return tuple(values[name] for name in dimensions)
-
-
-def _profit_factor(values: list[float]) -> float:
-    gains = sum(value for value in values if value > 0)
-    losses = -sum(value for value in values if value < 0)
-    if losses <= 0:
-        return 999.0 if gains > 0 else 0.0
-    return round(gains / losses, 4)
+_group_key = _proj.horizon_group_key
+_profit_factor = _proj.profit_factor
 
 
 def _combo_rows(
@@ -74,44 +60,20 @@ def _combo_rows(
                     observations.append((row, gross))
             if not observations:
                 continue
-            gross_values = [value for _, value in observations]
-            net_values = [value - cost_pct for value in gross_values]
-            days = Counter(candidate_day(row) or "unknown" for row, _ in observations)
-            symbols = Counter(_text(row.get("symbol")) for row, _ in observations)
-            count = len(observations)
-            max_day_share = max(days.values()) / count if days else 1.0
-            max_symbol_share = max(symbols.values()) / count if symbols else 1.0
-            avg_gross = sum(gross_values) / count
-            avg_net = sum(net_values) / count
-            profit_factor = _profit_factor(net_values)
-            daily_net: dict[str, list[float]] = defaultdict(list)
-            for (row, _), net_value in zip(observations, net_values):
-                daily_net[candidate_day(row) or "unknown"].append(net_value)
-            daily_net_returns = {
-                day: round(sum(values) / len(values), 4)
-                for day, values in sorted(daily_net.items())
-            }
-            leave_one_day_out = {}
-            for excluded_day in daily_net:
-                retained = [
-                    value
-                    for day, values in daily_net.items()
-                    if day != excluded_day
-                    for value in values
-                ]
-                leave_one_day_out[excluded_day] = (
-                    round(sum(retained) / len(retained), 4)
-                    if retained
-                    else None
-                )
-            observed_lodo = [
-                value for value in leave_one_day_out.values()
-                if value is not None
-            ]
-            worst_lodo = min(observed_lodo) if observed_lodo else None
-            robust_across_days = bool(observed_lodo) and all(
-                value > 0 for value in observed_lodo
-            )
+            stats = _proj.horizon_observation_stats(observations, cost_pct=cost_pct, day_of=candidate_day)
+            count = stats["count"]
+            net_values = stats["net_values"]
+            days = stats["days"]
+            symbols = stats["symbols"]
+            max_day_share = stats["max_day_share"]
+            max_symbol_share = stats["max_symbol_share"]
+            avg_gross = stats["avg_gross"]
+            avg_net = stats["avg_net"]
+            profit_factor = stats["profit_factor"]
+            daily_net_returns = stats["daily_net_returns"]
+            leave_one_day_out = stats["leave_one_day_out"]
+            worst_lodo = stats["worst_lodo"]
+            robust_across_days = stats["robust_across_days"]
             eligible = (
                 count >= MIN_OBSERVATIONS
                 and len(days) >= MIN_DAYS
@@ -270,80 +232,7 @@ def build_horizon_alignment_review(
     }
 
 
-def render_horizon_alignment_review(payload: Mapping[str, Any]) -> str:
-    date_range = payload.get("range") or {}
-    cost = payload.get("cost_model") or {}
-    lines = [
-        f"# Horizon Alignment Review ({date_range.get('start')} ~ {date_range.get('end')})",
-        "",
-        "This report is evaluation-only. It does not change runtime behavior.",
-        "",
-        "## Cost Basis",
-        "",
-        f"- source: `{cost.get('source')}`",
-        f"- samples: {cost.get('sample_count')}",
-        f"- EMA round-trip cost: {float(cost.get('ema_round_trip_cost_pct') or 0):.4f}%",
-        f"- conservative round-trip cost: {float(cost.get('conservative_round_trip_cost_pct') or 0):.4f}%",
-        "",
-        f"## Decision: **{payload.get('decision')}**",
-        "",
-        "## Time x Tactic x Horizon",
-        "",
-        "| Time | Tactic | Horizon | Obs/Days | Gross | Net | Net Win | PF | Day Max | Symbol Max | Decision |",
-        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
-    ]
-    for row in payload.get("time_tactic") or []:
-        dimensions = row.get("dimensions") or {}
-        lines.append(
-            f"| {dimensions.get('time_bucket')} | {dimensions.get('tactic')} | {row.get('horizon')} | "
-            f"{row.get('observed_count')}/{row.get('observed_day_count')} | "
-            f"{row.get('average_gross_return_pct')}% | {row.get('average_net_return_pct')}% | "
-            f"{float(row.get('net_win_rate') or 0):.1%} | {row.get('net_profit_factor')} | "
-            f"{float(row.get('maximum_day_share') or 0):.1%} | "
-            f"{float(row.get('maximum_symbol_share') or 0):.1%} | `{row.get('decision')}` |"
-        )
-    lines += [
-        "",
-        "## Controlled-Adoption Candidates",
-        "",
-    ]
-    adoption = payload.get("controlled_adoption_candidates") or []
-    if not adoption:
-        lines.append("- None")
-    else:
-        for row in adoption:
-            dimensions = row.get("dimensions") or {}
-            lines.append(
-                f"- `{dimensions.get('time_bucket')} | {dimensions.get('tactic')} | {row.get('horizon')}`: "
-                f"net {row.get('average_net_return_pct')}%, PF {row.get('net_profit_factor')}, "
-                f"{row.get('observed_count')} observations across {row.get('observed_day_count')} days"
-            )
-    lines += [
-        "",
-        "## Observation Candidates",
-        "",
-    ]
-    observation = payload.get("observation_candidates") or []
-    if not observation:
-        lines.append("- None")
-    else:
-        for row in observation:
-            dimensions = row.get("dimensions") or {}
-            lines.append(
-                f"- `{dimensions.get('time_bucket')} | {dimensions.get('tactic')} | {row.get('horizon')}`: "
-                f"net {row.get('average_net_return_pct')}%, PF {row.get('net_profit_factor')}, "
-                f"worst leave-one-day-out {row.get('worst_leave_one_day_out_net_return_pct')}%, "
-                f"robust={row.get('robust_across_days')}"
-            )
-    lines += [
-        "",
-        "## Next Action",
-        "",
-        f"- decision: **{(payload.get('next_action') or {}).get('decision')}**",
-        f"- reason: {(payload.get('next_action') or {}).get('reason')}",
-        "- behavior change authorized: **False**",
-    ]
-    return "\n".join(lines) + "\n"
+render_horizon_alignment_review = _render.render_horizon_alignment_review
 
 
 def write_horizon_alignment_review(

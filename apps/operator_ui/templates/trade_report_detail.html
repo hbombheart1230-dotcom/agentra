@@ -19,17 +19,28 @@
 </section>
 
 {% set diag = report.ai_report_diagnostics or {} %}
+<section class="card observation-context" aria-label="AI report provenance">
+  <h2>Artifact Provenance</h2>
+  <p class="subtle-meta">Saved report observations, not an order approval or execution receipt.</p>
+  <dl class="provenance-grid">
+    <div><dt>Story / trade</dt><dd>{{ report.story_id or report.trade_id or "not captured" }}</dd></div>
+    <div><dt>Run trace</dt><dd>{{ report.run_id or "not captured" }}</dd></div>
+    <div><dt>Linked AI artifact</dt><dd data-artifact-state="{{ 'OBSERVED' if report.report_available is sameas true else 'NO_DATA' }}">{{ "OBSERVED" if report.report_available is sameas true else "NO_DATA — No linked AI report artifact" }}</dd></div>
+  </dl>
+  {% if report.paths %}<details><summary>Recorded artifact paths</summary><dl class="provenance-grid">{% for key, path in report.paths.items() %}<div><dt>{{ key }}</dt><dd class="path">{{ path or "not captured" }}</dd></div>{% endfor %}</dl></details>{% endif %}
+</section>
+
 <section class="grid grid-2">
   <article class="card card--attention">
     <h2>Lifecycle Review</h2>
     <div class="chip-list">
-      <span class="{{ diag.report_status_badge_class or 'status-badge' }}">{{ diag.report_status_label or "AI Report" }}</span>
+      <span class="{{ diag.report_status_badge_class if report.report_available is sameas true else 'status-badge' }}">{{ diag.report_status_label or "AI Report" }}</span>
       <span class="{{ report.story_type_badge_class or 'status-badge' }}">{{ report.story_type_label or "-" }}</span>
       <span class="chip">{{ report.execution_mode_label or "-" }}</span>
       {% if report.status %}
       <span class="chip">Lifecycle {{ report.status | upper }}</span>
       {% endif %}
-      {% if report.report_available %}
+      {% if report.report_available is sameas true %}
       <span class="chip chip--soft">Openable full report</span>
       {% endif %}
     </div>
@@ -168,7 +179,7 @@
       <li>Status: {{ (diag.report_status_label or "-") }}</li>
       <li>Reason: {{ (diag.report_reason_human or "-") }}</li>
       <li>Next step: {{ (diag.next_expected_step or "-") }}</li>
-      <li>Attempted: {{ (diag.generation_attempted if diag.generation_attempted is not none else "-") }}</li>
+      <li>Attempted: {% if diag.generation_attempted is sameas true %}recorded attempt{% elif diag.generation_attempted is sameas false %}no recorded attempt{% else %}UNKNOWN{% endif %}</li>
       <li>Provider / model: {{ (diag.llm_provider or "OpenRouter") }} / {{ (diag.llm_model_used or "-") }}</li>
       {% if diag.last_error_message %}
       <li>Last error: {{ diag.last_error_message }}</li>
@@ -212,7 +223,7 @@
 <section class="card card--muted">
   <details class="details-block">
     <summary>Raw report JSON (evidence)</summary>
-    <pre class="code tall">{{ report.raw_report | tojson(indent=2) }}</pre>
+    {% if report.raw_report %}<pre class="code tall">{{ report.raw_report | tojson(indent=2) }}</pre>{% else %}<p class="empty-state">NO_DATA — No saved report JSON was captured.</p>{% endif %}
   </details>
 </section>
 {% endblock %}

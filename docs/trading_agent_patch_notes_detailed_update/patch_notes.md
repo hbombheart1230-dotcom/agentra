@@ -1,5 +1,35 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST07-A7.3 FULL-CHAIN REPORTER UTILITY PROJECTIONS 20261021
+**Stage:** P1.5 FAST07 A7.3 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- full-chain 리뷰의 역할별 지표, top-pick/runner-up 쌍 비교, 선택 가용성, A/B/R1/R2/C 의사결정 창 귀속을 `fast07_attribution_projection.py`로, mining 행 구성·scorecard 조립·렌더러 3개를 `fast07_chain_render_projection.py`로 옮겼습니다. 줄 수: full_chain_component_review 1031→674, operator_summary_mining 492→178, agent_effectiveness_scorecard 302→173.
+- 데이터 로딩, 비용·슬리피지, forward 부착(`_q9_decision_candidate_rows`), 역할 점수와 판정(`_classify_root_cause`, `_attribution_component`, `_scanner_decision`, 진입/청산/전체 시스템), mining `_readiness`, scorecard `_delta_state`·`_decision_state`는 원래 모듈에 남겼습니다.
+- 검증: 신규 smoke 8건(FAST07 smoke 전체 28건)과 관련 평가 테스트 192건 통과, 변경 전 모듈 대비 동등성 A7.3 31/31(A7.1 41/41, A7.2 64/64 재확인).
+- **SIZE:** 두 owner가 각각 1012·1080줄(그중 약 460줄은 그대로 옮긴 렌더러). 승인된 owner 3개 안에서 유지했습니다.
+
+Sources: `libs/reporting/evaluation/full_chain_component_review.py`, `libs/reporting/evaluation/operator_summary_mining.py`, `libs/reporting/evaluation/agent_effectiveness_scorecard.py`, `libs/reporting/evaluation/fast07_attribution_projection.py`, `libs/reporting/evaluation/fast07_chain_render_projection.py`, `tests/test_p15_fast07_a_chain_smoke.py`, `tests/test_p15_fast07_a_evidence_smoke.py`.
+
+## 2026-10-21 · P1.5 FAST07-A7.2 LOSS AND NO-TRADE ATTRIBUTION PROJECTIONS 20261021
+**Stage:** P1.5 FAST07 A7.2 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- 손실 분해, 비거래 원인, 평가 렌즈의 forward window 버킷팅·실현/청산 후 요약·Q9 의사결정 카운터·기준선 readout·스트리밍 누적기를 `fast07_attribution_projection.py`로, 렌더러를 `fast07_chain_render_projection.py`로 옮겼습니다. 줄 수: loss_decomposition 549→298, no_trade_attribution 376→158, evaluation_lens_report 610→157.
+- 데이터 로딩, dedupe, forward 부착, 비용 하한, 진입 지연 컷오프(15분·±0.3%), `_diagnosis`·`_next_action`, 비거래 분류(no_trade_class·shadow_opportunity)는 원래 모듈에 남겼습니다.
+- forward 관측이 없는 경우는 계속 미관측으로 남고 수익으로 계산되지 않습니다.
+- 검증: 신규 smoke 11건과 기존 손실·비거래·렌즈·horizon 테스트 통과, 변경 전 모듈 대비 동등성 64/64.
+
+Sources: `libs/reporting/evaluation/loss_decomposition.py`, `libs/reporting/evaluation/no_trade_attribution.py`, `libs/reporting/evaluation/evaluation_lens_report.py`, `libs/reporting/evaluation/fast07_attribution_projection.py`, `libs/reporting/evaluation/fast07_chain_render_projection.py`, `tests/test_p15_fast07_a_attribution_smoke.py`.
+
+## 2026-10-21 · P1.5 FAST07-A7.1 Q9 EVIDENCE TRUTH PROJECTIONS 20261021
+**Stage:** P1.5 FAST07 A7.1 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- Q9 거래 read model, Q13 진입 타이밍, horizon alignment의 정규화·무결성 분류·페이로드 조립을 `fast07_trade_projection.py`로, 렌더러를 `fast07_chain_render_projection.py`로 옮겼습니다. 줄 수: trade_read_model 769→307, entry_timing_attribution 488→215, horizon_alignment 368→257.
+- 산출물 읽기 순서, Q9 window 스트리밍, 분할 매도 sibling 탐색, forward outcome 부착, 비용 프로필, 타이밍 라벨(`_label`)과 eligibility 임계값은 원래 모듈에 남겼습니다.
+- null/UNKNOWN/UNAVAILABLE 구분, 시간 순서, 선택 종목 규칙은 그대로이며 새 증거 권한은 없습니다.
+- 검증: 신규 smoke 9건(실현/미청산/역순/누락 증거 등)과 기존 Q9·거래·타이밍·horizon 테스트 통과, 변경 전 모듈 대비 동등성 41/41.
+
+Sources: `libs/reporting/evaluation/trade_read_model.py`, `libs/reporting/evaluation/entry_timing_attribution.py`, `libs/reporting/evaluation/horizon_alignment.py`, `libs/reporting/evaluation/fast07_trade_projection.py`, `libs/reporting/evaluation/fast07_chain_render_projection.py`, `tests/test_p15_fast07_a_evidence_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST06-A Q8 EVALUATION AND REVIEW REPORT PROJECTIONS 20261021
 **Stage:** P1.5 FAST06-A DEV-A 소스 후보 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 
@@ -4198,3 +4228,35 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Only approved folder/new tests/paired notes changed, prior324 notes preserved and own branch325. GPT serially reconciles newer integration notes and new exact source-stage admission. Linux, full repository pytest, hosted composed CI, production frozen/real-data parity, UI build/deploy NOT_RUN; no main, Docker, live LLM or broker activity.
 
 Sources: `apps/operator_ui/data_access_brief_input_projection.py`, `apps/operator_ui/data_access_brief_market_sections.py`, `apps/operator_ui/data_access_brief_sections_projection.py`, `apps/operator_ui/data_access_brief_evidence_projection_p15.py`, `apps/operator_ui/data_access_brief_presentation_projection_p15.py`, `tests/test_p15_operator_brief_folder_parity.py`, `tests/test_p15_operator_brief_folder_mutations.py`, `docs/ENGINEERING_DELIVERY_POLICY.md`.
+
+## 2026-10-21 - P1.5 FAST07 B7.1 20261021
+**Stage:** FAST_DEV implementation checkpoint; final peer and composed integration pending.
+
+- Explicit SUCCESS/FAILED/GUARDED/PENDING/UNKNOWN/NO_DATA execution badges, no NOOP success badge or truthy-string report link; zero executions distinct from successful reconciliation; incomplete reconciliation and portfolio snapshots stay neutral. Preserve filters/run trace and escaping; no endpoint, loader or trading changes.
+- Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
+
+Sources: `apps/operator_ui/templates/overview.html`, `apps/operator_ui/templates/runs.html`, `apps/operator_ui/data_access_status.py`, `tests/test_p15_fast07_b_overview_render_smoke.py`.
+
+## 2026-10-21 - P1.5 FAST07 B7.2 20261021
+**Stage:** FAST_DEV implementation checkpoint; final peer and composed integration pending.
+
+- Source provenance/guard and order-intent separation, explicit artifact absence, reader errors and stable trace links; no approval inferred from a narrative or intent. Normal render smoke only.
+- Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
+
+Sources: `apps/operator_ui/templates/run_detail.html`, `apps/operator_ui/templates/trade_report_detail.html`, `tests/test_p15_fast07_b_detail_render_smoke.py`.
+
+## 2026-10-21 - P1.5 FAST07 B7.3 20261021
+**Stage:** FAST_DEV implementation checkpoint; final peer and composed integration pending.
+
+- Saved observation versus current decision and execution distinguished; missing and stale/fallback evidence labelled, risk and next-step anchors, keyboard skip navigation and read-only notice; no trading control.
+- Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
+
+Sources: `apps/operator_ui/templates/operator_brief_detail.html`, `apps/operator_ui/templates/base.html`, `tests/test_p15_fast07_b_detail_render_smoke.py`.
+
+## 2026-10-21 - P1.5 FAST07 B7.4 20261021
+**Stage:** FAST_DEV implementation checkpoint; final peer and composed integration pending.
+
+- Small-screen grids, scrollable evidence tables, wrapped trace IDs/JSON, keyboard focus, neutral versus warning/critical badges and reduced-motion support. Normal rendered HTML/style smoke; pixel visual acceptance deferred.
+- Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
+
+Sources: `apps/operator_ui/static/operator.css`, `tests/test_p15_fast07_b_accessibility_smoke.py`.
