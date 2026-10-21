@@ -1,8 +1,35 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 328,
+  "entry_count": 329,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST07-A7.1 Q9 EVIDENCE TRUTH PROJECTIONS 20261021",
+      "title": "Q9 trade read model, Q13 entry timing and horizon alignment gain a pure evidence-normalization owner",
+      "stage": "P1.5 FAST07 A7.1 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Timestamp/value normalization, lifecycle shaping, integrity classification and payload assembly move to libs/reporting/evaluation/fast07_trade_projection.py; renderers move to fast07_chain_render_projection.py. Artifact reads, the streamed Q9 window scan, forward-outcome attachment, cost profile and every label/eligibility threshold stay in the original modules: trade_read_model 769->307, entry_timing_attribution 488->215, horizon_alignment 368->257 lines.",
+      "details": [
+        "trade_read_model: integrity defects/watch items and BLOCKER/FAIL/WATCH/PASS classification, broker-truth and evaluation-exclusion handling, selection/monitor/baseline/provenance assembly are now pure; lifecycle, entry/exit, closeout, exclusion and evidence files are still read by the facade in the same order, and the partial-exit sibling scan and Q9 window stream are unchanged.",
+        "entry_timing_attribution: stage epochs, delays, missing-stage PARTIAL status, forward-quality fields and label summary move; _label (all timing thresholds) and attach_forward_outcomes stay in the facade.",
+        "horizon_alignment: per-combination cost, concentration and leave-one-day-out statistics move; MIN_* eligibility constants, decision labels and sort stay in _combo_rows.",
+        "Checks: tests/test_p15_fast07_a_evidence_smoke.py 9 passed (realized/open/stale/missing evidence, unknown vs missing normalizers, exclusions, no windows/minutes, thresholds, owner purity) plus existing Q9/trade/timing/horizon tests; scratch baseline parity 41/41."
+      ],
+      "impact": "No new evidence authority; null/UNKNOWN/UNAVAILABLE semantics, chronology and selected-symbol rules unchanged; no trading, broker, Q8 contract or threshold change.",
+      "sources": [
+        "libs/reporting/evaluation/trade_read_model.py",
+        "libs/reporting/evaluation/entry_timing_attribution.py",
+        "libs/reporting/evaluation/horizon_alignment.py",
+        "libs/reporting/evaluation/fast07_trade_projection.py",
+        "libs/reporting/evaluation/fast07_chain_render_projection.py",
+        "tests/test_p15_fast07_a_evidence_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST06-A Q8 EVALUATION AND REVIEW REPORT PROJECTIONS 20261021",

@@ -1,5 +1,15 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST07-A7.1 Q9 EVIDENCE TRUTH PROJECTIONS 20261021
+**Stage:** P1.5 FAST07 A7.1 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- Q9 거래 read model, Q13 진입 타이밍, horizon alignment의 정규화·무결성 분류·페이로드 조립을 `fast07_trade_projection.py`로, 렌더러를 `fast07_chain_render_projection.py`로 옮겼습니다. 줄 수: trade_read_model 769→307, entry_timing_attribution 488→215, horizon_alignment 368→257.
+- 산출물 읽기 순서, Q9 window 스트리밍, 분할 매도 sibling 탐색, forward outcome 부착, 비용 프로필, 타이밍 라벨(`_label`)과 eligibility 임계값은 원래 모듈에 남겼습니다.
+- null/UNKNOWN/UNAVAILABLE 구분, 시간 순서, 선택 종목 규칙은 그대로이며 새 증거 권한은 없습니다.
+- 검증: 신규 smoke 9건(실현/미청산/역순/누락 증거 등)과 기존 Q9·거래·타이밍·horizon 테스트 통과, 변경 전 모듈 대비 동등성 41/41.
+
+Sources: `libs/reporting/evaluation/trade_read_model.py`, `libs/reporting/evaluation/entry_timing_attribution.py`, `libs/reporting/evaluation/horizon_alignment.py`, `libs/reporting/evaluation/fast07_trade_projection.py`, `libs/reporting/evaluation/fast07_chain_render_projection.py`, `tests/test_p15_fast07_a_evidence_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST06-A Q8 EVALUATION AND REVIEW REPORT PROJECTIONS 20261021
 **Stage:** P1.5 FAST06-A DEV-A 소스 후보 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 
