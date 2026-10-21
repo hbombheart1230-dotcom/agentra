@@ -6,6 +6,7 @@ seams. LLM coordination and persistence remain in data_access_core.
 from __future__ import annotations
 
 from typing import Any, Dict, List
+from apps.operator_ui import data_access_brief_evidence_projection_p15 as _evidence
 
 
 def brief_input_candidate_hints_market_headlines(monitor, scanner_trace, selected, canonical_trade, strategist_artifact, raw_input, strategist_summary, trade_story_input, *, facade):
@@ -169,56 +170,16 @@ def build_operator_brief_input(detail: Dict[str, Any], *, facade) -> Dict[str, A
         feature_snapshot,
     )
     chart_status, chart_note = facade._chart_filter_status_and_note(feature_coverage)
-    canonical_filter_bullets = list(canonical_trade.get("filter_bullets") or [])[:8]
-    canonical_selection_bullets = list(canonical_trade.get("selection_bullets") or [])[:6]
-    if facade._safe_int(feature_coverage.get("total"), 0) > 0:
-        updated_bullets: List[str] = []
-        replaced_chart_bullet = False
-        for bullet in canonical_filter_bullets:
-            text = str(bullet or "").strip()
-            if text.lower().startswith("chart completeness filter:"):
-                updated_bullets.append(f"chart completeness filter: {chart_status} - {chart_note}")
-                replaced_chart_bullet = True
-            else:
-                updated_bullets.append(text)
-        if not replaced_chart_bullet:
-            updated_bullets.append(f"chart completeness filter: {chart_status} - {chart_note}")
-        canonical_filter_bullets = updated_bullets[:8]
-        canonical_filters_summary = (
-            f"Scanner and guard checks used normalized chart coverage with {feature_coverage.get('present')}/{feature_coverage.get('total')} captured features."
-        )
-        updated_selection_bullets: List[str] = []
-        replaced_selection_chart_bullet = False
-        for bullet in canonical_selection_bullets:
-            text = str(bullet or "").strip()
-            if text.lower().startswith("chart / feature coverage:"):
-                updated_selection_bullets.append(
-                    f"Chart / feature coverage: {feature_coverage.get('present')}/{feature_coverage.get('total')}"
-                )
-                replaced_selection_chart_bullet = True
-            else:
-                updated_selection_bullets.append(text)
-        if not replaced_selection_chart_bullet:
-            updated_selection_bullets.append(
-                f"Chart / feature coverage: {feature_coverage.get('present')}/{feature_coverage.get('total')}"
-            )
-        canonical_selection_bullets = updated_selection_bullets[:6]
-    else:
-        canonical_filters_summary = canonical_trade.get("filters_summary")
+    canonical_filter_bullets, canonical_filters_summary, canonical_selection_bullets = _evidence.chart_evidence(
+        canonical_trade, feature_coverage, chart_status, chart_note, facade=facade,
+    )
     candidate_hints, market_headlines, monitor_artifact, monitor_entry_metrics, monitor_entry_thresholds, monitor_policy_ref, monitor_summary, monitor_thresholds_used, monitor_timing_assessment, monitor_trace, scanner_selection_trace, selected_symbol, symbol_headlines = facade.brief_input_candidate_hints_market_headlines(monitor=monitor, scanner_trace=scanner_trace, selected=selected, canonical_trade=canonical_trade, strategist_artifact=strategist_artifact, raw_input=raw_input, strategist_summary=strategist_summary, trade_story_input=trade_story_input, facade=facade)
     if not scanner_selection_trace:
         scanner_selection_trace = facade.brief_input_scanner_selection_trace(scanner_artifact=scanner_artifact, selected_symbol=selected_symbol, score_breakdown=score_breakdown, scanner_trace=scanner_trace, selected=selected, canonical_trade=canonical_trade, facade=facade)[0]
     canonical_monitor_snapshot_stop_policy_trace, canonical_monitor_stop_policy_trace, monitor_stop_policy_trace = facade.brief_input_canonical_monitor_snapshot_stop_policy_t(monitor_artifact=monitor_artifact, monitor_summary=monitor_summary, monitor_trace=monitor_trace, canonical_trade=canonical_trade, facade=facade)
-    if not any(value not in (None, "", []) for value in monitor_stop_policy_trace.values()):
-        monitor_stop_policy_trace = dict(canonical_monitor_stop_policy_trace or {})
-    elif canonical_monitor_stop_policy_trace:
-        for key, value in canonical_monitor_stop_policy_trace.items():
-            if monitor_stop_policy_trace.get(key) in (None, "", []):
-                monitor_stop_policy_trace[key] = value
-    if canonical_monitor_snapshot_stop_policy_trace:
-        for key, value in canonical_monitor_snapshot_stop_policy_trace.items():
-            if monitor_stop_policy_trace.get(key) in (None, "", []):
-                monitor_stop_policy_trace[key] = value
+    monitor_stop_policy_trace = _evidence.merge_stop_evidence(
+        monitor_stop_policy_trace, canonical_monitor_stop_policy_trace, canonical_monitor_snapshot_stop_policy_trace,
+    )
     commander_applied_policy, monitor_applied_policy, monitor_effective_policy, monitor_received_policy = facade.brief_input_commander_applied_policy_monitor_applied(commander_artifact=commander_artifact, commander_decision=commander_decision, monitor_trace=monitor_trace, monitor_policy_ref=monitor_policy_ref, facade=facade)
     return {
         "run_id": detail.get("run_id"),
