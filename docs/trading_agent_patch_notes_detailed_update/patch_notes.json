@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 333,
+  "entry_count": 334,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8771,6 +8771,28 @@
       "summary": "Shared escaped macro shows source class, actual artifact and guard/execution evidence. Only internal run/report URL families are clickable; no operation or permission is added.",
       "details": [
         "Shared escaped macro shows source class, actual artifact and guard/execution evidence. Only internal run/report URL families are clickable; no operation or permission is added.",
+        "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
+      ],
+      "impact": "Read-only UI/service development only; not integrated or released.",
+      "sources": [
+        "apps/operator_ui/",
+        "tests/test_p15_fast08_b_*.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08 B8.4 20261021",
+      "title": "Organize saved brief evidence and navigation",
+      "stage": "FAST_DEV checkpoint; final peer and integration acceptance pending",
+      "types": [
+        "UI",
+        "FIX",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Pure saved-brief state and shared navigation macro make missing/stale/fallback evidence explicit, keyboard/screen-reader context preserved. Saved decisions do not claim execution success.",
+      "details": [
+        "Pure saved-brief state and shared navigation macro make missing/stale/fallback evidence explicit, keyboard/screen-reader context preserved. Saved decisions do not claim execution success.",
         "Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification."
       ],
       "impact": "Read-only UI/service development only; not integrated or released.",
