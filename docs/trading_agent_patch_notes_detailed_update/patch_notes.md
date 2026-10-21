@@ -1,5 +1,14 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST08-A8.4 CUMULATIVE PERFORMANCE AND HORIZON PROJECTIONS 20261021
+**Stage:** P1.5 FAST08 A8.4 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
+
+- 일자 간 strategist B−A 차이, rank 행 조회, horizon compliance 행·그룹 집계, 점수 범위 축 요약, 피드백 노출 기록, 렌더러를 `fast08_cumulative_projection.py`로 옮겼습니다. 줄 수: cumulative_improvement_review 473→313, horizon_compliance_report 181→55, attribution_score_range 264→146, feedback_effectiveness 71→57.
+- 개선 후보 상태(`_candidate_rows`), 패치 허용 여부, 다음 결정, 제외 규칙, `DecisionClass`, 인과 주장 금지(`causal_claim_allowed=False`)는 원래 모듈에 남겼습니다. 누락 점수는 0이 아니라 None으로 유지됩니다.
+- 검증: 신규 smoke 7건과 기존 관련 테스트 62건 통과, 동등성 23/23.
+
+Sources: `libs/reporting/evaluation/cumulative_improvement_review.py`, `libs/reporting/evaluation/horizon_compliance_report.py`, `libs/reporting/evaluation/attribution_score_range.py`, `libs/reporting/evaluation/feedback_effectiveness.py`, `libs/reporting/evaluation/fast08_cumulative_projection.py`, `tests/test_p15_fast08_a_cumulative_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST08-A8.3 Q13 Q14 Q16 AND COST COMPARISON PROJECTIONS 20261021
 **Stage:** P1.5 FAST08 A8.3 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 

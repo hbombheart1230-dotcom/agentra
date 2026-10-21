@@ -1,8 +1,36 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 334,
+  "entry_count": 335,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.4 CUMULATIVE PERFORMANCE AND HORIZON PROJECTIONS 20261021",
+      "title": "Cumulative improvement review, horizon compliance, attribution score range and feedback effectiveness share a pure projection helper",
+      "stage": "P1.5 FAST08 A8.4 DEV-A source checkpoint; FAST_DEV smoke only; SOURCE_ADMISSION_PENDING_GPT",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Cross-day strategist B-minus-A deltas, rank-row lookup, horizon-compliance row/group aggregation, attribution-score range axes, feedback exposure records and the Markdown renderers move to libs/reporting/evaluation/fast08_cumulative_projection.py: cumulative_improvement_review 473->313, horizon_compliance_report 181->55, attribution_score_range 264->146, feedback_effectiveness 71->57 lines. The range report now reuses the A8.3 weakest-axis helpers.",
+      "details": [
+        "cumulative_improvement_review: artifact reads, cost bases, input assembly, _candidate_rows (every candidate status), behavior_patch_authorized and next_decision stay in the facade; the strategist weighting fold, outcome-conditioned count and renderer move.",
+        "horizon_compliance_report: promotion/exit-incident exclusions stay in the facade; per-trade rows, grouping and rendering move.",
+        "attribution_score_range: day iteration, source-artifact and trade-count discovery stay; score rows, axis summary with MISSING vs INSUFFICIENT vs MISSING_SCORE statuses, day table and renderer move. Missing scores stay None, never 0.",
+        "feedback_effectiveness: decision_class, causal_claim_allowed=False and the paired-control requirement stay in the facade; exposure record construction moves. No causal attribution or adoption is invented.",
+        "Checks: tests/test_p15_fast08_a_cumulative_smoke.py 7 passed plus existing cumulative/horizon/score/Q9 tests (62 passed); scratch baseline parity 23/23."
+      ],
+      "impact": "Historical comparators, chronology and statuses unchanged; no forward-validity claim, policy promotion, trading or broker change.",
+      "sources": [
+        "libs/reporting/evaluation/cumulative_improvement_review.py",
+        "libs/reporting/evaluation/horizon_compliance_report.py",
+        "libs/reporting/evaluation/attribution_score_range.py",
+        "libs/reporting/evaluation/feedback_effectiveness.py",
+        "libs/reporting/evaluation/fast08_cumulative_projection.py",
+        "tests/test_p15_fast08_a_cumulative_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST08-A8.3 Q13 Q14 Q16 AND COST COMPARISON PROJECTIONS 20261021",

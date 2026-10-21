@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import json
-from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
-from .attribution_score_window import SCORE_KEYS, _mapping, _read_json, _score_value
+from . import fast08_cumulative_projection as _cp
+from . import fast08_qwindow_projection as _qw
+from .attribution_score_window import SCORE_KEYS, _read_json, _score_value
 
 
 def _parse_date(value: str) -> date:
@@ -73,79 +74,21 @@ def build_attribution_score_range(
     for day in _date_range(start, end):
         if not include_empty_days and not _has_source_artifact(reports_root, day):
             continue
-        payload = _day_payload(reports_root, day)
-        trade_count = _day_trade_count(reports_root, day)
-        scores = dict(payload.get("scores") or {}) if payload else {}
-        has_score = any(_score_value({"scores": scores}, key) is not None for key in SCORE_KEYS)
         day_rows.append(
-            {
-                "day": day,
-                "available": bool(payload),
-                "scored": has_score,
-                "reason": "" if payload else "attribution_score_missing",
-                "trade_count": trade_count,
-                "scores": scores,
-                "weakest_observed_axis": dict(payload.get("weakest_observed_axis") or {}) if payload else {},
-            }
+            _cp.range_score_row(
+                day,
+                payload=_day_payload(reports_root, day),
+                trade_count=_day_trade_count(reports_root, day),
+                axis_score_of=_score_value,
+                score_keys=SCORE_KEYS,
+            )
         )
 
     scored_rows = [row for row in day_rows if row.get("scored")]
-    axis_summary: dict[str, Any] = {}
-    for key in SCORE_KEYS:
-        values: list[int] = []
-        status_counts: Counter[str] = Counter()
-        reason_counts: Counter[str] = Counter()
-        for row in day_rows:
-            item = _mapping(_mapping(row.get("scores")).get(key))
-            status = str(item.get("status") or ("MISSING" if not row.get("available") else "MISSING_SCORE"))
-            status_counts[status] += 1
-            value = _score_value(row, key)
-            if value is not None:
-                values.append(value)
-            for reason in item.get("reasons") or []:
-                reason_counts[str(reason)] += 1
-        axis_summary[key] = {
-            "day_count": len(day_rows),
-            "scored_day_count": len(values),
-            "missing_day_count": status_counts.get("MISSING", 0),
-            "insufficient_day_count": status_counts.get("INSUFFICIENT_EVIDENCE", 0),
-            "average_score": round(sum(values) / len(values), 2) if values else None,
-            "min_score": min(values) if values else None,
-            "max_score": max(values) if values else None,
-            "status_counts": dict(status_counts),
-            "top_reasons": [
-                {"reason": reason, "count": count}
-                for reason, count in reason_counts.most_common(10)
-            ],
-        }
-
-    weakest_counts: Counter[str] = Counter()
-    for row in scored_rows:
-        weakest = str(_mapping(row.get("weakest_observed_axis")).get("name") or "")
-        if weakest:
-            weakest_counts[weakest] += 1
-
-    daily_table = [
-        {
-            "day": row.get("day"),
-            "available": bool(row.get("available")),
-            "scored": bool(row.get("scored")),
-            "trade_count": row.get("trade_count"),
-            "weakest_axis": _mapping(row.get("weakest_observed_axis")).get("name") or "",
-            **{key: _score_value(row, key) for key in SCORE_KEYS},
-        }
-        for row in day_rows
-    ]
-    scored_axis_averages = {
-        key: item.get("average_score")
-        for key, item in axis_summary.items()
-        if item.get("average_score") is not None
-    }
-    weakest_average_axis = (
-        min(scored_axis_averages.items(), key=lambda item: float(item[1]))
-        if scored_axis_averages
-        else ("", None)
-    )
+    axis_summary = _cp.range_axis_summary(day_rows, SCORE_KEYS, _score_value)
+    weakest_counts = _qw.weakest_axis_counts(scored_rows)
+    daily_table = _cp.range_day_table(day_rows, SCORE_KEYS, _score_value)
+    weakest_average = _qw.weakest_average_axis(axis_summary)
     return {
         "schema_version": "attribution_score_range.v1",
         "evaluation_program_id": "Q13_ATTRIBUTION_SCORE_RANGE",
@@ -161,10 +104,7 @@ def build_attribution_score_range(
         "scored_trade_count": sum(int(row.get("trade_count") or 0) for row in scored_rows),
         "axis_summary": axis_summary,
         "weakest_axis_distribution": dict(weakest_counts),
-        "weakest_axis_by_average_score": {
-            "name": weakest_average_axis[0],
-            "average_score": weakest_average_axis[1],
-        },
+        "weakest_axis_by_average_score": weakest_average,
         "daily_rows": daily_table,
         "interpretation_rule": (
             "Use scored days for attribution conclusions. Missing or insufficient days are "
@@ -173,65 +113,7 @@ def build_attribution_score_range(
     }
 
 
-def render_attribution_score_range(payload: Mapping[str, Any]) -> str:
-    title = f"{payload.get('start', '')} to {payload.get('end', '')}"
-    lines = [
-        f"# Q13 Attribution Score Range - {title}",
-        "",
-        f"- Behavior effect: `{payload.get('behavior_effect', '')}`",
-        f"- Days: {payload.get('day_count', 0)} total / {payload.get('available_day_count', 0)} available / {payload.get('scored_day_count', 0)} scored",
-        f"- Trade days: {payload.get('trade_day_count', 0)}",
-        f"- Total trades: {payload.get('total_trade_count', 0)}",
-        f"- Scored trades: {payload.get('scored_trade_count', 0)}",
-        f"- Weakest by average score: `{_mapping(payload.get('weakest_axis_by_average_score')).get('name') or '-'}` "
-        f"({_mapping(payload.get('weakest_axis_by_average_score')).get('average_score')})",
-        "",
-        "## Axis Summary",
-        "",
-        "| Axis | Avg Score | Min | Max | Scored Days | Missing Days | Insufficient Days | Top Reasons |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
-    ]
-    for key, item in _mapping(payload.get("axis_summary")).items():
-        obj = _mapping(item)
-        reasons = ", ".join(
-            f"{row.get('reason')} ({row.get('count')})"
-            for row in obj.get("top_reasons") or []
-        ) or "-"
-        lines.append(
-            f"| {key} | {obj.get('average_score')} | {obj.get('min_score')} | "
-            f"{obj.get('max_score')} | {obj.get('scored_day_count')} | "
-            f"{obj.get('missing_day_count')} | {obj.get('insufficient_day_count')} | {reasons} |"
-        )
-    lines.extend(["", "## Weakest Axis Distribution", ""])
-    distribution = _mapping(payload.get("weakest_axis_distribution"))
-    if distribution:
-        for key, count in sorted(distribution.items(), key=lambda item: (-int(item[1]), item[0])):
-            lines.append(f"- `{key}`: {count}")
-    else:
-        lines.append("- No scored days.")
-    lines.extend(
-        [
-            "",
-            "## Daily Rows",
-            "",
-            "| Day | Available | Scored | Trades | Weakest | Selection | Scanner | Entry | Exit/Horizon | Evidence |",
-            "| --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |",
-        ]
-    )
-    for row in payload.get("daily_rows") or []:
-        if not isinstance(row, Mapping):
-            continue
-        lines.append(
-            f"| {row.get('day')} | {row.get('available')} | {row.get('scored')} | "
-            f"{row.get('trade_count')} | {row.get('weakest_axis') or '-'} | "
-            f"{row.get('selection_integrity_score')} | "
-            f"{row.get('scanner_alignment_score')} | "
-            f"{row.get('entry_timing_score')} | "
-            f"{row.get('exit_horizon_score')} | "
-            f"{row.get('evidence_quality_score')} |"
-        )
-    lines.extend(["", "## Interpretation Rule", "", f"- {payload.get('interpretation_rule', '')}", ""])
-    return "\n".join(lines)
+render_attribution_score_range = _cp.render_attribution_score_range
 
 
 def write_attribution_score_range(
