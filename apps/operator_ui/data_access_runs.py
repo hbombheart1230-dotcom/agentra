@@ -6,11 +6,17 @@ from typing import Any, Dict, Tuple
 from libs.runtime.canonical_artifacts import load_run_canonical_artifacts
 
 
-from .fast08_observation_view import has_observed_payload
-
-
 def _has_meaningful_payload(payload: Any) -> bool:
-    return isinstance(payload, dict) and has_observed_payload(payload)
+    if not isinstance(payload, dict) or not payload:
+        return False
+    for value in payload.values():
+        if isinstance(value, dict) and _has_meaningful_payload(value):
+            return True
+        if isinstance(value, list) and any(item not in ({}, [], None, "") for item in value):
+            return True
+        if value not in ({}, [], None, ""):
+            return True
+    return False
 
 
 def load_run_canonical_sources(reports_root: Path, run_id: str, run_day: str = "") -> Dict[str, Any]:

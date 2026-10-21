@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-{% set traces = ui_dashboard({"runs": runs}).traces %}
 <section class="hero">
   <div>
     <div class="eyebrow">Operations run index</div>
@@ -10,20 +9,9 @@
   <div class="hero-meta">
     <div class="metric">
       <span class="metric-label">Rows</span>
-      <span class="metric-value">{{ traces.total }}</span>
+      <span class="metric-value">{{ runs|length }}</span>
     </div>
   </div>
-</section>
-
-<section class="card trace-summary" aria-labelledby="trace-summary-title">
-  <h2 id="trace-summary-title">Displayed run observations</h2>
-  <p id="trace-count-scope" class="source-confidence">Filtered rows only; recorded fills are not independently verified broker receipts. Missing status is not NOOP.</p>
-  <dl class="trace-counts">
-    {% for state, count in traces.counts.items() %}<div><dt>{{ state }}</dt><dd data-trace-count="{{ state }}">{{ count }}</dd></div>{% endfor %}
-  </dl>
-  {% if traces.malformed %}<p class="reader-error">{{ traces.malformed }} malformed records retained as NO_DATA.</p>{% endif %}
-  {% if traces.state == "MALFORMED" %}<p class="reader-error">Run collection is malformed; no observations can be counted.</p>{% endif %}
-  <a class="link-action" href="#run-evidence">Skip to run evidence</a>
 </section>
 
 <section class="run-filters" aria-label="Run filters">
@@ -33,7 +21,7 @@
   <a href="/runs?limit={{ limit }}&amp;activity_view={{ activity_view }}&amp;mismatch_only={{ 'false' if mismatch_only else 'true' }}" class="link-action {% if mismatch_only %}link-action--active{% endif %}">Mismatch only</a>
 </section>
 
-<section class="card table-card" tabindex="0" role="region" aria-label="Recent runs evidence table" aria-describedby="trace-count-scope" id="run-evidence">
+<section class="card table-card" tabindex="0" role="region" aria-label="Recent runs evidence table">
   <p class="table-hint">Scroll horizontally to inspect all evidence columns.</p>
   <table>
     <caption class="sr-only">Recorded runs, guard observations and linked artifact availability</caption>
@@ -57,13 +45,11 @@
       </tr>
     </thead>
     <tbody>
-      {% for trace in traces["items"] %}
-      {% set row = trace.row %}
+      {% for row in runs %}
       <tr>
         <td>{{ row.ts }}</td>
         <td>
-          {% if trace.run_link %}<a class="trace-link" href="{{ trace.run_link }}" aria-label="Open recorded run {{ row.run_id }}">{{ row.run_id_short or row.run_id }}</a>{% else %}<span class="subtle-meta">Run trace not captured or unsafe</span>{% endif %}
-          <div class="source-confidence" data-source-state="{{ trace.source }}">Source: {{ trace.source }}; freshness not verified</div>
+          <a href="/runs/{{ row.run_id | urlencode }}">{{ row.run_id_short or row.run_id }}</a>
           {% if row.run_id_short and row.run_id_short != row.run_id %}
           <div class="meta-line">full: {{ row.run_id }}</div>
           {% endif %}
@@ -87,9 +73,16 @@
         <td>{{ row.execution_mode_label or "-" }}</td>
         <td>
           <div class="chip-list">
-            <span class="status-badge" data-artifact-state="{{ trace.artifact.state }}">{{ trace.artifact.label }}</span>
-            {% if trace.artifact.link %}<a class="link-action" href="{{ trace.artifact.link }}">Open report</a>{% endif %}
-            {% if trace.brief_link %}<a class="link-action" href="{{ trace.brief_link }}">Open brief</a>{% endif %}
+            {% if row.report_available is sameas true %}<span class="{{ row.report_status_badge_class or 'status-badge' }}">{{ row.report_status_label or "AI Report Available" }}</span>{% else %}<span class="status-badge">{{ row.report_status_label if row.report_status in ["failed", "pending", "skipped"] else "NO_DATA — no linked report" }}</span>{% endif %}
+            {% if row.lifecycle_status %}
+            <span class="chip">Lifecycle {{ row.lifecycle_status | upper }}</span>
+            {% endif %}
+            {% if row.report_available is sameas true and row.report_link %}
+            <a class="link-action" href="{{ row.report_link }}">Open report</a>
+            {% endif %}
+            {% if row.operator_brief_available is sameas true and row.operator_brief_link %}
+            <a class="link-action" href="{{ row.operator_brief_link }}">Open brief</a>
+            {% endif %}
           </div>
           {% if row.trade_id %}
           <p class="subtle-meta">Trade ID: {{ row.trade_id }}</p>
@@ -109,12 +102,12 @@
         </td>
         <td>
           {% if row.macro_stress_active is sameas true %}
-          active {{ trace.flags | join(", ") }}
+          active {{ row.macro_stress_flags | join(", ") }}
           {% else %}
           {{ "normal" if row.macro_stress_active is sameas false else "UNKNOWN" }}
           {% endif %}
         </td>
-        <td>{{ row.feature_coverage_quality }} ({% if trace.coverage is not none %}{{ "%.0f"|format(trace.coverage * 100) }}%{% else %}UNKNOWN{% endif %})</td>
+        <td>{{ row.feature_coverage_quality }} ({% if row.feature_coverage_ratio is number %}{{ "%.0f"|format(row.feature_coverage_ratio * 100) }}%{% else %}UNKNOWN{% endif %})</td>
         <td>
           <div>{{ row.monitor_reason or row.exit_reason or "-" }}</div>
           <div class="subtle-meta">axis: {{ row.active_exit_axis or "-" }}</div>
@@ -125,10 +118,16 @@
         </td>
         <td>{{ row.guard_reason or "-" }}</td>
         <td>
-          {% set execution_view = trace.execution %}
-          <span class="status-badge status-badge--{{ execution_view.tone }}" data-execution-state="{{ execution_view.state }}">{{ execution_view.state }}</span>
-          <div class="subtle-meta">{{ execution_view.action or "-" }} / {{ execution_view.raw_status or "not captured" }}</div>
-          {% if execution_view.reason %}<div class="subtle-meta">{{ execution_view.reason }}</div>{% endif %}
+          {% set action = (row.execution_action or "") | upper %}
+          {% set execution = (row.execution_status or "") | lower %}
+          {% if execution in ["denied", "blocked", "guarded"] %}{% set state, tone = "GUARDED", "warn" %}
+          {% elif execution in ["failed", "error", "rejected", "cancelled"] %}{% set state, tone = "FAILED", "critical" %}
+          {% elif action in ["NOOP", "WAIT", "HOLD"] %}{% set state, tone = "NO_EXECUTION", "neutral" %}
+          {% elif execution in ["pending", "accepted", "submitted", "partially_filled"] %}{% set state, tone = "PENDING", "warn" %}
+          {% elif action in ["BUY", "SELL"] and execution in ["ok", "success", "filled", "executed", "completed"] %}{% set state, tone = "SUCCESS", "ok" %}
+          {% else %}{% set state, tone = ("UNKNOWN" if action or execution else "NO_DATA"), "neutral" %}{% endif %}
+          <span class="status-badge status-badge--{{ tone }}" data-execution-state="{{ state }}">{{ state }}</span>
+          <div class="subtle-meta">{{ action or "-" }} / {{ row.execution_status or "not captured" }}</div>
         </td>
       </tr>
       {% else %}

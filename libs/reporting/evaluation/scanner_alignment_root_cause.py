@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import json
+from collections import defaultdict
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-from . import fast08_scanner_attribution as _sa
+from .metrics import performance_metrics
 
 
 ROOT_CAUSES = (
@@ -25,15 +26,27 @@ OUTCOME_CONDITIONED_CAUSES = {
 EVIDENCE_GAP_CAUSES = {"Missing Evidence"}
 
 
-_mapping = _sa.mapping
+def _mapping(value: Any) -> Mapping[str, Any]:
+    return value if isinstance(value, Mapping) else {}
 
 
 def _rows(value: Any) -> list[Mapping[str, Any]]:
     return [row for row in (value or []) if isinstance(row, Mapping)]
 
 
-_num = _sa.number
-_symbol = _sa.symbol_of
+def _num(value: Any) -> float | None:
+    try:
+        if value in (None, ""):
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _symbol(value: Any) -> str:
+    if isinstance(value, Mapping):
+        return str(value.get("symbol") or "").strip()
+    return str(value or "").strip()
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -44,9 +57,29 @@ def _read_json(path: Path) -> dict[str, Any]:
         return {}
 
 
-_selected_rank = _sa.selected_rank
-_score_gap = _sa.score_gap
-_outcome_return = _sa.outcome_return
+def _selected_rank(model: Mapping[str, Any]) -> int | None:
+    selection = _mapping(model.get("selection"))
+    selected_candidate = _mapping(selection.get("selected_candidate"))
+    value = _num(selection.get("selected_rank") or selected_candidate.get("rank"))
+    return int(value) if value is not None else None
+
+
+def _score_gap(model: Mapping[str, Any]) -> float | None:
+    selection = _mapping(model.get("selection"))
+    top1 = _mapping(selection.get("scanner_top1"))
+    selected = _mapping(selection.get("selected_candidate"))
+    top_score = _num(top1.get("score_total"))
+    selected_score = _num(selected.get("score_total"))
+    if top_score is None or selected_score is None:
+        return None
+    return round(top_score - selected_score, 6)
+
+
+def _outcome_return(evaluation: Mapping[str, Any], model: Mapping[str, Any]) -> float | None:
+    value = _num(_mapping(evaluation.get("realized_outcome")).get("net_return_pct"))
+    if value is not None:
+        return value
+    return _num(_mapping(model.get("outcome")).get("net_return_pct"))
 
 
 def classify_scanner_alignment_root_cause(
@@ -139,7 +172,8 @@ def classify_scanner_alignment_root_cause(
     }
 
 
-_impact_score = _sa.impact_score
+def _impact_score(returns: list[float]) -> float:
+    return round(sum(value for value in returns if value < 0), 4)
 
 
 def _diagnostic_kind(cause: str) -> str:
@@ -150,7 +184,27 @@ def _diagnostic_kind(cause: str) -> str:
     return "structural"
 
 
-_largest_cause = _sa.largest_cause
+def _largest_cause(
+    cause_summary: Sequence[Mapping[str, Any]],
+    *,
+    excluded: set[str] | None = None,
+) -> dict[str, Any]:
+    excluded = excluded or set()
+    observed = [
+        row
+        for row in cause_summary
+        if int(row.get("trade_count") or 0) > 0 and str(row.get("root_cause") or "") not in excluded
+    ]
+    return dict(
+        max(
+            observed,
+            key=lambda row: (
+                int(row.get("trade_count") or 0),
+                abs(float(row.get("negative_impact_pct") or 0.0)),
+            ),
+            default={},
+        )
+    )
 
 
 def _patch_candidate(cause: str) -> str:
@@ -167,14 +221,6 @@ def _patch_candidate(cause: str) -> str:
     if cause == "Missing Evidence":
         return "Fix missing selection evidence before interpreting scanner alignment."
     return "No scanner-alignment behavior patch candidate from aligned rows."
-
-
-def _largest_causes(cause_summary: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    return _sa.largest_causes(
-        cause_summary,
-        behavior_excluded={"Missing Evidence", "Aligned / No Alignment Issue"},
-        structural_excluded=OUTCOME_CONDITIONED_CAUSES | EVIDENCE_GAP_CAUSES,
-    )
 
 
 def build_scanner_alignment_root_cause_report(
@@ -198,18 +244,61 @@ def build_scanner_alignment_root_cause_report(
             net_return_pct=net_return,
         )
         rows.append(
-            _sa.root_cause_row(
-                row,
-                trade_id=trade_id,
-                net_return=net_return,
-                classification=classification,
-                kind=_diagnostic_kind(classification["root_cause"]),
-            )
+            {
+                "trade_id": trade_id,
+                "symbol": row.get("executed_symbol") or row.get("symbol"),
+                "raw_scanner_top1": row.get("raw_scanner_top1"),
+                "post_strategy_top1": row.get("post_strategy_top1"),
+                "selected_symbol": row.get("selected_symbol"),
+                "executed_symbol": row.get("executed_symbol"),
+                "net_return_pct": net_return,
+                "root_cause": classification["root_cause"],
+                "diagnostic_kind": _diagnostic_kind(classification["root_cause"]),
+                "causal_eligible": _diagnostic_kind(classification["root_cause"]) == "structural",
+                "confidence": classification["confidence"],
+                "selected_rank": classification["selected_rank"],
+                "score_gap": classification["score_gap"],
+                "reasons": classification["reasons"],
+            }
         )
 
-    cause_summary = _sa.root_cause_summary(rows, ROOT_CAUSES, kind_of=_diagnostic_kind)
-    largest = _largest_causes(cause_summary)
-    largest_structural = largest["largest_structural_root_cause"]
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        grouped[str(row.get("root_cause") or "Missing Evidence")].append(row)
+
+    cause_summary: list[dict[str, Any]] = []
+    for cause in ROOT_CAUSES:
+        cause_rows = grouped.get(cause, [])
+        returns = [
+            float(row["net_return_pct"])
+            for row in cause_rows
+            if row.get("net_return_pct") is not None
+        ]
+        metrics = performance_metrics(returns)
+        cause_summary.append(
+            {
+                "root_cause": cause,
+                "diagnostic_kind": _diagnostic_kind(cause),
+                "causal_eligible": _diagnostic_kind(cause) == "structural",
+                "trade_count": len(cause_rows),
+                "return_observation_count": len(returns),
+                "win_rate": metrics["win_rate"],
+                "avg_return_pct": metrics["average_return_pct"],
+                "profit_factor": metrics["profit_factor"],
+                "max_drawdown_pct": metrics["maximum_drawdown_pct"],
+                "negative_impact_pct": _impact_score(returns),
+            }
+        )
+
+    largest = _largest_cause(cause_summary)
+    largest_behavior = _largest_cause(
+        cause_summary,
+        excluded={"Missing Evidence", "Aligned / No Alignment Issue"},
+    )
+    largest_structural = _largest_cause(
+        cause_summary,
+        excluded=OUTCOME_CONDITIONED_CAUSES | EVIDENCE_GAP_CAUSES,
+    )
     patch_candidate = _patch_candidate(str(largest_structural.get("root_cause") or ""))
 
     return {
@@ -220,7 +309,10 @@ def build_scanner_alignment_root_cause_report(
         "day": day,
         "trade_count": len(rows),
         "cause_summary": cause_summary,
-        **largest,
+        "largest_root_cause": largest,
+        "largest_observed_root_cause": largest,
+        "largest_behavior_root_cause": largest_behavior,
+        "largest_structural_root_cause": largest_structural,
         "outcome_conditioned_causes": sorted(OUTCOME_CONDITIONED_CAUSES),
         "q15_behavior_patch_candidate": patch_candidate,
         "rows": rows,
@@ -233,7 +325,57 @@ def build_scanner_alignment_root_cause_report(
     }
 
 
-render_scanner_alignment_root_cause_report = _sa.render_scanner_alignment_root_cause_report
+def render_scanner_alignment_root_cause_report(payload: Mapping[str, Any]) -> str:
+    lines = [
+        f"# Q14 Scanner Alignment Root Cause - {payload.get('day', '')}",
+        "",
+        f"- Behavior effect: `{payload.get('behavior_effect', '')}`",
+        f"- Trades: {payload.get('trade_count', 0)}",
+        f"- Largest observed root cause: `{_mapping(payload.get('largest_observed_root_cause') or payload.get('largest_root_cause')).get('root_cause') or '-'}`",
+        f"- Largest behavior root cause: `{_mapping(payload.get('largest_behavior_root_cause')).get('root_cause') or '-'}`",
+        f"- Largest structural root cause: `{_mapping(payload.get('largest_structural_root_cause')).get('root_cause') or '-'}`",
+        "- Outcome-conditioned labels are descriptive and are not independent causal proof.",
+        f"- Q15 candidate: {payload.get('q15_behavior_patch_candidate') or '-'}",
+        "",
+        "## Root Cause Summary",
+        "",
+        "| Root Cause | Kind | Causal | Trades | Return Obs | Win Rate | Avg Return | Profit Factor | MDD | Negative Impact |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for row in payload.get("cause_summary") or []:
+        if not isinstance(row, Mapping):
+            continue
+        lines.append(
+            f"| {row.get('root_cause')} | {row.get('diagnostic_kind') or '-'} | "
+            f"{bool(row.get('causal_eligible'))} | {row.get('trade_count')} | "
+            f"{row.get('return_observation_count')} | {float(row.get('win_rate') or 0):.1%} | "
+            f"{float(row.get('avg_return_pct') or 0):.4f}% | {row.get('profit_factor')} | "
+            f"{float(row.get('max_drawdown_pct') or 0):.4f}% | "
+            f"{float(row.get('negative_impact_pct') or 0):.4f}% |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Rows",
+            "",
+            "| Trade | Symbol | Raw Top1 | Post Top1 | Selected | Rank | Return | Root Cause | Reasons |",
+            "| --- | --- | --- | --- | --- | ---: | ---: | --- | --- |",
+        ]
+    )
+    for row in payload.get("rows") or []:
+        if not isinstance(row, Mapping):
+            continue
+        reasons = ", ".join(str(reason) for reason in row.get("reasons") or []) or "-"
+        value = row.get("net_return_pct")
+        lines.append(
+            f"| {row.get('trade_id')} | {row.get('symbol') or '-'} | "
+            f"{row.get('raw_scanner_top1') or '-'} | {row.get('post_strategy_top1') or '-'} | "
+            f"{row.get('selected_symbol') or '-'} | {row.get('selected_rank') or '-'} | "
+            f"{'-' if value is None else f'{float(value):.4f}%'} | "
+            f"{row.get('root_cause')} | {reasons} |"
+        )
+    lines.extend(["", "## Interpretation", "", f"- {payload.get('interpretation_rule', '')}", ""])
+    return "\n".join(lines)
 
 
 def _load_day_models_and_evaluations(reports_root: Path, day: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -282,9 +424,41 @@ def build_scanner_alignment_root_cause_range(
         cursor += timedelta(days=1)
 
     all_rows = [row for payload in daily_payloads for row in payload.get("rows") or []]
-    cause_summary = _sa.root_cause_summary(all_rows, ROOT_CAUSES, kind_of=_diagnostic_kind)
-    largest = _largest_causes(cause_summary)
-    largest_structural = largest["largest_structural_root_cause"]
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in all_rows:
+        grouped[str(row.get("root_cause") or "Missing Evidence")].append(row)
+    cause_summary: list[dict[str, Any]] = []
+    for cause in ROOT_CAUSES:
+        cause_rows = grouped.get(cause, [])
+        returns = [
+            float(row["net_return_pct"])
+            for row in cause_rows
+            if row.get("net_return_pct") is not None
+        ]
+        metrics = performance_metrics(returns)
+        cause_summary.append(
+            {
+                "root_cause": cause,
+                "diagnostic_kind": _diagnostic_kind(cause),
+                "causal_eligible": _diagnostic_kind(cause) == "structural",
+                "trade_count": len(cause_rows),
+                "return_observation_count": len(returns),
+                "win_rate": metrics["win_rate"],
+                "avg_return_pct": metrics["average_return_pct"],
+                "profit_factor": metrics["profit_factor"],
+                "max_drawdown_pct": metrics["maximum_drawdown_pct"],
+                "negative_impact_pct": _impact_score(returns),
+            }
+        )
+    largest = _largest_cause(cause_summary)
+    largest_behavior = _largest_cause(
+        cause_summary,
+        excluded={"Missing Evidence", "Aligned / No Alignment Issue"},
+    )
+    largest_structural = _largest_cause(
+        cause_summary,
+        excluded=OUTCOME_CONDITIONED_CAUSES | EVIDENCE_GAP_CAUSES,
+    )
     return {
         "schema_version": "scanner_alignment_root_cause_range.v1",
         "evaluation_program_id": "Q14_SCANNER_ALIGNMENT_ROOT_CAUSE_RANGE",
@@ -294,7 +468,10 @@ def build_scanner_alignment_root_cause_range(
         "day_count": len(daily_payloads),
         "trade_count": len(all_rows),
         "cause_summary": cause_summary,
-        **largest,
+        "largest_root_cause": largest,
+        "largest_observed_root_cause": largest,
+        "largest_behavior_root_cause": largest_behavior,
+        "largest_structural_root_cause": largest_structural,
         "outcome_conditioned_causes": sorted(OUTCOME_CONDITIONED_CAUSES),
         "measurement_contract_version": "q14_structural_causality.v2",
         "q15_behavior_patch_candidate": _patch_candidate(str(largest_structural.get("root_cause") or "")),

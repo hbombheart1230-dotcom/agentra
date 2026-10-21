@@ -1,5 +1,4 @@
 ﻿{% extends "base.html" %}
-{% from "_fast08_evidence.html" import evidence_panel, observed_link with context %}
 {% block content %}
 <section class="hero">
   <div>
@@ -24,22 +23,22 @@
 {% set portfolio_sync = detail.portfolio_sync or {} %}
 {% set execution = detail.executor.execution or {} %}
 {% set verdict = detail.supervisor.verdict or {} %}
-{% set detail_view = ui_run_detail(detail) %}
-<nav class="trace-navigation" aria-label="Run evidence navigation">
-  <a class="link-action" href="/runs">Back to recorded runs</a>
-  <a class="link-action" href="#run-source-status">Inspect source observations</a>
-</nav>
-{{ evidence_panel(detail_view, "Recorded Run Evidence") }}
-<section class="card" id="run-source-status" tabindex="-1" aria-labelledby="run-source-title">
-  <h2 id="run-source-title">Source observations</h2>
-  <p class="source-confidence" data-source-state="{{ detail_view.source_status }}">Reader: {{ detail_view.source_status }}. Source labels do not establish freshness.</p>
-  <ul class="trace-sources">{% for source in detail_view.sources %}<li data-source-state="{{ source.health }}">{{ source.role }}: {{ source.source }} / {{ source.health }}</li>{% endfor %}</ul>
+<section class="card observation-context" aria-label="Recorded run evidence">
+  <h2>Recorded Run Evidence</h2>
+  <p class="subtle-meta">Historical event and artifact snapshot. A decision or order intent is not proof of execution.</p>
+  <dl class="provenance-grid">
+    <div><dt>Run trace</dt><dd>{{ detail.run_id }}</dd></div>
+    <div><dt>Decision / intent</dt><dd>{{ detail.commander.command_intent or detail.commander.path or "not captured" }}</dd></div>
+    <div><dt>Guard observation</dt><dd data-approval-state="{{ 'GUARDED' if verdict.allowed is sameas false else ('RECORDED_ALLOWED' if verdict.allowed is sameas true else 'UNKNOWN') }}">{% if verdict.allowed is sameas false %}GUARDED{% elif verdict.allowed is sameas true %}RECORDED_ALLOWED — not an execution receipt{% else %}UNKNOWN{% endif %}: {{ verdict.reason or "reason not captured" }}</dd></div>
+    <div><dt>Executor observation</dt><dd>{{ execution.action or "UNKNOWN" }} / {{ execution.status or "status not captured" }}</dd></div>
+    <div><dt>Reader source</dt><dd>{{ portfolio_sync.positions_source_label or "not captured" }}</dd></div>
+  </dl>
 </section>
 
 <section class="card card--attention report-summary-card">
   <h2>AI Report Status</h2>
   <div class="chip-list">
-    <span class="{{ trade_report.report_status_badge_class if trade_report.report_available is sameas true else 'status-badge' }}">{{ trade_report.report_status_label if trade_report.report_available is sameas true or trade_report.report_status in ["pending", "failed", "skipped"] else detail_view.artifact.label }}</span>
+    <span class="{{ trade_report.report_status_badge_class if trade_report.report_available is sameas true else 'status-badge' }}">{{ trade_report.report_status_label or "AI Report" }}</span>
     <span class="{{ trade_report.story_type_badge_class or 'status-badge' }}">{{ trade_report.story_type_label or "-" }}</span>
     <span class="chip">{{ trade_report.execution_mode_label or "-" }}</span>
     {% if trade_report.lifecycle_status %}
@@ -60,14 +59,14 @@
   </ul>
   {% if trade_report.report_available is sameas true and trade_report.report_link %}
   <p class="chip-list">
-    {{ observed_link(trade_report.report_link, "Open full report") }}
+    <a class="link-action" href="{{ trade_report.report_link }}">Open full report</a>
     {% if trade_report.operator_brief_available is sameas true and trade_report.operator_brief_link %}
-    {{ observed_link(trade_report.operator_brief_link, "Open saved brief") }}
+    <a class="link-action" href="{{ trade_report.operator_brief_link }}">Open saved brief</a>
     {% endif %}
   </p>
   {% else %}
   <p class="empty-state" data-artifact-state="NO_DATA">No linked full AI report was observed. A saved brief may exist independently.</p>
-  {% if trade_report.operator_brief_available is sameas true and trade_report.operator_brief_link %}<p>{{ observed_link(trade_report.operator_brief_link, "Open saved brief") }}</p>{% endif %}
+  {% if trade_report.operator_brief_available is sameas true and trade_report.operator_brief_link %}<p><a class="link-action" href="{{ trade_report.operator_brief_link }}">Open saved brief</a></p>{% endif %}
   {% endif %}
 </section>
 
@@ -191,13 +190,13 @@
       </ul>
       {% if trade_report.report_available is sameas true and (sec.ai_trade_report or {}).get("link") %}
       <p class="chip-list">
-        {{ observed_link((sec.ai_trade_report or {}).get("link"), "Open full AI report") }}
+        <a class="link-action" href="{{ (sec.ai_trade_report or {}).get('link') }}">Open full AI report</a>
         {% if trade_report.operator_brief_available is sameas true and trade_report.operator_brief_link %}
-        {{ observed_link(trade_report.operator_brief_link, "Open saved brief") }}
+        <a class="link-action" href="{{ trade_report.operator_brief_link }}">Open saved brief</a>
         {% endif %}
       </p>
       {% elif trade_report.operator_brief_available is sameas true and trade_report.operator_brief_link %}
-      <p>{{ observed_link(trade_report.operator_brief_link, "Open saved brief") }}</p>
+      <p><a class="link-action" href="{{ trade_report.operator_brief_link }}">Open saved brief</a></p>
       {% endif %}
     </div>
 
@@ -239,7 +238,7 @@
     {% if detail.reporter.chain %}
     <details class="details-block">
       <summary>Reporter Chain</summary>
-      <pre class="code">{{ detail.reporter.chain | default(none) | tojson(indent=2) }}</pre>
+      <pre class="code">{{ detail.reporter.chain | tojson(indent=2) }}</pre>
     </details>
     {% endif %}
     <details class="details-block">
@@ -250,15 +249,15 @@
 
   <article class="card">
     <h2>Commander</h2>
-    <pre class="code">{{ detail.commander | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.commander | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Strategist</h2>
-    <pre class="code">{{ detail.strategist.summary | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.strategist.summary | tojson(indent=2) }}</pre>
     <h3>LLM</h3>
-    <pre class="code">{{ detail.strategist.llm | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.strategist.llm | tojson(indent=2) }}</pre>
     <h3>Decision Trace</h3>
-    <pre class="code">{{ detail.strategist.decision_trace | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.strategist.decision_trace | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Strategist Evidence</h2>
@@ -269,37 +268,37 @@
   </article>
   <article class="card">
     <h2>Scanner</h2>
-    <pre class="code">{{ detail.scanner.summary | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.scanner.summary | tojson(indent=2) }}</pre>
     <h3>Decision Trace</h3>
-    <pre class="code">{{ detail.scanner.decision_trace | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.scanner.decision_trace | tojson(indent=2) }}</pre>
     <h3>Feature Coverage</h3>
     <p class="meta-line">
       quality={{ detail.scanner.feature_coverage.quality }}
       present={{ detail.scanner.feature_coverage.present }}/{{ detail.scanner.feature_coverage.total }}
       ratio={% if detail.scanner.feature_coverage.coverage_ratio is number %}{{ "%.0f"|format(detail.scanner.feature_coverage.coverage_ratio * 100) }}%{% else %}UNKNOWN{% endif %}
     </p>
-    <pre class="code">{{ detail.scanner.feature_coverage | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.scanner.feature_coverage | tojson(indent=2) }}</pre>
     <h3>Quote Metrics</h3>
     <p class="meta-line">
       present={{ detail.scanner.quote_metrics.present }}
       price={{ detail.scanner.quote_metrics.skill_quote_price or "-" }}
       change_pct={{ detail.scanner.quote_metrics.intraday_change_pct or "-" }}
     </p>
-    <pre class="code">{{ detail.scanner.quote_metrics | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.scanner.quote_metrics | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Monitor</h2>
-    <pre class="code">{{ detail.monitor.summary | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.monitor.summary | tojson(indent=2) }}</pre>
     <h3>Decision Trace</h3>
-    <pre class="code">{{ detail.monitor.decision_trace | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.monitor.decision_trace | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Supervisor</h2>
-    <pre class="code">{{ detail.supervisor.verdict | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.supervisor.verdict | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Executor</h2>
-    <pre class="code">{{ detail.executor.execution | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code">{{ detail.executor.execution | tojson(indent=2) }}</pre>
   </article>
   <article class="card">
     <h2>Same-Day Symbol Trade History</h2>
@@ -337,7 +336,7 @@
   </article>
   <article class="card">
     <h2>Raw Event Preview</h2>
-    <pre class="code tall">{{ detail.event_preview | default(none) | tojson(indent=2) }}</pre>
+    <pre class="code tall">{{ detail.event_preview | tojson(indent=2) }}</pre>
   </article>
 </section>
 {% endblock %}

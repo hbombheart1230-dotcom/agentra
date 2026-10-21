@@ -4,8 +4,6 @@ from datetime import datetime
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from . import fast08_evidence_inventory as _ev
-
 
 KST = ZoneInfo("Asia/Seoul")
 MIN_COMPLETE_WINDOWS = 20
@@ -41,19 +39,35 @@ def build_q9_day_validity(
     now: datetime | None = None,
 ) -> dict[str, Any]:
     current = (now or datetime.now(KST)).astimezone(KST)
-    signals = _ev.q9_day_signals(inventory)
-    decision = signals["decision"]
-    complete_count = signals["complete_count"]
-    window_count = signals["window_count"]
-    linkage_ratio = signals["linkage_ratio"]
-    synthetic_count = signals["synthetic_count"]
-    missing_selected = signals["missing_selected"]
-    invalid_forward = signals["invalid_forward"]
-    unavailable_forward = signals["unavailable_forward"]
-    pending_forward = signals["pending_forward"]
-    forward_total = signals["forward_total"]
-    forward_coverage = signals["forward_coverage"]
-    comparison_complete = signals["comparison_complete"]
+    daily = inventory.get("daily_artifacts")
+    daily = daily if isinstance(daily, dict) else {}
+    decision = daily.get("q9_decision_windows")
+    decision = decision if isinstance(decision, dict) else {}
+    comparison = daily.get("q9_vs_samsung_hynix_comparison")
+    comparison = comparison if isinstance(comparison, dict) else {}
+
+    window_count = int(decision.get("scanner_selection_window_count") or 0)
+    complete_count = int(
+        decision.get("complete_pabc_window_count")
+        or decision.get("complete_abc_window_count")
+        or 0
+    )
+    linkage_ratio = complete_count / window_count if window_count else 0.0
+    synthetic_count = int(decision.get("synthetic_window_count") or 0)
+    missing_selected = int(decision.get("missing_selected_candidate_count") or 0)
+    invalid_forward = int(decision.get("forward_invalid_candidate_count") or 0)
+    unavailable_forward = int(decision.get("forward_unavailable_candidate_count") or 0)
+    pending_forward = int(decision.get("forward_pending_candidate_count") or 0)
+    observed_forward = int(decision.get("forward_observed_candidate_count") or 0)
+    forward_total = int(decision.get("pre_strategist_forward_candidate_count") or 0)
+    forward_usable = observed_forward + pending_forward
+    forward_coverage = forward_usable / forward_total if forward_total else 0.0
+    comparison_complete = (
+        bool(comparison.get("exists"))
+        and str(comparison.get("schema_version") or "") == "q9_baseline_unified_comparison.v1"
+        and str(comparison.get("evidence_status") or "").upper() == "COMPLETE"
+        and bool(comparison.get("forward_windows_complete"))
+    )
 
     session_day = datetime.fromisoformat(day).date()
     is_future = session_day > current.date()
@@ -158,7 +172,39 @@ def build_q9_day_validity(
         "status": status,
         "counts_as_formal_day": status == "VALID",
         "trade_required": False,
-        "checks": _ev.q9_day_checks(signals),
+        "checks": {
+            "artifact_exists": bool(decision.get("exists")),
+            "schema_match": bool(decision.get("schema_match", True)),
+            "complete_pabc_window_count": complete_count,
+            "scanner_selection_window_count": window_count,
+            "pabc_linkage_ratio": round(linkage_ratio, 4),
+            "full_session_coverage": bool(decision.get("full_session_coverage")),
+            "first_window_kst": decision.get("first_scanner_window_kst"),
+            "last_window_kst": decision.get("last_scanner_window_kst"),
+            "last_runtime_evidence_kst": decision.get("last_q9_runtime_evidence_kst"),
+            "session_coverage_source": decision.get("session_coverage_source"),
+            "synthetic_window_count": synthetic_count,
+            "post_session_window_count": int(
+                decision.get("post_session_window_count") or 0
+            ),
+            "missing_selected_candidate_count": missing_selected,
+            "forward_candidate_count": forward_total,
+            "forward_observed_candidate_count": observed_forward,
+            "forward_pending_candidate_count": pending_forward,
+            "forward_unavailable_candidate_count": unavailable_forward,
+            "forward_invalid_candidate_count": invalid_forward,
+            "forward_usable_coverage": round(forward_coverage, 4),
+            "forward_outcome_reason_counts": dict(
+                decision.get("forward_outcome_reason_counts") or {}
+            ),
+            "forward_outcome_status_signature_counts": dict(
+                decision.get("forward_outcome_status_signature_counts") or {}
+            ),
+            "unified_comparison_exists": bool(comparison.get("exists")),
+            "unified_comparison_evidence_status": str(comparison.get("evidence_status") or ""),
+            "unified_comparison_forward_complete": bool(comparison.get("forward_windows_complete")),
+            "unified_comparison_complete_override": bool(comparison_complete),
+        },
         "blockers": blockers,
         "warnings": warnings,
         "rule": (

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any
 
 from .contracts import CONTRACT_VERSION, EvidenceClass, IntegrityStatus
-from . import fast08_evidence_inventory as _ev
 from .horizon_contract import evaluate_horizon_contract
 
 
@@ -49,7 +48,14 @@ def evaluate_trade(model: dict[str, Any]) -> dict[str, Any]:
         and not partial_exit_duplicate
         and not confirmed_runtime_defect
     )
-    post_exit, observed_checkpoints = _ev.observed_post_exit(model)
+    post_exit = (model.get("monitor") or {}).get("post_exit")
+    post_exit = post_exit if isinstance(post_exit, dict) else {}
+    checkpoints = post_exit.get("checkpoints") if isinstance(post_exit.get("checkpoints"), dict) else {}
+    observed_checkpoints = {
+        key: value
+        for key, value in checkpoints.items()
+        if isinstance(value, dict) and str(value.get("status") or "") == "observed"
+    }
     horizon_alignment = (
         {
             "status": "excluded_runtime_incident",
@@ -95,12 +101,21 @@ def evaluate_trade(model: dict[str, Any]) -> dict[str, Any]:
             "status": "observed" if model.get("entry") else "unavailable",
             "reason": (model.get("entry") or {}).get("reason"),
         },
-        "exit_quality": _ev.exit_quality_block(
-            exit_metric_excluded=exit_metric_excluded,
-            exit_reason=exit_reason,
-            post_exit=post_exit,
-            observed=observed_checkpoints,
-        ),
+        "exit_quality": {
+            "status": (
+                "excluded_runtime_incident"
+                if exit_metric_excluded
+                else "observed" if observed_checkpoints else "diagnostic_only"
+            ),
+            "reason": exit_reason,
+            "label": "ambiguous",
+            "post_exit_comparison": "available" if observed_checkpoints else "unavailable",
+            "observed_checkpoints": observed_checkpoints,
+            "best_exit_offset": post_exit.get("best_exit_offset"),
+            "best_exit_price": post_exit.get("best_exit_price"),
+            "max_post_exit_upside_pct": post_exit.get("max_post_exit_upside_pct"),
+            "max_post_exit_drawdown_pct": post_exit.get("max_post_exit_drawdown_pct"),
+        },
         "horizon_alignment": horizon_alignment,
         "tactic_alignment": {
             "playbook": (model.get("selection") or {}).get("strategist_playbook"),

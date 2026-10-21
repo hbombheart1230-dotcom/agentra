@@ -1,6 +1,4 @@
 {% extends "base.html" %}
-{% from "_fast08_navigation.html" import brief_navigation, saved_context %}
-{% from "_fast08_evidence.html" import observed_link with context %}
 {% block content %}
 <section class="hero">
   <div>
@@ -22,9 +20,26 @@
 
 {% set sec = brief.sections or {} %}
 {% set saved = brief.raw_brief or {} %}
-{% set saved_view = ui_saved_brief(saved, sections=sec) %}
-{{ saved_context(saved_view, brief.run_id) }}
-{{ brief_navigation() }}
+{% set brief_state = (saved.status or "unknown") | lower %}
+<section class="card observation-context" aria-label="Saved brief provenance">
+  <h2>Saved Brief Evidence</h2>
+  <p class="subtle-meta">저장된 관측 기록입니다. 현재 승인이나 체결 성공을 의미하지 않습니다.</p>
+  {% if saved.stale is sameas true or brief_state == "stale" %}
+  <p class="status-badge status-badge--warn" data-brief-state="STALE">STALE — source marked this snapshot stale; check a newer run.</p>
+  {% elif brief_state == "fallback" %}
+  <p class="status-badge status-badge--warn" data-brief-state="FALLBACK">FALLBACK — saved deterministic summary; not a confirmed AI narrative.</p>
+  {% elif brief_state in ["failed", "error"] %}
+  <p class="status-badge status-badge--critical" data-brief-state="FAILED">FAILED — inspect saved diagnostics.</p>
+  {% elif not sec %}
+  <p class="status-badge" data-brief-state="NO_DATA">NO_DATA — no structured brief sections captured.</p>
+  {% else %}
+  <p class="status-badge" data-brief-state="SAVED">SAVED — freshness not independently verified.</p>
+  {% endif %}
+  <dl class="provenance-grid"><div><dt>Run trace</dt><dd>{{ brief.run_id or "not captured" }}</dd></div><div><dt>Saved timestamp</dt><dd>{{ saved.generated_at or saved.updated_at or "not captured" }}</dd></div></dl>
+</section>
+<nav class="page-jumps" aria-label="Brief sections">
+  <a href="#brief-evidence">Evidence</a><a href="#brief-decision">Decision</a><a href="#brief-risk">Monitor / risk</a><a href="#brief-next">Next step</a>
+</nav>
 <section class="grid grid-2">
   <article class="card card--attention" id="brief-decision" tabindex="-1">
     <h2>Current Snapshot</h2>
@@ -51,10 +66,10 @@
     </ul>
     <p class="chip-list">
       {% if brief.run_link %}
-      {{ observed_link(brief.run_link, "Open run detail") }}
+      <a class="link-action" href="{{ brief.run_link }}">Open run detail</a>
       {% endif %}
       {% if brief.report_link %}
-      {{ observed_link(brief.report_link, "Open linked report detail") }}
+      <a class="link-action" href="{{ brief.report_link }}">Open linked report detail</a>
       {% endif %}
     </p>
   </article>

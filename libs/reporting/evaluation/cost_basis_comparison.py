@@ -14,7 +14,6 @@ from libs.reporting.q9_forward_candles import (
 )
 from libs.runtime.broker_cost_profile import load_broker_cost_profile
 
-from . import fast08_qwindow_projection as _qw
 from .scanner_quality import (
     build_scanner_quality_review,
     extract_pre_strategist_candidate_rows,
@@ -67,7 +66,14 @@ def build_evaluation_cost_bases(
     }
 
 
-_topk_rows = _qw.topk_rows_by_key
+def _topk_rows(review: Mapping[str, Any]) -> dict[tuple[int, str], dict[str, Any]]:
+    topk = review.get("topk_forward_performance")
+    topk = topk if isinstance(topk, Mapping) else {}
+    return {
+        (int(row.get("top_k") or 0), str(row.get("horizon") or "")): dict(row)
+        for row in topk.get("rows") or []
+        if isinstance(row, Mapping)
+    }
 
 
 def build_cost_basis_comparison(
@@ -106,7 +112,29 @@ def build_cost_basis_comparison(
         slippage_pct=slippage_pct,
         minute_rows_by_symbol=forward_candles,
     )
-    rows = _qw.cost_comparison_rows(mock_review, live_review)
+    mock_rows = _topk_rows(mock_review)
+    live_rows = _topk_rows(live_review)
+    rows: list[dict[str, Any]] = []
+    for key in sorted(mock_rows, key=lambda item: (item[1], item[0])):
+        mock_row = mock_rows[key]
+        live_row = live_rows.get(key, {})
+        gross = mock_row.get("gross") if isinstance(mock_row.get("gross"), Mapping) else {}
+        mock_net = mock_row.get("net") if isinstance(mock_row.get("net"), Mapping) else {}
+        live_net = live_row.get("net") if isinstance(live_row.get("net"), Mapping) else {}
+        rows.append({
+            "top_k": key[0],
+            "horizon": key[1],
+            "window_count": int(mock_row.get("window_count") or 0),
+            "observed_day_count": int(mock_row.get("observed_day_count") or 0),
+            "gross": dict(gross),
+            "mock_net": dict(mock_net),
+            "live_net": dict(live_net),
+            "expectancy_delta_live_minus_mock_pct": round(
+                float(live_net.get("expectancy_pct") or 0.0)
+                - float(mock_net.get("expectancy_pct") or 0.0),
+                4,
+            ),
+        })
     return {
         "schema_version": "q9_cost_basis_comparison.v1",
         "behavior_effect": "evaluation_only",
@@ -126,7 +154,56 @@ def build_cost_basis_comparison(
     }
 
 
-render_cost_basis_comparison = _qw.render_cost_basis_comparison
+def render_cost_basis_comparison(payload: Mapping[str, Any]) -> str:
+    date_range = payload.get("range") or {}
+    bases = payload.get("cost_bases") or {}
+    mock = bases.get("mock_observed") or {}
+    live = bases.get("live_deployment_equity") or {}
+    lines = [
+        f"# Cost Basis Comparison ({date_range.get('start')} ~ {date_range.get('end')})",
+        "",
+        "Evaluation-only. Runtime entry, exit, and broker accounting are unchanged.",
+        f"Forward data source: `{payload.get('forward_data_source') or 'unknown'}`.",
+        f"Cohort scope: `{payload.get('cohort_scope') or 'unknown'}`.",
+        "",
+        "## Cost Assumptions",
+        "",
+        "| Basis | Round Trip | Slippage | Total Drag | Purpose |",
+        "|---|---:|---:|---:|---|",
+        f"| Mock observed | {float(mock.get('round_trip_cost_pct') or 0):.4f}% | "
+        f"{float(bases.get('slippage_pct') or 0):.4f}% | "
+        f"{float(mock.get('total_drag_with_slippage_pct') or 0):.4f}% | Mock PnL/cash truth |",
+        f"| Live equity assumption | {float(live.get('round_trip_cost_pct') or 0):.4f}% | "
+        f"{float(bases.get('slippage_pct') or 0):.4f}% | "
+        f"{float(live.get('total_drag_with_slippage_pct') or 0):.4f}% | Deployment evaluation |",
+        "",
+        "## Pre-Strategist Scanner Top-K",
+        "",
+        "| Top-K | Horizon | Windows/Days | Gross | Mock Net | Live Net | Live-Mock Delta |",
+        "|---:|---|---:|---:|---:|---:|---:|",
+    ]
+    for row in payload.get("rows") or []:
+        gross = row.get("gross") or {}
+        mock_net = row.get("mock_net") or {}
+        live_net = row.get("live_net") or {}
+        lines.append(
+            f"| {row.get('top_k')} | {row.get('horizon')} | "
+            f"{row.get('window_count')}/{row.get('observed_day_count')} | "
+            f"{float(gross.get('expectancy_pct') or 0):.4f}% | "
+            f"{float(mock_net.get('expectancy_pct') or 0):.4f}% | "
+            f"{float(live_net.get('expectancy_pct') or 0):.4f}% | "
+            f"{float(row.get('expectancy_delta_live_minus_mock_pct') or 0):+.4f}% |"
+        )
+    lines += [
+        "",
+        "## Interpretation",
+        "",
+        "- Mock net answers whether the signal beats the mock account's observed friction.",
+        "- Live net answers whether it beats the explicit 2026 KRX equity assumption.",
+        "- ETF/ETN tax treatment requires instrument classification and is not inferred here.",
+        "- This report does not authorize a trading-policy change.",
+    ]
+    return "\n".join(lines) + "\n"
 
 
 def write_cost_basis_comparison(
