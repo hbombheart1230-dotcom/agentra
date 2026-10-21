@@ -71,3 +71,22 @@ def is_retryable_brief_failure(status: str, reason: str = "") -> bool:
     if status_text in {"timeout", "network_error", "empty_response"}:
         return True
     return "429" in reason_text or "rate" in reason_text
+
+
+def saved_brief_observation(payload: Any) -> Dict[str, Any]:
+    """Summarize existing saved evidence; never parse/call an LLM or infer freshness."""
+    raw = payload if isinstance(payload, dict) else {}
+    sections = raw.get("sections") if isinstance(raw.get("sections"), dict) else {}
+    state = str(raw.get("status") or "").strip().lower()
+    if raw.get("stale") is True or state == "stale":
+        label, tone = "STALE", "warn"
+    elif state == "fallback":
+        label, tone = "FALLBACK", "warn"
+    elif state in {"failed", "error"}:
+        label, tone = "FAILED", "critical"
+    elif not sections:
+        label, tone = "NO_DATA", "neutral"
+    else:
+        label, tone = "SAVED", "neutral"
+    return {"state": label, "tone": tone, "captured_at": str(raw.get("generated_at") or raw.get("updated_at") or ""),
+            "source_class": "saved_artifact" if raw else "missing", "freshness_verified": False}

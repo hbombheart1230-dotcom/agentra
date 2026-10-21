@@ -4048,3 +4048,9 @@ Sources: `apps/operator_ui/templates/operator_brief_detail.html`, `apps/operator
 - Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
 
 Sources: `apps/operator_ui/static/operator.css`, `tests/test_p15_fast07_b_accessibility_smoke.py`.
+
+## 2026-10-21 - P1.5 FAST08 B8.1 20261021
+**Stage:** FAST_DEV checkpoint; final peer and integration acceptance pending.
+
+- Canonical priority preserved; nested empty payloads no longer override real facts, false/zero remain evidence, directory paths are not artifacts. Share pure boolean/finite-number/execution/link presentation, add saved-brief observation without LLM parsing changes.
+- Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification.
