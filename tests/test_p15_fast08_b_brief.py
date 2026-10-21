@@ -3,7 +3,7 @@ from test_p15_fast08_b_dashboard import client_for
 
 
 @pytest.mark.parametrize('saved,sections,expected', [({'status':'fallback'}, {}, 'FALLBACK'),
-    ({'stale':True}, {}, 'STALE'), ({},{},'NO_DATA'), ({'status':'ok'},{'executive_decision':{'final_action':'WAIT'}},'SAVED'),
+    ({'stale':True}, {}, 'STALE'), ({},{},'NO_DATA'), ({'status':'ok'},{'executive_decision':{'final_action':'WAIT'}},'DERIVED'),
     ({},{'executive_decision':{'final_action':'WAIT'}},'DERIVED')])
 def test_actual_brief_get_does_not_invent_saved_or_current_authority(monkeypatch,saved,sections,expected):
     brief={'found':True,'raw_brief':saved,'sections':sections,'run_id':'R1'}
