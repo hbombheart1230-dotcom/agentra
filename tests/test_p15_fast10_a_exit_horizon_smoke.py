@@ -334,6 +334,6 @@ def test_horizon_review_shares_one_conversion_across_all_three_combinations(monk
 def test_a10_owner_stays_pure() -> None:
     source = Path(tp.__file__).read_text(encoding="utf-8")
     imports = [line for line in source.splitlines() if line.startswith(("import ", "from "))]
-    assert all(line.split()[1] in {"__future__", "collections", "datetime", "typing", ".contracts", ".metrics"} for line in imports), imports
+    assert all(line.split()[1] in {"__future__", "bisect", "collections", "datetime", "typing", ".contracts", ".metrics"} for line in imports), imports
     for banned in ("open(", "write_text", "read_text", "read_json", "os.environ", "subprocess", ".now("):
         assert banned not in source, banned

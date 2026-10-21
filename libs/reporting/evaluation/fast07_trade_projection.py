@@ -10,6 +10,7 @@ load and all labelling/eligibility thresholds stay in the original
 
 from __future__ import annotations
 
+from bisect import bisect_right
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Mapping, Sequence
@@ -627,9 +628,48 @@ def kst_day(at_epoch: int) -> str:
         return ""
 
 
+def _row_ts(row: Mapping[str, Any]) -> int | None:
+    try:
+        return int(float(row.get("ts") or 0))
+    except (TypeError, ValueError):
+        return None  # a malformed timestamp never matches (it used to abort the whole report)
+
+
 def row_at_or_before(rows: Sequence[Mapping[str, Any]], at_epoch: int) -> Mapping[str, Any] | None:
-    prior = [row for row in rows if int(row.get("ts") or 0) <= at_epoch]
-    return prior[-1] if prior else None
+    """Last row, in list order, stamped at or before ``at_epoch``."""
+    prior = None
+    for row in rows:
+        stamp = _row_ts(row)
+        if stamp is not None and stamp <= at_epoch:
+            prior = row
+    return prior
+
+
+class MinuteIndex:
+    """Per-symbol minute rows with their timestamps converted once.
+
+    A symbol whose rows are already in non-decreasing time order is answered by binary search (the last row at
+    or before the epoch, which is what the linear scan returns); any other symbol falls back to the linear scan,
+    so unsorted or malformed rows keep the same answer.
+    """
+
+    def __init__(self, rows_by_symbol: Mapping[str, Sequence[Mapping[str, Any]]]) -> None:
+        self._rows_by_symbol = rows_by_symbol
+        self._cache: dict[str, tuple[Sequence[Mapping[str, Any]], list[int] | None]] = {}
+
+    def at_or_before(self, symbol: str, at_epoch: int) -> Mapping[str, Any] | None:
+        entry = self._cache.get(symbol)
+        if entry is None:
+            rows = self._rows_by_symbol.get(symbol) or ()
+            stamps = [_row_ts(row) for row in rows]
+            ordered = all(s is not None for s in stamps) and all(a <= b for a, b in zip(stamps, stamps[1:]))
+            entry = (rows, stamps if ordered else None)  # type: ignore[assignment]
+            self._cache[symbol] = entry
+        rows, stamps = entry
+        if stamps is None:
+            return row_at_or_before(rows, at_epoch)
+        position = bisect_right(stamps, at_epoch) - 1
+        return rows[position] if position >= 0 else None
 
 
 def pre_entry_move_pct(
@@ -638,10 +678,14 @@ def pre_entry_move_pct(
     decision_epoch: int,
     entry_price: float | None,
     minute_rows_by_symbol: Mapping[str, list[Mapping[str, Any]]],
+    index: "MinuteIndex | None" = None,
 ) -> tuple[float | None, dict[str, Any]]:
     if not symbol or decision_epoch <= 0 or entry_price is None or entry_price <= 0:
         return None, {"available": False, "reason": "missing_symbol_time_or_entry_price"}
-    base = row_at_or_before(list(minute_rows_by_symbol.get(symbol) or []), decision_epoch)
+    if index is not None:
+        base = index.at_or_before(symbol, decision_epoch)
+    else:
+        base = row_at_or_before(minute_rows_by_symbol.get(symbol) or (), decision_epoch)
     if not base:
         return None, {"available": False, "reason": "minute_row_before_decision_unavailable"}
     if kst_day(int(base.get("ts") or 0)) != kst_day(decision_epoch):
@@ -827,6 +871,101 @@ def entry_timing_row(
     if anomalies:
         row["timing_anomalies"] = anomalies
     return row
+
+
+# --- Q13 evidence quality (A11) ---------------------------------------------------------------------------------
+
+EVIDENCE_DIMENSIONS = {
+    "actual_entry": ("FILLED", "NO_FILL"),
+    "observed_forward_path": ("OBSERVED", "PARTIAL", "UNAVAILABLE", "NOT_APPLICABLE"),
+    "shadow_anchor": ("AVAILABLE", "UNAVAILABLE"),
+}
+EVIDENCE_CLASSES = (
+    "ACTUAL_FILL_OBSERVED_PATH",
+    "ACTUAL_FILL_PARTIAL_PATH",
+    "ACTUAL_FILL_NO_OBSERVED_PATH",
+    "NO_ACTUAL_FILL",
+    "LEGACY_NO_EVIDENCE_BASIS",
+    "UNCLASSIFIED",
+)
+
+
+def _evidence_class(basis: Mapping[str, Any] | None) -> str:
+    if basis is None:
+        return "LEGACY_NO_EVIDENCE_BASIS"
+    entry, path = basis.get("actual_entry"), basis.get("observed_forward_path")
+    if entry == "NO_FILL":
+        return "NO_ACTUAL_FILL"
+    if entry == "FILLED":
+        return {"OBSERVED": "ACTUAL_FILL_OBSERVED_PATH", "PARTIAL": "ACTUAL_FILL_PARTIAL_PATH",
+                "UNAVAILABLE": "ACTUAL_FILL_NO_OBSERVED_PATH"}.get(str(path), "UNCLASSIFIED")
+    return "UNCLASSIFIED"
+
+
+def entry_evidence_quality(
+    rows: Sequence[Mapping[str, Any]], *, model_count: int, excluded_count: int
+) -> dict[str, Any]:
+    """Counts actual fills, observed price paths, shadow anchors, insufficient evidence and timestamp anomalies.
+
+    Every dimension is a partition of the analyzed rows (legacy rows without ``evidence_basis`` count as UNKNOWN,
+    never as FILLED), and ``reconciliation`` states whether analyzed + excluded equals the models offered.
+    """
+    dimensions: dict[str, dict[str, int]] = {name: {value: 0 for value in values} | {"UNKNOWN": 0} for name, values in EVIDENCE_DIMENSIONS.items()}
+    integrity = {"OK": 0, "MISMATCH": 0, "UNKNOWN": 0}
+    classes = {name: 0 for name in EVIDENCE_CLASSES}
+    anomaly_codes: dict[str, int] = {}
+    insufficient = shadow_only = rows_with_anomalies = 0
+    actual_return = actual_return_missing = 0
+    for row in rows:
+        basis = row.get("evidence_basis")
+        basis = basis if isinstance(basis, Mapping) else None
+        classes[_evidence_class(basis)] += 1
+        for name, allowed in EVIDENCE_DIMENSIONS.items():
+            value = None if basis is None else basis.get(name)
+            dimensions[name][value if value in allowed else "UNKNOWN"] += 1
+        state = None if basis is None else basis.get("timing_integrity")
+        integrity["OK" if state == "OK" else "MISMATCH" if isinstance(state, str) and state.startswith("MISMATCH") else "UNKNOWN"] += 1
+        codes = row.get("timing_anomalies")
+        codes = [str(c) for c in codes] if isinstance(codes, list) else []
+        if codes:
+            rows_with_anomalies += 1
+            for code in codes:
+                anomaly_codes[code] = anomaly_codes.get(code, 0) + 1
+        if row.get("label") == "INSUFFICIENT_EVIDENCE":
+            insufficient += 1
+        if basis is not None and basis.get("actual_entry") == "NO_FILL" and basis.get("shadow_anchor") == "AVAILABLE":
+            shadow_only += 1
+        if basis is not None and basis.get("actual_entry") == "FILLED":
+            if row.get("entry_return_pct") is None:
+                actual_return_missing += 1
+            else:
+                actual_return += 1
+    row_count = len(rows)
+    sums_match = (
+        all(sum(counts.values()) == row_count for counts in dimensions.values())
+        and sum(integrity.values()) == row_count
+        and sum(classes.values()) == row_count
+    )
+    return {
+        "schema_version": "q13_entry_evidence_quality.v1",
+        "evidence_classes": classes,
+        "actual_entry": dimensions["actual_entry"],
+        "observed_forward_path": dimensions["observed_forward_path"],
+        "shadow_anchor": dimensions["shadow_anchor"],
+        "timing_integrity": integrity,
+        "timing_anomaly_codes": dict(sorted(anomaly_codes.items())),
+        "rows_with_timing_anomalies": rows_with_anomalies,
+        "insufficient_evidence_count": insufficient,
+        "shadow_only_count": shadow_only,
+        "actual_return_observed_count": actual_return,
+        "actual_return_missing_on_fill_count": actual_return_missing,
+        "reconciliation": {
+            "model_count": model_count,
+            "analyzed_count": row_count,
+            "excluded_count": excluded_count,
+            "reconciled": bool(sums_match and row_count + excluded_count == model_count),
+        },
+    }
 
 
 def _mean_or_none(values: Sequence[float | None], digits: int) -> float | None:

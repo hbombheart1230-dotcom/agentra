@@ -141,7 +141,7 @@ def test_horizon_combo_thresholds_stay_in_facade() -> None:
 
 
 def test_a71_owners_are_pure() -> None:
-    allowed = {"__future__", "array", "collections", "datetime", "json", "typing", ".contracts", ".metrics"}
+    allowed = {"__future__", "array", "bisect", "collections", "datetime", "json", "typing", ".contracts", ".metrics"}
     for module in (proj, render):
         source = Path(module.__file__).read_text(encoding="utf-8")
         imports = [line for line in source.splitlines() if line.startswith(("import ", "from "))]

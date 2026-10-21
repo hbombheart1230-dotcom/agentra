@@ -27,7 +27,56 @@ def timing_fmt(value: Any, suffix: str = "") -> str:
         return str(value)
 
 
+def _has_evidence_basis(payload: Mapping[str, Any]) -> bool:
+    return any(isinstance(row, Mapping) and isinstance(row.get("evidence_basis"), Mapping) for row in payload.get("rows") or [])
+
+
+def _basis_cell(row: Mapping[str, Any]) -> str:
+    basis = row.get("evidence_basis")
+    if not isinstance(basis, Mapping):
+        return "legacy (no evidence basis)"
+    cell = (
+        f"fill={basis.get('actual_entry', '?')} / path={basis.get('observed_forward_path', '?')} / "
+        f"shadow-anchor={basis.get('shadow_anchor', '?')} / timing={basis.get('timing_integrity', '?')}"
+    )
+    return cell.replace("|", "/")
+
+
+def _render_evidence_quality(quality: Mapping[str, Any]) -> list[str]:
+    recon = mapping(quality.get("reconciliation"))
+    lines = [
+        "",
+        "## Evidence Quality",
+        "",
+        "Actual results come from executed fills; the observed path is a price observation after the actual entry; "
+        "the shadow anchor is decision-time data that was never executed. They are counted separately.",
+        "",
+        f"- Models offered: {recon.get('model_count', '-')} = analyzed {recon.get('analyzed_count', '-')} + excluded {recon.get('excluded_count', '-')} "
+        f"(reconciled: **{'yes' if recon.get('reconciled') else 'NO'}**)",
+        f"- Insufficient evidence rows: {quality.get('insufficient_evidence_count', 0)}",
+        f"- Shadow-only rows (decision anchor but no actual fill): {quality.get('shadow_only_count', 0)}",
+        f"- Actual fills with a realized return / without: {quality.get('actual_return_observed_count', 0)} / "
+        f"{quality.get('actual_return_missing_on_fill_count', 0)}",
+        "",
+        "| Evidence class | Rows |",
+        "| --- | ---: |",
+    ]
+    for name, count in mapping(quality.get("evidence_classes")).items():
+        lines.append(f"| {name} | {count} |")
+    for title, key in (("Actual entry", "actual_entry"), ("Observed forward path", "observed_forward_path"),
+                       ("Shadow anchor", "shadow_anchor"), ("Timing integrity", "timing_integrity")):
+        counts = mapping(quality.get(key))
+        lines.append("")
+        lines.append(f"- {title}: " + ", ".join(f"{name}={count}" for name, count in counts.items()))
+    codes = mapping(quality.get("timing_anomaly_codes"))
+    lines.append("")
+    lines.append(f"- Timing mismatches ({quality.get('rows_with_timing_anomalies', 0)} rows): "
+                 + (", ".join(f"{name}={count}" for name, count in codes.items()) or "none"))
+    return lines
+
+
 def render_entry_timing_attribution_report(payload: Mapping[str, Any]) -> str:
+    separated = _has_evidence_basis(payload)
     lines = [
         f"# Q13 Entry Timing Attribution - {payload.get('day', '')}",
         "",
@@ -51,18 +100,24 @@ def render_entry_timing_attribution_report(payload: Mapping[str, Any]) -> str:
             f"{timing_fmt(row.get('avg_5m_mfe_pct'), '%')} | "
             f"{timing_fmt(row.get('avg_5m_mae_pct'), '%')} |"
         )
-    lines.extend([
-        "",
-        "## Trade Rows",
-        "",
-        "| Trade | Symbol | Label | Delay Sec | Pre-entry Move | +5m Return | +5m MFE | +5m MAE | Realized | Reasons |",
-        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
-    ])
+    if isinstance(payload.get("evidence_quality"), Mapping):
+        lines.extend(_render_evidence_quality(payload["evidence_quality"]))
+    lines.extend(["", "## Trade Rows", ""])
+    if separated:
+        lines.extend([
+            "| Trade | Symbol | Label | Delay Sec | Pre-entry Move | +5m Return (observed path) | +5m MFE (observed path) | +5m MAE (observed path) | Realized (actual) | Reasons | Evidence |",
+            "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |",
+        ])
+    else:
+        lines.extend([
+            "| Trade | Symbol | Label | Delay Sec | Pre-entry Move | +5m Return | +5m MFE | +5m MAE | Realized | Reasons |",
+            "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+        ])
     for row in payload.get("rows") or []:
         if not isinstance(row, Mapping):
             continue
         quality = mapping(row.get("entry_forward_quality"))
-        lines.append(
+        cells = (
             f"| {row.get('trade_id')} | {row.get('symbol')} | {row.get('label')} | "
             f"{timing_fmt(row.get('scanner_to_entry_delay_sec'))} | "
             f"{timing_fmt(row.get('pre_entry_move_pct'), '%')} | "
@@ -72,6 +127,7 @@ def render_entry_timing_attribution_report(payload: Mapping[str, Any]) -> str:
             f"{timing_fmt(row.get('entry_return_pct'), '%')} | "
             f"{', '.join(row.get('label_reasons') or []) or '-'} |"
         )
+        lines.append(cells + (f" {_basis_cell(row)} |" if separated else ""))
     lines.extend([
         "",
         "## Limitations",
@@ -203,6 +259,11 @@ def render_loss_decomposition(payload: Mapping[str, Any]) -> str:
         f"- trusted forward: {evidence.get('trusted_forward_count')} ({float(evidence.get('trusted_forward_coverage') or 0):.1%})",
         f"- trusted forward observed days: {', '.join(evidence.get('trusted_forward_observed_days') or []) or '-'}",
         f"- trade models: {evidence.get('trade_model_count')}",
+        *(
+            [f"- excluded trade models (split-sell child / confirmed runtime defect): {evidence.get('excluded_trade_model_count')} of {evidence.get('total_trade_model_count')}"]
+            if evidence.get("excluded_trade_model_count")
+            else []
+        ),
         "",
         "## Stage Diagnosis",
         "",
@@ -264,6 +325,12 @@ def render_loss_decomposition(payload: Mapping[str, Any]) -> str:
             f"| {row.get('offset')} | {row.get('count')} | "
             f"{row.get('average_improvement_pct')}% | {row.get('improved_count')} | "
             f"{row.get('worsened_count')} |"
+        )
+    if (payload.get("monitor_exit") or {}).get("unrealized_exit_excluded_count"):
+        lines.append("")
+        lines.append(
+            "- Post-exit price observations are virtual (not a realized result); trades without a realized exit are not counted: "
+            f"{(payload.get('monitor_exit') or {}).get('unrealized_exit_excluded_count')}"
         )
     lines += [
         "",

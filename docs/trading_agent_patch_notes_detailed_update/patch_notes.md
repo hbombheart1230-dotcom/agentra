@@ -1,5 +1,17 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 A11 Q13 EVIDENCE QUALITY AGGREGATION AND REPORTER MARKDOWN 20261021
+**Stage:** P1.5 A11 DEV-A 소스 체크포인트 · 일반·`python -O` 집중 테스트 · 마스터 보고는 Issue #20(A10 이력은 Issue #28) · **Tags:** FIX · REFACTOR · TEST · SAFETY
+
+- Q13 진입 타이밍 보고서에 추가 블록 `evidence_quality`를 넣어 실제 체결, 관측 가격 경로, shadow 기준점, 근거 부족, 시각 이상을 서로 겹치지 않는 분할로 집계하고, 분석 건수 + 제외 건수가 제시된 모델 수와 같은지 `reconciled`로 표시합니다. 각 차원은 분석 행 수와 합이 같아야 하며, `evidence_basis`가 없는 기존 행과 잘못된 값은 UNKNOWN으로 세어 FILLED로 취급하지 않습니다. 별도로 shadow-only(결정 기준점은 있으나 실제 체결 없음)와 체결 대비 실현 수익 유무도 셉니다.
+- Markdown: payload에 `evidence_quality`가 있을 때만 Evidence Quality 절(정합성 줄, 분류 표, 차원별 건수, 시각 불일치)이 붙고, 행에 `evidence_basis`가 있으면 표 열을 (observed path)와 Realized (actual)로 구분해 Evidence 열을 추가합니다. 값 안의 파이프는 표를 깨지 않습니다. 새 필드가 없는 기존 payload는 BASE와 바이트 단위로 같게 렌더링됩니다(무작위 65830자 보고서 등 3건).
+- **확인된 결함 수정:** `build_loss_decomposition`이 분할 매도 자식·확정 런타임 결함 거래를 독립 거래로 합산했습니다(적격 1건인데 실현·청산 관측 3건). 진입 타이밍 보고와 full-chain 검토는 이미 제외하고 있어 집계 대상이 어긋났습니다. 같은 규칙을 적용하고, 제외가 있을 때만 `excluded_trade_model_count`/`total_trade_model_count`를 보고하며 렌더러가 제외 줄과 가상 사후 가격 안내를 표시합니다. A10 청산 요약은 실현 청산과 가상 가격 경로를 이미 분리하고 있고 추가 혼합 결함은 발견되지 않았습니다.
+- 성능(3000건·150종목·종목당 분봉 400개): 진입 타이밍 보고 생성 0.545초 → 약 0.235초(약 2.3배). 거래마다 `attach_forward_outcomes`를 따로 호출해 내부 종목·일자 캐시가 공유되지 않던 것을, 분봉이 있는 종목의 체결만 한 번에 호출하도록 바꿨습니다. 분봉이 없는 종목은 기존 개별 호출을 유지해 체결가가 가격 계열로 쓰이는 일을 막습니다. 분봉 조회는 정렬된 종목별 색인(정렬되지 않았거나 잘못된 행은 선형 탐색)입니다. 처음 시도한 역방향 선형 스캔은 오히려 느려(0.545초 → 0.605초) 교체했습니다. 남은 시간 대부분은 허용 경로 밖의 `attach_forward_outcomes` 내부입니다.
+- 동등성: 무작위 494행(정렬되지 않은 분봉, 분봉 없는 종목, 전일 기준선, 가격 누락, 독립 lane·결함 거래)이 `evidence_quality`를 제외하면 BASE와 동일합니다(전체·분봉 없음·빈 보고서). 임계값·DecisionClass·Q9/Q13/Q14/Q16 분류는 바뀌지 않았습니다.
+- 검증: 신규 27건과 A10/FAST07 smoke, 관련 Q9/손실/타이밍/horizon/거래 모델/full-chain/closeout/scorecard/mining 테스트가 `-O`에서 196건 통과, 일반 모드에서 196건 중 195건 통과했습니다. 일반 모드 실패 1건(`test_daily_summary_payload_identical_with_streamed_and_materialised_rows`)은 두 `generated_at` 값이 초 경계에 걸린 것으로, 현재 후보와 BASE 모두 8/8 재실행 통과이며 변경한 파일 밖 코드를 다루므로 기존 시계 의존 불안정으로 기록만 하고 수정하지 않았습니다.
+
+Sources: `libs/reporting/evaluation/fast07_trade_projection.py`, `libs/reporting/evaluation/entry_timing_attribution.py`, `libs/reporting/evaluation/fast07_chain_render_projection.py`, `libs/reporting/evaluation/loss_decomposition.py`, `tests/test_p15_fast11_a_evidence_quality_smoke.py`, `tests/test_p15_fast10_a_exit_horizon_smoke.py`, `tests/test_p15_fast07_a_evidence_smoke.py`.
+
 ## 2026-10-21 · P1.5 A10 REPORTER EXIT AND HOLDING HORIZON EVIDENCE 20261021
 **Stage:** P1.5 A10 DEV-A 소스 체크포인트(Issue #28) · 일반·`python -O` 집중 테스트 · trade_truth v2는 지시대로 보류 · **Tags:** FIX · REFACTOR · TEST · SAFETY
 

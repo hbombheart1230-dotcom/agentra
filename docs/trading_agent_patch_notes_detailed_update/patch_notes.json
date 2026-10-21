@@ -1,8 +1,40 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 339,
+  "entry_count": 340,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 A11 Q13 EVIDENCE QUALITY AGGREGATION AND REPORTER MARKDOWN 20261021",
+      "title": "Q13 entry-timing report aggregates evidence quality, Markdown separates actual from virtual evidence, loss decomposition uses the same exclusion rule, and report generation is about 2.3x faster",
+      "stage": "P1.5 A11 DEV-A source checkpoint; focused normal and python -O; master report on Issue #20 (A10 history: Issue #28)",
+      "types": [
+        "FIX",
+        "REFACTOR",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "The entry-timing report gains an additive evidence_quality block that counts actual fills, observed price paths, shadow anchors, insufficient evidence and timestamp anomalies as separate partitions and states whether analyzed plus excluded equals the models offered. The Markdown renderer labels actual results versus observed-path values, lists mismatch reasons and reconciliation, and renders payloads without the new fields exactly as before. build_loss_decomposition now excludes split-sell children and confirmed runtime defects like the entry-timing and full-chain readouts. Fill readouts are computed in one batch per report and minute lookups use a binary search.",
+      "details": [
+        "evidence_quality (fast07_trade_projection.entry_evidence_quality, appended after limitations): per-dimension counts for actual_entry, observed_forward_path, shadow_anchor and timing_integrity (each a partition of the analyzed rows; legacy rows without evidence_basis and malformed values count as UNKNOWN and are never counted as FILLED), mutually exclusive evidence classes (ACTUAL_FILL_OBSERVED_PATH, ACTUAL_FILL_PARTIAL_PATH, ACTUAL_FILL_NO_OBSERVED_PATH, NO_ACTUAL_FILL, LEGACY_NO_EVIDENCE_BASIS, UNCLASSIFIED), timing_anomaly_codes, insufficient_evidence_count, shadow_only_count (decision anchor but no actual fill), actual_return_observed/missing_on_fill counts, and reconciliation {model_count, analyzed_count, excluded_count, reconciled}. reconciled is false unless every partition sums to the analyzed rows and analyzed + excluded equals the models offered.",
+        "Markdown: an Evidence Quality section (reconciliation line, class table, per-dimension counts, timing mismatches) is added only when the payload carries evidence_quality; when rows carry evidence_basis the trade table labels columns (observed path) versus Realized (actual) and adds an Evidence column; pipes in values cannot break the table. Payloads without the new fields were rendered byte-identically to BASE (65830-character randomized report and two smaller ones). The loss-decomposition renderer shows an excluded-models line and a virtual post-exit note only when those counts exist.",
+        "Confirmed defect fixed: build_loss_decomposition summed realized, entry and exit statistics over all models, so a broker-day split-sell child or a confirmed runtime defect was counted as an independent trade (3 realized/exit observations where 1 trade was eligible), while the entry-timing report and the full-chain review already exclude them. It now applies the same rule and reports excluded_trade_model_count/total_trade_model_count only when something was excluded. The exit summary from A10 keeps realized exits and virtual price paths apart; no further mixing defect was found.",
+        "Performance (3000 fills, 150 symbols with 400 minute rows each): entry-timing report build 0.545 s to about 0.235 s (about 2.3x). attach_forward_outcomes was called once per fill, so its per-symbol/day caches were never shared; fills whose symbol has minute rows now go through one call, and fills without minute rows keep the single-fill call so a batch can never use the fills' own entry prices as a price series. Minute lookups use a per-symbol sorted index with a linear fallback for unsorted or malformed rows. A first linear-scan variant measured slower (0.545 s to 0.605 s) and was replaced. The remaining time is mostly inside attach_forward_outcomes, which is outside the authorized paths.",
+        "Parity: 494 randomized rows (unsorted and malformed-free minute series, symbols with no minute rows, cross-day and missing prices, independent-lane and defect trades) are identical to BASE once evidence_quality is removed, for the full report, an empty-minutes report and an empty report. No threshold, DecisionClass or Q9/Q13/Q14/Q16 classification changed.",
+        "Checks: tests/test_p15_fast11_a_evidence_quality_smoke.py 27 cases plus A10/FAST07 smokes and related Q9/loss/timing/horizon/trade-model/full-chain/closeout/scorecard/mining tests, 196 passed under python -O and 195 of 196 under normal mode; the single normal-mode failure was test_daily_summary_payload_identical_with_streamed_and_materialised_rows, whose two generated_at values straddled a second boundary. It passed 8 of 8 reruns on both this candidate and BASE and covers code outside the changed files, so it is recorded as a pre-existing clock-dependent flake and not changed."
+      ],
+      "impact": "Read-only evaluation readouts only; no execution, approval, risk, UEF, Step5C, DTO schema, threshold or live-path change; missing or mismatched evidence is counted as such and never as a fill or a favorable result.",
+      "sources": [
+        "libs/reporting/evaluation/fast07_trade_projection.py",
+        "libs/reporting/evaluation/entry_timing_attribution.py",
+        "libs/reporting/evaluation/fast07_chain_render_projection.py",
+        "libs/reporting/evaluation/loss_decomposition.py",
+        "tests/test_p15_fast11_a_evidence_quality_smoke.py",
+        "tests/test_p15_fast10_a_exit_horizon_smoke.py",
+        "tests/test_p15_fast07_a_evidence_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 A10 REPORTER EXIT AND HOLDING HORIZON EVIDENCE 20261021",

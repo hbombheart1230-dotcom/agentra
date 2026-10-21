@@ -48,6 +48,20 @@ _row_at_or_before = _proj.row_at_or_before
 _pre_entry_move_pct = _proj.pre_entry_move_pct
 
 
+def _entry_candidate(trade_id: str, symbol: str, entry_epoch: int, entry_price: float) -> dict[str, Any]:
+    return {
+        "symbol": symbol,
+        "trade_id": trade_id,
+        "generated_at": _iso(entry_epoch),
+        "shadow_forward_base": {
+            "available": True,
+            "baseline_epoch": entry_epoch,
+            "baseline_price": entry_price,
+            "source": "actual_entry",
+        },
+    }
+
+
 def _entry_forward(
     *,
     trade_id: str,
@@ -59,20 +73,38 @@ def _entry_forward(
     if not symbol or entry_epoch <= 0 or entry_price is None or entry_price <= 0:
         return {"available": False, "reason": "entry_baseline_unavailable", "checkpoints": {}}
     rows = attach_forward_outcomes(
-        [{
-            "symbol": symbol,
-            "trade_id": trade_id,
-            "generated_at": _iso(entry_epoch),
-            "shadow_forward_base": {
-                "available": True,
-                "baseline_epoch": entry_epoch,
-                "baseline_price": entry_price,
-                "source": "actual_entry",
-            },
-        }],
+        [_entry_candidate(trade_id, symbol, entry_epoch, entry_price)],
         minute_rows_by_symbol=minute_rows_by_symbol,
     )
     return _proj.forward_from_outcome(_mapping((rows[0] if rows else {}).get("shadow_forward_outcome")))
+
+
+def _entry_forwards(
+    specs: Sequence[tuple[str, str, int, float | None]],
+    minute_rows_by_symbol: Mapping[str, list[Mapping[str, Any]]],
+) -> list[dict[str, Any]]:
+    """Forward readouts for many fills; same result per fill as ``_entry_forward``.
+
+    Fills whose symbol has minute rows are evaluated in one call so the per-symbol/day work is shared.
+    Fills without minute rows keep the single-fill call, because a batch would let the fills' own entry prices
+    stand in as a price series for that symbol.
+    """
+    results: list[dict[str, Any] | None] = [None] * len(specs)
+    batch_positions: list[int] = []
+    batch_rows: list[dict[str, Any]] = []
+    for position, (trade_id, symbol, entry_epoch, entry_price) in enumerate(specs):
+        if entry_price is not None and entry_price > 0 and entry_epoch > 0 and symbol and symbol == symbol.strip() and minute_rows_by_symbol.get(symbol):
+            batch_positions.append(position)
+            batch_rows.append(_entry_candidate(trade_id, symbol, entry_epoch, entry_price))
+        else:
+            results[position] = _entry_forward(
+                trade_id=trade_id, symbol=symbol, entry_epoch=entry_epoch, entry_price=entry_price,
+                minute_rows_by_symbol=minute_rows_by_symbol,
+            )
+    if batch_rows:
+        for position, row in zip(batch_positions, attach_forward_outcomes(batch_rows, minute_rows_by_symbol=minute_rows_by_symbol)):
+            results[position] = _proj.forward_from_outcome(_mapping(row.get("shadow_forward_outcome")))
+    return [result for result in results if result is not None]
 
 
 _checkpoint = _proj.checkpoint
@@ -142,26 +174,26 @@ def build_entry_timing_attribution_report(
     windows = _daily_windows_by_id(Path(reports_root), day)
     rows: list[dict[str, Any]] = []
     excluded_count = 0
+    eligible: list[tuple[Mapping[str, Any], dict[str, Any], str]] = []
     for model in models:
         if _proj.is_excluded_model(model):
             excluded_count += 1
             continue
         selection = _mapping(model.get("selection"))
         window = windows.get(str(selection.get("q9_decision_id") or ""), {})
-        timing = _proj.entry_stage_timing(model, window)
-        symbol = str(model.get("symbol") or "")
+        eligible.append((model, _proj.entry_stage_timing(model, window), str(model.get("symbol") or "")))
+    forwards = _entry_forwards(
+        [(str(model.get("trade_id") or ""), symbol, timing["entry_epoch"], timing["entry_price"]) for model, timing, symbol in eligible],
+        rows_by_symbol,
+    )
+    minute_index = _proj.MinuteIndex(rows_by_symbol)
+    for (model, timing, symbol), forward in zip(eligible, forwards):
         pre_move, pre_move_meta = _pre_entry_move_pct(
             symbol=symbol,
             decision_epoch=timing["decision_epoch"],
             entry_price=timing["entry_price"],
             minute_rows_by_symbol=rows_by_symbol,
-        )
-        forward = _entry_forward(
-            trade_id=str(model.get("trade_id") or ""),
-            symbol=symbol,
-            entry_epoch=timing["entry_epoch"],
-            entry_price=timing["entry_price"],
-            minute_rows_by_symbol=rows_by_symbol,
+            index=minute_index,
         )
         scanner_delay = _proj.delay_seconds(timing["entry_epoch"], timing["scanner_time"])
         label, reasons = _label(
@@ -198,6 +230,7 @@ def build_entry_timing_attribution_report(
             "Labels are attribution hypotheses, not trading behavior.",
             "INSUFFICIENT_EVIDENCE is used when forward minute observations are missing or ambiguous.",
         ],
+        "evidence_quality": _proj.entry_evidence_quality(rows, model_count=len(models), excluded_count=excluded_count),
     }
 
 

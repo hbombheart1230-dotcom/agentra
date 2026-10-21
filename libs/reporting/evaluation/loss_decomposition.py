@@ -257,14 +257,17 @@ def build_loss_decomposition(*, reports_root: Path, start: str, end: str) -> dic
     )
     shadow = build_quant_shadow_candidate_evaluation(payloads)
     candidates = _candidate_rows(payloads)
-    models = _load_trade_models(reports_root, start, end)
+    all_models = _load_trade_models(reports_root, start, end)
+    # Same exclusion as the entry-timing report and the full-chain review: a split-sell child or a confirmed
+    # runtime defect is not an independent trade, so it must not be counted in realized/entry/exit summaries.
+    models = [model for model in all_models if not _tp.is_excluded_model(model)]
     rank_rows = _group_forward(candidates, lambda row: _rank_bucket(row.get("rank")))
     role_rows = _group_forward(candidates, lambda row: row.get("shadow_role"))
     tactic_rows = _group_forward(candidates, lambda row: row.get("quant_tactic_id"))
     realized = _realized_trade_summary(models)
     entry = _entry_timing_summary(models, candidates)
     exit_hold = _exit_hold_summary(models)
-    return _attr.assemble_loss_decomposition(
+    payload = _attr.assemble_loss_decomposition(
         start=start,
         end=end,
         payload_count=len(payloads),
@@ -289,6 +292,10 @@ def build_loss_decomposition(*, reports_root: Path, start: str, end: str) -> dic
             exit_hold=exit_hold,
         ),
     )
+    if len(all_models) != len(models):
+        payload["evidence"]["total_trade_model_count"] = len(all_models)
+        payload["evidence"]["excluded_trade_model_count"] = len(all_models) - len(models)
+    return payload
 
 
 render_loss_decomposition = _render.render_loss_decomposition
