@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Optional
 
@@ -37,6 +38,21 @@ def create_app(config: Optional[OperatorUIConfig] = None) -> FastAPI:
         redoc_url=None,
         openapi_url=None,
     )
+    async def source_unavailable(request: Request, exc: Exception) -> JSONResponse:
+        # Preserve failure, without exposing local paths or inventing empty data.
+        return JSONResponse({"detail": "Read-only source temporarily unavailable."}, status_code=503)
+
+    app.add_exception_handler(OSError, source_unavailable)
+    app.add_exception_handler(json.JSONDecodeError, source_unavailable)
+
+    @app.middleware("http")
+    async def observation_headers(request: Request, call_next):
+        response = await call_next(request)
+        if request.method == "GET" and not request.url.path.startswith("/static/"):
+            response.headers.setdefault("Cache-Control", "no-store")
+            response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        return response
+
     app.state.operator_ui_config = cfg
     app.mount("/static", StaticFiles(directory=str(base_dir / "static")), name="static")
 

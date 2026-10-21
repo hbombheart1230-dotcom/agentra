@@ -4072,3 +4072,9 @@ Sources: `apps/operator_ui/static/operator.css`, `tests/test_p15_fast07_b_access
 
 - Pure saved-brief state and shared navigation macro make missing/stale/fallback evidence explicit, keyboard/screen-reader context preserved. Saved decisions do not claim execution success.
 - Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification.
+
+## 2026-10-21 - P1.5 FAST08 B8.5 20261021
+**Stage:** FAST_DEV checkpoint; final peer and integration acceptance pending.
+
+- Existing six GET routes retain loader order and source authority; controlled rendering handles errors and invalid/missing identifiers with read-only diagnostics. No POST/action/control endpoint introduced.
+- Issue20 FAST08 comment6308194177; existing B work branch only. Actual focused smoke counts/exit and exact final peer are recorded in Issue20. No historical validator, frozen core/Owner, Broker, approval/order/execution, UEF/Step5C, prompt or CI modification.
