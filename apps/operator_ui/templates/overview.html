@@ -5,7 +5,7 @@
   {% set status_label, status_tone = view.system.state, view.system.tone %}
   {% set exec_captured = view.executions.value is not none %}
   {% set exec_total = view.executions.value if exec_captured else 0 %}
-  {% set blocked_total = overview.operator_summary.blocked_total if overview.operator_summary.blocked_total is number else (overview.daily.blocks or 0) %}
+  {% set blocked_total = view.blocked_total %}
   {% set portfolio_sync = overview.portfolio_sync or {} %}
   {% set portfolio_sync_summary = overview.portfolio_sync_summary or {} %}
   {% set recon_status, recon_tone, recon_sentence = view.reconciliation.state, view.reconciliation.tone, view.reconciliation.sentence %}
@@ -36,7 +36,9 @@
       <div class="status-badge status-badge--{{ status_tone }}" data-system-state="{{ status_label }}">{{ status_label }}</div>
       <p class="operator-sentence">
         {{ exec_total if exec_captured else "UNKNOWN" }} executions today.
-        {% if blocked_total > 0 %}
+        {% if blocked_total is none %}
+          Block count not captured.
+        {% elif blocked_total > 0 %}
           {{ blocked_total }} blocked.
         {% else %}
           No blocks.
@@ -55,13 +57,13 @@
     <article class="card card--hero">
       <h2>Today Executions</h2>
       <p class="kpi-value">{{ exec_total if exec_captured else "NO_DATA" }}</p>
-      <p class="source-confidence">Execution source: {{ view.executions.source }}; counters alone do not verify a fill.</p>
-      <p class="subtle-meta">Approved today: {{ overview.daily.approvals or 0 }}</p>
+      <p class="source-confidence">Execution source: {{ view.executions.source }} / {{ view.source_state }}; counters alone do not verify a fill.</p>
+      <p class="subtle-meta">Recorded allowed observations: {{ view.approvals if view.approvals is not none else "NO_DATA" }}; permission is not execution</p>
     </article>
 
     <article class="card card--hero">
       <h2>Blocked</h2>
-      <p class="kpi-value">{{ blocked_total }}</p>
+      <p class="kpi-value">{{ blocked_total if blocked_total is not none else "NO_DATA" }}</p>
       <p class="subtle-meta">Blocks recorded today</p>
     </article>
 
@@ -80,6 +82,15 @@
         {{ portfolio_sync_summary.alert_total or 0 }} alerts
       </p>
     </article>
+  </section>
+
+  <section class="card trace-summary" aria-labelledby="overview-traces-title">
+    <h2 id="overview-traces-title">Recorded activity, separate from execution totals</h2>
+    <p class="source-confidence">Declared run count: {{ view.run_total if view.run_total is not none else "NO_DATA" }}. Source freshness is not independently verified.</p>
+    <p>Displayed trade records: {{ view.traces.total }}; filtered observations are not a broker or full-day total.</p>
+    <dl class="trace-counts">{% for state, count in view.traces.counts.items() %}<div><dt>{{ state }}</dt><dd data-trace-count="{{ state }}">{{ count }}</dd></div>{% endfor %}</dl>
+    {% if view.traces.state == "MALFORMED" %}<p class="reader-error">Trade collection is malformed; observations unavailable.</p>{% endif %}
+    <a class="link-action" href="/runs">Inspect recorded runs</a>
   </section>
 
   <p class="section-label">Immediate Attention</p>
@@ -262,15 +273,17 @@
 
     <article class="card">
       <h2>Today Trades</h2>
-      {% if overview.today_trades %}
+      {% if view.traces["items"] %}
       <div class="trade-list">
-        {% for trade in overview.today_trades %}
+        {% for trace in view.traces["items"] %}
+        {% set trade = trace.row %}
         <div class="trade-row">
           <span class="trade-time">{{ trade.ts }}</span>
           <span class="trade-action trade-action--{{ (trade.action or '') | lower }}">{{ trade.action }}</span>
           <span class="trade-symbol">{{ trade.symbol }}</span>
           <span class="trade-qty">x{{ trade.qty }}</span>
-          <span class="trade-status">{{ trade.status or "-" }}</span>
+          <span class="trade-status" data-execution-state="{{ trace.execution.state }}">{{ trace.execution.state }} / {{ trace.execution.raw_status or "not captured" }}</span>
+          {% if trace.run_link %}<a class="link-action" href="{{ trace.run_link }}" aria-label="Open recorded run {{ trade.run_id }}">Run evidence</a>{% endif %}
           <span class="subtle-meta">axis {{ trade.active_exit_axis or "-" }}</span>
           <span class="subtle-meta">stop {{ trade.effective_stop or "-" }}</span>
           {% if trade.peak_drawdown and trade.peak_drawdown != "-" %}
@@ -292,7 +305,7 @@
         {% endfor %}
       </div>
       {% else %}
-      <p class="subtle-meta">No BUY/SELL executions found for the latest day.</p>
+      <p class="subtle-meta">NO_DATA — No trade observations supplied for the latest day.</p>
       {% endif %}
     </article>
   </section>

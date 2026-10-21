@@ -40,12 +40,22 @@ _group_key = _proj.horizon_group_key
 _profit_factor = _proj.profit_factor
 
 
+def _row_facts(candidates: list[dict[str, Any]]) -> dict[int, tuple[str, dict[str, float | None]]]:
+    """Per-row day and per-horizon returns, converted once and shared by every combination."""
+    return {
+        id(row): (candidate_day(row) or "unknown", {horizon: _checkpoint_return(row, horizon) for horizon in HORIZONS})
+        for row in candidates
+    }
+
+
 def _combo_rows(
     candidates: list[dict[str, Any]],
     *,
     dimensions: tuple[str, ...],
     cost_pct: float,
+    facts: dict[int, tuple[str, dict[str, float | None]]] | None = None,
 ) -> list[dict[str, Any]]:
+    facts = facts if facts is not None else _row_facts(candidates)
     grouped: dict[tuple[str, ...], list[dict[str, Any]]] = defaultdict(list)
     for row in candidates:
         grouped[_group_key(row, dimensions)].append(row)
@@ -55,12 +65,12 @@ def _combo_rows(
         for horizon in HORIZONS:
             observations: list[tuple[dict[str, Any], float]] = []
             for row in members:
-                gross = _checkpoint_return(row, horizon)
+                gross = facts[id(row)][1][horizon]
                 if gross is not None:
                     observations.append((row, gross))
             if not observations:
                 continue
-            stats = _proj.horizon_observation_stats(observations, cost_pct=cost_pct, day_of=candidate_day)
+            stats = _proj.horizon_observation_stats(observations, cost_pct=cost_pct, day_of=lambda row: facts[id(row)][0])
             count = stats["count"]
             net_values = stats["net_values"]
             days = stats["days"]
@@ -146,6 +156,7 @@ def build_horizon_alignment_review(
         end=end,
     )
     candidates = _candidate_rows(payloads)
+    facts = _row_facts(candidates)
     profile = load_broker_cost_profile(cost_profile_path)
     cost_ratio = float(
         profile.get("conservative_round_trip_cost_pct")
@@ -157,16 +168,19 @@ def build_horizon_alignment_review(
         candidates,
         dimensions=("time_bucket", "tactic"),
         cost_pct=cost_pct,
+        facts=facts,
     )
     time_lane = _combo_rows(
         candidates,
         dimensions=("time_bucket", "primary_lane"),
         cost_pct=cost_pct,
+        facts=facts,
     )
     time_tactic_rail = _combo_rows(
         candidates,
         dimensions=("time_bucket", "tactic", "market_regime_rail"),
         cost_pct=cost_pct,
+        facts=facts,
     )
     candidates_for_adoption = [
         row for row in time_tactic
