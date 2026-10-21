@@ -3,12 +3,12 @@
 ## 2026-10-21 · P1.5 FAST06-A Q8 EVALUATION AND REVIEW REPORT PROJECTIONS 20261021
 **Stage:** P1.5 FAST06-A DEV-A 소스 후보 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · **Tags:** REFACTOR · TEST
 
-- Q8 평가·리뷰 보고서 4개의 결정적 집계는 `q8_historical_projection_fast06.py`로, Markdown 렌더러 4개는 `q8_review_render_fast06.py`로 옮겼습니다. 파일 읽기·날짜 순회·보고서 기록·trust gate/dedupe 계약 호출·판정 임계값은 원래 모듈에 남겼습니다. 줄 수: q8_historical_review 926→273, q8_shadow_blocker_review 344→179, q8_trusted_reaggregation 240→94, q8_lane_decision_table 263→132.
+- Q8 평가·리뷰 보고서 4개의 결정적 집계는 `q8_historical_projection_fast06.py`로, Markdown 렌더러 4개는 `q8_review_render_fast06.py`로 옮겼습니다. 파일 읽기·날짜 순회·보고서 기록·trust gate/dedupe 계약 호출·판정 임계값은 원래 모듈에 남겼습니다. 줄 수: q8_historical_review 926→273, q8_shadow_blocker_review 344→178, q8_trusted_reaggregation 240→94, q8_lane_decision_table 263→132.
 - A1: 과거 리뷰 누적기, 거래/일일 행 투영, shadow 요약 집계, 패턴 집계, 페이로드 조립. `_decision_for_reclaim_subtype`, `_promotion_recommendations`, 후보 fallback 읽기는 facade에 남습니다.
 - A2: shadow blocker 체크포인트·사유별 그룹 집계. dedupe, trust gate, `_decision_for_row`, gate 차단 시 retain_under_observation 강등은 그대로입니다. `_candidate_rows`는 기존 테스트가 고정하고 있어 facade에 그대로 둡니다.
 - A3: trusted reaggregation 일별·누적 readout과 watchlist. 누락 소스는 not_available로 유지하고 Decision Rule 임계값은 facade가 계약 모듈에서 읽어 넘깁니다.
 - A4: lane 행, shadow 수 결합, 판정 정렬. `_verdict`(임계값·근거 문구)는 facade에 남고 실제 정책 활성화 문구는 변경 없습니다.
-- 검증: 신규 smoke 11건 + 기존 Q8/closeout/operator summary 테스트 58건 통과(normal), 변경 전 모듈 대비 JSON/Markdown 바이트 동등 45/45. **FAST_DEFERRED:** `-O`, 전체 pytest, 적대적 변형, CI, 신규 owner 소스 승인.
+- 검증: 신규 smoke 9건 + 기존 Q8/closeout/operator summary 테스트 58건 통과(normal), 변경 전 모듈 대비 JSON/Markdown 바이트 동등 45/45. **FAST_DEFERRED:** `-O`, 전체 pytest, 적대적 변형, CI, 신규 owner 소스 승인.
 
 Sources: `libs/reporting/q8_historical_review.py`, `libs/reporting/q8_shadow_blocker_review.py`, `libs/reporting/q8_trusted_reaggregation.py`, `libs/reporting/q8_lane_decision_table.py`, `libs/reporting/q8_historical_projection_fast06.py`, `libs/reporting/q8_review_render_fast06.py`, `tests/test_p15_q8_reporting_fast_smoke.py`.
 
