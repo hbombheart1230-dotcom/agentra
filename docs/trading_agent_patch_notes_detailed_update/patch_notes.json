@@ -1,8 +1,31 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 336,
+  "entry_count": 337,
   "entries": [
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 FAST08-A8.6 SYMBOL AND TRADE EXPLANATION READOUT 20261021",
+      "title": "A8.6 targets are pinned or already pure: three STAGE_CONTRACT_BLOCKED facades and a characterization test for trade_truth_resolver",
+      "stage": "P1.5 FAST08 A8.6 DEV-A checkpoint; test-only; symbol_read_model / trade_explain / strategy_read_model STAGE_CONTRACT_BLOCKED",
+      "types": [
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "No source file was changed in A8.6. symbol_read_model, trade_explain and strategy_read_model are facades in the closed R-6/R-7/R-9 sets whose bodies already live in facade-injected owners and are pinned by test_work_reporter_seed_migration (trade_explain also by test_work_reporter_r8_read_contracts), so they were left byte-identical. trade_truth_resolver (116 lines) is already one pure function with no I/O, so no responsibility was moved. A new characterization test pins its canonical/fill provenance semantics.",
+      "details": [
+        "STAGE_CONTRACT_BLOCKED: libs/reporting/symbol_read_model.py (R-9), libs/reporting/trade_explain.py (R-6/R-8) and libs/reporting/strategy_read_model.py (R-7). No pin, validator or test was relaxed.",
+        "trade_truth_resolver: no separable I/O or presentation exists; restructuring truth/fallback branching for line count alone was rejected as risk without benefit.",
+        "tests/test_p15_fast08_a_trade_truth_smoke.py (16 cases): empty/non-mapping facts read as fallback_mark_only, never zero; broker-day authority is high confidence only with a value or named source; pct-only observations never become truth; placeholder PnL strings are absent; fallback pct is recomputed from buy and account/monitor marks and left empty without valid prices; an account-snapshot estimate without a valid fill price is a fallback.",
+        "Flagged, not changed: with broker_day_authoritative=True and no PnL value or source, authority is unavailable while the pct keeps the truth basis; this is pinned as current behavior for review.",
+        "Also noted in A8.5: libs/reporting/post_exit_shadow_recap.py is STAGE_CONTRACT_BLOCKED (R-4/R-8 pinned owner bodies)."
+      ],
+      "impact": "No behavior, threshold, broker or persistence change; adds regression coverage for trade truth provenance.",
+      "sources": [
+        "tests/test_p15_fast08_a_trade_truth_smoke.py"
+      ]
+    },
     {
       "date": "2026-10-21",
       "version": "P1.5 FAST08-A8.5 SHADOW AND EXIT CONTEXT PROJECTIONS 20261021",

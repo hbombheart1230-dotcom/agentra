@@ -1,5 +1,16 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-21 · P1.5 FAST08-A8.6 SYMBOL AND TRADE EXPLANATION READOUT 20261021
+**Stage:** P1.5 FAST08 A8.6 DEV-A 체크포인트 · 테스트 전용 · symbol_read_model / trade_explain / strategy_read_model STAGE_CONTRACT_BLOCKED · **Tags:** TEST · SAFETY
+
+- A8.6에서는 소스 파일을 바꾸지 않았습니다. `symbol_read_model`(R-9), `trade_explain`(R-6/R-8), `strategy_read_model`(R-7)은 닫힌 R 집합의 facade이고 본문은 이미 facade 주입 owner에 있으며 `test_work_reporter_seed_migration`(trade_explain은 `test_work_reporter_r8_read_contracts` 포함)이 고정하고 있어 그대로 두었습니다. 어떤 고정·검증·테스트도 완화하지 않았습니다.
+- `trade_truth_resolver`(116줄)는 I/O 없는 순수 함수 하나뿐이라 옮길 책임이 없습니다. 줄 수만을 위해 정본/fallback 분기를 쪼개는 일은 위험만 있고 이득이 없어 하지 않았습니다.
+- 대신 `tests/test_p15_fast08_a_trade_truth_smoke.py` 16건으로 정본·체결 provenance 의미를 고정했습니다: 빈 사실은 0이 아니라 fallback_mark_only, broker-day 권위는 값 또는 출처가 있을 때만 높은 신뢰, pct만 있는 관측은 truth가 되지 않음, 자리표시 PnL 문자열은 부재로 취급, fallback pct는 매수가와 계좌·monitor 가격으로만 재계산, 유효한 체결가가 없는 계좌 스냅샷 추정은 fallback.
+- **표시만 하고 바꾸지 않음:** `broker_day_authoritative=True`인데 PnL 값·출처가 없으면 authority는 unavailable인데 pct는 truth 기준으로 남습니다. 현재 동작으로 고정해 검토 대상으로 남겼습니다.
+- A8.5에서 기록한 `post_exit_shadow_recap.py` 차단(R-4/R-8)도 동일합니다.
+
+Sources: `tests/test_p15_fast08_a_trade_truth_smoke.py`.
+
 ## 2026-10-21 · P1.5 FAST08-A8.5 SHADOW AND EXIT CONTEXT PROJECTIONS 20261021
 **Stage:** P1.5 FAST08 A8.5 DEV-A 소스 체크포인트 · FAST_DEV smoke · SOURCE_ADMISSION_PENDING_GPT · post_exit_shadow_recap STAGE_CONTRACT_BLOCKED · **Tags:** REFACTOR · TEST
 
