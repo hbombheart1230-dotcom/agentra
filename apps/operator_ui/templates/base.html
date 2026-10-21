@@ -7,19 +7,21 @@
   <link rel="stylesheet" href="{{ request.url_for('static', path='operator.css') }}">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="shell">
     <aside class="rail">
       <div class="brand">
         <div class="brand-kicker">Trading Agent</div>
         <div class="brand-title">Operator Console</div>
       </div>
-      <nav class="nav">
-        <a href="/" class="nav-link {% if section == 'overview' %}active{% endif %}">Overview</a>
-        <a href="/runs" class="nav-link {% if section == 'runs' %}active{% endif %}">Recent Runs</a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="/" {% if section == 'overview' %}aria-current="page"{% endif %} class="nav-link {% if section == 'overview' %}active{% endif %}">Overview</a>
+        <a href="/runs" {% if section == 'runs' %}aria-current="page"{% endif %} class="nav-link {% if section == 'runs' %}active{% endif %}">Recent Runs</a>
         <a href="/healthz" class="nav-link">Health JSON</a>
       </nav>
     </aside>
-    <main class="content">
+    <main class="content" id="main-content" tabindex="-1">
+      <p class="console-notice" role="note">Read-only observation console · No order, approval or execution controls.</p>
       {% block content %}{% endblock %}
     </main>
   </div>

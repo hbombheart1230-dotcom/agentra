@@ -19,11 +19,32 @@
 </section>
 
 {% set sec = brief.sections or {} %}
+{% set saved = brief.raw_brief or {} %}
+{% set brief_state = (saved.status or "unknown") | lower %}
+<section class="card observation-context" aria-label="Saved brief provenance">
+  <h2>Saved Brief Evidence</h2>
+  <p class="subtle-meta">저장된 관측 기록입니다. 현재 승인이나 체결 성공을 의미하지 않습니다.</p>
+  {% if saved.stale is sameas true or brief_state == "stale" %}
+  <p class="status-badge status-badge--warn" data-brief-state="STALE">STALE — source marked this snapshot stale; check a newer run.</p>
+  {% elif brief_state == "fallback" %}
+  <p class="status-badge status-badge--warn" data-brief-state="FALLBACK">FALLBACK — saved deterministic summary; not a confirmed AI narrative.</p>
+  {% elif brief_state in ["failed", "error"] %}
+  <p class="status-badge status-badge--critical" data-brief-state="FAILED">FAILED — inspect saved diagnostics.</p>
+  {% elif not sec %}
+  <p class="status-badge" data-brief-state="NO_DATA">NO_DATA — no structured brief sections captured.</p>
+  {% else %}
+  <p class="status-badge" data-brief-state="SAVED">SAVED — freshness not independently verified.</p>
+  {% endif %}
+  <dl class="provenance-grid"><div><dt>Run trace</dt><dd>{{ brief.run_id or "not captured" }}</dd></div><div><dt>Saved timestamp</dt><dd>{{ saved.generated_at or saved.updated_at or "not captured" }}</dd></div></dl>
+</section>
+<nav class="page-jumps" aria-label="Brief sections">
+  <a href="#brief-evidence">Evidence</a><a href="#brief-decision">Decision</a><a href="#brief-risk">Monitor / risk</a><a href="#brief-next">Next step</a>
+</nav>
 <section class="grid grid-2">
-  <article class="card card--attention">
+  <article class="card card--attention" id="brief-decision">
     <h2>Current Snapshot</h2>
     <div class="chip-list">
-      <span class="status-badge status-badge--ok">{{ brief.executive_action or "-" }} {{ brief.executive_symbol or "-" }}</span>
+      <span class="chip" data-decision-only="true">Decision: {{ brief.executive_action or "-" }} {{ brief.executive_symbol or "-" }}</span>
       {% if brief.story_type_label %}
       <span class="{{ brief.story_type_badge_class or 'status-badge' }}">{{ brief.story_type_label }}</span>
       {% endif %}
@@ -48,13 +69,13 @@
       <a class="link-action" href="{{ brief.run_link }}">Open run detail</a>
       {% endif %}
       {% if brief.report_link %}
-      <a class="link-action" href="{{ brief.report_link }}">Open full AI report</a>
+      <a class="link-action" href="{{ brief.report_link }}">Open linked report detail</a>
       {% endif %}
     </p>
   </article>
 
   <article class="card">
-    <h2>Strategist Evidence</h2>
+    <h2 id="brief-evidence" tabindex="-1">Strategist Evidence</h2>
     <ul class="summary-list summary-list--tight">
       <li>Regime / playbook: {{ (sec.strategist_evidence or {}).get("market_regime") or "-" }} / {{ (sec.strategist_evidence or {}).get("playbook") or "-" }}</li>
       <li>Global sentiment / VIX: {{ (sec.strategist_evidence or {}).get("global_sentiment") or "-" }} / {{ (sec.strategist_evidence or {}).get("vix") or "-" }}</li>
@@ -78,7 +99,8 @@
   </article>
 
   <article class="card">
-    <h2>Monitor / Guard</h2>
+    <h2 id="brief-risk" tabindex="-1">Monitor / Guard</h2>
+    {% if not sec.monitor_guard_snapshot %}<p class="empty-state">UNKNOWN — Monitor / guard evidence was not captured.</p>{% endif %}
     <ul class="summary-list summary-list--tight">
       <li>Top blocker / reason: {{ (sec.monitor_guard_snapshot or {}).get("summary") or "-" }}</li>
       <li>Entry reason code: {{ (sec.monitor_guard_snapshot or {}).get("entry_reason") or "-" }}</li>
@@ -98,7 +120,7 @@
   </article>
 
   <article class="card">
-    <h2>Next Expected Step</h2>
+    <h2 id="brief-next" tabindex="-1">Next Expected Step</h2>
     <ul class="summary-list summary-list--tight">
       <li>Next step: {{ (sec.next_step or {}).get("summary") or "-" }}</li>
       {% for line in brief.watch_next or [] %}
@@ -130,13 +152,13 @@
   <details class="details-block">
     <summary>Supporting Agent Summaries</summary>
     <ul class="summary-list summary-list--tight">
-      <li><strong>Commander</strong>: {{ brief.raw_brief.commander_summary or "-" }}</li>
-      <li><strong>Strategist</strong>: {{ brief.raw_brief.strategist_summary or "-" }}</li>
-      <li><strong>Scanner</strong>: {{ brief.raw_brief.scanner_summary or "-" }}</li>
-      <li><strong>Monitor</strong>: {{ brief.raw_brief.monitor_summary or "-" }}</li>
-      <li><strong>Supervisor</strong>: {{ brief.raw_brief.supervisor_summary or "-" }}</li>
-      <li><strong>Executor</strong>: {{ brief.raw_brief.executor_summary or "-" }}</li>
-      <li><strong>Reporter</strong>: {{ brief.raw_brief.reporter_summary or "-" }}</li>
+      <li><strong>Commander</strong>: {{ saved.commander_summary or "-" }}</li>
+      <li><strong>Strategist</strong>: {{ saved.strategist_summary or "-" }}</li>
+      <li><strong>Scanner</strong>: {{ saved.scanner_summary or "-" }}</li>
+      <li><strong>Monitor</strong>: {{ saved.monitor_summary or "-" }}</li>
+      <li><strong>Supervisor</strong>: {{ saved.supervisor_summary or "-" }}</li>
+      <li><strong>Executor</strong>: {{ saved.executor_summary or "-" }}</li>
+      <li><strong>Reporter</strong>: {{ saved.reporter_summary or "-" }}</li>
     </ul>
   </details>
 </section>
@@ -144,7 +166,7 @@
 <section class="card card--muted">
   <details class="details-block">
     <summary>Saved brief JSON (evidence)</summary>
-    <pre class="code tall">{{ brief.raw_brief | tojson(indent=2) }}</pre>
+    <pre class="code tall">{{ saved | tojson(indent=2) }}</pre>
   </details>
 </section>
 {% endblock %}

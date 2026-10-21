@@ -4032,3 +4032,11 @@ Sources: `apps/operator_ui/templates/overview.html`, `apps/operator_ui/templates
 - Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
 
 Sources: `apps/operator_ui/templates/run_detail.html`, `apps/operator_ui/templates/trade_report_detail.html`, `tests/test_p15_fast07_b_detail_render_smoke.py`.
+
+## 2026-10-21 - P1.5 FAST07 B7.3 20261021
+**Stage:** FAST_DEV implementation checkpoint; final peer and composed integration pending.
+
+- Saved observation versus current decision and execution distinguished; missing and stale/fallback evidence labelled, risk and next-step anchors, keyboard skip navigation and read-only notice; no trading control.
+- Existing B branch, FAST07 Issue20 comment6307615137. Focused synthetic normal render tests only; exact commands/counts and peer evidence recorded in Issue20. No full pytest, -O, historical admission or hosted CI reruns. Existing frozen Owners/B4, policies, broker and HTTP endpoints unchanged.
+
+Sources: `apps/operator_ui/templates/operator_brief_detail.html`, `apps/operator_ui/templates/base.html`, `tests/test_p15_fast07_b_detail_render_smoke.py`.

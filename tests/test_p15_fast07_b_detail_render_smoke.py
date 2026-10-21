@@ -43,3 +43,25 @@ def test_trade_provenance_absence_and_reader_error_escape(available, expected):
     assert 'href="/runs/R1"' in text
     assert 'NO_DATA — No saved report JSON' in text
     assert 'Attempted: UNKNOWN' in text
+
+
+@pytest.mark.parametrize('saved, sections, expected', [({'status':'fallback'}, {}, 'FALLBACK'),
+    ({'status':'ok','stale':True}, {}, 'STALE'), ({'status':'failed'}, {}, 'FAILED'),
+    ({}, {}, 'NO_DATA'), ({'status':'ok'}, {'executive_decision':{'final_action':'WAIT'}}, 'SAVED')])
+def test_brief_saved_truth_hierarchy_and_missing_guard(saved, sections, expected):
+    text=render('operator_brief_detail.html',brief={'raw_brief':saved,'sections':sections,'executive_action':'WAIT','run_id':'R-한글'})
+    assert f'data-brief-state="{expected}"' in text
+    assert 'status-badge--ok' not in text
+    assert 'data-decision-only="true"' in text
+    assert 'UNKNOWN — Monitor / guard evidence' in text
+    for anchor in ['brief-evidence','brief-decision','brief-risk','brief-next']:
+        assert f'href="#{anchor}"' in text and f'id="{anchor}"' in text
+
+
+def test_navigation_keyboard_and_saved_text_escape():
+    text=render('operator_brief_detail.html',brief={'raw_brief':{'commander_summary':'<script>unsafe</script>'}, 'sections':{}})
+    assert 'href="#main-content"' in text and 'id="main-content" tabindex="-1"' in text
+    assert 'aria-label="Primary navigation"' in text
+    assert 'aria-current="page"' in text
+    assert '<script>' not in text and '&lt;script&gt;unsafe&lt;/script&gt;' in text
+    assert 'No order, approval or execution controls' in text
