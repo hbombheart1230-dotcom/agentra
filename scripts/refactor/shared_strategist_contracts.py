@@ -6,6 +6,7 @@ This does not promote the developer branch or waive any integration failure.
 """
 import ast
 import copy
+import hashlib
 from functools import lru_cache
 from pathlib import Path
 import subprocess
@@ -439,7 +440,46 @@ B_CONTRACT_PATHS = frozenset({
     "tests/test_p15_integration_completion.py",
     "tests/test_shared_role_contracts.py",
     "tests/test_p15_b_versioned_contract.py",
+    # Integrator-owned, separately source-reviewed BATCH05-A contract test.
+    "tests/test_p15_batch05_a_exact_admission.py",
 })
+# New versioned BATCH05-A source stage, independently isolated from historic B pin.
+# Exact Git blob digests from dev-A's immutable staged source; no prefix allowlist.
+BATCH05_A_STAGE_SHA = "8017f64636d53f129de470589ea4698c4fbd907c"
+BATCH05_A_BLOBS = {
+    "libs/reporting/metrics_generator_projection_p15.py": "d8abd9de59feaea1db8dde2242bb24cb8bad8691",
+    "libs/reporting/metrics_report_generator.py": "5435b90498a3c4af5a93c87958a0868d02b425c2",
+    "libs/reporting/operator_period_projection_p15.py": "505f25e58f75a69eb604e87cbda04b019afe9c0a",
+    "libs/reporting/operator_period_summary.py": "5aa97a1ea822a7d57f41318ee2659ac6da952445",
+    "libs/reporting/operator_visibility.py": "5d18ff3ce0c8b1238dd5d4ae6aabf43dea943baf",
+    "libs/reporting/operator_visibility_projection_p15.py": "8301448c830c03e4f102c68fa8c0b6bdbd0744a1",
+    "libs/reporting/phase_runtime_health.py": "f768887ec81141ffc5b240fbf14c678e0383ee3d",
+    "libs/reporting/phase_runtime_health_projection_p15.py": "e76fd4992f76ab658faa77d679ab2137099ae45c",
+    "tests/test_p15_reporting_operational_parity.py": "6fffd28c2b5d9e033dc9d2a972d90a527966d4b3",
+    "tests/test_p15_reporting_operational_projections.py": "c07e69bbb4242aa573871ef5aeff4e594f6fe96a",
+}
+BATCH05_A_PATHS = frozenset(BATCH05_A_BLOBS)
+BATCH05_A_RUNTIME = frozenset(p for p in BATCH05_A_PATHS if p.startswith("libs/"))
+BATCH05_A_ADMISSION_TEST = "tests/test_p15_batch05_a_exact_admission.py"
+BATCH05_A_ADMISSION_TEST_BLOB = "a7662a5a86db5e8077685e2c596170eae5e85033"
+
+
+def _git_blob_sha(normalized_text):
+    """Local immutable Git blob check; no checkout history/fetch dependency."""
+    content = normalized_text.replace("\r\n", "\n").encode("utf-8")
+    return hashlib.sha1(b"blob " + str(len(content)).encode("ascii") + b"\0" + content).hexdigest()
+
+
+def verify_batch05_a_sources(overrides=None):
+    """Exact ten-path readout/source stage; no historical source projection."""
+    overrides = overrides or {}
+    for path, expected in sorted(BATCH05_A_BLOBS.items()):
+        source = overrides[path] if path in overrides else (ROOT / path).read_text(encoding="utf-8-sig")
+        require(_git_blob_sha(source) == expected,
+                "BATCH05-A exact blob drift: " + path)
+    return BATCH05_A_PATHS
+
+
 B_DEFINITIONS = frozenset({"load_overview", "_trade_report_index", "load_run_detail"})
 
 
@@ -503,8 +543,21 @@ def verify_b_scope(overrides=None):
         ["git", "ls-files", "--others", "--exclude-standard", "--", *POST_ACCEPTANCE_CODE_ROOTS],
         cwd=ROOT, text=True).splitlines())
     changed |= set(overrides)
-    require(changed <= B_SOURCE_PATHS | B_CONTRACT_PATHS,
-            "B-stage unapproved source/test/fixture path: " + repr(changed - B_SOURCE_PATHS - B_CONTRACT_PATHS))
+    accepted_paths = B_SOURCE_PATHS | B_CONTRACT_PATHS | BATCH05_A_PATHS
+    require(changed <= accepted_paths,
+            "B-stage unapproved source/test/fixture path: " + repr(changed - accepted_paths))
+    # Preserve all previous B_SOURCE_PATHS exact source/test pins. An A stage
+    # cannot be accepted partially: all ten stage-diff paths or none.
+    a_paths = changed & BATCH05_A_PATHS
+    require(not a_paths or a_paths == BATCH05_A_PATHS,
+            "BATCH05-A incomplete exact source stage: " + repr(BATCH05_A_PATHS ^ a_paths))
+    if a_paths:
+        verify_batch05_a_sources(overrides)
+    if BATCH05_A_ADMISSION_TEST in changed:
+        source = overrides[BATCH05_A_ADMISSION_TEST] if BATCH05_A_ADMISSION_TEST in overrides else (
+            ROOT / BATCH05_A_ADMISSION_TEST).read_text(encoding="utf-8-sig")
+        require(_git_blob_sha(source) == BATCH05_A_ADMISSION_TEST_BLOB,
+                "BATCH05-A admission-test blob drift: " + BATCH05_A_ADMISSION_TEST)
     for path in sorted(B_SOURCE_PATHS):
         current = overrides[path] if path in overrides else (ROOT / path).read_text(encoding="utf-8-sig")
         require(current.replace("\r\n", "\n") == git_source(B_SOURCE, path),
