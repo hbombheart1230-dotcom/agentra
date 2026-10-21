@@ -118,10 +118,10 @@ def decision_overlay_blocker_counts_monitor_last_states(cache_age_sec_for_state,
     # Task 4: Monitor feedback and adaptive policy
     persisted = state.get("persisted_state") if isinstance(state.get("persisted_state"), dict) else {}
     monitor_last_states = persisted.get("monitor_last_state_by_symbol") if isinstance(persisted.get("monitor_last_state_by_symbol"), dict) else {}
-    
+
     recent_feedback = state.get("recent_strategy_feedback") if isinstance(state.get("recent_strategy_feedback"), dict) else {}
     recent_monitor_issues = list(recent_feedback.get("recent_monitor_issues") or [])
-    
+
     blocker_counts = {}
     return (blocker_counts, monitor_last_states, recent_monitor_issues, strategist_invocation_mode, strategy_selection_mode, strategy_state)
 
@@ -132,11 +132,11 @@ def decision_rules_adaptive_feedback_allowed_adaptive_polic(blocker_counts, tota
     if blocker_counts:
         dominant_blocker = max(blocker_counts, key=blocker_counts.get)
         blocker_count = blocker_counts[dominant_blocker]
-        
+
     avg_distance_to_ready = avg_distance / total_wait if total_wait > 0 else 0.0
     near_ready_flag = near_ready_count > 0
     failure_streak = blocker_count
-    
+
     injected_feedback = state.get("mock_monitor_feedback")
     if isinstance(injected_feedback, dict):
         dominant_blocker = injected_feedback.get("dominant_blocker", dominant_blocker)
@@ -182,5 +182,3 @@ def decision_rules_adaptive_feedback_allowed_adaptive_polic(blocker_counts, tota
         "risk_off_no_entry_expansion",
     }
     return (adaptive_feedback_allowed, adaptive_policy, entry_control, monitor_feedback, policy_adjustment_trace)
-
-

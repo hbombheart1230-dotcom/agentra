@@ -304,5 +304,3 @@ def _monitor_entry_readiness_context(state: Dict[str, Any], *, facade) -> Dict[s
         "prior_intent_side": prior_intent,
         "prior_reason": prior_reason,
     }
-
-
