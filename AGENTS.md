@@ -1,5 +1,8 @@
 # D01 — Agentra Codex entry (AGENTS.md)
 
+**LATEST 2026-10-22 OVERRIDE:** Your committed/pushed approved-branch source, tests and paired UI notes are the handoff. Put exact SHA + normal/-O results/exits + peer verdict/blocker in the commit message or small branch-local evidence record; retain local detailed logs. **Do not require `gh` login/tokens or posting an Issue #20 comment** (it is GPT-owned master board; posting optional). GPT inspects pushed HEAD/diff/tests/CI and updates #20 itself. User-facing local final is 3–5 lines only, not a lengthy last-section tiki-taka list. This replaces contradictory older developer Issue-comment/long CLI instructions. Actual safety, peer-before-integration, CI and main approval unchanged.
+
+
 **2026-10-22 standing handoff rule:** After each substantive batch, commit/push actual source+tests and paired UI notes to your authorized branch and post a DETAILED SHA-linked evidence report in GitHub master Issue (#20 for P1.5). Report exact files, normal/-O commands/results/exits, independent opposite-CLI exit+verdict or PEER_DEFERRED, actual reviewer NOT_RUN, CI links, blockers and next READY. GPT reads GitHub directly; NEVER ask the user to copy/paste developer results. GPT replies to the user briefly but expects full technical evidence in GitHub. Keep all safety/main/integration gates.
 
 
