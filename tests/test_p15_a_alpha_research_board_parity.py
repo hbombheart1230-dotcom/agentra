@@ -239,7 +239,8 @@ def test_feature_candidates_candidate_factory_and_attention_order_match_base():
                   prospective=[("k", 1)], concentration={}, evidence_note="n", next_action="a", source_keys=["k"])
     assert _outcome(lambda: cur._candidate(**kwargs)) == _outcome(lambda: base()._candidate(**kwargs))
     rows = [{"candidate_id": "b", "board_bucket": "CLOSED"}, {"candidate_id": "a", "board_bucket": "ACTION_REVIEW"}, {"candidate_id": "c", "board_bucket": "UNKNOWN"}, {"candidate_id": "a2", "board_bucket": None}]
-    assert cur._attention_order(rows) == base()._attention_order(rows) == ["a", "b", "a2", "c"][:0] or True
+    # ACTION_REVIEW (2) < CLOSED (7) < unknown/None buckets (9, tied -> candidate_id order)
+    assert cur._attention_order(rows) == base()._attention_order(rows) == ["a", "b", "a2", "c"]
     assert _outcome(lambda: cur._attention_order(copy.deepcopy(rows))) == _outcome(lambda: base()._attention_order(copy.deepcopy(rows)))
     assert _outcome(lambda: cur._attention_order([{"board_bucket": "CLOSED"}])) == _outcome(lambda: base()._attention_order([{"board_bucket": "CLOSED"}]))
 
