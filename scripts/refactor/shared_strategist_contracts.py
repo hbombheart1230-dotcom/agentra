@@ -1029,7 +1029,7 @@ def verify_ui_structure(overrides=None):
     actual |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True).splitlines())
     actual = {p for p in actual if p not in B_CI_JUNIT or not _b_ci_junit_evidence(p, head)}
     actual |= set(overrides)
-    require(actual == expected, "UI structure unexpected/missing path: " + repr(actual ^ expected))
+    require(actual == expected, "B-stage UI structure unexpected/missing path: " + repr(actual ^ expected))
     tree, owners = _ui_structure_core_oracle()
     require(dump(ast.parse(read(UI_CORE))) == dump(tree), "new-stage source core body/import/ABI: " + UI_CORE)
     for path, owner in owners.items():

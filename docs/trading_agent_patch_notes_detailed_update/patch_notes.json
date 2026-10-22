@@ -9090,7 +9090,7 @@
         "Core2467 to2309LOC; brief finalization input and three successful-response shapes move to brief_parts/response.py; run event/evidence projection moves to read_models/run_inputs.py. LLM calls, clocks, retries, artifact construction, cache and persistence remain in original order in core.",
         "Exact new-stage AST reconstruction checks copied pure statements, call arguments, signatures and imports against green51bb7130. Earlier B29 and immutable historical source proofs retain their pins. Original344 note records preserved.",
         "Differential BASE callables retain original annotations as well as defaults and keyword defaults; test-only callable reconstruction does not alter the source ABI.",
-        "Retain the existing new-stage source rejection category for incompatible core shapes; original negative-test expectations are unchanged."
+        "Retain existing new-stage source and B-stage scope rejection categories for incompatible core shapes and unauthorized paths; original negative-test expectations are unchanged."
       ],
       "impact": "Structural only; no new UI behavior, policy or trading authority.",
       "sources": [

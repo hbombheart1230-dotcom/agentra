@@ -4198,4 +4198,4 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Core2467->2309LOC: pure brief response/finalization inputs and run event/evidence shaping have coherent brief_parts/response.py and read_models/run_inputs.py Owners. Legacy facade signatures and use-time lookup remain; no IO/clock/LLM/retry/cache/persistence moves.
 - Exact new-stage AST reconstruction protects all copied bodies, unmoved code, arguments and imports from green51bb7130. Historical pins and B29 proof remain separate; preserve344 old note records and append345. Top-level Python count35 remains35; implementation bodies move into packages rather than new root files.
 - Differential BASE callable reconstruction preserves annotations/defaults; actual facade ABI remains unchanged.
-- Preserve the existing new-stage source rejection category; historical negative-test expectations unchanged.
+- Preserve the existing new-stage source and B-stage scope rejection categories; historical negative-test expectations unchanged.
