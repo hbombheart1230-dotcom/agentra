@@ -1,5 +1,14 @@
 # Agentra P1.5 — CURRENT (D7 frozen, B source CI blocked, BATCH03 active with bounded follow-on)
 
+## 2026-10-22 LATEST ACTIVE WORK-ORDER TRACK — **T00–T09 V3 FOLDER FIRST** (supersedes all BATCH03–05 and isolated file-split dispatch)
+
+**Single source of truth:** [P15_TREE_00_MASTER_20261022.md](P15_TREE_00_MASTER_20261022.md), target [TREE_V3_FROZEN](../architecture/TREE_V3_FROZEN.md), [Issue #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). Exact detailed executable sequence is [T00](P15_TREE_01_BASELINE_AND_ADMISSION_20261022.md), [T01](P15_TREE_02_AGENT_ROLE_INVENTORY_20261022.md), [T02](P15_TREE_03_FIVE_ROLE_CLOSURE_20261022.md), [T03](P15_TREE_04_LEGACY_COMPAT_20261022.md), [T04](P15_TREE_05_SAFETY_ROLE_SURFACES_20261022.md), [T05](P15_TREE_06_RUNTIME_GRAPH_WIRING_20261022.md), [T06](P15_TREE_07_ROOT_PACKAGE_BOUNDARIES_20261022.md), [T07](P15_TREE_08_LARGE_FILE_DEBT_20261022.md), [T08–T09](P15_TREE_09_INTEGRATION_AND_FREEZE_20261022.md).
+
+**P0 order:** T00 exact candidate/admission → T01 role tree/entry proof → T02 current 5 role closure → T03 legacy adapters → T04 guarded Supervisor/Executor interfaces (separate PO approval for safety source) → T05 graph/runtime role wiring → T06 root folder ownership → **T07 giant-file splitting** → T08 composed exact SHA hosted CI → T09 freeze. Nothing below is a newer active task authority. Underlying source must not be auto-merged; source integration B `51bb7130` hosted CI 6/6 only; PR31 not CI accepted, main untouched.
+
+**Progress at pointer commit:** T00 READY / T01 DESIGN_READY / T02–T03 DEPENDENT / T04 SAFETY_GATED / T05–T09 NOT STARTED. No WO is declared implemented merely from writing this plan. Primary roles A Reporter+Strategist+Scanner, B Commander+Monitor, GPT integration/CI. Do NOT dispatch another isolated Q8/alpha/UI helper task before this sequence.
+
+
 ## 2026-10-22 — CANONICAL ACTIVE P1.5: BIGGEST FILE / FOLDER FIRST (latest user-approved, overrides stale BATCH03-05 pointers)
 
 - **Target:** Clean deep & flattened repository tree and split major modules by stable responsibility; NOT new features or isolated helper refactors. Before each work packet inventory current largest safe eligible files, choose top priority, record before/after largest LOC, root file count, owner package map and preserved imports. Source behavior, ABI, I/O, effects and safety must be byte/effect-equivalent.

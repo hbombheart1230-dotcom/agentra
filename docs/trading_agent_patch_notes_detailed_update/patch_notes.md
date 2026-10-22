@@ -1,5 +1,13 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P15_TREE_V3_END_TO_END_FOLDER_FIRST_WORK_ORDER_20261022
+**Stage:** PLANNED / STAGE CI PENDING · **Tags:** ARCHITECTURE · REFACTOR · PROCESS · SAFETY
+
+- Official current P1.5 delivery order: **T00 exact stage admission → T01 agent role tree → T02 five role canonical public entry → T03 14 legacy adapters → T04 Supervisor/Executor gated public role interfaces → T05 graph/runtime wiring → T06 root folder ownership → T07 large-file split → T08 hosted composed integration CI → T09 structural freeze**.
+- Integration reference `51bb7130`: `libs/agents` 119 role Python files in five subtrees, supervisor/executor 0, `libs/agent` legacy 14. Every WO carries physical old/new path, owner, ABI/effects/negative safety, SHA peer verdict and hosted CI proof before DONE.
+- [Official master work order](docs/refactor/work_orders/P15_TREE_00_MASTER_20261022.md) and [CURRENT](docs/refactor/work_orders/CURRENT.md). No trading authority or main change; planning documents only.
+
+
 ## 2026-10-20 · P1.5 BATCH05 FOLDER SCALE FOUR DELIVERABLES AND LOCAL CI 20261020
 **Stage:** BATCH05 개발 범위 승인 (DOCS ONLY) · **Tags:** PROCESS · REFACTOR · TEST · SAFETY
 

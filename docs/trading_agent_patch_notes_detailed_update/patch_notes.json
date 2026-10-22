@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 355,
+  "entry_count": 356,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9341,6 +9341,33 @@
         "AGENTS.md",
         "CLAUDE.md",
         "docs/refactor/work_orders/CURRENT.md"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_TREE_V3_END_TO_END_FOLDER_FIRST_WORK_ORDER_20261022",
+      "title": "Frozen V3 agents role tree T00–T09 stage-gated work order program",
+      "stage": "PLANNED / STAGE CANDIDATE NOT CI-ACCEPTED",
+      "types": [
+        "ARCHITECTURE",
+        "REFACTOR",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Re-align source delivery from disconnected small file splits to proven seven-role folder-entry surfaces, legacy adapters, runtime wiring, root ownership, then giant-file decomposition and composed CI.",
+      "details": [
+        "Verified integration baseline: libs/agents 119 Python files in five role subtrees with supervisor/executor entry absent; libs/agent legacy fourteen files; graphs 45 and runtime 322 distinct layer files.",
+        "Single master T00–T09 plus linked T01/T02 work orders and a top-of-file CURRENT pointer; fixed stage matrix of TODO vs source evidence, exact owner A/B/GPT assignments and status per gate.",
+        "Trading safety/immutable historical oracles intact, no new Broker route, no main/live; hosted green B-only 51bb baseline cannot prove new draft PR31; accepted code needs exact SHA and new hosted CI."
+      ],
+      "impact": "Makes P1.5 folder-first work progress visible and gives A/B coherent source tasks in architectural order without unrelated reassignments.",
+      "sources": [
+        "docs/refactor/work_orders/P15_TREE_00_MASTER_20261022.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/work_orders/P15_TREE_02_AGENT_ROLE_INVENTORY_20261022.md",
+        "docs/refactor/work_orders/P15_TREE_03_FIVE_ROLE_CLOSURE_20261022.md",
+        "docs/refactor/architecture/TREE_V3_FROZEN.md"
       ]
     }
   ]
