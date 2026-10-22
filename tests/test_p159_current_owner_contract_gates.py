@@ -12,6 +12,8 @@ import subprocess
 from pathlib import Path
 import sys
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts/refactor"))
 import shared_role_contracts as SHARED
 
@@ -28,6 +30,136 @@ MAX_OWNER_LOC = 350
 ALLOWED_OWNER_IMPORTS = {"__future__": {"annotations"}, "typing": {"Any", "NamedTuple"}}
 FORBIDDEN_TOKENS = ("os.environ", "os.getenv", "getenv(", "time.time(", "datetime.now", "datetime.utcnow", "uuid.uuid",
                     "subprocess", "sqlite3", "requests.", "print(", "open(", "logging.")
+
+# Issue20 6331537986: current-HEAD-only B layout. Historical ledgers/pins are
+# unchanged. These literal imports and two symbols were read from fedef7f7.
+B_COMMANDER_PIN = "fedef7f7b72ac396c60c7a8ac1d9432e1dab782c"
+B_CONTEXT_OWNER = "libs/agents/commander/projections/decision_context_read_model.py"
+B_CACHE_OWNER = "libs/agents/commander/projections/cache_refresh_read_model.py"
+B_SYMBOL_OWNERS = {
+    ("libs/runtime/commander/decision_overlay_projection.py",
+     "decision_overlay_blocker_counts_monitor_last_states"): B_CONTEXT_OWNER,
+    ("libs/runtime/commander/decision_rules_projection.py",
+     "decision_rules_adaptive_feedback_allowed_adaptive_polic"): B_CONTEXT_OWNER,
+}
+B_COMMANDER_IMPORTS = {
+    "libs/runtime/commander/decision_context_projection.py": (
+        "from __future__ import annotations",
+        "from typing import Any, NamedTuple",
+        "from libs.agents.commander.projections import decision_context_read_model as _context_read_model",
+    ),
+    "libs/runtime/commander/decision_overlay_projection.py": (
+        "from __future__ import annotations",
+        "from libs.agents.commander.projections.decision_context_read_model import decision_overlay_blocker_counts_monitor_last_states",
+    ),
+    "libs/runtime/commander/decision_rules_projection.py": (
+        "from __future__ import annotations",
+        "from libs.agents.commander.projections.decision_context_read_model import decision_rules_adaptive_feedback_allowed_adaptive_polic",
+    ),
+    B_CONTEXT_OWNER: ("from __future__ import annotations", "from typing import Any, Dict"),
+    B_CACHE_OWNER: ("from __future__ import annotations", "from typing import Any, Dict"),
+}
+
+
+def _commander_tree(path, text=None):
+    """Closed B imports, no nested/duplicate import or changed runtime source."""
+    tree = ast.parse((ROOT / path).read_text(encoding="utf-8-sig") if text is None else text)
+    actual = [ast.dump(n) for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))]
+    expected = [ast.dump(ast.parse(s).body[0]) for s in B_COMMANDER_IMPORTS[path]]
+    # ast.walk visits module-level imports before any nested imports.
+    assert actual == expected, (path, "unapproved Commander import/reexport")
+    pinned = ast.parse(_git_show(path, B_COMMANDER_PIN))
+    assert ast.dump(tree) == ast.dump(pinned), (path, "approved Commander source drift")
+    return tree
+
+
+def _commander_symbol_owner(module, function, text=None, owner_text=None):
+    owner = B_SYMBOL_OWNERS[(module, function)]
+    old = _commander_tree(module, text)
+    canonical = _commander_tree(owner, owner_text)
+    assert not any(isinstance(n, ast.FunctionDef) and n.name == function for n in old.body)
+    definitions = [n for n in canonical.body if isinstance(n, ast.FunctionDef) and n.name == function]
+    assert len(definitions) == 1, (owner, function)
+    historical = next(n for n in ast.parse(_git_show(module, SHARED.S5.B_COMPOSED_BASE)).body
+                      if isinstance(n, ast.FunctionDef) and n.name == function)
+    assert ast.dump(definitions[0].args) == ast.dump(historical.args), (module, function, "facade ABI")
+    assert [a.arg for a in definitions[0].args.kwonlyargs] == ["facade"]
+    legacy = importlib.import_module(module[:-3].replace("/", "."))
+    current = importlib.import_module(owner[:-3].replace("/", "."))
+    assert getattr(legacy, function) is getattr(current, function), (module, function, "identity")
+    return owner
+
+
+def test_b_commander_closed_layout_identity_and_delegated_wrapper_abi():
+    assert B_COMMANDER_PIN == SHARED.S5.B_COMPOSED_BRIEF
+    for (module, function), owner in B_SYMBOL_OWNERS.items():
+        assert _commander_symbol_owner(module, function) == owner
+    # The effectful front of this wrapper stays in its original module; only its
+    # pure tail delegates. Exact accepted AST plus original ABI is required.
+    path = "libs/runtime/commander/decision_context_projection.py"
+    tree = _commander_tree(path)
+    old = ast.parse(_git_show(path, SHARED.S5.B_COMPOSED_BASE))
+    name = "decision_ctx_entry_capacity_available_market_regime"
+    before = next(n for n in old.body if isinstance(n, ast.FunctionDef) and n.name == name)
+    after = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name)
+    assert ast.dump(before.args) == ast.dump(after.args)
+
+
+@pytest.mark.parametrize("module,function", sorted(B_SYMBOL_OWNERS))
+@pytest.mark.parametrize("kind", ["symbol", "target", "module", "alias", "duplicate", "rebind", "dynamic"])
+def test_b_commander_identity_reexport_mutants_fail_from_green(module, function, kind):
+    assert _commander_symbol_owner(module, function) == B_SYMBOL_OWNERS[(module, function)]
+    tree = ast.parse((ROOT / module).read_text(encoding="utf-8"))
+    imp = next(n for n in tree.body if isinstance(n, ast.ImportFrom) and n.module.startswith("libs.agents."))
+    if kind == "symbol":
+        imp.names[0].name += "_unapproved"
+    elif kind == "target":
+        imp.names[0].name = "decision_context_readout"
+    elif kind == "module":
+        imp.module = "libs.execution.broker"
+    elif kind == "alias":
+        imp.names[0].asname = "unknown_alias"
+    elif kind == "duplicate":
+        tree.body.append(copy.deepcopy(imp))
+    elif kind == "rebind":
+        tree.body.extend(ast.parse(function + " = None").body)
+    else:
+        tree.body.extend(ast.parse("__import__('libs.execution.broker')").body)
+    with pytest.raises(AssertionError):
+        _commander_symbol_owner(module, function, ast.unparse(tree))
+
+
+@pytest.mark.parametrize("module,function", sorted(B_SYMBOL_OWNERS))
+def test_b_commander_canonical_abi_and_runtime_identity_mutants_fail(module, function, monkeypatch):
+    owner = _commander_symbol_owner(module, function)
+    tree = ast.parse((ROOT / owner).read_text(encoding="utf-8"))
+    fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == function)
+    fn.args.kwonlyargs[0].arg = "unapproved_facade"
+    with pytest.raises(AssertionError):
+        _commander_symbol_owner(module, function, owner_text=ast.unparse(tree))
+    legacy = importlib.import_module(module[:-3].replace("/", "."))
+    monkeypatch.setattr(legacy, function, lambda *args, **kwargs: None)
+    with pytest.raises(AssertionError, match="identity"):
+        _commander_symbol_owner(module, function)
+
+
+@pytest.mark.parametrize("path", sorted(B_COMMANDER_IMPORTS))
+@pytest.mark.parametrize("addition", ["import os", "from libs.agents.unapproved import helper",
+                                      "from libs.llm import Router", "__import__('subprocess')"])
+def test_b_commander_import_authority_mutants_fail_from_green(path, addition):
+    _commander_tree(path)
+    with pytest.raises(AssertionError):
+        _commander_tree(path, (ROOT / path).read_text(encoding="utf-8") + "\n" + addition + "\n")
+
+
+def test_b_commander_delegated_wrapper_argument_mutation_is_rejected():
+    path = "libs/runtime/commander/decision_context_projection.py"
+    tree = _commander_tree(path)
+    fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef)
+              and n.name == "decision_ctx_entry_capacity_available_market_regime")
+    fn.body[-1].value.args[0] = ast.Constant(value=None)
+    with pytest.raises(AssertionError, match="source drift"):
+        _commander_tree(path, ast.unparse(tree))
 
 
 def _segments():
@@ -58,6 +190,8 @@ def _mapping():
 def _current(owner_module, owner_function):
     mapping = _mapping()
     new_module, new_function, change = mapping.get((owner_module, owner_function), (owner_module, owner_function, None))
+    if SHARED.S5.b_composed_selected() and (new_module, new_function) in B_SYMBOL_OWNERS:
+        new_module = _commander_symbol_owner(new_module, new_function)
     return new_module, new_function, change
 
 
@@ -133,16 +267,23 @@ def test_all_owner_modules_import_and_obey_authority_restrictions_at_head():
         owners.add(_follow(_current(s["owner_module"], s["owner_function"])[0]))
     for c in _t3()["changes"]:
         owners.add(_follow(c["new_module"]))
+    if SHARED.S5.b_composed_selected():
+        owners.update((B_CONTEXT_OWNER, B_CACHE_OWNER))
     assert owners
     for owner in sorted(owners):
         importlib.import_module(owner[:-3].replace("/", "."))  # import resolution / no cycles at import time
         text = SHARED.S5.historical_source(owner)  # T3 import/LOC shape at accepted historical stage
         assert len(text.splitlines()) <= MAX_OWNER_LOC, owner
         tree = ast.parse(text)
+        commander = SHARED.S5.b_composed_selected() and owner in B_COMMANDER_IMPORTS
+        if commander:
+            _commander_tree(owner, text)  # exact imports + accepted source, not a prefix allowance
         for node in tree.body:
             if isinstance(node, ast.Import):
                 raise AssertionError(f"{owner}: plain import not allowed in a pure Owner")
             if isinstance(node, ast.ImportFrom):
+                if commander:
+                    continue  # already checked against the complete literal AST import list
                 allowed = ALLOWED_OWNER_IMPORTS.get(node.module)
                 assert allowed is not None, (owner, node.module)
                 assert {a.name for a in node.names} <= allowed, (owner, node.module, [a.name for a in node.names])

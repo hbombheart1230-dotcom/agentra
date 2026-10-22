@@ -154,7 +154,7 @@ def test_historical_view_never_hides_a_modified_current_blob(path, monkeypatch):
 # B-only composed admission: historical/current source are separate proof inputs.
 def test_b_composed_exact_input_and_old_function_bodies_remain_intact():
     assert len(S.B_COMPOSED_PATHS) == 23
-    assert len(S.verify_b_composed()) == 24
+    assert len(S.verify_b_composed()) == 25
     old = ast.parse(S.git_source(S.B_COMPOSED_COMMANDER, "scripts/refactor/shared_strategist_contracts.py"))
     new = ast.parse((S.ROOT / "scripts/refactor/shared_strategist_contracts.py").read_text(encoding="utf-8"))
     for fn in (n for n in old.body if isinstance(n, ast.FunctionDef)):
@@ -168,7 +168,7 @@ def test_b_composed_exact_input_and_old_function_bodies_remain_intact():
 @pytest.mark.parametrize("path", sorted(S.B_COMPOSED_PATHS - S.B_COMPOSED_CHECKS - S.COMMANDER_V1_NOTES))
 def test_b_composed_source_mutants_reject_from_green_current_tree(path):
     import shared_role_contracts as roles
-    assert len(S.verify_b_composed()) == 24
+    assert len(S.verify_b_composed()) == 25
     assert roles.verify_runtime()["monitor_bodies"] == 20
     for gate in (S.verify_b_composed, roles.verify_runtime):
         with pytest.raises(AssertionError) as rejected:
@@ -261,3 +261,12 @@ def test_actual_original_predicates_on_pinned_archive_not_current_worktree(sha, 
             "assert x['moves']==313 and x['monitor_bodies']==20")]
     result = subprocess.run(command, cwd=root, env=env, capture_output=True, text=True, encoding="utf-8")
     assert result.returncode == 0, (sha, result.returncode, result.stdout, result.stderr)
+    if sha == S.B_COMPOSED_BASE:
+        # The original pre-amendment current-head T3 file also executes unchanged
+        # on its genuine old source tree. Later B current-head resolution does
+        # not rewrite the old ledger, ABI, import oracle or historical test.
+        historical = subprocess.run(
+            [sys.executable, *flags, "-B", "-m", "pytest", "-q", "-p", "no:cacheprovider",
+             "tests/test_p159_current_owner_contract_gates.py"],
+            cwd=root, env=env, capture_output=True, text=True, encoding="utf-8")
+        assert historical.returncode == 0, (sha, historical.returncode, historical.stdout, historical.stderr)

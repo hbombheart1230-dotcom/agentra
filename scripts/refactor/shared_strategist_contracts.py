@@ -742,6 +742,7 @@ B_COMPOSED_CHECKS = frozenset({
     "scripts/refactor/shared_strategist_contracts.py",
     "scripts/refactor/shared_role_contracts.py",
     "tests/test_p15_integration_completion.py",
+    "tests/test_p159_current_owner_contract_gates.py",
 })
 
 
@@ -753,7 +754,7 @@ def b_composed_selected():
 
 
 def verify_b_composed(overrides=None, *, inventory=None):
-    """Exact reviewed 23-file B input plus one integration test; no prefix grant.
+    """Exact 23-file B input plus two authorized integration tests; no prefix grant.
 
     Current checker bytes are tied to the tested/reviewed HEAD, not to another
     self-referential hash manifest. Original standalone predicates below remain
