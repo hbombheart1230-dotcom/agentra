@@ -19,6 +19,7 @@ FIX = ROOT / "tests" / "fixtures" / "p1_5_v1052_candidate_risk" / "cases.json"
 OLD = "libs.runtime.scanner.candidate_risk"
 NEW = "libs.agents.scanner.candidate_risk"
 BASE_BLOB = "8dea30aebd811d8d9f214c8bca7bef8ea41fa3f9"
+PILOT_END = "17d3a4acd4ac8ff1da2ef427045bb483d8401c0f"
 
 
 def _blob_sha1(data: bytes) -> str:
@@ -97,9 +98,48 @@ def test_single_implementation_shim_without_code_and_no_rank_owner_added():
 
 
 def test_pilot_touches_no_forbidden_surface():
-    out = subprocess.check_output(["git", "diff", "--name-only", "-z", "860207682dc02080260e768587ac5f401f8c902a", "HEAD"],
+    # The original pilot's anti-authority proof remains on its genuine endpoint;
+    # later independently approved Commander changes are a separate stage.
+    out = subprocess.check_output(["git", "diff", "--name-only", "-z", "860207682dc02080260e768587ac5f401f8c902a", PILOT_END],
                                   cwd=ROOT).decode().split(chr(0))
     forbidden = ("graphs/nodes/scanner_node.py", "graphs/nodes/execute_from_packet.py", "libs/execution/", "libs/supervisor/",
                  "libs/approval/", "libs/risk/", "libs/llm/", "libs/kiwoom/", "libs/runtime/commander/")
     for p in [x for x in out if x]:
         assert not p.startswith(forbidden), p
+    from scripts.refactor import shared_strategist_contracts as S
+    if S.b_composed_selected():
+        S.verify_b_composed()  # current closed paths + immutable approved B source
+
+
+def test_current_commander_tree_rejects_unknown_role_module_and_changed_source(tmp_path):
+    import p15_agent_tree_allowlist as AL
+    from scripts.refactor import shared_strategist_contracts as S
+    agents = tmp_path / "libs/agents"
+    for role in AL.AGENT_PACKAGES:
+        (agents / role).mkdir(parents=True)
+    commander = agents / "commander"
+    for name in AL.COMMANDER_FILES:
+        path = commander / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(S.git_source(S.B_COMPOSED_BRIEF, "libs/agents/commander/" + name), encoding="utf-8")
+    assert AL.actual_dirs(agents) == set(AL.AGENT_PACKAGES)
+    (agents / "unapproved_role").mkdir()
+    with pytest.raises(AssertionError):
+        assert AL.actual_dirs(agents) == set(AL.AGENT_PACKAGES)
+    (agents / "unapproved_role").rmdir()
+    rogue = commander / "projections/order_execution.py"
+    rogue.write_text("BROKER_PERMISSION = True\n", encoding="utf-8")
+    with pytest.raises(AssertionError, match="exact package inventory"):
+        AL.actual_dirs(agents)
+    rogue.unlink()
+    owner = commander / "projections/decision_context_read_model.py"
+    owner.write_text(owner.read_text(encoding="utf-8") + "\n__import__('subprocess')\n", encoding="utf-8")
+    with pytest.raises(AssertionError, match="source differs"):
+        AL.actual_dirs(agents)
+
+
+def test_current_stage_still_rejects_true_authority_changes():
+    from scripts.refactor import shared_strategist_contracts as S
+    assert S.verify_b_composed()
+    with pytest.raises(AssertionError, match="unexpected/missing inventory"):
+        S.verify_b_composed({"libs/execution/unapproved.py": "EXECUTION_ENABLED = True\n"})

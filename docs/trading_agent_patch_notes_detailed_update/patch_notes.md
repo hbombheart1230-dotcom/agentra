@@ -4177,3 +4177,10 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Current p159 resolves two literal Commander and four literal Brief input identity reexports by symbol (Issue20 6331537986/6331883747), verifies exact import AST/canonical facade ABI/runtime identity, the unchanged delegated wrapper and accepted pure Owners. Current reexport modules and Owners match fedef source; unknown symbol/target/module/alias, duplicate import, rebinding, dynamic import and wrapper mutations fail closed. Original p159 executes unchanged on pinned BASE; historical ledgers and source proofs remain intact.
 - Original historical predicates/pins/manifest remain unchanged and execute on actual pinned archive source fixtures. Exact current Commander/Brief sources are validated before historical projections; no wildcard, hash-chain framework, skip or authority change.
 - Preserve341 records and paired Markdown history, append one integration record342. Core/R3, Broker/UEF/Step5C/Monitor policies, workflow and main remain unchanged. Do not infer hosted CI/integration PASS from this entry.
+
+## 2026-10-22 - P15_B_CI_ADMISSION_REPAIR_20261022
+**Stage:** B-only candidate; source review/Tech Lead integration and exact-SHA CI remain separate.
+
+- Preserve historical Scanner pilot START and genuine17d3a4ac endpoint; exact current Commander package has four pinned files and one projections directory. Unknown roles/modules, altered source and authority paths still fail.
+- Distinguish only18 literal untracked JUnit outputs proven in both unchanged CI workflows, with exact workflow/checkout provenance and real regular JUnit XML content. No tracked/source/wildcard exemption; hostile unknown/lookalike/content/provenance cases reject.
+- Retain original B25 source/proof scope plus two explicitly approved CI proof files; preserve all342 old records and append343. No production, historic pin, workflow, trading, A, integration or main modification. Results and peer verdict in Issue20.

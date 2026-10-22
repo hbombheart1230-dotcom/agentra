@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 342,
+  "entry_count": 343,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9027,6 +9027,30 @@
         "apps/operator_ui/data_access_brief_sections_projection.py",
         "apps/operator_ui/data_access_brief_source_truth_p15.py",
         "apps/operator_ui/data_access_brief_evidence_readout_p15.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_B_CI_ADMISSION_REPAIR_20261022",
+      "title": "Preserve historical Scanner pilot and admit exact Commander tree and transient CI evidence",
+      "stage": "B-owned candidate; Tech Lead integration and exact-SHA CI pending",
+      "types": [
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Repair three composed-stage CI false positives without changing production source, historical pins or workflows.",
+      "details": [
+        "Current Commander package admits only its four accepted fedef files and projections directory; byte equality and unknown-role/module/authority negative controls remain fail-closed. Historical Scanner pilot keeps its original START and real17d3a4ac endpoint; current B source admission runs separately.",
+        "Only18 literal JUnit destinations proven in both unchanged baseline workflows can be classified as non-source when genuinely untracked, in the exact CI workflow and checkout, with a real regular JUnit XML file. Tracked files, unknown/lookalike/source paths, wrong provenance, malformed or non-JUnit content remain rejected. Original B25 tracked scope retained plus exactly two newly authorized proof files.",
+        "Preserve all342 previous records and Markdown history; no production, safety-policy, UEF/Step5C, main, integration, workflow or A changes. Actual normal/-O, negative controls and peer review are reported in Issue20; candidate branch only until GPT admission."
+      ],
+      "impact": "Version-aware test/source-admission compatibility only; no runtime or trading-authority change.",
+      "sources": [
+        "tests/p15_agent_tree_allowlist.py",
+        "tests/test_p166_v1052_candidate_risk_migration.py",
+        "scripts/refactor/shared_strategist_contracts.py",
+        "tests/test_p15_integration_completion.py"
       ]
     }
   ]

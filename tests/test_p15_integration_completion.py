@@ -152,9 +152,106 @@ def test_historical_view_never_hides_a_modified_current_blob(path, monkeypatch):
 
 
 # B-only composed admission: historical/current source are separate proof inputs.
+@pytest.fixture(scope="module")
+def real_pytest_junit(tmp_path_factory):
+    """Use actual pytest output, not a fabricated production-output golden."""
+    import os
+    root = tmp_path_factory.mktemp("junit-producer")
+    test = root / "test_report.py"
+    test.write_text("def test_offline_metadata():\n    assert True\n", encoding="utf-8")
+    report = root / "result.xml"
+    flags = [] if __debug__ else ["-O"]
+    result = subprocess.run([sys.executable, *flags, "-B", "-m", "pytest", "-q", "-p", "no:cacheprovider",
+                             str(test), "--junitxml=" + str(report)], cwd=root,
+                            env=dict(os.environ, PYTEST_DISABLE_PLUGIN_AUTOLOAD="1"),
+                            capture_output=True, text=True, encoding="utf-8")
+    assert result.returncode == 0, (result.returncode, result.stdout, result.stderr)
+    return report.read_bytes()
+
+
+@pytest.mark.parametrize("workflow", ["p15-integration-t4-regression.yml", "p152-r2c-residual-regression.yml"])
+def test_ci_junit_names_are_exact_frozen_workflow_destinations(workflow):
+    import re
+    text = S.git_source(S.B_CI_REPAIR_BASE, ".github/workflows/" + workflow)
+    names = set(re.findall(r"--junitxml=(branch_output/gate_[\w]+_junit\.xml)", text))
+    assert names == S.B_CI_JUNIT and len(names) == 18
+
+
+def test_ci_evidence_present_absent_unknown_and_tracked_remain_distinct(tmp_path, monkeypatch, real_pytest_junit):
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=S.ROOT, text=True).strip()
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_WORKFLOW", "P1.5 Integration T4 Linux Windows Regression")
+    monkeypatch.setenv("GITHUB_SHA", head)
+    evidence = set()
+    tracked = set()
+    original = subprocess.check_output
+    validator = S._b_ci_junit_evidence
+    def git_with_ci_output(args, *a, **kw):
+        out = original(args, *a, **kw)
+        if args == ["git", "ls-files", "--others", "--exclude-standard"]:
+            return out + "\n".join(sorted(evidence)) + ("\n" if evidence else "")
+        if args == ["git", "diff", "--name-only", S.B_COMPOSED_BASE]:
+            return out + "\n".join(sorted(tracked)) + ("\n" if tracked else "")
+        return out
+    monkeypatch.setattr(subprocess, "check_output", git_with_ci_output)
+    monkeypatch.setattr(S, "_b_ci_junit_evidence", lambda path, commit: validator(path, commit, root=tmp_path))
+    expected = S.verify_b_composed()  # real current tree, no prior reports
+    for name in S.B_CI_JUNIT:
+        p = tmp_path / name
+        p.parent.mkdir(exist_ok=True)
+        p.write_bytes(real_pytest_junit)
+    evidence.update(S.B_CI_JUNIT)
+    assert S.verify_b_composed() == expected  # genuine prior pytest reports, all 18 exact names
+    for unknown in ("branch_output/gate_unknown_junit.xml", "branch_output/gate_t4d_junit.xml.py",
+                    "libs/broker/rogue.py", "branch_output/GATE_t4d_junit.xml"):
+        evidence.add(unknown)
+        with pytest.raises(AssertionError, match="unexpected/missing inventory"):
+            S.verify_b_composed()
+        evidence.remove(unknown)
+    name = sorted(evidence)[0]
+    evidence.remove(name)
+    tracked.add(name)
+    with pytest.raises(AssertionError, match="unexpected/missing inventory"):
+        S.verify_b_composed()  # tracked/staged report never receives a source-path exemption
+
+
+@pytest.mark.parametrize("payload", [b"import os\n", b"<source/>", b"<testsuites><evil/></testsuites>",
+                                      b'<!DOCTYPE x [<!ENTITY y "z">]><testsuites/>'])
+def test_named_ci_report_with_non_junit_content_fails(tmp_path, monkeypatch, real_pytest_junit, payload):
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_WORKFLOW", "P1.5 Integration T4 Linux Windows Regression")
+    monkeypatch.setenv("GITHUB_SHA", "fixture-head")
+    path = sorted(S.B_CI_JUNIT)[0]
+    p = tmp_path / path
+    p.parent.mkdir()
+    p.write_bytes(real_pytest_junit)
+    assert S._b_ci_junit_evidence(path, "fixture-head", root=tmp_path)
+    p.write_bytes(payload)
+    with pytest.raises(AssertionError, match="invalid CI JUnit evidence"):
+        S._b_ci_junit_evidence(path, "fixture-head", root=tmp_path)
+
+
+def test_ci_report_needs_actual_workflow_checkout_and_file(tmp_path, monkeypatch, real_pytest_junit):
+    path = sorted(S.B_CI_JUNIT)[0]
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_WORKFLOW", "P1.5 Integration T4 Linux Windows Regression")
+    monkeypatch.setenv("GITHUB_SHA", "fixture-head")
+    with pytest.raises(AssertionError, match="evidence path"):
+        S._b_ci_junit_evidence(path, "fixture-head", root=tmp_path)
+    p = tmp_path / path
+    p.parent.mkdir()
+    p.write_bytes(real_pytest_junit)
+    assert S._b_ci_junit_evidence(path, "fixture-head", root=tmp_path)
+    for key, value in (("GITHUB_ACTIONS", "false"), ("GITHUB_WORKFLOW", "unapproved workflow"),
+                       ("GITHUB_SHA", "wrong-checkout")):
+        with monkeypatch.context() as m:
+            m.setenv(key, value)
+            assert not S._b_ci_junit_evidence(path, "fixture-head", root=tmp_path)
+
+
 def test_b_composed_exact_input_and_old_function_bodies_remain_intact():
     assert len(S.B_COMPOSED_PATHS) == 23
-    assert len(S.verify_b_composed()) == 25
+    assert len(S.verify_b_composed()) == 27
     old = ast.parse(S.git_source(S.B_COMPOSED_COMMANDER, "scripts/refactor/shared_strategist_contracts.py"))
     new = ast.parse((S.ROOT / "scripts/refactor/shared_strategist_contracts.py").read_text(encoding="utf-8"))
     for fn in (n for n in old.body if isinstance(n, ast.FunctionDef)):
@@ -168,7 +265,7 @@ def test_b_composed_exact_input_and_old_function_bodies_remain_intact():
 @pytest.mark.parametrize("path", sorted(S.B_COMPOSED_PATHS - S.B_COMPOSED_CHECKS - S.COMMANDER_V1_NOTES))
 def test_b_composed_source_mutants_reject_from_green_current_tree(path):
     import shared_role_contracts as roles
-    assert len(S.verify_b_composed()) == 25
+    assert len(S.verify_b_composed()) == 27
     assert roles.verify_runtime()["monitor_bodies"] == 20
     for gate in (S.verify_b_composed, roles.verify_runtime):
         with pytest.raises(AssertionError) as rejected:

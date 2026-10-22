@@ -743,7 +743,64 @@ B_COMPOSED_CHECKS = frozenset({
     "scripts/refactor/shared_role_contracts.py",
     "tests/test_p15_integration_completion.py",
     "tests/test_p159_current_owner_contract_gates.py",
+    "tests/p15_agent_tree_allowlist.py",
+    "tests/test_p166_v1052_candidate_risk_migration.py",
 })
+B_CI_REPAIR_BASE = "1bcf6290fd01a36545ecefbfb3f6fac03dae7bcc"
+# Exact --junitxml destinations in both unchanged workflows at B_CI_REPAIR_BASE.
+B_CI_JUNIT = frozenset({
+    "branch_output/gate_harness_guards_junit.xml",
+    "branch_output/gate_moved_body_operator_ui_junit.xml",
+    "branch_output/gate_moved_body_reporting_junit.xml",
+    "branch_output/gate_scope_abi_guards_junit.xml",
+    "branch_output/gate_second_pass_junit.xml",
+    "branch_output/gate_symbol_ledger_junit.xml",
+    "branch_output/gate_third_pass_t1_junit.xml",
+    "branch_output/gate_third_pass_t2_junit.xml",
+    "branch_output/gate_third_pass_t3_junit.xml",
+    "branch_output/gate_third_pass_t35_junit.xml",
+    "branch_output/gate_t4a_junit.xml",
+    "branch_output/gate_t4b_junit.xml",
+    "branch_output/gate_t4c_junit.xml",
+    "branch_output/gate_t4d_junit.xml",
+    "branch_output/gate_wave_b_moved_bodies_junit.xml",
+    "branch_output/gate_wave_b_scope_junit.xml",
+    "branch_output/gate_wave_c_moved_bodies_junit.xml",
+    "branch_output/gate_wave_c_scope_junit.xml",
+})
+B_CI_WORKFLOWS = frozenset({
+    "P1.5 Integration T4 Linux Windows Regression",
+    "P1.5 Reporting Regression + P1.5 Design Guard",
+})
+
+
+def _b_ci_junit_evidence(path, head, *, root=None):
+    """Non-source evidence only; caller applies this ONLY to git-untracked files.
+
+    No directory/suffix wildcard, tracked exemption or developer-mode bypass.
+    The actual CI workflow, exact checkout and real JUnit file are all required.
+    """
+    import os
+    import xml.etree.ElementTree as ET
+    if (path not in B_CI_JUNIT or os.environ.get("GITHUB_ACTIONS") != "true"
+            or os.environ.get("GITHUB_WORKFLOW") not in B_CI_WORKFLOWS
+            or os.environ.get("GITHUB_SHA") != head):
+        return False
+    root = ROOT if root is None else root
+    p = root / path
+    require(p.is_file() and not p.is_symlink() and not p.parent.is_symlink()
+            and p.parent.resolve() == root.resolve() / "branch_output", "invalid CI JUnit evidence path: " + path)
+    raw = p.read_bytes()
+    require(b"<!DOCTYPE" not in raw and b"<!ENTITY" not in raw, "invalid CI JUnit evidence declaration: " + path)
+    try:
+        tree = ET.fromstring(raw)
+    except ET.ParseError as exc:
+        raise AssertionError("invalid CI JUnit evidence XML: " + path) from exc
+    allowed = {"testsuites", "testsuite", "testcase", "properties", "property", "failure", "error",
+               "skipped", "system-out", "system-err"}
+    require(tree.tag in {"testsuites", "testsuite"} and any(n.tag == "testsuite" for n in tree.iter())
+            and all(n.tag in allowed for n in tree.iter()), "invalid CI JUnit evidence content: " + path)
+    return True
 
 
 def b_composed_selected():
@@ -754,13 +811,14 @@ def b_composed_selected():
 
 
 def verify_b_composed(overrides=None, *, inventory=None):
-    """Exact 23-file B input plus two authorized integration tests; no prefix grant.
+    """Exact original B25 scope plus two authorized CI proof files; no prefix grant.
 
     Current checker bytes are tied to the tested/reviewed HEAD, not to another
     self-referential hash manifest. Original standalone predicates below remain
     unchanged and are exercised on their pinned historical filesystem trees.
     """
     overrides = overrides or {}
+    require(B_CI_REPAIR_BASE == "1bcf6290fd01a36545ecefbfb3f6fac03dae7bcc", "B CI repair immutable base")
     require((B_COMPOSED_BASE, B_COMPOSED_COMMANDER, B_COMPOSED_BRIEF) ==
             ("d7ab82940deaa05810b28ef78fc0be88e201f9b6",
              "e328d7801763a65e6c2c50c90edd693ff685ef95",
@@ -780,9 +838,11 @@ def verify_b_composed(overrides=None, *, inventory=None):
     require(COMMANDER_V1_PROOF_HASHES == ast.literal_eval(old_manifest),
             "Commander V1 historical proof manifest changed")
     expected = B_COMPOSED_PATHS | B_COMPOSED_CHECKS
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     changed = _commander_delta(B_COMPOSED_BASE)
-    changed |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"],
-                                          cwd=ROOT, text=True).splitlines())
+    untracked = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"],
+                                       cwd=ROOT, text=True).splitlines()
+    changed |= {p for p in untracked if not _b_ci_junit_evidence(p, head)}
     changed |= set(overrides)
     require(changed == expected, "B-stage composed unexpected/missing inventory: " + repr(changed ^ expected))
     if inventory is not None:
@@ -798,21 +858,20 @@ def verify_b_composed(overrides=None, *, inventory=None):
         kind = "checker/test drift" if path in COMMANDER_V1_CONTRACT_FILES else "new-stage source/ABI/body differs"
         require(_commander_read(path, overrides) == git_source(B_COMPOSED_BRIEF, path),
                 kind + " from B pin: " + path)
-    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     for path in sorted(B_COMPOSED_CHECKS):
         require(_commander_read(path, overrides) == git_source(head, path),
                 "B-stage checker/test drift from reviewed HEAD: " + path)
     note = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
-    old = json.loads(git_source(B_COMPOSED_BRIEF, note))
+    old = json.loads(git_source(B_CI_REPAIR_BASE, note))
     current = json.loads(_commander_read(note, overrides))
     require(current["entries"][:-1] == old["entries"] and len(current["entries"]) == len(old["entries"]) + 1,
             "B composed historical patchnotes changed")
-    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 342,
+    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 343,
             "B composed patchnotes count/version")
-    require(current["entries"][-1]["version"] == "P15_B_COMPOSED_INTEGRATION_20261022",
+    require(current["entries"][-1]["version"] == "P15_B_CI_ADMISSION_REPAIR_20261022",
             "B composed integration note")
     md = "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
-    require(_commander_read(md, overrides).startswith(git_source(B_COMPOSED_BRIEF, md)),
+    require(_commander_read(md, overrides).startswith(git_source(B_CI_REPAIR_BASE, md)),
             "B composed historical Markdown changed")
     verify_historical_b_scope()
     return frozenset(changed)
