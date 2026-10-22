@@ -1,0 +1,8 @@
+# T05 — Wiring: `graphs/` ↔ `libs/runtime/` ↔ `libs/agents/`
+**Status:** DESIGN_READY, following T02–T04, requires exact selected output ABI and importer graph. **Existing baseline:** `graphs/` 45 Python files; `libs/runtime/` 322. Not equivalent to `agents/` tree.
+**DEV-A:** read-only/source-approved safe Strategist/Scanner/Reporter role wiring and report entry; preserve `graphs/nodes/reporter_node.py` bundle runtime, existing LLM behavior, selected Rank-1 and all observed artifacts.
+**DEV-B:** Commander/Monitor pure graph-facing projections and role aliases. `graphs/commander_runtime.py` routing, clock, state/lease; `graphs/nodes/monitor_node.py` OrderIntent only remain effectful original owners. `graphs/nodes/execute_from_packet.py` and `graphs/nodes/decide_trade.py` unmodified safety contracts.
+1. Confirm the actual import/call chain for all five safe roles (and the two safeguarded roles only conceptually), use-time monkeypatch, no circular role dependencies or recursive compat path.
+2. If an actual pure already-proven owner and parent both have duplicate implementation, retain a single canonical body and exact old/new module identity shim with only allowed tests; do not wholesale relocate 322 runtime modules.
+3. Replay BASE vs new call order, state fields/serialization, exceptions, intent conservation, selected symbol, rank/reason provenance, write-event ordering, mocked LLM and broker non-execution; normal and -O, opposite-source review.
+**EXIT:** there is one reliable role→graph→runtime diagram backed by actual code, single owner per migrated seam, frozen safety chain intact. 
