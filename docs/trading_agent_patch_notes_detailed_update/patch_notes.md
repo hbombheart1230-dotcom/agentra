@@ -4208,3 +4208,4 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Twelve flat Brief implementations 2535->48LOC at old paths: input4, sections3, render5 canonical modules in brief_parts. Root Python count35 stays35 for required legacy imports; old/new modules and callable objects are identical, no duplicate business logic.
 - Exact current byte/shim/path proof precedes unchanged R3/T4-A predicates. Preserve historical pins, outputs, effects,345 earlier notes; append346. No integration or runtime policy change.
 - T3 source probes resolve exact admitted aliases before original symbol-breadth checks; committed B1 ancestry prevents deletion-based stage fallback. No historical pin/predicate edits.
+- Source b63ba49fa2e6358d77d4eac27a678ce7a7f6fd55: normal/-O main187PASS plus distinct R3 68PASS, all exits0; Claude sourcePASS exit0, reviewer Python NOT_RUN (six denied calls, two Python attempts). Git receipt records limitations.

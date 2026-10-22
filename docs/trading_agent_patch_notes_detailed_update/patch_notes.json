@@ -9105,7 +9105,7 @@
       "date": "2026-10-22",
       "version": "P15_B_OPERATOR_STRUCTURE_B2_20261022",
       "title": "Consolidate twelve Brief implementations into input, sections and render packages",
-      "stage": "Developer source only; peer deferred and GPT admission pending",
+      "stage": "Developer source; peer static PASS with execution limitation, GPT admission pending",
       "types": [
         "REFACTOR"
       ],
@@ -9114,7 +9114,8 @@
       "details": [
         "Twelve root implementation files 2535->48LOC; canonical source bytes match green51bb. Top-level Python count35 stays35 to preserve all legacy module paths; no duplicated implementation. Input4/sections3/render5 canonical Owners, old and new imports return the same modules and callable objects.",
         "Exact closed new-stage path/shim/byte proof precedes original R3/T4-A source inspection. Historical SHA pins, ledgers, predicates, outputs and facade imports retained. Previous345 note records preserved; no feature, policy, IO, LLM or execution change.",
-        "T3 current source probes follow only admitted whole-module aliases before the original symbol-breadth and AST checks. Committed B1 ancestry prevents deletion of the stage marker from falling back to a weaker historical stage. No historical predicate or oracle changed."
+        "T3 current source probes follow only admitted whole-module aliases before the original symbol-breadth and AST checks. Committed B1 ancestry prevents deletion of the stage marker from falling back to a weaker historical stage. No historical predicate or oracle changed.",
+        "B2 source b63ba49fa2e6358d77d4eac27a678ce7a7f6fd55: main187PASS plus distinct changed-owner R3 68PASS, each normal/-O with actual exits0. Fresh Claude CLIexit0 sourcePASS; reviewer Python NOT_RUN, six denied tool calls including two Python attempts. Durable Git receipt preserves limitations."
       ],
       "impact": "Folder structure and ownership only.",
       "sources": [
