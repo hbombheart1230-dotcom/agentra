@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 340,
+  "entry_count": 341,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8973,6 +8973,31 @@
         "scripts/refactor/shared_strategist_contracts.py",
         "scripts/refactor/shared_role_contracts.py",
         "tests/test_p15_commander_pure_v1_admission.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_OPERATOR_BRIEF_PURE_READOUT_20261022",
+      "title": "Separate Operator Brief source truth and evidence readouts",
+      "stage": "Structural source candidate; historical admission pending Tech Lead integration",
+      "types": [
+        "REFACTOR",
+        "WEB_UI",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Move four source-selection helpers and seven evidence-section helpers into two pure Owners while preserving existing imports and call-time facade dependencies.",
+      "details": [
+        "Input assembly shrinks248->123LOC and section assembly387->270LOC; actual helper bodies move unchanged to source-truth139LOC and evidence-readout134LOC Owners.",
+        "Existing builder bodies, core, R3 compaction, API/template/LLM/trading behavior and historical source pins remain unchanged. Differential BASE JSON/Markdown, error/call-order, reference/zero/False/Unicode and GET escaping checks cover the new source stage.",
+        "Historical full-file UI_PIN current-tree gates and Commander standalone inventory necessarily reject these newly authorized paths; report STAGE_ADMISSION_PENDING_GPT separately. No historical gate edits, skip, CI workaround, new trading authority or integration/main change. Exact primary normal/-O exit statuses and source-only Claude review are recorded in Issue20."
+      ],
+      "impact": "Read-only ownership change; previous340 note records preserved. No UI output feature or policy change.",
+      "sources": [
+        "apps/operator_ui/data_access_brief_source_truth_p15.py",
+        "apps/operator_ui/data_access_brief_evidence_readout_p15.py",
+        "tests/test_p15_b_operator_brief_pure_parity.py",
+        "tests/test_p15_b_operator_brief_boundaries.py"
       ]
     }
   ]

@@ -4162,3 +4162,10 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Add isolated P15_COMMANDER_PURE_V1 exact-source admission for unchanged e4a59788 Commander B1/B2. Historical S5/B pins, source inventories, Reporter313/23 and Monitor14/20 proofs remain intact; both shared scope and runtime boundaries require the new version before admitting its nine runtime paths.
 - All11 Commander source/test blobs pinned unchanged; exact closed source/proof inventory, checker hashes and paired notes preserve old339 records. Missing/extra files, byte/ABI drift, historical role mutations and new trading/LLM/write capability reject before admission.
 - Monitor B3/B4 remain blocked. No historical allowlist/pin change, skip/waiver, new runtime behavior, CI/main/integration or PR modification. Actual normal/-O and independent results in Issue20.
+
+## 2026-10-22 - P15_OPERATOR_BRIEF_PURE_READOUT_20261022
+**Stage:** Structural source candidate; historical admission pending Tech Lead integration.
+
+- Move four Operator Brief source-truth helpers and seven evidence/section readouts into two pure Owners. Existing module names re-export the same callables; builders keep facade use-time lookup, signatures, output order and fallback semantics.
+- Input assembly248->123LOC; section assembly387->270LOC. New Owners139/134LOC; core, R3 compaction, routes/templates, historical gates and trading boundaries unchanged.
+- Existing340 records preserved; BASE differential normal/-O tests and source-only Claude review are reported with exact SHA/exit in Issue20. Historical UI_PIN/current standalone scope rejection remains STAGE_ADMISSION_PENDING_GPT, not waived. No integration/main/CI or runtime-data claim.
