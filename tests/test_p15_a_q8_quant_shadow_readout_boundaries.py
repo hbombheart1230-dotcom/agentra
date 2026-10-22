@@ -20,13 +20,16 @@ FACADE = "libs/reporting/quant_shadow_candidate_evaluation.py"
 OWNERS = {
     "libs/reporting/evaluation/quant_shadow_forward_readout_p15.py": {"__future__", "collections", "typing"},
     "libs/reporting/evaluation/quant_shadow_render_p15.py": {"__future__", "typing"},
+    "libs/reporting/evaluation/quant_shadow_observation_projection_p15.py": {"__future__", "collections", "typing"},
 }
 # BASE functions that moved into the owners (facade keeps a same-name, same-signature wrapper); `_mean` stays put
 MOVED = {"_checkpoint_value", "_forward_outcome_summary", "_top_forward_groups", "_entry_lane_forward_outcomes",
-         "_format_rows", "_format_forward_rows", "_format_scorecard_rows", "render_quant_shadow_candidate_evaluation_lines"}
+         "_format_rows", "_format_forward_rows", "_format_scorecard_rows", "render_quant_shadow_candidate_evaluation_lines",
+         # wave A-W1 (Tech Lead 6335238675): observation shape / diagnostic projections
+         "_entry_shape", "_entry_shape_payload", "_below_vwap_reclaim_observation", "_below_vwap_reclaim_observation_payload",
+         "_entry_lane_observation", "_entry_lane_observation_payload"}
 RED_LINE = {"_evaluation_trust_gate", "_promotion_candidate", "_no_trade_scorecard", "_dedupe_candidates", "_shadow_readiness",
-            "build_quant_shadow_candidate_evaluation", "_scorecard_rows", "_named_forward_rows", "_scorecard_return_signal",
-            "_entry_shape_payload", "_below_vwap_reclaim_observation_payload", "_entry_lane_observation_payload"}
+            "build_quant_shadow_candidate_evaluation", "_scorecard_rows", "_named_forward_rows", "_scorecard_return_signal"}
 EFFECT_NAMES = {"open", "print", "exec", "eval", "__import__", "input"}
 EFFECT_ATTRS = {"read_text", "read_bytes", "write_text", "write_bytes", "mkdir", "exists", "glob", "unlink", "now", "utcnow",
                 "today", "time", "getenv", "environ", "system", "popen", "dumps", "dump", "loads", "load"}
@@ -37,6 +40,8 @@ ALLOWED_CHANGES = {
     FACADE, *OWNERS,
     "tests/test_p15_a_q8_quant_shadow_readout_parity.py",
     "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py",
+    "libs/reporting/evaluation/quant_shadow_observation_projection_p15.py",
+    "tests/test_p15_a_q8_quant_shadow_observation_parity.py",
     "tests/test_p15_a_q8_reporting_boundaries.py",  # exact path-only companion admission
     "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py",  # drops the facade from its read-only list (now writable)
     "tests/test_work_reporter_seed_migration.py",  # exact path-only companion admission

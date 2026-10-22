@@ -1,5 +1,12 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P1.5 DEV-A Q8 QUANT SHADOW OBSERVATION PROJECTION OWNER A-W1 20261022
+**Stage:** A-W1, 8307cc37 수용 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- `quant_shadow_candidate_evaluation`의 관찰·진단 투영 6개(`_entry_shape`, `_entry_shape_payload`, `_below_vwap_reclaim_observation(_payload)`, `_entry_lane_observation(_payload)`)를 `evaluation/quant_shadow_observation_projection_p15`(148줄, owner 1개)로 이동. facade 1099→999줄, 본문은 원문 그대로이고 같은 이름·시그니처 wrapper가 호출 시점에 owner를 import하며 `facade`를 넘겨 `_text`·`_bool`·`_top_counter`·런타임 분류기 monkeypatch 결과가 BASE와 같음.
+- 신뢰 게이트·승급 후보·스코어카드·중복 제거·readiness·`build_quant_shadow_candidate_evaluation`·`_count_reason`·`_runner_up_risk_count`와 모든 신뢰 상수는 무수정. 이동하지 않은 모든 함수는 BASE와 AST 동일(테스트).
+- 신규 테스트 1개(BASE 동등성: 직접 호출·행 단위·build 섹션, facade seam 11개, owner 변형 6개)와 기존 경계 테스트의 새 owner 검사. 부속 admission은 정확한 경로 1개를 `P15_A_Q8_PATHS`와 이전 Q8 경계 허용 목록에 추가한 것뿐임.
+
 ## 2026-10-22 · P1.5 DEV-A Q8 QUANT SHADOW FORWARD READOUT AND RENDER OWNERS 20261022
 **Stage:** 21a58fb0 수용 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
 

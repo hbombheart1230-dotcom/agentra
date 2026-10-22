@@ -36,6 +36,8 @@ ALLOWED_CHANGES = {
     "libs/reporting/evaluation/quant_shadow_render_p15.py",
     "tests/test_p15_a_q8_quant_shadow_readout_parity.py",
     "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py",
+    "libs/reporting/evaluation/quant_shadow_observation_projection_p15.py",
+    "tests/test_p15_a_q8_quant_shadow_observation_parity.py",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
 }

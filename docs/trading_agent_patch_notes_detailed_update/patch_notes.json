@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 345,
+  "entry_count": 346,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9091,6 +9091,30 @@
         "libs/reporting/evaluation/quant_shadow_render_p15.py",
         "libs/reporting/quant_shadow_candidate_evaluation.py",
         "tests/test_p15_a_q8_quant_shadow_readout_parity.py",
+        "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 QUANT SHADOW OBSERVATION PROJECTION OWNER A-W1 20261022",
+      "title": "Move the entry-shape, below-VWAP reclaim and entry-lane observation projections into one pure owner",
+      "stage": "Wave A-W1 on work/p15-a-reporter-pure-20261021 after accepted 8307cc37; read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "quant_shadow_candidate_evaluation keeps the trust gate, promotion, scorecard, dedupe, readiness, build and loaders; the six observation/diagnostic functions behind entry_shape_diagnostics, below_vwap_reclaim_observation and entry_lane_observation move to evaluation/quant_shadow_observation_projection_p15.",
+      "details": [
+        "Facade 1099->999 lines, one new owner of 148 lines (limit was two). Moved with verbatim bodies: _entry_shape, _entry_shape_payload, _below_vwap_reclaim_observation, _below_vwap_reclaim_observation_payload, _entry_lane_observation, _entry_lane_observation_payload. Each keeps a same-name, same-signature facade wrapper that imports the owner at call time (the evaluation package already imports this facade) and passes facade=sys.modules[__name__]; the owner reads _text, _bool, _top_counter, the row helpers and the runtime classifiers classify_below_vwap_reclaim_observation / build_entry_lane_observation on that facade, so patching any of them behaves as on BASE.",
+        "Not touched: _evaluation_trust_gate, _promotion_candidate, _no_trade_scorecard, _dedupe_candidates, _shadow_readiness, build_quant_shadow_candidate_evaluation, _count_reason and _runner_up_risk_count (promotion inputs), eligibility, thresholds and every trust constant; the AST-identity check against BASE now covers every function that did not move.",
+        "New test file compares BASE d7ab8294 with the current facade on empty/typical/malformed/mixed rows (direct calls, per-row helpers, build sections), 11 facade seams and 6 owner mutants; the existing readout boundary test now also pins the new owner (stdlib-only, effect-free, facade-only helpers, allowlist). Companion admission is exact-path only: one path added to P15_A_Q8_PATHS and to the earlier Q8 boundary allowlists."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.",
+      "sources": [
+        "libs/reporting/evaluation/quant_shadow_observation_projection_p15.py",
+        "libs/reporting/quant_shadow_candidate_evaluation.py",
+        "tests/test_p15_a_q8_quant_shadow_observation_parity.py",
         "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py"
       ]
     }
