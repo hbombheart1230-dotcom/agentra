@@ -23,6 +23,7 @@ def original(name):
     fn = ns[name]
     result = types.FunctionType(fn.__code__, core.__dict__, name, fn.__defaults__, fn.__closure__)
     result.__kwdefaults__ = fn.__kwdefaults__
+    result.__annotations__ = dict(fn.__annotations__)
     return result
 
 
