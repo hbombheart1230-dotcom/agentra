@@ -9149,7 +9149,7 @@
       "date": "2026-10-22",
       "version": "P15_B_OPERATOR_STRUCTURE_B3_20261022",
       "title": "Consolidate run, trade, overview and status implementations in read_models",
-      "stage": "Developer source; tests and opposite CLI review pending",
+      "stage": "Source-tested candidate; full B1-B3 static peer PASS; historical standalone freeze limitation / GPT admission pending",
       "types": [
         "REFACTOR"
       ],
@@ -9158,7 +9158,10 @@
       "details": [
         "Four root modules 1122->16LOC; read_models/runs.py, trades.py, overview.py and status.py preserve complete green51bb source bytes. IO stays inside the same unchanged read functions; existing API routes, core imports and effect order are retained. All16 moved legacy paths preserve module/callable identity.",
         "Root Python file count remains35 for compatibility, while16 implementation files become shims. Core remains2309LOC versus2467BASE. Prior346 notes retained; exact current source maps add only four pairs and preserve historical pins. No policy, approval, order, persistence, LLM, scheduling or retry change.",
-        "Constructed function ASTs explicitly include empty type_params rather than relying on interpreter-version defaults; owner round-trip schema test added. Linux execution remains separately NOT_RUN on this developer candidate."
+        "Constructed function ASTs explicitly include empty type_params rather than relying on interpreter-version defaults; owner round-trip schema test added. Linux execution remains separately NOT_RUN on this developer candidate.",
+        "Final code 67f107e39568f74d150e3f402bfe70ddfc920d11: normal200PASS plus distinct B3 R3 52PASS, same -O counts, all real exits0. Fresh Claude CLIexit0 full B1-B3 bounded static sourcePASS; reviewer tests NOT_RUN by request, zero denied calls. Complete source/exit/verdict receipt is Git tracked.",
+        "Unchanged old whole-file freeze diagnostic: one FAIL normal/-O on BOTH genuine51bb baseline inputs and candidate, actual exits1; no expected-value edits or waiver. New-stage source/API contracts pass; full repository and new hosted CI are NOT_RUN. HEAD equality protects only dirty checker drift; independent exact-SHA review remains required.",
+        "Metadata housekeeping executed under previously read6336183716: archive5 verified, remote13->6, seven exact-lease deletions, old B active worktree preserved. Reassignment6336414973 was observed after operations; further tag/delete/prune STOPPED and actual state reported in6336682204. No main/integration/A/code merge."
       ],
       "impact": "Canonical read-model package boundaries only; no functional UI changes.",
       "sources": [
