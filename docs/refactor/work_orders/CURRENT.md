@@ -1,5 +1,14 @@
 # Agentra P1.5 — CURRENT (D7 frozen, B source CI blocked, BATCH03 active with bounded follow-on)
 
+## 2026-10-22 — CANONICAL ACTIVE P1.5: BIGGEST FILE / FOLDER FIRST (latest user-approved, overrides stale BATCH03-05 pointers)
+
+- **Target:** Clean deep & flattened repository tree and split major modules by stable responsibility; NOT new features or isolated helper refactors. Before each work packet inventory current largest safe eligible files, choose top priority, record before/after largest LOC, root file count, owner package map and preserved imports. Source behavior, ABI, I/O, effects and safety must be byte/effect-equivalent.
+- **A primary:** `work/p15-a-reporter-pure-20261021@8307cc37ccdd2147b46c679f7eef9fb9864359fb`, accepted A Reporter source not yet integrated. Start from latest origin ref, Reporter big packages `trade_report_ai.py` ~64.6KB, `intraday_trade_reports.py` ~63.9KB, `trade_report_markdown_clean.py` ~48.7KB; reuse existing `libs/reporting/trade_report/`, `trade_report_markdown/`, `reporter_bundle_runtime_parts/` as justified. Large cohesive file/folder wave(s), no unrelated Q8 micro split.
+- **B primary:** `work/p15-b-ci-admission-repair-20261022@51bb7130b2ba627be50800fa89c6108dd1a5018c` **already an ancestor/identical to GREEN integration**; do not keep reconciling it. New B branch from actual integration when working on `apps/operator_ui/data_access_core.py` (2468 LOC/~113KB), major root `data_access_brief_*` clusters and stable package shims; no live broker/approval/risk changes.
+- **Integration:** `integration/p1.5@51bb7130b2ba627be50800fa89c6108dd1a5018c` full required hosted CI **6/6 SUCCESS** (B accepted). **One and only pending composed candidate:** `stage/p15-large-first-a-composition-20261022`, initially selected **33 A code/test paths** on green B, further policy+dual notes to be completed under next commits, not integrated/CI green until actual checks. GPT to admit A and reconcile sources/notes; no blind developer-branch merges or lost patchnotes.
+- **main:** `2f95bba429636ee15ae9a399cc4ff7c4e6dcd5cb` unmodified, release/live not authorized. Issue #20 is GPT-owned current master, not a developer posting requirement. Historic body below remains frozen evidence, NOT current task authority.
+
+
 ## LATEST OPERATOR APPROVED BATCH05 — FOUR FOLDER-SCALE GROUPS EACH + UNIFIED RETURNS (2026-10-20)
 
 **Source of Truth:** [BATCH05 exact work order](P15_BATCH05_FOLDER_SCALE_REPORTING_AND_OPERATOR_BRIEF_20261020.md). Operator requests 2–3× bigger, 3–4 connected deliverables/part, folder-level large/easy first, same **Claude-style final report for BOTH** primary developers, and local CI reviewer diagnosis. Latest committed source checkpoints:
