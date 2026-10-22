@@ -794,8 +794,9 @@ def verify_b_composed(overrides=None, *, inventory=None):
         disk = {p.relative_to(ROOT).as_posix() for p in (ROOT / prefix).rglob("*.py")}
         require(disk == pinned, "B-stage composed unexpected/missing package file: " + repr(disk ^ pinned))
     for path in sorted(B_COMPOSED_PATHS - B_COMPOSED_CHECKS - COMMANDER_V1_NOTES):
+        kind = "checker/test drift" if path in COMMANDER_V1_CONTRACT_FILES else "new-stage source/ABI/body differs"
         require(_commander_read(path, overrides) == git_source(B_COMPOSED_BRIEF, path),
-                "new-stage source/ABI/body differs from B pin: " + path)
+                kind + " from B pin: " + path)
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     for path in sorted(B_COMPOSED_CHECKS):
         require(_commander_read(path, overrides) == git_source(head, path),
