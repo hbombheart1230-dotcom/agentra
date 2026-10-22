@@ -4200,3 +4200,4 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Differential BASE callable reconstruction preserves annotations/defaults; actual facade ABI remains unchanged.
 - Preserve the existing new-stage source and B-stage scope rejection categories; historical negative-test expectations unchanged.
 - The full51bb contract AST prefix, including repeated definitions and pins, remains identical.
+- Source b55a6b2640218e7319f61e0c2223a3a866b97d5e: normal140/-O140PASS exits0/0; fresh Claude exit1 HTTP429 usage limit, PEER_DEFERRED / independent tests NOT_RUN. Exact Git receipt included; no integration.

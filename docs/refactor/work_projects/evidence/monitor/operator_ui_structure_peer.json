@@ -1,0 +1,60 @@
+{
+  "base_sha": "51bb7130b2ba627be50800fa89c6108dd1a5018c",
+  "waves": [
+    {
+      "wave": "B1",
+      "source_sha": "b55a6b2640218e7319f61e0c2223a3a866b97d5e",
+      "tests": {
+        "normal": {
+          "passed": 140,
+          "exit": 0,
+          "xml": {
+            "name": "pytest",
+            "errors": "0",
+            "failures": "0",
+            "skipped": "0",
+            "tests": "140",
+            "time": "59.310",
+            "timestamp": "2026-10-22T17:06:38.742150+09:00",
+            "hostname": "BOOK-P23MBGEMI1"
+          }
+        },
+        "optimized": {
+          "passed": 140,
+          "exit": 0,
+          "xml": {
+            "name": "pytest",
+            "errors": "0",
+            "failures": "0",
+            "skipped": "0",
+            "tests": "140",
+            "time": "58.928",
+            "timestamp": "2026-10-22T17:06:48.936404+09:00",
+            "hostname": "BOOK-P23MBGEMI1"
+          }
+        }
+      },
+      "peer": {
+        "command": "claude -p <exact source-SHA bounded review> --output-format json",
+        "exit": 1,
+        "verdict": "PEER_DEFERRED",
+        "api_error_status": 429,
+        "api_error": "usage_limit_reached",
+        "raw_result": "You've hit your session limit · resets 5:10pm (Asia/Seoul)",
+        "independent_tests": "NOT_RUN"
+      },
+      "metrics": {
+        "core_before_loc": 2467,
+        "core_after_loc": 2309,
+        "top_level_python_before": 35,
+        "top_level_python_after": 35
+      },
+      "not_run": [
+        "new candidate hosted CI",
+        "full repository pytest",
+        "live data validation",
+        "UI build"
+      ]
+    }
+  ]
+}

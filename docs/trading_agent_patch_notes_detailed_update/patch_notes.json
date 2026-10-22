@@ -9091,7 +9091,8 @@
         "Exact new-stage AST reconstruction checks copied pure statements, call arguments, signatures and imports against green51bb7130. Earlier B29 and immutable historical source proofs retain their pins. Original344 note records preserved.",
         "Differential BASE callables retain original annotations as well as defaults and keyword defaults; test-only callable reconstruction does not alter the source ABI.",
         "Retain existing new-stage source and B-stage scope rejection categories for incompatible core shapes and unauthorized paths; original negative-test expectations are unchanged.",
-        "The entire original51bb contract AST remains an identical prefix, including repeated historical/current definitions, constants and SHA pins."
+        "The entire original51bb contract AST remains an identical prefix, including repeated historical/current definitions, constants and SHA pins.",
+        "B1 source b55a6b2640218e7319f61e0c2223a3a866b97d5e: normal140PASS/-O140PASS, actual exits0/0. Fresh claude -p exit1 HTTP429 usage_limit_reached; PEER_DEFERRED, independent tests NOT_RUN. Durable SHA-linked receipt retained; no integration."
       ],
       "impact": "Structural only; no new UI behavior, policy or trading authority.",
       "sources": [
