@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 338,
+  "entry_count": 339,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8921,6 +8921,31 @@
         ".github/workflows/p15-integration-t4-regression.yml",
         "tests/test_p159_current_owner_contract_gates.py",
         "scripts/refactor/shared_strategist_contracts.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 PEER-DEFERRED LONG-RUN CONTINUITY 20261022",
+      "title": "Continue authorized development when cross-model CLI review is unavailable",
+      "stage": "Standing engineering policy change; no production, integration or main changes",
+      "types": [
+        "PROCESS",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Bound retries on reviewer timeout/credit exhaustion; record SELF_PASS/PEER_DEFERRED and continue the next authorized independent developer task while preserving required independent review and exact-SHA CI before integration.",
+      "details": [
+        "Primary executes real normal and python -O regression/negative/trading-safety validation with exit codes before its own development-branch commit/push; reviewer failure cannot be reported as PASS.",
+        "Retry a transient unavailable/timeout reviewer at most once; do not retry credit exhaustion. Record the precise SHA, error/exit, peer tests NOT_RUN, and deferred-review obligation.",
+        "GPT follows up on independent review or user-approved equivalent; no integration or release on SELF_PASS/PEER_DEFERRED alone. Separate lanes keep progressing on already approved nonoverlapping scope.",
+        "No permission escalation, ACL/MXC rerun loop, reviewer writes, historical tests waiver, main merge, broker execution or autonomous background runner."
+      ],
+      "impact": "Reduce idle time for Claude/Codex during third-party review outages without relaxing safety or integration acceptance.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md"
       ]
     }
   ]

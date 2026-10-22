@@ -4146,3 +4146,13 @@ UEF9 필수 계약은 고정된 비민감 합성 원천 JSON 4개를 명시적 r
 - Actual local validation and exact-SHA fresh read-only Claude receipt are recorded in PR/Issue20 after commit. Required hosted checks on the resulting integration SHA remain pending GPT review/merge. No automatic integration/main merge, source/test/oracle modification, live trading or deployment.
 
 Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflows/p15-integration-t4-regression.yml`, `tests/test_p159_current_owner_contract_gates.py`, `scripts/refactor/shared_strategist_contracts.py`.
+
+## 2026-10-22 · P1.5 PEER-DEFERRED LONG-RUN CONTINUITY 20261022
+**Stage:** 상시 개발 운영 정책 변경 (P1.5–P8+) · **Tags:** PROCESS · TEST · SAFETY
+
+- Claude/Codex 상대 CLI가 무응답·타임아웃이면 최대 1회 재시도, 크레딧 소진은 즉시 재시도 중단.
+- 주 개발자는 자체 normal / `python -O`, 회귀·부정·안전 검사 실제 종료 코드를 확인하고, PASS 시 자기 승인된 개발 브랜치에 정확한 SHA를 커밋·푸시. `SELF_PASS / PEER_DEFERRED`로 기록하고 다음 승인된 독립 READY 범위를 진행한다.
+- 독립 검증 PASS는 주장하지 않는다. 지팀장이 후속 검증 또는 사용자 승인 동등 대체 검증을 처리하며, 필수 검증 및 통합 SHA CI 전에는 integration/main/실거래 릴리스 금지.
+- 검토자는 소스 수정·커밋·푸시·하위 CLI 재호출 금지. 일반 지원 CLI 권한 내 소스 검토/필요 테스트는 가능; 무한 재시도, ACL/MXC 반복, 보안 차단 우회 금지.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
