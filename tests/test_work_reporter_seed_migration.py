@@ -56,7 +56,10 @@ P15_A_Q8_PATHS = {"libs/reporting/q8_historical_review.py", "libs/reporting/q8_s
                   "libs/reporting/evaluation/q8_historical_render_p15.py",
                   "libs/reporting/evaluation/q8_shadow_readout_p15.py",
                   "libs/reporting/q8_trusted_reaggregation.py",
-                  "libs/reporting/evaluation/q8_trusted_reaggregation_projection_p15.py"}
+                  "libs/reporting/evaluation/q8_trusted_reaggregation_projection_p15.py",
+                  "libs/reporting/quant_shadow_candidate_evaluation.py",
+                  "libs/reporting/evaluation/quant_shadow_forward_readout_p15.py",
+                  "libs/reporting/evaluation/quant_shadow_render_p15.py"}
 P15_A_PURE_OWNERS = {("read_models", n + ".py") for n in (
     "operator_daily_projection", "operator_run_context_projection", "phase_health_projection", "phase_health_policy_views",
     "phase_health_text_rendering", "period_summary_projection", "metrics_projection", "metrics_summary_projection",
@@ -387,7 +390,7 @@ def test_scope_checker_still_rejects_unexpected_and_forbidden_paths():
     # the Q8 grant is exact: the read-only trust policy and any sibling path are still rejected by the helper itself
     assert _scope_violations(["libs/reporting/q8_evaluation_contract.py", "libs/reporting/evaluation/q8_extra_p15.py"]) == [
         "libs/reporting/q8_evaluation_contract.py", "libs/reporting/evaluation/q8_extra_p15.py"]
-    assert len(P15_A_Q8_PATHS) == 8 and all(p.startswith("libs/reporting/") for p in P15_A_Q8_PATHS)
+    assert len(P15_A_Q8_PATHS) == 11 and all(p.startswith("libs/reporting/") for p in P15_A_Q8_PATHS)
     assert _scope_violations(sorted(R4_FACADE_FILES | R4_OWNER_FILES | R4_SHARED_CONTRACT_FILES)) == []
 
 

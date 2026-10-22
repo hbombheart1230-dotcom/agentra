@@ -38,7 +38,9 @@ FACADES = {
 EFFECT_NAMES = {"open", "print", "exec", "eval", "__import__", "input"}
 EFFECT_ATTRS = {"read_text", "read_bytes", "write_text", "write_bytes", "mkdir", "exists", "glob", "unlink",
                 "now", "utcnow", "today", "time", "getenv", "environ", "system", "popen"}
-READ_ONLY = ("libs/reporting/q8_evaluation_contract.py", "libs/reporting/quant_shadow_candidate_evaluation.py",
+# quant_shadow_candidate_evaluation.py left this list when the later approved quant-shadow readout packet made it a writable
+# facade; its decision logic is pinned by the AST-identity check in test_p15_a_q8_quant_shadow_readout_boundaries.py
+READ_ONLY = ("libs/reporting/q8_evaluation_contract.py",
              "libs/reporting/quant_shadow_forward_outcomes.py", "libs/runtime/quant/vwap_reclaim_observation.py",
              "libs/reporting/evaluation/__init__.py")
 ALLOWED_CHANGES = set(OWNERS) | set(FACADES) | {
@@ -49,6 +51,11 @@ ALLOWED_CHANGES = set(OWNERS) | set(FACADES) | {
     "libs/reporting/evaluation/q8_trusted_reaggregation_projection_p15.py",
     "tests/test_p15_a_q8_trusted_reaggregation_parity.py",
     "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py",
+    "libs/reporting/quant_shadow_candidate_evaluation.py",
+    "libs/reporting/evaluation/quant_shadow_forward_readout_p15.py",
+    "libs/reporting/evaluation/quant_shadow_render_p15.py",
+    "tests/test_p15_a_q8_quant_shadow_readout_parity.py",
+    "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
 }

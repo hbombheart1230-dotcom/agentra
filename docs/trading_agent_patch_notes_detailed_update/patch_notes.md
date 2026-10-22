@@ -1,5 +1,12 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P1.5 DEV-A Q8 QUANT SHADOW FORWARD READOUT AND RENDER OWNERS 20261022
+**Stage:** 21a58fb0 수용 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- `quant_shadow_candidate_evaluation`의 forward 성과 요약·그룹 집계(`_checkpoint_value`, `_forward_outcome_summary`, `_top_forward_groups`, `_entry_lane_forward_outcomes`)와 Markdown 행 포맷터·`render_quant_shadow_candidate_evaluation_lines`를 `evaluation/quant_shadow_forward_readout_p15`(128줄)와 `evaluation/quant_shadow_render_p15`(267줄)로 이동. facade 1425→1099줄, 본문은 원문 그대로이고 같은 이름·시그니처의 wrapper가 `facade`를 넘겨 호출 시점 monkeypatch 결과가 BASE와 같음(`_mean`은 facade에 유지).
+- 레드라인 유지: 신뢰 게이트·승급 후보·무거래 스코어카드·중복 제거·readiness·`build_quant_shadow_candidate_evaluation`·로더 및 이동하지 않은 모든 함수는 BASE와 AST 동일(테스트로 확인). 기준값·관찰 적격성·Q8 계약 변경 없음.
+- `evaluation/__init__` → pipeline → full_chain_component_review → 이 facade 경로 때문에 모듈 최상단 owner import는 순환을 만들어, wrapper가 호출 시점에 owner를 import함. 신규 테스트 2개(BASE 동등성/경계)와 서로 다른 7개 시작 모듈 fresh import 확인. 부속 admission은 정확한 경로 3개를 `P15_A_Q8_PATHS`·Q8 경계 허용 목록에 추가하고, 이제 승인된 쓰기 대상인 facade를 기존 읽기 전용 목록 2곳에서 제외한 것뿐임.
+
 ## 2026-10-22 · P1.5 DEV-A Q8 TRUSTED REAGGREGATION PURE PROJECTION AND READOUT OWNER 20261022
 **Stage:** 3151be9f 수용 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
 

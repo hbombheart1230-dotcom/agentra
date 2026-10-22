@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 344,
+  "entry_count": 345,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9066,6 +9066,32 @@
         "libs/reporting/q8_trusted_reaggregation.py",
         "tests/test_p15_a_q8_trusted_reaggregation_parity.py",
         "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 QUANT SHADOW FORWARD READOUT AND RENDER OWNERS 20261022",
+      "title": "Move the quant-shadow forward-outcome readout and the evaluation Markdown lines into two pure owners",
+      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 after accepted 21a58fb0; read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "quant_shadow_candidate_evaluation keeps loaders, dedupe, the trust gate, promotion, scorecard and build logic; the forward-outcome summary/grouping and the Markdown row formatters plus render lines move to evaluation/quant_shadow_forward_readout_p15 and evaluation/quant_shadow_render_p15.",
+      "details": [
+        "Facade 1425->1099 lines; owners 128 and 267 lines. Moved with verbatim bodies: _checkpoint_value, _forward_outcome_summary, _top_forward_groups, _entry_lane_forward_outcomes and _format_rows, _format_forward_rows, _format_scorecard_rows, render_quant_shadow_candidate_evaluation_lines. Each keeps a same-name, same-signature facade wrapper that passes facade=sys.modules[__name__] to the owner *_impl, so patching any facade helper (_text, _bool, _forward_outcome, _candidate_day, _entry_lane_observation, _mean, the moved functions) changes output exactly as on BASE. _mean stays in the facade.",
+        "Red line kept: _evaluation_trust_gate, _promotion_candidate, _no_trade_scorecard, _dedupe_candidates, _shadow_readiness, build_quant_shadow_candidate_evaluation, the scorecard/observation payload builders, loaders and every other unmoved function are AST-identical to BASE (asserted); thresholds, observation eligibility and Q8 contracts are unchanged.",
+        "The wrappers import their owner at call time because libs/reporting/evaluation/__init__ imports pipeline -> full_chain_component_review -> this facade; a module-level owner import produced an import cycle in the first attempt. A test imports the facade from seven different first modules in a clean interpreter.",
+        "Two new test files compare BASE d7ab8294 with the current facade (direct calls incl. limits and malformed rows, full build + render lines with the forward-outcome attachment replaced identically, 8 render payloads, 13 facade seams, 8 owner mutants) and pin owner imports, effect-free source, BASE signatures and constants, the change allowlist and the cycle-free fresh imports. Companion admission is exact-path only: three paths added to P15_A_Q8_PATHS and the Q8 boundary allowlists, and quant_shadow_candidate_evaluation.py removed from two old read-only lists now that it is an approved writable facade."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.",
+      "sources": [
+        "libs/reporting/evaluation/quant_shadow_forward_readout_p15.py",
+        "libs/reporting/evaluation/quant_shadow_render_p15.py",
+        "libs/reporting/quant_shadow_candidate_evaluation.py",
+        "tests/test_p15_a_q8_quant_shadow_readout_parity.py",
+        "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py"
       ]
     }
   ]

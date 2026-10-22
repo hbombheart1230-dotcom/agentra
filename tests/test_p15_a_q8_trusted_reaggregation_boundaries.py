@@ -22,14 +22,20 @@ FACADE = "libs/reporting/q8_trusted_reaggregation.py"
 EFFECT_NAMES = {"open", "print", "exec", "eval", "__import__", "input"}
 EFFECT_ATTRS = {"read_text", "read_bytes", "write_text", "write_bytes", "mkdir", "exists", "glob", "unlink", "now",
                 "utcnow", "today", "time", "getenv", "environ", "system", "popen", "dumps", "dump", "loads", "load"}
-READ_ONLY = ("libs/reporting/q8_evaluation_contract.py", "libs/reporting/quant_shadow_candidate_evaluation.py",
-             "libs/reporting/evaluation/__init__.py")
+# quant_shadow_candidate_evaluation.py is a writable facade in the later approved quant-shadow readout packet (its decision
+# logic is pinned by test_p15_a_q8_quant_shadow_readout_boundaries.py)
+READ_ONLY = ("libs/reporting/q8_evaluation_contract.py", "libs/reporting/evaluation/__init__.py")
 ALLOWED_CHANGES = {
     OWNER, FACADE,
     "tests/test_p15_a_q8_trusted_reaggregation_parity.py",
     "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py",
     "tests/test_p15_a_q8_reporting_boundaries.py",  # exact path-only companion admission
     "tests/test_work_reporter_seed_migration.py",  # exact path-only companion admission
+    "libs/reporting/quant_shadow_candidate_evaluation.py",  # later approved Q8 packets (same branch)
+    "libs/reporting/evaluation/quant_shadow_forward_readout_p15.py",
+    "libs/reporting/evaluation/quant_shadow_render_p15.py",
+    "tests/test_p15_a_q8_quant_shadow_readout_parity.py",
+    "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
 }
