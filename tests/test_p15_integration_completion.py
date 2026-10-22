@@ -236,6 +236,13 @@ def test_actual_original_predicates_on_pinned_archive_not_current_worktree(sha, 
         PYTHONPATH=str(root), PYTHONDONTWRITEBYTECODE="1", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1",
         DRY_RUN="1", TRADING_MODE="mock", EXECUTION_ENABLED="false",
         TEMP=str(tmp_path), TMP=str(tmp_path), TMPDIR=str(tmp_path))
+    # Git for Windows probes revision:path arguments as filenames. Deep test
+    # fixture roots otherwise fail MAX_PATH before reading a valid Git object.
+    # Invocation-local filesystem support only; no repository/global config edit.
+    config_count = int(env.get("GIT_CONFIG_COUNT", "0"))
+    env.update({"GIT_CONFIG_COUNT": str(config_count + 1),
+                f"GIT_CONFIG_KEY_{config_count}": "core.longpaths",
+                f"GIT_CONFIG_VALUE_{config_count}": "true"})
     subprocess.run(["git", "read-tree", sha], cwd=root, env=env, check=True)
     flags = [] if __debug__ else ["-O"]
     if sha == S.B_COMPOSED_BRIEF:

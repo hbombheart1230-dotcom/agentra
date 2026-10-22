@@ -828,6 +828,10 @@ _standalone_historical_source = historical_source
 def verify_commander_pure_v1(overrides=None, *, inventory=None):
     if not b_composed_selected():
         return _standalone_commander_v1(overrides, inventory=inventory)
+    # This named historical view never gains extra proof-file override rights.
+    # The actual composed checker has its own explicit integration test scope.
+    extra = set(overrides or {}) & (COMMANDER_V1_CONTRACT_FILES - COMMANDER_V1_CONTRACT_DELTA)
+    require(not extra, "B-stage Commander V1 unexpected/missing inventory: " + repr(extra))
     verify_b_composed(overrides)
     old_paths = COMMANDER_V1_PATHS | COMMANDER_V1_CONTRACT_DELTA | COMMANDER_V1_NOTES
     if inventory is not None:
