@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 344,
+  "entry_count": 355,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9074,6 +9074,273 @@
         ".github/workflows/p152-r2c-residual-regression.yml",
         "scripts/refactor/shared_strategist_contracts.py",
         "tests/test_p15_integration_completion.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 DEV-A A1-A4 REPORTER PURE PROJECTION OWNERS 20261021",
+      "title": "Move pure Reporter projections into four read_models owners with unchanged output",
+      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 (BASE d7ab8294); independent review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Operator daily, phase runtime health, period summary and metrics Markdown pure code now lives in four stdlib-only owners; facades keep reads, clocks, writes and call order.",
+      "details": [
+        "BASE d7ab82940deaa05810b28ef78fc0be88e201f9b6. New owners under libs/agents/reporter/read_models: operator_daily_projection (readout + streaming run-context fold), phase_health_projection (text/aggregation, monitor surfaces, two-phase run health around the policy source read), period_summary_projection, metrics_projection. Facades operator_visibility 1520->1019, phase_runtime_health 1361->526, operator_period_summary 1195->1142 (little pure code left; remaining debt is effectful or R3 delegating), metrics_report_generator 545->132 lines.",
+        "Mechanical move only: facade-injected owners resolve helpers at call time so monkeypatch seams, JSON/Markdown bytes, exception order and effect order are unchanged. No gate, oracle, R3 or shared contract file was modified.",
+        "Two new tests (parity against BASE source, effect-free/AST boundaries) pass normal and python -O; a hostile aggregate mutation is caught. The pinned read_models tree listing guard and closed-delta shared contract gate flag the new owner paths and are reported as STAGE_CONTRACT_BLOCKED / SOURCE_ADMISSION_PENDING_GPT, not relaxed."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational reporting only.",
+      "sources": [
+        "docs/refactor/architecture/TREE_V3_FROZEN.md",
+        "tests/test_p15_a_reporter_pure_parity.py",
+        "tests/test_p15_a_reporter_pure_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": "P1.5 DEV-A REPORTER PURE OWNER RESPONSIBILITY SPLIT 20261021",
+      "title": "Split the three large Reporter pure owners by responsibility with unchanged output",
+      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 after 309e3a48; independent review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Operator daily, phase health and metrics owners are cut into nine modules of at most 350 lines each; facades keep reads, clocks, writes and call order.",
+      "details": [
+        "Follow-up to 309e3a48 on BASE d7ab82940deaa05810b28ef78fc0be88e201f9b6. operator_daily_projection (readout) plus operator_run_context_projection (streaming run fold); phase_health_projection (run surfaces and aggregate), phase_health_policy_views (gating, policy summaries, compact view, persisted surfaces) and phase_health_text_rendering (tables and text); metrics_projection (aggregate), metrics_summary_projection (metrics.v1 assembly) and metrics_event_fold (strategist LLM counters). period_summary_projection is unchanged.",
+        "Mechanical move only: helpers still resolve on the injected facade at call time; the LLM counter slice mutates one accumulator in the original statement order. Only the folder-inventory gate in test_work_reporter_seed_migration.py was adjusted: the pinned historical inventory is now proven against the BASE Git tree and the current folder must equal it plus the exact approved owner names. No shared contract file, R3 fixture or gate was changed.",
+        "Patch-note history keeps the original 338 entries in order; the earlier DEV-A record moved after them and this record follows it."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational reporting only.",
+      "sources": [
+        "tests/test_p15_a_reporter_pure_parity.py",
+        "tests/test_p15_a_reporter_pure_boundaries.py",
+        "tests/test_work_reporter_seed_migration.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 HISTORICAL AGGREGATION RENDER AND SHADOW READOUT OWNERS 20261022",
+      "title": "Move Q8 post-hoc aggregation, Markdown rendering and shadow/lane readout into three pure evaluation owners with unchanged output",
+      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 after e3dca2a0 (SOURCE_ACCEPTED_WITH_PEER_TEST_LIMITATION); read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "q8_historical_review keeps its reads, writes and data-source selection while accumulators, folds and Markdown move to q8_historical_aggregation_p15 and q8_historical_render_p15; shadow-blocker group summaries and lane verdict composition move to q8_shadow_readout_p15.",
+      "details": [
+        "Facade lines: q8_historical_review 926->354, q8_shadow_blocker_review 344->224, q8_lane_decision_table 263->125. New owners under libs/reporting/evaluation: q8_historical_aggregation_p15 (346), q8_historical_render_p15 (224), q8_shadow_readout_p15 (299). Every BASE function, class, constant and libs.* import name stays importable from its facade as the same object; __all__ and public signatures are unchanged.",
+        "Facades still own day iteration, daily_summary/trade/candidate-log reads, the classify_below_vwap_reclaim_observation fallback, forward-outcome attachment, canonical dedupe, trust-gate construction, loaders and JSON/Markdown writes (UTF-8 BOM and LF for the historical Markdown). q8_evaluation_contract and quant_shadow_candidate_evaluation are unchanged; the lane coverage threshold is read from the contract.",
+        "New tests compare BASE d7ab8294 facades with the current ones over a synthetic reports tree: payloads, written bytes, exceptions and the full Path read/exists/glob/mkdir/write order. Mutating weighting, tie order, subtype decisions, pattern counters, coverage threshold, verdict order or checkpoint parsing in the owners fails the comparison.",
+        "Importing a Q8 facade now also initializes the existing libs.reporting.evaluation package (its __init__ is outside this change). The boundary test checks this import from an empty directory: no cycle and no files written."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.",
+      "sources": [
+        "libs/reporting/evaluation/q8_historical_aggregation_p15.py",
+        "libs/reporting/evaluation/q8_historical_render_p15.py",
+        "libs/reporting/evaluation/q8_shadow_readout_p15.py",
+        "tests/test_p15_a_q8_historical_pure_parity.py",
+        "tests/test_p15_a_q8_reporting_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 FACADE MONKEYPATCH COMPATIBILITY 20261022",
+      "title": "Restore call-time facade lookup for the Q8 owners so patching a facade helper behaves as before the split",
+      "stage": "Compatibility follow-up on work/p15-a-reporter-pure-20261021 after f67bf1ec; read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Q8 owner bodies now take the facade and look up helpers and the trust threshold on it at call time, so monkeypatching q8_lane_decision_table._verdict / TRUSTED_FORWARD_MIN_COVERAGE or q8_shadow_blocker_review._summarize_group changes output exactly as on BASE.",
+      "details": [
+        "Same idiom as the earlier Reporter owners: BASE names whose bodies call other BASE helpers are thin facade wrappers with the BASE signature that pass facade=sys.modules[__name__] to an owner *_impl (lane: _verdict, _forward_rows, _counts_by_name, _reason_summary, build; shadow: _checkpoint_values, _decision_for_row, _summarize_group; historical: _pct_from_ratio, _decision_for_reclaim_subtype, _aggregate_return_rows, render_q8_historical_review_markdown). ShadowSummaryFold and PatternRowFold take the facade and resolve ForwardAccumulator, GroupAccumulator and helpers through it. Helper-free leaves stay owner objects re-exported unchanged.",
+        "TRUSTED_FORWARD_MIN_COVERAGE is now read only through the lane facade, which imports it from the unchanged q8_evaluation_contract; the readout owner no longer imports the contract. No threshold, verdict, dedupe or trust-gate behaviour changed.",
+        "Known limit kept on purpose: GroupAccumulator/ForwardAccumulator methods use the owner's normalizers, so patching q8_historical_review._int/_float/_text/_weighted_avg does not reach those methods (it does reach every other body). A test documents this.",
+        "New regressions: 23 facade attributes are patched identically on the BASE d7ab8294 module and the current facade and the payload plus Markdown must match and differ from the unpatched output; the boundary test now checks every BASE function and class signature, not only __all__."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.",
+      "sources": [
+        "libs/reporting/q8_historical_review.py",
+        "libs/reporting/q8_shadow_blocker_review.py",
+        "libs/reporting/q8_lane_decision_table.py",
+        "tests/test_p15_a_q8_historical_pure_parity.py",
+        "tests/test_p15_a_q8_reporting_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 REPORTER SCOPE GATE EXACT PATH REGISTRATION 20261022",
+      "title": "Register the six Q8 refactor paths in the Reporter scope gate so the committed Q8 split passes it",
+      "stage": "Gate follow-up on work/p15-a-reporter-pure-20261021 after 2156f254; Tech Lead / operator approved the refactor-process test edit",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "test_target_tree_discipline_and_no_forbidden_surface failed on the committed Q8 split because its closed Reporter scope list lacked the six Q8 source paths; they are now an exact closed set next to the existing P1.5 DEV-A facade set.",
+      "details": [
+        "Only tests/test_work_reporter_seed_migration.py changed besides these notes and the Q8 boundary allowlist: a closed P15_A_Q8_PATHS set (three Q8 facades plus the three libs/reporting/evaluation/q8_*_p15.py owners) is removed from the scope diff like the existing P15_A_FACADES; _scope_violations itself, the pinned historical folder inventory, fixtures and every other gate are unchanged.",
+        "The grant is exact, not a prefix: q8_evaluation_contract.py, quant_shadow_candidate_evaluation.py and any sibling q8_* path are still reported as violations (asserted in test_scope_checker_still_rejects_unexpected_and_forbidden_paths).",
+        "The unrelated clock-boundary flake in test_closeout_memory_bounds (generated_at differing by one second) is intentionally left unchanged."
+      ],
+      "impact": "Test-scope bookkeeping only. No behavior, trading, approval, risk, UEF or Step5C change.",
+      "sources": [
+        "tests/test_work_reporter_seed_migration.py",
+        "tests/test_p15_a_q8_reporting_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 TRUSTED REAGGREGATION PURE PROJECTION AND READOUT OWNER 20261022",
+      "title": "Move the Q8 trusted-reaggregation day rows, cumulative aggregate and Markdown readout into one pure owner",
+      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 after accepted 3151be9f; read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "q8_trusted_reaggregation keeps day iteration, shadow payload loading, the shadow evaluation calls and the JSON/Markdown writes; the per-day trust-gate row, the cumulative aggregate/envelope and the report Markdown move to evaluation/q8_trusted_reaggregation_projection_p15.",
+      "details": [
+        "Facade 240->82 lines, new owner 205 lines (the single approved new module). BASE names _iter_days, _fmt_pct, _fmt_num, _watchlist_rows, build/render/write_q8_trusted_reaggregation and the five contract constants stay importable with the BASE signatures; leaves are re-exported owner objects, build and render stay facade functions that pass facade=sys.modules[__name__] to the owner *_impl bodies.",
+        "Same call-time lookup as the accepted Q8 split: the owner reads _fmt_pct/_fmt_num/_watchlist_rows and TRUSTED_FORWARD_MIN_COUNT, TRUSTED_FORWARD_MIN_COVERAGE, DUPLICATE_RATE_MAX, PROMOTION_CANDIDATE_MIN_OBSERVED and PROMOTION_CANDIDATE_MIN_DAYS through the facade, so patching any of them (or _iter_days / the render function used by write) changes output exactly as on BASE. Trust thresholds, gate rows and promotion flags are unchanged; q8_evaluation_contract and quant_shadow_candidate_evaluation are untouched.",
+        "No existing test or in-repo caller covered this module, so two new files compare BASE d7ab8294 and the current facade over gated/allowed/legacy/malformed/empty cases and six day windows (payload, Markdown, exceptions, loader and evaluation call order, written bytes and Path call order) plus nine facade seams and five owner mutants; the boundary file pins owner imports, effect-free source, BASE signatures, read-only trust policy, the change allowlist and a cycle-free fresh import.",
+        "Companion admission is exact-path only: two paths added to P15_A_Q8_PATHS in test_work_reporter_seed_migration.py and to the Q8 boundary allowlist; no historical pin or predicate was relaxed."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.",
+      "sources": [
+        "libs/reporting/evaluation/q8_trusted_reaggregation_projection_p15.py",
+        "libs/reporting/q8_trusted_reaggregation.py",
+        "tests/test_p15_a_q8_trusted_reaggregation_parity.py",
+        "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 QUANT SHADOW FORWARD READOUT AND RENDER OWNERS 20261022",
+      "title": "Move the quant-shadow forward-outcome readout and the evaluation Markdown lines into two pure owners",
+      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 after accepted 21a58fb0; read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "quant_shadow_candidate_evaluation keeps loaders, dedupe, the trust gate, promotion, scorecard and build logic; the forward-outcome summary/grouping and the Markdown row formatters plus render lines move to evaluation/quant_shadow_forward_readout_p15 and evaluation/quant_shadow_render_p15.",
+      "details": [
+        "Facade 1425->1099 lines; owners 128 and 267 lines. Moved with verbatim bodies: _checkpoint_value, _forward_outcome_summary, _top_forward_groups, _entry_lane_forward_outcomes and _format_rows, _format_forward_rows, _format_scorecard_rows, render_quant_shadow_candidate_evaluation_lines. Each keeps a same-name, same-signature facade wrapper that passes facade=sys.modules[__name__] to the owner *_impl, so patching any facade helper (_text, _bool, _forward_outcome, _candidate_day, _entry_lane_observation, _mean, the moved functions) changes output exactly as on BASE. _mean stays in the facade.",
+        "Red line kept: _evaluation_trust_gate, _promotion_candidate, _no_trade_scorecard, _dedupe_candidates, _shadow_readiness, build_quant_shadow_candidate_evaluation, the scorecard/observation payload builders, loaders and every other unmoved function are AST-identical to BASE (asserted); thresholds, observation eligibility and Q8 contracts are unchanged.",
+        "The wrappers import their owner at call time because libs/reporting/evaluation/__init__ imports pipeline -> full_chain_component_review -> this facade; a module-level owner import produced an import cycle in the first attempt. A test imports the facade from seven different first modules in a clean interpreter.",
+        "Two new test files compare BASE d7ab8294 with the current facade (direct calls incl. limits and malformed rows, full build + render lines with the forward-outcome attachment replaced identically, 8 render payloads, 13 facade seams, 8 owner mutants) and pin owner imports, effect-free source, BASE signatures and constants, the change allowlist and the cycle-free fresh imports. Companion admission is exact-path only: three paths added to P15_A_Q8_PATHS and the Q8 boundary allowlists, and quant_shadow_candidate_evaluation.py removed from two old read-only lists now that it is an approved writable facade."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.",
+      "sources": [
+        "libs/reporting/evaluation/quant_shadow_forward_readout_p15.py",
+        "libs/reporting/evaluation/quant_shadow_render_p15.py",
+        "libs/reporting/quant_shadow_candidate_evaluation.py",
+        "tests/test_p15_a_q8_quant_shadow_readout_parity.py",
+        "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 PEER-DEFERRED LONG-RUN CONTINUITY 20261022",
+      "title": "Continue authorized development when cross-model CLI review is unavailable",
+      "stage": "Standing engineering policy change; no production, integration or main changes",
+      "types": [
+        "PROCESS",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Bound retries on reviewer timeout/credit exhaustion; record SELF_PASS/PEER_DEFERRED and continue the next authorized independent developer task while preserving required independent review and exact-SHA CI before integration.",
+      "details": [
+        "Primary executes real normal and python -O regression/negative/trading-safety validation with exit codes before its own development-branch commit/push; reviewer failure cannot be reported as PASS.",
+        "Retry a transient unavailable/timeout reviewer at most once; do not retry credit exhaustion. Record the precise SHA, error/exit, peer tests NOT_RUN, and deferred-review obligation.",
+        "GPT follows up on independent review or user-approved equivalent; no integration or release on SELF_PASS/PEER_DEFERRED alone. Separate lanes keep progressing on already approved nonoverlapping scope.",
+        "No permission escalation, ACL/MXC rerun loop, reviewer writes, historical tests waiver, main merge, broker execution or autonomous background runner."
+      ],
+      "impact": "Reduce idle time for Claude/Codex during third-party review outages without relaxing safety or integration acceptance.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 GITHUB-DIRECT HANDOFF AND CONCISE OPERATOR REPORTING 20261022",
+      "title": "Full developer evidence in GitHub and concise GPT product-owner updates",
+      "stage": "Standing development communication policy; no source or trading changes",
+      "types": [
+        "PROCESS",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Claude/Codex report exact SHA and detailed code/test/peer/CI results directly to GitHub; GPT independently inspects these and gives the user brief decisions instead of requesting copied reports.",
+      "details": [
+        "Developer receipts include full base/candidate SHA and actual pushed branch; paths, command exits and normal/-O/negative/safety evidence, peer review verdict and NOT_RUN, CI URLs, blockers and next READY.",
+        "GPT provides concise stage/A/B/CI/blocker/next-action reports to Product Owner unless detail is requested; no user copy/paste bridge.",
+        "No relaxed integration, review, safety, main, live or authorization rules; Issue comments do not self-start local CLI sessions."
+      ],
+      "impact": "Maintain auditable technical handoffs while reducing repeated user-facing detail and manual relay.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 GIT PUSH HANDOFF ISSUE20 GPT OWNERSHIP 20261022",
+      "title": "Development source branch push is the handoff; GPT owns P1.5 master Issue #20",
+      "stage": "Standing engineering handoff policy; not integration or runtime changes",
+      "types": [
+        "PROCESS",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Remove mandatory developer Issue comments and gh token setup; GPT inspects pushed developer source/tests/patchnotes directly and maintains #20; developer terminal reports stay short.",
+      "details": [
+        "On every approved batch Claude/Codex commit and push source, tests and paired notes on own branch; include exact SHA and essential self/peer verdicts in commit message or compact branch evidence and preserve local full logs.",
+        "Master Issue #20 is the GPT technical coordination and acceptance board; developer comments are optional and lack of comment does not block source intake.",
+        "No change to exact code review, safety, historical gates, integration CI, main and live trade authorization."
+      ],
+      "impact": "Eliminates redundant authentication and operator copy/paste friction without weakening evidence or integration controls.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 P0 STRUCTURE FIRST BIG FILE FOLDER TREE 20261022",
+      "title": "Hard P0 priority: largest safe files, coherent folder tree and true modular responsibilities",
+      "stage": "Authoritative priority override across active P1.5 and later structural refactors; source integration candidate pending",
+      "types": [
+        "PROCESS",
+        "REFACTOR",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Safety first; next reorganize repository/package tree, split oversized multi-responsibility eligible files and preserve stable module/facade imports; stop tiny Q8 helper and review-ceremony loops.",
+      "details": [
+        "Prioritize by current HEAD largest eligible file and actual root clutter. Claude Reporter trade_report_ai / intraday trade report / Markdown families; Codex Operator UI data_access_core.py 2468 LOC and root brief family.",
+        "Each wave must show before/after root Python files, major facade LOC, canonical owner folder map and import graph, with pure structural BASE parity, negative/safety checks, normal/-O and fresh opposite CLI verdict.",
+        "No feature/strategy/approval/execution changes, no broken historical pinned proof; Tech Lead selects and integrates approved SHA, reconciles notes and checks hosted CI; main and live remain separate PO decisions."
+      ],
+      "impact": "Measure actual maintainability and extendable module boundaries instead of encouraging microtasks.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/CURRENT.md"
       ]
     }
   ]

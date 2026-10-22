@@ -4191,3 +4191,92 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Move only the two bounded BASE/current T3.5 diagnostic TXT outputs and their notice consumer to RUNNER_TEMP/agentra-t35-diag in both existing workflows. Preserve original diagnostic calls, pinned BASE, arguments, continue-on-error, notice bounds/escaping and all other workflow text.
 - Exact two-path admission compares complete workflows against frozen1bcf6290 with only three literal path substitutions. Unknown workflow/source changes and untracked diagnostic TXT still fail; no broad output exemption.
 - Preserve343 historical entries, original historical predicates and accepted B sources; append344. No production, authority, A, integration or main change. Actual test/reviewer results are separate from hosted CI.
+
+## 2026-10-22 · P1.5 DEV-A Q8 QUANT SHADOW FORWARD READOUT AND RENDER OWNERS 20261022
+**Stage:** 21a58fb0 수용 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- `quant_shadow_candidate_evaluation`의 forward 성과 요약·그룹 집계(`_checkpoint_value`, `_forward_outcome_summary`, `_top_forward_groups`, `_entry_lane_forward_outcomes`)와 Markdown 행 포맷터·`render_quant_shadow_candidate_evaluation_lines`를 `evaluation/quant_shadow_forward_readout_p15`(128줄)와 `evaluation/quant_shadow_render_p15`(267줄)로 이동. facade 1425→1099줄, 본문은 원문 그대로이고 같은 이름·시그니처의 wrapper가 `facade`를 넘겨 호출 시점 monkeypatch 결과가 BASE와 같음(`_mean`은 facade에 유지).
+- 레드라인 유지: 신뢰 게이트·승급 후보·무거래 스코어카드·중복 제거·readiness·`build_quant_shadow_candidate_evaluation`·로더 및 이동하지 않은 모든 함수는 BASE와 AST 동일(테스트로 확인). 기준값·관찰 적격성·Q8 계약 변경 없음.
+- `evaluation/__init__` → pipeline → full_chain_component_review → 이 facade 경로 때문에 모듈 최상단 owner import는 순환을 만들어, wrapper가 호출 시점에 owner를 import함. 신규 테스트 2개(BASE 동등성/경계)와 서로 다른 7개 시작 모듈 fresh import 확인. 부속 admission은 정확한 경로 3개를 `P15_A_Q8_PATHS`·Q8 경계 허용 목록에 추가하고, 이제 승인된 쓰기 대상인 facade를 기존 읽기 전용 목록 2곳에서 제외한 것뿐임.
+
+## 2026-10-22 · P1.5 DEV-A Q8 TRUSTED REAGGREGATION PURE PROJECTION AND READOUT OWNER 20261022
+**Stage:** 3151be9f 수용 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- `q8_trusted_reaggregation`의 일별 신뢰 게이트 행, 누적 집계·envelope, Markdown 렌더링을 `evaluation/q8_trusted_reaggregation_projection_p15`(205줄) 하나로 이동. facade는 날짜 순회, 그림자 payload 로딩, 평가 호출, JSON/Markdown 쓰기를 유지(240→82줄).
+- 승인된 Q8 분리와 같은 호출 시점 facade 조회: `_fmt_pct`·`_fmt_num`·`_watchlist_rows`와 신뢰 상수 5개를 facade 경유로 읽어 monkeypatch 결과가 BASE와 같음. 기준값·게이트·승급 플래그 변경 없음, 신뢰 정책 파일 무수정.
+- 기존 테스트·호출부가 없던 모듈이라 신규 테스트 2개(BASE 동등성/경계)로 payload·Markdown·예외·호출 순서·쓰기 바이트 비교, facade seam 9개, owner 변형 5개 검출. 부속 admission은 정확한 경로 2개를 `P15_A_Q8_PATHS`와 Q8 경계 허용 목록에 추가한 것뿐이며 이력 pin·조건은 완화하지 않음.
+
+## 2026-10-22 · P1.5 DEV-A Q8 REPORTER SCOPE GATE EXACT PATH REGISTRATION 20261022
+**Stage:** 2156f254 이후 게이트 후속 (BASE d7ab8294, 지팀장·운영자가 리팩터링 과정에 필요한 테스트 수정으로 승인) · **Tags:** REFACTOR · TEST
+
+- `test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`가 커밋된 Q8 분리의 소스 경로 6개를 닫힌 Reporter 범위 목록에 없어서 실패하던 문제를 정확한 닫힌 집합 `P15_A_Q8_PATHS`(facade 3개 + owner 3개) 등록으로 해결. 기존 `P15_A_FACADES`와 같은 방식이며 prefix 와일드카드 없음.
+- `_scope_violations`, 고정된 이력 폴더 목록, 픽스처, 다른 게이트는 무수정. `q8_evaluation_contract.py` 등 신뢰 정책 파일과 그 외 q8_* 경로는 여전히 위반으로 보고됨(테스트로 확인).
+- 리팩터링과 무관한 `test_closeout_memory_bounds`의 시계 1초 경계 flake는 의도적으로 수정하지 않음.
+
+## 2026-10-22 · P1.5 DEV-A Q8 FACADE MONKEYPATCH COMPATIBILITY 20261022
+**Stage:** f67bf1ec 이후 호환성 후속 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- Q8 owner 본문이 facade를 받아 helper와 신뢰 기준값을 호출 시점에 facade에서 조회하도록 변경. `q8_lane_decision_table._verdict`·`TRUSTED_FORWARD_MIN_COVERAGE`, `q8_shadow_blocker_review._summarize_group` 등을 monkeypatch하면 BASE와 똑같이 결과가 바뀜.
+- 다른 helper를 부르는 BASE 함수는 BASE 시그니처의 facade wrapper로 두고 owner `*_impl`에 `facade`를 넘김(기존 Reporter owner와 같은 방식). helper가 없는 단순 함수는 owner 객체를 그대로 재노출. 기준값·판정·중복 제거·신뢰 게이트 동작 변경 없음.
+- 의도적으로 남긴 제한: 누적기 클래스 메서드는 owner의 정규화 함수를 직접 사용(테스트로 명시). 회귀 테스트 추가: facade 속성 23개를 BASE와 현재에 똑같이 패치해 결과 일치 확인, 모든 BASE 함수·클래스 시그니처 비교.
+
+## 2026-10-22 · P1.5 DEV-A Q8 HISTORICAL AGGREGATION RENDER AND SHADOW READOUT OWNERS 20261022
+**Stage:** e3dca2a0 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- Q8 사후분석 `q8_historical_review`의 누적기·일별 집계·Markdown 렌더링을 `evaluation/q8_historical_aggregation_p15`(346줄)와 `q8_historical_render_p15`(224줄)로 이동. 읽기·쓰기·데이터 소스 선택은 facade 유지(926→354줄), 출력 바이트(BOM·LF)와 읽기/쓰기 순서 동일.
+- `q8_shadow_blocker_review`의 그룹 요약과 `q8_lane_decision_table`의 판정·표 구성을 `q8_shadow_readout_p15`(299줄)로 이동(344→224, 263→125줄). 신뢰 게이트·중복 제거·로더·렌더링·쓰기는 facade 유지, `q8_evaluation_contract` 무수정.
+- 신규 테스트 2개(BASE 동등성, 경계)로 출력 바이트·예외·Path 호출 순서 비교, 가중 평균·동률 순서·판정 기준을 바꾸는 변형 검출. facade import 시 기존 `libs.reporting.evaluation` 패키지가 함께 로드됨(순환 없음, 파일 생성 없음 확인).
+
+## 2026-10-21 · P1.5 DEV-A REPORTER PURE OWNER RESPONSIBILITY SPLIT 20261021
+**Stage:** 309e3a48 이후 구조 리팩터링 후보 (BASE d7ab8294, 독립 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- 큰 Reporter 순수 owner 3개를 책임별 9개 모듈(각 350줄 이하)로 분할: `operator_run_context_projection`, `phase_health_policy_views`, `phase_health_text_rendering`, `metrics_summary_projection`, `metrics_event_fold` 추가. `period_summary_projection`은 변경 없음. facade의 읽기·시계·쓰기·호출 순서와 출력은 동일.
+- 폴더 목록 게이트(`test_work_reporter_seed_migration.py`의 1개 테스트)만 수정: 고정된 역사 목록을 BASE Git 트리와 대조하고, 현재 폴더는 역사 목록 + 승인된 owner 이름과 정확히 일치해야 함. 공유 계약 검증 파일은 무수정.
+- 패치노트 JSON은 원래 338개 이력을 순서대로 유지하고 앞선 DEV-A 기록과 이번 기록을 뒤에 추가(340개).
+
+## 2026-10-21 · P1.5 DEV-A A1-A4 REPORTER PURE PROJECTION OWNERS 20261021
+**Stage:** 구조 리팩터링 후보 (BASE d7ab8294, 독립 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- 운영 일일·phase 런타임 헬스·기간 요약·메트릭 Markdown의 순수 코드를 `libs/agents/reporter/read_models/`의 4개 stdlib 전용 owner(`operator_daily_projection`, `phase_health_projection`, `period_summary_projection`, `metrics_projection`)로 이동. 읽기·시계·쓰기·호출 순서는 facade 유지.
+- facade 줄 수: operator_visibility 1520→1019, phase_runtime_health 1361→526, operator_period_summary 1195→1142(순수 코드 거의 없음, 잔여는 부수효과/R3 위임), metrics_report_generator 545→132. 출력 바이트·예외·효과 순서 동일, 게이트/오라클/R3 파일 무수정.
+- 신규 테스트 2개(BASE 동등성, 경계/무부수효과) normal·-O 통과, 적대적 변형 검출. 고정된 read_models 트리 목록 가드와 closed-delta 공유 계약 게이트는 신규 경로를 차단하며 완화하지 않고 STAGE_CONTRACT_BLOCKED / SOURCE_ADMISSION_PENDING_GPT로 보고.
+
+
+
+## 2026-10-22 · P1.5 PEER-DEFERRED LONG-RUN CONTINUITY 20261022
+**Stage:** 상시 개발 운영 정책 변경 (P1.5–P8+) · **Tags:** PROCESS · TEST · SAFETY
+
+- Claude/Codex 상대 CLI가 무응답·타임아웃이면 최대 1회 재시도, 크레딧 소진은 즉시 재시도 중단.
+- 주 개발자는 자체 normal / `python -O`, 회귀·부정·안전 검사 실제 종료 코드를 확인하고, PASS 시 자기 승인된 개발 브랜치에 정확한 SHA를 커밋·푸시. `SELF_PASS / PEER_DEFERRED`로 기록하고 다음 승인된 독립 READY 범위를 진행한다.
+- 독립 검증 PASS는 주장하지 않는다. 지팀장이 후속 검증 또는 사용자 승인 동등 대체 검증을 처리하며, 필수 검증 및 통합 SHA CI 전에는 integration/main/실거래 릴리스 금지.
+- 검토자는 소스 수정·커밋·푸시·하위 CLI 재호출 금지. 일반 지원 CLI 권한 내 소스 검토/필요 테스트는 가능; 무한 재시도, ACL/MXC 반복, 보안 차단 우회 금지.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
+
+## 2026-10-22 · P1.5 GITHUB-DIRECT HANDOFF AND CONCISE OPERATOR REPORTING 20261022
+**Stage:** 상시 GitHub 직접 보고 및 사용자 간결 보고 정책 · **Tags:** PROCESS · TEST
+
+- Claude/Codex는 개발 코드를 자신의 승인 브랜치에 commit/push하고, Issue #20에 전체 SHA·파일·테스트 normal/-O·종료 코드·교차 검토·CI·차단·다음 작업을 상세 보고한다. 사용자가 전달·복붙할 필요가 없다.
+- 지팀장은 GitHub 실제 소스·SHA·검증 증거·CI를 직접 수용·통합하고 사용자에게는 단계/A·B/중요 SHA/CI/차단/다음 행동만 간결히 보고한다.
+- 검증·통합·거래 안전·main 승인 불변, GitHub 댓글이 로컬 CLI를 자동 실행하지는 않는다.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
+
+## 2026-10-22 · P1.5 GIT PUSH HANDOFF ISSUE20 GPT OWNERSHIP 20261022
+**Stage:** 개발 브랜치 푸시 인계 · Issue #20 지팀장 소유 · **Tags:** PROCESS · TEST
+
+- Claude·Codex는 승인 범위 코드·테스트·UI 패치노트 Git 브랜치 푸시로 인계한다. `gh` 로그인·토큰 또는 Issue #20 개발자 댓글은 필수 아님.
+- 필요한 테스트/독립 검토 결과는 커밋 본문 또는 간결한 브랜치 증거에 남기고 전체 로컬 로그는 보존한다. 지팀장은 Git HEAD·변경 코드·테스트·CI를 직접 확인해 #20에 수용·수정·통합 결정을 기록한다.
+- 개발 CLI 사용자 화면의 최종 보고는 3~5줄로 축약하고, 이전 장문 보고·표 의무는 대체한다. 거래 안전, 이력 검증, 필수 독립 검토, CI, main 승인은 유지한다.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
+
+
+## 2026-10-22 · P1.5 P0 STRUCTURE FIRST BIG FILE FOLDER TREE 20261022
+**Stage:** Product Owner final P0 mandate · **Tags:** PROCESS · REFACTOR · SAFETY
+
+- **P0 (after trading safety):** First reorganize repository folder tree, then split biggest safe multiple-responsibility files into cohesive packages, then stabilize module APIs and imports; minimize large-root clutter. Do not spend more independent development cycles on tiny Q8 helpers or new reviewer frameworks in place of source decomposition.
+- Claude: Reporter trade_report_ai/intraday_trade_reports/Markdown existing folder families. Codex: Operator UI data_access_core.py (~2468 LOC), many flat brief modules. Quantify before/after facade LOC, root files, owner boundaries and preserved old import/ABI.
+- Commit/push code+tests+paired UI patchnotes with normal/-O and bounded cross-CLI evidence; GPT accepts, reconciles diverged branches and enforces hosted CI. No trading functionality change, no main/live authority.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/work_orders/CURRENT.md`.
