@@ -1,5 +1,13 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P1.5 DEV-A LARGE-FIRST Q9 FULL CHAIN COMPONENT REVIEW PARTS PACKAGE 20261022
+**Stage:** large-first Reporter wave (지팀장 6335586418/6335924810), 924d8180 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- Q9 `full_chain_component_review.py` 1031→486줄. 로딩·전방 성과 연결·build 오케스트레이션(진입/청산/전체 시스템 판정 포함)·파일 쓰기는 facade에 두고, 근본 원인 분류·역할/페어/결정 윈도 귀속·컴포넌트 판정 조립·Markdown 렌더를 `full_chain_review_parts/`의 순수 owner 4개(145·272·145·138줄, 표준 라이브러리만 사용)로 분리. `evaluation` 최상위 .py는 50개 그대로. 호출 방향: 소비자 → facade → parts.
+- 이동한 11개 함수는 원문 그대로이며 같은 이름·시그니처의 wrapper가 `facade`를 넘김. symtable 기반 이동기가 본문이 읽는 모든 모듈 수준 이름(helper·임계값·HORIZONS·DecisionClass 등)에 `facade.`를 붙여 monkeypatch 결과가 BASE와 같음. 전방 성과를 붙여 상태를 읽을 수 있는 `_q9_decision_candidate_rows`와 `build`·`write`·`_number`·`_behavior_metric_eligible`은 facade에 남기고 BASE와 AST 동일. 계약·임계값·UEF·소비자 파일 무수정.
+- 신규 테스트 70개: 데이터셋 5개로 build+render+쓰기 파일을 BASE와 비교, 근본 원인 135개 조합 격자, facade seam 22개, owner 변형 11개, 경계 검사(7개 시작 모듈 fresh import 포함). 부속 admission은 정확한 경로 6개(`P15_A_FULLCHAIN_PATHS`)와 이전 A 허용 목록뿐임.
+- 여전히 막힘(미수정): trade_report_ai·trade_report_ai_deterministic·trade_report_markdown_clean·intraday_trade_reports·trade_bundle_assembly는 공유 facade 복원 가드에 묶여 있음(924d8180 영수증 참조).
+
 ## 2026-10-22 · P1.5 DEV-A A1 REPORTER AI REVIEW PARTS PACKAGE 20261022
 **Stage:** A1 (지팀장 우선순위 정정 6335586418), 508b3e97 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
 

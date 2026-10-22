@@ -38,6 +38,14 @@ ALLOWED_CHANGES = {
     FACADE, "libs/reporting/reporter_ai_review_parts/__init__.py", *OWNERS,
     "tests/test_p15_a_reporter_ai_review_parity.py", "tests/test_p15_a_reporter_ai_review_boundaries.py",
     "tests/test_work_reporter_seed_migration.py",  # exact path-only companion admission
+    "libs/reporting/evaluation/full_chain_component_review.py",  # large-first Reporter wave (Tech Lead 6335586418 / 6335924810)
+    "libs/reporting/evaluation/full_chain_review_parts/__init__.py",
+    "libs/reporting/evaluation/full_chain_review_parts/root_cause.py",
+    "libs/reporting/evaluation/full_chain_review_parts/attribution.py",
+    "libs/reporting/evaluation/full_chain_review_parts/component_decisions.py",
+    "libs/reporting/evaluation/full_chain_review_parts/render.py",
+    "tests/test_p15_a_full_chain_review_parity.py",
+    "tests/test_p15_a_full_chain_review_boundaries.py",
     "tests/test_p15_a_q8_reporting_boundaries.py", "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py",
     "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py",  # their allowlists name the new A-owned paths
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",

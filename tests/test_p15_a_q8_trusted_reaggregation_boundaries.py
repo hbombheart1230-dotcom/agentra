@@ -31,6 +31,14 @@ ALLOWED_CHANGES = {
     "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py",
     "tests/test_p15_a_q8_reporting_boundaries.py",  # exact path-only companion admission
     "tests/test_work_reporter_seed_migration.py",  # exact path-only companion admission
+    "libs/reporting/evaluation/full_chain_component_review.py",  # large-first Reporter wave (Tech Lead 6335586418 / 6335924810)
+    "libs/reporting/evaluation/full_chain_review_parts/__init__.py",
+    "libs/reporting/evaluation/full_chain_review_parts/root_cause.py",
+    "libs/reporting/evaluation/full_chain_review_parts/attribution.py",
+    "libs/reporting/evaluation/full_chain_review_parts/component_decisions.py",
+    "libs/reporting/evaluation/full_chain_review_parts/render.py",
+    "tests/test_p15_a_full_chain_review_parity.py",
+    "tests/test_p15_a_full_chain_review_boundaries.py",
     "libs/reporting/quant_shadow_candidate_evaluation.py",  # later approved Q8 packets (same branch)
     "libs/reporting/evaluation/quant_shadow_forward_readout_p15.py",
     "libs/reporting/evaluation/quant_shadow_render_p15.py",
