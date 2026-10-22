@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 340,
+  "entry_count": 341,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8965,6 +8965,29 @@
         "No relaxed integration, review, safety, main, live or authorization rules; Issue comments do not self-start local CLI sessions."
       ],
       "impact": "Maintain auditable technical handoffs while reducing repeated user-facing detail and manual relay.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 GIT PUSH HANDOFF ISSUE20 GPT OWNERSHIP 20261022",
+      "title": "Development source branch push is the handoff; GPT owns P1.5 master Issue #20",
+      "stage": "Standing engineering handoff policy; not integration or runtime changes",
+      "types": [
+        "PROCESS",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Remove mandatory developer Issue comments and gh token setup; GPT inspects pushed developer source/tests/patchnotes directly and maintains #20; developer terminal reports stay short.",
+      "details": [
+        "On every approved batch Claude/Codex commit and push source, tests and paired notes on own branch; include exact SHA and essential self/peer verdicts in commit message or compact branch evidence and preserve local full logs.",
+        "Master Issue #20 is the GPT technical coordination and acceptance board; developer comments are optional and lack of comment does not block source intake.",
+        "No change to exact code review, safety, historical gates, integration CI, main and live trade authorization."
+      ],
+      "impact": "Eliminates redundant authentication and operator copy/paste friction without weakening evidence or integration controls.",
       "sources": [
         "docs/ENGINEERING_DELIVERY_POLICY.md",
         "AGENTS.md",
