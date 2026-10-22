@@ -172,3 +172,12 @@ def test_status_legacy_alias_mid_call_monkeypatch_is_seen_at_use_time(monkeypatc
             value = module.build_portfolio_sync_card({"reader_ok": True, "positions_source": "reader", "reader_positions_count": "2"})
         return value, events
     assert run(legacy) == run(baseline)
+
+
+def test_generated_owner_ast_roundtrips_with_explicit_function_schema():
+    _, owners = S._ui_structure_core_oracle()
+    for tree in owners.values():
+        for fn in tree.body:
+            if isinstance(fn, ast.FunctionDef):
+                assert fn.type_params == []
+        assert ast.dump(ast.parse(ast.unparse(tree))) == ast.dump(tree)

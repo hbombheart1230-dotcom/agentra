@@ -4215,3 +4215,4 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 
 - Four root read-model implementations 1122->16LOC move unchanged into read_models/runs.py, trades.py, overview.py and status.py. Same read-function boundaries, routes, legacy imports and effects; no behavior or trading authority change.
 - All16 old/new module pairs retain identity. Root Python count35 stays35 for compatibility;16 implementation files become tiny shims. Core2467->2309LOC. Preserve346 prior notes and original historical pins; append347 with exact four-pair admission.
+- Generated function ASTs explicitly initialize type_params and round-trip against parsed source; no reliance on version-specific constructor defaults. Candidate Linux execution NOT_RUN.

@@ -973,7 +973,7 @@ def _ui_structure_core_oracle():
                 return n
         body = [Qualify().visit(n) for n in body]
         signature = ast.arguments(posonlyargs=[], args=[ast.arg(a) for a in args], vararg=None, kwonlyargs=[ast.arg('facade')], kw_defaults=[None], kwarg=None, defaults=[])
-        return ast.FunctionDef(name, signature, body, [], returns=None, type_comment=None)
+        return ast.FunctionDef(name, signature, body, [], returns=None, type_comment=None, type_params=[])
     response.append(helper('prepare_result', ['result', 'detail', 'fallback', 'attempts'], finalize.body[:cut] + [ast.Return(ast.Tuple([ast.Name(n, ast.Load()) for n in ('out', 'parsed_output', 'latency_ms')], ast.Load()))], ('re', '_sanitize_operator_brief_result')))
 
     def call(name, args):
