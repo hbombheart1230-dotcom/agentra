@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 339,
+  "entry_count": 340,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8942,6 +8942,29 @@
         "No permission escalation, ACL/MXC rerun loop, reviewer writes, historical tests waiver, main merge, broker execution or autonomous background runner."
       ],
       "impact": "Reduce idle time for Claude/Codex during third-party review outages without relaxing safety or integration acceptance.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 GITHUB-DIRECT HANDOFF AND CONCISE OPERATOR REPORTING 20261022",
+      "title": "Full developer evidence in GitHub and concise GPT product-owner updates",
+      "stage": "Standing development communication policy; no source or trading changes",
+      "types": [
+        "PROCESS",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Claude/Codex report exact SHA and detailed code/test/peer/CI results directly to GitHub; GPT independently inspects these and gives the user brief decisions instead of requesting copied reports.",
+      "details": [
+        "Developer receipts include full base/candidate SHA and actual pushed branch; paths, command exits and normal/-O/negative/safety evidence, peer review verdict and NOT_RUN, CI URLs, blockers and next READY.",
+        "GPT provides concise stage/A/B/CI/blocker/next-action reports to Product Owner unless detail is requested; no user copy/paste bridge.",
+        "No relaxed integration, review, safety, main, live or authorization rules; Issue comments do not self-start local CLI sessions."
+      ],
+      "impact": "Maintain auditable technical handoffs while reducing repeated user-facing detail and manual relay.",
       "sources": [
         "docs/ENGINEERING_DELIVERY_POLICY.md",
         "AGENTS.md",

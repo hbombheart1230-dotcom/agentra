@@ -1,5 +1,12 @@
 # D00 — Agentra engineering constitution: DELIVERY FIRST / NO RECURSIVE AUDIT
 
+## 2026-10-22 — GITHUB-DIRECT developer receipts / SHORT operator updates (P1.5–P8+)
+
+**Developer → GPT:** At each substantive implementation, peer-review or CI handoff, primary Claude/Codex must push code+tests and paired UI patchnotes to its authorized branch, verify exact origin SHA, then publish an evidence-rich receipt in the current master GitHub Issue (P1.5: #20). Include BASE/CANDIDATE full SHAs, exact changed paths, implementation outcomes, actual normal/-O commands/counts/exit codes, failure cases, independent CLI invocation exit and explicit PASS/REWORK/BLOCKED or SELF_PASS/PEER_DEFERRED, reviewer tests RAN/NOT_RUN, relevant safety/boundary evidence, note integrity, CI run URLs, outstanding risks and next authorized task. No user relaying/copy-pasting reports. GPT directly inspects GitHub source, SHA and CI and resolves integration; a GitHub post does not awaken a local CLI.
+
+**GPT → Product Owner:** Reply with only essential decisions and facts—current stage, A/B states, source/integration SHA when relevant, PASS/FAIL/CI/blocker and next action. Avoid long tables, narrative histories, repeated instructions or developer-level technical detail unless explicitly requested. **Concise user reports do not reduce thorough GitHub evidence requirements or independent review/safety gates.** Continue parallel development only within approved scope; main/live need separate user approval.
+
+
 ## 2026-10-22 — PEER_DEFERRED continuous development (operator-approved standing override, P1.5–P8+)
 
 **This newer rule supersedes older D00/D01/D02 language that requires a successful opposite-CLI review before an author may continue coding. It does NOT waive independent review for integration or release.** Normal path: author tests, commits/pushes an exact candidate SHA, invokes a fresh opposite CLI (`claude -p` or `codex exec`), checks both real process exit and explicit PASS/REWORK/BLOCKED; on genuine findings, author fixes and reviews a NEW SHA. The reviewer does not write source, commit, push or invoke nested CLIs. Use ordinary supported local review/test permissions rather than recurring ACL/MXC/isolation ceremony; never bypass an actual security denial.

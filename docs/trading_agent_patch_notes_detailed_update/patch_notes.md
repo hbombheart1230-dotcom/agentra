@@ -4156,3 +4156,12 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - 검토자는 소스 수정·커밋·푸시·하위 CLI 재호출 금지. 일반 지원 CLI 권한 내 소스 검토/필요 테스트는 가능; 무한 재시도, ACL/MXC 반복, 보안 차단 우회 금지.
 
 Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
+
+## 2026-10-22 · P1.5 GITHUB-DIRECT HANDOFF AND CONCISE OPERATOR REPORTING 20261022
+**Stage:** 상시 GitHub 직접 보고 및 사용자 간결 보고 정책 · **Tags:** PROCESS · TEST
+
+- Claude/Codex는 개발 코드를 자신의 승인 브랜치에 commit/push하고, Issue #20에 전체 SHA·파일·테스트 normal/-O·종료 코드·교차 검토·CI·차단·다음 작업을 상세 보고한다. 사용자가 전달·복붙할 필요가 없다.
+- 지팀장은 GitHub 실제 소스·SHA·검증 증거·CI를 직접 수용·통합하고 사용자에게는 단계/A·B/중요 SHA/CI/차단/다음 행동만 간결히 보고한다.
+- 검증·통합·거래 안전·main 승인 불변, GitHub 댓글이 로컬 CLI를 자동 실행하지는 않는다.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.

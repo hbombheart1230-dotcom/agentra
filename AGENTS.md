@@ -1,5 +1,8 @@
 # D01 — Agentra Codex entry (AGENTS.md)
 
+**2026-10-22 standing handoff rule:** After each substantive batch, commit/push actual source+tests and paired UI notes to your authorized branch and post a DETAILED SHA-linked evidence report in GitHub master Issue (#20 for P1.5). Report exact files, normal/-O commands/results/exits, independent opposite-CLI exit+verdict or PEER_DEFERRED, actual reviewer NOT_RUN, CI links, blockers and next READY. GPT reads GitHub directly; NEVER ask the user to copy/paste developer results. GPT replies to the user briefly but expects full technical evidence in GitHub. Keep all safety/main/integration gates.
+
+
 **Latest standing override (2026-10-22):** D00 §"PEER_DEFERRED continuous development" controls opposite-CLI timeout/credit exhaustion. After one bounded retry (zero if credits exhausted), primary Codex runs real normal/`python -O` affected regression and safety tests; if PASS, commit/push own approved dev branch and mark `SELF_PASS / PEER_DEFERRED`. Proceed with next approved, nonoverlapping READY work while GPT schedules deferred independent review. Never label peer PASS or integrate/release without required independent validation and exact composed-SHA CI. No infinite reviewer/ACL/MXC loops or unauthorized scope expansion; actual permission denials remain binding. Reviewer is non-writing but may run permitted focused tests using ordinary supported CLI permissions.
 
 
