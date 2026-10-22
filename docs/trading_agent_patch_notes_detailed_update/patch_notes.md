@@ -4199,3 +4199,4 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Exact new-stage AST reconstruction protects all copied bodies, unmoved code, arguments and imports from green51bb7130. Historical pins and B29 proof remain separate; preserve344 old note records and append345. Top-level Python count35 remains35; implementation bodies move into packages rather than new root files.
 - Differential BASE callable reconstruction preserves annotations/defaults; actual facade ABI remains unchanged.
 - Preserve the existing new-stage source and B-stage scope rejection categories; historical negative-test expectations unchanged.
+- The full51bb contract AST prefix, including repeated definitions and pins, remains identical.

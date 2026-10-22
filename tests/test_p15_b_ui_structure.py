@@ -102,7 +102,5 @@ def test_core_unmoved_definitions_and_original_declarations_remain():
 def test_original_51bb_stage_predicates_are_retained_verbatim_at_ast_level():
     old = ast.parse(S.git_source(BASE, "scripts/refactor/shared_strategist_contracts.py"))
     current = ast.parse(Path(S.__file__).read_text(encoding="utf-8"))
-    for before in old.body:
-        if isinstance(before, ast.FunctionDef):
-            after = next(n for n in current.body if isinstance(n,ast.FunctionDef) and n.name == before.name)
-            assert ast.dump(after) == ast.dump(before), before.name
+    retained = ast.Module(body=current.body[:len(old.body)], type_ignores=[])
+    assert ast.dump(retained) == ast.dump(old)  # Includes every original repeated definition and pin.
