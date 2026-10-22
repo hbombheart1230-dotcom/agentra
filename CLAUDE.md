@@ -1,26 +1,13 @@
-# D02 — Claude DEV-A 개발 규칙 (CLAUDE.md)
+# D02 — Claude A 개발 규칙
 
-**작업 입구:** [한글 CURRENT](docs/refactor/work_orders/CURRENT.md)에서 **Claude A 작업 링크**만 따라간다. 상세 구현은 해당 [P1.5 단계 체크리스트](docs/refactor/plan/pending/)의 **기존 원본 패킷** 링크를 따른다. 기존 V3/원본 P1.5 단계가 동결 계약이며 새 T00~T09 설계는 비활성이다.
+**작업 입구:** [CURRENT](docs/refactor/work_orders/CURRENT.md)의 **이번 Claude 배정 RF 링크** → 해당 [RF 독립 작업 파일](docs/refactor/plan/pending/) → 원본 동결 구현 패킷. [전체 현황](docs/refactor/plan/STATUS.md), [P1.5.0~11 합격 기준](docs/refactor/plan/criteria/)은 필요할 때만 읽는다. 단계 번호는 순차 개발 명령이 아니다.
 
-## 세션 시작·재독 최소화
-- 새 세션: CURRENT 1회 → 자신의 pending 단계 파일 → 필요 시 [D00](docs/ENGINEERING_DELIVERY_POLICY.md). 같은 세션에서 **blob SHA/문서 내용이 변하지 않았음이 확인되면 상세 재독을 생략**. 새 세션/변경/충돌/안전 불확실 때 필요한 부분 다시 확인.
-- GitHub 원격 실제 HEAD·승인된 파일 범위·통합/검증 현황을 커밋 직전 재확인. 옛 Issue/완료된 작업 지시는 신규 수행권이 아니다.
-
-## A 개발 소유권·완료
-- 기존 A 브랜치: `work/p15-a-reporter-pure-20261021`. **Reporter P1.5.1~2, Strategist P1.5.4, Scanner P1.5.5**, 해당 승인 테스트. Codex의 Monitor/Commander/Operator UI·공통 계약·Executor/Supervisor·Step5C는 별도 승인 없이 변경 금지.
-- 폴더/책임 경계에서 크고 의미 있는 PURE 코드 작업을 우선하고 이미 수용된 Reporter 코드를 중복 개발하지 않는다. 변경은 UI 패치노트 JSON/MD 동시 보존 및 정합성 확인.
-- 구현 후 정상 Python·`python -O`·필요한 BASE 동등성(출력/예외/부작용/LLM/호출 순서)과 실패/경계 테스트. 동결 핀이나 거부된 권한·안전 오라클은 바꾸지 않는다.
-
-## 필수 티키타카 — 본인의 기존 로컬 PRIMARY에서 직접
-1. 구현/자체 테스트 후 정확한 커밋 SHA로 push; **새로운 독립 읽기 전용 `codex exec` CLI**를 본인 세션에서 호출한다. 기존 Codex 주 개발 세션을 검토자로 쓰거나 사용자에게 프롬프트 복사 요청 금지.
-2. BASE/CANDIDATE, 변경 경로, frozen 계약을 전달. 리뷰어는 읽기 전용 소스 검토, 수정·커밋·푸시·하위 CLI 재호출 불가. 실제 CLI 종료 코드와 `PASS/REWORK/BLOCKED` 판정을 별도 확인; exit0만으로 PASS 불가. PURE 리뷰어 측 pytest 미실행은 `NOT_RUN`.
-3. 실제 결함은 REWORK→새 SHA→신규 독립 CLI 재검토. 크레딧 부족/무응답 시 제한적 확인 후 **SELF_PASS/PEER_DEFERRED**; 승인된 독립 작업은 계속해도 **미완료 독립 검증을 통합 완료로 주장하거나 통합할 수 없음**. 권한 우회·무한 재시도 금지.
-
-## 크레딧 부족 시
-- Codex는 **현재 승인된 구 UI 브랜치 정리 작업**의 유일한 원격 삭제 담당. Claude는 관련 브랜치/tag/ref를 병렬 변경하지 않는다. 본인 크레딧이 부족하면 검증만 deferred로 남기고 재개 시 갭을 해결; 다른 개발자의 독립 진행을 막지 않는다.
-
-## 안전·보고
-- Scanner 순위/soft chart-fit와 Monitor hard 진입권한을 혼동하지 않는다. Reporter I/O·LLM·기존 byte/ledger 동등성, 거래 안전·UEF/Step5C·실거래 기본 OFF·키/데이터 격리를 보존한다.
-- 보고는 작업 파일 링크와 정확한 BASE/NEW SHA, 변경 경로, normal/-O, 신선한 상대 CLI exit+판정/NOT_RUN, 패치노트·차단. **GPT가** 최종 수용·선별 통합·필수 CI·pending→done 이동.
-
-**공통 원칙 상세:** [D00](docs/ENGINEERING_DELIVERY_POLICY.md). D02는 방법이지 신규 파일/브랜치/안전 수정 허가가 아니다. 이전 BATCH/CURRENT 텍스트는 Git 이력에서 확인할 수 있지만 새 지시가 아니다.
+- **재독 최소화:** 새 세션 CURRENT부터 읽는다. 같은 세션에서 이미 읽었고 문서 SHA/내용이 같으면 전문 재독하지 않는다. 변경·충돌·안전 불확실 시 재확인. 전 팀 공통 규칙은 [D00](docs/ENGINEERING_DELIVERY_POLICY.md).
+- **담당:** RF는 Claude/Codex 영구 배정이 아니라 CURRENT에서 지팀장이 탄력 지정. 기존 Claude 전문 영역은 Reporter, Strategist, Scanner. [파일별 RF 소유권](docs/refactor/plan/FILE_COVERAGE_63182ab2.csv) 확인 후 해당 RF 파일만 수정. 타 RF의 공유 DTO·State·graph·테스트는 읽기 전용이며 변경 필요 시 조정 요청. A/B 동시 수정 금지.
+- **개발:** 이미 구현/수용된 코드 재개발 금지. 의미 있는 큰 PURE Owner 분리와 기존 서비스 재사용. 공개 import·graph 호출·rank/Top1·State·프롬프트/LLM retries·출력·예외 동등성 보장. 파일 이동 전 동적/CLI/테스트/배포 소비자 검증.
+- **테스트/패치노트:** normal 및 `python -O`, BASE parity·실패/경계 회귀 후 SHA push. 변경 시 UI patch_notes JSON/MD 동시 기록. 성공 임시 산출물 자동정리, 실패 제한 보존. 오라클 완화 금지.
+- **티키타카:** 자신의 주 CLI에서 새 독립 읽기 전용 `codex exec` 프로세스를 직접 호출. BASE/후보 SHA·변경 파일·동결 경계 전달. 리뷰어는 수정/commit/push/다른 CLI 재호출 금지. 실제 종료 코드와 명시적 `PASS/REWORK/BLOCKED` 확인; exit0만으로 PASS 금지. REWORK면 새 SHA 재검토. 테스트 미실행은 `NOT_RUN`.
+- **크레딧 부족:** `SELF_PASS/PEER_DEFERRED` 후 다른 승인된 독립 RF 계속 가능. **GPT는 미검토 코드를 통합할 수 없다.** 권한 우회/무한 재시도 금지.
+- **브랜치 정리:** 현재 [구 B UI 브랜치](docs/refactor/plan/troubleshooting/open/P15_BRANCH_CLEANUP.md)는 Codex 단독. Claude는 동일 ref·태그를 변경하지 않는다.
+- **안전:** Scanner의 soft chart-fit를 Monitor hard veto로 전환 금지; Broker·승인·실거래·UEF/Step5C 및 main 무승인 변경 금지. 비밀값/운영데이터 분리.
+- **보고:** RF 링크, BASE/변경 SHA, 테스트, peer verdict+exit, 패치노트·차단. GPT 단독 선별 통합·CI·완료 이동.
