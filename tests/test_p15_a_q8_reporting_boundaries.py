@@ -28,7 +28,7 @@ PRIOR = "e3dca2a08601fc90a63eb3ec84fb85d39d4848e1"
 OWNERS = {
     "libs/reporting/evaluation/q8_historical_aggregation_p15.py": {"__future__", "collections", "dataclasses", "typing"},
     "libs/reporting/evaluation/q8_historical_render_p15.py": {"__future__", "typing"},
-    "libs/reporting/evaluation/q8_shadow_readout_p15.py": {"__future__", "typing", "libs.reporting.q8_evaluation_contract"},
+    "libs/reporting/evaluation/q8_shadow_readout_p15.py": {"__future__", "typing"},
 }
 FACADES = {
     "libs/reporting/q8_historical_review.py": hist,
@@ -116,22 +116,37 @@ def test_facade_keeps_every_base_name_public_api_and_signature(path):
     assert not missing, missing
     base_ns = _exec_base(path, base_src)
     assert module.__all__ == base_ns["__all__"]
-    for name in base_ns["__all__"]:
-        if callable(base_ns[name]):
-            assert str(inspect.signature(getattr(module, name))) == str(inspect.signature(base_ns[name])), name
+    for node in base_tree.body:  # every BASE function/class, private ones included, keeps its call signature
+        if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+            assert str(inspect.signature(getattr(module, node.name))) == str(inspect.signature(base_ns[node.name])), node.name
 
 
-def test_facades_reexport_the_owner_objects_not_copies():
-    for name in ("GroupAccumulator", "ForwardAccumulator", "_decision_for_reclaim_subtype", "_aggregate_return_rows",
-                 "_float", "_int", "_pct_from_ratio", "_text", "_avg", "_weighted_avg"):
-        assert getattr(hist, name) is getattr(agg_owner, name), name
-    for name in ("_md_table", "render_q8_historical_review_markdown"):
-        assert getattr(hist, name) is getattr(render_owner, name), name
-    for name in ("_text", "_to_float", "_bool", "_checkpoint_values", "_avg", "_decision_for_row", "_summarize_group"):
-        assert getattr(shadow, name) is getattr(readout_owner, name), name
-    for name in ("_verdict", "_rows", "_forward_rows", "_counts_by_name", "_reason_summary", "_float", "_int", "_text"):
-        assert getattr(lane, name) is getattr(readout_owner, name), name
-    assert lane.TRUSTED_FORWARD_MIN_COVERAGE is readout_owner.TRUSTED_FORWARD_MIN_COVERAGE
+# BASE names whose bodies call other BASE helpers are facade-defined wrappers (patchable seams, owner impl gets
+# ``facade=``); helper-free leaves and the accumulator classes are the owner objects re-exported unchanged.
+WRAPPERS = {
+    hist: ("_pct_from_ratio", "_decision_for_reclaim_subtype", "_aggregate_return_rows", "render_q8_historical_review_markdown"),
+    shadow: ("_checkpoint_values", "_decision_for_row", "_summarize_group"),
+    lane: ("_forward_rows", "_counts_by_name", "_reason_summary", "_verdict", "build_q8_lane_decision_table"),
+}
+LEAVES = {
+    hist: (agg_owner, ("GroupAccumulator", "ForwardAccumulator", "_float", "_int", "_text", "_avg", "_weighted_avg")),
+    shadow: (readout_owner, ("_text", "_to_float", "_bool", "_avg")),
+    lane: (readout_owner, ("_rows", "_float", "_int", "_text")),
+}
+
+
+def test_seam_wrappers_live_in_facades_and_leaves_are_reexported_owner_objects():
+    for module, names in WRAPPERS.items():
+        for name in names:
+            assert getattr(module, name).__module__ == module.__name__, (module.__name__, name)
+    for module, (owner, names) in LEAVES.items():
+        for name in names:
+            assert getattr(module, name) is getattr(owner, name), (module.__name__, name)
+    assert getattr(hist, "_md_table") is render_owner._md_table
+    import libs.reporting.q8_evaluation_contract as contract
+
+    assert lane.TRUSTED_FORWARD_MIN_COVERAGE is contract.TRUSTED_FORWARD_MIN_COVERAGE
+    assert not hasattr(readout_owner, "TRUSTED_FORWARD_MIN_COVERAGE")  # read only through the facade
 
 
 def test_effects_and_pinned_closeout_functions_stay_in_facades():

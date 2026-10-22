@@ -1,7 +1,7 @@
 """Pure Q8 historical-review aggregation (P1.5 DEV-A): normalization, accumulators and per-day folds.
 
-No reads, writes, clocks or source selection: ``libs.reporting.q8_historical_review`` reads each day
-and feeds these folds in the original order, so Counter/dict insertion (and tie) order is unchanged.
+No I/O: ``libs.reporting.q8_historical_review`` reads each day and feeds these folds in the original order.
+``*_impl`` bodies and folds resolve helpers on the injected ``facade`` at call time (accumulator methods excepted).
 """
 from __future__ import annotations
 
@@ -31,8 +31,8 @@ def _int(value: Any) -> int:
         return 0
 
 
-def _pct_from_ratio(value: Any) -> float | None:
-    parsed = _float(value)
+def _pct_from_ratio_impl(value: Any, *, facade: Any) -> float | None:
+    parsed = facade._float(value)
     if parsed is None:
         return None
     return parsed * 100.0 if abs(parsed) <= 1.0 else parsed
@@ -169,13 +169,13 @@ class ForwardAccumulator:
         return out
 
 
-def _decision_for_reclaim_subtype(row: Mapping[str, Any]) -> str:
-    name = _text(row.get("name"))
-    observed = _int(row.get("observed_count"))
-    ret5 = _float(row.get("avg_return_5m_pct")) or 0.0
-    ret15 = _float(row.get("avg_return_15m_pct")) or 0.0
-    ret60 = _float(row.get("avg_return_60m_pct")) or 0.0
-    mae5 = _float(row.get("avg_mae_5m_pct")) or 0.0
+def _decision_for_reclaim_subtype_impl(row: Mapping[str, Any], *, facade: Any) -> str:
+    name = facade._text(row.get("name"))
+    observed = facade._int(row.get("observed_count"))
+    ret5 = facade._float(row.get("avg_return_5m_pct")) or 0.0
+    ret15 = facade._float(row.get("avg_return_15m_pct")) or 0.0
+    ret60 = facade._float(row.get("avg_return_60m_pct")) or 0.0
+    mae5 = facade._float(row.get("avg_mae_5m_pct")) or 0.0
     if observed < 30:
         return "retain_observation_sample_small"
     if name.endswith("true_below_vwap_failure") and ret5 > 0 and ret15 > 0:
@@ -189,10 +189,10 @@ def _decision_for_reclaim_subtype(row: Mapping[str, Any]) -> str:
     return "retain_under_observation"
 
 
-def _aggregate_return_rows(rows: Sequence[Mapping[str, Any]], key: str, *, limit: int = 12) -> List[Dict[str, Any]]:
+def _aggregate_return_rows_impl(rows: Sequence[Mapping[str, Any]], key: str, *, limit: int, facade: Any) -> List[Dict[str, Any]]:
     grouped: Dict[str, List[float]] = defaultdict(list)
     for row in rows:
-        value = _text(row.get(key)) or "missing"
+        value = facade._text(row.get(key)) or "missing"
         pnl = row.get("pnl_pct")
         if isinstance(pnl, (int, float)):
             grouped[value].append(float(pnl))
@@ -207,7 +207,7 @@ def _aggregate_return_rows(rows: Sequence[Mapping[str, Any]], key: str, *, limit
                 "win_count": sum(1 for value in values if value > 0),
                 "loss_count": sum(1 for value in values if value < 0),
                 "win_rate": round(sum(1 for value in values if value > 0) / len(values), 4),
-                "avg_return_pct": _avg(values),
+                "avg_return_pct": facade._avg(values),
             }
         )
     out.sort(key=lambda row: (int(row["count"]), abs(float(row["avg_return_pct"]))), reverse=True)
@@ -218,40 +218,42 @@ def _counter_rows(counter: Counter[str], limit: int) -> List[Dict[str, Any]]:
     return [{"name": name, "count": count} for name, count in counter.most_common(limit) if name]
 
 
-def _named_counts(counter: Counter[str], rows: Any) -> None:
+def _named_counts(counter: Counter[str], rows: Any, facade: Any) -> None:
     for row in list(rows or []):
         if isinstance(row, Mapping):
-            counter[_text(row.get("name"))] += _int(row.get("count"))
+            counter[facade._text(row.get("name"))] += facade._int(row.get("count"))
 
 
 class ShadowSummaryFold:
     """Folds daily ``quant_shadow_candidate_evaluation`` / ``q8_shadow_blocker_review`` sections."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, facade: Any) -> None:
+        self.facade = facade
         self.reason_counter: Counter[str] = Counter()
         self.role_counter: Counter[str] = Counter()
         self.tactic_counter: Counter[str] = Counter()
         self.below_vwap_subtype_counter: Counter[str] = Counter()
         self.below_vwap_subtype_v2_counter: Counter[str] = Counter()
-        self.subtype_forward: Dict[str, ForwardAccumulator] = defaultdict(ForwardAccumulator)
+        self.subtype_forward: Dict[str, ForwardAccumulator] = defaultdict(facade.ForwardAccumulator)
         self.subtype_forward_days: set[str] = set()
-        self.group_acc: Dict[str, GroupAccumulator] = defaultdict(GroupAccumulator)
+        self.group_acc: Dict[str, GroupAccumulator] = defaultdict(facade.GroupAccumulator)
         self.q_days = 0
         self.q8_group_days = 0
 
     def add_day(self, day: str, payload: Mapping[str, Any]) -> None:
         q = payload.get("quant_shadow_candidate_evaluation") if isinstance(payload.get("quant_shadow_candidate_evaluation"), dict) else {}
+        facade = self.facade
         if q.get("candidate_count") is not None:
             self.q_days += 1
-        _named_counts(self.reason_counter, q.get("by_reason"))
-        _named_counts(self.role_counter, q.get("by_role"))
-        _named_counts(self.tactic_counter, q.get("by_tactic_id"))
+        _named_counts(self.reason_counter, q.get("by_reason"), facade)
+        _named_counts(self.role_counter, q.get("by_role"), facade)
+        _named_counts(self.tactic_counter, q.get("by_tactic_id"), facade)
         below_vwap = q.get("below_vwap_reclaim_observation") if isinstance(q.get("below_vwap_reclaim_observation"), Mapping) else {}
-        _named_counts(self.below_vwap_subtype_counter, below_vwap.get("by_subtype"))
-        _named_counts(self.below_vwap_subtype_v2_counter, below_vwap.get("by_subtype_v2"))
+        _named_counts(self.below_vwap_subtype_counter, below_vwap.get("by_subtype"), facade)
+        _named_counts(self.below_vwap_subtype_v2_counter, below_vwap.get("by_subtype_v2"), facade)
         lane_forward = q.get("entry_lane_forward_outcomes") if isinstance(q.get("entry_lane_forward_outcomes"), Mapping) else {}
         for row in list(lane_forward.get("by_lane_subtype") or []):
-            name = _text(row.get("name")) if isinstance(row, Mapping) else ""
+            name = facade._text(row.get("name")) if isinstance(row, Mapping) else ""
             if not name.startswith("vwap_reclaim:"):
                 continue
             self.subtype_forward[name].add(row)
@@ -261,7 +263,7 @@ class ShadowSummaryFold:
         if groups:
             self.q8_group_days += 1
         for row in groups:
-            reason = _text(row.get("reason") or row.get("name")) if isinstance(row, Mapping) else ""
+            reason = facade._text(row.get("reason") or row.get("name")) if isinstance(row, Mapping) else ""
             if reason:
                 self.group_acc[reason].add(day, row)
 
@@ -269,13 +271,13 @@ class ShadowSummaryFold:
         return not self.below_vwap_subtype_v2_counter
 
     def add_candidate_subtype(self, subtype_v2: Any) -> None:
-        self.below_vwap_subtype_v2_counter[_text(subtype_v2)] += 1
+        self.below_vwap_subtype_v2_counter[self.facade._text(subtype_v2)] += 1
 
     def to_dict(self) -> Dict[str, Any]:
         ordered = sorted(self.subtype_forward.items(), key=lambda item: (item[1].candidate_count, item[0]), reverse=True)
         subtype_forward_rows = [acc.to_dict(name) for name, acc in ordered]
         for row in subtype_forward_rows:
-            row["decision"] = _decision_for_reclaim_subtype(row)
+            row["decision"] = self.facade._decision_for_reclaim_subtype(row)
         groups = sorted(self.group_acc.items(), key=lambda item: item[1].candidate_count, reverse=True)
         return {
             "q_shadow_day_count": self.q_days,
@@ -297,7 +299,8 @@ _PATTERN_INT_FIELDS = ("win_count", "loss_count", "flat_count", "cost_drag_loss_
 class PatternRowFold:
     """Folds one ``pattern_performance.<section>.<group_key>`` list across daily summaries."""
 
-    def __init__(self, section: str, group_key: str) -> None:
+    def __init__(self, section: str, group_key: str, *, facade: Any) -> None:
+        self.facade = facade
         self.section = section
         self.group_key = group_key
         self.grouped: Dict[str, Dict[str, Any]] = defaultdict(
@@ -309,6 +312,7 @@ class PatternRowFold:
         pattern = payload.get("pattern_performance") if isinstance(payload.get("pattern_performance"), dict) else {}
         section_payload = pattern.get(self.section) if isinstance(pattern.get(self.section), dict) else {}
         rows = section_payload.get(self.group_key) if isinstance(section_payload.get(self.group_key), list) else []
+        _text, _int, _float = self.facade._text, self.facade._int, self.facade._float
         for row in rows:
             if not isinstance(row, Mapping):
                 continue
@@ -338,7 +342,7 @@ class PatternRowFold:
                     "loss_count": int(bucket.get("loss_count") or 0),
                     "flat_count": int(bucket.get("flat_count") or 0),
                     "win_rate": round(wins / closed, 4) if closed else 0.0,
-                    "avg_return_pct": _weighted_avg(float(bucket.get("return_sum") or 0.0), int(bucket.get("return_weight") or 0)),
+                    "avg_return_pct": self.facade._weighted_avg(float(bucket.get("return_sum") or 0.0), int(bucket.get("return_weight") or 0)),
                     "cost_drag_loss_count": int(bucket.get("cost_drag_loss_count") or 0),
                 }
             )

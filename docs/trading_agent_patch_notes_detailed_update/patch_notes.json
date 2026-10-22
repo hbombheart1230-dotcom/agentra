@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 341,
+  "entry_count": 342,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8991,6 +8991,32 @@
         "libs/reporting/evaluation/q8_historical_aggregation_p15.py",
         "libs/reporting/evaluation/q8_historical_render_p15.py",
         "libs/reporting/evaluation/q8_shadow_readout_p15.py",
+        "tests/test_p15_a_q8_historical_pure_parity.py",
+        "tests/test_p15_a_q8_reporting_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 FACADE MONKEYPATCH COMPATIBILITY 20261022",
+      "title": "Restore call-time facade lookup for the Q8 owners so patching a facade helper behaves as before the split",
+      "stage": "Compatibility follow-up on work/p15-a-reporter-pure-20261021 after f67bf1ec; read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Q8 owner bodies now take the facade and look up helpers and the trust threshold on it at call time, so monkeypatching q8_lane_decision_table._verdict / TRUSTED_FORWARD_MIN_COVERAGE or q8_shadow_blocker_review._summarize_group changes output exactly as on BASE.",
+      "details": [
+        "Same idiom as the earlier Reporter owners: BASE names whose bodies call other BASE helpers are thin facade wrappers with the BASE signature that pass facade=sys.modules[__name__] to an owner *_impl (lane: _verdict, _forward_rows, _counts_by_name, _reason_summary, build; shadow: _checkpoint_values, _decision_for_row, _summarize_group; historical: _pct_from_ratio, _decision_for_reclaim_subtype, _aggregate_return_rows, render_q8_historical_review_markdown). ShadowSummaryFold and PatternRowFold take the facade and resolve ForwardAccumulator, GroupAccumulator and helpers through it. Helper-free leaves stay owner objects re-exported unchanged.",
+        "TRUSTED_FORWARD_MIN_COVERAGE is now read only through the lane facade, which imports it from the unchanged q8_evaluation_contract; the readout owner no longer imports the contract. No threshold, verdict, dedupe or trust-gate behaviour changed.",
+        "Known limit kept on purpose: GroupAccumulator/ForwardAccumulator methods use the owner's normalizers, so patching q8_historical_review._int/_float/_text/_weighted_avg does not reach those methods (it does reach every other body). A test documents this.",
+        "New regressions: 23 facade attributes are patched identically on the BASE d7ab8294 module and the current facade and the payload plus Markdown must match and differ from the unpatched output; the boundary test now checks every BASE function and class signature, not only __all__."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.",
+      "sources": [
+        "libs/reporting/q8_historical_review.py",
+        "libs/reporting/q8_shadow_blocker_review.py",
+        "libs/reporting/q8_lane_decision_table.py",
         "tests/test_p15_a_q8_historical_pure_parity.py",
         "tests/test_p15_a_q8_reporting_boundaries.py"
       ]

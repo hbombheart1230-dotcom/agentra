@@ -2,14 +2,14 @@
 
 Shared by ``libs.reporting.q8_shadow_blocker_review`` (per-reason forward summaries) and
 ``libs.reporting.q8_lane_decision_table`` (lane verdict rows). Payload loading, forward-outcome
-attachment, canonical dedupe, trust-gate construction, rendering and writes stay in those facades;
-the trust thresholds are read from the READ-ONLY ``q8_evaluation_contract``.
+attachment, canonical dedupe, trust-gate construction, rendering and writes stay in those facades.
+``*_impl`` bodies resolve every helper and the trust threshold (``TRUSTED_FORWARD_MIN_COVERAGE`` from the
+read-only ``q8_evaluation_contract``) on the injected ``facade`` at call time, so patching a facade
+attribute behaves as it did before the move.
 """
 from __future__ import annotations
 
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
-
-from libs.reporting.q8_evaluation_contract import TRUSTED_FORWARD_MIN_COVERAGE
 
 
 def _text(value: Any) -> str:
@@ -36,7 +36,7 @@ def _bool(value: Any) -> bool:
     return str(value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
 
 
-def _checkpoint_values(outcome: Mapping[str, Any]) -> Dict[str, Any]:
+def _checkpoint_values_impl(outcome: Mapping[str, Any], *, facade: Any) -> Dict[str, Any]:
     checkpoints = outcome.get("checkpoints") if isinstance(outcome.get("checkpoints"), Mapping) else {}
     observed: List[Mapping[str, Any]] = [
         checkpoint
@@ -45,9 +45,9 @@ def _checkpoint_values(outcome: Mapping[str, Any]) -> Dict[str, Any]:
     ]
     if not observed:
         return {"available": False}
-    returns = [_to_float(row.get("return_pct")) for row in observed]
-    mfes = [_to_float(row.get("mfe_pct")) for row in observed]
-    maes = [_to_float(row.get("mae_pct")) for row in observed]
+    returns = [facade._to_float(row.get("return_pct")) for row in observed]
+    mfes = [facade._to_float(row.get("mfe_pct")) for row in observed]
+    maes = [facade._to_float(row.get("mae_pct")) for row in observed]
     returns = [value for value in returns if value is not None]
     mfes = [value for value in mfes if value is not None]
     maes = [value for value in maes if value is not None]
@@ -64,8 +64,8 @@ def _avg(values: Sequence[float]) -> float:
     return round(sum(values) / len(values), 4) if values else 0.0
 
 
-def _decision_for_row(row: Mapping[str, Any]) -> str:
-    reason = _text(row.get("reason"))
+def _decision_for_row_impl(row: Mapping[str, Any], *, facade: Any) -> str:
+    reason = facade._text(row.get("reason"))
     if reason == "volume_confirmation_missing":
         return "retain_under_observation"
     if reason in {"breakout_not_ready", "pullback_not_mature"}:
@@ -75,16 +75,17 @@ def _decision_for_row(row: Mapping[str, Any]) -> str:
     return "retain_under_observation"
 
 
-def _summarize_group(
+def _summarize_group_impl(
     reason: str,
     rows: Sequence[Mapping[str, Any]],
     *,
     promotion_allowed: bool,
+    facade: Any,
 ) -> Dict[str, Any]:
     observed_rows: List[Dict[str, Any]] = []
     for row in rows:
         outcome = row.get("shadow_forward_outcome") if isinstance(row.get("shadow_forward_outcome"), Mapping) else {}
-        values = _checkpoint_values(outcome)
+        values = facade._checkpoint_values(outcome)
         if values.get("available"):
             observed_rows.append({**dict(row), "_q8_forward": values})
     latest_returns = [
@@ -110,16 +111,16 @@ def _summarize_group(
         key=lambda row: float(row["_q8_forward"].get("max_favorable_pct") or 0.0),
         reverse=True,
     )[:5]
-    raw_decision = _decision_for_row(rows[0]) if rows else "retain_under_observation"
+    raw_decision = facade._decision_for_row(rows[0]) if rows else "retain_under_observation"
     decision = raw_decision if promotion_allowed else "retain_under_observation"
     return {
         "reason": reason,
         "candidate_count": len(rows),
         "observed_count": len(observed_rows),
         "coverage": round(float(len(observed_rows)) / float(len(rows)), 4) if rows else 0.0,
-        "avg_latest_return_pct": _avg(latest_returns),
-        "avg_max_favorable_pct": _avg(mfes),
-        "avg_max_adverse_pct": _avg(maes),
+        "avg_latest_return_pct": facade._avg(latest_returns),
+        "avg_max_favorable_pct": facade._avg(mfes),
+        "avg_max_adverse_pct": facade._avg(maes),
         "positive_latest_count": positive_count,
         "positive_latest_rate": round(float(positive_count) / float(len(latest_returns)), 4) if latest_returns else 0.0,
         "missed_opportunity_count": missed_opportunity_count,
@@ -131,10 +132,10 @@ def _summarize_group(
         "decision_blocked_by_trust_gate": bool(raw_decision != decision),
         "examples": [
             {
-                "symbol": _text(row.get("symbol")),
-                "role": _text(row.get("shadow_role")),
+                "symbol": facade._text(row.get("symbol")),
+                "role": facade._text(row.get("shadow_role")),
                 "rank": row.get("rank"),
-                "tactic_id": _text(row.get("quant_tactic_id")),
+                "tactic_id": facade._text(row.get("quant_tactic_id")),
                 "latest_return_pct": row["_q8_forward"].get("latest_return_pct"),
                 "max_favorable_pct": row["_q8_forward"].get("max_favorable_pct"),
                 "max_adverse_pct": row["_q8_forward"].get("max_adverse_pct"),
@@ -169,39 +170,39 @@ def _rows(value: Any) -> List[Dict[str, Any]]:
     return [dict(row) for row in list(value or []) if isinstance(row, Mapping)]
 
 
-def _forward_rows(evaluation: Mapping[str, Any]) -> List[Dict[str, Any]]:
+def _forward_rows_impl(evaluation: Mapping[str, Any], *, facade: Any) -> List[Dict[str, Any]]:
     forward = evaluation.get("entry_lane_forward_outcomes")
     if not isinstance(forward, Mapping):
         return []
-    return _rows(forward.get("by_primary_lane"))
+    return facade._rows(forward.get("by_primary_lane"))
 
 
-def _counts_by_name(rows: Iterable[Mapping[str, Any]]) -> Dict[str, int]:
+def _counts_by_name_impl(rows: Iterable[Mapping[str, Any]], *, facade: Any) -> Dict[str, int]:
     out: Dict[str, int] = {}
     for row in rows:
-        name = _text(row.get("name"))
+        name = facade._text(row.get("name"))
         if name:
-            out[name] = _int(row.get("count"))
+            out[name] = facade._int(row.get("count"))
     return out
 
 
-def _reason_summary(evaluation: Mapping[str, Any], *, limit: int = 6) -> str:
+def _reason_summary_impl(evaluation: Mapping[str, Any], *, limit: int, facade: Any) -> str:
     parts = []
-    for row in _rows(evaluation.get("by_reason"))[:limit]:
-        name = _text(row.get("name"))
+    for row in facade._rows(evaluation.get("by_reason"))[:limit]:
+        name = facade._text(row.get("name"))
         if name:
             parts.append(f"{name} {row.get('count') or 0}")
     return ", ".join(parts) if parts else "-"
 
 
-def _verdict(row: Mapping[str, Any], *, promotion_allowed: bool) -> Dict[str, str]:
-    observed = _int(row.get("observed_count"))
-    coverage = _float(row.get("coverage"))
-    ret5 = _float(row.get("avg_return_5m_pct"))
-    ret15 = _float(row.get("avg_return_15m_pct"))
-    mfe5 = _float(row.get("avg_mfe_5m_pct"))
-    mae5 = _float(row.get("avg_mae_5m_pct"))
-    lane = _text(row.get("name"))
+def _verdict_impl(row: Mapping[str, Any], *, promotion_allowed: bool, facade: Any) -> Dict[str, str]:
+    observed = facade._int(row.get("observed_count"))
+    coverage = facade._float(row.get("coverage"))
+    ret5 = facade._float(row.get("avg_return_5m_pct"))
+    ret15 = facade._float(row.get("avg_return_15m_pct"))
+    mfe5 = facade._float(row.get("avg_mfe_5m_pct"))
+    mae5 = facade._float(row.get("avg_mae_5m_pct"))
+    lane = facade._text(row.get("name"))
 
     if not promotion_allowed:
         return {
@@ -209,7 +210,7 @@ def _verdict(row: Mapping[str, Any], *, promotion_allowed: bool) -> Dict[str, st
             "decision": "retain under observation",
             "rationale": "Q8 trust gate blocked promotion review; lane signal is diagnostic only.",
         }
-    if observed < 10 or coverage < TRUSTED_FORWARD_MIN_COVERAGE:
+    if observed < 10 or coverage < facade.TRUSTED_FORWARD_MIN_COVERAGE:
         return {
             "verdict": "DATA_INCOMPLETE",
             "decision": "observe",
@@ -250,18 +251,19 @@ _VERDICT_ORDER = {
 }
 
 
-def lane_decision_table_payload(evaluation: Mapping[str, Any], *, day: str) -> Dict[str, Any]:
+def lane_decision_table_payload_impl(evaluation: Mapping[str, Any], *, day: str, facade: Any) -> Dict[str, Any]:
     """Compose the ``q8_lane_decision_table.v1`` payload from an already built shadow evaluation."""
+    _int, _float = facade._int, facade._float
     trust_gate = evaluation.get("evaluation_trust_gate") if isinstance(evaluation.get("evaluation_trust_gate"), Mapping) else {}
     promotion_allowed = bool(trust_gate.get("promotion_allowed"))
     lane_observation = evaluation.get("entry_lane_observation")
-    lane_counts = _counts_by_name(
-        _rows(lane_observation.get("by_primary_lane") if isinstance(lane_observation, Mapping) else [])
+    lane_counts = facade._counts_by_name(
+        facade._rows(lane_observation.get("by_primary_lane") if isinstance(lane_observation, Mapping) else [])
     )
     rows: List[Dict[str, Any]] = []
-    for row in _forward_rows(evaluation):
-        verdict = _verdict(row, promotion_allowed=promotion_allowed)
-        lane = _text(row.get("name"))
+    for row in facade._forward_rows(evaluation):
+        verdict = facade._verdict(row, promotion_allowed=promotion_allowed)
+        lane = facade._text(row.get("name"))
         rows.append(
             {
                 "lane": lane,
@@ -294,6 +296,6 @@ def lane_decision_table_payload(evaluation: Mapping[str, Any], *, day: str) -> D
         "evaluation_trust_gate": dict(trust_gate),
         "promotion_allowed": promotion_allowed,
         "would_enter_count": _int(evaluation.get("would_enter_count")),
-        "reason_summary": _reason_summary(evaluation),
+        "reason_summary": facade._reason_summary(evaluation),
         "rows": rows,
     }

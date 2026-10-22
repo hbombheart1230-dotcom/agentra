@@ -370,21 +370,26 @@ def _hist_payload(mod, tmp: Path, **scenario):
     [
         (agg_owner, "_weighted_avg", lambda total, weight: round(total, 4)),
         (agg_owner, "_counter_rows", lambda counter, limit: [{"name": n, "count": c} for n, c in sorted(counter.items()) if n][:limit]),
-        (agg_owner, "_decision_for_reclaim_subtype", lambda row: "keep_blocked"),
         (agg_owner, "_PATTERN_INT_FIELDS", ("win_count", "loss_count", "flat_count")),
+        (agg_owner, "_decision_for_reclaim_subtype_impl", lambda row, *, facade: "keep_blocked"),
+        (agg_owner, "_named_counts", lambda counter, rows, facade: None),
     ],
 )
 def test_historical_mutants_are_detected(tmp_path, monkeypatch, target, name, mutant):
     expected = _hist_payload(base("hist"), tmp_path / "base")
     assert _hist_payload(hist_cur, tmp_path / "green") == expected
     monkeypatch.setattr(target, name, mutant)
+    if hasattr(hist_cur, name):  # an ``*_impl`` is also bound in the facade namespace at import
+        monkeypatch.setattr(hist_cur, name, mutant)
     assert _hist_payload(hist_cur, tmp_path / "mutant") != expected
 
 
 @pytest.mark.parametrize(
     "name,mutant",
-    [("TRUSTED_FORWARD_MIN_COVERAGE", 0.0), ("_VERDICT_ORDER", {}),
-     ("_checkpoint_values", lambda outcome: {"available": False})],
+    [("_VERDICT_ORDER", {}),
+     ("_checkpoint_values_impl", lambda outcome, *, facade: {"available": False}),
+     ("_verdict_impl", lambda row, *, promotion_allowed, facade: {"verdict": "GOOD_BLOCK", "decision": "x", "rationale": "y"}),
+     ("_summarize_group_impl", lambda reason, rows, *, promotion_allowed, facade: {"reason": reason, "observed_count": 0})],
 )
 def test_readout_mutants_are_detected(monkeypatch, name, mutant):
     for mod in (base("lane"), lane_cur):
@@ -400,4 +405,96 @@ def test_readout_mutants_are_detected(monkeypatch, name, mutant):
                 base("shadow").build_q8_shadow_blocker_review(_shadow_payloads(), **kwargs))
     assert snapshot() == expected
     monkeypatch.setattr(readout_owner, name, mutant)
+    if name.endswith("_impl"):  # facades bound the owner impl at import; rebind the facade reference too
+        for facade in (lane_cur, shadow_cur):
+            if hasattr(facade, name):
+                monkeypatch.setattr(facade, name, mutant)
     assert snapshot() != expected
+
+
+# --- facade monkeypatch seams: patching a BASE facade attribute must change current output exactly as at BASE ---
+
+
+def _seam_lane(mod, monkeypatch, tmp_path):
+    monkeypatch.setattr(mod, "load_quant_shadow_candidate_payloads", lambda **kw: [])
+    monkeypatch.setattr(mod, "build_quant_shadow_candidate_evaluation", lambda payloads: _lane_evaluation(True))
+    payload = mod.build_q8_lane_decision_table(day="2026-06-02")
+    return payload, mod.render_q8_lane_decision_table_markdown(payload)
+
+
+def _seam_shadow(mod, monkeypatch, tmp_path):
+    review = mod.build_q8_shadow_blocker_review(
+        _shadow_payloads(), minute_rows_by_symbol=MINUTES,
+        quant_shadow_evaluation={"evaluation_trust_gate": {"promotion_allowed": True}})
+    return review, mod.render_q8_shadow_blocker_review_markdown(review, day="2026-06-02")
+
+
+def _seam_hist(mod, monkeypatch, tmp_path):
+    reports = tmp_path / "reports"
+    if not reports.exists():
+        _build_reports(tmp_path, v2=False, allowed_day=1)
+    payload = mod.build_q8_historical_review_payload(reports_root=reports, start="2026-06-01", end="2026-06-05")
+    return payload, mod.render_q8_historical_review_markdown(payload)
+
+
+def _probe_class(name):
+    def factory(mod):
+        original = getattr(mod, name)
+        return type(f"Probe{name}", (original,), {"to_dict": lambda self, key: {**original.to_dict(self, key), "probe": 1}})
+    return factory
+
+
+SEAMS = [
+    ("lane", "_verdict", lambda mod: lambda row, *, promotion_allowed: {"verdict": "GOOD_BLOCK", "decision": "patched", "rationale": "p"}),
+    ("lane", "TRUSTED_FORWARD_MIN_COVERAGE", lambda mod: 0.0),
+    ("lane", "_reason_summary", lambda mod: lambda evaluation, *, limit=6: "patched"),
+    ("lane", "_forward_rows", lambda mod: lambda evaluation: [{"name": "only", "observed_count": 50, "coverage": 1.0}]),
+    ("lane", "_counts_by_name", lambda mod: lambda rows: {"breakout": 1}),
+    ("lane", "_rows", lambda mod, _o=None: (lambda value, o=mod._rows: o(value)[:2])),
+    ("lane", "_text", lambda mod: (lambda value, o=mod._text: o(value).upper())),
+    ("lane", "_int", lambda mod: (lambda value, default=0, o=mod._int: o(value, default) + 1)),
+    ("lane", "_float", lambda mod: (lambda value, default=0.0, o=mod._float: o(value, default) / 2)),
+    ("shadow", "_summarize_group", lambda mod: lambda reason, rows, *, promotion_allowed: {"reason": reason, "observed_count": len(rows)}),
+    ("shadow", "_checkpoint_values", lambda mod: lambda outcome: {"available": False}),
+    ("shadow", "_decision_for_row", lambda mod: lambda row: "patched"),
+    ("shadow", "_avg", lambda mod: lambda values: 42.0),
+    ("shadow", "_to_float", lambda mod: (lambda value, o=mod._to_float: None if o(value) is None else o(value) * 2)),
+    ("shadow", "_text", lambda mod: (lambda value, o=mod._text: o(value).upper())),
+    ("hist", "_decision_for_reclaim_subtype", lambda mod: lambda row: "patched"),
+    ("hist", "_aggregate_return_rows", lambda mod: lambda rows, key, *, limit=12: [{"name": key, "count": len(rows)}]),
+    ("hist", "_md_table", lambda mod: lambda headers, rows: ["<table>"]),
+    ("hist", "_avg", lambda mod: lambda values: 7.0),
+    ("hist", "_pct_from_ratio", lambda mod: lambda value: 1.0),
+    ("hist", "ForwardAccumulator", _probe_class("ForwardAccumulator")),
+    ("hist", "GroupAccumulator", _probe_class("GroupAccumulator")),
+    ("hist", "_promotion_recommendations", lambda mod: lambda payload: [{"candidate": "patched"}]),
+]
+_SEAM_RUNNERS = {"lane": _seam_lane, "shadow": _seam_shadow, "hist": _seam_hist}
+_SEAM_MODULES = {"lane": lane_cur, "shadow": shadow_cur, "hist": hist_cur}
+
+
+@pytest.mark.parametrize("key,name,factory", SEAMS, ids=[f"{k}.{n}" for k, n, _ in SEAMS])
+def test_facade_monkeypatch_seams_match_base(tmp_path, monkeypatch, key, name, factory):
+    run = _SEAM_RUNNERS[key]
+    current = _SEAM_MODULES[key]
+    unpatched = run(current, monkeypatch, tmp_path)
+    monkeypatch.undo()
+    outputs = []
+    for mod in (base(key), current):
+        monkeypatch.setattr(mod, name, factory(mod))
+        outputs.append(json.dumps(run(mod, monkeypatch, tmp_path), ensure_ascii=False, default=repr))
+        monkeypatch.undo()
+    assert outputs[1] == outputs[0]
+    assert outputs[1] != json.dumps(unpatched, ensure_ascii=False, default=repr)  # the seam is live, not ignored
+
+
+def test_historical_leaf_patches_do_not_reach_accumulator_methods(monkeypatch):
+    """Known, documented limit: accumulator methods use the owner's normalizers, not the facade attribute."""
+    monkeypatch.setattr(hist_cur, "_int", lambda value: 99)
+    acc = hist_cur.GroupAccumulator()
+    acc.add("d", {"candidate_count": 2})
+    assert acc.candidate_count == 2
+    # ...while the same patch does reach facade-routed bodies (observed 99 >= 30 changes the decision)
+    assert hist_cur._decision_for_reclaim_subtype({"observed_count": 1}) == "retain_under_observation"
+    monkeypatch.undo()
+    assert hist_cur._decision_for_reclaim_subtype({"observed_count": 1}) == "retain_observation_sample_small"

@@ -1,25 +1,42 @@
 from __future__ import annotations
 
 import json
+import sys as _sys
 from pathlib import Path
-from typing import Any, Dict, Mapping
+from typing import Any, Dict, Iterable, List, Mapping
 
 from libs.reporting.evaluation.q8_shadow_readout_p15 import (  # noqa: F401 - facade ABI re-exports
-    _counts_by_name,
+    _counts_by_name_impl,
     _float,
-    _forward_rows,
+    _forward_rows_impl,
     _int,
-    _reason_summary,
+    _reason_summary_impl,
     _rows,
     _text,
-    _verdict,
-    lane_decision_table_payload,
+    _verdict_impl,
+    lane_decision_table_payload_impl,
 )
-from libs.reporting.q8_evaluation_contract import TRUSTED_FORWARD_MIN_COVERAGE  # noqa: F401 - facade ABI re-export
+from libs.reporting.q8_evaluation_contract import TRUSTED_FORWARD_MIN_COVERAGE
 from libs.reporting.quant_shadow_candidate_evaluation import (
     build_quant_shadow_candidate_evaluation,
     load_quant_shadow_candidate_payloads,
 )
+
+
+def _forward_rows(evaluation: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    return _forward_rows_impl(evaluation, facade=_sys.modules[__name__])
+
+
+def _counts_by_name(rows: Iterable[Mapping[str, Any]]) -> Dict[str, int]:
+    return _counts_by_name_impl(rows, facade=_sys.modules[__name__])
+
+
+def _reason_summary(evaluation: Mapping[str, Any], *, limit: int = 6) -> str:
+    return _reason_summary_impl(evaluation, limit=limit, facade=_sys.modules[__name__])
+
+
+def _verdict(row: Mapping[str, Any], *, promotion_allowed: bool) -> Dict[str, str]:
+    return _verdict_impl(row, promotion_allowed=promotion_allowed, facade=_sys.modules[__name__])
 
 
 def build_q8_lane_decision_table(
@@ -29,7 +46,7 @@ def build_q8_lane_decision_table(
 ) -> Dict[str, Any]:
     payloads = load_quant_shadow_candidate_payloads(reports_root=reports_root, days=[str(day)[:10]])
     evaluation = build_quant_shadow_candidate_evaluation(payloads)
-    return lane_decision_table_payload(evaluation, day=day)
+    return lane_decision_table_payload_impl(evaluation, day=day, facade=_sys.modules[__name__])
 
 
 def _fmt_pct(value: Any) -> str:

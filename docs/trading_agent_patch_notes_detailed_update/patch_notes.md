@@ -1,5 +1,12 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P1.5 DEV-A Q8 FACADE MONKEYPATCH COMPATIBILITY 20261022
+**Stage:** f67bf1ec 이후 호환성 후속 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- Q8 owner 본문이 facade를 받아 helper와 신뢰 기준값을 호출 시점에 facade에서 조회하도록 변경. `q8_lane_decision_table._verdict`·`TRUSTED_FORWARD_MIN_COVERAGE`, `q8_shadow_blocker_review._summarize_group` 등을 monkeypatch하면 BASE와 똑같이 결과가 바뀜.
+- 다른 helper를 부르는 BASE 함수는 BASE 시그니처의 facade wrapper로 두고 owner `*_impl`에 `facade`를 넘김(기존 Reporter owner와 같은 방식). helper가 없는 단순 함수는 owner 객체를 그대로 재노출. 기준값·판정·중복 제거·신뢰 게이트 동작 변경 없음.
+- 의도적으로 남긴 제한: 누적기 클래스 메서드는 owner의 정규화 함수를 직접 사용(테스트로 명시). 회귀 테스트 추가: facade 속성 23개를 BASE와 현재에 똑같이 패치해 결과 일치 확인, 모든 BASE 함수·클래스 시그니처 비교.
+
 ## 2026-10-22 · P1.5 DEV-A Q8 HISTORICAL AGGREGATION RENDER AND SHADOW READOUT OWNERS 20261022
 **Stage:** e3dca2a0 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
 

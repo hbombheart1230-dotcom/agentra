@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys as _sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
@@ -8,9 +9,9 @@ from typing import Any, Dict, Iterable, List, Mapping, Sequence
 from libs.reporting.evaluation.q8_shadow_readout_p15 import (  # noqa: F401 - facade ABI re-exports
     _avg,
     _bool,
-    _checkpoint_values,
-    _decision_for_row,
-    _summarize_group,
+    _checkpoint_values_impl,
+    _decision_for_row_impl,
+    _summarize_group_impl,
     _text,
     _to_float,
 )
@@ -53,6 +54,23 @@ def _candidate_rows(payloads: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any
 
 def _dedupe_rows(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
     return dedupe_q8_candidates(rows)
+
+
+def _checkpoint_values(outcome: Mapping[str, Any]) -> Dict[str, Any]:
+    return _checkpoint_values_impl(outcome, facade=_sys.modules[__name__])
+
+
+def _decision_for_row(row: Mapping[str, Any]) -> str:
+    return _decision_for_row_impl(row, facade=_sys.modules[__name__])
+
+
+def _summarize_group(
+    reason: str,
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    promotion_allowed: bool,
+) -> Dict[str, Any]:
+    return _summarize_group_impl(reason, rows, promotion_allowed=promotion_allowed, facade=_sys.modules[__name__])
 
 
 def build_q8_shadow_blocker_review(

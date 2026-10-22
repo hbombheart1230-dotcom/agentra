@@ -1,27 +1,28 @@
 from __future__ import annotations
 
 import json
+import sys as _sys
 from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping
+from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
 from libs.reporting.evaluation.q8_historical_aggregation_p15 import (  # noqa: F401 - facade ABI re-exports
     ForwardAccumulator,
     GroupAccumulator,
     PatternRowFold,
     ShadowSummaryFold,
-    _aggregate_return_rows,
+    _aggregate_return_rows_impl,
     _avg,
-    _decision_for_reclaim_subtype,
+    _decision_for_reclaim_subtype_impl,
     _float,
     _int,
-    _pct_from_ratio,
+    _pct_from_ratio_impl,
     _text,
     _weighted_avg,
 )
 from libs.reporting.evaluation.q8_historical_render_p15 import (  # noqa: F401 - facade ABI re-exports
     _md_table,
-    render_q8_historical_review_markdown,
+    render_q8_historical_review_markdown_impl,
 )
 from libs.runtime.quant.vwap_reclaim_observation import classify_below_vwap_reclaim_observation
 
@@ -44,6 +45,10 @@ def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
 def _write_md(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(str(text or ""), encoding="utf-8-sig", newline="\n")
+
+
+def _pct_from_ratio(value: Any) -> float | None:
+    return _pct_from_ratio_impl(value, facade=_sys.modules[__name__])
 
 
 def _iter_days(start: str, end: str) -> Iterable[str]:
@@ -82,6 +87,10 @@ def _trade_id_from_path(path: Path) -> str:
         return ""
 
 
+def _decision_for_reclaim_subtype(row: Mapping[str, Any]) -> str:
+    return _decision_for_reclaim_subtype_impl(row, facade=_sys.modules[__name__])
+
+
 def _extract_trade_rows(reports_root: Path, *, start: str, end: str) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
     for path in sorted((reports_root / "trades").glob("*/**/reports/ai_trade_summary.json")):
@@ -117,6 +126,10 @@ def _extract_trade_rows(reports_root: Path, *, start: str, end: str) -> List[Dic
             }
         )
     return rows
+
+
+def _aggregate_return_rows(rows: Sequence[Mapping[str, Any]], key: str, *, limit: int = 12) -> List[Dict[str, Any]]:
+    return _aggregate_return_rows_impl(rows, key, limit=limit, facade=_sys.modules[__name__])
 
 
 def _daily_summary_rows(reports_root: Path, *, start: str, end: str) -> List[Dict[str, Any]]:
@@ -162,7 +175,7 @@ def _daily_summary_rows(reports_root: Path, *, start: str, end: str) -> List[Dic
 
 
 def _aggregate_shadow_summaries(reports_root: Path, *, start: str, end: str) -> Dict[str, Any]:
-    fold = ShadowSummaryFold()
+    fold = ShadowSummaryFold(facade=_sys.modules[__name__])
     for day in _iter_days(start, end):
         path = reports_root / "operator_summary" / "daily" / day / "daily_summary.json"
         if not path.exists():
@@ -185,7 +198,7 @@ def _pattern_rows_from_daily_summaries(
     section: str,
     group_key: str,
 ) -> List[Dict[str, Any]]:
-    fold = PatternRowFold(section, group_key)
+    fold = PatternRowFold(section, group_key, facade=_sys.modules[__name__])
     for day in _iter_days(start, end):
         path = reports_root / "operator_summary" / "daily" / day / "daily_summary.json"
         if not path.exists():
@@ -329,6 +342,10 @@ def build_q8_historical_review_payload(
     else:
         payload["promotion_recommendations"] = _promotion_recommendations(payload)
     return payload
+
+
+def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:
+    return render_q8_historical_review_markdown_impl(payload, facade=_sys.modules[__name__])
 
 
 def write_q8_historical_review(

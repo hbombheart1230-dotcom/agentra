@@ -1,7 +1,8 @@
 """Pure Q8 historical-review Markdown rendering (P1.5 DEV-A).
 
 Render-only: turns the ``q8_historical_review.v1`` payload into the operator Markdown.
-Writing (UTF-8 BOM, LF newlines) stays in ``libs.reporting.q8_historical_review``.
+Writing (UTF-8 BOM, LF newlines) stays in ``libs.reporting.q8_historical_review``; tables are built
+with the injected ``facade._md_table`` looked up at call time.
 """
 from __future__ import annotations
 
@@ -15,7 +16,7 @@ def _md_table(headers: Sequence[str], rows: Sequence[Sequence[Any]]) -> List[str
     return out
 
 
-def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:
+def render_q8_historical_review_markdown_impl(payload: Mapping[str, Any], *, facade: Any) -> str:
     trade = payload.get("trade_summary") if isinstance(payload.get("trade_summary"), Mapping) else {}
     lines: List[str] = [
         f"# Q8 Historical Review: {payload.get('start')} to {payload.get('end')}",
@@ -42,7 +43,7 @@ def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:
     daily_rows = list(payload.get("daily_rows") or [])
     if daily_rows:
         lines.extend(
-            _md_table(
+            facade._md_table(
                 ["Day", "Trades", "Closed", "Returns", "Missing", "Win", "Avg", "Raw", "Deduped", "Trusted", "Gate", "Allowed", "Rail"],
                 [
                     [
@@ -86,7 +87,7 @@ def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:
         rows = list(payload.get(key) or [])
         lines.extend([f"### {title}", ""])
         lines.extend(
-            _md_table(
+            facade._md_table(
                 ["Name", "Count", "Win", "Avg"],
                 [
                     [
@@ -112,14 +113,14 @@ def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:
         ]
     )
     lines.extend(
-        _md_table(
+        facade._md_table(
             ["Reason", "Count"],
             [[row.get("name"), row.get("count")] for row in list(payload.get("by_reason") or [])[:15]],
         )
     )
     lines.extend(["", "### Forward Blocker Review", ""])
     lines.extend(
-        _md_table(
+        facade._md_table(
             ["Reason", "n", "obs", "Latest", "MFE", "MAE", "Missed", "Adverse", "Decision"],
             [
                 [
@@ -154,21 +155,21 @@ def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:
         ]
     )
     lines.extend(
-        _md_table(
+        facade._md_table(
             ["Subtype", "Count"],
             [[row.get("name"), row.get("count")] for row in subtype_rows[:10]],
         )
     )
     lines.extend(["", "### Subtype V2 Counts", ""])
     lines.extend(
-        _md_table(
+        facade._md_table(
             ["Subtype V2", "Count"],
             [[row.get("name"), row.get("count")] for row in subtype_v2_rows[:12]],
         )
     )
     lines.extend(["", "### Subtype Forward Outcomes", ""])
     lines.extend(
-        _md_table(
+        facade._md_table(
             ["Subtype", "n", "obs", "3m", "5m", "15m", "30m", "60m", "MFE5", "MAE5", "Decision"],
             [
                 [
@@ -190,7 +191,7 @@ def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:
     )
     lines.extend(["", "## Recommendations", ""])
     lines.extend(
-        _md_table(
+        facade._md_table(
             ["Candidate", "Decision", "Evidence"],
             [
                 [
