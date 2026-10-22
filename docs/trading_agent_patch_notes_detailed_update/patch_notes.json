@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 346,
+  "entry_count": 347,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9130,6 +9130,32 @@
         "CLAUDE.md",
         "docs/ENGINEERING_DELIVERY_POLICY.md",
         "docs/refactor/README.md"
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_FULL_REPO_RF_TASK_LEDGER_20261023",
+      "title": "ROOT to LEAF 93 independent RF work packets",
+      "stage": "DOCS_ONLY / NO_SOURCE",
+      "types": [
+        "PROCESS",
+        "REFACTOR",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Created 93 exclusive P1.5 work packages covering 3,985 baseline Git files and 298 directories; moved 12 old stage checklists to criteria; established STATUS of roots/26 libs and flexible A/B CURRENT.",
+      "details": [
+        "No code, main, real trading, CI oracle, or safety mutation.",
+        "Frozen implementation packets and all P1.5.0–11 final acceptance criteria retained.",
+        "File-level single RF owner CSV pins baseline 63182ab2; completion requires peer verdict and exact hosted CI evidence.",
+        "D01/D02 operating contracts remain and are aligned separately; issue #20 not used as task feed."
+      ],
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/plan/STATUS.md",
+        "docs/refactor/plan/FILE_COVERAGE_63182ab2.csv",
+        "docs/refactor/plan/pending/",
+        "docs/refactor/plan/criteria/"
       ]
     }
   ]

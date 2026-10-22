@@ -4212,3 +4212,11 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLI
 - **문서만 변경**, main/실거래/브로커/Executor/Supervisor/CI 오라클/런타임 불변. UI JSON 기록 345→346건, Markdown 1건 추가. 신규 CI·코드 수용 검증은 본 문서 변경으로 완료되지 않음.
 
 Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.md`, `CLAUDE.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/README.md`.
+
+## 2026-10-23 — P15_FULL_REPO_RF_TASK_LEDGER_20261023
+**Stage:** DOCS_ONLY / P1.5 ALL ROOTS
+
+- 93개 독립 RF 작업(`pending/RF-xxx.md`), 전체 3,985개 파일·298개 디렉터리 전수, 10개 루트+26 libs 패키지 진행 상황판·전수 경로 CSV.
+- 기존 P1.5.0~11 체크 파일 12개는 `criteria/`로 원본 blob 그대로 이동, 원래 구현 패킷·안전 정책 유지.
+- CURRENT에서 A/B 1~5개 이상 가변 배정, GPT가 SHA/상대 CLI PASS/필수 CI 후 `done/` 이동.
+- 소스·main·실거래·CI 오라클 불변. UI patch note JSON/MD 346→347건.
