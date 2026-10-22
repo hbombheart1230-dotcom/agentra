@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 345,
+  "entry_count": 346,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9101,6 +9101,35 @@
         "CLAUDE.md",
         "docs/refactor/README.md",
         "docs/refactor/architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_PLAN_TRACKER_KO_V1_20261022",
+      "title": "Introduce concise Korean CURRENT and 12 linked P1.5 stage completion checklists",
+      "stage": "DOCS_ONLY / TRACKER_SETUP / NO_SOURCE_INTEGRATION",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Make CURRENT a concise Korean operational index, link the twelve existing P1.5.0–11 stage packets through pending/done checklists and two bounded troubleshooting cases, and separate developer D01/D02 rules from D00 common policy.",
+      "details": [
+        "Retain frozen V3 and entire repository scope; reference existing immutable implementation packets rather than duplicating/reinventing plans. All 12 P1.5 stages begin pending until reviewed integrated CI evidence confirms full stage closure.",
+        "Reduce D01/D02 and refactor README to current entrypoints and mandatory same-session cache rules; D00 remains the shared safety constitution, read on new session or changed/uncertain safety. Historic long instructions stay available in Git history.",
+        "Track obsolete B branch release/delete separately from GPT-owned A/B staged source/CI admission. No PR31 blanket merge, main/real trading modification, operational CLI spawn or claim of hosted CI PASS.",
+        "Preserve existing 345 paired UI patchnote records without renumbering or suppressing historical checks. Append exactly one new JSON/MD note."
+      ],
+      "impact": "Documentation/operating navigation only. Source/trading/safety behavior unchanged; final stage closures and exact-SHA CI remain pending.",
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/plan/pending/",
+        "docs/refactor/plan/troubleshooting/open/",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "docs/refactor/README.md"
       ]
     }
   ]

@@ -1,5 +1,8 @@
 # D00 — Agentra engineering constitution: DELIVERY FIRST / NO RECURSIVE AUDIT
 
+> **읽기 최적화 (2026-10-22):** [한글 CURRENT](refactor/work_orders/CURRENT.md)가 유일한 활성 작업 상황판이고, 실제 작업·완료 체크는 [plan/pending](refactor/plan/pending/)에, 개발자 실행·티키타카 규칙은 [D01 Codex](../AGENTS.md) / [D02 Claude](../CLAUDE.md)에 있다. 본 D00은 **GPT 및 전 팀에 적용하는 안전·공통 개발 원칙**으로 새 세션 또는 개정·충돌·안전 판단 때 확인한다. 같은 세션에서 이미 읽었고 파일 SHA/내용이 그대로면 전문 재독하지 않는다. 아래 오래된 날짜별 BATCH 지시는 새 작업권한이 아니다.
+
+
 ## 2026-10-22 ACTIVE EXECUTION LOCK — READ FIRST (FULL REPOSITORY)
 
 **Single live instruction pointer: [`docs/refactor/work_orders/CURRENT.md`](refactor/work_orders/CURRENT.md).** Product Owner confirms entire Agentra ROOT→LEAF P1.5.0–11 refactor, not only `libs/agents/`: all 26 `libs/` packages plus `.github/`, `apps/`, `graphs/`, `scripts/`, `tests/`, `docs/`, `deploy/`, `config/`, `data/` and root controls. Reuse frozen V3 and the **existing** P1.5 packets, original full-tree path/owner ledgers, and existing branches; DO NOT activate draft PR31 T00–T09 program or superseded BATCH03–05 as new dispatch. Safety/explicit latest user approval always wins.

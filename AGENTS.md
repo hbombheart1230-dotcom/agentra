@@ -1,51 +1,27 @@
-# D01 — Agentra Codex entry (AGENTS.md)
+# D01 — Codex DEV-B 개발 규칙 (AGENTS.md)
 
-## 2026-10-22 ACTIVE EXECUTION LOCK — READ FIRST
+**작업 입구:** [한글 CURRENT](docs/refactor/work_orders/CURRENT.md)에서 **Codex B 작업 링크**만 따라간다. 상세 구현은 해당 [P1.5 단계 체크리스트](docs/refactor/plan/pending/)의 **기존 원본 패킷** 링크를 따른다. 원본 구현 패킷과 동결 V3가 계약이며 새 T00~T09 설계는 비활성이다.
 
-**One active source-of-truth pointer:** [`docs/refactor/work_orders/CURRENT.md`](docs/refactor/work_orders/CURRENT.md). Entire Agentra ROOT→LEAF (not agents-only), frozen V3, existing P1.5.0–11 packets and original full-tree owner ledger. BATCH03–05 and PR31 T00–T09 proposals below are historical/non-executable as future orders. Old Issue #20 comments do not override current PO intent. Refresh real remote refs and explicit latest PO authority each session.
+## 세션 시작·재독 최소화
+- 새 세션: CURRENT 1회 → 자신의 pending/문제 해결 파일 → 필요 시 [D00](docs/ENGINEERING_DELIVERY_POLICY.md). 이미 같은 세션에서 문서를 읽었고 그 **blob SHA/내용이 변하지 않았음이 확인되면 전문 재독 생략**. 최초/변경/충돌/안전 불확실 시 해당 부분 재확인.
+- GitHub 원격 실제 HEAD·개발 브랜치·허용 파일 경계·검증/통합 상태를 커밋 직전 재확인. 이전 대화·완료된 명령/PR 댓글은 승인 권한이 아니다.
 
-CODEX DEV-B keeps Monitor/Commander/Operator UI assigned implementation. Codex has **one-time** sole local-CLI ownership of the obsolete B UI remote-ref housekeeping after fresh worktree/tag/SHA proofs while Claude credits are low; this does NOT grant branch creation, PR31 merge, safety edits or peer PASS.
+## B 개발 소유권·완료
+- 기존 B 브랜치: `work/p15-b-operator-structure-20261022`. **Operator UI/Brief P1.5.3, Monitor P1.5.6, Commander P1.5.7** 및 분리 승인된 연결 테스트. 다른 root/legacy consumer 변경은 기존 패킷의 정확한 권한과 소유자 확인 후. Claude 소유 파일·공통 DTO/Executor/Supervisor/Step5C는 별도 승인 없이 수정 금지.
+- 연결된 큰 실제 책임 경계 2~4개를 우선. 작은 helper·문서·검사 도구로 시간 채우기 금지. 기존 수용 구현 중복 개발 금지. 모든 변경은 패치노트 **JSON+MD 동시** 갱신.
+- 자체 정상 Python/`python -O`와 필요한 BASE 출력·호출 순서·예외·실패·경계 동등성 확인. PURE 구조 작업에 적대적 회귀 필요한 만큼 추가. 정상 baseline FAIL은 숨기지 말고 차단으로 기록, skip/xfail·oracle 완화 금지.
 
-Work only on approved A/B branch and exact paths, submit normal/`python -O`, fresh read-only opposite CLI verdict/exit (or PEER_DEFERRED), both JSON/MD UI patchnotes. GPT alone selects reviewed source into integration and checks actual SHA CI. No new plans/branches, runtime authority changes, main push or trading deployment.
+## 필수 티키타카 — 본인의 기존 로컬 PRIMARY에서 직접
+1. 구현·테스트 → 정확한 SHA로 commit/push. 그 뒤 **새로운 독립 읽기 전용 `claude -p` CLI 프로세스**를 본인 세션에서 호출. 상대방의 주 개발 세션을 검토자로 쓰거나 사용자에게 검토 프롬프트 전달 금지.
+2. BASE/CANDIDATE SHA, 변경 파일, 승인 계약/기존 불변조건을 제공. 리뷰어는 소스 검토만 하고 파일 수정/commit/push/하위 CLI 호출 금지. 실제 **종료 코드와 명시적 `PASS/REWORK/BLOCKED`**를 함께 기록하며 exit0만으로 PASS 처리하지 않는다. PURE 리뷰어 pytest 미실행은 `NOT_RUN`.
+3. `REWORK`면 실제 결함만 수정해 새 SHA로 새 CLI 검토. `PASS`면 GPT 수용 대기 및 다음 승인된 독립 작업. 크레딧/타임아웃/권한 한계는 제한적으로 확인하고 **SELF_PASS/PEER_DEFERRED** 기록; 별도 승인된 개발 계속, **미검증 코드는 통합 금지**. 반복 권한 변경/무한 재시도 금지.
 
-**The dated text below is retained for provenance; conflicting 'latest' / BATCH05 / fixed historical SHA assignments are INACTIVE.**
+## 일회성 B 브랜치 정리 소유권
+- 사용자 최신 지시로 Codex가 [구 브랜치 정리 체크리스트](docs/refactor/plan/troubleshooting/open/P15_BRANCH_CLEANUP.md)의 **지정된 원격 ref 1개만** 담당. 선행 `WORKTREE_RELEASED`는 보고된 상태일 뿐 삭제 증명이 아니므로, 모든 활성 워크트리·old SHA·archive tag·쓰기 프로세스·정당 권한을 다시 확인한다.
+- Claude의 이전 삭제 담당 지정은 이 작업에 한해 무효; 동시 삭제 금지. 거부 시 BLOCKED 기록하고 개발 지속. `main`, integration, PR31, 활성 개발 브랜치, 모든 소스/태그 임의 변경 금지.
 
-## HISTORICAL 2026-10-20 BATCH05 developer return contract (NOT active scope)
+## 안전·보고
+- Monitor는 OrderIntent만 만들며 Broker 실행 불가; 승인보다 Executor 가드 우선. 실거래 기본 OFF, allowlist/수량한도/중복 intent_id/run_id/UEF·Step5C 불변. 비밀키·운영 데이터 노출 금지.
+- 응답은 작업 링크·실제 BASE/NEW SHA·변경 경로·self normal/-O·상대 CLI exit/verdict/NOT_RUN·패치노트·남은 차단 1~2개만. **GPT가** 수용·선별 통합·CI 및 pending→done 완료 이동.
 
-**Read [BATCH05 exact four-group folder-scale work order](docs/refactor/work_orders/P15_BATCH05_FOLDER_SCALE_REPORTING_AND_OPERATOR_BRIEF_20261020.md) and latest CURRENT/Issue #20.** Four substantial source groups as one cohesive batch, not a function at a time or time padding. Exact writable paths only, historical pinned bodies/guards immutable, existing SHA baseline first. Same final report format as Claude BATCH04-A for **both** Codex and Claude: full BASE/CANDIDATE SHA and changed files, 4 delivered groups with LOC/ABI/byte/effect deltas, normal/-O and baseline-positive/mutation counts, peer independent tests versus NOT_RUN, local CI/hosted T3 blockers, patchnotes review actor, precise NOT_RUN. Final section MUST be `### 티키타카 실행 리스트` with **one row per actual new read-only opposite CLI invocation** (including BLOCKED and permission-denied attempts), full SHA/flags/isolation/exit/explicit verdict/tests/fix/new SHA.
-
-Permission restrictions are not solved by switching shells, writing alternate CI scripts, new wrappers, or disabling sandbox; follow D00 §3A strict child controls. External OS-enforced source read-only isolation is prerequisite for optional dangerous permission flags; without it strict native no-prompt/read-only, and honest REVIEWER_TESTS_NOT_RUN if Python denied. Supplementary JSON/patchnote denial must stay visible; author/GPT document review remains distinct from reviewer test. T3 Linux missing SHA and previously denied CI workflow edit remain `CI_REPAIR_BLOCKED_PENDING_PERMITTED_APPROVAL`, no workaround by new source work order. No main/live trade permission.
-
-
-**MUST READ FIRST:** [Engineering delivery constitution](docs/ENGINEERING_DELIVERY_POLICY.md) — **DELIVERY FIRST / NO RECURSIVE AUDIT**. This rule applies to **all** Codex, Claude, GPT/Work, developer and auditor work on **all branches and future stages**. Later explicit operator requests and non-bypassable safety controls prevail; historical material below or in old commits does NOT grant active branch/write/deployment authority.
-
-**DOC-FIRST milestone (completed 2026-10-20):** D7 document freeze was accepted by the operator; only specifically authorized source branches/tasks are now permitted. See [refactor README](docs/refactor/README.md). **Current task:** [docs/refactor/work_orders/CURRENT.md](docs/refactor/work_orders/CURRENT.md) + [P1.5 master #20](https://github.com/hbombheart1230-dotcom/agentra/issues/20). **Issues #16–#19 are CLOSED historical implementation/audit evidence, never a current task queue.** New tasks and roles require a fresh explicit operator-authorized #20 checkpoint and a newly assigned issue. Work from isolated clones/detached audit; **DO NOT modify dirty operational `C:\\Agentra`**, Q12 worktrees, production reports/data, broker, Supervisor/Executor/Step5C or `main` (policy-protected; GitHub branch protection NOT VERIFIED/previously reported absent) without specific separate authorization. Stable live order authority, UEF, UNKNOWN quarantine and immutable evidence remain fail-closed.
-
-**One sentence:** Developers implement scoped code; independent auditors evaluate its changed risk boundary **once**; GPT integrates approved exact paths promptly and owns root-wide completion. Avoid new meta-analysis tools, repeated whole-matrix auditing, cosmetic packages and extra branches. Full suite and real-data/UI acceptance belong on the composed integration SHA and final stage gate, not every developer-branch review.
-
-**Required delivery:** exact BASE/NEW SHA, changed paths, self-run tests, reused CI with its SHA, independent verdict, integration SHA/pending, blockers, NOT_RUN, next single action. Any tracked change updates both UI patch notes; user-facing ZIP includes changed files only. No self-authorized live trades/deployment, force-removal, CI/oracle weakening or branch garbage collection.
-
-## Codex-specific role assignment
-
-Your role is specified by the **latest explicit task issue**, not an old generic claim that Codex is always an auditor. Previous Codex developer/auditor lanes (#16/#19) are CLOSED evidence, not currently assigned roles. DOC convergence only until operator DOC_FREEZE acceptance; #20 plus explicit authorization assigns any next role. Implement only if designated developer; otherwise read-only independent audit and stop after verdict. Historical branch instructions and old static-analyzer loops are superseded. No unapproved new tests/scanners to prove checkers.
-
-## Standing two-part development and peer-CLI review contract (D01)
-
-**Primary CODEX_DEV_B is a developer, not an audit-only worker.** Once operator DOC_FREEZE acceptance explicitly authorizes P1.5 source development, own meaningful Monitor / Commander / Operator UI / pure State-integration batches under the GPT-assigned exact file list. Continue independent development between reviewed batches. Read the current #20 work order for per-slice scope/SHA; no automatic revival of old branches or fixed Runner/Python orchestration.
-
-**At the end of each substantive committed candidate** (after focused positive and hostile/negative tests), **Codex itself calls the Claude CLI as a NEW independent review process** using its normal available shell interface. Typical shape: `claude -p "<read-only request with exact BASE/CANDIDATE SHA, paths and tests>"`. The review uses `REVIEW_ONLY_NO_NESTED_CLI`, an isolated read-only checkout and the receipt defined in D00 §3A; never the concurrently running `CLAUDE_DEV_A` developer session. Capture the actual process exit and `PASS | REWORK | BLOCKED`, not a made-up successful receipt. On REWORK, repair own code, commit a new SHA and invoke another fresh Claude CLI review. On PASS, record peer evidence and continue the next owned development batch. On BLOCKED or denied CLI execution, preserve the checkpoint and ask the operator to resume; do not invent a background worker.
-
-**When invoked as `CODEX_CLI` reviewer by `CLAUDE_DEV_A`**, execute only the read-only bounded review against the supplied exact SHA; report concrete findings/test evidence to the Claude caller and EXIT. Do **not** implement, push, call Claude/another CLI again, or treat the review subprocess as a second standing developer session. Review mode always overrides the developer continuation instructions for that subprocess.
-
-**One PC, separate writer isolation:** both primary developers operate on the operator's same computer, but MUST NOT write to one dirty working tree concurrently. Validate actual installed CLI commands, credentials, shell permissions and approved workspace/branch before first handoff. No runner/daemon/scheduler, unsafe skip approvals, live orders or automatic main merge. The preceding DOC-FIRST restriction stays in force until explicit operator approval.
-
-
-## Current developer work-unit sizing and visible review (2026-10-20)
-
-For any **new operator-authorized** assignment, read [the substantive development-loop work order](docs/refactor/work_orders/P15_SUBSTANTIVE_DEV_LOOP_20261020.md) and D00 §3B. Treat one assignment as a **cohesive 60–120-minute-class code-development scope**, not a one-function extraction followed by an exit. Include several linked real implementation/regression/independent-review checkpoints; show each meaningful step and opposite-CLI feedback directly in the interactive CLI conversation seen in the operator's remote-control app. Don't spawn watchers/status files or manufacture reviews to fill time. Continue only through explicitly authorized READY slices; stop with `NO_MORE_AUTHORIZED_READY_SCOPE` otherwise. A peer PASS with frozen guard failures is **NOT integration-ready** and does not grant permission to weaken a historical contract.
-
-**ACTIVE PARALLEL, MINIMUM IDLE (D00 §3B):** As CODEX_DEV_B, continue substantial explicitly READY Operator UI/Monitor work while Claude develops distinct Reporter/Strategist/Scanner source. Self-launch local `claude -p` review for your own candidate; never make the operator activate the standing Claude developer chat as your reviewer. Respect exact separate writer paths; STOP on no authorized slice/security denial, no filler or invented PASS. GPT coordinates next real READY work and integration, not time padding.
-
-**MANDATORY REVIEW SELF-DISPATCH (D00 §3A, §5A):** After finishing its own approved work and pushing a candidate, **primary Codex itself MUST execute local `claude -p "<read-only exact-SHA review request>"` from its existing terminal/tool** and consume actual stdout, exit status and structured verdict there; genuine REWORK → Codex edits → new SHA → rerun NEW local `claude -p`. It MUST NOT ask operator to paste a separate review prompt into primary Claude's chat. When Codex itself is the read-only child reviewer for a Claude-authored change, respond and exit without creating nested CLI calls. Tech Lead gives the operator only the **coding-owner** start info unless Claude has its own independent coding task.
-
-**LATEST OWNER RULE — cross-CLI permission + final review ledger (2026-10-20):** Follow D00 §3A operator update. In the **OS-enforced isolated read-only reviewer snapshot only**, primary Codex may invoke `claude -p --dangerously-skip-permissions`; primary Claude may invoke `codex exec --dangerously-bypass-approvals-and-sandbox` to avoid reviewer approval-prompt stalls. These are not allowed in an unisolated operational workstation or with live credentials/writable repository; if isolation cannot be verified use documented strict no-prompt/read-only fallback and report BLOCKED. A child remains REVIEW_ONLY_NO_NESTED_CLI; no edits/commits/pushes. All final developer messages MUST END with `티키타카 실행 리스트`: every actual call (including permission BLOCKED), exact SHA/exit/verdict/actual reviewer tests/NOT_RUN/findings/rework/new SHA. Do not invent calls or treat exit 0 as PASS. Prioritize coherent 2–4 connected outcomes over microtask churn; never pad or self-expand scope.
+**공통 원칙 상세:** [D00](docs/ENGINEERING_DELIVERY_POLICY.md). 본 D01은 실행 방법만 정하며 신규 거래·PR·작업 범위 승인이 아니다. 옛 BATCH 기록은 Git 이력에 보존되지만 현재 수행 명령이 아니다.

@@ -4201,3 +4201,14 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - **Documentation only:** no runtime Python changes, new branch, local CLI launch, source composition, CI pass or release claim. JSON patchnotes 344→345 unique, paired Markdown appended.
 
 Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/README.md`.
+
+## 2026-10-22 — P15_PLAN_TRACKER_KO_V1_20261022
+**Stage:** DOCS_ONLY / TRACKER_SETUP / NO_SOURCE_INTEGRATION · **Tags:** DOCS · PROCESS · SAFETY
+
+- `CURRENT.md`를 **한글 20~30줄 상황판**으로 축소: GPT·Codex·Claude 현재 할 일은 **실제 상대경로 작업 파일 링크**만 표시하고 전체 ROOT→LEAF·V3·P1.5.0~11·기준 HEAD/CI/안전 경계 고정.
+- `docs/refactor/plan/pending/P1.5.0.md`~`P1.5.11.md` **12개**에 기존 확정 구현 패킷의 단계 ID별 체크와 미완료 증거란 생성. `done/`, `troubleshooting/open/closed/` 추가. 기존 코드의 일부 완료는 실제 증명 없이는 단계 전체 DONE으로 선언하지 않으며, 지팀장만 확인 후 폴더 이동.
+- 구 Codex UI 브랜치 단일 삭제와 GPT A/B/PR31 선별 수용/CI를 각각 문제 체크리스트에 분리. 크레딧 소진 시 SELF_PASS/PEER_DEFERRED 개발 지속, 독립검증 미완료 코드 통합 금지.
+- D01/D02에는 현재 소유권·읽기 캐시·로컬 상대 CLI 티키타카·크레딧 대응을 정리; D00은 전 팀 공통 헌법으로 보존하고 새 세션/변경/안전 불확실 시 읽는다. 리팩터링 README는 원본 계획·로드맵·범위 링크 중심으로 단축. 긴 과거 지시 문서는 기존 Git 이력에서 보존.
+- **문서만 변경**, main/실거래/브로커/Executor/Supervisor/CI 오라클/런타임 불변. UI JSON 기록 345→346건, Markdown 1건 추가. 신규 CI·코드 수용 검증은 본 문서 변경으로 완료되지 않음.
+
+Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.md`, `CLAUDE.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/README.md`.
