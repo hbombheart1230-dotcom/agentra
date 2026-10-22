@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 346,
+  "entry_count": 347,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9143,6 +9143,32 @@
         "apps/operator_ui/brief_parts/render/helpers.py",
         "apps/operator_ui/brief_parts/render/narrative.py",
         "apps/operator_ui/brief_parts/render/summary.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_B_OPERATOR_STRUCTURE_B3_20261022",
+      "title": "Consolidate run, trade, overview and status implementations in read_models",
+      "stage": "Developer source; tests and opposite CLI review pending",
+      "types": [
+        "REFACTOR"
+      ],
+      "status": "current",
+      "summary": "Move four unchanged read-only implementation modules into the existing read_models package with exact legacy aliases.",
+      "details": [
+        "Four root modules 1122->16LOC; read_models/runs.py, trades.py, overview.py and status.py preserve complete green51bb source bytes. IO stays inside the same unchanged read functions; existing API routes, core imports and effect order are retained. All16 moved legacy paths preserve module/callable identity.",
+        "Root Python file count remains35 for compatibility, while16 implementation files become shims. Core remains2309LOC versus2467BASE. Prior346 notes retained; exact current source maps add only four pairs and preserve historical pins. No policy, approval, order, persistence, LLM, scheduling or retry change."
+      ],
+      "impact": "Canonical read-model package boundaries only; no functional UI changes.",
+      "sources": [
+        "apps/operator_ui/data_access_run_read_models.py",
+        "apps/operator_ui/data_access_trade_read_models.py",
+        "apps/operator_ui/data_access_overview_projection.py",
+        "apps/operator_ui/data_access_status.py",
+        "apps/operator_ui/read_models/runs.py",
+        "apps/operator_ui/read_models/trades.py",
+        "apps/operator_ui/read_models/overview.py",
+        "apps/operator_ui/read_models/status.py"
       ]
     }
   ]

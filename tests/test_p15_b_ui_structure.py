@@ -133,3 +133,42 @@ def test_deleted_stage_marker_cannot_fall_back_to_an_earlier_stage(monkeypatch):
     assert S.ui_structure_selected()  # Real committed ancestry, not a mocked branch flag.
     with pytest.raises(AssertionError):
         S.verify_b_sources({S.UI_CORE: S.git_source(BASE, S.UI_CORE)})
+
+
+@pytest.mark.parametrize("payload", [None, {}, [], {"reader_ok": True},
+    {"reader_ok": False, "reader_error": "관측 failure"},
+    {"reader_ok": True, "positions_mismatch_detected": True, "reconciliation_applied": True, "reader_positions_count": "2", "persisted_positions_count": "bad"},
+    {"reader_ok": True, "positions_mismatch_detected": True, "positions_source": "unknown", "reader_positions_count": None}])
+def test_status_api_payloads_keep_real_base_bytes_and_sparse_exceptions(payload):
+    import apps.operator_ui.data_access_status as current
+    baseline = types.ModuleType("frozen_operator_status")
+    exec(compile(S.git_source(BASE, "apps/operator_ui/data_access_status.py"), "<actual51bbstatus>", "exec"), baseline.__dict__)
+    assert outcome(current.build_portfolio_sync_card, copy.deepcopy(payload)) == outcome(baseline.build_portfolio_sync_card, copy.deepcopy(payload))
+    for present in (False, True):
+        args = dict(report_exists=present, lifecycle_status="open", story_type="decision_only", generation={"status": "error", "reason": "offline"})
+        def call(fn):
+            try:
+                return ("value", json.dumps(fn(copy.deepcopy(payload), **args), ensure_ascii=False, separators=(",", ":")))
+            except Exception as exc:
+                return ("exception", type(exc).__name__, str(exc))
+        assert call(current.normalize_ai_report_diagnostics) == call(baseline.normalize_ai_report_diagnostics)
+
+
+def test_status_legacy_alias_mid_call_monkeypatch_is_seen_at_use_time(monkeypatch):
+    import apps.operator_ui.data_access_status as legacy
+    import apps.operator_ui.read_models.status as canonical
+    assert legacy is canonical
+    baseline = types.ModuleType("frozen_operator_status")
+    exec(compile(S.git_source(BASE, "apps/operator_ui/data_access_status.py"), "<actual51bbstatus>", "exec"), baseline.__dict__)
+    def run(module):
+        events = []
+        safe_int = module._safe_int
+        with monkeypatch.context() as patch:
+            def read(value, default=0):
+                events.append((value, default))
+                patch.setattr(module, "portfolio_positions_source_label", lambda source: "late:" + source)
+                return safe_int(value, default)
+            patch.setattr(module, "_safe_int", read)
+            value = module.build_portfolio_sync_card({"reader_ok": True, "positions_source": "reader", "reader_positions_count": "2"})
+        return value, events
+    assert run(legacy) == run(baseline)

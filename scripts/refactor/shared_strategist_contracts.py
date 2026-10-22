@@ -997,7 +997,7 @@ def _ui_structure_core_oracle():
     return (ast.fix_missing_locations(tree), owners)
 
 
-UI_STRUCTURE_MOVES = {'apps/operator_ui/data_access_brief_canonical_input.py': 'apps/operator_ui/brief_parts/input/canonical.py', 'apps/operator_ui/data_access_brief_compaction.py': 'apps/operator_ui/brief_parts/input/compaction.py', 'apps/operator_ui/data_access_brief_monitor_notes.py': 'apps/operator_ui/brief_parts/input/monitor_notes.py', 'apps/operator_ui/data_access_brief_input_sections.py': 'apps/operator_ui/brief_parts/input/sections.py', 'apps/operator_ui/data_access_brief_facts.py': 'apps/operator_ui/brief_parts/sections/facts.py', 'apps/operator_ui/data_access_brief_market_sections.py': 'apps/operator_ui/brief_parts/sections/market.py', 'apps/operator_ui/data_access_brief_monitor_sections.py': 'apps/operator_ui/brief_parts/sections/monitor.py', 'apps/operator_ui/data_access_brief_render_sections.py': 'apps/operator_ui/brief_parts/render/sections.py', 'apps/operator_ui/data_access_brief_render_fallback.py': 'apps/operator_ui/brief_parts/render/fallback.py', 'apps/operator_ui/data_access_brief_render_helpers.py': 'apps/operator_ui/brief_parts/render/helpers.py', 'apps/operator_ui/data_access_brief_render_narrative_helpers.py': 'apps/operator_ui/brief_parts/render/narrative.py', 'apps/operator_ui/data_access_brief_render_summary_derivation.py': 'apps/operator_ui/brief_parts/render/summary.py'}
+UI_STRUCTURE_MOVES = {'apps/operator_ui/data_access_brief_canonical_input.py': 'apps/operator_ui/brief_parts/input/canonical.py', 'apps/operator_ui/data_access_brief_compaction.py': 'apps/operator_ui/brief_parts/input/compaction.py', 'apps/operator_ui/data_access_brief_monitor_notes.py': 'apps/operator_ui/brief_parts/input/monitor_notes.py', 'apps/operator_ui/data_access_brief_input_sections.py': 'apps/operator_ui/brief_parts/input/sections.py', 'apps/operator_ui/data_access_brief_facts.py': 'apps/operator_ui/brief_parts/sections/facts.py', 'apps/operator_ui/data_access_brief_market_sections.py': 'apps/operator_ui/brief_parts/sections/market.py', 'apps/operator_ui/data_access_brief_monitor_sections.py': 'apps/operator_ui/brief_parts/sections/monitor.py', 'apps/operator_ui/data_access_brief_render_sections.py': 'apps/operator_ui/brief_parts/render/sections.py', 'apps/operator_ui/data_access_brief_render_fallback.py': 'apps/operator_ui/brief_parts/render/fallback.py', 'apps/operator_ui/data_access_brief_render_helpers.py': 'apps/operator_ui/brief_parts/render/helpers.py', 'apps/operator_ui/data_access_brief_render_narrative_helpers.py': 'apps/operator_ui/brief_parts/render/narrative.py', 'apps/operator_ui/data_access_brief_render_summary_derivation.py': 'apps/operator_ui/brief_parts/render/summary.py', 'apps/operator_ui/data_access_run_read_models.py': 'apps/operator_ui/read_models/runs.py', 'apps/operator_ui/data_access_trade_read_models.py': 'apps/operator_ui/read_models/trades.py', 'apps/operator_ui/data_access_overview_projection.py': 'apps/operator_ui/read_models/overview.py', 'apps/operator_ui/data_access_status.py': 'apps/operator_ui/read_models/status.py'}
 UI_STRUCTURE_PACKAGES = frozenset({
     "apps/operator_ui/brief_parts/__init__.py",
     "apps/operator_ui/read_models/__init__.py",
@@ -1057,7 +1057,7 @@ def verify_ui_structure(overrides=None):
     note = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
     old, current = json.loads(git_source(UI_STRUCTURE_BASE, note)), json.loads(read(note))
     require(current["entries"][:len(old["entries"])] == old["entries"], "UI structure historical patchnotes changed")
-    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 346,
+    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 347,
             "UI structure patchnotes count/version")
     md = "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
     require(read(md).startswith(git_source(UI_STRUCTURE_BASE, md)), "UI structure historical Markdown changed")
@@ -1085,6 +1085,8 @@ def verify_b_sources(overrides=None):
     verify_ui_structure({p:v for p,v in (overrides or {}).items() if p in B_RUNTIME})
     projected = dict(overrides or {})
     projected[UI_CORE] = git_source(B_SOURCE, UI_CORE)
+    for path in B_RUNTIME & UI_STRUCTURE_MOVES.keys():
+        projected[path] = git_source(B_SOURCE, path)  # Actual exact alias/canonical proof already ran.
     return _b_sources_before_ui_structure(projected)
 
 

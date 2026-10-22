@@ -4209,3 +4209,9 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Exact current byte/shim/path proof precedes unchanged R3/T4-A predicates. Preserve historical pins, outputs, effects,345 earlier notes; append346. No integration or runtime policy change.
 - T3 source probes resolve exact admitted aliases before original symbol-breadth checks; committed B1 ancestry prevents deletion-based stage fallback. No historical pin/predicate edits.
 - Source b63ba49fa2e6358d77d4eac27a678ce7a7f6fd55: normal/-O main187PASS plus distinct R3 68PASS, all exits0; Claude sourcePASS exit0, reviewer Python NOT_RUN (six denied calls, two Python attempts). Git receipt records limitations.
+
+## 2026-10-22 - P15_B_OPERATOR_STRUCTURE_B3_20261022
+**Stage:** Developer source; GPT admission pending.
+
+- Four root read-model implementations 1122->16LOC move unchanged into read_models/runs.py, trades.py, overview.py and status.py. Same read-function boundaries, routes, legacy imports and effects; no behavior or trading authority change.
+- All16 old/new module pairs retain identity. Root Python count35 stays35 for compatibility;16 implementation files become tiny shims. Core2467->2309LOC. Preserve346 prior notes and original historical pins; append347 with exact four-pair admission.
