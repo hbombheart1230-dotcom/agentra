@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys as _sys
 from collections import Counter
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -566,120 +567,27 @@ def _mean(values: Sequence[float]) -> float | None:
 
 
 def _checkpoint_value(row: Mapping[str, Any], checkpoint: str, metric: str) -> float | None:
-    outcome = _forward_outcome(row)
-    checkpoints = outcome.get("checkpoints")
-    if not isinstance(checkpoints, Mapping):
-        return None
-    payload = checkpoints.get(checkpoint)
-    if not isinstance(payload, Mapping) or _text(payload.get("status")) != "observed":
-        return None
-    value = payload.get(metric)
-    try:
-        if value in (None, ""):
-            return None
-        return float(value)
-    except Exception:
-        return None
+    from libs.reporting.evaluation.quant_shadow_forward_readout_p15 import _checkpoint_value_impl
+
+    return _checkpoint_value_impl(row, checkpoint, metric, facade=_sys.modules[__name__])
 
 
 def _forward_outcome_summary(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    observed_rows = [row for row in rows if _bool(_forward_outcome(row).get("available"))]
-    observed_days = Counter(_candidate_day(row) for row in observed_rows if _candidate_day(row))
-    largest_day_count = observed_days.most_common(1)[0][1] if observed_days else 0
-    horizon_counts: Dict[str, int] = {}
-    horizon_day_counts: Dict[str, int] = {}
-    for horizon in ("+3m", "+5m", "+15m", "+30m", "+60m", "EOD"):
-        horizon_rows = [
-            row
-            for row in rows
-            if _checkpoint_value(row, horizon, "return_pct") is not None
-        ]
-        horizon_counts[horizon] = len(horizon_rows)
-        horizon_day_counts[horizon] = len(
-            {_candidate_day(row) for row in horizon_rows if _candidate_day(row)}
-        )
-    return {
-        "measurement_contract_version": "forward_horizon_coverage.v2",
-        "candidate_count": len(rows),
-        "observed_count": len(observed_rows),
-        "observed_day_count": len(observed_days),
-        "sample_concentration": (
-            round(float(largest_day_count) / float(len(observed_rows)), 4)
-            if observed_rows
-            else 0.0
-        ),
-        "observed_days": [name for name, _count in observed_days.most_common(5)],
-        "observed_count_by_horizon": horizon_counts,
-        "observed_day_count_by_horizon": horizon_day_counts,
-        **{
-            f"observed_count_{horizon[1:-1]}m" if horizon.startswith("+") else "observed_count_eod": count
-            for horizon, count in horizon_counts.items()
-        },
-        **{
-            f"observed_day_count_{horizon[1:-1]}m" if horizon.startswith("+") else "observed_day_count_eod": count
-            for horizon, count in horizon_day_counts.items()
-        },
-        "avg_return_3m_pct": _mean([_checkpoint_value(row, "+3m", "return_pct") for row in rows]),
-        "avg_return_5m_pct": _mean([_checkpoint_value(row, "+5m", "return_pct") for row in rows]),
-        "avg_return_15m_pct": _mean([_checkpoint_value(row, "+15m", "return_pct") for row in rows]),
-        "avg_return_30m_pct": _mean([_checkpoint_value(row, "+30m", "return_pct") for row in rows]),
-        "avg_return_60m_pct": _mean([_checkpoint_value(row, "+60m", "return_pct") for row in rows]),
-        "avg_mfe_5m_pct": _mean([_checkpoint_value(row, "+5m", "mfe_pct") for row in rows]),
-        "avg_mae_5m_pct": _mean([_checkpoint_value(row, "+5m", "mae_pct") for row in rows]),
-        "coverage": (float(len(observed_rows)) / float(len(rows))) if rows else 0.0,
-    }
+    from libs.reporting.evaluation.quant_shadow_forward_readout_p15 import _forward_outcome_summary_impl
+
+    return _forward_outcome_summary_impl(rows, facade=_sys.modules[__name__])
 
 
 def _top_forward_groups(groups: Mapping[str, List[Mapping[str, Any]]], *, limit: int = 10) -> List[Dict[str, Any]]:
-    summaries: List[Dict[str, Any]] = []
-    for name, rows in groups.items():
-        summary = _forward_outcome_summary(rows)
-        if int(summary.get("observed_count") or 0) <= 0:
-            continue
-        summary["name"] = name
-        summaries.append(summary)
-    summaries.sort(
-        key=lambda item: (
-            float(item.get("avg_return_5m_pct") or item.get("avg_return_3m_pct") or -999.0),
-            int(item.get("observed_count") or 0),
-        ),
-        reverse=True,
-    )
-    return summaries[:limit]
+    from libs.reporting.evaluation.quant_shadow_forward_readout_p15 import _top_forward_groups_impl
+
+    return _top_forward_groups_impl(groups, limit=limit, facade=_sys.modules[__name__])
 
 
 def _entry_lane_forward_outcomes(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    by_lane: Dict[str, List[Mapping[str, Any]]] = {}
-    by_subtype: Dict[str, List[Mapping[str, Any]]] = {}
-    by_subtype_v2: Dict[str, List[Mapping[str, Any]]] = {}
-    by_lane_subtype: Dict[str, List[Mapping[str, Any]]] = {}
-    by_lane_subtype_v2: Dict[str, List[Mapping[str, Any]]] = {}
-    by_time_bucket: Dict[str, List[Mapping[str, Any]]] = {}
-    by_market_rail: Dict[str, List[Mapping[str, Any]]] = {}
-    for row in candidates:
-        observation = _entry_lane_observation(row)
-        lane = _text(observation.get("primary_lane")) or "unknown"
-        subtype = _text(observation.get("subtype")) or "unknown"
-        subtype_v2 = _text(observation.get("subtype_v2")) or subtype
-        time_bucket = _text(observation.get("time_bucket")) or "unknown"
-        market_rail = _text(observation.get("market_regime_rail")) or "unknown"
-        by_lane.setdefault(lane, []).append(row)
-        by_subtype.setdefault(subtype, []).append(row)
-        by_subtype_v2.setdefault(subtype_v2, []).append(row)
-        by_lane_subtype.setdefault(f"{lane}:{subtype}", []).append(row)
-        by_lane_subtype_v2.setdefault(f"{lane}:{subtype_v2}", []).append(row)
-        by_time_bucket.setdefault(time_bucket, []).append(row)
-        by_market_rail.setdefault(market_rail, []).append(row)
-    return {
-        "behavior_effect": "evaluation_only",
-        "by_primary_lane": _top_forward_groups(by_lane, limit=10),
-        "by_subtype": _top_forward_groups(by_subtype, limit=10),
-        "by_subtype_v2": _top_forward_groups(by_subtype_v2, limit=10),
-        "by_lane_subtype": _top_forward_groups(by_lane_subtype, limit=12),
-        "by_lane_subtype_v2": _top_forward_groups(by_lane_subtype_v2, limit=12),
-        "by_time_bucket": _top_forward_groups(by_time_bucket, limit=8),
-        "by_market_regime_rail": _top_forward_groups(by_market_rail, limit=8),
-    }
+    from libs.reporting.evaluation.quant_shadow_forward_readout_p15 import _entry_lane_forward_outcomes_impl
+
+    return _entry_lane_forward_outcomes_impl(candidates, facade=_sys.modules[__name__])
 
 
 def _scorecard_return_signal(row: Mapping[str, Any]) -> float | None:
@@ -1168,258 +1076,24 @@ def build_quant_shadow_candidate_evaluation(
 
 
 def _format_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
-    parts: List[str] = []
-    for row in list(rows)[:limit]:
-        name = _text(row.get("name"))
-        if not name:
-            continue
-        parts.append(f"{name} ({row.get('count') or 0})")
-    return ", ".join(parts) if parts else "none"
+    from libs.reporting.evaluation.quant_shadow_render_p15 import _format_rows_impl
+
+    return _format_rows_impl(rows, limit=limit, facade=_sys.modules[__name__])
 
 
 def _format_forward_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
-    parts: List[str] = []
-    for row in list(rows)[:limit]:
-        name = _text(row.get("name"))
-        if not name:
-            continue
-        observed = int(row.get("observed_count") or 0)
-        count = int(row.get("candidate_count") or 0)
-        ret5 = row.get("avg_return_5m_pct")
-        ret15 = row.get("avg_return_15m_pct")
-        mfe5 = row.get("avg_mfe_5m_pct")
-        mae5 = row.get("avg_mae_5m_pct")
-        parts.append(
-            f"{name} ({observed}/{count}, "
-            f"+5m {float(ret5):.4f}%"
-            if ret5 is not None
-            else f"{name} ({observed}/{count}, +5m n/a"
-        )
-        if parts:
-            last = parts[-1]
-            if ret15 is not None:
-                last += f", +15m {float(ret15):.4f}%"
-            if mfe5 is not None:
-                last += f", mfe5 {float(mfe5):.4f}%"
-            if mae5 is not None:
-                last += f", mae5 {float(mae5):.4f}%"
-            parts[-1] = last + ")"
-    return "; ".join(parts) if parts else "none"
+    from libs.reporting.evaluation.quant_shadow_render_p15 import _format_forward_rows_impl
+
+    return _format_forward_rows_impl(rows, limit=limit, facade=_sys.modules[__name__])
 
 
 def _format_scorecard_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
-    parts: List[str] = []
-    for row in list(rows)[:limit]:
-        name = _text(row.get("name"))
-        if not name:
-            continue
-        observed = int(row.get("observed_count") or 0)
-        count = int(row.get("candidate_count") or 0)
-        ret5 = row.get("avg_return_5m_pct")
-        ret15 = row.get("avg_return_15m_pct")
-        mfe5 = row.get("avg_mfe_5m_pct")
-        mae5 = row.get("avg_mae_5m_pct")
-        state = _text(row.get("review_state"))
-        text = (
-            f"{name} ({observed}/{count}, "
-            f"+5m {float(ret5):.4f}%"
-            if ret5 is not None
-            else f"{name} ({observed}/{count}, +5m n/a"
-        )
-        if ret15 is not None:
-            text += f", +15m {float(ret15):.4f}%"
-        if mfe5 is not None:
-            text += f", mfe5 {float(mfe5):.4f}%"
-        if mae5 is not None:
-            text += f", mae5 {float(mae5):.4f}%"
-        if state:
-            text += f", state {state}"
-        parts.append(text + ")")
-    return "; ".join(parts) if parts else "none"
+    from libs.reporting.evaluation.quant_shadow_render_p15 import _format_scorecard_rows_impl
+
+    return _format_scorecard_rows_impl(rows, limit=limit, facade=_sys.modules[__name__])
 
 
 def render_quant_shadow_candidate_evaluation_lines(payload: Mapping[str, Any] | None) -> List[str]:
-    evaluation = dict(payload or {})
-    if not evaluation or int(evaluation.get("candidate_count") or 0) <= 0:
-        return []
-    lines = [
-        "",
-        "## Quant Shadow Candidates",
-        "",
-        "- Q8 shadow candidates: "
-        f"{evaluation.get('candidate_count') or 0} candidates / "
-        f"deduped {evaluation.get('deduped_candidate_count') or evaluation.get('candidate_count') or 0} / "
-        f"duplicates {evaluation.get('duplicate_candidate_count') or 0} / "
-        f"{evaluation.get('payload_count') or 0} payloads / "
-        f"evaluated {evaluation.get('evaluated_count') or 0} / "
-        f"would-enter {evaluation.get('would_enter_count') or 0} / "
-        f"opening-probe {evaluation.get('opening_momentum_probe_would_enter_count') or 0} / "
-        f"largecap-surge {evaluation.get('opening_largecap_surge_would_enter_count') or 0} / "
-        f"guard-blocked {evaluation.get('guard_blocked_count') or 0} "
-        f"(actionable {evaluation.get('actionable_guard_blocked_count') or 0})",
-        f"- Q8 shadow forward base: {evaluation.get('forward_base_available_count') or 0}/"
-        f"{evaluation.get('candidate_count') or 0} candidates have baseline minute price "
-        f"(coverage {float(evaluation.get('forward_base_coverage') or 0.0):.1%})",
-        f"- Q8 shadow forward outcome: {evaluation.get('forward_outcome_available_count') or 0}/"
-        f"{evaluation.get('deduped_candidate_count') or evaluation.get('candidate_count') or 0} deduped candidates have "
-        "at least one trusted forward checkpoint "
-        f"(coverage {float(evaluation.get('forward_outcome_coverage') or 0.0):.1%})",
-        f"- Roles: {_format_rows(list(evaluation.get('by_role') or []))}",
-        f"- Reasons: {_format_rows(list(evaluation.get('by_reason') or []))}",
-        f"- Tactics: {_format_rows(list(evaluation.get('by_tactic_id') or []))}",
-        f"- Suitability: {_format_rows(list(evaluation.get('by_tactic_suitability_tier') or []))}",
-        f"- Cost floor: {_format_rows(list(evaluation.get('by_cost_floor_state') or []))}",
-        f"- Failure axis: {_format_rows(list(evaluation.get('by_primary_failure_axis') or []))}",
-    ]
-    trust_gate = (
-        evaluation.get("evaluation_trust_gate")
-        if isinstance(evaluation.get("evaluation_trust_gate"), Mapping)
-        else {}
-    )
-    if trust_gate:
-        lines += [
-            "",
-            "### Q8 Evaluation Trust Gate",
-            "",
-            "- Trust gate: "
-            f"`{trust_gate.get('status') or 'unknown'}` / "
-            f"promotion_allowed `{bool(trust_gate.get('promotion_allowed'))}`",
-            "- Trust evidence: "
-            f"raw {trust_gate.get('raw_candidate_count') or 0}, "
-            f"deduped {trust_gate.get('deduped_candidate_count') or 0}, "
-            f"duplicates {trust_gate.get('duplicate_count') or 0} "
-            f"({float(trust_gate.get('duplicate_rate') or 0.0):.1%}), "
-            f"trusted forward {trust_gate.get('trusted_forward_count') or 0} "
-            f"({float(trust_gate.get('trusted_forward_coverage') or 0.0):.1%})",
-            f"- Trust block reasons: {', '.join(str(x) for x in list(trust_gate.get('reasons') or [])) or 'none'}",
-            "- Promotion-ready candidates: "
-            f"{_format_scorecard_rows(list(trust_gate.get('promotion_ready_candidates') or []), limit=4)}",
-        ]
-    readiness = evaluation.get("shadow_readiness") if isinstance(evaluation.get("shadow_readiness"), Mapping) else {}
-    if readiness:
-        lines.append(
-            "- Q8 shadow readiness: "
-            f"`{readiness.get('status') or 'not_available'}` / "
-            f"action `{readiness.get('action') or 'hold'}` / "
-            f"scope `{readiness.get('promotion_scope') or 'none'}` / "
-            f"sample {readiness.get('evaluated_count') or 0}/"
-            f"{readiness.get('candidate_count') or 0}"
-        )
-    promotion = evaluation.get("promotion_candidate") if isinstance(evaluation.get("promotion_candidate"), Mapping) else {}
-    if promotion:
-        lines.append(
-            "- Q8 promotion candidate: "
-            f"{promotion.get('candidate') or 'hold'} / "
-            f"confidence {promotion.get('confidence') or 'none'} / "
-            f"{promotion.get('reason') or '-'} / "
-            f"action {promotion.get('recommended_action') or 'hold'}"
-        )
-        if promotion.get("promotion_state"):
-            lines.append(
-                "- Q8 promotion state: "
-                f"{promotion.get('promotion_state') or 'unknown'} / "
-                f"effect {promotion.get('behavior_effect') or 'unknown'} / "
-                f"guard {promotion.get('active_guard_reason') or '-'}"
-            )
-        counts = promotion.get("counts") if isinstance(promotion.get("counts"), Mapping) else {}
-        if counts:
-            lines.append(
-                "- Q8 promotion counts: "
-                f"cost-edge {counts.get('cost_edge') or 0}, "
-                f"runner-up {counts.get('runner_up') or 0}, "
-                f"entry-guard {counts.get('entry_guard') or 0}"
-            )
-    no_trade = evaluation.get("no_trade_scorecard") if isinstance(evaluation.get("no_trade_scorecard"), Mapping) else {}
-    if no_trade:
-        lines += [
-            "",
-            "### Q8 No-Trade Scorecard",
-            "",
-            "- No-trade scorecard: "
-            f"`{no_trade.get('status') or 'unknown'}` / "
-            f"evidence `{no_trade.get('evidence_quality') or 'unknown'}` / "
-            f"forward {no_trade.get('forward_outcome_available_count') or 0}/"
-            f"{no_trade.get('candidate_count') or 0} "
-            f"({float(no_trade.get('forward_outcome_coverage') or 0.0):.1%})",
-            f"- Verdict: {no_trade.get('verdict') or '-'}",
-            "- Correctly blocked signals: "
-            f"{_format_scorecard_rows(list(no_trade.get('correctly_blocked_signals') or []), limit=4)}",
-            "- Missed-opportunity candidates: "
-            f"{_format_scorecard_rows(list(no_trade.get('missed_opportunity_candidates') or []), limit=4)}",
-            "- Promotion watchlist: "
-            f"{_format_scorecard_rows(list(no_trade.get('promotion_watchlist') or []), limit=4)}",
-            f"- Next review action: `{no_trade.get('next_review_action') or 'continue_observation'}`",
-        ]
-    opening_probe = evaluation.get("opening_momentum_probe") if isinstance(evaluation.get("opening_momentum_probe"), Mapping) else {}
-    if opening_probe:
-        lines += [
-            "- Opening momentum probe shadow: "
-            f"{opening_probe.get('would_enter_count') or 0}/"
-            f"{opening_probe.get('candidate_count') or 0} would-probe "
-            f"(observation only)",
-            f"- Opening probe reasons: {_format_rows(list(opening_probe.get('by_reason') or []))}",
-            f"- Opening probe symbols: {_format_rows(list(opening_probe.get('by_would_enter_symbol') or []))}",
-        ]
-        if opening_probe.get("zero_would_enter_explanation"):
-            lines.append(f"- Opening probe zero-pass note: {opening_probe.get('zero_would_enter_explanation')}")
-    largecap_probe = evaluation.get("opening_largecap_surge") if isinstance(evaluation.get("opening_largecap_surge"), Mapping) else {}
-    if largecap_probe:
-        lines += [
-            "- Opening largecap surge shadow: "
-            f"{largecap_probe.get('would_enter_count') or 0}/"
-            f"{largecap_probe.get('candidate_count') or 0} would-probe "
-            f"(observation only)",
-            f"- Opening largecap reasons: {_format_rows(list(largecap_probe.get('by_reason') or []))}",
-            f"- Opening largecap symbols: {_format_rows(list(largecap_probe.get('by_would_enter_symbol') or []))}",
-        ]
-        if largecap_probe.get("zero_would_enter_explanation"):
-            lines.append(f"- Opening largecap zero-pass note: {largecap_probe.get('zero_would_enter_explanation')}")
-    entry_shape = evaluation.get("entry_shape_diagnostics") if isinstance(evaluation.get("entry_shape_diagnostics"), Mapping) else {}
-    if entry_shape:
-        lines += [
-            "- Entry shape diagnostics: "
-            f"pullback/vwap blocked {entry_shape.get('pullback_or_vwap_blocked_count') or 0}, "
-            f"breakout ready-like {entry_shape.get('breakout_ready_like_count') or 0}, "
-            f"breakout not-ready {entry_shape.get('breakout_not_ready_count') or 0}",
-            f"- Entry shapes: {_format_rows(list(entry_shape.get('by_shape') or []))}",
-        ]
-    entry_lane = (
-        evaluation.get("entry_lane_observation")
-        if isinstance(evaluation.get("entry_lane_observation"), Mapping)
-        else {}
-    )
-    if entry_lane and int(entry_lane.get("candidate_count") or 0) > 0:
-        lines += [
-            "- Entry lane observation: "
-            f"{entry_lane.get('candidate_count') or 0} candidates / "
-            f"{_format_rows(list(entry_lane.get('by_primary_lane') or []), limit=8)}",
-            f"- Entry lane subtypes: {_format_rows(list(entry_lane.get('by_lane_subtype') or []), limit=8)}",
-            f"- Entry lane time buckets: {_format_rows(list(entry_lane.get('by_time_bucket') or []), limit=6)}",
-            f"- Entry lane market rails: {_format_rows(list(entry_lane.get('by_market_regime_rail') or []), limit=6)}",
-        ]
-    lane_forward = (
-        evaluation.get("entry_lane_forward_outcomes")
-        if isinstance(evaluation.get("entry_lane_forward_outcomes"), Mapping)
-        else {}
-    )
-    if lane_forward:
-        lines += [
-            "- Entry lane forward outcomes: "
-            f"{_format_forward_rows(list(lane_forward.get('by_primary_lane') or []), limit=5)}",
-            "- Entry lane subtype forward outcomes: "
-            f"{_format_forward_rows(list(lane_forward.get('by_lane_subtype') or []), limit=5)}",
-            "- Entry lane market-rail forward outcomes: "
-            f"{_format_forward_rows(list(lane_forward.get('by_market_regime_rail') or []), limit=5)}",
-        ]
-    below_vwap = (
-        evaluation.get("below_vwap_reclaim_observation")
-        if isinstance(evaluation.get("below_vwap_reclaim_observation"), Mapping)
-        else {}
-    )
-    if below_vwap and int(below_vwap.get("candidate_count") or 0) > 0:
-        lines.append(
-            "- Below-VWAP reclaim observation: "
-            f"{below_vwap.get('candidate_count') or 0} candidates / "
-            f"{_format_rows(list(below_vwap.get('by_subtype') or []), limit=8)}"
-        )
-    return lines
+    from libs.reporting.evaluation.quant_shadow_render_p15 import render_quant_shadow_candidate_evaluation_lines_impl
+
+    return render_quant_shadow_candidate_evaluation_lines_impl(payload, facade=_sys.modules[__name__])
