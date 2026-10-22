@@ -1,5 +1,12 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P1.5 DEV-A Q8 HISTORICAL AGGREGATION RENDER AND SHADOW READOUT OWNERS 20261022
+**Stage:** e3dca2a0 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- Q8 사후분석 `q8_historical_review`의 누적기·일별 집계·Markdown 렌더링을 `evaluation/q8_historical_aggregation_p15`(346줄)와 `q8_historical_render_p15`(224줄)로 이동. 읽기·쓰기·데이터 소스 선택은 facade 유지(926→354줄), 출력 바이트(BOM·LF)와 읽기/쓰기 순서 동일.
+- `q8_shadow_blocker_review`의 그룹 요약과 `q8_lane_decision_table`의 판정·표 구성을 `q8_shadow_readout_p15`(299줄)로 이동(344→224, 263→125줄). 신뢰 게이트·중복 제거·로더·렌더링·쓰기는 facade 유지, `q8_evaluation_contract` 무수정.
+- 신규 테스트 2개(BASE 동등성, 경계)로 출력 바이트·예외·Path 호출 순서 비교, 가중 평균·동률 순서·판정 기준을 바꾸는 변형 검출. facade import 시 기존 `libs.reporting.evaluation` 패키지가 함께 로드됨(순환 없음, 파일 생성 없음 확인).
+
 ## 2026-10-21 · P1.5 DEV-A REPORTER PURE OWNER RESPONSIBILITY SPLIT 20261021
 **Stage:** 309e3a48 이후 구조 리팩터링 후보 (BASE d7ab8294, 독립 검토·통합 대기) · **Tags:** REFACTOR · TEST
 

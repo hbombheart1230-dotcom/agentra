@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 340,
+  "entry_count": 341,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8967,6 +8967,32 @@
         "tests/test_p15_a_reporter_pure_parity.py",
         "tests/test_p15_a_reporter_pure_boundaries.py",
         "tests/test_work_reporter_seed_migration.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 HISTORICAL AGGREGATION RENDER AND SHADOW READOUT OWNERS 20261022",
+      "title": "Move Q8 post-hoc aggregation, Markdown rendering and shadow/lane readout into three pure evaluation owners with unchanged output",
+      "stage": "Structural refactor candidate on work/p15-a-reporter-pure-20261021 after e3dca2a0 (SOURCE_ACCEPTED_WITH_PEER_TEST_LIMITATION); read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "q8_historical_review keeps its reads, writes and data-source selection while accumulators, folds and Markdown move to q8_historical_aggregation_p15 and q8_historical_render_p15; shadow-blocker group summaries and lane verdict composition move to q8_shadow_readout_p15.",
+      "details": [
+        "Facade lines: q8_historical_review 926->354, q8_shadow_blocker_review 344->224, q8_lane_decision_table 263->125. New owners under libs/reporting/evaluation: q8_historical_aggregation_p15 (346), q8_historical_render_p15 (224), q8_shadow_readout_p15 (299). Every BASE function, class, constant and libs.* import name stays importable from its facade as the same object; __all__ and public signatures are unchanged.",
+        "Facades still own day iteration, daily_summary/trade/candidate-log reads, the classify_below_vwap_reclaim_observation fallback, forward-outcome attachment, canonical dedupe, trust-gate construction, loaders and JSON/Markdown writes (UTF-8 BOM and LF for the historical Markdown). q8_evaluation_contract and quant_shadow_candidate_evaluation are unchanged; the lane coverage threshold is read from the contract.",
+        "New tests compare BASE d7ab8294 facades with the current ones over a synthetic reports tree: payloads, written bytes, exceptions and the full Path read/exists/glob/mkdir/write order. Mutating weighting, tie order, subtype decisions, pattern counters, coverage threshold, verdict order or checkpoint parsing in the owners fails the comparison.",
+        "Importing a Q8 facade now also initializes the existing libs.reporting.evaluation package (its __init__ is outside this change). The boundary test checks this import from an empty directory: no cycle and no files written."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.",
+      "sources": [
+        "libs/reporting/evaluation/q8_historical_aggregation_p15.py",
+        "libs/reporting/evaluation/q8_historical_render_p15.py",
+        "libs/reporting/evaluation/q8_shadow_readout_p15.py",
+        "tests/test_p15_a_q8_historical_pure_parity.py",
+        "tests/test_p15_a_q8_reporting_boundaries.py"
       ]
     }
   ]
