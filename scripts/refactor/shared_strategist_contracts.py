@@ -1012,12 +1012,15 @@ UI_STRUCTURE_CHECKS = frozenset({
     "scripts/refactor/shared_role_contracts.py", UI_STRUCTURE_TEST,
     "tests/test_p153_operator_ui_moved_bodies.py",
     "tests/test_p162_t4a_extraction_gates.py",
+    "tests/test_p159_current_owner_contract_gates.py",
 })
 UI_STRUCTURE_RUNTIME = frozenset({UI_CORE, UI_STRUCTURE_RESPONSE, UI_STRUCTURE_RUN}) | frozenset(UI_STRUCTURE_MOVES) | frozenset(UI_STRUCTURE_MOVES.values())
 
 
 def ui_structure_selected():
-    return (ROOT / UI_STRUCTURE_RESPONSE).exists()
+    return ((ROOT / UI_STRUCTURE_RESPONSE).exists() or subprocess.run(
+        ["git", "merge-base", "--is-ancestor", "b55a6b2640218e7319f61e0c2223a3a866b97d5e", "HEAD"],
+        cwd=ROOT, capture_output=True).returncode == 0)
 
 
 def verify_ui_structure(overrides=None):

@@ -124,3 +124,12 @@ def test_packaged_owner_module_and_all_original_callable_objects_are_identical(l
             S.verify_ui_structure({path: (S.ROOT / path).read_text(encoding="utf-8") + "\n__import__('socket')\n"})
     with pytest.raises(AssertionError, match="identity shim"):
         S.verify_ui_structure({legacy: S.ui_structure_shim_source(canonical).replace("sys.modules[__name__] = _owner", "sys.modules[__name__] = None")})
+
+
+def test_deleted_stage_marker_cannot_fall_back_to_an_earlier_stage(monkeypatch):
+    original_exists = Path.exists
+    marker = S.ROOT / S.UI_STRUCTURE_RESPONSE
+    monkeypatch.setattr(Path, "exists", lambda path: False if path == marker else original_exists(path))
+    assert S.ui_structure_selected()  # Real committed ancestry, not a mocked branch flag.
+    with pytest.raises(AssertionError):
+        S.verify_b_sources({S.UI_CORE: S.git_source(BASE, S.UI_CORE)})

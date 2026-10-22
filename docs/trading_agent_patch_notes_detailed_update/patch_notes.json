@@ -9113,7 +9113,8 @@
       "summary": "Replace twelve flat implementation modules with exact module-identity aliases to coherent brief_parts subpackages.",
       "details": [
         "Twelve root implementation files 2535->48LOC; canonical source bytes match green51bb. Top-level Python count35 stays35 to preserve all legacy module paths; no duplicated implementation. Input4/sections3/render5 canonical Owners, old and new imports return the same modules and callable objects.",
-        "Exact closed new-stage path/shim/byte proof precedes original R3/T4-A source inspection. Historical SHA pins, ledgers, predicates, outputs and facade imports retained. Previous345 note records preserved; no feature, policy, IO, LLM or execution change."
+        "Exact closed new-stage path/shim/byte proof precedes original R3/T4-A source inspection. Historical SHA pins, ledgers, predicates, outputs and facade imports retained. Previous345 note records preserved; no feature, policy, IO, LLM or execution change.",
+        "T3 current source probes follow only admitted whole-module aliases before the original symbol-breadth and AST checks. Committed B1 ancestry prevents deletion of the stage marker from falling back to a weaker historical stage. No historical predicate or oracle changed."
       ],
       "impact": "Folder structure and ownership only.",
       "sources": [
