@@ -4165,3 +4165,12 @@ Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
 - 검증·통합·거래 안전·main 승인 불변, GitHub 댓글이 로컬 CLI를 자동 실행하지는 않는다.
 
 Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
+
+## 2026-10-22 · P1.5 GIT PUSH HANDOFF ISSUE20 GPT OWNERSHIP 20261022
+**Stage:** 개발 브랜치 푸시 인계 · Issue #20 지팀장 소유 · **Tags:** PROCESS · TEST
+
+- Claude·Codex는 승인 범위 코드·테스트·UI 패치노트 Git 브랜치 푸시로 인계한다. `gh` 로그인·토큰 또는 Issue #20 개발자 댓글은 필수 아님.
+- 필요한 테스트/독립 검토 결과는 커밋 본문 또는 간결한 브랜치 증거에 남기고 전체 로컬 로그는 보존한다. 지팀장은 Git HEAD·변경 코드·테스트·CI를 직접 확인해 #20에 수용·수정·통합 결정을 기록한다.
+- 개발 CLI 사용자 화면의 최종 보고는 3~5줄로 축약하고, 이전 장문 보고·표 의무는 대체한다. 거래 안전, 이력 검증, 필수 독립 검토, CI, main 승인은 유지한다.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
