@@ -38,6 +38,7 @@ ALLOWED_CHANGES = {
     "tests/test_p15_a_q8_quant_shadow_readout_parity.py",
     "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py",
     "tests/test_p15_a_q8_reporting_boundaries.py",  # exact path-only companion admission
+    "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py",  # drops the facade from its read-only list (now writable)
     "tests/test_work_reporter_seed_migration.py",  # exact path-only companion admission
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
