@@ -43,6 +43,11 @@ ALLOWED_CHANGES = {
     FACADE, PARTS + "__init__.py", *OWNERS,
     "tests/test_p15_a_full_chain_review_parity.py", "tests/test_p15_a_full_chain_review_boundaries.py",
     "tests/test_work_reporter_seed_migration.py",  # exact path-only companion admission
+    "libs/reporting/alpha_research_board/builder.py",  # large-first Reporter wave (Tech Lead 6337591262)
+    "libs/reporting/alpha_research_board/candidate_rows.py",
+    "libs/reporting/alpha_research_board/board_assembly.py",
+    "tests/test_p15_a_alpha_research_board_parity.py",
+    "tests/test_p15_a_alpha_research_board_boundaries.py",
     "tests/test_p15_a_reporter_ai_review_boundaries.py", "tests/test_p15_a_q8_reporting_boundaries.py",
     "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py", "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",

@@ -1,5 +1,13 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P1.5 DEV-A LARGE-FIRST ALPHA RESEARCH BOARD BUILDER SPLIT 20261022
+**Stage:** large-first Reporter wave (지팀장 6337591262), fbcf2b00 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- `alpha_research_board/builder.py` 701→371줄. 파일 읽기·glob(`_prospective_concentrations`, `_large_cap_candidate`), 모든 reader/builder/시계/canonicalize 호출 순서를 가진 `build_alpha_research_board` 오케스트레이션, `write_alpha_research_board`는 facade에 두고, 후보 행 생성과 보드 조립을 같은 패키지의 순수 owner 2개(`candidate_rows` 280줄, `board_assembly` 212줄, 표준 라이브러리만 사용)로 분리. libs/reporting 최상위 .py는 125개 그대로, 패키지 내부 10→12개.
+- 이동한 9개 함수는 원문 그대로이며 같은 이름·시그니처의 wrapper가 `facade`를 넘김. 오케스트레이터의 순수 블록 6개(민감도 반영, 강세 BTC 행, 단기 알파 행, 최종 오프라인 검토 반영, 누락 소스 목록, legacy payload 조립)는 텍스트 변경 없이 호출로 교체했고 `generated_at`은 인자로 받으며 시계 호출은 facade에 남김. I/O·시계·canonicalize 호출의 순서가 BASE와 같음을 AST로 검증(순서를 바꾸거나 빼면 거부됨을 증명).
+- 무수정: contracts(SOURCE_PATHS·TRACKS·임계값), canonical(상태·승급 판정), loaders·report·sensitivity·remaining_reviews·runtime_validation·large_cap_review·short_alpha_discriminator·daily_uef_pipeline·closeout_maintenance. 같은 입력에서 보드 payload와 쓰기 산출물 12개가 BASE와 바이트 동일.
+- 신규 테스트 69개(실제 체인 5개 변형, 통제 시나리오 5개, 단위 격자, facade seam 17개, owner 변형 15개, 경계). 기존 287개 계열 테스트는 그대로(287 passed, 24 skipped: 실데이터 없음).
+
 ## 2026-10-22 · P1.5 DEV-A LARGE-FIRST Q9 FULL CHAIN COMPONENT REVIEW PARTS PACKAGE 20261022
 **Stage:** large-first Reporter wave (지팀장 6335586418/6335924810), 924d8180 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
 

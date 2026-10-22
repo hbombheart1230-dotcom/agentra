@@ -53,6 +53,11 @@ ALLOWED_CHANGES = {
     "tests/test_p15_a_q8_reporting_boundaries.py",  # exact path-only companion admission
     "tests/test_p15_a_q8_trusted_reaggregation_boundaries.py",  # drops the facade from its read-only list (now writable)
     "tests/test_work_reporter_seed_migration.py",  # exact path-only companion admission
+    "libs/reporting/alpha_research_board/builder.py",  # large-first Reporter wave (Tech Lead 6337591262)
+    "libs/reporting/alpha_research_board/candidate_rows.py",
+    "libs/reporting/alpha_research_board/board_assembly.py",
+    "tests/test_p15_a_alpha_research_board_parity.py",
+    "tests/test_p15_a_alpha_research_board_boundaries.py",
     "libs/reporting/evaluation/full_chain_component_review.py",  # large-first Reporter wave (Tech Lead 6335586418 / 6335924810)
     "libs/reporting/evaluation/full_chain_review_parts/__init__.py",
     "libs/reporting/evaluation/full_chain_review_parts/root_cause.py",

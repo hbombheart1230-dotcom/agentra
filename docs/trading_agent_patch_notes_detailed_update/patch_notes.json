@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 348,
+  "entry_count": 349,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9173,6 +9173,33 @@
         "libs/reporting/evaluation/full_chain_review_parts/render.py",
         "tests/test_p15_a_full_chain_review_parity.py",
         "tests/test_p15_a_full_chain_review_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A LARGE-FIRST ALPHA RESEARCH BOARD BUILDER SPLIT 20261022",
+      "title": "Split the 701-line alpha_research_board builder into candidate_rows and board_assembly owners with an unchanged effect order",
+      "stage": "Large-first Reporter wave (Tech Lead 6337591262) on work/p15-a-reporter-pure-20261021 after fbcf2b00; read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "libs/reporting/alpha_research_board/builder.py (701 lines) keeps the file reads and globbing (_prospective_concentrations, _large_cap_candidate), the build_alpha_research_board orchestration with every reader/builder/clock/canonicalize call in the original order, and write_alpha_research_board; candidate row shaping and board assembly move into two pure owners in the same package.",
+      "details": [
+        "Before/after: builder.py 701 -> 371 lines; new candidate_rows.py (280) and board_assembly.py (212), both stdlib-only and under 350 lines, in the existing alpha_research_board package (10 -> 12 .py files there, libs/reporting top level stays 125). Import direction: closeout_maintenance / daily_uef_pipeline / scripts -> alpha_research_board.__init__ -> builder -> candidate_rows / board_assembly; owners import no project module.",
+        "Moved with verbatim bodies behind same-name, same-signature facade wrappers that pass facade=sys.modules[__name__]: _candidate, _q12_hypothesis_metric, _feature_candidates, _fresh_change, _opening_rows, _broad_opening, _latent, _btc_woori, _attention_order (a symtable-based mover qualified every module-level name the bodies read: mapping, metric_snapshot, find_by_id, find_horizon, _candidate). Six pure blocks of build_alpha_research_board became calls with unchanged text: sensitivity adjustment, strong-bull BTC row, short-alpha row, final offline review adjustment, missing-source list and the legacy payload (generated_at is passed in, the clock call stays in the facade).",
+        "Effect contract: the ordered sequence of load_json, _prospective_concentrations, build_risk_high_sensitivity, _large_cap_candidate, build_remaining_candidate_reviews, build_short_alpha_discriminator, build_immediate_opening_runtime_validation, datetime.now and canonicalize_board calls in build_alpha_research_board is asserted equal to BASE by AST (and the check is shown to reject a swapped or dropped call). _prospective_concentrations, _large_cap_candidate and write_alpha_research_board are AST-identical to BASE.",
+        "Not touched: contracts.py (SOURCE_PATHS, TRACKS, thresholds, SCHEMA_VERSION), canonical.py (status/promotion decisions), loaders, report, sensitivity, remaining_reviews, runtime_validation, large_cap_review, short_alpha_discriminator, daily_uef_pipeline, closeout_maintenance and the research script; candidate order, labels, notes, buckets, schema and timestamps are byte-equal to BASE.",
+        "Tests: 69 new (BASE d7ab8294 vs current: the real builder chain over 5 synthetic reports trees incl. all twelve written files byte for byte, 5 controlled runs with identical fakes reaching every sensitivity/review branch, adverse unit grids, 17 facade seams, 15 owner mutants; boundaries for imports, effect-free owners, facade-only name resolution, BASE signatures/constants, effect order, AST identity, untouched siblings, allowlist and cycle-free fresh imports from 7 modules). The existing 287-test alpha/UEF family is unchanged (287 passed, 24 skipped for missing real data, normal and -O). Companion admission is exact-path only: P15_A_ALPHA_PATHS (3 paths) and the earlier A allowlists."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Evaluation-only research board; the board payload and written artifacts are byte-equal to BASE for equal inputs.",
+      "sources": [
+        "libs/reporting/alpha_research_board/builder.py",
+        "libs/reporting/alpha_research_board/candidate_rows.py",
+        "libs/reporting/alpha_research_board/board_assembly.py",
+        "tests/test_p15_a_alpha_research_board_parity.py",
+        "tests/test_p15_a_alpha_research_board_boundaries.py"
       ]
     }
   ]
