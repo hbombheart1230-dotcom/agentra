@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 347,
+  "entry_count": 348,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9173,6 +9173,30 @@
         "apps/operator_ui/read_models/trades.py",
         "apps/operator_ui/read_models/overview.py",
         "apps/operator_ui/read_models/status.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_MONITOR_COMMANDER_CONTRACTS_20261022",
+      "title": "Add pure Monitor and Commander compatibility contracts",
+      "stage": "P1.5.6 MO1 / P1.5.7 C1 developer candidate; runtime wiring deferred",
+      "types": [
+        "REFACTOR"
+      ],
+      "status": "current",
+      "summary": "Expose public role input/result contracts that characterize existing compatibility state patches without moving runtime orchestration.",
+      "details": [
+        "Monitor now has a real public package entry with MonitorAgentInput and MonitorAgentResult. Its result captures exactly the existing 27 top-level Monitor compatibility keys and never applies a patch or evaluates a signal.",
+        "Commander exports CommanderRuntimeInput and CommanderRuntimeResult. Its result captures exactly the documented 46-key compatibility surface and does not route, execute, acquire runtime ownership, or mutate state.",
+        "Focused normal and python -O tests verify public imports, mapping validation, exact patch membership and source-state preservation. Graph facades, Broker/Supervisor/Executor, UEF, Step5 and live execution remain unchanged."
+      ],
+      "impact": "Pure role-contract characterization only; no runtime behavior or trading authority change.",
+      "sources": [
+        "libs/agents/monitor/__init__.py",
+        "libs/agents/monitor/contracts.py",
+        "libs/agents/commander/__init__.py",
+        "libs/agents/commander/contracts.py",
+        "tests/test_p156_p157_role_contracts.py"
       ]
     }
   ]

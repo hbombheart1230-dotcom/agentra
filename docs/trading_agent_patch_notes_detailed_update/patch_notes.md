@@ -4219,3 +4219,10 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Final source 67f107e39568f74d150e3f402bfe70ddfc920d11: normal200+distinct R3 52PASS and identical -O counts, all exits0; fresh Claude full B1-B3 static sourcePASS exit0, tests NOT_RUN by request, zero denials. Git receipt includes exact SHA and raw verdict.
 - Original standalone whole-file freeze: one FAIL in each mode on genuine51bb baseline and candidate (exits1), unchanged/not waived. Candidate hosted CI, full pytest, Linux, live data and UI build NOT_RUN. Checker HEAD equality protects dirty drift only; exact-SHA independent review is separate.
 - One-time metadata receipt: archive5 verified, seven exact-lease deletions, remote13->6; old B active worktree branch preserved. Reassignment6336414973 observed after execution of previously read6336183716; all further ref housekeeping stopped and actual state reported in6336682204. Main/integration/A preserved.
+
+## 2026-10-22 - P15_MONITOR_COMMANDER_CONTRACTS_20261022
+**Stage:** P1.5.6 MO1 / P1.5.7 C1 developer candidate; runtime wiring deferred.
+
+- Add the real public Monitor package entry with pure `MonitorAgentInput` and `MonitorAgentResult`. The result characterizes exactly the existing 27 top-level Monitor compatibility keys; it does not evaluate signals, apply state, emit intents, or perform IO.
+- Export pure `CommanderRuntimeInput` and `CommanderRuntimeResult` from the existing Commander role package. The result characterizes the documented 46-key Commander compatibility surface without routing, execution, ownership, state mutation, LLM invocation, or policy changes.
+- Focused normal and `python -O` tests cover public imports, exact compatibility patch membership, source-state preservation and non-mapping rejection. Graph facades, Broker/Supervisor/Executor, UEF, Step5 and live execution remain unchanged.
