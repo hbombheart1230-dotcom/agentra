@@ -782,7 +782,14 @@ def _b_ci_diagnostic_workflow(path):
     """Only three literal path substitutions from the frozen complete workflow."""
     require(path in B_CI_DIAGNOSTIC_WORKFLOWS, "unapproved diagnostic workflow")
     text = git_source(B_CI_REPAIR_BASE, path)
-    for old, new in (('          mkdir -p branch_output\n          git worktree add --detach /tmp/t35_base', '          mkdir -p "$RUNNER_TEMP/agentra-t35-diag"\n          git worktree add --detach /tmp/t35_base'), ('$GITHUB_WORKSPACE/branch_output/t35_diag_', '$RUNNER_TEMP/agentra-t35-diag/t35_diag_'), ("          import glob\n          for f in sorted(glob.glob('branch_output/t35_diag_*.txt')):", "          import glob, os\n          for f in sorted(glob.glob(os.path.join(os.environ['RUNNER_TEMP'], 'agentra-t35-diag', 't35_diag_*.txt'))):")):
+    for old, new in (
+        ('          mkdir -p branch_output\n          git worktree add --detach /tmp/t35_base',
+         '          mkdir -p "$RUNNER_TEMP/agentra-t35-diag"\n          git worktree add --detach /tmp/t35_base'),
+        ('$GITHUB_WORKSPACE/branch_output/t35_diag_',
+         '$RUNNER_TEMP/agentra-t35-diag/t35_diag_'),
+        ("          import glob\n          for f in sorted(glob.glob('branch_output/t35_diag_*.txt')):",
+         "          import glob, os\n          for f in sorted(glob.glob(os.path.join(os.environ['RUNNER_TEMP'], 'agentra-t35-diag', 't35_diag_*.txt'))):"),
+    ):
         require(text.count(old) == 1, "diagnostic workflow oracle mismatch: " + path)
         text = text.replace(old, new)
     return text

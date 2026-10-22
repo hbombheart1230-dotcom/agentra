@@ -390,9 +390,10 @@ def test_diagnostic_workflow_exact_frozen_substitution_and_hostile_changes(path)
         assert old in current
         with pytest.raises(AssertionError, match="workflow differs beyond approved paths"):
             S.verify_b_composed({path: current.replace(old, new)})
-    for mutation in (None, current + "\n# unapproved workflow change\n"):
-        with pytest.raises(AssertionError, match="workflow differs beyond approved paths"):
-            S.verify_b_composed({path: mutation})
+    with pytest.raises(AssertionError, match="missing source: " + path):
+        S.verify_b_composed({path: None})
+    with pytest.raises(AssertionError, match="workflow differs beyond approved paths"):
+        S.verify_b_composed({path: current + "\n# unapproved workflow change\n"})
 
 
 @pytest.mark.parametrize("path", sorted(S.B_CI_DIAGNOSTIC_WORKFLOWS))
