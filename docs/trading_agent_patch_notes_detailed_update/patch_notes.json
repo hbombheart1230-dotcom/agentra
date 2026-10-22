@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 344,
+  "entry_count": 345,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9074,6 +9074,27 @@
         ".github/workflows/p152-r2c-residual-regression.yml",
         "scripts/refactor/shared_strategist_contracts.py",
         "tests/test_p15_integration_completion.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_B_OPERATOR_STRUCTURE_B1_20261022",
+      "title": "Separate pure brief response and run input projections from the large core",
+      "stage": "Developer source candidate; independent review and GPT admission pending",
+      "types": [
+        "REFACTOR"
+      ],
+      "status": "current",
+      "summary": "Introduce coherent brief_parts and read_models packages; retain all effectful orchestration at the core facade.",
+      "details": [
+        "Core2467 to2309LOC; brief finalization input and three successful-response shapes move to brief_parts/response.py; run event/evidence projection moves to read_models/run_inputs.py. LLM calls, clocks, retries, artifact construction, cache and persistence remain in original order in core.",
+        "Exact new-stage AST reconstruction checks copied pure statements, call arguments, signatures and imports against green51bb7130. Earlier B29 and immutable historical source proofs retain their pins. Original344 note records preserved."
+      ],
+      "impact": "Structural only; no new UI behavior, policy or trading authority.",
+      "sources": [
+        "apps/operator_ui/data_access_core.py",
+        "apps/operator_ui/brief_parts/response.py",
+        "apps/operator_ui/read_models/run_inputs.py"
       ]
     }
   ]

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from apps.operator_ui.brief_parts.response import prepare_result as _prepare_brief_result, primary_result as _brief_primary_result, repaired_result as _brief_repaired_result, line_result as _brief_line_result
+from apps.operator_ui.read_models.run_inputs import project_run_inputs as _project_run_inputs
+
 import json
 import os
 from dataclasses import dataclass
@@ -1382,43 +1385,7 @@ def _load_operator_brief(detail: Dict[str, Any]) -> Dict[str, Any]:
     attempts: List[Dict[str, Any]] = []
 
     def finalize(result: Dict[str, Any]) -> Dict[str, Any]:
-        out = _sanitize_operator_brief_result(detail, result, fallback)
-        headline = str(out.get("headline") or "").strip()
-        fallback_headline = str(fallback.get("headline") or "").strip()
-        expected_date = ""
-        headline_date = ""
-        started_at = str(detail.get("started_at") or "").strip()
-        started_match = re.search(r"\d{4}-\d{2}-\d{2}", started_at)
-        headline_match = re.search(r"\d{4}-\d{2}-\d{2}", headline)
-        if started_match:
-            expected_date = started_match.group(0)
-        if headline_match:
-            headline_date = headline_match.group(0)
-        if not headline:
-            out["headline"] = fallback_headline
-        elif expected_date and headline_date and headline_date != expected_date:
-            out["headline"] = fallback_headline
-        parsed_output = {
-            "headline": str(out.get("headline") or ""),
-            "commander_summary": str(out.get("commander_summary") or ""),
-            "strategist_summary": str(out.get("strategist_summary") or ""),
-            "scanner_summary": str(out.get("scanner_summary") or ""),
-            "monitor_summary": str(out.get("monitor_summary") or ""),
-            "supervisor_summary": str(out.get("supervisor_summary") or ""),
-            "executor_summary": str(out.get("executor_summary") or ""),
-            "reporter_summary": str(out.get("reporter_summary") or ""),
-            "operator_takeaways": [str(x or "") for x in list(out.get("operator_takeaways") or []) if str(x or "").strip()],
-            "executive_summary": str(out.get("executive_summary") or ""),
-            "scanner_reason": str(out.get("scanner_reason") or ""),
-            "entry_summary": str(out.get("entry_summary") or ""),
-            "holding_summary": str(out.get("holding_summary") or ""),
-            "exit_plan_summary": str(out.get("exit_plan_summary") or ""),
-            "risk_summary": str(out.get("risk_summary") or ""),
-            "next_checkpoints": [str(x or "") for x in list(out.get("next_checkpoints") or []) if str(x or "").strip()],
-        }
-        latency_ms = 0
-        if attempts:
-            latency_ms = sum(int(row.get("latency_ms") or 0) for row in attempts)
+        out, parsed_output, latency_ms = _prepare_brief_result(result, detail, fallback, attempts, facade=_r3_sys.modules[__name__])
         out["llm_response_artifact"] = build_llm_response_artifact(
             component="brief",
             run_id=run_id,
@@ -1447,15 +1414,7 @@ def _load_operator_brief(detail: Dict[str, Any]) -> Dict[str, Any]:
     router = LLMRouter.from_env()
     if router.client is None:
         return finalize(
-            {
-                **_failure_operator_brief(detail, status="fallback", model="", reason="llm_client_unavailable", failure_status="error"),
-                "parse_mode": "none",
-                "required_keys_expected": list(OPERATOR_BRIEF_REQUIRED_KEYS),
-                "required_keys_present": [],
-                "required_keys_missing": list(OPERATOR_BRIEF_REQUIRED_KEYS),
-                "completeness_score": 0.0,
-                "used_fallback_sections": list(OPERATOR_BRIEF_REQUIRED_KEYS),
-            }
+            {**_failure_operator_brief(detail, status='fallback', model='', reason='llm_client_unavailable', failure_status='error'), 'parse_mode': 'none', 'required_keys_expected': list(OPERATOR_BRIEF_REQUIRED_KEYS), 'required_keys_present': [], 'required_keys_missing': list(OPERATOR_BRIEF_REQUIRED_KEYS), 'completeness_score': 0.0, 'used_fallback_sections': list(OPERATOR_BRIEF_REQUIRED_KEYS)}
         )
     explicit_model = str(
         os.getenv("OPERATOR_UI_RUN_BRIEF_MODEL", "")
@@ -1576,28 +1535,7 @@ def _load_operator_brief(detail: Dict[str, Any]) -> Dict[str, Any]:
                     meta={"role": "brief", "language_ok": True, **parse_meta},
                 )
             )
-            return finalize({
-                "status": "ok",
-                "model": model,
-                "headline": str(parsed_candidate.get("headline") or fallback.get("headline") or ""),
-                "commander_summary": str(parsed_candidate.get("commander_summary") or fallback.get("commander_summary") or ""),
-                "strategist_summary": str(parsed_candidate.get("strategist_summary") or fallback.get("strategist_summary") or ""),
-                "scanner_summary": str(parsed_candidate.get("scanner_summary") or fallback.get("scanner_summary") or ""),
-                "monitor_summary": str(parsed_candidate.get("monitor_summary") or fallback.get("monitor_summary") or ""),
-                "supervisor_summary": str(parsed_candidate.get("supervisor_summary") or fallback.get("supervisor_summary") or ""),
-                "executor_summary": str(parsed_candidate.get("executor_summary") or fallback.get("executor_summary") or ""),
-                "reporter_summary": str(parsed_candidate.get("reporter_summary") or fallback.get("reporter_summary") or ""),
-                "operator_takeaways": [str(x or "") for x in list(parsed_candidate.get("operator_takeaways") or [])[:5] if str(x or "").strip()] or list(fallback.get("operator_takeaways") or []),
-                "executive_summary": str(parsed_candidate.get("executive_summary") or ""),
-                "scanner_reason": str(parsed_candidate.get("scanner_reason") or ""),
-                "entry_summary": str(parsed_candidate.get("entry_summary") or ""),
-                "holding_summary": str(parsed_candidate.get("holding_summary") or ""),
-                "exit_plan_summary": str(parsed_candidate.get("exit_plan_summary") or ""),
-                "risk_summary": str(parsed_candidate.get("risk_summary") or ""),
-                "next_checkpoints": [str(x or "") for x in list(parsed_candidate.get("next_checkpoints") or [])[:5] if str(x or "").strip()],
-                **parse_meta,
-                "used_fallback_sections": [],
-            })
+            return finalize(_brief_primary_result(parsed_candidate, fallback, model, parse_meta, facade=_r3_sys.modules[__name__]))
         primary_partial = dict(parsed_candidate) if parsed_candidate else {}
         if parsed_candidate and not language_ok:
             primary_status = "partial"
@@ -1667,29 +1605,7 @@ def _load_operator_brief(detail: Dict[str, Any]) -> Dict[str, Any]:
                 meta={"role": "brief", "language_ok": True, **repair_meta},
             )
         )
-        return finalize({
-            "status": "repaired",
-            "model": model,
-            "headline": str(repaired.get("headline") or fallback.get("headline") or ""),
-            "commander_summary": str(repaired.get("commander_summary") or fallback.get("commander_summary") or ""),
-            "strategist_summary": str(repaired.get("strategist_summary") or fallback.get("strategist_summary") or ""),
-            "scanner_summary": str(repaired.get("scanner_summary") or fallback.get("scanner_summary") or ""),
-            "monitor_summary": str(repaired.get("monitor_summary") or fallback.get("monitor_summary") or ""),
-            "supervisor_summary": str(repaired.get("supervisor_summary") or fallback.get("supervisor_summary") or ""),
-            "executor_summary": str(repaired.get("executor_summary") or fallback.get("executor_summary") or ""),
-            "reporter_summary": str(repaired.get("reporter_summary") or fallback.get("reporter_summary") or ""),
-            "operator_takeaways": [str(x or "") for x in list(repaired.get("operator_takeaways") or [])[:5] if str(x or "").strip()] or list(fallback.get("operator_takeaways") or []),
-            "executive_summary": str(repaired.get("executive_summary") or ""),
-            "scanner_reason": str(repaired.get("scanner_reason") or ""),
-            "entry_summary": str(repaired.get("entry_summary") or ""),
-            "holding_summary": str(repaired.get("holding_summary") or ""),
-            "exit_plan_summary": str(repaired.get("exit_plan_summary") or ""),
-            "risk_summary": str(repaired.get("risk_summary") or ""),
-            "next_checkpoints": [str(x or "") for x in list(repaired.get("next_checkpoints") or [])[:5] if str(x or "").strip()],
-            "reason": "llm_repair_pass",
-            **repair_meta,
-            "used_fallback_sections": [],
-        })
+        return finalize(_brief_repaired_result(repaired, fallback, model, repair_meta, facade=_r3_sys.modules[__name__]))
     attempts.append(
         make_attempt(
             step="repaired_attempt",
@@ -1750,30 +1666,7 @@ def _load_operator_brief(detail: Dict[str, Any]) -> Dict[str, Any]:
                     },
                 )
             )
-            return finalize({
-                "status": "salvaged",
-                "model": model,
-                "headline": str(line_parsed.get("headline") or fallback.get("headline") or ""),
-                "commander_summary": str(line_parsed.get("commander_summary") or fallback.get("commander_summary") or ""),
-                "strategist_summary": str(line_parsed.get("strategist_summary") or fallback.get("strategist_summary") or ""),
-                "scanner_summary": str(line_parsed.get("scanner_summary") or fallback.get("scanner_summary") or ""),
-                "monitor_summary": str(line_parsed.get("monitor_summary") or fallback.get("monitor_summary") or ""),
-                "supervisor_summary": str(line_parsed.get("supervisor_summary") or fallback.get("supervisor_summary") or ""),
-                "executor_summary": str(line_parsed.get("executor_summary") or fallback.get("executor_summary") or ""),
-                "reporter_summary": str(line_parsed.get("reporter_summary") or fallback.get("reporter_summary") or ""),
-                "operator_takeaways": [str(x or "") for x in list(line_parsed.get("operator_takeaways") or [])[:5] if str(x or "").strip()] or list(fallback.get("operator_takeaways") or []),
-                "executive_summary": str(line_parsed.get("executive_summary") or ""),
-                "scanner_reason": str(line_parsed.get("scanner_reason") or ""),
-                "entry_summary": str(line_parsed.get("entry_summary") or ""),
-                "holding_summary": str(line_parsed.get("holding_summary") or ""),
-                "exit_plan_summary": str(line_parsed.get("exit_plan_summary") or ""),
-                "risk_summary": str(line_parsed.get("risk_summary") or ""),
-                "next_checkpoints": [str(x or "") for x in list(line_parsed.get("next_checkpoints") or [])[:5] if str(x or "").strip()],
-                "reason": "llm_line_repair_pass",
-                "parse_mode": "none",
-                **line_meta,
-                "used_fallback_sections": [],
-            })
+            return finalize(_brief_line_result(line_parsed, fallback, model, line_meta, facade=_r3_sys.modules[__name__]))
         attempts.append(
             make_attempt(
                 step="line_repair_attempt",
@@ -2250,58 +2143,7 @@ def load_run_detail(config: OperatorUIConfig, run_id: str) -> Dict[str, Any]:
     if not all_rows:
         return {"run_id": str(run_id or ""), "found": False}
 
-    route_row = next((r for r in all_rows if str(r.get("stage") or "") == "commander_router" and str(r.get("event") or "") == "route"), {})
-    end_row = next((r for r in reversed(all_rows) if str(r.get("stage") or "") == "commander_router" and str(r.get("event") or "") == "end"), {})
-    strategist_summary = next((r.get("payload") for r in reversed(all_rows) if str(r.get("stage") or "") == "strategist" and str(r.get("event") or "") == "summary" and isinstance(r.get("payload"), dict)), {})
-    strategist_llm = next((r.get("payload") for r in reversed(all_rows) if str(r.get("stage") or "") == "strategist_llm" and str(r.get("event") or "") == "result" and isinstance(r.get("payload"), dict)), {})
-    scanner_summary = next((r.get("payload") for r in reversed(all_rows) if str(r.get("stage") or "") == "scanner" and str(r.get("event") or "") == "summary" and isinstance(r.get("payload"), dict)), {})
-    monitor_summary = next((r.get("payload") for r in reversed(all_rows) if str(r.get("stage") or "") == "monitor" and str(r.get("event") or "") == "summary" and isinstance(r.get("payload"), dict)), {})
-    verdict_payload = next((r.get("payload") for r in reversed(all_rows) if str(r.get("stage") or "") == "execute_from_packet" and str(r.get("event") or "") == "verdict" and isinstance(r.get("payload"), dict)), {})
-    execution_payload = next((r.get("payload") for r in reversed(all_rows) if str(r.get("stage") or "") == "execute_from_packet" and str(r.get("event") or "") == "execution" and isinstance(r.get("payload"), dict)), {})
-    portfolio_sync = _build_portfolio_sync_card(_extract_portfolio_guard_payload_from_run_rows(all_rows))
-
-    strategic_frame = next(
-        (
-            (r.get("payload") or {}).get("payload")
-            for r in reversed(all_rows)
-            if str(r.get("stage") or "") == "decision_trace"
-            and str(r.get("event") or "") == "strategic_frame"
-            and isinstance(r.get("payload"), dict)
-            and str((r.get("payload") or {}).get("agent") or "") == "strategist"
-        ),
-        {},
-    )
-    candidate_selection = next(
-        (
-            (r.get("payload") or {}).get("payload")
-            for r in reversed(all_rows)
-            if str(r.get("stage") or "") == "decision_trace"
-            and str(r.get("event") or "") == "candidate_selection"
-            and isinstance(r.get("payload"), dict)
-            and str((r.get("payload") or {}).get("agent") or "") == "scanner"
-        ),
-        {},
-    )
-    entry_exit_decision = next(
-        (
-            (r.get("payload") or {}).get("payload")
-            for r in reversed(all_rows)
-            if str(r.get("stage") or "") == "decision_trace"
-            and str(r.get("event") or "") == "entry_exit_decision"
-            and isinstance(r.get("payload"), dict)
-            and str((r.get("payload") or {}).get("agent") or "") == "monitor"
-        ),
-        {},
-    )
-    selected_candidate = candidate_selection.get("selected_candidate") if isinstance(candidate_selection.get("selected_candidate"), dict) else {}
-    feature_snapshot = selected_candidate.get("feature_snapshot") if isinstance(selected_candidate.get("feature_snapshot"), dict) else {}
-    feature_coverage = _feature_coverage(feature_snapshot)
-    quote_metrics = _quote_metrics_snapshot(feature_snapshot)
-
-    strategist_evidence = _latest_evidence(evidence_rows, agent="strategist", stage="theme_selection")
-    reporter_evidence = _latest_evidence(evidence_rows, agent="reporter", stage="post_run_analysis")
-    first_dt = _to_datetime(all_rows[0].get("ts"))
-    run_day = first_dt.strftime("%Y-%m-%d") if first_dt else ""
+    route_row, end_row, strategist_summary, strategist_llm, scanner_summary, monitor_summary, verdict_payload, execution_payload, portfolio_sync, strategic_frame, candidate_selection, entry_exit_decision, feature_coverage, quote_metrics, strategist_evidence, run_day = _project_run_inputs(all_rows, evidence_rows, facade=_r3_sys.modules[__name__])
     canonical_sources = load_run_canonical_sources(config.reports_root, str(run_id or ""), run_day)
     (
         commander_summary,

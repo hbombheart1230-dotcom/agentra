@@ -946,3 +946,132 @@ def historical_source(path):
         verify_b_composed()
         return git_source(HISTORICAL_STAGE, path)
     return _standalone_historical_source(path)
+
+
+# Operator UI structure V1 is a new stage, never a rewrite of the B29 proof.
+UI_STRUCTURE_BASE = "51bb7130b2ba627be50800fa89c6108dd1a5018c"
+UI_STRUCTURE_RESPONSE = "apps/operator_ui/brief_parts/response.py"
+UI_STRUCTURE_RUN = "apps/operator_ui/read_models/run_inputs.py"
+@lru_cache(maxsize=1)
+def _ui_structure_core_oracle():
+    source = git_source(UI_STRUCTURE_BASE, UI_CORE)
+    tree = ast.parse(source)
+    functions = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
+    brief = functions['_load_operator_brief']
+    finalize = next((n for n in brief.body if isinstance(n, ast.FunctionDef) and n.name == 'finalize'))
+    cut = next((i for i, n in enumerate(finalize.body) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Subscript)))
+    response = []
+
+    def helper(name, args, body, globals=()):
+        body = copy.deepcopy(body)
+
+        class Qualify(ast.NodeTransformer):
+
+            def visit_Name(self, n):
+                if n.id in globals and isinstance(n.ctx, ast.Load):
+                    return ast.copy_location(ast.Attribute(ast.Name('facade', ast.Load()), n.id, ast.Load()), n)
+                return n
+        body = [Qualify().visit(n) for n in body]
+        signature = ast.arguments(posonlyargs=[], args=[ast.arg(a) for a in args], vararg=None, kwonlyargs=[ast.arg('facade')], kw_defaults=[None], kwarg=None, defaults=[])
+        return ast.FunctionDef(name, signature, body, [], returns=None, type_comment=None)
+    response.append(helper('prepare_result', ['result', 'detail', 'fallback', 'attempts'], finalize.body[:cut] + [ast.Return(ast.Tuple([ast.Name(n, ast.Load()) for n in ('out', 'parsed_output', 'latency_ms')], ast.Load()))], ('re', '_sanitize_operator_brief_result')))
+
+    def call(name, args):
+        return ast.Call(ast.Name(name, ast.Load()), [ast.Name(a, ast.Load()) for a in args], [ast.keyword('facade', ast.parse('_r3_sys.modules[__name__]', mode='eval').body)])
+    finalize.body[:cut] = [ast.Assign([ast.Tuple([ast.Name(n, ast.Store()) for n in ('out', 'parsed_output', 'latency_ms')], ast.Store())], call('_prepare_brief_result', ['result', 'detail', 'fallback', 'attempts']))]
+    for status, name, args in (('ok', 'primary_result', ['parsed_candidate', 'fallback', 'model', 'parse_meta']), ('repaired', 'repaired_result', ['repaired', 'fallback', 'model', 'repair_meta']), ('salvaged', 'line_result', ['line_parsed', 'fallback', 'model', 'line_meta'])):
+        node = next((n for n in ast.walk(brief) if isinstance(n, ast.Return) and isinstance(n.value, ast.Call) and isinstance(n.value.func, ast.Name) and (n.value.func.id == 'finalize') and isinstance(n.value.args[0], ast.Dict) and any((isinstance(k, ast.Constant) and k.value == 'status' and isinstance(v, ast.Constant) and (v.value == status) for k, v in zip(n.value.args[0].keys, n.value.args[0].values)))))
+        response.append(helper(name, args, [ast.Return(copy.deepcopy(node.value.args[0]))]))
+        node.value.args[0] = call('_brief_' + name, args)
+    run = functions['load_run_detail']
+    start = next((i for i, n in enumerate(run.body) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) and (n.targets[0].id == 'route_row')))
+    end = next((i for i, n in enumerate(run.body) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) and (n.targets[0].id == 'canonical_sources')))
+    body = run.body[start:end]
+    outputs = ['route_row', 'end_row', 'strategist_summary', 'strategist_llm', 'scanner_summary', 'monitor_summary', 'verdict_payload', 'execution_payload', 'portfolio_sync', 'strategic_frame', 'candidate_selection', 'entry_exit_decision', 'feature_coverage', 'quote_metrics', 'strategist_evidence', 'run_day']
+    projection = helper('project_run_inputs', ['all_rows', 'evidence_rows'], body + [ast.Return(ast.Tuple([ast.Name(n, ast.Load()) for n in outputs], ast.Load()))], ('_build_portfolio_sync_card', '_extract_portfolio_guard_payload_from_run_rows', '_feature_coverage', '_quote_metrics_snapshot', '_latest_evidence', '_to_datetime'))
+    run.body[start:end] = [ast.Assign([ast.Tuple([ast.Name(n, ast.Store()) for n in outputs], ast.Store())], call('_project_run_inputs', ['all_rows', 'evidence_rows']))]
+    added = ast.parse('from apps.operator_ui.brief_parts.response import prepare_result as _prepare_brief_result, primary_result as _brief_primary_result, repaired_result as _brief_repaired_result, line_result as _brief_line_result\nfrom apps.operator_ui.read_models.run_inputs import project_run_inputs as _project_run_inputs').body
+    tree.body[1:1] = added
+    future = ast.parse('from __future__ import annotations').body
+    owners = {UI_STRUCTURE_RESPONSE: ast.fix_missing_locations(ast.Module(future + response, type_ignores=[])), UI_STRUCTURE_RUN: ast.fix_missing_locations(ast.Module(copy.deepcopy(future) + [projection], type_ignores=[]))}
+    return (ast.fix_missing_locations(tree), owners)
+
+
+UI_STRUCTURE_MOVES = {}  # Later approved whole-module waves add literal pairs only.
+UI_STRUCTURE_PACKAGES = frozenset({
+    "apps/operator_ui/brief_parts/__init__.py",
+    "apps/operator_ui/read_models/__init__.py",
+})
+UI_STRUCTURE_TEST = "tests/test_p15_b_ui_structure.py"
+UI_STRUCTURE_RECEIPT = "docs/refactor/work_projects/evidence/monitor/operator_ui_structure_peer.json"
+UI_STRUCTURE_CHECKS = frozenset({
+    "scripts/refactor/shared_strategist_contracts.py",
+    "scripts/refactor/shared_role_contracts.py", UI_STRUCTURE_TEST,
+})
+UI_STRUCTURE_RUNTIME = frozenset({UI_CORE, UI_STRUCTURE_RESPONSE, UI_STRUCTURE_RUN})
+
+
+def ui_structure_selected():
+    return (ROOT / UI_STRUCTURE_RESPONSE).exists()
+
+
+def verify_ui_structure(overrides=None):
+    """Closed new-stage source proof; old B29 inventory is still a separate view."""
+    overrides = overrides or {}
+    require(UI_STRUCTURE_BASE == "51bb7130b2ba627be50800fa89c6108dd1a5018c", "UI structure immutable base")
+    read = lambda p: _commander_read(p, overrides)
+    expected = UI_STRUCTURE_RUNTIME | UI_STRUCTURE_PACKAGES | UI_STRUCTURE_CHECKS | COMMANDER_V1_NOTES
+    # An evidence-only follow-up commit is allowed at this ONE literal path.
+    if (ROOT / UI_STRUCTURE_RECEIPT).exists():
+        expected |= {UI_STRUCTURE_RECEIPT}
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    actual = _commander_delta(UI_STRUCTURE_BASE)
+    actual |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True).splitlines())
+    actual = {p for p in actual if p not in B_CI_JUNIT or not _b_ci_junit_evidence(p, head)}
+    actual |= set(overrides)
+    require(actual == expected, "UI structure unexpected/missing path: " + repr(actual ^ expected))
+    tree, owners = _ui_structure_core_oracle()
+    require(dump(ast.parse(read(UI_CORE))) == dump(tree), "UI structure core body/import/ABI: " + UI_CORE)
+    for path, owner in owners.items():
+        current = ast.parse(read(path))
+        require(current.body and isinstance(current.body[0], ast.Expr)
+                and current.body[0].value.value == "Pure already-loaded UI projections; effectful calls remain in core.",
+                "UI structure owner header: " + path)
+        current.body = current.body[1:]
+        require(dump(current) == dump(owner), "UI structure pure body/import: " + path)
+    for path in UI_STRUCTURE_PACKAGES:
+        require(read(path) == '"""Read-only Operator UI projections."""\n', "UI structure package capability: " + path)
+    for path in UI_STRUCTURE_CHECKS:
+        require(read(path) == git_source(head, path), "UI structure checker/test drift: " + path)
+    note = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
+    old, current = json.loads(git_source(UI_STRUCTURE_BASE, note)), json.loads(read(note))
+    require(current["entries"][:len(old["entries"])] == old["entries"], "UI structure historical patchnotes changed")
+    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 345,
+            "UI structure patchnotes count/version")
+    md = "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+    require(read(md).startswith(git_source(UI_STRUCTURE_BASE, md)), "UI structure historical Markdown changed")
+    return frozenset(expected)
+
+
+_composed_before_ui_structure = verify_b_composed
+_b_sources_before_ui_structure = verify_b_sources
+_historical_before_ui_structure = historical_source
+
+
+def verify_b_composed(overrides=None, *, inventory=None):
+    if not ui_structure_selected():
+        return _composed_before_ui_structure(overrides, inventory=inventory)
+    verify_ui_structure(overrides)
+    original = B_COMPOSED_PATHS | B_COMPOSED_CHECKS | B_CI_DIAGNOSTIC_WORKFLOWS
+    if inventory is not None:
+        require(set(inventory) == original, "B-stage composed unexpected/missing inventory: " + repr(set(inventory) ^ original))
+    return original
+
+
+def verify_b_sources(overrides=None):
+    if not ui_structure_selected():
+        return _b_sources_before_ui_structure(overrides)
+    verify_ui_structure({p:v for p,v in (overrides or {}).items() if p in B_RUNTIME})
+    projected = dict(overrides or {})
+    projected[UI_CORE] = git_source(B_SOURCE, UI_CORE)
+    return _b_sources_before_ui_structure(projected)

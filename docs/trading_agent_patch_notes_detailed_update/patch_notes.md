@@ -4191,3 +4191,9 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Move only the two bounded BASE/current T3.5 diagnostic TXT outputs and their notice consumer to RUNNER_TEMP/agentra-t35-diag in both existing workflows. Preserve original diagnostic calls, pinned BASE, arguments, continue-on-error, notice bounds/escaping and all other workflow text.
 - Exact two-path admission compares complete workflows against frozen1bcf6290 with only three literal path substitutions. Unknown workflow/source changes and untracked diagnostic TXT still fail; no broad output exemption.
 - Preserve343 historical entries, original historical predicates and accepted B sources; append344. No production, authority, A, integration or main change. Actual test/reviewer results are separate from hosted CI.
+
+## 2026-10-22 - P15_B_OPERATOR_STRUCTURE_B1_20261022
+**Stage:** Developer source candidate; GPT admission pending.
+
+- Core2467->2309LOC: pure brief response/finalization inputs and run event/evidence shaping have coherent brief_parts/response.py and read_models/run_inputs.py Owners. Legacy facade signatures and use-time lookup remain; no IO/clock/LLM/retry/cache/persistence moves.
+- Exact new-stage AST reconstruction protects all copied bodies, unmoved code, arguments and imports from green51bb7130. Historical pins and B29 proof remain separate; preserve344 old note records and append345. Top-level Python count35 remains35; implementation bodies move into packages rather than new root files.
