@@ -1,5 +1,12 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P1.5 DEV-A Q8 REPORTER SCOPE GATE EXACT PATH REGISTRATION 20261022
+**Stage:** 2156f254 이후 게이트 후속 (BASE d7ab8294, 지팀장·운영자가 리팩터링 과정에 필요한 테스트 수정으로 승인) · **Tags:** REFACTOR · TEST
+
+- `test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`가 커밋된 Q8 분리의 소스 경로 6개를 닫힌 Reporter 범위 목록에 없어서 실패하던 문제를 정확한 닫힌 집합 `P15_A_Q8_PATHS`(facade 3개 + owner 3개) 등록으로 해결. 기존 `P15_A_FACADES`와 같은 방식이며 prefix 와일드카드 없음.
+- `_scope_violations`, 고정된 이력 폴더 목록, 픽스처, 다른 게이트는 무수정. `q8_evaluation_contract.py` 등 신뢰 정책 파일과 그 외 q8_* 경로는 여전히 위반으로 보고됨(테스트로 확인).
+- 리팩터링과 무관한 `test_closeout_memory_bounds`의 시계 1초 경계 flake는 의도적으로 수정하지 않음.
+
 ## 2026-10-22 · P1.5 DEV-A Q8 FACADE MONKEYPATCH COMPATIBILITY 20261022
 **Stage:** f67bf1ec 이후 호환성 후속 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
 

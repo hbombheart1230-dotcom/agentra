@@ -44,6 +44,7 @@ READ_ONLY = ("libs/reporting/q8_evaluation_contract.py", "libs/reporting/quant_s
 ALLOWED_CHANGES = set(OWNERS) | set(FACADES) | {
     "tests/test_p15_a_q8_historical_pure_parity.py",
     "tests/test_p15_a_q8_reporting_boundaries.py",
+    "tests/test_work_reporter_seed_migration.py",  # approved: exact Q8 path registration in the Reporter scope gate
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
 }

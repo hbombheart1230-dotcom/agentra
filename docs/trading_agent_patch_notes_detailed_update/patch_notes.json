@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 342,
+  "entry_count": 343,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9018,6 +9018,28 @@
         "libs/reporting/q8_shadow_blocker_review.py",
         "libs/reporting/q8_lane_decision_table.py",
         "tests/test_p15_a_q8_historical_pure_parity.py",
+        "tests/test_p15_a_q8_reporting_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A Q8 REPORTER SCOPE GATE EXACT PATH REGISTRATION 20261022",
+      "title": "Register the six Q8 refactor paths in the Reporter scope gate so the committed Q8 split passes it",
+      "stage": "Gate follow-up on work/p15-a-reporter-pure-20261021 after 2156f254; Tech Lead / operator approved the refactor-process test edit",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "test_target_tree_discipline_and_no_forbidden_surface failed on the committed Q8 split because its closed Reporter scope list lacked the six Q8 source paths; they are now an exact closed set next to the existing P1.5 DEV-A facade set.",
+      "details": [
+        "Only tests/test_work_reporter_seed_migration.py changed besides these notes and the Q8 boundary allowlist: a closed P15_A_Q8_PATHS set (three Q8 facades plus the three libs/reporting/evaluation/q8_*_p15.py owners) is removed from the scope diff like the existing P15_A_FACADES; _scope_violations itself, the pinned historical folder inventory, fixtures and every other gate are unchanged.",
+        "The grant is exact, not a prefix: q8_evaluation_contract.py, quant_shadow_candidate_evaluation.py and any sibling q8_* path are still reported as violations (asserted in test_scope_checker_still_rejects_unexpected_and_forbidden_paths).",
+        "The unrelated clock-boundary flake in test_closeout_memory_bounds (generated_at differing by one second) is intentionally left unchanged."
+      ],
+      "impact": "Test-scope bookkeeping only. No behavior, trading, approval, risk, UEF or Step5C change.",
+      "sources": [
+        "tests/test_work_reporter_seed_migration.py",
         "tests/test_p15_a_q8_reporting_boundaries.py"
       ]
     }

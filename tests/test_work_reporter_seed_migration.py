@@ -48,6 +48,13 @@ DECOMPOSED = {"trade_report_symbol_metadata": ("read_models", ["symbol_metadata_
 P15_A_HISTORICAL_TREE = "d7ab82940deaa05810b28ef78fc0be88e201f9b6"  # integration/p1.5 BASE: exact historical folder inventory
 P15_A_FACADES = {"libs/reporting/operator_visibility.py", "libs/reporting/phase_runtime_health.py",
                  "libs/reporting/operator_period_summary.py", "libs/reporting/metrics_report_generator.py"}
+# P1.5 DEV-A Q8 post-hoc evaluation facades and their pure owners: exact closed set (no wildcard); the Q8 trust
+# policy modules stay outside it and are still policed by the scope check below
+P15_A_Q8_PATHS = {"libs/reporting/q8_historical_review.py", "libs/reporting/q8_shadow_blocker_review.py",
+                  "libs/reporting/q8_lane_decision_table.py",
+                  "libs/reporting/evaluation/q8_historical_aggregation_p15.py",
+                  "libs/reporting/evaluation/q8_historical_render_p15.py",
+                  "libs/reporting/evaluation/q8_shadow_readout_p15.py"}
 P15_A_PURE_OWNERS = {("read_models", n + ".py") for n in (
     "operator_daily_projection", "operator_run_context_projection", "phase_health_projection", "phase_health_policy_views",
     "phase_health_text_rendering", "period_summary_projection", "metrics_projection", "metrics_summary_projection",
@@ -283,7 +290,7 @@ def test_target_tree_discipline_and_no_forbidden_surface():
         assert sorted(Path(x).name for x in tree if x.endswith(".py")) == historical, sub
         assert sorted(p.name for p in (base / sub).glob("*.py")) ==             sorted(historical + [n for d_sub, n in P15_A_PURE_OWNERS if d_sub == sub]), sub
     out = [x for x in subprocess.check_output(["git", "diff", "--name-only", "-z", START, "HEAD"], cwd=ROOT).decode().split(chr(0)) if x]
-    out = [x for x in out if x not in P15_A_FACADES]  # exact closed P1.5 DEV-A facade import/wrapper edits; helper stays strict
+    out = [x for x in out if x not in P15_A_FACADES | P15_A_Q8_PATHS]  # exact closed P1.5 DEV-A facade/Q8 edits; helper stays strict
     merged = subprocess.check_output(["git", "rev-list", "--merges", f"{START}..HEAD"], cwd=ROOT).decode().split()
     violations = _scope_violations(out, merged=bool(merged))
     assert not violations, violations
@@ -375,6 +382,10 @@ def test_scope_checker_still_rejects_unexpected_and_forbidden_paths():
            "libs/runtime/monitor/cycle_event_payloads.py", "docs/refactor/p1_5_2_facade_symbol_ledger_2026-10-09.json"]
     assert _scope_violations(bad) == bad
     assert _scope_violations(["libs/reporting/operator_visibility.py"], merged=True) == ["libs/reporting/operator_visibility.py"]
+    # the Q8 grant is exact: the read-only trust policy and any sibling path are still rejected by the helper itself
+    assert _scope_violations(["libs/reporting/q8_evaluation_contract.py", "libs/reporting/evaluation/q8_extra_p15.py"]) == [
+        "libs/reporting/q8_evaluation_contract.py", "libs/reporting/evaluation/q8_extra_p15.py"]
+    assert len(P15_A_Q8_PATHS) == 6 and all(p.startswith("libs/reporting/") for p in P15_A_Q8_PATHS)
     assert _scope_violations(sorted(R4_FACADE_FILES | R4_OWNER_FILES | R4_SHARED_CONTRACT_FILES)) == []
 
 
