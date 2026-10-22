@@ -231,7 +231,7 @@ def test_actual_original_predicates_on_pinned_archive_not_current_worktree(sha, 
     with tarfile.open(fileobj=io.BytesIO(archive)) as stream:
         stream.extractall(root, filter="data")
     env = dict(os.environ, GIT_DIR=subprocess.check_output(
-        ["git", "rev-parse", "--absolute-git-dir"], cwd=S.ROOT, text=True).strip(),
+        ["git", "rev-parse", "--absolute-git-dir"], cwd=S.ROOT, text=True, encoding="utf-8").strip(),
         GIT_WORK_TREE=str(root), GIT_INDEX_FILE=str(tmp_path / "private-index"),
         PYTHONPATH=str(root), PYTHONDONTWRITEBYTECODE="1", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1",
         DRY_RUN="1", TRADING_MODE="mock", EXECUTION_ENABLED="false",
@@ -252,5 +252,5 @@ def test_actual_original_predicates_on_pinned_archive_not_current_worktree(sha, 
             "x=r.verify_runtime();"
             "print('ORIGINAL_PINNED_GATE_PASS',x);"
             "assert x['moves']==313 and x['monitor_bodies']==20")]
-    result = subprocess.run(command, cwd=root, env=env, capture_output=True, text=True)
+    result = subprocess.run(command, cwd=root, env=env, capture_output=True, text=True, encoding="utf-8")
     assert result.returncode == 0, (sha, result.returncode, result.stdout, result.stderr)
