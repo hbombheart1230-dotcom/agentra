@@ -159,6 +159,20 @@ def test_unmoved_functions_are_ast_identical_and_moved_names_are_thin_facade_wra
         assert getattr(facade, name).__module__ == facade.__name__
 
 
+def test_new_owners_keep_the_dropped_q9_row_key_contract():
+    """The review opts in to dropping these Q9 row keys, so no module on its path may mention them (the existing source scan
+    in test_closeout_memory_bounds only lists the facade, not the new owners)."""
+    import re
+
+    import libs.reporting.quant_shadow_candidate_evaluation as qsce
+
+    assert qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN
+    for path in [FACADE, *OWNERS]:
+        text = (ROOT / path).read_text(encoding="utf-8")
+        for key in qsce.Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN:
+            assert not re.search(rf"""["']{key}["']""", text), (path, key)
+
+
 def test_contract_consumers_and_trust_modules_are_untouched_since_base():
     assert _git("diff", "--name-only", BASE_SHA, "--", *UNTOUCHED).split() == []
 
