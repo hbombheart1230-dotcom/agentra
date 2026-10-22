@@ -774,6 +774,20 @@ B_CI_WORKFLOWS = frozenset({
 })
 
 
+B_CI_DIAGNOSTIC_WORKFLOWS = frozenset({'.github/workflows/p15-integration-t4-regression.yml', '.github/workflows/p152-r2c-residual-regression.yml'})
+B_CI_DIAGNOSTIC_BASE = "3c4af8ff1e86b5d24f7c4048f0ede766d372cb5e"
+
+
+def _b_ci_diagnostic_workflow(path):
+    """Only three literal path substitutions from the frozen complete workflow."""
+    require(path in B_CI_DIAGNOSTIC_WORKFLOWS, "unapproved diagnostic workflow")
+    text = git_source(B_CI_REPAIR_BASE, path)
+    for old, new in (('          mkdir -p branch_output\n          git worktree add --detach /tmp/t35_base', '          mkdir -p "$RUNNER_TEMP/agentra-t35-diag"\n          git worktree add --detach /tmp/t35_base'), ('$GITHUB_WORKSPACE/branch_output/t35_diag_', '$RUNNER_TEMP/agentra-t35-diag/t35_diag_'), ("          import glob\n          for f in sorted(glob.glob('branch_output/t35_diag_*.txt')):", "          import glob, os\n          for f in sorted(glob.glob(os.path.join(os.environ['RUNNER_TEMP'], 'agentra-t35-diag', 't35_diag_*.txt'))):")):
+        require(text.count(old) == 1, "diagnostic workflow oracle mismatch: " + path)
+        text = text.replace(old, new)
+    return text
+
+
 def _b_ci_junit_evidence(path, head, *, root=None):
     """Non-source evidence only; caller applies this ONLY to git-untracked files.
 
@@ -812,7 +826,7 @@ def b_composed_selected():
 
 
 def verify_b_composed(overrides=None, *, inventory=None):
-    """Exact original B25 scope plus two authorized CI proof files; no prefix grant.
+    """Exact B25 plus two CI proof files and two path-only workflows; no prefix grant.
 
     Current checker bytes are tied to the tested/reviewed HEAD, not to another
     self-referential hash manifest. Original standalone predicates below remain
@@ -838,7 +852,7 @@ def verify_b_composed(overrides=None, *, inventory=None):
             "Commander V1 exact proof inventory")
     require(COMMANDER_V1_PROOF_HASHES == ast.literal_eval(old_manifest),
             "Commander V1 historical proof manifest changed")
-    expected = B_COMPOSED_PATHS | B_COMPOSED_CHECKS
+    expected = B_COMPOSED_PATHS | B_COMPOSED_CHECKS | B_CI_DIAGNOSTIC_WORKFLOWS
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     changed = _commander_delta(B_COMPOSED_BASE)
     untracked = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"],
@@ -862,17 +876,21 @@ def verify_b_composed(overrides=None, *, inventory=None):
     for path in sorted(B_COMPOSED_CHECKS):
         require(_commander_read(path, overrides) == git_source(head, path),
                 "B-stage checker/test drift from reviewed HEAD: " + path)
+    require(B_CI_DIAGNOSTIC_BASE == "3c4af8ff1e86b5d24f7c4048f0ede766d372cb5e", "B diagnostic immutable base")
+    for path in sorted(B_CI_DIAGNOSTIC_WORKFLOWS):
+        require(_commander_read(path, overrides) == _b_ci_diagnostic_workflow(path),
+                "B diagnostic workflow differs beyond approved paths: " + path)
     note = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
-    old = json.loads(git_source(B_CI_REPAIR_BASE, note))
+    old = json.loads(git_source(B_CI_DIAGNOSTIC_BASE, note))
     current = json.loads(_commander_read(note, overrides))
     require(current["entries"][:-1] == old["entries"] and len(current["entries"]) == len(old["entries"]) + 1,
             "B composed historical patchnotes changed")
-    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 343,
+    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 344,
             "B composed patchnotes count/version")
-    require(current["entries"][-1]["version"] == "P15_B_CI_ADMISSION_REPAIR_20261022",
+    require(current["entries"][-1]["version"] == "P15_B_CI_DIAGNOSTIC_TEMP_20261022",
             "B composed integration note")
     md = "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
-    require(_commander_read(md, overrides).startswith(git_source(B_CI_REPAIR_BASE, md)),
+    require(_commander_read(md, overrides).startswith(git_source(B_CI_DIAGNOSTIC_BASE, md)),
             "B composed historical Markdown changed")
     verify_historical_b_scope()
     return frozenset(changed)

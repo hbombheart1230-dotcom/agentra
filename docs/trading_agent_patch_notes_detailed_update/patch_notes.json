@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 343,
+  "entry_count": 344,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9049,6 +9049,29 @@
       "sources": [
         "tests/p15_agent_tree_allowlist.py",
         "tests/test_p166_v1052_candidate_risk_migration.py",
+        "scripts/refactor/shared_strategist_contracts.py",
+        "tests/test_p15_integration_completion.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_B_CI_DIAGNOSTIC_TEMP_20261022",
+      "title": "Keep bounded T3.5 diagnostic logs outside the source checkout",
+      "stage": "B candidate; Tech Lead admission and integrated hosted CI pending",
+      "types": [
+        "CI",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "Relocate only the BASE/current T3.5 diagnostic TXT producer and notice consumer in both existing workflows to runner temp.",
+      "details": [
+        "Preserve both diagnostic calls, pinned BASE, bounded arguments, continue-on-error, escaped bounded notices and all other workflow bytes against the frozen 1bcf6290 oracle. No TXT/JSON/source exemptions are added.",
+        "Admit only the two exact workflow paths with full frozen-source substitution checks and adversarial mutations; retain historical predicates and original B source proofs. Preserve all343 earlier patch-note entries and Markdown history. No production, safety, A, integration or main changes."
+      ],
+      "impact": "CI transient-file isolation only; no runtime or authority change.",
+      "sources": [
+        ".github/workflows/p15-integration-t4-regression.yml",
+        ".github/workflows/p152-r2c-residual-regression.yml",
         "scripts/refactor/shared_strategist_contracts.py",
         "tests/test_p15_integration_completion.py"
       ]

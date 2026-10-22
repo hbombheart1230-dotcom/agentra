@@ -4184,3 +4184,10 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Preserve historical Scanner pilot START and genuine17d3a4ac endpoint; exact current Commander package has four pinned files and one projections directory. Unknown roles/modules, altered source and authority paths still fail.
 - Distinguish only18 literal untracked JUnit outputs proven in both unchanged CI workflows, with exact workflow/checkout provenance and real regular UTF-8 JUnit XML content. NUL/UTF-16, DOCTYPE/entities and hostile unknown/lookalike/content/provenance cases reject; no tracked/source/wildcard exemption. Later non-JUnit diagnostic TXT outputs remain outside the explicit exception and need separate integration handling, not a whole-workflow CI PASS claim.
 - Retain original B25 source/proof scope plus two explicitly approved CI proof files; preserve all342 old records and append343. No production, historic pin, workflow, trading, A, integration or main modification. Results and peer verdict in Issue20.
+
+## 2026-10-22 - P15_B_CI_DIAGNOSTIC_TEMP_20261022
+**Stage:** B candidate; Tech Lead admission and integrated hosted CI pending.
+
+- Move only the two bounded BASE/current T3.5 diagnostic TXT outputs and their notice consumer to RUNNER_TEMP/agentra-t35-diag in both existing workflows. Preserve original diagnostic calls, pinned BASE, arguments, continue-on-error, notice bounds/escaping and all other workflow text.
+- Exact two-path admission compares complete workflows against frozen1bcf6290 with only three literal path substitutions. Unknown workflow/source changes and untracked diagnostic TXT still fail; no broad output exemption.
+- Preserve343 historical entries, original historical predicates and accepted B sources; append344. No production, authority, A, integration or main change. Actual test/reviewer results are separate from hosted CI.

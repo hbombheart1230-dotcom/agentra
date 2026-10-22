@@ -203,7 +203,8 @@ def test_ci_evidence_present_absent_unknown_and_tracked_remain_distinct(tmp_path
     evidence.update(S.B_CI_JUNIT)
     assert S.verify_b_composed() == expected  # genuine prior pytest reports, all 18 exact names
     for unknown in ("branch_output/gate_unknown_junit.xml", "branch_output/gate_t4d_junit.xml.py",
-                    "libs/broker/rogue.py", "branch_output/GATE_t4d_junit.xml"):
+                    "libs/broker/rogue.py", "branch_output/GATE_t4d_junit.xml", "branch_output/t35_diag_t35_base.txt",
+                    "branch_output/t35_diag_agentra.txt"):
         evidence.add(unknown)
         with pytest.raises(AssertionError, match="unexpected/missing inventory"):
             S.verify_b_composed()
@@ -253,7 +254,7 @@ def test_ci_report_needs_actual_workflow_checkout_and_file(tmp_path, monkeypatch
 
 def test_b_composed_exact_input_and_old_function_bodies_remain_intact():
     assert len(S.B_COMPOSED_PATHS) == 23
-    assert len(S.verify_b_composed()) == 27
+    assert len(S.verify_b_composed()) == 29
     old = ast.parse(S.git_source(S.B_COMPOSED_COMMANDER, "scripts/refactor/shared_strategist_contracts.py"))
     new = ast.parse((S.ROOT / "scripts/refactor/shared_strategist_contracts.py").read_text(encoding="utf-8"))
     for fn in (n for n in old.body if isinstance(n, ast.FunctionDef)):
@@ -267,7 +268,7 @@ def test_b_composed_exact_input_and_old_function_bodies_remain_intact():
 @pytest.mark.parametrize("path", sorted(S.B_COMPOSED_PATHS - S.B_COMPOSED_CHECKS - S.COMMANDER_V1_NOTES))
 def test_b_composed_source_mutants_reject_from_green_current_tree(path):
     import shared_role_contracts as roles
-    assert len(S.verify_b_composed()) == 27
+    assert len(S.verify_b_composed()) == 29
     assert roles.verify_runtime()["monitor_bodies"] == 20
     for gate in (S.verify_b_composed, roles.verify_runtime):
         with pytest.raises(AssertionError) as rejected:
@@ -369,3 +370,95 @@ def test_actual_original_predicates_on_pinned_archive_not_current_worktree(sha, 
              "tests/test_p159_current_owner_contract_gates.py"],
             cwd=root, env=env, capture_output=True, text=True, encoding="utf-8")
         assert historical.returncode == 0, (sha, historical.returncode, historical.stdout, historical.stderr)
+
+
+@pytest.mark.parametrize("path", sorted(S.B_CI_DIAGNOSTIC_WORKFLOWS))
+def test_diagnostic_workflow_exact_frozen_substitution_and_hostile_changes(path):
+    original = S.git_source(S.B_CI_REPAIR_BASE, path)
+    current = (S.ROOT / path).read_text(encoding="utf-8")
+    assert current == S._b_ci_diagnostic_workflow(path)
+    assert current.count('--max-records 3 --variants 2') == original.count('--max-records 3 --variants 2') == 1
+    assert current.count('continue-on-error: true') == original.count('continue-on-error: true')
+    assert '"$GITHUB_WORKSPACE/branch_output/t35_diag_' not in current
+    assert S.verify_b_composed()
+    for old, new in (("--max-records 3", "--max-records 4"),
+                     ("--variants 2", "--variants 3"),
+                     ('"$RUNNER_TEMP/agentra-t35-diag/t35_diag_', '"$GITHUB_WORKSPACE/branch_output/t35_diag_'),
+                     ("continue-on-error: true", "continue-on-error: false"),
+                     ("[:3500]", "[:35000]"),
+                     ("54bebe5ece0ac34c4f45df55c44889c9ce323e95", "0" * 40)):
+        assert old in current
+        with pytest.raises(AssertionError, match="workflow differs beyond approved paths"):
+            S.verify_b_composed({path: current.replace(old, new)})
+    for mutation in (None, current + "\n# unapproved workflow change\n"):
+        with pytest.raises(AssertionError, match="workflow differs beyond approved paths"):
+            S.verify_b_composed({path: mutation})
+
+
+@pytest.mark.parametrize("path", sorted(S.B_CI_DIAGNOSTIC_WORKFLOWS))
+@pytest.mark.parametrize("diagnostic_exit", [0, 7])
+def test_actual_diagnostic_loop_and_notice_keep_bytes_outside_checkout(path, diagnostic_exit, tmp_path):
+    """Run real loop/consumer; substitute only BASE input directory in fixture.
+
+    The hosted git worktree creation is checked by the full-text oracle, never
+    executed locally. Diagnostic data here are synthetic and contain no reports.
+    """
+    import os
+    import shutil
+    import textwrap
+    bash = shutil.which("bash")
+    if sys.platform == "win32":
+        from pathlib import Path
+        bash = str(Path(os.environ.get("ProgramFiles", "C:/Program Files")) / "Git/bin/bash.exe")
+        assert Path(bash).is_file(), "Git Bash required for producer execution"
+    assert bash, "Bash required for producer execution"
+    workspace = tmp_path / "agentra"
+    base = tmp_path / "t35_base"
+    runner = tmp_path / "runner-temp"
+    for folder in (workspace, base, runner):
+        folder.mkdir()
+    script = workspace / "scripts/refactor/p161_agent_output_diagnose.py"
+    script.parent.mkdir(parents=True)
+    script.write_text(
+        "import pathlib, sys\n"
+        "assert sys.argv[2:] == ['--max-records', '3', '--variants', '2']\n"
+        "print(pathlib.Path(sys.argv[1]).name + ': \uad00\uce21 % \U0001f9ea')\n"
+        "print('bounded:' + 'x' * 4000)\n"
+        "print('diagnostic stderr', file=sys.stderr)\n"
+        f"sys.exit({diagnostic_exit})\n", encoding="utf-8")
+    env = dict(os.environ, GITHUB_WORKSPACE=workspace.as_posix(), RUNNER_TEMP=runner.as_posix(),
+               PATH=str(__import__('pathlib').Path(sys.executable).parent) + os.pathsep + os.environ['PATH'],
+               PYTHONIOENCODING="utf-8", PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
+    def fragments(text):
+        block = text.split('      - name: T3.5 Linux golden-replay diagnosis', 1)[1]
+        block = block.split('        run: |\n', 1)[1].split('\n      - name:', 1)[0]
+        block = textwrap.dedent(block)
+        mkdir = block.splitlines()[0]
+        loop = block[block.index('for t in '):block.index("python - <<'PY'")]
+        assert loop.count('for t in /tmp/t35_base "$GITHUB_WORKSPACE"; do') == 1
+        loop = loop.replace('for t in /tmp/t35_base ', 'for t in "' + base.as_posix() + '" ', 1)
+        consumer = block.split("python - <<'PY'\n", 1)[1].split('\nPY', 1)[0]
+        return mkdir + '\n' + loop, consumer
+    def consume(code):
+        result = subprocess.run([sys.executable, "-B", "-c", code], cwd=workspace, env=env, capture_output=True)
+        assert result.returncode == 0, (result.returncode, result.stderr)
+        return result.stdout
+    new_loop, new_consumer = fragments((S.ROOT / path).read_text(encoding="utf-8"))
+    old_loop, old_consumer = fragments(S.git_source(S.B_CI_REPAIR_BASE, path))
+    assert consume(new_consumer) == b""  # absent output is still harmless
+    for loop in (new_loop, old_loop):
+        result = subprocess.run([bash, "-c", loop], cwd=workspace, env=env, capture_output=True)
+        assert result.returncode == 0, (result.returncode, result.stdout, result.stderr)
+        if loop == new_loop:
+            assert not (workspace / "branch_output").exists()
+            assert {f.name for f in (runner / "agentra-t35-diag").iterdir()} == {
+                "t35_diag_t35_base.txt", "t35_diag_agentra.txt"}
+    assert consume(new_consumer) == consume(old_consumer)
+    output = consume(new_consumer)
+    assert output.count(b"::notice title=t35-diag-") == 2
+    assert b"%25" in output and b"%0A" in output and "\uad00\uce21".encode() in output
+    for name in ("t35_diag_agentra.txt", "t35_diag_t35_base.txt"):
+        (runner / "agentra-t35-diag" / name).unlink()
+        (workspace / "branch_output" / name).unlink()
+        assert consume(new_consumer) == consume(old_consumer)
+    assert consume(new_consumer) == b""
