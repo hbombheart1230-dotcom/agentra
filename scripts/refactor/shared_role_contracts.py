@@ -76,7 +76,9 @@ def verify_runtime(overrides=None):
     require(not reporter & monitor, "ambiguous runtime overlap")
     strategist = S5.current_contract(overrides)["runtime_paths"]
     require(not (reporter | monitor) & strategist, "ambiguous S5 runtime overlap")
-    S5.verify_next_stage(overrides)
+    S5.verify_next_stage({p: value for p, value in overrides.items()
+                         if p in S5.NEXT_RUNTIME or p in S5.B_RUNTIME
+                         or p in S5.B_COMPOSED_BRIEF_RUNTIME})
     actual = set(subprocess.check_output(["git", "diff", "--name-only", BASE, "--", "libs", "graphs", "apps"], cwd=ROOT, text=True).splitlines())
     actual |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard", "--", "libs", "graphs", "apps"], cwd=ROOT, text=True).splitlines())
     actual |= {p for p in overrides if p.startswith(("libs/", "graphs/", "apps/"))}
@@ -89,6 +91,8 @@ def verify_runtime(overrides=None):
         selected = {p: text for p, text in overrides.items() if p in S5.COMMANDER_V1_PATHS}
         commander = S5.verify_commander_pure_v1(selected)["runtime_paths"]
     expected = reporter | monitor | strategist | set(S5.NEXT_RUNTIME) | S5.B_RUNTIME | commander
+    if S5.b_composed_selected():
+        expected |= S5.B_COMPOSED_BRIEF_RUNTIME
     require(actual == expected, "unexpected/missing runtime path: " + repr(actual ^ expected))
     for sha, paths in ((REPORTER, reporter), (MONITOR, monitor), (S5.CANDIDATE_CODE, strategist)):
         for path in sorted(paths):

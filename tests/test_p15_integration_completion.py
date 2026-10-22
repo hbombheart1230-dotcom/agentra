@@ -27,7 +27,9 @@ def test_current_source_restores_only_the_five_approved_definitions():
     assert S.historical_source(S.NODE) == S.git_source(S.HISTORICAL_STAGE, S.NODE)
     # Historical size/import rules remain on the old stage; no new global cap.
     assert len(S.historical_source(S.UI_SECTIONS).splitlines()) <= 350
-    assert len((S.ROOT / S.UI_SECTIONS).read_text(encoding="utf-8").splitlines()) == 387
+    assert len(S.git_source(S.UI_PIN, S.UI_SECTIONS).splitlines()) == 387
+    pin = S.B_COMPOSED_BRIEF if S.b_composed_selected() else S.UI_PIN
+    assert (S.ROOT / S.UI_SECTIONS).read_text(encoding="utf-8") == S.git_source(pin, S.UI_SECTIONS)
 
 
 @pytest.mark.parametrize("path,name", [(p, n) for p, names in S.NEXT_MOVED.items() for n in names])
@@ -147,3 +149,108 @@ def test_historical_view_never_hides_a_modified_current_blob(path, monkeypatch):
     monkeypatch.setattr(Path, "read_text", changed)
     with pytest.raises(AssertionError, match="new-stage source"):
         S.historical_source(path)
+
+
+# B-only composed admission: historical/current source are separate proof inputs.
+def test_b_composed_exact_input_and_old_function_bodies_remain_intact():
+    assert len(S.B_COMPOSED_PATHS) == 23
+    assert len(S.verify_b_composed()) == 24
+    old = ast.parse(S.git_source(S.B_COMPOSED_COMMANDER, "scripts/refactor/shared_strategist_contracts.py"))
+    new = ast.parse((S.ROOT / "scripts/refactor/shared_strategist_contracts.py").read_text(encoding="utf-8"))
+    for fn in (n for n in old.body if isinstance(n, ast.FunctionDef)):
+        # The first definition is the untouched historical predicate; later
+        # wrappers validate current input before projecting its historical view.
+        retained = next(n for n in new.body if isinstance(n, ast.FunctionDef) and n.name == fn.name)
+        assert ast.dump(retained) == ast.dump(fn), fn.name
+    assert S.verify_b_scope() == S.COMMANDER_V1_PATHS | S.COMMANDER_V1_CONTRACT_DELTA
+
+
+@pytest.mark.parametrize("path", sorted(S.B_COMPOSED_PATHS - S.B_COMPOSED_CHECKS - S.COMMANDER_V1_NOTES))
+def test_b_composed_source_mutants_reject_from_green_current_tree(path):
+    import shared_role_contracts as roles
+    assert len(S.verify_b_composed()) == 24
+    assert roles.verify_runtime()["monitor_bodies"] == 20
+    for gate in (S.verify_b_composed, roles.verify_runtime):
+        with pytest.raises(AssertionError) as rejected:
+            gate({path: (S.ROOT / path).read_text(encoding="utf-8") + "\n__import__('socket')\n"})
+        assert path in str(rejected.value)
+        with pytest.raises(AssertionError) as missing:
+            gate({path: None})
+        assert path in str(missing.value)
+
+
+@pytest.mark.parametrize("path", [
+    "libs/broker/unapproved.py", "libs/executor/unapproved.py", "libs/supervisor/unapproved.py",
+    "libs/agents/commander/unapproved.py", "graphs/nodes/decide_trade.py",
+    "apps/operator_ui/main.py", "tests/test_uef9_formal_authority.py",
+    "tests/fixtures/uef9_synthetic/reports_inputs.json", ".github/workflows/unapproved.yml",
+    "libs/reporting/q8_historical_review.py",
+])
+def test_b_composed_has_no_authority_ci_fixture_or_a_lane_prefix_grant(path):
+    import shared_role_contracts as roles
+    assert roles.verify_runtime()["moves"] == 313
+    for gate in (S.verify_b_composed, roles.verify_runtime):
+        with pytest.raises(AssertionError) as rejected:
+            gate({path: "BROKER_EXECUTION_ALLOWED = True\n"})
+        assert path in str(rejected.value)
+
+
+@pytest.mark.parametrize("path", sorted(S.B_COMPOSED_CHECKS))
+def test_b_composed_checker_mutation_rejects_without_new_hash_chain(path):
+    assert S.verify_b_composed()
+    with pytest.raises(AssertionError, match="checker/test drift"):
+        S.verify_b_composed({path: (S.ROOT / path).read_text(encoding="utf-8") + "\n# drift\n"})
+
+
+def test_b_composed_omission_and_note_history_mutation_remain_red():
+    expected = S.verify_b_composed()
+    for path in expected:
+        with pytest.raises(AssertionError, match="unexpected/missing inventory"):
+            S.verify_b_composed(inventory=expected - {path})
+    path = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
+    note = json.loads((S.ROOT / path).read_text(encoding="utf-8"))
+    note["entries"][0]["title"] += " rewritten"
+    with pytest.raises(AssertionError, match="historical patchnotes"):
+        S.verify_b_composed({path: json.dumps(note)})
+
+
+@pytest.mark.parametrize("sha", [S.B_COMPOSED_BASE, S.B_COMPOSED_COMMANDER, S.B_COMPOSED_BRIEF])
+def test_actual_original_predicates_on_pinned_archive_not_current_worktree(sha, tmp_path):
+    """Ordinary test fixture, not a clone, branch or registered Git worktree.
+
+    The original source archive uses the repository's read-only object store and
+    a private index. No real Git index/ref/config or production source is changed.
+    Original checker files/functions execute unmodified on their real old files.
+    """
+    import io
+    import os
+    import tarfile
+    root = tmp_path / "source"
+    root.mkdir()
+    archive = subprocess.check_output(["git", "archive", "--format=tar", sha], cwd=S.ROOT)
+    with tarfile.open(fileobj=io.BytesIO(archive)) as stream:
+        stream.extractall(root, filter="data")
+    env = dict(os.environ, GIT_DIR=subprocess.check_output(
+        ["git", "rev-parse", "--absolute-git-dir"], cwd=S.ROOT, text=True).strip(),
+        GIT_WORK_TREE=str(root), GIT_INDEX_FILE=str(tmp_path / "private-index"),
+        PYTHONPATH=str(root), PYTHONDONTWRITEBYTECODE="1", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1",
+        DRY_RUN="1", TRADING_MODE="mock", EXECUTION_ENABLED="false",
+        TEMP=str(tmp_path), TMP=str(tmp_path), TMPDIR=str(tmp_path))
+    subprocess.run(["git", "read-tree", sha], cwd=root, env=env, check=True)
+    flags = [] if __debug__ else ["-O"]
+    if sha == S.B_COMPOSED_BRIEF:
+        # This test file intentionally pins its developer-stage gate bytes. It
+        # remains unchanged and runs in the exact stage it was written to prove.
+        command = [sys.executable, *flags, "-B", "-m", "pytest", "-q", "-p", "no:cacheprovider",
+                   "tests/test_p15_b_operator_brief_boundaries.py", "--basetemp=" + str(tmp_path / "pytest")]
+    else:
+        command = [sys.executable, *flags, "-B", "-c", (
+            "import sys;sys.path.insert(0,'scripts/refactor');"
+            "from scripts.refactor import shared_strategist_contracts as s;"
+            "import shared_role_contracts as r;"
+            "s.verify_next_stage();s.verify_b_scope();"
+            "x=r.verify_runtime();"
+            "print('ORIGINAL_PINNED_GATE_PASS',x);"
+            "assert x['moves']==313 and x['monitor_bodies']==20")]
+    result = subprocess.run(command, cwd=root, env=env, capture_output=True, text=True)
+    assert result.returncode == 0, (sha, result.returncode, result.stdout, result.stderr)

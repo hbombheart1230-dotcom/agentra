@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 341,
+  "entry_count": 342,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8998,6 +8998,34 @@
         "apps/operator_ui/data_access_brief_evidence_readout_p15.py",
         "tests/test_p15_b_operator_brief_pure_parity.py",
         "tests/test_p15_b_operator_brief_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_B_COMPOSED_INTEGRATION_20261022",
+      "title": "Compose accepted Commander and Operator Brief B source with exact stage admission",
+      "stage": "Local integration candidate; actual normal/O peer and CI receipts in Issue20",
+      "types": [
+        "REFACTOR",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Compose only the23 approved B paths from d7ab8294 through fedef7f7; preserve historical source proofs and admit exact current Commander and Brief blobs.",
+      "details": [
+        "Historical S5/B/UI_PIN and standalone Commander predicates and old manifest remain unchanged. Original checkers execute on real pinned source archive fixtures with a private Git index; no new clone/branch/worktree or global permission changes.",
+        "Current stage binds d7ab8294/e328d780/fedef7f7, exact23 source paths plus existing integration test; no wildcard or new hash chain. Current gate sources/tests are checked against tested HEAD; missing/extra/authority/CI/fixture/owner mutations fail closed.",
+        "Preserve all341 B-only note records in order and append this paired integration record. No A/Q8 source, production data, safety policy, UEF, Broker, core/R3, CI/workflow or main changes. Remote promotion and INTEGRATED require separately reported tests, source review and hostedCI."
+      ],
+      "impact": "Bounded B-only stage composition; no runtime behavior or trading authority change.",
+      "sources": [
+        "scripts/refactor/shared_strategist_contracts.py",
+        "scripts/refactor/shared_role_contracts.py",
+        "tests/test_p15_integration_completion.py",
+        "apps/operator_ui/data_access_brief_input_projection.py",
+        "apps/operator_ui/data_access_brief_sections_projection.py",
+        "apps/operator_ui/data_access_brief_source_truth_p15.py",
+        "apps/operator_ui/data_access_brief_evidence_readout_p15.py"
       ]
     }
   ]

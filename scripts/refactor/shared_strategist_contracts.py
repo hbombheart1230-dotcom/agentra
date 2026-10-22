@@ -702,3 +702,156 @@ def verify_b_scope(overrides=None):
     if commander_v1_selected(overrides):
         return verify_commander_pure_v1(overrides)["changed_paths"]
     return verify_legacy_b_scope(overrides)
+
+
+# Issue20 6330021757: one B-only composed stage, no historical pin changes.
+B_COMPOSED_BASE = "d7ab82940deaa05810b28ef78fc0be88e201f9b6"
+B_COMPOSED_COMMANDER = "e328d7801763a65e6c2c50c90edd693ff685ef95"
+B_COMPOSED_BRIEF = "fedef7f7b72ac396c60c7a8ac1d9432e1dab782c"
+B_COMPOSED_PATHS = frozenset({
+    'apps/operator_ui/data_access_brief_evidence_readout_p15.py',
+    'apps/operator_ui/data_access_brief_input_projection.py',
+    'apps/operator_ui/data_access_brief_sections_projection.py',
+    'apps/operator_ui/data_access_brief_source_truth_p15.py',
+    'docs/trading_agent_patch_notes_detailed_update/patch_notes.json',
+    'docs/trading_agent_patch_notes_detailed_update/patch_notes.md',
+    'libs/agents/commander/__init__.py',
+    'libs/agents/commander/projections/__init__.py',
+    'libs/agents/commander/projections/cache_refresh_read_model.py',
+    'libs/agents/commander/projections/decision_context_read_model.py',
+    'libs/runtime/commander/decision_context_projection.py',
+    'libs/runtime/commander/decision_overlay_projection.py',
+    'libs/runtime/commander/decision_rules_projection.py',
+    'libs/runtime/commander/strategist_fingerprint.py',
+    'libs/runtime/commander/strategist_refresh_decision.py',
+    'scripts/refactor/shared_role_contracts.py',
+    'scripts/refactor/shared_strategist_contracts.py',
+    'tests/test_p15_b_commander_monitor_boundaries.py',
+    'tests/test_p15_b_commander_monitor_pure_parity.py',
+    'tests/test_p15_b_operator_brief_boundaries.py',
+    'tests/test_p15_b_operator_brief_pure_parity.py',
+    'tests/test_p15_commander_pure_v1_admission.py',
+    'tests/test_shared_strategist_contracts.py',
+})
+B_COMPOSED_BRIEF_RUNTIME = frozenset({
+    UI_INPUT, UI_SECTIONS,
+    "apps/operator_ui/data_access_brief_source_truth_p15.py",
+    "apps/operator_ui/data_access_brief_evidence_readout_p15.py",
+})
+B_COMPOSED_CHECKS = frozenset({
+    "scripts/refactor/shared_strategist_contracts.py",
+    "scripts/refactor/shared_role_contracts.py",
+    "tests/test_p15_integration_completion.py",
+})
+
+
+def b_composed_selected():
+    # Deletion must not fall back to an earlier stage after this source commit.
+    return ((ROOT / "apps/operator_ui/data_access_brief_source_truth_p15.py").exists()
+            or subprocess.run(["git", "merge-base", "--is-ancestor", B_COMPOSED_BRIEF, "HEAD"],
+                              cwd=ROOT, capture_output=True).returncode == 0)
+
+
+def verify_b_composed(overrides=None, *, inventory=None):
+    """Exact reviewed 23-file B input plus one integration test; no prefix grant.
+
+    Current checker bytes are tied to the tested/reviewed HEAD, not to another
+    self-referential hash manifest. Original standalone predicates below remain
+    unchanged and are exercised on their pinned historical filesystem trees.
+    """
+    overrides = overrides or {}
+    require((B_COMPOSED_BASE, B_COMPOSED_COMMANDER, B_COMPOSED_BRIEF) ==
+            ("d7ab82940deaa05810b28ef78fc0be88e201f9b6",
+             "e328d7801763a65e6c2c50c90edd693ff685ef95",
+             "fedef7f7b72ac396c60c7a8ac1d9432e1dab782c"), "B composed immutable pins")
+    require(_commander_delta(B_COMPOSED_BASE, B_COMPOSED_BRIEF) == set(B_COMPOSED_PATHS),
+            "B composed exact 23-file input")
+    commander_paths = {p for p in B_COMPOSED_PATHS if p.startswith(
+        ("libs/agents/commander/", "libs/runtime/commander/")) or p in {
+        "tests/test_p15_b_commander_monitor_boundaries.py",
+        "tests/test_p15_b_commander_monitor_pure_parity.py"}}
+    require(COMMANDER_V1_PATHS == commander_paths, "Commander V1 exact eleven-path pin")
+    old_tree = ast.parse(git_source(B_COMPOSED_COMMANDER, "scripts/refactor/shared_strategist_contracts.py"))
+    old_manifest = next(n.value for n in old_tree.body if isinstance(n, ast.Assign)
+                        and any(isinstance(t, ast.Name) and t.id == "COMMANDER_V1_PROOF_HASHES" for t in n.targets))
+    require(set(COMMANDER_V1_PROOF_HASHES) == COMMANDER_V1_CONTRACT_FILES,
+            "Commander V1 exact proof inventory")
+    require(COMMANDER_V1_PROOF_HASHES == ast.literal_eval(old_manifest),
+            "Commander V1 historical proof manifest changed")
+    expected = B_COMPOSED_PATHS | B_COMPOSED_CHECKS
+    changed = _commander_delta(B_COMPOSED_BASE)
+    changed |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"],
+                                          cwd=ROOT, text=True).splitlines())
+    changed |= set(overrides)
+    require(changed == expected, "B-stage composed unexpected/missing inventory: " + repr(changed ^ expected))
+    if inventory is not None:
+        require(set(inventory) == expected,
+                "B-stage composed unexpected/missing inventory: " + repr(set(inventory) ^ expected))
+    for prefix in ("libs/agents/commander", "apps/operator_ui"):
+        pinned = set(subprocess.check_output(["git", "ls-tree", "-r", "--name-only", B_COMPOSED_BRIEF,
+                                             "--", prefix], cwd=ROOT, text=True).splitlines())
+        pinned = {p for p in pinned if p.endswith(".py")}
+        disk = {p.relative_to(ROOT).as_posix() for p in (ROOT / prefix).rglob("*.py")}
+        require(disk == pinned, "B-stage composed unexpected/missing package file: " + repr(disk ^ pinned))
+    for path in sorted(B_COMPOSED_PATHS - B_COMPOSED_CHECKS - COMMANDER_V1_NOTES):
+        require(_commander_read(path, overrides) == git_source(B_COMPOSED_BRIEF, path),
+                "new-stage source/ABI/body differs from B pin: " + path)
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    for path in sorted(B_COMPOSED_CHECKS):
+        require(_commander_read(path, overrides) == git_source(head, path),
+                "B-stage checker/test drift from reviewed HEAD: " + path)
+    note = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
+    old = json.loads(git_source(B_COMPOSED_BRIEF, note))
+    current = json.loads(_commander_read(note, overrides))
+    require(current["entries"][:-1] == old["entries"] and len(current["entries"]) == len(old["entries"]) + 1,
+            "B composed historical patchnotes changed")
+    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 342,
+            "B composed patchnotes count/version")
+    require(current["entries"][-1]["version"] == "P15_B_COMPOSED_INTEGRATION_20261022",
+            "B composed integration note")
+    md = "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+    require(_commander_read(md, overrides).startswith(git_source(B_COMPOSED_BRIEF, md)),
+            "B composed historical Markdown changed")
+    verify_historical_b_scope()
+    return frozenset(changed)
+
+
+# The original functions/bodies and historical manifest above are retained.
+# Their old-stage tests execute them from immutable source archives. Current
+# wrappers first prove the actual composed source, then expose the same named
+# historical view rather than pretending its old source blob was rewritten.
+_standalone_commander_v1 = verify_commander_pure_v1
+_standalone_next_stage = verify_next_stage
+_standalone_historical_source = historical_source
+
+
+def verify_commander_pure_v1(overrides=None, *, inventory=None):
+    if not b_composed_selected():
+        return _standalone_commander_v1(overrides, inventory=inventory)
+    verify_b_composed(overrides)
+    old_paths = COMMANDER_V1_PATHS | COMMANDER_V1_CONTRACT_DELTA | COMMANDER_V1_NOTES
+    if inventory is not None:
+        require(set(inventory) == old_paths,
+                "B-stage Commander V1 unexpected/missing inventory: " + repr(set(inventory) ^ old_paths))
+    return {"version": COMMANDER_V1, "runtime_paths": COMMANDER_V1_RUNTIME,
+            "changed_paths": frozenset(old_paths - COMMANDER_V1_NOTES)}
+
+
+def verify_next_stage(overrides=None):
+    if not b_composed_selected():
+        return _standalone_next_stage(overrides)
+    overrides = overrides or {}
+    # Preserve original error/ABI semantics for the original five-function stage.
+    verify_b_sources(overrides)
+    verify_b_composed({p: value for p, value in overrides.items() if p in B_COMPOSED_PATHS})
+    projected = dict(overrides)
+    for path in (UI_INPUT, UI_SECTIONS):
+        projected[path] = git_source(UI_PIN, path)
+    return _standalone_next_stage(projected)
+
+
+def historical_source(path):
+    if b_composed_selected() and path in (UI_INPUT, UI_SECTIONS):
+        verify_b_composed()
+        return git_source(HISTORICAL_STAGE, path)
+    return _standalone_historical_source(path)

@@ -4169,3 +4169,10 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Move four Operator Brief source-truth helpers and seven evidence/section readouts into two pure Owners. Existing module names re-export the same callables; builders keep facade use-time lookup, signatures, output order and fallback semantics.
 - Input assembly248->123LOC; section assembly387->270LOC. New Owners139/134LOC; core, R3 compaction, routes/templates, historical gates and trading boundaries unchanged.
 - Existing340 records preserved; BASE differential normal/-O tests and source-only Claude review are reported with exact SHA/exit in Issue20. Historical UI_PIN/current standalone scope rejection remains STAGE_ADMISSION_PENDING_GPT, not waived. No integration/main/CI or runtime-data claim.
+
+## 2026-10-22 - P15_B_COMPOSED_INTEGRATION_20261022
+**Stage:** B-only local integration candidate; exact source/test/peer/CI outcomes in Issue20.
+
+- Select only approved d7ab8294..fedef7f7 B23paths; A and Q8 excluded. Current scope is exact, with the existing integration test as sole additional path.
+- Original historical predicates/pins/manifest remain unchanged and execute on actual pinned archive source fixtures. Exact current Commander/Brief sources are validated before historical projections; no wildcard, hash-chain framework, skip or authority change.
+- Preserve341 records and paired Markdown history, append one integration record342. Core/R3, Broker/UEF/Step5C/Monitor policies, workflow and main remain unchanged. Do not infer hosted CI/integration PASS from this entry.
