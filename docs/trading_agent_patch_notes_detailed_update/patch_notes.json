@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 345,
+  "entry_count": 346,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9099,6 +9099,48 @@
         "apps/operator_ui/data_access_core.py",
         "apps/operator_ui/brief_parts/response.py",
         "apps/operator_ui/read_models/run_inputs.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_B_OPERATOR_STRUCTURE_B2_20261022",
+      "title": "Consolidate twelve Brief implementations into input, sections and render packages",
+      "stage": "Developer source only; peer deferred and GPT admission pending",
+      "types": [
+        "REFACTOR"
+      ],
+      "status": "current",
+      "summary": "Replace twelve flat implementation modules with exact module-identity aliases to coherent brief_parts subpackages.",
+      "details": [
+        "Twelve root implementation files 2535->48LOC; canonical source bytes match green51bb. Top-level Python count35 stays35 to preserve all legacy module paths; no duplicated implementation. Input4/sections3/render5 canonical Owners, old and new imports return the same modules and callable objects.",
+        "Exact closed new-stage path/shim/byte proof precedes original R3/T4-A source inspection. Historical SHA pins, ledgers, predicates, outputs and facade imports retained. Previous345 note records preserved; no feature, policy, IO, LLM or execution change."
+      ],
+      "impact": "Folder structure and ownership only.",
+      "sources": [
+        "apps/operator_ui/data_access_brief_canonical_input.py",
+        "apps/operator_ui/data_access_brief_compaction.py",
+        "apps/operator_ui/data_access_brief_monitor_notes.py",
+        "apps/operator_ui/data_access_brief_input_sections.py",
+        "apps/operator_ui/data_access_brief_facts.py",
+        "apps/operator_ui/data_access_brief_market_sections.py",
+        "apps/operator_ui/data_access_brief_monitor_sections.py",
+        "apps/operator_ui/data_access_brief_render_sections.py",
+        "apps/operator_ui/data_access_brief_render_fallback.py",
+        "apps/operator_ui/data_access_brief_render_helpers.py",
+        "apps/operator_ui/data_access_brief_render_narrative_helpers.py",
+        "apps/operator_ui/data_access_brief_render_summary_derivation.py",
+        "apps/operator_ui/brief_parts/input/canonical.py",
+        "apps/operator_ui/brief_parts/input/compaction.py",
+        "apps/operator_ui/brief_parts/input/monitor_notes.py",
+        "apps/operator_ui/brief_parts/input/sections.py",
+        "apps/operator_ui/brief_parts/sections/facts.py",
+        "apps/operator_ui/brief_parts/sections/market.py",
+        "apps/operator_ui/brief_parts/sections/monitor.py",
+        "apps/operator_ui/brief_parts/render/sections.py",
+        "apps/operator_ui/brief_parts/render/fallback.py",
+        "apps/operator_ui/brief_parts/render/helpers.py",
+        "apps/operator_ui/brief_parts/render/narrative.py",
+        "apps/operator_ui/brief_parts/render/summary.py"
       ]
     }
   ]

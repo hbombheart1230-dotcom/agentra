@@ -104,3 +104,23 @@ def test_original_51bb_stage_predicates_are_retained_verbatim_at_ast_level():
     current = ast.parse(Path(S.__file__).read_text(encoding="utf-8"))
     retained = ast.Module(body=current.body[:len(old.body)], type_ignores=[])
     assert ast.dump(retained) == ast.dump(old)  # Includes every original repeated definition and pin.
+
+
+@pytest.mark.parametrize("legacy,canonical", sorted(S.UI_STRUCTURE_MOVES.items()))
+def test_packaged_owner_module_and_all_original_callable_objects_are_identical(legacy, canonical):
+    import importlib
+    assert S.verify_ui_structure()
+    old = importlib.import_module(legacy[:-3].replace("/", "."))
+    new = importlib.import_module(canonical[:-3].replace("/", "."))
+    assert old is new
+    tree = ast.parse(S.git_source(BASE, legacy))
+    for node in tree.body:
+        if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+            assert getattr(old, node.name) is getattr(new, node.name)
+            if isinstance(node, ast.FunctionDef):
+                assert ast.dump(ast.parse(S.ui_structure_source(legacy))) == ast.dump(tree)
+    for path in (legacy, canonical):
+        with pytest.raises(AssertionError):
+            S.verify_ui_structure({path: (S.ROOT / path).read_text(encoding="utf-8") + "\n__import__('socket')\n"})
+    with pytest.raises(AssertionError, match="identity shim"):
+        S.verify_ui_structure({legacy: S.ui_structure_shim_source(canonical).replace("sys.modules[__name__] = _owner", "sys.modules[__name__] = None")})

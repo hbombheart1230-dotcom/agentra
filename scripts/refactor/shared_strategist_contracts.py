@@ -997,18 +997,23 @@ def _ui_structure_core_oracle():
     return (ast.fix_missing_locations(tree), owners)
 
 
-UI_STRUCTURE_MOVES = {}  # Later approved whole-module waves add literal pairs only.
+UI_STRUCTURE_MOVES = {'apps/operator_ui/data_access_brief_canonical_input.py': 'apps/operator_ui/brief_parts/input/canonical.py', 'apps/operator_ui/data_access_brief_compaction.py': 'apps/operator_ui/brief_parts/input/compaction.py', 'apps/operator_ui/data_access_brief_monitor_notes.py': 'apps/operator_ui/brief_parts/input/monitor_notes.py', 'apps/operator_ui/data_access_brief_input_sections.py': 'apps/operator_ui/brief_parts/input/sections.py', 'apps/operator_ui/data_access_brief_facts.py': 'apps/operator_ui/brief_parts/sections/facts.py', 'apps/operator_ui/data_access_brief_market_sections.py': 'apps/operator_ui/brief_parts/sections/market.py', 'apps/operator_ui/data_access_brief_monitor_sections.py': 'apps/operator_ui/brief_parts/sections/monitor.py', 'apps/operator_ui/data_access_brief_render_sections.py': 'apps/operator_ui/brief_parts/render/sections.py', 'apps/operator_ui/data_access_brief_render_fallback.py': 'apps/operator_ui/brief_parts/render/fallback.py', 'apps/operator_ui/data_access_brief_render_helpers.py': 'apps/operator_ui/brief_parts/render/helpers.py', 'apps/operator_ui/data_access_brief_render_narrative_helpers.py': 'apps/operator_ui/brief_parts/render/narrative.py', 'apps/operator_ui/data_access_brief_render_summary_derivation.py': 'apps/operator_ui/brief_parts/render/summary.py'}
 UI_STRUCTURE_PACKAGES = frozenset({
     "apps/operator_ui/brief_parts/__init__.py",
     "apps/operator_ui/read_models/__init__.py",
+    "apps/operator_ui/brief_parts/input/__init__.py",
+    "apps/operator_ui/brief_parts/sections/__init__.py",
+    "apps/operator_ui/brief_parts/render/__init__.py",
 })
 UI_STRUCTURE_TEST = "tests/test_p15_b_ui_structure.py"
 UI_STRUCTURE_RECEIPT = "docs/refactor/work_projects/evidence/monitor/operator_ui_structure_peer.json"
 UI_STRUCTURE_CHECKS = frozenset({
     "scripts/refactor/shared_strategist_contracts.py",
     "scripts/refactor/shared_role_contracts.py", UI_STRUCTURE_TEST,
+    "tests/test_p153_operator_ui_moved_bodies.py",
+    "tests/test_p162_t4a_extraction_gates.py",
 })
-UI_STRUCTURE_RUNTIME = frozenset({UI_CORE, UI_STRUCTURE_RESPONSE, UI_STRUCTURE_RUN})
+UI_STRUCTURE_RUNTIME = frozenset({UI_CORE, UI_STRUCTURE_RESPONSE, UI_STRUCTURE_RUN}) | frozenset(UI_STRUCTURE_MOVES) | frozenset(UI_STRUCTURE_MOVES.values())
 
 
 def ui_structure_selected():
@@ -1039,6 +1044,9 @@ def verify_ui_structure(overrides=None):
                 "UI structure owner header: " + path)
         current.body = current.body[1:]
         require(dump(current) == dump(owner), "UI structure pure body/import: " + path)
+    for legacy, canonical in UI_STRUCTURE_MOVES.items():
+        require(read(legacy) == ui_structure_shim_source(canonical), "UI structure identity shim: " + legacy)
+        require(read(canonical) == git_source(UI_STRUCTURE_BASE, legacy), "UI structure canonical body/import: " + canonical)
     for path in UI_STRUCTURE_PACKAGES:
         require(read(path) == '"""Read-only Operator UI projections."""\n', "UI structure package capability: " + path)
     for path in UI_STRUCTURE_CHECKS:
@@ -1046,7 +1054,7 @@ def verify_ui_structure(overrides=None):
     note = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
     old, current = json.loads(git_source(UI_STRUCTURE_BASE, note)), json.loads(read(note))
     require(current["entries"][:len(old["entries"])] == old["entries"], "UI structure historical patchnotes changed")
-    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 345,
+    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 346,
             "UI structure patchnotes count/version")
     md = "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
     require(read(md).startswith(git_source(UI_STRUCTURE_BASE, md)), "UI structure historical Markdown changed")
@@ -1075,3 +1083,24 @@ def verify_b_sources(overrides=None):
     projected = dict(overrides or {})
     projected[UI_CORE] = git_source(B_SOURCE, UI_CORE)
     return _b_sources_before_ui_structure(projected)
+
+
+def ui_structure_shim_source(target):
+    module = target[:-3].replace("/", ".")
+    parent, name = module.rsplit(".", 1)
+    return ('"""Legacy import alias; canonical read-only implementation lives in a domain package."""\n'
+            'import sys\nfrom ' + parent + ' import ' + name + ' as _owner\n'
+            'sys.modules[__name__] = _owner\n')
+
+
+def ui_structure_source(path):
+    if ui_structure_selected() and path in UI_STRUCTURE_MOVES:
+        verify_ui_structure()
+        return (ROOT / UI_STRUCTURE_MOVES[path]).read_text(encoding="utf-8-sig")
+    return (ROOT / path).read_text(encoding="utf-8-sig")
+
+
+def historical_source(path):
+    if ui_structure_selected() and path in UI_STRUCTURE_MOVES:
+        return ui_structure_source(path)
+    return _historical_before_ui_structure(path)

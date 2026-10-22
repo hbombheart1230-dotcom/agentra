@@ -54,6 +54,9 @@ def source(path, overrides=None):
 
 
 def follow(path):
+    if S5.ui_structure_selected() and path in S5.UI_STRUCTURE_MOVES:
+        S5.verify_ui_structure()
+        return S5.UI_STRUCTURE_MOVES[path]
     pairs = whole_moves()
     if path in pairs:
         source(path)
