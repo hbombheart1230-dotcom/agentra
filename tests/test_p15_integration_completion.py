@@ -216,7 +216,9 @@ def test_ci_evidence_present_absent_unknown_and_tracked_remain_distinct(tmp_path
 
 
 @pytest.mark.parametrize("payload", [b"import os\n", b"<source/>", b"<testsuites><evil/></testsuites>",
-                                      b'<!DOCTYPE x [<!ENTITY y "z">]><testsuites/>'])
+                                      b'<!DOCTYPE x [<!ENTITY y "z">]><testsuites/>',
+                                      "<!DOCTYPE testsuites [<!ENTITY x 'fixture'>]><testsuites><testsuite name='&x;'/></testsuites>".encode("utf-16"),
+                                      "<!DOCTYPE testsuites [<!ENTITY x 'fixture'>]><testsuites><testsuite name='&x;'/></testsuites>".encode("utf-16-be")])
 def test_named_ci_report_with_non_junit_content_fails(tmp_path, monkeypatch, real_pytest_junit, payload):
     monkeypatch.setenv("GITHUB_ACTIONS", "true")
     monkeypatch.setenv("GITHUB_WORKFLOW", "P1.5 Integration T4 Linux Windows Regression")

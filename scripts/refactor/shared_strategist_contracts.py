@@ -791,10 +791,11 @@ def _b_ci_junit_evidence(path, head, *, root=None):
     require(p.is_file() and not p.is_symlink() and not p.parent.is_symlink()
             and p.parent.resolve() == root.resolve() / "branch_output", "invalid CI JUnit evidence path: " + path)
     raw = p.read_bytes()
+    require(b"\x00" not in raw, "invalid CI JUnit evidence encoding: " + path)
     require(b"<!DOCTYPE" not in raw and b"<!ENTITY" not in raw, "invalid CI JUnit evidence declaration: " + path)
     try:
-        tree = ET.fromstring(raw)
-    except ET.ParseError as exc:
+        tree = ET.fromstring(raw.decode("utf-8"))
+    except (UnicodeDecodeError, ET.ParseError) as exc:
         raise AssertionError("invalid CI JUnit evidence XML: " + path) from exc
     allowed = {"testsuites", "testsuite", "testcase", "properties", "property", "failure", "error",
                "skipped", "system-out", "system-err"}
