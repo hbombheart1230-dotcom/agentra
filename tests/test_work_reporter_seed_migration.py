@@ -50,6 +50,10 @@ P15_A_FACADES = {"libs/reporting/operator_visibility.py", "libs/reporting/phase_
                  "libs/reporting/operator_period_summary.py", "libs/reporting/metrics_report_generator.py"}
 # P1.5 DEV-A Q8 post-hoc evaluation facades and their pure owners: exact closed set (no wildcard); the Q8 trust
 # policy modules stay outside it and are still policed by the scope check below
+# P1.5 DEV-A wave A1: reporter AI review facade and its pure *_parts owners (exact closed set, no wildcard)
+P15_A_REVIEW_PATHS = {"libs/reporting/reporter_ai_review.py", "libs/reporting/reporter_ai_review_parts/__init__.py",
+                      "libs/reporting/reporter_ai_review_parts/prompting.py", "libs/reporting/reporter_ai_review_parts/compact_input.py",
+                      "libs/reporting/reporter_ai_review_parts/result_shaping.py", "libs/reporting/reporter_ai_review_parts/review_resolution.py"}
 P15_A_Q8_PATHS = {"libs/reporting/q8_historical_review.py", "libs/reporting/q8_shadow_blocker_review.py",
                   "libs/reporting/q8_lane_decision_table.py",
                   "libs/reporting/evaluation/q8_historical_aggregation_p15.py",
@@ -296,7 +300,7 @@ def test_target_tree_discipline_and_no_forbidden_surface():
         assert sorted(Path(x).name for x in tree if x.endswith(".py")) == historical, sub
         assert sorted(p.name for p in (base / sub).glob("*.py")) ==             sorted(historical + [n for d_sub, n in P15_A_PURE_OWNERS if d_sub == sub]), sub
     out = [x for x in subprocess.check_output(["git", "diff", "--name-only", "-z", START, "HEAD"], cwd=ROOT).decode().split(chr(0)) if x]
-    out = [x for x in out if x not in P15_A_FACADES | P15_A_Q8_PATHS]  # exact closed P1.5 DEV-A facade/Q8 edits; helper stays strict
+    out = [x for x in out if x not in P15_A_FACADES | P15_A_Q8_PATHS | P15_A_REVIEW_PATHS]  # exact closed P1.5 DEV-A edits; helper stays strict
     merged = subprocess.check_output(["git", "rev-list", "--merges", f"{START}..HEAD"], cwd=ROOT).decode().split()
     violations = _scope_violations(out, merged=bool(merged))
     assert not violations, violations
@@ -392,6 +396,7 @@ def test_scope_checker_still_rejects_unexpected_and_forbidden_paths():
     assert _scope_violations(["libs/reporting/q8_evaluation_contract.py", "libs/reporting/evaluation/q8_extra_p15.py"]) == [
         "libs/reporting/q8_evaluation_contract.py", "libs/reporting/evaluation/q8_extra_p15.py"]
     assert len(P15_A_Q8_PATHS) == 12 and all(p.startswith("libs/reporting/") for p in P15_A_Q8_PATHS)
+    assert len(P15_A_REVIEW_PATHS) == 6 and all(p.startswith("libs/reporting/reporter_ai_review") for p in P15_A_REVIEW_PATHS)
     assert _scope_violations(sorted(R4_FACADE_FILES | R4_OWNER_FILES | R4_SHARED_CONTRACT_FILES)) == []
 
 

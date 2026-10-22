@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 346,
+  "entry_count": 347,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9116,6 +9116,34 @@
         "libs/reporting/quant_shadow_candidate_evaluation.py",
         "tests/test_p15_a_q8_quant_shadow_observation_parity.py",
         "tests/test_p15_a_q8_quant_shadow_readout_boundaries.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P1.5 DEV-A A1 REPORTER AI REVIEW PARTS PACKAGE 20261022",
+      "title": "Split reporter_ai_review into a reporter_ai_review_parts package with a thin LLM-orchestrating facade",
+      "stage": "Wave A1 (Tech Lead 6335586418 priority correction) on work/p15-a-reporter-pure-20261021 after 508b3e97; read-only source review and integration pending",
+      "types": [
+        "REFACTOR",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "libs/reporting/reporter_ai_review.py (499 lines) keeps the LLM router, evidence-ledger writes, environment reads and execution-profile resolution; prompt assembly, compact input shaping, result shaping and the enabled/parse-response policy move into four pure owners under libs/reporting/reporter_ai_review_parts/.",
+      "details": [
+        "Before/after: reporter_ai_review.py 499 -> 265 lines; new package reporter_ai_review_parts with __init__.py plus prompting.py (55), compact_input.py (120), result_shaping.py (113) and review_resolution.py (50), every owner stdlib-only. libs/reporting top level stays 125 .py files (no new top-level file) and gains one *_parts directory, the repository's existing convention for decomposed facades. Import direction: reporter_analysis -> reporter_ai_review -> reporter_ai_review_parts.*; owners import no project module.",
+        "Moved with verbatim bodies behind same-name, same-signature facade wrappers that pass facade=sys.modules[__name__]: _normalize_llm_status, _clip_str, _list_str, _dict_str, _normalize_evidence_link_items, _normalize_result, _default_result, _build_compact_input, _build_messages. Owner bodies read each helper, required_key_metadata, canonical_llm_status and REPORTER_AI_REVIEW_REQUIRED_KEYS on that facade, so the existing monkeypatch seams behave as on BASE. build_ai_reporter_review keeps every LLM/ledger/env call and order; only the enabled-policy resolution and the parse-mode / parse-failure-reason classification became calls to review_resolution (three spans, expressions unchanged).",
+        "Tests: 69 new (BASE d7ab8294 vs current over 18 orchestrator scenarios incl. policy precedence, DRY_RUN, unavailable client, raising chat, empty/partial/missing-key/non-JSON replies, explicit params and env fallbacks, comparing returned dicts, router role/policy/messages and the ledger call sequence; adverse helper inputs; 12 facade seams; 10 owner mutants; boundaries for imports, effects, LLM/ledger isolation, BASE signatures/constants, allowlist and cycle-free fresh imports).",
+        "Blocked parts of the wave, not changed: trade_report_ai.py, trade_report_ai_deterministic.py, trade_report_markdown_clean.py, intraday_trade_reports.py and trade_bundle_assembly.py are registered facades of the pinned reporter facade-restoration ledger (313 moves, tests/test_shared_reporter_facade_guard.py, scripts/refactor/reporter_facade_guard.py): an extra import or any unmoved-body change fails that shared proof, and the symbol counts 182/209 are pinned by p152_integration_acceptance. They need a Tech Lead decision before any decomposition."
+      ],
+      "impact": "No behavior, trading, approval, risk, UEF or Step5C change. Passive post-run reporting only; the LLM call, ledger writes and execution policy resolution are unchanged.",
+      "sources": [
+        "libs/reporting/reporter_ai_review.py",
+        "libs/reporting/reporter_ai_review_parts/prompting.py",
+        "libs/reporting/reporter_ai_review_parts/compact_input.py",
+        "libs/reporting/reporter_ai_review_parts/result_shaping.py",
+        "libs/reporting/reporter_ai_review_parts/review_resolution.py",
+        "tests/test_p15_a_reporter_ai_review_parity.py",
+        "tests/test_p15_a_reporter_ai_review_boundaries.py"
       ]
     }
   ]

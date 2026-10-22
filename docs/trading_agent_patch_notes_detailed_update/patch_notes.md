@@ -1,5 +1,13 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P1.5 DEV-A A1 REPORTER AI REVIEW PARTS PACKAGE 20261022
+**Stage:** A1 (지팀장 우선순위 정정 6335586418), 508b3e97 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- `reporter_ai_review.py` 499→265줄. LLM 라우터·증거 원장 기록·환경변수·실행 프로파일 해석은 facade에 두고, 프롬프트 조립·compact 입력·결과 정리·활성/파싱 판정을 `reporter_ai_review_parts/`의 순수 owner 4개(55·120·113·50줄, 모두 표준 라이브러리만 사용)로 분리. libs/reporting 최상위 .py는 125개 그대로이고 기존 `*_parts` 관례의 디렉터리 1개 추가. 호출 방향: reporter_analysis → reporter_ai_review → parts.
+- 이동한 9개 함수는 원문 그대로이며 같은 이름·시그니처의 wrapper가 `facade`를 넘겨 호출 시점 monkeypatch 결과가 BASE와 같음. `build_ai_reporter_review`의 LLM/원장/환경 호출과 순서는 그대로이고, 활성 정책 해석과 파싱 모드·실패 사유 분류 3곳만 `review_resolution` 호출로 바뀜(식 동일).
+- 신규 테스트 69개: 오케스트레이터 18개 시나리오(정책 우선순위, DRY_RUN, 클라이언트 없음, chat 예외, 빈/부분/키 누락/비JSON 응답, 명시 인자·환경 대체값)를 BASE와 비교해 반환값·라우터 호출·원장 호출 순서까지 일치 확인, facade seam 12개, owner 변형 10개, 경계 검사.
+- 막힌 부분(수정하지 않음): `trade_report_ai`·`trade_report_ai_deterministic`·`trade_report_markdown_clean`·`intraday_trade_reports`·`trade_bundle_assembly`는 이동 원장(313건) 기반 공유 facade 복원 가드(`test_shared_reporter_facade_guard`, `reporter_facade_guard`)와 심볼 수(182/209) 고정에 묶여 있어, import 하나만 추가하거나 이동하지 않은 본문을 바꿔도 공유 증명이 깨짐. 분해 전에 지팀장 결정이 필요함.
+
 ## 2026-10-22 · P1.5 DEV-A Q8 QUANT SHADOW OBSERVATION PROJECTION OWNER A-W1 20261022
 **Stage:** A-W1, 8307cc37 수용 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
 
