@@ -1,6 +1,16 @@
 # D01 — Agentra Codex entry (AGENTS.md)
 
-## 2026-10-20 BATCH05 latest developer return contract (applies to D01 and D02)
+## 2026-10-22 ACTIVE EXECUTION LOCK — READ FIRST
+
+**One active source-of-truth pointer:** [`docs/refactor/work_orders/CURRENT.md`](docs/refactor/work_orders/CURRENT.md). Entire Agentra ROOT→LEAF (not agents-only), frozen V3, existing P1.5.0–11 packets and original full-tree owner ledger. BATCH03–05 and PR31 T00–T09 proposals below are historical/non-executable as future orders. Old Issue #20 comments do not override current PO intent. Refresh real remote refs and explicit latest PO authority each session.
+
+CODEX DEV-B keeps Monitor/Commander/Operator UI assigned implementation. Codex has **one-time** sole local-CLI ownership of the obsolete B UI remote-ref housekeeping after fresh worktree/tag/SHA proofs while Claude credits are low; this does NOT grant branch creation, PR31 merge, safety edits or peer PASS.
+
+Work only on approved A/B branch and exact paths, submit normal/`python -O`, fresh read-only opposite CLI verdict/exit (or PEER_DEFERRED), both JSON/MD UI patchnotes. GPT alone selects reviewed source into integration and checks actual SHA CI. No new plans/branches, runtime authority changes, main push or trading deployment.
+
+**The dated text below is retained for provenance; conflicting 'latest' / BATCH05 / fixed historical SHA assignments are INACTIVE.**
+
+## HISTORICAL 2026-10-20 BATCH05 developer return contract (NOT active scope)
 
 **Read [BATCH05 exact four-group folder-scale work order](docs/refactor/work_orders/P15_BATCH05_FOLDER_SCALE_REPORTING_AND_OPERATOR_BRIEF_20261020.md) and latest CURRENT/Issue #20.** Four substantial source groups as one cohesive batch, not a function at a time or time padding. Exact writable paths only, historical pinned bodies/guards immutable, existing SHA baseline first. Same final report format as Claude BATCH04-A for **both** Codex and Claude: full BASE/CANDIDATE SHA and changed files, 4 delivered groups with LOC/ABI/byte/effect deltas, normal/-O and baseline-positive/mutation counts, peer independent tests versus NOT_RUN, local CI/hosted T3 blockers, patchnotes review actor, precise NOT_RUN. Final section MUST be `### 티키타카 실행 리스트` with **one row per actual new read-only opposite CLI invocation** (including BLOCKED and permission-denied attempts), full SHA/flags/isolation/exit/explicit verdict/tests/fix/new SHA.
 

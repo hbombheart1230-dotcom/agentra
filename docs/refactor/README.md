@@ -1,5 +1,8 @@
 # Agentra P1.5/P1.6 — canonical document entry
 
+**ACTIVE execution source (2026-10-22): [`work_orders/CURRENT.md`](work_orders/CURRENT.md).** The approved scope is **FULL REPOSITORY ROOT→LEAF**, not only agents: frozen `TREE_V3_FROZEN.md`, all 26 libs packages and all root folders, with original P1.5.0–11 implementation packets. Existing root/full-path ledgers are in `architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md`, `architecture/P15_ALL_LIBS_OWNERS_20261018.md`, `architecture/P15_TREE_ALL_PATHS_PINNED_20261018.txt`, `architecture/P15_ALL_FILES_OWNERSHIP_CANDIDATES_20261018.csv`. Their 2026-10-18 counts are historical, not today's live HEAD. 2026-10-20 doc-freeze and earlier `DOC_FREEZE_PENDING` blocks below are historical; do not revive closed gates or stage-only T00–T09 plan. Source/integration CI and final P1.5 freeze remain separate.
+
+
 > **CURRENT D7 FREEZE (2026-10-20):** [Accepted DOC_FREEZE receipt](DOC_D7_FREEZE_ACCEPTANCE_20261020.md) pins original reviewed integration source `d89cc136a72efea76fe4da67d1c851f418011312` and records operator-approved historical exceptions. **`DOC_FREEZE_ACCEPTED` ≠ `FINAL_ACCEPTED`.** Subsequent documentation bookkeeping changes have separate SHA/CI; Issue #20 is the live checkpoint. Developer lanes have **not** started automatically.
 
 > **D7 signoff-ready evidence (2026-10-20):** [Bounded DOC_FREEZE decision packet](DOC_D7_RELEASE_READINESS_20261020.md) consolidates D0–D6, 317-entry/1,017-source validation and the exact remaining independent-review/operator gates. **REVIEW_READY is not DOC_FREEZE_ACCEPTED**; Issue #20 controls the active SHA and CI.

@@ -1,6 +1,14 @@
 # D00 — Agentra engineering constitution: DELIVERY FIRST / NO RECURSIVE AUDIT
 
-## 2026-10-20 — mandatory folder-scale batch and identical Claude-style final receipts (BATCH05+)
+## 2026-10-22 ACTIVE EXECUTION LOCK — READ FIRST (FULL REPOSITORY)
+
+**Single live instruction pointer: [`docs/refactor/work_orders/CURRENT.md`](refactor/work_orders/CURRENT.md).** Product Owner confirms entire Agentra ROOT→LEAF P1.5.0–11 refactor, not only `libs/agents/`: all 26 `libs/` packages plus `.github/`, `apps/`, `graphs/`, `scripts/`, `tests/`, `docs/`, `deploy/`, `config/`, `data/` and root controls. Reuse frozen V3 and the **existing** P1.5 packets, original full-tree path/owner ledgers, and existing branches; DO NOT activate draft PR31 T00–T09 program or superseded BATCH03–05 as new dispatch. Safety/explicit latest user approval always wins.
+
+**Order:** documentation pointer fixed → reviewed A/B/PR31 source admission and safe one-ref B housekeeping (Codex sole CLI owner under latest PO instruction) → exact composed integration-SHA normal/-O/peer/hosted CI → redundant stage retirement → remaining existing P1.5.0–11 work by original packet ID. Main/real trades and Supervisor/Executor/Step5C authority remain separately gated. Do not claim any action automatically started by reading this file.
+
+**Old instructions below are preserved as dated history and are NOT active assignment authority when conflicting with CURRENT.** Use only safety and process invariants that remain compatible.
+
+## HISTORICAL 2026-10-20 — BATCH05 folder-scale return contract (NOT active task scope)
 
 - Product Owner authorizes **BATCH05 four substantial deliverable groups per primary developer**, about 2–3× the BATCH04 *inspected source scope* and organized by related directory, **but bounded by exact approved file allowlists**. Prefer large/easy PURE reporting/read-model boundaries; don't split already pinned historical R3 Owners or grow tiny helper files merely to satisfy LOC. Developer may finish all four groups with one code/review handoff; no arbitrary time minimum or made-up work durations.
 - **Same report format for Codex and Claude**, using the **Claude BATCH04-A detailed example**: title+exact BASE/CANDIDATE SHA, branch/worktree/push, changed paths, A1–A4/B1–B4 code results+LOC, byte/effect/parity and normal/-O test counts, nonvacuous mutation outcomes, local CI/reviewer authority blockers, independent vs self tests, precise NOT_RUN. **LAST heading `### 티키타카 실행 리스트`** must be a complete table of all actual direct child CLI calls, including denied and incomplete attempts, exit, verdict, flags/isolation, reviewer tests actually run vs NOT_RUN, real fixes/new SHA.

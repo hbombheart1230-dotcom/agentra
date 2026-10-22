@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 344,
+  "entry_count": 345,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9074,6 +9074,33 @@
         ".github/workflows/p152-r2c-residual-regression.yml",
         "scripts/refactor/shared_strategist_contracts.py",
         "tests/test_p15_integration_completion.py"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": "P15_FULL_REPO_CURRENT_LOCK_20261022",
+      "title": "Unify active P1.5 execution pointer to frozen full-repository ROOT-to-LEAF scope",
+      "stage": "DOCS_ONLY / CURRENT_LOCKED / SOURCE_INTEGRATION_PENDING",
+      "types": [
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Make the preexisting CURRENT pointer the sole active execution contract across D00/D01/D02 and refactor README. Restore full 10-root, 26-libs package P1.5.0–11 scope; deauthorize stale BATCH03–05 and PR31 T00–T09 as new dispatch.",
+      "details": [
+        "Historical dated work-order docs, full path/owner manifests, frozen V3 architecture and all prior patch-note entries are retained. Former long CURRENT body remains at its immutable pre-lock integration SHA.",
+        "Target four remote branch heads (main, integration, DEV-A, DEV-B); safe obsolete B branch cleanup delegated only to Codex local primary under latest PO, after fresh worktree/SHA/tag proof. PR31 not auto-merged or deleted.",
+        "All code/peer/SHA and hosted exact-integration-SHA checks remain pending; this documentation-only update does not start local CLI, source merge, CI, production deployment or live trading."
+      ],
+      "impact": "Clarified startup/operating authority and retained historical provenance without runtime/strategy/safety mutation.",
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/README.md",
+        "docs/refactor/architecture/P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md"
       ]
     }
   ]

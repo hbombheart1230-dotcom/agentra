@@ -4191,3 +4191,13 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Move only the two bounded BASE/current T3.5 diagnostic TXT outputs and their notice consumer to RUNNER_TEMP/agentra-t35-diag in both existing workflows. Preserve original diagnostic calls, pinned BASE, arguments, continue-on-error, notice bounds/escaping and all other workflow text.
 - Exact two-path admission compares complete workflows against frozen1bcf6290 with only three literal path substitutions. Unknown workflow/source changes and untracked diagnostic TXT still fail; no broad output exemption.
 - Preserve343 historical entries, original historical predicates and accepted B sources; append344. No production, authority, A, integration or main change. Actual test/reviewer results are separate from hosted CI.
+
+## 2026-10-22 — P15_FULL_REPO_CURRENT_LOCK_20261022
+**Stage:** DOCS_ONLY / CURRENT_LOCKED / SOURCE_INTEGRATION_PENDING · **Tags:** DOCS · PROCESS · SAFETY
+
+- Restore **full Agentra ROOT→LEAF** existing P1.5.0–11 delivery scope: all 26 libs first-level packages and apps/graphs/scripts/tests/docs/deploy/config/data/.github plus root controls; seven role public entries are just one subsystem. Reuse frozen TREE_V3, original detailed packets and 2026-10-18 immutable full-path/owner inventory; no redesign or AST rescan.
+- Make existing `docs/refactor/work_orders/CURRENT.md` the sole live execution pointer across D00/D01/D02/refactor README; mark old BATCH03–05 and draft-only T00–T09 as historical. Old CURRENT wording persists in Git history at `51bb7130`, no historical documents or patchnote entries removed.
+- Target exactly four remote heads (main, integration, A, B). Codex DEV-B alone may safely finish obsolete B ref cleanup after fresh worktree/SHA/tag proof; GPT only selectively integrates reviewed A/B/PR31 source then proves required CI on exact new integration SHA. Peer credit shortage = SELF_PASS/PEER_DEFERRED, never integration approval. `main`, real orders, Supervisor/Executor/Step5C/UEF safety untouched.
+- **Documentation only:** no runtime Python changes, new branch, local CLI launch, source composition, CI pass or release claim. JSON patchnotes 344→345 unique, paired Markdown appended.
+
+Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/README.md`.
