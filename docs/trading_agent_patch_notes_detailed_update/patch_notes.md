@@ -1,5 +1,12 @@
 # Trading Agent System — Detailed Patch Notes Timeline
 
+## 2026-10-22 · P1.5 DEV-A Q8 TRUSTED REAGGREGATION PURE PROJECTION AND READOUT OWNER 20261022
+**Stage:** 3151be9f 수용 이후 구조 리팩터링 후보 (BASE d7ab8294, 읽기 전용 소스 검토·통합 대기) · **Tags:** REFACTOR · TEST
+
+- `q8_trusted_reaggregation`의 일별 신뢰 게이트 행, 누적 집계·envelope, Markdown 렌더링을 `evaluation/q8_trusted_reaggregation_projection_p15`(205줄) 하나로 이동. facade는 날짜 순회, 그림자 payload 로딩, 평가 호출, JSON/Markdown 쓰기를 유지(240→82줄).
+- 승인된 Q8 분리와 같은 호출 시점 facade 조회: `_fmt_pct`·`_fmt_num`·`_watchlist_rows`와 신뢰 상수 5개를 facade 경유로 읽어 monkeypatch 결과가 BASE와 같음. 기준값·게이트·승급 플래그 변경 없음, 신뢰 정책 파일 무수정.
+- 기존 테스트·호출부가 없던 모듈이라 신규 테스트 2개(BASE 동등성/경계)로 payload·Markdown·예외·호출 순서·쓰기 바이트 비교, facade seam 9개, owner 변형 5개 검출. 부속 admission은 정확한 경로 2개를 `P15_A_Q8_PATHS`와 Q8 경계 허용 목록에 추가한 것뿐이며 이력 pin·조건은 완화하지 않음.
+
 ## 2026-10-22 · P1.5 DEV-A Q8 REPORTER SCOPE GATE EXACT PATH REGISTRATION 20261022
 **Stage:** 2156f254 이후 게이트 후속 (BASE d7ab8294, 지팀장·운영자가 리팩터링 과정에 필요한 테스트 수정으로 승인) · **Tags:** REFACTOR · TEST
 
