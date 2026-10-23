@@ -4,7 +4,7 @@
 
 ## 마지막 실행
 
-- RUN_ID: 2026-10-24T0000Z-claude-a-sched-14 (직전: sched-13; CURRENT@integration 19c0b113 확인, 소스 변경 없음 — 코드 후보 a21401db 유지)
+- RUN_ID: 2026-10-23T1817Z-claude-a-sched-15 (직전: sched-14) (직전: sched-13; CURRENT@integration 19c0b113 확인, 소스 변경 없음 — 코드 후보 a21401db 유지)
 - ROLE: Claude A (예약)
 - STATUS: RF-013 PEER_BLOCKED_OWNERSHIP (소스 변경 없음, 검증 대상 코드 SHA a21401dbf8161b549848ac682b8bd11cac439ab5 유지). RF-018 NO_NEW_SOURCE.
 - START_INTEGRATION_SHA: 29637622ebe136ae237cd3aa2337334e713736f4
@@ -73,5 +73,16 @@
 - RF-018: 신규 소스 없음(sched-13 증거 유지, B peer 대기). RF-020: B가 소비자 계약 증거/peer 요청을 아직 올리지 않아 A peer 대상 없음(NOT_RUN).
 - PEER_VERDICT: RF-013 BLOCKED(이전 B 판정 유지), RF-018/020 NOT_RUN. 통합 NOT_RUN. CI: 본 회차 조회 NOT_RUN(UNKNOWN).
 - GPT_ACTION_REQUIRED: RF-013 정확 9파일 허용(대안 5) 승인 여부 또는 신규 파일 0 축소 결정; RF-018 B peer 배정; RF-020 증거 제출 시 A peer 수행.
+
+### sched-15 (2026-10-23T1817Z): RF-020 독립 peer 검증 (A가 B의 RF-020을 읽기 전용 검증, 코드·오라클 변경 없음)
+- 기준: integration `19c0b1135f5cf8353ba11a1056e21ad56cb32132`(CURRENT도 동일), B HEAD `16ed53e4f063c93bdeb09f353d7e96d51b6db8d8`(B 코드 후보 `a3d60e37` 유지, B의 새 커밋 8bde643d는 RF-001 sanitation 재적용), A 시작 HEAD `2933910527b8e293aa9e3864c96514ccb43c00ac`. CURRENT 지시: A가 RF-020, B가 RF-018을 각각 별도 read-only peer 검증.
+- **정적 검증:** FILE_COVERAGE CSV의 RF-020 30파일 + `libs/runtime/monitor/` 실제 트리를 BASE `63182ab2`, B 후보 `a3d60e37`, B HEAD `16ed53e4`, integration `19c0b113` 4개 리비전에서 blob 비교: 각각 **30/30 BASE와 동일**, 폴더 내 파일 수 30, CSV 밖 파일 0, 추가·삭제·수정 0.
+- **동작 검증(B HEAD 16ed53e4 detached worktree, `libs.runtime.monitor` 참조 테스트 20파일):** 전체 normal/-O 각각 528 passed / 64 failed. 64 failed는 전부 `tests/test_p15_commander_pure_v1_admission.py` 1파일: 54건 'B-stage UI structure unexpected/missing path'(B가 재적용한 RF-001 `apps/operator_ui/data_access_brief_sanitation.py`, `HANDOFF_B.md` 등을 역사 inventory가 모름) + 10건 동일 계열(`data_access_run_detail_projection.py` 포함). 해당 파일을 제외한 **19파일 normal 528 passed / 0 failed, `python -O` 528 passed / 0 failed**.
+- 비교 기준선: integration HEAD `19c0b113`(B 변경 없음)에서 같은 20파일은 55 failed / 537 passed — 실패 55건은 모두 `tests/test_p15_commander_pure_v1_admission.py`의 'B-stage composed unexpected/missing inventory'(허가된 운영 문서 `ENGINEERING_DELIVERY_POLICY.md`, `STATUS.md`, `verification/*/.gitkeep`, `pending/RF-013/018/020/026.md` 경로). 즉 이 파일은 RF-020 소스와 무관하게 CI_RED 계약 트랙에서 이미 실패하며, B의 RF-001 재적용이 B 브랜치에서 9건을 추가로 늘렸다.
+- **판정(A의 독립 검증):** RF-020 `libs/runtime/monitor/` **KEEP_VERIFIED 지지 — REMOTE_PEER_PASS 후보(범위 한정)**. 근거: 30/30 blob 동일 + 소비자 19파일 normal/-O 528 passed. 한계: ① `test_p15_commander_pure_v1_admission.py`(공유 역사 계약) 실패는 RF-020 판정에서 분리했으며 해결되지 않음, ② B의 RF-020 회귀 명령은 B 본인이 제출한 것이 아니라 A가 소유 파일 참조 테스트를 직접 선택해 실행한 것(선택 기준: `runtime.monitor` 참조 grep), ③ 통합·CI 증거 없음, ④ 최종 DONE 판정은 GPT. 소스·테스트·오라클 수정 없음.
+- 새 관찰(GPT 참고): B HEAD의 RF-001 재적용(8bde643d)이 `test_p15_commander_pure_v1_admission.py`의 실패를 55→64건으로 늘림(전부 B-stage UI structure 인벤토리). CURRENT는 이를 별도 트랙으로 분리하라고 판정했으므로 추가 조치 없이 기록만 함.
+- RF-013 / RF-018: 이번 회차 신규 소스 없음. RF-013 stage `7e06e979` BLOCKED(RF-074 inventory) 유지, 구조 대안은 sched-14 항목 참조. RF-018은 B의 peer 대기.
+- CI: integration 19c0b113 exact-SHA hosted CI는 이번 회차 미조회(UNKNOWN); 마지막 직접 확인(CURRENT 인용) 2170066e 1 PASS / 4 FAIL.
+- GPT_ACTION_REQUIRED: (1) RF-020 A peer 결과(범위 한정 REMOTE_PEER_PASS 후보) 수용 여부와 RF 원본 반영. (2) `test_p15_commander_pure_v1_admission.py`의 B-stage 인벤토리 실패(55건 integration, 64건 B HEAD)를 CI_RED 트랙에서 판정 — 오라클 수정 필요 시 GPT 승인. (3) RF-018 B peer 및 RF-013 stage 판정, RF-026 순환 import 소유 판정(기존 요청 유지).
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
