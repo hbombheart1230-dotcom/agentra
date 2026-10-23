@@ -65,6 +65,12 @@
 - **지팀장 통합 게이트:** ① 원소유 RF별 파일 집합과 테스트 분리 ② RF별 독립 peer PASS ③ 선별 integration SHA normal/-O ④ 동일 SHA hosted CI 필수 PASS 순서. 기존 역사 S5/B-stage oracle을 현 후보 51경로에 무조건 적용하거나 allowlist 확장하지 않는다. CI_RED는 별도 호환성 트랙으로 독립 검증하고 RF 완료 수치에 합산하지 않는다. RF-026 SAFETY_HOLD, main/실거래/안전권한 변경 금지.
 - **상태:** 소유권 분리 결정만 완료. **신규 소스 커밋/테스트/통합 NOT_RUN**, RF DONE 0/93. 다음 예약 실행은 보고서 갱신만으로 진전 처리하지 않는다.
 
+## 2026-10-23 15:02 UTC — 지팀장 exact-SHA hosted CI 실패 직접 진단·처리
+
+- **원격 대조:** integration `fa233811`; A HEAD `5493ec81` / RUN `2026-10-23T1420Z-claude-a-sched-8` / 코드 `a21401db`; B HEAD `baf066f1` / RUN `B-20261023T141441Z` / 코드 `a3d60e37`. **A/B 신규 회차·소스 변경 없음**. 소유권 결정은 직전 절로 이미 확정, 반복 승인 불필요.
+- **직접 확인 CI:** `fa233811`의 5 Actions 중 Scripts **SUCCESS**, Shared **FAIL**, Reporting/Web **FAIL**, Design Guard/T4 **IN_PROGRESS** (각 Linux regression step FAIL, Windows step 진행 중; 전체 결론 미확정). [기존 CI troubleshooting](../plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md)에 정확한 job/log 근거와 수락 조건 반영. **CI_RED 유지, RF DONE 0/93, source 통합 0**.
+- **확인된 두 원인:** Shared/Reporting의 pinned B-stage inventory는 **현재 허가된 문서 6경로**를 역사적 변경 목록과 혼동하여 FAIL; Design Guard/T4 Linux 단계는 폐지된 direct opposite-CLI 역사 문자열을 현행 D01/D02에 요구(`REVIEW_ONLY_NO_NESTED_CLI` 첫 실패). **역사 오라클 수정·토큰만 채워 거짓 통과 처리 금지**. GPT가 historical/current scope 분리 설계·계약 소유 판정 담당. A는 RF-013 9 owner/원소유 소비자 patch 제안, B는 RF-001/020 코드·normal/-O에 집중. CI 수리는 별도 검증 가능한 후보·정확한 SHA·hosted CI 이후만 ACCEPT.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
