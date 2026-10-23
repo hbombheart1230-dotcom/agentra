@@ -47,4 +47,10 @@
 - PEER_VERDICT: NOT_RUN(이번 회차 독립 검증 없음). 통합 NOT_RUN. CI: integration 29637622 5개 중 Scripts Contract PASS(https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106251) / 4 FAIL — Shared https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106068, Reporting/Web https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106113, Design Guard https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106233, T4 https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106059 (모두 completed; CURRENT 진단 인용, A 미분석).
 - GPT_ACTION_REQUIRED: (1) seed_migration 오라클에 owner 9 + facade 4 정확 허용 추가 승인(최소 범위 지정). (2) RF-013 활성화 후보를 담을 integration 기반 임시 브랜치 예외 승인(또는 지팀장이 15경로를 직접 적용). (3) RF-030/035 담당의 wrapper 전환 승인. (4) RF-026 순환 import 소유 판정.
 
+### sched-12 (2026-10-24): CURRENT 갱신 반영 확인 (소스 커밋 없음, 코드 SHA a21401db 유지)
+- 기준: origin/integration/p1.5 `2170066e`. CURRENT 신규 사실: GPT가 `stage/p15-rf013-activation-20261024@7e06e979`(17경로=소스·테스트 15+patchnotes 2) 생성(원격 존재 재확인). A는 이 stage에서 새 소스 개발 금지, B 독립 peer(41 / consumer 985+1)가 다음 단계. A 측 후속 조치 없음.
+- RF-013: 증거 변경 없음(sched-9/10의 41 / 985+1 normal/-O 유지). PEER NOT_RUN, 통합 NOT_RUN, 유일 실패 = RF-074 frozen inventory(오라클 미수정).
+- RF-018: `libs/runtime/strategist/` 47파일 모두 최대 311줄(총 5892줄), 분리 대상 대형 모듈 없음 → KEEP_VERIFIED 후보. BASE 대비 diff 0. 이번 회차 테스트 NOT_RUN, 신규 소스 없음(무의미 분할 금지).
+- 검증 큐 verification/codex 0건. GPT_ACTION_REQUIRED: RF-018 KEEP_VERIFIED 수용 여부 및 독립 검증 배정.
+
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
