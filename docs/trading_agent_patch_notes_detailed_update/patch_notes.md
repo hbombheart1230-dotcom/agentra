@@ -4227,3 +4227,7 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.
 - 예약 실행은 A `C:\Users\홍훈\Agentra-P15\dev-a`, B `C:\Users\홍훈\Agentra-P15\dev-b`에서 최신 원격 **CURRENT만** 매회 확인. D00/01/02는 최초·변경·충돌·안전 불확실 시 재독.
 - CURRENT의 배정 RF/트러블슈팅 전체 순회, 진척 없는 한 건 때문에 조기 종료 금지. RF-020·RF-001 보고 미검증 및 RF-010/026/075 경계 문제를 troubleshooting/open에 기록하고 CURRENT에 링크.
 - 소스·main·실거래·안전 조건 변경 없음, JSON/MD paired 기록 추가.
+
+### 2026-10-23 — P15 UI JSON schema/provenance correction (no extra entry)
+- 기존 P15_FULL_REPO_RF_TASK_LEDGER 및 P15_RF_SCHEDULE_CURRENT_ONLY_AND_SCOPE JSON 항목의 필수 `impact` 두 건 누락을 보정하고, 최근 3개 문서 기록의 `sources`를 디렉터리 대신 존재하는 실제 문서 파일 경로로 정정.
+- A/B 작업·거래 코드·main·CI 오라클 불변; 보고 당시 CI 1 PASS / 4 FAIL, 기존 DOC_FREEZE/pinned exact-path gate는 미해결로 troubleshooting/open 링크.

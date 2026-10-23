@@ -9124,8 +9124,8 @@
       "impact": "Documentation/operating navigation only. Source/trading/safety behavior unchanged; final stage closures and exact-SHA CI remain pending.",
       "sources": [
         "docs/refactor/work_orders/CURRENT.md",
-        "docs/refactor/plan/pending/",
-        "docs/refactor/plan/troubleshooting/open/",
+        "docs/refactor/plan/pending/RF-001.md",
+        "docs/refactor/plan/troubleshooting/open/P15_SOURCE_ADMISSION.md",
         "AGENTS.md",
         "CLAUDE.md",
         "docs/ENGINEERING_DELIVERY_POLICY.md",
@@ -9154,9 +9154,10 @@
         "docs/refactor/work_orders/CURRENT.md",
         "docs/refactor/plan/STATUS.md",
         "docs/refactor/plan/FILE_COVERAGE_63182ab2.csv",
-        "docs/refactor/plan/pending/",
-        "docs/refactor/plan/criteria/"
-      ]
+        "docs/refactor/plan/pending/RF-001.md",
+        "docs/refactor/plan/criteria/P1.5.0.md"
+      ],
+      "impact": "93 RF packets and file-level ownership ledger change planning/navigation only; no source, trading or safety behavior altered."
     },
     {
       "date": "2026-10-23",
@@ -9180,7 +9181,8 @@
         "AGENTS.md",
         "CLAUDE.md",
         "docs/refactor/plan/troubleshooting/open/P15_RF020_SCOPE_AND_BATCH_SCHEDULER_20261023.md"
-      ]
+      ],
+      "impact": "Scheduled workers consume CURRENT-only changes while unchanged D00-D02 are cached; documentation and triage only, no trading/source changes."
     }
   ]
 }
