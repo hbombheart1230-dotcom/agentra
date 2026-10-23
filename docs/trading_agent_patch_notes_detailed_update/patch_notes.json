@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 348,
+  "entry_count": 349,
   "entries": [
     {
       "date": "2026-10-20",
@@ -8973,6 +8973,27 @@
         "scripts/refactor/shared_strategist_contracts.py",
         "scripts/refactor/shared_role_contracts.py",
         "tests/test_p15_commander_pure_v1_admission.py"
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_RF001_BRIEF_SANITATION_OWNER_20261023",
+      "title": "Move Operator Brief cleaning helpers to sanitation owner",
+      "stage": "Codex B source candidate; peer, admission, integration and hosted CI pending",
+      "types": [
+        "REFACTOR"
+      ],
+      "status": "current",
+      "summary": "Keep the public brief facade while moving text/list cleaning bodies into the existing sanitation owner with call-time facade resolution.",
+      "details": [
+        "apps/operator_ui/data_access_brief.py preserves clean_brief_text and clean_brief_list signatures and delegates to sanitation implementations using its live module object.",
+        "The list owner calls facade.clean_brief_text at use time, preserving monkeypatch visibility, blank-value behavior, exception behavior and public import compatibility.",
+        "No broker, Supervisor, Executor, Step5C, UEF, CI oracle, workflow or live-trading behavior changed. Historical B-stage inventory failure remains a separate admission issue and is not relaxed."
+      ],
+      "impact": "Pure Operator UI text sanitation ownership only; no runtime authority or external IO change.",
+      "sources": [
+        "apps/operator_ui/data_access_brief.py",
+        "apps/operator_ui/data_access_brief_sanitation.py"
       ]
     },
     {

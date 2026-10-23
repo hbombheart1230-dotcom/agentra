@@ -4226,3 +4226,9 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Add the real public Monitor package entry with pure `MonitorAgentInput` and `MonitorAgentResult`. The result characterizes exactly the existing 27 top-level Monitor compatibility keys; it does not evaluate signals, apply state, emit intents, or perform IO.
 - Export pure `CommanderRuntimeInput` and `CommanderRuntimeResult` from the existing Commander role package. The result characterizes the documented 46-key Commander compatibility surface without routing, execution, ownership, state mutation, LLM invocation, or policy changes.
 - Focused normal and `python -O` tests cover public imports, exact compatibility patch membership, source-state preservation and non-mapping rejection. Graph facades, Broker/Supervisor/Executor, UEF, Step5 and live execution remain unchanged.
+## 2026-10-23 - P15_RF001_BRIEF_SANITATION_OWNER_20261023
+**Stage:** Codex B source candidate; peer, GPT admission, integration and hosted CI pending.
+
+- Keep the public `clean_brief_text` and `clean_brief_list` facade signatures while moving their pure bodies into the existing sanitation owner.
+- The list implementation resolves `facade.clean_brief_text` at call time, preserving monkeypatch behavior, blank inputs, exceptions and import compatibility.
+- No Broker/Supervisor/Executor/Step5C/UEF, workflow, CI-oracle or live-trading behavior changed. The historical B-stage inventory failure remains unmodified and separate from this source candidate.
