@@ -4,7 +4,7 @@
 
 ## 마지막 실행
 
-- RUN_ID: 2026-10-23T1717Z-claude-a-sched-13 (직전: sched-12; 이전 항목은 하단 보존) (직전: 2026-10-23T1520Z-claude-a-sched-10; 이번 회차는 CURRENT@integration 29637622 불변 확인만, 신규 증거 없음) (CURRENT@integration 29637622 확인; 이전 RUN 항목 통합, 상세는 git 이력)
+- RUN_ID: 2026-10-24T0000Z-claude-a-sched-14 (직전: sched-13; CURRENT@integration 19c0b113 확인, 소스 변경 없음 — 코드 후보 a21401db 유지)
 - ROLE: Claude A (예약)
 - STATUS: RF-013 PEER_BLOCKED_OWNERSHIP (소스 변경 없음, 검증 대상 코드 SHA a21401dbf8161b549848ac682b8bd11cac439ab5 유지). RF-018 NO_NEW_SOURCE.
 - START_INTEGRATION_SHA: 29637622ebe136ae237cd3aa2337334e713736f4
@@ -59,5 +59,19 @@
 - 실패 원인(로그 확인): 2 failed(`test_p15_strategist_s5_helper_moves::test_diff_against_pinned_source_touches_only_the_closed_path_set`, `test_work_monitor_role_contracts` 1건)와 57 errors(`test_shared_strategist_contracts.py` 전부)는 모두 같은 공유 계약 `verify_b_composed`의 'B-stage composed unexpected/missing inventory'(허가된 운영 문서 경로가 `B_RF93_CI_REPAIR_FILES`에 없음)이며 Strategist 동작 실패가 아님. 이는 CI_RED 호환성 트랙(후보 a0493b60 계열)에 속하고 오라클은 수정하지 않음. Strategist 동작 테스트 1152개는 전부 PASS.
 - RF-018 소유 47파일은 최대 311줄, BASE 대비 diff 0 → 분할 대상 없음. **KEEP_VERIFIED 후보**; 독립 peer 검증 NOT_RUN(미배정), 통합 NOT_RUN, CI 마지막 직접 확인 29637622 1 PASS / 4 FAIL.
 - GPT_ACTION_REQUIRED: (1) RF-018 KEEP_VERIFIED 수용 및 독립 peer 배정. (2) 공유 계약(B-stage 인벤토리) 문서 경로 처리는 CI_RED 트랙에서 GPT 판정 — RF-018 완료 근거로 합산하지 않음. (3) RF-013 stage 7e06e979 B peer와 seed_migration 오라클 판정, RF-026 순환 import 소유 판정(기존 요청 유지).
+
+### sched-14 (2026-10-24): RF-013 read_models 역사 inventory 구조 대안 분석 (제안만, 소스·오라클 불변)
+- 기준: CURRENT@integration `19c0b113`(A 신규 지시 = 33 owner 재사용/구조 대안 제안만). 검증 큐 0건. 테스트 NOT_RUN(소스 불변; 41 / 985+1 증거 유지).
+- 오라클 사실(`tests/test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`): ① `libs/agents/reporter` 하위 디렉터리 집합이 `{narrative, read_models}`와 정확히 일치해야 함, ② 각 패키지 `*.py` 목록이 BASE `d7ab829` 역사 inventory(read_models 33개)와 정확히 일치해야 함(와일드카드 없음).
+- 대안 평가:
+  1. **기존 33 owner 재사용(신규 파일 0)** — 불가/비권장: 33개는 facade 본문 verbatim blob 고정(REGISTRY/R4~R9 owner bodies, 다른 테스트의 byte 비교)이라 신규 9 본문 병합 시 고정 blob·parity 오라클이 깨짐. 비-고정 파일(`symbol_metadata_*`, 요약류)에 합쳐도 의미 불일치 + 파일 수 감소 목적(대형 모듈 분할) 상실.
+  2. **narrative 패키지에 배치** — 동일 닫힌 목록 검사로 동일 실패(narrative inventory 불일치). 이득 없음.
+  3. **신규 제3 패키지** — 디렉터리 집합 검사 `== {narrative, read_models}`에서 즉시 실패.
+  4. **libs/reporting 등 reporter 밖 배치** — 이 오라클은 회피하나 RF-030/035/CSV 미등재 영역이라 RF-013 소유 아님·역방향 의존이 되어 비추천.
+  5. **정확 허용 목록 추가(권장)** — `P15_A_PURE_OWNERS`(owner 9 정확 파일명, 와일드카드 없음) 1개 집합 + 현 폴더 == 역사 inventory ∪ 허용 9 비교(기존 줄 1개 수정) = 약 8줄. A 후보 `a21401db`의 해당 테스트에 이미 동일 구현이 있어 105 passed(normal/-O)로 확인됨(sched-10); 더 넓은 Q8/AI review 허용은 제외하고 owner 9만 남기는 축소판이 최소안. **오라클 수정은 GPT/RF-074 소유자 승인 사항 — A 미수정.**
+- 결론: 오라클 무수정으로 신규 9파일을 RF-013 소유 폴더에 둘 방법은 없음. 선택지는 (5) 정확 9파일 허용 승인 또는 RF-013을 신규 파일 0(분할 포기, KEEP_VERIFIED 67/67만)으로 축소. A는 GPT 판정 전 추가 소스 작업 안 함.
+- RF-018: 신규 소스 없음(sched-13 증거 유지, B peer 대기). RF-020: B가 소비자 계약 증거/peer 요청을 아직 올리지 않아 A peer 대상 없음(NOT_RUN).
+- PEER_VERDICT: RF-013 BLOCKED(이전 B 판정 유지), RF-018/020 NOT_RUN. 통합 NOT_RUN. CI: 본 회차 조회 NOT_RUN(UNKNOWN).
+- GPT_ACTION_REQUIRED: RF-013 정확 9파일 허용(대안 5) 승인 여부 또는 신규 파일 0 축소 결정; RF-018 B peer 배정; RF-020 증거 제출 시 A peer 수행.
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
