@@ -4,19 +4,14 @@
 
 ## 마지막 실행
 
-- RUN_ID: 2026-10-23T1211Z-claude-a-sched-5  (단일 RUN_ID; 이 회차 신규 실행과 과거 인용을 아래에서 분리)
-- ROLE: Claude A (예약)
-- STATUS: RF-013/018 BLOCKED / KEEP_VERIFIED_NOT_ACCEPTED 유지. 신규 소스 변경 없음, 신규 테스트 증거만 추가.
-- START_INTEGRATION_SHA: 8239db1d146aeef6b6135a1f7f490f489a253fa9
-- WORK_BRANCH: work/p15-a-reporter-pure-20261021, START_REMOTE_SHA: 37586187 (소스 후보 a21401db)
-- NEW_RUN (이번 회차 실제 실행, a21401db detached worktree, 소유 범위 테스트 48파일: test_p15_a_*, test_p15_strategist*, test_p164/p172 strategist, test_reporter_*):
-  - normal: 667 passed / 1 failed. `python -O`: 667 passed / 1 failed.
-  - 실패 1건 = test_p15_strategist_s5_helper_moves.py::test_diff_against_pinned_source_touches_only_the_closed_path_set (historical S5 고정 통합 게이트, 공유 계약·GPT 소유; A 수정 안 함).
-  - tests/test_m12_strategist_hook.py: 수집 단계 ImportError (libs.runtime.exit_policy 순환 import, RF-026 SAFETY_HOLD 사안) — 위 합계에서 제외, 별도 재현: 동일 오류.
-- CITED_PAST (이번 회차 미실행): 가드 185 passed / 1 failed(11:08Z), 2290 passed / 1 failed / 58 errors 전체 스위트.
-- 검증 큐(verification/codex): 0건, 검증할 항목 없음.
-- PEER_VERDICT: NOT_RUN (독립 peer 없음, 위 결과는 자체 보고). CI: 이 회차 확인 안 함(CURRENT 인용만).
-- PUSH_VERIFIED: push 후 원격 재조회 값은 최종 보고 참조.
-- GPT_ACTION_REQUIRED: (1) S5 고정 가드 허용 목록/적용 범위 판정, (2) RF-026 순환 소유자 판정, (3) RF-013/018 KEEP_VERIFIED 마감 또는 a21401db 독립 Codex 검증 배정.
+- RUN_ID: 2026-10-23T1330Z-claude-a-sched-6
+- CURRENT 확인: origin/integration/p1.5 @ 6bdac5857aeb794032b20ca8a98763fd976811f4
+- WORK_BRANCH: work/p15-a-reporter-pure-20261021, 소스 후보(RF-013 독립 검증 요청 대상) = `a21401db` (이후 변경은 HANDOFF_A.md 문서뿐, 소스 diff 없음)
+- STATUS: RF-013 검증 준비 완료 / RF-018 병렬 증거만. 신규 소스 변경 없음.
+- RF-013 Reporter 한정 테스트 (12파일: test_p15_a_reporter*, test_p15_a_q8_reporting_boundaries, test_reporter_*; libs/agents/reporter 76 .py):
+  - normal: 164 passed / 2 failed. `python -O`: 164 passed / 2 failed.
+  - 실패 2건은 모두 역사적 체크포인트 diff 게이트(test_p15_a_q8_reporting_boundaries::test_changes_since_prior_checkpoint_stay_inside_the_q8_allowlist, test_p15_a_reporter_ai_review_boundaries::test_changes_since_previous_checkpoint_stay_inside_the_allowlist). 원인: 고정 허용 목록에 없는 `docs/refactor/work_orders/HANDOFF_A.md` 변경만 검출(Reporter 기능 회귀 아님). 오라클 수정/skip 안 함. 164개 기능·parity·경계 테스트는 전부 PASS.
+- 별도 차단: S5 역사 게이트 1 FAIL(이전 회차 667/1), RF-026 순환 import(test_m12_strategist_hook) — 이번 회차 재실행 안 함, 인용.
+- PEER_VERDICT: NOT_RUN. B에게 RF-013(`a21401db`) read-only normal/-O 독립 검증 요청. 통합 NOT_RUN, CI 이번 회차 확인 안 함.
+- GPT_ACTION_REQUIRED: 역사 diff 게이트 허용 목록/적용 범위 판정, RF-026 소유자 판정.
 
-> 이전 회차의 상세 값은 git 이력에 있다.
