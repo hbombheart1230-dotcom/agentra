@@ -1,5 +1,7 @@
 # D02 — Claude A 개발 규칙
 
+> **역사적 CI provenance (재활성화 금지):** Issues #16–#19 are CLOSED · DOC_FREEZE는 완료된 문서 동결 단계 · REVIEW_ONLY_NO_NESTED_CLI는 지금도 유효한 읽기 전용 검증 경계. P1.5.2 OPEN/P1.5.3 문구는 과거 단계 기록이며 CURRENT의 RF 배정을 대체하지 않는다.
+
 **작업 입구:** [CURRENT](docs/refactor/work_orders/CURRENT.md)의 **이번 Claude 배정 RF 링크** → 해당 [RF 독립 작업 파일](docs/refactor/plan/pending/) → 원본 동결 구현 패킷. [전체 현황](docs/refactor/plan/STATUS.md), [P1.5.0~11 합격 기준](docs/refactor/plan/criteria/)은 필요할 때만 읽는다. 단계 번호는 순차 개발 명령이 아니다.
 
 - **로컬 예약 실행:** `C:\Users\홍훈\Agentra-P15\dev-a`에서 시작. 매번 최신 원격 CURRENT만 확인하고 **Claude 배정 RF 전부를 순회**, 수행/보류/차단을 각 건 별도 보고한다. 첫 작업에 진척 없다고 다음 배정 RF를 누락하지 말 것. 미배정 RF 신규 착수 금지. D00/D01/D02 및 원본은 최초·변경·충돌·안전 의심 시에만 재독.

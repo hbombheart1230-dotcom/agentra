@@ -832,6 +832,19 @@ def b_composed_selected():
                               cwd=ROOT, capture_output=True).returncode == 0)
 
 
+# Separately pinned accepted B-stage and the first RF93 docs-only snapshot.
+# Future source changes need a new explicitly reviewed admission, never a prefix grant.
+B_FROZEN_GREEN = "51bb7130b2ba627be50800fa89c6108dd1a5018c"
+B_RF93_DOCS_PIN = "3fb24fe01761bd8f68587ee48fd0014e807d0d8a"
+B_RF93_CI_REPAIR_FILES = frozenset({
+    "scripts/refactor/shared_strategist_contracts.py",
+    "AGENTS.md", "CLAUDE.md", "docs/refactor/work_orders/CURRENT.md",
+    "docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md",
+    "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
+    "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
+})
+
+
 def verify_b_composed(overrides=None, *, inventory=None):
     """Exact B25 plus two CI proof files and two path-only workflows; no prefix grant.
 
@@ -860,13 +873,33 @@ def verify_b_composed(overrides=None, *, inventory=None):
     require(COMMANDER_V1_PROOF_HASHES == ast.literal_eval(old_manifest),
             "Commander V1 historical proof manifest changed")
     expected = B_COMPOSED_PATHS | B_COMPOSED_CHECKS | B_CI_DIAGNOSTIC_WORKFLOWS
+    # Validate the entire exact historical B-stage using the green, hosted-CI
+    # accepted tree. Never misclassify later RF93 governance documents as B code.
+    require(subprocess.run(["git", "merge-base", "--is-ancestor", B_FROZEN_GREEN, "HEAD"],
+                           cwd=ROOT, capture_output=True).returncode == 0,
+            "B-stage green source pin not ancestral")
+    require(subprocess.run(["git", "merge-base", "--is-ancestor", B_RF93_DOCS_PIN, "HEAD"],
+                           cwd=ROOT, capture_output=True).returncode == 0,
+            "RF93 document snapshot not ancestral")
+    historical = _commander_delta(B_COMPOSED_BASE, B_FROZEN_GREEN)
+    require(historical == expected, "B-stage pinned composed inventory: " + repr(historical ^ expected))
+    documented = _commander_delta(B_FROZEN_GREEN, B_RF93_DOCS_PIN)
+    require(documented and all(p.startswith("docs/") or p in {"AGENTS.md", "CLAUDE.md"}
+                               for p in documented),
+            "RF93 docs-only pin contains unauthorized source/CI/authority changes")
+    recent = _commander_delta(B_RF93_DOCS_PIN)
+    require(recent <= B_RF93_CI_REPAIR_FILES,
+            "B-stage composed unexpected/missing inventory: " +
+            repr(recent - B_RF93_CI_REPAIR_FILES))
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     changed = _commander_delta(B_COMPOSED_BASE)
     untracked = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"],
                                        cwd=ROOT, text=True).splitlines()
     changed |= {p for p in untracked if not _b_ci_junit_evidence(p, head)}
     changed |= set(overrides)
-    require(changed == expected, "B-stage composed unexpected/missing inventory: " + repr(changed ^ expected))
+    permitted = expected | documented | recent
+    require(changed == permitted, "B-stage composed unexpected/missing inventory: " +
+            repr(changed ^ permitted))
     if inventory is not None:
         require(set(inventory) == expected,
                 "B-stage composed unexpected/missing inventory: " + repr(set(inventory) ^ expected))
@@ -889,18 +922,26 @@ def verify_b_composed(overrides=None, *, inventory=None):
                 "B diagnostic workflow differs beyond approved paths: " + path)
     note = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
     old = json.loads(git_source(B_CI_DIAGNOSTIC_BASE, note))
+    green = json.loads(git_source(B_FROZEN_GREEN, note))
+    documented_notes = json.loads(git_source(B_RF93_DOCS_PIN, note))
     current = json.loads(_commander_read(note, overrides))
-    require(current["entries"][:-1] == old["entries"] and len(current["entries"]) == len(old["entries"]) + 1,
+    require(green["entries"][:-1] == old["entries"] and
+            len(green["entries"]) == len(old["entries"]) + 1 and
+            green["entries"][-1]["version"] == "P15_B_CI_DIAGNOSTIC_TEMP_20261022" and
+            green["entry_count"] == 344,
+            "B composed pinned historical patchnotes changed")
+    require(documented_notes["entries"][:len(green["entries"])] == green["entries"] and
+            current["entries"][:len(documented_notes["entries"])] == documented_notes["entries"],
             "B composed historical patchnotes changed")
-    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 344,
+    require(current["entry_count"] == len(current["entries"]) ==
+            len({r["version"] for r in current["entries"]}) and
+            len(current["entries"]) > len(documented_notes["entries"]),
             "B composed patchnotes count/version")
-    require(current["entries"][-1]["version"] == "P15_B_CI_DIAGNOSTIC_TEMP_20261022",
-            "B composed integration note")
     md = "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
-    require(_commander_read(md, overrides).startswith(git_source(B_CI_DIAGNOSTIC_BASE, md)),
+    require(_commander_read(md, overrides).startswith(git_source(B_RF93_DOCS_PIN, md)),
             "B composed historical Markdown changed")
     verify_historical_b_scope()
-    return frozenset(changed)
+    return frozenset(expected)
 
 
 # The original functions/bodies and historical manifest above are retained.

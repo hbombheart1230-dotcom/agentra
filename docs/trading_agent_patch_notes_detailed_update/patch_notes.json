@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 348,
+  "entry_count": 349,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9183,6 +9183,34 @@
         "docs/refactor/plan/troubleshooting/open/P15_RF020_SCOPE_AND_BATCH_SCHEDULER_20261023.md"
       ],
       "impact": "Scheduled workers consume CURRENT-only changes while unchanged D00-D02 are cached; documentation and triage only, no trading/source changes."
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_CI_HISTORICAL_RF93_SEPARATION_20261023",
+      "title": "Separate pinned historical B-stage admission from RF93 documents without weakening source gates",
+      "stage": "P1.5 CI_COMPAT_REPAIR",
+      "types": [
+        "REFACTOR",
+        "TEST",
+        "SAFETY",
+        "DOCS"
+      ],
+      "summary": "Repair four blocked CI workflows by verifying B-stage source inventory on its green pinned SHA and RF93 documentation on a separate immutable SHA.",
+      "details": [
+        "Preserve the B-stage 29-path exact inventory, source/AST/ABI pins, current untracked/override rejection and negative mutation tests.",
+        "Prove no runtime or CI authority diff between green B-stage and the RF93 documentation snapshot; only exact named follow-up CI repair paths are considered.",
+        "Restore historical provenance wording in D01/D02/CURRENT without reactivating old work queues.",
+        "No main promotion, live execution, Supervisor/Executor/Step5C or guard/approval modifications. Hosted exact-SHA CI and peer review pending."
+      ],
+      "impact": "Restores correct historical vs current CI stage boundaries while retaining fail-closed source admission; no broker or trading behavior change.",
+      "sources": [
+        "scripts/refactor/shared_strategist_contracts.py",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md"
+      ],
+      "status": "current"
     }
   ]
 }

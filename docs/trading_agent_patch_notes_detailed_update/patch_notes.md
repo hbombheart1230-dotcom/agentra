@@ -4231,3 +4231,11 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.
 ### 2026-10-23 — P15 UI JSON schema/provenance correction (no extra entry)
 - 기존 P15_FULL_REPO_RF_TASK_LEDGER 및 P15_RF_SCHEDULE_CURRENT_ONLY_AND_SCOPE JSON 항목의 필수 `impact` 두 건 누락을 보정하고, 최근 3개 문서 기록의 `sources`를 디렉터리 대신 존재하는 실제 문서 파일 경로로 정정.
 - A/B 작업·거래 코드·main·CI 오라클 불변; 보고 당시 CI 1 PASS / 4 FAIL, 기존 DOC_FREEZE/pinned exact-path gate는 미해결로 troubleshooting/open 링크.
+
+## 2026-10-23 — P15_CI_HISTORICAL_RF93_SEPARATION_20261023
+**Stage:** P1.5 CI_COMPAT_REPAIR / VERIFY_PENDING
+
+- 과거 B-stage의 소스·AST·ABI·29경로 폐쇄 인벤토리는 마지막 CI 6/6 녹색 SHA `51bb7130`에서 검증하도록 분리. 후속 RF93 문서 스냅샷 `3fb24fe0` 이후에는 명시된 CI 수리 파일 이외 변경은 거부.
+- D01/D02/CURRENT에 역사적 DOC_FREEZE/Issue 경로 provenance를 비활성 기록으로 복원. 과거 배정 재활성화 금지.
+- User-facing patch_notes JSON/MD 동기화, 통합 실거래/브로커/안전권한 변경 없음.
+- Hosted exact-source CI 및 상대 CLI 독립 검증은 이 커밋 후 증거가 확보되기 전까지 **NOT_VERIFIED / BLOCKED**.

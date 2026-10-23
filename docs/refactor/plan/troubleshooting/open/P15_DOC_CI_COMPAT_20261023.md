@@ -20,3 +20,9 @@
 - [ ] 예약 실행은 항상 원격 `integration/p1.5` HEAD와 최신 CI를 기준으로 하고, 브랜치 삭제/보존 태그는 API로 재확인. 쓰기 실패는 해당 시도만 BLOCKED 보고하며 오래된 SHA로 덮어쓰기 금지.
 
 **제약:** `main`·실거래·안전 권한·CI 검증 오라클을 수정/약화하지 않음. 이미 공개된 RF 계약은 유지하고 정확한 해결에는 별도 검증 필요.
+
+## 지팀장 CI 호환성 수리 후보 (2026-10-23)
+- **확인된 마지막 녹색 기준:** `51bb7130b2ba627be50800fa89c6108dd1a5018c` (필수 CI 6/6 PASS). RF93 문서 스냅샷 `3fb24fe01761bd8f68587ee48fd0014e807d0d8a`와 분리.
+- **기존 실패:** `3fb24fe0` 5개 워크플로 최종 1 PASS / 4 FAIL. Shared/Reporting은 과거 B-stage 정확한 29경로 검사가 후속 120건 문서 변경을 source inventory로 오인. T4/Design Guard는 DOC_FREEZE/역사 provenance 표현 삭제로 실패.
+- **수리 범위:** B-stage 기존 29경로 인벤토리·실제 Owner 바이트/AST/ABI·부정 mutation 검증 유지. 녹색 고정 SHA의 역사적 인벤토리와 RF93 문서 스냅샷을 분리하여, 스냅샷 이후 정확히 명시한 CI 수리 파일 외 변경을 거부한다. 문서 provenance는 재활성 지시가 아닌 과거 기록으로 복원한다. UI patchnotes JSON/MD 동기화.
+- **판정:** 수리 커밋은 hosted exact-SHA normal/optimized CI 및 별도 독립 CLI verdict 이전까지 `VERIFY_PENDING`. CI 실패가 남으면 수정 완료 선언 금지; 기존 오라클/실거래 경계 변경 금지.
