@@ -1,0 +1,7 @@
+# T04 — Seven visible role peers: Supervisor/Executor public surfaces (safety gated)
+**Status:** ARCHITECTURE_GATED — source edits to these authority boundaries require separate explicit operator approval. Role peer public target from `TREE_V3_FROZEN.md`: `libs/agents/supervisor/`, `libs/agents/executor/`, but **do not create empty decorative folders or duplicate engines**.
+Existing actual trusted authority remains `libs/risk/`, `libs/approval/`, `libs/supervisor/`, `libs/execution/`, `libs/kiwoom/`, `graphs/nodes/execute_from_packet.py`. This is an authority topology, NOT role-specific move permission.
+1. GPT creates two proposed **read-only/callable public API adapter** contracts after precise constructor/consumers inspect; no duplication of Supervisor approve/deny or Executor submit/cancel/recovery.
+2. Demonstrate that proposed adapters do not modify write paths, call counts, Step5C state, intent_id idempotency, run_id, UNKNOWN quarantine, broker mutation, allowlist/EXECUTION_ENABLED or precedence of runtime safety guard over approval.
+3. If a real nonempty adapter is safe and user separately approves exact source paths, implement in isolated role subtree with frozen old engine path unchanged, fail-closed negative tests. Otherwise record `SAFETY_LOCK_DEFERRED` and keep 5 public folders: do not falsely claim seven completed.
+**EXIT:** seven roles physically present **with real safe entry surface and independent gate**, OR fully documented explicit security hold. `main`, live trading and production adapters stay disabled. 

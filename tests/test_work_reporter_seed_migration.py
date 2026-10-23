@@ -45,6 +45,37 @@ DECOMPOSED = {"trade_report_symbol_metadata": ("read_models", ["symbol_metadata_
                                                                 "symbol_metadata_name_inference", "symbol_metadata_resolution"]),
               "trade_story_pipeline_news": ("narrative", ["news_text", "news_headlines", "news_scanner_contribution"]),
               "trade_story_pipeline_scanner": ("narrative", ["scanner_basis", "scanner_selection_trace", "scanner_evidence_fit"])}
+P15_A_HISTORICAL_TREE = "d7ab82940deaa05810b28ef78fc0be88e201f9b6"  # integration/p1.5 BASE: exact historical folder inventory
+P15_A_FACADES = {"libs/reporting/operator_visibility.py", "libs/reporting/phase_runtime_health.py",
+                 "libs/reporting/operator_period_summary.py", "libs/reporting/metrics_report_generator.py"}
+# P1.5 DEV-A Q8 post-hoc evaluation facades and their pure owners: exact closed set (no wildcard); the Q8 trust
+# policy modules stay outside it and are still policed by the scope check below
+# P1.5 DEV-A wave A1: reporter AI review facade and its pure *_parts owners (exact closed set, no wildcard)
+P15_A_REVIEW_PATHS = {"libs/reporting/reporter_ai_review.py", "libs/reporting/reporter_ai_review_parts/__init__.py",
+                      "libs/reporting/reporter_ai_review_parts/prompting.py", "libs/reporting/reporter_ai_review_parts/compact_input.py",
+                      "libs/reporting/reporter_ai_review_parts/result_shaping.py", "libs/reporting/reporter_ai_review_parts/review_resolution.py"}
+# P1.5 DEV-A large-first wave: Q9 full-chain component review facade and its pure *_parts owners (exact closed set, no wildcard)
+P15_A_FULLCHAIN_PATHS = {"libs/reporting/evaluation/full_chain_component_review.py", "libs/reporting/evaluation/full_chain_review_parts/__init__.py",
+                         "libs/reporting/evaluation/full_chain_review_parts/root_cause.py", "libs/reporting/evaluation/full_chain_review_parts/attribution.py",
+                         "libs/reporting/evaluation/full_chain_review_parts/component_decisions.py", "libs/reporting/evaluation/full_chain_review_parts/render.py"}
+# P1.5 DEV-A large-first wave: alpha research board builder and its two pure owners (exact closed set, no wildcard)
+P15_A_ALPHA_PATHS = {"libs/reporting/alpha_research_board/builder.py", "libs/reporting/alpha_research_board/candidate_rows.py",
+                     "libs/reporting/alpha_research_board/board_assembly.py"}
+P15_A_Q8_PATHS = {"libs/reporting/q8_historical_review.py", "libs/reporting/q8_shadow_blocker_review.py",
+                  "libs/reporting/q8_lane_decision_table.py",
+                  "libs/reporting/evaluation/q8_historical_aggregation_p15.py",
+                  "libs/reporting/evaluation/q8_historical_render_p15.py",
+                  "libs/reporting/evaluation/q8_shadow_readout_p15.py",
+                  "libs/reporting/q8_trusted_reaggregation.py",
+                  "libs/reporting/evaluation/q8_trusted_reaggregation_projection_p15.py",
+                  "libs/reporting/quant_shadow_candidate_evaluation.py",
+                  "libs/reporting/evaluation/quant_shadow_forward_readout_p15.py",
+                  "libs/reporting/evaluation/quant_shadow_render_p15.py",
+                  "libs/reporting/evaluation/quant_shadow_observation_projection_p15.py"}
+P15_A_PURE_OWNERS = {("read_models", n + ".py") for n in (
+    "operator_daily_projection", "operator_run_context_projection", "phase_health_projection", "phase_health_policy_views",
+    "phase_health_text_rendering", "period_summary_projection", "metrics_projection", "metrics_summary_projection",
+    "metrics_event_fold")}
 REPORTER_PACKAGES = {"narrative", "read_models"}  # exact, versioned by this project (shared allowlist is Work-owned)
 OLD, NEW = "libs.reporting.{}", "libs.agents.reporter.{}.{}"
 
@@ -267,11 +298,16 @@ def test_target_tree_discipline_and_no_forbidden_surface():
     base = ROOT / "libs/agents/reporter"
     assert {p.name for p in base.iterdir() if p.is_dir() and p.name != "__pycache__"} == REPORTER_PACKAGES
     for sub in REPORTER_PACKAGES:
-        assert sorted(p.name for p in (base / sub).glob("*.py")) == \
-            sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]
-                   + [f"{o}.py" for d_sub, owners in DECOMPOSED.values() if d_sub == sub for o in owners]
-                   + [Path(o).name for o in sorted(R4_OWNER_FILES) if Path(o).parent.name == sub]), sub
+        historical = sorted(["__init__.py"] + [f"{n}.py" for n, (s, _b) in REGISTRY.items() if s == sub]
+                            + [f"{o}.py" for d_sub, owners in DECOMPOSED.values() if d_sub == sub for o in owners]
+                            + [Path(o).name for o in sorted(R4_OWNER_FILES) if Path(o).parent.name == sub])
+        # the pinned historical inventory is proven against the real historical Git tree (integration BASE), while the
+        # current folder is that inventory plus the exact approved P1.5 DEV-A Reporter pure owners (no prefix wildcard)
+        tree = subprocess.check_output(["git", "ls-tree", "--name-only", P15_A_HISTORICAL_TREE, f"libs/agents/reporter/{sub}/"], cwd=ROOT).decode().split()
+        assert sorted(Path(x).name for x in tree if x.endswith(".py")) == historical, sub
+        assert sorted(p.name for p in (base / sub).glob("*.py")) ==             sorted(historical + [n for d_sub, n in P15_A_PURE_OWNERS if d_sub == sub]), sub
     out = [x for x in subprocess.check_output(["git", "diff", "--name-only", "-z", START, "HEAD"], cwd=ROOT).decode().split(chr(0)) if x]
+    out = [x for x in out if x not in P15_A_FACADES | P15_A_Q8_PATHS | P15_A_REVIEW_PATHS | P15_A_FULLCHAIN_PATHS | P15_A_ALPHA_PATHS]  # exact closed P1.5 DEV-A edits; helper stays strict
     merged = subprocess.check_output(["git", "rev-list", "--merges", f"{START}..HEAD"], cwd=ROOT).decode().split()
     violations = _scope_violations(out, merged=bool(merged))
     assert not violations, violations
@@ -363,6 +399,13 @@ def test_scope_checker_still_rejects_unexpected_and_forbidden_paths():
            "libs/runtime/monitor/cycle_event_payloads.py", "docs/refactor/p1_5_2_facade_symbol_ledger_2026-10-09.json"]
     assert _scope_violations(bad) == bad
     assert _scope_violations(["libs/reporting/operator_visibility.py"], merged=True) == ["libs/reporting/operator_visibility.py"]
+    # the Q8 grant is exact: the read-only trust policy and any sibling path are still rejected by the helper itself
+    assert _scope_violations(["libs/reporting/q8_evaluation_contract.py", "libs/reporting/evaluation/q8_extra_p15.py"]) == [
+        "libs/reporting/q8_evaluation_contract.py", "libs/reporting/evaluation/q8_extra_p15.py"]
+    assert len(P15_A_Q8_PATHS) == 12 and all(p.startswith("libs/reporting/") for p in P15_A_Q8_PATHS)
+    assert len(P15_A_ALPHA_PATHS) == 3 and all(p.startswith("libs/reporting/alpha_research_board/") for p in P15_A_ALPHA_PATHS)
+    assert len(P15_A_FULLCHAIN_PATHS) == 6 and all(p.startswith("libs/reporting/evaluation/full_chain_") for p in P15_A_FULLCHAIN_PATHS)
+    assert len(P15_A_REVIEW_PATHS) == 6 and all(p.startswith("libs/reporting/reporter_ai_review") for p in P15_A_REVIEW_PATHS)
     assert _scope_violations(sorted(R4_FACADE_FILES | R4_OWNER_FILES | R4_SHARED_CONTRACT_FILES)) == []
 
 

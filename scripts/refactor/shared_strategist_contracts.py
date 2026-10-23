@@ -988,3 +988,166 @@ def historical_source(path):
         verify_b_composed()
         return git_source(HISTORICAL_STAGE, path)
     return _standalone_historical_source(path)
+
+
+# Candidate-only B UI structure layer; old RF93 gate stays unchanged.
+UI_STRUCTURE_BASE = "51bb7130b2ba627be50800fa89c6108dd1a5018c"
+UI_STRUCTURE_RESPONSE = "apps/operator_ui/brief_parts/response.py"
+UI_STRUCTURE_RUN = "apps/operator_ui/read_models/run_inputs.py"
+@lru_cache(maxsize=1)
+def _ui_structure_core_oracle():
+    source = git_source(UI_STRUCTURE_BASE, UI_CORE)
+    tree = ast.parse(source)
+    functions = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
+    brief = functions['_load_operator_brief']
+    finalize = next((n for n in brief.body if isinstance(n, ast.FunctionDef) and n.name == 'finalize'))
+    cut = next((i for i, n in enumerate(finalize.body) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Subscript)))
+    response = []
+
+    def helper(name, args, body, globals=()):
+        body = copy.deepcopy(body)
+
+        class Qualify(ast.NodeTransformer):
+
+            def visit_Name(self, n):
+                if n.id in globals and isinstance(n.ctx, ast.Load):
+                    return ast.copy_location(ast.Attribute(ast.Name('facade', ast.Load()), n.id, ast.Load()), n)
+                return n
+        body = [Qualify().visit(n) for n in body]
+        signature = ast.arguments(posonlyargs=[], args=[ast.arg(a) for a in args], vararg=None, kwonlyargs=[ast.arg('facade')], kw_defaults=[None], kwarg=None, defaults=[])
+        return ast.FunctionDef(name, signature, body, [], returns=None, type_comment=None, type_params=[])
+    response.append(helper('prepare_result', ['result', 'detail', 'fallback', 'attempts'], finalize.body[:cut] + [ast.Return(ast.Tuple([ast.Name(n, ast.Load()) for n in ('out', 'parsed_output', 'latency_ms')], ast.Load()))], ('re', '_sanitize_operator_brief_result')))
+
+    def call(name, args):
+        return ast.Call(ast.Name(name, ast.Load()), [ast.Name(a, ast.Load()) for a in args], [ast.keyword('facade', ast.parse('_r3_sys.modules[__name__]', mode='eval').body)])
+    finalize.body[:cut] = [ast.Assign([ast.Tuple([ast.Name(n, ast.Store()) for n in ('out', 'parsed_output', 'latency_ms')], ast.Store())], call('_prepare_brief_result', ['result', 'detail', 'fallback', 'attempts']))]
+    for status, name, args in (('ok', 'primary_result', ['parsed_candidate', 'fallback', 'model', 'parse_meta']), ('repaired', 'repaired_result', ['repaired', 'fallback', 'model', 'repair_meta']), ('salvaged', 'line_result', ['line_parsed', 'fallback', 'model', 'line_meta'])):
+        node = next((n for n in ast.walk(brief) if isinstance(n, ast.Return) and isinstance(n.value, ast.Call) and isinstance(n.value.func, ast.Name) and (n.value.func.id == 'finalize') and isinstance(n.value.args[0], ast.Dict) and any((isinstance(k, ast.Constant) and k.value == 'status' and isinstance(v, ast.Constant) and (v.value == status) for k, v in zip(n.value.args[0].keys, n.value.args[0].values)))))
+        response.append(helper(name, args, [ast.Return(copy.deepcopy(node.value.args[0]))]))
+        node.value.args[0] = call('_brief_' + name, args)
+    run = functions['load_run_detail']
+    start = next((i for i, n in enumerate(run.body) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) and (n.targets[0].id == 'route_row')))
+    end = next((i for i, n in enumerate(run.body) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) and (n.targets[0].id == 'canonical_sources')))
+    body = run.body[start:end]
+    outputs = ['route_row', 'end_row', 'strategist_summary', 'strategist_llm', 'scanner_summary', 'monitor_summary', 'verdict_payload', 'execution_payload', 'portfolio_sync', 'strategic_frame', 'candidate_selection', 'entry_exit_decision', 'feature_coverage', 'quote_metrics', 'strategist_evidence', 'run_day']
+    projection = helper('project_run_inputs', ['all_rows', 'evidence_rows'], body + [ast.Return(ast.Tuple([ast.Name(n, ast.Load()) for n in outputs], ast.Load()))], ('_build_portfolio_sync_card', '_extract_portfolio_guard_payload_from_run_rows', '_feature_coverage', '_quote_metrics_snapshot', '_latest_evidence', '_to_datetime'))
+    run.body[start:end] = [ast.Assign([ast.Tuple([ast.Name(n, ast.Store()) for n in outputs], ast.Store())], call('_project_run_inputs', ['all_rows', 'evidence_rows']))]
+    added = ast.parse('from apps.operator_ui.brief_parts.response import prepare_result as _prepare_brief_result, primary_result as _brief_primary_result, repaired_result as _brief_repaired_result, line_result as _brief_line_result\nfrom apps.operator_ui.read_models.run_inputs import project_run_inputs as _project_run_inputs').body
+    tree.body[1:1] = added
+    future = ast.parse('from __future__ import annotations').body
+    owners = {UI_STRUCTURE_RESPONSE: ast.fix_missing_locations(ast.Module(future + response, type_ignores=[])), UI_STRUCTURE_RUN: ast.fix_missing_locations(ast.Module(copy.deepcopy(future) + [projection], type_ignores=[]))}
+    return (ast.fix_missing_locations(tree), owners)
+
+
+UI_STRUCTURE_MOVES = {'apps/operator_ui/data_access_brief_canonical_input.py': 'apps/operator_ui/brief_parts/input/canonical.py', 'apps/operator_ui/data_access_brief_compaction.py': 'apps/operator_ui/brief_parts/input/compaction.py', 'apps/operator_ui/data_access_brief_monitor_notes.py': 'apps/operator_ui/brief_parts/input/monitor_notes.py', 'apps/operator_ui/data_access_brief_input_sections.py': 'apps/operator_ui/brief_parts/input/sections.py', 'apps/operator_ui/data_access_brief_facts.py': 'apps/operator_ui/brief_parts/sections/facts.py', 'apps/operator_ui/data_access_brief_market_sections.py': 'apps/operator_ui/brief_parts/sections/market.py', 'apps/operator_ui/data_access_brief_monitor_sections.py': 'apps/operator_ui/brief_parts/sections/monitor.py', 'apps/operator_ui/data_access_brief_render_sections.py': 'apps/operator_ui/brief_parts/render/sections.py', 'apps/operator_ui/data_access_brief_render_fallback.py': 'apps/operator_ui/brief_parts/render/fallback.py', 'apps/operator_ui/data_access_brief_render_helpers.py': 'apps/operator_ui/brief_parts/render/helpers.py', 'apps/operator_ui/data_access_brief_render_narrative_helpers.py': 'apps/operator_ui/brief_parts/render/narrative.py', 'apps/operator_ui/data_access_brief_render_summary_derivation.py': 'apps/operator_ui/brief_parts/render/summary.py', 'apps/operator_ui/data_access_run_read_models.py': 'apps/operator_ui/read_models/runs.py', 'apps/operator_ui/data_access_trade_read_models.py': 'apps/operator_ui/read_models/trades.py', 'apps/operator_ui/data_access_overview_projection.py': 'apps/operator_ui/read_models/overview.py', 'apps/operator_ui/data_access_status.py': 'apps/operator_ui/read_models/status.py'}
+UI_STRUCTURE_PACKAGES = frozenset({
+    "apps/operator_ui/brief_parts/__init__.py",
+    "apps/operator_ui/read_models/__init__.py",
+    "apps/operator_ui/brief_parts/input/__init__.py",
+    "apps/operator_ui/brief_parts/sections/__init__.py",
+    "apps/operator_ui/brief_parts/render/__init__.py",
+})
+UI_STRUCTURE_TEST = "tests/test_p15_b_ui_structure.py"
+UI_STRUCTURE_RECEIPT = "docs/refactor/work_projects/evidence/monitor/operator_ui_structure_peer.json"
+UI_STRUCTURE_CHECKS = frozenset({
+    "scripts/refactor/shared_strategist_contracts.py",
+    "scripts/refactor/shared_role_contracts.py", UI_STRUCTURE_TEST,
+    "tests/test_p153_operator_ui_moved_bodies.py",
+    "tests/test_p162_t4a_extraction_gates.py",
+    "tests/test_p159_current_owner_contract_gates.py",
+})
+UI_STRUCTURE_RUNTIME = frozenset({UI_CORE, UI_STRUCTURE_RESPONSE, UI_STRUCTURE_RUN}) | frozenset(UI_STRUCTURE_MOVES) | frozenset(UI_STRUCTURE_MOVES.values())
+
+
+def ui_structure_selected():
+    return ((ROOT / UI_STRUCTURE_RESPONSE).exists() or subprocess.run(
+        ["git", "merge-base", "--is-ancestor", "b55a6b2640218e7319f61e0c2223a3a866b97d5e", "HEAD"],
+        cwd=ROOT, capture_output=True).returncode == 0)
+
+
+def verify_ui_structure(overrides=None):
+    """Closed new-stage source proof; old B29 inventory is still a separate view."""
+    overrides = overrides or {}
+    require(UI_STRUCTURE_BASE == "51bb7130b2ba627be50800fa89c6108dd1a5018c", "UI structure immutable base")
+    read = lambda p: _commander_read(p, overrides)
+    expected = UI_STRUCTURE_RUNTIME | UI_STRUCTURE_PACKAGES | UI_STRUCTURE_CHECKS | COMMANDER_V1_NOTES
+    # An evidence-only follow-up commit is allowed at this ONE literal path.
+    if (ROOT / UI_STRUCTURE_RECEIPT).exists():
+        expected |= {UI_STRUCTURE_RECEIPT}
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    actual = _commander_delta(UI_STRUCTURE_BASE)
+    actual |= set(subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True).splitlines())
+    actual = {p for p in actual if p not in B_CI_JUNIT or not _b_ci_junit_evidence(p, head)}
+    actual |= set(overrides)
+    require(actual == expected, "B-stage UI structure unexpected/missing path: " + repr(actual ^ expected))
+    tree, owners = _ui_structure_core_oracle()
+    require(dump(ast.parse(read(UI_CORE))) == dump(tree), "new-stage source core body/import/ABI: " + UI_CORE)
+    for path, owner in owners.items():
+        current = ast.parse(read(path))
+        require(current.body and isinstance(current.body[0], ast.Expr)
+                and current.body[0].value.value == "Pure already-loaded UI projections; effectful calls remain in core.",
+                "UI structure owner header: " + path)
+        current.body = current.body[1:]
+        require(dump(current) == dump(owner), "UI structure pure body/import: " + path)
+    for legacy, canonical in UI_STRUCTURE_MOVES.items():
+        require(read(legacy) == ui_structure_shim_source(canonical), "UI structure identity shim: " + legacy)
+        require(read(canonical) == git_source(UI_STRUCTURE_BASE, legacy), "UI structure canonical body/import: " + canonical)
+    for path in UI_STRUCTURE_PACKAGES:
+        require(read(path) == '"""Read-only Operator UI projections."""\n', "UI structure package capability: " + path)
+    for path in UI_STRUCTURE_CHECKS:
+        require(read(path) == git_source(head, path), "UI structure checker/test drift: " + path)
+    note = "docs/trading_agent_patch_notes_detailed_update/patch_notes.json"
+    old, current = json.loads(git_source(UI_STRUCTURE_BASE, note)), json.loads(read(note))
+    require(current["entries"][:len(old["entries"])] == old["entries"], "UI structure historical patchnotes changed")
+    require(current["entry_count"] == len(current["entries"]) == len({r["version"] for r in current["entries"]}) == 347,
+            "UI structure patchnotes count/version")
+    md = "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+    require(read(md).startswith(git_source(UI_STRUCTURE_BASE, md)), "UI structure historical Markdown changed")
+    return frozenset(expected)
+
+
+_composed_before_ui_structure = verify_b_composed
+_b_sources_before_ui_structure = verify_b_sources
+_historical_before_ui_structure = historical_source
+
+
+def verify_b_composed(overrides=None, *, inventory=None):
+    if not ui_structure_selected():
+        return _composed_before_ui_structure(overrides, inventory=inventory)
+    verify_ui_structure(overrides)
+    original = B_COMPOSED_PATHS | B_COMPOSED_CHECKS | B_CI_DIAGNOSTIC_WORKFLOWS
+    if inventory is not None:
+        require(set(inventory) == original, "B-stage composed unexpected/missing inventory: " + repr(set(inventory) ^ original))
+    return original
+
+
+def verify_b_sources(overrides=None):
+    if not ui_structure_selected():
+        return _b_sources_before_ui_structure(overrides)
+    verify_ui_structure({p:v for p,v in (overrides or {}).items() if p in B_RUNTIME})
+    projected = dict(overrides or {})
+    projected[UI_CORE] = git_source(B_SOURCE, UI_CORE)
+    for path in B_RUNTIME & UI_STRUCTURE_MOVES.keys():
+        projected[path] = git_source(B_SOURCE, path)  # Actual exact alias/canonical proof already ran.
+    return _b_sources_before_ui_structure(projected)
+
+
+def ui_structure_shim_source(target):
+    module = target[:-3].replace("/", ".")
+    parent, name = module.rsplit(".", 1)
+    return ('"""Legacy import alias; canonical read-only implementation lives in a domain package."""\n'
+            'import sys\nfrom ' + parent + ' import ' + name + ' as _owner\n'
+            'sys.modules[__name__] = _owner\n')
+
+
+def ui_structure_source(path):
+    if ui_structure_selected() and path in UI_STRUCTURE_MOVES:
+        verify_ui_structure()
+        return (ROOT / UI_STRUCTURE_MOVES[path]).read_text(encoding="utf-8-sig")
+    return (ROOT / path).read_text(encoding="utf-8-sig")
+
+
+def historical_source(path):
+    if ui_structure_selected() and path in UI_STRUCTURE_MOVES:
+        return ui_structure_source(path)
+    return _historical_before_ui_structure(path)

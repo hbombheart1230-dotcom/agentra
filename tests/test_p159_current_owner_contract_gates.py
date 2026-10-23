@@ -217,7 +217,8 @@ def _current(owner_module, owner_function):
 
 
 def _tree(path):
-    return ast.parse((ROOT / path).read_text(encoding="utf-8-sig"))
+    return ast.parse(SHARED.S5.ui_structure_source(path) if SHARED.S5.ui_structure_selected()
+                     else (ROOT / path).read_text(encoding="utf-8-sig"))
 
 
 def _git_show(path, sha):
@@ -341,7 +342,8 @@ def test_original_modules_keep_their_public_callable_signatures_since_each_stage
 def test_facade_symbol_breadth_did_not_increase_for_converted_owners():
     for c in _t3()["changes"]:
         old_src = _git_show(c["old_module"], "ede47324e8db4be12c45e0a09ca3dcd22c68c5c1")
-        new_src = (ROOT / c["new_module"]).read_text(encoding="utf-8-sig")
+        new_src = (SHARED.S5.ui_structure_source(c["new_module"]) if SHARED.S5.ui_structure_selected()
+                   else (ROOT / c["new_module"]).read_text(encoding="utf-8-sig"))
 
         def facade_syms(src, fname):
             fn = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == fname)

@@ -123,7 +123,7 @@ def test_use_site_qualification_is_the_only_body_change(path, name, owner):
     base_src = _base_source(path)
     base_tree = ast.parse(base_src)
     base_fn = _func(base_tree, name)
-    owner_src = (ROOT / owner).read_text(encoding="utf-8")
+    owner_src = _current_owner_source(owner)
     impl = _func(ast.parse(owner_src), f"{name}_r3_impl")
     for n in impl.body:
         assert not (isinstance(n, ast.Assign) and _is_fa(n.value)), (path, name, "entry-time capture")
@@ -143,7 +143,7 @@ def test_use_site_qualification_is_the_only_body_change(path, name, owner):
 
 @pytest.mark.parametrize("owner", sorted({o for _, _, o in MOVES}))
 def test_owner_bounded_and_never_imports_original_module(owner):
-    src = (ROOT / owner).read_text(encoding="utf-8")
+    src = _current_owner_source(owner)
     assert len(src.splitlines()) <= 350, owner
     for n in ast.walk(ast.parse(src)):
         mods = [a.name for a in n.names] if isinstance(n, ast.Import) else ([n.module or ""] if isinstance(n, ast.ImportFrom) else [])
@@ -230,3 +230,9 @@ def test_use_time_resolution_matches_baseline_before_and_within_call(path, name,
         got = _run(fn, req, kwreq, mk, targets, module, scenario)
         want = _run(ref, req, kwreq, mk, targets, module, scenario)
         assert got == want, (name, scenario, got[1][:6], want[1][:6])
+
+
+def _current_owner_source(path):
+    # New stage verifies real exact shim + canonical bytes BEFORE old R3 AST proof.
+    from scripts.refactor import shared_strategist_contracts as S
+    return S.ui_structure_source(path) if S.ui_structure_selected() else (ROOT / path).read_text(encoding="utf-8")

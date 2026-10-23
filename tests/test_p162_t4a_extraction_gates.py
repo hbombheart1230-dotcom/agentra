@@ -71,7 +71,7 @@ class _Unqualify(ast.NodeTransformer):
 
 
 def _owner_fn(seg):
-    return _funcs(ast.parse((ROOT / seg["owner"]).read_text(encoding="utf-8-sig")))[seg["owner_function"]]
+    return _funcs(ast.parse(_current_owner_source(seg["owner"])))[seg["owner_function"]]
 
 
 def _call_name(call):
@@ -166,7 +166,7 @@ def test_owner_modules_are_small_pure_and_resolve_only_allowed_names():
     mods = sorted({s["owner"] for s in _ledger()["segments"]})
     assert len(mods) >= 4
     for rel in mods:
-        text = (ROOT / rel).read_text(encoding="utf-8-sig")
+        text = _current_owner_source(rel)
         assert len(text.splitlines()) <= MAX_OWNER_LOC, rel
         for tok in FORBIDDEN_TOKENS:
             assert tok not in text, (rel, tok)
@@ -202,7 +202,7 @@ def test_scanner_node_is_substantially_smaller_and_no_second_ranking_implementat
     # one canonical sort: the ranking sort (`sorted(scan_results, ...)`) and its overlay re-sorts exist exactly where they
     # existed at BASE (inlined AST equality above) and nowhere else in the new Owners
     for seg in {s["owner"] for s in _ledger()["segments"]}:
-        text = (ROOT / seg).read_text(encoding="utf-8-sig")
+        text = _current_owner_source(seg)
         assert text.count("sorted(scan_results") == 0, seg
 
 
@@ -238,3 +238,10 @@ def test_t4a_changed_paths_stay_in_scanner_scope_and_touch_no_authority_surface(
         assert p.startswith(ALLOWED_CHANGED), f"T4-A touched an out-of-scope path: {p}"
         assert not p.startswith(FORBIDDEN_PREFIXES), p
         assert not p.startswith("tests/fixtures/p1_5_t35_agent_outputs/"), "T3.5 golden fixtures must stay unchanged"
+
+
+def _current_owner_source(path):
+    # Pinned T4-A oracle/predicates unchanged; current whole-module aliases get
+    # exact byte/shim admission before this historical shape inspection.
+    from scripts.refactor import shared_strategist_contracts as S
+    return S.ui_structure_source(path) if S.ui_structure_selected() else (ROOT / path).read_text(encoding="utf-8-sig")

@@ -54,6 +54,9 @@ def source(path, overrides=None):
 
 
 def follow(path):
+    if S5.ui_structure_selected() and path in S5.UI_STRUCTURE_MOVES:
+        S5.verify_ui_structure()
+        return S5.UI_STRUCTURE_MOVES[path]
     pairs = whole_moves()
     if path in pairs:
         source(path)
@@ -70,6 +73,8 @@ def role_paths(sha):
 def verify_runtime(overrides=None):
     """No arbitrary path allowlist: all runtime deltas must equal an immutable input."""
     overrides = overrides or {}
+    if S5.ui_structure_selected():
+        S5.verify_ui_structure(overrides)
     S5.verify_b_scope({p: value for p, value in overrides.items()
                        if not p.startswith(("libs/", "graphs/", "apps/"))})
     reporter, monitor = role_paths(REPORTER), role_paths(MONITOR)
@@ -93,6 +98,8 @@ def verify_runtime(overrides=None):
     expected = reporter | monitor | strategist | set(S5.NEXT_RUNTIME) | S5.B_RUNTIME | commander
     if S5.b_composed_selected():
         expected |= S5.B_COMPOSED_BRIEF_RUNTIME
+    if S5.ui_structure_selected():
+        expected |= S5.UI_STRUCTURE_RUNTIME | S5.UI_STRUCTURE_PACKAGES
     require(actual == expected, "unexpected/missing runtime path: " + repr(actual ^ expected))
     for sha, paths in ((REPORTER, reporter), (MONITOR, monitor), (S5.CANDIDATE_CODE, strategist)):
         for path in sorted(paths):

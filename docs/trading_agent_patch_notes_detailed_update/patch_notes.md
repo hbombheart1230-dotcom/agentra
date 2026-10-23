@@ -4242,3 +4242,255 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.
 
 ### 2026-10-23 — CI follow-up: historical README provenance (no extra entry)
 - Hosted T4/Design Guard가 요구하는 과거 `DOC_FREEZE` 표식이 문서 안내 README에서 빠진 것을 확인해 비활성 역사 기록으로 복원. 기존 테스트·워크플로를 변경하지 않음.
+
+
+## 2026-10-23 — Four-branch composition evidence (DRAFT; not integrated)
+**State:** SOURCE_ADMISSION_PENDING · Integration `b768b2b3` retained green
+
+### A — 11 imported version records
+
+#### 2026-10-21 · P1.5 DEV-A A1-A4 REPORTER PURE PROJECTION OWNERS 20261021
+**Move pure Reporter projections into four read_models owners with unchanged output** · Structural refactor candidate on work/p15-a-reporter-pure-20261021 (BASE d7ab8294); independent review and integration pending
+
+Operator daily, phase runtime health, period summary and metrics Markdown pure code now lives in four stdlib-only owners; facades keep reads, clocks, writes and call order.
+
+- BASE d7ab82940deaa05810b28ef78fc0be88e201f9b6. New owners under libs/agents/reporter/read_models: operator_daily_projection (readout + streaming run-context fold), phase_health_projection (text/aggregation, monitor surfaces, two-phase run health around the policy source read), period_summary_projection, metrics_projection. Facades operator_visibility 1520->1019, phase_runtime_health 1361->526, operator_period_summary 1195->1142 (little pure code left; remaining debt is effectful or R3 delegating), metrics_report_generator 545->132 lines.
+- Mechanical move only: facade-injected owners resolve helpers at call time so monkeypatch seams, JSON/Markdown bytes, exception order and effect order are unchanged. No gate, oracle, R3 or shared contract file was modified.
+- Two new tests (parity against BASE source, effect-free/AST boundaries) pass normal and python -O; a hostile aggregate mutation is caught. The pinned read_models tree listing guard and closed-delta shared contract gate flag the new owner paths and are reported as STAGE_CONTRACT_BLOCKED / SOURCE_ADMISSION_PENDING_GPT, not relaxed.
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Observational reporting only.
+
+#### 2026-10-21 · P1.5 DEV-A REPORTER PURE OWNER RESPONSIBILITY SPLIT 20261021
+**Split the three large Reporter pure owners by responsibility with unchanged output** · Structural refactor candidate on work/p15-a-reporter-pure-20261021 after 309e3a48; independent review and integration pending
+
+Operator daily, phase health and metrics owners are cut into nine modules of at most 350 lines each; facades keep reads, clocks, writes and call order.
+
+- Follow-up to 309e3a48 on BASE d7ab82940deaa05810b28ef78fc0be88e201f9b6. operator_daily_projection (readout) plus operator_run_context_projection (streaming run fold); phase_health_projection (run surfaces and aggregate), phase_health_policy_views (gating, policy summaries, compact view, persisted surfaces) and phase_health_text_rendering (tables and text); metrics_projection (aggregate), metrics_summary_projection (metrics.v1 assembly) and metrics_event_fold (strategist LLM counters). period_summary_projection is unchanged.
+- Mechanical move only: helpers still resolve on the injected facade at call time; the LLM counter slice mutates one accumulator in the original statement order. Only the folder-inventory gate in test_work_reporter_seed_migration.py was adjusted: the pinned historical inventory is now proven against the BASE Git tree and the current folder must equal it plus the exact approved owner names. No shared contract file, R3 fixture or gate was changed.
+- Patch-note history keeps the original 338 entries in order; the earlier DEV-A record moved after them and this record follows it.
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Observational reporting only.
+
+#### 2026-10-22 · P1.5 DEV-A Q8 HISTORICAL AGGREGATION RENDER AND SHADOW READOUT OWNERS 20261022
+**Move Q8 post-hoc aggregation, Markdown rendering and shadow/lane readout into three pure evaluation owners with unchanged output** · Structural refactor candidate on work/p15-a-reporter-pure-20261021 after e3dca2a0 (SOURCE_ACCEPTED_WITH_PEER_TEST_LIMITATION); read-only source review and integration pending
+
+q8_historical_review keeps its reads, writes and data-source selection while accumulators, folds and Markdown move to q8_historical_aggregation_p15 and q8_historical_render_p15; shadow-blocker group summaries and lane verdict composition move to q8_shadow_readout_p15.
+
+- Facade lines: q8_historical_review 926->354, q8_shadow_blocker_review 344->224, q8_lane_decision_table 263->125. New owners under libs/reporting/evaluation: q8_historical_aggregation_p15 (346), q8_historical_render_p15 (224), q8_shadow_readout_p15 (299). Every BASE function, class, constant and libs.* import name stays importable from its facade as the same object; __all__ and public signatures are unchanged.
+- Facades still own day iteration, daily_summary/trade/candidate-log reads, the classify_below_vwap_reclaim_observation fallback, forward-outcome attachment, canonical dedupe, trust-gate construction, loaders and JSON/Markdown writes (UTF-8 BOM and LF for the historical Markdown). q8_evaluation_contract and quant_shadow_candidate_evaluation are unchanged; the lane coverage threshold is read from the contract.
+- New tests compare BASE d7ab8294 facades with the current ones over a synthetic reports tree: payloads, written bytes, exceptions and the full Path read/exists/glob/mkdir/write order. Mutating weighting, tie order, subtype decisions, pattern counters, coverage threshold, verdict order or checkpoint parsing in the owners fails the comparison.
+- Importing a Q8 facade now also initializes the existing libs.reporting.evaluation package (its __init__ is outside this change). The boundary test checks this import from an empty directory: no cycle and no files written.
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.
+
+#### 2026-10-22 · P1.5 DEV-A Q8 FACADE MONKEYPATCH COMPATIBILITY 20261022
+**Restore call-time facade lookup for the Q8 owners so patching a facade helper behaves as before the split** · Compatibility follow-up on work/p15-a-reporter-pure-20261021 after f67bf1ec; read-only source review and integration pending
+
+Q8 owner bodies now take the facade and look up helpers and the trust threshold on it at call time, so monkeypatching q8_lane_decision_table._verdict / TRUSTED_FORWARD_MIN_COVERAGE or q8_shadow_blocker_review._summarize_group changes output exactly as on BASE.
+
+- Same idiom as the earlier Reporter owners: BASE names whose bodies call other BASE helpers are thin facade wrappers with the BASE signature that pass facade=sys.modules[__name__] to an owner *_impl (lane: _verdict, _forward_rows, _counts_by_name, _reason_summary, build; shadow: _checkpoint_values, _decision_for_row, _summarize_group; historical: _pct_from_ratio, _decision_for_reclaim_subtype, _aggregate_return_rows, render_q8_historical_review_markdown). ShadowSummaryFold and PatternRowFold take the facade and resolve ForwardAccumulator, GroupAccumulator and helpers through it. Helper-free leaves stay owner objects re-exported unchanged.
+- TRUSTED_FORWARD_MIN_COVERAGE is now read only through the lane facade, which imports it from the unchanged q8_evaluation_contract; the readout owner no longer imports the contract. No threshold, verdict, dedupe or trust-gate behaviour changed.
+- Known limit kept on purpose: GroupAccumulator/ForwardAccumulator methods use the owner's normalizers, so patching q8_historical_review._int/_float/_text/_weighted_avg does not reach those methods (it does reach every other body). A test documents this.
+- New regressions: 23 facade attributes are patched identically on the BASE d7ab8294 module and the current facade and the payload plus Markdown must match and differ from the unpatched output; the boundary test now checks every BASE function and class signature, not only __all__.
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.
+
+#### 2026-10-22 · P1.5 DEV-A Q8 REPORTER SCOPE GATE EXACT PATH REGISTRATION 20261022
+**Register the six Q8 refactor paths in the Reporter scope gate so the committed Q8 split passes it** · Gate follow-up on work/p15-a-reporter-pure-20261021 after 2156f254; Tech Lead / operator approved the refactor-process test edit
+
+test_target_tree_discipline_and_no_forbidden_surface failed on the committed Q8 split because its closed Reporter scope list lacked the six Q8 source paths; they are now an exact closed set next to the existing P1.5 DEV-A facade set.
+
+- Only tests/test_work_reporter_seed_migration.py changed besides these notes and the Q8 boundary allowlist: a closed P15_A_Q8_PATHS set (three Q8 facades plus the three libs/reporting/evaluation/q8_*_p15.py owners) is removed from the scope diff like the existing P15_A_FACADES; _scope_violations itself, the pinned historical folder inventory, fixtures and every other gate are unchanged.
+- The grant is exact, not a prefix: q8_evaluation_contract.py, quant_shadow_candidate_evaluation.py and any sibling q8_* path are still reported as violations (asserted in test_scope_checker_still_rejects_unexpected_and_forbidden_paths).
+- The unrelated clock-boundary flake in test_closeout_memory_bounds (generated_at differing by one second) is intentionally left unchanged.
+
+**Impact:** Test-scope bookkeeping only. No behavior, trading, approval, risk, UEF or Step5C change.
+
+#### 2026-10-22 · P1.5 DEV-A Q8 TRUSTED REAGGREGATION PURE PROJECTION AND READOUT OWNER 20261022
+**Move the Q8 trusted-reaggregation day rows, cumulative aggregate and Markdown readout into one pure owner** · Structural refactor candidate on work/p15-a-reporter-pure-20261021 after accepted 3151be9f; read-only source review and integration pending
+
+q8_trusted_reaggregation keeps day iteration, shadow payload loading, the shadow evaluation calls and the JSON/Markdown writes; the per-day trust-gate row, the cumulative aggregate/envelope and the report Markdown move to evaluation/q8_trusted_reaggregation_projection_p15.
+
+- Facade 240->82 lines, new owner 205 lines (the single approved new module). BASE names _iter_days, _fmt_pct, _fmt_num, _watchlist_rows, build/render/write_q8_trusted_reaggregation and the five contract constants stay importable with the BASE signatures; leaves are re-exported owner objects, build and render stay facade functions that pass facade=sys.modules[__name__] to the owner *_impl bodies.
+- Same call-time lookup as the accepted Q8 split: the owner reads _fmt_pct/_fmt_num/_watchlist_rows and TRUSTED_FORWARD_MIN_COUNT, TRUSTED_FORWARD_MIN_COVERAGE, DUPLICATE_RATE_MAX, PROMOTION_CANDIDATE_MIN_OBSERVED and PROMOTION_CANDIDATE_MIN_DAYS through the facade, so patching any of them (or _iter_days / the render function used by write) changes output exactly as on BASE. Trust thresholds, gate rows and promotion flags are unchanged; q8_evaluation_contract and quant_shadow_candidate_evaluation are untouched.
+- No existing test or in-repo caller covered this module, so two new files compare BASE d7ab8294 and the current facade over gated/allowed/legacy/malformed/empty cases and six day windows (payload, Markdown, exceptions, loader and evaluation call order, written bytes and Path call order) plus nine facade seams and five owner mutants; the boundary file pins owner imports, effect-free source, BASE signatures, read-only trust policy, the change allowlist and a cycle-free fresh import.
+- Companion admission is exact-path only: two paths added to P15_A_Q8_PATHS in test_work_reporter_seed_migration.py and to the Q8 boundary allowlist; no historical pin or predicate was relaxed.
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.
+
+#### 2026-10-22 · P1.5 DEV-A Q8 QUANT SHADOW FORWARD READOUT AND RENDER OWNERS 20261022
+**Move the quant-shadow forward-outcome readout and the evaluation Markdown lines into two pure owners** · Structural refactor candidate on work/p15-a-reporter-pure-20261021 after accepted 21a58fb0; read-only source review and integration pending
+
+quant_shadow_candidate_evaluation keeps loaders, dedupe, the trust gate, promotion, scorecard and build logic; the forward-outcome summary/grouping and the Markdown row formatters plus render lines move to evaluation/quant_shadow_forward_readout_p15 and evaluation/quant_shadow_render_p15.
+
+- Facade 1425->1099 lines; owners 128 and 267 lines. Moved with verbatim bodies: _checkpoint_value, _forward_outcome_summary, _top_forward_groups, _entry_lane_forward_outcomes and _format_rows, _format_forward_rows, _format_scorecard_rows, render_quant_shadow_candidate_evaluation_lines. Each keeps a same-name, same-signature facade wrapper that passes facade=sys.modules[__name__] to the owner *_impl, so patching any facade helper (_text, _bool, _forward_outcome, _candidate_day, _entry_lane_observation, _mean, the moved functions) changes output exactly as on BASE. _mean stays in the facade.
+- Red line kept: _evaluation_trust_gate, _promotion_candidate, _no_trade_scorecard, _dedupe_candidates, _shadow_readiness, build_quant_shadow_candidate_evaluation, the scorecard/observation payload builders, loaders and every other unmoved function are AST-identical to BASE (asserted); thresholds, observation eligibility and Q8 contracts are unchanged.
+- The wrappers import their owner at call time because libs/reporting/evaluation/__init__ imports pipeline -> full_chain_component_review -> this facade; a module-level owner import produced an import cycle in the first attempt. A test imports the facade from seven different first modules in a clean interpreter.
+- Two new test files compare BASE d7ab8294 with the current facade (direct calls incl. limits and malformed rows, full build + render lines with the forward-outcome attachment replaced identically, 8 render payloads, 13 facade seams, 8 owner mutants) and pin owner imports, effect-free source, BASE signatures and constants, the change allowlist and the cycle-free fresh imports. Companion admission is exact-path only: three paths added to P15_A_Q8_PATHS and the Q8 boundary allowlists, and quant_shadow_candidate_evaluation.py removed from two old read-only lists now that it is an approved writable facade.
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.
+
+#### 2026-10-22 · P1.5 DEV-A Q8 QUANT SHADOW OBSERVATION PROJECTION OWNER A-W1 20261022
+**Move the entry-shape, below-VWAP reclaim and entry-lane observation projections into one pure owner** · Wave A-W1 on work/p15-a-reporter-pure-20261021 after accepted 8307cc37; read-only source review and integration pending
+
+quant_shadow_candidate_evaluation keeps the trust gate, promotion, scorecard, dedupe, readiness, build and loaders; the six observation/diagnostic functions behind entry_shape_diagnostics, below_vwap_reclaim_observation and entry_lane_observation move to evaluation/quant_shadow_observation_projection_p15.
+
+- Facade 1099->999 lines, one new owner of 148 lines (limit was two). Moved with verbatim bodies: _entry_shape, _entry_shape_payload, _below_vwap_reclaim_observation, _below_vwap_reclaim_observation_payload, _entry_lane_observation, _entry_lane_observation_payload. Each keeps a same-name, same-signature facade wrapper that imports the owner at call time (the evaluation package already imports this facade) and passes facade=sys.modules[__name__]; the owner reads _text, _bool, _top_counter, the row helpers and the runtime classifiers classify_below_vwap_reclaim_observation / build_entry_lane_observation on that facade, so patching any of them behaves as on BASE.
+- Not touched: _evaluation_trust_gate, _promotion_candidate, _no_trade_scorecard, _dedupe_candidates, _shadow_readiness, build_quant_shadow_candidate_evaluation, _count_reason and _runner_up_risk_count (promotion inputs), eligibility, thresholds and every trust constant; the AST-identity check against BASE now covers every function that did not move.
+- New test file compares BASE d7ab8294 with the current facade on empty/typical/malformed/mixed rows (direct calls, per-row helpers, build sections), 11 facade seams and 6 owner mutants; the existing readout boundary test now also pins the new owner (stdlib-only, effect-free, facade-only helpers, allowlist). Companion admission is exact-path only: one path added to P15_A_Q8_PATHS and to the earlier Q8 boundary allowlists.
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Observational post-hoc reporting only.
+
+#### 2026-10-22 · P1.5 DEV-A A1 REPORTER AI REVIEW PARTS PACKAGE 20261022
+**Split reporter_ai_review into a reporter_ai_review_parts package with a thin LLM-orchestrating facade** · Wave A1 (Tech Lead 6335586418 priority correction) on work/p15-a-reporter-pure-20261021 after 508b3e97; read-only source review and integration pending
+
+libs/reporting/reporter_ai_review.py (499 lines) keeps the LLM router, evidence-ledger writes, environment reads and execution-profile resolution; prompt assembly, compact input shaping, result shaping and the enabled/parse-response policy move into four pure owners under libs/reporting/reporter_ai_review_parts/.
+
+- Before/after: reporter_ai_review.py 499 -> 265 lines; new package reporter_ai_review_parts with __init__.py plus prompting.py (55), compact_input.py (120), result_shaping.py (113) and review_resolution.py (50), every owner stdlib-only. libs/reporting top level stays 125 .py files (no new top-level file) and gains one *_parts directory, the repository's existing convention for decomposed facades. Import direction: reporter_analysis -> reporter_ai_review -> reporter_ai_review_parts.*; owners import no project module.
+- Moved with verbatim bodies behind same-name, same-signature facade wrappers that pass facade=sys.modules[__name__]: _normalize_llm_status, _clip_str, _list_str, _dict_str, _normalize_evidence_link_items, _normalize_result, _default_result, _build_compact_input, _build_messages. Owner bodies read each helper, required_key_metadata, canonical_llm_status and REPORTER_AI_REVIEW_REQUIRED_KEYS on that facade, so the existing monkeypatch seams behave as on BASE. build_ai_reporter_review keeps every LLM/ledger/env call and order; only the enabled-policy resolution and the parse-mode / parse-failure-reason classification became calls to review_resolution (three spans, expressions unchanged).
+- Tests: 69 new (BASE d7ab8294 vs current over 18 orchestrator scenarios incl. policy precedence, DRY_RUN, unavailable client, raising chat, empty/partial/missing-key/non-JSON replies, explicit params and env fallbacks, comparing returned dicts, router role/policy/messages and the ledger call sequence; adverse helper inputs; 12 facade seams; 10 owner mutants; boundaries for imports, effects, LLM/ledger isolation, BASE signatures/constants, allowlist and cycle-free fresh imports).
+- Blocked parts of the wave, not changed: trade_report_ai.py, trade_report_ai_deterministic.py, trade_report_markdown_clean.py, intraday_trade_reports.py and trade_bundle_assembly.py are registered facades of the pinned reporter facade-restoration ledger (313 moves, tests/test_shared_reporter_facade_guard.py, scripts/refactor/reporter_facade_guard.py): an extra import or any unmoved-body change fails that shared proof, and the symbol counts 182/209 are pinned by p152_integration_acceptance. They need a Tech Lead decision before any decomposition.
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Passive post-run reporting only; the LLM call, ledger writes and execution policy resolution are unchanged.
+
+#### 2026-10-22 · P1.5 DEV-A LARGE-FIRST Q9 FULL CHAIN COMPONENT REVIEW PARTS PACKAGE 20261022
+**Split the 1031-line Q9 full_chain_component_review into a full_chain_review_parts package with a thin orchestrating facade** · Large-first Reporter wave (Tech Lead 6335586418 / 6335924810) on work/p15-a-reporter-pure-20261021 after 924d8180; read-only source review and integration pending
+
+libs/reporting/evaluation/full_chain_component_review.py (1031 lines, 870 of them in 14 large bodies) keeps loading, the forward-outcome attachment, the build orchestration with its entry/exit/full-system decisions and the file writes; root-cause classification, role/paired/decision-window attribution, component decision assembly and the Markdown render move into four pure owners under libs/reporting/evaluation/full_chain_review_parts/.
+
+- Before/after: full_chain_component_review.py 1031 -> 486 lines; new package full_chain_review_parts with __init__.py plus root_cause.py (145), attribution.py (272), component_decisions.py (145) and render.py (138), every owner stdlib-only and under 350 lines. libs/reporting/evaluation keeps 50 top-level .py files (no new top-level file); import direction is agent_effectiveness_scorecard / stage2_authority / scripts -> full_chain_component_review -> full_chain_review_parts, owners import no project module.
+- Moved with verbatim bodies behind same-name, same-signature facade wrappers that pass facade=sys.modules[__name__]: _topk_metric, _classify_root_cause, _role_metrics, _paired_role_deltas, _selection_availability, _q9_role_row, _decision_window_attribution, _attribution_component, _scanner_decision, _unavailable_component, render_full_chain_component_review. A symtable-based mover prefixed every module-level name the bodies read (helpers, thresholds, HORIZONS, DecisionClass, performance_metrics, candidate_day, _checkpoint_return) with facade., so patching any of them behaves as on BASE.
+- Kept in the facade on purpose and AST-identical to BASE: _number, _behavior_metric_eligible, _q9_decision_candidate_rows (attaches forward outcomes and may read state), build_full_chain_component_review and write_full_chain_component_review. Contracts, thresholds, loss_decomposition, scanner_quality, metrics, stage2_authority, agent_effectiveness_scorecard and the UEF/canonical packages are untouched.
+- Tests: 71 new (BASE d7ab8294 vs current: 5 hermetic datasets through build + render + written JSON/Markdown files, a 135-case root-cause grid, component-decision grids, adverse metric helper inputs, 22 facade seams, 11 owner mutants; boundaries for imports, effects, facade-only name resolution, BASE signatures and constants, AST identity of unmoved functions, change allowlist and cycle-free fresh imports from 7 first modules). Companion admission is exact-path only: P15_A_FULLCHAIN_PATHS (6 paths) and the earlier A allowlists.
+- Still blocked and not changed: trade_report_ai.py, trade_report_ai_deterministic.py, trade_report_markdown_clean.py, intraday_trade_reports.py and trade_bundle_assembly.py stay pinned by the shared reporter facade-restoration ledger (see the 924d8180 receipt).
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Q9 evaluation-only reporting; thresholds, DecisionClass values and decision logic are unchanged.
+
+#### 2026-10-22 · P1.5 DEV-A LARGE-FIRST ALPHA RESEARCH BOARD BUILDER SPLIT 20261022
+**Split the 701-line alpha_research_board builder into candidate_rows and board_assembly owners with an unchanged effect order** · Large-first Reporter wave (Tech Lead 6337591262) on work/p15-a-reporter-pure-20261021 after fbcf2b00; read-only source review and integration pending
+
+libs/reporting/alpha_research_board/builder.py (701 lines) keeps the file reads and globbing (_prospective_concentrations, _large_cap_candidate), the build_alpha_research_board orchestration with every reader/builder/clock/canonicalize call in the original order, and write_alpha_research_board; candidate row shaping and board assembly move into two pure owners in the same package.
+
+- Before/after: builder.py 701 -> 371 lines; new candidate_rows.py (280) and board_assembly.py (212), both stdlib-only and under 350 lines, in the existing alpha_research_board package (10 -> 12 .py files there, libs/reporting top level stays 125). Import direction: closeout_maintenance / daily_uef_pipeline / scripts -> alpha_research_board.__init__ -> builder -> candidate_rows / board_assembly; owners import no project module.
+- Moved with verbatim bodies behind same-name, same-signature facade wrappers that pass facade=sys.modules[__name__]: _candidate, _q12_hypothesis_metric, _feature_candidates, _fresh_change, _opening_rows, _broad_opening, _latent, _btc_woori, _attention_order (a symtable-based mover qualified every module-level name the bodies read: mapping, metric_snapshot, find_by_id, find_horizon, _candidate). Six pure blocks of build_alpha_research_board became calls with unchanged text: sensitivity adjustment, strong-bull BTC row, short-alpha row, final offline review adjustment, missing-source list and the legacy payload (generated_at is passed in, the clock call stays in the facade).
+- Effect contract: the ordered sequence of load_json, _prospective_concentrations, build_risk_high_sensitivity, _large_cap_candidate, build_remaining_candidate_reviews, build_short_alpha_discriminator, build_immediate_opening_runtime_validation, datetime.now and canonicalize_board calls in build_alpha_research_board is asserted equal to BASE by AST (and the check is shown to reject a swapped or dropped call). _prospective_concentrations, _large_cap_candidate and write_alpha_research_board are AST-identical to BASE.
+- Not touched: contracts.py (SOURCE_PATHS, TRACKS, thresholds, SCHEMA_VERSION), canonical.py (status/promotion decisions), loaders, report, sensitivity, remaining_reviews, runtime_validation, large_cap_review, short_alpha_discriminator, daily_uef_pipeline, closeout_maintenance and the research script; candidate order, labels, notes, buckets, schema and timestamps are byte-equal to BASE.
+- Tests: 69 new (BASE d7ab8294 vs current: the real builder chain over 5 synthetic reports trees incl. all twelve written files byte for byte, 5 controlled runs with identical fakes reaching every sensitivity/review branch, adverse unit grids, 17 facade seams, 15 owner mutants; boundaries for imports, effect-free owners, facade-only name resolution, BASE signatures/constants, effect order, AST identity, untouched siblings, allowlist and cycle-free fresh imports from 7 modules). The existing 287-test alpha/UEF family is unchanged (287 passed, 24 skipped for missing real data, normal and -O). Companion admission is exact-path only: P15_A_ALPHA_PATHS (3 paths) and the earlier A allowlists.
+
+**Impact:** No behavior, trading, approval, risk, UEF or Step5C change. Evaluation-only research board; the board payload and written artifacts are byte-equal to BASE for equal inputs.
+
+### B — 4 imported version records
+
+#### 2026-10-22 · P15_B_OPERATOR_STRUCTURE_B1_20261022
+**Separate pure brief response and run input projections from the large core** · Developer source candidate; independent review and GPT admission pending
+
+Introduce coherent brief_parts and read_models packages; retain all effectful orchestration at the core facade.
+
+- Core2467 to2309LOC; brief finalization input and three successful-response shapes move to brief_parts/response.py; run event/evidence projection moves to read_models/run_inputs.py. LLM calls, clocks, retries, artifact construction, cache and persistence remain in original order in core.
+- Exact new-stage AST reconstruction checks copied pure statements, call arguments, signatures and imports against green51bb7130. Earlier B29 and immutable historical source proofs retain their pins. Original344 note records preserved.
+- Differential BASE callables retain original annotations as well as defaults and keyword defaults; test-only callable reconstruction does not alter the source ABI.
+- Retain existing new-stage source and B-stage scope rejection categories for incompatible core shapes and unauthorized paths; original negative-test expectations are unchanged.
+- The entire original51bb contract AST remains an identical prefix, including repeated historical/current definitions, constants and SHA pins.
+- B1 source b55a6b2640218e7319f61e0c2223a3a866b97d5e: normal140PASS/-O140PASS, actual exits0/0. Fresh claude -p exit1 HTTP429 usage_limit_reached; PEER_DEFERRED, independent tests NOT_RUN. Durable SHA-linked receipt retained; no integration.
+
+**Impact:** Structural only; no new UI behavior, policy or trading authority.
+
+#### 2026-10-22 · P15_B_OPERATOR_STRUCTURE_B2_20261022
+**Consolidate twelve Brief implementations into input, sections and render packages** · Developer source; peer static PASS with execution limitation, GPT admission pending
+
+Replace twelve flat implementation modules with exact module-identity aliases to coherent brief_parts subpackages.
+
+- Twelve root implementation files 2535->48LOC; canonical source bytes match green51bb. Top-level Python count35 stays35 to preserve all legacy module paths; no duplicated implementation. Input4/sections3/render5 canonical Owners, old and new imports return the same modules and callable objects.
+- Exact closed new-stage path/shim/byte proof precedes original R3/T4-A source inspection. Historical SHA pins, ledgers, predicates, outputs and facade imports retained. Previous345 note records preserved; no feature, policy, IO, LLM or execution change.
+- T3 current source probes follow only admitted whole-module aliases before the original symbol-breadth and AST checks. Committed B1 ancestry prevents deletion of the stage marker from falling back to a weaker historical stage. No historical predicate or oracle changed.
+- B2 source b63ba49fa2e6358d77d4eac27a678ce7a7f6fd55: main187PASS plus distinct changed-owner R3 68PASS, each normal/-O with actual exits0. Fresh Claude CLIexit0 sourcePASS; reviewer Python NOT_RUN, six denied tool calls including two Python attempts. Durable Git receipt preserves limitations.
+
+**Impact:** Folder structure and ownership only.
+
+#### 2026-10-22 · P15_B_OPERATOR_STRUCTURE_B3_20261022
+**Consolidate run, trade, overview and status implementations in read_models** · Source-tested candidate; full B1-B3 static peer PASS; historical standalone freeze limitation / GPT admission pending
+
+Move four unchanged read-only implementation modules into the existing read_models package with exact legacy aliases.
+
+- Four root modules 1122->16LOC; read_models/runs.py, trades.py, overview.py and status.py preserve complete green51bb source bytes. IO stays inside the same unchanged read functions; existing API routes, core imports and effect order are retained. All16 moved legacy paths preserve module/callable identity.
+- Root Python file count remains35 for compatibility, while16 implementation files become shims. Core remains2309LOC versus2467BASE. Prior346 notes retained; exact current source maps add only four pairs and preserve historical pins. No policy, approval, order, persistence, LLM, scheduling or retry change.
+- Constructed function ASTs explicitly include empty type_params rather than relying on interpreter-version defaults; owner round-trip schema test added. Linux execution remains separately NOT_RUN on this developer candidate.
+- Final code 67f107e39568f74d150e3f402bfe70ddfc920d11: normal200PASS plus distinct B3 R3 52PASS, same -O counts, all real exits0. Fresh Claude CLIexit0 full B1-B3 bounded static sourcePASS; reviewer tests NOT_RUN by request, zero denied calls. Complete source/exit/verdict receipt is Git tracked.
+- Unchanged old whole-file freeze diagnostic: one FAIL normal/-O on BOTH genuine51bb baseline inputs and candidate, actual exits1; no expected-value edits or waiver. New-stage source/API contracts pass; full repository and new hosted CI are NOT_RUN. HEAD equality protects only dirty checker drift; independent exact-SHA review remains required.
+- Metadata housekeeping executed under previously read6336183716: archive5 verified, remote13->6, seven exact-lease deletions, old B active worktree preserved. Reassignment6336414973 was observed after operations; further tag/delete/prune STOPPED and actual state reported in6336682204. No main/integration/A/code merge.
+
+**Impact:** Canonical read-model package boundaries only; no functional UI changes.
+
+#### 2026-10-22 · P15_MONITOR_COMMANDER_CONTRACTS_20261022
+**Add pure Monitor and Commander compatibility contracts** · P1.5.6 MO1 / P1.5.7 C1 developer candidate; runtime wiring deferred
+
+Expose public role input/result contracts that characterize existing compatibility state patches without moving runtime orchestration.
+
+- Monitor now has a real public package entry with MonitorAgentInput and MonitorAgentResult. Its result captures exactly the existing 27 top-level Monitor compatibility keys and never applies a patch or evaluates a signal.
+- Commander exports CommanderRuntimeInput and CommanderRuntimeResult. Its result captures exactly the documented 46-key compatibility surface and does not route, execute, acquire runtime ownership, or mutate state.
+- Focused normal and python -O tests verify public imports, mapping validation, exact patch membership and source-state preservation. Graph facades, Broker/Supervisor/Executor, UEF, Step5 and live execution remain unchanged.
+
+**Impact:** Pure role-contract characterization only; no runtime behavior or trading authority change.
+
+### PR31 stage — 5 imported version records
+
+#### 2026-10-22 · P1.5 PEER-DEFERRED LONG-RUN CONTINUITY 20261022
+**Continue authorized development when cross-model CLI review is unavailable** · Standing engineering policy change; no production, integration or main changes
+
+Bound retries on reviewer timeout/credit exhaustion; record SELF_PASS/PEER_DEFERRED and continue the next authorized independent developer task while preserving required independent review and exact-SHA CI before integration.
+
+- Primary executes real normal and python -O regression/negative/trading-safety validation with exit codes before its own development-branch commit/push; reviewer failure cannot be reported as PASS.
+- Retry a transient unavailable/timeout reviewer at most once; do not retry credit exhaustion. Record the precise SHA, error/exit, peer tests NOT_RUN, and deferred-review obligation.
+- GPT follows up on independent review or user-approved equivalent; no integration or release on SELF_PASS/PEER_DEFERRED alone. Separate lanes keep progressing on already approved nonoverlapping scope.
+- No permission escalation, ACL/MXC rerun loop, reviewer writes, historical tests waiver, main merge, broker execution or autonomous background runner.
+
+**Impact:** Reduce idle time for Claude/Codex during third-party review outages without relaxing safety or integration acceptance.
+
+#### 2026-10-22 · P1.5 GITHUB-DIRECT HANDOFF AND CONCISE OPERATOR REPORTING 20261022
+**Full developer evidence in GitHub and concise GPT product-owner updates** · Standing development communication policy; no source or trading changes
+
+Claude/Codex report exact SHA and detailed code/test/peer/CI results directly to GitHub; GPT independently inspects these and gives the user brief decisions instead of requesting copied reports.
+
+- Developer receipts include full base/candidate SHA and actual pushed branch; paths, command exits and normal/-O/negative/safety evidence, peer review verdict and NOT_RUN, CI URLs, blockers and next READY.
+- GPT provides concise stage/A/B/CI/blocker/next-action reports to Product Owner unless detail is requested; no user copy/paste bridge.
+- No relaxed integration, review, safety, main, live or authorization rules; Issue comments do not self-start local CLI sessions.
+
+**Impact:** Maintain auditable technical handoffs while reducing repeated user-facing detail and manual relay.
+
+#### 2026-10-22 · P1.5 GIT PUSH HANDOFF ISSUE20 GPT OWNERSHIP 20261022
+**Development source branch push is the handoff; GPT owns P1.5 master Issue #20** · Standing engineering handoff policy; not integration or runtime changes
+
+Remove mandatory developer Issue comments and gh token setup; GPT inspects pushed developer source/tests/patchnotes directly and maintains #20; developer terminal reports stay short.
+
+- On every approved batch Claude/Codex commit and push source, tests and paired notes on own branch; include exact SHA and essential self/peer verdicts in commit message or compact branch evidence and preserve local full logs.
+- Master Issue #20 is the GPT technical coordination and acceptance board; developer comments are optional and lack of comment does not block source intake.
+- No change to exact code review, safety, historical gates, integration CI, main and live trade authorization.
+
+**Impact:** Eliminates redundant authentication and operator copy/paste friction without weakening evidence or integration controls.
+
+#### 2026-10-22 · P1.5 P0 STRUCTURE FIRST BIG FILE FOLDER TREE 20261022
+**Hard P0 priority: largest safe files, coherent folder tree and true modular responsibilities** · Authoritative priority override across active P1.5 and later structural refactors; source integration candidate pending
+
+Safety first; next reorganize repository/package tree, split oversized multi-responsibility eligible files and preserve stable module/facade imports; stop tiny Q8 helper and review-ceremony loops.
+
+- Prioritize by current HEAD largest eligible file and actual root clutter. Claude Reporter trade_report_ai / intraday trade report / Markdown families; Codex Operator UI data_access_core.py 2468 LOC and root brief family.
+- Each wave must show before/after root Python files, major facade LOC, canonical owner folder map and import graph, with pure structural BASE parity, negative/safety checks, normal/-O and fresh opposite CLI verdict.
+- No feature/strategy/approval/execution changes, no broken historical pinned proof; Tech Lead selects and integrates approved SHA, reconciles notes and checks hosted CI; main and live remain separate PO decisions.
+
+**Impact:** Measure actual maintainability and extendable module boundaries instead of encouraging microtasks.
+
+#### 2026-10-22 · P15_TREE_V3_END_TO_END_FOLDER_FIRST_WORK_ORDER_20261022
+**Frozen V3 agents role tree T00–T09 stage-gated work order program** · PLANNED / STAGE CANDIDATE NOT CI-ACCEPTED
+
+Re-align source delivery from disconnected small file splits to proven seven-role folder-entry surfaces, legacy adapters, runtime wiring, root ownership, then giant-file decomposition and composed CI.
+
+- Verified integration baseline: libs/agents 119 Python files in five role subtrees with supervisor/executor entry absent; libs/agent legacy fourteen files; graphs 45 and runtime 322 distinct layer files.
+- Single master T00–T09 plus linked T01/T02 work orders and a top-of-file CURRENT pointer; fixed stage matrix of TODO vs source evidence, exact owner A/B/GPT assignments and status per gate.
+- Trading safety/immutable historical oracles intact, no new Broker route, no main/live; hosted green B-only 51bb baseline cannot prove new draft PR31; accepted code needs exact SHA and new hosted CI.
+
+**Impact:** Makes P1.5 folder-first work progress visible and gives A/B coherent source tasks in architectural order without unrelated reassignments.
+
+### P15_FOUR_BRANCH_CONSOLIDATION_CANDIDATE_20261023
+- GitHub candidate tracks newest A/B source; PR31's earlier A overlap is overridden by latest A, T00–T09 stay inactive historical drafts.
+- Shared B UI structure suffix is appended without replacing RF93 CI repair. Existing stage-level source checks will need independent admission, normal/-O and hosted CI before `integration/p1.5` can be changed.
+- No main or production trade impact. Source admission verdict: PENDING.

@@ -1,0 +1,7 @@
+# T03 — `libs/agent/` M15 legacy adapters: reconcile, do not mass-delete
+**Status:** DESIGN_READY. **Current integration:** 14 Python files; `commander.py`, `strategist.py`, `scanner.py`, `monitor.py`, `reporter.py`, `executor.py`, `executor/*` and inputs/outputs/router compatibility. `libs/agent/commander.py` explicitly documents `graphs.commander_runtime` as operational; `monitor.py` is a legacy placeholder, not live Monitor.
+**A:** legacy `reporter`, `strategist`, `scanner` adapter import/symbol/constructor source proof. **B:** legacy `commander`, `monitor` adapters; `executor` code is READ_ONLY SAFETY_LOCK and belongs to T04.
+1. Each exact file gets KEEP_COMPAT / THIN_ADAPTER_SAFE / BLOCKED_UNPROVEN. Avoid claiming old symbols are unused from static grep alone. Consumer imports, reflection, tests and monkeypatch ABI dictate retention.
+2. Promote only proven pure internal body to canonical role owner, legacy public constructor/signature retained; no blanket redirect of graph node objects or stale imports. Deletion prohibited unless *all* consumers and historical pin tests prove compatibility and explicit deletion permission exists.
+3. Keep `libs/agent` as clearly labeled compatibility namespace through P1.5 if needed; a visually clean V3 tree does not require unsafe elimination.
+**EXIT:** all 14 old files classified, any safely moved body is single-owned with BASE output/exception/identity tests normal/-O, no live routing/policy side effects. 
