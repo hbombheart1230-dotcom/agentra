@@ -113,6 +113,13 @@
 - **지팀장 직접 확인:** integration과 B parent `744c6e8c`의 RF-001 2개 source blob 동일 → **향후 2파일만 선별 가능**. B HEAD와 integration의 RF-001 33파일 중 **19파일이 다르므로 브랜치 전체 merge 금지**. B patchnotes는 기존 integration 355 entries를 유지하고 신규 sanitation entry **1개만 추가**해야 함(후보 349개 JSON으로 덮어쓰기 금지).
 - **다음 B:** RF-001 33/33 KEEP/MOVE/WRAPPER 전수 근거와 저장소에서 재현 가능한 focused normal/-O PASS 시험 제출(임시 parity 스크립트만으로 완료 불가). RF-020은 이미 확인한 19 consumer×528 PASS 반복 금지; 미확인 side-effect·RF-026 경계만 검증. **다음 A:** 새 B 증거가 생기면 그 범위만 독립 read-only peer. RF-013 stage `7e06e979`는 RF-074 inventory BLOCKED 유지. CI_RED `a0493b60` 별도 peer/exact CI 미충족. `50a93793` hosted **1 PASS / 4 FAIL**, 새 문서 SHA CI UNKNOWN. **RF DONE 0/93, 신규 source 통합 0**.
 
+## 2026-10-24 05:44 KST — 지팀장 독립 소유구조 검증·교차 안전 소유권 결정
+
+- **원격:** 시작 integration `05367a23`; A `8d785acf` / `sched-18`(HANDOFF 갱신, A 코드 `a21401db` 불변); B `0d011a7e` / `B-20261023T184120Z`(코드 `8bde643d`, patchnotes `16ed53e4` 불변). A는 B의 focused 60/60 normal/-O를 별도 read-only 재현했다고 보고, B의 33/33 분류는 새 근거. 새 A/B 소스 커밋 없음.
+- **지팀장 직접 수행 RF-001:** GitHub B HEAD에서 CSV RF-001 **33/33 소스 원문/blob 독립 열람**, 정확히 **4행 alias 16 + 호환 facade 3 + owner 14** 정적 분류를 확인하고 [RF-001](../plan/pending/RF-001.md)에 기록. `data_access_core.py`는 2,308행으로 owner 책임·side effect 동등성 검증이 여전히 필요. **OWNER_MAP_STATIC_VERIFIED**, 그러나 2-source PASS_SCOPED를 RF 전체 PASS로 승격하지 않음. B는 core/19개 divergent 파일의 소비자 계약과 2-file 선별 admission 근거를 집중 보강, A는 새 증거만 peer 검증. **전체 브랜치 병합 금지**.
+- **지팀장 직접 수행 RF-026/RF-021:** 순환 import 3파일의 BASE↔integration Git blob **3/3 동일**을 확인해 **기준선 기존 결함**으로 분리. `exit_policy.py`는 RF-026, `monitor_exit/__init__.py` 및 `policy_map_builder.py`는 **RF-021** 소유로 확정. [RF-026](../plan/pending/RF-026.md)에 정확한 import 체인·소유권·read-only 검증 게이트를 기록. **RF-021 패키지 export 변경 후보는 명시적 안전 승인 전 소스 수정 금지**, RF-020 작업에 섞지 않음.
+- **게이트:** 이번 회차 실제 신규 runtime 테스트 `NOT_RUN`, 새 source integration `NOT_RUN`, 새 SHA hosted Actions PR-only/combined-status 조회는 빈 결과여서 **UNKNOWN(PASS 아님)**. 기존 CI_RED 1/4 및 RF-013/RF-074 BLOCKED, CI_RED `a0493b60` peer/exact CI 미완 유지. **RF DONE 0/93**, main/실거래/안전가드/CI 오라클 불변. 위 두 소유권·정적 검증은 새 증거이나 런타임/통합 완료가 아니다.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
