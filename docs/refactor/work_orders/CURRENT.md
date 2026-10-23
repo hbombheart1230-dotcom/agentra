@@ -107,6 +107,12 @@
 - **RF-013 구조 결정:** stage `7e06e979` 신규 9 owner와 RF-074 frozen 33-file inventory는 실제로 충돌. A의 5가지 구조 대안 중 oracle 불변·원소유 RF 보존·유의미한 분할을 동시에 만족하는 후보는 없음. **이번 회차 RF-074 oracle 수정/허용 목록 확대 승인하지 않음.** 9파일 stage는 BLOCKED로 보존하고 RF-001/020/018 검증을 우선; A/B 동일 41·153/1 재실행 금지. 필요시 추후 별도 명시 승인으로만 RF-074 역사 계약 범위 재설계.
 - **hosted CI 직접 재조회:** integration `19c0b113` 2026-10-23 18:04 UTC 5 runs 모두 completed: Scripts **1 SUCCESS**, Shared/Reporting-Web/Design Guard/T4 **4 FAILURE**. 새로운 문서 커밋 exact-SHA CI는 아직 UNKNOWN. CI_RED `a0493b60` peer·exact CI 부재, 통합 금지. **RF DONE 0/93, 신규 소스 통합 0**. main·실거래·안전 가드·CI oracle 불변.
 
+## 2026-10-24 04:40 KST — RF-001 peer 수용·통합 입력 분리 (지팀장 확정)
+
+- **원격:** integration 직전 `50a93793`, A `46d90a5a` / sched-16, B `19e958a4` / RUN `B-20261023T183030Z`. A가 B source `8bde643d`를 detached 독립 검증: normal/-O parity `PARITY_OK`, 40 consumer tests에서 후보·parent 동일 **806 PASS / 102 FAIL / 116 ERROR**(실패/오류 node 차이 0). **RF-001 `PASS_SCOPED` 수용**, 전체 PASS 아님. RF-001 원본에 증거 반영.
+- **지팀장 직접 확인:** integration과 B parent `744c6e8c`의 RF-001 2개 source blob 동일 → **향후 2파일만 선별 가능**. B HEAD와 integration의 RF-001 33파일 중 **19파일이 다르므로 브랜치 전체 merge 금지**. B patchnotes는 기존 integration 355 entries를 유지하고 신규 sanitation entry **1개만 추가**해야 함(후보 349개 JSON으로 덮어쓰기 금지).
+- **다음 B:** RF-001 33/33 KEEP/MOVE/WRAPPER 전수 근거와 저장소에서 재현 가능한 focused normal/-O PASS 시험 제출(임시 parity 스크립트만으로 완료 불가). RF-020은 이미 확인한 19 consumer×528 PASS 반복 금지; 미확인 side-effect·RF-026 경계만 검증. **다음 A:** 새 B 증거가 생기면 그 범위만 독립 read-only peer. RF-013 stage `7e06e979`는 RF-074 inventory BLOCKED 유지. CI_RED `a0493b60` 별도 peer/exact CI 미충족. `50a93793` hosted **1 PASS / 4 FAIL**, 새 문서 SHA CI UNKNOWN. **RF DONE 0/93, 신규 source 통합 0**.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
