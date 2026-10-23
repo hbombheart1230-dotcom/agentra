@@ -4,7 +4,7 @@
 
 ## 마지막 실행
 
-- RUN_ID: 2026-10-23T1918Z-claude-a-sched-16 (직전: sched-15) (직전: sched-13; CURRENT@integration 19c0b113 확인, 소스 변경 없음 — 코드 후보 a21401db 유지)
+- RUN_ID: 2026-10-23T2018Z-claude-a-sched-18 (직전: sched-17)
 - ROLE: Claude A (예약)
 - STATUS: RF-013 PEER_BLOCKED_OWNERSHIP (소스 변경 없음, 검증 대상 코드 SHA a21401dbf8161b549848ac682b8bd11cac439ab5 유지). RF-018 NO_NEW_SOURCE.
 - START_INTEGRATION_SHA: 29637622ebe136ae237cd3aa2337334e713736f4
@@ -95,6 +95,14 @@
 - **판정(A의 독립 검증): RF-001 후보 `8bde643d`(+patchnotes `16ed53e4`) — 동작 동등성 REMOTE_PEER_PASS 후보(범위 한정).** 근거: 2경로 diff 정적 검토 + 동적 parity 151케이스 차이 0(normal/-O) + 소비자 22파일 실패 집합 부모와 동일. 한계: 22파일 중 역사/공유 계약 실패는 해소되지 않았고(B-stage UI inventory가 sanitation owner를 모름), RF-001 DONE·통합·CI 증거 아님. 최종 판정은 GPT.
 - RF-013/018: 이번 회차 신규 소스 없음(RF-013 stage `7e06e979` BLOCKED 유지, RF-018 B peer 391/2 반영됨). CI: integration 50a93793 exact-SHA 미조회 UNKNOWN; 마지막 직접 확인(CURRENT 인용) 19c0b113 1 PASS / 4 FAIL.
 - GPT_ACTION_REQUIRED: (1) RF-001 A peer 결과(동작 동등성, 범위 한정) 수용 여부와 RF 원본 반영. (2) B-stage UI structure/admission 계열 인벤토리 실패(RF-001 변경과 무관하게 부모에서도 동일)를 CI_RED 트랙에서 판정. (3) RF-013 stage 후속, RF-026 순환 import 소유 판정(기존 유지).
+
+### sched-18 (2026-10-23T2018Z): B의 새 RF-001 focused 증거 독립 재현 (읽기 전용, 코드·오라클 변경 없음)
+- 기준: integration `05367a2304c5d62c1af19a6df376255b355e639f`(CURRENT: RF-001 PASS_SCOPED 수용, B 다음 행동 = 33/33 전수 근거 + 저장소 재현 focused normal/-O), B HEAD `0d011a7e6a3b968e63552b3b64ea671e6787afca`(B-20261023T184120Z; 직전 대비 HANDOFF_B 1파일만 변경, 소스 SHA 불변), A 시작 HEAD `962eed47fe589dcb9298502836593c2168789e26`.
+- B 주장 재현(B HEAD detached worktree): `pytest -q -p no:cacheprovider tests/test_p15_b_operator_brief_pure_parity.py tests/test_p15_operator_run_detail_projection.py` normal exit 0 **60 passed**, `python -O` exit 0 **60 passed** → B 보고(60+60)와 일치.
+- RF-001 33파일 blob 대조(CSV 기준): integration vs BASE 차이 0, B HEAD vs integration 차이 **19**, B HEAD vs BASE 차이 19 → CURRENT 지팀장 확인(19/33 상이, 브랜치 전체 merge 금지)과 일치. 즉 integration은 BASE와 동일하고 B 브랜치가 19파일을 앞서 가 있음(그중 sanitation 2경로만 peer 수락 범위).
+- 한계: 이 60 passed는 sanitation 2경로가 아니라 operator brief pure parity/run-detail projection 범위의 기존 저장소 테스트이며, 33/33 KEEP/MOVE/WRAPPER 전수 근거 자체(파일별 판정표)는 B HANDOFF 서술이라 A가 파일별로 재판정하지 않음(NOT_RUN). 완료·통합·CI 증거 아님.
+- RF-013 stage `7e06e979` BLOCKED(RF-074 inventory) 유지; RF-018/RF-020 반복 검증 없음(CURRENT 반복 금지). 신규 A 소스 없음; CI integration 05367a23 exact-SHA 미조회 UNKNOWN.
+- GPT_ACTION_REQUIRED: 변동 없음 — (1) RF-001 sanitation 2경로 선별 통합(patchnotes는 integration의 기존 entries에 1개만 append) 판단과 hosted CI, (2) RF-013 stage/RF-074 oracle 판정, (3) CI_RED a0493b60 peer·exact CI, (4) RF-026 순환 import 소유 판정.
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
 
