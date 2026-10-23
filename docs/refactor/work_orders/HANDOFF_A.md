@@ -4,7 +4,7 @@
 
 ## 마지막 실행
 
-- RUN_ID: 2026-10-23T2018Z-claude-a-sched-18 (직전: sched-17)
+- RUN_ID: 2026-10-23T2117Z-claude-a-sched-20 (직전: sched-19)
 - ROLE: Claude A (예약)
 - STATUS: RF-013 PEER_BLOCKED_OWNERSHIP (소스 변경 없음, 검증 대상 코드 SHA a21401dbf8161b549848ac682b8bd11cac439ab5 유지). RF-018 NO_NEW_SOURCE.
 - START_INTEGRATION_SHA: 29637622ebe136ae237cd3aa2337334e713736f4
@@ -103,6 +103,14 @@
 - 한계: 이 60 passed는 sanitation 2경로가 아니라 operator brief pure parity/run-detail projection 범위의 기존 저장소 테스트이며, 33/33 KEEP/MOVE/WRAPPER 전수 근거 자체(파일별 판정표)는 B HANDOFF 서술이라 A가 파일별로 재판정하지 않음(NOT_RUN). 완료·통합·CI 증거 아님.
 - RF-013 stage `7e06e979` BLOCKED(RF-074 inventory) 유지; RF-018/RF-020 반복 검증 없음(CURRENT 반복 금지). 신규 A 소스 없음; CI integration 05367a23 exact-SHA 미조회 UNKNOWN.
 - GPT_ACTION_REQUIRED: 변동 없음 — (1) RF-001 sanitation 2경로 선별 통합(patchnotes는 integration의 기존 entries에 1개만 append) 판단과 hosted CI, (2) RF-013 stage/RF-074 oracle 판정, (3) CI_RED a0493b60 peer·exact CI, (4) RF-026 순환 import 소유 판정.
+
+### sched-20 (2026-10-23T2117Z): B의 새 RF-001 core 소비자 테스트 독립 재현 (읽기 전용, 코드·오라클 변경 없음)
+- 기준: integration `af0caf776833efbc738bca9b88655980c78a45d7`(CURRENT: RF-001 33/33 owner map 정적 확인, RF-021 안전 경계 소유 확정), B HEAD `ec28cb9f384688164a470782dc56c2a3e6a29437`(B-20261023T185015Z; 직전 대비 HANDOFF_B 1파일만 변경, 소스 SHA 불변), A 시작 HEAD `f9a7074e7c0c25e4eaa056939815b50d9f6f2956`(sched-19: 이 B 증거 이전 시점의 NOT_RUN 기록).
+- B 새 주장: core side-effect/consumer `tests/test_operator_ui.py` + `tests/test_operator_ui_data_access_phase2.py` exit 0, 81 passed.
+- 독립 재현(B HEAD detached worktree): normal exit 0 **81 passed**, `python -O` exit 0 **81 passed** → B 보고와 일치. 같은 2파일을 B 부모 `744c6e8c`와 integration `af0caf77`에서 실행해도 각각 **81 passed**(차이 0) → sanitation 변경이 이 소비자 계약을 바꾸지 않음.
+- 한계: 이 2파일은 UI 소비자 회귀이며 `data_access_core.py` 약 2.3~2.5k행의 owner 책임·side effect를 파일별로 판정한 것이 아님(core 파일 줄 수는 브랜치마다 다름: integration 2467, B는 별도). 19개 divergent 파일의 소비자 계약과 2-file 선별 admission 근거는 B/GPT 몫이며 A는 파일별 재판정 NOT_RUN. 완료·통합·CI 증거 아님.
+- RF-013 stage `7e06e979` BLOCKED(RF-074 inventory) 유지, RF-018/RF-020 반복 검증 없음, 신규 A 소스 없음. RF-026/RF-021 순환 import는 CURRENT 소유 확정(RF-021 변경은 안전 승인 전 소스 수정 금지)이라 A 조치 없음. CI integration af0caf77 exact-SHA 미조회 UNKNOWN.
+- GPT_ACTION_REQUIRED: 변동 없음 — RF-001 2경로 선별 통합 판단과 hosted CI, RF-013 stage/RF-074 oracle 판정, CI_RED a0493b60 peer·exact CI, RF-021 안전 승인 여부.
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
 
