@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 354,
+  "entry_count": 355,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9341,6 +9341,33 @@
         "No changes to runtime, execution, trading guards, test oracle or Actions workflows. Tests and hosted CI for this documentation edit are NOT_RUN; integration@87647c98 was CI_RED."
       ],
       "impact": "Remove contradictory local/cloud CLI obligations and equalize assignment, review, safe integration and reporting behavior for both developers.",
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_DEVELOPER_BRANCH_FAST_FORWARD_CLARIFICATION_20261023",
+      "title": "Keep A and B coding when long-lived branches diverge from integration",
+      "stage": "DOCS_ONLY / A_UNBLOCKED / CI_RED_REMAINS",
+      "types": [
+        "PROCESS",
+        "DOCS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Clarified the existing long-lived developer branch policy: divergence between integration and A/B is normal and does not prevent ordinary fast-forward commits to the same remote developer branch.",
+      "details": [
+        "Claude A@a21401db may implement RF-013 and RF-018 on existing A branch without merging/rebasing integration; Codex uses identical B rule. Read latest CURRENT and RF descriptions from integration, even if the older A/B tree lacks RF documents.",
+        "Fast-forward push condition is local branch tip descending from its own remote branch HEAD, not from integration HEAD. Remote same-branch advances, ownership/contract mismatch, unavailable write auth remain legitimate BLOCKED cases.",
+        "No forced updates, new temporary branches, source integration, trade-safety changes or test-oracle modifications. CI_RED candidate 59e34204 still awaits Codex cloud independent validation. No hosted CI or code tests for this documentation-only clarification."
+      ],
+      "impact": "Remove false development blockage in cloud scheduled runs without loosening review or integration safety gates.",
       "sources": [
         "docs/refactor/work_orders/CURRENT.md",
         "docs/ENGINEERING_DELIVERY_POLICY.md",

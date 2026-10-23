@@ -10,7 +10,7 @@
 - **상대 CLI 자기 호출(로컬 티키타카) 의무 폐지.** 로컬도 클라우드도 개발자가 상대 CLI를 직접 실행하지 않는다. 검증은 반대편 별도 세션에서 exact SHA를 읽기 전용으로 수행한다. 독립 테스트 미실행은 NOT_RUN; self PASS는 peer PASS가 아니다.
 - 실행 시작에 CURRENT·배정 **모든** pending RF·반대 검증 큐·일회성 작업 및 실제 원격/권한을 확인한다. 소유권 경계는 RF 전수 CSV 기준. 한 건 차단돼도 남은 작업을 계속한다.
 - 정상 RF 검증자는 독립 PASS **이후 검증 세션 밖의 분리된 통합 단계**에서 승인 경로만 single-writer/CAS·비강제 반영하고 exact 통합 SHA normal/`-O` 및 hosted CI를 확인한다. CI 오라클, PR31/4-HEAD, 안전/공유 계약은 GPT 예외 승인 대상이며 GPT만 최종 done 이동.
-- 상시 4개 브랜치, force/무단 merge/rebase/신규 브랜치 금지. 사전 승인된 일회성 예외만 보존·정리 조건대로 처리한다. 클라우드 자동 브랜치 생성은 승인 자체가 아니다.
+- 상시 4개 브랜치. **A/B ↔ integration의 정상적인 분기는 개발 중단 사유가 아니다.** 활성 RF·운영규칙은 integration에서 읽고 구현은 기존 A/B 브랜치에 쌓는다. fast-forward는 **같은 이름의 원격 A/B HEAD와 비교**하여 판정한다. A/B 작업 브랜치에 RF 지시 파일이 없어도 integration CURRENT/RF가 정본이다. force/무단 merge/rebase/신규 브랜치 금지. 사전 승인된 일회성 예외만 보존·정리 조건대로 처리한다.
 - `main`·실거래·Supervisor/Executor/Step5C·UEF 안전 권한 및 테스트 오라클 무승인 변경 금지. 추적 파일을 손상하는 부정 프로브 금지. UI patchnotes JSON/MD 동시 갱신.
 - 아래 과거 로컬 CLI 직접 호출 지시/티키타카 명령 예시는 **기록만 보존된 비활성 역사**다. 충돌 시 이 절과 CURRENT를 적용한다.
 

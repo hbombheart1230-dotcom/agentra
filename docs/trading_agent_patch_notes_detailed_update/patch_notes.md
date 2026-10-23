@@ -4287,3 +4287,12 @@ Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/work_orders/CURRE
 - CI_RED 예외 후보 `59e34204`는 Codex 클라우드 검증 대기이며 새 RF 없음. 4개 상시 브랜치 + 기존 승인 임시 브랜치 1개; 클라우드 Connector 승계·Codex 예약 상태 미검증. 기존 integration@87647c98 CI_RED, 이 문서 변경의 테스트·hosted CI NOT_RUN.
 
 Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.json`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.md`.
+
+## 2026-10-23 — P15_DEVELOPER_BRANCH_FAST_FORWARD_CLARIFICATION_20261023
+**Stage:** DOCS_ONLY / A_UNBLOCKED / CI_RED_REMAINS · **Tags:** PROCESS · DOCS · SAFETY
+
+- A/B 개발 브랜치와 integration의 분기는 **정상**이며 개발 BLOCKED 사유가 아님. 최신 CURRENT/RF 규칙은 integration에서 읽고, 코드는 기존 A/B 브랜치에서 작업한다. 구 A/B 브랜치 트리에 RF 파일이 없는 것은 차단 사유가 아니다.
+- Fast-forward 기준은 **해당 원격 A/B HEAD ↔ 로컬 A/B 커밋** 관계다. 같은 브랜치가 선행 변경돼 FF 실패하거나 소유권/계약 충돌·쓰기 권한 거부 시에만 BLOCKED. 무단 merge/rebase, force push, 신규 브랜치 없음.
+- Claude A RF-013/RF-018 개발 재개 승인; Codex B도 동일 규칙. CI_RED 수리 후보 독립 검증 대기 유지. 문서 수정에 대한 테스트/hosted CI는 NOT_RUN.
+
+Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.json`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.md`.
