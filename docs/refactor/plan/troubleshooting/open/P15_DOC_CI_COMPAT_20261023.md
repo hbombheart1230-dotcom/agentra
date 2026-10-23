@@ -56,3 +56,9 @@
 - B 원격 HEAD `c3d410769a27a58dfa53adc46f7a131a13420f9c`, RUN `B-20261023T131355Z`. 허가된 읽기 전용 `git fetch origin 613a945d2b27e735d4019cdc85b4660f2c891d8f` exit 0; B 보고 `git cat-file -t` = commit, pinned `apps/operator_ui/data_access_core.py` `git show` exit 0. 이전 **history object unavailable** 원인은 해당 환경에서 해소.
 - CI_RED 기존 후보 `a0493b6035b390a1691371364b1e4ba3ec50aea9` detached read-only normal 및 `python -O` **각 exit 1**. 새 차단은 B-stage UI structure **6경로 unexpected/missing** (HANDOFF_B, commander/monitor 4파일, `tests/test_p156_p157_role_contracts.py`); 정확한 경로 분류와 허용 범위는 아직 GPT 승인 없음. **PEER REWORK_REQUIRED, NOT_ADMITTED**. 오라클/후보 변경 및 integration merge 없음.
 - 다음 B: 6경로의 기준 SHA·기존 소유권·역사 B-stage 인벤토리 대비 기대/실제를 구분해 증거 제출. GPT: 역사 오라클 보존을 전제로 소유권 및 후보 admission 최소 경계를 판정; 무단 allowlist 확장 금지. integration `f2bd4beb` exact-SHA hosted CI **UNKNOWN** (PR 필터 조회 결과 없음은 PASS 근거 아님).
+
+## 2026-10-23 14:14 UTC B 최신 exact-candidate 재검증 — 이전 UI 6경로 판정 철회
+
+- B HANDOFF `B-20261023T141441Z`, 원격 HEAD `baf066f100291325a72d50bdee74049adaf71167`: 기존 후보 `a0493b6035b390a1691371364b1e4ba3ec50aea9`의 **실제 detached candidate worktree**에서 `verify_next_stage()` normal/`python -O` 각각 **exit 0**으로 B가 보고. 추가 pinned `6849bed4af358c214f63011a0d58ef760ca79fa0` fetch 후 `cat-file`/`git show` 성공. 지팀장 로컬 재실행 NOT_RUN.
+- 직전 UI structure 6경로 exit 1은 **B 작업 트리에서 실행한 결과**로 확인되어 이 후보에 대한 REWORK 근거에서 철회. 다만 **별도 peer-session receipt NOT_RUN, exact-candidate hosted CI UNKNOWN, source admission NOT_ADMITTED, 통합 NOT_RUN**. SELF/단일 read-only 재현을 최종 PEER_PASS로 승격하지 않는다.
+- 다음: B는 정확한 후보 SHA·worktree·명령·exit를 유지하고 별도 독립 검증 증거를 확보한다. GPT는 역사 오라클을 수정하지 않고 admission 경계와 exact-SHA CI를 확인한 뒤에만 통합을 판정한다.
