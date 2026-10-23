@@ -57,6 +57,14 @@
 - **CI_RED:** B가 exact detached 후보 `a0493b60`에서 normal/`python -O` **각 exit 0** 재현. 이전 UI 6경로 exit 1은 잘못된 작업 트리 결과로 철회. [기존 CI_RED troubleshooting](../plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md)에 정정 기록. **별도 peer receipt NOT_RUN, exact-SHA hosted CI UNKNOWN, NOT_ADMITTED/통합 NOT_RUN**. B는 검증 근거를 보존하고 독립 peer 증거 확보; GPT는 오라클 변경 없이 source admission·CI 확인.
 - **상태:** RF-001/020 신규 테스트 NOT_RUN, RF-026 SAFETY_HOLD. RF DONE **0/93**, 최종 독립 PASS **0**, 신규 통합 **0**. integration `99de4fb3` hosted CI는 A 보고 1 PASS/4 FAIL이나 지팀장 PR 전용 조회 결과 없음; **직접 확정 UNKNOWN**. main/실거래/오라클 변경 없음.
 
+## 지팀장 확정 결정 — 소유권 분리 및 실행 우선순위 (2026-10-23)
+
+- **결정 RF-013:** A 후보 `a21401db`의 실제 변경 58경로는 **RF-013 일괄 편입 불허**. 신규 `libs/agents/reporter/read_models/` 9파일은 RF-013 소유로 유지하고, 기존 67파일은 KEEP_VERIFIED 후보(최종 검증 전). RF-030의 `operator_visibility.py`·`operator_period_summary.py`, RF-035의 `metrics_report_generator.py`·`phase_runtime_health.py` 등 소비자 wrapper는 **각 원소유 RF에서만 변경**. A는 9파일+필수 소비자 변경을 **파일별 별도 후보/패치 집합**으로 구분하여 제출하고, 단독 9파일은 비활성 코드이므로 DONE/통합 신청하지 않는다. 타 RF 수정 15경로 및 CSV 미등재 신규 34경로는 원 소유 RF·테스트 소유자 판정 전 RF-013 통합 범위에서 제외한다. 원래 브랜치 전체 merge 금지.
+- **A 즉시 행동:** 반복 624 PASS 재실행보다 실제 소비자 의존성/기존 인터페이스 parity를 증명하고, RF-013 9파일과 RF-030/035의 최소 활성화 wrapper 경로를 분리한 검증 가능한 코드 후보를 기존 A 브랜치에 생성. RF-030/035의 소유권은 변경하지 않으며, 필요한 교차 파일은 **읽기 전용 patch proposal**로만 제출(원소유 RF의 코드 변경·push 금지). 나머지 Q8·Alpha·AI Review 변경은 각각 별도 소유 RF로 분류하고 RF-013 완료 근거에서 제외. 코드 변경 시 UI patchnotes JSON/MD 동기화. 독립 normal/-O·소비자 회귀를 증명할 때까지 BLOCKED.
+- **B 즉시 행동:** CI_RED `a0493b60`은 exact detached normal/-O exit 0 **재현까지만 인정**, hosted CI·별도 peer receipt 이전 source admission 보류. 이미 해소된 역사 객체/잘못된 작업트리 오류를 다시 진단하지 않는다. RF-013에 대한 동일 624 PASS 반복 검증 중단. 우선 **RF-001 소유 파일에서 실제 최소 코드 개선 + normal/-O**, 이어 RF-020 전수 MOVE/KEEP/WRAPPER 검증에 착수; 교차 소유 파일은 읽기 전용 제안. 각 회차 HANDOFF에는 새 코드 SHA 또는 재현 가능한 구체 장애를 남긴다.
+- **지팀장 통합 게이트:** ① 원소유 RF별 파일 집합과 테스트 분리 ② RF별 독립 peer PASS ③ 선별 integration SHA normal/-O ④ 동일 SHA hosted CI 필수 PASS 순서. 기존 역사 S5/B-stage oracle을 현 후보 51경로에 무조건 적용하거나 allowlist 확장하지 않는다. CI_RED는 별도 호환성 트랙으로 독립 검증하고 RF 완료 수치에 합산하지 않는다. RF-026 SAFETY_HOLD, main/실거래/안전권한 변경 금지.
+- **상태:** 소유권 분리 결정만 완료. **신규 소스 커밋/테스트/통합 NOT_RUN**, RF DONE 0/93. 다음 예약 실행은 보고서 갱신만으로 진전 처리하지 않는다.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
