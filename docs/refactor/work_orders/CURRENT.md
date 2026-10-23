@@ -50,6 +50,13 @@
 - **CI_RED:** B의 pinned `613a945d` history fetch·UI blob 읽기 **성공**; 기존 `a0493b60` normal/`-O`는 각각 **exit 1**, 원인이 B-stage UI structure 6경로 unexpected/missing으로 구체화. **REWORK_REQUIRED / NOT_ADMITTED**. B는 6경로의 기대/실제·소유권 증거 제출, GPT는 역사 오라클 보존 하에 admission 경계 판정. RF-001/020 신규 테스트 **NOT_RUN**.
 - **통합/CI:** 신규 통합 **0**, RF DONE **0/93**, 독립 최종 PASS **0**. integration `f2bd4beb` exact-SHA hosted CI **UNKNOWN** (PR 필터 조회 결과 없음). RF-026 안전 HOLD 유지; main/실거래/오라클/무승인 브랜치 변경 없음.
 
+## 2026-10-23 14:20 UTC 지팀장 최신 수거·판정
+
+- **원격:** integration 기존 `99de4fb3`, A HEAD `5493ec81` / RUN `2026-10-23T1420Z-claude-a-sched-8`, B HEAD `baf066f1` / RUN `B-20261023T141441Z`. 코드 후보 A `a21401db`, B `a3d60e37` 불변; 이번 A/B 소스 변경 없음. A는 상단 RUN_ID 불일치 정리 완료, 이번 회차 테스트 NOT_RUN.
+- **RF-013:** B 독립 read-only Reporter 19파일 normal/`-O` 각각 **624 PASS**는 유지하나 PEER **BLOCKED/REWORK**. A가 106경로(BASE 양방향 차이)와 58경로(A merge-base 기준 실제 변경)를 분리했고, 신규 Reporter owner 9파일만 선별하면 활성 소비자 없는 휴면 코드임을 확인. RF-030/035 wrapper와 CSV 미등재 43파일, 공유 계약 51경로 충돌은 **GPT 소유권/계약 판정 전 BLOCKED**. A는 타 RF 소유 파일 무단 수정하지 말고 경계별 선별 후보를 준비한다.
+- **CI_RED:** B가 exact detached 후보 `a0493b60`에서 normal/`python -O` **각 exit 0** 재현. 이전 UI 6경로 exit 1은 잘못된 작업 트리 결과로 철회. [기존 CI_RED troubleshooting](../plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md)에 정정 기록. **별도 peer receipt NOT_RUN, exact-SHA hosted CI UNKNOWN, NOT_ADMITTED/통합 NOT_RUN**. B는 검증 근거를 보존하고 독립 peer 증거 확보; GPT는 오라클 변경 없이 source admission·CI 확인.
+- **상태:** RF-001/020 신규 테스트 NOT_RUN, RF-026 SAFETY_HOLD. RF DONE **0/93**, 최종 독립 PASS **0**, 신규 통합 **0**. integration `99de4fb3` hosted CI는 A 보고 1 PASS/4 FAIL이나 지팀장 PR 전용 조회 결과 없음; **직접 확정 UNKNOWN**. main/실거래/오라클 변경 없음.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
