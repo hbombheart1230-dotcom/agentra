@@ -105,3 +105,9 @@
 - 소비자 pytest(참조 grep 상 `data_access_brief|clean_brief_*|data_access_core` 포함 40개 tests 파일, `--continue-on-collection-errors`): 후보 normal **806 passed / 102 failed / 116 errors**, `python -O` 동일 수치; BASE 744c6e8c normal **동일 806/102/116**, FAILED·ERROR 노드 ID 집합 **diff 0** → 후보가 도입한 신규 실패 0. 102+116은 모두 기존 역사 inventory/CI_RED 계열(예: test_p15_integration_completion, test_p165_t4d_extraction_gates)이며 오라클 미수정. 이 40파일 전수 PASS는 아님.
 - PEER_VERDICT(RF-001, 범위 한정): **PASS_SCOPED** — 동작·facade 동등성 및 BASE 대비 무회귀 증명. 단 RF 전체 PASS/CI PASS/통합 승인 아님(역사 inventory FAIL 존재, hosted CI UNKNOWN). 통합은 GPT 판정.
 - RF-013: stage 7e06e979 BLOCKED 유지(RF-074 oracle 불변 결정), 신규 소스 없음. RF-018: 신규 소스 없음, 증거 sched-13 유지. 검증 큐 변경 없음.
+
+### sched-17 (2026-10-24): 신규 배정 없음 — 검증 대상 NOT_RUN (소스 변경 없음, 코드 SHA a21401db 유지)
+- 기준: CURRENT@integration `05367a23`, A 시작 `46d90a5a`, B `19e958a4`. B는 `16ed53e4` 이후 `HANDOFF_B.md` 1경로만 변경(신규 소스·테스트·patchnotes 없음). `verification/claude`·`verification/codex` 큐는 `.gitkeep`뿐(0건).
+- CURRENT 지시상 A의 다음 행동은 "새 B 증거가 생기면 그 범위만 독립 read-only peer"이며 대상이 없어 동일 테스트 재실행은 하지 않음. RF-013 stage `7e06e979` BLOCKED 유지(RF-074 oracle 무수정), RF-018 신규 소스 없음.
+- PEER_VERDICT: 신규 없음(NOT_RUN). 이전 RF-001 PASS_SCOPED·RF-020 범위 한정 지지 유지. CI: 조회 NOT_RUN/UNKNOWN. 상대 CLI 호출 없음(티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: RF-013 정확 9파일 허용 vs 신규 파일 0 축소 결정; B의 RF-001 33/33 전수·RF-020 보강 증거 제출 시 A peer.
