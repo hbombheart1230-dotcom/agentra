@@ -1,6 +1,6 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**전수 기준:** `63182ab27ecf889768003f637a40577ba1277f86` · **3985개 파일 / 298개 디렉터리** · RF 독립작업 **93건** · 증거로 최종 확인된 완료 **0건**, 나머지는 이전 부분 개발·통합 검증 필요.
+**전수 기준:** `63182ab27ecf889768003f637a40577ba1277f86` · **3985개 파일 / 298개 디렉터리** · RF 독립작업 **93건** · 검증 대기 **0건** · 증거로 최종 확인된 완료 **0건**, 나머지는 이전 부분 개발·통합 검증 필요.
 
 ## 우선순위 / 잔여 작업
 | 우선 | 목적 | 미검증 RF |
@@ -56,6 +56,6 @@
 | `libs/supervisor/` | 4 | [RF-060](pending/RF-060.md) | 미판정 |
 | `libs/tools/` | 3 | [RF-061](pending/RF-061.md) | 미판정 |
 
-**단일 파일 소유권:** [3985파일↔RF CSV](FILE_COVERAGE_63182ab2.csv). [pending 독립작업](pending/) · [done 검증완료](done/) · [P1.5.0~11 합격 기준](criteria/) · [CURRENT](../work_orders/CURRENT.md).
+**RF 상태 3단계:** [pending 개발 대기](pending/) → [verification/claude (Claude 구현·Codex 검증)](verification/claude/) 또는 [verification/codex (Codex 구현·Claude 검증)](verification/codex/) → [done](done/). 현재 verification 0건이며 93개 전부 pending이다. 이 경로는 실제 검증 완료를 주장하지 않으며, 구현 SHA와 self 정상/-O 명령 및 인수인계가 없는 이동은 무효다.\n\n**단일 파일 소유권:** [3985파일↔RF CSV](FILE_COVERAGE_63182ab2.csv). [pending 독립작업](pending/) · [done 검증완료](done/) · [P1.5.0~11 합격 기준](criteria/) · [CURRENT](../work_orders/CURRENT.md).
 
-**완료 판정:** 지팀장이 source/peer 실제 PASS·정확한 통합 SHA 필수 CI 후에만 pending→done과 상태 숫자를 갱신하며, 수정 없는 KEEP_VERIFIED도 증거로 인정. 기존 안전 예외 별도 처리.
+**완료 판정:** 지팀장이 source/peer 실제 PASS·정확한 통합 SHA 필수 CI 후에만 verification→done과 상태 숫자를 갱신하며, 수정 없는 KEEP_VERIFIED도 증거로 인정. 기존 안전 예외 별도 처리.
