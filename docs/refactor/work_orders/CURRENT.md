@@ -71,6 +71,14 @@
 - **직접 확인 CI:** `fa233811`의 5 Actions 중 Scripts **SUCCESS**, Shared **FAIL**, Reporting/Web **FAIL**, Design Guard/T4 **IN_PROGRESS** (각 Linux regression step FAIL, Windows step 진행 중; 전체 결론 미확정). [기존 CI troubleshooting](../plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md)에 정확한 job/log 근거와 수락 조건 반영. **CI_RED 유지, RF DONE 0/93, source 통합 0**.
 - **확인된 두 원인:** Shared/Reporting의 pinned B-stage inventory는 **현재 허가된 문서 6경로**를 역사적 변경 목록과 혼동하여 FAIL; Design Guard/T4 Linux 단계는 폐지된 direct opposite-CLI 역사 문자열을 현행 D01/D02에 요구(`REVIEW_ONLY_NO_NESTED_CLI` 첫 실패). **역사 오라클 수정·토큰만 채워 거짓 통과 처리 금지**. GPT가 historical/current scope 분리 설계·계약 소유 판정 담당. A는 RF-013 9 owner/원소유 소비자 patch 제안, B는 RF-001/020 코드·normal/-O에 집중. CI 수리는 별도 검증 가능한 후보·정확한 SHA·hosted CI 이후만 ACCEPT.
 
+## 2026-10-24 지팀장 소스 후보 분리 승인 — 단일 임시 브랜치
+
+- **실행 승인(예외):** D00의 단일 임시 브랜치 규정에 따라 지팀장이 `stage/p15-rf013-activation-20261024`를 integration 최신 SHA에서 1회 생성한다. **소유자 GPT**, 목적은 A 후보 `a21401db`의 58경로 중 **정확히 15개 소스·테스트 경로만 분리한 검증용 staging**. 여기에 UI patchnotes JSON/MD만 추가 가능. **integration/source admission, 독립 PASS, CI GREEN 또는 RF DONE 승인이 아니다.** 신규 상시 브랜치 불가. 소비자 B peer·CI·PR 및 SHA 보존 상태 확인 후 최종 통합 또는 명시적 폐기 시 정리; 임의 삭제 금지.
+- **교차 RF 제한 승인:** RF-013 신규 read_models 9개는 A 소유. 4개 wrapper `libs/reporting/{metrics_report_generator,operator_period_summary,operator_visibility,phase_runtime_health}.py`는 각각 **RF-035 2개, RF-030 2개** 원소유 유지. 이 4경로에 한해서만 **GPT가 stage에서 원소유 RF의 통합 준비 역할을 수행**하며, A에게 다른 RF 전체 소유권을 넘기지 않는다. `tests/test_p15_a_reporter_pure_{boundaries,parity}.py` 2개는 후보 증거용. Q8/Alpha/AI Review, RF-074 기존 oracle, 안전권한 파일은 stage에서 제외.
+- **새 A 증거:** sched-9/10에서 위 15경로를 integration `29637622`에 격리 오버레이하여 pure normal/-O 각각 **41 PASS**, 16 consumer 파일 normal/-O 각각 **985 PASS/1 FAIL**. 유일한 실패는 RF-074 `test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`의 frozen folder inventory가 신규 read_models 9개를 거부. **oracle 변경 승인 없음, CI/peer PASS 아님**. B는 stage exact SHA에서 **별도 읽기 전용 세션**으로 41·986 consumer 및 계약·소유권을 재검증하고, 실패가 역사 inventory인지 실제 계약 위반인지 독립 판정. 지팀장은 oracle 수리 없이 안전한 추가 source 분리 가능성을 계속 평가한다.
+- **새 B 증거:** B RF-001 sanitation 후보 `0254a5aa`는 frozen B-stage inventory 차단으로 `6b0681df`에서 **revert**. RF-020 CSV 30/30 KEEP, focused normal/-O 각 122 PASS/1 FAIL(외부 UI inventory 6경로). 두 RF **독립 PASS 없음**. B는 같은 CI/역사 allowlist 재진단을 중단하고 원소유 코드 경계에서 계약을 유지하는 새 최소 구현 또는 30파일 외부 소비자 parity를 계속한다.
+- **hosted CI 직접 재조회:** integration `29637622` Actions **Scripts 1 SUCCESS / Shared·Reporting/Web·Design Guard·T4 4 FAILURE** (5개 모두 completed). 정확한 SHA `29637622`의 CI RED이며 다른 SHA에 대한 판정으로 재사용 금지.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
