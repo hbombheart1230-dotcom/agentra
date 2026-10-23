@@ -44,3 +44,9 @@
 
 - A 예약 `RUN_ID=2026-10-23T-claude-a-sched-3`, 브랜치 `bd11c774`, 코드 후보 `a21401db`: HANDOFF가 없는 detached clean source-only worktree에서 A 경계 가드 + S5 helper test를 normal/`python -O` 각각 **185 passed / 1 failed**로 보고. 이전 HANDOFF 포함 브랜치의 7 실패 중 6건은 handoff 문서 경로의 역사 allowlist 충돌로 분리되었으나, **잔여 1건은** `scripts/refactor/shared_strategist_contracts.py:91`의 pinned B-stage 소유 경로 검사가 A 후보 Reporter/Strategist 변경을 거부. 공유 오라클 변경 승인 아님. A 자체 보고, 지팀장 독립 실행 NOT_RUN.
 - **다음:** 소스-only `a21401db`와 별개 B-stage 고정 범위 계약의 적용 대상을 구분하여 소유자/안전 영향부터 판정. 기존 oracle·allowlist를 임의 변경하지 않고 CI_RED 후보 독립 검증 이후 최소 호환성 수리 여부 결정. `8e0a7d3` 이후 exact-SHA hosted CI 상태는 별도 확인 전 UNKNOWN.
+
+## 2026-10-23 11:10 UTC — A 가드 원인 세분화 (미수리)
+
+- 원격 Claude A `375861876fda3c7e27927c0a38ab24de2b0a2d6e`, `HANDOFF_A.md`의 `EVIDENCE_11Z` (RUN `2026-10-23T11:08Z-claude-a-sched-4b`) 수거. A 소스 후보는 기존 `a21401db` 그대로이며 **신규 소스 변경 없음**. A 보고의 detached source-only normal/`python -O` 각각 **185 PASS / 1 FAIL**; 실패 `test_diff_against_pinned_source_touches_only_the_closed_path_set`에서 RF-013 Reporter 관련 변경·테스트를 포함한 **51경로**가 역사적 S5 범위 밖이라고 보고. 51경로 목록/테스트 실행은 A 자체 증거이며 GPT 독립 재현 `NOT_RUN`.
+- GitHub 정적 교차확인: `a21401db:tests/test_p15_strategist_s5_helper_moves.py`의 해당 테스트는 `scripts.refactor.shared_strategist_contracts.verify_integration_scope()`를 직접 호출하여 **pinned integrated lane**을 검증한다. Reporter/Strategist A 작업 브랜치 전체 변경을 S5의 닫힌 통합 범위로 오인하지 않도록 적용 대상/기준 SHA를 분리해야 한다. **이 사실은 51경로 자동 승인이나 오라클 allowlist 확장 근거가 아니다.** 기존 pinned gate 보존, A 소유 RF별 테스트와 S5 historical integration gate를 구분하여 별도 독립 검증한다.
+- A HANDOFF 상단 RUN_ID `10:58Z-...-4`와 후속 증거 `11:08Z-...-4b`가 혼재하고 TEST_NORMAL에 과거 `NOT_RUN` 설명이 남아 있다. 다음 A 회차는 한 개의 정확한 RUN_ID로 현재 회차 실행과 과거 인용을 분리해 기록해야 한다. B 최신 원격 `d06190d9`는 09:09Z 회차 그대로, CI_RED normal setup 오류 및 optimized `NOT_RUN` 유지.
