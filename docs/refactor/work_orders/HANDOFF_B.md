@@ -4,26 +4,26 @@
 
 ## 마지막 실행
 
-- RUN_ID: B-20261023T152047Z
+- RUN_ID: B-20261023T161921Z
 - ROLE: Codex B
-- STATUS: RF001_CANDIDATE_PUSHED / VERIFY_PENDING / GPT_ACTION_REQUIRED
+- STATUS: REWORK_APPLIED / RF001_BLOCKED_BY_FROZEN_INVENTORY / GPT_ACTION_REQUIRED
 - START_INTEGRATION_SHA: `29637622ebe136ae237cd3aa2337334e713736f4`
 - WORK_BRANCH: `work/p15-b-operator-structure-20261022`
-- START_REMOTE_SHA: `baf066f100291325a72d50bdee74049adaf71167`
-- CODE_CANDIDATE_SHA: `0254a5aa35e10b8bbbc76845f9bcb54c546a8132` (RF-001 후보; source push 재조회 일치)
+- START_REMOTE_SHA: `4b488eda5906d991d371f899e40408757e1b5936`
+- CODE_CANDIDATE_SHA: `NONE` (`0254a5aa35e10b8bbbc76845f9bcb54c546a8132` RF-001 후보는 frozen B-stage inventory 불일치로 `6b0681df4bc66b20cea0fcf23432c67210f5da52`에서 non-force revert; 유효 B 코드 후보는 기존 `a3d60e37332f4c45f8bfa7685bbc59c076d22d3e`)
 - HANDOFF_RECORD_COMMIT: pending local commit; END_REMOTE_SHA는 push 뒤 종료 보고에서 재조회한다.
 - RF_RESULTS:
-  - RF-001: `CANDIDATE_PUSHED / VERIFY_PENDING`; `apps/operator_ui/data_access_brief.py`의 `clean_brief_text`·`clean_brief_list` 본문을 같은 RF 소유 `data_access_brief_sanitation.py` owner로 이동하고 facade module을 호출 시점 주입해 public API와 monkeypatch 해석을 보존했다. patchnotes JSON/MD는 RF-080 소유여서 무단 수정하지 않았다. 후보 `0254a5aa`.
-  - RF-020: `VERIFY_ADVANCED / VERIFY_PENDING`; `tests/test_p15_b_commander_monitor_boundaries.py tests/test_p15_b_commander_monitor_pure_parity.py` normal/-O 각각 exit 0, 113 passed. 전수 MOVE/KEEP/WRAPPER 증거 및 peer PASS 없음.
+  - RF-001: `REWORK_APPLIED / BLOCKED`; 최소 sanitation owner move 후보 `0254a5aa`는 shared B-stage inventory가 두 RF-001 경로를 허용하지 않아 normal/-O boundary에 추가 경로로 나타났다. 오라클 변경 없이 source revert `6b0681df`를 push했다. revert 뒤 exact UI contract 차단은 기존 외부 6경로만 남는다. GPT의 inventory/admission 승인 전 새 RF-001 source change 금지.
+  - RF-020: `VERIFY_ADVANCED / BLOCKED_BY_SHARED_CONTRACT`; CSV 소유 30파일은 BASE `63182ab2`와 현재 B HEAD blob 모두 KEEP(30/30), BASE→HEAD 및 integration→HEAD monitor diff 0. 외부 소비자 import는 graphs, exit_policy/monitor_exit, reporter, reporting, tests에 존재하며 수정하지 않았다. focused boundary/parity는 이전 normal/-O 113 passed; 이번 전수 contract selection은 normal/-O 각각 122 passed/1 failed (공유 UI inventory 외부 6경로).
   - BRANCH_CLEANUP: `VERIFY_PENDING`; 구 ref 없음, 보존 태그 `archive/p15-20261022/b-operator-historical` = `70843da4ac237c667b41c831a9aad9051626844f`, 소비 열린 PR 0건. Cloud 밖 worktree·프로세스는 `UNKNOWN`.
-  - CI_RED: `READ_ONLY_REPRO_PASS / CI_PENDING`; `613a945d` fetch 성공 뒤 exact 후보 worktree를 실제 `cd`하여 재검증했다. 이번 회차 새 pinned `6849bed4af358c214f63011a0d58ef760ca79fa0`는 fetch 전 `cat-file`/`show` exit 128, 허가된 읽기 전용 fetch exit 0 뒤 `cat-file`=commit 및 `strategist_node.py` show exit 0으로 복구됐다. exact `a0493b6035b390a1691371364b1e4ba3ec50aea9` normal/-O 모두 exit 0. 이전 회차의 UI 6경로 exit 1은 B 작업트리에서 실행된 결과여서 후보 증거가 아니며 철회한다. 별도 peer session/hosted exact-SHA CI는 아직 없어 PEER_PASS·admission·통합은 주장하지 않는다.
+  - CI_RED: `READ_ONLY_REPRO_PASS / CI_PENDING`; pinned `613a945d`·`6849bed4`는 local `cat-file`=commit 유지, exact `a0493b6035b390a1691371364b1e4ba3ec50aea9` detached normal/-O exit 0의 기존 재현 유지. 최신 지시대로 이미 해소된 history 오류를 반복 진단하지 않음; peer receipt/hosted exact-SHA CI 없음.
   - RF-013_PEER: `BLOCKED / REWORK_REQUIRED`; Claude A 후보 `a21401dbf8161b549848ac682b8bd11cac439ab5`의 기존 read-only 재현은 지정 19 Reporter 테스트 normal/-O 각각 exit 0 `624 passed`다. direct BASE `63182ab27ecf889768003f637a40577ba1277f86` 대비 전체 106경로, A merge-base 기준 58경로로 집계 기준이 다르며 reporter 경로 9개뿐이다. 단독 소유/계약 PASS 불가, 코드 수정 없음.
-- CHANGED_PATHS: `apps/operator_ui/data_access_brief.py`, `apps/operator_ui/data_access_brief_sanitation.py`, `docs/refactor/work_orders/HANDOFF_B.md`.
-- TEST_NORMAL: RF-001 candidate smoke `PYTHONDONTWRITEBYTECODE=1 /workspace/agentra/.venv/bin/python -c "import apps.operator_ui.data_access_brief as b; ... clean_brief_text/list value + monkeypatch assertions ..."` — exit 0. Broad `pytest -q -p no:cacheprovider tests/test_operator_ui.py tests/test_p153_operator_ui_moved_bodies.py` — exit 1, 731 passed/28 failed; failures are pre-existing p153 core-owner AST/owner-bound contract cases, not the two changed brief sanitation paths. RF-020 focused pair — exit 0, 113 passed.
-- TEST_OPTIMIZED: RF-001 same smoke under `python -O` — exit 0. Broad same selection under `python -O` — exit 1, 731 passed/28 failed (same 28 p153 contract failures). RF-020 focused pair under `python -O` — exit 0, 113 passed.
-- PEER_VERDICT: `verification/claude/` 대기 RF 0건; RF-001 candidate `0254a5aa`와 RF-020 독립 PASS 없음; CI_RED은 actual detached read-only 재현 PASS이나 별도 peer-session receipt가 없어 `PEER_NOT_ASSERTED`; RF-013은 소유/계약 경계로 `BLOCKED / REWORK_REQUIRED`.
-- CI: `gh run list --commit a0493b60` exit 0, hosted runs 0건; integration exact-SHA CI는 `UNKNOWN` (CURRENT의 `fa233811` Shared/Reporting FAIL, Design/T4 진행 중 관측 외 이번 회차 직접 확정 없음).
+- CHANGED_PATHS: source rework `6b0681df` reverts the two RF-001 paths; this HANDOFF only thereafter.
+- TEST_NORMAL: RF-020 selection `pytest -q -p no:cacheprovider tests/test_p15_b_commander_monitor_boundaries.py tests/test_p15_b_commander_monitor_pure_parity.py tests/test_p163_monitor_contract_freeze.py tests/test_work_monitor_scope_accounting.py` — exit 1, 122 passed/1 failed. `verify_ui_structure()` after revert — exit 1; unexpected set is external six only (`HANDOFF_B.md`, commander/monitor 4, `test_p156_p157_role_contracts.py`), no RF-001 sanitation paths.
+- TEST_OPTIMIZED: same RF-020 selection under `python -O` — exit 1, 122 passed/1 failed; same `verify_ui_structure()` under `python -O` — exit 1, same external six only.
+- PEER_VERDICT: `verification/claude/` 대기 RF 0건; reverted RF-001에 peer request 없음; RF-020 독립 PASS 없음; CI_RED은 actual detached read-only 재현 PASS이나 peer receipt 없어 `PEER_NOT_ASSERTED`; RF-013은 소유/계약 경계로 `BLOCKED / REWORK_REQUIRED`.
+- CI: integration `29637622ebe136ae237cd3aa2337334e713736f4` exact hosted CI 이번 회차 `NOT_RUN`; CI_RED hosted exact SHA `NOT_RUN`.
 - PUSH_VERIFIED: pending non-force push and remote requery.
-- GPT_ACTION_REQUIRED: (1) RF-001 `0254a5aa`의 brief sanitation owner move를 별도 Claude read-only peer 검증 대상으로 승인/큐잉하고, RF-080 patchnotes 공동 기록 방식을 판정한다. (2) CI_RED `a0493b60`은 pinned 접근 및 exact normal/-O 재현 완료 상태에서 peer receipt·hosted CI/admission 여부를 판정한다. (3) RF-013 소유권 분리와 RF-001 broad p153의 기존 28 contract failures를 각각 원소유 기준으로 판정한다. (4) Cloud 밖 구 B worktree·프로세스 종료 증거는 여전히 필요하다.
+- GPT_ACTION_REQUIRED: (1) RF-001 소유 두 경로도 frozen B-stage inventory에 admission할 수 있는지, 또는 새 source work를 금지할지 판정한다; 현재 B는 안전상 revert됨. (2) RF-020 30/30 KEEP의 외부 소비자/공유 UI inventory 6경로 계약을 원소유 기준으로 판정한다. (3) CI_RED peer receipt·hosted CI/admission 여부와 RF-013 소유권 분리를 계속 판정한다. (4) Cloud 밖 구 B worktree·프로세스 종료 증거는 여전히 필요하다.
 
 > 이 파일의 HANDOFF 기록 커밋은 코드 후보 SHA와 별개다. push 후 원격 HEAD를 다시 조회한 정확한 END_REMOTE_SHA와 PUSH_VERIFIED 결과는 종료 보고에 기록한다.
