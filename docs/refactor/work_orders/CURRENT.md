@@ -82,6 +82,14 @@
 - **새 B 증거:** B RF-001 sanitation 후보 `0254a5aa`는 frozen B-stage inventory 차단으로 `6b0681df`에서 **revert**. RF-020 CSV 30/30 KEEP, focused normal/-O 각 122 PASS/1 FAIL(외부 UI inventory 6경로). 두 RF **독립 PASS 없음**. B는 같은 CI/역사 allowlist 재진단을 중단하고 원소유 코드 경계에서 계약을 유지하는 새 최소 구현 또는 30파일 외부 소비자 parity를 계속한다.
 - **hosted CI 직접 재조회:** integration `29637622` Actions **Scripts 1 SUCCESS / Shared·Reporting/Web·Design Guard·T4 4 FAILURE** (5개 모두 completed). 정확한 SHA `29637622`의 CI RED이며 다른 SHA에 대한 판정으로 재사용 금지.
 
+## 2026-10-24 02:19 KST 지팀장 실측·차단 해소 판정
+
+- **실측 원격:** integration `d11ab08f` (본 점검의 RF 증거 반영 후), A `bcd3c8d6` / sched-12 (신규 소스 없음), B `744c6e8c` / RUN `B-20261023T171720Z` (stage 독립 peer 수행, 신규 B 소스 없음).
+- **RF-013 stage `7e06e979` 독립 peer:** B detached read-only pure normal/-O **41/41 PASS**, direct consumer 9파일 + RF-074 inventory normal/-O **153 PASS/1 FAIL**. 이 증거는 A의 16 consumer 파일 985/1 전수 범위를 대체하지 않는다. 1 FAIL은 `test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`의 **read_models 기존 33파일 고정 목록 대비 신규 9파일** 충돌(지팀장 GitHub 양쪽 디렉터리 실측: 33→42). **RF-074 오라클 수정·allowlist 확장 승인하지 않음**. 9개 신규 파일이 역사 고정 구조에 부합하도록 소스 배치 대안 및 기존 33개 owner 재사용 가능성을 A가 분석·제안한다(코드/테스트 오라클 임의 변경 금지). 새 후보가 없으면 B는 동일 41·153/1 반복하지 않는다. stage/source admission **BLOCKED**, RF-013 DONE 아님.
+- **RF-018 / RF-020 지팀장 독립 정적 검증 완료:** GitHub Contents API 재귀로 BASE↔integration↔A/B 해당 브랜치 경로·blob SHA 대조. RF-018 Strategist **47/47 동일**, RF-020 Monitor **30/30 동일**, 경로 추가/삭제 0. 각 RF 원본에 증거 반영. **KEEP_VERIFIED 후보로 진전**했으나 normal/-O 및 반대편 독립 peer가 아직 없어 DONE 아님. A는 RF-018 소유·소비자 회귀 normal/-O를 제출하고 B는 RF-020 회귀 명령·exit 및 소비자 경계를 제출; A가 RF-020을, B가 RF-018을 각각 별도 read-only peer 검증.
+- **B RF-001:** GPT가 승인한 sanitation 2경로 개선을 **기존 B 브랜치에서 신규 코드 SHA로 재적용**하고 monkeypatch/예외/빈값 parity normal/-O·patchnotes를 먼저 확보. 역사 frozen B-stage inventory는 별도 트랙으로 분리하고 오라클 수정 금지. 단순 HANDOFF만 갱신하는 회차를 진전으로 취급하지 않는다.
+- **hosted CI 직접 확인:** integration `2170066e` 5개 Actions 완료, Scripts **1 SUCCESS**, Shared·Reporting/Web·Design Guard·T4 **4 FAILURE**. stage `7e06e979` hosted Actions **0건**. 본 문서/증거 업데이트 exact SHA CI **UNKNOWN**. CI_RED `a0493b60` 별도 peer/exact CI 미충족, 통합 금지. RF DONE **0/93**; main·실거래·안전 가드·CI 오라클 불변.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
