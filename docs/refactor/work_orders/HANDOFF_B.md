@@ -4,26 +4,27 @@
 
 ## 마지막 실행
 
-- RUN_ID: B-20261023T171720Z
+- RUN_ID: B-20261023T182320Z
 - ROLE: Codex B
-- STATUS: STAGE_RF013_PEER_BLOCKED_BY_RF074_INVENTORY / GPT_ACTION_REQUIRED
-- START_INTEGRATION_SHA: `2170066ea2b133eb984080a0ed519b2b24a02d72`
+- STATUS: RF001_SOURCE_CANDIDATE_PUSHED / RF020_CONSUMER_EVIDENCE_READY / RF018_CI_RED_SEPARATED / GPT_ACTION_REQUIRED
+- START_INTEGRATION_SHA: `19c0b1135f5cf8353ba11a1056e21ad56cb32132`
 - WORK_BRANCH: `work/p15-b-operator-structure-20261022`
-- START_REMOTE_SHA: `f2e0a7040dfea7d552ad0fe0c28985051f6ccc9b`
-- CODE_CANDIDATE_SHA: `NONE` (`0254a5aa35e10b8bbbc76845f9bcb54c546a8132` RF-001 후보는 frozen B-stage inventory 불일치로 `6b0681df4bc66b20cea0fcf23432c67210f5da52`에서 non-force revert; 유효 B 코드 후보는 기존 `a3d60e37332f4c45f8bfa7685bbc59c076d22d3e`)
+- START_REMOTE_SHA: `744c6e8ce04535d6ee5ccacf224b8335f60e450d`
+- CODE_CANDIDATE_SHA: `8bde643dffe0312e4be2301e5f93298149a7f99e` (RF-001 source only; `0254a5aa`의 승인된 two-path sanitation ownership을 `6b0681df` revert 뒤 non-force reapply). Patchnote record commit: `16ed53e4f063c93bdeb09f353d7e96d51b6db8d8`.
 - HANDOFF_RECORD_COMMIT: pending local commit; END_REMOTE_SHA는 push 뒤 종료 보고에서 재조회한다.
 - RF_RESULTS:
-  - RF-001: `REWORK_APPLIED / VERIFY_PENDING`; GPT의 최신 판정은 `0254a5aa` 2경로 sanitation move를 RF-001 소유 개선으로 인정하되 historical B-stage inventory 실패와 분리한다. 이번 회차는 GPT 승인 stage RF-013 peer가 최우선이라 B source 재적용은 `NOT_RUN`; 기존 revert `6b0681df` 유지.
-  - RF-020: `VERIFY_ADVANCED / BLOCKED_BY_SHARED_CONTRACT`; CSV 소유 30파일은 BASE `63182ab2`와 현재 B HEAD blob 모두 KEEP(30/30), BASE→HEAD 및 integration→HEAD monitor diff 0. 외부 소비자 import는 graphs, exit_policy/monitor_exit, reporter, reporting, tests에 존재하며 수정하지 않았다. focused boundary/parity는 이전 normal/-O 113 passed; 이번 전수 contract selection은 normal/-O 각각 122 passed/1 failed (공유 UI inventory 외부 6경로).
-  - BRANCH_CLEANUP: `VERIFY_PENDING`; 구 ref 없음, 보존 태그 `archive/p15-20261022/b-operator-historical` = `70843da4ac237c667b41c831a9aad9051626844f`, 소비 열린 PR 0건. Cloud 밖 worktree·프로세스는 `UNKNOWN`.
+  - RF-001: `SOURCE_CANDIDATE_PUSHED / PEER_PENDING`; 정확히 `apps/operator_ui/data_access_brief.py`와 `apps/operator_ui/data_access_brief_sanitation.py`만 source commit에서 변경했다. public facade가 sanitation owner helper에 facade를 넘겨 dynamic monkeypatch, `None`/blank/list limit/`ValueError` 계약을 유지한다. patchnotes JSON/MD를 동시 갱신했다. frozen B-stage inventory는 개발 차단으로 재사용하지 않았고, peer/hosted CI PASS는 주장하지 않는다.
+  - RF-020: `CONSUMER_EVIDENCE_READY / CLAUDE_PEER_REQUEST_PENDING`; blob 동일성 재검사는 하지 않았다. 외부 소비자 5파일 normal/-O 각각 221 passed, exit 0. 정규 queue/CURRENT는 변경하지 않았으므로 Claude 독립 peer receipt는 아직 없다.
+  - RF-018: `READ_ONLY_PEER_EVIDENCE / CI_RED_SEPARATED`; integration `19c0b113` detached read-only worktree에서 selected strategist/role consumer set을 normal/-O 각각 391 passed/2 failed로 재현했다. 두 실패는 strategist behavior가 아니라 `B_RF93_CI_REPAIR_FILES`의 B-stage composed inventory에 integration 문서/queue 경로가 없는 CI_RED이다. 따라서 KEEP/47/47을 REMOTE_PEER_PASS나 integration PASS로 승격하지 않는다.
+  - BRANCH_CLEANUP: `VERIFY_PENDING`; 구 ref 없음, 보존 태그 `archive/p15-20261022/b-operator-historical` = `70843da4ac237c667b41c831a9aad9051626844f`, 소비 열린 PR 0건. 이번 detached read-only worktree 제거는 git worktree가 non-working-tree 상태라고 거부하여 Cloud 밖 worktree/프로세스 종료 증거는 `VERIFY_PENDING`.
   - CI_RED: `READ_ONLY_REPRO_PASS / CI_PENDING`; pinned `613a945d`·`6849bed4`는 local `cat-file`=commit 유지, exact `a0493b6035b390a1691371364b1e4ba3ec50aea9` detached normal/-O exit 0의 기존 재현 유지. 최신 지시대로 이미 해소된 history 오류를 반복 진단하지 않음; peer receipt/hosted exact-SHA CI 없음.
   - RF-013_STAGE_PEER: `BLOCKED_BY_RF074_FROZEN_INVENTORY`; GPT stage `stage/p15-rf013-activation-20261024@7e06e979f854b323eb70eaf63e6d252e27be6965`를 detached read-only worktree에서 검증했다. parent `e39052ed`, exact 17경로(소스·테스트 15 + patchnotes 2), `git diff --check` exit 0, patch_notes JSON entry_count/entries 356/356. pure 2파일 normal/-O 각각 41 passed/exit 0. 4 wrapper의 직접 import consumer 9파일 + RF-074 inventory test는 normal/-O 각각 153 passed/1 failed; 유일 실패는 `test_target_tree_discipline_and_no_forbidden_surface`가 신규 read_models 9파일을 historical registry에 미등재로 거부함. stage·오라클·B source 수정 없음.
-- CHANGED_PATHS: 이 HANDOFF만 (stage/B source 변경 없음).
-- TEST_NORMAL: stage exact `7e06e979` detached read-only: `pytest -q -p no:cacheprovider tests/test_p15_a_reporter_pure_boundaries.py tests/test_p15_a_reporter_pure_parity.py` — exit 0, 41 passed. 직접 import consumer 9파일 + `tests/test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface` — exit 1, 153 passed/1 failed (read_models inventory). RF-001/RF-020 이번 회차 신규 실행 `NOT_RUN`.
-- TEST_OPTIMIZED: stage exact 동일 pure 2파일 under `python -O` — exit 0, 41 passed. 동일 직접 import consumer 9파일 + RF-074 inventory test under `python -O` — exit 1, 153 passed/1 failed (same read_models inventory).
-- PEER_VERDICT: `verification/claude/` 정규 큐 0건; stage `7e06e979`은 exact read-only functional reproduction `SOURCE_STATIC_PASS`이나 RF-074 frozen inventory failure로 `BLOCKED` (PEER_PASS/통합 PASS 아님). RF-001/RF-020 독립 PASS 없음; CI_RED은 `PEER_NOT_ASSERTED`.
-- CI: stage `7e06e979` hosted Actions 0건 `NOT_RUN`; integration `2170066e` exact hosted CI 이번 회차 `NOT_RUN`; CI_RED hosted exact SHA `NOT_RUN`.
+- CHANGED_PATHS: RF-001 source 2 (`apps/operator_ui/data_access_brief.py`, `apps/operator_ui/data_access_brief_sanitation.py`); patchnotes 2 (`docs/trading_agent_patch_notes_detailed_update/patch_notes.{json,md}`); this HANDOFF.
+- TEST_NORMAL: RF-001 direct facade parity script (`None`/blank/list limit/`ValueError`/dynamic monkeypatch against parent facade) — exit 0. RF-020 `pytest -q -p no:cacheprovider tests/test_intraday_monitor_signals.py tests/test_monitor_candidate_cascade.py tests/test_monitor_directional_edge.py tests/test_monitor_exit_guard.py tests/test_monitor_exit_price_freshness.py` — exit 0, 221 passed. RF-018 detached integration selected strategist/role tests — exit 1, 391 passed/2 inventory failures. RF-013 stage `7e06e979` rerun intentionally `NOT_RUN` (RF-074 historical inventory block unchanged).
+- TEST_OPTIMIZED: RF-001 identical direct parity script under `python -O` — exit 0. RF-020 identical five external consumer tests under `python -O` — exit 0, 221 passed. RF-018 detached integration selected strategist/role tests under `python -O` — exit 1, 391 passed/2 same inventory failures. RF-013 `NOT_RUN`.
+- PEER_VERDICT: `verification/claude/` normal queue was not modified. RF-001 `PEER_PENDING`; RF-020 `CLAUDE_PEER_REQUEST_PENDING` (evidence ready, no receipt); RF-018 `READ_ONLY_REPRO_WITH_CI_RED`, not REMOTE_PEER_PASS; RF-013 stays `BLOCKED_BY_RF074_FROZEN_INVENTORY`; CI_RED `PEER_NOT_ASSERTED`.
+- CI: RF-001 hosted exact-SHA CI `NOT_RUN`; RF-020 hosted CI `NOT_RUN`; RF-018 inventory CI_RED separate; CI_RED `a0493b60` hosted exact CI still `NOT_RUN`/not admissible.
 - PUSH_VERIFIED: pending non-force push and remote requery.
-- GPT_ACTION_REQUIRED: (1) stage `7e06e979`의 RF-074 registry에 exact 신규 read_models 9파일을 허용할지(오라클 owner/범위 승인) 판정한다; B는 오라클 미수정. (2) CURRENT가 언급한 16 consumer test files의 정확한 목록을 제공하거나, B가 실제 direct import 9파일로 실행한 153/1 증거 범위를 수용할지 판정한다. (3) stage peer BLOCKED 해소 뒤 hosted CI/admission을 결정한다. (4) RF-001 재적용 peer/patchnotes 및 RF-020 30/30 KEEP 소비자 계약, CI_RED peer receipt, Cloud 밖 B cleanup 증거는 별도 대기다.
+- GPT_ACTION_REQUIRED: (1) RF-001 `8bde643d`를 Claude independent peer queue에 배정하고 exact-SHA CI/admission 여부를 결정한다. (2) RF-020 five-consumer 221/221 normal/-O evidence에 대한 Claude peer receipt를 요청/기록한다. (3) RF-018의 2 inventory failures/57 collection-error family를 CI_RED으로만 처리할지 판정한다; RF-018 PASS로 합산하지 않는다. (4) RF-013 RF-074 exact nine-file inventory 허용 여부와 CI_RED `a0493b60` peer/exact CI는 기존 대기 그대로다.
 
 > 이 파일의 HANDOFF 기록 커밋은 코드 후보 SHA와 별개다. push 후 원격 HEAD를 다시 조회한 정확한 END_REMOTE_SHA와 PUSH_VERIFIED 결과는 종료 보고에 기록한다.
