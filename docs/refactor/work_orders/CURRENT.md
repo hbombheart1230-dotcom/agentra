@@ -98,6 +98,15 @@
 - **B 즉시 개발:** 기존 RF-001 2경로 sanitation 후보 `0254a5aa`의 안전한 재적용/동등 구현, facade monkeypatch·빈값·예외 parity normal/-O와 UI patchnotes를 **새 소스 SHA**로 제출. RF-020은 30/30 KEEP 기능·소비자 계약 증거를 제출하고 A peer 요청. CI_RED는 별도 peer·hosted exact CI 전 통합 금지. 기존 B-stage 실패만으로 B의 RF-001 개발을 되돌리지 말 것.
 - **exact-SHA hosted CI 직접 확인:** `dc475680` 2026-10-23 17:21 UTC push Actions 5개 **completed: Scripts SUCCESS 1, Reporting/Web·Design Guard·Shared·T4 FAILURE 4**. 이는 새 CI 수리 성공이 아니다. 이번 RF-018 문서 커밋의 exact CI **UNKNOWN**. RF DONE **0/93**, 신규 소스 통합 **0**. `main`/실거래/안전 가드/CI 오라클 변경 없음.
 
+## 2026-10-24 04:05 KST — 지팀장 실행: RF-001 코드 접수·RF-020 독립 peer 판정
+
+- **원격 HEAD 실측:** 점검 시작 integration `19c0b1135f5cf8353ba11a1056e21ad56cb32132`, A `d5967afddea79c2da8df0b9e1b2d383b68f429c0` / `sched-15`, B `362ad570caf16a365c6199b27028d84039067c18` / `B-20261023T182320Z`. GitHub 비교 B `744c6e8c..362ad570`: **RF-001 소스 2경로 + UI patchnotes 2경로 + HANDOFF 1경로**. A 신규 소스 없음; A `29339105..d5967afd`는 HANDOFF 1경로.
+- **직접 처리 RF-001:** B 소스 후보 `8bde643dffe0312e4be2301e5f93298149a7f99e`의 2파일 diff·원문을 지팀장이 독립 정적 검토. 기존 public facade signature와 dynamic monkeypatch 호출 유지, sanitation helper 분리 확인. B SELF parity script normal/-O 각 exit 0, patchnotes `16ed53e4` 확인. **RF-001 원본에 코드 SHA·수락 테스트·Claude A peer 배정 기록 완료**. A는 정확한 B 후보(소스 `8bde643d`, patchnotes 포함 `16ed53e4`)를 read-only 검증하고 소비자·public import·예외·경계 normal/-O pytest 증거를 제출. `re` facade 전역 제거의 외부 의존성도 확인. **PEER_PENDING / NOT_ADMITTED**; historical B-stage UI inventory FAIL로 소스 개발을 되돌리지 않는다.
+- **직접 처리 RF-020:** A `sched-15` 별도 read-only peer에서 B `16ed53e4`의 Monitor 참조 19파일 normal/-O 각각 **528 PASS / exit 0**, Monitor 30/30 blob KEEP 확인. 역사 inventory 파일 포함 시 528 PASS/64 FAIL, integration 기준에서도 같은 역사 테스트 55 FAIL. 지팀장이 **RF-020 원본에 범위 한정 peer 증거 수용**. 전체 RF/CI PASS는 아님; 같은 19파일 반복 금지, B는 파일별 KEEP 근거·외부 계약 보강.
+- **RF-018:** B read-only Strategist 소비자 normal/-O 각 **391 PASS/2 FAIL**(historical B-stage inventory); A self 1152 PASS/2 FAIL/57 ERROR와 분리 기록. 47/47 KEEP 정적 증거 유지, 전체 peer PASS/CI PASS는 아님. 동일 실패 반복 대신 CI_RED 별도 해결 대상으로 분류.
+- **RF-013 구조 결정:** stage `7e06e979` 신규 9 owner와 RF-074 frozen 33-file inventory는 실제로 충돌. A의 5가지 구조 대안 중 oracle 불변·원소유 RF 보존·유의미한 분할을 동시에 만족하는 후보는 없음. **이번 회차 RF-074 oracle 수정/허용 목록 확대 승인하지 않음.** 9파일 stage는 BLOCKED로 보존하고 RF-001/020/018 검증을 우선; A/B 동일 41·153/1 재실행 금지. 필요시 추후 별도 명시 승인으로만 RF-074 역사 계약 범위 재설계.
+- **hosted CI 직접 재조회:** integration `19c0b113` 2026-10-23 18:04 UTC 5 runs 모두 completed: Scripts **1 SUCCESS**, Shared/Reporting-Web/Design Guard/T4 **4 FAILURE**. 새로운 문서 커밋 exact-SHA CI는 아직 UNKNOWN. CI_RED `a0493b60` peer·exact CI 부재, 통합 금지. **RF DONE 0/93, 신규 소스 통합 0**. main·실거래·안전 가드·CI oracle 불변.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
