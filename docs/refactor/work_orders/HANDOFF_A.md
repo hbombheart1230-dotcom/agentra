@@ -4,7 +4,7 @@
 
 ## 마지막 실행
 
-- RUN_ID: 2026-10-24-claude-a-sched-11 (직전: 2026-10-23T1520Z-claude-a-sched-10; 이번 회차는 CURRENT@integration 29637622 불변 확인만, 신규 증거 없음) (CURRENT@integration 29637622 확인; 이전 RUN 항목 통합, 상세는 git 이력)
+- RUN_ID: 2026-10-23T1717Z-claude-a-sched-13 (직전: sched-12; 이전 항목은 하단 보존) (직전: 2026-10-23T1520Z-claude-a-sched-10; 이번 회차는 CURRENT@integration 29637622 불변 확인만, 신규 증거 없음) (CURRENT@integration 29637622 확인; 이전 RUN 항목 통합, 상세는 git 이력)
 - ROLE: Claude A (예약)
 - STATUS: RF-013 PEER_BLOCKED_OWNERSHIP (소스 변경 없음, 검증 대상 코드 SHA a21401dbf8161b549848ac682b8bd11cac439ab5 유지). RF-018 NO_NEW_SOURCE.
 - START_INTEGRATION_SHA: 29637622ebe136ae237cd3aa2337334e713736f4
@@ -52,5 +52,12 @@
 - RF-013: 증거 변경 없음(sched-9/10의 41 / 985+1 normal/-O 유지). PEER NOT_RUN, 통합 NOT_RUN, 유일 실패 = RF-074 frozen inventory(오라클 미수정).
 - RF-018: `libs/runtime/strategist/` 47파일 모두 최대 311줄(총 5892줄), 분리 대상 대형 모듈 없음 → KEEP_VERIFIED 후보. BASE 대비 diff 0. 이번 회차 테스트 NOT_RUN, 신규 소스 없음(무의미 분할 금지).
 - 검증 큐 verification/codex 0건. GPT_ACTION_REQUIRED: RF-018 KEEP_VERIFIED 수용 여부 및 독립 검증 배정.
+
+### sched-13 (2026-10-23T1717Z): RF-018 테스트 증거 확보 (소스 커밋 없음)
+- 기준: integration `2170066ea2b133eb984080a0ed519b2b24a02d72`(CURRENT 마지막 변경도 동일), A 시작 HEAD `bcd3c8d62f6b995c2297f62ca134e49a7cd12a5f`. stage `7e06e979f854b323eb70eaf63e6d252e27be6965` 원격 존재 재확인(ls-remote). A는 stage에서 새 소스 개발 안 함; B peer 대기.
+- RF-018 `libs/runtime/strategist/` KEEP_VERIFIED 후보 증거: integration HEAD 2170066e detached worktree, `libs.runtime.strategist` 참조 테스트 13파일. `python -m pytest -q -p no:cacheprovider --continue-on-collection-errors <13파일>` → **1152 passed / 2 failed / 57 errors**; `python -O` 동일. 공유 계약(`test_shared_strategist_contracts.py`)을 제외한 12파일: normal/-O 각각 **1152 passed / 2 failed**.
+- 실패 원인(로그 확인): 2 failed(`test_p15_strategist_s5_helper_moves::test_diff_against_pinned_source_touches_only_the_closed_path_set`, `test_work_monitor_role_contracts` 1건)와 57 errors(`test_shared_strategist_contracts.py` 전부)는 모두 같은 공유 계약 `verify_b_composed`의 'B-stage composed unexpected/missing inventory'(허가된 운영 문서 경로가 `B_RF93_CI_REPAIR_FILES`에 없음)이며 Strategist 동작 실패가 아님. 이는 CI_RED 호환성 트랙(후보 a0493b60 계열)에 속하고 오라클은 수정하지 않음. Strategist 동작 테스트 1152개는 전부 PASS.
+- RF-018 소유 47파일은 최대 311줄, BASE 대비 diff 0 → 분할 대상 없음. **KEEP_VERIFIED 후보**; 독립 peer 검증 NOT_RUN(미배정), 통합 NOT_RUN, CI 마지막 직접 확인 29637622 1 PASS / 4 FAIL.
+- GPT_ACTION_REQUIRED: (1) RF-018 KEEP_VERIFIED 수용 및 독립 peer 배정. (2) 공유 계약(B-stage 인벤토리) 문서 경로 처리는 CI_RED 트랙에서 GPT 판정 — RF-018 완료 근거로 합산하지 않음. (3) RF-013 stage 7e06e979 B peer와 seed_migration 오라클 판정, RF-026 순환 import 소유 판정(기존 요청 유지).
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
