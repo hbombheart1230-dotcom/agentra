@@ -28,3 +28,14 @@
 - **판정:** 수리 커밋은 hosted exact-SHA normal/optimized CI 및 별도 독립 CLI verdict 이전까지 `VERIFY_PENDING`. CI 실패가 남으면 수정 완료 선언 금지; 기존 오라클/실거래 경계 변경 금지.
 
 - **후속 실패 세부:** 최초 수리 SHA `419128e0`의 T4/Design Guard는 문서 검사 32번째 assertion에서 `docs/refactor/README.md`의 역사적 `DOC_FREEZE` 표식 누락을 발견. 해당 README에 비활성 provenance를 복원했고 CI 수리 경계에 정확한 경로 한 개만 추가. 기존 오라클/워크플로 수정 없음.
+
+## 2026-10-23 09:54 UTC 지팀장 exact-SHA CI 재검증
+
+- **실제 조회:** `integration/p1.5@138bdaedc050cc6cdf00983e9f92b9b60ddd5531` (Shared job checkout 로그의 SHA 일치). 5개 워크플로의 최신 시도 job 완료 상태 직접 확인: **1 PASS / 4 FAIL**. `main`/런타임 소스 변경 없음. 이 증거는 CI 재실행이 아니라 기존 hosted run의 job/log 재검증이다.
+- **PASS:** [Scripts Contract #39920091454](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39920091454) (Linux/Windows success).
+- **FAIL inventory:** [Shared Candidate #39920091422](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39920091422) (4개 contracts job fail): `scripts/refactor/shared_strategist_contracts.py:94`의 historical B-stage inventory에서 `docs/ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/plan/STATUS.md`, `docs/refactor/plan/verification/{claude,codex}/.gitkeep` 4경로 unexpected. [Reporting/Web #39920091470](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39920091470) (reporting-compat fail, web-build PASS): 같은 inventory mismatch, 592 passed / 2 failed / 1 deselected.
+- **FAIL peer gate:** [Design Guard #39920091404](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39920091404), [T4 #39920091423](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39920091423): CI 단계의 `AssertionError: read-only peer-review gate missing`. 해당 기존 검사에서 D01/D02의 `claude -p`/`codex exec` 직접 상대 CLI 요구를 기대하나, 최신 CURRENT는 별도 read-only 독립 검증 세션으로 변경됨. 기존 안전한 독립 검증 게이트 보존을 전제로 역사 계약과 현재 계약의 범위를 분리해야 한다.
+- **수리 후보:** Claude `a0493b60` (handoff `59e34204`)는 Codex B 보고상 pinned historical object `613a945d...`의 `apps/operator_ui/data_access_core.py` 부재로 독립 normal setup ERROR, `python -O NOT_RUN`; **PEER_PENDING / NOT_ADMITTED**. 먼저 정확한 역사 객체 확보·검증 가능성 재확인, 이후 read-only normal/-O 검증. 오라클 삭제/느슨한 allowlist/무단 source admission 금지.
+- **A 경계 가드(별개):** Claude A `HANDOFF_A.md` 추가 후 179 passed / 7 failed(normal/-O); 보고된 7건은 historical pinned source 대비 신규 handoff 문서 경로에 따른 scope check. **HANDOFF 기록용 branch HEAD와 코드 후보 SHA를 분리**하여 테스트하고 원본 oracle은 수정하지 않는다. RF-013/018은 그 밖의 2290 passed / 1 failed / 58 errors(normal/-O), 독립 PASS 없음으로 BLOCKED.
+
+**다음 게이트:** 지팀장 별도 승인 없이는 CI/가드 코드를 고치지 않는다. Codex B는 CI_RED 후보의 정확한 history 핀과 독립 검증 실패를 증거로 확정; Claude A는 source-only exact SHA 테스트를 별도로 기록; GPT는 계약 호환성의 최소 수정 경계를 검토하고 독립 PASS 전 integration 통합 금지.
