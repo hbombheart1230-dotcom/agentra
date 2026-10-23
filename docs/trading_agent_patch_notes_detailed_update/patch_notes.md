@@ -4242,3 +4242,13 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.
 
 ### 2026-10-23 — CI follow-up: historical README provenance (no extra entry)
 - Hosted T4/Design Guard가 요구하는 과거 `DOC_FREEZE` 표식이 문서 안내 README에서 빠진 것을 확인해 비활성 역사 기록으로 복원. 기존 테스트·워크플로를 변경하지 않음.
+
+## 2026-10-23 — P15_AUTHOR_ORIGIN_VERIFICATION_QUEUE_20261023
+**Stage:** DOCS_ONLY / DESIGN_BRANCH / NOT_ACTIVATED · **Tags:** PROCESS · REFACTOR · TEST · SAFETY
+
+- 93개 RF는 동일 원본 파일 하나로 `pending/` → `verification/claude/` 또는 `verification/codex/` → `done/` 상태 전이. 검증 폴더는 **원 구현자 기준**이며 상대가 독립 검증한다. 현재 RF 검증 대기 0, DONE 0이며 실제 구현/테스트/peer 결과를 새로 주장하지 않는다.
+- 개발 완료 인수인계에 BASE/구현 SHA, branch/PR, 정확한 변경 범위·동등성, normal/`python -O` 명령·exit, UI patchnotes JSON/MD 및 HOLD 필수. 리뷰어는 동일 RF에 정확한 검증 SHA, 테스트·exit/NOT_RUN, PASS/REWORK/BLOCKED와 이력을 기록. 이동 시 하위 폴더 깊이 변화에 따른 상대 링크 보정.
+- 로컬 상대 CLI 원칙을 유지하되 클라우드에서 별도 모델/서비스의 실제 독립 SHA 검증을 입증한 경우에만 `REMOTE_PEER_PASS` 후보로 보고; GPT 최종 수용/정확한 통합 SHA CI 전에는 DONE 불가.
+- 2시간 예약 vs GitHub 이벤트는 미결정이며 트리거·GitHub Actions·API 키·`main` 변경을 활성화하지 않았다. 이 변경은 검증 큐 정책을 위한 별도 설계 브랜치의 문서 수정이다.
+
+Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/STATUS.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
