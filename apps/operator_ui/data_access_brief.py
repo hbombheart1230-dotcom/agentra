@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-import sys as _brief_sys
+import re
 from typing import Any, Dict, List
 
 from libs.llm.json_response import parse_llm_json_response, required_key_metadata
-from apps.operator_ui.data_access_brief_sanitation import (
-    _clean_brief_list_r3_impl,
-    _clean_brief_text_r3_impl,
-)
 
 
 OPERATOR_BRIEF_REQUIRED_KEYS = [
@@ -24,11 +20,26 @@ OPERATOR_BRIEF_REQUIRED_KEYS = [
 
 
 def clean_brief_text(v: Any) -> str:
-    return _clean_brief_text_r3_impl(v, facade=_brief_sys.modules[__name__])
+    s = str(v or "").strip()
+    if not s:
+        return ""
+    s = re.sub(r"^\s*From\s+[A-Za-z0-9_]+\s*-\s*", "", s)
+    s = re.sub(r"^\s*[A-Za-z0-9_]+_hint\s*-\s*", "", s)
+    s = re.sub(r"\s+", " ", s).strip(" -")
+    return s
 
 
 def clean_brief_list(v: Any, *, limit: int) -> List[str]:
-    return _clean_brief_list_r3_impl(v, limit=limit, facade=_brief_sys.modules[__name__])
+    if not isinstance(v, list):
+        return []
+    out: List[str] = []
+    for item in v:
+        cleaned = clean_brief_text(item)
+        if cleaned:
+            out.append(cleaned)
+        if len(out) >= max(1, int(limit)):
+            break
+    return out
 
 
 def operator_brief_parse_meta(raw: Any, parsed: Dict[str, Any] | None) -> Dict[str, Any]:
