@@ -7,6 +7,30 @@ Owner never imports the facade.
 """
 from __future__ import annotations
 
+import re
+
+
+def _clean_brief_text_r3_impl(value, *, facade):
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    text = re.sub(r"^\s*From\s+[A-Za-z0-9_]+\s*-\s*", "", text)
+    text = re.sub(r"^\s*[A-Za-z0-9_]+_hint\s*-\s*", "", text)
+    return re.sub(r"\s+", " ", text).strip(" -")
+
+
+def _clean_brief_list_r3_impl(value, *, limit, facade):
+    if not isinstance(value, list):
+        return []
+    result = []
+    for item in value:
+        cleaned = facade.clean_brief_text(item)
+        if cleaned:
+            result.append(cleaned)
+        if len(result) >= max(1, int(limit)):
+            break
+    return result
+
 
 def _normalize_operator_brief_payload_r3_impl(brief, detail, *, llm_response_artifact, facade):
     out = dict(brief or {})
