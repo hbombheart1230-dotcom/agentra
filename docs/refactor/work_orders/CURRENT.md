@@ -2,6 +2,13 @@
 
 > **유일한 활성 배정판:** 매 실행 원격 `integration/p1.5` CURRENT부터 확인. [D00](../../ENGINEERING_DELIVERY_POLICY.md) · [D01 Codex](../../../AGENTS.md) · [D02 Claude](../../../CLAUDE.md). 불변 문서는 재독하지 않는다.
 
+## 2026-10-24 07:23 KST — CI_RED 후보 안전 판정 및 정확한 CI 확인 (우선 적용)
+
+- **직접 원격 확인:** integration `af0caf776833efbc738bca9b88655980c78a45d7`; A `94a12b71f4f34821dd5b621bac4fc3cbf8e1331e` / `sched-21` (소스 불변), B `1e8faa4848ef1f1950ba8af9572ab73a062b9642` / `B-20261023T185820Z` (코드 후보 `8bde643d` 불변). 새로운 독립 최종 PASS나 소스 통합 없음.
+- **hosted exact-SHA CI 직접 확인:** integration `af0caf776833efbc738bca9b88655980c78a45d7`의 5개 push Actions는 모두 완료, **Scripts 1 SUCCESS / Shared·Reporting/Web·Design Guard·T4 4 FAILURE**. Shared/Reporting은 `verify_b_composed()`가 현재 운영 문서 **9경로**(D00, STATUS, verification 양쪽 .gitkeep, RF-001/013/018/020/026)를 역사적 B-stage 목록 밖으로 판정; Design Guard/T4는 `read-only peer-review gate missing` 및 폐지된 opposite-CLI 문자열을 요구. 이는 CI_RED이며 정상/optimized 전체 PASS 아님. GitHub Actions runs `40021830240/243/287/233/387`.
+- **지팀장 신규 직접 판정 — CI_RED `a0493b6035b390a1691371364b1e4ba3ec50aea9` = REJECTED_AS_SUBMITTED / BLOCKED:** GitHub exact commit diff는 `scripts/refactor/shared_strategist_contracts.py` **1파일**에 historical B-stage 허용 문서 **4경로**를 추가한다. 이는 **CI 오라클 자체 변경**이며 현재 사용자/D00 승인 범위 밖이다. 후보는 현 integration 실패 9경로 전체를 해소하지도 못한다. 별도 peer와 exact candidate hosted CI도 **NOT_RUN(각 Actions 0건)**. **이 SHA를 통합하거나 allowlist를 더 확장하지 말 것.** B는 이 후보를 반복 테스트하지 않고 RF-001/020 소유 소스·계약 작업을 계속한다. 역사 오라클의 의미 보존된 수리는 사용자 명시 승인 전 **SAFETY_HOLD**.
+- **RF 게이트 유지:** RF-001 sanitation 2경로 `PASS_SCOPED`·33/33 owner-map 정적 검증은 인정하되 core side-effect 및 full RF 독립 PASS·exact integration normal/-O·hosted GREEN 부족으로 선별 통합 **BLOCKED**. RF-013 stage `7e06e979`는 RF-074 frozen inventory 1 FAIL로 **BLOCKED**, 9 owner와 RF-030/035 소비자 원소유 분리 유지. RF-020 KEEP 범위 한정, RF-021 안전 HOLD. 이번 지팀장 runtime test `NOT_RUN`, source merge `NOT_RUN`, **DONE 0/93**. 다음 A/B 회차는 이미 통과한 테스트를 반복하지 말고 RF-001 19 divergent owner의 공개 IO/부작용 경계와 새 독립 검증 가능한 소스 증거를 제출한다.
+
 ## 현재 배정 (CURRENT가 유일한 배정 권한)
 
 - 전체 ROOT→LEAF 3985파일/298폴더, RF 93개. [STATUS](../plan/STATUS.md) · [단독 파일 소유권](../plan/FILE_COVERAGE_63182ab2.csv) · [기존 P1.5.0~11 최종 12개 합격 기준](../plan/criteria/).
