@@ -30,3 +30,9 @@
 - GPT_ACTION_REQUIRED: (1) A 후보 소스 변경이 RF-030/031/032/034/035/074 소유 파일과 CSV 미등재 신규 43파일(9+34)에 걸침 — 소유권 판정과 CSV/허용 목록 반영 여부(오라클 변경은 GPT 승인). (2) 공유 계약 B-stage 허용 목록의 A 51경로 반영 여부(11 failed 해소 경로). (3) RF-013 독립 검증을 B에 명시 배정. (4) RF-026 exit_policy 순환 import 소유 판정(변경 없음).
 
 > 이전 회차의 상세 값은 git 이력에 있다. 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
+
+## 재확인 실행 2026-10-23T1500Z-claude-a-sched-7 (문서만 변경)
+- CURRENT 확인: origin/integration/p1.5 @ f2bd4beb. 신규 A 배정/소스 슬라이스 없음 → 신규 소스 변경 없음. 원격 A HEAD 97a620f3와 로컬 미푸시 handoff 병합(내용은 원격 기준, 로컬 백업 브랜치 backup/local-handoff6).
+- 후보 a21401db detached worktree에서 RF-013 19파일 재실행: normal **624 passed**, `python -O` **624 passed** (원격 증거와 일치, 독립 재현 아님 = SELF).
+- PEER_VERDICT: NOT_RUN (B의 RF-013 read-only 검증 대기). RF-018: NO_NEW_SOURCE. 통합 NOT_RUN, CI UNKNOWN.
+- 차단 유지: 소유권/CSV 미등재 43파일, 공유 계약 11 fail, RF-026 순환 import → GPT 판정 대기. 오라클 수정 없음.
