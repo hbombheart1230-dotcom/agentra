@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 353,
+  "entry_count": 354,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9317,6 +9317,35 @@
       "sources": [
         "docs/ENGINEERING_DELIVERY_POLICY.md",
         "docs/refactor/work_orders/CURRENT.md",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_UNIFIED_ROLE_NEUTRAL_PEER_QUEUE_20261023",
+      "title": "Align Claude and Codex with a single asynchronous peer-queue protocol",
+      "stage": "DOCS_ONLY / PEER_PENDING / CI_RED_REMAINS",
+      "types": [
+        "PROCESS",
+        "DOCS",
+        "SAFETY",
+        "TEST"
+      ],
+      "status": "current",
+      "summary": "One common local/cloud developer process for Claude and Codex: self-test and exact-SHA handoff, separate independent opposite session verification; retire direct local nested CLI. Existing safety, integration and CI gates remain unchanged.",
+      "details": [
+        "CURRENT now explicitly assigns the Codex cloud peer check of CI_RED candidate 59e34204 in the existing troubleshooting document; no new RF.",
+        "Normal RF verifier remains the isolated integrator only after independent PASS and CAS; CI-oracle and PR31/4-HEAD admission stay GPT-gated.",
+        "Four permanent branches and one previously approved, temporary Claude cloud candidate branch are distinguished. Cloud routine connector inheritance remains NOT_VERIFIED.",
+        "No changes to runtime, execution, trading guards, test oracle or Actions workflows. Tests and hosted CI for this documentation edit are NOT_RUN; integration@87647c98 was CI_RED."
+      ],
+      "impact": "Remove contradictory local/cloud CLI obligations and equalize assignment, review, safe integration and reporting behavior for both developers.",
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
       ]

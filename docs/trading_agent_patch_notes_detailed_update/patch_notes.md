@@ -4278,3 +4278,12 @@ Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/
 - 예외 임시 브랜치에는 사전 승인, 소유자·기준 SHA·사용처·종료 조건 필요. 정리 전 소비자·local worktree·실행 프로세스·미통합 코드·태그 SHA 확인; lease 기반 안전 삭제만 허용. `main`·실거래·안전·CI 오라클·스케줄 변경 없음. 문서 개정 자체 때문에 수동 전체 CI를 따로 요구하지 않음.
 
 Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.json`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.md`.
+
+## 2026-10-23 — P15_UNIFIED_ROLE_NEUTRAL_PEER_QUEUE_20261023
+**Stage:** DOCS_ONLY / PEER_PENDING / CI_RED_REMAINS · **Tags:** PROCESS · DOCS · SAFETY · TEST
+
+- CURRENT/D00/D01/D02 활성 규칙 통일: Claude/Codex 모두 배정 RF 전체 개발·normal/`python -O`·patchnotes·SHA 인수인계 → **다음 상대 독립 세션** 읽기 전용 검증. 로컬 직접 상대 CLI 호출/티키타카 의무 폐지(과거 기록은 역사로만 유지).
+- 정상 RF 독립 PASS 후 검증과 분리된 단일 writer/CAS 통합 및 exact-SHA CI 유지. CI 오라클·PR31/4-HEAD·안전/공유 계약은 GPT 별도 승인. GPT만 DONE.
+- CI_RED 예외 후보 `59e34204`는 Codex 클라우드 검증 대기이며 새 RF 없음. 4개 상시 브랜치 + 기존 승인 임시 브랜치 1개; 클라우드 Connector 승계·Codex 예약 상태 미검증. 기존 integration@87647c98 CI_RED, 이 문서 변경의 테스트·hosted CI NOT_RUN.
+
+Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.json`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.md`.
