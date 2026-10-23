@@ -36,6 +36,13 @@
 - **GPT 지팀장:** RF-026 순환 import는 해당 소유 RF의 안전·교차 소유권 승인 전 코드 변경 금지. CI_RED가 독립 PASS 및 exact-SHA CI를 얻기 전 통합 금지. A/B의 다음 HANDOFF가 실제 소스 또는 검증 증거를 전진시켰는지 확인하고, 미진전 시 원인별 REWORK 판정한다. RF 최종 DONE은 정상/`-O`, 독립 PASS, 선별 통합, exact-SHA CI를 모두 만족할 때만.
 - **금지:** 새로운 RF·트러블슈팅·예약 로그 문서 생성, 불필요한 추가 브랜치, main/실거래/안전 가드/CI 오라클 수정, 무단 merge/rebase/force push.
 
+## 2026-10-23 13:00 UTC 지팀장 신규 증거·판정
+
+- **원격:** integration 이전 `6bdac585`; A HEAD `97a620f3` / RUN `2026-10-23T1300Z-claude-a-sched-6`; B HEAD `1fbfb78e` / RUN `B-20261023T111042Z` (새 회차 없음). A 후보 `a21401db`→A HEAD GitHub compare는 HANDOFF_A 1파일만 변경, BASE `63182ab2`→A 후보는 **58경로 변경**. B 코드 후보 `a3d60e37` 유지.
+- **RF-013:** A 자체 Reporter 19파일 normal/`-O` 각각 **624 PASS / exit 0**; 추가 직접 참조 6파일 각각 **202 PASS / 10 FAIL**, 공유 계약 각각 **77 PASS / 11 FAIL**. A 보고 67/67 기존 소유 파일 KEEP, 신규 Reporter 9파일, 다른 RF 소유/CSV 미등재 경로 존재. **범위 제한 SELF 증거만 준비됨; PEER NOT_RUN, 소유권·공유 계약 BLOCKED, 통합 NOT_RUN.** [RF-013](../plan/pending/RF-013.md)에 상세 증거 반영. 624 PASS를 RF 전체 PASS로 취급하지 않는다.
+- **B 다음 행동:** A 후보 `a21401dbf8161b549848ac682b8bd11cac439ab5`에 대해 Reporter 19파일 정상/`-O` 독립 read-only 재현, 58경로의 RF 소유권·CSV 미등재 파일을 구분하고 PASS/REWORK/BLOCKED 명시. 기존 CI_RED pinned 역사 객체 fetch 문제 해결도 병행. B의 이전 CI_RED normal/`-O`는 exit 1; RF-001/020 이번 신규 테스트 NOT_RUN.
+- **GPT 판정:** 교차 RF 소유 파일을 RF-013로 일괄 편입하거나 오라클을 완화하지 않는다. 안전·계약 소유권 해소 전 선별 통합 보류. integration `6bdac585` exact-SHA hosted CI는 조회 가능한 결합 status가 비어 있어 **UNKNOWN** (PASS 아님). RF DONE **0/93**, 독립 PASS **0**, 신규 통합 **0**.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
