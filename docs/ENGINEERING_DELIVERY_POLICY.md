@@ -3,6 +3,14 @@
 > **읽기 최적화 (2026-10-22):** [한글 CURRENT](refactor/work_orders/CURRENT.md)가 유일한 활성 작업 상황판이고, 실제 작업·검증·완료 체크는 [plan/pending](refactor/plan/pending/) → [plan/verification](refactor/plan/verification/) → [plan/done](refactor/plan/done/)에, 개발자 실행·독립검증 규칙은 [D01 Codex](../AGENTS.md) / [D02 Claude](../CLAUDE.md)에 있다. 본 D00은 **GPT 및 전 팀에 적용하는 안전·공통 개발 원칙**으로 새 세션 또는 개정·충돌·안전 판단 때 확인한다. 같은 세션에서 이미 읽었고 파일 SHA/내용이 그대로면 전문 재독하지 않는다. 아래 오래된 날짜별 BATCH 지시는 새 작업권한이 아니다.
 
  
+## 2026-10-23 ACTIVE — 예약 실행 증거 저장·지팀장 수거 계약
+
+- **기존 파일 재사용, 신규 RUN_A/RUN_B 문서 금지.** A(Claude)는 CURRENT 배정 `docs/refactor/plan/pending/RF-013.md`, `RF-018.md` 등 **자신의 기존 RF 원본**의 `개발 인수인계` 섹션에, B(Codex)는 `RF-001.md`, `RF-020.md` 등의 같은 섹션에 회차별 유의미한 결과를 기록한다. 작성자가 자기 개발 브랜치에 기록·비강제 push하고 원격 SHA를 재조회한다. 공유 `integration/p1.5` RF/verification 큐의 상태 이동은 GPT 또는 승인된 단일 publisher만 한다. 기존 A/B 브랜치에 RF 원본이 없다면 임의 신규 RF를 만들지 않고 해당 브랜치의 기존 허가된 체크포인트/인수인계 파일을 우선 활용하며, 그마저 없으면 `HANDOFF_NOT_PERSISTED`를 예약 실행 결과에 명시하고 GPT에 공용 RF 반영을 요청한다.
+- **일회성 작업:** CURRENT가 링크한 기존 `docs/refactor/plan/troubleshooting/open/*.md`에 작업별 증거와 `GPT_ACTION_REQUIRED`를 기록하도록 요청한다. 공용 문서에 대한 직접 동시 쓰기·소유권 침범은 금지하며, A/B는 자기 개발 브랜치의 허가된 기존 기록 또는 종료 보고로 인계하고 GPT가 최신 HEAD 확인 후 해당 기존 troubleshooting 파일에 반영한다.
+- **기록 형식(기존 파일에 짧은 섹션 추가):** `RUN_ID(UTC/역할), ROLE, START_INTEGRATION_SHA, WORK_BRANCH, START_REMOTE_SHA, END_REMOTE_SHA, RF_RESULTS(각 배정 RF/일회성 작업 상태와 후보 SHA), CHANGED_PATHS, TEST_NORMAL(명령/exit/PASS 수 또는 NOT_RUN), TEST_OPTIMIZED(명령/exit/PASS 수 또는 NOT_RUN), PEER_VERDICT(독립 검증 SHA·PASS/REWORK/BLOCKED/PEER_PENDING/NOT_RUN), CI(정확한 SHA·URL·상태 또는 NOT_RUN), PUSH_VERIFIED(YES/NO), GPT_ACTION_REQUIRED(결정 종류·대상·근거 SHA·최소 다음 행동 또는 NONE)`. `NO_WORK`·`BLOCKED`도 대상별 원인을 기록한다. 실행되지 않은 테스트는 NOT_RUN, 조회 불가 사실은 UNKNOWN, 자체 PASS는 PEER_PASS가 아니다.
+- **지팀장 예약 수거:** 매 회차 최신 `integration/p1.5` 전체 SHA와 그 SHA의 CURRENT를 먼저 읽고, A/B 원격 브랜치 HEAD·해당 기존 RF 인수인계·기존 troubleshooting·verification 큐를 비교한다. `GPT_ACTION_REQUIRED`를 우선 추출해 정확한 코드 SHA·normal/-O·독립 상대 세션 verdict·CI를 대조하고 `ACCEPT / REWORK / BLOCKED / NO_CHANGE`로 판단한다. 실제 신규 증거가 있을 때만 CURRENT의 배정·상태·다음 행동을 최소 PATCH하고 필요한 기존 RF/STATUS/troubleshooting·UI patchnotes JSON/MD를 동기화한다. CURRENT는 상세 실행 로그가 아니라 **검증된 현재 판단과 다음 행동만** 담는다.
+- **원격 영속성 경계:** GitHub에 저장되지 않은 예약 결과는 `HANDOFF_NOT_PERSISTED`이고 지팀장 판정은 NOT_VERIFIED다. GitHub 저장과 예약 알림은 별개다. 중복/빈 커밋, 새 문서·Issue 댓글, 검증되지 않은 DONE/CI PASS를 금지한다. 쓰기 직전 integration 최신 HEAD를 재확인하고 충돌 시 BLOCKED로 중단한다. 이 규칙은 D01/D02의 예약 종료 보고 항목을 구체화하며 기존 소유권·독립 검증·통합·안전 게이트를 변경하지 않는다.
+
 ## 2026-10-23 ACTIVE — 단일 실행 규칙 (로컬·클라우드·A/B 공통)
 
 **CURRENT가 단일 활성 배정 정본이며 이 절이 유일한 실행 절차다.** Claude와 Codex는 담당 RF와 상대 검증 큐만 다르다. 모든 환경에서 **개발 → 자체 normal/`python -O`/패치노트 → SHA 원격 보존 → 작성자 검증 큐 인수인계 → 다음 상대 독립 세션 검증 → PASS 후 별도 제한 통합/CI → GPT DONE**을 따른다.
