@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 352,
+  "entry_count": 353,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9292,6 +9292,33 @@
         "AGENTS.md",
         "CLAUDE.md",
         "docs/refactor/work_orders/CURRENT.md"
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_FOUR_PERMANENT_BRANCH_POLICY_20261023",
+      "title": "Adopt four permanent Agentra branches and archive retired stage refs",
+      "stage": "DOCS_ONLY / BRANCH_HYGIENE / VERIFIED_REMOTE_REFS",
+      "types": [
+        "PROCESS",
+        "REFACTOR",
+        "SAFETY",
+        "DOCS"
+      ],
+      "status": "current",
+      "summary": "Keep main, integration/p1.5, Claude A and Codex B as the four permanent branches; avoid per-RF branch proliferation, and preserve retired stage commits at exact-SHA archive tags.",
+      "details": [
+        "GitHub branches verified at four; design/p15-peer-verification-queue-20261023 is fully integrated and removed.",
+        "Retired stage SHA d73be191 and earlier stage 8b98fe74 are preserved by two matching archive/p15-20261023 tags; their source-admission, normal/-O, independent peer and CI acceptance are still pending.",
+        "Routine docs/current changes may be committed directly to integration/p1.5 with SHA-checked nonforce writes; exceptional temporary branches need authorized scope, ownership, consumer audit and prompt cleanup.",
+        "No new source integration, main promotion, real trading/guard changes, CI oracle modification or scheduler activation; required hosted CI still applies to source integration."
+      ],
+      "impact": "Documents four-branch lifecycle and verified archive provenance; no application source, trading authority or CI gate modified.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
       ]
     }
   ]

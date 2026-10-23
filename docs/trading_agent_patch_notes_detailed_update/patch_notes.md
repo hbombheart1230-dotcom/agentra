@@ -4269,3 +4269,12 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/STATUS.md`,
 - 과거 `d73be191` 4-HEAD·PR31 후보는 기존 GPT 소스 수용 게이트에 유지. `main`·거래 안전·실거래·CI 오라클 변경 없음. 별도 개발 브랜치나 수동 full CI 없이 운영 문서만 직접 개정했으며 이벤트 예약 설정은 활성화하지 않음.
 
 Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/work_orders/CURRENT.md`.
+
+## 2026-10-23 — P15_FOUR_PERMANENT_BRANCH_POLICY_20261023
+**Stage:** DOCS_ONLY / BRANCH_HYGIENE / VERIFIED_REMOTE_REFS · **Tags:** PROCESS · REFACTOR · SAFETY · DOCS
+
+- 사용자 승인: **상시 브랜치 4개**(`main`, `integration/p1.5`, Claude A `work/p15-a-reporter-pure-20261021`, Codex B `work/p15-b-operator-structure-20261022`). RF별 신규 브랜치 및 문서용 설계 브랜치를 반복 생성하지 않는다. 일상 CURRENT/운영 문서 변경은 안전한 HEAD 확인 후 integration 직반영.
+- GitHub 실제 원격 7→6→**4개** 확인. 설계 브랜치는 완전 통합 후 삭제. `d73be191` 및 `8b98fe74` stage는 각각 `archive/p15-20261023/stage-p15-four-branch-consolidation-20261023` 및 `archive/p15-20261023/stage-p15-large-first-a-composition-20261022` 정확한 태그 SHA로 보존. **보존 태그는 구현 승인/CI PASS가 아니며 기존 source admission 게이트 유지**.
+- 예외 임시 브랜치에는 사전 승인, 소유자·기준 SHA·사용처·종료 조건 필요. 정리 전 소비자·local worktree·실행 프로세스·미통합 코드·태그 SHA 확인; lease 기반 안전 삭제만 허용. `main`·실거래·안전·CI 오라클·스케줄 변경 없음. 문서 개정 자체 때문에 수동 전체 CI를 따로 요구하지 않음.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/work_orders/CURRENT.md`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.json`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.md`.

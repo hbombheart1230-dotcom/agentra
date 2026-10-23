@@ -11,6 +11,13 @@
 
 **Old instructions below are preserved as dated history and are NOT active assignment authority when conflicting with CURRENT.** Use only safety and process invariants that remain compatible.
 
+## 2026-10-23 ACTIVE BRANCH HYGIENE — FOUR PERMANENT REFS (USER APPROVED)
+
+- **상시 원격 브랜치는 정확히 4개를 목표로 한다:** `main` (릴리스, 사용자 승인 전 변경 금지), `integration/p1.5` (CURRENT·RF 검증 및 최종 통합의 단일 정본), `work/p15-a-reporter-pure-20261021` (Claude A 재사용 작업 브랜치), `work/p15-b-operator-structure-20261022` (Codex B 재사용 작업 브랜치). 새 RF마다 브랜치를 만들지 않는다. 일반 CURRENT/D00/D01/D02·운영 문서 수정은 소유권·정확한 HEAD·비강제 업데이트를 확인한 뒤 `integration/p1.5`에 직접 반영할 수 있다. 문서만 변경했다고 수동 전체 CI를 별도 요청하지 않는다. 다만 자동 GitHub Actions가 실행되면 결과를 있는 그대로 기록하며 실패/미실행을 PASS로 간주하지 않는다.
+- **실제 정리 확인 (2026-10-23):** 원격 7 → 6 (설계 브랜치 삭제) → **4개**로 축소. `design/p15-peer-verification-queue-20261023@6e2e0acb`는 integration에 완전 포함되어 삭제됐다. `stage/p15-four-branch-consolidation-20261023@d73be191`, `stage/p15-large-first-a-composition-20261022@8b98fe74`는 각각 `archive/p15-20261023/stage-p15-four-branch-consolidation-20261023` → `d73be1916b7a8adaea5e4419092e808cc5d9588d`, `archive/p15-20261023/stage-p15-large-first-a-composition-20261022` → `8b98fe7452c4816d22c61a4809c368b4e99c3163` **원격 태그 SHA 검증 후 브랜치 제거**. 이전 보존 태그는 손대지 않는다. 이 보존은 **source admission/peer/normal·-O/CI PASS가 아니며**, 후보 `d73be191` 수용·역사적 PR31 보존의 기존 게이트는 여전히 활성이다. SHA와 태그는 임의 이동·삭제·재생성 금지.
+- **신규 branch 예외:** 독립 worktree 격리·실험·합성 후보가 실질적으로 필요한 경우에만 **사용자의 사전 승인 또는 CURRENT의 명시적 지팀장 승인**으로 임시 브랜치를 만들고, 생성 즉시 Owner·목적·기준 SHA·정리 조건을 기존 CURRENT/해당 RF에 기록한다. 임시 브랜치가 상시 5번째 브랜치로 남아서는 안 된다. 완전히 검증·수용했거나 정확한 SHA를 읽기 가능한 보존 태그에 고정한 후 **소비자(PR/CI/예약 작업/로컬 worktree/프로세스), 미통합 변경, 최신 HEAD**를 확인해야만 제거할 수 있다. 태그 보존만으로 미검증 코드를 승인·누락 처리하지 않는다.
+- **삭제·통합 안전:** 삭제 대상은 원격 SHA와 정확히 일치하는 조건부 삭제(lease)만 허용. 불일치·dirty/활성 worktree·프로세스·PR/CI 소비자·검증 보존 실패 시 중단하고 `BLOCKED`를 보고한다. 무차별 prune, reset, force push, main 변경, 거래 안전 조건 완화, 일괄 PR 병합 금지. `integration/p1.5`에 대한 실제 RF 소스 통합은 D00의 상대 독립 검증·단일 writer/CAS·정확한 SHA CI 게이트를 그대로 통과해야 한다.
+
 ## 2026-10-23 ACTIVE RF HANDOFF / INDEPENDENT VERIFICATION QUEUE
 
 - **Canonical lifecycle:** `docs/refactor/plan/pending/RF-xxx.md` (구현 대기) → `docs/refactor/plan/verification/claude/RF-xxx.md` 또는 `verification/codex/` (구현자 self 검증 후 상대 독립 검증 대기) → `docs/refactor/plan/done/RF-xxx.md` (독립 검증자의 제한된 통합과 정확한 SHA CI PASS 후 GPT DONE 판정). `verification/claude`는 **Claude가 구현했고 Codex가 검증할 작업**, `verification/codex`는 **Codex가 구현했고 Claude가 검증할 작업**이다. **93개의 고유 RF 파일은 항상 정확히 한 상태 폴더에만 존재**해야 한다. 검증 대기는 DONE이 아니다.
