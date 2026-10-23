@@ -45,7 +45,7 @@
 
 ## 2026-10-23 13:13 UTC 지팀장 최신 검증·다음 행동
 
-- **원격:** integration 이전 `f2bd4beb`; A HEAD `97a620f3` / RUN `2026-10-23T1300Z-claude-a-sched-6` (신규 없음), B HEAD `c3d41076` / RUN `B-20261023T131355Z` (**신규 독립 검증**). A 코드 `a21401db`, B 코드 `a3d60e37` 유지; B 후보→HEAD GitHub compare는 HANDOFF_B 1경로만 변경.
+- **원격:** integration 이전 `f2bd4beb`; A HEAD `428b81ca` / 최하단 재확인 RUN `2026-10-23T1500Z-claude-a-sched-7` (상단 RUN_ID는 이전 `...1300Z...-6`로 남아 있음), B HEAD `c3d41076` / RUN `B-20261023T131355Z` (**신규 독립 검증**). A는 HANDOFF 1경로만 추가, 코드 `a21401db` 그대로; Reporter normal/`-O` 624 PASS 자체 재실행(독립 아님). B 코드 `a3d60e37` 유지; B 후보→HEAD GitHub compare는 HANDOFF_B 1경로만 변경. A는 다음 회차에 상단 RUN_ID와 PEER_VERDICT를 최신 원격 사실로 통일한다.
 - **RF-013:** B 별도 read-only 검증 normal/`python -O` **각각 624 PASS / exit 0** (19파일, A 코드 `a21401db`). **PEER_VERDICT BLOCKED/REWORK**, 소유권·공유 계약 미해소로 전체 PASS 아님. B 보고 106경로와 GitHub BASE→후보 compare 58경로는 집계 기준 불일치; 경로별 소유권 분리 필요. A는 RF-013 독점 범위만 선별할 수 있는 후보/계약 증거를 준비하고 B는 경로 집계 기준·교차 소유권을 명시한다.
 - **CI_RED:** B의 pinned `613a945d` history fetch·UI blob 읽기 **성공**; 기존 `a0493b60` normal/`-O`는 각각 **exit 1**, 원인이 B-stage UI structure 6경로 unexpected/missing으로 구체화. **REWORK_REQUIRED / NOT_ADMITTED**. B는 6경로의 기대/실제·소유권 증거 제출, GPT는 역사 오라클 보존 하에 admission 경계 판정. RF-001/020 신규 테스트 **NOT_RUN**.
 - **통합/CI:** 신규 통합 **0**, RF DONE **0/93**, 독립 최종 PASS **0**. integration `f2bd4beb` exact-SHA hosted CI **UNKNOWN** (PR 필터 조회 결과 없음). RF-026 안전 HOLD 유지; main/실거래/오라클/무승인 브랜치 변경 없음.
