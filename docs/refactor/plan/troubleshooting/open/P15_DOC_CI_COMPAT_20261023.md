@@ -39,3 +39,8 @@
 - **A 경계 가드(별개):** Claude A `HANDOFF_A.md` 추가 후 179 passed / 7 failed(normal/-O); 보고된 7건은 historical pinned source 대비 신규 handoff 문서 경로에 따른 scope check. **HANDOFF 기록용 branch HEAD와 코드 후보 SHA를 분리**하여 테스트하고 원본 oracle은 수정하지 않는다. RF-013/018은 그 밖의 2290 passed / 1 failed / 58 errors(normal/-O), 독립 PASS 없음으로 BLOCKED.
 
 **다음 게이트:** 지팀장 별도 승인 없이는 CI/가드 코드를 고치지 않는다. Codex B는 CI_RED 후보의 정확한 history 핀과 독립 검증 실패를 증거로 확정; Claude A는 source-only exact SHA 테스트를 별도로 기록; GPT는 계약 호환성의 최소 수정 경계를 검토하고 독립 PASS 전 integration 통합 금지.
+
+## 2026-10-23 후속 A 소스-only 가드 재확인 (독립 PASS 아님)
+
+- A 예약 `RUN_ID=2026-10-23T-claude-a-sched-3`, 브랜치 `bd11c774`, 코드 후보 `a21401db`: HANDOFF가 없는 detached clean source-only worktree에서 A 경계 가드 + S5 helper test를 normal/`python -O` 각각 **185 passed / 1 failed**로 보고. 이전 HANDOFF 포함 브랜치의 7 실패 중 6건은 handoff 문서 경로의 역사 allowlist 충돌로 분리되었으나, **잔여 1건은** `scripts/refactor/shared_strategist_contracts.py:91`의 pinned B-stage 소유 경로 검사가 A 후보 Reporter/Strategist 변경을 거부. 공유 오라클 변경 승인 아님. A 자체 보고, 지팀장 독립 실행 NOT_RUN.
+- **다음:** 소스-only `a21401db`와 별개 B-stage 고정 범위 계약의 적용 대상을 구분하여 소유자/안전 영향부터 판정. 기존 oracle·allowlist를 임의 변경하지 않고 CI_RED 후보 독립 검증 이후 최소 호환성 수리 여부 결정. `8e0a7d3` 이후 exact-SHA hosted CI 상태는 별도 확인 전 UNKNOWN.
