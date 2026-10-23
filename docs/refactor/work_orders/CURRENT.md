@@ -20,9 +20,18 @@
 5. **브랜치·안전:** 상시 `main`/`integration/p1.5`/A/B 4개. **integration과 A/B 개발 브랜치의 분기는 정상이며 개발 BLOCKED 사유가 아니다.** RF·D00/D01/D02는 integration에서 읽고 코드 작업은 해당 A/B 브랜치에서 수행한다(기존 A/B 브랜치에 RF 문서가 없어도 integration RF를 참고). 로컬 개발 커밋이 **원격 같은 A/B 브랜치 HEAD**의 자손이면 정상 fast-forward push할 수 있다. 동일 브랜치의 원격 HEAD가 변경돼 fast-forward 불가하거나 소유권/계약이 충돌할 때만 BLOCKED로 보고한다. 실행 전 checkout/BASE/원격 HEAD/권한 확인. 강제 push, 무단 merge/rebase, 자동 신규 브랜치 금지. 위 `claude/...`는 기존 승인된 단일 임시 예외이며 검증·보존·소비자 확인 후 정리. `main`, 실거래, Supervisor/Executor/Step5C/UEF, CI 오라클 무승인 수정 금지.
 6. **예약:** Claude 2시간 루틴 활성 **보고만 있음**(GitHub Connector/Repository 자동 승계 미검증). Codex 예약은 실제 실행 증거 확인 전 미확정. GitHub 이벤트 자동 트리거는 NOT_ENABLED. 예약은 배정권이 아니며 매 실행 GitHub 인증/checkout 및 (RF, 역할, SHA) 중복을 확인한다.
 
+## 2026-10-23 지팀장 수거 판정 — 사용자 전달 A/B 예약 종료 보고
+
+- **출처 구분:** Claude A 07:39 UTC 및 Codex B 종료 보고는 사용자 전달 내용이며 GitHub RF에 영속화되지 않았다. 원격 A `a21401db`, B `a3d60e37` HEAD를 재조회해 일치 확인. 이번 예약 실행의 신규 push 없음; `HANDOFF_NOT_PERSISTED`. 이를 독립 PASS 또는 RF 완료로 인정하지 않는다.
+- **A RF-013/RF-018:** `BLOCKED / KEEP_VERIFIED_NOT_ACCEPTED`. A 보고의 normal/-O 각각 2290 passed, 1 failed, 58 errors는 전부 PASS가 아니다. RF-026 소유 `libs/runtime/exit_policy.py` 순환 import 주장에 대해 담당 RF-026에서 원인/재현/영향 분리 확인 필요. A는 전체 integration merge/rebase 없이 기존 RF 범위의 테스트·동등성 증거를 보강하고, 변경 없는 파일을 DONE 처리하지 않는다.
+- **B RF-001:** `VERIFY_PENDING` (소유권·구조 계약 미완). **RF-020:** `NO_WORK / VERIFY_PENDING` (브랜치 diff 없음만으로 완료 불가). 브랜치 정리 `VERIFY_PENDING`. 두 정규 검증 큐 0건, DONE 0건 유지.
+- **CI_RED 예외:** 후보 `a0493b60` / 인수인계 `59e34204`는 B 보고상 독립 검증 normal setup 오류, `python -O NOT_RUN`; `PEER_PENDING / REWORK_REQUIRED`. GPT 별도 CI 오라클 승인 전 통합 금지.
+- **CI 관측(사용자 전달, 재확인 필요):** `9ad952a0`에서 Scripts PASS, Shared Candidate FAIL, Reporting/Web FAIL, Reporting Regression/Design Guard 및 T4는 RUNNING으로 보고됨. 종료 상태 및 필수 전체 PASS 미확인.
+- **지팀장 다음 행동:** A/B는 신규 RF·별도 RUN 문서 생성 없이 기존 브랜치의 허가된 인수인계 위치를 확정할 때까지 종료 보고에 `HANDOFF_NOT_PERSISTED` 명시. GPT는 RF-026 소유권/순환 import 재현, CI_RED 독립 검증 실패 근거, RF-001 소유권 계약을 우선 판정한다. CURRENT는 요약 판단만 기록하며 세부 RF 인수인계/상태 이동은 증거·단일 writer 확인 후 수행한다.
+
 ## 현재 검증 상태와 역사
 
-- 마지막 확인된 integration HEAD `87647c98`: 5개 hosted Actions 중 **1 PASS / 4 FAIL**. 과거 `b768b2b3`의 필수 6/6 PASS는 별도 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
+- 이전 확인 integration HEAD `87647c98`: 5개 hosted Actions 중 **1 PASS / 4 FAIL**. 과거 `b768b2b3`의 필수 6/6 PASS는 별도 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
 - 합성 `d73be191`과 PR31은 normal/`python -O`·독립검증·exact-SHA hosted CI 이전에 통합 금지.
 - 역사적 `DOC-A` · `DOC_FREEZE` · `P1.5.2 OPEN` · `P1.5.3`, Issue #20과 Issues #16–#19 CLOSED는 provenance. 구 BATCH/T00 재활성 및 불필요 Issue 댓글 금지.
 
