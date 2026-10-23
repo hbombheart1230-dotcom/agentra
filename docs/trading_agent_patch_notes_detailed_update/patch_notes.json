@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 349,
+  "entry_count": 350,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9210,6 +9210,30 @@
         "docs/refactor/work_orders/CURRENT.md",
         "docs/refactor/README.md",
         "docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md"
+      ],
+      "status": "current"
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_FOUR_BRANCH_COMPOSITE_POINTER_20261023",
+      "title": "Record the four-head consolidation candidate while preserving the six-check green integration branch",
+      "stage": "P1.5 CURRENT_ADMISSION_PENDING",
+      "types": [
+        "DOCS",
+        "TEST",
+        "SAFETY"
+      ],
+      "summary": "Latest A and B source, PR31 historical evidence and current integration governance were composed into a four-parent, 120-path isolated candidate; source admission and new exact-SHA CI are still pending.",
+      "details": [
+        "Four-parent candidate stage/p15-four-branch-consolidation-20261023@d73be191 includes integration b768b2b3, A a21401db, B a3d60e37 and stage 8b98fe74 lineage.",
+        "Current integration source stays unchanged and retains previous 6/6 hosted success; candidate has not been normal/-O, independently peer-tested, or hosted CI verified.",
+        "CURRENT was updated to distinguish green historical integration from unadmitted future source; no branch deletion and no main/production authority change."
+      ],
+      "impact": "Accurate developer starting pointer and explicit safety/CI admission blockers; no runtime code changed on integration.",
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/plan/troubleshooting/open/P15_SOURCE_ADMISSION.md",
+        "scripts/refactor/shared_strategist_contracts.py"
       ],
       "status": "current"
     }

@@ -4242,3 +4242,11 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.
 
 ### 2026-10-23 — CI follow-up: historical README provenance (no extra entry)
 - Hosted T4/Design Guard가 요구하는 과거 `DOC_FREEZE` 표식이 문서 안내 README에서 빠진 것을 확인해 비활성 역사 기록으로 복원. 기존 테스트·워크플로를 변경하지 않음.
+
+
+## 2026-10-23 — P15_FOUR_BRANCH_COMPOSITE_POINTER_20261023
+**Stage:** CURRENT_ADMISSION_PENDING / DOCS_ONLY
+
+- 4개 HEAD의 전체 Git DAG 부모를 가진 source/test 합성 후보 `d73be191` 생성: 현재 CI 6/6 녹색 `b768b2b3` + A `a21401db` + B `a3d60e37` + PR31 `8b98fe74`.
+- Candidate branch `stage/p15-four-branch-consolidation-20261023` 에 120 changed paths/통합 UI notes 370건. PR31 T00–T09는 CURRENT의 현재 RF93 지시를 대체하지 않는 역사적 자료로만 보존.
+- normal/-O, 독립 반대 CLI, 후보 hosted CI 0회. Integration 코드는 변경하지 않고 6/6 녹색 유지. `CURRENT`는 다음 소스 수용 게이트와 경고만 갱신. 원본 4 ref 보존, main/실거래 변경 없음.
