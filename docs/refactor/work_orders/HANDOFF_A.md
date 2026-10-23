@@ -133,3 +133,9 @@
 - CURRENT 지시: A는 새 B 증거가 생기면 그 범위만 peer. 대상 없어 테스트 재실행 안 함(sched-18에서 60/60 재현 완료). RF-013 stage `7e06e979` BLOCKED(RF-074 oracle 무수정), RF-018 신규 소스 없음, RF-021 export 변경은 안전 승인 전 수정 금지 준수.
 - PEER_VERDICT: NOT_RUN. CI: 조회 NOT_RUN/UNKNOWN. 상대 CLI 호출 없음(티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: RF-013 9파일 허용 vs 신규 파일 0 축소 결정; B의 core/19 divergent 파일 증거 제출 시 A peer.
+
+### sched-22 (2026-10-24): 신규 B 증거 없음 — 검증 대상 NOT_RUN (소스 변경 없음, 코드 SHA a21401db 유지)
+- 기준: CURRENT@integration `500b358e`(CI_RED `a0493b60` REJECTED_AS_SUBMITTED/BLOCKED, 9경로 오라클 변경 SAFETY_HOLD), A 시작 `94a12b71`, B `1e8faa48`(B-20261023T185820Z; 직전 대비 HANDOFF_B.md만 변경, 신규 소스·테스트 없음). 검증 큐 0건.
+- sched-20에서 B 최신 RF-001 증거(81 passed normal/-O) 재현 완료라 동일 테스트 재실행 안 함. RF-013 stage `7e06e979` BLOCKED(RF-074), RF-018 신규 소스 없음, `a0493b60` 통합·오라클 확장 안 함.
+- PEER_VERDICT: NOT_RUN. CI: UNKNOWN. 상대 CLI 호출 없음(티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: 변동 없음.
