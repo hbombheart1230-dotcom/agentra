@@ -26,3 +26,5 @@
 - **기존 실패:** `3fb24fe0` 5개 워크플로 최종 1 PASS / 4 FAIL. Shared/Reporting은 과거 B-stage 정확한 29경로 검사가 후속 120건 문서 변경을 source inventory로 오인. T4/Design Guard는 DOC_FREEZE/역사 provenance 표현 삭제로 실패.
 - **수리 범위:** B-stage 기존 29경로 인벤토리·실제 Owner 바이트/AST/ABI·부정 mutation 검증 유지. 녹색 고정 SHA의 역사적 인벤토리와 RF93 문서 스냅샷을 분리하여, 스냅샷 이후 정확히 명시한 CI 수리 파일 외 변경을 거부한다. 문서 provenance는 재활성 지시가 아닌 과거 기록으로 복원한다. UI patchnotes JSON/MD 동기화.
 - **판정:** 수리 커밋은 hosted exact-SHA normal/optimized CI 및 별도 독립 CLI verdict 이전까지 `VERIFY_PENDING`. CI 실패가 남으면 수정 완료 선언 금지; 기존 오라클/실거래 경계 변경 금지.
+
+- **후속 실패 세부:** 최초 수리 SHA `419128e0`의 T4/Design Guard는 문서 검사 32번째 assertion에서 `docs/refactor/README.md`의 역사적 `DOC_FREEZE` 표식 누락을 발견. 해당 README에 비활성 provenance를 복원했고 CI 수리 경계에 정확한 경로 한 개만 추가. 기존 오라클/워크플로 수정 없음.

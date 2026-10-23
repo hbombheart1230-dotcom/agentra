@@ -4239,3 +4239,6 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.
 - D01/D02/CURRENT에 역사적 DOC_FREEZE/Issue 경로 provenance를 비활성 기록으로 복원. 과거 배정 재활성화 금지.
 - User-facing patch_notes JSON/MD 동기화, 통합 실거래/브로커/안전권한 변경 없음.
 - Hosted exact-source CI 및 상대 CLI 독립 검증은 이 커밋 후 증거가 확보되기 전까지 **NOT_VERIFIED / BLOCKED**.
+
+### 2026-10-23 — CI follow-up: historical README provenance (no extra entry)
+- Hosted T4/Design Guard가 요구하는 과거 `DOC_FREEZE` 표식이 문서 안내 README에서 빠진 것을 확인해 비활성 역사 기록으로 복원. 기존 테스트·워크플로를 변경하지 않음.

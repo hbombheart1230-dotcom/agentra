@@ -839,6 +839,7 @@ B_RF93_DOCS_PIN = "3fb24fe01761bd8f68587ee48fd0014e807d0d8a"
 B_RF93_CI_REPAIR_FILES = frozenset({
     "scripts/refactor/shared_strategist_contracts.py",
     "AGENTS.md", "CLAUDE.md", "docs/refactor/work_orders/CURRENT.md",
+    "docs/refactor/README.md",
     "docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
