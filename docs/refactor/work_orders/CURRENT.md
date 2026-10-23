@@ -23,11 +23,11 @@
 ## 2026-10-23 09:54 UTC 지팀장 최신 수거 판정
 
 - **원격 확인:** integration `138bdaed` 기준 A `de6ae3e3` (RUN `2026-10-23T08:58Z-claude-a-sched-2`), B `d06190d9` (RUN `B-20261023T090903Z`). 두 HANDOFF는 실제 GitHub 커밋으로 영속화됨; 두 회차 모두 **신규 소스 코드 없음**. HANDOFF 본문에 `PUSH_VERIFIED: PENDING_AT_WRITE`가 남아 있으므로 커밋 존재는 직접 확인하되 종료 보고의 원격 재조회 확인은 별개다.
-- **A RF-013/018:** `BLOCKED / KEEP_VERIFIED_NOT_ACCEPTED`, 코드 후보 `a21401db`. normal/`python -O` 관련 2290 passed / 1 failed / 58 errors(Claude 보고; 독립 재실행 아님). HANDOFF 문서 추가 뒤 경계 가드 179 passed / 7 failed도 보고됨. **지시:** handoff HEAD와 소스 후보 SHA를 구분해 기존 oracle 변경 없이 후보 exact SHA에서 가드를 재확인. RF-026 소유 `libs/runtime/exit_policy.py` 순환 import 주장 별도 재현·소유자 판정. 독립 peer PASS 없음.
+- **A RF-013/018:** `BLOCKED / KEEP_VERIFIED_NOT_ACCEPTED`, 소스 후보 `a21401db`, 새 HANDOFF `bd11c774` (RUN `2026-10-23T-claude-a-sched-3`, 신규 소스 없음). A가 소스-only detached 후보에서 가드 normal/`python -O` 각각 **185 passed / 1 failed** 보고: HANDOFF 경로로 인한 기존 7 실패 중 6건은 분리, 남은 1건은 `shared_strategist_contracts.py:91`의 B-stage 고정 경로 계약과 A 변경 충돌. 기존 2290 passed / 1 failed / 58 errors는 해결되지 않음. 자체 보고이며 **독립 peer NOT_RUN**. **지시:** A는 공유 오라클 무단 수정 없이 후보 소유 경로/실패 근거 보강, 다음 HANDOFF에 정확한 UTC RUN_ID·normal/-O·push 확인 필드 기록. RF-026의 exit_policy ↔ monitor_exit 순환은 GitHub 소스 정적 확인 완료, BASE 런타임 재현은 A 보고이며 **RF-026 PENDING / SAFETY_HOLD**, GPT 소유권 경계 판정 전 소스 수정 금지.
 - **B RF-001:** `VERIFY_PENDING` (소유권·구조 계약 근거 필요); **RF-020:** `NO_WORK / VERIFY_PENDING` (전체 소유 파일 MOVE/KEEP/WRAPPER 증거와 테스트 없이 완료 불가). 기존 코드 후보 `a3d60e37`; 이번 회차 normal/-O `NOT_RUN`. 브랜치 정리 `VERIFY_PENDING`, 클라우드 외 worktree/process `UNKNOWN`.
 - **CI_RED:** 후보 `a0493b60`, handoff `59e34204`; B의 이전 read-only 검증은 pinned history `613a945d` 객체/경로 부재로 setup ERROR, optimized `NOT_RUN`. **PEER_PENDING / REWORK_REQUIRED**, 통합 금지. B는 정확한 history/object 검증과 normal/-O 독립 결과를 먼저 보강한다.
 - **hosted CI:** `138bdaed` 5개 workflow job/log 직접 확인 **1 PASS / 4 FAIL**. Shared/Reporting은 과거 B-stage 경로 인벤토리와 현재 문서 변경 충돌, Design Guard/T4는 `read-only peer-review gate missing`으로 실패. 상세 job/로그 근거는 [기존 CI 트러블슈팅](../plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md)에 기록. 오라클 약화·무단 수정 금지.
-- **결론:** 정규 검증 큐 0건, **RF DONE 0건**, CI_RED 통합 0건. 지팀장 다음 행동은 독립 검증/역사 핀 확보와 공유 계약 호환성의 안전한 최소 수리 경계 판정. 새 브랜치·RF·RUN 문서 생성 금지.
+- **결론:** 정규 검증 큐 0건, **RF DONE 0건**, CI_RED 통합 0건. B HANDOFF는 이전 회차 `d06190d9` 그대로(신규 테스트 NOT_RUN). **B 지시:** CI_RED 고정 history 객체/경로 확인 → 독립 normal/-O 재검증, RF-001 소유권 증거 보강; RF-020은 NO_WORK 유지. **GPT:** RF-026 교차 소유권·안전 영향과 A의 S5 고정 경로 계약 적용 범위 판정. 새 브랜치·RF·RUN 문서 생성 금지.
 
 ## 현재 검증 상태와 역사
 
