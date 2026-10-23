@@ -2,6 +2,7 @@
 
 **작업 입구:** [CURRENT](docs/refactor/work_orders/CURRENT.md)의 **이번 Claude 배정 RF 링크** → 해당 [RF 독립 작업 파일](docs/refactor/plan/pending/) → 원본 동결 구현 패킷. [전체 현황](docs/refactor/plan/STATUS.md), [P1.5.0~11 합격 기준](docs/refactor/plan/criteria/)은 필요할 때만 읽는다. 단계 번호는 순차 개발 명령이 아니다.
 
+- **로컬 예약 실행:** `C:\Users\홍훈\Agentra-P15\dev-a`에서 시작. 매번 최신 원격 CURRENT만 확인하고 **Claude 배정 RF 전부를 순회**, 수행/보류/차단을 각 건 별도 보고한다. 첫 작업에 진척 없다고 다음 배정 RF를 누락하지 말 것. 미배정 RF 신규 착수 금지. D00/D01/D02 및 원본은 최초·변경·충돌·안전 의심 시에만 재독.
 - **재독 최소화:** 새 세션 CURRENT부터 읽는다. 같은 세션에서 이미 읽었고 문서 SHA/내용이 같으면 전문 재독하지 않는다. 변경·충돌·안전 불확실 시 재확인. 전 팀 공통 규칙은 [D00](docs/ENGINEERING_DELIVERY_POLICY.md).
 - **담당:** RF는 Claude/Codex 영구 배정이 아니라 CURRENT에서 지팀장이 탄력 지정. 기존 Claude 전문 영역은 Reporter, Strategist, Scanner. [파일별 RF 소유권](docs/refactor/plan/FILE_COVERAGE_63182ab2.csv) 확인 후 해당 RF 파일만 수정. 타 RF의 공유 DTO·State·graph·테스트는 읽기 전용이며 변경 필요 시 조정 요청. A/B 동시 수정 금지.
 - **개발:** 이미 구현/수용된 코드 재개발 금지. 의미 있는 큰 PURE Owner 분리와 기존 서비스 재사용. 공개 import·graph 호출·rank/Top1·State·프롬프트/LLM retries·출력·예외 동등성 보장. 파일 이동 전 동적/CLI/테스트/배포 소비자 검증.

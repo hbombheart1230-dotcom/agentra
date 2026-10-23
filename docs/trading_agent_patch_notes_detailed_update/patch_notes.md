@@ -4220,3 +4220,10 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.
 - 기존 P1.5.0~11 체크 파일 12개는 `criteria/`로 원본 blob 그대로 이동, 원래 구현 패킷·안전 정책 유지.
 - CURRENT에서 A/B 1~5개 이상 가변 배정, GPT가 SHA/상대 CLI PASS/필수 CI 후 `done/` 이동.
 - 소스·main·실거래·CI 오라클 불변. UI patch note JSON/MD 346→347건.
+
+## 2026-10-23 — P15_RF_SCHEDULE_CURRENT_ONLY_AND_SCOPE_20261023
+**Stage:** DOCS_ONLY / TRIAGE
+
+- 예약 실행은 A `C:\Users\홍훈\Agentra-P15\dev-a`, B `C:\Users\홍훈\Agentra-P15\dev-b`에서 최신 원격 **CURRENT만** 매회 확인. D00/01/02는 최초·변경·충돌·안전 불확실 시 재독.
+- CURRENT의 배정 RF/트러블슈팅 전체 순회, 진척 없는 한 건 때문에 조기 종료 금지. RF-020·RF-001 보고 미검증 및 RF-010/026/075 경계 문제를 troubleshooting/open에 기록하고 CURRENT에 링크.
+- 소스·main·실거래·안전 조건 변경 없음, JSON/MD paired 기록 추가.

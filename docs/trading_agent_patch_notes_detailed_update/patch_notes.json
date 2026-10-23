@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 347,
+  "entry_count": 348,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9156,6 +9156,30 @@
         "docs/refactor/plan/FILE_COVERAGE_63182ab2.csv",
         "docs/refactor/plan/pending/",
         "docs/refactor/plan/criteria/"
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_RF_SCHEDULE_CURRENT_ONLY_AND_SCOPE_20261023",
+      "title": "Read only CURRENT at scheduled runs and track blocked RF-020/001 work",
+      "stage": "DOCS_ONLY / TRIAGE",
+      "types": [
+        "PROCESS",
+        "REFACTOR",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Point A/B scheduled runs at each actual Windows worktree, load only current remote CURRENT per run, process every assignment and record RF-020/001 scope/no-progress finding in open troubleshooting with CURRENT link.",
+      "details": [
+        "D00/D01/D02 and frozen packets are reused when unchanged; mandatory reread only on new setup, changes, conflicts or safety uncertainty.",
+        "Work remains RF-001 and RF-020 with separate Codex remote branch cleanup item; no new code/test or peer evidence has been received.",
+        "RF-010/026/075 ownership seams are identified but no cross-RF write authorization is granted. No live trading, main, or integration source mutation."
+      ],
+      "sources": [
+        "docs/refactor/work_orders/CURRENT.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/plan/troubleshooting/open/P15_RF020_SCOPE_AND_BATCH_SCHEDULER_20261023.md"
       ]
     }
   ]

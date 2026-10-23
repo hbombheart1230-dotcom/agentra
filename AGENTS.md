@@ -2,6 +2,7 @@
 
 **작업 입구:** [CURRENT](docs/refactor/work_orders/CURRENT.md)의 **이번 Codex 배정 RF 링크** → 해당 [RF 독립 작업 파일](docs/refactor/plan/pending/) → 그 파일의 기존 동결 원본 패킷. [전체 현황](docs/refactor/plan/STATUS.md)과 [P1.5.0~11 합격 기준](docs/refactor/plan/criteria/)은 필요할 때만 본다. P1.5 단계 번호는 새로운 순차 배정이 아니다.
 
+- **로컬 예약 실행:** `C:\Users\홍훈\Agentra-P15\dev-b`에서 시작. 매번 최신 원격 CURRENT만 확인하고 **그 시점에 배정된 모든 RF·일회성 정리 건을 순회**, 각 건의 수행/보류/차단을 각각 보고한다. 한 작업에 남은 구현이 없거나 PEER_DEFERRED라도 다른 배정 작업을 이어서 점검한다. 미배정 RF는 임의 수행 금지. D00/D01/D02 및 원본은 최초·변경·충돌·안전 의심 시에만 재독.
 - **재독 최소화:** 새 세션에는 CURRENT부터 읽고 작업 링크를 확인한다. 같은 세션에서 이미 읽었고 문서 SHA/내용이 불변이면 전문을 다시 읽지 않는다. 변경·충돌·안전 의심 시 다시 확인. 공통 헌법은 [D00](docs/ENGINEERING_DELIVERY_POLICY.md).
 - **담당:** A/B 영구 역할 고정 금지. CURRENT의 최신 배정이 우선이다. 기존 Codex 전문 작업은 Operator UI, Monitor, Commander. RF마다 [파일 전수 소유권](docs/refactor/plan/FILE_COVERAGE_63182ab2.csv)을 확인해 **해당 RF 소유 파일만** 수정한다. 타 RF 소유 공유 계약/State/테스트가 필요하면 지팀장에게 조정 요청. 동일 파일 A/B 동시 수정 금지.
 - **개발:** 기존 구현과 CI 증거부터 재사용, 의미 있는 큰 Owner/폴더 경계 우선. 소비자 검증 없이 공개 import/CLI/path 이동 금지. 기존 값·순위·직렬화·LLM 호출·State·예외·안전/실거래 기본 OFF 불변. 테스트·검증 오라클 완화 금지.
