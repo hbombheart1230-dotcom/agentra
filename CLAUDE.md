@@ -17,3 +17,5 @@
 - 종료 보고 필수 항목: RUN_ID, ROLE, INTEGRATION_SHA, WORK_BRANCH, START_SHA, END_REMOTE_SHA, RF_RESULTS, TEST_NORMAL, TEST_OPTIMIZED, PEER_VERDICT, CI, PUSH_VERIFIED, GPT_ACTION_REQUIRED.
 - GPT_ACTION_REQUIRED에는 지팀장이 결정할 소스 수용, 계약 충돌, CI 차단, 검증 큐 이동, 통합, RF 완료와 최소 다음 행동을 명시한다. 없으면 NONE.
 - 원격에 저장하지 못한 결과는 HANDOFF_NOT_PERSISTED로 표시한다. 빈 커밋, 임의 신규 브랜치, Issue 댓글은 금지한다. 예약 실행 알림만으로 GitHub 인수인계를 완료했다고 주장하지 않는다.
+
+- **고정 예약 실행 영수증(우선):** 매 회차 기존 `work/p15-a-reporter-pure-20261021` 브랜치의 `docs/refactor/work_orders/HANDOFF_A.md`를 반드시 실제 결과로 갱신·비강제 push한다. RF 원본이 작업 브랜치에 없으므로 임의 RF 생성·integration merge 금지. 기존 RF와 troubleshooting의 공용 기록은 GPT가 한다. `RUN_ID, ROLE, STATUS, START_INTEGRATION_SHA, WORK_BRANCH, START_REMOTE_SHA, RF_RESULTS, TEST_NORMAL, TEST_OPTIMIZED, PEER_VERDICT, CI, GPT_ACTION_REQUIRED`를 기록하고 코드 후보 SHA와 HANDOFF 커밋 SHA를 구분한다. push 후 원격 HEAD를 재조회해 `END_REMOTE_SHA` 및 `PUSH_VERIFIED`를 종료 보고에 기재한다. 미실행은 NOT_RUN, 미확인은 UNKNOWN, 실패는 BLOCKED. 결과 없더라도 NO_WORK로 새 회차 영수증을 갱신한다. 원격 기록 실패 시 HANDOFF_NOT_PERSISTED라고 보고한다.
