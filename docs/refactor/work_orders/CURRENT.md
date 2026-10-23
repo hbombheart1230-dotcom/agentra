@@ -90,6 +90,14 @@
 - **B RF-001:** GPT가 승인한 sanitation 2경로 개선을 **기존 B 브랜치에서 신규 코드 SHA로 재적용**하고 monkeypatch/예외/빈값 parity normal/-O·patchnotes를 먼저 확보. 역사 frozen B-stage inventory는 별도 트랙으로 분리하고 오라클 수정 금지. 단순 HANDOFF만 갱신하는 회차를 진전으로 취급하지 않는다.
 - **hosted CI 직접 확인:** integration `2170066e` 5개 Actions 완료, Scripts **1 SUCCESS**, Shared·Reporting/Web·Design Guard·T4 **4 FAILURE**. stage `7e06e979` hosted Actions **0건**. 본 문서/증거 업데이트 exact SHA CI **UNKNOWN**. CI_RED `a0493b60` 별도 peer/exact CI 미충족, 통합 금지. RF DONE **0/93**; main·실거래·안전 가드·CI 오라클 불변.
 
+## 2026-10-24 03:02 KST 지팀장 신규 증거·실행 판정
+
+- **원격 수거:** integration 이전 `7d0167bf`, A `51065012` / sched-13 (RF-018 **신규 자체 테스트 증거**, 소스 불변), B `744c6e8c` / RUN `B-20261023T171720Z` (이전과 동일, RF-001 신규 소스 없음). A/B 원격 HANDOFF를 직접 재조회했다. A 코드 후보 `a21401db`, B 신규 유효 코드 후보 **NONE**; RF-013 stage `7e06e979` 유지.
+- **RF-018 새 근거 수용:** A는 integration `2170066e` detached에서 Strategist 관련 13파일 normal/-O 각각 **1152 PASS / 2 FAIL / 57 collection ERROR**, 공유 계약 1파일 제외 12파일 각각 **1152 PASS / 2 FAIL** 보고. 실패·수집 오류는 역사 `verify_b_composed` B-stage inventory와 연관됐다는 **A 분석이며 지팀장 독립 실행 NOT_RUN**. 47/47 blob KEEP 정적 확인과 기능 PASS를 인정하되 **RF 전체 PASS 아님**. [RF-018](../plan/pending/RF-018.md)에 신규 실행 증거 반영. **B 별도 read-only peer 우선 배정**, 실패 2건과 collection 57건은 CI_RED 계약 트랙과 분리 추적. A는 RF-013 역사 inventory 해결을 위한 기존 33 owner 재사용/구조 대안만 제안하고 기존 oracle 무단 수정 금지.
+- **RF-013:** stage `7e06e979`의 B 41 PASS, 소비자 153 PASS/1 FAIL은 이미 판정됨. 직접 import 소비자 9파일만 검사했으므로 A의 16파일 985 PASS/1 FAIL을 대체하지 않는다. RF-074 `test_target_tree_discipline_and_no_forbidden_surface`가 `read_models` 폴더의 **실제 파일 목록과 닫힌 기대 목록을 비교**한다는 점을 원본 코드에서 직접 재확인했다. **오라클 변경 승인 없음**, stage BLOCKED. 동일 테스트 반복 금지.
+- **B 즉시 개발:** 기존 RF-001 2경로 sanitation 후보 `0254a5aa`의 안전한 재적용/동등 구현, facade monkeypatch·빈값·예외 parity normal/-O와 UI patchnotes를 **새 소스 SHA**로 제출. RF-020은 30/30 KEEP 기능·소비자 계약 증거를 제출하고 A peer 요청. CI_RED는 별도 peer·hosted exact CI 전 통합 금지. 기존 B-stage 실패만으로 B의 RF-001 개발을 되돌리지 말 것.
+- **exact-SHA hosted CI 직접 확인:** `dc475680` 2026-10-23 17:21 UTC push Actions 5개 **completed: Scripts SUCCESS 1, Reporting/Web·Design Guard·Shared·T4 FAILURE 4**. 이는 새 CI 수리 성공이 아니다. 이번 RF-018 문서 커밋의 exact CI **UNKNOWN**. RF DONE **0/93**, 신규 소스 통합 **0**. `main`/실거래/안전 가드/CI 오라클 변경 없음.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
