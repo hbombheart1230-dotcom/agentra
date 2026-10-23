@@ -28,6 +28,14 @@
 - **CI_RED 예외 — REWORK_REQUIRED / NOT_ADMITTED:** 후보 `a0493b60`, handoff `59e34204`. B 이전 read-only normal/`-O` **모두 exit 1**, pinned `613a945d` UI 파일 로컬 `git show` 실패. 지팀장 GitHub 원격에서 해당 pinned blob 존재 확인했으므로 B는 clone/fetch 범위·git stderr·로컬 객체 접근을 진단한 후 동일 후보 normal/`-O` 재검증. 독립 PASS·통합 없음.
 - **CI/안전:** 마지막 직접 확인 `138bdaed` hosted CI **1 PASS / 4 FAIL**. 현재 integration `8239db1d`의 exact-SHA hosted CI는 **UNKNOWN** (PR 전용 조회에서 결과 없음은 성공/미실행 증거가 아님). RF-026 `PENDING / SAFETY_HOLD` (exit_policy↔monitor_exit 순환; 교차 소유권 승인 전 소스 수정 금지). 정규 검증 큐 0건, **RF DONE 0/93**, 신규 코드 통합 0건. GPT는 S5 적용 범위·RF-026 소유권 판정을 유지하며 오라클/main/실거래/무승인 브랜치는 변경하지 않는다.
 
+## 2026-10-23 지팀장 실행 지시 — 첫 RF 검증 전진 (우선 적용)
+
+- **우선순위 1 / Claude A / RF-013:** 기존 후보 `a21401db`의 `libs/agents/reporter/` 독점 67파일에 대해 MOVE/KEEP/WRAPPER/SAFETY_HOLD 전수 증거를 정리하고, Reporter에 한정된 normal 및 `python -O` 회귀를 새로 실행한다. S5 historical cross-scope 1 FAIL과 RF-026 순환 import는 별도 차단으로 구분하되 삭제·skip·오라클 완화 금지. 독립 검증 가능한 정확한 코드 SHA, 테스트 명령/exit, 남은 결함을 `HANDOFF_A.md`에 남긴다. **RF-018은 병렬 독립 증거만 준비**하고 RF-013 검증 요청을 늦추지 않는다. 검증 준비가 되면 B의 다음 read-only 검증 대상으로 RF-013을 명시한다.
+- **우선순위 1 / Codex B / CI_RED:** 원격에 존재하는 `613a945d:apps/operator_ui/data_access_core.py`가 로컬에서 조회되지 않는 원인을 `git cat-file -t`, `git show` stderr, shallow/partial clone/fetch 상태로 진단한다. 허가된 읽기 전용 이력 fetch로 해결 가능하면 기존 후보 `a0493b60` normal 및 `python -O`를 **정확한 SHA**에서 재실행하고 실제 exit와 verdict를 `HANDOFF_B.md`에 기록한다. 후보·오라클 수정 및 integration 병합 금지. 객체가 여전히 불가하면 정확한 명령·stderr와 최소 재현으로 BLOCKED 판정한다.
+- **우선순위 2 / Codex B / RF-013 peer:** A가 검증 가능한 RF-013 후보 SHA와 테스트 증거를 HANDOFF에 올리면, **별도 읽기 전용 검증 세션**에서 RF-013만 정상/`-O` 독립 재현하고 PASS/REWORK/BLOCKED를 명시한다. 독립 검증에서 소스·테스트·오라클 변경 금지. B의 RF-001/RF-020은 기존 소유권/계약 미확정 범위를 임의 수정하지 말고 안전한 독립 파일 검증을 계속한다.
+- **GPT 지팀장:** RF-026 순환 import는 해당 소유 RF의 안전·교차 소유권 승인 전 코드 변경 금지. CI_RED가 독립 PASS 및 exact-SHA CI를 얻기 전 통합 금지. A/B의 다음 HANDOFF가 실제 소스 또는 검증 증거를 전진시켰는지 확인하고, 미진전 시 원인별 REWORK 판정한다. RF 최종 DONE은 정상/`-O`, 독립 PASS, 선별 통합, exact-SHA CI를 모두 만족할 때만.
+- **금지:** 새로운 RF·트러블슈팅·예약 로그 문서 생성, 불필요한 추가 브랜치, main/실거래/안전 가드/CI 오라클 수정, 무단 merge/rebase/force push.
+
 ## 현재 검증 상태와 역사
 
 - 마지막 직접 확인 `c4ae36f5`의 5개 hosted Actions **1 PASS / 4 FAIL** (job 완료 재조회); 이번 문서 갱신 SHA의 CI는 **NOT_RUN/UNKNOWN**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
