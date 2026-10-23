@@ -4,12 +4,12 @@
 
 ## 마지막 실행
 
-- RUN_ID: 2026-10-24-claude-a-sched-9 (CURRENT@integration 29637622 확인; 이전 RUN 항목 통합, 상세는 git 이력)
+- RUN_ID: 2026-10-23T1520Z-claude-a-sched-10 (직전: 2026-10-24-claude-a-sched-9) (CURRENT@integration 29637622 확인; 이전 RUN 항목 통합, 상세는 git 이력)
 - ROLE: Claude A (예약)
 - STATUS: RF-013 PEER_BLOCKED_OWNERSHIP (소스 변경 없음, 검증 대상 코드 SHA a21401dbf8161b549848ac682b8bd11cac439ab5 유지). RF-018 NO_NEW_SOURCE.
 - START_INTEGRATION_SHA: 29637622ebe136ae237cd3aa2337334e713736f4
 - WORK_BRANCH: work/p15-a-reporter-pure-20261021
-- START_REMOTE_SHA: 5493ec81ab05f4d6df52c6332308de1e4b36f4b2
+- START_REMOTE_SHA: 31b97b603392816d02eb835937cd3172c7e29f14
 - PUSH_VERIFIED: PENDING_AT_WRITE (push 후 원격 재조회 값은 최종 보고 참조)
 - CHANGED_PATHS: docs/refactor/work_orders/HANDOFF_A.md 만 (소스·테스트·오라클 변경 없음)
 - TEST_NORMAL / TEST_OPTIMIZED: 이번 회차 NOT_RUN(소스 불변). 최근 SELF 실행(sched-6/7, a21401db, RF-013 19파일): 각각 624 passed, exit 0. B 독립 read-only 재현(HANDOFF_B B-20261023T141441Z 보고): normal/-O 각각 624 passed, exit 0.
@@ -37,5 +37,14 @@
 - 결과(실제 실행): 2개 pure 테스트 normal **41 passed**, `python -O` **41 passed**. 소비자 테스트 16파일(4 wrapper 참조) normal/-O 각각 **985 passed / 1 failed**. 1 failed = `tests/test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`(`AssertionError: read_models`): 역사적 폴더 inventory 게이트가 신규 `read_models/` 9파일을 모름 — 오라클 allowlist 확장은 GPT 승인 사항이라 A는 미수정/미skip. a21401db 전체 트리(해당 테스트 수정판 포함)에서는 별도 허용 목록으로 통과(104 passed/1 failed 별개: Q8 등 타 경로 부재 때문, 최소 세트 부분 체크아웃의 한계).
 - 결론: 9 owner는 4 wrapper 없이는 소비자 0(휴면). 최소 활성화 = wrapper 4경로(타 RF 소유). **PEER NOT_RUN, 통합 NOT_RUN, RF-013 BLOCKED(교차 소유 승인 + 역사 inventory 오라클 allowlist 판정 대기).** 타 RF 소유 15경로·CSV 미등재 34경로는 RF-013 범위에서 제외 유지. RF-018 NO_NEW_SOURCE(RF-013 증거 우선).
 - GPT_ACTION_REQUIRED: RF-030/035 담당이 위 proposal diff를 받아 wrapper 전환·push할지, seed_migration inventory allowlist(9경로) 허용 여부.
+
+### sched-10 (2026-10-23T1520Z): 최소 활성화 세트를 integration HEAD 위에서 실증 (소스 커밋 없음, 코드 SHA a21401db 유지)
+- 기준: integration `29637622ebe136ae237cd3aa2337334e713736f4` detached worktree(저장소 밖 임시, 푸시 없음). 4 wrapper(`libs/reporting/{metrics_report_generator,operator_period_summary,operator_visibility,phase_runtime_health}.py`)는 integration HEAD에서 merge-base d7ab829와 blob 동일 → A의 wrapper diff(77+/1875-)는 충돌 없이 적용 가능. `libs/agents/reporter/` 폴더는 d7ab829→integration 변경 0.
+- 15경로(owner 9 + wrapper 4 + 테스트 2)를 `git checkout a21401db -- <15경로>`로 integration HEAD에 오버레이: pure 테스트 2파일 normal **41 passed**, `python -O` **41 passed**. 소비자 테스트 16파일(4 wrapper 참조) normal/-O 각각 **985 passed / 1 failed**. 이는 sched-9의 d7ab829 기준 결과와 동일 → 최소 세트는 integration HEAD에서도 동등하게 동작.
+- 1 failed = `tests/test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`: 역사적 reporter 폴더 inventory 게이트(RF-074 소유 오라클)가 신규 `read_models/` 9파일을 모름. 오버레이에 A 후보판 이 테스트(`a21401db`)를 추가하면 normal/-O 각각 **105 passed**. 단 그 판은 Q8·AI review 등 이번 최소 세트 밖 경로 허용까지 포함해 더 넓으므로 그대로 제안하지 않음.
+- 오라클 파일 수정은 이번 회차에 시도했으나 환경 권한 분류기가 차단(보안 테스트 변경)했고 우회하지 않음. 따라서 **최소 허용 목록 패치(owner 9 + facade 4 exact closed set)는 작성·검증하지 않았다 = NOT_RUN**. 필요하면 GPT가 RF-074 오라클 변경을 승인하고 허용 범위를 지정해야 함.
+- 코드 후보를 새 커밋으로 만들지 않은 이유: 15경로 선별 커밋은 integration 기반이어야 하며 A 브랜치(d7ab829 계열)에는 이미 58경로 전체가 있어 별도 브랜치가 필요(상시 4개 정책상 불가). 재현은 위 `git checkout a21401db -- <15경로>` 오버레이로 가능. CURRENT의 "검증 가능한 코드 후보" 생성은 **브랜치 정책으로 BLOCKED, GPT가 통합 기반 임시 브랜치 예외를 승인하면 즉시 제출 가능**.
+- PEER_VERDICT: NOT_RUN(이번 회차 독립 검증 없음). 통합 NOT_RUN. CI: integration 29637622 5개 중 Scripts Contract PASS(https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106251) / 4 FAIL — Shared https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106068, Reporting/Web https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106113, Design Guard https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106233, T4 https://github.com/hbombheart1230-dotcom/agentra/actions/runs/39975106059 (모두 completed; CURRENT 진단 인용, A 미분석).
+- GPT_ACTION_REQUIRED: (1) seed_migration 오라클에 owner 9 + facade 4 정확 허용 추가 승인(최소 범위 지정). (2) RF-013 활성화 후보를 담을 integration 기반 임시 브랜치 예외 승인(또는 지팀장이 15경로를 직접 적용). (3) RF-030/035 담당의 wrapper 전환 승인. (4) RF-026 순환 import 소유 판정.
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
