@@ -4260,3 +4260,12 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/`, `AGENTS.
 - 2시간 예약 vs GitHub 이벤트는 미결정이며 트리거·GitHub Actions·API 키·`main` 변경을 활성화하지 않았다. 이 변경은 검증 큐 정책을 위한 별도 설계 브랜치의 문서 수정이다.
 
 Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/refactor/plan/STATUS.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`.
+
+## 2026-10-23 — P15_PEER_LED_INTEGRATION_CI_DELEGATION_20261023
+**Stage:** DOCS_ONLY / OPERATING_POLICY / NEW_RF_SCOPE · **Tags:** PROCESS · REFACTOR · TEST · SAFETY
+
+- 독립 검증된 RF는 **상대 검증 담당자**가 읽기 전용 리뷰 세션 종료 후 별도 제한 통합 단계에서 단일 writer/CAS·파일 독점권·최신 HEAD를 확인하고 `integration/p1.5`에 선별 반영. 변경 SHA normal/`python -O` 대상 회귀 및 정확한 SHA의 필수 hosted CI 결과·URL을 RF에 적어 GPT에 인계한다.
+- CI FAIL/PENDING/NOT_RUN, 잠금 부재, 소유권 충돌 시 `INTEGRATION_BLOCKED/CI_PENDING`으로 정직하게 보고하고 DONE 금지. GPT만 `verification → done` 최종 판정한다.
+- 과거 `d73be191` 4-HEAD·PR31 후보는 기존 GPT 소스 수용 게이트에 유지. `main`·거래 안전·실거래·CI 오라클 변경 없음. 별도 개발 브랜치나 수동 full CI 없이 운영 문서만 직접 개정했으며 이벤트 예약 설정은 활성화하지 않음.
+
+Sources: `docs/ENGINEERING_DELIVERY_POLICY.md`, `AGENTS.md`, `CLAUDE.md`, `docs/refactor/work_orders/CURRENT.md`.

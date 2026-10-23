@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 351,
+  "entry_count": 352,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9265,6 +9265,33 @@
         "docs/refactor/plan/STATUS.md",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_PEER_LED_INTEGRATION_CI_DELEGATION_20261023",
+      "title": "Delegate bounded RF integration and exact-SHA CI to independent peer verifier",
+      "stage": "DOCS_ONLY / OPERATING_POLICY / NEW_RF_SCOPE",
+      "types": [
+        "PROCESS",
+        "REFACTOR",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "After independent Claude↔Codex verification PASS, the opposite reviewer performs serialized bounded integration into integration/p1.5, runs target tests and checks exact integration SHA hosted CI; GPT retains final RF DONE/exception authority.",
+      "details": [
+        "Keep read-only peer CLI/cloud reviewer session isolated; perform permitted integration only in a separate post-verification step with exclusive file scope, fresh HEAD, single writer/CAS and no force push.",
+        "If integration ownership overlaps, SHA moves, lock is unavailable, required checks fail or are pending, stop at INTEGRATION_BLOCKED/CI_PENDING and preserve accurate result links; only GPT moves verification RF to done.",
+        "Historical 4-HEAD candidate d73be191 and PR31 source-admission remain separately GPT-gated. Main, live trading, safety guards, historical CI oracle and automation schedules unchanged.",
+        "Documentation-only direct policy change to integration/p1.5 without extra branch or manually requested full CI; existing GitHub triggers may still execute independently."
+      ],
+      "impact": "Changes review-stage responsibility only; source/runtime, trading authority, CI oracle, main and event/schedule setup are unchanged.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/CURRENT.md"
       ]
     }
   ]
