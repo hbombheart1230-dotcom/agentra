@@ -18,20 +18,20 @@
 3. **독립 검증:** 반대쪽 **별도 세션**이 exact SHA를 읽기 전용 검증한다. **로컬·클라우드 모두 상대 CLI 직접 호출·티키타카 의무 폐지.** 리뷰 세션 수정/커밋/푸시/다른 CLI 실행 금지. 실제 테스트 exit·PASS/REWORK/BLOCKED·NOT_RUN 기록.
 4. **통합:** 정상 RF는 독립 PASS 후 별도 통합 단계에서 검증자가 승인 경로만 단일 writer/CAS·비강제 통합해 그 SHA의 normal/`-O`·필수 hosted CI 확인. CI 미통과·충돌·잠금 불명은 BLOCKED. **CI 오라클, PR31/4-HEAD, 안전·공유 계약은 GPT 별도 승인**. 최종 `verification → done`은 GPT만 결정.
 5. **브랜치·안전:** 상시 `main`/`integration/p1.5`/A/B 4개. **integration과 A/B 개발 브랜치의 분기는 정상이며 개발 BLOCKED 사유가 아니다.** RF·D00/D01/D02는 integration에서 읽고 코드 작업은 해당 A/B 브랜치에서 수행한다(기존 A/B 브랜치에 RF 문서가 없어도 integration RF를 참고). 로컬 개발 커밋이 **원격 같은 A/B 브랜치 HEAD**의 자손이면 정상 fast-forward push할 수 있다. 동일 브랜치의 원격 HEAD가 변경돼 fast-forward 불가하거나 소유권/계약이 충돌할 때만 BLOCKED로 보고한다. 실행 전 checkout/BASE/원격 HEAD/권한 확인. 강제 push, 무단 merge/rebase, 자동 신규 브랜치 금지. 위 `claude/...`는 기존 승인된 단일 임시 예외이며 검증·보존·소비자 확인 후 정리. `main`, 실거래, Supervisor/Executor/Step5C/UEF, CI 오라클 무승인 수정 금지.
-6. **예약:** Claude 2시간 루틴 활성 **보고만 있음**(GitHub Connector/Repository 자동 승계 미검증). Codex 예약은 실제 실행 증거 확인 전 미확정. GitHub 이벤트 자동 트리거는 NOT_ENABLED. 예약은 배정권이 아니며 매 실행 GitHub 인증/checkout 및 (RF, 역할, SHA) 중복을 확인한다.
+6. **예약:** A/B 모두 기존 개발 브랜치의 고정 `docs/refactor/work_orders/HANDOFF_A.md` / `HANDOFF_B.md`에 실제 예약 실행 결과 push 확인. 예약은 배정권·독립 PASS가 아니며 매 회차 원격 SHA/실행 증거를 검증한다. GitHub 이벤트 자동 트리거는 NOT_ENABLED.
 
-## 2026-10-23 지팀장 수거 판정 — 사용자 전달 A/B 예약 종료 보고
+## 2026-10-23 09:54 UTC 지팀장 최신 수거 판정
 
-- **출처 구분:** Claude A 07:39 UTC 및 Codex B 종료 보고는 사용자 전달 내용이며 GitHub RF에 영속화되지 않았다. 원격 A `a21401db`, B `a3d60e37` HEAD를 재조회해 일치 확인. 이번 예약 실행의 신규 push 없음; `HANDOFF_NOT_PERSISTED`. 이를 독립 PASS 또는 RF 완료로 인정하지 않는다.
-- **A RF-013/RF-018:** `BLOCKED / KEEP_VERIFIED_NOT_ACCEPTED`. A 보고의 normal/-O 각각 2290 passed, 1 failed, 58 errors는 전부 PASS가 아니다. RF-026 소유 `libs/runtime/exit_policy.py` 순환 import 주장에 대해 담당 RF-026에서 원인/재현/영향 분리 확인 필요. A는 전체 integration merge/rebase 없이 기존 RF 범위의 테스트·동등성 증거를 보강하고, 변경 없는 파일을 DONE 처리하지 않는다.
-- **B RF-001:** `VERIFY_PENDING` (소유권·구조 계약 미완). **RF-020:** `NO_WORK / VERIFY_PENDING` (브랜치 diff 없음만으로 완료 불가). 브랜치 정리 `VERIFY_PENDING`. 두 정규 검증 큐 0건, DONE 0건 유지.
-- **CI_RED 예외:** 후보 `a0493b60` / 인수인계 `59e34204`는 B 보고상 독립 검증 normal setup 오류, `python -O NOT_RUN`; `PEER_PENDING / REWORK_REQUIRED`. GPT 별도 CI 오라클 승인 전 통합 금지.
-- **CI 관측(사용자 전달, 재확인 필요):** `9ad952a0`에서 Scripts PASS, Shared Candidate FAIL, Reporting/Web FAIL, Reporting Regression/Design Guard 및 T4는 RUNNING으로 보고됨. 종료 상태 및 필수 전체 PASS 미확인.
-- **지팀장 다음 행동:** A/B는 신규 RF·별도 RUN 문서 생성 없이 기존 브랜치의 허가된 인수인계 위치를 확정할 때까지 종료 보고에 `HANDOFF_NOT_PERSISTED` 명시. GPT는 RF-026 소유권/순환 import 재현, CI_RED 독립 검증 실패 근거, RF-001 소유권 계약을 우선 판정한다. CURRENT는 요약 판단만 기록하며 세부 RF 인수인계/상태 이동은 증거·단일 writer 확인 후 수행한다.
+- **원격 확인:** integration `138bdaed` 기준 A `de6ae3e3` (RUN `2026-10-23T08:58Z-claude-a-sched-2`), B `d06190d9` (RUN `B-20261023T090903Z`). 두 HANDOFF는 실제 GitHub 커밋으로 영속화됨; 두 회차 모두 **신규 소스 코드 없음**. HANDOFF 본문에 `PUSH_VERIFIED: PENDING_AT_WRITE`가 남아 있으므로 커밋 존재는 직접 확인하되 종료 보고의 원격 재조회 확인은 별개다.
+- **A RF-013/018:** `BLOCKED / KEEP_VERIFIED_NOT_ACCEPTED`, 코드 후보 `a21401db`. normal/`python -O` 관련 2290 passed / 1 failed / 58 errors(Claude 보고; 독립 재실행 아님). HANDOFF 문서 추가 뒤 경계 가드 179 passed / 7 failed도 보고됨. **지시:** handoff HEAD와 소스 후보 SHA를 구분해 기존 oracle 변경 없이 후보 exact SHA에서 가드를 재확인. RF-026 소유 `libs/runtime/exit_policy.py` 순환 import 주장 별도 재현·소유자 판정. 독립 peer PASS 없음.
+- **B RF-001:** `VERIFY_PENDING` (소유권·구조 계약 근거 필요); **RF-020:** `NO_WORK / VERIFY_PENDING` (전체 소유 파일 MOVE/KEEP/WRAPPER 증거와 테스트 없이 완료 불가). 기존 코드 후보 `a3d60e37`; 이번 회차 normal/-O `NOT_RUN`. 브랜치 정리 `VERIFY_PENDING`, 클라우드 외 worktree/process `UNKNOWN`.
+- **CI_RED:** 후보 `a0493b60`, handoff `59e34204`; B의 이전 read-only 검증은 pinned history `613a945d` 객체/경로 부재로 setup ERROR, optimized `NOT_RUN`. **PEER_PENDING / REWORK_REQUIRED**, 통합 금지. B는 정확한 history/object 검증과 normal/-O 독립 결과를 먼저 보강한다.
+- **hosted CI:** `138bdaed` 5개 workflow job/log 직접 확인 **1 PASS / 4 FAIL**. Shared/Reporting은 과거 B-stage 경로 인벤토리와 현재 문서 변경 충돌, Design Guard/T4는 `read-only peer-review gate missing`으로 실패. 상세 job/로그 근거는 [기존 CI 트러블슈팅](../plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md)에 기록. 오라클 약화·무단 수정 금지.
+- **결론:** 정규 검증 큐 0건, **RF DONE 0건**, CI_RED 통합 0건. 지팀장 다음 행동은 독립 검증/역사 핀 확보와 공유 계약 호환성의 안전한 최소 수리 경계 판정. 새 브랜치·RF·RUN 문서 생성 금지.
 
 ## 현재 검증 상태와 역사
 
-- 이전 확인 integration HEAD `87647c98`: 5개 hosted Actions 중 **1 PASS / 4 FAIL**. 과거 `b768b2b3`의 필수 6/6 PASS는 별도 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
+- 현재 확인 `138bdaed`의 5개 hosted Actions **1 PASS / 4 FAIL**. 과거 `b768b2b3`의 필수 6/6 PASS는 다른 SHA의 이전 증거이며 현재 GREEN이 아니다. CI 수리 후보는 아직 integration 미반영.
 - 합성 `d73be191`과 PR31은 normal/`python -O`·독립검증·exact-SHA hosted CI 이전에 통합 금지.
 - 역사적 `DOC-A` · `DOC_FREEZE` · `P1.5.2 OPEN` · `P1.5.3`, Issue #20과 Issues #16–#19 CLOSED는 provenance. 구 BATCH/T00 재활성 및 불필요 Issue 댓글 금지.
 
