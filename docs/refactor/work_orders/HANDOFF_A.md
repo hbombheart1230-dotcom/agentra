@@ -86,3 +86,11 @@
 - GPT_ACTION_REQUIRED: (1) RF-020 A peer 결과(범위 한정 REMOTE_PEER_PASS 후보) 수용 여부와 RF 원본 반영. (2) `test_p15_commander_pure_v1_admission.py`의 B-stage 인벤토리 실패(55건 integration, 64건 B HEAD)를 CI_RED 트랙에서 판정 — 오라클 수정 필요 시 GPT 승인. (3) RF-018 B peer 및 RF-013 stage 판정, RF-026 순환 import 소유 판정(기존 요청 유지).
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
+
+### sched-16 (2026-10-24): RF-001 B 후보 독립 read-only peer (A 소스 변경 없음, 코드 SHA a21401db 유지)
+- 기준: CURRENT@integration `50a93793`. 검증 대상 = B `8bde643dffe0312e4be2301e5f93298149a7f99e`(소스 2경로 `apps/operator_ui/data_access_brief.py`, `data_access_brief_sanitation.py`) / patchnotes 포함 `16ed53e4`. detached worktree(저장소 밖 임시, 수정·push 없음), 비교 기준 BASE `744c6e8c`.
+- 정적: 공개 facade `clean_brief_text/clean_brief_list` 시그니처 유지, 호출은 `_brief_sys.modules[__name__]` facade 경유라 동적 monkeypatch 유지, owner(sanitation)는 facade를 import하지 않음. `data_access_brief.py`의 `re` 제거 후 잔존 `re.` 사용 0, 외부에서 `data_access_brief.re` 참조 0.
+- 동등성 스크립트(old 744c6e8c vs new 16ed53e4, 실제 실행): None/빈값/공백/접두 From·_hint/개행/비문자/비리스트/limit 0·1·-3·"2"/facade monkeypatch/limit="x" ValueError 전부 일치 — normal/-O 각각 `PARITY_OK`.
+- 소비자 pytest(참조 grep 상 `data_access_brief|clean_brief_*|data_access_core` 포함 40개 tests 파일, `--continue-on-collection-errors`): 후보 normal **806 passed / 102 failed / 116 errors**, `python -O` 동일 수치; BASE 744c6e8c normal **동일 806/102/116**, FAILED·ERROR 노드 ID 집합 **diff 0** → 후보가 도입한 신규 실패 0. 102+116은 모두 기존 역사 inventory/CI_RED 계열(예: test_p15_integration_completion, test_p165_t4d_extraction_gates)이며 오라클 미수정. 이 40파일 전수 PASS는 아님.
+- PEER_VERDICT(RF-001, 범위 한정): **PASS_SCOPED** — 동작·facade 동등성 및 BASE 대비 무회귀 증명. 단 RF 전체 PASS/CI PASS/통합 승인 아님(역사 inventory FAIL 존재, hosted CI UNKNOWN). 통합은 GPT 판정.
+- RF-013: stage 7e06e979 BLOCKED 유지(RF-074 oracle 불변 결정), 신규 소스 없음. RF-018: 신규 소스 없음, 증거 sched-13 유지. 검증 큐 변경 없음.
