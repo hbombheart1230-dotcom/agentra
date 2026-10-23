@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 350,
+  "entry_count": 351,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9236,6 +9236,36 @@
         "scripts/refactor/shared_strategist_contracts.py"
       ],
       "status": "current"
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_AUTHOR_ORIGIN_VERIFICATION_QUEUE_20261023",
+      "title": "Stage author-indexed independent verification queue for RF-001–093",
+      "stage": "DOCS_ONLY / DESIGN_BRANCH / NOT_ACTIVATED",
+      "types": [
+        "PROCESS",
+        "REFACTOR",
+        "TEST",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Define the single-RF pending → verification/claude|codex (original author) → done lifecycle; require developer SHA/normal/-O/contract handoff and opposite-agent independent verification before GPT integration and hosted CI.",
+      "details": [
+        "Preserve all 93 RF files in pending until actual self evidence exists; create only empty author-indexed verification directories, without claiming new implementation/peer PASS.",
+        "Use the original RF markdown file, append bounded handoff and peer evidence, fix relative links on relocation, retain historical REWORK records, and prohibit duplicate RF files or developer unilateral integration of source.",
+        "Allow evidence-backed remote independent peer sessions as a cloud transport distinct from local child CLI. No self-review substitution, exit0-only PASS, altered CI oracle, trading permissions, or main updates.",
+        "Two-hour schedules and GitHub event triggers are under evaluation and not activated; metadata changes are staged on design branch pending review."
+      ],
+      "impact": "Operating-policy and RF queue design only; no source/runtime, broker authority, CI oracle, main, or remote scheduler changed.",
+      "sources": [
+        "docs/ENGINEERING_DELIVERY_POLICY.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/refactor/work_orders/CURRENT.md",
+        "docs/refactor/plan/STATUS.md",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+      ]
     }
   ]
 }

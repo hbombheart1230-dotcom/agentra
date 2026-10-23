@@ -1,6 +1,6 @@
 # D00 — Agentra engineering constitution: DELIVERY FIRST / NO RECURSIVE AUDIT
 
-> **읽기 최적화 (2026-10-22):** [한글 CURRENT](refactor/work_orders/CURRENT.md)가 유일한 활성 작업 상황판이고, 실제 작업·완료 체크는 [plan/pending](refactor/plan/pending/)에, 개발자 실행·티키타카 규칙은 [D01 Codex](../AGENTS.md) / [D02 Claude](../CLAUDE.md)에 있다. 본 D00은 **GPT 및 전 팀에 적용하는 안전·공통 개발 원칙**으로 새 세션 또는 개정·충돌·안전 판단 때 확인한다. 같은 세션에서 이미 읽었고 파일 SHA/내용이 그대로면 전문 재독하지 않는다. 아래 오래된 날짜별 BATCH 지시는 새 작업권한이 아니다.
+> **읽기 최적화 (2026-10-22):** [한글 CURRENT](refactor/work_orders/CURRENT.md)가 유일한 활성 작업 상황판이고, 실제 작업·검증·완료 체크는 [plan/pending](refactor/plan/pending/) → [plan/verification](refactor/plan/verification/) → [plan/done](refactor/plan/done/)에, 개발자 실행·티키타카 규칙은 [D01 Codex](../AGENTS.md) / [D02 Claude](../CLAUDE.md)에 있다. 본 D00은 **GPT 및 전 팀에 적용하는 안전·공통 개발 원칙**으로 새 세션 또는 개정·충돌·안전 판단 때 확인한다. 같은 세션에서 이미 읽었고 파일 SHA/내용이 그대로면 전문 재독하지 않는다. 아래 오래된 날짜별 BATCH 지시는 새 작업권한이 아니다.
 
 
 ## 2026-10-22 ACTIVE EXECUTION LOCK — READ FIRST (FULL REPOSITORY)
@@ -10,6 +10,17 @@
 **Order:** documentation pointer fixed → reviewed A/B/PR31 source admission and safe one-ref B housekeeping (Codex sole CLI owner under latest PO instruction) → exact composed integration-SHA normal/-O/peer/hosted CI → redundant stage retirement → remaining existing P1.5.0–11 work by original packet ID. Main/real trades and Supervisor/Executor/Step5C authority remain separately gated. Do not claim any action automatically started by reading this file.
 
 **Old instructions below are preserved as dated history and are NOT active assignment authority when conflicting with CURRENT.** Use only safety and process invariants that remain compatible.
+
+## 2026-10-23 ACTIVE RF HANDOFF / INDEPENDENT VERIFICATION QUEUE
+
+- **Canonical lifecycle:** `docs/refactor/plan/pending/RF-xxx.md` (구현 대기) → `docs/refactor/plan/verification/claude/RF-xxx.md` 또는 `verification/codex/` (구현자 self 검증 후 상대 독립 검증 대기) → `docs/refactor/plan/done/RF-xxx.md` (GPT 통합·정확한 SHA CI 검증 후). `verification/claude`는 **Claude가 구현했고 Codex가 검증할 작업**, `verification/codex`는 **Codex가 구현했고 Claude가 검증할 작업**이다. **93개의 고유 RF 파일은 항상 정확히 한 상태 폴더에만 존재**해야 한다. 검증 대기는 DONE이 아니다.
+- **RF 파일 단일 원본:** 기존 RF 본문을 그대로 보존하고 같은 파일의 끝에 짧은 `개발 인수인계` 및 `독립 검증` 섹션을 추가한다. 구현자는 `AUTHOR / BASE_SHA / CANDIDATE_SHA / BRANCH/PR / CHANGED_PATHS / MOVE·KEEP_VERIFIED·WRAPPER 근거 / 공개 import·호출·계약·side effect 동등성 또는 HOLD / 실행한 normal·python -O 명령·exit·PASS 수 / patchnotes JSON·MD / 미해결 문제`를 실제 사실만 기록한다. 검증자는 작성자의 PASS를 그대로 승인하지 않고 **정확한 후보 SHA를 독립 checkout/읽기 전용 검사 및 가능한 위험 표적 테스트**한 뒤 `REVIEWER / REVIEWED_SHA / commands·exit / PASS·REWORK·BLOCKED / NOT_RUN / 결함 / 새 SHA 재검증`을 같은 RF에 기록한다. 빈 증거·구두 보고·exit0만으로 PASS 불가.
+- **이동 게이트:** 구현 완료가 아닌데 `verification/`으로 옮기지 않는다. 정확한 후보 코드 SHA가 GitHub에 존재하고 self normal/`python -O` 및 필수 증거가 있을 때만 인수인계 이동을 제안한다. 구현자가 자신의 후보 PR에서 동일 RF를 `pending → verification/<author>`으로 **rename**하고 관련 상대 Markdown 링크(깊이 변경)를 보정한다. **공용 `integration/p1.5` 상태판에 반영하는 metadata-only 이동은 GPT 또는 별도 승인된 단일 queue publisher가 수용**한다. 이 상태 이동은 코드 통합·독립 PASS·실거래 승인과 무관하다. 충돌/중복 이동은 중단하고 HEAD 재조회. 다중 RF 간 공유 patchnotes/STATUS 동시 수정은 GPT가 조정한다.
+- **REWORK / BLOCKED:** 검증에서 실패하면 검증 이력을 보존한 채 CURRENT가 원 구현자에게 같은 RF를 재배정한다. 구현자는 새 SHA를 제출하고 이전 독립 PASS를 승계하지 않는다. 필요 시 `pending/`으로 되돌리되 새 RF 파일 생성 금지. 리뷰 수행 환경에서 명령이 불가하면 `PEER_DEFERRED` 또는 `BLOCKED`이지 PASS가 아니다.
+- **티키타카의 두 실행 운송수단:** 로컬 상대 CLI(`claude -p` / `codex exec`)의 격리·읽기 전용·실제 exit 요구는 유지. 클라우드에서는 **다른 모델/서비스의 독립 세션이 동일 SHA를 검증**하고 명시적 실행 증거를 남긴 경우만 별도 `REMOTE_PEER_PASS` 후보로 표시할 수 있다. 단순 PR 자동 코멘트, self-test, 타 모델 미실행, 테스트 불가 사실을 CLI PASS로 가장하지 말 것. 최종 독립 게이트 수용은 GPT가 증거로 판정하고, 이후 통합 SHA hosted CI가 필수다.
+- **예약·이벤트 중립 규칙:** 트리거는 작업 배정권이 아니다. 매 실행마다 `origin/integration/p1.5`의 CURRENT와 구현/검증 큐를 확인하고 **CURRENT에 명시된 할 일만** 수행한다. 중복 (RF, 역할, 후보 SHA) 실행은 차단하고, 중간에 발생한 새 배정은 유실 없이 다음 실행에서 조회한다. 실행 중 상태는 실제 외부 run 상태와 교차 확인; GitHub Actions 잡 종료만으로 외부 Claude 세션 종료를 추정하지 않는다. 자동 트리거·API 비밀값·`main` 워크플로 추가는 별도 승인 전까지 **NOT_ENABLED**다.
+- **Safety and completion unchanged:** D00 안전 원칙, D01/D02 소유권, 동결 P1.5.0~11, Python normal/`-O`, UI patchnotes JSON·MD, GPT 단독 선별 통합, 정확한 통합 SHA CI, `main`/실거래 승인 게이트 모두 유지한다.
+
 
 ## HISTORICAL 2026-10-20 — BATCH05 folder-scale return contract (NOT active task scope)
 
