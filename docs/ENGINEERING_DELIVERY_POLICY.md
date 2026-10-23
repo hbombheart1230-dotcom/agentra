@@ -3,6 +3,12 @@
 > **읽기 최적화 (2026-10-22):** [한글 CURRENT](refactor/work_orders/CURRENT.md)가 유일한 활성 작업 상황판이고, 실제 작업·검증·완료 체크는 [plan/pending](refactor/plan/pending/) → [plan/verification](refactor/plan/verification/) → [plan/done](refactor/plan/done/)에, 개발자 실행·독립검증 규칙은 [D01 Codex](../AGENTS.md) / [D02 Claude](../CLAUDE.md)에 있다. 본 D00은 **GPT 및 전 팀에 적용하는 안전·공통 개발 원칙**으로 새 세션 또는 개정·충돌·안전 판단 때 확인한다. 같은 세션에서 이미 읽었고 파일 SHA/내용이 그대로면 전문 재독하지 않는다. 아래 오래된 날짜별 BATCH 지시는 새 작업권한이 아니다.
 
  
+## 2026-10-23 ACTIVE — 고정 HANDOFF 경로 (예약 실행 우선 계약)
+
+- 기존 RF 원본이 A/B 개발 브랜치에 없는 사실을 확인했다. 예약 실행 증거의 **유일한 작성 위치**는 Claude A의 기존 `work/p15-a-reporter-pure-20261021:docs/refactor/work_orders/HANDOFF_A.md`, Codex B의 기존 `work/p15-b-operator-structure-20261022:docs/refactor/work_orders/HANDOFF_B.md`이다. 두 파일은 실제 브랜치에 초기화되어 있다. 기존 위의 RF 직접 작성/기존 체크포인트 fallback 문구와 충돌하면 이 절을 우선한다.
+- 매 실행 CURRENT의 모든 RF·일회성 작업을 확인하고 기존 HANDOFF의 `RUN_ID, ROLE, STATUS, START_INTEGRATION_SHA, WORK_BRANCH, START_REMOTE_SHA, END_REMOTE_SHA, RF_RESULTS, TEST_NORMAL, TEST_OPTIMIZED, PEER_VERDICT, CI, PUSH_VERIFIED, GPT_ACTION_REQUIRED`를 실제 결과로 교체한다. RUN_ID는 회차마다 고유해야 하며 `NO_WORK`도 기록한다. `END_REMOTE_SHA`는 handoff 커밋 push 후 원격 조회한 SHA를 뜻하며 파일 내용에 자기 자신의 커밋 SHA를 미리 쓸 수 없으므로 `PUSH_VERIFIED`는 push 후 재조회 증거와 함께 종료 보고에 확정한다. 핸드오프 커밋과 코드 후보 SHA를 혼동하지 않는다.
+- 원격 HANDOFF가 새로 갱신되지 않으면 예약 종료 알림만으로 증거 수거 성공이라 판단하지 않는다. GPT는 두 고정 경로와 원격 커밋을 확인한 뒤 RF·troubleshooting에 필요한 근거를 선별 반영하고 CURRENT는 검증된 판정·다음 행동만 갱신한다. HANDOFF 파일은 RF 원본·검증 큐·독립 PASS를 대체하지 않는다. 빈 커밋·무단 신규 브랜치·main/거래 안전 변경 금지.
+
 ## 2026-10-23 ACTIVE — 예약 실행 증거 저장·지팀장 수거 계약
 
 - **기존 파일 재사용, 신규 RUN_A/RUN_B 문서 금지.** A(Claude)는 CURRENT 배정 `docs/refactor/plan/pending/RF-013.md`, `RF-018.md` 등 **자신의 기존 RF 원본**의 `개발 인수인계` 섹션에, B(Codex)는 `RF-001.md`, `RF-020.md` 등의 같은 섹션에 회차별 유의미한 결과를 기록한다. 작성자가 자기 개발 브랜치에 기록·비강제 push하고 원격 SHA를 재조회한다. 공유 `integration/p1.5` RF/verification 큐의 상태 이동은 GPT 또는 승인된 단일 publisher만 한다. 기존 A/B 브랜치에 RF 원본이 없다면 임의 신규 RF를 만들지 않고 해당 브랜치의 기존 허가된 체크포인트/인수인계 파일을 우선 활용하며, 그마저 없으면 `HANDOFF_NOT_PERSISTED`를 예약 실행 결과에 명시하고 GPT에 공용 RF 반영을 요청한다.
