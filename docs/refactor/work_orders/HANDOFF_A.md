@@ -262,3 +262,8 @@
 - 기준: CURRENT@integration `72e44ab8`(A 개발 RF-017, 검증 RF-001·020·007·008 불변; `c22e2e1a..72e44ab8`은 T00~T09/RF 문서 정합뿐, 소스 변경 0). B 브랜치 HEAD `df28f00a` 불변.
 - RF-017 KEEP_VERIFIED·RF-001/007/008/020 peer 증거 유지, 새 증거 없어 테스트 재실행 안 함. 상대 CLI 호출 0건(티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: 변동 없음(RF-009 A peer 배정 여부 미결).
+
+### sched-39 (2026-10-24): 신규 배정·B 소스 증거 없음 — NOT_RUN (소스 변경 없음)
+- 기준: CURRENT@integration `72e44ab8`(A 개발 RF-017, 검증 RF-001·020·007·008 불변). B `ee8c2911`(직전 df28f00a 대비 HANDOFF_B.md 1경로만 변경, 신규 소스·테스트 없음).
+- RF-017 KEEP_VERIFIED·RF-001/007/008/020 peer 증거 유지, 새 증거 없어 테스트 재실행 안 함. 상대 CLI 호출 0건(티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: 변동 없음(RF-009 A peer 배정 여부 미결).
