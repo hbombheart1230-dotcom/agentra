@@ -4,7 +4,7 @@
 
 ## 마지막 실행
 
-- RUN_ID: 2026-10-23T2317Z-claude-a-sched-23 (직전: sched-22)
+- RUN_ID: 2026-10-24T0017Z-claude-a-sched-25 (직전: sched-24)
 - ROLE: Claude A (예약)
 - STATUS: RF-013 PEER_BLOCKED_OWNERSHIP (소스 변경 없음, 검증 대상 코드 SHA a21401dbf8161b549848ac682b8bd11cac439ab5 유지). RF-018 NO_NEW_SOURCE.
 - START_INTEGRATION_SHA: 29637622ebe136ae237cd3aa2337334e713736f4
@@ -120,6 +120,15 @@
 - 다음 A 회차 지시 수령: 이미 통과한 테스트 반복 금지, RF-001 19 divergent owner의 공개 IO/부작용 경계와 새 독립 검증 가능한 소스 증거에만 peer. B의 새 소스 SHA가 없으므로 이번 회차 peer 대상 NOT_RUN. A 자신의 RF-013 stage `7e06e979`는 RF-074 inventory로 BLOCKED 유지, RF-018 KEEP_VERIFIED 후보/RF-020 범위 한정 수락 유지.
 - CI: integration `af0caf77`의 5개 Actions 완료 Scripts 1 SUCCESS / 4 FAILURE(CURRENT 인용, runs 40021830240/243/287/233/387). 신규 SHA `500b358e` CI는 미조회 UNKNOWN. normal/-O: 이번 회차 NOT_RUN(소스 불변).
 - GPT_ACTION_REQUIRED: (1) 임시 브랜치 `claude/agentra-p15-cloud-setup-v5ue0u` 보존/삭제 결정과 소비자 확인. (2) RF-001 선별 통합 BLOCKED 사유(core side-effect 독립 PASS, hosted GREEN) 해소 경로. (3) RF-013 stage/RF-074, RF-021 안전 승인(기존 유지).
+
+### sched-25 (2026-10-24T0017Z): B의 RF-002 KEEP 증거·RF-001 overlay 주장 독립 확인 (읽기 전용, 소스·오라클 변경 없음)
+- 기준: integration `a872bbbfe46973c4637be5d97414ad42007f2bc7`(CURRENT: 사장 승인 Quick Fix·ROOT 고정, RF-013/018→verification/claude, RF-001/020→verification/codex 큐 접수, A=RF-014 신규 개발, B=RF-002), A 시작 HEAD `2b535154a16499896a8d79fa987a38f25e624681`(sched-24: RF-014 20/20 KEEP_VERIFIED 제출 완료), B HEAD `2439d2483e749e461ef8ea2b24339c930d5c3d20`(B-20261024T001040Z; 소스 불변, HANDOFF_B만 변경).
+- **B의 RF-002(9 owner) KEEP 주장 확인:** FILE_COVERAGE CSV RF-002 9파일(`apps/operator_ui/{__init__,main}.py`, `static/operator.css`, `templates/{base,operator_brief_detail,overview,run_detail,runs,trade_report_detail}.html`)을 BASE `63182ab2` 대비 blob 비교: B HEAD / integration / A HEAD 모두 **9/9 동일**. `static`·`templates`·`main.py` 아래 실제 파일 수 BASE 8·B 8, CSV 밖 파일 0 → B의 "9 paths diff 0, 추가 분할은 public template/route 계약 변화만 늘림" 서술과 일치(정적). B의 81 passed 테스트(`test_operator_ui.py`, `test_operator_ui_data_access_phase2.py`)는 sched-20에서 B HEAD/B 부모/integration 모두 81 passed로 이미 독립 재현.
+- **B의 RF-001 overlay 주장 확인:** integration `a872bbbf` detached worktree에 `git checkout 8bde643d -- apps/operator_ui/data_access_brief.py apps/operator_ui/data_access_brief_sanitation.py`(정확히 2경로)만 오버레이하고 `test_p15_b_operator_brief_pure_parity.py` + `test_p15_operator_run_detail_projection.py` + `test_operator_ui.py` + `test_operator_ui_data_access_phase2.py`: normal exit 0 **141 passed**, `python -O` exit 0 **141 passed** → B 보고(141+141)와 일치. 오버레이는 임시 worktree에서만 수행했고 저장소·원격 변경 없음(`git status` 0).
+- **한계:** RF-002는 KEEP(소스 변경 0)이라 정적 blob 일치와 UI 소비자 81 passed가 전부이며 route/template 계약의 파일별 판정은 B 서술 인용. RF-001 141은 2-source overlay 범위이며 core `data_access_core.py`/19 divergent 파일 side-effect 독립 PASS가 아님(선별 통합 BLOCKED 사유 유지). 최종 판정·통합·CI는 GPT.
+- 판정(A의 읽기 전용 확인): RF-002 KEEP 증거 **REMOTE_PEER_PASS 후보(범위 한정: 정적 9/9 blob + 소비자 81 normal/-O)**, RF-001 2-source overlay 141 **재현 PASS**(전체 RF PASS 아님). RF-013/018은 B peer 대기, RF-014는 sched-24 KEEP_VERIFIED 제출 후 B peer 대기, RF-020 범위 한정 수락 유지.
+- CI: integration `a872bbbf` exact-SHA 미조회 UNKNOWN; 마지막 직접 확인(CURRENT 인용) `af0caf77` 1 SUCCESS / 4 FAILURE, `500b358e` 1/4.
+- GPT_ACTION_REQUIRED: (1) RF-002 A scoped peer 결과 수용과 verification 큐 이동 여부. (2) RF-001 2-source 선별 통합·core side-effect·hosted GREEN 경로. (3) RF-014 KEEP_VERIFIED 수용 및 B peer 배정(sched-24). (4) 기존 CI_RED 임시 브랜치 정리, RF-021/RF-074 항목은 변동 없음.
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
 
