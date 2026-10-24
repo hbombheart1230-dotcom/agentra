@@ -3,7 +3,7 @@
 > **활성 규칙만 유지.** 과거 BATCH·PR31·CLI 티키타카·날짜별 실행 기록은 Git 이력에 보존하며 현재 작업 권한이 아니다. 모든 역할은 먼저 [CURRENT](refactor/work_orders/CURRENT.md)를 읽는다. D00은 최초·변경·충돌·안전 판단 때 읽고, 같은 SHA면 반복 전문 열람하지 않는다.
 
 ## 1. 범위·정본·소유권
-- P1.5는 Agentra **전체 ROOT→LEAF** 리팩터링이다. P1.5.0~11의 기존 최종 합격 기준, 동결 V3, [STATUS](refactor/plan/STATUS.md), [FILE_COVERAGE](refactor/plan/FILE_COVERAGE_63182ab2.csv), 각 [RF](refactor/plan/pending/)의 소유권·계약을 유지한다. 신규 계획·중복 문서·Issue 댓글·자체 감사 도구를 불필요하게 만들지 않는다.
+- P1.5는 Agentra **전체 ROOT→LEAF** 리팩터링이다. [**T00 전체 목표트리**](refactor/architecture/T00_TARGET_TREE.md)에서 10개 루트·26개 libs 패키지의 목표 경계를 찾는다. P1.5.0~11의 기존 최종 합격 기준, 동결 V3, [STATUS](refactor/plan/STATUS.md), [FILE_COVERAGE](refactor/plan/FILE_COVERAGE_63182ab2.csv), 각 [RF](refactor/plan/pending/)의 소유권·계약을 유지한다. 신규 계획·중복 문서·Issue 댓글·자체 감사 도구를 불필요하게 만들지 않는다.
 - 정규 브랜치: `main`(승인 전 수정 금지), `integration/p1.5`(GPT 지팀장 단일 관리 writer), `work/p15-a-reporter-pure-20261021`(Claude A), `work/p15-b-operator-structure-20261022`(Codex B). 기존 임시 브랜치는 미통합 변경·소비자·보존 SHA 확인 후에만 정리한다. 신규 브랜치/worktree·force push·무승인 merge/rebase 금지.
 - 매 실행 repo ROOT, checkout, origin/integration 및 자기 원격 HEAD를 확인한다. CURRENT와 RF는 integration 정본, 실제 개발과 HANDOFF는 각 A/B 기존 브랜치에 작성한다. 정상적인 integration↔A/B divergence 자체는 BLOCKED 사유가 아니다. push는 같은 원격 브랜치 HEAD와 fast-forward 여부를 확인한다.
 - RF 소유권 외 파일은 읽기 전용. 공유 계약·교차 RF·소비자 이동은 별도 RF와 소유권·승인 게이트를 따른다. RF-013 owner 9파일과 RF-030/035 소비자는 별도 입장·검증. RF-021 안전 HOLD 유지.
