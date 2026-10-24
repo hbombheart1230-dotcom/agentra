@@ -1,91 +1,29 @@
 # Codex B 예약 실행 인수인계
 
-> 정본: `integration/p1.5`의 CURRENT·D00·D01. 이 파일은 B 기존 개발 브랜치에서만 갱신한다. RF 원본/검증 큐의 공용 상태 변경은 지팀장 또는 승인 publisher만 한다.
+> 정본: `origin/integration/p1.5:docs/refactor/work_orders/CURRENT.md`. 이 파일은 B 기존 브랜치의 최신 실행 영수증만 보존한다.
 
 ## 마지막 실행
 
-- RUN_ID: B-20261024T021634Z
+- RUN_ID: B-20261024T031117Z
 - ROLE: Codex B
-- STATUS: RF004_KEEP_EVIDENCE_READY / RF015_PEER_BLOCKED_EXACT_TREE / RF001_002_003_020_VERIFICATION_WAITING / GPT_ACTION_REQUIRED
-- START_INTEGRATION_SHA: `96ef4c94867ecfd9b639b76d87c8a147128cf1d6`
+- STATUS: RF005_KEEP_EVIDENCE_READY / RF013_014_015_018_PEER_BLOCKED_OR_WAITING / GPT_ACTION_REQUIRED
+- START_INTEGRATION_SHA: `08cd5e2f1fb1c36b19a13144261322d7b070778e`
 - WORK_BRANCH: `work/p15-b-operator-structure-20261022`
-- START_REMOTE_SHA: `72db08eecdb90f6266d47cf207bb807b525b75a0`
-- CODE_CANDIDATE_SHA: none new. Existing RF-001 source candidate remains `8bde643dffe0312e4be2301e5f93298149a7f99e`; this run made no source, patchnote, oracle, safety, main, or integration change.
-- HANDOFF_RECORD_COMMIT: pending local commit; END_REMOTE_SHA/PUSH_VERIFIED are established only after non-force push and remote requery.
+- START_REMOTE_SHA: `b11affbc71a32b140b40ddf02b81d4cebd7454c3`
+- CODE_CANDIDATE_SHA: none new. No source, UI patchnote, safety, oracle, integration, or main file changed this run.
 - RF_RESULTS:
-  - RF-004: `KEEP_EVIDENCE_READY / PEER_PENDING`; CURRENT-assigned `apps/api/domain/` + `apps/api/models/` exact CSV set is 35 files in BASE `63182ab2` and B HEAD, with no diff/add/delete. Largest domain/model modules remain focused projections (`runtime_status_projection.py` 10,278 bytes; `llm_operations_projection.py` 6,273 bytes; scheduled-intelligence 6,048 bytes); direct API test consumers include anomalies/runtime-status. The 18 `tests/apps/api/test_*.py` suite passed normal and optimized, each exit 0/79 passed. Existing domain/model responsibility partition and public DTO/API surface were kept unchanged; no UI patchnotes are due without source change. Claude A independent read-only peer remains required.
-  - RF-015_PEER: `BLOCKED_EXACT_TREE_REQUIRED / NOT_PEER_PASS`; A source SHA is `bcb0f950878b948b2bcba7e29fa2bca17e907f3f`, BASE `63182ab2`. Exact RF-015 owner 19 paths have BASE=A diff 0 and 19 files each; runtime/graph/test consumers were enumerated read-only. B has 21 paths under `libs/agents/monitor/`: two candidate-external paths, `__init__.py` and `contracts.py`, differ from A. Therefore B worktree cannot stand in for A's exact candidate. The A-selected four-test command was executed only as diagnostic in B: normal and `python -O` both exit 1, 252 passed/12 failed; failures are historical Commander/B-stage UI inventory and list B-only RF-001/HANDOFF plus the two extra Monitor paths. This is not a valid A candidate/BASE comparison and is not attributed to RF-015. A separate exact-SHA read-only checkout/archive execution with a cleanup-capable isolated environment is required; current execution policy rejected the isolated temporary-tree cleanup command before it ran. No source/fixture/oracle workaround was attempted.
-  - RF-003: `KEEP_EVIDENCE_READY / A_PEER_PENDING`; prior 25-path BASE-identical normal/-O 79-pass evidence remains; CURRENT moved it to verification/codex.
-  - RF-014: `REWORK_REQUIRED / VERIFY_BLOCKED_CROSS_OWNER`; prior A-only Reporter `output_payloads` mismatch remains. No changed SHA, so prohibited repetition was not performed.
-  - RF-001/RF-002/RF-020: `VERIFICATION_WAITING`; existing scoped evidence is retained, without repeated RF-001 sanitation, RF-020 30/30 blob, or RF-020 consumer runs.
-  - RF-013/RF-018: `BLOCKED_OR_NO_NEW_DELTA`; RF-013 frozen RF-074 inventory and RF-018 CI_RED separation remain; no prohibited repeat run.
-  - CI_RED: `REJECTED_AS_SUBMITTED / SAFETY_HOLD`; `a0493b60` is neither rerun nor accepted.
+  - RF-005: `KEEP_EVIDENCE_READY / PEER_PENDING`; exact CSV owner set `apps/api/` router/adapter/infrastructure paths is BASE `63182ab2` = B HEAD: 40/40 blob-identical, add/delete/diff 0. `main.py` registers 15 routers; adapters/infrastructure stay bounded (largest 141 lines) and public router prefixes remain isolated. API suite normal and `python -O` each exit 0, 79 passed. No meaningful source split or patchnote change is justified; Claude A independent read-only peer is required.
+  - RF-013: `BLOCKED_BY_RF074_FROZEN_INVENTORY`; no new ownership-separated A SHA, so prohibited stage 41/153+1 repetition was not run.
+  - RF-014: `REWORK_REQUIRED / VERIFY_BLOCKED_CROSS_OWNER`; no new A SHA after Reporter `output_payloads` mismatch, so no repeat.
+  - RF-015: `PEER_BLOCKED_EXACT_TREE`; target A `bcb0f950` 19 owner blobs equal BASE, but B has two candidate-external Monitor paths. B diagnostic was not an exact candidate verdict; a cleanup-capable isolated exact-SHA/BASE execution is required.
+  - RF-018: `PEER_BLOCKED_NO_NEW_ISOLATED_BOUNDARY`; prior CI_RED-separated evidence retained; no identical 391/1152 repeat.
+  - CI_RED `a0493b60`: `REJECTED_AS_SUBMITTED / SAFETY_HOLD`, not rerun or accepted.
 - CHANGED_PATHS: `docs/refactor/work_orders/HANDOFF_B.md` only.
-- TEST_NORMAL: RF-004 `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider $(rg --files tests/apps/api -g 'test_*.py')` — exit 0, 79 passed. RF-015 diagnostic command `tests/test_p173_p058_integration_contracts.py tests/test_shared_role_contracts.py tests/test_work_monitor_continuous.py tests/test_work_monitor_role_contracts.py` on B, not A candidate — exit 1, 252 passed/12 failed.
-- TEST_OPTIMIZED: RF-004 identical command under `.venv/bin/python -O -m pytest` — exit 0, 79 passed. RF-015 B diagnostic under `python -O` — exit 1, 252 passed/12 failed; not valid candidate verdict.
-- PEER_VERDICT: RF-015 `BLOCKED_EXACT_TREE_REQUIRED`, not PASS/REWORK against A source; RF-004 `PEER_PENDING`. Existing RF-001/002/003/020 A verification queues and RF-013/014/018 B queues are unchanged by this run.
-- CI: `origin/integration/p1.5@96ef4c94` CURRENT cites predecessor `c0d5e840` hosted 1 SUCCESS/4 FAILURE; this HANDOFF and RF-004 source-free evidence have no exact-SHA hosted CI (`NOT_RUN/UNKNOWN`).
+- TEST_NORMAL: `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider $(rg --files tests/apps/api -g 'test_*.py')` — exit 0, 79 passed.
+- TEST_OPTIMIZED: same command with `.venv/bin/python -O -m pytest` — exit 0, 79 passed.
+- PEER_VERDICT: RF-005 `PEER_PENDING`; RF-013/014/015/018 have no new valid peer PASS. Self test is not peer PASS.
+- CI: integration CURRENT pointer SHA `08cd5e2f` hosted result `NOT_RUN/UNKNOWN`; no source integration or exact hosted CI started.
 - PUSH_VERIFIED: pending non-force push and remote requery.
-- GPT_ACTION_REQUIRED: (1) arrange RF-015 exact A SHA plus BASE isolated read-only checkout in a cleanup-capable environment, then compare the 11 historical failures; do not use B's divergent 21-path tree as peer verdict. (2) queue Claude A independent peer for RF-004 35-path KEEP and 79+79 API suite. (3) retain RF-014 cross-owner block, RF-013 frozen inventory block, and CI_RED safety hold; do not promote scoped KEEP evidence to DONE.
+- GPT_ACTION_REQUIRED: (1) queue Claude A read-only peer for RF-005 exact B SHA and 40-path KEEP/79+79 evidence. (2) provide isolated exact-SHA environment for RF-015 base comparison. (3) retain RF-013/RF-014/RF-018 and CI_RED blocks; do not mark any RF DONE from scoped evidence.
 
-> This HANDOFF receipt is distinct from every source candidate SHA; remote confirmation follows the commit.
-
-## 이전 실행
-
-- RUN_ID: B-20261024T011154Z
-- ROLE: Codex B
-- STATUS: RF003_KEEP_EVIDENCE_READY / RF014_PEER_REWORK_REQUIRED / RF002_PEER_ACCEPTED_FOR_KEEP / GPT_ACTION_REQUIRED
-- START_INTEGRATION_SHA: `c0d5e840266c04a9156f76d8bf92bcf719558327`
-- WORK_BRANCH: `work/p15-b-operator-structure-20261022`
-- START_REMOTE_SHA: `2439d2483e749e461ef8ea2b24339c930d5c3d20`
-- CODE_CANDIDATE_SHA: `8bde643dffe0312e4be2301e5f93298149a7f99e` (기존 RF-001 two-path source; 이번 회차 신규 source commit 없음). RF-003 및 RF-014는 KEEP/peer evidence만 생성했고 source/patchnote 변경은 없다.
-- HANDOFF_RECORD_COMMIT: pending local commit; non-force push 및 origin requery 뒤 END_REMOTE_SHA를 종료 보고에 기록한다.
-- RF_RESULTS:
-  - RF-003: `KEEP_EVIDENCE_READY / PEER_PENDING`; CURRENT가 배정한 `apps/api/services/` 25 owner paths는 BASE `63182ab2`와 B HEAD 사이 diff 0이다. 최대 파일은 `performance.py` 254 lines이고 router consumers는 health/market/operations/overview/profile/runtime_status/performance 등 공개 API service imports를 유지한다. `tests/apps/api/test_*.py` 18 files를 `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider`로 실행해 normal exit 0, 79 passed; 동일 command의 `python -O`도 exit 0, 79 passed. 불필요한 service/API 계약 분할·source/patchnote 변경은 하지 않았다. GPT가 Claude A independent peer scope/acceptance를 큐에 배정해야 한다.
-  - RF-014_PEER: `REWORK_REQUIRED / NOT_PEER_PASS`; 대상 A SHA `a5ff2436c246fe5cbdaf568fdfd2f2253f09403c`와 BASE `63182ab27ecf889768003f637a40577ba1277f86`의 `libs/agents/scanner/` owner는 diff 0, 각 20 files다. Scanner facade/import consumer는 `libs/runtime/scanner/*` 16 modules와 migration tests에서 확인했다. detached read-only A/base worktrees에서 `tests/test_p171_v3055_scanner_projection_migration.py tests/test_p159_current_owner_contract_gates.py`를 normal/-O 실행했다: A normal/O 각각 exit 1, `41 passed, 2 failed`; BASE normal/O 각각 exit 1, `120 passed, 1 failed`. 공통 T3는 historical B-stage inventory guard라 CI_RED로 분리한다. 그러나 A-only p171 `test_shim_has_no_code_and_exactly_one_body_exists[output_payloads]`는 `libs/reporting/evaluation/q8_shadow_readout_p15.py` (actual) 대 BASE 기대 `libs/reporting/q8_shadow_blocker_review.py`의 function location mismatch라 Scanner 20-owner KEEP 범위 밖 Reporter delta와 결합되어 있다. `REWORK_REQUIRED OWNER=Claude A REVIEWER=Codex B SHA=a5ff2436c246fe5cbdaf568fdfd2f2253f09403c REPRO=two-test command above (normal/-O exit 1) ACCEPTANCE=output_payloads baseline delta를 원소유 경로에서 해소 또는 GPT가 scanner 검증 범위에서 분리하고 새 exact SHA를 제출`; T3 historical guard는 별도 CI_RED이며 PASS로 전환하지 않는다. 검증 세션에서 source/오라클 변경 없음.
-  - RF-002: `PASS_SCOPED / PEER_ACCEPTED_FOR_KEEP`; CURRENT에 따른 A sched-25 독립 9/9 BASE=B=integration blob과 normal/-O 81 passed 수용 상태를 유지한다. 최종 DONE/통합 CI PASS 아님.
-  - RF-001: `PASS_SCOPED / NOT_ADMITTED`; source `8bde643d` 및 selective-overlay 141/141 normal/-O, A scoped peer evidence는 이전 기록 그대로다. 이번 회차 동일 시험을 반복하지 않았다.
-  - RF-020: `SCOPED_KEEP_VERIFIED_PEER_EVIDENCE`; 30/30 blob 및 528-pass consumer peer 증거를 반복하지 않았다. RF-026 safety/import 경계와 full integration gate는 미완이다.
-  - RF-013_QUEUE: `BLOCKED_BY_RF074_FROZEN_INVENTORY`; 새 ownership-separated source SHA가 없어 41/153+1 historical suite를 재실행하지 않았다.
-  - RF-018_QUEUE: `PEER_BLOCKED / NOT_RUN`; 새 A delta/node isolation이 없어 prior 47/47 KEEP와 CI_RED 분리를 유지한다.
-  - BRANCH_CLEANUP: `VERIFY_PENDING`; `git worktree list`는 B worktree 하나만 보였고 RF-014 detached temporary worktrees는 제거됐다. Cloud 밖 process/PR consumer는 확인 불가다.
-  - CI_RED: `REJECTED_AS_SUBMITTED / SAFETY_HOLD`; `a0493b60` oracle change는 재실행·통합하지 않았다. CURRENT의 integration `a872bbbfe...` hosted result는 Scripts 1 SUCCESS / other 4 FAILURE, current queue-document SHA CI는 UNKNOWN이다.
-- CHANGED_PATHS: `docs/refactor/work_orders/HANDOFF_B.md` only. No RF source, patchnote, API contract, safety guard, oracle, integration, or main change.
-- TEST_NORMAL: RF-003 `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider $(rg --files tests/apps/api -g 'test_*.py')` — exit 0, 79 passed. RF-014 detached A and BASE each ran the two-test command above — A exit 1, 41 passed/2 failed; BASE exit 1, 120 passed/1 failed.
-- TEST_OPTIMIZED: RF-003 identical command under `.venv/bin/python -O -m pytest` — exit 0, 79 passed. RF-014 A and BASE under `python -O` retain the same exits/counts as normal.
-- PEER_VERDICT: RF-014 is independent Codex B read-only verdict `REWORK_REQUIRED`, not peer PASS. RF-002 stays A peer-accepted scoped KEEP. RF-001/RF-020 queue evidence remains scoped; RF-013/RF-018 remain blocked/pending changed evidence.
-- CI: no new exact-SHA hosted CI was started; `NOT_RUN/UNKNOWN` for this HANDOFF. Do not infer GREEN from local tests.
-- PUSH_VERIFIED: pending non-force push and remote requery.
-- GPT_ACTION_REQUIRED: (1) RF-003 25-path KEEP evidence (79+79) needs Claude A independent peer queue/acceptance. (2) RF-014 A-only `output_payloads` Reporter-location mismatch needs Claude A owner resolution or explicit GPT scope separation before a new exact-SHA peer run; T3 remains distinct CI_RED. (3) Do not promote RF-002/RF-001/RF-020 scoped evidence to DONE; selective integration and exact hosted CI remain GPT gates. (4) Keep RF-013 frozen inventory and CI_RED `a0493b60` safety holds unchanged.
-
-> 이 RUN의 HANDOFF 기록 커밋은 source candidate SHA와 별개다. push 후 remote HEAD를 다시 조회해 종료 보고한다.
-
-## 이전 실행
-
-- RUN_ID: B-20261024T001040Z
-- ROLE: Codex B
-- STATUS: RF002_KEEP_EVIDENCE_READY / RF001_020_QUEUED_FOR_CLAUDE / RF013_018_PEER_WAITING_NEW_DELTA / GPT_ACTION_REQUIRED
-- START_INTEGRATION_SHA: `a872bbbfe46973c4637be5d97414ad42007f2bc7`
-- WORK_BRANCH: `work/p15-b-operator-structure-20261022`
-- START_REMOTE_SHA: `b0616a75a8effe1043ccee39d65aead47543dd27`
-- CODE_CANDIDATE_SHA: `8bde643dffe0312e4be2301e5f93298149a7f99e` (RF-001 source only; `0254a5aa`의 승인된 two-path sanitation ownership을 `6b0681df` revert 뒤 non-force reapply). Patchnote record commit: `16ed53e4f063c93bdeb09f353d7e96d51b6db8d8`.
-- HANDOFF_RECORD_COMMIT: pending local commit; END_REMOTE_SHA는 push 뒤 종료 보고에서 재조회한다.
-- RF_RESULTS:
-  - RF-001: `SELECTIVE_OVERLAY_REPRO_PASS / NOT_ADMITTED`; source `8bde643d`는 정확히 `apps/operator_ui/data_access_brief.py`와 `apps/operator_ui/data_access_brief_sanitation.py`만 변경하고 patchnotes JSON/MD는 `16ed53e4`에 있다. Claude A detached peer `sched-16`은 parent 대비 parity `PARITY_OK`, 40 consumer files 후보/parent 각각 806 passed/102 failed/116 errors 및 node diff 0으로 `PASS_SCOPED`를 제출했고 GPT가 수용했다(전체 RF/CI PASS 아님). 33/33 owner map: 16개 4-line `sys.modules` legacy aliases = `WRAPPER`(brief input/sections/render 12 + read_models 4); `data_access.py`와 `data_access_reports.py` = compatibility `WRAPPER`; `data_access_brief.py` = public facade `WRAPPER` with sanitation delegation; 나머지 14개(`data_access_core`, sanitation, value_formatting, brief sections/prompts/fallback/run_detail/trade_index/source_truth/evidence_readout/input_projection, symbol_run_chain, linkage, runs) = cohesive `KEEP` owners. 19 B/integration divergent set은 12 brief aliases + 4 read_models aliases + `data_access_brief.py` + sanitation + `data_access_core.py`다. 최신 A sched-20 core 81/81 baseline delta 0 증거는 유지한다. 이번 회차는 integration `500b358e` detached worktree에 `8bde643d`의 정확한 두 source path만 staged overlay(overlay blobs `a993e258`/`7b8c960c`; base blobs `13227d81`/`787ec26c`)했고 focused suite normal/-O 모두 141 passed, exit 0. overlay는 임시 worktree에서 제거했으며 integration commit/merge/patchnote/CI 변경이 아니다. full-branch merge remains prohibited.
-  - RF-020: `SCOPED_KEEP_VERIFIED_PEER_EVIDENCE / KEEP_MAP_ADVANCED`; Claude A detached peer가 B code 포함 `16ed53e4`에서 Monitor consumer 19파일 normal/-O 각각 528 passed/exit 0를 제출했고 GPT가 범위 한정 KEEP evidence로 수용했다. B는 이미 PASS한 소비자 시험·30/30 blob 검사를 반복하지 않았다. 이번 회차 integration coverage CSV에서 30 files/2241 lines를 read-only 분류: `monitor_node.py`가 24 owner modules를 직접 import하고, 나머지 signal feature/score/explanation 5 modules는 `intraday_monitor_signals.py`/consumer tests가 경계다; 10 external Python consumers가 owner module을 직접 참조한다. 최대 307 lines이며, monitor cycle/entry/exit/signal projection의 cohesive owner partition이므로 불필요 분할은 하지 않는다. RF-026 순환 import·외부 동적 side-effect·exact integration CI는 미완이다.
-  - RF-002: `KEEP_EVIDENCE_READY / PEER_PENDING`; 새 CURRENT 배정 9 owner paths를 read-only 분석했다. `main.py`(124 lines)는 overview/runs/run-detail/trade-report/brief의 5 HTML endpoint를 template에 연결하며, CSS(716 lines)와 6 templates는 screen/asset owner partition을 유지한다. B와 integration 및 BASE 사이 해당 9 paths diff는 0; 추가 분할은 public template/route contract 변화만 늘려 이득이 없다. `tests/test_operator_ui.py tests/test_operator_ui_data_access_phase2.py` normal/-O 각각 exit 0, 81 passed. Source/patchnotes 변경 없음이므로 Claude peer 신규 요청은 GPT queue 절차 대기다.
-  - RF-013_QUEUE: `PEER_BLOCKED / NOT_RUN`; `verification/claude/RF-013.md` exact targets `a21401db`/stage `7e06e979`를 확인했다. 새 changed SHA/ownership-separated 9 owner + wrapper proposal가 없고 CURRENT는 changed SHA만 re-review하라 하므로 historical 624/41/153+1 suite를 반복하지 않았다.
-  - RF-018_QUEUE: `PEER_BLOCKED / NOT_RUN`; `verification/claude/RF-018.md` exact target integration `500b358e`를 확인했다. A의 2 FAIL/57 ERROR node isolation 또는 new side-effect boundary가 아직 없으므로 current instruction대로 identical 391/1152 suites를 반복하지 않았다. CI_RED 분리 유지.
-  - RF-018: `READ_ONLY_PEER_EVIDENCE / CI_RED_SEPARATED`; integration `19c0b113` detached read-only worktree에서 selected strategist/role consumer set을 normal/-O 각각 391 passed/2 failed로 재현했다. 두 실패는 strategist behavior가 아니라 `B_RF93_CI_REPAIR_FILES`의 B-stage composed inventory에 integration 문서/queue 경로가 없는 CI_RED이다. 따라서 KEEP/47/47을 REMOTE_PEER_PASS나 integration PASS로 승격하지 않는다.
-  - BRANCH_CLEANUP: `VERIFY_ADVANCED`; 구 ref 없음, 보존 태그 `archive/p15-20261022/b-operator-historical` = `70843da4ac237c667b41c831a9aad9051626844f`, 소비 열린 PR 0건. RF-018 detached read-only worktree는 테스트 종료 뒤 `git worktree remove`/`prune`으로 제거했고 남은 local worktree는 B worktree 하나다. Cloud 밖 증거는 `VERIFY_PENDING`.
-  - CI_RED: `READ_ONLY_REPRO_PASS / CI_PENDING`; pinned `613a945d`·`6849bed4`는 local `cat-file`=commit 유지, exact `a0493b6035b390a1691371364b1e4ba3ec50aea9` detached normal/-O exit 0의 기존 재현 유지. 최신 지시대로 이미 해소된 history 오류를 반복 진단하지 않음; peer receipt/hosted exact-SHA CI 없음.
-  - RF-013_STAGE_PEER: `BLOCKED_BY_RF074_FROZEN_INVENTORY`; GPT stage `stage/p15-rf013-activation-20261024@7e06e979f854b323eb70eaf63e6d252e27be6965`를 detached read-only worktree에서 검증했다. parent `e39052ed`, exact 17경로(소스·테스트 15 + patchnotes 2), `git diff --check` exit 0, patch_notes JSON entry_count/entries 356/356. pure 2파일 normal/-O 각각 41 passed/exit 0. 4 wrapper의 직접 import consumer 9파일 + RF-074 inventory test는 normal/-O 각각 153 passed/1 failed; 유일 실패는 `test_target_tree_discipline_and_no_forbidden_surface`가 신규 read_models 9파일을 historical registry에 미등재로 거부함. stage·오라클·B source 수정 없음.
-- CHANGED_PATHS: 이번 회차는 this HANDOFF only. RF-002는 KEEP evidence only (source/patchnotes 변경 없음). 기존 RF-001 source 2 (`apps/operator_ui/data_access_brief.py`, `apps/operator_ui/data_access_brief_sanitation.py`)와 patchnotes 2 (`docs/trading_agent_patch_notes_detailed_update/patch_notes.{json,md}`)는 `8bde643d`/`16ed53e4`에 보존.
-- TEST_NORMAL: RF-002 `PYTHONDONTWRITEBYTECODE=1 /workspace/agentra/.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_operator_ui.py tests/test_operator_ui_data_access_phase2.py` — exit 0, 81 passed. RF-001 prior integration `500b358e` detached 2-source overlay 141 passed; RF-020 528-pass peer suite/30-blob comparison과 RF-013 stage `7e06e979` 및 RF-018 391/1152 suites는 queue instruction/반복 금지에 따라 `NOT_RUN`.
-- TEST_OPTIMIZED: 동일 RF-002 command under `python -O` — exit 0, 81 passed. RF-001 prior overlay 141 passed; RF-020/RF-013/RF-018 반복은 `NOT_RUN`.
-- PEER_VERDICT: official queues active: RF-001/RF-020 `verification/codex` → Claude A peer pending; RF-013/RF-018 `verification/claude` → B peer waiting new delta. RF-001 `PASS_SCOPED + SELECTIVE_OVERLAY_SELF_REPRO` (A sched-16/20 independent evidence; full RF/CI/integration PASS 아님); RF-020 `SCOPED_PEER_EVIDENCE_ACCEPTED`; RF-002 `PEER_PENDING`; RF-018 remains `READ_ONLY_REPRO_WITH_CI_RED`, not REMOTE_PEER_PASS; RF-013 `BLOCKED_BY_RF074_FROZEN_INVENTORY`; CI_RED `REJECTED_AS_SUBMITTED / PEER_NOT_ASSERTED`.
-- CI: integration `500b358e` latest cited hosted status 1 SUCCESS/4 FAILURE; new queue/CURRENT SHA hosted CI UNKNOWN. RF-001/RF-002 exact source integration `NOT_RUN`; RF-020 hosted CI `NOT_RUN`; RF-018 inventory CI_RED separate; CI_RED `a0493b60` is `REJECTED_AS_SUBMITTED`, hosted exact CI `NOT_RUN`/not admissible.
-- PUSH_VERIFIED: pending non-force push and remote requery.
-- GPT_ACTION_REQUIRED: (1) RF-002 9-path KEEP evidence/81+81 source-free result에 대해 Claude peer scope 및 GPT acceptance를 결정한다; no source admission requested. (2) RF-001 `8bde643d` scoped peer/33-map/60+60/81+81/current integration detached overlay 141+141 evidence를 full RF acceptance로 오인하지 말고 exact two-source selective admission, integration commit normal/-O, hosted CI gate를 결정한다. Integration patchnotes에는 B의 349-entry JSON을 덮지 말고 sanitation record 1개만 append해야 한다. (3) RF-020 scoped KEEP evidence/RF-026 safety-import gate, RF-018 2 FAIL/57 ERROR node isolation, RF-013 ownership-separated new SHA를 각각 큐에 추가할 때 B/A peer를 재개한다. (4) CI_RED `a0493b60`은 REJECTED 상태로 유지하고 oracle 수정 재시도 금지다.
-
-> 이 파일의 HANDOFF 기록 커밋은 코드 후보 SHA와 별개다. push 후 원격 HEAD를 다시 조회한 정확한 END_REMOTE_SHA와 PUSH_VERIFIED 결과는 종료 보고에 기록한다.
+> The HANDOFF commit SHA is distinct from code candidates. END_REMOTE_SHA is confirmed in the termination report after push.
