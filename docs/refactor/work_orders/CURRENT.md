@@ -1,5 +1,16 @@
 # Agentra CURRENT — P1.5 전체 리팩터링
 
+## 2026-10-24 11:10 KST — 지팀장 신규 RF 2건 큐 접수 / RF-014 독립 REWORK 판정 (우선 적용)
+
+- **원격 HEAD:** integration `c0d5e840266c04a9156f76d8bf92bcf719558327`; Claude A `bcb0f950878b948b2bcba7e29fa2bca17e907f3f` (sched-26, HANDOFF만 변경); Codex B `72db08eecdb90f6266d47cf207bb807b525b75a0` (B-20261024T011154Z, HANDOFF만 변경). **신규 source/patchnotes 커밋 0, 신규 source integration 0.**
+- **지팀장 큐 접수:** RF-015(A 작성, B peer) `pending→verification/claude`; RF-003(B 작성, A peer) `pending→verification/codex`. 기존 RF 원본 유지, SHA·normal/-O·차단·다음 peer 조건 기록. **큐 접수는 PASS/DONE 아님.**
+- **A RF-015:** 19/19 Monitor owner BASE `63182ab2`와 동일, KEEP_VERIFIED. A normal/-O 각각 **253 PASS/11 FAIL** (B-stage historical allowlist; BASE 동적 재현 NOT_RUN), B independent peer **NOT_RUN**. B는 19 owner 및 consumer/side effect 독립 확인, 11개 historical 실패 BASE 대조 후 범위 분리 verdict. 소유 외 oracle·RF-021/026 수정 금지.
+- **B RF-003:** 25/25 `apps/api/services/` BASE 동일, KEEP_VERIFIED. B normal/-O 각각 **79 PASS/exit 0** (API 18 test files), A independent peer **NOT_RUN**. A는 exact B HEAD/BASE 25 blob과 공개 router IO/side effects 및 79 normal/-O를 별도 read-only 재현.
+- **RF-014 독립 peer:** B는 A `a5ff2436` vs BASE `63182ab2`의 Scanner 20 owner 동일 확인. 두 테스트 normal/-O: A **41 PASS/2 FAIL**, BASE **120 PASS/1 FAIL**. 공통 T3는 역사 가드; 추가 p171 `output_payloads` 실패는 Reporter 소비자 이동과 연동. **REWORK_REQUIRED / NOT_PEER_PASS**, 원 OWNER A. 지팀장 판정: Scanner 소유 파일 자체 수정 근거는 없으므로 **VERIFY_BLOCKED_CROSS_OWNER**, 큐 유지. A는 Reporter 원소유 RF-030/035/074와 차이를 분리한 재현·수정 제안만 제출하고 다른 RF 소스·oracle 무승인 수정 금지; B는 새 SHA/근거 전까지 동일 테스트 반복 금지.
+- **다음 병렬 개발:** Claude A → **RF-016 Strategist agent** (8 owner, `libs/agents/strategist/`); Codex B → **RF-004 FastAPI domain/models** (35 owner, `apps/api/domain/`, `apps/api/models/`). 기존 A/B 브랜치와 HANDOFF만 사용. 검증 큐 8건(Claude 작성 RF-013/014/015/018; Codex 작성 RF-001/002/003/020), pending 85, done **0/93**. Quick Fix 사전 승인 없음.
+- **CI exact-SHA:** `integration c0d5e840: Scripts SUCCESS, Shared/Reporting-Web/Design Guard/T4 FAILURE (5 completed)`. 4 실패를 PASS로 간주하지 않으며 oracle `a0493b60` 거부, RF-021 safety HOLD 유지. 이번 회차 지팀장 runtime normal/-O **NOT_RUN**, peer 자체 실행 **NOT_RUN**, GitHub 원격 증거만 판정. 임시 브랜치 2개 미통합 보존, 새 브랜치 금지.
+
+
 ## 2026-10-24 09:55 KST — RF-014/002 신규 검증 큐 접수 및 다음 RF 배정 (우선 적용)
 
 - **근거 HEAD:** integration `a872bbbfe46973c4637be5d97414ad42007f2bc7`; A `a5ff2436c246fe5cbdaf568fdfd2f2253f09403c` (HANDOFF sched-25), B `2439d2483e749e461ef8ea2b24339c930d5c3d20` (HANDOFF B-20261024T001040Z). 양측 마지막 변경은 HANDOFF만이며 신규 소스 통합은 없다.
@@ -38,9 +49,9 @@
 ## 현재 배정 (CURRENT가 유일한 배정 권한)
 
 - 전체 ROOT→LEAF 3985파일/298폴더, RF 93개. [STATUS](../plan/STATUS.md) · [단독 파일 소유권](../plan/FILE_COVERAGE_63182ab2.csv) · [기존 P1.5.0~11 최종 12개 합격 기준](../plan/criteria/).
-- **Claude A:** 검증 큐 [RF-013](../plan/verification/claude/RF-013.md)·[RF-018](../plan/verification/claude/RF-018.md)·[RF-014](../plan/verification/claude/RF-014.md)는 Codex B peer 대기/BLOCKED (RF-014 20/20 KEEP, 역사 가드 2 FAIL). **신규 개발 RF-015 Monitor agent** ([pending](../plan/pending/RF-015.md), 19 owner files): 기존 소유 경계 내 read-only 전수·KEEP/MOVE/WRAPPER→실제 안전한 source change 또는 KEEP evidence·normal/-O·patchnotes·SHA 제출. RF-015의 `libs/agents/monitor/` 독점 소유만 수정하고 RF-020/021/026 경계는 읽기 전용. RF-013 rework는 소유권 분리 제안으로 병행. 기존 브랜치 `work/p15-a-reporter-pure-20261021`.
-- **Codex B:** 검증 큐 [RF-001](../plan/verification/codex/RF-001.md)·[RF-020](../plan/verification/codex/RF-020.md)·[RF-002](../plan/verification/codex/RF-002.md)는 Claude A peer 범위 증거 대기 (RF-002 9/9 KEEP 및 81/81 scoped peer 인정, CI RED). **신규 개발 RF-003 FastAPI services** ([pending](../plan/pending/RF-003.md), 25 owner files): RF-003의 `apps/api/services/` 25개 독점 파일에 대해 FastAPI 서비스 호출/IO/side-effect 계약 분석→독립 소스 개선 또는 KEEP evidence·normal/-O·patchnotes·SHA 제출. RF-001 UI·거래 안전·공유 계약 교차 쓰기 금지. RF-001 core rework는 별도 병행. [구 브랜치 정리](../plan/troubleshooting/open/P15_BRANCH_CLEANUP.md). 기존 브랜치 `work/p15-b-operator-structure-20261022`.
-- **정규 RF 검증 큐:** Claude 작성 → [verification/claude](../plan/verification/claude/)에서 Codex 검증 (**RF-013/018/014 3건**); Codex 작성 → [verification/codex](../plan/verification/codex/)에서 Claude 검증 (**RF-001/020/002 3건**). **대기/BLOCKED 총 6건, DONE 0건**. 차단 중에도 A=RF-015, B=RF-003 독립 개발 병행.
+- **Claude A:** verification/claude RF-013/014/015/018은 B peer 대상. **신규 개발 RF-016 Strategist agent** ([pending](../plan/pending/RF-016.md), 8 owner files `libs/agents/strategist/`). RF-014 `REWORK_REQUIRED/VERIFY_BLOCKED_CROSS_OWNER`: Reporter 원소유 RF-030/035/074와 p171 output_payloads 실패를 분리해 재현·제안만, 타 RF/오라클 무단 수정 금지. RF-015 19 KEEP, 253 PASS/11 historical FAIL normal/-O; B peer 대기. 기존 브랜치 `work/p15-a-reporter-pure-20261021` 및 HANDOFF_A 고정.
+- **Codex B:** verification/codex RF-001/002/003/020은 A peer 대상. **신규 개발 RF-004 FastAPI domain·models** ([pending](../plan/pending/RF-004.md), 35 owner files `apps/api/domain/`, `apps/api/models/`). RF-003 25 KEEP, normal/-O 79 PASS, A peer 대기. RF-014 peer REWORK 근거 B HANDOFF 확인, 새 근거 없으면 재실행 금지. 기존 브랜치 `work/p15-b-operator-structure-20261022` 및 HANDOFF_B 고정.
+- **정규 RF 검증 큐:** Claude 작성 → [verification/claude](../plan/verification/claude/)에서 Codex 검증 (**RF-013/014/015/018 4건**); Codex 작성 → [verification/codex](../plan/verification/codex/)에서 Claude 검증 (**RF-001/002/003/020 4건**). **대기/BLOCKED 8건, DONE 0건**, A RF-016·B RF-004 병렬 개발 지속.
 - **별도 CI_RED 검증 대기(Codex B):** [CI 호환성 트러블슈팅](../plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md), 임시 `claude/agentra-p15-cloud-setup-v5ue0u` @ `59e34204abb66562780773b649576fa142976041` (코드 `a0493b60`, 인수인계 `d629bc31`). **REJECTED_AS_SUBMITTED / SAFETY_HOLD** (오라클 변경 후보, peer/exact CI 없음). 일반 RF가 아니며 새 RF 생성 금지. GPT가 CI 오라클 검증 후 수용·통합 결정.
 - **GPT 지팀장:** 위 CI_RED 예외·[4-HEAD 합성 후보 d73be191](../plan/troubleshooting/open/P15_SOURCE_ADMISSION.md) source admission, RF 배정·최종 DONE. 합성 후보는 아직 SOURCE_ADMISSION_PENDING.
 
