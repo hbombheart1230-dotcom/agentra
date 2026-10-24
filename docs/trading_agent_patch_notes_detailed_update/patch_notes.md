@@ -4306,3 +4306,10 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLI
 - 소스/실거래/안전 검사·CI oracle 임의 완화 불가. peer 및 normal/-O·hosted CI가 실제 통과하기 전까지 CI_REPAIR_PENDING.
 
 Sources: `scripts/refactor/shared_strategist_contracts.py`, `.github/workflows/p15-integration-t4-regression.yml`, `.github/workflows/p152-r2c-residual-regression.yml`, `docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.json`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.md`.
+
+## 2026-10-24 — P15_CI_MINIMAL_OFFLINE_20261024
+**Stage:** CI_SIMPLIFICATION / OPERATOR_APPROVED · **Tags:** TEST · PROCESS · SAFETY
+
+- 자동 CI를 7개에서 2개로 축소했다. Python은 mock/offline 안전·역할 smoke를 normal과 `python -O`로 실행하고, Web은 `apps/web` 변경에서 npm ci/test/build만 실행한다. 역사 SHA fetch, 문서 문자열 및 중복 경로 검사는 자동 CI에서 제거했다.
+
+Sources: `.github/workflows/p15-shared-candidate.yml`, `.github/workflows/p15-integration-crossbranch-compat.yml`, `docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md`.

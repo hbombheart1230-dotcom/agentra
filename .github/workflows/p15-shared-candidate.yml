@@ -1,140 +1,52 @@
-name: P1.5 Shared Candidate Required Contracts
+name: P1.5 Shared Offline Safety
+
 on:
   push:
-    branches:
-      - integration/p1.5
+    branches: [integration/p1.5]
+    paths:
+      - '**/*.py'
+      - 'tests/**'
+      - 'requirements*.txt'
+      - '.github/workflows/p15-shared-candidate.yml'
   workflow_dispatch:
+
 permissions:
   contents: read
+
 concurrency:
-  group: p15-shared-${{ github.ref }}
+  group: p15-shared-offline-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
-  contracts:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            python: '3.12'
-            mode: normal
-            flags: ''
-          - os: ubuntu-latest
-            python: '3.12'
-            mode: optimized
-            flags: '--optimized'
-          - os: windows-latest
-            python: '3.13'
-            mode: normal
-            flags: ''
-          - os: windows-latest
-            python: '3.13'
-            mode: optimized
-            flags: '--optimized'
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-          cache: pip
-      - run: python -m pip install -r requirements.txt
-      - name: Resolve pinned retired-branch source trees (read-only, fail-closed)
-        shell: bash
-        run: |
-          set -euo pipefail
-          # fetch-depth: 0 does not restore tips of deleted historical branches.
-          # Do not use --depth=1 here: it can make even a full clone shallow,
-          # breaking immutable T1/T2/T4 SHA ancestry checks on Windows/Linux.
-          # Do not change the audited pins, source oracles, or pytest contract.
-          for sha in \
-            6849bed4af358c214f63011a0d58ef760ca79fa0 \
-            c4960c5312945c8dac9b141df222f54ecc28beda \
-            d269c906ebadad75a0b833778ebc6a632a388e7c \
-            613a945d2b27e735d4019cdc85b4660f2c891d8f \
-            3a44bed26433d03408999fb43aa45d2e4f280f55 \
-            1e1e78a9061f9a56c3ce1410202ce5193c6af679 \
-            c5fe8a9a59788cd7cf1eb1d72f9aa8b22a40f7ca; do
-            git fetch --no-tags origin "$sha"
-            git cat-file -e "$sha^{commit}"
-          done
-          for pinned in \
-            '6849bed4af358c214f63011a0d58ef760ca79fa0:graphs/nodes/strategist_node.py' \
-            'c4960c5312945c8dac9b141df222f54ecc28beda:graphs/nodes/strategist_node.py' \
-            'd269c906ebadad75a0b833778ebc6a632a388e7c:graphs/nodes/strategist_node.py' \
-            '613a945d2b27e735d4019cdc85b4660f2c891d8f:apps/operator_ui/data_access_core.py' \
-            '3a44bed26433d03408999fb43aa45d2e4f280f55:graphs/nodes/strategist_node.py'; do
-            if ! git cat-file -e "$pinned"; then
-              echo "::error::Pinned original source blob is missing: $pinned"
-              exit 1
-            fi
-          done
-          # Fail before pytest if the two historical Git diff endpoints are absent.
-          git cat-file -e '1e1e78a9061f9a56c3ce1410202ce5193c6af679^{commit}'
-          git cat-file -e 'c5fe8a9a59788cd7cf1eb1d72f9aa8b22a40f7ca^{commit}'
-          git diff --name-only 1e1e78a9061f9a56c3ce1410202ce5193c6af679 c5fe8a9a59788cd7cf1eb1d72f9aa8b22a40f7ca > /dev/null
-          if [ "$(git rev-parse --is-shallow-repository)" != "false" ]; then
-            echo "::error::Historical SHA checks require complete Git ancestry"
-            exit 1
-          fi
-          git merge-base --is-ancestor 67e0dc0ee0b91d45d242ccbfb3e1133d3a06e5ea HEAD || { echo "::error::T1 historical stage ancestry unavailable"; exit 1; }
-          git merge-base --is-ancestor d4a5364bae817504c253e06b9150ee49c692e120 HEAD || { echo "::error::T2 historical stage ancestry unavailable"; exit 1; }
-          git merge-base --is-ancestor ab8563b251c7a2fc8b0409fde36a05bc10918f04 HEAD || { echo "::error::Ownership historical stage ancestry unavailable"; exit 1; }
-          git merge-base --is-ancestor c338ba34276566b0b5f6de1e7f556778ec917968 HEAD || { echo "::error::T4-A historical stage ancestry unavailable"; exit 1; }
-          git merge-base --is-ancestor 8acedae23e64c11b958556e7835b4ebf5e404e73 HEAD || { echo "::error::T4-B historical stage ancestry unavailable"; exit 1; }
-          git merge-base --is-ancestor ac4642dc265811bf7ff56e32adbadf8203fed771 HEAD || { echo "::error::T4-C historical stage ancestry unavailable"; exit 1; }
-          git merge-base --is-ancestor ad3659131e804f9fa84b67f3bf6a0a0b2017a064 HEAD || { echo "::error::T4-D historical stage ancestry unavailable"; exit 1; }
-      - name: Historical 11-failure targeted smoke before full contracts
-        shell: bash
-        run: |
-          set -euo pipefail
-          py_flags=()
-          if [ "${{ matrix.mode }}" = "optimized" ]; then py_flags=(-O); fi
-          python "${py_flags[@]}" -m pytest -q -p no:cacheprovider \
-            tests/test_shared_strategist_contracts.py::test_prepared_integrated_scope_uses_exact_source_and_shared_paths \
-            tests/test_shared_strategist_contracts.py::test_configured_shared_cli_retains_api_fixture_visibility \
-            tests/test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface \
-            tests/test_p157_third_pass_t1_extraction_gates.py::test_t1_end_sha_is_an_ancestor_of_head \
-            tests/test_p158_third_pass_t2_extraction_gates.py::test_t2_end_sha_is_an_ancestor_of_head \
-            tests/test_p159_ownership_matrix_provenance.py::test_source_sha_is_a_reachable_commit_and_an_ancestor_of_head \
-            tests/test_p162_t4a_extraction_gates.py::test_t4a_changed_paths_stay_in_scanner_scope_and_touch_no_authority_surface \
-            tests/test_p163_t4b_extraction_gates.py::test_t4b_changed_paths_stay_in_monitor_scope_and_touch_no_authority_surface \
-            tests/test_p164_t4c_extraction_gates.py::test_t4c_changed_paths_stay_in_strategist_scope_and_touch_no_authority_surface \
-            tests/test_p165_t4d_extraction_gates.py::test_t4d_changed_paths_stay_in_commander_ui_scope_and_touch_no_authority_surface \
-            tests/test_p15_strategist_s5_helper_moves.py::test_diff_against_pinned_source_touches_only_the_closed_path_set
-      - name: Reporter R8 R10 R11, Monitor M9, all structural T3 T4, authority and mutations
-        id: tests
-        run: python scripts/refactor/shared_candidate_tests.py --suite all ${{ matrix.flags }}
-      - uses: actions/upload-artifact@v4
-        if: ${{ always() && steps.tests.outputs.evidence != '' }}
-        with:
-          name: contracts-${{ matrix.os }}-${{ matrix.python }}-${{ matrix.mode }}
-          path: ${{ steps.tests.outputs.evidence }}
-          retention-days: 7
-  api-router-compat:
-    strategy:
-      fail-fast: false
-      matrix:
-        fastapi: ['0.142.2', '0.143.0']
+  safety:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        optimized: ['', '-O']
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      TRADING_MODE: mock
+      OPENROUTER_API_KEY: ''
+      KIWOOM_APP_KEY: ''
+      KIWOOM_APP_SECRET: ''
+      KIWOOM_ACCESS_TOKEN: ''
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -r requirements.txt fastapi==${{ matrix.fastapi }}
-      - name: Actual GET endpoints and rejected POST PUT mounted endpoints
-        id: tests
-        run: python scripts/refactor/shared_candidate_tests.py --suite api
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: api-router-${{ matrix.fastapi }}
-          path: ${{ steps.tests.outputs.evidence }}
-          retention-days: 7
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - name: Offline safety and role smoke tests
+        run: >-
+          python ${{ matrix.optimized }} -m pytest -q -p no:cacheprovider
+          tests/test_real_executor_disabled.py
+          tests/test_p1_3_broker_read_write_gate.py
+          tests/test_step5c_execution_owner.py
+          tests/test_uef9_formal_authority.py
+          tests/test_m11_2_scanner.py
+          tests/test_work_monitor_observation_views.py
+          tests/test_trade_report_ai.py
+          tests/test_operator_ui.py

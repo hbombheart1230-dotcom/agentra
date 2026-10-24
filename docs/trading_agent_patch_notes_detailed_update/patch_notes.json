@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 356,
+  "entry_count": 357,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9401,6 +9401,32 @@
         "scripts/refactor/shared_strategist_contracts.py",
         ".github/workflows/p15-integration-t4-regression.yml",
         ".github/workflows/p152-r2c-residual-regression.yml",
+        "docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "version": "P15_CI_MINIMAL_OFFLINE_20261024",
+      "title": "Reduce P1.5 automatic CI to two offline regression workflows",
+      "stage": "CI_SIMPLIFICATION / OPERATOR_APPROVED",
+      "types": [
+        "TEST",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Removed five historical, document and duplicate regression workflows; retained offline Python safety smoke and apps/web npm compatibility.",
+      "details": [
+        "Python runs offline mock tests for RealExecutor, Step5C, Broker read/write, UEF-9 and Scanner/Monitor/Reporter/Operator UI in normal and optimized modes.",
+        "Web runs only for apps/web or its workflow changes: npm ci, npm test and npm run build.",
+        "Historical test tools remain available for manual use; no production safety implementation or test expectation changed."
+      ],
+      "impact": "Documentation-only changes no longer start long historical CI jobs.",
+      "sources": [
+        ".github/workflows/p15-shared-candidate.yml",
+        ".github/workflows/p15-integration-crossbranch-compat.yml",
         "docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"

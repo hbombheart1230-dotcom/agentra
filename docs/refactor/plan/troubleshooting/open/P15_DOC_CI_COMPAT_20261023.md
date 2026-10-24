@@ -81,3 +81,9 @@
 - 최초 후보 integration@80b6f892: stale direct-CLI assertion 단계는 통과했으나, 옛 SHA(51bb7130)에 D00 경로가 없고 historical patchnotes가 이동 전 RF 문서를 참조해 실패. 또한 B-stage pin부터 현재 diff가 삭제된 옛 RF 경로를 HEAD 트리에 없는 것으로 정확히 판정하지 못함.
 - 수정: 과거 문구 검사는 역사 계약 검사 자체에 위임, RF 이동으로 사라진 옛 경로만 차집합에서 제외, 패치노트의 역사 RF 경로는 동일 ID가 현행 4개 상태 폴더 중 정확히 하나에 있을 때만 수락.
 - 원래 16개 역사적 누락 소스와 비-RF 소스 경로에 대한 차단은 유지. 새 exact integration SHA CI 재확인 전 DONE 불가.
+
+## 2026-10-24 — CI 최소화 적용
+
+- 운영자 명시 승인으로 integration의 7개 workflow를 2개로 축소했다. 역사 SHA fetch, 문서 문자열 검사, 고정 경로 인벤토리 및 중복 T3/T4 회귀 workflow 5개는 자동 실행에서 제거했다. Python 검증 도구와 테스트 파일은 삭제하지 않아 필요 시 수동 실행할 수 있다.
+- 남은 Python workflow는 mock/offline에서 RealExecutor 기본 차단, Step5C 승인·중복 실행, Broker read/write 분리, UEF-9 권한, Scanner·Monitor·Reporter·Operator UI를 normal과 `python -O`로 실행한다. Web workflow는 `apps/web` 변경에서만 npm ci/test/build를 실행한다.
+- main·거래 안전 구현·테스트 기대값·D00/D01/D02·RF 상태는 변경하지 않았다.

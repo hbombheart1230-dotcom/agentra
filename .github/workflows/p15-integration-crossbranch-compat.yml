@@ -1,79 +1,27 @@
-name: P1.5 Integration Reporting and Web Compatibility
+name: P1.5 Web Compatibility
+
 on:
   push:
-    branches:
-      - integration/p1.5
-      - main
+    branches: [integration/p1.5]
+    paths:
+      - 'apps/web/**'
+      - '.github/workflows/p15-integration-crossbranch-compat.yml'
   pull_request:
-    branches:
-      - main
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - '.github/workflows/p15-integration-crossbranch-compat.yml'
   workflow_dispatch:
+
 permissions:
   contents: read
+
+concurrency:
+  group: p15-web-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  reporting-compat:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    env:
-      PYTHONDONTWRITEBYTECODE: '1'
-      PYTEST_ADDOPTS: '-p no:cacheprovider'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # history-dependent stage-pinned contract tests (BASE..HEAD diff)
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-      - run: python -m pip install --upgrade pip && pip install -r requirements.txt
-      - name: Hydrate exact T3 / S1 historical source blobs (read-only, fail-closed)
-        shell: bash
-        run: |
-          set -euo pipefail
-          git fetch --no-tags origin 6849bed4af358c214f63011a0d58ef760ca79fa0 613a945d2b27e735d4019cdc85b4660f2c891d8f
-          git cat-file -e '6849bed4af358c214f63011a0d58ef760ca79fa0:graphs/nodes/strategist_node.py'
-          git cat-file -e '613a945d2b27e735d4019cdc85b4660f2c891d8f:apps/operator_ui/data_access_brief_input_projection.py'
-          test "$(git rev-parse --is-shallow-repository)" = false
-      - name: Combined T4 PR5 Reporting, Scripts and UI API regression (no live execution)
-        run: |
-          python -m pytest -q -p no:cacheprovider \
-            tests/test_reporting_relocation_imports.py \
-            tests/test_diagnostics_shared_owners.py \
-            tests/test_baseline_shared_owners.py \
-            tests/test_diagnostic_queries_work_order01.py \
-            tests/test_scripts_issue8_followup.py \
-            tests/test_scripts_target_tree_compat_audit.py \
-            tests/test_patch_notes_sync.py \
-            tests/apps/api/test_patch_notes.py \
-            tests/test_trade_report_ai.py \
-            tests/test_p166_v1052_candidate_risk_migration.py \
-            tests/test_p167_v2053_scanner_context_migration.py \
-            tests/test_p168_wave_b_shim_verifier_negatives.py \
-            tests/test_p171_v3055_scanner_projection_migration.py \
-            tests/test_p172_v4056_scanner_policy_migration.py \
-            tests/test_p172_strategist_s1_057_migration.py \
-            tests/test_p173_p058_integration_contracts.py \
-            tests/test_p169_broad_failure_evidence.py \
-            tests/test_scanner_candidate_risk.py \
-            tests/test_operator_ui.py \
-            --deselect tests/test_operator_ui.py::test_operator_brief_input_paths_fallback_to_trade_root_not_reports_dir
-  baseline-lf-windows-native:
-    runs-on: windows-latest
-    timeout-minutes: 20
-    env:
-      PYTHONDONTWRITEBYTECODE: '1'
-      PYTEST_ADDOPTS: '-p no:cacheprovider'
-      PRODUCTION_WRITE_AUDIT_MODE: 'full'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install offline reporting test dependencies
-        run: python -m pip install "pytest>=8,<10" -r requirements.txt
-      - name: Required native-Windows Q10/Q12 baseline LF byte contract (two parameterizations)
-        run: python -m pytest -q -p no:cacheprovider tests/test_baseline_shared_owners.py::test_pipeline_io_facades_preserve_bytes_and_error_contract
-  web-build-and-test:
+  web:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
