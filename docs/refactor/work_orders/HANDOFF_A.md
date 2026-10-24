@@ -2,7 +2,7 @@
 
 ## sched-26 (2026-10-24, RF-015 Monitor agent)
 
-- RUN_ID: 2026-10-24T-claude-a-sched-26 | BASE a5ff2436c246fe5cbdaf568fdfd2f2253f09403c | integration c0d5e840266c04a9156f76d8bf92bcf719558327
+- RUN_ID: 2026-10-24T0118Z-claude-a-sched-26 (직전: sched-25)
 - RF-015 `libs/agents/monitor/` 19/19 파일: BASE `63182ab2` 대비 diff 0 (이미 owner 위치, libs/runtime/monitor* 소비자 wrapper 존재) → **KEEP_VERIFIED**, 소스 변경 없음.
 - 소비자 테스트(4파일 test_p173_p058_integration_contracts / test_shared_role_contracts / test_work_monitor_continuous / test_work_monitor_role_contracts): normal·`-O` 각각 **253 passed / 11 failed**. 11 실패는 모두 역사적 B-stage allowlist 가드(`libs/reporting/q8_historical_review.py` 등 reporting 경로 'unapproved') 및 그 mutation 변형이며 monitor 경로 무관. 오라클 수정 안 함. BASE 동적 재현 NOT_RUN.
 - PEER NOT_RUN, hosted CI NOT_RUN, push 대상 HANDOFF_A.md만. 티키타카 실행 리스트: 호출 0건 (현 CURRENT는 상대 CLI 호출 의무 폐지).
@@ -136,6 +136,14 @@
 - 판정(A의 읽기 전용 확인): RF-002 KEEP 증거 **REMOTE_PEER_PASS 후보(범위 한정: 정적 9/9 blob + 소비자 81 normal/-O)**, RF-001 2-source overlay 141 **재현 PASS**(전체 RF PASS 아님). RF-013/018은 B peer 대기, RF-014는 sched-24 KEEP_VERIFIED 제출 후 B peer 대기, RF-020 범위 한정 수락 유지.
 - CI: integration `a872bbbf` exact-SHA 미조회 UNKNOWN; 마지막 직접 확인(CURRENT 인용) `af0caf77` 1 SUCCESS / 4 FAILURE, `500b358e` 1/4.
 - GPT_ACTION_REQUIRED: (1) RF-002 A scoped peer 결과 수용과 verification 큐 이동 여부. (2) RF-001 2-source 선별 통합·core side-effect·hosted GREEN 경로. (3) RF-014 KEEP_VERIFIED 수용 및 B peer 배정(sched-24). (4) 기존 CI_RED 임시 브랜치 정리, RF-021/RF-074 항목은 변동 없음.
+
+### sched-26 (2026-10-24T0118Z): RF-015 Monitor agent 신규 배정 — 전수 판정 KEEP_VERIFIED (소스 변경 없음)
+- 기준: integration `c0d5e840266c04a9156f76d8bf92bcf719558327`(CURRENT: A=RF-015 Monitor agent 19 owner files `libs/agents/monitor/`, RF-014→verification/claude·RF-002→verification/codex 큐 접수), A 시작 HEAD `a5ff2436c246fe5cbdaf568fdfd2f2253f09403c`, B `72db08eecdb90f6266d47cf207bb807b525b75a0`(HANDOFF_B 1파일만 변경). 코드 SHA 변경 없음.
+- **정적 판정(CSV RF-015 19행):** BASE `63182ab2` 대비 blob 동일 — integration 19/19, A HEAD 19/19, B HEAD 19/19. `libs/agents/monitor/` 실제 파일 19개, CSV 밖 파일 0. 줄 수 최대 337(policy_trace_views.py), 290(observability.py), 285(cycle_output_projection.py), 271, 253, 192… 나머지 ≤173 → 분리 대상 대형 모듈 없음(이미 events 2 + projections 17 단일 책임 Owner로 분할). 파일별: 19 KEEP_VERIFIED(MOVE/WRAPPER 대상 없음; 대응 `libs/runtime/monitor/*` 쪽 WRAPPER는 RF-020 소유라 읽기 전용).
+- **import·소비자:** 19개 모듈 각각 별도 프로세스에서 `import <module>` **19/19 성공**(RF-021/026 순환 import 체인에 걸리지 않음). `libs.agents.monitor` 소비자: `libs/runtime/monitor` 14, `libs/runtime/monitor_exit` 4, `libs/runtime` 4, `scripts/refactor` 1 — 모두 타 RF 소유(RF-020/021/026 등)라 수정하지 않음. 이동·분할 시 소비자 import 변경이 필요하고 순수 부작용 이득 없음 → 추가 분할 보류(무의미 분할 금지).
+- **테스트(integration c0d5e840 detached worktree):** 직접 참조 4파일(`test_p173_p058_integration_contracts`, `test_shared_role_contracts`, `test_work_monitor_continuous`, `test_work_monitor_role_contracts`) normal/-O 각각 **253 passed / 11 failed**. 11 failed = `test_shared_role_contracts.py` 10 + `test_work_monitor_role_contracts.py` 1, 전부 동일 원인 'B-stage composed unexpected/missing inventory'(현재 운영 문서 RF/STATUS/verification 경로가 역사 B-stage 목록 밖; CI_RED 트랙, 오라클 불변). 두 공유 계약 파일을 제외한 monitor 동작 테스트: normal/-O 각각 **76 passed / 0 failed**. 합집합 23파일(직접 4 + RF-020 소비자 19, `commander_pure_v1_admission` 제외): normal/-O 각각 **781 passed / 11 failed**(동일 11건).
+- 한계: 독립 peer 검증 NOT_RUN(Codex B 별도 세션 대기), 통합 NOT_RUN, hosted CI UNKNOWN, 소스 변경 0이라 patchnotes 변경 없음. RF-015 DONE 아님 — KEEP_VERIFIED 증거 제출 단계. 외부 소비자 부작용(RF-020/021/026 경계) 독립 판정은 해당 소유 RF 몫.
+- GPT_ACTION_REQUIRED: (1) RF-015 KEEP_VERIFIED 수용 및 verification/claude 큐 이동·B peer 배정. (2) 'B-stage composed inventory' 계열 11건은 CI_RED 트랙(오라클 승인 필요, A 미수정). (3) RF-002 A scoped peer(sched-25), RF-013/018/014 B peer 대기, RF-001 선별 통합·RF-021 안전 HOLD·임시 브랜치 정리는 기존 요청 유지.
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
 
