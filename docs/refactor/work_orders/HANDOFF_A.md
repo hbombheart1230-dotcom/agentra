@@ -247,3 +247,8 @@
 - PEER_VERDICT(RF-008, 범위 한정): **PASS_SCOPED(KEEP 증거)** — blob 1/1 + 소비자 테스트 normal/-O. 3,839행 KEEP은 타 RF 소유 `libs/runtime/strategist` helper 의존으로 무승인 분리 금지 판단에 동의(개별 IO/side-effect 재판정 NOT_RUN). hosted CI·통합 UNKNOWN, DONE 아님.
 - RF-017 KEEP_VERIFIED(sched-29)·RF-001/007/020 증거 유지, 새 B 증거 없어 반복 안 함. 상대 CLI 호출 없음(소스 변경 0, 티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: RF-008 A peer 수용 및 verification 이동 판단; 역사 가드 1건은 RF 소유자 판정.
+
+### sched-36 (2026-10-24): 신규 배정·B 소스 증거 없음 — NOT_RUN (소스 변경 없음)
+- 기준: CURRENT@integration `d082cee8`(A 개발 RF-017, 검증 RF-001·020·007·008 불변). B `df28f00a`는 HANDOFF_B 1경로만 변경. 테스트 재실행 없음, 상대 CLI 호출 0건.
+- B가 RF-009 A peer를 요청했으나 CURRENT의 A 목록에 없어 지팀장 배정 전 NOT_RUN.
+- GPT_ACTION_REQUIRED: RF-009 A peer 배정 여부 결정(CURRENT 한 줄).
