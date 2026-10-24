@@ -4313,3 +4313,10 @@ Sources: `scripts/refactor/shared_strategist_contracts.py`, `.github/workflows/p
 - 자동 CI를 7개에서 2개로 축소했다. Python은 mock/offline 안전·역할 smoke를 normal과 `python -O`로 실행하고, Web은 `apps/web` 변경에서 npm ci/test/build만 실행한다. 역사 SHA fetch, 문서 문자열 및 중복 경로 검사는 자동 CI에서 제거했다.
 
 Sources: `.github/workflows/p15-shared-candidate.yml`, `.github/workflows/p15-integration-crossbranch-compat.yml`, `docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md`.
+
+## 2026-10-24 — P15_RF001_BRIEF_SANITATION_OWNER_20261023 (scoped integration)
+**Stage:** RF-001 2-source selective integration / full RF still verification
+
+- Codex B `8bde643d`에서 `data_access_brief.py`·`data_access_brief_sanitation.py` 2개 파일만 선별. 기존 facade 시그니처·동적 monkeypatch·예외 동등성 유지. A 독립 read-only overlay normal/-O 각 141 PASS(기존 sched-25).
+- B 작업 브랜치 33파일 일괄 병합은 불허. 나머지 31개 RF-001 파일과 core 2,308행의 side-effect·동적 소비자 범위는 별도 검증 대기.
+- main/실거래/Broker/Step5C/UEF/오라클 변경 없음. 소스 반영 SHA의 신규 hosted CI 성공 전 RF-001 전체 DONE 아님.

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 357,
+  "entry_count": 358,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9430,6 +9430,29 @@
         "docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "version": "P15_RF001_BRIEF_SANITATION_OWNER_20261023",
+      "title": "Move Operator Brief cleaning helpers to sanitation owner",
+      "stage": "P1.5 RF-001 scoped 2-source integration (full RF acceptance still pending)",
+      "types": [
+        "REFACTOR"
+      ],
+      "status": "current",
+      "summary": "Keep the public brief facade while moving text/list cleaning bodies into the existing sanitation owner with call-time facade resolution.",
+      "details": [
+        "apps/operator_ui/data_access_brief.py preserves clean_brief_text and clean_brief_list signatures and delegates to sanitation implementations using its live module object.",
+        "The list owner calls facade.clean_brief_text at use time, preserving monkeypatch visibility, blank-value behavior, exception behavior and public import compatibility.",
+        "No broker, Supervisor, Executor, Step5C, UEF, CI oracle, workflow or live-trading behavior changed. Historical B-stage inventory failure remains a separate admission issue and is not relaxed.",
+        "After Claude A read-only exact candidate parity and 141/141 normal/-O isolated overlay PASS, GPT admits only two owner files, not the divergent B branch or the other 31 RF-001 owned paths.",
+        "Full RF-001 completion remains blocked on core/consumer side-effect contract and final independent RF acceptance."
+      ],
+      "impact": "Pure Operator UI text sanitation ownership only; no runtime authority or external IO change.",
+      "sources": [
+        "apps/operator_ui/data_access_brief.py",
+        "apps/operator_ui/data_access_brief_sanitation.py"
       ]
     }
   ]
