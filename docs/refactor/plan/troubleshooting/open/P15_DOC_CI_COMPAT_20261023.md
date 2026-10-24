@@ -76,3 +76,8 @@
 - 수리 범위: shared_strategist_contracts.py의 RF-001~093 상태 문서 경로만 이동 허용하되 전수 93건 중복·누락 검사; 현행 D00/D01/D02는 독립 read-only peer/안전 계약을 검사하고 역사적 문자열은 B_FROZEN_GREEN@51bb7130 스냅샷에만 확인.
 - 양쪽 YAML은 기존 승인된 진단 워크플로를 기준으로 정확한 교체 블록 1곳만 허용하며 소스·권한/거래 가드 범위 확장 금지.
 - 수락: 독립 검증, normal 및 python -O, 무단 소스/테스트 변조 거부, 정확한 새 integration SHA hosted 필수 CI 5/5 GREEN 전까지 CI_REPAIR_PENDING. RF DONE 승격 금지.
+
+## 2026-10-24 — 최초 hosted CI 재현에 따른 동일 수리 보완
+- 최초 후보 integration@80b6f892: stale direct-CLI assertion 단계는 통과했으나, 옛 SHA(51bb7130)에 D00 경로가 없고 historical patchnotes가 이동 전 RF 문서를 참조해 실패. 또한 B-stage pin부터 현재 diff가 삭제된 옛 RF 경로를 HEAD 트리에 없는 것으로 정확히 판정하지 못함.
+- 수정: 과거 문구 검사는 역사 계약 검사 자체에 위임, RF 이동으로 사라진 옛 경로만 차집합에서 제외, 패치노트의 역사 RF 경로는 동일 ID가 현행 4개 상태 폴더 중 정확히 하나에 있을 때만 수락.
+- 원래 16개 역사적 누락 소스와 비-RF 소스 경로에 대한 차단은 유지. 새 exact integration SHA CI 재확인 전 DONE 불가.

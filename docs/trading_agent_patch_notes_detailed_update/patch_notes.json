@@ -9393,7 +9393,8 @@
       "details": [
         "RF-001..RF-093 may move only among pending/verification/ done paths, with exact conservation and no duplicate/out-of-range RF; source/CI paths otherwise closed.",
         "Two existing T4/Design Guard YAMLs replace obsolete D7/DOC_FREEZE strings with live D00-D02 independent read-only roles, while proving the old literal contract against pinned CI-green Git SHA.",
-        "Unreviewed source, Broker/Step5C/UEF/authority, CI bypass and main remain forbidden; independent validation and exact hosted CI green required before accepting the repair."
+        "Unreviewed source, Broker/Step5C/UEF/authority, CI bypass and main remain forbidden; independent validation and exact hosted CI green required before accepting the repair.",
+        "Hosted CI first run exposed old-path omissions: missing former RF paths are accepted only when a single matching live RF exists; historical patchnote RF references resolve by stable RF identifier; other missing source paths still fail. Obsolete D00 string proof is not required on an ancient SHA that predates D00."
       ],
       "impact": "Prevent normal RF state movement and current process docs from repeatedly failing historical frozen-stage CI while preserving source/safety regression gates.",
       "sources": [

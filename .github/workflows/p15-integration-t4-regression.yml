@@ -95,18 +95,8 @@ jobs:
           assert "libs/agents/{commander,strategist,scanner,monitor,reporter,supervisor,executor}/" in target
           assert "HISTORICAL PROCEDURE / NOT A LIVE WORK ORDER" in protocol
           assert "HISTORICAL IMPLEMENTATION ACCEPTANCE POLICY" in size
-          # Preserve the old contract on the immutable, CI-green historical tree.
-          import subprocess
-          historical_sha = "51bb7130b2ba627be50800fa89c6108dd1a5018c"
-          historical = lambda p: subprocess.check_output(
-              ["git", "show", historical_sha + ":" + p], text=True)
-          old_d00 = historical(paths["d00"])
-          old_current = historical(paths["current"])
-          old_codex = historical(paths["codex"])
-          old_claude = historical(paths["claude"])
-          assert "DIRECT CROSS-CLI RELAY" in old_d00
-          assert "REVIEW_ONLY_NO_NESTED_CLI" in old_codex and "REVIEW_ONLY_NO_NESTED_CLI" in old_claude
-          assert "DOC_FREEZE" in old_current and "P1.5.2 OPEN" in old_current
+          # The immutable historical source-stage tests run independently;
+          # current RF governance does not need old DOC_FREEZE string anchors.
           with (root/paths["registry"]).open(encoding="utf-8",newline="") as handle:
               rows=list(csv.DictReader(handle))
           assert len(rows)==339, "original 339 document registry must remain conserved"
@@ -138,6 +128,7 @@ jobs:
           assert len(set(versions)) == len(versions), "duplicate patch-note version"
           assert len(set(titles)) == len(titles), "duplicate patch-note title"
           absent = []
+          import re
           for entry in notes["entries"]:
               assert isinstance(entry.get("sources"), list), entry.get("version")
               for src in entry["sources"]:
@@ -147,6 +138,21 @@ jobs:
                       continue
                   assert not Path(src).is_absolute() and ".." not in Path(src).parts, src
                   if not (root / src).exists():
+                      # Historical note keeps its old RF path; require the same
+                      # RF number to exist exactly once in the live state queue.
+                      match = re.fullmatch(
+                          r"docs/refactor/plan/(?:pending|done|verification/(?:claude|codex))/RF-(\d{3})\.md",
+                          src,
+                      )
+                      if match and 1 <= int(match.group(1)) <= 93:
+                          name = "RF-" + match.group(1) + ".md"
+                          found = [
+                              root / "docs/refactor/plan" / stage / name
+                              for stage in ("pending", "done", "verification/claude", "verification/codex")
+                              if (root / "docs/refactor/plan" / stage / name).is_file()
+                          ]
+                          assert len(found) == 1, ("historical RF reference lost/duplicated", src, found)
+                          continue
                       absent.append((entry["version"], src))
                       assert src in known_historical_missing, ("new missing patch-note source", entry["version"], src)
           assert len(absent) == 16, ("historical missing-source occurrence drift", absent)

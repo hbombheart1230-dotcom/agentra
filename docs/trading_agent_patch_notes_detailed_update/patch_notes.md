@@ -4302,6 +4302,7 @@ Sources: `docs/refactor/work_orders/CURRENT.md`, `docs/ENGINEERING_DELIVERY_POLI
 
 - 과거 B-stage 검사에서 현재 RF 상태 문서 이동을 소스 범위 이탈로 판단하던 오류를 개선. 원본 93개 RF의 중복·누락·비정상 경로를 계속 거부.
 - 두 필수 워크플로의 구 DOC_FREEZE·상대 CLI 문자열 검증을 현재 D00/D01/D02의 독립 read-only 검증 계약으로 교체. 역사적 원문 계약은 고정된 CI GREEN SHA 51bb7130에서 유지.
+- 이전 상태의 RF 문서가 없어져도 동일 RF ID가 상태 폴더 한 곳에 존재하는지 검사. 과거 패치노트의 RF 참조도 동일 ID로 해석하고 일반 누락 소스 16건 검증은 그대로 유지.
 - 소스/실거래/안전 검사·CI oracle 임의 완화 불가. peer 및 normal/-O·hosted CI가 실제 통과하기 전까지 CI_REPAIR_PENDING.
 
 Sources: `scripts/refactor/shared_strategist_contracts.py`, `.github/workflows/p15-integration-t4-regression.yml`, `.github/workflows/p152-r2c-residual-regression.yml`, `docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.json`, `docs/trading_agent_patch_notes_detailed_update/patch_notes.md`.
