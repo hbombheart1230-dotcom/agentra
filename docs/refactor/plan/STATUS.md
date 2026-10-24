@@ -15,7 +15,7 @@
 | 범위 | 파일 | 독립 작업 | 상태 |
 |---|---:|---|---|
 | `.github/` | 7 | [RF-092](pending/RF-092.md) | 미판정 |
-| `apps/` | 240 | [RF-001](verification/codex/RF-001.md) · [RF-002](verification/codex/RF-002.md) · [RF-003](verification/codex/RF-003.md) · [RF-004](verification/codex/RF-004.md) · [RF-005](verification/codex/RF-005.md) · [RF-006](pending/RF-006.md) · [RF-007](pending/RF-007.md) | 미판정 |
+| `apps/` | 240 | [RF-001](verification/codex/RF-001.md) · [RF-002](verification/codex/RF-002.md) · [RF-003](verification/codex/RF-003.md) · [RF-004](verification/codex/RF-004.md) · [RF-005](verification/codex/RF-005.md) · [RF-006](verification/codex/RF-006.md) · [RF-007](pending/RF-007.md) | 미판정 |
 | `config/` | 8 | [RF-090](pending/RF-090.md) | 미판정 |
 | `data/` | 25 | [RF-091](pending/RF-091.md) | 미판정 |
 | `deploy/` | 33 | [RF-087](pending/RF-087.md) · [RF-088](pending/RF-088.md) · [RF-089](pending/RF-089.md) | 미판정 |
@@ -56,8 +56,8 @@
 | `libs/supervisor/` | 4 | [RF-060](pending/RF-060.md) | 미판정 |
 | `libs/tools/` | 3 | [RF-061](pending/RF-061.md) | 미판정 |
 
-**RF 상태:** [pending](pending/) **82건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **6건** → [done](done/) **0건** (총 **93건**). 검증 큐는 PASS가 아니라 독립 검증 대기·BLOCKED 포함이며, 최종 DONE은 peer PASS·선별 통합·정확한 통합 SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
+**RF 상태:** [pending](pending/) **81건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **7건** → [done](done/) **0건** (총 **93건**). 검증 큐는 PASS가 아니라 독립 검증 대기·BLOCKED 포함이며, 최종 DONE은 peer PASS·선별 통합·정확한 통합 SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
 
-**현재 배정:** [CURRENT](../work_orders/CURRENT.md) 참조 (A RF-017 개발·Codex 작성 RF 독립 검증 / B RF-006 개발·Claude 작성 RF 독립 검증). 안전 RF-021 HOLD 및 무승인 CI 오라클 변경 금지.
+**현재 배정:** [CURRENT](../work_orders/CURRENT.md) 참조 (A RF-017 개발·Codex 작성 RF 독립 검증 / B RF-007 개발·Claude 작성 RF 독립 검증). 안전 RF-021 HOLD 및 무승인 CI 오라클 변경 금지.
 
 **전수 소유권:** [3985파일↔RF CSV](FILE_COVERAGE_63182ab2.csv) · [P1.5.0~11 합격 기준](criteria/). 회차별 실행 이력은 Git 이력·RF·HANDOFF에서 확인한다.
