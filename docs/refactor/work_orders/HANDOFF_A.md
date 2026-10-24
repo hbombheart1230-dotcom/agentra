@@ -201,3 +201,10 @@
 - **RF-005 peer (B HEAD `fe98fa812697bf7af96eac2915aab8f4e0b148e1`):** `apps/api` 전체 100파일 blob이 BASE `63182ab2`와 **동일(diff 0)** — CSV RF-005 40개 포함. `apps.api.*` 99개 모듈 import **99/99 성공**(fastapi/pydantic/httpx는 임시 `--target`에만 설치, 저장소·전역 환경 무변경), `apps.api.main.app` 로드 `routes` 15. `tests/apps/api` 20파일 normal **78 passed / 1 skipped**, `python -O` **78 passed / 1 skipped**(skip 1 = Windows symlink 환경). 실패 0.
 - PEER_VERDICT(RF-005, 범위 한정): **PASS_SCOPED(KEEP 증거)** — blob·import·API 테스트 normal/-O. 라우터별 IO/side-effect 개별 재판정·hosted CI·통합은 NOT_RUN/UNKNOWN. RF-020은 sched-15 증거 유지(528 반복 안 함, 새 B 증거 없음). 상대 CLI(codex exec) 호출 없음 — 소스 변경 0이라 리뷰 대상 후보 없음(티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: RF-017 KEEP_VERIFIED 수용 및 B peer 배정; RF-005 A peer 수용 및 verification 이동 판단. 역사 T3 가드/CI_RED는 별도 트랙.
+
+### sched-30 (2026-10-24): RF-006 Web features 독립 peer (소스·오라클 변경 없음)
+- 기준: CURRENT@integration `c3635435`(A: RF-017 개발 / 검증 RF-001·002·003·004·020·005·006), A 시작 `532930c4`, B HEAD `0796a7dfb6fdf3bf561e5bc036c830b1becb8095`(코드 SHA `fe98fa81` 대비 HANDOFF_B 1파일만 변경). 나머지 RF는 sched-16/25/27/28/29 증거 유지, 반복 안 함. RF-017은 sched-29 KEEP_VERIFIED 유지(신규 지시 없음).
+- **RF-006 (60/60):** `apps/web/src/features` 파일 60개, BASE `63182ab2` 대비 diff B HEAD 0 / integration 0. `apps/web` 전체 BASE 대비 변경 0.
+- **테스트(저장소 밖 detached worktree):** `npm ci` 성공(146 packages), `npm test -- --run` **7파일/16 passed, exit 0**, `npm run build` **exit 0**(vite built). B 보고(16 PASS/build 0)와 일치. TypeScript라 `python -O` 비해당.
+- PEER_VERDICT(RF-006, 범위 한정): **PASS_SCOPED(KEEP 증거)** — blob 60/60 + vitest + build. 기능별 IO/UI 개별 재판정·e2e·hosted CI·통합은 NOT_RUN/UNKNOWN, DONE 아님. 상대 CLI 호출 없음(소스 변경 0, 티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: RF-006 A peer 수용 및 verification 이동 판단; 기존 항목(RF-021 안전 HOLD, CI_RED 오라클, RF-001 선별 통합) 유지.
