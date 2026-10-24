@@ -252,3 +252,8 @@
 - 기준: CURRENT@integration `d082cee8`(A 개발 RF-017, 검증 RF-001·020·007·008 불변). B `df28f00a`는 HANDOFF_B 1경로만 변경. 테스트 재실행 없음, 상대 CLI 호출 0건.
 - B가 RF-009 A peer를 요청했으나 CURRENT의 A 목록에 없어 지팀장 배정 전 NOT_RUN.
 - GPT_ACTION_REQUIRED: RF-009 A peer 배정 여부 결정(CURRENT 한 줄).
+
+### sched-37 (2026-10-24): 신규 배정·B 소스 증거 없음 — NOT_RUN (소스 변경 없음)
+- 기준: CURRENT@integration `c22e2e1a`(A 개발 RF-017, 검증 RF-001·020·007·008 불변; 변경분은 T00~T09 문서/카운트뿐). B 브랜치 HEAD `df28f00a` 불변(신규 커밋 0).
+- RF-017 KEEP_VERIFIED·RF-001/007/008/020 peer 증거 유지, 새 증거 없어 테스트 재실행 안 함. 상대 CLI 호출 0건(티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: 변동 없음(RF-009 A peer 배정 여부 미결).
