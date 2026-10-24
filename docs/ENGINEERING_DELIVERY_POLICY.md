@@ -18,7 +18,7 @@
 - 개발은 기존 코드 재사용·의미 있는 분리 또는 KEEP_VERIFIED를 선택하고 import/call/DTO/State/IO/예외/side effect/거래 안전의 동등성을 확인한다. 소유 경계·양성/음성·실패 경로를 포함한 **위험 표적 테스트**를 normal과 `python -O`로 수행하고 정확한 후보 SHA를 push한다. 단순 KEEP도 BASE blob과 소비자 계약 증거가 필요하다.
 - 상대 검증은 **별도 독립 read-only 세션**에서 정확한 BASE→후보 SHA와 변경 경계만 확인한다. 개발자가 상대 CLI를 직접 호출할 의무가 없다. 자체 PASS/exit 0/CI GREEN은 peer PASS가 아니다. 검증자는 명시적 PASS/REWORK/BLOCKED, 테스트·exit/NOT_RUN, 실패 근거를 남긴다. 동일 SHA의 불필요한 3,000개 테스트 반복·감사 재귀를 금지하며 새 위험이 있을 때만 범위를 확장한다.
 - **검증 속도 게이트:** 실패는 동일 명령·환경의 BASE와 후보 exact SHA를 비교해 기존 CI_RED와 신규 회귀를 분리하고, 재현하지 못한 것은 UNKNOWN으로 남긴다. 지팀장은 새 peer 증거가 도착한 **해당 점검 회차에** PASS/REWORK/BLOCKED와 다음 조치를 판정해 RF에 기록한다. 범위 한정 PASS는 최종 PASS나 DONE으로 승격하지 않는다.
-- **Quick Fix 예외:** GPT가 수정 **전에** CURRENT에 RF·정확한 파일 경로·기준 SHA·일시 writer 이전을 명시 승인한 작은 비안전 import/path/typo/fixture 수정만 검증자의 **별도 수정 역할 세션**에서 기존 A/B 브랜치에 허용한다. 작성한 검증자는 그 SHA에 최종 독립 PASS 불가; 반대 비작성자가 새 exact SHA를 다시 검증한다. 구조·공개 계약·거래 안전·CI 오라클·교차 소유권은 Quick Fix 불가. CURRENT 포인터 정책을 유지하도록 승인 기록은 해당 RF에 상세화하고 CURRENT에는 그 RF 경로만 지정한다.
+- **Quick Fix 예외:** GPT가 수정 **전에** 해당 RF에 정확한 파일 경로·기준 SHA·일시 writer 이전의 승인 근거를 기록하고 CURRENT에는 해당 RF 경로만 지정한 작은 비안전 import/path/typo/fixture 수정만 검증자의 **별도 수정 역할 세션**에서 기존 A/B 브랜치에 허용한다. 작성한 검증자는 그 SHA에 최종 독립 PASS 불가; 반대 비작성자가 새 exact SHA를 다시 검증한다. 구조·공개 계약·거래 안전·CI 오라클·교차 소유권은 Quick Fix 불가. CURRENT 포인터 정책을 유지하도록 승인 기록은 해당 RF에 상세화하고 CURRENT에는 그 RF 경로만 지정한다.
 - peer PASS 후 **검증 세션과 분리된 통합 단계**에서 승인 RF 경로만 integration 최신 HEAD에 단일 writer/CAS·비강제 선별 반영한다. 전체 A/B 브랜치 병합 금지. writer 잠금/원자성·소유권·충돌 증명이 없으면 INTEGRATION_BLOCKED. 정확한 **새 integration SHA**에 normal/-O 회귀 및 필수 hosted GitHub Actions GREEN을 확인한 뒤에만 GPT가 done 판정한다. CI RED/PENDING/NOT_RUN/UNKNOWN은 PASS가 아니다. 다른 SHA의 과거 CI PASS를 승계하지 않는다.
 
 ## 4. 절대 안전·예외
