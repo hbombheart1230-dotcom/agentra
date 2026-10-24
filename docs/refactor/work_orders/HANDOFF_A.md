@@ -2,7 +2,7 @@
 
 ## sched-26 (2026-10-24, RF-015 Monitor agent)
 
-- RUN_ID: 2026-10-24T0517Z-claude-a-sched-31 (직전: sched-30)
+- RUN_ID: 2026-10-24T0918Z-claude-a-sched-35 (직전: sched-34)
 - RF-015 `libs/agents/monitor/` 19/19 파일: BASE `63182ab2` 대비 diff 0 (이미 owner 위치, libs/runtime/monitor* 소비자 wrapper 존재) → **KEEP_VERIFIED**, 소스 변경 없음.
 - 소비자 테스트(4파일 test_p173_p058_integration_contracts / test_shared_role_contracts / test_work_monitor_continuous / test_work_monitor_role_contracts): normal·`-O` 각각 **253 passed / 11 failed**. 11 실패는 모두 역사적 B-stage allowlist 가드(`libs/reporting/q8_historical_review.py` 등 reporting 경로 'unapproved') 및 그 mutation 변형이며 monitor 경로 무관. 오라클 수정 안 함. BASE 동적 재현 NOT_RUN.
 - PEER NOT_RUN, hosted CI NOT_RUN, push 대상 HANDOFF_A.md만. 티키타카 실행 리스트: 호출 0건 (현 CURRENT는 상대 CLI 호출 의무 폐지).
@@ -161,6 +161,16 @@
 - 판정(A 독립 peer): RF-007 **KEEP 증거 REMOTE_PEER_PASS 후보(범위 한정: 정적 38/38 + vitest 16/16 + build 0)**, **E2E는 BLOCKED(데이터 fixture)**. 통합·hosted CI·최종 판정은 GPT. `package.json`의 의존성이 `latest`라 시점별 결과가 달라질 수 있는 재현성 위험을 기록(변경 안 함).
 - CI: integration `e008c08e` exact-SHA 미조회 UNKNOWN; 마지막 인용 `c0d5e840` Scripts 1 SUCCESS / 4 FAILURE.
 - GPT_ACTION_REQUIRED: (1) RF-007 A 범위 한정 peer 수용, E2E 격리 mock API/fixture(저장소 밖 임시 또는 승인된 fixture) 승인 여부. (2) RF-006 peer(sched-30) 수용. (3) 사라진 임시 브랜치 2개의 보존 태그/SHA 기록 확인(59e34204·7e06e979 도달 가능성). (4) 기존 요청 유지: RF-017/016 KEEP 수용, RF-014 peer 대상 SHA, RF-013/RF-074, RF-001 선별 통합, RF-021, CI_RED 오라클 승인.
+
+### sched-35 (2026-10-24T0918Z): RF-001 통합 SHA 사후 검증 (A 독립, 읽기 전용, 소스·오라클 변경 없음)
+- 기준: integration `7e3190e064420e03b5eb2124122a33ee07b7c9aa`(CURRENT: A 개발 RF-017, A 검증 RF-001·020·007·008; 지팀장이 RF-002~006을 done으로 이동하고 RF-001 sanitation을 `1c4d191f51437097675cd5099865912d29205198`로 통합), A 시작 HEAD `b195fbfc5591298fe4ee5473ba094435228f205a`(sched-34: RF-008 peer), B `df28f00ab019c112dfe91dfce7a9b51bc9966f37`(HANDOFF_B만 변경).
+- **통합 내용 확인(RF-001, 통합 SHA 1c4d191f):** 변경 5경로 = 소스 2(`apps/operator_ui/data_access_brief.py`, `data_access_brief_sanitation.py`) + RF-001 큐 문서 + patchnotes JSON/MD. 소스 diff의 해시가 B 후보 `744c6e8c..8bde643d` 소스 diff와 **동일**(통합은 B 후보를 정확히 그대로 수용). integration의 두 소스 blob이 `8bde643d`의 blob과 동일. patchnotes: `entry_count` 357→358, 기존 357 entries가 접두로 그대로 보존, 추가 1건 `P15_RF001_BRIEF_SANITATION_OWNER_20261023` → "B의 349-entry JSON으로 덮어쓰지 말 것" 조건 충족.
+- **통합 SHA 동작 parity(integration 7e3190e0 vs 통합 전 부모 3fcb7870의 원본 모듈):** 공개 이름 누락 0, 시그니처 동일, 151케이스(text 30 + list 11×11) 차이 **0**, monkeypatch 의미 동일. 명령 `python <parity>` / `python -O <parity>` 모두 exit 0 (스크립트는 저장소 밖 비커밋).
+- **소비자 회귀(integration에 존재하는 21 테스트 파일: brief/operator_ui/operator_brief 참조 + operator_brief_pure_parity + run_detail_projection + operator_ui + phase2):** integration 7e3190e0 normal/-O 각각 **460 passed / 7 failed / 113 errors**. 통합 전 부모 3fcb7870에서 같은 21파일: **460 / 7 / 113 (동일)**, 실패·오류 항목 집합 차이 양방향 0 → 통합이 만든 새 실패 0. 잔존 실패는 기존 역사 계약(`test_p15_integration_completion` 113 errors 등), 오라클 불변.
+- **hosted CI(통합 SHA):** `1c4d191f`의 "P1.5 Shared Offline Safety"(run 40079749220, https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40079749220) **completed / success**. 이전 `edb6762d`도 success(run 40073430254). `7e3190e0`(문서·큐 커밋)에는 Actions 실행이 목록에 없음(UNKNOWN). "P1.5 Web Compatibility"는 1c4d191f에서 실행되지 않음(경로 조건으로 보임, 확인 못함). 새 축소 CI가 필수 검사 전체인지는 GPT가 판정.
+- 한계: RF-001 core(`data_access_core.py`)와 19 divergent 파일은 이번 통합 범위가 아님(sanitation 2경로만 통합). RF-001 전체 DONE 아님.
+- RF-007·RF-008·RF-020: 이번 회차 신규 증거 없음(sched-30/31/34 유지). RF-017 KEEP_VERIFIED 제출 완료.
+- GPT_ACTION_REQUIRED: (1) RF-001 sanitation 통합 사후 확인 결과 수용, 잔여 RF-001 core/19 divergent 범위 처리 방침. (2) RF-007 E2E fixture 승인, RF-008/020/017·016 peer·수용 처리. (3) 새 CI에서 'integration 후속 Actions 미실행(문서 커밋)'과 Web Compatibility 경로 조건 확인. (4) RF-013/RF-074, RF-014 peer 대상 SHA, RF-021 안전 HOLD는 기존 유지.
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
 
