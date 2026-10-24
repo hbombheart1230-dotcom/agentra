@@ -34,7 +34,7 @@ tests/
 |---|---|
 | `tests/test_operator_ui.py`, `test_operator_ui_data_access_phase2.py` | UI route/Brief, normal/-O, 읽기만, golden/serialization |
 | `tests/apps/api/test_public_profile.py`, `test_isolation.py`, `test_bounded_reader.py` | API 위험한 경로 접근·민감정보 누수 차단 |
-| `tests/apps/api/test_patch_notes.py`, `tests/test_patch_notes_sync.py` | JSON/MD patchnotes schema+provenance 일치 |
+| `tests/apps/api/test_patch_notes.py` (RF-073), `tests/test_patch_notes_sync.py` (RF-078) | JSON/MD patchnotes schema+provenance 일치; RF-074 독점 파일이 아님 |
 | `tests/test_commander_contract.py`, `tests/test_reporter_agent_trade_entrypoint.py`, `tests/test_scanner_candidate_risk.py` | 공용 import identity·단독 호출·파사드 소비자 parity |
 | `tests/test_monitor_exit_guard.py`, `tests/test_monitor_exit_price_freshness.py` | exit timing/price/tick/SAFE_CONFIRM guards |
 | `tests/test_execution_trace_completeness.py`, `test_execution_plan_closeout_docs.py` | Executor evidence/State safety boundary |

@@ -2,6 +2,29 @@
 
 **기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태: pending 79 / verification 9 / DONE 5** (RF-002~006). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
+## T00~T09 ↔ RF-93 목표 커버리지 대조 (2026-10-24)
+
+아래 표는 **기존 RF 범위의 목표 참조 매핑**이며, 목표 위치로 파일 이동 완료 또는 최종 PASS를 뜻하지 않는다. 93건은 기준선 CSV 3,985개 파일에 한 RF씩 유일하게 매칭되고, 새 문서 경로는 RF-079 논리 Owner 델타로 분리한다.
+
+| 목표 | 기준선 책임 RF | RF 수 | 실물 기반 핵심 보완·차단 |
+|---|---|---:|---|
+| [T02 apps](../architecture/T02_APPS_TARGET.md) | 001~007 | 7 | API services/domain/route는 003/004/005, Operator Brief는 001, 템플릿은 002(DONE), Web features 006(DONE), shell/E2E 007. **T02 잘못된 소유 표기 교정** |
+| [T07 graphs](../architecture/T07_GRAPHS_TARGET.md) | 008~012 | 5 | Strategist 008, Scanner 009, Monitor 010, Commander 011, 실제 Executor·State·pipeline 안전 012. **실행 stub 혼동 교정** |
+| [V3 libs](../architecture/TREE_V3_FROZEN.md) | 013~062 | 50 | 26 패키지 baseline 전수. 7-role public interface 중 2개(`agents/supervisor`, `agents/executor`) 부재: RF-060·048의 안전 설계 검토와 RF-017/044 계약 선행, 물리 생성 미승인 |
+| [T08 scripts](../architecture/T08_SCRIPTS_TARGET.md) | 063~071 | 9 | 진단 063, refactor 064, research 065, examples/maintenance 066, checks 067, generators 068, capture/build 069, launch 070, 기타 root/restart/cleanup 071. **공개 CLI 경로 보존** |
+| [T09 tests](../architecture/T09_TESTS_TARGET.md) | 072~078 | 7 | fixture 072, API/deploy 073, reporting/operator 074, agents 075, safety 076, legacy API 077, global/misc 078. `test_patch_notes_sync.py`는 RF-078 |
+| [T06 docs](../architecture/T06_DOCS_TARGET.md) | 079~086 | 8 | D00=RF-086, refactor/T00~09 신규 docs=RF-079 논리 Owner, research docs=RF-082, 역사·CI 링크 보존 |
+| [T05 deploy](../architecture/T05_DEPLOY_TARGET.md) | 087~089 | 3 | compose/docker 087, trading SAFETY_LOCK 088, m28/m31 OS templates 089 |
+| [T03 config](../architecture/T03_CONFIG_TARGET.md) | 090 | 1 | 시험 설정 8개, safe env/Skill order capability 분리 |
+| [T04 data](../architecture/T04_DATA_TARGET.md) | 091 | 1 | 25개 specs/eval/historic data, `.env` 의심 파일 내용 노출 금지 |
+| [T01 CI](../architecture/T01_GITHUB_CI_TARGET.md) | 092 | 1 | 7→2 축소 이슈 기존 증거로 종결. **신규 SHA의 필수 CI는 별도 검증** |
+| [T00 루트 파일](../architecture/T00_TARGET_TREE.md) | 093 | 1 | 공개 진입·test configs·역사 artifact 11개 |
+| **합계** | **001~093** | **93** | **범위 소유권 100%; 목표별 실행·검증 완료율 별도 미판정** |
+
+**정합성 체크:** 7+5+50+9+7+8+3+1+1+1+1=93. 보완된 주요 RF 개별 문서는 기존 `pending/`·`verification/` 안에서 상태/기존 증거를 보존하며 TARGET/CONSUMERS/ACCEPTANCE 조건을 추가했다. `done/RF-002~006`의 기존 지팀장 승인·SHA는 재작성하지 않았다.
+
+**아직 최종 DONE 불가:** 목표 파일의 실제 OWNER/DESTINATION별 소비자 증거·합격 기준 12개·보호 경계 승인과 exact integration SHA regression/CI가 필요. 미완료 2개 public role의 신규 파일은 소유권 사전 승인 전 물리 생성 불가.
+
 ## T00 목표·현행 구조 정합성 (2026-10-24, 문서-only)
 - [**T00 전체 목표 인덱스**](../architecture/T00_TARGET_TREE.md) → T01~T09는 `.github/apps/config/data/deploy/docs/graphs/scripts/tests` 루트별 **파일 이름·개선 구조·RF**를 제시한다. 26 libs package는 동결 V3와 RF-013~062를 따른다.
 - **현행 Git `d082cee8`**: root singles 11, `.github` **2**, `apps` 240, `config` 8, `data` 25, `deploy` 33, `docs` **1,413**, `graphs` 45, `libs` 1,227, `scripts` 418, `tests` 658 = **4,080**.

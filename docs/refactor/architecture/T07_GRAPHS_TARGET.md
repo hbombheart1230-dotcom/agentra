@@ -29,16 +29,16 @@ graphs/
 ## 최종 Owner·파일별 조치 후보
 | 원본 | 최종 목표 | RF/조건 |
 |---|---|---|
-| `graphs/commander_runtime.py` | 실제 런타임/스케줄 orchestration entry KEEP; pure helper만 libs/agents/commander 또는 libs/runtime/commander에 단일 Owner | RF-008/012, State/timing parity |
-| `graphs/trading_graph.py`, `graphs/nodes/executor_node.py` | 테스트 M17 stub로 KEEP; 실제 주문 경로라고 기술 금지 | RF-008/011 |
-| `graphs/nodes/strategist_node.py` | graph State adapter만; 전략 Frame과 현행 LLM 호출 계약 분리 | RF-010~012; prompt/LLM count/repair sequence |
+| `graphs/commander_runtime.py` | 실제 런타임/스케줄 orchestration entry KEEP; pure helper만 libs/agents/commander 또는 libs/runtime/commander에 단일 Owner | RF-011, State/timing parity |
+| `graphs/trading_graph.py`, `graphs/nodes/executor_node.py` | 테스트 M17 stub로 KEEP; 실제 주문 경로라고 기술 금지 | RF-011(`trading_graph.py`)/RF-012(`executor_node.py`) |
+| `graphs/nodes/strategist_node.py` | graph State adapter만; 전략 Frame과 현행 LLM 호출 계약 분리 | RF-008; prompt/LLM count/repair sequence |
 | `graphs/nodes/scanner_node.py`, `scan_candidates.py`, `select_candidate.py` | 단일 Scanner Owner/Top-1 rank authority; graph adapter 최소화 | RF-009; score/rank/tie-break/candidate |
-| `graphs/nodes/monitor_node.py`, `portfolio_guard_node.py` | monitor signal/Intent vs portfolio guard 분리 | RF-010~012; broker-write zero |
-| `graphs/nodes/execute_from_packet.py`, `execute_order.py` | 승인 이후 real guarded order mutation / SAFETY_LOCK | RF-011/012: no unsafe move |
-| `graphs/nodes/{decide_trade,update_state_after_execution}.py` | State/authority mutation 그대로 KEEP; 순수 부분만 소비자/효과 입증 후 | RF-010~012 |
-| `graphs/nodes/{build_market_snapshot,build_portfolio_snapshot,build_open_order_snapshot,build_risk_context}.py` | bounded read projection; no second source of truth | RF-008~012 |
-| `graphs/nodes/{load_state,save_state,log_decision_trace}.py` | State IO/evidence writer 권한 명시, side-effects 유지 | RF-008~012 |
-| `graphs/pipelines/{live_cycle,runtime_tick,eod_report,offhours_validation}.py` | canonical entry candidate, caller inventory 검증 후 결정 | RF-008~012 |
+| `graphs/nodes/monitor_node.py`, `portfolio_guard_node.py` | monitor signal/Intent vs portfolio guard 분리 | RF-010(`monitor_node.py`)/RF-012(`portfolio_guard_node.py`); broker-write zero |
+| `graphs/nodes/execute_from_packet.py`, `execute_order.py` | 승인 이후 real guarded order mutation / SAFETY_LOCK | RF-012: no unsafe move |
+| `graphs/nodes/{decide_trade,update_state_after_execution}.py` | State/authority mutation 그대로 KEEP; 순수 부분만 소비자/효과 입증 후 | RF-012 |
+| `graphs/nodes/{build_market_snapshot,build_portfolio_snapshot,build_open_order_snapshot,build_risk_context}.py` | bounded read projection; no second source of truth | RF-012 |
+| `graphs/nodes/{load_state,save_state,log_decision_trace}.py` | State IO/evidence writer 권한 명시, side-effects 유지 | RF-012 |
+| `graphs/pipelines/{live_cycle,runtime_tick,eod_report,offhours_validation}.py` | canonical entry candidate, caller inventory 검증 후 결정 | RF-012 |
 | `graphs/pipelines/m10_live_pipeline.py`, `m11*_live_pipeline.py`, `m13_*.py` | 역사/호환 pipeline candidate, scheduler/CLI 참조 제로 증명 전 KEEP | RF-008~012 |
 
 ## 완료 조건

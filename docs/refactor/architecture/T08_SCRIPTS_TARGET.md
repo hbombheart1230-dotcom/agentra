@@ -5,7 +5,7 @@
 ```text
 scripts/
 ├── __init__.py
-├── diagnostics/       # pure/read-only health, audit, query, benchmark (RF-063)
+├── diagnostics/       # pure/read-only health, audit, query, benchmark (RF-063; 일부 생성기는 write effect 검토)
 ├── refactor/          # isolated structural evidence/contract tools (RF-064)
 ├── research/          # non-trading experiments & Q10/Q12 research (RF-065)
 ├── maintenance/       # bounded repair/cleanup; write permissions audited (RF-066)
@@ -26,11 +26,11 @@ scripts/
 | `scripts/refactor/*` | 종료된 실험 vs 현재 계약 도구 분리, 과거 SHA 및 오라클 보존 | RF-064 |
 | `scripts/research/{run_alpha_research_board,run_opening_rank1_shadow,run_integrated_trade_diagnosis}.py` | 연구·검증 입력/출력 명시, 주문 권한 없음 | RF-065 |
 | `scripts/maintenance/{run_log_maintenance,run_report_maintenance,clean_evaluation_test_contamination}.py` | 보존 기한·실행 mode·실제 write 사전 검사 | RF-066 |
-| `scripts/check_real_execution_preflight.py`, `launch_with_preflight.py`, `restart_live_session.py` | 외부 scheduler/운영 진입점을 **그대로 유지**, 순수 구현부와 진입 함수를 분리한 경우 동등성 입증 | RF-067/070/071 (각 파일 실제 RF는 아래 인벤토리) |
+| `scripts/check_real_execution_preflight.py`, `launch_with_preflight.py`, `restart_live_session.py` | 외부 scheduler/운영 진입점을 **그대로 유지**, 순수 구현부와 진입 함수를 분리한 경우 동등성 입증 | RF-067(check)/RF-070(launch)/RF-071(restart) |
 | `scripts/generate_daily_report.py`, `generate_operator_summary_report.py`, `generate_m28_launch_templates.py` | generator output schema/파일명/경로/바이트 유지 | RF-068 |
 | `scripts/capture_preopen_macro_snapshot.py`, `capture_q10_preopen_snapshot.py`, `capture_q12_btc_0855_snapshot.py` | 호출 clock/env read timing, 서식, 산출물 경로 유지 | RF-069 |
-| `scripts/cleanup_pytest_artifacts.py`, `cleanup_pytest_artifacts.ps1`, `cleanup_pytest_artifacts.cmd` | 성공 scratch 자동 정리, 실패 기록 제한 보존. 운영 데이터 재귀 삭제 금지 | RF-066/071, 실제 RF 아래 참조 |
-| `scripts/restart_live_session.ps1`, `restart_live_session.bat`, `scripts/register_mock_exam_tasks_example.bat` | OS 호출 경계 KEEP / command line arguments parity | RF-070/071, 실제 RF 아래 참조 |
+| `scripts/cleanup_pytest_artifacts.py`, `cleanup_pytest_artifacts.ps1`, `cleanup_pytest_artifacts.cmd` | 성공 scratch 자동 정리, 실패 기록 제한 보존. 운영 데이터 재귀 삭제 금지 | RF-071, 실제 RF 아래 참조 |
+| `scripts/restart_live_session.ps1`, `restart_live_session.bat`, `scripts/register_mock_exam_tasks_example.bat` | OS 호출 경계 KEEP / command line arguments parity | RF-071(restart) / RF-070(register), 실제 RF 아래 참조 |
 
 ### 처리 지침
 1. `scripts/` 루트의 기존 *.py/ps1/bat/cmd는 **외부 소비자 이름과 경로가 정본일 수 있음**. 기존 루트 파일을 삭제하고 하위 파일로만 옮기는 개편 금지.

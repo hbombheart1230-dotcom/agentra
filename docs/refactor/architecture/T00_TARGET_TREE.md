@@ -34,6 +34,7 @@ libs/
 └── __init__.py                                # 총 26 first-level packages + file
 ```
 
+- **미완성 2개 공개 역할의 책임 경계:** `libs/agents/supervisor/`는 RF-060(보호된 Supervisor 소스의 순수 공개 계약 검토), `libs/agents/executor/`는 RF-048(보호된 Executor 소스의 순수 공개 계약 검토)의 **설계 검토 책임**으로 연결한다. 실제 새 파일을 RF-060/048에서 임의 쓰기하는 권한이 아니라, RF-017(공용 agents export), RF-044(공유 DTO), 그래프 소비자와 경로 소유권을 GPT가 사전 합의한 후 사용자 안전 승인을 별도 받아야 한다.
 - 현재 26개 패키지는 모두 존재. `libs/agents/supervisor/`, `libs/agents/executor/`의 **독립 공개 역할 인터페이스**는 목표이며 실제 실행·안전 엔진을 이관하거나 빈 decorative packages를 만들라는 지시가 아니다.
 - 상세 소유권·기존 실제 하위 구조: [TREE_V3_FROZEN](TREE_V3_FROZEN.md) · [ALL_LIBS_OWNERS](P15_ALL_LIBS_OWNERS_20261018.md) (과거 snapshot) · [ROOT→LEAF reality](P15_ROOT_TO_LEAF_REALITY_AND_CLEANUP_20261018.md) (과거 snapshot). **기존 최신 RF-013~062**가 각 `libs/` 경계를 담당하며 새로운 미승인 task가 아니다.
 - `libs/{approval,execution,kiwoom,risk,supervisor}/`, 실운영 `graphs/nodes/execute_from_packet.py`, UEF publisher, Step5C/UNKNOWN 등은 SAFETY_LOCK. 메인/실거래/CI oracle 무승인 변경 금지.

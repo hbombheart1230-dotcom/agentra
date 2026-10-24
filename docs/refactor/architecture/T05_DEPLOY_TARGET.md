@@ -41,10 +41,10 @@ deploy/
 |---|---|---|
 | `compose/compose.yaml`, `compose.public.yaml`, `compose.cloudflare.yaml` | web/api/cloudflared 구성 차이 명시; 중복 진실 설정 최소화 | RF-087 KEEP/COMPARE |
 | `docker/Dockerfile.api`, `Dockerfile.web`, `nginx.conf` | 빌드/서빙 각 1 Owner, 계약된 health/ports | RF-088 KEEP |
-| `trading/compose.trading.*.yaml`, `trading-docker.ps1` | real/mock/dryrun 절대 혼동 금지, 기존 안전 경로 | RF-089 SAFETY_LOCK |
-| `trading/cutover-to-docker.ps1`, `rollback-to-host.ps1` | 실제 운영 전환/롤백 공개 진입점 | RF-089 KEEP, 실행 NOT_RUN |
-| `m28_launch_templates/linux/*.service` | systemd 정확한 unit/working directory 경로 | RF-087~089 KEEP |
-| `m28_launch_templates/windows/*.xml` | 기존 Task Scheduler 호출 문자열 고정 | RF-087~089 KEEP |
+| `trading/compose.trading.*.yaml`, `trading-docker.ps1` | real/mock/dryrun 절대 혼동 금지, 기존 안전 경로 | RF-088 SAFETY_LOCK |
+| `trading/cutover-to-docker.ps1`, `rollback-to-host.ps1` | 실제 운영 전환/롤백 공개 진입점 | RF-088 KEEP, 실행 NOT_RUN |
+| `m28_launch_templates/linux/*.service` | systemd 정확한 unit/working directory 경로 | RF-089 KEEP |
+| `m28_launch_templates/windows/*.xml` | 기존 Task Scheduler 호출 문자열 고정 | RF-089 KEEP |
 | `m28_registration_helpers/*`, `m31_registration_helpers/windows/*.ps1` | OS별 helper Owner 유지, mock/real 분리 | RF-087~089 KEEP |
 
 ## 반드시 확인할 소비자·검증

@@ -41,7 +41,7 @@ docs/
 ## 기존 문서의 진짜 목표 처리
 | 경로·파일 | 최종 책임 / 처리 | RF |
 |---|---|---|
-| `docs/ENGINEERING_DELIVERY_POLICY.md` | D00 업무·안전 정본(중복 이슈 회차 보고 금지) | RF-079 / 규칙은 D00 우선 |
+| `docs/ENGINEERING_DELIVERY_POLICY.md` | D00 업무·안전 정본(중복 이슈 회차 보고 금지) | RF-086 / 규칙은 D00 우선 |
 | `docs/refactor/work_orders/CURRENT.md` | 1~2KB 작업 배정 링크만; 회차 테스트 로그 금지 | RF-079 |
 | `docs/refactor/architecture/TREE_V3_FROZEN.md` | 7개 역할·안전 위상 불변 | RF-079 |
 | `docs/refactor/architecture/T00_TARGET_TREE.md`, T01~T09 | **구조 목차 vs 각 루트 상세 파일 목표**만; 작업상태/검증로그 중복 금지 | RF-079 신규 경로 |
@@ -52,9 +52,11 @@ docs/
 | `docs/refactor/plan/troubleshooting/{open,closed}/` | 미해결/해결 증거, 실패를 PASS로 덮지 않음 | RF-079 |
 | `docs/daily_patch/`, `docs/trading_agent_patch_notes_detailed_update/` | 역사/화면 연결 이력 원형 보존, 의미 있는 코드 변경에 JSON/MD 동기 | RF-080 |
 | `docs/{plan,roadmap}/` | 전략·과거 계획으로 분리, CURRENT 권한과 충돌하는 지시 무효 표시 | RF-081 |
-| `docs/{architecture,dev-team,development,dev}/` | 역사 설계/팀 작업 로그. T00을 대체하는 병행 정본 금지 | RF-079/082~084 |
+| `docs/{architecture,dev-team,development,dev}/` | 역사 설계/팀 작업 로그. T00을 대체하는 병행 정본 금지 | RF-079(architecture)/RF-084(alignment)/RF-086(기타 dev-team·development) |
 | `docs/{operations,runtime,execution_plan,commander_control,kiwoom_truth,observability,web_observability}/` | 해당 운영/도메인 운영 계약 유지, 링크 유효성 확인 | RF-085 |
-| `docs/{research,evaluation,offline_alpha,quant_trade_diagnosis}/` | 연구·평가 출처/증거 보존, UEF actual publisher를 docs로 재배치 금지 | RF-086 / 세부 CSV |
+| `docs/{research,evaluation,offline_alpha,quant_trade_diagnosis}/` | 연구·평가 출처/증거 보존, UEF actual publisher를 docs로 재배치 금지 | RF-082 / 세부 CSV |
+
+**RF-079과 RF-086 분리:** D00은 기준선 CSV에서 RF-086, `docs/refactor/architecture/T00~T09` 및 refactor RF·STATUS 관리경로는 논리상 RF-079 델타이다. `docs/research/`는 RF-082이며, RF-079로 소유권을 덮어쓰지 않는다.
 
 ## 수량·경로 오류의 정밀 해소 (PINNED baseline → d082cee8)
 - 기준선 `63182ab2`: 3,985파일 / 298디렉터리. 기준선 CSV **3,985/3,985 하나의 RF만** 지정, 중복 0·누락 0.

@@ -35,19 +35,21 @@ apps/
 ## 핵심 파일별 목표 경계
 | 현재 파일(실존) | 목표 위치/Owner | RF·처리 | 종료 검증 |
 |---|---|---|---|
-| `apps/api/main.py`, `apps/api/routers/*.py` | 같은 위치 / HTTP facade | RF-003~006 KEEP | route/API·status·public profile |
-| `apps/api/services/{overview,operations,opportunities,reports,trades}.py` | 같은 service owner (pure read) | RF-003~006 KEEP/SPLIT_BY_PROOF | no broker/State mutate, JSON parity |
-| `apps/api/domain/anomalies/{factory,freshness_rules,integrity_rules,policy}.py` | anomalies rule owner | RF-001~007 KEEP | anomaly fingerprint/shape parity |
-| `apps/api/infrastructure/{bounded_reader,paths,public_sanitization,source_roots}.py` | infra readonly gate | RF-003~006 KEEP | path traversal, bounded I/O, sanitization |
-| `apps/api/adapters/{trade_bundle,patch_notes,safe_reports}.py` | adapter only | RF-003~006 KEEP | provenance/byte schema |
-| `apps/operator_ui/main.py`, `data_access.py` | stable public route/facade KEEP | RF-001/002 | old imports, routes, output |
+| `apps/api/main.py`, `apps/api/routers/*.py` | 같은 위치 / HTTP facade | RF-005 KEEP | route/API·status·public profile |
+| `apps/api/services/{overview,operations,opportunities,reports,trades}.py` | 같은 service owner (pure read) | RF-003 KEEP/SPLIT_BY_PROOF | no broker/State mutate, JSON parity |
+| `apps/api/domain/anomalies/{factory,freshness_rules,integrity_rules,policy}.py` | anomalies rule owner | RF-004 KEEP | anomaly fingerprint/shape parity |
+| `apps/api/infrastructure/{bounded_reader,paths,public_sanitization,source_roots}.py` | infra readonly gate | RF-005 KEEP | path traversal, bounded I/O, sanitization |
+| `apps/api/adapters/{trade_bundle,patch_notes,safe_reports}.py` | adapter only | RF-005 KEEP | provenance/byte schema |
+| `apps/operator_ui/main.py`, `data_access.py` | stable public route/facade KEEP | RF-002(`main.py`)/RF-001(`data_access.py`) | old imports, routes, output |
 | `apps/operator_ui/data_access_core.py` | minimal dispatcher; substantive readonly owners in pre-existing focused files | RF-001 REFACTOR_PURE | golden Brief text, LLM count/order, no write |
 | `apps/operator_ui/data_access_brief_{input_projection,sections_projection,render_sections,render_summary_derivation}.py` | input/read/renderer each one Owner | RF-001, relevant consumer RF | exact serialized artifact; monkeypatch seam |
-| `apps/operator_ui/data_access_{run_read_models,trade_read_models,overview_projection,reports}.py` | separate readonly query models | RF-001~002 KEEP/SPLIT | PnL/truth provenance |
+| `apps/operator_ui/data_access_{run_read_models,trade_read_models,overview_projection,reports}.py` | separate readonly query models | RF-001 KEEP/SPLIT | PnL/truth provenance |
 | `apps/operator_ui/templates/{base,operator_brief_detail,overview,run_detail,runs,trade_report_detail}.html` | existing templates KEEP | RF-002 | CSS, route, browser E2E |
 | `apps/web/src/app/{App,navigation}.tsx` | shell/navigation | RF-007 | route parity |
-| `apps/web/src/features/{patch-notes,runtime-status,trades}/` | feature owned presentational code | RF-007 | npm unit/snapshot, provenance |
+| `apps/web/src/features/{patch-notes,runtime-status,trades}/` | feature owned presentational code | RF-006 | npm unit/snapshot, provenance |
 | `apps/web/src/shared/api/{client,useApi}.ts` | stable API client | RF-007 | response/parsing; no trading writes |
+
+**소유권 교정:** `apps/web/src/features/**`는 RF-006(DONE), `apps/web/src/{app,shared}`·`e2e`는 RF-007(검증 큐) 소유다. `apps/api/{services,domain,routers+models+adapters+infrastructure}`는 각각 RF-003/004/005, `apps/operator_ui`는 data_access RF-001, main/templates RF-002이다. 범위가 다른 RF의 DONE 코드를 무단 변경하지 않는다.
 
 **제안하는 개선:** 실재하는 `data_access_brief_*.py`를 책임별 재분류·중복 정리하되 새 `common2/`·`parts_r4/`를 만들지 않는다. Operator Brief LLM 생성/캐시·readonly truth의 한 Owner가 확인된 후에만 `data_access_core.py` 파사드를 얇게 한다. 도메인/웹은 무조건 재배치가 아니라 현 패키지 구조를 목표 기본값으로 삼는다.
 
