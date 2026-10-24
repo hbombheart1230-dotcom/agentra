@@ -223,3 +223,9 @@
 - RF-017 KEEP_VERIFIED(sched-29)·RF-003/004/005/006/007 peer(sched-27~31)·RF-001 PASS_SCOPED(sched-16) 증거 유지, 새 증거가 없어 동일 테스트 재실행 안 함. RF-007 E2E는 데이터 fixture 승인 전 BLOCKED 유지.
 - PEER_VERDICT: 신규 없음(NOT_RUN). CI: 신규 exact-SHA 조회 NOT_RUN/UNKNOWN. 상대 CLI 호출 없음(티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: 변동 없음(sched-31 항목 유지).
+
+### sched-33 (2026-10-24): 신규 B 소스 증거 없음 — 검증 대상 NOT_RUN (소스 변경 없음, 코드 SHA a21401db 유지)
+- 기준: CURRENT@integration `edb6762d`(배정 목록 sched-32와 동일: A 개발 RF-017, 검증 RF-001·002·003·004·020·005·006·007). `9808a76b..edb6762d` 변경은 CI 워크플로 축소·CI 호환 문서/patchnotes뿐(GPT 트랙, A 소유 경로 아님). B `3c62ba66`(직전 508b039a 대비 HANDOFF_B.md 1경로만 변경, 신규 소스·테스트 없음). A 시작 `c8eef526`.
+- RF-017 KEEP_VERIFIED(sched-29)·RF-003/004/005/006/007 peer·RF-001 PASS_SCOPED 증거 유지, 새 증거 없어 테스트 재실행 안 함. RF-007 E2E는 데이터 fixture 승인 전 BLOCKED 유지.
+- PEER_VERDICT: 신규 없음(NOT_RUN). CI: exact-SHA 조회 NOT_RUN/UNKNOWN. 상대 CLI 호출 없음(티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: 변동 없음.
