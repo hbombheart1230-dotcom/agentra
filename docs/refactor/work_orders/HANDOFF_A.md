@@ -217,3 +217,9 @@
 - **테스트(저장소 밖 detached worktree):** `npm ci` 성공(146 packages), `npm test -- --run` **7파일/16 passed, exit 0**, `npm run build` **exit 0**(vite built). B 보고(16 PASS/build 0)와 일치. TypeScript라 `python -O` 비해당.
 - PEER_VERDICT(RF-006, 범위 한정): **PASS_SCOPED(KEEP 증거)** — blob 60/60 + vitest + build. 기능별 IO/UI 개별 재판정·e2e·hosted CI·통합은 NOT_RUN/UNKNOWN, DONE 아님. 상대 CLI 호출 없음(소스 변경 0, 티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: RF-006 A peer 수용 및 verification 이동 판단; 기존 항목(RF-021 안전 HOLD, CI_RED 오라클, RF-001 선별 통합) 유지.
+
+### sched-32 (2026-10-24): 신규 B 소스 증거 없음 — 검증 대상 NOT_RUN (소스 변경 없음, 코드 SHA a21401db 유지)
+- 기준: CURRENT@integration `9808a76b`(배정 목록은 sched-31과 동일: A 개발 RF-017, 검증 RF-001·002·003·004·020·005·006·007). `2b594741..9808a76b` 변경은 CI 워크플로·shared_strategist_contracts·CI 호환 문서/patchnotes뿐(GPT 트랙)이며 A 소유 경로 아님. B `508b039a`(직전 0796a7df 대비 HANDOFF_B.md 1경로만 변경, 신규 소스·테스트 없음). A 시작 `e0b6942f`.
+- RF-017 KEEP_VERIFIED(sched-29)·RF-003/004/005/006/007 peer(sched-27~31)·RF-001 PASS_SCOPED(sched-16) 증거 유지, 새 증거가 없어 동일 테스트 재실행 안 함. RF-007 E2E는 데이터 fixture 승인 전 BLOCKED 유지.
+- PEER_VERDICT: 신규 없음(NOT_RUN). CI: 신규 exact-SHA 조회 NOT_RUN/UNKNOWN. 상대 CLI 호출 없음(티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: 변동 없음(sched-31 항목 유지).
