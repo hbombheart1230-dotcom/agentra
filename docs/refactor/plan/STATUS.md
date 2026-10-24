@@ -1,6 +1,6 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**전수 기준:** `63182ab27ecf889768003f637a40577ba1277f86` · **3985개 파일 / 298개 디렉터리** · RF 독립작업 **93건** · 검증 대기/BLOCKED **14건** · 증거로 최종 확인된 완료 **0건**, 나머지는 이전 부분 개발·통합 검증 필요.
+**전수 기준:** `63182ab27ecf889768003f637a40577ba1277f86` · **3985개 파일 / 298개 디렉터리** · RF 독립작업 **93건** · 검증 대기/BLOCKED **9건** · 증거로 최종 확인된 완료 **0건**, 나머지는 이전 부분 개발·통합 검증 필요.
 
 ## 우선순위 / 잔여 작업
 | 우선 | 목적 | 미검증 RF |
@@ -15,7 +15,7 @@
 | 범위 | 파일 | 독립 작업 | 상태 |
 |---|---:|---|---|
 | `.github/` | 7 | [RF-092](pending/RF-092.md) | 미판정 |
-| `apps/` | 240 | [RF-001](verification/codex/RF-001.md) · [RF-002](verification/codex/RF-002.md) · [RF-003](verification/codex/RF-003.md) · [RF-004](verification/codex/RF-004.md) · [RF-005](verification/codex/RF-005.md) · [RF-006](verification/codex/RF-006.md) · [RF-007](verification/codex/RF-007.md) | 미판정 |
+| `apps/` | 240 | [RF-001](verification/codex/RF-001.md) · [RF-002](done/RF-002.md) · [RF-003](done/RF-003.md) · [RF-004](done/RF-004.md) · [RF-005](done/RF-005.md) · [RF-006](done/RF-006.md) · [RF-007](verification/codex/RF-007.md) | 미판정 |
 | `config/` | 8 | [RF-090](pending/RF-090.md) | 미판정 |
 | `data/` | 25 | [RF-091](pending/RF-091.md) | 미판정 |
 | `deploy/` | 33 | [RF-087](pending/RF-087.md) · [RF-088](pending/RF-088.md) · [RF-089](pending/RF-089.md) | 미판정 |
@@ -56,7 +56,7 @@
 | `libs/supervisor/` | 4 | [RF-060](pending/RF-060.md) | 미판정 |
 | `libs/tools/` | 3 | [RF-061](pending/RF-061.md) | 미판정 |
 
-**RF 상태:** [pending](pending/) **79건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **9건** → [done](done/) **0건** (총 **93건**). 검증 큐는 PASS가 아니라 독립 검증 대기·BLOCKED 포함이며, 최종 DONE은 peer PASS·선별 통합·정확한 통합 SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
+**RF 상태:** [pending](pending/) **79건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **4건** → [done](done/) **5건** (총 **93건**). 검증 큐는 PASS가 아니라 독립 검증 대기·BLOCKED 포함이며, 최종 DONE은 peer PASS·선별 통합·정확한 통합 SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
 
 **현재 배정:** [CURRENT](../work_orders/CURRENT.md) 참조 (A RF-017 개발·Codex 작성 RF 독립 검증 / B RF-009 개발·Claude 작성 RF 독립 검증). 안전 RF-021 HOLD 및 무승인 CI 오라클 변경 금지.
 
