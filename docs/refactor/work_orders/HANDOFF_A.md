@@ -229,3 +229,11 @@
 - RF-017 KEEP_VERIFIED(sched-29)·RF-003/004/005/006/007 peer·RF-001 PASS_SCOPED 증거 유지, 새 증거 없어 테스트 재실행 안 함. RF-007 E2E는 데이터 fixture 승인 전 BLOCKED 유지.
 - PEER_VERDICT: 신규 없음(NOT_RUN). CI: exact-SHA 조회 NOT_RUN/UNKNOWN. 상대 CLI 호출 없음(티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: 변동 없음.
+
+### sched-34 (2026-10-24): RF-008 Strategist graph 독립 peer (A, 읽기 전용, 소스·오라클 변경 없음)
+- 기준: CURRENT@integration `7e3190e0`(A: 개발 RF-017, 검증 RF-001·020·007·008; RF-002~006은 done 이동). RF-008이 신규 배정. A 시작 `a05c28a2`, B HEAD `f0fc90c9bf7d4035aa4698bff943487efe3dc194`(저장소 밖 detached worktree 검증).
+- **정적:** `graphs/nodes/strategist_node.py` blob `86e9c2e2…` 가 BASE `63182ab2` = integration = B HEAD **1/1 동일**(3,839행), import 성공.
+- **테스트:** `strategist_node`를 참조하는 tests 42파일(p172 포함) normal **1270 passed / 1 failed**, `python -O` **1270 passed / 1 failed**(동일). p172 단독 normal/-O 각 **94 passed**(B 보고와 일치). 실패 1건 `test_p15_strategist_s5_helper_moves.py::test_diff_against_pinned_source_touches_only_the_closed_path_set`는 브랜치 diff 기반 역사 가드(Strategist 파일 변경 0이라 원인 아님), BASE 대조 재실행 NOT_RUN, 오라클 무수정.
+- PEER_VERDICT(RF-008, 범위 한정): **PASS_SCOPED(KEEP 증거)** — blob 1/1 + 소비자 테스트 normal/-O. 3,839행 KEEP은 타 RF 소유 `libs/runtime/strategist` helper 의존으로 무승인 분리 금지 판단에 동의(개별 IO/side-effect 재판정 NOT_RUN). hosted CI·통합 UNKNOWN, DONE 아님.
+- RF-017 KEEP_VERIFIED(sched-29)·RF-001/007/020 증거 유지, 새 B 증거 없어 반복 안 함. 상대 CLI 호출 없음(소스 변경 0, 티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: RF-008 A peer 수용 및 verification 이동 판단; 역사 가드 1건은 RF 소유자 판정.
