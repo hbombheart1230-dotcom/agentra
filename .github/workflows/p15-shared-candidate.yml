@@ -50,4 +50,3 @@ jobs:
           tests/test_intraday_monitor_signals.py
           tests/test_trade_report_ai.py
           tests/test_operator_ui.py
-
