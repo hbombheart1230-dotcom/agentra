@@ -4,6 +4,34 @@
 
 ## 마지막 실행
 
+- RUN_ID: B-20261024T021634Z
+- ROLE: Codex B
+- STATUS: RF004_KEEP_EVIDENCE_READY / RF015_PEER_BLOCKED_EXACT_TREE / RF001_002_003_020_VERIFICATION_WAITING / GPT_ACTION_REQUIRED
+- START_INTEGRATION_SHA: `96ef4c94867ecfd9b639b76d87c8a147128cf1d6`
+- WORK_BRANCH: `work/p15-b-operator-structure-20261022`
+- START_REMOTE_SHA: `72db08eecdb90f6266d47cf207bb807b525b75a0`
+- CODE_CANDIDATE_SHA: none new. Existing RF-001 source candidate remains `8bde643dffe0312e4be2301e5f93298149a7f99e`; this run made no source, patchnote, oracle, safety, main, or integration change.
+- HANDOFF_RECORD_COMMIT: pending local commit; END_REMOTE_SHA/PUSH_VERIFIED are established only after non-force push and remote requery.
+- RF_RESULTS:
+  - RF-004: `KEEP_EVIDENCE_READY / PEER_PENDING`; CURRENT-assigned `apps/api/domain/` + `apps/api/models/` exact CSV set is 35 files in BASE `63182ab2` and B HEAD, with no diff/add/delete. Largest domain/model modules remain focused projections (`runtime_status_projection.py` 10,278 bytes; `llm_operations_projection.py` 6,273 bytes; scheduled-intelligence 6,048 bytes); direct API test consumers include anomalies/runtime-status. The 18 `tests/apps/api/test_*.py` suite passed normal and optimized, each exit 0/79 passed. Existing domain/model responsibility partition and public DTO/API surface were kept unchanged; no UI patchnotes are due without source change. Claude A independent read-only peer remains required.
+  - RF-015_PEER: `BLOCKED_EXACT_TREE_REQUIRED / NOT_PEER_PASS`; A source SHA is `bcb0f950878b948b2bcba7e29fa2bca17e907f3f`, BASE `63182ab2`. Exact RF-015 owner 19 paths have BASE=A diff 0 and 19 files each; runtime/graph/test consumers were enumerated read-only. B has 21 paths under `libs/agents/monitor/`: two candidate-external paths, `__init__.py` and `contracts.py`, differ from A. Therefore B worktree cannot stand in for A's exact candidate. The A-selected four-test command was executed only as diagnostic in B: normal and `python -O` both exit 1, 252 passed/12 failed; failures are historical Commander/B-stage UI inventory and list B-only RF-001/HANDOFF plus the two extra Monitor paths. This is not a valid A candidate/BASE comparison and is not attributed to RF-015. A separate exact-SHA read-only checkout/archive execution with a cleanup-capable isolated environment is required; current execution policy rejected the isolated temporary-tree cleanup command before it ran. No source/fixture/oracle workaround was attempted.
+  - RF-003: `KEEP_EVIDENCE_READY / A_PEER_PENDING`; prior 25-path BASE-identical normal/-O 79-pass evidence remains; CURRENT moved it to verification/codex.
+  - RF-014: `REWORK_REQUIRED / VERIFY_BLOCKED_CROSS_OWNER`; prior A-only Reporter `output_payloads` mismatch remains. No changed SHA, so prohibited repetition was not performed.
+  - RF-001/RF-002/RF-020: `VERIFICATION_WAITING`; existing scoped evidence is retained, without repeated RF-001 sanitation, RF-020 30/30 blob, or RF-020 consumer runs.
+  - RF-013/RF-018: `BLOCKED_OR_NO_NEW_DELTA`; RF-013 frozen RF-074 inventory and RF-018 CI_RED separation remain; no prohibited repeat run.
+  - CI_RED: `REJECTED_AS_SUBMITTED / SAFETY_HOLD`; `a0493b60` is neither rerun nor accepted.
+- CHANGED_PATHS: `docs/refactor/work_orders/HANDOFF_B.md` only.
+- TEST_NORMAL: RF-004 `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider $(rg --files tests/apps/api -g 'test_*.py')` — exit 0, 79 passed. RF-015 diagnostic command `tests/test_p173_p058_integration_contracts.py tests/test_shared_role_contracts.py tests/test_work_monitor_continuous.py tests/test_work_monitor_role_contracts.py` on B, not A candidate — exit 1, 252 passed/12 failed.
+- TEST_OPTIMIZED: RF-004 identical command under `.venv/bin/python -O -m pytest` — exit 0, 79 passed. RF-015 B diagnostic under `python -O` — exit 1, 252 passed/12 failed; not valid candidate verdict.
+- PEER_VERDICT: RF-015 `BLOCKED_EXACT_TREE_REQUIRED`, not PASS/REWORK against A source; RF-004 `PEER_PENDING`. Existing RF-001/002/003/020 A verification queues and RF-013/014/018 B queues are unchanged by this run.
+- CI: `origin/integration/p1.5@96ef4c94` CURRENT cites predecessor `c0d5e840` hosted 1 SUCCESS/4 FAILURE; this HANDOFF and RF-004 source-free evidence have no exact-SHA hosted CI (`NOT_RUN/UNKNOWN`).
+- PUSH_VERIFIED: pending non-force push and remote requery.
+- GPT_ACTION_REQUIRED: (1) arrange RF-015 exact A SHA plus BASE isolated read-only checkout in a cleanup-capable environment, then compare the 11 historical failures; do not use B's divergent 21-path tree as peer verdict. (2) queue Claude A independent peer for RF-004 35-path KEEP and 79+79 API suite. (3) retain RF-014 cross-owner block, RF-013 frozen inventory block, and CI_RED safety hold; do not promote scoped KEEP evidence to DONE.
+
+> This HANDOFF receipt is distinct from every source candidate SHA; remote confirmation follows the commit.
+
+## 이전 실행
+
 - RUN_ID: B-20261024T011154Z
 - ROLE: Codex B
 - STATUS: RF003_KEEP_EVIDENCE_READY / RF014_PEER_REWORK_REQUIRED / RF002_PEER_ACCEPTED_FOR_KEEP / GPT_ACTION_REQUIRED
