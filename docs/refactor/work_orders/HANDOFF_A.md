@@ -1,5 +1,12 @@
 # Claude A 예약 실행 인수인계
 
+## sched-47 (2026-10-25, integration 72e44ab8)
+
+- CURRENT: Claude A 개발 RF-017, 독립 검증 RF-001/020/007/008. 소스 변경 없음.
+- RF-017 (`libs/agents/{__init__,commander/**}` 5파일): BASE `63182ab2` 대비 diff 0 → **KEEP_VERIFIED**. import 확인 OK(`projections.__all__` 2개 owner). 임시 detached worktree(72e44ab8)에서 commander 관련 3테스트 normal/-O 각 42 passed / 57 failed; 실패는 전부 역사적 B-stage inventory 가드(T0x 문서·workflow·operator_ui 파일 'unexpected/missing')로 libs/agents 무관, 오라클 미수정.
+- 검증 큐: RF-008 strategist_node.py·libs/runtime/monitor·apps/web BASE 대비 diff 0 확인. RF-001 `apps/operator_ui/data_access_brief.py`는 BASE 대비 7+/18-(B 변경). 테스트 collection 오류 4건(환경)으로 RF-001/020/007/008 독립 테스트 **NOT_RUN**, peer 판정 PASS 주장 없음.
+- 티키타카 실행 리스트: 상대 CLI 호출 0건. hosted CI NOT_RUN. 이 파일만 push.
+
 ## sched-26 (2026-10-24, RF-015 Monitor agent)
 
 - RUN_ID: 2026-10-24T0918Z-claude-a-sched-35 (직전: sched-34)
