@@ -2,7 +2,7 @@
 
 ## sched-26 (2026-10-24, RF-015 Monitor agent)
 
-- RUN_ID: 2026-10-24T0217Z-claude-a-sched-27 (직전: sched-26)
+- RUN_ID: 2026-10-24T0517Z-claude-a-sched-31 (직전: sched-30)
 - RF-015 `libs/agents/monitor/` 19/19 파일: BASE `63182ab2` 대비 diff 0 (이미 owner 위치, libs/runtime/monitor* 소비자 wrapper 존재) → **KEEP_VERIFIED**, 소스 변경 없음.
 - 소비자 테스트(4파일 test_p173_p058_integration_contracts / test_shared_role_contracts / test_work_monitor_continuous / test_work_monitor_role_contracts): normal·`-O` 각각 **253 passed / 11 failed**. 11 실패는 모두 역사적 B-stage allowlist 가드(`libs/reporting/q8_historical_review.py` 등 reporting 경로 'unapproved') 및 그 mutation 변형이며 monitor 경로 무관. 오라클 수정 안 함. BASE 동적 재현 NOT_RUN.
 - PEER NOT_RUN, hosted CI NOT_RUN, push 대상 HANDOFF_A.md만. 티키타카 실행 리스트: 호출 0건 (현 CURRENT는 상대 CLI 호출 의무 폐지).
@@ -152,6 +152,15 @@
 - **(3) RF-016 Strategist agent 신규 배정 판정 — KEEP_VERIFIED(소스 변경 없음):** CSV RF-016 8행(`libs/agents/strategist/{__init__,context/{__init__,market_key_events,news_compaction,symbol_read_models,theme_strength},output/{__init__,strategic_answers}}.py`) BASE 대비 blob 동일: integration / A HEAD / B HEAD 각 **8/8**. 폴더 실제 파일 8, CSV 밖 0, 최대 312줄(news_compaction.py)·177줄(strategic_answers.py) 외 ≤126줄 → 분할 대상 없음. 8개 모듈 각각 별도 프로세스 import **8/8 성공**. 소비자는 `libs/runtime/strategist/context`(4)·`output`(1)·`scripts/refactor`(1) — RF-018·공유 계약 소유라 수정 안 함(WRAPPER 대응은 RF-018). 테스트(integration 96ef4c94, 참조 5파일 `test_p154_wave_b_moved_bodies`, `test_p168_wave_b_shim_verifier_negatives`, `test_p172_strategist_s1_057_migration`, `test_p173_p058_integration_contracts`, `test_work_monitor_role_contracts`): normal/-O 각각 **1060 passed / 1 failed**; 실패 1건은 `test_work_monitor_role_contracts`의 B-stage composed inventory(CI_RED 트랙)이며 이를 뺀 4파일은 normal/-O 각각 **913 passed / 0 failed**.
 - 한계: RF-016 독립 peer NOT_RUN(B 대기), 통합·hosted CI UNKNOWN, 소스 변경 0이라 patchnotes 변경 없음, DONE 아님.
 - GPT_ACTION_REQUIRED: (1) RF-003 A peer 결과(범위 한정) 수용 및 큐 처리. (2) RF-014 peer 대상 SHA를 integration 트리로 고정/분리 승인(위 120/1 근거) 또는 A 브랜치의 Reporter 후보 정리 방침. (3) RF-016 KEEP_VERIFIED 수용·verification/claude 이동·B peer 배정. (4) 기존 요청 유지: RF-013 RF-074/소유권, RF-001 선별 통합·core side-effect, RF-021 안전 HOLD, 임시 브랜치 2개 정리, 'B-stage composed inventory' CI_RED 오라클 승인.
+
+### sched-31 (2026-10-24T0517Z): RF-007 Web UI shell·E2E 독립 peer (A, 읽기 전용, 소스·오라클 변경 없음)
+- 기준: integration `e008c08e11739f28770e8e418dcc5c8fda4df898`(CURRENT: A 검증에 RF-006·RF-007 추가, B 개발=RF-008), A 시작 HEAD `ab8556bc2f466ec84ed25069ccd090c341ecf2e6`(sched-30: RF-006 peer), B HEAD `76617fa326400eb097ac7376d0e9184bc3a8e1e1`(B CODE `0796a7dfb6fdf3bf561e5bc036c830b1becb8095`, 이후 HANDOFF만 변경). 참고: 원격 브랜치는 이제 main·integration·A·B 4개뿐이며 임시 `claude/agentra-p15-cloud-setup-v5ue0u`(59e34204)와 `stage/p15-rf013-activation-20261024`는 원격에서 사라짐(ls-remote 확인; 보존 태그는 archive/* 3개만 조회됨, 두 SHA의 태그는 조회되지 않음) — 지팀장이 정리한 것으로 보이며 A는 삭제하지 않았다.
+- **정적(blob):** CSV RF-007 38파일 BASE `63182ab2` 대비 동일 — B HEAD / B CODE 0796a7df / integration / A HEAD 각 **38/38**. `apps/web/` 실제 파일 98개 중 CSV(RF-007) 밖 60개는 `src/features/*`·`shared` 등 다른 RF 소유 경로(RF-007 범위 밖, 수정 없음).
+- **동작 재현(B HEAD 76617fa3 detached worktree, `apps/web`):** `npm ci --no-audit --no-fund` 성공(112 패키지), `npm test -- --run` exit 0 **Test Files 7 passed / Tests 16 passed**, `npm run build`(tsc app+node noEmit + vite build) exit **0** → B 보고(16 PASS / build 0)와 일치. TypeScript/Vite라 `python -O` NOT_APPLICABLE.
+- **E2E 재현 결과(B의 BLOCKED 사유 분해):** B는 "브라우저 경로 미발견"으로 차단. 이 클라우드에는 Playwright용 Chromium이 설치돼 있어 `BROWSER_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome`로 `node e2e/smoke.mjs`를 실행: **브라우저는 정상 기동**해 라우트 순회까지 진행했으나 `/#trades`에서 `button.sortable-header` 대기 30s 타임아웃으로 **exit 1**. 원인 = 로컬 FastAPI(`uvicorn apps.api.main:app`, 빈 데이터)가 `/api/v1/overview`·`/trades`·`/market/snapshot` 에 404 "no trade artifacts found" 반환 → 거래 행이 없어 정렬 헤더 단언 불가. 즉 **브라우저 차단은 해소(BROWSER_PATH 지정)되었고, 남은 차단은 거래·시장 데이터 fixture 부재**(실제 운영 데이터/키는 가져오지 않음, 실서버·브로커 호출 없음). E2E는 격리 mock API/fixture 승인 전까지 BLOCKED 유지. 사용한 임시 서버(uvicorn/vite)는 종료했고 worktree 변경 0(node_modules·dist는 gitignore).
+- 판정(A 독립 peer): RF-007 **KEEP 증거 REMOTE_PEER_PASS 후보(범위 한정: 정적 38/38 + vitest 16/16 + build 0)**, **E2E는 BLOCKED(데이터 fixture)**. 통합·hosted CI·최종 판정은 GPT. `package.json`의 의존성이 `latest`라 시점별 결과가 달라질 수 있는 재현성 위험을 기록(변경 안 함).
+- CI: integration `e008c08e` exact-SHA 미조회 UNKNOWN; 마지막 인용 `c0d5e840` Scripts 1 SUCCESS / 4 FAILURE.
+- GPT_ACTION_REQUIRED: (1) RF-007 A 범위 한정 peer 수용, E2E 격리 mock API/fixture(저장소 밖 임시 또는 승인된 fixture) 승인 여부. (2) RF-006 peer(sched-30) 수용. (3) 사라진 임시 브랜치 2개의 보존 태그/SHA 기록 확인(59e34204·7e06e979 도달 가능성). (4) 기존 요청 유지: RF-017/016 KEEP 수용, RF-014 peer 대상 SHA, RF-013/RF-074, RF-001 선별 통합, RF-021, CI_RED 오라클 승인.
 
 > 매 회차 위 값을 실제 증거로 갱신하고 push 후 원격 재조회한다. 증거가 없으면 UNKNOWN/NOT_RUN.
 
