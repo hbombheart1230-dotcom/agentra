@@ -148,3 +148,10 @@
 - sched-20에서 B 최신 RF-001 증거(81 passed normal/-O) 재현 완료라 동일 테스트 재실행 안 함. RF-013 stage `7e06e979` BLOCKED(RF-074), RF-018 신규 소스 없음, `a0493b60` 통합·오라클 확장 안 함.
 - PEER_VERDICT: NOT_RUN. CI: UNKNOWN. 상대 CLI 호출 없음(티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: 변동 없음.
+
+### sched-24 (2026-10-24): RF-014 Scanner agent 신규 배정 — 전수 판정 KEEP_VERIFIED (소스 변경 없음)
+- 기준: CURRENT@integration `a872bbbf`(08:58 KST 재배정: Claude A → RF-014, 20 owner files), A 시작 `938fd7df`→원격 `fa3f144f` ff 후 작업. 코드 SHA 변경 없음.
+- 판정(20/20, CSV RF-014 행): `git diff 63182ab2 HEAD -- libs/agents/scanner libs/runtime/scanner` = **0** (BASE와 동일). 본체는 이미 `libs/agents/scanner/{candidate_risk,context,policy,projections}`에 단일 Owner로 존재하고 `libs/runtime/scanner/*`의 대응 16개는 sys.modules 치환 WRAPPER(코드 없음, V1-052~V4-056 이관 결과). 16개 모듈 전부 정상 import. 파일별: 4 `__init__` KEEP; candidate_risk, context 5, policy 5, projections 5 = 16 KEEP_VERIFIED + 런타임 WRAPPER 유지(소비자: graphs/nodes·libs/runtime 다수, 이동 시 import 동등성 위험 대비 이득 없음). 최대 모듈 285행(guidance)이라 추가 분리 사유 없음. MOVE/SAFETY_HOLD 0.
+- 테스트(Scanner 이관/계약 8파일: p154, p159, p166, p167, p168, p171, p172, p173): normal **921 passed / 2 failed**, `python -O` **921 passed / 2 failed** (동일). 실패 2건은 Scanner 소유 외 역사 가드: (1) `test_p171…[output_payloads]` — 소비자 집합에 `libs/reporting/evaluation/q8_shadow_readout_p15.py`가 추가되고 `libs/reporting/q8_shadow_blocker_review.py`가 사라진 것(Reporter 쪽 RF 이동 결과, frozen inventory, 오라클 무수정), (2) `test_p159…test_t3_changed_paths_contain_no_authority_surface` — 브랜치 diff 기반 역사 T3 가드. 두 건 모두 BASE 대조 재실행은 NOT_RUN(Scanner 파일이 BASE와 동일하므로 Scanner 변경이 원인이 아님을 정적으로만 확인). 삭제·skip·완화 없음.
+- 한계/NOT_RUN: 독립 peer 검증 NOT_RUN(Codex B 별도 세션 대기), hosted CI UNKNOWN, 소스 변경 0이라 patchnotes 변경 없음. RF-014 DONE 아님 — KEEP_VERIFIED 증거 제출 단계. 상대 CLI 호출 없음(티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: RF-014 KEEP_VERIFIED 수용 여부 및 B peer 배정; RF-013/018 BLOCKED 유지 변동 없음; 역사 가드 2건(q8_shadow 소비자 이동, T3 diff 가드)은 RF 소유자 판정.
