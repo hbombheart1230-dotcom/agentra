@@ -1,5 +1,14 @@
 # Agentra CURRENT — P1.5 전체 리팩터링
 
+## 2026-10-24 — 사장 승인: 검증 Quick Fix 및 브랜치 ROOT 고정 (우선 적용)
+
+- **작업 지시 정본:** `integration/p1.5:docs/refactor/work_orders/CURRENT.md`. A/B 파트별 시작 지시·HANDOFF 경로는 변경하지 않는다. 각 세션 시작 시 **저장소 ROOT와 현재 브랜치, origin HEAD**를 확인하고, 모든 RF/운영규칙은 integration에서 읽는다. 기존 개발 브랜치가 integration과 다른 것은 정상이며 신규 브랜치 생성 이유가 아니다.
+- **정규 브랜치 4개만 사용:** `main`(변경 금지), `integration/p1.5`(지팀장 단일 지시·통합 writer), `work/p15-a-reporter-pure-20261021`(Claude A), `work/p15-b-operator-structure-20261022`(Codex B). 기존 임시 예외 `claude/agentra-p15-cloud-setup-v5ue0u`는 CI_RED 검증·정리 대상이지 신규 개발 루트가 아니다. 그 밖의 새 브랜치·worktree·무단 merge/rebase/force push 금지; 발견 시 HEAD·변경 파일·소비자 조사 후 지팀장이 기존 브랜치로 수렴 판정하며 임의 삭제 금지.
+- **검증자 Quick Fix 예외 승인:** 기본 독립 검증은 read-only. 단순 import/경로/타이핑/비안전 fixture 등 **안전·공유 계약·타 RF 소유권에 영향 없는 작은 결함**에 한해 검증자가 지팀장으로부터 **RF, 정확한 파일 경로, writer 소유권 이전, 기준 SHA**를 CURRENT로 먼저 승인받으면 기존 A/B 브랜치에서 별도 **수정 역할 세션**으로 변경·normal/-O·patchnotes·push할 수 있다. 동시 writer 금지, 검증 세션 안에서 소스 변경 금지, 새 브랜치 금지.
+- **독립성:** Quick Fix를 작성한 검증자는 그 수정 SHA에 대해 최종 독립 PASS 불가. 원개발자 또는 별도 비작성자 세션이 exact SHA 재검증하고 지팀장이 결과 판정한다. 구조·공개 계약·안전·CI 오라클·교차 RF 변경은 Quick Fix 금지, 원개발자 REWORK_REQUIRED 또는 지팀장 별도 승인. 모든 실패는 `REWORK_REQUIRED OWNER=<원개발자> REVIEWER=<상대> SHA=<후보> REPRO=<재현> ACCEPTANCE=<조건>`으로 HANDOFF 제출한다.
+- **큐·병렬성:** 지팀장이 기존 RF pending→verification/<author> 이동, BLOCKED/REWORK는 큐에 남기고 CURRENT에 원인·담당·다음 행동을 기록한다. 검증 대기 중에도 A/B는 다음 독립 RF 개발 지속. 최종 verification→done은 독립 PASS·선별 통합·exact-SHA normal/-O·hosted CI를 지팀장이 확인한 후에만. 기존 RF-001/013/018/020 큐 유지, RF-021 및 CI_RED oracle HOLD 유지.
+
+
 > **유일한 활성 배정판:** 매 실행 원격 `integration/p1.5` CURRENT부터 확인. [D00](../../ENGINEERING_DELIVERY_POLICY.md) · [D01 Codex](../../../AGENTS.md) · [D02 Claude](../../../CLAUDE.md). 불변 문서는 재독하지 않는다.
 
 ## 2026-10-24 07:23 KST — CI_RED 후보 안전 판정 및 정확한 CI 확인 (우선 적용)
