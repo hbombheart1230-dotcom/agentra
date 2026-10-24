@@ -1,5 +1,7 @@
 # Agentra P1.5 운영 문서
 
+**[T00 전체 목표 폴더트리](architecture/T00_TARGET_TREE.md)** → T01~T09 루트별 상세 목표·파일명·RF. `libs/` 26패키지는 동결 V3와 RF-013~062. 현재 파일 수는 [STATUS](plan/STATUS.md), 기준선 소유권은 3,985-file CSV(역사 고정).
+
 [CURRENT / 이번 배정](work_orders/CURRENT.md) → [전체 루트·26개 libs 현황](plan/STATUS.md) → [독립 작업 pending](plan/pending/) → [검증 완료 done](plan/done/).
 
 - 기존 P1.5.0~11은 [12개 합격 기준](plan/criteria/)이며 직렬 작업 지시가 아니다. 기존 구현 패킷·[동결 V3](architecture/TREE_V3_FROZEN.md)·[마스터 로드맵](p1_5_p1_6_master_plan.md)은 그대로 유지한다.
