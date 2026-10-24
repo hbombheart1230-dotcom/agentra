@@ -1,6 +1,6 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**전수 기준:** `63182ab27ecf889768003f637a40577ba1277f86` · **3985개 파일 / 298개 디렉터리** · RF 독립작업 **93건** · 검증 대기/BLOCKED **8건** · 증거로 최종 확인된 완료 **0건**, 나머지는 이전 부분 개발·통합 검증 필요.
+**전수 기준:** `63182ab27ecf889768003f637a40577ba1277f86` · **3985개 파일 / 298개 디렉터리** · RF 독립작업 **93건** · 검증 대기/BLOCKED **9건** · 증거로 최종 확인된 완료 **0건**, 나머지는 이전 부분 개발·통합 검증 필요.
 
 ## 우선순위 / 잔여 작업
 | 우선 | 목적 | 미검증 RF |
@@ -15,7 +15,7 @@
 | 범위 | 파일 | 독립 작업 | 상태 |
 |---|---:|---|---|
 | `.github/` | 7 | [RF-092](pending/RF-092.md) | 미판정 |
-| `apps/` | 240 | [RF-001](verification/codex/RF-001.md) · [RF-002](verification/codex/RF-002.md) · [RF-003](verification/codex/RF-003.md) · [RF-004](pending/RF-004.md) · [RF-005](pending/RF-005.md) · [RF-006](pending/RF-006.md) · [RF-007](pending/RF-007.md) | 미판정 |
+| `apps/` | 240 | [RF-001](verification/codex/RF-001.md) · [RF-002](verification/codex/RF-002.md) · [RF-003](verification/codex/RF-003.md) · [RF-004](verification/codex/RF-004.md) · [RF-005](pending/RF-005.md) · [RF-006](pending/RF-006.md) · [RF-007](pending/RF-007.md) | 미판정 |
 | `config/` | 8 | [RF-090](pending/RF-090.md) | 미판정 |
 | `data/` | 25 | [RF-091](pending/RF-091.md) | 미판정 |
 | `deploy/` | 33 | [RF-087](pending/RF-087.md) · [RF-088](pending/RF-088.md) · [RF-089](pending/RF-089.md) | 미판정 |
