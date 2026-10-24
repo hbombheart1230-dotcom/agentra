@@ -1,5 +1,10 @@
 # Claude A 예약 실행 인수인계
 
+## sched-48 (2026-10-25, integration 72e44ab8)
+
+- CURRENT 불변(A 개발 RF-017, 검증 RF-001/020/007/008). B HEAD `ee8c2911` 불변. A 시작 `a1dbe8fb`. 소스 변경 없음.
+- RF-017 KEEP_VERIFIED·검증 큐 peer 증거 유지, 새 증거 없어 테스트 재실행 안 함(NOT_RUN). 상대 CLI 호출 0건(티키타카 실행 0건). hosted CI NOT_RUN. 이 파일만 push.
+
 ## sched-47 (2026-10-25, integration 72e44ab8)
 
 - CURRENT: Claude A 개발 RF-017, 독립 검증 RF-001/020/007/008. 소스 변경 없음.
