@@ -1,5 +1,12 @@
 # Claude A 예약 실행 인수인계
 
+## sched-26 (2026-10-24, RF-015 Monitor agent)
+
+- RUN_ID: 2026-10-24T-claude-a-sched-26 | BASE a5ff2436c246fe5cbdaf568fdfd2f2253f09403c | integration c0d5e840266c04a9156f76d8bf92bcf719558327
+- RF-015 `libs/agents/monitor/` 19/19 파일: BASE `63182ab2` 대비 diff 0 (이미 owner 위치, libs/runtime/monitor* 소비자 wrapper 존재) → **KEEP_VERIFIED**, 소스 변경 없음.
+- 소비자 테스트(4파일 test_p173_p058_integration_contracts / test_shared_role_contracts / test_work_monitor_continuous / test_work_monitor_role_contracts): normal·`-O` 각각 **253 passed / 11 failed**. 11 실패는 모두 역사적 B-stage allowlist 가드(`libs/reporting/q8_historical_review.py` 등 reporting 경로 'unapproved') 및 그 mutation 변형이며 monitor 경로 무관. 오라클 수정 안 함. BASE 동적 재현 NOT_RUN.
+- PEER NOT_RUN, hosted CI NOT_RUN, push 대상 HANDOFF_A.md만. 티키타카 실행 리스트: 호출 0건 (현 CURRENT는 상대 CLI 호출 의무 폐지).
+
 > 정본: `integration/p1.5`의 CURRENT·D00·D02. 이 파일은 A 기존 개발 브랜치에서만 갱신한다. RF 원본/검증 큐의 공용 상태 변경은 지팀장 또는 승인 publisher만 한다.
 
 ## 마지막 실행
