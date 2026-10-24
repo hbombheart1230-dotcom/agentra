@@ -1,5 +1,14 @@
 # Agentra CURRENT — P1.5 전체 리팩터링
 
+## 2026-10-24 09:55 KST — RF-014/002 신규 검증 큐 접수 및 다음 RF 배정 (우선 적용)
+
+- **근거 HEAD:** integration `a872bbbfe46973c4637be5d97414ad42007f2bc7`; A `a5ff2436c246fe5cbdaf568fdfd2f2253f09403c` (HANDOFF sched-25), B `2439d2483e749e461ef8ea2b24339c930d5c3d20` (HANDOFF B-20261024T001040Z). 양측 마지막 변경은 HANDOFF만이며 신규 소스 통합은 없다.
+- **지팀장 큐 이동:** RF-014(Claude A 작성, Codex B 독립 검증) pending→verification/claude, RF-002(Codex B 작성, Claude A 독립 검증) pending→verification/codex. KEEP_VERIFIED evidence는 코드 변경이 없어 BASE와 동일한 파일 blob을 후보로 사용. 큐 접수는 DONE/PASS/CI GREEN 아님.
+- **RF-014:** A 20/20 Scanner owner 경로 BASE 동일·KEEP/WRAPPER evidence; normal/-O 각각 **921 PASS/2 FAIL**. 두 실패는 historical q8_shadow 소비자 inventory 및 T3 branch diff guard이며 BASE 동적 재현은 NOT_RUN. B는 exact `63182ab27ecf889768003f637a40577ba1277f86`↔A HEAD 20개 blob, Scanner import/consumer contract를 독립 확인하고 두 실패의 BASE 비교를 별도 실행·격리한다. **PEER_PENDING / BLOCKED_BY_HISTORICAL_GATES**; 테스트 오라클 수정 금지.
+- **RF-002:** B 9/9 UI 경로 KEEP, normal/-O 각 **81 PASS/exit 0**; A sched-25에서 9/9 BASE=B=integration blob 및 81 normal/-O 기존 독립 재현 확인. **PASS_SCOPED / PEER_ACCEPTED_FOR_KEEP**(소스 변경 없음). 최종 DONE은 전체 계약/통합 exact-SHA hosted CI GREEN 이후에만. RF-001 두 경로 overlay 141/141 독립 재현도 수용하되 RF-001 전체 PASS 아님.
+- **다음 병렬 개발:** Claude A → **RF-015 Monitor agent** (19 owner files, `libs/agents/monitor/`; RF-020 및 RF-021/026 타 소유 파일 읽기 전용), Codex B → **RF-003 FastAPI services** (25 owner files, `apps/api/services/`; API/공유 계약·실거래 안전 수정 금지). 각자 기존 A/B 브랜치와 HANDOFF만 사용, 다른 RF 검증 병행. **Quick Fix 별도 승인 없음**, 검증자 read-only 유지.
+- **현황:** verification 6건(RF-013/018/014→B peer, RF-001/020/002→A peer), pending 87건, done 0/93. integration `a872bbbfe46973c4637be5d97414ad42007f2bc7` exact-SHA hosted Actions **Scripts 1 SUCCESS / 나머지 4 FAILURE**. 이번 이동 커밋 CI는 생성 후 재조회; source merge 0, 새 runtime 직접 실행 NOT_RUN. CI_RED `a0493b60` 거부·RF-021 안전 HOLD 유지. 임시 stage/claude 브랜치는 미통합 변경 보존 후 정리, 무단 삭제 금지.
+
 ## 2026-10-24 — 사장 승인: 검증 Quick Fix 및 브랜치 ROOT 고정 (우선 적용)
 
 - **작업 지시 정본:** `integration/p1.5:docs/refactor/work_orders/CURRENT.md`. A/B 파트별 시작 지시·HANDOFF 경로는 변경하지 않는다. 각 세션 시작 시 **저장소 ROOT와 현재 브랜치, origin HEAD**를 확인하고, 모든 RF/운영규칙은 integration에서 읽는다. 기존 개발 브랜치가 integration과 다른 것은 정상이며 신규 브랜치 생성 이유가 아니다.
@@ -29,9 +38,9 @@
 ## 현재 배정 (CURRENT가 유일한 배정 권한)
 
 - 전체 ROOT→LEAF 3985파일/298폴더, RF 93개. [STATUS](../plan/STATUS.md) · [단독 파일 소유권](../plan/FILE_COVERAGE_63182ab2.csv) · [기존 P1.5.0~11 최종 12개 합격 기준](../plan/criteria/).
-- **Claude A:** 검증 큐 [RF-013](../plan/verification/claude/RF-013.md)·[RF-018](../plan/verification/claude/RF-018.md)는 Codex B peer 대기/BLOCKED. **신규 개발 RF-014 Scanner agent** ([pending](../plan/pending/RF-014.md), 20 owner files): 기존 소유 경계 내 read-only 전수·KEEP/MOVE/WRAPPER→실제 안전한 source change 또는 KEEP evidence·normal/-O·patchnotes·SHA 제출. RF-013 rework는 소유권 분리 제안으로 병행. 기존 브랜치 `work/p15-a-reporter-pure-20261021`.
-- **Codex B:** 검증 큐 [RF-001](../plan/verification/codex/RF-001.md)·[RF-020](../plan/verification/codex/RF-020.md)는 Claude A peer 대기/BLOCKED. **신규 개발 RF-002 Operator UI 화면·자산** ([pending](../plan/pending/RF-002.md), 9 owner files): RF-001 33개 소유 파일과 교차 쓰기 금지, 정적 자산·UI 계약 read-only 분석→독립 소스 개선 또는 KEEP evidence·normal/-O·patchnotes·SHA 제출. RF-001 core rework는 별도 병행. [구 브랜치 정리](../plan/troubleshooting/open/P15_BRANCH_CLEANUP.md). 기존 브랜치 `work/p15-b-operator-structure-20261022`.
-- **정규 RF 검증 큐:** Claude 작성 → [verification/claude](../plan/verification/claude/)에서 Codex 검증 (**RF-013/018 2건**); Codex 작성 → [verification/codex](../plan/verification/codex/)에서 Claude 검증 (**RF-001/020 2건**). **대기/BLOCKED 총 4건, DONE 0건**. 차단 중에도 A=RF-014, B=RF-002 독립 개발 병행.
+- **Claude A:** 검증 큐 [RF-013](../plan/verification/claude/RF-013.md)·[RF-018](../plan/verification/claude/RF-018.md)는 Codex B peer 대기/BLOCKED. **신규 개발 RF-015 Monitor agent** ([pending](../plan/pending/RF-015.md), 19 owner files): 기존 소유 경계 내 read-only 전수·KEEP/MOVE/WRAPPER→실제 안전한 source change 또는 KEEP evidence·normal/-O·patchnotes·SHA 제출. RF-013 rework는 소유권 분리 제안으로 병행. 기존 브랜치 `work/p15-a-reporter-pure-20261021`.
+- **Codex B:** 검증 큐 [RF-001](../plan/verification/codex/RF-001.md)·[RF-020](../plan/verification/codex/RF-020.md)는 Claude A peer 대기/BLOCKED. **신규 개발 RF-003 FastAPI services** ([pending](../plan/pending/RF-003.md), 25 owner files): RF-001 33개 소유 파일과 교차 쓰기 금지, 정적 자산·UI 계약 read-only 분석→독립 소스 개선 또는 KEEP evidence·normal/-O·patchnotes·SHA 제출. RF-001 core rework는 별도 병행. [구 브랜치 정리](../plan/troubleshooting/open/P15_BRANCH_CLEANUP.md). 기존 브랜치 `work/p15-b-operator-structure-20261022`.
+- **정규 RF 검증 큐:** Claude 작성 → [verification/claude](../plan/verification/claude/)에서 Codex 검증 (**RF-013/018/014 3건**); Codex 작성 → [verification/codex](../plan/verification/codex/)에서 Claude 검증 (**RF-001/020/002 3건**). **대기/BLOCKED 총 6건, DONE 0건**. 차단 중에도 A=RF-015, B=RF-003 독립 개발 병행.
 - **별도 CI_RED 검증 대기(Codex B):** [CI 호환성 트러블슈팅](../plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md), 임시 `claude/agentra-p15-cloud-setup-v5ue0u` @ `59e34204abb66562780773b649576fa142976041` (코드 `a0493b60`, 인수인계 `d629bc31`). **SELF_PASS / PEER_PENDING**. 일반 RF가 아니며 새 RF 생성 금지. GPT가 CI 오라클 검증 후 수용·통합 결정.
 - **GPT 지팀장:** 위 CI_RED 예외·[4-HEAD 합성 후보 d73be191](../plan/troubleshooting/open/P15_SOURCE_ADMISSION.md) source admission, RF 배정·최종 DONE. 합성 후보는 아직 SOURCE_ADMISSION_PENDING.
 
