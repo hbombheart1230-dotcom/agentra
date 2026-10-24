@@ -47,6 +47,7 @@ jobs:
           tests/test_step5c_execution_owner.py
           tests/test_uef9_formal_authority.py
           tests/test_m11_2_scanner.py
-          tests/test_work_monitor_observation_views.py
+          tests/test_intraday_monitor_signals.py
           tests/test_trade_report_ai.py
           tests/test_operator_ui.py
+
