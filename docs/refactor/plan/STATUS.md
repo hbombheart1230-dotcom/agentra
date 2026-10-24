@@ -56,8 +56,8 @@
 | `libs/supervisor/` | 4 | [RF-060](pending/RF-060.md) | 미판정 |
 | `libs/tools/` | 3 | [RF-061](pending/RF-061.md) | 미판정 |
 
-**RF 상태 3단계:** [pending 개발 대기](pending/) → [verification/claude (Claude 구현·Codex 검증)](verification/claude/) 또는 [verification/codex (Codex 구현·Claude 검증)](verification/codex/) → [done](done/). 현재 verification 6건(RF-013/018/014→Codex 검증, RF-001/020/002→Claude 검증), pending 87건, done 0건이다. 이 경로는 실제 검증 완료를 주장하지 않으며, 구현 SHA와 self 정상/-O 명령 및 인수인계가 없는 이동은 무효다.\n\n**단일 파일 소유권:** [3985파일↔RF CSV](FILE_COVERAGE_63182ab2.csv). [pending 독립작업](pending/) · [done 검증완료](done/) · [P1.5.0~11 합격 기준](criteria/) · [CURRENT](../work_orders/CURRENT.md).
+**RF 상태:** [pending](pending/) **84건** → [verification/claude](verification/claude/) **4건** / [verification/codex](verification/codex/) **5건** → [done](done/) **0건** (총 **93건**). 검증 큐는 PASS가 아니라 독립 검증 대기·BLOCKED 포함이며, 최종 DONE은 peer PASS·선별 통합·정확한 통합 SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
 
-**2026-10-24 08:58 KST 큐 접수:** 4건은 검증 차단 상태를 보존한 대기이며 PASS/DONE이 아니다. 개발 병렬 배정은 A RF-014(20파일), B RF-002(9파일). 역사 CI_RED는 별도 트랙, 검증 차단으로 개발을 멈추지 않는다.\n\n**완료 판정:** 지팀장이 source/peer 실제 PASS·정확한 통합 SHA 필수 CI 후에만 verification→done과 상태 숫자를 갱신하며, 수정 없는 KEEP_VERIFIED도 증거로 인정. 기존 안전 예외 별도 처리.
+**현재 배정:** [CURRENT](../work_orders/CURRENT.md) 참조 (A RF-016 개발·Codex 작성 RF 독립 검증 / B RF-005 개발·Claude 작성 RF 독립 검증). 안전 RF-021 HOLD 및 무승인 CI 오라클 변경 금지.
 
-**2026-10-24 09:55 KST 추가 큐 접수:** RF-014(Scanner, Claude 작성→Codex 검증, self 921 PASS/2 역사 게이트 FAIL), RF-002(UI, Codex 작성→Claude 검증, 9/9 KEEP + 81 normal/-O 독립 범위 PASS). 둘 다 최종 DONE/CI GREEN 아님. 다음 개발 A RF-015, B RF-003. 기존 RF-013/018/001/020 큐 보존.
+**전수 소유권:** [3985파일↔RF CSV](FILE_COVERAGE_63182ab2.csv) · [P1.5.0~11 합격 기준](criteria/). 회차별 실행 이력은 Git 이력·RF·HANDOFF에서 확인한다.
