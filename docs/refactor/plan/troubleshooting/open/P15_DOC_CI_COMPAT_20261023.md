@@ -70,3 +70,9 @@
 - **Reporting/Web 실패 로그:** job `120483928955`, `tests/test_p166_v1052_candidate_risk_migration.py`의 `test_pilot_touches_no_forbidden_surface`와 `test_current_stage_still_rejects_true_authority_changes`가 동일 문서 6경로 인벤토리로 **2 FAIL / 592 PASS / 1 deselected**. Web build와 LF/Windows baseline job은 PASS. Shared와 별도 제품 결함 2개로 오인하지 말 것.
 - **Design Guard/T4 Linux 실패 로그:** jobs `120483929675`, `120483929824`의 `Validate live D00 DOC-FIRST contract and historical preservation` 단계 `AssertionError: read-only peer-review gate missing`. Inline guard는 D01 `AGENTS.md`에 `REVIEW_ONLY_NO_NESTED_CLI` 리터럴을 요구하고, 그 다음 D00 `DIRECT CROSS-CLI RELAY`, D01 `claude -p`, D02 `codex exec` 등 **현재 폐지된 opposite-CLI 실행 방식의 역사 문자열**도 요구한다. D01/D02는 별도 읽기 전용 peer 검증·상대 CLI 미호출을 명시하므로, 문자열 삽입만으로 테스트를 통과시키면 실제 현행 계약 검증이 되지 않는다. 새 계약을 역사 고정 테스트와 구분하는 **의미 보존된 검증 설계**가 필요하며 기존 oracle 임의 완화 금지.
 - **즉시 판정/소유권:** 원인은 런타임 RF-013 코드 결함으로 입증되지 않았으며 **GPT 소유의 historical/current contract admission 충돌**. A/B의 이미 지정된 RF 개발을 중단시켜 동일 CI 로그를 재진단시키지 않는다. GPT는 기존 계약의 역사 pinned SHA·검증 대상·문서 변경 경계별 기대 집합을 분리한 최소 수리 후보를 독립 검증할 것. **수락 조건:** 역사 B-stage 원본에 대한 mutation/rejection 테스트 보존, 현재 문서-only 변경의 정상/optimized 회귀 PASS, 현행 read-only/no nested CLI 규칙에 대한 실질 assertion PASS, integration exact SHA hosted 5개 모두 SUCCESS. 조건 전에는 CI_RED / NOT_ADMITTED, RF DONE 0/93.
+
+## 2026-10-24 — 사용자 승인 CI 호환성 수리 후보 (지팀장)
+- 원인: RF 상태 문서 이동을 과거 B-stage 닫힌 소스 집합에서 검사하고, 두 hosted workflow가 폐지된 DOC_FREEZE/상대 CLI 문자열을 현행 D00-D02에 요구함.
+- 수리 범위: shared_strategist_contracts.py의 RF-001~093 상태 문서 경로만 이동 허용하되 전수 93건 중복·누락 검사; 현행 D00/D01/D02는 독립 read-only peer/안전 계약을 검사하고 역사적 문자열은 B_FROZEN_GREEN@51bb7130 스냅샷에만 확인.
+- 양쪽 YAML은 기존 승인된 진단 워크플로를 기준으로 정확한 교체 블록 1곳만 허용하며 소스·권한/거래 가드 범위 확장 금지.
+- 수락: 독립 검증, normal 및 python -O, 무단 소스/테스트 변조 거부, 정확한 새 integration SHA hosted 필수 CI 5/5 GREEN 전까지 CI_REPAIR_PENDING. RF DONE 승격 금지.

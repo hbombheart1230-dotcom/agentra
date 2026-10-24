@@ -792,6 +792,13 @@ def _b_ci_diagnostic_workflow(path):
     ):
         require(text.count(old) == 1, "diagnostic workflow oracle mismatch: " + path)
         text = text.replace(old, new)
+    # Keep both hosted workflow YAMLs pinned to their existing diagnostic
+    # template plus this exact approved live-contract transition (no wildcard).
+    old_live_guard = "          assert \"D00\" in d00 and \"DELIVERY FIRST\" in d00\n          for cli in (cl,cx):\n              assert \"docs/refactor/work_orders/CURRENT.md\" in cli\n              assert \"Issues #16–#19 are CLOSED\" in cli, \"closed historical work queue must not reactivate\"\n              assert \"REVIEW_ONLY_NO_NESTED_CLI\" in cli, \"read-only peer-review gate missing\"\n              assert \"DOC_FREEZE\" in cli, \"CLI must enforce docs-first\"\n          assert \"integration/p1.5\" in current and \"DOC-A\" in current\n          assert \"DOC_FREEZE\" in current and \"Issue #20\" in current, \"current pointer must honor phase gate and issue authority\"\n          assert \"FINAL_ACCEPTED\" not in current, \"CURRENT must not claim release acceptance before DOC_FREEZE\"\n          assert \"DOC_FREEZE\" in overview and \"DOC_FREEZE\" in rules\n          assert \"docs/ENGINEERING_DELIVERY_POLICY.md\" in d00\n          assert \"DIRECT CROSS-CLI RELAY\" in d00, \"D00 dual-development protocol missing\"\n          assert \"claude -p\" in cx and \"codex exec\" in cl, \"D01/D02 direct opposite-CLI review missing\"\n          assert \"libs/agents/{commander,strategist,scanner,monitor,reporter,supervisor,executor}/\" in target\n          assert \"HISTORICAL PROCEDURE / NOT A LIVE WORK ORDER\" in protocol\n          assert \"HISTORICAL IMPLEMENTATION ACCEPTANCE POLICY\" in size\n          assert \"P1.5.2 OPEN\" in current and \"P1.5.3\" in current, \"pinned provenance markers lost\"\n"
+    new_live_guard = "          # Live P1.5 governance is checked against its actual policy, not\n          # obsolete 2026-10-20 DOC_FREEZE/child-CLI text anchors.\n          assert d00.startswith(\"# D00\") and \"integration/p1.5\" in d00\n          assert \"RF-021\" in d00 and \"CI 오라클\" in d00\n          assert \"단일 관리 writer\" in d00 and \"CURRENT\" in d00\n          for cli in (cl, cx):\n              assert \"docs/refactor/work_orders/CURRENT.md\" in cli\n              assert \"별도 read-only 세션\" in cli and \"상대 CLI 직접 호출 금지\" in cli\n              assert \"main/실거래/안전 계약/CI 오라클 무승인 변경 금지\" in cli\n          assert \"integration/p1.5\" in current and \"RF-021\" in current\n          for role in (\"Claude A 개발:\", \"Codex B 개발:\",\n                       \"Claude A 독립 검증:\", \"Codex B 독립 검증:\"):\n              assert role in current, (\"missing assigned role\", role)\n          assert \"FINAL_ACCEPTED\" not in current\n          assert \"libs/agents/{commander,strategist,scanner,monitor,reporter,supervisor,executor}/\" in target\n          assert \"HISTORICAL PROCEDURE / NOT A LIVE WORK ORDER\" in protocol\n          assert \"HISTORICAL IMPLEMENTATION ACCEPTANCE POLICY\" in size\n          # Preserve the old contract on the immutable, CI-green historical tree.\n          import subprocess\n          historical_sha = \"51bb7130b2ba627be50800fa89c6108dd1a5018c\"\n          historical = lambda p: subprocess.check_output(\n              [\"git\", \"show\", historical_sha + \":\" + p], text=True)\n          old_d00 = historical(paths[\"d00\"])\n          old_current = historical(paths[\"current\"])\n          old_codex = historical(paths[\"codex\"])\n          old_claude = historical(paths[\"claude\"])\n          assert \"DIRECT CROSS-CLI RELAY\" in old_d00\n          assert \"REVIEW_ONLY_NO_NESTED_CLI\" in old_codex and \"REVIEW_ONLY_NO_NESTED_CLI\" in old_claude\n          assert \"DOC_FREEZE\" in old_current and \"P1.5.2 OPEN\" in old_current\n"
+    require(text.count(old_live_guard) == 1,
+            "historical workflow live guard no longer matches pinned template: " + path)
+    text = text.replace(old_live_guard, new_live_guard)
     return text
 
 
@@ -838,12 +845,49 @@ B_FROZEN_GREEN = "51bb7130b2ba627be50800fa89c6108dd1a5018c"
 B_RF93_DOCS_PIN = "3fb24fe01761bd8f68587ee48fd0014e807d0d8a"
 B_RF93_CI_REPAIR_FILES = frozenset({
     "scripts/refactor/shared_strategist_contracts.py",
+    ".github/workflows/p15-integration-t4-regression.yml",
+    ".github/workflows/p152-r2c-residual-regression.yml",
     "AGENTS.md", "CLAUDE.md", "docs/refactor/work_orders/CURRENT.md",
     "docs/refactor/README.md",
     "docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
     "docs/trading_agent_patch_notes_detailed_update/patch_notes.md",
 })
+
+
+# RF93 state documents are a *moving queue*, not a B-stage source change.
+# Restrict changes to exactly one of the 93 original RF identifiers in its
+# canonical state folder. Every other source/test/workflow remains exact-scoped.
+B_RF93_GOVERNANCE_FILES = frozenset({
+    "docs/ENGINEERING_DELIVERY_POLICY.md",
+    "docs/refactor/plan/STATUS.md",
+    "docs/refactor/plan/verification/claude/.gitkeep",
+    "docs/refactor/plan/verification/codex/.gitkeep",
+})
+
+
+def _rf93_state_document(path):
+    match = re.fullmatch(
+        r"docs/refactor/plan/(?:pending|done|verification/(?:claude|codex))/RF-(\d{3})\.md",
+        path,
+    )
+    return bool(match and 1 <= int(match.group(1)) <= 93)
+
+
+def _require_rf93_conservation():
+    locations = ("pending", "verification/claude", "verification/codex", "done")
+    found = {}
+    for location in locations:
+        for path in (ROOT / "docs/refactor/plan" / location).glob("RF-*.md"):
+            name = path.name
+            require(re.fullmatch(r"RF-\d{3}\.md", name),
+                    "RF93 invalid work order identifier: " + name)
+            number = int(name[3:6])
+            require(1 <= number <= 93 and number not in found,
+                    "RF93 duplicate/out-of-range: " + name)
+            found[number] = path
+    require(set(found) == set(range(1, 94)),
+            "RF93 missing work orders: " + repr(sorted(set(range(1, 94)) - set(found))))
 
 
 def verify_b_composed(overrides=None, *, inventory=None):
@@ -889,9 +933,12 @@ def verify_b_composed(overrides=None, *, inventory=None):
                                for p in documented),
             "RF93 docs-only pin contains unauthorized source/CI/authority changes")
     recent = _commander_delta(B_RF93_DOCS_PIN)
-    require(recent <= B_RF93_CI_REPAIR_FILES,
+    _require_rf93_conservation()
+    allowed_recent = (B_RF93_CI_REPAIR_FILES | B_RF93_GOVERNANCE_FILES |
+                      {p for p in recent if _rf93_state_document(p)})
+    require(recent <= allowed_recent,
             "B-stage composed unexpected/missing inventory: " +
-            repr(recent - B_RF93_CI_REPAIR_FILES))
+            repr(recent - allowed_recent))
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     changed = _commander_delta(B_COMPOSED_BASE)
     untracked = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"],

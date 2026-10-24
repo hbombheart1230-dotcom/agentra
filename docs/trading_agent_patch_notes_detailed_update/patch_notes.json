@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 355,
+  "entry_count": 356,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9373,6 +9373,34 @@
         "docs/ENGINEERING_DELIVERY_POLICY.md",
         "AGENTS.md",
         "CLAUDE.md",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
+        "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "version": "P15_RF93_LIVE_HISTORICAL_CI_CONTRACT_SEPARATION_20261024",
+      "title": "Separate frozen B-stage proof from live RF93 work-order movement and role-based CI contracts",
+      "stage": "P1.5 CI_COMPAT_REPAIR_CANDIDATE",
+      "types": [
+        "TEST",
+        "DOCS",
+        "PROCESS",
+        "SAFETY"
+      ],
+      "status": "current",
+      "summary": "Repair stale historical B-stage document inventory and direct-child CLI string gate while retaining pinned source/authority checks and RFC ownership.",
+      "details": [
+        "RF-001..RF-093 may move only among pending/verification/ done paths, with exact conservation and no duplicate/out-of-range RF; source/CI paths otherwise closed.",
+        "Two existing T4/Design Guard YAMLs replace obsolete D7/DOC_FREEZE strings with live D00-D02 independent read-only roles, while proving the old literal contract against pinned CI-green Git SHA.",
+        "Unreviewed source, Broker/Step5C/UEF/authority, CI bypass and main remain forbidden; independent validation and exact hosted CI green required before accepting the repair."
+      ],
+      "impact": "Prevent normal RF state movement and current process docs from repeatedly failing historical frozen-stage CI while preserving source/safety regression gates.",
+      "sources": [
+        "scripts/refactor/shared_strategist_contracts.py",
+        ".github/workflows/p15-integration-t4-regression.yml",
+        ".github/workflows/p152-r2c-residual-regression.yml",
+        "docs/refactor/plan/troubleshooting/open/P15_DOC_CI_COMPAT_20261023.md",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.json",
         "docs/trading_agent_patch_notes_detailed_update/patch_notes.md"
       ]
