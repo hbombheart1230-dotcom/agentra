@@ -187,3 +187,10 @@
 - 테스트(Scanner 이관/계약 8파일: p154, p159, p166, p167, p168, p171, p172, p173): normal **921 passed / 2 failed**, `python -O` **921 passed / 2 failed** (동일). 실패 2건은 Scanner 소유 외 역사 가드: (1) `test_p171…[output_payloads]` — 소비자 집합에 `libs/reporting/evaluation/q8_shadow_readout_p15.py`가 추가되고 `libs/reporting/q8_shadow_blocker_review.py`가 사라진 것(Reporter 쪽 RF 이동 결과, frozen inventory, 오라클 무수정), (2) `test_p159…test_t3_changed_paths_contain_no_authority_surface` — 브랜치 diff 기반 역사 T3 가드. 두 건 모두 BASE 대조 재실행은 NOT_RUN(Scanner 파일이 BASE와 동일하므로 Scanner 변경이 원인이 아님을 정적으로만 확인). 삭제·skip·완화 없음.
 - 한계/NOT_RUN: 독립 peer 검증 NOT_RUN(Codex B 별도 세션 대기), hosted CI UNKNOWN, 소스 변경 0이라 patchnotes 변경 없음. RF-014 DONE 아님 — KEEP_VERIFIED 증거 제출 단계. 상대 CLI 호출 없음(티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: RF-014 KEEP_VERIFIED 수용 여부 및 B peer 배정; RF-013/018 BLOCKED 유지 변동 없음; 역사 가드 2건(q8_shadow 소비자 이동, T3 diff 가드)은 RF 소유자 판정.
+
+### sched-28 (2026-10-24): RF-004 독립 peer (A, 읽기 전용, 소스·오라클 변경 없음)
+- 기준: CURRENT@integration `08cd5e2f`(RF-004 → verification/codex 큐), A 시작 `e833bee3`, B `b11affbc71a32b140b40ddf02b81d4cebd7454c3`(소스 불변, HANDOFF_B만 변경). RF-003/RF-016은 sched-27에서 처리 완료라 반복하지 않음.
+- **정적:** CSV RF-004 35행 BASE `63182ab2` 대비 blob 동일 — B HEAD / integration / A HEAD 각 **35/35**(diff 0). 35개 모듈 각각 import **35/35 성공**. 최대 모듈 197줄(models/runtime_status.py), 소비자는 `apps/api/routers/*`·`adapters/llm_event_tail.py`·`infrastructure/source_roots.py` 등 → 분할 사유 없음.
+- **테스트(B HEAD detached worktree):** `tests/apps/api` 18파일 `python -m pytest -q -p no:cacheprovider` normal **78 passed / 1 skipped**, `python -O` **78 passed / 1 skipped** (B 보고 79 PASS와 합계 일치; skip 1건 = `test_paths.py:48` Windows symlink 생성 불가 환경). fastapi/pydantic은 이 PC에 없어 임시 `--target` 디렉터리로만 설치(저장소·전역 환경 변경 없음). 실패 0.
+- 판정: **RF-004 KEEP 증거 REMOTE_PEER_PASS 후보(범위 한정)** — 35/35 blob + import + API 테스트 normal/-O. 라우터 공개 IO/side effect 파일별 재판정은 NOT_RUN(B 서술 인용). 통합·hosted CI UNKNOWN, DONE 아님. 상대 CLI 호출 없음(티키타카 실행 0건).
+- GPT_ACTION_REQUIRED: RF-003/RF-004 A peer 수용 및 verification 이동 판단; RF-016 B peer 배정(sched-27).
