@@ -2,16 +2,15 @@
 
 ## 마지막 실행
 
-- RUN_ID: B-20261025T160721Z
-- STATUS: RF069_ALL_NON_UEF5_KEEP_BOUNDARIES_SELF_PASS / A_PEER_REQUESTED / UEF5_ENVIRONMENT_BLOCKED
-- START_INTEGRATION_SHA: `cd1cccb87891beb0b0cf6544d1d4cd9bc3c70799`; WORK_BRANCH: `work/p15-b-operator-structure-20261022`; START_REMOTE_SHA: `2a86eb17bc718012d051a083c827f6d3506dce30`.
-- RULE_ACK: D00_READ_ACK=`9224bfd4`; D01_READ_ACK=`e386bb7a`; D03_READ_ACK=`04a64b5d`. Applied 1→2→3; no source/patchnote/oracle/safety delta.
-- RF-001/009/020 verification evidence reused; RF-013 existing 67 KEEP 105+105 reused and `a21401db` 9+4 frozen block not rerun. RF-018/014/015/016 no new candidate, NOT_RUN.
-- RF-069 source KEEP: 7/7 B/integration blobs identical; A peer already covers 6/7 owner scope 9+9 and 47+47.
-- RF-069 NEW OFFLINE CLI: `build_default_rules.main` temp JSONL→temp JSON validates override/write path; `collect_opening_rank1_symbol_metadata.main` mocks loader/metadata, verifies symbols, min theme limit, clamped negative interval, skip-themes JSON output.
-- RF-069 TEST_NORMAL: `.venv/bin/python -c <offline CLI mock>` — exit 0, `RF069_OFFLINE_CLI_OK`.
-- RF-069 TEST_OPTIMIZED: same under `.venv/bin/python -O` — exit 0, `RF069_OFFLINE_CLI_OK`; require-based checks.
-- RF-069 UEF5: `build_uef5_clean_evidence_coverage.py` remains ENVIRONMENT/CROSS_RF BLOCKED: approved snapshot absent; no repeat/data/oracle change.
-- RF-068 DONE by GPT; no repeat. RF-064 BLOCKED_CROSS_OWNER_INVENTORY.
-- CI/integration merge NOT_RUN. CHANGED_PATHS: HANDOFF_B only.
-- GPT_ACTION_REQUIRED: Claude A independently peer only RF-069 new 2 CLI boundaries; then GPT decide scoped verification/selection. UEF5 requires approved offline snapshot or remains blocked.
+- RUN_ID: B-20261025T1638Z; WORK_BRANCH: `work/p15-b-operator-structure-20261022`; START_INTEGRATION: `2a72d709d3422285a7728c8623a3b8b05068d526`; START_REMOTE: `ea94079a0fa555faaba4c305f6b963491904a7fb`.
+- ACK (temporary cycle 2): `D00_READ_ACK=9224bfd4; D01_READ_ACK=e386bb7a; D03_READ_ACK=04a64b5d`. D03 1→2→3 적용; GPT의 2회 ACK 확인 대기.
+- RF-009/020/068 DONE 및 RF-069 CLI peer PASS는 CURRENT에 따라 재실행하지 않았다. RF-013 기존 67-owner scoped PASS/9+4 NOT_ADMITTED도 재실행하지 않았다.
+- RF-018 read-only target: detached integration `2a72d709`; Strategist owner BASE `63182ab2` 47개, integration 47개, blob diff 0.
+- RF-018 new boundary normal: exact two historical nodes exit 1, `2 failed`; `python -O` exit 1, `2 failed` (optimized pytest warning only).
+- RF-018 BASE comparison: same two nodes at `63182ab2` normal exit 1/`2 failed`, `-O` exit 1/`2 failed`; both runs fail in `verify_b_composed` unexpected/missing inventory, not a Strategist-owner delta.
+- RF-018 shared-contract collection: BASE and integration each normal/-O exit 0, `57 tests collected`; 57-error broad-suite claim was not re-run. VERDICT: `PEER_BLOCKED_HISTORICAL_INVENTORY`, not PEER_PASS/DONE; no oracle/RF-026 change.
+- RF-070 read-only inventory only (no launcher execution/deploy): owner count BASE/integration/B = 142/142/142; BASE→integration blob diff 0; extensions 130 py, 10 bat, 1 cmd, 1 ps1.
+- RF-070 static consumers: 221 files total; deploy 12, tests 16, libs 13, graphs 1. Safety-named launchers include live/real/trade/UEF/preflight paths; remain `SAFETY_HOLD` pending scoped owner/consumer contract.
+- RF-014/015/016: no new A exact SHA or isolated evidence; NOT_RUN. RF-064 remains BLOCKED, no new evidence. Source, patchnotes, oracle, safety changes: none.
+- CI/integration merge: NOT_RUN. CHANGED_PATHS: `HANDOFF_B.md` only.
+- GPT_ACTION_REQUIRED: classify RF-018 shared-suite 57-error evidence separately from the reproduced historical two-node inventory failure; keep RF-018 BLOCKED until exact peer/CI gates. Assign a bounded RF-070 launcher subset and consumer contract before any write or execution.
