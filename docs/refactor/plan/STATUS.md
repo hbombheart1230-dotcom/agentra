@@ -1,8 +1,10 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 00:30 KST): pending 72 / verification 16 / rework 0 / DONE 5** (RF-002~006). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 01:03 KST): pending 72 / verification 15 / rework 0 / DONE 6** (RF-002~006, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
 ## 현재 지팀장 판정·다음 실행 (2026-10-26)
+
+- **01:03 KST RF-068 DONE:** A 독립 8/8 peer 경계 normal/-O 기존 PASS(11/15/5 offline/12), B·integration 8/8 소스 blob 동일 KEEP. GitHub `f097690b → integration` 및 `ac7bf5ac → integration` compare에서 변경 경로 전부 문서, 소스·테스트·오라클 0 변경을 확인. D03 §3A에 따라 과거 **각 integration 정확한 코드 SHA**의 normal/-O PASS를 현행 동일 코드·테스트 트리에 재사용(현행 문서 HEAD 물리 재실행 NOT_RUN, hosted CI 불요). 소스 선별 통합 NOOP, RF-068 `verification/codex → done`; **72/15/0/6**. 신규 코드·안전·오라클 변경 없음. RF-069 잔여 2 CLI offline/mock + UEF5 환경 차단은 유지. A/B 신규 소스 없음, Issue #32 신규 댓글 없음.
 
 - **00:30 KST 신규 상태 전환:** A 최신 `0f31a9b6` RF-068 8/8 독립 peer scoped 증거 수용, 지팀장 integration `5807be6f` ↔ B `2a86eb17`의 8개 generator blob 직접 8/8 동일 확인. RF-068 KEEP_VERIFIED, 소스 통합 delta 0; 통합 SHA normal/-O 실행 증거만 NOT_RUN, DONE 보류. RF-069는 A 신규 독립 normal/-O 9+9 및 소비자 47+47 scoped PASS, 7/7 owner blob 동일 확인으로 **pending→verification/codex** 이동. 미검증 CLI 2경계 및 UEF5 offline snapshot 부재 ENVIRONMENT/CROSS_RF는 별도 차단; B 잔여 mock·A 신규 peer, 이후 RF-070 read-only 범위. **상태 72/16/0/5**. CI 조회·대기 제외(D03), 신규 source/오라클/안전 변경 없음. Issue #32 새 댓글 없음.
 
@@ -140,8 +142,8 @@
 | `libs/supervisor/` | 4 | [RF-060](pending/RF-060.md) | 미판정 |
 | `libs/tools/` | 3 | [RF-061](pending/RF-061.md) | 미판정 |
 
-**RF 상태:** [pending](pending/) **74건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **9건** ↔ [rework/claude](rework/claude/) **0건** / [rework/codex](rework/codex/) **0건** → [done](done/) **5건** = **총 93건**. verification에는 검증 대기·PASS_SCOPED·BLOCKED가 포함된다. rework에는 지팀장이 구체적 소유 경로 보완을 확정한 원개발자 RF만 이동하며, 동일 RF를 여러 상태에 중복 보관하지 않는다. DONE은 peer PASS·선별 통합·정확한 integration SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
+**RF 상태:** [pending](pending/) **72건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **10건** ↔ [rework/claude](rework/claude/) **0건** / [rework/codex](rework/codex/) **0건** → [done](done/) **6건** = **총 93건**. verification에는 검증 대기·PASS_SCOPED·BLOCKED가 포함된다. rework에는 지팀장이 구체적 소유 경로 보완을 확정한 원개발자 RF만 이동하며, 동일 RF를 여러 상태에 중복 보관하지 않는다. DONE은 전체 peer·소유권·선별 통합 및 D03 §3A에 따른 통합 코드 SHA normal/-O 증거 확인 후 지팀장만 판정한다. hosted CI는 필수 아님.
 
-**현재 배정:** [CURRENT](../work_orders/CURRENT.md) 기준 A/B 모두 rework 없음. A는 RF-020→009→001 신규 peer 증거와 RF-068 독립 검증 후 RF-019/017 개발, B는 RF-013 기존 67 owner KEEP peer 및 RF-068 개발을 진행한다. RF-013 신규 9 + RF-030/035 소비자 4는 RF-074 frozen test 실패로 NOT_ADMITTED. 각 회차에서 실행 가능한 복수 RF 처리, BLOCKED만 건너뛴다.
+**현재 배정:** [CURRENT](../work_orders/CURRENT.md) 기준 A/B 모두 rework 없음. A는 RF-020→009→001 신규 peer 증거와 RF-069 신규 CLI 경계 peer 후 RF-019/017 개발, B는 RF-013 기존 67 owner KEEP peer 재사용 및 RF-069 잔여 offline/mock→RF-070 read-only 인벤토리를 진행한다. RF-013 신규 9 + RF-030/035 소비자 4는 RF-074 frozen test 실패로 NOT_ADMITTED. 각 회차에서 실행 가능한 복수 RF 처리, BLOCKED만 건너뛴다.
 
 **전수 소유권:** [3985파일↔RF CSV](FILE_COVERAGE_63182ab2.csv) · [P1.5.0~11 합격 기준](criteria/). 회차별 실행 이력은 Git 이력·RF·HANDOFF에서 확인한다.
