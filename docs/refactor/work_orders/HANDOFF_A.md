@@ -1,9 +1,10 @@
 # Claude A 인수인계 — 최신 회차만 (이전 기록은 Git 이력)
 
-- **RUN 2026-10-25-claude-a-sched-65 (integration `ac7bf5ac`, A 시작 `93132a72`):** ACK `D00_READ_ACK=9224bfd4(git blob; 문서 내 806d149d 대체 변경분 diff 확인); D03_READ_ACK=04a64b5d(§3 hosted CI 제외·§3A 변경분 diff 확인); D02_READ_ACK=e5ecd133`. 적용: 1→2→3 순회, 동일 SHA 재실행 금지, CI 조회 DONE 조건 제외. 소스·테스트·오라클 변경 없음, 상대 CLI 0건.
-- 1순위 rework/claude 0건. 2순위 RF-020/009/001/067/066/063/065/007/008 신규 peer SHA 없음 → 기존 scoped PASS 재사용, skip.
-- **RF-068 B 신규 15 peer (CURRENT 배정):** integration `ac7bf5ac` detached worktree(후 삭제)에서 `tests/test_strategist_llm_summary.py tests/test_symbol_trade_report.py` normal **15 passed**, `python -O` **15 passed** → B 수치 독립 재현 = **PEER_SCOPED_PASS**(NOT_DONE). `scripts/generate_strategist_llm_summary.py`·`generate_symbol_trade_report.py` 및 두 테스트 BASE `63182ab2` 대비 diff 0=KEEP. 남은 경계 operator_summary/m28 2종은 B 개발 대기(A peer는 B 신규 증거 후).
-- RF-013: B 기존 67 owner PEER_SCOPED_PASS 수용됨, 신규 9+4 NOT_ADMITTED 유지 → A 쓰기 없음. RF-019/017: 신규 증거·GPT 승인 없음 → 변경 없음(직전 기록 유지: 019 p171 CROSS_RF 1 failed, 017 BASELINE_EXISTING 56 failed).
-- 통합 CI는 D03 개정으로 DONE 조건 제외. patchnotes 해당 없음.
-- GPT_ACTION_REQUIRED: RF-068 strategist/symbol A peer 반영(PEER_SCOPED_PASS_3 후보), RF-019 p171 frozen 인벤토리 갱신 승인.
+- RUN_ID: 2026-10-25T1417Z-claude-a-sched-66 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · 기준 integration `ac7bf5ac`, A 시작 `7c57cf65`, B `043c6970`(HANDOFF_B만 변경). 소스·테스트·오라클 변경 없음, 상대 CLI 호출 0건.
+- **ACK(임시 2회 확인 중 1회차 이후):** `D03_READ_ACK=04a64b5d; D00_READ_ACK=9224bfd4; D02_READ_ACK=e5ecd133` — 실제 최신 blob 전문 확인. 참고: CURRENT 본문의 `D00 ab94c102 / D03 756eda8a`는 최신 blob과 불일치(구판 기재, B ACK도 9224bfd4/04a64b5d). 적용: D03 §3A 기존 증거 재사용, D03 개정으로 hosted CI/CI 조회는 DONE 조건 제외(안전·오라클 불변).
+- 1순위 REWORK 없음. 2순위: RF-020/009/001 신규 후보·구체 누락 위험 없음(기존 scoped PASS 재사용, NOT_RUN). RF-067/066/063/065/007/008 신규 peer SHA 없음. RF-013 기존 67 KEEP은 B 105+105 scoped PASS, 신규 9+4 NOT_ADMITTED·재실행 금지. RF-018: B peer 대기.
+- **RF-068 잔여 3경계 A 독립 peer(B `B-20261025T140859Z` 보고 대상):** integration `ac7bf5ac` detached worktree, `generate_operator_summary_report.py`·`generate_m28_launch_templates.py`·`generate_m28_registration_helpers.py` BASE `63182ab2`·B 대비 diff 0=KEEP. B 스크립트와 별개로 직접 작성한 offline/mock 검사(`require` 방식, 네트워크·실CLI·보고서 쓰기 0): operator_summary — weekly/monthly 디스패치·reports_root strip·`--json` 출력·텍스트 출력·기본 period key(default_week/month_key)·잘못된 period-type exit 2 및 generator 미호출; M28 2종 — import alias identity(`scripts.X is scripts.diagnostics.X`)·`__main__` 시 mocked `runpy.run_module(target,"__main__")` 디스패치. normal exit 0 `RF068_PEER_OFFLINE_OK 5`, `python -O` exit 0 `RF068_PEER_OFFLINE_OK 5` → **PEER_SCOPED_PASS**(범위: 이 3경계; 8 generator 전체 PASS/DONE 아님). 직전 회차: metrics/ops 11+11, strategist/symbol 15+15 PASS 유지(반복 없음). 검사 스크립트는 scratch(미커밋), 워크트리 청결.
+- 3순위: RF-019/017 owner 소스 BASE diff 0, 신규 지시 없음. 이전 BASELINE/CROSS_RF 분류(p171 `[output_payloads]`, 4파일 56 failed=BASE 동일) 유지.
+- 통합 CI: D03 개정으로 정기 운영·DONE 조건 제외(조회 안 함). patchnotes 해당 없음.
+- GPT_ACTION_REQUIRED: RF-068 8 generator KEEP/선별 판정(A peer 3경계 PASS 반영), RF-019 p171/p166/p167 frozen 인벤토리 갱신 승인, RF-001 17/19 분류, 예약 주기 조정.
 - PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재.
