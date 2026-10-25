@@ -2,7 +2,6 @@
 
 > 정본: `integration/p1.5`. A/B는 아래 **1 → 2 → 3순위**로 수행한다. 같은 SHA·동일 실패 반복 검증이나 신규 근거 없는 BLOCKED는 건너뛴다.
 
-- **임시 규칙 재확인 (다음 2회 A/B 실행 후 지팀장 제거):** Claude A는 CURRENT → D00(`docs/ENGINEERING_DELIVERY_POLICY.md`) → D03(`docs/refactor/work_orders/D03_DEV_TEAM_RULES.md`) → D02(`CLAUDE.md`), Codex B는 CURRENT → D00 → D03 → D01(`AGENTS.md`)을 **이번 회차에 한 번 전문 재독**하고 HANDOFF에 확인한 문서 blob SHA와 규칙 이해 여부를 기록한다. 신규 peer SHA·증거가 없으면 해당 검증만 건너뛰고, A는 RF-019→017 개발, B는 RF-001→009→020 원개발자 REWORK를 실제 진행한다. 개별 RF가 막혀도 다음 실행 가능 RF를 계속 처리한다. 불가 시 구체적인 파일·계약·차단 원인과 GPT_ACTION_REQUIRED를 남기며 막연한 NOT_RUN으로 전 순위를 종료하지 않는다. 안전·소유권·오라클 승인 경계는 유지한다. 지팀장은 다음 2회 A/B 실행 결과에서 재독 확인 후 **이 임시 줄만 삭제**한다.
 - **규칙 변경 알림 (상시):** 지팀장은 D00·D01·D02·D03의 정본 blob SHA를 직전 확인값과 비교하고, **변경이 확인된 경우에만** CURRENT에 해당 문서명·이전/신규 SHA·변경 핵심·영향받는 A/B의 재독 지시를 직접 명시한다. 미변경 시 재독 강제 금지. 변경 안내는 해당 A/B가 읽고 HANDOFF에 반영한 뒤 지팀장이 CURRENT에서 제거한다. 이번 확인 SHA: D00 `442247ea`, D01 `81daa098`, D02 `c6a5cf3c`, D03 `8ee3e385` (각 blob SHA 앞 8자리; 정본 전체 SHA는 Git으로 조회).
 - **개발팀 규칙:** [D00](../../ENGINEERING_DELIVERY_POLICY.md) · [D03 / 개발 공통](D03_DEV_TEAM_RULES.md) · [D01 / Codex](../../../AGENTS.md) · [D02 / Claude](../../../CLAUDE.md)
 - **Claude A 1순위 · 반려 재작업:** 현재 없음 ([rework/claude](../plan/rework/claude/) **0건**).
