@@ -9,6 +9,18 @@
 - **정확한 정의:** KEEP_CANDIDATE는 현재 경로의 **보존 후보**이며 확인된 최종 목표 위치나 책임 분리 완료 판정이 아니다. A/B는 검토 때마다 실제 함수·소비자·호출 계약을 증명해 TARGET/ACTION/Owner 확정. 안전·교차 Owner 임의 MOVE 금지.
 - 과거 DONE RF-002~006의 169개 파일은 기존 KEEP_VERIFIED 판정과 증거를 **소급 기록만** 했다. 기존 DONE/peer/CI 판정 변경·재실행 없음. RF-021 안전 HOLD 및 EX1~EX6 제한 유지.
 
+## 지팀장 차단 해소 책임표 (D00 §6; 2026-10-25)
+
+| RF | 결정 책임 / 수행·독립 검증 | 차단을 푸는 **다음 구체적 증거** | 재개 상태 |
+|---|---|---|---|
+| [013](verification/claude/RF-013.md) | **GPT** 경로별 Owner 판정 / **A** 9 신규+4 wrapper 경로 분리 / **B** 변경분 peer | 13경로의 소유 RF·consumer·BASE→후보, 허용된 RF-013 최소 후보 | `REWORK/BLOCKED` |
+| [014](verification/claude/RF-014.md) | **GPT** RF-009/019/030/035/074 경계 결정 / **A** 실패 2 node 원인 분리 / **B** peer | RF-014 20개와 output payload·Reporter consumer, BASE/후보 실패 대조 | `VERIFY_BLOCKED` |
+| [018](verification/claude/RF-018.md) | **GPT** RF-026/import·역사 CI 원인 판정 / **A** 2 FAIL·57 ERROR 그룹 증명 / **B** peer | 실패 node와 BASE/후보 동일 명령, RF-026 경계 분리 | `PEER_BLOCKED` |
+| [064](pending/RF-064.md) | **GPT** 외부 8경로 Owner·승인 범위 판정 / **B** source 2개·실패 대조 / **A** peer | 8경로 원소유+30 PASS/10 FAIL/57 ERROR 원인별 BASE 대조 | `PENDING/BLOCKED` |
+
+- **고정 운영:** 매 지팀장 점검 때 CURRENT→새 HANDOFF/후보→위 RF의 **새 증거 여부**를 확인하고, 증거가 있으면 **그 회차에 GPT가 경로별 결정·다음 작업을 해당 RF에 기록**, 실행 대상만 CURRENT에 연결한다. 없으면 같은 SHA 재검증 없이 A/B가 다음 독립 RF를 진행한다. 역할·안전·테스트 오라클 권한은 D00 제약 불변.
+- **분명한 상태:** 위 표는 해결·재배정·코드 변경이 완료됐다는 뜻이 아닌 **지팀장 실제 실행 지시의 고정 위치**다. 최종 DONE은 독립 검증과 exact integration SHA CI 뒤에만 판정한다.
+
 ## T00~T09 ↔ RF-93 목표 커버리지 대조 (2026-10-24)
 
 아래 표는 **기존 RF 범위의 목표 참조 매핑**이며, 목표 위치로 파일 이동 완료 또는 최종 PASS를 뜻하지 않는다. 93건은 기준선 CSV 3,985개 파일에 한 RF씩 유일하게 매칭되고, 새 문서 경로는 RF-079 논리 Owner 델타로 분리한다.

@@ -30,3 +30,12 @@
 ## 5. 역할과 보고
 - [D01 Codex](../AGENTS.md) / [D02 Claude](../CLAUDE.md)는 역할·검증 큐·HANDOFF 경로만 정의한다. [CURRENT](refactor/work_orders/CURRENT.md)의 최신 배정이 우선하며 D00 안전 게이트를 완화하지 못한다.
 - 지팀장은 A/B 원격 HEAD와 HANDOFF의 **최신 회차만**, 변경된 RF·실제 코드/CI 증거만 읽는다. A/B 실제 변경 SHA·normal/-O·peer 결과, 지팀장 큐 이동/통합/DONE, pending/verification/done(총93), CI와 다음 행동을 이 채팅에 간결히 보고한다. 증거 없는 완료 주장·문서만을 위한 커밋 금지.
+
+## 6. 지팀장 차단 해소·검증 적체 운영 루프 (모든 지팀장 점검에 적용)
+
+- **단일 운영 위치:** 규칙은 이 **D00 §6**, 건별 결정·수정 지시는 **해당 RF**, 요약 책임·상태는 **[STATUS](refactor/plan/STATUS.md)**, A/B 실행·결과는 각자 **HANDOFF**, 작업 순서/포인터만 **[CURRENT](refactor/work_orders/CURRENT.md)**에 둔다. 새 총괄 문서·중복 회차 일지는 금지. CURRENT는 이미 D00 링크를 갖고 있으므로 규칙 전문을 복제하지 않는다.
+- **점검 입력(매 지팀장 점검의 고정 순서):** CURRENT 최신 HEAD → A/B 원격 HEAD와 최신 HANDOFF → 새 후보·peer 증거가 있는 RF/열린 차단 RF의 *변경분만* → STATUS의 pending/verification/done 수와 hosted CI **정확한 SHA**. D00 및 미변경 증거는 SHA가 같으면 전문 재열람하지 않는다. 이 절차는 지팀장 점검이 수행될 때 적용하며 별도 예약 실행을 자동 생성하지 않는다.
+- **BLOCKED/REWORK 처리 책임 = 지팀장:** 문제를 단순 재보고하지 않고 **그 점검 회차에 RF 본문에** (1) 실패 node/원인 분류(`NEW_REGRESSION` / `BASELINE_EXISTING` / `ENVIRONMENT` / `CROSS_RF_OWNER` / `UNKNOWN`), (2) BASE·후보 SHA 및 정확한 영향 경로, (3) 파일별 writer Owner·독립 reviewer, (4) 승인된 최소 수정 또는 읽기 전용 증거 요청, (5) 금지 경계, (6) 재개 트리거·PASS 판정 조건·다음 행동을 명시한다. 증거 부족은 UNKNOWN으로 유지; 임의로 PASS/권한 승격 금지.
+- **소유권 충돌 의사결정:** 지팀장이 고정 CSV/각 RF/실제 소비자를 대조해 경로별 단일 writer를 판정한다. **판정 ≠ 변경 승인**. 타 RF 경로·신규 공개 인터페이스·안전 효과·CI oracle은 기존 D00·사용자 승인 게이트가 충족되기 전까지 read-only/BLOCKED. 수행자는 자기 CURRENT 배정과 허용된 소유 파일만 수정, 상대 peer는 별도 read-only 세션으로 검증한다. 과거 오라클/테스트 기대값을 실패 숨기기 용도로 수정할 수 없다.
+- **대기열 관리:** 동일 SHA·동일 실패에 재검증 반복하지 않는다. 증거가 들어오면 같은 점검에서 `PASS_SCOPED/REWORK/BLOCKED`와 다음 **한 가지 실행 행동**을 RF·STATUS에 반영하고, 실행 가능하면 CURRENT의 기존 A/B 순서에 연결한다. 진전 불가능한 RF는 차단 이유·재개 트리거를 남기고 다음 독립 RF로 진행한다. PASS_SCOPED와 KEEP_CANDIDATE는 RF DONE 근거가 아니다.
+- **마감/보고:** 승인된 소스는 GPT가 최신 integration에 **RF 소유 경로만 선별 통합**, 새 통합 SHA의 normal/`python -O`·필수 hosted CI GREEN을 확인한 뒤 RF를 DONE으로 이동한다. 점검 보고는 **A/B 진행 → 지팀장 결정·실행(커밋/SHA 또는 미수행 명시) → 차단 RF/CI → 다음 행동** 순서로 간결하게 남긴다. 새 증거가 없으면 NO_CHANGE이며 불필요한 문서 커밋도 금지한다.
