@@ -345,3 +345,12 @@
 - 기준: CURRENT@integration `2765534e`(A 개발 RF-019→RF-017, 검증 RF-063·001·020·007·008·009 불변; 62e6aaf0 이후 변경은 docs 전용 — per-file 목표 배치 계약, B 배정). B HEAD `9f2317b8`(ee8c2911 대비 HANDOFF_B.md 1경로만 변경, 소스·테스트 0). A 시작 `82d966e5`.
 - RF-063 PEER PASS_SCOPED·RF-001/007/008/009/020 peer 증거, RF-019/RF-017 KEEP_VERIFIED 유지. 새 증거 없어 테스트 재실행 안 함. 상대 CLI 호출 0건(티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: RF-063 판정, cp949 로케일 의존 테스트 처리 여부, RF-009 A peer 배정 여부.
+
+### sched-54 (2026-10-25): RF-065 A 1순위 독립 검증 — PEER PASS_SCOPED (소스 변경 없음)
+- 기준: CURRENT@integration `92723f0f`(A 검증 1순위 RF-065 신규 추가, 개발 RF-019→RF-017). A 시작 `68093958`(work 브랜치). B HEAD `74784a74`(HANDOFF_B 외 소스 변경 없음).
+- 검증 SHA: BASE `63182ab2` / integration `92723f0f` / B `74784a74`. `scripts/research` 54 .py, BASE=integration=B diff 0(소스 동일).
+- 분류(read-only 정적): subprocess/socket/requests/urllib/place_order/submit_order/ib_insync/os.system 직접 호출 0건(`kis|broker` 매치 1건은 run_horizon_alignment_review argparse 설명문). repo 내부 import 0. 50/54가 보고서 파일 쓰기 → 54 CLI 일괄 실행 NOT_RUN(의도적, 쓰기·live/frozen 데이터 가능성). 54 모두 KEEP_VERIFIED, SAFETY_HOLD 0, 이동/WRAPPER 없음.
+- 테스트(detached integration 워크트리, PYTHONUTF8=1): AST parse 54/54 OK; `tests/test_scripts_target_tree_compat_audit.py` normal **7 passed**, `python -O` **7 passed**. 
+- 판정: PEER PASS_SCOPED(소스 동일성·정적 안전 분류·정/-O). 소비자(스케줄러/배포) 전수 동적 증명·통합 SHA hosted CI 미확정 → NOT_DONE 유지, 판정·큐 이동은 지팀장.
+- 나머지: RF-063·001·020·007·008·009 새 증거 없음 → 재실행 없음. 개발 RF-019/RF-017 KEEP_VERIFIED 유지. 상대 CLI 호출 0건(티키타카 실행 0건, 문서 전용 변경).
+- GPT_ACTION_REQUIRED: RF-065 판정, RF-063 cp949 테스트 처리, RF-009 A peer 배정 여부.
