@@ -21,13 +21,13 @@
 - 정상 구동/외부 호출/모의투자 주문/체결/재시작/종료를 **서로 별도 증거로 판정**한다. 주문이 없는 회차는 NO_ORDER이며, 실제 미검증 단계는 NOT_RUN이다. 신규 회귀와 기존 운영/환경 실패를 분리해 지팀장에게 보고한다.
 - 런검증 결과는 P1.5 출시 판단의 독립 증거이나, 개발팀 peer PASS·GitHub exact-SHA CI·RF DONE이나 `main` 병합을 자동 승인하지 않는다. 오류 수정은 지팀장이 승인한 개발 RF 원소유자에게 반환한다.
 
-## 4. 홀수 날짜 예약 운영·GitHub 증거 루프
+## 4. 평일 고정 예약 운영·GitHub 증거 루프
 
-- **대상일:** Asia/Seoul 달력의 홀수 날짜(1·3·5·…·31일). 한국 장 휴장·주말이면 실거래 루프를 강제로 실행하지 않고 `MARKET_CLOSED`/NOT_RUN로 기록한다. 07:00/09:30/17:00/19:00은 **KST 목표 시각**이다. 예약 제품의 지연 실행·PC 절전·앱 종료를 고려해 실행 시 실제 날짜·시간·휴장 여부를 재검사한다.
+- **대상일:** 매주 월~금(Asia/Seoul, KST), **날짜 홀짝·요일에 따른 담당 교대 없이 동일한 4개 예약**을 실행한다. 한국 장 휴장일이면 실제 거래 루프를 강제로 실행하지 않고 `MARKET_CLOSED`/NOT_RUN로 기록한다. 07:00/09:30/17:00/19:00은 **KST 목표 시각**이다. 예약 제품의 지연 실행·PC 절전·앱 종료를 고려해 실행 시 실제 날짜·시간·휴장 여부를 재검사한다.
 - **07:00 — Codex / `P15-RUNLAB-START`:** 독립 RunLab checkout에서 `origin/integration/p1.5` fetch/fast-forward 후 **당일 TESTED_SHA와 RUN_ID를 고정**. 기존 실행·소유권 lock·Docker Engine·UI/API·Paper 전용 endpoint/계좌를 확인하고 기존 운영 PC와 동일한 공식 장전/장중 기동 경로를 준비·가동한다. 장전에는 preopen 및 운영 준비만; 장중 시작은 기존 세션 시작 정책을 따른다. 시장시간 가드 강제 우회·미검증 임의 신규 주문 금지. 시작 결과를 댓글로 보고한다.
 - **09:30 — Claude / `P15-RUNLAB-MORNING-REVIEW`:** **07:00과 동일한 RUN_ID·TESTED_SHA**의 프로세스/컨테이너·시장데이터·LLM·키움 모의투자·주문/체결·안전 가드·오류를 읽기 전용으로 독립 점검한다. 누락된 선행 실행은 결함으로 꾸미지 않고 `UPSTREAM_NOT_RUN` 또는 BLOCKED로 보고하며, 검증자가 런타임을 새로 띄우지 않는다.
 - **17:00 — Codex / `P15-RUNLAB-EOD`:** 당일 07시 이후 전체 실행 로그·중복 주문·보유/청산·미체결/취소·API/LLM 오류·Reporter/UI·state/종료/회복을 점검한다. 당일 코드가 이미 구동 중이면 최신 HEAD가 바뀌어도 **장중 재배포·재시작하지 않는다**. 운영 종료는 기존 EOD 절차대로 하며 증거를 보존한다. 한 번의 EOD 종합 결과를 게시한다.
 - **19:00 — Claude / `P15-RUNLAB-FINAL-REVIEW`:** 17시의 당일 증거를 독립 재검토해 `PASS/FAIL/BLOCKED/NOT_RUN`별 확정 범위, 신규 회귀/기존 운영·환경 결함, 개선 제안 및 후속 개발 필요성을 정리해 게시한다. 17시 보고가 없거나 실제 증거가 없으면 전체 PASS 금지. 개선 **제안**은 코드 변경 허가가 아니다.
 - **GitHub 기록 정본:** [런검증 전용 Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32)에 4개 슬롯의 최신 증거 댓글을 추가한다. `DATE_KST | SLOT | ROLE | RUN_ID | TESTED_SHA | REMOTE_HEAD | START/EXIT | DOCKER/UI | KIWOOM_PAPER | MARKET/LLM | ORDERS/FILLS | REPORTER/STATE | VERDICT | NEW_FINDING | IMPROVEMENT_PROPOSAL | EVIDENCE_PATH | NEXT_ACTION` 형식으로 기록한다. GitHub 게시 불가 시 로컬 보존 후 `GITHUB_POST_NOT_RUN`을 보고한다. 중복 댓글·비밀 값·대용량 원시 로그 업로드 금지. 개발이 필요한 사항은 지팀장에게 전달한다.
 - **버전·재시작 안전:** 당일 TESTED_SHA는 고정하고 변경된 원격 HEAD는 별도 기록한다. 다음 유효 예약일에 새 SHA를 가져온다. 동작 중인 런타임·다른 운영 PC 인스턴스와 모의계좌가 겹칠 수 있으면 소유권·중복 주문 위험을 확인하고 안전하게 BLOCKED 처리한다. 앱/PC 절전으로 예약을 놓친 경우 `SCHEDULE_MISSED` 기록만; 장 마감 후 지연 예약이 과거 세션을 재실행하거나 새 주문을 내지 않는다.
-- **예약 실현 게이트:** Codex/Claude의 해당 **PC 설치형 예약 작업 4개**를 별도로 생성하고, 각 프로그램의 활성·로컬 폴더·권한·스케줄·첫 실행 증거를 확인한 뒤에만 `SCHEDULE_ACTIVE` 판정. 자동화 미설치·미검증은 `SCHEDULE_NOT_CONFIGURED`. 설치·수정은 사용자 별도 승인 범위만 수행한다.
+- **예약 실현 게이트:** Codex/Claude의 해당 **월~금 PC 설치형 예약 작업 4개**를 별도로 생성하고, 각 프로그램의 활성·로컬 폴더·권한·스케줄·첫 실행 증거를 확인한 뒤에만 `SCHEDULE_ACTIVE` 판정. 자동화 미설치·미검증은 `SCHEDULE_NOT_CONFIGURED`. 설치·수정은 사용자 별도 승인 범위만 수행한다.
