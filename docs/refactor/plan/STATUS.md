@@ -2,6 +2,13 @@
 
 **기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태: pending 77 / verification 11 / DONE 5** (RF-002~006). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
+## 파일별 TARGET_PATH 직접 계약 — 2026-10-25
+
+- `RF-001~093` **93/93개 문서에 각자 파일별 SOURCE→TARGET 표 삽입**; 기준선 CSV 3,985행 + 신규 docs 121행 = **4,106행**. 실제 HEAD 4,089파일과 차이는 역사 이동·퇴역 17개를 포함하기 때문이며, 실제 파일을 추가/이동한 것이 아니다.
+- 분류: `COMPAT_OWNER_REVIEW` 6; `KEEP_CANDIDATE` 3549; `KEEP_VERIFIED_EXISTING_DONE` 169; `MOVED_CURRENT_PATH` 12; `NEW_DOC_KEEP_CANDIDATE` 121; `OWNER_SPLIT_REVIEW` 164; `RESTRICTED_REVIEW_KEEP` 5; `RETIRED_HISTORICAL` 5; `SAFETY_HOLD_KEEP` 75.
+- **정확한 정의:** KEEP_CANDIDATE는 현재 경로의 **보존 후보**이며 확인된 최종 목표 위치나 책임 분리 완료 판정이 아니다. A/B는 검토 때마다 실제 함수·소비자·호출 계약을 증명해 TARGET/ACTION/Owner 확정. 안전·교차 Owner 임의 MOVE 금지.
+- 과거 DONE RF-002~006의 169개 파일은 기존 KEEP_VERIFIED 판정과 증거를 **소급 기록만** 했다. 기존 DONE/peer/CI 판정 변경·재실행 없음. RF-021 안전 HOLD 및 EX1~EX6 제한 유지.
+
 ## T00~T09 ↔ RF-93 목표 커버리지 대조 (2026-10-24)
 
 아래 표는 **기존 RF 범위의 목표 참조 매핑**이며, 목표 위치로 파일 이동 완료 또는 최종 PASS를 뜻하지 않는다. 93건은 기준선 CSV 3,985개 파일에 한 RF씩 유일하게 매칭되고, 새 문서 경로는 RF-079 논리 Owner 델타로 분리한다.
