@@ -370,3 +370,12 @@
 - 판정: PEER PASS_SCOPED(소스 동일성·정적 안전 분류·정/-O). 소비자(스케줄러/배포) 전수 동적 증명·통합 SHA hosted CI 미확정 → NOT_DONE 유지, 판정·큐 이동은 지팀장.
 - 나머지: RF-063·001·020·007·008·009 새 증거 없음 → 재실행 없음. 개발 RF-019/RF-017 KEEP_VERIFIED 유지. 상대 CLI 호출 0건(티키타카 실행 0건, 문서 전용 변경).
 - GPT_ACTION_REQUIRED: RF-065 판정, RF-063 cp949 테스트 처리, RF-009 A peer 배정 여부.
+
+### sched-55 (2026-10-25): RF-066 A 1순위 독립 검증 — PEER PASS_SCOPED (소스 변경 없음)
+- 기준: CURRENT@integration `6dc41a8e`(A 검증 1순위 RF-066 신규, 개발 RF-019→RF-017). B HEAD `f9708c2c`.
+- 검증 SHA: BASE `63182ab2` / integration `6dc41a8e` / B `f9708c2c`. `scripts/{examples,maintenance}` 17 .py, 세 SHA의 ls-tree 해시 동일(소스 diff 0).
+- 분류(read-only 정적): subprocess/socket/requests/urllib/place_order/submit_order/ib_insync/os.system 직접 호출 0건. 파일 쓰기/이동 5개(clean_evaluation_test_contamination, compact_q9_decision_windows, run_broker_trade_reconciliation=보고서 write_text, reconcile_intent_state_store=sqlite3, step5d_crash_reconciliation) = SAFETY_HOLD(CLI 미실행, NOT_RUN 의도적); 나머지 12 KEEP_VERIFIED. 최상위 `scripts/*.py` 래퍼가 `scripts.maintenance/examples`를 소비(정적 확인).
+- 테스트(detached integration 워크트리, PYTHONUTF8=1): AST 17/17 OK; `tests/test_scripts_target_tree_compat_audit.py` normal **7 passed**, `python -O` **7 passed**.
+- 판정: PEER PASS_SCOPED. 전체 소비자(스케줄러/배포) 동적 증명·통합 SHA hosted CI 미확정 → NOT_DONE 유지, 판정·큐 이동은 지팀장.
+- 나머지: RF-063·065·001·020·007·008·009 새 증거 없음 → 재실행 없음. 개발 RF-019/RF-017 KEEP_VERIFIED 유지. 상대 CLI 호출 0건(티키타카 실행 0건, 문서 전용 변경).
+- GPT_ACTION_REQUIRED: RF-066 판정, RF-063 cp949 테스트 처리, RF-009 A peer 배정 여부.
