@@ -1,8 +1,11 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 01:03 KST): pending 72 / verification 15 / rework 0 / DONE 6** (RF-002~006, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 01:28 KST): pending 72 / verification 14 / rework 0 / DONE 7** (RF-002~006, 009, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
 ## 현재 지팀장 판정·다음 실행 (2026-10-26)
+
+- **01:28 KST RF-009 DONE:** Graph 3/3 owner integration/B/BASE blob KEEP, A detached peer normal/-O 각 145 PASS + rank/State/fallback/monkeypatch 표적 각 33 PASS 수용. 과거 integration `958431c3`→현행 `cd1cccb8` GitHub compare 코드·테스트 변경 0(AGENTS/CLAUDE·docs만 변경) 확인, 통합 코드 동등성으로 기존 normal/-O 재사용(현행 문서 HEAD 직접 실행 NOT_RUN). 구체 미충족 위험 없는 일반적 '전수 미입증' 요구는 D03 §3A로 해제, **verification/codex → done**, source 선별 통합 NOOP. RF-069 A 신규 2 CLI offline/mock peer normal/-O exit 0 수용, UEF5 승인 snapshot 부재로 verification 유지. **72/14/0/7**. CI 조회·GREEN 대기는 제외, Issue #32 신규 댓글 없음. 새 source/안전/오라클 변경 없음.
+
 
 - **01:03 KST RF-068 DONE:** A 독립 8/8 peer 경계 normal/-O 기존 PASS(11/15/5 offline/12), B·integration 8/8 소스 blob 동일 KEEP. GitHub `f097690b → integration` 및 `ac7bf5ac → integration` compare에서 변경 경로 전부 문서, 소스·테스트·오라클 0 변경을 확인. D03 §3A에 따라 과거 **각 integration 정확한 코드 SHA**의 normal/-O PASS를 현행 동일 코드·테스트 트리에 재사용(현행 문서 HEAD 물리 재실행 NOT_RUN, hosted CI 불요). 소스 선별 통합 NOOP, RF-068 `verification/codex → done`; **72/15/0/6**. 신규 코드·안전·오라클 변경 없음. RF-069 잔여 2 CLI offline/mock + UEF5 환경 차단은 유지. A/B 신규 소스 없음, Issue #32 신규 댓글 없음.
 
