@@ -1,12 +1,10 @@
 # Claude A 인수인계 — 최신 회차만 (이전 기록은 Git 이력)
 
-- RUN_ID: 2026-10-25T-claude-a-sched-59 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · 기준 integration `fdc13604`(CURRENT.md만 확인)
-- 규칙 재독: CURRENT→D00(blob `442247ea`)→D03(`8ee3e385`)→D02(`c6a5cf3c`) 전문 확인, 변경 없음. 이해: 신규 SHA/증거 없는 peer 검증 skip, RF-019→017 실제 진행, 안전·오라클·타RF 쓰기 금지.
-- 1순위 rework/claude 0건. 2순위 RF-067/066/063/065/007/008: 신규 peer SHA 없음 → 건너뜀. RF-013: 교차 Owner BLOCKED 유지.
-- 3순위 RF-019: `libs/runtime/scanner/` 29경로 BASE `63182ab2`→HEAD diff 0(KEEP_VERIFIED blob parity). 소비자: graphs/nodes/{scanner,strategist,scan_candidates}, graphs/commander_runtime, libs/agent/scanner, libs/strategies 등. 표적 8파일 normal 1 FAIL/72 PASS(-x), `python -O` **1 FAIL/111 PASS**. 유일 실패 `test_p171...::test_shim_has_no_code_and_exactly_one_body_exists[output_payloads]`: 소비자 집합에 `libs/reporting/evaluation/q8_shadow_readout_p15.py`가 추가·`libs/reporting/q8_shadow_blocker_review.py`가 빠짐 — 소스·테스트는 BASE와 동일, libs/reporting 소비자 이동(타 RF 소유)에 의한 CROSS_RF drift. 오라클/테스트 수정 안 함.
-- RF-017: `libs/agents/{__init__,commander/**}` BASE 대비 diff 0. 표적 테스트 수집 시 `tests/test_operator_ui.py` 등 2건 collection ERROR(normal/-O 동일, B 영역/환경 추정, 미조사) → 패리티 테스트 NOT_RUN.
+- RUN_ID: 2026-10-25T0917Z-claude-a-sched-60 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · 기준 integration `fdc13604`, A 시작 `40c3feb7`
+- 규칙 재독: CURRENT(blob `00c71a37`)→D00(`442247ea`)→D03(`8ee3e385`)→D02(`c6a5cf3c`) 전문 확인. 이해: 신규 SHA/증거 없는 peer 검증 skip, RF-019→017 실제 진행, 안전·오라클·타RF 쓰기 금지, 막힌 경로는 특정 후 다음 RF 계속.
+- 1순위 rework/claude 0건. 2순위 RF-067/066/063/065/007/008 신규 peer SHA 없음 → skip. RF-013: 교차 Owner BLOCKED 유지(9+4경로 B read-only 대조 대기), RF-018: B peer 대기·신규 증거 없음.
+- RF-017 (핸드오프 59의 collection ERROR 정정): venv python으로 `tests/test_operator_ui.py` 53건 정상 수집 → 이전 ERROR는 환경(시스템 python) 기인, 소스 무관. `libs/agents/{__init__,commander/**}` BASE 대비 diff 0 유지.
+- RF-017/019 소비자 9파일(`from libs.agents`) 정상 실행 A head: **14 failed / 1131 passed**(102s). 동일 9파일 BASE `63182ab2`: 12 failed. 실패는 p166/p167/p171 역사 인벤토리 테스트·shared_role_contracts 돌연변이 검사 등 테스트/오라클 측 드리프트이며 RF-017/019 owner 소스는 BASE와 blob 동일 → BASELINE_EXISTING / CROSS_RF(타 RF 소유 libs/reporting 이동 포함). 오라클·테스트 수정 안 함. `python -O` 전체 재실행은 시간 제한으로 NOT_RUN(직전 handoff 59: 표적 -O 1 FAIL 동일 원인).
 - 소스 변경 없음 → 후보 SHA 없음, 상대 CLI 호출 0건, patchnotes 해당 없음. 통합 CI UNKNOWN.
-- GPT_ACTION_REQUIRED: RF-019 p171 소비자 집합 갱신(frozen 테스트, 승인 필요) 판단 및 RF-017 collection ERROR 원인(operator_ui) 확인.
-
-### 티키타카 실행 리스트
-- 실제 새 상대 CLI 호출 0건.
+- GPT_ACTION_REQUIRED: RF-019 p171/p166/p167 frozen 인벤토리 테스트 갱신 여부(승인 필요), RF-013 owner 배치·RF-030/035 writer, 예약 주기(2h) 조정 여부.
+- PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재.
