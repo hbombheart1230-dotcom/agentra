@@ -7,3 +7,9 @@
 - normal/-O 외 신규 실행 없음. 통합 CI는 D03 개정으로 조회 제외. patchnotes 해당 없음.
 - GPT_ACTION_REQUIRED: RF-070 잔여 57의 다음 read-only 범위 승인(32 SAFETY_HOLD 유지), RF-066 PEER_SCOPED 판정, RF-019 owner-local KEEP 수용 및 p171/p166/p167 frozen 인벤토리 승인, RF-001 owner-only admission 대안(B 수정 SHA), 예약 주기 조정.
 - PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재.
+
+## 78 (2026-10-26 sched) — CURRENT `f06fe0f0` 확인, 신규 B SHA 없음
+- RUN_ID: 2026-10-26-claude-a-sched-78 (77 이후 후속) · BRANCH work/p15-a-reporter-pure-20261021 · 소스·테스트·오라클 변경 없음, 상대 CLI 0건. B 최신 `8a145c77`은 HANDOFF만 변경(RF-001 수정 SHA 없음 → RF-001 신규 peer 없음, RF-069 UEF5 snapshot 없음, RF-070 잔여 57 HOLD 유지).
+- **RF-019 29 owner 정적 소비자 맵(git ls-files 전수, 비실행):** 28개 비-`__init__` 모듈 전부 운영 소비자 `graphs/nodes/scanner_node.py` 1곳이 import(단일 소비자). 추가 운영 소비자: control_eligibility·output_payloads·output_snapshots → `scripts/refactor/p170_v3055_projection_capture_plugin.py`(읽기 전용 projection capture), theme_filter → `libs/agents/scanner/projections/output_snapshots.py`. tests 직접 참조 0건 모듈: candidate_row_projection, candidate_selection, evidence, market_representative_guard, ranking_policy_overlay, scanner_event_payloads, selection_evidence_projection_value_te_scanner(7개; 간접 scanner_node 경로로만 커버, 신규 테스트 미작성). 파일명 단어매칭 내부 참조는 근사치(compatibility·evidence·macro_chart_fit 등 소수).
+- 판정: 소스 diff 0 + 단일/2개 소비자 + import 부작용 0 → 21 잔여 owner **KEEP_CANDIDATE 소비자 근거 제출**(SELF, 동적 State/효과 런타임 증명은 NOT_RUN). `p171` 동결 1 FAIL은 CROSS_RF_OWNER 유지, 이번 회차 미실행. RF-017 및 067 이후: 신규 증거 없음.
+- GPT_ACTION_REQUIRED: RF-019 21 owner 소비자 맵 수용 여부, 테스트 직접참조 0건 7모듈 신규 테스트 허용 여부, RF-001 B 수정 SHA.
