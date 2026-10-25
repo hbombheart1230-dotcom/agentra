@@ -1,6 +1,6 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태: pending 75 / verification 13 / DONE 5** (RF-002~006). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태: pending 75 / verification 13 / rework 0 / DONE 5** (RF-002~006). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
 ## 현재 지팀장 판정·다음 실행 (2026-10-25)
 
@@ -8,7 +8,7 @@
 - **RF-063** A peer **PASS_SCOPED**(76 소유 blob 동일, normal/-O 각 130 PASS, PYTHONUTF8=1). 13개 위험 키워드 CLI 미실행, cp949 기본 로케일 UnicodeDecodeError 1건은 ENVIRONMENT 확인 필요. **RF-065** A peer **PASS_SCOPED**(54 blob 동일, normal/-O 각 7 PASS, 50개 파일 쓰기 CLI 미실행). 둘 다 전체 소비자·CI 미완료로 verification 유지.
 - **RF-018** A BASE/integration 동일 명령 1152 PASS/2 FAIL/57 ERROR 모두 동일: 59건 **BASELINE_EXISTING/HISTORICAL_INVENTORY**, 신규 회귀 0(제출 증거 범위). **RF-014** BASE/integration 각 1102 PASS/3 FAIL 동일: 3건 BASELINE_EXISTING, A 브랜치 Reporter 소비자 2건 CROSS_RF_OWNER. B는 분리된 증거만 독립 검증; 최종 peer PASS 아님.
 - **RF-013** 신규 Reporter owner 9경로=RF-013 후보, 소비자 wrapper 4경로=`metrics_report_generator.py`·`phase_runtime_health.py` RF-035 / `operator_visibility.py`·`operator_period_summary.py` RF-030. RF-074 frozen inventory 충돌로 **(c) BLOCKED 유지**, 교차 RF writer/오라클 변경 미승인. RF-064도 신규 차단 해소 증거 없어 Pending 유지.
-- **다음 배정:** A RF-066 peer → RF-019 개발; B RF-018·014 분리 증거 peer → RF-067 개발. RF-021 안전 HOLD 유지. CI exact integration SHA GREEN 없으면 통합/DONE 금지.
+- **다음 배정(1→2→3순위):** A/B 반려 `rework/` 0건 → A RF-066 기존 peer 보완·신규 근거 우선, B RF-018·014 분리 증거 peer → A RF-019 / B RF-067 신규 개발. 같은 증거 반복 검증 금지. RF-021 안전 HOLD 유지. CI exact integration SHA GREEN 없으면 통합/DONE 금지.
 
 ## 파일별 TARGET_PATH 직접 계약 — 2026-10-25
 
@@ -48,7 +48,7 @@
 | [T00 루트 파일](../architecture/T00_TARGET_TREE.md) | 093 | 1 | 공개 진입·test configs·역사 artifact 11개 |
 | **합계** | **001~093** | **93** | **범위 소유권 100%; 목표별 실행·검증 완료율 별도 미판정** |
 
-**정합성 체크:** 7+5+50+9+7+8+3+1+1+1+1=93. 보완된 주요 RF 개별 문서는 기존 `pending/`·`verification/` 안에서 상태/기존 증거를 보존하며 TARGET/CONSUMERS/ACCEPTANCE 조건을 추가했다. `done/RF-002~006`의 기존 지팀장 승인·SHA는 재작성하지 않았다.
+**정합성 체크:** 7+5+50+9+7+8+3+1+1+1+1=93. 보완된 주요 RF 개별 문서는 기존 `pending/`·`verification/`·`rework/` 안에서 상태/기존 증거를 보존하며 TARGET/CONSUMERS/ACCEPTANCE 조건을 추가했다. `done/RF-002~006`의 기존 지팀장 승인·SHA는 재작성하지 않았다.
 
 **아직 최종 DONE 불가:** 목표 파일의 실제 OWNER/DESTINATION별 소비자 증거·합격 기준 12개·보호 경계 승인과 exact integration SHA regression/CI가 필요. 미완료 2개 public role의 신규 파일은 소유권 사전 승인 전 물리 생성 불가.
 
@@ -80,7 +80,7 @@
 | `docs/` | 1313 | [RF-079](pending/RF-079.md) · [RF-080](pending/RF-080.md) · [RF-081](pending/RF-081.md) · [RF-082](pending/RF-082.md) · [RF-083](pending/RF-083.md) · [RF-084](pending/RF-084.md) · [RF-085](pending/RF-085.md) · [RF-086](pending/RF-086.md) | 미판정 |
 | `graphs/` | 45 | [RF-008](verification/codex/RF-008.md) · [RF-009](verification/codex/RF-009.md) · [RF-010](pending/RF-010.md) · [RF-011](pending/RF-011.md) · [RF-012](pending/RF-012.md) | 미판정 |
 | `libs/` | 1227 | [RF-013](verification/claude/RF-013.md) · [RF-014](verification/claude/RF-014.md) · [RF-015](verification/claude/RF-015.md) · [RF-016](verification/claude/RF-016.md) · [RF-017](pending/RF-017.md) · [RF-018](verification/claude/RF-018.md) · [RF-019](pending/RF-019.md) · [RF-020](verification/codex/RF-020.md) · [RF-021](pending/RF-021.md) · [RF-022](pending/RF-022.md) · [RF-023](pending/RF-023.md) · [RF-024](pending/RF-024.md) · [RF-025](pending/RF-025.md) · [RF-026](pending/RF-026.md) · [RF-027](pending/RF-027.md) · [RF-028](pending/RF-028.md) · [RF-029](pending/RF-029.md) · [RF-030](pending/RF-030.md) · [RF-031](pending/RF-031.md) · [RF-032](pending/RF-032.md) · [RF-033](pending/RF-033.md) · [RF-034](pending/RF-034.md) · [RF-035](pending/RF-035.md) · [RF-036](pending/RF-036.md) · [RF-037](pending/RF-037.md) · [RF-038](pending/RF-038.md) · [RF-039](pending/RF-039.md) · [RF-040](pending/RF-040.md) · [RF-041](pending/RF-041.md) · [RF-042](pending/RF-042.md) · [RF-043](pending/RF-043.md) · [RF-044](pending/RF-044.md) · [RF-045](pending/RF-045.md) · [RF-046](pending/RF-046.md) · [RF-047](pending/RF-047.md) · [RF-048](pending/RF-048.md) · [RF-049](pending/RF-049.md) · [RF-050](pending/RF-050.md) · [RF-051](pending/RF-051.md) · [RF-052](pending/RF-052.md) · [RF-053](pending/RF-053.md) · [RF-054](pending/RF-054.md) · [RF-055](pending/RF-055.md) · [RF-056](pending/RF-056.md) · [RF-057](pending/RF-057.md) · [RF-058](pending/RF-058.md) · [RF-059](pending/RF-059.md) · [RF-060](pending/RF-060.md) · [RF-061](pending/RF-061.md) · [RF-062](pending/RF-062.md) | 미판정 |
-| `scripts/` | 418 | [RF-063](verification/codex/RF-063.md) · [RF-064](pending/RF-064.md) · [RF-065](verification/codex/RF-065.md) · [RF-066](pending/RF-066.md) · [RF-067](pending/RF-067.md) · [RF-068](pending/RF-068.md) · [RF-069](pending/RF-069.md) · [RF-070](pending/RF-070.md) · [RF-071](pending/RF-071.md) | 미판정 |
+| `scripts/` | 418 | [RF-063](verification/codex/RF-063.md) · [RF-064](pending/RF-064.md) · [RF-065](verification/codex/RF-065.md) · [RF-066](verification/codex/RF-066.md) · [RF-067](pending/RF-067.md) · [RF-068](pending/RF-068.md) · [RF-069](pending/RF-069.md) · [RF-070](pending/RF-070.md) · [RF-071](pending/RF-071.md) | 미판정 |
 | `tests/` | 658 | [RF-072](pending/RF-072.md) · [RF-073](pending/RF-073.md) · [RF-074](pending/RF-074.md) · [RF-075](pending/RF-075.md) · [RF-076](pending/RF-076.md) · [RF-077](pending/RF-077.md) · [RF-078](pending/RF-078.md) | 미판정 |
 | 루트 파일 | 11 | [RF-093](pending/RF-093.md) | 미판정 |
 
@@ -114,8 +114,8 @@
 | `libs/supervisor/` | 4 | [RF-060](pending/RF-060.md) | 미판정 |
 | `libs/tools/` | 3 | [RF-061](pending/RF-061.md) | 미판정 |
 
-**RF 상태:** [pending](pending/) **76건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **7건** → [done](done/) **5건** (총 **93건**). 검증 큐는 PASS가 아니라 독립 검증 대기·BLOCKED 포함이며, 최종 DONE은 peer PASS·선별 통합·정확한 통합 SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
+**RF 상태:** [pending](pending/) **75건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **8건** ↔ [rework/claude](rework/claude/) **0건** / [rework/codex](rework/codex/) **0건** → [done](done/) **5건** = **총 93건**. verification에는 검증 대기·PASS_SCOPED·BLOCKED가 포함된다. rework에는 지팀장이 확정한 실행 가능한 원개발자 수정 RF만 이동하며, 동일 RF를 여러 상태에 중복 보관하지 않는다. DONE은 peer PASS·선별 통합·정확한 integration SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
 
-**현재 배정:** [CURRENT](../work_orders/CURRENT.md) 참조 (A 독립 검증 RF-063→RF-065 우선, 개발 RF-019→RF-017 / B 독립 검증 신규 증거 우선, 개발 RF-066→RF-064[BLOCKED]).
+**현재 배정:** [CURRENT](../work_orders/CURRENT.md)의 A/B별 1순위 rework → 2순위 verification → 3순위 pending 개발. 1순위 미배정이면 2순위 여러 건 연속 처리한다.
 
 **전수 소유권:** [3985파일↔RF CSV](FILE_COVERAGE_63182ab2.csv) · [P1.5.0~11 합격 기준](criteria/). 회차별 실행 이력은 Git 이력·RF·HANDOFF에서 확인한다.
