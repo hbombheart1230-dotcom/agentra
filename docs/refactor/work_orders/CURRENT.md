@@ -1,19 +1,13 @@
-# Agentra P1.5 — CURRENT (작업 포인터 전용)
+# Agentra P1.5 — CURRENT (배정 포인터)
 
-> 정본: `integration/p1.5`. A/B는 아래 **1 → 2 → 3순위**로 수행한다. 같은 SHA·동일 실패 반복 검증이나 신규 근거 없는 BLOCKED는 건너뛴다.
+> 정본 `integration/p1.5`. 실행 규칙은 [D03](D03_DEV_TEAM_RULES.md), 안전은 [D00](../../ENGINEERING_DELIVERY_POLICY.md), 역할은 [D01 Codex](../../../AGENTS.md)·[D02 Claude](../../../CLAUDE.md). **한 회차 1→2→3 전부 순회**, 변경된 RF 증거만 처리.
 
-- **규칙 변경 알림 (상시):** 지팀장은 D00·D01·D02·D03의 정본 blob SHA를 직전 확인값과 비교하고, **변경이 확인된 경우에만** CURRENT에 해당 문서명·이전/신규 SHA·변경 핵심·영향받는 A/B의 재독 지시를 직접 명시한다. 미변경 시 재독 강제 금지. 변경 안내는 해당 A/B가 읽고 HANDOFF에 반영한 뒤 지팀장이 CURRENT에서 제거한다. 이번 확인 SHA: D00 `442247ea`, D01 `81daa098`, D02 `c6a5cf3c`, D03 `8ee3e385` (각 blob SHA 앞 8자리; 정본 전체 SHA는 Git으로 조회).
-- **개발팀 규칙:** [D00](../../ENGINEERING_DELIVERY_POLICY.md) · [D03 / 개발 공통](D03_DEV_TEAM_RULES.md) · [D01 / Codex](../../../AGENTS.md) · [D02 / Claude](../../../CLAUDE.md)
-- **Claude A 1순위 · 반려 재작업:** 현재 없음 ([rework/claude](../plan/rework/claude/) **0건**).
-- **Claude A 2순위 · 독립 검증:** [RF-067](../plan/verification/codex/RF-067.md) · [RF-066](../plan/verification/codex/RF-066.md) · [RF-063](../plan/verification/codex/RF-063.md) · [RF-065](../plan/verification/codex/RF-065.md) · [RF-007](../plan/verification/codex/RF-007.md) · [RF-008](../plan/verification/codex/RF-008.md)
-- **Claude A 3순위 · 나머지 개발:** [RF-019](../plan/pending/RF-019.md) → [RF-017](../plan/pending/RF-017.md) · [HANDOFF_A](HANDOFF_A.md) — `work/p15-a-reporter-pure-20261021`
-- **지팀장 신속 처리 지시 (RF-001/009/020):** 기존 독립 PASS와 normal/-O 증거는 그대로 재사용하고 각 RF의 최신 `빠른 검증 전환/유한 인수조건` 절에 명시된 **잔여 경계만** B가 제출한다. 지팀장은 새 증거 도착 회차에 RF별 verification 복귀 또는 정확한 실패 node REWORK를 판정하고 A는 새 경계만 peer 검증한다. 교차 소유권·안전 HOLD·hosted exact-SHA CI는 면제하지 않는다. 한 RF에서 멈추지 말고 1→2→3 순회한다.
-- **Codex B 1순위 · 반려 재작업:** [RF-001](../plan/rework/codex/RF-001.md) → [RF-009](../plan/rework/codex/RF-009.md) → [RF-020](../plan/rework/codex/RF-020.md) — 각 RF 원소유 범위의 미충족 인수조건만 보완·실증. 타 RF·실거래·안전·오라클 수정 금지. [rework/codex](../plan/rework/codex/) **3건**.
-- **Codex B 2순위 · 독립 검증:** [RF-018](../plan/verification/claude/RF-018.md) · [RF-014](../plan/verification/claude/RF-014.md) · [RF-015](../plan/verification/claude/RF-015.md) · [RF-016](../plan/verification/claude/RF-016.md) · [RF-013](../plan/verification/claude/RF-013.md) **(교차 Owner BLOCKED; B는 기존 `a21401db` 9+4경로 최초 read-only 소비자·부작용 계약 증거만 수집 가능, 수정·동일 테스트 반복 금지; [RF-030](../plan/pending/RF-030.md)/[RF-035](../plan/pending/RF-035.md) writer 별도 배정 전 수정 금지, RF-074 오라클 동결)**
-- **Codex B 3순위 · 나머지 개발:** [RF-068](../plan/pending/RF-068.md) → [RF-064](../plan/pending/RF-064.md) **(BLOCKED, 신규 증거 있을 때만 복귀)** · [HANDOFF_B](HANDOFF_B.md) — `work/p15-b-operator-structure-20261022`
-- **회차별 1→2→3 전 구간 순회 (상시):** A/B는 매 실행에서 1순위 REWORK의 실행 가능한 인수조건을 먼저 실제 보완하고, 이어 2순위 신규 SHA·신규 증거의 독립 read-only 검증, 이어 3순위 소유 범위의 신규 개발까지 순서대로 시도한다. 앞 순위에서 작업했거나 일부 BLOCKED여도 회차를 조기 종료하지 않는다. 새 검증 근거가 없는 2순위는 즉시 건너뛰며, 3순위는 허용된 실행 가능 RF를 계속 진행한다. 목표는 각자 신규 코드 후보 SHA 또는 유효한 독립 검증 증거 최소 1건이며, RF 상태 전환·DONE은 인수조건 충족 시에만 한다. 목표 미달 시 실제 도구 한도·차단 경로·계약·증거와 지팀장 조치 요청을 HANDOFF에 구체적으로 남긴다. 동일 SHA 재검증·빈 커밋·안전/소유권 경계 위반 금지.
-- **실행:** **각 순위는 복수 RF 대기열이며 시간당/회차당 1건 제한 없음**. 같은 실행 회차에 해당 순위의 실행 가능한 RF를 순서대로 여러 건 처리하고, 막힌 RF만 건너뛴다. 1순위는 지팀장이 **rework/원개발자 폴더**로 이동시키고 허용 경로·수정 행동을 확정한 RF를 모두 순서대로 수행; 없으면 2순위의 **새 후보 SHA 또는 새 검증 근거**를 여러 건 검증(기존 PASS_SCOPED 반복 금지), 없으면 3순위. 검증자는 상대 RF를 고치지 않고 지팀장이 원개발자 1순위로 반환한다.
-- **지팀장 정체 자가 조치:** A/B가 신규 코드·검증·REWORK 진척 없이 종료하면 지팀장이 해당 회차에 HEAD·HANDOFF·RF 인수조건·소유권·차단 증거를 직접 확인하고, 승인된 권한 안에서 원인을 해소(배정·범위·REWORK 지시·큐/CURRENT 수정 등)한 뒤 재실행 가능 상태로 만든다. 권한 밖 변경은 임의 수행하지 않고 필요한 승인·차단 근거를 명시한다.
-- **지팀장:** 새 검증 결과를 해당 회차에 PASS/REWORK/BLOCKED로 판정하고 반려·재배정/선별 통합·exact-SHA CI·DONE까지 처리. [STATUS](../plan/STATUS.md) · [검증 큐](../plan/verification/) · [반려 큐](../plan/rework/) · [차단 이슈](../plan/troubleshooting/open/) · [RF-021 안전 HOLD](../plan/pending/RF-021.md)
+- **규칙 변경 알림 — A/B 다음 실행 시 1회 재독:** D01 `81daa098 → 28779e2b`, D02 `c6a5cf3c → e5ecd133`, D03 `8ee3e385 → b99533ca`: 중복 규칙을 D03으로 통합하고 D01/D02는 역할 포인터로 축소; 기존 안전·검증·통합 게이트 유지, 새 증거가 있으면 빠르게 peer로 전환. **A는 D02·D03, B는 D01·D03을 재독하고 HANDOFF에 확인 기록**. D00 `442247ea` 불변이므로 재독 불필요. 지팀장은 확인 뒤 이 알림을 제거한다.
+- **Claude A / 1 REWORK:** 없음.
+- **Claude A / 2 독립 검증:** [067](../plan/verification/codex/RF-067.md) · [066](../plan/verification/codex/RF-066.md) · [063](../plan/verification/codex/RF-063.md) · [065](../plan/verification/codex/RF-065.md) · [007](../plan/verification/codex/RF-007.md) · [008](../plan/verification/codex/RF-008.md).
+- **Claude A / 3 개발:** [019](../plan/pending/RF-019.md) → [017](../plan/pending/RF-017.md). [HANDOFF_A](HANDOFF_A.md) · `work/p15-a-reporter-pure-20261021`.
+- **Codex B / 1 REWORK:** [001](../plan/rework/codex/RF-001.md) → [009](../plan/rework/codex/RF-009.md) → [020](../plan/rework/codex/RF-020.md). **각 RF 마지막 '빠른 검증 전환' 절의 미충족 경계만** 증명하고 기존 PASS 재실행 금지.
+- **Codex B / 2 독립 검증:** [018](../plan/verification/claude/RF-018.md) · [014](../plan/verification/claude/RF-014.md) · [015](../plan/verification/claude/RF-015.md) · [016](../plan/verification/claude/RF-016.md) · [013](../plan/verification/claude/RF-013.md). RF-013은 교차 Owner BLOCKED: B는 기존 `a21401db` 9+4 경로 read-only 소비자·부작용 검증만; RF-030/035 writer 미배정, RF-074 오라클 동결.
+- **Codex B / 3 개발:** [068](../plan/pending/RF-068.md) → [064](../plan/pending/RF-064.md) (BLOCKED, 신규 증거 있을 때만). [HANDOFF_B](HANDOFF_B.md) · `work/p15-b-operator-structure-20261022`.
 
-> `main`·안전·CI 오라클 무승인 변경 금지. 신규 브랜치 금지. RF 큐 이동·최종 DONE·선별 통합은 지팀장만. 배정 변경 시 해당 RF 링크/줄만 갱신한다.
+> 지팀장: 신규 증거 즉시 RF 판정·검증 전환·선별 통합·CI 확인. 상세 사유는 RF, 집계는 [STATUS](../plan/STATUS.md), 런검증은 별도 D04. `main`·안전·CI 오라클 무승인 변경 금지.
