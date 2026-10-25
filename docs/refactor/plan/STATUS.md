@@ -132,8 +132,8 @@
 | `libs/supervisor/` | 4 | [RF-060](pending/RF-060.md) | 미판정 |
 | `libs/tools/` | 3 | [RF-061](pending/RF-061.md) | 미판정 |
 
-**RF 상태:** [pending](pending/) **74건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **6건** ↔ [rework/claude](rework/claude/) **0건** / [rework/codex](rework/codex/) **3건** → [done](done/) **5건** = **총 93건**. verification에는 검증 대기·PASS_SCOPED·BLOCKED가 포함된다. rework에는 지팀장이 구체적 소유 경로 보완을 확정한 원개발자 RF만 이동하며, 동일 RF를 여러 상태에 중복 보관하지 않는다. DONE은 peer PASS·선별 통합·정확한 integration SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
+**RF 상태:** [pending](pending/) **74건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **9건** ↔ [rework/claude](rework/claude/) **0건** / [rework/codex](rework/codex/) **0건** → [done](done/) **5건** = **총 93건**. verification에는 검증 대기·PASS_SCOPED·BLOCKED가 포함된다. rework에는 지팀장이 구체적 소유 경로 보완을 확정한 원개발자 RF만 이동하며, 동일 RF를 여러 상태에 중복 보관하지 않는다. DONE은 peer PASS·선별 통합·정확한 integration SHA normal/-O 및 필수 hosted CI GREEN 후 지팀장만 판정한다.
 
-**현재 배정:** [CURRENT](../work_orders/CURRENT.md)의 A 1순위 rework 없음 / B RF-001·009·020 1순위 rework → 2순위 verification → 3순위 pending 개발. 각 회차에서 실행 가능한 복수 RF 처리, BLOCKED만 건너뛴다.
+**현재 배정:** [CURRENT](../work_orders/CURRENT.md) 기준 A/B 모두 rework 없음. A는 RF-020→009→001 신규 peer 증거와 RF-068 독립 검증 후 RF-019/017 개발, B는 RF-013 기존 67 owner KEEP peer 및 RF-068 개발을 진행한다. RF-013 신규 9 + RF-030/035 소비자 4는 RF-074 frozen test 실패로 NOT_ADMITTED. 각 회차에서 실행 가능한 복수 RF 처리, BLOCKED만 건너뛴다.
 
 **전수 소유권:** [3985파일↔RF CSV](FILE_COVERAGE_63182ab2.csv) · [P1.5.0~11 합격 기준](criteria/). 회차별 실행 이력은 Git 이력·RF·HANDOFF에서 확인한다.
