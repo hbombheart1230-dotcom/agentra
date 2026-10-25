@@ -7,17 +7,18 @@
 - `integration/p1.5`와 RF/CURRENT/STATUS는 **지팀장 단일 writer**; A/B는 각자 기존 work 브랜치의 소유 파일과 HANDOFF만 수정. 타 RF 파일·공개 공유 계약은 read-only, 별도 소유권/승인 판단 전 변경 금지. 정상적인 브랜치 divergence는 차단 사유가 아니다.
 - 시작 시 repo ROOT·checkout·원격 HEAD·정확한 후보 SHA를 확인하고, push 후 원격 HEAD를 재확인한다. 기존 작업장·사용자 데이터 보존. D00 금지 사항은 모든 단계에 우선한다.
 
-## 2. 한 회차 실행 — 개발을 멈추지 않는 루프
-- **반드시 1→2→3 모두 순회:** (1) CURRENT의 자기 원개발자 REWORK에서 승인된 최소 수정/KEEP 실증, (2) 상대 RF 신규 SHA·새 증거만 별도 read-only 독립 검증, (3) 자기 신규 RF 개발. 앞 순위를 수행해도 다음 순위를 확인한다. 차단된 RF만 건너뛰며 회차당 RF 1건 제한 없음.
-- **증거 재사용:** 동일 SHA·동일 테스트 재실행 금지. 이미 입증된 blob parity·normal/-O·peer PASS_SCOPED는 유지한다. KEEP은 의미 없는 소스 수정을 요구하지 않고, 미검증 소비자/호출/State/IO/예외/부작용 **위험 경계만** 표적 offline/mock normal·`python -O`로 확인한다. 새 회귀는 BASE와 같은 조건으로 비교해 BASELINE_EXISTING/ENVIRONMENT/CROSS_RF_OWNER/UNKNOWN을 분리한다.
-- **빠른 검증 전환:** RF에 적힌 **잔여 인수조건**이 충족되면 지팀장은 같은 점검 회차에 verification 복귀를 판정하고 상대는 신규 경계만 독립 검증한다. 새 코드 SHA 또는 유효한 독립 검증 증거를 회차 목표로 삼되, 실제 도구 한도·권한 차단이면 원인/재개 트리거를 남긴다. 임의로 PASS/DONE을 만들지 않는다.
-- 소스 수정 시 기존 import·동적 patchability·공개 API·side effect·거래 안전 동등성 및 UI 연결 patchnotes JSON/MD를 확인한다. 테스트 산출물은 격리·정리하며 오라클 변경으로 실패를 숨기지 않는다.
+## 2. 한 회차 실행 — 실제 코드 진척 우선
+- **우선순위:** (1) 실행 가능한 자기 REWORK의 최소 수정·KEEP 실증 또는 재현 가능한 기술 차단 근거, (2) 상대 RF **신규 코드 SHA·위험 경계만** 독립 read-only 검증, (3) 자기 신규 RF 개발. REWORK가 차단되면 같은 회차 다음 실행 가능한 RF로 진행한다. 단순 ACK·기존 상태 재보고는 REWORK 조치가 아니다.
+- **지팀장 결정:** 원개발자에게는 해결 방법의 선택을 떠넘기지 않고 허용 경로·구체적 수정/KEEP 조건을 준다. 지팀장은 각 RF 다음 행동을 FIX / KEEP / PEER / INTEGRATE / BLOCKED 중 하나로 확정한다. 반복 GPT_ACTION_REQUIRED는 새 문서·ACK 대신 원인 조사 및 직접 판정으로 해소한다.
+- **증거 재사용:** 동일 코드 blob·동일 테스트 반복 금지. 기존 blob parity·normal/-O·peer PASS_SCOPED는 유지한다. 미검증 소비자/호출/State/IO/예외/부작용 **위험 경계만** 표적 offline/mock normal/-O 검증한다. 실패는 BASE와 같은 조건으로 비교해 BASELINE_EXISTING / ENVIRONMENT / CROSS_RF_OWNER / UNKNOWN을 분리한다.
+- **완료 전환:** RF 인수조건과 독립 검증이 충족되면 지팀장은 같은 회차 선별 통합·통합 SHA normal/-O·DONE 가능성을 판정한다. 직접 수정분도 상대 독립 peer가 필요하다. 불가능하면 실제 차단과 재개 조건을 해당 RF에 기록한다.
+- 소스 수정 시 import·동적 patchability·공개 API·side effect·거래 안전 동등성 및 UI 연결 patchnotes JSON/MD를 확인한다. 테스트 산출물은 격리·정리하며 오라클 변경으로 실패를 숨기지 않는다.
 
 ## 3. RF 상태·독립 검증·통합
 - **RF 단일 위치:** `pending/` → `verification/{claude|codex}/` ↔ `rework/{claude|codex}/` → `done/`; 하위 폴더명은 **원개발자**다. 큐 이동·최종 DONE은 지팀장만. 원개발자만 REWORK 소유 경로 수정, 검증자는 상대 RF의 코드·테스트·fixture 수정 금지.
 - REWORK는 독립 검증에서 재현된 소유 경로 결함 또는 **구체적 미충족 계약**에 한정. 지팀장은 RF에 BASE/후보 SHA·실패 node·FIX_OWNER·허용 경로·최소 보완 또는 KEEP 실증·다음 peer를 명시한다. 기존 BASE 실패·환경 문제·교차 소유권·안전/CI 오라클 HOLD만으로 REWORK를 만들지 않는다.
 - 자체 테스트 PASS ≠ peer PASS. 상대는 정확한 후보 SHA와 변경된 위험 경계만 별도 read-only 세션에서 검증하고 PASS/REWORK/BLOCKED·명령·exit·근거를 보고한다. PASS_SCOPED ≠ 전체 PASS.
-- **통합/DONE:** 전체 peer PASS 및 소유권 승인 후 지팀장이 해당 RF 소유 경로만 `integration/p1.5` 최신 HEAD에 CAS/비강제 선별 반영(브랜치 통째 병합 금지). 새 통합 **정확한 SHA**의 normal/-O 필수 검증과 전체 peer PASS·소유권 승인을 확인한 뒤 DONE. hosted GitHub Actions 및 exact-SHA CI 상태 조회는 P1.5 정기 운영과 DONE 필수 조건에서 제외한다. 기존 CI 워크플로·오라클은 변경하지 않는다. 기존 CI 오라클은 변경하지 않는다.
+- **통합/DONE:** 전체 peer PASS 및 소유권 승인 후 지팀장이 해당 RF 소유 경로만 `integration/p1.5` 최신 HEAD에 CAS/비강제 선별 반영(브랜치 통째 병합 금지). 새 통합 **정확한 SHA**의 normal/-O 필수 검증과 전체 peer PASS·소유권 승인을 확인한 뒤 DONE. hosted GitHub Actions 및 exact-SHA CI 상태 조회는 P1.5 정기 운영과 DONE 필수 조건에서 제외한다. 기존 CI 워크플로·오라클은 변경하지 않는다.
 
 
 ## 3A. 테스트 우선 종결 판정 (RF-001~093 공통)
@@ -26,6 +27,11 @@
 - **REWORK는 코드 결함에만:** 재현 가능한 소유 코드 결함 또는 변경으로 생긴 구체적 회귀가 확인된 경우에만 원개발자 REWORK. 미실행·기존 BASE 실패·CI 조회 불가·타 RF 소유권 HOLD·증거 서식 미비는 별도 BLOCKED/운영 조치로 분리하고 신규 코드 수정 요구 금지.
 - **검증은 한 번, 통합은 따로:** 원개발자 표적 테스트 → 상대 변경 범위 read-only peer → 지팀장 선별 통합 → 통합 SHA의 필수 normal/-O → DONE. 이미 입증된 단계는 반복하지 않는다. CI 상태 조회와 hosted CI GREEN 요구는 P1.5 정기 운영·DONE 판정에서 제외한다. 안전 가드·테스트 오라클·기존 CI 워크플로는 변경하지 않는다.
 - **93개 RF 적용:** 이 절은 RF-001~093 전체에 즉시 적용하며 93개 RF에 동일 문구 복사 금지. 각 RF에는 필요할 때만 '기존 유효 PASS / 미충족 구체 사례 / 담당자 / 다음 판정'을 짧게 갱신한다.
+
+## 3B. RF 큐 이동 정합성
+- RF는 물리 경로도 단일 정본이어야 한다. 이전 경로 제거·새 경로 생성·CURRENT 포인터·STATUS 집계를 함께 확인한다. 일부만 성공하면 **이동 미완료**로 표시하고 도구 차단·복구 조건을 기록한다. 중복 파일을 논리 집계에서 제외하는 것만으로 물리 정합성 PASS를 선언하지 않는다.
+- REWORK에는 BASE/후보 코드 SHA, 실패 node, 원개발자, 허용 수정 경로, 최소 FIX/KEEP 조건, 다음 peer를 명시한다. 원개발자 수정 SHA가 없으면 검증 대기 상태를 신규 진척으로 보고하지 않는다.
+- KEEP은 자동 DONE이 아니다. 인수조건·독립 검증·소유권·통합 SHA 검증을 충족한 경우에만 DONE이다.
 
 ## 4. 기록·지팀장 책임
 - `CURRENT` = **작업 포인터/규칙 변경 알림만**. `RF` = 해당 건의 결정·잔여 증거·재개 조건. `STATUS` = 전체 현황. `HANDOFF_A/B` = **최신 실행 10~20줄만 교체**, 과거는 Git 이력. 새 총괄 문서·반복 일지·빈 커밋 금지.
