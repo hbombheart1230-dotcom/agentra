@@ -19,6 +19,14 @@
 - 자체 테스트 PASS ≠ peer PASS. 상대는 정확한 후보 SHA와 변경된 위험 경계만 별도 read-only 세션에서 검증하고 PASS/REWORK/BLOCKED·명령·exit·근거를 보고한다. PASS_SCOPED ≠ 전체 PASS.
 - **통합/DONE:** 전체 peer PASS 및 소유권 승인 후 지팀장이 해당 RF 소유 경로만 `integration/p1.5` 최신 HEAD에 CAS/비강제 선별 반영(브랜치 통째 병합 금지). 새 통합 **정확한 SHA**의 normal/-O 및 필수 hosted GitHub Actions GREEN 확인 후에만 DONE. CI RED/UNKNOWN/NOT_RUN은 GREEN이 아니다. 기존 CI 오라클은 변경하지 않는다.
 
+
+## 3A. 테스트 우선 종결 판정 (RF-001~093 공통)
+- **테스트와 코드가 판정 기준:** 해당 RF 인수조건을 커버하는 기존 normal/-O 테스트 PASS 및 기존 peer 근거는 그대로 인정한다. 문서/HANDOFF만 변경되면 코드·테스트 blob 동일성을 확인해 증거를 재사용한다. SHA는 테스트 대상 코드 식별자이며 문서 커밋 HEAD 자체를 새 코드로 취급하지 않는다.
+- **PASS 범위 명시:** 테스트 PASS 숫자만으로 미실행 계약까지 PASS라 하지 않는다. 다만 미충족 주장 시 지팀장은 **정확한 테스트 부재/실패 사례, 변경 경로·호출자, 실제 위험** 중 구체적 근거를 RF에 적는다. 기존 테스트가 해당 동작을 이미 검증하면 추가 테스트·REWORK 요구 금지. 구체적 근거가 없으면 '추가 검증 요구'를 해제하고 peer/통합 판단으로 진행한다.
+- **REWORK는 코드 결함에만:** 재현 가능한 소유 코드 결함 또는 변경으로 생긴 구체적 회귀가 확인된 경우에만 원개발자 REWORK. 미실행·기존 BASE 실패·CI 조회 불가·타 RF 소유권 HOLD·증거 서식 미비는 별도 BLOCKED/운영 조치로 분리하고 신규 코드 수정 요구 금지.
+- **검증은 한 번, 통합은 따로:** 원개발자 표적 테스트 → 상대 변경 범위 read-only peer → 지팀장 선별 통합 → 통합 SHA의 기존 필수 CI/normal/-O → DONE. 이미 입증된 단계는 반복하지 않는다. CI UNKNOWN/NOT_RUN은 FAIL로 간주하지 않지만 GREEN으로도 간주하지 않으며, CI 실행·조회 원인 확인은 지팀장 책임이다. CI/안전 가드·오라클 및 DONE 필수 게이트는 변경하지 않는다.
+- **93개 RF 적용:** 이 절은 RF-001~093 전체에 즉시 적용하며 93개 RF에 동일 문구 복사 금지. 각 RF에는 필요할 때만 '기존 유효 PASS / 미충족 구체 사례 / 담당자 / 다음 판정'을 짧게 갱신한다.
+
 ## 4. 기록·지팀장 책임
 - `CURRENT` = **작업 포인터/규칙 변경 알림만**. `RF` = 해당 건의 결정·잔여 증거·재개 조건. `STATUS` = 전체 현황. `HANDOFF_A/B` = **최신 실행 10~20줄만 교체**, 과거는 Git 이력. 새 총괄 문서·반복 일지·빈 커밋 금지.
 - HANDOFF는 RUN_ID, 시작/후보 **코드 SHA**(HANDOFF 커밋과 구분), RF별 변경 경로, normal/-O 명령·exit, 독립 verdict, BLOCKED 원인·재개 트리거, patchnotes, CI SHA/상태, GPT_ACTION_REQUIRED, push 확인을 간결히 담는다. 실질적 새 증거가 없으면 NO_CHANGE로 보고하고 문서만 커밋하지 않는다.
