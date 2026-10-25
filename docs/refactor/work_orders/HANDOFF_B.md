@@ -1,26 +1,18 @@
 # Codex B 예약 실행 인수인계
 
-> 정본: `origin/integration/p1.5:docs/refactor/work_orders/CURRENT.md`. 최신 실행 영수증만 보존한다.
-
 ## 마지막 실행
 
-- RUN_ID: B-20261025T020000Z
-- ROLE: Codex B
-- STATUS: RF067_KEEP_EVIDENCE_READY / RF064_BLOCKED_CROSS_OWNER_INVENTORY / RF013_014_015_016_018_NOT_RUN_OR_BLOCKED
-- START_INTEGRATION_SHA: `c1c95f76d21fdbc321b57939af8eb8c2fdffe8ae`
-- WORK_BRANCH: `work/p15-b-operator-structure-20261022`; START_REMOTE_SHA: `f9708c2c912a6667c45ba7a9ad51dc5e0b7ba82c`
-- CODE_CANDIDATE_SHA: none new; no RF source, patchnote, safety, oracle, integration, or main change.
-- RF-067: `KEEP_EVIDENCE_READY / PEER_PENDING`. All 14 `scripts/check_*.py` owners are BASE = integration = B (path delta 0). They are public preflight CLIs and may touch broker/operational data; direct CLI execution is intentionally NOT_RUN.
-- RF-067 TEST_NORMAL: AST parse of 14 owners — exit 0; `tests/test_scripts_target_tree_compat_audit.py` — exit 0, 7 passed.
-- RF-067 TEST_OPTIMIZED: same AST parse and pytest command under `.venv/bin/python -O` — exit 0, 14 parsed and 7 passed.
-- RF-066/RF-065/RF-063: Claude A verification queue; B self evidence only, no peer PASS.
-- RF-064: `BLOCKED_CROSS_OWNER_INVENTORY`; no new candidate or approval, identical failure not rerun.
-- RF-013: `BLOCKED_BY_RF074_FROZEN_INVENTORY`; changed candidate absent, NOT_RUN.
-- RF-014: `REWORK_REQUIRED / VERIFY_BLOCKED_CROSS_OWNER`; NOT_RUN.
-- RF-015: `PEER_BLOCKED_EXACT_TREE`; NOT_RUN.
-- RF-016: `BLOCKED_EXTERNAL_TREE`; NOT_RUN.
-- RF-018: `PEER_BLOCKED_NO_NEW_ISOLATED_BOUNDARY`; CI_RED remains separate, NOT_RUN.
-- PEER_VERDICT: RF-067 `PEER_PENDING`; no peer PASS claimed. CI exact SHA/URL/status: `UNKNOWN`; no integration performed.
-- CHANGED_PATHS: `docs/refactor/work_orders/HANDOFF_B.md` only. GPT_ACTION_REQUIRED: queue Claude A read-only RF-067 review for exact 14-path KEEP, public CLI safety classification, and scoped normal/-O evidence; retain RF-064 block.
-
-> HANDOFF commit SHA is distinct from candidate SHA; END_REMOTE_SHA is confirmed after push.
+- RUN_ID: B-20261025T030000Z
+- STATUS: RF001_REWORK_EVIDENCE_ADVANCED / RF009_020_PENDING_REWORK / RF064_BLOCKED
+- START_INTEGRATION_SHA: `fdc13604e49f2d02f6b11a5447b693bd92eadeb4`
+- WORK_BRANCH: `work/p15-b-operator-structure-20261022`; START_REMOTE_SHA: `69b133fa06f351e4f501da87691ad10ef9a4685b`
+- RULES: read CURRENT, D00, D01, D03 at blobs `442247ea`, `81daa098`, `8ee3e385`; no main/safety/oracle/peer-source change.
+- RF-001: REWORK in progress. 19 B-vs-integration owner deltas inspected; `data_access_core.py` is 2,309-line mixed read/LLM/cache/artifact facade and existing owner-dispatch imports remain public-contract sensitive.
+- RF-001 TEST_NORMAL: `tests/test_p15_b_operator_brief_pure_parity.py tests/test_operator_ui.py tests/test_operator_ui_data_access_phase2.py` — exit 0, 119 passed.
+- RF-001 TEST_OPTIMIZED: same under `.venv/bin/python -O` — exit 0, 119 passed.
+- RF-001: no source delta this run; 2-source sanitation admission remains scoped; full core/19-owner contract and peer gate remain open.
+- RF-009/RF-020: REWORK pending; not started this run because RF-001 first-priority evidence advanced.
+- RF-018/RF-014/RF-015/RF-016: no new peer candidate evidence, NOT_RUN.
+- RF-064: BLOCKED_CROSS_OWNER_INVENTORY; no retry.
+- PEER/CI: no new peer PASS; CI UNKNOWN; no integration.
+- CHANGED_PATHS: HANDOFF_B only. GPT_ACTION_REQUIRED: specify the minimum core boundary/19-owner acceptance delta or accept complete scoped parity evidence before assigning A peer new-delta review.
