@@ -1,6 +1,14 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태: pending 76 / verification 12 / DONE 5** (RF-002~006). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태: pending 75 / verification 13 / DONE 5** (RF-002~006). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+
+## 현재 지팀장 판정·다음 실행 (2026-10-25)
+
+- **RF-066** B self normal/-O 각 AST 17/17 및 표적 pytest 7 PASS, BASE/integration/B 17개 소유 경로 diff 0. `pending → verification/codex` 이동; **A read-only peer 1순위**, 브로커 조정·SQLite/intent·Step5D·파일 이동·외부 카탈로그 동기화 CLI **미실행/안전 검토 필요**. NOT_DONE.
+- **RF-063** A peer **PASS_SCOPED**(76 소유 blob 동일, normal/-O 각 130 PASS, PYTHONUTF8=1). 13개 위험 키워드 CLI 미실행, cp949 기본 로케일 UnicodeDecodeError 1건은 ENVIRONMENT 확인 필요. **RF-065** A peer **PASS_SCOPED**(54 blob 동일, normal/-O 각 7 PASS, 50개 파일 쓰기 CLI 미실행). 둘 다 전체 소비자·CI 미완료로 verification 유지.
+- **RF-018** A BASE/integration 동일 명령 1152 PASS/2 FAIL/57 ERROR 모두 동일: 59건 **BASELINE_EXISTING/HISTORICAL_INVENTORY**, 신규 회귀 0(제출 증거 범위). **RF-014** BASE/integration 각 1102 PASS/3 FAIL 동일: 3건 BASELINE_EXISTING, A 브랜치 Reporter 소비자 2건 CROSS_RF_OWNER. B는 분리된 증거만 독립 검증; 최종 peer PASS 아님.
+- **RF-013** 신규 Reporter owner 9경로=RF-013 후보, 소비자 wrapper 4경로=`metrics_report_generator.py`·`phase_runtime_health.py` RF-035 / `operator_visibility.py`·`operator_period_summary.py` RF-030. RF-074 frozen inventory 충돌로 **(c) BLOCKED 유지**, 교차 RF writer/오라클 변경 미승인. RF-064도 신규 차단 해소 증거 없어 Pending 유지.
+- **다음 배정:** A RF-066 peer → RF-019 개발; B RF-018·014 분리 증거 peer → RF-067 개발. RF-021 안전 HOLD 유지. CI exact integration SHA GREEN 없으면 통합/DONE 금지.
 
 ## 파일별 TARGET_PATH 직접 계약 — 2026-10-25
 
