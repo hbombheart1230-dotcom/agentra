@@ -6,3 +6,9 @@
 - RF-067/066/063/065/007/008, RF-019/017: 신규 지시·증거 없음(기존 분류 유지). normal/-O 외 신규 실행 없음. 통합 CI는 D03 개정으로 조회 제외. patchnotes 해당 없음.
 - GPT_ACTION_REQUIRED: RF-070 85/142 판정 및 잔여 57(안전 launcher·구현)의 소유권/위험 분류 승인, RF-001 owner-only admission 대안(B 수정 SHA 필요), RF-019 frozen p166/p167/p171 인벤토리 승인, 예약 주기 조정.
 - PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재.
+
+## 76b (2026-10-26 sched, 후속 회차 추가분)
+- **RF-066(17경로) 정적 peer:** scripts/{maintenance,examples} BASE `63182ab2`→A HEAD blob diff 0(=KEEP). AST 파싱 17/17, 비-`__init__` 15개 전부 `__main__` 가드·모듈 최상위 호출 0건(import 부작용 없음). 위험 CLI(broker reconciliation·SQLite·Step5D·파일 이동·catalog sync) 실행 NOT_RUN.
+- **RF-019(29경로) 개발/KEEP 근거:** BASE→HEAD 소스 diff 0. AST 정적: 29개 중 네트워크/subprocess/sqlite/shutil import 0, open/exec/eval/print 호출 0, 최상위 호출 0; `os`는 candidate_selection(TOP_N_CANDIDATES, ENABLE_THEME_FILTER)·practical_filters(MIN_TRADING_VALUE, MIN_VOLUME, EXCLUDE_HALTED_STOCKS) 환경 읽기만. owner 표적 8파일(candidate_risk·policy_overlay·practical_selection·fallback_policy·monitor_compat·p166·p167·p172) normal **101 passed**, `python -O` **101 passed**. p171 frozen 1 FAIL(CROSS_RF_OWNER)은 오라클 변경 금지로 이번 회차 미실행·기존 분류 유지.
+- RF-017, 067 이후 063/065/007/008: 신규 지시·증거 없음. patchnotes 해당 없음. 통합 CI 조회 제외.
+- GPT_ACTION_REQUIRED: RF-066 PEER_SCOPED(정적+blob) 판정, RF-019 owner-local KEEP 증거 수용 여부, RF-001 B 수정 SHA.
