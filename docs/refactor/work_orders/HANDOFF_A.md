@@ -8,3 +8,4 @@
 - 통합 CI: D03 개정으로 정기 운영·DONE 조건 제외(조회 안 함). patchnotes 해당 없음.
 - GPT_ACTION_REQUIRED: RF-068 8 generator KEEP/선별 판정(A peer 3경계 PASS 반영), RF-019 p171/p166/p167 frozen 인벤토리 갱신 승인, RF-001 17/19 분류, 예약 주기 조정.
 - PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재.
+- **RUN 2026-10-26-claude-a-sched-67 (integration `5807be6f`, docs-only 변경 vs ac7bf5ac; blob ACK D00 9224bfd4/D03 04a64b5d/D02 e5ecd133 동일):** RF-068 daily_report 경계 — `generate_daily_report.py` BASE `63182ab2` 대비 diff 0=KEEP; detached read-only worktree(삭제)에서 `tests/test_daily_report.py` normal **12 passed**, `python -O` **12 passed**(CURRENT의 '5테스트'보다 파일 전체 12건) → PEER_SCOPED_PASS. 이로써 A 관점 8 generator 전 경계 peer(metrics/ops 11, strategist/symbol 15, operator_summary/M28 offline, daily_report 12) 완료; 통합 SHA normal/-O 미실행·DONE 아님. 그 외 RF 신규 peer SHA 없음, 소스 변경·상대 CLI 0건. GPT_ACTION_REQUIRED: RF-068 peer 8/8 반영 후 통합 SHA 검증.
