@@ -3,7 +3,7 @@
 > 정본: `integration/p1.5`. **안전·권한 [D00](../../ENGINEERING_DELIVERY_POLICY.md) → 공통 [D03](D03_DEV_TEAM_RULES.md) → 역할 [D01 Codex](../../../AGENTS.md) / [D02 Claude](../../../CLAUDE.md)**. 매회 REWORK → 상대 독립 검증 → 신규 개발 **1→2→3 전부 순회**. RF별 상세 판정은 RF 정본, 집계는 [STATUS](../plan/STATUS.md), 런검증은 별도 D04.
 
 ## 규칙 변경 ACK (확인 전 유지)
-- 최신 blob: D00 `9224bfd4`, D01 `c07bce6a`, D02 `e5ecd133`, D03 `04a64b5d`. A는 D00·D02·D03, B는 D00·D01·D03 최신본을 실제 읽고 HANDOFF에 각 blob ACK 기록.
+- 최신 blob: D00 `9224bfd4`, D01 `e386bb7a`, D02 `e5ecd133`, D03 `04a64b5d`. A는 D00·D02·D03, B는 D00·D01·D03 최신본을 실제 읽고 HANDOFF에 각 blob ACK 기록.
 - **임시 2회 확인 지시 유지:** A/B 모두 각자 다음 2회 실행에서 D03 전문과 역할별 D01/D02를 읽고 `D03_READ_ACK=<blob>; D01_OR_D02_READ_ACK=<blob>; 적용 RF/다음 행동` 기록. 지팀장이 **각 2회 ACK 확인 후에만** 이 줄 삭제. D03 §3A 테스트 우선 판정 즉시 적용. 기존 PASS/KEEP/peer 증거 재사용; 동일 SHA·테스트 반복 금지.
 
 ## 지팀장
