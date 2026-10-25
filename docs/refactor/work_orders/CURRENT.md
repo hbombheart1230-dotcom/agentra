@@ -1,18 +1,25 @@
-# Agentra P1.5 — CURRENT (배정 포인터)
+# Agentra P1.5 — CURRENT (작업 포인터)
 
-> 정본 `integration/p1.5`. 실행 규칙은 [D03](D03_DEV_TEAM_RULES.md), 안전은 [D00](../../ENGINEERING_DELIVERY_POLICY.md), 역할은 [D01 Codex](../../../AGENTS.md)·[D02 Claude](../../../CLAUDE.md). **한 회차 1→2→3 전부 순회**, 변경된 RF 증거만 처리.
+> 정본: `integration/p1.5`. **안전·권한 [D00](../../ENGINEERING_DELIVERY_POLICY.md) → 공통 [D03](D03_DEV_TEAM_RULES.md) → 역할 [D01 Codex](../../../AGENTS.md) / [D02 Claude](../../../CLAUDE.md)**. 매회 REWORK → 상대 독립 검증 → 신규 개발 **1→2→3 전부 순회**. RF별 상세 판정은 RF 정본, 집계는 [STATUS](../plan/STATUS.md), 런검증은 별도 D04.
 
-- **규칙 변경 알림(다음 실행 1회 실제 재독):** D00 `442247ea → 806d149d`(지팀장 직접 처리 책임 추가), D01 `28779e2b → 2c63bf6b`(B 역할/지팀장 우선 처리 명시), D03 `b99533ca → 756eda8a`(§3A 테스트 우선 판정). **A는 변경 D00·D03 및 D02(`e5ecd133`), B는 변경 D00·D01·D03을 읽고 HANDOFF에 각 최신 blob ACK 기록.** 과거 D00 '불변·재독 불필요' 문구는 더 이상 유효하지 않다. 기존 2회 D03 확인 지시는 유지하며 지팀장은 A/B 확인 전 제거하지 않는다.
-- **임시 필독 · 다음 A/B 실행 2회 확인:** **A와 B 모두 시작 즉시 D03 전체 최신본을 실제로 읽고**, 특히 §2 한 회차 1→2→3 전부 순회·기존 PASS 재사용·잔여 위험만 표적 검증·즉시 peer 전환과 §3 독립검증/통합 경계를 확인한다. D01/D02도 역할별 최신본 1회 확인한다. 읽었다고 추정하지 말고 HANDOFF에 `D03_READ_ACK=<D03 blob SHA>; D01_OR_D02_READ_ACK=<blob SHA>; 적용 RF/다음 행동`을 기록한다. **지팀장은 A/B 각 2회 실행에서 ACK를 확인한 뒤 이 임시 줄을 삭제**한다. 미확인 시 삭제 금지. D00 안전 규칙은 그대로 유지.
-- **즉시 적용 · 93 RF 전체 테스트 우선 판정:** D03 새 **§3A**(blob `756eda8a`)를 A/B 모두 다음 실행 시작 시 **전문 재독**하고 HANDOFF에 `D03_READ_ACK=756eda8a` 기록. 기존 테스트 PASS·KEEP·peer 증거는 재사용하고, 소스 변경 없는 HANDOFF HEAD 차이로 재시험하지 않는다. 실제 재현 결함 없는 '계약 미완료'는 REWORK로 유지하지 말고 구체적인 미검증 테스트/위험을 제시하거나 지팀장 peer 판정 요청. 기존 2회 필독 ACK 지시도 계속 유효. CI 운영 게이트는 사용자 승인으로 제외. 안전·오라클 변경 없음.
-- **지팀장 최신 판정(22:26 KST):** B RF-013 기존 67 owner의 원본 RF-074 frozen test normal/-O 각 105 PASS를 `PEER_SCOPED_PASS`로 수용. 신규 9 read_models + RF-030/035 wrapper 4는 기존 frozen 1 FAIL로 NOT_ADMITTED·writer 미활성 유지. A RF-068 metrics/ops 11+11 독립 PASS 인정, B strategist/symbol 15+15 자체 PASS 인정. **지팀장 직접 정적 확인:** RF-068 operator_summary의 기간별 파일 출력, M28 두 호환 진입점의 import/runpy 경계. B는 3개 경계만 offline/mock 표적 검증, A는 신규 B 15 범위만 peer. 동일 PASS 재실행·문서-only 빈 커밋 금지. RF-013·068 상세은 각 RF 정본, DONE에는 통합 SHA normal/-O와 peer PASS 필요; hosted CI는 불필요.
-- **이전 판정(21:27 KST):** RF-013 A 후보 9 신규 read_models는 RF-074 **원본 동결 테스트 normal/-O 각각 104 PASS/1 FAIL**(B 독립 재현)로 **NOT_ADMITTED**; RF-030/035 wrapper 4개도 통합 제외·writer 미활성. B는 A 후보 동일 실패를 반복하지 말고 **기존 RF-013 67 owner KEEP**만 integration 기준 read-only peer. RF-009 A 신규 normal/-O 각 33 PASS를 기존 145 PASS와 함께 인정(PEER_SCOPED_PASS, NOT_DONE). RF-068 B 신규 normal/-O 각 11 PASS는 8 generator 중 2개 범위 SELF_PASS_SCOPED로 인정, A 독립 peer 및 B 나머지 안전한 offline/mock 경계 확인. 지팀장은 소스 변경 없는 KEEP 판정을 직접 처리하며 증거 없는 반복 문서 커밋 금지.
-- **지팀장 / 직접 진행:** A/B 최신 코드 SHA·신규 테스트·peer 증거 확인 → 직접 가능한 작은 코드 수정·표적 normal/-O 테스트(환경 부재 시 NOT_RUN 및 실행 담당 지정) → RF 판정·큐 이동 → RF-013 read_models 9경로/RF-030·035 소비자 4경로/RF-074 동결 오라클의 소유권 차단 해결 → 독립 검증 완료 RF 선별 통합 → CURRENT/STATUS 갱신. 지팀장 수정 코드도 상대 독립 검증 필수. 새 증거가 없으면 다른 실행 가능 RF 진행. 매 보고에 직접 조치 SHA·테스트·차단 및 CURRENT 링크 기재.
-- **Claude A / 1 REWORK:** 없음.
-- **Claude A / 2 독립 검증:** [020](../plan/verification/codex/RF-020.md) → [009](../plan/verification/codex/RF-009.md) → [001](../plan/verification/codex/RF-001.md) **기존 scoped PASS 재사용·실제 빠진 테스트/결함만 판정**. 추가로 [RF-068](../plan/pending/RF-068.md)의 B 신규 strategist/symbol 15+15 PASS만 read-only peer하고, 기존 metrics/ops 11+11 peer PASS 재사용. 새 근거 없으면 [067](../plan/verification/codex/RF-067.md) · [066](../plan/verification/codex/RF-066.md) · [063](../plan/verification/codex/RF-063.md) · [065](../plan/verification/codex/RF-065.md) · [007](../plan/verification/codex/RF-007.md) · [008](../plan/verification/codex/RF-008.md) 확인 후 3순위로.
-- **Claude A / 3 개발:** [019](../plan/pending/RF-019.md) → [017](../plan/pending/RF-017.md). [HANDOFF_A](HANDOFF_A.md) · `work/p15-a-reporter-pure-20261021`.
-- **Codex B / 1 REWORK:** 없음. RF-001/009/020은 **재현된 신규 소스 결함 없음**으로 D03 §3A에 따라 verification/codex로 반환(전체 PASS/DONE 아님). B는 재작업 반복 대신 다음 순위 진행.
-- **Codex B / 2 독립 검증:** **[013](../plan/verification/claude/RF-013.md) 기존 67 frozen peer 완료(105+105 scoped PASS)** — A 후보 `a21401db` 신규 9 + RF-030/035 wrapper 4는 원본 RF-074 동결 테스트 blob `cabcecfe`에서 **104 PASS/1 FAIL normal/-O**로 불수용 확정(동일 실패 재실행 금지). B는 기존 67 frozen peer 105+105 PASS를 재사용하고 신규 증거 없으면 반복 금지. 9+4는 통합 제외, A 후보 변경 테스트 blob `915fca9c` 승인 금지. 다음 [018](../plan/verification/claude/RF-018.md) · [014](../plan/verification/claude/RF-014.md) · [015](../plan/verification/claude/RF-015.md) · [016](../plan/verification/claude/RF-016.md).
-- **Codex B / 3 개발:** [068](../plan/pending/RF-068.md) → [064](../plan/pending/RF-064.md) (BLOCKED, 신규 증거 있을 때만). [RF-030](../plan/pending/RF-030.md)·[RF-035](../plan/pending/RF-035.md)는 B 조건부 구현자/A peer로 지정하되 **RF-013 9+4 현재 NOT_ADMITTED; 지팀장 별도 CURRENT 승인 전 wrapper 쓰기 금지**. [HANDOFF_B](HANDOFF_B.md) · `work/p15-b-operator-structure-20261022`.
+## 규칙 변경 ACK (확인 전 유지)
+- 최신 blob: D00 `806d149d`, D01 `2c63bf6b`, D02 `e5ecd133`, D03 `756eda8a`. A는 D00·D02·D03, B는 D00·D01·D03 최신본을 실제 읽고 HANDOFF에 각 blob ACK 기록.
+- **임시 2회 확인 지시 유지:** A/B 모두 각자 다음 2회 실행에서 D03 전문과 역할별 D01/D02를 읽고 `D03_READ_ACK=<blob>; D01_OR_D02_READ_ACK=<blob>; 적용 RF/다음 행동` 기록. 지팀장이 **각 2회 ACK 확인 후에만** 이 줄 삭제. D03 §3A 테스트 우선 판정 즉시 적용. 기존 PASS/KEEP/peer 증거 재사용; 동일 SHA·테스트 반복 금지.
 
-> 지팀장: 신규 증거 즉시 RF 판정·검증 전환·선별 통합. 상세 사유는 RF, 집계는 [STATUS](../plan/STATUS.md), 런검증은 별도 D04. `main`·안전 오라클 무승인 변경 금지.
+## 지팀장
+- A/B 코드 SHA·HANDOFF·신규 peer 증거만 확인 → RF 판정/큐 이동 → 소유권 승인된 경로만 선별 통합 → 통합 정확한 SHA normal/-O 확인 → 조건 충족 시 DONE. 지팀장 코드 변경도 상대 peer 필수. 환경 부재 시 NOT_RUN과 실행 담당 명시.
+- **RF-013 차단:** 기존 67 owner frozen peer normal/-O 각 105 PASS는 `PEER_SCOPED_PASS`로 인정. 신규 read_models 9 + RF-030/035 wrapper 4는 RF-074 원본 frozen normal/-O 각 104 PASS/1 FAIL로 **NOT_ADMITTED**; writer 비활성, 통합/오라클 변경 금지. 소유권·계약 해결 전 진행 불가. 상세은 [RF-013](../plan/verification/claude/RF-013.md).
+- **RF-068:** 기존 metrics/ops 11+11 peer PASS 및 strategist/symbol 15+15 self PASS 재사용. B는 operator_summary 기간별 출력·M28 호환 진입점 2개 경계만 표적 offline/mock; A는 신규 B 15 범위만 peer. 상세은 [RF-068](../plan/pending/RF-068.md).
+- hosted CI/GREEN은 D03에 따라 필수 게이트 아님. `main` 병합·실거래·안전/오라클 무승인 변경 금지.
+
+## Claude A — `work/p15-a-reporter-pure-20261021` · [HANDOFF](HANDOFF_A.md)
+1. **REWORK:** 없음.
+2. **독립 검증:** [020](../plan/verification/codex/RF-020.md) → [009](../plan/verification/codex/RF-009.md) → [001](../plan/verification/codex/RF-001.md). 기존 scoped PASS 재사용, 실제 빠진 위험만 검증. 추가 [068](../plan/pending/RF-068.md) B 신규 strategist/symbol peer. 이후 [067](../plan/verification/codex/RF-067.md) → [066](../plan/verification/codex/RF-066.md) → [063](../plan/verification/codex/RF-063.md) → [065](../plan/verification/codex/RF-065.md) → [007](../plan/verification/codex/RF-007.md) → [008](../plan/verification/codex/RF-008.md).
+3. **신규 개발:** [019](../plan/pending/RF-019.md) → [017](../plan/pending/RF-017.md).
+
+## Codex B — `work/p15-b-operator-structure-20261022` · [HANDOFF](HANDOFF_B.md)
+1. **REWORK:** 없음. RF-001/009/020은 재현된 신규 소스 결함 없이 verification/codex 복귀(전체 PASS/DONE 아님).
+2. **독립 검증:** [013](../plan/verification/claude/RF-013.md) 기존 67 owner 105+105 scoped PASS 재사용; 신규 9+4 실패 재실행 금지. 다음 [018](../plan/verification/claude/RF-018.md) → [014](../plan/verification/claude/RF-014.md) → [015](../plan/verification/claude/RF-015.md) → [016](../plan/verification/claude/RF-016.md).
+3. **신규 개발:** [068](../plan/pending/RF-068.md) → [064](../plan/pending/RF-064.md) (BLOCKED, 신규 증거 시만). [030](../plan/pending/RF-030.md)/[035](../plan/pending/RF-035.md)는 조건부 B 구현·A peer; **지팀장 별도 CURRENT 승인 전 wrapper 쓰기 금지**.
+
+> 신규 증거만 처리. 테스트·판정·차단 상세은 해당 RF에서 관리하며 CURRENT에 운영 일지를 누적하지 않는다.
