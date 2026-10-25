@@ -1,8 +1,11 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-25 21:27 KST): pending 74 / verification 14 / rework 0 / DONE 5** (RF-002~006). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-25 23:31 KST): pending 73 / verification 15 / rework 0 / DONE 5** (RF-002~006). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
 ## 현재 지팀장 판정·다음 실행 (2026-10-25)
+
+- **23:31 KST 상태 전환:** RF-068 8개 generator B/integration 소스 diff 0 KEEP 후보. B offline/mock 3경계 normal/-O exit 0, A 별도 peer 같은 3경계 normal/-O exit 0 신규 수용; 기존 metrics/ops 2경계 A peer 재사용. **5/8 peer scoped**, strategist/symbol 2경계 B self 15+15 및 daily_report 기존 5테스트는 최종 독립 확인 미완. RF-068 `pending → verification/codex` 이동, **73/15/0/5**. A 잔여 peer, B 신규 RF-069 배정. 통합 SHA normal/-O NOT_RUN, DONE 증가 없음. hosted CI 조회는 D03에 따라 제외. RF-013 9+4 NOT_ADMITTED 유지; Issue #32 신규 증거 없음.
+
 
 > **최신 판정 우선 (21:27 KST):** 아래 19:35 이전 항목의 `74/11/3/5`, RF-001/009/020 REWORK 배정은 **역사 기록**이며 현재 큐 상태가 아니다. 아래 최신 회차 결정과 CURRENT가 우선한다.
 
