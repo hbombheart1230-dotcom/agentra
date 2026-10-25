@@ -14,6 +14,13 @@
 - 실질적 변경이 없으면 NO_CHANGE/NO_WORK를 보고하되 **빈 문서 커밋 금지**. 근거가 새로 생긴 경우에만 RF/HANDOFF/STATUS/troubleshooting을 갱신한다. 소스 변경 시 UI 연결 patchnotes **JSON·MD 동기화**. 테스트 임시 산출물은 격리·성공 자동 정리·실패 제한 보존.
 - 작업은 `pending/RF-xxx.md → verification/claude`(Claude 작성/B 검증) 또는 `verification/codex`(Codex 작성/A 검증) `→ done/RF-xxx.md`. **93개 RF 각각 한 상태 폴더에만** 둔다. 후보 SHA·self normal/-O·근거가 있을 때 GPT가 기존 RF를 검증 큐로 이동한다. BLOCKED/REWORK도 큐 유지하고 원작성자에게 수정 재배정; 다른 독립 RF는 계속한다. GPT만 최종 done 이동.
 
+### 실행 우선순위 (지팀장 배정, A/B 공통)
+- **0순위 — 지팀장 즉시 판정:** 새 peer 증거가 있으면 해당 회차에 PASS/REWORK/BLOCKED와 RF 큐·후속 배정을 먼저 처리한다. 안전 HOLD와 승인 게이트는 항상 우선한다.
+- **1순위 — 실행 가능한 신규 독립 검증:** CURRENT의 각자 독립 검증 링크 중 아직 검증하지 않은 exact SHA·소비자 경계·self normal/-O 근거가 준비된 RF를 우선한다. 동일 조건이면 CURRENT에 나열된 순서대로 처리한다. 이미 PASS_SCOPED인 동일 SHA·범위는 반복하지 않는다.
+- **2순위 — 신규 개발:** 검증 대상이 없거나 신규 증거 없이 BLOCKED라면 CURRENT의 각자 개발 링크를 앞에서부터 진행한다. BLOCKED RF는 원인·필요한 최소 입력을 HANDOFF에 적고 다음 RF로 넘어간다.
+- **3순위 — 차단 재점검:** 차단 해소 증거·승인·새 후보 SHA가 생긴 건만 다시 검증한다. 새 정보 없는 차단을 반복 점검하기 위해 개발을 멈추지 않는다.
+- **회차 처리:** 독립 검증과 개발을 모두 무조건 끝내라는 뜻이 아니다. 실행 가능한 1순위부터 처리하고 남은 작업·다음 대상은 HANDOFF에 명시한다. 지팀장은 새 증거에 따라 CURRENT의 링크 순서를 조정한다. CURRENT는 경로 포인터만 유지한다.
+
 ## 3. 개발·독립 검증·통합
 - 개발은 기존 코드 재사용·의미 있는 분리 또는 KEEP_VERIFIED를 선택하고 import/call/DTO/State/IO/예외/side effect/거래 안전의 동등성을 확인한다. 소유 경계·양성/음성·실패 경로를 포함한 **위험 표적 테스트**를 normal과 `python -O`로 수행하고 정확한 후보 SHA를 push한다. 단순 KEEP도 BASE blob과 소비자 계약 증거가 필요하다.
 - 상대 검증은 **별도 독립 read-only 세션**에서 정확한 BASE→후보 SHA와 변경 경계만 확인한다. 개발자가 상대 CLI를 직접 호출할 의무가 없다. 자체 PASS/exit 0/CI GREEN은 peer PASS가 아니다. 검증자는 명시적 PASS/REWORK/BLOCKED, 테스트·exit/NOT_RUN, 실패 근거를 남긴다. 동일 SHA의 불필요한 3,000개 테스트 반복·감사 재귀를 금지하며 새 위험이 있을 때만 범위를 확장한다.
