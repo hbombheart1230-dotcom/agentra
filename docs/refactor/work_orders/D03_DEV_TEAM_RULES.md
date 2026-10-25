@@ -14,24 +14,13 @@
 - **완료 전환:** RF 인수조건과 독립 검증이 충족되면 지팀장은 같은 회차 선별 통합·통합 SHA normal/-O·DONE 가능성을 판정한다. 직접 수정분도 상대 독립 peer가 필요하다. 불가능하면 실제 차단과 재개 조건을 해당 RF에 기록한다.
 - 소스 수정 시 import·동적 patchability·공개 API·side effect·거래 안전 동등성 및 UI 연결 patchnotes JSON/MD를 확인한다. 테스트 산출물은 격리·정리하며 오라클 변경으로 실패를 숨기지 않는다.
 
-## 3. RF 상태·독립 검증·통합
-- **RF 단일 위치:** `pending/` → `verification/{claude|codex}/` ↔ `rework/{claude|codex}/` → `done/`; 하위 폴더명은 **원개발자**다. 큐 이동·최종 DONE은 지팀장만. 원개발자만 REWORK 소유 경로 수정, 검증자는 상대 RF의 코드·테스트·fixture 수정 금지.
-- REWORK는 독립 검증에서 재현된 소유 경로 결함 또는 **구체적 미충족 계약**에 한정. 지팀장은 RF에 BASE/후보 SHA·실패 node·FIX_OWNER·허용 경로·최소 보완 또는 KEEP 실증·다음 peer를 명시한다. 기존 BASE 실패·환경 문제·교차 소유권·안전/CI 오라클 HOLD만으로 REWORK를 만들지 않는다.
-- 자체 테스트 PASS ≠ peer PASS. 상대는 정확한 후보 SHA와 변경된 위험 경계만 별도 read-only 세션에서 검증하고 PASS/REWORK/BLOCKED·명령·exit·근거를 보고한다. PASS_SCOPED ≠ 전체 PASS.
-- **통합/DONE:** 전체 peer PASS 및 소유권 승인 후 지팀장이 해당 RF 소유 경로만 `integration/p1.5` 최신 HEAD에 CAS/비강제 선별 반영(브랜치 통째 병합 금지). 새 통합 **정확한 SHA**의 normal/-O 필수 검증과 전체 peer PASS·소유권 승인을 확인한 뒤 DONE. hosted GitHub Actions 및 exact-SHA CI 상태 조회는 P1.5 정기 운영과 DONE 필수 조건에서 제외한다. 기존 CI 워크플로·오라클은 변경하지 않는다.
-
-
-## 3A. 테스트 우선 종결 판정 (RF-001~093 공통)
-- **테스트와 코드가 판정 기준:** 해당 RF 인수조건을 커버하는 기존 normal/-O 테스트 PASS 및 기존 peer 근거는 그대로 인정한다. 문서/HANDOFF만 변경되면 코드·테스트 blob 동일성을 확인해 증거를 재사용한다. SHA는 테스트 대상 코드 식별자이며 문서 커밋 HEAD 자체를 새 코드로 취급하지 않는다.
-- **PASS 범위 명시:** 테스트 PASS 숫자만으로 미실행 계약까지 PASS라 하지 않는다. 다만 미충족 주장 시 지팀장은 **정확한 테스트 부재/실패 사례, 변경 경로·호출자, 실제 위험** 중 구체적 근거를 RF에 적는다. 기존 테스트가 해당 동작을 이미 검증하면 추가 테스트·REWORK 요구 금지. 구체적 근거가 없으면 '추가 검증 요구'를 해제하고 peer/통합 판단으로 진행한다.
-- **REWORK는 코드 결함에만:** 재현 가능한 소유 코드 결함 또는 변경으로 생긴 구체적 회귀가 확인된 경우에만 원개발자 REWORK. 미실행·기존 BASE 실패·CI 조회 불가·타 RF 소유권 HOLD·증거 서식 미비는 별도 BLOCKED/운영 조치로 분리하고 신규 코드 수정 요구 금지.
-- **검증은 한 번, 통합은 따로:** 원개발자 표적 테스트 → 상대 변경 범위 read-only peer → 지팀장 선별 통합 → 통합 SHA의 필수 normal/-O → DONE. 이미 입증된 단계는 반복하지 않는다. CI 상태 조회와 hosted CI GREEN 요구는 P1.5 정기 운영·DONE 판정에서 제외한다. 안전 가드·테스트 오라클·기존 CI 워크플로는 변경하지 않는다.
-- **93개 RF 적용:** 이 절은 RF-001~093 전체에 즉시 적용하며 93개 RF에 동일 문구 복사 금지. 각 RF에는 필요할 때만 '기존 유효 PASS / 미충족 구체 사례 / 담당자 / 다음 판정'을 짧게 갱신한다.
-
-## 3B. RF 큐 이동 정합성
-- RF는 물리 경로도 단일 정본이어야 한다. 이전 경로 제거·새 경로 생성·CURRENT 포인터·STATUS 집계를 함께 확인한다. 일부만 성공하면 **이동 미완료**로 표시하고 도구 차단·복구 조건을 기록한다. 중복 파일을 논리 집계에서 제외하는 것만으로 물리 정합성 PASS를 선언하지 않는다.
-- REWORK에는 BASE/후보 코드 SHA, 실패 node, 원개발자, 허용 수정 경로, 최소 FIX/KEEP 조건, 다음 peer를 명시한다. 원개발자 수정 SHA가 없으면 검증 대기 상태를 신규 진척으로 보고하지 않는다.
-- KEEP은 자동 DONE이 아니다. 인수조건·독립 검증·소유권·통합 SHA 검증을 충족한 경우에만 DONE이다.
+## 3. RF 판정·검증·통합
+- RF 큐는 pending → verification/{claude|codex} ↔ rework/{claude|codex} → done. 폴더는 원개발자 기준이며 지팀장만 이동·DONE 판정한다. 이전 파일, 새 파일, CURRENT 링크, STATUS 집계를 함께 점검하고 일부 실패 시 이동 미완료로 기록한다.
+- REWORK는 원개발자 소유의 재현된 코드 결함 또는 구체적 계약 미충족에 한정한다. BASE·후보 코드 SHA, 실패 node, 소유자, 허용 경로, FIX/KEEP 조건, 다음 peer를 해당 RF에 기록한다. 기존 BASE 실패, 환경, 타 RF 소유권, 안전 HOLD는 별도 차단으로 분류한다.
+- 자체 PASS와 독립 peer PASS를 구별한다. 기존 유효 normal/-O·peer 증거를 재사용하고 신규 코드 SHA와 미검증 위험만 상대 read-only peer가 확인한다. PASS_SCOPED는 전체 PASS가 아니다. 추가 검증 요구에는 구체적인 실패·미충족 계약 근거가 필요하다.
+- 전체 인수조건·peer PASS·소유권 승인 후 지팀장은 소유 경로만 integration/p1.5 최신 HEAD에 선별 통합한다. 통합된 정확한 SHA의 필수 normal/-O PASS 후 DONE. KEEP만으로 DONE 아님. 지팀장 수정도 독립 peer 필수.
+- hosted CI 상태 조회는 정기 운영과 DONE 필수 조건에서 제외한다. 기존 CI 워크플로·테스트 오라클은 승인 없이 변경하지 않는다.
+- RF-001~093 공통 적용. 공통 규칙은 RF마다 복사하지 않는다.
 
 ## 4. 기록·지팀장 책임
 - `CURRENT` = **작업 포인터/규칙 변경 알림만**. `RF` = 해당 건의 결정·잔여 증거·재개 조건. `STATUS` = 전체 현황. `HANDOFF_A/B` = **최신 실행 10~20줄만 교체**, 과거는 Git 이력. 새 총괄 문서·반복 일지·빈 커밋 금지.
