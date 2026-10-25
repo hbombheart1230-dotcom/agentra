@@ -8,15 +8,15 @@
 
 ## 지팀장
 - [D00 자율 완료 운영](../../ENGINEERING_DELIVERY_POLICY.md)·[D03 §3/§3A](D03_DEV_TEAM_RULES.md) 기준으로 DONE 후보 우선 판정, 승인 경로만 선별 통합, 통합 SHA normal/-O 검증. 차단은 해당 RF에 기록하고 다음 RF 진행.
-- [RF-009 DONE](../plan/done/RF-009.md): Graph 3/3 KEEP·A peer 145+33 normal/-O·integration 코드/테스트 동일성 수용, 재실행 금지. [RF-068 DONE](../plan/done/RF-068.md): 8/8 KEEP·독립 peer 및 통합 코드 동등성 normal/-O 수용, 재실행 금지. [RF-013](../plan/verification/claude/RF-013.md): 기존 67 scoped PASS, 신규 9+4 NOT_ADMITTED(오라클·writer 변경 금지). [RF-069](../plan/verification/codex/RF-069.md): CLI 2경계 A 신규 offline/mock peer 수용; UEF5 승인 snapshot 부재 ENVIRONMENT 유지. B는 동일 CLI 재실행하지 않고 RF-070 read-only inventory 진행.
+- [RF-020 DONE](../plan/done/RF-020.md): Monitor 30/30 KEEP, A 독립 normal/-O 각 528 PASS 및 통합 소유 코드·테스트 동일성 수용, 재실행 금지. [RF-009 DONE](../plan/done/RF-009.md): Graph 3/3 KEEP·A peer 145+33 normal/-O·integration 코드/테스트 동일성 수용, 재실행 금지. [RF-068 DONE](../plan/done/RF-068.md): 8/8 KEEP·독립 peer 및 통합 코드 동등성 normal/-O 수용, 재실행 금지. [RF-013](../plan/verification/claude/RF-013.md): 기존 67 scoped PASS, 신규 9+4 NOT_ADMITTED(오라클·writer 변경 금지). [RF-069](../plan/verification/codex/RF-069.md): CLI 2경계 A 신규 offline/mock peer 수용; UEF5 승인 snapshot 부재 ENVIRONMENT 유지. B는 동일 CLI 재실행하지 않고 RF-070 read-only inventory 진행.
 
 ## Claude A — `work/p15-a-reporter-pure-20261021` · [HANDOFF](HANDOFF_A.md)
 1. **REWORK:** 없음.
-2. **독립 검증:** [020](../plan/verification/codex/RF-020.md) → [001](../plan/verification/codex/RF-001.md). 기존 scoped PASS 재사용, 실제 빠진 위험만 검증. [069](../plan/verification/codex/RF-069.md) 2 CLI peer 완료(재검증 금지), UEF5 승인 snapshot 신규 증거가 생길 때만 peer. 이후 [067](../plan/verification/codex/RF-067.md) → [066](../plan/verification/codex/RF-066.md) → [063](../plan/verification/codex/RF-063.md) → [065](../plan/verification/codex/RF-065.md) → [007](../plan/verification/codex/RF-007.md) → [008](../plan/verification/codex/RF-008.md).
+2. **독립 검증:** [001](../plan/verification/codex/RF-001.md). 기존 scoped PASS 재사용, 실제 빠진 위험만 검증. [069](../plan/verification/codex/RF-069.md) 2 CLI peer 완료(재검증 금지), UEF5 승인 snapshot 신규 증거가 생길 때만 peer. 이후 [067](../plan/verification/codex/RF-067.md) → [066](../plan/verification/codex/RF-066.md) → [063](../plan/verification/codex/RF-063.md) → [065](../plan/verification/codex/RF-065.md) → [007](../plan/verification/codex/RF-007.md) → [008](../plan/verification/codex/RF-008.md).
 3. **신규 개발:** [019](../plan/pending/RF-019.md) → [017](../plan/pending/RF-017.md).
 
 ## Codex B — `work/p15-b-operator-structure-20261022` · [HANDOFF](HANDOFF_B.md)
-1. **REWORK:** 없음. RF-001/009/020은 재현된 신규 소스 결함 없이 verification/codex 복귀(전체 PASS/DONE 아님).
+1. **REWORK:** 없음. RF-009/020 DONE(재검증 금지), RF-001 verification 유지.
 2. **독립 검증:** [013](../plan/verification/claude/RF-013.md) 기존 67 owner 105+105 scoped PASS 재사용; 신규 9+4 실패 재실행 금지. 다음 [018](../plan/verification/claude/RF-018.md) → [014](../plan/verification/claude/RF-014.md) → [015](../plan/verification/claude/RF-015.md) → [016](../plan/verification/claude/RF-016.md).
 3. **신규 개발:** [069](../plan/verification/codex/RF-069.md) CLI 검증 완료·UEF5 승인 snapshot 대기(재실행 금지) → [070](../plan/pending/RF-070.md) 원소유 launcher 범위 읽기 전용 소비자 인벤토리부터(실행·배포 금지) → [064](../plan/pending/RF-064.md) (BLOCKED, 신규 증거 시만). [030](../plan/pending/RF-030.md)/[035](../plan/pending/RF-035.md)는 조건부 B 구현·A peer; **지팀장 별도 CURRENT 승인 전 wrapper 쓰기 금지**.
 

@@ -1,8 +1,10 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 01:28 KST): pending 72 / verification 14 / rework 0 / DONE 7** (RF-002~006, 009, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 02:04 KST): pending 72 / verification 13 / rework 0 / DONE 8** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
 ## 현재 지팀장 판정·다음 실행 (2026-10-26)
+
+- **02:04 KST RF-020 DONE:** Monitor 30/30 owner BASE/integration/B blob 동일 KEEP, A 독립 소비자 19파일 normal/-O 각 528 PASS/exit 0, B 보조 221+8 PASS 재사용. peer `16ed53e4`→integration `7c4668e2` 비교에서 Monitor·tests 변경 0; 외부 Operator Brief 2·refactor helper 1 변경은 별도 소유. 역사 B-stage 64 FAIL과 RF-026 안전 순환 import HOLD는 분리하고, 특정 신규 결함 없는 추상적 전수 요구는 D03 §3A로 해제. 소스 선별 통합 NOOP, 통합 동일 코드/테스트 범위 기존 normal/-O 수용, 현행 문서 HEAD 직접 pytest NOT_RUN. **verification/codex → done; 72/13/0/8.** hosted CI 불요. Issue #32 신규 댓글 없음.
 
 - **01:28 KST RF-009 DONE:** Graph 3/3 owner integration/B/BASE blob KEEP, A detached peer normal/-O 각 145 PASS + rank/State/fallback/monkeypatch 표적 각 33 PASS 수용. 과거 integration `958431c3`→현행 `cd1cccb8` GitHub compare 코드·테스트 변경 0(AGENTS/CLAUDE·docs만 변경) 확인, 통합 코드 동등성으로 기존 normal/-O 재사용(현행 문서 HEAD 직접 실행 NOT_RUN). 구체 미충족 위험 없는 일반적 '전수 미입증' 요구는 D03 §3A로 해제, **verification/codex → done**, source 선별 통합 NOOP. RF-069 A 신규 2 CLI offline/mock peer normal/-O exit 0 수용, UEF5 승인 snapshot 부재로 verification 유지. **72/14/0/7**. CI 조회·GREEN 대기는 제외, Issue #32 신규 댓글 없음. 새 source/안전/오라클 변경 없음.
 
