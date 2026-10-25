@@ -2,7 +2,7 @@
 
 > 정본: `integration/p1.5`. A/B는 아래 **1 → 2 → 3순위**로 수행한다. 같은 SHA·동일 실패 반복 검증이나 신규 근거 없는 BLOCKED는 건너뛴다.
 
-- **공통 규칙:** [D00](../../ENGINEERING_DELIVERY_POLICY.md) · [D01 / Codex](../../../AGENTS.md) · [D02 / Claude](../../../CLAUDE.md)
+- **개발팀 규칙:** [D00](../../ENGINEERING_DELIVERY_POLICY.md) · [D03 / 개발 공통](D03_DEV_TEAM_RULES.md) · [D01 / Codex](../../../AGENTS.md) · [D02 / Claude](../../../CLAUDE.md)
 - **Claude A 1순위 · 반려 재작업:** [RF-013](../plan/rework/claude/RF-013.md) — 자기 RF-013 기존 소유 파일의 합법 최소 후보 재구성만 승인; RF-030/035/074·오라클 경계 수정 금지. [rework/claude](../plan/rework/claude/) **1건**.
 - **Claude A 2순위 · 독립 검증:** [RF-067](../plan/verification/codex/RF-067.md) · [RF-066](../plan/verification/codex/RF-066.md) · [RF-063](../plan/verification/codex/RF-063.md) · [RF-065](../plan/verification/codex/RF-065.md) · [RF-007](../plan/verification/codex/RF-007.md) · [RF-008](../plan/verification/codex/RF-008.md)
 - **Claude A 3순위 · 나머지 개발:** [RF-019](../plan/pending/RF-019.md) → [RF-017](../plan/pending/RF-017.md) · [HANDOFF_A](HANDOFF_A.md) — `work/p15-a-reporter-pure-20261021`

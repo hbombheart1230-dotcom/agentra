@@ -1,12 +1,5 @@
-# Agentra P1.5 — supplementary rules, not a second D00
+# P1.5 이전 COMMON_RULES — D03 안내 포인터
 
-**Primary rules:** [D00](../../ENGINEERING_DELIVERY_POLICY.md) + [trading safety](../../ground_rules/AGENT_RULES.md). Do NOT copy contradictory D00 policies here.
+활성 P1.5 개발팀 공통 규칙은 **[D03_DEV_TEAM_RULES.md](D03_DEV_TEAM_RULES.md)** 한 곳에서 관리한다. 공통 안전·권한은 [D00](../../ENGINEERING_DELIVERY_POLICY.md), 이번 RF 작업 배정은 [CURRENT](CURRENT.md)를 따른다.
 
-- Working integration: `integration/p1.5`; `main` is the existing operations baseline, NOT physically GitHub-protected unless checked. Do not create new developer branches before operator DOC_FREEZE approval.
-- Read [CURRENT](CURRENT.md), the latest #20, actual remote SHA and ONLY newly activated role Issue. All 2026-10-12/17 Reporter/Monitor/R3 previous tasks, historical static classifier loops and deleted branches are inert.
-- The scoped `a50d6e47` Strategist/Operator UI source changes are already independently audited and selectively integrated; new code work must not restart them.
-- Only operator-authorized isolated CLI invocation can run a worker (`claude -p`, `codex exec` where configured); GitHub comments cannot wake terminated processes. Bound calls and retries; fail closed.
-- Any approved tracked changes update BOTH UI patch-notes JSON+MD. Changed-files-only ZIP, no secrets/production data. Preserve pinned golden/test/ABI, Step5C/UNKNOWN/UEF; temporary tests isolated with bounded failure retention.
-- Auditor gives exact-SHA `PASS / PASS_WITH_FINDINGS / REWORK / BLOCKED`, test evidence and NOT_RUN. No self-audit code write or automatic widening of scope. GPT selectively composes only approved source changes, verifies new HEAD and #20.
-
-Handoff: `TASK | OWNER | BASE_SHA | CHANGED_PATHS | TESTS | SHA_MATCHED_CI | REVIEW_VERDICT | NOT_RUN | NEXT_ACTION`.
+이 파일의 과거 DOC_FREEZE·Issue·임시 브랜치 지시는 더 이상 활성 작업 지시가 아니며 이전 내용은 Git 이력에서 조회한다.
