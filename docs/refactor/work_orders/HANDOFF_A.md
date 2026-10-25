@@ -1,15 +1,19 @@
 # Claude A 인수인계 — 최신 회차만 (이전 기록은 Git 이력)
 
-- RUN_ID: 2026-10-25T0530Z-claude-a-sched-56 (D02 규칙대로 정리) · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021
-- 기준: integration `c1c95f76d21fdbc321b57939af8eb8c2fdffe8ae`, A 시작 `b11976af7a350558b483a393f88e719599edc136`, B `69b133fa06f351e4f501da87691ad10ef9a4685b`. 소스·테스트·오라클 변경 없음, 상대 CLI 호출 0건.
-- 코드 후보 SHA: RF-013 Reporter `a21401dbf8161b549848ac682b8bd11cac439ab5`(불변). 그 외 A 개발 RF는 BASE 대비 diff 0 KEEP_VERIFIED.
-- 개발(2순위): RF-019(scanner 29파일)·RF-017 KEEP_VERIFIED 제출. RF-013 **BLOCKED (c)**: 신규 read_models 9경로가 RF-074 frozen inventory 밖, consumer wrapper 4경로는 RF-030/035 소유 — 합법 owner 배치안과 RF-030/035별 승인 후보 SHA 대기.
-- 지팀장 수용 분류: RF-018 59건·RF-014 3건 = BASELINE_EXISTING(BASE와 node 동일, NEW_REGRESSION 0), A-branch-only 2건은 CROSS_RF_OWNER. 둘 다 Codex B 독립 검증 대기.
-- 독립 검증(1순위, Codex 작성 RF, read-only): RF-067·066·063·065·009·001·020·007·008 범위 한정 peer 제출, 반환할 코드 결함 0건. RF-001 통합 사후 확인 새 실패 0, RF-020 19파일 528 passed, RF-007 38/38·vitest 16·build 0.
-- normal/-O: 이번 회차 NOT_RUN(소스 불변). 최근 실행값: RF-013 19파일 624 passed, RF-018 13파일 1152/2F/57E(=BASE), RF-014 11파일 1102/3F(=BASE), `python -O` 동일.
-- PEER_VERDICT: A 후보 PEER_PASS 없음(RF-013 BLOCKED, RF-014/018 B 검증 대기). 최종 DONE은 GPT.
-- BLOCKED: RF-013(owner 배치·RF-030/035 writer), RF-007 E2E(거래·시장 fixture 부재), RF-021 안전 HOLD, 역사 B-stage 인벤토리 CI_RED 계열.
-- CI: 마지막 확인 통합 SHA `1c4d191f` "P1.5 Shared Offline Safety" SUCCESS(run 40079749220). `c1c95f76` exact CI 미조회 UNKNOWN.
-- GPT_ACTION_REQUIRED: (1) RF-013 재개용 owner 배치안 설계 방향 지정 및 RF-030/035 writer 배정. (2) RF-014/018 B peer 진행, RF-019/017 KEEP_VERIFIED 수용. (3) RF-001 core·19 divergent 처리, RF-007 E2E fixture 승인.
-- PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재(이 파일은 자기 SHA를 쓸 수 없음).
-- RF-067 (이번 회차 추가): PASS_SCOPED. integration `bf9d7bbd` 기준 `scripts/check_*.py` 14경로 BASE `63182ab2`와 diff 0, AST/compile normal·`-O` exit 0, `__main__` 가드·최상위 호출 0·위험 import 0, compat audit 7 passed normal/-O, 소비자 테스트 3파일 17 passed normal/-O. NOT_RUN: 14개 CLI 실행(preflight 브로커 위험)·Task Scheduler/PATH·hosted CI. DONE 아님.
+- RUN_ID: 2026-10-25T0700Z-claude-a-sched-57 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021
+- 기준: integration `698b5928d4ed611540bc7b8bd9a83d9786878231`(CURRENT.md만 확인), A 시작 `f88ee1ea9c1059668ac94a41a4f12e18a09184a1`. 소스·테스트·오라클 변경 없음, 상대 CLI 호출 0건.
+- **1순위 RF-013 반려 재작업 → BLOCKED (정확한 불가능 원인, 허위 FIX 없음)**
+  - 거부 후보 `a21401db` vs BASE `63182ab2`: `libs/agents/reporter/` diff = 신규 `read_models/` 9파일(+2300) 뿐, 기존 67 owner 파일은 BASE와 blob 동일(변경 0).
+  - 9파일(metrics_event_fold, metrics_projection, metrics_summary_projection, operator_daily_projection, operator_run_context_projection, period_summary_projection, phase_health_policy_views, phase_health_projection, phase_health_text_rendering)은 `a21401db` 전체 트리 grep 기준 **RF-035/030 소유 4 wrapper**(metrics_report_generator·phase_runtime_health = RF-035, operator_visibility·operator_period_summary = RF-030)에서만 import됨. 테스트·apps·scripts 소비자 0.
+  - 따라서 기존 67 owner 파일 안에서 같은 책임 분리를 하면 (a) 이 로직은 narrative/read_model 기존 owner와 책임이 다른 metrics/operator/phase-health 투영이라 무관 모듈에 끼워 넣는 의미 없는 병합이고, (b) 소비자 wrapper(RF-030/035) 수정 없이는 호출되지 않는 휴면 코드다. RF-013 단독 합법 최소 source diff는 **존재하지 않음**(= KEEP_VERIFIED 67파일 유지가 유일한 합법 상태).
+  - 재개 조건(지팀장 판정과 동일): RF-074 인벤토리 오라클 무수정 owner 배치안 + RF-030/035 writer 별도 배정·승인. 승인 시 A가 9파일을 해당 경로 기준으로 재구성 가능. 타 RF/오라클 수정 없음.
+- 2순위 독립 검증: RF-066/067/063/065/007/008에 새 후보 SHA·새 근거 없음(RF-066/067은 지팀장 분류 문서만 추가) → 동일 SHA 반복 금지에 따라 재실행 생략. 기존 RF-067 PASS_SCOPED 유지.
+- 3순위: RF-019·RF-017은 이전 회차 KEEP_VERIFIED 제출 상태, 신규 지시 없음.
+- normal/-O: NOT_RUN(소스 불변). 직전 실행값은 이력 참조: RF-013 19파일 624 passed(normal/-O).
+- PEER_VERDICT: 해당 없음(신규 후보 SHA 없음). DONE은 GPT.
+- BLOCKED: RF-013(owner 배치·RF-030/035 writer 배정), RF-021 안전 HOLD, 역사 B-stage 인벤토리 CI_RED 계열. CI: 통합 SHA `698b5928` exact CI 미조회 UNKNOWN.
+- GPT_ACTION_REQUIRED: RF-013 owner 배치 방향 지정 및 RF-030/035 writer 배정, 또는 BLOCKED 유지 확정.
+- PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재.
+
+### 티키타카 실행 리스트
+- 실제 새 상대 CLI 호출 0건 (소스 후보 없음, 호출할 검토 대상 SHA 없음).
