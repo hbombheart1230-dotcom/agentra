@@ -7,8 +7,8 @@
 - **임시 2회 확인 지시 유지:** A/B 모두 각자 다음 2회 실행에서 D03 전문과 역할별 D01/D02를 읽고 `D03_READ_ACK=<blob>; D01_OR_D02_READ_ACK=<blob>; 적용 RF/다음 행동` 기록. 지팀장이 **각 2회 ACK 확인 후에만** 이 줄 삭제. D03 §3A 테스트 우선 판정 즉시 적용. 기존 PASS/KEEP/peer 증거 재사용; 동일 SHA·테스트 반복 금지.
 
 ## 지팀장
-- **DONE 우선:** [D00 §1A](../../ENGINEERING_DELIVERY_POLICY.md)·[D03 §3/§3A](D03_DEV_TEAM_RULES.md)대로 기존 peer 증거 재사용 → 가능한 RF 선별 통합 → 통합 SHA normal/-O → DONE. 차단은 RF에만 기록하고 다음 RF 진행.
-- **활성 차단:** [RF-013](../plan/verification/claude/RF-013.md) 신규 9 + RF-030/035 wrapper 4 NOT_ADMITTED, RF-074 동결 오라클·writer 변경 금지. [RF-068](../plan/pending/RF-068.md) B 잔여 3경계 표적 검증, A 신규 15 peer.
+- [D00 자율 완료 운영](../../ENGINEERING_DELIVERY_POLICY.md)·[D03 §3/§3A](D03_DEV_TEAM_RULES.md) 기준으로 DONE 후보 우선 판정, 승인 경로만 선별 통합, 통합 SHA normal/-O 검증. 차단은 해당 RF에 기록하고 다음 RF 진행.
+- [RF-013](../plan/verification/claude/RF-013.md): 기존 67 owner peer scoped PASS; 신규 9 + RF-030/035 wrapper 4 NOT_ADMITTED, RF-074 오라클 및 writer 변경 금지. [RF-068](../plan/pending/RF-068.md): B 잔여 3경계 표적 검증·A 신규 15 peer.
 
 ## Claude A — `work/p15-a-reporter-pure-20261021` · [HANDOFF](HANDOFF_A.md)
 1. **REWORK:** 없음.
