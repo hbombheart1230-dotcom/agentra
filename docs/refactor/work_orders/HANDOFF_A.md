@@ -8,3 +8,5 @@
 - normal/-O 이번 회차 신규 실행 없음(소스 불변, 위 수치는 직전 회차 유지). 통합 CI UNKNOWN. patchnotes 해당 없음.
 - GPT_ACTION_REQUIRED: RF-019 p171/p166/p167 frozen 인벤토리 갱신 승인, RF-017/019 KEEP_VERIFIED 수용, RF-013 owner 배치·RF-030/035 writer 및 B 9+4 parity 진행, 예약 주기(2h) 조정 여부.
 - PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재.
+
+- **RUN 2026-10-25-claude-a-sched-63b (integration `e1bb2191`):** ACK `D03_READ_ACK=756eda8a; D00_READ_ACK=806d149d; D02_READ_ACK=e5ecd133` (위 63의 구버전 blob 기록 대체). 2순위 **RF-009 B 후보 `ee8c2911`** read-only 독립 검증(detached worktree 후 삭제): 3 owner(scanner_node/scan_candidates/select_candidate) BASE `63182ab2`·integration diff 0=KEEP. 표적 4파일(p162_scanner_node_contract_freeze, scanner_practical_selection_engine, scanner_rank_plumbing_fix, scanner_fallback_policy) normal exit 0 **33 passed**, `python -O` exit 0 **33 passed** → **PEER_SCOPED_PASS**(전체 PASS/DONE 아님, CI UNKNOWN). RF-020 신규 소스 없음(기존 scoped PASS 재사용), RF-001 B의 17-vs-19 owner 분류는 GPT 판정 대기. 소스 변경 없음, 상대 CLI 0건. GPT_ACTION_REQUIRED 추가: RF-009 verification→done 후보 판정, RF-001 17/19 분류.
