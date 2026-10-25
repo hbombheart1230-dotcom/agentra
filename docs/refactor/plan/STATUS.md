@@ -1,8 +1,11 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 02:04 KST): pending 72 / verification 13 / rework 0 / DONE 8** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 08:00 KST, 논리 큐 기준): pending 72 / verification 12 / rework 1 / DONE 8** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
 ## 현재 지팀장 판정·다음 실행 (2026-10-26)
+
+- **08:00 KST 큐 집계 정합성 수정:** RF-001은 CURRENT·`rework/codex/RF-001.md`의 최신 원개발자 REWORK 판정이 정본이며, 구 `verification/codex/RF-001.md`는 도구 삭제 안전 차단으로 남은 **물리 중복 사본**이므로 논리 큐에서 제외한다. 이에 따라 **pending 72 / verification 12 / rework 1 / DONE 8**로 집계한다. 물리 큐 일치 PASS 아님. B 새 `RF001_REWORK_ACK`·수정 CODE_SHA는 아직 없고, A/B 원격은 최신 HANDOFF-only(새 소스·테스트 0). RF-070 85/142 행동 scoped peer 및 잔여 57/57 정적 분류, RF-066 정적 peer, RF-019 8파일 101 PASS는 기존 판정 유지. Issue #32 신규 댓글 없음, 통합/직접 테스트 NOT_RUN, hosted CI 조회 제외(D03).
+
 
 - **03:33 KST 신규 독립 증거:** A RF-070 첫 3 wrapper offline/mock normal/-O peer exit 0 + trace 소비자 각 3 PASS 수용(3/142 scoped, 전체 PENDING 유지); 지팀장 B/integration 다음 3 wrapper blob 동일성 확인, B mock→A peer 배정. RF-001 A 신규 16 alias·90 parity normal/-O scoped PASS이나 B 후보 동결 구조 734 중 각 28 FAIL(현 integration 각 734 PASS)로 원자 admission HOLD; B 원소유 대안/KEEP 분리, 오라클 변경 불허. A/B 소스 SHA 불변, 이번 회차 통합·DONE·큐 이동 없음. **상태 72/13/0/8 불변**, 지팀장 pytest NOT_RUN, Issue #32 신규 증거 없음, hosted CI 조회 제외.
 
