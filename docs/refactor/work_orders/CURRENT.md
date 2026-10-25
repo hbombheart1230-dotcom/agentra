@@ -17,7 +17,7 @@
 
 ## Codex B — `work/p15-b-operator-structure-20261022` · [HANDOFF](HANDOFF_B.md)
 1. **REWORK:** 없음. RF-009/020 DONE(재검증 금지), RF-001 verification 유지.
-2. **독립 검증:** [013](../plan/verification/claude/RF-013.md) 기존 67 owner 105+105 scoped PASS 재사용; 신규 9+4 실패 재실행 금지. [018](../plan/verification/claude/RF-018.md) 역사 2 FAIL normal/-O BASE 동일로 `HISTORICAL_INVENTORY` 분리(동일 테스트 재실행 금지), 신규 Strategist 소비자/side-effect 증거 시에만 peer. 다음 [014](../plan/verification/claude/RF-014.md) → [014](../plan/verification/claude/RF-014.md) → [015](../plan/verification/claude/RF-015.md) → [016](../plan/verification/claude/RF-016.md).
+2. **독립 검증:** [013](../plan/verification/claude/RF-013.md) 기존 67 owner 105+105 scoped PASS 재사용; 신규 9+4 실패 재실행 금지. [018](../plan/verification/claude/RF-018.md) 역사 2 FAIL normal/-O BASE 동일로 `HISTORICAL_INVENTORY` 분리(동일 테스트 재실행 금지), 신규 Strategist 소비자/side-effect 증거 시에만 peer. 다음 [014](../plan/verification/claude/RF-014.md) → [015](../plan/verification/claude/RF-015.md) → [016](../plan/verification/claude/RF-016.md).
 3. **신규 개발:** [069](../plan/verification/codex/RF-069.md) CLI 검증 완료·UEF5 승인 snapshot 대기(재실행 금지) → [070](../plan/pending/RF-070.md) 기존 142 owner KEEP 인벤토리 수용; 첫 3개 연구/진단 compatibility wrapper만 offline/mock normal/-O·소비자 계약 확인, A 신규 peer(실제 실행·배포 금지) → [064](../plan/pending/RF-064.md) (BLOCKED, 신규 증거 시만). [030](../plan/pending/RF-030.md)/[035](../plan/pending/RF-035.md)는 조건부 B 구현·A peer; **지팀장 별도 CURRENT 승인 전 wrapper 쓰기 금지**.
 
 > 신규 증거만 처리. 테스트·판정·차단 상세은 해당 RF에서 관리하며 CURRENT에 운영 일지를 누적하지 않는다.
