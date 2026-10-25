@@ -5,13 +5,13 @@
 ## 현재 지팀장 판정·다음 실행 (2026-10-25)
 
 - **RF-009·020 (B 1순위 REWORK):** A의 기존 범위 한정 peer PASS는 그대로 보존. RF-009는 Graph 3 owner의 State/ranking/NOOP·외부 소비자 경계, RF-020은 Monitor 30 owner의 dynamic/side-effect·KEEP 소비자 맵 증거가 RF 전체 인수조건에 부족하다. **신규 회귀·소스 버그 확정은 아님.** Codex B가 기존 RF 소유 경로의 최소 코드 delta 또는 exact-SHA 완전 KEEP 근거를 제출, Claude A는 새 증거만 read-only peer. RF-014/019·RF-026의 타 소유권/안전 HOLD는 그대로 보존.
-- **RF-067** B SELF normal/-O 각 AST 14/14 및 표적 pytest 7 PASS, B HANDOFF `B-20261025T020000Z`, 신규 코드 없음. **pending→verification/codex** 접수, A read-only peer 우선; 공개 preflight CLI의 브로커·운영 데이터 위험으로 직접 실행 NOT_RUN. NOT_DONE.
+- **RF-067** B SELF normal/-O 각 AST 14/14·7 PASS 후 A `f88ee1ea` HANDOFF에서 독립 정적/소비자 `7+17 PASS`씩 **PASS_SCOPED 보고**(정확한 개별 명령·시점/exit는 보강 필요). 14개 공개 preflight CLI 직접 실행·Windows/Unix PATH·Task Scheduler·stdout/exit/환경·부작용 계약은 NOT_RUN/미확정. **VERIFICATION 유지 / NOT_DONE**. B는 위험 CLI를 실행하지 않고 격리 offline/mock 계약 증거·명령/exit 보강, A는 새 근거만 peer. 통합 없음.
 
 - **RF-066** B self normal/-O 각 AST 17/17 및 표적 pytest 7 PASS, BASE/integration/B 17개 소유 경로 diff 0. `pending → verification/codex` 이동; **A read-only peer 1순위**, 브로커 조정·SQLite/intent·Step5D·파일 이동·외부 카탈로그 동기화 CLI **미실행/안전 검토 필요**. NOT_DONE.
 - **RF-063** A peer **PASS_SCOPED**(76 소유 blob 동일, normal/-O 각 130 PASS, PYTHONUTF8=1). 13개 위험 키워드 CLI 미실행, cp949 기본 로케일 UnicodeDecodeError 1건은 ENVIRONMENT 확인 필요. **RF-065** A peer **PASS_SCOPED**(54 blob 동일, normal/-O 각 7 PASS, 50개 파일 쓰기 CLI 미실행). 둘 다 전체 소비자·CI 미완료로 verification 유지.
 - **RF-018** A BASE/integration 동일 명령 1152 PASS/2 FAIL/57 ERROR 모두 동일: 59건 **BASELINE_EXISTING/HISTORICAL_INVENTORY**, 신규 회귀 0(제출 증거 범위). **RF-014** BASE/integration 각 1102 PASS/3 FAIL 동일: 3건 BASELINE_EXISTING, A 브랜치 Reporter 소비자 2건 CROSS_RF_OWNER. B는 분리된 증거만 독립 검증; 최종 peer PASS 아님.
 - **RF-013 (A 1순위 REWORK)** 기존 A 후보의 Reporter 신규 9파일과 RF-074 frozen inventory 충돌을 해결할 **RF-013 소유 경로 한정 합법 최소 source 후보** 제출; RF-030/035 4 consumer wrapper와 RF-074/CI 오라클은 미승인·수정 금지. 기존 (c) 전체 통합 BLOCKED는 지속. **RF-001 (B 1순위 REWORK)** 33 owner 안의 2,308행 core IO/side-effect·19개 divergent owner 경계를 해소하는 소스 delta 또는 완전 KEEP 실증. 기존 PASS_SCOPED는 전체 peer PASS 아님. RF-064는 신규 차단 해소 증거 없어 pending 유지.
-- **다음 배정(1→2→3순위):** **A RF-013 / B RF-001→009→020 소유범위 반려 보완 먼저** → A RF-067 등 새 peer, B RF-018·014 신규 실패분류 peer → A RF-019 / B RF-068 신규 개발. 1순위는 각자 완료 가능한 여러 RF를 같은 회차에 순차 처리, 동일 증거 반복 금지. RF-021 안전 HOLD 유지. CI exact integration SHA GREEN 없으면 통합/DONE 금지.
+- **다음 배정(1→2→3순위):** **A RF-013 / B RF-001→009→020 소유범위 반려 보완 먼저** → A RF-067 후속 신규 근거가 있을 때만 peer, B RF-018·014 신규 실패분류 peer → A RF-019 / B RF-068 신규 개발. 1순위는 각자 완료 가능한 여러 RF를 같은 회차에 순차 처리, 동일 증거 반복 금지. RF-021 안전 HOLD 유지. CI exact integration SHA GREEN 없으면 통합/DONE 금지.
 
 ## 파일별 TARGET_PATH 직접 계약 — 2026-10-25
 
