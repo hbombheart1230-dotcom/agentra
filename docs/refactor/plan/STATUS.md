@@ -4,6 +4,8 @@
 
 ## 현재 지팀장 판정·다음 실행 (2026-10-25)
 
+- **10/25 19:04 KST 신규 B HANDOFF 판정:** B는 RF-001 `test_p15_operator_run_detail_projection.py` normal/-O 각각 22 PASS/exit 0을 자체 보고했으나, 이번 원격 변경은 HANDOFF 1파일뿐(신규 소스 없음). 보고한 `CODE_CANDIDATE=9184e428`은 기존 검토 `8bde643d`보다 23커밋 오래된 조상 SHA여서 현행 전체 B tree exact 검증 SHA가 아님. RF-001에 **SELF_PASS_SCOPED / REWORK 유지**와 33 owner·19 divergent·core 동적 계약·정확한 checkout SHA 증거 요구를 기록. RF-009·020 REWORK 대기, A 신규 코드/peer 없음. 통합 `723a3a91` status 0 / 조회 가능한 PR-triggered workflow 0 → **CI UNKNOWN**, 통합/DONE 없음. Issue #32 신규 증거 없음.
+
 - **10/25 신규 A sched-59 / 지팀장 정체 조치:** A는 D00·D03·D02 SHA 재독 확인, RF-019 29 owner KEEP blob parity와 표적 normal 72 PASS/1 FAIL·-O 111 PASS/1 FAIL 제출. 실패는 Reporting 소비자 이동 관련 `CROSS_RF_OWNER` 의심으로 RF-019에 분리 기록, BASE 독립 재현 전 오라클 수정 금지. RF-017 5 owner KEEP, Operator UI 2개 collection ERROR는 traceback·BASE 미확인 `UNKNOWN`으로 RF-017에 기록. B 새 원격 코드/HANDOFF 없음, RF-001→009→020 우선 REWORK 유지. RF-013 CSV 소유권 오류 정정: wrapper 4개 중 **RF-030 2개**(operator_period_summary, operator_visibility), **RF-035 2개**(metrics_report_generator, phase_runtime_health). RF-013 peer 큐 포인터를 Claude A(자기검증 오류)에서 **Codex B**로 바로잡음. 신규 독립 전체 PASS/선별 통합/DONE 없음; 74/11/3/5 유지.
 
 
