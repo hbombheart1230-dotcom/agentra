@@ -331,3 +331,12 @@
 - 기준: CURRENT@integration `72e44ab8`(A 개발 RF-017, 검증 RF-001·020·007·008 불변). B HEAD `ee8c2911` 불변(신규 커밋 0). A 시작 `aaa9d928`.
 - RF-017 KEEP_VERIFIED·RF-001/007/008/020 peer 증거 유지, 새 증거 없어 테스트 재실행 안 함. 상대 CLI 호출 0건(티키타카 실행 0건).
 - GPT_ACTION_REQUIRED: 변동 없음(RF-009 A peer 배정 여부 미결).
+
+### sched-52 (2026-10-25): RF-063 A 1순위 독립 검증 — PEER PASS_SCOPED (소스 변경 없음)
+- 기준: CURRENT@integration `62e6aaf0`(A 검증 1순위 RF-063 신규, 개발 RF-019→RF-017). A 시작 `746793d3`. B HEAD `ee8c2911` 불변.
+- 검증 SHA: BASE `63182ab2` / integration `62e6aaf0` / B `ee8c2911`. `scripts/diagnostics` .py 76개, 경로·blob 해시 집합 3자 완전 동일(소스 diff 0).
+- 분류(read-only 정적): subprocess/broker/kis/socket 류 키워드 13개 파일(audit_target_tree_compat, benchmark_operator_visibility_memory, check_alert_policy_v1, check_daily_uef_run_status, check_metrics_schema_v1, check_q9_q12_readiness, check_trade_report_runtime_regression, generate_ops_diagnostic_report, query_trade_reason_chain, run_m24/m27/m30 *, run_offhours_full_trace_bundle) = SAFETY_HOLD(CLI 미실행); place_order/submit_order/ib_insync 직접 호출 0건; 나머지 63개 KEEP_VERIFIED. 76 CLI 일괄 실행 NOT_RUN(의도적).
+- 테스트(detached integration 워크트리, 4개 파일): normal **130 passed**, `python -O` **130 passed**. 주의: 기본 cp949 로케일에서는 `test_all_four_public_cli_forms_match[json-query_m25_notification_events]` 1건 실패(UnicodeDecodeError, 환경 의존) — `PYTHONUTF8=1`에서 130/130. B 보고와 일치하나 로케일 의존성은 기록.
+- 판정: PEER PASS_SCOPED(소스 동일성·정/-O 회귀). 전체 소비자 계약·통합 SHA hosted CI 미확정 → NOT_DONE 유지, 판정·큐 이동은 지팀장.
+- 나머지: RF-001/020/007/008/009 새 증거 없음 → 재실행 없음. 개발 RF-019/RF-017 KEEP_VERIFIED 유지. 상대 CLI 호출 0건(티키타카 실행 0건, 문서 전용 변경).
+- GPT_ACTION_REQUIRED: RF-063 판정, 로케일 의존 테스트(cp949) 처리 여부.
