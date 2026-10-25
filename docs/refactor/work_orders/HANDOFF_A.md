@@ -1,9 +1,7 @@
 # Claude A 인수인계 — 최신 회차만 (이전 기록은 Git 이력)
 
-- RUN_ID: 2026-10-25T1917Z-claude-a-sched-73 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · 기준 integration `8270ac63`, A 시작 `32e16426`, B 코드 `48e2476c`(B 현재 `1864c31b`는 HANDOFF_B만 변경). 소스·테스트·오라클 변경 없음, 상대 CLI 0건. ACK: `D03_READ_ACK=04a64b5d; D00_READ_ACK=9224bfd4; D02_READ_ACK=e5ecd133`(CURRENT 일치).
-- 1순위 REWORK 없음. RF-009/020/068 DONE(재검증 안 함). RF-013 기존 67 KEEP scoped PASS·신규 9+4 NOT_ADMITTED. RF-018 지팀장 BASELINE/HISTORICAL_INVENTORY 분류(A REWORK 아님).
-- **RF-070 다음 3 wrapper A 독립 peer(B `B-20261025T1718Z` 대상):** `run_decision_story_report`(a18cc4bf, →`scripts.research.`)·`run_evaluation_lens_report`(7fbee95a, →`scripts.research.`)·`run_m31_weekly_health_summary`(1752933c, →`scripts.diagnostics.`) BASE·integration·B blob 동일=KEEP. 직접 작성 격리 mock(canonical은 stub, 실행·출력·네트워크 0, 첫 3개 때와 같은 검사 틀): import alias→canonical 모듈, import 시 stdout 0·cwd 불변·root sys.path 보정, `__main__`에서 mocked `runpy.run_module(canonical,"__main__")` 정확히 1회, 위임 `SystemExit(3)`·`RuntimeError` 전파. normal exit 0 `RF070_PEER_OFFLINE_OK 3`, `python -O` exit 0 동일. 소비자 `tests/test_reporter_script_wrappers.py::test_decision_story_script_delegates_to_reporter` + `tests/test_m31_3_weekly_health_summary.py::test_m31_3_weekly_health_summary_passes_default` B 트리 normal 2 passed / `-O` 2 passed. evaluation_lens는 코드·테스트 소비자 없음(정적 KEEP만). → **PEER_SCOPED_PASS 6/142**(누적, 나머지 136 미실행·SAFETY_HOLD 유지). RF-070 DONE 아님.
-- RF-001: B 수정 SHA 없음(후보 `48e2476c`/`02919e45` 동일), 직전 16 alias·90 parity PASS_SCOPED 유지, frozen 28 FAIL로 원자적 admission HOLD 지팀장 결정 — 반복 peer 없음. RF-069: UEF5 승인 snapshot 증거 없음. RF-067/066/063/065/007/008·RF-019/017: 신규 지시·증거 없음(기존 분류 유지).
-- normal/-O: 위 RF-070 외 신규 실행 없음. 통합 CI는 D03 개정으로 조회 제외. patchnotes 해당 없음.
-- GPT_ACTION_REQUIRED: RF-070 다음 subset 지정/현 6/142 판정, RF-001 owner-only admission 대안(B 수정 SHA 필요), RF-019 frozen p166/p167/p171 인벤토리 승인, 예약 주기 조정.
-- PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재.
+- RUN_ID: 2026-10-26-claude-a-sched-74 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · 기준 integration `3bf7fb4fb2811893bc696bb549b6a8fb10130ef6`, A 시작 `447c2c87`, B `1864c31b`(코드 `48e2476c` 이후 HANDOFF_B만 변경, 이미 handoff 73에서 peer 완료). 소스·테스트·오라클 변경 없음, 상대 CLI 0건. ACK: `D03_READ_ACK=04a64b5d; D00_READ_ACK=9224bfd4; D02_READ_ACK=e5ecd133`(CURRENT·origin blob 일치; 2회 ACK 중 이번 회차 기록).
+- 1순위 REWORK: 없음.
+- 2순위 독립 검증: 신규 증거 없음 → peer 미실행(동일 SHA·테스트 반복 금지 준수). RF-001: B 수정 SHA 없음(frozen 28 FAIL admission HOLD 유지). RF-069: UEF5 승인 snapshot 신규 증거 없음. RF-070: 6/142 PEER_SCOPED_PASS 유지(지팀장 수용), B의 새 묶음 mock 증거 없음 → 대기. RF-067/066/063/065/007/008: 신규 지시·증거 없음.
+- 3순위 신규 개발: RF-019/017 신규 지시 없음, 기존 분류 유지.
+- GPT_ACTION_REQUIRED: B의 RF-070 신규 순수 wrapper 묶음 증거 또는 RF-001 수정 SHA 제공 시 해당 peer만 실행.
