@@ -4,6 +4,9 @@
 
 ## 현재 지팀장 판정·다음 실행 (2026-10-25)
 
+- **10/25 신규 A sched-59 / 지팀장 정체 조치:** A는 D00·D03·D02 SHA 재독 확인, RF-019 29 owner KEEP blob parity와 표적 normal 72 PASS/1 FAIL·-O 111 PASS/1 FAIL 제출. 실패는 Reporting 소비자 이동 관련 `CROSS_RF_OWNER` 의심으로 RF-019에 분리 기록, BASE 독립 재현 전 오라클 수정 금지. RF-017 5 owner KEEP, Operator UI 2개 collection ERROR는 traceback·BASE 미확인 `UNKNOWN`으로 RF-017에 기록. B 새 원격 코드/HANDOFF 없음, RF-001→009→020 우선 REWORK 유지. RF-013 CSV 소유권 오류 정정: wrapper 4개 중 **RF-030 2개**(operator_period_summary, operator_visibility), **RF-035 2개**(metrics_report_generator, phase_runtime_health). RF-013 peer 큐 포인터를 Claude A(자기검증 오류)에서 **Codex B**로 바로잡음. 신규 독립 전체 PASS/선별 통합/DONE 없음; 74/11/3/5 유지.
+
+
 - **RF-009·020 (B 1순위 REWORK):** A의 기존 범위 한정 peer PASS는 그대로 보존. RF-009는 Graph 3 owner의 State/ranking/NOOP·외부 소비자 경계, RF-020은 Monitor 30 owner의 dynamic/side-effect·KEEP 소비자 맵 증거가 RF 전체 인수조건에 부족하다. **신규 회귀·소스 버그 확정은 아님.** Codex B가 기존 RF 소유 경로의 최소 코드 delta 또는 exact-SHA 완전 KEEP 근거를 제출, Claude A는 새 증거만 read-only peer. RF-014/019·RF-026의 타 소유권/안전 HOLD는 그대로 보존.
 - **RF-067** B SELF normal/-O 각 AST 14/14·7 PASS 후 A `f88ee1ea` HANDOFF에서 독립 정적/소비자 `7+17 PASS`씩 **PASS_SCOPED 보고**(정확한 개별 명령·시점/exit는 보강 필요). 14개 공개 preflight CLI 직접 실행·Windows/Unix PATH·Task Scheduler·stdout/exit/환경·부작용 계약은 NOT_RUN/미확정. **VERIFICATION 유지 / NOT_DONE**. B는 위험 CLI를 실행하지 않고 격리 offline/mock 계약 증거·명령/exit 보강, A는 새 근거만 peer. 통합 없음.
 
