@@ -1,5 +1,12 @@
 # Claude A 예약 실행 인수인계
 
+## sched-51 (2026-10-25, integration 958431c3)
+
+- CURRENT: A 개발 RF-019·RF-017, 독립 검증 RF-001/020/007/008/009(신규). A 시작 `f0895f28`, B HEAD `ee8c2911` 불변. 소스 변경 없음.
+- RF-019 (`libs/runtime/scanner/` 29파일): integration 958431c3 vs BASE `63182ab2` diff 0 → **KEEP_VERIFIED**. RF-017 diff 0 유지.
+- RF-009 독립 검증(read-only, detached 958431c3): `graphs/nodes/{scanner_node,scan_candidates,select_candidate}.py` BASE 및 B HEAD ee8c2911 대비 diff 0(3/3 동일). Scanner 관련 14테스트 파일 normal 138+7 passed / `-O` 138+7 passed (실패 0; universe_upgrade·practical_selection 각 7 passed). 판정 **PASS(KEEP_VERIFIED 동등성, 범위=위 테스트)** — 전체 RF 계약·통합 SHA CI는 NOT_RUN, DONE 판정은 GPT.
+- RF-001/020/007/008: 새 증거 없어 재실행 NOT_RUN(환경 collection 오류 이력). 상대 CLI 호출 0건. hosted CI NOT_RUN. 이 파일만 push.
+
 ## sched-48 (2026-10-25, integration 72e44ab8)
 
 - CURRENT 불변(A 개발 RF-017, 검증 RF-001/020/007/008). B HEAD `ee8c2911` 불변. A 시작 `a1dbe8fb`. 소스 변경 없음.
