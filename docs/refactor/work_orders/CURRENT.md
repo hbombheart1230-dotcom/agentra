@@ -19,6 +19,8 @@
 **개발 큐에서 제거:** RF-001은 아래 지팀장 통합 후 **1회 검증만** 남음. 새 source REWORK 없이 RF-001 반복 개발·기존 734×2·53×2 재검증 금지.
 
 ## 지팀장 — 검증·통합·DONE (개발 RF와 별도)
+**예약 동기화:** 지팀장 A/B 슬롯은 한국시간 매시 02분·32분 교차 실행(2026-10-26 승인). 개발팀 A/B 예약은 기존 설정 유지. 각 회차는 D00/D03에 따라 실제 RF 조치와 원격 결과를 우선하며, 조회만 수행한 경우 완료로 보고하지 않는다.
+
 1. **[RF-001](../plan/queue/04_LEAD_ACCEPTANCE/CODEX_B/RF-001.md) — 선별 통합 완료, EXACT_SHA_TEST_PENDING:** B source `b994a133` 두 owner 파일 blob `4f73570f`·`0666538f` integration 반영, patchnotes JSON/MD 병합; source+patchnotes anchor `2f77bd95`. 기존 B 격리 734×2·UI 53×2, A peer 734×2·17 differential 수용. **B 1회 read-only 최신 integration HEAD**에서 `tests/test_p153_operator_ui_moved_bodies.py`, `tests/test_operator_ui_data_access_phase2.py`, `tests/test_operator_ui.py` normal/-O 실행·exit·HEAD 제출(검증이지 개발 재배정 아님). 지팀장이 33 owner 잔여 인수조건 판정 후 DONE. 반영 HEAD 직접 테스트 **NOT_RUN**, 아직 DONE 금지.
 2. **[RF-018](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-018.md)·[RF-070](../plan/queue/02_DEVELOPING/CODEX_B/RF-070.md)·[RF-066](../plan/queue/02_DEVELOPING/CODEX_B/RF-066.md):** 새 증거만 KEEP/FIX/PEER/INTEGRATE/BLOCKED 판정. RF-018 fallback 3건 BASE 동일(2 재현, scanner_priority 우회 미재현), 안전·오라클 무승인 수정 금지. 차단 RF를 이유로 다른 큐 중단 금지.
 
