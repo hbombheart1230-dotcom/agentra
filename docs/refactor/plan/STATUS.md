@@ -1,5 +1,15 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
+## 지팀장 B 회차 — A run 105 신규 동적 증거 인수·원개발 3 RF 독립 peer 이동 (2026-10-26)
+
+- **신규 A source HEAD `4e9f0ae9`:** 소스 코드 수정 0. 새 격리 하네스 5개와 `scan_list.py`가 A branch `docs/refactor/work_orders/evidence/run103_boundary_scripts/`에 실제 존재함을 원격 blob으로 확인. A run 105: RF-033 45/45 KEEP, `RF033_BOUNDARY_OK` normal/-O exit 0; RF-034 40/40 KEEP, `RF034_CANONICAL_OK` normal/-O exit 0; RF-032 135/135 KEEP, `RF032_EVAL_OK` normal/-O exit 0. 합성 임시 입력·State 불변·네트워크/운영 쓰기 차단. RF-034 문자열 truthy `window_complete`는 실제 생산자 bool만 전달, 패치 기각/되돌림(신규 source 없음); RF-032 invalid generated_at fail-open은 기존 설계, 독립 검증 전 CODE 결함 단정 금지.
+- **지팀장 직접 판정/물리 이동:** RF-033 `02_DEVELOPING/CLAUDE_A→03_PEER_REVIEW/CODEX_B`, RF-034 동일, RF-032 동일. `KEEP_NOOP_CANDIDATE / PEER_REQUIRED / NOT_DONE`. 각 owner 45/40/135 전체의 파일별 분류·첫 소비자 격리 normal/-O를 원개발 증거로 수용, B에 **기존 A 하네스 재실행이 아닌 최초 독립 위험 경계** 배정. 상대 peer 및 최신 exact integration SHA·hosted CI 미충족, DONE/코드 통합 0.
+- **추가 A peer:** RF-065 `daily_profitability_scorecard.main(argv)` 합성 3거래 JSON/default/argparse read-only normal/-O exit 0 `RF065_OFFLINE_PEER_OK`, RF-063 `audit_target_tree_compat.audit` 합성 7케이스·manifest 오류·main exit 0/1 normal/-O exit 0 `RF063_TREE_AUDIT_PEER_OK`를 기존 import-only와 별개로 LEAD에서 수용. 두 RF 모두 나머지 효과/locale/hosted CI HOLD·NOT_DONE, 물리 단계 LEAD 유지. B HEAD `5fb0e131` 신규 코드 0.
+- **Issue #32:** 17:38 root cause follow-up의 broker/local SELL mismatch, BUY guard stale, Operator GREEN/readiness true 및 source-image SHA 미입증은 `RUNTIME_ENV/UNKNOWN + CODE_CANDIDATE_UNCONFIRMED` 유지. 운영/거래 안전 계약/동결 RF-074 변경·REWORK/재배포 무승인 금지.
+- **troubleshooting:** open 4(브랜치 로컬 exit, CI 호환 5게이트, RF020/001 예약·범위, source admission) / closed 0. 실제 종료조건 충족 0 → 이동 0.
+- **물리 큐:** PENDING **62** / DEVELOPING **3** / PEER_REVIEW **10** / LEAD_ACCEPTANCE **7** / REWORK **0** / DONE **11** = **93**. 최신 exact-SHA hosted CI 지팀장 직접 NOT_RUN. 소스 선별 통합 후보 0, main·실거래·안전·동결 테스트/CI·예약 무변경.
+
+
 ## 지팀장 B 슬롯 RF-065 독립 peer 정적 범위 인수 (2026-10-26 18시 KST)
 
 - **A/B 최신:** A HANDOFF run 104의 RF-063 신규 synthetic read-only CLI 2개 normal/-O exit 0은 직전 지팀장 A 회차에서 이미 RF-063 LEAD로 수용했으므로 재처리하지 않음. B HANDOFF `B-20261026T083907Z`는 RF-028·RF-066 기존 scoped peer/self 재보고, 새 코드 SHA 0. RF-031 최초 B 동적 peer 및 RF-033 최초 A owner 경계는 여전히 NOT_RUN.
