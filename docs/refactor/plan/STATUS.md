@@ -1,3 +1,32 @@
+## 지팀장 B 슬롯 — 2026-10-27 05:28 KST / RF-016 최초 실제 consumer Python + A run128/129 인수
+
+- **신규 A/B/RunLab:** A `bc746b7b→e40af512` 신규 2커밋(HANDOFF/evidence 4파일, 운영 소스 diff0), B `8fe36a3d` 신규 0. A run128 RF-032 evaluation lens 실제 builder/writer·partial IO, RF-033 vnext equities provider→pipeline, RF-034 10-file partial write; run129 RF-032 q13/q14 validation writer 모두 normal/`-O` exit0 원개발자 scoped 인수. Issue #32 최신 2026-10-26 19시 댓글 이후 새 관측 0: broker SELL `0020349` 출처, stale BUY guard, OCI SOURCE_SHA `UNKNOWN` = `SAFETY_HOLD`, 코드 REWORK/재배포 아님.
+- **지팀장 직접 신규 Python:** `libs/runtime/strategist/policy/node_policy_projection.py::strat_policy_commander_context_policy_adjustment` 정확 원격 blob `b1319b9e6e6c50f8a38a39082a3f9e80b9e996b1` 함수 4,355-byte/FNV32 `008d9fe0` = 실행 격리 복사본. `/mnt/data/lead_rf016_node_policy_consumer_harness.py` 정상 **29 PASS/exit0**, `python -O` **29 PASS/exit0**, FAIL0, pyc0. node policy→주입 facade answers→directive consumer, use-time patch, candidates/summary/State/exception, 얕은 복사와 nested alias 관찰. 실제 facade 전체/동적 소비자/실효과/전체 repo/신규 hosted CI `NOT_RUN`. 실행 하네스는 로컬 산출물이며 GitHub 동일본 업로드 주장은 하지 않음.
+- **지팀장 신규 직접 원문 판정:** `q13_q14_validation.py` BASE/integration/A/B blob `0c209fae` 4/4 동일. `ACTIONABLE_ROOT_CAUSES`에 `Exit Horizon` 자신이 포함돼 `Exit Horizon > max(ACTIONABLE)` 분기는 논리상 도달 불가. `validation_id`를 정화하지 않고 reports_root/evaluation/validation 아래에 붙여 `../escape` 입력 시 하위 경로 이탈(격리 원개발 관측). 기존 BASE 동작이며 외부 입력/UEF 소비자 영향 UNKNOWN; 무승인 코드·테스트·운영 경로 변경0. 다른 4개 원본(q13/lens/equities/short-alpha) 4-way blob 동일.
+- **LEAD 실물 14/14 직접 최종 게이트 판정:** 시작 **14 / 신규 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14**, 물리 이동0, 운영 소스 선별 통합0. 아래는 이번 회차 신규 근거를 반영한 최초 미충족 게이트/해제권자(이전 유효 normal/-O·peer 재사용, 재실행 금지).
+
+| RF | 지팀장 판정 | 최초 남은 계약 / 해제 책임 |
+| --- | --- | --- |
+| 014 | HOLD | Scanner shim 동적·ranking/NOOP 독립 경계 — B 신규 peer |
+| 015 | HOLD | Monitor 역사 11 FAIL BASE 원인/2 신규 파일 소비자 — B 분리 |
+| 016 | HOLD | node-policy 29×2 PASS; news-query→answers 실제 facade chain 및 외부 dynamic — B 신규 peer |
+| 028 | HOLD | rich renderer 정식 schema/파일 writer 영향 — B 독립 peer |
+| 029 | HOLD | story bundle v1/v2·external-root truth 실제 facade — B 독립 peer |
+| 031 | HOLD | reporter 8 writer/day-cache·부분 OSError helper graph — B 독립 peer |
+| 032 | HOLD | A lens/q13 신규 scoped, 135 owner 중 나머지 writer·validation_id caller trust·UEF — B 신규 peer/보호 승인 |
+| 033 | HOLD | A equities scoped, provider→storage/Windows Thread·time_alignment — B 독립 peer/A 새 owner |
+| 034 | HOLD | A 10-file partial scoped, casebook→scanner·40 owner/closeout — B 독립 peer/보호 승인 |
+| 050 | HOLD | Operator UI primary→repair→line LLM State/fallback/예외 — B 신규 peer |
+| 063 | HOLD | diagnostics CLI/locale/스케줄러 효과 미검증 — A/B 격리 증거 |
+| 065 | HOLD | research scheduler·외부 IO 안전 계약 — A/B 격리 증거 |
+| 067 | HOLD | delegated diagnostics/Windows PATH/exit/fail-closed — B 신규 fake |
+| 069 | SAFETY_HOLD | UEF5 historical snapshot/보호 소비자 승인·런 증거 — 사용자/런검증 증거 소유자 |
+
+- **CI 실물 tree 판정:** `integration@cefe3152`와 hosted Safety SUCCESS `40332899631@0da98a47`의 root `graphs/libs/scripts/tests/apps/.github` tree SHA **6/6 동일**; hosted Web SUCCESS `40073316192@1374d371`의 `apps/web`·`apps/api` subtree 및 `p15-integration-crossbranch-compat.yml` blob 동일. `apps/operator_ui`/전체 workflows는 Web 기준과 다르므로 PASS 확대 금지. 이번 문서-only 변경 후 source/test/workflow 변경 없음, 신규 hosted/전체 repo `NOT_RUN`.
+- **troubleshooting 실물:** open4 (BRANCH_CLEANUP/RF012_FINITE/RF020_SCOPE/SOURCE_ADMISSION), closed1 (DOC_CI), 실제 해결0·이동0. 93 RF 큐 PENDING61/DEVELOPING3/PEER1/LEAD14/DONE14/REWORK0. **EXECUTION_INCOMPLETE**: 추가 DONE·운영 source 통합0, 최초 안전 검증은 진척. B P0 RF-031 writer graph, P1 RF-050 Operator; A 다음 RF-032 q9_artifact_repair(새 owner), RF-033 time_alignment, RF-034 scanner_diagnostics. main/실거래/안전 계약/동결 CI·예약/운영 데이터 무승인 변경0.
+
+---
+
 ## 지팀장 A 슬롯 — 2026-10-27 05:02 KST / RF-032·034 최초 부분 IO 직접 실행
 
 - **A/B/RunLab 신규:** A `bc746b7b`, B `8fe36a3d` (직전 B 슬롯 이후 추가 커밋/운영 source/독립 peer 0). Issue #32 최종 10/26 19시 read-only 이후 신규 댓글0, SELL `0020349` provenance/BUY guard/OCI SOURCE_SHA UNKNOWN, `SAFETY_HOLD` 유지.
