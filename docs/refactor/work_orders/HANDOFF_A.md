@@ -1,11 +1,16 @@
 # Claude A 인수인계 — 최신 회차만 (이전 기록은 Git 이력)
 
-- RUN_ID: 2026-10-26T0500Z-claude-a-sched-93 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · integration `bd4ff1d9`. **A 소스 코드 변경 없음.** 상대 CLI 0건.
-- CURRENT: A = "RF-001 신규 격리 조합 peer 대기". 후보 `cdc3599fe0c5429c5fc0a559db09f7cd9fecbd3d`(BASE `2150f6bc`, 변경 2파일: data_access_core.py, data_access_brief_monitor_notes.py; 최신 integration과 `apps/operator_ui` 차이 0 → 동일 적용).
-- **독립 read-only peer (일회용 detached worktree, 실행 후 제거):**
-  - 동결 `tests/test_p153_operator_ui_moved_bodies.py tests/test_operator_ui_data_access_phase2.py` — 후보 normal **734 PASS** / `-O` **734 PASS**; BASE `2150f6bc` 동일 734/734. 신규 FAIL 0 (기존 28 FAIL 미재현).
-  - 변경 두 함수 `_strategist_risk_tone`/`_strategist_monitor_guidance` BASE↔후보 differential 17건(None/빈/공백/None→risk_mode 폴백/0/문자열·숫자·리스트 입력/facade `_strategist_nested_value` monkeypatch/예외 전파) normal·`-O` 출력 byte-identical.
-  - `tests/test_operator_ui.py`: **NOT_RUN(환경)** — 이 PC에 `fastapi` 없음(BASE도 동일 collection ImportError, 후보 회귀 아님). 지팀장 지정 필수 3종 중 이 1종은 fastapi 갖춘 환경 필요.
-- 판정: **PEER_SCOPED_PASS** (신규 조합 경계). 통합/DONE 판단은 지팀장; test_operator_ui.py는 B 또는 fastapi 환경에서 실행 필요.
-- 티키타카 실행 리스트: 상대 CLI 호출 0건 (read-only 직접 검증만).
-- PUSH_VERIFIED: 종료 보고 참조.
+- RUN_ID: 2026-10-26T0417Z-claude-a-sched-94 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · A 시작 `ae860f9c`(handoff 93, 다른 세션 push), integration 시작 `4444f342` → 종료 확인 `306aaa8d`, B `26458918`(HANDOFF/문서만). **A 소스 코드 변경 없음**(owner 코드 `e7471a2e` 유지). 상대 CLI 0건.
+- **정책 수신 증명(시작→종료 원격 blob):** CURRENT `871fd76a`(종료 시), D00 `04effac1`→`bebc2e20`, D03 `88d64817`→`9c08a3c8`, D02 `883c8b89`(불변). POLICY_CHANGED=D00,D03. POLICY_READ=PASS(변경 본문 필독: §2A 간결 지시/차단 분리, 연속 실행 확인 `NOT_STARTED_REASON`, 최초 격리 조합 peer 규칙, 시작/종료 원격 SHA 조회). 로컬 작업 브랜치 정책 파일은 사용하지 않음.
+- ① peer: CURRENT의 A 첫 행 "RF-001 최초 격리 조합 `cdc3599f` peer"는 **handoff 93이 이미 수행**(734/734 normal/-O, 차분 동일) → 동일 조합 반복 금지로 재실행 안 함. B 신규 코드 SHA 없음. ② REWORK 없음.
+- **③ RF-013 실제 미충족 인수조건(67 owner 소비자·State/IO/효과, CURRENT 첫 과제) — 증거 제출 (integration `453ecede`/`4444f342` 기준 owner blob = BASE, A 원복 `e7471a2e` 트리와 source 차분 0):**
+  - 정적 AST 스캔(`libs/agents/reporter/**` 67): 금지 import(subprocess/socket/requests/httpx/urllib/sqlite3/shutil/pathlib/logging/threading/asyncio/random/time/datetime/tempfile/glob) **0**, 파일·네트워크·프로세스 IO 호출 0, 환경 읽기 0, 가변 전역 0, 모듈 최상위 호출 0 (탐지된 `replace`는 전부 `str.replace` 오탐). broad `except Exception` 위치는 변환/폴백 용도(예: post_exit_recap_bodies_01 9, symbol_trade_report_bodies_01 4, intraday_trade_reports_r9_bodies_01 4).
+  - 실행 근거: Reporter 소비자 테스트 196파일 + 추가 관련 테스트 173파일 + pipeline_trace 7파일, `coverage`(scratch 설치) 아래 정상 실행 → **owner 67파일 문장 coverage 91%(7149문장 중 655 미실행)**. 90% 미만은 6파일: bundle_assembly_bodies_01 64%·strategy_read_model_bodies_01 71%·symbol_metadata_name_inference 73%·post_exit_recap_bodies_01 81%·pipeline_trace_bodies_01 81%·entry_blocker_bodies_01 84%. 그 외 61파일은 ≥85% 대부분 ≥90%(예: agent_pipeline_trace_r8 99%, news·scanner·memory 계열 93~99%).
+  - 실패 분류(동일 노드 BASE `63182ab2` 재실행): 1차 세트 39 FAIL/ERROR 중 38 = BASE 동일(UEF 계열 11+8+2+2+1 등 snapshot/환경), 1건(`test_closeout_memory_bounds::test_daily_summary_payload_identical_with_streamed_and_materialised_rows`)은 격리 실행 시 normal/`-O` **57 passed** → coverage·순서 의존 ENV 플레이크; 2차 세트 188 FAIL/ERROR 중 187 = BASE 동일(`test_p15_integration_completion` 113, `test_p15_commander_pure_v1_admission` 55, `test_p15_b_versioned_contract` 15 등 역사/CI 인벤토리), 1건(`test_p156_parity_harness` 삭제 워크플로 참조) = CI 오라클/ENV. **Reporter owner 기인 NEW_REGRESSION 0.**
+  - 판정: 67 owner **KEEP(FIX 0), 미충족 항목 = 위 6파일의 미실행 분기에 대한 실행 근거 보강**(결함 징후 없음). 9+4 미승인 경로 재도입 없음, 오라클·RF-030/035 변경 0.
+- **NOT_STARTED_REASON:** RF-019/017/018 — 파일별 KEEP 판정·coverage 99.7%/100%/99.6% 이미 제출(handoff 90·91·92), 새 소스 SHA·REWORK 없음 → `NO_EXECUTABLE_OWNER`(잔여는 인자 수십 개의 통합 경로 소수 문장). RF-066/070 — B 소유(`SAFETY_HOLD` 일부 포함).
+- 다음 실행 가능 A 작업: RF-013 저커버리지 6 owner(특히 bundle_assembly_bodies_01 95문장, strategy_read_model_bodies_01 70문장) 격리 하네스 normal/-O.
+- 통합 CI는 D03 개정으로 조회 제외. patchnotes 해당 없음(소스 변경 0).
+- GPT_ACTION_REQUIRED: RF-013 67 owner KEEP 후보 판정(FIX 0, 91%, NEW_REGRESSION 0) 및 저커버리지 6 owner 보강 필요 여부, RF-019/017/018 KEEP_VERIFIED, RF-001 `cdc3599f` 선별 통합, 동결 28 FAIL·57 collection 오라클 처리, 예약 주기 조정.
+- 최종 완료 답변 요약: 코드 변경 0, RF-013 Reporter 67 owner 정적 clean + coverage 91% + 실패 분류(NEW_REGRESSION 0), 정책 D00/D03 갱신 확인.
+- PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고 및 Issue #11 댓글에 기재.
