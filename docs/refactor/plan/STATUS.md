@@ -1,3 +1,14 @@
+## 지팀장 B 슬롯 — 2026-10-27 03시 이후 / A run124·125 인수 + RF-032 신규 부분쓰기 직접 재현
+
+- **실물 LEAD 시작 14 / 신규 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14**. RF 93 고유: PENDING61 / DEVELOPING3 / PEER1 / LEAD14 / DONE14 / REWORK0. 운영 source 통합0, 큐 이동0, `EXECUTION_INCOMPLETE`.
+- **신규 A source·peer:** A `5f96ed9b→d2887d4a`는 HANDOFF/evidence 5파일만 변경, 운영 source 0. run124 RF-028 정식 carryover/same-day, RF-029 외부-root truth projection, RF-032 score_window writer; run125 RF-032 score_range writer 정상/-O exit0. 원개발자 scoped이며 B 독립 peer로 오인하지 않음. B `8fe36a3d` 이후 신규 source/peer 0.
+- **지팀장 직접 신규 Python:** RF-032 `write_attribution_score_range` exact function FNV32 `56b1c387` (owner Git blob `ea17c616`)을 temp-only fake에서 normal **16 PASS/exit0**, `python -O` **16 PASS/exit0**, FAIL0, 외부쓰기·네트워크·주문0. Markdown write OSError 주입 시 JSON만 신규 내용으로 갱신되고 Markdown은 이전 버전 유지(기존 BASE 비원자적 writer). **코드 REWORK 아님**; 부분실패에 대한 소비자 계약은 B 독립 검증·지팀장 후속 판단. 증거 `evidence/lead_rf032_range_partial_write_boundary.py`; 전체 원본 패키지·운영 root NOT_RUN.
+- **LEAD 전건 직접 게이트:** RF-014 B Scanner dynamic rank/NOOP peer; 015 B Monitor 역사11 BASE/State; 016 B news→strategic_answers; **028 B formal rich renderer peer/외부 효과**; **029 B story facade/extroot peer**; 031 B Reporter 8 writer/day cache/OSError; **032 B 새 writer peer/UEF 보호/2파일 부분실패**; 033 B InputWorker→publish/scheduler Windows; 034 B casebook→scanner; 050 B Operator primary/repair/line LLM fake; 063 diagnostics CLI/locale; 065 research CLI/scheduler; 067 delegated diagnostics target/Windows; 069 승인 historical UEF5 snapshot ENV_BLOCKED. 신규 재현 원개발 결함0, 인수조건 완결 DONE 후보0.
+- **CI:** Shared Offline Safety run `40332899631@0da98a47` completed/success; `0da98a47→현행 integration` `apps/graphs/libs/scripts/tests/.github` 변경0으로 동일 tested tree 범위 재사용. Web run `40073316192@1374d371` success, `apps/web`/`apps/api`/Web workflow 변경0인 해당 범위만 재사용(다른 operator UI diff는 Web CI 범위 밖). 신규 hosted/전체 repo/실효과 CLI NOT_RUN.
+- **Issue #32:** 10/26 19시 독립 최종 리뷰 이후 신규 댓글0, broker SELL 0020349 provenance·BUY guard stale·OCI source SHA UNKNOWN → SAFETY_HOLD, 무승인 코드/재배포/실거래 금지. **troubleshooting:** open4 / closed1 전건 확인, 실제 해소0·이동0.
+- **다음 최초 실행:** B P0 RF-031 8 writer/day-cache/OSError 독립 tmp fake, P1 RF-050 Operator 3단계 LLM fake, P2 RF-029 facade/extroot peer, P3 RF-034 casebook→scanner, P4 RF-067 delegated target AST→안전 fake. A P0 RF-032 `no_trade_attribution` 신규 안전 writer (run124/125 marker 반복 금지), P1 RF-033 provider/fake-thread 최초 경계, P2 RF-034 cohorts 나머지. RF-069 환경/승인 차단은 우회 금지.
+
+---
 ## 지팀장 A 슬롯 — 2026-10-27 03시 KST / RF-067 신규 직접 14-root-wrapper 검증
 
 **실물·판정:** 시작 LEAD **14** / 신규 유입 **0** / 직접 판정 **14** / 신규 DONE **0** / REWORK **0** / 잔여 LEAD **14**. 원격 `queue` 13개 폴더 재조회: PENDING 61 / DEVELOPING 3 / PEER 1 / LEAD 14 / DONE 14 / REWORK 0 = **RF 93 unique, 중복·누락 0**. 큐 실물 이동 **0**, 신규 운영 source 선별 통합 **0**, **EXECUTION_INCOMPLETE**.
