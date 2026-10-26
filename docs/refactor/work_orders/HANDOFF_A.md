@@ -42,3 +42,18 @@
 - NOT_STARTED_REASON: RF-007 = `ENV_BLOCK`(`fastapi` 미설치, UI 소비자·E2E 불가; 재개 = fastapi 환경). RF-063(76)·RF-065(54) = `TIME_LIMIT`(SAFETY_CLI_REVIEW_REQUIRED·research CLI 안전 분류 필요, 다음 회차 첫 작업: `scripts/diagnostics`/`scripts/research` 파일별 AST 안전 분류 후 import 계약 하네스). RF-029 증거 반복 안 함.
 - GPT_ACTION_REQUIRED: RF-008 PEER_PASS_SCOPED 인수 판정(위 이상 징후 1건 참고), RF-067 CLI 실행 격리 승인 여부, 예약 주기(변경 안 함).
 - PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
+
+---
+## 추가 회차 (동시 실행 병합) — RF-030 실코드 FIX
+
+- RUN_ID: 2026-10-26-claude-a-sched-100 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · A 시작 `11073cec` → **A source SHA `03b255e5`** (RF-030 FIX). integration `d1bafb5b`(시작=종료 확인 대상). 상대 CLI 0건.
+- POLICY_REMOTE_START_SHA: CURRENT `075e3492`(실행 중 fetch 최신), D00 `bebc2e20`, D03 `d281c4dd`, D05 `0b877de8`, D02 `82396714`. POLICY_READ_SHA: CURRENT·D03 전문. POLICY_CHANGED=CURRENT(RF-030 A 배정). POLICY_APPLIED_OR_DEFERRED: 적용 — RF-030 최우선 실코드 FIX 수행.
+- **RF-030 FIX (`03b255e5`, 소유 2파일):** `operator_visibility.generate_operator_daily_summary`의 ~145줄 순수 markdown 렌더 블록을 `operator_visibility_parts/summary_snapshot_and_bundle.py::_render_operator_daily_summary_markdown_r3_impl(out, target_day, *, facade)`로 추출. facade는 payload 빌드·`mkdir`·JSON/MD 쓰기만 담당(IO/pure 분리). `facade.NAME` use-time 조회(`render_data_freshness_markdown`, `_health_badge`, `_humanize_reason`, `_format_reason_rows`, `_safe_float`, `render_controlled_validation_daily_lines`, `json`)로 기존 monkeypatch 해석 보존, `out` 읽기전용(부작용 없음), 공개 API 불변. operator_visibility.py 1520→1377줄.
+- **증거:** 하네스 `generate_operator_daily_summary`(고정 now, 임시 events) BASE(HEAD 워크트리) vs 후보 md sha256 `a7bba1e1…c0d0` **normal·`-O` 동일**(3462자), integration `d1bafb5b` 워크트리에 동일 2파일 적용 시도 동일 해시(owner blob이 integration==A HEAD 사전 확인). 소비자 영향 테스트(operator_summary_reports/report_metadata_alignment/operator_summary_refresh/closeout_residual_positions/run_phase5_validation_bundle) normal·`-O` **34 passed**. 넓은 reporting 연관 53파일 normal 10 failed/1495 passed, 이 중 9건은 BASE 동일 실패(`test_p15_overview_live_projection` 7·`test_uef5_1_clean_evidence_registry` 2, CROSS_RF/BASELINE_EXISTING).
+- **신규 1건 실패 분류(CROSS_RF 오라클):** `tests/test_p15_strategist_s5_helper_moves.py::test_diff_against_pinned_source_touches_only_the_closed_path_set`(BASE PASS→후보 FAIL, normal·-O). 원인=이 A 브랜치의 구 B-stage 가드(`shared_strategist_contracts.verify_b_scope`, `libs/**` 변경을 B 7경로로 제한)가 어떤 libs 변경도 거부. 최신 integration 트리(가드 blob `8b0d6988`)에 동일 패치 적용 시 이 테스트 **PASS**(그곳 잔여 1 failed는 `RF93 missing work orders`로 패치 유무 무관 기존). 오라클 변경 안 함. → 지팀장이 통합 시 확인.
+- **RF-008 peer(`strategist_node.py` blob `86e9c2e2`=integration 동일):** 관련 42파일 normal 1038 passed 후 위 가드 1건에서 -x 중단, `-O` **1270 passed / 1 failed(동일 가드, owner 무관 — 후보 libs 변경 때문)**. State/monkeypatch/예외 경계 신규 위험 증거는 가드 외 FAIL 없음. 정밀 신규 경계 하네스는 NOT_RUN(시간). PASS_SCOPED 아님/DONE 아님.
+- CONTINUATION_STATUS: RF-030 FIX 완료 → RF-008 부분 peer. RF-030 `operator_period_summary.py`(1195줄) 후속 경계는 미검토 — NOT_STARTED_REASON=TIME_LIMIT, 다음 회차 첫 작업. 
+- BLOCKED/재개: `tests/apps/**`·operator UI = `fastapi` 미설치(ENVIRONMENT). 
+- GPT_ACTION_REQUIRED: RF-030 `03b255e5` 독립 B peer 배정(md 하네스 `rf030_h.py` 방식 재현 가능), 통합 시 구 B-stage 가드 영향 확인, UI patchnotes는 내부 리팩터라 미작성(필요 시 지시).
+- 다음 행동: RF-030 period_summary 경계 → peer 결과 반영.
+- PUSH_VERIFIED: 아래 push 후 확인.
