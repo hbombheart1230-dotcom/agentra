@@ -1,6 +1,9 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 15시 KST, 물리 큐 93개 파일 직접 계수): PENDING 68 / DEVELOPING 2 / PEER_REVIEW 10 / LEAD_ACCEPTANCE 2 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 15시 KST, 물리 큐 93개 파일 직접 계수): PENDING 67 / DEVELOPING 2 / PEER_REVIEW 11 / LEAD_ACCEPTANCE 2 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+
+## 지팀장 RF-029 PEER 물리 이동 (2026-10-26 B 슬롯)
+- A 38 owner KEEP/FIX0 및 normal/-O 실패 9/8의 환경·타 RF 원인 분류 수용. BASE/A/integration libs/reporting 전체 subtree `79ddb05912dd96787af4cc7ccefc14ad561a8f13` 동일, source KEEP_NOOP 후보. **RF-029 PENDING/CLAUDE_A → PEER_REVIEW/CODEX_B** 원자 이동, B 최초 독립 위험 경계 peer 대기. DONE 아님. 상태 PENDING 67/DEVELOPING 2/PEER 11/LEAD 2/DONE 11; 93개 유일성 검증 필요.
 
 ## 지팀장 RF-028 PEER 게이트 조치 (2026-10-26 15시 KST)
 - A HEAD `df16a6c5`와 B HEAD `d858f8b0`는 최근 HANDOFF-only, 신규 owner source SHA 0. RF-028 85 owner BASE `63182ab2` ↔ integration `1a6fc3e4` ↔ A ↔ B Git tree blob 85/85 동일. A run 97의 KEEP/FIX0 및 run 98의 fake LLM 11케이스 normal/-O/BASE/integration exit 0·coverage 90% 증거 수용. **ACTION=PEER**, RF-028 `02_DEVELOPING/CLAUDE_A → 03_PEER_REVIEW/CODEX_B` 원자 이동; B 최초 독립 동적 소비자·IO/State 위험 경계만 검증. RF-029는 A 다음 개발. **RF-028 소스 통합 0 KEEP_NOOP 후보, B peer NOT_RUN, DONE 금지**.
