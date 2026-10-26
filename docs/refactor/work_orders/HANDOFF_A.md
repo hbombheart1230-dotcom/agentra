@@ -327,3 +327,16 @@
 - 판정: 3건 **PEER_PASS_SCOPED**(A 원개발자 최초 검증), 코드 결함(기능)·BASE/integration 차이 0, FIX 불필요, DONE 아님. NOT_RUN: 운영 root·실데이터·hosted CI·전체 repo 테스트. 남은 미검증: RF-032 나머지 write owner, RF-033 provider.
 - 다음: A 신규 CURRENT 배정/B 소스 SHA 대기.
 - PUSH_VERIFIED: push 후 확인.
+
+---
+## 추가 회차 — CURRENT(`49aae0aa`) A: run124(`69f4321d`) 이후 CURRENT 3건 이미 소진 → RF-032 새 writer `attribution_score_range`
+
+- RUN_ID: 2026-10-26T1819Z-claude-a-sched-125 · A 시작 `69f4321d` · integration `bc79f8e6` · B `8fe36a3d` · **A 소스 코드 변경 없음(NO_CHANGE)**. CURRENT의 A P0/P1/P2(RF-028 carryover/same-day, RF-029 truth_projection ext-root, RF-032 attribution_score_window)는 run124에서 이미 실행되어 반복하지 않음. 이번 회차는 RF-032 다음 새 안전 writer 하나. owner `evaluation/attribution_score_range.py` blob `ea17c616` = integration = BASE.
+- 하네스 `evidence/run103_boundary_scripts/rf032_attribution_score_range_writer.py`(`python -S`, 저장소 루트, tmp reports root만; 네트워크·subprocess·sqlite·tmp 밖 쓰기 차단, 시도 0).
+- 실행: integration/BASE × normal/`-O` 4조합 모두 **exit 0**, marker `RF032_ATTRIBUTION_SCORE_RANGE_OK days=6 available=3 scored=2 include_empty=8 trades=10 idempotent=yes files=2 outside_write=OSError dir_collision=FileExistsError net_attempts=0`, 4개 출력 동일(debug 필드 제외).
+- 확인: build는 읽기 전용(트리 불변). 소스 산출물이 전혀 없는 날은 건너뜀(`include_empty_days=True`면 포함), 점수 payload 없는 날은 `available=False`(trades dir·scorecard 건수는 유지), 깨진 JSON 불가용, scorecard `trade_count`가 비정수면 `TRD_*` 디렉터리 수로 폴백(파일은 제외), 전부 INSUFFICIENT인 날은 available이나 not scored, 축 평균/min/max/status_counts/top_reasons, weakest axis 분포는 scored 일자만, 평균 최약 축 선택, 문자열 점수 `"70.5"`→int 반올림 70, 비수치 점수 제외. render 결정적·비-mapping 행 건너뜀·빈 payload 렌더 가능. write는 `evaluation/range/<start>_<end>/` 2파일, 재쓰기 바이트 동일, 입력 불변, 산출 JSON == build 결과. 예외: start>end·잘못된 날짜·`start=None` → `ValueError`, `reports_root=None` → `TypeError`, 인자 누락 → `TypeError`, render(None) → `AttributeError`, 출력 경로가 파일과 충돌 → `FileExistsError`, tmp 밖 root → `OSError`(차단).
+- **관찰(변경 안 함):** 일자 payload의 `scores`가 mapping이 아니거나(예 문자열) `weakest_observed_axis`가 문자열이면 `dict(...)` 변환에서 `ValueError`가 나 **범위 전체 build/write가 중단**(해당 일자만 건너뛰지 않음; `attribution_score_window`는 payload 정화 경로가 다름). `int(round(70.5))` 은행가 반올림 70. 정상 데이터 경로에서는 발생하지 않음.
+- 판정: **PEER_PASS_SCOPED**(A 원개발자 최초 검증), BASE/integration 차이 0, FIX 불필요(관찰 사항은 지팀장 판단), DONE 아님. UEF/frozen/운영 root/hosted CI NOT_RUN.
+- 남은 미검증: RF-032 나머지 write owner(`no_trade_attribution`, `day_validity`, `entry_timing_attribution`, `scanner_score_decomposition` 등), RF-034 `cohorts` 나머지, RF-033 provider 나머지. RF-030 승인 대기.
+- 다음: 신규 CURRENT 배정 없으면 RF-032 다른 writer.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
