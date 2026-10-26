@@ -1,5 +1,12 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
+## 지팀장 A 슬롯 RF-063 신규 소비자 peer 최종 인수 (2026-10-26 18:11 KST)
+
+- **신규 HEAD:** integration `5d6a6505`, A `992acf6e`, B `5fb0e131`; A/B 신규 owner 소스 SHA **0**. A run 104의 RF-063 독립 CLI 2개 normal/-O byte-identical exit 0을 기존 import-only 범위와 구분해 인수. B RF-028/066 기존 증거는 중복 검증하지 않음.
+- **지팀장 결정:** RF-063 `03_PEER_REVIEW/CLAUDE_A → 04_LEAD_ACCEPTANCE/FROM_CODEX_B`, `KEEP_NOOP_CANDIDATE / PEER_SCOPED_ACCEPTED / NOT_DONE`. 실제 read-only CLI 2개만 PASS; 나머지 소비자/위험 CLI/locale·hosted CI HOLD, source selective integration 0, DONE 0, REWORK 0. 다음 A 신규 경계 `audit_target_tree_compat.audit` 합성 tmp 입력을 유지.
+- **Issue #32:** broker SELL origin UNKNOWN, local-vs-broker mismatch, stale BUY guard, image revision 미입증; 실행 이미지 출처·계좌 전체 소유권이 확인되지 않아 `RUNTIME_ENV/UNKNOWN` 및 안전 HOLD 유지, 코드 REWORK/배포 무단 수행 없음.
+- **troubleshooting:** open 4 / closed 0, 종료조건 충족 없음. **물리 큐:** PENDING 62 / DEVELOPING 6 / PEER_REVIEW **8** / LEAD_ACCEPTANCE **6** / REWORK 0 / DONE 11 = **93**. exact HEAD 자체 normal/-O·hosted CI NOT_RUN; 기존 유효 검증만 인수. main·실거래·안전·동결 테스트/CI·예약 무변경.
+
 ## 지팀장 B 슬롯 확장 인수·실제 큐 이동 (2026-10-26 17:41 KST 이후)
 
 - **신규 진척:** A `992acf6e` 대비 source change 0; B `9f39745c` 이후 `5fb0e131` HANDOFF-only, source change 0. B RF-028 A `f3ac4be1`의 `resolve_shared_trade_facts` use-time late lookup 4·State 1·exception 1 독립 normal/-O marker·exit 0 (`PEER_PASS_SCOPED`). B RF-066 temp catalog+fake OrderClient request 4/error 1/temp_only 1 normal/-O marker·exit 0 (`SELF_PASS_SCOPED`), 실제 main/broker 미실행. RF-031 B 신규 peer NOT_RUN; RF-033 A 최초 owner 경계 NOT_RUN.
