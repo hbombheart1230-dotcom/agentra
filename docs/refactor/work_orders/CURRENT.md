@@ -2,7 +2,7 @@
 
 **정본 바로가기:** [D00 공통 규칙](../../ENGINEERING_DELIVERY_POLICY.md) · [D01 Codex B](../../../AGENTS.md) · [D02 Claude A](../../../CLAUDE.md) · [D03 개발팀 규칙](D03_DEV_TEAM_RULES.md) · [D04 런검증 규칙](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md)
 
-**매 실행 읽기:** A=CURRENT+D02, B=CURRENT+D01. A/B는 D00·D03 최초/변경 시만 전문 재독. 지팀장은 매번 CURRENT+D00+D03+D01+D02 전문 재독.
+**매 실행 원격 정책 수신:** A/B는 시작·종료에 integration의 CURRENT/D00/D03/자기 역할 blob SHA를 조회하고 실제 읽은 SHA와 적용 여부를 HANDOFF에 남긴다(D00 §3). A=CURRENT+D02, B=CURRENT+D01 매번 전문, D00·D03 최초/변경 시 전문 재독. 지팀장은 CURRENT+D00+D03+D01+D02 매번 전문.
 
 | 담당 | 이번 실행: 자기 개발 우선 | 상대 검증 조건 |
 |---|---|---|
