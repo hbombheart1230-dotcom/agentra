@@ -19,7 +19,7 @@
 - 소스 수정 시 import·동적 patchability·공개 API·side effect·거래 안전 동등성 및 UI 연결 patchnotes JSON/MD를 확인한다. 테스트 산출물은 격리·정리하며 오라클 변경으로 실패를 숨기지 않는다.
 
 ## 3. RF 판정·검증·통합
-- RF 큐는 pending → verification/{claude|codex} ↔ rework/{claude|codex} → done. 폴더는 원개발자 기준이며 지팀장만 이동·DONE 판정한다. 이전 파일, 새 파일, CURRENT 링크, STATUS 집계를 함께 점검하고 일부 실패 시 이동 미완료로 기록한다.
+- RF 큐는 pending → verification/{claude|codex} ↔ rework/{claude|codex} → done. REWORK 원인이 해결되면 해당 실패를 종결하고, RF 전체 인수조건과 통합 SHA 검증도 충족되면 같은 회차 DONE으로 이동한다. 폴더는 원개발자 기준이며 지팀장만 이동·DONE 판정한다. 이전 파일, 새 파일, CURRENT 링크, STATUS 집계를 함께 점검하고 일부 실패 시 이동 미완료로 기록한다.
 - REWORK는 원개발자 소유의 재현된 코드 결함 또는 구체적 계약 미충족에 한정한다. BASE·후보 코드 SHA, 실패 node, 소유자, 허용 경로, FIX/KEEP 조건, 다음 peer를 해당 RF에 기록한다. 기존 BASE 실패, 환경, 타 RF 소유권, 안전 HOLD는 별도 차단으로 분류한다.
 - 자체 PASS와 독립 peer PASS를 구별한다. 기존 유효 normal/-O·peer 증거를 재사용하고 신규 코드 SHA와 미검증 위험만 상대 read-only peer가 확인한다. PASS_SCOPED는 전체 PASS가 아니다. 추가 검증 요구에는 구체적인 실패·미충족 계약 근거가 필요하다.
 - 전체 인수조건·peer PASS·소유권 승인 후 지팀장은 소유 경로만 integration/p1.5 최신 HEAD에 선별 통합한다. 통합된 정확한 SHA의 필수 normal/-O PASS 후 DONE. KEEP만으로 DONE 아님. 지팀장 수정도 독립 peer 필수.
