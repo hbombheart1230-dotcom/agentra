@@ -16,8 +16,8 @@ docs/refactor/plan/queue/
     CLAUDE_A/    # Claude A가 Codex B의 후보를 검증
     CODEX_B/     # Codex B가 Claude A의 후보를 검증
   04_LEAD_ACCEPTANCE/
-    CLAUDE_A/    # 원개발 Claude A, 처리 권한은 지팀장
-    CODEX_B/     # 원개발 Codex B, 처리 권한은 지팀장
+    FROM_CLAUDE_A/ # 원개발 Claude A, 처리 권한은 지팀장
+    FROM_CODEX_B/  # 원개발 Codex B, 처리 권한은 지팀장
   05_DONE/
     CLAUDE_A/
     CODEX_B/
@@ -28,8 +28,8 @@ docs/refactor/plan/queue/
 
 ## 불변 조건
 1. RF-001~RF-093은 각각 정확히 하나의 활성 단계·파일에만 존재한다. 단계 간 이동은 Git rename에 준하는 내용 보존·원본 삭제·신규 경로 확인을 하나의 원자적 커밋으로 처리한다.
-2. PENDING/DEVELOPING/REWORK/DONE/LEAD_ACCEPTANCE 하위 팀은 **원개발팀**이다. PEER_REVIEW 하위 팀은 **실제 독립 검증팀**이다. 교차 팀이 개발 권한을 갖는다는 뜻이 아니다.
-3. 원개발자가 source SHA와 정상/-O 및 구체 인수 증거를 제출하면 DEVELOPING→PEER_REVIEW/상대팀. peer 완료 시 PEER_REVIEW→LEAD_ACCEPTANCE/원개발팀. 실제 결함만 REWORK/원개발팀. D03 인수·통합 exact SHA 완료 시 DONE/원개발팀.
+2. PENDING/DEVELOPING/REWORK/DONE 하위 팀은 **원개발팀**이고 LEAD_ACCEPTANCE의 `FROM_CLAUDE_A`/`FROM_CODEX_B`는 **원개발팀 출처**이다. `LEAD/` 중복 계층은 사용하지 않는다. PEER_REVIEW 하위 팀은 **실제 독립 검증팀**이다. 교차 팀이 개발 권한을 갖는다는 뜻이 아니다.
+3. 원개발자가 source SHA와 정상/-O 및 구체 인수 증거를 제출하면 DEVELOPING→PEER_REVIEW/상대팀. peer 완료 시 PEER_REVIEW→LEAD_ACCEPTANCE/FROM_원개발팀. 실제 결함만 REWORK/원개발팀. D03 인수·통합 exact SHA 완료 시 DONE/원개발팀.
 4. REWORK 해결 뒤 새 SHA만 재-peer한다. 동일 source SHA·동일 테스트 경계 반복 금지. KEEP_NOOP는 원본 owner/test blob 동일성과 기존 독립 증거를 근거로 지팀장이 직접 종결할 수 있다.
 5. 위험 안전 HOLD·환경 차단은 정확한 해제 조건을 기록한다. 추상적 부분 PASS라는 이유로 개발팀에 재배정하지 않는다.
 6. 지팀장만 큐 이동, STATUS/CURRENT 정합성 및 최종 DONE을 승인한다. PC 런검증팀은 이동 권한이 없다.
