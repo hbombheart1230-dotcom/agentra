@@ -35,3 +35,16 @@
 
 - 다음 행동: 지팀장 판정(RF-033/034/032 KEEP 수용 여부·RF-030 (a)/(b)/(c)). A 단독으로 더 진행할 안전한 신규 경계는 RF-033 잔여 `data_provider.py`/`crypto_fear_greed.py`(네트워크 provider, mock 필요)와 RF-032 write owner 29개의 tmp 쓰기 경로(허용 시) — 다음 배정에 포함 요청. DONE 주장 아님(상대 B peer·통합 exact SHA 전).
 - PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
+
+---
+## 추가 회차 — RF-033 네트워크 provider 경계 (handoff 105가 다음 후보로 남긴 미검증 경계)
+
+- RUN_ID: 2026-10-26T0917Z-claude-a-sched-106 · A 시작 `4e9f0ae9` · integration `f88e511d`(CURRENT `68a9573d`, A 섹션은 105가 처리한 `5d6a6505` 판과 동일, RF-063/065만 지팀장 LEAD 인수) · B `5fb0e131`(직전 대비 문서 커밋만, 신규 B 소스 SHA 없음). **A 소스 코드 변경 없음(NO_CHANGE).** CURRENT 1~5순위는 105가 이미 수행 → 반복 안 함.
+- **RF-033 `baseline_btc_woori_tech/{crypto_fear_greed.py,data_provider.py}` (blob==BASE==integration; 105가 "mock 필요"로 남긴 경계):** 하네스 `evidence/run103_boundary_scripts/rf033_providers.py`(저장소 루트에서 실행). 격리: 자격 증명 env 제거, 소켓·subprocess·os.system·sqlite3·쓰기 `open`/`write_text`/`mkdir` 차단, `urlopen`/`require_yfinance`/`merge_capture_into_signal_payload`는 in-process fake로 교체(실제 네트워크·yfinance·캡처 파일 접근 0). 차단 시도 0.
+  - `crypto_fear_greed.load_crypto_fear_greed_index`: 정확한 날짜 행 채택·`exact_day_not_found_latest_used`·빈 응답·`data` 누락·비매핑 JSON·불량 행(`value_missing`)·타임아웃/OSError/JSON 오류 → 모두 `fetch_failed:<ExcType>` 등 사유와 함께 `available=False` 반환(예외 비전파), 요청 URL `…/fng/?limit=30&format=json`·UA `TradingAgentSystem/1.0`·timeout 전달, 레짐 경계(≤24 extreme_fear, ≤44 fear, ≤55 neutral, ≤74 greed, 그 외 extreme_greed, 분류 문자열 우선).
+  - `data_provider`: `evaluate_multihorizon_leading_signal` 288조합, `_yf_rows`(최근 2일 제한 80행·tz 없는 시각은 UTC 간주·비datetime 인덱스·close≤0 제외·중복 epoch 정리·`history` 예외→`[]`·빈/None 프레임→`[]`·반복 중 예외→`[]`), `_momentum_rows`(5행 미만→`[]`, 80행→75행), `signal_at`(5개 시점: 이전/동시/+60s/+2h/+2일, stale 판정·소스 집계·빈 payload→`btc_signal_unavailable`), `load_btc_signal_rows`(3소스 75행, 연구 컨텍스트 80/3행, `include_research_context=False`→빈 목록, `DataSourceDependencyError`→`available=False`·`dependency_missing:yfinance_missing` 사유 전달·연구 행 빈 목록).
+  - 실행: `python rf033_providers.py` → `RF033_PROVIDERS_OK fg=12 dp=21 debug=True` **exit 0**, `python -O …` `debug=False` **exit 0**. integration `f88e511d`·BASE `63182ab2`·normal·`-O` 4개 출력 JSON(45,415바이트) **바이트 동일**. 판정: **PEER_PASS_SCOPED / 소비자 경계 신규 입증**, 코드 결함·BASE 차이 0, FIX 불필요, patchnotes 해당 없음.
+- 미검증 잔여(다음 후보): RF-032 쓰기 owner 29개의 tmp 쓰기 경로(허용 시, 105 요청 사항), RF-033 `point_in_time_capture.merge_capture_into_signal_payload` 실제 구현의 파일 읽기/쓰기 경계.
+- RF-030 = 승인 대기 유지(`03b255e5` 통합 금지). RF-007 = ENV_BLOCK.
+- 다음 행동: 지팀장 판정/배정 대기. 배정 없으면 위 잔여 경계 진행.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
