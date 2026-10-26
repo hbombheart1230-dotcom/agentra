@@ -1,13 +1,15 @@
-# Agentra P1.5 — CURRENT (이번 턴)
+# Agentra P1.5 — CURRENT (지팀장 배정, 이번 턴)
 
-| 담당 | 지금 턴에 할 일 |
+| 담당 | 지금 턴에 실행할 RF와 작업 |
 |---|---|
-| **A Claude** | **새 A 소유 미완료 RF 착수.** RF-029는 38 owner KEEP/FIX0 제출 완료이므로 재검증·재보고 금지. 지팀장이 물리 큐에서 소유권과 비동결 조건을 확인해 다음 번호를 배정한다. |
-| **B Codex** | **새 B 소유 미완료 RF 착수.** RF-070의 85 scoped PASS·57 정적 분류, RF-066의 17 AST·정적 peer·7 표적 PASS를 재실행하지 않는다. 이 두 RF의 미충족 인수조건은 지팀장이 판정하고, 새 재현 결함이나 특정 최초 미검증 경계가 있을 때만 별도 지시한다. |
-| **지팀장** | **RF-029 KEEP/FIX0 인수 판정·peer 이동 여부 결정. RF-070/066 기존 증거로 KEEP/HOLD/peer 판정. RF-001 통합 SHA 검증 및 RF-028 B 최초 peer의 남은 게이트 관리.** A/B 다음 소유 RF를 물리 큐에서 실제 번호까지 확정·배정하고 큐/STATUS를 동기화한다. |
+| **A Claude** | **RF-030 (16 owner, reporting/operator period summary)**: `libs/reporting/operator_period_summary.py` 및 `operator_period_summary_parts/**`, `operator_candidate_decisions.py` 등 [FILE_COVERAGE](../plan/FILE_COVERAGE_63182ab2.csv)의 RF-030 전용 16파일. 소유권·호출/IO/State·실제 혼합 책임을 확인하고 재현 결함은 최소 FIX, 없으면 KEEP 근거 제출. RF-029 38 owner 증거 재검증 금지. 이어서 **RF-031 (22 owner, reporter AI review)**. |
+| **B Codex** | **RF-071 (42 owner, scripts utilities)**: `scripts/analyze_entry_blockers.py`, `scripts/approval_cli.py`, `scripts/cleanup_pytest_artifacts.py` 등 [FILE_COVERAGE](../plan/FILE_COVERAGE_63182ab2.csv)의 RF-071 전용 42파일. 먼저 읽기/정적 분석으로 실행 효과 분류, 안전한 소비자·CLI 경계만 격리 검증, 실제 결함 최소 FIX 또는 KEEP. 운영 명령·파일 삭제·승인·주문 효과 실행 금지. 이어서 후속 RF는 지팀장 배정 대기. RF-070/066 기존 증거 재실행 금지. |
+| **지팀장** | **RF-029 KEEP/FIX0 최종 인수 판정**, RF-070/066 KEEP/HOLD·남은 게이트 판정, RF-001 통합 SHA 검증 및 RF-028 최초 B peer 관리. **RF-030/031 A, RF-071 B 소유권을 물리 큐에 정합화**하고 정확한 경로 확인 후 큐 이동·STATUS 갱신. |
 
-**예약 운영:** 매 회차 하던 일을 이어간다. 1시간 안에 모든 작업을 끝낼 필요 없다. 동일 SHA·동일 범위 검증 반복 금지. 새 재현 결함이 없으면 이미 제출한 KEEP/FIX0을 개발자에게 재배정하지 않는다.
+**배정 근거:** BASE `63182ab2`의 FILE_COVERAGE RF-030=16, RF-031=22, RF-071=42 owner. 이는 **이번 턴 실행 지시**이며 아직 물리 큐 이동이나 DONE 판정이 완료됐다는 뜻은 아니다. 물리 큐에서 RF의 실제 단계·UNASSIGNED 경로가 확인되지 않으면 다른 owner 파일은 수정하지 말고 지팀장에게 경로 충돌을 즉시 보고한다.
 
-**정본:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md) · [D03](D03_DEV_TEAM_RULES.md) · [A 역할](../../../CLAUDE.md) · [B 역할](../../../AGENTS.md) · [RF 큐 D05](D05_RF_PHYSICAL_QUEUE_20261026.md) · [STATUS](../plan/STATUS.md) · [A HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) · [B HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md).
+**연속 실행:** 예약 한도까지 현재 RF를 진행하고 다음 회차에 그대로 이어간다. 동일 SHA·동일 경계 반복 금지. 신규 source SHA·증거와 미완료 지점만 HANDOFF에 기록.
 
-**안전:** main·실거래·안전 계약·동결 오라클·예약 무승인 변경 금지. 부분 PASS·BLOCKED·NOT_RUN은 DONE이 아니다. GitHub 쓰기 실패 시 원인별 허용된 방법으로 재시도하고 원격 SHA를 확인한다.
+**정본:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md) → [D03](D03_DEV_TEAM_RULES.md) → [A 역할](../../../CLAUDE.md) / [B 역할](../../../AGENTS.md) · [D05 큐](D05_RF_PHYSICAL_QUEUE_20261026.md) · [STATUS](../plan/STATUS.md).
+
+**안전:** main·실거래·안전 계약·동결 오라클·예약 무승인 변경 금지. 부분 PASS/BLOCKED/NOT_RUN ≠ DONE.
