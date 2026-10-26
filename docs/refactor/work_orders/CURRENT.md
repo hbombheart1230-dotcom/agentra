@@ -1,3 +1,23 @@
+# Agentra P1.5 — 지팀장 B 슬롯 최신 정본 (2026-10-27 01시 이후 KST)
+
+**본 최상단 절이 아래 A/B 이전 실행 절과 충돌할 때 우선한다.** 유일한 실행 정본은 `integration/p1.5` CURRENT+D00. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. 작업 브랜치 CURRENT 사용 금지. LEAD 최종 DONE/REWORK·물리 큐·통합은 지팀장 전담. 동일 source SHA·동일 marker 재실행 금지.
+
+## 신규 진척·지팀장 직접 실행
+
+- **LEAD 실물 시작 14 / 신규 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14.** PENDING61 / DEVELOPING3 / PEER1 / LEAD14 / DONE14 / REWORK0 = 93 (이 회차 14 LEAD 실물 경로 재조회, 큐 이동0). 신규 운영 source 통합0. **이번 결과 `EXECUTION_INCOMPLETE`**, 부분 PASS를 DONE으로 이동하지 않는다.
+- **A 신규 run120/121 인수:** A `cf4bd4aa` RF-033 input delivery/forward/worker, RF-032 cost-basis writer, RF-034 profit-lock/strategist ROI; A `645f1313` RF-029 human payload→Markdown renderer 정상/-O exit0 원개발 scoped. B `8fe36a3d` 이후 신규 source/peer0. 신규 A 하네스 4개 Git blob 확인; 6 대표 owner BASE/integration/A/B blob 동일. 해당 신규 증거는 RF-029/032/033/034 원본에 지팀장이 직접 판정·반영, 새 코드 cherry-pick 없음.
+- **지팀장 RF-033 직접 신규 검증:** `input_delivery.py` 정확 Git blob `42525d03`, `input_worker.py` `2184c9ee`의 함수/클래스 AST만 tmp/fake에서 normal `python -S` **37 PASS/exit0**, `python -O -S` **37 PASS/exit0**, stderr empty. 원격 GitHub 하네스 `evidence/lead_rf033_input_delivery_boundary.py` commit `5542610e` 및 `lead_rf033_input_worker_consumer.py` commit `1b285ceb`는 실행본과 byte-identical. 09:00/capture fetch 게이트·90초/09:12 stale·08:55 snapshot·State·tmp writer·OSError/PermissionError 확인. 실제 fetch/order/thread/원본 패키지/atomic storage **NOT_RUN**. RF-033 판정 `65a8eaa9`. **실제 소비자:** `InputWorker.tick → input_delivery.publish_input`; `hypothesis_forward`는 tick 직접 caller 아님.
+- **CI:** hosted Safety `40332899631` normal/-O SUCCESS, Web `40073316192` SUCCESS를 직접 jobs 조회. `0da98a47 → integration` 코드/테스트/workflow 변경0, Web 검증 source/workflow 동일; 해당 범위만 재사용. 신규 전체 repo/hosted/effectful main **NOT_RUN**. Issue #32 SELL provenance/BUY guard/OCI source SHA UNKNOWN `SAFETY_HOLD`, 코드 REWORK/실거래/재배포 금지.
+- **troubleshooting:** open4 (branch local exit, RF020, source admission, RF012 finite) / closed1 (DOC CI), 신규 실제 해결0·이동0. RF-069 승인 historical UEF5 snapshot 부재, 무승인 fixture/오라클 생성 금지. STATUS `36f99586` 갱신 완료.
+
+## 다음 A/B 최초 실행 (기존 성공 marker 반복 금지)
+
+- **Codex B P0:** [RF-031](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md) 실제 `generate_reporter_analysis_report` helper graph→8 writer/day cache/partial OSError의 **새 독립 tmp-only fake normal/-O**. 이전 실패 `rf031_writer_ast_peer.py` 문자열 검사 폐기. env `EVENT_LOG_DAY_CACHE_DIR`, `STRATEGY_MEMORY_PATH`, `STRATEGY_MEMORY_DAILY_DIR`, `EVIDENCE_LEDGER_PATH`, cwd/log/reports root temp. 실 LLM/운영 root/frozen13/거래 금지. **P1:** RF-028 정식 `story_input.canonical_agent_artifacts` rich blocked summary/full 독립 peer. **P2:** RF-029 story assembly v1/v2 + canonical tmp-read 독립 peer(실제 writer 없음). **P3:** RF-032 cost-basis 또는 horizon writer 중 **새 독립** temp effect/idempotency/OSError. **P4:** RF-033 input_worker→publish/capture 최초 독립 peer(지팀장 37×2 및 A run120 동일 marker 반복 금지). 그다음 RF-014/016/050/015 기존 신규 경계 순.
+- **Claude A P0:** [RF-033](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-033.md) `input_delivery/hypothesis_forward/input_worker` run120 및 지팀장 37×2 반복 금지. `vnext/storage.py::publish`의 **아직 미검증** atomic replace/immutable no-clobber·OSError cleanup을 합성 temp-only, normal/-O, 외부 쓰기0으로 최초 검증. 실제 fetch·start_input_worker thread/운영 root 금지. **P1:** [RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md) run121 human renderer 반복 금지, `trade_story_pipeline.build_trade_story_input`의 실제 facade→bundle 조립·State/예외 최초 fake. **P2:** RF-032 cost-basis/horizon 반복 금지, 남은 `loss_decomposition/operator_summary_mining` 안전 writer. **P3:** RF-034 profit-lock/ROI 반복 금지, `opening_casebook/opening_policy_matrix` 신규 pure producer.
+- **지팀장:** 신규 peer 인수 즉시 LEAD **14 전건 직접 DONE/HOLD/REWORK 판정**, 인수조건 충족 건 즉시 `05_DONE/{원개발팀}` 원자 이동·구 경로 삭제·commit 확인 → 허용 소스 선별 통합·정확 tree CI → troubleshooting 실제 해결만 closed → STATUS → **CURRENT 마지막 갱신**. main/실거래/Broker/Supervisor/Executor/Step5C/UEF 안전 계약·동결 테스트/CI·예약/운영 데이터 무승인 변경 금지.
+
+---
+
 # Agentra P1.5 — 지팀장 A 슬롯 최신 정본 (2026-10-27 01시 KST)
 
 **이 최상단 실행 절이 아래 모든 이전 배정보다 우선.** 유일한 정본은 `integration/p1.5`의 이 CURRENT+D00. 작업 브랜치 CURRENT 금지. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. 동일 SHA·경계 재검증 금지. 지팀장이 LEAD 전건 최종 판정·큐 이동·통합을 소유한다.
