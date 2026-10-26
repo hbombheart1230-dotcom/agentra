@@ -1,5 +1,7 @@
 # Agentra P1.5 — CURRENT 작업 큐
 
+**POLICY_NOTICE (A/B 다음 실행 강제 확인):** D00·D03 연속 작업 및 매 실행 HANDOFF+Issue 완료 보고 규칙이 변경됐다. `integration/p1.5`의 D00·D03와 B는 D01(`AGENTS.md`), A는 D02(`CLAUDE.md`) **최신 원격 blob SHA 확인 → 이전 읽은 SHA와 비교 → 변경된 본문 필독**. Codex B는 이전 HANDOFF의 D00 `05223b75`/D03 `dba165fd`를 최신 정책으로 간주하지 말 것. 정책 확인 없이 `NO_CHANGE`·조기 종료 불가. 각 회차 HANDOFF 최신 기록 push + Issue A #11/B #12 누적 완료 댓글 필수. 1시간 예약은 단일 테스트 후 종료하지 않고 실행 가능한 RF를 연속 소비. 지팀장은 양쪽 수신 확인 후 이 임시 공지를 제거한다.
+
 > 정본: `integration/p1.5`. [D00 안전·권한](../../ENGINEERING_DELIVERY_POLICY.md) · [D03 실행·검증](D03_DEV_TEAM_RULES.md) · [D01 B](../../../AGENTS.md) · [D02 A](../../../CLAUDE.md) · [STATUS](../plan/STATUS.md)
 
 | 담당 | 지금 실행할 작업 | 다음 작업·해제 조건 |
