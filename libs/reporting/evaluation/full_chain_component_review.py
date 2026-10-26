@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import sys as _sys
 from collections import defaultdict
 import os
 from pathlib import Path
@@ -15,25 +14,6 @@ from libs.reporting.quant_shadow_candidate_evaluation import (
 from libs.reporting.quant_shadow_forward_outcomes import attach_forward_outcomes
 from libs.runtime.broker_cost_profile import load_broker_cost_profile
 
-from libs.reporting.evaluation.full_chain_review_parts.root_cause import (  # noqa: F401 - facade ABI re-exports
-    _classify_root_cause_impl,
-    _topk_metric_impl,
-)
-from libs.reporting.evaluation.full_chain_review_parts.attribution import (  # noqa: F401 - facade ABI re-exports
-    _decision_window_attribution_impl,
-    _paired_role_deltas_impl,
-    _q9_role_row_impl,
-    _role_metrics_impl,
-    _selection_availability_impl,
-)
-from libs.reporting.evaluation.full_chain_review_parts.component_decisions import (  # noqa: F401 - facade ABI re-exports
-    _attribution_component_impl,
-    _scanner_decision_impl,
-    _unavailable_component_impl,
-)
-from libs.reporting.evaluation.full_chain_review_parts.render import (  # noqa: F401 - facade ABI re-exports
-    render_full_chain_component_review_impl,
-)
 from .contracts import (
     CONTRACT_VERSION,
     DIRECTIONAL_MIN_DAYS,
@@ -83,7 +63,18 @@ def _topk_metric(
     top_k: int,
     horizon: str,
 ) -> dict[str, Any]:
-    return _topk_metric_impl(scanner_quality, top_k=top_k, horizon=horizon, facade=_sys.modules[__name__])
+    topk = scanner_quality.get("topk_forward_performance")
+    topk = topk if isinstance(topk, Mapping) else {}
+    return next(
+        (
+            dict(row)
+            for row in topk.get("rows") or []
+            if isinstance(row, Mapping)
+            and int(row.get("top_k") or 0) == top_k
+            and str(row.get("horizon") or "") == horizon
+        ),
+        {},
+    )
 
 
 def _classify_root_cause(
@@ -93,7 +84,110 @@ def _classify_root_cause(
     entry: Mapping[str, Any],
     exit_hold: Mapping[str, Any],
 ) -> dict[str, Any]:
-    return _classify_root_cause_impl(scanner_quality=scanner_quality, attribution=attribution, entry=entry, exit_hold=exit_hold, facade=_sys.modules[__name__])
+    scanner_top1 = _topk_metric(scanner_quality, top_k=1, horizon="+30m")
+    scanner_top3 = _topk_metric(scanner_quality, top_k=3, horizon="+30m")
+    scanner_enough = bool(
+        int(scanner_top1.get("window_count") or 0) >= DIRECTIONAL_MIN_OBSERVATIONS
+        and int(scanner_top1.get("observed_day_count") or 0) >= DIRECTIONAL_MIN_DAYS
+    )
+    top1_net = _number((scanner_top1.get("net") or {}).get("expectancy_pct"))
+    top3_net = _number((scanner_top3.get("net") or {}).get("expectancy_pct"))
+    scanner_fail = bool(
+        scanner_enough
+        and top1_net is not None
+        and top3_net is not None
+        and top1_net <= 0.0
+        and top3_net <= 0.0
+    )
+
+    attribution_30 = next(
+        (
+            row
+            for row in attribution.get("by_horizon") or []
+            if isinstance(row, Mapping) and row.get("horizon") == "+30m"
+        ),
+        {},
+    )
+    strategist_enough = bool(
+        int(attribution_30.get("strategist_comparison_count") or 0)
+        >= DIRECTIONAL_MIN_OBSERVATIONS
+        and int(attribution_30.get("strategist_day_count") or 0) >= DIRECTIONAL_MIN_DAYS
+    )
+    commander_enough = bool(
+        int(attribution_30.get("commander_comparison_count") or 0)
+        >= DIRECTIONAL_MIN_OBSERVATIONS
+        and int(attribution_30.get("commander_day_count") or 0) >= DIRECTIONAL_MIN_DAYS
+    )
+    strategist_delta = _number(attribution_30.get("average_strategist_delta_pct"))
+    commander_delta = _number(attribution_30.get("average_commander_delta_pct"))
+    strategist_fail = bool(
+        strategist_enough
+        and strategist_delta is not None
+        and strategist_delta <= -MIN_MATERIAL_RANKING_DELTA_PCT
+    )
+    commander_fail = bool(
+        commander_enough
+        and commander_delta is not None
+        and commander_delta <= -MIN_MATERIAL_RANKING_DELTA_PCT
+    )
+
+    entry_enough = bool(
+        int(entry.get("matched_trade_count") or 0) >= DIRECTIONAL_MIN_OBSERVATIONS
+        and int(entry.get("matched_day_count") or 0) >= DIRECTIONAL_MIN_DAYS
+    )
+    entry_delta = _number(entry.get("average_entry_price_delta_pct"))
+    entry_fail = bool(entry_enough and entry_delta is not None and entry_delta > 0.30)
+
+    exit_enough = bool(
+        int(exit_hold.get("observed_trade_count") or 0) >= DIRECTIONAL_MIN_OBSERVATIONS
+        and int(exit_hold.get("observed_day_count") or 0) >= DIRECTIONAL_MIN_DAYS
+    )
+    exit_5m = next(
+        (
+            row
+            for row in exit_hold.get("by_hold_offset") or []
+            if isinstance(row, Mapping) and row.get("offset") == "+5m"
+        ),
+        {},
+    )
+    exit_improvement = _number(exit_5m.get("average_improvement_pct"))
+    exit_fail = bool(exit_enough and exit_improvement is not None and exit_improvement >= 0.30)
+
+    statuses = {
+        "scanner_intrinsic_fail": scanner_fail,
+        "strategist_degradation": strategist_fail,
+        "commander_over_filtering": commander_fail,
+        "monitor_entry_fail": entry_fail,
+        "monitor_exit_fail": exit_fail,
+    }
+    primary = next((name for name, active in statuses.items() if active), "")
+    if not primary:
+        primary = (
+            "no_dominant_problem"
+            if all((scanner_enough, strategist_enough, commander_enough, entry_enough, exit_enough))
+            else "insufficient_sample"
+        )
+    return {
+        "schema_version": "q9_problem_segment_classification.v1",
+        "behavior_effect": "evaluation_only",
+        "primary_root_cause": primary,
+        "statuses": statuses,
+        "sample_status": {
+            "scanner": scanner_enough,
+            "strategist": strategist_enough,
+            "commander": commander_enough,
+            "monitor_entry": entry_enough,
+            "monitor_exit": exit_enough,
+        },
+        "evidence": {
+            "scanner_top1_net_expectancy_pct": top1_net,
+            "scanner_top3_net_expectancy_pct": top3_net,
+            "strategist_delta_pct": strategist_delta,
+            "commander_delta_pct": commander_delta,
+            "monitor_entry_price_delta_pct": entry_delta,
+            "monitor_exit_5m_improvement_pct": exit_improvement,
+        },
+    }
 
 
 def _role_metrics(
@@ -103,7 +197,27 @@ def _role_metrics(
     horizon: str,
     cost_pct: float,
 ) -> dict[str, Any]:
-    return _role_metrics_impl(candidates, role=role, horizon=horizon, cost_pct=cost_pct, facade=_sys.modules[__name__])
+    values: list[float] = []
+    days: set[str] = set()
+    for row in candidates:
+        if str(row.get("shadow_role") or "") != role:
+            continue
+        value = _checkpoint_return(row, horizon)
+        if value is None:
+            continue
+        values.append(value - cost_pct)
+        day = candidate_day(row)
+        if day:
+            days.add(day)
+    return {
+        "role": role,
+        "horizon": horizon,
+        "evidence_class": "TRUSTED_SHADOW",
+        "observed_count": len(values),
+        "observed_day_count": len(days),
+        "cost_adjusted": True,
+        **performance_metrics(values),
+    }
 
 
 def _paired_role_deltas(
@@ -111,11 +225,84 @@ def _paired_role_deltas(
     *,
     horizon: str,
 ) -> dict[str, Any]:
-    return _paired_role_deltas_impl(candidates, horizon=horizon, facade=_sys.modules[__name__])
+    windows: dict[str, dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
+    window_days: dict[str, str] = {}
+    for row in candidates:
+        role = str(row.get("shadow_role") or "")
+        if role not in {"top_pick", "runner_up_evaluated"}:
+            continue
+        value = _checkpoint_return(row, horizon)
+        if value is None:
+            continue
+        window = str(row.get("_payload_generated_at") or "")
+        if not window:
+            continue
+        windows[window][role].append(value)
+        window_days[window] = candidate_day(row) or ""
+    deltas: list[float] = []
+    days: set[str] = set()
+    for window, roles in windows.items():
+        top = roles.get("top_pick") or []
+        runner = roles.get("runner_up_evaluated") or []
+        if not top or not runner:
+            continue
+        deltas.append((sum(top) / len(top)) - (sum(runner) / len(runner)))
+        if window_days.get(window):
+            days.add(window_days[window])
+    return {
+        "horizon": horizon,
+        "comparison": "top_pick_minus_runner_up_evaluated",
+        "evidence_class": "TRUSTED_SHADOW",
+        "paired_window_count": len(deltas),
+        "observed_day_count": len(days),
+        "average_delta_pct": round(sum(deltas) / len(deltas), 4) if deltas else None,
+        "positive_delta_rate": round(sum(value > 0 for value in deltas) / len(deltas), 4) if deltas else None,
+        "delta_distribution": performance_metrics(deltas),
+    }
 
 
 def _selection_availability(models: list[dict[str, Any]]) -> dict[str, Any]:
-    return _selection_availability_impl(models, facade=_sys.modules[__name__])
+    raw_controls = 0
+    strategist_snapshots = 0
+    commander_snapshots = 0
+    comparable_strategist = 0
+    comparable_commander = 0
+    missing: dict[str, int] = defaultdict(int)
+    for model in models:
+        selection = model.get("selection") if isinstance(model.get("selection"), Mapping) else {}
+        raw_rows = selection.get("raw_scanner_top10")
+        raw_control = bool(
+            selection.get("raw_scanner_snapshot_source")
+            in {"control_snapshot", "scanner_intrinsic_control_snapshot"}
+            and isinstance(raw_rows, list)
+            and raw_rows
+        )
+        strategist = bool(
+            selection.get("strategist_run_id")
+            and isinstance(selection.get("post_strategist_top10"), list)
+            and selection.get("post_strategist_top10")
+        )
+        commander = bool(selection.get("commander_final_explicit"))
+        raw_controls += int(raw_control)
+        strategist_snapshots += int(strategist)
+        commander_snapshots += int(commander)
+        comparable_strategist += int(raw_control and strategist)
+        comparable_commander += int(strategist and commander)
+        if not raw_control:
+            missing["trusted_raw_scanner_top10"] += 1
+        if not strategist:
+            missing["strategist_run_and_post_ranking"] += 1
+        if not commander:
+            missing["explicit_commander_selection_or_veto"] += 1
+    return {
+        "trade_model_count": len(models),
+        "raw_scanner_control_count": raw_controls,
+        "strategist_snapshot_count": strategist_snapshots,
+        "commander_snapshot_count": commander_snapshots,
+        "scanner_vs_strategist_comparable_count": comparable_strategist,
+        "strategist_vs_commander_comparable_count": comparable_commander,
+        "missing_fields": dict(sorted(missing.items())),
+    }
 
 
 def _q9_decision_candidate_rows(payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -134,7 +321,16 @@ def _q9_role_row(
     roles: Mapping[str, list[dict[str, Any]]],
     role: str,
 ) -> dict[str, Any]:
-    return _q9_role_row_impl(roles, role, facade=_sys.modules[__name__])
+    rows = roles.get(role) or []
+    if role == "B_STRATEGIST_RANKED":
+        selected = next((row for row in rows if row.get("q9_selected")), None)
+        if selected:
+            return selected
+    return min(
+        rows,
+        key=lambda row: int(float(row.get("rank") or 999)),
+        default={},
+    )
 
 
 def _decision_window_attribution(
@@ -142,7 +338,126 @@ def _decision_window_attribution(
     *,
     cost_pct: float,
 ) -> dict[str, Any]:
-    return _decision_window_attribution_impl(payloads, cost_pct=cost_pct, facade=_sys.modules[__name__])
+    grouped: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+    for row in _q9_decision_candidate_rows(payloads):
+        decision_id = str(row.get("q9_decision_id") or "")
+        role = str(row.get("q9_decision_role") or "")
+        if decision_id and role:
+            grouped[decision_id][role].append(row)
+    by_horizon: list[dict[str, Any]] = []
+    for horizon in HORIZONS:
+        strategist_deltas: list[float] = []
+        refresh_deltas: list[float] = []
+        commander_deltas: list[float] = []
+        strategist_days: set[str] = set()
+        refresh_days: set[str] = set()
+        commander_days: set[str] = set()
+        for roles in grouped.values():
+            a_row = _q9_role_row(roles, "A_SCANNER_CONTROL")
+            b_row = _q9_role_row(roles, "B_STRATEGIST_RANKED")
+            r1_row = _q9_role_row(roles, "R1_PRE_REFRESH_SCANNER")
+            r2_row = _q9_role_row(roles, "R2_POST_REFRESH_SCANNER")
+            c_row = _q9_role_row(roles, "C_COMMANDER_FINAL")
+            a_value = _checkpoint_return(a_row, horizon) if a_row else None
+            b_value = _checkpoint_return(b_row, horizon) if b_row else None
+            if a_value is not None and b_value is not None:
+                strategist_deltas.append(b_value - a_value)
+                day = candidate_day(b_row)
+                if day:
+                    strategist_days.add(day)
+            r1_value = _checkpoint_return(r1_row, horizon) if r1_row else None
+            r2_value = _checkpoint_return(r2_row, horizon) if r2_row else None
+            if r1_value is not None and r2_value is not None:
+                refresh_deltas.append(r2_value - r1_value)
+                day = candidate_day(r2_row)
+                if day:
+                    refresh_days.add(day)
+            if b_value is None or not c_row:
+                continue
+            if c_row.get("q9_commander_no_trade"):
+                c_net = 0.0
+            else:
+                c_value = _checkpoint_return(c_row, horizon)
+                if c_value is None:
+                    continue
+                c_net = c_value - cost_pct
+            b_net = b_value - cost_pct
+            commander_deltas.append(c_net - b_net)
+            day = candidate_day(c_row)
+            if day:
+                commander_days.add(day)
+        by_horizon.append(
+            {
+                "horizon": horizon,
+                "strategist_comparison_count": len(strategist_deltas),
+                "strategist_day_count": len(strategist_days),
+                "average_strategist_delta_pct": (
+                    round(sum(strategist_deltas) / len(strategist_deltas), 4)
+                    if strategist_deltas
+                    else None
+                ),
+                "strategist_positive_delta_rate": (
+                    round(sum(value > 0 for value in strategist_deltas) / len(strategist_deltas), 4)
+                    if strategist_deltas
+                    else None
+                ),
+                "strategy_ranking_overlay_comparison_count": len(strategist_deltas),
+                "strategy_ranking_overlay_day_count": len(strategist_days),
+                "average_strategy_ranking_overlay_delta_pct": (
+                    round(sum(strategist_deltas) / len(strategist_deltas), 4)
+                    if strategist_deltas
+                    else None
+                ),
+                "strategy_ranking_overlay_positive_delta_rate": (
+                    round(sum(value > 0 for value in strategist_deltas) / len(strategist_deltas), 4)
+                    if strategist_deltas
+                    else None
+                ),
+                "post_scanner_refresh_comparison_count": len(refresh_deltas),
+                "post_scanner_refresh_day_count": len(refresh_days),
+                "average_post_scanner_refresh_delta_pct": (
+                    round(sum(refresh_deltas) / len(refresh_deltas), 4)
+                    if refresh_deltas
+                    else None
+                ),
+                "post_scanner_refresh_positive_delta_rate": (
+                    round(sum(value > 0 for value in refresh_deltas) / len(refresh_deltas), 4)
+                    if refresh_deltas
+                    else None
+                ),
+                "commander_comparison_count": len(commander_deltas),
+                "commander_day_count": len(commander_days),
+                "average_commander_delta_pct": (
+                    round(sum(commander_deltas) / len(commander_deltas), 4)
+                    if commander_deltas
+                    else None
+                ),
+                "commander_positive_delta_rate": (
+                    round(sum(value > 0 for value in commander_deltas) / len(commander_deltas), 4)
+                    if commander_deltas
+                    else None
+                ),
+            }
+        )
+    return {
+        "schema_version": "q9_decision_window_attribution.v1",
+        "role_semantics": {
+            "A_SCANNER_CONTROL": "same-universe intrinsic Scanner ranking; not a full pre-Strategist control",
+            "B_STRATEGIST_RANKED": "strategy-weighted Scanner ranking",
+            "R1_PRE_REFRESH_SCANNER": "first Scanner result before optional tactical refresh",
+            "R2_POST_REFRESH_SCANNER": "Scanner result after optional tactical refresh",
+            "C_COMMANDER_FINAL": "Commander final approval or veto",
+        },
+        "full_strategist_contribution_status": "NOT_MEASURABLE",
+        "full_strategist_missing_control": "strategy-neutral candidate sourcing and ranking shadow",
+        "decision_window_count": len(grouped),
+        "candidate_row_count": sum(
+            len(rows) for roles in grouped.values() for rows in roles.values()
+        ),
+        "by_horizon": by_horizon,
+    }
 
 
 def _attribution_component(
@@ -153,7 +468,60 @@ def _attribution_component(
     missing_comparison: str,
     availability: dict[str, Any],
 ) -> dict[str, Any]:
-    return _attribution_component_impl(attribution=attribution, component=component, question=question, missing_comparison=missing_comparison, availability=availability, facade=_sys.modules[__name__])
+    prefix = "strategist" if component == "strategist" else "commander"
+    primary = next(
+        (
+            row for row in attribution.get("by_horizon") or []
+            if row.get("horizon") == "+30m"
+        ),
+        {},
+    )
+    count = int(primary.get(f"{prefix}_comparison_count") or 0)
+    days = int(primary.get(f"{prefix}_day_count") or 0)
+    delta = _number(primary.get(f"average_{prefix}_delta_pct"))
+    positive_rate = _number(primary.get(f"{prefix}_positive_delta_rate"))
+    enough = count >= DIRECTIONAL_MIN_OBSERVATIONS and days >= DIRECTIONAL_MIN_DAYS
+    material = (
+        enough
+        and delta is not None
+        and positive_rate is not None
+        and delta >= MIN_MATERIAL_RANKING_DELTA_PCT
+        and positive_rate >= MIN_POSITIVE_RANKING_DELTA_RATE
+    )
+    if not enough:
+        return {
+            "decision": DecisionClass.INSUFFICIENT_EVIDENCE.value,
+            "question": question,
+            "finding": (
+                f"{component.title()} has {count} comparable +30m windows across {days} day(s); "
+                "the fixed 20-observation and 2-day threshold is not complete."
+            ),
+            "missing_comparison": (
+                f"at least {DIRECTIONAL_MIN_OBSERVATIONS} comparable +30m windows across "
+                f"{DIRECTIONAL_MIN_DAYS} days; current={count} windows/{days} days"
+            ),
+            "availability": dict(availability),
+            "primary_horizon": "+30m",
+            "metrics": dict(primary),
+            "behavior_change_authorized": False,
+        }
+    return {
+        "decision": (
+            DecisionClass.PROMOTION_CANDIDATE.value
+            if material
+            else DecisionClass.ADJUST_AND_RETEST.value
+        ),
+        "question": question,
+        "finding": (
+            f"{component.title()} shows a material +30m delta."
+            if material
+            else f"{component.title()} does not show a material +30m delta under the fixed contract."
+        ),
+        "missing_comparison": None,
+        "primary_horizon": "+30m",
+        "metrics": dict(primary),
+        "behavior_change_authorized": False,
+    }
 
 
 def _scanner_decision(
@@ -161,7 +529,52 @@ def _scanner_decision(
     role_metrics: list[dict[str, Any]],
     paired: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    return _scanner_decision_impl(role_metrics=role_metrics, paired=paired, facade=_sys.modules[__name__])
+    top_30 = next(
+        (row for row in role_metrics if row["role"] == "top_pick" and row["horizon"] == "+30m"),
+        {},
+    )
+    pair_30 = next((row for row in paired if row["horizon"] == "+30m"), {})
+    enough = (
+        int(pair_30.get("paired_window_count") or 0) >= DIRECTIONAL_MIN_OBSERVATIONS
+        and int(pair_30.get("observed_day_count") or 0) >= DIRECTIONAL_MIN_DAYS
+    )
+    relative_positive = (
+        enough
+        and float(pair_30.get("average_delta_pct") or 0.0) >= MIN_MATERIAL_RANKING_DELTA_PCT
+        and float(pair_30.get("positive_delta_rate") or 0.0) >= MIN_POSITIVE_RANKING_DELTA_RATE
+    )
+    absolute_positive = float(top_30.get("expectancy_pct") or 0.0) > 0
+    decision = (
+        DecisionClass.RETAIN.value
+        if relative_positive and absolute_positive
+        else DecisionClass.ADJUST_AND_RETEST.value
+        if relative_positive
+        else DecisionClass.ADJUST_AND_RETEST.value
+        if enough
+        else DecisionClass.INSUFFICIENT_EVIDENCE.value
+    )
+    return {
+        "decision": decision,
+        "question": "Does Scanner ranking put stronger candidates ahead of runner-ups and retain cost-positive edge?",
+        "relative_ranking_effect_positive": relative_positive,
+        "absolute_cost_adjusted_edge_positive": absolute_positive,
+        "primary_horizon": "+30m",
+        "finding": (
+            "Top-pick ordering is directionally better than evaluated runner-ups, but the selected "
+            "Top-pick set remains cost-negative; ranking direction is useful while candidate quality "
+            "and horizon calibration require adjustment."
+            if relative_positive and not absolute_positive
+            else "Scanner Top-pick ordering does not establish a material ranking effect after "
+            "applying the fixed +0.30% delta and 55% positive-window thresholds."
+            if not relative_positive
+            else "Scanner ranking and absolute cost-adjusted edge are both positive."
+        ),
+        "missing_comparison": None if enough else "paired Top-pick and runner-up forward outcomes",
+        "materiality_contract": {
+            "minimum_average_delta_pct": MIN_MATERIAL_RANKING_DELTA_PCT,
+            "minimum_positive_delta_rate": MIN_POSITIVE_RANKING_DELTA_RATE,
+        },
+    }
 
 
 def _unavailable_component(
@@ -170,7 +583,14 @@ def _unavailable_component(
     missing_comparison: str,
     availability: dict[str, Any],
 ) -> dict[str, Any]:
-    return _unavailable_component_impl(question=question, missing_comparison=missing_comparison, availability=availability, facade=_sys.modules[__name__])
+    return {
+        "decision": DecisionClass.INSUFFICIENT_EVIDENCE.value,
+        "question": question,
+        "finding": "Historical value-add cannot be measured without the named control comparison.",
+        "missing_comparison": missing_comparison,
+        "availability": availability,
+        "behavior_change_authorized": False,
+    }
 
 
 def build_full_chain_component_review(
@@ -461,7 +881,132 @@ def build_full_chain_component_review(
 
 
 def render_full_chain_component_review(payload: Mapping[str, Any]) -> str:
-    return render_full_chain_component_review_impl(payload, facade=_sys.modules[__name__])
+    date_range = payload.get("range") or {}
+    components = payload.get("component_decisions") or {}
+    lines = [
+        f"# Q9 Full-Chain Component Review ({date_range.get('start')} ~ {date_range.get('end')})",
+        "",
+        "Evaluation-only. No runtime or trading policy change is authorized.",
+        "",
+        "## Final Component Decisions",
+        "",
+        "| Component | Decision | Finding / Missing Comparison |",
+        "|---|---|---|",
+    ]
+    for key in ("scanner", "strategist", "commander", "monitor_entry", "monitor_exit", "full_system"):
+        row = components.get(key) or {}
+        detail = row.get("missing_comparison") or row.get("finding") or ""
+        lines.append(f"| {key} | `{row.get('decision')}` | {detail} |")
+    scanner = components.get("scanner") or {}
+    lines += [
+        "",
+        "## Scanner: Cost-Adjusted Role Metrics",
+        "",
+        "| Role | Horizon | Count/Days | Expectancy | Win Rate | PF |",
+        "|---|---|---:|---:|---:|---:|",
+    ]
+    for row in scanner.get("role_cost_adjusted_metrics") or []:
+        lines.append(
+            f"| {row.get('role')} | {row.get('horizon')} | "
+            f"{row.get('observed_count')}/{row.get('observed_day_count')} | "
+            f"{row.get('expectancy_pct')}% | {float(row.get('win_rate') or 0):.1%} | "
+            f"{row.get('profit_factor')} |"
+        )
+    lines += [
+        "",
+        "## Scanner: Paired Ranking Effect",
+        "",
+        "| Horizon | Paired Windows/Days | Top-pick Minus Runner-up | Positive Rate |",
+        "|---|---:|---:|---:|",
+    ]
+    for row in scanner.get("paired_role_comparisons") or []:
+        lines.append(
+            f"| {row.get('horizon')} | {row.get('paired_window_count')}/{row.get('observed_day_count')} | "
+            f"{row.get('average_delta_pct')}% | {float(row.get('positive_delta_rate') or 0):.1%} |"
+        )
+    scanner_quality = ((payload.get("evidence") or {}).get("scanner_quality") or {})
+    lines += [
+        "",
+        "## Scanner: Same-Universe Intrinsic Top-K Forward Performance",
+        "",
+        "| Top-K | Horizon | Windows/Days | Gross Expectancy | Net Expectancy |",
+        "|---:|---|---:|---:|---:|",
+    ]
+    for row in (scanner_quality.get("topk_forward_performance") or {}).get("rows") or []:
+        lines.append(
+            f"| {row.get('top_k')} | {row.get('horizon')} | "
+            f"{row.get('window_count')}/{row.get('observed_day_count')} | "
+            f"{(row.get('gross') or {}).get('expectancy_pct')}% | "
+            f"{(row.get('net') or {}).get('expectancy_pct')}% |"
+        )
+    lines += [
+        "",
+        "## Scanner: Candidate Source Performance",
+        "",
+        "| Source | Horizon | Count/Days | Net Expectancy | Win Rate |",
+        "|---|---|---:|---:|---:|",
+    ]
+    for row in (scanner_quality.get("source_performance") or {}).get("rows") or []:
+        lines.append(
+            f"| {row.get('source')} | {row.get('horizon')} | "
+            f"{row.get('count')}/{row.get('observed_day_count')} | "
+            f"{row.get('expectancy_pct')}% | {float(row.get('win_rate') or 0):.1%} |"
+        )
+    problem = payload.get("problem_segment") or {}
+    lines += [
+        "",
+        "## Problem Segment",
+        "",
+        f"- primary root cause: **{problem.get('primary_root_cause')}**",
+        f"- statuses: `{json.dumps(problem.get('statuses') or {}, ensure_ascii=False, sort_keys=True)}`",
+    ]
+    entry = (components.get("monitor_entry") or {}).get("metrics") or {}
+    exit_row = (components.get("monitor_exit") or {}).get("metrics") or {}
+    realized = ((components.get("full_system") or {}).get("metrics") or {}).get("performance") or {}
+    availability = (payload.get("evidence") or {}).get("selection_availability") or {}
+    attribution = (payload.get("evidence") or {}).get("decision_window_attribution") or {}
+    lines += [
+        "",
+        "## Attribution Availability",
+        "",
+        f"- trade models: {availability.get('trade_model_count')}",
+        f"- same-universe intrinsic Scanner controls: {availability.get('raw_scanner_control_count')}",
+        f"- Strategist snapshots: {availability.get('strategist_snapshot_count')}",
+        f"- Commander snapshots: {availability.get('commander_snapshot_count')}",
+        f"- intrinsic vs strategy-weighted comparable: {availability.get('scanner_vs_strategist_comparable_count')}",
+        f"- Strategist vs Commander comparable: {availability.get('strategist_vs_commander_comparable_count')}",
+        f"- Q9 decision windows with forward candidates: {attribution.get('decision_window_count')}",
+        f"- Q9 A/B/C forward candidate rows: {attribution.get('candidate_row_count')}",
+        "",
+        "## Monitor Entry",
+        "",
+        f"- matched trades/days: {entry.get('matched_trade_count')} / {entry.get('matched_day_count')}",
+        f"- average entry-price delta: {entry.get('average_entry_price_delta_pct')}%",
+        f"- median entry-price delta: {entry.get('median_entry_price_delta_pct')}%",
+        "",
+        "## Monitor Exit",
+        "",
+        f"- observed exits/days: {exit_row.get('observed_trade_count')} / {exit_row.get('observed_day_count')}",
+        f"- +5m average improvement: {next((row.get('average_improvement_pct') for row in exit_row.get('by_hold_offset') or [] if row.get('offset') == '+5m'), None)}%",
+        "",
+        "## Realized Full System",
+        "",
+        f"- trades: {realized.get('count')}",
+        f"- win rate: {float(realized.get('win_rate') or 0):.1%}",
+        f"- expectancy: {realized.get('expectancy_pct')}%",
+        f"- profit factor: {realized.get('profit_factor')}",
+        f"- maximum drawdown: {realized.get('maximum_drawdown_pct')}%",
+        "",
+        "## Overall Decision",
+        "",
+        f"- decision: **{(payload.get('overall_decision') or {}).get('decision')}**",
+        f"- first actionable component: `{(payload.get('overall_decision') or {}).get('first_actionable_component')}`",
+        f"- reason: {(payload.get('overall_decision') or {}).get('reason')}",
+        "- historical review complete: **True**",
+        "- open-ended extension authorized: **False**",
+        "- behavior change authorized: **False**",
+    ]
+    return "\n".join(lines) + "\n"
 
 
 def write_full_chain_component_review(

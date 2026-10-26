@@ -130,8 +130,6 @@ from libs.reporting.operator_period_summary_parts.operator_readouts import (
     _operator_readout_r3_impl,
     _operator_label_fallback_r3_impl,
 )
-import sys as _period_sys
-from libs.agents.reporter.read_models import period_summary_projection as _period_projection
 
 
 _WEEK_RE = re.compile(r"^(\d{4})-W(\d{2})$")
@@ -876,18 +874,57 @@ def _runtime_activity_payload(
     except ValueError:
         q9_window_count, decisions, monitor_intents = 0, [], []  # unreadable file == no windows (as _read_json did)
     if q9_window_count:
-        return _period_projection.runtime_activity_from_q9_windows(q9_path=q9_path, q9_window_count=q9_window_count, decisions=decisions, monitor_intents=monitor_intents, facade=_period_sys.modules[__name__])
+        return {
+            "source": "q9_decision_windows",
+            "source_path": str(q9_path),
+            "events": q9_window_count,
+            "commander_decision_count": len(decisions),
+            "missing_commander_decision_count": max(0, q9_window_count - len(decisions)),
+            "approvals": sum(value in {"approve", "approved", "allow"} for value in decisions),
+            "blocks": sum(value in {"reject", "blocked", "veto"} for value in decisions),
+            "noops": sum(value in {"noop", "no_trade"} for value in decisions),
+            "monitor_buy_count": sum(value == "BUY" for value in monitor_intents),
+            "monitor_noop_count": sum(value == "NOOP" for value in monitor_intents),
+            "symbols_observed_count": 0,
+            "generated_symbol_report_count": 0,
+        }
 
     if source_payload and any(key in source_payload for key in explicit_runtime_keys):
-        return _period_projection.runtime_activity_from_daily_payload(source_payload=source_payload, facade=_period_sys.modules[__name__])
+        return {
+            "source": "daily_report_payload",
+            "events": _safe_int(source_payload.get("events")),
+            "approvals": _safe_int(source_payload.get("approvals")),
+            "blocks": _safe_int(source_payload.get("blocks")),
+            "symbols_observed_count": len(list(source_payload.get("symbols_observed") or [])),
+            "generated_symbol_report_count": _safe_int(source_payload.get("generated_symbol_report_count")),
+        }
 
     live_payload, live_path = _latest_live_summary_payload(reports_root, day)
     if not live_payload:
-        return _period_projection.runtime_activity_not_available(facade=_period_sys.modules[__name__])
+        return {
+            "source": "not_available",
+            "events": 0,
+            "approvals": 0,
+            "blocks": 0,
+            "symbols_observed_count": 0,
+            "generated_symbol_report_count": 0,
+        }
 
     events = live_payload.get("events") if isinstance(live_payload.get("events"), dict) else {}
     execution = live_payload.get("execution") if isinstance(live_payload.get("execution"), dict) else {}
-    return _period_projection.runtime_activity_from_live_summary(live_payload=live_payload, live_path=live_path, events=events, execution=execution, facade=_period_sys.modules[__name__])
+    return {
+        "source": "live_summary_fallback",
+        "source_path": live_path,
+        "lookback_min": _safe_int(live_payload.get("lookback_min")),
+        "events": _safe_int(events.get("window_total")),
+        "events_scanned_total": _safe_int(events.get("scanned_total")),
+        "approvals": _safe_int(execution.get("allowed_total")),
+        "blocks": _safe_int(execution.get("blocked_total")),
+        "executed_total": _safe_int(execution.get("executed_total")),
+        "broker_fail_total": _safe_int(execution.get("executed_broker_fail_total")),
+        "symbols_observed_count": 0,
+        "generated_symbol_report_count": 0,
+    }
 
 
 def _operator_readout(
@@ -1001,7 +1038,23 @@ def build_operator_daily_summary_artifact_payload(
         exit_counts=counters.get("exit_reasons") or Counter(),
         entry_counts=counters.get("entry_reasons") or Counter(),
     )
-    _period_projection.apply_critical_closeout_readout(summary=summary, facade=_period_sys.modules[__name__])
+    residual_risk = (
+        summary.get("residual_positions", {}).get("closeout_operational_risk")
+        if isinstance(summary.get("residual_positions"), dict)
+        else {}
+    )
+    if isinstance(residual_risk, dict) and str(residual_risk.get("severity") or "").lower() == "critical":
+        readout = summary["operator_readout"]
+        symbols_text = ", ".join(str(x) for x in list(residual_risk.get("unresolved_symbols") or []) if str(x).strip())
+        readout["issues"] = [
+            f"CRITICAL closeout issue: broker truth still has unclosed position(s): {symbols_text or '-'}",
+            *list(readout.get("issues") or []),
+        ]
+        readout["recommended_actions"] = [
+            "Next open: flatten unresolved position(s) at market before new BUY evaluation.",
+            *list(readout.get("recommended_actions") or []),
+        ]
+        readout["root_cause"] = "장마감 청산/검증 루프가 broker truth 잔여 포지션을 완전히 닫지 못했습니다."
     return summary
 
 
