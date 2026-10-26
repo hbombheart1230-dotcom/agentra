@@ -2,6 +2,11 @@
 
 **기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 15시 KST, 물리 큐 93개 파일 직접 계수): PENDING 67 / DEVELOPING 2 / PEER_REVIEW 11 / LEAD_ACCEPTANCE 2 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
+## 지팀장 A 실행 — RF-030 원소유 배정·기술 판정 (2026-10-26)
+- **실제 원격 RF 이동:** `01_PENDING/UNASSIGNED/RF-030.md` → `01_PENDING/CLAUDE_A/RF-030.md`, commit `f73d73607e2061d0dca2d13b5cea535db44a4424` (Git tree 원자 이동). `STAGE=01_PENDING`, `ORIGINAL_OWNER=CLAUDE_A`, `ACTIVE_ACTOR=CLAUDE_A`, `ACTION=FIX_TARGETED_OR_KEEP_PROVEN`, **NOT_DONE**. 16/16 owner source blob BASE `63182ab2`=integration `1f8ea0bf`=A `11073cec` 원격 검증; 신규 owner 코드 diff **0**, 선별 통합 **0**. A HANDOFF 99의 `NO_EXECUTABLE_OWNER` 원인은 RF-029 PEER 이동 후 신규 A RF 미배정; 이번 RF-030 배정으로 작업 지시 차단 해제, 실제 A 코드 SHA/normal/-O **NOT_RUN**.
+- **남은 게이트:** B RF-001 최신 integration exact-SHA 3 tests normal/-O 미제출, RF-028·029 신규 B 독립 peer 미제출, A RF-008 최초 위험 peer 미제출. RF-069 historical UEF5 snapshot 환경 차단 유지. A/B 최신 CURRENT/D03 정책 적용은 HANDOFF에서 실제 실행으로 확인 필요. RF-030 개발 후 B peer·integration SHA 검증 전 DONE 금지.
+- **물리 큐 집계 불변:** PENDING 67(UNASSIGNED 66, CLAUDE_A 1), DEVELOPING 2, PEER_REVIEW 11, LEAD_ACCEPTANCE 2, REWORK 0, DONE 11; 93개 단일 경로 재검증 필요. main·실거래·안전·오라클·예약 변경 없음.
+
 ## 지팀장 RF-029 PEER 물리 이동 (2026-10-26 B 슬롯)
 - A 38 owner KEEP/FIX0 및 normal/-O 실패 9/8의 환경·타 RF 원인 분류 수용. BASE/A/integration libs/reporting 전체 subtree `79ddb05912dd96787af4cc7ccefc14ad561a8f13` 동일, source KEEP_NOOP 후보. **RF-029 PENDING/CLAUDE_A → PEER_REVIEW/CODEX_B** 원자 이동, B 최초 독립 위험 경계 peer 대기. DONE 아님. 상태 PENDING 67/DEVELOPING 2/PEER 11/LEAD 2/DONE 11; 93개 유일성 검증 필요.
 
