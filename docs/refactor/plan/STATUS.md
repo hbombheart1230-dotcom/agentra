@@ -119,7 +119,7 @@
 | 범위 | 기준선 파일 | 독립 작업 | 상태 |
 |---|---:|---|---|
 | `.github/` | 7 | [RF-092](pending/RF-092.md) | 미판정 |
-| `apps/` | 240 | [RF-001](rework/codex/RF-001.md) · [RF-002](done/RF-002.md) · [RF-003](done/RF-003.md) · [RF-004](done/RF-004.md) · [RF-005](done/RF-005.md) · [RF-006](done/RF-006.md) · [RF-007](verification/codex/RF-007.md) | 미판정 |
+| `apps/` | 240 | [RF-001](verification/codex/RF-001.md) · [RF-002](done/RF-002.md) · [RF-003](done/RF-003.md) · [RF-004](done/RF-004.md) · [RF-005](done/RF-005.md) · [RF-006](done/RF-006.md) · [RF-007](verification/codex/RF-007.md) | 미판정 |
 | `config/` | 8 | [RF-090](pending/RF-090.md) | 미판정 |
 | `data/` | 25 | [RF-091](pending/RF-091.md) | 미판정 |
 | `deploy/` | 33 | [RF-087](pending/RF-087.md) · [RF-088](pending/RF-088.md) · [RF-089](pending/RF-089.md) | 미판정 |
@@ -160,8 +160,8 @@
 | `libs/supervisor/` | 4 | [RF-060](pending/RF-060.md) | 미판정 |
 | `libs/tools/` | 3 | [RF-061](pending/RF-061.md) | 미판정 |
 
-**RF 상태:** [pending](pending/) **72건** → [verification/claude](verification/claude/) **5건** / [verification/codex](verification/codex/) **10건** ↔ [rework/claude](rework/claude/) **0건** / [rework/codex](rework/codex/) **0건** → [done](done/) **6건** = **총 93건**. verification에는 검증 대기·PASS_SCOPED·BLOCKED가 포함된다. rework에는 지팀장이 구체적 소유 경로 보완을 확정한 원개발자 RF만 이동하며, 동일 RF를 여러 상태에 중복 보관하지 않는다. DONE은 전체 peer·소유권·선별 통합 및 D03 §3A에 따른 통합 코드 SHA normal/-O 증거 확인 후 지팀장만 판정한다. hosted CI는 필수 아님.
+**RF 상태(최신 큐 판정):** pending **72건** / verification **13건** / rework **0건** / done **8건** = **총 93건**. RF-001은 `verification/codex` 단일 경로이며 `PASS_SCOPED / BLOCKED / NOT_DONE`. 완료 판단은 D03 §3을 따른다. 과거 회차 수치와 지시는 역사 기록으로만 보존한다.
 
-**현재 배정:** [CURRENT](../work_orders/CURRENT.md) 기준 A/B 모두 rework 없음. A는 RF-020→009→001 신규 peer 증거와 RF-069 신규 CLI 경계 peer 후 RF-019/017 개발, B는 RF-013 기존 67 owner KEEP peer 재사용 및 RF-069 잔여 offline/mock→RF-070 read-only 인벤토리를 진행한다. RF-013 신규 9 + RF-030/035 소비자 4는 RF-074 frozen test 실패로 NOT_ADMITTED. 각 회차에서 실행 가능한 복수 RF 처리, BLOCKED만 건너뛴다.
+**현재 배정:** [CURRENT](../work_orders/CURRENT.md)가 유일한 최신 작업 큐. 이 STATUS의 과거 회차 배정은 실행 지시로 사용하지 않는다.
 
 **전수 소유권:** [3985파일↔RF CSV](FILE_COVERAGE_63182ab2.csv) · [P1.5.0~11 합격 기준](criteria/). 회차별 실행 이력은 Git 이력·RF·HANDOFF에서 확인한다.
