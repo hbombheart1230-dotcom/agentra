@@ -1,6 +1,6 @@
 # Agentra P1.5 — CURRENT
 
-**매 예약·수동 실행 시작 전 무조건 본문 재독(지팀장 포함):** CURRENT → [D00](../../ENGINEERING_DELIVERY_POLICY.md) → [D03](D03_DEV_TEAM_RULES.md) → [D01](../../../AGENTS.md) / [D02](../../../CLAUDE.md). **지팀장은 모두 읽는다.** SHA 불변이어도 생략 금지.
+**매 실행 읽기:** A=CURRENT+D02, B=CURRENT+D01. A/B는 D00·D03 최초/변경 시만 전문 재독. 지팀장은 매번 CURRENT+D00+D03+D01+D02 전문 재독.
 
 | 담당 | 이번 실행: 자기 개발 우선 | 상대 검증 조건 |
 |---|---|---|
