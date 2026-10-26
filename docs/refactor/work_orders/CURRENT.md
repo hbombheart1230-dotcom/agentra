@@ -14,6 +14,14 @@
 
 **지팀장은 이미 나온 증거의 RF 판정·큐 이동·소스 통합을 개발자에게 되돌리지 마라.** 직접 ACCEPT/HOLD/KEEP/FIX/PEER/REWORK/INTEGRATE를 결정하고 물리 큐를 갱신하라. 다음 배정을 확정한 뒤 CURRENT를 마지막에 고쳐라. 이 상시 지시형 운영 규칙을 이후 CURRENT 개정에서도 반드시 유지하라.
 
+## 지팀장 P0 — LEAD_ACCEPTANCE 병목 직접 소진 (2026-10-26)
+
+**담당: 지팀장 / 신규 A·B 배정보다 우선.** 물리 `04_LEAD_ACCEPTANCE` 8건 전수 경로와 SHA를 열거해 기존 원개발·독립 peer·normal/-O·소비자/IO/State·예외·exact integration SHA·CI 증거로 **각각 직접** ACCEPT/DONE, HOLD, REWORK 판정하라. A/B에게 최종 판정을 재위임하지 않는다. 재검증은 새로운 위험 경계에만 허용한다. KEEP_NOOP도 전체 owner·공개 소비자·CI 게이트 충족 시 DONE 가능하며, 부분 PASS·NOT_RUN은 DONE 금지. 최종 통과 건은 `05_DONE`으로 단일 물리 경로 이동하고 STATUS를 동기화하라. 이동 후 93 RF 고유 ID/누락/중복 0 및 정확한 integration SHA 확인. 막힌 건은 누락 게이트와 해제 조건을 RF별 기록하고 즉시 다음 LEAD RF 판정으로 전환하라.
+
+**기존 확인된 HOLD:** RF-008 standalone/외부 read-only fail-soft 및 BASE 기존 FAIL, RF-028 85-owner 소비자/효과, RF-029 38-owner 소비자/CI, RF-063 진단 CLI 효과/locale, RF-065 연구 CLI 효과/locale, RF-067 14-owner Windows PATH·Scheduler/preflight. RF-001의 과거 exact `b5fe3dd9` 787×2 PASS는 재실행하지 않되 현행 SHA/hosted CI 범위를 구별한다. 남은 LEAD 경로도 전수 확인한다. #32 SELL provenance·BUY guard·reconciliation/Operator GREEN·image SHA는 런환경/미확정 후보로만 보존하고 안전 계약/배포/REWORK 무승인 변경 금지.
+
+**회차 종료조건:** 실제 RF 판정 및 가능한 물리 이동·선별 통합 먼저, open/closed troubleshooting의 종료 증거 확인, STATUS 변경 시 갱신, A/B 신규 안전 경계 재배정, CURRENT **마지막 갱신**. 이동·통합 0이면 그 원인과 해제 조건을 명시하고 EXECUTION_INCOMPLETE 보고. 기존 valid normal/-O·peer 재실행 금지.
+
 ## Claude A — `work/p15-a-reporter-pure-20261021`
 
 **인수 완료·재실행 금지:** run106 RF-033 provider `fg=12 dp=21`; run107 RF-067 두 root wrapper, RF-065 agent-effectiveness scorecard, RF-063 metrics schema CLI normal/-O exit 0은 지팀장이 수용했다. **RF-067은 LEAD로 이동**, A는 동일 wrapper peer 재실행 금지. RF-063 metrics CLI는 쓰기형(tmp-only)이지 read-only가 아니다. RF-030 `03b255e5` frozen RF-074 충돌 후보는 통합 금지 HOLD.
