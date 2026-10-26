@@ -252,3 +252,20 @@
 - 판정: 4건 모두 **PEER_PASS_SCOPED**(A 최초 원개발자 검증), 코드 결함·BASE 차이 0, FIX 불필요, DONE 주장 아님. B 후속 독립 peer용 정확 입력: 위 blob + 하네스 경로, 정상/`-O` exit 0 marker.
 - 반복 안 함: run 116/117 전체, RF-029 B projection peer, RF-032 기존 28 writer, RF-033 기존 provider/capture marker. 남은 미검증: RF-032 write owner 중 나머지(`loss_decomposition`·`cost_basis_comparison`·`operator_summary_mining` 등), RF-033 `hypothesis_features.py`(379줄, 소비자 `hypothesis_forward`/`input_worker`).
 - PUSH_VERIFIED: push 후 확인.
+
+---
+## 추가 회차 — RF-033: run 118이 미검증으로 남긴 `hypothesis_features.py`
+
+- RUN_ID: 2026-10-26T1522Z-claude-a-sched-119 · A 시작 `9fbe4ad6`(run 118 포함) · integration `e46de735`(CURRENT `4ce17c50`; A P0 RF-029·P1 RF-032·P2 RF-014·P3 RF-033 배정은 run 118이 이미 수행 → 반복 안 함) · B `8f4c8f77`(HANDOFF_B 문서 커밋만, 신규 B 소스 SHA 없음). **A 소스 코드 변경 없음(NO_CHANGE)**; `baseline_btc_woori_tech/hypothesis_features.py` blob == BASE == integration. 하네스 `evidence/run103_boundary_scripts/rf033_hypothesis_features_peer.py`(저장소 루트에서 실행). 순수 모듈(IO·네트워크·env 없음, import는 stdlib + `.contracts`)이라 별도 fake 불필요.
+- 실행: `python rf033_hypothesis_features_peer.py` → `RF033_HYPOTHESIS_FEATURES_OK btc=12 daily=8 local=9 pullback=4 gap_bands=10 malformed=5 mutation=none debug=True` **exit 0**, `-O` `debug=False` **exit 0**. integration `e46de735`·BASE `63182ab2`·normal·`-O` 4개 출력 JSON(12,446바이트) **바이트 동일**. 검증은 `assert` 대신 `check()`(SystemExit)라 `-O`에서도 유효. 분기 커버리지 99%(161문장 중 미실행 0, 분기 56개 중 부분 1개).
+- **확인된 계약(변경 없음):**
+  - `_btc_0855`: 캡처 상태 `MISSING/MISSED`→`status=MISSING`(사유 전달·기본 `btc_0855_capture_unavailable`); `CAPTURED`이고 `btc_0855_captured_sources`가 비어 있지 않으면 그 소스가 `sources`보다 우선(비어 있으면 `sources`로 폴백). **look-ahead 방어:** 08:55 KST 이후 행은 무시하고 이전 행 중 최신만 사용, 나이 300초 초과(301초)는 제외·300초는 허용. `btc_krw`/`btc_usd` 평균, 임계 3/4/5/7%에 대한 불리언 맵, 비숫자 momentum은 해당 소스만 제외, `price` 없으면 `close` 사용, `sources`가 매핑이 아니면 MISSING.
+  - `_daily_context`: 08:55 기준 **24시간 이전에 마감된 일봉만** 사용(최근 24시간 내 행 제외, 20개 미만이면 MISSING), 과거 7일 중 +3% 이상 일수로 `FIRST_SURGE/REPEATED_SURGE/NO_STRONG_SURGE`, 돌파 우선순위 `ATH > 60D > 20D > NO_BREAKOUT`(60일 돌파는 60개 이상일 때만), BTC USD 가격 없으면 MISSING.
+  - `_woori_previous_close`: 대상일 **이전** 일자 중 최신, `close<=0`·`ts<=0` 제외, 구조 불량 시 `None`. `_gap_band` 경계: `<0 NEGATIVE`, `[0,3) 0_TO_3`, `[3,5) 3_TO_5`, `[5,10) 5_TO_10`, `>=10 GTE_10`, `None→MISSING`.
+  - `_local_snapshot`: 진입 분봉 없음/진입가 없음→MISSING; 09:00은 완료 분봉이 없어 `opening_auction_entry_has_no_local_confirmation`(확인값 `None`); 그 외 확인 구간은 `entry_epoch-60s`까지, 거래량비 ≥1.2 또는 가격(시가 초과·직전 고점 돌파)으로 `local_confirmation`; 직전 거래량 0이면 비율 `None`.
+  - `_pullback_snapshot`: 09:05–09:30 첫 VWAP 터치 후 회복 → 다음 분 시가 진입(다음 분봉 없으면 MISSING, 거래량 0이면 건너뜀).
+  - `build_hypothesis_features`: 입력 `candles`·`btc_signals` 불변, 4개 진입 라벨+`PULLBACK`, 빈 입력은 전부 MISSING로 정상 반환. **예외(fail-soft 없음):** 날짜 형식 오류→`ValueError`, `candles=None`→`TypeError`, `ts` 문자열→`ValueError`, `btc_signals=None`→예외.
+- 판정: **PEER_PASS_SCOPED(순수 feature 계산, owner BASE 동일)**, 코드 결함·BASE 차이 0, FIX 불필요. 소비자(`input_delivery`·`vnext/features`·`hypothesis_pipeline`)의 효과 경로는 이번 범위 밖. DONE 아님.
+- 남은 미검증: RF-032 write owner 중 `loss_decomposition`·`cost_basis_comparison`·`operator_summary_mining` 등, RF-033 `input_delivery.py`·`hypothesis_forward.py`·`input_worker.py`. RF-030 = 승인 대기.
+- 다음: A 신규 CURRENT 배정 없음 → 신규 배정/B 소스 SHA 대기.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
