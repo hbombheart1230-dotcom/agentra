@@ -89,9 +89,9 @@
 | RF | 결정 책임 / 수행·독립 검증 | 차단을 푸는 **다음 구체적 증거** | 재개 상태 |
 |---|---|---|---|
 | [013](verification/claude/RF-013.md) | **GPT 교차 Owner/인벤토리 결정 / A 기존 67경로 KEEP 증거 / B peer** | 신규 9경로 단일 writer 및 RF-030/035 wrapper·RF-074 frozen inventory 충돌 없는 승인/증거 | `VERIFICATION/BLOCKED_CROSS_RF_OWNER` |
-| [014](verification/claude/RF-014.md) | **GPT** RF-009/019/030/035/074 경계 결정 / **A** 실패 2 node 원인 분리 / **B** peer | RF-014 20개와 output payload·Reporter consumer, BASE/후보 실패 대조 | `VERIFY_BLOCKED` |
-| [018](verification/claude/RF-018.md) | **GPT** RF-026/import·역사 CI 원인 판정 / **A** 2 FAIL·57 ERROR 그룹 증명 / **B** peer | 실패 node와 BASE/후보 동일 명령, RF-026 경계 분리 | `PEER_BLOCKED` |
-| [064](pending/RF-064.md) | **GPT** 외부 8경로 Owner·승인 범위 판정 / **B** source 2개·실패 대조 / **A** peer | 8경로 원소유+30 PASS/10 FAIL/57 ERROR 원인별 BASE 대조 | `PENDING/BLOCKED` |
+| [014](queue/03_PEER_REVIEW/CODEX_B/RF-014.md) | **GPT** RF-009/019/030/035/074 경계 결정 / **A** 실패 2 node 원인 분리 / **B** peer | RF-014 20개와 output payload·Reporter consumer, BASE/후보 실패 대조 | `VERIFY_BLOCKED` |
+| [018](queue/03_PEER_REVIEW/CODEX_B/RF-018.md) | **GPT** RF-026/import·역사 CI 원인 판정 / **A** 2 FAIL·57 ERROR 그룹 증명 / **B** peer | 실패 node와 BASE/후보 동일 명령, RF-026 경계 분리 | `PEER_BLOCKED` |
+| [064](queue/01_PENDING/UNASSIGNED/RF-064.md) | **GPT** 외부 8경로 Owner·승인 범위 판정 / **B** source 2개·실패 대조 / **A** peer | 8경로 원소유+30 PASS/10 FAIL/57 ERROR 원인별 BASE 대조 | `PENDING/BLOCKED` |
 
 - **고정 운영:** 매 지팀장 점검 때 CURRENT→새 HANDOFF/후보→위 RF의 **새 증거 여부**를 확인하고, 증거가 있으면 **그 회차에 GPT가 경로별 결정·다음 작업을 해당 RF에 기록**, 실행 대상만 CURRENT에 연결한다. 없으면 같은 SHA 재검증 없이 A/B가 다음 독립 RF를 진행한다. 역할·안전·테스트 오라클 권한은 D00 제약 불변.
 - **분명한 상태:** 위 표는 해결·재배정·코드 변경이 완료됐다는 뜻이 아닌 **지팀장 실제 실행 지시의 고정 위치**다. 최종 DONE은 독립 검증과 exact integration SHA CI 뒤에만 판정한다.
@@ -139,47 +139,47 @@
 ## 루트 폴더 전체 — 아래 파일 수는 **3,985 기준선** (현행 수량이 아님)
 | 범위 | 기준선 파일 | 독립 작업 | 상태 |
 |---|---:|---|---|
-| `.github/` | 7 | [RF-092](pending/RF-092.md) | 미판정 |
-| `apps/` | 240 | [RF-001](verification/codex/RF-001.md) · [RF-002](done/RF-002.md) · [RF-003](done/RF-003.md) · [RF-004](done/RF-004.md) · [RF-005](done/RF-005.md) · [RF-006](done/RF-006.md) · [RF-007](verification/codex/RF-007.md) | 미판정 |
-| `config/` | 8 | [RF-090](pending/RF-090.md) | 미판정 |
-| `data/` | 25 | [RF-091](pending/RF-091.md) | 미판정 |
-| `deploy/` | 33 | [RF-087](pending/RF-087.md) · [RF-088](pending/RF-088.md) · [RF-089](pending/RF-089.md) | 미판정 |
-| `docs/` | 1313 | [RF-079](pending/RF-079.md) · [RF-080](pending/RF-080.md) · [RF-081](pending/RF-081.md) · [RF-082](pending/RF-082.md) · [RF-083](pending/RF-083.md) · [RF-084](pending/RF-084.md) · [RF-085](pending/RF-085.md) · [RF-086](pending/RF-086.md) | 미판정 |
-| `graphs/` | 45 | [RF-008](verification/codex/RF-008.md) · [RF-009](rework/codex/RF-009.md) · [RF-010](pending/RF-010.md) · [RF-011](pending/RF-011.md) · [RF-012](pending/RF-012.md) | 미판정 |
-| `libs/` | 1227 | [RF-013](verification/claude/RF-013.md) · [RF-014](verification/claude/RF-014.md) · [RF-015](verification/claude/RF-015.md) · [RF-016](verification/claude/RF-016.md) · [RF-017](pending/RF-017.md) · [RF-018](verification/claude/RF-018.md) · [RF-019](pending/RF-019.md) · [RF-020](rework/codex/RF-020.md) · [RF-021](pending/RF-021.md) · [RF-022](pending/RF-022.md) · [RF-023](pending/RF-023.md) · [RF-024](pending/RF-024.md) · [RF-025](pending/RF-025.md) · [RF-026](pending/RF-026.md) · [RF-027](pending/RF-027.md) · [RF-028](pending/RF-028.md) · [RF-029](pending/RF-029.md) · [RF-030](pending/RF-030.md) · [RF-031](pending/RF-031.md) · [RF-032](pending/RF-032.md) · [RF-033](pending/RF-033.md) · [RF-034](pending/RF-034.md) · [RF-035](pending/RF-035.md) · [RF-036](pending/RF-036.md) · [RF-037](pending/RF-037.md) · [RF-038](pending/RF-038.md) · [RF-039](pending/RF-039.md) · [RF-040](pending/RF-040.md) · [RF-041](pending/RF-041.md) · [RF-042](pending/RF-042.md) · [RF-043](pending/RF-043.md) · [RF-044](pending/RF-044.md) · [RF-045](pending/RF-045.md) · [RF-046](pending/RF-046.md) · [RF-047](pending/RF-047.md) · [RF-048](pending/RF-048.md) · [RF-049](pending/RF-049.md) · [RF-050](pending/RF-050.md) · [RF-051](pending/RF-051.md) · [RF-052](pending/RF-052.md) · [RF-053](pending/RF-053.md) · [RF-054](pending/RF-054.md) · [RF-055](pending/RF-055.md) · [RF-056](pending/RF-056.md) · [RF-057](pending/RF-057.md) · [RF-058](pending/RF-058.md) · [RF-059](pending/RF-059.md) · [RF-060](pending/RF-060.md) · [RF-061](pending/RF-061.md) · [RF-062](pending/RF-062.md) | 미판정 |
-| `scripts/` | 418 | [RF-063](verification/codex/RF-063.md) · [RF-064](pending/RF-064.md) · [RF-065](verification/codex/RF-065.md) · [RF-066](verification/codex/RF-066.md) · [RF-067](verification/codex/RF-067.md) · [RF-068](pending/RF-068.md) · [RF-069](pending/RF-069.md) · [RF-070](verification/codex/RF-070.md) · [RF-071](pending/RF-071.md) | 미판정 |
-| `tests/` | 658 | [RF-072](pending/RF-072.md) · [RF-073](pending/RF-073.md) · [RF-074](pending/RF-074.md) · [RF-075](pending/RF-075.md) · [RF-076](pending/RF-076.md) · [RF-077](pending/RF-077.md) · [RF-078](pending/RF-078.md) | 미판정 |
-| 루트 파일 | 11 | [RF-093](pending/RF-093.md) | 미판정 |
+| `.github/` | 7 | [RF-092](queue/01_PENDING/UNASSIGNED/RF-092.md) | 미판정 |
+| `apps/` | 240 | [RF-001](queue/04_LEAD_ACCEPTANCE/CODEX_B/RF-001.md) · [RF-002](queue/05_DONE/CODEX_B/RF-002.md) · [RF-003](queue/05_DONE/CODEX_B/RF-003.md) · [RF-004](queue/05_DONE/CODEX_B/RF-004.md) · [RF-005](queue/05_DONE/CODEX_B/RF-005.md) · [RF-006](queue/05_DONE/CODEX_B/RF-006.md) · [RF-007](queue/03_PEER_REVIEW/CLAUDE_A/RF-007.md) | 미판정 |
+| `config/` | 8 | [RF-090](queue/01_PENDING/UNASSIGNED/RF-090.md) | 미판정 |
+| `data/` | 25 | [RF-091](queue/01_PENDING/UNASSIGNED/RF-091.md) | 미판정 |
+| `deploy/` | 33 | [RF-087](queue/01_PENDING/UNASSIGNED/RF-087.md) · [RF-088](queue/01_PENDING/UNASSIGNED/RF-088.md) · [RF-089](queue/01_PENDING/UNASSIGNED/RF-089.md) | 미판정 |
+| `docs/` | 1313 | [RF-079](queue/01_PENDING/UNASSIGNED/RF-079.md) · [RF-080](queue/01_PENDING/UNASSIGNED/RF-080.md) · [RF-081](queue/01_PENDING/UNASSIGNED/RF-081.md) · [RF-082](queue/01_PENDING/UNASSIGNED/RF-082.md) · [RF-083](queue/01_PENDING/UNASSIGNED/RF-083.md) · [RF-084](queue/01_PENDING/UNASSIGNED/RF-084.md) · [RF-085](queue/01_PENDING/UNASSIGNED/RF-085.md) · [RF-086](queue/01_PENDING/UNASSIGNED/RF-086.md) | 미판정 |
+| `graphs/` | 45 | [RF-008](queue/03_PEER_REVIEW/CLAUDE_A/RF-008.md) · [RF-009](rework/codex/RF-009.md) · [RF-010](queue/01_PENDING/UNASSIGNED/RF-010.md) · [RF-011](queue/01_PENDING/UNASSIGNED/RF-011.md) · [RF-012](queue/01_PENDING/UNASSIGNED/RF-012.md) | 미판정 |
+| `libs/` | 1227 | [RF-013](verification/claude/RF-013.md) · [RF-014](queue/03_PEER_REVIEW/CODEX_B/RF-014.md) · [RF-015](queue/03_PEER_REVIEW/CODEX_B/RF-015.md) · [RF-016](queue/03_PEER_REVIEW/CODEX_B/RF-016.md) · [RF-017](pending/RF-017.md) · [RF-018](queue/03_PEER_REVIEW/CODEX_B/RF-018.md) · [RF-019](pending/RF-019.md) · [RF-020](rework/codex/RF-020.md) · [RF-021](queue/01_PENDING/UNASSIGNED/RF-021.md) · [RF-022](queue/01_PENDING/UNASSIGNED/RF-022.md) · [RF-023](queue/01_PENDING/UNASSIGNED/RF-023.md) · [RF-024](queue/01_PENDING/UNASSIGNED/RF-024.md) · [RF-025](queue/01_PENDING/UNASSIGNED/RF-025.md) · [RF-026](queue/01_PENDING/UNASSIGNED/RF-026.md) · [RF-027](queue/01_PENDING/UNASSIGNED/RF-027.md) · [RF-028](queue/02_DEVELOPING/CLAUDE_A/RF-028.md) · [RF-029](queue/01_PENDING/CLAUDE_A/RF-029.md) · [RF-030](queue/01_PENDING/UNASSIGNED/RF-030.md) · [RF-031](queue/01_PENDING/UNASSIGNED/RF-031.md) · [RF-032](queue/01_PENDING/UNASSIGNED/RF-032.md) · [RF-033](queue/01_PENDING/UNASSIGNED/RF-033.md) · [RF-034](queue/01_PENDING/UNASSIGNED/RF-034.md) · [RF-035](queue/01_PENDING/UNASSIGNED/RF-035.md) · [RF-036](queue/01_PENDING/UNASSIGNED/RF-036.md) · [RF-037](queue/01_PENDING/UNASSIGNED/RF-037.md) · [RF-038](queue/01_PENDING/UNASSIGNED/RF-038.md) · [RF-039](queue/01_PENDING/UNASSIGNED/RF-039.md) · [RF-040](queue/01_PENDING/UNASSIGNED/RF-040.md) · [RF-041](queue/01_PENDING/UNASSIGNED/RF-041.md) · [RF-042](queue/01_PENDING/UNASSIGNED/RF-042.md) · [RF-043](queue/01_PENDING/UNASSIGNED/RF-043.md) · [RF-044](queue/01_PENDING/UNASSIGNED/RF-044.md) · [RF-045](queue/01_PENDING/UNASSIGNED/RF-045.md) · [RF-046](queue/01_PENDING/UNASSIGNED/RF-046.md) · [RF-047](queue/01_PENDING/UNASSIGNED/RF-047.md) · [RF-048](queue/01_PENDING/UNASSIGNED/RF-048.md) · [RF-049](queue/01_PENDING/UNASSIGNED/RF-049.md) · [RF-050](queue/01_PENDING/UNASSIGNED/RF-050.md) · [RF-051](queue/01_PENDING/UNASSIGNED/RF-051.md) · [RF-052](queue/01_PENDING/UNASSIGNED/RF-052.md) · [RF-053](queue/01_PENDING/UNASSIGNED/RF-053.md) · [RF-054](queue/01_PENDING/UNASSIGNED/RF-054.md) · [RF-055](queue/01_PENDING/UNASSIGNED/RF-055.md) · [RF-056](queue/01_PENDING/UNASSIGNED/RF-056.md) · [RF-057](queue/01_PENDING/UNASSIGNED/RF-057.md) · [RF-058](queue/01_PENDING/UNASSIGNED/RF-058.md) · [RF-059](queue/01_PENDING/UNASSIGNED/RF-059.md) · [RF-060](queue/01_PENDING/UNASSIGNED/RF-060.md) · [RF-061](queue/01_PENDING/UNASSIGNED/RF-061.md) · [RF-062](queue/01_PENDING/UNASSIGNED/RF-062.md) | 미판정 |
+| `scripts/` | 418 | [RF-063](queue/03_PEER_REVIEW/CLAUDE_A/RF-063.md) · [RF-064](queue/01_PENDING/UNASSIGNED/RF-064.md) · [RF-065](queue/03_PEER_REVIEW/CLAUDE_A/RF-065.md) · [RF-066](queue/02_DEVELOPING/CODEX_B/RF-066.md) · [RF-067](queue/03_PEER_REVIEW/CLAUDE_A/RF-067.md) · [RF-068](pending/RF-068.md) · [RF-069](pending/RF-069.md) · [RF-070](queue/02_DEVELOPING/CODEX_B/RF-070.md) · [RF-071](queue/01_PENDING/UNASSIGNED/RF-071.md) | 미판정 |
+| `tests/` | 658 | [RF-072](queue/01_PENDING/UNASSIGNED/RF-072.md) · [RF-073](queue/01_PENDING/UNASSIGNED/RF-073.md) · [RF-074](queue/01_PENDING/UNASSIGNED/RF-074.md) · [RF-075](queue/01_PENDING/UNASSIGNED/RF-075.md) · [RF-076](queue/01_PENDING/UNASSIGNED/RF-076.md) · [RF-077](queue/01_PENDING/UNASSIGNED/RF-077.md) · [RF-078](queue/01_PENDING/UNASSIGNED/RF-078.md) | 미판정 |
+| 루트 파일 | 11 | [RF-093](queue/01_PENDING/UNASSIGNED/RF-093.md) | 미판정 |
 
 ## libs/ 26개 패키지 — **기준선/현행 파일수 동일**, 최종 Owner 판정 별도
 | 패키지 | 파일 | 독립 작업 | 상태 |
 |---|---:|---|---|
-| `libs/agent/` | 14 | [RF-040](pending/RF-040.md) | 미판정 |
-| `libs/agents/` | 119 | [RF-013](verification/claude/RF-013.md) · [RF-014](verification/claude/RF-014.md) · [RF-015](verification/claude/RF-015.md) · [RF-016](verification/claude/RF-016.md) · [RF-017](pending/RF-017.md) | 미판정 |
-| `libs/ai/` | 6 | [RF-041](pending/RF-041.md) | 미판정 |
-| `libs/approval/` | 2 | [RF-042](pending/RF-042.md) | 미판정 |
-| `libs/catalog/` | 6 | [RF-043](pending/RF-043.md) | 미판정 |
-| `libs/contracts/` | 16 | [RF-044](pending/RF-044.md) | 미판정 |
-| `libs/core/` | 10 | [RF-045](pending/RF-045.md) | 미판정 |
-| `libs/data_quality/` | 2 | [RF-046](pending/RF-046.md) | 미판정 |
-| `libs/diagnostics/` | 4 | [RF-047](pending/RF-047.md) | 미판정 |
-| `libs/execution/` | 19 | [RF-048](pending/RF-048.md) | 미판정 |
-| `libs/kiwoom/` | 5 | [RF-049](pending/RF-049.md) | 미판정 |
-| `libs/llm/` | 8 | [RF-050](pending/RF-050.md) | 미판정 |
-| `libs/market/` | 8 | [RF-051](pending/RF-051.md) | 미판정 |
-| `libs/market_data/` | 2 | [RF-052](pending/RF-052.md) | 미판정 |
-| `libs/news/` | 12 | [RF-053](pending/RF-053.md) | 미판정 |
-| `libs/performance/` | 4 | [RF-054](pending/RF-054.md) | 미판정 |
-| `libs/read/` | 17 | [RF-055](pending/RF-055.md) | 미판정 |
-| `libs/reporting/` | 500 | [RF-028](pending/RF-028.md) · [RF-029](pending/RF-029.md) · [RF-030](pending/RF-030.md) · [RF-031](pending/RF-031.md) · [RF-032](pending/RF-032.md) · [RF-033](pending/RF-033.md) · [RF-034](pending/RF-034.md) · [RF-035](pending/RF-035.md) | 미판정 |
-| `libs/research/` | 110 | [RF-036](pending/RF-036.md) · [RF-037](pending/RF-037.md) · [RF-038](pending/RF-038.md) · [RF-039](pending/RF-039.md) | 미판정 |
-| `libs/risk/` | 3 | [RF-056](pending/RF-056.md) | 미판정 |
-| `libs/runtime/` | 322 | [RF-018](verification/claude/RF-018.md) · [RF-019](pending/RF-019.md) · [RF-020](rework/codex/RF-020.md) · [RF-021](pending/RF-021.md) · [RF-022](pending/RF-022.md) · [RF-023](pending/RF-023.md) · [RF-024](pending/RF-024.md) · [RF-025](pending/RF-025.md) · [RF-026](pending/RF-026.md) · [RF-027](pending/RF-027.md) | 미판정 |
-| `libs/skills/` | 6 | [RF-057](pending/RF-057.md) | 미판정 |
-| `libs/storage/` | 3 | [RF-058](pending/RF-058.md) | 미판정 |
-| `libs/strategies/` | 21 | [RF-059](pending/RF-059.md) | 미판정 |
-| `libs/supervisor/` | 4 | [RF-060](pending/RF-060.md) | 미판정 |
-| `libs/tools/` | 3 | [RF-061](pending/RF-061.md) | 미판정 |
+| `libs/agent/` | 14 | [RF-040](queue/01_PENDING/UNASSIGNED/RF-040.md) | 미판정 |
+| `libs/agents/` | 119 | [RF-013](verification/claude/RF-013.md) · [RF-014](queue/03_PEER_REVIEW/CODEX_B/RF-014.md) · [RF-015](queue/03_PEER_REVIEW/CODEX_B/RF-015.md) · [RF-016](queue/03_PEER_REVIEW/CODEX_B/RF-016.md) · [RF-017](pending/RF-017.md) | 미판정 |
+| `libs/ai/` | 6 | [RF-041](queue/01_PENDING/UNASSIGNED/RF-041.md) | 미판정 |
+| `libs/approval/` | 2 | [RF-042](queue/01_PENDING/UNASSIGNED/RF-042.md) | 미판정 |
+| `libs/catalog/` | 6 | [RF-043](queue/01_PENDING/UNASSIGNED/RF-043.md) | 미판정 |
+| `libs/contracts/` | 16 | [RF-044](queue/01_PENDING/UNASSIGNED/RF-044.md) | 미판정 |
+| `libs/core/` | 10 | [RF-045](queue/01_PENDING/UNASSIGNED/RF-045.md) | 미판정 |
+| `libs/data_quality/` | 2 | [RF-046](queue/01_PENDING/UNASSIGNED/RF-046.md) | 미판정 |
+| `libs/diagnostics/` | 4 | [RF-047](queue/01_PENDING/UNASSIGNED/RF-047.md) | 미판정 |
+| `libs/execution/` | 19 | [RF-048](queue/01_PENDING/UNASSIGNED/RF-048.md) | 미판정 |
+| `libs/kiwoom/` | 5 | [RF-049](queue/01_PENDING/UNASSIGNED/RF-049.md) | 미판정 |
+| `libs/llm/` | 8 | [RF-050](queue/01_PENDING/UNASSIGNED/RF-050.md) | 미판정 |
+| `libs/market/` | 8 | [RF-051](queue/01_PENDING/UNASSIGNED/RF-051.md) | 미판정 |
+| `libs/market_data/` | 2 | [RF-052](queue/01_PENDING/UNASSIGNED/RF-052.md) | 미판정 |
+| `libs/news/` | 12 | [RF-053](queue/01_PENDING/UNASSIGNED/RF-053.md) | 미판정 |
+| `libs/performance/` | 4 | [RF-054](queue/01_PENDING/UNASSIGNED/RF-054.md) | 미판정 |
+| `libs/read/` | 17 | [RF-055](queue/01_PENDING/UNASSIGNED/RF-055.md) | 미판정 |
+| `libs/reporting/` | 500 | [RF-028](queue/02_DEVELOPING/CLAUDE_A/RF-028.md) · [RF-029](queue/01_PENDING/CLAUDE_A/RF-029.md) · [RF-030](queue/01_PENDING/UNASSIGNED/RF-030.md) · [RF-031](queue/01_PENDING/UNASSIGNED/RF-031.md) · [RF-032](queue/01_PENDING/UNASSIGNED/RF-032.md) · [RF-033](queue/01_PENDING/UNASSIGNED/RF-033.md) · [RF-034](queue/01_PENDING/UNASSIGNED/RF-034.md) · [RF-035](queue/01_PENDING/UNASSIGNED/RF-035.md) | 미판정 |
+| `libs/research/` | 110 | [RF-036](queue/01_PENDING/UNASSIGNED/RF-036.md) · [RF-037](queue/01_PENDING/UNASSIGNED/RF-037.md) · [RF-038](queue/01_PENDING/UNASSIGNED/RF-038.md) · [RF-039](queue/01_PENDING/UNASSIGNED/RF-039.md) | 미판정 |
+| `libs/risk/` | 3 | [RF-056](queue/01_PENDING/UNASSIGNED/RF-056.md) | 미판정 |
+| `libs/runtime/` | 322 | [RF-018](queue/03_PEER_REVIEW/CODEX_B/RF-018.md) · [RF-019](pending/RF-019.md) · [RF-020](rework/codex/RF-020.md) · [RF-021](queue/01_PENDING/UNASSIGNED/RF-021.md) · [RF-022](queue/01_PENDING/UNASSIGNED/RF-022.md) · [RF-023](queue/01_PENDING/UNASSIGNED/RF-023.md) · [RF-024](queue/01_PENDING/UNASSIGNED/RF-024.md) · [RF-025](queue/01_PENDING/UNASSIGNED/RF-025.md) · [RF-026](queue/01_PENDING/UNASSIGNED/RF-026.md) · [RF-027](queue/01_PENDING/UNASSIGNED/RF-027.md) | 미판정 |
+| `libs/skills/` | 6 | [RF-057](queue/01_PENDING/UNASSIGNED/RF-057.md) | 미판정 |
+| `libs/storage/` | 3 | [RF-058](queue/01_PENDING/UNASSIGNED/RF-058.md) | 미판정 |
+| `libs/strategies/` | 21 | [RF-059](queue/01_PENDING/UNASSIGNED/RF-059.md) | 미판정 |
+| `libs/supervisor/` | 4 | [RF-060](queue/01_PENDING/UNASSIGNED/RF-060.md) | 미판정 |
+| `libs/tools/` | 3 | [RF-061](queue/01_PENDING/UNASSIGNED/RF-061.md) | 미판정 |
 
 **RF 상태(최신 큐 판정):** pending **71건** / verification **14건** / rework **0건** / done **8건** = **총 93건**. RF-001은 `verification/codex` 단일 경로이며 `PASS_SCOPED / BLOCKED / NOT_DONE`. 완료 판단은 D03 §3을 따른다. 과거 회차 수치와 지시는 역사 기록으로만 보존한다.
 
