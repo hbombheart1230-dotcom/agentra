@@ -1,23 +1,26 @@
-# Agentra P1.5 — CURRENT (지팀장 실행 지시판)
+# Agentra P1.5 — CURRENT
 
-**정본 파일 위치:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md) · [D03](D03_DEV_TEAM_RULES.md) · [D05](D05_RF_PHYSICAL_QUEUE_20261026.md) · [D06](D06_RF_ATTEMPT_AND_AUDIT_20261026.md). D00은 내용 변경 없이 이동.
+**원칙:** 한 RF = 한 실행 담당. 완료 이력은 [STATUS](../plan/STATUS.md)·각 RF·HANDOFF에서 확인한다. 이 파일은 **현재 행동만** 적는다.
 
-**D05/D06 물리 큐 전환 (ACTIVE):** [D05 물리 큐](D05_RF_PHYSICAL_QUEUE_20261026.md) · [D06 시도/핑퐁 감사](D06_RF_ATTEMPT_AND_AUDIT_20261026.md). 폴더 표기는 `CLAUDE_A` / `CODEX_B`. 93 RF는 `plan/queue/`에 단일 물리 경로로 이관. `plan/queue/`가 유일한 활성 RF 큐이며 과거 경로는 사용하지 않는다. A/B 예약 변경 없음. 새 문서 작성은 RF 코드 진척이나 DONE이 아니다.
+**정본 읽기:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md) → [D03](D03_DEV_TEAM_RULES.md) → [A 역할](../../../CLAUDE.md) / [B 역할](../../../AGENTS.md). 물리 큐 [D05](D05_RF_PHYSICAL_QUEUE_20261026.md)·[D06](D06_RF_ATTEMPT_AND_AUDIT_20261026.md).
 
-**정본:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md) · [D01 B](../../../AGENTS.md) · [D02 A](../../../CLAUDE.md) · [D03](D03_DEV_TEAM_RULES.md) · [STATUS](../plan/STATUS.md) · [FILE_COVERAGE](../plan/FILE_COVERAGE_63182ab2.csv). **원칙:** 자기 owner 개발 → 신규 SHA만 상대 peer → 지팀장 선별 통합·exact SHA 검증·DONE. HANDOFF/ACK만으로 회차 종료 금지. 위험 명령만 HOLD, 안전한 다음 RF 계속. main·실거래·안전 계약·오라클·예약 무승인 변경 금지.
+## 현재 실행 큐
 
-**POLICY_REREAD_REQUIRED (A/B):** 원격 D03 [현재 `d281c4dd`](D03_DEV_TEAM_RULES.md) (A 최종 수신 `4fe849a8` / run 98, B 최종 `471d7ab3` / run `B-20261026T0410Z`; 신규 `d281c4dd` 양쪽 미수신), 역할 정본 [D01 `b1865860`](../../../AGENTS.md) / [D02 `82396714`](../../../CLAUDE.md)도 이전 HANDOFF 이후 변경. A/B는 다음 실행 CURRENT·자기 역할 정본 전문 및 변경 D03 전문을 재독하고 시작/종료 SHA·실제 적용을 HANDOFF에 증명. A의 `4fe849a8` 수신은 직전 유효 증거이나 신규 `d281c4dd` 및 D05 `0b877de8` 수신·적용 완료는 아님. B `B-20261026T0410Z` RF-066 scoped 실행 수용, 정책·후속 착수는 `CONTINUATION_UNVERIFIED`. 수신·적용 확인 후 지팀장이 임시 항목 삭제.
+| 순서 | RF | 현재 실행 담당 | 지금 할 일 | 넘길 조건 |
+|---|---|---|---|---|
+| A-1 | [029](../plan/queue/01_PENDING/CLAUDE_A/RF-029.md) | **지팀장** | A 기존 38 owner KEEP/FIX0 근거 인수 판정. 새 결함 없으면 peer 이동, 있으면 파일·재현·FIX 범위 특정 | B peer 또는 구체 REWORK |
+| A-2 | **다음 A 소유 PENDING RF** | **A Claude** | RF-029 결과 대기 없이, 물리 큐에서 A 소유·비동결·미착수 RF를 선정해 실제 코드 개발. RF 번호·파일·소유권 확인 후 HANDOFF에 기록 | 최소 FIX·소스 SHA·focused normal/-O 또는 근거 있는 KEEP |
+| B-1 | [070](../plan/queue/02_DEVELOPING/CODEX_B/RF-070.md) | **B Codex** | 안전한 잔여 owner 중 재현 가능한 소비자·IO/side-effect 결함을 최소 FIX. 위험 launcher 32개 HOLD | 신규 소스 SHA 또는 특정 BLOCKED |
+| B-2 | [066](../plan/queue/02_DEVELOPING/CODEX_B/RF-066.md) | **B Codex** | fake OrderClient·임시 경로로 미검증 요청 계약을 확인하고 실제 결함만 FIX. 주문·고정 파일 쓰기 금지 | 신규 소스 SHA 또는 특정 BLOCKED |
+| V-1 | [001](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-001.md) | **B Codex (1회 검증)** | 최신 integration HEAD 격리 read-only, 아래 3파일 normal/-O 각 1회; HEAD·exit·실패 node 제출. 개발 반복 금지 | **지팀장**이 33 owner 인수·DONE 판정 |
+| V-2 | [028](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-028.md) | **B Codex (최초 peer)** | A 기존 KEEP 증거 재사용, 미검증 동적 소비자·State/IO·예외 경계만 독립 peer | **지팀장**이 LEAD_ACCEPTANCE·KEEP 판정 |
 
-## A Claude — 지금 할 일
-**[RF-029](../plan/queue/01_PENDING/CLAUDE_A/RF-029.md)**: trade_story 및 trade_read_model_parts 38 owner. 미충족 소비자·IO/State 계약만 확인하고 결함이 있으면 최소 FIX·신규 소스 SHA 제출. 결함이 없으면 KEEP 인수 판정 요청 후 다음 A owner RF로 진행. 기존 검증 반복 금지.
+**RF-001 검증 명령 대상:** `tests/test_p153_operator_ui_moved_bodies.py` · `tests/test_operator_ui_data_access_phase2.py` · `tests/test_operator_ui.py`. 동일 세 파일을 `python -m pytest -q`와 `python -O -m pytest -q`로 각각 실행한다.
 
-## B Codex — 지금 할 일
-1. **[RF-001](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-001.md)**: 최신 integration HEAD에서 지정된 3개 테스트 normal/-O 최초 실행, 실제 SHA·exit 제출. 과거 격리 PASS 반복 금지.
-2. **[RF-028](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-028.md)**: 최초 독립 peer. 신규 동적 소비자·IO/State 위험 경계만 판정.
-3. **[RF-070](../plan/queue/02_DEVELOPING/CODEX_B/RF-070.md) → [RF-066](../plan/queue/02_DEVELOPING/CODEX_B/RF-066.md)**: 안전한 owner의 실제 최소 FIX·신규 소스 SHA 우선. 위험 launcher·실제 주문 HOLD.
+## 예약 회차 처리
 
-## 지팀장 — 즉시 처리
-- RF-001 exact integration SHA 검증 수신 → 33 owner 인수 판정 → 충족 시 DONE 물리 이동.
-- RF-028 B peer 수신 → LEAD_ACCEPTANCE 이동 및 KEEP 인수 판정.
-- RF-029 기존 KEEP 증거 직접 판정 → peer 이동 또는 특정 FIX 배정.
-- RF 큐·STATUS 일치 확인. 같은 SHA 테스트 반복 금지. GitHub 쓰기 실패 시 허용된 방식으로 재시도하고 원격 SHA 확인.
+- **A:** A-2 실제 개발을 계속한다. RF-029는 지팀장 판정 대기 중이므로 동일 증거를 반복하지 않는다.
+- **B:** B-1 → B-2 개발을 계속한다. V-1/V-2는 **최초 미검증 경계에 한해 1회** 수행하며, 검증 때문에 자기 개발을 계속 미루지 않는다. 한 회차에 전부 못 하면 미착수 이유와 다음 항목을 HANDOFF에 남긴다.
+- **지팀장 (매시 02·32분):** A/B 신규 SHA·검증 결과 회수 → RF-029 직접 판정 → V-1/V-2 결과 인수 → 물리 큐 이동·선별 통합·STATUS 정합화. 다음 A RF가 아직 특정되지 않았으면 큐에서 소유권을 확인해 번호를 지정한다.
+
+**금지:** 동일 SHA·동일 테스트 반복, ACK/문서만으로 종료, Issue 댓글로 배정, 다른 RF owner 무단 수정, main·실거래·안전 계약·동결 오라클 무승인 변경. GitHub 쓰기 실패 시 원인 구분·허용된 재시도·원격 SHA 확인; 안전 검사 우회 금지. **NOT_RUN/BLOCKED/부분 PASS ≠ DONE.**
