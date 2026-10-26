@@ -38,7 +38,7 @@ cases = [
     ("relative/elsewhere", "relative/elsewhere"),
 ]
 for index, (src, expected) in enumerate(cases):
-    check(_canonical_reports_root(Path(src)) == Path(expected), `root_${index}`)
+    check(_canonical_reports_root(Path(src)) == Path(expected), f"root_{index}")
 
 with patch.dict(os.environ, {}, clear=True):
     check(_cache_dir(Path('/tmp/lead/events.jsonl')) == Path('/tmp/lead/.day_cache'), 'cache_default')
