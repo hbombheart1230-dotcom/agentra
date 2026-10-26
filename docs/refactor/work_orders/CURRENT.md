@@ -1,3 +1,37 @@
+# Agentra P1.5 — CURRENT (지팀장 B 슬롯 2026-10-26 22:38 KST 최종 배정)
+
+**정본:** `integration/p1.5` 이 CURRENT + D00. **본 절이 아래 22시·21시 배정보다 우선한다.** 작업 브랜치 CURRENT 사용 금지. 지팀장만 RF 최종 DONE/REWORK·물리 큐·통합 결정. 동일 source SHA/동일 경계 normal/`python -O`/peer 재실행 금지.
+
+## 지팀장 직접 실행·검증 결과
+
+- **LEAD 시작 15 / 신규 유입 0 / 직접 판정 15 / 신규 DONE 0 / REWORK 0 / 잔여 15.** GitHub 실물 LEAD A출처10+B출처5 전수 확인. 큐 `PENDING61/DEVELOPING3/PEER1(RF-018)/LEAD15/REWORK0/DONE13 = 93`, 물리 이동0·운영 소스 통합0. 15건 모두 최초 미충족 게이트가 남아 LEAD_HOLD, 근거 없는 DONE/REWORK 금지. RF별 구체 판정은 최신 STATUS와 원본 RF에 기록.
+- **A HEAD `77182853` run115 신규 정상/-O 3개 인수:** RF-008 market snapshot fake21, RF-016 strategic_answers facade keys16/q15 keys29/alias4/malformed15, RF-028 실제 report producer 43섹션 rich/minimal facade 동일. owner BASE=A=integration 정확 blob parity, 운영 source delta0. 지팀장 RF-008 `b412e84d`, RF-016 `4bda1be7`, RF-028 `dce1fc04` 신규 직접 판정. **B HEAD `2c866400`** 신규 source/peer 없음.
+- **지팀장 직접 Python normal/-O 각 8 PASS, exit0:** `graphs/nodes/build_market_snapshot.py` 정확 Git blob `af11f9d6`(4127 bytes) 격리 fake reader/no HTTP/no order/no operational writes. `AGENTRA_RF008_SOURCE=build_market_snapshot.py PYTHONDONTWRITEBYTECODE=1 python lead_rf008_price_finiteness.py` / `python -O` 둘 다 `RF008_FINITE_PRICE_LEAD_OBSERVED cases=8`, 새 pyc0. 재현 하네스 `docs/refactor/work_orders/evidence/lead_rf008_price_finiteness.py` Git blob `36445c0d`, commit `0da98a47`(로컬 동일 확인). **주의:** 이 파일은 `FILE_COVERAGE` 기준 RF-012 소유(PENDING/UNASSIGNED), RF-008 소유가 아니다. BASE 기존 NaN/Infinity/음수 quote 일부 mode 통과 관측은 **안전성 PASS가 아니라 위험 경계 발견**, 실거래 영향 UNKNOWN. 새 troubleshooting open `P15_RF012_MARKET_PRICE_FINITE_20261026.md` commit `f6e07bb2`. RF-008 원개발 REWORK/거래 안전 코드 변경 금지.
+- **CI 범위:** hosted `P1.5 Shared Offline Safety` run `40272648973` @ `f9126467ac160e44133cd31ce6e5562141a8bd70` `safety`/`safety (-O)` 두 job success 직접 확인. `f9126467 → 6caca50e` production source/tests/workflows diff0, 이후 문서/하네스/트러블슈팅만 추가. 이 **동일 safety 범위에만** CI 재사용, 전체 RF PASS 아님. 이번 회차 repo 전체 회귀/새 hosted CI `NOT_RUN`.
+- **Issue #32:** 19시 read-only final 이후 새 증거 없음, SELL 출처/BUY guard/OCI SOURCE_SHA `UNKNOWN/BLOCKED`; 새 RF-012 가격 관측과 원인 연결 추정 금지.
+- **troubleshooting:** 기존 open4 미해결·closed0; 신규 RF-012 안전 관측 open1 → **open5/closed0**, 실제 해결 이동0. STATUS 갱신 commit `767c8532` 후 **이 CURRENT를 마지막에 갱신**.
+
+## Codex B — `work/p15-b-operator-structure-20261022` (이번 배정 우선)
+
+1. **P0 RF-029** [LEAD RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md): unadvertised `081d3f70` fetch 재시도 금지. `git fetch origin work/p15-a-reporter-pure-20261021` → `read_truth_projection.py=62bda630`, `read_display_context.py=17f91f31`, `trade_read_model.py=783ccaaa` 세 blob 확인 → **신규** facade State alias/missing/invalid/예외 독립 synthetic tmp-only normal/`-O` 실제 exit/marker. A run112 truth14/display15 재실행 금지.
+2. **P1 RF-016** [LEAD RF-016](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-016.md): A run115 `rf016_strategic_answers.py` 원개발자 증거 재실행 금지. `node_policy_projection.py::strat_policy_commander_context_policy_adjustment` → facade `_build_strategic_answers` → 반환 `strategic_answers`의 중첩 alias4/State/예외/use-time patch **독립 신규** fake read-only normal/`-O` exit/marker. 기존 지팀장 theme13×2 재실행 금지.
+3. **P2 RF-028** [LEAD RF-028](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-028.md): A run115 정식 43섹션 producer→Markdown 증거 재실행 금지. 최초 `memory_application_surface`/`monitor_snapshot` 풍부 정식 스키마 분기와 예외/State/IO를 별도 합성 fake normal/`-O` 독립 peer. 이전 B latepatch4/State1/exception1 재실행 금지.
+4. **P3 RF-034** [LEAD RF-034](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-034.md): A run114 renderer↔pipeline·지팀장 metrics12×2 재실행 금지. 신규 독립 renderer payload/CRLF/ValueError/tmp writer 효과 fake normal/`-O` 검증.
+5. **P4 RF-050 → P5 RF-015:** RF-050 actual Strategist/Reporter/UI caller LLM error State/fallback 최초 독립 fake, RF-015 역사 11 BASE FAIL node별 동일 명령/환경 차이 분류. 기존 marker 반복 금지. RF-070/066/071 위험 main·cleanup/restart/Step5C 실행 금지; 남은 안전 정적 작업은 이후.
+
+## Claude A — `work/p15-a-reporter-pure-20261021` (이번 배정 우선)
+
+1. **P0 RF-031** [LEAD RF-031](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md): `reporter_analysis.py` 실제 writer/State/예외 및 CLI 소비자 AST-only 먼저, 기존 timeout B peer·BASE 3696 PASS/56 FAIL 재실행 금지. fresh fetch/실운영 root/13 frozen owner 실행 금지. 완전 tmp fake·외부 쓰기0 증명된 최초 경계만 normal/`-O` 원개발 증거.
+2. **P1 RF-028** [LEAD RF-028](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-028.md): A run115 43섹션 동일 marker 재실행 금지. 정식 producer의 `memory_application_surface`·`monitor_snapshot` 미검증 풍부 branch만 fake tmp/no-network 정상/`-O` 최초 검증, B 새 peer를 위한 정확 schema/State/예외 제출.
+3. **P2 RF-016** [LEAD RF-016](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-016.md): run115 nested alias4 발견은 BASE 동일, 수정/삭제 금지. `node_policy_projection` 소비자에서 결과를 실제 mutate하는지 **정적 read-only** 확인하고 mutation 미발견 시 UNKNOWN 분리; B 독립 peer와 동일 경계 재실행 금지.
+4. **P3 RF-008** [LEAD RF-008](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-008.md): run115 `build_market_snapshot` fake21 및 지팀장 finite8×2 반복 금지. RF-008 실제 `strategist_node.py`의 아직 미검증 외부/동적 consumer만 정적 범위 확인. **RF-012 소유 코드·거래 안전 계약은 지팀장 승인·정식 배정 전 수정/실행 금지.**
+
+## 지팀장 다음 직접 실행
+
+A/B 신규 source·peer·Issue #32 인수 → **LEAD 15 전건 최종 게이트 본인 직접 처리**, 유효한 정확 source/test/workflow tree CI 범위만 인수 → 충족 시 즉시 `04_LEAD → 05_DONE` 물리 이동 및 구 경로 삭제/단일 경로·commit 검증 → 안전한 선별 통합 → troubleshooting 실제 해결만 closed 이동 → STATUS → CURRENT 마지막 갱신. RF-012 안전 관측은 지팀장이 먼저 다운스트림 finite guard/실제 소비자 확인 후 사용자 승인 필요한 변경을 별도로 구분. `main`·실거래·Broker/Supervisor/Executor/Step5C/UEF 거래 안전·동결 테스트/CI·예약·운영 데이터 무승인 변경 금지.
+
+---
+
 # Agentra P1.5 — CURRENT (지팀장 LEAD 15건 / DONE 13건 / 2026-10-26 22시 KST)
 
 **유일한 실행 정본:** `integration/p1.5` 이 파일. 상시 D00 규칙 유지. 아래 22시 실행 배정이 이전 21:40 및 21시 이력보다 우선하며, 작업 브랜치 CURRENT 사용 금지. RF 최종 DONE/REWORK는 지팀장이 직접 판정한다.
