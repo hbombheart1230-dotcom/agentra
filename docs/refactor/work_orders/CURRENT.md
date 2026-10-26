@@ -1,3 +1,34 @@
+# Agentra P1.5 — 지팀장 B 슬롯 최신 정본 (2026-10-27 04:32 KST 이후)
+
+**본 최상단 절이 아래 A/B 이력보다 우선.** 정본은 `integration/p1.5`의 이 CURRENT+D00 및 실제 배정 RF. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. A/B 작업 브랜치 CURRENT 읽기 금지. 동일 SHA·경계/marker 재실행 금지. 최종 DONE/REWORK·큐 이동·선별 통합은 지팀장 직접.
+
+## 신규 진척 → 지팀장 실제 조치·검증 → 판정
+
+- **HEAD/RunLab:** A `bc746b7b`(run126/127 신규 HANDOFF/evidence 4개, 운영 소스0), B `8fe36a3d`(신규 source/peer0). A 신규 RF-032 `no_trade_attribution` Q9 builder→pipeline synthetic writer 및 `scanner_alignment_root_cause` writer, RF-033 fake-thread+tick/provider, RF-034 cohort→renderer 정상/`-O` exit0 원개발 scoped 인수. 4 owner blob BASE/integration/A/B 동일: `967aca16/8774bea2/2184c9ee/c4f290ad`. RF-032 `no_trade_attribution.py` 자체에는 writer 없음. Issue #32 10/26 19시 이후 새 댓글0, SELL `0020349` provenance·BUY guard·OCI SOURCE_SHA UNKNOWN `SAFETY_HOLD` (원개발 REWORK 아님).
+- **지팀장 신규 직접 Python:** RF-032 `scanner_alignment_root_cause.py::write_scanner_alignment_root_cause_range` owner blob `8774bea2`/정확 함수 FNV32 `9ee11dea`, fake builder/renderer + temp-only 파일 실패 주입. normal **17 PASS/exit0**, `python -O` **17 PASS/exit0**, FAIL0, tmp 외 쓰기/네트워크/주문0. Markdown OSError→JSON 새/MD 구버전, render RuntimeError→JSON만 생성, JSON PermissionError→기존 두 파일 보존. BASE 기존 2파일 비원자성 관측, 운영 영향 UNKNOWN, 신규 원개발 REWORK 아님. 최초 하네스 기대 오류 및 `assert` -O 소거를 **하네스만 수정** 후 양 모드 명시적 검사 최종 PASS. 원격 재현본 `evidence/lead_rf032_scanner_alignment_partial_boundary.py` commit `c8ac53df` blob `9c4f576d` = 실제 실행본 byte-identical. RF-032 `eb08a9b7`, RF-033 `866bcad1`, RF-034 `4c7c1ad2`에 신규 범위 판정 반영.
+- **LEAD 실물 전건 직접 최종 판정:** 시작 **14** / 신규 유입 **0** / 직접 판정 **14** / 신규 DONE **0** / REWORK **0** / 잔여 **14**, 실제 큐 이동0, source 선별 통합0. `HOLD/NOT_DONE` 각 최초 미검증: RF-014 Scanner shim dynamic; 015 Monitor 역사11 BASE; 016 news→answers; 028 rich renderer; 029 story/extroot; 031 8 writer/day-cache; **032 B 신규 writer peer/135 owner/UEF**; **033 B provider→storage/Windows**; **034 B casebook→scanner/40 owner**; 050 Operator 3-stage LLM; 063 diagnostics CLI/locale; 065 research scheduler; 067 delegated diagnostics/Windows; 069 승인 UEF5 historical snapshot. 이전 유효 peer/normal/-O 재사용, DONE 요건 전부 충족 RF 없음. RF 93/93 unique: PENDING61/DEVELOPING3/PEER1/LEAD14/DONE14/REWORK0.
+- **CI/트러블슈팅:** hosted Safety `40332899631@0da98a47` 정상/-O SUCCESS, 현재 source/tests/workflow diff0 범위에만 재사용. Web `40073316192@1374d371` SUCCESS, apps/web·apps/api·Web workflow 동등 범위만 수용(Operator UI 확대 금지). 신규 hosted/전체 repo/실효과 CLI NOT_RUN. open4(BRANCH_CLEANUP/RF012_FINITE/RF020_SCOPE/SOURCE_ADMISSION)·closed1(DOC_CI), 신규 실제 해소0·이동0. STATUS commit `12aa36df` 이후 **CURRENT 마지막 갱신**. `EXECUTION_INCOMPLETE`; main/실거래/안전 계약·동결 CI·예약/운영 데이터 무승인 변경0.
+
+## Codex B — 다음 최초 검증 실행 (`work/p15-b-operator-structure-20261022`)
+
+1. **P0 [RF-031](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md):** `generate_reporter_analysis_report` 실제 helper graph→8 writer/day cache/partial OSError, `EVENT_LOG_DAY_CACHE_DIR`/`STRATEGY_MEMORY_PATH`/`STRATEGY_MEMORY_DAILY_DIR`/`EVIDENCE_LEDGER_PATH`/cwd/reports root 모두 temp fake, normal/`-O` 실제 exit/source SHA/outside writes0. 기존 잘못된 AST token 하네스·A writer·지팀장 path15×2 재실행 금지. 실 LLM/운영 root/거래 금지.
+2. **P1 [RF-050](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-050.md):** Operator `data_access_core` primary→repair→line fake `LLMRouter.chat` JSONDecodeError/TimeoutError/HTTPError·fallback/State/예외 최초 독립 normal/`-O`, router→client 기존 peer 반복 금지. 네트워크·캐시 쓰기 금지.
+3. **P2 [RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md):** facade→story bundle v1/v2·external-root truth 다른 fixture read-only/State/예외 독립 normal/`-O`; A run122~124 반복 금지.
+4. **P3 [RF-032](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-032.md):** A 신규 `scanner_alignment_root_cause` 및 지팀장 17×2 **같은 경계 반복 금지**. RF-032 다른 writer(예: `evaluation_lens_report.py`)에서 첫 신규 partial IO/State 독립 temp fake 정상/`-O`; 보호 UEF/운영 root 실행 금지.
+5. **P4 [RF-034](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-034.md) → [RF-067](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-067.md):** casebook→scanner 최초 독립 producer/consumer/State/예외 fake 후 delegated diagnostics target AST-first/안전한 하나만 temp fake. 기존 A cohort·지팀장 scanner19×2·14 wrapper 정상/-O 반복 금지; broker/UEF main 금지.
+
+## Claude A — 다음 최초 검증 실행 (`work/p15-a-reporter-pure-20261021`)
+
+1. **P0 [RF-032](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-032.md):** 새 실제 writer `libs/reporting/evaluation/evaluation_lens_report.py::write_evaluation_lens_report` (owner blob `cade83e2`) AST-first, tmp-only normal/`-O`·build/render/State/파일 실패·outside writes0. run126 no_trade pipeline 및 run127 scanner_alignment, 지팀장 17×2 재실행 금지. UEF/frozen/운영 root 금지.
+2. **P1 [RF-033](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-033.md):** `vnext/equities.py::fetch_equities`의 provider→consumer 경계를 주입 fake로 최초 검증, 실제 fetch/네트워크/Windows Thread 금지. run126 fake Thread·지팀장 32×2/tick12×2/storage11×2 반복 금지.
+3. **P2 [RF-034](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-034.md):** `pipeline.py::write_short_alpha_discriminator`의 기존 10파일 정상 writer와 **다른** partial OSError/rollback/State 효과 temp-only 최초 정상/`-O`; A run114 renderer·run126 cohorts 반복 금지, 실제 운영 root/실데이터 금지.
+
+## 지팀장 다음 직접 실행
+
+새 A/B source·독립 peer·Issue #32 즉시 인수 → LEAD 최신 실물 전건 본인 owner/consumer/State/효과/예외·정확 CI 판정 및 가능한 신규 안전 직접 검증 → 충족 즉시 `04_LEAD→05_DONE/{원개발팀}` 물리 이동·구 경로 삭제/단일 경로/commit 확인 → 허용 소스 선별 통합 → troubleshooting 실제 해결만 closed → 다음 배정 → STATUS 변경 시 갱신 → **CURRENT 마지막**. main·실거래·Broker/Supervisor/Executor/Step5C/UEF 안전 계약·동결 테스트/CI·예약·운영 데이터 무승인 변경 금지.
+
+---
+
 # Agentra P1.5 — 지팀장 A 슬롯 최신 정본 (2026-10-27 04시 KST 이후)
 
 **본 최상단 절이 아래 A/B 과거 이력보다 우선.** 실행 정본은 `integration/p1.5` CURRENT + D00 및 실제 배정 RF. 작업 브랜치 CURRENT 금지. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. 동일 SHA·동일 경계/marker 재실행 금지. 최종 DONE/REWORK·물리 이동·통합은 지팀장 전담.
