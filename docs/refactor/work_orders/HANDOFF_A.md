@@ -78,3 +78,14 @@
 - 코드 진척 0(NO_CHANGE, 문서·하네스만). DONE 주장 아님: RF-033/032 전체 owner·hosted CI·정확 integration SHA 게이트 미충족, RF-065 정상 fetch 경로 미검증.
 - 다음 행동: 지팀장 판정(RF-033 malformed ts ValueError 방어 여부는 소비자 영향 있어 별도 승인 요청, 기본은 KEEP). 이후 A 안전 신규 경계 소진 시 RF-050 정식 배정 요청.
 - PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
+
+---
+## 추가 회차 — RF-007 E2E 독립 peer: fixture 부재 해소 (ENV_BLOCK 해제)
+
+- RUN_ID: 2026-10-26T1018Z-claude-a-sched-109 · A 시작 `c3462ec3`(run 108 포함) · integration `87b821fd`(CURRENT `651d013f`; A 섹션의 RF-033 capture/RF-032 writer/RF-065 alpha CLI는 run 108이 이미 수행 → 반복 안 함) · B `53d8624e`(문서/인벤토리 커밋만, 신규 B 소스 SHA 없음). **A 소스 코드 변경 없음(NO_CHANGE).**
+- **ENV_BLOCK 정정:** 이전 기록의 `fastapi 미설치`는 시스템 파이썬 기준이었고 repo `.venv`에는 fastapi 0.161.1·uvicorn 0.54.0이 설치되어 있다. RF-007의 실제 차단은 "E2E 격리 fixture 부재"(지팀장 2026-10-24 판정)였으며, 이번에 **repo의 기존 테스트 fixture writer(`tests/apps/api/artifact_fixtures.py`, 읽기 전용 사용)로 합성 저장소 루트를 만들어 실제 읽기 전용 API를 구동**해 해소.
+- **방법(`evidence/run103_boundary_scripts/rf007_fixture_root.py` + `rf007_e2e_runner.sh`):** `/tmp/rf007_root`에 합성 5일(2026-10-20~24)·14거래·성과/운영 요약/기회/시장/LLM 이벤트 생성(기본 UI 조회창 45일 안에 있어야 거래 목록이 채워짐 — 8월 날짜로 만든 1차 시도는 `/#trades`에서 `button.sortable-header` 30초 timeout, 날짜 조정 후 해소) → `uvicorn apps.api.main:create_app --factory`(127.0.0.1:8000, `OBSERVABILITY_*` 루트를 tmp로 지정, OPENROUTER 키 제거) + `npx vite --host 127.0.0.1`(5173, `/api`→8000 프록시) + `npm ci`(lockfile 고정, 146 패키지) + Playwright Chromium(`/opt/pw-browsers/chromium-1194`). 운영 데이터·브로커·실계좌·외부 API 접근 0(서버는 loopback 전용, 실행 후 종료·포트 해제 확인).
+- **결과(SOURCE: integration `87b821fd`, apps/web 38/38 BASE blob 동일):** `node e2e/smoke.mjs` **exit 0** — `Verified 11 routes at desktop and mobile viewports.`(overview/performance/trades/opportunities/strategies/market/alerts/patch-notes/llm-operations/reports/data-quality × 2 viewport, 가로 overflow ≤2px·제목·본문 길이·정렬 aria-sort none→ascending→descending·trades 정렬 버튼 8개 단언 통과), `node e2e/public-profile.mjs` **exit 0** — `Verified public-profile navigation and mode markers.`. TypeScript/Node라 `python -O` NOT_APPLICABLE. Vitest 16/16·build는 지팀장 2026-10-24 판정(sched-31, 동일 owner blob)을 재사용하며 이번 재실행 안 함.
+- **판정:** RF-007 **E2E_BLOCKED 사유(fixture 부재) 해소 — PEER_PASS_SCOPED(E2E 2종 + 기존 Vitest/build)**. 한계: 합성 데이터이므로 실데이터 렌더 정확성·hosted CI·integration exact SHA 필수 게이트는 미충족, **DONE 아님**. `package.json`의 `latest` 의존성 재현성 문제(지팀장 지적)는 lockfile `npm ci`로 우회했을 뿐 해결되지 않음(B 소유 수정 사항, A 무수정).
+- 다음: 지팀장 RF-007 E2E 판정. 그 외 A 실행 가능 owner 작업 없음(RF-050은 정식 배정 전 수정·삭제 금지, RF-030 승인 대기).
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
