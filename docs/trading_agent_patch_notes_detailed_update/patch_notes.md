@@ -4320,3 +4320,12 @@ Sources: `.github/workflows/p15-shared-candidate.yml`, `.github/workflows/p15-in
 - Codex B `8bde643d`에서 `data_access_brief.py`·`data_access_brief_sanitation.py` 2개 파일만 선별. 기존 facade 시그니처·동적 monkeypatch·예외 동등성 유지. A 독립 read-only overlay normal/-O 각 141 PASS(기존 sched-25).
 - B 작업 브랜치 33파일 일괄 병합은 불허. 나머지 31개 RF-001 파일과 core 2,308행의 side-effect·동적 소비자 범위는 별도 검증 대기.
 - main/실거래/Broker/Step5C/UEF/오라클 변경 없음. 소스 반영 SHA의 신규 hosted CI 성공 전 RF-001 전체 DONE 아님.
+
+## 2026-10-26 - P15_RF001_STRATEGIST_BRIEF_OWNER_20261026
+**Stage:** GPT scoped selective integration; exact integration SHA normal/-O pending.
+
+- Keep the public core helpers while moving pure strategist risk-tone and monitor-guidance derivation into the existing brief monitor-notes owner.
+- Core passes its module facade at call time, retaining dynamic monkeypatch lookup and the existing public import surface; no new package path or `sys.modules` alias is introduced.
+- Focused normal and `python -O` injected-facade checks cover nested risk-tone/risk-mode fallback, monitor guidance and blank output. No cache, artifact, LLM, broker, scheduler or trading behavior changed.
+
+- B isolated 734×2 and UI 53×2 PASS, A independent 734×2 + 17 differential PASS; post-integration exact SHA validation NOT_RUN.
