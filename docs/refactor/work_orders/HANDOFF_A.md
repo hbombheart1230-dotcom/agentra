@@ -351,3 +351,15 @@
 - 판정: 3건 **PEER_PASS_SCOPED**(A 원개발자 최초 검증), BASE/integration 차이 0, FIX 불필요, DONE 아님. NOT_RUN: 운영 root·실데이터·Windows 실제 thread·hosted CI·전체 repo 테스트·UEF/frozen. 남은 미검증: RF-032 나머지 write owner(`day_validity`, `entry_timing_attribution`, `scanner_score_decomposition` 등), RF-033 provider 나머지, RF-034 `scanner_diagnostics` 나머지. RF-030 승인 대기.
 - 다음: 신규 CURRENT 배정/B 소스 SHA 대기.
 - PUSH_VERIFIED: push 후 확인.
+
+---
+## 추가 회차 — CURRENT(`0080ec82`) A: run126(`c9869ed8`)이 CURRENT P0~P2 소진 → RF-032 새 writer `scanner_alignment_root_cause`
+
+- RUN_ID: 2026-10-26T1917Z-claude-a-sched-127 · A 시작 `c9869ed8` · integration `3c26fd2b` · B `8fe36a3d` · **A 소스 코드 변경 없음(NO_CHANGE)**. CURRENT의 no_trade_attribution/start_input_worker/cohorts는 run126에서 완료되어 반복하지 않음. owner `evaluation/scanner_alignment_root_cause.py` blob `8774bea2` = integration = BASE. 하네스 `evidence/run103_boundary_scripts/rf032_scanner_alignment_root_cause_writer.py`(`python -S`, 저장소 루트, tmp reports root만; 네트워크·subprocess·sqlite·tmp 밖 쓰기 차단, 시도 0).
+- 실행: integration/BASE × normal/`-O` 4조합 **exit 0**, marker `RF032_SCANNER_ALIGNMENT_ROOT_CAUSE_OK classify=18 day_trades=6 range_days=3 range_trades=7 idempotent=yes files=2 outside_write=OSError dir_collision=FileExistsError net_attempts=0`, 출력 동일(debug 필드 제외).
+- 확인: `classify` 우선순위(Missing Evidence → Symbol Mapping(3개 changed 플래그) → Candidate Filtering(selected≠post & rank>1) → Strategist Override → Rank Drift → Scanner Ranking Failure(수익<0) → Aligned), rank 1·rank 부재·수익 0.0은 Aligned, `selected_candidate.rank` 문자열 허용, score_gap 계산·비수치 시 None. day build: evaluation outcome이 model outcome보다 우선, 비수치/부재 수익은 None, 비-dict 행 제외, cause 순서 고정, diagnostic_kind(structural/outcome_conditioned/evidence_gap)·causal_eligible, largest 3종, Q15 후보 문구, 입력 불변. render 결정적·None 수익 `-` 표기. range build: 읽기 전용, `selection_authority`·model·evaluation 중 하나라도 있는 날만 포함(평가만 있는 날은 0행으로 포함), 깨진 JSON·파일 항목 건너뜀. write: `evaluation/range/<start>_<end>/scanner_alignment_root_cause_report.{json,md}` 2파일, 재쓰기 바이트 동일, 산출 JSON == build, 입력 불변. 예외: `classify(row=None|model=None)` `AttributeError`, kw 누락 `TypeError`, `selection_authority=None`·`models=["x"]` `AttributeError`, `models=None` `TypeError`, 잘못된 날짜 `ValueError`, `end=None`/`reports_root=None` `TypeError`, render(None) `AttributeError`, render 비수치 win_rate `ValueError`, 출력 경로 충돌 `FileExistsError`, tmp 밖 root `OSError`(차단).
+- **관찰(변경 안 함):** range는 `start>end`면 오류 없이 빈 결과(`attribution_score_range`는 `ValueError`); `selection_authority.rows=None`은 정상 처리; 렌더가 `win_rate` 비수치에 `ValueError`(정상 build 경로에서는 발생 안 함).
+- 판정: **PEER_PASS_SCOPED**(A 원개발자 최초 검증), BASE/integration 차이 0, FIX 불필요, DONE 아님. UEF/frozen/운영 root/hosted CI NOT_RUN.
+- 남은 미검증: RF-032 나머지 write owner(`q13_q14_validation`, `q9_artifact_repair`, `historical_prior`, `evaluation_lens_report`, `agent_effectiveness_scorecard`, `cumulative_improvement_review`, `frozen_window_closeout`(frozen 주의)), RF-033 provider 나머지, RF-034 `scanner_diagnostics` 나머지. RF-030 승인 대기.
+- 다음: 신규 CURRENT 배정 없으면 RF-032 다른 writer.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
