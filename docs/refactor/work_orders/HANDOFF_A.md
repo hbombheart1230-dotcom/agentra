@@ -151,3 +151,14 @@
   - **State patch 경계:** 정적 AST로 A `graphs/nodes/monitor_node.py`의 `state["…"] =` 27건과 계약 키가 **정확히 일치**(누락 0·초과 0). repo 내 `MonitorAgentInput/Result` 소비자는 새 2파일 자신뿐(테스트 포함 import 없음) → 현재는 순수 dead-on-arrival 계약, 운영 효과 0(실제 Monitor main/네트워크/파일 쓰기 0).
 - 정리: RF-050 지원(B peer 새 소비자·예외 질의) 없음 — 답변할 신규 건 없음, run110/111 재실행 안 함. DONE 판정은 지팀장. 미검증: 위 RF-029 경계의 B 독립 peer, RF-015 B-only의 11 FAIL BASE node별 비교(B 담당), `EVIDENCE_LEDGER_PATH` 미설정 mkdir 관찰 판정.
 - 다음 행동: 지팀장 인수·판정(RF-029/008/015). 배정 없으면 A는 신규 최초 경계가 CURRENT에 올 때까지 대기(동일 경계 재실행 금지).
+
+---
+## 추가 회차 — run 112가 남긴 `EVIDENCE_LEDGER_PATH` mkdir 관찰 판별 (정적+최소 실행, 신규 하네스 없음)
+
+- RUN_ID: 2026-10-26T1225Z-claude-a-sched-113 · A 시작 `38417408`(run 112 포함) · integration `f6995b76`(CURRENT `5845935c`, A 섹션 P0 RF-029·P1 RF-008·P2 RF-015는 run 112가 이미 수행 → 반복 안 함) · B `f19d3a12`(불변, 신규 B 소스 SHA 없음 → peer 대상 없음). **A 소스 코드 변경 없음(NO_CHANGE).**
+- 질문(run 112 미결): `EVIDENCE_LEDGER_PATH` 미설정 시 `strategist_node` 1회가 `data/evidence_ledger`를 32회 mkdir 시도 — 결함인가?
+- **판정: 설계된 동작(INTENDED), 결함 아님 — 단 호출자는 경로 격리 필요.** 근거: ① mkdir 호출자는 `libs/research/evidence_ledger.py::append_evidence_record`(수동·append-only 로깅; docstring "passive logging only and does not mutate runtime decisions")로, `path.parent.mkdir(parents=True, exist_ok=True)` 후 JSONL 1줄을 `fsync`와 함께 추가. `strategist_node`가 `record_raw_input/llm_prompt/...`를 호출할 때마다 1회이므로 32회 ≈ 한 번의 노드 실행에서 기록되는 증거 레코드 수(`graphs/nodes/{scanner,monitor,strategist}_node.py`·`libs/reporting/reporter_*`도 동일 모듈 사용). ② 경로 해석 `_resolve_log_path`: 명시 인자 없으면 `EVIDENCE_LEDGER_PATH`(기본 `data/evidence_ledger/events.jsonl`)를 `libs/core/path_isolation.resolve_runtime_write_path`에 통과. ③ 실행 확인(동일 cwd, env만 다름): 일반 실행 → `data/evidence_ledger/events.jsonl`(**cwd 상대**, 저장소 루트에서 실행하면 운영 ledger와 동일 경로), `PYTEST_CURRENT_TEST` 설정 시 → `/tmp/trading_agent_system_pytest/<세션>/runtime_write_root/data/evidence_ledger/events.jsonl`로 자동 격리(cwd 밖). 즉 pytest 안에서는 안전하게 격리되고, 비-pytest 하네스·스크립트는 `EVIDENCE_LEDGER_PATH`(또는 cwd)를 tmp로 지정해야 운영 ledger를 오염시키지 않음.
+- 운영 영향/후속: 코드 변경 불필요. 위험은 "비-pytest 임시 스크립트를 저장소 루트 cwd에서 `EVIDENCE_LEDGER_PATH` 없이 돌리는 경우"로 한정(오염=추가 JSONL 줄, 거래 결정 비변경). 격리 하네스 작성 규칙으로 `EVIDENCE_LEDGER_PATH`·cwd 격리를 명시할 것을 권고(문서화만; 정책/코드 수정은 지팀장 판단).
+- 반복 안 함: RF-029/008/015(run 112), RF-050 policy/client/store(run 110/111), RF-063/065/067 기존 수용분. RF-030 = 승인 대기.
+- 다음: A 실행 가능한 신규 owner 경계 없음 → 신규 B source SHA 또는 CURRENT 배정 대기.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
