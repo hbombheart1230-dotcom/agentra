@@ -1,3 +1,16 @@
+# Agentra P1.5 — 지팀장 B 슬롯 직접 실행 인수 (2026-10-26 23시 KST)
+
+**정본은 `integration/p1.5` 이 CURRENT + D00.** 이 절은 이번 B 슬롯의 **신규 실제 실행·판정**만 추가한다. **아래 23시 A 슬롯의 A/B P0~P5 배정은 변경 없이 유효**하다. 작업 브랜치 CURRENT 사용 금지, 동일 SHA·동일 경계 증거 재실행 금지.
+
+- **LEAD 실물 14/14 직접 재판정:** A 출처 10 / B 출처 4. **시작 14 / 신규 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14.** 현행 큐 PENDING **61** / DEVELOPING **3** / PEER **1** / LEAD **14** / DONE **14** / REWORK **0** = **93/93 고유·누락0**. RF-008 DONE은 이전 A 슬롯 commit `0c063b10` 성과이며 **이번 B 슬롯 신규 DONE으로 계산하지 않는다**. LEAD 실물 이동0, 운영 소스 통합0. RF별 최초 미충족 경계는 최신 [STATUS](../plan/STATUS.md) 및 RF 실물 정본 참조; 부족한 게이트가 있는 14건을 허위 DONE/REWORK 이동하지 않는다.
+- **A/B 인수:** A `b22cf53d` run116/117 RF-031 writer/State, RF-028 rich/cascade, RF-016 alias 소비자, RF-008 동적 소비자 정적 정상/-O 수용; B `34a58585` RF-029 projection 독립 normal/-O exit0 수용. **A/B 신규 운영 source delta 0**, 선별 병합 대상 0. 기존 same-marker 재실행 금지. Issue #32 19시 final 이후 새 독립 결과 없음; SELL provenance/BUY guard/OCI SHA UNKNOWN/BLOCKED, 코드 REWORK·재배포 금지.
+- **지팀장 새 Python 직접 실행:** RF-012 원소유 보호 `graphs/nodes/execute_from_packet.py` blob `1a10af59`의 **순수 함수 3개만 별도 격리 복사본에서 AST 추출**하여 fake-only 테스트. normal/`python -O` 각각 **9/9 관찰 PASS, exit0**, `RF012_NOTIONAL_AST_OK cases=9 inf=6 nan_ignored=1 writes=0`. Infinity 주문가격 후보 채택 6경로 재현, 입력 State 불변, 실 broker/order/HTTP/운영 데이터 효과0. **위험 동작 관찰이지 안전성 PASS 아님**. GitHub 재현 하네스 [`lead_rf012_notional_ast.py`](evidence/lead_rf012_notional_ast.py) commit `23c6410b`에는 정확 Git blob fail-closed 조건 추가. 이 저장본을 전체 원본 source와 함께 직접 실행한 결과는 **NOT_RUN**; 로컬 실행은 별도 함수 복사본. RF-012 PENDING/UNASSIGNED, 안전 코드·오라클 변경 없음. [troubleshooting OPEN](../plan/troubleshooting/open/P15_RF012_MARKET_PRICE_FINITE_20261026.md)에 결과·후속 안전 게이트 기록, RF-012 원본도 갱신.
+- **정확 CI tree 판정:** Shared Offline Safety run `40332899631` @ `0da98a47` success; 현행 `integration@396840f6`의 `apps/graphs/libs/scripts/tests/.github` 6개 tree SHA가 해당 tested commit과 **전부 동일**. 기존 offline safety 범위에만 유효; Web CI 기존 성공도 해당 web source/workflow tree 범위에만 유효. 새 hosted 실행/전체 repository 정상/-O/실거래는 **NOT_RUN**. 문서-only SHA별 무의미한 CI 재실행 금지.
+- **troubleshooting 실제 확인:** open **4**(branch cleanup local exit, RF020 scope, source admission, RF012 price finite), closed **1**(승인된 현행 2-workflow로 해결된 DOC CI). DOC CI closed 이동은 이전 A 슬롯 조치이며 이번 슬롯 해결 이동 0. 역사 5개 workflow GREEN으로 꾸미지 않음.
+- **다음 최초 실행/책임:** **Codex B** 아래 최신 배정 P0 RF-031 writer/day cache 독립 peer → P1 RF-028 정식 cascade 독립 peer → P2 RF-016 alias 독립 peer → P3 RF-034 renderer peer, 이후 RF-050/015. **Claude A** 아래 최신 P0 RF-029 story pipeline 원개발 신규 tmp State/IO → P1 RF-032 새 안전 writer → P2 RF-014 Scanner 소비자 맵 → P3 RF-033 새 소비자. **지팀장** RF-012 exact 원본 SHA 재현 및 하류 eligibility/주문 효과 0 안전 검증 가능 범위 판정, 승인 필요 보호 코드 변경은 수행하지 않는다. RF 최종 DONE/REWORK는 지팀장 본인 전담.
+
+---
+
 # Agentra P1.5 — CURRENT (지팀장 A 슬롯 2026-10-26 23시 KST 최종 배정)
 
 **유일한 정본:** `integration/p1.5` 이 CURRENT + [D00](D00_ENGINEERING_DELIVERY_POLICY.md). **이 최상단 배정이 아래 22:38·22시 이력보다 우선.** 작업 브랜치 CURRENT 읽기 금지. RF 최종 DONE/REWORK/선별 통합은 지팀장 본인 판정. 동일 source SHA·경계 normal/`python -O`/peer 재실행 금지.
