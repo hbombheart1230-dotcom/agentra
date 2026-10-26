@@ -27,6 +27,14 @@
 - 상대는 **새 source SHA의 미검증 위험 경계만** read-only normal/-O peer한다. FAIL이면 원인 SHA·node·재현·소유자·수정조건을 전달하고, PASS_SCOPED면 범위를 한정한다. 같은 증거 재검증이나 ACK 왕복 금지.
 - 지팀장은 새 peer 결과를 해당 RF에 FIX/KEEP/PEER/INTEGRATE/BLOCKED로 즉시 판정하고 승인 owner 변경만 integration 최신 HEAD에 선별 반영한다. 통합 exact SHA 필수 검증 PASS 및 RF 인수조건 전부 충족 시에만 DONE. 실행 불가한 테스트는 NOT_RUN으로 남긴다.
 
+## 3B. 지팀장 통합 누락 방지 강제 게이트
+- **트리거:** 새 A/B source SHA의 독립 peer 결과가 도착하거나 기존 REWORK가 해결된 모든 회차. 보고·CURRENT/RF 갱신 전에 반드시 아래 단계를 완료하거나 각 단계의 기술적 불가 사유를 기록한다.
+- **1. 차분 판정:** 최신 integration HEAD와 후보 SHA의 owner 파일 diff를 확인하고 각 파일을 `ADMIT` / `KEEP_NOOP` / `REJECT`로 분류한다. 전체 브랜치 divergence·다른 RF 실패는 해당 owner 변경의 격리 테스트 생략 사유가 아니다.
+- **2. 격리 적용:** ADMIT 후보만 최신 integration 기반 격리 작업장에 적용한다. 권한·안전·소유 경계를 확인하고, 적용 불가 시 파일·오류·해제 조건을 남긴다. KEEP_NOOP는 SHA/내용 동일 근거를 기록한다.
+- **3. 필수 검증:** 격리 후보의 변경 영향 테스트와 동결 필수 normal/-O를 실행한다. PASS면 승인된 owner 경로만 integration에 선별 반영하고 **반영된 정확한 integration SHA**를 normal/-O 재검증한다. FAIL은 BASE 대비 신규 회귀·기존 실패를 구분한다. 테스트를 실제 실행하지 않았다면 `NOT_RUN`이며 통합 승인/DONE 금지.
+- **4. 종료 판정:** 각 후보를 `INTEGRATED_VERIFIED` / `KEEP_NOOP_VERIFIED` / `REWORK` / `BLOCKED_ENV` / `BLOCKED_SAFETY` / `NOT_RUN` 중 하나로 확정하고 다음 owner·명령·재개 조건을 RF에 남긴다. **문서 커밋, peer PASS, CURRENT 갱신만으로 회차 종료 금지.** 실제 도구/작업장 부재 시 우선 사용 가능한 GitHub/격리 실행 경로를 확인하고, 없으면 정확한 미실행 단계와 환경 제공 조건을 기록한다. 절차상 체크 완료를 소스 진척으로 계산하지 않는다.
+- **5. 대시보드 일치:** CURRENT에는 위 결과 상태·코드 SHA·다음 행동만 반영한다. RF의 판정과 CURRENT의 상태가 서로 다르면 회차 미완료. `DONE`은 D00 권한과 D03 전체 인수조건을 모두 충족한 경우에만 허용한다.
+
 ## 4. Git 쓰기 차단 대응
 - push·파일 수정이 거절되면 실제 오류를 구분하고 최신 원격 SHA 재조회 → 변경 범위·소유권 확인 → 충돌 해소 또는 허용된 최소 단위 재시도를 수행한다. 성공 시 원격 HEAD와 변경 파일을 검증한다.
 - 안전 정책 차단은 우회하지 않는다. 동일 실패를 무한 반복하거나 금지된 강제 push로 전환하지 않는다. 허용된 해결 경로가 없으면 BLOCKED와 정확한 재개 조건을 남기고 다른 실행 가능한 RF를 진행한다.
