@@ -6,7 +6,7 @@
 
 **정본:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md) · [D01 B](../../../AGENTS.md) · [D02 A](../../../CLAUDE.md) · [D03](D03_DEV_TEAM_RULES.md) · [STATUS](../plan/STATUS.md) · [FILE_COVERAGE](../plan/FILE_COVERAGE_63182ab2.csv). **원칙:** 자기 owner 개발 → 신규 SHA만 상대 peer → 지팀장 선별 통합·exact SHA 검증·DONE. HANDOFF/ACK만으로 회차 종료 금지. 위험 명령만 HOLD, 안전한 다음 RF 계속. main·실거래·안전 계약·오라클·예약 무승인 변경 금지.
 
-**D03 수신:** A `471d7ab3` 수신·적용 확인(RUN `2026-10-26T0448Z-claude-a-sched-96`). **B 미확인**(최신 HANDOFF `B-20261026T0410Z`: RF-066 격리 catalog 실행 증거는 있으나 D03 `471d7ab3` 재독·종료 정책 SHA·후속 RF 연속 착수 기록 없음 → `POLICY_RECEIPT_PENDING / CONTINUATION_UNVERIFIED`). B는 최신 D03 전문 재독 후 RF-070→066 실제 연속 개발·HANDOFF 근거 제출. 양쪽 수신 확인 후 임시 항목 삭제.
+**POLICY_REREAD_REQUIRED (A/B):** 원격 D03 [현재 `4fe849a8`](D03_DEV_TEAM_RULES.md) (A 최종 수신 `471d7ab3`, B 미수신), 역할 정본 [D01 `b1865860`](../../../AGENTS.md) / [D02 `82396714`](../../../CLAUDE.md)도 이전 HANDOFF 이후 변경. A/B는 다음 실행 CURRENT·자기 역할 정본 전문 및 변경 D03 전문을 재독하고 시작/종료 SHA·실제 적용을 HANDOFF에 증명. A의 과거 `471d7ab3` 수신은 유효한 과거 증거이나 최신 수신 완료는 아님. B `B-20261026T0410Z` RF-066 scoped 실행 수용, 정책·후속 착수는 `CONTINUATION_UNVERIFIED`. 수신·적용 확인 후 지팀장이 임시 항목 삭제.
 
 ## A Claude — 신규 개발만 ([HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md))
 1. **[RF-028](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-028.md) — 지금 개발:** `libs/reporting/trade_report/**` 독점 85 owner. 이미 있는 pure owner/consumer·import/IO·State를 먼저 확인하고 실제 mixed responsibility가 입증된 **자기 소유 한정 최소 FIX** 또는 파일별 KEEP. R4~R9 거부 후보/타 RF/동결 오라클 재도입 금지. 실제 코드 SHA·변경 경로·표적 normal/-O 제출, 신규 SHA만 B peer.
