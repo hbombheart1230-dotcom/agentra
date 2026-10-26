@@ -1,3 +1,32 @@
+# Agentra P1.5 — 지팀장 A 슬롯 최신 정본 (2026-10-27 07시 KST 이후)
+
+**이 최상단 절이 아래 06:31 B 슬롯 및 이전 배정보다 우선.** 유일한 정본 `integration/p1.5` CURRENT→D00→실제 배정 RF. 작업 브랜치 CURRENT 금지. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. 지팀장이 RF 최종 판정/큐 이동·선별 통합 책임, 동일 SHA·경계 재검증 금지.
+
+## 신규 인수 → 지팀장 직접 검증·LEAD 전건 판정
+- **A/B/RunLab:** A `9eb2007f`, B `c18ad0b0` 직전 06:31 이후 commit delta0, 신규 source/독립 peer0. Issue #32 10/26 19시 이후 새 댓글0, SELL `0020349` provenance/BUY guard stale/OCI SOURCE_SHA UNKNOWN = `SAFETY_HOLD`, 신규 원개발 REWORK 아님.
+- **RF-032 신규 직접 원본 함수 실행:** `agent_effectiveness_scorecard.py::write_agent_effectiveness_scorecard` blob `16b50178`, FNV32 `a4abdfce` (BASE/integration/A/B 4-way 동일), builder/scorer/renderer fake+**실제 temp-only 파일 쓰기** normal **10 PASS/exit0**, `python -O` **10 PASS/exit0**. JSON/MD·State·부분 OSError/PermissionError/기존 MD 보존 확인. MD 실패 시 JSON만 갱신되는 BASE 기존 비원자성, 운영 영향 UNKNOWN. 전체 원본 모듈/실 Stage2 NOT_RUN. 로컬 `/mnt/data/lead_rf032_scorecard_writer_20261027.py` SHA256 `c1791372` (GitHub 업로드 아님).
+- **RF-065 신규 직접 CLI 예외 경계:** `scripts/research/run_agent_effectiveness_scorecard.py::main` blob `db4571d6`, FNV32 `e82af54a` (4-way 동일), 원본 CLI 함수+fake writers normal **8 PASS/exit0**, `python -O` **8 PASS/exit0**. same-day/range Stage2 분기, argv/path/date, 1/2단계 실패 전파 및 argparse exit2, 실제 쓰기0. A run107 실제 tmp CLI smoke 재실행 아님. 로컬 `/mnt/data/lead_rf032_scorecard_cli_20261027.py` SHA256 `519dcfd7`. **신규 총 36 PASS/최종 FAIL0**, hosted/전체 repo/실효과 CLI NOT_RUN.
+- **LEAD 최신 실물 전건:** 시작 **14 / 신규 유입0 / 직접 판정14 / 신규 DONE0 / REWORK0 / 잔여14**. `RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069` 13 HOLD/NOT_DONE + RF-069 SAFETY_HOLD/NOT_DONE. 각 최초 미검증·해제권자 [STATUS](../plan/STATUS.md) 최상단 및 실물 RF. **RF 물리 이동0 / 운영 source 선별 통합0**, PENDING61/DEVELOPING3/PEER1/LEAD14/DONE14/REWORK0 = **93 unique**. 원개발 신규 코드 결함 재현0.
+- **정확 CI/tree:** `integration@0a1a56da` vs Safety SUCCESS `40332899631@0da98a47` `graphs/libs/scripts/tests/apps/.github` root 6/6 동일. Web SUCCESS `40073316192@1374d371` `apps/web`/`apps/api`/Web workflow 3/3 동일; `apps/operator_ui` Web과 달라 확대 금지. 이후 RF/STATUS/CURRENT 문서-only, 신규 hosted CI NOT_RUN.
+- **troubleshooting:** open4(BRANCH_CLEANUP/RF012_FINITE/RF020_SCOPE/SOURCE_ADMISSION), closed1(DOC_CI), 실제 해결0/이동0. main·실거래·거래 안전 계약·동결 테스트/CI·예약·운영 데이터 변경0. **EXECUTION_INCOMPLETE**.
+
+## Codex B — 다음 최초 검증 (`work/p15-b-operator-structure-20261022`)
+1. **P0 RF-031:** 실제 `generate_reporter_analysis_report` day-cache+8 writer/helper graph를 **stub 없이** fake LLM-only, `EVENT_LOG_DAY_CACHE_DIR`/`STRATEGY_MEMORY_PATH`/`STRATEGY_MEMORY_DAILY_DIR`/`EVIDENCE_LEDGER_PATH`/cwd/reports 모두 temp. 부분 OSError·State/outside writes0 normal/-O 독립 검증. 기존 `RF031_HELPER_FAKE_OK` 재실행 금지.
+2. **P1 RF-050:** Operator `data_access_core` primary→repair→line fake `LLMRouter.chat` JSONDecodeError/TimeoutError/HTTPError, State/fallback/예외 normal/-O 독립. 실 네트워크/캐시 금지.
+3. **P2 RF-016:** 실제 news-query→strategic_answers facade/dynamic consumer State/예외 최초 독립 temp fake normal/-O. 지팀장 news-signal28×2/node-policy29×2 재실행 금지.
+4. **P3 RF-032:** `q13_q14_validation` public `validation_id` trust/Exit Horizon read-only + **scorecard→Stage2 실제 temp-only 부분 실패 신규 독립**. 지팀장 writer10×2/CLI fake8×2, A run130/131, 기존 lens/Q9 writer 반복 금지. 보호 UEF/frozen 실행 금지.
+5. **P4 RF-034:** casebook→scanner State/예외 및 latent actual producer→cache/output-root temp-only 독립. 기존 latent34×2 반복 금지. RF-029/063/065/067/069 잔여는 STATUS 순서대로.
+
+## Claude A — 다음 최초 검증 (`work/p15-a-reporter-pure-20261021`)
+1. **P0 RF-032:** `libs/reporting/evaluation/cumulative_improvement_review.py::write_cumulative_improvement_review` 신규 실제 writer/consumer·State·부분 OSError AST-first, temp-only normal/-O. **지팀장 scorecard writer/CLI 신규 10+8 fake 및 run130/131 Q9·historical 반복 금지.**
+2. **P1 RF-034:** `scanner_diagnostics` 남은 owner→consumer 신규 pure/read-only fake, 기존 metrics/latent/source integrity 재실행 금지.
+3. **P2 RF-033:** 남은 InputWorker→storage consumer 안전한 최초 fake 경계만, run130 time_alignment/provider·기존 scheduler 반복 금지.
+
+## 지팀장 다음 직접 행동
+새 A/B source·peer·Issue #32 인수 → LEAD 전건 owner/consumer/import/dynamic/CLI/UI/State/IO/네트워크/주문/예외·정확 SHA/CI 최종 직접 판정, 안전 최초 경계 직접 실행 → 충족 RF 즉시 `04_LEAD→05_DONE/{원개발팀}` 원자적 이동·구 경로 삭제·단일 경로/commit 확인 → 승인 source 선별 통합 → troubleshooting 실제 해결만 closed → 배정→STATUS→**CURRENT 마지막 갱신**. 최종 판정 재위임/무승인 안전 변경 금지.
+
+---
+
 # Agentra P1.5 — 지팀장 B 슬롯 정본 (2026-10-27 06:31 이후)
 
 **이 최상단 절이 아래 A 06시·이전 모든 배정보다 우선.** 유일한 정본 `integration/p1.5`의 CURRENT→D00→실제 RF. 작업 브랜치 CURRENT 읽기 금지. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. 지팀장 최종 RF 판정·물리 이동·통합 책임, 같은 SHA·경계 재실행 금지.
