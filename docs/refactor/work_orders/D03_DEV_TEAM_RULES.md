@@ -29,6 +29,6 @@
 
 ## 5. 기록·지팀장 책임
 - `CURRENT` = **작업 포인터/규칙 변경 알림만**. `RF` = 해당 건의 결정·잔여 증거·재개 조건. `STATUS` = 전체 현황. `HANDOFF_A/B` = **최신 실행 10~20줄만 교체**, 과거는 Git 이력. 새 총괄 문서·반복 일지·빈 커밋 금지.
-- HANDOFF는 RUN_ID, 시작/후보 **코드 SHA**(HANDOFF 커밋과 구분), RF별 변경 경로, normal/-O 명령·exit, 독립 verdict, BLOCKED 원인·재개 트리거, patchnotes, GPT_ACTION_REQUIRED, push 확인을 간결히 담는다. 실질적 새 증거가 없으면 NO_CHANGE로 보고하고 문서만 커밋하지 않는다.
+- HANDOFF는 RUN_ID, 시작/후보 **코드 SHA**(HANDOFF 커밋과 구분), RF별 변경 경로, normal/-O 명령·exit, 독립 verdict, BLOCKED 원인·재개 트리거, patchnotes, GPT_ACTION_REQUIRED, push 확인을 간결히 담는다. **매 실행(예약·수동 강제 포함)마다 코드 변경 유무와 무관하게 HANDOFF 최신 회차를 교체·commit·push한다.** 신규 결과가 없으면 `NO_CHANGE`와 실행 시각/RUN_ID, 시작·종료 원격 코드 SHA, 확인한 미완료 RF·실행 가능성·차단 사유, 실제 명령/NOT_RUN, 다음 행동을 짧게 남긴다. 신규 검증·peer 결과가 있으면 명령·exit·대상 SHA를 반드시 남긴다. HANDOFF-only 커밋은 실행 관측용이며 코드 진척·RF PASS·DONE으로 세지 않는다. 동일 실행의 중복 커밋·장문 반복은 금지한다.
 - 지팀장은 매 점검 **CURRENT → A/B 원격 HEAD·최신 HANDOFF → 변경된 RF 증거 → 런검증 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) 신규 내용 → STATUS**만 확인. 멈춘 RF는 그 회차에 직접 소유권·원인·최소 다음 행동을 확정하고 실행 가능한 다음 RF로 넘긴다. 새 peer 증거는 같은 회차에 판정하고, 완전 peer PASS는 선별 통합/통합 SHA normal/-O 검증 단계로 즉시 넘긴다. 같은 SHA 전수 재검증·중복 감사 금지.
 - 보고는 **A/B 진행 → 지팀장 실제 조치/커밋 → RF·통합 검증 → 다음 행동** 순서. 계획·부분 PASS·NOT_RUN을 DONE으로 보고하지 않는다. 별도 예약 생성/변경은 사용자 승인 없이 하지 않는다.
