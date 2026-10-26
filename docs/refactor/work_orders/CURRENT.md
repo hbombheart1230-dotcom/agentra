@@ -1,6 +1,6 @@
 # Agentra P1.5 — CURRENT (2026-10-26 지팀장 A 실행, RF-030 신규 A 코드 작업 배정)
 
-**POLICY_REREAD_REQUIRED:** CURRENT 실행 지시 변경 anchor commit `fdb4239e655d9dda11643fc4e995cf4269fc58b0` / 이전 blob `7733998c19d95f505a3ebf0683be8c1701c9fde2`; A/B 모두 **PENDING**. 실행 시작·종료 시 `integration/p1.5` CURRENT **최신 blob SHA**를 직접 조회·전문 재독하고 HANDOFF에 `POLICY_READ_SHA`/`POLICY_APPLIED_OR_DEFERRED`를 제출한다. B는 D03 `d281c4dd351d606959acd58b83126c3d484bcfe4` 전문 재독 미확인, A는 이전 HANDOFF에서 D03 수신 확인. 지팀장은 실제 peer·owner 작업 없이는 ACK만으로 수신 완료 처리하지 않는다.
+**POLICY_REREAD_REQUIRED:** 최신 실행 지시 변경 anchor `b106384ee151c0db2a1820f2b893d12ee45d1a46` (RF-030 A owner 배정·B RF-001 exact-SHA 최우선); 이전 정책 변경 anchor `fdb4239e655d9dda11643fc4e995cf4269fc58b0`. A/B 모두 **PENDING**. 실행 시작·종료 시 `integration/p1.5` CURRENT **실제 최신 blob SHA**를 조회·전문 재독하고 HANDOFF에 `POLICY_READ_SHA`/`POLICY_APPLIED_OR_DEFERRED`와 실제 실행 증거를 제출한다. B의 D03 `d281c4dd351d606959acd58b83126c3d484bcfe4` 전문 재독 미확인, A는 D03 수신 확인이나 **새 RF-030 지시 미수신**. ACK만으로 완료 처리하지 않는다.
 
 | 담당 | 지금 턴에 실행할 RF와 작업 |
 |---|---|
