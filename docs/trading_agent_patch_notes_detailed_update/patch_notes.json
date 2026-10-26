@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 349,
+  "entry_count": 350,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9218,6 +9218,27 @@
         "libs/agents/commander/__init__.py",
         "libs/agents/commander/contracts.py",
         "tests/test_p156_p157_role_contracts.py"
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "version": "P15_RF001_STRATEGIST_BRIEF_OWNER_20261026",
+      "title": "Delegate strategist brief labels to the existing monitor-notes owner",
+      "stage": "Codex B source candidate; independent peer, GPT admission, integration and CI pending",
+      "types": [
+        "REFACTOR"
+      ],
+      "status": "current",
+      "summary": "Keep data_access_core public helpers while moving strategist risk-tone and monitor-guidance derivation into the existing pure brief monitor-notes owner.",
+      "details": [
+        "The core wrappers retain their names and dynamically pass the facade module at use time, preserving monkeypatch resolution and the public data-access import surface.",
+        "The pure owner resolves risk_tone before risk_mode and trims monitor_guidance exactly as before; it performs no file, cache, LLM, broker, scheduling or trading operation.",
+        "Focused normal and python -O injected-facade checks cover dynamic nested-value lookup, fallback and blank output. Frozen structural suite remains separately blocked by the pre-existing B-stage inventory path set and is not waived."
+      ],
+      "impact": "Internal pure-owner responsibility split only; no UI route, artifact persistence, LLM fallback, cache key or trading authority change.",
+      "sources": [
+        "apps/operator_ui/data_access_core.py",
+        "apps/operator_ui/data_access_brief_monitor_notes.py"
       ]
     }
   ]

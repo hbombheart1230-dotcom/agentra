@@ -214,3 +214,15 @@ def _strategist_nested_value_r3_impl(payload, key, *, facade):
         if value is not None:
             return value
     return None
+
+
+def _strategist_risk_tone_r3_impl(payload, *, facade):
+    value = facade._strategist_nested_value(payload, "risk_tone")
+    if value is None:
+        value = facade._strategist_nested_value(payload, "risk_mode")
+    return str(value or "").strip()
+
+
+def _strategist_monitor_guidance_r3_impl(payload, *, facade):
+    value = facade._strategist_nested_value(payload, "monitor_guidance")
+    return str(value or "").strip()

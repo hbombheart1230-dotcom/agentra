@@ -4232,3 +4232,10 @@ Sources: `.github/workflows/p152-r2c-residual-regression.yml`, `.github/workflow
 - Keep the public `clean_brief_text` and `clean_brief_list` facade signatures while moving their pure bodies into the existing sanitation owner.
 - The list implementation resolves `facade.clean_brief_text` at call time, preserving monkeypatch behavior, blank inputs, exceptions and import compatibility.
 - No Broker/Supervisor/Executor/Step5C/UEF, workflow, CI-oracle or live-trading behavior changed. The historical B-stage inventory failure remains unmodified and separate from this source candidate.
+
+## 2026-10-26 - P15_RF001_STRATEGIST_BRIEF_OWNER_20261026
+**Stage:** Codex B source candidate; independent peer, GPT admission, integration and CI pending.
+
+- Keep the public core helpers while moving pure strategist risk-tone and monitor-guidance derivation into the existing brief monitor-notes owner.
+- Core passes its module facade at call time, retaining dynamic monkeypatch lookup and the existing public import surface; no new package path or `sys.modules` alias is introduced.
+- Focused normal and `python -O` injected-facade checks cover nested risk-tone/risk-mode fallback, monitor guidance and blank output. No cache, artifact, LLM, broker, scheduler or trading behavior changed.
