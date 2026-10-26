@@ -1,10 +1,11 @@
 # Claude A 인수인계 — 최신 회차만 (이전 기록은 Git 이력)
 
-- RUN_ID: 2026-10-26T0320Z-claude-a-sched-92 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · integration `4444f342`, A 시작 `b499d508`(로컬 `69d4df10`에서 ff), B `22ba268c`. **A 소스 코드 SHA 변경 없음**(owner 코드 `e7471a2e` 유지). 상대 CLI 0건. POLICY_SHA: D00 `04effac1`·D03 `88d64817`·D02 `883c8b89` (직전 D00 `4c56bb65`, D03 `a6606ee3` → POLICY_CHANGED=YES, D03 전문 재독 PASS: 신규 SHA 없으면 peer 금지·KEEP만으로 DONE 아님·소스 진척 우선).
-- ① 상대 신규 소스 SHA 없음(B RF-001 격리 후보 `cdc3599f`는 B 소유 테스트 대기; 기존 peer 이후 제출 SHA 아님 → peer 안 함). ② 자기 REWORK 없음. ③ 지팀장 12:00 RF-018 판정(KEEP_SCOPED/NOT_DONE) 지시 수행: 남은 192문장 중 `commander_refresh_context`·`adjustment_directives`·`theme_compaction`·`override_normalization`·`response_contract_parsing` 5 owner의 실제 동적 소비자·폴백·예외 위험만 offline 표적 확인.
-- **RF-018 5 owner 실제 facade(`graphs/nodes/strategist_node.py`) 경유 offline 하네스(scratch, 네트워크/파일쓰기 0, tmp 읽기 전용 경로) normal·`python -O` 각 exit 0 `RF018_RESIDUAL_OK 202`.** 문장 coverage(5파일 1007 line-start 기준, sys.settrace 자체 계측) **96.9%→99.6%**(미실행 4: 다중행 식 부산물 3 + 도달 불가 `if not lines: return {}`). 경계: commander refresh(open ctx 우선·strategist ctx per-key 폴백·rank1 raw 플래그 우선·리스트 캡 4/5/6·입력 불변), 메트릭/성과/패턴 compact(정렬·동률·usable 분기), adjustment 방향 추론 전 분기·directive 기본값 11분기·잘못된 액션 되돌림·memory 비활성 단락, rejected reasons 6캡/점수 파생, overrides allow-list·`observation_only` 강제·stage2/3/4 정규화 및 derive(setdefault 보존), theme 압축/쿼리/심볼 병합·보호 모드.
-- **발견(결함 아님 KEEP·FIX 0, owner 본문은 동결 AST verbatim이라 수정 불가) — `_extract_contract_from_prose`(JSON 실패 후 마지막 폴백)의 잠재 특성 3건:** (a) enum 정규식 교대 순서 `defensive|…|defensive_exit` 때문에 `monitor_guidance: defensive_exit`는 `defensive`로 잘려 허용 목록 불일치 → 단독이면 필드 누락(`hold_through_noise, defensive_exit`는 앞 값 채택); (b) 따옴표 없는 `[a, b]` 목록은 대괄호가 값에 남고 `scanner_priority` 허용 필터가 비어 DOTALL 폴백이 필터 없이 재추가; (c) 여러 줄 대괄호 목록은 첫 줄만 잘못 파싱(`['["a"']`)되고 폴백이 건너뜀. 정상 경로(JSON/따옴표 목록)에서는 필터 동작 확인. 소비자 영향은 LLM이 JSON을 못 준 폴백 경로로 한정 — 지팀장 판단 필요 시 별도 FIX 승인.
-- 새 source SHA 없음 → B peer 불필요. 지팀장 요청 시 하네스(scratch) 내용은 이 HANDOFF 요약으로 재현 가능. patchnotes 해당 없음(tracked 소스 변경 0). 오라클·안전·교차 owner 변경 0.
-- GPT_ACTION_REQUIRED: (1) RF-018 5 owner 위 3 잠재 특성에 대한 KEEP vs 별도 FIX 승인 판정, (2) 남은 미실행 소수(주로 1 파일 미세) 외 RF-018 전체 인수조건·소비자 호환 판정, (3) RF-019/017 KEEP_VERIFIED, RF-013 CLOSED/67 owner 인수조건.
-- 최종 완료 답변 요약: 코드 변경 0, RF-018 residual 5 owner offline 202 체크 normal/-O PASS, coverage 96.9→99.6%, 잠재 특성 3건 기록(FIX 0).
-- PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고에 기재.
+- RUN_ID: 2026-10-26T0500Z-claude-a-sched-93 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · integration `bd4ff1d9`. **A 소스 코드 변경 없음.** 상대 CLI 0건.
+- CURRENT: A = "RF-001 신규 격리 조합 peer 대기". 후보 `cdc3599fe0c5429c5fc0a559db09f7cd9fecbd3d`(BASE `2150f6bc`, 변경 2파일: data_access_core.py, data_access_brief_monitor_notes.py; 최신 integration과 `apps/operator_ui` 차이 0 → 동일 적용).
+- **독립 read-only peer (일회용 detached worktree, 실행 후 제거):**
+  - 동결 `tests/test_p153_operator_ui_moved_bodies.py tests/test_operator_ui_data_access_phase2.py` — 후보 normal **734 PASS** / `-O` **734 PASS**; BASE `2150f6bc` 동일 734/734. 신규 FAIL 0 (기존 28 FAIL 미재현).
+  - 변경 두 함수 `_strategist_risk_tone`/`_strategist_monitor_guidance` BASE↔후보 differential 17건(None/빈/공백/None→risk_mode 폴백/0/문자열·숫자·리스트 입력/facade `_strategist_nested_value` monkeypatch/예외 전파) normal·`-O` 출력 byte-identical.
+  - `tests/test_operator_ui.py`: **NOT_RUN(환경)** — 이 PC에 `fastapi` 없음(BASE도 동일 collection ImportError, 후보 회귀 아님). 지팀장 지정 필수 3종 중 이 1종은 fastapi 갖춘 환경 필요.
+- 판정: **PEER_SCOPED_PASS** (신규 조합 경계). 통합/DONE 판단은 지팀장; test_operator_ui.py는 B 또는 fastapi 환경에서 실행 필요.
+- 티키타카 실행 리스트: 상대 CLI 호출 0건 (read-only 직접 검증만).
+- PUSH_VERIFIED: 종료 보고 참조.
