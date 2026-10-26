@@ -13,7 +13,9 @@
 2. **[RF-029](../plan/queue/01_PENDING/CLAUDE_A/RF-029.md) — 이어서 개발:** `trade_story/**`·`trade_read_model_parts/**` 독점 38 owner. 안전한 pure 책임 분리/소비자 검증, 필요 시 최소 FIX→B peer. RF-028 한 조각의 PASS·HANDOFF만으로 종료하지 말 것.
 **개발 큐에서 제거:** RF-013·RF-017·RF-019 **DONE**. 새 결함 SHA에 대한 명시 REWORK가 아니면 재착수 금지.
 
-## B Codex — 신규 개발만 ([HANDOFF_B](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md))
+## B Codex — 개발 및 RF-001 통합 검증
+**최우선 1회 검증 배정 (지팀장, 2026-10-26):** B는 다음 예약 회차의 첫 실행으로 `origin/integration/p1.5` 최신 HEAD를 격리 read-only 작업장에 checkout하고 정확한 SHA를 기록한 뒤 `python -m pytest -q tests/test_p153_operator_ui_moved_bodies.py tests/test_operator_ui_data_access_phase2.py tests/test_operator_ui.py` 및 `python -O -m pytest -q`에 동일 3파일을 지정해 각 exit/PASS/FAIL을 기록한다. 외부 IO·주문·고정 파일 쓰기 금지. HANDOFF_B에 `RF001_EXACT_INTEGRATION_SHA`, normal/-O exit, 실패 node 및 push 증거를 남긴다. 해당 검증은 개발 재배정이 아니며 기존 격리 734×2·53×2 반복 금지. 테스트 실행이 불가하면 명령·원인·재개 조건을 기록하고 즉시 RF-070→RF-066의 안전한 owner 작업을 이어간다. 지팀장은 결과 도착 시 33 owner 인수조건을 판정하고 PASS면 동일 회차 물리 DONE 이동한다.
+ ([HANDOFF_B](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md))
 1. **[RF-070](../plan/queue/02_DEVELOPING/CODEX_B/RF-070.md) — 지금 남은 owner 작업:** 142 중 85 offline/mock scoped PASS 재사용. 나머지 **25 기타 구현**은 파일별 소비자·CLI·IO·side-effect 판정 후 외부 효과 없는 경계만 fake/mock normal/-O; 실제 launcher 32 명령 HOLD. 단순 정적 읽기·ACK로 종료 금지.
 2. **[RF-066](../plan/queue/02_DEVELOPING/CODEX_B/RF-066.md) — 이어서:** B `B-20261026T0410Z` 격리 `build_demo_catalog` normal exit 0·marker 2 수용, `-O`는 exit 0만 확인(조건부 marker). 동일 범위 재실행 금지. temp 경로 + fake OrderClient로 **미검증 요청 형태·소비자 경계** normal/-O, 불가 시 정확한 환경 차단과 다음 owner 계속. 실제 `main()`·고정 파일 쓰기·주문 접근 HOLD.
 **개발 큐에서 제거:** RF-001은 아래 지팀장 통합 후 **1회 검증만** 남음. 새 source REWORK 없이 RF-001 반복 개발·기존 734×2·53×2 재검증 금지.
