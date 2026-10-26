@@ -1,17 +1,12 @@
-# Agentra P1.5 — CURRENT
+# Agentra P1.5 — CURRENT (대시보드)
 
-**정본 바로가기:** [D00 공통 규칙](../../ENGINEERING_DELIVERY_POLICY.md) · [D01 Codex B](../../../AGENTS.md) · [D02 Claude A](../../../CLAUDE.md) · [D03 개발팀 규칙](D03_DEV_TEAM_RULES.md) · [D04 런검증 규칙](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md)
+정본: [D00](../../ENGINEERING_DELIVERY_POLICY.md) · [D03](D03_DEV_TEAM_RULES.md) · [D01](../../../AGENTS.md) · [D02](../../../CLAUDE.md) · [STATUS](../plan/STATUS.md)
 
-**매 실행 원격 정책 수신:** A/B는 시작·종료에 integration의 CURRENT/D00/D03/자기 역할 blob SHA를 조회하고 실제 읽은 SHA와 적용 여부를 HANDOFF에 남긴다(D00 §3). A=CURRENT+D02, B=CURRENT+D01 매번 전문, D00·D03 최초/변경 시 전문 재독. 지팀장은 CURRENT+D00+D03+D01+D02 매번 전문.
+| 담당 | RF | 현재 상태 | 다음 행동 · 상세 정본 |
+|---|---|---|---|
+| A Claude | RF-001 → RF-013/019/017/018 | RF-001 신규 격리 조합 peer 대기 | [RF-001](../plan/verification/codex/RF-001.md) · [HANDOFF_A](HANDOFF_A.md) |
+| B Codex | RF-070 → RF-066 | RF-070 85/142 scoped peer; 32 launcher HOLD; 25 추가 분류 대상. RF-066 NOT_DONE | [RF-070](../plan/verification/codex/RF-070.md) · [RF-066](../plan/verification/codex/RF-066.md) · [HANDOFF_B](HANDOFF_B.md) |
+| 지팀장 | RF 판정·선별 통합 | RF-001 격리 후보 NOT_INTEGRATED; RF-070/066 NOT_DONE | [RF-001](../plan/verification/codex/RF-001.md) · [STATUS](../plan/STATUS.md) |
+| PC 런검증팀 | 별도 검증 | D04 권한 경계 | [runtime CURRENT](../../runtime/validation/CURRENT.md) |
 
-| 담당 | 이번 실행: 자기 개발 우선 | 상대 검증 조건 |
-|---|---|---|
-| **A Claude** | **RF-001 새 integration+2 owner hunk 조합 독립 peer 우선**(`cdc3599f` / B `b994a133` 두 파일; 기존 18-case 반복 금지) → RF-013 실제 미충족 코드 과제 → RF-019 → RF-017 → RF-018 | 동일 B 코드 SHA라도 **기존 peer에서 미검증한 격리 조합**만 최초 read-only normal/-O 확인; 이후 새 코드 SHA 없으면 재검증 금지 |
-| **B Codex** | **RF-001 734×2 격리 PASS 제출 완료**(동일 SHA 반복 금지). 즉시 **RF-070 VERIFICATION 잔여 25개 read-only 위험·소비자 분류(파일별 승인 전 실행/수정 금지)** → **RF-066 안전 CLI 제외 owner 구현·offline/mock 증거**. 단일 PASS 후 종료 금지; 각 RF 신규 source SHA 또는 구체 BLOCKED와 다음 owner 작업 제출 | A가 기존 peer 이후 새 RF-013 코드 SHA를 제출한 경우만 read-only peer |
-| **지팀장** | A/B 신규 결과 회수 → FIX/KEEP 판정 → 선별 통합 → 통합 SHA normal/-O → RF DONE 여부 | 동일 SHA 증거 재사용; 미완료 결과를 반복 검증으로 전가 금지 |
-
-**큐 이동 확인:** RF-070 → [verification/codex/RF-070](../plan/verification/codex/RF-070.md), PARTIAL_PEER_PASS 85/142 / SAFETY_HOLD 32 / 잔여 검토 25 / NOT_DONE. RF-066은 기존 verification/codex 유지. STATUS pending 71 / verification 14 / rework 0 / done 8.
-
-**이번 배정:** A RF-001은 기존 18-case 재검증이 아닌 **새 integration 조합 최초 독립 peer**에 한정. B RF-070/066은 734 PASS를 이유로 중단 불가; 금지 launcher 32개는 실행 금지, 25개는 read-only 위험 분류부터 수행하고 승인된 파일에 한해 구현·mock. **규칙:** 새 코드 SHA 없으면 기존 peer 반복 금지·자기 RF 계속 개발. 이전 검증 18-case(RF-001), 134/134(RF-013) 재실행 금지. 오라클·안전·main 무승인 변경 금지. 미충족 인수조건은 각 RF에만 기록. [RF-001](../plan/verification/codex/RF-001.md) · [RF-013](../plan/verification/claude/RF-013.md) · [STATUS](../plan/STATUS.md) · [HANDOFF_A](HANDOFF_A.md) · [HANDOFF_B](HANDOFF_B.md).
-
-**런검증팀:** [별도 CURRENT](../../runtime/validation/CURRENT.md) → [D00](../../ENGINEERING_DELIVERY_POLICY.md) → [D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md).
+큐: pending **71** · verification **14** · rework **0** · done **8** (마지막 확인 집계; 최신 STATUS 우선).
