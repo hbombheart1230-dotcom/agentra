@@ -1,6 +1,9 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 12:33 KST, 물리·논리 큐 일치): pending 71 / verification 14 / rework 0 / DONE 8** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 13:35 KST, 기존 물리·논리 큐 유지): pending 71 / verification 14 / rework 0 / DONE 8** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+
+## 최신 지팀장 판정 (2026-10-26 13:35 KST)
+- A/B **신규 owner 소스 SHA 0**. RF-001 최초 격리 peer A `ae860f9c`: normal/-O 734×2 PASS·differential 17건 수용, `PEER_SCOPED_PASS`; `test_operator_ui.py`는 A fastapi 미설치로 NOT_RUN → B 격리 환경 UI normal/-O·patchnotes 후 ADMIT 재판정. RF-013 A `2026-10-26T0428Z` normal/-O 격리 하네스 11+2 PASS, 67 owner coverage 92% → KEEP_SCOPED; 잔여 4 경계 미완료. **소스 통합·RF 이동·DONE 0**, pending 71 / verification 14 / rework 0 / DONE 8. D03 변경 blob `89826e10` A/B 정책 재수신 아직 PENDING. RF-066 실제 주문·고정 파일 쓰기만 HOLD, 정적·안전 격리 mock은 계속 허용.
 
 ## 최신 큐 판정 (2026-10-26 12:33 KST)
 
