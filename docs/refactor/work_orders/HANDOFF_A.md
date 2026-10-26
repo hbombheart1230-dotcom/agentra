@@ -459,3 +459,14 @@
 - 판정: 조사 완료(코드 결함 후보 2건 정확 `FILE::SYMBOL` 제시), 수정은 승인 대기. DONE 아님. RF-030 승인 대기 유지.
 - 다음: 지팀장/사용자 (a)(b) 승인 또는 "의도된 동작/삭제" 결정 대기; 새 CURRENT 배정 없으면 `NO_DELTA`.
 - PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
+
+---
+## 추가 회차 — CURRENT(통합 `d79f6bd3`) A P0 RF-033 Windows 실환경 storage.publish 경계 (소스 변경 0)
+
+- RUN_ID: 2026-10-27-claude-a-sched-134 · A 시작 `ed0aa857`(ff) · integration `d79f6bd3` · **A 소스 코드 변경 없음(NO_CHANGE)**. P1 RF-032은 run133 read-only 조사(`q13_q14_validation.py`: `validation_id` 경로 이탈, Exit Horizon 도달 불가)가 유효, 승인 대기라 재조사 없음.
+- **신규 경계(run133이 Linux라 NOT_RUN이던 Windows 실측):** owner `vnext/storage.py::publish` blob `23783494` = integration(일치). Windows 11 / Python 3.13.14 NTFS, 실제 `threading`·`os.link`·`os.replace`, tmp 전용(`tempfile.mkdtemp`), 네트워크/운영 root 0. 일반 `python`·`python -O` 각 **exit 0 / 15 cases**, marker `RF033_WIN_STORAGE_OK`.
+- 확인: mutable 덮어쓰기·tmp(`.q12-*`) 잔존 0; immutable 첫 publish + no-clobber(기존 값 반환); 16 실제 스레드 immutable 경쟁 → 오류 0, 전원 동일 payload, tmp 잔존 0; NaN `ValueError` 후 파일/tmp 0; 대상이 디렉터리/핸들 점유 시 `PermissionError`(mutable·immutable 모두) 후 tmp 정리.
+- **관찰(변경 안 함, 지팀장 판단):** 4 writer×60회 + 4 reader 동시 mutable `os.replace`에서 Windows `PermissionError` 약 237~239/240회가 `publish`에서 **그대로 전파**(재시도 없음). 읽기 측 부분 JSON은 0(`PermissionError` 제외), 종료 후 파일 유효 JSON. 따라서 동시 갱신 프로세스/스레드가 있으면 `InputWorker.tick`이 예외를 `q12_input_delivery_error=PermissionError`로 처리하고 15초 후 재시도하는 기존 계약에 의존. 단일 writer 정상 경로는 영향 없음. BASE 동일 → REWORK 아님, HARDENING 후보(짧은 retry)이나 승인 필요.
+- 판정: **PEER_PASS_SCOPED**(A 원개발자, 독립 B peer 아님), DONE 아님. NOT_RUN: 실제 `start_input_worker` Thread+Task Scheduler, 다중 프로세스 race, 운영 root, hosted CI, UEF/frozen. 하네스는 증거 보존 목적 외 커밋하지 않음.
+- 다음: 신규 CURRENT 배정 없으면 `NO_DELTA`.
+- PUSH_VERIFIED: push 후 확인.
