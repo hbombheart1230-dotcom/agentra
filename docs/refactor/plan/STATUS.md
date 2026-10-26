@@ -1,3 +1,9 @@
+## 지팀장 RF-001 최종 DONE — 2026-10-26 20:42 KST
+
+- 실제 33/33 owner의 remote source 정적 효과 검사: core는 LLM 3 attempts, cached/operator brief JSON/MD, trade health/lifecycle files **WRITE** (read-only로 오분류하지 않음); `monitor_notes` 8 pure helpers 및 나머지 31 KEEP. `tests/test_operator_ui.py`의 saving/failover/cache invalidation/LLM timeout/patchable facade 소비자 테스트 직접 확인.
+- **기존 선별 통합** core `0666538f`/notes `4f73570f`, A 독립 734×2 + differential17, B 정확 통합 `b5fe3dd9` normal/-O 787×2 PASS. `f9126467` hosted Shared Offline Safety run `40272648973` normal/-O success. 원격 compare `f9126467` → 직전 `0c914d8af552675e3b7d5860a02b4006a0fe69b9`: runtime code/tests/workflows 0 변화; 운영·문서·patchnotes만 변경. **tested integrated source/tree 동일**, 문서-only HEAD 새 CI 필요 없음.
+- RF-001 LEAD→DONE 실제 이동; 신규 source/cherry-pick 0, 동결/실거래 변경 0. STATUS 집계는 원격 tree 검산을 기준으로 한다.
+
 ## 지팀장 직접 RF-007 종결 — 2026-10-26, SOURCE-TREE CI + E2E 게이트 종결
 
 - **실제 코드 기준 게이트 판정:** GitHub Actions `P1.5 Web Compatibility` run `40073316192` @ 통합 `1374d371` `npm ci`/`npm test`/`npm run build` 모두 PASS. 최신 판단 전 integration의 `apps/web` `a96c7deb`·`apps/api` `2a488828` 및 Web CI workflow `4e498a8b`는 tested integration에서 동일 blob/tree. 동결 CI를 변경하거나 재실행하지 않고 정확한 **이미 통합된 소스**의 CI 결과 인수. 후속 문서-only SHA check-runs 0은 동등 소스가 미검증이라는 뜻이 아님(최신 SHA에서 CI를 새로 실행했다는 주장은 금지).
