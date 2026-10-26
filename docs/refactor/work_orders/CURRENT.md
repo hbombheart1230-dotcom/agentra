@@ -1,3 +1,22 @@
+# Agentra P1.5 — 지팀장 A 슬롯 정본 (2026-10-27 02시 KST)
+
+**이 최상단 절이 아래 이력과 충돌할 때 우선.** 정본은 `integration/p1.5`의 CURRENT + D00. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. 작업 브랜치 CURRENT 사용 금지. RF 최종 판정/큐 이동/통합은 지팀장 소유. 동일 source SHA·marker 재실행 금지.
+
+## 신규 진척·지팀장 직접 실행
+
+- **LEAD 실물 시작 14 / 신규 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14**. 큐 PENDING61 / DEVELOPING3 / PEER1 / LEAD14 / DONE14 / REWORK0 = 93 unique, 중복0. 물리 이동0·운영 source 통합0. 전체 `EXECUTION_INCOMPLETE`; 남은 각 RF 최초 미검증 경계는 최신 STATUS 및 해당 실물 RF. 기존 HOLD 반복이나 부분 PASS는 DONE 아님.
+- A HEAD `645f1313`, B `8fe36a3d`: 직전 B 슬롯 이후 신규 코드/peer 0. Issue #32 신규 런검증 댓글 0, SELL provenance·BUY guard·OCI SOURCE_SHA UNKNOWN → `SAFETY_HOLD` (CODE REWORK 아님).
+- **지팀장 신규 RF-033 storage 실제 실행:** `libs/reporting/baseline_btc_woori_tech/vnext/storage.py` exact Git blob `23783494b75f4aaef16825200b2bf05ae82bfb91`의 원문을 byte-identical temp 복사본으로 import. `PYTHONDONTWRITEBYTECODE=1 python -S` 및 `python -O -S` 각각 **11 PASS / FAIL0 / exit0**, marker `RF033_LEAD_STORAGE_PUBLISH_11X2`. Mutable atomic replace, immutable hardlink no-clobber, OSError/PermissionError/fsync/NaN/invalid collision cleanup, 입력 State 불변·temp 외 효과0. 재현 테스트 `evidence/lead_rf033_storage_publish_boundary.py` blob `3b12fb23` commit `8b47ecce`는 실행본과 byte-identical. RF-033 판정 `e6a6f2b1`, STATUS `6990c418`. Windows 파일시스템/동시성·scheduler·B 독립 worker peer·전체 owner 효과는 NOT_RUN. A에게 동일 storage marker 반복 지시 금지.
+- Safety hosted `40332899631@0da98a47` 정상/-O SUCCESS와 현행 운영 source/tests/workflow diff0 범위만 재사용. Web `40073316192@1374d371`은 Web 관련 동일 tree 범위만 재사용. 신규 hosted/전체 repo/실거래 `NOT_RUN`. Troubleshooting open4/closed1, 신규 실제 해결0. RF-069 승인 UEF5 snapshot 부재, RF-012 finite/Issue32 안전 문제 무승인 수정 금지.
+
+## 다음 A/B 최초 실행 (기존 성공 경계 반복 금지)
+
+- **Codex B P0:** [RF-031](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md) `generate_reporter_analysis_report` helper graph→8 writer/day cache/partial OSError **신규 독립** tmp-only fake normal/-O. 기존 잘못된 AST 문자열 하네스·지팀장 path15×2·A run116 반복 금지. `EVENT_LOG_DAY_CACHE_DIR`, `STRATEGY_MEMORY_PATH`, `STRATEGY_MEMORY_DAILY_DIR`, `EVIDENCE_LEDGER_PATH`, cwd/event log/reports root 모두 temp. 실제 LLM/운영 root/frozen13/거래 금지. **P1:** RF-028 정식 rich blocked summary/full peer → **P2:** RF-029 story assembly v1/v2·canonical tmp-read peer → **P3:** RF-032 cost-basis/horizon writer 새 peer → **P4:** RF-033 `InputWorker.tick → publish_input` capture/provider fake·State/예외 독립 peer(지팀장 storage 11×2와 input37×2 반복 금지). 그 뒤 RF-014/016/050/015 신규 경계.
+- **Claude A P0 변경:** [RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md) `trade_story_pipeline.build_trade_story_input` facade→bundle 실제 조립·State alias·malformed 예외 **최초** no-network fake normal/-O. run121 human renderer·run118 story assembly 반복 금지. **P1:** RF-032 `loss_decomposition/operator_summary_mining` 새 안전 writer tmp-only. **P2:** RF-034 `opening_casebook/opening_policy_matrix` 새 pure producer. **RF-033 storage.publish는 지팀장 exact-source 11×2로 해소**, 동일 경계 재실행하지 말고 B 신규 독립 worker/Windows 효과 대기. 실 fetch/thread/UEF/운영 root 금지.
+- **지팀장 다음 최초:** 신규 A/B peer·Issue #32 인수 즉시 LEAD 실물 **전건** 직접 판정 → 인수조건 충족 RF 즉시 `04_LEAD_ACCEPTANCE → 05_DONE/{원개발팀}` 물리 이동·구 경로 삭제/commit·93 unique 검증 → 허용 소스 선별 통합/정확 tree CI → troubleshooting 실제 해결만 closed → 다음 배정 → STATUS → **CURRENT 마지막**. main/실거래/Broker/Supervisor/Executor/Step5C/UEF 안전 계약·동결 테스트/CI·예약/운영 데이터 무승인 변경 금지.
+
+---
+
 # Agentra P1.5 — 지팀장 B 슬롯 최신 정본 (2026-10-27 01시 이후 KST)
 
 **본 최상단 절이 아래 A/B 이전 실행 절과 충돌할 때 우선한다.** 유일한 실행 정본은 `integration/p1.5` CURRENT+D00. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. 작업 브랜치 CURRENT 사용 금지. LEAD 최종 DONE/REWORK·물리 큐·통합은 지팀장 전담. 동일 source SHA·동일 marker 재실행 금지.
