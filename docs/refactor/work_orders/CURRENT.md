@@ -16,17 +16,15 @@
 
 ## Claude A — `work/p15-a-reporter-pure-20261021`
 
-**원개발 RF-033/034/032 완료 처리(KEEP 후보, B peer 대기):** A run 105 `4e9f0ae9`의 45/40/135 owner BASE 동일·신규 offline normal/-O exit 0을 지팀장이 수용해 **03_PEER_REVIEW/CODEX_B로 이동**했다. A는 동일 하네스 재실행·추가 형식적 코드 diff 금지. RF-030 `01_PENDING/CLAUDE_A`의 `03b255e5` frozen RF-074 위반 후보 통합 금지·HOLD 유지.
+**인수 완료·재실행 금지:** run106 RF-033 provider `fg=12 dp=21`; run107 RF-067 두 root wrapper, RF-065 agent-effectiveness scorecard, RF-063 metrics schema CLI normal/-O exit 0은 지팀장이 수용했다. **RF-067은 LEAD로 이동**, A는 동일 wrapper peer 재실행 금지. RF-063 metrics CLI는 쓰기형(tmp-only)이지 read-only가 아니다. RF-030 `03b255e5` frozen RF-074 충돌 후보는 통합 금지 HOLD.
 
-**1순위 — RF-067 B 코드 루트 공개 wrapper 신규 독립 peer** [03_PEER_REVIEW/CLAUDE_A](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-067.md). `scripts/check_reports_trades_health.py`, `scripts/check_reporter_upgrade_regression.py`의 `__main__` runpy delegation과 import-time alias를 검사한다. 기존 RF-063 `scripts/diagnostics/*` 2개 `main(argv)` 및 RF-067 AST/7/17 PASS **반복 금지**. 합성 temp reports + fake argv로 **root wrapper 호출 경로만** in-process `runpy.run_path` 격리; socket/sqlite/subprocess/운영 쓰기 차단, 출력/exit·`sys.modules`·State/예외 동등성 검증. `python /tmp/rf067_wrapper_peer.py` / `python -O /tmp/rf067_wrapper_peer.py` 최초 marker/실제 exit·검토 SOURCE_SHA 제출. `check_real_execution_preflight.py` 등 브로커·실행 효과 있는 `__main__` 직접 호출 금지. 효과 차단 실패 시 해당 wrapper만 SAFETY_HOLD하고 **RF-065**.
+**1순위 — RF-033 잔여 원개발 IO 경계** [03_PEER_REVIEW/CODEX_B](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-033.md). `libs/reporting/baseline_btc_woori_tech/point_in_time_capture.py::merge_capture_into_signal_payload` → `load_capture_snapshot/load_captured_sources`를 **synthetic tmp root, 기존 08:55 capture·깨진 JSON·누락 day·중복 epoch·malformed ts**로 최초 확인. `capture_q12_btc_0855_snapshot` 실제 fetch/쓰기 호출 금지. 입력 payload 불변·읽기 경로·fallback_reason·예외 전파 분류. `python /tmp/rf033_capture_owner.py` / `python -O /tmp/rf033_capture_owner.py` marker·exit·SOURCE_SHA·BASE 차분 제출. 네트워크/브로커/운영 root 차단. 이건 **A 원개발 추가 증거**이지 B 독립 peer 대체가 아니다. 위험하면 HOLD 후 RF-032.
 
-**2순위 — RF-065 LEAD 잔여 연구 CLI 독립 peer** [04_LEAD_ACCEPTANCE/FROM_CODEX_B](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-065.md). `daily_profitability_scorecard.main(argv)` 합성 3거래 JSON/default·argparse `RF065_OFFLINE_PEER_OK` normal/-O exit 0은 **이미 인수**; 재실행 금지. 다음 `scripts/research/run_agent_effectiveness_scorecard.py::main`→`write_agent_effectiveness_scorecard`/stage2 writer의 argv·output_dir·쓰기/State를 **AST/read-only로 먼저** 분류. 안전한 tmp-root-only 효과 격리 가능할 때만 `/tmp/rf065_next_cli_peer.py` normal/-O 최초 실행하고 marker·exit·tmp 외 쓰기 0 증거 제출. 운영 파일/실거래/스케줄러 실행 금지. 불가 시 SAFETY_HOLD 후 **RF-063**.
+**2순위 — RF-032 평가 writer 효과 경계** [03_PEER_REVIEW/CODEX_B](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-032.md). `libs/reporting/evaluation/pipeline.py::{_write_json,_write_text,build_q9_evaluation}` AST/read-only로 먼저 쓰기·호출·`recover_forward=True`의 `allow_fresh_fetch=True`를 분리. **절대 fresh fetch 실행 금지**; safe `recover_forward=False` + fake dependencies + tmp-root-only write가 증명될 때만 `python /tmp/rf032_writer_owner.py` / `python -O /tmp/rf032_writer_owner.py` 첫 정상/최적화 exit·marker·tmp 밖 쓰기 0 제출. 불가 시 SAFETY_HOLD 후 RF-065.
 
-**3순위 — RF-063 LEAD 잔여 진단 CLI 독립 peer** [04_LEAD_ACCEPTANCE/FROM_CODEX_B](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-063.md). 기존 read-only 진단 2 CLI 및 `audit_target_tree_compat.audit` 합성 7케이스 `RF063_TREE_AUDIT_PEER_OK` normal/-O exit 0은 **인수 완료**, 반복 금지. 다음 `scripts/diagnostics/check_metrics_schema_v1.py`의 공개 read-only 소비자·argv·bad JSON fail-soft를 합성 tmp reports로 검토, `python /tmp/rf063_metrics_peer.py` / `python -O /tmp/rf063_metrics_peer.py` marker·exit·부작용 0 제출. 위험 경계는 HOLD하고 **RF-007**.
+**3순위 — RF-065 잔여 연구 CLI** [04_LEAD_ACCEPTANCE/FROM_CODEX_B](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-065.md). `scripts/research/run_alpha_hypothesis_competition.py::main`→`libs.research.alpha_competition.run_alpha_hypothesis_competition`을 AST-only로 우선 분류; 기본 fetch=True이므로 직접 main 실행 금지. `--no-fetch`·fake dependency·tmp-only 출력 효과가 안전할 때만 `python /tmp/rf065_alpha_cli_peer.py` / `python -O /tmp/rf065_alpha_cli_peer.py` 신규 marker/exit·효과 0 제출. 막히면 RF-007 ENV 상태 기록 후 다음 안전한 RF.
 
-**4순위 — RF-007** [03_PEER_REVIEW/CLAUDE_A](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-007.md). 기존 fastapi ENV_BLOCK은 같은 SHA 재실행 금지. 환경 해제·새 SOURCE_SHA가 없으면 원인/재개조건만 제출하고 RF-067/065/063의 다른 안전한 미검증 소비자 계속.
-
-**A 제출:** 각 RF의 exact SOURCE_SHA, 새 함수/입력/부작용·normal/-O 실제 명령·marker·exit, CODE/BASELINE/ENV/SAFETY 분류, KEEP/FIX/HOLD·다음 RF. Issue #11/HANDOFF는 결과 제출만, CURRENT·RF 큐 수정 금지. 시간 상한·회차 RF 개수 제한 없음. 안전한 첫 검증 뒤 다음 경계 연속 진행.
+**A 제출:** 실제 SOURCE_SHA, 최초 미검증 경계·normal/-O 명령/exit·효과 차단·CODE/BASELINE/ENV/SAFETY, KEEP/FIX/HOLD. Issue #11/HANDOFF는 결과만, RF 큐·CURRENT 직접 수정 금지. 반복 없이 다음 RF 연속 진행.
 
 ## Codex B — `work/p15-b-operator-structure-20261022`
 
@@ -48,10 +46,12 @@
 
 ## 지팀장 — `integration/p1.5`
 
-**이번 B 회차 실제 완료:** A `4e9f0ae9` run 105의 **새 owner 증거 3건** 인수: RF-033 45/45 KEEP + `RF033_BOUNDARY_OK` normal/-O exit 0, RF-034 40/40 KEEP + `RF034_CANONICAL_OK` exit 0, RF-032 135/135 KEEP + `RF032_EVAL_OK` exit 0. 지팀장이 세 RF를 `02_DEVELOPING/CLAUDE_A→03_PEER_REVIEW/CODEX_B` 물리 이동하고 **B 최초 독립 peer** 배정. A의 새 RF-065 `RF065_OFFLINE_PEER_OK`, RF-063 `RF063_TREE_AUDIT_PEER_OK` 정상/-O exit 0은 기존 import-only와 구별해 LEAD에서 추가 수용(두 RF NOT_DONE). 이전 B 회차 RF-065 PEER→LEAD 이동 및 직전 A 회차 RF-063 이동은 반복하지 않는다.
+**이번 회차 실제 판정:** A run106/107의 신규 증거를 직접 인수. **RF-067을 PEER_REVIEW/CLAUDE_A → LEAD_ACCEPTANCE/FROM_CODEX_B로 물리 이동**, `PEER_SCOPED_ACCEPTED / KEEP_NOOP_CANDIDATE / NOT_DONE`. RF-063/065는 신규 tmp-only 쓰기형 CLI 경계를 추가 수용, RF-033 provider는 A 원개발 증거로만 수용(B peer 대기). B HEAD `5fb0e131` 신규 소스·peer 0, 현재 B 1순위 RF-031 유지. 코드 선별 통합 후보 없음(새 source 0; RF-030 frozen FAIL 후보 제외), DONE 0, REWORK 0.
 
-**코드·안전 판단:** A/B 최신 원개발 source delta 0 → 이번 회차 **선별 통합할 코드 0**, 신규 DONE 0, REWORK 0. RF-030 `03b255e5` frozen RF-074 FAIL 후보는 미승인·미통합. RF-001 `integration@b5fe3dd9` exact scoped normal/-O 787 PASS는 수용 완료, 전체 33 owner/hosted CI 전 DONE 금지. Issue #32 broker BUY/SELL fill 대비 local SELL origin UNKNOWN, stale BUY guard, readiness/Operator GREEN 및 running image SOURCE_SHA 미입증은 **RUNTIME_ENV/UNKNOWN + CODE_CANDIDATE_UNCONFIRMED**. `execute_from_packet._update_recent_buy_order_guard`, `kiwoom_order_fill_reader.load_local_execution_rows`, `build_execution_readiness`, `operator_visibility` read-only owner 경계 추적; 원개발 재현 전 안전 계약 변경/REWORK/재배포 금지.
+**RF-067 남은 인수 게이트:** 14 owner 공개 CLI 전체의 Windows PATH/Task Scheduler 소비자, 안전 preflight 효과, 최신 integration exact SHA/hosted CI. A가 검증한 두 wrapper를 재실행하지 않는다. 지팀장이 전체 계약 충족 증거를 직접 판정할 때까지 LEAD HOLD.
 
-**troubleshooting:** `open/` 4문서 모두 종료조건 미충족, `closed/` 해결 기록 0. 임의 이동 금지. **물리 큐:** PENDING **62** / DEVELOPING **3** / PEER_REVIEW **10** / LEAD_ACCEPTANCE **7** / REWORK **0** / DONE **11** = **93**(고유 93). 신규 통합 HEAD exact normal/-O 및 hosted CI 직접 실행 NOT_RUN. main·실거래·거래 안전 계약·동결 테스트/CI·예약 변경 금지.
+**런검증 #32:** broker SELL 원인 UNKNOWN, local/broker mismatch, stale BUY guard, image source SHA 미입증은 환경·미확정 코드 후보. 원인 재현 전 코드 REWORK·거래 안전 수정·운영 재배포 금지. `troubleshooting/open` 4건은 종료조건 미충족, `closed` 0건.
 
-**다음 지팀장 루프:** ① 최신 integration CURRENT 단독 시작→A/B 신규 소스 diff·HANDOFF·Issue #32 확인 ② 신규 CODE/BASELINE/ENV/SAFETY/UNKNOWN 분류 ③ 새 peer 증거 RF 직접 판정·원자 물리 이동 ④ 허용된 source 변경만 owner+frozen+peer+patchnotes 검증 후 선별 통합·exact SHA/hosted CI ⑤ open/closed 실제 해결만 이동·STATUS 정합 ⑥ 다음 다중 RF 실행 명령 배정 ⑦ **CURRENT를 반드시 마지막에 갱신**. 보고만으로 종료 금지. 처리시간 상한 없음.
+**물리 큐(이동 후):** PENDING 62 / DEVELOPING 3 / PEER_REVIEW 9 / LEAD_ACCEPTANCE 8 / REWORK 0 / DONE 11 = 93. 부분 PASS·NOT_RUN ≠ DONE. 지팀장 자체 latest integration exact-SHA hosted CI NOT_RUN.
+
+**다음 지팀장 루프:** integration CURRENT 단독 시작 → A/B HEAD·신규 evidence 및 #32 확인 → 새로운 peer RF 직접 판정·원자 이동 → 소스 delta가 있을 때만 frozen/peer/patchnotes 검증 후 허용 파일 선별 통합 → open/closed 실제 종료만 이동 → STATUS 동기화 → CURRENT 마지막 갱신. main·실거래·거래 안전·동결 테스트/CI·예약 무승인 변경 금지.

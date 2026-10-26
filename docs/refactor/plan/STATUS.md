@@ -1,3 +1,12 @@
+## 지팀장 B 슬롯 — A run106/107 신규 peer 인수 및 RF-067 실제 이동 (2026-10-26 18:33 KST)
+
+- **A 신규:** branch `3ce7aa45`, 소스 delta 0; run106 RF-033 provider fake 경계 `RF033_PROVIDERS_OK fg=12 dp=21` normal/-O exit 0 원개발 증거 추가(상대 peer 아님). run107 RF-067 두 root wrapper `RF067_WRAPPER_PEER_OK`, RF-065 research scorecard tmp-only write `RF065_NEXT_CLI_PEER_OK`, RF-063 metrics schema tmp-only write `RF063_METRICS_PEER_OK` 모두 BASE/integration/normal/-O 4-way 동일·exit 0(지팀장 직접 런 NOT_RUN). RF-063 metrics CLI는 read-only가 아닌 쓰기형으로 CURRENT 정정.
+- **B:** branch `5fb0e131` 이전 회차 이후 새 커밋 0, RF-031/033/034/032 최초 독립 peer 미제출. RF-001 exact `b5fe3dd9` 787×2 PASS 및 RF-028 scoped peer 기존 증거 재사용, 반복 금지.
+- **지팀장 실제 판정·원자 물리 이동:** RF-067 `03_PEER_REVIEW/CLAUDE_A → 04_LEAD_ACCEPTANCE/FROM_CODEX_B`, `KEEP_NOOP_CANDIDATE / PEER_SCOPED_ACCEPTED / NOT_DONE`. 독립 wrapper 소비자 경계는 수용, 14-owner 전체 효과/Windows CLI/hosted CI 및 최신 integration exact-SHA 미검증. RF-063·065 LEAD 잔여 게이트만 축소, RF-033 원개발 증거 추가·B peer 대기. 신규 코드 선별 통합 0, DONE 0, REWORK 0.
+- **Issue #32:** 17:38 관측 SELL provenance UNKNOWN, local/broker mismatch, stale BUY guard, image SOURCE_SHA 미입증 → RUNTIME_ENV/UNKNOWN 및 CODE_CANDIDATE_UNCONFIRMED. 거래 안전 변경/REWORK/재배포 없음.
+- **troubleshooting:** open 4 전부 미종결(로컬 exit/PR 소비자, hosted 5 gates, RF020/001 범위, source admission); closed 0, 이동 0.
+- **물리 큐:** PENDING 62 / DEVELOPING 3 / PEER_REVIEW **9** / LEAD_ACCEPTANCE **8** / REWORK 0 / DONE 11 = **93**, 고유 RF 93(이동 후 재검증 예정). 지팀장 latest integration exact-SHA CI/pytest NOT_RUN, 부분 PASS≠DONE. main·실거래·거래 안전 계약·동결 오라클·예약 변경 없음.
+
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
 ## 지팀장 B 회차 — A run 105 신규 동적 증거 인수·원개발 3 RF 독립 peer 이동 (2026-10-26)
