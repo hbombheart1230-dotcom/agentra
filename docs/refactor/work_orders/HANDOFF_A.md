@@ -50,7 +50,7 @@
 - PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
 
 ---
-## 추가 회차 — CURRENT(`68a9573d`) 1~3순위 신규 경계: RF-067 루트 wrapper · RF-065 다음 CLI · RF-063 metrics schema CLI
+## 추가 회차 — CURRENT(`0f5ca6ac`) 1~3순위 신규 경계: RF-067 루트 wrapper · RF-065 다음 CLI · RF-063 metrics schema CLI
 
 - RUN_ID: 2026-10-26T0917Z-claude-a-sched-107 · A 시작 `ddef2647`(106 포함) · integration `f88e511d`에서 실행(원격은 `c0c3152b`까지 이동, A 섹션 동일) · B `5fb0e131`(문서 커밋만). **A 소스 코드 변경 없음(NO_CHANGE).** 하네스는 `evidence/run103_boundary_scripts/`(저장소 루트에서 실행). 공통 격리: 자격 증명 env 제거, 소켓·subprocess·os.system·sqlite3 차단, 쓰기는 **tmp 루트 밖이면 기록+차단**. 4개 출력(integration·BASE `63182ab2`·normal·`-O`) 전부 바이트 동일, exit 0.
 - **1) RF-067 루트 wrapper (`scripts/check_reports_trades_health.py`, `scripts/check_reporter_upgrade_regression.py`, blob==BASE):** `rf067_wrapper_peer.py` → `RF067_WRAPPER_PEER_OK w1=0 w2=0 argparse=2/2 alias=2 patch_visible=True writes=0 debug=True` **exit 0**, `-O` `debug=False` **exit 0**. `runpy.run_path(…, run_name="__main__")` 위임: wrapper1 `--json`/기본 출력 exit 0, wrapper2 2일 비교 `--json`/기본 exit 0, 잘못된 플래그·필수 인자 누락 → argparse exit 2. wrapper `__main__` 출력/exit가 직접 `diagnostics.main` 호출과 동일. import 시 `scripts.<name>` 모듈이 `scripts.diagnostics.<name>` 모듈 객체와 동일(`is`)하고 `sys.modules` 치환·monkeypatch 전파(`patch_visible=True`) 확인. 실행 전후 tmp 트리 불변, 쓰기 0. **PEER_PASS_SCOPED**(루트 wrapper 호출 경로).
