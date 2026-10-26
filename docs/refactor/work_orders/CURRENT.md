@@ -10,19 +10,13 @@
 - **B:** RF-070 미분류 22 OTHER 파일별 argv/env/IO/동적·외부 소비자·ACTIVE/COMPAT/SAFETY_HOLD 완성, 막히면 RF-066 16 owner → RF-071. 안전 런처 실행 금지.
 - **런검증 #32 / 장애:** 17:38 broker/local SELL provenance UNKNOWN, BUY guard stale, readiness/Operator GREEN vs reconciliation mismatch, OCI source SHA 불명. 코드 REWORK·실거래 안전 변경 금지. troubleshooting open 4/closed 0, 종료조건 충족 0. RF-007 제외 다른 RF 큐 이동 0. CURRENT 마지막 반영.
 
-## 지팀장 완료한 LEAD 판정 — 다음 회차 기준선
+## 지팀장 필수 실행 슬롯 — LEAD 큐 우선
 
-1. **LEAD 13건 전수 직접 판정 완료:** RF-001/008/016/028/029/031/032/033/034/063/065/067/069. [STATUS](../plan/STATUS.md) 최상단에 파일별 기존 PASS, 남은 최초 안전 경계, SOURCE/BASE/ENV/SAFETY, DONE 미충족 근거를 기록. `LEAD_HOLD`는 **결정 보류**가 아니라 **지팀장 직접 게이트 미충족 판정**이며 다른 사람에게 이 판정을 재위임하지 않는다.
-2. **소유 코드 직접 교차 검사:** BASE `63182ab2`, integration `87b821fd`, A `c3462ec3`, B `53d8624e`. 13 RF 558 owner 전수 경로 존재, 12 RF 525개 blob 4-way 동일, RF-001 33개 B=integration 동일(BASE 대비 4개 변경). 신규 source patch 0, 추가 선별 통합 0. 과거 valid normal/-O·peer 반복하지 않는다.
-3. **금회 신규 근거 반영:** A run108 RF-032 pipeline temp writer normal/-O exit 0(32파일, 29 writer 전체 미검증; `all(... or True ...)` 항등참 검증은 배제), RF-033 point-in-time capture malformed ts `ValueError`(BASE 동작, producer int; 별도 hardening 후보, 코드 REWORK 아님), RF-065 alpha competition `--no-fetch` fake CLI normal/-O exit0/fetch0/outside-write0(기본 fetch 경계는 금지). 각 기존 LEAD 문서에 지팀장 판정 추가.
-4. **물리 큐:** RF-050 **01_PENDING/UNASSIGNED → 02_DEVELOPING/CLAUDE_A** 신규 배정. 최종 단일 경로 Git tree 검산: `PENDING 61 / DEVELOPING 4 / PEER_REVIEW 4 / LEAD 13 / REWORK 0 / DONE 11 = 93`; 중복 0·누락 0. 나머지 LEAD는 증거 없는 DONE·REWORK·단순 역이동 금지. RF-069은 UEF5 historical 승인 snapshot 부재로 ENV/CROSS_RF 차단 유지.
-5. **정확 SHA 검증:** integration `87b821fd` check-runs 0; hosted 이력 GREEN은 과거 다른 SHA이므로 최신으로 확대하지 않는다. 지팀장 직접 pytest NOT_RUN, 기존 A/B 실제 marker·exit만 인수. **새 코드가 없으므로 코드 통합 불요**, CI 전체 PASS/DONE 0. `main`·실거래·Broker/Supervisor/Executor/Step5C/UEF 안전 계약·동결 테스트/CI·예약/주기·운영 데이터 무승인 변경 없음.
+**이 절은 [D00 §2](D00_ENGINEERING_DELIVERY_POLICY.md)의 자동 실행 의무를 현재 회차에 적용한다.** 별도 사용자 지시를 기다리지 않는다. A/B 신규 진척 확인 즉시 `04_LEAD_ACCEPTANCE` **전건**을 지팀장 자신의 작업으로 직접 처리한다. 증거 재사용 → 가능한 신규 직접 검증/선별 통합 → DONE·REWORK·구체적 차단 확정 및 물리 큐 이동 → 새 A/B 작업 배정 순서. **A/B 배정·STATUS/CURRENT 갱신만 하고 LEAD 실물 처리를 생략하면 `EXECUTION_INCOMPLETE`**. HOLD를 반복하거나 최종 판정을 A/B에 재위임하지 않는다. 승인·실행환경·독립 peer가 필요한 경우에는 정확한 게이트만 남기고 안전한 다음 RF를 진행한다. 모든 DONE은 D00의 전체 인수·필수 검증을 충족해야 한다.
 
-## 공통 실행 규칙
+**현행 LEAD 14건:** RF-001/007/008/016/028/029/031/032/033/034/063/065/067/069. RF-007은 새로 인수한 synthetic E2E peer의 범위만 인정, 정확 SHA hosted CI·잔여 소비자 게이트 HOLD. RF-001의 기존 787×2, RF-032/033/065의 신규 run108, 기타 기존 peer는 반복 금지. **우선 지팀장 본인이 14건 각각 DONE 가능 여부와 남은 최초 직접 실행 가능한 게이트를 확인**한다. 상세 과거 판정·실패 분류는 [STATUS](../plan/STATUS.md) 및 각 RF가 정본이며 이 CURRENT에 반복 기재하지 않는다.
 
-A/B는 반드시 최신 **integration CURRENT**를 읽고 **자기 코드 브랜치**에서 수행. 같은 SOURCE_SHA/입력·함수·경계의 기존 정상/`python -O` 또는 peer를 재실행하지 않는다. 각 새 작업은 **확인 → 파일/함수별 KEEP/FIX/HOLD 판정 근거 → 안전한 합성 fake 검증 normal/-O 명령과 실제 exit → SOURCE SHA → 다음 RF**까지 진행한다. 소스 수정이 허용되고 실제 이득이 있는 경우에만 원본 frozen oracle·독립 peer·필요 UI patchnotes JSON/MD를 함께 제출한다. 상대 팀 peer는 최초 신규 경계만 read-only 검증. TIME LIMIT/회차당 RF 개수 제한 없음. 특정 경계 ENV/SAFETY/frozen으로 막히면 해당 경계만 HOLD하고 **다음 안전 RF**로 즉시 진행한다. ACK/HANDOFF-only 종료 금지.
-
-**지팀장:** 신규 A/B/RunLab 데이터 인수 → 직접 코드·RF 판정/물리 큐 이동·허용 owner 선별 통합 → 정확 SHA 필수 검증 → troubleshooting 실제 해결 조건 점검 → STATUS → **마지막에 CURRENT**. 과거 판정 반복/재위임 불가. 새 코드가 없으면 코드 통합 0이라고 기록, 이미 유효한 peer 증거 재검증 불가.
+**공통 실행:** A/B는 최신 integration CURRENT만 읽고 자기 코드 브랜치에서 수행, 안전한 최초 신규 경계 normal/`python -O` 실제 exit·SHA 제출, 시간·RF 개수 제한 없음. 중복 검증·ACK-only 종료 금지. main/실거래/거래 안전 계약/동결 테스트·CI/예약·운영 데이터·승인 없는 삭제 금지. **회차 종료 순서:** 신규 증거 → LEAD 전건 직접 판정/가능한 조치 → 선별 통합·정확 SHA 검증 → troubleshooting open/closed → STATUS → CURRENT 마지막.
 
 ## Claude A — `work/p15-a-reporter-pure-20261021`
 
