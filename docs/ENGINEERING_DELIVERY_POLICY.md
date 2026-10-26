@@ -1,8 +1,9 @@
 # D00 — Agentra 공통 안전·권한·증거 원칙
 
-> 각 팀은 **자기 CURRENT부터** 읽는다. 미변경 정본·동일 SHA 증거는 반복 조회하지 않는다. 개발팀: [CURRENT](refactor/work_orders/CURRENT.md) → [D03](refactor/work_orders/D03_DEV_TEAM_RULES.md) 및 D01/D02. PC 런검증팀: [검증 CURRENT](runtime/validation/CURRENT.md) → [D04](runtime/validation/D04_RUNTIME_VALIDATION_RULES.md). 런검증팀에는 A/B RF 업무 규칙을 적용하지 않는다.
+> **최상위 규범 / 단일 권한 정본.** 개발팀 시작: CURRENT → D00 → D03 → D01(B)/D02(A). PC 런검증팀: runtime/validation/CURRENT → D00 → D04. 하위 문서에 권한·안전·공통 증거 규칙을 복제하지 않는다.
 
 ## 1. 권한·안전 경계
+- **권한표:** 사용자=main·실거래·안전 계약·동결 오라클 변경의 명시 승인권자; 지팀장=RF 판정·큐 이동·CURRENT/STATUS/RF 단일 writer·integration 선별 통합·DONE; Claude A=Reporter 소유 코드 구현 및 B 코드 read-only peer; Codex B=Operator/Monitor 소유 코드 구현 및 A 코드 read-only peer; PC 런검증팀=runtime 증거만 작성(코드 수정·RF 판정·통합 금지). 소유 경로는 개별 RF가 정본이며 임의 확대 금지.
 - `main` 수정·병합은 사용자 명시 승인 전 금지. `integration/p1.5` 통합·RF 최종 DONE은 GPT 지팀장 책임이며, 개발 브랜치 전체 일괄 병합·무승인 강제 push 금지.
 - 실계좌 주문/실거래 권한, Broker·Supervisor·Executor·Step5C·UEF 거래 안전 계약·가드·replay/write-safety, CI 오라클·테스트 기대값·allowlist·skip/xfail/waiver는 **명시 승인 없이 변경 금지**. 거부된 오라클 후보 `a0493b60`도 미승인 상태다. 테스트를 GREEN으로 만들기 위한 안전 우회 금지.
 - P1.5.0~11 동결 합격 기준과 RF-021 안전 HOLD 유지. 공유 공개 계약·4-HEAD/PR31 합성·미승인 source admission은 지팀장 별도 판단·승인 없이는 통합하지 않는다.
@@ -17,7 +18,11 @@
 
 - 도구·Git 쓰기가 차단되면 즉시 포기하지 않고 오류 종류(권한·충돌·입력·안전 정책)를 확인하여 허용 범위 안에서 수정 후 재시도한다. 안전 검사 우회, 금지 작업의 강행, 무승인 강제 push는 하지 않는다. 해소 불가능하면 BLOCKED 사유와 재개 조건을 명시한다.
 
-## 3. 실행·증거의 신뢰성
+## 3. 공통 정책 갱신·증거의 신뢰성
+- **매 실행 정책 수신 의무:** 각 팀은 자기 CURRENT를 시작점으로 integration 원격 D00 및 역할별 실행 규칙(D03+D01/D02 또는 D04)의 blob SHA를 직전 HANDOFF와 비교한다. 변경된 문서 본문은 반드시 다시 읽고 `POLICY_SHA_BEFORE/AFTER`, `POLICY_CHANGED`, `POLICY_READ=PASS/BLOCKED`를 HANDOFF에 남긴다. SHA가 같으면 재독하지 않는다. CURRENT는 규칙 본문이나 임시 POLICY_NOTICE를 싣지 않는다. 읽기 실패는 재시도하고 BLOCKED로 기록하며 이전 규칙을 최신으로 가장하지 않는다.
+- **공통 증거 원칙:** 코드 SHA와 HANDOFF SHA 구분, 실제 명령·exit·실패 node·BASE 대비 신규 회귀 구분, 동일 SHA 유효 normal/-O 및 peer 증거 재사용, NOT_RUN/BLOCKED의 정직한 표기, 임시 산출물 격리·정리. 문서·ACK·재검증 건수는 코드 진척으로 계산하지 않는다.
+
+## 4. 실행·증거의 신뢰성
 - 시작 시 대상 저장소·브랜치·정확한 source SHA·설정 및 역할별 권한을 식별하고, 자기 작업장과 기존 상태·데이터를 보존한다. 권한 없는 수정·삭제·배포·통합을 하지 않는다.
 - 수행한 명령, 대상 SHA, 실제 출구 코드·테스트·외부 호출·실패 근거를 기록한다. **NOT_RUN/UNKNOWN/BLOCKED를 PASS로 꾸미지 않는다.** 부분 PASS는 전체 PASS가 아니다.
 - 실패는 가능하면 같은 조건의 BASE·후보 비교로 기존 문제와 신규 회귀를 구분한다. 반복 검증·중복 문서·불필요한 전체 테스트·빈 커밋을 피한다. 테스트 산출물은 격리하고 성공분 자동 정리·실패분 제한 보존한다.
