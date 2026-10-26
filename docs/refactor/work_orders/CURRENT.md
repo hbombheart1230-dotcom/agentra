@@ -1,3 +1,21 @@
+# Agentra P1.5 — 지팀장 A 슬롯 직접 실행 인수 (2026-10-27 00시 KST)
+
+**정본:** `integration/p1.5` 이 CURRENT + D00. **이 절이 아래 23시 B/A 슬롯 이력보다 우선하며 기존 A/B P0/P1 우선순위는 유지**한다. 작업 브랜치 CURRENT 금지. RF 최종 판정/DONE/선별 통합은 지팀장 전담. 동일 SHA·동일 경계 테스트 재실행 금지.
+
+- **LEAD 실물 전건 직접 판정:** 시작 **14 / 신규 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14**, 실제 LEAD→DONE/REWORK 물리 이동0, 운영 소스 선별 통합0. 큐 **PENDING61 / DEVELOPING3 / PEER1 / LEAD14 / DONE14 / REWORK0 = 93 고유**. 신규 재현 원개발 결함0. 14개별 최초 미충족 소비자/State/IO/예외·승인 조건은 [STATUS](../plan/STATUS.md) 최신 상단과 각 실물 RF 참조. 부분 PASS/HOLD를 DONE으로 승격하지 않는다.
+- **신규 A/B 인수:** A `b22cf53d` 신규 source0; B `8f4c8f77`는 `34a58585` 대비 HANDOFF_B만 변경. B `RF016_ALIAS_PEER_OK alias=1 copy=1 use_time_round=1 valueerror=1 io=none` normal/-O exit0 독립 scoped peer를 RF-016에 직접 수용; B 임시 `/tmp` 스크립트 원격 보존 없음 → 전체 owner peer PASS 아님. Issue #32 최신 2026-10-26 21:21 KST 이후 새 런검증 없음, SELL origin/BUY guard/OCI SOURCE_SHA UNKNOWN·런타임 BLOCKED. 런검증 문제를 새 코드 REWORK로 만들지 않는다.
+- **지팀장 실제 신규 Python:** RF-016 `market_key_events.py` 정확 blob `3b09d58c` **12 PASS** + `symbol_read_models.py` 정확 blob `91316b51` **14 PASS**, 각 normal/`python -O` **exit0**, 합계 **26+26 PASS**. 별도 tmp exact-blob import·fake facade, State 불변·상한·use-time patch·예외/얕은 alias 관찰, 외부 주문/네트워크/운영 쓰기0. 재현 하네스 [key events](evidence/lead_rf016_market_key_events.py) commit `3862b274`, [symbol models](evidence/lead_rf016_symbol_read_models.py) commit `984e4875`; 원격 blob과 로컬 바이트 동일. 첫 -O 환경 타임아웃(exit124)은 안전 변경 없이 재실행 exit0으로 해소. `news_compaction.py`와 facade downstream/외부 State 효과는 **NOT_RUN**, RF-016 **KEEP_SCOPED/LEAD_HOLD/NOT_DONE**.
+- **정확 owner/CI:** LEAD 14 RF `FILE_COVERAGE` 총 **571/571 owner**가 BASE `63182ab2` / integration `07623944` / A `b22cf53d` / B `8f4c8f77` **4-way blob 동일**, 신규 승인 가능한 owner source diff0. B-only RF-015 dormant 2파일은 별도 HOLD. 현재 `apps/graphs/libs/scripts/tests/.github` 6 tree = hosted safety SUCCESS `40332899631@0da98a47` 6/6 동일; Web `apps/web` = SUCCESS `40073316192@1374d371` 동일. 해당 테스트 범위만 재사용, repo 전체/LEAD 14 effectful 검증 **NOT_RUN**.
+- **troubleshooting:** open **4**(branch local exit, RF020 scope, source admission, RF012 finite) / closed **1**(승인된 active DOC CI), 새 실제 해제 0 → 물리 이동0. RF-012 Infinity 위험 관찰은 별도 안전 OPEN이며 무승인 코드/거래 계약 변경 금지.
+
+## 다음 실행 배정 — 기존 P0/P1 유지, RF-016 완료 경계만 갱신
+
+- **Codex B P0:** [RF-031](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md) `generate_reporter_analysis_report`의 **8개 tmp writer/day cache/부분 OSError/State** 최초 독립 fake normal/-O, A run116 동일 marker 반복 금지. **P1:** [RF-028](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-028.md) 정식 `story_input.canonical_agent_artifacts` cascade/blocked summary-vs-full 최초 독립 peer. **P2:** [RF-016](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-016.md) alias peer는 **완료·재실행 금지**; 다음은 `libs/agents/strategist/context/news_compaction.py::_build_market_news_query_targets_r3_impl`의 policy/env 우선순위·facade.os getenv use-time·malformed State/예외 및 실제 `strategic_answers` downstream payload 경계만 **새 독립** tmp-only normal/-O. 지팀장 key_events12/symbol_models14/theme13 재실행 금지. 이후 기존 P3 RF-034→P4 RF-050→P5 RF-015 유지.
+- **Claude A P0:** [RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md) `trade_story_pipeline.py`→`trade_story_pipeline_story_assembly.py` 신규 실제 story tmp writer/State/예외 원개발 fake, B projection peer 반복 금지. **P1:** RF-032의 29 write owner 중 신규 안전한 tmp writer 1개, **P2:** RF-014 Scanner 교차 소유 소비자 맵, **P3:** RF-033 신규 안전 소비자; 아래 기존 상세 명령 유지.
+- **지팀장 다음 최초 직접 행동:** B/A 새 SHA·Issue #32 인수 → **LEAD 14 전건** 본인 직접 게이트 판단·가능한 안전한 신규 검증 실행, 충족하면 즉시 `05_DONE/{원개발팀}` 물리 이동/구 경로 삭제·93 unique 검증 → 허용 소스만 선별 통합/정확 tree CI → troubleshooting 실제 해결만 closed → STATUS → CURRENT 마지막. 현재 RF-016 `news_compaction` effectless 함수의 신규 직접 격리 검증이 안전 후보이며 B 독립 peer는 다른 신규 하류 경계로 한정. main/실거래/Broker/Supervisor/Executor/Step5C/UEF 안전·동결 테스트/CI·예약/운영 데이터 무승인 변경 금지.
+
+---
+
 # Agentra P1.5 — 지팀장 B 슬롯 직접 실행 인수 (2026-10-26 23시 KST)
 
 **정본은 `integration/p1.5` 이 CURRENT + D00.** 이 절은 이번 B 슬롯의 **신규 실제 실행·판정**만 추가한다. **아래 23시 A 슬롯의 A/B P0~P5 배정은 변경 없이 유효**하다. 작업 브랜치 CURRENT 사용 금지, 동일 SHA·동일 경계 증거 재실행 금지.
