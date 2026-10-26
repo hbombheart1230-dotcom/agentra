@@ -1,5 +1,14 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
+## 지팀장 B 슬롯 RF-065 독립 peer 정적 범위 인수 (2026-10-26 18시 KST)
+
+- **A/B 최신:** A HANDOFF run 104의 RF-063 신규 synthetic read-only CLI 2개 normal/-O exit 0은 직전 지팀장 A 회차에서 이미 RF-063 LEAD로 수용했으므로 재처리하지 않음. B HANDOFF `B-20261026T083907Z`는 RF-028·RF-066 기존 scoped peer/self 재보고, 새 코드 SHA 0. RF-031 최초 B 동적 peer 및 RF-033 최초 A owner 경계는 여전히 NOT_RUN.
+- **지팀장 실제 판정·큐:** RF-065 B 원개발 54 owner BASE 동일, B 기존 7/7 normal/-O 및 A 독립 54개 import-only/AST (46 SAFE_STATIC, 6 guarded-risk, 2 import-time effects; RF-063 포함 130/130 normal/-O BASE/integration byte-identical exit 0)를 **정적/import peer 범위로만** 수용. `03_PEER_REVIEW/CLAUDE_A → 04_LEAD_ACCEPTANCE/FROM_CODEX_B` 이동, `KEEP_NOOP_CANDIDATE / PEER_SCOPED_ACCEPTED / NOT_DONE`. 안전한 연구 CLI 소비자 동작·쓰기/스케줄러/argv·hosted CI·exact-SHA 전체 게이트는 미완료. source selective integration 0, DONE 0, REWORK 0. A에 `daily_profitability_scorecard.main(argv)`의 최초 합성 tmp 격리 검증 배정.
+- **Issue #32 신규 root-cause follow-up:** broker BUY 0019354와 SELL 0020349 모두 fill, local SELL 이벤트 누락/소유자 UNKNOWN, BUY guard fill=-1 stale, broker/local mismatch인데 readiness/Operator GREEN 관측. `execute_from_packet._update_recent_buy_order_guard`, `load_local_execution_rows`, `build_execution_readiness`, `operator_visibility` 코드 경계가 읽기 전용으로 지목됨. 운영 이미지 SOURCE_SHA 미입증이므로 `RUNTIME_ENV/UNKNOWN + CODE_CANDIDATE_UNCONFIRMED`으로 분리; 안전 계약·동결 RF-074 변경/REWORK/배포 금지. RunLab이 source-image 증명과 SELL provenance 제공 후 해당 owner RF에서 BASE 대비 재현 여부 판정.
+- **troubleshooting 4 open/0 closed:** BRANCH_CLEANUP 로컬 exit·PR 소비자 미확인, DOC_CI_COMPAT hosted 5 gates 미해소, RF020_SCOPE/BATCH_SCHEDULER 계약·예약 미해소, SOURCE_ADMISSION exact SHA/CI 미해소. 해결 이동 0.
+- **물리 큐:** PENDING **62** / DEVELOPING **6** / PEER_REVIEW **7** / LEAD_ACCEPTANCE **7** / REWORK **0** / DONE **11** = **93**. 최신 통합 SHA normal/-O 및 hosted CI 직접 실행 NOT_RUN; 기존 유효 증거만 재사용. main·실거래·거래 안전 계약·동결 테스트/CI·예약 무변경.
+
+
 ## 지팀장 A 슬롯 RF-063 신규 소비자 peer 최종 인수 (2026-10-26 18:11 KST)
 
 - **신규 HEAD:** integration `5d6a6505`, A `992acf6e`, B `5fb0e131`; A/B 신규 owner 소스 SHA **0**. A run 104의 RF-063 독립 CLI 2개 normal/-O byte-identical exit 0을 기존 import-only 범위와 구분해 인수. B RF-028/066 기존 증거는 중복 검증하지 않음.
