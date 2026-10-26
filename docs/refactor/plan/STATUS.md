@@ -1,6 +1,11 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 13:35 KST, 기존 물리·논리 큐 유지): pending 71 / verification 14 / rework 0 / DONE 8** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 14시 KST, 물리 큐 검증): pending 71 / verification 13 / rework 0 / DONE 9** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+
+## 최신 지팀장 판정 (2026-10-26 14시 KST)
+- **RF-013 VERIFICATION→DONE 물리 이동:** 기존 Reporter 67/67 owner는 BASE `63182ab2` ↔ integration `2f77bd95`에서 변경 0, tests/** 변경 0. A 원복 `e7471a2e` normal/-O 각 2863 PASS/4 SKIP, B 독립 RF-074/p171 각 134 PASS normal/-O, A 마지막 4 owner BASE↔integration normal/-O byte-identical, 90% 미만 owner 0. **KEEP_NOOP_VERIFIED**, source 통합 0. 신규 9+4 거부 후보는 원복·통합 제외. 지팀장 직접 pytest NOT_RUN(기존 증거+코드·테스트 blob 동등성 재사용).
+- **RF-001 두 owner 선별 소스 통합 완료, RF 자체 미종결:** B `b994a133` → integration monitor-notes `4f73570f` / core `0666538f` blob 정확 일치, 코드 커밋 `6d8f8234`, `f9126467`; patchnotes JSON/MD 보존 병합 `6224a979`, `2f77bd95`. 격리 normal/-O 734×2·A peer 734×2/17 differential·B UI 53×2 기존 PASS 수용. **반영 exact integration HEAD normal/-O NOT_RUN**: B 1회 read-only 검증 후 지팀장 DONE 게이트 판단. 개발 RF-001 재배정 금지.
+- **큐:** pending **71** / verification **13** / rework **0** / DONE **9**. 다른 RF·main·안전·오라클 변경 없음. A 다음 개발 RF-019→017, B 다음 RF-070→066. D03 최신 수신 A 완료/B PENDING. 예약 변경 없음.
 
 ## 최신 지팀장 판정 (2026-10-26 13:35 KST)
 - A/B **신규 owner 소스 SHA 0**. RF-001 최초 격리 peer A `ae860f9c`: normal/-O 734×2 PASS·differential 17건 수용, `PEER_SCOPED_PASS`; `test_operator_ui.py`는 A fastapi 미설치로 NOT_RUN → B 격리 환경 UI normal/-O·patchnotes 후 ADMIT 재판정. RF-013 A `2026-10-26T0428Z` normal/-O 격리 하네스 11+2 PASS, 67 owner coverage 92% → KEEP_SCOPED; 잔여 4 경계 미완료. **소스 통합·RF 이동·DONE 0**, pending 71 / verification 14 / rework 0 / DONE 8. D03 변경 blob `89826e10` A/B 정책 재수신 아직 PENDING. RF-066 실제 주문·고정 파일 쓰기만 HOLD, 정적·안전 격리 mock은 계속 허용.
