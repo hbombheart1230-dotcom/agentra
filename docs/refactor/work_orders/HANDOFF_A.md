@@ -442,3 +442,20 @@
 - 남은 미검증: RF-032 `frozen_window_closeout`(frozen 주의) 외 write owner 소진, RF-033 provider 후속, RF-034 `cohorts` 일부. RF-030 승인 대기.
 - 다음: 신규 CURRENT 배정 없으면 RF-034 `cohorts` 또는 RF-033 provider 후속.
 - PUSH_VERIFIED: push 후 확인.
+
+---
+## 추가 회차 — CURRENT(통합 `d79f6bd3`, 재편 후 정본) A P0 RF-033 · P1 RF-032 read-only 조사 (신규 하네스 0)
+
+- RUN_ID: 2026-10-26T2217Z-claude-a-sched-133 · A 시작 `3565cac5`(run132) · integration `d79f6bd3` · B `c18ad0b0` · **A 소스 코드 변경 없음(NO_CHANGE)**, 신규 하네스·실행 0(D00 §2/§4 "증거를 위한 증거 생성 금지" 준수). 방법: integration 체크아웃에서 `git grep`/원문 읽기만.
+- **P1 RF-032 조사 결과 (`libs/reporting/evaluation/q13_q14_validation.py`, blob `0c209fae`):**
+  1. **Exit Horizon 분기 도달 불가** — `build_q13_q14_validation_report` L110: `if root_counts["Exit Horizon"] > max(root_counts.get(cause, 0) for cause in ACTIONABLE_ROOT_CAUSES)` 의 `ACTIONABLE_ROOT_CAUSES`가 `"Exit Horizon"` 자신을 포함(L18-23) → `x > max(…, x, …)`는 항상 거짓. 최초 도입 커밋 `4fc37550`(2026-07-21)부터 동일(이력 확인). 기존 테스트 `tests/test_q13_q14_validation.py` 3건은 `exit_count` 기본 0만 사용해 이 분기를 검증하지 않음. README(`docs/q13_q14_validation/README.md` L127,177)는 Exit Horizon을 "추가 validation row"/Q15 우선순위 4번으로만 언급하고 override 규칙은 명시하지 않음 → **의도 불명**.
+  2. **`validation_id` 경로 이탈** — `write_q13_q14_validation_report` L315 `out_dir = reports_root / "evaluation" / "validation" / validation_id`. `validation_id`가 `..`를 포함하면 상위로 이탈(예 `../escape`), **절대 경로면 `Path` 결합 규칙상 앞 경로 전체가 무시됨**(순수 경로 연산 확인: `Path('reports')/'evaluation'/'validation'/'/abs/x'` → `/abs/x`) → `reports/` 밖 임의 디렉터리에 `q13_q14_validation_report.{json,md}` 생성 가능.
+  3. **외부 consumer 영향(repo 전체 `git grep`):** `write_q13_q14_validation_report`의 유일한 실호출자는 `scripts/research/run_q13_q14_validation.py::main`(`--validation-id` 필수 CLI 인자, 운영자 로컬 실행; README 명령 예시는 `q13_q14_validation_YYYYMMDD` 형태)이며 `scripts/run_q13_q14_validation.py`는 이를 호환 재노출만 함. `build_q13_q14_validation_report`는 위 writer와 테스트 3건만 호출. 산출 경로 `reports/evaluation/validation/<id>/…`는 문서(`docs/web_observability/read_only_ui_docker_kubernetes_review_2026-08-14.md` §5.3)에서만 참조되고 `apps/`·`libs/`·`scripts/`에 reader 코드는 없음. 원격/웹 입력이 `validation_id`로 흐르는 경로는 발견되지 않음 → 위험도는 **로컬 운영자 CLI 신뢰 경계 내 낮음**, 단 보호 `reports/` 밖 쓰기는 안전 계약상 막는 편이 맞음.
+- **예상 최소 수정(적용 안 함, 승인 필요):**
+  - (a) `q13_q14_validation.py::write_q13_q14_validation_report`: `out_dir` 계산 직후 `validation_id`가 `re.fullmatch(r"[A-Za-z0-9._-]+", id)`이고 `id not in {".", ".."}`가 아니면 `ValueError`, 또는 `out_dir.resolve().is_relative_to((reports_root/"evaluation"/"validation").resolve())` 검사(build 후·mkdir 전). 약 4줄 + 테스트 2건(`..`·절대경로 거부).
+  - (b) `build_q13_q14_validation_report` L110: 의도가 "Exit Horizon이 다른 actionable 원인보다 엄격히 크면 largest"라면 비교 대상에서 자신을 제외 `max(root_counts.get(c, 0) for c in ACTIONABLE_ROOT_CAUSES if c != "Exit Horizon")` + 테스트 1~2건; **의도가 아니면 분기 삭제**. (b)는 `largest_behavior_root_cause_day_counts`→`stable_ok`(SRF 4/5)→GO/NO_GO 결정을 바꿀 수 있는 **의미 변경**이며 모듈이 "Q13/Q14 axes and score formulas are frozen; only instrumentation and artifact bugs may be fixed during validation"을 명시하므로 계측/아티팩트 버그 해당 여부의 사용자 판단이 필요.
+- **승인이 필요한 범위:** 두 수정 모두 `libs/reporting/evaluation/q13_q14_validation.py`(+`tests/test_q13_q14_validation.py`) 편집인데, 동결 오라클 `tests/test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`(`_scope_violations(merged=True)`)는 `libs/reporting/**`에서 allowlist(REGISTRY/DECOMPOSED/R4 facade) 밖 경로 편집을 위반으로 판정하므로, **오라클 allowlist 확장 또는 해당 RF 소유권 이전에 대한 사용자/지팀장 승인 없이는 A가 적용 불가**. 이 회차는 코드 수정·frozen/UEF 실행 없음.
+- **P0 RF-033 (InputWorker→storage):** 신규 실행 없음. 이미 증명된 범위: A run120 `rf033_input_delivery_peer.py`(실 `publish_input`→실 `storage.publish` + `load_candidate_input` 왕복, tick 경로·research 캐시·예외 전파), run122 storage `publish` 원자성/immutable/OSError cleanup, run126 `start_input_worker` fake-thread(loop 창·tick 예외 격리·`KeyboardInterrupt` 전파), 지팀장 37×2·11×2·12×2·32×2. **남은 게이트(실행 불가/중복):** 실제 Windows Thread/`os.link` 동작은 이 Linux 환경 `NOT_RUN`(UNKNOWN), 독립 B peer 필요. 같은 경계 하네스는 만들지 않음.
+- 판정: 조사 완료(코드 결함 후보 2건 정확 `FILE::SYMBOL` 제시), 수정은 승인 대기. DONE 아님. RF-030 승인 대기 유지.
+- 다음: 지팀장/사용자 (a)(b) 승인 또는 "의도된 동작/삭제" 결정 대기; 새 CURRENT 배정 없으면 `NO_DELTA`.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
