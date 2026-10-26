@@ -1,6 +1,6 @@
 # Codex B 예약 실행 인수인계
 
-- RUN_ID: `B-20261026T2238Z`; B source 변경 없음 (`2c866400a3fe0df568d621ca197fcc6d08e1db1b`); CURRENT integration `4483a736`.
-- RF-029 P0 independent peer: advertised A `b22cf53d` fetched; exact blobs verified `truth=62bda630`, `display=17f91f31`, facade `783ccaaa`. Detached `/tmp/agentra-rf029-peer`; `/tmp/rf029_display_projection_peer.py` normal/-O both exit 0: `RF029_DISPLAY_PROJECTION_PEER_OK facade=1 missing=1 invalid=1 state_alias=1 exception=1 tmp_write=0`. The harness monkeypatched only the three facade seams, used an empty temp artifact root, and observed no temp writes. Scoped peer, NOT_DONE.
-- RF-034 P1, RF-050 P2, RF-015 P3 and RF-070/066/071 P4: NOT_RUN in this handoff after RF-029 consumed the safe execution slot; no same-marker reuse, unsafe main, broker, Step5, delete, sync, or source modification. Next boundaries are respectively renderer tmp-writer fake; actual caller LLM error fake; historical 11-Fail BASE classification; and only newly approved fake boundaries.
+- RUN_ID: `B-20261026T2300Z`; B source 변경 없음 (`34a58585d64d6bc00a3c02003e18cc1d96bef263`); CURRENT integration `07623944`.
+- RF-016 independent peer (A `b22cf53d` detached): `/tmp/rf016_alias_peer.py` normal/-O both exit 0: `RF016_ALIAS_PEER_OK alias=1 copy=1 use_time_round=1 valueerror=1 io=none`. The facade-injected round/memory seams were fake-only; nested primary-candidate input is copied, malformed score propagates `ValueError`, no write/network/order. Scoped peer, NOT_DONE.
+- RF-031 P0, RF-028 P1, RF-034 P3, RF-050 P4, RF-015 P5: NOT_RUN this run; their newly assigned first fake/BASE boundaries remain next work. No prior marker re-run or unsafe writer/main/broker/Step5 execution.
 - No code candidate, patchnotes, integration merge, CI, main, real trading, safety-contract, or frozen-oracle change.
