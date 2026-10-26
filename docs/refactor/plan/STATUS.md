@@ -1,3 +1,10 @@
+## 지팀장 직접 RF-007 종결 — 2026-10-26, SOURCE-TREE CI + E2E 게이트 종결
+
+- **실제 코드 기준 게이트 판정:** GitHub Actions `P1.5 Web Compatibility` run `40073316192` @ 통합 `1374d371` `npm ci`/`npm test`/`npm run build` 모두 PASS. 최신 판단 전 integration의 `apps/web` `a96c7deb`·`apps/api` `2a488828` 및 Web CI workflow `4e498a8b`는 tested integration에서 동일 blob/tree. 동결 CI를 변경하거나 재실행하지 않고 정확한 **이미 통합된 소스**의 CI 결과 인수. 후속 문서-only SHA check-runs 0은 동등 소스가 미검증이라는 뜻이 아님(최신 SHA에서 CI를 새로 실행했다는 주장은 금지).
+- **A 독립 consumer E2E:** A run109 `node e2e/smoke.mjs`, `node e2e/public-profile.mjs` exit0, tmp fake 5일/14거래, 11 routes desktop/mobile·GET API·legacy/public-profile navigation. 지팀장 `client.ts::getJson` GET+AbortSignal+ApiError, `useApi.ts` lifecycle/error/State, `vite.config.ts` localhost-only proxy를 원격 소스로 신규 직접 확인. lockfile `npm ci` success로 web dependency reproducibility gate 충족; `latest` 범위 자체 삭제/수정 없음.
+- **실제 RF 이동:** RF-007 `04_LEAD_ACCEPTANCE/FROM_CODEX_B → 05_DONE/CODEX_B`, `KEEP_VERIFIED / PEER_ACCEPTED / SOURCE_TREE_CI_PASS / DONE`; 보유 owner 38, source delta 0, 새 patchnotes 불요, 동결·안전·main 변경 0. 나머지 14 LEAD는 증거 부족 게이트별 HOLD, 불필요한 exact 문서 HEAD CI 일괄 요구 금지.
+- **큐 예상:** PENDING 61 / DEVELOPING 3 / PEER 3 / LEAD 14 / REWORK 0 / DONE 12 = 93; 실제 tree 재검산으로 확정. 최초 유효 peer 같은 SHA 재실행 금지.
+
 ## 지팀장 B 슬롯 — RF-050 원개발 인수·PEER 실물 이동, RF-063 새 독립 범위 수용 (2026-10-26 20:32 KST)
 
 - **A 신규 진척:** Issue #11 run110 `08e24650` RF-050 LLM 8 owner 분류 및 policy lookup fake 정상/-O exit0, RF-063 alert locale peer·RF-067 preflight AST-only 정상/-O exit0. run111 `266b953c` RF-050 `openrouter_client/model_catalog_store` fake URL/open tmp-only normal/-O exit0 (`RF050_CLIENT_STORE_OK client=18 store=12 extract=16 files=2 blocked=0 outside=0`). **B HEAD `f19d3a12`**, 신규 B source 없음. A/B 새 코드 통합 대상 없음.
