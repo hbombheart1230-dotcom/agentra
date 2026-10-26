@@ -1,3 +1,29 @@
+# Agentra P1.5 — 지팀장 A 슬롯 최신 정본 (2026-10-27 01시 KST)
+
+**이 최상단 실행 절이 아래 모든 이전 배정보다 우선.** 유일한 정본은 `integration/p1.5`의 이 CURRENT+D00. 작업 브랜치 CURRENT 금지. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. 동일 SHA·경계 재검증 금지. 지팀장이 LEAD 전건 최종 판정·큐 이동·통합을 소유한다.
+
+## 신규 인수·지팀장 실제 검증
+
+- **LEAD 시작 14 / 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14.** 전체 RF 93 unique (PENDING61/DEVELOPING3/PEER1/LEAD14/DONE14/REWORK0), 이동0, 운영 소스 통합0. 14건 최초 미검증 경계는 최신 [STATUS](../plan/STATUS.md)와 실물 RF. 인수조건 충족 전 HOLD를 DONE으로 쓰지 않는다.
+- A `c6009f9f`(run118/119 증거만, source0), B `8fe36a3d`(RF-031 AST 하네스 실패 기록, source0). B의 `writer boundary tokens` normal/-O exit1은 **하네스가 helper 경계 문자열을 caller 직접 본문에서 찾는 잘못된 전제**다. writer/LLM/main 미실행, 원개발 코드 REWORK 아님. 동일 실패 하네스 반복 금지.
+- **지팀장 직접 RF-031 새 경계:** 정확 source blob 6개 callgraph/IO/예외 **23 정적 조건 PASS**, 추출 순수 `_canonical_reports_root`+`_cache_dir` normal **15/15 PASS exit0** / `python -O` **15/15 PASS exit0**. 실행한 하네스의 원격 동일 Git blob `93fa67d1` ([재현 코드](evidence/lead_rf031_path_resolution_boundary.py), commit `43666949`), RF-031 판정 commit `8c9565f5`/`d3c1edbd`. **전체 원본 모듈·8 writer 실제 실행 NOT_RUN**, B 최초 독립 writer peer 여전히 필요.
+- hosted Safety `40332899631@0da98a47` normal/-O SUCCESS, Web `40073316192@1374d371` SUCCESS; 현행 운영 소스/테스트/workflow와 성공 source tree 비교에서 변경0인 **기존 범위만** 재사용. 신규 hosted·전체 회귀 NOT_RUN. Issue #32 SELL provenance·BUY guard·OCI SOURCE_SHA UNKNOWN; 코드 REWORK/실거래/재배포 금지. Troubleshooting **open4/closed1**, 신규 실제 종결0.
+
+## Codex B 다음 최초 실행 (자기 코드 브랜치)
+
+1. **P0 [RF-031](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md):** 실패한 `/tmp/rf031_writer_ast_peer.py`의 문자열 토큰 검사 **폐기/재실행 금지**. 새 독립 tmp-only fake는 실제 `generate_reporter_analysis_report`→`iter_jsonl_events` cache → `generate_trade_explain_report` → `generate_operator_daily_summary` → strategy feedback/ledger → 최종 JSON/MD의 **helper callgraph** 기준. `EVENT_LOG_DAY_CACHE_DIR`, `STRATEGY_MEMORY_PATH`, `STRATEGY_MEMORY_DAILY_DIR`, `EVIDENCE_LEDGER_PATH`, event log/reports root/cwd 전부 temp 격리. 정상 8 writer/day cache·OSError 부분 산출·Reporter caller State/예외를 새 독립 normal/`python -O`에서 검증, 실제 exit/marker/source SHA/outside writes0. A run116·지팀장 순수 path15×2 재실행 금지. 실 LLM/운영 데이터/frozen13/거래 금지; 안전 불가 경계는 정확 NOT_RUN.
+2. **P1 RF-028** 정식 `story_input.canonical_agent_artifacts` blocked summary/full cascade 최초 독립 peer → **P2 RF-029** story assembly v1/v2·canonical tmp read 독립 peer → **P3 RF-032** horizon writer idempotent/OSError 독립 peer → **P4 RF-014** Scanner dynamic rank/NOOP → **P5 RF-016** news→strategic_answers downstream. 기존 성공 marker 재실행 금지. 각 RF 링크/상세는 아래 00:30 KST 배정 유지.
+
+## Claude A 다음 최초 실행 (자기 코드 브랜치)
+
+- **P0 RF-033:** `input_delivery.py → hypothesis_forward.py → input_worker.py`의 아직 미검증 효과 없는 첫 consumer/State/예외를 AST-first+합성 temp-only normal/-O. run118/119 trend/hypothesis marker 반복 금지. 이후 **P1 RF-032** 다른 안전 writer → **P2 RF-029** 실제 story renderer tmp 효과 → **P3 RF-034** 새 producer branch. 상세는 아래 00:30 KST 배정 유지.
+
+## 지팀장 다음 직접 실행
+
+A/B 신규 source/peer·Issue #32 인수 즉시 **LEAD 실물 전건 본인 직접 판정 및 안전한 최초 검증**, 충족한 RF는 그 회차에 `04_LEAD_ACCEPTANCE → 05_DONE/{원개발팀}` 실물 이동·구 경로 삭제·93 unique/원격 commit 검증 → 승인된 owner 소스만 선별 통합·정확 tree CI → troubleshooting 실제 해결만 closed → 다음 배정 → STATUS → **CURRENT 마지막**. `main`·실거래·Broker/Supervisor/Executor/Step5C/UEF 안전 계약·동결 테스트/CI·예약·운영 데이터 무승인 변경 금지.
+
+---
+
 # Agentra P1.5 — 지팀장 B 슬롯 최신 정본 (2026-10-27 00:30 KST)
 
 **본 최상단 절이 아래 모든 이력보다 우선.** `integration/p1.5`의 이 CURRENT + D00만 정본. A/B 작업 브랜치 CURRENT 금지. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. A/B는 실행 증거 제출, 지팀장은 RF 최종 판단·물리 큐·선별 통합 전담. 동일 SHA·동일 경계 normal/-O/peer 재실행 금지.
