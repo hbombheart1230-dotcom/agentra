@@ -1,3 +1,14 @@
+# 종결 판정 — CURRENT ACTIVE CI COMPAT / 2026-10-26 23시 KST
+
+**CLOSED_BY_APPROVED_WORKFLOW_SCOPE_REPLACEMENT**, 이전 5개 역사 workflow가 5/5 GREEN으로 수리됐다는 뜻은 **아니다**. 아래 기록의 2026-10-23 실패는 역사적 사실로 보존한다. 운영자 승인 하 7개 workflow→현행 2개로 축소된 변경은 기존 커밋이며 이번 회차 workflow/테스트/안전 코드 수정 **0**.
+
+- 현행 `.github/workflows/` 실물 정확 2개: `p15-shared-candidate.yml` blob `4c3c071b`, `p15-integration-crossbranch-compat.yml` blob `4e498a8b`. 역사 문자열·B-stage 5 workflow를 현재 필수 게이트로 재요구하지 않는다.
+- Shared Offline Safety 최신 run `40332899631` @ `0da98a4758c034f052fff2a132b17c85c84f06c0`: `safety`, `safety (-O)` 두 job **SUCCESS**. `0da98a47`와 지팀장 최신 코드 기준 `91e5fe79`의 `graphs=4ca426f1`, `libs=5b0647fd`, `scripts=d9fbc14d`, `tests=f2741398`, `apps=e6747540`, `.github=75f8f8f4` tree SHA **모두 동일**. 이 범위에 한정한 재사용이며 전체 repository/RunLab PASS가 아님.
+- Web Compatibility run `40073316192` @ `1374d371` **SUCCESS**. `apps/web` subtree `a96c7debc7b0c28f1020610cbf5234f957a41a90` 및 web workflow blob `4e498a8b`가 현재와 동일; 현재 문서/Operator UI 변경은 web 재실행 트리거가 아님. 현재 docs-only HEAD hosted checks 0을 FAIL이나 PASS로 꾸미지 않는다.
+- **종결 범위:** 2026-10-23 문서 재배치로 역사적 자동 CI가 적색이던 문제는 승인된 **현행 workflow 계약으로 대체**되어 현재 필수 smoke 정상/-O·Web 범위 GREEN. 역사 테스트 도구 자체 삭제/완화 또는 5개 비활성 workflow 소급 PASS 아님. 향후 더 넓은 CI 재도입/역사 호환 검증은 별도 승인·새 작업으로 관리. 본 troubleshooting만 open→closed 실물 이동.
+
+---
+
 # P1.5 문서 개편 CI 호환성 및 예약 검증 오류
 
 - **상태:** `OPEN / BLOCKED` · 담당 GPT 지팀장 · 기준 `integration/p1.5@a3705871`

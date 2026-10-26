@@ -13,3 +13,10 @@
 3. **상대 독립 peer → 지팀장:** 신규 변경 경계만 검증하고, 정확 통합 source/test/workflow tree·필수 CI 판정 후 본 open을 closed로 이동할지 결정. 운영 재배포/실거래/예약 변경은 별도 승인.
 
 **현재 결론:** 실제 테스트로 유한성 미검증 경계가 확인되었으나 실제 거래 영향은 미확정. 승인 없는 코드 FIX/REWORK/재배포 없음. `OPEN` 유지.
+
+
+## 지팀장 2026-10-26 23시 KST — RF-012 다운스트림 신규 정적 추적 (OPEN 유지)
+
+- **정확한 GitHub source/tree read-only:** `build_market_snapshot.py` blob `af11f9d6`의 `state["market_snapshot"] = snap.to_dict()` 및 `persisted_state.last_market_price` 갱신(89~97행). 실제 호출자는 `graphs/pipelines/m11_2_live_pipeline.py`(blob `41766fe2`, 8/21행), `graphs/pipelines/offhours_validation.py`(blob `9a5c7576`, 198/237행)에서 확인. RF-008 owner facade와 별개.
+- **주문 경계의 직접 읽기:** `graphs/nodes/execute_from_packet.py` blob `1a10af59`(보호 계약, **읽기만**). `_coerce_float` 162~166행은 `float(value)` 후 예외만 처리하여 Infinity를 제거하지 않음; `_positive_price_from_row` 1634~1642행은 `abs(px)>0`로 필터해 **양의 Infinity를 후보로 허용할 수 있음**; `_resolve_order_price_for_notional_with_source` 1756~1763행은 `state.market_snapshot`을 후보에 추가하고 1776행 `max(price_candidates)`로 선택. 따라서 **합성/정적 경로상 비유한 가격이 notional price 후보에 들어갈 수 있는 가능성** 확인. NaN은 비교에서 걸러질 수 있으나 모든 경로 안전성은 증명되지 않음. 보호 실행/실주문/런타임 재현 **NOT_RUN**; 실제 주문 유입·계좌 영향 **UNKNOWN**.
+- **지팀장 분류:** `BASELINE_BEHAVIOR / SAFETY_REVIEW_REQUIRED / CROSS_RF012`, 새 RF-008 회귀나 Issue #32 SELL 원인으로 연결하지 않음. `RF-008` 기존 strategist owner KEEP 종결과 별도로 이 OPEN은 유지. 다음 최초 해제 행동: RF-012 원소유 및 실행 안전 승인권자가 `_resolve_order_price_for_notional_with_source` downstream에서 Infinity 후보가 주문 금액/eligibility까지 도달하는지 **보호 코드 수정 없이** detached fake-only normal/-O 검증; 명령/정확 SHA/State·외부효과 0 제출. 실제 변경은 사용자 사전 승인 필요.
