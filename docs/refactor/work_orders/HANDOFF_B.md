@@ -1,6 +1,7 @@
 # Codex B 예약 실행 인수인계
 
-- RUN_ID: `B-20261026T0410Z`; source SHA none.
-- RF-066: `scripts/examples/demo_m7_dry_run_pipeline.py::build_demo_catalog` isolated temp-path boundary normal exit 0 `RF066_DEMO_CATALOG_OK 2`; no `main`, OrderClient, broker/order access or operational path execution.
-- `python -O` invocation exited 0; output marker was conditional on a failure guard, so only exit is evidence. Re-run only with an exception-backed marker if this boundary needs stronger evidence.
-- RF-001 integration candidate evidence reused; RF-070 safety holds unchanged. Next: re-read D03 `471d7ab3`, then RF-066 fake OrderClient boundary or other safe owner.
+- RUN_ID: `B-20261026T082626Z`; B source 변경 없음.
+- RF-001 — exact tested SHA `b5fe3dd917cd70318d5bd5248aee1a6c2bf5fa1e`; read-only detached checkout; owner blobs `data_access_core.py=0666538f`, `data_access_brief_monitor_notes.py=4f73570f`. `/workspace/agentra/.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p153_operator_ui_moved_bodies.py` => exit 0, 706 passed; `tests/test_operator_ui_data_access_phase2.py` => exit 0, 28 passed; `tests/test_operator_ui.py` => exit 0, 53 passed. The same three commands with `python -O -m pytest` => exit 0, 706/28/53 passed. No code/oracle change. Scope: post-integration exact-SHA test only; lead acceptance/DONE remains pending.
+- RF-029 — independent peer tested A SHA `cd20d4d8cb9e14446fd395177ff2540c9cbb1bc1` in a read-only detached checkout. An offline `TemporaryDirectory` fake-artifact harness exercised `selected_trade_artifacts` precedence (lifecycle timestamp over shared facts; shared exit fallback), invalid payload fail-soft, picker `ValueError` propagation, input non-mutation, and `trade_story_pipeline._safe_read_json_file` good/malformed/missing inputs. Normal and `python -O` each printed `RF029_PEER_OK precedence=4 invalid=3 exception=1 read_failsoft=3`, exit 0. Effects were restricted to a temporary artifact; no network, broker, or operational file path. Scoped peer only; not DONE.
+- BLOCKED: none newly observed. RF-066 requires the still-unperformed fake `OrderClient` request/error marker; RF-070 remaining launcher classification is not yet advanced in this run.
+- NEXT: report the RF-001/RF-029 evidence to Issue #12, then perform RF-028's first new dynamic-consumer peer or RF-066's fake-OrderClient boundary as CURRENT prioritizes.
