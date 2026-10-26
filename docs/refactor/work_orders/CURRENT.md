@@ -1,26 +1,13 @@
-# Agentra P1.5 — CURRENT
+# Agentra P1.5 — CURRENT (이번 턴)
 
-**원칙:** 한 RF = 한 실행 담당. 완료 이력은 [STATUS](../plan/STATUS.md)·각 RF·HANDOFF에서 확인한다. 이 파일은 **현재 행동만** 적는다.
+| 담당 | 지금 턴에 할 일 |
+|---|---|
+| **A Claude** | **다음 A 소유 미완료 RF 개발 착수.** RF-029 기존 KEEP/FIX0 증거는 재실행하지 말고 지팀장 판정 대기. 물리 큐의 A 소유·비동결 RF를 확인해 번호와 대상 파일을 HANDOFF에 명시하고 실제 owner 코드 작업 진행. |
+| **B Codex** | **[RF-070](../plan/queue/02_DEVELOPING/CODEX_B/RF-070.md) 개발 계속.** 안전한 잔여 owner의 소비자·IO·효과 경계에서 실제 수정 진행. 위험 launcher HOLD. 다음 작업은 [RF-066](../plan/queue/02_DEVELOPING/CODEX_B/RF-066.md). |
+| **지팀장** | **[RF-029](../plan/queue/01_PENDING/CLAUDE_A/RF-029.md) 기존 증거 직접 인수 판정** 및 peer 이동/구체 FIX 결정. [RF-001](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-001.md) exact integration SHA 검증 배정·결과 판정, [RF-028](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-028.md) B 독립 peer 배정·결과 판정·큐 이동 관리. A의 다음 RF 번호 확정. |
 
-**정본 읽기:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md) → [D03](D03_DEV_TEAM_RULES.md) → [A 역할](../../../CLAUDE.md) / [B 역할](../../../AGENTS.md). 물리 큐 [D05](D05_RF_PHYSICAL_QUEUE_20261026.md)·[D06](D06_RF_ATTEMPT_AND_AUDIT_20261026.md).
+**예약 운영:** 1시간 실행 한도에 도달하면 **하던 작업과 마지막 코드 SHA·미완료 지점 그대로 다음 회차에 이어서 수행**한다. 매회 처음부터 재검증하거나 모든 RF 완료를 요구하지 않는다. B의 RF-001 검증·RF-028 peer는 지팀장이 별도 게이트로 관리하며 B 개발을 불필요하게 중단시키지 않는다.
 
-## 현재 실행 큐
+**정본:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md) · [D03](D03_DEV_TEAM_RULES.md) · [A 역할](../../../CLAUDE.md) · [B 역할](../../../AGENTS.md) · [RF 큐 D05](D05_RF_PHYSICAL_QUEUE_20261026.md) · [시도 감사 D06](D06_RF_ATTEMPT_AND_AUDIT_20261026.md) · [STATUS](../plan/STATUS.md). 완료 이력은 CURRENT에 반복 기재하지 않는다.
 
-| 순서 | RF | 현재 실행 담당 | 지금 할 일 | 넘길 조건 |
-|---|---|---|---|---|
-| A-1 | [029](../plan/queue/01_PENDING/CLAUDE_A/RF-029.md) | **지팀장** | A 기존 38 owner KEEP/FIX0 근거 인수 판정. 새 결함 없으면 peer 이동, 있으면 파일·재현·FIX 범위 특정 | B peer 또는 구체 REWORK |
-| A-2 | **다음 A 소유 PENDING RF** | **A Claude** | RF-029 결과 대기 없이, 물리 큐에서 A 소유·비동결·미착수 RF를 선정해 실제 코드 개발. RF 번호·파일·소유권 확인 후 HANDOFF에 기록 | 최소 FIX·소스 SHA·focused normal/-O 또는 근거 있는 KEEP |
-| B-1 | [070](../plan/queue/02_DEVELOPING/CODEX_B/RF-070.md) | **B Codex** | 안전한 잔여 owner 중 재현 가능한 소비자·IO/side-effect 결함을 최소 FIX. 위험 launcher 32개 HOLD | 신규 소스 SHA 또는 특정 BLOCKED |
-| B-2 | [066](../plan/queue/02_DEVELOPING/CODEX_B/RF-066.md) | **B Codex** | fake OrderClient·임시 경로로 미검증 요청 계약을 확인하고 실제 결함만 FIX. 주문·고정 파일 쓰기 금지 | 신규 소스 SHA 또는 특정 BLOCKED |
-| V-1 | [001](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-001.md) | **B Codex (1회 검증)** | 최신 integration HEAD 격리 read-only, 아래 3파일 normal/-O 각 1회; HEAD·exit·실패 node 제출. 개발 반복 금지 | **지팀장**이 33 owner 인수·DONE 판정 |
-| V-2 | [028](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-028.md) | **B Codex (최초 peer)** | A 기존 KEEP 증거 재사용, 미검증 동적 소비자·State/IO·예외 경계만 독립 peer | **지팀장**이 LEAD_ACCEPTANCE·KEEP 판정 |
-
-**RF-001 검증 명령 대상:** `tests/test_p153_operator_ui_moved_bodies.py` · `tests/test_operator_ui_data_access_phase2.py` · `tests/test_operator_ui.py`. 동일 세 파일을 `python -m pytest -q`와 `python -O -m pytest -q`로 각각 실행한다.
-
-## 예약 회차 처리
-
-- **A:** A-2 실제 개발을 계속한다. RF-029는 지팀장 판정 대기 중이므로 동일 증거를 반복하지 않는다.
-- **B:** B-1 → B-2 개발을 계속한다. V-1/V-2는 **최초 미검증 경계에 한해 1회** 수행하며, 검증 때문에 자기 개발을 계속 미루지 않는다. 한 회차에 전부 못 하면 미착수 이유와 다음 항목을 HANDOFF에 남긴다.
-- **지팀장 (매시 02·32분):** A/B 신규 SHA·검증 결과 회수 → RF-029 직접 판정 → V-1/V-2 결과 인수 → 물리 큐 이동·선별 통합·STATUS 정합화. 다음 A RF가 아직 특정되지 않았으면 큐에서 소유권을 확인해 번호를 지정한다.
-
-**금지:** 동일 SHA·동일 테스트 반복, ACK/문서만으로 종료, Issue 댓글로 배정, 다른 RF owner 무단 수정, main·실거래·안전 계약·동결 오라클 무승인 변경. GitHub 쓰기 실패 시 원인 구분·허용된 재시도·원격 SHA 확인; 안전 검사 우회 금지. **NOT_RUN/BLOCKED/부분 PASS ≠ DONE.**
+**안전:** 소유권·main·실거래·안전 계약·동결 테스트/CI 오라클 무승인 변경 금지. 부분 PASS·BLOCKED·NOT_RUN은 DONE 아님. GitHub 쓰기 실패는 원인별 허용된 방법으로 재시도하고 실제 SHA 확인.
