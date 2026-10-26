@@ -1,3 +1,27 @@
+## 지팀장 LEAD 15건 직접 재판정 / RF-001·RF-007 DONE 및 잔여 13 최초 경계 (2026-10-26 20:45 KST)
+
+**금회 실물 성과:** RF-007 `3bd94d99`·RF-001 `7196943b` 각 `04_LEAD_ACCEPTANCE → 05_DONE/CODEX_B` 커밋 완료; GitHub tree 93/93 unique. 새 코드/테스트·workflow/주문·예약 변경 없음. 정상/-O·독립 peer·hosted CI는 **기존 동일 소스 실행 증거를 직접 결합**했고 새 테스트 실행을 주장하지 않음. RF-001은 33/33 원격 소스 소비자/효과 전수 정적 검사, RF-007은 API/lockfile/CI/E2E 실물 인수. `f9126467 → 7196943b` Python/TS/CI source·tests 변경 없음; `1374d371` Web CI에서 `apps/web` `a96c7deb`와 `apps/api` `2a488828` 동일. 문서-only 변경마다 exact HEAD hosted rerun 일괄 강제하지 않고 **실제 통합된 코드 SHA + byte-identical tree**의 CI를 구분해 인수.
+
+**나머지 LEAD 13건 지팀장 직접 미충족 판정 (전원 NOT_DONE, 기존 유효 증거 재사용):**
+
+| RF | 직접 판정·소비자/효과와 남은 최초 게이트 | 다음 검증·해제권자 |
+|---|---|---|
+| 008 | `KEEP_SCOPED / IO_HOLD`; owner 1/1 strategist_node는 LLM·candidate generator, reports/trades disk read, EventLogger 파일 log effect가 있어 pure 아님. A State5/1270×2 및 B 94×2 인수. standalone 외부 read/로그 fallback peer와 BASE 1 FAIL 분리 부족 | B 원개발 consumer fixture, A 독립 temp/fake logger·LLM/market read 신규 peer |
+| 014 | `KEEP_SCOPED / CROSS_RF_HOLD`; Scanner 20 owner 동일, B Top1/malformed fake 수용. ranking/reject/NOOP dynamic consumer와 RF-009/019/030/035/074 상호 소비자/과거 BASE 3 FAIL 미해소 | 지팀장 owner 소유권 확정, B 새 동적 소비자 peer |
+| 016 | `KEEP_SCOPED / FACADE_HOLD`; Strategist 8 owner 동일, 913×2 및 B pure 1함수 peer 수용. `strategic_answers` 동적 facade/State/IO/예외, 과거 1060/1 BASE 분리 부족 | 지팀장 consumer map·A producer/B 새 facade peer |
+| 028 | `KEEP_SCOPED / RENDER_HOLD`; 85 trade_report owner 동일, use-time late binding 4/State1/exception1 수용. main_renderer/read-display 주변 소비자 IO 및 owner 단일 책임 미충족 | A 원개발 구조 경계, B 신규 renderer fake peer |
+| 029 | `KEEP_SCOPED / STATE_HOLD`; 38 trade_story owner 동일, precedence/invalid/failsoft peer 수용. report read-display projection·State/IO, 기존 memory nondeterminism과 UEF2a ENV 실패 분리 필요 | 지팀장 BASE/ENV 분리 후 안전 consumer peer |
+| 031 | `KEEP_SCOPED / FROZEN_HOLD`; 22 owner 동일(13 frozen), B timeout/exception fake 수용. reporter_analysis reader/writer·State·frozen 소비자 및 역사 56 BASE FAIL 차이 미해소 | 보호 RF-074 변경 금지, A/B 신규 temp-only read/write peer |
+| 032 | `KEEP_SCOPED / WRITE_HOLD`; 135 owner, A 32 tmp empty+B 28 nonempty writer peer 수용. `all(...or True)` assert 무효로 제외. 29 write owner·UEF 부작용/더 많은 예외 경계 미충족 | 지팀장 안전 owner 선별 후 B 신규 fake 경계; 위험 UEF 실행 승인 전 금지 |
+| 033 | `KEEP_SCOPED / CAPTURE_HOLD`; 45 owner, malformed JSON/day/epoch/ts fake capture B·A 인수. malformed ts ValueError는 BASE 동일, producer int. 전체 시각별 다른 consumer·file IO/State 미인수 | B/A 최초 미검증 consumer만, 코드 하드닝은 승인 전 금지 |
+| 034 | `KEEP_SCOPED / DESIGN_HOLD`; 40 owner 동일, truthy window_complete baseline design 및 실 producer bool 확인, B fake 수용. short_alpha/report consumer output·fallthrough effect 부족 | A/B 신규 short-alpha fake 소비자 |
+| 063 | `KEEP_SCOPED / EFFECTFUL_CLI_HOLD`; 76 diagnostics owner 동일. A metrics schema temp WRITE, target_tree audit, run110 alert policy locale peer normal/-O 인수. cp949 분리는 scoped 해소, 13 위험 CLI·Windows 소비자와 나머지 effectful CLI 미검증 | B 정적 CLI별 효과·A 최초 안전 synthetic peer. 운영 main 금지 |
+| 065 | `KEEP_SCOPED / FETCH_HOLD`; 54 research owner 동일, scorecard/alpha `--no-fetch` temp outputs normal/-O·fetch0 인수. 기본 fetch/history/live/scheduler 부작용과 다른 CLI unresolved | B CLI effect map, A 최초 fake-no-fetch consumer만, live fetch 금지 |
+| 067 | `KEEP_SCOPED / EXTERNAL_HOLD`; 14 root check CLI 동일, wrapper runpy alias/argparse와 A run110 preflight AST-only accepted. Windows PATH/Task Scheduler·real preflight effect/exit 계약 미입증 | B 외부 소비자 맵, A Windows isolated read-only evidence, live preflight 금지 |
+| 069 | `KEEP_SCOPED / ENV_CROSS_RF_BLOCKED`; 7 capture/build owners 동일, A 2 offline CLI scoped pass, B 6/7 분류. UEF5 approved historical snapshot path/SHA/scope 부재 | 승인권자가 historical snapshot 지정 전 build fixture/오라클 생성 금지 |
+ 
+**해제 우선순위:** RF-008 단일 파일 신규 IO/외부 read fake → RF-014/016 동적 소비자 → RF-028/029/031/034 read-render 범위; 위험 write/scheduler/UEF·historical 승인 건은 부분 HOLDS 유지. 모든 RF 최종 ACCEPT/DONE/REWORK는 지팀장 책임이며 A/B는 최초 독립 검증 실행만 담당. 지금까지 재현된 신규 원개발 CODE 결함 없으므로 REWORK 0. `main`·실거래·동결 CI/안전·운영 데이터 무승인 변경 금지.
+
 ## 지팀장 RF-001 최종 DONE — 2026-10-26 20:42 KST
 
 - 실제 33/33 owner의 remote source 정적 효과 검사: core는 LLM 3 attempts, cached/operator brief JSON/MD, trade health/lifecycle files **WRITE** (read-only로 오분류하지 않음); `monitor_notes` 8 pure helpers 및 나머지 31 KEEP. `tests/test_operator_ui.py`의 saving/failover/cache invalidation/LLM timeout/patchable facade 소비자 테스트 직접 확인.
