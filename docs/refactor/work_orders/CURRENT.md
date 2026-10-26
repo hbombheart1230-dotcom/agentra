@@ -1,3 +1,37 @@
+# Agentra P1.5 — 지팀장 B 슬롯 최신 정본 (2026-10-27 00:30 KST)
+
+**본 최상단 절이 아래 모든 이력보다 우선.** `integration/p1.5`의 이 CURRENT + D00만 정본. A/B 작업 브랜치 CURRENT 금지. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. A/B는 실행 증거 제출, 지팀장은 RF 최종 판단·물리 큐·선별 통합 전담. 동일 SHA·동일 경계 normal/-O/peer 재실행 금지.
+
+## 이번 직접 처리 / 신규 인수
+
+- **LEAD 시작 14 / 신규 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14.** 실물 RF 14개 경로 각각 직접 fetch·기존 owner/State/IO/예외/peer·최초 부족분 판정. 큐 변동 없음(PENDING61 / DEVELOPING3 / PEER1 / LEAD14 / DONE14 / REWORK0 = 93, 기존 전수 고유 집계). 실제 LEAD→DONE 이동0·운영 소스 선별 통합0. 부족한 최초 게이트를 `STATUS` 최신 상단 및 신규 판정 RF-014/016/029/032/033에 기록. **부분 PASS는 DONE 아님**.
+- **신규 A 인수:** A `b22cf53d` 이후 run118/119 2개 문서/evidence 커밋, 신규 운영 source0. RF-029 story assembly v1/v2·hydration, RF-032 horizon tmp writer, RF-014 20 Scanner owner→RF-019 shim→RF-009 소비자 map/동적 repeat-risk-NOOP, RF-033 trend/hypothesis pure 원개발 정상/-O exit0 scoped. 신규 하네스 Git blob 6개 직접 확인. B `8f4c8f77` 이후 신규 운영 source/peer0. 여섯 대표 owner BASE/integration/A/B 4-way Git blob 동일. 신규 원개발 회귀 결함 확정0.
+- **지팀장 신규 Python:** RF-016 `news_compaction.py::_build_market_news_query_targets_r3_impl` GitHub blob `c4ba0ddf`에서 추출한 정확 함수(3658자/FNV `da63247`)를 fake facade로 **normal 22/22 PASS exit0 + `python -O` 22/22 PASS exit0**. 로컬 하네스 `/mnt/data/lead_rf016_news_targets_boundary.py`; GitHub 재현 파일 `docs/refactor/work_orders/evidence/lead_rf016_news_query_targets.py` commit `897a29e6`. 이 GitHub 업로드 파일 및 원본 전체 모듈 자체 직접 실행은 **NOT_RUN**. policy/env/use-time, risk/fear/breadth, 테마/이벤트, 입력 불변, malformed 예외의 **순수 함수 범위만** 수용. 외부 주문/네트워크/운영 쓰기0. 처음 하네스 기대 개수 오류는 테스트만 수정 후 정상/-O 통과, 원개발 REWORK 아님.
+- **CI:** hosted Shared Offline Safety run `40332899631@0da98a47` safety/`-O` SUCCESS. `0da98a47 → 현행 integration` compare의 `apps/graphs/libs/scripts/tests/.github` 변경0으로 같은 소스/테스트/workflow 범위에만 재사용. Web run `40073316192`은 Web 동일 tree 범위만 재사용. 신규 전체 repo 정상/-O·hosted CI·effectful main **NOT_RUN**. 문서 HEAD마다 재실행 강제 금지.
+- **런검증 Issue #32:** SELL `0020349` broker/local 출처 불일치, BUY guard stale, OCI 실행 SOURCE_SHA UNKNOWN. `SAFETY_HOLD` 유지, 코드 REWORK·실거래·재배포 금지. **troubleshooting:** open4(LOCAL_EXIT, RF020_SCOPE, SOURCE_ADMISSION, RF012_FINITE), closed1(DOC_CI), 신규 실제 해소0·이동0.
+
+## Codex B — 신규 우선순위 (자기 코드 브랜치에서 실행)
+
+1. **P0 [RF-031](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md):** A run116 writer 8파일/day cache/partial OSError 증거 재실행 금지. 독립 tmp-only fake로 `generate_reporter_analysis_report`→8 writer/day cache/partial failure·`Reporter.analyze_event_logs` caller State/예외, `python <new peer>`/`python -O <new peer>` 실제 exit/marker/source SHA/outside writes0. frozen13/실 LLM/운영 root 금지.
+2. **P1 [RF-028](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-028.md):** 정식 `story_input.canonical_agent_artifacts`의 blocked summary-vs-full·fallback/State/예외 **독립** synthetic peer, A run117 marker 반복 금지.
+3. **P2 [RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md):** A run118 신규 `trade_story_pipeline.py → trade_story_pipeline_story_assembly.py` v1/v2·canonical tmp read·malformed 예외를 새 독립 fake normal/-O. B 기존 display projection peer 반복 금지.
+4. **P3 [RF-032](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-032.md):** A run118 `evaluation/horizon_alignment.py::write_horizon_alignment_review` tmp json/md 2파일·idempotency/OSError를 **독립** fake 정상/-O. 28 writer 기존 marker 반복 금지, UEF/live 금지.
+5. **P4 [RF-014](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-014.md):** A run118 RF-019 shim→RF-009 scanner dynamic repeat/risk/NOOP 및 20 owner 소비자 지도 새 독립 read-only peer. 이전 B Top1 marker 반복 금지.
+6. **P5 [RF-016](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-016.md):** 새 news query 함수 자체는 지팀장 22×2 완료·재실행 금지. `news_compaction`→`strategic_answers` 실제 facade/downstream State·use-time patch·예외 최초 독립 tmp-only normal/-O. 이후 RF-033 hypothesis→input_worker 새 peer, RF-034 renderer, RF-050 caller, RF-015 역사 BASE FAIL 순.
+
+## Claude A — 신규 우선순위 (자기 코드 브랜치에서 실행)
+
+1. **P0 [RF-033](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-033.md):** run118/119 trend/hypothesis 동일 marker 반복 금지. 미검증 `input_delivery.py`→`hypothesis_forward.py`→`input_worker.py` 중 효과 없는 첫 consumer/State/예외를 AST-first + synthetic tmp-only normal/-O, fetch/실데이터 차단. B 독립 peer 대상과 범위 충돌 금지.
+2. **P1 [RF-032](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-032.md):** horizon writer 반복 금지. 나머지 write-owner에서 새 **안전한** evaluation writer 하나 AST-first·tmp-only 정상/-O. UEF/frozen/실데이터 효과는 NOT_RUN/승인 조건만 제출.
+3. **P2 [RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md):** story assembly v1/v2 반복 금지. 실제 renderer/report tmp writer·State/예외의 미검증 **다른** 원개발 경계만 no-network fake.
+4. **P3 [RF-034](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-034.md):** 기존 renderer/pipeline·metrics marker 반복 금지. 아직 미검증 report producer branch 한 곳의 입력 schema/State/예외·tmp write만 신규 검증. B가 동일 경계를 수행하면 분리.
+
+## 지팀장 다음 직접 실행
+
+A/B 새 source/peer·Issue #32 인수 → **LEAD 실물 14 전건 본인 직접 게이트 판정·실행 가능한 최초 안전 검증**, 모든 인수 조건 충족 시 그 회차에 `04_LEAD_ACCEPTANCE → 05_DONE/{원개발팀}` 실물 이동/구 경로 삭제/93 unique 확인 → 허용 소스만 선별 통합·정확 tree CI → troubleshooting 실제 해결만 closed → 다음 A/B 배정 → STATUS → **CURRENT 마지막**. RF-069 UEF5 승인 snapshot 부재·RF-012 가격 안전 문제는 승인 우회 금지. main/실거래/Broker/Supervisor/Executor/Step5C/UEF 거래 안전 계약·동결 테스트/CI·예약/운영 데이터 무승인 변경 금지.
+
+---
+
 # Agentra P1.5 — 지팀장 A 슬롯 직접 실행 인수 (2026-10-27 00시 KST)
 
 **정본:** `integration/p1.5` 이 CURRENT + D00. **이 절이 아래 23시 B/A 슬롯 이력보다 우선하며 기존 A/B P0/P1 우선순위는 유지**한다. 작업 브랜치 CURRENT 금지. RF 최종 판정/DONE/선별 통합은 지팀장 전담. 동일 SHA·동일 경계 테스트 재실행 금지.
