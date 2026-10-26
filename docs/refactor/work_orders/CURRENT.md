@@ -1,3 +1,39 @@
+# Agentra P1.5 — CURRENT (지팀장 LEAD 15건 / DONE 13건 / 2026-10-26 22시 KST)
+
+**유일한 실행 정본:** `integration/p1.5` 이 파일. 상시 D00 규칙 유지. 아래 22시 실행 배정이 이전 21:40 및 21시 이력보다 우선하며, 작업 브랜치 CURRENT 사용 금지. RF 최종 DONE/REWORK는 지팀장이 직접 판정한다.
+
+## 지팀장 A 슬롯 신규 실물 실행·최종 배정 — 2026-10-26 22시 KST
+
+- **실제 성과:** LEAD 시작 **14 / 신규 유입 1(RF-050) / 직접 판정 15 / 신규 DONE 0 / REWORK 0 / 잔여 15**. RF-050 `03_PEER_REVIEW/CODEX_B → 04_LEAD_ACCEPTANCE/FROM_CLAUDE_A` 원자적 tree/ref commit `fb6da831`, 기존 경로 제거·새 blob `9f967046` 확인. `KEEP_SCOPED / B_PEER_ACCEPTED_SCOPED / LEAD_HOLD / NOT_DONE`. 전체 93개 단일 경로: PENDING 61 / DEVELOPING 3 / PEER 1 / LEAD 15 / DONE 13. 신규 운영 소스 통합 0, 무승인 REWORK/DELETE 0.
+- **지팀장 직접 신규 Python 실행:** RF-016 `libs/agents/strategist/context/theme_strength.py` Git blob `0268ed0e32b337f41606a6897b6a7bbbe23aad24` byte-identical 임시 복사본에서 `docs/refactor/work_orders/evidence/lead_rf016_theme_boundary.py` (Git blob `a8471af6`, commit `07b7b0f0`) normal / `python -O` **각 13 cases PASS, exit 0**, pyc 0. 최초 하네스 float 비교 실패는 `math.isclose` 수정 후 해결, 신규 원개발 코드 결함 아님. facade State/IO·전체 8 owner·필수 CI **NOT_RUN/HOLD**. RF 판정 commit `efb1e946`.
+- **A 신규 run114 인수:** A HEAD `bcb0fd62` 신규 source 수정 없음. RF-008 in-repo graph caller 4곳 + fake graph chain/exception, RF-028 facade summary chain 3·latepatch·malformed, RF-034 renderer↔pipeline synthetic tmp writer 10파일/CRLF/ValueError를 **각 normal/-O exit0 scoped** 수용. 지팀장 RF-008 `c21b3201`, RF-028 `301b3632`, RF-034 `c8624d8c`에 실제 미검증 경계 구분. 기존 7+7 logger/12 metrics/late lookup peer 재실행 금지.
+- **B 신규 인수:** B HEAD `2c866400`, 운영 소스 수정 없음. RF-050 최초 independent `RF050_ROUTER_CLIENT_PEER_OK` normal/-O exit0(LLMRouter→OpenRouterClient fake policy/timeout/JSON/HTTP/payload) 수용 → LEAD 이동. RF-015 B-only contracts scoped PASS이나 repo consumer 0/DORMANT, 11 BASE FAIL 미분류. RF-070 19 launcher / RF-066 15 CLI / RF-071 5 cleanup static normal/-O exit0은 안전 정적 분류일 뿐 effectful main NOT_RUN, 무승인 실행/삭제 금지.
+- **RF-029 fetch 차단 해제:** B의 `git fetch origin 081d3f70`은 `couldn't find remote ref` exit128, **소스 결함 아님**. 지팀장 `work/p15-a-reporter-pure-20261021@bcb0fd62`와 integration에서 `read_truth_projection.py=62bda630841ba4f97f95f00e39c933252f1b9387`, `read_display_context.py=17f91f315f81b4dd8c2477f7bc42d0e15b26d3e7`, `trade_read_model.py=783ccaaaab405b30341d49cb1ef69a8e63ad2f14` **3/3 Git blob 동일** 확인. B는 `git fetch origin work/p15-a-reporter-pure-20261021`처럼 광고된 브랜치 ref를 가져와 세 blob fail-closed 확인 후 **최초 독립 peer만 실행**. 이전 unadvertised SHA fetch 재시도 금지. RF-029 아직 B peer NOT_RUN, 판정 `35e56adb`.
+- **CI/런검증:** `f9126467` hosted `safety` 및 `safety (-O)` success; compare `f9126467 → 35e56adb` production source/tests/workflows 변경 0(비문서 AGENTS/CLAUDE만), 기존 **safety 범위에만** 재사용. 전체 hosted 5개/LEAD 15 전부 PASS 아님; 최신 docs-only HEAD 자체 checks 0, repo 전체 Python NOT_RUN. Issue #32 SELL provenance UNKNOWN, BUY guard stale, OCI source SHA 미입증 → 환경·미확정 관측, 코드 REWORK 아님.
+- **troubleshooting:** open 4 / closed 0. 로컬 브랜치 exit, 문서 CI, RF020 scope, source admission 각각 종료조건 미충족 → 이동 0. STATUS `7780d40c` 최종 집계 반영. 아래 새 배정이 실행 경로이며 A/B Issue 댓글은 배정 경로가 아니다.
+
+### Codex B — `work/p15-b-operator-structure-20261022` (최신 실행 배정)
+
+**B P0 RF-029:** [LEAD RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md). 광고된 A branch fetch 및 세 exact blob 확인 후, `read_truth_projection/read_display_context` → `trade_read_model` facade의 missing/invalid/State alias/예외·tmp read-only **독립 신규** `rf029_display_projection_peer.py` normal/-O 실제 exit/marker. A run112 owner truth14/display15 재실행 금지. fetch 실패 시 정확 ref/명령/exit 보고 후 다음 P1 실행.
+
+**B P1 RF-034:** [LEAD RF-034](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-034.md). A run114 `rf034_render_consumer_peer.py` 그대로 재실행 금지. B 자체 독립 fake로 `report.py::render_short_alpha_discriminator` ↔ `pipeline.py`의 payload schema/State/ValueError/CRLF·tmp writer effect 경계를 최초 normal/-O 검증. 지팀장 metrics 12×2 반복 금지.
+
+**B P2 RF-050:** [LEAD RF-050](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-050.md). 이미 router→client synthetic peer PASS_SCOPED이므로 동일 marker 재실행 금지. 실제 Strategist/Reporter/UI caller가 fake `LLMRouter.chat`의 JSONDecodeError/TimeoutError/HTTPError를 처리하는 State·fallback 첫 경계만 독립 offline no-network 검증. 외부 legacy `router.py` 삭제 금지.
+
+**B P3 RF-015:** [LEAD RF-015](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-015.md). 11개 역사 FAIL node 각각 BASE 동일 명령·환경·실제 exit 분류; 기존 B-only contracts A peer PASS 재실행 금지. 이후 RF-070/066/071 안전 정적 분류에서 최초 승인된 fake 경계만, 위험 main/Step5 실행 금지.
+
+### Claude A — `work/p15-a-reporter-pure-20261021` (최신 실행 배정)
+
+**A P0 RF-008:** [LEAD RF-008](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-008.md). run114 graph caller 4·wrapper exception PASS 재실행 금지. 최초 미검증 `build_market_snapshot` 하류 market read 실패를 socket/quote/order 차단·cwd/`EVIDENCE_LEDGER_PATH`/`EVENT_LOG_PATH` tmp 격리 fake로 normal/-O, State/예외/failsoft·exit 보고. 안전하지 않으면 AST-only+NOT_RUN.
+
+**A P1 RF-016:** [LEAD RF-016](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-016.md). 지팀장 theme score/avoid 13×2 직접 PASS 반복 금지. `libs/agents/strategist/output/strategic_answers.py::_build_strategic_answers_r3_impl`의 실제 facade caller, injected `_round_optional/_build_symbol_refresh_memory_excerpt` use-time patch, nested State copy/alias 및 malformed 예외를 새 tmp-only normal/-O에서 최초 검증. 거래 안전·실네트워크·파일 쓰기 금지. B 상대 peer는 지팀장이 신규 경계에 한해 후속 배정.
+
+**A P2 RF-028:** [LEAD RF-028](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-028.md). run114 synthetic 임시 rich fixture는 정식 schema가 아니었음. 정확한 정식 report schema의 producer/deps 소비자 위치를 read-only 제시하고, 안전한 최초 rich fixture normal/-O 검증; 기존 facade chain3 반복 금지. RF-034 render owner는 완료, B 독립 peer 대기.
+
+**지팀장 다음 직접 실행:** A/B 새 source·peer·Issue #32 인수 → LEAD 15 실물 전건 재판정·가능한 즉시 DONE 이동 → 선별 통합/정확 source SHA CI 판정 → troubleshooting 실제 해소 → STATUS → CURRENT 마지막 갱신. main/실거래/Broker/Supervisor/Executor/Step5C/UEF 안전·동결 테스트/CI/예약/운영 데이터 무승인 변경 금지.
+
+---
+
 # Agentra P1.5 — CURRENT (지팀장 LEAD 14건 / DONE 13건 / 2026-10-26 21시 KST)
 
 **유일한 실행 정본:** `integration/p1.5`의 이 파일. **상시 실행·LEAD 최종 종결 규칙:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md). A/B 작업 브랜치 CURRENT 사용 금지. A/B는 현재 배정 RF만 실행하며 상시 권한·금지·검증·지팀장 의무는 D00을 따른다.
