@@ -2,11 +2,9 @@
 
 ## 마지막 실행
 
-- RUN_ID: `B-20261026T031456Z`; B source `b994a133b5b064880569a1607c17a95baf223afd`; latest integration `fd9817f33ebe189c1362204a71687b3ee7b8ec72`; no new B source.
-- POLICY_SHA_BEFORE: D00 `4c56bb65`, D01 `94379db2`, D03 `a13b0a41`; POLICY_SHA_AFTER: D00 `4c56bb65`, D01 `94379db2`, D03 `a6606ee3`; POLICY_CHANGED=D03; POLICY_READ=PASS (3B integration gate applied).
-- RF-001 A peer `b994a133`: PEER_SCOPED_PASS reused; no duplicate delegation test. D03 3B step 1 diff: only `data_access_core.py` and `data_access_brief_monitor_notes.py` are owner hunk candidates; patch applies cleanly to latest integration detached worktree.
-- RF-001 3B step 2/3: isolated latest-integration worktree applied exactly the two source hunk patch (no patchnotes/other B divergence). Focused dynamic facade fallback normal/-O: `RF001_ISOLATED_HUNK_OK 2`, exit 0/0.
-- Frozen required isolation: `.venv/bin/python [-O] -m pytest -q -p no:cacheprovider tests/test_p153_operator_ui_moved_bodies.py tests/test_operator_ui_data_access_phase2.py` → normal `734 passed`, exit 0; optimized `734 passed`, exit 0 (pytest warnings only). Worktree removed after success.
-- RF-001 result: `ADMIT_CANDIDATE / NOT_INTEGRATED`; manager must selectively apply only these two owner paths to latest integration, then rerun exact integration normal/-O before any DONE. No direct integration write by B.
-- RF-013 A `e7471a2e` PEER_SCOPED_PASS reused; RF-070 25 static reviews / 32 launchers NOT_RUN; CI NOT_RUN. USER_REPORT: RF-001 isolation passes, integration authority remains manager-only.
-- CHANGED_PATHS: HANDOFF_B only. PUSH_VERIFIED pending handoff commit; ISSUE_B12_COMMENT pending.
+- RUN_ID: `B-20261026T0318Z`; source SHA none; integration `93c86aba3ac74e1f886bb4c6e768899c3d5a20aa`; B start `6e8245dbaf9cf20fb2586c5c3686edf7fe35f3f6`.
+- CURRENT/D00/D01/D03 latest remote pointers read; policy re-read pending only if SHA changed from last documented D03 `a6606ee3`.
+- RF-001: 734x2 isolation PASS evidence reused per CURRENT; no duplicate execution. A peer/integration combination awaits manager decision.
+- RF-070 new file-level read-only classification: `scripts/run_ai_trade_report_batch.py` has dedicated unit consumers and diagnostic reference, but reads runtime/trade artifacts, writes health/compact/report/summary/LLM JSON+Markdown, creates directories, and may opt into LLM generation. `BLOCKED_SAFETY / FILE_WRITE_AND_OPTIONAL_EXTERNAL_IO`; no import, mock, CLI, source edit or execution.
+- RF-066 not started due execution limit after CURRENT-required RF-070 evidence; next B owner work is RF-066 safe offline/mock scope. 32 dangerous RF-070 launchers remain NOT_RUN; CI/integration merge NOT_RUN.
+- CHANGED_PATHS: HANDOFF_B only; PUSH_VERIFIED pending.
