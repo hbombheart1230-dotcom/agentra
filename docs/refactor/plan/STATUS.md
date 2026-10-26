@@ -1,3 +1,26 @@
+## 지팀장 LEAD 13건 전수 직접 종결 판정 — 2026-10-26 19:09 KST, integration `87b821fd`
+
+- **코드 정본 검사:** RF-001/008/016/028/029/031/032/033/034/063/065/067/069 합계 **558 owner 경로 모두 integration 존재**. CSV `FILE_COVERAGE_63182ab2.csv` 독점 558행을 BASE/A/B/integration git tree blob으로 전수 비교: 12개 RF(525경로)는 4-way byte-identical, RF-001 33/33는 B=integration, BASE 대비 4개 변경(A 후보는 타 작업 중 8차이). **새 소스 delta 0 / 신규 체리픽 대상 0**. 이전 정상/-O/독립 peer는 재사용, same-SHA 반복 없음.
+- **직접 LEAD verdict 13/13:**
+  - `RF-001 INTEGRATED_SCOPED / HOLD` — B exact integrated `b5fe3dd9` 787×2 PASS, frozen 734×2 및 A differential 17 인정. 다만 33 owner 전체 소비자/출력/효과·현행 변경 집합의 필수 admission 미증명, CI 0 → NOT_DONE.
+  - `RF-008 KEEP_SCOPED / HOLD` — 1 owner blob 동일, A State fake 5 수용. `run_strategist` standalone 및 external read-only failsoft·BASE 1 FAIL 분류 공백 → NOT_DONE.
+  - `RF-016 KEEP_SCOPED / HOLD` — 8/8 동일, A 913×2 PASS와 B strategist pure peer 첫 경계 수용. 나머지 동적 facade consumer/State 및 historical 1060 PASS/1 FAIL 분리 필요 → NOT_DONE.
+  - `RF-028 KEEP_SCOPED / HOLD` — 85/85 동일, B dynamic monkeypatch 4/state1/exception1 수용. 다른 renderer/consumer/IO 효과 부족 → NOT_DONE.
+  - `RF-029 KEEP_SCOPED / HOLD` — 38/38 동일, B fake-artifact precedence4/invalid3/exception1/failsoft3 수용. read-display projection State/consumer/ENV·BASE 실패 경계 부족 → NOT_DONE.
+  - `RF-031 KEEP_SCOPED / FROZEN_HOLD` — 22/22 동일, B timeout/exception fake peer 수용; 13 frozen owner 편집 금지, read/write/error State 추가 peer 부족. BASE 동일 56 FAIL은 코드 REWORK 아님 → NOT_DONE.
+  - `RF-032 KEEP_SCOPED / WRITE_PEER_HOLD` — 135/135 동일, A run108 pipeline tmp-root writer 32 files normal/-O exit0 수용; `all(... or True ...)` 항등참 assert는 검증 근거에서 제외. 29 writer·UEF 위험/비어 있지 않은 row 신규 B peer 부족 → NOT_DONE.
+  - `RF-033 KEEP_SCOPED / BASELINE_EXCEPTION_HOLD` — 45/45 동일, A run108 capture fallback/dup/ValueError normal/-O exit0 수용; malformed ts가 BASE에서도 uncaught `ValueError`, 정상 producer는 int. 무승인 하드닝/REWORK 금지, B 새 capture peer 부족 → NOT_DONE.
+  - `RF-034 KEEP_SCOPED / DESIGN_HOLD` — 40/40 동일, B truthy string baseline 기록/실생산 bool 확인, speculative FIX 기각. short_alpha/report 소비자/효과 부족 → NOT_DONE.
+  - `RF-063 KEEP_SCOPED / CLI_HOLD` — 76/76 동일, A diagnostics AST/read-only audit + tmp-only metrics writer PASS 수용, locale cp949 및 나머지 effectful CLI 의도적 NOT_RUN → NOT_DONE.
+  - `RF-065 KEEP_SCOPED / FETCH_HOLD` — 54/54 동일, A run108 `run_alpha_hypothesis_competition --no-fetch` synthetic tmp/cached JSON+MD normal/-O exit0 최초 독립 peer 수용, 기본 fetch+다른 CLI 효과·locale 미확인 → NOT_DONE.
+  - `RF-067 KEEP_SCOPED / EXTERNAL_CONSUMER_HOLD` — 14/14 동일, A root check_ wrapper normal/-O alias/runpy peer accepted, Windows PATH/Task Scheduler/real preflight 소비자 미입증 → NOT_DONE.
+  - `RF-069 KEEP_SCOPED / ENVIRONMENT_BLOCKED` — 7/7 동일, A offline 2 CLI peer 수용. UEF5 승인 historical snapshot path/SHA/use-scope 부재, fixture·오라클 생성 금지 → NOT_DONE.
+- **외부 검증:** `integration/p1.5@87b821fd` GitHub check-runs 0건, hosted Actions 최신 관련 GREEN은 과거 다른 SHA의 실행이며 새 문서 HEAD PASS로 주장할 수 없음. 신규 정상/-O **지팀장 직접 NOT_RUN**; 기존 제출 exit는 인수. 불확정·환경/BASE를 CODE REWORK로 전환하지 않음. 결과 **LEAD 13 HOLD / DONE 이동 0 / REWORK 0 / 신규 source 통합 0**, 다만 각 RF 완료 조건을 다시 원개발 판정으로 위임하지 않음.
+- **신규 A 증거 인수:** [Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11) run108의 `rf033_capture_owner.py` / `rf032_writer_owner.py` / `rf065_alpha_cli_peer.py`와 A HANDOFF commit `c3462ec3`. 새 A 파일은 보존 증거만, owner source SHA 불변. 위 세 LEAD 문서에 신규 결과 및 실제 최초 peer 필요 경계 직접 기록.
+- **실제 실행 큐 확대:** 기존 LEAD 13은 판정을 되돌리지 않고 보존, A 신규 작업 **RF-050 `01_PENDING/UNASSIGNED → 02_DEVELOPING/CLAUDE_A`** 정식 배정(LLM 8 owner 읽기전용 퇴역 후보 조사만, source 삭제 불허). 후속 B는 CURRENT의 RF-070 22 OTHER→066→071→014/015. A는 RF-050 정적 소비자/모델 우선순위 연구를 연속 실행. 시간 상한 없음.
+- **런검증 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32):** BUY/SELL broker truth vs local SELL absent, stale BUY guard, readiness/operator GREEN mismatch, image source SHA UNKNOWN. 실제 결과 심각하지만 코드 REWORK 귀속·배포/안전 수정은 특정 실행 SHA/owner 재현 전 승인 불가. 환경/UNKNOWN 분리, RunLab read-only provenance 조사 유지.
+- **troubleshooting:** 원격 `open/` 4건, `closed/` .gitkeep 1건(해결 문서 0). branch local release/PR, legacy CI, RF020/001 compatibility, admission 4건 모두 종료 게이트 미충족 → 이동 0. **물리 RF 큐(후속 이동): PENDING 61 / DEVELOPING 4 / PEER 4 / LEAD 13 / REWORK 0 / DONE 11 = 93.** 93 single-path checksum commit 후 확인. main/실거래/안전/동결 CI·test/예약·운영 데이터 변경 없음.
+
 ## 지팀장 A 슬롯 — RF-016 신규 독립 peer 인수·단일 큐 이동 (2026-10-26 19시 KST)
 
 - **A/B 최신:** A `3ce7aa45`(run106/107 HANDOFF·offline 하네스, owner source delta 0), B `53d8624e`(RUN B-20261026T094550Z, source delta 0). B 첫 신규 RF-016/014/015 순수 함수 독립 peer normal/-O `RF016_014_015_PEER_OK strategist=1 scanner=1 monitor=1 io=none` 각 exit 0; B 후속 RF-070 41 AST(25 OTHER+16 safety wrapper), RF-066 17 owner inventory 각 normal/-O exit 0. 위험 launcher/운영 효과 실행 NOT_RUN.
