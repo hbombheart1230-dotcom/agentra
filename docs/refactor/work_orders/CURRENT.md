@@ -24,6 +24,9 @@
 
 **3순위 — RF-065 잔여 연구 CLI** [04_LEAD_ACCEPTANCE/FROM_CODEX_B](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-065.md). `scripts/research/run_alpha_hypothesis_competition.py::main`→`libs.research.alpha_competition.run_alpha_hypothesis_competition`을 AST-only로 우선 분류; 기본 fetch=True이므로 직접 main 실행 금지. `--no-fetch`·fake dependency·tmp-only 출력 효과가 안전할 때만 `python /tmp/rf065_alpha_cli_peer.py` / `python -O /tmp/rf065_alpha_cli_peer.py` 신규 marker/exit·효과 0 제출. 막히면 RF-007 ENV 상태 기록 후 다음 안전한 RF.
 
+**후속 슬롯(현재 미활성) — RF-050 LLM 퇴역 판단** [01_PENDING/UNASSIGNED](../plan/queue/01_PENDING/UNASSIGNED/RF-050.md). 현재 A의 RF-067→065→063→007에서 안전하게 가능한 새 경계를 먼저 수행하라. **지팀장이 물리 큐를 02_DEVELOPING/CLAUDE_A로 옮겨 정식 배정하기 전에는 RF-050 원개발·소스 수정 실행 금지.** 정식 배정되면 `libs/llm/{router.py,llm_router.py,model_catalog.py,model_catalog_store.py,model_names.py,json_response.py,openrouter_client.py,__init__.py}` 8 Owner의 public/static/dynamic/env/scheduler 소비자·fallback·IO/State/예외를 처음 조사한다. 첫 경계 `router.py::LLMRouter.chat/ModelSpec` vs `llm_router.py::LLMRouter.resolve/chat`, `model_catalog.py::resolve_policy_llm_slot`; synthetic offline read-only harness `/tmp/rf050_retirement_boundary.py` 생성 후 `python /tmp/rf050_retirement_boundary.py` / `python -O /tmp/rf050_retirement_boundary.py`, 최초 marker/exit, FILE::SYMBOL별 ACTIVE/FALLBACK/COMPAT/DORMANT/REMOVE_CANDIDATE/SAFETY_HOLD·SOURCE_SHA 제출. 실제 provider·주문·운영 파일·동결 오라클·모델 교체 금지; 외부 소비자 불확실 시 HOLD하고 이후 안전한 RF 계속. **별도 사용자 승인 전 실제 삭제 금지**.
+
+
 **A 제출:** 실제 SOURCE_SHA, 최초 미검증 경계·normal/-O 명령/exit·효과 차단·CODE/BASELINE/ENV/SAFETY, KEEP/FIX/HOLD. Issue #11/HANDOFF는 결과만, RF 큐·CURRENT 직접 수정 금지. 반복 없이 다음 RF 연속 진행.
 
 ## Codex B — `work/p15-b-operator-structure-20261022`
@@ -42,6 +45,9 @@
 
 **7순위 — RF-071** [02_DEVELOPING/CODEX_B](../plan/queue/02_DEVELOPING/CODEX_B/RF-071.md). `scripts/analyze_entry_blockers.py`, `benchmark_operator_visibility_memory.py`, `approval_cli.py::main(argv)`의 AST-only wrapper/권한/효과 구별, `python /tmp/rf071_entry_static.py` / `python -O /tmp/rf071_entry_static.py` marker/exit. 실제 승인·cleanup·restart·주문 명령 금지. 이어서 peer **RF-016→014→015**의 CURRENT 기존 범위 중 최초 미검증 안전 함수로 진행(상대 peer 동일 SHA 반복 금지).
 
+**신규 보강 — RF-070 퇴역 분류 및 RF-050 후속 독립 peer.** 현재 B 순서 RF-031→033→034→032→070→066→071 및 최초 독립 normal/-O는 그대로 유지한다. RF-031의 기존 B peer를 완료한 뒤, RF-070에서 `run_operator_ui.py::_parse_args/main`, `run_reporter_analysis_report.py::_build_parser/main`, `run_scheduled_intelligence.py::main`의 공개 CLI/argv/cwd/env/Windows Scheduler·Docker·UI 소비자와 부작용을 `/tmp/rf070_static_dispositions.py`에서 AST-only로 구분하고 `python /tmp/rf070_static_dispositions.py` / `python -O /tmp/rf070_static_dispositions.py` marker/exit·25행 추가 분류를 제출한다. 32 위험 launcher 실행/예약 변경 금지; UNKNOWN이면 COMPAT/SAFETY_HOLD 후 RF-066. RF-050이 **A 정식 배정·후보 제출 및 지팀장 peer 명령을 받은 이후에만** B가 기존 증거 반복 없이 `router.py` legacy raw response→현행 text router와 primary/fallback 우선순위의 새로운 synthetic peer를 `/tmp/rf050_b_peer.py`에서 정상/-O 각 실행하고 marker/exit/source SHA 제출한다. RF-050 원개발 owner 파일 수정 및 사용자 미승인 삭제 금지.
+
+
 **B 제출:** RF별 exact SOURCE_SHA, 신규 독립 normal/-O marker·exit, fake 입력·효과 차단, 파일별 KEEP/FIX/HOLD, CODE/BASELINE/ENV/UNKNOWN 분류, 다음 RF. Issue #12/HANDOFF는 결과 제출만, CURRENT·큐 변경 금지. RF-001 exact `b5fe3dd9` 787×2 PASS 및 RF-028 use-time peer는 이미 수용·재실행 금지. 시간 상한 없음.
 
 ## 지팀장 — `integration/p1.5`
@@ -53,5 +59,8 @@
 **런검증 #32:** broker SELL 원인 UNKNOWN, local/broker mismatch, stale BUY guard, image source SHA 미입증은 환경·미확정 코드 후보. 원인 재현 전 코드 REWORK·거래 안전 수정·운영 재배포 금지. `troubleshooting/open` 4건은 종료조건 미충족, `closed` 0건.
 
 **물리 큐(이동 후):** PENDING 62 / DEVELOPING 3 / PEER_REVIEW 9 / LEAD_ACCEPTANCE 8 / REWORK 0 / DONE 11 = 93. 부분 PASS·NOT_RUN ≠ DONE. 지팀장 자체 latest integration exact-SHA hosted CI NOT_RUN.
+
+**승인 문서 반영(2026-10-26):** D00 §3A + RF-050/031/070/090 퇴역 게이트를 사용자 승인에 따라 문서로만 반영. SOURCE 삭제/선별 통합 0, 보호 계약·CI·예약·운영 모델 변경 0. 기존 RF 93개와 11 DONE, 신규 A/B 증거 인수 및 RF 기존 우선순위는 유지한다. RF-050/090은 PENDING, RF-031 peer 및 RF-070 기존 개발이 우선. **지팀장 다음 실제 행동:** A/B 신규 diff·런검증을 먼저 판정 → 신규 안전한 RF 검증·통합 → RF-070 최초 퇴역 소비자 근거 인수 → A의 기존 RF 우선 범위 소진 시 RF-050을 물리 큐 이동해 최초 LLM 후보 분류 배정 → SOURCE 삭제는 개별 사용자 승인·독립 peer·정확 통합 SHA CI 확인 후에만. CURRENT 갱신은 이번 문서 커밋의 마지막 작성 대상으로 둔다.
+
 
 **다음 지팀장 루프:** integration CURRENT 단독 시작 → A/B HEAD·신규 evidence 및 #32 확인 → 새로운 peer RF 직접 판정·원자 이동 → 소스 delta가 있을 때만 frozen/peer/patchnotes 검증 후 허용 파일 선별 통합 → open/closed 실제 종료만 이동 → STATUS 동기화 → CURRENT 마지막 갱신. main·실거래·거래 안전·동결 테스트/CI·예약 무승인 변경 금지.

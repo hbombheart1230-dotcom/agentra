@@ -9,6 +9,14 @@
 
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
+## 승인된 보강 — Legacy & Dead Code Retirement (2026-10-26)
+
+- **범위:** 사용자 승인으로 D00 §3A와 기존 RF-050/031/070/090의 미사용 경로·구형 호환·동적 소비자 퇴역 판정 기준만 보강했다. **RF-001~093 수·소유/물리 큐·11 DONE·기존 PASS·원개발/peer 판정은 불변.**
+- **조사 우선순위:** 기존 진행 RF-031 B peer 및 RF-070 B 정적 25개에 신규 분류를 적용한다. RF-050은 아직 PENDING/UNASSIGNED이며, 현재 A 슬롯의 RF-067→065→063→007 작업 후 지팀장이 별도로 물리 이동·정식 배정한다. RF-090도 PENDING 유지.
+- **신규 폐기 증거:** 문서 적용 시점 `REMOVE_CANDIDATE` 확정 수 **미집계**, 승인·실제 삭제 파일 **0**, 순감소 LOC **0**, 운영 변경 **0**. 기존 KEEP 숫자를 삭제 성과로 계산하지 않는다. 이후 `RF | 파일::함수/키 | ACTIVE/FALLBACK/COMPAT/DORMANT/REMOVE_CANDIDATE/SAFETY_HOLD | 별도 승인 | deletion SHA | normal/-O | peer | 통합 SHA/CI`만 실제 신규 증거로 갱신한다.
+- **금지:** 코드·설정 삭제, main/실거래·안전 계약·동결 CI/테스트·예약 변경, 운영 데이터 제거, 이미 수용한 SHA 재검증. 후보별 사용자 별도 승인 전 실제 제거 안 함.
+
+
 ## 지팀장 B 회차 — A run 105 신규 동적 증거 인수·원개발 3 RF 독립 peer 이동 (2026-10-26)
 
 - **신규 A source HEAD `4e9f0ae9`:** 소스 코드 수정 0. 새 격리 하네스 5개와 `scan_list.py`가 A branch `docs/refactor/work_orders/evidence/run103_boundary_scripts/`에 실제 존재함을 원격 blob으로 확인. A run 105: RF-033 45/45 KEEP, `RF033_BOUNDARY_OK` normal/-O exit 0; RF-034 40/40 KEEP, `RF034_CANONICAL_OK` normal/-O exit 0; RF-032 135/135 KEEP, `RF032_EVAL_OK` normal/-O exit 0. 합성 임시 입력·State 불변·네트워크/운영 쓰기 차단. RF-034 문자열 truthy `window_complete`는 실제 생산자 bool만 전달, 패치 기각/되돌림(신규 source 없음); RF-032 invalid generated_at fail-open은 기존 설계, 독립 검증 전 CODE 결함 단정 금지.

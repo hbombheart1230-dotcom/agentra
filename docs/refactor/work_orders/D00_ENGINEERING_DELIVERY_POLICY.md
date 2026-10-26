@@ -40,6 +40,20 @@
 - KEEP_NOOP는 코드 동일성과 독립 증거로 직접 종결 가능하다. **전체 RF 인수조건·독립 검증·통합된 정확한 SHA의 필수 normal/-O PASS 후에만 DONE**. 부분 PASS/NOT_RUN/BLOCKED는 DONE이 아니다. 기존 테스트·CI 오라클을 임의 변경하지 않는다.
 - RF에는 새로운 근거·결정·다음 작업만 추가한다. 중복 감사·attempt 파일은 만들지 않는다.
 
+## 3A. Legacy & Dead Code Retirement — 기존 RF 내 퇴역 게이트
+
+**적용:** RF-001~093의 앞으로 수행하는 미검증 범위에만 적용한다. 기존 DONE·유효한 SHA/normal/-O/peer 증거를 소급 취소하거나 같은 경계를 재검증하지 않는다. 새 RF·독립 보고 장부를 만들지 않고, 각 RF에 신규 후보·실제 판정·증거만 기록한다.
+
+1. **후보 발견:** 기존 Owner/consumer 분류를 재사용하여 미사용 함수·중복 구현·구형 wrapper/CLI·모델 프로파일·환경변수 별칭을 찾는다. 파일 전체 제거와 함수/설정 일부 제거를 구분한다. 정적 import 검색만으로 미사용 판정하지 않는다.
+2. **다중 소비자 확인:** 직접 import/호출, `importlib`·`runpy`·문자열 기반 동적 로딩, `__main__`·BAT/PowerShell/CLI, Commander `applied_policy`·환경변수·fallback, Docker/CI/UI/스케줄러, 테스트/외부 공개 계약을 확인한다. 저장소 바깥 소비자와 Paper/런타임 이미지 출처가 확인되지 않으면 UNKNOWN/HOLD로 남긴다. 런타임 미호출 자체는 제거 증거가 아니다.
+3. **분류:** `ACTIVE`(실사용), `FALLBACK`(장애 대응), `COMPAT`(호환 소비자), `DORMANT`(기능 비활성·재사용 가능), `REMOVE_CANDIDATE`(소비자·효과 검증 후 제거 검토), `SAFETY_HOLD`(권한·증거 부족). `KEEP_VERIFIED`와 이 사용 상태는 별개의 축이다. `REMOVE_CANDIDATE`는 삭제 승인·성공 증거가 아니다.
+4. **작은 단위로 퇴역:** 제거 후보마다 정확한 `FILE::SYMBOL` 또는 설정 키, 조회한 소비자 경로와 부재 근거, 대체 경로, 외부 효과·입출력/State/예외 계약, 위험·되돌림 방법을 기존 RF에 한 줄 이상 기재한다. 안전성이 증명된 pure/internal 코드에 한해 최소 제거 diff를 제안한다. 미승인 상태에서는 실제 코드 삭제·운영 설정 변경을 수행하지 않는다.
+5. **검증과 승인:** **사용자가 제거 범위를 사전 승인한 후** 해당 RF Owner가 격리 브랜치에서 최소 diff와 기존 계약의 normal/`python -O` 명령·실제 exit·source SHA, 필요한 patchnotes를 제출한다. 상대 팀은 기존 증거를 재실행하지 않고 **새 제거 경계**만 독립 read-only peer 검증한다. 지팀장이 OWNER/보호 경계·frozen oracle·정확한 통합 SHA/필수 CI를 판정하고 선별 통합한다.
+6. **보호 대상:** Broker/Supervisor/Executor/Step5C/UEF·거래 안전, 운영 데이터·감사/연구 증거, 실제 거래·예약·동결 테스트/CI 및 공개 CLI는 제거 증명이 완결되지 않으면 `SAFETY_HOLD` 또는 `COMPAT`. 기록이 역사적이라는 이유만으로 지우지 않는다. 외부 효과를 확인하려고 라이브 명령을 실행하지 않는다.
+7. **한 RF의 결과:** `RETIREMENT: 대상 | 분류 | 소비자·동적·운영 근거 | 제안 KEEP/DEPRECATE/REMOVE/HOLD | SOURCE_SHA | normal/-O·peer | 승인/차단 | 다음 경계`를 기존 RF에 간결히 남긴다. 후보가 없으면 `CANDIDATE_NONE` + 근거를 한 번만 기록한다. 실물 코드/파일 삭제가 없으면 DELETE 성과를 주장하지 않는다.
+
+**우선 시범:** RF-050(LLM 8경로), RF-031(Reporter AI), RF-070(공개 launcher), RF-090(config)의 각기 다른 Owner와 기존 RF 상태를 유지한다. RF-050은 정식 배정 전 PENDING이며, RF-031은 기존 peer를 먼저 마친다. RF 번호·큐 총합·CSV 소유권은 이 정책만으로 바뀌지 않는다.
+
 ## 4. 트러블슈팅
 
 **장애·STATUS:** 미해결은 [troubleshooting/open](../plan/troubleshooting/open/), 해결 건은 [troubleshooting/closed](../plan/troubleshooting/closed/)에 정리한다. 지팀장은 예약 회차마다 A/B·[런검증 Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) 신규 결과와 RF를 인수하고, 실제 변경만 [STATUS](../plan/STATUS.md)에 갱신한다.
