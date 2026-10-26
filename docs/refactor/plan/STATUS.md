@@ -1,3 +1,5 @@
+**RF-034 smoke 부작용 정정:** 최초 격리 import가 임시 repo `__pycache__` pyc 2개를 생성했음. 운영 repo/데이터 쓰기 아님. 하네스 `sys.dont_write_bytecode=True` 적용(commit `de163269`) 후 임시 pyc 삭제, normal/-O 각 12 PASS exit0 및 새 pyc 0건 확인(`RF034_NO_REPO_PYC_PASS`). 최초 실행을 `write 0`으로 소급 주장하지 않으며, 수정된 하네스에서만 no-pyc 확인. RF-034 LEAD HOLD/NOT_DONE 유지.
+
 ## 지팀장 B 슬롯 — LEAD 14 전건 실물 판정·RF-034 신규 Python 직접 검증 (2026-10-26 21:40 KST)
 
 - **최신 HEAD:** integration 시작 `f6995b76`, A `081d3f70` (run112/113 신규 증거, 운영 소스 변경 0), B `f19d3a12` (신규 없음). Issue #32 19시 final read-only: SELL provenance/BUY guard/OCI SOURCE_SHA UNKNOWN, full runtime PASS 아님. **LEAD 시작 14 / 신규 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14.** 큐 PENDING 61 / DEVELOPING 3 / PEER 2 / LEAD 14 / DONE 13 / REWORK 0 = 93. 물리 이동 0·운영 소스 통합 0.
