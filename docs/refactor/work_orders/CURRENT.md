@@ -6,9 +6,9 @@
 
 | 담당 | 지금 실행할 작업 | 다음 작업·해제 조건 |
 |---|---|---|
-| Claude A ([HANDOFF_A](HANDOFF_A.md)) | [RF-019](../plan/pending/RF-019.md) 남은 약 5문장·p171 CROSS_RF 소비자/State 증거 보완(기존 99.6% 자체 PASS 재실행 금지); B 신규 코드 SHA만 peer | [RF-017](../plan/pending/RF-017.md); B [RF-001](../plan/verification/codex/RF-001.md) 신규 수정 SHA 도착 시 우선 peer |
-| Codex B ([HANDOFF_B](HANDOFF_B.md)) | [RF-017](../plan/pending/RF-017.md) 기존 [RF-017](../plan/pending/RF-017.md) 5-owner KEEP peer 결과를 재사용하고 미충족 인수조건만 지팀장에게 전달; [RF-019](../plan/pending/RF-019.md) evidence 외 신규 위험 경계만 peer; [RF-070](../plan/pending/RF-070.md) 잔여 25개 기타 구현 read-only 소비자·효과 경계 정리 | [RF-001](../plan/verification/codex/RF-001.md) 해소된 28 FAIL은 종결하고 별개 잔여 인수조건을 해결하거나 실제 owner-local 개발 진행; 32개 위험 launcher 실행 금지 |
-| 지팀장 | RF-017 5 owner BASE=integration `3f1677cc` blob 5/5 동일 직접 확인; A branch 4경로 부재는 후보 트리 문제로 분리, B peer 대상 integration KEEP으로 확정(RF-017 기록). A RF-017 273문장 100% normal/-O SELF_PASS_SCOPED, B peer NOT_RUN. RF-019 A 29-owner 약 99.6% SELF_PASS_SCOPED 및 B evidence/guard/practical/overlay normal/-O 독립 scoped PASS 수용; p171 CROSS_RF·잔여 State/효과 미종결. 신규 SHA·peer 판정, [RF-001](../plan/verification/codex/RF-001.md) KEEP 복귀 후 남은 전체 인수조건·교차 RF 차단 판정, [RF-013](../plan/verification/claude/RF-013.md) 소유권 HOLD 유지 | 인수조건 충족 RF만 선별 통합 및 통합 SHA normal/-O 검증 |
+| Claude A ([HANDOFF_A](HANDOFF_A.md)) | **1순위 RF-013 branch-local REWORK:** `f67bf1ec` 계열의 미승인 `q8_shadow_readout_p15.py` 및 직접 의존하는 후보를 소유 경계 내에서 최소 원복해 A 브랜치 p171 동결 2 FAIL을 제거하고 실제 source SHA 제출; frozen 테스트·오라클 불변. | B에게 exact SHA peer 요청 후 RF-019 잔여 4문장·다음 실제 owner 구현 진행. 단순 coverage 보고로 종료 금지. |
+| Codex B ([HANDOFF_B](HANDOFF_B.md)) | **1순위 RF-001 실제 구현:** 기존 `data_access_core.py` 내부 허용 owner 경계의 최소 책임 분리 코드 SHA 제출. 안전하게 불가능하면 함수·동결 AST 제약과 KEEP 근거를 확정하고 같은 회차 다른 구현 가능한 B RF 진행. | A 신규 RF-013 원복 SHA가 오면 p171 실패 2 node·RF-074 경계 exact-SHA 독립 peer. RF-017 기존 7/7 재실행 금지; RF-070 32 위험 launcher NOT_RUN 유지. |
+| 지팀장 | A/B 새 source SHA만 판정하고 RF-013 A branch 회귀와 RF-019 owner 경계를 분리. RF-017 5 owner KEEP 및 B peer 7/7 증거 수용(전체 DONE 아님). RF-001 과거 28 FAIL 해결은 CLOSED, 잔여 인수조건은 별도 추적. | 새 SHA→peer→필요시 REWORK→선별 통합→integration exact-SHA normal/-O 검증 후 DONE. HANDOFF-only를 코드 진척으로 계산하지 않음. |
 
 **기록 위치:** RF = 개별 결정·실패·검증·차단·재개 조건. HANDOFF_A/B = 이번 실행의 신규 코드 SHA·명령·결과. STATUS = RF 집계. CURRENT = 담당·우선순위·링크만. 기존 증거는 재사용한다.
 
