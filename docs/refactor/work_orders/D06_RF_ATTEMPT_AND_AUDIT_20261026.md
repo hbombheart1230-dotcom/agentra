@@ -1,6 +1,6 @@
 # D06 — RF 시도 계수·핑퐁 차단·정합성 (2026-10-26 KST)
 
-> D00·D03·D05 하위의 운영 정본. 동일 증거 반복 실행과 HANDOFF-only 진척 착시를 방지한다.
+> [D00](D00_ENGINEERING_DELIVERY_POLICY.md)·[D03](D03_DEV_TEAM_RULES.md)·[D05](D05_RF_PHYSICAL_QUEUE_20261026.md) 하위의 운영 정본. 동일 증거 반복 실행과 HANDOFF-only 진척 착시를 방지한다.
 
 ## RF별 최소 메타데이터
 - `RF_ID`, `STAGE`, `ORIGINAL_OWNER=CLAUDE_A|CODEX_B|UNASSIGNED`, `ACTIVE_ACTOR`

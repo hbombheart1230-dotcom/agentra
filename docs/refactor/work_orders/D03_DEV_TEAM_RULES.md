@@ -1,6 +1,6 @@
 # D03 — Agentra P1.5 개발팀 공통 실행·검증 규칙
 
-> **개발팀 정본.** 시작은 [CURRENT](CURRENT.md), 공통 안전·권한·증거는 [D00](../../ENGINEERING_DELIVERY_POLICY.md), 역할/브랜치는 [D01 Codex](../../../AGENTS.md)·[D02 Claude](../../../CLAUDE.md). PC 런검증팀은 별도 D04. D00과 역할별 문서의 내용을 이곳에 복제하지 않는다.
+> **개발팀 정본.** 시작은 [CURRENT](CURRENT.md), 공통 안전·권한·증거는 [D00](D00_ENGINEERING_DELIVERY_POLICY.md), 역할/브랜치는 [D01 Codex](../../../AGENTS.md)·[D02 Claude](../../../CLAUDE.md). PC 런검증팀은 별도 D04. D00과 역할별 문서의 내용을 이곳에 복제하지 않는다.
 
 ## 1. 개발 범위·단일 소유
 - RF 93개·소유 경로: [FILE_COVERAGE](../plan/FILE_COVERAGE_63182ab2.csv); 대상 트리: [T00](../architecture/T00_TARGET_TREE.md); 인수조건은 각 RF, 집계는 STATUS가 정본이다.
