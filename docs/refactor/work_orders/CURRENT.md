@@ -1,3 +1,36 @@
+# Agentra P1.5 — 지팀장 B 슬롯 최신 정본 (2026-10-27 05:28 KST 이후)
+
+**이 절이 아래 05:02 A 슬롯과 모든 과거 절보다 우선.** 유일한 배정 정본은 `integration/p1.5`의 CURRENT + D00 + 실제 RF. A=`work/p15-a-reporter-pure-20261021`, B=`work/p15-b-operator-structure-20261022`. A/B 작업 브랜치 CURRENT 읽기 금지. 지팀장이 RF 최종 DONE/REWORK·큐 이동·선별 통합 담당. 동일 SHA·동일 경계 normal/`-O`·peer 반복 금지.
+
+## 신규 인수 → 지팀장 실제 검증/판정
+
+- **A/B/RunLab:** A `bc746b7b→e40af512` 2커밋(HANDOFF + 4 evidence, 운영 소스 변경0). run128 RF-032 evaluation lens builder/writer, RF-033 `vnext/equities.fetch_equities` fake provider→pipeline, RF-034 10파일 partial OSError; run129 RF-032 `q13_q14_validation` build/render/writer. 모두 원개발자 정상/`python -O` exit0 scoped, 독립 B peer로 과장 금지. B `8fe36a3d` 신규0. Issue #32 10/26 19시 최종 이후 신규 댓글0, SELL `0020349` provenance/BUY guard stale/OCI SOURCE_SHA UNKNOWN은 `SAFETY_HOLD`, 재현된 신규 P1.5 REWORK 아님.
+- **지팀장 최초 직접 Python RF-016:** `node_policy_projection.py::strat_policy_commander_context_policy_adjustment` 원본 Git blob `b1319b9e`, 정확 함수 4,355 bytes FNV32 `008d9fe0`를 격리. `/mnt/data/lead_rf016_node_policy_consumer_harness.py` 정상 **29 PASS/exit0**, `python -O` **29 PASS/exit0**, FAIL0, pyc0, 네트워크/주문/운영 쓰기0. 실제 node-policy→주입 facade answers→directive use-time/State·얕은 copy/nested alias/exception 경계. **실제 facade 전체 연결, B 독립 peer, 외부 dynamic consumer NOT_RUN**. 실행 하네스는 로컬 파일로 GitHub byte-identical 저장본 주장은 하지 않는다.
+- **RF-032 직접 코드 판단:** `q13_q14_validation.py`의 Exit Horizon > max(ACTIONABLE, Exit Horizon 자신 포함) 분기는 논리상 unreachable. `validation_id` 미정화 경로는 `../escape`로 validation 하위 이탈 가능(원개발자 tmp 관측). owner BASE/integration/A/B 동일, 실외부 입력·UEF 영향 UNKNOWN. 사용자 승인 없이 코드/보호 계약 수정 금지. RF-016/032/033/034에 신규 scoped 증거와 해제 경계를 실제 기록했다.
+- **LEAD 최신 실물 14/14 직접 최종 판정:** 시작 **14 / 신규 유입 0 / 직접 판정 14 / 신규 DONE 0 / REWORK 0 / 잔여 14**. LEAD RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069 모두 `HOLD/NOT_DONE`(069 `SAFETY_HOLD`), 부족한 최초 계약·해제 책임은 [STATUS](../plan/STATUS.md) 최신 05:28 표 및 해당 실물 RF에 기록. RF 물리 이동0, 운영 소스 선별 통합0. 큐 PENDING61/DEVELOPING3/PEER1/LEAD14/DONE14/REWORK0 = 93 unique.
+- **정확 CI/tree:** `integration@cefe3152` vs Safety `40332899631@0da98a47` 성공(normal/-O)의 root `graphs/libs/scripts/tests/apps/.github` tree 6/6 byte-identical. Web `40073316192@1374d371` 성공, `apps/web`/`apps/api` 및 `p15-integration-crossbranch-compat.yml` blob 동일. `apps/operator_ui`·전체 workflows는 Web과 다르므로 확대 금지. 이번 문서-only 변경 뒤 source/test/workflow 변경0. 신규 hosted/전체 repo/실효과 CLI NOT_RUN.
+- **troubleshooting:** `open/` 4(BRANCH_CLEANUP/RF012_FINITE/RF020_SCOPE/SOURCE_ADMISSION), `closed/` 1(DOC_CI), 실제 해결0·이동0. `main`/실거래/Broker/Supervisor/Executor/Step5C/UEF 안전 계약/동결 테스트·CI/예약/운영 데이터 무승인 변경0. **EXECUTION_INCOMPLETE** — 신규 검증 58 PASS, 추가 RF DONE0.
+
+## Codex B — 다음 최초 실행 (`work/p15-b-operator-structure-20261022`)
+
+1. **P0 [RF-031](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md):** `generate_reporter_analysis_report` 실제 helper graph→8 writer/day-cache·partial OSError 최초 **독립** temp-only normal/`-O`; `EVENT_LOG_DAY_CACHE_DIR`/`STRATEGY_MEMORY_PATH`/`STRATEGY_MEMORY_DAILY_DIR`/`EVIDENCE_LEDGER_PATH`/cwd/reports 모두 tmp. 기존 잘못된 AST token assertion 및 기존 A/지팀장 writer marker 반복 금지. source SHA/exit/outside writes0 제출.
+2. **P1 [RF-050](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-050.md):** Operator `data_access_core` primary→repair→line fake `LLMRouter.chat` JSONDecodeError/TimeoutError/HTTPError·fallback·State/예외 최초 독립 normal/`-O`. router→client 기존 peer 반복/실 네트워크·캐시 쓰기 금지.
+3. **P2 [RF-016](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-016.md):** 지팀장 신규 node-policy consumer29×2, 기존 news query22×2, A strategic_answers owner16/29, 기존 B alias peer **재실행 금지**. 최초 미검증 실제 news-query→strategic_answers facade/downstream 결합과 외부 dynamic 소비자·중첩 State mutation을 새로운 독립 tmp-only fake로 normal/`-O`, exact SHA/exit/효과0 제출. 최종 DONE 판단은 지팀장.
+4. **P3 [RF-032](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-032.md):** A run128/129 lens/q13 owner marker와 지팀장 lens14×2 재실행 금지. `q13_q14_validation.py` producer→public consumer `validation_id` 신뢰 경계/Exit Horizon 우선규칙을 read-only 정적 조사하고 다른 안전 writer 1개 신규 temp-only 독립 검증. UEF/frozen·운영 root 실행 금지.
+5. **P4 [RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md) → [RF-034](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-034.md):** story bundle v1/v2·external root 신규 독립 peer → casebook→scanner State/exception peer. 기존 A run122~129 및 지팀장 partial writer 중복 금지.
+
+## Claude A — 다음 최초 실행 (`work/p15-a-reporter-pure-20261021`)
+
+1. **P0 [RF-032](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-032.md):** run128 lens, run129 q13 완료. **다른** `libs/reporting/evaluation/q9_artifact_repair.py` AST-first owner/consumer/State/IO·partial OSError 최초 격리 temp-only normal/`-O`; 보호 UEF/frozen·실데이터·운영 root 실행 금지. 이후 `historical_prior` 등 신규 owner.
+2. **P1 [RF-033](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-033.md):** `libs/reporting/baseline_btc_woori_tech/vnext/time_alignment.py::fetch_alignment` fake provider/consumer State·예외 정상/`-O`, 실제 yfinance/네트워크/Windows Thread 금지. run128 equities 및 run126 tick/storage 반복 금지.
+3. **P2 [RF-034](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-034.md):** `pipeline.py::build_short_alpha_discriminator`의 missing/corrupt JSON→integrity/status/State·예외 신규 fake read-only fixture normal/`-O`. run128 10파일 partial OSError, 지팀장29×2 및 기존 A cohort/renderer 반복 금지. closeout/UEF 실효과 금지.
+
+## 지팀장 다음 직접 실행
+
+A/B 신규 source·독립 peer·Issue #32 인수 즉시 최신 LEAD **전건** owner/import/dynamic/CLI/UI/State·효과·예외·정확 SHA/필수 CI 직접 판정, 수행 가능한 최초 신규 안전 테스트 실행. DONE 충족 건은 **그 회차** `04_LEAD_ACCEPTANCE→05_DONE/{원개발팀}` 실제 파일 이동·구 경로 삭제·단일 경로/commit 검증. 허용 source 선별 통합 → troubleshooting 실제 해결만 closed → 다음 배정 → STATUS 변경 시 갱신 → **CURRENT 마지막 갱신**. 동일 SHA·경계 반복 및 안전 승인 우회 금지.
+
+---
+
 # Agentra P1.5 — 지팀장 A 슬롯 최신 정본 (2026-10-27 05:02 KST 이후)
 
 **이 최상단 절이 아래 04:32 B 슬롯 및 이전 이력보다 우선.** 정본 `integration/p1.5` CURRENT+D00+실제 배정 RF. A `work/p15-a-reporter-pure-20261021`, B `work/p15-b-operator-structure-20261022`. A/B 작업 브랜치 CURRENT 읽기 금지. 최종 DONE/REWORK·큐 이동·선별 통합은 지팀장 직접. 동일 SHA·경계/marker 반복 검증 금지.
