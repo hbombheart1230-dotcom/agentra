@@ -1,8 +1,12 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 09:00 KST, 물리·논리 큐 일치): pending 72 / verification 13 / rework 0 / DONE 8** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 12:33 KST, 물리·논리 큐 일치): pending 71 / verification 14 / rework 0 / DONE 8** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
-## 최신 지팀장 판정 (2026-10-26 09:00 KST)
+## 최신 큐 판정 (2026-10-26 12:33 KST)
+
+- **RF-070 pending→verification/codex 이동 확인:** 기존 안전 순수 wrapper 85/142에 대한 A/B 독립 offline/mock normal/-O scoped PASS 재사용, 잔여 57은 32 SAFETY_HOLD + 25 read-only 위험·소비자 분류로 제한. 구 pending 경로 404, 새 verification RF 문서 존재; CURRENT도 verification 지시. **71 pending / 14 verification / 0 rework / 8 DONE.** 전체 RF PASS/DONE 아님. A/B 신규 소스 SHA 없음(`e7471a2e`→A HEAD HANDOFF만, `b994a133`→B HEAD HANDOFF만). RF-001 두 owner blob은 B/격리 `cdc3599f` 동일, integration 미반영; A 최초 격리 조합 peer 및 `test_operator_ui.py` normal/-O와 통합 exact-SHA 테스트 전 ADMIT/DONE HOLD. RF-018 202×2/잠재 폴백 3건은 12:26 기존 판정 재사용. 이번 회차 소스 통합·새 pytest NOT_RUN, 예약·main·안전·오라클 변경 없음.
+
+## 이전 지팀장 판정 (2026-10-26 09:00 KST)
 
 - **RF-001 물리 큐 복구 완료:** B CODE `53416d4c` 17 owner KEEP 복귀에 대한 A `f633d6cd` 독립 peer scoped PASS 수용. 기존 `rework/codex/RF-001.md` 전 내용이 `verification/codex/RF-001.md`에 포함됨을 확인 후 구 중복 사본 삭제. 원개발자 소유 후보 회귀가 복귀되었으므로 REWORK→VERIFICATION/BLOCKED; B branch composite frozen 28 FAIL은 교차 RF/history inventory로 분리하되 전체 frozen PASS로 간주하지 않음. 신규 source/테스트/오라클/통합 없음. **72 pending / 13 verification / 0 rework / 8 DONE.**
 - **다음 실행:** B는 A RF-019 신규 위험 경계 peer와 RF-070 잔여 25개 기타 구현 read-only 소비자·효과 분류. A는 RF-019 잔여 21 owner 및 RF-017 normal/-O 새 경계. RF-013 9+4 미승인, RF-070 위험 32 실행 금지, RF-069 UEF5 환경 차단 유지. Issue #32 신규 댓글 0; hosted CI 제외(D03), 지팀장 pytest NOT_RUN.
