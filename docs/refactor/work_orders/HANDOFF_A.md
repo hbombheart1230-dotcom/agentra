@@ -226,3 +226,17 @@
 - 미검증: ① RF-031 실 LLM·번들 main·13 frozen owner, ② RF-028 cascade/visibility·B 독립 peer, ③ RF-016 직렬화 이후/저장소 밖 소비자, ④ RF-008 저장소 밖 호출자.
 - 다음 행동: 지팀장 인수·판정. 신규 최초 경계가 CURRENT에 올 때까지 동일 경계 재실행 금지.
 - PUSH_VERIFIED: push 후 `git ls-remote` 로 원격 HEAD 확인(Issue 댓글은 CURRENT상 배정 경로 아님 → 미작성).
+
+---
+## 추가 회차 — RF-028: run 116이 미검증으로 남긴 `entry_candidate_cascade`·`entry_execution_visibility` 분기
+
+- RUN_ID: 2026-10-26T1421Z-claude-a-sched-117 · A 시작 `457846f9`(run 116 포함) · integration `4483a736`(CURRENT `abdcb541`; 최상단 A 4건 P0 RF-031·P1 RF-028·P2 RF-016·P3 RF-008은 run 116이 이미 수행 → 반복 안 함) · B `2c866400`(불변, 신규 B 소스 SHA 없음 → peer 대상 없음). **A 소스 코드 변경 없음(NO_CHANGE)**; 대상 owner blob == BASE == integration. 하네스 `evidence/run103_boundary_scripts/rf028_cascade_visibility_peer.py`(저장소 루트에서 실행).
+- 격리: 자격 증명 env 제거, `EVIDENCE_LEDGER_PATH`·`EVENT_LOG_PATH`·cwd를 tmp로 격리, 소켓·subprocess·sqlite 차단, 모든 쓰기 차단(시도 0). 정식 producer `trade_report_ai.build_deterministic_trade_report` + `build_ai_trade_report_compact_input` + 렌더러 2종(`render_trade_summary_markdown`, `render_trade_report_markdown`)만 사용.
+- 실행: `python rf028_cascade_visibility_peer.py` → `RF028_CASCADE_VISIBILITY_OK scenarios=8 exc=0 fallback_lines=2 blocked_lines=2 leaks=0 blocked=0 debug=True` **exit 0**, `-O` `debug=False` **exit 0**. integration `4483a736`·BASE `63182ab2`·normal·`-O` 4개 출력 JSON **바이트 동일**.
+- **정식 schema 확인(코드 입증):** commander/monitor/strategist 계약은 `story_input["canonical_agent_artifacts"]` 아래({strategist, commander, monitor})에서만 인식됨. **같은 데이터를 최상위 `commander`/`monitor` 키에 두면 완전히 무시**(`flat_keys_ignored`: visibility 키 0개·후보 줄 0개; run 114/115 임시 fixture가 '풍부'해 보이지 않은 원인). 정식 위치에서는 `entry_execution_visibility = {commander_entry_control, monitor_entry_candidate_cascade, strategy_candidate_watch_proposal, summary}`가 생성되어 compact input과 report 양쪽에 동일하게 나옴.
+- **분기별 렌더(요약 `* 후보 감시:` / `* 후보 선택:`, 전체 `- [후보 감시 실행]` / `- 최종 후보:`):** ① fallback(1위 005930 보류→차순위 000660): `후보 감시: 7위까지 / 차순위 6개 / cascade 활성`, `최종 후보: 000660(2위)`, 전체 리포트에 "1순위 005930 보류 -> 차순위 000660, 035420 확인 (사유: breakout_not_ready)"·전략가 제안 `rank<=10 / runner_ups=9`·전술 표시; ② top-pick 즉시 확정: `5위까지 / 차순위 4개`, `최종 후보: 000660(1위)`; ③ cascade 차단(`attempted=False`, `blocked_reason=max_positions_reached`): 요약은 `10위까지 / 차순위 9개`와 `최종 후보: 005930`만 표시하고 **차단 사유는 요약에 없음**(전체 리포트·visibility 데이터에는 존재) — 관찰만; ④ 전략가 제안만 있고 실행 정보 없음: 후보 줄 생략(요약에서 `전략가 후보 감시 제안`·내부 사유 문구 누출 0); ⑤ 없음/비정식 위치/`cascade`가 list/타입 오염(`runner_up_symbols` str, `fallback_trace` str, `max_priority_rank` "seven", `entry_control` str)은 예외 없이 후보 줄 생략(8 시나리오 예외 0).
+- 입력 `story_input`·생성 `report` 불변(producer·renderer 모두), 내부 문구(`balanced_rank_cap`·`지휘관 최종 적용 범위` 등) 요약 누출 0.
+- 판정: **PEER_PASS_SCOPED(RF-028 cascade/visibility 분기, owner BASE 동일)**, 코드 결함·BASE 차이 0, FIX 불필요. 남은 미검증: `main_renderer` 나머지 분기(carryover·same-day summary 등), B 독립 peer(위 schema로 지팀장 배정 대기). DONE 아님.
+- 반복 안 함: run 116 전체(RF-031/028 memory·monitor/RF-016 정적/RF-008 동적), run 115, RF-050·RF-063/065/067. RF-030 = 승인 대기.
+- 다음: A 실행 가능한 신규 CURRENT 배정 없음 → 신규 배정/B 소스 SHA 대기.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
