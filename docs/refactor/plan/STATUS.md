@@ -1,5 +1,15 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
+## 지팀장 B 슬롯 확장 인수·실제 큐 이동 (2026-10-26 17:41 KST 이후)
+
+- **신규 진척:** A `992acf6e` 대비 source change 0; B `9f39745c` 이후 `5fb0e131` HANDOFF-only, source change 0. B RF-028 A `f3ac4be1`의 `resolve_shared_trade_facts` use-time late lookup 4·State 1·exception 1 독립 normal/-O marker·exit 0 (`PEER_PASS_SCOPED`). B RF-066 temp catalog+fake OrderClient request 4/error 1/temp_only 1 normal/-O marker·exit 0 (`SELF_PASS_SCOPED`), 실제 main/broker 미실행. RF-031 B 신규 peer NOT_RUN; RF-033 A 최초 owner 경계 NOT_RUN.
+- **지팀장 직접 판정·이동:** RF-028 `03_PEER_REVIEW/CODEX_B → 04_LEAD_ACCEPTANCE/FROM_CLAUDE_A` (KEEP_NOOP_CANDIDATE, 독립 scoped peer 수용, 미검증 85-owner 전체 계약/CLI·IO·CI 남음 → NOT_DONE). RF-032·034 `01_PENDING/UNASSIGNED → 02_DEVELOPING/CLAUDE_A`; RF-071 `01_PENDING/UNASSIGNED → 02_DEVELOPING/CODEX_B`. RF-066 fake self 수용·잔여 owner 조사, RF-070 25개 중 3개 정적 첫 소비자 직접 지정. **새 소스 통합 0, DONE 추가 0, REWORK 0**.
+- **런검증 #32:** 17:38 신규 진단에서 paper BUY/Sell broker fill, 2 vs 1 local mismatch·SELL origin UNKNOWN·stale guard·이미지 source SHA 미입증 재확인. 이후 원인 재현 없음; CODE로 단정하거나 운영/예약/안전 코드를 수정하지 않음. RunLab 읽기 전용 trace/reconciliation 담당, 환경/미확정 관측은 HOLD.
+- **troubleshooting 실물:** `open/` 4문서 전부 접근, `closed/` .gitkeep만(해결 0). branch cleanup 로컬/PR 근거 없음, DOC-CI 역사/신규 SHA 5 gate 불충족, RF020/001 범위 및 예약 조기 종료 아직 검증 중, SOURCE_ADMISSION 전체 계약 미충족. 이동 0.
+- **물리 큐:** PENDING **62** / DEVELOPING **6** / PEER_REVIEW **9** / LEAD_ACCEPTANCE **5** / REWORK **0** / DONE **11** = **93 RF**, 물리 경로 단일화 후 확인. 신규 코드는 없으며 integration source/CI 오라클/거래 안전/main/예약 무변경; 지팀장 자체 pytest NOT_RUN, 기존 normal/-O exit 기록만 인수.
+- **배정 운영:** A RF-033→034→032→065→063, B RF-031→070→066→071→016→014 순으로 **시간 상한 없이** 신규 안전 경계만 연속 수행. 앞 작업이 HOLD이면 명확한 해제 조건을 남기고 다음 RF 즉시 착수. 동일 경계 재검증 불허.
+
+
 ## 지팀장 신규 증거 인수·물리 큐 판정 (2026-10-26, integration 기준 b5fe3dd9)
 - **A/B 신규:** A HEAD `992acf6e`는 HANDOFF-only; RF-031 22/22 BASE 동일, 13 frozen-owner HOLD + 9 FIX 근거 없음, BASE와 동일 56 FAIL/3696 PASS normal/-O. A RF-063 최초 read-only audit CLI 2개 BASE/integration normal/-O byte-identical exit 0, 나머지 위험 CLI HOLD. B HEAD `9f39745c` HANDOFF-only; RF-029 최초 offline fake-artifact peer normal/-O exit 0(4 precedence/3 invalid/1 exception/3 read-failsoft). 신규 A/B source SHA 0.
 - **RF-001:** B가 `integration@b5fe3dd917cd70318d5bd5248aee1a6c2bf5fa1e` detached checkout에서 3개 필수 표적 테스트 정상/-O 각 **706+28+53=787 PASS, exit 0**, owner blob core `0666538f`·monitor-notes `4f73570f` 확인. 이 SHA의 scoped exact-SHA gate 해소. 33-owner 전수/hosted CI·새 문서 HEAD exact-SHA 미입증이므로 **LEAD / NOT_DONE**.
