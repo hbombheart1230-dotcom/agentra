@@ -304,3 +304,15 @@
 - 남은 미검증: RF-034 `scanner_diagnostics`·`cohorts` 나머지, RF-029 `read_truth_projection.py` 외부 root, RF-032 나머지 write owner. RF-030 = 승인 대기.
 - 다음: A 신규 CURRENT 배정/B 소스 SHA 대기.
 - PUSH_VERIFIED: push 후 확인.
+
+---
+## 추가 회차 — CURRENT(`aac4154c`) A P1 RF-029 `build_trade_story_input` facade→bundle 조립 경계
+
+- RUN_ID: 2026-10-26T1719Z-claude-a-sched-123 · A 시작 `04590c0f` · integration `d6567906` · B `8fe36a3d`(docs-only) · **A 소스 코드 변경 없음(NO_CHANGE)**; `trade_story_pipeline.py`·`trade_story_pipeline_story_assembly.py`·`trade_story_facade_r3_parts/bodies_01.py`·`trade_story_human_parts/*` blob이 BASE `63182ab2`와 동일. 하네스 `evidence/run103_boundary_scripts/rf029_build_story_input_peer.py`(저장소 루트, `PYTHONPATH=.`, tmp-only, 네트워크·subprocess·sqlite·쓰기 차단).
+- 실행: `.venv/bin/python rf029_build_story_input_peer.py` 및 `python -O` × integration/BASE 4조합 모두 **exit 0**, marker `RF029_BUILD_STORY_INPUT_OK variants=12 exc=5 alias_shared=0 idempotent=True impl_parity=True mutation=none`, 4개 출력 바이트 동일(152,425 B, 시각 필드 redact 후).
+- 확인: 풍부한 bundle_out(market/scanner/monitor/guard/outcome/reporter/conclusion human payload + 4개 summary + `canonical_agent_artifacts` + `evidence_provenance`)로 schema `trade_story_input.v1`, reasoning_trace/provenance 키 구성, 멱등, facade 결과 == `story_assembly.build_trade_story_input(..., deps=_story_assembly_deps())`, 입력 bundle 불변, 출력 키별 State alias 비공유(`alias_shared=0`), open(HOLD) vs closed(SELL) lifecycle은 `action/status/entry_summary/exit_summary/execution_outcome_human/operator_conclusion_human/report_section_seeds/strategist_feedback_input` 8키 차이, lifecycle `None`/`{}`/str은 빈 lifecycle로 정상 처리, 빈 bundle은 정상.
+- 예외(관찰, 변경 안 함): bundle `None`/list/str → `AttributeError`(`.get`), 중첩 human payload가 비-mapping일 때 `ValueError`(dict 변환), summary가 int일 때 `TypeError`.
+- 판정: **PEER_PASS_SCOPED**(A 원개발자 최초 검증), BASE/integration 차이 0, FIX 불필요, DONE 아님. B 독립 peer 입력: 위 blob + 하네스 경로 + normal/`-O` exit 0 marker. NOT_RUN: 실데이터·hosted CI·전체 repo 테스트.
+- 남은 미검증: RF-029 `read_truth_projection.py` 외부 root, RF-032 나머지 write owner, RF-034 `scanner_diagnostics`/`cohorts`, RF-028 `main_renderer` 잔여 분기. RF-030 = 승인 대기(후보 `03b255e5`·day-loader patch 미사용).
+- 다음: 신규 CURRENT 배정/B 소스 SHA 대기.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
