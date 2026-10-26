@@ -1,3 +1,5 @@
+**지팀장 추가 실물 RF 이동 — 2026-10-26 22시 KST:** A/B 신규 독립 peer를 인수해 RF-050을 `03_PEER_REVIEW/CODEX_B → 04_LEAD_ACCEPTANCE/FROM_CLAUDE_A` **원자적 tree commit `fb6da83186978e12155955d18ce9099971608b44`**으로 이동. 구 경로 삭제·신 경로 blob `9f967046`·원격 ref 비강제 expected-SHA 갱신 성공 확인. B `RF050_ROUTER_CLIENT_PEER_OK` normal/-O exit0 범위 한정 수용, A의 policy/client/store owner 증거와 결합하되 external/dynamic/actual caller exception·State, catalog writer, 필수 CI 범위는 아직 미충족. **RF-050 KEEP_SCOPED / B_PEER_ACCEPTED_SCOPED / LEAD_HOLD / NOT_DONE**. 이번 슬롯 **LEAD 시작 14 / 신규 유입 1 / 직접 판정 15 / 신규 DONE 0 / REWORK 0 / 잔여 15**. 원격 93개 고유·단일 물리 경로, PENDING61/DEVELOPING3/PEER1/LEAD15/DONE13. 새 소스 통합 0, queue move 1. 기존 14건 직접 판정은 아래 유지.
+
 ## 지팀장 A 슬롯 — 신규 직접 코드 경계 실행 및 LEAD 14건 전수 판정 (2026-10-26 22시 KST)
 
 - **시작 기준:** integration `6e053f46`, A `bcb0fd62` (run114 신규 독립 증거 3건), B `2c866400` (RF-029 exact commit fetch 실패; RF-050 peer PASS_SCOPED, RF-015 contracts peer PASS_SCOPED, RF-070/066/071 위험 launcher 정적 PASS). Issue #32 최신 read-only: SELL `0020349` provenance UNKNOWN, BUY guard stale, OCI source SHA 미입증; 코드 REWORK 단정 금지.
