@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "generated_for": "Agentra",
-  "entry_count": 358,
+  "entry_count": 359,
   "entries": [
     {
       "date": "2026-10-20",
@@ -9453,6 +9453,27 @@
       "sources": [
         "apps/operator_ui/data_access_brief.py",
         "apps/operator_ui/data_access_brief_sanitation.py"
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "version": "P15_RF001_STRATEGIST_BRIEF_OWNER_20261026",
+      "title": "Delegate strategist brief labels to the existing monitor-notes owner",
+      "stage": "GPT scoped selective integration of two owner files; exact integration SHA normal/-O verification pending",
+      "types": [
+        "REFACTOR"
+      ],
+      "status": "current",
+      "summary": "Keep data_access_core public helpers while moving strategist risk-tone and monitor-guidance derivation into the existing pure brief monitor-notes owner.",
+      "details": [
+        "The core wrappers retain their names and dynamically pass the facade module at use time, preserving monkeypatch resolution and the public data-access import surface.",
+        "The pure owner resolves risk_tone before risk_mode and trims monitor_guidance exactly as before; it performs no file, cache, LLM, broker, scheduling or trading operation.",
+        "B isolated candidate 734/734 normal/-O and UI 53/53 normal/-O passed; A independent isolated peer 734/734 and 17 differential cases passed. Post-admission exact integration SHA test remains NOT_RUN."
+      ],
+      "impact": "Internal pure-owner responsibility split only; no UI route, artifact persistence, LLM fallback, cache key or trading authority change.",
+      "sources": [
+        "apps/operator_ui/data_access_core.py",
+        "apps/operator_ui/data_access_brief_monitor_notes.py"
       ]
     }
   ]
