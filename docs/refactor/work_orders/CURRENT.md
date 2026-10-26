@@ -2,6 +2,13 @@
 
 **유일한 지시 정본:** `hbombheart1230-dotcom/agentra` / `integration/p1.5`의 이 CURRENT. **실행 정책:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md). **RF 실물:** [queue](../plan/queue/). **집계:** [STATUS](../plan/STATUS.md). A/B 자신의 브랜치 CURRENT, 구 HANDOFF, Issue #11/#12 댓글은 작업 배정 정본이 아니다. 필요한 D00와 현재 배정 RF만 읽고 바로 실행한다.
 
+## 지팀장 실행 갱신 — RF-069 실물 판정 반영 (2026-10-26)
+
+- **완료한 GitHub 조치:** RF-069 LEAD 원본에 단일 환경 차단, 해제권자, A/B 최초 신규 경계, 지팀장 종료 판정을 기록했다. 커밋 `63f60872cee553abfce6d8639e4d59da72f18a4e`. 물리 단계 LEAD 유지, DONE 이동 0.
+- **B / P0 / RF-069:** 승인된 historical offline snapshot의 경로·SHA·사용 범위가 제공되기 전 `scripts/build_uef5_clean_evidence_coverage.py` 실행·fixture 생성·오라클 변경 금지. 승인 후 `python <격리 UEF5 검증 스크립트>` 및 `python -O <동일 스크립트>`의 실제 명령·exit·SOURCE_SHA·snapshot SHA·side-effect 0 제출. 승인 전에는 RF-070의 남은 22 OTHER 정적 분류를 먼저 진행한다.
+- **A / P0 / RF-069:** B의 승인 snapshot 신규 실행 증거가 도착한 경우에만 동일 historical UEF5 경계의 독립 read-only peer normal/-O 실행. 그전에는 RF-033 capture 합성 tmp/no-fetch 신규 경계, 막히면 RF-032 tmp-only writer 경계 수행.
+- **지팀장:** RF-069은 hosted CI 일괄 강제하지 않는다(D03). 승인 snapshot·B normal/-O·A 독립 peer·정확 integration SHA를 확인한 뒤 직접 DONE 여부 판정한다. 나머지 LEAD 12건은 현재 HOLD이며, 누락 게이트 해소 전 DONE 이동 금지. RF-001의 기존 787×2 PASS 재실행 금지.
+
 ## 공통 실행 계약
 
 지팀장은 A/B 새 source SHA·독립 peer·[런검증 #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) 증거를 먼저 인수한다. 기존 유효 normal/-O/peer와 같은 SHA·경계는 반복하지 않는다. 신규 코드 diff가 있으면 owner·동결/안전/소비자·patchnotes·독립 peer를 확인한 뒤 허용 파일만 선별 통합하고 정확한 integration SHA 테스트/hosted CI를 판정한다. 신규 코드가 없으면 기존 RF의 실제 판정·물리 큐/STATUS 조치를 직접 수행한다. 판정을 A/B에 재위임하거나 ACK/HANDOFF만 쓰고 종료하지 않는다. 부분 PASS, BLOCKED, NOT_RUN은 DONE이 아니다.
