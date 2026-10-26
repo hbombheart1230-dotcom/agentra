@@ -16,11 +16,19 @@
 
 ## 지팀장 P0 — LEAD_ACCEPTANCE 병목 직접 소진 (2026-10-26)
 
-**담당: 지팀장 / 신규 A·B 배정보다 우선.** 물리 `04_LEAD_ACCEPTANCE` 8건 전수 경로와 SHA를 열거해 기존 원개발·독립 peer·normal/-O·소비자/IO/State·예외·exact integration SHA·CI 증거로 **각각 직접** ACCEPT/DONE, HOLD, REWORK 판정하라. A/B에게 최종 판정을 재위임하지 않는다. 재검증은 새로운 위험 경계에만 허용한다. KEEP_NOOP도 전체 owner·공개 소비자·CI 게이트 충족 시 DONE 가능하며, 부분 PASS·NOT_RUN은 DONE 금지. 최종 통과 건은 `05_DONE`으로 단일 물리 경로 이동하고 STATUS를 동기화하라. 이동 후 93 RF 고유 ID/누락/중복 0 및 정확한 integration SHA 확인. 막힌 건은 누락 게이트와 해제 조건을 RF별 기록하고 즉시 다음 LEAD RF 판정으로 전환하라.
+**담당: 지팀장 / 신규 A·B 배정보다 우선.** 물리 `04_LEAD_ACCEPTANCE` 12건 전수 경로와 SHA를 열거해 기존 원개발·독립 peer·normal/-O·소비자/IO/State·예외·exact integration SHA·CI 증거로 **각각 직접** ACCEPT/DONE, HOLD, REWORK 판정하라. A/B에게 최종 판정을 재위임하지 않는다. 재검증은 새로운 위험 경계에만 허용한다. KEEP_NOOP도 전체 owner·공개 소비자·CI 게이트 충족 시 DONE 가능하며, 부분 PASS·NOT_RUN은 DONE 금지. 최종 통과 건은 `05_DONE`으로 단일 물리 경로 이동하고 STATUS를 동기화하라. 이동 후 93 RF 고유 ID/누락/중복 0 및 정확한 integration SHA 확인. 막힌 건은 누락 게이트와 해제 조건을 RF별 기록하고 즉시 다음 LEAD RF 판정으로 전환하라.
 
 **기존 확인된 HOLD:** RF-008 standalone/외부 read-only fail-soft 및 BASE 기존 FAIL, RF-028 85-owner 소비자/효과, RF-029 38-owner 소비자/CI, RF-063 진단 CLI 효과/locale, RF-065 연구 CLI 효과/locale, RF-067 14-owner Windows PATH·Scheduler/preflight. RF-001의 과거 exact `b5fe3dd9` 787×2 PASS는 재실행하지 않되 현행 SHA/hosted CI 범위를 구별한다. 남은 LEAD 경로도 전수 확인한다. #32 SELL provenance·BUY guard·reconciliation/Operator GREEN·image SHA는 런환경/미확정 후보로만 보존하고 안전 계약/배포/REWORK 무승인 변경 금지.
 
 **회차 종료조건:** 실제 RF 판정 및 가능한 물리 이동·선별 통합 먼저, open/closed troubleshooting의 종료 증거 확인, STATUS 변경 시 갱신, A/B 신규 안전 경계 재배정, CURRENT **마지막 갱신**. 이동·통합 0이면 그 원인과 해제 조건을 명시하고 EXECUTION_INCOMPLETE 보고. 기존 valid normal/-O·peer 재실행 금지.
+
+## 지팀장 B 슬롯 최신 결정 — 4 RF peer 수용 후 LEAD 12건 (2026-10-26)
+
+**완료:** B Issue #12 RUN B-20261026T093354Z의 RF-031 fake timeout/exception, RF-033 malformed summary/Q9 no-fetch, RF-034 truthy/stage2, RF-032 malformed time/tmp inventory 독립 normal/-O exit 0을 지팀장이 직접 PEER_SCOPED_ACCEPTED 판정. **RF-031/033/034/032를 `03_PEER_REVIEW/CODEX_B` → `04_LEAD_ACCEPTANCE/FROM_CLAUDE_A` 물리 이동**하고 이전 파일 4건 부재 확인. 4건 전부 KEEP_NOOP_CANDIDATE/NOT_DONE. 소스 통합 0, DONE 0. **큐:** PENDING 62 / DEVELOPING 3 / PEER 5 / LEAD 12 / REWORK 0 / DONE 11 = 93(전체 경로 전수 NOT_RUN). STATUS 갱신 완료. RF-030 frozen FAIL 후보 통합 금지.
+
+**지팀장 다음 P0:** LEAD 12건 각각 기존 SOURCE_SHA/독립 peer/소비자·IO·예외/normal·-O/exact integration SHA·hosted CI 완료 여부를 직접 분류하고, 충분한 증거를 가진 RF만 DONE으로 물리 이동. 현재 RF-031/032/033/034는 신규 독립 scoped peer는 충족했지만 전체 owner 효과·hosted CI 미충족이므로 HOLD; 기존 marker 반복 금지. 기존 8 LEAD도 누락 게이트별 판정하라. 전체 93 물리 경로 중복·누락 0은 아직 NOT_RUN이므로 반드시 검사. Issue #32 미확정 SELL provenance·stale guard·GREEN/reconciliation mismatch 및 OCI SHA는 CODE REWORK 단정 금지. open/closed troubleshooting 현행 listing API 오류로 전수 NOT_RUN, 기존 open4/closed0의 해결 증거 없음·이동 없음.
+
+**A 즉시 실행:** RF-033 `point_in_time_capture.py::merge_capture_into_signal_payload` 합성 tmp·no-fetch 최초 경계 `python /tmp/rf033_capture_owner.py` / `python -O /tmp/rf033_capture_owner.py` exit/marker/SOURCE_SHA 제출, 위험 시 RF-032 `evaluation/pipeline.py::_write_json/_write_text` AST+tmp-only 효과 경계로 이동. **B 즉시 실행:** 기존 RF-031/033/034/032 peer marker 재실행 금지. RF-070 25 OTHER 정적 분류를 파일별 ACTIVE/COMPAT/SAFETY_HOLD로 마무리하되 실제 main/bind/scheduler 실행 금지, `python /tmp/rf070_static_dispositions.py` / `python -O /tmp/rf070_static_dispositions.py` 최초 미검증 경계만 marker/exit 제출. 막히면 RF-066 17 owner 중 최초 안전 fake parser 경계로 전환. A/B는 RF 최종 판정/큐 이동을 하지 않는다.
 
 ## Claude A — `work/p15-a-reporter-pure-20261021`
 
@@ -66,7 +74,7 @@
 
 **런검증 #32:** broker SELL 원인 UNKNOWN, local/broker mismatch, stale BUY guard, image source SHA 미입증은 환경·미확정 코드 후보. 원인 재현 전 코드 REWORK·거래 안전 수정·운영 재배포 금지. `troubleshooting/open` 4건은 종료조건 미충족, `closed` 0건.
 
-**물리 큐(이동 후):** PENDING 62 / DEVELOPING 3 / PEER_REVIEW 9 / LEAD_ACCEPTANCE 8 / REWORK 0 / DONE 11 = 93. 부분 PASS·NOT_RUN ≠ DONE. 지팀장 자체 latest integration exact-SHA hosted CI NOT_RUN.
+**과거 회차 물리 큐(역사값):** PENDING 62 / DEVELOPING 3 / PEER_REVIEW 9 / LEAD_ACCEPTANCE 8 / REWORK 0 / DONE 11 = 93. 현행 값은 위 최신 결정 참조. 부분 PASS·NOT_RUN ≠ DONE. 지팀장 자체 latest integration exact-SHA hosted CI NOT_RUN.
 
 **승인 문서 반영(2026-10-26):** D00 §3A + RF-050/031/070/090 퇴역 게이트를 사용자 승인에 따라 문서로만 반영. SOURCE 삭제/선별 통합 0, 보호 계약·CI·예약·운영 모델 변경 0. 기존 RF 93개와 11 DONE, 신규 A/B 증거 인수 및 RF 기존 우선순위는 유지한다. RF-050/090은 PENDING, RF-031 peer 및 RF-070 기존 개발이 우선. **지팀장 다음 실제 행동:** A/B 신규 diff·런검증을 먼저 판정 → 신규 안전한 RF 검증·통합 → RF-070 최초 퇴역 소비자 근거 인수 → A의 기존 RF 우선 범위 소진 시 RF-050을 물리 큐 이동해 최초 LLM 후보 분류 배정 → SOURCE 삭제는 개별 사용자 승인·독립 peer·정확 통합 SHA CI 확인 후에만. CURRENT 갱신은 이번 문서 커밋의 마지막 작성 대상으로 둔다.
 
