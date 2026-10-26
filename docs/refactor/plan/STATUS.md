@@ -1,6 +1,6 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 14:33 KST, 물리 큐 93개 파일 직접 계수): PENDING 68 / DEVELOPING 3 / PEER_REVIEW 9 / LEAD_ACCEPTANCE 2 / REWORK 0 / DONE 11** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 14:33 KST, 물리 큐 93개 파일 직접 계수): PENDING 68 / DEVELOPING 3 / PEER_REVIEW 9 / LEAD_ACCEPTANCE 2 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
 ## 최종 RF-019 KEEP_NOOP 종결 (2026-10-26 14시 KST)
 - **RF-019 verification→DONE:** Scanner 29/29 owner BASE↔integration `9db712b9` source·tests diff 0. A 29 KEEP/FIX0, 99.7% owner coverage·외부 IO 0·normal/-O scoped; B 독립 evidence/guard/practical/overlay/build normal/-O scoped peer 5+3+2+2+4 exit 0. 이전 p171 2 FAIL은 A RF-013 원복·B peer로 CLOSED. 4문장 미실행은 기존 BASE 동일 복합 인자 경계이며 신규 회귀 아님. **KEEP_NOOP_VERIFIED**, 선별 소스 통합 0, 지팀장 직접 pytest NOT_RUN. 큐 **69 pending / 13 verification / 0 rework / 11 DONE**. A 개발 RF-028→029 유지.
