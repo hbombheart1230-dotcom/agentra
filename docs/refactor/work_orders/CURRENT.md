@@ -8,7 +8,7 @@
 
 ## A Claude — Reporter · [HANDOFF_A (작업 브랜치)](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md)
 1. **[RF-013](../plan/verification/claude/RF-013.md) — 즉시 진행:** 67 owner KEEP, coverage 92%. 잔여 `strategy_read_model_bodies_01`(71%), `pipeline_trace_bodies_01`(81%), `post_exit_recap_bodies_01`(81%), `entry_blocker_bodies_01`(84%)의 **실제 미검증 소비자/폴백 위험**을 격리 fake normal/-O로 검증. 결함 확인 시 owner 범위 최소 FIX→검증. 단순 숫자 채우기·실제 `KiwoomOrderFillReader.from_env` 호출·미승인 9+4 경로·오라클 수정 금지.
-2. **RF-019 → RF-017 → [RF-018](../plan/verification/claude/RF-018.md):** 각 RF의 기존 증거를 재사용해 남은 인수조건·소비자 위험을 처리. RF-018은 JSON 실패 fallback 잠재 3건을 동일 BASE 입력으로 재현하고 공개 소비자·안전 영향 판별; 승인 없는 안전 계약 FIX 금지. RF-019/017의 **현재 큐 파일 경로는 STATUS/큐에서 확인**(기존 verification/claude 경로 404이므로 링크를 추정하지 않음).
+2. **[RF-019](../plan/pending/RF-019.md) → [RF-017](../plan/pending/RF-017.md) → [RF-018](../plan/verification/claude/RF-018.md):** 각 RF의 기존 증거를 재사용해 남은 인수조건·소비자 위험을 처리. RF-018은 JSON 실패 fallback 잠재 3건을 동일 BASE 입력으로 재현하고 공개 소비자·안전 영향 판별; 승인 없는 안전 계약 FIX 금지. RF-019·RF-017은 현재 pending 큐에 있으며, 기존 증거가 있더라도 지팀장 판정 전 DONE으로 간주하지 않는다.
 3. **[RF-001](../plan/verification/codex/RF-001.md) peer:** 격리 `cdc3599f` 독립 734×2 PASS 수용 완료. 동일 조합 재검증 금지; 신규 코드 SHA/새 위험이 있을 때만 peer.
 
 ## B Codex — Operator/Monitor · [HANDOFF_B (작업 브랜치)](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md)
