@@ -44,6 +44,8 @@
 
 **런검증 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) EOD:** broker BUY/SELL filled 증거 수용, broker 2 vs local 1 mismatch·SELL origin UNKNOWN·BUY guard stale·Reporter trade_index empty·metrics stale·running image SHA 미입증. RUNTIME_ENV/UNKNOWN 관측으로 보존, 소유 코드 재현 전 REWORK 금지. RUNLAB 환경·예약은 RunLab 담당, 지팀장 무승인 변경 금지.
 
+**런검증팀 지시 정본:** PC Codex/Claude 런검증 담당은 매 회차 [런검증 CURRENT](../../runtime/validation/CURRENT.md)를 `integration/p1.5`에서 **먼저 읽고**, 연결된 R00·Issue #32를 따라라. A/B 개발자는 위의 개발 CURRENT/RF를 계속 따른다. 두 팀의 CURRENT를 서로 대체하지 마라. `RUN_SOURCE_SHA`(증명된 실행 이미지 소스)와 `REMOTE_HEAD`(계속 이동하는 개발 HEAD)는 일치할 필요가 없다. **불일치 자체는 정상**, 실행 이미지의 SHA 미귀속만 버전별 실런 PASS `BLOCKED/UNKNOWN`으로 표시한다. 건강/시장/공식 브로커 체결 관측은 별도 판정하고, 새 HEAD에 맞춘 무승인 재빌드·재시작·State 변경·예약 설치를 지시하지 마라. 런검증팀은 증거·환경 제안, 지팀장은 CODE 재현을 RF에 연결하는 소유권을 유지한다.
+
 **troubleshooting:** [open](../plan/troubleshooting/open/) 4건 / [closed](../plan/troubleshooting/closed/) 0건 확인, 해결조건 증명 없음→이동 0. STATUS는 이번 RF 이동에 맞춰 갱신. A/B 기존 normal/-O·peer 반복 금지. 새로운 owner source SHA·독립 peer·frozen 오라클·patchnotes·exact integration SHA/CI가 모두 충족되는 최소 코드만 지팀장이 직접 선별 통합. RF-001/029/031 부분 PASS를 DONE으로 승격하지 마라.
 
 **다음 지팀장 실행:** ① 이 integration CURRENT만 읽고 A/B 새 HANDOFF·source diff·Issue #32 확인 ② 신규 CODE/BASELINE/ENV/SAFETY/UNKNOWN 분류 ③ 이미 충족된 RF는 직접 KEEP/FIX/PEER/INTEGRATE/HOLD 판정·원자 큐 이동 ④ 허용 owner blob만 선별 통합 및 exact-SHA normal/-O 증거 인수 ⑤ troubleshooting open/closed 종료조건 확인, STATUS 정합화 ⑥ A/B 구체적 다음 RF 배정 ⑦ **CURRENT를 마지막에 갱신**. 실행 가능한 지팀장 RF가 있으면 보고만 하고 종료하지 마라. main·실거래·Broker/Supervisor/Executor/Step5C/UEF·동결 테스트/CI·예약 무승인 변경 금지.
