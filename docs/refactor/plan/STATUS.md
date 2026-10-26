@@ -1,3 +1,17 @@
+## 지팀장 A 슬롯 — 2026-10-27 03시 KST / RF-067 신규 직접 14-root-wrapper 검증
+
+**실물·판정:** 시작 LEAD **14** / 신규 유입 **0** / 직접 판정 **14** / 신규 DONE **0** / REWORK **0** / 잔여 LEAD **14**. 원격 `queue` 13개 폴더 재조회: PENDING 61 / DEVELOPING 3 / PEER 1 / LEAD 14 / DONE 14 / REWORK 0 = **RF 93 unique, 중복·누락 0**. 큐 실물 이동 **0**, 신규 운영 source 선별 통합 **0**, **EXECUTION_INCOMPLETE**.
+
+- **신규 A/B:** A `5f96ed9b` 및 B `8fe36a3d` 각 HEAD 이전 인수 기준과 **동일(커밋 delta 0)**. 신규 운영 소스·독립 peer 0. Issue #32 마지막 10/26 19시 독립 리뷰 이후 신규 댓글 0; SELL `0020349` broker/local provenance, BUY guard stale, OCI SOURCE_SHA UNKNOWN → `SAFETY_HOLD`, 신규 원개발 REWORK 아님.
+- **지팀장 신규 실제 검증 RF-067:** 14개 공개 `scripts/check_*.py` owner GitHub 원문/각 blob을 직접 확인, 전부 `scripts.diagnostics.check_*`로 위임하는 COMPAT/ACTIVE_PUBLIC_CLI wrapper. **기존 A 2-wrapper peer와 다른 신규 14개 exact-blob** synthetic test: 3개 `normal 16/16` + `-O 16/16`, 나머지 11개 `normal 56/56` + `-O 56/56`, 모두 **exit 0**, 최종 14 wrapper/normal **72 PASS**, -O **72 PASS**, FAIL 0. 각 source SHA 일치, `sys.modules` alias/PATH 중복 방지/CLI 위임/예외 전파, outside writes/network/broker 0. 실제 diagnostics target/Windows Task Scheduler/운영 root **NOT_RUN**. 정확 실행본과 원격 blob 동일한 하네스 `lead_rf067_wrapper3.py` blob `8d1478bf` (commit `88816d58`) + `lead_rf067_wrapper11.py` blob `4a1b9324` (commit `09862407`), RF 판정 commit `0c39ce4a`. Python -O에서 assert 생략을 피하도록 검증은 `check()` 사용. **RF-067 KEEP_WRAPPER_ONLY / NOT_DONE**, 다른 14 delegated target의 실제 효과와 Windows 소비자는 남음.
+- **14 LEAD 직접 게이트 판정 (전부 HOLD/NOT_DONE, 이전 유효 동일 SHA 증거 재사용):** RF-014 Scanner dynamic rank/NOOP B peer; 015 Monitor 역사 11 BASE FAIL node·State; 016 news→strategic_answers B peer; 028 main_renderer 정식 rich schema 독립 효과; 029 B story assembly/external-root peer; 031 B Reporter 8 writer/day-cache/partial OSError; 032 B 신규 writer 독립·UEF 보호; 033 B worker→publish/capture peer 및 Windows 동시성; 034 B casebook→scanner peer·cohorts; 050 B Operator primary→repair→line fake/LLM cache; 063 diagnostics 실제 쓰기 CLI·locale; 065 research CLI·scheduler; **067 wrapper 14개 해소, delegated diagnostics target/Windows/외부 CLI**; 069 UEF5 승인 historical snapshot 부재 `ENV_BLOCKED`. **새 CODE REWORK 증거 0**, 새 source 통합 대상 0. 인수조건 충족 DONE 후보 0.
+- **정확 CI:** hosted Safety `40332899631@0da98a47` normal/-O 2 jobs SUCCESS, Web `40073316192@1374d371` web SUCCESS 재조회. `0da98a47→integration` Git compare의 변경 파일은 docs/evidence뿐(운영 `apps/graphs/libs/scripts/tests/.github` diff 0). 성공 당시의 해당 source/test/workflow 범위에만 CI 재사용. **이번 신규 hosted·전체 repo 회귀·실제 broker/diagnostics CLI NOT_RUN**.
+- **Troubleshooting 실물:** `open/` 4건(LOCAL_EXIT, RF020_SCOPE, SOURCE_ADMISSION, RF012_FINITE), `closed/` 1건(DOC_CI) 각 파일 확인. 새 해제 조건 충족 **0**, 이동 0. RF-012 비유한 가격 및 Issue #32 주문 관측은 BASE/안전 경계로 분리, 무승인 수정 금지.
+
+**다음 최초 행동:** Codex B는 RF-031 **새 독립** helper graph→8 writer/day cache/OSError tmp-only normal/-O부터 수행; RF-067은 14개 wrapper fake 재실행하지 않고 delegated `scripts/diagnostics/check_*.py` 실제 효과·CLI/Windows 소비자 AST 분류 후 첫 안전 target만 fake 검증. Claude A는 RF-028 정식 carryover/same-day rich main_renderer 최초 경계부터 수행. 최종 DONE/REWORK/선별 통합은 지팀장 직접 판정. `main`·실거래·안전 계약·동결 테스트/CI·예약·운영 데이터 변경 0.
+
+---
+
 ## 지팀장 B 슬롯 — 2026-10-27 신규 A run122/123 인수 + RF-034 실제 신규 19×2 실행
 
 **물리 집계/판정:** LEAD 시작 **14**, 신규 유입 **0**, 지팀장 직접 RF 실물 판정 **14**, 신규 DONE **0**, REWORK **0**, 잔여 **14**. PENDING **61** / DEVELOPING **3** / PEER **1** / LEAD **14** / DONE **14** / REWORK **0** = **93 unique** (기존 전수 및 이번 LEAD 실물 확인; 이번 큐 이동 0). 신규 운영 source/선별 통합 0. **EXECUTION_INCOMPLETE**; 부분 검증을 DONE으로 기록하지 않는다.
