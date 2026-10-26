@@ -8,7 +8,7 @@
 
 **POLICY_REREAD_REQUIRED (A/B):** 원격 D03 [현재 `d281c4dd`](D03_DEV_TEAM_RULES.md) (A 최종 수신 `4fe849a8` / run 98, B 최종 `471d7ab3` / run `B-20261026T0410Z`; 신규 `d281c4dd` 양쪽 미수신), 역할 정본 [D01 `b1865860`](../../../AGENTS.md) / [D02 `82396714`](../../../CLAUDE.md)도 이전 HANDOFF 이후 변경. A/B는 다음 실행 CURRENT·자기 역할 정본 전문 및 변경 D03 전문을 재독하고 시작/종료 SHA·실제 적용을 HANDOFF에 증명. A의 `4fe849a8` 수신은 직전 유효 증거이나 신규 `d281c4dd` 및 D05 `0b877de8` 수신·적용 완료는 아님. B `B-20261026T0410Z` RF-066 scoped 실행 수용, 정책·후속 착수는 `CONTINUATION_UNVERIFIED`. 수신·적용 확인 후 지팀장이 임시 항목 삭제.
 
-## A Claude — 신규 개발만 ([HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md))
+## A Claude — RF-029 owner KEEP 증거 제출 완료, 미충족 소비자 계약만 진행 ([HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md))
 1. **[RF-028](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-028.md) — A KEEP 제출, B 최초 peer 대기:** 85/85 BASE↔A↔B↔integration blob 동일, A run 97/98 owner KEEP/FIX0·trade_summary fake LLM normal/-O scoped 수용. 지팀장 15시 `DEVELOPING→PEER_REVIEW/CODEX_B` 원자 이동. A 재개발 금지(새 결함 SHA 제외), B는 RF-001 exact SHA 게이트 후 미검증 동적 소비자/IO/State 위험만 독립 검증. NOT_DONE.
 2. **[RF-029](../plan/queue/01_PENDING/CLAUDE_A/RF-029.md) — A 지금 개발:** `trade_story/**`·`trade_read_model_parts/**` 독점 38 owner. 안전한 pure 책임 분리/소비자 검증, 필요 시 최소 FIX→B peer. RF-028 한 조각의 PASS·HANDOFF만으로 종료하지 말 것.
 **개발 큐에서 제거:** RF-013·RF-017·RF-019 **DONE**. 새 결함 SHA에 대한 명시 REWORK가 아니면 재착수 금지.
