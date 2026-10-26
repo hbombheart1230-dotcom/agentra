@@ -30,7 +30,7 @@
 - 대상 팀 전부가 해당 SHA를 읽고 적용(또는 구체적 안전 이월)한 사실을 지팀장이 확인한 뒤 CURRENT의 임시 항목을 직접 제거한다. 제거 자체는 코드 진척이나 RF DONE이 아니다. 지팀장 실행에서 이를 누락하면 정책 배포는 미완료다.
 
 ## 3. RF 판정·검증·통합
-- RF 큐는 pending → verification/{claude|codex} ↔ rework/{claude|codex} → done. REWORK 원인이 해결되면 해당 실패를 종결하고, RF 전체 인수조건과 통합 SHA 검증도 충족되면 같은 회차 DONE으로 이동한다. 폴더는 원개발자 기준이며 지팀장만 이동·DONE 판정한다. 이전 파일, 새 파일, CURRENT 링크, STATUS 집계를 함께 점검하고 일부 실패 시 이동 미완료로 기록한다.
+- RF 큐는 [D05](D05_RF_PHYSICAL_QUEUE_20261026.md)의 `01_PENDING → 02_DEVELOPING → 03_PEER_REVIEW → 04_LEAD_ACCEPTANCE → 05_DONE`(재현 결함만 `06_REWORK`) 물리 경로를 따른다. `03_PEER_REVIEW` 하위 폴더는 독립 검증팀, `04_LEAD_ACCEPTANCE/FROM_*`는 원개발팀 출처를 뜻한다. REWORK 원인이 해결되면 해당 실패를 종결하고, RF 전체 인수조건과 통합 SHA 검증도 충족되면 같은 회차 DONE으로 이동한다. 지팀장만 이동·DONE 판정한다. 이전 파일, 새 파일, CURRENT 링크, STATUS 집계를 함께 점검하고 일부 실패 시 이동 미완료로 기록한다.
 - REWORK는 원개발자 소유의 재현된 코드 결함 또는 구체적 계약 미충족에 한정한다. BASE·후보 코드 SHA, 실패 node, 소유자, 허용 경로, FIX/KEEP 조건, 다음 peer를 해당 RF에 기록한다. 기존 BASE 실패, 환경, 타 RF 소유권, 안전 HOLD는 별도 차단으로 분류한다.
 - 자체 PASS와 독립 peer PASS를 구별한다. 기존 유효 normal/-O·peer 증거를 재사용하고 새 코드 SHA 또는 최초 미검증 격리 조합의 새 위험만 상대 read-only peer가 확인한다. PASS_SCOPED는 전체 PASS가 아니다. 추가 검증 요구에는 구체적인 실패·미충족 계약 근거가 필요하다.
 - 전체 인수조건·peer PASS·소유권 승인 후 지팀장은 소유 경로만 integration/p1.5 최신 HEAD에 선별 통합한다. 통합된 정확한 SHA의 필수 normal/-O PASS 후 DONE. KEEP만으로 DONE 아님. 지팀장 수정도 독립 peer 필수.
