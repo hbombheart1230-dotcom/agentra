@@ -1,5 +1,7 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
+**운영 현황 (2026-10-26):** [troubleshooting/open](troubleshooting/open/) 4건 / [closed](troubleshooting/closed/) 0건. 런검증 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) → 지팀장 판정 → 코드 결함만 RF 연결; 변경 시 이 STATUS 반영.
+
 **기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 16:42 KST, 물리 큐 93개 단일 경로): PENDING 66 / DEVELOPING 3 / PEER_REVIEW 10 / LEAD_ACCEPTANCE 3 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
 ## 지팀장 B 실행 — RF-008 독립 peer 인수·RF-030 실코드 HOLD (2026-10-26 16:42 KST)

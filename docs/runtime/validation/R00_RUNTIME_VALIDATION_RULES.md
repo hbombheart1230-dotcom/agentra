@@ -35,6 +35,8 @@
 
 ## 4. 개발팀 인계
 
+**트러블슈팅·STATUS:** 런검증팀은 Issue #32에 신규 증거만 남긴다. 지팀장이 예약 회차마다 [troubleshooting/open](../../refactor/plan/troubleshooting/open/)·[closed](../../refactor/plan/troubleshooting/closed/)를 정리하고 RF·[STATUS](../../refactor/plan/STATUS.md)의 실제 변경만 갱신한다.
+
 런검증팀은 **관측·증거·개선 제안**까지만 한다. RF 생성·판정·큐 이동·Git 통합 금지.
 
 - 안전·중대 이상은 즉시 Issue #32로 알리고 지팀장에게 전달한다.

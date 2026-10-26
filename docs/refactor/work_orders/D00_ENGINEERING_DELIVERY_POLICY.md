@@ -42,6 +42,8 @@
 
 ## 4. 트러블슈팅
 
+**장애·STATUS:** 미해결은 [troubleshooting/open](../plan/troubleshooting/open/), 해결 건은 [troubleshooting/closed](../plan/troubleshooting/closed/)에 정리한다. 지팀장은 예약 회차마다 A/B·[런검증 Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) 신규 결과와 RF를 인수하고, 실제 변경만 [STATUS](../plan/STATUS.md)에 갱신한다.
+
 **실패 직후 바로 BLOCKED로 끝내지 않는다.**
 
 1. 실제 오류·명령·대상 SHA 확인 → CODE / 기존 BASELINE / ENV / GIT·TOOL / SAFETY·OWNER 구분.
