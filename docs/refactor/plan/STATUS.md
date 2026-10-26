@@ -1,6 +1,11 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 15시 KST, 물리 큐 93개 파일 직접 계수): PENDING 67 / DEVELOPING 2 / PEER_REVIEW 11 / LEAD_ACCEPTANCE 2 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 16:42 KST, 물리 큐 93개 단일 경로): PENDING 66 / DEVELOPING 3 / PEER_REVIEW 10 / LEAD_ACCEPTANCE 3 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+
+## 지팀장 B 실행 — RF-008 독립 peer 인수·RF-030 실코드 HOLD (2026-10-26 16:42 KST)
+- **RF-008:** B owner `graphs/nodes/strategist_node.py` blob `86e9c2e2` integration/B 동일. A 독립 read-only peer normal/-O 각각 1270 PASS/1 BASELINE FAIL, State 5종 offline normal/-O/BASE/integration byte-identical exit 0. 최초 17 FAIL 재현 불가 원인 UNKNOWN; standalone `run_strategist` 및 시세 fail-soft 미검증. **03_PEER_REVIEW/CLAUDE_A → 04_LEAD_ACCEPTANCE/FROM_CODEX_B**, PEER_SCOPED_ACCEPTED / KEEP_NOOP_CANDIDATE / NOT_DONE. 소스 통합 0.
+- **RF-030:** A 소스 `03b255e5` 실제 2파일 순수 렌더 분리, focused normal/-O 34 PASS 및 md 동일성 제출. 다만 RF-074 동결 `test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`가 A 변경 전 PASS→후 FAIL(1 FAIL/104 PASS)임을 A run 101이 독립적으로 재현. **01_PENDING/CLAUDE_A → 02_DEVELOPING/CLAUDE_A**, CODE_CANDIDATE_HOLD_FROZEN_ORACLE / NOT_DONE. 동결 테스트 무승인 수정 불가, 코드 integration ADMIT HOLD, 추가 A patch 미적용. 구 B-stage 가드 FAIL은 별도 분류.
+- **남은 게이트:** RF-001 최신 integration exact SHA normal/-O 3파일 B 증거 미수신, RF-028/029 B 신규 peer 미수신, RF-069 UEF5 snapshot 환경 BLOCKED. 기존 증거 재실행 금지. 물리 큐 이동은 격리 브랜치 PR의 단일 squash 통합에서만 확정.
 
 ## 지팀장 A 실행 — RF-030 원소유 배정·기술 판정 (2026-10-26)
 - **실제 원격 RF 이동:** `01_PENDING/UNASSIGNED/RF-030.md` → `01_PENDING/CLAUDE_A/RF-030.md`, commit `f73d73607e2061d0dca2d13b5cea535db44a4424` (Git tree 원자 이동). `STAGE=01_PENDING`, `ORIGINAL_OWNER=CLAUDE_A`, `ACTIVE_ACTOR=CLAUDE_A`, `ACTION=FIX`, **NOT_DONE**. 16/16 owner source blob BASE `63182ab2`=integration `1f8ea0bf`=A `11073cec` 원격 검증; 신규 owner 코드 diff **0**, 선별 통합 **0**. A HANDOFF 99의 `NO_EXECUTABLE_OWNER` 원인은 RF-029 PEER 이동 후 신규 A RF 미배정; 이번 RF-030 배정으로 작업 지시 차단 해제, 실제 A 코드 SHA/normal/-O **NOT_RUN**.
