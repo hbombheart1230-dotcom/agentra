@@ -1,5 +1,13 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
+## 지팀장 신규 증거 인수·물리 큐 판정 (2026-10-26, integration 기준 b5fe3dd9)
+- **A/B 신규:** A HEAD `992acf6e`는 HANDOFF-only; RF-031 22/22 BASE 동일, 13 frozen-owner HOLD + 9 FIX 근거 없음, BASE와 동일 56 FAIL/3696 PASS normal/-O. A RF-063 최초 read-only audit CLI 2개 BASE/integration normal/-O byte-identical exit 0, 나머지 위험 CLI HOLD. B HEAD `9f39745c` HANDOFF-only; RF-029 최초 offline fake-artifact peer normal/-O exit 0(4 precedence/3 invalid/1 exception/3 read-failsoft). 신규 A/B source SHA 0.
+- **RF-001:** B가 `integration@b5fe3dd917cd70318d5bd5248aee1a6c2bf5fa1e` detached checkout에서 3개 필수 표적 테스트 정상/-O 각 **706+28+53=787 PASS, exit 0**, owner blob core `0666538f`·monitor-notes `4f73570f` 확인. 이 SHA의 scoped exact-SHA gate 해소. 33-owner 전수/hosted CI·새 문서 HEAD exact-SHA 미입증이므로 **LEAD / NOT_DONE**.
+- **지팀장 물리 조치:** RF-029 `03_PEER_REVIEW/CODEX_B → 04_LEAD_ACCEPTANCE/FROM_CLAUDE_A` (B 최초 scoped peer 수용, KEEP_NOOP/NOT_DONE). RF-031 `02_DEVELOPING/CLAUDE_A → 03_PEER_REVIEW/CODEX_B` (A 22 owner KEEP 후보 수용, B 신규 State/IO·LLM fake peer 대기). RF-033 `01_PENDING/UNASSIGNED → 02_DEVELOPING/CLAUDE_A` (45 owner 신규 A 원개발, offline fake market data 경계 우선). **신규 소스 통합 0 / DONE 0**.
+- **Issue #32 EOD:** 2026-10-26 17:04 관측 BUY 0019354 filled/SELL 0020349 filled, broker 2 vs local 1 reconciliation mismatch; SELL submitting owner UNKNOWN, BUY guard stale, reporter trade_index empty, metrics stale, running image source SHA 미입증. **RUNTIME_ENV/UNKNOWN + 관측 불일치**, 재현된 소유 코드 결함으로 확정 불가. 안전·운영·예약 수정 및 REWORK 생성 없음. 원인 추적은 RunLab 소유.
+- **troubleshooting:** open 4/closed 0 전수 확인, 4건 모두 종료조건 미충족하여 이동 0. **큐 정본:** PENDING 65 / DEVELOPING 3 / PEER 10 / LEAD 4 / REWORK 0 / DONE 11 = 93, RF 중복 0(커밋 후 tree 검증). 지팀장 자체 pytest NOT_RUN; B/A 기존 증거 재사용, main·거래 안전·동결 테스트/CI·예약 무변경.
+
+
 ## 지팀장 A 슬롯 인수·배정 (2026-10-26, integration base `1fb0d1c6`)
 - **A 신규:** run 102, 신규 owner source 0. RF-030 오라클 허용 가능 16/16 owner 모두 FAIL → 원개발 FIX `03b255e5` 미통합, **02_DEVELOPING/CLAUDE_A → 01_PENDING/CLAUDE_A (LEAD_ORACLE_HOLD)**. 사용자 오라클 변경 승인 전 코드 수정/peer 반복 없음. **RF-031** 새 A 개발 슬롯: **01_PENDING/UNASSIGNED → 02_DEVELOPING/CLAUDE_A**, 22 owner 소비자·State/IO·frozen gate 선별 조사부터 시작. RF-071 미배정 유지.
 - **A 독립 peer RF-063/065:** 76+54 owner 기존 BASE 동일, 신규 import-only 격리 **130/130 × BASE/integration × normal/-O exit 0·byte-identical** 및 AST risk 판정 수용. 실제 `__main__` CLI·운영 side-effect는 NOT_RUN/SAFETY_HOLD. **두 RF 모두 03_PEER_REVIEW 유지, DONE 0**. 동일 130 import 증거 재사용.
@@ -11,7 +19,7 @@
 
 **운영 현황 (2026-10-26):** [troubleshooting/open](troubleshooting/open/) 4건 / [closed](troubleshooting/closed/) 0건. 런검증 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) → 지팀장 판정 → 코드 결함만 RF 연결; 변경 시 이 STATUS 반영.
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 16:42 KST, 물리 큐 93개 단일 경로): PENDING 66 / DEVELOPING 3 / PEER_REVIEW 10 / LEAD_ACCEPTANCE 3 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 신규 지팀장 큐 이동 후, 물리 큐 93개 단일 경로): PENDING 65 / DEVELOPING 3 / PEER_REVIEW 10 / LEAD_ACCEPTANCE 4 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
 
 ## 지팀장 B 실행 — RF-008 독립 peer 인수·RF-030 실코드 HOLD (2026-10-26 16:42 KST)
 - **RF-008:** B owner `graphs/nodes/strategist_node.py` blob `86e9c2e2` integration/B 동일. A 독립 read-only peer normal/-O 각각 1270 PASS/1 BASELINE FAIL, State 5종 offline normal/-O/BASE/integration byte-identical exit 0. 최초 17 FAIL 재현 불가 원인 UNKNOWN; standalone `run_strategist` 및 시세 fail-soft 미검증. **03_PEER_REVIEW/CLAUDE_A → 04_LEAD_ACCEPTANCE/FROM_CODEX_B**, PEER_SCOPED_ACCEPTED / KEEP_NOOP_CANDIDATE / NOT_DONE. 소스 통합 0.
