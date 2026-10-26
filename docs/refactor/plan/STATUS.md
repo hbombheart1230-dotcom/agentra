@@ -1,5 +1,14 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
+## 지팀장 A 슬롯 인수·배정 (2026-10-26, integration base `1fb0d1c6`)
+- **A 신규:** run 102, 신규 owner source 0. RF-030 오라클 허용 가능 16/16 owner 모두 FAIL → 원개발 FIX `03b255e5` 미통합, **02_DEVELOPING/CLAUDE_A → 01_PENDING/CLAUDE_A (LEAD_ORACLE_HOLD)**. 사용자 오라클 변경 승인 전 코드 수정/peer 반복 없음. **RF-031** 새 A 개발 슬롯: **01_PENDING/UNASSIGNED → 02_DEVELOPING/CLAUDE_A**, 22 owner 소비자·State/IO·frozen gate 선별 조사부터 시작. RF-071 미배정 유지.
+- **A 독립 peer RF-063/065:** 76+54 owner 기존 BASE 동일, 신규 import-only 격리 **130/130 × BASE/integration × normal/-O exit 0·byte-identical** 및 AST risk 판정 수용. 실제 `__main__` CLI·운영 side-effect는 NOT_RUN/SAFETY_HOLD. **두 RF 모두 03_PEER_REVIEW 유지, DONE 0**. 동일 130 import 증거 재사용.
+- **B 인수:** 최신 HANDOFF의 RF-066 `build_demo_catalog` normal exit 0 + optimized exit-only; fake OrderClient 입력/예외 경계는 미확인. RF-001 exact integration HEAD 대상 3개 테스트 normal/-O 제출 없음; RF-028/029 B 최초 신규 peer 제출 없음. 다음 B 우선순위 CURRENT로 지시, 재개발·기존 734×2 반복 금지.
+- **런검증 Issue #32:** 2026-10-26 09:38 이전 건강·mock BUY ACCEPTED 관측 수용, source-image SHA 미입증/07:00 예약 미구성/BUY fill·cancel·TTL reconciliation UNKNOWN/09:00 metrics 선행 snapshot 분리. **재현된 코드 회귀 0**, 새 RF/REWORK 생성 없음. RUNLAB EOD/19시 증거 수신 전 특정 원인 단정 금지.
+- **troubleshooting:** open 4건/closed 0건 점검. 원격 구 branch 삭제는 확인됐으나 로컬 exit·PR 소비자 확인 미완료; CI 호환/스케줄러·RF-020/001 범위/소스 admission 역시 종료조건 불충족. 실제 해결 건 없어 이동 0.
+- **물리 큐 변화:** RF-030/RF-031 상호 슬롯 전환으로 수량 **PENDING 66(UNASSIGNED 65/CLAUDE_A 1) / DEVELOPING 3(A 1/B 2) / PEER 10 / LEAD 3 / REWORK 0 / DONE 11 = 93**. 선별 코드 통합 0, 지팀장 직접 pytest NOT_RUN; main·실거래·계약·동결 tests/CI·예약 변경 없음.
+
+
 **운영 현황 (2026-10-26):** [troubleshooting/open](troubleshooting/open/) 4건 / [closed](troubleshooting/closed/) 0건. 런검증 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) → 지팀장 판정 → 코드 결함만 RF 연결; 변경 시 이 STATUS 반영.
 
 **기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 16:42 KST, 물리 큐 93개 단일 경로): PENDING 66 / DEVELOPING 3 / PEER_REVIEW 10 / LEAD_ACCEPTANCE 3 / REWORK 0 / DONE 11** (DONE: RF-002~006, 009, 013, 017, 019, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
