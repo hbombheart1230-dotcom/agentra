@@ -1,5 +1,7 @@
 # Agentra P1.5 — CURRENT (지팀장 실행 지시판)
 
+**D05/D06 운영 개편 (전환 준비, NOT_ACTIVE):** [D05 물리 큐](D05_RF_PHYSICAL_QUEUE_20261026.md) · [D06 시도/핑퐁 감사](D06_RF_ATTEMPT_AND_AUDIT_20261026.md). 폴더 표기는 `CLAUDE_A` / `CODEX_B`. 기존 93 RF의 실제 이동·전체 링크 정합성·카운트 검증 전까지 기존 `plan/pending|verification|rework|done`이 실행 정본이며, 새 `queue/`는 활성화하지 않는다. A/B 예약 변경 없음. 새 문서 작성은 RF 코드 진척이나 DONE이 아니다.
+
 **정본:** [D00](../../ENGINEERING_DELIVERY_POLICY.md) · [D01 B](../../../AGENTS.md) · [D02 A](../../../CLAUDE.md) · [D03](D03_DEV_TEAM_RULES.md) · [STATUS](../plan/STATUS.md) · [FILE_COVERAGE](../plan/FILE_COVERAGE_63182ab2.csv). **원칙:** 자기 owner 개발 → 신규 SHA만 상대 peer → 지팀장 선별 통합·exact SHA 검증·DONE. HANDOFF/ACK만으로 회차 종료 금지. 위험 명령만 HOLD, 안전한 다음 RF 계속. main·실거래·안전 계약·오라클·예약 무승인 변경 금지.
 
 **D03 수신:** A `471d7ab3` 수신·연속 착수 확인(RUN `2026-10-26T0448Z-claude-a-sched-96`). **B 미확인**(최신 RUN `B-20261026T0400Z`는 RF-001 UI 53×2만 제출, 후속 착수/NOT_STARTED_REASON 누락 → `CONTINUATION_UNVERIFIED`). B는 D03 `471d7ab3` 전문 재독·실제 후속 착수 및 HANDOFF 근거 제출. 양쪽 확인 후 지팀장이 이 임시 항목 삭제.
