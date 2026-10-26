@@ -12,7 +12,7 @@
 3. **[RF-001](../plan/verification/codex/RF-001.md) peer:** 격리 `cdc3599f` 독립 734×2 PASS 수용 완료. 동일 조합 재검증 금지; 신규 코드 SHA/새 위험이 있을 때만 peer.
 
 ## B Codex — Operator/Monitor · [HANDOFF_B (작업 브랜치)](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md)
-1. **[RF-001](../plan/verification/codex/RF-001.md) — 즉시 진행:** `cdc3599f` 격리 후보에서 `tests/test_operator_ui.py` **normal/-O**를 fastapi 구비 환경에서 실행하고 UI patchnotes JSON/MD 확인. 결함 시 승인된 **두 owner hunk만** 최소 FIX→검증. 기존 B/A 734×2 및 17 differential PASS 재사용; 전체 B branch 혼합 통합 금지.
+1. **[RF-001](../plan/verification/codex/RF-001.md) — 즉시 진행:** `cdc3599f` 격리 후보에서 `tests/test_operator_ui.py` normal/-O **각 53 PASS (B HEAD `479b3cc9`, RUN `B-20261026T0400Z`)** 보고 수용. 남은 UI patchnotes JSON/MD 및 33 owner 계약을 확인. 결함 시 승인된 **두 owner hunk만** 최소 FIX→검증. 기존 B/A 734×2 및 17 differential PASS 재사용; 전체 B branch 혼합 통합 금지.
 2. **[RF-070](../plan/verification/codex/RF-070.md):** 잔여 기타 25개 구현의 소비자·IO·side effect·소유권을 정적 분류한 후 안전한 격리 mock 경계 실제 검증/필요한 owner FIX. 위험 launcher 32개 운영 실행 금지; 기존 85/142 PASS 재사용.
 3. **[RF-066](../plan/verification/codex/RF-066.md):** `demo_m7_dry_run_pipeline.py`의 실제 `main()`·운영 파일 쓰기·주문 접근만 HOLD. 임시 경로 + fake OrderClient로 `build_demo_catalog`/소비자 경계를 안전하게 normal/-O 검증; 격리 불확실 시 그 명령만 NOT_RUN, 다른 16 owner로 즉시 진행. 단일 파일 BLOCKED로 회차 종료 금지.
 
