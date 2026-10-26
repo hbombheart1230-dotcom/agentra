@@ -1,16 +1,23 @@
 # Claude A 인수인계 — 최신 회차만 (이전 기록은 Git 이력)
 
-- RUN_ID: 2026-10-26T0428Z-claude-a-sched-95 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · A 시작 `13b1dc50`, integration 시작·종료 `306aaa8d`(불변), B `26458918`(불변, 신규 소스 SHA 없음). **A 소스 코드 변경 없음**(owner 코드 `e7471a2e` 유지). 상대 CLI 0건.
-- **정책 수신 증명(시작=종료 원격 blob, POLICY_CHANGED=NO):** CURRENT `871fd76a`, D00 `bebc2e20`, D03 `9c08a3c8`, D02 `883c8b89`. 변경 없음 → 재독 생략, POLICY_READ=PASS(직전 회차 전문 필독 유지).
-- ① peer: B 신규 코드 SHA 없음, RF-001 `cdc3599f` 최초 격리 조합 peer는 handoff 93에서 완료 → 반복 금지. ② REWORK 없음. ③ RF-013(CURRENT 첫 과제): 직전 94의 저커버리지 owner 보강 진행.
-- **RF-013 Reporter owner 보강(소스 무변경, scratch 격리 하네스 — 주입 stub facade/in-memory fake, 네트워크·파일·브로커 0), normal·`python -O` 각 exit 0:**
-  - `RF013_BUNDLE_OK 11` — `read_models/bundle_assembly_bodies_01.py`: 거래일 힌트(ISO/숫자/무효), 브로커 조회 side 정규화(영문·약어·1/2·한글), `_has_meaningful_payload`(비어 있지 않은 컨테이너는 fallthrough로 truthy — 특성 기록), canonical/normalized/fallback payload 우선순위, agent별 run-id 순서·중복 제거, placeholder 진입 사유, 마지막 exit monitor 컨텍스트(컬렉션 병합 순서·thresholds/trigger/reason/monitor_reason/posture 파생·입력 불변), lifecycle 적용(outcome·lifecycle 갱신), 브로커 주문 상태 첨부(주입 reader 정상/예외/무의미 응답/ID 누락/조회 비활성/기존값 단락 + 조회 활성 시 `KiwoomOrderFillReader.from_env`를 in-memory fake로 대체한 성공·실패), execution details 합성, strategist/scanner trace summary mirror·runner-up 결정.
-  - `RF013_NAMEINF_OK 2` — `read_models/symbol_metadata_name_inference.py`: 종목명 그럴듯함 필터(숫자·사유 토큰·한글 금칙어·`_ready` 등), 괄호/접두 매칭, headline 종류는 접두 경로 제외, 말줄임(`…`/`...`) 꼬리 경로(접두가 불가할 때만 도달)·`[..]` 제거·금칙어 이름 거절, shared_facts 중첩 source, metadata_value/translate_text 주입.
-  - **안전 기록:** 하네스 초안 1회가 조회 활성 케이스에서 실제 `KiwoomOrderFillReader.from_env()`를 자격 증명 없이 호출함(샌드박스에 KIWOOM 관련 환경변수 0건 확인, DTO 오류 반환·네트워크 호출 관측 없음, 실계좌·주문 접근 없음). 즉시 해당 케이스를 모듈 in-memory fake로 교체했고 이후 실행은 모두 fake만 사용.
-  - **coverage:** 3단계 기존 합산(91%, 655 미실행) + 하네스 → **owner 67파일 92%(7149문장 중 545 미실행)**. bundle_assembly_bodies_01 **64%→100%**, symbol_metadata_name_inference **73%→100%**. 90% 미만 남음 4파일: strategy_read_model_bodies_01 71%(70문장), pipeline_trace_bodies_01 81%(30), post_exit_recap_bodies_01 81%(51), entry_blocker_bodies_01 84%(46).
-- 판정: 67 owner KEEP / FIX 0 유지, 결함 징후 없음(특성 1: `_has_meaningful_payload` 컨테이너 fallthrough — 원 구현 동일, 동결 AST verbatim이라 수정 안 함). Reporter 기인 NEW_REGRESSION 0(직전 94 분류 유지).
-- **NOT_STARTED_REASON:** RF-019/017/018 = `NO_EXECUTABLE_OWNER`(handoff 90·91·92 제출, 신규 SHA·REWORK 없음). RF-066/070 = B 소유. RF-013 저커버리지 잔여 4 owner = 다음 회차(`TIME_LIMIT` 아님, 이번 회차 우선순위로 bundle/name 먼저 소화).
+- RUN_ID: 2026-10-26T0448Z-claude-a-sched-96 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · A 시작 `4c8ecadb`, integration 시작 `18b626f6` → 종료 `ce9d7cae`, B 시작 `479b3cc9`(종료 동일, 신규 B 소스 SHA 없음 — 직전 `26458918` 이후 B는 RF-001 UI 53×2 보고 갱신뿐). **A 소스 코드 변경 없음**(owner 코드 `e7471a2e` 유지). 상대 CLI 0건.
+- **정책 수신 증명:** 시작 원격 CURRENT `bf12b997`, D00 `bebc2e20`, D03 `471d7ab3bae3…`, D02 `883c8b89` → 종료 CURRENT `590ecb3d`(A 섹션 문구 불변, B RF-001 보고 반영뿐), D00·D03·D02 불변. **POLICY_CHANGED=YES(D03 `9c08a3c8`→`471d7ab3`, CURRENT 갱신), POLICY_READ_SHA=`471d7ab3`(D03 전문 + CURRENT 전문 재독), POLICY_REREAD=DONE.** POLICY_APPLIED: 확인 뒤 즉시 실행(§2) — RF-013 잔여 4 owner 소비자/폴백 검증 → RF-018 fallback 3건 재현을 같은 회차에 연속 착수(아래). CONTINUATION_STATUS=착수·소화. **A 수신 완료 → 지팀장이 CURRENT의 A PENDING 항목 회수 가능.**
+- ① peer: B 신규 코드 SHA 없음, RF-001 `cdc3599f` 격리 조합 peer는 handoff 93 완료·수용 → 반복 금지. ② REWORK 없음.
+- **③ RF-013(CURRENT 첫 과제) — 잔여 4 owner 실제 소비자/폴백 위험 검증(소스 무변경, scratch 하네스, 외부 IO 0).** 방법: facade 공개 함수 ~2000/636/149/153 케이스를 **integration `18b626f6`**와 **BASE `63182ab2`** 두 트리에서 normal·`python -O` 각 실행해 출력 JSON을 `cmp`(단순 숫자 채우기가 아니라 원 구현 대비 차분). 결과: 4 owner 모두 4개 실행(I/I-O/BASE/BASE-O) **바이트 동일, exit 0**.
+  - `read_models/strategy_read_model_bodies_01.py` 71%→**95%**(2054 케이스; 미커버 13문장은 `_rows_from_news_like` 방어 분기). 예외 0.
+  - `read_models/entry_blocker_bodies_01.py` 84%→**95%**(636 케이스, build_entry_blocker_row 6 monitor×5 scanner 조합·summarize/sequence 포함). 예외 2건은 BASE 동일(혼합 불량 row 입력 특성, 회귀 아님).
+  - `narrative/post_exit_recap_bodies_01.py` 81%→**100%**(149 케이스). 안전: `libs.runtime.monitor_minute_ohlcv`를 `sys.modules` fake로 주입해 실제 minute 러너·시세 skill 미임포트/미호출(fetch_fresh_* 4모드 none/raise/rows/empty 검증). 특성 2: 거래일 없는(`exit_ts` 무효) shadow에 비 dict row가 있으면 `dict(row)`가 예외 — BASE 동일.
+  - `narrative/pipeline_trace_bodies_01.py` 81%→**100%**(153 케이스, 예외 0).
+  - owner 합산 추정 545→약 376 미실행(약 **94.7%**, 파일별 수치로 산출·전체 재결합은 미수행). 90% 미만 owner 0건. `KiwoomOrderFillReader.from_env` 미호출, `.env`/키 접근 0, 오라클·9+4 경로 미수정.
+  - 판정: 67 owner KEEP / FIX 0 유지, 결함 징후 없음. Reporter 기인 NEW_REGRESSION 0.
+- **④ RF-018 JSON 실패 fallback 잠재 3건 — 동일 BASE 입력 재현(소스 무변경, `graphs.nodes.strategist_node._extract_contract_from_prose`, LLM·네트워크 0), I/I-O/BASE/BASE-O 4개 바이트 동일:**
+  - (1) enum 선행 부분일치 **재현**: `playbook: defensive_exit`→`{"playbook":"defensive"}`(접두 `defensive` 채택), `monitor_guidance: defensive_exit`→`{}`(`defensive`가 monitor 허용 목록에 없어 유실). 영향: JSON 파싱이 모두 실패한 prose에서만 도달(`strategist_node.py:201` 마지막 fallback), monitor 지침 누락(=기본값)·playbook 보수쪽 오분류. 주문/브로커 경로 직접 영향 없음(전략 컨텍스트 입력).
+  - (2) unquoted bracket scanner_priority 필터 우회 **재현 안 됨**: 비허용 값은 모두 필터로 제거(`{}`), 허용 값도 `[trading_value`처럼 괄호가 붙어 필터에 걸려 유실(fail-closed 방향). 대신 `themes: [ai, semis]`→`["[ai","semis]"]`처럼 괄호 찌꺼기 항목 발생(재현).
+  - (3) multiline bracket list truncation **재현**: `themes: [\n "ai",\n "semis"\n]`→`["["]`, 여러 줄 `report_focus`/`scanner_priority`→`{}`.
+  - 판별: 3건 모두 BASE 이전부터 있는 동결 코드의 입력 한정 동작(BASELINE_EXISTING), 주문·안전 계약 우회 아님(필터 우회는 미재현). **무승인 안전 계약 FIX 금지 준수 — 수정 안 함.** 별도 FIX 여부는 지팀장 재판정(권장: RF-018 KEEP_SCOPED 유지, (1)·(3)은 LLM 정상 JSON 경로에서는 도달 불가이므로 낮은 우선순위 개선 후보).
+- **NOT_STARTED_REASON:** RF-019/017 = `NO_EXECUTABLE_OWNER`(기존 KEEP 증거 handoff 90·91·92: 29/5 owner, 신규 SHA·REWORK·미검증 소비자 위험 없음; 지팀장 판정 대기, pending 큐 DONE 아님). RF-066/070 = B 소유. RF-013 잔여 4 owner·RF-018 fallback 3건은 이번 회차 소화(미착수 0).
 - 통합 CI는 D03 개정으로 조회 제외. patchnotes 해당 없음(소스 변경 0).
-- GPT_ACTION_REQUIRED: RF-013 67 owner KEEP 후보 판정(커버리지 92%, 잔여 4 owner 보강은 A 계속), RF-019/017/018 KEEP_VERIFIED, RF-001 `cdc3599f` 선별 통합, 동결 28 FAIL·57 collection 오라클, 예약 주기 조정.
-- 최종 완료 답변 요약: 코드 변경 0, RF-013 owner 보강 — bundle_assembly·name_inference 100%, 합산 92%, 안전 사고 1건(자격 증명 없는 reader 생성) 즉시 차단 기록.
+- 하네스(미커밋 scratch): rf013_srm/eb/pe/pt.py, rf018_prose.py. 전부 offline.
+- GPT_ACTION_REQUIRED: RF-013 67 owner KEEP 판정(커버리지 약 94.7%, 90% 미만 0), RF-018 fallback (1)·(3) FIX 여부, RF-019/017/018 KEEP_VERIFIED, RF-001 `cdc3599f` 선별 통합, 동결 28 FAIL·57 collection 오라클, 예약 주기 조정, CURRENT A PENDING 회수.
+- 최종 완료 답변 요약: 코드 변경 0, RF-013 잔여 4 owner BASE 대비 바이트 동일 검증(전부 90%+), RF-018 fallback 3건 중 2건 재현·1건 미재현, 안전 영향 판별 기록.
 - PUSH_VERIFIED: push 후 원격 재조회 결과는 종료 보고 및 Issue #11 댓글에 기재.
