@@ -5,6 +5,7 @@ import ast
 import copy
 import hashlib
 import importlib.util
+import sys
 from pathlib import Path
 
 SOURCE = Path(__file__).resolve().parents[4] / "libs/reporting/short_alpha_discriminator/metrics.py"
@@ -25,6 +26,7 @@ def main() -> None:
     check(not any(isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id in ("open", "exec", "eval", "__import__") for n in ast.walk(tree)), "effectful_calls")
     spec = importlib.util.spec_from_file_location("rf034_metrics", SOURCE)
     check(spec is not None and spec.loader is not None, "spec")
+    sys.dont_write_bytecode = True  # prevent __pycache__ in the checked-out repository
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     check(module.number("bad") is None and module.number(None) is None and module.number("1.25") == 1.25, "number")
