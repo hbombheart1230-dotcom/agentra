@@ -11,3 +11,16 @@
 - NOT_STARTED_REASON: CURRENT 4번(RF-063/065 새 offline 경계) = `TIME_LIMIT` — 이번 회차는 RF-031 조사·전체 테스트에 사용, 다음 회차 후보: RF-063 `scripts/diagnostics`의 SAFE_STATIC 33개 중 순수 함수 소비자를 import 후 직접 호출하는 fake 입력 하네스(쓰기·네트워크 차단).
 - 다음 행동: 지팀장 RF-031 KEEP 판정 및 다음 A RF 배정. 배정 없으면 위 RF-063/065 새 경계 진행.
 - PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
+
+---
+## 추가 회차 — RF-063 새 offline 소비자 경계 (CURRENT 4번)
+
+- RUN_ID: 2026-10-26T0819Z-claude-a-sched-104 · A 시작 `f3ac4be1` · integration `b5fe3dd9`(CURRENT `3995a9a9` 불변) · B `9f39745c`(직전 `c4f974b5` 대비 `HANDOFF_B.md` 문서 1개만 변경 → 신규 B 소스 SHA 없음, peer 없음). **A 소스 코드 변경 없음(NO_CHANGE).** RF-031 KEEP(handoff 103) 유지, 반복 안 함.
+- **RF-063 소비자 경계 peer (처음 검증하는 경계, 130/130 import-only 반복 아님):** B 원개발 읽기 전용 감사 CLI 2개의 **공개 함수 + `main(argv)`**를 합성 reports 트리(2일×4거래, sidecar·LLM 응답·lifecycle·ai_trade_report 변형 포함)에서 실제 실행.
+  - 대상: `scripts/diagnostics/check_reports_trades_health.py`(`audit_reports_trades_health` 4개 day 조건, `main --json`/기본 출력), `scripts/diagnostics/check_reporter_upgrade_regression.py`(`analyze_day`·`compare_days`, `main`의 `--json`/기본·단일/2일 비교). 두 파일 blob==BASE.
+  - 격리: 자격 증명 env 제거, 소켓·subprocess·os.system·sqlite3 차단, 모든 쓰기(`open` 쓰기 모드·`write_text`·`mkdir`) 차단(픽스처는 차단 전 생성), 합성 트리는 `/tmp/rf063_fixed`.
+  - 결과: integration `b5fe3dd9`·BASE `63182ab2`·normal·`python -O` **4개 출력 바이트 동일, exit 0**. 차단된 호출 시도 0, 실행 전후 트리 변화 없음(`tree_unchanged=True`). 특성 기록: `audit` day=2026-04-08 trade_dir_count 3(디렉터리 4개 중 `iter_trade_dirs`가 3개 인식), issue_counts `{diagnostic_status_mismatch:1, llm_error:1, llm_recovered:2, sidecar_missing:3}`, severity `{info:2, warn:5}`, `main` 반환 0.
+  - 판정: **PEER_PASS_SCOPED(읽기 전용 소비자 계약 2개)**. 나머지 CLI(subprocess/sqlite/real_executor 등 SAFETY_HOLD)와 쓰기가 수반되는 `main`은 NOT_RUN. DONE 아님.
+- NOT_STARTED_REASON: RF-065 새 경계 = `TIME_LIMIT`(다음 후보: `daily_profitability_scorecard.main(argv)` 등 읽기 중심 main을 같은 격리·합성 입력으로, 쓰기 경로는 tmp로만). RF-007 = ENV_BLOCK(fastapi). RF-030 = 승인 대기.
+- 다음 행동: 지팀장 RF-031/063 판정 및 다음 A RF 배정 대기.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
