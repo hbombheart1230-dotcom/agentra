@@ -57,3 +57,15 @@
 - GPT_ACTION_REQUIRED: RF-030 `03b255e5` 독립 B peer 배정(md 하네스 `rf030_h.py` 방식 재현 가능), 통합 시 구 B-stage 가드 영향 확인, UI patchnotes는 내부 리팩터라 미작성(필요 시 지시).
 - 다음 행동: RF-030 period_summary 경계 → peer 결과 반영.
 - PUSH_VERIFIED: 아래 push 후 확인.
+
+---
+## 추가 회차 (동시 실행 병합) — RF-030 오라클 적색 검출 + 2번째 FIX 패치(미적용)
+
+- RUN_ID: 2026-10-26T0719Z-claude-a-sched-101 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · A 시작 `46c050b0`, 동시 세션이 `03b255e5`(RF-030 FIX, HEAD `9ab173ff`)를 먼저 push → 그 위에 병합. integration `d1bafb5b`(시작=종료), B `d858f8b0`(불변). **이 회차 libs/ 소스 커밋 없음.** 산출: 패치 파일만 `docs/refactor/work_orders/evidence/RF-030_operator_visibility_day_loader.patch`(blob `c2f1f694`).
+- POLICY_REMOTE_START_SHA=END_SHA: CURRENT `075e3492` · D00 `bebc2e20` · D03 `d281c4dd` · D02 `82396714`. POLICY_READ_SHA=CURRENT 전문(RF-030 A 배정). POLICY_APPLIED: 적용.
+- **중요 검출 — `03b255e5`가 RF-074 동결 오라클을 적색으로 만듦(코드 입증):** `tests/test_work_reporter_seed_migration.py::test_target_tree_discipline_and_no_forbidden_surface`(closed START..HEAD scope diff, 3 merge 포함 → `libs/reporting/**` 허용 목록 밖 경로 변경 위반)는 직전 A HEAD `46c050b0`에서 **PASS**, FIX가 들어간 A HEAD `9ab173ff`에서 **FAIL**(`1 failed, 104 passed`). 위반 경로 = `operator_visibility.py`·`operator_visibility_parts/summary_snapshot_and_bundle.py`. 프로브로도 확인: integration `d1bafb5b`에서 `operator_visibility.py` 주석 1줄 추가, `operator_period_summary_parts/pattern_naming.py`·`operator_summary_refresh.py`·`trade_report/services/trade_summary.py` 각 1줄 추가가 모두 같은 테스트를 FAIL시킴(프로브는 `reset --hard`로 원복, clean). `test_p15_strategist_s5_helper_moves` 가드 실패(동시 세션 보고)와는 **별개의 두 번째 오라클**이며, 동시 세션 보고에는 빠져 있음. **영향: RF-028/029/030의 `libs/reporting/**` 모든 소스 변경은 이 오라클을 적색으로 만든다.** 오라클 무승인 수정 금지 → 지팀장/사용자 결정 필요: (a) 오라클 허용 목록에 RF-030 owner 경로 승인 추가, (b) `03b255e5` 통합 보류·KEEP 처리, (c) 허용 prefix(`libs/agents/reporter/**`) 하위 owner 설계 지시.
+- **RF-030 2번째 FIX 후보(패치만, 미커밋):** `generate_decision_story_report`·`generate_run_card_report`의 동일 25행 일별 로딩 블록을 `_load_day_stories_and_freshness(events_path, report_dir, day) -> (target_day, route_summary, stories_all, freshness)` helper 1개로 통합(+23/−36, 주석 제외 AST 동일 확인; 스트리밍 3패스 구조 보존). 1차 시도는 `route_summary` 미반환으로 NameError 11 테스트 실패 → 즉시 검출·수정(패치에 남지 않음). 검증: 관련 8개 테스트 파일 **미수정·패치 각 normal 116 passed, `-O` 116 passed**(integration `d1bafb5b`와 `03b255e5` 위 모두). 합성 이벤트 32 시나리오 md·JSON 차분: integration 대비 패치 트리 동일(타임스탬프 정규화). 단, 빈 날짜(`2000-01-01`) 시나리오 8건의 md는 **미수정 트리끼리도 normal/-O 사이 해시가 달라지는 타임스탬프 비결정성**이 남아 있어(패치 원인 아님) 해당 8건은 동일성 입증에서 제외, 나머지 24건은 동일. `git apply --check` 통과(`46c050b0`, `9ab173ff`, integration).
+- RF-008·RF-067 peer는 handoff 100(위) 유지. 동시 세션의 RF-008 부분 peer(1038 passed 후 -x 중단)는 내 완전 실행(1270 passed, 1 baseline failure)이 대체 가능.
+- NOT_STARTED_REASON: RF-063/065 = `TIME_LIMIT`, RF-007 = `ENV_BLOCK`(fastapi), RF-031/071 = UNASSIGNED.
+- GPT_ACTION_REQUIRED: 위 (a)/(b)/(c) 결정, `03b255e5` B peer 배정 여부(오라클 결정 후), RF-008·RF-067 인수.
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.

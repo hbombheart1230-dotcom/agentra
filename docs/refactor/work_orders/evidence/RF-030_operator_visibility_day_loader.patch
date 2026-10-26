@@ -1,0 +1,87 @@
+diff --git a/libs/reporting/operator_visibility.py b/libs/reporting/operator_visibility.py
+index 26c71139..b39e1768 100644
+--- a/libs/reporting/operator_visibility.py
++++ b/libs/reporting/operator_visibility.py
+@@ -1210,16 +1210,17 @@ def generate_operator_daily_summary(
+     return md_path, js_path
+ 
+ 
+-def generate_decision_story_report(
++def _load_day_stories_and_freshness(
+     events_path: Path,
+     report_dir: Path,
+-    *,
+-    day: Optional[str] = None,
+-    max_runs: Optional[int] = 120,
+-    trade_only: bool = True,
+-) -> Tuple[Path, Dict[str, Any]]:
+-    report_dir.mkdir(parents=True, exist_ok=True)
++    day: Optional[str],
++) -> Tuple[str, Dict[str, Any], List[Dict[str, Any]], Dict[str, Any]]:
++    """Load (target_day, route summary, route-overlaid run stories, report freshness) for one reporting day.
+ 
++    Shared by generate_decision_story_report and generate_run_card_report (their loading blocks were
++    identical). With an explicit ``day`` the rows stay streamed (three bounded passes over the per-day
++    cache, see _build_run_contexts' OOM RCA note); without one the whole file is read once to pick the day.
++    """
+     if day:
+         # Day-scoped fast path: three independent, bounded streaming passes
+         # over iter_jsonl_events's own per-day disk cache (built once on
+@@ -1257,6 +1258,20 @@ def generate_decision_story_report(
+         )
+         stories_all = _apply_commander_route_overlay(_build_run_contexts(day_rows), route_summary)
+         freshness = _build_report_freshness(day_rows)
++    return target_day, route_summary, stories_all, freshness
++
++
++def generate_decision_story_report(
++    events_path: Path,
++    report_dir: Path,
++    *,
++    day: Optional[str] = None,
++    max_runs: Optional[int] = 120,
++    trade_only: bool = True,
++) -> Tuple[Path, Dict[str, Any]]:
++    report_dir.mkdir(parents=True, exist_ok=True)
++
++    target_day, route_summary, stories_all, freshness = _load_day_stories_and_freshness(events_path, report_dir, day)
+     if bool(trade_only):
+         stories_all = [s for s in stories_all if _is_trade_story(s)]
+     limit = int(max_runs or 0)
+@@ -1376,35 +1391,7 @@ def generate_run_card_report(
+ ) -> Tuple[Path, Dict[str, Any]]:
+     report_dir.mkdir(parents=True, exist_ok=True)
+ 
+-    if day:
+-        # See generate_decision_story_report's matching comment: day-scoped
+-        # fast path, three independent bounded streaming passes instead of
+-        # one materialized day_rows list held for the whole function.
+-        target_day = str(day).strip()
+-        route_summary = build_commander_route_summary(
+-            reports_root=_canonical_report_root(report_dir),
+-            day=target_day,
+-            day_rows=_iter_day_rows_with_epoch(events_path, target_day),
+-        )
+-        stories_all = _apply_commander_route_overlay(
+-            _build_run_contexts(_iter_day_rows_with_epoch(events_path, target_day)),
+-            route_summary,
+-        )
+-        freshness = _build_report_freshness(_iter_day_rows_with_epoch(events_path, target_day))
+-    else:
+-        rows: List[Dict[str, Any]] = []
+-        for raw in _iter_jsonl(events_path):
+-            ts = raw.get("ts") or (raw.get("payload") or {}).get("ts")
+-            rows.append({**raw, "_epoch": _to_epoch(ts), "_day": _utc_day(ts)})
+-        target_day = _pick_day(rows, day)
+-        day_rows = [r for r in rows if str(r.get("_day") or "") == target_day]
+-        route_summary = build_commander_route_summary(
+-            reports_root=_canonical_report_root(report_dir),
+-            day=target_day,
+-            day_rows=day_rows,
+-        )
+-        stories_all = _apply_commander_route_overlay(_build_run_contexts(day_rows), route_summary)
+-        freshness = _build_report_freshness(day_rows)
++    target_day, route_summary, stories_all, freshness = _load_day_stories_and_freshness(events_path, report_dir, day)
+     if bool(trade_only):
+         stories_all = [s for s in stories_all if _is_trade_story(s)]
+     stories_all = sorted(stories_all, key=lambda s: int(s.get("first_epoch") or 0))
