@@ -10,7 +10,7 @@
 
 ## A Claude — RF-029 owner KEEP 증거 제출 완료, 미충족 소비자 계약만 진행 ([HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md))
 1. **[RF-028](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-028.md) — A KEEP 제출, B 최초 peer 대기:** 85/85 BASE↔A↔B↔integration blob 동일, A run 97/98 owner KEEP/FIX0·trade_summary fake LLM normal/-O scoped 수용. 지팀장 15시 `DEVELOPING→PEER_REVIEW/CODEX_B` 원자 이동. A 재개발 금지(새 결함 SHA 제외), B는 RF-001 exact SHA 게이트 후 미검증 동적 소비자/IO/State 위험만 독립 검증. NOT_DONE.
-2. **[RF-029](../plan/queue/01_PENDING/CLAUDE_A/RF-029.md) — A 지금 개발:** `trade_story/**`·`trade_read_model_parts/**` 독점 38 owner. 안전한 pure 책임 분리/소비자 검증, 필요 시 최소 FIX→B peer. RF-028 한 조각의 PASS·HANDOFF만으로 종료하지 말 것.
+2. **[RF-029](../plan/queue/01_PENDING/CLAUDE_A/RF-029.md) — A 기존 KEEP/FIX0 제출, 지팀장 판정 대기:** `trade_story/**`·`trade_read_model_parts/**` 독점 38 owner. 안전한 pure 책임 분리/소비자 검증, 필요 시 최소 FIX→B peer. RF-028 한 조각의 PASS·HANDOFF만으로 종료하지 말 것.
 **개발 큐에서 제거:** RF-013·RF-017·RF-019 **DONE**. 새 결함 SHA에 대한 명시 REWORK가 아니면 재착수 금지.
 
 ## B Codex — 개발 및 RF-001 통합 검증
