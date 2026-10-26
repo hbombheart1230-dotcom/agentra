@@ -1,5 +1,7 @@
 # Agentra P1.5 — CURRENT (대시보드)
 
+**POLICY_REREAD_REQUIRED (임시 · 지팀장 관리):** A Claude / B Codex 모두 [D03](D03_DEV_TEAM_RULES.md) 변경 blob `89826e109e1e98bfdb683b8cbbe24757fabc549f` 전문 재독 후 HANDOFF에 `POLICY_READ_SHA`·`POLICY_REREAD`·`POLICY_APPLIED_OR_DEFERRED` 및 실제 연속 RF 착수 근거 기록. **A: PENDING / B: PENDING**. 지팀장이 양쪽 원격 수신·적용을 확인한 뒤 이 문단을 직접 삭제. 단순 ACK 불인정. 기존 RF 작업 계속 진행.
+
 정본: [D00](../../ENGINEERING_DELIVERY_POLICY.md) · [D03](D03_DEV_TEAM_RULES.md) · [D01](../../../AGENTS.md) · [D02](../../../CLAUDE.md) · [STATUS](../plan/STATUS.md)
 
 | 담당 | RF | 현재 상태 | 다음 행동 · 상세 정본 |
