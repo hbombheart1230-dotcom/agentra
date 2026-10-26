@@ -112,6 +112,8 @@ from apps.operator_ui.data_access_brief_monitor_notes import (
     _should_replace_brief_monitor_summary_r3_impl,
     _prefer_richer_brief_text_r3_impl,
     _strategist_nested_value_r3_impl,
+    _strategist_risk_tone_r3_impl,
+    _strategist_monitor_guidance_r3_impl,
 )
 from apps.operator_ui.data_access_brief_fallback import (
     _fallback_operator_brief_r3_impl,
@@ -257,15 +259,11 @@ def _strategist_nested_value(payload: Any, key: str) -> Any:
 
 
 def _strategist_risk_tone(payload: Any) -> str:
-    value = _strategist_nested_value(payload, "risk_tone")
-    if value is None:
-        value = _strategist_nested_value(payload, "risk_mode")
-    return str(value or "").strip()
+    return _strategist_risk_tone_r3_impl(payload, facade=_r3_sys.modules[__name__])
 
 
 def _strategist_monitor_guidance(payload: Any) -> str:
-    value = _strategist_nested_value(payload, "monitor_guidance")
-    return str(value or "").strip()
+    return _strategist_monitor_guidance_r3_impl(payload, facade=_r3_sys.modules[__name__])
 
 
 def _env_int_with_fallback(*names: str, default: int) -> int:
