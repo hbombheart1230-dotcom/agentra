@@ -26,12 +26,18 @@
 - hosted CI 상태 조회는 정기 운영과 DONE 필수 조건에서 제외한다. 기존 CI 워크플로·테스트 오라클은 승인 없이 변경하지 않는다.
 - RF-001~093 공통 적용. 공통 규칙은 RF마다 복사하지 않는다.
 
+## 3A. 자율 개발·REWORK 핑퐁·가시성
+- **사전 컨펌 최소화:** 이미 배정된 RF의 독점 소유 파일 및 D00 안전 경계 안에서 A/B는 지팀장 매회 승인을 기다리지 않고 실제 소스 수정·테스트·commit·push를 연속 수행한다. 새로운 공유 소유권, 안전 계약, 실거래, 동결 오라클 변경만 지팀장/사용자 승인 경계로 분리한다.
+- **REWORK 즉시 우선:** 상대 검증 FAIL로 재현 가능한 owner-local 결함이 확인되면 지팀장이 해당 RF에 FAIL node·검증 SHA·수정 소유자·허용 경로·합격 조건을 기록한다. 원개발자는 다음 회차 첫 작업으로 해당 RF의 **실제 코드 수정 SHA**를 제출한다. 상대는 새 SHA의 실패 경계만 독립 재검증하고 결과를 자신의 Issue 및 상대 Issue에 전달한다. FAIL이면 같은 RF에서 FIX→PEER를 반복하고, PASS이면 지팀장이 통합/잔여 인수조건을 판정한다. 소스 수정 없이 동일 SHA의 ACK/커버리지 반복은 REWORK 해소로 인정하지 않는다.
+- **상세 보고:** 매 RUN_ID별 GitHub Issue #11(A)/#12(B)에 변경 파일·함수·전후 동작·코드 SHA·명령/exit·실패 traceback 또는 실패 node·REWORK 원인·수정 시도·재검증 결과·미완료 인수조건·다음 owner/action을 빠짐없이 기록한다. 분량 제한 없음. HANDOFF에도 재현 가능한 상세 근거와 최종 답변을 기록한다. 다른 팀이 조치해야 하는 FAIL은 상대 Issue에도 동일 RF·SHA·재현 조건·요구 행동을 명시한다.
+- **지팀장 책임:** 두 Issue/HANDOFF의 신규 RUN_ID를 대조해 각 RF의 FIX/PEER/REWORK/INTEGRATE/DONE 결정을 정본 RF에 기록하고 상대에게 재전달한다. REWORK 수정 지시가 이미 승인된 소유 경계 내라면 추가 컨펌을 만들지 않는다. 진척은 검증 건수가 아니라 **새 소스 SHA, 해결된 FAIL node, 상대 재검증, RF 종결, 통합 SHA**로 보고한다.
+
 ## 4. Git 쓰기 차단 대응
 - push·파일 수정이 거절되면 실제 오류를 구분하고 최신 원격 SHA 재조회 → 변경 범위·소유권 확인 → 충돌 해소 또는 허용된 최소 단위 재시도를 수행한다. 성공 시 원격 HEAD와 변경 파일을 검증한다.
 - 안전 정책 차단은 우회하지 않는다. 동일 실패를 무한 반복하거나 금지된 강제 push로 전환하지 않는다. 허용된 해결 경로가 없으면 BLOCKED와 정확한 재개 조건을 남기고 다른 실행 가능한 RF를 진행한다.
 
 ## 5. 기록·지팀장 책임
-- `CURRENT` = **작업 포인터/규칙 변경 알림만**. `RF` = 해당 건의 결정·잔여 증거·재개 조건. `STATUS` = 전체 현황. `HANDOFF_A/B` = **최신 실행 10~20줄만 교체**, 과거는 Git 이력. 새 총괄 문서·반복 일지·빈 커밋 금지.
-- HANDOFF는 RUN_ID, 시작/후보 **코드 SHA**(HANDOFF 커밋과 구분), RF별 변경 경로, normal/-O 명령·exit, 독립 verdict, BLOCKED 원인·재개 트리거, patchnotes, GPT_ACTION_REQUIRED, push 확인을 간결히 담는다. **매 실행(예약·수동 강제 포함)마다 코드 변경 유무와 무관하게 HANDOFF 최신 회차를 교체·commit·push한다.** 신규 결과가 없으면 `NO_CHANGE`와 실행 시각/RUN_ID, 시작·종료 원격 코드 SHA, 확인한 미완료 RF·실행 가능성·차단 사유, 실제 명령/NOT_RUN, 다음 행동을 짧게 남긴다. 신규 검증·peer 결과가 있으면 명령·exit·대상 SHA를 반드시 남긴다. **각 회차의 최종 사용자용 작업 완료 답변도 빠짐없이 HANDOFF에 짧게 수록하고, 해당 담당 GitHub Issue(A #11, B #12)에 같은 RUN_ID의 완료 댓글을 1회 append한다.** Issue는 누적 실행 이력, HANDOFF는 최신 회차 및 Git 이력으로 관리한다. 댓글에는 시작·종료 시각/실질 작업 시간, 연속 처리 작업 수, 실제 코드 SHA/변경 파일, RF별 PASS_SCOPED/FAIL/BLOCKED/NOT_RUN, 다음 작업, 조기 종료 이유, HANDOFF 링크, push 검증 결과를 담는다. 코드 변경 0·NO_CHANGE·push 실패도 보고 의무가 사라지지 않는다. push 실패 시 Issue 댓글로 실패 사유를 남기고, Issue 댓글 실패 시 HANDOFF에 오류를 남긴다. 둘 다 실패하면 최종 답변에 전송 실패를 명시한다. 동일 RUN_ID 중복 댓글 금지. HANDOFF-only 커밋은 실행 관측용이며 코드 진척·RF PASS·DONE으로 세지 않는다. 동일 실행의 중복 커밋·장문 반복은 금지한다.
+- `CURRENT` = **작업 포인터/규칙 변경 알림만**. `RF` = 해당 건의 결정·잔여 증거·재개 조건. `STATUS` = 전체 현황. `HANDOFF_A/B` = **최신 실행의 상세 기술 보고(분량 제한 없음)**, 과거는 Git 이력. 새 총괄 문서·반복 일지·빈 커밋 금지.
+- HANDOFF는 RUN_ID, 시작/후보 **코드 SHA**(HANDOFF 커밋과 구분), RF별 변경 경로, normal/-O 명령·exit, 독립 verdict, BLOCKED 원인·재개 트리거, patchnotes, GPT_ACTION_REQUIRED, push 확인을 간결히 담는다. **매 실행(예약·수동 강제 포함)마다 코드 변경 유무와 무관하게 HANDOFF 최신 회차를 교체·commit·push한다.** 신규 결과가 없으면 `NO_CHANGE`와 실행 시각/RUN_ID, 시작·종료 원격 코드 SHA, 확인한 미완료 RF·실행 가능성·차단 사유, 실제 명령/NOT_RUN, 다음 행동을 짧게 남긴다. 신규 검증·peer 결과가 있으면 명령·exit·대상 SHA를 반드시 남긴다. **각 회차의 최종 사용자용 작업 완료 답변을 HANDOFF에 구체적으로 수록하고, 해당 담당 GitHub Issue(A #11, B #12)에 같은 RUN_ID의 완료 댓글을 1회 append한다.** Issue는 누적 실행 이력, HANDOFF는 최신 회차 및 Git 이력으로 관리한다. 댓글에는 시작·종료 시각/실질 작업 시간, 연속 처리 작업 수, 실제 코드 SHA/변경 파일, RF별 PASS_SCOPED/FAIL/BLOCKED/NOT_RUN, 다음 작업, 조기 종료 이유, HANDOFF 링크, push 검증 결과를 담는다. 코드 변경 0·NO_CHANGE·push 실패도 보고 의무가 사라지지 않는다. push 실패 시 Issue 댓글로 실패 사유를 남기고, Issue 댓글 실패 시 HANDOFF에 오류를 남긴다. 둘 다 실패하면 최종 답변에 전송 실패를 명시한다. 동일 RUN_ID 중복 댓글 금지. HANDOFF-only 커밋은 실행 관측용이며 코드 진척·RF PASS·DONE으로 세지 않는다. 동일 실행의 중복 커밋과 근거 없는 내용 반복은 금지하되 필요한 코드 diff·실패 traceback·수정 지시·재검증·결과 상세 기록은 길이 제한 없이 허용한다.
 - 지팀장은 매 점검 **CURRENT → A/B 원격 HEAD·최신 HANDOFF → 변경된 RF 증거 → 런검증 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) 신규 내용 → STATUS**만 확인. 멈춘 RF는 그 회차에 직접 소유권·원인·최소 다음 행동을 확정하고 실행 가능한 다음 RF로 넘긴다. 새 peer 증거는 같은 회차에 판정하고, 완전 peer PASS는 선별 통합/통합 SHA normal/-O 검증 단계로 즉시 넘긴다. 같은 SHA 전수 재검증·중복 감사 금지.
 - 보고는 **A/B 진행 → 지팀장 실제 조치/커밋 → RF·통합 검증 → 다음 행동** 순서. 계획·부분 PASS·NOT_RUN을 DONE으로 보고하지 않는다. 별도 예약 생성/변경은 사용자 승인 없이 하지 않는다.
