@@ -1,3 +1,10 @@
+## 지팀장 B 슬롯 — B 최초 독립 peer 4건 직접 수용·물리 이동 (2026-10-26)
+
+- B Issue #12 RUN B-20261026T093354Z 최초 normal/-O exit 0: RF-031 fake timeout/exception, RF-033 malformed summary/Q9 no-fetch, RF-034 stage2/truthy BASELINE_DESIGN, RF-032 malformed time/tmp inventory. B 다음 RUN B-20261026T094550Z RF-070 static 41(25 OTHER+16 safety wrapper), RF-066 static 17 owner normal/-O exit 0 추가; 실제 효과형 실행 NOT_RUN. A 신규 소스 증거 0; RF-030 동결 충돌 후보 통합 금지.
+- **지팀장 판정/물리 이동:** RF-031/033/034/032를 PEER_REVIEW/CODEX_B에서 LEAD_ACCEPTANCE/FROM_CLAUDE_A로 각각 신규 경계 독립 peer 수용, KEEP_NOOP_CANDIDATE / PEER_SCOPED_ACCEPTED / NOT_DONE. 기존 파일 삭제와 신규 파일 존재 원격 확인, old_exists=false 4건. 4건 전체 owner/효과/exact SHA hosted CI 미충족, DONE 0, 신규 source integration 0.
+- **큐 기대 집계:** PENDING 62 / DEVELOPING 3 / PEER_REVIEW 5 / LEAD_ACCEPTANCE 12 / REWORK 0 / DONE 11 = 93. 4건 경로만 원격 검증; 전체 93개 경로 전수는 NOT_RUN.
+- **Issue #32:** SELL provenance UNKNOWN, broker/local mismatch, stale BUY guard, readiness GREEN/image SHA 미증명. 코드 REWORK/안전 수정 금지. Troubleshooting 이전 open 4/closed 0 종료 증거 없음; 디렉터리 listing API 오류로 현행 전수 재검증 NOT_RUN, 이동 0.
+
 ## 지팀장 B 슬롯 — A run106/107 신규 peer 인수 및 RF-067 실제 이동 (2026-10-26 18:33 KST)
 
 - **A 신규:** branch `3ce7aa45`, 소스 delta 0; run106 RF-033 provider fake 경계 `RF033_PROVIDERS_OK fg=12 dp=21` normal/-O exit 0 원개발 증거 추가(상대 peer 아님). run107 RF-067 두 root wrapper `RF067_WRAPPER_PEER_OK`, RF-065 research scorecard tmp-only write `RF065_NEXT_CLI_PEER_OK`, RF-063 metrics schema tmp-only write `RF063_METRICS_PEER_OK` 모두 BASE/integration/normal/-O 4-way 동일·exit 0(지팀장 직접 런 NOT_RUN). RF-063 metrics CLI는 read-only가 아닌 쓰기형으로 CURRENT 정정.
