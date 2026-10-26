@@ -12,6 +12,14 @@
 - **실계좌·실주문 금지.** `KIWOOM_MODE=mock`·모의 서버/계좌를 확인한다. `EXECUTION_MODE=real`은 실제 운영 루프일 수 있고 실계좌 허가가 아니다. `ALLOW_REAL_EXECUTION=false` 유지. 모의 계좌 확인이 안 되면 주문만 중단한다.
 - 기존 장중 프로세스가 작동 중이면 HEAD 변경만으로 재시작·재배포하지 않는다. 기존 데이터·로그·잠금·프로필을 보존한다. `C:\Agentco`, 개발 A/B 브랜치, 운영 PC 소스·상태 변경 금지.
 
+### 실행 이미지 SHA와 개발 HEAD를 분리하라
+
+- 매 회차 `REMOTE_HEAD`(조회 당시 원격 integration HEAD), `CHECKOUT_SHA`(RunLab 로컬 소스), `RUN_IMAGE_DIGEST`(구동 컨테이너 이미지), `RUN_SOURCE_SHA`(해당 이미지에 실제 포함된 소스)를 **서로 다른 필드**로 기록하라. 예약 07:00 실행이 없으면 `UPSTREAM_NOT_RUN`으로 남기고 EOD 관측 RUN_ID를 07시 RUN_ID로 대체하지 마라.
+- 개발 A/B 및 integration의 커밋·푸시는 계속 허용된다. `RUN_SOURCE_SHA != REMOTE_HEAD`는 **정상적인 고정 버전 실런**이며 결함, 코드 REWORK, 재빌드/재배포 사유가 아니다. 원격 HEAD는 조회값으로만 기록하고 하루 동안 실행 중인 Docker를 HEAD 변경에 맞춰 자동 교체하지 마라.
+- 구동 이미지의 `RUN_SOURCE_SHA`는 해당 **실행 이미지 digest와 연결되는** OCI revision 라벨 또는 검증 가능한 빌드 provenance/manifest로 입증하라. 로컬 checkout SHA, 마지막 검증 SHA, 최신 Git HEAD, 이미지 생성 시간으로 실행 소스 SHA를 추정·대체하지 마라.
+- 소스 귀속이 불가능하면 `RUN_SOURCE_SHA=UNKNOWN`, `VERSION_SCOPED_PASS=BLOCKED`로 기록하되, Docker/API 상태·시장/LLM 관측·공식 모의 브로커 체결 사실은 **관측 항목별 PASS/FAIL/UNKNOWN**으로 그대로 보존하라. SHA 미입증만으로 기존 실런 전체를 FAIL로 뒤집지 마라.
+- 새로운 OCI revision 표기는 **차기 승인된 빌드**에 반영할 개선안이다. 지금 실행 중인 이미지·프로세스·DB/State·예약을 라벨 보강이나 HEAD 동기화 목적으로 무승인 변경하지 마라. 주문/SELL owner/Guard/Reporter 불일치는 공식 브로커 증거와 로컬 이벤트를 읽기 전용으로 대조하고 코드 결함 재현은 지팀장이 소유 RF에 배정한다.
+
 ## 2. 실행 담당·시간 (평일 KST)
 
 | 시각 | 담당 | 기존 예약명·작업 |
