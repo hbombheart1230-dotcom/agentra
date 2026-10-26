@@ -19,7 +19,7 @@
 - 도구·Git 쓰기가 차단되면 즉시 포기하지 않고 오류 종류(권한·충돌·입력·안전 정책)를 확인하여 허용 범위 안에서 수정 후 재시도한다. 안전 검사 우회, 금지 작업의 강행, 무승인 강제 push는 하지 않는다. 해소 불가능하면 BLOCKED 사유와 재개 조건을 명시한다.
 
 ## 3. 공통 정책 갱신·증거의 신뢰성
-- **매 실행 정책 수신 의무:** 각 팀은 자기 CURRENT를 시작점으로 integration 원격 D00 및 역할별 실행 규칙(D03+D01/D02 또는 D04)의 blob SHA를 직전 HANDOFF와 비교한다. 변경된 문서 본문은 반드시 다시 읽고 `POLICY_SHA_BEFORE/AFTER`, `POLICY_CHANGED`, `POLICY_READ=PASS/BLOCKED`를 HANDOFF에 남긴다. SHA가 같으면 재독하지 않는다. CURRENT는 규칙 본문이나 임시 POLICY_NOTICE를 싣지 않는다. 읽기 실패는 재시도하고 BLOCKED로 기록하며 이전 규칙을 최신으로 가장하지 않는다.
+- **매 실행 정책 수신 의무:** 각 팀은 자기 CURRENT를 시작점으로 integration 원격 D00 및 역할별 실행 규칙(D03+D01/D02 또는 D04)의 blob SHA를 직전 HANDOFF와 비교한다. 매 실행 CURRENT·D00·D03·역할별 D01/D02(지팀장도 D01/D02 모두)를 SHA와 무관하게 반드시 본문까지 읽고 `POLICY_SHA_BEFORE/AFTER`, `POLICY_CHANGED`, `POLICY_READ=PASS/BLOCKED`를 HANDOFF에 남긴다. SHA가 같아도 재독한다. CURRENT는 규칙 본문이나 임시 POLICY_NOTICE를 싣지 않는다. 읽기 실패는 재시도하고 BLOCKED로 기록하며 이전 규칙을 최신으로 가장하지 않는다.
 - **공통 증거 원칙:** 코드 SHA와 HANDOFF SHA 구분, 실제 명령·exit·실패 node·BASE 대비 신규 회귀 구분, 동일 SHA 유효 normal/-O 및 peer 증거 재사용, NOT_RUN/BLOCKED의 정직한 표기, 임시 산출물 격리·정리. 문서·ACK·재검증 건수는 코드 진척으로 계산하지 않는다.
 
 ## 4. 실행·증거의 신뢰성
