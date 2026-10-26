@@ -25,3 +25,20 @@
 - BLOCKED/재개: `tests/apps/**`·`tests/test_operator_ui.py` = `fastapi` 미설치(ENVIRONMENT). 재개 = 지팀장의 A 신규 RF 번호 배정 또는 신규 B source SHA.
 - 다음 행동: 지팀장이 배정한 A RF 즉시 착수, 신규 B SHA 도착 시 peer.
 - PUSH_VERIFIED: 아래 push 후 Issue #11 댓글 참조.
+
+---
+## 추가 회차 (동시 실행 병합) — RF-008 최초 peer · RF-067 최초 peer
+
+- RUN_ID: 2026-10-26T0700Z-claude-a-sched-100 · ROLE: Claude A · BRANCH: work/p15-a-reporter-pure-20261021 · A 시작 `11073cec`. **A 소스 코드 변경 없음(NO_CHANGE)**, 상대 B 소스 SHA 신규 없음(B `d858f8b0` 불변). peer는 물리 큐 `03_PEER_REVIEW/CLAUDE_A`의 **최초 미검증 경계**(D03 §2 허용).
+- POLICY_REMOTE_START_SHA(integration `02fe2ce7`): CURRENT `88177d92` · D00 `bebc2e20` · D03 `d281c4dd` · D02 `82396714`. POLICY_REMOTE_END_SHA(integration `1f8ea0bf`): CURRENT `3728ff09`(A 지시: RF-008 최초 peer → RF-007/063/065/067 최초 미검증 경계만) · 나머지 불변. POLICY_CHANGED=CURRENT만. POLICY_READ_SHA: CURRENT 시작 `88177d92`·종료 `3728ff09` 전문 재독, D03 `d281c4dd` 전문 수신. POLICY_APPLIED: 적용 — RF-008 먼저 실행, 이어 RF-067 착수.
+- **RF-008 peer (`graphs/nodes/strategist_node.py`, 3,839행, blob `86e9c2e2` = BASE = integration = B, diff 0):**
+  - 정적(AST): 161함수, top-level 호출 0, 가변 전역 8(상수 표), 광역 except 19, import `os/json/pathlib/re/time/ast/sys/datetime`, env 읽기 9개(`STRATEGIST_FRAME_USE_LLM` 등), 파일 쓰기 호출 없음, LLM 호출은 `LLMRouter.from_env()`(L2252)→`router.chat("strategist", …)`(L2488) 한 경로.
+  - 테스트(strategist_node 참조 42파일, `OPENROUTER_API_KEY` 비움, integration `02fe2ce7`): 재실행 확정값 normal **1 failed / 1270 passed**, `python -O` **1 failed / 1270 passed**. BASE `63182ab2` 동일 명령 normal **1 failed / 1270 passed**. 유일 실패 `tests/test_p15_strategist_s5_helper_moves.py::test_diff_against_pinned_source_touches_only_the_closed_path_set`(B-stage 동결 인벤토리 오라클, BASE 동일 → BASELINE_EXISTING, 오라클 무수정). B 자체 증거 `test_p172_strategist_s1_057_migration` 94 PASS 포함.
+  - **이상 징후 1건(미해명, 정직 기록):** 같은 integration 트리의 **첫** normal·`-O` 두 실행에서 17 failed(RF-008 밖 `test_m21_commander_runtime_entry` 11, `test_p0a_e2e_open_order_guard…` 2, `test_m31_17`·`test_paper_trading_execution_finalization`·`test_scanner_fallback_policy` 각 1, 위 동결 오라클 1)로 보였으나, 같은 명령 **재실행에서는 normal·-O 모두 1 failed / 1270 passed**(BASE와 동일). 17개 노드 단독/부분 조합은 첫 실행 이후 PASS, 파일 단위·`-k` 이분 탐색도 재현 못 함. 원인 미확정(해당 시점의 일시적 환경/동시 실행 간섭 추정, UNKNOWN). owner 파일이 BASE와 동일하므로 strategist_node 기인 아님. 재발 시 동일 17 노드 목록(`rf008_fail_n.txt`)으로 재확인.
+  - State patch·소비자 차분 하네스(`rf008_diff.py`, fake `LLMRouter`(client None)·**소켓 연결 차단**·`time.time` 고정·고정 tmp reports_root): 입력 5종(empty/candidates+policy/news/holding monitor_only/비정상 타입) 출력 State JSON 1.88MB가 **integration·BASE·normal·`-O` 4개 바이트 동일**, exit 0, LLM 호출 0, 생성 파일은 tmp `canonical/` 1개 디렉터리뿐. 예외 입력도 크래시 없이 State 반환.
+  - **안전 기록:** 하네스 1차(소켓 차단 전)에서 `strategist_node`가 LLM 없이도 **외부 시세 서비스 쿠키/crumb 조회(공개 시장 데이터 read-only)를 시도**해 샌드박스에서 `ConnectionError`로 실패("Cookie/crumb fetch failed, continuing without crumb" 로그). 인증·키·계좌·주문 접근 없음, 실패 시 계속 진행(fail-soft). 이후 모든 하네스는 소켓 차단. 이 외부 read-only 시세 조회는 owner 코드 원래 동작(BASE 동일)이며 변경 안 함.
+  - 판정: **PEER_PASS_SCOPED / KEEP 타당**(3,839행 facade가 타 RF 소유 `libs/runtime/strategist` helper 다수 호출 → 무승인 물리 분리 금지 동의). 전체 PASS·DONE 아님.
+- **RF-067 peer (`scripts/check_*.py` 14 wrapper, blob==BASE 14/14, 대상 `scripts/diagnostics/*` 14/14도 BASE blob 동일):** 모두 14행 호환 진입점(`runpy`/`importlib` 위임). import 계약 하네스(`rf067_peer.py`): 14개 wrapper를 `import` 시 대상 `scripts.diagnostics.<name>` 모듈로 치환됨(14/14 True), 대상 top-level 호출 0, 루트·scripts에 신규 파일 0. integration·BASE·normal·`-O` 4개 출력 바이트 동일 exit 0. `__main__` 실제 실행(CLI)은 **NOT_RUN**(진단 스크립트가 reports/운영 경로를 읽을 수 있어 안전 검토 대상, 재개 = 지팀장이 격리 경로/명령을 승인). 판정: import 계약 PEER_PASS_SCOPED, CLI 계약은 PENDING 유지.
+- NOT_STARTED_REASON: RF-007 = `ENV_BLOCK`(`fastapi` 미설치, UI 소비자·E2E 불가; 재개 = fastapi 환경). RF-063(76)·RF-065(54) = `TIME_LIMIT`(SAFETY_CLI_REVIEW_REQUIRED·research CLI 안전 분류 필요, 다음 회차 첫 작업: `scripts/diagnostics`/`scripts/research` 파일별 AST 안전 분류 후 import 계약 하네스). RF-029 증거 반복 안 함.
+- GPT_ACTION_REQUIRED: RF-008 PEER_PASS_SCOPED 인수 판정(위 이상 징후 1건 참고), RF-067 CLI 실행 격리 승인 여부, 예약 주기(변경 안 함).
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
