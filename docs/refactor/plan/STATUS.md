@@ -1,3 +1,10 @@
+## 지팀장 A 슬롯 — RF-016 신규 독립 peer 인수·단일 큐 이동 (2026-10-26 19시 KST)
+
+- **A/B 최신:** A `3ce7aa45`(run106/107 HANDOFF·offline 하네스, owner source delta 0), B `53d8624e`(RUN B-20261026T094550Z, source delta 0). B 첫 신규 RF-016/014/015 순수 함수 독립 peer normal/-O `RF016_014_015_PEER_OK strategist=1 scanner=1 monitor=1 io=none` 각 exit 0; B 후속 RF-070 41 AST(25 OTHER+16 safety wrapper), RF-066 17 owner inventory 각 normal/-O exit 0. 위험 launcher/운영 효과 실행 NOT_RUN.
+- **지팀장 실제 조치:** RF-016만 `03_PEER_REVIEW/CODEX_B` → `04_LEAD_ACCEPTANCE/FROM_CLAUDE_A` 원자 이동, B strategist pure 1함수 scoped peer 수용; A 원개발 8/8 BASE=integration=A blob 동일(원격 tree 비교) 및 913×2 기존 증거 재사용. `KEEP_NOOP_CANDIDATE / PEER_SCOPED_ACCEPTED / LEAD_HOLD / NOT_DONE`. RF-014는 BASE 기존 3 FAIL·Scanner 소비자, RF-015는 11 FAIL·Monitor 동적 계약이 한 함수 peer로 해결되지 않아 PEER 유지. RF-016 나머지 동적/State/예외, 1060 PASS/1 FAIL 원인, exact-SHA hosted CI 미충족. LEAD 기존 12건은 RF-001(33 owner/hosted), RF-008(standalone/외부 fail-soft), RF-028(85 owner 효과), RF-029(38 owner/CI), RF-031/032/033/034(전체 owner 효과/CI), RF-063/065(locale·CLI 효과/CI), RF-067(Windows/Scheduler/preflight), RF-069(UEF5 승인 snapshot) 모두 HOLD/NOT_DONE; 근거 없는 DONE 이동 없음.
+- **현행 물리 큐 원격 전수:** PENDING 62 / DEVELOPING 3 / PEER_REVIEW 4 / LEAD_ACCEPTANCE 13 / REWORK 0 / DONE 11 = **93**, 고유 RF 93, 중복·누락 0, RF-016 활성 경로 1. RF-016 8 owner BASE/A/integration blob 동일. 최종 integration exact SHA hosted checks 0건, 지팀장 normal/-O NOT_RUN. 신규 source 통합 0, DONE 0.
+- **런검증 #32:** broker/local SELL 누락, stale BUY guard, readiness GREEN vs reconciliation mismatch, image revision SHA UNKNOWN. 런 관측 및 code candidate 미확정, CODE REWORK/재배포/안전 계약 수정 없음. troubleshooting open 4/closed 0 원격 tree 전수 확인; 각 종료조건 미충족으로 이동 0.
+
 ## 지팀장 B 슬롯 — B 최초 독립 peer 4건 직접 수용·물리 이동 (2026-10-26)
 
 - B Issue #12 RUN B-20261026T093354Z 최초 normal/-O exit 0: RF-031 fake timeout/exception, RF-033 malformed summary/Q9 no-fetch, RF-034 stage2/truthy BASELINE_DESIGN, RF-032 malformed time/tmp inventory. B 다음 RUN B-20261026T094550Z RF-070 static 41(25 OTHER+16 safety wrapper), RF-066 static 17 owner normal/-O exit 0 추가; 실제 효과형 실행 NOT_RUN. A 신규 소스 증거 0; RF-030 동결 충돌 후보 통합 금지.
