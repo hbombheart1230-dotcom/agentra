@@ -1,3 +1,32 @@
+# Agentra P1.5 — CURRENT (지팀장 A 슬롯 2026-10-26 23시 KST 최종 배정)
+
+**유일한 정본:** `integration/p1.5` 이 CURRENT + [D00](D00_ENGINEERING_DELIVERY_POLICY.md). **이 최상단 배정이 아래 22:38·22시 이력보다 우선.** 작업 브랜치 CURRENT 읽기 금지. RF 최종 DONE/REWORK/선별 통합은 지팀장 본인 판정. 동일 source SHA·경계 normal/`python -O`/peer 재실행 금지.
+
+## 지팀장 실제 실행 결과·다음 게이트
+
+- **LEAD 시작 15 / 신규 유입 0 / 직접 판정 15 / 신규 DONE 1 / REWORK 0 / 잔여 14.** [RF-008 DONE](../plan/queue/05_DONE/CODEX_B/RF-008.md) `04_LEAD/FROM_CODEX_B → 05_DONE/CODEX_B` 실제 이동 commit `0c063b10`, source 1/1 blob `86e9c2e2` BASE/integration/A/B 동일, in-repo 4 consumer+dynamic/CLI 검색·EventLogger/LLM/State/예외 peer·B94×2 정상/-O 인수. 외부 standalone entrypoint 부재를 직접 확인, RF-012 가격 유한성 위험은 **별도 소유 OPEN**으로 보존. 93개 단일 물리 경로, PENDING61 / DEVELOPING3 / PEER1 / LEAD14 / DONE14 / REWORK0. **새 운영 소스 통합 0**(A/B 운영 source diff0).
+- **신규 A `b22cf53d` run116/117:** RF-031 writer 8 tmp files/day cache/State/예외, RF-028 정식 cascade/visibility 8분기, RF-016 alias 소비자 정적 6파일, RF-008 동적 소비자 repo scan 정상/-O exit0. **신규 B `34a58585`:** RF-029 A branch exact 3 blob fetch 성공 후 독립 projection peer 정상/-O `RF029_DISPLAY_PROJECTION_PEER_OK` exit0, write0. RF-016/028/029/031의 신규 근거와 남은 **최초** 미검증 경계는 해당 실물 RF 및 [STATUS](../plan/STATUS.md) 최신 상단에 반영(`91e5fe79`). 나머지 10 LEAD 기존 근거/차단 재사용; 무근거 DONE/REWORK 금지.
+- **CI/검증:** 현행 필수 safety hosted `40332899631` @ `0da98a47` normal/-O 두 job SUCCESS, 현행 source/tests/workflow tree `apps=e6747540` `graphs=4ca426f1` `libs=5b0647fd` `scripts=d9fbc14d` `tests=f2741398` `.github=75f8f8f4` 정확 동일. Web `40073316192` @ `1374d371` SUCCESS, `apps/web=a96c7deb`·web workflow blob `4e498a8b` 동일. 기존 범위에만 적용, 이번 문서 HEAD 새 hosted CI 0·지팀장 Python normal/-O **NOT_RUN**, 전체 RF/RunLab PASS 아님. 원격 GitHub 큐/정확 blob/tree 정적 검증 PASS.
+- **troubleshooting:** 실제 해결 `P15_DOC_CI_COMPAT_20261023`은 **사용자 승인된 현행 2-workflow로 대체 + 최신 active safety/Web GREEN**으로 `open → closed` 이동 `a0f4a123`; 역사 5 workflow 소급 PASS 아님. 현재 **open4 / closed1**. RF-012 open에 `execute_from_packet.py` read-only static downstream Infinity candidate 경로 기록, 보호 코드 변경/실거래 NOT_RUN, 실제 주문 영향 UNKNOWN. branch local exit/RF020 scope/source admission OPEN. Issue #32 최신 19시 final 이후 새 결과 없음: SELL provenance·BUY guard·OCI SOURCE_SHA UNKNOWN/BLOCKED, RF 신규 CODE REWORK 아님.
+
+## Codex B — `work/p15-b-operator-structure-20261022` (최신 실행 배정)
+
+1. **P0 [RF-031](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md) 최초 독립 writer peer:** A run116 `rf031_reporter_analysis_boundary.py` **재실행 금지**. detached/tmp-only no-network/no-order fake로 `reporter_analysis.generate_reporter_analysis_report` → JSON/MD 외 metrics/operator_summary/trade_explain **8파일**, `EVENT_LOG_DAY_CACHE_DIR` 기본 vs tmp, 전략 메모리 append, 단계별 예외/부분 산출과 `Reporter.analyze_event_logs` caller 반환을 독립 검증. `python <new_harness>` / `python -O <new_harness>` 실제 exit/marker·exact owner blob·outside writes0. 실 LLM·frozen 13 owner/운영 root 실행 금지; 안전하지 않으면 AST-only/NOT_RUN·정확 차단 제출.
+2. **P1 [RF-028](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-028.md) 최초 정식 cascade 독립 peer:** A run117 `RF028_CASCADE_VISIBILITY_OK`·run116 rich/memory marker 반복 금지. `story_input.canonical_agent_artifacts` 정식 위치에서 fallback/top1/blocked cascade의 `entry_execution_visibility` State·요약 차단사유 생략 vs 전체 보고서 보존·malformed/exception·writer effect를 자체 tmp-only fake 정상/-O로 독립 검증. 85 owner 전수 PASS 주장 금지.
+3. **P2 [RF-016](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-016.md):** A run115 strategic_answers alias4·run116 static mutation 0 재실행 금지. `node_policy_projection.strat_policy_commander_context_policy_adjustment` → facade `_build_strategic_answers` → `strategy_policy_annotation` use-time nested State/예외 최초 독립 fake 정상/-O.
+4. **P3 [RF-034](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-034.md):** A renderer↔pipeline 기존 marker 반복 금지. 자체 fake로 payload/CRLF/ValueError·tmp writer 경계 최초 독립 peer. **P4 RF-050** 실제 Strategist/Reporter/UI `LLMRouter.chat` exception State/fallback; **P5 RF-015** historical 11 FAIL BASE node별 원인 분리. RF-070/066/071 위험 main/Step5C/cleanup/restart 실행·삭제 금지, 남은 안전 정적 작업은 이후.
+
+## Claude A — `work/p15-a-reporter-pure-20261021` (최신 실행 배정)
+
+1. **P0 [RF-029](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md):** B 신규 projection peer PASS를 반복하지 말고 `libs/reporting/trade_story_pipeline.py`→`trade_story_pipeline_story_assembly.py` 실제 report/story 파일 소비자·State·예외·tmp writer 경계를 **원개발자 최초** synthetic offline 정상/-O 검증. 외부 파일/네트워크/브로커 차단. B 후속 독립 peer에 필요한 정확 schema/owner blob/exit 제출.
+2. **P1 [RF-032](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-032.md):** B 기존 nonempty trade writer 28파일 PASS 반복 금지. 29개 write-owner 중 아직 미검증 **새 순수 evaluation writer 1경계**를 파일별 AST 효과 분류 후 완전 tmp-root·`recover_forward=False`·no UEF/live로 normal/-O 최초 검증. 경계가 safety/frozen이면 NOT_RUN·정확 owner/승인권자 기록하고 다음 안전 파일로 이동.
+3. **P2 [RF-014](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-014.md):** 20 Scanner owner와 RF-009/019/030/035/074의 단일 소비자 소유권 충돌을 **read-only** 파일::심볼 매핑, 기존 BASE 3 FAIL/T3 및 B Top1 fake 반복 금지. 최초 안전 dynamic rank/reject/NOOP consumer만 tmp fake 정상/-O. 타 RF·동결 테스트 수정 금지.
+4. **P3 [RF-033](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-033.md):** 기존 provider/capture/forward-return marker 반복 금지. 남은 45 owner 중 최초 비효과 consumer 또는 safe malformed writer 경계를 별도 tmp-only 검증. 위험 실데이터·UEF 실행 금지.
+
+**지팀장 다음 최초 행동:** A/B 새 source/peer·Issue #32 인수 → **LEAD 잔여 14 전건** 직접 최종 게이트 재판정, 충족 시 즉시 05_DONE 실물 이동·구 경로 삭제/93개 단일 경로 검증 → 안전한 선별 통합·exact source tree CI 판정 → troubleshooting 실제 해결만 closed 이동 → STATUS → **CURRENT 마지막 갱신**. RF-012 protected Infinity 후보는 승인 전 코드 수정/실거래 없이 안전한 독립 offline 검증 경계만 정한다. main/실거래/Broker/Supervisor/Executor/Step5C/UEF 거래 안전·동결 테스트/CI·예약·운영 데이터 무승인 변경 금지.
+
+---
+
 # Agentra P1.5 — CURRENT (지팀장 B 슬롯 2026-10-26 22:38 KST 최종 배정)
 
 **정본:** `integration/p1.5` 이 CURRENT + D00. **본 절이 아래 22시·21시 배정보다 우선한다.** 작업 브랜치 CURRENT 사용 금지. 지팀장만 RF 최종 DONE/REWORK·물리 큐·통합 결정. 동일 source SHA/동일 경계 normal/`python -O`/peer 재실행 금지.
