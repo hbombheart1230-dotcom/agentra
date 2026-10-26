@@ -1,3 +1,10 @@
+## 지팀장 RF-015 Monitor 단계 전진 — 2026-10-26 21시 KST
+
+- **실제 이동:** RF-015 `03_PEER_REVIEW/CODEX_B → 04_LEAD_ACCEPTANCE/FROM_CLAUDE_A`, 원자적 Git commit `3537d07e`; 이전 경로 삭제·새 경로 1개. **KEEP_SCOPED / INDEPENDENT_PEER_SCOPED_ACCEPTED / LEAD_HOLD / NOT_DONE**. 전체 큐 **PENDING 61 / DEVELOPING 3 / PEER 2 / LEAD 14 / DONE 13 / REWORK 0 = 93**, 고유 RF 93/93.
+- **이번 최초 지팀장 구분:** integration `44a71b20`, A `266b953c`, B `f19d3a12`에서 기존 RF-015 Monitor 19/19 owner blob 동일. B에만 있는 `libs/agents/monitor/__init__.py` (`685fc54a`)·`contracts.py` (`62cb08a2`)는 A/integration에 없고 detached A source 기반 B의 기존 scoped transition/summary peer가 두 신규 파일을 검증했다는 근거는 없다. **두 B-only 파일 선별 통합 제외/독립 A peer 미완료**. 역사 11 FAIL의 BASE 대조 및 State/event·동적 소비자 검증 미완료. 다음 최초 증거는 B의 node별 BASE 대조 및 A의 두 신규 파일 독립 read-only peer. 같은 marker 재실행 금지.
+- **LEAD 14건 처리:** 기존 13건(RF-008/014/016/028/029/031/032/033/034/063/065/067/069)은 아래 20:45 직접 판정·미충족 게이트를 유지, 신규 소스/peer 없으므로 동일 증거 반복 검증하지 않음. 신규 RF-015를 추가해 전원 **NOT_DONE**, 신규 DONE 0·소스 통합 0. 문서-only 커밋의 normal/-O 및 hosted CI **NOT_RUN**. Issue #32 broker SELL provenance UNKNOWN·BUY guard stale·OCI SHA_UNPROVEN은 런검증 차단이며 코드 REWORK로 전환하지 않음.
+- **Troubleshooting:** open 4/closed 0; 로컬 exit, 문서 CI 호환, RF020 교차 owner/스케줄, source admission은 각각 종료조건 미충족이므로 이동 없음. `main`·거래 안전·동결 CI/테스트·예약 변경 없음.
+
 ## 지팀장 LEAD 15건 직접 재판정 / RF-001·RF-007 DONE 및 잔여 13 최초 경계 (2026-10-26 20:45 KST)
 
 **금회 실물 성과:** RF-007 `3bd94d99`·RF-001 `7196943b` 각 `04_LEAD_ACCEPTANCE → 05_DONE/CODEX_B` 커밋 완료; GitHub tree 93/93 unique. 새 코드/테스트·workflow/주문·예약 변경 없음. 정상/-O·독립 peer·hosted CI는 **기존 동일 소스 실행 증거를 직접 결합**했고 새 테스트 실행을 주장하지 않음. RF-001은 33/33 원격 소스 소비자/효과 전수 정적 검사, RF-007은 API/lockfile/CI/E2E 실물 인수. `f9126467 → 7196943b` Python/TS/CI source·tests 변경 없음; `1374d371` Web CI에서 `apps/web` `a96c7deb`와 `apps/api` `2a488828` 동일. 문서-only 변경마다 exact HEAD hosted rerun 일괄 강제하지 않고 **실제 통합된 코드 SHA + byte-identical tree**의 CI를 구분해 인수.
