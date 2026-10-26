@@ -1,6 +1,12 @@
 # Agentra P1.5 전체 ROOT→LEAF 리팩터링 현황
 
-**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 14시 KST, 물리 큐 검증): pending 71 / verification 13 / rework 0 / DONE 9** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+**기준선(역사 고정):** `63182ab27ecf889768003f637a40577ba1277f86` · **3,985파일/298디렉터리/93개 RF**. **현행 구조(기준 `d082cee8`): 4,080파일/302디렉터리**; 신규 T01~09 문서 9개가 합쳐지면 **4,089파일/302디렉터리** (커밋 후 HEAD 검산 필요). **RF 상태 (2026-10-26 14시 KST, 물리 큐 검증): pending 69 / verification 14 / rework 0 / DONE 10** (RF-002~006, 009, 020, 068). 과거 'DONE 0'은 오류였으며 이 기록으로 정정.
+
+## 추가 큐·개발 배정 판정 (2026-10-26 14시 KST)
+- **RF-017 PENDING→DONE:** 기존 Commander 5 owner BASE↔integration·tests 변경 0, A 273문장 100% self normal/-O 및 B `RF017_KEEP_PEER_OK 7` integration read-only peer normal/-O exit 0 재사용. KEEP_NOOP_VERIFIED, 신규 Supervisor/Executor RF-048/060/044는 독립 HOLD, 지팀장 pytest NOT_RUN.
+- **RF-019 PENDING→VERIFICATION/CLAUDE:** A 29/29 owner KEEP/FIX0, 99.7% scoped 소비자·State/IO·효과 판정 제출, B 기존 evidence/guard/practical/overlay/build offline peer normal/-O scoped PASS, BASE↔integration `libs/runtime/scanner/**` 및 tests 변경 0. **개발 종료, 지팀장 최종 인수조건/KEEP_NOOP 판단만 남음.**
+- **신규 A 개발 배정:** RF-028(85 owner, Reporter trade_report) → RF-029(38 owner, trade_story), 정본 pending RF 상단에 A owner 명시. 기존 RF-013/017/019 반복 개발 금지.
+- **물리 큐:** pending **69** / verification **14** / rework **0** / DONE **10** (93). CSV는 BASE 소유권의 역사적 `UNVERIFIED` 표기이므로 다른 DONE RF처럼 불변 유지.
 
 ## 최신 지팀장 판정 (2026-10-26 14시 KST)
 - **RF-013 VERIFICATION→DONE 물리 이동:** 기존 Reporter 67/67 owner는 BASE `63182ab2` ↔ integration `2f77bd95`에서 변경 0, tests/** 변경 0. A 원복 `e7471a2e` normal/-O 각 2863 PASS/4 SKIP, B 독립 RF-074/p171 각 134 PASS normal/-O, A 마지막 4 owner BASE↔integration normal/-O byte-identical, 90% 미만 owner 0. **KEEP_NOOP_VERIFIED**, source 통합 0. 신규 9+4 거부 후보는 원복·통합 제외. 지팀장 직접 pytest NOT_RUN(기존 증거+코드·테스트 blob 동등성 재사용).
