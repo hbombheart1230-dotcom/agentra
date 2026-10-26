@@ -8,6 +8,8 @@
 - 시작 시 repo ROOT·checkout·원격 HEAD·정확한 후보 SHA를 확인하고, push 후 원격 HEAD를 재확인한다. 기존 작업장·사용자 데이터 보존. D00 금지 사항은 모든 단계에 우선한다.
 
 ## 2. 한 회차 실행 — 실제 코드 진척 우선
+- **정책 최신성 필수 게이트:** 매 실행 시작 시 CURRENT의 `POLICY_NOTICE`와 integration 원격 D00·D03·D01(B)/D02(A)의 최신 blob SHA를 확인하고, 이전 회차 HANDOFF에 기록된 읽은 SHA와 비교한다. SHA가 달라진 문서는 반드시 새 본문을 읽고 변경된 규칙을 적용한 뒤 작업한다. SHA가 같으면 기존 본문 재사용 가능. 읽기 실패 시 이전 정책을 임의 적용하여 완료 처리하지 말고 재시도하고 BLOCKED 원인을 기록한다. HANDOFF에 `POLICY_SHA_BEFORE/AFTER`, `POLICY_CHANGED`, `POLICY_READ=PASS/BLOCKED`를 기록한다.
+
 - **우선순위:** (1) 실행 가능한 자기 REWORK의 최소 수정·KEEP 실증 또는 재현 가능한 기술 차단 근거, (2) 상대 RF **신규 코드 SHA·위험 경계만** 독립 read-only 검증, (3) 자기 신규 RF 개발. REWORK가 차단되면 같은 회차 다음 실행 가능한 RF로 진행한다. 단순 ACK·기존 상태 재보고는 REWORK 조치가 아니다.
 - **지팀장 결정:** 원개발자에게는 해결 방법의 선택을 떠넘기지 않고 허용 경로·구체적 수정/KEEP 조건을 준다. 지팀장은 각 RF 다음 행동을 FIX / KEEP / PEER / INTEGRATE / BLOCKED 중 하나로 확정한다. 반복 GPT_ACTION_REQUIRED는 새 문서·ACK 대신 원인 조사 및 직접 판정으로 해소한다.
 - **증거 재사용:** 동일 코드 blob·동일 테스트 반복 금지. 기존 blob parity·normal/-O·peer PASS_SCOPED는 유지한다. 미검증 소비자/호출/State/IO/예외/부작용 **위험 경계만** 표적 offline/mock normal/-O 검증한다. 실패는 BASE와 같은 조건으로 비교해 BASELINE_EXISTING / ENVIRONMENT / CROSS_RF_OWNER / UNKNOWN을 분리한다.
@@ -30,6 +32,6 @@
 
 ## 5. 기록·지팀장 책임
 - `CURRENT` = **작업 포인터/규칙 변경 알림만**. `RF` = 해당 건의 결정·잔여 증거·재개 조건. `STATUS` = 전체 현황. `HANDOFF_A/B` = **최신 실행 10~20줄만 교체**, 과거는 Git 이력. 새 총괄 문서·반복 일지·빈 커밋 금지.
-- HANDOFF는 RUN_ID, 시작/후보 **코드 SHA**(HANDOFF 커밋과 구분), RF별 변경 경로, normal/-O 명령·exit, 독립 verdict, BLOCKED 원인·재개 트리거, patchnotes, GPT_ACTION_REQUIRED, push 확인을 간결히 담는다. **매 실행(예약·수동 강제 포함)마다 코드 변경 유무와 무관하게 HANDOFF 최신 회차를 교체·commit·push한다.** 신규 결과가 없으면 `NO_CHANGE`와 실행 시각/RUN_ID, 시작·종료 원격 코드 SHA, 확인한 미완료 RF·실행 가능성·차단 사유, 실제 명령/NOT_RUN, 다음 행동을 짧게 남긴다. 신규 검증·peer 결과가 있으면 명령·exit·대상 SHA를 반드시 남긴다. HANDOFF-only 커밋은 실행 관측용이며 코드 진척·RF PASS·DONE으로 세지 않는다. 동일 실행의 중복 커밋·장문 반복은 금지한다.
+- HANDOFF는 RUN_ID, 시작/후보 **코드 SHA**(HANDOFF 커밋과 구분), RF별 변경 경로, normal/-O 명령·exit, 독립 verdict, BLOCKED 원인·재개 트리거, patchnotes, GPT_ACTION_REQUIRED, push 확인을 간결히 담는다. **매 실행(예약·수동 강제 포함)마다 코드 변경 유무와 무관하게 HANDOFF 최신 회차를 교체·commit·push한다.** 신규 결과가 없으면 `NO_CHANGE`와 실행 시각/RUN_ID, 시작·종료 원격 코드 SHA, 확인한 미완료 RF·실행 가능성·차단 사유, 실제 명령/NOT_RUN, 다음 행동을 짧게 남긴다. 신규 검증·peer 결과가 있으면 명령·exit·대상 SHA를 반드시 남긴다. **각 회차의 최종 사용자용 작업 완료 답변도 빠짐없이 HANDOFF에 짧게 수록하고, 해당 담당 GitHub Issue(A #11, B #12)에 같은 RUN_ID의 완료 댓글을 1회 append한다.** Issue는 누적 실행 이력, HANDOFF는 최신 회차 및 Git 이력으로 관리한다. 댓글에는 시작·종료 시각/실질 작업 시간, 연속 처리 작업 수, 실제 코드 SHA/변경 파일, RF별 PASS_SCOPED/FAIL/BLOCKED/NOT_RUN, 다음 작업, 조기 종료 이유, HANDOFF 링크, push 검증 결과를 담는다. 코드 변경 0·NO_CHANGE·push 실패도 보고 의무가 사라지지 않는다. push 실패 시 Issue 댓글로 실패 사유를 남기고, Issue 댓글 실패 시 HANDOFF에 오류를 남긴다. 둘 다 실패하면 최종 답변에 전송 실패를 명시한다. 동일 RUN_ID 중복 댓글 금지. HANDOFF-only 커밋은 실행 관측용이며 코드 진척·RF PASS·DONE으로 세지 않는다. 동일 실행의 중복 커밋·장문 반복은 금지한다.
 - 지팀장은 매 점검 **CURRENT → A/B 원격 HEAD·최신 HANDOFF → 변경된 RF 증거 → 런검증 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) 신규 내용 → STATUS**만 확인. 멈춘 RF는 그 회차에 직접 소유권·원인·최소 다음 행동을 확정하고 실행 가능한 다음 RF로 넘긴다. 새 peer 증거는 같은 회차에 판정하고, 완전 peer PASS는 선별 통합/통합 SHA normal/-O 검증 단계로 즉시 넘긴다. 같은 SHA 전수 재검증·중복 감사 금지.
 - 보고는 **A/B 진행 → 지팀장 실제 조치/커밋 → RF·통합 검증 → 다음 행동** 순서. 계획·부분 PASS·NOT_RUN을 DONE으로 보고하지 않는다. 별도 예약 생성/변경은 사용자 승인 없이 하지 않는다.
