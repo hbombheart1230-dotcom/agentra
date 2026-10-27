@@ -15,6 +15,19 @@
 - TEXT/JSON × normal/`python -O` 4회 모두 `rc 0`, `ok=True day=2026-10-27 commander_total=16 cooldown_transition_total=1 intervention_total=1 error_total=1`(JSON도 ok true), temp 파일 11개, 차단 호출 0, worktree 변경 0. 대조: 구 blob(integration)은 TEXT에서 `NameError: name 'day'`.
 - 변경은 1행(`day`→`summary['day']`)뿐, 소스 수정·통합·DONE 0. 직접 hosted CI/Windows Scheduler/다른 CLI NOT_RUN. 판정 **PEER_PASS_SCOPED**(수정 blob 한정), 최종 수용은 지팀장.
 
+**UNASSIGNED 자율 CLAIM (C02) — run141b (`2026-10-27T0345Z`, A 시작 `f4c6ce79`, integration `c962e23a`): RF-052 구현 + RF-046/047/054/058 owner 검증**
+
+- 선택 근거: A 큐는 RF-043(peer 대기)·RF-035(93 oracle HOLD)·RF-030(HOLD)뿐 → 보호 경계 아닌 소형 CODE RF를 CLAIM. RF-061 `libs/tools`는 소비자가 Step5C 안전 테스트라 보호 인접으로 제외. 지팀장에 물리 Owner 동기화 요청.
+- **RF-052 `libs/market_data` — 실제 결함 수정(A 원개발 소스 변경 1파일):** `receipts.py::resolve_archive_path`가 POSIX에서 Windows drive/드라이브-상대(`C:\evil.raw`, `C:evil.raw`, `c:/x.raw`)와 백슬래시 `..`(`a\..\..\e.raw`)를 통과시킴 → 기존 repo 테스트 `tests/test_market_data_receipts.py::test_absolute_path_rejected[C:\\evil.raw]`가 Linux에서 FAIL(integration=BASE). archive ref는 Linux/Windows 호스트 간 이동하므로 `PureWindowsPath(ref).drive/root`와 `PureWindowsPath(ref).parts`의 `..`도 거부하도록 6줄 수정(유효 content-addressed ref 형식 불변). blob `e59febed` → **`10283d8f`**.
+  - 검증: `pytest tests/test_market_data_receipts.py tests/test_kiwoom_history_receipt_lifecycle.py` **40 passed**(수정 전 39 passed/1 failed). `rf052_receipts_path_check.py` normal/`-O` **exit 0** (`RF052_RECEIPTS_PATH_OK rejected=11 accepted=3`; 수정 전 integration은 5건 ACCEPTED). 소비자 `uef5/candle_authority`·`uef5/historical_recompute`·`post_reclaim_alpha/kiwoom_history`: `tests/test_uef5_2_historical_recompute.py` 결과 **11 failed/49 passed/2 errors로 수정 전 integration과 동일**(기존 환경 실패, UEF 보호 계약 무변경). patchnotes 대상 UI 아님.
+- **owner 검증(소스 변경 0)** — 하네스 `rf_pkg_owner_verify.py`(정적 소비자 지도 + 실제 import 공개 API 지문(네트워크/subprocess 차단, 쓰기 tmp 한정) + 패키지 기존 테스트), integration/BASE × normal/`-O` 4조합 exit 0, 지문 동일:
+  - RF-046 `libs/data_quality` 2파일 88줄 (`__init__.py` 0d046552, `signal_contract.py` 9206f801): importer 5, 전용 테스트 없음, 효과 없음(시각 사용만) → KEEP_VERIFIED 후보.
+  - RF-047 `libs/diagnostics` 4파일 97줄 (`__init__.py` edeb5378, `archive_inspection.py` 299d328c, `cli_capture.py` adc8a568, `observations.py` e584b141): importer 12, `test_diagnostics_shared_owners` **52 passed** → KEEP_VERIFIED 후보.
+  - RF-054 `libs/performance` 4파일 1,313줄 (`__init__.py` f7765976, `performance_aggregator.py` 573603cf, `playbook_stats.py` f61800ed, `strategy_memory.py` 4427c787): importer 7, env·쓰기 효과, `test_strategy_performance_feedback` **8 passed** → KEEP 후보(쓰기 효과 temp 검증은 후속).
+  - RF-058 `libs/storage` 3파일 137줄 (`__init__.py` e69de29b, `proposal_store.py` a7def15b, `state_store.py` 65452429): importer 4, 쓰기 효과, `test_state_store` **4 passed** → KEEP_VERIFIED 후보.
+  - (`-O`에서는 pytest assert 재작성이 비활성되어 테스트는 normal만 의미; `-O`는 import/지문만.)
+- 다음: B 독립 peer(RF-052 수정 blob `10283d8f`, RF-043/046/047/054/058). 지팀장: RF-052 선별 통합 판단, 4개 RF 물리 Owner 동기화.
+
 **RF-015 독립 peer (B 새 근거 `f3cc5ee1`) — run141 (`2026-10-27T0325Z`; A 시작 `569ebe6b`, integration `c962e23a`, B `43017525`)**
 
 - B 주장: 4파일 Monitor 계약 명령이 B source에서 252 PASS/12 FAIL, BASE 253/11, 추가 1건은 `test_combined_agent_tree_is_exactly_the_versioned_allowlist`(동결 Commander 패키지 인벤토리 원인, RF-015 owner 무관).
