@@ -7,7 +7,7 @@
 
 | 순서 | RF | 다음 실행 |
 |---|---|---|
-| 1 | **063** | B의 새 수정 도착 시 NameError/효과 경계 독립 peer; 기존 diagnostics 46+4 CLI 재실행 금지 |
+| 1 | **063** | A의 pinned NameError와 B 현재 미재현 SHA 차이 확인, 신규 B 수정 시 해당 경계만 peer; diagnostics 46+4 CLI 재실행 금지 |
 | 2 | **065 / 067** | 새 B 변경/안전한 실제 소비자 증거에만 peer; 기존 research 46+19·delegated target 재실행 금지 |
 | 3 | **015** | B의 Monitor 역사 BASE FAIL·B-only 소비자 **새 근거 도착 시** 독립 peer |
 | HOLD | **069** | historical UEF5 snapshot 승인 전 실행 금지 |
@@ -23,4 +23,4 @@
 | 3 | `03_PEER_REVIEW/CLAUDE_A` 신규 B 소유 peer |
 | 4 | 자기 `01_PENDING/CLAUDE_A` 다음 RF 개발 |
 
-자기 브랜치에서 **구현→테스트→커밋·푸시→HANDOFF→다음 RF**를 반복한다. 다른 RF가 가능하면 대기 때문에 종료하지 않는다. `UNASSIGNED`는 지팀장 배정 요청.
+**일반 RF는 사용자·지팀장 개별 승인 대기 없이** 자기 브랜치에서 **구현→테스트→커밋·푸시→HANDOFF·#11→다음 RF**를 반복한다. 자기 큐가 보호 HOLD뿐이면 양쪽 HEAD·HANDOFF·Issue를 확인하여 중복 없는 `01_PENDING/UNASSIGNED` 일반 RF를 **자율 CLAIM하고 즉시 개발**한다. 지팀장은 다음 회차 물리 Owner를 동기화한다. 다른 RF가 가능하면 대기 때문에 종료하지 않는다.
