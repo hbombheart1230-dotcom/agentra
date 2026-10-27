@@ -6,35 +6,35 @@
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
-| 51 | 7 | 7 | 14 | 14 | 0 | **93** |
+| 51 | 9 | 19 | 0 | 14 | 0 | **93** |
 
-- **LEAD 14:** RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069. **PEER 7:** RF-018(B owner), RF-041/043/046/047/052/053(A owner). **DEVELOPING 7:** RF-021/051/054/058(A), RF-066/070/071(B). **PENDING 51:** RF-030/035(A), UNASSIGNED 49. **DONE 14:** RF-001~009,013,017,019,020,068. REWORK 0.
-- **신규 실물 이동:** A run142 Owner CLAIM RF-021/041/051/053을 integration에서 `01_PENDING/UNASSIGNED` 원경로 삭제 후 각각 `02_DEVELOPING/CLAUDE_A`(021/051), `03_PEER_REVIEW/CLAUDE_A`(041/053)로 확정. 4개 원경로 제거·새 경로 확인, 93개 유일 큐 유지(이동 전 55/5/5/14/14 → 후 51/7/7/14/14). RF-021 A 소스 수정·RF-041/051/053 owner KEEP 후보는 **아직 integration 코드 미통합/B peer NOT_RUN/신규 DONE 0**. RF-021의 32개 SAFETY_HOLD_KEEP 분류 및 RF-051 네트워크/쓰기 fake 경계는 원래 수용·보호 조건에 따라 별도 판정.
+- **기존 우선 14건:** RF-063/065 → DEV(B); RF-067/069 → PEER(B); RF-014/015/016/028/029/031/032/033/034/050 → PEER(A). **이외 DEV 7 / PEER 7 / PENDING 51 / DONE 14**로 실물 93건. 아래 원본 체크 표의 링크를 우선한다.
+- **실물 큐 재분류:** 우선 14건을 DEV 2·PEER 12로 재배치. 신규 DONE이 아니라 원래 미완료 조건을 해당 담당자에게 반환한 이동이다. 기존 기록의 LEAD 14 표현은 당시 스냅샷이다.
 - **LEAD 공통 새 기준:** 유효한 원래 범위 독립 peer PASS → 지팀장 SOURCE SHA·통합 diff/충돌·보호 경계·필요한 CI 확인 → **같은 회차 DONE**. 지팀장 Python/Windows/전체 소비자 재테스트 없음. Scoped PASS를 전체 PASS로 확대하지 않고, 원래 필수 미충족 1건만 해제 요청. 자세한 14건별 최초 판정은 [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md).
 
 <!-- RF_LEAD_CHECKLIST_START -->
-## LEAD RF 원본 체크리스트 — 한눈에 보는 잔여 조건
+## 우선 14건 RF 원본 체크리스트 — 현재 실물 단계 연동
 
 각 RF 원본 `DONE 체크`의 **7개 항목**을 읽은 스냅샷입니다. **MET**는 증거 확인, **N/A**는 조건부 비적용으로 DONE이나 PASS로 세지 않습니다. **PARTIAL/PENDING/SAFETY_BLOCKED**는 미완료입니다. 링크를 열면 체크 이유와 증거 범위가 있습니다. 이 표는 파일 저장 시 실시간 조회되는 것이 아니라 동기화 명령으로 갱신됩니다.
 
-| RF 원본 | Owner→Peer | 체크 / 미완료 | 남은 체크 | 다음 해제 조건 · 담당 | 상태 |
+| RF 원본 | 실물 단계·Owner→Peer | 체크 / 미완료 | 남은 체크 | 다음 해제 조건 · 담당 | 상태 |
 |---|---|---:|---|---|---|
-| [RF-063](queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-063.md) | B → A | 3/7 · 4남음 | C1,C2,C3,C7 | **C1** diagnostics 76-owner MOVE/KEEP/SAFETY_HOLD 최종 분류 (**지팀장**) | MISSING |
-| [RF-067](queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-067.md) | B → A | 5/7 · 2남음 | C6,C7 | **C6** 14 wrapper KEEP의 integration SHA 필수 CI 판정 (**지팀장**) | MISSING |
-| [RF-015](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-015.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** 역사 11 FAIL BASE/후보 node별 분류 (**Codex B**) | MISSING |
-| [RF-050](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-050.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** LLM router/cache 8-owner와 B fake 10/10 범위 대조 (**지팀장**) | MISSING |
-| [RF-031](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-031.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C2** Reporter writer/State/실패 원래 범위 대조 (**지팀장**) | MISSING |
-| [RF-014](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-014.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Scanner shim→RF-009 repeat/risk/NOOP 독립 peer (**Codex B**) | MISSING |
-| [RF-016](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-016.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Strategist 외부 facade 원래 호출 peer 범위 판정 (**지팀장→B**) | MISSING |
-| [RF-028](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-028.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** trade_report rich schema 필수 소비자 peer 판정 (**지팀장→B**) | MISSING |
-| [RF-029](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-029.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** trade_story facade→bundle 독립 peer 판정 (**지팀장→B**) | MISSING |
-| [RF-033](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-033.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Q10/Q12 input_worker→publish_input peer 범위 판정 (**지팀장→B**) | MISSING |
-| [RF-034](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-034.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** alpha casebook→Scanner peer 범위 판정 (UEF 보호 별도) (**지팀장→B**) | MISSING |
-| [RF-032](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-032.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C2** evaluation writer/validation-id 원래 범위 대조 (UEF 보호 별도 차단) (**지팀장**) | MISSING |
-| [RF-065](queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-065.md) | B → A | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** research 54-owner KEEP/CLI 효과 분류 원래 조건 판정 (**지팀장**) | MISSING |
-| [RF-069](queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-069.md) | B → A | 2/7 · 5남음 | C1,C2,C3,C6,C7 | **C3** UEF5 historical snapshot 경로·SHA·read-only 승인 없음 (**사용자·증거 소유자→B→A**) | SAFETY_BLOCKED |
+| [RF-063](queue/02_DEVELOPING/CODEX_B/RF-063.md) | DEV · B → A | 2/7 · 5남음 | C1,C2,C3,C4,C7 | **C1** diagnostics 76-owner MOVE/KEEP/SAFETY_HOLD 최종 분류 (**지팀장**) | MISSING |
+| [RF-067](queue/03_PEER_REVIEW/CODEX_B/RF-067.md) | PEER · B → A | 4/7 · 3남음 | C4,C6,C7 | **C4** 14 root wrapper의 원래 필수 CLI/호출 계약에 A 독립 peer 2건이 충분한지 판정; 부족한 경계만 추가 peer (**지팀장→Claude A**) | MISSING |
+| [RF-015](queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** 역사 11 FAIL BASE/후보 node별 분류 (**Codex B**) | MISSING |
+| [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** LLM router/cache 8-owner와 B fake 10/10 범위 대조 (**지팀장**) | MISSING |
+| [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C2** Reporter writer/State/실패 원래 범위 대조 (**지팀장**) | MISSING |
+| [RF-014](queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Scanner shim→RF-009 repeat/risk/NOOP 독립 peer (**Codex B**) | MISSING |
+| [RF-016](queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Strategist 외부 facade 원래 호출 peer 범위 판정 (**지팀장→B**) | MISSING |
+| [RF-028](queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** trade_report rich schema 필수 소비자 peer 판정 (**지팀장→B**) | MISSING |
+| [RF-029](queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** trade_story facade→bundle 독립 peer 판정 (**지팀장→B**) | MISSING |
+| [RF-033](queue/03_PEER_REVIEW/CLAUDE_A/RF-033.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Q10/Q12 input_worker→publish_input peer 범위 판정 (**지팀장→B**) | MISSING |
+| [RF-034](queue/03_PEER_REVIEW/CLAUDE_A/RF-034.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** alpha casebook→Scanner peer 범위 판정 (UEF 보호 별도) (**지팀장→B**) | MISSING |
+| [RF-032](queue/03_PEER_REVIEW/CLAUDE_A/RF-032.md) | PEER · A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C2** evaluation writer/validation-id 원래 범위 대조 (UEF 보호 별도) (**지팀장**) | MISSING |
+| [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) | DEV · B → A | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** research 54-owner KEEP/CLI 효과 분류 원래 조건 판정 (**지팀장**) | MISSING |
+| [RF-069](queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | PEER · B → A | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** UEF5 historical snapshot 경로·SHA·read-only 승인 없음 (**사용자·증거 소유자→B→A**) | SAFETY_BLOCKED |
 
-**LEAD 14건:** 체크 21/98 · 미완료 77/98. 물리 DONE은 아직 14건(기존)이고, 위 체크 숫자는 RF 종결 건수가 아닙니다.
+**우선 14건:** 체크 18/98 · 미완료 80/98. 실제 DEV 2 + PEER 12, LEAD 0. 물리 DONE은 기존 14건이며 위 체크는 RF 종결 건수가 아닙니다.
 
 RF 체크/증거 변경 시 같은 커밋에 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 실행. `--check`로 STATUS 동기화 상태 검사. D00·기존 CI·보호 코드는 수정하지 않습니다.
 <!-- RF_LEAD_CHECKLIST_END -->
@@ -48,7 +48,7 @@ RF 체크/증거 변경 시 같은 커밋에 `python docs/refactor/tools/sync_rf
 - **RF-015 기존 실패 비교 신규 근거:** A가 B `252 PASS/12 FAIL` vs integration/BASE `253 PASS/11 FAIL`을 독립 재현; 추가 1건은 B-only Commander frozen package inventory. **Monitor 19-owner의 신규 회귀로 판정하지 않는다.** frozen CI/오라클 편집 불허. 불필요한 기준선 검증 재수행 금지.
 - **RF-052/046/047:** A 원개발 증거에 따라 PEER 큐로 이동, B 독립 검증 미도착. RF-054/058은 실제 writer/effect 검증 필요해 DEVELOPING 유지. 코드 통합·DONE 0. **RF-043:** catalog 6 source BASE=A=integration 동일, A owner normal/-O 완료. B 원래 범위 독립 peer 필요. 동일 owner 테스트 재실행 금지.
 
-## LEAD 종결 작업·오너
+## 우선 14건 미완료 해제 작업·오너
 
 - **지팀장:** LEAD 14건 중 이미 유효 peer 범위를 충족한 RF부터 **본래 RF 체크·SOURCE SHA·integration/CI**만 판정. 새 CLI·State·Windows 전수 검증 목록을 만들어 돌아보내지 않는다. 충족하면 즉시 물리 `05_DONE`과 STATUS 해당 항목만 변경. 지금 이 상태표는 DONE 승격 승인 문서가 아니다.
 - **B:** RF-052 수정 독립 peer → RF-043/041/053/046/047 KEEP 독립 peer, RF-021 A 패치 `policy_map_builder.py@dc9d6528` cold-import 독립 확인(원래 32 owner/SAFETY_HOLD_KEEP는 개발 계속) → 자기 RF-066/070/071 계속. 자기 원개발 PASS를 독립 peer로 표기하지 않는다.
