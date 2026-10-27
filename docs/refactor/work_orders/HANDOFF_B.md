@@ -1,5 +1,7 @@
 # Codex B 인수인계
 
+- Latest checkpoint `B-20261027-RF029-EXTROOT`: source `62bda630841ba4f97f95f00e39c933252f1b9387`; independently exercised `read_truth_blocker_trace_data_source_quality` through a facade `Path` seam with one existing external-root path and one nonexistent path. Normal `python -` / optimized `python -O -` exits `0/0`; `same_day_reporter_linkage.file_found=True/False`, two `Path.exists` calls, hold duration clamped, threshold object alias retained, caller linkage unchanged, outside writes `0`. Scoped peer only; no broker/network/order/subprocess. RF-029 remains `LEAD_HOLD` pending A's distinct facade→bundle boundary and Lead consumer/CI judgment. Next: RF-015 B-only consumer evidence.
+
 - Latest checkpoint `B-20261027-RF016-NESTED`: source `78be88c658067eab7d1898111cb8e5c44219f2f7`; actual `strat_policy_commander_context_policy_adjustment` with injected facade consumer RuntimeError, normal `python -` / optimized `python -O -` exits `0/0`. Markers `RF016_NESTED_PROJECTION_EXCEPTION[_OPT]_OK`; nested values observed, State unchanged, exception propagated, IO 0. Scoped only. RF-063 candidate retained; remaining C01 work is not complete. Next: RF-029 external truth-root failure.
 
 - RUN_ID: `B-20261027T-C01-5`; base source: `47d6e04d013dbed26d39e395e3ae707337508c51`; C01: `4f012a3a`.
