@@ -36,7 +36,7 @@
 
 ## 🟢 C03 남은 A READY — 실물 CLAIM 동기화 완료
 
-**현재 A 활성 CLAIM 2건:** [RF-040](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-040.md) · [RF-061](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md). A `23e54e01` run165에서 두 RF의 원래 C2/C3 KEEP 후보·정확 A=integration source를 제출했다. RF-040 normal/`-O` 19-file pytest 각각 **1377 PASS/5 FAIL**(동일 실패; shallow history/타 RF/BASE 관련 Owner 분류, BASE 직접 재현 NOT_RUN). RF-061 Step5C/frozen 직접 테스트 **NOT_RUN**. C1~C4 최종 수용·B full peer는 아직 없으므로 C03이 최초 원래 부족 계약을 확인할 때만 해당 경계를 보완한다. **B에게 안전한 정확 SOURCE C4 인계**, RF-040 shadowed `executor.py` 삭제 금지, RF-040 Executor·RF-061 Step5C 보호 실행/수정 금지. 추가 동시 CLAIM 금지(2/2).
+**현재 A 활성 CLAIM 2건:** [RF-040](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-040.md) · [RF-061](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md). A `525705f6` run164~166에서 두 RF의 원래 C2/C3 KEEP 후보·정확 A=integration source 및 run166 실패 정적 출처를 제출했다. RF-040 normal/`-O` 19-file pytest 각각 **1377 PASS/5 FAIL**(동일 실패; **3건 shallow-history 과거 객체 부재, 2건 A 전용 RF-021/RF-030 파일 차이**로 정적 분류; BASE/integration 직접 재현 NOT_RUN). RF-061 Step5C/frozen 직접 테스트 **NOT_RUN**. **A의 5 FAIL 출처 재분류는 완료, 같은 증거 반복 금지**; C3 MET 여부는 C03/C05의 원래 게이트 판정 대기. C1~C4 최종 수용·B full peer는 아직 없으므로 C03이 최초 원래 부족 계약을 확인할 때만 해당 경계를 보완한다. **B에게 안전한 정확 SOURCE C4 인계**, RF-040 shadowed `executor.py` 삭제 금지, RF-040 Executor·RF-061 Step5C 보호 실행/수정 금지. 추가 동시 CLAIM 금지(2/2).
 
 **RF-057 SKIP:** [원본](../plan/queue/01_PENDING/UNASSIGNED/RF-057.md)의 `libs/skills/runner.py` Kiwoom/skill executor 보호 인접으로 run164에서 미CLAIM; 자동 READY에서 제외, 안전한 별도 판정 전 실실행/변경 금지.
 
