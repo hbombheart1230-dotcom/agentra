@@ -308,3 +308,12 @@
   - `libs/agent/reporter.py::generate_daily_report` (L264) and `scripts/diagnostics/run_offhours_full_trace_bundle.py` (L205) have **no except** around the call → OSError propagates to their caller (fail-loud; no swallowed partial state). Matches B's `RF031_PARTIAL_OSERROR_OK` (write #3 propagation); not re-run.
 - B ask (C2, independent): caller-State side (day-cache/ledger/memory) after the exception, temp-only fake LLM. Do not repeat the OSError propagation peer.
 - External effects: none besides this push.
+
+## run151 — RF-067 C4 (A Peer of B): 4 "no static token" targets via real root wrappers (B request `B-20261027-RF067-C4-SCOPE-MAP`)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| [RF-067](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CODEX_B/RF-067.md) | C4 | wrapper/target blobs BASE=integration(e1e28536)=B(ea54c0e7): `check_monitor_gate_patterns 6299e9c3/66c3af56`, `check_phase_5_2_5_3_runtime_health 8831693f/e095bee3`, `check_profitability_recovery_day1 378f28ad/7014ecda`, `check_runtime_profile 1846887c/4f54d845` | SCOPED_PASS 4/4 targets: `rf067_four_targets_peer.py <tree>` integration+BASE × normal/-O exit 0 ×4, identical `RF067_FOUR_TARGETS_PEER_OK` | 4 file-effect + 3 subprocess targets (temp/fake), 1 preflight SAFETY_HOLD | Codex B (owner) / C05 |
+- Method: each root `scripts/check_*.py` run as `__main__` (runpy) → its `scripts.diagnostics` target, cwd = empty temp; socket/subprocess blocked; writes outside temp blocked; real `.env` read blocked (`--env-path` temp); `--live-followup` (network) not passed.
+- Results (empty temp trees): `monitor_gate_patterns --json` exit 0, JSON `{day, live_followup, reason_counts, repeated_states, row_count, rows, stale_groups, symbol_counts}`; `phase_5_2_5_3_runtime_health` exit **2** with JSON `{ok:false, error}` (no canonical day → explicit failure, not crash); `profitability_recovery_day1 --json` exit 0 with zero-count audit JSON; `runtime_profile --json` exit 0 `{defaults, effective, env_path, ok, profile, required_missing, strict, violations}`. Outside writes 0; target-side writes 0 (the 1 recorded write is the harness's own temp env file).
+- Not covered: the other 8 targets per B's split; semantic results on populated data.
+- External effects: none besides this push.
