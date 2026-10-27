@@ -1,6 +1,9 @@
-# Codex B 예약 실행 인수인계
+# Codex B 인수인계
 
-- RUN_ID: `B-20261027T1000Z`; B source unchanged (`2b1cd7da5be38a8598abdf213e510a8eef1f78f9`); CURRENT integration `ec1e302f`.
-- RF-050 P1: fake `LLMRouter` primary timeout → repair error → line fallback, normal exit 0 `RF050_PRIMARY_REPAIR_LINE_OK calls=4 fallback=1 temp_only=1 io=none`; optimized exit 0 `RF050_PRIMARY_REPAIR_LINE_OPT_OK calls=4`. Input-artifact writer no-op; no network/broker/order. Scoped peer, NOT_DONE; next gate is cache artifact path under temp root.
-- RF-016 onward: continue CURRENT order with distinct boundaries; no same marker reuse.
-- No code candidate, patchnotes, integration merge, CI, main, real trading, safety-contract, or frozen-oracle change.
+- RUN_ID: `B-20261027T-current-lead`; source: `f58d14815cd5575298f393b5fb76bb47f995cf8d`; CURRENT: `origin/integration/p1.5` fetched 2026-10-27.
+- RF-031 P0: `python -m pytest -q tests/test_reporter_analysis_report.py::test_reporter_agent_can_run_passive_log_analysis` exit `1`; `python -O -m pytest ...` exit `1` — `No module named pytest`. This environment cannot run the required temp-fixture caller boundary until pytest is provisioned. Owner: environment maintainer; unblock: install the repository test dependency. Existing writer/OSError evidence was not repeated.
+- RF-050 P1: prior distinct marker retained: primary timeout → repair error → line fallback fake LLM normal/optimized exit `0`; scoped only. First remaining gate: temp cache-artifact effect.
+- RF-016 P2: source `f58d14815cd5575298f393b5fb76bb47f995cf8d`; actual facade/dynamic call normal/optimized exit `0`: `RF016_FACADE_DYNAMIC[_OPT]_OK targets=10 answers=16 root_only=1`. Nested state preserved; no files under temp reports root, network/broker/order `0`. First remaining gate: facade exception projection.
+- RF-029 P3: source unchanged; actual v1/v2 assembly normal/optimized exit `0`: `RF029_V1_V2_ASSEMBLY[_OPT]_OK ... alias_preserved=1 io=none`. `truth_root` input alias stayed unchanged; malformed string lifecycle was normalized (no exception). First remaining gate: external truth-root read/failure boundary.
+- RF-033 P4: source unchanged; actual `InputWorker.tick → publish_input` with fake providers normal/optimized exit `0`: `RF033_TICK_STORAGE[_OPT]_OK state=1 temp_io=1 files=4 root_only=1`. All writes were below mktemp root; network/broker/order `0`. First remaining gate: provider/storage failure projection.
+- No source change, patchnote, integration/main/CI/frozen-oracle/safety-contract, real trading, or non-temp operational write.
