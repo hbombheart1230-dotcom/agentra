@@ -13,8 +13,9 @@
 
 - C 정본은 모두 `integration/p1.5:docs/refactor/work_orders/`. 작업 브랜치의 오래된 CURRENT를 지시로 사용하지 않는다.
 - **신규 브랜치·tag·PR·worktree 생성 절대 금지.** 충돌 시 기존 브랜치에서만 안전하게 재시도하고 불가하면 `GIT_BLOCKED`.
-- A/B는 **배정된 일반 RF**를 자기 브랜치에서 구현·수정·테스트·커밋·푸시한다. 별도 건별 승인 대기가 아니다. 지팀장은 수용 범위만 integration으로 통합한다.
-- 배정 밖 범위, `main`, 거래·보호 계층, 배포·예약·운영 데이터 변경은 **사용자 사전 승인**이 필요하다. D 계열 고정 계약도 승인 후 변경한다.
+- **일반 RF 전체는 개발 진행 승인 완료 상태다.** A/B는 자기 Owner RF의 분석·구현·수정·테스트·커밋·푸시, 상대 RF 독립 peer를 **사용자·지팀장 개별 승인 대기 없이** 연속 실행한다. 지팀장의 LEAD 수용은 완료 품질 판정이지 개발 착수 허가가 아니다.
+- Owner가 없는 일반 RF는 A/B가 양쪽 HEAD·HANDOFF·#11/#12를 확인하고 겹치지 않는 건을 먼저 선택해 자기 HANDOFF/Issue에 **RF·Owner CLAIM·SHA**를 기록한 뒤 즉시 개발한다. 지팀장은 다음 동기화 때 integration 물리 Owner를 확정한다. 충돌한 RF만 건너뛰고 다른 RF를 계속한다.
+- D/C·루트 역할 문서의 일반 운영 정합성은 지팀장이 기존 integration 브랜치에서 관리하며 별도 승인 대기를 만들지 않는다. **예외는 보호 구간뿐**: `main`·실거래/주문·Broker/Supervisor/Executor/Step5C/UEF 안전 계약·frozen tests/oracles/CI·비밀정보·운영 데이터·배포·예약 변경은 별도 명시적 사용자 승인 전 금지한다.
 
 ## 2. 계속 실행하는 RF 루프
 
@@ -27,9 +28,9 @@
 | 5 | **즉시 다음 RF 선택, 반복** | 실행 가능 작업 소진·실행 한도까지만 |
 
 - 막힌 RF는 첫 차단 원인과 해제 책임만 기록하고 **다른 RF로 이동**한다. 새 증거가 없으면 개발 가능 큐로 넘어간다.
-- A/B 작업 선택 순서: C의 신규 peer/owner 우선 작업 → 자기 `02_DEVELOPING` → `06_REWORK` → 담당 `03_PEER_REVIEW` → 자기 `01_PENDING`. 자기 큐가 비면 지팀장이 `UNASSIGNED`를 배정한다.
+- A/B 작업 선택 순서: C의 신규 peer/owner 우선 작업 → 자기 `02_DEVELOPING` → `06_REWORK` → 담당 `03_PEER_REVIEW` → 자기 `01_PENDING` → 중복 없는 `01_PENDING/UNASSIGNED` 자율 CLAIM. 일반 RF는 어떤 단계에서도 별도 승인 응답을 기다리지 않는다.
 - 유효한 동일 SHA·동일 경계 normal/`python -O`/CI는 재사용. 의미 없는 synthetic 테스트·HANDOFF-only 커밋·회차별 문서 누적 금지.
-- 작업이 실제로 모두 차단되면 `BLOCKED`/승인 필요 사유·다음 재개 위치를 기록한다. 실행 한도에 도달하면 `EXECUTION_LIMIT`과 다음 RF를 남긴다. **진척을 꾸며 내지 않는다.**
+- 작업이 실제로 모두 차단되면 `BLOCKED`/환경·보호 경계 사유·다음 재개 위치를 기록한다. 실행 한도에 도달하면 `EXECUTION_LIMIT`과 다음 RF를 남긴다. **진척을 꾸며 내지 않는다.**
 
 ## 3. RF 최종 판정과 필수 경계
 
@@ -63,7 +64,7 @@
 - A/B는 자체 선택 RF의 **RF 번호·SOURCE SHA·실제 결과·다음 RF**를 HANDOFF에 남겨 자기 브랜치 커밋·푸시 후 담당 Issue에 신규 체크포인트를 제출한다. 지팀장은 매 회차 A/B 최신 HEAD·HANDOFF·#11/#12 신규 기록을 대조해 판정·통합·다음 배정에 반영한다. Issue의 과거 브랜치·업무 지시는 D/C 정본보다 우선하지 않는다.
 ### 지팀장 STATUS 관리 — 매 예약 필수
 
-- **매회** 실물 RF 큐·Owner·개수, integration/A/B HEAD, HANDOFF_A/B와 Issue #11/#12의 신규 체크포인트, 승인·차단을 `docs/refactor/plan/STATUS.md`와 대조한다. 확인하지 못한 실물 검증은 `NOT_VERIFIED`로 구분한다.
+- **매회** 실물 RF 큐·Owner·개수, integration/A/B HEAD, HANDOFF_A/B와 Issue #11/#12의 신규 체크포인트, 보호 HOLD·차단을 `docs/refactor/plan/STATUS.md`와 대조한다. 확인하지 못한 실물 검증은 `NOT_VERIFIED`로 구분한다.
 - RF 상태·담당·검증·차단·SHA·작업 배정 등 **실제 현재 상태가 바뀌면 같은 회차에 STATUS 본문을 전체 교체하고 커밋·푸시한다.** 변화가 없으면 대조만 하고 문서 커밋을 만들지 않는다. 상세 증거는 RF/HANDOFF/Git에 둔다.
 - **종료 순서:** RF 판정·가능한 통합/DONE → STATUS 동기화 → 필요한 C01/C02 갱신 → **C00 마지막 갱신**. 필요한 STATUS 갱신을 누락한 실행은 `EXECUTION_INCOMPLETE`로 보고한다. 문서 변경만으로 RF/운영 소스 진척을 주장하지 않는다.
 - 보고는 `실제 RF 진척 | SOURCE/commit SHA | PASS/FAIL/BLOCKED/NOT_RUN | 다음 RF` 한 표로 끝낸다.
