@@ -5,7 +5,7 @@
 ## 실물 상태·새 배정
 
 - 큐: PENDING 61 / DEVELOPING 3 / PEER 1 / **LEAD 14** / DONE 14 / REWORK 0 = 93 unique. **물리 큐 및 원개발 Owner 유지.** LEAD = 014,015,016,028,029,031,032,033,034,050,063,065,067,069.
-- A `f4c4fe9f`: RF-033 Windows NTFS storage.publish 실제 thread normal/-O 각 15-case exit0(원개발자 scoped, 소스 변경0). B `c18ad0b0`: 신규 peer·소스 없음. 기존 증거 재실행 금지.
+- A `1fe4efe3`: B 소유 RF-063 DR Windows temp, RF-065 scorecard→Stage2 실제 writer, RF-067 reports/trades delegated target 독립 scoped peer; source0. B `2b1cd7da`: A 소유 RF-031 writer·3번째 write OSError 독립 scoped peer 보고; source0·하네스 미보존. 전체 DONE 아님. 재실행 금지.
 - **최우선 목표:** 신규 PENDING 개발·반복 synthetic 테스트 대신 LEAD 미충족 게이트 해소. A는 B 원개발 RF의 독립 peer, B는 A 원개발 RF의 독립 peer. 검증만 통과했다고 DONE으로 판단하지 않으며, 최종 결정과 04→05 물리 이동은 지팀장 전담.
 - A/B는 기존 자기 브랜치에서만 수행. 각 신규 최초 경계는 SOURCE SHA, 실제 normal/-O 명령·exit, State·IO·예외·outside-write 및 잔여 1개 게이트만 HANDOFF 1회 제출. 차단되면 다음 배정 RF 계속. 동일 SHA/경계 재검증·HANDOFF-only 커밋 금지.
 
@@ -22,7 +22,7 @@
 
 브랜치: `work/p15-b-operator-structure-20261022`. **아래 순서대로 처리, 첫 미충족 경계 해제 후 다음 RF.**
 
-1. **P0 RF-031:** 실제 Reporter 8 writer/day-cache·부분 OSError·State, fake LLM 및 격리 temp env/cwd. helper stub 금지. `RF031_HELPER_FAKE_OK` 재실행 금지.
+1. **P0 RF-031:** 기존 writer/부분 OSError peer 반복 금지. **최초 부족: Reporter caller State→day-cache/ledger/memory 및 예외 후 부분 산출 소비자·복구**를 temp-only fake LLM normal/-O로 독립 검증. 재현 명령·하네스·exit 제출.
 2. **P1 RF-050:** Operator `data_access_core` primary→repair→line LLM fake 오류/timeout·fallback·cache 효과.
 3. **P2 RF-016:** news-query→`strategic_answers` 실제 facade/dynamic 소비자·중첩 State/예외.
 4. **P3 RF-029:** story bundle v1/v2→assembly·external truth-root read·State alias/예외.
@@ -38,5 +38,5 @@ B가 직접 소유하는 RF-063/065/067은 A peer가 요청하는 **신규** 소
 ## 지팀장 인수·안전
 
 - 새 A/B 증거가 도착한 **영향 RF만** 최종 인수하고, 조건 충족 시 LEAD→DONE 즉시 실물 이동/구 경로 삭제/93 unique·commit SHA 확인. 새 증거 없으면 `NO_DELTA`, Git 쓰기0.
-- RF-069은 UEF5 historical snapshot **path/SHA/use-scope 사용자/증거 소유자 승인 전 SAFETY_HOLD**. RF-032/034 보호 closeout·UEF, RunLab #32 SELL/BUY/OCI 안전 미확정은 승인 없이 수정·실행 금지.
+- RF-069은 UEF5 historical snapshot **path/SHA/use-scope 사용자/증거 소유자 승인 전 SAFETY_HOLD**. RF-032/034 보호 closeout·UEF 승인 대기. RunLab #32 신규 mock SELL `0045749` 체결 미확정·전일 SELL 출처 불명·OCI SOURCE_SHA 미입증: 안전 수정·재배포 금지.
 - D00·main·거래 안전 계약·동결 테스트/CI·운영 데이터·예약 변경 및 신규 브랜치/PR/worktree 생성 금지. 실제 소스 변경은 사전 사용자 승인. 작업 순서: A/B 새 근거→지팀장 판단·가능한 DONE→다음 배정→STATUS 현재 상태 교체→**CURRENT 마지막 전체 교체**.
