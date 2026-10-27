@@ -282,3 +282,15 @@
 - C4 evidence reused, not rerun: B `B-20261027-RF014-DYNAMIC-PEER` (shim→RF-009 repeat/risk/NOOP normal/-O) and A run103 `rf014_top1_selected_fixture.py`.
 - B ask (original C1 only): match the 20 rows against the exact blobs. No new dynamic tests needed.
 - External effects: none besides this push.
+
+## run149 — RF-015 C1/C2 (Owner): 19-owner final ACTION + State/event contract (integration e1e28536; read-only `git rev-parse`/`git grep`, nothing executed)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| [RF-015](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | C1, C2 | 19 owner blobs BASE=integration=B (below); B-only `libs/agents/monitor/{__init__,contracts}.py` excluded (INTEGRATION_HOLD) | PASS (owner static); C2 reuses run112 dynamic evidence | C3 B node match (run145 data), C4 B, C6/C7 C05 | Codex B |
+- All 19 are canonical pure projection/event modules under `libs/agents/monitor/` (I/O grep `write_text/open/mkdir/subprocess/urlopen/requests` = 0 in all). Each has its runtime-path consumer under `libs/runtime/…`; 12 are 4-line `sys.modules` shims (`libs/runtime/monitor/<same name>.py`, `monitor_exit/{observability,order_lifecycle}.py`), the others are aliased from mixed runtime modules (`monitor_entry_state`, `monitor_exit/{reasons,selected_snapshot}`, `monitor_strategy_frame`, `intraday_monitor_signals`, `monitor/entry_candidate_{annotation,policy}`, `monitor_entry_policy_context`).
+- **ACTION = KEEP_VERIFIED for all 19** (no MOVE: already at canonical owner path; no FIX evidence):
+  - events: `cycle_event_payloads 633f9afb`, `cycle_log_trace_payloads 51fa0783`
+  - projections: `cycle_detail_projection 9630c66f`, `cycle_detail_projection_exit_decision_detail fe67e001`, `cycle_output_projection 26db1a16`, `cycle_output_projection_value_state_monitor 97831983`, `cycle_posture_projection 2ed727fb`, `entry_evidence fa5a9a66`, `entry_focus_output_projection 21326cb2`, `entry_state_views 61e3f2c2`, `exit_axis_labels d640b83a`, `feature_context_views 77c79d96`, `observability 66fdfb39`, `order_lifecycle e87b0c2c`, `policy_output_projection fe6c9ebf`, `policy_trace_views 95e3e8c2`, `scanner_monitor_handoff_projection d7c3f8af`, `signal_evidence_defaults d53de4e4`, `signal_explanation be74bc5f`.
+- **C2 State/event/effect contract (reused, no rerun):** A run112 normal/-O exit 0: 19-owner public attr hash `7abc614de7` unchanged, runtime wrapper 14 imports unchanged, 27 State keys ↔ `graphs/nodes/monitor_node.py` 27 direct state writes, Mapping misuse → TypeError, shallow snapshot/frozen dataclass/dict alias contract. Owners return payloads only; State writes happen in `monitor_node.py` (outside RF-015). B `RF015_MONITOR_CONSUMER_OK transition=1 summary=1 state=none io=none` scoped peer reused.
+- C3 data for B already in run145 (11 BASE nodes, one shared docs-inventory cause, B-only Commander inventory separate).
+- External effects: none besides this push.
