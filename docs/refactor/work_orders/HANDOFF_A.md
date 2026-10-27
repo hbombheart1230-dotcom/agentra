@@ -15,6 +15,15 @@
 - TEXT/JSON × normal/`python -O` 4회 모두 `rc 0`, `ok=True day=2026-10-27 commander_total=16 cooldown_transition_total=1 intervention_total=1 error_total=1`(JSON도 ok true), temp 파일 11개, 차단 호출 0, worktree 변경 0. 대조: 구 blob(integration)은 TEXT에서 `NameError: name 'day'`.
 - 변경은 1행(`day`→`summary['day']`)뿐, 소스 수정·통합·DONE 0. 직접 hosted CI/Windows Scheduler/다른 CLI NOT_RUN. 판정 **PEER_PASS_SCOPED**(수정 blob 한정), 최종 수용은 지팀장.
 
+**RF-015 독립 peer (B 새 근거 `f3cc5ee1`) — run141 (`2026-10-27T0325Z`; A 시작 `569ebe6b`, integration `c962e23a`, B `43017525`)**
+
+- B 주장: 4파일 Monitor 계약 명령이 B source에서 252 PASS/12 FAIL, BASE 253/11, 추가 1건은 `test_combined_agent_tree_is_exactly_the_versioned_allowlist`(동결 Commander 패키지 인벤토리 원인, RF-015 owner 무관).
+- A 독립 재현(동결 테스트 수정·우회 없음, git 이력이 필요해 worktree에서 실행): `python [-O] -m pytest -q -p no:cacheprovider tests/test_p173_p058_integration_contracts.py tests/test_shared_role_contracts.py tests/test_work_monitor_continuous.py tests/test_work_monitor_role_contracts.py -rf`
+  - B HEAD `43017525`: normal/`-O` 각 **exit 1, 252 passed / 12 failed**. integration `c962e23a`: 각 **exit 1, 253/11**. BASE `63182ab2`: 각 **exit 1, 253/11**.
+  - 실패 집합: **integration = BASE 11건 동일**(`test_shared_role_contracts` 10건 B-stage 경로/변형 + `test_work_monitor_role_contracts::test_all_retained_role_owners_and_protected_runtime_stay_byte_identical`). B 추가 1건 = `test_p173_p058_integration_contracts.py::test_combined_agent_tree_is_exactly_the_versioned_allowlist` → `AssertionError: Commander exact package inventory`.
+  - 원인 확인: BASE 대비 B의 `libs/agents` 변경은 `commander/__init__.py`·**`commander/contracts.py`(B-only 신규)**·`monitor/__init__.py`·`monitor/contracts.py` 4개. 추가 실패는 Commander 패키지 인벤토리 위반이며 RF-015 Monitor owner 19파일 동작과 무관 → **B 분류와 일치**.
+- 판정: **PEER_PASS_SCOPED**(B 기준선 분류 독립 재현). 남은 게이트: B-only `libs/agents/{commander,monitor}/contracts.py` 실제 사용처/통합 여부(지팀장)와 동결 인벤토리 오라클 변경 승인. DONE 아님.
+
 **RF-035 (A 원개발, 신규 배정) owner 인벤토리 — run140b (`2026-10-27T0315Z`, A 시작 `d60ad87d`)**
 
 - 하네스 `evidence/run103_boundary_scripts/rf035_owner_inventory.py` blob `c3ecf458` + 결과 `rf035_owner_inventory_rows_4f012a3a.json`(119행). 정적·읽기 전용(파일 쓰기/네트워크 없음). 동결 RF-074 오라클은 **테스트를 실행·수정하지 않고** `_scope_violations`와 상수만 AST로 재구성해 각 파일 편집 시 위반 여부를 판정. 깨끗한 추출본 integration `4f012a3a`/BASE × normal/`-O` 4조합 **exit 0, 결과 동일(digest `90569bdec454`)**.
