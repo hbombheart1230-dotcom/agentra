@@ -15,6 +15,16 @@
 - TEXT/JSON × normal/`python -O` 4회 모두 `rc 0`, `ok=True day=2026-10-27 commander_total=16 cooldown_transition_total=1 intervention_total=1 error_total=1`(JSON도 ok true), temp 파일 11개, 차단 호출 0, worktree 변경 0. 대조: 구 blob(integration)은 TEXT에서 `NameError: name 'day'`.
 - 변경은 1행(`day`→`summary['day']`)뿐, 소스 수정·통합·DONE 0. 직접 hosted CI/Windows Scheduler/다른 CLI NOT_RUN. 판정 **PEER_PASS_SCOPED**(수정 blob 한정), 최종 수용은 지팀장.
 
+**RF-021 결함 수정 + RF-041/051/053 CLAIM·owner 검증 — run142 (`2026-10-27T0430Z`; A 시작 `2eeeeb50`, integration `74a1c960`, B `43017525`)**
+
+- **RF-021 (UNASSIGNED CLAIM, Monitor exit runtime) — 순환 import 결함 수정:** `import libs.runtime.exit_policy`(및 `graphs.nodes.decide_trade`)가 **콜드 import 시 실패**(integration=BASE): `exit_policy` → `libs.runtime.monitor_exit`(패키지 `__init__`) → `policy_map_builder` → `from libs.runtime.exit_policy import apply_account_pnl_crosscheck_context`(부분 초기화) → `ImportError`. `graphs.commander_runtime`처럼 monitor_exit를 먼저 import하는 경로만 우연히 동작. 수정: `libs/runtime/monitor_exit/policy_map_builder.py`의 해당 import를 호출 시점(함수 내부)으로 이동(동작 동일). blob `a94cf82b` → **`dc9d6528`**. `exit_policy.py`(RF-026)는 미변경.
+  - 검증: 콜드 import `libs.runtime.exit_policy`/`graphs.nodes.decide_trade` normal·`-O` **FAIL→OK**, `monitor_exit`/`monitor_exit_inputs`/`commander_runtime` OK 유지. libs/ai 관련 테스트 10파일: 수정 전 **7 errors(수집 단계 ImportError)** → 수정 후 **65 passed**, 파일별 단독 실행도 전부 통과. 회귀: integration worktree에 동일 수정만 적용해 monitor_exit/exit_policy/decide_trade/monitor_node/libs.ai 관련 93개 테스트 파일 실행 → 수정 전후 **실패 집합 263건 완전 동일(신규 실패 0)**, 2237 passed 동일(기존 실패는 git 이력·B-stage 인벤토리 등 기준선).
+- **RF-041 `libs/ai`** (`intent_schema.py` ad3d073d, `strategist.py` da37b5eb, `strategist_config.py` 7be1fead, `strategist_factory.py` 643221db, providers 하위 포함 6파일): importer 10, env 사용, 관련 테스트는 위 순환 import 때문에 수집 실패했던 것이며 RF-021 수정 후 65 passed → KEEP 후보.
+- **RF-051 `libs/market`** (`global_sentiment.py` 8523d4ca, `korea_bond_yields.py` 1e996cbf, `korea_index_sanity.py` 9963d5dc, `opening_macro_snapshot_collector.py` a401a7ea, `preopen_macro_snapshot.py` 4c52deac, `q10_index_observation_collector.py` cbd04a11, `q10_observation_integrity.py` 04f5f400, `yfinance_support.py` 03edd32a): importer 35, env·네트워크(yfinance)·쓰기 효과, 기존 테스트 **142 passed** → KEEP 후보(네트워크/쓰기 효과는 fake 기반 별도 검증 필요).
+- **RF-053 `libs/news`** (`model.py` 0f8832b9, `models.py` 05bce4b4, `news_analyzer.py` 59541983, `news_pipeline.py` 851700ff, providers/scorers 하위 포함 12파일): importer 9, 기존 테스트 **48 passed** → KEEP 후보.
+- 하네스 `rf_pkg_owner_verify.py`(`RF_PKGS` 지정) integration/BASE × normal/`-O` 4조합 exit 0·공개 API 지문 동일. RF-057 `libs/skills`(Kiwoom API 실행기)는 보호 인접으로 CLAIM 안 함.
+- 다음: B 독립 peer(RF-021 수정 `dc9d6528`, RF-041/051/053). 지팀장: Owner 동기화·RF-021 선별 통합.
+
 **UNASSIGNED 자율 CLAIM (C02) — run141b (`2026-10-27T0345Z`, A 시작 `f4c6ce79`, integration `c962e23a`): RF-052 구현 + RF-046/047/054/058 owner 검증**
 
 - 선택 근거: A 큐는 RF-043(peer 대기)·RF-035(93 oracle HOLD)·RF-030(HOLD)뿐 → 보호 경계 아닌 소형 CODE RF를 CLAIM. RF-061 `libs/tools`는 소비자가 Step5C 안전 테스트라 보호 인접으로 제외. 지팀장에 물리 Owner 동기화 요청.

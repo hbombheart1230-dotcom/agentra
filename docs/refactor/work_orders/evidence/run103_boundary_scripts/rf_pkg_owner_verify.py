@@ -5,7 +5,7 @@
 import os, sys, ast, re, json, hashlib, subprocess, tempfile, shutil
 from pathlib import Path
 repo = Path(os.getcwd()).resolve(); RUN_TESTS = "--no-tests" not in sys.argv[1:] and __debug__
-PKGS = {"RF-046": "data_quality", "RF-047": "diagnostics", "RF-052": "market_data", "RF-054": "performance", "RF-058": "storage"}
+PKGS = dict(x.split("=") for x in os.environ["RF_PKGS"].split(",")) if os.environ.get("RF_PKGS") else {"RF-046": "data_quality", "RF-047": "diagnostics", "RF-052": "market_data", "RF-054": "performance", "RF-058": "storage"}
 def check(c, m):
     if not c: raise SystemExit("CHECK_FAILED@%d: %s" % (sys._getframe(1).f_lineno, m))
 srcs = {}

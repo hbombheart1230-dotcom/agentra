@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
-from libs.runtime.exit_policy import apply_account_pnl_crosscheck_context
 from libs.runtime.monitor_exit.market_enrichment import (
     enrich_exit_policy_with_market_inputs,
     enrich_exit_policy_with_signal_inputs,
@@ -46,6 +45,10 @@ def build_monitor_exit_policy_map(
         exit_policy_map=out,
     )
     out = apply_position_entry_risk_to_exit_policy(state, symbol, out)
+    # Imported at call time: libs.runtime.exit_policy imports this package, so a module-level import
+    # here makes a cold `import libs.runtime.exit_policy` fail on a circular partial import.
+    from libs.runtime.exit_policy import apply_account_pnl_crosscheck_context
+
     return apply_account_pnl_crosscheck_context(
         out,
         position=position,
