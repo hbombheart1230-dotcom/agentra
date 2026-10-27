@@ -335,3 +335,14 @@
 - Sandbox: temp cwd, socket connect/Popen blocked, write-mode `open` blocked. No broker/network/order.
 - Not covered: other facade→owner paths (human payloads, evidence enrichment); this is not full RF-029 PASS.
 - External effects: none besides this push.
+
+## run154 — RF-051/054/058 C1 (Owner): 15-owner blob parity + ACTION table (integration 241f929c, BASE 63182ab2; read-only `git rev-parse`/`git grep`, nothing executed)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| RF-051 | C1 | 8 `libs/market` blobs A=integration=BASE (below) | PASS (owner static): ACTION **KEEP_VERIFIED 8/8**, no MOVE/FIX evidence | C2/C3 reuse run144 + B `RF051_EFFECT_OK` scoped peer; C4 full peer, C6/C7 C05 | Codex B / C05 |
+| RF-054 | C1 | 4 `libs/performance` blobs A=integration=BASE | PASS (owner static): KEEP_VERIFIED 4/4; C2/C3 writer/effect reuse run142 | C4 B peer, C6/C7 | Codex B / C05 |
+| RF-058 | C1 | 3 `libs/storage` blobs A=integration=BASE | PASS (owner static): KEEP_VERIFIED 3/3; C2/C3 reuse run142 | C4 B peer, C6/C7 | Codex B / C05 |
+- Blobs (identical in A, integration, BASE): market `global_sentiment 8523d4ca` (833 L, 4 src consumers/18 test files, 4 write tokens), `korea_bond_yields 1e996cbf` (135, 2/1, network import), `korea_index_sanity 9963d5dc` (96, 3/3), `opening_macro_snapshot_collector a401a7ea` (181, 1/4, write), `preopen_macro_snapshot 4c52deac` (43, 2/2), `q10_index_observation_collector cbd04a11` (643, 3/7, write), `q10_observation_integrity 04f5f400` (80, 2/0, write), `yfinance_support 03edd32a` (69, 14/2, network import); performance `__init__ f7765976` (27, 5/87), `performance_aggregator 573603cf` (478, 1/1, write), `playbook_stats f61800ed` (178, 1/4, write), `strategy_memory 4427c787` (630, 5/18, write); storage `__init__ e69de29b` (empty), `proposal_store a7def15b` (11, 1/0, append), `state_store 65452429` (126, 4/6, write).
+- Counts are regex-based non-test importer files / test files referencing the module (approximate, caller-map evidence only). Network/write owners are the ones covered by run142/run144 fake/temp effect harnesses; no real yfinance/KOFIA/network.
+- Not covered: B independent full-scope peer (only B `RF051_EFFECT_OK` scoped); `q10_observation_integrity`/`proposal_store` have no dedicated test file (covered only by importers).
+- External effects: none besides this push.
