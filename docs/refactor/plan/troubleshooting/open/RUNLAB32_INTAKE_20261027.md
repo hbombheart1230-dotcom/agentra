@@ -42,3 +42,10 @@
 - **새 사실만 추적:** 같은 현상이 RunLab #32에 다시 올라오면 기존 CASE 표의 **delta와 원본 댓글 링크만** 갱신. 수용 증거/테스트 재실행과 별개 문서 체크포인트 반복 금지.
 
 **현재 실제 수행:** Issue #32 근거 확인 및 문서상 OPEN·담당 배정. RunLab PC 직접 실행·Dev A/B 신규 진단·코드 fix·통합 CI·운영 재검증 **NOT_RUN**. 현재 상태는 `OPEN`, `DEV_RESOLVED=NO`, `RUNTIME_VERIFIED=NO`. 별도 RF 큐 이동·DONE 발생 없음.
+
+## 2026-10-27 B 신규 read-only ORDER/GUARD 소스 trace 접수 (런검증 아님)
+
+- **출처:** `work/p15-b-operator-structure-20261022@7af57e8e`, [HANDOFF_B](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md), `B-20261027-RL32-ORDER-GUARD-SOURCE-TRACE`. **소스 정적 추적만**, fake/CLI/브로커/운영 런 **NOT_RUN**.
+- **ORDER 가능 경로:** 정상 흐름에서 `execute_from_packet`는 `execute_owned_order` → recent guard 갱신 → `stage=execute_from_packet, event=execution` JSONL 기록 순서. `kiwoom_order_fill_reader.load_local_execution_rows`는 그 이벤트와 주문 ID·심볼·모드·broker message/order-id 조건을 요구한다. 따라서 **주문 제출 후 로그 기록 전 실패**는 broker truth가 존재해도 local reconciliation row가 없을 수 있는 **가설 경계**다. SELL `0020349`의 실제 원인 입증은 아님.
+- **GUARD/READINESS:** unknown fill은 `-1`로 보존, `expires_epoch` 만료 평가는 있지만 persisted pruning은 이후 정상 갱신 경로에 의존. `build_execution_readiness`는 fresh portfolio/open-order/ownership/Step5C 입력 소비자이며 local execution event를 생성·broker/local reconciliation하지 않는다. 10/27 오전 BUY guard 비움 원인은 여전히 UNKNOWN.
+- **판정 유지:** `FILE_OWNER_MAPPED`(ORDER RF-012/055, GUARD RF-012/048) / `DEFECT_OWNER_PENDING` / `RUN_SOURCE_SHA=UNKNOWN` / `OPEN/SAFETY_HOLD` / `DEV_RESOLVED=NO` / `RUNTIME_VERIFIED=NO`. 차기 증거는 **승인된 격리 fake에서 post-submit logger-failure 경계** 또는 RunLab의 이미지 SHA provenance. 실제 주문/취소/재배포·보호 코드 변경·운영 파일 쓰기 금지.

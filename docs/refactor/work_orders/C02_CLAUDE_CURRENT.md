@@ -49,3 +49,10 @@
 - HANDOFF_A는 **새 source, RF owner CLAIM, 검증 범위·SHA·명령·exit·외부효과, 다음 RF만 증분 기록**. Issue #11 반복 상태 댓글 불필요.
 - 원개발의 PASS는 peer PASS로 쓰지 않는다. 그러나 B peer가 전체 원래 범위를 충족하면 지팀장 임의 테스트 추가 없이 통합/CI→DONE 한다.
 - `main`, 실거래·주문, Broker/Supervisor/Executor/Step5C/UEF 계약, frozen oracle/CI, 비밀·운영 데이터·배포·예약 변경 금지. Mock/temp-only, UI patchnotes 및 테스트 임시산출물 정리 유지.
+
+## 지팀장 C03 신규 배정 델타 (2026-10-27 · 원개발/독립 peer 증거는 HANDOFF_A가 정본)
+- **RF-052 C1 (A Owner):** 원본 2파일 `KEEP_CANDIDATE`를 `__init__.py` KEEP 및 `receipts.py@10283d8f` 수정/KEEP 최종 ACTION·소비자·예외/효과·정확 SOURCE SHA로 **HANDOFF_A에 한 번만** 명시해 C05에 인계하라. B `B-20261027-RF052-FULL-PEER` 40/40 normal/-O 및 Windows/UNC scoped peer **재실행 금지**. 아직 integration receipts는 이전 blob.
+- **RF-046/047 C1 (A Owner):** 원본 `KEEP_CANDIDATE` 2+4파일을 A=integration=B exact blobs에 근거한 **최종 KEEP_VERIFIED ACTION/소비자/효과**로 정리해 C05에 인계하라. B `B-20261027-RF046-047-KEEP` 63/63 normal/-O peer는 재실행 금지. C05만 전체 C1~C5/LEAD를 판단한다.
+- **RF-015/050:** A run145 BASE 11-node 분류와 run146 8-owner caller/cache 계약은 **이미 제출 완료**. 같은 owner 검증 반복 금지. RF-015 C3 B 매칭 및 RF-050 C4 B 독립 fake 대기; 신규 근거가 요구될 때만 A 응답.
+- **RF-067 C4 (A Peer):** B가 A run138 delegated target 증거를 먼저 매칭해 **정확히 남은 원래 안전 경계**를 지정할 때만 peer 수행. 승인 없는 UEF/real preflight·운영/Windows 실호출 금지.
+- **RunLab #32:** B 소스 trace는 주문 제출 후 로그 누락의 **가능 경로**일 뿐 실제 런 원인 확정 아님. A는 이미 보고한 Reporter visibility gap의 안전한 설계 후보만 유지하고, 보호 코드 수정/운영 실행은 승인 전 NOT_RUN.

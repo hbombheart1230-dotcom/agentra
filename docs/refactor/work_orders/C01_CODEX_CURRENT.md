@@ -48,3 +48,10 @@
 - HANDOFF_B에 `RF | SOURCE SHA | original acceptance coverage | PEER_PASS / SCOPED_PASS / FAIL / NOT_RUN | command·exit | external effects | NEXT`의 **새 변화만** 기록. Issue #12 반복 댓글 금지.
 - **Peer PASS면 지팀장이 직접 새 Python/Windows 테스트를 요구하는 단계가 없다.** 지팀장에게 SHA·통합·CI 판정만 넘긴다.
 - `main`, 실거래·주문, Broker/Supervisor/Executor/Step5C/UEF 안전 계약, frozen CI/oracle, 비밀·운영데이터·배포·예약 무승인 변경/실행 금지. Mock/temp-only. UI 변경 시 patchnotes, 테스트 산출물 보존정책 준수.
+
+## 지팀장 C03 신규 배정 델타 (2026-10-27 · 원개발/독립 peer 증거는 HANDOFF_B가 정본)
+- **RF-015 C3 (B Peer):** A run145 `aa00bcd9`의 BASE/integration **253/11 동일 11 node**를 기존 B 252/12와 대응시켜 B-only Commander frozen inventory 1건을 분리하고, **원래 RF-015 C3의 충족 범위만** 판정·HANDOFF_B에 SHA/NOT_RUN을 남겨라. 같은 pytest 반복 금지·frozen oracle 수정 금지. A C1/C2는 별도 Owner 책임.
+- **RF-050 C4 (B Peer):** A run146 `b7da8bab`의 8-owner blob·caller/cache 계약을 받아 기존 fake 10/10에서 **빠진 원래 필수 caller/State·실패/캐시 경계만** isolated fake normal/-O로 검증하라. 전체 PASS/SCOPED_PASS를 정확히 구분한다.
+- **RF-067 C4 (B Owner 인계):** A run138 delegated target scoped CLI 기존 증거를 `B-20261027-RF067-C4-SCOPE-MAP`과 먼저 매칭하고 **실제 누락 경계 1개**만 A peer에게 요청하라. 14 fake wrapper/기존 target 재실행·UEF/real preflight 승인 없는 실행 금지.
+- **RF-052/046/047:** B `B-20261027-RF052-FULL-PEER` 및 `RF046-047-KEEP`의 원래 범위 peer 결과를 **재실행하지 말고** A 최종 C1 ACTION이 오면 C05가 판단하도록 증거만 인계하라. C01/B는 RF 체크·LEAD 이동·STATUS를 변경하지 않는다.
+- **RunLab #32:** `B-20261027-RL32-ORDER-GUARD-SOURCE-TRACE`는 read-only **가능 경로** 증거로 인수. 실제 SELL 원인·RUN_SOURCE_SHA 확정 금지. 보호 fake 실행은 승인/격리 조건 확인 전 NOT_RUN, 일반 RF는 계속 진행.
