@@ -1,21 +1,21 @@
-# C00 — Agentra P1.5 지팀장 현재 작업
+# C00 — Agentra P1.5 지팀장 현재 작업 (2026-10-27 갱신)
 
-**정본:** `integration/p1.5`. 고정 계약 D00은 읽기 전용. RF-001~093 전체를 보호 경계 내 연속 처리한다. 작업 브랜치 CURRENT를 정본으로 사용하지 않는다.
+**정본:** `integration/p1.5`. 고정 계약 `D00_ENGINEERING_DELIVERY_POLICY.md` 읽기 전용. **RF-001~093 전체** 보호 경계 내 연속 실행. A/B 작업 브랜치 CURRENT는 정본 아님. 읽기만 하고 종료 금지. 신규 branch/tag/PR/worktree 금지, `main` 변경 금지.
 
-## 현재 실물 큐 (93 unique·중복 0·누락 0)
+## 실물 큐 — 93 unique·중복0·누락0 (integration `c259b368` 이동 뒤 전수 재조회)
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | 합계 |
 |---:|---:|---:|---:|---:|---:|---:|
-| 60 | 3 | 3 | 13 | 14 | 0 | **93** |
+| 60 | 3 | 2 | 14 | 14 | 0 | **93** |
 
-LEAD=014/015/016/028/029/031/032/033/034/050/065/067/069. PEER=018, **063(B owner·A scoped peer 완료→지팀장 판정)**, **043(A owner→B peer)**. PENDING A=030(HOLD),035; UNASSIGNED=58. 신규 DONE=0.
+- **LEAD 14:** RF-014,015,016,028,029,031,032,033,034,050,**063**,065,067,069. **PEER 2:** RF-018(B owner), RF-043(A owner/B peer pending). **DEVELOPING 3:** RF-066/070/071(B). **PENDING:** RF-030/035(A), UNASSIGNED 58. **DONE 기존 14, 신규 DONE 0.**
+- **최신 지팀장 진척:** RF-063 diagnostics text `NameError` 단일행을 정확 B owner blob `fdde6c82bfc9820b853487904fb491a96cbd3408`으로 integration commit **`c962e23a5b5395bc489c9793806fede2ff05924e`** 선별 통합. A 독립 peer `HANDOFF_A@569ebe6be` TEXT/JSON × normal/-O **4/4 exit0** 범위 한정 수용. GitHub Actions [run 40443430786](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40443430786): `safety` 및 `safety (-O)` 둘 다 **success**(이 통합 SHA). 기존 `03_PEER_REVIEW/CODEX_B/RF-063.md`는 **원자적으로 `04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-063.md`로 이동**, commit **`c259b3682bb1f99ffdcd8e8cc011c2af4ef61276`**. 전체 76 CLI/Windows Scheduler/보호 runtime 의미 검증 부족하여 **LEAD_HOLD/NOT_DONE**, 04→05 금지. 지팀장 직접 Python `NOT_RUN`, 외부 A/B PASS를 직접 실행 PASS로 표시하지 않는다.
+- STATUS와 A/B C는 **`5de066fdf3f079906c40c290d697ee200a2f5fda`**에서 동기화. A/B 최신 HEAD: A **`569ebe6be8af13c7edf4f36822499cb6ae814639`**, B **`43017525dd733bd2d79e232b3da3ffa4db65ebba`**. Issue #11 지팀장 checkpoint comment **6432945419**, #12 **6432946013** 게시 확인. RunLab #32 최신 독립 관측 2026-10-27 09:38 KST(아래).
 
-## 지금 해야 할 최초 행동
+## 다음 실행 가능한 순서 (D00 §2A 종료 게이트)
 
-1. **RF-063 실제 지팀장 인수·통합 게이트:** B 수정 commit `78be88c658067eab7d1898111cb8e5c44219f2f7`, 정확 source blob `fdde6c82bfc9820b853487904fb491a96cbd3408`. **A HEAD `569ebe6be`의 독립 TEXT/JSON × normal/-O 4/4 exit 0 PEER_PASS_SCOPED가 HANDOFF_A에 도착**(하네스 `rf063_m23_closeout_text_fix_peer.py`, temp-only); 기존 integration blob `5de4ec68`는 TEXT NameError. 같은 경계 재검증 대신 실제 소비자·통합/CI 적용 범위를 직접 판정하고 가능한 선별 통합·물리 큐 이동을 처리한다. 필수 게이트 부족 시 RF-043·LEAD 다음 가능 RF로 즉시 전환, DONE 허위 승격 금지.
-2. **RF-043 B 독립 peer:** A owner `libs/catalog` 6파일 KEEP_VERIFIED 후보, 검증 하네스 blob `b2c915c79166937b0a2b47c1c28bdc25b77a4331`. A=integration 6개 Git blob 동일, A 보고 BASE/integration × normal/-O exit 0. `01_PENDING/CLAUDE_A → 03_PEER_REVIEW/CLAUDE_A` 이동 commit `36a51a547c92a026d348244d3dc5d23158a78001`. **B peer·지팀장 최종 인수·CI 전 DONE 아님**. Broker/order DTO 변경 금지.
-3. **LEAD 13건:** 새 독립 peer·실제 consumer/State/IO·예외·source/tree SHA·필수 CI를 직접 판단. 기존 같은 SHA/경계 PASS 재사용, 조건 충족 RF만 `04→05` 원개발팀 폴더로 이동·구 경로 삭제. STATUS의 최초 미충족 게이트 유지.
-4. **A/B 연속 개발:** A HEAD `569ebe6be8af13c7edf4f36822499cb6ae814639` (RF-043 owner, RF-035 119파일 중 frozen oracle 93 HOLD); B HEAD `43017525dd733bd2d79e232b3da3ffa4db65ebba` (RF-063 1행 수정, RF-031 positive caller, RF-050 fake router, RF-015 BASE, RF-016/029 scoped). A는 RF-063 동일 peer 재검증 없이 RF-035 안전 editable 범위; B는 RF-043 peer→RF-031 partial OSError downstream→RF-050 UI/cache. 다음 일반 RF는 별도 착수 승인 없이 각자 기존 브랜치에서 개발·HANDOFF/#11/#12에 실제 SHA/명령/exit 제출. 동결 oracle/안전 계약 보호.
-5. **RunLab #32:** 2026-10-27 09:38 KST mock SELL 0045749 접수, fill/출처 미확정; 전일 SELL 0020349 local 누락·guard/reconciliation mismatch·OCI RUN_SOURCE_SHA UNKNOWN → SAFETY_HOLD. 실거래·주문·안전 계약·동결 CI/오라클·운영 데이터·배포·예약 무승인 변경 금지.
-
-**D00 §2A 실행 우선·종료 게이트 적용:** 이번 RF-063 신규 A peer는 지팀장 판정 대상이다. RF-063이 막혀도 RF-043·다른 LEAD로 이동한다. 단순 원문 조회·미완료 보고로 종료하지 않는다. 지팀장 직접 Python 및 hosted CI 현재 NOT_RUN; 필요 검증은 근거를 분리해 표시한다.
+1. **RF-043 — B 독립 peer 최초 게이트:** A owner `libs/catalog` 6개 KEEP_VERIFIED 후보, BASE=A=integration 동일 blob; A 하네스 `rf043_catalog_owner_verify.py` blob `b2c915c7`, 원개발 normal/-O 4경로 exit0. **B 독립 peer는 아직 NOT_RUN**. B가 정확 6 source/public consumer·State/IO·예외를 주문 DTO 건드리지 않는 temp-only fake normal/-O로 제출하면 지팀장이 인수·실물 이동/통합·CI 판정. 원개발 코드가 기존 integration과 동일해 새 통합 실적 꾸미지 말 것.
+2. **LEAD 잔여 13+RF-063 안전 게이트:** RF-031 B partial OSError 후 실제 downstream recovery, RF-050 B Operator UI 3-stage fallback 및 cache-OSError, RF-014 dynamic Scanner→Graph shim/NOOP, RF-015 B-only Monitor/BASE frozen inventory, RF-016 nested State 외부 소비자, RF-028 rich writer/85 owner, RF-029 facade→bundle 38 owner, RF-032 validation-id/UEF HOLD, RF-033 InputWorker.tick→publish_input, RF-034 latent/cache/Scanner, RF-065 연구 effectful CLI/Windows, RF-067 diagnostics wrapper/Windows·보호 CLI, RF-069 UEF5 historical snapshot 승인 HOLD. **새 증거가 있는 최초 미충족 게이트만 처리**. 유효 동일 SHA·경계 PASS 재검증 금지. 어느 RF가 막혀도 다른 일반 RF로 전환.
+3. **A/B 연속 작업:** A는 RF-035 119파일 중 frozen RF-074 oracle 금지 93 HOLD, 안전 editable 26의 새로운 consumer/State/temp-only 경계·일반 UNASSIGNED CLAIM. B는 **RF-043 peer → RF-031 downstream → RF-050 UI/cache** 이후 자기 developing RF-066/070/071·중복 없는 일반 RF. A/B는 기존 브랜치 구현/검증/푸시, HANDOFF_A/B 및 Issue #11/#12에 SOURCE SHA·명령·exit·외부효과 기록. 개별 착수 승인 대기 금지.
+4. **RunLab #32 SAFETY_HOLD:** 오늘 09:38 KST mock SELL `0045749` 접수(체결/출처 UNKNOWN), 전일 SELL `0020349` local 누락, guard/reconciliation mismatch, OCI `RUN_SOURCE_SHA=UNKNOWN`. 런검증은 읽기 전용 관측만, 안전 상태 해결 전 실거래/실주문·Broker/Supervisor/Executor/Step5C/UEF 계약·frozen CI/oracle·비밀·운영데이터·배포·예약 변경 절대 금지. RF-069 UEF5 historical snapshot은 path/SHA/use-scope + 명시적 승인 전 실행 금지.
+5. **지팀장 의무:** 첫 유효 행동 RF 판정·검증/통합. 93 unique 실물 큐/Owner와 HEAD/HANDOFF/#11/#12를 매회 대조, STATUS 변경 시 전체 교체 커밋 후 필요한 C01/C02를 갱신하고 **C00 마지막 갱신**. 결론은 실제 SOURCE/통합 SHA, PASS/FAIL/NOT_RUN, 물리 큐 변화, 다음 RF를 기록. 모든 safe actionable RF 소진 또는 실제 실행/환경 제약일 때만 D00 분류로 종료.
