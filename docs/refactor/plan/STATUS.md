@@ -6,10 +6,10 @@
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
-| 60 | 3 | 2 | 14 | 14 | 0 | **93** |
+| 55 | 5 | 5 | 14 | 14 | 0 | **93** |
 
-- **LEAD 14:** RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069. **PEER 2:** RF-018(B owner), RF-043(A owner/B peer 대기). **DEVELOPING 3:** RF-066/070/071(B). **PENDING:** RF-030/035(A), UNASSIGNED 58. **DONE 14:** 기존 RF-001~009,013,017,019,020,068. REWORK 0.
-- 카운트는 `c259b368` 물리 큐 이동 후 93 unique/중복0/누락0 확인된 **기존 integration 실물 기준**이다. 이번 지시서 정리는 **큐 변경/새 DONE/테스트 실행이 아니다**. 뒤에 발생한 작업 브랜치 CLAIM은 통합·물리 Owner 확정 전 카운트에 반영하지 않는다.
+- **LEAD 14:** RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069. **PEER 5:** RF-018(B), RF-043/046/047/052(A owner→B peer). **DEVELOPING 5:** RF-054/058(A), RF-066/070/071(B). **PENDING:** RF-030/035(A), UNASSIGNED 53. **DONE 14:** 기존 RF-001~009,013,017,019,020,068. REWORK 0.
+- 카운트는 `c259b368` 물리 큐 이동 후 93 unique/중복0/누락0 확인된 **기존 integration 실물 기준**이다. 이번 지시서 정리는 **큐 변경/새 DONE/테스트 실행이 아니다**. 2026-10-27 지팀장 인수에서 A CLAIM 5건을 integration 실물로 확정: RF-052/046/047은 A owner 증거 수용 후 B peer 대기, RF-054/058은 A DEVELOPING(효과/쓰기 검증 미완료). A 브랜치 코드 수정은 아직 통합하지 않았다.
 - **LEAD 공통 새 기준:** 유효한 원래 범위 독립 peer PASS → 지팀장 SOURCE SHA·통합 diff/충돌·보호 경계·필요한 CI 확인 → **같은 회차 DONE**. 지팀장 Python/Windows/전체 소비자 재테스트 없음. Scoped PASS를 전체 PASS로 확대하지 않고, 원래 필수 미충족 1건만 해제 요청. 자세한 14건별 최초 판정은 [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md).
 
 ## 가장 최근 수용 근거 및 작업 브랜치 신규 변경
@@ -18,7 +18,7 @@
 - **A 브랜치 최신 확인:** `work/p15-a-reporter-pure-20261021@ba32a86a11a9dc1fc79e673b144d9bba238fd127`. HANDOFF_A run141b에 **신규 RF-052 Owner CLAIM/코드 수정**과 RF-046/047/054/058 KEEP 후보 검증이 있음. RF-052 `libs/market_data/receipts.py` 수정 blob `10283d8f`, targeted pytest **40 passed**(전 39 PASS/1 FAIL), normal/-O path harness exit0. UEF5 기존 결과 11 FAIL/49 PASS/2 ERROR는 수정 전과 동일하다고 A 보고. 이 결과는 **A 원개발 증거**, **B peer 미확인**, **integration 미통합**이며 승인된 UEF5 변경/운영 테스트가 아님.
 - **B 브랜치 최신 확인:** `work/p15-b-operator-structure-20261022@43017525dd733bd2d79e232b3da3ffa4db65ebba`. 기존 RF-031 실제 caller **8/8**, RF-050 fake-router **10/10** 및 RF-029/016/014 scoped 독립 증거는 그대로 재사용. RF-052·RF-043 B peer 결과는 아직 이번 인수에서 확인되지 않았다.
 - **RF-015 기존 실패 비교 신규 근거:** A가 B `252 PASS/12 FAIL` vs integration/BASE `253 PASS/11 FAIL`을 독립 재현; 추가 1건은 B-only Commander frozen package inventory. **Monitor 19-owner의 신규 회귀로 판정하지 않는다.** frozen CI/오라클 편집 불허. 불필요한 기준선 검증 재수행 금지.
-- **RF-043:** catalog 6 source BASE=A=integration 동일, A owner normal/-O 완료. B 원래 범위 독립 peer 필요. 동일 owner 테스트 재실행 금지.
+- **RF-052/046/047:** A 원개발 증거에 따라 PEER 큐로 이동, B 독립 검증 미도착. RF-054/058은 실제 writer/effect 검증 필요해 DEVELOPING 유지. 코드 통합·DONE 0. **RF-043:** catalog 6 source BASE=A=integration 동일, A owner normal/-O 완료. B 원래 범위 독립 peer 필요. 동일 owner 테스트 재실행 금지.
 
 ## LEAD 종결 작업·오너
 
