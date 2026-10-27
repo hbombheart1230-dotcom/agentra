@@ -10,6 +10,14 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-035 (A 원개발, 신규 배정) owner 인벤토리 — run140b (`2026-10-27T0315Z`, A 시작 `d60ad87d`)**
+
+- 하네스 `evidence/run103_boundary_scripts/rf035_owner_inventory.py` blob `c3ecf458` + 결과 `rf035_owner_inventory_rows_4f012a3a.json`(119행). 정적·읽기 전용(파일 쓰기/네트워크 없음). 동결 RF-074 오라클은 **테스트를 실행·수정하지 않고** `_scope_violations`와 상수만 AST로 재구성해 각 파일 편집 시 위반 여부를 판정. 깨끗한 추출본 integration `4f012a3a`/BASE × normal/`-O` 4조합 **exit 0, 결과 동일(digest `90569bdec454`)**.
+- 결과: `RF035_OWNER_INVENTORY_OK files=119 lines=36288 oracle_forbidden=93 editable=26 write=33 subprocess=2 network=1 llm=8 editable_effect_free=20`. 형태: module 86 / R3 facade 16 / wrapper 17. env 의존 13, 리포 내 importer 0인 파일 7.
+- **핵심:** 119개 중 **93개는 편집하는 순간 동결 RF-074 오라클이 FAIL** → RF-030과 같은 이유로 소스 분리·이동은 **사용자/지팀장 승인 없이는 불가**. 편집 가능한 26개는 R4~R9 facade allowlist 파일이며, 그중 효과 없는 20개(`trade_read_model`, `trade_bundle_assembly`, `trade_lifecycle_builder`, `trade_memory_surface` 등)는 이미 RF-074 단계에서 facade로 정리된 표면.
+- 외부 효과 파일(쓰기 33, subprocess/네트워크/LLM 10): `live_execution_bundle_runner`(2,787줄), `intraday_trade_reports`, `alert_notifier`(네트워크), `llm_daily_summary`·`live_execution_llm_artifacts`·`llm_artifacts`(LLM), `daily_report`, `carryover_exit_reconciler`, `fact_narrative_report`, `live_execution_event_evidence` — 실행 검증은 temp 격리 fake가 필요하며 외부 발행 writer는 C02 지시대로 HOLD.
+- 판정: RF-035는 **인벤토리 단계 완료, 구현은 동결 오라클 승인 대기(BLOCKED_ORACLE)**. 승인 전 할 수 있는 다음 안전 작업: 효과 없는 26개 편집 가능 파일의 소비자 동등성 확인, writer별 temp 격리 효과 검증(외부 발행 제외).
+
 **RF-043 (A 원개발, 신규 배정) + RF-063 재현 고정 — run140 (`2026-10-27T0300Z`; A 시작 `a03102dd`, integration `4f012a3a`, B `47d6e04d`)**
 
 - **RF-063 (06_REWORK, B Owner):** B "현재 B 소스에서 NameError 미재현" → `scripts/diagnostics/run_m23_closeout_check.py` blob **`5de4ec68`이 B HEAD `47d6e04d`·B source `318eb9d5`·integration·BASE 모두 동일**하며, B HEAD `git archive` 추출본에서 **텍스트 모드**(`python scripts/run_m23_closeout_check.py`, 인자 없음, 빈 cwd) → `NameError: name 'day' is not defined` **exit 1**, `--json` → exit 0. B는 JSON 모드만 확인한 것으로 보임. 재현 명령: `cd $(mktemp -d) && PATH= python <B_checkout>/scripts/run_m23_closeout_check.py; echo $?` (1). 수정 대상 `main()`의 텍스트 print `day={day}` → `day={summary['day']}`.
