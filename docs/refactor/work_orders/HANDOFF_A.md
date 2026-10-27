@@ -231,3 +231,20 @@
 - Prior owner evidence reused (no rerun): run110 `rf050_policy_lookup.py`, run111 `rf050_client_store.py` normal/-O exit 0.
 - B next (scoped): the caller list above with injected fake `LLMRouter.chat` (raise/timeout/bad JSON) proving no State mutation, no network/write. External/dynamic consumer provenance stays UNKNOWN (operator owner).
 - External effects: none besides this push. Next: Owner 031 C2.
+
+## run147 — RF-052 / RF-046 / RF-047 C1 (Owner) final ACTION for C05 (integration d15a54ed; read-only `git rev-parse`/`git grep`, no rerun of B peers)
+| RF | C | SOURCE | 범위 | 판정 | 첫 미충족·해제 담당 |
+|---|---|---|---|---|---|
+| 052 | C1 | `__init__ 5e63e4a5` (BASE=int=A=B); `receipts` A `10283d8f` (BASE/int/B `e59febed`) | 2 owner ACTION/consumer/effect | PASS (owner) | integration of `receipts@10283d8f` + CI → C05 |
+| 046 | C1 | `__init__ 0d046552`, `signal_contract 9206f801` (BASE=int=A=B) | 2 owner | KEEP_VERIFIED candidate | C05 |
+| 047 | C1 | `__init__ edeb5378`, `archive_inspection 299d328c`, `cli_capture adc8a568`, `observations e584b141` (BASE=int=A=B) | 4 owner | KEEP_VERIFIED candidate | C05 |
+- **RF-052 final ACTION:**
+  - `libs/market_data/__init__.py` → **KEEP** (package marker, no effect).
+  - `libs/market_data/receipts.py` → **FIX+KEEP** at `10283d8f` (commit `ba32a86a`): `resolve_archive_path` rejects Windows drive/UNC/root and backslash `..` (`PureWindowsPath`) in addition to POSIX absolute/`..`; raises `ArchivePathError` (ValueError) — no other API change.
+  - Consumers: `libs/reporting/evaluation/uef5/{candle_authority,historical_recompute}.py`, `libs/research/post_reclaim_alpha/kiwoom_history.py`; tests `test_market_data_receipts`, `test_kiwoom_history_receipt_lifecycle`, `test_uef5_2_historical_recompute`.
+  - Effects: file writes only under caller-given `archive_root`/`receipt_root` (`persist_raw_artifact`, `write_receipt`; `RawArchiveConflictError` on differing content); reads `read_raw_artifact/read_receipt/verify_raw_archive`; no network/subprocess.
+  - Evidence (reused): A run139 40 PASS (was 39/1), UEF5_2 11F/49P/2E = integration baseline; B `B-20261027-RF052-FULL-PEER` 40/40 normal/-O.
+- **RF-046 final ACTION KEEP_VERIFIED:** `libs/data_quality` (signal contract, pure) ← `graphs/nodes/{build_decision_context,decide_trade,strategist_node}.py`, `libs/market/global_sentiment.py`, `libs/news/news_pipeline.py`. No IO.
+- **RF-047 final ACTION KEEP_VERIFIED:** `libs/diagnostics` ← `scripts/diagnostics/` 10 CLIs (`check_log_archive_integrity`, `generate_ops_diagnostic_report`, `query_trade_reason_chain`, `reconstruct_incident_timeline`, `run_m23/24/26/27/29_closeout_check`, `run_m29_log_archive_integrity_check`) + `tests/test_diagnostics_shared_owners.py`. Effects: archive reads, `cli_capture` output capture used by CLIs; writes only where the CLI is given an output path (run141b).
+- Evidence reused: A run141b; B `B-20261027-RF046-047-KEEP` 63/63 normal/-O. No reruns.
+- External effects: none besides this push. Next: remaining Owner table rows (031/014/016/028/029/033/034/032) only on new requests.
