@@ -513,3 +513,25 @@
 | RF-067 | C4 | B=integration wrappers (blobs above) | SCOPED_PASS (wrapper mechanics only): exact wrapper blobs from `git archive` into scratchpad temp beside a **self-written fake** `scripts.diagnostics.<target>` (real targets 4a648f34/468ee8c6 never imported or run). Per wrapper × normal/`-O` (`python -I`): as `__main__` argv passthrough empty/`--x 1` rc 0, target `SystemExit(3)` → rc 3, target exception → rc 1 traceback; import mode `sys.modules["scripts.<name>"] is scripts.diagnostics.<name>` True. 2 wrappers × 2 modes × 5 = 20/20 as expected. temp tree listing identical before/after (no write) | with run137/138/138b/138d/138e/151 A evidence B maps 12/14 targets; these 2 cover **wrapper mechanics only** — real `check_daily_uef_run_status` (UEF) and `check_real_execution_preflight` (broker preflight) behavior stays NOT_RUN/SAFETY_HOLD (needs D00 user approval) so C4 is not full PASS; C6/C7 C05 | Codex B / 지팀장 / C05 |
 - Not run: real targets, UEF, broker/real-execution preflight, network, Windows Task Scheduler. Scoped peer, not RF-067 DONE.
 - External effects: none besides this push.
+
+## run163 — RF-067 C4 (Peer of B): 14-root consolidated verdict (integration fd5d608c, B fea02def, A 6cdb53b1; read-only `git rev-parse`/`git show`, nothing re-executed)
+Static facts: all 14 `scripts/check_*.py` are the same 10-line delegation template (normalized-text hash `63b25204` for all 14); all 14 wrapper and target blobs are byte-identical B=integration.
+| # | root wrapper / target blob | A evidence run | modes · effect scope | 판정 |
+|--:|---|---|---|---|
+| 1 | `check_reports_trades_health` 72f9956d / 90853b7c | run137 | real subprocess, normal/-O, no fake, writes/net/subprocess blocked | SCOPED_PASS |
+| 2 | `check_profitability_recovery_day1` 378f28ad / 7014ecda | run138, run151 | normal/-O, writes blocked, tmp cwd | SCOPED_PASS |
+| 3 | `check_reporter_upgrade_regression` dcf5d165 / ab585cf1 | run138 | normal/-O, writes blocked | SCOPED_PASS |
+| 4 | `check_phase_5_2_5_3_runtime_health` 8831693f / e095bee3 | run138, 138c, 151 | normal/-O, tmp event log; `--date` day-cache write observed in tmp only | SCOPED_PASS |
+| 5 | `check_monitor_gate_patterns` 6299e9c3 / 66c3af56 | run138b, 151 | normal/-O, read-only; `--live-followup` (market fetch) NOT_RUN | SCOPED_PASS |
+| 6 | `check_q9_q12_readiness` 276316fc / 68349976 | run138d | normal/-O; closeout logic + PowerShell-absent degraded path only; Windows live NOT_RUN | SCOPED_PASS |
+| 7 | `check_trade_report_runtime_regression` 54f313b9 / d320eb12 | run138d | normal/-O; `--skip-repair --skip-local-debug` validation mode only, default mode spawn blocked, `--llm-acceptance` NOT_RUN | SCOPED_PASS |
+| 8 | `check_log_archive_integrity` d4aa9f55 / d1f0b80e | run138e | normal/-O, writes tmp-only | SCOPED_PASS |
+| 9 | `check_metrics_schema_v1` 803dce34 / 2c493ba7 | run138e | same | SCOPED_PASS |
+| 10 | `check_audit_trail_completeness` d98ee6f2 / 1df9947a | run138e | same | SCOPED_PASS |
+| 11 | `check_alert_policy_v1` b5645133 / 1dfc6fa2 | run138e | same (synthetic `.env` only) | SCOPED_PASS |
+| 12 | `check_runtime_profile` 1846887c / 4f54d845 | run151 | normal/-O, `--env-path` temp, real `.env` blocked | SCOPED_PASS |
+| 13 | `check_daily_uef_run_status` 7a531b73 / 4a648f34 | run162 | **fake target module only**, normal/-O; real UEF target never imported | WRAPPER_ONLY (target NOT_RUN, SAFETY_HOLD) |
+| 14 | `check_real_execution_preflight` 27ac1cf1 / 468ee8c6 | run162 | **fake target module only**, normal/-O; real broker preflight never imported | WRAPPER_ONLY (target NOT_RUN, SAFETY_HOLD) |
+- Verdict: **full original-scope C4 PASS cannot be claimed.** 12/14 real-target SCOPED_PASS + 2/14 wrapper-only. Because rows 1–12 show the wrapper is a pure delegation template (byte-identical for all 14), rows 13–14 wrapper mechanics are sound, but the behavior of the real UEF-status and real-execution-preflight targets is unverified.
+- **First unmet original condition (1):** DONE-check #4 (relative read-only CLI real PASS/exit + SOURCE SHA) for `check_daily_uef_run_status` and `check_real_execution_preflight` real targets. Release owner: user explicit approval per D00 §3 (protected UEF / broker preflight), else C03/C05 decide whether wrapper-only KEEP_VERIFIED suffices for these two. A will not run them.
+- Scoped, not DONE; run137/138/138b-e/151/162 not re-run. External effects: none besides this push.
