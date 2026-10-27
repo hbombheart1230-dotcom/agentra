@@ -8,7 +8,7 @@
 |---:|---|---|---|
 | 1 | [RF-015](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | Owner | **C1/C2 Owner run149 제출 완료**. B C4 원래 19-owner full peer 판단 대기; B-only Commander frozen FAIL을 Monitor 회귀로 보지 않음. run112/145/149 재실행 금지 |
 | 2 | [RF-031](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | Owner | **C1/C2 Owner run150 제출 완료**. B의 caller-State/partial-OSError scoped peer 수령; B가 지목한 최초 원래 C2 계약 누락에만 대응, 기존 fake 재실행 금지 |
-| 3 | [RF-067](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CODEX_B/RF-067.md) | Peer | **C4**: 기존 A 2 root + run151 4 + run138e 4 + run138d 2 = **서로 다른 12/14 root scoped peer**. B가 12 root 정확 SHA·모드 매핑을 제출했고 **A run162가 보호 2 root 공개 import/argv/예외/exit fake-module 20/20 SCOPED_PASS 완료**. **A 다음 작업:** 기존 12개 scoped root + run162 2개 fake wrapper의 정확 SOURCE·모드·효과 경계를 14행 한 표로 합쳐 원래 RF-067 root-wrapper 전체 C4 PASS 가능 여부를 명시하거나 최초 미충족 원래 조건 1개를 지목해 C03/C05 인계. 보호 2개 실 target NOT_RUN/SAFETY_HOLD. 기존 12와 run162 재실행 금지; UEF/real preflight·Windows 운영 실호출 금지 |
+| 3 | [RF-067](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CODEX_B/RF-067.md) | Peer | **A run163 14행 SOURCE·모드·효과 통합 판정 이미 제출**: 12 real-target SCOPED_PASS + 2 보호 fake-wrapper WRAPPER_ONLY, 전체 C4 PASS 불가로 보고됨. **기존 run137~162 및 run163 표 재작성·재실행 금지.** 원래 RF-067 독점은 공개 wrapper 14개이므로, 별도 target의 보호 실실행을 새 게이트로 만들지 않고 **원래 C4 '상대 read-only CLI PASS/exit'가 wrapper-only 범위에서 충족 가능한지** 근거·SHA로 명시 PASS 또는 첫 부족 원래 조건 1개를 C03/C05에 회신. UEF/real preflight target·Windows 운영 호출 NOT_RUN/SAFETY_HOLD 유지 |
 | 4 | [RF-014](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | Owner | run148 **20-owner C1 ACTION 제출됨**, B static/dynamic scoped 수령. 원래 C2/C3 Scanner consumer·ranking/reject/NOOP 중 최초 빠진 계약만 정리해 B full C4 요청 |
 | 5 | [RF-050](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | Owner | run146 8-owner caller/cache 지도 재사용. **C1 최종 KEEP/COMPAT/효과 ACTION**을 한 번 확정해 B C4에 인계; 기존 B fake 10/10 재실행 금지 |
 | 6 | [RF-065](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-065.md) · [RF-063](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-063.md) | Peer | **RF-065 신규 B source `1641cfef`, `run_integrated_trade_validation.py@4119747f`**: 이전 default output-root 외부 8개 산출물에 대한 B 수정 후보. **A run161에서 정확 B `1641cfef`/blob `4119747f` 공개 CLI 7 argv × normal/`-O` = 14/14 temp-only fake SCOPED_PASS 완료**. 실제 downstream writer·broker·network·운영 보고서 NOT_RUN, 전체 RF C4 PASS 아님. 같은 범위 재실행 금지; B 54-owner C1 및 원래 C2/C3 남은 계약 대기. RF-063 기존 TEXT/JSON 4/4 peer 재실행 금지; 신규 B 근거만 확인 |
@@ -32,22 +32,20 @@
 - **RF-070:** B launcher parser 및 reporter synthetic temp writer 8/8 scoped, 아직 전체 Owner C1~C3 아님. 남은 20 OTHER·32 보호 launcher는 B 담당; 실제 server bind/운영 writer peer 금지.
 - **RF-071:** B 3/42 entrypoint 정적 ACTION만 제출, `approval_cli.py`는 Step5C SAFETY_HOLD. B 39개 추가 근거 이후 A는 안전한 공개 wrapper 범위만 독립 peer.
 
-## 🟢 C03 신규 PENDING 공급 — A Owner 후보 6건
+## 🟢 C03 남은 A READY — 실물 CLAIM 동기화 완료
 
-**[C03의 신규 READY 12건 배정표](C03_LEAD_TRIAGE_CURRENT.md)를 따른다.** 이 표는 `01_PENDING/UNASSIGNED`의 후보이며 **현재 CLAIM/DEV/DONE이 아니다**. 기존 C1~C5 우선 미완료·peer/full PASS를 포기하지 않는다. **최대 2건만 동시 CLAIM**, 자기 기존 브랜치 HANDOFF에 독점·CLAIM/SOURCE SHA를 적고 C05의 실물 큐/STATUS 동기화를 기다리는 동안 다른 안전 READY RF도 계속한다.
+**현재 A 활성 CLAIM 2건:** [RF-040](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-040.md) · [RF-061](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md). A `cd429015` run164의 14/3 owner 정적 ACTION은 **C1 후보**, full C1~C4 PASS가 아니다. RF-040 `executor.py` shadowed duplicate는 삭제하지 말고 보호 Executor 경계와 분리해 C2 판정; RF-061 `tool_facade.py` Step5C 보호는 수정·실행 HOLD. **B 독립 peer는 A가 원래 C1~C3 SOURCE/범위 인계한 후** 시작. C05가 두 RF의 PENDING→DEV 실물 이동을 완료했다. 추가 동시 CLAIM 금지(활성 슬롯 2/2).
 
-| 순서 | RF 원본 | 신규 A Owner 후보 | 첫 원래 C1 범위·주의 |
-|---:|---|---|---|
-| 1 | [RF-040](../plan/queue/01_PENDING/UNASSIGNED/RF-040.md) | **A Owner 후보** · libs/agent · 14파일 | 우선: agent 패키지 책임·공개 계약, 안전 경계 read-only |
-| 2 | [RF-057](../plan/queue/01_PENDING/UNASSIGNED/RF-057.md) | **A Owner 후보** · libs/skills · 6파일 | skills 공개 API/파일별 ACTION; 외부 효과 temp-only |
-| 3 | [RF-061](../plan/queue/01_PENDING/UNASSIGNED/RF-061.md) | **A Owner 후보** · libs/tools · 3파일 | 작은 CODE 패키지 KEEP/OWNER 검증 |
-| 4 | [RF-036](../plan/queue/01_PENDING/UNASSIGNED/RF-036.md) | **A Owner 후보** · Research Rank1 · 34파일 | research feature_mart·opening_rank1 계약; 운영 쓰기 차단 |
-| 5 | [RF-037](../plan/queue/01_PENDING/UNASSIGNED/RF-037.md) | **A Owner 후보** · Research structural alpha · 21파일 | structural_alpha·alpha_competition 순수 분석 경계 |
-| 6 | [RF-039](../plan/queue/01_PENDING/UNASSIGNED/RF-039.md) | **A Owner 후보** · Research evidence/memory · 16파일 | research 잔여 evidence·memory 소유권/IO; 운영 데이터 쓰기 금지 |
+**RF-057 SKIP:** [원본](../plan/queue/01_PENDING/UNASSIGNED/RF-057.md)의 `libs/skills/runner.py` Kiwoom/skill executor 보호 인접으로 run164에서 미CLAIM; 자동 READY에서 제외, 안전한 별도 판정 전 실실행/변경 금지.
 
-- **즉시 CLAIM 후보:** [RF-040](../plan/queue/01_PENDING/UNASSIGNED/RF-040.md) → [RF-057](../plan/queue/01_PENDING/UNASSIGNED/RF-057.md). 중복 CLAIM/보호 조건이 있으면 이유만 기록하고 순서상 다음 후보로 이동. 남은 후보는 선점하지 말고 소진 시 차례로 선택한다.
-- **작업 단위:** 해당 RF 원본 `DONE 체크` C1~C3·정확 CODE/RESEARCH FILE_COVERAGE → 변경 필요할 때 자기 범위 내 최소 diff/격리 normal/-O·fake 확인 → `HANDOFF_A`에 최초 증거·차단·다음 RF. 외부 소비자나 타 RF 소유 파일은 읽기 전용, 보호 경계는 별도 승인 전 수정/실행 금지.
-- **C05만** PENDING→DEV 물리 이동, RF 체크와 STATUS/Owner 정합성 처리를 수행. C03은 신규 후보 보충, 반대 peer 인계·C01/C02 배정만 한다. PENDING 숫자는 C05 실제 이동 전까지 그대로다.
+| 순서 | 미CLAIM A READY 원본 | 안전한 첫 작업 |
+|---:|---|---|
+| 1 | [RF-036](../plan/queue/01_PENDING/UNASSIGNED/RF-036.md) · 34파일 | Rank1/feature mart 정적 owner·caller, 운영 보고서 쓰기 HOLD |
+| 2 | [RF-037](../plan/queue/01_PENDING/UNASSIGNED/RF-037.md) · 21파일 | structural alpha 정적 계약, 전략/실거래 변경 금지 |
+| 3 | [RF-039](../plan/queue/01_PENDING/UNASSIGNED/RF-039.md) · 16파일 | evidence/memory read-only/temp, 운영 DB·State HOLD |
+| 4 | [RF-038](../plan/queue/01_PENDING/UNASSIGNED/RF-038.md) · 39파일 | diagnostics/opportunity 파일 독점 확인, temp/fake만 |
+
+위 4건은 **실제 PENDING/UNASSIGNED 후보**이지 Owner 확정이나 DEV가 아니다. 활성 슬롯이 비면 순서대로 독점·SOURCE·원본 C1을 확인해 HANDOFF에 CLAIM하고 **C05만** 실물/STATUS를 이동한다. RF-015/031 full peer 및 기존 RF 원래 C1~C5를 우선한다. A READY 4건, B READY 6건; [C03 최신 배정](C03_LEAD_TRIAGE_CURRENT.md)을 따른다.
 
 ## 무조건 끝까지 수행하는 루프
 
