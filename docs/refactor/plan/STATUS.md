@@ -22,7 +22,7 @@
 | 담당 | 확인 브랜치 HEAD | 새 근거·다음 행동 |
 |---|---|---|
 | Claude A | `a03102dd52eb9ee70df84b909411d480e8e8db3a` (역할문서-only; 최신 원개발 fixture SHA `7797b793`) | [#11 run139](https://github.com/hbombheart1230-dotcom/agentra/issues/11): RF-028 in-process writer fake, RF-014 Top1 selected fixture, RF-034 schema-valid source fixture 추가. B의 신규 scoped peer 결과는 #12에 도착; 최종 RF 게이트/LEAD 판정 필요. 운영 source 변경 0. RF-030 frozen oracle 보호 HOLD |
-| Codex B | `47d6e04d013dbed26d39e395e3ae707337508c51` (역할문서-only; 최신 peer SHA `2e2d24d6`) | [#12](https://github.com/hbombheart1230-dotcom/agentra/issues/12): RF-031 downstream JSON-only 복구·RF-050 cache reload·RF-014 selected Top1·RF-028 in-process writer·RF-034 valid source·RF-033 corrupt partial consumer 추가 scoped peer normal/`-O` 결과. RF-063 NameError는 현재 B source에서 미재현 보고(원 SHA 비교 필요). **운영 source 변경 0, 전체 DONE 아님** |
+| Codex B | `47d6e04d013dbed26d39e395e3ae707337508c51` (역할문서-only; 최신 peer SHA `2e2d24d6`) | [#12](https://github.com/hbombheart1230-dotcom/agentra/issues/12): RF-031 downstream JSON-only 복구·RF-050 cache reload·RF-014 selected Top1·RF-028 in-process writer·RF-034 valid source·RF-033 corrupt partial consumer 추가 scoped peer normal/`-O` 결과. RF-063 B의 미재현 보고와 달리 지팀장 3브랜치 동일 blob `5de4ec68` 텍스트 경로 결함을 확인하여 06_REWORK로 이동. **운영 source 변경 0, 전체 DONE 아님** |
 
 작업 연결: **D00 = 상시 관리·검증 계약**, C00 = 지팀장 이번 작업, C01/C02 = 각 개발자 다음 실행 큐, HANDOFF·#11/#12 = 증거·선택한 다음 RF. 기존 Issue 본문의 과거 작업 브랜치는 현재 D/C보다 우선하지 않는다. 문서·fixture 진척을 RF DONE으로 계산하지 않는다.
 
@@ -55,4 +55,4 @@
 
 - [#32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) 마지막 인수: **2026-10-27 09:38 KST**. mock SELL `0045749` 체결·보유 출처 UNKNOWN, 전일 SELL `0020349` 로컬 누락·출처 UNKNOWN, broker/local·guard·Reporter 불일치 및 OCI `RUN_SOURCE_SHA=UNKNOWN` 유지. 런타임 버전별 **BLOCKED**; 운영 주문·재배포·안전 계약 변경 금지.
 - **일반 RF 전 범위 개발은 포괄 허용:** A/B는 배정·자율 CLAIM한 일반 RF를 별도 사용자·지팀장 승인 대기 없이 구현·검증·커밋·푸시한다. 지팀장은 독립 검증을 인수해 최종 DONE 및 Owner 동기화만 수행한다. 보호 구간은 D00의 별도 명시적 승인 전 HOLD.
-- 지팀장 다음 행동: B `2e2d24d6`의 새 scoped peer·A `7797b793` fixture를 영향 RF에서 직접 재판정하고, 가능하면 DONE 처리. 매 예약 RF 실물 큐·A/B HEAD·HANDOFF·#11/#12와 이 STATUS를 대조하여 변화 있는 항목만 갱신한다. **이번 회차는 운영 소스·RF 물리 이동·테스트 실행 없이 정책 문서 동기화만 수행**.
+- 지팀장 다음 행동: B `2e2d24d6`의 새 scoped peer·A `7797b793` fixture를 영향 RF에서 직접 재판정하고, 가능하면 DONE 처리. 매 예약 RF 실물 큐·A/B HEAD·HANDOFF·#11/#12와 이 STATUS를 대조하여 변화 있는 항목만 갱신한다. **지팀장 이번 회차 실물 이동은 RF-035/043 Owner 배정 및 RF-063 06_REWORK 반려 3건. 운영 소스 통합·지팀장 직접 테스트 실행 0.**
