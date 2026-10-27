@@ -14,7 +14,7 @@
 
 ## 현재 작업
 
-1. **RF-052 코드 수정 완료 후보 — B peer 대기:** `libs/market_data/receipts.py` source blob `10283d8f`, Windows drive/UNC/backslash traversal 처리. A owner 증거: targeted pytest **40 PASS**(전 39 PASS/1 FAIL), normal/-O path harness exit0. UEF5 history 11 FAIL/49 PASS/2 ERROR는 integration 기존 실패와 동일하므로 **RF-052 신규 회귀로 오인 금지**. 현 단계에서 DONE/통합으로 표기하지 않고 B 독립 peer와 지팀장 SHA·CI 판단에 인계한다.
+1. **RF-052 코드 수정·B path scoped peer 완료, 전체 원래 범위 미종결:** `libs/market_data/receipts.py` source blob `10283d8f`, Windows drive/UNC/backslash traversal 처리. A owner 증거: targeted pytest **40 PASS**(전 39 PASS/1 FAIL), normal/-O path harness exit0. UEF5 history 11 FAIL/49 PASS/2 ERROR는 integration 기존 실패와 동일하므로 **RF-052 신규 회귀로 오인 금지**. B `B-20261027-RF052-ARCHIVE-PATH`는 수정 blob `10283d8f` Windows/UNC/backslash traversal normal/-O exit0/0 **path 경계 PEER_PASS**. 원래 2-owner C1~C5 전체·integration CI 미완료로 DONE/통합은 보류한다.
 2. **RF-046/047/054/058 KEEP 후보:** A owner의 source/import/기존 테스트 범위 검증 근거는 HANDOFF_A run141b를 재사용. **B 독립 peer와 통합 큐 소유 확정 전 전체 DONE 아님.** RF-054/058의 실제 writer/effect는 원래 수용 조건에 필요한 범위만 적어 B에 인계한다.
 3. **RF-043 DONE:** A `libs/catalog` 6개 + B exact-source 11/11 independent peer → 지팀장 KEEP_VERIFIED `05_DONE`. A 재실행 금지.
 4. **RF-035:** 원래 파일 119 중 RF-074 frozen oracle 충돌 93은 변경 금지, editable 26에서 **실제 원래 RF 수용 조건/버그 수정에 필요한 것만** 다룬다. 무의미한 새 광범위 소비자·IO 전수조사 금지. RF-030 보호 HOLD 및 RF-069 승인 전 UEF5 snapshot 실행 금지.
