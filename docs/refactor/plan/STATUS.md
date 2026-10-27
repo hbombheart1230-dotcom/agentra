@@ -19,7 +19,7 @@
 
 | RF 원본 | 실물 단계·Owner→Peer | MET · N/A · 남음 | 미충족 체크 | 다음 해제 조건 · 담당 | 상태 |
 |---|---|---:|---|---|---|
-| [RF-063](queue/02_DEVELOPING/CODEX_B/RF-063.md) | DEV · B → A | MET 1 · N/A 1 · 5남음 | C1,C2,C3,C4,C7 | **C1** diagnostics 76-owner MOVE/KEEP/SAFETY_HOLD 최종 분류 (**지팀장**) | MISSING |
+| [RF-063](queue/02_DEVELOPING/CODEX_B/RF-063.md) | DEV · B → A | MET 1 · N/A 1 · 5남음 | C1,C2,C3,C4,C7 | **C1** diagnostics 잔여 63-owner ACTION 및 CLI/효과/소비자 근거 (**Codex B → Claude A(peer)**) | MISSING |
 | [RF-067](queue/03_PEER_REVIEW/CODEX_B/RF-067.md) | PEER · B → A | MET 3 · N/A 1 · 3남음 | C4,C6,C7 | **C4** 14 root wrapper의 원래 필수 CLI/호출 계약에 A 독립 peer 2건이 충분한지 판정; 부족한 경계만 추가 peer (**지팀장→Claude A**) | MISSING |
 | [RF-015](queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** 역사 11 FAIL BASE/후보 node별 분류 (**Codex B**) | MISSING |
 | [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** LLM router/cache 8-owner와 B fake 10/10 범위 대조 (**지팀장**) | MISSING |
@@ -41,6 +41,7 @@
 
 ## 가장 최근 수용 근거 및 작업 브랜치 신규 변경
 
+- **RF-063 C1 지팀장 신규 실물 판독:** 76/76 원본 소스 read-only 조회, 그중 15행 thin wrapper 13/13의 정확한 source blob→`libs.runtime.entrypoints.*.main` 대상 blob 존재를 정적으로 확인. RF-063 ACTION 표에서 13개 `KEEP_CANDIDATE → WRAPPER` 수정(커밋 `54c9af95`), 잔여 63개는 후보 상태. **C1 PARTIAL 유지**(CLI/normal/-O/효과·A peer NOT_RUN), DEV 1건 단계 유지, 전체 93 큐 변화 0. 다음 Codex B owner 63개 ACTION·효과 증거 → Claude A 독립 peer.
 - **RF-063:** B owner `scripts/diagnostics/run_m23_closeout_check.py` 수정 blob `fdde6c82bfc9820b853487904fb491a96cbd3408`, integration 코드 commit `c962e23a5b5395bc489c9793806fede2ff05924e`. Claude A 독립 peer TEXT/JSON × normal/-O **4/4 exit0**, [Actions 40443430786](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40443430786) shared offline safety 두 잡 **success**. 변경 범위는 **완료된 근거**로 재사용한다. 하지만 기존 RF-063 본래 76-owner DONE 체크의 **전체 범위 충족 판정은 별도**, 현재 실물 `02_DEVELOPING/CODEX_B` 유지(C1~C4 미충족, C6 이미 통합 CI 확인). 76 CLI/Windows 운영 실행이 모두 자동 요구되는 것은 아니며 보호 사항은 개별 HOLD.
 - **A 브랜치 최신 확인:** `work/p15-a-reporter-pure-20261021@ccb0a4ea9b509fb96c37a1539e89135ea08534b3`. HANDOFF_A run141b에 **신규 RF-052 Owner CLAIM/코드 수정**과 RF-046/047/054/058 KEEP 후보 검증이 있음. RF-052 `libs/market_data/receipts.py` 수정 blob `10283d8f`, targeted pytest **40 passed**(전 39 PASS/1 FAIL), normal/-O path harness exit0. UEF5 기존 결과 11 FAIL/49 PASS/2 ERROR는 수정 전과 동일하다고 A 보고. 이 결과는 **A 원개발 증거**, **B peer 미확인**, **integration 미통합**이며 승인된 UEF5 변경/운영 테스트가 아님.
 - **B 브랜치 최신 확인:** `work/p15-b-operator-structure-20261022@43017525dd733bd2d79e232b3da3ffa4db65ebba`. 기존 RF-031 실제 caller **8/8**, RF-050 fake-router **10/10** 및 RF-029/016/014 scoped 독립 증거는 그대로 재사용. RF-052·RF-043 B peer 결과는 아직 이번 인수에서 확인되지 않았다.
