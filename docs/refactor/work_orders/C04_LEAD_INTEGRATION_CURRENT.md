@@ -8,8 +8,8 @@
 - 수정: **C04**와 허용된 `integration/p1.5` 소스 변경만. **원본 RF 체크·큐·STATUS/CSV·LEAD_CURRENT·C01/C02/C03/C05는 건드리지 않는다.** C04의 결과가 C05의 최종 수용을 대신하지 않는다.
 
 ## 매회 통합 알고리즘
-1. [LEAD 물리 큐](../plan/queue/04_LEAD_ACCEPTANCE/)에서 **새로운 후보만** 조회한다. C03의 `LEAD_READY` 권고나 과거 LEAD 기록만으로 사전 통합하지 않는다.
-2. 해당 RF의 현재 원본 C1~C5와 정확한 peer full PASS/SOURCE SHA를 확인한다. 누락·scoped·self-peer·SAFETY_BLOCKED이면 **통합 금지**; C05에 정확한 첫 blocker와 담당만 전달한다.
+1. [LEAD 물리 큐](../plan/queue/04_LEAD_ACCEPTANCE/)에서 **새로운 후보만** 조회한다. C03의 `LEAD_READY` 권고나 과거 LEAD 기록만으로 사전 통합하지 않는다. C05가 완료한 C1~C5 게이트를 중복 재판정하지 않는다.
+2. C05의 LEAD 판정에 적힌 **정확 SOURCE SHA와 독립 full PASS 식별자**가 통합할 소스와 일치하는지만 확인한다. 신규 SHA 불일치·보호 침해·gate 기록 누락이면 **통합 금지**, C05에 첫 blocker를 반환한다. C1~C5를 새로 테스트/수용하지 않는다.
 3. **KEEP_VERIFIED:** 대상 소스의 Owner/peer/integration 바이트 동일성 확인, 기존 **해당 integration SHA**의 원래 요구 CI PASS가 재사용 가능한지 증거 링크 확보. 문서 변경을 소스 실적이라 표기 금지.
 4. **코드 변경:** 정확 SOURCE SHA의 **검증된 파일/패치만 선별 반영**한다. A/B 브랜치 전체 무검토 병합 금지. 기존 통합 diff·충돌·원래 계약·안전 경계를 확인하고, 관련 UI 소스 변경 시 patchnotes 조건 준수.
 5. 필요한 integration CI 결과를 **정확한 통합 commit SHA**에 매칭한다. 실제 성공 결과가 없으면 `CI_PENDING/FAIL/NOT_RUN`이라고 기록하고 C05에 DONE 가능하다고 넘기지 않는다. 원래 불필요한 CI는 근거가 있는 `NOT_REQUIRED`만 인정한다.

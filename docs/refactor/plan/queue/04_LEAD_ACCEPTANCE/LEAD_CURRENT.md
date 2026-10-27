@@ -1,18 +1,18 @@
 # LEAD — P1.5 최종 인수·종결 작업표 (2026-10-27)
 
-**정본:** `integration/p1.5`의 [D00](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [C05 최종 종결](../../../work_orders/C05_LEAD_CLOSEOUT_CURRENT.md) · [STATUS](../../STATUS.md). 이 문서는 **LEAD의 현재 실행 지침**이다. 아래 개별 RF 문서의 이전 날짜 `LEAD_HOLD`와 '다음 전수검증' 지시는 해당 시점의 **증거 이력**으로 읽고, 이 문서와 D00의 최신 규칙을 우선한다. 단 **개별 RF의 본래 작업 목표·DONE 체크·보호 경계는 폐기하지 않는다**.
+**정본:** `integration/p1.5`의 [D00](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [C05 최종 종결](../../../work_orders/C05_LEAD_CLOSEOUT_CURRENT.md) · [STATUS](../../STATUS.md). 이 문서는 **LEAD 실물 큐의 추적표**다. 배정·통합·최종 이동의 실행 지시는 각각 C03·C04·C05가 소유한다. 아래 개별 RF 문서의 이전 날짜 `LEAD_HOLD`와 '다음 전수검증' 지시는 해당 시점의 **증거 이력**으로 읽고, 이 문서와 D00의 최신 규칙을 우선한다. 단 **개별 RF의 본래 작업 목표·DONE 체크·보호 경계는 폐기하지 않는다**.
 
 ## LEAD 입구 원본 체크 게이트 (D00 §2.1)
 
 - **C1~C5의 원래 필수 조건 `MET` 또는 사유 있는 `N/A` + 반대 peer 전체 원래 범위 `PASS` + SHA 대응**이 확인되지 않으면 `04_LEAD_ACCEPTANCE` 물리 이동 금지. 기존 `SCOPED_PASS`, 단독 Owner 제출, 오래된 HOLD 처리만으로 입구를 열지 않는다.
 - 현재 `04_LEAD_ACCEPTANCE` 실물 **0건**이다. 14개 과거 LEAD 후보는 `02_DEVELOPING` 2건, `03_PEER_REVIEW` 12건. 현재 누락은 각 RF·[STATUS](../../STATUS.md)에서 읽고, 필요한 C조건 1개만 Owner/Peer에 지정한다.
-- **지팀장만 RF 원본 체크·STATUS 동기화 책임**이 있다. A/B는 SOURCE SHA 범위·독립 근거 제출. LEAD 입장 후 C6 요구 CI·통합, C7 `05_DONE` 이동을 같은 회차에 처리한다.
+- **C05만 RF 원본 체크·STATUS 동기화 책임**이 있다. A/B는 SOURCE SHA 범위·독립 근거 제출, C03은 판정·배정, C04는 LEAD 실물 진입 후 C6 요구 통합/CI 근거를 확보한다. C05가 C6를 인수한 회차에 C7 `05_DONE`까지 종결한다.
 
 ## 종결 알고리즘 (한 번만)
 
 1. **원래 RF 수용 조건**과 최신 SOURCE SHA/독립 peer 범위 대조. 이미 PASS한 동일 SHA·동일 경계 반복 검증 금지.
-2. **원래 필수 범위를 독립 peer가 PASS**했다면 지팀장은 직접 Python/Windows/IO/State를 재검증하지 않는다. 코드 변경이면 선택적으로 integration 반영, 무변경 KEEP이면 byte-identical 여부 확인. 통합 diff/충돌·계약 보호·**요구되는 integration SHA CI**만 확인.
-3. 충족 즉시 `04_LEAD_ACCEPTANCE → 05_DONE` **같은 회차** 수행. 물리 파일 이동/큐 유일성 및 STATUS **변경 항목만** 정리. 별도 지팀장 승인 왕복 없음.
+2. **원래 필수 범위를 독립 peer가 PASS**했다면 지팀장은 Python/Windows/IO/State를 재테스트하지 않는다. C05가 LEAD로 이동한 RF에 한해 C04가 코드 변경 선별 통합 또는 byte-identical KEEP를 확인하고, 통합 diff/충돌·계약 보호·**요구되는 integration SHA CI** 근거를 C05에 제출한다.
+3. **C04의 C6 근거가 충족된 이후** C05는 해당 **C05 인수 회차 안에서** `04_LEAD_ACCEPTANCE → 05_DONE` 이동·C6/C7 체크·큐 유일성·STATUS 변경분을 처리한다. C04 수행 시간과 LEAD 물리 진입 시간을 억지로 같은 예약 회차로 묶지 않는다.
 4. peer가 `SCOPED_PASS`면 그것을 전체 PASS라고 바꾸지 않는다. **본래 수용 조건에 필요한 미충족 항목 한 개와 해제 담당**만 적는다. 동적 전체 소비자, 모든 owner별 CLI/Windows/State/예외 전수 검증을 새로운 공통 DONE 게이트로 추가 금지.
 5. **기존 BASE와 동일한 실패는 신규 회귀로 취급 금지.** RF의 실제 구현이 일으킨 신규 실패/원래 필수 계약 위반만 REWORK. 무관한 후속 품질/운영 문제는 별도 RF/이슈로 분리하되, 실제 보호 경계 침해는 분리해도 해제하지 않는다.
 6. `RF-032/034/069` 및 RunLab #32에서 **UEF/closeout/실거래·운영 경계는 사용자 승인 없이 실행·수정하지 않는다.** 그 보호 대상만 SAFETY_HOLD; 무관한 읽기 전용 일반 RF의 판단은 계속한다.

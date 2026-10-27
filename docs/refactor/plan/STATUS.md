@@ -10,7 +10,7 @@
 
 - **기존 우선 14건:** RF-063/065 → DEV(B); RF-067/069 → PEER(B); RF-014/015/016/028/029/031/032/033/034/050 → PEER(A). **이외 DEV 7 / PEER 5 / PENDING 51 / DONE 16**로 실물 93건. 아래 원본 체크 표의 링크를 우선한다.
 - **실물 큐 재분류:** 우선 14건을 DEV 2·PEER 12로 재배치. 신규 DONE이 아니라 원래 미완료 조건을 해당 담당자에게 반환한 이동이다. 기존 기록의 LEAD 14 표현은 당시 스냅샷이다.
-- **LEAD 공통 새 기준:** 유효한 원래 범위 독립 peer PASS → 지팀장 SOURCE SHA·통합 diff/충돌·보호 경계·필요한 CI 확인 → **같은 회차 DONE**. 지팀장 Python/Windows/전체 소비자 재테스트 없음. Scoped PASS를 전체 PASS로 확대하지 않고, 원래 필수 미충족 1건만 해제 요청. 자세한 14건별 최초 판정은 [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md).
+- **LEAD 공통 새 기준:** 유효한 원래 범위 독립 peer PASS → C05가 C1~C5·물리 LEAD 진입 판정 → C04가 SOURCE SHA·통합 diff/충돌·보호 경계·필요한 CI 확보 → **C05가 C6 인수한 회차에 DONE**. 지팀장 Python/Windows/전체 소비자 재테스트 없음. Scoped PASS를 전체 PASS로 확대하지 않고, 원래 필수 미충족 1건만 해제 요청. 자세한 14건별 최초 판정은 [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md).
 
 <!-- RF_LEAD_CHECKLIST_START -->
 ## 우선 14건 RF 원본 체크리스트 — 현재 실물 단계 연동
@@ -56,7 +56,7 @@
 
 ## 우선 14건 미완료 해제 작업·오너
 
-- **지팀장:** 이전 LEAD에서 반환된 우선 14건 중 원래 체크 C1~C5의 증거·SOURCE SHA·peer 범위를 먼저 대조해 04 진입 가능 여부를 판정한 다음 **본래 RF 체크·SOURCE SHA·integration/CI**만 판정. 새 CLI·State·Windows 전수 검증 목록을 만들어 돌아보내지 않는다. 충족하면 즉시 물리 `05_DONE`과 STATUS 해당 항목만 변경. 지금 이 상태표는 DONE 승격 승인 문서가 아니다.
+- **지팀장 역할별:** C03은 이전 LEAD에서 반환된 우선 14건의 C1~C5 증거·SOURCE SHA·peer 범위를 대조하고 부족한 조건을 A/B에 배정한다. C05는 전체 peer PASS를 확인해 실물 LEAD 이동 및 RF 체크·STATUS를 담당하고, C04는 LEAD에 들어온 RF의 integration/CI C6만 처리한다. 새 CLI·State·Windows 전수 검증 목록을 만들어 돌아보내지 않는다. C04의 C6 증거가 충족되면 C05가 해당 인수 회차에 물리 `05_DONE`과 STATUS 변경 항목을 처리한다. 지금 이 상태표는 DONE 승격 승인 문서가 아니다.
 - **B:** RF-052 path scoped peer 완료(나머지 원래 범위 확인) → RF-041/046/047 KEEP peer, RF-053/043 완료 범위 재실행 금지, RF-021 A 패치 `policy_map_builder.py@dc9d6528` cold-import 독립 확인(원래 32 owner/SAFETY_HOLD_KEEP는 개발 계속) → 자기 RF-066/070/071 계속. 자기 원개발 PASS를 독립 peer로 표기하지 않는다.
 - **A:** RF-052/046/047/054/058 owner 증거 고정 후 B peer 결과 기다리는 동안 RF-035 허용 26범위·일반 안전 RF 개발. RF-063 기존 4/4 peer 재실행 없음.
 - 각 RF는 신규 FAIL/게이트 없는 한 계속 새 검증을 추가하지 않는다. `KEEP_VERIFIED`는 원래 수용 조건을 충족하면 코드 변경 없이 DONE 가능. 작업자가 BLOCKED이면 해당 RF만 차단하고 다른 일반 RF 계속.

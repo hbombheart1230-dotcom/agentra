@@ -9,7 +9,7 @@
 - **중요:** 최종 승인자는 한 명(C05)이다. C03의 권고는 PASS 선언이 아니고, C04의 CI 기록은 C7 완료가 아니다.
 
 ## 매회 실행 순서
-1. **DONE 가능한 것부터:** 물리 LEAD 후보에 대해 C04의 `SOURCE SHA → integration SHA → CI` 신규 증거를 확인한다. 원래 C1~C5가 이미 유효하고 **C6 MET/적법 N/A**가 되면 **이 C05 회차에 C6 체크 + C7 이동/STATUS까지 완료**한다. 별도 승인 대기 회차를 만들지 않는다.
+1. **DONE 가능한 것부터:** 물리 LEAD 후보에 대해 C04의 `SOURCE SHA → integration SHA → CI` 신규 증거를 확인한다. 원래 C1~C5가 이미 유효하고 **C6 MET**(필수 CI PASS 또는 근거 있는 NOT_REQUIRED 포함)가 되면 **이 C05 회차에 C6 체크 + C7 이동/STATUS까지 완료**한다. 별도 승인 대기 회차를 만들지 않는다.
 2. **새 LEAD 진입 판정:** C03 제안 및 A/B 새 HANDOFF를 보고, 해당 원본 RF의 **C1~C5 전체 MET/적법 N/A + 정확 SOURCE SHA에 반대 peer 원래 전체 범위 PASS**를 확인한 경우에만 `03_PEER_REVIEW → 04_LEAD_ACCEPTANCE` 실물 이동. C04가 다음 예약에서 C6를 수행하도록 인수 정보를 남긴다.
 3. **DEV/PEER 경로 정리:** Owner가 C1~C3/해당 C5 완료 주장·근거를 제출했을 때만 `02_DEVELOPING → 03_PEER_REVIEW`. 신규 누락은 최초 C 하나와 Owner/Peer를 적어 적합한 DEV/PEER에 남기거나 반환한다. 직접적 신규 회귀/원래 계약 위반에 한정해 `06_REWORK` 심사.
 4. **체크 진실성:** 원본 `## DONE 체크` 7항목은 실제 근거가 확인된 `MET`/적법 `N/A`만 체크. 체크가 빈 경우 과거 Owner/peer 제출을 1회 대조하되 자동 PASS 금지. `SCOPED_PASS`와 `SAFETY_BLOCKED`가 남으면 DONE·LEAD 진입 불가.
