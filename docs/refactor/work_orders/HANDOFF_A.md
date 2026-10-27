@@ -10,6 +10,15 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**A 소유 RF fixture 공급 — run139 (`2026-10-27T0230Z`, C02 신규 정본 첫 실행; A 시작 `2b303a57`, integration `e99cadf0`, B `7f376b5a`)**
+
+- C02: B 소유 peer(063/065/067/015)는 새 B 근거 없음(B `7f376b5a`는 HANDOFF_B/AGENTS.md만, NameError 수정 미도착) → A 원개발 큐로 이동. A 큐: `02_DEVELOPING`·`06_REWORK`·`03_PEER_REVIEW` 비어 있음, `01_PENDING`은 **RF-030 하나(동결 오라클 HOLD, 사용자/지팀장 승인 필요)**. 대신 HANDOFF_B가 **A 소유 RF의 B peer를 막는 fixture 부재 3건**을 명시해 소유자로서 공급.
+- **RF-028** `rf028_intraday_writer_inprocess_fake.py` blob `e9f887e7` (대상 `libs/reporting/intraday_trade_reports.py` `819ce8b8`): B 차단 사유 "root=temp가 force-sync runner로 진입" → 실제 seam은 모듈 전역 `_run_bundle_sync(argv)`(호출 시점 조회)이며 `root` 지정 시 force-sync로 `run_live_execution_bundle_inprocess`(`--trade-report-ai`, `--env-path`)를 실행. `FakeBundleRunner`가 이 함수만 대체(나머지 정책/skip 분기·argv·이벤트 로그·brief cache 무효화·결과 조립은 실제 코드). `RF028_INTRADAY_WRITER_INPROCESS_FAKE_OK seam=_run_bundle_sync generated=SELL/BUY(root) skip_branches=4 failed=rc!=0 rc0_invalid_json=generated cache_invalidated=1 subprocess=0 network=0`. **관찰:** runner가 rc 0이면서 JSON이 아닌 stdout을 내면 `summary={}`로 **`status=generated`(trade_id 빈 값) — 실패가 성공으로 보고됨**; JSON 배열이면 failed. argv에 `--day`가 없음(`state['day']` 미사용). `ENV_PATH`가 `--env-path`로 전달되므로 fake 미사용 시 실 `.env`를 읽을 수 있음.
+- **RF-014** `rf014_top1_selected_fixture.py` blob `5632840f` (대상 `graphs/nodes/scanner_node.py` `ffa8825e`): B "selected none/rank 0" → repo 자체 테스트 seam(`mock_scan_results`/`mock_top_value_symbols`/`mock_top_volume_symbols`, `live_fetch=False`, `tests/test_scanner_fallback_policy.py`와 동일한 두 hydration hook 대체)으로 **top_stock=005930·selected_rank=1**, 점수 교환 시 000660 선택, strict 빈 풀은 NOOP(`kiwoom_candidate_pool_empty_strict_mode`), ranking_table 2행, 결정적. `RF014_TOP1_SELECTED_FIXTURE_OK top_stock=005930 selected_rank=1 score_swap=000660 strict_empty=NOOP network=0`.
+- **RF-034** `rf034_valid_sources_fixture.py` blob `13bda556` (대상 `short_alpha_discriminator/pipeline.py` `eda1a869`): `write_valid_sources(reports_root)`가 필수 3 source(opening cumulative, feature_mart, cumulative scorecard)를 schema-valid로 기록 → **integrity PASS, joined 4/4**, 읽기 전용, cohort/policy 섹션 생성; 음성 대조(feature 제거)→`INVALID_REQUIRED_SOURCE/MISSING_ARTIFACT`. `RF034_VALID_SOURCES_FIXTURE_OK integrity=PASS joined=4 negative_control=INVALID_REQUIRED_SOURCE read_only=yes network=0`.
+- 세 fixture 모두 깨끗한 `git archive` 추출본 integration `e99cadf0`/BASE `63182ab2` × normal/`-O` 4조합 **exit 0·출력 동일**, 네트워크·subprocess·sqlite 차단, 쓰기 tmp 한정(`io.open`·`os.*` 포함). A 소스 변경 0.
+- 다음: B가 위 fixture로 RF-028 rich writer·RF-014 Top1·RF-034 supplied-source 독립 peer 재시도. A 잔여 개발 큐는 RF-030(HOLD, 승인 필요)뿐.
+
 **RF-065 — run138g (`2026-10-27T0235Z`, 같은 회차 연속, A 시작 `913a30c0`) 필수 인자 research CLI 19건 정상 경로 (`--set research-args`)**
 
 - 하네스 `rf063_run_cli_survey_peer.py`(blob `300de79a`, `--set research-args`): 기본 실행에서 필수 인자 누락(exit 2)이던 19건을 **최소 유효 인자**(날짜 2026-10-20..22, `--reports-root <tmp 빈 디렉터리>`, `--no-fetch` 제공 시)로 실제 프로세스 실행. 깨끗한 `git archive` 추출본(integration `ec1e302f` / BASE) × normal/`-O` 4조합 **완전 동일**, 쓰기 tmp cwd 한정·네트워크·subprocess 차단·자격 제거, repo 작업트리 변화 0.
