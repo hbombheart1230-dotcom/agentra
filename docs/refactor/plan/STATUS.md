@@ -6,9 +6,10 @@
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
-| 51 | 9 | 17 | 0 | 16 | 0 | **93** |
+| 51 | 9 | 14 | 3 | 16 | 0 | **93** |
 
-- **기존 우선 14건:** RF-063/065 → DEV(B); RF-067/069 → PEER(B); RF-014/015/016/028/029/031/032/033/034/050 → PEER(A). **이외 DEV 7 / PEER 5 / PENDING 51 / DONE 16**로 실물 93건. 아래 원본 체크 표의 링크를 우선한다.
+- **기존 우선 14건:** RF-063/065 → DEV(B); RF-067/069 → PEER(B); RF-014/015/016/028/029/031/032/033/034/050 → PEER(A). **이외 DEV 7 / PEER 2 / LEAD 3 / PENDING 51 / DONE 16**로 실물 93건. 아래 원본 체크 표의 링크를 우선한다.
+- **C05 실제 LEAD 3건:** [RF-052](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-052.md) A receipts@10283d8f·B full 40/40, [RF-046](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-046.md)·[RF-047](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-047.md) KEEP·B 63/63. 세 건 C1~C4 MET, C5 N/A, C6/C7 PENDING. PEER 17→14, LEAD 0→3, DONE 16 유지. C04 정확 SHA CI 인수 후 C05 DONE. 직접 테스트/운영 실행 NOT_RUN.
 - **실물 큐 재분류:** 우선 14건을 DEV 2·PEER 12로 재배치. 신규 DONE이 아니라 원래 미완료 조건을 해당 담당자에게 반환한 이동이다. 기존 기록의 LEAD 14 표현은 당시 스냅샷이다.
 - **LEAD 공통 새 기준:** 유효한 원래 범위 독립 peer PASS → C05가 C1~C5·물리 LEAD 진입 판정 → C04가 SOURCE SHA·통합 diff/충돌·보호 경계·필요한 CI 확보 → **C05가 C6 인수한 회차에 DONE**. 지팀장 Python/Windows/전체 소비자 재테스트 없음. Scoped PASS를 전체 PASS로 확대하지 않고, 원래 필수 미충족 1건만 해제 요청. 자세한 14건별 최초 판정은 [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md).
 

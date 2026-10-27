@@ -17,10 +17,10 @@
 6. 다른 예약의 HEAD/문서 변경과 경합 시 안전한 최신 HEAD에 재적용한다. 커밋이나 예약 횟수를 DONE으로 세지 않는다. 완료할 수 없으면 `RF | 첫 blocker | 해제 담당 | NEXT` 기록하고 다음 정상 RF로 이동.
 
 ## 시작 스냅샷 (2026-10-27 STATUS; 실제 변경 사항이 있으면 갱신)
-- **전체 93건:** PENDING 51 / DEV 9 / PEER 17 / LEAD 0 / DONE 16 / REWORK 0. 과거 'LEAD 14'는 반환된 **DEV 2 + PEER 12** 이력이며 현재 LEAD 실물 0.
+- **전체 93건:** PENDING 51 / DEV 9 / PEER 14 / LEAD 3 / DONE 16 / REWORK 0. 과거 'LEAD 14'는 반환된 **DEV 2 + PEER 12** 이력이며 현재 LEAD 실물 0.
 - **우선 14:** RF-063·065 DEV(B), RF-067·069 PEER(B), RF-014·015·016·028·029·031·032·033·034·050 PEER(A). 기존 STATUS 기준 **MET 4 / N/A 14 / 미완료 80**(총 98 체크). 미완료 원래 체크는 조건이 해제되기 전까지 추측으로 메우지 않는다.
 - **이미 종결:** RF-043/053 `KEEP_VERIFIED` DONE; B 독립 peer exact source와 integration offline safety CI 근거를 활용해 완료됨. 다시 이동/재실행하지 않는다.
-- C04가 통합할 실물 LEAD 후보는 현재 없다. **C03 권고가 와도 C05가 먼저 엄격히 LEAD 게이트를 확인**한다.
+- C04가 인수할 실물 LEAD 3건: RF-052 수정 통합, RF-046/047 KEEP CI. C6/DONE 아직 아님. **C03 권고가 와도 C05가 먼저 엄격히 LEAD 게이트를 확인**한다.
 
 ## RunLab 관련 RF 상태
 - RunLab #32 사건 접수·A/B 배정은 C03, 원본 운영 증상과 승인 전 read-only 관측은 별도 RunLab 담당. C05는 **RF 소유/단계/STATUS에 실제 새 변화가 있을 때만** 반영한다.
@@ -29,6 +29,8 @@
 ## 금회 인수·종결 장부 (실제 변경분만)
 | RF | Owner SOURCE SHA·반대 peer | C1~C5 게이트 | C04 integration SHA·CI | 물리 이전→이후 | C6/C7·STATUS | NEXT |
 |---|---|---|---|---|---|---|
-| 없음 | — | — | — | — | — | 다음 증거 대기 |
+| RF-052 | A receipts@10283d8f, B 40/40 + Windows | C1~C4 MET, C5 N/A | C04 integration/CI PENDING | PEER→LEAD | C6/C7 PENDING | C04 통합/CI → C05 DONE |
+| RF-046 | A/B/int 2 owner 동일, B 63/63 | C1~C4 MET, C5 N/A | C04 KEEP/CI PENDING | PEER→LEAD | C6/C7 PENDING | C04 CI → C05 DONE |
+| RF-047 | A/B/int 4 owner 동일, B 63/63 | C1~C4 MET, C5 N/A | C04 KEEP/CI PENDING | PEER→LEAD | C6/C7 PENDING | C04 CI → C05 DONE |
 
-**다음 실행:** C04의 C6 완료 후보 **즉시 DONE**, 다음 C03의 전체 수용 범위 충족 후보 **LEAD 실물 이동**, 변경 RF 정합성만 갱신. 보고: `RF | OWNER/PEER SHA | C1~C5 | integration SHA·CI | DONE/LEAD/BLOCKED | STATUS/queue | NEXT`.
+**다음 실행:** C04의 RF-052/046/047 C6 완료 후보 **즉시 DONE**, 다음 C03의 전체 수용 범위 충족 후보 **LEAD 실물 이동**, 변경 RF 정합성만 갱신. 보고: `RF | OWNER/PEER SHA | C1~C5 | integration SHA·CI | DONE/LEAD/BLOCKED | STATUS/queue | NEXT`.

@@ -5,7 +5,7 @@
 ## LEAD 입구 원본 체크 게이트 (D00 §2.1)
 
 - **C1~C5의 원래 필수 조건 `MET` 또는 사유 있는 `N/A` + 반대 peer 전체 원래 범위 `PASS` + SHA 대응**이 확인되지 않으면 `04_LEAD_ACCEPTANCE` 물리 이동 금지. 기존 `SCOPED_PASS`, 단독 Owner 제출, 오래된 HOLD 처리만으로 입구를 열지 않는다.
-- 현재 `04_LEAD_ACCEPTANCE` 실물 **0건**이다. 14개 과거 LEAD 후보는 `02_DEVELOPING` 2건, `03_PEER_REVIEW` 12건. 현재 누락은 각 RF·[STATUS](../../STATUS.md)에서 읽고, 필요한 C조건 1개만 Owner/Peer에 지정한다.
+- 현재 `04_LEAD_ACCEPTANCE` 실물 **3건(RF-046/047/052)**이다. 14개 과거 LEAD 후보는 `02_DEVELOPING` 2건, `03_PEER_REVIEW` 12건. 현재 누락은 각 RF·[STATUS](../../STATUS.md)에서 읽고, 필요한 C조건 1개만 Owner/Peer에 지정한다.
 - **C05만 RF 원본 체크·STATUS 동기화 책임**이 있다. A/B는 SOURCE SHA 범위·독립 근거 제출, C03은 판정·배정, C04는 LEAD 실물 진입 후 C6 요구 통합/CI 근거를 확보한다. C05가 C6를 인수한 회차에 C7 `05_DONE`까지 종결한다.
 
 ## 종결 알고리즘 (한 번만)
@@ -16,6 +16,16 @@
 4. peer가 `SCOPED_PASS`면 그것을 전체 PASS라고 바꾸지 않는다. **본래 수용 조건에 필요한 미충족 항목 한 개와 해제 담당**만 적는다. 동적 전체 소비자, 모든 owner별 CLI/Windows/State/예외 전수 검증을 새로운 공통 DONE 게이트로 추가 금지.
 5. **기존 BASE와 동일한 실패는 신규 회귀로 취급 금지.** RF의 실제 구현이 일으킨 신규 실패/원래 필수 계약 위반만 REWORK. 무관한 후속 품질/운영 문제는 별도 RF/이슈로 분리하되, 실제 보호 경계 침해는 분리해도 해제하지 않는다.
 6. `RF-032/034/069` 및 RunLab #32에서 **UEF/closeout/실거래·운영 경계는 사용자 승인 없이 실행·수정하지 않는다.** 그 보호 대상만 SAFETY_HOLD; 무관한 읽기 전용 일반 RF의 판단은 계속한다.
+
+## C05 신규 실제 LEAD 3건 (2026-10-27)
+
+| RF | SOURCE·독립 peer | C1~C5 | C6 담당/NEXT |
+|---|---|---|---|
+| [RF-052](FROM_CLAUDE_A/RF-052.md) | A receipts@10283d8f, B full 40/40 + Windows path | C1~C4 MET, C5 N/A | C04 수정 통합 + exact CI → C05 DONE |
+| [RF-046](FROM_CLAUDE_A/RF-046.md) | A/B/integration 2 owner identical, B 63/63 | C1~C4 MET, C5 N/A | C04 KEEP CI → C05 DONE |
+| [RF-047](FROM_CLAUDE_A/RF-047.md) | A/B/integration 4 owner identical, B 63/63 | C1~C4 MET, C5 N/A | C04 KEEP CI → C05 DONE |
+
+LEAD 이동은 DONE이 아니다. RF-052 integration source는 구 blob이며 C04 선별 통합 전. C05 직접 테스트 NOT_RUN.
 
 ## 우선 14 — 수용 조건 재확인 순서 (실제 DEV 2·PEER 12·LEAD 0, 아직 DONE 아님)
 
