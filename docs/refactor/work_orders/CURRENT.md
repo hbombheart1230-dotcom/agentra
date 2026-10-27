@@ -1,42 +1,29 @@
 # Agentra P1.5 — CURRENT
 
-**정본:** `integration/p1.5`의 이 파일. 상시 규칙은 [D00](D00_ENGINEERING_DELIVERY_POLICY.md), 상세 차단은 [STATUS](../plan/STATUS.md)와 각 RF. **D00 수정 금지.** 회차별 절 추가 금지, 현재 상태로 전체 교체.
+**정본:** `integration/p1.5`의 이 파일. 상시 정책 [D00](D00_ENGINEERING_DELIVERY_POLICY.md)은 **읽기 전용**, 상세 증거·차단은 [STATUS](../plan/STATUS.md)와 기존 RF/HANDOFF. 현재 상태만 전체 교체하며 과거 회차 절 누적 금지.
 
-## 실물 상태·새 배정
+## 현재 물리 상태·인수
 
-- 큐: PENDING 61 / DEVELOPING 3 / PEER 1 / **LEAD 14** / DONE 14 / REWORK 0 = 93 unique. **물리 큐 및 원개발 Owner 유지.** LEAD = 014,015,016,028,029,031,032,033,034,050,063,065,067,069.
-- A `1fe4efe3`: B 소유 RF-063 DR Windows temp, RF-065 scorecard→Stage2 실제 writer, RF-067 reports/trades delegated target 독립 scoped peer; source0. B `2b1cd7da`: A 소유 RF-031 writer·3번째 write OSError 독립 scoped peer 보고; source0·하네스 미보존. 전체 DONE 아님. 재실행 금지.
-- **최우선 목표:** 신규 PENDING 개발·반복 synthetic 테스트 대신 LEAD 미충족 게이트 해소. A는 B 원개발 RF의 독립 peer, B는 A 원개발 RF의 독립 peer. 검증만 통과했다고 DONE으로 판단하지 않으며, 최종 결정과 04→05 물리 이동은 지팀장 전담.
-- A/B는 기존 자기 브랜치에서만 수행. 각 신규 최초 경계는 SOURCE SHA, 실제 normal/-O 명령·exit, State·IO·예외·outside-write 및 잔여 1개 게이트만 HANDOFF 1회 제출. 차단되면 다음 배정 RF 계속. 동일 SHA/경계 재검증·HANDOFF-only 커밋 금지.
+- **큐:** PENDING 61 / DEVELOPING 3 / PEER 1 / **LEAD 14** / DONE 14 / REWORK 0 = **93 unique**, 중복 0. LEAD = 014,015,016,028,029,031,032,033,034,050,063,065,067,069. 신규 LEAD 0 / 신규 DONE 0 / 운영 source 통합 0.
+- integration 기준 `ec1e302f`. **A `61e6aadc`:** 운영 source 0, RF-063/065/067 실제 CLI를 독립 temp-only subprocess normal/`-O` 추가 검증(보존 peer 스크립트 7개). 전체 RF PASS 아님. **B `b2399dfb`:** 운영 source 0·HANDOFF-only; RF-031 caller ledger/memory + 강제 partial Markdown OSError normal/`-O` exit 0 **보고**, 하네스 미보존. 기타 A 원개발 RF 9건의 scoped 결과도 전체 peer PASS 아님. 기존 동일 SHA/경계 PASS·BASE FAIL 재실행 금지.
+- **지팀장 최종:** 위 scoped 경계만 인수, 모든 14 LEAD **HOLD/NOT_DONE**(069 SAFETY_HOLD). BASE 동등 pre-existing 오류는 신규 CODE REWORK 아님. 04→05 이동 0 / 코드 선택 통합 0 / CI 신규 실행 NOT_RUN. 원격 HEAD·A/B source SHA·93개 단일 경로 재확인 후 변경 판단.
 
-## Claude A — B 원개발 LEAD 독립 검증
+## Claude A — B 원개발 peer
 
-브랜치: `work/p15-a-reporter-pure-20261021`. **기존 A 자기 원개발 반복 검증은 후순위.**
+기존 브랜치 `work/p15-a-reporter-pure-20261021`만 사용. 완료된 RF-063 diagnostics 46+4 CLI, RF-065 research 46 및 필수 인자 19, RF-067 안전 target 재검증 **금지**.
 
-1. **P0 RF-063:** diagnostics CLI의 미검증 쓰기·cp949 locale·출력/exit·Windows/스케줄러 소비자를 안전한 temp-only fake로 독립 검증. 기존 76 import/metrics/alert/audit peer 반복 금지.
-2. **P1 RF-065:** research CLI의 scorecard→Stage2 실제 temp 연속 쓰기·부분 OSError·State, no-fetch·argv/exit·외부 IO 독립 검증. 기존 CLI fake·A smoke·54 import 반복 금지.
-3. **P2 RF-067:** 공개 wrapper 14개는 검증 완료. delegated diagnostics target의 새 소비자·stdout/stderr·exit·PATH·fail-closed 독립 peer만 수행.
-4. **조건부 RF-015:** B가 Monitor 역사 11 FAIL·B-only 2파일 소비자 근거를 제출하면 그 **새 B 범위만** A가 독립 peer. RF-069 UEF5는 승인된 historical snapshot 전 실행 금지.
+1. **RF-063 / 065 / 067:** A의 안전한 Linux 격리 실행 경계는 현재 소진. 보호 UEF/실 인증/Windows Scheduler·PowerShell은 **NOT_RUN/승인 대기**. 추가 fake 전수검증·HANDOFF-only 커밋 금지. A가 확인한 `run_m23_closeout_check` 텍스트 출력 unbound `day`는 BASE 기존 버그: 소스 수정은 지팀장·사용자 별도 승인 후 원 Owner에 배정.
+2. **RF-015 조건부:** B가 기존 11 FAIL node별 BASE 대비 근거 및 B-only `libs/agents/monitor` 2파일의 **새 실제 소비자**를 제시한 경우, 그 미검증 범위만 독립 read-only normal/`-O` 실행. 없다면 A 신규 검증 중지.
 
-## Codex B — A 원개발 LEAD 독립 검증
+## Codex B — A 원개발 peer
 
-브랜치: `work/p15-b-operator-structure-20261022`. **아래 순서대로 처리, 첫 미충족 경계 해제 후 다음 RF.**
+기존 브랜치 `work/p15-b-operator-structure-20261022`만 사용. 기존 자기 RF-063/065/067를 자기 peer라고 주장하지 않는다.
 
-1. **P0 RF-031:** 기존 writer/부분 OSError peer 반복 금지. **최초 부족: Reporter caller State→day-cache/ledger/memory 및 예외 후 부분 산출 소비자·복구**를 temp-only fake LLM normal/-O로 독립 검증. 재현 명령·하네스·exit 제출.
-2. **P1 RF-050:** Operator `data_access_core` primary→repair→line LLM fake 오류/timeout·fallback·cache 효과.
-3. **P2 RF-016:** news-query→`strategic_answers` 실제 facade/dynamic 소비자·중첩 State/예외.
-4. **P3 RF-029:** story bundle v1/v2→assembly·external truth-root read·State alias/예외.
-5. **P4 RF-033:** `InputWorker.tick→publish_input` provider→storage·실제 temp IO/State·실패 독립 peer. A Windows storage 15×2는 재사용만.
-6. **P5 RF-014:** Scanner→Graph/Runtime Top1/ranking/NOOP dynamic 소비자 및 역사 3 BASE FAIL 분리.
-7. **P6 RF-028:** trade-report rich schema→summary/full renderer·실제 외부 writer 소비자.
-8. **P7 RF-034:** casebook→scanner와 latent producer→temp cache/output·부분실패.
-9. **P8 RF-015:** Monitor 11 역사 FAIL BASE 대조, State/event 소비자 및 B-only 2파일 실사용 확인 후 A peer 인계.
-10. **P9 RF-032:** validation_id 입력 신뢰/Exit Horizon와 scorecard→Stage2 temp 부분실패, 기존 135 owner 증거 재사용. UEF/frozen 의미 변경은 승인 대기.
+1. **P0 RF-031:** 새로 보고한 caller ledger/memory·부분 OSError는 범위 한정 재사용. **최초 부족: 부분 산출을 받은 downstream 호출자의 상태·복구/재시도 처리**를 temp-only fake LLM, 실제 원본 caller·실효과 격리 normal/`python -O` 독립 검증. 정확 source blob·재현 가능 명령·하네스·exit·outside-write0을 1회 제출. `pytest` 미설치(기존 exit 1/1)는 **ENV** — 기존 테스트 반복 없이 안전한 직접 Python 실행 우선; 필요할 때만 환경 담당자에 의존성 요청.
+2. **이후 순서 (첫 게이트만):** RF-050 model catalog cache artifact/부분실패 → 016 nested State 예외 projection → 029 외부 truth-root 읽기/실패 → 033 provider/storage 실패 → 014 dynamic Top1→NOOP → 028 정식 rich schema writer → 034 casebook→Scanner → 015 역사 11 FAIL·B-only 소비자 → 032 validation_id/Stage2 부분실패. 기존 marker 재실행 금지, source 변경 필요 시 사용자 승인 전 진행 금지.
 
-B가 직접 소유하는 RF-063/065/067은 A peer가 요청하는 **신규** 소비자·효과 자료만 보완하며, 자기 검증을 독립 peer로 보고하지 않는다.
+## 지팀장 다음 행동·안전
 
-## 지팀장 인수·안전
-
-- 새 A/B 증거가 도착한 **영향 RF만** 최종 인수하고, 조건 충족 시 LEAD→DONE 즉시 실물 이동/구 경로 삭제/93 unique·commit SHA 확인. 새 증거 없으면 `NO_DELTA`, Git 쓰기0.
-- RF-069은 UEF5 historical snapshot **path/SHA/use-scope 사용자/증거 소유자 승인 전 SAFETY_HOLD**. RF-032/034 보호 closeout·UEF 승인 대기. RunLab #32 신규 mock SELL `0045749` 체결 미확정·전일 SELL 출처 불명·OCI SOURCE_SHA 미입증: 안전 수정·재배포 금지.
-- D00·main·거래 안전 계약·동결 테스트/CI·운영 데이터·예약 변경 및 신규 브랜치/PR/worktree 생성 금지. 실제 소스 변경은 사전 사용자 승인. 작업 순서: A/B 새 근거→지팀장 판단·가능한 DONE→다음 배정→STATUS 현재 상태 교체→**CURRENT 마지막 전체 교체**.
+- A/B 새 **source/peer**, RF 큐, CI/RunLab #32 **신규** 변화만 비교. 미처리 DONE 조건이 없다면 동일 LEAD 전건 재심사 금지. 조건 충족 즉시 해당 04→05 단일 경로 물리 이동/구 경로 삭제·93 unique/정확 blob/tree/commit 확인.
+- RF-069 UEF5 historical snapshot **path/SHA/use-scope 승인 전 SAFETY_HOLD**. RF-032/034 보호 closeout·UEF 승인 필요. RunLab #32 mock SELL `0045749` fill-truth 불명, 전일 SELL `0020349` provenance 불명, OCI SOURCE_SHA UNKNOWN: 주문·운영 데이터·가드·배포 무승인 변경 금지.
+- D00·main·실거래·Broker/Supervisor/Executor/Step5C/UEF·동결 테스트/CI·스케줄·신규 브랜치/tag/PR/worktree 변경 금지. 충돌 시 기존 integration HEAD 재조회 후 비강제 재시도, 불가하면 `GIT_BLOCKED`. **순서:** 신규 peer→지팀장 판정·가능한 코드/RF 이동→새 배정→STATUS 전체 교체→CURRENT **마지막 전체 교체**. 진척·현재상태 변화 없으면 Git 쓰기 0.
