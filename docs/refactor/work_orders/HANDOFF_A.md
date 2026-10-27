@@ -498,3 +498,11 @@
 - Not run: protected UEF/Broker/Executor, network, real data. Source unchanged. Scoped peer, not RF DONE. Integration merge into A skipped (conflicts in AGENTS.md/CURRENT.md/patch_notes.json, non-owned); A keeps reading integration read-only.
 - Status of A-owned RFs this run: RF-015/031/014/050/016/028/029/032/033/034/051/054/058 all C1 ACTION + C2/C3 submitted; waiting on B C4. RF-035/RF-030 protected/frozen-oracle HOLD; RF-021/041 pending B peer.
 - External effects: none besides this push.
+
+## run161 — RF-065 C4 (Peer of B): independent check of B `--output-root` fix (B SOURCE 1641cfef, `scripts/research/run_integrated_trade_validation.py` blob 4119747f; exact-SHA `git archive` into scratchpad temp, `python -I`, normal and `-O`)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| RF-065 | C4 | B 1641cfef | SCOPED_PASS: public CLI with fake `build_opening_rank1_shadow` / `run_integrated_trade_diagnosis` modules, 7 argv cases × normal/`-O` = 14/14 as expected. default → `output_root=<reports-root>/evaluation/offline_alpha/integrated_trade_diagnosis` (also under a custom `--reports-root`); explicit `--output-root` passed through unchanged (with/without custom reports-root); opening/diagnosis exception propagates (diagnosis not called when opening fails); unknown arg → argparse rc 2, no downstream call. Source tree and cwd file listing unchanged before/after every case (no outside write by the CLI wiring) | other RF-065 C items (B-owned: 54-owner KEEP/CLI classification), C6/C7 C05 | Codex B / C05 |
+- Limits: downstream modules were fakes, so this verifies argument wiring only, not that real `build_opening_rank1_shadow` (writes under `--reports-root`) or `run_integrated_trade_diagnosis` stay inside the given roots; `longitudinal_path` still defaults to a cwd-relative `reports/...` read path (unchanged, read-only). Harness reports uncaught exceptions without a real traceback exit, so rc shown as 0 for those two cases is the harness, not the CLI (real CLI would exit 1).
+- Not run: real writer, broker, network, operational reports, protected UEF/Executor. Scoped peer, not RF-065 DONE and not C1~C4 full PASS.
+- External effects: none besides this push.
