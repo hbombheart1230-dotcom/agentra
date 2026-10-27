@@ -23,6 +23,15 @@
 - **IMAGE/OPS:** 17시 Codex EOD 보고 없음(`UPSTREAM_NOT_RUN`), 20:09 FINAL이 보존된 자료로 독립 관측. **RunLab**은 이미지 digest↔source provenance, EOD/예약 상태를 읽기 전용으로 확인; 무승인 예약 수정·재배포 금지.
 - **분류/종결:** `FILE_OWNER_MAPPED / DEFECT_OWNER_PENDING / DEV_RESOLVED=NO / RUNTIME_VERIFIED=NO / OPEN / SAFETY_HOLD`. mock 환경의 Docker 건강·LLM 부분 PASS는 주문-로컬 정합 FAIL이나 버전별 PASS를 대체하지 않음. 사용자 별도 승인 없는 주문·보호 실행·운영 파일/이미지/설정 변경 금지. 새로운 RF 생성·RF 큐 이동·코드 변경·CI 실행 없음.
 
+## 2026-10-28 07:00 START 신규 관측 인수 — 기존 OPEN 사건 delta (C03 08시)
+
+- **출처:** [Issue #32 07시 START](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6454782573), RUN_ID `start_20261028_070423`. REMOTE_HEAD `48b47e102bbd557de3a8b06ffc0740c8f11f2aa0`, 로컬 체크아웃/source 표시 `a4083434522f1ad0e8d4762f3c8eb02b16641a52`, image digest `sha256:f3d1a4a354c2244af714f8e8564aba9164fc3efa5c98163040ecf402e372b6b8`. **image→source revision 증명 없음: RUN_SOURCE_SHA=UNKNOWN / TESTED_SHA=UNPROVEN.** 로컬 SHA나 REMOTE_HEAD를 실행 이미지 SHA로 승격 금지.
+- **운영 관측 범위:** 10/25 기존 런타임 보존·재시작 없음, Docker 3/3 healthy, API/UI HTTP 200, mock 및 `ALLOW_REAL_EXECUTION=false` 플래그 확인. `REBUILD/REDEPLOY=BLOCKED`; 이것은 **버전별 RUNTIME_VERIFIED나 주문 정합 PASS가 아님**. 10/28 장전 market/LLM 신규 실검증 NOT_RUN(전일 저장 메타만 확인), fresh broker 조회·주문·취소 없음.
+- **ORDER/GUARD delta:** 10/26 BUY `0019354` 체결·SELL `0020349` local 누락, 10/27 BUY `0017713` local 누락·SELL `0045749` local 대응이라는 **기존 보존 snapshot 불일치 지속**. 이전 BUY guard는 현재 empty이나 정리 원인/시각 UNKNOWN. SELL `0045749` guard `filled_qty=-1/remaining_qty=-1`, fill truth 미확정 상태 지속. 보존 snapshot의 과거 open-orders empty를 현재 계좌 전체 소유권/브로커 상태 PASS로 사용 금지(`CURRENT_BROKER_STATE/ACCOUNT_WIDE_OWNERSHIP=UNKNOWN`).
+- **REPORT/IMAGE/OPS delta:** 10/27 broker round trip 대비 local `trade_index=[]/trade_count=0` 불일치 지속. OCI revision·이미지 출처 미증명, 기존 `--allow-offhours` 기동 기록으로 세션 동등성도 UNPROVEN. 07시 START 보고는 있으므로 이전의 07시 예약 미확정 기록을 **오늘 SLOT NOT_RUN**으로 확대하지 않는다. 실제 예약 등록/소유권은 별도 증명 대기.
+- **기존 담당 유지(새 RF/CLAIM 없음):** **B** `RL32-ORDER/GUARD` RF-012/055/048의 submit→local event·fill/TTL 경계 read-only/fake 조사, **A** `RL32-REPORT` RF-030/035/001 producer 누락·UNKNOWN→GREEN 후보 read-only/temp-fake 조사, **RunLab** image digest↔source·lease/account ownership·적용 증거 읽기 전용 확인. `FILE_OWNER_MAPPED ≠ DEFECT_OWNER`. 승인 전 보호 코드·주문·운영 DB/State·이미지·예약·재배포 변경 금지.
+- **판정:** `DEFECT_OWNER_PENDING / DEV_RESOLVED=NO / RUNTIME_VERIFIED=NO / OPEN / SAFETY_HOLD`. RunLab 원본 PC DB/로그/이미지를 C03이 직접 열람·재실행한 것은 아님. RF 체크·물리 큐·STATUS·CI·DONE 변경 없음.
+
 ## 2026-10-27 A run143 독립 read-only 조사 인수 — REPORT producer/visibility 분리
 
 - **A source 기준:** integration `179a6f50` 및 BASE `63182ab2`, `rl32_report_trace.py` temp-only × normal/`python -O` **4/4 exit0**(A 실행 보고, 지팀장 직접 재실행 NOT_RUN). 현재 integration `libs/reporting/operator_visibility.py` blob `26c71139e363...`, `symbol_trade_report.py` blob `099cdbd0...`, `intraday_trade_reports.py` blob `819ce8b8...`를 지팀장이 별도 원격 read-only 조회.
