@@ -1,10 +1,17 @@
 # Agentra PC 런검증팀 — CURRENT
 
 **정본:** `hbombheart1230-dotcom/agentra` / `integration/p1.5`
-**운영:** [R00](R00_RUNTIME_VALIDATION_RULES.md) · **증거:** [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32)
+**운영:** [R00](R00_RUNTIME_VALIDATION_RULES.md) · **공통 장애 인계:** [D04](D04_RUNTIME_VALIDATION_RULES.md) → [C00](../../refactor/work_orders/CURRENT.md) · **증거:** [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32)
 **작업 PC:** `C:\\AgentraRunLab` — 기존 운영 PC·`C:\\Agentco`·개발 브랜치는 변경하지 않는다.
 
 **Codex/Claude 런검증 담당은 매 회차 시작할 때 이 브랜치의 최신 런검증 CURRENT를 먼저 읽고, 여기서 연결한 R00만 필요한 범위로 읽어 실행하라.** 다른 브랜치/로컬 복사본 CURRENT를 지시 정본으로 사용하지 말고, Issue #32에는 신규 사실과 정확한 증거만 보고하라. 이 문서 개정은 예약 생성·실런 재시작을 뜻하지 않는다.
+
+## 런검증 중대 이상 → D04 공동 인계
+
+- **이 문서/R00 = 런검증 관측 실행**, **D04 = #32에서 개발팀으로 넘기는 공통 작업**, **D00/C00 = 지팀장 RF 배정/종결**. RunLab 작업자는 D04의 관측/전달 형식만 참고하고 개발 브랜치나 RF를 직접 변경하지 않는다.
+- SELL provenance·fill-truth/Guard·broker↔local/Reporter mismatch 등 신규 안전 발견은 즉시 #32에 제출. 지팀장이 [RUNLAB32 OPEN](../../refactor/plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md)에 중복 없이 접수하고 **C00에서 개발 B(주문/Guard 조사), 개발 A(Reporter 조사), RunLab(OCI/환경 관측)**에 배정한다.
+- 17시 EOD/19시 FINAL은 **새 체결·잔고/Reporter 차이만** 관측. `RUN_SOURCE_SHA=UNKNOWN`이면 버전별 PASS는 BLOCKED. 운영 이미지·State 수정, 주문/취소/재배포/예약 변경은 추가 승인 전 금지. **RF 통합 완료와 실제 런검증 사건 CLOSED를 구분**한다.
+- 2026-10-27 09:38 관측에서 **10/26 BUY guard는 비어 있는 것으로 확인**됐으나 정리 원인은 UNKNOWN; **신규 SELL `0045749`는 접수만 확인**, 체결·포지션은 UNKNOWN. 과거 10/26 BUY guard 잔류를 현재 지속 중이라고 보고하지 않는다.
 
 ## 핵심 원칙 — Git 개발과 고정 버전 실런 분리
 
