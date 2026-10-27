@@ -1,27 +1,38 @@
-# Agentra P1.5 — STATUS (2026-10-27 지팀장 실물 동기화)
+# Agentra P1.5 — STATUS (2026-10-27, 단일 종결 규칙 동기화)
 
-정본: `integration/p1.5`의 D00(읽기 전용)·C00. 원격 큐 **93 unique / 중복 0 / 누락 0** 전수 검증. 근거: HANDOFF_A/B, Issues #11/#12, RunLab #32, GitHub source/Actions.
+**정본:** `integration/p1.5`. 운영 기준 [D00](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · 지팀장 현재 [C00](../work_orders/CURRENT.md) · [LEAD 작업표](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). **이 STATUS는 관측·판정 요약이며 구 회차별 상세 검증 지시를 재발행하지 않는다.** 개별 RF 문서의 예전 `LEAD_HOLD` 문구는 당시 증거 이력이다. 각 RF의 본래 DONE 체크와 보호 경계는 유효하다.
+
+## integration 실물 큐 — 마지막 검증 스냅샷
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
 | 60 | 3 | 2 | 14 | 14 | 0 | **93** |
 
-- **LEAD 14:** RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069. **PEER 2:** RF-018 (B owner), RF-043 (A owner, B independent peer pending). **DEVELOPING 3:** RF-066/070/071(B). **PENDING 60:** A RF-030/035, UNASSIGNED 58. **DONE 14:** 기존 RF-001~009,013,017,019,020,068 (추가 DONE 0). REWORK 0.
-- **실제 RF-063 진행:** 이전 `03_PEER_REVIEW/CODEX_B/RF-063.md` 물리 경로를 `04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-063.md`로 **원자적 이동** (`c259b3682bb1f99ffdcd8e8cc011c2af4ef61276`). 수정 텍스트 출력 1행만 integration commit `c962e23a5b5395bc489c9793806fede2ff05924e`에 선별 반영. 최종 source blob `fdde6c82bfc9820b853487904fb491a96cbd3408` = B owner commit `78be88c658067eab7d1898111cb8e5c44219f2f7`. 구 `5de4ec68` TEXT NameError 해소. 공개 entrypoint `scripts/run_m23_closeout_check.py`(blob `46678e41`) → diagnostics 위임 정적 확인.
-- **A 독립 peer:** A HEAD `569ebe6be8af13c7edf4f36822499cb6ae814639`, `HANDOFF_A` run137, 수정 blob TEXT/JSON × normal/`python -O` **4/4 exit0**, temp 파일 11개, 외부 효과 0 보고. **A 실행 증거**이지 지팀장 Python 실행 아님(`NOT_RUN`). 기존 동일 경계 재검증 금지.
-- **해당 SOURCE SHA 필수 hosted offline CI:** [Actions run 40443430786](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40443430786), `safety` 및 `safety (-O)` **둘 다 success** (source SHA `c962e23a`). D00 허용 범위의 offline regression; 전체 RF63 76 CLI/Windows/실데이터 의미 검증은 아님.
+- **LEAD 14:** RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069. **PEER 2:** RF-018(B owner), RF-043(A owner/B peer 대기). **DEVELOPING 3:** RF-066/070/071(B). **PENDING:** RF-030/035(A), UNASSIGNED 58. **DONE 14:** 기존 RF-001~009,013,017,019,020,068. REWORK 0.
+- 카운트는 `c259b368` 물리 큐 이동 후 93 unique/중복0/누락0 확인된 **기존 integration 실물 기준**이다. 이번 지시서 정리는 **큐 변경/새 DONE/테스트 실행이 아니다**. 뒤에 발생한 작업 브랜치 CLAIM은 통합·물리 Owner 확정 전 카운트에 반영하지 않는다.
+- **LEAD 공통 새 기준:** 유효한 원래 범위 독립 peer PASS → 지팀장 SOURCE SHA·통합 diff/충돌·보호 경계·필요한 CI 확인 → **같은 회차 DONE**. 지팀장 Python/Windows/전체 소비자 재테스트 없음. Scoped PASS를 전체 PASS로 확대하지 않고, 원래 필수 미충족 1건만 해제 요청. 자세한 14건별 최초 판정은 [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md).
 
-## A/B 최신 인수 및 후속 게이트
-- A 브랜치 HEAD `569ebe6be8af13c7edf4f36822499cb6ae814639`: RF-043 catalog 6 source blob이 BASE/integration과 동일, owner의 normal/-O 전수 검증·KEEP 후보; B 독립 peer 미도착. RF-035 119파일 인벤토리 중 **93파일 동결 RF-074 oracle 편집 HOLD**, 안전 editable 26만 소비자/State/IO 관찰 가능. RF-030 동결 HOLD. Issue #11 최신 run140은 RF-043/RF-035를 기록하나 RF-063 **신규 A run137은 HANDOFF_A에서 확인**, 해당 댓글 별도 게시 여부는 미확인.
-- B 브랜치 HEAD `43017525dd733bd2d79e232b3da3ffa4db65ebba`: RF-031 positive caller 8/8 정상/-O PASS(부분 OSError 이후 복구는 미검증), RF-050 fake-router 10/10(운영 UI three-stage·cache OSError 미검증), RF-029 외부 truth-root scoped normal/-O, RF-016 nested exception scoped normal/-O. RF-015 현재 252 PASS/12 FAIL vs BASE 253 PASS/11 FAIL: 추가 frozen Commander exact-inventory 실패는 승인 HOLD; Monitor owner regression 증거 아님. Issue #12 최신 RF-050 기록과 HANDOFF_B 대조됨.
-- **RF-043 최초 부족 게이트 (B):** source `libs/catalog` 6파일 exact SHA, 소비자·State/IO·예외 및 broker-safe read-only fake 독립 peer normal/-O, HANDOFF_B/#12 커밋 증거. 주문 DTO 요청 body 관찰은 보호 계약 수정 무승인 금지.
-- **LEAD 13 기존 HOLD:** 014 dynamic Scanner shim→Graph/NOOP peer; 015 B-only 소비자·frozen BASE; 016 nested facade→외부 consumer; 028 rich formal schema 독립 B/85 owner 효과; 029 facade→bundle 독립 B/38 owner; 031 partial OSError 이후 downstream 소비자; 032 validation_id trust·UEF 보호; 033 InputWorker.tick→publish_input; 034 casebook→Scanner/cache; 050 operator UI 3-stage·model cache; 065 연구 effectful CLI/Windows Scheduler; 067 diagnostics wrapper/Windows/보호 CLI; 069 historical UEF5 snapshot path/SHA/use-scope 사전 승인. 동일 SHA/경계 scoped PASS 재실행 금지.
-- **RF-063 LEAD_HOLD:** 수정의 원개발→독립 peer→선별 통합→해당 SHA offline CI는 충족. 76 owner CLI 의미/효과·Task Scheduler·보호 runtime 3개는 `NOT_RUN/SAFETY_HOLD`; 04→05 미승격.
+## 가장 최근 수용 근거 및 작업 브랜치 신규 변경
 
-## RunLab #32 SAFETY_HOLD (읽기 전용)
-2026-10-27 **09:38 KST** 최신 독립 관측: mock SELL **0045749** 접수, fill/position source 확인 불가; 전일 SELL **0020349** local 누락, broker/local mismatch, guard/reconciliation 미해결, OCI `RUN_SOURCE_SHA=UNKNOWN`. 런 검증은 버전별 BLOCKED. 실거래·주문·Broker/Supervisor/Executor/Step5C/UEF 안전 계약·동결 오라클/CI·비밀·운영데이터·배포·예약 무승인 변경 금지.
+- **RF-063:** B owner `scripts/diagnostics/run_m23_closeout_check.py` 수정 blob `fdde6c82bfc9820b853487904fb491a96cbd3408`, integration 코드 commit `c962e23a5b5395bc489c9793806fede2ff05924e`. Claude A 독립 peer TEXT/JSON × normal/-O **4/4 exit0**, [Actions 40443430786](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40443430786) shared offline safety 두 잡 **success**. 변경 범위는 **완료된 근거**로 재사용한다. 하지만 기존 RF-063 본래 76-owner DONE 체크의 **전체 범위 충족 판정은 별도**, 현재 실물 `04_LEAD_ACCEPTANCE` 유지. 76 CLI/Windows 운영 실행이 모두 자동 요구되는 것은 아니며 보호 사항은 개별 HOLD.
+- **A 브랜치 최신 확인:** `work/p15-a-reporter-pure-20261021@ba32a86a11a9dc1fc79e673b144d9bba238fd127`. HANDOFF_A run141b에 **신규 RF-052 Owner CLAIM/코드 수정**과 RF-046/047/054/058 KEEP 후보 검증이 있음. RF-052 `libs/market_data/receipts.py` 수정 blob `10283d8f`, targeted pytest **40 passed**(전 39 PASS/1 FAIL), normal/-O path harness exit0. UEF5 기존 결과 11 FAIL/49 PASS/2 ERROR는 수정 전과 동일하다고 A 보고. 이 결과는 **A 원개발 증거**, **B peer 미확인**, **integration 미통합**이며 승인된 UEF5 변경/운영 테스트가 아님.
+- **B 브랜치 최신 확인:** `work/p15-b-operator-structure-20261022@43017525dd733bd2d79e232b3da3ffa4db65ebba`. 기존 RF-031 실제 caller **8/8**, RF-050 fake-router **10/10** 및 RF-029/016/014 scoped 독립 증거는 그대로 재사용. RF-052·RF-043 B peer 결과는 아직 이번 인수에서 확인되지 않았다.
+- **RF-015 기존 실패 비교 신규 근거:** A가 B `252 PASS/12 FAIL` vs integration/BASE `253 PASS/11 FAIL`을 독립 재현; 추가 1건은 B-only Commander frozen package inventory. **Monitor 19-owner의 신규 회귀로 판정하지 않는다.** frozen CI/오라클 편집 불허. 불필요한 기준선 검증 재수행 금지.
+- **RF-043:** catalog 6 source BASE=A=integration 동일, A owner normal/-O 완료. B 원래 범위 독립 peer 필요. 동일 owner 테스트 재실행 금지.
 
-## 다음 연속 실행
-- **지팀장:** RF-043 B peer 도착 시 선별 판정, 이어 LEAD RF-031/050/014 등 최초 미검증 consumer 게이트를 인수. RF-063은 04 LEAD로 소스/CI scoped 수용, 보호/운영 게이트는 HOLD. 추가 DONE 또는 코드 변경을 허위 주장하지 않는다.
-- **B:** RF-043 독립 peer 우선 → RF-031 downstream partial OSError → RF-050 UI/cache → 남은 안전 일반 RF를 기존 브랜치에서 연속 개발. HANDOFF_B/Issue #12 SHA·명령·exit.
-- **A:** RF-035 안전 26 editable 영역의 새로운 소비자/State·temp only 경계 → 중복 없는 일반 RF. RF-030/동결 RF-074 oracle HOLD, RF-063 동일 4경로 peer 반복 금지. HANDOFF_A/Issue #11 SHA·명령·exit.
+## LEAD 종결 작업·오너
+
+- **지팀장:** LEAD 14건 중 이미 유효 peer 범위를 충족한 RF부터 **본래 RF 체크·SOURCE SHA·integration/CI**만 판정. 새 CLI·State·Windows 전수 검증 목록을 만들어 돌아보내지 않는다. 충족하면 즉시 물리 `05_DONE`과 STATUS 해당 항목만 변경. 지금 이 상태표는 DONE 승격 승인 문서가 아니다.
+- **B:** RF-052 수정 독립 peer → RF-043 catalog 독립 peer → 실제 누락된 원래 조건만 좁게 검증 → 자기 RF-066/070/071 계속. 자기 원개발 PASS를 독립 peer로 표기하지 않는다.
+- **A:** RF-052/046/047/054/058 owner 증거 고정 후 B peer 결과 기다리는 동안 RF-035 허용 26범위·일반 안전 RF 개발. RF-063 기존 4/4 peer 재실행 없음.
+- 각 RF는 신규 FAIL/게이트 없는 한 계속 새 검증을 추가하지 않는다. `KEEP_VERIFIED`는 원래 수용 조건을 충족하면 코드 변경 없이 DONE 가능. 작업자가 BLOCKED이면 해당 RF만 차단하고 다른 일반 RF 계속.
+
+## 안전 보호 (RunLab #32 관측을 코드 결함과 분리)
+
+2026-10-27 09:38 KST 마지막 확인: mock SELL `0045749` 체결/출처 UNKNOWN, 전일 SELL `0020349` local 누락, broker/local·guard reconciliation mismatch, OCI `RUN_SOURCE_SHA=UNKNOWN`. **실거래/주문/런검증·Broker/Supervisor/Executor/Step5C/UEF·frozen CI/oracle·비밀/운영데이터·배포·예약** 무승인 실행·변경 금지. RunLab은 읽기 전용으로만 인수하고, RunLab 문제를 무관한 RF 코드 FAIL로 간주하지 않는다.
+
+특히 **RF-069 UEF5 historical snapshot은 path/SHA/use-scope 및 사용자·증거 소유자 승인 전 NOT_RUN/SAFETY_HOLD**. RF-032/034 보호 UEF/closeout도 승인 전 우회 금지. 안전한 일반 RF의 정상 진행은 방해하지 않는다.
+
+## 상태 관리
+
+**실제 변경된 RF·Owner·완료·HOLD 필드만 업데이트.** 매회 전체 93건/HEAD/HANDOFF/Issue 재조회, STATUS 전체 교체, C00 마지막 업데이트, 중복 체크포인트 게시 의무는 **폐지**. 기록에는 실제 실행한 사람, source/commit SHA, 검증 범위·PASS/FAIL/NOT_RUN, 물리 큐 변경, NEXT만 남긴다.
