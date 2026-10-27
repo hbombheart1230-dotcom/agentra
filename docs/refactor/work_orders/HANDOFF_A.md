@@ -10,6 +10,11 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-063 — run137 (A 독립 peer, B 수정 `78be88c6` / blob `fdde6c82`)**
+- `scripts/diagnostics/run_m23_closeout_check.py` blob `fdde6c82bfc9820b853487904fb491a96cbd3408`(HEAD:path 확인)을 detached temp worktree에서 검증. 하네스 `docs/refactor/work_orders/evidence/run103_boundary_scripts/rf063_m23_closeout_text_fix_peer.py`: cwd·`--event-log-path`·`--report-dir` 모두 mkdtemp, socket.connect/subprocess.Popen/sqlite3.connect 차단.
+- TEXT/JSON × normal/`python -O` 4회 모두 `rc 0`, `ok=True day=2026-10-27 commander_total=16 cooldown_transition_total=1 intervention_total=1 error_total=1`(JSON도 ok true), temp 파일 11개, 차단 호출 0, worktree 변경 0. 대조: 구 blob(integration)은 TEXT에서 `NameError: name 'day'`.
+- 변경은 1행(`day`→`summary['day']`)뿐, 소스 수정·통합·DONE 0. 직접 hosted CI/Windows Scheduler/다른 CLI NOT_RUN. 판정 **PEER_PASS_SCOPED**(수정 blob 한정), 최종 수용은 지팀장.
+
 **RF-035 (A 원개발, 신규 배정) owner 인벤토리 — run140b (`2026-10-27T0315Z`, A 시작 `d60ad87d`)**
 
 - 하네스 `evidence/run103_boundary_scripts/rf035_owner_inventory.py` blob `c3ecf458` + 결과 `rf035_owner_inventory_rows_4f012a3a.json`(119행). 정적·읽기 전용(파일 쓰기/네트워크 없음). 동결 RF-074 오라클은 **테스트를 실행·수정하지 않고** `_scope_violations`와 상수만 AST로 재구성해 각 파일 편집 시 위반 여부를 판정. 깨끗한 추출본 integration `4f012a3a`/BASE × normal/`-O` 4조합 **exit 0, 결과 동일(digest `90569bdec454`)**.
