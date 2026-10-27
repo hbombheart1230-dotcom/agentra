@@ -356,3 +356,11 @@
 - Reused (no rerun): run115 strategic_answers `keys=16 q15_keys=29 malformed=15 alias_shared=4 writes=0` normal/-O; run116 static alias-mutation `writes=1 alias_key_stores=2` (top-level new dict, no nested mutation); theme13×2 lead harness.
 - Not covered: B facade→owner full peer, populated-data semantics.
 - External effects: none besides this push.
+
+## run156 — RF-033 / RF-034 C1 (Owner): blob parity BASE=A=integration (integration 241f929c; read-only `git rev-parse`/`git show`, nothing executed)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| RF-033 | C1 (parity only) | 45 CSV-owned blobs BASE=A=integration | PARTIAL (static): 45/45 identical, no source change since BASE; 10 files contain write/open/subprocess/network tokens (`crypto_fear_greed`, `historical_review`, `hypothesis_pipeline`, 3× `pipeline`, `point_in_time_capture`, `storage`, `unified_comparison`) | per-file final ACTION, C2/C3 reuse run134 (fail-closed partial read) + B `partial artifact read` scoped peer; C4 B, C6/C7 C05 | Claude A / Codex B |
+| RF-034 | C1 (parity only) | 40 CSV-owned blobs BASE=A=integration | PARTIAL (static): 40/40 identical; 7 files with write tokens (`builder`, `five_session_review`, `latent_forward`, `latent_watch`, `writer`, 2× `pipeline`) | per-file final ACTION, C2/C3 reuse `rf034_valid_sources_fixture.py 13bda556` + B schema-valid casebook PASS; C4 B | Claude A / Codex B |
+- Token greps are file-level indicators, not proof of effect; effect harnesses are the earlier A fixtures. No FIX evidence found, so no code change. This is not a full per-file ACTION table and not RF DONE.
+- External effects: none besides this push.
