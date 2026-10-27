@@ -2,7 +2,7 @@
 
 > **진입점 C03 + [D00](D00_ENGINEERING_DELIVERY_POLICY.md).** 구 `CURRENT.md`(C00) 사용 금지. RF 원본의 `## DONE 체크`가 판정 정본이다. C03은 **C1~C5 근거 권고·A/B 배정만** 수행하며 RF 체크·실물 이동·STATUS·통합·CI·DONE은 각각 C05/C04 소유다. 같은 SOURCE/범위의 성공 검증 재실행 금지.
 
-## 🔴 현재 첫 미충족 조건·다음 담당 (2026-10-28 04시, A run166 + B `7e47cd6a` 증거)
+## 🔴 현재 첫 미충족 조건·다음 담당 (2026-10-28 08시, A `525705f6` run166 + B `fa817e91` scoped 증거)
 
 | 우선 | RF 원본 | 첫 원래 부족 조건 / 신규 증거 판정 | 담당·NEXT |
 |---:|---|---|---|
@@ -68,10 +68,16 @@
 ## ▶ 인계·물리 단계
 
 - [C01 B 작업판](C01_CODEX_CURRENT.md) / [C02 A 작업판](C02_CLAUDE_CURRENT.md): 위 **최초 부족 C번호 + 담당 + 다음 링크**를 우선한다. 새 테스트 명세를 여기서 만들거나 누적 델타를 덧붙이지 않는다.
-- [A HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) `525705f6` run149~166 / [B HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md) `7e47cd6a` (RF-033 9/9 scoped, RF-028/029 scoped, RF-066/070/071 Owner 부분 증거): 정확 SOURCE·Owner vs peer·PASS vs SCOPED_PASS/NOT_RUN 구분. A의 정적 C1 ACTION은 C05 원본 체크가 아니다.
+- [A HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) `525705f6` run149~166 / [B HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md) `fa817e91` (RF-034 7/7 scoped 추가; RF-033 9/9 scoped, RF-028/029 scoped, RF-066/070/071 Owner 부분 증거): 정확 SOURCE·Owner vs peer·PASS vs SCOPED_PASS/NOT_RUN 구분. A의 정적 C1 ACTION은 C05 원본 체크가 아니다.
 - [C05 종결판](C05_LEAD_CLOSEOUT_CURRENT.md) / [C04 통합판](C04_LEAD_INTEGRATION_CURRENT.md): **RF-067은 C05가 이미 C4 MET·PEER→LEAD 이동 완료**. C03의 신규 C1~C5 승격 후보는 0건. **C04**는 RF-067의 14/14 byte-identical KEEP 확인을 완료했으며, 남은 exact integration SHA 필수 CI C6 결과를 확보해 C05에 인계해야 한다. C04 작업판도 현재 `LEAD 1 / RF-067 KEEP_SOURCE_VERIFIED / CI_NOT_RUN`으로 정합화되었다. C04의 첫 차단은 정확 integration SHA의 hosted safety CI normal/`-O` 실행·PASS 확보이며 C03/A/B가 wrapper C4를 재검증할 사안이 아니다.
 - [RF-046](../plan/queue/05_DONE/CLAUDE_A/RF-046.md) · [RF-047](../plan/queue/05_DONE/CLAUDE_A/RF-047.md) · [RF-052](../plan/queue/05_DONE/CLAUDE_A/RF-052.md): **이미 DONE**, C03 재검증·재승인 금지.
 - [RunLab #32 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md): [20:09 FINAL](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6440428084) 신규 증거 인수: mock SELL `0045749` 체결 확인, BUY `0017713` broker 체결 대비 local event 0, SELL guard `filled_qty=-1` TTL 후 약 10.5h 잔류, Reporter `trade_rows=[]` vs broker 청산 1. **B**는 ORDER RF-012/055의 BUY 제출→local 기록 누락 및 GUARD RF-048 TTL/filled-truth를 read-only/fake로 분리, **A**는 REPORT RF-030/035의 producer 입력 누락·GREEN visibility를 read-only/fake로 분리, **RunLab**은 OCI source 증거·EOD 누락 여부 읽기 전용 확인. FILE_OWNER≠DEFECT_OWNER, `RUN_SOURCE_SHA=UNKNOWN`, `DEV_RESOLVED=NO`, `RUNTIME_VERIFIED=NO`, `SAFETY_HOLD` 유지. 운영 주문/배포/파일·보호 계약 변경 금지.
+
+## ▶ RunLab #32 신규 07시 START 인수 (2026-10-28 08시 C03)
+
+- [Issue #32 07시 관측](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6454782573) · [OPEN 접수 delta](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md): RUN_ID `start_20261028_070423`, REMOTE_HEAD `48b47e10`, LOCAL_SOURCE `a4083434`, image digest `sha256:f3d1a4a3…`이나 **image→source 증명 없음**(`RUN_SOURCE_SHA=UNKNOWN`). 기존 10/25 컨테이너 보존·3/3 healthy·API/UI 200·mock 플래그 확인은 운영/버전별 PASS가 아님. 재빌드·재배포 BLOCKED, 신규 broker 조회·주문·장전 검증 NOT_RUN.
+- **새 증거의 한계:** 10/27 BUY `0017713` local 누락, SELL `0045749` fill truth -1·guard 잔류, Reporter `trade_index=[]` 불일치 지속. 기존 BUY guard는 empty이나 정리 원인 UNKNOWN; 현재 브로커 상태·account-wide ownership·세션 동등성도 UNKNOWN. **새 RF 수용·C1~C7 MET·DEV_RESOLVED·RUNTIME_VERIFIED 증거 0건**.
+- **배정 유지(중복 실행 금지):** **B** RF-012/055 ORDER 및 RF-048/012 GUARD read-only/fake provenance·post-submit local log·TTL/fill-truth, **A** RF-030/035/001 REPORT producer/visibility read-only/temp-fake, **RunLab** 이미지 provenance·기존 lease/계좌 소유권 증거 읽기 전용 확인. `FILE_OWNER≠DEFECT_OWNER`, `OPEN/SAFETY_HOLD` 유지. 승인 전 보호 코드·주문·운영 데이터·이미지·예약 변경 금지. RF-015/031 우선 full peer, RF-067 exact SHA CI(C04) 우선순위는 그대로.
 
 ## 실행 한도 종료 시 필수 증거
 
