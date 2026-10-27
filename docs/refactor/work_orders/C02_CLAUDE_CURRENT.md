@@ -4,7 +4,7 @@
 
 ## P0 공통 RunLab #32 — 지팀장 배정 조사 (D04)
 
-**사건:** [RUNLAB32-20261027 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md) · [D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md). **개발 Claude A**는 `RL32-REPORT`(broker round trip 대비 `trade_index=[]`, realised sample 누락, operator GREEN vs reconciliation mismatch, stale metrics)의 **Reporter/metrics/visibility read-only trace 및 temp fake 소비자 확인**만 담당한다. 10/27 신규 SELL의 Reporter 반영 여부는 아직 UNKNOWN이며 RunLab 17/19시가 관측한다. `RUN_SOURCE_SHA=UNKNOWN` 때문에 현재 개발 HEAD 회귀라 단정하지 않는다. 확인한 source SHA·입력 이벤트 provenance·출력 일관성·실제로 미실행한 효과/원 소유 RF 후보만 HANDOFF_A에 기록하고 지팀장에 전달한다. 보호 readiness/Executor/운영 데이터 변경은 무승인 금지. P0 신규 사실 처리 후 기존 RF-052/043/035 및 일반 RF 개발을 계속한다.
+**사건:** [RUNLAB32-20261027 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md) · [D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md). **개발 Claude A**는 `RL32-REPORT`(broker round trip 대비 `trade_index=[]`, realised sample 누락, operator GREEN vs reconciliation mismatch, stale metrics)의 **Reporter/metrics/visibility read-only trace 및 temp fake 소비자 확인**만 담당한다. 10/27 신규 SELL의 Reporter 반영 여부는 아직 UNKNOWN이며 RunLab 17/19시가 관측한다. `RUN_SOURCE_SHA=UNKNOWN` 때문에 현재 개발 HEAD 회귀라 단정하지 않는다. FILE_COVERAGE 파일 owner 매핑: `libs/reporting/operator_visibility.py` RF-030, `libs/reporting/{metrics_report_generator,reporter_bundle_runtime_parts/closed_sell_reconciliation}.py` RF-035, `apps/operator_ui/data_access_trade_index_projection.py` RF-001. **파일 owner이지 원인 확정 아님.** source SHA·입력 이벤트 provenance·출력 일관성·미실행 효과·실제 결함 RF 후보만 HANDOFF_A에 기록해 지팀장에 전달한다. 보호 readiness/Executor/운영 데이터 변경은 무승인 금지. P0 신규 사실 처리 후 기존 RF-052/043/035 및 일반 RF 개발을 계속한다.
 
 ## 현재 작업
 
