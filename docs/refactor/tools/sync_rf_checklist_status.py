@@ -37,7 +37,7 @@ BOX = re.compile(r"^- \[([ xX])\] .*? — \*\*(MET|N/A|PARTIAL|PENDING|SAFETY_BL
 META = re.compile(r"<!-- RF_CHECKLIST_META (\{[^\n]+\}) -->")
 
 
-def render():
+def render(counts):
     lines = [
         "## 우선 14건 RF 원본 체크리스트 — 현재 실물 단계 연동",
         "",
@@ -98,7 +98,7 @@ def render():
         "",
         f"**우선 14건:** **MET {met_total}/98 · N/A {na_total}/98 · 미완료 {98-met_total-na_total}/98**. "
         f"실제 DEV {stage_counts['02_DEVELOPING']} + PEER {stage_counts['03_PEER_REVIEW']}, "
-        f"LEAD {stage_counts['04_LEAD_ACCEPTANCE']}. 물리 DONE은 기존 14건이며 N/A를 증거 PASS로 합산하지 않습니다.",
+        f"LEAD {stage_counts['04_LEAD_ACCEPTANCE']}. 물리 DONE은 {counts['05_DONE']}건이며 N/A를 증거 PASS로 합산하지 않습니다.",
         "",
         "**STATUS 갱신 책임: 지팀장.** RF 변경/증거 인수 및 물리 이동 시 같은 작업에서 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check` 확인. 이 도구는 93개 실물 파일의 유일성/단계 수와 우선 14개 원본 체크를 대조하며 RF 합격/안전 실행을 자동 승인하지 않습니다.",
     ])
@@ -117,7 +117,7 @@ def main():
         raise ValueError("STATUS markers missing or repeated")
     before, rest = source.split(START, 1)
     _, after = rest.split(END, 1)
-    updated = before + START + "\n" + render() + "\n" + END + after
+    updated = before + START + "\n" + render(counts) + "\n" + END + after
     values = [counts[s] for s in STAGES]
     record = "| " + " | ".join(str(n) for n in values) + " | **93** |"
     row_re = r"(?m)^\| \d+ \| \d+ \| \d+ \| \d+ \| \d+ \| \d+ \| \*\*93\*\* \|$"
