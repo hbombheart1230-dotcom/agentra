@@ -294,3 +294,17 @@
 - **C2 State/event/effect contract (reused, no rerun):** A run112 normal/-O exit 0: 19-owner public attr hash `7abc614de7` unchanged, runtime wrapper 14 imports unchanged, 27 State keys ↔ `graphs/nodes/monitor_node.py` 27 direct state writes, Mapping misuse → TypeError, shallow snapshot/frozen dataclass/dict alias contract. Owners return payloads only; State writes happen in `monitor_node.py` (outside RF-015). B `RF015_MONITOR_CONSUMER_OK transition=1 summary=1 state=none io=none` scoped peer reused.
 - C3 data for B already in run145 (11 BASE nodes, one shared docs-inventory cause, B-only Commander inventory separate).
 - External effects: none besides this push.
+
+## run150 — RF-031 C1 + C2 (Owner): 22-owner ACTION with oracle scope; partial-OSError downstream recovery (integration e1e28536, BASE 63182ab2)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| [RF-031](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | C1 | 22 owner blobs BASE=integration (`reporter_analysis 9b7963ff`, `trade_report_ai d0b90c5b`, …) | PASS (owner): `rf031_oracle_scope.py` integration normal/-O exit 0 `RF031_ORACLE_SCOPE_OK files=22 forbidden=13 editable=9` | — | C05 |
+| RF-031 | C2 | same | PASS (owner, scoped): `rf031_partial_recovery_fake.py` integration+BASE × normal/-O exit 0 ×4, identical `RF031_PARTIAL_RECOVERY_OK` | B independent caller-State peer | Codex B |
+- **C1 ACTION (22):**
+  - Frozen RF-074 oracle forbids edit → **SAFETY_HOLD_KEEP (13):** `reporter_ai_review`, `reporter_feedback`, `trade_report_ai_{compact_helpers,llm,merge_policy,prompting,shared_facts,summary_adapter}`, `trade_report_markdown_{monitor,scanner,truth}`, `trade_report_runtime_{generation,policy}`. Of these, the 9–10-line ones are `sys.modules` aliases to `libs/reporting/trade_report/*` (WRAPPER).
+  - Editable, R4–R9 facades already split by RF-074 → **KEEP_VERIFIED (9):** `reporter_analysis` (only writer: final JSON then MD, L658–659), `trade_report_ai` (LLM via `LLMRouter`, 12 consumers), `trade_report_ai_{compact_input,deterministic}`, `trade_report_common` (23 consumers), `trade_report_markdown_{clean,strategy_memory}`, `trade_report_post_exit_shadow`, `trade_report_symbol_metadata`. No FIX evidence → no code change.
+- **C2 partial-OSError downstream recovery (new):**
+  - Fake generator writes JSON then raises `OSError` on MD. `live_execution_bundle_runner._load_or_generate_reporter_analysis`: 1st call propagates OSError leaving only `reporter_analysis_<day>.json`; 2nd call sees MD missing → **regenerates** (reuse requires both JSON and MD); 3rd call **reuses** without calling the generator. All writes under temp; socket/subprocess blocked.
+  - `libs/agent/reporter.py::generate_daily_report` (L264) and `scripts/diagnostics/run_offhours_full_trace_bundle.py` (L205) have **no except** around the call → OSError propagates to their caller (fail-loud; no swallowed partial state). Matches B's `RF031_PARTIAL_OSERROR_OK` (write #3 propagation); not re-run.
+- B ask (C2, independent): caller-State side (day-cache/ledger/memory) after the exception, temp-only fake LLM. Do not repeat the OSError propagation peer.
+- External effects: none besides this push.
