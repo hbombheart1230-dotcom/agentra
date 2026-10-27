@@ -30,6 +30,10 @@
 - [RF-046](../plan/queue/05_DONE/CLAUDE_A/RF-046.md) · [RF-047](../plan/queue/05_DONE/CLAUDE_A/RF-047.md) · [RF-052](../plan/queue/05_DONE/CLAUDE_A/RF-052.md): **이미 DONE**, C03 재검증·재승인 금지.
 - [RunLab #32 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md): [20:09 FINAL](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6440428084) 신규 증거 인수: mock SELL `0045749` 체결 확인, BUY `0017713` broker 체결 대비 local event 0, SELL guard `filled_qty=-1` TTL 후 약 10.5h 잔류, Reporter `trade_rows=[]` vs broker 청산 1. **B**는 ORDER RF-012/055의 BUY 제출→local 기록 누락 및 GUARD RF-048 TTL/filled-truth를 read-only/fake로 분리, **A**는 REPORT RF-030/035의 producer 입력 누락·GREEN visibility를 read-only/fake로 분리, **RunLab**은 OCI source 증거·EOD 누락 여부 읽기 전용 확인. FILE_OWNER≠DEFECT_OWNER, `RUN_SOURCE_SHA=UNKNOWN`, `DEV_RESOLVED=NO`, `RUNTIME_VERIFIED=NO`, `SAFETY_HOLD` 유지. 운영 주문/배포/파일·보호 계약 변경 금지.
 
+## 실행 한도 종료 시 필수 증거
+
+- `EXECUTION_LIMIT`로 끝날 때는 D00 §4 형식의 `LIMIT_TYPE | EVIDENCE | LAST_DONE | NOT_DONE | NEXT`를 **실제 제한 신호 기준**으로 함께 남긴다. 제한값·원인 불명은 `UNKNOWN/NOT_VERIFIED`, 추정한 시간·호출수·크레딧을 사실처럼 쓰지 않는다. 가능한 READY RF가 남으면 첫 작업 완료만으로 종료하지 않는다. 한도 도달 전에 이미 분류한 RF·A/B 신규 배정 델타와 미처리 첫 RF·담당을 반드시 구분한다. **단순 HANDOFF 대기 또는 새 증거 없음은 EXECUTION_LIMIT 사유가 아니다.**
+
 ## 절대 운영 규칙·현재 스냅샷
 
 - RF 원본의 원래 C1~C5 및 실제 미체크 항목이 정본. C03은 **권고/배정만**, C05만 RF 체크·물리 이동·STATUS/C7, C04만 선별 통합/CI. 같은 SOURCE·동일 범위의 성공 검증 재실행 금지. Owner 주장·정적 parity·독립 peer·CI·운영 실검증은 다른 증거다.

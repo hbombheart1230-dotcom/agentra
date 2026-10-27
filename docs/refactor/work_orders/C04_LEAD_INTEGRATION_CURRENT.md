@@ -30,7 +30,7 @@
 2. KEEP이면 소스 바이트 일치와 필요한 기존 CI 증거를 확인한다. 변경이면 승인된 최소 파일 diff만 선별 통합한다. A/B 브랜치 전체 병합 금지.
 3. **정확한 통합 commit SHA**에 원래 필요한 CI PASS를 매칭한다. 결과가 없으면 `PENDING/NOT_RUN/FAIL`로 기록하며 C05에 DONE으로 넘기지 않는다.
 4. C6 근거를 남겨 **[C05](C05_LEAD_CLOSEOUT_CURRENT.md)로 즉시 인계하고 다음 LEAD RF**를 처리한다. 한 건 실패·안전 HOLD 때문에 다른 LEAD 처리 중단 금지.
-5. 후보가 진짜 0건이면 `NO_DELTA`; 실행 한도면 `EXECUTION_LIMIT`로 실제 미완료를 명시한다.
+5. 후보가 진짜 0건이면 `NO_DELTA`. `EXECUTION_LIMIT`는 **실제 제한 신호**가 확인된 경우에만 사용하며, D00 §4의 `LIMIT_TYPE | EVIDENCE | LAST_DONE | NOT_DONE | NEXT`를 남긴다. 원인·수치 불명은 `UNKNOWN/NOT_VERIFIED`로 적는다. 미완료된 통합 RF·정확 SOURCE/CI SHA·C05 인계 여부를 반드시 구분하고 `NO_DELTA`나 CI 실패를 한도로 오인하지 않는다.
 
 **소유권:** C04는 허용된 integration 소스·본 문서의 C6 인계만 수정. RF 체크·물리 큐·STATUS·DONE은 C05. 보호 실행/실거래/운영설정/UEF/frozen 변경은 D00에 따라 별도 승인 필수. 이미 DONE인 RF-043/053과 기존 동일 SHA/범위 테스트 반복 금지.
 

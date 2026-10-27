@@ -40,7 +40,8 @@
 - A/B HANDOFF 신규 델타 형식: `RF | SOURCE SHA | Owner/Peer 역할 | 원래 수용 범위 | 실행 명령·결과/정적 근거 | PASS/FAIL/SCOPED_PASS/NOT_RUN | 첫 부족 조건·담당 | NEXT`. Issue #11/#12는 주요 변화만 보고, 매회 복사·중복 댓글 금지.
 - **C05만** RF 원본 체크·C1~C7 판정·Owner/peer·실물 이동·STATUS 집계/링크를 수정한다. 상태 변경 시 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check`로 변경분과 전체 유일성/단계 수 정합성을 검증한다. 이 도구는 승인·실행·PASS를 생성하지 않는다.
 - 93개 RF/모든 HEAD·HANDOFF·Issue 전수 점검은 매 예약에 의무가 아니다. 신규 delta·변경된 RF만 우선 보고, 실제 불일치/충돌/누락이 의심될 때 범위를 넓힌다.
-- 막히면 `첫 원래 C조건 하나/보호 사유 하나 + 해제 담당`을 명시하고 다음 RF로 이동. 새 사실이 없으면 `NO_DELTA`, 막힘은 `BLOCKED`, 실행 한도는 `EXECUTION_LIMIT`로 정직하게 종료. 성과는 **RF 실제 DONE·미충족 C 감소·안전한 코드 통합**, 예약 실행·문서 커밋 수가 아니다.
+- 막히면 `첫 원래 C조건 하나/보호 사유 하나 + 해제 담당`을 명시하고 다음 RF로 이동. 새 사실이 없으면 `NO_DELTA`, 막힘은 `BLOCKED`, 확인된 실행 한도는 `EXECUTION_LIMIT`로 정직하게 종료. 성과는 **RF 실제 DONE·미충족 C 감소·안전한 코드 통합**, 예약 실행·문서 커밋 수가 아니다.
+- **한도 보고 필수:** `EXECUTION_LIMIT`는 **실제 플랫폼·도구의 한도 신호가 확인된 경우에만** 사용한다. 보고에 `LIMIT_TYPE`(TIMEOUT/TOOL_CALLS/TOKENS_CONTEXT/RATE_LIMIT/QUOTA/ENV_RESOURCE/OTHER/UNKNOWN), `EVIDENCE`(도구명·오류/종료 표시·시각·제한 수치 **확인된 것만**), `LAST_DONE`(마지막 실제 RF·SHA·성공 작업), `NOT_DONE`(중단된 단계), `NEXT`(재개 위치·담당)를 적는다. **원인을 추측하거나 크레딧 소진으로 단정하지 않는다.** 원인·수치를 확인 못 하면 `UNKNOWN/NOT_VERIFIED`로 적고, 한도 신호 자체가 없으면 `EXECUTION_LIMIT`라고 주장하지 않는다. `NO_DELTA`·`BLOCKED`와 혼용 금지.
 
 ## 5. RunLab #32 공통 연동 계약
 - RunLab 정본은 [R00](../../runtime/validation/R00_RUNTIME_VALIDATION_RULES.md)·[D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md)·[Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32)·[OPEN 접수대장](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md).

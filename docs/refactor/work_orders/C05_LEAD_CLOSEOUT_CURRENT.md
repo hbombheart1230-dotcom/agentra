@@ -23,6 +23,8 @@
 
 **쓰기 권한:** C05는 원본 RF·물리 단계·STATUS·LEAD_CURRENT·본 C05만 변경한다. C03 권고는 실제 승인이 아니며 C04 통합도 자동 DONE이 아니다. [RunLab #32 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md)은 개발 DONE과 별도 `RUNTIME_PENDING`이며 보호/운영 변경은 별도 승인.
 
+**실행 한도 보고:** `EXECUTION_LIMIT`로 끝날 때는 D00 §4 형식의 `LIMIT_TYPE | EVIDENCE | LAST_DONE | NOT_DONE | NEXT`를 **실제 제한 신호 기준**으로 함께 남긴다. 제한값·원인 불명은 `UNKNOWN/NOT_VERIFIED`, 추정한 시간·호출수·크레딧을 사실처럼 쓰지 않는다. 가능한 READY RF가 남으면 첫 작업 완료만으로 종료하지 않는다. `NOT_DONE`에 미반영 RF 체크·STATUS/물리 이동 여부를 적고, 성공한 C6·C7과 미실행을 분리한다.
+
 **보고 1줄/RF:** `RF 링크 | Owner/peer SHA | C1~C5 | C6 integration SHA·CI | 체크/물리 이동/STATUS | 남은 최초 차단`.
 
 ## C05 2026-10-27 18시 최종 인수 — DONE +3

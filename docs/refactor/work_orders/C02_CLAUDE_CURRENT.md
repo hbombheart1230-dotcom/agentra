@@ -32,6 +32,7 @@
 
 - **정지 금지:** 첫 작업 종료, 첫 커밋, 한 건 PASS, 첫 HANDOFF, peer/지팀장 응답 대기만으로 세션을 종료하지 않는다. 한 RF가 BLOCKED면 원본에 근거가 있는 안전 사유를 HANDOFF에 적고 **바로 다른 RF**를 수행한다. 독립 실행 가능한 READY RF가 0개거나 실제 실행 한도에 닿을 때만 종료할 수 있다. 예약 회차 밖에서 자동 지속된다고 주장하지 않는다.
 - **진실성:** Owner는 자기 A 브랜치에 소스/테스트 커밋·푸시. Peer는 상대 B 정확 SHA 독립 검증. `SCOPED_PASS`를 전체 `PASS`로 바꾸지 않고 기존 PASS 중복 재실행 금지. **원본 RF 체크·물리 이동·STATUS는 C05만 수정**한다. RF-043/053 DONE, RF-052/046/047은 이미 **DONE**이므로 기존 peer 재실행·재배정 금지.
+- **실행 한도 보고:** `EXECUTION_LIMIT`로 끝날 때는 D00 §4 형식의 `LIMIT_TYPE | EVIDENCE | LAST_DONE | NOT_DONE | NEXT`를 **실제 제한 신호 기준**으로 함께 남긴다. 제한값·원인 불명은 `UNKNOWN/NOT_VERIFIED`, 추정한 시간·호출수·크레딧을 사실처럼 쓰지 않는다. 가능한 READY RF가 남으면 첫 작업 완료만으로 종료하지 않는다.
 - **보고 한 줄:** `RF 링크 | 원래 C번호 | SOURCE SHA | 증거 PASS/PARTIAL/NOT_RUN | 남은 C번호 | 해제 담당 | NEXT RF 링크`. [Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)는 마일스톤 기록만. [D00 안전 규칙](D00_ENGINEERING_DELIVERY_POLICY.md)은 절대 완화 금지.
 
 **이번 회차가 끝날 때 필수 숫자:** `실제 처리 RF 수 / 완료 체크 증거 수 / 코드 변경 RF 수 / peer 검증 수 / 다음 READY RF`. 문서/댓글 개수를 실적이라 부르지 않는다.
