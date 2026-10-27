@@ -6,12 +6,12 @@
 
 | 우선 | 실물 RF 링크 | 상태 | C05 즉시 처리 |
 |---|---|---|---|
-| 1 | [RF-046](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-046.md) | LEAD · C1~C5 수용, C6/C7 미완료 | C04 source/CI 증거 인수 → 충족 즉시 DONE |
-| 2 | [RF-047](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-047.md) | LEAD · C1~C5 수용, C6/C7 미완료 | C04 KEEP/CI 증거 인수 → 충족 즉시 DONE |
-| 3 | [RF-052](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-052.md) | LEAD · C1~C5 수용, C6/C7 미완료 | C04 검증된 통합 SHA/CI 인수 → 충족 즉시 DONE |
+| 1 | [RF-046](../plan/queue/05_DONE/CLAUDE_A/RF-046.md) | **DONE · KEEP_VERIFIED** | C6 exact CI + C7 실물/STATUS 종결 |
+| 2 | [RF-047](../plan/queue/05_DONE/CLAUDE_A/RF-047.md) | **DONE · KEEP_VERIFIED** | C6 exact CI + C7 실물/STATUS 종결 |
+| 3 | [RF-052](../plan/queue/05_DONE/CLAUDE_A/RF-052.md) | **DONE · INTEGRATED** | C6 exact CI + C7 실물/STATUS 종결 |
 | 4 | [C03 수용 후보](C03_LEAD_TRIAGE_CURRENT.md) / [A HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) / [B HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md) | DEV/PEER | **RF 원본 C1~C5·SOURCE SHA·반대 peer full PASS 확인** 시 LEAD 실물 이동 |
 
-**마지막 확인된 물리 현황:** 총 93건 · PENDING 51 · DEV 9 · PEER 14 · **LEAD 3** · DONE 16 · REWORK 0. 우선 14건(DEV 2 + PEER 12)은 C1~C7 **MET 4, N/A 14, 미완료 80**. 최신 수치는 실제 큐와 [STATUS](../plan/STATUS.md)가 우선한다. RF-043/053은 DONE이며 재실행 금지.
+**마지막 확인된 물리 현황:** 총 93건 · PENDING 51 · DEV 9 · PEER 14 · **LEAD 0** · DONE 19 · REWORK 0. 우선 14건(DEV 2 + PEER 12)은 C1~C7 **MET 4, N/A 14, 미완료 80**. 최신 수치는 실제 큐와 [STATUS](../plan/STATUS.md)가 우선한다. RF-043/053은 DONE이며 재실행 금지.
 
 ## 매회 반드시 실제 처리
 
@@ -24,3 +24,10 @@
 **쓰기 권한:** C05는 원본 RF·물리 단계·STATUS·LEAD_CURRENT·본 C05만 변경한다. C03 권고는 실제 승인이 아니며 C04 통합도 자동 DONE이 아니다. [RunLab #32 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md)은 개발 DONE과 별도 `RUNTIME_PENDING`이며 보호/운영 변경은 별도 승인.
 
 **보고 1줄/RF:** `RF 링크 | Owner/peer SHA | C1~C5 | C6 integration SHA·CI | 체크/물리 이동/STATUS | 남은 최초 차단`.
+
+## C05 2026-10-27 18시 최종 인수 — DONE +3
+- **RF-046/047/052:** C04의 source·full peer·exact integration commit `7cfb26d811853545e8b88da9143afdb1afdb1e19` 및 [Actions 40481581384](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40481581384) 정상/`-O` success 인수. 세 RF C6 MET, C7 MET, 물리 `04→05` 이동. 기존 C1~C4 MET/C5 N/A 유지. 93 unique, DONE 16→19, LEAD 3→0.
+- **CI 이후 HEAD 차이:** 통합 commit→C04 증거 HEAD `bde330c4` diff는 C04 문서만 변경. 이번 C05 종결 커밋도 문서·RF 경로 변경뿐이며 코드 재검증을 수행했다고 주장하지 않는다.
+- **C03 신규 READY:** 현재 C03에 추가 전체 C1~C5 + 반대 full peer 확정 후보 없음. 우선 14 RF는 최초 미충족 C 및 보호 경계를 유지, 임의 승격 0.
+- **검증:** 원격 Git tree 93개 유일성 및 3건 C1~C7 체크, STATUS 단계 집계를 직접 확인. `sync_rf_checklist_status.py --write/--check`는 GitHub 연결 환경에 checkout 실행 기능이 없어 **NOT_RUN**; 동등한 읽기 전용 원격 불변식 확인을 별도로 수행하며 Python 실행 성공으로 표기하지 않는다. 고정 FILE_COVERAGE CSV 변경 없음.
+- **RunLab:** `DEV_RESOLVED`/RF DONE과 `RUNTIME_VERIFIED` 별개. #32 `OPEN/RUNTIME_PENDING` 및 안전 HOLD 유지, 운영 런 NOT_RUN.
