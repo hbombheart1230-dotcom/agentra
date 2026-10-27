@@ -14,8 +14,8 @@
 
 | 담당 | 확인 브랜치 HEAD | 새 근거·다음 행동 |
 |---|---|---|
-| Claude A | `7797b7937e6e1e2065b32836d8ef8dfa5ca6cd60` | [#11 run139](https://github.com/hbombheart1230-dotcom/agentra/issues/11): RF-028 in-process writer fake, RF-014 Top1 selected fixture, RF-034 schema-valid source fixture 추가. A 보고 normal/`-O` 안전 4모드; **B 독립 peer 필요**. 운영 source 변경 0. RF-030은 frozen oracle 승인 HOLD |
-| Codex B | `2e2d24d6db0ac9ddfa1579fdc8b8258eeb1f3c73` | [#12](https://github.com/hbombheart1230-dotcom/agentra/issues/12): RF-031 downstream JSON-only 복구·RF-050 cache reload·RF-014 selected Top1·RF-028 in-process writer·RF-034 valid source·RF-033 corrupt partial consumer 추가 scoped peer normal/`-O` 결과. RF-063 NameError는 현재 B source에서 미재현 보고(원 SHA 비교 필요). **운영 source 변경 0, 전체 DONE 아님** |
+| Claude A | `a03102dd52eb9ee70df84b909411d480e8e8db3a` (역할문서-only; 최신 원개발 fixture SHA `7797b793`) | [#11 run139](https://github.com/hbombheart1230-dotcom/agentra/issues/11): RF-028 in-process writer fake, RF-014 Top1 selected fixture, RF-034 schema-valid source fixture 추가. B의 신규 scoped peer 결과는 #12에 도착; 최종 RF 게이트/LEAD 판정 필요. 운영 source 변경 0. RF-030 frozen oracle 보호 HOLD |
+| Codex B | `47d6e04d013dbed26d39e395e3ae707337508c51` (역할문서-only; 최신 peer SHA `2e2d24d6`) | [#12](https://github.com/hbombheart1230-dotcom/agentra/issues/12): RF-031 downstream JSON-only 복구·RF-050 cache reload·RF-014 selected Top1·RF-028 in-process writer·RF-034 valid source·RF-033 corrupt partial consumer 추가 scoped peer normal/`-O` 결과. RF-063 NameError는 현재 B source에서 미재현 보고(원 SHA 비교 필요). **운영 source 변경 0, 전체 DONE 아님** |
 
 작업 연결: **D00 = 상시 관리·검증 계약**, C00 = 지팀장 이번 작업, C01/C02 = 각 개발자 다음 실행 큐, HANDOFF·#11/#12 = 증거·선택한 다음 RF. 기존 Issue 본문의 과거 작업 브랜치는 현재 D/C보다 우선하지 않는다. 문서·fixture 진척을 RF DONE으로 계산하지 않는다.
 
