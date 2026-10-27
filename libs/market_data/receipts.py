@@ -24,7 +24,7 @@ import hashlib
 import json
 import os
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any, Mapping, Optional, Sequence
 
 RECEIPT_SCHEMA = "market_data_receipt.v1"
@@ -111,9 +111,12 @@ class RawArchiveConflictError(RuntimeError):
 
 def resolve_archive_path(archive_root: Path, ref: str) -> Path:
     archive_root = Path(archive_root).resolve()
-    if not ref or os.path.isabs(ref) or ref.startswith(("/", "\\")):
+    # Refs are portable across OSes (archives move between Linux and Windows hosts), so Windows
+    # drive/UNC anchors and backslash-separated '..' are rejected on every platform.
+    win = PureWindowsPath(ref) if ref else None
+    if not ref or os.path.isabs(ref) or ref.startswith(("/", "\\")) or win.drive or win.root:
         raise ArchivePathError(f"raw_archive_ref must be a non-empty relative path: {ref!r}")
-    if ".." in Path(ref).parts:
+    if ".." in Path(ref).parts or ".." in win.parts:
         raise ArchivePathError(f"raw_archive_ref must not contain '..': {ref!r}")
     candidate = (archive_root / ref).resolve()
     try:
