@@ -199,3 +199,17 @@
 - Result: no behavior difference integration vs BASE; owner effect boundary for RF-051 is fake-verifiable → files remain KEEP candidates, no code change. B peer pending; not DONE.
 - External effects: none besides this push. NOT_RUN: real yfinance/KOFIA network.
 - Next: RF-035 editable subset / next non-protected RF.
+
+## run145 — RF-015 C3 (Owner): BASE 11 FAIL node-level data for B (source integration 01c11f99, BASE 63182ab2)
+| RF | C | SOURCE | 범위 | 판정 | 첫 미충족·해제 담당 |
+|---|---|---|---|---|---|
+| 015 | C3 | BASE `63182ab2` (integration identical, run141) | Monitor 4-file contract command, node-level | SCOPED_PASS (baseline classified) | B-only Commander inventory oracle → 지팀장 |
+- Command (worktree, git history needed): `python -m pytest -q -p no:cacheprovider tests/test_p173_p058_integration_contracts.py tests/test_shared_role_contracts.py tests/test_work_monitor_continuous.py tests/test_work_monitor_role_contracts.py -rf` → exit 1, **253 passed / 11 failed**.
+- 11 BASE nodes:
+  - `test_shared_role_contracts.py::test_exact_combined_runtime_inputs_and_restoration`
+  - `test_shared_role_contracts.py::test_real_source_mutations_fail_closed[shim_import|shim_duplicate|shim_redirect|owner_body|unmoved|wrapper|broker|numbered_owner]` (8)
+  - `test_shared_role_contracts.py::test_shared_checker_rejects_mutation_under_optimized_python` (`-O` subprocess: unmutated `verify_runtime()` raises first → CalledProcessError)
+  - `test_work_monitor_role_contracts.py::test_all_retained_role_owners_and_protected_runtime_stay_byte_identical`
+- Single shared cause for all 11: `scripts/refactor/shared_strategist_contracts.py:94` (`verify_runtime → verify_b_scope → verify_commander_pure_v1 → verify_b_composed`) `B-stage composed unexpected/missing inventory` = exactly **21 docs/governance paths, 0 code paths**: `AGENTS.md`, `CLAUDE.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/README.md`, `docs/refactor/plan/{done,troubleshooting/closed}/.gitkeep`, `docs/refactor/plan/pending/P1.5.0..P1.5.11.md` (12), `docs/refactor/plan/troubleshooting/open/{P15_BRANCH_CLEANUP,P15_SOURCE_ADMISSION}.md`, `docs/refactor/work_orders/CURRENT.md`. These are P1.5 bootstrap docs at BASE, not Monitor owner files → pre-existing baseline, not an RF-015 regression.
+- Separate (B-only, not in BASE): `test_p173_p058_integration_contracts.py::test_combined_agent_tree_is_exactly_the_versioned_allowlist` → `Commander exact package inventory` from B-new `libs/agents/commander/contracts.py` (run141). Needs frozen-oracle decision by 지팀장; not an RF-015 Monitor behavior defect.
+- External effects: none besides this push. Next: Owner 050 C4 (LLM router/cache contract).
