@@ -10,6 +10,14 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-065 — run138g (`2026-10-27T0235Z`, 같은 회차 연속, A 시작 `913a30c0`) 필수 인자 research CLI 19건 정상 경로 (`--set research-args`)**
+
+- 하네스 `rf063_run_cli_survey_peer.py`(blob `300de79a`, `--set research-args`): 기본 실행에서 필수 인자 누락(exit 2)이던 19건을 **최소 유효 인자**(날짜 2026-10-20..22, `--reports-root <tmp 빈 디렉터리>`, `--no-fetch` 제공 시)로 실제 프로세스 실행. 깨끗한 `git archive` 추출본(integration `ec1e302f` / BASE) × normal/`-O` 4조합 **완전 동일**, 쓰기 tmp cwd 한정·네트워크·subprocess 차단·자격 제거, repo 작업트리 변화 0.
+- 결과: **19/19 exit 0**, tmp 밖 쓰기 시도 0. 대부분 JSON을 stdout에 출력하고 `--output-dir`/기본 경로에 2~6개 파일 생성(`run_agent_effectiveness_scorecard` 6, `run_stage2_authority_review` 4, 그 외 2; `daily_profitability_scorecard`·`run_alpha_research_board`·`run_quant_trade_diagnosis`·`run_same_symbol_sequence`는 빈 입력이라 파일 0).
+- **관찰(변경 안 함):** (1) 입력이 **빈 reports root여도 19건 모두 exit 0으로 성공**(빈 결과 산출; `quant diagnosis: 0/0 trades`) → 입력 누락을 exit로 감지 불가(fail-open, 이전 target과 동일 패턴). (2) `run_q8_historical_review`·`run_q8_lane_decision_table`은 산출물을 **cwd 기준 `docs/tactics/`**(저장소 문서 디렉터리)에 기록 — repo 루트에서 인자 없이 실행하면 버전관리 문서 디렉터리를 수정하게 됨(이 서베이는 tmp cwd). `run_post_exit_shadow_recap`은 `reports/dev/analysis/post_exit_shadow_recap/<day>/`. (3) `--reports-root` 지원 CLI에서도 일부 산출 경로는 별도 `--output-dir`/고정 상대경로.
+- 판정: **PEER_PASS_SCOPED**(필수 인자 research CLI 정상 경로·빈 입력 수준), DONE 아님. NOT_RUN: 데이터가 있는 입력의 의미 정합(합성 데이터 시나리오는 개별 CLI별 별도 경계; 앞서 `run_agent_effectiveness_scorecard`·`run_q13_q14_validation`·`run_loss_decomposition` 등 일부 owner writer는 run107~133에서 합성 데이터로 검증됨), 보호 UEF/frozen CLI 7건, Windows Task Scheduler, 자격 있는 환경.
+- **A 소진 판정(현재 CURRENT 기준):** P0 RF-063 diagnostics CLI 46+4건 실제 프로세스(서베이·쓰기형 check 포함) 완료 / P1 RF-065 research CLI 53건 중 46+19건(필수 인자 포함)·보호 7건 제외 완료 / P2 RF-067 target 안전분 완료 / RF-015 조건부(B 제출 대기). 남은 후보는 모두 (b) SAFETY_HOLD·보호 CLI·실데이터/네트워크/자격 옵션, (c) Windows·자격 환경, (d) 데이터 의미 검증은 해당 owner writer별 별도 합성 시나리오(승인 시 진행)에 해당.
+
 **RF-063 / RF-065 — run138f (`2026-10-27T0215Z`, 같은 회차 연속, A 시작 `ebbe0636`, integration `ec1e302f`, B `f58d1481`) 전수 실제-프로세스 서베이: diagnostics `run_*` 46건 · research 46건**
 
 - 하네스 `evidence/run103_boundary_scripts/rf063_run_cli_survey_peer.py` blob `b49fa6e7`: 각 CLI를 root wrapper로 실제 프로세스 실행 — (1) `--help`, (2) **기본 인자** 실행(빈 tmp cwd, 자격 env 제거, `PATH=''`). 자식 부트스트랩이 **모든 쓰기를 해당 tmp cwd로 한정**(`builtins.open`/`io.open`/pathlib, `os.mkdir/remove/unlink/rmdir/rename/replace`)하고 네트워크·subprocess를 차단, sqlite는 tmp 경로만 허용. **깨끗한 `git archive` 추출본**(integration `ec1e302f` / BASE `63182ab2`)에서 normal/`-O` 4조합 실행: 서베이 표가 **integration=BASE, normal=`-O` 완전 동일**. (주의: 작업 worktree의 ignored `data/` 잔존물이 m24 결과를 바꿔 처음엔 불일치로 보였으며 깨끗한 추출본으로 해소.) 이 서베이는 **프로세스 수준 사실(exit/오류 종류/생성 파일/차단 시도)만** 확인하며 각 check의 의미 정합은 검증하지 않음. 보호 대상 `run_uef*` 6건·`run_frozen_q9_baseline_closeout`은 **실행하지 않음**(research 53 중 46 실행).

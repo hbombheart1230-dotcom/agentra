@@ -2,12 +2,13 @@
 # Per CLI: (1) `--help` and (2) a DEFAULT-ARGS run in a fresh empty tmp cwd. The child bootstrap CONFINES every write (builtins.open, io.open/pathlib, os.mkdir/remove/rename/...) to that tmp cwd, and blocks network/subprocess/sqlite.
 # Credential env vars and PATH are cleared; no .env exists in the cwd. This establishes process-level facts only (exit code, crash/gate/arg error class, files created, blocked-effect attempts, timeouts) -- NOT semantic correctness of each check.
 # Set selection: default `diagnostics` = scripts/diagnostics/run_*.py (46, RF-063). `--set research` = scripts/research/*.py (53 minus protected run_uef*/frozen* CLIs, RF-065).
-# Usage: python rf063_run_cli_survey_peer.py <repo_root> [-O] [--set research]
+# `--set research-args` = the research CLIs that REQUIRE arguments, run with minimal valid args (dates 2026-10-20..22, --reports-root <tmp> / --no-fetch when the CLI offers them) against an EMPTY tmp reports root.
+# Usage: python rf063_run_cli_survey_peer.py <repo_root> [-O] [--set research|research-args]
 import os, sys, json, re, shutil, subprocess, tempfile
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 repo = Path(sys.argv[1]).resolve(); opt = ["-O"] if "-O" in sys.argv[2:] else []
-SET = "research" if "research" in sys.argv[2:] else "diagnostics"
+SET = "research-args" if "research-args" in sys.argv[2:] else "research" if "research" in sys.argv[2:] else "diagnostics"
 def check(c, m):
     if not c: raise SystemExit("CHECK_FAILED: " + str(m))
 BOOT = r'''
@@ -52,11 +53,21 @@ base_env = {k: v for k, v in os.environ.items() if not any(s in k.upper() for s 
 base_env.update({"PYTHONDONTWRITEBYTECODE": "1", "PYTHONPATH": "", "PATH": "", "PYTHONIOENCODING": "utf-8"})
 if SET == "diagnostics":
     names = sorted(p.name for p in (repo / "scripts/diagnostics").glob("run_*.py")); check(len(names) == 46, len(names))
+elif SET == "research-args":
+    D1, D2, RR_NAME = "2026-10-20", "2026-10-22", "reports_in"
+    REQ = {"daily_profitability_scorecard.py": ["--date", D1], "run_agent_effectiveness_scorecard.py": ["--start", D1, "--end", D2], "run_alpha_research_board.py": ["--through-day", D1],
+           "run_attribution_score_range.py": ["--start", D1, "--end", D2], "run_cumulative_improvement_review.py": ["--start", D1, "--end", D2], "run_evaluation_lens_report.py": ["--start", D1, "--end", D2],
+           "run_full_chain_component_review.py": ["--start", D1, "--end", D2], "run_horizon_alignment_review.py": ["--start", D1, "--end", D2], "run_horizon_revision_backtest.py": ["--start", D1, "--end", D2],
+           "run_loss_decomposition.py": ["--start", D1, "--end", D2], "run_monitor_noop_attribution.py": ["--start", D1, "--end", D2], "run_post_exit_shadow_recap.py": ["--day", D1],
+           "run_q13_q14_validation.py": ["--validation-id", "v1", "--start", D1, "--end", D2], "run_q8_historical_review.py": ["--start", D1, "--end", D2], "run_q8_lane_decision_table.py": ["--day", D1],
+           "run_quant_trade_diagnosis.py": ["--day", D1], "run_same_symbol_sequence.py": ["--start", D1, "--end", D2], "run_scanner_alignment_root_cause_range.py": ["--start", D1, "--end", D2], "run_stage2_authority_review.py": ["--end", D1]}
+    names = sorted(REQ); check(len(names) == 19, len(names))
 else:
     allr = sorted(p.name for p in (repo / "scripts/research").glob("*.py") if p.name != "__init__.py")
     PROTECTED = [n for n in allr if "uef" in n.lower() or "frozen" in n.lower()]   # protected UEF / frozen-window CLIs are NEVER executed
     names = [n for n in allr if n not in PROTECTED]; check(len(allr) == 53 and len(names) == 53 - len(PROTECTED), (len(allr), PROTECTED))
 check(all((repo / "scripts" / n).exists() for n in names), "root wrappers")
+REQ = globals().get("REQ", {})
 root = Path(tempfile.mkdtemp(prefix="rf063_survey_")).resolve()
 def redact(s): return re.sub(r"\d{4}-\d{2}-\d{2}", "<d>", re.sub(r"\d{8,}", "<n>", s.replace(str(root), "T").replace(str(repo), "REPO")))
 def one(name):
@@ -70,7 +81,13 @@ def one(name):
         except subprocess.TimeoutExpired:
             return None, "", "", True
     hc, hout, herr, hto = go(["--help"], 60)
-    rc, out, err, to = go([], 45)
+    argv = []
+    if SET == "research-args":
+        (cwd / RR_NAME).mkdir()
+        argv = list(REQ[name])
+        if "--reports-root" in hout: argv += ["--reports-root", str(cwd / RR_NAME)]
+        if "--no-fetch" in hout: argv += ["--no-fetch"]
+    rc, out, err, to = go(argv, 45)
     files = sorted(str(p.relative_to(cwd).as_posix()) for p in cwd.rglob("*") if p.is_file())
     m = re.search(r"BLOCKED_ATTEMPTS=(\d+) ?(\S*)", err); att = int(m.group(1)) if m else None  # noqa
     last = [l for l in err.strip().splitlines() if l and not l.startswith("BLOCKED_")][-1:] or [""]
@@ -82,7 +99,7 @@ def one(name):
     elif rc is not None and err.count("Traceback") and rc == 1: cls = "CRASH1"
     else: cls = f"EXIT{rc}"
     kinds = sorted({b for b in (m.group(2).split(";") if m and m.group(2) else []) if b})
-    return name, {"help": "ok" if hc == 0 and "usage" in hout.lower() else f"code={hc}" + ("/timeout" if hto else ""), "default_run": cls, "errtype": errtype, "blocked_kinds": kinds, "files": len(files), "file_dirs": sorted({redact(f).split("/")[0] for f in files})[:3],
+    return name, {"argv": [redact(a) for a in argv], "help": "ok" if hc == 0 and "usage" in hout.lower() else f"code={hc}" + ("/timeout" if hto else ""), "default_run": cls, "errtype": errtype, "blocked_kinds": kinds, "files": len(files), "file_dirs": sorted({redact(f).split("/")[0] for f in files})[:3],
                   "stdout_head": redact(out.strip().splitlines()[0])[:60] if out.strip() else "", "stdout_json": bool(out.strip().startswith(("{", "["))), "first_blocked": first, "err_last": redact(last[0])[:90]}
 with ThreadPoolExecutor(max_workers=8) as ex: table = dict(ex.map(one, names))
 
@@ -100,7 +117,7 @@ if SET == "diagnostics":
 summary = {}
 for n, v in table.items(): summary[v["default_run"]] = summary.get(v["default_run"], 0) + 1
 check(not [n for n, v in table.items() if v["help"] != "ok" and v["default_run"] != "TIMEOUT" and False], "")  # informational
-out = {"set": SET, "skipped_protected": ([] if SET == "diagnostics" else PROTECTED), "extras_m23": {"text": m23_text, "json": m23_json}, "count": len(table), "summary": summary, "help_ok": sum(1 for v in table.values() if v["help"] == "ok"), "table": table}
+out = {"set": SET, "skipped_protected": (PROTECTED if SET == "research" else []), "extras_m23": {"text": m23_text, "json": m23_json}, "count": len(table), "summary": summary, "help_ok": sum(1 for v in table.values() if v["help"] == "ok"), "table": table}
 check(repo_status() == repo_before, "repo working tree changed")
 outside = [n for n, v in table.items() if "write" in v["blocked_kinds"] or any(k in ("mkdir", "remove", "unlink", "rmdir", "rename", "replace") for k in v["blocked_kinds"])]
 out["attempted_writes_outside_tmp"] = outside
