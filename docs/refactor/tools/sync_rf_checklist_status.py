@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync 14 LEAD RF original DONE checkboxes and NEXT gates into STATUS.md.
+"""Validate 93 physical RFs and sync 14 priority checklists into STATUS.md.
 
 Reads markdown only; never runs Agentra runtime, CI, brokers or user data.
 Usage: python docs/refactor/tools/sync_rf_checklist_status.py --write
@@ -16,6 +16,23 @@ STATUS = BASE / "plan" / "STATUS.md"
 QUEUE = BASE / "plan" / "queue"
 START, END = "<!-- RF_LEAD_CHECKLIST_START -->", "<!-- RF_LEAD_CHECKLIST_END -->"
 ORDER = "063 067 015 050 031 014 016 028 029 033 034 032 065 069".split()
+STAGES = ("01_PENDING", "02_DEVELOPING", "03_PEER_REVIEW", "04_LEAD_ACCEPTANCE", "05_DONE", "06_REWORK")
+
+
+def queue_counts():
+    rf_files = sorted(QUEUE.rglob("RF-[0-9][0-9][0-9].md"))
+    ids = [path.stem for path in rf_files]
+    expected = [f"RF-{i:03d}" for i in range(1, 94)]
+    if len(rf_files) != 93 or sorted(ids) != expected:
+        raise ValueError("Physical queue must have exactly RF-001..RF-093, one file each")
+    count = {stage: 0 for stage in STAGES}
+    for path in rf_files:
+        if path.parent.parent.name not in count:
+            raise ValueError(f"Unknown RF queue stage: {path}")
+        count[path.parent.parent.name] += 1
+    return count
+
+
 BOX = re.compile(r"^- \[([ xX])\] .*? — \*\*(MET|N/A|PARTIAL|PENDING|SAFETY_BLOCKED|MISSING)\*\*", re.M)
 META = re.compile(r"<!-- RF_CHECKLIST_META (\{[^\n]+\}) -->")
 
@@ -24,12 +41,12 @@ def render():
     lines = [
         "## 우선 14건 RF 원본 체크리스트 — 현재 실물 단계 연동",
         "",
-        "각 RF 원본 `DONE 체크`의 **7개 항목**을 읽은 스냅샷입니다. **MET**는 증거 확인, **N/A**는 조건부 비적용으로 DONE이나 PASS로 세지 않습니다. **PARTIAL/PENDING/SAFETY_BLOCKED**는 미완료입니다. 링크를 열면 체크 이유와 증거 범위가 있습니다. 이 표는 파일 저장 시 실시간 조회되는 것이 아니라 동기화 명령으로 갱신됩니다.",
+        "각 RF 원본 `DONE 체크` 7항목의 판정 스냅샷입니다. **MET**는 원래 범위 근거 확인, **N/A**는 근거 있는 조건부 비적용이며 실제 PASS 수치에 더하지 않습니다. 미체크 PARTIAL/PENDING/MISSING/SAFETY_BLOCKED는 미완료입니다. DEV의 Owner 제출은 최종 MET가 아니며, PEER에서는 C1~C5 원래 조건을 전체 범위 독립 증거로 확정합니다. 물리 LEAD 진입에는 C1~C5 충족 + 전체 peer PASS가 필요합니다([D00 §2.1](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md)). 이 표는 **지팀장이 갱신**합니다.",
         "",
-        "| RF 원본 | 실물 단계·Owner→Peer | 체크 / 미완료 | 남은 체크 | 다음 해제 조건 · 담당 | 상태 |",
+        "| RF 원본 | 실물 단계·Owner→Peer | MET · N/A · 남음 | 미충족 체크 | 다음 해제 조건 · 담당 | 상태 |",
         "|---|---|---:|---|---|---|",
     ]
-    total = 0
+    met_total = na_total = 0
     stage_counts = {"02_DEVELOPING": 0, "03_PEER_REVIEW": 0, "04_LEAD_ACCEPTANCE": 0}
     queue_root = BASE / "plan" / "queue"
     for rf in ORDER:
@@ -50,14 +67,23 @@ def render():
         if len(marks) != 7 or len(meta) != 1:
             raise ValueError(f"{path}: requires seven marked criteria and one metadata record")
         state = json.loads(meta[0])
-        checked, missing = [], []
+        checked, missing, met, exempt = [], [], [], []
         for idx, (mark, verdict) in enumerate(marks, 1):
             if (mark.lower() == "x") != (verdict in ("MET", "N/A")):
                 raise ValueError(f"{path}: checkbox/verdict disagree at C{idx}")
             (checked if mark.lower() == "x" else missing).append(idx)
+            if verdict == "MET":
+                met.append(idx)
+            elif verdict == "N/A":
+                exempt.append(idx)
         if state["next"] not in missing:
             raise ValueError(f"{path}: NEXT gate must be unchecked")
-        total += len(checked)
+        met_total += len(met)
+        na_total += len(exempt)
+        if stage == "04_LEAD_ACCEPTANCE" and any(i in missing for i in range(1, 6)):
+            raise ValueError(f"{path}: LEAD not allowed while C1-C5 incomplete")
+        if stage == "05_DONE" and missing:
+            raise ValueError(f"{path}: DONE not allowed while checklist incomplete")
         link = path.relative_to(BASE / "plan").as_posix()
         owner_peer = "A → B" if parent in ("CLAUDE_A", "FROM_CLAUDE_A") else "B → A"
         stage_label = {"02_DEVELOPING": "DEV", "03_PEER_REVIEW": "PEER", "04_LEAD_ACCEPTANCE": "LEAD"}.get(stage, stage)
@@ -65,16 +91,16 @@ def render():
         gate = state["gate"].replace("|", "/").replace("\n", " ")
         owner = state["owner"].replace("|", "/").replace("\n", " ")
         lines.append(
-            f"| [RF-{rf}]({link}) | {stage_label} · {owner_peer} | {len(checked)}/7 · {len(missing)}남음 | {remains} | "
+            f"| [RF-{rf}]({link}) | {stage_label} · {owner_peer} | MET {len(met)} · N/A {len(exempt)} · {len(missing)}남음 | {remains} | "
             f"**C{state['next']}** {gate} (**{owner}**) | {state['decision']} |"
         )
     lines.extend([
         "",
-        f"**우선 14건:** 체크 {total}/98 · 미완료 {98-total}/98. "
+        f"**우선 14건:** **MET {met_total}/98 · N/A {na_total}/98 · 미완료 {98-met_total-na_total}/98**. "
         f"실제 DEV {stage_counts['02_DEVELOPING']} + PEER {stage_counts['03_PEER_REVIEW']}, "
-        f"LEAD {stage_counts['04_LEAD_ACCEPTANCE']}. 물리 DONE은 기존 14건이며 위 체크는 RF 종결 건수가 아닙니다.",
+        f"LEAD {stage_counts['04_LEAD_ACCEPTANCE']}. 물리 DONE은 기존 14건이며 N/A를 증거 PASS로 합산하지 않습니다.",
         "",
-        "RF 체크/증거 변경 시 같은 커밋에 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 실행. `--check`로 STATUS 동기화 상태 검사. D00·기존 CI·보호 코드는 수정하지 않습니다.",
+        "**STATUS 갱신 책임: 지팀장.** RF 변경/증거 인수 및 물리 이동 시 같은 작업에서 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check` 확인. 이 도구는 93개 실물 파일의 유일성/단계 수와 우선 14개 원본 체크를 대조하며 RF 합격/안전 실행을 자동 승인하지 않습니다.",
     ])
     return "\n".join(lines)
 
@@ -85,19 +111,26 @@ def main():
     op.add_argument("--write", action="store_true")
     op.add_argument("--check", action="store_true")
     args = p.parse_args()
+    counts = queue_counts()
     source = STATUS.read_text(encoding="utf-8")
     if source.count(START) != 1 or source.count(END) != 1:
         raise ValueError("STATUS markers missing or repeated")
     before, rest = source.split(START, 1)
     _, after = rest.split(END, 1)
     updated = before + START + "\n" + render() + "\n" + END + after
+    values = [counts[s] for s in STAGES]
+    record = "| " + " | ".join(str(n) for n in values) + " | **93** |"
+    row_re = r"(?m)^\| \d+ \| \d+ \| \d+ \| \d+ \| \d+ \| \d+ \| \*\*93\*\* \|$"
+    updated, n = re.subn(row_re, lambda _: record, updated, count=1)
+    if n != 1:
+        raise ValueError("STATUS queue-count row missing or not unique")
     if args.check:
         if source != updated:
             raise SystemExit("STALE: run --write after RF checklist changes")
-        print("PASS: 14 original LEAD checklists match STATUS")
+        print("PASS: 93 unique physical RFs and 14 priority checklists match STATUS")
     elif updated != source:
         STATUS.write_text(updated, encoding="utf-8")
-        print("UPDATED: STATUS 14 RF checklists")
+        print("UPDATED: STATUS 93 RF queue counts + 14 priority checklists")
     else:
         print("UNCHANGED: STATUS current")
 
