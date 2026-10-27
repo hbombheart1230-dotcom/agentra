@@ -61,5 +61,9 @@
 | 지팀장 | C00·STATUS·RF 큐 | #11/#12 신규 결과 인수 |
 
 - A/B는 자체 선택 RF의 **RF 번호·SOURCE SHA·실제 결과·다음 RF**를 HANDOFF에 남겨 자기 브랜치 커밋·푸시 후 담당 Issue에 신규 체크포인트를 제출한다. 지팀장은 매 회차 A/B 최신 HEAD·HANDOFF·#11/#12 신규 기록을 대조해 판정·통합·다음 배정에 반영한다. Issue의 과거 브랜치·업무 지시는 D/C 정본보다 우선하지 않는다.
-- STATUS는 현재 큐·차단만, 상세 증거는 RF/HANDOFF/Git에 기록. 변화 없으면 문서 쓰기 금지.
+### 지팀장 STATUS 관리 — 매 예약 필수
+
+- **매회** 실물 RF 큐·Owner·개수, integration/A/B HEAD, HANDOFF_A/B와 Issue #11/#12의 신규 체크포인트, 승인·차단을 `docs/refactor/plan/STATUS.md`와 대조한다. 확인하지 못한 실물 검증은 `NOT_VERIFIED`로 구분한다.
+- RF 상태·담당·검증·차단·SHA·작업 배정 등 **실제 현재 상태가 바뀌면 같은 회차에 STATUS 본문을 전체 교체하고 커밋·푸시한다.** 변화가 없으면 대조만 하고 문서 커밋을 만들지 않는다. 상세 증거는 RF/HANDOFF/Git에 둔다.
+- **종료 순서:** RF 판정·가능한 통합/DONE → STATUS 동기화 → 필요한 C01/C02 갱신 → **C00 마지막 갱신**. 필요한 STATUS 갱신을 누락한 실행은 `EXECUTION_INCOMPLETE`로 보고한다. 문서 변경만으로 RF/운영 소스 진척을 주장하지 않는다.
 - 보고는 `실제 RF 진척 | SOURCE/commit SHA | PASS/FAIL/BLOCKED/NOT_RUN | 다음 RF` 한 표로 끝낸다.
