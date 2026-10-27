@@ -14,6 +14,19 @@
 | `RL32-IMAGE` / `ENV+PROVENANCE_BLOCKED` | 실행 이미지에 OCI revision/빌드 증명 부족: `RUN_SOURCE_SHA=UNKNOWN`. RUN 이미지와 새로운 integration HEAD 불일치만으로 코드 FAIL 아님 | **RunLab Codex(07/17시):** 이미지 digest·기존 빌드 provenance 읽기 전용 조사, **지팀장:** 소유/승인 경로 결정 | 현 이미지 무승인 재빌드/교체 금지. **차기 승인 빌드에서** revision label·digest↔SHA 증명 도입 후 해당 런 검증 가능 |
 | `RL32-OPS` / `ENV_PENDING` | 07시 예약 등록/활성의 독립 증명 부족. 장중 market listener reconnecting, 복사본 `C:\AgentraRunLab\logs\events.jsonl` stale 대비 실제 `src/data/logs/events.jsonl` 갱신 | **RunLab 운영 담당:** 기존 예약 등록 여부·활성 상태·로그 경로를 읽기 전용 구분. **지팀장:** 승인 필요한 일정/설정 변경 판정 | 예약 미확정≠07시 보고/런 ID 전체 부재; 실제 설정 변경은 사용자 별도 승인 후만 |
 
+## FILE_COVERAGE 실제 경로→RF 소유 매핑 (지팀장 읽기 전용 인수)
+
+기준: `docs/refactor/plan/FILE_COVERAGE_63182ab2.csv` blob `32fecc1bf00d261eacbd9a027e6d02be83893366`, BASE `63182ab2`. integration의 다음 경로 source를 직접 조회했으나 **운영 이미지 RUN_SOURCE_SHA는 여전히 UNKNOWN**. CSV의 RF는 **파일 책임 소유자**이지 런타임 증상의 원인/수정 RF 확정이 아니다. CSV verification은 아래 경로 대부분 `UNVERIFIED`; 실제 root-cause는 B/A의 읽기 전용 조사 결과 전까지 `DEFECT_OWNER_PENDING`.
+
+| 사건 | 소스 경로 → 파일 RF | 소스 연결 관찰 / 다음 확인 |
+|---|---|---|
+| RL32-ORDER | `graphs/nodes/execute_from_packet.py` → **RF-012**; `libs/read/kiwoom_order_fill_reader.py`, `kiwoom_broker_truth_common.py` → **RF-055** | `kiwoom_order_fill_reader.load_local_execution_rows`는 `stage=execute_from_packet`, `event=execution` JSONL을 소비. SELL `0020349`의 실제 제출 경로와 로컬 이벤트 누락 지점을 B가 read-only/fake로 분리. RF-012 보호 실행 경계는 수정 금지 |
+| RL32-GUARD | `graphs/nodes/build_execution_readiness.py` → **RF-012**; `libs/execution/recent_order_guard.py`, `order_lifecycle_policy.py`, `execution_readiness.py` → **RF-048** | readiness 노드 주석상 `execute_from_packet`가 `state.execution_readiness.ready`를 소비. SELL fill-truth/TTL과 reconciliation 입력 생성 vs 소비 구간을 B가 분리, 보호 계약 수정 금지 |
+| RL32-REPORT | `libs/reporting/operator_visibility.py` → **RF-030**; `libs/reporting/metrics_report_generator.py`, `reporter_bundle_runtime_parts/closed_sell_reconciliation.py` → **RF-035**; `apps/operator_ui/data_access_trade_index_projection.py` → **RF-001** | `trade_index=[]`의 producer 입력 누락 vs Reporter/Operator 소비 결함은 아직 미분류. A가 fake/temp로 비교, RF-030 동결 오라클/보호 HOLD 유지 |
+| RL32-IMAGE/OPS | 소스 경로 미확정(OCI revision label·런이미지/운영 예약 메타) | RunLab이 read-only provenance 확보, 이미지 교체/재배포/예약 변경은 승인 전 금지 |
+
+**판정:** `FILE_OWNER_MAPPED`(위 경로만) / `DEFECT_OWNER_PENDING` / `DEV_RESOLVED=NO` / `RUNTIME_VERIFIED=NO`. 원래 RF의 개발 owner를 임의 교체하거나 이 매핑만으로 RF를 REWORK/DONE 처리하지 않는다.
+
 ### 지팀장에게 부여된 공통 작업
 
 - **현재 C00에 등록/배정 완료 대상:** `RL32-ORDER/GUARD`의 개발 B 읽기 전용 조사, `RL32-REPORT`의 개발 A 읽기 전용 조사, `RL32-IMAGE/OPS`의 RunLab 환경 관측과 지팀장 소유자 분류.
