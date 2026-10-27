@@ -21,3 +21,11 @@
 5. 종료는 실제 실행/컨텍스트 한도 도달 또는 모든 READY RF가 증거 기반 BLOCKED/없음일 때만. 종료 보고: `이번 회차 실제 수행 RF 수 | 해제한 C | 새 코드/peer 증거 | 남은 READY 수 | 다음 RF`. **프로세스가 종료되면 문서만으로 백그라운드 지속 실행은 보장되지 않는다.**
 
 **완료/중복 금지:** RF-043/053은 DONE. RF-052/046/047은 [LEAD 큐](../plan/queue/04_LEAD_ACCEPTANCE/)에서 C04/C05 처리 대기; 기존 B full peer 재실행 금지. RF-069 UEF5 승인 전 NOT_RUN. [Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)는 마일스톤 보고만, 최신 세부 증거는 HANDOFF_A. 안전·쓰기권한·C1~C7 기준은 [D00](D00_ENGINEERING_DELIVERY_POLICY.md) 그대로 따른다.
+
+## C03 배정 delta (2026-10-27 18시)
+| RF | 첫 부족 C | Owner→Peer / 다음 담당 |
+|---|---|---|
+| [RF-014](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | C4 | A→B: run148 20-owner C1 ACTION 제출 완료, B 원본 전체 peer 판정 대기. 같은 owner map/dynamic marker 재실행 금지. |
+| [RF-015](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | C2 | A→B: 11 BASE FAIL 분류 재사용, B-only frozen Commander inventory 별도 HOLD. Monitor State/event·consumer 동등성 첫 안전 경계만. |
+| [RF-031](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | C2 | A→B: partial-OSError downstream recovery의 원래 소비자·State/예외 계약만 B에 인계. |
+| [RF-067](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-067.md) | C4 | B→A: 기존 2 target/Lead 14 fake-wrapper 재실행 금지, B scope map 중 안전한 미검증 diagnostic target 1건만 isolated fake normal/-O; preflight/UEF NOT_RUN. |

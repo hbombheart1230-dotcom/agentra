@@ -21,3 +21,11 @@
 5. 종료는 실제 실행/컨텍스트 한도 도달 또는 모든 READY RF가 증거 기반 BLOCKED/없음일 때만. 종료 보고: `이번 회차 실제 수행 RF 수 | 해제한 C | 새 코드/peer 증거 | 남은 READY 수 | 다음 RF`. **프로세스가 종료되면 문서만으로 백그라운드 지속 실행은 보장되지 않는다.**
 
 **완료/중복 금지:** RF-043/053은 DONE. RF-052/046/047의 기존 독립 peer는 인수됨(현재 [LEAD 큐](../plan/queue/04_LEAD_ACCEPTANCE/)); 재실행 금지. [Issue #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12)는 마일스톤 보고만, 최신 세부 증거는 HANDOFF_B. 안전·쓰기권한·C1~C7 기준은 [D00](D00_ENGINEERING_DELIVERY_POLICY.md) 그대로 따른다.
+
+## C03 배정 delta (2026-10-27 18시)
+| RF | 첫 부족 C | Owner→Peer / 다음 담당 |
+|---|---|---|
+| [RF-014](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | C4 | A→B: A run148 20-owner ACTION을 B가 exact source/기존 dynamic scoped peer와 대조하고 최초 부족 경계만 독립 검증; 같은 marker 반복 금지. |
+| [RF-031](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | C2 | A→B: 기존 positive 8/8 재사용, partial-OSError recovery/State의 첫 독립 temp fake. |
+| [RF-050](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | C4 | A→B: 기존 10/10 재사용, UI primary/repair/line 예외·State 첫 no-network fake. |
+| [RF-065](../plan/queue/02_DEVELOPING/CODEX_B/RF-065.md) | C1 | B→A: 기존 temp-only scoped 검증 재사용, 잔여 37개 안전 후보 중 미검증 1건만; 위험 기본 경로 NOT_RUN. |

@@ -20,3 +20,10 @@
 4. C1~C5 전체 증거가 충족되면 **C05에 근거만 인계**한다. C03은 RF 체크·상태·STATUS를 고치지 않고 C04 소스를 사전 통합하지 않는다.
 
 **한눈에 보는 최신 상태:** [STATUS](../plan/STATUS.md)가 유일한 수치 정본. 마지막 확인 93 RF: PENDING 51 / DEV 9 / PEER 14 / **LEAD 3** / DONE 16 / REWORK 0. LEAD RF-052/046/047은 **이미 C05가 실물 이동**했으므로 구 'LEAD 0/LEAD_READY 제안' 문구를 다시 쓰지 않는다. 보고: `새로 해제된 체크 수 | 배정 RF 링크 | C05 인계 RF | 실제 BLOCKED 원인`.
+
+## C03 신규 증거·배정 delta (2026-10-27 18시 KST)
+- [RF-014](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md): A run148은 20-owner C1 ACTION/consumer/effect 표를 제출했다(A HEAD 972d11d8). 기존 B RF014-DYNAMIC-PEER는 shim→RF-009 scoped normal/-O만. **B가 20-owner 원본 범위·정확 SOURCE와 기존 peer를 대조해 최초 부족 C4만 검증**. C1 원본 체크 미변경, full PASS/LEAD_READY 아님.
+- [RF-015](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md): A run145 + B RF015-BASELINE에서 역사 11 FAIL은 BASE와 동일. B의 추가 1 FAIL은 B-only frozen Commander inventory로 Monitor owner 회귀가 아님. C3 전체 PASS 아님; 다음 **A C2 Monitor State/event·consumer** 첫 안전 경계. 역사 11 FAIL 재실행 금지.
+- [RF-031](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md): B RF031-CALLER 8/8은 정상 writer scoped peer, **C2 partial-OSError downstream recovery**가 최초 미충족. [RF-050](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md): B RF050-CALLERS 10/10은 Reporter/Strategist scoped peer, **C4 UI primary→repair→line fake**가 최초 미충족. 각 기존 PASS 재사용.
+- [RF-065](../plan/queue/02_DEVELOPING/CODEX_B/RF-065.md): B 신규 attribution-window/conditional-alpha/integrated-trade/trade-explain temp-only CLI scoped 증거, 최신 B HANDOFF 기준 **37개 안전 후보 CLI 의미 검증 잔여**. C1 PARTIAL, B 다음 미검증 안전 1건. RF-063 C1 잔여 63, RF-067 C4 target 잔여 12, RF-069 historical UEF 보호 NOT_RUN 유지.
+- C05 신규 인계 **0건**: RF-052/046/047은 이미 LEAD 실물 3건; 신규 C1~C5 full peer PASS 확인 없음. RunLab #32 신규 운영 관측 없음, RUN_SOURCE_SHA=UNKNOWN / SAFETY_HOLD. RF 체크·실물 이동·STATUS·DONE·코드 변경 0.
