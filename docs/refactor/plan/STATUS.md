@@ -35,7 +35,7 @@
 | [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) | DEV · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** research 54-owner KEEP/CLI 효과 분류 원래 조건 판정 (**지팀장**) | MISSING |
 | [RF-069](queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | PEER · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** UEF5 historical snapshot 경로·SHA·read-only 승인 없음 (**사용자·증거 소유자→B→A**) | SAFETY_BLOCKED |
 
-**우선 14건:** **MET 4/98 · N/A 14/98 · 미완료 80/98**. 실제 DEV 2 + PEER 12, LEAD 0. 물리 DONE은 16건이며 N/A를 증거 PASS로 합산하지 않습니다.
+**우선 14건:** **MET 4/98 · N/A 14/98 · 미완료 80/98**. 실제 DEV 2 + PEER 12, LEAD 0. 물리 DONE은 19건이며 N/A를 증거 PASS로 합산하지 않습니다.
 
 **STATUS 갱신 책임: 지팀장.** RF 변경/증거 인수 및 물리 이동 시 같은 작업에서 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check` 확인. 이 도구는 93개 실물 파일의 유일성/단계 수와 우선 14개 원본 체크를 대조하며 RF 합격/안전 실행을 자동 승인하지 않습니다.
 <!-- RF_LEAD_CHECKLIST_END -->
