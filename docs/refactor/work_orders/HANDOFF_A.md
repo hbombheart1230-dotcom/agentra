@@ -10,6 +10,18 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-063 / RF-065 — run138f (`2026-10-27T0215Z`, 같은 회차 연속, A 시작 `ebbe0636`, integration `ec1e302f`, B `f58d1481`) 전수 실제-프로세스 서베이: diagnostics `run_*` 46건 · research 46건**
+
+- 하네스 `evidence/run103_boundary_scripts/rf063_run_cli_survey_peer.py` blob `b49fa6e7`: 각 CLI를 root wrapper로 실제 프로세스 실행 — (1) `--help`, (2) **기본 인자** 실행(빈 tmp cwd, 자격 env 제거, `PATH=''`). 자식 부트스트랩이 **모든 쓰기를 해당 tmp cwd로 한정**(`builtins.open`/`io.open`/pathlib, `os.mkdir/remove/unlink/rmdir/rename/replace`)하고 네트워크·subprocess를 차단, sqlite는 tmp 경로만 허용. **깨끗한 `git archive` 추출본**(integration `ec1e302f` / BASE `63182ab2`)에서 normal/`-O` 4조합 실행: 서베이 표가 **integration=BASE, normal=`-O` 완전 동일**. (주의: 작업 worktree의 ignored `data/` 잔존물이 m24 결과를 바꿔 처음엔 불일치로 보였으며 깨끗한 추출본으로 해소.) 이 서베이는 **프로세스 수준 사실(exit/오류 종류/생성 파일/차단 시도)만** 확인하며 각 check의 의미 정합은 검증하지 않음. 보호 대상 `run_uef*` 6건·`run_frozen_q9_baseline_closeout`은 **실행하지 않음**(research 53 중 46 실행).
+- **diagnostics `run_*` 46건 (RF-063):** `--help` 46/46 ok. 기본 실행 EXIT0 25 / EXIT3(게이트 실패) 9 / CRASH1 12. 쓰기 시도 중 repo 쪽 기본경로가 있는 CLI 8건(차단됨).
+  - **코드 결함 재현(BASE 동일 blob, 원개발 영역):** `scripts/diagnostics/run_m23_closeout_check.py::main`(blob `5de4ec68`) — 텍스트 모드 최종 출력 `f"... day={day} ..."`가 정의되지 않은 `day`를 참조 → **`NameError: name 'day' is not defined`로 exit 1**(작업은 이미 수행·파일 11개 생성 후 마지막 print에서 실패). `--json` 모드는 exit 0. **최소 수정:** `day={summary['day']}`(또는 `requested_day`) 1토큰, `libs/reporting/**` 밖이라 동결 오라클 영향 없음 — B 원개발 소유 RF-063의 파일이라 A가 수정하지 않음(지팀장 REWORK/수정 판단).
+  - **기본 호출이 repo 쪽에 쓰려는 CLI(차단됨):** `run_m24_closeout_check`/`run_m24_guard_precedence_check`(`REPO/data/state`), `run_m30_final_golive_signoff`·`run_m30_post_golive_monitoring_policy`·`run_m30_quality_gates_bundle`·`run_m30_release_signoff_checklist`·`run_m31_mock_exam_readiness_check`(`REPO/data/logs/milestones/m30/...`; 앞단 단계는 cwd tmp에 11개 파일을 만든 뒤 하위 단계가 repo 루트 고정 경로로 이동), `run_offhours_full_trace_bundle`(`REPO/reports/dev/analysis/offhours_full_trace`) → **기본 인자 실행이 repo의 `data/`·`reports/`를 생성/수정**할 수 있음(일부는 cwd 기준, 일부는 repo 루트 기준으로 경로 규칙 혼재).
+  - `run_m22_closeout_check`: 기본 실행 중 yfinance import가 홈 캐시 sqlite(`~/.cache/py-yfinance/tkr-tz.db`)를 여는 시도 → 실행 환경의 홈 디렉터리 부작용(차단됨, exit 0). `run_m28_closeout_check`·`run_m28_launch_hook_integration_check`는 하위 프로세스를 spawn(차단 환경에서 `OSError`), `run_m31_agent_chain_probe`는 `data/specs/...` 입력 부재로 `FileNotFoundError`.
+  - 나머지 EXIT0 25(대부분 cwd 기준으로 자체 합성 데이터를 만들어 `ok=True` 보고)·EXIT3 9(입력 부재로 `ok=False`, 예 m26 계열 6, m31 3, agent_pipeline_trace).
+- **research CLI 46건 실행 (RF-065, 보호 7건 제외):** `--help` 46/46 ok. 기본 실행 EXIT0 22 / 필수 인자 누락 ARGERR2 19 / CRASH1 5. CRASH1: `run_offhours_validation_loop`(`REPO/data/state` 생성 시도), `run_rank1_feature_mart`·`run_rank1_prospective_shadow`(`REPO/reports/evaluation/feature_…` 생성 시도, 차단됨), `run_q12_historical_policy_review`(기본 입력 `reports/...` 부재 `FileNotFoundError`), **`run_structural_alpha_batch2`: 기본 호출이 곧바로 Kiwoom 인증 경로(`KiwoomAuthError: Missing KIW…`)로 진입** — 자격이 있으면 **실제 Kiwoom 토큰 요청**을 하게 되는 기본 동작(이 서베이는 자격을 제거해 차단/실패만 확인, 실제 인증 호출 없음). 다른 CLI는 `--no-fetch`/필수 인자 없이 기본 실행 시 합성 또는 빈 입력으로 tmp 산출.
+- **판정:** RF-063 diagnostics 46건·RF-065 research 46건 모두 **실제-프로세스 `--help`·기본 인자·cwd/쓰기 한정 수준 PEER_PASS_SCOPED**(결과 사실 기록), 의미 정합·보호 CLI·실데이터는 NOT_RUN. **결함 후보 1건 확정(run_m23 NameError)**, 안전 관련 관찰 3건(repo 쪽 기본 쓰기 8+3건, Kiwoom 인증 진입 기본 동작, 홈 캐시 부작용).
+- NOT_RUN: 보호 UEF/frozen CLI 7건, `--help` 이외 인자 조합(필수 인자 있는 CLI의 정상 경로), Windows Task Scheduler, 자격 있는 환경.
+
 **RF-063 / RF-067 — run138e (`2026-10-27T0150Z`, 같은 회차 연속, A 시작 `b7383767`) 쓰기형 check CLI 4건 실제 subprocess**
 
 - 정정: 직전 보고에서 이 4건을 "RF-063 기존 peer와 중복"으로 건너뛰었으나 기존 peer는 import/함수 수준이었고 **실제 CLI 프로세스(stdout/exit/cwd/쓰기 효과) 증거는 없었음** → 이번에 수행.
