@@ -10,6 +10,14 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-067 — run138 (`2026-10-27T0058Z`, B 원개발 독립 peer, 신규 예약 프롬프트 첫 실행; A 시작 `1fe4efe3`, integration `e45a31b2`, B `2b1cd7da` = HANDOFF_B 문서만)**
+
+- 대상 3 target(BASE=integration blob 동일): `check_profitability_recovery_day1.py` `7014ecda`(root wrapper `378f28ad`), `check_reporter_upgrade_regression.py` `ab585cf1`(`dcf5d165`), `check_phase_5_2_5_3_runtime_health.py` `e095bee3`(`8831693f`); lib `profitability_recovery_day1.py` `c1b07665`, `phase_runtime_health.py` `bc8c24db`. 하네스 `evidence/run103_boundary_scripts/rf067_diagnostics_cli_batch_peer.py` blob `ed196ac2`(실제 subprocess 4모드 × 3 target, fake 0, 쓰기·네트워크·subprocess·sqlite 차단, `PATH=''`).
+- 실행: integration/BASE × normal/`-O` 4조합 **exit 0**, `RF067_DIAGNOSTICS_CLI_BATCH_OK targets=3 modes=4_identical … argparse=2 child_attempts=0 tree_unchanged=yes`, 4개 출력 동일.
+- 확인: ① day1 audit — JSON·텍스트 7줄 일치, 합성 4거래(닫힘 2·generation regression 2·holding thin 4·linkage missing 4·exec 필드 누락 24·top weakness `holding_evidence_thin`), `--date` 누락/미지 인자 exit 2, 잘못된 날짜 문자열은 **검증 없이 빈 audit exit 0**. ② reporter_upgrade_regression — 2일 비교 delta(닫힘 −1, 누락 canonical −4, thin_trace −4 등), 단일일은 comparison 없음, 공백 `--day` 무시(전부 공백이면 `{"days": []}` exit 0), 존재하지 않는 날 0 비율. ③ phase_5_2_5_3 — 빈/없는 root·잘못된 `--date`·`--limit 0`은 모두 stdout에 `{"ok": false, "error": "No canonical monitor runs found…"}` 출력 후 **exit 2**(stderr 비어 있음), `--limit abc`/미지 인자 argparse exit 2. 4개 호출 모드 stdout 바이트 동일, 읽기 전용(tmp·repo 변화 0, 쓰기 시도 0).
+- **관찰(변경 안 함):** (1) day1·reporter_upgrade의 기본/상대 `--reports-root`는 **cwd 기준**(cwd에 reports가 있으면 4거래, 없으면 0), 반면 `check_reports_trades_health`·`check_phase_5_2_5_3`은 **repo 루트 기준** → Task Scheduler 작업 디렉터리에 따라 결과가 달라질 수 있고 target 간 규칙이 불일치. 부재 시 실패가 아니라 빈 결과 exit 0(day1/reporter)이라 입력 누락을 exit로 감지 불가(fail-open). (2) phase_5_2_5_3의 오류 JSON이 stdout으로 나감(stderr 아님).
+- 판정: **PEER_PASS_SCOPED**(delegated target 누적 4건: reports_trades_health + 위 3건), DONE 아님. NOT_RUN: phase_5_2_5_3의 정상 경로(canonical monitor artifact 합성 필요), `check_monitor_gate_patterns`(`--live-followup` fetch 옵션), `check_q9_q12_readiness`·`check_trade_report_runtime_regression`(subprocess 호출), alert/audit/log/metrics 4건(RF-063 기존 peer와 중복 범위), `check_runtime_profile`·`check_real_execution_preflight`·`check_daily_uef_run_status`(env/broker/UEF — SAFETY_HOLD), Windows Task Scheduler.
+
 **RF-067 — run137 (`2026-10-27T0043Z`, B 원개발 독립 peer, A 시작 `8ac63142`, integration `e45a31b2`, B `c18ad0b0`)**
 
 - 대상: delegated diagnostics target `scripts/diagnostics/check_reports_trades_health.py` blob `90853b7c`, 공개 root wrapper `scripts/check_reports_trades_health.py` `72f9956d`, `libs/reporting/llm_artifacts.py::iter_trade_dirs` `06dd435f` (BASE=integration 동일). 하네스 `evidence/run103_boundary_scripts/rf067_reports_trades_health_target_peer.py` blob `2f15165b`(오케스트레이터, 실제 subprocess 4모드: wrapper/target 부트스트랩 + plain wrapper + `-m`). fake 0, 자식은 네트워크·subprocess·sqlite·쓰기 open 차단.
@@ -38,7 +46,7 @@
 
 ## 수용 대기 / 다음 시작 위치
 
-- **A 다음 최초 작업: RF-067** 나머지 delegated diagnostics target(read-only 우선; `check_reports_trades_health`는 run137 완료). 루트 wrapper 14개 기존 fake/AST 반복 금지.
+- **A 다음 최초 작업: RF-067** 나머지 delegated diagnostics target(run137·138에서 4건 완료; 남은 안전 후보: `check_monitor_gate_patterns`(live-followup 미사용), phase_5_2_5_3 정상 경로). 루트 wrapper 14개 기존 fake/AST 반복 금지.
 - RF-063 나머지 effectful CLI와 scheduler; RF-065 나머지 CLI·scheduler는 미검증, **새로운 승인된 안전 경계**가 지정될 때만 진행. 동일 run135/136 하네스를 반복하지 않는다.
 - **RF-032 (run133) read-only 발견:** `q13_q14_validation.py`의 `validation_id` 경로 이탈 가능성과 Exit Horizon 비교 자기포함으로 분기 도달 불가. 두 수정 모두 적용 안 함. 동결 정책/오라클 의미 변경·소유권 변경은 사용자 승인 필요. 자세한 근거는 [A `ed0aa857`](https://github.com/hbombheart1230-dotcom/agentra/commit/ed0aa857db8fe023c13639d96681879183eb5b82).
 - 검증 완료 구간의 전체 RF/CI `PASS`를 주장하지 않는다. 다음 결과는 정확 source/blob SHA·명령·exit·효과·최초 잔여 게이트를 보존하고, **Git 원격 push 후 Issue #11 댓글 실제 생성/URL 확인**. 단순 NO_DELTA 때 HANDOFF·Issue 쓰기 0.
