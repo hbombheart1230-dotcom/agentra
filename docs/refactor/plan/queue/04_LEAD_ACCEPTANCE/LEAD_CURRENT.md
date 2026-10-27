@@ -1,6 +1,6 @@
 # LEAD — P1.5 최종 인수·종결 작업표 (2026-10-27)
 
-**정본:** `integration/p1.5`의 [D00](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [C00](../../../work_orders/CURRENT.md) · [STATUS](../../STATUS.md). 이 문서는 **LEAD의 현재 실행 지침**이다. 아래 개별 RF 문서의 이전 날짜 `LEAD_HOLD`와 '다음 전수검증' 지시는 해당 시점의 **증거 이력**으로 읽고, 이 문서와 D00의 최신 규칙을 우선한다. 단 **개별 RF의 본래 작업 목표·DONE 체크·보호 경계는 폐기하지 않는다**.
+**정본:** `integration/p1.5`의 [D00](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [C05 최종 종결](../../../work_orders/C05_LEAD_CLOSEOUT_CURRENT.md) · [STATUS](../../STATUS.md). 이 문서는 **LEAD의 현재 실행 지침**이다. 아래 개별 RF 문서의 이전 날짜 `LEAD_HOLD`와 '다음 전수검증' 지시는 해당 시점의 **증거 이력**으로 읽고, 이 문서와 D00의 최신 규칙을 우선한다. 단 **개별 RF의 본래 작업 목표·DONE 체크·보호 경계는 폐기하지 않는다**.
 
 ## LEAD 입구 원본 체크 게이트 (D00 §2.1)
 

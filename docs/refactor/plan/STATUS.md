@@ -1,6 +1,6 @@
 # Agentra P1.5 — STATUS (2026-10-27, RF 단계 게이트·원본 체크 정합성)
 
-**정본:** `integration/p1.5`. 운영 기준 [D00](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · 지팀장 현재 [C00](../work_orders/CURRENT.md) · [LEAD 작업표](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). **이 STATUS는 관측·판정 요약이며 구 회차별 상세 검증 지시를 재발행하지 않는다.** 개별 RF 문서의 예전 `LEAD_HOLD` 문구는 당시 증거 이력이다. 각 RF의 본래 DONE 체크와 보호 경계는 유효하다.
+**정본:** `integration/p1.5`. 운영 기준 [D00](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · 지팀장 [C03 배정](../work_orders/C03_LEAD_TRIAGE_CURRENT.md) / [C04 통합](../work_orders/C04_LEAD_INTEGRATION_CURRENT.md) / [C05 종결](../work_orders/C05_LEAD_CLOSEOUT_CURRENT.md) · [LEAD 작업표](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). **이 STATUS는 관측·판정 요약이며 구 회차별 상세 검증 지시를 재발행하지 않는다.** 개별 RF 문서의 예전 `LEAD_HOLD` 문구는 당시 증거 이력이다. 각 RF의 본래 DONE 체크와 보호 경계는 유효하다.
 
 ## integration 실물 큐 — 마지막 검증 스냅샷
 
@@ -65,7 +65,7 @@
 
 - **접수 실물:** [RUNLAB32-20261027 OPEN](troubleshooting/open/RUNLAB32_INTAKE_20261027.md) · [D04 공통 계약](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md) · [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32). 신규 접수는 **RF 큐의 새로운 DONE/REWORK·SOURCE 수정이나 RunLab 실제 테스트 실행이 아니다**.
 - **지팀장 P0:** A run143의 integration/BASE × normal/-O 4/4 temp-only trace(지팀장 원격 source blob 3개 대조)를 신규 인수. **REPORT는 local SELL lifecycle producer 부재 시 `trade_index=[]`가 일관되며, realised summary 누락→trading health UNKNOWN이 Operator GREEN을 승격하지 않는 소스 표시 gap**을 분리했다. broker reconciliation 신호는 현재 Operator health 입력에 없음. **ORDER producer 실제 원인은 B read-only/fake 조사 우선**, RF-030 visibility 개선은 A 설계 후보·frozen oracle/보호 승인 전 수정 금지. 적용 이미지 RUN_SOURCE_SHA UNKNOWN이므로 원인/운영 검증은 미확정. 상세 [OPEN 대장](troubleshooting/open/RUNLAB32_INTAKE_20261027.md).
-- **지팀장 P0:** #32 관측을 중복 없이 구분하고 FILE_COVERAGE blob `32fecc1b`로 **경로별 파일 Owner 매핑 완료**: ORDER RF-012/055, GUARD RF-012/048, REPORT RF-030/035/001(상세 OPEN 대장). **원인 결함 소유 RF는 `DEFECT_OWNER_PENDING`**(RUN_SOURCE_SHA UNKNOWN)이며, 사용자 승인 필요 여부·다음 증거를 C00에 배정. 개발 Codex B는 `RL32-ORDER/GUARD` **read-only·격리 fake** 원인 추적, 개발 Claude A는 `RL32-REPORT` **read-only·temp fake** 원인 추적, RunLab은 `RL32-IMAGE/OPS` 출처·예약·EOD/FINAL **읽기 전용 관측** 담당.
+- **지팀장 P0:** #32 관측을 중복 없이 구분하고 FILE_COVERAGE blob `32fecc1b`로 **경로별 파일 Owner 매핑 완료**: ORDER RF-012/055, GUARD RF-012/048, REPORT RF-030/035/001(상세 OPEN 대장). **원인 결함 소유 RF는 `DEFECT_OWNER_PENDING`**(RUN_SOURCE_SHA UNKNOWN)이며, 사용자 승인 필요 여부·다음 증거를 C03에 배정. 개발 Codex B는 `RL32-ORDER/GUARD` **read-only·격리 fake** 원인 추적, 개발 Claude A는 `RL32-REPORT` **read-only·temp fake** 원인 추적, RunLab은 `RL32-IMAGE/OPS` 출처·예약·EOD/FINAL **읽기 전용 관측** 담당.
 - **현재 증거 구분:** 10/26 mock broker BUY `0019354`·SELL `0020349` 체결, SELL local 누락/submitter UNKNOWN. 10/27 09:38 BUY guard 비움은 관측됐지만 경위 UNKNOWN; 신규 SELL `0045749` 접수만 확인, **체결·잔고 미확인**. `RUN_SOURCE_SHA=UNKNOWN`으로 최신 개발 HEAD 소스 회귀 판정 불가.
 - **별도 종결:** 개발 `DEV_RESOLVED` 후에도 승인된 고정 버전 RunLab 증상 재확인 `RUNTIME_VERIFIED` 전에는 troubleshooting `OPEN/RUNTIME_PENDING`. 안전 계약·운영 DB/State·모의/실 주문·이미지/예약 변경은 승인 전 실행 금지. 무관한 우선 14개 일반 RF를 런검증 안전 HOLD에 일괄 종속시키지 않는다.
 

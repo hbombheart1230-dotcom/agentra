@@ -1,6 +1,6 @@
 # RUNLAB32 — RunLab #32 신규 증상 접수·개발 인계 (2026-10-27)
 
-**CASE:** `RUNLAB32-20261027` · **상태:** `OPEN / SAFETY_HOLD`(영향받는 주문·운영 경계만) · **지팀장:** TRIAGE_OWNER · **정본 규칙:** [D04](../../../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md) ↔ [D00](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) ↔ [C00](../../../work_orders/CURRENT.md).
+**CASE:** `RUNLAB32-20261027` · **상태:** `OPEN / SAFETY_HOLD`(영향받는 주문·운영 경계만) · **지팀장:** TRIAGE_OWNER · **정본 규칙:** [D04](../../../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md) ↔ [D00](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) ↔ [C03 배정](../../../work_orders/C03_LEAD_TRIAGE_CURRENT.md).
 
 **증거 범위:** [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32)에서 2026-10-26 EOD [Codex 결과](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6411226322) · [추가 소스 조사](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6411909991) · 2026-10-27 [07시](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6428473788) · [09:38 독립 관측](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6430800415). **원본 증거는 `C:\AgentraRunLab`의 RunLab 보존 경로**, 이 문서는 공개 가능한 요약/작업 배정만 유지. 실행 중 이미지 digest는 `sha256:f3d1a4a3…`로 보고됐으나 **RUN_SOURCE_SHA=UNKNOWN**; 현재 integration 코드와 런타임 동일 버전임을 주장하지 않는다.
 
@@ -36,7 +36,7 @@
 
 ### 지팀장에게 부여된 공통 작업
 
-- **현재 C00에 등록/배정 완료 대상:** `RL32-ORDER/GUARD`의 개발 B 읽기 전용 조사, `RL32-REPORT`의 개발 A 읽기 전용 조사, `RL32-IMAGE/OPS`의 RunLab 환경 관측과 지팀장 소유자 분류.
+- **현재 C03이 접수·배정 관리할 대상:** `RL32-ORDER/GUARD`의 개발 B 읽기 전용 조사, `RL32-REPORT`의 개발 A 읽기 전용 조사, `RL32-IMAGE/OPS`의 RunLab 환경 관측과 지팀장 소유자 분류.
 - **최초 미해결 계약만 분류:** Source bug 재현 시 `FILE_COVERAGE`와 원 Owner를 확인해 기존 RF로 연결; RF 소유 미확정·보호 영역인 동안 `OWNER_MAPPING_PENDING / SAFETY_HOLD`. 사용자가 승인하지 않은 Executor/Broker/Supervisor/Step5C/UEF 수정·frozen CI/오라클 변경 금지. A/B는 **이 인수 자체로 보호 코드 수정 권한을 얻지 않는다**.
 - **개발 정상 종결과 운영 종결 분리:** Developer `PEER_PASS → integration/CI`는 `DEV_RESOLVED`일 뿐, RunLab 적용 image/source SHA가 검증되고 해당 증상을 재확인하기 전까지 `RUNTIME_PENDING / OPEN`. 무승인 컨테이너 재배포/주문을 요구하지 않는다.
 - **새 사실만 추적:** 같은 현상이 RunLab #32에 다시 올라오면 기존 CASE 표의 **delta와 원본 댓글 링크만** 갱신. 수용 증거/테스트 재실행과 별개 문서 체크포인트 반복 금지.
