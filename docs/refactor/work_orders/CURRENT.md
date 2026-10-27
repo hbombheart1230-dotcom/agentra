@@ -11,6 +11,15 @@
 - LEAD RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069. PEER RF-018/043/046/047/052. DEVELOPING RF-054/058(A), RF-066/070/071(B). PENDING RF-030/035 및 UNASSIGNED 53.
 - **새 문서 동기화만으로 물리 큐 이동·코드 통합·DONE은 발생하지 않았다.** WORKER CLAIM은 integration에 실물 반영될 때만 큐 수를 고친다. 상세 상태는 [STATUS](../plan/STATUS.md).
 
+## P0 공통 배정 — RunLab #32 신규 트러블 인수 (D04)
+
+**계약:** [D00 §5](D00_ENGINEERING_DELIVERY_POLICY.md) · [D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md) · [RunLab #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32) · [사건 OPEN 대장](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md). **지팀장은 #32 신규 발견을 단순 HOLD로 끝내지 말고, 중복 접수 방지 → 원인 분류 → Owner/기존 RF 후보 지정 → 조사 증거 인수 → 필요 승인 판정**까지 맡는다. 새 증거가 없는 날에는 과거 #32 전체를 반복 재검토하지 않는다.
+
+- **P0-SAFETY/TRIAGE · 지팀장 소유:** broker/local SELL `0020349`의 local 누락/owner UNKNOWN, `0045749`의 접수 이후 체결 미확정, Guard fill-truth, Reporter consistency를 `RL32-ORDER/GUARD/REPORT`로 인수. RUN_SOURCE_SHA UNKNOWN이므로 **운영 문제를 현재 코드의 재현 확정 결함으로 단정하지 않는다**. FILE_COVERAGE·실제 코드 owner/RF 확정은 지팀장 책임이며, 확정 전 `OWNER_MAPPING_PENDING`.
+- **개발 Codex B 조사 배정:** `RL32-ORDER/GUARD`의 order provenance → local execution row → broker reconciliation → readiness/TTL의 **기존 소스 read-only·격리 fake 재현**. 보호 Executor/Broker/Guard 코드를 **무승인 수정하지 않는다**. 개발 Claude A는 `RL32-REPORT`의 trade_index·Reporter/metrics·operator GREEN 계약을 **read-only·temp fake**로 조사. 확인된 결함만 지팀장이 정확 원소유 RF로 넘겨 Owner 수정→반대 peer로 진행. [C01](C01_CODEX_CURRENT.md)·[C02](C02_CLAUDE_CURRENT.md)에 동일 조사 배정.
+- **RunLab 담당:** R00의 17시 EOD·19시 FINAL에서 오늘 SELL 체결/잔고·Reporter 반영을 독립 대조하고 OCI revision/예약/로그 경로는 읽기 전용 확인. RunLab이 코드 RF/DONE/CI를 직접 판정하지 않는다.
+- **처리 결과:** **DEV_RESOLVED(원래 RF peer + integration/필수 CI) ≠ RUNTIME_VERIFIED(승인된 적용 이미지로 실제 증상 확인)**. 개발 DONE 후에도 RunLab 사건은 증거가 확보될 때까지 `OPEN / RUNTIME_PENDING`. 운영 교체·주문·예약·보호 계약 변경은 사용자 별도 승인 필요. 무관한 LEAD 14건은 그대로 종결 진행.
+
 ## 지팀장 실행 — 새 테스트 만드는 역할 아님
 
 1. **LEAD 14건 빠른 종결 판정:** [LEAD_CURRENT](../plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md)의 순서대로 **원래 각 RF DONE 체크 + 기존 독립 peer SOURCE SHA·실제 범위**만 맞춘다. 원래 필수 범위 peer PASS이면 지팀장 재실행 **없이** 통합 diff/충돌·보호 경계·필요한 integration SHA CI만 확인하고 **같은 회차 04→05 DONE**. 누락이면 처음 원래 조건 1개/담당만 제시하고 다음 RF로 넘어간다. 새 광범위 소비자·State·IO·Windows 검증 의무를 만들지 않는다.
