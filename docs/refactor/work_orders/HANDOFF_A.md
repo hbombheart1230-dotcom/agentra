@@ -364,3 +364,107 @@
 | RF-034 | C1 (parity only) | 40 CSV-owned blobs BASE=A=integration | PARTIAL (static): 40/40 identical; 7 files with write tokens (`builder`, `five_session_review`, `latent_forward`, `latent_watch`, `writer`, 2× `pipeline`) | per-file final ACTION, C2/C3 reuse `rf034_valid_sources_fixture.py 13bda556` + B schema-valid casebook PASS; C4 B | Claude A / Codex B |
 - Token greps are file-level indicators, not proof of effect; effect harnesses are the earlier A fixtures. No FIX evidence found, so no code change. This is not a full per-file ACTION table and not RF DONE.
 - External effects: none besides this push.
+
+## run157 — RF-033 / RF-034 C1 (Owner): per-file final ACTION table (A base 396ef02c, integration 68f01123; read-only `git grep`, nothing executed)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| RF-033 | C1 | 45 blobs BASE=A=integration (run156) | PASS (owner static): ACTION **KEEP_VERIFIED 45/45**; no orphan module (every file has ≥1 importer), no MOVE/WRAPPER/FIX evidence; 10 effect files keep run134 fake/temp harness evidence | C2/C3 reuse run134 + B scoped peer; C4 B (Q10/Q12 input_worker→publish_input), C6/C7 C05 | Codex B / C05 |
+| RF-034 | C1 | 40 blobs BASE=A=integration (run156) | PASS (owner static): ACTION **KEEP_VERIFIED 40/40**; no orphan; 7 effect files keep `rf034_valid_sources_fixture.py 13bda556` evidence; UEF/closeout protected paths NOT executed | C2/C3 reuse + B casebook PASS; C4 B, C6/C7 C05 | Codex B / C05 |
+- Method: absolute-module `git grep` over py/sh/yml/json/toml excluding self, plus package-relative import grep; tests = paths containing `/tests/` or `test_`. Counts are approximate caller-map evidence, effect tokens are file-level indicators (not proof of effect). `crypto_fear_greed` urlopen and `vnext/storage` os.replace stay KEEP: real network/write NOT run, covered by prior fake/temp harnesses.
+- Not covered: B independent full peer; populated-data semantics. This is not RF DONE.
+- External effects: none besides this push.
+
+### RF-033 per-file ACTION (45/40; src=non-test importers+pkg-relative, test=test files, fx=effect tokens)
+
+| file | L | src | test | effect tokens | ACTION |
+|---|--:|---|--:|---|---|
+| `baseline_btc_woori_tech/__init__.py` | 4 | 17(pkg0+rel0) | 13 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/comparison.py` | 115 | 1(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/contracts.py` | 39 | 1(pkg0+rel11) | 4 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/crypto_fear_greed.py` | 102 | 1(pkg0+rel1) | 0 | urlopen | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `baseline_btc_woori_tech/data_provider.py` | 328 | 1(pkg0+rel5) | 2 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/forward_returns.py` | 74 | 1(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/historical_review.py` | 438 | 2(pkg0+rel0) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `baseline_btc_woori_tech/hypothesis_features.py` | 379 | 1(pkg0+rel3) | 3 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/hypothesis_forward.py` | 108 | 0(pkg0+rel2) | 2 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/hypothesis_pipeline.py` | 371 | 0(pkg0+rel1) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `baseline_btc_woori_tech/input_delivery.py` | 80 | 1(pkg0+rel2) | 1 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/input_worker.py` | 51 | 3(pkg0+rel0) | 0 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/pipeline.py` | 296 | 0(pkg0+rel1) | 1 | write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `baseline_btc_woori_tech/point_in_time_capture.py` | 264 | 5(pkg0+rel4) | 3 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `baseline_btc_woori_tech/report.py` | 161 | 0(pkg0+rel2) | 0 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/strategy.py` | 199 | 0(pkg0+rel1) | 2 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/trend_context.py` | 202 | 1(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/vnext/__init__.py` | 1 | 2(pkg0+rel0) | 3 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/vnext/contract.py` | 40 | 1(pkg0+rel6) | 2 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/vnext/equities.py` | 57 | 1(pkg0+rel2) | 2 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/vnext/features.py` | 118 | 1(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/vnext/outcomes.py` | 44 | 0(pkg0+rel2) | 2 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/vnext/pipeline.py` | 106 | 2(pkg0+rel0) | 2 | write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `baseline_btc_woori_tech/vnext/report.py` | 49 | 0(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `baseline_btc_woori_tech/vnext/storage.py` | 40 | 0(pkg0+rel1) | 2 | .unlink,mkdir,open(fd, 'w,os.replace | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `baseline_btc_woori_tech/vnext/time_alignment.py` | 66 | 1(pkg0+rel2) | 1 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/__init__.py` | 5 | 13(pkg0+rel0) | 9 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/contracts.py` | 24 | 1(pkg0+rel11) | 1 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/data_provider.py` | 129 | 2(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_returns.py` | 227 | 1(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_validation/__init__.py` | 3 | 5(pkg0+rel0) | 7 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_validation/contracts.py` | 75 | 2(pkg0+rel6) | 2 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_validation/cumulative.py` | 70 | 0(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_validation/expected_actual.py` | 62 | 0(pkg0+rel1) | 2 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_validation/market_inputs.py` | 227 | 0(pkg0+rel1) | 2 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_validation/pipeline.py` | 199 | 0(pkg0+rel1) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `baseline_samsung_hynix/forward_validation/reaction_reader.py` | 467 | 2(pkg0+rel1) | 5 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_validation/report.py` | 126 | 0(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_validation/scoring.py` | 165 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/forward_validation/shadow_comparison.py` | 138 | 1(pkg0+rel1) | 2 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/pipeline.py` | 279 | 0(pkg0+rel2) | 1 | write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `baseline_samsung_hynix/q9_comparison.py` | 179 | 1(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/report.py` | 91 | 0(pkg0+rel2) | 1 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/strategy.py` | 144 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `baseline_samsung_hynix/unified_comparison.py` | 304 | 2(pkg0+rel1) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+
+### RF-034 per-file ACTION (45/40; src=non-test importers+pkg-relative, test=test files, fx=effect tokens)
+
+| file | L | src | test | effect tokens | ACTION |
+|---|--:|---|--:|---|---|
+| `alpha_research_board/__init__.py` | 3 | 8(pkg0+rel0) | 5 | - | KEEP_VERIFIED |
+| `alpha_research_board/builder.py` | 701 | 0(pkg0+rel1) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `alpha_research_board/canonical.py` | 555 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `alpha_research_board/contracts.py` | 156 | 2(pkg0+rel3) | 2 | - | KEEP_VERIFIED |
+| `alpha_research_board/large_cap_review.py` | 86 | 0(pkg0+rel2) | 0 | - | KEEP_VERIFIED |
+| `alpha_research_board/loaders.py` | 85 | 0(pkg0+rel7) | 0 | - | KEEP_VERIFIED |
+| `alpha_research_board/remaining_reviews.py` | 302 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `alpha_research_board/report.py` | 143 | 4(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `alpha_research_board/runtime_validation.py` | 202 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `alpha_research_board/sensitivity.py` | 323 | 0(pkg0+rel4) | 1 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/__init__.py` | 3 | 5(pkg0+rel0) | 3 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/candle_provider.py` | 118 | 1(pkg0+rel2) | 1 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/contracts.py` | 27 | 0(pkg0+rel7) | 0 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/episodes.py` | 108 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/extraction.py` | 110 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/five_session_review.py` | 179 | 0(pkg0+rel1) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `opening_rank1_shadow/latent_forward.py` | 283 | 0(pkg0+rel1) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `opening_rank1_shadow/latent_watch.py` | 313 | 0(pkg0+rel1) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `opening_rank1_shadow/market_snapshot.py` | 147 | 0(pkg0+rel2) | 1 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/metrics.py` | 199 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/observability.py` | 398 | 0(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/pipeline.py` | 251 | 0(pkg0+rel1) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `opening_rank1_shadow/report.py` | 191 | 0(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `opening_rank1_shadow/symbol_metadata.py` | 73 | 0(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `quant_trade_diagnosis/__init__.py` | 13 | 3(pkg0+rel0) | 2 | - | KEEP_VERIFIED |
+| `quant_trade_diagnosis/builder.py` | 624 | 0(pkg0+rel2) | 0 | - | KEEP_VERIFIED |
+| `quant_trade_diagnosis/conditional_alpha.py` | 92 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `quant_trade_diagnosis/markdown.py` | 344 | 0(pkg0+rel2) | 0 | - | KEEP_VERIFIED |
+| `quant_trade_diagnosis/writer.py` | 134 | 1(pkg0+rel1) | 0 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `short_alpha_discriminator/__init__.py` | 9 | 11(pkg0+rel0) | 1 | - | KEEP_VERIFIED |
+| `short_alpha_discriminator/cohorts.py` | 283 | 1(pkg0+rel4) | 1 | - | KEEP_VERIFIED |
+| `short_alpha_discriminator/contracts.py` | 24 | 1(pkg0+rel6) | 0 | - | KEEP_VERIFIED |
+| `short_alpha_discriminator/metrics.py` | 73 | 0(pkg0+rel6) | 0 | - | KEEP_VERIFIED |
+| `short_alpha_discriminator/opening_casebook.py` | 243 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `short_alpha_discriminator/opening_policy_matrix.py` | 130 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `short_alpha_discriminator/pipeline.py` | 186 | 4(pkg0+rel1) | 1 | mkdir,write_text | KEEP_VERIFIED (effect: reuse fake/temp harness; no real I/O run) |
+| `short_alpha_discriminator/profit_lock.py` | 94 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
+| `short_alpha_discriminator/report.py` | 185 | 4(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `short_alpha_discriminator/scanner_diagnostics.py` | 115 | 1(pkg0+rel1) | 0 | - | KEEP_VERIFIED |
+| `short_alpha_discriminator/strategist_roi.py` | 66 | 0(pkg0+rel1) | 1 | - | KEEP_VERIFIED |
