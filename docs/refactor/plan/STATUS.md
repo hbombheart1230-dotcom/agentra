@@ -1,4 +1,4 @@
-# Agentra P1.5 — STATUS (2026-10-27, RF 단계 게이트·원본 체크 정합성)
+# Agentra P1.5 — STATUS (2026-10-28, RF 단계 게이트·원본 체크 정합성)
 
 **정본:** `integration/p1.5`. 운영 기준 [D00](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · 지팀장 [C03 배정](../work_orders/C03_LEAD_TRIAGE_CURRENT.md) / [C04 통합](../work_orders/C04_LEAD_INTEGRATION_CURRENT.md) / [C05 종결](../work_orders/C05_LEAD_CLOSEOUT_CURRENT.md) · [LEAD 작업표](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). **이 STATUS는 관측·판정 요약이며 구 회차별 상세 검증 지시를 재발행하지 않는다.** 개별 RF 문서의 예전 `LEAD_HOLD` 문구는 당시 증거 이력이다. 각 RF의 본래 DONE 체크와 보호 경계는 유효하다.
 
@@ -8,12 +8,14 @@
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
-| 49 | 11 | 14 | 0 | 19 | 0 | **93** |
+| 49 | 11 | 13 | 1 | 19 | 0 | **93** |
 
-- **기존 우선 14건:** RF-063/065 → DEV(B); RF-067/069 → PEER(B); RF-014/015/016/028/029/031/032/033/034/050 → PEER(A). **이외 DEV 9 / PEER 2 / LEAD 0 / PENDING 49 / DONE 19**로 실물 93건. 아래 원본 체크 표의 링크를 우선한다.
+- **기존 우선 14건:** RF-063/065 → DEV(B); RF-069 → PEER(B); RF-067 → LEAD(B); RF-014/015/016/028/029/031/032/033/034/050 → PEER(A). **이외 DEV 9 / PEER 2 / LEAD 0 / PENDING 49 / DONE 19**로 실물 93건. 아래 원본 체크 표의 링크를 우선한다.
 - **C05 DONE 신규 3건 (2026-10-27 18시):** [RF-052](queue/05_DONE/CLAUDE_A/RF-052.md) A receipts@10283d8f·B full 40/40, [RF-046](queue/05_DONE/CLAUDE_A/RF-046.md)·[RF-047](queue/05_DONE/CLAUDE_A/RF-047.md) KEEP·B 63/63. 세 건 C1~C4 MET, C5 N/A, **C6 MET** (integration `7cfb26d811853545e8b88da9143afdb1afdb1e19` [Actions 40481581384](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40481581384) normal/-O success), **C7 MET** (실물 이동·STATUS). LEAD 3→0, DONE 16→19. C05 직접 테스트/운영 실행 NOT_RUN.
 - **실물 큐 재분류:** 우선 14건을 DEV 2·PEER 12로 재배치. 신규 DONE이 아니라 원래 미완료 조건을 해당 담당자에게 반환한 이동이다. 기존 기록의 LEAD 14 표현은 당시 스냅샷이다.
 - **LEAD 공통 새 기준:** 유효한 원래 범위 독립 peer PASS → C05가 C1~C5·물리 LEAD 진입 판정 → C04가 SOURCE SHA·통합 diff/충돌·보호 경계·필요한 CI 확보 → **C05가 C6 인수한 회차에 DONE**. 지팀장 Python/Windows/전체 소비자 재테스트 없음. Scoped PASS를 전체 PASS로 확대하지 않고, 원래 필수 미충족 1건만 해제 요청. 자세한 14건별 최초 판정은 [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md).
+
+- **C05 2026-10-28 신규 LEAD 1건:** [RF-067](queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-067.md)은 A `HANDOFF_A` run165의 정확 14개 공개 wrapper 독점 범위 `PEER_PASS`를 인수하여 C4 MET, `03_PEER_REVIEW/CODEX_B → 04_LEAD_ACCEPTANCE/FROM_CODEX_B` 이동. C1~C3 MET/C5 N/A 유지, C6/C7 PENDING, **DONE 증가 0**. 12 real-target wrapper 호출 + 보호 2개 real-wrapper→fake-target만 증거이며 보호 diagnostics target 실제 실행·운영 런은 NOT_RUN. C04 exact SHA CI 후 C05 종결 대기. 기존 RunLab #32 SAFETY_HOLD와 무관.
 
 <!-- RF_LEAD_CHECKLIST_START -->
 ## 우선 14건 RF 원본 체크리스트 — 현재 실물 단계 연동
@@ -23,7 +25,7 @@
 | RF 원본 | 실물 단계·Owner→Peer | MET · N/A · 남음 | 미충족 체크 | 다음 해제 조건 · 담당 | 상태 |
 |---|---|---:|---|---|---|
 | [RF-063](queue/02_DEVELOPING/CODEX_B/RF-063.md) | DEV · B → A | MET 1 · N/A 1 · 5남음 | C1,C2,C3,C4,C7 | **C1** diagnostics 잔여 63-owner ACTION 및 CLI/효과/소비자 근거 (**Codex B → Claude A(peer)**) | MISSING |
-| [RF-067](queue/03_PEER_REVIEW/CODEX_B/RF-067.md) | PEER · B → A | MET 3 · N/A 1 · 3남음 | C4,C6,C7 | **C4** 14 root wrapper의 원래 필수 CLI/호출 계약에 A 독립 peer 2건이 충분한지 판정; 부족한 경계만 추가 peer (**지팀장→Claude A**) | MISSING |
+| [RF-067](queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-067.md) | LEAD · B → A | MET 4 · N/A 1 · 2남음 | C6,C7 | **C6** A run165 14-wrapper 독점 범위 `PEER_PASS` 수용. C04 exact integration SHA·KEEP·필수 CI → C05 C7 종결. 보호 diagnostics target NOT_RUN (**C04→C05**) | PENDING |
 | [RF-015](queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** 역사 11 FAIL BASE/후보 node별 분류 (**Codex B**) | MISSING |
 | [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** LLM router/cache 8-owner와 B fake 10/10 범위 대조 (**지팀장**) | MISSING |
 | [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C2** Reporter writer/State/실패 원래 범위 대조 (**지팀장**) | MISSING |
@@ -37,7 +39,7 @@
 | [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) | DEV · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** research 54-owner KEEP/CLI 효과 분류 원래 조건 판정 (**지팀장**) | MISSING |
 | [RF-069](queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | PEER · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** UEF5 historical snapshot 경로·SHA·read-only 승인 없음 (**사용자·증거 소유자→B→A**) | SAFETY_BLOCKED |
 
-**우선 14건:** **MET 4/98 · N/A 14/98 · 미완료 80/98**. 실제 DEV 2 + PEER 12, LEAD 0. 물리 DONE은 19건이며 N/A를 증거 PASS로 합산하지 않습니다.
+**우선 14건:** **MET 5/98 · N/A 14/98 · 미완료 79/98**. 실제 DEV 2 + PEER 11 + LEAD 1. 물리 DONE은 19건이며 N/A를 증거 PASS로 합산하지 않습니다.
 
 **STATUS 갱신 책임: 지팀장.** RF 변경/증거 인수 및 물리 이동 시 같은 작업에서 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check` 확인. 이 도구는 93개 실물 파일의 유일성/단계 수와 우선 14개 원본 체크를 대조하며 RF 합격/안전 실행을 자동 승인하지 않습니다.
 <!-- RF_LEAD_CHECKLIST_END -->
