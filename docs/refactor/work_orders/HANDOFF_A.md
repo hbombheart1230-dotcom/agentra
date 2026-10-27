@@ -470,3 +470,16 @@
 - 판정: **PEER_PASS_SCOPED**(A 원개발자, 독립 B peer 아님), DONE 아님. NOT_RUN: 실제 `start_input_worker` Thread+Task Scheduler, 다중 프로세스 race, 운영 root, hosted CI, UEF/frozen. 하네스는 증거 보존 목적 외 커밋하지 않음.
 - 다음: 신규 CURRENT 배정 없으면 `NO_DELTA`.
 - PUSH_VERIFIED: push 후 확인.
+
+---
+## 추가 회차 — CURRENT(통합 `e45a31b2`) A P0 RF-063 (B 원개발) `run_m29_disaster_recovery_drill` effectful CLI 독립 peer
+
+- RUN_ID: 2026-10-27-claude-a-sched-135 · A 시작 `f4c4fe9f` · integration `e45a31b2` · **A 소스 코드 변경 없음(NO_CHANGE)**. 내 브랜치와 integration이 분기(병합 시 CURRENT/patch_notes 충돌)하여 병합하지 않고 `git archive origin/integration/p1.5`를 scratchpad에 풀어 그 소스로 실행(워크트리/브랜치 생성 0). owner `scripts/diagnostics/run_m29_disaster_recovery_drill.py` blob `a8a340b9` = integration = A 브랜치.
+- 신규 경계(기존 alert/metrics/audit/import peer 반복 아님): **실제 CLI를 subprocess로 실행**, 실 `shutil.rmtree`/`copytree`/파일 쓰기/내부 `replay_main`·`archive_integrity_main` 호출, 모든 4개 경로 인자를 tmp로 지정, cwd도 빈 tmp. 로케일 `PYTHONUTF8=0 PYTHONIOENCODING=cp949`(stdout을 cp949로 디코드). 하네스 `evidence/run103_boundary_scripts/rf063_dr_drill_peer.py` blob `a6968af4`. Windows 11/Python 3.13.14, 네트워크·broker·운영 root 0.
+- 실행: `python`·`python -O` × {정상, `--inject-fail`, `--no-clear`} 6조합.
+  - 정상: exit 0, ok=true, parity ok, hash_mismatch 0, failures 0, stderr 0. `--inject-fail`: exit **3**, ok=false, parity false, hash_mismatch 1, failures 6. `--no-clear`: exit 0.
+  - 쓰기: report_dir 3파일 생성; 지정한 restored 경로에 둔 stale 파일은 제거; tmp 형제 sentinel 보존; cwd 산출 0; 추출 소스 트리 전후 diff 0(outside-write 0). cp949 출력 디코드 오류 없음.
+- **관찰(변경 안 함):** `--no-clear`여도 restore 단계의 `_copytree_replace`가 `restored-dataset-root`의 기존 내용(stale)을 교체하므로 "no clear"는 working/report/archive 사전 삭제만 생략. 정리(rmtree)는 사용자가 지정한 인자 경로에만 적용(기본값은 repo 상대 `data/recovery`, `reports/m29_*`)—인자 없이 실행 시 repo 하위 기본 경로를 삭제·재생성하므로 스케줄러는 기본값 의존 주의.
+- 판정: **PEER_PASS_SCOPED**(B 원개발 RF의 독립 peer, 이 CLI 1건), DONE 아님. NOT_RUN: Windows Task Scheduler 실호출, 기본 경로(repo 하위) 실행, 나머지 effectful CLI(m27/m29 closeout 등)·hosted CI.
+- 잔여 1개 게이트: RF-063 나머지 diagnostics effectful CLI와 스케줄러 소비자. RF-065/067은 다음 회차(P1/P2).
+- PUSH_VERIFIED: push 후 확인.
