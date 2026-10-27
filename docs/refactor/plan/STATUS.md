@@ -31,7 +31,7 @@
 ## RunLab #32 공통 트러블슈팅 배정 (D04 연동 · 2026-10-27)
 
 - **접수 실물:** [RUNLAB32-20261027 OPEN](troubleshooting/open/RUNLAB32_INTAKE_20261027.md) · [D04 공통 계약](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md) · [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32). 신규 접수는 **RF 큐의 새로운 DONE/REWORK·SOURCE 수정이나 RunLab 실제 테스트 실행이 아니다**.
-- **지팀장 P0:** #32의 새 주문·체결/Guard·Reporter·OCI 관측을 중복 없이 구분해 `OWNER_MAPPING_PENDING`에서 원래 RF 소유 확정, 사용자 승인 필요 여부와 다음 증거를 C00에 배정. 개발 Codex B는 `RL32-ORDER/GUARD` **read-only·격리 fake** 원인 추적, 개발 Claude A는 `RL32-REPORT` **read-only·temp fake** 원인 추적, RunLab은 `RL32-IMAGE/OPS` 출처·예약·EOD/FINAL **읽기 전용 관측** 담당.
+- **지팀장 P0:** #32 관측을 중복 없이 구분하고 FILE_COVERAGE blob `32fecc1b`로 **경로별 파일 Owner 매핑 완료**: ORDER RF-012/055, GUARD RF-012/048, REPORT RF-030/035/001(상세 OPEN 대장). **원인 결함 소유 RF는 `DEFECT_OWNER_PENDING`**(RUN_SOURCE_SHA UNKNOWN)이며, 사용자 승인 필요 여부·다음 증거를 C00에 배정. 개발 Codex B는 `RL32-ORDER/GUARD` **read-only·격리 fake** 원인 추적, 개발 Claude A는 `RL32-REPORT` **read-only·temp fake** 원인 추적, RunLab은 `RL32-IMAGE/OPS` 출처·예약·EOD/FINAL **읽기 전용 관측** 담당.
 - **현재 증거 구분:** 10/26 mock broker BUY `0019354`·SELL `0020349` 체결, SELL local 누락/submitter UNKNOWN. 10/27 09:38 BUY guard 비움은 관측됐지만 경위 UNKNOWN; 신규 SELL `0045749` 접수만 확인, **체결·잔고 미확인**. `RUN_SOURCE_SHA=UNKNOWN`으로 최신 개발 HEAD 소스 회귀 판정 불가.
 - **별도 종결:** 개발 `DEV_RESOLVED` 후에도 승인된 고정 버전 RunLab 증상 재확인 `RUNTIME_VERIFIED` 전에는 troubleshooting `OPEN/RUNTIME_PENDING`. 안전 계약·운영 DB/State·모의/실 주문·이미지/예약 변경은 승인 전 실행 금지. 무관한 LEAD 14개 일반 RF를 런검증 안전 HOLD에 일괄 종속시키지 않는다.
 
