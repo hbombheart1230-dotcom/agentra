@@ -12,13 +12,13 @@
 - **B Peer:** A Owner 기존 10 RF-014/015/016/028/029/031/032/033/034/050은 `03_PEER_REVIEW/CLAUDE_A`에서 원본 C1~C3 Owner 제출 및 C4 peer의 실제 수용 범위를 좁게 매칭한다. 일부 C1~C3가 미체크인 것은 최종 인수 미확정이고, **전체 범위 C1~C5 충족 전 LEAD 반환 금지**.
 - 지팀장은 RF 체크 판정·원본 메타·STATUS 수치/링크의 **유일한 갱신 책임자**. B는 HANDOFF_B에 RF·SOURCE SHA·원래 C항목 별 `OWNER_CLAIM/PEER_PASS/SCOPED_PASS/MISSING/NOT_RUN` 근거와 최초 미충족·해제 담당을 보내고, peer의 결과를 스스로 LEAD/DONE으로 변경하지 않는다.
 
-## 즉시 실행
+## 즉시 실행 — 완료 peer 재실행 금지
 
-1. **RF-052 — 신규 A 패치 B 독립 peer:** A 브랜치 최신 `ba32a86a`, `libs/market_data/receipts.py::resolve_archive_path` Windows drive/UNC/backslash traversal 보완. A의 `pytest` 40 PASS·normal/-O 경계 결과는 원개발 근거. **B가 수정 SOURCE blob `10283d8f`의 경로 거부·정상 경로 유지·관련 호출자에 대해 독립 오프라인 peer**를 제출. UEF5 보호 계약, frozen oracle, 운영 데이터 실행·변경 금지. RF-052는 integration 실물 `03_PEER_REVIEW/CLAUDE_A` 배정 완료·코드 미통합; 정확 source 확인.
-2. **RF-043 — A 소유 `libs/catalog` 6개 KEEP_VERIFIED 후보:** 기존 A 자체 normal/-O는 peer가 아니다. 원래 RF 수용 조건과 source/integration byte identity를 확인해 **최소 독립 peer**를 수행하고 결과 제출. 임의 모든 소비자/State/예외 전수 확장 금지.
-3. **이전 LEAD 반환 RF의 scoped 증거 재사용:** RF-031 실제 caller 8/8, RF-050 fake router 10/10, RF-029 truth-root, RF-016 nested projection, RF-014 Top1 등 B 기존 PASS를 **그대로 지팀장에 인계**. 원래 수용 조건이 실제 비어 있을 때만 해당 첫 결함/조건을 추가 검증한다. 같은 명령·동일 경계 재실행 금지.
-4. **A run142 신규 peer·원개발 게이트:** RF-041 `libs/ai` 6개, RF-053 `libs/news` 12개 KEEP 후보의 동일 SOURCE SHA·원래 범위 독립 peer. RF-021 A `libs/runtime/monitor_exit/policy_map_builder.py` 수정 blob `dc9d6528`(cold import circular ImportError fix) 독립 peer는 보호 실행 없이 격리 temp로만; 원 RF 32 owner의 SAFETY_HOLD_KEEP는 승인 없이 해제/통합 금지. RF-051 `libs/market` 8개는 네트워크·쓰기 fake 효과 A owner 미완료라 DEVELOPING. RF-021/051은 `02_DEVELOPING/CLAUDE_A`, RF-041/053은 `03_PEER_REVIEW/CLAUDE_A`로 integration 실물 이동 완료. 동일 검증 반복 금지.
-5. **B owner RF-066/070/071 → 일반 UNASSIGNED:** 자기 코드 개발을 진행한다. 다른 RF가 BLOCKED라도 계속 진행한다. A의 RF-046/047/054/058 KEEP 후보는 원개발 근거일 뿐, B peer는 아직 확인되지 않았으므로 중복 없는 범위에서 후속 독립 검증한다.
+1. **완료 인수:** B `B-20261027-RF043-CATALOG` normal/-O 11/11, `B-20261027-RF053-NEWS` 15/15 정확 source peer는 지팀장이 `RF-043/053` **05_DONE KEEP_VERIFIED**로 이동. 이 범위 재실행·재보고 금지.
+2. **RF-052:** A `libs/market_data/receipts.py@10283d8f` Windows/UNC/backslash traversal 독립 path peer normal/-O exit0/0 인수. **원래 2-owner C1~C3 및 전체 C4 범위**에서 누락된 첫 항목만 보완·HANDOFF_B에 적고, 보호 UEF5/운영 데이터 변경 금지. A owner 자체 40 PASS와 별도 표기.
+3. **RF-041:** A 정확 source 6개(A tree `f9176623`, RF-021 patch 포함) B 독립 11/11 PASS 수용. 현 integration은 RF-021 lazy-import patch 미통합이라 baseline cold-import 실패 존재. 원래 C1~C5 전체 범위·integration 의존성을 좁게 분리해 지팀장에 인계, 보호 RF-021 전체 32 owner 자동 해제 금지.
+4. **RF-046/047 및 RF-021:** A KEEP 후보 RF-046(2)/047(4) 최소 독립 peer; RF-021 `dc9d6528` cold import normal/-O 0/0 **scoped peer 완료**, 보호 exit-policy 효과는 NOT_RUN. RF-051 A fake yfinance/network/write 4/4 owner PASS 도착 → B 독립 검증은 원래 필수 효과 경계만.
+5. **B 원개발 RF-063/065/067/069 및 RF-066/070/071:** RF-063 76 owner AST 분류(13 WRAPPER, 25 read-static, 38 효과 토큰) 완료, C1은 아직 MISSING. 25 후보 소비자·KEEP 근거부터 진행, 효과형은 temp/fake 또는 SAFETY_HOLD. RF-069 historical UEF5 snapshot 승인 전 NOT_RUN. 다른 RF 차단에도 일반 안전 개발 계속. RunLab #32 ORDER/GUARD read-only/fake 조사와 source SHA 추적을 별도 유지.
 
 ## 증거·안전
 
