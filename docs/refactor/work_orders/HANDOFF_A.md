@@ -10,6 +10,14 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-067 — run137 (`2026-10-27T0043Z`, B 원개발 독립 peer, A 시작 `8ac63142`, integration `e45a31b2`, B `c18ad0b0`)**
+
+- 대상: delegated diagnostics target `scripts/diagnostics/check_reports_trades_health.py` blob `90853b7c`, 공개 root wrapper `scripts/check_reports_trades_health.py` `72f9956d`, `libs/reporting/llm_artifacts.py::iter_trade_dirs` `06dd435f` (BASE=integration 동일). 하네스 `evidence/run103_boundary_scripts/rf067_reports_trades_health_target_peer.py` blob `2f15165b`(오케스트레이터, 실제 subprocess 4모드: wrapper/target 부트스트랩 + plain wrapper + `-m`). fake 0, 자식은 네트워크·subprocess·sqlite·쓰기 open 차단.
+- 실행: integration/BASE × normal/`-O`(자식에도 전달) 4조합 하네스 **exit 0**, `RF067_REPORTS_TRADES_HEALTH_TARGET_OK trade_dirs=12 modes=4_identical day_filter=11/1/0 empty_PATH=ok cp949=ok ascii_json=crash_exit1 exit_always_0=yes relative_root=repo_anchored child_attempts=0 tree_unchanged=yes`, 4개 출력 동일.
+- 확인: 합성 reports(12 trade dir: 정상·LLM partial/salvaged·brief error·strategist fallback/placeholder 2종·깨진 JSON·한글 trade_id·`TRD_` 아닌 lifecycle dir·날짜 아닌 dir/파일) 에 대해 4개 호출 모드 stdout 바이트 동일·exit 0, `PATH=''`에서도 동작. 집계(issue/severity/sidecar/llm status), `--day` 필터(11/1/0, 공백 trim), 존재하지 않는 root·파일 root exit 0, `--help` 0, 알 수 없는 인자·값 누락 argparse **exit 2**. cp949 stdout에서 한글 경로 정상. 읽기 전용: tmp·repo 작업트리 변화 0, 쓰기 시도 0.
+- **관찰(변경 안 함):** (1) `main()`은 `ok`/경고와 무관하게 **항상 exit 0**(`error` severity는 모듈이 생성하지 않아 `ok`는 사실상 항상 True) — 스케줄러/게이트가 exit로 실패를 감지할 수 없음(fail-open). (2) 상대 `--reports-root`·빈 문자열은 **cwd가 아닌 repo 루트** 기준으로 해석(cwd에 같은 이름 디렉터리가 있어도 무시) — Task Scheduler 작업 디렉터리 무관, 단 repo 밖 상대경로 불가. (3) `--json` 출력이 `ensure_ascii=False`라 stdout 인코딩이 ascii이고 경로에 비ASCII가 있으면 `UnicodeEncodeError` **exit 1**(텍스트 모드는 정상) — Windows 콘솔/리다이렉트 인코딩 의존.
+- 판정: **PEER_PASS_SCOPED**(B 원개발 RF-067의 delegated target 1건), DONE 아님. 잔여 1개 게이트: 나머지 13 target(특히 effectful·env 의존 `check_runtime_profile`/`check_real_execution_preflight`·UEF 계열)과 Windows PATH/Task Scheduler 실호출 NOT_RUN(preflight/UEF는 SAFETY_HOLD 유지).
+
 **RF-065 — run136 (`2026-10-27T0018Z`, [A `aed5d333f24c`](https://github.com/hbombheart1230-dotcom/agentra/commit/aed5d333f24c9a1feb15ca95f81cad7ee14d4748), B 원개발 독립 peer)**
 
 - CLI source `scripts/research/run_agent_effectiveness_scorecard.py` blob `db4571d6`, 실제 scorecard writer `16b50178`, Stage2 pipeline `76939b24` (BASE=integration). 하네스 `docs/refactor/work_orders/evidence/run103_boundary_scripts/rf065_scorecard_stage2_continuous_peer.py`.
@@ -30,7 +38,7 @@
 
 ## 수용 대기 / 다음 시작 위치
 
-- **A 다음 최초 작업: RF-067** delegated diagnostics 실제 target의 안전한 최초 독립 소비자·stdout/stderr·exit·Windows PATH/fail-closed. 루트 wrapper 14개 기존 fake/AST 반복 금지.
+- **A 다음 최초 작업: RF-067** 나머지 delegated diagnostics target(read-only 우선; `check_reports_trades_health`는 run137 완료). 루트 wrapper 14개 기존 fake/AST 반복 금지.
 - RF-063 나머지 effectful CLI와 scheduler; RF-065 나머지 CLI·scheduler는 미검증, **새로운 승인된 안전 경계**가 지정될 때만 진행. 동일 run135/136 하네스를 반복하지 않는다.
 - **RF-032 (run133) read-only 발견:** `q13_q14_validation.py`의 `validation_id` 경로 이탈 가능성과 Exit Horizon 비교 자기포함으로 분기 도달 불가. 두 수정 모두 적용 안 함. 동결 정책/오라클 의미 변경·소유권 변경은 사용자 승인 필요. 자세한 근거는 [A `ed0aa857`](https://github.com/hbombheart1230-dotcom/agentra/commit/ed0aa857db8fe023c13639d96681879183eb5b82).
 - 검증 완료 구간의 전체 RF/CI `PASS`를 주장하지 않는다. 다음 결과는 정확 source/blob SHA·명령·exit·효과·최초 잔여 게이트를 보존하고, **Git 원격 push 후 Issue #11 댓글 실제 생성/URL 확인**. 단순 NO_DELTA 때 HANDOFF·Issue 쓰기 0.
