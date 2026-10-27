@@ -490,3 +490,11 @@
 - No orphan: 7 `canonical/adapters` files with no package-relative hits each have 1–9 import lines elsewhere. Tokens are file-level indicators. Not RF DONE.
 - External effects: none besides this push.
 
+
+## run160 — RF-063 C4 (Peer of B): independent check of B REWORK text/JSON `day` fix (B SOURCE 78be88c6, `scripts/diagnostics/run_m23_closeout_check.py` blob fdde6c82 = integration 68f01123 blob; A base d0de3dda; exact-SHA `git archive` into scratchpad temp, `python -I`)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| RF-063 | C4 | B 78be88c6 | SCOPED_PASS: text and `--json` × normal/`-O` all exit 0 (4/4); text prints `ok=True day=2026-10-27 …` (no NameError); JSON `ok:true`; 7 files each, all inside temp `--event-log-path/--report-dir`. Using `--skip-error-case` gives rc 3/`ok=False` in all 4 modes — expected resilience-closeout semantics, not a day regression | other RF-063 C items (B-owned), C6/C7 C05 | Codex B / C05 |
+- Not run: protected UEF/Broker/Executor, network, real data. Source unchanged. Scoped peer, not RF DONE. Integration merge into A skipped (conflicts in AGENTS.md/CURRENT.md/patch_notes.json, non-owned); A keeps reading integration read-only.
+- Status of A-owned RFs this run: RF-015/031/014/050/016/028/029/032/033/034/051/054/058 all C1 ACTION + C2/C3 submitted; waiting on B C4. RF-035/RF-030 protected/frozen-oracle HOLD; RF-021/041 pending B peer.
+- External effects: none besides this push.
