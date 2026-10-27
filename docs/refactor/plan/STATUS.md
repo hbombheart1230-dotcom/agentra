@@ -19,7 +19,7 @@
 
 | RF 원본 | Owner→Peer | 체크 / 미완료 | 남은 체크 | 다음 해제 조건 · 담당 | 상태 |
 |---|---|---:|---|---|---|
-| [RF-063](queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-063.md) | B → A | 3/7 · 3남음 | C1,C2,C3,C7 | **C1** diagnostics 76-owner MOVE/KEEP/SAFETY_HOLD 최종 분류 (**지팀장**) | MISSING |
+| [RF-063](queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-063.md) | B → A | 3/7 · 4남음 | C1,C2,C3,C7 | **C1** diagnostics 76-owner MOVE/KEEP/SAFETY_HOLD 최종 분류 (**지팀장**) | MISSING |
 | [RF-067](queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-067.md) | B → A | 5/7 · 2남음 | C6,C7 | **C6** 14 wrapper KEEP의 integration SHA 필수 CI 판정 (**지팀장**) | MISSING |
 | [RF-015](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-015.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** 역사 11 FAIL BASE/후보 node별 분류 (**Codex B**) | MISSING |
 | [RF-050](queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-050.md) | A → B | 1/7 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** LLM router/cache 8-owner와 B fake 10/10 범위 대조 (**지팀장**) | MISSING |

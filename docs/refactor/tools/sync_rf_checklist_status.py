@@ -24,7 +24,7 @@ def render():
     lines = [
         "## LEAD RF 원본 체크리스트 — 한눈에 보는 잔여 조건",
         "",
-        "각 RF 원본 \`DONE 체크\`의 **7개 항목**을 읽은 스냅샷입니다. **MET**는 증거 확인, **N/A**는 조건부 비적용으로 DONE이나 PASS로 세지 않습니다. **PARTIAL/PENDING/SAFETY_BLOCKED**는 미완료입니다. 링크를 열면 체크 이유와 증거 범위가 있습니다. 이 표는 파일 저장 시 실시간 조회되는 것이 아니라 동기화 명령으로 갱신됩니다.",
+        "각 RF 원본 `DONE 체크`의 **7개 항목**을 읽은 스냅샷입니다. **MET**는 증거 확인, **N/A**는 조건부 비적용으로 DONE이나 PASS로 세지 않습니다. **PARTIAL/PENDING/SAFETY_BLOCKED**는 미완료입니다. 링크를 열면 체크 이유와 증거 범위가 있습니다. 이 표는 파일 저장 시 실시간 조회되는 것이 아니라 동기화 명령으로 갱신됩니다.",
         "",
         "| RF 원본 | Owner→Peer | 체크 / 미완료 | 남은 체크 | 다음 해제 조건 · 담당 | 상태 |",
         "|---|---|---:|---|---|---|",
@@ -63,7 +63,7 @@ def render():
         "",
         f"**LEAD 14건:** 체크 {total}/98 · 미완료 {98-total}/98. 물리 DONE은 아직 14건(기존)이고, 위 체크 숫자는 RF 종결 건수가 아닙니다.",
         "",
-        "RF 체크/증거 변경 시 같은 커밋에 \`python docs/refactor/tools/sync_rf_checklist_status.py --write\` 실행. \`--check\`로 STATUS 동기화 상태 검사. D00·기존 CI·보호 코드는 수정하지 않습니다."
+        "RF 체크/증거 변경 시 같은 커밋에 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 실행. `--check`로 STATUS 동기화 상태 검사. D00·기존 CI·보호 코드는 수정하지 않습니다."
     ])
     return "\n".join(lines)
 
