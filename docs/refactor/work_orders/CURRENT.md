@@ -1,21 +1,27 @@
-# C00 — Agentra P1.5 지팀장 현재 작업 (2026-10-27 갱신)
+# C00 — Agentra P1.5 지팀장 현재 작업 (2026-10-27 간소화)
 
-**정본:** `integration/p1.5`. 고정 계약 `D00_ENGINEERING_DELIVERY_POLICY.md` 읽기 전용. **RF-001~093 전체** 보호 경계 내 연속 실행. A/B 작업 브랜치 CURRENT는 정본 아님. 읽기만 하고 종료 금지. 신규 branch/tag/PR/worktree 금지, `main` 변경 금지.
+**정본:** `integration/p1.5`. 공통 계약 `D00_ENGINEERING_DELIVERY_POLICY.md`(2026-10-27 사용자 승인 간소화). 새 branch/tag/PR/worktree, `main` 변경 금지.
 
-## 실물 큐 — 93 unique·중복0·누락0 (integration `c259b368` 이동 뒤 전수 재조회)
+## 마지막 확인된 큐 스냅샷
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | 합계 |
 |---:|---:|---:|---:|---:|---:|---:|
 | 60 | 3 | 2 | 14 | 14 | 0 | **93** |
 
-- **LEAD 14:** RF-014,015,016,028,029,031,032,033,034,050,**063**,065,067,069. **PEER 2:** RF-018(B owner), RF-043(A owner/B peer pending). **DEVELOPING 3:** RF-066/070/071(B). **PENDING:** RF-030/035(A), UNASSIGNED 58. **DONE 기존 14, 신규 DONE 0.**
-- **최신 지팀장 진척:** RF-063 diagnostics text `NameError` 단일행을 정확 B owner blob `fdde6c82bfc9820b853487904fb491a96cbd3408`으로 integration commit **`c962e23a5b5395bc489c9793806fede2ff05924e`** 선별 통합. A 독립 peer `HANDOFF_A@569ebe6be` TEXT/JSON × normal/-O **4/4 exit0** 범위 한정 수용. GitHub Actions [run 40443430786](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40443430786): `safety` 및 `safety (-O)` 둘 다 **success**(이 통합 SHA). 기존 `03_PEER_REVIEW/CODEX_B/RF-063.md`는 **원자적으로 `04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-063.md`로 이동**, commit **`c259b3682bb1f99ffdcd8e8cc011c2af4ef61276`**. 전체 76 CLI/Windows Scheduler/보호 runtime 의미 검증 부족하여 **LEAD_HOLD/NOT_DONE**, 04→05 금지. 지팀장 직접 Python `NOT_RUN`, 외부 A/B PASS를 직접 실행 PASS로 표시하지 않는다.
-- STATUS와 A/B C는 **`5de066fdf3f079906c40c290d697ee200a2f5fda`**에서 동기화. A/B 최신 HEAD: A **`569ebe6be8af13c7edf4f36822499cb6ae814639`**, B **`43017525dd733bd2d79e232b3da3ffa4db65ebba`**. Issue #11 지팀장 checkpoint comment **6432945419**, #12 **6432946013** 게시 확인. RunLab #32 최신 독립 관측 2026-10-27 09:38 KST(아래).
+- LEAD: RF-014,015,016,028,029,031,032,033,034,050,063,065,067,069.
+- PEER: RF-018(B owner), RF-043(A owner/B peer 대기). DEVELOPING: RF-066/070/071(B). PENDING: RF-030/035(A) + UNASSIGNED 58.
+- 이 수치는 `integration`의 기존 실물 큐 기준 **마지막 관측값**이다. D00/C 문서 간소화 자체는 RF DONE·코드 검증 실적이 아니므로 카운트를 변경하지 않았다. 큐 실물 이동 시 해당 수치만 갱신한다.
 
-## 다음 실행 가능한 순서 (D00 §2A 종료 게이트)
+## 다음 실행 순서 — 재검증 없는 최종 인수
 
-1. **RF-043 — B 독립 peer 최초 게이트:** A owner `libs/catalog` 6개 KEEP_VERIFIED 후보, BASE=A=integration 동일 blob; A 하네스 `rf043_catalog_owner_verify.py` blob `b2c915c7`, 원개발 normal/-O 4경로 exit0. **B 독립 peer는 아직 NOT_RUN**. B가 정확 6 source/public consumer·State/IO·예외를 주문 DTO 건드리지 않는 temp-only fake normal/-O로 제출하면 지팀장이 인수·실물 이동/통합·CI 판정. 원개발 코드가 기존 integration과 동일해 새 통합 실적 꾸미지 말 것.
-2. **LEAD 잔여 13+RF-063 안전 게이트:** RF-031 B partial OSError 후 실제 downstream recovery, RF-050 B Operator UI 3-stage fallback 및 cache-OSError, RF-014 dynamic Scanner→Graph shim/NOOP, RF-015 B-only Monitor/BASE frozen inventory, RF-016 nested State 외부 소비자, RF-028 rich writer/85 owner, RF-029 facade→bundle 38 owner, RF-032 validation-id/UEF HOLD, RF-033 InputWorker.tick→publish_input, RF-034 latent/cache/Scanner, RF-065 연구 effectful CLI/Windows, RF-067 diagnostics wrapper/Windows·보호 CLI, RF-069 UEF5 historical snapshot 승인 HOLD. **새 증거가 있는 최초 미충족 게이트만 처리**. 유효 동일 SHA·경계 PASS 재검증 금지. 어느 RF가 막혀도 다른 일반 RF로 전환.
-3. **A/B 연속 작업:** A는 RF-035 119파일 중 frozen RF-074 oracle 금지 93 HOLD, 안전 editable 26의 새로운 consumer/State/temp-only 경계·일반 UNASSIGNED CLAIM. B는 **RF-043 peer → RF-031 downstream → RF-050 UI/cache** 이후 자기 developing RF-066/070/071·중복 없는 일반 RF. A/B는 기존 브랜치 구현/검증/푸시, HANDOFF_A/B 및 Issue #11/#12에 SOURCE SHA·명령·exit·외부효과 기록. 개별 착수 승인 대기 금지.
-4. **RunLab #32 SAFETY_HOLD:** 오늘 09:38 KST mock SELL `0045749` 접수(체결/출처 UNKNOWN), 전일 SELL `0020349` local 누락, guard/reconciliation mismatch, OCI `RUN_SOURCE_SHA=UNKNOWN`. 런검증은 읽기 전용 관측만, 안전 상태 해결 전 실거래/실주문·Broker/Supervisor/Executor/Step5C/UEF 계약·frozen CI/oracle·비밀·운영데이터·배포·예약 변경 절대 금지. RF-069 UEF5 historical snapshot은 path/SHA/use-scope + 명시적 승인 전 실행 금지.
-5. **지팀장 의무:** 첫 유효 행동 RF 판정·검증/통합. 93 unique 실물 큐/Owner와 HEAD/HANDOFF/#11/#12를 매회 대조, STATUS 변경 시 전체 교체 커밋 후 필요한 C01/C02를 갱신하고 **C00 마지막 갱신**. 결론은 실제 SOURCE/통합 SHA, PASS/FAIL/NOT_RUN, 물리 큐 변화, 다음 RF를 기록. 모든 safe actionable RF 소진 또는 실제 실행/환경 제약일 때만 D00 분류로 종료.
+1. **LEAD 14건 우선 종결:** 각각 **원래 RF 수용 조건**과 이미 제출된 Owner/독립 peer 증거를 대조한다. **원래 필수 범위 peer PASS + 동일 SOURCE SHA + 안전한 통합/필수 CI PASS이면, 지팀장 자체 소비자·State/IO·예외 재테스트 없이 즉시 `05_DONE` 이동.** `04_LEAD_ACCEPTANCE`에서 추가 승인 회차를 만들지 않는다.
+2. **RF-063 첫 판정:** B 수정 blob `fdde6c82`는 integration `c962e23a5b5395bc489c9793806fede2ff05924e`에 통합됐고, A의 TEXT/JSON × normal/-O **4/4 peer PASS**, GitHub Actions [40443430786](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40443430786) safety 양 모드 PASS. 이 변경 범위의 증거는 **충족·재사용**한다. 기존의 '전체 76 CLI/Windows Scheduler/보호 runtime 검증 부족'을 **자동 전체-RF HOLD 사유로 쓰지 않는다.** 원래 RF 수용 조건에 실제 포함된 항목만 부족 조건으로 특정한다. 범위 밖 운영검증은 별도 후속/보호 HOLD로 분리한다. **원 RF 범위 확인 전 DONE으로 단정하지 않는다.**
+3. **RF-043:** A의 `libs/catalog` 6개 KEEP_VERIFIED 후보는 BASE/integration과 동일 source. B의 **원래 RF 수용 조건에 대한 독립 peer**만 대기한다. B peer PASS 후 지팀장은 무관한 새 소비자·예외 전수검증을 추가하지 않고 integration/CI 확인→DONE 판정.
+4. **나머지 LEAD:** RF-031/050/014/015/016/028/029/032/033/034/065/067/069은 기존 scoped PASS가 원래 필수 범위를 충족하는지 먼저 판정한다. 부족한 원래 필수 조건 또는 확인된 실결함이 있으면 **정확한 첫 결함과 Owner**만 지정하고, 다른 검증 완료 RF부터 종결한다. 새로 제안한 넓은 검증 목록을 완료 게이트로 확대하지 않는다.
+5. **A/B 진행:** B는 RF-043 독립 peer와 자기 RF-066/070/071 및 일반 RF, A는 RF-035의 허용 파일 및 안전 일반 RF를 계속 수행한다. C01/C02는 동일 D00 기준으로 간소화됨. HANDOFF는 변경분만; Issue #11/#12 중복 회차 보고 불필요.
+
+## 안전/운영 경계
+
+- RunLab #32 마지막 관측(2026-10-27 09:38 KST): mock SELL `0045749` 출처/체결 UNKNOWN, 전일 `0020349` local 누락, guard/reconciliation 불일치, OCI `RUN_SOURCE_SHA=UNKNOWN`. **영향받는 운영·주문·안전 변경은 SAFETY_HOLD**. 이것만으로 무관한 안전 일반 RF를 묶어 HOLD하지 않는다.
+- RF-069 historical UEF5 snapshot은 path/SHA/use-scope와 사용자·증거 소유자 승인 전 실행 금지. RF-032/034 보호 UEF·frozen oracle·CI 우회 금지. `main`, 실주문, 안전 계약, 비밀·운영 데이터·배포·예약 보호 유지.
+- 지팀장은 **신규 증거가 있는 RF만** 인수한다. 매회 93개 전수재조회/전체 HEAD·HANDOFF·Issue 대조, STATUS 전체 교체, C00 최종 갱신, 새 검증 생성 의무 **없음**. 실제 RF 상태가 바뀌면 RF 경로와 STATUS의 **해당 상태만** 갱신한다. 다음 작업이 없거나 실제 실행 한도면 정상 종료한다.
