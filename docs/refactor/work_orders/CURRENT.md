@@ -6,10 +6,12 @@
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | 합계 |
 |---:|---:|---:|---:|---:|---:|---:|
-| 51 | 9 | 19 | 0 | 14 | 0 | **93** |
+| 51 | 9 | 17 | 0 | 16 | 0 | **93** |
 
-- **실물 93개(중복·누락 0):** 이전 LEAD 14건은 DEV(B) RF-063/065, PEER(B) RF-067/069, PEER(A) RF-014/015/016/028/029/031/032/033/034/050으로 반환. 기존 일반 DEV 7/PEER 7, PENDING RF-030/035 + UNASSIGNED 49, DONE 14. 현행 04_LEAD 실물 **0건**. 링크·MET/N/A/미완료를 구분한 정본은 [STATUS](../plan/STATUS.md).
+- **실물 93개(중복·누락 0):** 이전 LEAD 14건은 DEV(B) RF-063/065, PEER(B) RF-067/069, PEER(A) RF-014/015/016/028/029/031/032/033/034/050으로 반환. 기존 일반 DEV 7/PEER 5, PENDING RF-030/035 + UNASSIGNED 49, DONE 16. 현행 04_LEAD 실물 **0건**. 링크·MET/N/A/미완료를 구분한 정본은 [STATUS](../plan/STATUS.md).
 - **A run142 실물 이동 완료:** RF-021/051 → DEVELOPING(A), RF-041/053 → PEER(A owner→B peer). 원 PENDING 4개 경로 삭제, 신규 경로 확인. A `ccb0a4ea` RF-021 콜드 import 수정 blob `dc9d6528`은 **A 브랜치에만 존재**, B 독립 peer·integration 코드 통합·DONE 없음. 상세는 [STATUS](../plan/STATUS.md).
+
+**16시 실제 종결:** RF-043(`libs/catalog` 6개)·RF-053(`libs/news` 12개)는 A owner와 B exact-SHA 원래 공개 API 범위 독립 peer PASS, source byte-identical KEEP, source snapshot `c962e23a` offline safety CI 양 모드 success를 인수해 **03_PEER_REVIEW→05_DONE 실물 이동**. C1~C4 MET, C5 N/A, C6 source CI 재사용, C7 물리/STATUS 동기화. 코드 수정 0, 새 직접 테스트 NOT_RUN. RF-052는 B path-scoped peer 도착(원래 전체 범위/통합 미완료), RF-041은 A RF-021 patch 의존 peer로 PEER 유지. [STATUS](../plan/STATUS.md) 참조.
 
 ## P0 공통 배정 — RunLab #32 신규 트러블 인수 (D04)
 
@@ -30,7 +32,7 @@
 1. **우선 14건의 원래 조건 해제 및 재인수(현재 LEAD 0):** [LEAD_CURRENT](../plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md)의 순서대로 **원래 각 RF DONE 체크 + 기존 독립 peer SOURCE SHA·실제 범위**만 맞춘다. 원래 필수 범위 peer PASS이면 지팀장 재실행 **없이** 통합 diff/충돌·보호 경계·필요한 integration SHA CI만 확인하고 **같은 회차 04→05 DONE**. 누락이면 처음 원래 조건 1개/담당만 제시하고 다음 RF로 넘어간다. 새 광범위 소비자·State·IO·Windows 검증 의무를 만들지 않는다.
 2. **RF-063 우선:** B blob `fdde6c82` 수정은 integration `c962e23a5b5395bc489c9793806fede2ff05924e`에 반영됨, A 4/4 peer PASS, 해당 통합 SHA offline safety CI 양 모드 PASS. **재검증 금지.** 지팀장 C1 원본 source 76/76 판독에서 13개 thin entrypoint wrapper의 SOURCE/target blob·`main`을 정적으로 확인해 ACTION `WRAPPER`로 분류(커밋 `54c9af95`); **잔여 63 owner ACTION·CLI/효과/소비자 근거는 Codex B Owner→Claude A 독립 peer**. C1 PARTIAL/DEV 유지, 실제 실행·Windows Scheduler·보호 작업은 NOT_RUN. 미충족 부분만 이어서 처리하고 원래 76 CLI 전체 실행을 새 공통 게이트로 만들지 않는다.
 3. **신규 A 작업 인수:** A 최신 확인 HEAD `ccb0a4ea9b509fb96c37a1539e89135ea08534b3`, B 최신 `43017525dd733bd2d79e232b3da3ffa4db65ebba`. A HANDOFF run141b: **RF-052 path-traversal 실제 소스 1파일 수정** blob `10283d8f`, tests 40 PASS + normal/-O 검사; RF-046/047/054/058 KEEP 후보. RF-052/046/047은 integration 03_PEER_REVIEW/CLAUDE_A, RF-054/058은 02_DEVELOPING/CLAUDE_A로 Owner 실물 확정, 코드 통합은 **미수행**, B 독립 peer 결과를 인수해 신규 결함 수정 RF-052부터 선별 통합 준비. A 자체 PASS는 B peer PASS가 아니다.
-4. **A/B 연속 운영:** B [C01](C01_CODEX_CURRENT.md) RF-052 peer→RF-043/041/053 KEEP peer→RF-021 cold-import 수정 blob `dc9d6528` 독립 peer→자기 RF-066/070/071. A [C02](C02_CLAUDE_CURRENT.md) RF-021 32-owner 안전 분류·RF-051 네트워크/쓰기 fake 효과 확인→다음 일반 RF. 한 RF 대기 때문에 다른 RF/지팀장 슬롯 종료·재승인 대기를 만들지 않는다.
+4. **A/B 연속 운영:** B [C01](C01_CODEX_CURRENT.md) RF-052 남은 원래 범위 판정→RF-041/046/047 KEEP peer (RF-043/053 완료 재실행 금지)→RF-021 cold-import 수정 blob `dc9d6528` 독립 peer→자기 RF-066/070/071. A [C02](C02_CLAUDE_CURRENT.md) RF-021 32-owner 안전 분류·RF-051 네트워크/쓰기 fake 효과 확인→다음 일반 RF. 한 RF 대기 때문에 다른 RF/지팀장 슬롯 종료·재승인 대기를 만들지 않는다.
 5. **최소 동기화:** 지팀장이 RF 체크 증거/실물 이동 시 **해당 RF와 STATUS의 링크·MET/N/A·남은 조건·단계 수를 함께** 수정하고 sync `--check` 확인. A/B에게 STATUS 수정을 전가하지 않는다. C00/C01/C02는 우선순위/담당이 실제 바뀔 때만 갱신. Issue/HANDOFF를 매회 전수 반복 대조하거나 동일 증거용 테스트·문서 커밋을 만들지 않는다.
 
 ## 분리된 보호 HOLD
