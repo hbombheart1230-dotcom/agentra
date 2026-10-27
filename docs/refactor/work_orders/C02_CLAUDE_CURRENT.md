@@ -16,9 +16,9 @@
 
 1. **RF-052 코드 수정 완료 후보 — B peer 대기:** `libs/market_data/receipts.py` source blob `10283d8f`, Windows drive/UNC/backslash traversal 처리. A owner 증거: targeted pytest **40 PASS**(전 39 PASS/1 FAIL), normal/-O path harness exit0. UEF5 history 11 FAIL/49 PASS/2 ERROR는 integration 기존 실패와 동일하므로 **RF-052 신규 회귀로 오인 금지**. 현 단계에서 DONE/통합으로 표기하지 않고 B 독립 peer와 지팀장 SHA·CI 판단에 인계한다.
 2. **RF-046/047/054/058 KEEP 후보:** A owner의 source/import/기존 테스트 범위 검증 근거는 HANDOFF_A run141b를 재사용. **B 독립 peer와 통합 큐 소유 확정 전 전체 DONE 아님.** RF-054/058의 실제 writer/effect는 원래 수용 조건에 필요한 범위만 적어 B에 인계한다.
-3. **RF-043 KEEP 후보:** A `libs/catalog` 6개 및 normal/-O 원개발 증거 보존. B 독립 peer 대기. A 재실행 금지.
+3. **RF-043 DONE:** A `libs/catalog` 6개 + B exact-source 11/11 independent peer → 지팀장 KEEP_VERIFIED `05_DONE`. A 재실행 금지.
 4. **RF-035:** 원래 파일 119 중 RF-074 frozen oracle 충돌 93은 변경 금지, editable 26에서 **실제 원래 RF 수용 조건/버그 수정에 필요한 것만** 다룬다. 무의미한 새 광범위 소비자·IO 전수조사 금지. RF-030 보호 HOLD 및 RF-069 승인 전 UEF5 snapshot 실행 금지.
-5. **A run142 RF-021/041/051/053 실물 Owner 확정:** RF-021 `02_DEVELOPING/CLAUDE_A` 콜드 import 순환 수정 blob `dc9d6528`, A 65 PASS 및 baseline 실패집합 동일 보고. **원 RF 32개 SAFETY_HOLD_KEEP와 보호 효과 판정 미완료, B peer/코드 통합 전**. RF-051 `02_DEVELOPING/CLAUDE_A` yfinance 네트워크/쓰기 fake owner 효과만 좁게 확인. RF-041 `libs/ai` 6개와 RF-053 `libs/news` 12개는 `03_PEER_REVIEW/CLAUDE_A`, B 독립 peer 대기(KEEP 후보). 자기 A 검증을 B PASS로 표기 금지.
+5. **A run142 RF-021/041/051/053 Owner 인수 및 RF-053 DONE:** RF-021 `02_DEVELOPING/CLAUDE_A` 콜드 import 순환 수정 blob `dc9d6528`, A 65 PASS 및 baseline 실패집합 동일 보고. **원 RF 32개 SAFETY_HOLD_KEEP와 보호 효과 판정 미완료, B peer/코드 통합 전**. RF-051 `02_DEVELOPING/CLAUDE_A` yfinance 네트워크/쓰기 fake owner 효과만 좁게 확인. RF-041 `libs/ai` 6개는 `03_PEER_REVIEW/CLAUDE_A` (B 11/11 peer, RF-021 patch integration 의존); RF-053 `libs/news` 12개는 B 15/15 peer 인수로 `05_DONE/CLAUDE_A` KEEP_VERIFIED. RF-051 A fake yfinance/network/write 4/4 owner 효과 증거 완료, B peer 대기. 자기 A 검증을 B PASS로 표기 금지.
 6. **B 소유 반환 RF-063/065(DEV), 067/069(PEER):** 기존 A 독립 PASS를 재사용한다. 특히 RF-063 수정 `fdde6c82` TEXT/JSON × normal/-O 4/4는 다시 실행하지 않는다. B가 **새로 변경한 SOURCE SHA** 또는 기존 원래 조건의 미충족 항목이 생겼을 때만 새로운 peer. 이후 일반 RF 계속 CLAIM/개발.
 
 ## 인계·안전
