@@ -1,11 +1,12 @@
-# C01 — Codex B 현재 작업 (지팀장 2026-10-27 동기화)
+# C01 — Codex B 현재 작업 (2026-10-27, 검증 게이트 간소화)
 
-브랜치 `work/p15-b-operator-structure-20261022`; D00 읽기 전용. **개별 착수 승인 불필요**, 자기 브랜치에서 구현·검증·푸시 후 HANDOFF_B/#12 실제 SHA·exit 제출.
+**브랜치:** `work/p15-b-operator-structure-20261022`. 정본 `integration/p1.5`의 D00을 따른다. 일반 RF의 착수·독립 peer·수정은 별도 승인을 기다리지 않는다.
 
-1. **RF-043 (A owner, B peer):** `libs/catalog` 6개 정확 source blob A=integration 동일. A `rf043_catalog_owner_verify.py` blob `b2c915c7` 증거는 원개발자 PASS이므로 그대로 독립 peer로 취급하지 말 것. 안전 temp-only·broker/order DTO 수정 없이 public import/caller/State/IO/예외 normal/-O **새로운 B 독립 peer** 제출. 이는 현재 03_PEER_REVIEW/CLAUDE_A의 첫 해제 게이트.
-2. **RF-031 (A owner, B peer 추가):** 기존 positive caller 8/8 및 OSError injection 재사용. 실제 Reporter caller에서 부분 OSError 이후 산출·day cache/ledger/memory 소비자 복구 경계, temp-only + fake LLM, 정상/-O, 외부 쓰기 0.
-3. **RF-050 (A owner, B peer 추가):** 기존 fake router 10/10 재사용. `data_access_core` primary→repair→line 3-stage fallback 및 `model_catalog_store` cache write/reload/OSError consumer, 네트워크 차단·temp only.
-4. **RF-063:** owner 수정 `78be88c6` blob `fdde6c82`는 A의 4/4 독립 peer 후 integration `c962e23a` 선별 통합, shared offline CI 양 모드 PASS, 실물은 04_LEAD_ACCEPTANCE. 동일 경계 재검증·신규 수정 불필요. 보호 CLI/Windows 운영 실행 금지.
-5. RF-015/016/029/033/014/028/034/032의 신규 소비자, 자기 02_DEVELOPING RF-066/070/071 → 중복 없는 01_PENDING/UNASSIGNED CLAIM을 D00 우선순위대로 연속 진행. claim 시 Owner/SHA HANDOFF/#12 기록. RF-069 역사 UEF5 HOLD.
+1. **RF-043 (A owner / B peer 우선):** `libs/catalog` 6개 KEEP_VERIFIED 후보, A 소스와 integration 동일. B는 **원래 RF 수용 조건**에 대한 독립 검증 및 정확한 SOURCE SHA·범위·PASS/FAIL 기록만 제출한다. 원개발자 증거를 자기 peer PASS로 바꿔 쓰지 않는다. 모든 public consumer/예외/Windows/주문 DTO를 새 공통 게이트로 만들지 않는다.
+2. **RF-031·RF-050:** 기존 B 검증(각 8/8, 10/10)은 재사용. **원래 RF 필수 조건이 실제로 미충족된 경우에 한해** 그 누락 조건만 추가 검증한다. 관련 없는 downstream/3-stage/cache-OSError 전수 테스트를 자동 요구하지 않는다. 충족이면 새 테스트 없이 peer PASS를 지팀장에게 인계한다.
+3. **RF-063:** B 패치 SHA/blob, A 독립 peer 4/4 및 integration CI 양 모드 PASS는 이미 인수됨. 동일 경계 재실행 금지. 추가 운영/보호 검증은 원 RF 수용 조건에 속하는지 분리하고, 보호 영역은 승인 전 실행하지 않는다.
+4. 이후 B의 RF-066/070/071 구현 → 누락이 명확한 독립 peer → 중복 없는 일반 RF 자율 CLAIM으로 계속 진행한다. 막힌 RF는 최초 실제 결함·담당만 남기고 다음으로 이동한다.
 
-`main`, 실거래, 주문/안전 계약, frozen oracle/CI, 운영데이터·배포·예약 무승인 변경 금지. UI 소스 변경 시 연결 patchnotes JSON/MD 동기화. 테스트 산출물은 temp 격리·성공분 청소.
+**증거/보고:** HANDOFF_B에 RF·SOURCE SHA·독립 검증 범위와 결과·다음 RF를 변경분으로 기록한다. Issue #12는 주요 체크포인트만 갱신하며 문서-only 반복 보고는 하지 않는다.
+
+**보호 불변:** `main`, 주문/실거래·Broker/Supervisor/Executor/Step5C/UEF 계약, frozen CI/oracle, 운영데이터·비밀·배포·예약은 명시적 승인 전 변경/실행 금지. temp-only/mock, UI patchnotes, 테스트 산출물 정리는 D00 준수.
