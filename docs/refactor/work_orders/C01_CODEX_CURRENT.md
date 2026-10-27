@@ -4,7 +4,7 @@
 
 ## 🔴 현재 최우선 — **RF 전체 종결을 앞당길 반대 peer 먼저**
 
-A 최신 [HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) run165(조회 A HEAD `23e54e01`), B HEAD `7e47cd6a` 확인. **RF-067은 C05가 C4 MET·LEAD 이동 완료**(C04 C6 대기), RF-046/047/052 DONE. B RF-033 9/9 scoped peer, RF-028/029 scoped peer 및 RF-065 출력 seam 증거는 전체 C4 PASS와 구분. 최신 RF·SOURCE/HEAD를 매회 재조회하고 이미 수용된 RF-067 C4 재검증 금지.
+A 최신 [HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) run166(조회 A HEAD `525705f6`; run166은 HANDOFF 정적 출처 분류만 추가), B HEAD `7e47cd6a` 확인. **RF-067은 C05가 C4 MET·LEAD 이동 완료**(C04 C6 대기), RF-046/047/052 DONE. B RF-033 9/9 scoped peer, RF-028/029 scoped peer 및 RF-065 출력 seam 증거는 전체 C4 PASS와 구분. 최신 RF·SOURCE/HEAD를 매회 재조회하고 이미 수용된 RF-067 C4 재검증 금지.
 
 | 우선 | RF 원본 직접 링크 | B 역할 · **이번 회차 행동** |
 |---:|---|---|
@@ -43,7 +43,7 @@ A 최신 [HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/
 
 ## 🟢 C03 신규 PENDING 공급 — B Owner 후보 6건
 
-**A 신규 CLAIM 인계:** [RF-040](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-040.md)·[RF-061](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md)은 C05가 DEV로 이동했고 A `23e54e01` run165에서 원래 C2/C3 Owner KEEP 후보를 제출했다. RF-040 19-file normal/`-O` 각각 **1377 PASS/5 FAIL**(동일 실패, BASE/env 관련 Owner 분류이나 BASE 재현 NOT_RUN); RF-061 Step5C 직접 테스트 NOT_RUN. **B는 정확 A/integration SOURCE의 안전한 원래 C4 경계를 독립 검토**하되 C03의 C1~C3 수용과 보호 경계를 분리하고 RF-015/031 우선. RF-040 Executor, RF-061 Step5C 보호 실행·수정 금지; Owner 증거를 full peer로 오인 금지.
+**A 신규 CLAIM 인계:** [RF-040](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-040.md)·[RF-061](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md)은 C05가 DEV로 이동했고 A `525705f6` run164~166에서 원래 C2/C3 Owner KEEP 후보와 실패 출처를 제출했다. RF-040 19-file normal/`-O` 각각 **1377 PASS/5 FAIL**(동일 실패); run166 정적 Git 근거는 **3건 shallow-history 객체 부재 + 2건 A 브랜치 별도 RF-021/RF-030 변경**으로 분류, BASE/integration 직접 재현 NOT_RUN. RF-061 Step5C 직접 테스트 NOT_RUN. **B는 A의 기존 5 FAIL 출처 분류를 반복하지 말고** 원래 C4 중 보호 제외 첫 미검증 소비자·효과 경계만 exact SOURCE로 독립 확인한다. **B는 정확 A/integration SOURCE의 안전한 원래 C4 경계를 독립 검토**하되 C03의 C1~C3 수용과 보호 경계를 분리하고 RF-015/031 우선. RF-040 Executor, RF-061 Step5C 보호 실행·수정 금지; Owner 증거를 full peer로 오인 금지.
 
 **[C03의 현재 미CLAIM READY 10건 배정표](C03_LEAD_TRIAGE_CURRENT.md)를 따른다.** 이 표는 `01_PENDING/UNASSIGNED`의 후보이며 **현재 CLAIM/DEV/DONE이 아니다**. 기존 C1~C5 우선 미완료·peer/full PASS를 포기하지 않는다. **최대 2건만 동시 CLAIM**, 자기 기존 브랜치 HANDOFF에 독점·CLAIM/SOURCE SHA를 적고 C05의 실물 큐/STATUS 동기화를 기다리는 동안 다른 안전 READY RF도 계속한다.
 
