@@ -326,3 +326,12 @@
 - Note: A branch still carries BASE blob `5de4ec68` (A does not own this RF; integration already has `fdde6c82`, so no A-side change made).
 - Not covered: remaining RF-063 scripts; this is not full RF-063 PASS.
 - External effects: none besides this push.
+
+## run153 — RF-029 C4 (Owner, B ask: distinct facade→bundle boundary) (A=integration blobs identical)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| [RF-029](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md) | C3/C4 (scoped) | `trade_story_pipeline.py 2d64151e`, `trade_story_assembly_parts/lifecycle_bundle.py 9bcac004`, `trade_story_facade_parts/dependency_maps.py eb8a351b` (A=integration) | SCOPED_PASS: `evidence/run103_boundary_scripts/rf029_facade_bundle_peer.py <tree>` normal/-O exit 0/0, identical `RF029_FACADE_BUNDLE_OK keys=34` | owner ACTION for remaining files, B independent re-run on exact SHA, C6/C7 C05 | Codex B |
+- Checks: (1) facade `build_lifecycle_bundle` output == owner `build_lifecycle_bundle(deps=facade._story_assembly_deps())` (timestamps stripped); (2) monkeypatching `facade.compute_evidence_completeness` reaches the owner at call time (0.77 observed); (3) dep exception propagates (ValueError, not swallowed); (4) inputs not mutated; (5) owner source never references the facade.
+- Sandbox: temp cwd, socket connect/Popen blocked, write-mode `open` blocked. No broker/network/order.
+- Not covered: other facade→owner paths (human payloads, evidence enrichment); this is not full RF-029 PASS.
+- External effects: none besides this push.
