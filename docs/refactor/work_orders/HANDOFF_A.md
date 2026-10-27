@@ -248,3 +248,37 @@
 - **RF-047 final ACTION KEEP_VERIFIED:** `libs/diagnostics` ← `scripts/diagnostics/` 10 CLIs (`check_log_archive_integrity`, `generate_ops_diagnostic_report`, `query_trade_reason_chain`, `reconstruct_incident_timeline`, `run_m23/24/26/27/29_closeout_check`, `run_m29_log_archive_integrity_check`) + `tests/test_diagnostics_shared_owners.py`. Effects: archive reads, `cli_capture` output capture used by CLIs; writes only where the CLI is given an output path (run141b).
 - Evidence reused: A run141b; B `B-20261027-RF046-047-KEEP` 63/63 normal/-O. No reruns.
 - External effects: none besides this push. Next: remaining Owner table rows (031/014/016/028/029/033/034/032) only on new requests.
+
+## run148 — RF-014 C1 (Owner): 20-owner per-file ACTION (integration 46bccca6; read-only `git rev-parse`/`git grep`/`git show`, nothing executed)
+| RF | C | SOURCE | 범위 | 판정 | 첫 미충족·해제 담당 |
+|---|---|---|---|---|---|
+| 014 | C1 | 20 owner blobs BASE=integration=A=B (below) | per-file ACTION/consumer/effect | PASS (owner C1) | B original C1 match → C05 |
+- Structure: all 16 non-`__init__` files are the **single canonical implementation**. Each `libs/runtime/scanner/<name>.py` is a V3-055/V4-056 compatibility shim that replaces itself in `sys.modules` with the canonical module (identity-preserving, no code). Production entry is `graphs/nodes/scanner_node.py` via the runtime path. I/O grep (`open/write_text/mkdir/requests/urlopen/subprocess`) = 0 hits in all 20 → pure functions.
+- Movement/oracle pins: `tests/test_p154_wave_b_moved_bodies.py` (context/policy bodies), `test_p166_v1052_candidate_risk_migration.py`, `test_p167/168/171` (context/shim negatives/projections), `test_p159_current_owner_contract_gates.py` (projection owner gates). Moving or editing a file would break these frozen migration oracles → no MOVE.
+
+| File (`libs/agents/scanner/…`) | blob | ACTION | Runtime shim / pins |
+|---|---|---|---|
+| `__init__.py` | d0176c7a | KEEP (package) | — |
+| `candidate_risk.py` | 8dea30ae | KEEP_VERIFIED | `runtime/scanner/candidate_risk`; p166/p167/p168/p171 |
+| `context/__init__.py` | bfd3a052 | KEEP (package) | — |
+| `context/feature_coverage.py` | 32ad1370 | KEEP_VERIFIED | shim; p154 |
+| `context/macro_chart_fit.py` | 7a5828c8 | KEEP_VERIFIED | shim; p154 |
+| `context/macro_focus.py` | 24170e43 | KEEP_VERIFIED | shim; p154, p168 |
+| `context/scoring_inputs.py` | b436430e | KEEP_VERIFIED | shim; p154, p168 |
+| `context/sentiment_inputs.py` | f514156e | KEEP_VERIFIED | shim; p154 |
+| `policy/__init__.py` | ef4a8b56 | KEEP (package) | — |
+| `policy/blocker_family_overlay.py` | 81d59515 | KEEP_VERIFIED | shim; p154 |
+| `policy/compatibility.py` | 323d5a54 | KEEP_VERIFIED | shim; p154 |
+| `policy/guidance.py` | 3318a80a | KEEP_VERIFIED | shim; p154 |
+| `policy/repeat_guard.py` | 5f794e54 | KEEP_VERIFIED (repeat contract → RF-009; B dynamic peer reused) | shim (V4-056); p154 |
+| `policy/symbol_prior.py` | 9bbc39ae | KEEP_VERIFIED | shim; p154 |
+| `projections/__init__.py` | cd9db42c | KEEP (package) | — |
+| `projections/candidate_context_projection.py` | 15fd6fc2 | KEEP_VERIFIED | shim; p159, p171 |
+| `projections/control_eligibility.py` | d4701304 | KEEP_VERIFIED (risk/NOOP eligibility; B dynamic peer reused) | shim ← `graphs/nodes/scanner_node.py` |
+| `projections/output_payloads.py` | fe5e34d5 | KEEP_VERIFIED | shim; p171 |
+| `projections/output_snapshots.py` | 02ef48a4 | KEEP_VERIFIED | shim ← `scanner_node.py`, `scripts/refactor/p170_v3055_projection_capture_plugin.py` |
+| `projections/selection_evidence_projection.py` | bf20e9af | KEEP_VERIFIED | shim; p159, p171 |
+
+- C4 evidence reused, not rerun: B `B-20261027-RF014-DYNAMIC-PEER` (shim→RF-009 repeat/risk/NOOP normal/-O) and A run103 `rf014_top1_selected_fixture.py`.
+- B ask (original C1 only): match the 20 rows against the exact blobs. No new dynamic tests needed.
+- External effects: none besides this push.
