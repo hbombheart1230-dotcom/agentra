@@ -1,29 +1,37 @@
-# C03 — 지팀장① | RF 판정·A/B 배정 보드
+# C03 — 지팀장① | 오늘 배정·수용 현황
 
-> 진입점 **C03 + [D00](D00_ENGINEERING_DELIVERY_POLICY.md)**. `CURRENT.md`는 폐기된 구 진입점. **이 파일은 실행할 RF 링크만 제시한다.** RF별 세부 지시/검증 목록 재작성 금지.
+> **한눈에 보는 RF 라우터.** [D00 원칙](D00_ENGINEERING_DELIVERY_POLICY.md) · [전체 STATUS](../plan/STATUS.md). 구 `CURRENT.md` 사용 금지. **검증 명세는 C03이 쓰지 않는다. 링크의 RF 원본 `## DONE 체크`가 정본이다.**
 
-## 지금 하는 일
+## 🔴 지금 처리할 RF
 
-| 우선 | 처리 대상 | 이 회차 책임 |
-|---|---|---|
-| 1 | [A HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) / [B HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md) | 신규 SOURCE/독립 peer 결과를 **해당 RF 원본 C1~C5에 대조** |
-| 2 | B Owner → A Peer: [RF-063](../plan/queue/02_DEVELOPING/CODEX_B/RF-063.md), [RF-065](../plan/queue/02_DEVELOPING/CODEX_B/RF-065.md), [RF-067](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-067.md), [RF-069](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | 첫 미충족 체크를 **[C01](C01_CODEX_CURRENT.md)·[C02](C02_CLAUDE_CURRENT.md)**에 RF 링크와 담당만 배정 |
-| 3 | A Owner → B Peer: [RF-014](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md), [RF-015](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md), [RF-016](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md), [RF-028](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md), [RF-029](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md), [RF-031](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md), [RF-032](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-032.md), [RF-033](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-033.md), [RF-034](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-034.md), [RF-050](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | 기존 독립 증거 재사용, **원본 실제 남은 체크만** 배정 |
-| 4 | [STATUS 실물 큐](../plan/STATUS.md) / [LEAD 큐](../plan/queue/04_LEAD_ACCEPTANCE/) | 유효한 C1~C5·반대 peer full PASS 후보를 **C05에 제안** |
-| 병행 P0 | [RunLab #32 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md) | 신규 사실만 접수·owner 후보 매핑; 보호 실행/원인 단정 금지 |
+| 순번 | 실제 RF 원본 링크 | 다음 행동 / 담당 |
+|---:|---|---|
+| 1 | [RF-014](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | A C1 20-owner 제출 → **B C4 정확 SOURCE·기존 peer 범위 대조** |
+| 2 | [RF-031](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | **A C2 owner 증거 → B 첫 미검증 recovery peer** |
+| 3 | [RF-050](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | B C4 UI caller/failure 원래 필수 범위 peer |
+| 4 | [RF-015](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | A C2 Monitor State/event/consumer; 기존 BASE 11 FAIL 재사용 |
+| 5 | [RF-065](../plan/queue/02_DEVELOPING/CODEX_B/RF-065.md) | **B C1** 연구 CLI 잔여 안전 검증; 기존 scoped 재실행 금지 |
+| 6 | [RF-063](../plan/queue/02_DEVELOPING/CODEX_B/RF-063.md) | B C1 잔여 owner 근거 |
+| 7 | [RF-067](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-067.md) | **A C4** B가 지정한 안전한 미검증 target만 독립 peer |
+| 8 | [RF-069](../plan/queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | 역사 UEF5 snapshot **SAFETY_BLOCKED/NOT_RUN**, 다른 RF 진행 |
 
-## 절대 운영 루프
+**나머지 우선 RF:** [RF-016](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) · [RF-028](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) · [RF-029](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md) · [RF-032](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-032.md) · [RF-033](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-033.md) · [RF-034](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-034.md). 실제 남은 C 번호·최신 증거는 **각 RF 원본**에서 읽는다.
 
-1. 신규 HANDOFF → **실제 RF 원본 `## DONE 체크`** → SOURCE SHA/원래 범위/기존 증거 순으로 확인한다.
-2. 필요한 경우에만 C01/C02에 `RF 링크 | 미충족 C번호 | Owner→Peer | 부족 사유 1줄 | 다음 담당` **한 줄** 추가한다. **RF 내용 복붙·독립 재테스트 전수 지시 금지.**
-3. 한 RF 차단 시 다음 안전 RF로 넘어가며, A/B가 한 건 끝내고 중단하지 않도록 다음 READY 링크를 유지한다.
-4. C1~C5 전체 증거가 충족되면 **C05에 근거만 인계**한다. C03은 RF 체크·상태·STATUS를 고치지 않고 C04 소스를 사전 통합하지 않는다.
+## ▶ 다음 인계
 
-**한눈에 보는 최신 상태:** [STATUS](../plan/STATUS.md)가 유일한 수치 정본. 마지막 확인 93 RF: PENDING 51 / DEV 9 / PEER 14 / **LEAD 3** / DONE 16 / REWORK 0. LEAD RF-052/046/047은 **이미 C05가 실물 이동**했으므로 구 'LEAD 0/LEAD_READY 제안' 문구를 다시 쓰지 않는다. 보고: `새로 해제된 체크 수 | 배정 RF 링크 | C05 인계 RF | 실제 BLOCKED 원인`.
+| 바로가기 | 상태 · C03이 할 일 |
+|---|---|
+| [C01 B 작업판](C01_CODEX_CURRENT.md) / [C02 A 작업판](C02_CLAUDE_CURRENT.md) | **원본 RF 링크 + 첫 부족 C번호 + 해제 담당**만 최신화. 한 건 후 멈추지 않도록 다음 READY 유지 |
+| [A HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) / [B HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md) | 신규 delta만 대조. 같은 SHA/범위 검증 재실행 금지 |
+| [C05 종결판](C05_LEAD_CLOSEOUT_CURRENT.md) / [C04 통합판](C04_LEAD_INTEGRATION_CURRENT.md) | C1~C5 **전체** + 정확 SOURCE·반대 full peer PASS일 때만 C05에 LEAD 제안 |
+| [RF-046](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-046.md) · [RF-047](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-047.md) · [RF-052](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-052.md) | **이미 LEAD 3건**. C03 재승인/사전 통합 금지, C04 C6 → C05 C7 |
+| [RunLab #32 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md) | 적용 SHA UNKNOWN: 새 사실만 분류, 운영/안전 변경 승인 없이 수행 금지 |
 
-## C03 신규 증거·배정 delta (2026-10-27 18시 KST)
-- [RF-014](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md): A run148은 20-owner C1 ACTION/consumer/effect 표를 제출했다(A HEAD 972d11d8). 기존 B RF014-DYNAMIC-PEER는 shim→RF-009 scoped normal/-O만. **B가 20-owner 원본 범위·정확 SOURCE와 기존 peer를 대조해 최초 부족 C4만 검증**. C1 원본 체크 미변경, full PASS/LEAD_READY 아님.
-- [RF-015](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md): A run145 + B RF015-BASELINE에서 역사 11 FAIL은 BASE와 동일. B의 추가 1 FAIL은 B-only frozen Commander inventory로 Monitor owner 회귀가 아님. C3 전체 PASS 아님; 다음 **A C2 Monitor State/event·consumer** 첫 안전 경계. 역사 11 FAIL 재실행 금지.
-- [RF-031](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md): B RF031-CALLER 8/8은 정상 writer scoped peer, **C2 partial-OSError downstream recovery**가 최초 미충족. [RF-050](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md): B RF050-CALLERS 10/10은 Reporter/Strategist scoped peer, **C4 UI primary→repair→line fake**가 최초 미충족. 각 기존 PASS 재사용.
-- [RF-065](../plan/queue/02_DEVELOPING/CODEX_B/RF-065.md): B 신규 attribution-window/conditional-alpha/integrated-trade/trade-explain temp-only CLI scoped 증거, 최신 B HANDOFF 기준 **37개 안전 후보 CLI 의미 검증 잔여**. C1 PARTIAL, B 다음 미검증 안전 1건. RF-063 C1 잔여 63, RF-067 C4 target 잔여 12, RF-069 historical UEF 보호 NOT_RUN 유지.
-- C05 신규 인계 **0건**: RF-052/046/047은 이미 LEAD 실물 3건; 신규 C1~C5 full peer PASS 확인 없음. RunLab #32 신규 운영 관측 없음, RUN_SOURCE_SHA=UNKNOWN / SAFETY_HOLD. RF 체크·실물 이동·STATUS·DONE·코드 변경 0.
+## 절대 운영 규칙
+
+- **각 RF 원본의 미체크 C1~C5·최신 검사 기록을 직접 읽고 최초 부족 한 항목만 배정.** 이미 충분한 SOURCE·peer 근거면 C05로 넘긴다. 이 문서에 RF별 기술 지시/근거 표를 복사하지 않는다.
+- C01/C02의 **현재 RF 링크/담당 행을 갱신**하되 누적 `C03 delta` 섹션을 끝없이 덧붙이지 않는다. 이미 처리한 배정은 교체/정리한다. 장황한 검증/테스트 세부는 RF와 HANDOFF에 남긴다.
+- 막힌 RF 하나가 A/B 전체 세션을 차단하지 않도록 다음 안전 READY를 연결한다. 작업자의 별도 승인 기다림 금지(보호 작업은 별도 명시 승인).
+- C03은 C1~C5 근거 **권고/배정만**. 체크·실물 이동·STATUS는 C05, source 통합/CI는 C04 단독. 보고: `RF 링크 | 최초 부족 C | 담당 | C05 인계 여부 | 다음 링크`.
+
+**현재 확인 스냅샷:** 93 RF = PENDING 51 / DEV 9 / PEER 14 / LEAD 3 / DONE 16 / REWORK 0. 우선 14건은 DEV 2 + PEER 12, 신규 LEAD 아님. 최신 [STATUS](../plan/STATUS.md)와 **실물 RF**가 수치 정본이다.
