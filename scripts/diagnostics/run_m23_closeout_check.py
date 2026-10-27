@@ -134,7 +134,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(json.dumps(summary, ensure_ascii=False))
     else:
         print(
-            f"ok={summary['ok']} day={day} commander_total={total} "
+            f"ok={summary['ok']} day={summary['day']} commander_total={total} "
             f"cooldown_transition_total={cooldown_transition_total} "
             f"intervention_total={intervention_total} error_total={error_total}"
         )
