@@ -4,7 +4,7 @@
 
 ## P0 공통 RunLab #32 — 지팀장 배정 조사 (D04)
 
-**사건:** [RUNLAB32-20261027 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md) · [D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md). **개발 Codex B**는 `RL32-ORDER/GUARD`(mock SELL 출처/로컬 기록 누락, buy/sell fill-truth·TTL, broker↔local reconciliation, readiness) **소스 읽기 전용 추적·격리 fake 재현만 담당**한다. `execute_from_packet.py` 등 보호 경로는 임의 수정하지 않는다. 실행 이미지 `RUN_SOURCE_SHA=UNKNOWN`이므로 현재 개발 HEAD 결함이라고 단정하지 않는다. 확인한 source SHA·producer/consumer·재현 범위/NOT_RUN·소유 RF 후보를 HANDOFF_B의 신규 delta로 지팀장에게 전달한다. **RF 소유 판정·안전 변경 승인은 지팀장/사용자**. 별도 RunLab PC의 Codex 스케줄 작업을 변경하거나 대신 실행하지 않는다. P0 신규 사실 인수 후 기존 RF-052/043 peer·일반 RF 개발을 계속한다.
+**사건:** [RUNLAB32-20261027 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md) · [D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md). **개발 Codex B**는 `RL32-ORDER/GUARD`(mock SELL 출처/로컬 기록 누락, buy/sell fill-truth·TTL, broker↔local reconciliation, readiness) **소스 읽기 전용 추적·격리 fake 재현만 담당**한다. `execute_from_packet.py` 등 보호 경로는 임의 수정하지 않는다. 실행 이미지 `RUN_SOURCE_SHA=UNKNOWN`이므로 현재 개발 HEAD 결함이라고 단정하지 않는다. FILE_COVERAGE 파일 owner 매핑: ORDER `graphs/nodes/execute_from_packet.py` RF-012, `libs/read/kiwoom_order_fill_reader.py` RF-055; GUARD `graphs/nodes/build_execution_readiness.py` RF-012, `libs/execution/{recent_order_guard,order_lifecycle_policy,execution_readiness}.py` RF-048. **이것은 파일 owner이지 결함 원인 확정 아님.** 실제 producer/consumer·source SHA·재현 범위/NOT_RUN·결함 owner 후보를 HANDOFF_B 신규 delta로 지팀장에게 전달한다. **RF 소유 판정·안전 변경 승인은 지팀장/사용자**. 별도 RunLab PC의 Codex 스케줄 작업을 변경하거나 대신 실행하지 않는다. P0 신규 사실 인수 후 기존 RF-052/043 peer·일반 RF 개발을 계속한다.
 
 ## 즉시 실행
 
