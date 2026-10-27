@@ -506,3 +506,10 @@
 - Limits: downstream modules were fakes, so this verifies argument wiring only, not that real `build_opening_rank1_shadow` (writes under `--reports-root`) or `run_integrated_trade_diagnosis` stay inside the given roots; `longitudinal_path` still defaults to a cwd-relative `reports/...` read path (unchanged, read-only). Harness reports uncaught exceptions without a real traceback exit, so rc shown as 0 for those two cases is the harness, not the CLI (real CLI would exit 1).
 - Not run: real writer, broker, network, operational reports, protected UEF/Executor. Scoped peer, not RF-065 DONE and not C1~C4 full PASS.
 - External effects: none besides this push.
+
+## run162 — RF-067 C4 (Peer of B): protected 2 root wrappers, fake-module only (integration c78e2657; `scripts/check_daily_uef_run_status.py` blob 7a531b73, `scripts/check_real_execution_preflight.py` blob 27ac1cf1; both B=integration)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| RF-067 | C4 | B=integration wrappers (blobs above) | SCOPED_PASS (wrapper mechanics only): exact wrapper blobs from `git archive` into scratchpad temp beside a **self-written fake** `scripts.diagnostics.<target>` (real targets 4a648f34/468ee8c6 never imported or run). Per wrapper × normal/`-O` (`python -I`): as `__main__` argv passthrough empty/`--x 1` rc 0, target `SystemExit(3)` → rc 3, target exception → rc 1 traceback; import mode `sys.modules["scripts.<name>"] is scripts.diagnostics.<name>` True. 2 wrappers × 2 modes × 5 = 20/20 as expected. temp tree listing identical before/after (no write) | with run137/138/138b/138d/138e/151 A evidence B maps 12/14 targets; these 2 cover **wrapper mechanics only** — real `check_daily_uef_run_status` (UEF) and `check_real_execution_preflight` (broker preflight) behavior stays NOT_RUN/SAFETY_HOLD (needs D00 user approval) so C4 is not full PASS; C6/C7 C05 | Codex B / 지팀장 / C05 |
+- Not run: real targets, UEF, broker/real-execution preflight, network, Windows Task Scheduler. Scoped peer, not RF-067 DONE.
+- External effects: none besides this push.
