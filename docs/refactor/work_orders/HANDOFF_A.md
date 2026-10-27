@@ -213,3 +213,21 @@
 - Single shared cause for all 11: `scripts/refactor/shared_strategist_contracts.py:94` (`verify_runtime → verify_b_scope → verify_commander_pure_v1 → verify_b_composed`) `B-stage composed unexpected/missing inventory` = exactly **21 docs/governance paths, 0 code paths**: `AGENTS.md`, `CLAUDE.md`, `docs/ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/README.md`, `docs/refactor/plan/{done,troubleshooting/closed}/.gitkeep`, `docs/refactor/plan/pending/P1.5.0..P1.5.11.md` (12), `docs/refactor/plan/troubleshooting/open/{P15_BRANCH_CLEANUP,P15_SOURCE_ADMISSION}.md`, `docs/refactor/work_orders/CURRENT.md`. These are P1.5 bootstrap docs at BASE, not Monitor owner files → pre-existing baseline, not an RF-015 regression.
 - Separate (B-only, not in BASE): `test_p173_p058_integration_contracts.py::test_combined_agent_tree_is_exactly_the_versioned_allowlist` → `Commander exact package inventory` from B-new `libs/agents/commander/contracts.py` (run141). Needs frozen-oracle decision by 지팀장; not an RF-015 Monitor behavior defect.
 - External effects: none besides this push. Next: Owner 050 C4 (LLM router/cache contract).
+
+## run146 — RF-050 C4 (Owner): 8-owner SOURCE + original call/cache contract for B scoped peer (integration 01c11f99)
+| RF | C | SOURCE | 범위 | 판정 | 첫 미충족·해제 담당 |
+|---|---|---|---|---|---|
+| 050 | C4 | 8 owner blob BASE = integration = B (below) | static caller/cache contract (read-only `git grep`, no execution) | PASS (owner contract provided) | B caller-side injected fake `LLMRouter.chat` peer → 지팀장 |
+- Blobs (BASE/integration/B identical): `__init__ 35d6bd0b`, `json_response e72f5e70`, `llm_router 4cb5f6c4`, `model_catalog 3d3ab4da`, `model_catalog_store 0095d766`, `model_names a5cabbd9`, `openrouter_client 9a463948`, `router bff4dff4`.
+- Call contract (non-test, non-`libs/llm` importers):
+  - `llm_router.LLMRouter` (ACTIVE): `graphs/nodes/strategist_node.py`, `apps/operator_ui/data_access_core.py`, `libs/reporting/{fact_narrative_report,llm_daily_summary,reporter_ai_review,trade_report_ai}.py`.
+  - `model_catalog` (ACTIVE): `resolve_model_profile/resolve_execution_profile` ← `graphs/commander_runtime.py`; `resolve_policy_llm_slot/_execution_slot` ← `libs/ai/strategist_config.py`, `libs/reporting/{daily_report,llm_daily_summary,operator_visibility,reporter_ai_review,trade_report_ai,trade_report_runtime_policy}.py`; `build_execution_profile_observability` ← +`fact_narrative_report`, `trade_report/services/{ai_report,trade_summary}.py`.
+  - `model_names.normalize_openrouter_model_name` (ACTIVE): strategist_node, data_access_core, `libs/ai/{providers/openai_provider,strategist_config}.py`, 7 reporting modules.
+  - `json_response` (ACTIVE): `parse_llm_json_response/required_key_metadata` ← operator_ui `data_access_{brief,core}`, reporting `fact_narrative_report`, `reporter_ai_review`, `trade_report_ai`, `trade_report/{llm,prompting,services/ai_report,services/trade_summary}`; `extract_json_object_loose/strip_fenced_code_block` ← `libs/ai/providers/openai_provider.py`.
+  - `openrouter_client` (ACTIVE via `llm_router` only; `ChatMessage` also used by legacy `router`).
+  - `router` (COMPAT_KEEP): 0 prod importers; only `tests/test_m20_3_legacy_llm_router_compat.py` + docs (m20_3). No removal.
+  - `__init__` (COMPAT): `from libs.llm import LLMRouter` documented in `docs/plan/m19_5`; 0 code importers.
+- Cache/IO contract: `model_catalog_store` default `data/model_catalog/`; writes only through `save_openrouter_models/save_model_cards` (`_write_json`: mkdir + write_text) and network only through `fetch_openrouter_models` (urlopen); sole prod caller `scripts/maintenance/sync_openrouter_model_catalog.py` (maintenance CLI, not runtime). Runtime callers are read-only.
+- Prior owner evidence reused (no rerun): run110 `rf050_policy_lookup.py`, run111 `rf050_client_store.py` normal/-O exit 0.
+- B next (scoped): the caller list above with injected fake `LLMRouter.chat` (raise/timeout/bad JSON) proving no State mutation, no network/write. External/dynamic consumer provenance stays UNKNOWN (operator owner).
+- External effects: none besides this push. Next: Owner 031 C2.
