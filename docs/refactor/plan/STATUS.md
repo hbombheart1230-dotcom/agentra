@@ -1,42 +1,38 @@
-# Agentra P1.5 — STATUS (현재 상태만)
+# Agentra P1.5 — STATUS
 
-**정본:** `integration/p1.5`의 [CURRENT](../work_orders/CURRENT.md), 상시 정책은 [D00](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md). 2026-10-27 LEAD 해제 작업 A/B 재배정 기준 원격 큐; 지난 회차 상세·명령·로그는 개별 RF와 Git 커밋 이력에 보존.
+정본: `integration/p1.5:docs/refactor/work_orders/CURRENT.md`. 정책 D00은 읽기 전용. 상세 재현은 기존 RF·HANDOFF와 Git 이력. **새 운영 source 통합 0 / 새 DONE 0**.
 
-## 실물 현황
+## 물리 큐·SHA
 
-| PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | 합계 |
-| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 61 | 3 | 1 | 14 | 14 | 0 | **93** |
+PENDING **61** / DEVELOPING **3** / PEER **1** / LEAD **14** / DONE **14** / REWORK **0** = **93 RF 단일 경로**(.gitkeep 제외, 중복 0). LEAD: 014,015,016,028,029,031,032,033,034,050,063,065,067,069.
 
-93개 RF는 각 1개 경로만 존재한다. 최근 LEAD 신규 DONE **0**, 신규 운영 소스 통합 **0**. 최근 반복 회차는 개별 RF의 scoped synthetic 증거를 보강했지만 **코드 진척으로 계산하지 않는다**. 최신 A `1fe4efe3`: B 원개발 RF-063 DR Windows temp, RF-065 실제 scorecard→Stage2 writer, RF-067 reports/trades target **독립 scoped peer**, source0. B `2b1cd7da`: A 원개발 RF-031 실제 writer·부분 OSError **독립 scoped peer 보고**, source0(하네스 미보존). 전체 DONE 아님, 같은 SHA/경계 재실행 금지.
+- 기준 integration `ec1e302fbce72b7c56a74767bc5d474d65dd59b5`: 최근 변화는 RF-031·STATUS·CURRENT 문서만. A `61e6aadc03b3dba277e9c67f618067f25ef4647a`: 기존 `1fe4efe3` 이후 운영 source 0, 보존된 독립 CLI 경계 스크립트 7개와 HANDOFF. B `b2399dfb9310cc5f23afe376bd2ce910b6be0313`: 기존 `2b1cd7da` 이후 HANDOFF만, 운영 source 0·재현 peer 하네스 미보존.
+- **A 독립 peer — 범위 한정:** RF-063 diagnostics `run_*` 46 CLI 및 효과형 `check_*` 4 CLI 실제 subprocess, RF-065 research 기본 실행 46 CLI + 필수 인자 정상경로 19, RF-067 위임 target 추가 6종 등. A 보고 BASE/integration × normal/`python -O` 동일·격리 tmp only, 현 지팀장 재실행 **NOT_RUN**. CLI 의미 완전성·실제 Windows Scheduler·보호 실호출 PASS 아님.
+- **B 독립 peer — 보고 범위 한정:** RF-031 caller fake ledger/memory 및 강제 최종 Markdown OSError, normal/`-O` 각각 exit 0 **B 보고**(`RF031_CALLER_LEDGER_MEMORY`, `RF031_PARTIAL_CONSUMER`). 다른 014/015/016/028/029/032/033/034/050도 독립 scoped marker 보고. 하네스/정확 실행 명령 미보존이므로 재현 가능한 전체 peer PASS·DONE으로 확대 금지. RF-031 pytest 호출은 `No module named pytest` normal/`-O` 각 exit 1 **ENV**, CODE REWORK 아님.
 
-**현재 LEAD:** RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069. RF-069만 역사적 UEF5 승인 자료 부재의 `SAFETY_HOLD`; 나머지는 아래 **최초 미충족 게이트**가 있는 `HOLD/NOT_DONE`. 동일 증거 재실행 금지.
+## LEAD 최초 남은 게이트·책임
 
-## LEAD 14건 — 최초 새 해제 게이트만
-
-| RF | 미충족 소비자·효과·독립 검증 / 다음 실행 책임 |
+| RF | 첫 부족 경계 · 해제 담당 |
 | --- | --- |
-| 014 | Scanner 실제 dynamic ranking/NOOP chain; B 독립 peer |
-| 015 | Monitor 기존 11 FAIL의 BASE 동일 조건 원인·B-only 2파일 소비자; B |
-| 016 | news-query→strategic_answers 실제 facade/State·예외; B 독립 peer |
-| 028 | trade-report 정식 rich schema→read/render/writer 외부 소비자; B |
-| 029 | story bundle v1/v2 및 external-root truth facade; B |
-| 031 | B 실제 writer·부분 OSError scoped 수용. 최초 부족: Reporter caller State/예외 복구·부분 산출 소비자, B 독립 temp-only |
-| 032 | public `validation_id` 경계, Exit Horizon, scorecard→Stage2 부분 실패(B); cumulative 신규 writer(A); 보호 UEF 사용자 승인 |
-| 033 | InputWorker→storage·Windows Thread 예외; A/B 신규 독립 경계 |
-| 034 | casebook→Scanner와 latent producer cache/output-root; B, closeout 안전 범위 승인 |
-| 050 | Operator 3-stage LLM primary/repair/line fallback·State; B 독립 peer |
-| 063 | A DR Windows temp scoped 수용. 최초 부족: 나머지 effectful diagnostics CLI·스케줄러, A peer |
-| 065 | A 실제 scorecard→Stage2 scoped 수용. 최초 부족: 나머지 effectful research CLI·외부 소비자/스케줄러, A peer |
-| 067 | A reports/trades delegated target scoped 수용. 최초 부족: 나머지 target PATH/exit/fail-closed·Windows 소비자, A peer |
-| 069 | 사용자/증거 소유자가 승인 historical UEF5 snapshot **path/SHA/use-scope** 제공 전 수행 금지 |
+| 014 | shim→실 runtime Top1/ranking/NOOP 동적 소비자 · B |
+| 015 | 역사 11 FAIL의 BASE node별 대응·B-only 2파일 실사용 확인 · B, 새 소비자 발생 시 A peer |
+| 016 | news-query→strategic_answers 예외 projection·외부 dynamic 소비자 · B |
+| 028 | 정식 rich schema memory/monitor→summary/full renderer·writer · B |
+| 029 | external truth-root 실제 읽기/실패·State 예외 · B |
+| 031 | 부분 파일 실패 뒤 Reporter **downstream 복구 소비자** · B (reproducible tmp-only 하네스·명령·exit 필요) |
+| 032 | public validation_id 신뢰·Stage2 부분 OSError 및 보호 UEF 승인 · B/사용자 |
+| 033 | provider→storage 실패 시 State/파일 부작용·복구 · B |
+| 034 | casebook→Scanner 소비자; 이후 latent producer temp cache/output · B |
+| 050 | model_catalog_store temp 캐시 artifact/부분실패 · B |
+| 063 | effectful CLI 기본 외부 경로·실 Windows scheduler 소비자. BASE 기존 `run_m23_closeout_check` text-mode `day` NameError 확인, 변경은 별도 사용자 승인 · A/사용자 |
+| 065 | 안전 범위 소진; 실데이터 의미·보호 CLI·Windows Scheduler/외부 소비자 · 사용자/검증 환경 소유자 |
+| 067 | 보호 preflight/UEF 및 Windows Task Scheduler·PowerShell live 경계 · 사용자/검증 환경 소유자 |
+| 069 | historical UEF5 snapshot **path/SHA/use-scope** 승인 전 SAFETY_HOLD · 사용자/증거 소유자 |
 
-**통합 CI 인수 범위:** Safety SUCCESS `40332899631@0da98a47`와 `graphs/libs/scripts/tests/apps/.github` 대상 소스 tree 동일한 범위의 기존 normal/-O만 재사용. Web SUCCESS `40073316192@1374d371`와 `apps/web`·`apps/api`·Web workflow 동일 범위만 재사용. 문서-only HEAD에 CI를 실행했다고 주장하지 않는다. 실제 코드 수정이 생기면 그 SHA에서 필요한 새 검증을 실시.
+RF-063에서 기본 repo `data/reports` 쓰기, cwd별 경로 분기, 연구 CLI의 기본 Kiwoom 인증 진입도 A 안전 격리에서 관찰. 실 인증·브로커·운영 경로 실행은 **NOT_RUN**. 위는 기존 BASE 동작과 같아 신규 원개발 REWORK로 자동 분류하지 않음.
 
-## 실제 변경·미해결
+## 재사용 검증·RunLab·안전
 
-- **LEAD 우선 재배정 (원래 RF 소유권 유지):** A는 **B 원개발** RF-063 → 065 → 067의 남은 CLI·State·쓰기·Windows/스케줄러 효과를 안전한 temp-only **독립 peer**로 해소. RF-015의 B-only 2파일도 B가 새 소비자 근거를 제출한 경우 A가 추가 독립 검증. B는 **A 원개발** RF-031 → 050 → 016 → 029 → 033 → 014 → 028 → 034 → 015 → 032의 최초 부족한 실제 소비자·State·효과 검증을 담당. B 자신의 RF-063/065/067의 owner 소비자 분류도 필요 시 A에게 먼저 제공. **RF-069** historical UEF5 snapshot은 사용자/증거 소유자의 path/SHA/use-scope 승인 전 수행 금지. 신규 PENDING 업무·기존 scoped marker 재실행은 후순위. A/B는 peer 증거만 제출, **지팀장이 LEAD→DONE 판정·물리 이동**. 자세한 실행 순서는 CURRENT와 각 RF. 운영 코드 수정 필요 시 사용자 사전 승인.
-- **RunLab #32 (10/27 09:38):** mock SELL `0045749`(229200, 1주) 접수·체결/보유 출처 UNKNOWN, sell guard fill-truth=-1. 전일 BUY guard는 비워졌으나 해제 원인 UNKNOWN; 전일 SELL `0020349` local 누락 지속. OCI 실행 SOURCE_SHA UNKNOWN. healthy ≠ 거래/State PASS. `SAFETY_HOLD`, 승인 없는 재배포·안전 수정 금지.
-- **troubleshooting:** open 4 (`BRANCH_CLEANUP`, `RF012_FINITE`, `RF020_SCOPE`, `SOURCE_ADMISSION`); closed 1 (`DOC_CI`). 해제 증거 없이 임의 이동하지 않는다.
-- **브랜치:** 정상 작업 범위는 `main`(보호)/`integration/p1.5`/A/B, 합계 4개. 잔존 `lead/*` 3개는 각각 docs/RF 이력 중심이고 integration과 diverged; 삭제 전 고유 commit·백업·외부 사용/권한을 확인한다. 신규 lead 브랜치 생성 금지. 삭제 도구가 없어 이번 처리에서 원격 삭제는 `NOT_RUN`.
-- **운영 문서 안정화:** CURRENT/STATUS 누적 회차 삭제, D00은 단일 규칙. 처리할 신규 변화가 없으면 `NO_DELTA`로 RF/문서/코드 쓰기를 모두 생략한다.
+- CI 재사용은 **동일 source/test/workflow tree에 한정**: Safety SUCCESS `40332899631@0da98a47`, Web SUCCESS `40073316192@1374d371`. 이번 최신 문서/peer-only 커밋에 대한 신규 CI **NOT_RUN**.
+- RunLab #32 최신 확인 증거는 2026-10-27 **09:38 KST** 독립 검증. mock SELL `0045749` 체결·보유 출처 불명, 어제 SELL `0020349` 출처/로컬 누락, OCI `RUN_SOURCE_SHA=UNKNOWN` ⇒ 런타임 전체 BLOCKED; 무승인 재배포·주문·가드 수정 금지. 이 회차 후속 신규 Issue 증거 없음.
+- D00·main·Broker/Supervisor/Executor/Step5C/UEF·frozen CI/테스트·운영 데이터·스케줄 변경 0. 기존 troubleshooting 4 open/1 closed 유지; 해결 근거 없어 이동 0. 사용자 승인 전 운영 소스 수정 0. 선별 통합 대상 없음.
