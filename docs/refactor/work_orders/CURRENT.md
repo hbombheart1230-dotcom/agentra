@@ -3,13 +3,13 @@
 **목표: 93개 RF 전체 종결. 새 증거 인수→판정→가능한 통합·DONE→A/B 다음 배정을 연속 반복하라.**
 브랜치: `integration/p1.5` · 공통: `D00_ENGINEERING_DELIVERY_POLICY.md` · 세부 근거: `../plan/STATUS.md`와 RF/HANDOFF.
 
-## 최근 보고 큐 (실물 전수 재검증 전; 실행 때 원격 대조)
+## 2026-10-27 검증된 물리 큐 (RF-001~093 경로 93 unique; .gitkeep 제외)
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | 합계 |
 |---:|---:|---:|---:|---:|---:|---:|
 | 61 | 3 | 1 | 14 | 14 | 0 | **93** |
 
-LEAD: **014, 015, 016, 028, 029, 031, 032, 033, 034, 050, 063, 065, 067, 069**
+LEAD: **014, 015, 016, 028, 029, 031, 032, 033, 034, 050, 063, 065, 067, 069**. PENDING A=3(RF-030 HOLD, 신규 RF-043/035), UNASSIGNED=58. 신규 DONE=0. STATUS에 검증·Owner 동기화 보존.
 
 ## 지금 할 일 — 가능한 만큼 연속 처리
 
@@ -17,7 +17,7 @@ LEAD: **014, 015, 016, 028, 029, 031, 032, 033, 034, 050, 063, 065, 067, 069**
 |---|---|---|
 | 1 | A/B HEAD·HANDOFF_A/B·Issue #11/#12 | 새 RF·SHA·검증·자체 선택한 다음 RF를 인수해 C01/C02·실물 큐와 대조; 기존 동등 증거 재사용 |
 | 2 | LEAD 중 충족 RF | 최종 판정→보호 경계 내 선별 통합·검증→`04→05` 이동·구 경로 삭제·93 unique 확인. **최종 판정은 개발 착수 허가가 아님** |
-| 3 | **063** | A 재현 BASE와 B 현재 미재현 source SHA 대조→일반 RF 결함이면 B 즉시 수정·A peer, 지팀장 종결 판정 |
+| 3 | **063 (우선 REWORK)** | GPT가 integration/A/B source blob `5de4ec68` 동일 및 TEXT 137행 미정의 `day` 확인. [#12 결함 반려](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6432409093). B가 일반 소스 최소 수정·안전 temp TEXT+JSON normal/`-O` 검증·A peer. 물리 LEAD→06_REWORK 이동은 동시 HEAD 충돌로 미완료(GIT_BLOCKED), 중복 진척 계산 금지 |
 | 4 | **031** | B의 caller 복구·부분실패 검증에서 재현 하네스와 downstream 잔여 게이트 확인; pytest ENV 분리 |
 | 5 | 나머지 LEAD | **B RF-014/028/034 fixture peer 및 RF-031/033/050 새 scoped 결과 인수**, 016/029/015/032 잔여 판정; 065/067 환경 HOLD, 069 보호 HOLD |
 | 6 | RunLab #32 | 신규 SELL·fill-truth·reconciliation·Reporter·OCI SHA만 인수, 안전 차단 유지 |
