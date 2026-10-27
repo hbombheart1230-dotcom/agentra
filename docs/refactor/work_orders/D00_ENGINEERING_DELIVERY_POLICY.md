@@ -42,3 +42,11 @@
 - `STATUS.md`는 **RF 상태·소유자·보호 HOLD 등 실질 변화가 있을 때만 해당 항목을 갱신**한다. 매회 전체 본문 교체·전체 카운트/HEAD 재작성·C00 마지막 갱신·정해진 문서 갱신 순서 의무는 폐지한다. C00/C01/C02도 작업 우선순위가 달라질 때만 짧게 갱신한다.
 - 막힌 RF는 부족한 **원래 수용 조건 1개/안전 사유 1개와 해제 담당**만 기록하고 다른 RF로 이동한다. 신규 actionable 증거가 없거나 도구/실행 한도에 도달하면 진척을 꾸미지 않고 `NO_DELTA`/`BLOCKED`/`EXECUTION_LIMIT`로 정상 종료할 수 있다.
 - 최종 보고는 **실제 코드·RF 변화, 검증 출처·SOURCE/통합 SHA, PASS/FAIL/NOT_RUN, 다음 RF**만 간결히 남긴다.
+
+## 5. RunLab 공통 트러블슈팅 연동
+
+- 런검증 실행은 [R00](../../runtime/validation/R00_RUNTIME_VALIDATION_RULES.md), 런검증→개발 인계는 [D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md), 접수 근거는 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32)를 정본으로 사용한다.
+- 지팀장은 새 관측이 생기면 기존 중복을 제외해 [OPEN 인수대장](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md)에 접수하고 **C00에 담당자·소유 RF 후보·다음 근거**를 배정한다. 실제 RF 소유를 확인하기 전에는 OWNER_MAPPING_PENDING으로 둔다.
+- 개발 Codex B는 주문 출처·Guard·reconciliation을, Claude A는 Reporter·metrics 일관성을 **읽기 전용/격리 모의 자료로 조사**한다. RunLab은 이미지 출처·환경/예약·독립 운영 관측을 맡는다. 정식 수정은 확정된 원소유 RF 담당만 수행하며 보호 대상 수정은 별도 사용자 승인이 필요하다.
+- 기존 RF 독립 peer PASS를 중복 검증하지 않는다. **RF의 DEV_RESOLVED와 RunLab 사건의 RUNTIME_VERIFIED는 별도**다. 실제 적용 버전에서 증상을 확인하기 전 사건은 OPEN/RUNTIME_PENDING으로 유지한다.
+- 새 사실이 있을 때만 C00·STATUS 변경분을 동기화한다. 무관한 RF는 진행하며 승인 없는 주문·운영 변경·재배포·예약 변경을 하지 않는다.
