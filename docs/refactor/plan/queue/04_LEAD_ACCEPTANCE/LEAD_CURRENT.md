@@ -2,6 +2,12 @@
 
 **정본:** `integration/p1.5`의 [D00](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [C00](../../../work_orders/CURRENT.md) · [STATUS](../../STATUS.md). 이 문서는 **LEAD의 현재 실행 지침**이다. 아래 개별 RF 문서의 이전 날짜 `LEAD_HOLD`와 '다음 전수검증' 지시는 해당 시점의 **증거 이력**으로 읽고, 이 문서와 D00의 최신 규칙을 우선한다. 단 **개별 RF의 본래 작업 목표·DONE 체크·보호 경계는 폐기하지 않는다**.
 
+## LEAD 입구 원본 체크 게이트 (D00 §2.1)
+
+- **C1~C5의 원래 필수 조건 `MET` 또는 사유 있는 `N/A` + 반대 peer 전체 원래 범위 `PASS` + SHA 대응**이 확인되지 않으면 `04_LEAD_ACCEPTANCE` 물리 이동 금지. 기존 `SCOPED_PASS`, 단독 Owner 제출, 오래된 HOLD 처리만으로 입구를 열지 않는다.
+- 현재 `04_LEAD_ACCEPTANCE` 실물 **0건**이다. 14개 과거 LEAD 후보는 `02_DEVELOPING` 2건, `03_PEER_REVIEW` 12건. 현재 누락은 각 RF·[STATUS](../../STATUS.md)에서 읽고, 필요한 C조건 1개만 Owner/Peer에 지정한다.
+- **지팀장만 RF 원본 체크·STATUS 동기화 책임**이 있다. A/B는 SOURCE SHA 범위·독립 근거 제출. LEAD 입장 후 C6 요구 CI·통합, C7 `05_DONE` 이동을 같은 회차에 처리한다.
+
 ## 종결 알고리즘 (한 번만)
 
 1. **원래 RF 수용 조건**과 최신 SOURCE SHA/독립 peer 범위 대조. 이미 PASS한 동일 SHA·동일 경계 반복 검증 금지.

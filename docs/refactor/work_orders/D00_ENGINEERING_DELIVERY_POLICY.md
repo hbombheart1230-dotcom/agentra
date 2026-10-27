@@ -6,7 +6,7 @@
 
 | 담당 | 기존 브랜치 | 정본 진입점 | 책임 |
 |---|---|---|---|
-| 지팀장 | `integration/p1.5` | `CURRENT.md` (C00) | 유효한 peer PASS 인수, 최소 통합 확인, DONE/REWORK 판정 |
+| 지팀장 | `integration/p1.5` | `CURRENT.md` (C00) | RF 원본 체크리스트·STATUS 정합성, 단계 게이트, peer 수용·안전 통합·DONE 판정 |
 | Claude A | `work/p15-a-reporter-pure-20261021` | `C02_CLAUDE_CURRENT.md` | A 소유 구현, B 소유 독립 peer |
 | Codex B | `work/p15-b-operator-structure-20261022` | `C01_CODEX_CURRENT.md` | B 소유 구현, A 소유 독립 peer |
 
@@ -28,6 +28,28 @@
 - RF 범위 밖에서 새로 발견한 품질 개선·운영 검증은 별도 후속 RF/이슈로 분리한다. 이 때문에 이미 충족된 무관한 일반 RF를 HOLD하지 않는다. 단, 발견된 결함이 원래 RF 수용 조건 또는 아래 보호 경계를 실제로 침해한다면 DONE 처리하지 않는다.
 - `KEEP_VERIFIED`는 실제 소스 변경이 없어도 동일 소스·peer·integration/CI 조건이 확인되면 DONE 가능. 문서만 갱신했다고 코드 실적을 만들지 않는다.
 
+## 2.1 RF 원본 7개 체크리스트와 실물 단계 진입 게이트 (2026-10-27 확정)
+
+**RF 문서의 원래 `## DONE 체크` 7항목은 완료 판정의 기준이며 지팀장 관리 대상이다.** 증거 없이 체크하지 않고, A/B Owner의 실행 보고를 독립 peer PASS 또는 지팀장 직접 PASS로 바꿔 쓰지 않는다.
+
+| 원래 RF 조건 | 주된 수용 단계 | 필수 확인 |
+|---|---|---|
+| C1 파일별 MOVE/KEEP/WRAPPER/SAFETY_HOLD | DEV 제출 → PEER 검증 | 전 Owner 파일 ACTION 및 근거. KEEP도 증거 필수 |
+| C2 책임·기존 계약 동등성 | DEV 제출 → PEER 검증 | 원래 범위의 import/caller/IO/State/예외·효과 중 실제 필수 계약 |
+| C3 normal/-O 및 실패·경계 | DEV 제출 → PEER 검증 | 원래 명시된 필수 회귀; 기존 BASE 실패는 별도 식별 |
+| C4 반대 개발자의 독립 peer | PEER | 정확 SOURCE SHA, 실제 실행/정적 증거 및 미실행 경계. `SCOPED_PASS`는 전체 PASS 아님 |
+| C5 변경 시 patchnotes·소유권 정합성 | DEV/PEER | 실제 적용 조건이면 증거로 확인. 불필요하면 이유를 명시한 `N/A` |
+| C6 통합/KEEP 및 필수 integration CI | LEAD | 실제 integration SOURCE/commit SHA, 필요한 CI 결과. 불필요한 CI는 원래 계약 근거로 NOT_REQUIRED |
+| C7 실물 DONE·STATUS/CSV | LEAD | C6까지 충족한 동일 회차에 수행, 실제 물리 파일 및 집계 대조 |
+
+- 상태 구분: `MET`=원래 조건 충족 근거와 범위 확인, `N/A`=사유가 적힌 조건부 비적용, `PARTIAL`=부분 증거만 확인, `PENDING`=미판정/미제출, `MISSING`=원래 필수 누락 확정, `SAFETY_BLOCKED`=보호 승인·환경 조건으로 미실행. **`[x]`는 MET 또는 사유 있는 N/A일 때만**. STATUS의 실제 검증 완료 수치에는 N/A를 섞지 않는다.
+- `01_PENDING → 02_DEVELOPING`: Owner CLAIM·물리 독점 확인. `02_DEVELOPING → 03_PEER_REVIEW`: Owner가 C1~C3 및 적용되는 C5 **원래 범위에 대한 검증 가능한 완료 주장·SOURCE SHA·근거를 제출**한 경우만. 이 시점의 Owner 제출은 최종 MET가 아니므로 PEER 확인 전 체크박스는 비어 있을 수 있다. 제출이 부족하면 DEV 유지/반환하며 미충족 최초 조건을 명시.
+- `03_PEER_REVIEW → 04_LEAD_ACCEPTANCE`: 반대 peer의 **원래 필수 전체 범위 PASS**를 확인해 **C1~C4 및 적용되는 C5가 모두 MET 또는 적법 N/A**로 기록된 때만. `SCOPED_PASS`가 남거나 미체크 C1~C5가 있으면 04에 올리지 않는다. PEER 중 Owner 증거의 실질 누락을 발견하면 Owner DEV로 반환하고, 직접적 신규 회귀·계약 위반만 REWORK 심사한다.
+- `04_LEAD_ACCEPTANCE → 05_DONE`: 지팀장이 C6만 통합·필수 CI 인수하고 같은 회차에 C7 처리. C1~C5를 다시 테스트하지 않는다. C6 미충족이면 실제 조건과 담당을 기록하고 필요 단계로 반환. **완료에 가까워 보이거나 대기 기간이 길다는 이유로 04에 올리지 않는다.**
+- 기존 기록이 `PEER`인데 C1~C3가 비어 있으면 **Owner 제출과 지팀장 수용 사이의 미확인 상태**다. 지팀장은 기존 HANDOFF/증거를 1회 매칭하고 필요한 조건만 OWNER에 반환한다. 비어 있는 체크를 자동 PASS로 처리하거나 무관한 전체 테스트를 추가하지 않는다.
+- `SAFETY_BLOCKED`는 승인 또는 원래 범위에서의 적법한 분리 판정 전 메워지지 않는다. 문서/체크 정리는 사용자 보호 코드 실행·fixture 생성 승인이 아니다.
+- **RF 파일의 원본 목표·범위·7개 체크를 먼저**, 변경/검증 기록은 뒤에 날짜순으로 보존한다. 과거 이력의 HOLD/LEAD 표기가 최신 물리 단계·판정을 덮어쓰지 않는다.
+
 ## 3. 안전 보호 경계 — 완화 금지
 
 - `main`, 실거래·실주문, Broker/Supervisor/Executor/Step5C/UEF 안전 계약, frozen test/oracle/CI, 비밀정보, 운영 데이터, 배포·예약 설정의 **무승인 변경/실행 금지**. 보호 영역은 별도 명시적 사용자 승인 필요.
@@ -39,7 +61,7 @@
 
 - A/B는 HANDOFF_A/B에 RF, SOURCE SHA, peer 결과, 최초 결함/차단, 다음 RF만 **변경분으로** 기록한다. Issue [#11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)/[#12](https://github.com/hbombheart1230-dotcom/agentra/issues/12)는 주요 체크포인트만 갱신하며 같은 내용을 매 회차 중복 게시하지 않는다.
 - 지팀장은 해당 RF의 새 증거만 보고 판정·선별 통합·실물 큐 이동을 수행한다. 전체 93개 RF, 모든 HEAD/HANDOFF/Issue를 **매회 전수 재조회하지 않는다**. 충돌·중복·누락이 의심되거나 상태 변경 시 해당 부분만 확인한다.
-- `STATUS.md`는 **RF 상태·소유자·보호 HOLD 등 실질 변화가 있을 때만 해당 항목을 갱신**한다. 매회 전체 본문 교체·전체 카운트/HEAD 재작성·C00 마지막 갱신·정해진 문서 갱신 순서 의무는 폐지한다. C00/C01/C02도 작업 우선순위가 달라질 때만 짧게 갱신한다.
+- **STATUS.md와 RF 체크리스트의 정합성 유지·갱신 책임은 지팀장 단독**이다. RF 단계·체크·Owner/peer·HOLD·DONE이 변하면 같은 인수 작업에 RF 원본 체크/근거와 STATUS 링크·수치·NEXT를 함께 갱신한다. A/B는 RF 근거·HANDOFF만 제출한다. 93건 전수 조회는 불일치나 실제 전체 검증 필요 시에만 수행하며, 일상에는 바뀐 RF만 확인한다. 동기화 도구 `docs/refactor/tools/sync_rf_checklist_status.py`는 지팀장이 `--write` 후 `--check`로 확인하는 수단이지 자동 완료 승인/Owner 업무가 아니다. C00/C01/C02도 담당/우선순위·물리 큐가 바뀔 때만 정합성 갱신한다.
 - 막힌 RF는 부족한 **원래 수용 조건 1개/안전 사유 1개와 해제 담당**만 기록하고 다른 RF로 이동한다. 신규 actionable 증거가 없거나 도구/실행 한도에 도달하면 진척을 꾸미지 않고 `NO_DELTA`/`BLOCKED`/`EXECUTION_LIMIT`로 정상 종료할 수 있다.
 - 최종 보고는 **실제 코드·RF 변화, 검증 출처·SOURCE/통합 SHA, PASS/FAIL/NOT_RUN, 다음 RF**만 간결히 남긴다.
 
