@@ -1,12 +1,20 @@
-# LEAD — P1.5 최종 인수·종결 작업표 (2026-10-27)
+# LEAD — P1.5 최종 인수·종결 작업표 (2026-10-28)
 
 **정본:** `integration/p1.5`의 [D00](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [C05 최종 종결](../../../work_orders/C05_LEAD_CLOSEOUT_CURRENT.md) · [STATUS](../../STATUS.md). 이 문서는 **LEAD 실물 큐의 추적표**다. 배정·통합·최종 이동의 실행 지시는 각각 C03·C04·C05가 소유한다. 아래 개별 RF 문서의 이전 날짜 `LEAD_HOLD`와 '다음 전수검증' 지시는 해당 시점의 **증거 이력**으로 읽고, 이 문서와 D00의 최신 규칙을 우선한다. 단 **개별 RF의 본래 작업 목표·DONE 체크·보호 경계는 폐기하지 않는다**.
 
 ## LEAD 입구 원본 체크 게이트 (D00 §2.1)
 
 - **C1~C5의 원래 필수 조건 `MET` 또는 사유 있는 `N/A` + 반대 peer 전체 원래 범위 `PASS` + SHA 대응**이 확인되지 않으면 `04_LEAD_ACCEPTANCE` 물리 이동 금지. 기존 `SCOPED_PASS`, 단독 Owner 제출, 오래된 HOLD 처리만으로 입구를 열지 않는다.
-- 현재 `04_LEAD_ACCEPTANCE` 실물 **0건**이다. C05 신규 A Owner CLAIM RF-040·061은 `01_PENDING→02_DEVELOPING/CLAUDE_A`로만 이동했다(전체 PENDING 49 / DEV 11 / PEER 14 / LEAD 0 / DONE 19 / REWORK 0). 이 2건은 C1~C5·반대 B full peer 미완료로 LEAD 후보가 아니다. RF-046/047/052는 C6·C7을 충족해 `05_DONE`으로 이동했다. 14개 과거 LEAD 후보는 `02_DEVELOPING` 2건, `03_PEER_REVIEW` 12건. 현재 누락은 각 RF·[STATUS](../../STATUS.md)에서 읽고, 필요한 C조건 1개만 Owner/Peer에 지정한다.
+- 현재 `04_LEAD_ACCEPTANCE` 실물 **1건: RF-067** (전체 PENDING 49 / DEV 11 / PEER 13 / LEAD 1 / DONE 19 / REWORK 0). A run165의 원래 14 공개 wrapper 독점 범위 full `PEER_PASS`를 C05가 인수해 C4 MET로 `03→04` 이동했다. 보호 diagnostics target 실제 실행은 NOT_RUN, 별도 RF-063/안전 경계로 유지. C04 exact SHA·KEEP·필수 CI C6 대기, **DONE 아님**. RF-040·061은 DEV Owner CLAIM에만 머문다. RF-046/047/052는 이미 DONE. 기존 우선 14건은 DEV 2·PEER 11·LEAD 1. 최신 [STATUS](../../STATUS.md) 및 실제 RF 원본이 우선한다.
 - **C05만 RF 원본 체크·STATUS 동기화 책임**이 있다. A/B는 SOURCE SHA 범위·독립 근거 제출, C03은 판정·배정, C04는 LEAD 실물 진입 후 C6 요구 통합/CI 근거를 확보한다. C05가 C6를 인수한 회차에 C7 `05_DONE`까지 종결한다.
+
+## 현재 C04 인계 — RF-067 (2026-10-28)
+
+| 실제 RF | 원개발 SOURCE / 반대 독립 peer | C1~C5 | C6 최초 부족 / 담당 |
+|---|---|---|---|
+| [RF-067](FROM_CODEX_B/RF-067.md) | Codex B `7e47cd6a` (마지막 변경은 HANDOFF만), A `23e54e01` HANDOFF run165, 14개 root wrapper B=integration exact blobs | **C1~C4 MET, C5 N/A**, C4 wrapper exclusive scope `PEER_PASS`; 보호 2 diagnostics target NOT_RUN | **C04**: 현재 integration 정확 SHA의 KEEP/충돌·보호 범위·필수 hosted CI. C05는 C6 수용 회차에 C7/DONE 동시 처리 |
+
+**실물 1건 / 신규 DONE 0건.** C04 승인 전 C6/C7 체크 금지. 운영 RunLab #32 SAFETY_HOLD 불변.
 
 ## 종결 알고리즘 (한 번만)
 
@@ -25,14 +33,14 @@
 | [RF-046](../05_DONE/CLAUDE_A/RF-046.md) | A/B/integration 2 owner identical, B 63/63 | C1~C4 MET, C5 N/A | **C6 MET / KEEP, C7 MET / DONE** |
 | [RF-047](../05_DONE/CLAUDE_A/RF-047.md) | A/B/integration 4 owner identical, B 63/63 | C1~C4 MET, C5 N/A | **C6 MET / KEEP, C7 MET / DONE** |
 
-3건 모두 통합 SHA `7cfb26d811853545e8b88da9143afdb1afdb1e19`의 [offline safety CI](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40481581384) 양 모드 success 및 실제 C7 이동으로 DONE. RF-052 integration receipts blob은 현재 `10283d8f`; C05 직접 테스트 NOT_RUN. 현재 신규 LEAD 대기 0건.
+3건 모두 통합 SHA `7cfb26d811853545e8b88da9143afdb1afdb1e19`의 [offline safety CI](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40481581384) 양 모드 success 및 실제 C7 이동으로 DONE. RF-052 integration receipts blob은 현재 `10283d8f`; C05 직접 테스트 NOT_RUN. 현재 신규 LEAD 대기 **1건(RF-067)**, C04 C6 증거 대기.
 
-## 우선 14 — 수용 조건 재확인 순서 (실제 DEV 2·PEER 12·LEAD 0, 아직 DONE 아님)
+## 우선 14 — 수용 조건 재확인 순서 (실제 DEV 2·PEER 11·LEAD 1, 아직 신규 DONE 아님)
 
 | RF | Owner → Peer | 이미 수용한 사실 / 먼저 내릴 판정 | 미충족일 때 딱 필요한 것 |
 |---|---|---|---|
 | **063** | B → A | 1행 TEXT NameError 수정 통합, A 4/4 peer, 해당 integration offline safety CI 양 모드 PASS. **우선 원래 76-owner의 MOVE/KEEP/SAFETY_HOLD 분류와 검증 범위가 충족됐는지 판정.** | 원래 RF가 요구하는 실제 미충족 항목만 특정. 전체 76 CLI·Windows Scheduler 재실행은 자동 조건 아님; 보호 실행 금지 |
-| **067** | B → A | 14개 공개 루트 wrapper 및 A 독립 일부 fake peer 수용. wrapper와 위임 대상 diagnostics(RF-063)의 책임 분리 후 KEEP 종결 가능성 심사 | wrapper 자신의 호출/import/argv 계약의 실제 누락만. 보호 target·Windows 운영 테스트를 공통 추가 조건으로 삼지 않음 |
+| **[067](FROM_CODEX_B/RF-067.md)** | B → A | **C1~C4 MET, C5 N/A, LEAD 승인**. A run165 14/14 원래 공개 wrapper scope `PEER_PASS`(12 real-target + 보호 2 fake-target), B/integration wrapper blob 동일. 보호 target 실행 NOT_RUN | **C6 C04:** byte-identical KEEP exact integration SHA + 요구 CI → **C05 C7**; 기존 peer 재실행 금지 |
 | **015** | A → B | 기존 Monitor 19 owner 동등; A가 B 신규 코드 검증. A 최신 독립 기준선 비교: BASE/integration 253 PASS·11 FAIL, B 252 PASS·12 FAIL, **추가 1건은 B-only Commander frozen inventory 문제** | B-only 비통합 코드 제외·추가 실패 소유권 확정 후 기존 Monitor 원래 조건 판단. frozen oracle 변경 금지 |
 | **050** | A → B | 라우터/클라이언트 scoped peer + B fake caller 10/10. 변경 없는 8 owner의 KEEP 수용 조건 판정 | 원 RF에서 반드시 요구하는 호출/캐시 계약만 확인. UI 3-stage·캐시 OSError 전수는 임의 추가 게이트 금지 |
 | **031** | A → B | B Reporter 실제 caller 8/8 및 partial OSError 단위 peer. 원개발 미변경·BASE 동일 | 원래 writer/State/실패 계약과 증거를 1회 매칭, 실제 누락 시 해당 소비자만 검증 |
@@ -46,7 +54,7 @@
 | **065** | B → A | research 54 owner KEEP 후보, A import 및 안전 CLI 일부 독립 peer | owner CLI 사용/효과 분류가 본래 체크를 만족하는지 먼저 판단. 54개 운영 CLI·Scheduler 전수 실행 금지 |
 | **069** | B → A | capture/build 7 owner KEEP 후보, A 2 CLI scoped peer | **승인된 UEF5 historical snapshot 경로·SHA·use-scope가 없음. 이 보호 경계는 승인 전 BLOCKED/NOT_RUN**. 다른 RF로 이동 |
 
-**이 표는 이전 LEAD 14건의 수용 조건 추적이다. 현재 파일은 02/03 큐에 있으며 [STATUS](../../STATUS.md)의 실물 링크가 우선한다.** 종료 순서는 PASS/DONE 선언이 아니다. RF별 최초 완료 여부는 원래 DONE 체크 및 기존 증거의 실제 범위로 결정한다. *지팀장 검증팀의 중복 작업 금지*는 *원래 필수 조건 면제*와 다르다.
+**이 표는 기존 우선 14건의 수용 조건 추적이다. RF-067만 실제 04_LEAD_ACCEPTANCE, 나머지는 02/03 큐에 있으며 [STATUS](../../STATUS.md)의 실물 링크가 우선한다.** 종료 순서는 PASS/DONE 선언이 아니다. RF별 최초 완료 여부는 원래 DONE 체크 및 기존 증거의 실제 범위로 결정한다. *지팀장 검증팀의 중복 작업 금지*는 *원래 필수 조건 면제*와 다르다.
 
 ## 짧은 인계 형식
 
