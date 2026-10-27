@@ -1,36 +1,26 @@
-# C05 — 지팀장③ 최종 인수·원본 RF/STATUS·DONE
-> 현재 노트 · 예약 직접 진입 파일 · 권장 시작 매시 50분 · `integration/p1.5`
+# C05 — 지팀장③ | RF 체크·실물 큐·DONE 최종 보드
 
-**상위 공통 규칙:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md). 구 `CURRENT.md`를 진입점으로 사용하거나 자동 갱신하지 않는다.
+> 진입점 **C05 + [D00](D00_ENGINEERING_DELIVERY_POLICY.md)**. 구 `CURRENT.md` 사용 금지. **원본 RF의 C1~C7, 물리 큐, [STATUS](../plan/STATUS.md) 갱신은 C05 단독 책임.**
 
-## 이번 역할의 목표·단독 쓰기 권한
-- **RF의 C1~C7 체크·물리 단계·STATUS·LEAD_CURRENT 정합성과 DONE 최종 책임자.** C03의 `LEAD_READY`와 C04의 통합/CI 장부를 인수하되, **실제 증거/SHA/원래 RF 게이트**를 직접 판단한다.
-- 수정: **C05**, 해당 **원본 RF 체크·증거 메타·실물 이동**, [STATUS](../plan/STATUS.md), [LEAD_CURRENT](../plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md), 관련 상태/CSV 정합성만. `D00`·A/B 소스·C01/C02/C03/C04·통합 소스는 수정하지 않는다.
-- **중요:** 최종 승인자는 한 명(C05)이다. C03의 권고는 PASS 선언이 아니고, C04의 CI 기록은 C7 완료가 아니다.
+## 지금 하는 일
 
-## 매회 실행 순서
-1. **DONE 가능한 것부터:** 물리 LEAD 후보에 대해 C04의 `SOURCE SHA → integration SHA → CI` 신규 증거를 확인한다. 원래 C1~C5가 이미 유효하고 **C6 MET**(필수 CI PASS 또는 근거 있는 NOT_REQUIRED 포함)가 되면 **이 C05 회차에 C6 체크 + C7 이동/STATUS까지 완료**한다. 별도 승인 대기 회차를 만들지 않는다.
-2. **새 LEAD 진입 판정:** C03 제안 및 A/B 새 HANDOFF를 보고, 해당 원본 RF의 **C1~C5 전체 MET/적법 N/A + 정확 SOURCE SHA에 반대 peer 원래 전체 범위 PASS**를 확인한 경우에만 `03_PEER_REVIEW → 04_LEAD_ACCEPTANCE` 실물 이동. C04가 다음 예약에서 C6를 수행하도록 인수 정보를 남긴다.
-3. **DEV/PEER 경로 정리:** Owner가 C1~C3/해당 C5 완료 주장·근거를 제출했을 때만 `02_DEVELOPING → 03_PEER_REVIEW`. 신규 누락은 최초 C 하나와 Owner/Peer를 적어 적합한 DEV/PEER에 남기거나 반환한다. 직접적 신규 회귀/원래 계약 위반에 한정해 `06_REWORK` 심사.
-4. **체크 진실성:** 원본 `## DONE 체크` 7항목은 실제 근거가 확인된 `MET`/적법 `N/A`만 체크. 체크가 빈 경우 과거 Owner/peer 제출을 1회 대조하되 자동 PASS 금지. `SCOPED_PASS`와 `SAFETY_BLOCKED`가 남으면 DONE·LEAD 진입 불가.
-5. **상태 쓰기 원자성:** 파일을 정확한 Owner/실물 큐 한 곳에만 두고, 체크·SOURCE SHA·peer·안전 사유·LEAD/DONE/REWORK를 정리한 뒤 `python docs/refactor/tools/sync_rf_checklist_status.py --write` → `--check` 실행. 동기화 자체는 PASS 승인 아님. **STATUS의 링크·카운트·NEXT 및 LEAD_CURRENT**를 바뀐 RF에 한정해 함께 맞춘다.
-6. 다른 예약의 HEAD/문서 변경과 경합 시 안전한 최신 HEAD에 재적용한다. 커밋이나 예약 횟수를 DONE으로 세지 않는다. 완료할 수 없으면 `RF | 첫 blocker | 해제 담당 | NEXT` 기록하고 다음 정상 RF로 이동.
+| 우선 | 실물 RF 링크 | 상태 | C05 즉시 처리 |
+|---|---|---|---|
+| 1 | [RF-046](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-046.md) | LEAD · C1~C5 수용, C6/C7 미완료 | C04 source/CI 증거 인수 → 충족 즉시 DONE |
+| 2 | [RF-047](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-047.md) | LEAD · C1~C5 수용, C6/C7 미완료 | C04 KEEP/CI 증거 인수 → 충족 즉시 DONE |
+| 3 | [RF-052](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-052.md) | LEAD · C1~C5 수용, C6/C7 미완료 | C04 검증된 통합 SHA/CI 인수 → 충족 즉시 DONE |
+| 4 | [C03 수용 후보](C03_LEAD_TRIAGE_CURRENT.md) / [A HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) / [B HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md) | DEV/PEER | **RF 원본 C1~C5·SOURCE SHA·반대 peer full PASS 확인** 시 LEAD 실물 이동 |
 
-## 시작 스냅샷 (2026-10-27 STATUS; 실제 변경 사항이 있으면 갱신)
-- **전체 93건:** PENDING 51 / DEV 9 / PEER 14 / LEAD 3 / DONE 16 / REWORK 0. 과거 'LEAD 14'는 반환된 **DEV 2 + PEER 12** 이력이며 현재 LEAD 실물 0.
-- **우선 14:** RF-063·065 DEV(B), RF-067·069 PEER(B), RF-014·015·016·028·029·031·032·033·034·050 PEER(A). 기존 STATUS 기준 **MET 4 / N/A 14 / 미완료 80**(총 98 체크). 미완료 원래 체크는 조건이 해제되기 전까지 추측으로 메우지 않는다.
-- **이미 종결:** RF-043/053 `KEEP_VERIFIED` DONE; B 독립 peer exact source와 integration offline safety CI 근거를 활용해 완료됨. 다시 이동/재실행하지 않는다.
-- C04가 인수할 실물 LEAD 3건: RF-052 수정 통합, RF-046/047 KEEP CI. C6/DONE 아직 아님. **C03 권고가 와도 C05가 먼저 엄격히 LEAD 게이트를 확인**한다.
+**마지막 확인된 물리 현황:** 총 93건 · PENDING 51 · DEV 9 · PEER 14 · **LEAD 3** · DONE 16 · REWORK 0. 우선 14건(DEV 2 + PEER 12)은 C1~C7 **MET 4, N/A 14, 미완료 80**. 최신 수치는 실제 큐와 [STATUS](../plan/STATUS.md)가 우선한다. RF-043/053은 DONE이며 재실행 금지.
 
-## RunLab 관련 RF 상태
-- RunLab #32 사건 접수·A/B 배정은 C03, 원본 운영 증상과 승인 전 read-only 관측은 별도 RunLab 담당. C05는 **RF 소유/단계/STATUS에 실제 새 변화가 있을 때만** 반영한다.
-- 적용 이미지 `RUN_SOURCE_SHA=UNKNOWN`, `DEFECT_OWNER_PENDING`이면 실제 런 원인 확정/운영 종결 금지. 개발 RF DONE(`DEV_RESOLVED`)과 사건 `RUNTIME_VERIFIED`를 합치지 않는다. 무관한 RF 종결은 계속한다.
+## 매회 반드시 실제 처리
 
-## 금회 인수·종결 장부 (실제 변경분만)
-| RF | Owner SOURCE SHA·반대 peer | C1~C5 게이트 | C04 integration SHA·CI | 물리 이전→이후 | C6/C7·STATUS | NEXT |
-|---|---|---|---|---|---|---|
-| RF-052 | A receipts@10283d8f, B 40/40 + Windows | C1~C4 MET, C5 N/A | C04 integration/CI PENDING | PEER→LEAD | C6/C7 PENDING | C04 통합/CI → C05 DONE |
-| RF-046 | A/B/int 2 owner 동일, B 63/63 | C1~C4 MET, C5 N/A | C04 KEEP/CI PENDING | PEER→LEAD | C6/C7 PENDING | C04 CI → C05 DONE |
-| RF-047 | A/B/int 4 owner 동일, B 63/63 | C1~C4 MET, C5 N/A | C04 KEEP/CI PENDING | PEER→LEAD | C6/C7 PENDING | C04 CI → C05 DONE |
+1. C04에서 새 C6 결과가 왔으면 **같은 회차에** 해당 RF 원본 C6 MET(정확 SHA CI 또는 근거 있는 NOT_REQUIRED) → C7 체크 → 실물 `05_DONE` 이동 → STATUS 반영까지 끝낸다. 후속 승인 회차 생성 금지.
+2. C03 신규 후보는 **실제 RF 원본 `## DONE 체크`와 최신 기록**을 먼저 열고, C1~C5 전체 MET/적법 N/A 및 반대팀 정확 SHA full PEER_PASS일 때만 `03→04` 이동한다. `SCOPED_PASS`, 미검증, SAFETY_BLOCKED는 승격 금지.
+3. DEV/PEER 미충족 RF는 **처음 부족한 C 하나 + 해제 담당만** C03에 돌려주고 다음 RF 진행. 이미 같은 SHA/범위의 증거 재실행 지시 금지.
+4. 실물 이동할 때 **원본 RF 체크/증거 메타 + STATUS/CSV + LEAD_CURRENT**를 함께 맞추고 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check`로 실물 93 유일성과 단계 수 확인한다.
+5. **한 RF 대기·차단으로 회차 종료 금지.** 다음 READY RF를 처리한다. 증거 없이 DONE 수를 늘리거나 N/A를 PASS로 세지 않는다.
 
-**다음 실행:** C04의 RF-052/046/047 C6 완료 후보 **즉시 DONE**, 다음 C03의 전체 수용 범위 충족 후보 **LEAD 실물 이동**, 변경 RF 정합성만 갱신. 보고: `RF | OWNER/PEER SHA | C1~C5 | integration SHA·CI | DONE/LEAD/BLOCKED | STATUS/queue | NEXT`.
+**쓰기 권한:** C05는 원본 RF·물리 단계·STATUS·LEAD_CURRENT·본 C05만 변경한다. C03 권고는 실제 승인이 아니며 C04 통합도 자동 DONE이 아니다. [RunLab #32 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md)은 개발 DONE과 별도 `RUNTIME_PENDING`이며 보호/운영 변경은 별도 승인.
+
+**보고 1줄/RF:** `RF 링크 | Owner/peer SHA | C1~C5 | C6 integration SHA·CI | 체크/물리 이동/STATUS | 남은 최초 차단`.
