@@ -7,11 +7,11 @@
 
 | 순서 | RF | 다음 실행 |
 |---|---|---|
-| 1 | **031** | downstream JSON-only 복구 scoped 완료 증거 재사용; 실제 caller 최종 State·재시도 경계/재현 명령만 확인 |
-| 2 | 050 / 016 / 029 | cache reload·facade 예외 기존 증거 재사용, 남은 전체 소비자·nested State 예외 / 외부 truth-root 실패 |
+| 1 | **063 REWORK** | **SOURCE blob `5de4ec68` 동일(integration/A/B)이며 `run_m23_closeout_check.py:137` 텍스트 출력에 미정의 `day` 확정.** B 원개발 최소 수정→격리 temp normal/`python -O` TEXT+JSON stdout/exit/효과 확인→A 독립 peer. [#12 지팀장 반려](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6432409093). 운영/보호 실행 금지 |
+| 2 | **031** / 050 / 016 / 029 | cache reload·facade 예외 기존 증거 재사용, 남은 전체 소비자·nested State 예외 / 외부 truth-root 실패 |
 | 3 | 033 / 014 / 028 | partial JSON·Top1·in-process writer scoped peer 재사용, 남은 실제 producer/Graph/외부 rich schema 소비자 |
 | 4 | 034 / 015 / 032 | valid sources scoped peer 재사용, casebook→Scanner 전체 소비자 / 역사 BASE FAIL·B-only 소비자 / validation_id 신뢰 경계 |
-| 5 | **063 / 065 / 067** | B 원개발 즉시 보완. RF-063 `run_m23_closeout_check`는 A 재현 SHA와 B 미재현 SHA 대조→결함이면 자기 브랜치에서 바로 수정·테스트→A peer 인계 |
+| 5 | **065 / 067** | 새 안전한 실제 소비자 증거만; Windows/보호 CLI HOLD 유지. 작업 소진 시 RF-066→070→071 Owner 개발 큐 이동 |
 
 ## 위 목록 다음
 
