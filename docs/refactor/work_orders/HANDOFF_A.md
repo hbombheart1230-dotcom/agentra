@@ -483,3 +483,19 @@
 - 판정: **PEER_PASS_SCOPED**(B 원개발 RF의 독립 peer, 이 CLI 1건), DONE 아님. NOT_RUN: Windows Task Scheduler 실호출, 기본 경로(repo 하위) 실행, 나머지 effectful CLI(m27/m29 closeout 등)·hosted CI.
 - 잔여 1개 게이트: RF-063 나머지 diagnostics effectful CLI와 스케줄러 소비자. RF-065/067은 다음 회차(P1/P2).
 - PUSH_VERIFIED: push 후 확인.
+
+---
+## 추가 회차 — CURRENT(`e45a31b2`) A P1 RF-065 (B 원개발 RF 독립 peer): scorecard→Stage2 실제 연속 쓰기·부분 OSError
+
+- RUN_ID: 2026-10-27T0018Z-claude-a-sched-136 · A 시작 `ed79c5eb`(run135) · integration `e45a31b2` · B `c18ad0b0` · **A 소스 코드 변경 없음(NO_CHANGE)**. P0 RF-063은 run135(`ed79c5eb`)가 처리해 반복하지 않음.
+- SOURCE(BASE=integration 동일 blob): `scripts/research/run_agent_effectiveness_scorecard.py` `db4571d6`, `evaluation/agent_effectiveness_scorecard.py` `16b50178`, `evaluation/stage2_authority/pipeline.py` `76939b24`.
+- 하네스 `evidence/run103_boundary_scripts/rf065_scorecard_stage2_continuous_peer.py`(오케스트레이터; CLI를 **실제 subprocess**로 실행, 실 writer 두 개 무치환, fake 0). 자식 프로세스는 부트스트랩으로 네트워크·subprocess·sqlite 차단·시도 카운트, 자격 env·프록시 제거, `PYTHONDONTWRITEBYTECODE=1`. 부분 실패는 monkeypatch가 아닌 **출력 파일명을 디렉터리가 점유**하게 해 실제 `IsADirectoryError`로 유발. 실행: `python <harness> <worktree> [-O]` × {integration, BASE} × {normal, `-O`(자식에도 `-O` 전달)} 4조합 모두 **exit 0**, marker `RF065_SCORECARD_STAGE2_CONTINUOUS_OK single=6files range_shards=3 dedup=3 partial_fail_exit=1(files_left=4) scorecard_fail_blocks_stage2=yes shard_fail_exit=1 argparse=2 rerun_idempotent_records=True child_attempts=0 repo_tree_unchanged=yes`, 출력 4개 동일(debug 필드 제외).
+- 확인(실제 temp 쓰기·State·exit):
+  - 단일일: 6파일(scorecard 2 + Stage2 review 2 + deep-dive 2), stdout JSON 키 `json_path/markdown_path/range/strategist_stage2_authority_review`. 범위(sharded, 기본 출력=`<reports>/evaluation/agent_effectiveness/<end>`): 일별 shard 재사용(스키마 일치)·shard 없는 날(04-10)은 실 Stage2 writer가 재생성(4파일), `decision_id` 중복은 **뒤 일자가 우선**, 빈 id·비-dict 레코드 제외, aggregation `shard_days/shard_count/deduplicated_record_count` 정확, 기존 shard 파일 미변경, 재실행 시 5파일 바이트 동일(`changed_files=[]`).
+  - **부분 실패(실제 OSError):** Stage2의 3번째 산출명이 디렉터리면 **exit 1**, stdout 비어 있음(요약 JSON 미출력), 앞서 쓴 scorecard 2 + Stage2 2파일은 **그대로 남음**(롤백 없음), deep-dive 파일 없음; 점유 해제 후 재실행 → exit 0·6파일(복구). scorecard `.md`가 점유되면 scorecard `.json`만 남고 **Stage2는 시작되지 않음**. 범위 모드에서 한 shard의 review 경로가 점유되면 exit 1이고 end-day 디렉터리에는 scorecard 2파일만 남음.
+  - argv/exit: `--end` 누락 argparse **exit 2**, `--end notadate` `ValueError` **exit 1**(예외 미포착, traceback), `--start > --end`는 **exit 0**(오류 없이 빈 범위 처리), `YYYY-MM-DDTHH:MM` 입력은 `[:10]` 절단으로 정상, 상대 `--reports-root/--output-dir`는 cwd 기준(reports-root는 읽기 전용이라 생성 안 됨), 인자 기본 `--start 2026-06-01`.
+  - 효과: 차단 시도 0(자식), cwd·sentinel·repo 작업트리 변화 0, 모든 쓰기는 지정 tmp/출력 경로 내부.
+- **관찰(변경 안 함):** (1) 범위 모드에서 CLI가 end-day 디렉터리의 일일 scorecard를 **먼저 덮어쓴 뒤** Stage2가 `_day_has_refresh_evidence`를 읽으므로, 직전 일일 scorecard의 refresh 근거는 end-day에서 새 계산값으로 대체됨(실데이터에서는 새 계산이 근거를 포함할 수 있음). (2) scorecard와 Stage2가 순차 실행·롤백 없음 → 두 번째 단계 실패 시 부분 산출 잔존(지팀장 기존 판정과 일치, 운영 영향 UNKNOWN). (3) `--start > --end` 무음 처리.
+- 판정: **PEER_PASS_SCOPED**(B 원개발 RF-065의 독립 peer, 이 CLI 1건), DONE 아님. 지팀장 8-case fake·A run107 빈 root smoke와 다른 경계(실 writer·실 OS 오류·실 exit).
+- 잔여 1개 게이트: Windows Task Scheduler 실호출·cp949 locale·실제 reports 데이터 규모(성능/실데이터 계산) NOT_RUN. 나머지 54 CLI의 effectful 소비자는 미검증. RF-067은 다음 회차(P2).
+- PUSH_VERIFIED: push 후 Issue #11 댓글 참조.
