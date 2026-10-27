@@ -7,7 +7,7 @@
 
 | 순서 | RF | 다음 실행 |
 |---|---|---|
-| 1 | **063 REWORK** | **SOURCE blob `5de4ec68` 동일(integration/A/B)이며 `run_m23_closeout_check.py:137` 텍스트 출력에 미정의 `day` 확정.** B 원개발 최소 수정→격리 temp normal/`python -O` TEXT+JSON stdout/exit/효과 확인→A 독립 peer. [#12 지팀장 반려](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6432409093). 운영/보호 실행 금지 |
+| 1 | **063 (06_REWORK/CODEX_B)** | **SOURCE blob `5de4ec68` 동일(integration/A/B)이며 `run_m23_closeout_check.py:137` 텍스트 출력에 미정의 `day` 확정.** B 원개발 최소 수정→격리 temp normal/`python -O` TEXT+JSON stdout/exit/효과 확인→A 독립 peer. [#12 지팀장 반려](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6432409093). 운영/보호 실행 금지 |
 | 2 | **031** / 050 / 016 / 029 | cache reload·facade 예외 기존 증거 재사용, 남은 전체 소비자·nested State 예외 / 외부 truth-root 실패 |
 | 3 | 033 / 014 / 028 | partial JSON·Top1·in-process writer scoped peer 재사용, 남은 실제 producer/Graph/외부 rich schema 소비자 |
 | 4 | 034 / 015 / 032 | valid sources scoped peer 재사용, casebook→Scanner 전체 소비자 / 역사 BASE FAIL·B-only 소비자 / validation_id 신뢰 경계 |
