@@ -41,7 +41,9 @@ A 최신 [HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/
 
 ## 🟢 C03 신규 PENDING 공급 — B Owner 후보 6건
 
-**[C03의 신규 READY 12건 배정표](C03_LEAD_TRIAGE_CURRENT.md)를 따른다.** 이 표는 `01_PENDING/UNASSIGNED`의 후보이며 **현재 CLAIM/DEV/DONE이 아니다**. 기존 C1~C5 우선 미완료·peer/full PASS를 포기하지 않는다. **최대 2건만 동시 CLAIM**, 자기 기존 브랜치 HANDOFF에 독점·CLAIM/SOURCE SHA를 적고 C05의 실물 큐/STATUS 동기화를 기다리는 동안 다른 안전 READY RF도 계속한다.
+**A 신규 CLAIM 인계:** [RF-040](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-040.md)·[RF-061](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md)은 C05가 이미 DEV로 이동했다(A `cd429015` run164). **B는 A의 원래 C1~C3 완결 주장·정확 SOURCE SHA가 도착한 뒤에만 안전한 C4 독립 peer**를 수행한다. RF-040 Executor, RF-061 Step5C 보호 동작 실행·수정 금지. A run164의 정적 KEEP/SAFETY_HOLD 후보를 full peer PASS로 오인하지 않는다. 우선 RF-015·031 원래 첫 부족 조건/full peer부터 처리한다.
+
+**[C03의 현재 미CLAIM READY 10건 배정표](C03_LEAD_TRIAGE_CURRENT.md)를 따른다.** 이 표는 `01_PENDING/UNASSIGNED`의 후보이며 **현재 CLAIM/DEV/DONE이 아니다**. 기존 C1~C5 우선 미완료·peer/full PASS를 포기하지 않는다. **최대 2건만 동시 CLAIM**, 자기 기존 브랜치 HANDOFF에 독점·CLAIM/SOURCE SHA를 적고 C05의 실물 큐/STATUS 동기화를 기다리는 동안 다른 안전 READY RF도 계속한다.
 
 | 순서 | RF 원본 | 신규 B Owner 후보 | 첫 원래 C1 범위·주의 |
 |---:|---|---|---|
