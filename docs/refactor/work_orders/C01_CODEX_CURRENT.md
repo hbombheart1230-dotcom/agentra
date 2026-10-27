@@ -18,6 +18,8 @@ A 최신 [HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/
 
 **RF-033 신규 peer 재사용:** B `7e47cd6a` HANDOFF는 `input_worker→publish_input` temp 소비자 normal/`-O` 각 **9 PASS, 2 deselected**(`exchange_calendars` 미설치)로 `PEER_PASS_SCOPED`만 입증했다. 45-owner 전체 C4는 미완료. 기존 9/9 재실행 금지; 다음 안전 경계는 RF-034 casebook→Scanner 또는 RF-033 원래 남은 소비자 1개. 환경 의존성 실패를 신규 소스 회귀로 단정하지 않는다.
 
+**RF-034 신규 peer 인수(B `fa817e91`, HANDOFF-only):** `tests/test_short_alpha_discriminator.py` synthetic casebook/pipeline normal/`python -O` **7/7 PASS 각 모드**, `PEER_PASS_SCOPED`로 수용. 이는 원래 40-owner 전체 C4 full PASS가 아니며 실 Scanner·UEF/closeout·운영 효과는 NOT_RUN. **동일 7/7 재실행 금지.** RF-015/031 우선 후 RF-034 원래 C2/C3/C4에서 아직 빠진 최초 안전한 소비자/효과 경계만 특정해 정확 SOURCE와 함께 인계. C03 판정·C05 원본 체크/이동 전 MET 주장 금지.
+
 **우선순위 규칙:** 안전하고 READY인 반대 peer RF가 있으면 **RF-065 CLI 하나씩 검증하는 작업보다 먼저** 처리한다. RF-015/031에서 이미 full peer 가능한 조건을 갖췄으면 정확 SHA·원래 전체 범위 근거로 PASS를 제출해 C03/C05가 즉시 판정하도록 한다. 그럴 수 없으면 최초 미충족 원래 C번호/경계만 지목하고 **즉시 다음 RF**로 넘어간다.
 
 **RF-065 검사 부풀리기 금지:** C1은 54파일의 ACTION·Owner·KEEP/WRAPPER/SAFETY_HOLD 근거이고, CLI 전체 1개씩 빈 입력 실행은 C1 자체와 동의어가 아니다. **매 CLI temp-fake 추가 실행을 RF-065 C1의 일괄 완료 전제조건으로 새로 만들지 말 것.** C2(효과/IO/State), C3(회귀)에서 원본 계약을 만족하는 데 필요한 대표·위험·실패 경계만 식별해 실행하고, 불충분하면 원래 계약에 연결된 부족분을 좁혀 제출한다. 기존 SCOPED_PASS는 보존하되 full PASS로 둔갑시키지 않는다.
