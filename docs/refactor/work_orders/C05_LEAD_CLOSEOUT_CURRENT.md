@@ -11,7 +11,7 @@
 | 3 | [RF-052](../plan/queue/05_DONE/CLAUDE_A/RF-052.md) | **DONE · INTEGRATED** | C6 exact CI + C7 실물/STATUS 종결 |
 | 4 | [C03 수용 후보](C03_LEAD_TRIAGE_CURRENT.md) / [A HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) / [B HANDOFF](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md) | DEV/PEER | **RF 원본 C1~C5·SOURCE SHA·반대 peer full PASS 확인** 시 LEAD 실물 이동 |
 
-**마지막 확인된 물리 현황:** 총 93건 · PENDING 51 · DEV 9 · PEER 14 · **LEAD 0** · DONE 19 · REWORK 0. 우선 14건(DEV 2 + PEER 12)은 C1~C7 **MET 4, N/A 14, 미완료 80**. 최신 수치는 실제 큐와 [STATUS](../plan/STATUS.md)가 우선한다. RF-043/053은 DONE이며 재실행 금지.
+**마지막 확인된 물리 현황:** 총 93건 · PENDING 49 · DEV 11 · PEER 14 · **LEAD 0** · DONE 19 · REWORK 0. 우선 14건(DEV 2 + PEER 12)은 C1~C7 **MET 4, N/A 14, 미완료 80**. 최신 수치는 실제 큐와 [STATUS](../plan/STATUS.md)가 우선한다. RF-043/053은 DONE이며 재실행 금지.
 
 ## 매회 반드시 실제 처리
 
@@ -33,3 +33,10 @@
 - **C03 신규 READY:** 현재 C03에 추가 전체 C1~C5 + 반대 full peer 확정 후보 없음. 우선 14 RF는 최초 미충족 C 및 보호 경계를 유지, 임의 승격 0.
 - **검증:** 원격 Git tree 93개 유일성 및 3건 C1~C7 체크, STATUS 단계 집계를 직접 확인. `sync_rf_checklist_status.py --write/--check`는 GitHub 연결 환경에 checkout 실행 기능이 없어 **NOT_RUN**; 동등한 읽기 전용 원격 불변식 확인을 별도로 수행하며 Python 실행 성공으로 표기하지 않는다. 고정 FILE_COVERAGE CSV 변경 없음.
 - **RunLab:** `DEV_RESOLVED`/RF DONE과 `RUNTIME_VERIFIED` 별개. #32 `OPEN/RUNTIME_PENDING` 및 안전 HOLD 유지, 운영 런 NOT_RUN.
+
+
+## C05 2026-10-27 신규 CLAIM 실물 처리 — PENDING→DEV 2건
+- A HEAD `cd42901588127352e15ceecee6a64a9eba90ea38` HANDOFF run164, 시작 integration `fd5d608cc5280102f37d93e2ea3c44ea8615657b`. [RF-040](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-040.md) 14 owner(12 KEEP 후보·1 Executor SAFETY_HOLD·1 shadowed duplicate), [RF-061](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md) 3 owner(2 KEEP 후보·1 Step5C SAFETY_HOLD) 명시 CLAIM 수용. RF-057은 보호 runner로 미CLAIM/미이동.
+- D00 §2.1 Owner CLAIM/중복 부재 확인으로 두 RF `01_PENDING/UNASSIGNED→02_DEVELOPING/CLAUDE_A` 실물 이동. C1~C7 체크 변경 0(C03 C1~C5 최종 수용·B full C4 없음), 코드/CI/운영 실행 0. 첫 부족은 C1 전체 ACTION/효과 C03 수용, B peer; Executor/Step5C 보호 실행·변경 승인 전 HOLD.
+- 물리 수치 PENDING 51→49, DEV 9→11, PEER 14, LEAD 0, DONE 19, REWORK 0. 93개 유일성은 원격 tree 조회로 확인, Python sync --write/--check는 checkout 실행 환경 없어 NOT_RUN.
+- A run163 RF-067 14-root 독립 통합 판정: 12 real-target SCOPED_PASS + 2 protected fake-wrapper WRAPPER_ONLY, **full C4 PASS 아님**. RF-015 C3, RF-031 C2, RF-065 C1 차단 유지. 신규 LEAD/DONE 0.

@@ -4,11 +4,13 @@
 
 ## integration 실물 큐 — 마지막 검증 스냅샷
 
+- **C05 신규 Owner CLAIM (2026-10-27):** [RF-040](queue/02_DEVELOPING/CLAUDE_A/RF-040.md)·[RF-061](queue/02_DEVELOPING/CLAUDE_A/RF-061.md), A HANDOFF run164 `cd429015` 명시 CLAIM·C1 Owner 부분 근거로 PENDING→DEV 2건. RF-057은 보호 runner로 미CLAIM. 전체 C1~C5·B full peer 미완료, DONE/LEAD/C6/CI 변화 없음. 기존 우선 14건 수치는 불변.
+
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
-| 51 | 9 | 14 | 0 | 19 | 0 | **93** |
+| 49 | 11 | 14 | 0 | 19 | 0 | **93** |
 
-- **기존 우선 14건:** RF-063/065 → DEV(B); RF-067/069 → PEER(B); RF-014/015/016/028/029/031/032/033/034/050 → PEER(A). **이외 DEV 7 / PEER 2 / LEAD 0 / PENDING 51 / DONE 19**로 실물 93건. 아래 원본 체크 표의 링크를 우선한다.
+- **기존 우선 14건:** RF-063/065 → DEV(B); RF-067/069 → PEER(B); RF-014/015/016/028/029/031/032/033/034/050 → PEER(A). **이외 DEV 9 / PEER 2 / LEAD 0 / PENDING 49 / DONE 19**로 실물 93건. 아래 원본 체크 표의 링크를 우선한다.
 - **C05 DONE 신규 3건 (2026-10-27 18시):** [RF-052](queue/05_DONE/CLAUDE_A/RF-052.md) A receipts@10283d8f·B full 40/40, [RF-046](queue/05_DONE/CLAUDE_A/RF-046.md)·[RF-047](queue/05_DONE/CLAUDE_A/RF-047.md) KEEP·B 63/63. 세 건 C1~C4 MET, C5 N/A, **C6 MET** (integration `7cfb26d811853545e8b88da9143afdb1afdb1e19` [Actions 40481581384](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40481581384) normal/-O success), **C7 MET** (실물 이동·STATUS). LEAD 3→0, DONE 16→19. C05 직접 테스트/운영 실행 NOT_RUN.
 - **실물 큐 재분류:** 우선 14건을 DEV 2·PEER 12로 재배치. 신규 DONE이 아니라 원래 미완료 조건을 해당 담당자에게 반환한 이동이다. 기존 기록의 LEAD 14 표현은 당시 스냅샷이다.
 - **LEAD 공통 새 기준:** 유효한 원래 범위 독립 peer PASS → C05가 C1~C5·물리 LEAD 진입 판정 → C04가 SOURCE SHA·통합 diff/충돌·보호 경계·필요한 CI 확보 → **C05가 C6 인수한 회차에 DONE**. 지팀장 Python/Windows/전체 소비자 재테스트 없음. Scoped PASS를 전체 PASS로 확대하지 않고, 원래 필수 미충족 1건만 해제 요청. 자세한 14건별 최초 판정은 [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md).
@@ -45,7 +47,7 @@
 - [RF-046](queue/05_DONE/CLAUDE_A/RF-046.md): KEEP_VERIFIED, 2 owner 동일 source, B 63/63 독립 peer, C6 CI PASS/C7 DONE.
 - [RF-047](queue/05_DONE/CLAUDE_A/RF-047.md): KEEP_VERIFIED, 4 owner 동일 source, B 63/63 독립 peer, C6 CI PASS/C7 DONE.
 - [RF-052](queue/05_DONE/CLAUDE_A/RF-052.md): receipts.py@10283d8f selective integration, B 40/40 + Windows peer, C6 CI PASS/C7 DONE.
-- 통합 코드 SHA [`7cfb26d811853545e8b88da9143afdb1afdb1e19`](https://github.com/hbombheart1230-dotcom/agentra/commit/7cfb26d811853545e8b88da9143afdb1afdb1e19), [GitHub Actions #40481581384](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40481581384) `head_sha` 일치, `safety`·`safety (-O)` 둘 다 completed/success. CI 이후 변경은 C04/C05 증거·큐·STATUS 문서뿐. **실물 93 unique, PENDING 51 / DEV 9 / PEER 14 / LEAD 0 / DONE 19 / REWORK 0**. `FILE_COVERAGE_63182ab2.csv`는 고정 소유 범위 표이며 단계 상태 CSV가 아님. Python sync script 실행 NOT_RUN(원격 조회로 물리 유일성/상태 동등 검증). RunLab #32 RUNTIME_VERIFIED 아님.
+- 통합 코드 SHA [`7cfb26d811853545e8b88da9143afdb1afdb1e19`](https://github.com/hbombheart1230-dotcom/agentra/commit/7cfb26d811853545e8b88da9143afdb1afdb1e19), [GitHub Actions #40481581384](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40481581384) `head_sha` 일치, `safety`·`safety (-O)` 둘 다 completed/success. CI 이후 변경은 C04/C05 증거·큐·STATUS 문서뿐. **당시 실물 93 unique, PENDING 51 / DEV 9 / PEER 14 / LEAD 0 / DONE 19 / REWORK 0**. `FILE_COVERAGE_63182ab2.csv`는 고정 소유 범위 표이며 단계 상태 CSV가 아님. Python sync script 실행 NOT_RUN(원격 조회로 물리 유일성/상태 동등 검증). RunLab #32 RUNTIME_VERIFIED 아님.
 
 ## 가장 최근 수용 근거 및 작업 브랜치 신규 변경
 

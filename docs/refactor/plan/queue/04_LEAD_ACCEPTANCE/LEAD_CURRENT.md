@@ -5,7 +5,7 @@
 ## LEAD 입구 원본 체크 게이트 (D00 §2.1)
 
 - **C1~C5의 원래 필수 조건 `MET` 또는 사유 있는 `N/A` + 반대 peer 전체 원래 범위 `PASS` + SHA 대응**이 확인되지 않으면 `04_LEAD_ACCEPTANCE` 물리 이동 금지. 기존 `SCOPED_PASS`, 단독 Owner 제출, 오래된 HOLD 처리만으로 입구를 열지 않는다.
-- 현재 `04_LEAD_ACCEPTANCE` 실물 **0건**이다. RF-046/047/052는 C6·C7을 충족해 `05_DONE`으로 이동했다. 14개 과거 LEAD 후보는 `02_DEVELOPING` 2건, `03_PEER_REVIEW` 12건. 현재 누락은 각 RF·[STATUS](../../STATUS.md)에서 읽고, 필요한 C조건 1개만 Owner/Peer에 지정한다.
+- 현재 `04_LEAD_ACCEPTANCE` 실물 **0건**이다. C05 신규 A Owner CLAIM RF-040·061은 `01_PENDING→02_DEVELOPING/CLAUDE_A`로만 이동했다(전체 PENDING 49 / DEV 11 / PEER 14 / LEAD 0 / DONE 19 / REWORK 0). 이 2건은 C1~C5·반대 B full peer 미완료로 LEAD 후보가 아니다. RF-046/047/052는 C6·C7을 충족해 `05_DONE`으로 이동했다. 14개 과거 LEAD 후보는 `02_DEVELOPING` 2건, `03_PEER_REVIEW` 12건. 현재 누락은 각 RF·[STATUS](../../STATUS.md)에서 읽고, 필요한 C조건 1개만 Owner/Peer에 지정한다.
 - **C05만 RF 원본 체크·STATUS 동기화 책임**이 있다. A/B는 SOURCE SHA 범위·독립 근거 제출, C03은 판정·배정, C04는 LEAD 실물 진입 후 C6 요구 통합/CI 근거를 확보한다. C05가 C6를 인수한 회차에 C7 `05_DONE`까지 종결한다.
 
 ## 종결 알고리즘 (한 번만)
