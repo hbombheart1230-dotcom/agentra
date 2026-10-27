@@ -10,6 +10,18 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-067 — run138d (`2026-10-27T0130Z`, 같은 회차 연속, A 시작 `87ac3247`) `check_q9_q12_readiness` · `check_trade_report_runtime_regression`**
+
+- `check_q9_q12_readiness.py` blob `68349976`(root `276316fc`), `libs/runtime/live_loop_process_query.py` `b2771ea2`; 하네스 `rf067_q9_q12_readiness_peer.py` `f83e2d1b`. **Windows 지향 target**(프로세스 조회가 PowerShell `Get-CimInstance`): 이 Linux 환경에서는 closeout 산출물 로직과 preopen/intraday의 **PowerShell 부재 degraded 경로**만 검증. 4조합 exit 0, `RF067_Q9_Q12_READINESS_OK closeout_all_missing=17 pre_activation=11 pass/warn/blocked=yes preopen_intraday=degraded_fail_closed(powershell_unavailable) subprocess_attempts=2 modes=4_identical child_writes=0 repo_tree_unchanged=yes`, 출력 동일.
+  - 확인(closeout): 2026-08-31 이후 일자는 16 산출물 누락 + `q10_lead_market_preopen_not_captured` = 17 blocker/exit 1, 이전 일자는 11, 전부 존재·VALID는 `PASS` exit 0(텍스트 `status=PASS`), `INVALID`→`q9_day_invalid`, `PENDING`→`q9_day_not_final_valid` 경고(exit 0), capture `MISSED`→blocker, 산출물 1개 누락→`q11_signals_missing`. q9 windows는 dict 행만 계산(비-dict 제외, 파싱 불가 `generated_at`는 시각 계산에서 제외).
+  - 확인(preopen/intraday): PowerShell 조회가 실패하면 항상 `live_session_not_running` + 3개 `*_loop_not_running`으로 **BLOCKED exit 1**(잠금 파일에 살아 있는 pid·신선한 heartbeat가 있어도 프로세스 열거가 비면 `running=False`) → 비Windows/PowerShell 부재 시 항상 실패(fail-closed). 호출 4모드 stdout 바이트 동일(intraday는 wall-clock 의존이라 blocker 코드만 비교), argparse exit 2(잘못된 `--phase`/미지 인자).
+  - **관찰(변경 안 함):** (1) 프로세스 열거가 PowerShell/WMI 전용이라 Linux/CI에서 의미 있는 live 판정 불가(Task Scheduler/Windows 실호출은 NOT_RUN). (2) 잘못된 `--day` 문자열도 검증 없이 처리(결과는 artifact 부재 blocker, exit 1). (3) `intraday` 판정은 `datetime.now(KST)`(09:10 이후) 의존. (4) 모든 phase에서 `_live_status`/`_process_status`(PowerShell 호출)를 먼저 수행.
+- `check_trade_report_runtime_regression.py` blob `d320eb12`(root `54f313b9`); 하네스 `rf067_trade_report_regression_peer.py` `89310843`. **읽기 전용 검증 모드(`--skip-repair --skip-local-debug`)만 실제 실행**, 기본 모드는 subprocess 차단 부트스트랩에서 spawn 시도만 확인. 4조합 exit 0, `RF067_TRADE_REPORT_REGRESSION_OK validation_only_mode=read_only cases=ok/bad/missing/open_sell/partial exit=0/1 default_mode=spawns_helpers(blocked) llm_acceptance=NOT_RUN modes=4_identical repo_tree_unchanged=yes`, 출력 동일.
+  - 확인: 합성 정상 거래 `PASS` exit 0(`target_run_id`=exit run, 3 단계 skip), 불량 거래 14종 failure 코드(zero hold, rank/candidate 0, status 충돌, symbol 불일치, report generation bad, all-fallback provenance, linkage 모순 등), 산출물 전부 누락 시 `missing_artifact:*` 7건, open 거래의 SELL 액션 충돌, 진입 증거 없는 closed 거래의 `thin_entry_evidence_not_marked_partial`; 중복 `(day,trade)` 스펙 1건으로 축소, 명시 run-id가 `target_run_id` 우선, 케이스 미지정 시 golden 3건(`2026-04-15/16`) 모두 FAIL exit 1; 잘못된 `--case` `ValueError` exit 1, 미지 인자·`--max-runs abc` argparse exit 2. tmp·repo 변화 0.
+  - **관찰(변경 안 함):** (1) **기본 모드(플래그 없음)는 `run_live_execution_bundle_report.py`(복구 실행, 기본 `--report-dir reports/dev/analysis/live_execution_bundles` 쓰기)와 `run_ai_trade_report_batch.py --local-debug`(리포트 재생성)를 subprocess로 실행** — "validate" 명칭과 달리 기본 호출이 repo `reports`를 수정할 수 있음(차단 부트스트랩에서 spawn 시도 1회·exit 1로 확인, 실제 실행 NOT_RUN). `--llm-acceptance`는 LLM/네트워크 → NOT_RUN. (2) 기본 golden 케이스 3건이 repo의 2026-04 실데이터에 고정. (3) 상대 `--reports-root`는 `Path.resolve()`로 cwd 기준(없으면 전 케이스 FAIL exit 1).
+- 판정: 두 target **PEER_PASS_SCOPED**(delegated target 누적 8건: reports_trades_health·profitability_day1·reporter_upgrade·phase_5_2_5_3·monitor_gate·q9_q12·trade_report_regression + run135 DR drill은 RF-063), DONE 아님.
+- **RF-067 소진 판정:** 남은 target — (a) RF-063 기존 peer와 중복 범위: `check_alert_policy_v1`, `check_audit_trail_completeness`, `check_log_archive_integrity`, `check_metrics_schema_v1`; (b) SAFETY_HOLD: `check_runtime_profile`(env), `check_real_execution_preflight`(broker), `check_daily_uef_run_status`(UEF); (c) 환경 불가: Windows Task Scheduler/PowerShell 실호출, `--live-followup`, `--llm-acceptance`. A가 안전하게 수행 가능한 RF-067 target은 소진.
+
 **RF-067 — run138c (`2026-10-27T0115Z`, 같은 회차 연속, A 시작 `4049210a`) `check_phase_5_2_5_3_runtime_health` 정상 경로**
 
 - 대상 `scripts/diagnostics/check_phase_5_2_5_3_runtime_health.py` `e095bee3`(root wrapper `8831693f`), `libs/reporting/phase_runtime_health.py` `bc8c24db`, `event_log_reader.py` `e1d39ff2`(BASE=integration 동일). 하네스 `evidence/run103_boundary_scripts/rf067_phase_runtime_health_positive_peer.py` blob `595fdd00`: 합성 canonical monitor 5 run(+이전 일자 1) + monitor 이벤트 로그를 tmp에 두고 실제 subprocess 4모드, fake 0, 네트워크·subprocess·sqlite 차단, `PATH=''`. **쓰기는 차단하지 않고 관찰**(`--date` 사용 시 캐시 쓰기를 확인하기 위함; tmp 밖 쓰기는 차단).
@@ -62,7 +74,7 @@
 
 ## 수용 대기 / 다음 시작 위치
 
-- **A 다음 최초 작업: RF-067** 나머지 delegated diagnostics target(run137·138에서 4건 완료; 남은 안전 후보: `check_monitor_gate_patterns`(live-followup 미사용), phase_5_2_5_3 정상 경로). 루트 wrapper 14개 기존 fake/AST 반복 금지.
+- **A 다음 작업:** RF-067 안전 target은 run138d로 소진(상세 아래). 남은 것은 RF-063 중복 4건·SAFETY_HOLD 3건·Windows 실호출·`--live-followup`/`--llm-acceptance` — 신규 승인/배정 시에만 진행. 루트 wrapper 14개 기존 fake/AST 반복 금지.
 - RF-063 나머지 effectful CLI와 scheduler; RF-065 나머지 CLI·scheduler는 미검증, **새로운 승인된 안전 경계**가 지정될 때만 진행. 동일 run135/136 하네스를 반복하지 않는다.
 - **RF-032 (run133) read-only 발견:** `q13_q14_validation.py`의 `validation_id` 경로 이탈 가능성과 Exit Horizon 비교 자기포함으로 분기 도달 불가. 두 수정 모두 적용 안 함. 동결 정책/오라클 의미 변경·소유권 변경은 사용자 승인 필요. 자세한 근거는 [A `ed0aa857`](https://github.com/hbombheart1230-dotcom/agentra/commit/ed0aa857db8fe023c13639d96681879183eb5b82).
 - 검증 완료 구간의 전체 RF/CI `PASS`를 주장하지 않는다. 다음 결과는 정확 source/blob SHA·명령·exit·효과·최초 잔여 게이트를 보존하고, **Git 원격 push 후 Issue #11 댓글 실제 생성/URL 확인**. 단순 NO_DELTA 때 HANDOFF·Issue 쓰기 0.
