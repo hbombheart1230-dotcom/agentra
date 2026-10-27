@@ -10,6 +10,14 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-067 — run138b (`2026-10-27T0105Z`, 같은 회차 연속, A 시작 `2a19e030`) `check_monitor_gate_patterns`**
+
+- 대상 `scripts/diagnostics/check_monitor_gate_patterns.py` blob `66c3af56`, root wrapper `6299e9c3`(BASE=integration 동일). 하네스 `evidence/run103_boundary_scripts/rf067_monitor_gate_patterns_peer.py` blob `fabe6610`: 실제 subprocess 4모드(wrapper/target 부트스트랩, plain, `-m`), fake 0, `PATH=''`, 쓰기·네트워크·subprocess·sqlite 차단. **`--live-followup`은 실행하지 않음**(`CompositeSkillRunner.from_env()`로 시장 데이터 조회 → NOT_RUN).
+- 실행: integration/BASE × normal/`-O` 4조합 **exit 0**, `RF067_MONITOR_GATE_PATTERNS_OK rows=10 stale_groups=5 reclaim_breakout_math=ok naive_ts_tz_dependent=540min cwd_relative_default=yes live_followup=NOT_RUN argparse=2 child_attempts=0 tree_unchanged=yes`, 4개 출력 동일.
+- 확인: 합성 canonical(11 디렉터리)에서 `run-monitor-minute*`·`monitor.json` 없는 디렉터리 제외, 깨진 monitor.json은 빈 행, shadow 없는 행은 빈 gate(가격은 `position_snapshot` 폴백), reclaim/breakout/pullback/vwap 계산이 독립 계산식과 일치, `1+vwap_distance==0`·NaN은 None, stale 판정 age≥3.0 포함(2.983 제외)·minute source 없는 행 제외, 동일 (symbol,reason,latest_candle_ts) 그룹 repeat 집계·정렬, `--reason` 필터, `--stale-age-min` 임계(11.5)·음수는 0으로 clamp, 텍스트·JSON 일치, `--day` 누락/잘못된 `--stale-age-min` argparse exit 2. 읽기 전용: tmp·repo 변화 0, 쓰기 시도 0.
+- **관찰(변경 안 함):** (1) tz 정보 없는 `ts`는 프로세스 로컬 타임존으로 해석 → 같은 파일이 `TZ=UTC0`에서 age 545분, `TZ=KST-9`에서 5분(540분 차이)으로 달라져 stale 판정이 실행 환경 TZ에 의존(tz-aware ts는 무관). (2) 기본 `--canonical-root ./reports/canonical`은 **cwd 기준**(cwd에 있으면 10행, 없으면 0행, 오류 없음, exit 0). (3) `--stale-age-min nan`을 수용(clamp 후 사실상 임계 0). (4) `--day`를 검증하지 않음(`../x`도 exit 0, 빈 결과).
+- 판정: **PEER_PASS_SCOPED**(delegated target 누적 5건), DONE 아님. NOT_RUN: `--live-followup`(실 시장 조회), Windows Task Scheduler.
+
 **RF-067 — run138 (`2026-10-27T0058Z`, B 원개발 독립 peer, 신규 예약 프롬프트 첫 실행; A 시작 `1fe4efe3`, integration `e45a31b2`, B `2b1cd7da` = HANDOFF_B 문서만)**
 
 - 대상 3 target(BASE=integration blob 동일): `check_profitability_recovery_day1.py` `7014ecda`(root wrapper `378f28ad`), `check_reporter_upgrade_regression.py` `ab585cf1`(`dcf5d165`), `check_phase_5_2_5_3_runtime_health.py` `e095bee3`(`8831693f`); lib `profitability_recovery_day1.py` `c1b07665`, `phase_runtime_health.py` `bc8c24db`. 하네스 `evidence/run103_boundary_scripts/rf067_diagnostics_cli_batch_peer.py` blob `ed196ac2`(실제 subprocess 4모드 × 3 target, fake 0, 쓰기·네트워크·subprocess·sqlite 차단, `PATH=''`).
