@@ -10,6 +10,14 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-067 — run138c (`2026-10-27T0115Z`, 같은 회차 연속, A 시작 `4049210a`) `check_phase_5_2_5_3_runtime_health` 정상 경로**
+
+- 대상 `scripts/diagnostics/check_phase_5_2_5_3_runtime_health.py` `e095bee3`(root wrapper `8831693f`), `libs/reporting/phase_runtime_health.py` `bc8c24db`, `event_log_reader.py` `e1d39ff2`(BASE=integration 동일). 하네스 `evidence/run103_boundary_scripts/rf067_phase_runtime_health_positive_peer.py` blob `595fdd00`: 합성 canonical monitor 5 run(+이전 일자 1) + monitor 이벤트 로그를 tmp에 두고 실제 subprocess 4모드, fake 0, 네트워크·subprocess·sqlite 차단, `PATH=''`. **쓰기는 차단하지 않고 관찰**(`--date` 사용 시 캐시 쓰기를 확인하기 위함; tmp 밖 쓰기는 차단).
+- 실행: integration/BASE × normal/`-O` 4조합 **exit 0**, `RF067_PHASE_5_2_5_3_POSITIVE_OK runs=5 views=5 run_id_cross_day=yes date_cache_side_effect=yes env_redirect=yes limit_neg_clamp=1 modes=4_identical child_attempts=0 repo_tree_unchanged=yes`, 4개 출력 동일(경로 해시 redact).
+- 확인: `--date` 없이 최신 canonical 일자 선택(run 5, 판정 BUY1/WAIT1/NOOP1/UNKNOWN2, stray 파일 무시), 이벤트 로그의 `monitor.*` 이벤트(`event_name`/`event` 키 모두)에서 surface(alignment·signal_evidence·gating) 복원, gating 통계·suspicious 플래그 집계, `--only-buy`/`--reason`/`--show-reclaim-near-ready`/`--show-policy-summary`/`--show-chart-structure-summary` 5개 뷰 exit 0, `--run-id`(복수·일자 횡단)·`--limit`(음수는 1로 clamp), 없는 run-id는 stdout 오류 JSON + exit 2, 4개 호출 모드 stdout 바이트 동일, repo 작업트리 변화 0.
+- **관찰(변경 안 함):** (1) **`--date`를 주고 이벤트 로그가 존재하면 "조회 전용" CLI가 이벤트 로그 옆에 `.day_cache/events_<day>_<hash>.jsonl`·`.meta.json`을 생성**(`event_log_reader.iter_jsonl_events`의 일자 캐시). `EVENT_LOG_DAY_CACHE_DIR`로 위치 변경 가능. 기본 `--event-log-path data/logs/events.jsonl`(repo 루트 기준)이면 repo 하위 `data/logs/.day_cache/`에 쓰기가 발생(이 하네스는 tmp 이벤트 로그만 사용해 repo 쓰기는 실행하지 않음). `--date` 없이는 쓰기 없음. (2) 상대 경로는 repo 루트 기준, 없는 입력은 exit 2(다른 target과 규칙 상이).
+- 판정: **PEER_PASS_SCOPED**(delegated target 누적 6건), DONE 아님. NOT_RUN: 기본 경로(repo `data/logs`) 실행, 실제 운영 canonical 데이터.
+
 **RF-067 — run138b (`2026-10-27T0105Z`, 같은 회차 연속, A 시작 `2a19e030`) `check_monitor_gate_patterns`**
 
 - 대상 `scripts/diagnostics/check_monitor_gate_patterns.py` blob `66c3af56`, root wrapper `6299e9c3`(BASE=integration 동일). 하네스 `evidence/run103_boundary_scripts/rf067_monitor_gate_patterns_peer.py` blob `fabe6610`: 실제 subprocess 4모드(wrapper/target 부트스트랩, plain, `-m`), fake 0, `PATH=''`, 쓰기·네트워크·subprocess·sqlite 차단. **`--live-followup`은 실행하지 않음**(`CompositeSkillRunner.from_env()`로 시장 데이터 조회 → NOT_RUN).
