@@ -55,3 +55,8 @@
 - **RF-067 C4 (B Owner 인계):** A run138 delegated target scoped CLI 기존 증거를 `B-20261027-RF067-C4-SCOPE-MAP`과 먼저 매칭하고 **실제 누락 경계 1개**만 A peer에게 요청하라. 14 fake wrapper/기존 target 재실행·UEF/real preflight 승인 없는 실행 금지.
 - **RF-052/046/047:** B `B-20261027-RF052-FULL-PEER` 및 `RF046-047-KEEP`의 원래 범위 peer 결과를 **재실행하지 말고** A 최종 C1 ACTION이 오면 C05가 판단하도록 증거만 인계하라. C01/B는 RF 체크·LEAD 이동·STATUS를 변경하지 않는다.
 - **RunLab #32:** `B-20261027-RL32-ORDER-GUARD-SOURCE-TRACE`는 read-only **가능 경로** 증거로 인수. 실제 SELL 원인·RUN_SOURCE_SHA 확정 금지. 보호 fake 실행은 승인/격리 조건 확인 전 NOT_RUN, 일반 RF는 계속 진행.
+
+## C03 최신 배정 delta (2026-10-27 · 중복 peer 실행 방지)
+- **[RF-065](../plan/queue/02_DEVELOPING/CODEX_B/RF-065.md) C1 / B Owner:** `B-20261027-RF065-C1-ACTION-MAP` + `RF065-ATTRIBUTION-RANGE`는 일부 효과 경계 scoped 증거다. 이미 끝낸 첫 range/temp CLI와 ACTION static map은 재실행하지 말고, **원본 RF C1의 다음 안전한 미충족 경계 하나**만 수행해 정확 SOURCE SHA·효과·NOT_RUN/SAFETY_HOLD와 함께 HANDOFF_B에 delta 제출. 전체 54-owner 완료·C4 full PASS 주장 금지.
+- **[RF-014](../plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) / B Peer:** 신규 `B-20261027-RF014-DYNAMIC-PEER`는 C4 scanner→RF-009 repeat/risk/NOOP의 독립 **SCOPED_PASS**다. 재실행 금지. 원본 C1~C3의 최초 부족은 A Owner에게 반환했고, B는 HANDOFF에 정확 peer scope만 유지한 채 다른 RF 진행.
+- **RF-052/046/047 / B Peer:** 기존 exact full-peer 재실행·재보고 금지. A run147 최종 C1 ACTION까지 접수되어 **C05 수용 판정 대기**. C01/B는 원본 체크·LEAD·STATUS를 변경하지 않는다.
