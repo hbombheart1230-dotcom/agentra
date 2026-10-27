@@ -14,6 +14,15 @@
 
 **현재 안전한 Linux peer 범위는 대부분 소진.** 새 B 근거가 없으면 검증을 발명하지 말고 아래 원개발 큐로 **즉시** 이동한다.
 
+## 신규 지팀장 물리 Owner 배정 (integration `a8a81430`)
+
+| 우선 | RF | 작업 |
+|---|---|---|
+| 1 | **043 — catalog 6파일** | `01_PENDING/CLAUDE_A/RF-043.md`에서 시작. 파일별 owner·실제 소비자·import·IO·예외 정적/안전한 temp 검증 후 필요한 최소 구현 또는 KEEP. B 독립 peer 요청; 운영/보호 쓰기 금지 |
+| 2 | **035 — reporting 서비스/발행 119파일** | `01_PENDING/CLAUDE_A/RF-035.md`. 기존 RF-074 frozen oracle 차이·외부 발행 writer는 HOLD, 우선 안전한 소비자/State/IO·효과 인벤토리. source 변경 시 별도 peer·patchnotes 검증 |
+
+RF-030은 frozen oracle 승인 HOLD 유지. 신규 B RF-063 수정이 도착하면 A가 그 변경 SHA의 TEXT+JSON 정상/`-O` 분기만 독립 peer한다. 두 RF는 원격 큐 소유권 **배정만 완료**, 구현·테스트 `NOT_RUN`.
+
 ## 다음 개발 큐
 
 | 우선 | 실제 작업 |
