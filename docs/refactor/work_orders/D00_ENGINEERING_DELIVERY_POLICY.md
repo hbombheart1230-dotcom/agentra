@@ -54,5 +54,12 @@
 ## 5. 문서·보고
 
 - D00/루트 `AGENTS.md`/`CLAUDE.md`는 고정 지시. C00/C01/C02는 **현재 우선 RF·다음 선택 위치만** 유지하며 지팀장이 integration에서 관리한다.
+| 실행자 | 자기 브랜치 HANDOFF | 작업 체크포인트 |
+|---|---|---|
+| Claude A | `docs/refactor/work_orders/HANDOFF_A.md` | [Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11) |
+| Codex B | `docs/refactor/work_orders/HANDOFF_B.md` | [Issue #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12) |
+| 지팀장 | C00·STATUS·RF 큐 | #11/#12 신규 결과 인수 |
+
+- A/B는 자체 선택 RF의 **RF 번호·SOURCE SHA·실제 결과·다음 RF**를 HANDOFF에 남겨 자기 브랜치 커밋·푸시 후 담당 Issue에 신규 체크포인트를 제출한다. 지팀장은 매 회차 A/B 최신 HEAD·HANDOFF·#11/#12 신규 기록을 대조해 판정·통합·다음 배정에 반영한다. Issue의 과거 브랜치·업무 지시는 D/C 정본보다 우선하지 않는다.
 - STATUS는 현재 큐·차단만, 상세 증거는 RF/HANDOFF/Git에 기록. 변화 없으면 문서 쓰기 금지.
 - 보고는 `실제 RF 진척 | SOURCE/commit SHA | PASS/FAIL/BLOCKED/NOT_RUN | 다음 RF` 한 표로 끝낸다.
