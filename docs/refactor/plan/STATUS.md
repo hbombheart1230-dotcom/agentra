@@ -8,7 +8,14 @@
 |---:|---:|---:|---:|---:|---:|---:|
 | 61 | 3 | 1 | 14 | 14 | 0 | **93** |
 
-**이 집계는 직전 정본의 보고값**이며, 이번 문서 정합성 수정에서는 RF-001~093 원격 실물 경로 전수 집계를 재실행하지 않았다(`PHYSICAL_QUEUE_NOT_VERIFIED`). 신규 DONE **확인 0**, integration 운영 소스 통합 **0**. LEAD: **014/015/016/028/029/031/032/033/034/050/063/065/067/069**. Scoped peer PASS를 전체 DONE으로 승격하지 않는다.
+**원격 물리 큐 전수 경로 확인(2026-10-27, HEAD `45a9fd9d`에서 실시):** `.gitkeep` 제외 93개 RF-001~093, 중복 경로 없이 PENDING 61 / DEVELOPING 3 / PEER 1 / LEAD 14 / DONE 14 / REWORK 0. PENDING 중 Claude A 소유 RF-030/035/043 = 3건, UNASSIGNED = 58건, CODEX_B PENDING = 0건. RF-035·043은 지팀장 배정 커밋 `a8a814302e727a633b18d2ed758f900a54858790`에서 UNASSIGNED → `01_PENDING/CLAUDE_A`로 실물 이동(원개발·peer·CI 미실행). 신규 DONE **확인 0**, integration 운영 소스 통합 **0**. LEAD: **014/015/016/028/029/031/032/033/034/050/063/065/067/069**. Scoped peer PASS는 전체 DONE이 아니다.
+
+## 지팀장 추가 조치 (2026-10-27)
+
+- RF-063 B 원개발 반려 요청: [#12 댓글](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6432409093). 3브랜치 source blob 직접 대조 및 미정의 변수 확인 완료; 직접 CLI 실행은 `NOT_RUN`.
+- RF-014/028/034: B `318eb9d5`의 신규 scoped peer는 결과 범위에 한해 인수, 20/85개 owner 전수 및 실제 외부 소비자·정식 통합 CI 게이트는 유지. 05_DONE 이동 0.
+- RF-035/043 A 소유 배정은 **구현·테스트 진척이 아니라 큐 배정**이다. C02에서 RF-043(6파일) → RF-035(119파일) 순으로 일반 안전 범위 원개발 진행.
+- 원격 동시 writer가 D00/STATUS/C00 등 문서 HEAD를 추가 변경하므로 새 변경은 최신 blob SHA에만 적용하고 덮어쓰기·force push 금지. 보호 구간 별도 승인 전 `SAFETY_HOLD`.
 
 ## 최신 A/B 인수 (2026-10-27 확인)
 
@@ -33,7 +40,7 @@
 | 033 | B published corrupt partial JSON consumer fail-closed scoped peer 보고; 실제 producer/consumer 최종 게이트 판정 |
 | 034 | A valid source fixture로 **B scoped peer 완료**; casebook→Scanner/cache 전체 소비자 추가 확인. 보호 closeout만 별도 보호 승인 |
 | 050 | B temp cache 저장→reload scoped peer 완료; 모델 fallback·State 최종 게이트 판정 |
-| 063 | A pinned BASE에서 `day` NameError 재현, B 현 source에서는 미재현 보고. **B Owner가 정확 SHA·BASE 차이 확인 후 일반 RF로 즉시 보완**, A 독립 peer. Windows·운영 경로 보호 유지 |
+| 063 | **지팀장 직접 source 확인: integration/A/B 동일 blob `5de4ec68`, 137행 TEXT의 미정의 `day` 확정.** B가 동일 B source에서 미재현 보고한 건은 TEXT 결함 반증이 아님. B 원개발 최소 수정→normal/`-O` 텍스트+JSON temp 검증→A 독립 peer. 현재 RF 물리 LEAD 유지(06_REWORK 이동 시도는 HEAD 변경/원격 오류로 미완료). 보호 실행 금지 |
 | 065 | 안전 Linux peer 소진; 실데이터·Windows Scheduler·보호 CLI 별도 안전 환경/승인 필요 |
 | 067 | 안전 delegated target peer 소진; Windows PowerShell·보호 preflight/UEF 경계 환경/승인 필요 |
 | 069 | historical UEF5 snapshot **path/SHA/use-scope 승인 전 SAFETY_HOLD** |
