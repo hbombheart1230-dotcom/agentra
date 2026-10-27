@@ -4,17 +4,19 @@
 
 ## 🔴 현재 최우선 — **RF 전체 종결을 앞당길 반대 peer 먼저**
 
-A 최신 [HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md)의 run149~162 제출(조회 A HEAD `6cdb53b1`), B HEAD `fea02def` (RF-065 output-root seam `1641cfef` + A run161 scoped peer, RF-067 A run162 protected fake wrapper peer, B RF-028/029 scoped peer). **RF-046/047/052는 DONE**, 신규 LEAD 0. 매 예약에 최신 HEAD/원본 RF를 재조회하고 새 증거만 처리한다.
+A 최신 [HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md) run165(조회 A HEAD `23e54e01`), B HEAD `7e47cd6a` 확인. **RF-067은 C05가 C4 MET·LEAD 이동 완료**(C04 C6 대기), RF-046/047/052 DONE. B RF-033 9/9 scoped peer, RF-028/029 scoped peer 및 RF-065 출력 seam 증거는 전체 C4 PASS와 구분. 최신 RF·SOURCE/HEAD를 매회 재조회하고 이미 수용된 RF-067 C4 재검증 금지.
 
 | 우선 | RF 원본 직접 링크 | B 역할 · **이번 회차 행동** |
 |---:|---|---|
 | 1 | [RF-015](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | **반대 peer C4**: A run149 19-owner KEEP/State/event와 run145 BASE 11 FAIL 기존 분류를 재사용. B의 최신 `PEER_PARTIAL`은 full PASS가 아님. **원래 19 owner C2/C3/C4의 최초 부족 계약 하나**만 대조·검증해 정확 SOURCE/결과 제출. B-only Commander frozen failure를 Monitor 회귀로 둔갑시키지 말 것. |
 | 2 | [RF-031](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | **반대 peer C2/C4**: A run150 22-owner ACTION 및 B 최신 real caller cache/memory + partial JSON/MD OSError regeneration **SCOPED_PASS** 수용. 기존 두 marker 재실행 금지. frozen 13 보호를 분리하고 원래 writer/State/실패 계약에서 **처음 빠진 한 소비자만** 제시; full C4 여부는 정확 범위로 판정. |
-| 3 | [RF-067](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CODEX_B/RF-067.md) | **Owner C4 증거 매핑**: A 기존 2 root + run151 4 + run138e 4 + run138d 2 = **서로 다른 12/14 root scoped peer**(원본 14 root). 기존 “남은 8개”는 run138d/e를 누락한 계산. 12 root SOURCE/blob·호출 모드 매핑은 HANDOFF_B에서 확인됨. **A run162가 보호 2 root의 fake-module 공개 import/argv/예외/exit 20/20 SCOPED_PASS 제출**. 14/14 wrapper 기계적 경계 증거를 C03/C05에 전달하고, **실 delegated target 2개는 NOT_RUN/SAFETY_HOLD**로 명확히 분리. 동일 fake 반복 금지, UEF·broker preflight·Windows Scheduler 실실행 금지. 전체 C4 PASS 자체 선언 금지. |
+| 3 | [RF-067](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-067.md) | **C05 C4 MET/LEAD 승인 완료**: A run165의 원래 공개 14-wrapper 독점 범위 `PEER_PASS` 인수. B는 추가 C4·fake-wrapper 검증/Owner 증거 재제출 **하지 않는다**. 보호 diagnostics target 실제 UEF/Broker 실행 NOT_RUN 유지. **다음 책임 C04** exact integration SHA KEEP·필수 CI C6 → C05 C7/DONE; B는 RF-015/031·다른 미완료 RF에 집중. |
 | 4 | [RF-065](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-065.md) | **Owner C1/C2**: 54-owner ACTION map은 C1 후보·원본 미체크. 이전 지정 temp-root 밖 8개 산출물의 원인을 B가 `run_integrated_trade_validation.py`의 누락된 `output_root` 전달로 분류, B `1641cfef` / blob `4119747f`에서 default/explicit root seam 수정. fake downstream normal/`-O` **SCOPED_PASS** 및 **A run161 독립 공개 CLI fake 14/14 SCOPED_PASS** 확보(실 writer NOT_RUN, 전체 A peer PASS 아님, integration 미통합). **B**는 정확 SOURCE·C1 ACTION 및 원래 C2/C3 미충족 1개만 제출하고 RF-015/031 peer 우선; **A**의 run161 성공 범위 재실행 금지; 추가 원래 C4 부족 경계만 지정. 보호/운영 root 재실행 금지. |
 | 5 | [RF-014](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | **반대 peer C4**: A run148 20-owner ACTION, B 20/20 static 및 shim→RF-009 dynamic scoped 재사용. A의 원래 C2/C3 잔여가 확인되면 그 **한 계약만** 반대 peer; C1 static PASS만으로 전체 C4 PASS 선언 금지. |
 | 6 | [RF-050](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | **반대 peer C4**: A run146 caller/cache 지도, 기존 B fake 10/10 재사용. A의 8-owner 최종 C1 ACTION이 도착한 뒤 원래 UI caller/cache failure 한 경계만 peer; 운영 정책/실 모델 변경 금지. |
 | 7 | [RF-063](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-063.md) | **Owner C1**: 76 owner 진단 파일 ACTION/consumer 남은 원래 범위만. |
+
+**RF-033 신규 peer 재사용:** B `7e47cd6a` HANDOFF는 `input_worker→publish_input` temp 소비자 normal/`-O` 각 **9 PASS, 2 deselected**(`exchange_calendars` 미설치)로 `PEER_PASS_SCOPED`만 입증했다. 45-owner 전체 C4는 미완료. 기존 9/9 재실행 금지; 다음 안전 경계는 RF-034 casebook→Scanner 또는 RF-033 원래 남은 소비자 1개. 환경 의존성 실패를 신규 소스 회귀로 단정하지 않는다.
 
 **우선순위 규칙:** 안전하고 READY인 반대 peer RF가 있으면 **RF-065 CLI 하나씩 검증하는 작업보다 먼저** 처리한다. RF-015/031에서 이미 full peer 가능한 조건을 갖췄으면 정확 SHA·원래 전체 범위 근거로 PASS를 제출해 C03/C05가 즉시 판정하도록 한다. 그럴 수 없으면 최초 미충족 원래 C번호/경계만 지목하고 **즉시 다음 RF**로 넘어간다.
 
@@ -41,7 +43,7 @@ A 최신 [HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/
 
 ## 🟢 C03 신규 PENDING 공급 — B Owner 후보 6건
 
-**A 신규 CLAIM 인계:** [RF-040](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-040.md)·[RF-061](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md)은 C05가 이미 DEV로 이동했다(A `cd429015` run164). **B는 A의 원래 C1~C3 완결 주장·정확 SOURCE SHA가 도착한 뒤에만 안전한 C4 독립 peer**를 수행한다. RF-040 Executor, RF-061 Step5C 보호 동작 실행·수정 금지. A run164의 정적 KEEP/SAFETY_HOLD 후보를 full peer PASS로 오인하지 않는다. 우선 RF-015·031 원래 첫 부족 조건/full peer부터 처리한다.
+**A 신규 CLAIM 인계:** [RF-040](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-040.md)·[RF-061](../plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md)은 C05가 DEV로 이동했고 A `23e54e01` run165에서 원래 C2/C3 Owner KEEP 후보를 제출했다. RF-040 19-file normal/`-O` 각각 **1377 PASS/5 FAIL**(동일 실패, BASE/env 관련 Owner 분류이나 BASE 재현 NOT_RUN); RF-061 Step5C 직접 테스트 NOT_RUN. **B는 정확 A/integration SOURCE의 안전한 원래 C4 경계를 독립 검토**하되 C03의 C1~C3 수용과 보호 경계를 분리하고 RF-015/031 우선. RF-040 Executor, RF-061 Step5C 보호 실행·수정 금지; Owner 증거를 full peer로 오인 금지.
 
 **[C03의 현재 미CLAIM READY 10건 배정표](C03_LEAD_TRIAGE_CURRENT.md)를 따른다.** 이 표는 `01_PENDING/UNASSIGNED`의 후보이며 **현재 CLAIM/DEV/DONE이 아니다**. 기존 C1~C5 우선 미완료·peer/full PASS를 포기하지 않는다. **최대 2건만 동시 CLAIM**, 자기 기존 브랜치 HANDOFF에 독점·CLAIM/SOURCE SHA를 적고 C05의 실물 큐/STATUS 동기화를 기다리는 동안 다른 안전 READY RF도 계속한다.
 
