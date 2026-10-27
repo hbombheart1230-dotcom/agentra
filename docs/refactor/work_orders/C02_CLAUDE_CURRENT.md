@@ -2,6 +2,10 @@
 
 **작업 브랜치:** `work/p15-a-reporter-pure-20261021` (마지막 확인 HEAD `ba32a86a`). **정본 규칙:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md), [LEAD 작업표](../plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). A는 A 소유 원개발자, B 소유 RF 독립 peer다. 개인 승인·지팀장 인계 확인을 기다리지 않는다.
 
+## P0 공통 RunLab #32 — 지팀장 배정 조사 (D04)
+
+**사건:** [RUNLAB32-20261027 OPEN](../plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md) · [D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md). **개발 Claude A**는 `RL32-REPORT`(broker round trip 대비 `trade_index=[]`, realised sample 누락, operator GREEN vs reconciliation mismatch, stale metrics)의 **Reporter/metrics/visibility read-only trace 및 temp fake 소비자 확인**만 담당한다. 10/27 신규 SELL의 Reporter 반영 여부는 아직 UNKNOWN이며 RunLab 17/19시가 관측한다. `RUN_SOURCE_SHA=UNKNOWN` 때문에 현재 개발 HEAD 회귀라 단정하지 않는다. 확인한 source SHA·입력 이벤트 provenance·출력 일관성·실제로 미실행한 효과/원 소유 RF 후보만 HANDOFF_A에 기록하고 지팀장에 전달한다. 보호 readiness/Executor/운영 데이터 변경은 무승인 금지. P0 신규 사실 처리 후 기존 RF-052/043/035 및 일반 RF 개발을 계속한다.
+
 ## 현재 작업
 
 1. **RF-052 코드 수정 완료 후보 — B peer 대기:** `libs/market_data/receipts.py` source blob `10283d8f`, Windows drive/UNC/backslash traversal 처리. A owner 증거: targeted pytest **40 PASS**(전 39 PASS/1 FAIL), normal/-O path harness exit0. UEF5 history 11 FAIL/49 PASS/2 ERROR는 integration 기존 실패와 동일하므로 **RF-052 신규 회귀로 오인 금지**. 현 단계에서 DONE/통합으로 표기하지 않고 B 독립 peer와 지팀장 SHA·CI 판단에 인계한다.
