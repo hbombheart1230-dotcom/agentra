@@ -536,7 +536,7 @@ Static facts: all 14 `scripts/check_*.py` are the same 10-line delegation templa
 - **First unmet original condition (1):** DONE-check #4 (relative read-only CLI real PASS/exit + SOURCE SHA) for `check_daily_uef_run_status` and `check_real_execution_preflight` real targets. Release owner: user explicit approval per D00 §3 (protected UEF / broker preflight), else C03/C05 decide whether wrapper-only KEEP_VERIFIED suffices for these two. A will not run them.
 - Scoped, not DONE; run137/138/138b-e/151/162 not re-run. External effects: none besides this push.
 
-## run164 — RF-040 / RF-061 C1 (Owner CLAIM request, physical move is C05): per-file ACTION (integration fd5d608c = A base 5-line fast-forward; read-only `git grep`/`git show` + temp import check, no protected run)
+## run164 — RF-040 / RF-061 C1 (Owner CLAIM request, physical move is C05): per-file ACTION (integration fd5d608c; A branch based on 6cdb53b1; read-only `git grep`/`git show` + temp import check, no protected run)
 CLAIM: A requests **RF-040** and **RF-061** (≤2 concurrent per C02). **RF-057 not claimed**: `libs/skills/runner.py` is the Kiwoom API/skill executor (protected-adjacent, same reason as run142); next candidate in order is RF-061.
 | RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
 |---|---|---|---|---|---|
