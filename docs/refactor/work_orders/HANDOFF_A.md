@@ -191,3 +191,11 @@
 - NOT_RUN: RunLab #32 real data, live/broker effects.
 - External effects: none besides this push.
 - Next: RF-051 owner effect verification.
+
+## run144 — RF-051 yfinance/network/write fake owner effects (source integration 83908c35, BASE 63182ab2)
+- Script: `evidence/run103_boundary_scripts/rf051_yfinance_effect_fake.py` (fake `yfinance` in sys.modules, socket/urlopen/subprocess blocked, writes confined to tmp).
+- Command: `PYTHONPATH=. python [-O] rf051_yfinance_effect_fake.py` on integration and BASE checkouts → exit 0 ×4, identical JSON, `RF051_EFFECT_OK`.
+- Checked: missing yfinance → `DataSourceDependencyError(dependency_missing:yfinance)`; `try_yfinance` returns None and logs ERROR once per component; `_fetch_last2_closes_yfinance` returns None for missing/empty/short/raising fetches and `(prev,last)` for a fake frame; `_write_macro_indicator_log` writes nothing when disabled, writes `<HHMMSS>_macro_indicators.json`+`latest.json` only under the given root, swallows a blocked default-root write; KOFIA `fetch_korea_bond_yield_overrides` returns a dict without raising when the network is blocked.
+- Result: no behavior difference integration vs BASE; owner effect boundary for RF-051 is fake-verifiable → files remain KEEP candidates, no code change. B peer pending; not DONE.
+- External effects: none besides this push. NOT_RUN: real yfinance/KOFIA network.
+- Next: RF-035 editable subset / next non-protected RF.
