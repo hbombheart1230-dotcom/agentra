@@ -2,13 +2,23 @@
 
 > 진입점 **C04 + [D00](D00_ENGINEERING_DELIVERY_POLICY.md)**. 구 `CURRENT.md` 사용 금지. C05가 실제 물리 `04_LEAD_ACCEPTANCE`에 이동한 RF만 처리한다.
 
-## 지금 하는 일 — LEAD 3건
+## 현재 C6 인계 — LEAD 3건 (2026-10-27 18시 KST)
 
-| 우선 | RF 원본 | 지금 필요한 결과 |
+| 우선 | RF 원본 | C04 판정 / C05 다음 작업 |
 |---|---|---|
-| 1 | [RF-046](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-046.md) | 정확한 source 동일성 + 해당 integration SHA의 요구 CI → C6 증거 |
-| 2 | [RF-047](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-047.md) | KEEP_VERIFIED·요구 CI 재사용 가능 여부 → C6 증거 |
-| 3 | [RF-052](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-052.md) | A 검증된 `receipts.py` 수정만 선별 통합 + 정확한 통합 SHA CI → C6 증거 |
+| 1 | [RF-046](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-046.md) | **C6 EVIDENCE_READY / KEEP_VERIFIED** → C05 C6 체크·C7 DONE |
+| 2 | [RF-047](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-047.md) | **C6 EVIDENCE_READY / KEEP_VERIFIED** → C05 C6 체크·C7 DONE |
+| 3 | [RF-052](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/RF-052.md) | **C6 EVIDENCE_READY / INTEGRATED** → C05 C6 체크·C7 DONE |
+
+### C04 정확 SHA 통합·CI 증거 (C05 즉시 인수용)
+
+- **통합 코드 commit:** [`7cfb26d811853545e8b88da9143afdb1afdb1e19`](https://github.com/hbombheart1230-dotcom/agentra/commit/7cfb26d811853545e8b88da9143afdb1afdb1e19) (부모 `c7b64bb789801143c46eb103ed5a0561266eccc4`). **실제 diff는 `libs/market_data/receipts.py` 단 1파일, 9 changed lines**. A 검증 blob `10283d8f8ac0c2c91357c22b060f0e609bedd324`를 정확히 선택했고 integration 이전 blob `e59febedb1c8fa9dbe167656fcd9d2303a1a74a3`에서 Windows drive/UNC/backslash traversal 거부를 추가했다. A 브랜치 전체 병합/다른 소스/UEF·frozen CI 변경 **0**.
+- **정확 CI:** [P1.5 Shared Offline Safety run **40481581384**](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40481581384), `head_sha=7cfb26d811853545e8b88da9143afdb1afdb1e19`, `completed/success`; job `safety` **success**, `safety (-O)` **success**. workflow blob `4c3c071bc73a4727ca1c980516e984f04b45e336`. Web workflow는 `apps/web/**` 전용이며 이번 source 변경과 무관. 이는 **offline safety CI**이지 보호된 UEF/운영 런 PASS가 아니다.
+- **RF-046:** A/B/integration exact blobs `libs/data_quality/{__init__.py=0d0465524dfa2cb6cdf969eecee544a6a0d60017,signal_contract.py=9206f801363a2bb8186ee183da90bd7bdd1c26c2}`. Owner A run147 C1 KEEP ACTION; 독립 B `B-20261027-RF046-047-KEEP` normal/-O **63/63 PASS**(B HANDOFF). `7cfb26d8`에서 두 owner blob이 그대로이고 요구 offline CI가 정확 SHA 성공. **C6 KEEP_VERIFIED + CI PASS, C05 C7 대기**.
+- **RF-047:** A/B/integration exact blobs `libs/diagnostics/{__init__.py=edeb537896df0b263b84712f339208437787b658,archive_inspection.py=299d328c506805d961bcc73b36b53e4caa8e6877,cli_capture.py=adc8a5686da431e3bdc500b8176ffd2a8754cd76,observations.py=e584b14105858e060197c0bf2607491f33ed80db}`. Owner A run147 C1 KEEP ACTION; 독립 B 동일 `63/63 PASS`. `7cfb26d8`에서 네 owner blob 그대로, exact-SHA CI 양 모드 성공. **C6 KEEP_VERIFIED + CI PASS, C05 C7 대기**.
+- **RF-052:** A owner `receipts.py@10283d8f` + `__init__.py@5e63e4a5`; B `B-20261027-RF052-FULL-PEER`는 A source `f9176623`의 해당 exact blob을 대상으로 receipt/lifecycle normal/-O **40/40 PASS** + 별도 Windows/UNC traversal 독립 peer. 기존 UEF5_2 11F/49P/2E는 BASE-identical이며 신규 회귀라고 주장하지 않는다. 실제 integration blob `10283d8f`, 위 `7cfb26d8` CI 양 모드 success. **C6 INTEGRATED + CI PASS, C05 C7 대기**.
+- **C05 권한 경계:** 이 C04 문서는 C6의 **증거 인계**일 뿐 RF 원본 C6/C7 체크·물리 `04→05`·STATUS/DONE 판정이 아니다. C05가 최신 HEAD의 코드 blob 동일성을 확인해 원래 C6에 반영하고 같은 회차 C7·STATUS를 종결한다. RunLab #32 `RUNTIME_VERIFIED`와 별개이며 실주문/운영/보호 테스트 **NOT_RUN**.
+
 
 현재 수치는 [STATUS](../plan/STATUS.md)와 [실물 LEAD 큐](../plan/queue/04_LEAD_ACCEPTANCE/)로 매회 다시 확인한다. 위 표는 완료 주장 아님.
 
