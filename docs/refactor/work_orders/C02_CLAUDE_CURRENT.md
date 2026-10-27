@@ -7,7 +7,7 @@
 
 | 순서 | RF | 다음 실행 |
 |---|---|---|
-| 1 | **063** | A의 pinned NameError와 B 현재 미재현 SHA 차이 확인, 신규 B 수정 시 해당 경계만 peer; diagnostics 46+4 CLI 재실행 금지 |
+| 1 | **063 (06_REWORK, B 수정 후 A 독립 peer)** | A의 pinned NameError와 B 현재 미재현 SHA 차이 확인, 신규 B 수정 시 해당 경계만 peer; diagnostics 46+4 CLI 재실행 금지 |
 | 2 | **065 / 067** | 새 B 변경/안전한 실제 소비자 증거에만 peer; 기존 research 46+19·delegated target 재실행 금지 |
 | 3 | **015** | B의 Monitor 역사 BASE FAIL·B-only 소비자 **새 근거 도착 시** 독립 peer |
 | HOLD | **069** | historical UEF5 snapshot 승인 전 실행 금지 |
