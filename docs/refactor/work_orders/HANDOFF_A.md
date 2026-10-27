@@ -177,3 +177,17 @@
 - RF-063 나머지 effectful CLI와 scheduler; RF-065 나머지 CLI·scheduler는 미검증, **새로운 승인된 안전 경계**가 지정될 때만 진행. 동일 run135/136 하네스를 반복하지 않는다.
 - **RF-032 (run133) read-only 발견:** `q13_q14_validation.py`의 `validation_id` 경로 이탈 가능성과 Exit Horizon 비교 자기포함으로 분기 도달 불가. 두 수정 모두 적용 안 함. 동결 정책/오라클 의미 변경·소유권 변경은 사용자 승인 필요. 자세한 근거는 [A `ed0aa857`](https://github.com/hbombheart1230-dotcom/agentra/commit/ed0aa857db8fe023c13639d96681879183eb5b82).
 - 검증 완료 구간의 전체 RF/CI `PASS`를 주장하지 않는다. 다음 결과는 정확 source/blob SHA·명령·exit·효과·최초 잔여 게이트를 보존하고, **Git 원격 push 후 Issue #11 댓글 실제 생성/URL 확인**. 단순 NO_DELTA 때 HANDOFF·Issue 쓰기 0.
+
+## run143 — RL32-REPORT P0 trace (source integration 179a6f50, BASE 63182ab2)
+- Script: `evidence/run103_boundary_scripts/rl32_report_trace.py` (temp-only, no network/subprocess/live data).
+- Command: `python rl32_report_trace.py` on integration/BASE checkouts × normal/`-O` → exit 0 ×4, identical output.
+- Traced: `symbol_trade_report.build_daily_trade_index` (→ `symbol_trade_report_r8_bodies_01.build_daily_trade_index_r4_impl`), `intraday_trade_reports.generate_intraday_trade_artifacts`, `operator_visibility._build_trading_health_status` and the health block of `build_operator_daily_summary_payload` (~L804-861).
+- Findings:
+  - trade_index reads only local `reports/trades/<day>/**/lifecycle/*` artifacts → `trade_index=[]` matches missing producer input, not a consumer bug.
+  - BUY with report root unset → `skipped`/`trade_report_generate_on_open_disabled`, no artifact; without a local SELL (RL32-ORDER symptom) no closed lifecycle exists.
+  - Missing realized summary → trading health `UNKNOWN`, which does not raise operator health → operator stays GREEN.
+  - Operator health inputs contain no broker reconciliation signal (design gap).
+- Candidate RFs: RF-030 `operator_visibility.py` reconciliation-in-health gap (frozen-oracle HOLD, lead decision); producer input belongs to RL32-ORDER (B side).
+- NOT_RUN: RunLab #32 real data, live/broker effects.
+- External effects: none besides this push.
+- Next: RF-051 owner effect verification.
