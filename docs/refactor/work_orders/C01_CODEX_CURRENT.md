@@ -39,6 +39,23 @@ A 최신 [HANDOFF_A](https://github.com/hbombheart1230-dotcom/agentra/blob/work/
 - **RF-070:** 두 launcher parser normal/`-O` scoped + reporter temp writer 8/8 normal/`-O` scoped 재사용. 남은 20 OTHER launcher 정적 ACTION/소비자·효과만 처리, 32 위험 launcher main/server/운영 실행 HOLD.
 - **RF-071:** 42 owner 중 3개 정적 ACTION(2 COMPAT wrapper, `approval_cli.py` Step5C 승인 보호 HOLD) 재사용. 남은 39 owner의 안전한 정적/격리 효과·소비자 판정 진행; 실제 승인 CLI/주문 실행 금지.
 
+## 🟢 C03 신규 PENDING 공급 — B Owner 후보 6건
+
+**[C03의 신규 READY 12건 배정표](C03_LEAD_TRIAGE_CURRENT.md)를 따른다.** 이 표는 `01_PENDING/UNASSIGNED`의 후보이며 **현재 CLAIM/DEV/DONE이 아니다**. 기존 C1~C5 우선 미완료·peer/full PASS를 포기하지 않는다. **최대 2건만 동시 CLAIM**, 자기 기존 브랜치 HANDOFF에 독점·CLAIM/SOURCE SHA를 적고 C05의 실물 큐/STATUS 동기화를 기다리는 동안 다른 안전 READY RF도 계속한다.
+
+| 순서 | RF 원본 | 신규 B Owner 후보 | 첫 원래 C1 범위·주의 |
+|---:|---|---|---|
+| 1 | [RF-044](../plan/queue/01_PENDING/UNASSIGNED/RF-044.md) | **B Owner 후보** · libs/contracts · 16파일 | 호환/DTO 계약; 타 RF 소유 DTO 변경 금지 |
+| 2 | [RF-045](../plan/queue/01_PENDING/UNASSIGNED/RF-045.md) | **B Owner 후보** · libs/core · 10파일 | core 공개 API·의존성·회귀 |
+| 3 | [RF-024](../plan/queue/01_PENDING/UNASSIGNED/RF-024.md) | **B Owner 후보** · Runtime quant · 18파일 | quant 원래 계약·효과 구분; 보호 거래 경계 미수정 |
+| 4 | [RF-010](../plan/queue/01_PENDING/UNASSIGNED/RF-010.md) | **B Owner 후보** · Monitor graph · 1파일 | monitor_node 1파일, A RF-015와 소비자 충돌 확인; 안전 실행 금지 |
+| 5 | [RF-011](../plan/queue/01_PENDING/UNASSIGNED/RF-011.md) | **B Owner 후보** · Commander graph · 3파일 | Commander/trading graph 3파일, Broker/Executor/Step5C 보호 구간 제외 |
+| 6 | [RF-059](../plan/queue/01_PENDING/UNASSIGNED/RF-059.md) | **B Owner 후보** · libs/strategies · 21파일 | 전략 패키지 import/caller 계약·mock; 실거래/전략 정책 무승인 변경 금지 |
+
+- **즉시 CLAIM 후보:** [RF-044](../plan/queue/01_PENDING/UNASSIGNED/RF-044.md) → [RF-045](../plan/queue/01_PENDING/UNASSIGNED/RF-045.md). 중복 CLAIM/보호 조건이 있으면 이유만 기록하고 순서상 다음 후보로 이동. 남은 후보는 선점하지 말고 소진 시 차례로 선택한다.
+- **작업 단위:** 해당 RF 원본 `DONE 체크` C1~C3·정확 CODE/RESEARCH FILE_COVERAGE → 변경 필요할 때 자기 범위 내 최소 diff/격리 normal/-O·fake 확인 → `HANDOFF_B`에 최초 증거·차단·다음 RF. 외부 소비자나 타 RF 소유 파일은 읽기 전용, 보호 경계는 별도 승인 전 수정/실행 금지.
+- **C05만** PENDING→DEV 물리 이동, RF 체크와 STATUS/Owner 정합성 처리를 수행. C03은 신규 후보 보충, 반대 peer 인계·C01/C02 배정만 한다. PENDING 숫자는 C05 실제 이동 전까지 그대로다.
+
 ## 무조건 끝까지 수행하는 루프
 
 **RF 링크 열기 → 그 RF 원본 `DONE 체크`의 미완료 확인 → 수행/독립 검증 → 자기 [HANDOFF_B](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-b-operator-structure-20261022/docs/refactor/work_orders/HANDOFF_B.md) 증분 기록·커밋/푸시 → 다음 READY RF.** 여기의 문구를 RF에 복제하지 않는다.
