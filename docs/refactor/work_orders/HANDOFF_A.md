@@ -28,6 +28,12 @@
   - (`-O`에서는 pytest assert 재작성이 비활성되어 테스트는 normal만 의미; `-O`는 import/지문만.)
 - 다음: B 독립 peer(RF-052 수정 blob `10283d8f`, RF-043/046/047/054/058). 지팀장: RF-052 선별 통합 판단, 4개 RF 물리 Owner 동기화.
 
+**RF-054/058 writer·effect owner 검증 — run142 (`2026-10-27T0430Z`, A 시작 `ba32a86a`, integration `74a1c960`; B 새 SOURCE 없음 → 신규 peer 0, RF-063/065/067 재실행 0)**
+
+- 하네스 `docs/refactor/work_orders/evidence/run103_boundary_scripts/rf054_058_writer_effect_check.py`(mkdtemp 한정, 네트워크·subprocess 차단, fake 0, 소스 변경 0). **실제 writer**: RF-054 `write_performance_summary`·`write_playbook_stats`·`write_strategy_memory`(+`STRATEGY_MEMORY_PERSIST_ENABLED=off` 시 무쓰기 `disabled`), 깨진 lifecycle_bundle 무시; RF-058 `StateStore` load 기본값(무쓰기)·왕복·손상 JSON 초기화·최신 broker truth 보존·4-thread save 후 tmp 잔존 0, `ProposalStore` jsonl append(한글).
+- normal / `python -O` 각 **exit 0**, `RF054_058_WRITER_EFFECT_OK files_under_reports=5`, 쓰기는 temp reports root 내부만, repo 작업트리 변화 0.
+- 판정: RF-054/058 writer/effect 항목 A owner 증거 충족(KEEP_VERIFIED 후보). **B 독립 peer·통합 SHA CI·DONE 아님**(A 자체 PASS ≠ peer PASS). NEXT: B peer 대기; 일반 RF 추가 CLAIM 가능 후보 없음(RF-035 editable 26은 원래 수용 조건 필요분 없음, RF-030/069 보호).
+
 **RF-015 독립 peer (B 새 근거 `f3cc5ee1`) — run141 (`2026-10-27T0325Z`; A 시작 `569ebe6b`, integration `c962e23a`, B `43017525`)**
 
 - B 주장: 4파일 Monitor 계약 명령이 B source에서 252 PASS/12 FAIL, BASE 253/11, 추가 1건은 `test_combined_agent_tree_is_exactly_the_versioned_allowlist`(동결 Commander 패키지 인벤토리 원인, RF-015 owner 무관).
