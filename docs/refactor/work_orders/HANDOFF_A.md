@@ -346,3 +346,13 @@
 - Counts are regex-based non-test importer files / test files referencing the module (approximate, caller-map evidence only). Network/write owners are the ones covered by run142/run144 fake/temp effect harnesses; no real yfinance/KOFIA/network.
 - Not covered: B independent full-scope peer (only B `RF051_EFFECT_OK` scoped); `q10_observation_integrity`/`proposal_store` have no dedicated test file (covered only by importers).
 - External effects: none besides this push.
+
+## run155 — RF-016 C1 (Owner): 8-owner blob parity + final ACTION (integration 241f929c, BASE 63182ab2; read-only `git rev-parse`/`git grep`, nothing executed)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| [RF-016](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) | C1 | 8 `libs/agents/strategist` blobs BASE=A=integration (below) | PASS (owner static): ACTION **KEEP_VERIFIED 8/8**, no MOVE/FIX evidence | C2/C3 reuse run115/116 + B `RF016_NESTED_PROJECTION_EXCEPTION_OK` scoped peer; C4 B full facade peer, C6/C7 C05 | Codex B / C05 |
+- Blobs (identical BASE/A/integration): `__init__ 3c1a0374` (1 L), `context/__init__ 3c1a0374`, `output/__init__ 3c1a0374`, `context/market_key_events 3b09d58c` (101 L), `context/news_compaction c4ba0ddf` (312), `context/symbol_read_models 91316b51` (126), `context/theme_strength 0268ed0e` (42), `output/strategic_answers 1c84a7ff` (177).
+- All are `_r3_impl` pure owners called from facade code in `libs/runtime/strategist/**` (`context/{market_key_events,news_compaction,symbol_read_models}.py` wrappers; `output/{strategic_answers,node_output_projection,strategist_output_policy_commander_fields}`, `policy/{node_policy_projection,strategy_policy_annotation}`) and `graphs/nodes/strategist_node.py`; `theme_strength` has 33 non-test src files. I/O grep (`write_text/open/mkdir/subprocess/urlopen/requests`) = 0 in all 8. Non-test consumers: 3 / 3 / 3 / 33 / 8 (market_key_events/news_compaction/symbol_read_models/theme_strength/strategic_answers); test files 3/3/3/10/7 (regex approximate).
+- Reused (no rerun): run115 strategic_answers `keys=16 q15_keys=29 malformed=15 alias_shared=4 writes=0` normal/-O; run116 static alias-mutation `writes=1 alias_key_stores=2` (top-level new dict, no nested mutation); theme13×2 lead harness.
+- Not covered: B facade→owner full peer, populated-data semantics.
+- External effects: none besides this push.
