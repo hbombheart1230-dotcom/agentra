@@ -1,6 +1,6 @@
 # C02 — Claude A 현재 작업 (2026-10-27 · 구현·최소 인계)
 
-**작업 브랜치:** `work/p15-a-reporter-pure-20261021` (마지막 확인 HEAD `ba32a86a`). **정본 규칙:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md), [LEAD 작업표](../plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). A는 A 소유 원개발자, B 소유 RF 독립 peer다. 개인 승인·지팀장 인계 확인을 기다리지 않는다.
+**작업 브랜치:** `work/p15-a-reporter-pure-20261021` (마지막 확인 HEAD `ccb0a4ea`). **정본 규칙:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md), [LEAD 작업표](../plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). A는 A 소유 원개발자, B 소유 RF 독립 peer다. 개인 승인·지팀장 인계 확인을 기다리지 않는다.
 
 ## P0 공통 RunLab #32 — 지팀장 배정 조사 (D04)
 
@@ -12,7 +12,8 @@
 2. **RF-046/047/054/058 KEEP 후보:** A owner의 source/import/기존 테스트 범위 검증 근거는 HANDOFF_A run141b를 재사용. **B 독립 peer와 통합 큐 소유 확정 전 전체 DONE 아님.** RF-054/058의 실제 writer/effect는 원래 수용 조건에 필요한 범위만 적어 B에 인계한다.
 3. **RF-043 KEEP 후보:** A `libs/catalog` 6개 및 normal/-O 원개발 증거 보존. B 독립 peer 대기. A 재실행 금지.
 4. **RF-035:** 원래 파일 119 중 RF-074 frozen oracle 충돌 93은 변경 금지, editable 26에서 **실제 원래 RF 수용 조건/버그 수정에 필요한 것만** 다룬다. 무의미한 새 광범위 소비자·IO 전수조사 금지. RF-030 보호 HOLD 및 RF-069 승인 전 UEF5 snapshot 실행 금지.
-5. **B 소유 LEAD RF-063/065/067:** 기존 A 독립 PASS를 재사용한다. 특히 RF-063 수정 `fdde6c82` TEXT/JSON × normal/-O 4/4는 다시 실행하지 않는다. B가 **새로 변경한 SOURCE SHA** 또는 기존 원래 조건의 미충족 항목이 생겼을 때만 새로운 peer. 이후 일반 RF 계속 CLAIM/개발.
+5. **A run142 RF-021/041/051/053 실물 Owner 확정:** RF-021 `02_DEVELOPING/CLAUDE_A` 콜드 import 순환 수정 blob `dc9d6528`, A 65 PASS 및 baseline 실패집합 동일 보고. **원 RF 32개 SAFETY_HOLD_KEEP와 보호 효과 판정 미완료, B peer/코드 통합 전**. RF-051 `02_DEVELOPING/CLAUDE_A` yfinance 네트워크/쓰기 fake owner 효과만 좁게 확인. RF-041 `libs/ai` 6개와 RF-053 `libs/news` 12개는 `03_PEER_REVIEW/CLAUDE_A`, B 독립 peer 대기(KEEP 후보). 자기 A 검증을 B PASS로 표기 금지.
+6. **B 소유 LEAD RF-063/065/067:** 기존 A 독립 PASS를 재사용한다. 특히 RF-063 수정 `fdde6c82` TEXT/JSON × normal/-O 4/4는 다시 실행하지 않는다. B가 **새로 변경한 SOURCE SHA** 또는 기존 원래 조건의 미충족 항목이 생겼을 때만 새로운 peer. 이후 일반 RF 계속 CLAIM/개발.
 
 ## 인계·안전
 
