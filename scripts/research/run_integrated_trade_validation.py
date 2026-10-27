@@ -26,6 +26,12 @@ def main() -> int:
     parser.add_argument("--start", default="2026-06-01")
     parser.add_argument("--validation-start", default="2026-08-03")
     parser.add_argument("--reports-root", type=Path, default=Path("reports"))
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        default=None,
+        help="Directory for integrated-diagnosis artifacts (defaults below --reports-root).",
+    )
     parser.add_argument("--state-path", type=Path, default=Path("data/state.json"))
     parser.add_argument("--no-fresh-fetch", action="store_true")
     args = parser.parse_args()
@@ -37,6 +43,11 @@ def main() -> int:
     )
     integrated = run_integrated_trade_diagnosis(
         reports_root=args.reports_root,
+        output_root=(
+            args.output_root
+            if args.output_root is not None
+            else args.reports_root / "evaluation" / "offline_alpha" / "integrated_trade_diagnosis"
+        ),
         start_day=args.start,
         end_day=args.day,
         validation_start_day=args.validation_start,
