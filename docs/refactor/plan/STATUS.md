@@ -6,24 +6,25 @@
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
-| 55 | 5 | 5 | 14 | 14 | 0 | **93** |
+| 51 | 7 | 7 | 14 | 14 | 0 | **93** |
 
-- **LEAD 14:** RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069. **PEER 5:** RF-018(B), RF-043/046/047/052(A owner→B peer). **DEVELOPING 5:** RF-054/058(A), RF-066/070/071(B). **PENDING:** RF-030/035(A), UNASSIGNED 53. **DONE 14:** 기존 RF-001~009,013,017,019,020,068. REWORK 0.
-- 카운트는 `c259b368` 물리 큐 이동 후 93 unique/중복0/누락0 확인된 **기존 integration 실물 기준**이다. 이번 지시서 정리는 **큐 변경/새 DONE/테스트 실행이 아니다**. 2026-10-27 지팀장 인수에서 A CLAIM 5건을 integration 실물로 확정: RF-052/046/047은 A owner 증거 수용 후 B peer 대기, RF-054/058은 A DEVELOPING(효과/쓰기 검증 미완료). A 브랜치 코드 수정은 아직 통합하지 않았다.
+- **LEAD 14:** RF-014/015/016/028/029/031/032/033/034/050/063/065/067/069. **PEER 7:** RF-018(B), RF-041/043/046/047/052/053(A owner→B peer). **DEVELOPING 7:** RF-021/051/054/058(A), RF-066/070/071(B). **PENDING:** RF-030/035(A), UNASSIGNED 49. **DONE 14:** 기존 RF-001~009,013,017,019,020,068. REWORK 0.
+- **신규 실물 이동:** A run142 Owner CLAIM RF-021/041/051/053을 integration에서 `01_PENDING/UNASSIGNED` 원경로 삭제 후 각각 `02_DEVELOPING/CLAUDE_A`(021/051), `03_PEER_REVIEW/CLAUDE_A`(041/053)로 확정. 4개 원경로 제거·새 경로 확인, 93개 유일 큐 유지(이동 전 55/5/5/14/14 → 후 51/7/7/14/14). RF-021 A 소스 수정·RF-041/051/053 owner KEEP 후보는 **아직 integration 코드 미통합/B peer NOT_RUN/신규 DONE 0**. RF-021의 32개 SAFETY_HOLD_KEEP 분류 및 RF-051 네트워크/쓰기 fake 경계는 원래 수용·보호 조건에 따라 별도 판정.
 - **LEAD 공통 새 기준:** 유효한 원래 범위 독립 peer PASS → 지팀장 SOURCE SHA·통합 diff/충돌·보호 경계·필요한 CI 확인 → **같은 회차 DONE**. 지팀장 Python/Windows/전체 소비자 재테스트 없음. Scoped PASS를 전체 PASS로 확대하지 않고, 원래 필수 미충족 1건만 해제 요청. 자세한 14건별 최초 판정은 [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md).
 
 ## 가장 최근 수용 근거 및 작업 브랜치 신규 변경
 
 - **RF-063:** B owner `scripts/diagnostics/run_m23_closeout_check.py` 수정 blob `fdde6c82bfc9820b853487904fb491a96cbd3408`, integration 코드 commit `c962e23a5b5395bc489c9793806fede2ff05924e`. Claude A 독립 peer TEXT/JSON × normal/-O **4/4 exit0**, [Actions 40443430786](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40443430786) shared offline safety 두 잡 **success**. 변경 범위는 **완료된 근거**로 재사용한다. 하지만 기존 RF-063 본래 76-owner DONE 체크의 **전체 범위 충족 판정은 별도**, 현재 실물 `04_LEAD_ACCEPTANCE` 유지. 76 CLI/Windows 운영 실행이 모두 자동 요구되는 것은 아니며 보호 사항은 개별 HOLD.
-- **A 브랜치 최신 확인:** `work/p15-a-reporter-pure-20261021@ba32a86a11a9dc1fc79e673b144d9bba238fd127`. HANDOFF_A run141b에 **신규 RF-052 Owner CLAIM/코드 수정**과 RF-046/047/054/058 KEEP 후보 검증이 있음. RF-052 `libs/market_data/receipts.py` 수정 blob `10283d8f`, targeted pytest **40 passed**(전 39 PASS/1 FAIL), normal/-O path harness exit0. UEF5 기존 결과 11 FAIL/49 PASS/2 ERROR는 수정 전과 동일하다고 A 보고. 이 결과는 **A 원개발 증거**, **B peer 미확인**, **integration 미통합**이며 승인된 UEF5 변경/운영 테스트가 아님.
+- **A 브랜치 최신 확인:** `work/p15-a-reporter-pure-20261021@ccb0a4ea9b509fb96c37a1539e89135ea08534b3`. HANDOFF_A run141b에 **신규 RF-052 Owner CLAIM/코드 수정**과 RF-046/047/054/058 KEEP 후보 검증이 있음. RF-052 `libs/market_data/receipts.py` 수정 blob `10283d8f`, targeted pytest **40 passed**(전 39 PASS/1 FAIL), normal/-O path harness exit0. UEF5 기존 결과 11 FAIL/49 PASS/2 ERROR는 수정 전과 동일하다고 A 보고. 이 결과는 **A 원개발 증거**, **B peer 미확인**, **integration 미통합**이며 승인된 UEF5 변경/운영 테스트가 아님.
 - **B 브랜치 최신 확인:** `work/p15-b-operator-structure-20261022@43017525dd733bd2d79e232b3da3ffa4db65ebba`. 기존 RF-031 실제 caller **8/8**, RF-050 fake-router **10/10** 및 RF-029/016/014 scoped 독립 증거는 그대로 재사용. RF-052·RF-043 B peer 결과는 아직 이번 인수에서 확인되지 않았다.
+- **A run142 신규:** RF-021 `libs/runtime/monitor_exit/policy_map_builder.py` 콜드 import 순환 의존 해소 blob `dc9d6528`(A 보고 65 PASS, baseline 대비 신규 실패 0, B peer/통합 NOT_RUN). RF-041 `libs/ai` 6파일 65 PASS, RF-051 `libs/market` 8파일 142 PASS(네트워크/쓰기 효과 owner 추가 필요), RF-053 `libs/news` 12파일 48 PASS. A owner 검증만 인수했으며 B peer PASS로 승격하지 않음.
 - **RF-015 기존 실패 비교 신규 근거:** A가 B `252 PASS/12 FAIL` vs integration/BASE `253 PASS/11 FAIL`을 독립 재현; 추가 1건은 B-only Commander frozen package inventory. **Monitor 19-owner의 신규 회귀로 판정하지 않는다.** frozen CI/오라클 편집 불허. 불필요한 기준선 검증 재수행 금지.
 - **RF-052/046/047:** A 원개발 증거에 따라 PEER 큐로 이동, B 독립 검증 미도착. RF-054/058은 실제 writer/effect 검증 필요해 DEVELOPING 유지. 코드 통합·DONE 0. **RF-043:** catalog 6 source BASE=A=integration 동일, A owner normal/-O 완료. B 원래 범위 독립 peer 필요. 동일 owner 테스트 재실행 금지.
 
 ## LEAD 종결 작업·오너
 
 - **지팀장:** LEAD 14건 중 이미 유효 peer 범위를 충족한 RF부터 **본래 RF 체크·SOURCE SHA·integration/CI**만 판정. 새 CLI·State·Windows 전수 검증 목록을 만들어 돌아보내지 않는다. 충족하면 즉시 물리 `05_DONE`과 STATUS 해당 항목만 변경. 지금 이 상태표는 DONE 승격 승인 문서가 아니다.
-- **B:** RF-052 수정 독립 peer → RF-043 catalog 독립 peer → 실제 누락된 원래 조건만 좁게 검증 → 자기 RF-066/070/071 계속. 자기 원개발 PASS를 독립 peer로 표기하지 않는다.
+- **B:** RF-052 수정 독립 peer → RF-043/041/053/046/047 KEEP 독립 peer, RF-021 A 패치 `policy_map_builder.py@dc9d6528` cold-import 독립 확인(원래 32 owner/SAFETY_HOLD_KEEP는 개발 계속) → 자기 RF-066/070/071 계속. 자기 원개발 PASS를 독립 peer로 표기하지 않는다.
 - **A:** RF-052/046/047/054/058 owner 증거 고정 후 B peer 결과 기다리는 동안 RF-035 허용 26범위·일반 안전 RF 개발. RF-063 기존 4/4 peer 재실행 없음.
 - 각 RF는 신규 FAIL/게이트 없는 한 계속 새 검증을 추가하지 않는다. `KEEP_VERIFIED`는 원래 수용 조건을 충족하면 코드 변경 없이 DONE 가능. 작업자가 BLOCKED이면 해당 RF만 차단하고 다른 일반 RF 계속.
 
