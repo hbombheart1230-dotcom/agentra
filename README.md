@@ -1,8 +1,14 @@
 ﻿# Trading Agent System - Agentra
 
-## Standing development/verification/integration rule
+## Current P1.5 delivery authority (2026-10-27)
 
-All GPT, Codex and Claude developer/auditor work follows **[DELIVERY FIRST / NO RECURSIVE AUDIT](docs/ENGINEERING_DELIVERY_POLICY.md)**. Finish verified source changes on integration before generating new analyzer/tooling/checklist loops. Targeted independent audit and exact-SHA CI are complementary; do not repeat full developer-branch pytest needlessly. This rule is permanent across P1.5–P8 and does not weaken safety gates.
+The active P1.5 execution source of truth is **[C00 CURRENT](docs/refactor/work_orders/CURRENT.md) → [D00 delivery contract](docs/refactor/work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) → [LEAD acceptance queue](docs/refactor/plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md) → [STATUS](docs/refactor/plan/STATUS.md)**. Developer work queues are [C01 Codex](docs/refactor/work_orders/C01_CODEX_CURRENT.md) and [C02 Claude](docs/refactor/work_orders/C02_CLAUDE_CURRENT.md).
+
+Original owner implementation → other developer's independent peer PASS → Tech Lead checks exact SHA/integration conflict/required CI → close DONE in the same pass. Do **not** create repeated Tech Lead tests, unnecessary broad CLI/Windows/state verification, or status-only loops. Existing RF acceptance criteria remain mandatory; scoped results are not silently promoted to full PASS. Protected broker/order/UEF, frozen CI/oracles, operational data, deployment, and scheduling still require explicit approval.
+
+The historical sections below reflect the dates stated there; they **do not override** the current P1.5 authority. The former `docs/ENGINEERING_DELIVERY_POLICY.md` pointer and the 2026-10-19 DOC_FREEZE_PENDING note were historical, not the present D00/C00 execution policy.
+
+---
 
 ## 2026-10-18 · Historical P1.5 source snapshot (ROOT-TO-LEAF)
 
