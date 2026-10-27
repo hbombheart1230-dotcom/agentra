@@ -2,7 +2,24 @@
 
 > 진입점 **C04 + [D00](D00_ENGINEERING_DELIVERY_POLICY.md)**. 구 `CURRENT.md` 사용 금지. C05가 실제 물리 `04_LEAD_ACCEPTANCE`에 이동한 RF만 처리한다.
 
-## 현재 C6 인계 — LEAD 0건 (2026-10-27 19시 KST)
+## 현재 C6 인계 — LEAD 1건 · RF-067 KEEP 소스 확인 / 정확 SHA CI 대기 (2026-10-28 KST)
+
+**현재 처리 대상:** [RF-067 실물 LEAD](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-067.md). C05가 원래 14개 공개 루트 wrapper 독점 범위의 A run165 full wrapper-scope `PEER_PASS`를 인수하여 C1~C4 MET/C5 N/A로 `03→04` 이동했다. **C6/C7은 미체크, DONE 아님**. 물리 큐는 PENDING 49 / DEV 11 / PEER 13 / LEAD 1 / DONE 19 / REWORK 0 (93건, STATUS·LEAD_CURRENT와 일치). 이전의 LEAD 0건/NO_DELTA 단락은 **당시 이력**일 뿐 현재 지시가 아니다.
+
+**C04 직접 확인 — KEEP_SOURCE_VERIFIED (코드 변경 0):**
+- 조회 integration HEAD `ec6fcdf70519585b1d7cfa47ad432417b68ea880`, A `23e54e01107aa1b0e739493c943b10e23a0655e5`, B `7e47cd6ac5a7ec3f8f4f15db117892c18feacf01`. 아래 14개 파일은 각 브랜치의 **실제 GitHub blob SHA를 각각 조회하여 14/14 모두 A=B=integration**임을 확인. 따라서 새 코드 cherry-pick/브랜치 병합은 불필요하고 허용하지 않는다.
+- `scripts/check_alert_policy_v1.py@b5645133`, `check_audit_trail_completeness.py@d98ee6f2`, `check_daily_uef_run_status.py@7a531b73`, `check_log_archive_integrity.py@d4aa9f55`, `check_metrics_schema_v1.py@803dce34`, `check_monitor_gate_patterns.py@6299e9c3`, `check_phase_5_2_5_3_runtime_health.py@8831693f`, `check_profitability_recovery_day1.py@378f28ad`, `check_q9_q12_readiness.py@276316fc`, `check_real_execution_preflight.py@27ac1cf1`, `check_reporter_upgrade_regression.py@dcf5d165`, `check_reports_trades_health.py@72f9956d`, `check_runtime_profile.py@1846887c`, `check_trade_report_runtime_regression.py@54f313b9`.
+- [A HANDOFF run165](https://github.com/hbombheart1230-dotcom/agentra/blob/work/p15-a-reporter-pure-20261021/docs/refactor/work_orders/HANDOFF_A.md)의 wrapper 범위 독립 peer만 인수. 12개 real-target read-only 경계 + 보호 2개 **real wrapper→fake target**. 실제 UEF/Broker diagnostics target·운영/Windows Scheduler·실주문은 NOT_RUN/SAFETY_HOLD; `PEER_PASS` 범위 확대 금지.
+- 이전 CI 성공 통합 commit `7cfb26d811853545e8b88da9143afdb1afdb1e19`부터 위 조회 HEAD까지 **32 commits ahead**, 변경 15경로 모두 docs/queue 기록(소스·workflow 변경 0). 이전 [Actions #40481581384](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40481581384)는 `head_sha=7cfb26d8`, `safety`·`safety (-O)` 모두 SUCCESS. **그 CI는 `ec6fcdf7`에 대한 정확 SHA CI가 아니다.**
+- [P1.5 Shared Offline Safety workflow](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/.github/workflows/p15-shared-candidate.yml)는 `push`의 `**/*.py`, tests, requirements, workflow 파일만 감시하며 **문서-only push로는 CI가 트리거되지 않는다**. 해당 integration 조회 SHA의 Actions 검색 결과 **0 runs**. 연결된 GitHub 작업 도구에는 `workflow_dispatch` 실행 액션이 없어 **이 회차 신규 hosted CI NOT_RUN**; 보호·frozen workflow 수정이나 무관한 코드 변경으로 트리거를 만들지 않았다.
+
+**C6 판정:** `KEEP_SOURCE_VERIFIED / CI_NOT_RUN / C6_PENDING / C05_HANDOFF_BLOCKED`. D00 §2 및 C05가 요구하는 **정확 통합 SHA의 offline safety normal/-O CI PASS**를 확인하기 전에는 C6 MET·DONE을 주장하지 않는다. **최초 blocker: 정확 integration SHA의 요구 CI 실행·결과 확보 (C04 / CI 실행 권한 소유자)**. workflow_dispatch가 허용된 권한 경로로 수행되어 두 job 성공하고 `head_sha`가 일치하면 C04가 이를 검증·C05에 즉시 인계한다. C05만 RF 원본 체크/실물 DONE/STATUS를 수정한다.
+
+**1줄 인계:** [RF-067](../plan/queue/04_LEAD_ACCEPTANCE/FROM_CODEX_B/RF-067.md) | B `7e47cd6a` / A `23e54e01` run165 | integration source `ec6fcdf7` (14/14 blob KEEP) | `KEEP_SOURCE_VERIFIED` | CI `NOT_RUN` (old `7cfb26d8` PASS only) | **C05 NEXT: C6 CI 증거 대기, C7/DONE 금지**.
+
+---
+
+## 이전 C6 인계 이력 — LEAD 0건 (2026-10-27 19시 KST)
 
 **NO_DELTA / 신규 C6 대상 없음.** [STATUS](../plan/STATUS.md)·[LEAD_CURRENT](../plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md) 및 `04_LEAD_ACCEPTANCE/FROM_CLAUDE_A/` 실물(현재 `.gitkeep`만 존재)을 대조했다. RF-046·047·052는 C05가 이미 C6/C7 체크와 `05_DONE` 이동을 완료했다. C03의 신규 `LEAD_READY`도 0건이다. 동일 소스·CI 재실행 및 사전 통합 금지.
 
