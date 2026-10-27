@@ -317,3 +317,12 @@
 - Results (empty temp trees): `monitor_gate_patterns --json` exit 0, JSON `{day, live_followup, reason_counts, repeated_states, row_count, rows, stale_groups, symbol_counts}`; `phase_5_2_5_3_runtime_health` exit **2** with JSON `{ok:false, error}` (no canonical day → explicit failure, not crash); `profitability_recovery_day1 --json` exit 0 with zero-count audit JSON; `runtime_profile --json` exit 0 `{defaults, effective, env_path, ok, profile, required_missing, strict, violations}`. Outside writes 0; target-side writes 0 (the 1 recorded write is the harness's own temp env file).
 - Not covered: the other 8 targets per B's split; semantic results on populated data.
 - External effects: none besides this push.
+
+## run152 — RF-063 C4 (A Peer of B): `run_m23_closeout_check.py` text-mode NameError fix (B REWORK candidate, B tip 8682ee76)
+| RF | C | SOURCE | 결과·증거 | 남은 C | 다음 담당 |
+|---|---|---|---|---|---|
+| [RF-063](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-063.md) | C4 | `scripts/diagnostics/run_m23_closeout_check.py` blob B=integration=`fdde6c82`, A-branch(BASE)=`5de4ec68` | SCOPED_PASS: `rf063_m23_peer.py <tree>` via real module `main()`, temp cwd/paths, `--day 2000-01-01`. B tree normal/-O exit 0/0 `RF063_M23_PEER_OK` (text: `ok=True day=2000-01-01 …`, json ok). BASE tree normal/-O exit 1/1: text mode `NameError: name 'day' is not defined` reproduced, json OK | other 75 RF-063 scripts (B C1 inventory: 25 no-effect, 38 effect-token → temp/fake or SAFETY_HOLD) | Codex B (owner) / C05 |
+- Fix is the one-token `day`→`summary['day']`; confirms the defect was real on BASE and is repaired on B. Socket connect and subprocess.Popen blocked; no write outside temp; no broker/order/network.
+- Note: A branch still carries BASE blob `5de4ec68` (A does not own this RF; integration already has `fdde6c82`, so no A-side change made).
+- Not covered: remaining RF-063 scripts; this is not full RF-063 PASS.
+- External effects: none besides this push.
