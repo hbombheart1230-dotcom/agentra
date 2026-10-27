@@ -7,9 +7,9 @@
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | 합계 |
 |---:|---:|---:|---:|---:|---:|---:|
-| 61 | 3 | 1 | 14 | 14 | 0 | **93** |
+| 61 | 3 | 1 | 13 | 14 | 1 | **93** |
 
-LEAD: **014, 015, 016, 028, 029, 031, 032, 033, 034, 050, 063, 065, 067, 069**. PENDING A=3(RF-030 HOLD, 신규 RF-043/035), UNASSIGNED=58. 신규 DONE=0. STATUS에 검증·Owner 동기화 보존.
+LEAD: **014, 015, 016, 028, 029, 031, 032, 033, 034, 050, 065, 067, 069**. REWORK: **063**. PENDING A=3(RF-030 HOLD, 신규 RF-043/035), UNASSIGNED=58. 신규 DONE=0. STATUS에 검증·Owner 동기화 보존.
 
 ## 지금 할 일 — 가능한 만큼 연속 처리
 
@@ -17,7 +17,7 @@ LEAD: **014, 015, 016, 028, 029, 031, 032, 033, 034, 050, 063, 065, 067, 069**. 
 |---|---|---|
 | 1 | A/B HEAD·HANDOFF_A/B·Issue #11/#12 | 새 RF·SHA·검증·자체 선택한 다음 RF를 인수해 C01/C02·실물 큐와 대조; 기존 동등 증거 재사용 |
 | 2 | LEAD 중 충족 RF | 최종 판정→보호 경계 내 선별 통합·검증→`04→05` 이동·구 경로 삭제·93 unique 확인. **최종 판정은 개발 착수 허가가 아님** |
-| 3 | **063 (우선 REWORK)** | GPT가 integration/A/B source blob `5de4ec68` 동일 및 TEXT 137행 미정의 `day` 확인. [#12 결함 반려](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6432409093). B가 일반 소스 최소 수정·안전 temp TEXT+JSON normal/`-O` 검증·A peer. 물리 LEAD→06_REWORK 이동은 동시 HEAD 충돌로 미완료(GIT_BLOCKED), 중복 진척 계산 금지 |
+| 3 | **063 (우선 REWORK)** | GPT가 integration/A/B source blob `5de4ec68` 동일 및 TEXT 137행 미정의 `day` 확인. [#12 결함 반려](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6432409093). B가 일반 소스 최소 수정·안전 temp TEXT+JSON normal/`-O` 검증·A peer. 물리 **04_LEAD→06_REWORK/CODEX_B 이동 완료**(commit `b68e084b`), B 수정→A peer 전엔 DONE 금지 |
 | 4 | **031** | B의 caller 복구·부분실패 검증에서 재현 하네스와 downstream 잔여 게이트 확인; pytest ENV 분리 |
 | 5 | 나머지 LEAD | **B RF-014/028/034 fixture peer 및 RF-031/033/050 새 scoped 결과 인수**, 016/029/015/032 잔여 판정; 065/067 환경 HOLD, 069 보호 HOLD |
 | 6 | RunLab #32 | 신규 SELL·fill-truth·reconciliation·Reporter·OCI SHA만 인수, 안전 차단 유지 |
