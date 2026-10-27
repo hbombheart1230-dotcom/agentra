@@ -6,9 +6,9 @@
 
 | PENDING | DEVELOPING | PEER | LEAD | DONE | REWORK | 합계 |
 |---:|---:|---:|---:|---:|---:|---:|
-| 61 | 3 | 1 | 14 | 14 | 0 | **93** |
+| 61 | 3 | 1 | 13 | 14 | 1 | **93** |
 
-**원격 물리 큐 전수 경로 확인(2026-10-27, HEAD `45a9fd9d`에서 실시):** `.gitkeep` 제외 93개 RF-001~093, 중복 경로 없이 PENDING 61 / DEVELOPING 3 / PEER 1 / LEAD 14 / DONE 14 / REWORK 0. PENDING 중 Claude A 소유 RF-030/035/043 = 3건, UNASSIGNED = 58건, CODEX_B PENDING = 0건. RF-035·043은 지팀장 배정 커밋 `a8a814302e727a633b18d2ed758f900a54858790`에서 UNASSIGNED → `01_PENDING/CLAUDE_A`로 실물 이동(원개발·peer·CI 미실행). 신규 DONE **확인 0**, integration 운영 소스 통합 **0**. LEAD: **014/015/016/028/029/031/032/033/034/050/063/065/067/069**. Scoped peer PASS는 전체 DONE이 아니다.
+**원격 물리 큐 전수 경로 확인(2026-10-27, HEAD `45a9fd9d`에서 실시):** `.gitkeep` 제외 93개 RF-001~093, 중복 경로 없이 PENDING 61 / DEVELOPING 3 / PEER 1 / LEAD 13 / DONE 14 / REWORK 1. PENDING 중 Claude A 소유 RF-030/035/043 = 3건, UNASSIGNED = 58건, CODEX_B PENDING = 0건. RF-035·043은 지팀장 배정 커밋 `a8a814302e727a633b18d2ed758f900a54858790`에서 UNASSIGNED → `01_PENDING/CLAUDE_A`로 실물 이동(원개발·peer·CI 미실행). 신규 DONE **확인 0**, integration 운영 소스 통합 **0**. LEAD: **014/015/016/028/029/031/032/033/034/050/065/067/069**. REWORK: **063**. Scoped peer PASS는 전체 DONE이 아니다.
 
 ## 지팀장 추가 조치 (2026-10-27)
 
@@ -26,7 +26,7 @@
 
 작업 연결: **D00 = 상시 관리·검증 계약**, C00 = 지팀장 이번 작업, C01/C02 = 각 개발자 다음 실행 큐, HANDOFF·#11/#12 = 증거·선택한 다음 RF. 기존 Issue 본문의 과거 작업 브랜치는 현재 D/C보다 우선하지 않는다. 문서·fixture 진척을 RF DONE으로 계산하지 않는다.
 
-## LEAD 14 — 최초 남은 해제 경계
+## LEAD 13 — 최초 남은 해제 경계
 
 | RF | 지금 남은 실행·담당 |
 |---|---|
@@ -40,12 +40,16 @@
 | 033 | B published corrupt partial JSON consumer fail-closed scoped peer 보고; 실제 producer/consumer 최종 게이트 판정 |
 | 034 | A valid source fixture로 **B scoped peer 완료**; casebook→Scanner/cache 전체 소비자 추가 확인. 보호 closeout만 별도 보호 승인 |
 | 050 | B temp cache 저장→reload scoped peer 완료; 모델 fallback·State 최종 게이트 판정 |
-| 063 | **지팀장 직접 source 확인: integration/A/B 동일 blob `5de4ec68`, 137행 TEXT의 미정의 `day` 확정.** B가 동일 B source에서 미재현 보고한 건은 TEXT 결함 반증이 아님. B 원개발 최소 수정→normal/`-O` 텍스트+JSON temp 검증→A 독립 peer. 현재 RF 물리 LEAD 유지(06_REWORK 이동 시도는 HEAD 변경/원격 오류로 미완료). 보호 실행 금지 |
+
 | 065 | 안전 Linux peer 소진; 실데이터·Windows Scheduler·보호 CLI 별도 안전 환경/승인 필요 |
 | 067 | 안전 delegated target peer 소진; Windows PowerShell·보호 preflight/UEF 경계 환경/승인 필요 |
 | 069 | historical UEF5 snapshot **path/SHA/use-scope 승인 전 SAFETY_HOLD** |
 
 기존 valid normal/`-O`·CI는 정확 source/test/workflow tree에 한해 재사용한다. 신규 CI 실행 **NOT_RUN**. 기존 확인 Safety SUCCESS `40332899631@0da98a47`, Web SUCCESS `40073316192@1374d371`은 다른 SHA의 전체 PASS 근거가 아니다.
+
+## REWORK 1 — Owner B 교정
+
+- **RF-063**: 지팀장 원격 source blob `5de4ec68`의 TEXT branch NameError 확인, [B 반려 체크포인트](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6432409093). `04_LEAD_ACCEPTANCE/FROM_CODEX_B` → `06_REWORK/CODEX_B` 물리 이동 [commit `b68e084b`](https://github.com/hbombheart1230-dotcom/agentra/commit/b68e084b9ee9af1a3f89773ae95582856bb14b58). B owner 최소 수정 normal/`-O` TEXT·JSON temp 검증 후 A 독립 peer 요청. GPT 직접 CLI 실행 `NOT_RUN`. 과거 RF-063 부분 peer PASS는 보존하며 DONE은 아님.
 
 ## RunLab·안전 / 남은 조치
 
