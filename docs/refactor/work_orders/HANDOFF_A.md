@@ -10,6 +10,16 @@
 
 ## 최근 신규 독립 검증 / 실행 증거
 
+**RF-043 (A 원개발, 신규 배정) + RF-063 재현 고정 — run140 (`2026-10-27T0300Z`; A 시작 `a03102dd`, integration `4f012a3a`, B `47d6e04d`)**
+
+- **RF-063 (06_REWORK, B Owner):** B "현재 B 소스에서 NameError 미재현" → `scripts/diagnostics/run_m23_closeout_check.py` blob **`5de4ec68`이 B HEAD `47d6e04d`·B source `318eb9d5`·integration·BASE 모두 동일**하며, B HEAD `git archive` 추출본에서 **텍스트 모드**(`python scripts/run_m23_closeout_check.py`, 인자 없음, 빈 cwd) → `NameError: name 'day' is not defined` **exit 1**, `--json` → exit 0. B는 JSON 모드만 확인한 것으로 보임. 재현 명령: `cd $(mktemp -d) && PATH= python <B_checkout>/scripts/run_m23_closeout_check.py; echo $?` (1). 수정 대상 `main()`의 텍스트 print `day={day}` → `day={summary['day']}`.
+- **RF-043 `libs/catalog` 6파일 owner 검증** (blob: __init__.py=e69de29b api_catalog.py=a6bddfa3 api_catalog_builder.py=0ada66e2 api_discovery.py=fd60af62 api_planner.py=ecdfdb3b api_request_builder.py=fa36a16f; BASE=integration 동일). 하네스 `evidence/run103_boundary_scripts/rf043_catalog_owner_verify.py` blob `b2c915c7`: 깨끗한 추출본 integration/BASE × normal/`-O` 4조합 **exit 0·출력 동일**, 네트워크·subprocess·sqlite 차단, 쓰기 tmp 한정. 기존 repo 테스트 5파일(`test_api_catalog/request_builder/planner/discovery/m7_demo_catalog`) 11 passed normal(참고: `-O`에서는 pytest assert 재작성이 비활성되어 의미 제한).
+  - 소비자 지도: `api_request_builder` 29파일(`libs/execution` 실행기·`order_client`·Step5B/5C 안전 테스트 포함 — `PreparedRequest`는 브로커 실행 DTO), `api_catalog` 23, `api_discovery` 5, `api_planner` 4, `api_catalog_builder` 2(`scripts/build_api_catalog.py`, `libs/read/kiwoom_broker_truth_common.ensure_catalog_path`), `__init__.py` 빈 패키지.
+  - 계약 확인: ApiSpec 기본값·`from_dict` 키 별칭/extra, ApiCatalog list/mapping/`apis` 컨테이너·중복/비-dict/타입/미존재 오류 계층(`ApiCatalogLoadError`/`ApiNotFoundError` ⊂ `ApiCatalogError`), JSON/JSONL load 오류 4종 모두 `ApiCatalogLoadError`; builder 병합(이름/메서드/엔드포인트 폴백, 태그 dedupe, `_sources`, `callable` 플래그, `request`→params 합성), 출력 재로드; discovery 점수·필터, planner select/ask 임계·margin·top3; request builder ready/ask·별칭·관리 헤더 제외·스키마 3형태·frozen DTO.
+  - **판정: `KEEP_VERIFIED` 후보(물리 이동/분리 없음).** 6개 모듈이 이미 단일 책임(로드/빌드/검색/계획/요청준비)이고, 공개 import 소비자가 실행·브로커·안전 테스트 계층에 걸쳐 있어 이동 비용·위험 대비 이점 없음. 소스 변경 0.
+  - **결함 후보(변경 안 함, 안전 계층 영향 → 승인 필요):** (1) **`ApiRequestBuilder.prepare` POST/PUT/PATCH 패스스루가 별칭 해석에 쓰인 원래 키(`symbol`, `quantity`)를 body에 중복 복사**하고 무관한 context 키(`note`)도 body에 넣음 → 주문 요청 body에 `ticker`와 `symbol`, `qty`와 `quantity`가 함께 실림(`execute_order`/`prepare_order_dry_run`→실행기 경로). (2) builder의 request 필드 분류가 병합 spec의 method가 아니라 **각 원본 레코드의 method**로 결정(GET 레코드면 POST API라도 query로 분류). (3) `merge_records`가 입력 레코드를 변형. (4) `ApiDiscovery.search("")`가 모든 callable spec과 매치. (5) builder 기본 입출력이 cwd 기준 `data/specs/...`이고 `kiwoom_broker_truth_common`이 카탈로그 부재 시 런타임에 생성.
+- 다음: RF-043 B 독립 peer 요청(위 하네스·blob). RF-035 착수(안전한 소비자/State/IO 인벤토리부터).
+
 **A 소유 RF fixture 공급 — run139 (`2026-10-27T0230Z`, C02 신규 정본 첫 실행; A 시작 `2b303a57`, integration `e99cadf0`, B `7f376b5a`)**
 
 - C02: B 소유 peer(063/065/067/015)는 새 B 근거 없음(B `7f376b5a`는 HANDOFF_B/AGENTS.md만, NameError 수정 미도착) → A 원개발 큐로 이동. A 큐: `02_DEVELOPING`·`06_REWORK`·`03_PEER_REVIEW` 비어 있음, `01_PENDING`은 **RF-030 하나(동결 오라클 HOLD, 사용자/지팀장 승인 필요)**. 대신 HANDOFF_B가 **A 소유 RF의 B peer를 막는 fixture 부재 3건**을 명시해 소유자로서 공급.
