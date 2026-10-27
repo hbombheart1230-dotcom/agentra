@@ -1,12 +1,16 @@
-# C01 — Codex B 현재 작업 (2026-10-27, 검증 게이트 간소화)
+# C01 — Codex B 현재 작업 (2026-10-27 · 독립 검증 우선)
 
-**브랜치:** `work/p15-b-operator-structure-20261022`. 정본 `integration/p1.5`의 D00을 따른다. 일반 RF의 착수·독립 peer·수정은 별도 승인을 기다리지 않는다.
+**작업 브랜치:** `work/p15-b-operator-structure-20261022` (마지막 확인 HEAD `43017525`). **정본 규칙:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md), [LEAD 작업표](../plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). B는 A 소유 RF의 **독립 검증자**, B 소유 RF의 구현자다. 새 지팀장 승인 회차를 만들지 않는다.
 
-1. **RF-043 (A owner / B peer 우선):** `libs/catalog` 6개 KEEP_VERIFIED 후보, A 소스와 integration 동일. B는 **원래 RF 수용 조건**에 대한 독립 검증 및 정확한 SOURCE SHA·범위·PASS/FAIL 기록만 제출한다. 원개발자 증거를 자기 peer PASS로 바꿔 쓰지 않는다. 모든 public consumer/예외/Windows/주문 DTO를 새 공통 게이트로 만들지 않는다.
-2. **RF-031·RF-050:** 기존 B 검증(각 8/8, 10/10)은 재사용. **원래 RF 필수 조건이 실제로 미충족된 경우에 한해** 그 누락 조건만 추가 검증한다. 관련 없는 downstream/3-stage/cache-OSError 전수 테스트를 자동 요구하지 않는다. 충족이면 새 테스트 없이 peer PASS를 지팀장에게 인계한다.
-3. **RF-063:** B 패치 SHA/blob, A 독립 peer 4/4 및 integration CI 양 모드 PASS는 이미 인수됨. 동일 경계 재실행 금지. 추가 운영/보호 검증은 원 RF 수용 조건에 속하는지 분리하고, 보호 영역은 승인 전 실행하지 않는다.
-4. 이후 B의 RF-066/070/071 구현 → 누락이 명확한 독립 peer → 중복 없는 일반 RF 자율 CLAIM으로 계속 진행한다. 막힌 RF는 최초 실제 결함·담당만 남기고 다음으로 이동한다.
+## 즉시 실행
 
-**증거/보고:** HANDOFF_B에 RF·SOURCE SHA·독립 검증 범위와 결과·다음 RF를 변경분으로 기록한다. Issue #12는 주요 체크포인트만 갱신하며 문서-only 반복 보고는 하지 않는다.
+1. **RF-052 — 신규 A 패치 B 독립 peer:** A 브랜치 최신 `ba32a86a`, `libs/market_data/receipts.py::resolve_archive_path` Windows drive/UNC/backslash traversal 보완. A의 `pytest` 40 PASS·normal/-O 경계 결과는 원개발 근거. **B가 수정 SOURCE blob `10283d8f`의 경로 거부·정상 경로 유지·관련 호출자에 대해 독립 오프라인 peer**를 제출. UEF5 보호 계약, frozen oracle, 운영 데이터 실행·변경 금지. RF-052는 현재 integration 실물 큐 승격/통합 전; 먼저 CLAIM 충돌/정확 source 확인.
+2. **RF-043 — A 소유 `libs/catalog` 6개 KEEP_VERIFIED 후보:** 기존 A 자체 normal/-O는 peer가 아니다. 원래 RF 수용 조건과 source/integration byte identity를 확인해 **최소 독립 peer**를 수행하고 결과 제출. 임의 모든 소비자/State/예외 전수 확장 금지.
+3. **LEAD 기존 scoped 증거 재사용:** RF-031 실제 caller 8/8, RF-050 fake router 10/10, RF-029 truth-root, RF-016 nested projection, RF-014 Top1 등 B 기존 PASS를 **그대로 지팀장에 인계**. 원래 수용 조건이 실제 비어 있을 때만 해당 첫 결함/조건을 추가 검증한다. 같은 명령·동일 경계 재실행 금지.
+4. **B owner RF-066/070/071 → 일반 UNASSIGNED:** 자기 코드 개발을 진행한다. 다른 RF가 BLOCKED라도 계속 진행한다. A의 RF-046/047/054/058 KEEP 후보는 원개발 근거일 뿐, B peer는 아직 확인되지 않았으므로 중복 없는 범위에서 후속 독립 검증한다.
 
-**보호 불변:** `main`, 주문/실거래·Broker/Supervisor/Executor/Step5C/UEF 계약, frozen CI/oracle, 운영데이터·비밀·배포·예약은 명시적 승인 전 변경/실행 금지. temp-only/mock, UI patchnotes, 테스트 산출물 정리는 D00 준수.
+## 증거·안전
+
+- HANDOFF_B에 `RF | SOURCE SHA | original acceptance coverage | PEER_PASS / SCOPED_PASS / FAIL / NOT_RUN | command·exit | external effects | NEXT`의 **새 변화만** 기록. Issue #12 반복 댓글 금지.
+- **Peer PASS면 지팀장이 직접 새 Python/Windows 테스트를 요구하는 단계가 없다.** 지팀장에게 SHA·통합·CI 판정만 넘긴다.
+- `main`, 실거래·주문, Broker/Supervisor/Executor/Step5C/UEF 안전 계약, frozen CI/oracle, 비밀·운영데이터·배포·예약 무승인 변경/실행 금지. Mock/temp-only. UI 변경 시 patchnotes, 테스트 산출물 보존정책 준수.
