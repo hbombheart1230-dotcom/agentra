@@ -22,12 +22,12 @@
 | [RF-015](queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** 원래 19-owner 전체 ACTION·소비자/효과 (**Claude A**); 기존 우선 C조건·안전 차단 유지 | MISSING |
 | [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** 원래 8-owner 전체 ACTION·router/cache 소비자/효과 (**Claude A**); 기존 우선 C조건·안전 차단 유지 | MISSING |
 | [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 0 · 7남음 | C1,C2,C3,C4,C5,C6,C7 | **C1** Reporter 22-owner 최종 ACTION (**Claude A**); 병행 C2 seed-merge/markdown·writer/State/실패 (**A**) + 전체 C4 (**Codex B**) | MISSING |
-| [RF-014](queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Scanner shim→RF-009 repeat/risk/NOOP 독립 peer (**Codex B**) | MISSING |
-| [RF-016](queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Strategist 외부 facade 원래 호출 peer 범위 판정 (**지팀장→B**) | MISSING |
-| [RF-028](queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** trade_report rich schema 필수 소비자 peer 판정 (**지팀장→B**) | MISSING |
-| [RF-029](queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** trade_story facade→bundle 독립 peer 판정 (**지팀장→B**) | MISSING |
-| [RF-033](queue/03_PEER_REVIEW/CLAUDE_A/RF-033.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Q10/Q12 input_worker→publish_input peer 범위 판정 (**지팀장→B**) | MISSING |
-| [RF-034](queue/03_PEER_REVIEW/CLAUDE_A/RF-034.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** alpha casebook→Scanner peer 범위 판정 (UEF 보호 별도) (**지팀장→B**) | MISSING |
+| [RF-014](queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** Scanner shim 전체 owner ACTION/소비자·효과 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
+| [RF-016](queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** Strategist 외부 facade 전체 owner ACTION/소비자·효과 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
+| [RF-028](queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** trade_report rich schema 전체 owner ACTION/소비자·효과 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
+| [RF-029](queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** trade_story facade→bundle 전체 owner ACTION/소비자·효과 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
+| [RF-033](queue/03_PEER_REVIEW/CLAUDE_A/RF-033.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** Q10/Q12 input_worker→publish_input 전체 owner ACTION/소비자·효과 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
+| [RF-034](queue/03_PEER_REVIEW/CLAUDE_A/RF-034.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** alpha casebook→Scanner 전체 owner ACTION/UEF 보호 경계 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
 | [RF-032](queue/03_PEER_REVIEW/CLAUDE_A/RF-032.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** 원래 135-owner 전체 ACTION·UEF/closeout 보호 경계 (**Claude A·C05**); 기존 우선 C조건·안전 차단 유지 | MISSING |
 | [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) | DEV · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** research 54-owner KEEP/CLI 효과 분류 원래 조건 판정 (**지팀장**) | MISSING |
 | [RF-069](queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | PEER · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** 원래 7-owner 전체 ACTION·보호 소비자/효과 (**Codex B**); 기존 우선 C조건·안전 차단 유지 | SAFETY_BLOCKED |
@@ -38,6 +38,7 @@
 <!-- RF_LEAD_CHECKLIST_END -->
 
 ## 새 보고와 변경 책임
+- **C05 2026-10-29 02:53 KST 추가 6 RF 첫 미충족 정정:** RF-014/016/028/029/033/034 원본 C1 PARTIAL에 맞춰 `RF_CHECKLIST_META.next=1`·STATUS 첫 미충족 C1로 교정. 기존 최우선 C4 Scanner/Strategist/trade_report/trade_story/Q10-Q12/alpha-casebook 독립 peer 모두 병행 미완료, RF-034 UEF 보호 유지. C1 MET 아님, 단계 PEER/LEAD 0/DONE 20 불변.
 - **C05 2026-10-29 02:52 KST 첫 미충족 C조건 메타 정정:** RF-015/050/032/069 원본 C1은 모두 PARTIAL인데 기존 `RF_CHECKLIST_META.next`는 각각 C3/C4/C2/C3로 표시되어 첫 미충족과 우선순위가 혼재했다. **첫 미충족 C1**으로 메타·STATUS 표만 교정(015 19-owner Claude A, 050 8-owner Claude A, 032 135-owner Claude A/C05, 069 7-owner Codex B). 기존 우선 C3 역사 11 FAIL, C4 LLM 8-owner peer, C2 validation-id 경로 탈출, C3 UEF5 historical 승인 차단은 **모두 그대로**. C1 MET·full peer·LEAD·DONE 승격 없음. RF-021 C1 MET/첫 C2 보호 차단은 불변.
 
 - **C05 2026-10-29 02:50 KST 신규 판정:** #12 `6475690024` B SOURCE `4b926c2e` RF-066 Q9 compaction 신규 temp-only test 1/1 normal/-O PASS(exit0, B 제출), #11 `6475734003` A 정확 B SHA 독립 1/1 + probe 4 PASS·1 신규 실패 각 모드, mutation 4/5. Minified Q9 재직렬화 크기 증가(46→111B, 398→1188B)·음수 reduced_pct 및 non-Mapping 필터 mutation 사각 발견. **RF-066 C1~C5 PARTIAL, C6/C7 PENDING**, 첫 C1 B 17-owner CLI/효과, 병행 C2 Q9 크기·필터/State 및 기존 quarantine 덮어쓰기, full C4 A 미완. 신규 1 test CSV/예외 단일 owner, RF-074 frozen 75 불변. **DEV 13 / PEER 13 / LEAD 0 / DONE 20** 유지, C05 pytest/sync NOT_RUN, 정확 HEAD hosted CI 없음. RF-021/032/069 보호 HOLD, RunLab #32 OPEN/`RUN_SOURCE_SHA=UNKNOWN`.
