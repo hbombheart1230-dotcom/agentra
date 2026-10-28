@@ -7,7 +7,7 @@ import json
 from scripts.examples import demo_m22_skill_flow as demo
 
 
-def test_rf066_mr22_skill_demo_timeout_json_uses_fake_scanner_and_monitor(monkeypatch, capsys):
+def test_rf066_m22_skill_demo_timeout_json_uses_fake_scanner_and_monitor(monkeypatch, capsys):
     calls = []
 
     def fake_scanner(state):
