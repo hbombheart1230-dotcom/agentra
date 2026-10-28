@@ -159,3 +159,91 @@ def test_metrics_payload_prefers_an_existing_report_and_survives_generator_failu
 
     monkeypatch.setattr(mg, "generate_metrics_report", fake)
     _eq(rf._load_or_generate_metrics_payload(root, "2026-10-29"), {"generated": True})
+
+
+def test_dominant_patterns_cover_route_reclaim_fallback_freshness_and_trade_rows():
+    route = {"route_selected_total": {"monitor_only": 3, "cached_strategist": 0, "full_cycle": 1}, "strategist_fallback_total": 2}
+    patterns = rf._build_dominant_patterns(route_summary=route, blocker_totals={"vwap_reclaim_fail": 3, "other": 1},
+                                           freshness={"freshness_status": "fresh", "source_window_summary": "w"},
+                                           trade_report_summary={"closed_trade_count": 4, "avg_pnl_pct": 0.5, "same_price_cost_loss_count": 1})
+    _eq([p["name"] for p in patterns], ["monitor_only_ratio", "full_cycle_ratio", "reclaim_blocked_ratio", "strategist_fallback_ratio", "freshness_status", "same_day_closed_trade_count"])
+    _eq((patterns[0]["value"], patterns[2]["value"], patterns[3]["value"]), (0.75, 0.75, 0.5))      # list is capped at six rows
+    full = rf._build_dominant_patterns(route_summary={}, blocker_totals={}, freshness={},
+                                       trade_report_summary={"closed_trade_count": 2, "avg_pnl_pct": 1.0, "same_price_cost_loss_count": 1})
+    _eq([p["name"] for p in full], ["same_day_closed_trade_count", "same_day_avg_pnl_pct", "same_price_cost_loss_ratio"])
+    _eq(full[2]["value"], 0.5)
+    _eq(rf._build_dominant_patterns(route_summary={}, blocker_totals={}, freshness={}), [])
+
+
+def test_recommendations_triggered_by_route_blocker_and_trade_signals_and_capped_at_four():
+    base = {"monitor_only_ratio": 0.5, "cached_strategist_ratio": 0.25}
+    recs = rf._build_recommendations(route_analysis=base, blocker_analysis=[{"blocker": "vwap_reclaim_x", "count": 3}],
+                                     trade_report_summary={"closed_trade_count": 3, "same_price_cost_loss_count": 1, "win_count": 0, "loss_count": 2})
+    _eq(len(recs), 4)                                                                                # six candidates, capped
+    if not recs[0].startswith("Monitor-only") or not recs[1].startswith("Cached strategist") or "vwap_reclaim_x" not in recs[2]:
+        raise AssertionError(recs)
+    only_trade = rf._build_recommendations(route_analysis={}, blocker_analysis=[], trade_report_summary={"closed_trade_count": 3, "win_count": 1, "loss_count": 2})
+    _eq(len(only_trade), 1)
+    if not only_trade[0].startswith("Same-day closed trades are loss-heavy"):
+        raise AssertionError(only_trade)
+    balanced = rf._build_recommendations(route_analysis={}, blocker_analysis=[{"blocker": "", "count": 1}])
+    if not balanced[0].startswith("Route and blocker mix look balanced"):
+        raise AssertionError(balanced)                                                               # a blank top blocker adds nothing
+
+
+def test_insight_summary_wording_for_route_blocker_and_trade_parts():
+    route = {"route_selected_total": {"monitor_only": 1, "full_cycle": 3}}
+    text = rf._build_insight_summary(route_analysis=route, blocker_analysis=[{"blocker": "b", "count": 2}],
+                                     trade_report_summary={"closed_trade_count": 4, "win_count": 2, "loss_count": 1, "flat_count": 1,
+                                                           "unknown_pnl_count": 1, "avg_pnl_pct": 0.4, "pnl_pct_sample_count": 3})
+    _eq(text, "Route mix is led by full_cycle 3/4; monitor_only 1/4, cached_strategist 0/4. Top blocker is b (2). "
+              "Same-day closed trade reports show 4 trades with 2 wins, 1 losses, 1 flat, 1 unknown pnl, avg pnl pct 0.4.")
+    zero_leader = rf._build_insight_summary(route_analysis={"route_selected_total": {"x": "bad", "y": 0}}, blocker_analysis=[])
+    _eq(zero_leader, "Feedback packet is available but source evidence is limited.")
+    no_avg = rf._build_insight_summary(route_analysis={}, blocker_analysis=[], trade_report_summary={"closed_trade_count": 1, "win_count": 1, "pnl_pct_sample_count": 0})
+    _eq(no_avg, "Same-day closed trade reports show 1 trades with 1 wins, 0 losses.")
+
+
+def _write(path, body):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(body), encoding="utf-8")
+
+
+def test_feedback_packet_without_a_day_uses_only_the_current_payload(tmp_path):
+    packet = rf.build_strategist_feedback_packet(
+        mode="metrics_report", reports_root=tmp_path / "reports",
+        payload={"route_selected_total": {"full_cycle": 2}, "dominant_blocker_total": {"gate": 3}, "generated_at": "t", "latest_run_id": "r1"})
+    _eq((packet["available"], packet["source_day"], packet["packet_version"], packet["runtime_semantics_unchanged"]), (True, "", "strategist_feedback.v1", True))
+    _eq((packet["source_reports"]["metrics"], packet["source_reports"]["current_payload"], packet["route_analysis"]["full_cycle_ratio"]), (True, True, 1.0))
+    _eq(packet["blocker_analysis"][0]["blocker"], "gate")
+    _eq(packet["confidence"], "low")
+    _eq(packet["data_freshness"]["latest_run_id"], "r1")
+    _eq(list(tmp_path.iterdir()), [])                                                                 # a day-less call never touches disk
+    again = rf.build_strategist_feedback_packet(mode="metrics_report", reports_root=tmp_path / "reports", payload={
+        "route_selected_total": {"full_cycle": 2}, "dominant_blocker_total": {"gate": 3}, "generated_at": "t", "latest_run_id": "r1"})
+    _eq(again["feedback_id"], packet["feedback_id"])                                                  # content-addressed and stable
+    empty = rf.build_strategist_feedback_packet(mode="x", reports_root=tmp_path / "reports", payload=None)
+    _eq((empty["available"], empty["confidence"], empty["source_reports"]["current_payload"]), (False, "low", False))
+
+
+def test_feedback_packet_with_a_day_reads_metrics_and_reporter_analysis_from_tmp_reports(tmp_path):
+    root = tmp_path / "reports"
+    _write(root / "metrics" / "metrics_2026-10-28.json", {"route_selected_total": {"monitor_only": 6, "full_cycle": 4}, "dominant_blocker_total": {"vwap_reclaim_fail": 5, "risk": 2},
+                                                          "data_freshness": {"freshness_status": "fresh", "latest_run_id": "m1"}})
+    _write(root / "dev" / "analysis" / "reporter_analysis" / "reporter_analysis_2026-10-28.json",
+           {"improvement_suggestions": ["from reporter"], "monitor_evaluation": {"monitor_reason_top": {"x": 1}}})
+    packet = rf.build_strategist_feedback_packet(mode="reporter_analysis_unused", payload={"day": "2026-10-28"}, reports_root=root)
+    _eq((packet["source_day"], packet["source_reports"]["metrics"], packet["source_reports"]["reporter_analysis"]), ("2026-10-28", True, True))
+    _eq(packet["route_analysis"]["monitor_only_ratio"], 0.6)
+    _eq(packet["data_freshness"]["latest_run_id"], "m1")
+    _eq(packet["confidence"], "medium")
+    _eq(packet["recommendation"][0].startswith("Monitor-only share is high"), True)                  # metrics present -> generated recommendations win
+    # reporter_analysis mode: its own recommendations replace the generated ones when no metrics exist
+    only = rf.build_strategist_feedback_packet(mode="reporter_analysis", reports_root=tmp_path / "other",
+                                               payload={"improvement_suggestions": ["fix a", "fix b"], "day": ""})
+    _eq(only["recommendation"], ["fix a", "fix b"])
+    # a balanced mix falls back to the reporter-analysis recommendations on disk
+    _write(root / "metrics" / "metrics_2026-10-29.json", {"route_selected_total": {"full_cycle": 5}})
+    _write(root / "dev" / "analysis" / "reporter_analysis" / "reporter_analysis_2026-10-29.json", {"improvement_suggestions": ["disk advice"]})
+    balanced = rf.build_strategist_feedback_packet(mode="metrics_report", payload={"day": "2026-10-29"}, reports_root=root)
+    _eq(balanced["recommendation"], ["disk advice"])
