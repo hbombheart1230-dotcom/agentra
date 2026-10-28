@@ -24,6 +24,8 @@
 ## 2. 수용·RF 단계 정본 (완화 금지)
 - 원본 RF의 작업 목표/원래 `## DONE 체크` C1~C7이 기준이다. C1=모든 owner 파일 MOVE/KEEP/WRAPPER/SAFETY_HOLD 행동 근거, C2=원래 import/caller/IO/State/예외/효과 동등성, C3=원래 normal/`python -O` 테스트·음성/실패 계약, C4=**반대 팀의 정확 SOURCE SHA 전체 원래 범위 독립 PASS**, C5=코드/UI/소유권 관련 patchnotes·메타 정합성(비적용 시 근거 있는 N/A), C6=승인된 최소 통합 또는 source 동일성 KEEP + 해당 source/commit SHA에 요구되는 CI, C7=RF 원본 체크·실제 DONE 이동·STATUS 동기화.
 - 상태는 `MET`, 사유 있는 `N/A`, `PARTIAL`, `PENDING`, `MISSING`, `SAFETY_BLOCKED`. `SCOPED_PASS`와 Owner self-pass는 C4 전체 PASS가 아니다. N/A를 PASS 수에 합산하지 않는다. 같은 source/범위 증거는 재사용; 원래 RF 범위 밖 전수 검증을 새 공통 게이트로 요구하지 않는다.
+## 2.1 실물 단계 게이트
+
 - 물리 단계: `01_PENDING → 02_DEVELOPING → 03_PEER_REVIEW → 04_LEAD_ACCEPTANCE → 05_DONE` (직접 계약 회귀는 근거 있는 `06_REWORK`). 01→02 owner CLAIM/중복 방지, 02→03 원래 C1~C3/C5 근거+SOURCE, 03→04 C1~C5 전체 충족+full independent peer, 04→05 C04 C6 필수 CI→C05 C6/C7+STATUS 처리. **C05만 단계 이동·원본 체크/DONE**, C04만 통합. 코드를 바꾼 A/B의 C5 문서는 지팀장이 해당 SHA에 맞춰 수정한 뒤 게이트 판정한다.
 
 ## 3. 안전 경계·작업 격리
