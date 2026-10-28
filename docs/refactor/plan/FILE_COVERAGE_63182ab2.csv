@@ -3858,6 +3858,7 @@ path,rf_id,verification,baseline_sha
 "tests/test_rf045_core_contracts.py","RF-045","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf045_core_pure_boundaries.py","RF-045","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf045_event_logger_exception_boundary.py","RF-045","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
+"tests/test_rf045_http_retry_boundary.py","RF-045","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf045_log_inventory_output_boundary.py","RF-045","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf045_owner_c1_inventory.py","RF-045","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf045_settings_consumer_exceptions.py","RF-045","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"

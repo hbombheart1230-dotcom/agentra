@@ -38,6 +38,8 @@
 <!-- RF_LEAD_CHECKLIST_END -->
 
 ## 새 보고와 변경 책임
+- **C05 2026-10-29 03:49 KST RF-045 신규 판정:** B #12 [6476896617](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6476896617) 정확 SOURCE `bccefd46` 신규 fake HTTP retry 테스트 normal/`-O` 각 1 PASS(exit0, B 제출), A #11 [6476966310](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6476966310) exact SHA 독립 각 1 PASS + probe 각 5/5 PASS, mutation 5/8(미검출 method.upper/sleep; dry_run 별도 테스트). C2/C3/C4 scoped 증거 인수·C5 exact-path RF-045 단일 소유 추가, **C1~C5 PARTIAL, C6/C7 PENDING, DEV 유지**. 첫 C1 B 10-owner 동적 소비자·env/log/file 효과, 전체 C4 A. integration HttpClient blob과 B SOURCE blob 상이, source parity/정확 SHA hosted CI 없음. **PENDING47/DEV13/PEER13/LEAD0/DONE20/REWORK0 불변**, RF-021/032/069 HOLD, RunLab #32 OPEN/SHA UNKNOWN. C05 직접 pytest·sync NOT_RUN.
+
 - **C05 2026-10-29 02:53 KST 추가 6 RF 첫 미충족 정정:** RF-014/016/028/029/033/034 원본 C1 PARTIAL에 맞춰 `RF_CHECKLIST_META.next=1`·STATUS 첫 미충족 C1로 교정. 기존 최우선 C4 Scanner/Strategist/trade_report/trade_story/Q10-Q12/alpha-casebook 독립 peer 모두 병행 미완료, RF-034 UEF 보호 유지. C1 MET 아님, 단계 PEER/LEAD 0/DONE 20 불변.
 - **C05 2026-10-29 02:52 KST 첫 미충족 C조건 메타 정정:** RF-015/050/032/069 원본 C1은 모두 PARTIAL인데 기존 `RF_CHECKLIST_META.next`는 각각 C3/C4/C2/C3로 표시되어 첫 미충족과 우선순위가 혼재했다. **첫 미충족 C1**으로 메타·STATUS 표만 교정(015 19-owner Claude A, 050 8-owner Claude A, 032 135-owner Claude A/C05, 069 7-owner Codex B). 기존 우선 C3 역사 11 FAIL, C4 LLM 8-owner peer, C2 validation-id 경로 탈출, C3 UEF5 historical 승인 차단은 **모두 그대로**. C1 MET·full peer·LEAD·DONE 승격 없음. RF-021 C1 MET/첫 C2 보호 차단은 불변.
 

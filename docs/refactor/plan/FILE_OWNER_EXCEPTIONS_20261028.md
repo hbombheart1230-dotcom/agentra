@@ -58,4 +58,10 @@
 |---|---|
 | `tests/test_rf066_q9_compaction_exception.py` | RF-066 / Codex B |
 
+**C05 2026-10-29 03:49 KST RF-045 신규 exact-path:** B #12 `6476896617` source `bccefd46460bcfe307883d5a66b129e8422a053b` 신규 테스트 blob `fd535aa45c4f522bbe7a60f4fa548115893bd5d0` 확인. A #11 `6476966310` 동일 SHA scoped peer(전체 C4 아님). CSV 단일 RF-045 Owner; RF-074 기존 frozen 75·regex 불변. validator NOT_RUN, C5 전체 MET 아님.
+
+| 신규 exact path | 단일 Owner |
+|---|---|
+| `tests/test_rf045_http_retry_boundary.py` | RF-045 / Codex B |
+
 **검증 경계:** C05가 위 원격 A 10개 blob·CSV 경로 유일성·RF 원본을 대조했다. 기존 75 frozen test/regex rename·rewrite 0. 별도의 정규식 기반 자동 검사기가 CSV 우선순위를 실제로 구현/준수하는지 실행 검증은 **NOT_RUN**이다. 해당 검증기가 exact-path 예외를 무시하면 소유권 검사 적용은 **BLOCKED**, 지팀장 승인 하에 validator 예외 처리를 별도 작업해야 한다. 이 예외 자체는 RF-031/040/054/058/074 C5 MET, full opposite peer, CI 또는 DONE을 승인하지 않는다.
