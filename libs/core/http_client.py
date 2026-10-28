@@ -38,13 +38,13 @@ class HttpClient:
         backoff_sec: float = 0.5,
         session: Optional["requests.Session"] = None,
     ):
-        if requests is None:  # pragma: no cover
+        if requests is None and session is None:  # pragma: no cover
             raise HttpClientError("requests is required for HttpClient. Please install requests.")
         self.base_url = base_url.rstrip("/") + "/"
         self.timeout_sec = int(timeout_sec)
         self.retry_max = int(retry_max)
         self.backoff_sec = float(backoff_sec)
-        self.session = session or requests.Session()
+        self.session = session if session is not None else requests.Session()
 
     def build_url(self, path: str) -> str:
         path = path.lstrip("/")
