@@ -34,4 +34,13 @@
 | `tests/test_rf031_reporter_analysis_optional_writers_contract.py` | RF-031 / Claude A |
 | `tests/test_rf031_reporter_feedback_helpers_contract.py` | RF-031 / Claude A |
 
+**C05 2026-10-29 00:50 KST 신규 exact-path 소유권:** A #11 `6473163851` 원격 `b203ad0108bc9f60b84c7f788a26b0c16ce83846` 신규 RF-031 3개와 B #12 `6472816538` 원격 `031de036ad826c92bb2c525012c22afe49b28c0c` 신규 RF-044 1개를 blob 조회 후 CSV 단일 소유로 확정. RF-031 세 경로는 RF-074 broad regex보다 exact-path가 우선하며 기존 frozen 75개 불변. RF-044 경로는 별도 owner로 귀속. 정규식 validator NOT_RUN, C5 전체 MET 아님.
+
+| 신규 exact path | 단일 Owner |
+|---|---|
+| `tests/test_rf031_trade_report_deterministic_seed_contract.py` | RF-031 / Claude A |
+| `tests/test_rf031_trade_report_compact_input_contract.py` | RF-031 / Claude A |
+| `tests/test_rf031_trade_report_strategy_memory_labels_contract.py` | RF-031 / Claude A |
+| `tests/test_rf044_executor_error_serialization.py` | RF-044 / Codex B |
+
 **검증 경계:** C05가 위 원격 A 10개 blob·CSV 경로 유일성·RF 원본을 대조했다. 기존 75 frozen test/regex rename·rewrite 0. 별도의 정규식 기반 자동 검사기가 CSV 우선순위를 실제로 구현/준수하는지 실행 검증은 **NOT_RUN**이다. 해당 검증기가 exact-path 예외를 무시하면 소유권 검사 적용은 **BLOCKED**, 지팀장 승인 하에 validator 예외 처리를 별도 작업해야 한다. 이 예외 자체는 RF-031/040/054/058/074 C5 MET, full opposite peer, CI 또는 DONE을 승인하지 않는다.
