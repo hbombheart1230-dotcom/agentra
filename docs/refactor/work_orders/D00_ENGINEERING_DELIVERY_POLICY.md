@@ -15,6 +15,12 @@
 - 지팀장 C03은 수용/배정·RunLab 접수·작업 진입점 수정, C04는 승인된 최소 소스 선별 통합·정확 SHA CI, C05는 RF C1~C7 판정·RF 원본/큐/STATUS·LEAD_CURRENT 단일 작성자다. **문서 수정 권한은 지팀장에게만** 있고 C03~C05 사이에서도 같은 대상의 동시 쓰기를 금지한다. 지팀장이 코드 통합을 수행할 때만 `integration/p1.5` 소스를 수정한다.
 - A/B 일반 RF 구현·테스트·반대 peer·자기 소스 커밋/푸시는 사전 승인된 일이다. 상대 **새 SHA·새 요청·C03 신규 지시가 없어도** 원래 미완료 계약을 수행한다. 막히면 다음 안전한 READY RF로 이동. `NO_DELTA`는 처리 가능한 원래 미완료 계약과 READY가 모두 없을 때만 적는다. Git 인증 실패·pytest 부재는 `BLOCKED`이며 `PUSH_VERIFIED` 아님.
 
+## 1.1 RF 원본 탐색·읽기 (A/B 필수)
+- **RF 원본은 작업 브랜치가 아니라 항상 `origin/integration/p1.5`의 `docs/refactor/plan/queue/` 아래에서 읽는다.** 단계 디렉터리 `01_PENDING/{CLAUDE_A,CODEX_B,UNASSIGNED}`, `02_DEVELOPING/{CLAUDE_A,CODEX_B}`, `03_PEER_REVIEW/{CLAUDE_A,CODEX_B}`, `04_LEAD_ACCEPTANCE/{FROM_CLAUDE_A,FROM_CODEX_B}`, `05_DONE/{CLAUDE_A,CODEX_B}`, `06_REWORK/{CLAUDE_A,CODEX_B}`. **폴더의 A/B는 원 Owner이지 현재 peer 수행자를 뜻하지 않는다.** RF 단계가 이동하므로 경로를 고정 암기하지 않는다.
+- **RF-### 경로 조회:** `git fetch origin integration/p1.5`(가능한 경우), `git ls-tree -r --name-only origin/integration/p1.5 -- docs/refactor/plan/queue` 결과에서 `/RF-###.md`로 끝나는 유일한 경로를 찾고 `git show origin/integration/p1.5:<정확한-경로>`로 읽는다. GitHub API/웹도 동일 ref+경로 사용. 예: B Owner `RF-065`는 `02_DEVELOPING/CODEX_B/RF-065.md`, B가 peer하는 A `RF-015`는 `03_PEER_REVIEW/CLAUDE_A/RF-015.md`. **찾지 못하거나 중복이면 추측/임의 생성하지 말고 자기 Issue에 BLOCKED 및 지팀장 경로 확인 요청**.
+- **읽는 순서:** `현재 단계/Owner` → `## 실제 작업 목표` → `## 이 작업만의 독점 파일 범위` → `## 독립성·선행 조건` → `## DONE 체크`의 **7개 원래 수용 조건** → 현재 미완료에 직접 관련된 `T00~T09` ACTION/최근 검증 근거만. 전체 소유 목록은 `docs/refactor/plan/FILE_COVERAGE_63182ab2.csv`의 해당 RF 행으로 확인; 대표 파일 목록만으로 전체 범위를 추정하지 않는다. `처리·검증 이력`은 필요할 때 특정 SOURCE/SHA만 조회.
+- **권한:** A/B는 RF Markdown·체크박스·물리 큐·CSV·STATUS를 수정하거나 옮기지 않는다. 원래 C1~C5의 자신이 수행할 계약만 소스/테스트로 해결하고 정확 SHA·명령·근거를 자기 Issue 댓글로 제출한다. C6 통합/CI 및 C7 체크/이동은 지팀장 처리. 새 A/B 커밋이 없더라도 기존 미완료 원래 수용 조건을 작업한다.
+
 ## 2. 수용·RF 단계 정본 (완화 금지)
 - 원본 RF의 작업 목표/원래 `## DONE 체크` C1~C7이 기준이다. C1=모든 owner 파일 MOVE/KEEP/WRAPPER/SAFETY_HOLD 행동 근거, C2=원래 import/caller/IO/State/예외/효과 동등성, C3=원래 normal/`python -O` 테스트·음성/실패 계약, C4=**반대 팀의 정확 SOURCE SHA 전체 원래 범위 독립 PASS**, C5=코드/UI/소유권 관련 patchnotes·메타 정합성(비적용 시 근거 있는 N/A), C6=승인된 최소 통합 또는 source 동일성 KEEP + 해당 source/commit SHA에 요구되는 CI, C7=RF 원본 체크·실제 DONE 이동·STATUS 동기화.
 - 상태는 `MET`, 사유 있는 `N/A`, `PARTIAL`, `PENDING`, `MISSING`, `SAFETY_BLOCKED`. `SCOPED_PASS`와 Owner self-pass는 C4 전체 PASS가 아니다. N/A를 PASS 수에 합산하지 않는다. 같은 source/범위 증거는 재사용; 원래 RF 범위 밖 전수 검증을 새 공통 게이트로 요구하지 않는다.
