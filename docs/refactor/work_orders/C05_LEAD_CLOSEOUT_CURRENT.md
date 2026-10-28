@@ -10,7 +10,8 @@
 5. 단계/실제 판정 변경 시만 [#36](https://github.com/hbombheart1230-dotcom/agentra/issues/36)에 `C05 | input comment | RF | old→new stage | C1-C7 | integration SHA/CI | changed documents | NEXT` 기록. 변경 없음 → 댓글·문서 커밋 0.
 
 ## 확인된 대기 사항 (2026-10-28)
-- 총 93개: **PENDING 49 / DEV 11 / PEER 13 / LEAD 0 / DONE 20 / REWORK 0**. 최신 수치 정본은 STATUS/실제 RF 파일.
+- 총 93개: **PENDING 47 / DEV 13 / PEER 13 / LEAD 0 / DONE 20 / REWORK 0**. 최신 수치 정본은 STATUS/실제 RF 파일.
 - **RF-067 종결 완료:** C1~C4/C6/C7 MET, C5 N/A, 14 wrapper KEEP; hosted [run `40623624802`](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40623624802) `CI_BASE_SHA=beca55b47e4ad2cde1bc8fc9fe2b8db6cec07989` normal/`-O` SUCCESS. `05_DONE/CODEX_B` 이동, RF 원본·STATUS·LEAD_CURRENT 동기화. 후속 Markdown HEAD는 D00 §2.2 문서 전용 동등성이지 HEAD 자체 CI PASS가 아님.
+- **신규 물리 CLAIM (2026-10-28):** RF-044(16-owner)·RF-045(10-owner)는 기존 B 단독 Owner 보고(#12 `6458432971`·`6458590772`)와 C01 P4의 B→A 배정을 근거로 `01_PENDING/UNASSIGNED → 02_DEVELOPING/CODEX_B` 이동. C1 전체 ACTION/consumer 미완료, A full C4 peer 미완료, C6/C7 PENDING. RF-045 `http_client.py` B blob `824d7c8f`·A scoped peer는 재사용하되 full PASS 아님. 원래 DONE 체크 7개 모두 미체크 유지.
 - **다음 안전 RF:** RF-015(역사 11 FAIL BASE/후보 분류는 확보, B의 원래 19-owner 전체 독립 C4 PASS 미완료), RF-031(Writer/State 경계 A normal/`-O` 15 PASS, B full peer 미완료), RF-050/014/016/028/029/032/033/034(각 원래 전체 peer 미완료). 보호 RF-069 승인 없는 historical snapshot NOT_RUN. RF-046/047/052/043/053/067 재종결 금지.
 - RunLab #32 `OPEN/RUNTIME_PENDING`, `RUN_SOURCE_SHA=UNKNOWN`; RF 개발 DONE과 무관하게 승인된 실런 재검증 전 CLOSED 금지. 주문/UEF 보호 무승인 변경·실행 금지.

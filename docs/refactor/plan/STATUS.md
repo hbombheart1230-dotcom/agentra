@@ -1,11 +1,11 @@
-# Agentra P1.5 — STATUS (2026-10-28 RF-067 C7 종결 반영)
+# Agentra P1.5 — STATUS (2026-10-28 RF-067 DONE · RF-044/045 DEV CLAIM 반영)
 
 **실물 RF·C1~C7 기준:** [D00](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [RF 큐](queue/) · [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). **수정 책임 C05 지팀장 단독**. 원본 RF의 원래 목표·DONE 체크·정확 SOURCE/peer CI 근거가 수용 정본이며 이 문서는 요약이다. 매회 기록을 누적하지 않는다.
 
 ## 현재 물리 큐
 | PENDING | DEV | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
-| 49 | 11 | 13 | 0 | 20 | 0 | **93** |
+| 47 | 13 | 13 | 0 | 20 | 0 | **93** |
 
 - **현재 LEAD 0건:** RF-067은 C1~C4/C6/C7 MET, C5 N/A로 [DONE](queue/05_DONE/CODEX_B/RF-067.md) 이동. hosted [run 40623624802](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40623624802)의 CI_BASE_SHA `beca55b47e4ad2cde1bc8fc9fe2b8db6cec07989` normal/`-O` SUCCESS. 문서 전용 후속 커밋은 D00 §2.2 동등성 인수이며 HEAD 직접 CI PASS로 표기하지 않음.
 - **DONE 20건:** 기존 RF-043/046/047/052/053 등 19건 유지 + RF-067 신규 종결 1건. 보호된 target/RunLab 실런 PASS를 주장하지 않음.
@@ -39,6 +39,7 @@
 
 ## 새 보고와 변경 책임
 - **개발자 보고:** [A Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)·[B Issue #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12)의 **신규 댓글만**. RunLab은 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32). 지팀장은 이 세 입력의 새 판정을 [Lead Issue #36](https://github.com/hbombheart1230-dotcom/agentra/issues/36)에 출력. **HANDOFF A/B 업데이트·재독 금지**. 이전 상세 증거는 이슈 과거 댓글·Git history·RF 원본에서 필요할 때만 조회.
+- **B 신규 Owner CLAIM:** RF-044(16-owner)·RF-045(10-owner) `01_PENDING/UNASSIGNED → 02_DEVELOPING/CODEX_B`, A 독립 peer 배정. 기존 B Owner #12 `6458432971`·`6458590772` 및 C01 P4 근거; C1~C5 전체 미완료, DONE 증가 없음. RF-045 B `http_client.py` blob `824d7c8f`·A scoped peer는 전체 C4 PASS가 아님.
 - **A 활성 Owner CLAIM:** RF-040/RF-061(DEV, 원래 C1~C5 및 B peer 미완료); B RF-063/RF-065 등 기존 RF 진행. B 신규 READY RF-044/045, A 슬롯 해제 시 RF-036/037. 새 SHA가 없다는 이유로 idle 보고 금지.
 - **C05 실제 상태 이동 때만** 해당 RF 체크·큐·STATUS·LEAD_CURRENT·연동 CSV 동기화. `sync_rf_checklist_status.py --write` 및 `--check`는 실행된 경우에만 PASS 보고한다. 원격 조회만 수행하면 `CHECK_NOT_RUN` 명시.
 - **RunLab #32:** [OPEN 사건 대장](troubleshooting/open/RUNLAB32_INTAKE_20261027.md); `RUN_SOURCE_SHA=UNKNOWN`, 운영 증상 `OPEN/RUNTIME_PENDING`. 코드 DEV_RESOLVED ≠ 운영 RUNTIME_VERIFIED. 주문/체결 증거와 로컬 Guard/Reporter 불일치는 읽기 전용 조사, 보호 승인·재배포 없이 CLOSED 금지. 운영 HOLD를 무관한 RF에 적용하지 않는다.

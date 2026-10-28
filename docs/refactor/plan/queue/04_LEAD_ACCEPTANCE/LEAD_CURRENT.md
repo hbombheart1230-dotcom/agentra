@@ -5,6 +5,6 @@
 | RF | 원 Owner / 독립 peer | 수용된 원래 게이트 | 현재 C6/C7 · 담당 |
 |---|---|---|---|
 
-**현재 LEAD 0건**. RF-067은 [05_DONE/CODEX_B](../05_DONE/CODEX_B/RF-067.md)로 C6/C7 종결(정확 CI_BASE SHA `beca55b47`, hosted run `40623624802` normal/`-O` SUCCESS; 문서 후속 커밋은 D00 §2.2 동등성). 전체 RF 상태 수치는 [STATUS](../../STATUS.md). 선별 통합/KEEP 소스와 정확 CI를 혼동하지 않는다. `SCOPED_PASS`를 full PASS로 확대하지 않고, 보호 RunLab/UEF 무승인 실행 금지. C05만 RF 체크·단계/STATUS 이동.
+**현재 LEAD 0건 (2026-10-28 C05 실물 재확인)**. RF-067은 [05_DONE/CODEX_B](../05_DONE/CODEX_B/RF-067.md)로 C6/C7 종결(정확 CI_BASE SHA `beca55b47`, hosted run `40623624802` normal/`-O` SUCCESS; 문서 후속 커밋은 D00 §2.2 동등성). 전체 RF 상태 수치는 [STATUS](../../STATUS.md). 선별 통합/KEEP 소스와 정확 CI를 혼동하지 않는다. `SCOPED_PASS`를 full PASS로 확대하지 않고, 보호 RunLab/UEF 무승인 실행 금지. C05만 RF 체크·단계/STATUS 이동.
 
 **운영:** 변경된 LEAD 진입/종결만 이 파일에 반영. 과거 완료 RF와 우선 14건의 회차별 증거·표를 덧붙이지 않는다.
