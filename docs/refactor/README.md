@@ -1,9 +1,9 @@
-# Agentra P1.5 리팩터링 — 정본 탐색
+# Agentra P1.5 — 정본 인덱스
 
-**현재 실행:** [C00 지팀장 CURRENT](work_orders/CURRENT.md) → [D00 공통 실행 계약](work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) → [LEAD 최종 종결표](plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md) → [RF 물리 큐](plan/queue/) / [STATUS](plan/STATUS.md).
+**[D00 공통 계약](work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) → [CURRENT 역할 라우터](work_orders/CURRENT.md)**. C01(B 코드), C02(A 코드), C03(지팀장 배정), C04(통합/CI), C05(RF/STATUS 종결)는 CURRENT에서 연결한다.
 
-**개발자 현재 작업:** [Codex B C01](work_orders/C01_CODEX_CURRENT.md) · [Claude A C02](work_orders/C02_CLAUDE_CURRENT.md).
+**개발 보고는 GitHub Issue 댓글만:** [Claude A #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11), [Codex B #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12), [RunLab #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32). 지팀장은 이 **3개 최신 댓글만** 입력받고, [Lead #36](https://github.com/hbombheart1230-dotcom/agentra/issues/36)에 변경된 판정만 출력한다.
 
-원개발 → 반대 개발자 독립 peer → 지팀장 SHA·선별 통합·필수 CI → 같은 회차 DONE. 동일 증거 재검증·매회 전수 현황 문서 교체·새 전수 테스트 발명 금지. 원래 RF 수용 조건과 안전 계약은 유지한다. 과거 기록의 `LEAD_HOLD`/소비자 검증 지시는 현행 LEAD_CURRENT와 대조한다.
+**RF 실물:** [STATUS](plan/STATUS.md) · [큐](plan/queue/) · [LEAD](plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). 문서·원본 RF·patchnotes·상태 관리는 지팀장만 수정. A/B는 각 브랜치 소스·테스트만 수정한다. 과거 HANDOFF/작업 packet/설계·archive는 필요할 때만 증거 조회.
 
-설계 참고: [T00 목표 트리](architecture/T00_TARGET_TREE.md), [파일 소유 범위 CSV](plan/FILE_COVERAGE_63182ab2.csv). 과거 작업지시·동결 문서는 증거 이력이며 정본 D00/C/LEAD를 대체하지 않는다.
+[목표 트리](architecture/T00_TARGET_TREE.md) · [동결 파일 소유 범위](plan/FILE_COVERAGE_63182ab2.csv).
