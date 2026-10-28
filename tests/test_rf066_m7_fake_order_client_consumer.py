@@ -48,3 +48,22 @@ def test_rf066_m7_demo_uses_fake_order_client_in_a_temp_working_directory(tmp_pa
     assert risk_context["open_positions"] == 0
     assert dry_run_token is True
     assert (tmp_path / "data/specs/api_catalog.demo.jsonl").is_file()
+
+
+def test_rf066_m7_demo_does_not_construct_an_order_client_when_plan_needs_clarification(tmp_path, monkeypatch, capsys):
+    class _ClarifyingPlanner:
+        def plan(self, _matches):
+            return SimpleNamespace(action="ask", selected=None, reason="fake clarification", candidates=[])
+
+    class _UnexpectedOrderClient:
+        def __init__(self):
+            raise AssertionError("order client must not be constructed for a non-selected plan")
+
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(demo, "ApiPlanner", _ClarifyingPlanner)
+    monkeypatch.setattr(demo, "OrderClient", _UnexpectedOrderClient)
+
+    demo.main()
+
+    assert "[PLAN] need clarification: fake clarification" in capsys.readouterr().out
+    assert (tmp_path / "data/specs/api_catalog.demo.jsonl").is_file()
