@@ -52,4 +52,10 @@
 | `tests/test_rf031_trade_report_markdown_clean_wrappers_contract.py` | RF-031 / Claude A |
 | `tests/test_rf066_temp_contamination_cleanup.py` | RF-066 / Codex B |
 
+**C05 2026-10-29 02:50 KST 신규 exact-path 소유권:** B #12 `6475690024` 정확 `4b926c2e0544d6055356f78159d4c92b6f63f412`의 신규 테스트 1개(blob `5c15e24ccec16e9fcdf873328a225e92b7e10edc`)를 RF-066 단일 Owner로 확정. RF-074 frozen 75·기존 regex 불변, validator NOT_RUN, C5 전체 MET 아님.
+
+| 신규 exact path | 단일 Owner |
+|---|---|
+| `tests/test_rf066_q9_compaction_exception.py` | RF-066 / Codex B |
+
 **검증 경계:** C05가 위 원격 A 10개 blob·CSV 경로 유일성·RF 원본을 대조했다. 기존 75 frozen test/regex rename·rewrite 0. 별도의 정규식 기반 자동 검사기가 CSV 우선순위를 실제로 구현/준수하는지 실행 검증은 **NOT_RUN**이다. 해당 검증기가 exact-path 예외를 무시하면 소유권 검사 적용은 **BLOCKED**, 지팀장 승인 하에 validator 예외 처리를 별도 작업해야 한다. 이 예외 자체는 RF-031/040/054/058/074 C5 MET, full opposite peer, CI 또는 DONE을 승인하지 않는다.
