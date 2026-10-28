@@ -77,4 +77,11 @@
 |---|---|
 | `tests/test_rf066_m7_fake_order_client_consumer.py` | RF-066 / Codex B |
 
+**C05 2026-10-29 06:50 KST 신규 exact-path 소유권:** B #12 [6480837180](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6480837180) SOURCE `ca7f9af6`에서 신규 2파일 blob `890cadee`/`37c5cd51` 확인, A #11 [6480910762](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6480910762) exact-source scoped peer. CSV 단일 Owner 2행 추가, RF-074 기존 frozen 75·regex 불변. 전체 C5 MET/CI 승인 아님.
+
+| 신규 exact path | 단일 Owner |
+|---|---|
+| `tests/test_rf045_event_logger_compat_attribute_exception.py` | RF-045 / Codex B |
+| `tests/test_rf066_m22_skill_demo_timeout_consumer.py` | RF-066 / Codex B |
+
 **검증 경계:** C05가 위 원격 A 10개 blob·CSV 경로 유일성·RF 원본을 대조했다. 기존 75 frozen test/regex rename·rewrite 0. 별도의 정규식 기반 자동 검사기가 CSV 우선순위를 실제로 구현/준수하는지 실행 검증은 **NOT_RUN**이다. 해당 검증기가 exact-path 예외를 무시하면 소유권 검사 적용은 **BLOCKED**, 지팀장 승인 하에 validator 예외 처리를 별도 작업해야 한다. 이 예외 자체는 RF-031/040/054/058/074 C5 MET, full opposite peer, CI 또는 DONE을 승인하지 않는다.
