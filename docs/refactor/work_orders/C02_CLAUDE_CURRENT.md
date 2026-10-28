@@ -5,4 +5,6 @@
 3. **연속 실행:** 첫 1건·새 B SHA·새 지팀장 배정에서 멈추지 말고 실행 가능한 동안 다음 미완료 RF/안전 READY까지 처리. 한 경계가 보호/환경 BLOCKED면 다음 안전 작업. RF-061 Step5C·RF-057 보호 인접/UEF 실런은 임의 실행 금지.
 4. **유일 보고:** 실제 작업 결과·코드 SHA가 새로 생겼을 때만 [Issue #11 댓글](https://github.com/hbombheart1230-dotcom/agentra/issues/11)로 `RF | OWNER/PEER | 정확 SOURCE_SHA | 수정 코드/테스트 경로 | 실제 normal/-O 결과 | 첫 미충족 C | PUSH VERIFIED/FAILED | NEXT`. **HANDOFF_A 및 다른 MD/CSV/patchnotes/큐/STATUS 수정 금지**. 필요한 문서/patchnotes는 지팀장 요청 댓글.
 
+**이 C02의 다음 RF·우선순위 갱신은 C03 지팀장만 한다.** A는 매회 최신 C02와 실제 RF 큐를 재조회하되 이 문서를 수정하거나 C03 갱신을 기다려 개발을 멈추지 않는다.
+
 Owner/peer 증거의 수용·실물 이동/DONE은 지팀장 권한이다.
