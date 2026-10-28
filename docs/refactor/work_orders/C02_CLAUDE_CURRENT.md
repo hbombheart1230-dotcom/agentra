@@ -1,41 +1,19 @@
 # C02 — Claude A · 코드/독립 peer만
 
 
-## 0. **최우선 강제 규칙 — 매 회차 정본 큐 전체 폴더트리·본인 RF 전수 조사 (생략 금지)**
+## 0. 최우선 — 담당 큐 전수 확인·완료 중심 연속 실행
 
-**단일 정본:** `integration/p1.5`의 `docs/refactor/plan/queue/`이다. 브랜치에 남은 오래된 큐 복사본·C01/C02의 정적 RF 목록·직전 Issue 댓글은 **실제 디렉터리 전수 탐색의 대체물이 아니다.** 매회 실행 시작 시 원격 integration HEAD SHA를 조회하고 아래 6단계의 모든 디렉터리 존재 여부를 확인한 뒤 **CLAUDE_A 이름의 모든 폴더를 빠짐없이 재귀 열거**한다. 각 RF의 원래 C1~C7 메타/단계와 자신의 Owner 또는 peer 책임을 확인해 실행 대상을 구성한다. `.gitkeep` 제외, RF 중복/누락·잘못된 소유권 발견 시 자기 #11 댓글로 C03/C05 정정 요청.
+정본은 `origin/integration/p1.5:docs/refactor/plan/queue/`. 매회 HEAD SHA와 아래 **본인 이름 폴더 5곳의 RF 파일 경로만 전수 열거**한다(중첩 폴더 포함). 전체 RF 문서·코드 재독 금지; **선택한 RF만 상세 읽기**. `git ls-tree -r --name-only origin/integration/p1.5 docs/refactor/plan/queue/` 또는 GitHub contents API를 사용한다.
 
-**실제 폴더트리 (변경 가능하므로 실행 때마다 원격 재조회):**
+- `01_PENDING/CLAUDE_A/`: CLAIM 전 조회만, 소스 변경 금지
+- `02_DEVELOPING/CLAUDE_A/`, `03_PEER_REVIEW/CLAUDE_A/`, `06_REWORK/CLAUDE_A/`: **전 RF를 ACTIVE 백로그에 등록**
+- `05_DONE/CLAUDE_A/`: 완료 여부만 확인, 중복 검증 금지
+- `04_LEAD_ACCEPTANCE/`: 지팀장 전용(작성·단계 이동 금지)
 
-```text
-docs/refactor/plan/queue/
-├── 01_PENDING/
-│   ├── CLAUDE_A/    ├── CODEX_B/    └── UNASSIGNED/
-├── 02_DEVELOPING/
-│   ├── CLAUDE_A/    └── CODEX_B/
-├── 03_PEER_REVIEW/
-│   ├── CLAUDE_A/    └── CODEX_B/
-├── 04_LEAD_ACCEPTANCE/
-│   └── FROM_CLAUDE_A/  (지팀장 전용; A/B 작성·단계 이동 금지)
-├── 05_DONE/
-│   ├── CLAUDE_A/    └── CODEX_B/
-└── 06_REWORK/
-    ├── CLAUDE_A/    └── CODEX_B/
-```
+C01/C02 우선순위는 **실행 순서**일 뿐 작업 범위나 회차별 할당량이 아니다. 선택한 ACTIVE RF의 최초 미충족 C조건을 안전하게 코드·테스트·독립 peer로 해결하고, 완료·차단 시 **즉시 다음 안전 RF**를 계속 진행한다. 한 번의 PASS·커밋·댓글·상대 SHA/승인 대기·임의 시간/건수 목표로 종료하지 않는다. **안전 작업이 모두 끝났거나 각 잔여 RF가 개별 BLOCKED(첫 C·근거·해제 담당), 또는 실제 플랫폼 한도일 때만 종료**한다. 한도 종료 시 다음 회차에 정확한 중단점부터 재개한다.
 
-**현재 본인 담당 폴더 및 RF (2026-10-29 원격 스냅샷, 다음 회차에는 이 목록 대신 실물 재열거):**
-- `docs/refactor/plan/queue/01_PENDING/CLAUDE_A/` → RF-030, RF-035 (CLAIM/보호 승인 전 소스 수정 금지)
-- `docs/refactor/plan/queue/02_DEVELOPING/CLAUDE_A/` → RF-021, RF-040, RF-051, RF-054, RF-058, RF-061
-- `docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/` → RF-014, RF-015, RF-016, RF-028, RF-029, RF-031, RF-032, RF-033, RF-034, RF-041, RF-050
-- `docs/refactor/plan/queue/05_DONE/CLAUDE_A/` → RF-013, RF-017, RF-019, RF-043, RF-046, RF-047, RF-052, RF-053 (목록·역행 여부만; 기존 PASS 재실행 금지)
-- `docs/refactor/plan/queue/06_REWORK/CLAUDE_A/` → 현재 .gitkeep 외 RF 없음 — 발생 시 최우선 미충족 계약 확인
+자기 #11에 `QUEUE_SCAN_SHA`, 단계별 RF 수·ACTIVE/처리/차단/다음 RF, 실제 작업 시작·종료 KST·경과분, 검증 normal/`-O`, 원격 push SHA를 간결히 기록한다. **30분은 목표/최소 작업시간이 아니며** 30분 미만일 경우 실제 종료 사유만 추가한다. 추정 시간 금지. D00의 Owner·frozen oracle·Broker/Step5C/UEF/RunLab HOLD와 문서 수정 금지는 유지한다.
 
-**반드시 실제로 수행할 루프:**
-1. `git fetch origin integration/p1.5` 후 `git ls-tree -r --name-only origin/integration/p1.5 docs/refactor/plan/queue/` 등으로 원격 트리의 전체 상대경로를 열거한다. Git 사용 불가 시 인증된 GitHub API의 `contents?ref=integration/p1.5`로 **각 단계/본인 디렉터리 전체**를 조회한다. 특정 RF 하나만 읽고 `QUEUE_SCAN=PASS`라 쓰지 말 것.
-2. 담당 `02_DEVELOPING`·`03_PEER_REVIEW`·`06_REWORK` **전 RF**를 ACTIVE 작업 목록으로 만든다. 각 RF에서 C1~C5 최초 미충족 조건, 기존 유효 SHA 증거, 새 안전 코드/테스트 또는 독립 peer 범위를 추출한다. `01_PENDING`은 승인된 CLAIM·Owner·안전 범위 없으면 inventory/read-only로만; `05_DONE`은 종료 목록만 확인하고 재작업·동일 검증 금지. `04_LEAD_ACCEPTANCE`의 이동/판정은 지팀장 권한이며 절대 대신하지 않는다.
-3. C01/C02 우선순위는 **실행 순서**일 뿐 탐색 범위를 제한하지 않는다. 우선 RF를 처리한 뒤에도 모든 남은 ACTIVE RF를 순회하여 다음 최초 미충족 C조건을 실제 구현/새 음성 테스트/안전 peer로 계속 해결한다. 한 개 PASS, 단일 커밋, 댓글, 상대 신규 SHA 부재, C05 결정 대기, 일부 효과 HOLD를 전역 종료 이유로 삼지 않는다. 위험 경계는 HOLD하고 다른 안전 RF로 즉시 이동한다.
-4. `QUEUE_SCAN_SHA`, `QUEUE_SCAN_PATHS`(본인 01/02/03/05/06 경로 5개), `STAGE_RF_COUNTS`, `ACTIVE_RF_IDS`, `PROCESSED_RF_IDS`, `BLOCKED_RF_IDS(first_C/reason/unblock_owner)`, `NEXT_SAFE_RF`를 자기 #11에 짧게 남긴다. 전체 대상이 DONE 또는 **전 ACTIVE RF가 각각 구체적 이유로 안전/승인/환경 BLOCKED**이거나 검증된 플랫폼 실행 한도일 때만 종료한다. **30분 미만 종료 시 '대상 폴더를 전부 보았다'는 말만으로 부족하고, 남은 안전 RF에서 계속 못한 관측 가능한 이유를 함께 제출한다.** 실작업 KST 원시 시간·정상/`-O`·push SHA도 기존 3~4항대로 반드시 보고.
-5. 기존 D00 소유권, frozen oracle, Broker/Step5C/UEF/RunLab 보호는 그대로 유지한다. 소스·테스트 작성은 오직 자기 작업 브랜치와 허용된 Owner 경로에 한정한다. **큐의 MD/CSV/STATUS/업무지시를 직접 고치거나 임의 CLAIM·DONE 처리하지 않는다.**
 
 1. **진입:** [D00 §1.1](D00_ENGINEERING_DELIVERY_POLICY.md) → [Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)의 자기 최신 댓글/중단점 → 필요할 때 [Issue #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12)의 대응 peer 결과 → **지금 작업할 RF 원본**. HANDOFF·STATUS 전체 재독 금지.
 2. **실행 — A 확장 연속 큐 (기존 CLAIM·독립성 유지):** A 브랜치 `work/p15-a-reporter-pure-20261021`에서 A 소유 코드/테스트만 수정·normal/`python -O` 검증·커밋·원격 푸시하고 B 소스 peer는 read-only/temp-fake로만. **B 신규 SHA 부재 또는 새 READY CLAIM 슬롯 부족이 A의 기존 DEV Owner·안전 peer 중단 사유는 아님.** 앞 항목의 보호 부분은 HOLD하고 다음 안전한 계약으로 이동한다.
@@ -52,7 +30,7 @@ docs/refactor/plan/queue/
    **A 순서(하나 막혀도 다음 안전 RF 연속):** P0 RF-033(A→B 첫 C1) 45-owner net6/write10 **새** fake urllib/yfinance + socket deny·tmp root C2/C3, RF-034(A→B 첫 C1) 40-owner write7 tmp-root/실패 음성(UEF 실효과 HOLD) → P1 RF-031(A→B 첫 C1) 22-owner 최종 ACTION/alias·reporter_analysis writer/State/TimeoutError 등 아직 미검증 원래 C2/C3 → P2 RF-051(A→B 첫 C1) 8-owner action/dynamic consumer 및 KOFIA/yfinance/atomic IO fake 경계(이미 통과한 1+18·117 재실행 금지) → P3 RF-040/061(A→B 첫 C1) fake-only executor/ToolFacade 소비자·효과, Step5C 실런 HOLD → P4 RF-054/058(A→B 첫 C1) State/strategy_memory·proposal_store 실패 계약 → P5 B 신규 `be28e9c1` RF-066 실그래프 seed=false·cwd write, RF-045 PATCH backoff 및 실제 EventLogger, RF-044 executor **새 SHA/미검증 범위만** temp/fake 독립 peer → P6 RF-041/050 잔여 C1/C2 및 RF-014/015/016/028/029/041/050 안전 원래 C4 → P7 READY RF-036/037/038/039 C05 CLAIM 전 read-only. 원래 54/269 ACTION **제안**은 C05가 PARTIAL로 기록했으므로 승인만 기다리며 종료 금지; 신규 코드/실패 계약 구현→normal/-O→정확 SHA push→#11.
    **동시 작성 충돌 방지:** 07:02~07:09와 07:03~07:08의 A 세션 겹침이 #11에 명시됨. A 같은 브랜치의 서로 다른 세션은 같은 RF/파일 중복 구현 금지, 쓰기 직전 fetch·fast-forward 확인 및 SHA lease 준수; 충돌 시 덮어쓰기/force push 금지, 다른 안전 RF로 이동해 #11에 정확 checkpoint·C05 소유 충돌 인계. 실작업 시간은 세션별 원시 기록만 사용: 07:13:03~07:23:28 **10.42분**은 같은 회차 5.87분 중간보고를 대체(합산 금지); 다른 4.92/7.02/3.55분 세션과 합산 금지. 30분 미만 사유는 제출, 전체 큐 소진·플랫폼 한도 증거 아님. D00·§3·4 시간 의무·RF-074 frozen75·보호 경계 유지.
 
-3. **강제 연속 실행 (0항의 담당 폴더·전 RF 조사 필수):** **세션 실작업 시간 필수:** 각 실행의 원시 `START_KST`, `END_KST`, 실제 경과분 `ELAPSED_MIN`을 시작·종료 기록으로 재확인(없으면 `NOT_VERIFIED`); 댓글 시각 간격·예약 예정 길이·테스트 소요초를 작업시간으로 추정·합산 금지. **30분 미만 종료**는 실제 사유, 마지막 진행 RF/첫 미충족 C, 다음 안전 RF, 계속 못한 이유를 자기 Issue에 기록. 동일 SHA·동일 범위 검증 PASS 반복 금지, 한 RF 차단 시 다음 안전 RF 연속 수행.  단일 PASS/댓글/커밋/상대 SHA 부재는 종료 사유가 아니다. 종료는 (a) 담당 RF 전부 DONE, (b) 모든 잔여 RF가 정확 첫 C·근거·해제 담당이 있는 안전/승인/환경 BLOCKED, (c) 확인된 플랫폼 실행 한도뿐. 도구/transport/의존성 장애는 최소 복구 후 다음 안전 RF, 마지막 SOURCE SHA·실패 명령·C·해제 담당을 #11에 기록하고 다음 회차 이어서. 같은 SHA·범위 재검증 금지, 새 결손만 normal/`python -O`. RF-061 Step5C·RF-057 UEF·RF-035 CLAIM 전 보호 유지.
+3. **강제 연속 실행 (0항 준수; 회차별 시간·건수 목표 없음):** **세션 실작업 시간 필수:** 각 실행의 원시 `START_KST`, `END_KST`, 실제 경과분 `ELAPSED_MIN`을 시작·종료 기록으로 재확인(없으면 `NOT_VERIFIED`); 댓글 시각 간격·예약 예정 길이·테스트 소요초를 작업시간으로 추정·합산 금지. **30분은 작업 목표가 아님. 30분 미만 종료**는 실제 사유, 마지막 진행 RF/첫 미충족 C, 다음 안전 RF, 계속 못한 이유를 자기 Issue에 기록. 동일 SHA·동일 범위 검증 PASS 반복 금지, 한 RF 차단 시 다음 안전 RF 연속 수행.  단일 PASS/댓글/커밋/상대 SHA 부재는 종료 사유가 아니다. 종료는 (a) 담당 RF 전부 DONE, (b) 모든 잔여 RF가 정확 첫 C·근거·해제 담당이 있는 안전/승인/환경 BLOCKED, (c) 확인된 플랫폼 실행 한도뿐. 도구/transport/의존성 장애는 최소 복구 후 다음 안전 RF, 마지막 SOURCE SHA·실패 명령·C·해제 담당을 #11에 기록하고 다음 회차 이어서. 같은 SHA·범위 재검증 금지, 새 결손만 normal/`python -O`. RF-061 Step5C·RF-057 UEF·RF-035 CLAIM 전 보호 유지.
 4. **유일 보고:** 매 실행 세션 종료 시 [Issue #11 댓글](https://github.com/hbombheart1230-dotcom/agentra/issues/11)에 `START_KST | END_KST | ELAPSED_MIN(미검증 시 NOT_VERIFIED) | 30분 미만 사유/마지막 RF·첫 C·다음 안전 RF·중단 이유 | RF | OWNER/PEER | 정확 SOURCE_SHA | 수정 코드/테스트 경로 | 실제 명령+normal/-O 결과 또는 NOT_RUN | 첫 미충족 C | PUSH VERIFIED/FAILED | NEXT`를 간결히 기록(유효 증거는 링크 재사용). **HANDOFF_A 및 다른 MD/CSV/patchnotes/큐/STATUS 수정 금지**. 필요한 문서/patchnotes는 지팀장 요청 댓글.
 
 **이 C02의 다음 RF·우선순위 갱신은 C03 지팀장만 한다.** A는 매회 최신 C02와 실제 RF 큐를 재조회하되 이 문서를 수정하거나 C03 갱신을 기다려 개발을 멈추지 않는다.
