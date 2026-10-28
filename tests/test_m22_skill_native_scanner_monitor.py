@@ -1,10 +1,43 @@
 from __future__ import annotations
 
 import json
+import socket
+import sys
+from types import ModuleType
+
+import pytest
 
 from graphs.nodes.monitor_node import monitor_node
 from graphs.nodes.scanner_node import scanner_node
 from scripts.demo_m22_skill_flow import main as demo_main
+
+
+
+@pytest.fixture(autouse=True)
+def _enforce_rf066_offline_contract(monkeypatch):
+    """Network must never be used, even when the host enables Yahoo seeding."""
+    ticker_requests = []
+
+    def deny_network(*_args, **_kwargs):
+        raise AssertionError("RF-066 test unexpectedly attempted a network connection")
+
+    def record_ticker(*args, **kwargs):
+        ticker_requests.append((args, kwargs))
+        raise AssertionError("RF-066 test unexpectedly requested a Yahoo Ticker")
+
+    fake_yfinance = ModuleType("yfinance")
+    fake_yfinance.Ticker = record_ticker
+    monkeypatch.setitem(sys.modules, "yfinance", fake_yfinance)
+    monkeypatch.setattr(socket.socket, "connect", deny_network)
+    monkeypatch.setattr(socket.socket, "connect_ex", deny_network)
+    monkeypatch.setenv("SCANNER_FEATURE_SEED_WITH_YF", "true")
+    yield
+    assert not ticker_requests, f"unexpected yfinance Ticker requests: {ticker_requests!r}"
+
+
+# Wednesday at noon KST: deterministic market-open time outside BUY closeout guard.
+RF066_NOON_KST_EPOCH = 1793156400
+RF066_NOON_KST_ISO = "2026-10-28T12:00:00+09:00"
 
 
 def test_m22_scanner_uses_skill_account_orders_for_penalty():
@@ -25,7 +58,11 @@ def test_m22_scanner_uses_skill_account_orders_for_penalty():
                 ]
             },
         },
-        "policy": {"max_risk": 1.0, "min_confidence": 0.0},
+        "policy": {
+            "max_risk": 1.0,
+            "min_confidence": 0.0,
+            "scanner_feature_seed_with_yf": False,
+        },
     }
 
     out = scanner_node(state)
@@ -60,7 +97,11 @@ def test_m22_scanner_ignores_filled_account_orders_for_open_order_penalty():
                 ]
             },
         },
-        "policy": {"max_risk": 1.0, "min_confidence": 0.0},
+        "policy": {
+            "max_risk": 1.0,
+            "min_confidence": 0.0,
+            "scanner_feature_seed_with_yf": False,
+        },
     }
 
     out = scanner_node(state)
@@ -71,6 +112,9 @@ def test_m22_scanner_ignores_filled_account_orders_for_open_order_penalty():
 
 def test_m22_monitor_reads_order_status_dto_without_changing_intent_shape():
     state = {
+        "tick_ts": RF066_NOON_KST_EPOCH,
+        "now_epoch": RF066_NOON_KST_EPOCH,
+        "now_iso": RF066_NOON_KST_ISO,
         "plan": {"thesis": "demo"},
         "entry_cost_filter": {"enabled": False},
         "selected": {"symbol": "AAA", "score": 0.9, "risk_score": 0.2, "confidence": 0.8},
@@ -111,6 +155,9 @@ def test_m22_monitor_reads_order_status_dto_without_changing_intent_shape():
 
 def test_m22_monitor_does_not_block_entry_on_filled_account_order_feature():
     state = {
+        "tick_ts": RF066_NOON_KST_EPOCH,
+        "now_epoch": RF066_NOON_KST_EPOCH,
+        "now_iso": RF066_NOON_KST_ISO,
         "plan": {"thesis": "demo"},
         "entry_cost_filter": {"enabled": False},
         "selected": {
@@ -216,6 +263,7 @@ def test_m22_scanner_falls_back_safely_on_skill_timeout_errors():
             "market.quote": {"action": "error", "meta": {"error_type": "TimeoutError"}},
             "account.orders": {"result": {"action": "ask", "question": "symbol required"}},
         },
+        "policy": {"scanner_feature_seed_with_yf": False},
     }
 
     out = scanner_node(state)
