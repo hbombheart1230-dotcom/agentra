@@ -5,4 +5,6 @@
 3. **연속 실행:** 첫 1건·새 A SHA·새 지팀장 배정에서 멈추지 말고 실행 가능한 동안 다음 미완료 RF까지 처리. 보호/환경 blocker는 첫 원래 C 한 개와 오류를 명시하고 다음 안전 작업으로 이동. 기존 scoped PASS ≠ full PASS.
 4. **유일 보고:** 실제 작업 결과·코드 SHA가 새로 생겼을 때만 [Issue #12 댓글](https://github.com/hbombheart1230-dotcom/agentra/issues/12)로 `RF | OWNER/PEER | 정확 SOURCE_SHA | 수정 코드/테스트 경로 | 실제 normal/-O 결과 | 첫 미충족 C | PUSH VERIFIED/FAILED | NEXT`. **HANDOFF_B 및 다른 MD/CSV/patchnotes/큐/STATUS 수정 금지**. 문서 요청은 댓글로 지팀장에게 전달한다.
 
+**이 C01의 다음 RF·우선순위 갱신은 C03 지팀장만 한다.** B는 매회 최신 C01과 실제 RF 큐를 재조회하되 이 문서를 수정하거나 C03 갱신을 기다려 개발을 멈추지 않는다.
+
 완료는 RF 수용 판정이 아니라 지팀장이 결정한다. 일반 개발은 자동 승인, 보호 실런은 별도 승인.
