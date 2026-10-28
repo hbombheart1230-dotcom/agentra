@@ -84,4 +84,17 @@
 | `tests/test_rf045_event_logger_compat_attribute_exception.py` | RF-045 / Codex B |
 | `tests/test_rf066_m22_skill_demo_timeout_consumer.py` | RF-066 / Codex B |
 
+**C05 2026-10-29 07:50 KST 신규 exact-path 8개 Owner:** #11 648193~648220, #12 6482066851/6482085416. 원격 A/B 파일 blob 확인. CSV 4039 unique, RF-074 frozen 75·regex 불변. 전체 C5 및 validator PASS 아님.
+
+| 신규 exact path | 단일 Owner | 원격 blob |
+|---|---|---|
+| tests/test_rf031_reporter_ai_review_caller_contract.py | RF-031 / Claude A | a89ad4772aa8 |
+| tests/test_rf051_market_owner_action_inventory.py | RF-051 / Claude A | 3474664d79bc |
+| tests/test_rf051_market_import_surface_guard.py | RF-051 / Claude A | dfb60ef86c20 |
+| tests/test_rf050_openrouter_client_fake_http_contract.py | RF-050 / Claude A | 11add9bd0ec0 |
+| tests/test_rf050_model_catalog_store_fake_http_contract.py | RF-050 / Claude A | 25d0cd1d1a4b |
+| tests/test_rf041_openai_provider_helpers_fake_http_contract.py | RF-041 / Claude A | a22fc6137ef5 |
+| tests/test_rf066_m22_graph_offline_policy.py | RF-066 / Codex B | e728d97ea3d2 |
+| tests/test_rf045_http_retry_method_backoff.py | RF-045 / Codex B | 749d64232bb7 |
+
 **검증 경계:** C05가 위 원격 A 10개 blob·CSV 경로 유일성·RF 원본을 대조했다. 기존 75 frozen test/regex rename·rewrite 0. 별도의 정규식 기반 자동 검사기가 CSV 우선순위를 실제로 구현/준수하는지 실행 검증은 **NOT_RUN**이다. 해당 검증기가 exact-path 예외를 무시하면 소유권 검사 적용은 **BLOCKED**, 지팀장 승인 하에 validator 예외 처리를 별도 작업해야 한다. 이 예외 자체는 RF-031/040/054/058/074 C5 MET, full opposite peer, CI 또는 DONE을 승인하지 않는다.
