@@ -93,3 +93,17 @@ def test_korea_bond_provider_exception_is_swallowed_in_extended_indicators(monke
     _eq(calls, [1])                      # provider was consulted and its exception did not escape
     if not isinstance(out, dict):
         raise AssertionError(type(out))
+
+
+def test_existing_dict_override_is_not_replaced_by_bond_provider(monkeypatch):
+    from libs.market import korea_bond_yields as kb
+
+    monkeypatch.setattr(kb, "fetch_korea_bond_yield_overrides", lambda policy=None: {
+        "kr_3y_yield": {"status": "ok", "current": 9.9},
+        "kr_10y_yield": "not-a-dict",
+    })
+    policy = {"macro_indicator_overrides": {"kr_3y_yield": {"status": "ok", "current": 1.1}}}
+    out = _REAL_EXTENDED({}, policy, inputs=None, korea_indices=None, krx_night_futures={})
+    text = repr(out)
+    if "1.1" not in text or "9.9" in text:
+        raise AssertionError(text)                      # explicit override wins over the provider value

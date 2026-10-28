@@ -64,3 +64,35 @@ def test_atomic_write_cleans_temp_when_replace_fails(tmp_path, monkeypatch):
         raise AssertionError(leftovers)
     if target.exists():
         raise AssertionError("target must not exist")
+
+
+def test_manifest_lock_windows_branch_with_fake_msvcrt_and_scoped_os_name(tmp_path, monkeypatch):
+    """NT branch via a fake msvcrt; only this module's ``os`` reference is swapped (no global os.name change)."""
+    import sys
+    import types
+
+    calls = []
+    fake = types.ModuleType("msvcrt")
+    fake.LK_LOCK, fake.LK_UNLCK = 1, 2
+    fake.locking = lambda fd, mode, nbytes: calls.append((mode, nbytes))
+    monkeypatch.setitem(sys.modules, "msvcrt", fake)
+    monkeypatch.setattr(qi, "os", types.SimpleNamespace(name="nt"))
+    target = tmp_path / "d" / "manifest.json"
+    with qi.manifest_lock(target):
+        if calls != [(1, 1)]:
+            raise AssertionError(calls)
+    if calls != [(1, 1), (2, 1)]:
+        raise AssertionError(calls)
+    if not (tmp_path / "d" / "manifest.lock").exists():
+        raise AssertionError("lock file is created next to the manifest")
+    if os.name == "nt":
+        raise AssertionError("global os.name must be untouched")
+
+
+def test_manifest_lock_posix_branch_releases_even_when_body_raises(tmp_path):
+    target = tmp_path / "m.json"
+    with pytest.raises(RuntimeError):
+        with qi.manifest_lock(target):
+            raise RuntimeError("body failed")
+    with qi.manifest_lock(target):                      # re-acquirable => the previous flock was released
+        pass
