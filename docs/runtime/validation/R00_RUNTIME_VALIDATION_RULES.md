@@ -41,12 +41,14 @@
 
 주문 수락은 체결 입증이 아니다. 거래 중복·미체결/취소·TTL·가드 상태를 구분한다. 기존 발견은 댓글 링크만 참조한다. 장애는 원인 확인 → 허용 범위 복구 → 결과 확인; 안전·운영 차단은 우회하지 않는다. 키·토큰·계좌 식별정보 기록 금지.
 
+**문서 단일 작성자:** RunLab 담당자는 R00/D04/CURRENT·RF·STATUS·사건 대장을 수정하지 않는다. 관측 결과는 **Issue #32 댓글만** 제출한다. 세 개발·런 Issue(#11/#12/#32)의 신규 사실은 지팀장이 인수하고, 지팀장 판정 출력은 [Issue #36](https://github.com/hbombheart1230-dotcom/agentra/issues/36)에 기록한다. 예약/운영 변경 권한은 이전과 동일하며 이 항목이 새 실행 승인을 뜻하지 않는다.
+
 ## 4. 개발팀 인계 — D04 공통 작업
 
-**RunLab → 지팀장 → 개발 A/B → 독립 검증 → 승인된 런검증 재확인**의 정본은 [D04](D04_RUNTIME_VALIDATION_RULES.md), 개발측 [D00](../../refactor/work_orders/D00_ENGINEERING_DELIVERY_POLICY.md)·[C00](../../refactor/work_orders/CURRENT.md)이다.
+**RunLab → 지팀장 → 개발 A/B → 독립 검증 → 승인된 런검증 재확인**의 정본은 [D04](D04_RUNTIME_VALIDATION_RULES.md), 개발측 [D00](../../refactor/work_orders/D00_ENGINEERING_DELIVERY_POLICY.md)·[C03 지팀장 배정](../../refactor/work_orders/C03_LEAD_TRIAGE_CURRENT.md)이다.
 
 - 런검증팀은 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32)에 **신규 사실·원본 증거 위치·RUN_IMAGE_DIGEST와 입증된 RUN_SOURCE_SHA(또는 UNKNOWN)·모의 브로커/로컬 불일치·다음 확인 범위**만 기록한다. **중대한 주문/안전 이상은 즉시**, 일반 발견은 19시 최종 독립 검증과 함께 제출한다.
-- 지팀장이 **새로운 발견이 있는 회차에만** [troubleshooting/open](../../refactor/plan/troubleshooting/open/)에서 중복을 확인하고 사건을 접수한다. **C00에 사건 ID·임시 조사 담당·정확한 원래 RF 후보 및 다음 증거를 배정**, RF 소유 미확정은 `OWNER_MAPPING_PENDING`으로 유지한다. 기존 사건의 새 관측은 delta만 추가하고 매회 과거 증거 재점검은 하지 않는다.
+- 지팀장이 **새로운 발견이 있는 회차에만** [troubleshooting/open](../../refactor/plan/troubleshooting/open/)에서 중복을 확인하고 사건을 접수한다. **C03에서 사건 ID·임시 조사 담당·정확한 원래 RF 후보 및 다음 증거를 배정**, RF 소유 미확정은 `OWNER_MAPPING_PENDING`으로 유지한다. 기존 사건의 새 관측은 delta만 추가하고 매회 과거 증거 재점검은 하지 않는다.
 - 환경·예약·OCI 출처는 **RunLab 읽기 전용 조사**. 코드 경계는 지팀장이 **원래 RF 소유자**에 배정, 상대 개발자가 독립 peer한다. RunLab은 코드 수정·RF 큐 이동·통합·DONE을 수행하지 않는다.
 - **개발 RF DONE은 런타임 증상 CLOSED가 아니다.** RunLab은 사용자 승인 하 적용된 고정 이미지의 provenance와 실제 증상 재관측을 확인할 때만 `RUNTIME_VERIFIED`를 제출한다. 적용 승인이 없다면 `RUNTIME_PENDING/OPEN`; RunLab에서 임의 주문·재배포·예약 수정을 하지 않는다.
 - **현재 공동 OPEN:** [RunLab #32 사건 대장](../../refactor/plan/troubleshooting/open/RUNLAB32_INTAKE_20261027.md). ORDER/GUARD는 개발 Codex B의 소스 조사, REPORT는 개발 Claude A의 소스 조사, IMAGE/OPS는 RunLab 관측, 소유 RF 확정과 최종 우선순위는 지팀장이 맡는다. 보호/운영 변경은 승인 전 금지.
