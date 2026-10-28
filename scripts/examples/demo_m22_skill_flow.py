@@ -25,6 +25,10 @@ def _build_demo_state(*, simulate_timeout: bool = False) -> Dict[str, Any]:
         # This demo is intentionally self-contained.  The supplied mock scan
         # rows and skill results must not fall through to a live market fetch.
         "live_fetch": False,
+        # Scanner feature hydration has a separate yfinance fallback.  Keep
+        # that fallback off as well: this is an offline demo, even when the
+        # caller's environment enables SCANNER_FEATURE_SEED_WITH_YF.
+        "policy": {"scanner_feature_seed_with_yf": False},
         # Keep baseline similar to make skill effects visible.
         "mock_scan_results": {
             "005930": {"score": 0.60, "risk_score": 0.20, "confidence": 0.82},
