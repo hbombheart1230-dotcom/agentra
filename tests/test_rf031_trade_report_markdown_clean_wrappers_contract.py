@@ -70,3 +70,47 @@ def test_scanner_selection_label_line(text, expected):
 ])
 def test_redundant_symbol_selection_line(text, expected):
     _eq(m._is_redundant_symbol_selection_line(text), expected)
+
+
+def test_number_and_pct_formatters():
+    _eq([m._fmt_multiple(v) for v in (1.5, "2", None, "x", 0)], ["1.50배", "2.00배", "-", "-", "0.00배"])
+    # signed pct takes a RATIO (x100) and renders an explicit sign
+    _eq([m._fmt_signed_pct(v) for v in (1.234, -0.5, 0, None, "x", "3")], ["+123.40%", "-50.00%", "0.00%", "-", "-", "+300.00%"])
+    _eq([m._korea_index_lines({})], [[]])
+    _eq(m._korea_index_lines({"korea_indices": {"indices": {"KOSPI": {"current": 2500.5, "change_pct": 1.2}}}}), ["KOSPI 현재 2,500.50 등락률 +1.20%"])
+
+
+def test_first_present_boolish_and_checkpoint_label():
+    _eq((m._first_present(None, "", 0, "a"), m._first_present(None, ""), m._first_present()), (0, "", ""))          # 0 counts as present
+    _eq([m._boolish(v) for v in (True, "true", "1", "yes", "Y", "no", "", None, 0, 2)], [True, True, True, True, True, False, False, False, False, False])
+    _eq([m._checkpoint_label(v) for v in ("entry", "exit", "hold", "unknown_x", "")], ["entry", "exit", "hold", "unknown_x", ""])
+
+
+def test_label_wrappers_delegate_to_the_strategy_memory_helpers():
+    _eq(m._strategy_horizon_alignment_label("aligned"), "전략 보유 구간과 충돌 없음")
+    _eq((m._strategy_horizon_alignment_label(""), m._strategy_horizon_alignment_label("conflict")), ("-", "conflict"))
+    _eq((m._duration_label_compact(65), m._duration_label_compact("x")), ("1분 5초", ""))
+    _eq((m._hold_window_label({"min_sec": 60, "target_sec": 300, "max_sec": 600}), m._hold_window_label({})), ("최소 1분 / 목표 5분 / 최대 10분", "-"))
+
+
+def test_operator_pnl_pct_prefers_truth_then_shared_and_reports_no_inference():
+    _eq(m._operator_pnl_pct({"pct": 1.5}, {}), (1.5, False))
+    _eq(m._operator_pnl_pct({}, {"pnl_pct": 2}), (2, False))
+    _eq(m._operator_pnl_pct({}, {}), ("", False))
+
+
+def test_quantity_inference_from_costs_and_name_inference():
+    f = m._infer_trade_quantity_from_costs
+    _eq(f(buy_price=100, sell_price=110, pnl=100, fee=0, tax=0), 10.0)
+    _eq(f(buy_price=100, sell_price=110, pnl=80, fee=10, tax=10), 10.0)                 # costs are added back to pnl before dividing
+    _eq(f(buy_price=110, sell_price=100, pnl=-100, fee=0, tax=0), 10.0)
+    for bad in (dict(buy_price=100, sell_price=100, pnl=-5, fee=3, tax=2), dict(buy_price=None, sell_price=110, pnl=1, fee=0, tax=0),
+                dict(buy_price=100, sell_price=110, pnl=None, fee=0, tax=0), dict(buy_price="x", sell_price=1, pnl=1, fee=0, tax=0)):
+        _eq(f(**bad), None)                                                           # equal prices or missing inputs cannot infer a quantity
+    _eq(m._infer_symbol_name_from_report_text({"summary": "삼성전자(005930) 매수 후 청산"}, "005930"), "삼성전자")
+    _eq(m._infer_symbol_name_from_report_text({}, "005930"), "")
+
+
+def test_reporter_pattern_humanizer_known_and_unknown_names():
+    _eq(m._humanize_reporter_pattern("monitor_only_ratio", "monitor_only 3/4 runs", 0.75), "모니터 단독 경로가 전체 4회 중 3회로 반복됐습니다.")
+    _eq(m._humanize_reporter_pattern("zzz", "d", 1), "d")                              # unknown pattern falls back to its detail text
