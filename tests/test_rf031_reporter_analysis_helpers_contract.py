@@ -81,3 +81,14 @@ def test_intent_flow_falls_back_to_operator_metrics_when_nothing_was_counted(tmp
     _eq((out["intents_created"], out["intents_blocked"], out["intents_approved"], out["intents_executed"]), (4, 2, 0, 1))
     zero = ra._build_intent_flow_analysis(day_rows=[], intents_path=tmp_path / "none.jsonl", day=DAY, operator_summary_obj={"raw_snapshot": "x"})
     _eq((zero["intents_created"], zero["status_counts"], zero["reason_top"]), (0, {}, {}))
+
+
+def test_latest_day_picks_the_newest_day_and_handles_missing_or_empty_logs(tmp_path):
+    _eq(ra._latest_day(tmp_path / "none.jsonl"), None)
+    p = tmp_path / "events.jsonl"
+    p.write_text("\n".join(json.dumps(r) for r in [
+        {"ts": "2026-10-27T10:00:00+00:00"}, {"ts": "2026-10-28T01:00:00+00:00"},
+        {"payload": {"ts": "2026-10-26T01:00:00+00:00"}}, {"x": 1}]) + "\n", encoding="utf-8")
+    _eq(ra._latest_day(p), DAY)
+    p.write_text("", encoding="utf-8")
+    _eq(ra._latest_day(p), None)
