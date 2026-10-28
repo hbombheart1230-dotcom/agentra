@@ -30,6 +30,13 @@
 
 - 물리 단계: `01_PENDING → 02_DEVELOPING → 03_PEER_REVIEW → 04_LEAD_ACCEPTANCE → 05_DONE` (직접 계약 회귀는 근거 있는 `06_REWORK`). 01→02 owner CLAIM/중복 방지, 02→03 원래 C1~C3/C5 근거+SOURCE, 03→04 C1~C5 전체 충족+full independent peer, 04→05 C04 C6 필수 CI→C05 C6/C7+STATUS 처리. **C05만 단계 이동·원본 체크/DONE**, C04만 통합. 코드를 바꾼 A/B의 C5 문서는 지팀장이 해당 SHA에 맞춰 수정한 뒤 게이트 판정한다.
 
+## 2.2 문서 전용 후속 커밋의 Hosted CI 재사용 예외 (홍사장 승인 2026-10-28)
+
+- **기본 원칙은 정확 integration SHA normal/`python -O` hosted CI PASS**이다. 다만 통과한 통합 커밋 `CI_BASE_SHA` 이후 현재 `integration/p1.5` HEAD까지 **문서 전용 후속 커밋**뿐이고 아래 조건을 전부 검증한 경우에만, C04/C05가 같은 코드/테스트 상태에 대한 기존 hosted CI 증거를 **`CI_PASS_AT_BASE + DOC_ONLY_EQUIVALENT_AT_HEAD`**로 인수할 수 있다. **`CI_PASS_AT_HEAD`로 허위 표기 금지.**
+- **검증 필수:** (1) CI 실행 URL/ID·`head_sha`·normal 및 `-O` 각각 SUCCESS를 원격 Actions에서 확인, (2) `CI_BASE_SHA...현재 HEAD` 전체 commit/diff 및 분기 선후관계를 확인해 변경 파일이 `docs/refactor/work_orders/C01_CODEX_CURRENT.md`~`C05_LEAD_CLOSEOUT_CURRENT.md`, `D00_ENGINEERING_DELIVERY_POLICY.md`, `docs/refactor/plan/STATUS.md`, `docs/refactor/plan/queue/**/RF-*.md`, `docs/refactor/plan/queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md` 등 지팀장 소유 **순수 상태/지시 Markdown**에만 한정됨을 증명. (3) 모든 RF 원본 owner 코드 blob·실행/검증 코드·테스트/오라클·의존성·CI/workflow·환경/설정/매니페스트/보호 계약·실행시 읽는 문서나 데이터는 **변경 0**임을 확인. 문서도 런타임 또는 테스트 입력으로 쓰이면 이 예외에서 제외한다. (4) 새 코드·테스트·위험 권한 변경, 불명확한 diff/조상 관계, 실패·취소·미실행 CI, 스코프 미충족 시 **즉시 재사용 불가**: 해당 코드 상태의 새 CI가 필요하다.
+- 해당 RF의 C1~C5·전체 반대 peer PASS·source KEEP blob 동일성·안전 HOLD는 **그대로 필수**다. C04는 `CI_BASE_SHA / RUN_ID / PASS(normal,-O) / HEAD_SHA / DOC_ONLY_DIFF_PATHS / CODE_TEST_WORKFLOW_DIFF=0 / SOURCE_BLOB_PARITY / EXCLUSIONS`를 한 번만 증거로 인계하고, C05는 그 뒤 생기는 지팀장 상태/체크/큐 정리 Markdown 커밋까지 동일 불변성을 재검증해 C6/C7 종결한다. **C04/C05가 기록용 Markdown을 푸시할 때마다 CI를 다시 돌리는 루프 금지.** CI를 새로 실행하지 않은 사실 자체는 반드시 구별해 기록한다.
+- 이 예외는 RF 완료 증거의 재사용에만 적용하며 GitHub branch protection, CI workflow, frozen test, Broker/UEF/real 안전 게이트를 바꾸거나 우회하는 승인이 아니다.
+
 ## 3. 안전 경계·작업 격리
 - 무승인 실계좌·실주문·브로커/운영 외부 쓰기, Broker/Supervisor/Executor/Step5C/UEF 안전 계약, frozen test/oracle/CI, 비밀정보, 운영 DB·State·데이터, 배포·예약 변경/실행 금지. 별도의 명시적 사용자 승인이 필요하다. mock/temp/fake 우선, 실런 RunLab와 개발 테스트를 구별한다.
 - RF-069 UEF5 historical snapshot은 경로·SHA·use-scope 및 사용자/증거 소유자 승인 전 `NOT_RUN/SAFETY_BLOCKED`. RF-032/034 UEF·closeout 보호를 우회하지 않는다. RunLab #32의 `RUN_SOURCE_SHA=UNKNOWN`은 운영 버전 검증 차단이지 자동 코드 회귀 판정이 아니다.
