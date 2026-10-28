@@ -98,3 +98,64 @@ def test_confidence_levels_follow_the_documented_thresholds():
     ]
     for route, blockers, trade, expected in cases:
         _eq(rf._build_confidence(route_analysis=route, blocker_analysis=blockers, trade_report_summary=trade), expected)
+
+
+def _trade(root, trade_id, body):
+    path = root / "trades" / "2026-10-28" / trade_id / "reports" / "ai_trade_report.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(body), encoding="utf-8")
+
+
+def _truth(status="closed", pnl=None, price=None, availability=None, exit_reason="", symbol=""):
+    return {"symbol": symbol, "truth_surface": {"status": {"status": status, "exit_reason": exit_reason, "symbol": symbol},
+                                                 "price": price or {}, "pnl": pnl or {}, "availability": availability or {}}}
+
+
+def test_trade_report_summary_classifies_closed_trades_from_tmp_reports(tmp_path):
+    root = tmp_path / "reports"
+    _eq(rf._build_trade_report_feedback_summary(root, "2026-10-28")["trade_count"], 0)              # no trade root
+    _trade(root, "TRD_1", _truth(pnl={"value": 100, "pct": 1.5}, availability={"broker_fill_present": True, "broker_pnl_present": True},
+                                 exit_reason="trail", symbol="005930"))
+    _trade(root, "TRD_2", _truth(pnl={"value": -50, "pct": "-0.5", "broker_fee": 10},
+                                 price={"broker_buy_price": 100, "broker_fill_price": "100"}, exit_reason="trail", symbol="000660"))
+    _trade(root, "TRD_3", _truth(pnl={"value": 0}, symbol="005930"))
+    _trade(root, "TRD_4", _truth(pnl={"pct": 2}, exit_reason="stop"))
+    _trade(root, "TRD_5", _truth())                                                                 # closed with no pnl at all -> unknown
+    _trade(root, "TRD_6", _truth(status="open", pnl={"value": 5}))                                  # counted as a trade, never as closed
+    _trade(root, "TRD_7", {})                                                                       # empty payload is skipped entirely
+    out = rf._build_trade_report_feedback_summary(root, "2026-10-28")
+    _eq((out["trade_count"], out["closed_trade_count"]), (6, 5))
+    _eq((out["win_count"], out["loss_count"], out["flat_count"], out["unknown_pnl_count"]), (2, 1, 1, 1))
+    _eq((out["broker_truth_count"], out["same_price_cost_loss_count"]), (1, 1))
+    _eq((out["avg_pnl_pct"], out["pnl_pct_sample_count"]), (round((1.5 - 0.5 + 2) / 3, 4), 3))
+    _eq(out["exit_reason_counts"], {"trail": 2, "stop": 1})
+    _eq(out["symbols"], ["005930", "000660"])                                                       # most frequent symbol first
+    _eq(sorted(p.name for p in tmp_path.iterdir()), ["reports"])
+
+
+def test_metrics_payload_prefers_an_existing_report_and_survives_generator_failures(tmp_path, monkeypatch):
+    root = tmp_path / "reports"
+    (root / "metrics").mkdir(parents=True)
+    (root / "metrics" / "metrics_2026-10-28.json").write_text(json.dumps({"existing": 1}), encoding="utf-8")
+    _eq(rf._load_or_generate_metrics_payload(root, "2026-10-28"), {"existing": 1})
+    _eq(rf._load_or_generate_metrics_payload(root, "2026-10-29"), {})                               # nothing on disk, no event logs
+    events = tmp_path / "data" / "logs" / "events.jsonl"
+    events.parent.mkdir(parents=True)
+    events.write_text("", encoding="utf-8")
+
+    import libs.reporting.metrics_report_generator as mg
+
+    def boom(*a, **k):
+        raise RuntimeError("generator down")
+
+    monkeypatch.setattr(mg, "generate_metrics_report", boom)
+    _eq(rf._load_or_generate_metrics_payload(root, "2026-10-29"), {})                               # generator failure is swallowed
+
+    def fake(events_path, out_dir, day):
+        out_dir.mkdir(parents=True, exist_ok=True)
+        js = out_dir / f"metrics_{day}.json"
+        js.write_text(json.dumps({"generated": True}), encoding="utf-8")
+        return out_dir / "x.md", js
+
+    monkeypatch.setattr(mg, "generate_metrics_report", fake)
+    _eq(rf._load_or_generate_metrics_payload(root, "2026-10-29"), {"generated": True})
