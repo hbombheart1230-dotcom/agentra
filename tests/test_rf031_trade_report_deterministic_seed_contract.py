@@ -106,3 +106,14 @@ def test_seed_does_not_change_bullet_lists_of_a_populated_report(monkeypatch):
     seeded = _build()
     for section in ("reporter_evaluation", "execution_quality", "strategist_summary"):
         _eq(seeded[section]["bullets"], base[section]["bullets"])
+
+
+@pytest.mark.parametrize("raw,expected_fragment", [("trailing_stop", "추적 손절로 청산"), ("totally_custom_reason", "totally custom reason")])
+def test_normalized_exit_reason_becomes_the_first_exit_bullet(monkeypatch, raw, expected_fragment):
+    monkeypatch.setattr(tra, "_load_trade_read_model_hint", lambda story: {"facts": {"exit_reason": raw}})
+    first = _build()["exit_decision"]["bullets"][0]
+    if not first.startswith("정규화된 청산 사유는 ") or expected_fragment not in first:
+        raise AssertionError(first)
+    monkeypatch.setattr(tra, "_load_trade_read_model_hint", lambda story: {})
+    if _build()["exit_decision"]["bullets"][0] == first:
+        raise AssertionError("exit reason bullet must depend on the read-model fact")
