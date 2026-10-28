@@ -3846,6 +3846,8 @@ path,rf_id,verification,baseline_sha
 "tests/test_rf045_core_pure_boundaries.py","RF-045","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf051_libs_market_bond_sanity_contract.py","RF-051","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf051_libs_market_global_sentiment_residual.py","RF-051","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
+"tests/test_rf051_libs_market_global_sentiment_signal_branches.py","RF-051","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
+"tests/test_rf051_libs_market_q10_collector_residual_contract.py","RF-051","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf051_libs_market_q10_integrity_residual.py","RF-051","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_run_ai_trade_report_batch.py","RF-074","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_run_live_session_summary.py","RF-078","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
