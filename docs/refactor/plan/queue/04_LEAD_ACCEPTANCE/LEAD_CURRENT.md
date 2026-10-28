@@ -7,4 +7,6 @@
 
 **현재 LEAD 0건 (2026-10-28 C05 실물 재확인)**. RF-067은 [05_DONE/CODEX_B](../05_DONE/CODEX_B/RF-067.md)로 C6/C7 종결(정확 CI_BASE SHA `beca55b47`, hosted run `40623624802` normal/`-O` SUCCESS; 문서 후속 커밋은 D00 §2.2 동등성). 전체 RF 상태 수치는 [STATUS](../../STATUS.md). 선별 통합/KEEP 소스와 정확 CI를 혼동하지 않는다. `SCOPED_PASS`를 full PASS로 확대하지 않고, 보호 RunLab/UEF 무승인 실행 금지. C05만 RF 체크·단계/STATUS 이동.
 
+**C05 큐 재확인 (2026-10-28 KST):** RF-021 C1만 인수(DEV 유지), RF-032 C2 read-only 경계 구체화(PEER 유지). 둘 다 C1~C5/full peer 게이트를 통과하지 않아 **LEAD 0건 불변**. RunLab #32 역시 별도 OPEN/RUNTIME_PENDING.
+
 **운영:** 변경된 LEAD 진입/종결만 이 파일에 반영. 과거 완료 RF와 우선 14건의 회차별 증거·표를 덧붙이지 않는다.

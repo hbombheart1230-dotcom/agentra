@@ -38,6 +38,8 @@
 <!-- RF_LEAD_CHECKLIST_END -->
 
 ## 새 보고와 변경 책임
+- **C05 C1 직접 인수 (2026-10-28 KST):** [RF-021](queue/02_DEVELOPING/CLAUDE_A/RF-021.md) 원본 32개 `SAFETY_HOLD_KEEP`의 정적 Owner/소비자·cold import 증거를 #11 `6461400486` 및 A source `1a76e430`에서 확인해 **C1 MET만** 체크. 물리 DEV 유지, 첫 미충족 C2/C3 보호 exit 동작은 **SAFETY_BLOCKED(홍사장/안전 계약 소유자 승인 필요)**, C4 B 전체 peer PENDING. 실제 DONE 증가 0.
+- **C05 C2 미충족 근거 명확화:** [RF-032](queue/03_PEER_REVIEW/CLAUDE_A/RF-032.md) `--validation-id`의 `../`·절대경로 탈출을 #12 `6461194517`·#11 `6462253630`에서 격리 재현/호출자 대조. **C2 PARTIAL/MISSING, C4 PENDING**, 보호 UEF/closeout 승인 전 하드닝 HOLD; 담당 C05 설계 판단→필요 시 홍사장/안전 계약 소유자. 원본 체크·물리 PEER 유지.
 - **개발자 보고:** [A Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)·[B Issue #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12)의 **신규 댓글만**. RunLab은 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32). 지팀장은 이 세 입력의 새 판정을 [Lead Issue #36](https://github.com/hbombheart1230-dotcom/agentra/issues/36)에 출력. **HANDOFF A/B 업데이트·재독 금지**. 이전 상세 증거는 이슈 과거 댓글·Git history·RF 원본에서 필요할 때만 조회.
 - **B 신규 Owner CLAIM:** RF-044(16-owner)·RF-045(10-owner) `01_PENDING/UNASSIGNED → 02_DEVELOPING/CODEX_B`, A 독립 peer 배정. 기존 B Owner #12 `6458432971`·`6458590772` 및 C01 P4 근거; C1~C5 전체 미완료, DONE 증가 없음. RF-045 B `http_client.py` blob `824d7c8f`·A scoped peer는 전체 C4 PASS가 아님.
 - **A 활성 Owner CLAIM:** RF-040/RF-061(DEV, 원래 C1~C5 및 B peer 미완료); B RF-063/RF-065 등 기존 RF 진행. B 신규 READY RF-044/045, A 슬롯 해제 시 RF-036/037. 새 SHA가 없다는 이유로 idle 보고 금지.
