@@ -9,6 +9,8 @@
 
 **C05 최신 판정 (2026-10-28 KST):** RF-031(PEER)·RF-040(DEV) 신규 A 테스트 10개 exact-path 단일 소유권을 C03 #36 `6465609676`대로 CSV/예외/RF에 반영, RF-074 75 baseline 불변. **RF-031/040 C5 PARTIAL, RF-074 C1/CLAIM 미완료**. RF-051 A `39eaa4a0` global sentiment 3/3 normal/-O 추가, C3/C5 PARTIAL. B 원격 `c45f6f13`에 RF-044/045 신규 fake 테스트 2개 존재 확인, 각 worker-reported local 1/1 normal/-O는 새 원격 SHA 직접 실행 NOT_RUN; full C4 없음. RF-066 scoped peer, RF-063/065 AST 부분 증거는 full PASS 아님. **LEAD 0/DONE 20, C6/C7 신규 후보 0**. C05 pytest normal/-O·sync tool NOT_RUN, 보호 RunLab/UEF HOLD.
 
+**C6 CI 재사용 경계 (2026-10-28 C05):** 이전 RF-067 종결 시점의 `CI_PASS_AT_BASE + DOC_ONLY_EQUIVALENT_AT_HEAD`는 당시 확인된 후속 순수 Markdown 구간에 한정된다. 이번 `e77b521a`의 `FILE_COVERAGE_63182ab2.csv`(14행 추가)와 신규 owner 예외 문서 이후 **과거 CI_BASE `beca55b47`→현 HEAD의 D00 §2.2 순수 Markdown 조건은 더 이상 성립하지 않는다**. RF-067의 과거 DONE을 재종결하거나 취소하지 않지만, 이후 어떤 RF의 신규 C6에도 그 과거 run을 재사용하지 않는다. C1~C5/full peer 충족 후보가 나오면 C04가 새 정확 integration SHA hosted normal/`python -O` SUCCESS를 확보해야 한다. 현 LEAD 0, C6 후보 0; CI NOT_RUN.
+
 **C05 큐 재확인 (2026-10-28 KST):** RF-021 C1만 인수(DEV 유지), RF-032 C2 read-only 경계 구체화(PEER 유지). 둘 다 C1~C5/full peer 게이트를 통과하지 않아 **LEAD 0건 불변**. RunLab #32 역시 별도 OPEN/RUNTIME_PENDING.
 
 **운영:** 변경된 LEAD 진입/종결만 이 파일에 반영. 과거 완료 RF와 우선 14건의 회차별 증거·표를 덧붙이지 않는다.
