@@ -17,11 +17,13 @@
 | `tests/test_rf040_libs_agent_reporter_hooks.py` | RF-040 / Claude A |
 | `tests/test_rf040_libs_agent_reporter_result.py` | RF-040 / Claude A |
 
-**C05 신규 exact-path 보강 (2026-10-28 20:52 KST):** A 원격 `3afbb9c6`의 RF-051 신규 테스트 2개 blob 확인, CSV 단일 Owner RF-051 귀속. RF-074 frozen 75 및 기존 10개 예외 불변. 혼합 `tests/test_rf054_058_040_final_residual_contract.py`은 C03 Owner 결정 전 미귀속, validator NOT_RUN.
+**C05 신규 exact-path 보강 (2026-10-28 20:52 KST):** A 원격 `3afbb9c6`의 RF-051 신규 테스트 2개 blob 확인, CSV 단일 Owner RF-051 귀속. RF-074 frozen 75 및 기존 10개 예외 불변. C03 [#36 `6468496083`](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6468496083)에서 혼합 신규 테스트 2개 exact-path 단일 Owner 확정. 원격 A `3afbb9c6` blob `29a07609`/`b5d455e0` 확인, CSV 반영. validator NOT_RUN.
 
 | 신규 exact path | 단일 Owner |
 |---|---|
 | `tests/test_rf051_libs_market_global_sentiment_signal_branches.py` | RF-051 / Claude A |
 | `tests/test_rf051_libs_market_q10_collector_residual_contract.py` | RF-051 / Claude A |
+| `tests/test_rf040_058_054_residual_gaps_contract.py` | RF-040 / Claude A |
+| `tests/test_rf054_058_040_final_residual_contract.py` | RF-054 / Claude A |
 
-**검증 경계:** C05가 위 원격 A 10개 blob·CSV 경로 유일성·RF 원본을 대조했다. 기존 75 frozen test/regex rename·rewrite 0. 별도의 정규식 기반 자동 검사기가 CSV 우선순위를 실제로 구현/준수하는지 실행 검증은 **NOT_RUN**이다. 해당 검증기가 exact-path 예외를 무시하면 소유권 검사 적용은 **BLOCKED**, 지팀장 승인 하에 validator 예외 처리를 별도 작업해야 한다. 이 예외 자체는 RF-031/040/074 C5 MET, full opposite peer, CI 또는 DONE을 승인하지 않는다.
+**검증 경계:** C05가 위 원격 A 10개 blob·CSV 경로 유일성·RF 원본을 대조했다. 기존 75 frozen test/regex rename·rewrite 0. 별도의 정규식 기반 자동 검사기가 CSV 우선순위를 실제로 구현/준수하는지 실행 검증은 **NOT_RUN**이다. 해당 검증기가 exact-path 예외를 무시하면 소유권 검사 적용은 **BLOCKED**, 지팀장 승인 하에 validator 예외 처리를 별도 작업해야 한다. 이 예외 자체는 RF-031/040/054/058/074 C5 MET, full opposite peer, CI 또는 DONE을 승인하지 않는다.
