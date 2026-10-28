@@ -21,7 +21,7 @@
 | [RF-067](queue/05_DONE/CODEX_B/RF-067.md) | 05_DONE · B → A | MET 6 · N/A 1 · 0남음 | — | **C7** 원본 체크·물리 DONE·STATUS 동기화 완료 (**C05**) | DONE |
 | [RF-015](queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** 역사 11 FAIL BASE/후보 node별 분류 (**Codex B**) | MISSING |
 | [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** LLM router/cache 8-owner와 B fake 10/10 범위 대조 (**지팀장**) | MISSING |
-| [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 0 · 7남음 | C1,C2,C3,C4,C5,C6,C7 | **C2** Reporter writer/State/실패 대조 (**지팀장**); **C5** exact owner 6개 CSV 반영·전체 patchnotes 미완료 (**C05→A/B**) | MISSING |
+| [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 0 · 7남음 | C1,C2,C3,C4,C5,C6,C7 | **C2** Reporter writer/State/실패 원래 범위 대조 (**지팀장**) | MISSING |
 | [RF-014](queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Scanner shim→RF-009 repeat/risk/NOOP 독립 peer (**Codex B**) | MISSING |
 | [RF-016](queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Strategist 외부 facade 원래 호출 peer 범위 판정 (**지팀장→B**) | MISSING |
 | [RF-028](queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** trade_report rich schema 필수 소비자 peer 판정 (**지팀장→B**) | MISSING |
