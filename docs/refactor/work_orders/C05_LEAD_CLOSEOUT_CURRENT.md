@@ -10,7 +10,7 @@
 5. 단계/실제 판정 변경 시만 [#36](https://github.com/hbombheart1230-dotcom/agentra/issues/36)에 `C05 | input comment | RF | old→new stage | C1-C7 | integration SHA/CI | changed documents | NEXT` 기록. 변경 없음 → 댓글·문서 커밋 0.
 
 ## 확인된 대기 사항 (2026-10-28)
-- 총 93개: **PENDING 49 / DEV 11 / PEER 13 / LEAD 1 / DONE 19 / REWORK 0**. 최신 수치 정본은 STATUS/실제 RF 파일.
-- **RF-067 최우선 종결:** C1~C4 MET, C5 N/A, C6/C7 현재 PENDING. hosted [run `40618114568`](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40618114568), `CI_BASE_SHA=3fec46fcf84ad53438dad457393f493f650fb377` normal/`-O` 성공 확보. C05는 D00 §2.2 문서 전용 전체 diff 검증 후 **즉시 C6/C7·DONE 및 STATUS/LEAD_CURRENT 처리**하고 원격 재확인한다. 현재 HEAD 자체 CI가 없다는 이유만으로 반복 BLOCKED 금지.
-- RF-046/047/052 및 RF-043/053은 이미 DONE. 과거 완료 절차·검증 횟수 복사·재실행 금지.
+- 총 93개: **PENDING 49 / DEV 11 / PEER 13 / LEAD 0 / DONE 20 / REWORK 0**. 최신 수치 정본은 STATUS/실제 RF 파일.
+- **RF-067 종결 완료:** C1~C4/C6/C7 MET, C5 N/A, 14 wrapper KEEP; hosted [run `40623624802`](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40623624802) `CI_BASE_SHA=beca55b47e4ad2cde1bc8fc9fe2b8db6cec07989` normal/`-O` SUCCESS. `05_DONE/CODEX_B` 이동, RF 원본·STATUS·LEAD_CURRENT 동기화. 후속 Markdown HEAD는 D00 §2.2 문서 전용 동등성이지 HEAD 자체 CI PASS가 아님.
+- **다음 안전 RF:** RF-015(역사 11 FAIL BASE/후보 분류는 확보, B의 원래 19-owner 전체 독립 C4 PASS 미완료), RF-031(Writer/State 경계 A normal/`-O` 15 PASS, B full peer 미완료), RF-050/014/016/028/029/032/033/034(각 원래 전체 peer 미완료). 보호 RF-069 승인 없는 historical snapshot NOT_RUN. RF-046/047/052/043/053/067 재종결 금지.
 - RunLab #32 `OPEN/RUNTIME_PENDING`, `RUN_SOURCE_SHA=UNKNOWN`; RF 개발 DONE과 무관하게 승인된 실런 재검증 전 CLOSED 금지. 주문/UEF 보호 무승인 변경·실행 금지.
