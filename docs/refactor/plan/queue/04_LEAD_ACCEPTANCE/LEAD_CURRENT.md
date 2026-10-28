@@ -7,7 +7,7 @@
 
 **현재 LEAD 0건 (2026-10-28 C05 실물 재확인)**. RF-067은 [05_DONE/CODEX_B](../05_DONE/CODEX_B/RF-067.md)로 C6/C7 종결(정확 CI_BASE SHA `beca55b47`, hosted run `40623624802` normal/`-O` SUCCESS; 문서 후속 커밋은 D00 §2.2 동등성). 전체 RF 상태 수치는 [STATUS](../../STATUS.md). 선별 통합/KEEP 소스와 정확 CI를 혼동하지 않는다. `SCOPED_PASS`를 full PASS로 확대하지 않고, 보호 RunLab/UEF 무승인 실행 금지. C05만 RF 체크·단계/STATUS 이동.
 
-**C05 최신 판정 (2026-10-29 04:52 KST):** RF-044/045 B #12 `6478221506` SOURCE `938ff945` 신규 tests normal/-O **1+3 PASS**(worker), A #11 `6478258552` exact SHA 혼합 **4/4 PASS** 양 모드, supervisor 독립 3/3·mutation 6/6, compat mutation 3/3. Fake EventLogger 테스트로 실제 `log_path` 오해석·start/end no-op는 해결되지 않음. 두 신규 테스트 CSV/예외 RF-044/045 단일 Owner. **C1~C5 PARTIAL, C6/C7 PENDING, DEV 유지**, 첫 C1 Codex B 16/10-owner 효과·소비자, full C4 Claude A. RF-031/066 C1/full C4, RF-021/032/069 HOLD, RunLab #32 OPEN/`RUN_SOURCE_SHA=UNKNOWN`. **LEAD 0/DONE 20/C6 후보 0**, C05 pytest/sync NOT_RUN, 정확 HEAD hosted CI PASS 없음.
+**C05 최신 판정 (2026-10-29 05:50 KST):** RF-066 B #12 `6479456046` SOURCE `da64f7cd` M7 fake OrderClient 신규 2 tests, B normal/-O 각각 1+1 PASS, A #11 `6479610575` exact SHA 각 2 PASS+독립 3/3+mutation 6/6. 신규 test RF-066 CSV/예외 단일 Owner; cwd 상대 catalog 쓰기는 tmp cwd에서만 허용. **C1~C5 PARTIAL, C6/C7 PENDING, DEV 유지**, 첫 C1 B 17-owner 효과·소비자, full C4 A. RF-044/045 logger·executor/HTTP 사각, RF-031/051/040/061/054/058 첫 C1, RF-021/032/069 보호 HOLD. RunLab #32 OPEN/`RUN_SOURCE_SHA=UNKNOWN`. **LEAD 0/DONE 20/C6 후보 0**, C05 직접 pytest/sync NOT_RUN, 정확 HEAD hosted CI PASS 없음.
 
 **C05 2026-10-29 02:52 KST 첫 미충족 정정:** RF-015/050/032/069의 C1 PARTIAL을 우선순위 C3/C4/C2/C3와 구별하여 원본 `RF_CHECKLIST_META.next=1` 및 STATUS 첫 미충족 C1로 정정. 기존 역사 11 FAIL·LLM full peer·validation-id 탈출·UEF5 승인 차단 유지, 단계 PEER 불변. LEAD 0/DONE 20/C6 후보 0.
 

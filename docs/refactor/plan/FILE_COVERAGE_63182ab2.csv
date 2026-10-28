@@ -3871,6 +3871,7 @@ path,rf_id,verification,baseline_sha
 "tests/test_rf051_libs_market_q10_integrity_residual.py","RF-051","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf054_058_040_final_residual_contract.py","RF-054","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf066_m22_fake_graph_consumer.py","RF-066","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
+"tests/test_rf066_m7_fake_order_client_consumer.py","RF-066","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf066_owner_c1_inventory.py","RF-066","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf066_q9_compaction_exception.py","RF-066","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
 "tests/test_rf066_temp_contamination_cleanup.py","RF-066","UNVERIFIED","63182ab27ecf889768003f637a40577ba1277f86"
