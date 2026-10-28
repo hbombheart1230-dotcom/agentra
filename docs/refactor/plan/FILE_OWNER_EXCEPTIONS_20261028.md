@@ -43,4 +43,13 @@
 | `tests/test_rf031_trade_report_strategy_memory_labels_contract.py` | RF-031 / Claude A |
 | `tests/test_rf044_executor_error_serialization.py` | RF-044 / Codex B |
 
+**C05 2026-10-29 01:50 KST 추가 exact-path 판정:** A #11 `6474598614`·`6474606575` exact `a17be883681b1bfeb7dcc9f8632b833d3cf4b5b5`에서 이전 `b203ad01` 대비 신규 **3파일**(보고의 '4파일'은 commit diff 기준 정정), B #12 `6474340889` exact `daf50d88d1086844e7d20a75e75e9d3beaf07ce6` 신규 1파일. 4개 GitHub blob 검증, CSV 단일 Owner 4행 추가. RF-074 기존 75개 frozen test·regex 변경 없음. 정규식 validator 실행 NOT_RUN; 전체 C5 MET 아님.
+
+| 신규 exact path | 단일 Owner |
+|---|---|
+| `tests/test_rf031_trade_report_ai_helpers_contract.py` | RF-031 / Claude A |
+| `tests/test_rf031_trade_report_alias_modules_contract.py` | RF-031 / Claude A |
+| `tests/test_rf031_trade_report_markdown_clean_wrappers_contract.py` | RF-031 / Claude A |
+| `tests/test_rf066_temp_contamination_cleanup.py` | RF-066 / Codex B |
+
 **검증 경계:** C05가 위 원격 A 10개 blob·CSV 경로 유일성·RF 원본을 대조했다. 기존 75 frozen test/regex rename·rewrite 0. 별도의 정규식 기반 자동 검사기가 CSV 우선순위를 실제로 구현/준수하는지 실행 검증은 **NOT_RUN**이다. 해당 검증기가 exact-path 예외를 무시하면 소유권 검사 적용은 **BLOCKED**, 지팀장 승인 하에 validator 예외 처리를 별도 작업해야 한다. 이 예외 자체는 RF-031/040/054/058/074 C5 MET, full opposite peer, CI 또는 DONE을 승인하지 않는다.
