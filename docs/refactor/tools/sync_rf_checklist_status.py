@@ -76,7 +76,12 @@ def render(counts):
                 met.append(idx)
             elif verdict == "N/A":
                 exempt.append(idx)
-        if state["next"] not in missing:
+        if stage == "05_DONE":
+            # Completed priority RFs have no unchecked next gate. Keep a final
+            # C7 marker only when all seven criteria are actually satisfied.
+            if missing or state["next"] != 7 or state["decision"] != "DONE":
+                raise ValueError(f"{path}: DONE requires all seven checks and final C7 marker")
+        elif state["next"] not in missing:
             raise ValueError(f"{path}: NEXT gate must be unchecked")
         met_total += len(met)
         na_total += len(exempt)
