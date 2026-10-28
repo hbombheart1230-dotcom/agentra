@@ -1,10 +1,7 @@
-# D01 — Codex B 진입점
+# D01 — Codex B 실행 진입점 (2026-10-28)
 
-| 항목 | 값 |
-|---|---|
-| 최초 정본 | `integration/p1.5:docs/refactor/work_orders/C01_CODEX_CURRENT.md` |
-| 고정 계약 | 같은 디렉터리 `D00_ENGINEERING_DELIVERY_POLICY.md` |
-| 유일 브랜치 | `work/p15-b-operator-structure-20261022` |
-| 결과 | B 브랜치 `docs/refactor/work_orders/HANDOFF_B.md` |
+**정본:** `integration/p1.5/docs/refactor/work_orders/C01_CODEX_CURRENT.md` → `D00_ENGINEERING_DELIVERY_POLICY.md`.
+**허용 소스 브랜치:** `work/p15-b-operator-structure-20261022`.
+**보고:** [Issue #12 댓글](https://github.com/hbombheart1230-dotcom/agentra/issues/12) **한 곳만**.
 
-**C01을 읽고 실행 가능한 RF를 끝까지 연속 처리하라.** B 소유 구현·테스트·커밋·푸시, A 소유 RF 독립 peer. 한 건 뒤 즉시 다음 건. **일반 RF는 사용자·지팀장 개별 승인 대기 없이 자체 선택·수정·푸시한다. 보호 구간만 D00에 따라 HOLD한다. 읽기·보고만으로 종료하지 마라. 신규 브랜치 생성 절대 금지.**
+A/B는 각 자기 브랜치의 **소스 코드와 테스트만** 편집·커밋·푸시한다. HANDOFF/MD/CSV/patchnotes/RF/STATUS/CURRENT/정책/이슈 본문은 일절 수정하지 않는다(지팀장 전담). 신규 SHA·요청이 없어도 미완료 RF와 안전한 READY RF를 계속 진행한다. 보호 경계·peer 정본은 D00. 실제 Git 인증·pytest 실패는 정확히 보고하며 푸시 성공을 꾸미지 않는다. `main`, 새 브랜치/PR/worktree 생성 금지.
