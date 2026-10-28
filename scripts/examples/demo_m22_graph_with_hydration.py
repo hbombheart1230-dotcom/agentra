@@ -56,6 +56,10 @@ def _build_state(*, fail: bool = False) -> Dict[str, Any]:
         "run_id": "m22-graph-hydration-demo",
         "skill_runner": _DemoRunner(fail=fail),
         "candidates": [{"symbol": "005930"}, {"symbol": "000660"}, {"symbol": "035420"}],
+        # This example is intended to be runnable without market network
+        # access. The scanner has an independent yfinance feature fallback,
+        # so disable it in the demo state rather than relying on ambient env.
+        "policy": {"scanner_feature_seed_with_yf": False},
         "mock_scan_results": {
             "005930": {"score": 0.60, "risk_score": 0.20, "confidence": 0.82},
             "000660": {"score": 0.60, "risk_score": 0.20, "confidence": 0.82},
