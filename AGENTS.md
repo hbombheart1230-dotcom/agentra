@@ -1,5 +1,7 @@
-# Codex B 진입점
+# D01 — Codex B 실행 진입점 (2026-10-28)
 
-**정본:** [`integration/p1.5`의 CURRENT](https://github.com/hbombheart1230-dotcom/agentra/blob/integration/p1.5/docs/refactor/work_orders/CURRENT.md)만 먼저 읽는다. 그 문서가 D00과 RF를 연결한다.
+**정본:** `integration/p1.5/docs/refactor/work_orders/C01_CODEX_CURRENT.md` → `D00_ENGINEERING_DELIVERY_POLICY.md`.
+**허용 소스 브랜치:** `work/p15-b-operator-structure-20261022`.
+**보고:** [Issue #12 댓글](https://github.com/hbombheart1230-dotcom/agentra/issues/12) **한 곳만**.
 
-**코드 브랜치:** `work/p15-b-operator-structure-20261022`. CURRENT의 B 작업을 실행하고 [HANDOFF_B](docs/refactor/work_orders/HANDOFF_B.md)에 신규 결과만 기록한다. 로컬 CURRENT는 지시가 아니다.
+A/B는 각 자기 브랜치의 **소스 코드와 테스트만** 편집·커밋·푸시한다. HANDOFF/MD/CSV/patchnotes/RF/STATUS/CURRENT/정책/이슈 본문은 일절 수정하지 않는다(지팀장 전담). 신규 SHA·요청이 없어도 미완료 RF와 안전한 READY RF를 계속 진행한다. 보호 경계·peer 정본은 D00. 실제 Git 인증·pytest 실패는 정확히 보고하며 푸시 성공을 꾸미지 않는다. `main`, 새 브랜치/PR/worktree 생성 금지.
