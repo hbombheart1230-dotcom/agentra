@@ -87,3 +87,14 @@ def test_latest_row_prefers_the_newest_ts_and_ignores_other_ids(tmp_path):
     ])
     _eq(f._latest_row("a")["v"], "new")
     _eq(f._latest_row("zzz"), None)
+
+
+def test_older_rows_after_newer_ones_do_not_replace_the_latest(tmp_path):
+    f = _facade_with_rows(tmp_path, [
+        {"ts": 9, "intent_id": "a", "v": "newest"},
+        {"ts": 2, "intent_id": "a", "v": "older"},
+    ])
+    _eq(f._latest_row("a")["v"], "newest")
+    text = json.dumps(f.list_intents(limit=5), ensure_ascii=False, default=str)
+    if "newest" not in text or "older" in text:
+        raise AssertionError(text)
