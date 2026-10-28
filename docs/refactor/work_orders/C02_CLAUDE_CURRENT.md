@@ -1,8 +1,8 @@
 # C02 — Claude A · 코드/독립 peer만
 
-1. **읽기:** **RF 탐색은 [D00 §1.1](D00_ENGINEERING_DELIVERY_POLICY.md)의 `integration/p1.5` 큐에서 번호로 유일 경로를 찾은 다음, 원래 `실제 작업 목표→독점 파일 범위→선행 조건→DONE 체크`를 읽는다.**  [D00](D00_ENGINEERING_DELIVERY_POLICY.md) → [Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)의 자기 최신 댓글/중단점 → 필요할 때 [Issue #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12)의 대응 peer 결과 → **지금 작업할 RF 원본**. HANDOFF·STATUS 전체 재독 금지.
+1. **진입:** [D00 §1.1](D00_ENGINEERING_DELIVERY_POLICY.md) → [Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)의 자기 최신 댓글/중단점 → 필요할 때 [Issue #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12)의 대응 peer 결과 → **지금 작업할 RF 원본**. HANDOFF·STATUS 전체 재독 금지.
 2. **실행:** A 브랜치 `work/p15-a-reporter-pure-20261021`에서 **소스 코드·테스트만** 수정/검증/커밋/푸시. B 코드 독립 peer는 read-only. 우선순위: **A RF-040·061 원래 C2/C3 (CLAIM 2/2)**, **B RF-065·063 및 066/070/071의 안전한 독립 peer**, A RF-015·031의 B가 지적한 실제 C 간극. 다음 A 안전 READY RF-036→037→039→038은 CLAIM 슬롯이 비었을 때.
-3. **대기 금지:** 새로운 B SHA/지팀장 배정이 없어도 원래 미완료 RF/안전 READY 진행. 한 경계가 보호/환경 BLOCKED면 다음 안전 작업. RF-061 Step5C·RF-057 보호 인접/UEF 실런은 임의 실행 금지.
-4. **유일 보고:** 결과를 [Issue #11 댓글](https://github.com/hbombheart1230-dotcom/agentra/issues/11)로 `RF | OWNER/PEER | 정확 SOURCE_SHA | 수정 코드/테스트 경로 | 실제 normal/-O 결과 | 첫 미충족 C | PUSH VERIFIED/FAILED | NEXT`. **HANDOFF_A 및 다른 MD/CSV/patchnotes/큐/STATUS 수정 금지**. 필요한 문서/patchnotes는 지팀장 요청 댓글.
+3. **연속 실행:** 첫 1건·새 B SHA·새 지팀장 배정에서 멈추지 말고 실행 가능한 동안 다음 미완료 RF/안전 READY까지 처리. 한 경계가 보호/환경 BLOCKED면 다음 안전 작업. RF-061 Step5C·RF-057 보호 인접/UEF 실런은 임의 실행 금지.
+4. **유일 보고:** 실제 작업 결과·코드 SHA가 새로 생겼을 때만 [Issue #11 댓글](https://github.com/hbombheart1230-dotcom/agentra/issues/11)로 `RF | OWNER/PEER | 정확 SOURCE_SHA | 수정 코드/테스트 경로 | 실제 normal/-O 결과 | 첫 미충족 C | PUSH VERIFIED/FAILED | NEXT`. **HANDOFF_A 및 다른 MD/CSV/patchnotes/큐/STATUS 수정 금지**. 필요한 문서/patchnotes는 지팀장 요청 댓글.
 
 Owner/peer 증거의 수용·실물 이동/DONE은 지팀장 권한이다.
