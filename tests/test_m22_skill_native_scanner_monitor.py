@@ -267,7 +267,7 @@ def test_m22_scanner_falls_back_safely_on_skill_timeout_errors():
     }
 
     out = scanner_node(state)
-    assert out["selected"]["symbol"] == "BBB"  # baseline scoring still works
+    assert out["selected"]["symbol"] == "BBB"
     assert out["scanner_skill"]["fallback"] is True
     assert out["scanner_skill"]["error_count"] == 2
     reasons = out["scanner_skill"]["fallback_reasons"]
@@ -291,7 +291,17 @@ def test_m22_monitor_falls_back_safely_on_order_status_timeout():
     assert out["monitor"]["order_status_fallback_reasons"][0].startswith("order.status:error:TimeoutError")
 
 
-def test_m22_demo_script_outputs_skill_visible_summary(capsys):
+def test_m22_demo_script_outputs_skill_visible_summary(capsys, monkeypatch):
+    # The demo must stay offline even if a host enables the scanner's
+    # yfinance feature-seed environment fallback.
+    from libs.market import yfinance_support
+
+    monkeypatch.setenv("SCANNER_FEATURE_SEED_WITH_YF", "true")
+    monkeypatch.setattr(
+        yfinance_support,
+        "try_yfinance",
+        lambda _component: (_ for _ in ()).throw(AssertionError("demo attempted yfinance")),
+    )
     rc = demo_main(["--json"])
     out = capsys.readouterr().out.strip()
     obj = json.loads(out)
