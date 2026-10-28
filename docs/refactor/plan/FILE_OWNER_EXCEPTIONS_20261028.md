@@ -98,3 +98,26 @@
 | tests/test_rf045_http_retry_method_backoff.py | RF-045 / Codex B | 749d64232bb7 |
 
 **검증 경계:** C05가 위 원격 A 10개 blob·CSV 경로 유일성·RF 원본을 대조했다. 기존 75 frozen test/regex rename·rewrite 0. 별도의 정규식 기반 자동 검사기가 CSV 우선순위를 실제로 구현/준수하는지 실행 검증은 **NOT_RUN**이다. 해당 검증기가 exact-path 예외를 무시하면 소유권 검사 적용은 **BLOCKED**, 지팀장 승인 하에 validator 예외 처리를 별도 작업해야 한다. 이 예외 자체는 RF-031/040/054/058/074 C5 MET, full opposite peer, CI 또는 DONE을 승인하지 않는다.
+
+**C05 2026-10-29 08:50 KST 신규 exact-path 18개:** A `46be5bea..a68acfc5`의 RF-033/034 신규 14파일, B `be28e9c1..4a329361`의 RF-044/066 신규 4파일 원격 compare에서 확인. A RF-041 `tests/test_rf041_openai_provider_helpers_fake_http_contract.py`는 이미 CSV에 RF-041로 귀속되어 있어 중복 추가하지 않음. CSV 4057 unique, RF-074 frozen 75 불변. 정규식 validator·공식 sync NOT_RUN, full C4/CI/DONE 승인 아님.
+
+| 신규 exact path | 단일 Owner |
+|---|---|
+| `tests/test_rf033_btc_data_provider_fake_yfinance_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_btc_historical_review_tmp_root_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_btc_vnext_equities_alignment_fake_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_btc_vnext_storage_pipeline_tmp_root_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_crypto_fear_greed_fake_http_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_samsung_forward_validation_capture_tmp_root_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_samsung_market_inputs_and_provider_fake_contract.py` | RF-033 / Claude A |
+| `tests/test_rf034_alpha_board_writer_scope_tmp_root_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_five_session_review_tmp_root_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_latent_forward_tmp_root_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_latent_watch_tmp_root_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_pipeline_day_status_tmp_root_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_quant_trade_diagnosis_writer_tmp_root_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_short_alpha_pipeline_status_tmp_root_contract.py` | RF-034 / Claude A |
+| `tests/test_rf044_executor_input_immutability.py` | RF-044 / Codex B |
+| `tests/test_rf066_log_maintenance_temp_effects.py` | RF-066 / Codex B |
+| `tests/test_rf066_m22_graph_temp_cwd_effects.py` | RF-066 / Codex B |
+| `tests/test_rf066_report_maintenance_temp_effects.py` | RF-066 / Codex B |
