@@ -144,3 +144,27 @@ def test_schema_order_execute_non_numeric_qty_raises_before_runner():
     with pytest.raises(ValueError):
         f.order_execute(intent={"symbol": "S", "qty": "abc"})
     _eq(f.runner.calls, [])
+
+
+class _FakeSupervisor:
+    def __init__(self):
+        self.calls = []
+
+    def create_intent(self, intent):
+        self.calls.append(intent)
+        return _Out(True)
+
+
+def test_schema_order_place_intent_maps_side_and_forwards_to_a_fake_supervisor_only():
+    # tool_schema.ToolFacade is dormant; here the supervisor is a fake, so no TwoPhaseSupervisor/ApprovalService/broker
+    # path (Step5C SAFETY_HOLD) is constructed or executed.
+    f = _schema_facade(_Out(True))
+    f.supervisor = _FakeSupervisor()
+    out = f.order_place_intent(side="BUY", symbol="005930", qty=3, price=70000)
+    _eq(out, {"decision": {"ok": True}})
+    f.order_place_intent(side="anything-else", symbol="X", qty=1, order_type="limit")
+    _eq(f.supervisor.calls, [
+        {"action": "BUY", "symbol": "005930", "qty": 3, "order_type": "market", "price": 70000},
+        {"action": "SELL", "symbol": "X", "qty": 1, "order_type": "limit", "price": None},     # any non-"buy" side becomes SELL
+    ])
+    _eq(f.runner.calls, [])    # the skill runner is never touched by intent creation
