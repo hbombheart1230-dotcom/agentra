@@ -132,3 +132,40 @@ def test_run_collector_for_a_past_day_returns_summary_without_looping(tmp_path):
     _eq(out, {"day": "2020-01-02", "captured": 1, "slot_count": 25, "manifest_path": str(mp)})
     _eq(len(scheduled_slots("2020-01-02")), 25)
     _eq(scheduled_slots("2020-01-02T10:00:00")[0].strftime("%Y-%m-%d %H:%M"), "2020-01-02 08:50")   # day string is truncated to 10 chars
+
+
+class _ClockDT(datetime):
+    """datetime whose now() walks through a scripted list (last value repeats); combine() stays real."""
+    script: list = []
+    idx = 0
+
+    @classmethod
+    def now(cls, tz=None):
+        i = min(cls.idx, len(cls.script) - 1)
+        cls.idx += 1
+        return cls.script[i]
+
+
+def test_run_collector_loop_marks_missed_captures_due_slot_then_sleeps_and_stops(tmp_path, monkeypatch):
+    s = lambda h, m, sec: datetime(2026, 8, 27, h, m, sec, tzinfo=KST)
+    # two now() calls per iteration (loop condition + body); iteration 3 starts after the 09:01:00 session end
+    _ClockDT.script, _ClockDT.idx = [s(9, 0, 30), s(9, 0, 30), s(9, 0, 31), s(9, 0, 31), s(9, 1, 30)], 0
+    monkeypatch.setattr(oc, "datetime", _ClockDT)
+    slept, captured_slots = [], []
+    monkeypatch.setattr(oc.time, "sleep", slept.append)
+    mp = tmp_path / "m.json"
+
+    def fake_capture_slot(*, day, scheduled_at, manifest_path, **kw):
+        captured_slots.append(scheduled_at.strftime("%H:%M"))
+        manifest = oc._read_manifest(manifest_path, day)
+        manifest["slots"].append({"slot": scheduled_at.strftime("%H:%M"), "status": "CAPTURED"})
+        oc._write_manifest(manifest_path, manifest)
+
+    monkeypatch.setattr(oc, "capture_slot", fake_capture_slot)
+    out = run_collector(day=DAY, manifest_path=mp, poll_sec=0.0, keepalive_until=clock_time(9, 1))
+    _eq(captured_slots, ["09:00"])                       # only the slot inside its 60 s window is captured
+    _eq(slept, [0.1])                                    # idle iteration sleeps max(0.1, poll_sec)
+    rows = {r["slot"]: r["status"] for r in json.loads(mp.read_text(encoding="utf-8"))["slots"]}
+    _eq([rows[k] for k in ("08:50", "08:55", "08:58", "08:59")], ["MISSED"] * 4)   # earlier slots are marked missed first
+    _eq(rows["09:00"], "CAPTURED")
+    _eq((out["day"], out["captured"], out["slot_count"], out["manifest_path"]), (DAY, 1, 25, str(mp)))
