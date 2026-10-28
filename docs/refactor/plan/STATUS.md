@@ -38,6 +38,8 @@
 <!-- RF_LEAD_CHECKLIST_END -->
 
 ## 새 보고와 변경 책임
+- **C05 추가 C1~C4 부분 판정 (2026-10-28 KST):** [RF-044](queue/02_DEVELOPING/CODEX_B/RF-044.md) 16-owner static facade/leaf map, B scoped normal/`-O` **34/34 PASS**(#12 `6463094361`), A 16+16 cold import(#11 `6463342456`)는 pre-peer; [RF-045](queue/02_DEVELOPING/CODEX_B/RF-045.md) 10-owner dynamic fallback/Settings/IO 경계, B fake/tmp **42/42 PASS**(#12 `6463100444`). **C1/C2/C3 PARTIAL, C4 full peer PENDING**, C5~C7 미완료, 둘 다 DEV 유지. [RF-063](queue/02_DEVELOPING/CODEX_B/RF-063.md) 76 owner AST 62 write/9 subprocess(#12 `6463116058`), [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) 54 owner AST 50 write/24 subprocess(#12 `6463105587`), normal/`-O` 새 실행 NOT_RUN, C1 기존 PARTIAL 유지. 위험 CLI/UEF/closeout은 승인 전 HOLD. **해제 B** 파일별 ACTION·효과/consumer→**A** full opposite peer→**C05** 단계 판정. 새로운 C1~C5 full 충족 0, 물리 단계/DONE 불변.
+
 - **C05 신규 C5 판정 (2026-10-28 KST):** [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) **C5 N/A→PARTIAL**. A [#11 `6463278917`](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6463278917)과 원격 A `b04efcc0` BASE diff에서 RF-031 신규 테스트 6개·RF-040 신규 테스트 4개가 [RF-074](queue/01_PENDING/UNASSIGNED/RF-074.md) 독점 정규식과 겹침. 기존 RF-074 75파일/동결 오라클 변경 근거는 아님. **C03** 파일별 소유권 예외/이름변경 결정 → **C05** CSV/allowlist/메타 동기화. RF-040 C5 기존 미체크 유지. RF-031 PEER·RF-074 PENDING 및 DONE 20 불변; normal/`-O` 새 C05 실행 **NOT_RUN**, full 반대 peer **미완료**.
 
 - **C05 C1 직접 인수 (2026-10-28 KST):** [RF-021](queue/02_DEVELOPING/CLAUDE_A/RF-021.md) 원본 32개 `SAFETY_HOLD_KEEP`의 정적 Owner/소비자·cold import 증거를 #11 `6461400486` 및 A source `1a76e430`에서 확인해 **C1 MET만** 체크. 물리 DEV 유지, 첫 미충족 C2/C3 보호 exit 동작은 **SAFETY_BLOCKED(홍사장/안전 계약 소유자 승인 필요)**, C4 B 전체 peer PENDING. 실제 DONE 증가 0.
