@@ -7,9 +7,7 @@
 
 **현재 LEAD 0건 (2026-10-28 C05 실물 재확인)**. RF-067은 [05_DONE/CODEX_B](../05_DONE/CODEX_B/RF-067.md)로 C6/C7 종결(정확 CI_BASE SHA `beca55b47`, hosted run `40623624802` normal/`-O` SUCCESS; 문서 후속 커밋은 D00 §2.2 동등성). 전체 RF 상태 수치는 [STATUS](../../STATUS.md). 선별 통합/KEEP 소스와 정확 CI를 혼동하지 않는다. `SCOPED_PASS`를 full PASS로 확대하지 않고, 보호 RunLab/UEF 무승인 실행 금지. C05만 RF 체크·단계/STATUS 이동.
 
-**C05 최신 부분 판정 (2026-10-28 KST):** RF-051 A 원격 `977056fe` q10 새 4/4 normal/-O → C3 PARTIAL; RF-066 B `dcd5913c` 11/11 normal/-O + A 동일 SHA scoped peer 8회 11/11 → C1~C4 PARTIAL(전체 C4 아님). RF-044 B 16+16 cold import, RF-045 B 9+9 cold import는 기존 C1~C3 PARTIAL 유지. RF-045 새 fake/temp 1/1 테스트는 로컬 `c423f4d0` PUSH_FAILED, 원격 B `dcd5913c`에 파일 없음 → 신규 C2/C3 증거로 불수용. RF-063/065 C1 AST 부분 분류 유지. **DEV→PEER 또는 PEER→LEAD 신규 후보 0**, C6/C7 없음. B push/auth 해제·owner ACTION→A full peer, A RF-051 ACTION→B full peer. 보호 승인 별도.
-
-**C05 신규 차단 판정 (2026-10-28 KST):** RF-031 C5 N/A→PARTIAL (A 신규 테스트 6개가 RF-074 정규식과 충돌), RF-074 신규 테스트 총 10개 소유권 미확정. C03 파일별 owner/예외·rename 판단→C05 메타 동기화 전 RF-031 PEER→LEAD 금지. **LEAD 0·DONE 20 유지**, 새로운 C6 후보 없음. 이 판단은 source/CI PASS가 아님.
+**C05 최신 판정 (2026-10-28 KST):** RF-031(PEER)·RF-040(DEV) 신규 A 테스트 10개 exact-path 단일 소유권을 C03 #36 `6465609676`대로 CSV/예외/RF에 반영, RF-074 75 baseline 불변. **RF-031/040 C5 PARTIAL, RF-074 C1/CLAIM 미완료**. RF-051 A `39eaa4a0` global sentiment 3/3 normal/-O 추가, C3/C5 PARTIAL. B 원격 `c45f6f13`에 RF-044/045 신규 fake 테스트 2개 존재 확인, 각 worker-reported local 1/1 normal/-O는 새 원격 SHA 직접 실행 NOT_RUN; full C4 없음. RF-066 scoped peer, RF-063/065 AST 부분 증거는 full PASS 아님. **LEAD 0/DONE 20, C6/C7 신규 후보 0**. C05 pytest normal/-O·sync tool NOT_RUN, 보호 RunLab/UEF HOLD.
 
 **C05 큐 재확인 (2026-10-28 KST):** RF-021 C1만 인수(DEV 유지), RF-032 C2 read-only 경계 구체화(PEER 유지). 둘 다 C1~C5/full peer 게이트를 통과하지 않아 **LEAD 0건 불변**. RunLab #32 역시 별도 OPEN/RUNTIME_PENDING.
 
