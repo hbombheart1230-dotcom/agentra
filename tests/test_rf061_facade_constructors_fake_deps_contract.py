@@ -95,6 +95,5 @@ def test_older_rows_after_newer_ones_do_not_replace_the_latest(tmp_path):
         {"ts": 2, "intent_id": "a", "v": "older"},
     ])
     _eq(f._latest_row("a")["v"], "newest")
-    text = json.dumps(f.list_intents(limit=5), ensure_ascii=False, default=str)
-    if "newest" not in text or "older" in text:
-        raise AssertionError(text)
+    out = f.list_intents(limit=5)
+    _eq((out["count"], out["intents"][0]["ts"], out["intents"][0]["intent_id"]), (1, 9, "a"))   # projection keeps the newest row only
