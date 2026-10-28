@@ -21,7 +21,7 @@
 | [RF-067](queue/05_DONE/CODEX_B/RF-067.md) | 05_DONE · B → A | MET 6 · N/A 1 · 0남음 | — | **C7** 원본 체크·물리 DONE·STATUS 동기화 완료 (**C05**) | DONE |
 | [RF-015](queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** 역사 11 FAIL BASE/후보 node별 분류 (**Codex B**) | MISSING |
 | [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** LLM router/cache 8-owner와 B fake 10/10 범위 대조 (**지팀장**) | MISSING |
-| [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C2** Reporter writer/State/실패 원래 범위 대조 (**지팀장**) | MISSING |
+| [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 0 · 7남음 | C1,C2,C3,C4,C5,C6,C7 | **C2** Reporter writer/State/실패 대조 (**지팀장**); **C5** 신규 테스트 6개 RF-074 정규식 충돌 (**C03→C05**) | MISSING |
 | [RF-014](queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Scanner shim→RF-009 repeat/risk/NOOP 독립 peer (**Codex B**) | MISSING |
 | [RF-016](queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** Strategist 외부 facade 원래 호출 peer 범위 판정 (**지팀장→B**) | MISSING |
 | [RF-028](queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C4** trade_report rich schema 필수 소비자 peer 판정 (**지팀장→B**) | MISSING |
@@ -32,12 +32,14 @@
 | [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) | DEV · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** research 54-owner KEEP/CLI 효과 분류 원래 조건 판정 (**지팀장**) | MISSING |
 | [RF-069](queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | PEER · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C3** UEF5 historical snapshot 경로·SHA·read-only 승인 없음 (**사용자·증거 소유자→B→A**) | SAFETY_BLOCKED |
 
-**우선 14건:** **MET 7/98 · N/A 14/98 · 미완료 77/98**. 실제 DEV 2 + PEER 11, LEAD 0. 물리 DONE은 20건이며 N/A를 증거 PASS로 합산하지 않습니다.
+**우선 14건:** **MET 7/98 · N/A 13/98 · 미완료 78/98**. 실제 DEV 2 + PEER 11, LEAD 0. 물리 DONE은 20건이며 N/A를 증거 PASS로 합산하지 않습니다.
 
 **STATUS 갱신 책임: 지팀장.** RF 변경/증거 인수 및 물리 이동 시 같은 작업에서 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check` 확인. 이 도구는 93개 실물 파일의 유일성/단계 수와 우선 14개 원본 체크를 대조하며 RF 합격/안전 실행을 자동 승인하지 않습니다.
 <!-- RF_LEAD_CHECKLIST_END -->
 
 ## 새 보고와 변경 책임
+- **C05 신규 C5 판정 (2026-10-28 KST):** [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) **C5 N/A→PARTIAL**. A [#11 `6463278917`](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6463278917)과 원격 A `b04efcc0` BASE diff에서 RF-031 신규 테스트 6개·RF-040 신규 테스트 4개가 [RF-074](queue/01_PENDING/UNASSIGNED/RF-074.md) 독점 정규식과 겹침. 기존 RF-074 75파일/동결 오라클 변경 근거는 아님. **C03** 파일별 소유권 예외/이름변경 결정 → **C05** CSV/allowlist/메타 동기화. RF-040 C5 기존 미체크 유지. RF-031 PEER·RF-074 PENDING 및 DONE 20 불변; normal/`-O` 새 C05 실행 **NOT_RUN**, full 반대 peer **미완료**.
+
 - **C05 C1 직접 인수 (2026-10-28 KST):** [RF-021](queue/02_DEVELOPING/CLAUDE_A/RF-021.md) 원본 32개 `SAFETY_HOLD_KEEP`의 정적 Owner/소비자·cold import 증거를 #11 `6461400486` 및 A source `1a76e430`에서 확인해 **C1 MET만** 체크. 물리 DEV 유지, 첫 미충족 C2/C3 보호 exit 동작은 **SAFETY_BLOCKED(홍사장/안전 계약 소유자 승인 필요)**, C4 B 전체 peer PENDING. 실제 DONE 증가 0.
 - **C05 C2 미충족 근거 명확화:** [RF-032](queue/03_PEER_REVIEW/CLAUDE_A/RF-032.md) `--validation-id`의 `../`·절대경로 탈출을 #12 `6461194517`·#11 `6462253630`에서 격리 재현/호출자 대조. **C2 PARTIAL/MISSING, C4 PENDING**, 보호 UEF/closeout 승인 전 하드닝 HOLD; 담당 C05 설계 판단→필요 시 홍사장/안전 계약 소유자. 원본 체크·물리 PEER 유지.
 - **개발자 보고:** [A Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)·[B Issue #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12)의 **신규 댓글만**. RunLab은 [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32). 지팀장은 이 세 입력의 새 판정을 [Lead Issue #36](https://github.com/hbombheart1230-dotcom/agentra/issues/36)에 출력. **HANDOFF A/B 업데이트·재독 금지**. 이전 상세 증거는 이슈 과거 댓글·Git history·RF 원본에서 필요할 때만 조회.
