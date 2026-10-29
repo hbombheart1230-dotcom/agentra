@@ -8,7 +8,7 @@
 ## FAST-3 신속 종결·RF 마이그레이션 우선 (2026-10-29 홍사장 승인)
 - 최우선 D00 §2의 **G1 CODE_READY, G2 TEST_READY, G3 INTEGRATED_DONE**만 판정한다. 아래 역사 C1~C7 전수/full C4/반드시 -O·hosted CI 의무와 옛 미완료 항목은 비차단 이력이다. 기존 7개 중 미체크를 다시 BLOCKER로 올리지 않는다.
 - **마이그레이션 완료 (2026-10-29 20:24 KST):** 원격 RF 93개 중 이전 14개는 이미 FAST-3, 이번 C05가 79개를 GitHub API 배치로 7→3 전환·레거시 보존하고 원격 확인. 로컬 git clone DNS 실패로 원본 Python `migrate_rf_fast3.py --write/--check` 및 `sync_rf_checklist_status.py --write/--check` 실제 실행은 NOT_RUN; 동일 계약의 GitHub 검증을 수행. 재마이그레이션 금지.
-- 메타 변경 시 과거 7개 체크 원본은 레거시 이력으로 보존. 자동 환산 PARTIAL은 기존 근거를 기준으로 다시 판정해 조기 MET 가능. RF-016의 기존 G1/G2 MET를 즉시 받아 G3 C04에 인계하고 결과가 오면 바로 DONE/STATUS 이동한다. 다른 RF도 변경 없는 파일 전수 C1 분석·full peer를 새로 요구하지 않는다.
+- 메타 변경 시 과거 7개 체크 원본은 레거시 이력으로 보존. 자동 환산 PARTIAL은 기존 근거를 기준으로 다시 판정해 조기 MET 가능. RF-016은 C04 G3_REUSE 인수로 05_DONE 종결했으므로 동일 SHA·범위 재검증/재이동 금지. 다음 신규 G1/G2 READY RF부터 처리한다. 다른 RF도 변경 없는 파일 전수 C1 분석·full peer를 새로 요구하지 않는다.
 - G1=Owner·변경/KEEP 소스 SHA 확인, G2=영향 부분 정상 smoke/pytest, G3=통합 소스 및 관련 smoke/CI 확인 + DONE/STATUS. 주석 문서 변경만으로 전체 CI 반복 금지. 실제 운영 런검증과 개발 DONE 구분. 실계좌 real mode 금지.
 - 짝수 :45 사전 수용/G1-G2, 홀수 :45 사후 통합/G3를 우선하되 준비된 RF가 있으면 같은 회차에 직행 DONE 가능. 회차당 DONE 0을 숙명으로 수용하지 말고 실제 충족한 RF를 종결한다.
 
