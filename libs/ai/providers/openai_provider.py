@@ -420,12 +420,13 @@ class OpenAIStrategist:
         try:
             import urllib.error as ue
 
-            if isinstance(e, ue.URLError):
-                return True
-
+            # HTTPError subclasses URLError: classify by status code first.
             if isinstance(e, ue.HTTPError):
                 code = int(getattr(e, "code", 0) or 0)
                 return code in (408, 409, 425, 429) or (500 <= code <= 599)
+
+            if isinstance(e, ue.URLError):
+                return True
         except Exception:
             pass
         return False
