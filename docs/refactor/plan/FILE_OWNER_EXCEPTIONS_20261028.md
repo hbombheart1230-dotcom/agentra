@@ -122,7 +122,7 @@
 | `tests/test_rf066_m22_graph_temp_cwd_effects.py` | RF-066 / Codex B |
 | `tests/test_rf066_report_maintenance_temp_effects.py` | RF-066 / Codex B |
 
-**C05 2026-10-29 09:5x KST 신규 exact-path 21개:** A `a68acfc5..8bdbd5ab` 19개(RF-033 9/RF-034 10), B `4a329361..801ca211` 2개(RF-045 1/RF-066 1). GitHub 원격 compare의 added 파일만 반영. CSV 4078 unique, RF-074 frozen 75 불변. C5 PARTIAL이며 C1~C4 full, CI, DONE 승인 아님.
+**C05 2026-10-29 09:55 KST 신규 exact-path 21개:** A `a68acfc5..8bdbd5ab` 19개(RF-033 9/RF-034 10), B `4a329361..801ca211` 2개(RF-045 1/RF-066 1). GitHub 원격 compare의 added 파일만 반영. CSV 4078 unique, RF-074 frozen 75 불변. C5 PARTIAL이며 C1~C4 full, CI, DONE 승인 아님.
 
 | 신규 exact path | 단일 Owner |
 |---|---|
