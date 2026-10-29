@@ -2,6 +2,9 @@
 
 ## 최신 우선 계약 — DONE 보존 + Txx TARGET_GAP 구분
 
+**최신 C05 delta (2026-10-29 KST):** 기존 DONE26/FAST-3 93 보존. RF-044 실제 2함수 MOVE + C04 scoped G3_REUSE로 **신규 DONE +1, 누적 27**. 남은 `_commander_shadow_monitor_gate_details/_commander_shadow_context_delta_summary`→`commander_shadow_evidence.py`는 TARGET_GAP_OPEN 2건, C03→Codex B 배정(기존 DONE 취소 금지). RF-031 A `048c6d3f` 4함수 MOVE·normal 187 PASS로 G1/G2 MET, **LEAD1**, G3 C04 최소 통합+정상 smoke 필요. RF-045 scoped copy guard는 integration 됐으나 D2 TOCTOU와 계획 함수 미이동으로 전체 RF DONE 금지. 물리 큐 **47/9/9/1/27/0**. C05 직접 pytest/sync NOT_RUN. 기존 RF-016/028/029/마이그레이션 반복 금지. 다음 회차 새 C04 G3/신규 READY만 처리.
+
+
 기존 DONE 26건의 역사 체크·증거는 **일괄 취소/재시험하지 않는다**. `rf_details/RF-xxx_IMPLEMENTATION.md`의 목표와 같은 원격 source/target의 실제 구조가 맞는 KEEP은 `KEEP_OK|path|한줄 이유|blob`으로 당회 통과. 과거 DONE에서 실제 구조 미충족이 확인되면 `TARGET_GAP_OPEN|SOURCE::함수|TARGET::함수|Actor`를 분리 기록하여 C03에 실구현 배정; 과거 DONE이 새 실제 MOVE 실적은 아님. CODE_READY는 원본 몸체 감소/target Owner 구현·호환, TEST_READY는 대상 변경 정상 fake test 1회 exit0, INTEGRATED_DONE은 C04 source integration. 문서만/KEEP-only/기존 기준점 이전 분리를 이번 회차 CODE_MOVE로 계산 금지. 아래 RF-016/028/029 반복 지시보다 우선.
 
 
