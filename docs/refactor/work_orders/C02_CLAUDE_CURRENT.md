@@ -1,5 +1,12 @@
 # C02 — Claude A | 다음 실행 코드·테스트 완결 명령
 
+## 매회 원격 지시 버전·환경 사전점검 (2026-10-29)
+
+- 시작 시 다른 프로젝트 문서나 구 tracking ref를 먼저 읽지 말고 **원격 integration/p1.5의 이 CURRENT 한 파일**을 직접 조회한다. 실제 CANONICAL_HEAD와 ORDER_FILE_BLOB_SHA를 기록한다. 번호별 ORDER_ID = C02 : ORDER_FILE_BLOB_SHA : ITEM_NO. 실행 중 명령서가 바뀌어도 시작 시 고정한 번호를 안전하게 수행하고 다음 회차에서 새 버전을 읽는다.
+- 본인 허용 개발 브랜치 원격 HEAD, 로컬 dirty/충돌·코드 소유권을 확인한다. 이어 Python normal/-O pytest 설치 여부와 Git 조회/승인된 push 경로를 점검한다. pytest 부재는 **pytest만 BLOCKED**, push 인증/외부 export 차단은 **push만 BLOCKED**다. 같은 문제로 다른 tmp/fake·읽기 전용 peer·안전한 코드 구현을 전부 중단하지 않는다. 강제 우회·force push·타인 브랜치 쓰기는 허용되지 않는다.
+- 각 번호 상태를 PENDING/RUNNING/LOCAL_IMPLEMENTED/PUSHED/TEST_VERIFIED/PEER_VERIFIED/VERIFIED_ALREADY/BLOCKED/NOT_RUN 중 사실대로 기록한다. 실제 로컬 구현·smoke를 원격 정상/-O PASS로 바꾸지 않는다. 같은 SHA·같은 전체 범위의 정확 증거만 재사용한다.
+- #11에 실측 START_KST/END_KST/ELAPSED_MIN(실측 없으면 NOT_VERIFIED), CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, 번호별 ORDER_ID/ITEM_STATUS, 정확 OWNER_REMOTE_SHA, 변경 경로, normal/-O 실제 exit, push 검증 SHA 또는 실패 근거, LAST_COMMAND/FUNCTION, UNBLOCK_OWNER, NEXT를 기록한다. 기존 아래 지시의 모든 안전 번호가 각자 완료/차단/한도에 도달하기 전에는 일부 PASS만으로 종료하지 않는다.
+
 **대상:** 기존 `work/p15-a-reporter-pure-20261021` 브랜치의 소유 code/test만 수정·정상 push. 시작 시 원격 A HEAD와 고정 SOURCE `2bce7dcaaadebe9fe825dcf9d2f5e1b1f667ad33` 대조, 진행 중인 작업은 안전 체크포인트까지 마친 후 적용. **1~5 모두 독립적인 필수 개발·계약 과제, 6은 고정 긴급 SOURCE 독립 peer.** 번호는 선행 순서·선택권·회차당 할당량이 아니다. 정확 SHA/범위가 이미 검증된 이전 변경은 중복 수정/재검증하지 않는다. 허용 A 코드·테스트 외 문서/CSV/정책/동결 오라클·타인 브랜치/긴급 브랜치 변경, 실제 시장·브로커·주문·Guard·UEF·Step5C·운영 State/DB/log/RunLab·비격리 CLI 및 force-push 금지. 소켓 차단·fake·`tmp_path`만 사용한다.
 
 
