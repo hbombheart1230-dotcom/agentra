@@ -23,7 +23,13 @@ class _NodeEventLogger:
         )
 
     def __getattr__(self, attr: str) -> Any:
-        return getattr(self._logger, attr)
+        # ``copy`` may ask a partially constructed instance for special
+        # methods before ``_logger`` has been restored.  Going through normal
+        # attribute lookup here would recurse back into this method.
+        logger = self.__dict__.get("_logger")
+        if logger is None or attr == "_logger" or attr.startswith("__"):
+            raise AttributeError(attr)
+        return getattr(logger, attr)
 
 
 def get_event_logger(name: str):
