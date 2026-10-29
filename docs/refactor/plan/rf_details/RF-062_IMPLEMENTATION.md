@@ -1,5 +1,9 @@
 # RF-062 — 코드 구조/함수 재배치 설계 (T00/V3)
 
+## 상세 KEEP / 단독 파일 RF-062
+기존 소유 Python 단 1개. Codex B가 목표 위치·단일 책임·모듈 크기·중복 Owner 여부를 현재 blob에서 확인해 적정하면 KEEP_OK | path | 1줄 정당 사유 | Git blob으로 즉시 PASS한다. 한 책임의 작은 파일을 자를 필요는 없다. 복합 대형 함수가 실제 확인되면 C03만 SOURCE 실제 def와 TARGET Owner를 정하고 C01 본문에 직접 기재한다. A/B에게 RF 설계 문서 탐색 금지. KEEP 새 테스트 0.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-062.md` blob `0c99e6567769ac6d061360f9dd281a8a523b0d74`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 1개 파일; 다른 RF 경로 쓰기 금지.
 

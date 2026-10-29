@@ -1,5 +1,14 @@
 # RF-061 — 코드 구조/함수 재배치 설계 (T00/V3)
 
+## 상세 코드 설계 RF-061
+libs/tools/tool_facade.py blob 7eaebf76311197000ea4cdb388a2543be0dfbce6 (351 LOC). Claude A 독점.
+- _approval_mode L33–55 (23) = approval authority edge / KEEP.
+- ToolFacade.list_intents L244–284 (41) = store read + recent order rows aggregation 혼합. 원본 facade 공개 API는 그대로. 결과 row aggregation 순수 block만 libs/tools/intent_list_projection.py::summarize_intent_rows 으로 MOVE 후보. 기존 조회, 예외/권한/순서 보존.
+- ToolFacade.order_execute L285–314 (30) = 실제 order 실행 경계 KEEP.
+- ToolFacade.run L315–351 (37) = command/preview routing 공개 entry KEEP.
+테스트: fake stored intent rows 2~4개에서 before/after 중복 ID/정렬/빈 결과 동일; 정상 targeted 1회. 조회/주문 효과는 변경 금지, 단일 책임이면 억지 microfile 생성 없이 KEEP_OK.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/02_DEVELOPING/CLAUDE_A/RF-061.md` blob `22d99a31f89674fc0cdec64d48d959b5632f7a20`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 3개 파일; 다른 RF 경로 쓰기 금지.
 

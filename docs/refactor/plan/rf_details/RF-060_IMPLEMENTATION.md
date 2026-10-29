@@ -1,5 +1,14 @@
 # RF-060 — 코드 구조/함수 재배치 설계 (T00/V3)
 
+## 상세 KEEP 승인 근거 RF-060
+libs/supervisor/intent_state_store.py blob 6a4828a8cf115279dfa9f390806d4e130478fce8 (761 LOC). Codex B 전담.
+- IntentStateStore._init_db L191–265 (75 LOC) = canonical SQLite setup / KEEP_EFFECT_BOUNDARY.
+- IntentStateStore.claim_execution L393–464 (72) = Step5C 원자적 claim/CAS / KEEP_EFFECT_BOUNDARY.
+- IntentStateStore.admit_intent L465–505 (41), verify_ownership L528–556 (29), finish_execution L557–592 (36), claim_physical_order L593–625 (33), release_physical_order L626–654 (29) = 동일 transaction/physical order owner / KEEP_JUSTIFIED.
+- resolve_intent_state_db_path L33–61 (29) = 단일 canonical DB path resolver / KEEP_OK.
+현재 코드가 위 구조 그대로라면 대형 파일이어도 한 DB Owner로 정당한 KEEP, 추가 테스트 0. 거래 원자성·사용자 승인 없이 분해 금지. 코드 변경 없음은 성과로 집계 금지.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-060.md` blob `4dfda7a0605855e1d7951458b124ab72bc3d4473`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 4개 파일; 다른 RF 경로 쓰기 금지.
 

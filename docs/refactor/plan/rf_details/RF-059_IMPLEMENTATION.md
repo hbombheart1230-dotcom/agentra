@@ -1,5 +1,14 @@
 # RF-059 — 코드 구조/함수 재배치 설계 (T00/V3)
 
+## 상세 실구현 판정 RF-059 (2026-10-29)
+원본 libs/strategies/candidates/kiwoom_candidate_provider.py blob 1498e5dd7528cc30347fb7948fde70218df33fc9 (526 LOC). Codex B 단독 구현.
+- SOURCE::_extract_themes_from_state L58–79 (22) → TARGET libs/strategies/candidates/theme_context_projection.py::extract_themes_from_state; MOVE BODY.
+- SOURCE::_extract_theme_symbol_index L80–104 (25) → 같은 theme_context_projection.py::extract_theme_symbol_index; MOVE BODY.
+- SOURCE::_fetch_rank_rows L118–153 (36) → 원래 파일에 KEEP. live fetch guard 및 네트워크 효과 경계.
+- libs/strategies/contracts.py::coerce_strategist_output L333–414(82)는 canonical contract 단일 Owner로 KEEP; 새 중복 생성 금지.
+- 두 helper는 함께 단일 Theme Context Projection Owner에 묶는다. 기존 SOURCE 함수명/서명 thin wrapper, monkeypatch runtime alias 유지. old/new theme 빈값/중복/순서/상태 무변형 fixture targeted 정상 1회. 실제 Kiwoom API 실행 금지.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-059.md` blob `85c8d2b8330c97db33ec7c20d76624c4654fe081`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 21개 파일; 다른 RF 경로 쓰기 금지.
 
