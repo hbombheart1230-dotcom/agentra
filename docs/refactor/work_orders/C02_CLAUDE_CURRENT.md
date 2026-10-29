@@ -1,10 +1,55 @@
-# C02 — Claude A 이번 회차 실행 명령
+# C02 — Claude A | 연속 구현 명령서
 
-작업 브랜치: `work/p15-a-reporter-pure-20261021`. 아래 작업을 순서대로 실제 구현한다. 이 파일만 작업 진입점으로 사용한다. 작업 선정·판단·다음 회차 설계는 지팀장이 담당한다.
+**실행 역할:** 이전 채팅·프로젝트 맥락을 몰라도 이 파일의 1→7번을 그대로 코딩하면 된다. RF/큐/D00/CURRENT 재독이나 자율 작업 선정 금지. `hbombheart1230-dotcom/agentra`의 **기존** `work/p15-a-reporter-pure-20261021` 브랜치에서 허용된 소스·테스트만 수정한다. 지시 설계 시 원격 A HEAD `8bdbd5ab32eed6d1b0dddfc799d3bc577ebf9a1e` 확인; 시작 시 HEAD를 다시 확인해 이미 같은 구현이 있으면 중복 커밋하지 말고 다음 번호로 진행한다. **보고서/계획만 작성하고 끝내지 말 것.**
 
-1. `libs/reporting/baseline_samsung_hynix/forward_validation/reaction_reader.py`: 실제 CLOSE가 없을 때 참고용 마지막 가격을 CLOSE/수익률에 사용하지 않는지 호출자까지 검증한다. 누락·시간 경계·0 거래량 입력의 실패 테스트를 추가하고, 재현된 결함은 A 소유 코드만 수정한다.
-2. 같은 패키지의 `scoring.py`, `shadow_comparison.py`, `report.py`: 결측 반응 데이터와 불충분한 표본이 점수·비교·보고에 잘못 반영되는지 합성 데이터로 확인한다. 실제 오류가 있으면 최소 수정하고 전후 출력을 검증한다.
-3. `libs/reporting/baseline_btc_woori_tech/forward_returns.py`와 `vnext/report.py`: 결측 시계열·0 기준값·출력 순서·표본 부족 입력을 임시 fixture로 확인하고, 재현된 결함만 수정한다.
-4. 독립 검증: Codex B 커밋 `e33929dd`의 `libs/core/event_logger_compat.py` 수정이 실제 호출자의 start/end 누락을 복구했는지 기존 승인된 격리 환경의 임시 복사본·임시 JSONL로 검사한다. B 소스 수정 금지. 남은 결함은 정확한 재현 절차를 보고한다.
+## 1 — 실제 Reporter 대형 파일의 종목 반응 책임 분리 (개발·필수)
 
-변경된 코드·테스트를 정상 및 `python -O`로 검증하고, A 브랜치에 커밋·푸시한 정확한 SHA와 실행 결과를 Issue #11 댓글에 보고한다. 첫 PASS나 첫 커밋으로 종료하지 말고 가능한 작업을 이어서 수행한다. 실제 실행 한도나 위험 경계에 걸리면 다음 안전 항목으로 넘어가고 중단점을 남긴다. 네트워크·실거래·Broker·Step5C·UEF·운영 파일은 실행하거나 변경하지 않는다. 외부 호출은 fake, 파일은 임시 경로로 격리한다. 문서·큐·상대 소스는 수정하지 않는다.
+**SOURCE:** `libs/reporting/baseline_samsung_hynix/forward_validation/reaction_reader.py` (지시 기준 약 467 LOC). **새 Owner:** `libs/reporting/baseline_samsung_hynix/forward_validation/stock_reaction.py`. 새 파일이 이미 있으면 중복 생성하지 않는다.
+
+- 현재 `reaction_reader._stock_reaction` (대략 141~270행) **함수의 실제 계산 본문 전체**를 새 Owner의 `stock_reaction_impl(..., facade)`로 MOVE한다. 기존 공개/테스트 호환 `_stock_reaction(day,target,rows,previous_close,last_available_lookback_sec,collector_override)`는 **signature·이름 동일한 얇은 wrapper**로 남긴다. wrapper가 호출 때 `facade=sys.modules[__name__]`을 전달하고, 새 Owner는 facade import/순환 의존 없이 원래 전역 `_number`, `_pct`, `_point_at`, `_checkpoint_epoch`, `_opening_point`, `_close_point`, `_forward_window`, `_last_available_point_before_close`, `CHECKPOINTS`를 필요한 위치에서 `facade.NAME`으로 사용한다. monkeypatch 동적 호출 보존.
+- **변경 금지 의미:** 검증된 collector override만 계산 가능한 관측값, collector integrity_failure이면 legacy fallback 금지와 PENDING 유지, 정말 ABSENT일 때만 legacy timeline fallback, 잘못된 CLOSE를 실제 CLOSE로 쓰지 않기, `return_to_close_pct`는 표시한 권위 있는 CLOSE와 동일 기준, CLOSE PENDING인 경우 관측 window의 `status=PARTIAL` 및 `return_to_close_pct=None`, 09:00의 첫 양수 거래량 캔들, `last_available_point_before_close`는 참고용으로만 출력. 리스트 순서·직렬화 출력 키·예외를 수정하지 않는다.
+- 새 `tests/test_p15_stock_reaction_extraction.py`: 기존 함수의 **분리 전 고정 기대 JSON/딕셔너리**를 fixture로 확보한 뒤 fake 종목 캔들 ① 빈 입력 ② 09:00 volume=0 뒤 09:01 양수 ③ CLOSE collector=110 vs legacy=90 ④ CLOSE PENDING ⑤ collector INVALID vs ABSENT ⑥ denominator=0 사례에서 결과가 일치해야 한다. 기존 collector 테스트도 정상/`-O`. 새 Owner **350 LOC 이하**, facade 실제 LOC 감소 보고.
+
+## 2 — 동일 파일의 Collector 무결성 책임 분리 (개발·필수)
+
+**SOURCE:** `reaction_reader.py::_collector_raw_row` (지시 기준 약 340~419행). **새 Owner:** `libs/reporting/baseline_samsung_hynix/forward_validation/collector_observations.py`.
+
+- 함수 body를 `collector_raw_row_impl(*, day,index_name,slot,root,facade)`로 MOVE하고 기존 `_collector_raw_row`는 signature 유지 wrapper로 만든다. 관측기 `observation_for_slot`와 `_has_verification_evidence`는 **함수 안에서 지연 import**하던 기존 구조 유지. 새 Owner는 기존 facade를 import하지 않는다. 원본 `_number`, `market_epoch`, `_COLLECTOR_ABSENT_STATES`, `_COLLECTOR_VERIFIED_STATES`를 호출 시 facade에서 참조하게 한다.
+- 결과 상태 3종을 변경하지 않는다: `availability=MISSING` + `never_attempted=True`는 **None(ABSENT)**; `LATE_MISSED/CORRUPT_STATE/미검증 시간`은 `integrity_failure=True`와 이유·시각·참고 관측값; `AVAILABLE/PARTIAL`이라도 검증 증거·index component가 없으면 INVALID, 두 검증이 모두 참일 때만 `ts,close,open,source,capture_status`를 반환한다. 실제 수집기·Kiwoom API 호출 금지.
+- `tests/test_p15_collector_observations_extraction.py`: 가짜 `observation_for_slot` 및 검증 함수 주입으로 ABSENT/INVALID/VERIFIED/오류 시간/해당 index 누락을 각각 비교; 새 Owner는 **350 LOC 이하**. 기존 `tests/test_q10_collector_fix3.py`, `tests/test_q10_reaction_reader_collector_integration.py` 정상/`-O` 통과 조건. 읽기 전용 mock/임시 파일만 사용.
+
+## 3 — 동일 파일의 지수 시계열 파일 IO 분리 (개발·필수)
+
+**SOURCE:** `reaction_reader.py::load_index_timeline` (대략 271~291행). **새 Owner:** `libs/reporting/baseline_samsung_hynix/forward_validation/index_timeline.py`.
+
+- `load_index_timeline_impl(*, day,macro_root,index_name,facade)`로 기존 파일 읽기·JSON 파싱·시간 변환·중복 timestamp 마지막 값 선택·정렬 기능 본문을 MOVE. 기존 `load_index_timeline` 이름/키워드 인자는 wrapper 유지. Owner는 facade의 `_number`를 호출 시 사용. 파일 read는 호출될 때만 수행하며 import 자체는 IO 0.
+- `tmp_path/day/*_macro_indicators.json` 가짜 파일로 ① 정상 입력 두 건의 timestamp 순서 ② 동시각 두 건에서 정렬 후 마지막 entry 선택 ③ JSON 손상/날짜 누락/인덱스 없음/숫자 변환 실패 건은 기존대로 skip ④ 빈 폴더 빈 리스트 ⑤ 입력 파일 수정 0을 확인. 현재 함수의 `except` 범위, `open/high/low`의 현재 falsy fallback, 누락 volume의 None 등 **현행 동작 그대로** 보존. 신규 `tests/test_p15_index_timeline_extraction.py` 및 정상/`-O`.
+- 세 분리의 마지막에는 `reaction_reader.py` 자체 실제 물리 LOC와 세 신설 모듈 LOC, 분리 전후 call graph/참조, 종합 SOURCE SHA를 기록. **소스 줄 이동이 아니라 wrapper가 실제 새 Owner 함수를 호출하는지** 검증한다.
+
+## 4 — 반응→점수→보고 전체 호출자 회귀 (새 결함 시 최소 수정)
+
+**SOURCE:** `libs/reporting/baseline_samsung_hynix/forward_validation/{scoring.py,shadow_comparison.py,report.py,pipeline.py}` 및 1~3번의 wrapper.
+
+- 합성 입력으로 `build_actual_reactions` → `score_semiconductor_signal`/해당 점수 함수 → `build_shadow_comparison` → `render_forward_validation_report`의 기존 진짜 소비자 호출을 확인한다. 해당 함수 signature가 정확히 다르면 **소스의 실제 연결 관계를 그대로 사용**, 가짜 adapter/미존재 함수를 만들어 PASS 내지 않는다.
+- ① CLOSE가 없는 지수는 참고가격이 수익률/entry 결과에 섞이지 않음 ② VERIFIED collector CLOSE는 표시 가격·수익률 동일 ③ 09:00 volume=0 오프닝 제외 ④ 이전 종가 0·누락 ⑤ 결측 scoring 데이터가 `INSUFFICIENT_EVIDENCE`인 기존 경계 ⑥ 거래 없는 날/빈 목록 ⑦ 결과 행 정렬·표본 수·문장 출력이 기존 계약과 일치함을 확인한다.
+- 실제 결함이 재현되면 **이 범위의 A 소유 파일**에서만 최소 수정하고 수정 전 실패/수정 후 PASS 증거를 남긴다. 외부 네트워크·시장 실거래·운영 state·배포 실행 금지. 신규 `tests/test_p15_forward_validation_parity_chain.py` + 기존 `tests/test_q10_index_close_fallback.py`, `tests/test_q10_lead_market_forward_validation.py` 정상/`-O`.
+
+## 5 — BTC 기존 성과·리포트 계약 보강 (후속 안전 작업)
+
+**SOURCE:** `libs/reporting/baseline_btc_woori_tech/forward_returns.py`, `libs/reporting/baseline_btc_woori_tech/vnext/report.py`.
+
+- 실제 함수 `attach_forward_returns`, `summarize`, `summarize_policy_variant`, `aggregate`, `render`를 사용해 임시·합성 데이터의 결측/0 기준/한 거래/여러 거래/입력 순서·정렬·표본 수·불변 입력을 검증한다. **현재 구현의 실제 출력에 근거한** 명시적인 기대값을 고정한다.
+- 실질 코드 결함이 나오면 해당 A 소유 소스만 최소 수정. 재현되지 않으면 테스트만 보강하고 6번으로 이동. 새로운 투자 정책·시장 데이터 호출은 넣지 않는다. 신규 `tests/test_p15_btc_forward_report_parity.py`, 정상/`-O`.
+
+## 6 — B 코드 독립 검증 (상대 브랜치 수정 금지)
+
+- B **고정 SOURCE SHA** `801ca211b83d04d4dc38e78f394f57ffb5dd29e4`의 `libs/contracts/agent_outputs.py`에서 `_build_strategist_trace_summary`, `_build_scanner_trace_summary`, `build_strategist_output_artifact`, `build_scanner_output_artifact`를 임시 격리 복사본으로 독립 검증한다. B 소스에 어떤 쓰기·푸시도 하지 않는다.
+- 기존 `tests/test_p161_agent_output_contract_freeze.py` 동결 오라클의 **변경 없는 실행**과, 이벤트 우선순위·누락뉴스·0 후보·runner-up tie-break·serializable 결과의 새 음성/경계 입력을 확인한다. 자체 소스 검증과 혼동하지 않고 B SOURCE SHA/실행 명령/기대값·실제값을 Issue #11에 보고한다. frozen fixture/CI·B 테스트 소스 변경 금지.
+- B의 변경 SHA가 이후 도착해도 이번 검증 고정 SHA는 바꾸지 않는다. 신 SHA 전체 피어 수용은 다음 C03에서 새 지시로 배정한다. 기존 같은 입력·SHA scoped PASS의 기계적 반복 금지.
+
+## 7 — 필수 실행·원격 보고
+
+- **반드시 순서대로 실구현.** 1개 테스트 통과·한 커밋·댓글·상대 새 SHA 없음으로 조기 종료하지 않는다. 항목 일부가 차단되면 위험 없는 다음 번호로 즉시 진행한다. 실제 플랫폼 실행 한도일 때만 정확한 마지막 완료 번호·남은 함수·실행 명령/에러·다음 수행 번호를 남긴다. 시간·건수 할당량 없음.
+- 매 수정 패키지마다 신규 표적 테스트 `python -m pytest -q -p no:cacheprovider <paths>`와 동일 테스트의 `python -O -m pytest -q -p no:cacheprovider <paths>` 양 모드를 **실제 실행**. CI 전체 PASS나 peer 전체 PASS를 부분 검증만으로 주장하지 않는다. 의존성 부재는 NOT_RUN/환경 차단.
+- A 기존 작업 브랜치에 소유 코드·테스트만 커밋/푸시, 원격 HEAD·추가된 파일 blob까지 확인. Git CLI 인증 실패면 허용된 GitHub 연결 쓰기를 fast-forward 조건에서만 사용. `main`/`integration`/B 코드/새 브랜치/PR/force push/문서/CSV/RF/STATUS/동결 oracle 변경 금지.
+- Issue **#11 댓글**에 실제 `START_KST,END_KST,ELAPSED_MIN` (추정 금지), **번호별** 바뀐 소스·테스트·before→after LOC·normal/-O exit·실제 원격 SHA·독립 peer SOURCE SHA·남은 안전 작업/차단 및 해제 담당 기록. 완료됐다고 판단한 번호는 증거로만 표시하고 지팀장 C05가 공식 완료 판정한다.
