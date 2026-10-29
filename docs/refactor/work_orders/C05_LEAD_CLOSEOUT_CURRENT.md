@@ -1,5 +1,10 @@
 # C05 — 지팀장 · 유일한 RF 체크·큐 이동·DONE·STATUS 작성자
 
+## FAST-3 G3 수용 기준 — C04 CI 중복 차단과 연계
+- **C05는 옛 C6를 다시 요구하지 않는다.** G3 증거는 `SOURCE/INTEGRATION blob + 관련 정상 smoke/targeted CI exit0` 또는 같은 범위의 이전 유효 PASS 1개로 충분하다. 새 `normal/-O hosted full CI`를 RF별 강제할 수 없으며 과거 7체크의 미충족을 재차 BLOCKER로 올리지 않는다.
+- C04 제출 `G3_REUSE`면 소스·테스트·의존성·보호 계약이 실제로 불변인지 확인하고 **동일 test/CI 재실행 없이** G3 MET 처리한다. `G3_NEW_TEST_PASS`면 그 범위의 실제 명령·exit0, `G3_BLOCKED`면 범위와 한 번의 실행 재개점만 인수한다. 단순 STATUS/큐/지시 Markdown 커밋을 이유로 GitHub Actions를 dispatch하지 않는다.
+- G1/G2/G3 MET인 RF는 **같은 회차에 05_DONE/STATUS 동기화**하고, G3가 아직 없는 G1/G2 MET RF는 다음 C04로 직행 인계한다. 정상 push로 자동 CI가 발생할 수 있는 실제 코드/테스트 변경은 회피/무력화하지 않는다. 코드 결함·보호 위험은 해당 변경 경계에서 G2/G3 BLOCKED로 남긴다.
+
 ## FAST-3 신속 종결·RF 마이그레이션 우선 (2026-10-29 홍사장 승인)
 - 최우선 D00 §2의 **G1 CODE_READY, G2 TEST_READY, G3 INTEGRATED_DONE**만 판정한다. 아래 역사 C1~C7 전수/full C4/반드시 -O·hosted CI 의무와 옛 미완료 항목은 비차단 이력이다. 기존 7개 중 미체크를 다시 BLOCKER로 올리지 않는다.
 - **다음 실행 첫 동작(단 한 번):** 원격 integration/p1.5의 tools/migrate_rf_fast3.py를 확인한 뒤 허용된 격리 checkout에서 `python docs/refactor/tools/migrate_rf_fast3.py --write`를 실행해 **93개 RF 체크리스트를 실제 3개로 변환**, `python docs/refactor/tools/migrate_rf_fast3.py --check` 및 `python docs/refactor/tools/sync_rf_checklist_status.py --write`와 `--check` 확인 → C05 소유 문서/STATUS/RF만 정상 commit/push/원격 대조한다. 실행 환경이 없으면 GitHub 허용 수단으로 남은 RF를 배치 수정하고 미완료 수를 명시. 완료 전에는 93개가 모두 전환됐다고 주장하지 않는다.
