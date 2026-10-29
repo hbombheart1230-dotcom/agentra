@@ -1,6 +1,6 @@
 # C05 — 지팀장 · 유일한 RF 체크·큐 이동·DONE·STATUS 작성자
 
-**2026-10-29 FAST-3 신규 판정:** RF-029 → RF-028 BASE 63182ab2/A bed17305/integration 671306d0 Owner tree 3-way KEEP + 관련 consumer/test blob 대조. 기존 작업자 정상 exit0 display/story/assembly, rich-schema/summary/facade 범위 G2 수용. 두 RF G1/G2 MET, PEER→LEAD, G3 C04_REUSE 대기. 신규 DONE 0/누적 21. 새 pytest/sync NOT_RUN. [C03 인계 #36 6495619323](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6495619323).
+**2026-10-29 FAST-3 신규 종결:** RF-029 → RF-028 G1/G2 MET + C04 [#36 6495771382](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6495771382) G3_REUSE (original Owner 38/38, 85/85 KEEP + relevant consumer/test/dependency parity + 기존 normal exit0) 수용. **두 RF 05_DONE, 신규 DONE +2, 누적 23/93.** 실제 C04/C05 pytest/CI NOT_RUN, 공식 sync NOT_RUN, GitHub API 정합 검증. RunLab 운영 실증 별개; real/실주문/위험 --apply 금지.
 
 
 ## FAST-3 G3 수용 기준 — C04 CI 중복 차단과 연계
@@ -29,7 +29,7 @@
 - **RF-016 05_DONE / G1·G2·G3 MET:** C04 [#36 6495425616](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6495425616) `G3_REUSE` 수용. 고정 A `2bce7dca` ↔ integration `8546db4d` 8/8 Strategist Owner KEEP 및 관련 테스트/소비자/의존성 동일; 기존 정상 targeted pytest 94+2+3 PASS(exit0) 인수. 이후 C04 Markdown-only 변경 `6850dd82`, 소스 영향 없음. 새 pytest/CI NOT_RUN. RF-016 `05_DONE/CLAUDE_A`, STATUS 동기화. **신규 DONE +1, 누적 21/93.**
 - **다음 READY:** G1 원격 Owner/KEEP와 G2 관련 정상 smoke/pytest exit0가 실제 확인된 RF만 04_LEAD_ACCEPTANCE로 이동, C04 G3 최소 통합/유효 테스트 1개 확인 즉시 DONE. full peer/-O/매 RF hosted CI 강제 금지. RF-041 nonfinite price, RF-045/066 log move race D2, RF-021/032/069 UEF/closeout 보호 실효과 HOLD. 버그는 OPEN_BUG 분리 가능하나 실계좌 위험 예외 없음.
 - **RunLab #32:** runtime unhealthy, `RUN_SOURCE_SHA=UNKNOWN`, 주문/Guard/Reporter 불일치. OPEN/RUNTIME_PENDING. 개발 DONE은 운영 검증/실계좌 활성화가 아님.
-- **물리 큐:** PENDING47/DEV13/PEER10/LEAD2(RF-029/028)/DONE21/REWORK0. Python sync/직접 pytest NOT_RUN(로컬 GitHub DNS); GitHub API 원격 파일·STATUS 동등 확인.
+- **물리 큐:** PENDING47/DEV13/PEER10/LEAD0/DONE23/REWORK0. Python sync/직접 pytest NOT_RUN(로컬 GitHub DNS); GitHub API 원격 파일·STATUS 동등 확인.
 
 ## 역사 검증 메모 (FAST-3 비차단, 2026-10-28~29)
 - **C05 2026-10-29 17:36 KST 신규 판정:** #36 `6491897462` emergency `1f372f2f` Git blob 동일 격리 추출 RF-041 18 PASS, RF-045/066 6 PASS 정상/`-O` 각각(총 24, 원본 repo/정확 SHA full peer NOT_RUN) → C3 scoped PARTIAL. #11 `6490543459` B `312a5161` repo 31 PASS, 독립 probe 18 PASS+1 FAIL 각 모드(inventory symlink 외부 생성) → RF-045 C2 PARTIAL/SAFETY_HOLD, RF-066 CLI 비임시 효과 HOLD. #12 `6490623337` B `617c8429` 혼합 37 PASS 양 모드, frozen timeout/-O NOT_RUN → RF-044 C3 PARTIAL; B A `d30c67ab` RF-033 5파일 88 PASS 양 모드, A `2bce7dca`까지 해당 파일 경로 변경 0 → C4 scoped PARTIAL(전체 45-owner 아님). FIRST_UNMET C1 A 033(45)/041(6), B 044(16)/045(10)/066(17), full C4 0, C6/C7/DONE 신규 0. #32 `6491497848` 17:12 runtime/API unhealthy, SHA UNKNOWN/OPEN. NEXT A/B original C1/full C4, emergency exact-source 전체 repo normal/-O+peer, C04 선별 통합/CI, RunLab read-only health/provenance. 운영 broker/UEF/--apply HOLD. 큐 47/13/13/0/20/0; C05 direct pytest/sync NOT_RUN(local DNS).
