@@ -14,7 +14,7 @@ from pathlib import Path
 
 QUEUE = Path(__file__).resolve().parents[1] / "plan" / "queue"
 STAGES = {"01_PENDING", "02_DEVELOPING", "03_PEER_REVIEW", "04_LEAD_ACCEPTANCE", "05_DONE", "06_REWORK"}
-CHECK = re.compile(r"^- \[([ xX])\] (.*?) — \*\*(MET|N/A|PARTIAL|PENDING|SAFETY_BLOCKED|MISSING|BLOCKED)\*\*(.*)$", re.M)
+CHECK = re.compile(r"^- \[([ xX])\] (.*)$", re.M)
 META = re.compile(r"<!-- RF_CHECKLIST_META (\{[^\n]+\}) -->")
 START = re.compile(r"(?m)^## DONE 체크\s*$")
 NEXT_SECTION = re.compile(r"(?m)^## ")
@@ -41,14 +41,14 @@ def convert(path: Path, source: str) -> tuple[str, bool]:
     if len(rows) != 7:
         raise ValueError(f"{path}: requires 7 legacy or 3 new criteria; found {len(rows)}")
     metas = META.findall(body)
-    if len(metas) != 1:
-        raise ValueError(f"{path}: legacy metadata count != 1")
-    legacy = json.loads(metas[0])
+    if len(metas) > 1:
+        raise ValueError(f"{path}: duplicate legacy metadata")
+    legacy = json.loads(metas[0]) if metas else {"next":1,"gate":"legacy","owner":"UNKNOWN","decision":"PENDING"}
     if not isinstance(legacy, dict):
         raise ValueError(f"{path}: malformed legacy metadata")
     verdicts = []
     for row in rows:
-        match = re.search(r"— \\*\\*(MET|N/A|PARTIAL|PENDING|SAFETY_BLOCKED|MISSING|BLOCKED)\\*\\*", row.group(2))
+        match = re.search(r"— \*\*(MET|N/A|PARTIAL|PENDING|SAFETY_BLOCKED|MISSING|BLOCKED)\*\*", row.group(2))
         verdicts.append(match.group(1) if match else ("MET" if row.group(1).lower() == "x" else "PENDING"))
     is_done = path.parent.parent.name == "05_DONE"
     if is_done and any(v not in ("MET", "N/A") for v in verdicts):
