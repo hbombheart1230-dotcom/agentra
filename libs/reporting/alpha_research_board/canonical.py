@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -15,6 +16,10 @@ from .contracts import (
     SCHEMA_VERSION,
 )
 from .loaders import load_json, mapping, metric_snapshot
+from . import canonical_stage2_source as _canonical_stage2_source_owner
+from . import canonical_stage2_candidate as _canonical_stage2_candidate_owner
+from . import canonical_negative_control as _canonical_negative_control_owner
+from . import canonical_question_summaries as _canonical_question_summaries_owner
 
 
 PERMANENTLY_CLOSED = {
@@ -265,96 +270,15 @@ def _rationale(row: Mapping[str, Any]) -> str:
 
 
 def _latest_stage2_source(reports_root: Path, through_day: str) -> tuple[dict[str, Any], dict[str, Any]]:
-    root = reports_root / "evaluation" / "agent_effectiveness"
-    candidates = []
-    for path in root.glob("cumulative_*/strategist_stage2_effectiveness_deep_dive.json"):
-        end_day = path.parent.name.rsplit("_", 1)[-1]
-        if end_day <= through_day.replace("-", ""):
-            candidates.append((end_day, path))
-    if not candidates:
-        daily = root / through_day / "strategist_stage2_effectiveness_deep_dive.json"
-        return load_json(daily)
-    return load_json(max(candidates, key=lambda item: item[0])[1])
+    return _canonical_stage2_source_owner.latest_stage2_source(reports_root, through_day, facade=sys.modules[__name__])
 
 
 def _stage2_candidate(reports_root: Path, through_day: str) -> tuple[dict[str, Any], dict[str, Any]]:
-    payload, source = _latest_stage2_source(reports_root, through_day)
-    metric = mapping(mapping(payload.get("changed_symbol_by_horizon")).get("+30m"))
-    coverage = mapping(payload.get("coverage"))
-    historical = {
-        "sample_count": int(metric.get("comparison_count") or 0),
-        "window_count": int(metric.get("observation_count") or 0),
-        "win_rate": metric.get("after_positive_rate"),
-        "avg_net_return_pct": metric.get("after_average_return_pct"),
-        "profit_factor": None,
-        "max_drawdown_pct": None,
-        "coverage": None,
-        "avg_mfe_pct": None,
-        "avg_mae_pct": None,
-    }
-    return (
-        {
-            "candidate_id": "STRATEGIST_STAGE2_REFRESH_AUTHORITY_V1",
-            "target_horizon": "+30m",
-            "source_status": "OBSERVATION_ONLY",
-            "board_bucket": "OBSERVE_FIXED",
-            "historical": historical,
-            "validation": {},
-            "prospective": {},
-            "concentration": {
-                "day_count": metric.get("day_count"),
-                "max_single_day_share": metric.get("max_single_day_share"),
-            },
-            "agent_attribution": {
-                "refresh_records": coverage.get("refresh_records"),
-                "stage2_attributable_records": coverage.get("stage2_attributable_records"),
-                "same_symbol_records": coverage.get("same_symbol_records"),
-                "changed_symbol_records": coverage.get("changed_symbol_records"),
-                "before_avg_return_pct": metric.get("before_average_return_pct"),
-                "after_avg_return_pct": metric.get("after_average_return_pct"),
-                "average_delta_pct": metric.get("average_delta_pct"),
-                "interpretation": mapping(payload.get("role_definition")).get(
-                    "important_boundary"
-                ),
-            },
-            "evidence_note": (
-                "R2는 2차 전략가 이후 Scanner 재실행 결과이며 LLM의 명시적 종목 교체와 동일하지 않다."
-            ),
-            "next_action": "재순위·후보 교체·진입 강화·no-trade 권한별 표본만 누적한다.",
-            "source_keys": ["strategist_stage2_effectiveness"],
-        },
-        source,
-    )
+    return _canonical_stage2_candidate_owner.stage2_candidate(reports_root, through_day, facade=sys.modules[__name__])
 
 
 def _negative_control_candidate(short_alpha: Mapping[str, Any]) -> dict[str, Any]:
-    cohorts = mapping(short_alpha.get("cohort_review")).get("cohorts") or []
-    cohort = next(
-        (
-            mapping(value)
-            for value in cohorts
-            if mapping(value).get("cohort_id") == "TOP_VALUE_VOLUME_NEGATIVE_CONTROL_V1"
-        ),
-        {},
-    )
-    historical = metric_snapshot(mapping(cohort.get("horizons")).get("+5m"))
-    return {
-        "candidate_id": "TOP_VALUE_VOLUME_NEGATIVE_CONTROL_V1",
-        "target_horizon": "+5m",
-        "source_status": "NEGATIVE_CONTROL",
-        "board_bucket": "OBSERVE_FIXED",
-        "historical": historical,
-        "validation": {},
-        "prospective": {},
-        "concentration": {
-            "day_count": cohort.get("day_count"),
-            "largest_day_share": cohort.get("largest_day_share"),
-            "largest_symbol_share": cohort.get("largest_symbol_share"),
-        },
-        "evidence_note": "거래대금·거래량만 높은 후보가 충분한 구분자인지 확인하는 고정 음성 대조군이다.",
-        "next_action": "대조군으로만 누적하며 독립 정책 후보로 승격하지 않는다.",
-        "source_keys": ["short_alpha_discriminator"],
-    }
+    return _canonical_negative_control_owner.negative_control_candidate(short_alpha, facade=sys.modules[__name__])
 
 
 def _source_artifacts(
@@ -383,30 +307,7 @@ def _net_metrics(row: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _question_summaries(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    summaries = []
-    for question in QUESTIONS:
-        question_id = str(question["question_id"])
-        grouped = [row for row in rows if row["question_id"] == question_id]
-        counts = {
-            status: sum(row["status"] == status for row in grouped)
-            for status in ALLOWED_STATUSES
-        }
-        summaries.append(
-            {
-                **dict(question),
-                "candidate_count": len(grouped),
-                "status_counts": counts,
-                "active_candidate_ids": [
-                    row["candidate_id"]
-                    for row in grouped
-                    if row["status"] in {"DISCOVERY", "PROSPECTIVE", "REVIEW_READY"}
-                ],
-                "closed_candidate_ids": [
-                    row["candidate_id"] for row in grouped if row["status"] == "CLOSED"
-                ],
-            }
-        )
-    return summaries
+    return _canonical_question_summaries_owner.question_summaries(rows, facade=sys.modules[__name__])
 
 
 def canonicalize_board(
