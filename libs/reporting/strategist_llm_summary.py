@@ -14,6 +14,8 @@ from libs.reporting import strategist_llm_summary_decision as _decision_owner
 from libs.reporting import strategist_llm_summary_readout as _readout_owner
 from libs.reporting import strategist_llm_summary_strategy as _strategy_owner
 from libs.reporting import strategist_llm_summary_quality_lines as _quality_lines_owner
+from libs.reporting import strategist_llm_summary_usage_lines as _usage_lines_owner
+from libs.reporting import strategist_llm_summary_strategy_lines as _strategy_lines_owner
 
 
 def _utc_now_iso() -> str:
@@ -346,30 +348,11 @@ def _strategy_patch_status_clean(detail: Dict[str, Any]) -> str:
 
 
 def _strategy_score_lines_clean(scores: Dict[str, Any], *, selected: str) -> List[str]:
-    if not scores:
-        return ["- -"]
-    rows = sorted(scores.items(), key=lambda row: (_score_value(row[1]), str(row[0])), reverse=True)
-    lines: List[str] = []
-    for name, score in rows:
-        marker = " (선택)" if str(name) == selected else ""
-        lines.append(f"- {name}: {_score_label(score)}{marker}")
-    return lines
+    return _strategy_lines_owner.strategy_score_lines_clean(scores, selected=selected, facade=sys.modules[__name__])
 
 
 def _rejected_strategy_lines(reasons: Dict[str, Any], *, selected: str) -> List[str]:
-    if not reasons:
-        return ["- -"]
-    lines: List[str] = []
-    for name in sorted(reasons):
-        if str(name) == selected:
-            continue
-        reason = reasons.get(name)
-        if isinstance(reason, (dict, list)):
-            reason_text = _json_inline(reason)
-        else:
-            reason_text = _text(reason)
-        lines.append(f"- {name}: {reason_text}")
-    return lines if lines else ["- -"]
+    return _strategy_lines_owner.rejected_strategy_lines(reasons, selected=selected, facade=sys.modules[__name__])
 
 
 def build_strategist_llm_summary_payload(response_json_path: Path) -> Dict[str, Any]:
@@ -485,55 +468,11 @@ def _directive_line(label: str, value: Dict[str, Any]) -> str:
 
 
 def _memory_usage_lines(memory: Dict[str, Any]) -> List[str]:
-    if not bool(memory.get("available")):
-        return ["- 메모리 사용 trace: -"]
-    lines = [
-        f"- 활성 레이어: {', '.join(str(x) for x in _as_list(memory.get('active_layers'))) or '-'}",
-        f"- 우선순위: {' -> '.join(str(x) for x in _as_list(memory.get('priority_order'))) or '-'}",
-        f"- 요약: {_text(memory.get('human_summary'))}",
-    ]
-    applied = _as_dict(memory.get("applied_to_strategy"))
-    if applied:
-        lines.append(f"- 전략 반영: playbook={_text(applied.get('playbook_effect'))}, risk={_text(applied.get('risk_posture_effect'))}")
-        lines.append(
-            f"- scanner/monitor 반영: scanner={_text(applied.get('scanner_guidance_effect'))}, "
-            f"monitor={_text(applied.get('monitor_policy_effect'))}"
-        )
-    layer_decisions = _as_dict(memory.get("layer_decisions"))
-    for layer in ("daily", "weekly", "monthly", "symbol"):
-        row = _as_dict(layer_decisions.get(layer))
-        if not row:
-            continue
-        summary = _as_dict(row.get("operator_summary"))
-        metrics = []
-        if summary.get("trade_count") is not None:
-            metrics.append(f"trades={summary.get('trade_count')}")
-        if summary.get("win_rate") is not None:
-            metrics.append(f"win_rate={summary.get('win_rate')}")
-        if summary.get("avg_return_pct") is not None:
-            metrics.append(f"avg_return_pct={summary.get('avg_return_pct')}")
-        metric_text = f" ({', '.join(metrics)})" if metrics else ""
-        lines.append(
-            f"- {layer}: used={row.get('used')} status={_text(row.get('status'), '')} "
-            f"effect={_text(row.get('effect'), '')}{metric_text}"
-        )
-    return lines
+    return _usage_lines_owner.memory_usage_lines(memory, facade=sys.modules[__name__])
 
 
 def _news_usage_lines(news: Dict[str, Any]) -> List[str]:
-    if not bool(news.get("available")):
-        return ["- 뉴스 사용 trace: -"]
-    query_targets = ", ".join(str(x) for x in _as_list(news.get("query_targets"))[:10]) or "-"
-    return [
-        f"- 검색/수집 타깃: {query_targets}",
-        f"- 사용 요약: {_text(news.get('human_summary'))}",
-        f"- 시장 효과: {_text(news.get('market_effect'))}",
-        f"- 플레이북 효과: {_text(news.get('playbook_effect'))}",
-        f"- 스캐너 반영: {_text(news.get('scanner_guidance_effect'))}",
-        f"- 모니터 반영: {_text(news.get('monitor_policy_effect'))}",
-        f"- 근거 헤드라인 수: market={news.get('market_headline_count')}, candidate={news.get('candidate_headline_count')}",
-        f"- query reasoning: {_text(news.get('news_query_reasoning'))}",
-    ]
+    return _usage_lines_owner.news_usage_lines(news, facade=sys.modules[__name__])
 
 
 def render_strategist_llm_summary_markdown(payload: Dict[str, Any]) -> str:
@@ -788,55 +727,11 @@ def _render_stage_specific_summary_markdown(payload: Dict[str, Any]) -> str:
 
 
 def _memory_usage_lines_clean(memory: Dict[str, Any]) -> List[str]:
-    if not bool(memory.get("available")):
-        return ["- 메모리 사용 trace: -"]
-    lines = [
-        f"- 활성 레이어: {', '.join(str(x) for x in _as_list(memory.get('active_layers'))) or '-'}",
-        f"- 우선순위: {' -> '.join(str(x) for x in _as_list(memory.get('priority_order'))) or '-'}",
-        f"- 요약: {_text(memory.get('human_summary'))}",
-    ]
-    applied = _as_dict(memory.get("applied_to_strategy"))
-    if applied:
-        lines.append(f"- 전략 반영: playbook={_text(applied.get('playbook_effect'))}, risk={_text(applied.get('risk_posture_effect'))}")
-        lines.append(
-            f"- scanner/monitor 반영: scanner={_text(applied.get('scanner_guidance_effect'))}, "
-            f"monitor={_text(applied.get('monitor_policy_effect'))}"
-        )
-    layer_decisions = _as_dict(memory.get("layer_decisions"))
-    for layer in ("daily", "weekly", "monthly", "symbol"):
-        row = _as_dict(layer_decisions.get(layer))
-        if not row:
-            continue
-        summary = _as_dict(row.get("operator_summary"))
-        metrics = []
-        if summary.get("trade_count") is not None:
-            metrics.append(f"trades={summary.get('trade_count')}")
-        if summary.get("win_rate") is not None:
-            metrics.append(f"win_rate={summary.get('win_rate')}")
-        if summary.get("avg_return_pct") is not None:
-            metrics.append(f"avg_return_pct={summary.get('avg_return_pct')}")
-        metric_text = f" ({', '.join(metrics)})" if metrics else ""
-        lines.append(
-            f"- {layer}: used={row.get('used')} status={_text(row.get('status'), '')} "
-            f"effect={_text(row.get('effect'), '')}{metric_text}"
-        )
-    return lines
+    return _usage_lines_owner.memory_usage_lines_clean(memory, facade=sys.modules[__name__])
 
 
 def _news_usage_lines_clean(news: Dict[str, Any]) -> List[str]:
-    if not bool(news.get("available")):
-        return ["- 뉴스 사용 trace: -"]
-    query_targets = ", ".join(str(x) for x in _as_list(news.get("query_targets"))[:10]) or "-"
-    return [
-        f"- 검색/수집 대상: {query_targets}",
-        f"- 사용 요약: {_text(news.get('human_summary'))}",
-        f"- 시장 효과: {_text(news.get('market_effect'))}",
-        f"- 플레이북 효과: {_text(news.get('playbook_effect'))}",
-        f"- 스캐너 반영: {_text(news.get('scanner_guidance_effect'))}",
-        f"- 모니터 반영: {_text(news.get('monitor_policy_effect'))}",
-        f"- 근거 헤드라인 수: market={news.get('market_headline_count')}, candidate={news.get('candidate_headline_count')}",
-        f"- query reasoning: {_text(news.get('news_query_reasoning'))}",
-    ]
+    return _usage_lines_owner.news_usage_lines_clean(news, facade=sys.modules[__name__])
 
 
 def _quality_audit_lines(payload: Dict[str, Any]) -> List[str]:
