@@ -1,5 +1,11 @@
 # RF-082 — 코드 구조/함수 재배치 설계 (T06)
 
+## T06 research/evaluation OWNER 최종 판정
+- docs/research/, docs/evaluation/, docs/offline_alpha/, docs/quant_trade_diagnosis/: source citations, reproducibility and original provenance preserved.
+- No active runtime/UEF producer may be substituted by a document-only copy. Existing data references and path-to-owner mapping remain.
+- Correct existing domain path yields KEEP_OK with blob and one-line reason; source function MOVE not applicable.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-082.md` blob `4230aa6849345392336e0003c916bf1a5a08b5b5`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 115개 파일; 다른 RF 경로 쓰기 금지.
 

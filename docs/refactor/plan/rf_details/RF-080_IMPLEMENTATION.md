@@ -1,5 +1,11 @@
 # RF-080 — 코드 구조/함수 재배치 설계 (T06)
 
+## T06 patch history OWNER 최종 판정
+- docs/daily_patch/ and docs/trading_agent_patch_notes_detailed_update/: historical release/patch provenance; keep names and dates, do not rewrite history.
+- Other owned docs retain domain directory and consumers. Existing file per-path SOURCE/TARGET table below is the authoritative scope.
+- One-line KEEP_OK when link/owner correct, no code/tests or cosmetic relocation. No A/B doc edits.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-080.md` blob `01f667d24df300e516599b35162b163c93c87d54`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 313개 파일; 다른 RF 경로 쓰기 금지.
 

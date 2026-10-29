@@ -1,5 +1,11 @@
 # RF-081 — 코드 구조/함수 재배치 설계 (T06)
 
+## T06 roadmap OWNER 최종 판정
+- docs/plan/ and docs/roadmap/: retained historical plans, not active execution authority over C01/C02.
+- Historical document code examples are not operative source functions, and do not justify creating new Python modules.
+- Path/link valid and single role yields KEEP_OK in one line with blob; no file moves just for tidiness.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-081.md` blob `fcb0e7674b8b0f450031cd7991db42e474403e31`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 198개 파일; 다른 RF 경로 쓰기 금지.
 

@@ -1,5 +1,13 @@
 # RF-079 — 코드 구조/함수 재배치 설계 (T06)
 
+## T06 정본 문서 OWNER 최종 판정
+- docs/refactor/work_orders/CURRENT.md: active router only, no historic status accumulation; KEEP.
+- docs/refactor/architecture/TREE_V3_FROZEN.md and T00_TARGET_TREE.md, T01 through T09: immutable frozen goals; KEEP.
+- docs/refactor/plan/STATUS.md, criteria, CSV: single authoritative status/history; KEEP.
+- Historical P15 snapshots stay in existing history paths and never replace CURRENT; KEEP_ARCHIVED.
+- All owned Markdown paths in this RF file already have SOURCE/TARGET entries; proper link and role means one-line KEEP_OK plus blob. No Python function move, no A/B doc writes.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-079.md` blob `f584de8f1cb2b564434ba872570be272ea6438f8`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 386개 파일; 다른 RF 경로 쓰기 금지.
 
