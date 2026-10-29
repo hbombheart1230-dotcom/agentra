@@ -1,0 +1,103 @@
+# Agentra P1.5 — RF-001~RF-093 구현 세부 설계 인덱스
+
+기준 `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062` · 실제 FILE_COVERAGE 4106 경로 · 93개 RF 독점 Actor 배치. T00~T09/V3 원형 유지.
+
+**완료 의미:** 설계 파일이 작성됐다는 의미이며 소스 리팩터링 코드가 전부 DONE된 것은 아니다. 대표 대형 모듈은 함수명을 확정했고, 나머지는 정확한 파일/blob/크기와 우선 분석 원본을 지정했으며 함수 실사 미완료를 표시한다. 미실사 상태를 분석 완료로 간주하지 않는다.
+
+| RF | 담당 | 목표 | 파일수 | 세부 설계 |
+|---|---|---|---:|---|
+| RF-001 | Codex B | T02 | 33 | [상세](./RF-001_IMPLEMENTATION.md) |
+| RF-002 | Codex B | T02 | 9 | [상세](./RF-002_IMPLEMENTATION.md) |
+| RF-003 | Codex B | T02 | 25 | [상세](./RF-003_IMPLEMENTATION.md) |
+| RF-004 | Codex B | T02 | 35 | [상세](./RF-004_IMPLEMENTATION.md) |
+| RF-005 | Codex B | T02 | 40 | [상세](./RF-005_IMPLEMENTATION.md) |
+| RF-006 | Codex B | T02 | 60 | [상세](./RF-006_IMPLEMENTATION.md) |
+| RF-007 | Codex B | T02 | 38 | [상세](./RF-007_IMPLEMENTATION.md) |
+| RF-008 | Codex B | T07 | 1 | [상세](./RF-008_IMPLEMENTATION.md) |
+| RF-009 | Codex B | T07 | 3 | [상세](./RF-009_IMPLEMENTATION.md) |
+| RF-010 | Codex B | T07 | 1 | [상세](./RF-010_IMPLEMENTATION.md) |
+| RF-011 | Codex B | T07 | 3 | [상세](./RF-011_IMPLEMENTATION.md) |
+| RF-012 | Codex B | T07 | 37 | [상세](./RF-012_IMPLEMENTATION.md) |
+| RF-013 | Claude A | T00/V3 | 67 | [상세](./RF-013_IMPLEMENTATION.md) |
+| RF-014 | Claude A | T00/V3 | 20 | [상세](./RF-014_IMPLEMENTATION.md) |
+| RF-015 | Claude A | T00/V3 | 19 | [상세](./RF-015_IMPLEMENTATION.md) |
+| RF-016 | Claude A | T00/V3 | 8 | [상세](./RF-016_IMPLEMENTATION.md) |
+| RF-017 | Claude A | T00/V3 | 5 | [상세](./RF-017_IMPLEMENTATION.md) |
+| RF-018 | Codex B | T00/V3 | 47 | [상세](./RF-018_IMPLEMENTATION.md) |
+| RF-019 | Claude A | T00/V3 | 29 | [상세](./RF-019_IMPLEMENTATION.md) |
+| RF-020 | Codex B | T00/V3 | 30 | [상세](./RF-020_IMPLEMENTATION.md) |
+| RF-021 | Claude A | T00/V3 | 32 | [상세](./RF-021_IMPLEMENTATION.md) |
+| RF-022 | Codex B | T00/V3 | 40 | [상세](./RF-022_IMPLEMENTATION.md) |
+| RF-023 | Codex B | T00/V3 | 21 | [상세](./RF-023_IMPLEMENTATION.md) |
+| RF-024 | Codex B | T00/V3 | 18 | [상세](./RF-024_IMPLEMENTATION.md) |
+| RF-025 | Codex B | T00/V3 | 13 | [상세](./RF-025_IMPLEMENTATION.md) |
+| RF-026 | Codex B | T00/V3 | 15 | [상세](./RF-026_IMPLEMENTATION.md) |
+| RF-027 | Codex B | T00/V3 | 77 | [상세](./RF-027_IMPLEMENTATION.md) |
+| RF-028 | Claude A | T00/V3 | 85 | [상세](./RF-028_IMPLEMENTATION.md) |
+| RF-029 | Claude A | T00/V3 | 38 | [상세](./RF-029_IMPLEMENTATION.md) |
+| RF-030 | Claude A | T00/V3 | 16 | [상세](./RF-030_IMPLEMENTATION.md) |
+| RF-031 | Claude A | T00/V3 | 38 | [상세](./RF-031_IMPLEMENTATION.md) |
+| RF-032 | Claude A | T00/V3 | 135 | [상세](./RF-032_IMPLEMENTATION.md) |
+| RF-033 | Claude A | T00/V3 | 76 | [상세](./RF-033_IMPLEMENTATION.md) |
+| RF-034 | Claude A | T00/V3 | 59 | [상세](./RF-034_IMPLEMENTATION.md) |
+| RF-035 | Claude A | T00/V3 | 119 | [상세](./RF-035_IMPLEMENTATION.md) |
+| RF-036 | Codex B | T00/V3 | 34 | [상세](./RF-036_IMPLEMENTATION.md) |
+| RF-037 | Claude A | T00/V3 | 21 | [상세](./RF-037_IMPLEMENTATION.md) |
+| RF-038 | Codex B | T00/V3 | 39 | [상세](./RF-038_IMPLEMENTATION.md) |
+| RF-039 | Claude A | T00/V3 | 16 | [상세](./RF-039_IMPLEMENTATION.md) |
+| RF-040 | Claude A | T00/V3 | 19 | [상세](./RF-040_IMPLEMENTATION.md) |
+| RF-041 | Claude A | T00/V3 | 7 | [상세](./RF-041_IMPLEMENTATION.md) |
+| RF-042 | Codex B | T00/V3 | 2 | [상세](./RF-042_IMPLEMENTATION.md) |
+| RF-043 | Claude A | T00/V3 | 6 | [상세](./RF-043_IMPLEMENTATION.md) |
+| RF-044 | Codex B | T00/V3 | 27 | [상세](./RF-044_IMPLEMENTATION.md) |
+| RF-045 | Codex B | T00/V3 | 24 | [상세](./RF-045_IMPLEMENTATION.md) |
+| RF-046 | Claude A | T00/V3 | 2 | [상세](./RF-046_IMPLEMENTATION.md) |
+| RF-047 | Claude A | T00/V3 | 4 | [상세](./RF-047_IMPLEMENTATION.md) |
+| RF-048 | Codex B | T00/V3 | 19 | [상세](./RF-048_IMPLEMENTATION.md) |
+| RF-049 | Claude A | T00/V3 | 5 | [상세](./RF-049_IMPLEMENTATION.md) |
+| RF-050 | Claude A | T00/V3 | 11 | [상세](./RF-050_IMPLEMENTATION.md) |
+| RF-051 | Claude A | T00/V3 | 15 | [상세](./RF-051_IMPLEMENTATION.md) |
+| RF-052 | Claude A | T00/V3 | 2 | [상세](./RF-052_IMPLEMENTATION.md) |
+| RF-053 | Claude A | T00/V3 | 12 | [상세](./RF-053_IMPLEMENTATION.md) |
+| RF-054 | Claude A | T00/V3 | 5 | [상세](./RF-054_IMPLEMENTATION.md) |
+| RF-055 | Claude A | T00/V3 | 17 | [상세](./RF-055_IMPLEMENTATION.md) |
+| RF-056 | Codex B | T00/V3 | 3 | [상세](./RF-056_IMPLEMENTATION.md) |
+| RF-057 | Claude A | T00/V3 | 6 | [상세](./RF-057_IMPLEMENTATION.md) |
+| RF-058 | Claude A | T00/V3 | 3 | [상세](./RF-058_IMPLEMENTATION.md) |
+| RF-059 | Claude A | T00/V3 | 21 | [상세](./RF-059_IMPLEMENTATION.md) |
+| RF-060 | Codex B | T00/V3 | 4 | [상세](./RF-060_IMPLEMENTATION.md) |
+| RF-061 | Claude A | T00/V3 | 3 | [상세](./RF-061_IMPLEMENTATION.md) |
+| RF-062 | Codex B | T00/V3 | 1 | [상세](./RF-062_IMPLEMENTATION.md) |
+| RF-063 | Codex B | T08 | 76 | [상세](./RF-063_IMPLEMENTATION.md) |
+| RF-064 | Codex B | T08 | 58 | [상세](./RF-064_IMPLEMENTATION.md) |
+| RF-065 | Codex B | T08 | 54 | [상세](./RF-065_IMPLEMENTATION.md) |
+| RF-066 | Codex B | T08 | 30 | [상세](./RF-066_IMPLEMENTATION.md) |
+| RF-067 | Codex B | T08 | 14 | [상세](./RF-067_IMPLEMENTATION.md) |
+| RF-068 | Codex B | T08 | 8 | [상세](./RF-068_IMPLEMENTATION.md) |
+| RF-069 | Codex B | T08 | 7 | [상세](./RF-069_IMPLEMENTATION.md) |
+| RF-070 | Codex B | T08 | 142 | [상세](./RF-070_IMPLEMENTATION.md) |
+| RF-071 | Codex B | T08 | 42 | [상세](./RF-071_IMPLEMENTATION.md) |
+| RF-072 | Codex B | T09 | 33 | [상세](./RF-072_IMPLEMENTATION.md) |
+| RF-073 | Claude A | T09 | 21 | [상세](./RF-073_IMPLEMENTATION.md) |
+| RF-074 | Codex B | T09 | 75 | [상세](./RF-074_IMPLEMENTATION.md) |
+| RF-075 | Claude A | T09 | 88 | [상세](./RF-075_IMPLEMENTATION.md) |
+| RF-076 | Codex B | T09 | 59 | [상세](./RF-076_IMPLEMENTATION.md) |
+| RF-077 | Claude A | T09 | 7 | [상세](./RF-077_IMPLEMENTATION.md) |
+| RF-078 | Codex B | T09 | 375 | [상세](./RF-078_IMPLEMENTATION.md) |
+| RF-079 | Claude A | T06 | 386 | [상세](./RF-079_IMPLEMENTATION.md) |
+| RF-080 | Codex B | T06 | 313 | [상세](./RF-080_IMPLEMENTATION.md) |
+| RF-081 | Claude A | T06 | 198 | [상세](./RF-081_IMPLEMENTATION.md) |
+| RF-082 | Codex B | T06 | 115 | [상세](./RF-082_IMPLEMENTATION.md) |
+| RF-083 | Claude A | T06 | 60 | [상세](./RF-083_IMPLEMENTATION.md) |
+| RF-084 | Codex B | T06 | 41 | [상세](./RF-084_IMPLEMENTATION.md) |
+| RF-085 | Claude A | T06 | 104 | [상세](./RF-085_IMPLEMENTATION.md) |
+| RF-086 | Codex B | T06 | 96 | [상세](./RF-086_IMPLEMENTATION.md) |
+| RF-087 | Claude A | T05 | 10 | [상세](./RF-087_IMPLEMENTATION.md) |
+| RF-088 | Codex B | T05 | 9 | [상세](./RF-088_IMPLEMENTATION.md) |
+| RF-089 | Claude A | T05 | 14 | [상세](./RF-089_IMPLEMENTATION.md) |
+| RF-090 | Codex B | T03 | 8 | [상세](./RF-090_IMPLEMENTATION.md) |
+| RF-091 | Claude A | T04 | 25 | [상세](./RF-091_IMPLEMENTATION.md) |
+| RF-092 | Codex B | T01 | 7 | [상세](./RF-092_IMPLEMENTATION.md) |
+| RF-093 | Claude A | T00 | 11 | [상세](./RF-093_IMPLEMENTATION.md) |
+
+**중복 금지:** 원본 path는 CSV에서 단일 RF가 소유. 변경 목적지 경로가 다른 RF 영역이면 소유 actor가 같은지 확인하고 C03이 target 소유권을 먼저 고정. 다른 개발자의 동시 쓰기 금지.
