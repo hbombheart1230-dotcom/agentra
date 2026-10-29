@@ -60,3 +60,25 @@
 
 ## 5. RunLab 분리
 - 정본 [R00](../../runtime/validation/R00_RUNTIME_VALIDATION_RULES.md)·[D04](../../runtime/validation/D04_RUNTIME_VALIDATION_RULES.md)·[RunLab CURRENT](../../runtime/validation/CURRENT.md)·[Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32). RunLab은 관측·새 사실을 #32 댓글로만, 지팀장은 신규 건만 사건 대장에 접수/원 RF owner 판정. 개발 `DEV_RESOLVED` ≠ 런타임 `RUNTIME_VERIFIED`; 승인된 적용 이미지·실증 없이 사건 CLOSED 불가. 안전 HOLD는 영향 경계에만 적용한다.
+
+## 6. 예약 연동·재개 계약 (홍사장 2026-10-29 승인)
+
+본 절은 기존 §1~§5의 Owner 독점, RF 원래 C1~C7, 안전 HOLD, hosted CI 및 RunLab 검증을 완화하지 않는다. 예약 시작은 완료/실행시간/푸시 권한 보장이 아니다.
+
+### 6.1 단계별 예약·인수
+- 권장 2시간 순환(KST): C03 분00 지시 발행 → A/B 각자 개발·반대 peer(B 분10, 외부 Claude A 별도) → C05 분45 사전 수용(C1~C5/실물 LEAD 판정) → C04 다음 시간 분15 LEAD 통합/CI → C05 다음 시간 분45 사후 수용(C6 확인 및 C7/DONE/STATUS) → C06 다음 시간 분55 독립 감사. C05는 매시간 분45의 같은 예약이 사전/사후를 판단한다. 예: 10:00/10:10/10:45/11:15/11:45/11:55.
+- 시각만으로 앞 단계 완료를 가정하지 않는다. 앞 담당이 IN_PROGRESS/BLOCKED/NOT_RUN이면 최신 실제 원격 코드·Issue·RF·CI 증거로 가능한 단계만 수행한다. 앞 단계 미완료는 새 RF의 통합·DONE을 허용하지 않는다.
+- C06은 독립 읽기 전용 감사이며 C06_AUDIT_CURRENT.md를 단일 감사 지침으로 사용한다. #37 감사 출력, #11/#12 개발자 증거, #36 지팀장 인계다.
+
+### 6.2 A/B 단일 지시 버전·환경·재개
+- A/B는 실행 때 원격 integration/p1.5의 C01 또는 C02 한 파일을 직접 읽어 CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, OWNER_REMOTE_SHA를 고정하고 번호별 ORDER_ID = C01|C02 : ORDER_FILE_BLOB_SHA : ITEM_NO를 만든다. 오래된 local ref·세션 메모·HANDOFF를 대신 사용하지 않는다. 실행 중 C03이 바꾸면 시작 당시의 원격 지시를 완료하거나 실제 체크포인트 후 다음 회차에 새 버전을 적용한다.
+- 첫 행동으로 owner 원격 SHA, 작업 트리 dirty/경합 및 허용 파일, Python 정상/-O pytest 모듈 존재, Git 원격 읽기/승인된 push 경로를 점검한다. 실제 push 성공은 이후 원격 blob을 별도 확인한다.
+- 번호별 ITEM_STATUS는 PENDING / RUNNING / LOCAL_IMPLEMENTED / PUSHED / TEST_VERIFIED / PEER_VERIFIED / VERIFIED_ALREADY / BLOCKED / NOT_RUN. VERIFIED_ALREADY는 정확 SOURCE SHA·원래 범위·정상/-O exit 근거가 있을 때만 쓴다. RF 물리 단계/원래 C1~C7은 C05 독점 판정이며 ITEM_STATUS와 같지 않다.
+- 매회 #11/#12에 최소 ORDER_ID, ORDER_FILE_BLOB_SHA, OWNER_SOURCE_SHA, 번호별 상태, CHANGED_PATHS, normal/-O 실제 exit 또는 NOT_RUN, PUSH_REMOTE_SHA 또는 정확 차단, LAST_COMMAND/FUNCTION, ERROR, UNBLOCK_OWNER, NEXT, 실측 START_KST/END_KST/ELAPSED_MIN(없으면 NOT_VERIFIED)을 남긴다. 로컬 구현·compile/smoke·테스트 파일 존재를 원격 PASS로 간주하지 않는다.
+- pytest 부재는 해당 테스트만 BLOCKED, 인증/private export 금지는 push만 BLOCKED, 플랫폼 실행 한도는 그 명령만 BLOCKED. 나머지 허용 코드·tmp/fake 테스트·peer는 계속한다. 정책 우회·임의 새 브랜치·force push 금지. 중단 시 마지막 실제 명령/함수와 재개점을 남긴다.
+
+### 6.3 C05 사전/사후 수용·문서·감사
+- C05 사전 단계: 원본 RF의 전체 Owner C1~C5·정확 SOURCE 독립 peer를 확인한 RF만 LEAD 승격. C04는 실물 LEAD만 최소 통합/KEEP하고 정확 integration SHA hosted normal/-O CI 또는 §2.2의 엄격한 동등성 증거를 제출. C05 사후 단계는 신규 C6 입증 후에만 C7/DONE/STATUS 완료. 긴급 DEV_RESOLVED는 이 과정 및 RunLab RUNTIME_VERIFIED를 대체하지 않는다.
+- D00은 정책이 변할 때만 갱신한다. C03은 새 C01/C02에도 이 절의 실행 preflight/버전/보고 요구를 넣고, C03~C05 각 문서는 현재 규칙·다음 실행 조건만 유지한다. 오래된 테스트·중복 PASS·회차 로그는 문서에 누적하지 않고 Issue/원본 RF/CI 링크로 참조한다.
+- C06은 신규 원격 변화 및 첫 미충족 C를 중심으로 실효 성과(원격 신규 코드/테스트, C4, C6, DONE 증가와 차단 해소)를 감사한다. 시간/테스트 수는 보조 지표. 신규 시정사항에만 #37과 필요한 대상 Issue를 작성하며 반복 댓글을 만들지 않는다.
+- GitHub Actions의 기존 정확 SHA CI 결과 읽기·증거 검증은 허용된 운영 범위에서 이용한다. 신규 workflow/CI 보안·branch protection·frozen oracle 변경이나 Git push 이벤트로 ChatGPT/Claude/Codex 세션을 직접 기동하는 별도 실행기는 이 절만으로 승인되지 않는다.
