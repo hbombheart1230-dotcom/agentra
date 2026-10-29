@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import sys
 from typing import Any, Dict, List
 
 from libs.llm.model_names import normalize_openrouter_model_name
+from libs.llm import model_catalog_resolve_policy_llm_slot as _slot_owner
 
 
 MODEL_CATALOG: Dict[str, Dict[str, Any]] = {
@@ -271,39 +273,7 @@ def build_execution_profile_observability(
 
 
 def resolve_policy_llm_slot(policy: Dict[str, Any] | None, *path: str, default_profile: str) -> Dict[str, Any]:
-    container = policy if isinstance(policy, dict) else {}
-    slot: Dict[str, Any] = {}
-    slot_source = "default_profile"
-    for candidate, source in (
-        (_nested_get(container, "applied_policy", "llm", *path), "applied_policy.llm"),
-        (_nested_get(container, "commander", "applied_policy", "llm", *path), "commander.applied_policy.llm"),
-        (_nested_get(container, "reporter_output", "applied_policy", "llm", *path), "reporter_output.applied_policy.llm"),
-        (_nested_get(container, "llm", *path), "llm"),
-        (_nested_get(container, "reporter_policy", "llm", *path), "reporter_policy.llm"),
-    ):
-        if isinstance(candidate, dict) and candidate:
-            slot = dict(candidate)
-            slot_source = source
-            break
-
-    resolved = resolve_model_profile(str(slot.get("profile") or ""), default_profile=default_profile)
-    primary = normalize_openrouter_model_name(
-        str(slot.get("primary") or slot.get("model") or resolved.get("primary") or "")
-    )
-    fallback = normalize_openrouter_model_name(
-        str(slot.get("fallback") or resolved.get("fallback") or "")
-    )
-    cards = [get_model_card(model) for model in _dedupe_models(primary, fallback)]
-    return {
-        "profile": str(slot.get("profile") or resolved.get("profile") or default_profile),
-        "requested_profile": str(slot.get("profile") or resolved.get("requested_profile") or default_profile),
-        "primary": primary,
-        "fallback": fallback,
-        "models": _dedupe_models(primary, fallback),
-        "cards": cards,
-        "policy_source": str(slot.get("policy_source") or slot_source or "default_profile"),
-        "profile_source": slot_source,
-    }
+    return _slot_owner.resolve_policy_llm_slot(policy, *path, default_profile=default_profile, facade=sys.modules[__name__])
 
 
 def resolve_policy_llm_execution_slot(
