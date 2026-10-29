@@ -16,14 +16,15 @@
 
 - 함수 body를 `collector_raw_row_impl(*, day,index_name,slot,root,facade)`로 MOVE하고 기존 `_collector_raw_row`는 signature 유지 wrapper로 만든다. 관측기 `observation_for_slot`와 `_has_verification_evidence`는 **함수 안에서 지연 import**하던 기존 구조 유지. 새 Owner는 기존 facade를 import하지 않는다. 원본 `_number`, `market_epoch`, `_COLLECTOR_ABSENT_STATES`, `_COLLECTOR_VERIFIED_STATES`를 호출 시 facade에서 참조하게 한다.
 - 결과 상태 3종을 변경하지 않는다: `availability=MISSING` + `never_attempted=True`는 **None(ABSENT)**; `LATE_MISSED/CORRUPT_STATE/미검증 시간`은 `integrity_failure=True`와 이유·시각·참고 관측값; `AVAILABLE/PARTIAL`이라도 검증 증거·index component가 없으면 INVALID, 두 검증이 모두 참일 때만 `ts,close,open,source,capture_status`를 반환한다. 실제 수집기·Kiwoom API 호출 금지.
-- `tests/test_p15_collector_observations_extraction.py`: 가짜 `observation_for_slot` 및 검증 함수 주입으로 ABSENT/INVALID/VERIFIED/오류 시간/해당 index 누락을 각각 비교; 새 Owner는 **350 LOC 이하**. 기존 `tests/test_q10_collector_fix3.py`, `tests/test_q10_reaction_reader_collector_integration.py` 정상/`-O` 통과 조건. 읽기 전용 mock/임시 파일만 사용.
+- **확인된 실패 입력 추가:** `availability="AVAILABLE"`, 유효한 index 가격, fake `_has_verification_evidence=True`이지만 `market_epoch(index_row)=None`인 조합에서 현재 `int(None)` TypeError가 발생한다. 새 Owner의 최종 `ts` 구성 전에 market timestamp를 한 번 검증하여 이 경우 `integrity_failure=True`·사유 `market_timestamp_missing`(또는 기존 소비자와 호환되는 구체 사유)을 반환하고 **legacy fallback을 절대 허용하지 않는다**. 정상 VERIFIED timestamp/가격/소스 필드는 바꾸지 않는다. 실패 전 재현과 수정 후 JSON 계약을 둘 다 테스트한다.
+- `tests/test_p15_collector_observations_extraction.py`: 가짜 `observation_for_slot` 및 검증 함수 주입으로 ABSENT/INVALID/VERIFIED/오류 시간/해당 index 누락·market timestamp None을 각각 비교; 새 Owner는 **350 LOC 이하**. 기존 `tests/test_q10_collector_fix3.py`, `tests/test_q10_reaction_reader_collector_integration.py` 정상/`-O` 통과 조건. 읽기 전용 mock/임시 파일만 사용.
 
 ## 3 — 동일 파일의 지수 시계열 파일 IO 분리 (개발·필수)
 
 **SOURCE:** `reaction_reader.py::load_index_timeline` (대략 271~291행). **새 Owner:** `libs/reporting/baseline_samsung_hynix/forward_validation/index_timeline.py`.
 
 - `load_index_timeline_impl(*, day,macro_root,index_name,facade)`로 기존 파일 읽기·JSON 파싱·시간 변환·중복 timestamp 마지막 값 선택·정렬 기능 본문을 MOVE. 기존 `load_index_timeline` 이름/키워드 인자는 wrapper 유지. Owner는 facade의 `_number`를 호출 시 사용. 파일 read는 호출될 때만 수행하며 import 자체는 IO 0.
-- `tmp_path/day/*_macro_indicators.json` 가짜 파일로 ① 정상 입력 두 건의 timestamp 순서 ② 동시각 두 건에서 정렬 후 마지막 entry 선택 ③ JSON 손상/날짜 누락/인덱스 없음/숫자 변환 실패 건은 기존대로 skip ④ 빈 폴더 빈 리스트 ⑤ 입력 파일 수정 0을 확인. 현재 함수의 `except` 범위, `open/high/low`의 현재 falsy fallback, 누락 volume의 None 등 **현행 동작 그대로** 보존. 신규 `tests/test_p15_index_timeline_extraction.py` 및 정상/`-O`.
+- `tmp_path/day/*_macro_indicators.json` 가짜 파일로 ① 정상 입력 두 건의 timestamp 순서 ② 동시각 두 건에서 정렬 후 마지막 entry 선택 ③ JSON 손상/날짜 누락/인덱스 없음/숫자 변환 실패 건은 기존대로 skip ④ 빈 폴더 빈 리스트 ⑤ 입력 파일 수정 0을 확인. **확인된 예외:** JSON 배열 `[]`는 현재 `payload.get` AttributeError로 전체 로딩을 중단한다. 새 Owner에서 `isinstance(payload, Mapping)` 및 중첩 `korea_indices/indices`의 Mapping 여부를 `.get` 전에 확인해 비객체/비정상 schema 파일만 건너뛰고 다음 정상 파일을 계속 읽는다. malformed 배열+정상 객체가 함께 있을 때 정상 객체만 결과에 남고 입력 파일 변경 0이어야 한다. 정상 객체의 기존 `except` 범위·`open/high/low` falsy fallback·누락 volume None은 유지한다. 신규 `tests/test_p15_index_timeline_extraction.py` 및 정상/`-O`.
 - 세 분리의 마지막에는 `reaction_reader.py` 자체 실제 물리 LOC와 세 신설 모듈 LOC, 분리 전후 call graph/참조, 종합 SOURCE SHA를 기록. **소스 줄 이동이 아니라 wrapper가 실제 새 Owner 함수를 호출하는지** 검증한다.
 
 ## 4 — 반응→점수→보고 전체 호출자 회귀 (새 결함 시 최소 수정)
@@ -32,6 +33,7 @@
 
 - 합성 입력으로 `build_actual_reactions` → `score_semiconductor_signal`/해당 점수 함수 → `build_shadow_comparison` → `render_forward_validation_report`의 기존 진짜 소비자 호출을 확인한다. 해당 함수 signature가 정확히 다르면 **소스의 실제 연결 관계를 그대로 사용**, 가짜 adapter/미존재 함수를 만들어 PASS 내지 않는다.
 - ① CLOSE가 없는 지수는 참고가격이 수익률/entry 결과에 섞이지 않음 ② VERIFIED collector CLOSE는 표시 가격·수익률 동일 ③ 09:00 volume=0 오프닝 제외 ④ 이전 종가 0·누락 ⑤ 결측 scoring 데이터가 `INSUFFICIENT_EVIDENCE`인 기존 경계 ⑥ 거래 없는 날/빈 목록 ⑦ 결과 행 정렬·표본 수·문장 출력이 기존 계약과 일치함을 확인한다.
+- **실제 소스 결함을 명시적으로 수정:** `shadow_comparison.py::build_shadow_comparison`에서 POSITIVE expected row와 `points={"09:00":{"ts":1,"price":100},"CLOSE":{"price":110}}`, `path=[]`, `cost_pct=0`, `slippage_pct=0`을 입력하면 OBSERVED outcome의 `mfe_pct/mae_pct=None` 이후 summary의 `float(None)` TypeError가 발생한다(원본 127~128행). summary `average_mfe_pct/average_mae_pct`는 **관측 가능한 숫자만** 평균 내고 유효 관측 0건이면 `None`; `trade_count`/`average_return_pct`와 기존 정상 path 출력은 불변. 결측을 임의 `0.0`으로 대체하지 않는다. `tests/test_p15_forward_validation_parity_chain.py`에 빈 path 1건, 빈 path+정상 path 혼합 2건, 정상 path만 1건의 정확 기대 dict와 오류 재현→수정 후 PASS를 추가한다.
 - 실제 결함이 재현되면 **이 범위의 A 소유 파일**에서만 최소 수정하고 수정 전 실패/수정 후 PASS 증거를 남긴다. 외부 네트워크·시장 실거래·운영 state·배포 실행 금지. 신규 `tests/test_p15_forward_validation_parity_chain.py` + 기존 `tests/test_q10_index_close_fallback.py`, `tests/test_q10_lead_market_forward_validation.py` 정상/`-O`.
 
 ## 5 — BTC 기존 성과·리포트 계약 보강 (후속 안전 작업)
