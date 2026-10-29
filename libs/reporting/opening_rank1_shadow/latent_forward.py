@@ -229,7 +229,7 @@ def _render(payload: Mapping[str, Any]) -> str:
 
 def build_latent_reactivation_forward(
     *, watch_payload: Mapping[str, Any], state_path: Path, output_root: Path,
-    allow_fresh_fetch: bool,
+    allow_fresh_fetch: bool, cache_root: Path | None = None,
 ) -> dict[str, Any]:
     triggers = _fresh_triggers(watch_payload)
     opening_root = Path(output_root).parent
@@ -249,7 +249,7 @@ def build_latent_reactivation_forward(
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in eligible:
         grouped[str(row.get("trigger_day") or "")].append(row)
-    cache_root = Path("data/research/opening_rank1_shadow/latent_forward_candles")
+    cache_root = Path(cache_root) if cache_root is not None else Path("data/research/opening_rank1_shadow/latent_forward_candles")
     observed = []
     for day, rows in sorted(grouped.items()):
         symbols = tuple(sorted({str(row.get("symbol") or "") for row in rows}))

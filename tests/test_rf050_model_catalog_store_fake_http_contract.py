@@ -92,8 +92,8 @@ def test_cards_payload_skips_bad_rows_sorts_by_id_and_applies_overrides():
     _eq(by["a/first"]["display_name"], "a/first")                                         # name falls back to the id
     ov = mc.STATIC_MODEL_CARD_OVERRIDES[override_id]
     _eq((by[override_id]["cost_tier"], by[override_id]["latency_tier"], by[override_id]["recommended_roles"]), (ov["cost_tier"], ov["latency_tier"], ov["recommended_roles"]))
-    with pytest.raises(AttributeError):
-        mc.build_model_cards_payload("junk")                                               # current contract: the data guard is bypassed by the later .get() on a non-dict
+    junk = mc.build_model_cards_payload("junk")                                            # P15 C02-5: non-dict input normalizes to an empty valid payload (formerly AttributeError)
+    _eq((junk["cards"], junk["card_count"], junk["source_model_count"]), ([], 0, 0))
     _eq(mc.build_model_cards_payload({"data": []})["source_model_count"], 0)
 
 

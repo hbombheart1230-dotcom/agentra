@@ -98,6 +98,13 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         return float(default)
 
 
+def _context_window(model_row: Dict[str, Any]) -> int:
+    try:
+        return max(0, int(model_row.get("context_length") or 0))
+    except (TypeError, ValueError, OverflowError):
+        return 0
+
+
 def _provider_from_model_id(model_id: str) -> str:
     text = str(model_id or "").strip()
     if "/" in text:
@@ -149,7 +156,7 @@ def _derive_reliability(model_row: Dict[str, Any]) -> str:
 
 def _derive_tags(model_row: Dict[str, Any]) -> List[str]:
     model_id = str(model_row.get("id") or "").strip()
-    context_window = int(model_row.get("context_length") or 0)
+    context_window = _context_window(model_row)
     pricing = model_row.get("pricing") if isinstance(model_row.get("pricing"), dict) else {}
     prompt_cost = _safe_float(pricing.get("prompt"), 0.0)
     completion_cost = _safe_float(pricing.get("completion"), 0.0)
@@ -200,7 +207,10 @@ def save_openrouter_models(payload: Dict[str, Any], path: Path | str = DEFAULT_O
 
 
 def build_model_cards_payload(openrouter_payload: Dict[str, Any]) -> Dict[str, Any]:
-    data = list(openrouter_payload.get("data") or []) if isinstance(openrouter_payload, dict) else []
+    if not isinstance(openrouter_payload, dict):
+        openrouter_payload = {}
+    raw_data = openrouter_payload.get("data")
+    data = raw_data if isinstance(raw_data, list) else []
     cards: List[Dict[str, Any]] = []
     for row in data:
         if not isinstance(row, dict):
@@ -214,7 +224,7 @@ def build_model_cards_payload(openrouter_payload: Dict[str, Any]) -> Dict[str, A
             "model_id": model_id,
             "provider": provider,
             "tags": _derive_tags(row),
-            "context_window": int(row.get("context_length") or 0),
+            "context_window": _context_window(row),
             "cost_tier": _derive_cost_tier(row),
             "latency_tier": _derive_latency_tier(row),
             "reliability": _derive_reliability(row),
@@ -250,10 +260,14 @@ def build_model_cards_payload(openrouter_payload: Dict[str, Any]) -> Dict[str, A
                 card[key] = override.get(key)
         cards.append(card)
     cards.sort(key=lambda item: str(item.get("model_id") or ""))
+    try:
+        source_model_count = int(openrouter_payload.get("model_count") or len(cards))
+    except (TypeError, ValueError, OverflowError):
+        source_model_count = len(cards)
     return {
         "generated_at": _utc_now_iso(),
         "source": "openrouter",
-        "source_model_count": int(openrouter_payload.get("model_count") or len(cards)),
+        "source_model_count": source_model_count,
         "card_count": len(cards),
         "cards": cards,
     }

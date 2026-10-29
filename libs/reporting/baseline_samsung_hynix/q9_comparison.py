@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Mapping
@@ -26,6 +27,7 @@ def _load_q9_rows(
     day: str,
     root: Path,
     state_path: Path = Path("data/state.json"),
+    allow_fresh_fetch: bool = True,
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     day_root = root / day
@@ -38,8 +40,11 @@ def _load_q9_rows(
             payload = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
             continue
+        if not isinstance(payload, Mapping):
+            continue
         generated_at = str(payload.get("generated_at") or "")
-        for raw in payload.get("q9_decision_candidates") or []:
+        candidates = payload.get("q9_decision_candidates")
+        for raw in candidates if isinstance(candidates, list) else []:
             if not isinstance(raw, Mapping) or raw.get("q9_decision_role") not in ROLES:
                 continue
             row = dict(raw)
@@ -48,7 +53,7 @@ def _load_q9_rows(
     candles = load_q9_forward_candles(
         rows,
         state_path=state_path,
-        allow_fresh_fetch=True,
+        allow_fresh_fetch=allow_fresh_fetch,
         run_id_prefix="q9_comparison_forward_recovery",
     )
     return attach_forward_outcomes(rows, minute_rows_by_symbol=candles)
@@ -62,8 +67,11 @@ def build_q9_role_comparison(
     slippage_pct: float,
     q9_root: Path = Path("data/logs/quant_shadow_candidates"),
     state_path: Path = Path("data/state.json"),
+    allow_fresh_fetch: bool = True,
 ) -> dict[str, Any]:
-    q9_rows = _load_q9_rows(day=day, root=q9_root, state_path=state_path)
+    # default call shape is unchanged; the opt-out is forwarded only when explicitly disabled
+    load_kwargs = {} if allow_fresh_fetch else {"allow_fresh_fetch": False}
+    q9_rows = _load_q9_rows(day=day, root=q9_root, state_path=state_path, **load_kwargs)
     drag = float(cost_pct) + float(slippage_pct)
     grouped: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(
         lambda: defaultdict(list)
@@ -79,6 +87,13 @@ def build_q9_role_comparison(
         if all(role in roles for role in ROLES)
     }
 
+    def rank_key(row: Mapping[str, Any]) -> int:
+        try:
+            value = float(row.get("rank") or 999)
+            return int(value) if math.isfinite(value) else 999
+        except (TypeError, ValueError):
+            return 999
+
     def representative(role: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
         if role == "B_STRATEGIST_RANKED":
             selected = next((row for row in rows if bool(row.get("q9_selected"))), None)
@@ -86,7 +101,7 @@ def build_q9_role_comparison(
                 return selected
         return min(
             rows,
-            key=lambda row: int(float(row.get("rank") or 999)),
+            key=rank_key,
             default={},
         )
 

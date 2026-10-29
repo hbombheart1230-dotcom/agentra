@@ -112,10 +112,11 @@ def test_representative_is_selected_for_b_else_lowest_rank(tmp_path, stubs):
     assert role(run(tmp_path / "n", {"a.json": no_sel}, cost=0.0, slip=0.0), "B_STRATEGIST_RANKED")["q9_net"]["average_return_pct"] == 1.0
 
 
-def test_unparsable_rank_raises_valueerror_current_behavior(tmp_path, stubs):
+def test_unparsable_rank_sorts_last_instead_of_aborting(tmp_path, stubs):
+    """Formerly ValueError aborted the whole comparison; P15 C02-2 gives bad ranks the last-place sentinel."""
     rows = window("D1") + [cand("D1", "A_SCANNER_CONTROL", rank="x", ret=1.0)]
-    with pytest.raises(ValueError):
-        run(tmp_path, {"a.json": rows})
+    out = run(tmp_path, {"a.json": rows})
+    assert out["comparable_complete_window_count"] == 1
 
 
 @pytest.mark.parametrize("decision,no_trade,expected_value,cash,active", [

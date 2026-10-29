@@ -120,18 +120,18 @@ def test_day_writer_zero_trades_writes_nothing(tmp_path, calls):
     assert _snapshot(tmp_path) == set()
 
 
-def test_day_writer_zip_truncates_to_shortest_input(tmp_path, calls):
+def test_day_writer_rejects_mismatched_input_lengths_before_any_write(tmp_path, calls):
+    """Formerly zip-truncated silently (trade_count 3 / written_count 1); P15 C02-4 fails closed with zero writes."""
     dirs = []
     for n in ("a", "b", "c"):
         d = tmp_path / n
         d.mkdir()
         dirs.append(d)
-    out = w.write_quant_trade_diagnoses_for_day(
-        reports_root=tmp_path / "r", day=DAY, trade_dirs=dirs,
-        models=[{"trade_id": "A"}, {"trade_id": "B"}, {"trade_id": "C"}], evaluations=[{}], attributions=[{}, {}])
-    assert out["trade_count"] == 3 and out["written_count"] == 1                 # count/written diverge silently (current behavior)
-    assert (dirs[0] / "reports" / "quant_trade_diagnosis.json").exists()
-    assert not (dirs[1] / "reports").exists() and not (dirs[2] / "reports").exists()
+    with pytest.raises(ValueError, match="length mismatch"):
+        w.write_quant_trade_diagnoses_for_day(
+            reports_root=tmp_path / "r", day=DAY, trade_dirs=dirs,
+            models=[{"trade_id": "A"}, {"trade_id": "B"}, {"trade_id": "C"}], evaluations=[{}], attributions=[{}, {}])
+    assert not any((d / "reports").exists() for d in dirs) and calls["build"] == []
 
 
 def test_day_writer_propagates_builder_failure_after_partial_writes(tmp_path, calls, monkeypatch):

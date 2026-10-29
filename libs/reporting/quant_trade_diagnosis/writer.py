@@ -97,6 +97,15 @@ def write_quant_trade_diagnoses_for_day(
         else load_conditional_alpha_episodes(episode_path)
     )
 
+    lengths = {
+        "trade_dirs": len(resolved_dirs),
+        "models": len(resolved_models),
+        "evaluations": len(resolved_evaluations),
+        "attributions": len(resolved_attributions),
+    }
+    if len(set(lengths.values())) != 1:
+        raise ValueError(f"quant trade diagnosis input length mismatch: {lengths}")
+
     written = []
     for trade_dir, model, evaluation, attribution in zip(
         resolved_dirs,
