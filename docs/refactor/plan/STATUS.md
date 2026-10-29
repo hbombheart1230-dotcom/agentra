@@ -1,6 +1,6 @@
 # Agentra P1.5 — STATUS (2026-10-29 20:24 KST FAST-3 93/93 · RF-016 LEAD)
 
-**CURRENT 2026-10-29 20:24 KST — FAST-3:** 93개 RF 전부 G1/G2/G3 3칸으로 전환(이번 C05 79개, 이전 전환 14개). 역사 C1~C7은 비차단. **RF-016 G1/G2 MET → 04_LEAD_ACCEPTANCE, G3 C04 KEEP·정상 targeted smoke/CI 근거 대기. 신규 DONE 0, 누적 DONE 20/93.** 큐 PENDING47/DEV13/PEER12/LEAD1/DONE20/REWORK0. RunLab #32 OPEN/SOURCE_UNKNOWN, real mode 금지. 격리 checkout Git DNS 불가로 Python migrate/sync --write/--check는 NOT_RUN; GitHub API 배치 동등 변환 및 93개 고유성·14 우선표 대조 수행.
+**CURRENT 2026-10-29 20:24 KST — FAST-3:** 93개 RF 전부 G1/G2/G3 3칸으로 전환(이번 C05 79개, 이전 전환 14개). 역사 C1~C7은 비차단. **RF-016 G1/G2 MET → 04_LEAD_ACCEPTANCE, G3 PARTIAL(8/8 KEEP blob 동일; C04 정상 targeted smoke/CI 미제출). 신규 DONE 0, 누적 DONE 20/93.** 큐 PENDING47/DEV13/PEER12/LEAD1/DONE20/REWORK0. RunLab #32 OPEN/SOURCE_UNKNOWN, real mode 금지. 격리 checkout Git DNS 불가로 Python migrate/sync --write/--check는 NOT_RUN; GitHub API 배치 동등 변환 및 93개 고유성·14 우선표 대조 수행.
 
 **아래의 과거 C1~C7 기록은 역사 참고이며 현재 FAST-3 필수 게이트가 아닙니다.**
 
@@ -35,7 +35,7 @@ FAST-3: **G1 원격 코드·Owner 범위**, **G2 변경 부분 smoke/pytest**, *
 | [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 target: changed scope not full owner peer (**C05**) | FAST_3_PENDING |
 | [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 target: changed scope not full owner peer (**C05**) | FAST_3_PENDING |
 | [RF-014](queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
-| [RF-016](queue/04_LEAD_ACCEPTANCE/CLAUDE_A/RF-016.md) | LEAD · A → B | MET 2 · N/A 0 · 1남음 | G3 | **G3** C04 integration KEEP 8 owner blob parity + targeted normal smoke/CI at integration SOURCE SHA; C05 DONE after evidence (**C04**) | G3_PENDING |
+| [RF-016](queue/04_LEAD_ACCEPTANCE/CLAUDE_A/RF-016.md) | LEAD · A → B | MET 2 · N/A 0 · 1남음 | G3 | **G3** C04 confirm integration 8/8 KEEP blob parity + targeted normal smoke/CI exit0; C05 DONE after evidence (**C04**) | G3_PARTIAL |
 | [RF-028](queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
 | [RF-029](queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
 | [RF-033](queue/03_PEER_REVIEW/CLAUDE_A/RF-033.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |

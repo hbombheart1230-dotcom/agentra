@@ -23,7 +23,7 @@
 
 ## 현재 우선 게이트 (2026-10-29 20:24 KST)
 - **RF-001..093 FAST-3 93/93:** 기존 전환 14개 + 이번 신규 79개, 레거시 7항목은 보존. GitHub API 배치 변환 및 93 고유 RF·14 우선표 대조. 원본 Python `--write`/`--check`는 로컬 GitHub DNS 실패로 NOT_RUN(실행했다고 주장 금지).
-- **RF-016 04_LEAD_ACCEPTANCE (G1 MET/G2 MET/G3 PENDING):** 8 owner Strategist source A 고정 `2bce7dca` / integration blob 동일성의 기존 증거, A 정상 migration 94 + reasoning2 + consumer3 및 temp fake 근거 수용. C04가 현재 integration SHA에서 8-owner KEEP/관련 targeted smoke 정상 exit0 또는 해당 SOURCE CI 근거를 확인해 G3 제출; C05가 근거 확인 즉시 05_DONE/STATUS 이동. 원래 C4 full peer·-O·전체 hosted CI는 요구하지 않음. 동일 SHA·범위 재시험 금지.
+- **RF-016 04_LEAD_ACCEPTANCE (G1 MET/G2 MET/G3 PARTIAL):** 8 owner Strategist source A 고정 `2bce7dca` / integration blob 동일성의 기존 증거, A 정상 migration 94 + reasoning2 + consumer3 및 temp fake 근거 수용. C05가 integration 92fec494에서 8/8 Owner Git blob 고정 A 2bce7dca와 동일 직접 확인(KEEP 부분 근거). C04가 관련 targeted smoke 정상 exit0 또는 해당 SOURCE CI 근거를 제출해 G3 완결; C05가 근거 확인 즉시 05_DONE/STATUS 이동. 원래 C4 full peer·-O·전체 hosted CI는 요구하지 않음. 동일 SHA·범위 재시험 금지.
 - **다음 READY:** G1/G2를 원격 증거로 신속 판정, 미변경 owner는 KEEP 확인 후 G2 관련 smoke 1회만 요구. RF-045/066 로그 이동 목적지 race D2는 비격리 `--apply` HOLD, RF-041 nonfinite BUY/SELL integration 미수정, RF-021/032/069 보호 정책·UEF historical은 실효과 HOLD. 버그는 별도 OPEN_BUG 가능하나 실계좌 위험은 예외 불가.
 - **RunLab #32:** 19:03 KST 관측 runtime healthcheck timeout/unhealthy, API/web healthy, RUN_SOURCE_SHA=UNKNOWN, ORDER/GUARD/REPORT 기존 불일치. OPEN/RUNTIME_PENDING, 운영 변경·실주문·재배포 금지.
 - **물리 큐:** PENDING47/DEV13/PEER12/LEAD1/DONE20/REWORK0. 이번 신규 DONE 0, G3 실제 C04 증거 대기. C05 직접 pytest·Python sync NOT_RUN. #11/#12 최신 B 20:10 보고는 local only, pytest 미설치/푸시 차단 → G1 원격 수용 불가.
