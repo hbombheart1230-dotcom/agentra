@@ -138,102 +138,8 @@ def _build_strategist_trace_summary(
     market_sentiment: str,
     playbook: str,
 ) -> Dict[str, Any]:
-    fear_index = _dict(global_signal.get("fear_index"))
-    strategy_policy_summary = _dict(strategist_output.get("strategy_policy_summary"))
-    market_policy = _dict(strategy_policy_summary.get("market_policy"))
-    risk_tone = _clip(
-        strategist_output.get("risk_tone") or market_policy.get("risk_tone"),
-        max_len=40,
-    )
-    trade_aggressiveness = _clip(
-        strategist_output.get("trade_aggressiveness") or market_policy.get("trade_aggressiveness"),
-        max_len=40,
-    )
-    monitor_guidance = _clip(
-        strategist_output.get("monitor_guidance") or market_policy.get("monitor_guidance"),
-        max_len=80,
-    )
-    reason_chain = _listify(strategist_output.get("reason_chain"), limit=8, max_len=180)
-    if not reason_chain:
-        reason_chain = _listify(market_policy.get("reason_chain"), limit=8, max_len=180)
-    news_targets = _listify(strategist_output.get("news_query_targets"), limit=8, max_len=80)
-    stress_flags = _listify(macro_overlay.get("stress_flags"), limit=6, max_len=60)
-    headline_count = _safe_int(
-        news_context.get("headline_count")
-        or strategist_output.get("news_total_headlines")
-        or strategist_output.get("market_news_total_headlines")
-    )
-    query_count = _safe_int(
-        strategist_output.get("market_news_query_count")
-        or len(news_targets)
-    )
-    global_sentiment_score = strategist_output.get("global_sentiment_score")
-    vix_level = (
-        fear_index.get("level")
-        if fear_index.get("level") not in (None, "")
-        else global_signal.get("vix_level")
-        if global_signal.get("vix_level") not in (None, "")
-        else macro_overlay.get("vix_level")
-    )
-    missing_flags: List[str] = []
-    if global_sentiment_score in (None, ""):
-        missing_flags.append("global_sentiment_score_missing")
-    if vix_level in (None, ""):
-        missing_flags.append("vix_level_missing")
-    if headline_count <= 0:
-        missing_flags.append("news_headlines_missing")
-    if not reason_chain:
-        missing_flags.append("reason_chain_missing")
-    summary = (
-        f"Strategist used regime={market_regime or 'not_captured'}, sentiment={market_sentiment or 'not_captured'}, "
-        f"playbook={playbook or 'not_captured'}, risk_tone={risk_tone or 'not_captured'}, "
-        f"global_sentiment={_format_trace_number(global_sentiment_score, digits=3)}, "
-        f"vix={_format_trace_number(vix_level, digits=2)}, headlines={headline_count}, targets={query_count}."
-    )
-    highlights = _dedupe_text(
-        [
-            f"Regime {market_regime or 'not_captured'} / playbook {playbook or 'not_captured'}",
-            (
-                "Themes: "
-                + (", ".join(themes[:4]) if themes else "none")
-                + (" | avoid: " + ", ".join(avoid_themes[:4]) if avoid_themes else "")
-            ),
-            (
-                f"Sentiment { _format_trace_number(global_sentiment_score, digits=3) } / "
-                f"VIX { _format_trace_number(vix_level, digits=2) } / "
-                f"stress {', '.join(stress_flags) if stress_flags else 'none'}"
-            ),
-            f"News evidence: {headline_count} headlines across {query_count} targets",
-            (
-                "Risk tone: "
-                + (risk_tone or "not_captured")
-                + (f" / aggressiveness: {trade_aggressiveness}" if trade_aggressiveness else "")
-            ),
-        ],
-        limit=6,
-        max_len=220,
-    )
-    return {
-        "summary": _clip(summary, max_len=320),
-        "highlights": highlights,
-        "reason_chain": reason_chain,
-        "headline_count": headline_count,
-        "news_query_count": query_count,
-        "news_query_targets": news_targets,
-        "global_sentiment_score": global_sentiment_score,
-        "vix_level": vix_level,
-        "stress_flags": stress_flags,
-        "market_regime": market_regime,
-        "market_sentiment": market_sentiment,
-        "playbook": playbook,
-        "risk_tone": risk_tone,
-        "trade_aggressiveness": trade_aggressiveness,
-        "monitor_guidance": monitor_guidance,
-        "themes": list(themes),
-        "avoid_themes": list(avoid_themes),
-        "missing_flags": missing_flags,
-    }
-
+    from libs.contracts.agent_output_parts import strategist_projections as _parts
+    return _parts._build_strategist_trace_summary(facade=_r3_sys.modules[__name__], strategist_output=strategist_output, global_signal=global_signal, macro_overlay=macro_overlay, news_context=news_context, themes=themes, avoid_themes=avoid_themes, market_regime=market_regime, market_sentiment=market_sentiment, playbook=playbook)
 
 def _build_strategist_decision_frame(
     *,
@@ -245,74 +151,8 @@ def _build_strategist_decision_frame(
     themes: List[str],
     avoid_themes: List[str],
 ) -> Dict[str, Any]:
-    event_payload = _dict(state.get("strategist_decision_frame"))
-    if event_payload:
-        out = dict(event_payload)
-        theme_packet = _dict(strategist_output.get("theme_strength_packet"))
-        if theme_packet and not _dict(out.get("theme_strength_packet")):
-            out["theme_strength_packet"] = theme_packet
-        if not out.get("theme_source") and (theme_packet.get("source") or strategist_output.get("theme_source")):
-            out["theme_source"] = _clip(strategist_output.get("theme_source") or theme_packet.get("source"), max_len=80)
-        if not out.get("theme_source_status") and (theme_packet.get("status") or strategist_output.get("theme_source_status")):
-            out["theme_source_status"] = _clip(
-                strategist_output.get("theme_source_status") or theme_packet.get("status"),
-                max_len=80,
-            )
-        if not out.get("theme_source_reason") and (theme_packet.get("reason") or strategist_output.get("theme_source_reason")):
-            out["theme_source_reason"] = _clip(
-                strategist_output.get("theme_source_reason") or theme_packet.get("reason"),
-                max_len=160,
-            )
-        if not out.get("available_themes") and isinstance(strategist_output.get("available_themes"), list):
-            out["available_themes"] = list(strategist_output.get("available_themes") or [])[:8]
-        if not out.get("selected_themes") and isinstance(strategist_output.get("selected_themes"), list):
-            out["selected_themes"] = _listify(strategist_output.get("selected_themes"), limit=5, max_len=80)
-        if not out.get("theme_strategy") and isinstance(strategist_output.get("theme_strategy"), dict):
-            out["theme_strategy"] = _dict(strategist_output.get("theme_strategy"))
-        return out
-    strategy_policy_summary = _dict(strategist_output.get("strategy_policy_summary"))
-    strategy_memory = _dict(strategist_output.get("strategy_memory"))
-    theme_packet = _dict(strategist_output.get("theme_strength_packet"))
-    theme_strength = _dict(strategist_output.get("theme_strength")) or _dict(theme_packet.get("theme_scores"))
-    reason_chain = _listify(
-        strategist_output.get("reason_chain")
-        or _dict(strategy_policy_summary.get("market_policy")).get("reason_chain"),
-        limit=8,
-        max_len=180,
-    )
-    return {
-        "market_regime": market_regime,
-        "market_sentiment": market_sentiment,
-        "playbook": playbook,
-        "themes": list(themes),
-        "selected_themes": _listify(strategist_output.get("selected_themes"), limit=5, max_len=80),
-        "avoid_themes": list(avoid_themes),
-        "scanner_bias": _clip(strategist_output.get("scanner_bias"), max_len=80),
-        "scanner_priority": _listify(strategist_output.get("scanner_priority"), limit=8, max_len=80),
-        "trade_aggressiveness": _clip(strategist_output.get("trade_aggressiveness"), max_len=40),
-        "risk_tone": _clip(strategist_output.get("risk_tone"), max_len=40),
-        "monitor_guidance": _clip(strategist_output.get("monitor_guidance"), max_len=80),
-        "report_focus": _listify(strategist_output.get("report_focus"), limit=8, max_len=80),
-        "strategy_memory": strategy_memory,
-        "reason_chain": reason_chain,
-        "strategy_policy_summary": strategy_policy_summary,
-        "theme_strength": theme_strength,
-        "theme_strength_packet": theme_packet,
-        "available_themes": list(strategist_output.get("available_themes") or [])[:8]
-        if isinstance(strategist_output.get("available_themes"), list)
-        else [],
-        "theme_strategy": _dict(strategist_output.get("theme_strategy")),
-        "theme_source": _clip(strategist_output.get("theme_source") or theme_packet.get("source"), max_len=80),
-        "theme_source_status": _clip(
-            strategist_output.get("theme_source_status") or theme_packet.get("status"),
-            max_len=80,
-        ),
-        "theme_source_reason": _clip(
-            strategist_output.get("theme_source_reason") or theme_packet.get("reason"),
-            max_len=160,
-        ),
-    }
-
+    from libs.contracts.agent_output_parts import strategist_projections as _parts
+    return _parts._build_strategist_decision_frame(facade=_r3_sys.modules[__name__], state=state, strategist_output=strategist_output, market_regime=market_regime, market_sentiment=market_sentiment, playbook=playbook, themes=themes, avoid_themes=avoid_themes)
 
 def _build_strategist_news_evidence_ranked(
     *,
@@ -322,18 +162,8 @@ def _build_strategist_news_evidence_ranked(
     market_news_context: Dict[str, Any],
     candidate_news_context: Dict[str, Any],
 ) -> Dict[str, Any]:
-    event_payload = _dict(state.get("strategist_news_evidence_ranked"))
-    if event_payload:
-        return dict(event_payload)
-    return {
-        "news_query_targets": _listify(strategist_output.get("news_query_targets"), limit=12, max_len=80),
-        "candidate_news_ranked": list(candidate_news_context.get("ranked_rows") or [])[:8],
-        "market_news_ranked": list(market_news_context.get("ranked_rows") or [])[:8],
-        "candidate_news_context": dict(candidate_news_context),
-        "market_news_context": dict(market_news_context),
-        "news_context": dict(news_context),
-    }
-
+    from libs.contracts.agent_output_parts import strategist_projections as _parts
+    return _parts._build_strategist_news_evidence_ranked(facade=_r3_sys.modules[__name__], state=state, strategist_output=strategist_output, news_context=news_context, market_news_context=market_news_context, candidate_news_context=candidate_news_context)
 
 def _build_global_sentiment_signal_payload(
     *,
@@ -341,24 +171,8 @@ def _build_global_sentiment_signal_payload(
     global_signal: Dict[str, Any],
     macro_overlay: Dict[str, Any],
 ) -> Dict[str, Any]:
-    event_payload = _dict(state.get("strategist_global_sentiment_breakdown"))
-    if event_payload:
-        return dict(event_payload)
-    fear_index = _dict(global_signal.get("fear_index"))
-    return {
-        "score": global_signal.get("score"),
-        "status": _clip(global_signal.get("status"), max_len=40),
-        "source": _clip(global_signal.get("source"), max_len=80),
-        "fear_index": {
-            "level": fear_index.get("level"),
-            "change_pct": fear_index.get("change_pct"),
-            "level_pressure": fear_index.get("level_pressure"),
-        },
-        "index_moves": _dict(global_signal.get("index_moves")),
-        "macro_moves": _dict(global_signal.get("macro_moves")),
-        "stress_flags": _listify(macro_overlay.get("stress_flags"), limit=8, max_len=80),
-    }
-
+    from libs.contracts.agent_output_parts import strategist_projections as _parts
+    return _parts._build_global_sentiment_signal_payload(facade=_r3_sys.modules[__name__], state=state, global_signal=global_signal, macro_overlay=macro_overlay)
 
 def _build_scanner_trace_summary(
     *,
@@ -374,94 +188,16 @@ def _build_scanner_trace_summary(
     scanner_bias_applied: bool = False,
     scanner_bias_summary: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    selected_candidate = _dict(selected.get("candidate"))
-    selected_sources = _listify(selected_candidate.get("sources"), limit=6, max_len=60)
-    positive_factors = [f"{k}:{_safe_float(v, 0.0):.3f}" for k, v in selected_score_breakdown.items() if _safe_float(v, 0.0) > 0][:4]
-    negative_factors = [f"{k}:{_safe_float(v, 0.0):.3f}" for k, v in selected_score_breakdown.items() if _safe_float(v, 0.0) < 0][:4]
-    runner_ups = [
-        {
-            "symbol": str(row.get("symbol") or ""),
-            "rank": _safe_int(row.get("rank")),
-            "score_total": _safe_float(row.get("score_total")),
-            "why": _clip(row.get("why"), max_len=160),
-        }
-        for row in candidate_preview[1:3]
-        if isinstance(row, dict) and str(row.get("symbol") or "").strip()
-    ]
-    missing_flags: List[str] = []
-    if not symbol:
-        missing_flags.append("selected_symbol_missing")
-    if universe_size <= 0:
-        missing_flags.append("candidate_pool_missing")
-    if not positive_factors and not negative_factors:
-        missing_flags.append("score_breakdown_missing")
-    bias_summary_dict = _dict(scanner_bias_summary)
-    summary = (
-        f"Scanner selected {symbol or 'not_captured'} rank #{selected_rank or 0}/{universe_size or 0} "
-        f"with score={selected_score_total:.3f} and margin_vs_second={margin_vs_second:.3f}."
-    )
-    highlights = _dedupe_text(
-        [
-            f"Selected {symbol or 'not_captured'} rank #{selected_rank or 0} out of {universe_size or 0}",
-            f"Score {selected_score_total:.3f} with margin {margin_vs_second:.3f} vs runner-up",
-            f"Source mix: {', '.join(selected_sources) if selected_sources else 'not_captured'}",
-            (
-                "Positive factors: " + ", ".join(positive_factors)
-                if positive_factors
-                else "Positive factors were not captured"
-            ),
-            (
-                "Negative factors: " + ", ".join(negative_factors)
-                if negative_factors
-                else "Negative factors were not captured"
-            ),
-            (
-                "Bias: " + str(bias_summary_dict.get("summary") or "")
-                if scanner_bias_applied and str(bias_summary_dict.get("summary") or "").strip()
-                else ""
-            ),
-        ],
-        limit=6,
-        max_len=220,
-    )
-    return {
-        "summary": _clip(selection_summary or summary, max_len=320),
-        "highlights": highlights,
-        "selected_symbol": symbol,
-        "runner_up_symbol": str(runner_ups[0].get("symbol") or "") if runner_ups else "",
-        "selected_rank": selected_rank,
-        "universe_size": universe_size,
-        "candidate_count": universe_size,
-        "selected_score_total": selected_score_total,
-        "margin_vs_second": margin_vs_second,
-        "selected_sources": selected_sources,
-        "critical_positive_factors": positive_factors,
-        "critical_negative_factors": negative_factors,
-        "top_candidates": candidate_preview[:3],
-        "runner_ups": runner_ups,
-        "scanner_bias_applied": bool(scanner_bias_applied),
-        "scanner_bias_summary": bias_summary_dict,
-        "missing_flags": missing_flags,
-    }
-
+    from libs.contracts.agent_output_parts import scanner_projections as _parts
+    return _parts._build_scanner_trace_summary(facade=_r3_sys.modules[__name__], symbol=symbol, selected_rank=selected_rank, universe_size=universe_size, selected_score_total=selected_score_total, margin_vs_second=margin_vs_second, selected_score_breakdown=selected_score_breakdown, selected=selected, candidate_preview=candidate_preview, selection_summary=selection_summary, scanner_bias_applied=scanner_bias_applied, scanner_bias_summary=scanner_bias_summary)
 
 def _build_scanner_candidate_ranking_table(
     *,
     state: Dict[str, Any],
     candidate_preview: List[Dict[str, Any]],
 ) -> Dict[str, Any]:
-    event_payload = _dict(state.get("scanner_candidate_ranking_table"))
-    if event_payload:
-        rows = list(event_payload.get("rows") or [])
-        return {
-            "tie_break_rule": _clip(event_payload.get("tie_break_rule"), max_len=120),
-            "rows": [dict(row) for row in rows if isinstance(row, dict)],
-        }
-    return {
-        "tie_break_rule": "score_total desc -> confidence desc -> risk_score asc",
-        "rows": [dict(row) for row in candidate_preview],
-    }
-
+    from libs.contracts.agent_output_parts import scanner_projections as _parts
+    return _parts._build_scanner_candidate_ranking_table(facade=_r3_sys.modules[__name__], state=state, candidate_preview=candidate_preview)
 
 def _build_scanner_candidate_selection_reason(
     *,
@@ -476,39 +212,8 @@ def _build_scanner_candidate_selection_reason(
     runner_ups: List[Dict[str, Any]],
     selected: Dict[str, Any],
 ) -> Dict[str, Any]:
-    event_payload = _dict(state.get("scanner_candidate_selection_reason"))
-    if event_payload:
-        return dict(event_payload)
-    selected_candidate = _dict(selected.get("candidate"))
-    why_selected = _listify(selected.get("top_reasons"), limit=6, max_len=180)
-    if not why_selected:
-        why_selected = _dedupe_text(
-            [
-                f"highest total score ({selected_score_total:.3f})" if selected_score_total else "",
-                f"confidence {_safe_float(selected.get('confidence')):.2f} and risk {_safe_float(selected.get('risk_score')):.2f}",
-                f"source mix: {', '.join(_listify(selected_candidate.get('sources'), limit=4, max_len=40))}",
-            ],
-            limit=4,
-            max_len=180,
-        )
-    return {
-        "selected_symbol": selected_symbol,
-        "selected_rank": selected_rank,
-        "selected_score_total": selected_score_total,
-        "margin_vs_second": margin_vs_second,
-        "critical_positive_factors": list(critical_positive_factors),
-        "critical_negative_factors": list(critical_negative_factors),
-        "selection_summary": selection_summary,
-        "why_selected": why_selected,
-        "runner_ups_lost": list(runner_ups),
-        "entry_compatibility_score": _safe_float(selected.get("entry_compatibility_score"), 0.0),
-        "compatibility_bias": _safe_float(selected.get("compatibility_bias"), 0.0),
-        "expected_monitor_block_reason": _clip(selected.get("expected_monitor_block_reason"), max_len=120),
-        "compatibility_trace": _dict(selected.get("compatibility_trace")),
-        "tie_break_rule": "score_total desc -> confidence desc -> risk_score asc",
-        "final_decision_basis": "Scanner selected the highest-ranked candidate after strategist-guided weighting, source scoring, and risk penalties.",
-    }
-
+    from libs.contracts.agent_output_parts import scanner_projections as _parts
+    return _parts._build_scanner_candidate_selection_reason(facade=_r3_sys.modules[__name__], state=state, selected_symbol=selected_symbol, selected_rank=selected_rank, selected_score_total=selected_score_total, margin_vs_second=margin_vs_second, critical_positive_factors=critical_positive_factors, critical_negative_factors=critical_negative_factors, selection_summary=selection_summary, runner_ups=runner_ups, selected=selected)
 
 def _monitor_decision_summary(
     *,
