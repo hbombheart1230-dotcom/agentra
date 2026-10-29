@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
 from libs.core.evidence_identity import stable_evidence_id
 from libs.reporting.llm_artifacts import iter_trade_dirs, resolve_trade_day_root
+from libs.reporting import reporter_feedback_route_summary as _reporter_feedback_route_summary_owner
+from libs.reporting import reporter_feedback_blocker_totals as _reporter_feedback_blocker_totals_owner
+from libs.reporting import reporter_feedback_freshness as _reporter_feedback_freshness_owner
+from libs.reporting import reporter_feedback_analysis_blockers as _reporter_feedback_analysis_blockers_owner
+from libs.reporting import reporter_feedback_dominant_patterns as _reporter_feedback_dominant_patterns_owner
+from libs.reporting import reporter_feedback_recommendations as _reporter_feedback_recommendations_owner
 
 
 def _normalize_day(day: Optional[str]) -> str:
@@ -52,62 +59,15 @@ def _ratio(count: int, total: int) -> float:
 
 
 def _extract_route_summary(payload: Mapping[str, Any] | None) -> Dict[str, Any]:
-    row = dict(payload or {})
-    nested = row.get("route_summary") if isinstance(row.get("route_summary"), dict) else {}
-    route_selected_total = nested.get("route_selected_total")
-    strategy_generation_mode_total = nested.get("strategy_generation_mode_total")
-    strategist_fallback_total = nested.get("strategist_fallback_total")
-    if not isinstance(route_selected_total, dict):
-        route_selected_total = row.get("route_selected_total") if isinstance(row.get("route_selected_total"), dict) else {}
-    if not isinstance(strategy_generation_mode_total, dict):
-        strategy_generation_mode_total = row.get("strategist_mode_total") if isinstance(row.get("strategist_mode_total"), dict) else {}
-    if strategist_fallback_total is None:
-        strategist_fallback_total = row.get("strategist_fallback_total")
-    return {
-        "route_source": str(nested.get("route_source") or row.get("route_source") or "unavailable"),
-        "route_source_run_count": _safe_int(nested.get("route_source_run_count") or row.get("route_source_run_count"), 0),
-        "route_source_missing_count": _safe_int(nested.get("route_source_missing_count") or row.get("route_source_missing_count"), 0),
-        "route_source_breakdown": dict(nested.get("route_source_breakdown") or row.get("route_source_breakdown") or {}),
-        "route_selected_total": dict(route_selected_total or {}),
-        "strategy_generation_mode_total": dict(strategy_generation_mode_total or {}),
-        "strategist_fallback_total": _safe_int(strategist_fallback_total, 0),
-    }
+    return _reporter_feedback_route_summary_owner.extract_route_summary(payload, facade=sys.modules[__name__])
 
 
 def _extract_blocker_totals(payload: Mapping[str, Any] | None) -> Dict[str, int]:
-    row = dict(payload or {})
-    direct = row.get("dominant_blocker_total") if isinstance(row.get("dominant_blocker_total"), dict) else {}
-    if direct:
-        return {str(k): _safe_int(v, 0) for k, v in direct.items()}
-    no_trade = row.get("no_trade_summary") if isinstance(row.get("no_trade_summary"), dict) else {}
-    topn = list(no_trade.get("dominant_blocker_topN") or [])
-    totals: Dict[str, int] = {}
-    for item in topn:
-        if not isinstance(item, dict):
-            continue
-        reason = str(item.get("reason") or "").strip()
-        if not reason:
-            continue
-        totals[reason] = _safe_int(item.get("count"), 0)
-    return totals
+    return _reporter_feedback_blocker_totals_owner.extract_blocker_totals(payload, facade=sys.modules[__name__])
 
 
 def _extract_freshness(payload: Mapping[str, Any] | None) -> Dict[str, Any]:
-    row = dict(payload or {})
-    freshness = row.get("data_freshness") if isinstance(row.get("data_freshness"), dict) else {}
-    if freshness:
-        return dict(freshness)
-    generated_at = str(row.get("generated_at") or "")
-    return {
-        "generated_at": generated_at,
-        "source_run_count": _safe_int(row.get("source_run_count"), 0),
-        "latest_run_id": str(row.get("latest_run_id") or ""),
-        "latest_run_ts": str(row.get("latest_run_ts") or ""),
-        "freshness_status": "unknown" if not generated_at else "fresh",
-        "stale": False,
-        "stale_reason": "source_not_declared" if not generated_at else "aligned_with_source_window",
-        "source_window_summary": "",
-    }
+    return _reporter_feedback_freshness_owner.extract_freshness(payload, facade=sys.modules[__name__])
 
 
 def _metrics_report_path(reports_root: Path, day: str) -> Path:
@@ -241,27 +201,7 @@ def _build_trade_report_feedback_summary(reports_root: Path, day: str) -> Dict[s
 
 
 def _extract_reporter_analysis_blocker_totals(payload: Mapping[str, Any] | None) -> Dict[str, int]:
-    row = dict(payload or {})
-    monitor_eval = row.get("monitor_evaluation") if isinstance(row.get("monitor_evaluation"), dict) else {}
-    supervisor = row.get("supervisor_activity") if isinstance(row.get("supervisor_activity"), dict) else {}
-    intent_flow = row.get("intent_flow_analysis") if isinstance(row.get("intent_flow_analysis"), dict) else {}
-    totals: Dict[str, int] = {}
-    for key, value in dict(monitor_eval.get("monitor_reason_top") or {}).items():
-        name = str(key or "").strip()
-        if not name:
-            continue
-        totals[name] = totals.get(name, 0) + _safe_int(value, 0)
-    for key, value in dict(supervisor.get("blocked_reason_top") or {}).items():
-        name = str(key or "").strip()
-        if not name:
-            continue
-        totals[name] = totals.get(name, 0) + _safe_int(value, 0)
-    for key, value in dict(intent_flow.get("reason_top") or {}).items():
-        name = str(key or "").strip()
-        if not name or name.startswith("monitor:"):
-            continue
-        totals[name] = totals.get(name, 0) + _safe_int(value, 0)
-    return totals
+    return _reporter_feedback_analysis_blockers_owner.extract_reporter_analysis_blocker_totals(payload, facade=sys.modules[__name__])
 
 
 def _extract_reporter_analysis_recommendations(payload: Mapping[str, Any] | None) -> list[str]:
@@ -281,78 +221,7 @@ def _build_dominant_patterns(
     freshness: Mapping[str, Any],
     trade_report_summary: Mapping[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    patterns: list[dict[str, Any]] = []
-    route_total = _safe_total(route_summary.get("route_selected_total") if isinstance(route_summary.get("route_selected_total"), dict) else {})
-    route_selected_total = route_summary.get("route_selected_total") if isinstance(route_summary.get("route_selected_total"), dict) else {}
-    if route_total > 0:
-        for name in ("monitor_only", "cached_strategist", "full_cycle"):
-            count = _safe_int(route_selected_total.get(name), 0)
-            if count <= 0:
-                continue
-            patterns.append(
-                {
-                    "name": f"{name}_ratio",
-                    "value": _ratio(count, route_total),
-                    "detail": f"{name} {count}/{route_total} runs",
-                }
-            )
-
-    blocker_total = _safe_total(blocker_totals)
-    reclaim_total = sum(count for name, count in blocker_totals.items() if "reclaim" in str(name))
-    if reclaim_total > 0 and blocker_total > 0:
-        patterns.append(
-            {
-                "name": "reclaim_blocked_ratio",
-                "value": _ratio(reclaim_total, blocker_total),
-                "detail": f"reclaim-related blockers {reclaim_total}/{blocker_total}",
-            }
-        )
-
-    fallback_total = _safe_int(route_summary.get("strategist_fallback_total"), 0)
-    if fallback_total > 0 and route_total > 0:
-        patterns.append(
-            {
-                "name": "strategist_fallback_ratio",
-                "value": _ratio(fallback_total, route_total),
-                "detail": f"fallback observed in {fallback_total}/{route_total} route-tagged runs",
-            }
-        )
-
-    if freshness:
-        patterns.append(
-            {
-                "name": "freshness_status",
-                "value": str(freshness.get("freshness_status") or "unknown"),
-                "detail": str(freshness.get("source_window_summary") or ""),
-            }
-        )
-    trade_summary = dict(trade_report_summary or {})
-    closed_trade_count = _safe_int(trade_summary.get("closed_trade_count"), 0)
-    if closed_trade_count > 0:
-        patterns.append(
-            {
-                "name": "same_day_closed_trade_count",
-                "value": closed_trade_count,
-                "detail": f"closed trade reports {closed_trade_count}",
-            }
-        )
-        patterns.append(
-            {
-                "name": "same_day_avg_pnl_pct",
-                "value": trade_summary.get("avg_pnl_pct"),
-                "detail": f"average same-day pnl pct {trade_summary.get('avg_pnl_pct')}",
-            }
-        )
-        cost_loss_count = _safe_int(trade_summary.get("same_price_cost_loss_count"), 0)
-        if cost_loss_count > 0:
-            patterns.append(
-                {
-                    "name": "same_price_cost_loss_ratio",
-                    "value": _ratio(cost_loss_count, closed_trade_count),
-                    "detail": f"same-price cost-loss trades {cost_loss_count}/{closed_trade_count}",
-                }
-            )
-    return patterns[:6]
+    return _reporter_feedback_dominant_patterns_owner.build_dominant_patterns(route_summary=route_summary, blocker_totals=blocker_totals, freshness=freshness, trade_report_summary=trade_report_summary, facade=sys.modules[__name__])
 
 
 def _build_blocker_analysis(blocker_totals: Mapping[str, int]) -> list[dict[str, Any]]:
@@ -393,31 +262,7 @@ def _build_recommendations(
     blocker_analysis: list[dict[str, Any]],
     trade_report_summary: Mapping[str, Any] | None = None,
 ) -> list[str]:
-    recommendations: list[str] = []
-    if float(route_analysis.get("monitor_only_ratio") or 0.0) >= 0.5:
-        recommendations.append("Monitor-only share is high; review hold-management concentration before widening entry tuning.")
-    if float(route_analysis.get("cached_strategist_ratio") or 0.0) >= 0.25:
-        recommendations.append("Cached strategist reuse is elevated; compare refresh cadence against fresh full-cycle opportunities.")
-    if blocker_analysis:
-        top_blocker = blocker_analysis[0]
-        blocker_name = str(top_blocker.get("blocker") or "")
-        if blocker_name:
-            recommendations.append(f"Top blocker is {blocker_name}; inspect whether this gate is dominating no-trade outcomes.")
-        if "reclaim" in blocker_name:
-            recommendations.append("VWAP reclaim-related failures are prominent; review reclaim readiness evidence before loosening thresholds.")
-    trade_summary = dict(trade_report_summary or {})
-    closed_trade_count = _safe_int(trade_summary.get("closed_trade_count"), 0)
-    if closed_trade_count > 0:
-        same_price_cost_loss_count = _safe_int(trade_summary.get("same_price_cost_loss_count"), 0)
-        win_count = _safe_int(trade_summary.get("win_count"), 0)
-        loss_count = _safe_int(trade_summary.get("loss_count"), 0)
-        if same_price_cost_loss_count > 0:
-            recommendations.append("Same-price round trips produced fee/tax drag; tighten follow-through evidence before repeating quick reversals.")
-        if loss_count > win_count:
-            recommendations.append("Same-day closed trades are loss-heavy; keep defensive entry posture until follow-through quality improves.")
-    if not recommendations:
-        recommendations.append("Route and blocker mix look balanced; continue observing for stable multi-session patterns before changing strategy.")
-    return recommendations[:4]
+    return _reporter_feedback_recommendations_owner.build_recommendations(route_analysis=route_analysis, blocker_analysis=blocker_analysis, trade_report_summary=trade_report_summary, facade=sys.modules[__name__])
 
 
 def _build_insight_summary(
