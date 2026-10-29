@@ -1,11 +1,19 @@
 """Integration-closeout inventory must never turn remote CI into local PASS."""
+import pytest
+
 from scripts.refactor.p152_integration_acceptance import (
     FACADES, LOCAL_GATES, REQUIRED_REMOTE_GATES, ROOT, build_inventory, owner_files,
 )
 
 
-def test_offline_inventory_is_read_only_and_retains_436_abi():
-    inventory = build_inventory(ROOT)
+@pytest.fixture(scope="module")
+def acceptance_inventory():
+    """One immutable source inventory is shared across independent assertions."""
+    return build_inventory(ROOT)
+
+
+def test_offline_inventory_is_read_only_and_retains_436_abi(acceptance_inventory):
+    inventory = acceptance_inventory
     source = inventory["source_inventory"]
     assert source["all_source_checks_pass"]
     assert sum(FACADES.values()) == 436
@@ -17,8 +25,8 @@ def test_offline_inventory_is_read_only_and_retains_436_abi():
     assert all(item["count_matches"] for item in source["facades"].values())
 
 
-def test_remote_green_cannot_close_p152_or_unlock_p153():
-    inventory = build_inventory(ROOT)
+def test_remote_green_cannot_close_p152_or_unlock_p153(acceptance_inventory):
+    inventory = acceptance_inventory
     assert inventory["closeout_allowed"] is False
     assert inventory["p152_stage"] == "OPEN"
     assert inventory["p153_stage"] == "NOT_AUTHORIZED"
@@ -29,8 +37,8 @@ def test_remote_green_cannot_close_p152_or_unlock_p153():
     assert all(x == "NOT_RUN_NOT_IN_GITHUB" for x in inventory["local_acceptance_gates"].values())
 
 
-def test_head_and_original_commit_are_explicit():
-    inventory = build_inventory(ROOT)
+def test_head_and_original_commit_are_explicit(acceptance_inventory):
+    inventory = acceptance_inventory
     assert len(inventory["git_sha"]) == 40
     assert len(inventory["pinned_before_code_sha"]) == 40
     assert inventory["git_sha"] != inventory["pinned_before_code_sha"]
