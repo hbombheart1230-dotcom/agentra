@@ -4,6 +4,8 @@
 
 **증거 범위:** [Issue #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32)에서 2026-10-26 EOD [Codex 결과](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6411226322) · [추가 소스 조사](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6411909991) · 2026-10-27 [07시](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6428473788) · [09:38 독립 관측](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6430800415) · [20:09 FINAL 독립 관측](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6440428084). **원본 증거는 `C:\AgentraRunLab`의 RunLab 보존 경로**, 이 문서는 공개 가능한 요약/작업 배정만 유지. 실행 중 이미지 digest는 `sha256:f3d1a4a3…`로 보고됐으나 **RUN_SOURCE_SHA=UNKNOWN**; 현재 integration 코드와 런타임 동일 버전임을 주장하지 않는다.
 
+**2026-10-29 17:12 KST EOD 신규 건강도 악화 (C05 접수):** [#32 6491497848](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6491497848) `eod_20261029_170202`/07시 `start_20261029_070316`, 실행 image digest 불변, `RUN_SOURCE_SHA=UNKNOWN`. 최종 **runtime unhealthy (5초 healthcheck timeout 9회), API unhealthy (3초 readiness timeout 3회), web healthy**, 프로세스 running/restart 0. 앞선 API/UI HTTP 200과 LLM 131/131은 현재 readiness PASS 아님. 오늘 신규 주문 0, 과거 broker/local 미기록·SELL guard `-1/-1`·PnL 결손 지속; stale readiness.ready=true와 guard 불일치. **신규 환경 BLOCKED:** RunLab 운영 담당이 보존 로그/CPU·메모리·healthcheck 응답/lease·이미지 provenance를 읽기 전용으로 원인 분리; B RF-012/055/048 ORDER/GUARD, A RF-030/035 REPORT read-only/fake 조사 유지. 재기동/healthcheck timeout 변경/배포/주문·운영 DB 쓰기 승인 전 금지. `OPEN / RUNTIME_PENDING / DEV_RESOLVED=NO / RUNTIME_VERIFIED=NO / SAFETY_HOLD`; 정확 SHA 귀속 코드 회귀 단정 금지.
+
 ## 실제 접수·배정 — 신규 RF 생성/큐 이동 전
 
 | 항목/분류(현시점) | 증거·정확한 미해결 범위 | 임시 조사 담당 | 지팀장 차기 판정/해제 조건 |
