@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Any, Dict, Optional, Tuple
 
@@ -19,7 +20,8 @@ def _to_float(x: Any, default: float = 0.0) -> float:
     try:
         if x is None:
             return default
-        return float(x)
+        value = float(x)
+        return value if math.isfinite(value) else default
     except Exception:
         return default
 
