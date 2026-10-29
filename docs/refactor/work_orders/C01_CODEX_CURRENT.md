@@ -25,6 +25,7 @@
 **SOURCE:** `libs/core/event_logger_compat.py`; `get_event_logger`, `_NodeEventLogger.start/end`. 직전 확인된 소스 수정이 이미 존재하므로 **기존 통과 테스트를 그대로 반복하지 않는다**.
 
 - 실제 `get_event_logger` 사용 지점을 코드에서 찾고 (Graph는 **읽기 전용**), 임시 `EVENT_LOG_PATH`와 가짜 payload로 생성된 JSONL의 `stage`, `event` 순서 `start,end`, 동일 `run_id`를 확인한다. 명시적 `log_path`를 받는 현재 EventLogger와 레거시 `node=` / positional / no-arg fake constructor도 기존 동작 유지.
+- **A의 실제 독립 음성 검증에서 남은 구멍(정확 B `e33929dd`):** `start(payload=[1])`·`end(payload="bad")`의 JSONL `payload={}` 정규화와 `get_event_logger("node")` 두 인스턴스 간 `run_id` 상이(한 인스턴스 start/end는 동일)를 `tests/test_p15_event_logger_caller_bridge.py`에 반드시 포함한다. 기존 B 테스트에서 이 두 변이가 통과했던 반례를 실패→PASS로 닫고, 원본 로그 내용/순서/파일 위치를 tmp 경로로 검증한다. 테스트에 운영 `data/logs`를 쓰지 않는다.
 - 다르면 B가 소유한 compat 어댑터만 최소 수정한다. `tests/test_p15_event_logger_caller_bridge.py` 신규. Graph·실제 로그 파일·기본 계좌 경로·실네트워크는 건드리지 않는다. 실제 버그가 없으면 새 경계 검증만 추가하고 **4번으로 진행**한다.
 
 ## 4 — 로그 유지보수의 목적지 충돌·부분 실패 (실제 결함 판단)
