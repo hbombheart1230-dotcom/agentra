@@ -1,41 +1,43 @@
-# C02 — Claude A | Strategist LLM **reporting-only** BODY MOVE 6건
+# C02 — Claude A | Strategist summary reporting-only BODY MOVE 6건 (A1~A6)
 
-## 단일 진입 / 안전 / 실행 계약
-- **이 C02 한 파일만** 실행 지시로 읽는다. RF 상세·INDEX·T00·D00·HANDOFF·STATUS·큐 문서는 탐색하거나 수정하지 않는다. 코드와 신규 targeted tests만 자기 브랜치 `work/p15-a-reporter-pure-20261021`에서 정상 commit/push. B의 `graphs/nodes/strategist_node.py`, `libs/contracts`, Operator UI, 실제 LLM 호출/주문/브로커/운영 DB·State/실네트워크/frozen oracle/CI는 변경 금지.
-- C03 확인 A HEAD=`a9817a4ba7136768ea37b720a4d3d5c073dedb2d`; SOURCE `libs/reporting/strategist_llm_summary.py` blob=`18bba177d241299a32aa6d95a49f712148ffe78d` (1701 lines, integration과 동일). TARGET `libs/reporting/strategist_llm_summary_stage.py`, `libs/reporting/strategist_llm_summary_usage.py`는 A 원격에서 둘 다 404/미존재. 시작 시 `CANONICAL_HEAD`, `ORDER_FILE_BLOB_SHA`, `OWNER_REMOTE_SHA`, `ORDER_ID=C02:<ORDER_FILE_BLOB_SHA>:A1..A6` 고정. 새 HEAD에서는 원함수/target blob을 먼저 재조회; 이미 이동된 item은 ALREADY_MOVED로만 기록.
-- 실제 MOVE 정의: SOURCE의 원함수 계산 본문을 삭제하고 새 TARGET의 **유일한** 구현 함수로 이전; SOURCE에는 동일 원명·원서명 얇은 wrapper만 남긴다. `from libs.reporting import strategist_llm_summary_stage as _stage_owner` / `..._usage as _usage_owner` (모듈 단위 또는 함수 내부 import 가능), `facade=sys.modules[__name__]`로 호출시점 helper/상수 조회. 새 TARGET은 SOURCE를 import하지 말고 전달받은 facade를 사용. `sys` import 추가 가능. 기존 원본의 출력 키 순서, 예외, 문자열 bytes, shallow alias, mutable 객체 fresh 생성, 함수 호출 순서 유지. 기존 함수/테스트의 golden을 이동 전에 fake 입력으로 캡처하고 wrapper·owner 직접 호출과 비교.
-- TEST는 각 item당 아래 **2~4 targeted fixture**를 `tests/test_p15_strategist_summary_<item>_owner.py`에 작성; `python -m pytest -q -p no:cacheprovider <이번 신규 파일들>` 정상 1회 exit0 (pytest 불가 시 stdlib unittest smoke). full suite, 모든 -O, hosted CI, full peer 강제 금지. 한 item 차단돼도 나머지 독립 item 진행. py_compile, 정상 push, `git ls-remote` 및 GitHub source/target/test blob 일치 확인. 실패는 TEST_BLOCKED와 PUSH_BLOCKED 구분; 로컬 commit은 원격 G1 아님.
+## 단일 진입·소유권·사전 고정
+- 이 **C02 한 파일만** 실행 명령으로 읽는다. D00/RF 상세/INDEX/T00/STATUS/HANDOFF/큐 탐색·수정 금지. Claude A의 `work/p15-a-reporter-pure-20261021`에서 **지정한 code/test만** 수정·정상 commit/push. B의 `graphs/nodes/strategist_node.py`, `libs/contracts/agent_outputs.py`, Operator UI 및 실거래/주문·Broker/Guard/Step5C/UEF/운영 DB·State/실네트워크/frozen CI는 절대 수정하지 않는다.
+- C03 실측 A HEAD `4c12726f209ece7b6c5942d4dee26aacb5f3bf45`. SOURCE `libs/reporting/strategist_llm_summary.py` **blob `50157713007d4dcae8d39086b5267be1d14f51d7`**, **1516 LOC(wc 기준)**. integration 현재 동일 SOURCE blob. 새 TARGET 4개는 A HEAD에서 404 확인: `libs/reporting/strategist_llm_summary_decision.py`, `strategist_llm_summary_readout.py`, `strategist_llm_summary_strategy.py`, `strategist_llm_summary_quality_lines.py`.
+- 이전 A1~A6 (`_infer_call_kind/_stage_meta/_parse_response_body/_memory_usage_from_canonical/_news_usage_from_canonical/_news_quality_audit`)는 **이미 원격 MOVE 완료**: A SHA `4c12726f`, SOURCE 1700→1516 LOC, TARGET `strategist_llm_summary_stage.py`/`_usage.py`; 정상 targeted 85 PASS exit0(A #11 보고). 재이동/재시험/이번 신규 성과 계상 금지.
+- 시작 시 `CANONICAL_HEAD`, `ORDER_FILE_BLOB_SHA`, `OWNER_REMOTE_SHA`, `ORDER_ID=C02:<ORDER_FILE_BLOB_SHA>:A1,A2,A3,A4,A5,A6`를 고정. 다른 커밋으로 원본/target이 이미 이동했으면 해당 item `ALREADY_MOVED`만 기록하고 다음 안전 item으로 진행.
+- 공통: 원함수 **계산 본문 삭제→TARGET 유일 Owner 실제 MOVE→원명·원서명 thin wrapper**. 기존 facade에 `sys` import 존재, `facade=sys.modules[__name__]`를 새 Owner에 전달; 새 Owner는 source 모듈을 역import하지 않는다. 모든 `_as_dict/_as_list/_text/_first_text/_first_dict/_directive/_stage_meta/_memory_usage_from_canonical` 참조는 **facade에서 호출 시점** 조회(원본 monkeypatch 보존). 기존 문자열 원문·한글·키 순서·예외·mutable fresh object·alias·호출 순서 유지. 원본/Owner/래퍼를 동일 fake 입력으로 golden 비교, 실제 LLM/파일 IO/운영 효과 금지.
+- 함수별 아래 **2~4 targeted fixture**를 `tests/test_p15_strategist_summary_<item>_owner.py`에 작성. 각 새 테스트는 wrapper-thin, golden parity, facade helper patch 도달을 포함. 정상 `python -m pytest -q -p no:cacheprovider <6개 신규 테스트 경로>` **1회 exit0**(pytest 불가 시 stdlib unittest smoke exit0); full peer/-O/full-suite/매 RF hosted CI 강제 금지. 한 item 막혀도 나머지 계속. `python -m py_compile`, 자기 브랜치 commit/push, `git ls-remote`와 원격 SOURCE/TARGET/TEST blob 재확인. 로컬 commit은 G1 아님.
 
-## A1 — stage call-kind inference
-- SOURCE `libs/reporting/strategist_llm_summary.py::_infer_call_kind(payload,raw,meta=None)` (L58–88, SOURCE blob `18bba177`) → TARGET `libs/reporting/strategist_llm_summary_stage.py::infer_call_kind(payload,raw,meta=None,*,facade)`.
-- 본문: raw→sidecar→payload explicit `call_kind` 우선, stage_component 2/3/4 매핑, selected_symbol/hold/carry payload fallback, 빈 문자열. `_as_dict/_text`는 `facade`에서 호출시점 조회.
-- TEST: (1) explicit 우선순위 raw/sidecar/payload; (2) stage_component 2/3/4 매핑; (3) selected/hold/carry 및 빈 fallback; (4) facade helper monkeypatch/입력 불변·원래 예외 parity.
+## A1 — output quality audit (62 source lines)
+- SOURCE `libs/reporting/strategist_llm_summary.py::_strategist_output_quality_audit(*,payload,canonical,stage_decision,strategy_detail,market_rail,news_quality)` L186–247, blob `50157713` → TARGET `libs/reporting/strategist_llm_summary_decision.py::strategist_output_quality_audit(*,payload,canonical,stage_decision,strategy_detail,market_rail,news_quality,facade)` (신규).
+- 본문 전체: candidate_watch, memory_usage, stage-specific/market-frame 분기, 8종 issue, `ok/watch/needs_review` 경계, `strategist_output_quality_audit.v1` dict. `facade._as_dict/_memory_usage_from_canonical/_text/_as_list` use-time. `_memory_usage_from_canonical`는 이전 stage/usage Owner wrapper 호출 그대로.
+- TEST `tests/test_p15_strategist_summary_output_quality_owner.py`: (1) 모든 증거→ok/키 순서, (2) stage-specific control missing vs market-frame missing, (3) issue 2/3 경계·memory disabled/empty layers·news not ok, (4) patched memory helper·한글/예외/입력 불변 및 wrapper/Owner parity.
 
-## A2 — stage metadata projection
-- SOURCE `libs/reporting/strategist_llm_summary.py::_stage_meta(payload,raw,meta=None)` (L89–113) → TARGET `libs/reporting/strategist_llm_summary_stage.py::stage_meta(payload,raw,meta=None,*,facade)`.
-- `_STAGE_META_BY_CALL_KIND` 복제 금지; `facade._STAGE_META_BY_CALL_KIND` use-time. `_as_dict/_infer_call_kind/_first_text`도 facade use-time. 원본 `stage_index`의 truthy-or precedence 및 4개 키 순서 유지.
-- TEST: (1) stage2/3/4 기본 메타; (2) raw→sidecar→inferred precedence/0·빈값; (3) unknown kind fallback; (4) patched `_infer_call_kind/_first_text` spy·예외/alias parity.
+## A2 — stage decision projection (62 source lines)
+- SOURCE `libs/reporting/strategist_llm_summary.py::_stage_decision_from_payload(payload,raw,meta=None)` L248–309 → TARGET `libs/reporting/strategist_llm_summary_decision.py::stage_decision_from_payload(payload,raw,meta=None,*,facade)`.
+- `facade._stage_meta/_text/_as_dict/_as_list/_first_text/_first_dict` use-time; market-frame이면 정확 `{"is_stage_specific": False}`, stage2/3/4 selected/hold/carry, truthy-or `stage_index`, confidence None/0, `raw_payload_keys` sorted 등 순서/예외 보존.
+- TEST `tests/test_p15_strategist_summary_stage_decision_owner.py`: (1) market frame early return, (2) stage2 selected_symbol·priority, (3) stage3/4 fallback·malformed index·confidence=0, (4) patched `_stage_meta/_first_dict` spy·입력 불변·기존 예외/키 순서 parity.
 
-## A3 — response JSON recovery
-- SOURCE `libs/reporting/strategist_llm_summary.py::_parse_response_body(raw)` (L114–145) → TARGET `libs/reporting/strategist_llm_summary_stage.py::parse_response_body(raw)`.
-- `parsed_output` 우선, `response_text` JSON dict만, `attempts` **역순** 탐색·malformed JSON 무시·dict shallow copy. `json` TARGET에서 직접 import; 원본 `JSONDecodeError` 이외 예외는 그대로.
-- TEST: (1) parsed_output 우선/복사 alias; (2) 정상 JSON dict vs list/scalar; (3) attempts 역순·invalid JSON skip; (4) 비정상 입력 예외/입력 불변/키 순서 parity.
+## A3 — operator readout (79 source lines)
+- SOURCE `libs/reporting/strategist_llm_summary.py::_operator_readout(payload,stage_decision=None)` L310–388 → TARGET `libs/reporting/strategist_llm_summary_readout.py::operator_readout(payload,stage_decision=None,*,facade)`.
+- stage-specific 영어 문장과 일반 market-frame 한글 문장 **bytes 그대로**, selected_themes·rationale best/worst·selected_symbol_bias none, good_points/issues/actions/validation 4개 cap 전체 MOVE. `facade._as_dict/_as_list/_text/_directive` use-time.
+- TEST `tests/test_p15_strategist_summary_operator_readout_owner.py`: (1) stage-specific reason 유무·영어 원문, (2) empty themes·default actions, (3) best/worst·none bias·cap/순서, (4) facade `_directive` spy·예외/입력 불변·래퍼/Owner parity.
 
-## A4 — memory usage surface
-- SOURCE `libs/reporting/strategist_llm_summary.py::_memory_usage_from_canonical(canonical)` (L229–265) → TARGET `libs/reporting/strategist_llm_summary_usage.py::memory_usage_from_canonical(canonical,*,facade)`.
-- daily/weekly/monthly/symbol layer 순서, empty row skip, operator_summary, visibility 3칸과 `available` 판정 전체 이동. `_as_dict/_as_list/_text/_compact_operator_summary`는 facade use-time.
-- TEST: (1) empty/default; (2) 4 layer+visibility·순서/키; (3) missing/non-dict rows/alias; (4) patched helper spy·예외/원본 불변.
+## A4 — operator readout clean (76 source lines)
+- SOURCE `libs/reporting/strategist_llm_summary.py::_operator_readout_clean(payload,stage_decision=None)` L397–472 → TARGET `libs/reporting/strategist_llm_summary_readout.py::operator_readout_clean(payload,stage_decision=None,*,facade)`.
+- **A3과 구현/문구 합치지 말 것**: clean의 한국어 stage-specific 문구, `"best 諛?worst"` 레거시 문자열, fallback·theme/entry/refresh 순서가 A3과 다르므로 원문 그대로 이동. `facade._as_dict/_as_list/_text/_directive` use-time.
+- TEST `tests/test_p15_strategist_summary_operator_readout_clean_owner.py`: (1) stage-specific reason 없음/있음 한국어, (2) themes 없음·policy directive, (3) best/worst/legacy 문자열·none bias·4 cap, (4) helper patch·old/new 문자열 bytes/예외/입력 불변 parity.
 
-## A5 — news usage surface
-- SOURCE `libs/reporting/strategist_llm_summary.py::_news_usage_from_canonical(canonical)` (L266–299) → TARGET `libs/reporting/strategist_llm_summary_usage.py::news_usage_from_canonical(canonical,*,facade)`.
-- headline 실제 배열 수→context count→sample-map fallback, `headline_count` 시장/후보 분배, query_targets 우선, 3개 sample cap과 confidence fallback 전체 이동. `_as_dict/_as_list/_text/_headline_count_from_sample_map` facade use-time.
-- TEST: (1) empty/default; (2) 배열 count가 context보다 우선; (3) context/sample-map/total 분배와 negative·bad numeric 기존 예외; (4) helper monkeypatch·sample cap/alias·키 순서 parity.
+## A5 — strategy detail precedence (78 source lines)
+- SOURCE `libs/reporting/strategist_llm_summary.py::_strategy_detail_from_sources(payload,canonical)` L481–558 → TARGET `libs/reporting/strategist_llm_summary_strategy.py::strategy_detail_from_sources(payload,canonical,*,facade)`.
+- canonical_detail → canonical → strategy_policy.market_policy/scanner_policy → payload의 **필드별 순서**, `_first_text`와 `_first_dict` 우선순위, `final_playbook` fallback, 10개 키 순서 전체 이동. `facade._as_dict/_first_text/_first_dict` use-time.
+- TEST `tests/test_p15_strategist_summary_strategy_detail_owner.py`: (1) full canonical 우선, (2) market/scanner fallback, (3) empty/None/0·중첩 dict alias, (4) patched `_first_text/_first_dict` spy·예외·키 순서/입력 불변 parity.
 
-## A6 — news quality audit
-- SOURCE `libs/reporting/strategist_llm_summary.py::_news_quality_audit(canonical,news_usage)` (L318–369) → TARGET `libs/reporting/strategist_llm_summary_usage.py::news_quality_audit(canonical,news_usage,*,facade)`.
-- 7개 issue 판정 순서, total/market/candidate counts, confidence·summary, weak/partial/ok, query_targets[:10]와 `schema_version`/키 순서 보존. `_as_dict/_as_list/_text` facade use-time.
-- TEST: (1) empty→weak/issue 순서; (2) full evidence→ok; (3) market-only/candidate-only/low confidence→partial; (4) patched helper·invalid numeric 기존 예외/입력 불변.
+## A6 — quality audit markdown lines (78 source lines)
+- SOURCE `libs/reporting/strategist_llm_summary.py::_quality_audit_lines(payload)` L1163–1240 → TARGET `libs/reporting/strategist_llm_summary_quality_lines.py::quality_audit_lines(payload,*,facade)`.
+- Market Regime Rail / News Quality / Risk-Off Exceptions / News Event Intelligence / Strategist Output Quality의 heading, blank line, **문자열·순서·불리언 출력** 그대로. 원함수 내부 `_issue_text`, `_watch_text`는 TARGET 함수 내부 nested helper로 함께 MOVE(전역으로 공개하지 않음); `facade._as_dict/_as_list/_text` use-time.
+- TEST `tests/test_p15_strategist_summary_quality_lines_owner.py`: (1) empty payload exact lines, (2) 5개 섹션 full evidence·한글·키 순서, (3) watchlist 6개 cap·non-dict rows·malformed inputs, (4) facade helpers patch/예외·입력 불변·wrapper/Owner parity.
 
 ## KEEP / 충돌 / 종료
-- SOURCE `_read_json`, `_load_canonical_strategist`(파일 IO), `_utc_now_iso`(시각), `build_strategist_llm_summary_payload`(보고서 조립), `render_strategist_llm_summary_markdown`(공개 렌더 진입), `_market_rail_from_canonical`(market rail policy 호출)는 **정당 KEEP**. 기존 `_headline_count_from_sample_map`, `_compact_operator_summary`, `_first_text`, `_as_dict/_as_list/_text`는 이번에는 공용 facade helper KEEP; 복제 금지. 이전 Reporter feedback/AI review 6개 MOVE는 A SHA `a9817a4`에서 완료됐으므로 재배정·재시험 금지. B의 Strategist **node**/Commander/UI와 파일 교집합 0.
-- A1..A6 각각 `ORDER_ID | STATUS | SOURCE_BEFORE/AFTER_BLOB+LOC | TARGET_BLOB | NORMAL_CMD/EXIT | PUSH_REMOTE_SHA | FIRST_BLOCKER/NEXT`를 #11 댓글 **한 번** 보고. G1/G2는 원격 source/test+정상 exit로 구분, C04만 integration 최소 통합·G3 smoke, C05만 RF/STATUS/DONE. 실계좌/실주문 금지.
+- `_read_json/_load_canonical_strategist`(IO), `_utc_now_iso`(clock), `build_strategist_llm_summary_payload`(orchestration), `generate_strategist_llm_summary`(IO), `render_strategist_llm_summary_markdown`(public render entry)는 **KEEP_EFFECT**. `_market_rail_from_canonical`은 policy 호출 경계 KEEP. `_as_dict/_as_list/_text/_first_text/_first_dict/_directive`는 공용 facade helper KEEP; 이번 6개 MOVE에 포함하지 않는다. `render_strategist_llm_summary_markdown` 이름이 파일에서 두 번 정의됨(L860/L1342): 앞 정의는 shadowed, **둘 다 변경 금지**, 중복 재배정 금지. A와 B의 SOURCE/TARGET 경로 교집합 0.
+- A1..A6 각각 `ORDER_ID | STATUS(IMPLEMENTED/ALREADY_MOVED/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED/NOT_RUN) | SOURCE_BEFORE/AFTER_BLOB+LOC | TARGET_BLOB | NORMAL_CMD/EXIT | PUSH_REMOTE_SHA | FIRST_BLOCKER/NEXT`를 #11 댓글 한 번 보고. C04 최소 integration/targeted smoke→C05 G1/G2/G3·DONE 독점. KEEP/기준점 이전 MOVE/테스트-only를 신규 구조 개선 실적으로 세지 않는다.
