@@ -1,5 +1,14 @@
 # RF-065 — 코드 구조/함수 재배치 설계 (T08)
 
+## 실물 함수 분석 RF-065
+
+Source scripts/research/run_phase5_validation_bundle.py (Git blob 7f7b2aa0717131b4de178050dd9b3a55051561ad; 499 LOC). Codex B.
+
+- _render_bundle_markdown(payload, *, repo_root) L113-292, 180 LOC: MOVE body into scripts/research/phase5_validation_markdown.py::render_bundle_markdown; source retains same-signature thin wrapper. Preserve output Markdown exact bytes and ordering. Keep adjacent JSON file writer in original path.
+- main L474-496, 23 LOC: KEEP public CLI argument/exit path.
+- New module belongs to this RF only. Before/after fake payload/temp repo_root exact Markdown fixture tests once. Existing equivalent renderer: reuse rather than duplicate.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-065.md` blob `72bb19104319ddec6d3cab232ee8f159b17df0f1`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 54개 파일; 다른 RF 경로 쓰기 금지.
 

@@ -1,5 +1,14 @@
 # RF-064 — 코드 구조/함수 재배치 설계 (T08)
 
+## 실물 함수 분석 RF-064
+
+Source scripts/refactor/shared_strategist_contracts.py (Git blob 8b0d6988695cfa599aacd16aa024b5c0a38989c7; 1048 LOC). Codex B.
+
+- verify_b_composed L898-1008 (111), verify_historical_next_scope L351-423 (73), verify_commander_pure_v1 L650-699 (50), verify_b_sources L449-483 (35), _verify_five_function_stage L283-326 (44): historical frozen Git SHA/AST contract checks. KEEP_JUSTIFIED: related pinned verification owner; do not rewrite hashes.
+- restore_candidate L125-168 (44): original Git effect entrypoint KEEP.
+- Existing single-purpose historical verifier has appropriate ownership, so accept KEEP with source blob and one-line rationale. This is not a source extraction metric. No repeated full suite on unchanged verifier.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-064.md` blob `e04799af7f8f8bb25a9c36647785f07a67d344af`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 58개 파일; 다른 RF 경로 쓰기 금지.
 

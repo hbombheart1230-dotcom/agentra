@@ -1,5 +1,14 @@
 # RF-063 — 코드 구조/함수 재배치 설계 (T08)
 
+## 실물 함수 분석 RF-063
+
+Source scripts/diagnostics/check_trade_report_runtime_regression.py (Git blob d320eb12a97e4d5a41a3f4ee3146edfa195c2b6f; 586 LOC). Codex B.
+
+- validate_trade_artifact_chain L313-453, 141 LOC: reads report context, checks artifact existence, and calculates failures/warnings. Move calculation-only evidence projection to scripts/diagnostics/trade_artifact_validation_projection.py::evaluate_trade_artifact_evidence, retain path read and public entry at source. Preserve warning ordering and keys.
+- main L471-583, 113 LOC: KEEP existing CLI/exit contract. _run_python_json L216-246: KEEP subprocess boundary. _has_substantive_entry_evidence L90-112, _has_substantive_exit_evidence L113-136: KEEP existing related helpers.
+- Targeted tests: absent/partial/full trade artifacts from tmp fixtures, before/after exact report JSON/error ordering. Only changed code one normal test.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-063.md` blob `83b2a5fbf16504769d10cd06631ff7cd3604ac76`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 76개 파일; 다른 RF 경로 쓰기 금지.
 
