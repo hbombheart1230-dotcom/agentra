@@ -21,12 +21,12 @@
 4. **새 원격 판정/변경만** #36에 SHA 확인 후 보고하고 반환 댓글 ID를 재조회한다. 변화 없으면 문서/댓글 0. 단일 차단·테스트 PASS·첫 커밋으로 종료하지 않고 다음 READY RF를 처리한다.
 5. 실제 real mode/실계좌, 무승인 운영 `--apply`, UEF historical, 타인 브랜치·force push·frozen oracle 변경 금지. mock/temp와 운영 런검증 분리.
 
-## 현재 우선 게이트 (2026-10-29 20:24 KST)
-- **RF-001..093 FAST-3 93/93:** 기존 전환 14개 + 이번 신규 79개, 레거시 7항목은 보존. GitHub API 배치 변환 및 93 고유 RF·14 우선표 대조. 원본 Python `--write`/`--check`는 로컬 GitHub DNS 실패로 NOT_RUN(실행했다고 주장 금지).
-- **RF-016 04_LEAD_ACCEPTANCE (G1 MET/G2 MET/G3 PARTIAL):** 8 owner Strategist source A 고정 `2bce7dca` / integration blob 동일성의 기존 증거, A 정상 migration 94 + reasoning2 + consumer3 및 temp fake 근거 수용. C05가 integration 92fec494에서 8/8 Owner Git blob 고정 A 2bce7dca와 동일 직접 확인(KEEP 부분 근거). C04가 관련 targeted smoke 정상 exit0 또는 해당 SOURCE CI 근거를 제출해 G3 완결; C05가 근거 확인 즉시 05_DONE/STATUS 이동. 원래 C4 full peer·-O·전체 hosted CI는 요구하지 않음. 동일 SHA·범위 재시험 금지.
-- **다음 READY:** G1/G2를 원격 증거로 신속 판정, 미변경 owner는 KEEP 확인 후 G2 관련 smoke 1회만 요구. RF-045/066 로그 이동 목적지 race D2는 비격리 `--apply` HOLD, RF-041 nonfinite BUY/SELL integration 미수정, RF-021/032/069 보호 정책·UEF historical은 실효과 HOLD. 버그는 별도 OPEN_BUG 가능하나 실계좌 위험은 예외 불가.
-- **RunLab #32:** 19:03 KST 관측 runtime healthcheck timeout/unhealthy, API/web healthy, RUN_SOURCE_SHA=UNKNOWN, ORDER/GUARD/REPORT 기존 불일치. OPEN/RUNTIME_PENDING, 운영 변경·실주문·재배포 금지.
-- **물리 큐:** PENDING47/DEV13/PEER12/LEAD1/DONE20/REWORK0. 이번 신규 DONE 0, G3 실제 C04 증거 대기. C05 직접 pytest·Python sync NOT_RUN. #11/#12 최신 B 20:10 보고는 local only, pytest 미설치/푸시 차단 → G1 원격 수용 불가.
+## 현재 우선 게이트 (2026-10-29 KST)
+- **RF-001..093 FAST-3 93/93:** 기존 14 + 신규 79개 GitHub API 마이그레이션 완료. 공식 Python migrate/sync `--write/--check`는 로컬 GitHub DNS로 NOT_RUN; 이미 전환된 93개 반복 쓰기 금지.
+- **RF-016 05_DONE / G1·G2·G3 MET:** C04 [#36 6495425616](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6495425616) `G3_REUSE` 수용. 고정 A `2bce7dca` ↔ integration `8546db4d` 8/8 Strategist Owner KEEP 및 관련 테스트/소비자/의존성 동일; 기존 정상 targeted pytest 94+2+3 PASS(exit0) 인수. 이후 C04 Markdown-only 변경 `6850dd82`, 소스 영향 없음. 새 pytest/CI NOT_RUN. RF-016 `05_DONE/CLAUDE_A`, STATUS 동기화. **신규 DONE +1, 누적 21/93.**
+- **다음 READY:** G1 원격 Owner/KEEP와 G2 관련 정상 smoke/pytest exit0가 실제 확인된 RF만 04_LEAD_ACCEPTANCE로 이동, C04 G3 최소 통합/유효 테스트 1개 확인 즉시 DONE. full peer/-O/매 RF hosted CI 강제 금지. RF-041 nonfinite price, RF-045/066 log move race D2, RF-021/032/069 UEF/closeout 보호 실효과 HOLD. 버그는 OPEN_BUG 분리 가능하나 실계좌 위험 예외 없음.
+- **RunLab #32:** runtime unhealthy, `RUN_SOURCE_SHA=UNKNOWN`, 주문/Guard/Reporter 불일치. OPEN/RUNTIME_PENDING. 개발 DONE은 운영 검증/실계좌 활성화가 아님.
+- **물리 큐:** PENDING47/DEV13/PEER12/LEAD0/DONE21/REWORK0. Python sync/직접 pytest NOT_RUN(로컬 GitHub DNS); GitHub API 원격 파일·STATUS 동등 확인.
 
 ## 역사 검증 메모 (FAST-3 비차단, 2026-10-28~29)
 - **C05 2026-10-29 17:36 KST 신규 판정:** #36 `6491897462` emergency `1f372f2f` Git blob 동일 격리 추출 RF-041 18 PASS, RF-045/066 6 PASS 정상/`-O` 각각(총 24, 원본 repo/정확 SHA full peer NOT_RUN) → C3 scoped PARTIAL. #11 `6490543459` B `312a5161` repo 31 PASS, 독립 probe 18 PASS+1 FAIL 각 모드(inventory symlink 외부 생성) → RF-045 C2 PARTIAL/SAFETY_HOLD, RF-066 CLI 비임시 효과 HOLD. #12 `6490623337` B `617c8429` 혼합 37 PASS 양 모드, frozen timeout/-O NOT_RUN → RF-044 C3 PARTIAL; B A `d30c67ab` RF-033 5파일 88 PASS 양 모드, A `2bce7dca`까지 해당 파일 경로 변경 0 → C4 scoped PARTIAL(전체 45-owner 아님). FIRST_UNMET C1 A 033(45)/041(6), B 044(16)/045(10)/066(17), full C4 0, C6/C7/DONE 신규 0. #32 `6491497848` 17:12 runtime/API unhealthy, SHA UNKNOWN/OPEN. NEXT A/B original C1/full C4, emergency exact-source 전체 repo normal/-O+peer, C04 선별 통합/CI, RunLab read-only health/provenance. 운영 broker/UEF/--apply HOLD. 큐 47/13/13/0/20/0; C05 direct pytest/sync NOT_RUN(local DNS).
