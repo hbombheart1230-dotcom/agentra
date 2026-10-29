@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -19,9 +20,25 @@ def _utc_now_iso() -> str:
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
-        return float(value)
+        number = float(value)
     except Exception:
         return float(default)
+    return number if math.isfinite(number) else float(default)
+
+
+def _finite_or_none(value: Any) -> Optional[float]:
+    try:
+        number = float(value)
+    except Exception:
+        return None
+    return number if math.isfinite(number) else None
+
+
+def _recent_window(value: Any, default: int = 5) -> int:
+    try:
+        return max(1, int(float(value)))
+    except (TypeError, ValueError, OverflowError):
+        return default
 
 
 def _extract_playbook(bundle: Dict[str, Any]) -> str:
@@ -36,7 +53,7 @@ def _extract_return(bundle: Dict[str, Any]) -> Optional[float]:
     truth = extract_truth_outcome_from_bundle(bundle)
     if bool(truth.get("available")):
         value = truth.get("return")
-        return float(value) if value not in (None, "") else None
+        return _finite_or_none(value) if value not in (None, "") else None
     trade_outcome = bundle.get("trade_outcome") if isinstance(bundle.get("trade_outcome"), dict) else {}
     candidates = [
         trade_outcome.get("return_pct"),
@@ -45,17 +62,13 @@ def _extract_return(bundle: Dict[str, Any]) -> Optional[float]:
     for value in candidates:
         if value in (None, ""):
             continue
-        try:
-            return float(value)
-        except Exception:
-            continue
+        number = _finite_or_none(value)
+        if number is not None:
+            return number
     pnl = trade_outcome.get("pnl")
     if pnl in (None, ""):
         return None
-    try:
-        return float(pnl)
-    except Exception:
-        return None
+    return _finite_or_none(pnl)
 
 
 def _max_drawdown(values: List[float]) -> float:
@@ -97,6 +110,7 @@ def calculate_playbook_stats(
     day: str = "",
     recent_window: int = 5,
 ) -> Dict[str, Any]:
+    recent_window = _recent_window(recent_window)
     rows: List[Dict[str, Any]] = []
     for bundle in list(bundles or []):
         if not isinstance(bundle, dict):
