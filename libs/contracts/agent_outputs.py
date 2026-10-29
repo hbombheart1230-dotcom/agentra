@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 21423)
-Total output lines: 1489
-
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -648,7 +645,122 @@ def build_monitor_output_artifact(state: Dict[str, Any]) -> Dict[str, Any]:
         }
     )
     artifact["validation"] = validate_artifact(artifact)
-    return artifact…1423 tokens truncated… else quote_snapshot.get("spread_bps")),
+    return artifact
+
+
+def build_supervisor_output_artifact(
+    state: Dict[str, Any],
+    *,
+    order: Dict[str, Any],
+    allowed: bool,
+    reason: str,
+    details: Dict[str, Any] | None = None,
+    strategy_policy_summary: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    symbol = str(order.get("symbol") or order.get("stk_cd") or "").strip()
+    artifact = _base_output(state, agent="supervisor", symbol=symbol, status="ok" if allowed else "blocked")
+    artifact.update(
+        {
+            "invoked_agents": ["supervisor"],
+            "intent_id": str(order.get('intent_id') or ''),
+            "command": str(order.get("action") or "").strip().upper(),
+            "decision": "approve" if allowed else "block",
+            "approval_result": bool(allowed),
+            "reason": _clip(reason, max_len=220),
+            "blocked_allowed_details": _dict(details),
+            "supervisor_allow": bool(allowed),
+            "verdict": "approve" if allowed else "block",
+            "supervisor_reason": _clip(reason, max_len=220),
+            "guard_reason": _clip(reason, max_len=220),
+            "action": str(order.get("action") or "").strip().upper(),
+            "symbol": symbol,
+            "order_request_summary": {
+                "action": str(order.get("action") or "").strip().upper(),
+                "symbol": symbol,
+                "qty": _safe_int(order.get("qty")),
+                "order_type": _clip(order.get("order_type"), max_len=32),
+            },
+            "strategy_policy_summary": _dict(strategy_policy_summary),
+        }
+    )
+    artifact["validation"] = validate_artifact(artifact)
+    return artifact
+
+
+def build_executor_output_artifact(
+    state: Dict[str, Any],
+    *,
+    execution: Dict[str, Any],
+    order: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    execution = _dict(execution)
+    order = _dict(order)
+    execution_payload = _dict(execution.get("payload"))
+    response_payload = _dict(execution_payload.get("response_payload"))
+    quote_snapshot = _dict(execution.get("quote_snapshot"))
+    symbol = str(execution.get("symbol") or order.get("symbol") or "").strip()
+    if "execution_ok" in execution:
+        execution_ok = bool(execution.get("execution_ok"))
+    elif "ok" in execution:
+        execution_ok = bool(execution.get("ok"))
+    else:
+        execution_ok = bool(execution.get("allowed"))
+    artifact = _base_output(
+        state,
+        agent="executor",
+        symbol=symbol,
+        status="ok" if bool(execution.get("allowed")) and execution_ok else "error",
+    )
+    artifact.update(
+        {
+            "action": str(execution.get("action") or order.get("action") or "").strip().upper(),
+            "allowed": bool(execution.get("allowed")),
+            "symbol": symbol,
+            "qty": _safe_int(order.get("qty") or execution.get("qty")),
+            "status": _clip(
+                execution.get("status")
+                or execution_payload.get("status")
+                or response_payload.get("return_msg"),
+                max_len=80,
+            ),
+            "reason": _clip(execution.get("reason"), max_len=220),
+            "broker_env": _clip(execution.get("broker_env") or execution_payload.get("broker_env"), max_len=32),
+            "effective_mode": _clip(execution.get("effective_mode") or execution_payload.get("effective_mode"), max_len=64),
+            "broker_message": _clip(
+                execution.get("broker_message")
+                or execution_payload.get("broker_message")
+                or response_payload.get("return_msg"),
+                max_len=200,
+            ),
+            "ord_no": _clip(
+                execution.get("ord_no")
+                or execution.get("order_id")
+                or execution_payload.get("ord_no")
+                or execution_payload.get("order_id")
+                or response_payload.get("ord_no")
+                or response_payload.get("order_id"),
+                max_len=64,
+            ),
+            "execution_ok": execution_ok,
+            # Phase 1 Step 5B: additive BrokerOutcome provenance. `execution_ok`
+            # stays a plain bool for backward compatibility; `broker_outcome`
+            # lets downstream consumers tell UNKNOWN (broker acceptance
+            # unconfirmed, must not be treated as a firm reject) apart from a
+            # true NOT_SENT/REJECTED.
+            "broker_outcome": _clip(execution.get("broker_outcome"), max_len=32),
+            "intent_id": str(execution.get('intent_id') or order.get('intent_id') or ''),
+            "intent_claim": _dict(execution.get('intent_claim')),
+            "intent_state_persistence_error": str(execution.get('intent_state_persistence_error') or ''),
+            "submission_phase": _clip(execution.get("submission_phase"), max_len=64),
+            "submission_attempts": _safe_int(execution.get("submission_attempts")),
+            "exception_type": _clip(execution.get("exception_type"), max_len=120),
+            "reconciliation_required": bool(execution.get("reconciliation_required")),
+            "broker_reference_missing": bool(execution.get("broker_reference_missing")),
+            "quote_snapshot": quote_snapshot,
+            "opening_alpha_execution_price_guard": _dict(execution.get("opening_alpha_execution_price_guard")),
+            "best_bid": _safe_float(execution.get("best_bid") if execution.get("best_bid") not in (None, "") else quote_snapshot.get("best_bid")),
+            "best_ask": _safe_float(execution.get("best_ask") if execution.get("best_ask") not in (None, "") else quote_snapshot.get("best_ask")),
+            "spread_bps": _safe_float(execution.get("spread_bps") if execution.get("spread_bps") not in (None, "") else quote_snapshot.get("spread_bps")),
             "order_request_summary": {
                 "action": str(order.get("action") or execution.get("action") or "").strip().upper(),
                 "symbol": symbol,
@@ -790,15 +902,146 @@ def _commander_shadow_has_open_order(state: Dict[str, Any]) -> Any:
 
 
 def _commander_shadow_actual_runtime(state: Dict[str, Any], *, path: str) -> Dict[str, Any]:
-    from libs.contracts.agent_output_parts.commander_shadow_runtime import build_actual_runtime
+    shadow_runtime = _dict(state.get("commander_shadow_runtime"))
+    strategist_llm = _dict(state.get("strategist_llm"))
+    monitor_output = _dict(state.get("monitor_output"))
+    monitor_action = _dict(state.get("monitor_action_decision"))
+    execution = _dict(state.get("execution"))
+    packet = _dict(state.get("decision_packet"))
+    packet_intent = _dict(packet.get("intent"))
+    runtime_fast_path = _dict(state.get("runtime_fast_path"))
 
-    return build_actual_runtime(state, path=path, facade=_r3_sys.modules[__name__])
+    strategist_executed_raw = shadow_runtime.get("strategist_executed")
+    strategist_executed = strategist_executed_raw if isinstance(strategist_executed_raw, bool) else None
+    strategist_called_raw = shadow_runtime.get("strategist_called")
+    strategist_called = strategist_called_raw if isinstance(strategist_called_raw, bool) else strategist_executed
+    llm_called_raw = shadow_runtime.get("llm_called_by_strategist")
+    if isinstance(llm_called_raw, bool):
+        llm_called = llm_called_raw
+    else:
+        llm_called = None
+        llm_status = _clip(strategist_llm.get("status") or strategist_llm.get("llm_status"), max_len=40).lower()
+        if strategist_executed is True:
+            llm_called = bool(
+                llm_status not in {"", "disabled"}
+                or _clip(strategist_llm.get("prompt_ref"), max_len=40)
+                or _clip(strategist_llm.get("response_ref"), max_len=40)
+            )
+    runtime_path = _clip(path, max_len=80)
+    selected_route = "cached_strategist" if "cached" in str(runtime_path or "") else ""
+    used_cached_strategist = bool(shadow_runtime.get("used_cached_strategist"))
+    if selected_route == "cached_strategist":
+        if strategist_executed is None:
+            strategist_executed = False
+        if strategist_called is None:
+            strategist_called = False
+        if llm_called is None:
+            llm_called = False
+    if selected_route == "cached_strategist" and strategist_executed is False and llm_called is False:
+        used_cached_strategist = True
+        strategist_called = False
+    elif strategist_called is None and llm_called is True:
+        strategist_called = True
+
+    monitor_decision = _clip(
+        shadow_runtime.get("monitor_decision")
+        or monitor_action.get("decision")
+        or monitor_output.get("intent_side"),
+        max_len=24,
+    ).upper()
+    if monitor_decision == "NOOP":
+        monitor_decision = "WAIT"
+
+    executor_action = _clip(
+        shadow_runtime.get("executor_action")
+        or _dict(execution.get("order")).get("action")
+        or packet_intent.get("action"),
+        max_len=24,
+    ).upper()
+    executor_status = _clip(
+        shadow_runtime.get("executor_status")
+        or execution.get("reason")
+        or _dict(execution.get("payload")).get("broker_message")
+        or execution.get("ok_source"),
+        max_len=80,
+    )
+    post_scanner_refresh_requested = bool(shadow_runtime.get("post_scanner_refresh_requested"))
+    post_scanner_refresh_reason = _clip(shadow_runtime.get("post_scanner_refresh_reason"), max_len=80)
+    if not post_scanner_refresh_requested and _clip(runtime_fast_path.get("reason"), max_len=80) == "post_scanner_selected_symbol_refresh":
+        post_scanner_refresh_requested = True
+        post_scanner_refresh_reason = _clip(runtime_fast_path.get("strategist_refresh_reason"), max_len=80)
+
+    return {
+        "strategist_executed": strategist_executed,
+        "strategist_called": strategist_called,
+        "llm_called_by_strategist": llm_called,
+        "used_cached_strategist": used_cached_strategist,
+        "pre_buy_refresh_requested": bool(shadow_runtime.get("pre_buy_refresh_requested")),
+        "pre_buy_refresh_reason": _clip(shadow_runtime.get("pre_buy_refresh_reason"), max_len=80),
+        "post_scanner_refresh_requested": post_scanner_refresh_requested,
+        "post_scanner_refresh_reason": post_scanner_refresh_reason,
+        "monitor_decision": monitor_decision or "",
+        "executor_action": executor_action or "",
+        "executor_status": executor_status,
+        "runtime_path": runtime_path,
+    }
 
 
 def _commander_shadow_observations(state: Dict[str, Any], *, path: str) -> Dict[str, Any]:
-    from libs.contracts.agent_output_parts.commander_shadow_runtime import build_observations
+    shadow_runtime = _dict(state.get("commander_shadow_runtime"))
+    strategist_llm = _dict(state.get("strategist_llm"))
+    strategist_output = _dict(state.get("strategist_output"))
+    selected = _dict(state.get("selected"))
+    portfolio_snapshot = _dict(state.get("portfolio_snapshot"))
+    positions = [row for row in list(portfolio_snapshot.get("positions") or []) if isinstance(row, dict)]
+    risk_context = _dict(state.get("risk_context"))
+    monitor = _dict(state.get("monitor"))
+    runtime_fast_path = _dict(state.get("runtime_fast_path"))
+    stress_flags = _listify(_dict(strategist_output.get("macro_stress_overlay")).get("stress_flags"), limit=6, max_len=60)
+    post_scanner_refresh_requested = bool(shadow_runtime.get("post_scanner_refresh_requested"))
+    post_scanner_refresh_reason = _clip(shadow_runtime.get("post_scanner_refresh_reason"), max_len=80)
+    post_scanner_refresh_selected_symbol = _clip(_dict(shadow_runtime.get("post_scanner_refresh_context")).get("selected_symbol"), max_len=32)
+    if not post_scanner_refresh_requested and _clip(runtime_fast_path.get("reason"), max_len=80) == "post_scanner_selected_symbol_refresh":
+        post_scanner_refresh_requested = True
+        post_scanner_refresh_reason = _clip(runtime_fast_path.get("strategist_refresh_reason"), max_len=80)
+        post_scanner_refresh_selected_symbol = _clip(runtime_fast_path.get("selected_symbol"), max_len=32)
 
-    return build_observations(state, path=path, facade=_r3_sys.modules[__name__])
+    score_total = selected.get("score_total")
+    if score_total in (None, ""):
+        score_total = selected.get("score")
+    signal_strength = score_total
+    if signal_strength in (None, ""):
+        signal_strength = selected.get("confidence")
+
+    retry_count_estimate = _safe_int(shadow_runtime.get("retry_count_estimate"), -1)
+    if retry_count_estimate < 0:
+        retry_count_estimate = max(0, _safe_int(strategist_llm.get("attempts"), 1) - 1)
+
+    position_state = "open_position" if len(positions) > 0 else "flat"
+    if "monitor_only" in str(path or ""):
+        position_state = "open_position_monitor_only" if len(positions) > 0 else position_state
+
+    return {
+        "market_changed": shadow_runtime.get("market_changed"),
+        "signal_strength": signal_strength,
+        "risk_score": selected.get("risk_score") if selected.get("risk_score") not in (None, "") else risk_context.get("score"),
+        "capital_available_for_sizing": risk_context.get("capital_available_for_sizing"),
+        "cash_truth_source": _clip(risk_context.get("cash_truth_source"), max_len=80),
+        "cash_truth_available": risk_context.get("cash_truth_available"),
+        "broker_orderable_amount": risk_context.get("broker_orderable_amount"),
+        "broker_withdrawable_cash": risk_context.get("broker_withdrawable_cash"),
+        "broker_deposit": risk_context.get("broker_deposit"),
+        "post_scanner_refresh_requested": post_scanner_refresh_requested,
+        "post_scanner_refresh_reason": post_scanner_refresh_reason,
+        "post_scanner_refresh_selected_symbol": post_scanner_refresh_selected_symbol,
+        "macro_stress": float(len(stress_flags)) if stress_flags else (1.0 if bool(_dict(strategist_output.get("macro_stress_overlay")).get("active")) else 0.0),
+        "last_llm_status": _clip(strategist_llm.get("status") or strategist_output.get("llm_frame_status"), max_len=40),
+        "retry_count_estimate": int(max(0, retry_count_estimate)),
+        "position_state": position_state,
+        "has_open_order": _commander_shadow_has_open_order(state),
+        "runtime_fast_path_reason": _clip(runtime_fast_path.get("reason"), max_len=80),
+        "repeated_same_context": shadow_runtime.get("repeated_same_context"),
+    }
 
 
 def _gate_pass(metrics: Dict[str, Any], passed_checks: List[str], failed_checks: List[str], key: str) -> Any:
