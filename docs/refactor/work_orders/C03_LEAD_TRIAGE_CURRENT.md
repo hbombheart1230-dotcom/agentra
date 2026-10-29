@@ -1,5 +1,10 @@
 # C03 — 지팀장 | 구체 실행 설계·A/B 연속 작업 공급
 
+## 최신 우선 계약 — 93개 RF 상세설계 기반 다중 개발 배정
+
+`docs/refactor/plan/rf_details/INDEX.md`의 93개 상세설계와 각 RF SOURCE→TARGET, 독점 A/B 배정이 정본. 위 D00 2026-10-29 절 우선; 아래의 C01/C02 1~2개만 배정, KEEP-only 최대한 DONE으로 보낸다는 옛 지시는 이 절과 충돌 시 무효. **A/B 각 4~6개 이상의 실제 독립 함수 이동 item**을 C01/C02에 유지하고 1개 완료시 재보충. 다른 RF가 소유한 목적지 경로는 같은 Actor라도 새 Owner 계약/CSV 반영 근거가 있어야 한다. **함수명·목표 Owner가 미분석인 RF는 실제 원본을 열어 코드 분석 후 해당 RF 상세설계를 먼저 채워** A/B에 넘긴다. 이미 옳은 KEEP은 한 줄+blob으로 즉시 끝내고 다시 요구하지 않는다. 진짜 cloud push/pytest 장애만 복구; 긴급 별도 개발 트랙 계획 금지.
+
+
 ## STRUCTURAL-REALITY — 2026-10-29 홍사장 시정 지시: 실제 리팩터링과 KEEP 검증 분리
 - **개발 DONE은 D00 §2 FAST-3 그대로 보존한다.** 그러나 C03/C05가 보고하는 구조 개선 실적은 `REFACTOR_CHANGED`(실제 모듈 책임 이동/함수 몸체 추출/의존성 감소), `KEEP_VERIFIED_ONLY`(대상 소스 변화 없이 동작·기존 구조 검증), `ALREADY_SPLIT_BEFORE_BASE`(main→P1.5 기준점 이전 분리)를 반드시 구별한다. **KEEP을 코드 구조 개선 건수·LOC 감소 실적에 더하지 말 것**. 실제 기준점은 main SHA·P1.5 baseline SHA·integration HEAD를 구분해 병기; 1개 RF의 성공을 다른 단계의 공으로 중복 집계 금지.
 - **검증된 실측(2026-10-29):** main `058a6403` 대비 integration 시점의 `graphs/nodes/strategist_node.py` 422309→194854B, `apps/operator_ui/data_access_core.py` 358998→112756B, `libs/reporting/trade_report_ai.py` 440032→64646B, `libs/reporting/reporter_analysis.py` 93941→28062B. 이는 파일 크기 감소를 뜻하지 P1.5 **중간 baseline 이후** 이 분해를 새로 했다는 의미가 아님. 21 DONE RF의 소유 총 431경로 중 426개는 baseline `63182ab2`→integration `671306d0` Git blob 동일, 5개 상이; main에서 160경로 미존재. **기존 DONE 21/93은 역사 사실로 유지**, 그러나 '중간 baseline부터 실제 코드 개선 19 RF'로 주장 금지.

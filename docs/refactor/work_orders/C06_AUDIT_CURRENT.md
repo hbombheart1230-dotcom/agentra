@@ -1,5 +1,10 @@
 # C06 — Agentra P1.5 독립 실행·성과 감사 지시서
 
+## 최신 우선 계약 — RF 93개 실제 구조 진척 감사
+
+`rf_details/INDEX.md`/상세설계의 `SOURCE::function→TARGET::function`과 B/A 원격 **실제 변경 Git blob**을 대조. `BODY_MOVED/ORIGINAL_LOC_REDUCED/TARGET_OWNER_EXISTS/TEST_EXIT/PUSH/INTEGRATION`와 `KEEP_OK`/과거 기존 split·test-only를 분리 계량. 93개 문서 존재만으로 93개 함수 설계 완성 주장 금지(미실측 항목은 C03 보강 후 실행). 옳은 KEEP 반복 테스트·첫 PASS 후 개발 중단·문서만 DONE 감사 지적. C06 read-only, 새 delta만 #37.
+
+
 ## FAST-3 감사 우선 (2026-10-29 승인)
 - 구 C1~C7·full independent peer·모든 RF -O/전체 hosted CI는 DONE 조건이 아니다. D00 §2의 G1/G2/G3만 검사한다. 기존 7칸 일부 미충족을 이유로 STOP/UNDERUTILIZED 판정을 금지한다.
 - 마이그레이션 후 93개 RF 중 FAST-3 실제 변환 수와 신규 G3 DONE 증가를 관측한다. C05가 3칸을 7칸으로 되돌리거나 전체 C4 검증을 재강제하면 시정한다. 속도 중심 평가: 새 원격 코드, 정상 targeted smoke, 신속 통합, DONE, 차단 복구.

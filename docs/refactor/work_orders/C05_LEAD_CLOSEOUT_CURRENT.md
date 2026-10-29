@@ -1,5 +1,10 @@
 # C05 — 지팀장 · 유일한 RF 체크·큐 이동·DONE·STATUS 작성자
 
+## 최신 우선 계약 — DONE 보존 + Txx TARGET_GAP 구분
+
+기존 DONE 26건의 역사 체크·증거는 **일괄 취소/재시험하지 않는다**. `rf_details/RF-xxx_IMPLEMENTATION.md`의 목표와 같은 원격 source/target의 실제 구조가 맞는 KEEP은 `KEEP_OK|path|한줄 이유|blob`으로 당회 통과. 과거 DONE에서 실제 구조 미충족이 확인되면 `TARGET_GAP_OPEN|SOURCE::함수|TARGET::함수|Actor`를 분리 기록하여 C03에 실구현 배정; 과거 DONE이 새 실제 MOVE 실적은 아님. CODE_READY는 원본 몸체 감소/target Owner 구현·호환, TEST_READY는 대상 변경 정상 fake test 1회 exit0, INTEGRATED_DONE은 C04 source integration. 문서만/KEEP-only/기존 기준점 이전 분리를 이번 회차 CODE_MOVE로 계산 금지. 아래 RF-016/028/029 반복 지시보다 우선.
+
+
 **2026-10-29 FAST-3 신규 DONE +3:** C04 [#36 6498151907](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6498151907)의 integration `87d3777513856b9f89575115c285f20e1a3560fc` RF-051/054/058 source/test 6/6 blob 동일 및 격리 Python 3.13 normal smoke exit0를 G3로 수용. 기존 A G2 normal 10/13/5 PASS exit0 유지. 세 RF 04_LEAD_ACCEPTANCE→05_DONE, 누적 **26/93**. 원본 repo pytest/committed test 직접 실행/hosted CI NOT_RUN. 공식 Python sync NOT_RUN, GitHub 원격 동등 검증. RF-016/028/029·93개 마이그레이션 반복 금지. 다음은 새로운 G1/G2 READY만 판정.
 
 **2026-10-29 신규 FAST-3 단계 전진:** RF-051/054/058 A `bed17305` source/test 원격 blob 및 [#11 6495308964](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6495308964) 정상 10/13/5 PASS exit0 수용, **G1/G2 MET → 04_LEAD_ACCEPTANCE 3건**. G3는 변경 소스 integration 미반영으로 PENDING; C04 최소 선별 통합 + 해당 integration SHA normal targeted smoke 인계. 신규 DONE 0, 누적 23/93. RF-016/028/029 반복 금지.

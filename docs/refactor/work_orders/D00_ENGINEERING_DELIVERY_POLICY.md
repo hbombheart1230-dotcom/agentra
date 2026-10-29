@@ -1,5 +1,14 @@
 # D00 — Agentra P1.5 단일 실행·권한 계약
 
+## 2026-10-29 RF 93개 실구현 계약 — 본 절 최우선
+
+- 동결 목표: T00~T09 및 TREE_V3_FROZEN 그대로. [93개 설계](../plan/rf_details/INDEX.md)의 SOURCE→FUNCTION→TARGET 및 RFC 원본 파일 독점권을 사용. 세부 파일이 미조회 함수라고 표기하면 **C03이 실제 소스를 열고 함수명을 확정한 후** A/B에 배정; 임의 추측 구현 금지.
+- **KEEP_OK 즉시 통과:** 정해진 폴더 위치, 단일 책임, 적절한 길이와 기존 호환 또는 합리적인 공개 CLI/State/effect 경계가 만족되면 KEEP_OK|path|한줄사유|blob으로 승인. 같은 blob 재시험/peer/장문 검토 금지. KEEP은 구조 목표 충족으로 수용하며 신규 CODE_MOVE 성과에 포함하지 않는다.
+- **MOVE 진척:** 원본 함수의 실제 몸체 제거 → 목표 단일 Owner 함수에 옮김 → 원시그니처 얇은 wrapper → caller/monkeypatch/출력/예외 보존. 이중 구현·파일명만 이동은 실패. 실제 변경한 함수의 기존 출력과 새 출력/예외를 fake fixture로 비교하여 정상 targeted pytest/unittest 1회(exit0). 반복 -O/full-suite/full-peer/hosted CI 금지.
+- **다중 RF:** C03은 A/B 각각 4~6개 이상 서로 독립적인 실제 함수 과제를 C01/C02에 공급, 한 Item PASS/KEEP/차단 뒤 다른 안전 항목 계속. A/B 원본/신규 target 파일 소유권 충돌 0; 각 자신의 branch code/test만. C04 묶음 통합, C05 READY 묶음 종결, C06 MOVE와 KEEP 분리 감사.
+- 기존 26개 DONE 및 모든 이전 검증 이력은 보존. DONE에도 남은 목표 부채가 확인되면 TARGET_GAP_OPEN(정확 SOURCE::함수/TARGET::함수)로 다음 구현에 배정하되 DONE을 일괄 취소하거나 과거 PASS 반복하지 않는다. 실거래/운영 DB/State·Broker/Guard/Step5C/UEF/frozen oracle 변경 금지. 긴급 트랙은 **클라우드 인증/pytest/push 등 실제 환경 차단 해결에만** 사용하고 별도 구조개발 트랙으로 운영하지 않는다.
+
+
 **정본:** `integration/p1.5`. 이 문서는 **지팀장 C03~C05의 작업 설계·안전·수용 정본**이다. A/B는 개별 회차 실행 명령인 C01/C02만 진입점으로 읽으며, 이 문서나 RF/큐를 매회 재독하지 않는다. 지팀장이 필요한 보호 조건을 작업별 명령서에 명시한다. 작업 지시: [C01](C01_CODEX_CURRENT.md) Codex B · [C02](C02_CLAUDE_CURRENT.md) Claude A · [C03](C03_LEAD_TRIAGE_CURRENT.md) 지팀장 배정 · [C04](C04_LEAD_INTEGRATION_CURRENT.md) 통합/CI · [C05](C05_LEAD_CLOSEOUT_CURRENT.md) 최종 STATUS. 구 핸드오프와 회차별 문서는 역사 자료이며 새 보고 경로가 아니다.
 
 ## 1. 진입점·원격 보고의 단일 정본
