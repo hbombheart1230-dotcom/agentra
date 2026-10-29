@@ -2,6 +2,17 @@
 
 **대상:** 기존 `work/p15-b-operator-structure-20261022`에서만 소유 code/test 수정·fast-forward push. 시작 시 원격 B HEAD와 아래 고정 SOURCE `617c8429c69c98ac6f707a820d0e6825766f8642`를 대조한다. 이미 다른 실행이 수정 중인 파일은 안전 체크포인트/HEAD 확인 후 겹치지 않게 이어간다. **1~5는 각기 필수 신규 개발·회귀 과제, 6은 필수 정확-SHA 상대 독립 검증.** 번호는 우선순위·선택권·종료 조건이 아니다. 결과가 이미 정확 SHA/범위로 입증된 것은 중복 실행하지 않고, 새 입력·새 소스·새 결손에만 테스트를 추가한다. 7은 실제 플랫폼 한도로 차단된 별도 동결 게이트로 유지한다. 모든 IO는 `tmp_path`·fake/deny-socket; 운영 파일/로그/주문/브로커/Guard/UEF/Step5C/RunLab, frozen 파일·CI/정책·문서/CSV·타인 브랜치 수정 및 force-push 금지.
 
+
+## 실행 루프 — 로컬 Codex 방식의 연속 수행 계약 (전 번호 필수)
+
+1. **진입 즉시 작업 테이블 확정:** 현재 원격 B HEAD와 이 문서의 #1~#7을 대조해 번호별 `DONE_WITH_EVIDENCE / IMPLEMENT / TEST / BLOCKED / NOT_RUN`을 구분한다. 기존 정확 SHA·동일 범위의 정상/-O PASS는 재사용하고, 존재하는 테스트/구현을 무의미하게 다시 만들지 않는다.
+2. **번호별 즉시 실행:** 새 입력의 실패 재현 → B 소유 최소 수정·독립 테스트 → normal/-O 실제 exit → 허용 브랜치 정상 커밋·푸시·원격 blob 확인까지 수행한다. 코드 수정이 불필요한 경우도 독립 음성 테스트·실제 결과를 남긴다. #6 상대 SHA는 격리 읽기 전용으로만 검증한다.
+3. **한 번호의 PASS는 종료가 아니다:** 다음 미완료 안전 번호로 즉시 이동한다. 중요도나 순서는 스스로 선택해도 **#1~#6 어느 번호도 생략할 수 없다**. #7 동결 게이트는 긴 실행이 가능한 환경에서 해소하되, 환경 한도가 확인되면 그 번호만 BLOCKED하고 다른 작업을 계속한다.
+4. **장애는 국소화:** 인증 문제는 push만 BLOCKED, 테스트 의존성 문제는 해당 테스트만 BLOCKED, 안전 HOLD는 그 효과만 금지한다. 나머지 가능한 코드·테스트·독립 peer를 이어서 수행하며 권한 밖 우회는 하지 않는다.
+5. **종료 게이트:** 모든 번호가 실제 원격 SHA와 검증 증거로 완료되었거나, 남은 번호 각각에 대해 구체 명령·오류·해제 담당·재개점이 기록되어 안전하게 수행할 작업이 없을 때만 종료한다. 환경·세션 실행 한도로 끝나면 정확한 마지막 함수/명령/결과를 #12에 남겨 **다음 회차 첫 재개점**으로 삼는다. 실행 시간이 길다는 사실이나 단일 PASS만으로 완료를 선언하지 않는다.
+
+**이번 회차 작업량:** #1~#5 독립 개발·회귀 5건, #6 정확 A SOURCE 독립 peer 1건, #7 frozen 장시간 게이트 1건. 이 목록을 임의로 하나의 시험명령으로 축소하지 말고 신규 근거를 생성하라.
+
 ## 1 — Q9 compact의 파일 크기 역증가 방지 (개발·필수)
 
 - **확인한 기존 B 코드:** `scripts/maintenance/compact_q9_decision_windows.py::compact_file/_compact_window/main` (B SOURCE, blob `e6d675039516a736c1ab19892a5fb98574836a13`), 공개 호환 entrypoint `scripts/compact_q9_decision_windows.py`(15 LOC import alias/runpy wrapper, **KEEP**). 현재 `compact_file`은 dict JSON을 읽고 window mapping만 유지한 뒤 무조건 `indent=2`로 재기록한다. 작은 압축 입력은 실제로 **46→111 bytes, 398→1188 bytes** 역증가 관찰. `_compact_window`와 `libs.runtime.q9_decision_snapshots._compact_candidates/_compact_mapping`는 변경하지 않는다.
