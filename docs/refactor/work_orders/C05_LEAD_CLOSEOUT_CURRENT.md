@@ -2,7 +2,9 @@
 
 ## 최신 우선 계약 — DONE 보존 + Txx TARGET_GAP 구분
 
-**최신 C05 delta (2026-10-30 00:48 KST):** RF-031 C04 `855456a2` 4함수 MOVE·Owner 2·테스트 2 A `048c6d3f` 5/5 Git blobs 동일, 기존 A 정상 187 PASS exit0와 정확 code SHA offline safety CI #40902755335 SUCCESS(신규 targeted 미포함) → G3_REUSE MET, **RF-031 05_DONE 신규 +1 / 누적 28/93, LEAD 0**. RF-041 nonfinite price·RF-045 D2 안전 HOLD, 다음 C04 READY만 처리. 과거 RF-016/028/029/마이그레이션 반복 금지. C05 직접 pytest/sync NOT_RUN.
+**최신 C05 delta (2026-10-30 00:52 KST):** A [#11 6501103386](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6501103386) `5da432ff` actual 6 MOVE, normal scoped 39 PASS exit0+related 230 PASS exit0; RF-034 5/ RF-050 1 changed function G1/G2 MET → **LEAD +2**, G3 C04 selective integration PENDING. RF-034 `_large_cap_candidate` target gap C03→A. RF-031 DONE 28 유지, 현재 LEAD 2. 이전 완료 RF 재검증·마이그레이션 없음.
+
+**이전 C05 delta (2026-10-30 00:48 KST):** RF-031 C04 `855456a2` 4함수 MOVE·Owner 2·테스트 2 A `048c6d3f` 5/5 Git blobs 동일, 기존 A 정상 187 PASS exit0와 정확 code SHA offline safety CI #40902755335 SUCCESS(신규 targeted 미포함) → G3_REUSE MET, **RF-031 05_DONE 신규 +1 / 누적 28/93, LEAD 0**. RF-041 nonfinite price·RF-045 D2 안전 HOLD, 다음 C04 READY만 처리. 과거 RF-016/028/029/마이그레이션 반복 금지. C05 직접 pytest/sync NOT_RUN.
 
 **과거 C05 delta (2026-10-29 KST):** 기존 DONE26/FAST-3 93 보존. RF-044 실제 2함수 MOVE + C04 scoped G3_REUSE로 **신규 DONE +1, 누적 27**. 남은 `_commander_shadow_monitor_gate_details/_commander_shadow_context_delta_summary`→`commander_shadow_evidence.py`는 TARGET_GAP_OPEN 2건, C03→Codex B 배정(기존 DONE 취소 금지). RF-031 A `048c6d3f` 4함수 MOVE·normal 187 PASS로 G1/G2 MET, **LEAD1**, G3 C04 최소 통합+정상 smoke 필요. RF-045 scoped copy guard는 integration 됐으나 D2 TOCTOU와 계획 함수 미이동으로 전체 RF DONE 금지. 물리 큐 **47/9/9/1/27/0**. C05 직접 pytest/sync NOT_RUN. 기존 RF-016/028/029/마이그레이션 반복 금지. 다음 회차 새 C04 G3/신규 READY만 처리.
 
