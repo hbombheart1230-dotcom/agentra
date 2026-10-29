@@ -1,63 +1,35 @@
-# C01 — Codex B | 실제 함수 몸체 이동·다중 RF 연속 구현
+# C01 — Codex B | 실측 Owner 함수 MOVE 6개 (단일 실행 문서)
 
-## 실행 진입 계약 — A/B에게 다른 문서 탐색 지시 금지 (최우선)
+## 실행·권한 (이 문서만 읽는다)
+- Owner branch: `work/p15-b-operator-structure-20261022`. **이 문서의 code/test만** 수정·정상 commit/push. 다른 설계·상태·큐 문서를 읽거나 수정하지 않는다. 다른 Actor 브랜치/코드, 운영 State·DB·로그·실주문/브로커/Guard/UEF/CI·frozen oracle/보호 정책 변경 금지. Git 인증·pytest 장애는 해당 단계만 BLOCKED로 분리하고 나머지 독립 item 계속.
+- Preflight: 원격 `integration/p1.5`의 `CANONICAL_HEAD`, 이 C01의 `ORDER_FILE_BLOB_SHA`(`git rev-parse <CANONICAL_HEAD>:docs/refactor/work_orders/C01_CODEX_CURRENT.md`), B 원격 `OWNER_REMOTE_SHA`를 직접 기록. **ORDER_ID=C01:<ORDER_FILE_BLOB_SHA>:B1..B6**. 시작 당시 지시서가 실행 중 변경돼도 기존 작업을 소급 실패 처리하지 않는다. local-only 커밋·원격 push·테스트 exit를 별도 기록한다.
+- MOVE 공통: source **원함수 본문 제거** + target 단일 Owner로 **실제 이동** + 원명/서명 facade thin wrapper. 호출시점 monkeypatch를 보존할 경우 `facade=sys.modules[__name__]`를 target에 전달해 target이 `facade._helper`를 호출하도록 구현한다. 새 owner가 facade를 역import하지 않는다. key order/한국어 문자열/JSON prompt bytes·기존 예외·읽기 순서·호출자 동작 동일. 변경 전 source의 fake 결과를 golden으로 저장해 변경 후 owner+wrapper 결과 비교. 정당 KEEP은 이미 적절한 단일 책임/공개 효과 경계일 때 `KEEP_OK|path|사유|blob` 한 번으로 끝내되 **아래 6개 미이동 함수는 KEEP으로 대체하지 않는다**.
+- 각 항목의 **2~4개 targeted fixture**는 temp/fake/socket-deny로만 수행. 정상 `python -m pytest -q -p no:cacheprovider <해당 신규 테스트>` 또는 `python -m unittest discover -s tests -p '<파일명>' -v` exit0 **1회**. pytest가 없으면 stdlib unittest. 전수 -O/full peer/전체 CI는 필수 아님. 한 항목 PASS/KEEP/실패·PUSH_BLOCKED 뒤에도 나머지 안전 항목 계속; 정상 push 후 remote source/target/test blob 재확인. 기존 구현의 동일 테스트 재실행 금지.
+- B 원격 기준 `14558ddc004037530925cc4f023d6d81a0a62158`. 기존 Commander runtime/observations 2개는 이미 `commander_shadow_runtime.py` blob `1e0f7e75`에 이동·통합됐으므로 **다시 이동하지 않는다**. 아래 새 target 4개 파일은 해당 B SHA에서 미존재. Strategist B 원본은 현재 integration과 다른 blob(긴급 reporter-feedback 추출이 integration에 선행 반영): B 브랜치의 기존 원본만 hunk 단위로 수정하고 C04가 충돌 없는 최소 diff만 선별 통합하도록 증거를 제출한다. 무분별한 전체 파일 overwrite/merge 금지.
 
-**A/B 각각 이 파일 하나만 읽고 개발을 수행한다.** `docs/refactor/plan/rf_details/`, `INDEX.md`, D00, C03, Txx, 원본 RF, STATUS를 A/B가 열거나 읽고 작업을 고르게 하지 않는다. 필요한 **SOURCE_PATH::EXACT_FUNCTION → TARGET_PATH::EXACT_FUNCTION, 함수 몸체 처리, 주입해야 할 의존성, 테스트 fixture, KEEP 사유, 담당 독점권, 우선순위 및 재개점은 모두 아래 C01/C02 본문에 완전히 복사**한다. GitHub의 *실제 작업 대상 코드 파일*과 호출자·타깃 파일은 직접 열어 구현할 수 있다. 자기 작업이 끝나도 다음 항목을 순서대로 진행한다.
+## B1 — Commander monitor gate 근거 projection
+- **SOURCE** `libs/contracts/agent_outputs.py::_commander_shadow_monitor_gate_details(state)` (B source blob `2a1d5d8c5618d9c0cde869e1853efbfa19952c91`, L828–894, 67행) → **TARGET** `libs/contracts/agent_output_parts/commander_shadow_evidence.py::build_monitor_gate_details(state, *, facade)`. `monitor_entry.metrics/thresholds`와 passed/failed 체크·pullback 우선순위·observed_features·entry_score/entry_block_reason를 만드는 본문 전체 MOVE. 원명 wrapper에서 `facade` 전달. target은 `_dict/_clip/_gate_pass/_score_from_checks`를 facade 호출시점 조회.
+- **test** `tests/test_p15_commander_shadow_gate_owner.py`: (1) 빈 state → None/빈 키 계약, (2) pullback bool false vs passed_checks 우선순위, (3) 8개 이상 passed/failed 잘림·threshold·price fallback, (4) `facade._gate_pass` spy/오류와 입력 불변. old/new/owner key order 동일.
 
-C03 지팀장이 93개 RF 설계서/실제 source를 읽고 필요한 다음 구현 항목을 이 단일 지시서의 **작업 큐 본문에 인라인 추가**한다. A/B가 상세설계를 찾아가라는 문구는 무효. 지시서에 없는 RF/함수는 새로 추정하지 않고 C03이 배정할 때까지 기존 다른 항목 진행. 각 차수에 4~6개 이상 독립 코드 항목을 유지하며 기존 완료 항목은 제거·추가. 구 구현과 목적지 소유권을 실제 시작 source blob에서 확인하여 중복 개발 금지.
+## B2 — Commander prior/current delta projection
+- **SOURCE** 같은 `agent_outputs.py::_commander_shadow_context_delta_summary(state, *, observations)` (L897–970, 74행) → **TARGET** 같은 `commander_shadow_evidence.py::build_context_delta_summary(state, *, observations, facade)`. symbol/playbook/regime/sentiment/VIX/score 변화 판정과 0.03·1.0·0.05 경계, 예외 fallback·last_llm_status 전부 MOVE. 원명 wrapper 유지, target `facade._dict/_clip` use-time.
+- **test** `tests/test_p15_commander_shadow_delta_owner.py`: (1) prior 없음→None 경계, (2) 0.029 vs 0.030 sentiment, (3) 0.99 vs 1.0 VIX·0.049 vs 0.05 score, (4) 비수치 예외/patch clip spy·원본 불변. 결과 dict 순서/bytes old/new 일치.
 
+## B3 — Strategist stage-specific JSON contract
+- **SOURCE** `graphs/nodes/strategist_node.py::_stage_specific_llm_contract(call_kind,base_contract)` (B blob `86e9c2e2b5d396226c538f161d468684861140c9`, L677–762, 86행) → **TARGET** `libs/runtime/strategist/llm/stage_contracts.py::build_stage_specific_contract(call_kind,base_contract)`. 3가지 kind `selected_symbol_tactical_refresh`, `stale_intraday_hold_review`, `end_of_day_carry_review`의 **전체 고정 JSON schema dict 본문** MOVE. 원명 wrapper, 알 수 없는 kind는 기존 **base_contract 객체 자체 반환(identity)** 유지. LLM 호출·policy writer·state mutation 이동 금지.
+- **test** `tests/test_p15_strategist_stage_contract_owner.py`: (1) 각 3종 kind 반환 JSON sha256 golden(한국어/키 순서 포함), (2) unknown kind identity, (3) 입력 base_contract 불변, (4) wrapper와 target dict·exception parity. fixture 외부 네트워크 0.
 
-**유일한 진입점:** 이 C01 파일만. 목표는 동결 T00~T09/V3이며 필요한 모든 배정 정보는 이 문서 본문에 이미 포함되어 있다. 허용 브랜치 `work/p15-b-operator-structure-20261022` code/test만 수정, 원격 push 후 #12 보고. 다른 브랜치/원본 RF·CSV·D00·STATUS/HANDOFF·CI·frozen oracle 수정 금지. 한 RF PASS/KEEP/실패 후에도 안전한 다음 RF 연속 수행.
+## B4 — Strategist token budget frame compression
+- **SOURCE** 같은 `strategist_node.py::_apply_strategist_llm_token_budget(compact, *, memory_usage_disabled)` (L1636–1733, 98행) → **TARGET** `libs/runtime/strategist/context/token_budget.py::apply_frame_token_budget(compact, *, memory_usage_disabled, facade)`. `theme_strength_packet` dedup, call_kind별 조기 반환, news/available_themes/refresh/feedback/memory slicing의 **전체 본문** MOVE. 원명 wrapper; target은 `_resolve_strategist_llm_call_kind/_theme_packet_summary_for_llm/_compact_theme_strength_for_llm/_compact_monitor_entry_policy_baseline_for_llm/_slim_refresh_context_for_llm`을 facade use-time 호출. 원본 shallow-copy/중첩 alias 동작까지 parity, 임의 deep-copy로 의미 변경 금지.
+- **test** `tests/test_p15_strategist_token_budget_owner.py`: (1) market_strategy_frame 조기 반환, (2) selected-symbol frame의 news 4/3·themes 4·component_symbols 3 절단, (3) memory_usage_disabled=True·feedback recommendation 2개, (4) patched helper spy·원본 입력/중첩 alias parity. 모든 결과 old/new 동일.
 
-## 시작과 공통 통과 기준
+## B5 — Strategist repair messages pure formatting
+- **SOURCE** 같은 `strategist_node.py::_build_strategist_llm_repair_messages(payload,raw_response)` (L2101–2210, 110행) → **TARGET** `libs/runtime/strategist/llm/repair_messages.py::build_repair_messages(payload,raw_response, *, facade)`. base_contract와 stage-specific JSON, raw parse failure reason, compact input, system/user 두 메시지 **문자열 생성 본문** MOVE. 원명 wrapper; `_build_compact_strategist_llm_payload/_resolve_strategist_llm_call_kind/_stage_specific_llm_contract/_classify_llm_parse_failure/json.dumps`를 facade 호출시점 조회하여 monkeypatch seam과 `ensure_ascii=False` bytes 유지. **실제 LLMRouter/재시도/ledger 호출 금지.**
+- **test** `tests/test_p15_strategist_repair_messages_owner.py`: (1) malformed raw + 한글 payload → 정확 2 message/bytes, (2) selected_symbol kind contract, (3) empty raw/None, (4) facade JSON/parse-failure spy와 원본 예외 parity. 네 fixture 모두 old/new SHA 일치.
 
-시작 1회 원격 integration HEAD·C01 blob·자기 B HEAD·dirty status만 확인. 최신 SHA에 이미 코드가 추출됐으면 해당 item은 SKIP_COMPLETED (반복 테스트 0). KEEP_OK = 목표 위치/단일 책임/적정 규모/중복 Owner 없음 또는 합리적인 CLI·IO·State 효과 경계. `KEEP_OK|RF|path|사유 한 줄|source blob`으로 통과, 새 테스트 0. 본문 MOVE는 원본에서 실제 삭제 + 새 Owner 함수 구현 + 호출시점 facade wrapper, 중복 복사 금지. 변경 함수만 old/new fake normal unittest 또는 pytest 1회 exit0, 원본 LOC 감소와 새 target blob 기록. pytest 없으면 unittest 사용. push 차단시 오류 1회 기록, 다른 독립 안전 item 계속; 비인가 credential/push 우회 금지.
+## B6 — Operator UI trade report index read-only Owner
+- **SOURCE** `apps/operator_ui/data_access_core.py::_trade_report_index(config)` (blob `0666538f5f6ddd74e3ca8a3fa290c95f044fbdb6`, L616–767, 152행) → **TARGET** `apps/operator_ui/data_access_report_index.py::trade_report_index(config, *, facade)`. 날짜별 `iter_trade_day_roots/iter_trade_dirs`→bundle path mtime 정렬→lifecycle/AI/brief/provenance/health 읽기→`_project_trade_identity/_project_trade_summary/_project_trade_record/_project_trade_indexes`와 by_run_id/by_story_id 갱신 **전체 읽기 전용 본문** MOVE. 원명 wrapper, `_trade_report_meta_for_run/_story` 및 UI import 경로 유지. target은 모든 `_read_json`, `_trade_paths_from_bundle`, `_existing_trade_path`, `_project_*`, `normalize_symbol`, `_to_epoch` 등을 **facade use-time** 조회. 실제 보고서 생성·수정/삭제·live 파일/네트워크 호출 금지.
+- **test** `tests/test_p15_ui_trade_report_index_owner.py`: `tmp_path` 아래 (1) 빈 reports→두 빈 index, (2) 한 `lifecycle_bundle.json` + `aggregated_execution_bundle.json`의 mtime/중복 경로 우선순위, (3) run_id/story_id 둘 다 연결·누락/불량 JSON 안전 동작, (4) patched facade `_project_trade_record` spy·기존 예외/순서/파일 해시 불변. read-only fake root만 사용; old/new dict equality·key order·원본 파일 write 0 확인.
 
-## B1 (RF-044): Commander Shadow 네 실제 계산 함수
-
-원본 `libs/contracts/agent_outputs.py` (B 기준 blob `d52816cf`, 약1621줄), 상세 RF-044.
-1. `_commander_shadow_actual_runtime` → `libs/contracts/agent_output_parts/commander_shadow_runtime.py::build_actual_runtime`.
-2. `_commander_shadow_observations` → 같은 `commander_shadow_runtime.py::build_observations`.
-3. `_commander_shadow_monitor_gate_details` → `libs/contracts/agent_output_parts/commander_shadow_evidence.py::build_monitor_gate_details`.
-4. `_commander_shadow_context_delta_summary` → 같은 `commander_shadow_evidence.py::build_context_delta_summary`.
-원래 서명 그대로 thin wrapper 유지. `_dict/_clip/_listify/_safe_int/_gate_pass/_score_from_checks` 호출시점 facade 주입. Cached Strategist, NOOP→WAIT, terminal order, 0.03/1.0/0.05 임계·키순서·None/False 원본과 같아야 한다. `tests/test_rf044_commander_shadow_runtime_owner.py` 및 `tests/test_rf044_commander_shadow_evidence_owner.py`가 미존재면 작성, 있으면 재사용. 합성 dict/fake만 사용.
-
-## B2 (RF-008 + RF-018): Strategist 큰 순수 함수 다섯 개 실제 이동
-
-원본 `graphs/nodes/strategist_node.py` (통합 blob `0f6cda31`, 3628줄) 및 RF-008. 신규 목적지 `libs/runtime/strategist`는 RF-018 **같은 B 담당**. 
-1. `_stage_specific_llm_contract` → `libs/runtime/strategist/llm/stage_contracts.py::build_stage_specific_contract`.
-2. `_apply_strategist_llm_token_budget` → `libs/runtime/strategist/context/token_budget.py::apply_frame_token_budget`.
-3. `_build_strategist_llm_repair_messages` → `libs/runtime/strategist/llm/repair_messages.py::build_repair_messages`.
-4. `_build_strategist_llm_messages` → `libs/runtime/strategist/llm/frame_messages.py::build_frame_messages`.
-5. `_build_compact_strategist_llm_payload` → `libs/runtime/strategist/context/compact_llm_payload.py::build_compact_llm_payload`.
-원본 wrapper 및 monkeypatch use-time 호환; Stage1~4 prompt/JSON 문자열 bytes와 memory-disabled·repair 순서·키순서 보존. 실제 `LLMRouter`, ledger writer, State mutation, broker 호출은 원위치. `tests/test_rf008_strategist_owner_extraction.py` 에 고정 original expected 및 fake facade 테스트. 추가 546줄 `strategist_node`에서 이미 추출된 부분은 KEEP_OK, 아직 분리할 순수 부분은 신규 slice로 만들고 TARGET_GAP을 정확히 기록.
-
-## B3 (RF-001): Operator UI core 원본 축소
-
-RF-001, 원본 `apps/operator_ui/data_access_core.py` (2466줄, blob 참고 `0666538f`).
-- `_load_operator_brief` → `apps/operator_ui/data_access_brief_loader.py::load_operator_brief`.
-- `_trade_report_index` → `apps/operator_ui/data_access_report_index.py::trade_report_index`.
-- `load_run_detail` → `apps/operator_ui/data_access_run_detail.py::load_run_detail`.
-기존 UI ReadModel Owner에 동일 코드가 있으면 신규 중복 금지. facade public import/캐시/파일 IO 경로·한국어/키 순서 보존. fake/tmp report fixtures, 운영 데이터 변경 없음.
-
-## B4 (RF-018/045/063/065/070/071): 정당한 KEEP 한 번에 종결 + 다음 실구현
-
-RF-018 `libs/runtime/strategist/llm/stage_reviews.py`(219줄), 단일 책임 context helper; RF-045 EventLogger copy fix 이미 같은 blob이면 SKIP, 작은 `libs/core` utilities KEEP; RF-063 `scripts/diagnostics/analyze_entry_blockers.py`(54줄), RF-065 `scripts/research/daily_profitability_scorecard.py`(40줄), RF-070/071 공개 `scripts/run_*.py` thin entry는 위치/책임 맞으면 KEEP_OK. 운영 `--apply`/실로그 이동은 HOLD, 비실행 확인은 계속. C03이 이 C01 본문에 직접 추가한 새 SOURCE::함수→TARGET::함수 작업만 이어서 MOVE한다. 다른 작업 문서를 탐색하지 않는다.
-
-## B5 (RF-010): Monitor Graph의 순수 후보를 실제 함수 수준 분리
-
-- 원본: `graphs/nodes/monitor_node.py::_evaluate_monitor_entry_candidate` (기준 blob의 L410~430, 약21행).
-- 목표: `graphs/nodes/monitor_entry_candidate_projection.py::evaluate_monitor_entry_candidate` (RF-010, B 단독).
-- 해당 private 계산의 input/output·기존 전역 참조를 확인해 순수 결과 판단 부분만 MOVE. 기존 `_evaluate_monitor_entry_candidate` signature 얇은 wrapper 유지. `monitor_node` 약499행 전체/실주문/State mutation은 옮기지 말 것.
-- 2~4개 fake monitor dict 고정 old/new 결과·예외/monkeypatch 일치, normal targeted unittest/pytest 한 번.
-
-## B6 (RF-011): Commander Runtime의 Monitor Intent 투영 함수 분리
-
-- 원본: `graphs/commander_runtime.py::_intent_from_monitor_state` (기준 blob L1703~1765, 약63행).
-- 목표: `graphs/commander_intent_projection.py::intent_from_monitor_state` (RF-011, B 단독).
-- 모니터 State의 **읽기 전용 의도 생성**만 해당 Owner로 MOVE, 원본 함수 얇은 wrapper 유지. `_attach_commander_applied_policy` / `_persist_commander` / broker·주문 효과 및 State writer 순서는 절대 이동하지 않는다.
-- 기존 입력 State의 intent schema/NOOP/WAIT/null/exception과 동등 fixture 2~4개, 정상 targeted test 한 번. 이후 C01 본문에 남은 다음 ITEM을 계속 수행.
-
-## 보고
-
-`ORDER_BLOB|ITEM/RF|SOURCE_BLOB|MOVED_FUNCTIONS|NEW_OWNER_PATH/BLOB|ORIGINAL_BEFORE_AFTER_LOC|KEEP_OK{reason,blob}|NORMAL_TEST_CMD_EXIT|PUSH_REMOTE_SHA|NEXT`만 #12에 1회. 코드 변경만 B branch에 commit/push, remote 확인. 첫 PASS·첫 KEEP으로 종료하지 않는다.
+## 종료·인계
+- B1~B6 **모두 필수 독립 과제**. 각 item `ITEM_STATUS=IMPLEMENTED|ALREADY_MOVED|TEST_BLOCKED|PUSH_BLOCKED|SAFETY_BLOCKED|NOT_RUN`, `ORDER_ID`, SOURCE_BEFORE/AFTER_BLOB·LOC, TARGET_PATH/BLOB, MOVED_FUNCTIONS, 정상 targeted CMD/EXIT, 원격 PUSH_REMOTE_SHA와 FIRST_BLOCKER/NEXT를 #12에 **한 번** 보고. B 본인 브랜치 정상 push 후 remote blob 재조회. C04가 A/B/긴급 간 겹친 부분을 **hunk 단위 최소 통합**하고 G3 smoke, C05가 G1/G2/G3·DONE 처리. B가 상태/타인 문서를 쓰지 않는다.
