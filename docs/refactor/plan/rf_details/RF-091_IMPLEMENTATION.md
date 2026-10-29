@@ -1,5 +1,9 @@
 # RF-091 — 코드 구조/함수 재배치 설계 (T04)
 
+## T04 exact targets
+Preserve pinned data/specs JSONL, default rules, eval manifest and dataset paths. Historical originals and archived state remain restricted. No file content read, move or deletion. Correct stable path and source authority is KEEP_OK; no Python functions to split.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-091.md` blob `d6fa61fb4e33c986a2ddff43ea6c60e5d8113a96`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 25개 파일; 다른 RF 경로 쓰기 금지.
 
