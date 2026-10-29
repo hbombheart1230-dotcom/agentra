@@ -242,10 +242,23 @@ def apply_log_move_candidates(log_root: Path, candidates: List[LogMoveCandidate]
 def write_log_inventory(log_root: Path, inventory: Dict[str, Any]) -> Tuple[Path, Path]:
     log_root = Path(log_root)
     catalog_dir = log_root / "dev" / "catalog"
-    catalog_dir.mkdir(parents=True, exist_ok=True)
-
     js_path = catalog_dir / "log_inventory_latest.json"
     md_path = catalog_dir / "log_inventory_latest.md"
+
+    # Refuse to follow links that redirect an inventory write away from the
+    # explicitly selected log root. Check *both* output files before mkdir/write
+    # so a pre-existing symlink cannot truncate an unrelated file.
+    root = log_root.resolve()
+    targets = (log_root / "dev", catalog_dir, js_path, md_path)
+    for target in targets:
+        try:
+            target.resolve(strict=False).relative_to(root)
+        except (ValueError, OSError, RuntimeError) as exc:
+            raise ValueError(f"unsafe log inventory path: {target}") from exc
+        if target.is_symlink():
+            raise ValueError(f"unsafe log inventory symlink: {target}")
+
+    catalog_dir.mkdir(parents=True, exist_ok=True)
     js_path.write_text(json.dumps(inventory, ensure_ascii=False, indent=2), encoding="utf-8")
 
     lines = [
