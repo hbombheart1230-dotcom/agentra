@@ -218,13 +218,13 @@ def test_collector_row_unparseable_observed_time_with_evidence_ok(collector):
     assert r["integrity_failure"] is True and r["reason"] == "observed_timestamp_unparseable"
 
 
-def test_collector_row_verified_without_market_timestamp_raises_typeerror(collector):
-    """BASE defect candidate (pinned): VERIFIED row whose component lacks a market timestamp makes int(None) raise."""
+def test_collector_row_verified_without_market_timestamp_is_integrity_failure(collector):
+    """Formerly a TypeError (int(None)); now an INVALID row so legacy fallback stays forbidden (P15 order 2)."""
     obs = _verified()
     obs["indices"]["KOSPI"].pop("market_observed_at")
     collector["obs"] = obs
-    with pytest.raises(TypeError):
-        rr._collector_raw_row(day=DAY, index_name="KOSPI", slot="09:30", root=None)
+    r = rr._collector_raw_row(day=DAY, index_name="KOSPI", slot="09:30", root=None)
+    assert r["integrity_failure"] is True and r["reason"] == "market_timestamp_missing" and r["collector_status"] == "AVAILABLE"
 
 
 # ---------- index reaction & build ----------
@@ -256,14 +256,14 @@ def test_index_reaction_close_invalid_collector_blocks_legacy_fallback(collector
     assert out["points"]["CLOSE"]["status"] == "PENDING" and out["points"]["CLOSE"]["integrity_failure"] is True
 
 
-def test_load_index_timeline_non_object_json_crashes_with_attributeerror(tmp_path):
-    """BASE defect candidate (pinned): the except tuple omits AttributeError, so a macro file holding a JSON list
-    aborts the whole index timeline (and therefore the day's Q10 reaction build) instead of being skipped."""
+def test_load_index_timeline_skips_non_object_json_and_keeps_reading(tmp_path):
+    """Formerly an AttributeError aborting the whole timeline; now only the malformed file is skipped (P15 order 3)."""
     d = tmp_path / DAY
     d.mkdir()
     (d / "f_macro_indicators.json").write_text("[1]", encoding="utf-8")
-    with pytest.raises(AttributeError):
-        rr.load_index_timeline(day=DAY, macro_root=tmp_path, index_name="KOSPI")
+    _macro(tmp_path, "g_macro_indicators.json", "2026-09-07T00:10:00Z", {"KOSPI": {"current": 7}})
+    rows = rr.load_index_timeline(day=DAY, macro_root=tmp_path, index_name="KOSPI")
+    assert [r["close"] for r in rows] == [7.0]
 
 
 def test_last_available_lookback_bound_is_inclusive():
