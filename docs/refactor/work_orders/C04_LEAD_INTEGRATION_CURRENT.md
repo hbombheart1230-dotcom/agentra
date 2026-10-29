@@ -10,3 +10,9 @@
 - 다른 LEAD가 있으면 한 건 차단 때문에 종료하지 않고 계속한다. C04는 통합 소스·통합에 필요한 기술 문서만 수정 가능; RF C 체크·물리 큐·STATUS·DONE은 **C05 단독**.
 - **C04 필수 갱신:** 실제 LEAD 후보·통합 SOURCE SHA·CI 결과·첫 차단/NEXT가 바뀌면 **이 C04 파일의 현재 작업만 교체·푸시·원격 재조회**한다. C01/C02/C03/C05는 수정하지 않고, A/B가 문서를 대신 갱신하게 하지 않는다. 변화 없으면 C04 쓰기 0.
 - **새 사실이 있을 때만** [Lead #36](https://github.com/hbombheart1230-dotcom/agentra/issues/36) 댓글: `C04 | RF | source/peer SHA | KEEP/INTEGRATED | integration SHA & CI run/pass/NOT_RUN | C6 evidence | C05 NEXT`. 증거 없는 동일 내용 문서 덧쓰기 금지. 0 신규 인계라도 미완료 RF-067 C6를 무시하지 않는다.
+
+## 단계형 통합 게이트 (2026-10-29 개편)
+- D00 §6과 실제 원격 RF 단계가 이 문서의 과거 현황보다 우선한다. 이 예약은 2시간마다 KST 홀수시간 분15 실행되며, 시각 자체를 C05 사전 수용 완료로 간주하지 않는다.
+- 시작 때 원격 integration HEAD, 최신 RF 경로와 C05가 C1~C5 및 전체 독립 C4를 실제 판정했는지 확인한다. 실물 04_LEAD_ACCEPTANCE 후보 0이면 통합/CI를 꾸며내거나 안전 계약을 완화하지 않는다. 후보가 없으면 신규 증거 없이 댓글·커밋 0.
+- 진짜 LEAD가 있으면 정확 owner SOURCE/PEER 및 파일별 충돌·보호 효과 확인 → 허용 최소 경로 KEEP/통합 → 통합 SHA와 정상/-O hosted CI 실제 run/result 기록. D00 §2.2 문서 전용 동등성은 엄격히 확인된 경우만. C05 사후 예약(다음 분45)에 C6 인계한다.
+- 새 후보 없는 시간에는 막힌 CI를 무작정 반복하지 말고 본인 큐의 아직 처리 가능한 LEAD만 점검한다. CI가 안 도는 원인은 BLOCKED(명령/실행주체/NEXT)로 기록한다. Git 이벤트 기반 새 오케스트레이터 또는 CI workflow 변경은 별도 승인 전 금지.
