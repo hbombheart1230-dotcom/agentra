@@ -2,11 +2,11 @@
 
 **정본:** [D00 §2](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [C04](../../../work_orders/C04_LEAD_INTEGRATION_CURRENT.md) · [C05](../../../work_orders/C05_LEAD_CLOSEOUT_CURRENT.md) · [STATUS](../../STATUS.md).
 
-**현재 2026-10-30 KST: LEAD 0건 / DONE 30/93.** 93개 RF의 7항목→FAST-3 G1/G2/G3 전환 완료(이번 79개, 이전 14개). 역사 full peer·-O·전체 hosted CI는 개발 DONE 필수 게이트가 아닙니다.
+**현재 2026-10-30 KST: LEAD 0건 / DONE 31/93.** 93개 RF의 7항목→FAST-3 G1/G2/G3 전환 완료(이번 79개, 이전 14개). 역사 full peer·-O·전체 hosted CI는 개발 DONE 필수 게이트가 아닙니다.
 
-**현재 LEAD 대기 RF 없음.** RF-034·050은 C04 `66d9b70e` scoped G3_REUSE로 05_DONE 이동. 다음 READY RF만 신규 인수.
+**현재 LEAD 대기 RF 없음.** RF-035는 C04 `732dc4a3` scoped G3_REUSE로 01_PENDING→05_DONE 직행(9 MOVE, A/integration 19/19 blob, 기존 normal 62+74 PASS exit0). RF-034 신규 3 MOVE는 과거 DONE 구조 부채 감소로만 기록, `_large_cap_candidate` TARGET_GAP_OPEN. 다음 READY RF만 신규 인수.
 
-**신규 delta (2026-10-30 KST):** RF-034·050 C04 #36 6502659462 exact integration `66d9b70e` code/test 14/14 blob 동일 + A normal 39/230 PASS exit0 G3_REUSE 수용 → **DONE +2, 누적 30/93, LEAD 0**. RF-034 `_large_cap_candidate` TARGET_GAP_OPEN C03→A 유지. 기존 DONE 재시험·재마이그레이션 없음.
+**신규 delta (2026-10-30 02:xx KST):** RF-035 C04 #36 6503961575 exact integration `732dc4a3` A `0d8dd2ad` 19/19 blob + A normal targeted 62+74 PASS exit0 G3_REUSE → **DONE +1, 누적 31/93, LEAD 0**. RF-034 별도 3함수 TARGET_GAP_CLOSED, 1건 OPEN 유지. 기존 DONE 재시험·재마이그레이션 없음.
 
 **RF-016 G3 수용 완료:** [05_DONE/CLAUDE_A/RF-016.md](../05_DONE/CLAUDE_A/RF-016.md)로 이동. C04 [G3_REUSE #36 6495425616](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6495425616) — 8/8 KEEP + 관련 기존 정상 94+2+3 PASS(exit0) 재사용. 직접 신규 pytest/CI NOT_RUN. **RF-029/028 G3_REUSE 수용 및 DONE:** [RF-029](../05_DONE/CLAUDE_A/RF-029.md), [RF-028](../05_DONE/CLAUDE_A/RF-028.md)로 이동. C04 [#36 6495771382](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6495771382): original Owner 38/38 + 85/85 source parity, relevant caller/test/dependency parity, prior normal exit0 재사용. 새 pytest/CI NOT_RUN. LEAD 0 (RF-051/054/058 G3 MET → DONE).
 

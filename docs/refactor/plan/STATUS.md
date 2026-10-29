@@ -1,6 +1,6 @@
-# Agentra P1.5 — STATUS (2026-10-30 KST FAST-3 93/93 · RF-034/050 DONE +2, cumulative 30/93)
+# Agentra P1.5 — STATUS (2026-10-30 KST FAST-3 93/93 · RF-035 DONE +1, cumulative 31/93)
 
-**CURRENT 2026-10-30 KST — FAST-3 신규 delta:** [C04 #36 6502659462](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6502659462) 정확 코드 `66d9b70e`에서 RF-034 5함수·RF-050 1함수 MOVE, A `5da432ff`와 관련 code/test **14/14 Git blob 동일**; A 기존 normal 39 PASS exit0·관련 230 PASS exit0 범위 재사용. 자동 offline safety CI #40913804892 SUCCESS이나 신규 targeted 미포함. **RF-034/050 04_LEAD→05_DONE +2, 누적 DONE 30/93**, G1/G2/G3 MET. RF-034 `_large_cap_candidate` TARGET_GAP_OPEN C03→Claude A 유지(이력 취소 없음). **물리 큐 47/9/7/0/30/0**. C05 직접 pytest·공식 sync NOT_RUN, 운영/실계좌/실주문/위험 --apply 없음.
+**CURRENT 2026-10-30 02:xx KST — FAST-3 신규 delta:** C04 [#36 6503961575](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6503961575) / code SHA `732dc4a3` / A `0d8dd2ad`: RF-035 runner 9 real function MOVE, C05 integration/A facade+9 Owner+9 tests **19/19 blob 동일**; A 기존 normal targeted 62+74 PASS exit0 및 runner 관련 108 PASS exit0로 G2, C04 same-source G3_REUSE로 G3 MET. Exact code SHA [offline safety CI 40923059424](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40923059424) SUCCESS(신규 RF targeted 아님). **RF-035 01_PENDING→05_DONE +1, 누적 DONE 31/93**, G1/G2/G3 MET. RF-034 기존 DONE 유지하며 신규 3함수 TARGET_GAP_CLOSED; `_large_cap_candidate` TARGET_GAP_OPEN C03→A 유지. **물리 큐 46/9/7/0/31/0**. C05 직접 pytest·공식 sync NOT_RUN; 운영/real/실주문/위험 --apply 없음.
 
 **아래의 과거 C1~C7 기록은 역사 참고이며 현재 FAST-3 필수 게이트가 아닙니다.**
 
@@ -16,11 +16,11 @@
 ## 현재 물리 큐
 | PENDING | DEV | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
-| 47 | 9 | 7 | 0 | 30 | 0 | **93** |
+| 46 | 9 | 7 | 0 | 31 | 0 | **93** |
 
 - **C05 2026-10-29 13:39 KST 최신 판정:** #11 6487113514 A `32d86ba` RF-033 cumulative fail-closed 및 5 exact tests(normal/`-O` cumulative 30, preopen 11, pipeline 7, report 10 PASS worker); integration cumulative blob 상이. A B 정확 `44b36a23` scoped peer 6+16+11 PASS 양 모드(044/045/066, full C4 아님). #12 6486877513 B 과거 A `fffa761a` 혼합 scoped peer 51 PASS·2 deselected 양 모드(028/029/033/034, 현 A보다 112 commits 뒤), `exchange_calendars`/`yaml` 수집 BLOCKED, B local `28fe8c12` push 실패·remote `44b36a23`. CSV RF-033 +5→4097 unique, RF-074 frozen 75. C1~C5 PARTIAL/C6-C7 PENDING, LEAD0/DONE20, 단계 불변. FIRST_UNMET A 033 45-owner/B 044 16,045 10,066 17-owner ACTION; full opposite C4 필요. RF-021 C2/C3 safety, RF-032 C1+validation-id, RF-069 C1+historical 승인 HOLD; #32 `RUN_SOURCE_SHA=UNKNOWN`/OPEN. C05 직접 normal/`-O` pytest/sync `--write`/`--check` NOT_RUN(DNS), exact SHA CI 0. NEXT 원래 C1/negative effect, 최신 SHA full peer, C04 CI; 운영 broker/UEF/--apply HOLD. **C05 13:41 추가:** B `fffa761a` 혼합 peer 51 PASS·2 deselected(normal/`-O`)의 RF-028/029/034 owner source 경로는 현 A `32d86ba`까지 원격 compare에서 변경 0(112 commits/106 paths), 국소 C4 PARTIAL 증거만 수용; RF-033 source 변경 6개는 동등성 제외. B local push 실패, full C4/DONE 아님.
 - **현재 LEAD 1건 (RF-031 G3 대기):** RF-067은 C1~C4/C6/C7 MET, C5 N/A로 [DONE](queue/05_DONE/CODEX_B/RF-067.md) 이동. hosted [run 40623624802](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40623624802)의 CI_BASE_SHA `beca55b47e4ad2cde1bc8fc9fe2b8db6cec07989` normal/`-O` SUCCESS. 문서 전용 후속 커밋은 D00 §2.2 동등성 인수이며 HEAD 직접 CI PASS로 표기하지 않음.
-- **DONE 30건:** 기존 DONE 26건 보존 + RF-044·031·034·050 신규 개발 DONE 4건. RF-044 잔여 2함수 및 RF-034 `_large_cap_candidate` TARGET_GAP_OPEN 유지. 운영 RunLab PASS 아님.
+- **DONE 31건:** 기존 DONE 26건 보존 + RF-044·031·034·050·035 신규 개발 DONE 5건. RF-044 잔여 2함수 및 RF-034 `_large_cap_candidate` TARGET_GAP_OPEN 유지. 운영 RunLab PASS 아님.
 
 <!-- RF_LEAD_CHECKLIST_START -->
 ## 우선 14건 RF 원본 체크리스트 — 현재 실물 단계 연동
