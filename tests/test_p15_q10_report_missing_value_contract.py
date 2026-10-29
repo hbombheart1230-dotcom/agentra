@@ -95,3 +95,10 @@ def test_expected_vs_actual_and_shadow_rows_render_none_gap_as_dash():
     md = render(expected_actual=ea, shadow=shadow)
     assert "| kospi | RISK_ON | - | INSUFFICIENT_EVIDENCE | LEAD_MARKET_SIGNAL |" in section(md, "Expected vs Actual")
     assert "| kospi | ENTRY_0900 | 0 | - | - | - | - | - | - |" in section(md, "Shadow Entry Comparison")
+
+
+def test_unverified_observation_without_timestamp_shows_dash_not_none():
+    reactions = copy.deepcopy(REACTIONS)
+    reactions["targets"]["KOSPI"]["points"]["CLOSE"]["unverified_observation"].update({"observed_at_kst": None})
+    unverified = section(render(reactions=reactions), "Captured But Not Calculation-Usable")
+    assert "| KOSPI | CLOSE | 101.2000 | PENDING | - |" in unverified and "None" not in unverified
