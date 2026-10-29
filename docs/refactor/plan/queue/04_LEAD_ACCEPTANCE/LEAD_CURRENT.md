@@ -5,7 +5,7 @@
 | RF | 원 Owner / 독립 peer | 수용된 원래 게이트 | 현재 C6/C7 · 담당 |
 |---|---|---|---|
 
-**현재 LEAD 0건 (2026-10-28 C05 실물 재확인)**. RF-067은 [05_DONE/CODEX_B](../05_DONE/CODEX_B/RF-067.md)로 C6/C7 종결(정확 CI_BASE SHA `beca55b47`, hosted run `40623624802` normal/`-O` SUCCESS; 문서 후속 커밋은 D00 §2.2 동등성). 전체 RF 상태 수치는 [STATUS](../../STATUS.md). 선별 통합/KEEP 소스와 정확 CI를 혼동하지 않는다. `SCOPED_PASS`를 full PASS로 확대하지 않고, 보호 RunLab/UEF 무승인 실행 금지. C05만 RF 체크·단계/STATUS 이동.
+**현재 LEAD 0건 (2026-10-29 11:40 C05 RF-033/044/045/066 scoped delta·CSV +14 확인, 전체 C1~C5/반대 peer 미충족)**. RF-067은 [05_DONE/CODEX_B](../05_DONE/CODEX_B/RF-067.md)로 C6/C7 종결(정확 CI_BASE SHA `beca55b47`, hosted run `40623624802` normal/`-O` SUCCESS; 문서 후속 커밋은 D00 §2.2 동등성). 전체 RF 상태 수치는 [STATUS](../../STATUS.md). 선별 통합/KEEP 소스와 정확 CI를 혼동하지 않는다. `SCOPED_PASS`를 full PASS로 확대하지 않고, 보호 RunLab/UEF 무승인 실행 금지. C05만 RF 체크·단계/STATUS 이동.
 
 **C05 최신 판정 (2026-10-29 09:55 KST):** #11 6484147965/6484564454 A `8bdbd5ab` RF-033/034 신규 19 test·양 모드 각 463 PASS(33 신규 파일), #12 6483973045/6484206701/6484227014 B `801ca211` RF-045 실제 EventLogger bridge/tmp caller·RF-066 temp CLI 양 모드 scoped PASS(worker), A 정확 B `e33929dd` scoped peer만. 신규 exact 21 test CSV/예외 4078 unique, RF-074 frozen 75 유지. RF-045 source parity B `941f7485` vs integration `d1631462` 미충족. RF-033/034/045/066 C1~C5 PARTIAL, full opposite C4 미충족, C6/C7 PENDING, LEAD0/DONE20. RF-021/032/069 안전 HOLD, #32 6484572658 RUN_SOURCE_SHA UNKNOWN/OPEN, broker-local/guard/Reporter mismatch. NEXT A 33/34 full owner ACTION·안전 negative, B 045/066 full owner ACTION, 반대팀 full C4, CI 정확 SHA. C05 pytest/sync NOT_RUN(git DNS).
 

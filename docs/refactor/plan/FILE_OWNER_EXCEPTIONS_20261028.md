@@ -147,3 +147,11 @@
 | `tests/test_rf034_opening_snapshot_metadata_conditional_alpha_contract.py` | RF-034 / Claude A |
 | `tests/test_rf045_event_logger_real_compat.py` | RF-045 / Codex B |
 | `tests/test_rf066_sync_legacy_brief_llm_cli.py` | RF-066 / Codex B |
+| `tests/test_p15_btc_forward_report_parity.py` | RF-033 / Claude A |
+| `tests/test_p15_collector_observations_extraction.py` | RF-033 / Claude A |
+| `tests/test_p15_forward_validation_parity_chain.py` | RF-033 / Claude A |
+| `tests/test_p15_index_timeline_extraction.py` | RF-033 / Claude A |
+| `tests/test_p15_stock_reaction_extraction.py` | RF-033 / Claude A |
+| `tests/test_p15_event_logger_caller_bridge.py` | RF-045 / Codex B |
+| `tests/test_p15_scanner_projection_extraction.py` | RF-044 / Codex B |
+| `tests/test_p15_strategist_projection_extraction.py` | RF-044 / Codex B |
