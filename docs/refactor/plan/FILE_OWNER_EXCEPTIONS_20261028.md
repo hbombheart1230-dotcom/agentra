@@ -121,3 +121,29 @@
 | `tests/test_rf066_log_maintenance_temp_effects.py` | RF-066 / Codex B |
 | `tests/test_rf066_m22_graph_temp_cwd_effects.py` | RF-066 / Codex B |
 | `tests/test_rf066_report_maintenance_temp_effects.py` | RF-066 / Codex B |
+
+**C05 2026-10-29 09:5x KST 신규 exact-path 21개:** A `a68acfc5..8bdbd5ab` 19개(RF-033 9/RF-034 10), B `4a329361..801ca211` 2개(RF-045 1/RF-066 1). GitHub 원격 compare의 added 파일만 반영. CSV 4078 unique, RF-074 frozen 75 불변. C5 PARTIAL이며 C1~C4 full, CI, DONE 승인 아님.
+
+| 신규 exact path | 단일 Owner |
+|---|---|
+| `tests/test_rf033_btc_hypothesis_features_daily_context_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_btc_input_worker_stubbed_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_btc_point_in_time_capture_paths_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_samsung_forward_reaction_reader_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_samsung_forward_report_render_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_samsung_forward_returns_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_samsung_forward_scoring_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_samsung_forward_shadow_comparison_contract.py` | RF-033 / Claude A |
+| `tests/test_rf033_samsung_q9_comparison_stubbed_contract.py` | RF-033 / Claude A |
+| `tests/test_rf034_alpha_board_canonical_status_tables_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_alpha_board_loaders_large_cap_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_alpha_board_runtime_validation_boundaries_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_alpha_board_sensitivity_remaining_reviews_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_candle_provider_fake_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_episodes_stubbed_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_extraction_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_metrics_promotion_gates_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_observability_contract.py` | RF-034 / Claude A |
+| `tests/test_rf034_opening_snapshot_metadata_conditional_alpha_contract.py` | RF-034 / Claude A |
+| `tests/test_rf045_event_logger_real_compat.py` | RF-045 / Codex B |
+| `tests/test_rf066_sync_legacy_brief_llm_cli.py` | RF-066 / Codex B |
