@@ -25,17 +25,19 @@
 
 ### 1.3 EMERGENCY — 런검증 PC 긴급 브랜치 점검·충돌 방지·통합 인계 (매회 필수, D00 §1.2)
 
-**홍사장 명시 승인(2026-10-29):** 예약 A/B와 **별개로**, 런검증 PC의 격리 클론에서 **단일 `emergency/p15-fixes` 브랜치**를 로컬 Codex 개발·로컬 Claude 독립 검증에 사용한다. 기존 C01/C02 예약 작업은 계속 진행하고, 긴급 로컬 실행자에게 CURRENT/C01/C02를 진입점으로 강요하지 않는다. 이 D00 승인으로 **C03 자신이 A/B 개발 브랜치에 코드를 푸시할 권한이 생기는 것은 아니다.**
+**홍사장 명시 승인(2026-10-29):** 예약 A/B와 **별개로**, 런검증 PC의 격리 클론에서 **단일 `emergency/p15-fixes` 브랜치**를 로컬 Codex 개발·로컬 Claude 독립 검증에 사용한다. 기존 C01/C02 예약 작업은 계속 진행하고, 긴급 로컬 실행자에게 CURRENT/C01/C02를 진입점으로 강요하지 않는다. **홍사장의 추가 직접 지시로 C03이 기존 단일 긴급 브랜치 `emergency/p15-fixes`에 한해 안전한 code/test를 직접 수정·정상 푸시할 수 있다**(D00 §1.2). **예약 A/B 개발 브랜치에 코드를 푸시할 권한은 생기지 않는다.** 로컬 Codex와 같은 파일을 건드리기 전 원격 HEAD/blob 및 미커밋 변경 충돌을 확인한다.
 
 **C03 매회 확인 순서 — 원격 신규 변화만:**
 1. `integration/p1.5` 기준 최신 HEAD를 확인한 뒤 GitHub에서 `emergency/p15-fixes` 브랜치 존재를 질의한다. **404/미생성은 `EMERGENCY=NOT_CREATED`**, 오류 추정이나 개발 지연 단정 금지. 로컬 런검증 PC 접속·클론 생성·운영 실행을 임의 수행하지 않는다. 신규 상태 변화가 없다면 댓글·문서 수정 0.
 2. 생성된 경우 `EMERGENCY_HEAD`, 확인 가능한 `BASE_SHA`, **이전 접수 이후 신규 commit/변경 source/test path**를 기록하고, `integration/p1.5`·예약 A/B 최신 SHA의 수정 경로와 비교한다. **같은 파일·함수, 이미 해결된 결함, 선행 통합, 재작업 위험**이 보이면 `OVERLAP`을 표시한다. 단순 파일 교집합만으로 충돌 확정하지 않고 실제 diff/호출자·동작을 대조한다. 무분별한 `merge`/cherry-pick/force-push 금지.
 3. 긴급 코드·테스트에 대해 **원격 파일/commit 존재**, `python -m pytest` normal, `python -O -m pytest`, **Claude의 정확 SOURCE SHA 독립 probe**, 원본 RF C1~C5, `C04` 통합·hosted CI, `C05` DONE/STATUS, **RunLab 실증**을 서로 별도 단계로 판정한다. 로컬 사용자가 전달하지 않았거나 원격 증거가 없으면 `NOT_VERIFIED/NOT_RUN`으로 둔다. 작성된 테스트 개수를 PASS 수로 바꾸거나 commit 시각으로 세션 시간을 추정하지 않는다.
-4. 신규 코드 변경이 확인되면 기존 RF Owner/보호 파일 범위·원본 계약과 교차 검증한다. Codex 수정 범위는 **긴급 브랜치의 안전한 code/test**, Claude는 별도 격리 checkout의 **독립 read-only peer**다. 같은 작업 트리 동시 수정 금지. RunLab 운영 checkout/컨테이너·실계좌/주문·운영 State·DB·로그·실네트워크·비격리 `--apply`·UEF/Step5C/Guard 및 frozen/CI 정책 변경은 승인 없이는 `SAFETY_HOLD`다.
+4. 신규 코드 변경이 확인되면 기존 RF Owner/보호 파일 범위·원본 계약과 교차 검증한다. Codex 및 C03 직접 수정 범위는 **긴급 브랜치의 안전한 code/test**, Claude는 별도 격리 checkout의 **독립 read-only peer**다. 같은 작업 트리 동시 수정 금지. RunLab 운영 checkout/컨테이너·실계좌/주문·운영 State·DB·로그·실네트워크·비격리 `--apply`·UEF/Step5C/Guard 및 frozen/CI 정책 변경은 승인 없이는 `SAFETY_HOLD`다.
 5. 안전한 통합 후보가 생기면 `EMERGENCY_SHA | BASE_SHA | CHANGED_PATHS | A/B_OVERLAP | NORMAL/-O | CLAUDE_PEER_SOURCE | FIRST_UNMET_C1-C7 | NEXT`를 **신규 사실 발생 시에만 #36**에 남기고 **C04 본인에게 선별 통합·정확 SHA CI**, **C05 본인에게 RF/STATUS/DONE 판정**을 요청한다. C03은 **상시 C04/C05 문서 변경 금지**이며 신규 긴급 후보가 실제 존재하는 경우에만 #36을 해당 후보 인계 증거로 참조하도록 한다. 긴급 코드의 B/A 선행 통합·중복 시에는 통합 보류 또는 소스 동일성 KEEP 근거만 인계한다. 절대 브랜치 전체 자동 병합·임의 DONE 승격 금지.
 6. **최소 상태 보고:** `EMERGENCY=NOT_CREATED | NO_REMOTE_DELTA | IN_PROGRESS | REVIEW_READY | OVERLAP | BLOCKED | INTEGRATED` 중 실제 근거 있는 상태와 최신 SHA만 선택한다. **원격 diff 없는 경우 신규 댓글/감사 반복 금지**. 긴급 브랜치 인수 때문에 기존 #11/#12/#32 신규 검토, C01/C02 공급, C04/C05 게이트를 중단하지 않는다.
 
 **문서 권한:** D00 개정은 이번 홍사장의 명시 승인으로 **이미 1회 수행된 별도 정책 변경**이다. 이후 C03 예약 회차는 D00을 자동 개정하지 않으며 본인 담당 C01/C02/C03에만 기록이 필요할 때 반영한다. 새로운 브랜치·PR/별도 A·B 긴급 브랜치 생성은 승인 아님.
+
+**2026-10-29 신규 긴급 실제 수정·전담 인계:** `emergency/p15-fixes`에서 `libs/core/log_maintenance.py::write_log_inventory` 외부 symlink 쓰기 방지 + 6 tests (`241b2990`), `libs/ai/intent_schema.py::_to_float` 비유한 지정가 fail-closed + 18 param tests (`1f372f2f`). 원격 파일 확인은 `CODE_PUSHED`이고 **저장소 원본 pytest normal/-O·Claude exact 긴급 SHA peer·CI/운영 검증은 아직 `NOT_VERIFIED`**. 이전 B `312a5161`의 경로 이동 보호와 내용·오너 충돌 여부를 별개로 점검한다. A `2bce7dca`의 RF-041 원본 6-owner blob은 통합/B와 동일; **긴급 intent_schema patch만 그와 다르므로 A 기존 독립 C4·KEEP source 동일성 증거에 섞지 않는다**. C01 신규 7번 RF-041 정확 A 원본 6 owner peer, C02 신규 7번 전체 A Owner/효과 + 8번 긴급 정확 SHA 독립 검증을 제공했으며 완료 전까지 C05 RF-041/066 DONE 0. 새 안전 성과가 들어오면 C04/C05에 **파일 단위** 선별 통합/CI·수용 인계하고 큰 미배정 문서/테스트/배포 RF는 근거 없는 CLAIM/종결 금지.
 
 ### 2. 작업 설계 전에 지팀장이 확인할 것
 - 활성 원본 계약, 파일 Owner, 목표 배치, 호출자와 import/런타임 참조, IO/State/예외/부작용 및 fake/temp 가능한 범위. **큰 파일의 함수 본문과 의존성을 직접 확인한 후** 어느 함수를 어느 새 Owner로 MOVE하고 어느 기존 facade에 wrapper를 남길지 결정한다.
