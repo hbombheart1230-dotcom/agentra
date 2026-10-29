@@ -1,9 +1,17 @@
 """Never turn missing static facade references into deletion authority."""
+import pytest
+
 from scripts.refactor.p152_prelocal_consumer_debt import build_debt_inventory
 
 
-def test_every_public_facade_symbol_has_conservative_decision():
-    record = build_debt_inventory()
+@pytest.fixture(scope="module")
+def debt_inventory():
+    """Scan the unchanged repository once; all three tests inspect it read-only."""
+    return build_debt_inventory()
+
+
+def test_every_public_facade_symbol_has_conservative_decision(debt_inventory):
+    record = debt_inventory
     assert record["public_symbol_total"] == 436
     assert len(record["symbol_cases"]) == 436
     assert len(record["facades"]) == 3
@@ -12,8 +20,8 @@ def test_every_public_facade_symbol_has_conservative_decision():
     assert all(item["remote_recommendation"].startswith("KEEP_") for item in record["symbol_cases"])
 
 
-def test_static_absence_is_never_dead_or_migration_approval():
-    record = build_debt_inventory()
+def test_static_absence_is_never_dead_or_migration_approval(debt_inventory):
+    record = debt_inventory
     assert record["evidence_scope"] == "STATIC_OFFLINE_ONLY_NO_LOCAL_RUNTIME_OR_DYNAMIC_PROOF"
     assert not record["deletion_authorized"]
     assert record["local_abi_and_runtime_consumer_gates"] == "NOT_RUN"
@@ -26,8 +34,8 @@ def test_static_absence_is_never_dead_or_migration_approval():
             assert "KEEP" in item["remote_recommendation"]
 
 
-def test_compatibility_wrapper_still_has_no_retirement_authority():
-    record = build_debt_inventory()
+def test_compatibility_wrapper_still_has_no_retirement_authority(debt_inventory):
+    record = debt_inventory
     wrappers = [x for x in record["symbol_cases"] if x["declared_disposition"] == "WRAPPER"]
     assert wrappers
     assert all(x["remote_recommendation"] == "KEEP_WRAPPER_PENDING_LOCAL_PROOF" for x in wrappers)
