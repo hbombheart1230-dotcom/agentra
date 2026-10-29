@@ -1,5 +1,15 @@
 # Agentra P1.5 — RF-001~RF-093 구현 세부 설계 인덱스
 
+## 2026-10-30 상세설계 검토·A/B 인라인 명령 기준 (기존 표보다 우선)
+
+- **93/93개 RF 상세 파일 존재 및 파일별 SOURCE/TARGET 경로 등록 완료.** Frozen T00~T09 및 TREE_V3_FROZEN은 수정하지 않았다. 단일 기준 FILE_COVERAGE CSV의 원본 4,106 path-owner 행을 사용하며, 소스 Python 2,458개 모두 함수 본문을 완독·독립 검증했다는 뜻은 아니다.
+- **구체 코드 설계:** RF-001, RF-008/018, RF-031, RF-041, RF-044 및 RF-055/057/059/061/063/065/070/071에는 실제 함수명·일부 정확한 줄·TARGET Python 모듈·효과 KEEP·테스트 fixture를 명시했다. RF-002~054 다른 항목에는 확인한 대표 원본의 함수 정의/KEEP 후보를 기술했지만 전체 RF Python 함수 전수분석은 아니므로 구현 전 C03이 누락 함수/기존 Owner·소비자 충돌을 판정한다.
+- **비코드 RF:** RF-072~078은 T09 fixture/test discovery 보존, RF-079~086은 T06 canonical/history link 보존, RF-087~089는 T05 deploy/OS schedule entry 보존, RF-090 config, RF-091 data, RF-092 GitHub CI, RF-093 root contracts를 각각 특정 사유의 정당 KEEP 우선으로 설계. 이들에는 신규 Python 함수명이 존재하지 않는 것이 올바르다.
+- **A/B 절대 단일 진입점:** A는 `docs/refactor/work_orders/C02_CLAUDE_CURRENT.md` 한 파일, B는 `C01_CODEX_CURRENT.md` 한 파일만 먼저 읽는다. **이 인덱스 및 개별 RF 상세파일을 A/B에 읽으라고 지시하지 않는다.** C03이 실제 함수/목표/테스트를 결정해 C01/C02 본문에 인라인 배정·푸시한다. 현재 각각 여섯 개의 독립 실구현 Item이 있으며 완료한 동일 blob은 재개하지 않는다.
+- **성과 구분:** `KEEP_OK`는 적절한 위치·단일 책임·호환 계약을 확인해 한 줄 사유+Git blob으로 종결한다. 함수 몸체가 실제 SOURCE에서 삭제되어 TARGET 단일 Owner에 구현·테스트·푸시되었을 때만 `REFACTOR_CHANGED`. 본 설계 commit은 **코드 변경 실적 0건**. 과거 05_DONE과 CI/test 이력은 유지하고 신규 Txx TARGET_GAP은 기존 RF 작업으로 해결.
+- **명세 품질 구분:** `SOURCE_VERIFIED_EXACT` = 실제 소스 본문·함수 확인; `PATH_OWNER_VERIFIED` = 경로·blob·소유권만 확인(함수 목록 추측 금지); `KEEP_IF` = 구조 조건부 후보, 실제 KEEP 수용 아님. 완료 판정에는 조건부 KEEP를 확정 PASS로 자동 계상하지 않는다.
+
+
 기준 `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062` · 실제 FILE_COVERAGE 4106 경로 · 93개 RF 독점 Actor 배치. T00~T09/V3 원형 유지.
 
 **완료 의미:** 설계 파일이 작성됐다는 의미이며 소스 리팩터링 코드가 전부 DONE된 것은 아니다. 대표 대형 모듈은 함수명을 확정했고, 나머지는 정확한 파일/blob/크기와 우선 분석 원본을 지정했으며 함수 실사 미완료를 표시한다. 미실사 상태를 분석 완료로 간주하지 않는다.
