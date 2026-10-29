@@ -1,5 +1,7 @@
 # C05 — 지팀장 · 유일한 RF 체크·큐 이동·DONE·STATUS 작성자
 
+**2026-10-29 FAST-3 신규 DONE +3:** C04 [#36 6498151907](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6498151907)의 integration `87d3777513856b9f89575115c285f20e1a3560fc` RF-051/054/058 source/test 6/6 blob 동일 및 격리 Python 3.13 normal smoke exit0를 G3로 수용. 기존 A G2 normal 10/13/5 PASS exit0 유지. 세 RF 04_LEAD_ACCEPTANCE→05_DONE, 누적 **26/93**. 원본 repo pytest/committed test 직접 실행/hosted CI NOT_RUN. 공식 Python sync NOT_RUN, GitHub 원격 동등 검증. RF-016/028/029·93개 마이그레이션 반복 금지. 다음은 새로운 G1/G2 READY만 판정.
+
 **2026-10-29 신규 FAST-3 단계 전진:** RF-051/054/058 A `bed17305` source/test 원격 blob 및 [#11 6495308964](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6495308964) 정상 10/13/5 PASS exit0 수용, **G1/G2 MET → 04_LEAD_ACCEPTANCE 3건**. G3는 변경 소스 integration 미반영으로 PENDING; C04 최소 선별 통합 + 해당 integration SHA normal targeted smoke 인계. 신규 DONE 0, 누적 23/93. RF-016/028/029 반복 금지.
 
 **2026-10-29 FAST-3 신규 종결:** RF-029 → RF-028 G1/G2 MET + C04 [#36 6495771382](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6495771382) G3_REUSE (original Owner 38/38, 85/85 KEEP + relevant consumer/test/dependency parity + 기존 normal exit0) 수용. **두 RF 05_DONE, 신규 DONE +2, 누적 23/93.** 실제 C04/C05 pytest/CI NOT_RUN, 공식 sync NOT_RUN, GitHub API 정합 검증. RunLab 운영 실증 별개; real/실주문/위험 --apply 금지.
@@ -29,9 +31,9 @@
 ## 현재 우선 게이트 (2026-10-29 KST)
 - **RF-001..093 FAST-3 93/93:** 기존 14 + 신규 79개 GitHub API 마이그레이션 완료. 공식 Python migrate/sync `--write/--check`는 로컬 GitHub DNS로 NOT_RUN; 이미 전환된 93개 반복 쓰기 금지.
 - **RF-016 05_DONE / G1·G2·G3 MET:** C04 [#36 6495425616](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6495425616) `G3_REUSE` 수용. 고정 A `2bce7dca` ↔ integration `8546db4d` 8/8 Strategist Owner KEEP 및 관련 테스트/소비자/의존성 동일; 기존 정상 targeted pytest 94+2+3 PASS(exit0) 인수. 이후 C04 Markdown-only 변경 `6850dd82`, 소스 영향 없음. 새 pytest/CI NOT_RUN. RF-016 `05_DONE/CLAUDE_A`, STATUS 동기화. **신규 DONE +1, 누적 21/93.**
-- **다음 READY:** RF-051/054/058 G1/G2 MET·LEAD 실물 이동 완료. C04는 A `bed17305` 변경 소스·관련 테스트 최소 선별 통합 및 정확 integration SHA 정상 smoke exit0 제출, C05가 G3 수용 즉시 DONE. 나머지 READY RF는 신규 원격 근거만 판정.
+- **다음 READY:** RF-051/054/058은 C04 scoped G3 증거 수용 후 DONE 완료. 다른 신규 READY RF는 A/B 새 원격 코드·관련 정상 exit0가 확보된 경우에만 G1/G2 판정, G3는 C04 최소 통합과 유효 smoke/CI로 종결. 중복 판정 금지.
 - **RunLab #32:** runtime unhealthy, `RUN_SOURCE_SHA=UNKNOWN`, 주문/Guard/Reporter 불일치. OPEN/RUNTIME_PENDING. 개발 DONE은 운영 검증/실계좌 활성화가 아님.
-- **물리 큐:** PENDING47/DEV10/PEER10/LEAD3/DONE23/REWORK0. Python sync/직접 pytest NOT_RUN(로컬 GitHub DNS); GitHub API 원격 파일·STATUS 동등 확인.
+- **물리 큐:** PENDING47/DEV10/PEER10/LEAD0/DONE26/REWORK0. Python sync/직접 pytest NOT_RUN(로컬 GitHub DNS); GitHub API 원격 파일·STATUS 동등 확인.
 
 ## 역사 검증 메모 (FAST-3 비차단, 2026-10-28~29)
 - **C05 2026-10-29 17:36 KST 신규 판정:** #36 `6491897462` emergency `1f372f2f` Git blob 동일 격리 추출 RF-041 18 PASS, RF-045/066 6 PASS 정상/`-O` 각각(총 24, 원본 repo/정확 SHA full peer NOT_RUN) → C3 scoped PARTIAL. #11 `6490543459` B `312a5161` repo 31 PASS, 독립 probe 18 PASS+1 FAIL 각 모드(inventory symlink 외부 생성) → RF-045 C2 PARTIAL/SAFETY_HOLD, RF-066 CLI 비임시 효과 HOLD. #12 `6490623337` B `617c8429` 혼합 37 PASS 양 모드, frozen timeout/-O NOT_RUN → RF-044 C3 PARTIAL; B A `d30c67ab` RF-033 5파일 88 PASS 양 모드, A `2bce7dca`까지 해당 파일 경로 변경 0 → C4 scoped PARTIAL(전체 45-owner 아님). FIRST_UNMET C1 A 033(45)/041(6), B 044(16)/045(10)/066(17), full C4 0, C6/C7/DONE 신규 0. #32 `6491497848` 17:12 runtime/API unhealthy, SHA UNKNOWN/OPEN. NEXT A/B original C1/full C4, emergency exact-source 전체 repo normal/-O+peer, C04 선별 통합/CI, RunLab read-only health/provenance. 운영 broker/UEF/--apply HOLD. 큐 47/13/13/0/20/0; C05 direct pytest/sync NOT_RUN(local DNS).
