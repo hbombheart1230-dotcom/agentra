@@ -2,6 +2,8 @@
 
 **실행:** 기존 `work/p15-b-operator-structure-20261022` 브랜치에서 본문 1~6을 **전부** 수행한다. 번호는 식별자이며 선행 순서·선택권·종료 허가가 아니다. 이 지시를 읽고 이미 시작한 이전 작업이 있으면 그 작업을 끊지 말고 안전 체크포인트까지 끝낸 후 본문과 대조한다. 지시 설계 기준 원격 SOURCE `44b36a233f42158288d564de3fe026a4e6701e76`; 시작 시 최신 원격 HEAD를 확인해 이미 구현된 내용은 정확 SHA·테스트 증거로만 인정하고 중복 커밋·동일 SHA/범위 PASS 반복 없이 남은 입력/경계로 진행한다. 소유 코드·테스트 외 문서, RF, 큐, CSV, 동결 오라클, 운영 로그·DB, 타인 브랜치 수정 금지. 실계좌·Broker·Step5C·UEF·RunLab/운영 루트·실네트워크 호출 및 force-push 금지. 명시한 `tmp_path`·fake·격리 환경만 사용한다.
 
+**실행 체크포인트:** B 원격 소스는 여전히 `44b36a233f42158288d564de3fe026a4e6701e76`이다. 로컬 전용 HANDOFF/문서 커밋은 허용된 코드·테스트 산출물이 아니며 원격으로 푸시하지 않는다. 아래 개발 1~5의 신규 입력·코드/테스트와 고정 SHA 검증 6은 각각 별도 완료 증거가 없는 한 모두 `NOT_RUN`으로 남는다. 일부 peer 스코프 PASS나 종속성 부족이 다른 번호를 면제하지 않는다. 외부 패키지 설치/전역 환경 변경을 임의 수행하지 않는다.
+
 ## 1 — Strategist/Scanner 추출 후 원래 출력 계약 검증·결손 수정 (개발·필수)
 
 - **확인한 실제 구조:** `libs/contracts/agent_outputs.py`의 4 Strategist + 3 Scanner 함수 본문은 `libs/contracts/agent_output_parts/strategist_projections.py`(248행), `scanner_projections.py`(162행)로 이미 이동됐다. 기존 facade에는 같은 공개/내부 signature wrapper가 남는다. **다시 MOVE하지 않는다.** 현행 `tests/test_p15_strategist_projection_extraction.py`(1개), `tests/test_p15_scanner_projection_extraction.py`(1개)는 소수 입력만 검사한다.
@@ -41,6 +43,6 @@
 
 ## 공통 검증·종료·원격 보고
 
-모든 1~6은 필수이며 하나라도 `NOT_RUN`이면 전체 완료가 아니다. 안전 차단은 해당 과제만 `BLOCKED(정확 함수·명령·오류·해제 담당·재개점)`로 두고 다른 안전 과제를 전부 계속한다. 각 신규/변경 테스트는 `python -m pytest -q -p no:cacheprovider <exact paths>`와 `python -O -m pytest -q -p no:cacheprovider <same paths>`를 실제 실행한다. `python -O`의 pytest assertion rewriting을 무효라고 일반화하지 않는다. 동결 파일은 읽기/실행만, 원본·fixture 변경 0. 실제 새 Owner/코드·테스트 LOC 전후, caller 연결, 실패→수정 후 결과, 정확 커밋 SHA를 남긴다. 허용된 B 브랜치에 소유 코드·테스트만 정상 fast-forward 커밋·푸시하고 원격 HEAD/blob 재조회. 인증 장애면 허용된 GitHub 연결 경로를 이용하되 force push·새 브랜치 금지.
+모든 1~6은 필수이며 하나라도 `NOT_RUN`이면 전체 완료가 아니다. `yaml`/`exchange_calendars`가 없는 환경에서 관련 모듈 수집이 실패하면 **그 정확 테스트 경로만** `BLOCKED(MODULE_NOT_FOUND)`로 표시하고 동일 실패 명령을 재실행하지 않는다. 사용 가능한 기존 프로젝트 가상환경/lockfile 설치본이 있는지만 확인하며 임의 인터넷 다운로드·운영 의존성 변경 금지. 독립적인 위 1~5의 fake/tmp 테스트와 다른 안전 과제는 즉시 계속한다. 상대 검증은 현재 지정된 A 고정 SHA만 인정하고, 다른 SHA의 부분 peer는 대체하지 않는다. 안전 차단은 해당 과제만 `BLOCKED(정확 함수·명령·오류·해제 담당·재개점)`로 두고 다른 안전 과제를 전부 계속한다. 각 신규/변경 테스트는 `python -m pytest -q -p no:cacheprovider <exact paths>`와 `python -O -m pytest -q -p no:cacheprovider <same paths>`를 실제 실행한다. `python -O`의 pytest assertion rewriting을 무효라고 일반화하지 않는다. 동결 파일은 읽기/실행만, 원본·fixture 변경 0. 실제 새 Owner/코드·테스트 LOC 전후, caller 연결, 실패→수정 후 결과, 정확 커밋 SHA를 남긴다. 허용된 B 브랜치에 소유 코드·테스트만 정상 fast-forward 커밋·푸시하고 원격 HEAD/blob 재조회. 인증 장애면 허용된 GitHub 연결 경로를 이용하되 force push·새 브랜치 금지.
 
 #12에 **실측** `START_KST/END_KST/ELAPSED_MIN`(없으면 `NOT_VERIFIED`), 과제별 `IMPLEMENTED|VERIFIED_ALREADY(SHA)|BLOCKED|NOT_RUN`, normal/-O 실제 명령·exit·PASS/FAIL, 정확 SOURCE SHA, 상대 고정 SHA, 미완료 과제의 다음 안전 함수·재개점과 30분 미만 종료 사유를 기록한다. 시간은 댓글 간격/예약 길이/테스트 초로 추정하지 않는다. 30분은 감사 신호이지 실행시간 목표가 아니다. 이미 완료된 과제만 빠르게 끝나면 남은 모든 안전 과제를 계속하고, 모두 끝났을 때만 완료 보고한다.
