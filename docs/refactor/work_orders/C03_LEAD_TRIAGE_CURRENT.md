@@ -11,7 +11,7 @@
 - D00 §2 FAST-3가 이 문서 내 과거 C1~C7/전체 Owner C4/매-RF normal -O/hosted 전체 CI/30분 업무량 강제 규칙보다 우선한다. RF 개발 DONE의 필수는 **G1 소스·Owner**, **G2 변경 부분 테스트 1회**, **G3 최소 통합·상태 반영**뿐. 원래 RF 7개는 이력 자료.
 - A/B에게는 1~3개 실질적으로 가장 빠르게 끝낼 수 있는 코드/호환 수정만 먼저 지정하고, 기존 4~6 패키지+full peer 목록을 무조건 모두 처리하게 강제하지 않는다. 이전 C01/C02의 7번 등 동결/상대 전수 peer를 개발 DONE의 BLOCKER로 재전달 금지.
 - 변경 없는 KEEP 파일·기존 정상 실행 증거를 최대한 재사용하고, 기능에 직접 영향을 주는 단일 실패/테스트에 집중한다. 상대팀 독립 probe는 선택적인 병렬 검토이고 완료 선행 조건이 아니다. 실제 mock/paper 런검증은 P1.5 개발 DONE 후 별도 수행.
-- **현재 최우선:** RF-016은 C05가 이미 G1/G2/G3 MET로 `05_DONE` 이동(누적 DONE 21)했으므로 C04/C05에 재인계·94 PASS 재실행 금지. 다음 원격 G1/G2 후보는 A `bed17305`의 RF-051(korea_index_sanity), RF-054(playbook_stats), RF-058(ProposalStore): C04는 해당 3파일의 A/integration blob 차이를 최소 선별 통합·targeted smoke, C05는 G1/G2 확인 뒤 G3 DONE 판정. 후속 RF-014/015는 A 기존 원본 KEEP blob 동일, 신규 함수 경계 테스트 1회만 수집. real mode 금지.
+- **현재 최우선:** **A는 RF-031의 실제 코드 추출(상단 STRUCTURAL-REALITY/C02 계약)을 먼저** 완료하고, C04/C05는 A가 이미 완료·푸시한 RF-051/054/058 G1/G2를 별도 병렬로 인수해 G3/DONE 처리한다. RF-016은 이미 05_DONE(21/93), 재인계·동일 94건 재실행 금지. 기존 RF-014/015 KEEP 검증은 코드 구조개선 실적으로 세지 않는다. real mode 금지.
 - 문서와 STATUS의 옛 7칸 텍스트를 새로운 필수 요구로 재해석하지 않는다. C05가 migrate_rf_fast3.py --write 및 sync_rf_checklist_status.py --write/--check를 인수하도록 #36에 지시한다.
 
 **핵심 원칙:** 지팀장이 코드·아키텍처·RF 계약·소유권·안전·독립 검증을 모두 판단한다. Codex B는 C01, Claude A는 C02 **단 한 개의 이번 회차 작업 명령서**만 읽고 이전 채팅 문맥 없이 그대로 구현한다. A/B에게 프로젝트 상황 파악, 큐·RF·D00·CURRENT 재독, '무엇을 할지 알아서 결정', 과거 PASS 반복을 맡기지 않는다. 이 문서와 D00은 지팀장용이다. C04(선별 통합/CI)와 C05(최종 수용/DONE/STATUS)는 예약과 역할을 유지한다.
