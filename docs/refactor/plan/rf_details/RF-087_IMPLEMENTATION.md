@@ -1,5 +1,9 @@
 # RF-087 — 코드 구조/함수 재배치 설계 (T05)
 
+## T05 confirmed path responsibility
+Retain deploy/compose/compose.yaml, compose.public.yaml and compose.cloudflare.yaml as distinct environment entrypoints. Keep deploy/docker/Dockerfile.api and Dockerfile.web and nginx.conf in the current build/serve roles. Compare duplicated settings only where a real conflict is identified; no cosmetic file rename. Valid correct source path = KEEP_OK with blob.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-087.md` blob `9f9ba9c7e98eb4f83e6ced92593f97a2173fbc72`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 10개 파일; 다른 RF 경로 쓰기 금지.
 

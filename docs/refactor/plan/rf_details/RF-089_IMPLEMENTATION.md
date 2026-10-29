@@ -1,5 +1,9 @@
 # RF-089 — 코드 구조/함수 재배치 설계 (T05)
 
+## T05 OS scheduler entry paths
+Retain deploy/m28_launch_templates/linux/*.service, windows/*.xml, m28_registration_helpers and m31_registration_helpers/windows scripts in existing OS folders. External Task Scheduler/systemd consumer path, working directory, cmdline args and process identity must stay exact. Short one-role entries get KEEP_OK with blob; no deployment test for unchanged file.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-089.md` blob `265140505ac40da512792ae8535150a3b9510eec`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 14개 파일; 다른 RF 경로 쓰기 금지.
 

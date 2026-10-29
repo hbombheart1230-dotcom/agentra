@@ -1,5 +1,9 @@
 # RF-088 — 코드 구조/함수 재배치 설계 (T05)
 
+## T05 trading deployment protected path
+Retain deploy/trading/compose.trading.yaml, compose.trading.real.yaml and dryrun override, trading-docker.ps1, cutover and rollback scripts, their existing mode/profile boundaries. A design review does not start a trading container or alter live defaults. KEEP_JUSTIFIED when stable consumer, mode and authority are intact. Do not create a new launcher merely to reduce file count.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-088.md` blob `3d2ac570268877725eff2810202119e78d4c4785`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 9개 파일; 다른 RF 경로 쓰기 금지.
 
