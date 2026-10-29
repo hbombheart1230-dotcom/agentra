@@ -1,5 +1,9 @@
 # RF-083 — 코드 구조/함수 재배치 설계 (T06)
 
+## Confirmed T06 status (2026-10-29)
+Existing historical docs remain in their canonical topic directories. No Python function extraction applies. Correct path, authoritativeness and links give KEEP_OK(path, reason, source SHA) once. A/B do not edit documents; lead handles any actual link correction.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-083.md` blob `ca5fb953058189634a40877ec7a4990c79719677`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 60개 파일; 다른 RF 경로 쓰기 금지.
 
