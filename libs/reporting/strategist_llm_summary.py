@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 from libs.runtime.quant.market_regime_observation import classify_market_regime_rail
 from libs.runtime.strategist_input_quality import build_risk_off_exception_policy
+from libs.reporting import strategist_llm_summary_stage as _stage_owner
+from libs.reporting import strategist_llm_summary_usage as _usage_owner
 
 
 def _utc_now_iso() -> str:
@@ -56,91 +59,15 @@ _STAGE_META_BY_CALL_KIND: Dict[str, Dict[str, Any]] = {
 
 
 def _infer_call_kind(payload: Dict[str, Any], raw: Dict[str, Any], meta: Dict[str, Any] | None = None) -> str:
-    sidecar = _as_dict(meta)
-    explicit = _text(
-        raw.get("call_kind") or sidecar.get("call_kind") or payload.get("call_kind"),
-        "",
-    )
-    if explicit:
-        return explicit
-    component = _text(
-        raw.get("stage_component") or sidecar.get("stage_component") or raw.get("component") or sidecar.get("component"),
-        "",
-    )
-    if component == "strategist_stage2_selected_symbol":
-        return "selected_symbol_tactical_refresh"
-    if component == "strategist_stage3_hold_review":
-        return "stale_intraday_hold_review"
-    if component == "strategist_stage4_carry_review":
-        return "end_of_day_carry_review"
-    if (
-        payload.get("selected_symbol_decision") is not None
-        or payload.get("target_symbol") is not None
-        or payload.get("runner_up_order") is not None
-    ):
-        return "selected_symbol_tactical_refresh"
-    if payload.get("hold_review_decision") is not None:
-        return "stale_intraday_hold_review"
-    if payload.get("carry_review_decision") is not None:
-        return "end_of_day_carry_review"
-    return ""
+    return _stage_owner.infer_call_kind(payload, raw, meta, facade=sys.modules[__name__])
 
 
 def _stage_meta(payload: Dict[str, Any], raw: Dict[str, Any], meta: Dict[str, Any] | None = None) -> Dict[str, Any]:
-    sidecar = _as_dict(meta)
-    call_kind = _infer_call_kind(payload, raw, sidecar)
-    inferred = dict(_STAGE_META_BY_CALL_KIND.get(call_kind) or {})
-    return {
-        "call_kind": call_kind,
-        "stage_index": raw.get("stage_index") or sidecar.get("stage_index") or inferred.get("stage_index"),
-        "stage_name": _first_text(
-            "",
-            raw.get("stage_name"),
-            sidecar.get("stage_name"),
-            inferred.get("stage_name"),
-            call_kind,
-        ),
-        "stage_component": _first_text(
-            "",
-            raw.get("stage_component"),
-            sidecar.get("stage_component"),
-            inferred.get("stage_component"),
-            raw.get("component"),
-            sidecar.get("component"),
-        ),
-    }
+    return _stage_owner.stage_meta(payload, raw, meta, facade=sys.modules[__name__])
 
 
 def _parse_response_body(raw: Dict[str, Any]) -> Dict[str, Any]:
-    parsed = raw.get("parsed_output")
-    if isinstance(parsed, dict) and parsed:
-        return dict(parsed)
-
-    response_text = raw.get("response_text")
-    if isinstance(response_text, str) and response_text.strip():
-        try:
-            loaded = json.loads(response_text)
-        except json.JSONDecodeError:
-            return {}
-        return dict(loaded) if isinstance(loaded, dict) else {}
-
-    attempts = raw.get("attempts")
-    if isinstance(attempts, list):
-        for row in reversed(attempts):
-            if not isinstance(row, dict):
-                continue
-            parsed = row.get("parsed_output")
-            if isinstance(parsed, dict) and parsed:
-                return dict(parsed)
-            response_text = row.get("raw_response_text")
-            if isinstance(response_text, str) and response_text.strip():
-                try:
-                    loaded = json.loads(response_text)
-                except json.JSONDecodeError:
-                    continue
-                if isinstance(loaded, dict):
-                    return dict(loaded)
-    return {}
+    return _stage_owner.parse_response_body(raw)
 
 
 def _canonical_strategist_path_for_response(source_path: Path) -> Path | None:
@@ -227,74 +154,11 @@ def _compact_operator_summary(value: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _memory_usage_from_canonical(canonical: Dict[str, Any]) -> Dict[str, Any]:
-    trace = _as_dict(canonical.get("memory_usage_trace"))
-    visibility = _as_dict(canonical.get("memory_packet_visibility"))
-    layer_decisions = _as_dict(trace.get("layer_decisions"))
-    compact_layers: Dict[str, Any] = {}
-    for layer in ("daily", "weekly", "monthly", "symbol"):
-        row = _as_dict(layer_decisions.get(layer))
-        if not row:
-            continue
-        compact_layers[layer] = {
-            "status": _text(row.get("status"), ""),
-            "active": bool(row.get("active")),
-            "used": bool(row.get("used")),
-            "confidence": row.get("confidence"),
-            "effect": _text(row.get("effect"), ""),
-            "reason": _text(row.get("reason"), ""),
-            "gate_reason": _text(row.get("gate_reason"), ""),
-            "operator_summary": _compact_operator_summary(_as_dict(row.get("operator_summary"))),
-        }
-
-    return {
-        "available": bool(trace or visibility),
-        "active_layers": _as_list(trace.get("active_layers")),
-        "priority_order": _as_list(trace.get("priority_order")),
-        "human_summary": _text(trace.get("human_summary"), ""),
-        "applied_to_strategy": _as_dict(trace.get("applied_to_strategy")),
-        "scanner_application": _as_dict(trace.get("scanner_application")),
-        "monitor_application": _as_dict(trace.get("monitor_application")),
-        "layer_decisions": compact_layers,
-        "memory_packet_visibility": {
-            "reporter_feedback_packet": _as_dict(visibility.get("reporter_feedback_packet")),
-            "selected_symbol_memory": _as_dict(visibility.get("selected_symbol_memory")),
-            "commander_refresh_context": _as_dict(visibility.get("commander_refresh_context")),
-        },
-    }
+    return _usage_owner.memory_usage_from_canonical(canonical, facade=sys.modules[__name__])
 
 
 def _news_usage_from_canonical(canonical: Dict[str, Any]) -> Dict[str, Any]:
-    trace = _as_dict(canonical.get("news_usage_trace"))
-    context = _as_dict(canonical.get("news_context"))
-    query_targets = _as_list(trace.get("query_targets")) or _as_list(canonical.get("news_query_targets"))
-    market_headlines = _as_list(trace.get("market_headlines_used"))
-    candidate_headlines = _as_list(trace.get("candidate_headlines_used"))
-    market_count = len(market_headlines)
-    candidate_count = len(candidate_headlines)
-    if market_count <= 0:
-        market_count = int(context.get("market_headline_count") or 0) or _headline_count_from_sample_map(canonical.get("market_news_sample"))
-    if candidate_count <= 0:
-        candidate_count = int(context.get("candidate_headline_count") or 0) or _headline_count_from_sample_map(canonical.get("candidate_news_sample"))
-    headline_count = int(context.get("headline_count") or 0)
-    if headline_count and market_count <= 0 and candidate_count <= 0:
-        market_count = int(context.get("market_signal_total") or 0)
-        candidate_count = max(0, headline_count - market_count)
-    return {
-        "available": bool(trace or context or canonical.get("news_evidence_summary") or query_targets),
-        "query_targets": query_targets,
-        "human_summary": _text(trace.get("human_summary") or context.get("summary"), ""),
-        "market_effect": _text(trace.get("market_effect"), ""),
-        "playbook_effect": _text(trace.get("playbook_effect"), ""),
-        "scanner_guidance_effect": _text(trace.get("scanner_guidance_effect"), ""),
-        "monitor_policy_effect": _text(trace.get("monitor_policy_effect"), ""),
-        "confidence": _text(trace.get("confidence") or ("medium" if context else ""), ""),
-        "news_evidence_summary": _text(canonical.get("news_evidence_summary"), ""),
-        "news_query_reasoning": _text(canonical.get("news_query_reasoning"), ""),
-        "market_headline_count": market_count,
-        "candidate_headline_count": candidate_count,
-        "market_headlines_sample": market_headlines[:3],
-        "candidate_headlines_sample": candidate_headlines[:3],
-    }
+    return _usage_owner.news_usage_from_canonical(canonical, facade=sys.modules[__name__])
 
 
 def _market_rail_from_canonical(canonical: Dict[str, Any]) -> Dict[str, Any]:
@@ -316,55 +180,7 @@ def _market_rail_from_canonical(canonical: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _news_quality_audit(canonical: Dict[str, Any], news_usage: Dict[str, Any]) -> Dict[str, Any]:
-    ranked = _as_dict(canonical.get("news_evidence_ranked"))
-    candidate_ranked = _as_list(ranked.get("candidate_news_ranked"))
-    market_ranked = _as_list(ranked.get("market_news_ranked"))
-    query_targets = _as_list(news_usage.get("query_targets"))
-    market_count = int(news_usage.get("market_headline_count") or len(market_ranked) or 0)
-    candidate_count = int(news_usage.get("candidate_headline_count") or len(candidate_ranked) or 0)
-    total = market_count + candidate_count
-    confidence = _text(news_usage.get("confidence"), "")
-    summary = _text(news_usage.get("human_summary") or news_usage.get("news_evidence_summary"), "")
-    no_effect = not any(
-        _text(news_usage.get(key), "")
-        for key in ("market_effect", "playbook_effect", "scanner_guidance_effect", "monitor_policy_effect")
-    )
-    issues: List[str] = []
-    if total <= 0:
-        issues.append("news_headlines_missing")
-    if not query_targets:
-        issues.append("news_query_targets_missing")
-    if no_effect:
-        issues.append("news_effect_trace_missing")
-    if confidence.lower() in {"", "-", "low", "none", "unknown"}:
-        issues.append("news_confidence_low_or_missing")
-    if not summary:
-        issues.append("news_summary_missing")
-    if total > 0 and candidate_count <= 0:
-        issues.append("candidate_news_missing")
-    if total > 0 and market_count <= 0:
-        issues.append("market_news_missing")
-    if not issues:
-        status = "ok"
-    elif total > 0:
-        status = "partial"
-    else:
-        status = "weak"
-    return {
-        "schema_version": "strategist_news_quality_audit.v1",
-        "status": status,
-        "headline_count": total,
-        "market_headline_count": market_count,
-        "candidate_headline_count": candidate_count,
-        "query_target_count": len(query_targets),
-        "query_targets": query_targets[:10],
-        "confidence": confidence,
-        "issues": issues,
-        "market_effect": _text(news_usage.get("market_effect"), ""),
-        "playbook_effect": _text(news_usage.get("playbook_effect"), ""),
-        "scanner_guidance_effect": _text(news_usage.get("scanner_guidance_effect"), ""),
-        "monitor_policy_effect": _text(news_usage.get("monitor_policy_effect"), ""),
-    }
+    return _usage_owner.news_quality_audit(canonical, news_usage, facade=sys.modules[__name__])
 
 
 def _strategist_output_quality_audit(
