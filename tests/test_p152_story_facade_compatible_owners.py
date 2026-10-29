@@ -1,6 +1,7 @@
 """P1.5.2 Story façade extraction: pinned AST bodies + public monkeypatch fidelity."""
 import ast
 import subprocess
+from functools import lru_cache
 from pathlib import Path
 import pytest
 import libs.reporting.trade_story_pipeline as facade
@@ -16,8 +17,14 @@ MOVED = {
 }
 
 
+@lru_cache(maxsize=1)
+def _pinned_source():
+    """The pinned Git blob is immutable; avoid a Git process for every case."""
+    return subprocess.check_output(["git", "show", f"{BASE}:{PATH}"], text=True, encoding="utf-8-sig")
+
+
 def before_function(name):
-    old = subprocess.check_output(["git", "show", f"{BASE}:{PATH}"], text=True, encoding="utf-8-sig")
+    old = _pinned_source()
     fn = next(n for n in ast.parse(old).body if isinstance(n, ast.FunctionDef) and n.name == name)
     space = vars(facade).copy()
     exec(compile(ast.Module(body=[fn], type_ignores=[]), "<pre-split-story-facade>", "exec"), space)
