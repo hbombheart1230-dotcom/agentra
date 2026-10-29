@@ -1,5 +1,8 @@
 # LEAD_CURRENT — 실제 C04/C05 인계 목록
 
+**C05 2026-10-29 19:33 KST 종결 게이트:** RF-016 원본 C1/C2/C3 MET·C5 N/A, **첫 미충족 C4=Codex B 8-owner original full 독립 peer 증거**([#36 6494160201](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6494160201)); 아직 LEAD 이동 금지. RF-045 emergency 최신 `457ca9f8`에도 log move check→move race overwrite D2가 [#11 6494086747](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6494086747)에서 재현돼 C2 SAFETY_HOLD, RF-066 운영 CLI 동일 효과 HOLD. RF-041 A 최신 HTTPError retry patch는 integration 미반영, nonfinite BUY/SELL 차단도 긴급 브랜치에만 있음. [#32 6493735258](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6493735258) 19:03 runtime unhealthy 지속, API/web healthy, RUN_SOURCE_SHA UNKNOWN/OPEN. **LEAD 0 / DONE 20/93 / C6 신규 승인 0**. C03·긴급 Codex D2 atomic no-overwrite+normal/-O, Claude A exact-source independent peer, Codex B RF-016 C4, C04 exact integration hosted CI 순으로 해제. 운영 주문/로그 `--apply`/재배포 HOLD.
+
+
 **정본:** [D00](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md), [C04](../../../work_orders/C04_LEAD_INTEGRATION_CURRENT.md), [C05](../../../work_orders/C05_LEAD_CLOSEOUT_CURRENT.md), [STATUS](../../STATUS.md). 여기에는 **실제로 `04_LEAD_ACCEPTANCE`에 있는 RF만** 기록한다. A/B 진행 및 과거 검증 이력은 [Issue #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11)·[Issue #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12)에서 보고한다.
 
 | RF | 원 Owner / 독립 peer | 수용된 원래 게이트 | 현재 C6/C7 · 담당 |
