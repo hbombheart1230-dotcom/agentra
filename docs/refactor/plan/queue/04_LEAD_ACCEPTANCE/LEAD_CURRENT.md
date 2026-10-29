@@ -1,5 +1,7 @@
 # LEAD_CURRENT — C04/C05 FAST-3 통합·종결 큐
 
+**C05 2026-10-30 05:45 KST 신규 구조 수용:** [C04 #36 6507661071](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6507661071) / integration [3a7e2d54](https://github.com/hbombheart1230-dotcom/agentra/commit/3a7e2d545b6f5addbfb02640a78d4579204cf25e): RF-031 기존 DONE의 TARGET_GAP_CLOSED +6, RF-044 기존 DONE의 TARGET_GAP_CLOSED +2. 신규 DONE 0, **LEAD 0 / DONE 31/93** 유지. A 11/11 및 B Owner/test 2/2 blob 동일, worker normal 95/2 PASS exit0, C04 scoped G3_REUSE. [offline safety CI 40949831961](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40949831961)는 offline safety이며 targeted 테스트 아님. 직접 재시험·재마이그레이션 없음.
+
 **정본:** [D00 §2](../../../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [C04](../../../work_orders/C04_LEAD_INTEGRATION_CURRENT.md) · [C05](../../../work_orders/C05_LEAD_CLOSEOUT_CURRENT.md) · [STATUS](../../STATUS.md).
 
 **현재 2026-10-30 KST: LEAD 0건 / DONE 31/93.** 93개 RF의 7항목→FAST-3 G1/G2/G3 전환 완료(이번 79개, 이전 14개). 역사 full peer·-O·전체 hosted CI는 개발 DONE 필수 게이트가 아닙니다.
