@@ -15,6 +15,9 @@ from .contracts import (
     TRACKS,
 )
 from .canonical import canonicalize_board
+from . import builder_q12_hypothesis_metric as _builder_q12_hypothesis_metric_owner
+from . import builder_feature_candidates as _builder_feature_candidates_owner
+from . import builder_btc_woori as _builder_btc_woori_owner
 from . import builder_opening_rows as _builder_opening_rows_owner
 from . import builder_broad_opening as _builder_broad_opening_owner
 from . import builder_latent as _builder_latent_owner
@@ -79,17 +82,7 @@ def _q12_hypothesis_metric(
     entry_method: str = "09:05",
     horizon: str = "+30m",
 ) -> dict[str, Any]:
-    for raw in payload.get("rows") or []:
-        row = mapping(raw)
-        if (
-            row.get("evidence_phase") == phase
-            and row.get("axis") == "hypothesis_path"
-            and row.get("value") == path_value
-            and row.get("entry_method") == entry_method
-            and row.get("horizon") == horizon
-        ):
-            return metric_snapshot(row.get("metrics"))
-    return metric_snapshot({})
+    return _builder_q12_hypothesis_metric_owner._q12_hypothesis_metric(payload, phase=phase, path_value=path_value, entry_method=entry_method, horizon=horizon, facade=sys.modules[__name__])
 
 
 def _feature_candidates(
@@ -97,76 +90,7 @@ def _feature_candidates(
     prospective_payload: Mapping[str, Any],
     concentrations: Mapping[str, Mapping[str, Any]],
 ) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    prospective_rows = prospective_payload.get("candidate_summaries") or []
-    specs = [
-        (
-            "R1_SCANNER_RISK_HIGH_30M_V1",
-            "scanner.risk_band == HIGH",
-            "+30m",
-            "SCANNER",
-        ),
-        (
-            "R1_ENTRY_DAILY_MA5_20_EXTENDED_15M_V1",
-            "chart.daily_ma5_20_cross_state == POST_CROSS_EXTENDED",
-            "+15m",
-            "MONITOR_ENTRY",
-        ),
-    ]
-    selected = feature_payload.get("prospective_shadow_candidates") or []
-    for candidate_id, label, horizon, owner in specs:
-        prospective = find_by_id(prospective_rows, "candidate_id", candidate_id)
-        candidate_meta = mapping(prospective.get("candidate"))
-        expected = candidate_meta.get("expected_value")
-        feature_path = candidate_meta.get("feature_path")
-        historical_row = next(
-            (
-                mapping(row)
-                for row in selected
-                if mapping(row).get("feature") == feature_path
-                and mapping(row).get("category") == expected
-            ),
-            {},
-        )
-        decision = mapping(prospective.get("decision"))
-        source_status = str(
-            decision.get("status")
-            or historical_row.get("decision")
-            or "INSUFFICIENT_EVIDENCE"
-        )
-        bucket = (
-            "ACTION_REVIEW"
-            if source_status == "SINGLE_BEHAVIOR_PATCH_REVIEW_ELIGIBLE"
-            else "OBSERVE_FIXED"
-        )
-        branch = metric_snapshot(prospective.get("branch"))
-        rows.append(
-            _candidate(
-                candidate_id=candidate_id,
-                track_id="OPENING_CONDITIONAL",
-                discriminator=label,
-                target_horizon=horizon,
-                source_status=source_status,
-                board_bucket=bucket,
-                owner=owner,
-                historical=metric_snapshot(historical_row.get("train")),
-                validation=metric_snapshot(historical_row.get("validation")),
-                prospective=branch,
-                concentration=concentrations.get(candidate_id),
-                evidence_note=(
-                    "Prospective에서도 비교군을 이겼지만 날짜·종목 집중도 민감도 검토가 필요함."
-                    if bucket == "ACTION_REVIEW"
-                    else "과거 방향성이 prospective에서 유지되지 못함."
-                ),
-                next_action=(
-                    "집중 종목·최대 일자를 제외한 민감도 검토 후 승격 또는 기각. 다른 영역은 변경하지 않음."
-                    if bucket == "ACTION_REVIEW"
-                    else "관측만 유지하고 과거 성과만으로 승격하지 않음."
-                ),
-                source_keys=["feature_candidates", "prospective_candidates"],
-            )
-        )
-    return rows
+    return _builder_feature_candidates_owner._feature_candidates(feature_payload, prospective_payload, concentrations, facade=sys.modules[__name__])
 
 
 def _prospective_concentrations(
@@ -242,20 +166,7 @@ def _latent(payload: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _btc_woori(payload: Mapping[str, Any]) -> dict[str, Any]:
-    horizon = find_horizon(payload.get("episode_horizons"), "+30m")
-    return _candidate(
-        candidate_id="BTC_WOORI_V2_ONLY_LOCAL_CONFIRMATION",
-        track_id="BTC_WOORI",
-        discriminator="BTC multi-horizon momentum + Woori local price/volume confirmation",
-        target_horizon="+30m",
-        source_status=str(payload.get("conclusion") or "INSUFFICIENT_EVIDENCE"),
-        board_bucket="OBSERVE_FIXED",
-        owner="BTC_WOORI_BASELINE",
-        historical=metric_snapshot(horizon.get("real_net")),
-        evidence_note="BTC 단독과 광범위 v2는 약하고, 독립 v2-only +30분 하위군만 양수임.",
-        next_action="고정된 현지 확인 하위군만 prospective로 수집.",
-        source_keys=["btc_woori_history"],
-    )
+    return _builder_btc_woori_owner._btc_woori(payload, facade=sys.modules[__name__])
 
 
 def _large_cap_candidate(reports_root: Path, through_day: str) -> tuple[dict[str, Any], dict[str, Any]]:
