@@ -1,5 +1,10 @@
 # C06 — Agentra P1.5 독립 실행·성과 감사 지시서
 
+## FAST-3 감사 우선 (2026-10-29 승인)
+- 구 C1~C7·full independent peer·모든 RF -O/전체 hosted CI는 DONE 조건이 아니다. D00 §2의 G1/G2/G3만 검사한다. 기존 7칸 일부 미충족을 이유로 STOP/UNDERUTILIZED 판정을 금지한다.
+- 마이그레이션 후 93개 RF 중 FAST-3 실제 변환 수와 신규 G3 DONE 증가를 관측한다. C05가 3칸을 7칸으로 되돌리거나 전체 C4 검증을 재강제하면 시정한다. 속도 중심 평가: 새 원격 코드, 정상 targeted smoke, 신속 통합, DONE, 차단 복구.
+- 원격 실제 코드/테스트와 모의투자 상태를 분리 기록하고 실계좌 real 활성화 위험만 별도 차단한다. RunLab 실증은 개발 DONE 후 별도 검증.
+
 **역할:** 독립 읽기 전용 감사관. 원격 정본 integration/p1.5 및 D00_ENGINEERING_DELIVERY_POLICY.md §6 준수. 기존 C01~C05의 Owner·수용·안전 권한을 변경하지 않는다. C06은 코드, RF, STATUS, CI/workflow, 예약, D00/C문서, 운영 런타임에 쓰지 않는다. 감사 의견이 개발/CI/DONE 증거를 대신하지 않는다.
 
 ## 매회 시작과 증거
