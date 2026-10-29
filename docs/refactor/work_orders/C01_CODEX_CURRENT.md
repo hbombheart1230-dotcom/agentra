@@ -1,6 +1,9 @@
 # C01 — Codex B | 연속 구현 명령서
 
-**실행 역할:** 이전 대화나 프로젝트 맥락은 필요 없다. 이 파일의 1→7번만 순서대로 실제 구현한다. 스스로 작업을 선정하거나 RF/큐/D00/CURRENT를 찾아 읽지 않는다. **명령만 설명하고 종료하지 말 것.** `hbombheart1230-dotcom/agentra`의 **기존** `work/p15-b-operator-structure-20261022` 브랜치에서 허용된 소스·테스트만 수정한다. 지시 기준에서 확인한 원격 B HEAD는 `801ca211b83d04d4dc38e78f394f57ffb5dd29e4`(2026-10-29 09시대); 시작 시 실제 HEAD를 확인하고 이미 같은 수정이 포함됐으면 해당 항목은 신규 작업 없이 검증 결과만 재사용하고 다음 번호로 이동한다. 코드가 달라졌으면 최신 코드에 맞춰 **같은 의도**를 구현하되 권한을 넘는 변경은 하지 않는다.
+**실행 역할:** 이전 대화나 프로젝트 맥락은 필요 없다. 이 파일의 개발·검증 과제 **1~6 전부 필수**이고 7은 공통 제출 규칙이다. 번호는 진행상태 식별자이지 **선행 순서·중단 허가가 아니다**. 스스로 작업을 선정하거나 RF/큐/D00/CURRENT를 찾아 읽지 않는다. **명령만 설명하고 종료하지 말 것.** `hbombheart1230-dotcom/agentra`의 **기존** `work/p15-b-operator-structure-20261022` 브랜치에서 허용된 소스·테스트만 수정한다. 지시 기준에서 확인한 원격 B HEAD는 `801ca211b83d04d4dc38e78f394f57ffb5dd29e4`(2026-10-29 09시대); 시작 시 실제 HEAD를 확인하고 이미 같은 수정이 포함됐으면 해당 항목은 신규 작업 없이 검증 결과만 재사용하고 다음 번호로 이동한다. 코드가 달라졌으면 최신 코드에 맞춰 **같은 의도**를 구현하되 권한을 넘는 변경은 하지 않는다.
+
+
+**전체 과제 이행 기준:** 과제 1과 2는 새 Owner 파일과 기존 facade wrapper가 실제 생성·연결되고 양 모드 회귀가 통과해야 **IMPLEMENTED**다. 과제 3~5는 명시한 경계 재현·검증을 모두 수행하고 결함이 확인되면 소스 수정까지 해야 **IMPLEMENTED**다. 과제 6은 지정한 상대 SHA의 새 경계 독립 검증이 실행돼야 **PEER_EXECUTED**다. 각각 `IMPLEMENTED | VERIFIED_ALREADY(증거 SHA) | BLOCKED(증거·다음 재개점) | NOT_RUN`으로 개별 보고한다. `NOT_RUN`/검토만 한 작업을 `IMPLEMENTED`로 바꾸지 말 것. **일부 완료 보고는 전체 업무 종료 선언이 아니다.**
 
 ## 1 — 대형 계약 파일의 Strategist 책임 실제 분리 (개발·필수)
 
@@ -18,7 +21,7 @@
 - 아래 3개 함수 본문만 MOVE: `_build_scanner_trace_summary`, `_build_scanner_candidate_ranking_table`, `_build_scanner_candidate_selection_reason`. 기존 함수명/signature는 facade에 얇게 유지. `build_scanner_output_artifact` 본체 및 검증·직렬화 공개 계약은 수정하지 않는다.
 - 1번과 같이 Owner는 facade를 import하지 않고 호출 시점 `facade` 주입으로 원래 `_dict/_listify/_safe_float/_safe_int/_clip/_dedupe_text`를 참조. score rounding, runner-up 2개, fallback tie-break 문구, event payload 우선순위, missing flags, 빈 후보 목록은 **바이트 동등한 JSON 출력을 목표**로 한다.
 - `tests/test_p15_scanner_projection_extraction.py`에서 0/1/3 후보, 동점, 양·음수 factor, candidate preview 누락, 명시적 ranking/selection event payload 우선순위, facade monkeypatch를 확인. 신규 Owner **350 LOC 이하**, 실제 facade LOC 감소 보고.
-- **동결 테스트/오라클 수정 금지:** `tests/test_p161_agent_output_contract_freeze.py`, `tests/fixtures/p1_5_t35_agent_outputs/**`는 그대로 유지한다. 분리 후 반드시 이 기존 계약 검증을 정상/`python -O`로 실행한다. 출력 parity가 깨지면 해당 extraction만 롤백·정확한 차이 제출 후 다음 3번으로 이동한다.
+- **동결 테스트/오라클 수정 금지:** `tests/test_p161_agent_output_contract_freeze.py`, `tests/fixtures/p1_5_t35_agent_outputs/**`는 그대로 유지한다. 분리 후 반드시 이 기존 계약 검증을 정상/`python -O`로 실행한다. 출력 parity가 깨지면 원인을 좁혀 **같은 과제 안에서 수정·재검증**한다. 실제 안전/권한 또는 환경 차단이 입증될 때만 그 과제를 BLOCKED로 유지하고, **남은 다른 모든 과제**를 계속 수행한다. 롤백·보고만으로 과제 완료 처리하지 않는다.
 
 ## 3 — 실제 EventLogger 호출자 무음 누락 해결 확인 (수정 필요 시 개발)
 
@@ -51,7 +54,7 @@
 
 ## 7 — 종료·보고(모든 개발 항목 공통)
 
-- **순서 1→6의 실질 작업을 가능한 만큼 모두 수행한다.** 첫 PASS·한 건 커밋·타인 SHA 대기·댓글 1개가 종료 조건이 아니다. 차단 항목은 첫 차단 원인과 해제 담당을 기록하고 **다음 번호로 즉시 진행**한다. 실제 플랫폼 실행 한도 때는 마지막 완료 번호·미완료 코드 위치·다음 명령부터의 체크포인트를 남긴다. 30분·건수 목표 없음.
+- **1~6의 모든 과제는 각각 독립적인 이행 의무다.** 순서를 따르거나 앞 과제 성공을 기다릴 필요가 없다. 막힌 과제는 격리하고 나머지 과제 전부를 병행 또는 연속 실행한다. **지시된 함수 분리·코드 변경·테스트·독립 검증 중 하나라도 미실행이면 이번 지시서는 미완료**다. 작업자가 자체 판단으로 '충분히 검증했다', '리스크가 작다', '이전 PASS가 있다', '이미 한 커밋 했다', '남은 시간이 적어 보인다'며 조기 종료·후속 과제 생략·업무 재선정하는 것을 금지한다. 실제 완료 증거가 있는 과제만 VERIFIED_ALREADY로 처리하고 diff·원격 SHA를 제시한다. 미완료 과제는 DONE으로 쓰지 않는다. **오직 실제 플랫폼 실행 한도, 도구·권한·환경 오류, 명시된 안전 위험**만 각 과제의 BLOCKED/NOT_RUN 사유로 허용하며 다른 독립 과제를 중단할 이유가 아니다. 오류는 근거·해제 조건·재개 지점을 기록하고 나머지를 계속 실행한다. 실제 한도 도달 시 전체 과제별 상태·마지막 변경 파일·다음 코드 작업을 남겨 후속 회차에서 재개한다. 30분·건수 목표 없음.
 - 새 변경 테스트 및 표적 회귀는 **`python -m pytest -q -p no:cacheprovider <paths>`**, **`python -O -m pytest -q -p no:cacheprovider <same paths>`** 두 모드로 실행한다. 테스트 환경 의존성/불가 상황은 PASS라 쓰지 말고 NOT_RUN/차단 근거 기록.
 - 본인 기존 B 브랜치에 **코드+테스트만** 커밋하고 원격 실제 HEAD·변경 blob을 재조회 확인. Git shell push 인증 실패면 이미 허용된 GitHub 연결 쓰기 경로로 동일 브랜치 fast-forward 가능한 경우에만 사용한다. main/integration/타인 브랜치 쓰기·force push·새 브랜치/PR·동결 오라클·문서/CSV/RF/STATUS 변경 금지.
 - GitHub Issue **#12 댓글**: `START_KST / END_KST / ELAPSED_MIN` **실측**, 완료 번호와 파일별 `OLD_LOC→NEW_LOC`, 실제 코드 수정·테스트·normal/-O/exit, 정확 원격 SHA, 상대 독립 검증 결과, 번호별 BLOCKED/NOT_RUN 및 다음 미수행 번호. 앞뒤 실행 시간을 합쳐 추정하지 않는다. 끝내지 못했더라도 실제 성과를 제출한다.
