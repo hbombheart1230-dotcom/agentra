@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import Any, Mapping
 
 
@@ -11,7 +12,8 @@ def _to_float(value: Any, default: float | None = None) -> float | None:
     try:
         if value in (None, ""):
             return default
-        return float(value)
+        number = float(value)
+        return number if math.isfinite(number) else default
     except Exception:
         return default
 
