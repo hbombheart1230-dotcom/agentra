@@ -39,7 +39,8 @@
 
 ## 6 — Codex B 신규 P0 수정의 정확 SOURCE 독립 검증 (필수·B 수정/푸시 금지)
 
-- **대상 B SOURCE** `0d8e2777b4af087219878de48df48a6c244277f9`. B 변경 파일 `libs/core/log_maintenance.py`와 신규 `tests/test_p15_log_move_root_boundary.py`의 실제 blob/함수/효과를 고정한 별도 temp detached 복사에서만 검증한다. 이전 B `44b36a23`에 대한 3 FAIL은 발견 증거일 뿐 새 SHA의 PASS 아님.
+- **대상 B SOURCE** `312a51618294304b2fd8e962c347ea01e6d54b55`. B 변경 파일 `libs/core/log_maintenance.py`와 신규 `tests/test_p15_log_move_root_boundary.py`의 실제 blob/함수/효과를 고정한 별도 temp detached 복사에서만 검증한다. 이전 B `44b36a23`에 대한 3 FAIL은 발견 증거일 뿐 새 SHA의 PASS 아님.
+- **신규 B 파일까지 포함:** B 원격 HEAD에 추가된 `tests/test_p15_sync_legacy_brief_no_write_cli.py` (6), `tests/test_p15_event_logger_constructor_matrix.py` (5), `tests/test_p15_run_log_maintenance_temp_cli.py` (4) 및 이전 `tests/test_p15_log_move_root_boundary.py` (12)의 실제 저장소 normal/`python -O` 수행 상태는 아직 NOT_RUN이다. A는 정확 새 B SHA 격리 clone에서 결과를 독립 확인하고 사각 mutation 또는 독립 최소 음성 probe를 작성한다. B 코드/test 변경 금지. CLI `--apply`는 tmp_root 내에서만, 비격리/운영 경로 금지. 자체 테스트가 PASS하여도 전체 RF C4로 승격 금지.
 - **독립 입력:** (a) `tmp_path/logs` source `../outside.txt`, target `../created_outside.txt`, logs 내부 디렉터리 symlink가 외부 목적지로 이어지는 변형에서 `skipped_unsafe_path`, 외부 파일 SHA/디렉터리 목록 불변, 정상 다음 후보는 `moved`; (b) 절대/빈/루트 자체 입력 및 source symlink, destination collision, 단일 OSError 뒤 계속되는 기존 계약을 독립 probe로 검증; (c) 저장소 자체 `tests/test_p15_log_move_root_boundary.py tests/test_log_maintenance.py` normal/`python -O` 검증. 시도·차단·exit code 및 exact B SHA만 인정, source/test 개선은 Codex B에 인계.
 - **주의:** 지팀장 격리 최소 replica 12 PASS/12 PASS는 저장소 내부 실행을 대체하지 않는다. 검사와 `shutil.move` 사이 symlink 레이스는 여전히 안전 증명이 아니므로 비격리 `--apply`/운영 root **SAFETY_HOLD**. B의 기존 RF-045 EventLogger/brief CLI 별도 C4 원래 전체 범위도 아직 PASS 아님. 새 사실이 없을 때 동일 PASS 재실행 금지.
 - B 브랜치/문서·RF/운영 쓰기 0. 정확 명령·normal/`-O`·독립 경계·남은 소유자 범위는 Issue #11에 보고. 테스트가 실패하면 오염 없는 임시 환경의 재현 입력/원인만 전달하고 위험 코드는 직접 바꾸지 않는다.
