@@ -99,9 +99,8 @@ def test_fetch_errors_become_per_indicator_unavailable_and_never_raise(monkeypat
         {"kr_3y_yield": ("unavailable", "kofia_fetch_error", "3000"), "kr_10y_yield": ("unavailable", "kofia_fetch_error", "3013")})
     if not out["kr_3y_yield"]["reason"].startswith("kofia_fetch_error:ParseError"):
         raise AssertionError(out["kr_3y_yield"]["reason"])
-    # bad numeric policy value is also caught only if it is inside the try; float() runs BEFORE the try -> raises
-    with pytest.raises(ValueError):
-        kb.fetch_korea_bond_yield_overrides({"korea_bond_yield_timeout_sec": "abc"})
+    # P15 C02-2: a malformed numeric policy value is normalized to the default before the try (formerly ValueError)
+    assert set(kb.fetch_korea_bond_yield_overrides({"korea_bond_yield_timeout_sec": "abc"})) == {"kr_3y_yield", "kr_10y_yield"}
 
 
 def test_fetch_kofia_xml_uses_post_headers_floor_timeout_and_decodes(monkeypatch):

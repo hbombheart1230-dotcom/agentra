@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import os
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -19,9 +20,25 @@ def _to_float(value: Any) -> float | None:
         text = str(value or "").strip()
         if not text:
             return None
-        return float(text)
+        value = float(text)
+        return value if math.isfinite(value) else None
     except Exception:
         return None
+
+
+def _policy_timeout_sec(raw: Any, default: float = 8.0) -> float:
+    try:
+        value = float(raw or default)
+    except (TypeError, ValueError):
+        return default
+    return value if math.isfinite(value) and value > 0 else default
+
+
+def _policy_lookback_days(raw: Any, default: int = 14) -> int:
+    try:
+        return int(float(raw or default))
+    except (TypeError, ValueError, OverflowError):
+        return default
 
 
 def _date_range(days: int = 14) -> Tuple[str, str]:
@@ -112,8 +129,8 @@ def fetch_korea_bond_yield_overrides(policy: Dict[str, Any] | None = None) -> Di
         enabled = os.getenv("KOREA_BOND_YIELD_PROVIDER_ENABLED", "true")
     if str(enabled).strip().lower() in {"0", "false", "no", "n", "off"}:
         return {}
-    timeout_sec = float(policy.get("korea_bond_yield_timeout_sec") or os.getenv("KOREA_BOND_YIELD_TIMEOUT_SEC") or 8.0)
-    days = int(float(policy.get("korea_bond_yield_lookback_days") or os.getenv("KOREA_BOND_YIELD_LOOKBACK_DAYS") or 14))
+    timeout_sec = _policy_timeout_sec(policy.get("korea_bond_yield_timeout_sec") or os.getenv("KOREA_BOND_YIELD_TIMEOUT_SEC"))
+    days = _policy_lookback_days(policy.get("korea_bond_yield_lookback_days") or os.getenv("KOREA_BOND_YIELD_LOOKBACK_DAYS"))
     start_date, end_date = _date_range(days)
     try:
         text = _fetch_kofia_xml(

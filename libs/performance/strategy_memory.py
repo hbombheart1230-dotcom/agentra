@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,9 +21,10 @@ def _utc_now_iso() -> str:
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
-        return float(value)
+        number = float(value)
     except Exception:
         return float(default)
+    return number if math.isfinite(number) else float(default)
 
 
 def _read_json_dict(path: Path) -> Dict[str, Any]:
@@ -297,7 +299,7 @@ def build_strategy_memory(
         for row in playbook_rows
         if row[0]
         and row[0] != "unknown"
-        and int(float((playbooks.get(row[0]) or {}).get("usage_count") or 0)) >= 2
+        and _safe_int((playbooks.get(row[0]) or {}).get("usage_count")) >= 2
         and row[2] >= 0.0
         and row[3] >= 0.5
     ][:3]
@@ -307,7 +309,7 @@ def build_strategy_memory(
         for row in sorted(playbook_rows, key=lambda row: (row[2], row[3], row[1], row[0]))
         if row[0]
         and row[0] != "unknown"
-        and int(float((playbooks.get(row[0]) or {}).get("usage_count") or 0)) >= 2
+        and _safe_int((playbooks.get(row[0]) or {}).get("usage_count")) >= 2
         and row[0].lower() not in best_set
         and (row[2] < 0.0 or row[3] <= 0.4)
     ][:3]
@@ -315,7 +317,7 @@ def build_strategy_memory(
     for name, _stability, _avg_return, _win_rate in playbook_rows[:4]:
         src = playbooks.get(name) if isinstance(playbooks.get(name), dict) else {}
         playbook_performance_snapshot[str(name)] = {
-            "usage_count": int(float(src.get("usage_count") or 0)),
+            "usage_count": _safe_int(src.get("usage_count")),
             "win_rate": _safe_float(src.get("win_rate"), 0.0),
             "avg_return": _safe_float(src.get("avg_return"), 0.0),
             "stability_score": _safe_float(src.get("stability_score"), 0.0),
@@ -332,7 +334,7 @@ def build_strategy_memory(
         regime_bias[str(regime)] = {
             "win_rate": _safe_float(item.get("win_rate"), 0.0),
             "avg_return": _safe_float(item.get("avg_return"), 0.0),
-            "trade_count": int(float(item.get("trade_count") or 0)),
+            "trade_count": _safe_int(item.get("trade_count")),
         }
 
     success_patterns = _recent_patterns_from_playbooks(playbooks, success=True)

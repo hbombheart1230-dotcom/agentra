@@ -66,9 +66,10 @@ class SentimentInputs:
 
 def _as_float(value: Any, default: float = 0.0) -> float:
     try:
-        return float(value)
+        number = float(value)
     except Exception:
         return float(default)
+    return number if math.isfinite(number) else float(default)
 
 
 def _compute_raw(
