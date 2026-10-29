@@ -1,5 +1,12 @@
 # C03 — 지팀장 | 구체 실행 설계·A/B 연속 작업 공급
 
+## STRUCTURAL-REALITY — 2026-10-29 홍사장 시정 지시: 실제 리팩터링과 KEEP 검증 분리
+- **개발 DONE은 D00 §2 FAST-3 그대로 보존한다.** 그러나 C03/C05가 보고하는 구조 개선 실적은 `REFACTOR_CHANGED`(실제 모듈 책임 이동/함수 몸체 추출/의존성 감소), `KEEP_VERIFIED_ONLY`(대상 소스 변화 없이 동작·기존 구조 검증), `ALREADY_SPLIT_BEFORE_BASE`(main→P1.5 기준점 이전 분리)를 반드시 구별한다. **KEEP을 코드 구조 개선 건수·LOC 감소 실적에 더하지 말 것**. 실제 기준점은 main SHA·P1.5 baseline SHA·integration HEAD를 구분해 병기; 1개 RF의 성공을 다른 단계의 공으로 중복 집계 금지.
+- **검증된 실측(2026-10-29):** main `058a6403` 대비 integration 시점의 `graphs/nodes/strategist_node.py` 422309→194854B, `apps/operator_ui/data_access_core.py` 358998→112756B, `libs/reporting/trade_report_ai.py` 440032→64646B, `libs/reporting/reporter_analysis.py` 93941→28062B. 이는 파일 크기 감소를 뜻하지 P1.5 **중간 baseline 이후** 이 분해를 새로 했다는 의미가 아님. 21 DONE RF의 소유 총 431경로 중 426개는 baseline `63182ab2`→integration `671306d0` Git blob 동일, 5개 상이; main에서 160경로 미존재. **기존 DONE 21/93은 역사 사실로 유지**, 그러나 '중간 baseline부터 실제 코드 개선 19 RF'로 주장 금지.
+- **이번 최우선 실제 구조 변경:** Claude A RF-031 `libs/reporting/reporter_ai_review.py`의 `_build_compact_input` 약 110줄 + `_build_messages` 약 44줄을 같은 독점 패턴의 `libs/reporting/reporter_ai_review_input.py`(C03 책임 지정 승인)로 이동. 공개 `_build_*()` facade·use-time monkeypatch·output byte parity를 유지하고 새 단일 RF-031 테스트를 작성. 상세 고정 실행 계약은 **최신 C02**. **새 source 모듈+원본 source 각 Git blob 변화/140줄 이상 원본 LOC 순감/관련 정상 테스트 exit0/원격 A push**가 인수 조건; test-only·KEEP-only는 이 구조 개선 과제 실패.
+- **다음 실질 구조 부채:** RF-008은 FAST-3 개발 DONE이지만 `graphs/nodes/strategist_node.py`가 아직 3840행/194854B인 사실을 그대로 남긴다. 이 구조 부채는 기존 RF를 허위 REWORK/NOT_DONE으로 바꾸지 말고 **별도 후속 구조 분해 과제로 C05 독점 소유권 승인 후 진행**. RF-044의 `libs/contracts/agent_outputs.py` 약 105KB도 후보이나 B push·pytest 환경 동시 차단 상태이므로 새 local-only 구현을 쌓지 않는다.
+- **C03 실행 순서:** 안전한 실제 추출·기능 개선을 먼저 배정하고, 코드 변경 0인 검증은 소비자 보호에 의미가 있을 때만 DONE으로 인계. 매회 `MAIN_BASE_HEAD | OWNER_FILES_CHANGED | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | TEST_EXIT | DONE_TYPE`를 간결하게 판단한다. 전체 안전·상태·D00 변경 및 real mode 허가는 기존대로 금지.
+
 ## FAST-3 최우선 운영 (2026-10-29 홍사장 속도 지시)
 - D00 §2 FAST-3가 이 문서 내 과거 C1~C7/전체 Owner C4/매-RF normal -O/hosted 전체 CI/30분 업무량 강제 규칙보다 우선한다. RF 개발 DONE의 필수는 **G1 소스·Owner**, **G2 변경 부분 테스트 1회**, **G3 최소 통합·상태 반영**뿐. 원래 RF 7개는 이력 자료.
 - A/B에게는 1~3개 실질적으로 가장 빠르게 끝낼 수 있는 코드/호환 수정만 먼저 지정하고, 기존 4~6 패키지+full peer 목록을 무조건 모두 처리하게 강제하지 않는다. 이전 C01/C02의 7번 등 동결/상대 전수 peer를 개발 DONE의 BLOCKER로 재전달 금지.
