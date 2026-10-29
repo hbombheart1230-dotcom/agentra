@@ -1,6 +1,6 @@
 # Agentra P1.5 — 정본 인덱스
 
-**[D00 공통 계약](work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) → [CURRENT 역할 라우터](work_orders/CURRENT.md)**. C01(B 코드), C02(A 코드), C03(지팀장 배정), C04(통합/CI), C05(RF/STATUS 종결)는 CURRENT에서 연결한다.
+**A/B 단일 실행 진입점:** [C01 — Codex B](work_orders/C01_CODEX_CURRENT.md) · [C02 — Claude A](work_orders/C02_CLAUDE_CURRENT.md). 각 회차의 파일·함수·수정·독립 검증 지시만 수행한다. [D00 공통 계약](work_orders/D00_ENGINEERING_DELIVERY_POLICY.md)·[CURRENT 역할 라우터](work_orders/CURRENT.md)·RF/소유권·안전 판단은 지팀장 C03~C05가 관리한다.
 
 **개발 보고는 GitHub Issue 댓글만:** [Claude A #11](https://github.com/hbombheart1230-dotcom/agentra/issues/11), [Codex B #12](https://github.com/hbombheart1230-dotcom/agentra/issues/12), [RunLab #32](https://github.com/hbombheart1230-dotcom/agentra/issues/32). 지팀장은 이 **3개 최신 댓글만** 입력받고, [Lead #36](https://github.com/hbombheart1230-dotcom/agentra/issues/36)에 변경된 판정만 출력한다.
 
