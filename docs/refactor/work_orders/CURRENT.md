@@ -2,7 +2,7 @@
 
 > 과거 C00 장문 상태표는 **2026-10-28부터 실행 지시 아님**. 여기에는 날짜별 기록/큐 수치를 다시 쌓지 않는다. 이전 이력은 Git history와 원본 Issue 댓글에서 확인한다.
 
-**공통 정본:** [D00](D00_ENGINEERING_DELIVERY_POLICY.md).
+**A/B 유일한 작업 진입점:** Codex B는 [C01](C01_CODEX_CURRENT.md), Claude A는 [C02](C02_CLAUDE_CURRENT.md) **각 한 파일만 먼저 읽고 그 회차의 구체 지시를 실행**한다. [D00](D00_ENGINEERING_DELIVERY_POLICY.md)의 RF·안전·권한·수용 판단은 지팀장 C03~C05가 수행하고 필요한 제약은 C01/C02에 직접 기재한다.
 
 | 역할 | 실행 진입점 | 최근 보고/입력 |
 |---|---|---|
