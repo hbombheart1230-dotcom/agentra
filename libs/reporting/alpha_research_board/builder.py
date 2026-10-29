@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,6 +15,11 @@ from .contracts import (
     TRACKS,
 )
 from .canonical import canonicalize_board
+from . import builder_opening_rows as _builder_opening_rows_owner
+from . import builder_broad_opening as _builder_broad_opening_owner
+from . import builder_latent as _builder_latent_owner
+from . import builder_fresh_change as _builder_fresh_change_owner
+from . import builder_attention_order as _builder_attention_order_owner
 from .loaders import find_by_id, find_horizon, load_json, mapping, metric_snapshot
 from .large_cap_review import build_large_cap_daily_review
 from .report import render_alpha_research_board
@@ -220,118 +226,19 @@ def _prospective_concentrations(
 
 
 def _fresh_change(payload: Mapping[str, Any]) -> dict[str, Any]:
-    reference = mapping(payload.get("historical_reference"))
-    historical = mapping(reference.get("branch"))
-    historical_metric = mapping(mapping(historical.get("horizons")).get("+30m"))
-    prospective_metric = mapping(mapping(mapping(payload.get("branch")).get("horizons")).get("+30m"))
-    source_status = str(mapping(payload.get("decision")).get("status") or "INSUFFICIENT_EVIDENCE")
-    return _candidate(
-        candidate_id="R1_FRESH_CHANGE_ACTIVATION_V1",
-        track_id="OPENING_CONDITIONAL",
-        discriminator="fresh top-change activation",
-        target_horizon="+30m",
-        source_status=source_status,
-        board_bucket="CLOSED_NEGATIVE_PROSPECTIVE",
-        owner="SCANNER",
-        historical=metric_snapshot(historical_metric),
-        prospective=metric_snapshot(prospective_metric),
-        evidence_note="과거 양수 결과가 prospective에서 음수로 뒤집힘.",
-        next_action="승격 후보에서 기각하고 과거 참고자료로만 보존.",
-        source_keys=["fresh_change"],
-    )
+    return _builder_fresh_change_owner._fresh_change(payload, facade=sys.modules[__name__])
 
 
 def _opening_rows(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
-    summary = mapping(payload.get("summary"))
-    lanes = mapping(summary.get("conditional_lane_summaries"))
-    rows: list[dict[str, Any]] = []
-    for lane_id, horizon, note in [
-        (
-            "IMMEDIATE_OPENING_PROBE",
-            "+5m",
-            "즉시 반응은 초반이 가장 강하고 EOD로 갈수록 약해짐.",
-        ),
-        (
-            "CONFIRMED_RECURRENT_RANK",
-            "+30m",
-            "방향은 강하지만 독립 표본이 지나치게 작음.",
-        ),
-        (
-            "DISLOCATION_REBOUND",
-            "+60m",
-            "5분보다 30~60분 반등 근거가 강함.",
-        ),
-    ]:
-        lane = mapping(lanes.get(lane_id))
-        horizon_row = mapping(mapping(lane.get("horizons")).get(horizon))
-        rows.append(
-            _candidate(
-                candidate_id=lane_id,
-                track_id="OPENING_CONDITIONAL",
-                discriminator=lane_id.lower(),
-                target_horizon=horizon,
-                source_status="COLLECTING",
-                board_bucket="OBSERVE_FIXED",
-                owner="SCANNER_OR_HORIZON_REVIEW",
-                prospective=metric_snapshot(horizon_row.get("live_net")),
-                evidence_note=note,
-                next_action="기존 고정 observer만 지속하고 새 lane은 만들지 않음.",
-                source_keys=["opening_cumulative"],
-            )
-        )
-    return rows
+    return _builder_opening_rows_owner._opening_rows(payload, facade=sys.modules[__name__])
 
 
 def _broad_opening(payload: Mapping[str, Any]) -> dict[str, Any]:
-    decision = mapping(payload.get("promotion_decision"))
-    values = mapping(decision.get("values"))
-    return _candidate(
-        candidate_id="OPEN_0_20_RANK1_30M",
-        track_id="OPENING_CONDITIONAL",
-        discriminator="all opening Rank-1 candidates",
-        target_horizon="+30m",
-        source_status=str(decision.get("status") or "INSUFFICIENT_EVIDENCE"),
-        board_bucket="CLOSED",
-        owner="NONE",
-        prospective={
-            "sample_count": values.get("observed_count", 0),
-            "window_count": values.get("observed_count", 0),
-            "win_rate": values.get("win_rate"),
-            "avg_net_return_pct": values.get("average_net_return_pct"),
-            "profit_factor": values.get("profit_factor"),
-            "coverage": values.get("coverage"),
-        },
-        concentration={
-            "largest_day_share": values.get("largest_day_share"),
-            "largest_symbol_share": values.get("largest_symbol_share"),
-        },
-        evidence_note="평균은 양수지만 고정된 종목 집중도 gate를 통과하지 못함.",
-        next_action="종료. Rank-1 전부 진입 근거로 재해석하지 않음.",
-        source_keys=["opening_cumulative"],
-    )
+    return _builder_broad_opening_owner._broad_opening(payload, facade=sys.modules[__name__])
 
 
 def _latent(payload: Mapping[str, Any]) -> dict[str, Any]:
-    summary = mapping(payload.get("summary"))
-    horizon = mapping(mapping(summary.get("horizons")).get("+30m"))
-    return _candidate(
-        candidate_id="LATENT_REACTIVATION_FRESH_TRIGGER",
-        track_id="SCANNER_REACTIVATION_HORIZON",
-        discriminator="fresh D+1-D+5 trigger after prior Rank-1 discovery",
-        target_horizon="+30m",
-        source_status=str(summary.get("status") or "INSUFFICIENT_EVIDENCE"),
-        board_bucket="CLOSED",
-        owner="NONE",
-        prospective=metric_snapshot(horizon.get("live_net")),
-        concentration={
-            "largest_day_share": summary.get("largest_day_share"),
-            "largest_symbol_share": summary.get("largest_symbol_share"),
-            "positive_day_ratio": summary.get("positive_day_ratio"),
-        },
-        evidence_note="수익률은 양수지만 날짜·종목 집중도와 양수 일자 gate를 통과하지 못함.",
-        next_action="고정 계약은 기각하고 30~60분 방향성만 연구 힌트로 보존.",
-        source_keys=["latent_reactivation"],
-    )
+    return _builder_latent_owner._latent(payload, facade=sys.modules[__name__])
 
 
 def _btc_woori(payload: Mapping[str, Any]) -> dict[str, Any]:
@@ -380,23 +287,7 @@ def _large_cap_candidate(reports_root: Path, through_day: str) -> tuple[dict[str
 
 
 def _attention_order(candidates: list[dict[str, Any]]) -> list[str]:
-    order = {
-        "RUNTIME_VALIDATION_NEXT": 0,
-        "BACKGROUND_RUNTIME_REQUIRED": 1,
-        "ACTION_REVIEW": 2,
-        "OBSERVE_FIXED": 3,
-        "DATA_REPAIR_BOUNDARY": 4,
-        "CLOSED_AFTER_SENSITIVITY_REVIEW": 5,
-        "CLOSED_NEGATIVE_PROSPECTIVE": 6,
-        "CLOSED": 7,
-    }
-    return [
-        row["candidate_id"]
-        for row in sorted(
-            candidates,
-            key=lambda row: (order.get(str(row.get("board_bucket")), 9), row["candidate_id"]),
-        )
-    ]
+    return _builder_attention_order_owner._attention_order(candidates)
 
 
 def build_alpha_research_board(
