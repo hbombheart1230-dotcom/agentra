@@ -165,3 +165,17 @@
 | `tests/test_p15_q10_forward_pipeline_temp_contract.py` | RF-033 / Claude A |
 | `tests/test_p15_q10_preopen_capture_temp_contract.py` | RF-033 / Claude A |
 | `tests/test_p15_q10_report_missing_value_contract.py` | RF-033 / Claude A |
+
+**C05 2026-10-29 15:39 KST 신규 exact-path 단일 Owner:** A `2bce7dca`, B `312a5161` 원격 blob 확인. 9개 신규 테스트 CSV 등록; RF-074 frozen 75 불변. B 새 4파일의 repository pytest normal/`-O` NOT_RUN.
+
+| 신규 exact path | 단일 Owner |
+|---|---|
+| `tests/test_p15_event_logger_constructor_matrix.py` | RF-045 / Codex B |
+| `tests/test_p15_latent_forward_cache_root_injection.py` | RF-034 / Claude A |
+| `tests/test_p15_log_move_root_boundary.py` | RF-045 / Codex B |
+| `tests/test_p15_model_catalog_malformed_cards.py` | RF-050 / Claude A |
+| `tests/test_p15_q9_malformed_rank_contract.py` | RF-033 / Claude A |
+| `tests/test_p15_q9_offline_optout.py` | RF-033 / Claude A |
+| `tests/test_p15_quant_diagnosis_batch_alignment.py` | RF-034 / Claude A |
+| `tests/test_p15_run_log_maintenance_temp_cli.py` | RF-066 / Codex B |
+| `tests/test_p15_sync_legacy_brief_no_write_cli.py` | RF-066 / Codex B |
