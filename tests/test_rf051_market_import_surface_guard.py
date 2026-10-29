@@ -2,7 +2,7 @@
 
 An owner's effect capability is bounded by what it can import. Pinning the full import set (equality, not subset)
 makes any new effect module (shutil, socket, subprocess, urllib, requests, sqlite3, os-level helpers ...) fail
-loudly until the owner's C1 action record is revisited. ``korea_index_sanity`` must stay stdlib-typing only.
+loudly until the owner's C1 action record is revisited. ``korea_index_sanity`` must stay stdlib-pure (typing, math).
 Explicit raises keep the checks live under ``python -O``.
 """
 from __future__ import annotations
@@ -20,8 +20,8 @@ EXPECTED_IMPORTS = {
         "libs.market.korea_index_sanity", "libs.market.yfinance_support", "libs.read.kiwoom_market_index_reader",
         "libs.read.krx_night_futures_reader", "math", "os", "pathlib", "time", "typing",
     },
-    "korea_bond_yields.py": {"__future__", "datetime", "os", "typing", "urllib.request", "xml.etree.ElementTree"},
-    "korea_index_sanity.py": {"__future__", "typing"},
+    "korea_bond_yields.py": {"__future__", "datetime", "math", "os", "typing", "urllib.request", "xml.etree.ElementTree"},
+    "korea_index_sanity.py": {"__future__", "math", "typing"},
     "opening_macro_snapshot_collector.py": {
         "__future__", "datetime", "json", "libs.market.preopen_macro_snapshot", "pathlib", "time", "typing", "zoneinfo",
     },
@@ -78,4 +78,4 @@ def test_only_two_owners_can_reach_the_network_and_only_one_the_kiwoom_reader_pa
     _eq(net, {"korea_bond_yields.py", "yfinance_support.py"})
     kiwoom = {o for o, mods in EXPECTED_IMPORTS.items() if "libs.read.kiwoom_market_index_reader" in mods}
     _eq(kiwoom, {"global_sentiment.py", "q10_index_observation_collector.py"})
-    _eq(EXPECTED_IMPORTS["korea_index_sanity.py"], {"__future__", "typing"})
+    _eq(EXPECTED_IMPORTS["korea_index_sanity.py"], {"__future__", "math", "typing"})

@@ -7,5 +7,6 @@ class ProposalStore:
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def save(self, proposal):
+        line = json.dumps(proposal, ensure_ascii=False) + "\n"
         with self.path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(proposal, ensure_ascii=False) + "\n")
+            f.write(line)

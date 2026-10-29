@@ -49,12 +49,13 @@ def test_proposal_store_creates_parent_and_appends_jsonl_in_order(tmp_path):
     _eq([json.loads(l)["id"] for l in raw.splitlines()], [1, 2, 3])
 
 
-def test_proposal_store_non_serializable_raises_after_opening_file(tmp_path):
+def test_proposal_store_non_serializable_raises_before_opening_file(tmp_path):
     p = tmp_path / "p.jsonl"
     s = ProposalStore(p)
     with pytest.raises(TypeError):
         s.save({"bad": object()})
-    _eq(p.read_text(encoding="utf-8"), "")  # opened for append, nothing written
+    if p.exists():  # P15 C02-4: serialized before open, so a failing save never creates the file
+        raise AssertionError("failed save created the file")
 
 
 def test_state_store_load_defaults_for_missing_corrupt_and_non_dict(tmp_path):
