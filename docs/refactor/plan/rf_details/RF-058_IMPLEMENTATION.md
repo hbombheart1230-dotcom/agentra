@@ -1,5 +1,10 @@
 # RF-058 — 코드 구조/함수 재배치 설계 (T00/V3)
 
+## SOURCE 실사 판정 — RF-058
+
+소유 3개 Python 파일은 기존 단일 역할 패키지 내의 크기가 작은 코드로, 담당 **Claude A 단독**. 함수/경로·소비자 확인 후 정상 구조면 `KEEP_OK|source_path|single responsibility/target placement|blob` 한 줄로 통과. 길이·역할상 분리할 함수가 없다면 신규 파일/테스트를 만들지 않는다. 기존 DONE 이력 보존, 추가 코드 변경의 완료를 허위 주장하지 않는다.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/05_DONE/CLAUDE_A/RF-058.md` blob `fb146c09575a79256d59852d580bec9ab13ff012`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 3개 파일; 다른 RF 경로 쓰기 금지.
 

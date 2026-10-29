@@ -1,5 +1,10 @@
 # RF-056 — 코드 구조/함수 재배치 설계 (T00/V3)
 
+## SOURCE 실사 판정 — RF-056
+
+소유 3개 Python 파일은 `libs/read/` 범위의 좁은 읽기 전용 책임이다. **Codex B 단독 소유**, Claude A 검증. 원본 개별 파일의 위치·외부 reader 소비자·크기·read-only 효과 단일성 확인시 `KEEP_OK|path|single read owner|blob` 즉시 승인한다. 큰 계산 함수가 실제로 발견되면 해당 `SOURCE::함수` 정의와 TARGET owner를 C03이 C01에 **인라인** 추가하기 전까지 추측 파일 생성 금지. LIVE API를 동작 검증 명목으로 호출하지 않는다.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-056.md` blob `b5c3f612f112212f3d843689243bebb9a85b23f5`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 3개 파일; 다른 RF 경로 쓰기 금지.
 

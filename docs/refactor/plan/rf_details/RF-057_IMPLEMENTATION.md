@@ -1,5 +1,15 @@
 # RF-057 — 코드 구조/함수 재배치 설계 (T00/V3)
 
+## SOURCE 본문 검토 확정 — RF-057
+
+`libs/skills/runner.py::SkillRunner.run(self,*,run_id,skill,args)` **L97~373, 약277줄**, `SkillRunner._to_dto` **L380~398, 약19줄**. 담당 **Codex B 단독**. 이 함수는 단순 큰 pure 함수가 아니라 **Step5C/5B mutation ownership·UNKNOWN quarantine·중복 주문 방지의 실제 효과 경계**다.
+
+- **KEEP 효과 몸체:** `SkillRunner.run`의 `is_mutation_api_id` 판정, invalid symbol fail-close, `evaluate_unknown_quarantine_guard`, canonical intent_id 필수 검사, `execute_owned_order`의 CAS/단일 claim, `_capture_dispatch`, `quarantine_symbol_for_unknown_outcome`, 실제 `self.executor.execute`와 events 발생 순서는 **원본 위치에 그대로 둔다**. 새 실행 주체를 만들지 않는다.
+- **추출 후보 S1 (순수):** `run`의 L109~136 `step.defaults/map` + 원본 raw args 우선순위·주문 시장가 `ord_uv` 정규화 부분. TARGET `libs/skills/runner_request_projection.py::build_step_context(step,args,api_id,*,render_template,rules)`. 다만 `rules.apply`의 효과 여부/패치 가능한 callable을 먼저 확인; 효과가 있으면 wrapper가 해당 부분까지 직접 수행하고 pure dict projection만 이동한다. 원본 `run`은 안전 게이트 전에 동일 순서로 helper를 호출한다.
+- **추출 후보 S2 (읽기 전용):** L341 이후 DTO 선택 후 `SkillRunResult(action="ready",...)` 결과 조립. TARGET `libs/skills/runner_result_projection.py::build_ready_result(skill,spec,args,payloads,step_meta,dto)`; **기존 `_to_dto` 실행과 event log 호출은 원본에 남긴다**, dict/result 필드만 이동한다.
+- **검증:** side=buy/sell·`trde_tp=3`·mapped/default/raw 우선순위 fake fixture, malformed symbol broker_call=0, duplicate claim broker<=1, quarantine UNKNOWN, 결과 dto 동등. 실제 Broker/운영 ledger 사용 금지. 각 변경 범위 정상 targeted offline pytest/unittest 1회, 원본 효과 순서·예외 유지.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-057.md` blob `dbc91718d013fcc7d225a53b818364805ed5fdb7`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 6개 파일; 다른 RF 경로 쓰기 금지.
 

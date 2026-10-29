@@ -1,5 +1,21 @@
 # RF-055 — 코드 구조/함수 재배치 설계 (T00/V3)
 
+## SOURCE 본문 검토 확정 — RF-055 (2026-10-29)
+
+**대표 source:** `libs/read/kiwoom_theme_reader.py` 580 LOC. 테마 API의 HTTP client와 pure normalization이 같은 파일에 혼재한다. 담당 **Codex B 단독**, Claude A는 읽기 검증. 원본 소스 원격 HEAD blob 재확인 후 진행.
+
+| SOURCE::확인된 함수 | 원본 구간 | TARGET::확정 함수 | 코드 처리 |
+|---|---|---|---|
+| `libs/read/kiwoom_theme_reader.py::normalize_theme_group` | L136–176 (41 LOC) | `libs/read/kiwoom_theme_normalization.py::normalize_theme_group` | MOVE BODY |
+| `libs/read/kiwoom_theme_reader.py::normalize_theme_component` | L177–195 (19 LOC) | 같은 `kiwoom_theme_normalization.py::normalize_theme_component` | MOVE BODY, 같은 책임 묶기 |
+| `libs/read/kiwoom_theme_reader.py::_symbols_from_any` | L98–122 (25 LOC) | 같은 `kiwoom_theme_normalization.py::_symbols_from_any` | 그룹/구성종목 정규화 의존성 함께 MOVE |
+| `libs/read/kiwoom_theme_reader.py::_split_text_items` | L77–97 (21 LOC) | 같은 `kiwoom_theme_normalization.py::_split_text_items` | 문자열 파싱 의존성 함께 MOVE |
+| `libs/read/kiwoom_theme_reader.py::_live_fetch_enabled` | L274–303 (30 LOC) | **원위치 KEEP** | `PYTEST_ALLOW_LIVE_KIWOOM_FETCH`·환경 차단 경계 |
+| `KiwoomThemeReader._post` | L368–388 | **원위치 KEEP** | 실 HTTP 요청 및 헤더/재시도 경계 |
+
+**정확한 이동 방법:** 동일 책임 4개 함수를 **한 개 normalization Owner**로 이동한다. `_norm_symbol/_first/_to_int/_round4/_to_float/_clean_text` 등 사용시점 호출 globals를 facade 또는 명시 의존성으로 제공하여 기존 monkeypatch 가능성 보존. `normalize_theme_group`와 `normalize_theme_component` 공개 명칭은 기존 위치에서 얇은 wrapper 보존. HTTP 요청·환경 live guard는 건드리지 않는다. raw dict/None/중복 종목·순서/주가 자리수의 고정 원본 결과 비교, 정상 offline targeted test 1회. 그 외 `libs/read/` 하위 파일은 단일 책임이 맞으면 KEEP_OK.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-055.md` blob `85213b9f511336df8aacdd5bbf8b2a567a42ffc8`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 17개 파일; 다른 RF 경로 쓰기 금지.
 
