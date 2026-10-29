@@ -2,7 +2,7 @@
 
 ## 최신 우선 계약 — DONE 보존 + Txx TARGET_GAP 구분
 
-**최신 C05 delta (2026-10-30 00:52 KST):** A [#11 6501103386](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6501103386) `5da432ff` actual 6 MOVE, normal scoped 39 PASS exit0+related 230 PASS exit0; RF-034 5/ RF-050 1 changed function G1/G2 MET → **LEAD +2**, G3 C04 selective integration PENDING. RF-034 `_large_cap_candidate` target gap C03→A. RF-031 DONE 28 유지, 현재 LEAD 2. 이전 완료 RF 재검증·마이그레이션 없음.
+**최신 C05 delta (2026-10-30 KST):** [C04 #36 6502659462](https://github.com/hbombheart1230-dotcom/agentra/issues/36#issuecomment-6502659462) exact integration code `66d9b70e` A `5da432ff` code/test 14/14 blob identical; A normal 39 PASS exit0+related 230 PASS exit0 G3_REUSE. **RF-034 5 MOVE / RF-050 1 MOVE, LEAD→05_DONE +2, 누적 30/93, LEAD 0.** RF-034 `_large_cap_candidate` TARGET_GAP_OPEN C03→A 유지. CI #40913804892 exact code SHA offline safety SUCCESS(새 targeted 미포함), C05 직접 pytest/sync NOT_RUN. 다음 C04 READY RF 신규 delta만 처리; RF-016/028/029·마이그레이션 재실행 금지.
 
 **이전 C05 delta (2026-10-30 00:48 KST):** RF-031 C04 `855456a2` 4함수 MOVE·Owner 2·테스트 2 A `048c6d3f` 5/5 Git blobs 동일, 기존 A 정상 187 PASS exit0와 정확 code SHA offline safety CI #40902755335 SUCCESS(신규 targeted 미포함) → G3_REUSE MET, **RF-031 05_DONE 신규 +1 / 누적 28/93, LEAD 0**. RF-041 nonfinite price·RF-045 D2 안전 HOLD, 다음 C04 READY만 처리. 과거 RF-016/028/029/마이그레이션 반복 금지. C05 직접 pytest/sync NOT_RUN.
 
