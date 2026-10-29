@@ -2,6 +2,8 @@
 
 **실물 RF·C1~C7 기준:** [D00](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [RF 큐](queue/) · [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). **수정 책임 C05 지팀장 단독**. 원본 RF의 원래 목표·DONE 체크·정확 SOURCE/peer CI 근거가 수용 정본이며 이 문서는 요약이다. 매회 기록을 누적하지 않는다.
 
+**C05 2026-10-29 17:34 KST 최신 C조건·차단 판정:** #11 [6490543459](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6490543459) B `312a5161` repo 31 PASS 양 모드 vs 독립 probe 18 PASS+1 FAIL 양 모드: RF-045 `write_log_inventory` 외부 symlink 파일쓰기 재현 → C2 PARTIAL/SAFETY_HOLD; RF-066 maintenance CLI 교차 영향. C03 긴급 `1f372f2f` writer containment 및 RF-041 nonfinite intent 패치는 integration 미반영, 6+18 신규 테스트 정의만/정확 peer·repo normal/-O NOT_RUN → RF-041 C2 PARTIAL/주문 HOLD. #12 [6490623337](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6490623337) B `617c8429` 혼합 각 37 PASS, 원격 추가 각 6 PASS; RF-044 frozen 정상 timeout·exit 미확인, -O NOT_RUN → C3 PARTIAL. 네 RF 첫 미충족 C1(B 044=16,045=10,066=17; A 041=6-owner), full opposite C4 없음. #32 [6491497848](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6491497848) 17:12 runtime/API unhealthy(healthcheck timeout), web healthy, `RUN_SOURCE_SHA=UNKNOWN`, 사건 OPEN. C6 exact integration normal/-O CI 없음, C7/DONE 변화 0, 큐 47/13/13/0/20/0. C05 직접 pytest/sync NOT_RUN(local DNS).
+
 ## 현재 물리 큐
 | PENDING | DEV | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|

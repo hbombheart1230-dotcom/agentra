@@ -5,9 +5,7 @@
 | RF | 원 Owner / 독립 peer | 수용된 원래 게이트 | 현재 C6/C7 · 담당 |
 |---|---|---|---|
 
-**현재 LEAD 0건 (2026-10-29 15:41 KST)**. 신규 A cumulative 및 scoped opposite peer에도 전체 C1~C5/full C4 미충족. RF-067 과거 DONE/CI_BASE 유지, 신규 C6 후보 0. PENDING47/DEV13/PEER13/LEAD0/DONE20/REWORK0.
-
-**C05 2026-10-29 15:41 KST 연속 판정:** 1차 RF-033/034/050/045/066 A `2bce7dca`/B `312a5161` P0 root containment+9 신규 exact tests, CSV 4106 unique/frozen 75; 2차 [#12 6488550634](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6488550634) RF-015/031/063/070/071 mixed scoped B normal/`-O` 13/29/11/4 PASS 각 모드(묶음별, 중복 합산 금지), RF-065 [6489102043](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6489102043) local `d9e296db` 8 PASS 각 모드이나 PUSH_FAILED/remote test absent. 모든 추가 RF 원래 C1~C5/full C4 미충족, C6/C7 신규 승인 0, 물리 단계 변화 0. FIRST_UNMET C1 A RF-015 19/031 22-owner; B RF-063 잔여 63/065 54/070 142/071 42-owner. RF-021 C2/C3 안전 승인, RF-032 C1+validation-id, RF-069 C1+historical 승인 HOLD. #32 `RUN_SOURCE_SHA=UNKNOWN` OPEN; PENDING47/DEV13/PEER13/LEAD0/DONE20/REWORK0. C05 direct pytest/sync --write/--check NOT_RUN(local DNS), 정확 integration SHA CI 없음. NEXT A/B full original C1 + opposite full C4, B exact new repo tests, C04 integration/CI, operational broker/UEF/--apply HOLD.
+**현재 LEAD 0건 (2026-10-29 17:34 KST)**. RF-041/044/045/066 신규 원격 증거 판정: B `312a5161` inventory symlink 독립 1 FAIL 양 모드, B `617c8429` 혼합 37 PASS 양 모드·frozen NOT_VERIFIED, 긴급 `1f372f2f` nonfinite intent/writer patch 미통합·원본 repo/peer NOT_RUN. 첫 미충족 C1 A RF-041(6), B RF-044(16)/045(10)/066(17); 전체 C4 0, C6/C7 신규 승인 0. #32 17:12 runtime/API unhealthy, `RUN_SOURCE_SHA=UNKNOWN`/OPEN. C04 선별 통합·정확 integration SHA hosted CI 필요. PENDING47/DEV13/PEER13/LEAD0/DONE20/REWORK0.
 
 **C05 2026-10-29 02:52 KST 첫 미충족 정정:** RF-015/050/032/069의 C1 PARTIAL을 우선순위 C3/C4/C2/C3와 구별하여 원본 `RF_CHECKLIST_META.next=1` 및 STATUS 첫 미충족 C1로 정정. 기존 역사 11 FAIL·LLM full peer·validation-id 탈출·UEF5 승인 차단 유지, 단계 PEER 불변. LEAD 0/DONE 20/C6 후보 0.
 
