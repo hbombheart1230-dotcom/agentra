@@ -22,6 +22,15 @@ from libs.core.settings import load_env_file
 from libs.core.symbols import normalize_symbol
 from libs.llm.model_names import normalize_openrouter_model_name
 from libs.runtime.windows_subprocess import background_creationflags, popen_hidden, run_hidden
+from libs.reporting import live_execution_bundle_runner_decision_trace as _live_execution_bundle_runner_decision_trace_owner
+from libs.reporting import live_execution_bundle_runner_meaningful_payload as _live_execution_bundle_runner_meaningful_payload_owner
+from libs.reporting import live_execution_bundle_runner_canonical_payload as _live_execution_bundle_runner_canonical_payload_owner
+from libs.reporting import live_execution_bundle_runner_run_filter as _live_execution_bundle_runner_run_filter_owner
+from libs.reporting import live_execution_bundle_runner_monitor_rows as _live_execution_bundle_runner_monitor_rows_owner
+from libs.reporting import live_execution_bundle_runner_trade_lookup as _live_execution_bundle_runner_trade_lookup_owner
+from libs.reporting import live_execution_bundle_runner_pid_active as _live_execution_bundle_runner_pid_active_owner
+from libs.reporting import live_execution_bundle_runner_existing_trade_run_ids as _live_execution_bundle_runner_existing_trade_run_ids_owner
+from libs.reporting import live_execution_bundle_runner_build_parser as _live_execution_bundle_runner_build_parser_owner
 from libs.reporting.agent_pipeline_trace import generate_agent_pipeline_trace_report
 from libs.reporting.intraday_trade_reports import (
     apply_live_bundle_backfill,
@@ -384,31 +393,7 @@ def _spawn_followup_background_job(
 
 
 def _pid_active(pid: int) -> bool:
-    if int(pid or 0) <= 0:
-        return False
-    if os.name == "nt":
-        try:
-            import ctypes
-
-            process_query_limited_information = 0x1000
-            handle = ctypes.windll.kernel32.OpenProcess(  # type: ignore[attr-defined]
-                process_query_limited_information,
-                False,
-                int(pid),
-            )
-            if handle:
-                ctypes.windll.kernel32.CloseHandle(handle)  # type: ignore[attr-defined]
-                return True
-            return False
-        except Exception:
-            return False
-    try:
-        os.kill(int(pid), 0)
-        return True
-    except PermissionError:
-        return True
-    except OSError:
-        return False
+    return _live_execution_bundle_runner_pid_active_owner._pid_active(pid, facade=sys.modules[__name__])
 
 
 def _make_bundle_event_logger(event_log_path: Path | None):
@@ -807,20 +792,7 @@ def _read_json(path: Path) -> Dict[str, Any]:
 
 
 def _latest_decision_trace_payload(rows: List[Dict[str, Any]], *, event: str, agent: str) -> Dict[str, Any]:
-    agent_name = str(agent or "").strip().lower()
-    event_name = str(event or "").strip()
-    for row in reversed(rows):
-        if str(row.get("stage") or "").strip() != "decision_trace":
-            continue
-        if str(row.get("event") or "").strip() != event_name:
-            continue
-        payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-        row_agent = str(payload.get("agent") or "").strip().lower()
-        if row_agent != agent_name:
-            continue
-        agent_payload = payload.get("payload") if isinstance(payload.get("payload"), dict) else {}
-        return dict(agent_payload or {})
-    return {}
+    return _live_execution_bundle_runner_decision_trace_owner.latest_decision_trace_payload(rows, event=event, agent=agent)
 
 
 def _stable_json_text(payload: Any) -> str:
@@ -855,16 +827,7 @@ def _build_component_fingerprint(
 
 
 def _has_meaningful_payload(payload: Any) -> bool:
-    if not isinstance(payload, dict) or not payload:
-        return False
-    for value in payload.values():
-        if isinstance(value, dict) and _has_meaningful_payload(value):
-            return True
-        if isinstance(value, list) and any(item not in ({}, [], None, "") for item in value):
-            return True
-        if value not in ({}, [], None, ""):
-            return True
-    return False
+    return _live_execution_bundle_runner_meaningful_payload_owner.has_meaningful_payload(payload, facade=sys.modules[__name__])
 
 
 def _prefer_canonical_payload(
@@ -876,24 +839,7 @@ def _prefer_canonical_payload(
     normalized_payload: Dict[str, Any] | None = None,
     normalized_path: str = "",
 ) -> Tuple[Dict[str, Any], str, str]:
-    canonical_payload = (
-        (canonical_sources.get("artifacts") or {}).get(agent)
-        if isinstance(canonical_sources.get("artifacts"), dict)
-        else {}
-    )
-    canonical_path = (
-        str(((canonical_sources.get("paths") or {}).get(agent) or "")).strip()
-        if isinstance(canonical_sources.get("paths"), dict)
-        else ""
-    )
-    merged = dict(fallback or {})
-    if _has_meaningful_payload(normalized_payload):
-        merged.update(dict(normalized_payload or {}))
-        return merged, "normalized_trade_artifact", str(normalized_path or "")
-    if _has_meaningful_payload(canonical_payload):
-        merged.update(dict(canonical_payload or {}))
-        return merged, "canonical", canonical_path
-    return dict(fallback or {}), str(fallback_source or "fallback"), canonical_path
+    return _live_execution_bundle_runner_canonical_payload_owner.prefer_canonical_payload(canonical_sources, agent, fallback, fallback_source=fallback_source, normalized_payload=normalized_payload, normalized_path=normalized_path, facade=sys.modules[__name__])
 
 
 def _build_run_snapshots(
@@ -1132,15 +1078,7 @@ def _filter_rows_by_run_ids(
     rows: List[Dict[str, Any]] | None,
     run_ids: Iterable[str] | None,
 ) -> List[Dict[str, Any]]:
-    source_rows = list(rows or [])
-    allowed = {str(run_id or "").strip() for run_id in list(run_ids or []) if str(run_id or "").strip()}
-    if not allowed:
-        return source_rows
-    return [
-        row
-        for row in source_rows
-        if str((row or {}).get("run_id") or "").strip() in allowed
-    ]
+    return _live_execution_bundle_runner_run_filter_owner.filter_rows_by_run_ids(rows, run_ids)
 
 
 def _target_symbol_monitor_rows(
@@ -1148,18 +1086,7 @@ def _target_symbol_monitor_rows(
     *,
     symbol: str,
 ) -> List[Dict[str, Any]]:
-    sym = normalize_symbol(symbol or "", allow_test_symbols=True)
-    if not sym:
-        return []
-    out: List[Dict[str, Any]] = []
-    for row in list(rows or []):
-        if _event_row_symbol(row) != sym:
-            continue
-        name = _event_row_name(row)
-        if not name.startswith("monitor."):
-            continue
-        out.append(row)
-    return out
+    return _live_execution_bundle_runner_monitor_rows_owner.target_symbol_monitor_rows(rows, symbol=symbol, facade=sys.modules[__name__])
 
 
 def _generate_agent_pipeline_trace_report_fast(
@@ -1223,27 +1150,7 @@ def _trade_id_sequence(trade_id: str) -> int:
 
 
 def _existing_trade_run_ids(trade_dir: Path) -> List[str]:
-    lifecycle_path = trade_dir / "lifecycle_bundle.json"
-    if not lifecycle_path.exists():
-        return []
-    payload = _read_json_if_exists(lifecycle_path)
-    run_ids: List[str] = [str(x or "").strip() for x in list(payload.get("linked_run_ids") or []) if str(x or "").strip()]
-    entry = payload.get("entry") if isinstance(payload.get("entry"), dict) else {}
-    exit_ctx = payload.get("exit") if isinstance(payload.get("exit"), dict) else {}
-    lifecycle = payload.get("lifecycle") if isinstance(payload.get("lifecycle"), dict) else {}
-    holding = lifecycle.get("holding") if isinstance(lifecycle.get("holding"), dict) else {}
-    for item in (
-        entry.get("run_id"),
-        exit_ctx.get("run_id"),
-    ):
-        rid = str(item or "").strip()
-        if rid and rid not in run_ids:
-            run_ids.append(rid)
-    for item in list(holding.get("run_ids") or []):
-        rid = str(item or "").strip()
-        if rid and rid not in run_ids:
-            run_ids.append(rid)
-    return run_ids
+    return _live_execution_bundle_runner_existing_trade_run_ids_owner._existing_trade_run_ids(trade_dir, facade=sys.modules[__name__])
 
 
 def _find_existing_trade_id_for_run_ids(
@@ -1253,26 +1160,7 @@ def _find_existing_trade_id_for_run_ids(
     symbol: str,
     run_ids: Iterable[str],
 ) -> str:
-    day_root = Path(reports_root) / "trades" / str(day or "").strip()
-    if not day_root.exists():
-        return ""
-    requested = {str(item or "").strip() for item in list(run_ids or []) if str(item or "").strip()}
-    if not requested:
-        return ""
-    symbol_norm = normalize_symbol(symbol or "", allow_test_symbols=True) or ""
-    matches: List[Tuple[int, str]] = []
-    for trade_dir in iter_trade_dirs(day_root):
-        trade_id = str(trade_dir.name or "").strip()
-        if symbol_norm and f"_{symbol_norm}_" not in trade_id:
-            continue
-        existing_run_ids = set(_existing_trade_run_ids(trade_dir))
-        if not existing_run_ids.intersection(requested):
-            continue
-        matches.append((_trade_id_sequence(trade_id), trade_id))
-    if not matches:
-        return ""
-    matches.sort(key=lambda item: (item[0], item[1]))
-    return str(matches[0][1] or "")
+    return _live_execution_bundle_runner_trade_lookup_owner.find_existing_trade_id_for_run_ids(reports_root=reports_root, day=day, symbol=symbol, run_ids=run_ids, facade=sys.modules[__name__])
 
 
 def _has_substantive_entry_evidence(entry: Dict[str, Any]) -> bool:
@@ -1399,27 +1287,7 @@ def _load_or_generate_reporter_analysis(
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Generate run-level aggregated execution bundles and per-trade reports.")
-    p.add_argument("--env-path", default=".env")
-    p.add_argument("--event-log-path", default="data/logs/events.jsonl")
-    p.add_argument("--evidence-log-path", default="data/evidence_ledger/events.jsonl")
-    p.add_argument("--report-dir", default="reports/dev/analysis/live_execution_bundles")
-    p.add_argument("--reports-root", default="reports")
-    p.add_argument("--intents-path", default="data/logs/intents.jsonl")
-    p.add_argument("--day", default=None)
-    p.add_argument("--max-runs", type=int, default=50)
-    p.add_argument("--target-run-id", default=None)
-    p.add_argument("--target-symbol", default=None)
-    p.add_argument("--role", default="intraday_trade_report_bundle")
-    ai = p.add_mutually_exclusive_group()
-    ai.add_argument("--trade-report-ai", dest="trade_report_ai", action="store_true")
-    ai.add_argument("--no-trade-report-ai", dest="trade_report_ai", action="store_false")
-    p.set_defaults(trade_report_ai=None)
-    p.add_argument("--trade-report-ai-model", default=None)
-    p.add_argument("--trade-report-ai-temperature", type=float, default=None)
-    p.add_argument("--trade-report-ai-max-tokens", type=int, default=None)
-    p.add_argument("--json", action="store_true")
-    return p
+    return _live_execution_bundle_runner_build_parser_owner._build_parser(facade=sys.modules[__name__])
 
 
 def main(argv: Optional[List[str]] = None) -> int:
