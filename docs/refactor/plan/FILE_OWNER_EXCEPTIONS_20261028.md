@@ -155,3 +155,13 @@
 | `tests/test_p15_event_logger_caller_bridge.py` | RF-045 / Codex B |
 | `tests/test_p15_scanner_projection_extraction.py` | RF-044 / Codex B |
 | `tests/test_p15_strategist_projection_extraction.py` | RF-044 / Codex B |
+
+**C05 2026-10-29 13:39 KST 신규 exact-path 단일 Owner:** A 원격 SOURCE `32d86ba`에서 아래 5개 테스트 파일 blob 직접 확인. FILE_COVERAGE CSV 4092→4097 unique, RF-074 frozen 75 불변. 전체 C5/CI 승인 아님.
+
+| 신규 exact path | 단일 Owner |
+|---|---|
+| `tests/test_p15_q10_cumulative_malformed_inputs.py` | RF-033 / Claude A |
+| `tests/test_p15_q10_cumulative_numeric_boundary.py` | RF-033 / Claude A |
+| `tests/test_p15_q10_forward_pipeline_temp_contract.py` | RF-033 / Claude A |
+| `tests/test_p15_q10_preopen_capture_temp_contract.py` | RF-033 / Claude A |
+| `tests/test_p15_q10_report_missing_value_contract.py` | RF-033 / Claude A |
