@@ -39,10 +39,30 @@ def test_apply_log_move_candidates_moves_files_and_dirs(tmp_path: Path) -> None:
     moved = apply_log_move_candidates(log_root, detect_log_move_candidates(log_root))
 
     assert moved
+    assert {result["status"] for result in moved} == {"moved"}
     assert (log_root / "dev" / "analysis" / "offhours" / "offhours_demo.jsonl").exists()
     assert (log_root / "milestones" / "m30" / "golive" / "sample.jsonl").exists()
     assert not (log_root / "offhours_demo.jsonl").exists()
     assert not (log_root / "m30_golive").exists()
+
+
+def test_apply_log_move_candidates_preserves_destination_and_continues_after_conflict(tmp_path: Path) -> None:
+    log_root = tmp_path / "data" / "logs"
+    log_root.mkdir(parents=True)
+    (log_root / "offhours_demo.jsonl").write_text("source", encoding="utf-8")
+    destination = log_root / "dev" / "analysis" / "offhours" / "offhours_demo.jsonl"
+    destination.parent.mkdir(parents=True)
+    destination.write_text("existing", encoding="utf-8")
+    (log_root / "events_live.jsonl").write_text("move-me", encoding="utf-8")
+
+    results = apply_log_move_candidates(log_root, detect_log_move_candidates(log_root))
+
+    by_source = {Path(result["src"]).name: result for result in results}
+    assert by_source["offhours_demo.jsonl"]["status"] == "skipped_destination_exists"
+    assert (log_root / "offhours_demo.jsonl").read_text(encoding="utf-8") == "source"
+    assert destination.read_text(encoding="utf-8") == "existing"
+    assert by_source["events_live.jsonl"]["status"] == "moved"
+    assert (log_root / "dev" / "live" / "events_live.jsonl").exists()
 
 
 def test_write_log_inventory_outputs_catalog(tmp_path: Path) -> None:
