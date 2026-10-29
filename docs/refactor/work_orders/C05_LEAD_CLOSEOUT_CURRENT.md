@@ -1,5 +1,12 @@
 # C05 — 지팀장 · 유일한 RF 체크·큐 이동·DONE·STATUS 작성자
 
+## FAST-3 신속 종결·RF 마이그레이션 우선 (2026-10-29 홍사장 승인)
+- 최우선 D00 §2의 **G1 CODE_READY, G2 TEST_READY, G3 INTEGRATED_DONE**만 판정한다. 아래 역사 C1~C7 전수/full C4/반드시 -O·hosted CI 의무와 옛 미완료 항목은 비차단 이력이다. 기존 7개 중 미체크를 다시 BLOCKER로 올리지 않는다.
+- **다음 실행 첫 동작(단 한 번):** 원격 integration/p1.5의 tools/migrate_rf_fast3.py를 확인한 뒤 허용된 격리 checkout에서 `python docs/refactor/tools/migrate_rf_fast3.py --write`를 실행해 **93개 RF 체크리스트를 실제 3개로 변환**, `python docs/refactor/tools/migrate_rf_fast3.py --check` 및 `python docs/refactor/tools/sync_rf_checklist_status.py --write`와 `--check` 확인 → C05 소유 문서/STATUS/RF만 정상 commit/push/원격 대조한다. 실행 환경이 없으면 GitHub 허용 수단으로 남은 RF를 배치 수정하고 미완료 수를 명시. 완료 전에는 93개가 모두 전환됐다고 주장하지 않는다.
+- 메타 변경 시 과거 7개 체크 원본은 레거시 이력으로 보존. 자동 환산 PARTIAL은 기존 근거를 기준으로 다시 판정해 조기 MET 가능. RF-016의 기존 G1/G2 MET를 즉시 받아 G3 C04에 인계하고 결과가 오면 바로 DONE/STATUS 이동한다. 다른 RF도 변경 없는 파일 전수 C1 분석·full peer를 새로 요구하지 않는다.
+- G1=Owner·변경/KEEP 소스 SHA 확인, G2=영향 부분 정상 smoke/pytest, G3=통합 소스 및 관련 smoke/CI 확인 + DONE/STATUS. 주석 문서 변경만으로 전체 CI 반복 금지. 실제 운영 런검증과 개발 DONE 구분. 실계좌 real mode 금지.
+- 짝수 :45 사전 수용/G1-G2, 홀수 :45 사후 통합/G3를 우선하되 준비된 RF가 있으면 같은 회차에 직행 DONE 가능. 회차당 DONE 0을 숙명으로 수용하지 말고 실제 충족한 RF를 종결한다.
+
 **보고 입력:** [#11 A](https://github.com/hbombheart1230-dotcom/agentra/issues/11) · [#12 B](https://github.com/hbombheart1230-dotcom/agentra/issues/12) · [#32 RunLab](https://github.com/hbombheart1230-dotcom/agentra/issues/32)의 **최근 미처리 신규 댓글**. [D00](D00_ENGINEERING_DELIVERY_POLICY.md)와 해당 [원본 RF](../plan/queue/)의 **기존 DONE 체크**가 판정 정본. 출력은 [Lead #36](https://github.com/hbombheart1230-dotcom/agentra/issues/36) 댓글이며 입력 재독 대상을 늘리지 않는다. **A/B HANDOFF 갱신·상시 전수 읽기 금지.**
 
 ## 실물 단계 처리
