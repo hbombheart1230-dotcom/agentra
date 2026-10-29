@@ -20,26 +20,26 @@
 <!-- RF_LEAD_CHECKLIST_START -->
 ## 우선 14건 RF 원본 체크리스트 — 현재 실물 단계 연동
 
-각 RF 원본 `DONE 체크` 7항목의 판정 스냅샷입니다. **MET**는 원래 범위 근거 확인, **N/A**는 근거 있는 조건부 비적용이며 실제 PASS 수치에 더하지 않습니다. 미체크 PARTIAL/PENDING/MISSING/SAFETY_BLOCKED는 미완료입니다. DEV의 Owner 제출은 최종 MET가 아니며, PEER에서는 C1~C5 원래 조건을 전체 범위 독립 증거로 확정합니다. 물리 LEAD 진입에는 C1~C5 충족 + 전체 peer PASS가 필요합니다([D00 §2.1](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md)). 이 표는 **지팀장이 갱신**합니다.
+FAST-3: **G1 원격 코드·Owner 범위**, **G2 변경 부분 smoke/pytest**, **G3 통합·완료**. 7항목 C1~C7은 비차단 역사 근거이며 full owner peer/모든 RF -O/전체 hosted CI는 필수가 아닙니다. [D00 §2](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) 우선. 본 표는 C05가 관리합니다.
 
 | RF 원본 | 실물 단계·Owner→Peer | MET · N/A · 남음 | 미충족 체크 | 다음 해제 조건 · 담당 | 상태 |
 |---|---|---:|---|---|---|
-| [RF-063](queue/02_DEVELOPING/CODEX_B/RF-063.md) | DEV · B → A | MET 1 · N/A 1 · 5남음 | C1,C2,C3,C4,C7 | **C1** diagnostics 잔여 63-owner ACTION 및 CLI/효과/소비자 근거 (**Codex B → Claude A(peer)**) | MISSING |
-| [RF-067](queue/05_DONE/CODEX_B/RF-067.md) | 05_DONE · B → A | MET 6 · N/A 1 · 0남음 | — | **C7** 원본 체크·물리 DONE·STATUS 동기화 완료 (**C05**) | DONE |
-| [RF-015](queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** 원래 19-owner 전체 ACTION·소비자/효과 (**Claude A**); 기존 우선 C조건·안전 차단 유지 | MISSING |
-| [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | MET 0 · N/A 0 · 7남음 | C1,C2,C3,C4,C5,C6,C7 | **C1** 원래 8-owner 전체 ACTION·router/cache 소비자/효과 (**Claude A**); 기존 우선 C조건·안전 차단 유지 | MISSING |
-| [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 0 · 7남음 | C1,C2,C3,C4,C5,C6,C7 | **C1** Reporter 22-owner 최종 ACTION (**Claude A**); 병행 C2 seed-merge/markdown·writer/State/실패 (**A**) + 전체 C4 (**Codex B**) | MISSING |
-| [RF-014](queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** Scanner shim 전체 owner ACTION/소비자·효과 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
-| [RF-016](queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) | PEER · A → B | MET 3 · N/A 1 · 3남음 | C4,C6,C7 | **C4** 고정 A source 8-owner original full 독립 peer/실행자·normal/-O·State alias 경계 (**Codex B → C05**) | PARTIAL |
-| [RF-028](queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** trade_report rich schema 전체 owner ACTION/소비자·효과 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
-| [RF-029](queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** trade_story facade→bundle 전체 owner ACTION/소비자·효과 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
-| [RF-033](queue/03_PEER_REVIEW/CLAUDE_A/RF-033.md) | PEER · A → B | MET 0 · N/A 0 · 7남음 | C1,C2,C3,C4,C5,C6,C7 | **C1** Q10/Q12 input_worker→publish_input 전체 owner ACTION/소비자·효과 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
-| [RF-034](queue/03_PEER_REVIEW/CLAUDE_A/RF-034.md) | PEER · A → B | MET 0 · N/A 0 · 7남음 | C1,C2,C3,C4,C5,C6,C7 | **C1** alpha casebook→Scanner 전체 owner ACTION/UEF 보호 경계 (**Claude A**); 기존 C4 full peer·안전 차단 유지 | MISSING |
-| [RF-032](queue/03_PEER_REVIEW/CLAUDE_A/RF-032.md) | PEER · A → B | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** 원래 135-owner 전체 ACTION·UEF/closeout 보호 경계 (**Claude A·C05**); 기존 우선 C조건·안전 차단 유지 | MISSING |
-| [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) | DEV · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** research 54-owner KEEP/CLI 효과 분류 원래 조건 판정 (**지팀장**) | MISSING |
-| [RF-069](queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | PEER · B → A | MET 0 · N/A 1 · 6남음 | C1,C2,C3,C4,C6,C7 | **C1** 원래 7-owner 전체 ACTION·보호 소비자/효과 (**Codex B**); 기존 우선 C조건·안전 차단 유지 | SAFETY_BLOCKED |
+| [RF-063](queue/02_DEVELOPING/CODEX_B/RF-063.md) | DEV · B → A | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 target: changed scope not full owner peer (**C05**) | FAST_3_PENDING |
+| [RF-067](queue/05_DONE/CODEX_B/RF-067.md) | 05_DONE · B → A | MET 3 · N/A 0 · 0남음 | — | **G3** FAST-3 target: changed scope not full owner peer (**C05**) | DONE |
+| [RF-015](queue/03_PEER_REVIEW/CLAUDE_A/RF-015.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 target: changed scope not full owner peer (**C05**) | FAST_3_PENDING |
+| [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 target: changed scope not full owner peer (**C05**) | FAST_3_PENDING |
+| [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 target: changed scope not full owner peer (**C05**) | FAST_3_PENDING |
+| [RF-014](queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
+| [RF-016](queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) | PEER · A → B | MET 2 · N/A 0 · 1남음 | G3 | **G3** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
+| [RF-028](queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
+| [RF-029](queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
+| [RF-033](queue/03_PEER_REVIEW/CLAUDE_A/RF-033.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
+| [RF-034](queue/03_PEER_REVIEW/CLAUDE_A/RF-034.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
+| [RF-032](queue/03_PEER_REVIEW/CLAUDE_A/RF-032.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
+| [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) | DEV · B → A | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
+| [RF-069](queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | PEER · B → A | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
 
-**우선 14건:** **MET 10/98 · N/A 10/98 · 미완료 78/98**. 실제 DEV 2 + PEER 11, LEAD 0. 물리 DONE은 20건이며 N/A를 증거 PASS로 합산하지 않습니다.
+**우선 14건:** **MET 5/42 · N/A 0/42 · 미완료 37/42**. 실제 DEV 2 + PEER 11, LEAD 0. 물리 DONE은 20건이며 N/A를 증거 PASS로 합산하지 않습니다.
 
 **STATUS 갱신 책임: 지팀장.** RF 변경/증거 인수 및 물리 이동 시 같은 작업에서 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check` 확인. 이 도구는 93개 실물 파일의 유일성/단계 수와 우선 14개 원본 체크를 대조하며 RF 합격/안전 실행을 자동 승인하지 않습니다.
 <!-- RF_LEAD_CHECKLIST_END -->
