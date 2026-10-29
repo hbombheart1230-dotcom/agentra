@@ -1,5 +1,10 @@
 # RF-084 — 코드 구조/함수 재배치 설계 (T06)
 
+## Verified target-role disposition — T06 historical alignment
+
+Design alignment files preserve historical authorship and link paths. Active authority is D00, V3 and T00-T09; old snapshots do not become new worker orders. If file location, purpose and consumers are already correct, KEEP_OK with one-line reason+source blob, without code changes or redundant tests. No new Python module applies.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-084.md` blob `7b9fc8c834142f34f2e0da31bb6f69dba3ca1087`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 41개 파일; 다른 RF 경로 쓰기 금지.
 
