@@ -46,7 +46,7 @@ FAST-3: **G1 원격 코드·Owner 범위**, **G2 변경 부분 smoke/pytest**, *
 | [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) | DEV · B → A | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
 | [RF-069](queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | PEER · B → A | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
 
-**우선 14건:** **MET 21/42 · N/A 0/42 · 미완료 21/42**. 실제 DEV 2 + PEER 5 + LEAD 0, 물리 DONE 30건.
+**우선 14건:** **MET 21/42 · N/A 0/42 · 미완료 21/42**. 실제 DEV 2 + PEER 5 + LEAD 0, 물리 DONE 31건.
 
 **STATUS 갱신 책임: 지팀장.** RF 변경/증거 인수 및 물리 이동 시 같은 작업에서 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check` 확인. 이 도구는 93개 실물 파일의 유일성/단계 수와 우선 14개 원본 체크를 대조하며 RF 합격/안전 실행을 자동 승인하지 않습니다.
 <!-- RF_LEAD_CHECKLIST_END -->
