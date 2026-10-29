@@ -53,10 +53,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     inventory = build_log_inventory(log_root)
     candidates = _load_candidates(inventory)
 
-    moved = []
+    move_results = []
     if bool(args.apply):
-        moved = apply_log_move_candidates(log_root, candidates)
+        move_results = apply_log_move_candidates(log_root, candidates)
         inventory = build_log_inventory(log_root)
+
+    moved_total = sum(1 for result in move_results if result.get("status") == "moved")
 
     md_path, js_path = write_log_inventory(log_root, inventory)
     out = {
@@ -64,8 +66,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         "log_root": str(log_root),
         "apply": bool(args.apply),
         "move_candidate_total": len(candidates),
-        "moved_total": len(moved),
-        "moved": moved,
+        "moved_total": moved_total,
+        "move_results": move_results,
         "warning_total": int((inventory.get("summary") or {}).get("warning_total") or 0),
         "report_md_path": str(md_path),
         "report_json_path": str(js_path),
@@ -75,7 +77,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     else:
         print(
             f"log_root={log_root} apply={bool(args.apply)} move_candidate_total={len(candidates)} "
-            f"moved_total={len(moved)} warning_total={out['warning_total']} "
+            f"moved_total={moved_total} warning_total={out['warning_total']} "
             f"report_json={js_path} report_md={md_path}"
         )
     return 0
