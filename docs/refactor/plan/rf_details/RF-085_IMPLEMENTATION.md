@@ -1,5 +1,9 @@
 # RF-085 — 코드 구조/함수 재배치 설계 (T06)
 
+## T06 operational documentation KEEP reason
+Existing operations, runtime, commander control and observability runbook references are intentionally located by domain. Preserve absolute/relative links, incident history and consumer path. Correct single-owner, linked file is KEEP_OK with reason+blob. No code function extraction; no operational process starts or A/B documentation edits.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-085.md` blob `fc9367abb7bbdd5bfd0abf63f4fc427f9330adeb`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 104개 파일; 다른 RF 경로 쓰기 금지.
 

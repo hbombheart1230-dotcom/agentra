@@ -1,5 +1,9 @@
 # RF-086 — 코드 구조/함수 재배치 설계 (T06)
 
+## T06 developer-policy KEEP reason
+D00 is the one active delivery policy. Past dev-team and development notes retain history and version, not competing execution authority. Keep documented links and source filename when correct. One-line KEEP_OK with blob; no new code/test and no forced relocation.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-086.md` blob `e4b81627ed9cb902b61e8bb7bf75364b6dc1dab4`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 96개 파일; 다른 RF 경로 쓰기 금지.
 
