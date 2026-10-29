@@ -1,54 +1,35 @@
-# C02 — Claude A | Reporting/AI 실제 함수 다중 이동·연속 구현
+# C02 — Claude A | 실측 Owner 함수 MOVE 6개 (단일 실행 문서)
 
-## 실행 진입 계약 — A/B에게 다른 문서 탐색 지시 금지 (최우선)
+## 실행·권한 (이 문서만 읽는다)
+- Owner branch: `work/p15-a-reporter-pure-20261021`. **이 문서에 지정된 code/test 파일만** 수정·커밋·정상 push. 다른 문서·설계·상태·원본 큐를 찾거나 수정하지 않는다. 다른 작업자 브랜치, CI/보호 정책, 운영 데이터·State·DB·로그, 실제 네트워크/주문/브로커/Guard/UEF는 절대 쓰지 않는다.
+- 시작할 때 `git ls-remote`로 **CANONICAL_HEAD**(`integration/p1.5`), **OWNER_REMOTE_SHA**(A 브랜치), `git rev-parse <CANONICAL_HEAD>:docs/refactor/work_orders/C02_CLAUDE_CURRENT.md`로 **ORDER_FILE_BLOB_SHA**를 고정. 번호별 **ORDER_ID=C02:<ORDER_FILE_BLOB_SHA>:A1..A6**. 실행 도중 지시서가 바뀌어도 시작 당시 blob의 과제는 유효하며 소급 실패 아님. 기존 local-only와 원격 push/테스트 exit는 분리.
+- 각 과제는 **원본 함수 몸체 제거 → 새 Owner 단일 구현 → 원래 이름/서명의 얇은 wrapper**. 호출시점 monkeypatch를 보존하려면 facade 모듈 `sys.modules[__name__]`를 target 함수에 **명시적 키워드 `facade=`로 전달**하고 target에서는 `facade.mapping`, `facade._candidate` 등 원래 참조를 use-time에 조회한다. **target에서 facade 역import 금지.** 결과 dict/list 순서·한국어 bytes·예외·입력 불변을 유지. 이전 구현을 새 파일에 복제하고 원본에도 남겨 두는 이중 구현 금지.
+- 각 Item의 2~4개 fake fixture를 기존 source BEFORE golden(변경 전 BLOB/함수 실행값)과 새 owner+wrapper에서 비교한다. **정상** `python -m pytest -q -p no:cacheprovider <해당 새 test 파일>` 또는 `python -m unittest discover -s tests -p '<파일명>' -v` **exit0 한 번**; pytest 없으면 stdlib. `-O`/full suite/전수 peer/hosted CI 필수 아님. 한 item이 막히면 정확 `ITEM_STATUS=TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED`·원인·재개점만 기록하고 **나머지 독립 item 계속**. 중복 완료한 함수는 원격 body/target blob이 같을 때만 `ALREADY_MOVED`로 제외하고 동일 테스트 재실행 금지.
+- 이번 6개 target은 A 원격 `048c6d3faeba24a90116e818ae98104293addd9c`에서 **모두 미존재**이고 아래 source 함수 본문은 실제 확인됨. 동일 source 파일의 함수끼리도 **서로 독립 ITEM**이며 같은 파일의 패치를 순차 누적한다. 새 owner가 기존 경로에 출현했으면 overwrite하지 말고 C03에 충돌 보고 후 다른 item 계속. **정당 KEEP은 기존 위치/책임/효과 경계에 맞는 경우 한 줄+blob으로만**, 이 6개 미이동 본문을 KEEP으로 대체하지 않는다.
 
-**A/B 각각 이 파일 하나만 읽고 개발을 수행한다.** `docs/refactor/plan/rf_details/`, `INDEX.md`, D00, C03, Txx, 원본 RF, STATUS를 A/B가 열거나 읽고 작업을 고르게 하지 않는다. 필요한 **SOURCE_PATH::EXACT_FUNCTION → TARGET_PATH::EXACT_FUNCTION, 함수 몸체 처리, 주입해야 할 의존성, 테스트 fixture, KEEP 사유, 담당 독점권, 우선순위 및 재개점은 모두 아래 C01/C02 본문에 완전히 복사**한다. GitHub의 *실제 작업 대상 코드 파일*과 호출자·타깃 파일은 직접 열어 구현할 수 있다. 자기 작업이 끝나도 다음 항목을 순서대로 진행한다.
+## A1 — opening lane 3행 투영
+- **SOURCE** `libs/reporting/alpha_research_board/builder.py::_opening_rows` (A source blob `0302499b8616c8f2daef55f0d1a7711b88069900`, L244–282, 39행) → **TARGET** `libs/reporting/alpha_research_board/builder_opening_rows.py::_opening_rows(payload, *, facade)`. `summary.conditional_lane_summaries`에서 `IMMEDIATE_OPENING_PROBE/+5m`, `CONFIRMED_RECURRENT_RANK/+30m`, `DISLOCATION_REBOUND/+60m` 순서의 3개 `_candidate`를 생성하는 **for-loop 몸체 전체**를 MOVE. 원래 `_opening_rows(payload)`는 facade wrapper만; target의 `mapping`, `metric_snapshot`, `_candidate`는 facade에서 조회.
+- **test** `tests/test_p15_alpha_board_opening_rows_owner.py`: (1) 빈 summary → 3개 순서/기본 값, (2) 각 lane live_net 서로 다른 값 → horizon별 prospective 구분, (3) `facade._candidate` spy가 호출순서·인자 기록, (4) 입력 deep copy 불변/한국어 note 정확 일치. 네 fixture old/new/owner 결과 동일.
 
-C03 지팀장이 93개 RF 설계서/실제 source를 읽고 필요한 다음 구현 항목을 이 단일 지시서의 **작업 큐 본문에 인라인 추가**한다. A/B가 상세설계를 찾아가라는 문구는 무효. 지시서에 없는 RF/함수는 새로 추정하지 않고 C03이 배정할 때까지 기존 다른 항목 진행. 각 차수에 4~6개 이상 독립 코드 항목을 유지하며 기존 완료 항목은 제거·추가. 구 구현과 목적지 소유권을 실제 시작 source blob에서 확인하여 중복 개발 금지.
+## A2 — broad opening 투영
+- **SOURCE** 같은 `builder.py::_broad_opening` (L285–311, 27행) → **TARGET** `libs/reporting/alpha_research_board/builder_broad_opening.py::_broad_opening(payload, *, facade)`. `promotion_decision.values`에서 `sample_count/window_count/win_rate/coverage`, `concentration`을 구성하는 전체 `_candidate` 본문 MOVE. 원명 wrapper, `facade.mapping`/`facade._candidate` use-time.
+- **test** `tests/test_p15_alpha_board_broad_opening_owner.py`: (1) 빈 decision → 기본 status/0 counts, (2) observed_count=7·win_rate=.5·largest_day_share=.6 → 지정 필드/키순서, (3) patched candidate spy와 원본 예외 parity, (4) 입력 불변.
 
+## A3 — latent reactivation 투영
+- **SOURCE** 같은 `builder.py::_latent` (L314–334, 21행) → **TARGET** `libs/reporting/alpha_research_board/builder_latent.py::_latent(payload, *, facade)`. `summary.horizons["+30m"].live_net`·concentration 3키를 구성하는 원본 몸체 MOVE; wrapper·`facade.mapping/metric_snapshot/_candidate` 전달.
+- **test** `tests/test_p15_alpha_board_latent_owner.py`: (1) 빈 summary, (2) +30m live_net와 largest_* 값, (3) spy candidate의 한국어 evidence_note 및 key order, (4) 원본 입력 불변.
 
-**유일한 진입점:** 이 C02 파일만. 동결 T00~T09/V3에 따라 아래 작업 큐에 직접 명시된 구현만 수행한다. A 허용 브랜치 `work/p15-a-reporter-pure-20261021` code/test만 수정·push. RF/STATUS/D00/C문서·B 브랜치·frozen oracle·live LLM/실거래/운영 DB/State는 수정 금지. 첫 한 함수 성공·KEEP·차단으로 종료하지 말고 A1~A5 연속 수행.
+## A4 — fresh change 투영
+- **SOURCE** 같은 `builder.py::_fresh_change` (L222–241, 20행) → **TARGET** `libs/reporting/alpha_research_board/builder_fresh_change.py::_fresh_change(payload, *, facade)`. `historical_reference.branch.horizons["+30m"]`와 `branch.horizons["+30m"]`의 historical/prospective 매핑과 고정 기각 사유 전체 MOVE; 원명 wrapper·facade use-time.
+- **test** `tests/test_p15_alpha_board_fresh_change_owner.py`: (1) 누락 historical → 기본, (2) historical positive/prospective negative 값 구분, (3) decision.status와 patched `metric_snapshot` 호출, (4) 원본 불변/한국어 bytes parity.
 
-## 시작/KEEP/테스트 단순화
+## A5 — attention 정렬 순수 함수
+- **SOURCE** 같은 `builder.py::_attention_order` (L382–399, 18행) → **TARGET** `libs/reporting/alpha_research_board/builder_attention_order.py::_attention_order(candidates)`. 8개 bucket priority와 `candidate_id` tie-break 정렬 몸체 MOVE; 기존 `_attention_order` thin wrapper. target은 facade 필요 없음(단독 pure Owner).
+- **test** `tests/test_p15_alpha_board_attention_order_owner.py`: (1) 빈 list → [], (2) CLOSED vs RUNTIME_VALIDATION_NEXT 순서, (3) 동일 bucket id 오름차순·unknown bucket 마지막, (4) 잘못된 row/누락 id의 **기존 예외와 입력 불변**. 새 결과와 변경 전 golden 동일.
 
-매회 integration HEAD·C02 blob·A 브랜치 remote HEAD·dirty만 확인. 이미 동일 SHA에서 이전한 함수는 반복 추출/테스트 금지. 목표 위치가 맞고 단일 책임·적절한 크기 또는 정당한 안전/외부 API 경계면 `KEEP_OK|RF|path|한 줄 이유|blob`로 즉시 PASS. MOVE는 기존 source 몸체가 사라지고 target 함수에 구현이 있어야 하며 기존 facade wrapper·use-time patch 경계 보존. 변경한 묶음의 fake old/new 기대 결과·예외 비교, 정상 pytest 또는 stdlib unittest **한 번 exit0**. 모든 RF -O/full CI/반대 peer 전수 금지.
+## A6 — model slot 우선순위 해석
+- **SOURCE** `libs/llm/model_catalog.py::resolve_policy_llm_slot` (blob `3d3ab4dae19e96f60b5a8019f8213e414db90f45`, L273–306, 34행) → **TARGET** `libs/llm/model_catalog_resolve_policy_llm_slot.py::resolve_policy_llm_slot(policy, *path, default_profile, facade)`. `applied_policy.llm → commander.applied_policy.llm → reporter_output.applied_policy.llm → llm → reporter_policy.llm → default` 순서, primary/fallback/cards/profile_source를 계산하는 **전체 함수 몸체** MOVE. 원명 `resolve_policy_llm_slot(policy,*path,default_profile=...)` wrapper 유지; `_nested_get/resolve_model_profile/normalize_openrouter_model_name/get_model_card/_dedupe_models`를 **facade 호출시점** 조회. `resolve_policy_llm_execution_slot` 호출자 수정·이동 금지.
+- **test** `tests/test_p15_model_catalog_slot_owner.py`: (1) None policy 기본 profile, (2) 우선순위 충돌(상위 applied_policy 승리), (3) primary=fallback 중복 제거·모델 카드 순서, (4) facade normalize spy·비매핑 입력/기존 예외/원본 불변.
 
-## A1 (RF-031): Reporter AI review 입력·메시지·결과 정규화 실제 MOVE
-
-RF-031; `libs/reporting/reporter_ai_review.py` A blob 참고 `a8c2507f`, 약500줄.
-1. `_build_compact_input(day,out)` 약110줄 → `libs/reporting/reporter_ai_review_input.py::build_compact_input`.
-2. `_build_messages(day,compact_input)` 약44줄 → 같은 파일 `build_messages`. `_clip_str/_list_str/json.dumps` 호출시점 patch 전달, 한국어·JSON key/order/prompt bytes·max-items 조건 동일.
-3. `_normalize_evidence_link_items` 약21줄 → `libs/reporting/reporter_ai_review_result.py::normalize_evidence_link_items`.
-4. `_normalize_result` 약25줄 → 같은 파일 `normalize_result`; `required_key_metadata`, null/default/error/key 순서 기존 그대로.
-원본 public/private API 얇은 wrapper 유지. `tests/test_rf031_reporter_ai_review_input_extraction.py`와 `tests/test_rf031_reporter_ai_review_result_owner.py`에 old/new, malformed, spy monkeypatch, 입력 불변 fake fixture. 실제 LLM/파일 writer 이동 금지.
-
-## A2 (RF-041): OpenAI Provider 응답 구조 투영 분리
-
-RF-041; 원본 `libs/ai/providers/openai_provider.py` 참고 A blob `341296b5`.
-- `_extract_chat_content` → `libs/ai/providers/openai_response_projection.py::extract_chat_content`
-- `_extract_chat_structured_object` → 같은 파일 `extract_chat_structured_object`
-- `_extract_usage` → 같은 파일 `extract_usage`.
-- `_extract_chat_message`, `_extract_chat_finish_reason`, `_chat_output_truncated_without_final_answer`도 코드에서 단일 결과 투영 Owner가 적절한지 확인한 뒤 같은 module에 연속 이동(정확 이름·동작 유지).
-`_post_json`, `_post_with_retry`, `decide`/사용자 broker 의도 실행은 원위치. 기존 `libs/llm/json_response.py` parsing 중복 구현 금지. structured/text/list/tool-call/reasoning/usage-none fixture, facade/patch seam parity 정상 테스트 1회. `tests/test_rf041_openai_response_projection.py` 미존재면 작성.
-
-## A3 (RF-050/014/015): 정당한 좋은 Owner KEEP 일괄 소진
-
-RF-050 `libs/llm/json_response.py`(91줄 단일 parser), RF-014 `libs/agents/scanner/candidate_risk.py`(113줄 위험 기반치), RF-015 `libs/agents/monitor/projections/cycle_detail_projection.py`(193줄 pure projection). 현재 목표 경로·한 역할·코드 중복 없음이면 **단회 KEEP_OK + blob**. 이미 있는 tests 같은 SHA 반복 금지.
-
-## A4 (RF-061/040): 정상 API Facade 유지하고 내부 과대 함수만 추출
-
-RF-061 `libs/tools/tool_facade.py`/ `tool_schema.py` 단일 Owner면 KEEP; RF-040 `libs/agent/commander.py`, `executor.py` 공개 API는 외부 import 호환 유지. 실제 순수 책임과 복잡한 효과 분리; 실주문/executor effect 변경 없음.
-
-## A5 확장 — RF-016 및 RF-050의 이미 맞는 작은 Owner 즉시 KEEP
-
-- `libs/agents/strategist/context/news_compaction.py`: news/message compaction이라는 한 책임이며 기존 `_compact_global_signal_for_llm_r3_impl` 약111행·뉴스 보조 함수는 **기존 Owner에서 적절하게 분리되어 있으면 KEEP_OK**. 함수별 파일을 무조건 더 만들지 않는다.
-- `libs/llm/json_response.py`: 91행·JSON response parsing 단일 책임이면 KEEP_OK. 이 파일과 OpenAI provider `_extract_chat_structured_object`의 중복 parser가 있다면 중복 기능 제거만 수행.
-- 위 두 파일은 정확한 blob과 한 줄 사유만 제출. PASS/재시험 0, 변경 성과에 포함하지 않는다.
-
-## A6: C03이 C02 본문에 직접 넣은 A 독점 함수 연속 MOVE
-
-C03이 이 C02 본문에 직접 인라인으로 추가한 A 전담 SOURCE::함수→TARGET::함수 작업을 순서대로 이어서 수행한다. 미실측 함수 이름 임의 추측 금지; 명령서 미완료/blocked 항목을 한 줄 재개점으로 넘겨도 다음 독립 안전 아이템 계속.
-
-## 보고
-
-`ORDER_BLOB|ITEM/RF|SOURCE_BLOB|MOVED_FUNCTIONS|NEW_OWNER_PATH/BLOB|SOURCE_BEFORE_AFTER_LOC|KEEP_OK{reason,blob}|NORMAL_TEST_CMD_EXIT|PUSH_REMOTE_SHA|NEXT`를 #11에 한 번. A branch code/test만 정상 커밋/푸시하고 원격 blob 재조회; BLOCKED를 PASS로 만들지 않는다. 통합·DONE/STATUS는 C04/C05.
+## 종료·인계
+- **각 A1~A6는 필수**이며 순서가 종료/선택 권한이 아니다. 한 번에 안전한 code/test 커밋을 묶을 수 있으나 A 본인 브랜치만 정상 push하고 **remote branch SHA 및 source/target/test blob**을 다시 조회한다. 원본 함수 전후 LOC, 실제 MOVED_FUNCTIONS, `NORMAL_TEST_CMD/EXIT`, `ITEM_STATUS`, `ORDER_ID`, `FIRST_BLOCKER/NEXT`를 #11 댓글 **1회** 보고. C04는 최소 diff 통합·targeted smoke, C05는 G1/G2/G3 수용·DONE; A는 상태 문서를 쓰지 않는다.
