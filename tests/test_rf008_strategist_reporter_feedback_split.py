@@ -40,13 +40,14 @@ class ReporterFeedbackOwnerTest(unittest.TestCase):
     def setUp(self):
         self.impl = _load_owner()
 
-    def test_disabled_fails_closed_without_io_or_mutation(self):
+    def test_policy_enabled_source_does_not_mutate_inputs(self):
         facade, calls = _facade()
         state = {"strategist_feedback_packet": {"available": True, "insight_summary": "ignored"}}
         policy = {"reporter_feedback_mode": "enabled"}
         state_before, policy_before = copy.deepcopy(state), copy.deepcopy(policy)
         out = self.impl(state, policy, facade=facade)
-        self.assertEqual(out["feedback_gate_reason"], "low_confidence")
+        self.assertTrue(out["consumed"])
+        self.assertEqual(out["feedback_gate_reason"], "mode_enabled")
         # Policy has no effect when source is present: default mode is auto.
         self.assertEqual(state, state_before)
         self.assertEqual(policy, policy_before)
