@@ -85,23 +85,7 @@ def _dict_str(v: Any, *, max_items: int = 8, max_key_len: int = 64, max_val_len:
 
 
 def _default_result(*, enabled: bool, status: str, reason: str = "", model: str = "") -> Dict[str, Any]:
-    meta = required_key_metadata({}, REPORTER_AI_REVIEW_REQUIRED_KEYS)
-    return {
-        "enabled": bool(enabled),
-        "status": str(status),
-        "llm_status": _normalize_llm_status(status),
-        "model": str(model or ""),
-        "reason": _clip_str(reason, max_len=320),
-        "parse_mode": "none",
-        **meta,
-        "ai_summary": "",
-        "ai_findings": [],
-        "ai_root_causes": [],
-        "ai_improvement_suggestions": [],
-        "ai_run_grade": "N/A",
-        "ai_agent_evaluations": {},
-        "ai_evidence_links": {"findings": [], "root_causes": [], "improvements": []},
-    }
+    return _result_owner.default_result(enabled=enabled, status=status, reason=reason, model=model, facade=sys.modules[__name__])
 
 
 def _normalize_evidence_link_items(v: Any, *, max_items: int = 10) -> List[Dict[str, Any]]:

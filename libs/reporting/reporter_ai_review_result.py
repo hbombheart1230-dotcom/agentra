@@ -52,3 +52,23 @@ def normalize_result(obj: Dict[str, Any], *, enabled: bool, model: str, facade: 
             "improvements": facade._normalize_evidence_link_items(evidence_links.get("improvements")),
         },
     }
+
+
+def default_result(*, enabled: bool, status: str, reason: str = "", model: str = "", facade: Any) -> Dict[str, Any]:
+    meta = facade.required_key_metadata({}, facade.REPORTER_AI_REVIEW_REQUIRED_KEYS)
+    return {
+        "enabled": bool(enabled),
+        "status": str(status),
+        "llm_status": facade._normalize_llm_status(status),
+        "model": str(model or ""),
+        "reason": facade._clip_str(reason, max_len=320),
+        "parse_mode": "none",
+        **meta,
+        "ai_summary": "",
+        "ai_findings": [],
+        "ai_root_causes": [],
+        "ai_improvement_suggestions": [],
+        "ai_run_grade": "N/A",
+        "ai_agent_evaluations": {},
+        "ai_evidence_links": {"findings": [], "root_causes": [], "improvements": []},
+    }
