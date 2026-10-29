@@ -1,60 +1,45 @@
-# C02 — Claude A | 연속 구현 명령서
+# C02 — Claude A | 다음 실행 완결형 개발 명령
 
-**실행 역할:** 이전 채팅·프로젝트 맥락 없이 이 파일의 **개발·검증 과제 1~6 전부 구현·실행 의무**를 수행한다. 번호는 진행상태 식별자이며 **처리 순서·선행 의존성·조기 종료 기준이 아니다**. RF/큐/D00/CURRENT 재독이나 자율 작업 선정 금지. `hbombheart1230-dotcom/agentra`의 **기존** `work/p15-a-reporter-pure-20261021` 브랜치에서 허용된 소스·테스트만 수정한다. 지시 설계 시 원격 A HEAD `8bdbd5ab32eed6d1b0dddfc799d3bc577ebf9a1e` 확인; 시작 시 HEAD를 다시 확인해 이미 같은 구현이 있으면 중복 커밋하지 말고 다음 번호로 진행한다. **보고서/계획만 작성하고 끝내지 말 것.**
+**실행:** 기존 `work/p15-a-reporter-pure-20261021` 브랜치에서 과제 1~6 **모두** 실행한다. 번호는 식별자이며 선행 순서·선택권·조기 종료 기준이 아니다. 직전 지시의 1~6은 원격 `d30c67abc03a8c6b33909558f624242c76ab979f`에서 함수 MOVE·수정·테스트·상대 고정 SHA peer까지 보고되어 **다시 실행하지 않는다**. 새 지시 설계 기준 SOURCE는 위 SHA; 시작 시 최신 HEAD와 해당 구현을 확인해 동일 구현·정확 SHA/범위 결과는 재사용하고 새 경계로 진행한다. 허용된 A 소유 소스·테스트 외 문서/RF/큐/CSV/동결 oracle, 타인 브랜치, 운영 상태·계좌·Broker·Step5C·UEF·RunLab 및 실네트워크 수정·호출 금지. 테스트는 `tmp_path`, fake provider, fake state, socket deny로 격리한다. 진행 중인 작업은 안전 체크포인트까지 마친 뒤 새 지시와 대조한다.
 
+## 1 — Q10 누적 입력의 비객체 JSON·outcomes 오염을 안전하게 격리 (개발·필수)
 
-**전체 과제 완료 판정:** 과제 1~3은 실제 새 Owner 파일·wrapper 연결·호출자 동등성·normal/-O PASS가 있어야 `IMPLEMENTED`; 과제 4~5는 명시된 모든 입력 사례를 실제 실행하고 오류가 있으면 수정해야 `IMPLEMENTED`; 과제 6은 지정 B SHA에서 독립 검증을 수행해야 `PEER_EXECUTED`. 모두 `IMPLEMENTED | VERIFIED_ALREADY(원격 근거 SHA) | BLOCKED(원인·재개점) | NOT_RUN`으로 각각 기록한다. 테스트 작성만, 과거 PASS, 최초 커밋, 보고 댓글은 전체 작업 종료 근거가 아니다.
+- **SOURCE:** `libs/reporting/baseline_samsung_hynix/forward_validation/cumulative.py::build_cumulative(root)` (현재 약 71행). `root.glob("*/q10_forward_validation/q10_shadow_entry_comparison.json")`을 정렬 순회하며 JSON 읽기 후 바로 `payload.get`, `outcomes` 각 `row.get`을 호출한다. JSON `[]`, `null`, `"text"`, `outcomes=[null,7,{}]`는 현재 `AttributeError` 또는 비정상 집계를 일으킬 수 있다.
+- 신규 `tests/test_p15_q10_cumulative_malformed_inputs.py`: `tmp_path/<ACTIVATION_DAY 이상 날짜>/q10_forward_validation/q10_shadow_entry_comparison.json`에 (a) 비객체 최상위 3종, (b) 객체이지만 `outcomes` 비-list, (c) list에 비-Mapping 원소, (d) 깨진 JSON, (e) 정상 객체 하나를 서로 다른 날짜에 배치. **기대:** 불량 파일/행만 건너뛰고 정상 `OBSERVED` 1개만 집계, `day_count=1`, `observed_outcome_count=1`, 날짜 정렬, 입력 파일 SHA256·디렉터리 목록 불변, 예외 0. `PENDING` 행은 집계 제외. `ACTIVATION_DAY` 이전은 무시한다.
+- `build_cumulative`의 `payload.get` 전에 `isinstance(payload, Mapping)`, `outcomes` 반복 전에 `list`와 각 `Mapping`을 확인해 **읽기 전용 fail-closed**. 기존 유효 입력·반환 schema·함수 signature·정렬·그룹 키·IO 경로 유지. `pipeline.py` 호출자는 수정하지 않는다. 기존 정상 값에 대한 전후 JSON 고정 비교를 추가한다.
 
-## 1 — 실제 Reporter 대형 파일의 종목 반응 책임 분리 (개발·필수)
+## 2 — Q10 누적 수익률 결측/비숫자 OBSERVED 행 (개발·필수)
 
-**SOURCE:** `libs/reporting/baseline_samsung_hynix/forward_validation/reaction_reader.py` (지시 기준 약 467 LOC). **새 Owner:** `libs/reporting/baseline_samsung_hynix/forward_validation/stock_reaction.py`. 새 파일이 이미 있으면 중복 생성하지 않는다.
+- **SOURCE:** 동일 `cumulative.py::build_cumulative`에서 `float(row["net_eod_return_pct"])`와 `float(row.get("mfe_pct") or 0.0)`·`mae_pct`를 수행한다. `OBSERVED`이지만 `net_eod_return_pct=None` 또는 `"bad"`이면 현재 집계 전체가 실패한다. 1번과 같은 파일을 **중복 수정하지 말고 하나의 정상 커밋으로 결합 가능**하되 각 테스트/입력 계약은 별도로 증명한다.
+- 신규 `tests/test_p15_q10_cumulative_numeric_boundary.py`: 동일 그룹의 유효 `net_eod_return_pct=2.0,-1.0`, `mfe_pct=3.0,1.0`, `mae_pct=-0.5,-2.0`와 결측/비숫자 수익 행을 섞는다. **기대:** 유효 2건만 `trade_count=2`, `average_return_pct=0.5`, `median_return_pct=0.5`, `profit_factor=2.0`, `win_rate=50.0`, `average_mfe_pct=2.0`, `average_mae_pct=-1.25`; `observed_outcome_count`/days는 실제 채택 행만 반영. 유효 행이 전혀 없으면 `summary=[]`, 0 count, 예외 0. 기존 유효 결과 불변.
+- **구현:** `float` 변환 실패 행은 집계 전 제외하고, 유효 관측을 임의 `0.0`으로 채워 수익률을 왜곡하지 않는다. `mfe/mae` 결측 처리의 기존 의미(0 취급)는 별도 승인 없이 바꾸지 않는다. NaN/inf 입력이 발견되면 그 실제 사례·후속 계약 판단을 보고하고 숫자 정책을 임의 확장하지 않는다. 모든 IO는 `tmp_path` 읽기만.
 
-- 현재 `reaction_reader._stock_reaction` (대략 141~270행) **함수의 실제 계산 본문 전체**를 새 Owner의 `stock_reaction_impl(..., facade)`로 MOVE한다. 기존 공개/테스트 호환 `_stock_reaction(day,target,rows,previous_close,last_available_lookback_sec,collector_override)`는 **signature·이름 동일한 얇은 wrapper**로 남긴다. wrapper가 호출 때 `facade=sys.modules[__name__]`을 전달하고, 새 Owner는 facade import/순환 의존 없이 원래 전역 `_number`, `_pct`, `_point_at`, `_checkpoint_epoch`, `_opening_point`, `_close_point`, `_forward_window`, `_last_available_point_before_close`, `CHECKPOINTS`를 필요한 위치에서 `facade.NAME`으로 사용한다. monkeypatch 동적 호출 보존.
-- **변경 금지 의미:** 검증된 collector override만 계산 가능한 관측값, collector integrity_failure이면 legacy fallback 금지와 PENDING 유지, 정말 ABSENT일 때만 legacy timeline fallback, 잘못된 CLOSE를 실제 CLOSE로 쓰지 않기, `return_to_close_pct`는 표시한 권위 있는 CLOSE와 동일 기준, CLOSE PENDING인 경우 관측 window의 `status=PARTIAL` 및 `return_to_close_pct=None`, 09:00의 첫 양수 거래량 캔들, `last_available_point_before_close`는 참고용으로만 출력. 리스트 순서·직렬화 출력 키·예외를 수정하지 않는다.
-- 새 `tests/test_p15_stock_reaction_extraction.py`: 기존 함수의 **분리 전 고정 기대 JSON/딕셔너리**를 fixture로 확보한 뒤 fake 종목 캔들 ① 빈 입력 ② 09:00 volume=0 뒤 09:01 양수 ③ CLOSE collector=110 vs legacy=90 ④ CLOSE PENDING ⑤ collector INVALID vs ABSENT ⑥ denominator=0 사례에서 결과가 일치해야 한다. 기존 collector 테스트도 정상/`-O`. 새 Owner **350 LOC 이하**, facade 실제 LOC 감소 보고.
+## 3 — Q10 preopen capture 시간 창·기존 스냅샷 보존 (개발·필수)
 
-## 2 — 동일 파일의 Collector 무결성 책임 분리 (개발·필수)
+- **SOURCE:** `libs/reporting/baseline_samsung_hynix/forward_validation/pipeline.py::_capture_window/_preopen_snapshot/capture_q10_preopen_snapshot` (약 200행 전체 파일). 기존 `_capture_window`는 08:50~08:59:59 KST, `_preopen_snapshot`은 기존 유효 JSON 우선, 시간 전 `WAITING` 무쓰기, 시간 후 `MISSED` snapshot 저장, 시간 내 fake provider `capture(as_of=now)` 호출 후 `CAPTURED` 또는 `DATA_UNAVAILABLE`.
+- 신규 `tests/test_p15_q10_preopen_capture_temp_contract.py`: `day="2026-10-29"`, 명시 `now=datetime(...,tzinfo=KST)`, `reports_root/state_path` 모두 `tmp_path`, fake `LeadMarketProvider.capture` 호출 횟수 계측. 08:49:59 → `WAITING`, 파일 없음, provider 0회; 09:00:00 → `MISSED`/reason `08:50_preopen_capture_window_missed_no_backfill`, 지정 JSON 한 개 생성, provider 0회; 08:50:00·08:59:59의 **별도 tmp 루트** → provider 1회, 스냅샷 상태/경로 반환. 같은 경로에 유효 snapshot을 미리 쓰면 호출 0회, 내용 해시 보존·backfill 금지. provider가 전부 `UNAVAILABLE`이면 `DATA_UNAVAILABLE`, `CAPTURED`로 둔갑 금지. 사전 활성일은 `NOT_ACTIVE_PROSPECTIVE_ONLY`/무쓰기.
+- 기존 반환 `q10_preopen_capture_status/day/captured_at_kst/reason/path`와 JSON 키 불변. 결함 재현 시 `pipeline.py` 최소 수정. `YFinanceLeadMarketProvider` 실제 생성/호출 금지(항상 fake 인스턴스 주입).
 
-**SOURCE:** `reaction_reader.py::_collector_raw_row` (지시 기준 약 340~419행). **새 Owner:** `libs/reporting/baseline_samsung_hynix/forward_validation/collector_observations.py`.
+## 4 — Q10 종단 pipeline의 정확한 temp 파일/호출자/재실행 계약 (개발·필수)
 
-- 함수 body를 `collector_raw_row_impl(*, day,index_name,slot,root,facade)`로 MOVE하고 기존 `_collector_raw_row`는 signature 유지 wrapper로 만든다. 관측기 `observation_for_slot`와 `_has_verification_evidence`는 **함수 안에서 지연 import**하던 기존 구조 유지. 새 Owner는 기존 facade를 import하지 않는다. 원본 `_number`, `market_epoch`, `_COLLECTOR_ABSENT_STATES`, `_COLLECTOR_VERIFIED_STATES`를 호출 시 facade에서 참조하게 한다.
-- 결과 상태 3종을 변경하지 않는다: `availability=MISSING` + `never_attempted=True`는 **None(ABSENT)**; `LATE_MISSED/CORRUPT_STATE/미검증 시간`은 `integrity_failure=True`와 이유·시각·참고 관측값; `AVAILABLE/PARTIAL`이라도 검증 증거·index component가 없으면 INVALID, 두 검증이 모두 참일 때만 `ts,close,open,source,capture_status`를 반환한다. 실제 수집기·Kiwoom API 호출 금지.
-- **확인된 실패 입력 추가:** `availability="AVAILABLE"`, 유효한 index 가격, fake `_has_verification_evidence=True`이지만 `market_epoch(index_row)=None`인 조합에서 현재 `int(None)` TypeError가 발생한다. 새 Owner의 최종 `ts` 구성 전에 market timestamp를 한 번 검증하여 이 경우 `integrity_failure=True`·사유 `market_timestamp_missing`(또는 기존 소비자와 호환되는 구체 사유)을 반환하고 **legacy fallback을 절대 허용하지 않는다**. 정상 VERIFIED timestamp/가격/소스 필드는 바꾸지 않는다. 실패 전 재현과 수정 후 JSON 계약을 둘 다 테스트한다.
-- `tests/test_p15_collector_observations_extraction.py`: 가짜 `observation_for_slot` 및 검증 함수 주입으로 ABSENT/INVALID/VERIFIED/오류 시간/해당 index 누락·market timestamp None을 각각 비교; 새 Owner는 **350 LOC 이하**. 기존 `tests/test_q10_collector_fix3.py`, `tests/test_q10_reaction_reader_collector_integration.py` 정상/`-O` 통과 조건. 읽기 전용 mock/임시 파일만 사용.
+- **SOURCE:** `pipeline.py::build_q10_forward_validation`, `reaction_reader.py::build_actual_reactions`, `expected_actual.py::build_expected_actual`, `shadow_comparison.py::build_shadow_comparison`, `cumulative.py::build_cumulative`, `report.py::render_forward_validation_report`. 현재 출력 4 JSON(스냅샷·reactions·expected·shadow) + 1 Markdown + 상위 `output_dir.parent/q10_forward_validation_cumulative.json`. **원래 호출자 경로와 signature를 그대로 유지**하고 fake adapter를 만들어 PASS 내지 않는다.
+- 신규 `tests/test_p15_q10_forward_pipeline_temp_contract.py`: `output_dir=tmp_path/reports/evaluation/baseline_samsung_hynix/2026-10-29`, `state_path=tmp_path/state.json`, `macro_root=tmp_path/macro`, `candle_map={}`, `cost_pct=0,slippage_pct=0`, fake provider + 08:51 KST로 진짜 함수 호출. 반환 경로 6개가 **전부 tmp_path 안**에 있고 존재, 각 JSON에 schema/program/day 등 기존 필드, 보고서에 `prospective_shadow_only`와 disabled-orders 문구, 임의 주문/실네트워크/운영 CWD 파일 0을 확인한다. 같은 fake 입력으로 재호출하면 누적 `day_count`/채택 outcome 수가 부풀지 않고 기존 스냅샷 hash가 동일해야 한다. `day<ACTIVATION_DAY`이면 상태 `NOT_ACTIVE_PROSPECTIVE_ONLY`, 새 파일 0.
+- `_write`의 `.tmp`→replace, `_read`의 malformed fallback은 기존 동작을 보존한다. 테스트가 실제 호출자 실패를 재현할 때만 A 소유 함수 최소 수정. 운영 파일·실수집기 호출·Step5C 정책 변경 금지.
 
-## 3 — 동일 파일의 지수 시계열 파일 IO 분리 (개발·필수)
+## 5 — Reporter Markdown 결측/관측 불가 표시 계약 (개발·필수)
 
-**SOURCE:** `reaction_reader.py::load_index_timeline` (대략 271~291행). **새 Owner:** `libs/reporting/baseline_samsung_hynix/forward_validation/index_timeline.py`.
+- **SOURCE:** `libs/reporting/baseline_samsung_hynix/forward_validation/report.py::_value/render_forward_validation_report` (약 127행). 현재 `None -> "-"`, `float -> 소수점 4자리`, `unverified_observation`은 `Captured But Not Calculation-Usable` 표에 표시, 수익/스코어 계산에 사용하지 않는다.
+- 신규 `tests/test_p15_q10_report_missing_value_contract.py`: 합성 `preopen={"capture_status":"DATA_UNAVAILABLE","signals":{}}`, `reactions={"targets":{"KOSPI":{"points":{"CLOSE":{"price":None,"unverified_observation":{"price":101.2,"capture_status":"PENDING","observed_at_kst":"2026-10-29T15:25:00+09:00"}}},"forward_windows":{"09:00":{"return_to_close_pct":None,"mfe_pct":None,"mae_pct":None,"status":"PARTIAL"}}}}}`, 빈 expected/shadow/cumulative를 넣어 `render_forward_validation_report` 직접 호출. **기대:** `DATA_UNAVAILABLE`, `Captured But Not Calculation-Usable`, `101.2000`, `PENDING`, `PARTIAL`, missing return `-`, `prospective_shadow_only`, disabled-orders 문구 포함; `None`이 `0.0000`으로 표시되지 않음. 정상 수익 1.25는 `1.2500%`, 정렬/표 머리글·마지막 newline 유지, 입력 dict 불변.
+- 본문에서 unverified price를 계산 가능한 CLOSE로 승격하거나 새로운 거래 정책을 추가하지 않는다. 실제 결함 시 report renderer만 최소 수정; 기존 호출 signature/문장 계약 보존.
 
-- `load_index_timeline_impl(*, day,macro_root,index_name,facade)`로 기존 파일 읽기·JSON 파싱·시간 변환·중복 timestamp 마지막 값 선택·정렬 기능 본문을 MOVE. 기존 `load_index_timeline` 이름/키워드 인자는 wrapper 유지. Owner는 facade의 `_number`를 호출 시 사용. 파일 read는 호출될 때만 수행하며 import 자체는 IO 0.
-- `tmp_path/day/*_macro_indicators.json` 가짜 파일로 ① 정상 입력 두 건의 timestamp 순서 ② 동시각 두 건에서 정렬 후 마지막 entry 선택 ③ JSON 손상/날짜 누락/인덱스 없음/숫자 변환 실패 건은 기존대로 skip ④ 빈 폴더 빈 리스트 ⑤ 입력 파일 수정 0을 확인. **확인된 예외:** JSON 배열 `[]`는 현재 `payload.get` AttributeError로 전체 로딩을 중단한다. 새 Owner에서 `isinstance(payload, Mapping)` 및 중첩 `korea_indices/indices`의 Mapping 여부를 `.get` 전에 확인해 비객체/비정상 schema 파일만 건너뛰고 다음 정상 파일을 계속 읽는다. malformed 배열+정상 객체가 함께 있을 때 정상 객체만 결과에 남고 입력 파일 변경 0이어야 한다. 정상 객체의 기존 `except` 범위·`open/high/low` falsy fallback·누락 volume None은 유지한다. 신규 `tests/test_p15_index_timeline_extraction.py` 및 정상/`-O`.
-- 세 분리의 마지막에는 `reaction_reader.py` 자체 실제 물리 LOC와 세 신설 모듈 LOC, 분리 전후 call graph/참조, 종합 SOURCE SHA를 기록. **소스 줄 이동이 아니라 wrapper가 실제 새 Owner 함수를 호출하는지** 검증한다.
+## 6 — Codex B 고정 SOURCE 독립 검증 (필수·상대 쓰기 금지)
 
-## 4 — 반응→점수→보고 전체 호출자 회귀 (새 결함 시 최소 수정)
+- **고정 SOURCE SHA:** `44b36a233f42158288d564de3fe026a4e6701e76` (B). 격리 임시 detached 복사본에서 `libs/contracts/agent_outputs.py`, `libs/contracts/agent_output_parts/{strategist_projections.py,scanner_projections.py}`, `libs/core/log_maintenance.py`, `scripts/maintenance/run_log_maintenance.py`, `tests/test_p15_{strategist_projection_extraction,scanner_projection_extraction}.py`, `tests/test_log_maintenance.py`를 읽고 실행한다.
+- 독립 신규 입력: facade `_clip/_safe_float` monkeypatch가 새 Owner 함수까지 전달되는지; event ranking의 비-dict row 제외, custom tie-break/selection reason의 **현행 불일치**는 구체 출력만 기록(정책 수정 금지); log destination 이미 존재할 때 원본·목적지 모두 hash 보존; `shutil.move` 한 후보 실패 후 다음 후보는 `moved`, `run_log_maintenance.main(["--log-root",str(tmp_path/logs),"--apply","--json"])`의 `moved_total`이 실제 이동 수와 같고 `move_results`를 제공하는지. 운영 root가 아닌 tmp에서만 수행.
+- 동결 `tests/test_p161_agent_output_contract_freeze.py`는 **읽기·변경 없는 실행만**. 같은 SHA/동일 범위에 이미 유효한 PASS 증거가 있다면 재실행하지 말고 그 증거를 명시. B 코드/테스트 수정·푸시 0. 정상·`-O` 명령·기대/실제·정확 SOURCE SHA·검증 범위와 미검증 원래 범위를 Issue #11에 기록. 새 B SHA가 도착해도 이 고정 SHA를 임의로 변경하지 않는다.
 
-**SOURCE:** `libs/reporting/baseline_samsung_hynix/forward_validation/{scoring.py,shadow_comparison.py,report.py,pipeline.py}` 및 1~3번의 wrapper.
+## 공통 검증·종료·원격 보고
 
-- 합성 입력으로 `build_actual_reactions` → `score_semiconductor_signal`/해당 점수 함수 → `build_shadow_comparison` → `render_forward_validation_report`의 기존 진짜 소비자 호출을 확인한다. 해당 함수 signature가 정확히 다르면 **소스의 실제 연결 관계를 그대로 사용**, 가짜 adapter/미존재 함수를 만들어 PASS 내지 않는다.
-- ① CLOSE가 없는 지수는 참고가격이 수익률/entry 결과에 섞이지 않음 ② VERIFIED collector CLOSE는 표시 가격·수익률 동일 ③ 09:00 volume=0 오프닝 제외 ④ 이전 종가 0·누락 ⑤ 결측 scoring 데이터가 `INSUFFICIENT_EVIDENCE`인 기존 경계 ⑥ 거래 없는 날/빈 목록 ⑦ 결과 행 정렬·표본 수·문장 출력이 기존 계약과 일치함을 확인한다.
-- **실제 소스 결함을 명시적으로 수정:** `shadow_comparison.py::build_shadow_comparison`에서 POSITIVE expected row와 `points={"09:00":{"ts":1,"price":100},"CLOSE":{"price":110}}`, `path=[]`, `cost_pct=0`, `slippage_pct=0`을 입력하면 OBSERVED outcome의 `mfe_pct/mae_pct=None` 이후 summary의 `float(None)` TypeError가 발생한다(원본 127~128행). summary `average_mfe_pct/average_mae_pct`는 **관측 가능한 숫자만** 평균 내고 유효 관측 0건이면 `None`; `trade_count`/`average_return_pct`와 기존 정상 path 출력은 불변. 결측을 임의 `0.0`으로 대체하지 않는다. `tests/test_p15_forward_validation_parity_chain.py`에 빈 path 1건, 빈 path+정상 path 혼합 2건, 정상 path만 1건의 정확 기대 dict와 오류 재현→수정 후 PASS를 추가한다.
-- 실제 결함이 재현되면 **이 범위의 A 소유 파일**에서만 최소 수정하고 수정 전 실패/수정 후 PASS 증거를 남긴다. 외부 네트워크·시장 실거래·운영 state·배포 실행 금지. 신규 `tests/test_p15_forward_validation_parity_chain.py` + 기존 `tests/test_q10_index_close_fallback.py`, `tests/test_q10_lead_market_forward_validation.py` 정상/`-O`.
+1~6 전부 필수. 한 항목 `BLOCKED`면 정확 함수/입력/실패 명령/해제 담당/재개점과 함께 격리하고 **다른 모든 안전 항목을 계속 수행**. 이미 유효한 같은 SHA·범위 PASS 재실행·빈 커밋·무의미한 이력 복사 금지. 신규/변경 테스트는 `python -m pytest -q -p no:cacheprovider <exact paths>` 및 `python -O -m pytest -q -p no:cacheprovider <same paths>`를 실제 실행하고 exit/FAIL/PASS 기록. 변경 전/후 실제 LOC·함수·call graph·입력/기대/실제와 오류 재현을 제출. 본인 A 브랜치에 허용 코드·테스트만 fast-forward 커밋·푸시하고 원격 HEAD/변경 blob 재확인. C04 통합/CI, C05 수용/DONE은 수행하지 않는다.
 
-## 5 — BTC 기존 성과·리포트 계약 보강 (후속 안전 작업)
-
-**SOURCE:** `libs/reporting/baseline_btc_woori_tech/forward_returns.py`, `libs/reporting/baseline_btc_woori_tech/vnext/report.py`.
-
-- 실제 함수 `attach_forward_returns`, `summarize`, `summarize_policy_variant`, `aggregate`, `render`를 사용해 임시·합성 데이터의 결측/0 기준/한 거래/여러 거래/입력 순서·정렬·표본 수·불변 입력을 검증한다. **현재 구현의 실제 출력에 근거한** 명시적인 기대값을 고정한다.
-- 실질 코드 결함이 나오면 해당 A 소유 소스만 최소 수정. 재현되지 않으면 테스트만 보강하고 6번으로 이동. 새로운 투자 정책·시장 데이터 호출은 넣지 않는다. 신규 `tests/test_p15_btc_forward_report_parity.py`, 정상/`-O`.
-
-## 6 — B 코드 독립 검증 (상대 브랜치 수정 금지)
-
-- B **고정 SOURCE SHA** `801ca211b83d04d4dc38e78f394f57ffb5dd29e4`의 `libs/contracts/agent_outputs.py`에서 `_build_strategist_trace_summary`, `_build_scanner_trace_summary`, `build_strategist_output_artifact`, `build_scanner_output_artifact`를 임시 격리 복사본으로 독립 검증한다. B 소스에 어떤 쓰기·푸시도 하지 않는다.
-- 기존 `tests/test_p161_agent_output_contract_freeze.py` 동결 오라클의 **변경 없는 실행**과, 이벤트 우선순위·누락뉴스·0 후보·runner-up tie-break·serializable 결과의 새 음성/경계 입력을 확인한다. 자체 소스 검증과 혼동하지 않고 B SOURCE SHA/실행 명령/기대값·실제값을 Issue #11에 보고한다. frozen fixture/CI·B 테스트 소스 변경 금지.
-- B의 변경 SHA가 이후 도착해도 이번 검증 고정 SHA는 바꾸지 않는다. 신 SHA 전체 피어 수용은 다음 C03에서 새 지시로 배정한다. 기존 같은 입력·SHA scoped PASS의 기계적 반복 금지.
-
-## 7 — 필수 실행·원격 보고
-
-- **1~6 모든 과제는 독립적인 필수 이행 의무다.** 순서 없이 진행할 수 있으며 한 과제의 성공·실패·선행 결과를 기다리느라 다른 과제를 멈추지 않는다. **지시한 모듈 분리·호출자 회귀·BTC 검증·상대 peer 중 하나라도 미이행이면 이번 명령은 미완료**다. 작업자 스스로 '이만하면 됐다', '지난번 PASS가 있다', '몇 건 수정했으니 충분하다', '시간이 부족할 듯하다'고 판단해 조기 종료하거나 항목을 누락시키지 마라. 실제 동일 구현 완료가 원격 SHA와 테스트로 입증된 경우에만 VERIFIED_ALREADY; 과제 1~3은 새 Owner로 함수 본문을 실제 MOVE하고 wrapper를 연결해야 구현 완료다. 결함이 재현되지 않는 과제 4~5도 **명시한 전체 경계 테스트 실행은 필수**다. **오직 명시적 안전 위험·실제 도구/권한/환경 차단·플랫폼 실행 한도**에만 해당 항목을 BLOCKED/NOT_RUN으로 기록한다. 개별 차단은 나머지 항목의 중단 이유가 아니며 모든 다른 과제를 이어서 수행한다. 한도 도달 시 미완료 과제별 현재 코드 위치·명령·재개점을 정확히 남긴다. 시간·건수 할당량 없음.
-- 매 수정 패키지마다 신규 표적 테스트 `python -m pytest -q -p no:cacheprovider <paths>`와 동일 테스트의 `python -O -m pytest -q -p no:cacheprovider <paths>` 양 모드를 **실제 실행**. CI 전체 PASS나 peer 전체 PASS를 부분 검증만으로 주장하지 않는다. 의존성 부재는 NOT_RUN/환경 차단.
-- A 기존 작업 브랜치에 소유 코드·테스트만 커밋/푸시, 원격 HEAD·추가된 파일 blob까지 확인. Git CLI 인증 실패면 허용된 GitHub 연결 쓰기를 fast-forward 조건에서만 사용. `main`/`integration`/B 코드/새 브랜치/PR/force push/문서/CSV/RF/STATUS/동결 oracle 변경 금지.
-- Issue **#11 댓글**에 실제 `START_KST,END_KST,ELAPSED_MIN` (추정 금지), **번호별** 바뀐 소스·테스트·before→after LOC·normal/-O exit·실제 원격 SHA·독립 peer SOURCE SHA·남은 안전 작업/차단 및 해제 담당 기록. 완료됐다고 판단한 번호는 증거로만 표시하고 지팀장 C05가 공식 완료 판정한다.
+#11 댓글에 **실측** `START_KST/END_KST/ELAPSED_MIN`(없으면 `NOT_VERIFIED`), 각 번호별 `IMPLEMENTED|VERIFIED_ALREADY(정확 SHA)|BLOCKED|NOT_RUN`, 테스트 normal/-O 명령·exit·SOURCE SHA, peer 고정 SHA, 미완료 번호·다음 안전 함수/재개점과 30분 미만 종료 사유를 기록. 예약 간격·댓글 시각·테스트 시간으로 경과시간을 추정하지 않는다. 30분은 감사 경보이지 강제 실행시간이 아니다. 모든 지정 안전 과제 완료 또는 실증 차단/실제 플랫폼 한도 외에는 종료하지 않는다.
