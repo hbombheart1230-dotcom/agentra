@@ -187,18 +187,36 @@ def build_log_inventory(log_root: Path) -> Dict[str, Any]:
 
 def apply_log_move_candidates(log_root: Path, candidates: List[LogMoveCandidate]) -> List[Dict[str, str]]:
     log_root = Path(log_root)
+    root = log_root.resolve()
     results: List[Dict[str, str]] = []
     for candidate in candidates:
-        src = log_root / candidate.rel_path
-        dst = log_root / candidate.target_rel_path
+        source_rel = Path(candidate.rel_path)
+        target_rel = Path(candidate.target_rel_path)
+        src = log_root / source_rel
+        dst = log_root / target_rel
+
+        def within_root(relative: Path, *, allow_root: bool = False) -> bool:
+            if relative.is_absolute() or ".." in relative.parts or (relative == Path(".") and not allow_root):
+                return False
+            try:
+                resolved = (root / relative).resolve(strict=False)
+                resolved.relative_to(root)
+                return allow_root or resolved != root
+            except (ValueError, OSError, RuntimeError):
+                return False
+
+        if not (within_root(source_rel) and within_root(target_rel) and within_root(target_rel.parent, allow_root=True)):
+            results.append(
+                {"src": str(src), "dst": str(dst), "category": candidate.category, "status": "skipped_unsafe_path"}
+            )
+            continue
         if not src.exists():
             results.append(
                 {"src": str(src), "dst": str(dst), "category": candidate.category, "status": "skipped_missing_source"}
             )
             continue
         if dst.exists():
-            # Maintenance must never silently discard an existing log.  Leave
-            # this candidate untouched and let the caller surface the conflict.
+            # Maintenance must never silently discard an existing log.
             results.append(
                 {"src": str(src), "dst": str(dst), "category": candidate.category, "status": "skipped_destination_exists"}
             )
