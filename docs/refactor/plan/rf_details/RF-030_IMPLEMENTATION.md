@@ -1,50 +1,60 @@
-# RF-030 — 코드 구조/함수 재배치 설계 (T00/V3)
+# RF-030 — SOURCE 실제 함수·TARGET 상세설계
 
-**원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/CLAUDE_A/RF-030.md` blob `d2847d93b4eac61779cd1d7a3ea897409c272bd4`.
-**구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 16개 파일; 다른 RF 경로 쓰기 금지.
+**입력 고정:** `integration/p1.5@a9568fbbc6007b9eafc6cb1c85363f406255774a`, RF 원본 `docs/refactor/plan/queue/01_PENDING/CLAUDE_A/RF-030.md`, FILE_COVERAGE CSV blob `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. **독점:** Claude A 구현 / Codex B read-only. 소유 16개 경로.
 
-> 설계와 구현은 다르다. 기존 DONE·KEEP·PASS 이력은 그대로 둔다. 이 문서의 `KEEP_IF`는 코드 실사 전 확정 PASS가 아니며, 정당한 KEEP이면 1줄 사유/블롭으로 즉시 통과한다. 반대로 큰 소스의 미완료 함수 이동은 기존 DONE과 별도로 TARGET_GAP으로 추적한다.
+## 1. 실측 함수 단위 분석 / 배치
 
-## 1. 소스 함수 → 목표 모듈/함수
+실제 `libs/reporting/operator_visibility.py` blob `26c71139e363632e914dff16e690ef2d209277c6` (1521 LOC)의 함수 정의 확인. 이 파일의 단일 기능 경계·소비자 조건을 검토한 분리 후보이며, 영향이 있는 IO/State/LLM/브로커 함수는 효과 Owner로 유지한다.
 
-**원본별 실측 함수 매핑 상태: 미확정.** 아래 전체 Git blob/크기 목록과 고정 목표 폴더 기준으로 분리 대상 원본을 지목한다. 코드 본문을 직접 읽지 않은 함수명·신규 함수를 추측해 확정 명령으로 발행하지 않는다. 해당 Actor가 구현 전 *아래 큰 파일*의 실제 `def/class`를 확인해 함수명을 이 문서에 보강하고, 단일 책임이면 KEEP 사유 한 줄로 즉시 통과한다.
+| 원본 def/정확 라인 | 이동/KEEP | 신규/기존 목표 파일::함수 | 이유/증거 |
+|---|---|---|---|
+| `libs/reporting/operator_visibility.py::_build_run_contexts` L357-680 | MOVE_BODY | `libs/reporting/operator_visibility_build_run_contexts.py::_build_run_contexts` | 324행 · 순수 후보 |
+| `libs/reporting/operator_visibility.py::_build_trading_health_status` L181-223 | MOVE_BODY | `libs/reporting/operator_visibility_build_trading_health_status.py::_build_trading_health_status` | 43행 · 순수 후보 |
+| `libs/reporting/operator_visibility.py::_iter_jsonl` L94-113 | KEEP_EFFECT_SPLIT_PURE | `libs/reporting/operator_visibility.py::_iter_jsonl` | 20행 · IO |
 
-## 2. 우선 구조 분석할 대형 Python 파일
+### _build_run_contexts — 원본 324행
+- **확인된 책임:** `libs/reporting/operator_visibility.py` L357–680; 직접 호출 helper `_run_context_default`, `_safe_int`, `_reason_text`, `_humanize_reason`, `_compact_kv_text`, `_decision_trace_inner`, `_broker_code_success`, `_normalize_reason_code`. 감지된 효과: 없음.
+- **목표:** `libs/reporting/operator_visibility_build_run_contexts.py::_build_run_contexts` (Owner Claude A, RF-030). 본문을 이 모듈로 실제 이전, 기존 함수는 동일 서명의 wrapper만 유지. 호출자/patch seam·키 순서·기존 예외 보존, 중복 로직 제거.
+- **검증:** exact 고정 SHA before/after fake fixture 정상·경계·예외/monkeypatch 테스트 1회만; 추가 -O/full peer 반복 금지.
 
-| SOURCE_PATH | bytes | 정확한 Git blob | 다음 코드 설계 절차 |
-|---|---:|---|---|
-| `libs/reporting/operator_visibility.py` | 77321 | `26c71139e363632e914dff16e690ef2d209277c6` | 실제 함수/메서드 경계 읽기 → 서로 다른 책임만 분리 → `libs/reporting/operator_visibility_parts.py` **목표 후보**(동일 역할 기존 모듈 우선) → thin wrapper |
-| `libs/reporting/operator_period_summary.py` | 44813 | `d6d1dd1ceb95842926095228c02bc5b35849ca17` | 실제 함수/메서드 경계 읽기 → 서로 다른 책임만 분리 → `libs/reporting/operator_period_summary_parts.py` **목표 후보**(동일 역할 기존 모듈 우선) → thin wrapper |
+### _build_trading_health_status — 원본 43행
+- **확인된 책임:** `libs/reporting/operator_visibility.py` L181–223; 직접 호출 helper `_read_json`, `_safe_int`, `_safe_float`. 감지된 효과: 없음.
+- **목표:** `libs/reporting/operator_visibility_build_trading_health_status.py::_build_trading_health_status` (Owner Claude A, RF-030). 본문을 이 모듈로 실제 이전, 기존 함수는 동일 서명의 wrapper만 유지. 호출자/patch seam·키 순서·기존 예외 보존, 중복 로직 제거.
+- **검증:** exact 고정 SHA before/after fake fixture 정상·경계·예외/monkeypatch 테스트 1회만; 추가 -O/full peer 반복 금지.
 
-## 3. 소유 전체 파일 / 기본 목표 경로 / 정당한 KEEP 근거
+### _iter_jsonl — 원본 20행
+- **확인된 책임:** `libs/reporting/operator_visibility.py` L94–113; 직접 호출 helper `_gen`. 감지된 효과: IO.
+- **목표:** `libs/reporting/operator_visibility.py::_iter_jsonl` (Owner Claude A, RF-030). IO·State·class context가 있는 부분은 원위치 효과 Owner로 KEEP. 실제 부작용과 무관한 계산 블록만 확인된 경우에 한해 새 pure helper로 분리, 아니면 KEEP_JUSTIFIED 한 줄로 승인.
+- **검증:** exact 고정 SHA before/after fake fixture 정상·경계·예외/monkeypatch 테스트 1회만; 추가 -O/full peer 반복 금지.
 
-`SOURCE_PATH = 기본 TARGET_PATH`는 T00~T09의 기존 경로 유지 후보이며 새 코어 함수는 위 1·2항으로 분리한다. 경로가 맞고 단일 책임·적정 길이이면 **KEEP_OK**. 근거는 한 줄, 동일 Git blob 재검증 0.
+## 2. 전체 파일별 SOURCE / 기본 목표 TARGET / KEEP·MOVE
 
-| SOURCE_PATH → 기본 TARGET_PATH | bytes | Git blob | 처리/사유 |
-|---|---:|---|---|
-| `libs/reporting/operator_candidate_decisions.py` → `libs/reporting/operator_candidate_decisions.py` | 2446 | `f381c6cf1b57` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary.py` → `libs/reporting/operator_period_summary.py` | 44813 | `d6d1dd1ceb95` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/closeout_reconciliation.py` → `libs/reporting/operator_period_summary_parts/closeout_reconciliation.py` | 8239 | `f365ed88d29b` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/markdown_daily_summary.py` → `libs/reporting/operator_period_summary_parts/markdown_daily_summary.py` | 17273 | `1fccf10264dc` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py` → `libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py` | 8382 | `79c904a04a64` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/operator_readouts.py` → `libs/reporting/operator_period_summary_parts/operator_readouts.py` | 4246 | `fffbf8e497b3` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py` → `libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py` | 14920 | `3a2b652091e8` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/pattern_naming.py` → `libs/reporting/operator_period_summary_parts/pattern_naming.py` | 10513 | `ee5924070a0b` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/period_payloads.py` → `libs/reporting/operator_period_summary_parts/period_payloads.py` | 10463 | `6f10f994521d` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/residual_positions.py` → `libs/reporting/operator_period_summary_parts/residual_positions.py` | 13887 | `3e5454d9b36d` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/trade_decision_fields.py` → `libs/reporting/operator_period_summary_parts/trade_decision_fields.py` | 18339 | `27edc86c7772` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py` → `libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py` | 14473 | `5ff83b766bd7` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_summary_refresh.py` → `libs/reporting/operator_summary_refresh.py` | 4667 | `91b2549c307f` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_visibility.py` → `libs/reporting/operator_visibility.py` | 77321 | `26c71139e363` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_visibility_parts/reason_text_and_time.py` → `libs/reporting/operator_visibility_parts/reason_text_and_time.py` | 7638 | `e111f89416e8` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py` → `libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py` | 12679 | `fea5094b7a91` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
+기존의 목표 폴더/공개 경로가 맞으면 KEEP_OK 즉시 승인. 함수 이동 목적지는 위 표의 실제 목표를 사용하며 원본 경로는 호환 wrapper 유지.
 
-## 4. 구현 · 검증 · 인수 체크
+| SOURCE_PATH | 기본 TARGET_PATH | Git SHA/bytes | 처리조건 |
+|---|---|---|---|
+| `libs/reporting/operator_candidate_decisions.py` | `libs/reporting/operator_candidate_decisions.py` | `f381c6cf1b57` / 2446B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary.py` | `libs/reporting/operator_period_summary.py` | `d6d1dd1ceb95` / 44813B | 긴 파일: 함수 분리 필요성 1회 판단, 실제 이름 확보 전 무작위 MOVE 금지 |
+| `libs/reporting/operator_period_summary_parts/closeout_reconciliation.py` | `libs/reporting/operator_period_summary_parts/closeout_reconciliation.py` | `f365ed88d29b` / 8239B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary_parts/markdown_daily_summary.py` | `libs/reporting/operator_period_summary_parts/markdown_daily_summary.py` | `1fccf10264dc` / 17273B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py` | `libs/reporting/operator_period_summary_parts/markdown_period_symbol_summary.py` | `79c904a04a64` / 8382B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary_parts/operator_readouts.py` | `libs/reporting/operator_period_summary_parts/operator_readouts.py` | `fffbf8e497b3` / 4246B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py` | `libs/reporting/operator_period_summary_parts/pattern_buckets_and_performance.py` | `3a2b652091e8` / 14920B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary_parts/pattern_naming.py` | `libs/reporting/operator_period_summary_parts/pattern_naming.py` | `ee5924070a0b` / 10513B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary_parts/period_payloads.py` | `libs/reporting/operator_period_summary_parts/period_payloads.py` | `6f10f994521d` / 10463B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary_parts/residual_positions.py` | `libs/reporting/operator_period_summary_parts/residual_positions.py` | `3e5454d9b36d` / 13887B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary_parts/trade_decision_fields.py` | `libs/reporting/operator_period_summary_parts/trade_decision_fields.py` | `27edc86c7772` / 18339B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py` | `libs/reporting/operator_period_summary_parts/trade_rows_and_metrics.py` | `5ff83b766bd7` / 14473B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_summary_refresh.py` | `libs/reporting/operator_summary_refresh.py` | `91b2549c307f` / 4667B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_visibility.py` | `libs/reporting/operator_visibility.py` | `26c71139e363` / 77321B | 위 실측 함수 이동·효과 경계 먼저 |
+| `libs/reporting/operator_visibility_parts/reason_text_and_time.py` | `libs/reporting/operator_visibility_parts/reason_text_and_time.py` | `e111f89416e8` / 7638B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py` | `libs/reporting/operator_visibility_parts/summary_snapshot_and_bundle.py` | `fea5094b7a91` / 12679B | 짧은 단일 책임이면 KEEP_OK |
 
-1. 소유 개발자가 원본 함수와 소비자·효과를 **딱 한 번** 확인. 역할/위치 적합하면 `KEEP_OK | path | 한 줄 사유 | blob` 즉시 통과, 반복 테스트·반대 전수 peer/추가 문서 요구하지 않는다.
-2. 실제 MOVE는 SOURCE의 계산 몸체를 TARGET Owner에 **이전**하고 원본에 같은 이름·인자의 얇은 wrapper만 남긴다. SOURCE LOC 감소·TARGET 새 blob·호출자 연결을 증거로 남긴다.
-3. 변경 함수에 한하여 before/after fixture 2~4개를 대상으로 **normal targeted pytest 또는 unittest 1회**. 변화 없는 KEEP에는 테스트 0. `-O`/전체 CI/전체 frozen 매 RF 의무 없음.
-4. A/B가 각각 자기 브랜치 code/test만 변경·정상 push. 서로 다른 RF가 같은 target 경로를 소유하면 구현 전에 C03이 단독 Owner를 지정. 이 문서의 새로운 타깃은 목표 **제안**이지 기존 FILE_COVERAGE를 자동 변경한 기록이 아니다.
-5. C04가 원격 소스 SHA 기준 선별 통합, C05가 기존 RF 이력을 보존하며 `TARGET_STRUCTURE=PASS/PARTIAL/BLOCKED` 판단. 기존 DONE은 자동 취소하지 않되 TARGET_GAP을 완성으로 포장하지 않는다.
+## 3. 개발 실행·리뷰·DONE
 
-**보고:** `RF | ORIGINAL_SOURCE_BLOB | MOVED_FUNCTIONS | NEW_TARGETS | KEEP_OK(paths+reason) | BEFORE/AFTER_LOC | TEST_EXIT | PUSH_SHA | INTEGRATION_SHA | TARGET_STRUCTURE`. 보호된 주문/Broker/Guard/Step5C/UEF/운영 파일·DB 실효과는 무승인 변경하지 않는다.
+1. 위치 정확·단일 역할·짧거나 합당한 effect/CLI 경계는 `KEEP_OK|PATH|한 줄 이유|BLOB`으로 종결. 같은 blob 신규 테스트/peer 금지.
+2. 실제 `MOVE_BODY`만 SOURCE에서 계산 구현을 삭제하고 TARGET Owner에 실제 함수를 추가. 원명 thin wrapper와 use-time monkeypatch·호출 순서를 유지. 기존 같은 Owner 존재하면 재사용, 이중 구현 금지.
+3. 바뀐 경계의 old/new fake/tmp fixture 기반 **정상 targeted unittest/pytest 1회 exit0**. live LLM·Broker·주문/Guard/UEF·운영 State/DB/파일 쓰기 금지. 한 항목 차단은 다른 과제 중지 사유 아님.
+4. Claude A 소유 branch code/test만 commit/push; source와 target blob, 원본 LOC 감소, 이동 함수, 정당 KEEP 사유, TEST_EXIT를 #11에 기록. C04 최소 묶음 통합, C05 기존 DONE 이력 보존 + 미완료 TARGET_GAP만 다음 구현 배정.
+
+`RF=RF-030|SOURCE_BLOB|FUNCTION_MOVES|TARGET_BLOBS|KEEP_REASON|BEFORE_AFTER_LOC|NORMAL_EXIT|PUSH_SHA|INTEGRATION_SHA|TARGET_VERDICT`

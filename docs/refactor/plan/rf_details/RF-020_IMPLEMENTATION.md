@@ -1,62 +1,86 @@
-# RF-020 — 코드 구조/함수 재배치 설계 (T00/V3)
+# RF-020 — SOURCE 실제 함수·TARGET 상세설계
 
-**원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/05_DONE/CODEX_B/RF-020.md` blob `1cc1846c82beeaa2401c5cc98ef4619b9d5f65a6`.
-**구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 30개 파일; 다른 RF 경로 쓰기 금지.
+**입력 고정:** `integration/p1.5@a9568fbbc6007b9eafc6cb1c85363f406255774a`, RF 원본 `docs/refactor/plan/queue/05_DONE/CODEX_B/RF-020.md`, FILE_COVERAGE CSV blob `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. **독점:** Codex B 구현 / Claude A read-only. 소유 30개 경로.
 
-> 설계와 구현은 다르다. 기존 DONE·KEEP·PASS 이력은 그대로 둔다. 이 문서의 `KEEP_IF`는 코드 실사 전 확정 PASS가 아니며, 정당한 KEEP이면 1줄 사유/블롭으로 즉시 통과한다. 반대로 큰 소스의 미완료 함수 이동은 기존 DONE과 별도로 TARGET_GAP으로 추적한다.
+## 1. 실측 함수 단위 분석 / 배치
 
-## 1. 소스 함수 → 목표 모듈/함수
+실제 `libs/runtime/monitor/entry_cascade_projection.py` blob `8dfaa5184be988a50e433d1b1a89d8812f865add` (278 LOC)의 함수 정의 확인. 이 파일의 단일 기능 경계·소비자 조건을 검토한 분리 후보이며, 영향이 있는 IO/State/LLM/브로커 함수는 효과 Owner로 유지한다.
 
-**원본별 실측 함수 매핑 상태: 미확정.** 아래 전체 Git blob/크기 목록과 고정 목표 폴더 기준으로 분리 대상 원본을 지목한다. 코드 본문을 직접 읽지 않은 함수명·신규 함수를 추측해 확정 명령으로 발행하지 않는다. 해당 Actor가 구현 전 *아래 큰 파일*의 실제 `def/class`를 확인해 함수명을 이 문서에 보강하고, 단일 책임이면 KEEP 사유 한 줄로 즉시 통과한다.
+| 원본 def/정확 라인 | 이동/KEEP | 신규/기존 목표 파일::함수 | 이유/증거 |
+|---|---|---|---|
+| `libs/runtime/monitor/entry_cascade_projection.py::entry_cascade_entry_cooldown_map_runner_entry` L102-185 | MOVE_BODY | `libs/runtime/monitor/entry_cascade_projection_entry_cascade_entry_cooldown_map_run.py::entry_cascade_entry_cooldown_map_runner_entry` | 84행 · 순수 후보 |
+| `libs/runtime/monitor/entry_cascade_projection.py::entry_cascade_intent` L215-278 | MOVE_BODY | `libs/runtime/monitor/entry_cascade_projection_entry_cascade_intent.py::entry_cascade_intent` | 64행 · 순수 후보 |
+| `libs/runtime/monitor/entry_cascade_projection.py::entry_cascade_buy_blocked_closeout_window_buy_blocked` L52-101 | MOVE_BODY | `libs/runtime/monitor/entry_cascade_projection_entry_cascade_buy_blocked_closeout_w.py::entry_cascade_buy_blocked_closeout_window_buy_blocked` | 50행 · 순수 후보 |
+| `libs/runtime/monitor/entry_cascade_projection.py::entry_cascade_entry_candidate_cascade_entry_cascade_co` L12-51 | MOVE_BODY | `libs/runtime/monitor/entry_cascade_projection_entry_cascade_entry_candidate_cascad.py::entry_cascade_entry_candidate_cascade_entry_cascade_co` | 40행 · 순수 후보 |
+| `libs/runtime/monitor/entry_cascade_projection.py::entry_cascade_buy_blocked_closeout_window_buy_blocked_2` L186-214 | MOVE_BODY | `libs/runtime/monitor/entry_cascade_projection_entry_cascade_buy_blocked_closeout_w.py::entry_cascade_buy_blocked_closeout_window_buy_blocked_2` | 29행 · 순수 후보 |
 
-## 2. 우선 구조 분석할 대형 Python 파일
+### entry_cascade_entry_cooldown_map_runner_entry — 원본 84행
+- **확인된 책임:** `libs/runtime/monitor/entry_cascade_projection.py` L102–185; 직접 호출 helper `_monitor_selected_snapshot_for_symbol`, `_evaluate_monitor_entry_candidate`. 감지된 효과: 없음.
+- **목표:** `libs/runtime/monitor/entry_cascade_projection_entry_cascade_entry_cooldown_map_run.py::entry_cascade_entry_cooldown_map_runner_entry` (Owner Codex B, RF-020). 본문을 이 모듈로 실제 이전, 기존 함수는 동일 서명의 wrapper만 유지. 호출자/patch seam·키 순서·기존 예외 보존, 중복 로직 제거.
+- **검증:** exact 고정 SHA before/after fake fixture 정상·경계·예외/monkeypatch 테스트 1회만; 추가 -O/full peer 반복 금지.
 
-**20KB 초과 원본 Python 없음.** 파일이 작아 책임·위치가 맞는 경우 KEEP_OK. 단순 폴더 꾸미기를 위해 추가 파일 만들지 않는다.
+### entry_cascade_intent — 원본 64행
+- **확인된 책임:** `libs/runtime/monitor/entry_cascade_projection.py` L215–278; 직접 호출 helper 없음. 감지된 효과: 없음.
+- **목표:** `libs/runtime/monitor/entry_cascade_projection_entry_cascade_intent.py::entry_cascade_intent` (Owner Codex B, RF-020). 본문을 이 모듈로 실제 이전, 기존 함수는 동일 서명의 wrapper만 유지. 호출자/patch seam·키 순서·기존 예외 보존, 중복 로직 제거.
+- **검증:** exact 고정 SHA before/after fake fixture 정상·경계·예외/monkeypatch 테스트 1회만; 추가 -O/full peer 반복 금지.
 
+### entry_cascade_buy_blocked_closeout_window_buy_blocked — 원본 50행
+- **확인된 책임:** `libs/runtime/monitor/entry_cascade_projection.py` L52–101; 직접 호출 helper `_evaluate_monitor_entry_candidate`. 감지된 효과: 없음.
+- **목표:** `libs/runtime/monitor/entry_cascade_projection_entry_cascade_buy_blocked_closeout_w.py::entry_cascade_buy_blocked_closeout_window_buy_blocked` (Owner Codex B, RF-020). 본문을 이 모듈로 실제 이전, 기존 함수는 동일 서명의 wrapper만 유지. 호출자/patch seam·키 순서·기존 예외 보존, 중복 로직 제거.
+- **검증:** exact 고정 SHA before/after fake fixture 정상·경계·예외/monkeypatch 테스트 1회만; 추가 -O/full peer 반복 금지.
 
-## 3. 소유 전체 파일 / 기본 목표 경로 / 정당한 KEEP 근거
+### entry_cascade_entry_candidate_cascade_entry_cascade_co — 원본 40행
+- **확인된 책임:** `libs/runtime/monitor/entry_cascade_projection.py` L12–51; 직접 호출 helper `_resolve_entry_candidate_cascade_config`. 감지된 효과: 없음.
+- **목표:** `libs/runtime/monitor/entry_cascade_projection_entry_cascade_entry_candidate_cascad.py::entry_cascade_entry_candidate_cascade_entry_cascade_co` (Owner Codex B, RF-020). 본문을 이 모듈로 실제 이전, 기존 함수는 동일 서명의 wrapper만 유지. 호출자/patch seam·키 순서·기존 예외 보존, 중복 로직 제거.
+- **검증:** exact 고정 SHA before/after fake fixture 정상·경계·예외/monkeypatch 테스트 1회만; 추가 -O/full peer 반복 금지.
 
-`SOURCE_PATH = 기본 TARGET_PATH`는 T00~T09의 기존 경로 유지 후보이며 새 코어 함수는 위 1·2항으로 분리한다. 경로가 맞고 단일 책임·적정 길이이면 **KEEP_OK**. 근거는 한 줄, 동일 Git blob 재검증 0.
+### entry_cascade_buy_blocked_closeout_window_buy_blocked_2 — 원본 29행
+- **확인된 책임:** `libs/runtime/monitor/entry_cascade_projection.py` L186–214; 직접 호출 helper 없음. 감지된 효과: 없음.
+- **목표:** `libs/runtime/monitor/entry_cascade_projection_entry_cascade_buy_blocked_closeout_w.py::entry_cascade_buy_blocked_closeout_window_buy_blocked_2` (Owner Codex B, RF-020). 본문을 이 모듈로 실제 이전, 기존 함수는 동일 서명의 wrapper만 유지. 호출자/patch seam·키 순서·기존 예외 보존, 중복 로직 제거.
+- **검증:** exact 고정 SHA before/after fake fixture 정상·경계·예외/monkeypatch 테스트 1회만; 추가 -O/full peer 반복 금지.
 
-| SOURCE_PATH → 기본 TARGET_PATH | bytes | Git blob | 처리/사유 |
-|---|---:|---|---|
-| `libs/runtime/monitor/__init__.py` → `libs/runtime/monitor/__init__.py` | 0 | `e69de29bb2d1` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/cycle_detail_projection.py` → `libs/runtime/monitor/cycle_detail_projection.py` | 249 | `891fc0f2685e` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py` → `libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py` | 291 | `337def9d3829` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/cycle_event_payloads.py` → `libs/runtime/monitor/cycle_event_payloads.py` | 233 | `92353886934b` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/cycle_log_trace_payloads.py` → `libs/runtime/monitor/cycle_log_trace_payloads.py` | 241 | `ea09d2208d54` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/cycle_output_projection.py` → `libs/runtime/monitor/cycle_output_projection.py` | 249 | `15efec65b9f7` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/cycle_output_projection_value_state_monitor.py` → `libs/runtime/monitor/cycle_output_projection_value_state_monitor.py` | 289 | `8d71d5444db6` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/cycle_posture_projection.py` → `libs/runtime/monitor/cycle_posture_projection.py` | 251 | `bb5bc64aef88` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_candidate_annotation.py` → `libs/runtime/monitor/entry_candidate_annotation.py` | 1509 | `4e8261c75470` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_candidate_guards.py` → `libs/runtime/monitor/entry_candidate_guards.py` | 4904 | `260ec04e8474` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_candidate_policy.py` → `libs/runtime/monitor/entry_candidate_policy.py` | 3988 | `efd4fc99b66d` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_candidate_probe.py` → `libs/runtime/monitor/entry_candidate_probe.py` | 2596 | `d258a5a200c4` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_carry_guard.py` → `libs/runtime/monitor/entry_carry_guard.py` | 2900 | `0b38d174ee3b` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_cascade_projection.py` → `libs/runtime/monitor/entry_cascade_projection.py` | 19770 | `8dfaa5184be9` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_cascade_selection.py` → `libs/runtime/monitor/entry_cascade_selection.py` | 4155 | `db8b243f694d` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_context.py` → `libs/runtime/monitor/entry_context.py` | 3639 | `b75523ccbf59` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_cycle_context.py` → `libs/runtime/monitor/entry_cycle_context.py` | 7386 | `295d06ced47b` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_evidence.py` → `libs/runtime/monitor/entry_evidence.py` | 221 | `16c01ec85b3f` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_focus_output_projection.py` → `libs/runtime/monitor/entry_focus_output_projection.py` | 261 | `a03222361945` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_guard_evidence.py` → `libs/runtime/monitor/entry_guard_evidence.py` | 4816 | `e202b6e6858d` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/entry_quality_projection.py` → `libs/runtime/monitor/entry_quality_projection.py` | 3713 | `a89377fa3220` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/exit_decision_projection.py` → `libs/runtime/monitor/exit_decision_projection.py` | 11821 | `8d6b25a64db1` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/exit_frame_projection.py` → `libs/runtime/monitor/exit_frame_projection.py` | 6887 | `94364273e750` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/policy_output_projection.py` → `libs/runtime/monitor/policy_output_projection.py` | 251 | `6d1170c9863b` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/scanner_monitor_handoff_projection.py` → `libs/runtime/monitor/scanner_monitor_handoff_projection.py` | 271 | `b497c1376f9e` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/signal_explanation.py` → `libs/runtime/monitor/signal_explanation.py` | 239 | `89b372fc2a81` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/signal_features.py` → `libs/runtime/monitor/signal_features.py` | 15750 | `6d58c717290f` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/signal_features_breakout_volume_gate.py` → `libs/runtime/monitor/signal_features_breakout_volume_gate.py` | 10873 | `9b1ad3d2fc31` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/signal_score_projection.py` → `libs/runtime/monitor/signal_score_projection.py` | 17772 | `a1a293581795` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/runtime/monitor/signal_score_projection_chart_structure_decision.py` → `libs/runtime/monitor/signal_score_projection_chart_structure_decision.py` | 4319 | `1464297872b4` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
+## 2. 전체 파일별 SOURCE / 기본 목표 TARGET / KEEP·MOVE
 
-## 4. 구현 · 검증 · 인수 체크
+기존의 목표 폴더/공개 경로가 맞으면 KEEP_OK 즉시 승인. 함수 이동 목적지는 위 표의 실제 목표를 사용하며 원본 경로는 호환 wrapper 유지.
 
-1. 소유 개발자가 원본 함수와 소비자·효과를 **딱 한 번** 확인. 역할/위치 적합하면 `KEEP_OK | path | 한 줄 사유 | blob` 즉시 통과, 반복 테스트·반대 전수 peer/추가 문서 요구하지 않는다.
-2. 실제 MOVE는 SOURCE의 계산 몸체를 TARGET Owner에 **이전**하고 원본에 같은 이름·인자의 얇은 wrapper만 남긴다. SOURCE LOC 감소·TARGET 새 blob·호출자 연결을 증거로 남긴다.
-3. 변경 함수에 한하여 before/after fixture 2~4개를 대상으로 **normal targeted pytest 또는 unittest 1회**. 변화 없는 KEEP에는 테스트 0. `-O`/전체 CI/전체 frozen 매 RF 의무 없음.
-4. A/B가 각각 자기 브랜치 code/test만 변경·정상 push. 서로 다른 RF가 같은 target 경로를 소유하면 구현 전에 C03이 단독 Owner를 지정. 이 문서의 새로운 타깃은 목표 **제안**이지 기존 FILE_COVERAGE를 자동 변경한 기록이 아니다.
-5. C04가 원격 소스 SHA 기준 선별 통합, C05가 기존 RF 이력을 보존하며 `TARGET_STRUCTURE=PASS/PARTIAL/BLOCKED` 판단. 기존 DONE은 자동 취소하지 않되 TARGET_GAP을 완성으로 포장하지 않는다.
+| SOURCE_PATH | 기본 TARGET_PATH | Git SHA/bytes | 처리조건 |
+|---|---|---|---|
+| `libs/runtime/monitor/__init__.py` | `libs/runtime/monitor/__init__.py` | `e69de29bb2d1` / 0B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/cycle_detail_projection.py` | `libs/runtime/monitor/cycle_detail_projection.py` | `891fc0f2685e` / 249B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py` | `libs/runtime/monitor/cycle_detail_projection_exit_decision_detail.py` | `337def9d3829` / 291B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/cycle_event_payloads.py` | `libs/runtime/monitor/cycle_event_payloads.py` | `92353886934b` / 233B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/cycle_log_trace_payloads.py` | `libs/runtime/monitor/cycle_log_trace_payloads.py` | `ea09d2208d54` / 241B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/cycle_output_projection.py` | `libs/runtime/monitor/cycle_output_projection.py` | `15efec65b9f7` / 249B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/cycle_output_projection_value_state_monitor.py` | `libs/runtime/monitor/cycle_output_projection_value_state_monitor.py` | `8d71d5444db6` / 289B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/cycle_posture_projection.py` | `libs/runtime/monitor/cycle_posture_projection.py` | `bb5bc64aef88` / 251B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_candidate_annotation.py` | `libs/runtime/monitor/entry_candidate_annotation.py` | `4e8261c75470` / 1509B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_candidate_guards.py` | `libs/runtime/monitor/entry_candidate_guards.py` | `260ec04e8474` / 4904B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_candidate_policy.py` | `libs/runtime/monitor/entry_candidate_policy.py` | `efd4fc99b66d` / 3988B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_candidate_probe.py` | `libs/runtime/monitor/entry_candidate_probe.py` | `d258a5a200c4` / 2596B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_carry_guard.py` | `libs/runtime/monitor/entry_carry_guard.py` | `0b38d174ee3b` / 2900B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_cascade_projection.py` | `libs/runtime/monitor/entry_cascade_projection.py` | `8dfaa5184be9` / 19770B | 위 실측 함수 이동·효과 경계 먼저 |
+| `libs/runtime/monitor/entry_cascade_selection.py` | `libs/runtime/monitor/entry_cascade_selection.py` | `db8b243f694d` / 4155B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_context.py` | `libs/runtime/monitor/entry_context.py` | `b75523ccbf59` / 3639B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_cycle_context.py` | `libs/runtime/monitor/entry_cycle_context.py` | `295d06ced47b` / 7386B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_evidence.py` | `libs/runtime/monitor/entry_evidence.py` | `16c01ec85b3f` / 221B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_focus_output_projection.py` | `libs/runtime/monitor/entry_focus_output_projection.py` | `a03222361945` / 261B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_guard_evidence.py` | `libs/runtime/monitor/entry_guard_evidence.py` | `e202b6e6858d` / 4816B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/entry_quality_projection.py` | `libs/runtime/monitor/entry_quality_projection.py` | `a89377fa3220` / 3713B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/exit_decision_projection.py` | `libs/runtime/monitor/exit_decision_projection.py` | `8d6b25a64db1` / 11821B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/exit_frame_projection.py` | `libs/runtime/monitor/exit_frame_projection.py` | `94364273e750` / 6887B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/policy_output_projection.py` | `libs/runtime/monitor/policy_output_projection.py` | `6d1170c9863b` / 251B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/scanner_monitor_handoff_projection.py` | `libs/runtime/monitor/scanner_monitor_handoff_projection.py` | `b497c1376f9e` / 271B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/signal_explanation.py` | `libs/runtime/monitor/signal_explanation.py` | `89b372fc2a81` / 239B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/signal_features.py` | `libs/runtime/monitor/signal_features.py` | `6d58c717290f` / 15750B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/signal_features_breakout_volume_gate.py` | `libs/runtime/monitor/signal_features_breakout_volume_gate.py` | `9b1ad3d2fc31` / 10873B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/signal_score_projection.py` | `libs/runtime/monitor/signal_score_projection.py` | `a1a293581795` / 17772B | 짧은 단일 책임이면 KEEP_OK |
+| `libs/runtime/monitor/signal_score_projection_chart_structure_decision.py` | `libs/runtime/monitor/signal_score_projection_chart_structure_decision.py` | `1464297872b4` / 4319B | 짧은 단일 책임이면 KEEP_OK |
 
-**보고:** `RF | ORIGINAL_SOURCE_BLOB | MOVED_FUNCTIONS | NEW_TARGETS | KEEP_OK(paths+reason) | BEFORE/AFTER_LOC | TEST_EXIT | PUSH_SHA | INTEGRATION_SHA | TARGET_STRUCTURE`. 보호된 주문/Broker/Guard/Step5C/UEF/운영 파일·DB 실효과는 무승인 변경하지 않는다.
+## 3. 개발 실행·리뷰·DONE
+
+1. 위치 정확·단일 역할·짧거나 합당한 effect/CLI 경계는 `KEEP_OK|PATH|한 줄 이유|BLOB`으로 종결. 같은 blob 신규 테스트/peer 금지.
+2. 실제 `MOVE_BODY`만 SOURCE에서 계산 구현을 삭제하고 TARGET Owner에 실제 함수를 추가. 원명 thin wrapper와 use-time monkeypatch·호출 순서를 유지. 기존 같은 Owner 존재하면 재사용, 이중 구현 금지.
+3. 바뀐 경계의 old/new fake/tmp fixture 기반 **정상 targeted unittest/pytest 1회 exit0**. live LLM·Broker·주문/Guard/UEF·운영 State/DB/파일 쓰기 금지. 한 항목 차단은 다른 과제 중지 사유 아님.
+4. Codex B 소유 branch code/test만 commit/push; source와 target blob, 원본 LOC 감소, 이동 함수, 정당 KEEP 사유, TEST_EXIT를 #12에 기록. C04 최소 묶음 통합, C05 기존 DONE 이력 보존 + 미완료 TARGET_GAP만 다음 구현 배정.
+
+`RF=RF-020|SOURCE_BLOB|FUNCTION_MOVES|TARGET_BLOBS|KEEP_REASON|BEFORE_AFTER_LOC|NORMAL_EXIT|PUSH_SHA|INTEGRATION_SHA|TARGET_VERDICT`
