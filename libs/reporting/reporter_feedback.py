@@ -7,6 +7,8 @@ from typing import Any, Dict, Mapping, Optional
 
 from libs.core.evidence_identity import stable_evidence_id
 from libs.reporting.llm_artifacts import iter_trade_dirs, resolve_trade_day_root
+from libs.reporting import reporter_feedback_analysis as _reporter_feedback_analysis_owner
+from libs.reporting import reporter_feedback_summary as _reporter_feedback_summary_owner
 from libs.reporting import reporter_feedback_route_summary as _reporter_feedback_route_summary_owner
 from libs.reporting import reporter_feedback_blocker_totals as _reporter_feedback_blocker_totals_owner
 from libs.reporting import reporter_feedback_freshness as _reporter_feedback_freshness_owner
@@ -205,13 +207,7 @@ def _extract_reporter_analysis_blocker_totals(payload: Mapping[str, Any] | None)
 
 
 def _extract_reporter_analysis_recommendations(payload: Mapping[str, Any] | None) -> list[str]:
-    row = dict(payload or {})
-    operator = row.get("operator_facing_summary") if isinstance(row.get("operator_facing_summary"), dict) else {}
-    direct = [str(x or "").strip() for x in list(row.get("improvement_suggestions") or []) if str(x or "").strip()]
-    if direct:
-        return direct[:4]
-    recommended = [str(x or "").strip() for x in list(operator.get("recommended_actions") or []) if str(x or "").strip()]
-    return recommended[:4]
+    return _reporter_feedback_analysis_owner.extract_reporter_analysis_recommendations(payload)
 
 
 def _build_dominant_patterns(
@@ -225,35 +221,11 @@ def _build_dominant_patterns(
 
 
 def _build_blocker_analysis(blocker_totals: Mapping[str, int]) -> list[dict[str, Any]]:
-    total = _safe_total(blocker_totals)
-    ranked = sorted(((str(name), _safe_int(count, 0)) for name, count in blocker_totals.items()), key=lambda item: (-item[1], item[0]))
-    out: list[dict[str, Any]] = []
-    for name, count in ranked[:5]:
-        out.append(
-            {
-                "blocker": name,
-                "count": count,
-                "ratio": _ratio(count, total),
-            }
-        )
-    return out
+    return _reporter_feedback_analysis_owner.build_blocker_analysis(blocker_totals, facade=sys.modules[__name__])
 
 
 def _build_route_analysis(route_summary: Mapping[str, Any]) -> Dict[str, Any]:
-    route_selected_total = dict(route_summary.get("route_selected_total") or {})
-    route_total = _safe_total(route_selected_total)
-    return {
-        "route_source": str(route_summary.get("route_source") or "unavailable"),
-        "route_selected_total": route_selected_total,
-        "strategy_generation_mode_total": dict(route_summary.get("strategy_generation_mode_total") or {}),
-        "strategist_fallback_total": _safe_int(route_summary.get("strategist_fallback_total"), 0),
-        "route_source_run_count": _safe_int(route_summary.get("route_source_run_count"), 0),
-        "route_source_missing_count": _safe_int(route_summary.get("route_source_missing_count"), 0),
-        "route_source_breakdown": dict(route_summary.get("route_source_breakdown") or {}),
-        "monitor_only_ratio": _ratio(_safe_int(route_selected_total.get("monitor_only"), 0), route_total),
-        "cached_strategist_ratio": _ratio(_safe_int(route_selected_total.get("cached_strategist"), 0), route_total),
-        "full_cycle_ratio": _ratio(_safe_int(route_selected_total.get("full_cycle"), 0), route_total),
-    }
+    return _reporter_feedback_analysis_owner.build_route_analysis(route_summary, facade=sys.modules[__name__])
 
 
 def _build_recommendations(
@@ -271,54 +243,7 @@ def _build_insight_summary(
     blocker_analysis: list[dict[str, Any]],
     trade_report_summary: Mapping[str, Any] | None = None,
 ) -> str:
-    parts: list[str] = []
-    route_total = _safe_total(route_analysis.get("route_selected_total") if isinstance(route_analysis.get("route_selected_total"), dict) else {})
-    if route_total > 0:
-        route_counts = route_analysis.get("route_selected_total") if isinstance(route_analysis.get("route_selected_total"), dict) else {}
-        monitor_only = _safe_int((route_counts or {}).get("monitor_only"), 0)
-        cached = _safe_int((route_counts or {}).get("cached_strategist"), 0)
-        leader = ""
-        leader_count = 0
-        if isinstance(route_counts, dict):
-            leader, leader_count = max(
-                ((str(name), _safe_int(count, 0)) for name, count in route_counts.items()),
-                key=lambda item: item[1],
-                default=("", 0),
-            )
-        if leader and leader_count > 0:
-            parts.append(
-                f"Route mix is led by {leader} {leader_count}/{route_total}; "
-                f"monitor_only {monitor_only}/{route_total}, cached_strategist {cached}/{route_total}."
-            )
-        else:
-            parts.append(
-                f"Route mix recorded {route_total} routed decisions; "
-                f"monitor_only {monitor_only}/{route_total}, cached_strategist {cached}/{route_total}."
-            )
-    if blocker_analysis:
-        top = blocker_analysis[0]
-        parts.append(f"Top blocker is {top.get('blocker')} ({top.get('count')}).")
-    trade_summary = dict(trade_report_summary or {})
-    closed_trade_count = _safe_int(trade_summary.get("closed_trade_count"), 0)
-    if closed_trade_count > 0:
-        win_count = _safe_int(trade_summary.get("win_count"), 0)
-        loss_count = _safe_int(trade_summary.get("loss_count"), 0)
-        flat_count = _safe_int(trade_summary.get("flat_count"), 0)
-        unknown_pnl_count = _safe_int(trade_summary.get("unknown_pnl_count"), 0)
-        avg_pnl_pct = trade_summary.get("avg_pnl_pct")
-        pnl_pct_sample_count = _safe_int(trade_summary.get("pnl_pct_sample_count"), 0)
-        result_bits = [f"{win_count} wins", f"{loss_count} losses"]
-        if flat_count > 0:
-            result_bits.append(f"{flat_count} flat")
-        if unknown_pnl_count > 0:
-            result_bits.append(f"{unknown_pnl_count} unknown pnl")
-        avg_text = f", avg pnl pct {avg_pnl_pct}" if pnl_pct_sample_count > 0 else ""
-        parts.append(
-            f"Same-day closed trade reports show {closed_trade_count} trades with {', '.join(result_bits)}{avg_text}."
-        )
-    if not parts:
-        parts.append("Feedback packet is available but source evidence is limited.")
-    return " ".join(parts)
+    return _reporter_feedback_summary_owner.build_insight_summary(route_analysis=route_analysis, blocker_analysis=blocker_analysis, trade_report_summary=trade_report_summary, facade=sys.modules[__name__])
 
 
 def _build_confidence(
@@ -327,24 +252,7 @@ def _build_confidence(
     blocker_analysis: list[dict[str, Any]],
     trade_report_summary: Mapping[str, Any] | None = None,
 ) -> str:
-    route_total = _safe_total(route_analysis.get("route_selected_total") if isinstance(route_analysis.get("route_selected_total"), dict) else {})
-    blocker_total = sum(_safe_int(item.get("count"), 0) for item in list(blocker_analysis or []))
-    trade_summary = dict(trade_report_summary or {})
-    closed_trade_count = _safe_int(trade_summary.get("closed_trade_count"), 0)
-    broker_truth_count = _safe_int(trade_summary.get("broker_truth_count"), 0)
-    if route_total >= 50 and len(blocker_analysis) >= 3:
-        return "high"
-    if route_total >= 10:
-        return "medium"
-    if closed_trade_count >= 3 and broker_truth_count >= 2:
-        return "high"
-    if closed_trade_count >= 1 and broker_truth_count >= 1:
-        return "medium"
-    if blocker_total >= 20 and len(blocker_analysis) >= 2:
-        return "high"
-    if blocker_total >= 5 and len(blocker_analysis) >= 1:
-        return "medium"
-    return "low"
+    return _reporter_feedback_summary_owner.build_confidence(route_analysis=route_analysis, blocker_analysis=blocker_analysis, trade_report_summary=trade_report_summary, facade=sys.modules[__name__])
 
 
 def build_strategist_feedback_packet(
