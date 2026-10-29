@@ -10,6 +10,10 @@ from libs.runtime.quant.market_regime_observation import classify_market_regime_
 from libs.runtime.strategist_input_quality import build_risk_off_exception_policy
 from libs.reporting import strategist_llm_summary_stage as _stage_owner
 from libs.reporting import strategist_llm_summary_usage as _usage_owner
+from libs.reporting import strategist_llm_summary_decision as _decision_owner
+from libs.reporting import strategist_llm_summary_readout as _readout_owner
+from libs.reporting import strategist_llm_summary_strategy as _strategy_owner
+from libs.reporting import strategist_llm_summary_quality_lines as _quality_lines_owner
 
 
 def _utc_now_iso() -> str:
@@ -192,57 +196,7 @@ def _strategist_output_quality_audit(
     market_rail: Dict[str, Any],
     news_quality: Dict[str, Any],
 ) -> Dict[str, Any]:
-    candidate_watch = _as_dict(strategy_detail.get("candidate_watch_policy"))
-    memory_usage = _memory_usage_from_canonical(canonical)
-    is_stage_specific = bool(stage_decision.get("is_stage_specific"))
-    decision = _text(stage_decision.get("decision") or payload.get("decision"), "")
-    confidence = stage_decision.get("confidence")
-    if confidence in (None, ""):
-        confidence = payload.get("confidence")
-    issues: List[str] = []
-    if not decision:
-        issues.append("decision_missing")
-    if confidence in (None, ""):
-        issues.append("confidence_missing")
-    if is_stage_specific:
-        if not _as_dict(stage_decision.get("monitor_instruction")) and not _as_dict(stage_decision.get("entry_policy_delta")):
-            issues.append("stage_control_fields_missing")
-    else:
-        if not _text(strategy_detail.get("final_playbook"), ""):
-            issues.append("final_playbook_missing")
-        if not _text(strategy_detail.get("tactical_strategy"), ""):
-            issues.append("tactical_strategy_missing")
-        if not candidate_watch:
-            issues.append("candidate_watch_policy_missing")
-    if _text(market_rail.get("market_regime_rail"), "") in {"", "macro_packet_unavailable"}:
-        issues.append("market_regime_rail_missing")
-    if news_quality.get("status") != "ok":
-        issues.append("news_quality_not_ok")
-    if not bool(memory_usage.get("available")):
-        issues.append("memory_trace_missing_or_disabled")
-    elif not _as_list(memory_usage.get("active_layers")):
-        issues.append("memory_active_layers_empty")
-    if not issues:
-        status = "ok"
-    elif len(issues) <= 2:
-        status = "watch"
-    else:
-        status = "needs_review"
-    return {
-        "schema_version": "strategist_output_quality_audit.v1",
-        "status": status,
-        "issues": issues,
-        "decision": decision,
-        "confidence": confidence,
-        "final_playbook": _text(strategy_detail.get("final_playbook"), ""),
-        "tactical_strategy": _text(strategy_detail.get("tactical_strategy"), ""),
-        "market_regime": _text(market_rail.get("market_regime"), ""),
-        "market_regime_rail": _text(market_rail.get("market_regime_rail"), ""),
-        "candidate_watch_policy_present": bool(candidate_watch),
-        "memory_available": bool(memory_usage.get("available")),
-        "memory_active_layers": _as_list(memory_usage.get("active_layers")),
-        "news_quality_status": _text(news_quality.get("status"), ""),
-    }
+    return _decision_owner.strategist_output_quality_audit(payload=payload, canonical=canonical, stage_decision=stage_decision, strategy_detail=strategy_detail, market_rail=market_rail, news_quality=news_quality, facade=sys.modules[__name__])
 
 
 def _stage_decision_from_payload(
@@ -250,140 +204,11 @@ def _stage_decision_from_payload(
     raw: Dict[str, Any],
     meta: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    stage_meta = _stage_meta(payload, raw, meta)
-    call_kind = _text(stage_meta.get("call_kind"), "")
-    stage_name = _text(stage_meta.get("stage_name") or payload.get("stage_name"), "")
-    try:
-        stage_index = int(stage_meta.get("stage_index") or payload.get("stage_index") or 0)
-    except (TypeError, ValueError):
-        stage_index = 0
-    is_market_frame = stage_index in (0, 1) and call_kind in {"", "market_strategy_frame", "theme_selection", "strategic_frame"}
-    if is_market_frame:
-        return {"is_stage_specific": False}
-
-    selected_symbol_review = _as_dict(payload.get("selected_symbol_tactical_review"))
-    candidate_watch = _as_dict(payload.get("candidate_watch_policy"))
-    refresh_trace = _as_dict(payload.get("strategy_refresh_trace"))
-    decision = _first_text(
-        "",
-        selected_symbol_review.get("selected_symbol_decision"),
-        payload.get("hold_review_decision"),
-        payload.get("carry_review_decision"),
-        payload.get("tactical_refresh_decision"),
-        payload.get("selected_symbol_decision"),
-        payload.get("decision"),
-    )
-    monitor_adjustment = _first_dict(payload.get("monitor_adjustment"), selected_symbol_review.get("monitor_adjustment"))
-    priority_exit_triggers = _as_list(payload.get("priority_exit_triggers"))
-    runner_up_order = _as_list(payload.get("runner_up_order")) or _as_list(selected_symbol_review.get("runner_up_order"))
-    commander_actionability = _first_dict(
-        payload.get("commander_actionability"),
-        selected_symbol_review.get("commander_actionability"),
-    )
-    if not commander_actionability:
-        actionability_text = _first_text("", payload.get("commander_actionability"), selected_symbol_review.get("commander_actionability"))
-        commander_actionability = {"value": actionability_text} if actionability_text else {}
-    return {
-        "is_stage_specific": True,
-        "stage_index": stage_index,
-        "stage_name": stage_name,
-        "call_kind": call_kind,
-        "stage_component": _text(stage_meta.get("stage_component"), ""),
-        "decision": decision,
-        "target_symbol": _first_text("", selected_symbol_review.get("target_symbol"), payload.get("target_symbol")),
-        "target_rank": selected_symbol_review.get("target_rank") or payload.get("target_rank"),
-        "runner_up_order": runner_up_order,
-        "monitor_instruction": _first_dict(payload.get("monitor_instruction"), selected_symbol_review.get("monitor_instruction")),
-        "entry_policy_delta": _first_dict(payload.get("entry_policy_delta"), selected_symbol_review.get("entry_policy_delta")),
-        "commander_actionability": commander_actionability,
-        "confidence": selected_symbol_review.get("confidence") if selected_symbol_review.get("confidence") is not None else payload.get("confidence"),
-        "exit_pressure": _text(payload.get("exit_pressure"), ""),
-        "thesis_status": _text(payload.get("thesis_status"), ""),
-        "next_check_minutes": payload.get("next_check_minutes"),
-        "priority_exit_triggers": priority_exit_triggers,
-        "monitor_adjustment": monitor_adjustment,
-        "reason": _first_text("", payload.get("reason"), selected_symbol_review.get("reason"), candidate_watch.get("reason"), refresh_trace.get("summary")),
-        "raw_payload_keys": sorted(str(key) for key in payload.keys()),
-    }
+    return _decision_owner.stage_decision_from_payload(payload, raw, meta, facade=sys.modules[__name__])
 
 
 def _operator_readout(payload: Dict[str, Any], stage_decision: Dict[str, Any] | None = None) -> Dict[str, Any]:
-    stage_decision = _as_dict(stage_decision)
-    if bool(stage_decision.get("is_stage_specific")):
-        stage_name = _text(stage_decision.get("stage_name"), "stage_specific")
-        decision = _text(stage_decision.get("decision"), "-")
-        reason = _text(stage_decision.get("reason"), "")
-        return {
-            "headline": f"{stage_name} / decision={decision}",
-            "good_points": [
-                "Stage-specific strategist response was parsed.",
-                "Market-frame fields such as selected_themes are not required for this stage.",
-            ],
-            "issues": [] if reason else ["stage-specific reason is empty"],
-            "root_cause": reason or "stage-specific response did not include a reason",
-            "recommended_actions": ["Review the stage decision fields instead of the market-frame section."],
-            "validation_questions": ["Confirm monitor/executor behavior followed the stage decision."],
-        }
-
-    theme_strategy = _as_dict(payload.get("theme_strategy"))
-    rationale = _text(payload.get("rationale"), "")
-    selected_themes = _as_list(payload.get("selected_themes"))
-    fallback_reason = _text(theme_strategy.get("fallback_reason"), "")
-    selected_symbol_bias = _directive(payload, "selected_symbol_bias_action")
-
-    good_points: List[str] = []
-    issues: List[str] = []
-    actions: List[str] = []
-    validation: List[str] = []
-
-    entry_policy = _directive(payload, "entry_policy_action")
-    monitor_focus = _directive(payload, "monitor_focus_action")
-    refresh_action = _directive(payload, "refresh_action")
-
-    if entry_policy:
-        good_points.append("최근 손실/과매매 피드백을 진입 정책 조정 근거로 명시했습니다.")
-    if monitor_focus:
-        good_points.append("모니터가 집중해야 할 축을 volume/reclaim처럼 실행 가능한 형태로 남겼습니다.")
-    if refresh_action:
-        good_points.append("전략 refresh가 요청된 이유와 최종 적용 단계를 분리해 남겼습니다.")
-
-    if not selected_themes:
-        issues.append("selected_themes가 비어 있어 테마 기반 전략 분기가 실제로 작동하지 않았습니다.")
-        actions.append("다음 실행에서 Commander가 available_themes/theme_strength_packet을 전략가 호출 전에 채우는지 확인합니다.")
-        validation.append("다음 전략가 요약에서 selected_themes가 실제 테마명으로 채워지는가?")
-    if "best 및 worst" in rationale or "best and worst" in rationale.lower():
-        issues.append("전략 메모리에서 같은 플레이북이 best/worst에 동시에 잡혀 방향성 신호가 약합니다.")
-        actions.append("best/worst 중복 플레이북은 방향성 bias가 아니라 memory_quality_flag로만 표시합니다.")
-    if str(selected_symbol_bias.get("action") or "").strip().lower() == "none":
-        issues.append("심볼 메모리 근거가 없어 특정 종목 편향 조정은 적용되지 않았습니다.")
-        validation.append("심볼 summary/memory가 누적된 뒤 selected_symbol_bias_action이 계속 none인지 확인합니다.")
-
-    if not good_points:
-        good_points.append("전략가 출력은 파싱 가능하며 playbook, entry policy, refresh trace를 포함합니다.")
-    if not issues:
-        issues.append("즉시 확인할 구조적 문제는 요약에서 감지되지 않았습니다.")
-    if not actions:
-        actions.append("다음 실행 결과와 비교해 같은 playbook 반복 여부를 확인합니다.")
-    if not validation:
-        validation.append("다음 실행에서 playbook/theme/entry policy가 시장 입력에 따라 달라지는가?")
-
-    headline_parts = [_text(payload.get("playbook"), "unknown")]
-    if selected_themes:
-        headline_parts.append(f"themes={', '.join(str(x) for x in selected_themes[:3])}")
-    else:
-        headline_parts.append("theme=none")
-    if theme_strategy.get("selection_mode"):
-        headline_parts.append(f"mode={theme_strategy.get('selection_mode')}")
-
-    root_cause = fallback_reason or rationale or "전략가 출력의 rationale 확인 필요"
-    return {
-        "headline": " / ".join(headline_parts),
-        "good_points": good_points[:4],
-        "issues": issues[:4],
-        "root_cause": root_cause,
-        "recommended_actions": actions[:4],
-        "validation_questions": validation[:4],
-    }
+    return _readout_owner.operator_readout(payload, stage_decision, facade=sys.modules[__name__])
 
 
 def _first_text(default: str, *values: Any) -> str:
@@ -395,79 +220,7 @@ def _first_text(default: str, *values: Any) -> str:
 
 
 def _operator_readout_clean(payload: Dict[str, Any], stage_decision: Dict[str, Any] | None = None) -> Dict[str, Any]:
-    stage_decision = _as_dict(stage_decision)
-    if bool(stage_decision.get("is_stage_specific")):
-        stage_name = _text(stage_decision.get("stage_name"), "stage_specific")
-        decision = _text(stage_decision.get("decision"), "-")
-        reason = _text(stage_decision.get("reason"), "")
-        return {
-            "headline": f"{stage_name} / decision={decision}",
-            "good_points": [
-                "단계별 전략가 응답이 파싱됐습니다.",
-                "이 단계는 시장 프레임이 아니므로 selected_themes 같은 1차 필드는 필수가 아닙니다.",
-            ],
-            "issues": [] if reason else ["단계별 응답의 reason이 비어 있습니다."],
-            "root_cause": reason or "단계별 응답에 reason이 포함되지 않았습니다.",
-            "recommended_actions": ["시장 프레임 섹션이 아니라 단계별 decision 필드를 확인합니다."],
-            "validation_questions": ["모니터/집행 흐름이 이 단계별 decision을 따랐는지 확인합니다."],
-        }
-
-    theme_strategy = _as_dict(payload.get("theme_strategy"))
-    rationale = _text(payload.get("rationale"), "")
-    selected_themes = _as_list(payload.get("selected_themes"))
-    fallback_reason = _text(theme_strategy.get("fallback_reason"), "")
-    selected_symbol_bias = _directive(payload, "selected_symbol_bias_action")
-    entry_policy = _directive(payload, "entry_policy_action")
-    monitor_focus = _directive(payload, "monitor_focus_action")
-    refresh_action = _directive(payload, "refresh_action")
-
-    good_points: List[str] = []
-    issues: List[str] = []
-    actions: List[str] = []
-    validation: List[str] = []
-
-    if entry_policy:
-        good_points.append("최근 손실/과매매 피드백을 진입 정책 조정 근거로 명시했습니다.")
-    if monitor_focus:
-        good_points.append("모니터가 집중할 축을 volume/reclaim처럼 실행 가능한 형태로 넘겼습니다.")
-    if refresh_action:
-        good_points.append("전략 refresh 요청 사유와 최종 적용 단계를 분리해 남겼습니다.")
-    if not selected_themes:
-        issues.append("selected_themes가 비어 있어 테마 기반 전략 분기가 약합니다.")
-        actions.append("다음 실행에서 Commander가 available_themes/theme_strength_packet을 전략가 호출 전에 채우는지 확인합니다.")
-        validation.append("다음 전략가 요약에서 selected_themes가 실제 테마명으로 채워지는지 확인합니다.")
-    if ("best" in rationale.lower() and "worst" in rationale.lower()) or "best 諛?worst" in rationale:
-        issues.append("전략 메모리에서 같은 플레이북이 best/worst에 동시에 잡혀 방향 신호가 혼합됩니다.")
-        actions.append("best/worst 중복 플레이북은 방향성 bias가 아니라 memory_quality_flag로만 표시합니다.")
-    if str(selected_symbol_bias.get("action") or "").strip().lower() == "none":
-        issues.append("성과 메모리 근거가 없어 특정 종목 영향 조정은 적용되지 않았습니다.")
-        validation.append("성과 summary/memory가 누적돼도 selected_symbol_bias_action이 계속 none인지 확인합니다.")
-
-    if not good_points:
-        good_points.append("전략가 출력은 파싱 가능하며 playbook, entry policy, refresh trace를 포함합니다.")
-    if not issues:
-        issues.append("즉시 확인할 구조적 문제는 요약에서 감지되지 않았습니다.")
-    if not actions:
-        actions.append("다음 실행 결과를 비교해 같은 playbook 반복 여부를 확인합니다.")
-    if not validation:
-        validation.append("다음 실행에서 playbook/theme/entry policy가 시장 입력에 따라 달라지는지 확인합니다.")
-
-    headline_parts = [_text(payload.get("playbook"), "unknown")]
-    if selected_themes:
-        headline_parts.append(f"themes={', '.join(str(x) for x in selected_themes[:3])}")
-    else:
-        headline_parts.append("theme=none")
-    if theme_strategy.get("selection_mode"):
-        headline_parts.append(f"mode={theme_strategy.get('selection_mode')}")
-
-    return {
-        "headline": " / ".join(headline_parts),
-        "good_points": good_points[:4],
-        "issues": issues[:4],
-        "root_cause": fallback_reason or rationale or "전략가 출력의 rationale 확인 필요",
-        "recommended_actions": actions[:4],
-        "validation_questions": validation[:4],
-    }
+    return _readout_owner.operator_readout_clean(payload, stage_decision, facade=sys.modules[__name__])
 
 
 def _first_dict(*values: Any) -> Dict[str, Any]:
@@ -479,81 +232,7 @@ def _first_dict(*values: Any) -> Dict[str, Any]:
 
 
 def _strategy_detail_from_sources(payload: Dict[str, Any], canonical: Dict[str, Any]) -> Dict[str, Any]:
-    canonical_detail = _as_dict(canonical.get("strategy_detail"))
-    strategy_policy = _as_dict(canonical.get("strategy_policy"))
-    market_policy = _as_dict(strategy_policy.get("market_policy"))
-    scanner_policy = _as_dict(strategy_policy.get("scanner_policy"))
-    return {
-        "pre_llm_playbook": _first_text(
-            "",
-            canonical_detail.get("pre_llm_playbook"),
-            canonical.get("pre_llm_playbook"),
-            market_policy.get("pre_llm_playbook"),
-            payload.get("pre_llm_playbook"),
-        ),
-        "llm_requested_playbook": _first_text(
-            "",
-            canonical_detail.get("llm_requested_playbook"),
-            canonical.get("llm_requested_playbook"),
-            market_policy.get("llm_requested_playbook"),
-            payload.get("llm_requested_playbook"),
-        ),
-        "requested_playbook": _first_text(
-            "",
-            canonical_detail.get("requested_playbook"),
-            canonical.get("requested_playbook"),
-            market_policy.get("requested_playbook"),
-            payload.get("requested_playbook"),
-        ),
-        "requested_playbook_source": _first_text(
-            "",
-            canonical_detail.get("requested_playbook_source"),
-            canonical.get("requested_playbook_source"),
-            market_policy.get("requested_playbook_source"),
-            payload.get("requested_playbook_source"),
-        ),
-        "final_playbook": _first_text(
-            "",
-            canonical_detail.get("final_playbook"),
-            canonical.get("final_playbook"),
-            market_policy.get("final_playbook"),
-            canonical.get("playbook"),
-            payload.get("final_playbook"),
-            payload.get("playbook"),
-        ),
-        "tactical_strategy": _first_text(
-            "",
-            canonical_detail.get("tactical_strategy"),
-            canonical.get("tactical_strategy"),
-            market_policy.get("tactical_strategy"),
-            payload.get("tactical_strategy"),
-        ),
-        "tactical_subtype": _first_text(
-            "",
-            canonical_detail.get("tactical_subtype"),
-            canonical.get("tactical_subtype"),
-            market_policy.get("tactical_subtype"),
-            payload.get("tactical_subtype"),
-        ),
-        "strategy_scores": _first_dict(
-            canonical_detail.get("strategy_scores"),
-            canonical.get("strategy_scores"),
-            market_policy.get("strategy_scores"),
-            payload.get("strategy_scores"),
-        ),
-        "rejected_strategy_reasons": _first_dict(
-            canonical_detail.get("rejected_strategy_reasons"),
-            canonical.get("rejected_strategy_reasons"),
-            market_policy.get("rejected_strategy_reasons"),
-            payload.get("rejected_strategy_reasons"),
-        ),
-        "candidate_watch_policy": _first_dict(
-            canonical_detail.get("candidate_watch_policy"),
-            canonical.get("candidate_watch_policy"),
-            scanner_policy.get("candidate_watch_policy"),
-            payload.get("candidate_watch_policy"),
-        ),
-    }
+    return _strategy_owner.strategy_detail_from_sources(payload, canonical, facade=sys.modules[__name__])
 
 
 def _json_inline(value: Any) -> str:
@@ -1161,81 +840,7 @@ def _news_usage_lines_clean(news: Dict[str, Any]) -> List[str]:
 
 
 def _quality_audit_lines(payload: Dict[str, Any]) -> List[str]:
-    rail = _as_dict(payload.get("market_regime_rail"))
-    news = _as_dict(payload.get("news_quality_audit"))
-    risk_policy = _as_dict(payload.get("risk_off_exception_policy"))
-    risk_conditions = _as_list(payload.get("risk_off_exception_conditions"))
-    news_event = _as_dict(payload.get("news_event_intelligence"))
-    news_event_usage = _as_dict(payload.get("news_event_intelligence_usage"))
-    output = _as_dict(payload.get("strategist_output_quality_audit"))
-    metrics = _as_dict(rail.get("metrics"))
-    rail_issues = _as_list(rail.get("issues"))
-    news_issues = _as_list(news.get("issues"))
-    output_issues = _as_list(output.get("issues"))
-
-    def _issue_text(items: List[Any]) -> str:
-        return ", ".join(str(x) for x in items if str(x or "").strip()) or "-"
-
-    def _watch_text(items: List[Any], key: str) -> str:
-        values: List[str] = []
-        for item in items:
-            if isinstance(item, dict):
-                text = str(item.get(key) or "").strip()
-            else:
-                text = str(item or "").strip()
-            if text:
-                values.append(text)
-        return ", ".join(values[:6]) or "-"
-
-    return [
-        "## Input/Output Quality Audit",
-        "",
-        "### Market Regime Rail",
-        "",
-        f"- market_regime: {_text(rail.get('market_regime'), '-')}",
-        f"- market_regime_rail: {_text(rail.get('market_regime_rail'), '-')}",
-        f"- risk_score: {rail.get('risk_score')}",
-        f"- kospi_pct: {metrics.get('kospi_pct')}",
-        f"- kosdaq_pct: {metrics.get('kosdaq_pct')}",
-        f"- breadth_score: {metrics.get('breadth_score')}",
-        f"- issues: {_issue_text(rail_issues)}",
-        "",
-        "### News Quality",
-        "",
-        f"- status: {_text(news.get('status'), '-')}",
-        f"- headline_count: {news.get('headline_count')}",
-        f"- market_headline_count: {news.get('market_headline_count')}",
-        f"- candidate_headline_count: {news.get('candidate_headline_count')}",
-        f"- query_target_count: {news.get('query_target_count')}",
-        f"- issues: {_issue_text(news_issues)}",
-        "",
-        "### Risk-Off Exceptions",
-        "",
-        f"- risk_off_active: {risk_policy.get('risk_off_active')}",
-        f"- allowed_exception_conditions: {_issue_text(_as_list(risk_policy.get('allowed_exception_conditions')))}",
-        f"- strategist_reported_conditions: {_issue_text(risk_conditions)}",
-        f"- instruction: {_text(risk_policy.get('instruction'), '-')}",
-        "",
-        "### News Event Intelligence",
-        "",
-        f"- behavior_effect: {_text(news_event.get('behavior_effect'), 'observation_only')}",
-        f"- trading_action_allowed: {news_event.get('trading_action_allowed', False)}",
-        f"- event_count: {_as_dict(news_event.get('input_summary')).get('event_count', 0)}",
-        f"- theme_watchlist: {_watch_text(_as_list(news_event.get('theme_watchlist')), 'theme')}",
-        f"- symbol_watchlist: {_watch_text(_as_list(news_event.get('symbol_watchlist')), 'symbol')}",
-        f"- llm_usage_status: {_text(news_event_usage.get('status'), '-')}",
-        f"- llm_usage_reason: {_text(news_event_usage.get('reason'), '-')}",
-        "",
-        "### Strategist Output Quality",
-        "",
-        f"- status: {_text(output.get('status'), '-')}",
-        f"- decision: {_text(output.get('decision'), '-')}",
-        f"- confidence: {output.get('confidence')}",
-        f"- final_playbook: {_text(output.get('final_playbook'), '-')}",
-        f"- tactical_strategy: {_text(output.get('tactical_strategy'), '-')}",
-        f"- issues: {_issue_text(output_issues)}",
-        "",
-    ]
+    return _quality_lines_owner.quality_audit_lines(payload, facade=sys.modules[__name__])
 
 
 def _render_stage_specific_summary_markdown_clean(payload: Dict[str, Any]) -> str:
