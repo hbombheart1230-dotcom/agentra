@@ -3,9 +3,22 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from statistics import median
-from typing import Any
+from typing import Any, Mapping
 
 from .contracts import ACTIVATION_DAY
+
+
+def _float_or_none(value: Any) -> float | None:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _excursion(value: Any) -> float:
+    """mfe/mae: missing keeps its historical meaning (0.0); an unparseable value is treated as missing too."""
+    parsed = _float_or_none(value or 0.0)
+    return 0.0 if parsed is None else parsed
 
 
 def build_cumulative(root: Path) -> dict[str, Any]:
@@ -18,11 +31,19 @@ def build_cumulative(root: Path) -> dict[str, Any]:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, UnicodeError, json.JSONDecodeError):
             continue
+        if not isinstance(payload, Mapping):
+            continue  # non-object JSON ([], null, "text", 7) is skipped, never aggregated
         day = str(payload.get("day") or path.parent.parent.name)
-        for row in payload.get("outcomes") or []:
-            if row.get("status") == "OBSERVED":
-                rows.append({"day": day, **dict(row)})
-                days.add(day)
+        outcomes = payload.get("outcomes") or []
+        if not isinstance(outcomes, list):
+            continue
+        for row in outcomes:
+            if not isinstance(row, Mapping) or row.get("status") != "OBSERVED":
+                continue
+            if _float_or_none(row.get("net_eod_return_pct")) is None:
+                continue  # OBSERVED without a usable return is excluded, never filled with 0.0
+            rows.append({"day": day, **dict(row)})
+            days.add(day)
     groups: dict[tuple[str, str, str, str], list[dict[str, Any]]] = {}
     for row in rows:
         groups.setdefault(
@@ -55,8 +76,8 @@ def build_cumulative(root: Path) -> dict[str, Any]:
                 "median_return_pct": round(median(values), 6),
                 "profit_factor": round(gains / losses, 6) if losses else (None if not gains else "INF"),
                 "max_drawdown_pct": round(drawdown, 6),
-                "average_mfe_pct": round(sum(float(row.get("mfe_pct") or 0.0) for row in group_rows) / len(group_rows), 6),
-                "average_mae_pct": round(sum(float(row.get("mae_pct") or 0.0) for row in group_rows) / len(group_rows), 6),
+                "average_mfe_pct": round(sum(_excursion(row.get("mfe_pct")) for row in group_rows) / len(group_rows), 6),
+                "average_mae_pct": round(sum(_excursion(row.get("mae_pct")) for row in group_rows) / len(group_rows), 6),
                 "average_eod_return_pct": round(sum(values) / len(values), 6),
             }
         )
