@@ -2,6 +2,17 @@
 
 **대상:** 기존 `work/p15-a-reporter-pure-20261021` 브랜치의 소유 code/test만 수정·정상 push. 시작 시 원격 A HEAD와 고정 SOURCE `2bce7dcaaadebe9fe825dcf9d2f5e1b1f667ad33` 대조, 진행 중인 작업은 안전 체크포인트까지 마친 후 적용. **1~5 모두 독립적인 필수 개발·계약 과제, 6은 고정 긴급 SOURCE 독립 peer.** 번호는 선행 순서·선택권·회차당 할당량이 아니다. 정확 SHA/범위가 이미 검증된 이전 변경은 중복 수정/재검증하지 않는다. 허용 A 코드·테스트 외 문서/CSV/정책/동결 오라클·타인 브랜치/긴급 브랜치 변경, 실제 시장·브로커·주문·Guard·UEF·Step5C·운영 State/DB/log/RunLab·비격리 CLI 및 force-push 금지. 소켓 차단·fake·`tmp_path`만 사용한다.
 
+
+## 실행 루프 — 로컬 Codex 방식의 연속 수행 계약 (전 번호 필수)
+
+1. **진입 즉시 작업 테이블 확정:** 현재 원격 A HEAD 및 이 문서 #1~#6을 비교한다. 번호마다 `DONE_WITH_EVIDENCE / IMPLEMENT / TEST / BLOCKED / NOT_RUN`을 구분하고 기존 정확 SHA·범위의 normal/-O PASS만 재사용한다.
+2. **실제 코드·테스트로 진행:** 신규 입력의 재현 → 허용 A Owner의 최소 보정·격리 회귀 → normal/-O 실제 exit → A 브랜치 정상 커밋·원격 HEAD/blob 확인. 변경이 불필요하면 원래 계약을 검증한 정확 입력과 결과를 제출한다. #6 긴급 소스 peer는 **상대 수정 없이** 독립 격리 테스트한다.
+3. **중간 종료 금지:** 첫 PASS·첫 커밋·첫 댓글에서 종료하지 않는다. #1~#6 모든 번호를 계속 순회하며, 안전한 번호는 순서와 관계없이 빠짐없이 실행한다. 기존 결과를 다시 출력하는 것으로 신규 구현을 대신하지 않는다.
+4. **부분 장애 처리:** 인증·의존성·플랫폼 한도는 해당 push/테스트만 BLOCKED로 분리하고 다른 안전 과제를 연속 수행한다. 운영 접속·실거래·보호 파일 변경 등 허용되지 않은 효과로 장애를 우회하지 않는다.
+5. **종료 및 인계:** 모든 번호의 원격 코드/테스트·normal/-O·상대 peer 증거가 확보되거나, 남은 번호 각각의 정확한 장애·해제 담당·재개점과 안전 작업 소진을 증명할 때만 종료한다. 도구 제한으로 중단되면 #11에 마지막 함수/명령/실제 결과를 남기고 다음 회차에 그 지점부터 재개한다. 실행 길이는 성과의 대리 지표가 아니다.
+
+**이번 회차 작업량:** #1~#5 서로 독립인 코드·회귀 5건과 #6 긴급 고정 SOURCE 검증 1건을 **전부** 다룬다. 기계적인 시험 반복 대신 결함의 실패→수정→재검증 근거를 우선한다.
+
 ## 1 — AI 6개 Owner의 실제 factory/HTTP/intent/consumer 계약 완성 (개발·필수)
 
 - **고정 A SOURCE:** `libs/ai/intent_schema.py`, `libs/ai/strategist.py`, `libs/ai/strategist_config.py`, `libs/ai/strategist_factory.py`, `libs/ai/providers/__init__.py`, `libs/ai/providers/openai_provider.py` (A `2bce7dca`). 이 여섯 파일은 동일 소스 범위에서 integration/B와 blob 일치. 공개 `get_strategist_from_env`, `OpenAIStrategist.from_env/_post_with_retry/decide`, `normalize_intent`와 read-only 소비자 `graphs/nodes/decide_trade.py`의 기존 signature·모듈 경로를 유지한다.
