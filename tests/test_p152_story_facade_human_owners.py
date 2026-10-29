@@ -1,6 +1,7 @@
 """Story façade report-only human judgment owners, pre-split source parity."""
 import ast
 import subprocess
+from functools import lru_cache
 from pathlib import Path
 import pytest
 import libs.reporting.trade_story_pipeline as api
@@ -12,9 +13,15 @@ NAMES = ("build_guard_reason_human", "build_reporter_status_human",
          "build_operator_conclusion_human")
 
 
+@lru_cache(maxsize=1)
+def _pinned_source():
+    """A fixed historical commit needs only one Git read per test module."""
+    return subprocess.check_output(["git", "show", f"{BEFORE}:{PATH}"],
+                                   text=True, encoding="utf-8-sig")
+
+
 def original(name):
-    src = subprocess.check_output(["git", "show", f"{BEFORE}:{PATH}"],
-                                  text=True, encoding="utf-8-sig")
+    src = _pinned_source()
     node = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef)
                 and n.name == name)
     env = vars(api).copy()
