@@ -15,6 +15,8 @@ from .contracts import (
     TRACKS,
 )
 from .canonical import canonicalize_board
+from . import builder_prospective_concentrations as _builder_prospective_concentrations_owner
+from . import builder_large_cap_candidate as _builder_large_cap_candidate_owner
 from . import builder_q12_hypothesis_metric as _builder_q12_hypothesis_metric_owner
 from . import builder_feature_candidates as _builder_feature_candidates_owner
 from . import builder_btc_woori as _builder_btc_woori_owner
@@ -96,57 +98,7 @@ def _feature_candidates(
 def _prospective_concentrations(
     *, reports_root: Path, first_day: str, through_day: str
 ) -> dict[str, dict[str, Any]]:
-    daily_root = (
-        reports_root
-        / "evaluation"
-        / "feature_mart"
-        / "opening_rank1"
-        / "prospective"
-    )
-    day_symbols: dict[str, set[tuple[str, str]]] = {}
-    for path in sorted(daily_root.glob("20??-??-??/rank1_candidate_shadow_daily.json")):
-        day = path.parent.name
-        if day < first_day or day > through_day:
-            continue
-        payload, source = load_json(path)
-        if source.get("error"):
-            continue
-        for value in payload.get("observations") or []:
-            row = mapping(value)
-            if not row.get("matched"):
-                continue
-            candidate_id = str(row.get("candidate_id") or "")
-            symbol = str(row.get("symbol") or "")
-            row_day = str(row.get("day") or day)
-            if candidate_id and symbol:
-                day_symbols.setdefault(candidate_id, set()).add((row_day, symbol))
-
-    def _largest_key(counts: Counter[str]) -> str | None:
-        """Return a reproducible mode: count descending, key ascending.
-
-        ``Counter.most_common(1)`` preserves first-seen order for ties.  The
-        source population above is accumulated in sets, whose iteration order
-        intentionally varies between Python hash seeds, so it cannot define
-        daily authority identity.
-        """
-        if not counts:
-            return None
-        return min(counts, key=lambda key: (-counts[key], key))
-
-    result: dict[str, dict[str, Any]] = {}
-    for candidate_id, pairs in day_symbols.items():
-        days = Counter(day for day, _symbol in pairs)
-        symbols = Counter(symbol for _day, symbol in pairs)
-        count = len(pairs)
-        result[candidate_id] = {
-            "independent_day_symbol_count": count,
-            "observed_day_count": len(days),
-            "largest_day_share": round(max(days.values()) / count, 4) if count else None,
-            "largest_symbol_share": round(max(symbols.values()) / count, 4) if count else None,
-            "largest_day": _largest_key(days),
-            "largest_symbol": _largest_key(symbols),
-        }
-    return result
+    return _builder_prospective_concentrations_owner.prospective_concentrations(reports_root=reports_root, first_day=first_day, through_day=through_day, facade=sys.modules[__name__])
 
 
 def _fresh_change(payload: Mapping[str, Any]) -> dict[str, Any]:
@@ -170,31 +122,7 @@ def _btc_woori(payload: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _large_cap_candidate(reports_root: Path, through_day: str) -> tuple[dict[str, Any], dict[str, Any]]:
-    review = build_large_cap_daily_review(
-        reports_root=reports_root, through_day=through_day
-    )
-    live_net = metric_snapshot(review.get("base"))
-    live_net["window_count"] = int(mapping(review.get("base")).get("window_count") or 0)
-    row = _candidate(
-        candidate_id="SAMSUNG_HYNIX_FIXED_UNIVERSE_TOP1",
-        track_id="LARGE_CAP_TWO_SYMBOL",
-        discriminator="momentum + volume confirmation within fixed two-symbol universe",
-        target_horizon="+180m",
-        source_status=str(review.get("decision") or "RUNTIME_DATA_REQUIRED"),
-        board_bucket="BACKGROUND_RUNTIME_REQUIRED",
-        owner="SAMSUNG_HYNIX_BASELINE",
-        prospective=live_net,
-        evidence_note="정합성 수정 이후 하루만 비교 가능하며 반복 window는 독립 거래가 아님.",
-        next_action="과거 시점 오류 자료를 섞지 않고 수정 이후 day-level episode만 누적.",
-        source_keys=["large_cap_daily"],
-    )
-    return row, {
-        "path": "multiple_daily_artifacts",
-        "available": bool(review.get("source_count")),
-        "error": "INVALID_DAILY_ARTIFACT" if review.get("invalid_sources") else None,
-        "through_day": through_day,
-        "source_count": review.get("source_count"),
-    }
+    return _builder_large_cap_candidate_owner.large_cap_candidate(reports_root, through_day, facade=sys.modules[__name__])
 
 
 def _attention_order(candidates: list[dict[str, Any]]) -> list[str]:
