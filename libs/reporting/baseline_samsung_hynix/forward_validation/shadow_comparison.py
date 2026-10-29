@@ -120,12 +120,16 @@ def build_shadow_comparison(
         for policy in SHADOW_ENTRY_POLICIES:
             rows = [row for row in outcomes if row["target"] == key and row["policy"] == policy and row["status"] == "OBSERVED"]
             metrics = _metric([float(row["net_eod_return_pct"]) for row in rows])
+            # An OBSERVED outcome whose entry has no later path row carries mfe/mae None; average only observable values
+            # (None when there is none) instead of crashing on float(None) or inventing 0.0.
+            mfe_values = [float(row["mfe_pct"]) for row in rows if row.get("mfe_pct") is not None]
+            mae_values = [float(row["mae_pct"]) for row in rows if row.get("mae_pct") is not None]
             metrics.update(
                 {
                     "target": key,
                     "policy": policy,
-                    "average_mfe_pct": round(sum(float(row["mfe_pct"]) for row in rows) / len(rows), 6) if rows else None,
-                    "average_mae_pct": round(sum(float(row["mae_pct"]) for row in rows) / len(rows), 6) if rows else None,
+                    "average_mfe_pct": round(sum(mfe_values) / len(mfe_values), 6) if mfe_values else None,
+                    "average_mae_pct": round(sum(mae_values) / len(mae_values), 6) if mae_values else None,
                     "average_eod_return_pct": metrics["average_return_pct"],
                 }
             )
