@@ -1,6 +1,7 @@
 """Story report contract display helpers maintain prior source and patchable seams."""
 import ast
 import subprocess
+from functools import lru_cache
 from pathlib import Path
 import pytest
 import libs.reporting.trade_story_pipeline as api
@@ -13,8 +14,14 @@ NAMES = ("slug", "feature_coverage", "normalized_feature_coverage",
          "build_story_id", "build_story_contract")
 
 
+@lru_cache(maxsize=1)
+def _pinned_source():
+    """The pinned Git blob is immutable; share the fetch across test cases."""
+    return subprocess.check_output(["git","show",f"{BASE}:{PATH}"],text=True,encoding="utf-8-sig")
+
+
 def former(name):
-    src=subprocess.check_output(["git","show",f"{BASE}:{PATH}"],text=True,encoding="utf-8-sig")
+    src=_pinned_source()
     node=next(n for n in ast.parse(src).body if isinstance(n,ast.FunctionDef) and n.name==name)
     ns=vars(api).copy()
     exec(compile(ast.Module(body=[node], type_ignores=[]),
