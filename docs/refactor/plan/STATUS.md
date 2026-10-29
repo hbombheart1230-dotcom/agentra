@@ -1,8 +1,13 @@
-# Agentra P1.5 — STATUS (2026-10-28 RF-067 DONE · RF-044/045 DEV CLAIM 반영)
+# Agentra P1.5 — STATUS (2026-10-29 20:24 KST FAST-3 93/93 · RF-016 LEAD)
+
+**CURRENT 2026-10-29 20:24 KST — FAST-3:** 93개 RF 전부 G1/G2/G3 3칸으로 전환(이번 C05 79개, 이전 전환 14개). 역사 C1~C7은 비차단. **RF-016 G1/G2 MET → 04_LEAD_ACCEPTANCE, G3 C04 KEEP·정상 targeted smoke/CI 근거 대기. 신규 DONE 0, 누적 DONE 20/93.** 큐 PENDING47/DEV13/PEER12/LEAD1/DONE20/REWORK0. RunLab #32 OPEN/SOURCE_UNKNOWN, real mode 금지. 격리 checkout Git DNS 불가로 Python migrate/sync --write/--check는 NOT_RUN; GitHub API 배치 동등 변환 및 93개 고유성·14 우선표 대조 수행.
+
+**아래의 과거 C1~C7 기록은 역사 참고이며 현재 FAST-3 필수 게이트가 아닙니다.**
+
 
 **C05 2026-10-29 19:33 KST 신규 반대 Peer·RunLab 판정:** [#11 6494086747](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6494086747) emergency `ba1bd2f2`→`1f372f2f` 독립 검증에서 RF-045 log move의 **목적지 검사→이동 race overwrite D2**를 Win/Linux 재현; latest emergency `457ca9f8`까지 core blob 불변, **C2 SAFETY_HOLD/원래 C1 10-owner 첫 미충족**. RF-066 CLI의 비임시 `--apply`도 동일 소비자 위험으로 HOLD(C1 17-owner Codex B). A 최신 [#11 6493240523](https://github.com/hbombheart1230-dotcom/agentra/issues/11#issuecomment-6493240523) RF-041 HTTPError retry 수정은 A 브랜치 전용, 42 PASS 양 모드이나 344 PASS+57 ERROR의 guard baseline 미분류; nonfinite BUY/SELL 위험 integration 잔류, **C1 Claude A/C2 안전 차단**. [#32 6493735258](https://github.com/hbombheart1230-dotcom/agentra/issues/32#issuecomment-6493735258) 19:03 독립 관측은 runtime healthcheck 5s timeout 지속(unhealthy), API/web healthy, 이미지 SOURCE SHA UNKNOWN, 과거 ORDER/GUARD/REPORT 결손 잔류 → RunLab OPEN. RF-016 실제 원본 C1~C3 MET·C5 N/A이므로 아래 우선표의 구 스냅샷 MET0을 **MET3/N/A1/미충족3(C4,C6,C7)**으로 정정; **신규 승격/DONE 0, LEAD0, DONE20/93**. D2 수정은 C03/긴급 Codex, 전체 Peer는 Claude A; RF-016 C4는 독립 Codex, hosted CI는 C04. C05 직접 pytest/동기화 도구 NOT_RUN.
 
-**실물 RF·C1~C7 기준:** [D00](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [RF 큐](queue/) · [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). **수정 책임 C05 지팀장 단독**. 원본 RF의 원래 목표·DONE 체크·정확 SOURCE/peer CI 근거가 수용 정본이며 이 문서는 요약이다. 매회 기록을 누적하지 않는다.
+**실물 RF·FAST-3 기준:** [D00](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md) · [RF 큐](queue/) · [LEAD_CURRENT](queue/04_LEAD_ACCEPTANCE/LEAD_CURRENT.md). **수정 책임 C05 지팀장 단독**. 원본 RF의 원래 목표·DONE 체크·정확 SOURCE/peer CI 근거가 수용 정본이며 이 문서는 요약이다. 매회 기록을 누적하지 않는다.
 
 **C05 2026-10-29 신규 2차 독립 검증 수용(홍사장 제출, 정확 SOURCE 구분):** RF-016 고정 A `2bce7dca` 8/8 원본 소스는 최신 A `8e370cca` 및 integration 변경 뒤에도 동일. P172 5-owner identity/shim/frozen/negative 94 PASS, 실제 Strategist dynamic consumer 2+3 PASS 및 temp/fake 추가 marker 양 모드 exit0을 기존 3개 docstring-only init의 KEEP와 대조하여 **RF-016 C1/C2/C3 MET**, **C4 PARTIAL(반대팀 수행자·original 8-owner full peer 인수 확인 전)**, C5 N/A, C6/C7 PENDING, 물리 PEER. RF-014 exact A `2bce7dca` detached 4 PASS 각 모드·RF-009 Top1/repeat/risk/NOOP/State 보호 소비자 신규 경계 수용, 그러나 20-owner 전체 C1/C2/C3/C4는 PARTIAL. RF-041 exact 옛 A SOURCE focused 80 PASS 각 모드라도 `BUY price='nan'` actionable 음성 결함 **normal/-O 둘 다 재현**(원래 C2 안전 BLOCKED/C3 FAIL); A 최신 `8e370cca`의 HTTPError retry 수정은 다른 파일의 별개 결과. 긴급 고정 `1f372f2f`에 한해 nonfinite fail-closed와 symlink 수정을 A peer 24+30 PASS 양 모드로 별도 보고, **정본에 아직 미통합**. 독립 실행 결과는 사용자 제출, 지팀장 Windows 재실행 NOT_RUN. 별도 Linux 전체 `6051P/4992F/301E/29S`(68m39) 원인 미분류 및 Windows 55% 중단(tzdata/yaml) **FULL_PYTEST NOT_CLASSIFIED/ENV_BLOCKED**, 특정 RF로 귀속 불가. C4 full·C6 exact integration hosted CI 신규 승인 0, LEAD 0/DONE 20. RF 원본 3개에 새 근거와 RF-016 C1~C3 체크 갱신, 공식 sync `--write/--check` 이 세션 NOT_RUN.
 
@@ -11,7 +16,7 @@
 ## 현재 물리 큐
 | PENDING | DEV | PEER | LEAD | DONE | REWORK | TOTAL |
 |---:|---:|---:|---:|---:|---:|---:|
-| 47 | 13 | 13 | 0 | 20 | 0 | **93** |
+| 47 | 13 | 12 | 1 | 20 | 0 | **93** |
 
 - **C05 2026-10-29 13:39 KST 최신 판정:** #11 6487113514 A `32d86ba` RF-033 cumulative fail-closed 및 5 exact tests(normal/`-O` cumulative 30, preopen 11, pipeline 7, report 10 PASS worker); integration cumulative blob 상이. A B 정확 `44b36a23` scoped peer 6+16+11 PASS 양 모드(044/045/066, full C4 아님). #12 6486877513 B 과거 A `fffa761a` 혼합 scoped peer 51 PASS·2 deselected 양 모드(028/029/033/034, 현 A보다 112 commits 뒤), `exchange_calendars`/`yaml` 수집 BLOCKED, B local `28fe8c12` push 실패·remote `44b36a23`. CSV RF-033 +5→4097 unique, RF-074 frozen 75. C1~C5 PARTIAL/C6-C7 PENDING, LEAD0/DONE20, 단계 불변. FIRST_UNMET A 033 45-owner/B 044 16,045 10,066 17-owner ACTION; full opposite C4 필요. RF-021 C2/C3 safety, RF-032 C1+validation-id, RF-069 C1+historical 승인 HOLD; #32 `RUN_SOURCE_SHA=UNKNOWN`/OPEN. C05 직접 normal/`-O` pytest/sync `--write`/`--check` NOT_RUN(DNS), exact SHA CI 0. NEXT 원래 C1/negative effect, 최신 SHA full peer, C04 CI; 운영 broker/UEF/--apply HOLD. **C05 13:41 추가:** B `fffa761a` 혼합 peer 51 PASS·2 deselected(normal/`-O`)의 RF-028/029/034 owner source 경로는 현 A `32d86ba`까지 원격 compare에서 변경 0(112 commits/106 paths), 국소 C4 PARTIAL 증거만 수용; RF-033 source 변경 6개는 동등성 제외. B local push 실패, full C4/DONE 아님.
 - **현재 LEAD 0건:** RF-067은 C1~C4/C6/C7 MET, C5 N/A로 [DONE](queue/05_DONE/CODEX_B/RF-067.md) 이동. hosted [run 40623624802](https://github.com/hbombheart1230-dotcom/agentra/actions/runs/40623624802)의 CI_BASE_SHA `beca55b47e4ad2cde1bc8fc9fe2b8db6cec07989` normal/`-O` SUCCESS. 문서 전용 후속 커밋은 D00 §2.2 동등성 인수이며 HEAD 직접 CI PASS로 표기하지 않음.
@@ -30,7 +35,7 @@ FAST-3: **G1 원격 코드·Owner 범위**, **G2 변경 부분 smoke/pytest**, *
 | [RF-050](queue/03_PEER_REVIEW/CLAUDE_A/RF-050.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 target: changed scope not full owner peer (**C05**) | FAST_3_PENDING |
 | [RF-031](queue/03_PEER_REVIEW/CLAUDE_A/RF-031.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 target: changed scope not full owner peer (**C05**) | FAST_3_PENDING |
 | [RF-014](queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
-| [RF-016](queue/03_PEER_REVIEW/CLAUDE_A/RF-016.md) | PEER · A → B | MET 2 · N/A 0 · 1남음 | G3 | **G3** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
+| [RF-016](queue/04_LEAD_ACCEPTANCE/CLAUDE_A/RF-016.md) | LEAD · A → B | MET 2 · N/A 0 · 1남음 | G3 | **G3** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
 | [RF-028](queue/03_PEER_REVIEW/CLAUDE_A/RF-028.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
 | [RF-029](queue/03_PEER_REVIEW/CLAUDE_A/RF-029.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 current unmet (**C05**) | FAST_3_PENDING |
 | [RF-033](queue/03_PEER_REVIEW/CLAUDE_A/RF-033.md) | PEER · A → B | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
@@ -39,7 +44,7 @@ FAST-3: **G1 원격 코드·Owner 범위**, **G2 변경 부분 smoke/pytest**, *
 | [RF-065](queue/02_DEVELOPING/CODEX_B/RF-065.md) | DEV · B → A | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
 | [RF-069](queue/03_PEER_REVIEW/CODEX_B/RF-069.md) | PEER · B → A | MET 0 · N/A 0 · 3남음 | G1,G2,G3 | **G1** FAST-3 first unmet (**C05**) | FAST_3_PENDING |
 
-**우선 14건:** **MET 5/42 · N/A 0/42 · 미완료 37/42**. 실제 DEV 2 + PEER 11, LEAD 0. 물리 DONE은 20건이며 N/A를 증거 PASS로 합산하지 않습니다.
+**우선 14건:** **MET 5/42 · N/A 0/42 · 미완료 37/42**. 실제 DEV 2 + PEER 10, LEAD 1. 물리 DONE은 20건이며 N/A를 증거 PASS로 합산하지 않습니다.
 
 **STATUS 갱신 책임: 지팀장.** RF 변경/증거 인수 및 물리 이동 시 같은 작업에서 `python docs/refactor/tools/sync_rf_checklist_status.py --write` 후 `--check` 확인. 이 도구는 93개 실물 파일의 유일성/단계 수와 우선 14개 원본 체크를 대조하며 RF 합격/안전 실행을 자동 승인하지 않습니다.
 <!-- RF_LEAD_CHECKLIST_END -->
