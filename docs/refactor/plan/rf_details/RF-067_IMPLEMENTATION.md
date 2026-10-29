@@ -1,5 +1,9 @@
 # RF-067 — 코드 구조/함수 재배치 설계 (T08)
 
+## T08 RF-067 — path-preserving KEEP
+Codex B assigned; 14 existing scripts files. Keep each correctly located single-purpose CLI, imports, argv/exit and cwd behavior intact. For a file without a separable long unrelated computation, record KEEP_OK(path, one-line purpose, Git blob) and advance immediately. No relocation for cosmetic folder structure. C03 assigns an explicit named function and destination in C01 if a real multi-responsibility module exists.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/05_DONE/CODEX_B/RF-067.md` blob `d6d3d8e4f6d952501b7f57bcadb4e8fd583bccd9`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 14개 파일; 다른 RF 경로 쓰기 금지.
 

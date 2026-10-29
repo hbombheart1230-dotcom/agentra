@@ -1,5 +1,13 @@
 # RF-070 — 코드 구조/함수 재배치 설계 (T08)
 
+## 실물 함수 RF-070
+Source scripts/run_ai_trade_report_batch.py blob 72622e920f606f4607ec5590a59d1fe330023ee5, 547 LOC. Codex B.
+- main(argv) L243–544 (302 lines): filesystem report generation, runtime-state read, output side effects and summaries coexist. Preserve public main argv/exit/output location. Do not blindly move entire main into new module.
+- _classify_missing_story_input L118–151 (34): simple classifier; KEEP if single role. _resolve_output_paths L86–117 (32): output-path policy helper; KEEP. _build_parser L50–73 (24): CLI parser helper; KEEP.
+- Pure extraction candidate: main's per-trade result/status dict projection, without artifact writes and global filesystem reads. TARGET scripts/report_batch_row_projection.py::build_trade_report_batch_row; exact pure statement-run must be marked from current main body by C03 before implementation. Preserve Korean text, json output and ordered skip/error branches. Use fake trade paths in tmp and normal targeted old/new test.
+- All other root run_*.py launchers correctly delegating to internal owners are KEEP_OK; avoid migrating public entrypoints.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-070.md` blob `6e7bb13917b89cb20ae2b4fbc23da573cdbdfe0e`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 142개 파일; 다른 RF 경로 쓰기 금지.
 

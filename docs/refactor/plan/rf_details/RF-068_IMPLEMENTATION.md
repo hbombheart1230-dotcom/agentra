@@ -1,5 +1,9 @@
 # RF-068 — 코드 구조/함수 재배치 설계 (T08)
 
+## T08 RF-068 — path-preserving KEEP
+Codex B assigned; 8 existing scripts files. Retain public command launchers and stable import entrypoints where an existing internal Owner already implements the behavior. One validated single-role, correctly placed file receives KEEP_OK + source blob, without new tests. Actual substantial pure logic is extracted only after C03 provides the named source function, single target module and old/new fixture in C01.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/05_DONE/CODEX_B/RF-068.md` blob `b3ac5567ba1631f892d63a7a809c919c7f1bfe00`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 8개 파일; 다른 RF 경로 쓰기 금지.
 

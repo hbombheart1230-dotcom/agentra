@@ -1,5 +1,12 @@
 # RF-071 — 코드 구조/함수 재배치 설계 (T08)
 
+## 실물 함수 RF-071
+Source scripts/start_trading_day.py blob f0193844c36b932900ae07f20c57dd641a831088, 660 LOC. Codex B.
+- run_watchdog L533–639 (107), run_start L441–495 (55), _q10_closeout_recovery L496–532 (37), _start_live L307–332 (26): process startup/health/closeout effects under public scheduler path, KEEP_EFFECT_BOUNDARY. Preserve Windows Powershell/launcher/cwd/exit/stop ordering.
+- _event_health L356–416 (61), _live_status L268–291 (24), _tail_lines L333–355 (23): read-only event/health derivation candidate for a grouped owner scripts/start_trading_day_health_projection.py::build_event_health_projection. Keep file access and process lookup in original launcher; move only pure dict/text output computation, not OS subprocess or file handles. If existing projections are suitable, reuse rather than duplicate.
+- Smaller root scripts are correctly KEEP when role/position are appropriate. No actual process start in targeted tests; synthetic log/health dict only.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-071.md` blob `84cff4ce3ce0aa2a609be486347e0cce4bd08dd9`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 42개 파일; 다른 RF 경로 쓰기 금지.
 

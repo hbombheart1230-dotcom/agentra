@@ -1,5 +1,9 @@
 # RF-066 — 코드 구조/함수 재배치 설계 (T08)
 
+## 실물 함수 RF-066
+Source scripts/maintenance/step5d_crash_reconciliation.py (Git blob 0b2cac5dc97b74e9c7ddb64f323561428b5220c4, 251 LOC). Codex B. report L98–135 (38) is the read-only reconciliation summary; main L225–248 (24) is the public CLI. KEEP if one responsibility, correct script location and argument/exit contract. Non-temporary apply operations are outside this refactoring scope. A/B do not re-run identical old tests just to reapprove KEEP.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/02_DEVELOPING/CODEX_B/RF-066.md` blob `e8992be97751010679f33b599921f536c7d71f29`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 30개 파일; 다른 RF 경로 쓰기 금지.
 

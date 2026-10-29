@@ -1,5 +1,9 @@
 # RF-069 — 코드 구조/함수 재배치 설계 (T08)
 
+## T08 RF-069 — path-preserving KEEP
+Codex B assigned; 7 existing scripts files. File paths are part of scheduled command/developer workflow compatibility. Preserve CLI/root entry, args/exit, existing routine ownership. Short single-role tool with no duplicate owner is KEEP_OK in one line; no trivial split. If complex pure computation exists, specify the exact function/target in C01 before coding.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/03_PEER_REVIEW/CODEX_B/RF-069.md` blob `fe8d83c9f4fcf1e3304fe16539c745ba1ac4cb08`.
 **구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 7개 파일; 다른 RF 경로 쓰기 금지.
 
