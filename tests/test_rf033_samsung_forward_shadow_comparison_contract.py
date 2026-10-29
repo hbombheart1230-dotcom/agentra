@@ -120,12 +120,12 @@ def test_summary_aggregates_per_target_policy_and_only_observed():
     assert len(out["summary"]) == 10
 
 
-def test_observed_outcome_without_future_path_rows_crashes_summary_with_typeerror():
-    """BASE defect candidate (pinned current behavior): an OBSERVED outcome whose entry has no later path row gets
-    mfe/mae None, then the summary does float(None) and the whole comparison raises instead of degrading."""
+def test_observed_outcome_without_future_path_rows_degrades_to_none_averages():
+    """Formerly float(None) -> TypeError that aborted the whole comparison (fixed in P15 order 4)."""
     r = {"path": [], "points": {"09:00": _pt(1000, 100.0), "CLOSE": _pt(9999, 101.0)}}
-    with pytest.raises(TypeError):
-        _run([_exp()], {"samsung": r})
+    out = _run([_exp()], {"samsung": r})
+    s = next(x for x in out["summary"] if x["policy"] == "ENTRY_0900")
+    assert s["trade_count"] == 1 and s["average_mfe_pct"] is None and s["average_mae_pct"] is None
 
 
 def test_first_pullback_short_side_boundary_is_inclusive():
