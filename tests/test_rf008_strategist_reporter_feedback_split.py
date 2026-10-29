@@ -48,7 +48,6 @@ class ReporterFeedbackOwnerTest(unittest.TestCase):
         out = self.impl(state, policy, facade=facade)
         self.assertTrue(out["consumed"])
         self.assertEqual(out["feedback_gate_reason"], "mode_enabled")
-        # Policy has no effect when source is present: default mode is auto.
         self.assertEqual(state, state_before)
         self.assertEqual(policy, policy_before)
         self.assertEqual(calls, [])
