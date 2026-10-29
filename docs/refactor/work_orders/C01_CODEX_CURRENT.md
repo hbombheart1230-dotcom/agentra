@@ -1,92 +1,37 @@
-# C01 — Codex B | 다음 실행 코드·테스트 완결 명령
+# C01 — Codex B | FAST-3 실행·환경 복구 / 실적 우선
 
-## FAST-3 속도 최우선 (2026-10-29)
+**정본:** GitHub `hbombheart1230-dotcom/agentra` / `integration/p1.5`.
+**허용 소유 브랜치:** `work/p15-b-operator-structure-20261022`의 코드·테스트만 작성·정상 푸시. README/문서/RF/STATUS/CI·D00·타인 브랜치·운영 State·실계좌·실주문·비격리 `--apply` 수정·효과 금지.
 
-- **D00 §2 FAST-3가 이 문서의 과거 full peer·전수 Owner·모든 -O/전체 suite·동결 게이트/모든 번호 완료 강제보다 우선**한다. 원래 C1~C7은 비차단 이력이다. RF 완료 조건은 G1 코드·Owner/KEEP 확인 → G2 변경 부분 정상 pytest 또는 stdlib smoke 1회 → G3 최소 통합·관련 검증·STATUS DONE 세 개다.
-- 아래 기존 번호 #1~#7은 **개발 후보 백로그/참고**이고, 해당 RF가 READY를 달성했으면 불필요한 전체 독립 peer/#7 frozen 반복으로 완료를 지연시키지 않는다. 가능한 1~3개 실제 변경·오류 수정부터 구현·정상 테스트·본인 브랜치 push에 집중한다. 특정 번호가 BLOCKED여도 다른 READY RF를 진행한다.
-- 수정 없는 모듈은 기존 SHA와 최소 소비자 검증을 재사용. 상대 검증자 전체 원본 파일/모든 -O를 기다리지 않는다. 필요한 경우 상대에게 변경 함수만 비차단 리뷰 요청. G1/G2 확보 즉시 #11(A)/#12(B)에 정확 SOURCE/normal exit와 C03/C05용 READY 인계.
-- 모의투자 mock/paper 동작 테스트는 모의 모드·계정 확인 후 가능하며, 실제 런검증은 개발 완료 후 별도 단계. 실계좌 real 주문/모드 활성화 금지. 기존 브랜치·Git 인증·원격 SHA·승인된 경로 사용과 결과 사실성은 유지한다.
+## 최상위 계약 — 기존 #1~#8 반복 의무 폐기
 
-## 매회 원격 지시 버전·환경 사전점검 (2026-10-29)
+- **D00 §2 FAST-3 우선:** RF 개발 DONE은 G1(원격 소스) + G2(영향받은 경계의 실제 pytest **또는 재현 가능한 stdlib Python smoke normal exit0 1회**) + G3(C04 최소 통합/KEEP, 관련 테스트/기존 유효 CI, C05 DONE)만 필수다. 원래 전체 C4 peer, 매번 `python -O`, 전체 hosted CI, frozen 장시간 테스트는 신규 DONE 필수 게이트가 아니다. 정확 SHA의 기존 PASS를 재사용한다.
+- 이전 C01의 #1~#8은 **역사 작업 항목**이며 모두를 매회 다시 개발/테스트하라는 요구를 종료한다. 특히 RF-016은 이미 C05가 `04_LEAD_ACCEPTANCE`로 옮겨 G1/G2 MET, C04 G3만 남았다. RF-016 원래 full C4·q15 mutation 추가·94 migration 재실행은 지금 B의 완료 조건이 아니며 **새 독립 peer는 선택사항**이다.
+- **환경 미준비를 작업자 태만으로 취급하지 않는다.** 그러나 접근 불가 환경에서 10개 미푸시 소스/테스트를 계속 복제·재커밋하는 것은 개발 진도가 아니다.
 
-- 시작 시 다른 프로젝트 문서나 구 tracking ref를 먼저 읽지 말고 **원격 integration/p1.5의 이 CURRENT 한 파일**을 직접 조회한다. 실제 CANONICAL_HEAD와 ORDER_FILE_BLOB_SHA를 기록한다. 번호별 ORDER_ID = C01 : ORDER_FILE_BLOB_SHA : ITEM_NO. 실행 중 명령서가 바뀌어도 시작 시 고정한 번호를 안전하게 수행하고 다음 회차에서 새 버전을 읽는다.
-- 본인 허용 개발 브랜치 원격 HEAD, 로컬 dirty/충돌·코드 소유권을 확인한다. 이어 Python normal/-O pytest 설치 여부와 Git 조회/승인된 push 경로를 점검한다. pytest 부재는 **pytest만 BLOCKED**, push 인증/외부 export 차단은 **push만 BLOCKED**다. 같은 문제로 다른 tmp/fake·읽기 전용 peer·안전한 코드 구현을 전부 중단하지 않는다. 강제 우회·force push·타인 브랜치 쓰기는 허용되지 않는다.
-- 각 번호 상태를 PENDING/RUNNING/LOCAL_IMPLEMENTED/PUSHED/TEST_VERIFIED/PEER_VERIFIED/VERIFIED_ALREADY/BLOCKED/NOT_RUN 중 사실대로 기록한다. 실제 로컬 구현·smoke를 원격 정상/-O PASS로 바꾸지 않는다. 같은 SHA·같은 전체 범위의 정확 증거만 재사용한다.
-- #12에 실측 START_KST/END_KST/ELAPSED_MIN(실측 없으면 NOT_VERIFIED), CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, 번호별 ORDER_ID/ITEM_STATUS, 정확 OWNER_REMOTE_SHA, 변경 경로, normal/-O 실제 exit, push 검증 SHA 또는 실패 근거, LAST_COMMAND/FUNCTION, UNBLOCK_OWNER, NEXT를 기록한다. 기존 아래 지시의 모든 안전 번호가 각자 완료/차단/한도에 도달하기 전에는 일부 PASS만으로 종료하지 않는다.
+## 0 — 시작 시 고정·환경 복구 단 한 차례
 
-**대상:** 기존 `work/p15-b-operator-structure-20261022`에서만 소유 code/test 수정·fast-forward push. 시작 시 원격 B HEAD와 아래 고정 SOURCE `617c8429c69c98ac6f707a820d0e6825766f8642`를 대조한다. 이미 다른 실행이 수정 중인 파일은 안전 체크포인트/HEAD 확인 후 겹치지 않게 이어간다. **1~5는 각기 필수 개발·회귀 과제, 6은 기존 고정 SOURCE 독립 검증, 8은 별도의 8-owner 독립 C4 신규 경계(최우선)다.** 번호는 우선순위·선택권·종료 조건이 아니다. 결과가 이미 정확 SHA/범위로 입증된 것은 중복 실행하지 않고, 새 입력·새 소스·새 결손에만 테스트를 추가한다. 7은 실제 플랫폼 한도로 차단된 별도 동결 게이트로 유지한다. 모든 IO는 `tmp_path`·fake/deny-socket; 운영 파일/로그/주문/브로커/Guard/UEF/Step5C/RunLab, frozen 파일·CI/정책·문서/CSV·타인 브랜치 수정 및 force-push 금지.
+1. 최신 원격 **이 C01 한 파일**과 `integration/p1.5` HEAD·C01 blob SHA, 본인 원격 B HEAD를 먼저 고정. B 로컬 작업 트리의 unpushed commit과 dirty 파일의 보존 여부 확인. 과거 `2055bc6fb3090766f87dc343f656c267d65ed2b7`의 코드/테스트-only 로컬 변경은 **보존**하고, 막연한 rebase/reset/cherry-pick·다른 커밋으로 덮어쓰기 금지.
+2. `python --version`, `python -m pip --version`, `python -m pytest --version`을 각각 실제 실행. 테스트 의존성 부재면 **환경이 허용하는 범위에서 단 한 번** 격리 venv + `pip install pytest`를 시도할 수 있다(정책상 허용된 인터넷/패키지 인덱스만, 우회 금지). 실패하면 `PYTEST_BLOCKED`로 고정하고 새 코드에 한해서 실제 `python -c ...`/stdlib harness normal exit0로 G2를 검증한다. pytest 명령의 `No module named pytest` exit1을 기능 테스트 FAIL로 표시하지 않는다.
+3. `git push origin HEAD:work/p15-b-operator-structure-20261022`를 **현재 깨끗한 승인 owner 브랜치 commit에 한해서 한 번** 확인. Git HTTPS username/자격증명이 없으면 승인된 GitHub 연결 도구가 **이미 제공하는** owner-branch contents/commit/ref 쓰기 기능 유무만 확인해, 허용된 경로가 있으면 그 경로만 사용한다. 브라우저에서 보이는 GitHub 계정 연결이 곧 VM Git credentials라는 가정은 금지. PAT 노출·새 토큰 요구·원격 보호 우회·private 소스의 비승인 외부 반출·force push 금지.
+4. `pytest` 및 승인 원격 쓰기가 **모두** 계속 차단이면 `ENV_BLOCKED_BOTH`를 제출하고, **새 로컬 전용 구현·커밋 생산을 중단**한다. 가능한 소스 read-only 검토와 재현 가능한 stdlib smoke만 1건 수행하고 정확 첫 차단을 보고한 후 종료. 매 회차 같은 실패를 8회 반복하지 않는다. 복구/설정 변경이 확인될 때만 본 개발을 재개한다.
 
+## 1 — 기존 B 로컬 2055bc6f 결과 보존/원격 반영 (환경 해제 때만)
 
-## 실행 진입·미푸시 로컬 테스트 복구 (2026-10-29 17:56 KST 시정, 다음 세션 적용)
+**기존 로컬 범위**(Issue #12 [6495081990](https://github.com/hbombheart1230-dotcom/agentra/issues/12#issuecomment-6495081990)): `scripts/maintenance/compact_q9_decision_windows.py`의 소형 Q9 JSON no-growth, `scripts/diagnostics/query_strategist_llm_events.py`의 NaN/Inf 제외, RF-031 caller 및 CLI 전달 등 **기존 8개 신규 테스트**. 새 작업으로 다시 만들지 말 것.
 
-- **최신 명령서 고정이 첫 행동:** `origin/integration/p1.5`의 **현재** `docs/refactor/work_orders/C01_CODEX_CURRENT.md`를 원격에서 한 번 직접 읽고, 그 문서의 **원격 integration commit SHA와 C01 blob SHA**를 기록한 뒤 아래 **#1~#6 및 #8 전체**를 실행한다. `git fetch origin integration/p1.5` 후 `git show origin/integration/p1.5:docs/refactor/work_orders/C01_CODEX_CURRENT.md` 또는 허용된 GitHub 읽기 연결로 확인한다. 예전 로컬 `c78e2657` 문서·기존 세션 메모로 대체하지 않는다. B 브랜치 원격 HEAD는 별도 고정해 `617c8429...` 이후 변경만 인수한다. **원격 문서 확인이 실패하면 정확 fetch/API 실패를 #12에 남기고, 이미 검증된 현재 코드/테스트의 안전한 독립 작업은 계속**한다. 이 문서 외 프로젝트 지시/큐/정책을 탐색하지 않는다.
-- **미푸시 코드/문서 혼합 커밋 처리:** #12 `6491988675`에서 로컬 `f893628f77abbcceebaaf7cbabebbee1038f0e70`은 `tests/test_rf031_reporter_partial_artifact_recovery.py` **1개 신규 temp-only 회귀 + 금지된 HANDOFF_B 문서 변경**을 함께 포함하고, Git HTTPS 인증 실패로 원격 B `617c8429c69c98ac6f707a820d0e6825766f8642`에는 없다. 이 로컬 커밋은 **푸시 금지**, 완료 증거로도 인정하지 않는다. 해당 로컬 test blob이 실제 접근 가능하고 원격 B에 같은 내용이 없으면, **기존 B 허용 작업 트리에서 test 파일만** `git show f893628f:tests/test_rf031_reporter_partial_artifact_recovery.py`로 추출해 추가한다(원본 문서/커밋 cherry-pick 금지). `git diff --name-only`로 test 외 경로 0을 확인하고 `python -m pytest -q -p no:cacheprovider tests/test_rf031_reporter_partial_artifact_recovery.py`, `python -O -m pytest -q -p no:cacheprovider tests/test_rf031_reporter_partial_artifact_recovery.py` 실제 exit를 **새 소스에서만** 확인한 뒤 test-only 정상 커밋·허용 B 브랜치 fast-forward push·원격 blob 확인. **A 고정 SOURCE 독립 검증 #6을 이 단일 scoped caller 테스트로 대체하지 않는다.** 로컬 blob이 없거나 동일 테스트가 이미 원격에 있으면 `LOCAL_ONLY_UNAVAILABLE/VERIFIED_ALREADY`로 기록하고 #1~#6 및 #8 안전 과제를 진행한다.
-- **새 감사의 검증된 사실:** #12 `6492263485`의 `[C06_AUDIT_ACTION]`은 **17:33 새 C01이 원격에 있었지만 17:36 B가 구 문서를 기준으로 로컬 테스트 1개만 수행**했다는 사실을 지적한다. 시정 제안만 수용하며 감사 댓글을 구현 완료로 세지 않는다. B `START_KST=17:36:06, END_KST=17:38:59, ELAPSED_MIN=2.88`은 실제 보고된 값이며 **인증 장애로 push만 BLOCKED**다. 테스트/격리 작업 #1~#6까지 모두 막혔다는 증거는 없으므로 각 항목의 새 구현·검증 또는 정확 국소 BLOCKED를 제출하고 안전한 잔여는 계속 수행한다. 30분을 채우라는 지시가 아니다.
+- 원격 B `617c8429...` 이후 동일 소스/테스트가 이미 반영됐는지 경로와 blob을 비교. 원격에 없다면 로컬 소유 commit의 변경 경로·기능·실제 source diff를 확인하고 금지 문서/HANDOFF/보호 파일 0인 경우에 한해 **기존 승인 B owner branch로 정상 push**. 푸시 경로가 계속 없으면 재커밋 금지, `LOCAL_ONLY_UNPUBLISHED`로 명시.
+- 정상 test 환경이면 바뀐 함수와 직접 caller에 대한 **관련 pytest 하나**, 아니면 함수의 특정 입력/기대 결과를 명시한 **실제 normal stdlib smoke(exit0)** 하나를 수행해 G2 범위와 명령을 보고. 조용한 `compileall`만으로 동작 검증 주장 금지.
+- `2055bc6f` 및 `7cf68e33/f833ec44` 등 서로 다른 과거 로컬 버전의 내용을 섞거나 타인 브랜치를 수정하지 않는다.
 
-## 실행 루프 — 로컬 Codex 방식의 연속 수행 계약 (전 번호 필수)
+## 2 — 환경이 복구된 경우에만 1개 신규 안전 과제
 
-1. **진입 즉시 작업 테이블 확정:** 현재 원격 B HEAD와 이 문서의 #1~#8을 대조해 번호별 `DONE_WITH_EVIDENCE / IMPLEMENT / TEST / BLOCKED / NOT_RUN`을 구분한다. 기존 정확 SHA·동일 범위의 정상/-O PASS는 재사용하고, 존재하는 테스트/구현을 무의미하게 다시 만들지 않는다.
-2. **번호별 즉시 실행:** 새 입력의 실패 재현 → B 소유 최소 수정·독립 테스트 → normal/-O 실제 exit → 허용 브랜치 정상 커밋·푸시·원격 blob 확인까지 수행한다. 코드 수정이 불필요한 경우도 독립 음성 테스트·실제 결과를 남긴다. #6 상대 SHA는 격리 읽기 전용으로만 검증한다.
-3. **한 번호의 PASS는 종료가 아니다:** 다음 미완료 안전 번호로 즉시 이동한다. 중요도나 순서는 스스로 선택해도 **#1~#6 및 #8 어느 번호도 생략할 수 없다**. #7 동결 게이트는 긴 실행이 가능한 환경에서 해소하되, 환경 한도가 확인되면 그 번호만 BLOCKED하고 다른 작업을 계속한다.
-4. **장애는 국소화:** 인증 문제는 push만 BLOCKED, 테스트 의존성 문제는 해당 테스트만 BLOCKED, 안전 HOLD는 그 효과만 금지한다. 나머지 가능한 코드·테스트·독립 peer를 이어서 수행하며 권한 밖 우회는 하지 않는다.
-5. **종료 게이트:** 모든 번호가 실제 원격 SHA와 검증 증거로 완료되었거나, 남은 번호 각각에 대해 구체 명령·오류·해제 담당·재개점이 기록되어 안전하게 수행할 작업이 없을 때만 종료한다. 환경·세션 실행 한도로 끝나면 정확한 마지막 함수/명령/결과를 #12에 남겨 **다음 회차 첫 재개점**으로 삼는다. 실행 시간이 길다는 사실이나 단일 PASS만으로 완료를 선언하지 않는다.
+**대상:** `scripts/maintenance/compact_q9_decision_windows.py`의 컴팩션이 파일보다 커지는 경우 **원본 유지·임시파일 미생성·감소량 0**을 실제 tmp-only로 검증. 기존 `tests/test_p15_compact_q9_no_growth.py`가 정확 SHA에서 이미 확인되면 `VERIFIED_ALREADY`로 처리하고 불필요한 중복 테스트/코드 작성 금지. 새 실패 입력이 나타난 경우에만 B 소유 최소 수정·관련 normal pytest 또는 stdlib smoke(exit0)·허용 브랜치 원격 push. 다른 레거시 #1~#8을 마음대로 계속 배정하지 않는다.
 
-**이번 회차 작업량:** #8의 8-owner 정확 SHA 독립 C4가 우선이다. #1~#5 미푸시 개발·회귀 5건, #6 기존 고정 A SOURCE peer, #7 frozen 장시간 게이트도 각자 잔여 단계가 끝날 때까지 필수다. 이 목록을 임의로 하나의 시험명령으로 축소하지 말고 신규 근거를 생성하라.
+## 3 — 보고·종료 조건
 
-## 8 — 고정 Claude A Strategist 8-owner **최초 누락 독립 C4** (최우선·상대 read-only)
+#12에 **실측** `START_KST, END_KST, ELAPSED_MIN`(불가하면 NOT_VERIFIED), `CANONICAL_SHA / C01_BLOB / B_REMOTE_SHA / B_LOCAL_SHA / CHANGED_PATHS / G1 / G2 / G3_PENDING`, 해당 명령/정확 exit, 실제 normal/-O 수행 여부, 승인 push 성공 또는 처음 발생한 인증/정책 차단, `UNBLOCK_OWNER/NEXT`를 1개 짧은 댓글로 제출.
 
-- **정확 SOURCE/소유:** `2bce7dcaaadebe9fe825dcf9d2f5e1b1f667ad33` (Claude A 원본 고정). 현재 A `8e370ccafade4dbb7689536791e4b89f5fdc033f`, B `617c8429c69c98ac6f707a820d0e6825766f8642`, 정본 `109b4b55faa266b50af78612c813a199bb2b02f5`의 **아래 8 owner Git blob이 8/8 완전히 동일함을 C03 원격 tree로 직접 확인**했다. 따라서 다른 A `libs/ai/providers/openai_provider.py` 수정·긴급 patch를 이 고정 소스에 섞지 않는다. B가 A 소스/브랜치/원본 테스트/문서에 쓰거나 cherry-pick하는 행위 금지.
-- **8-owner 매트릭스:** `libs/agents/strategist/{__init__.py,context/__init__.py,context/market_key_events.py,context/news_compaction.py,context/symbol_read_models.py,context/theme_strength.py,output/__init__.py,output/strategic_answers.py}`. 세 `__init__`는 docstring-only marker(해당 blob `3c1a0374e302f24b88a83819d1348a0bf25ded46`), 구현 다섯 owner는 위 순서로 `3b09d58c/c4ba0ddf/91316b51/0268ed0e/1c84a7ff`. 각 owner의 실제 export/facade import, 호출자, nested alias, State/예외/IO·negative 범위와 **기존 정확 SOURCE·양 모드 로그로 입증된 행** vs **처음 누락된 행**을 표로 구분한다. 기존 94 migration, reasoning 2, frame LLM 3, isolated `RF016_TEMP_FAKE_OK`, 과거 단일 alias/theme/news 함수 PASS는 **새로 재실행하지 말고** 출처·실행자/역할·정확 command/exit 확인 가능 여부만 기록. 해당 기존 사용자 실행의 '2차 독립'이라는 명칭은 **B 실제 반대팀 수행자 신원·8 owner full coverage 증거를 대체하지 못한다**.
-- **최초 누락 동적 소비자:** 고정 A source의 `libs/agents/strategist/context/news_compaction.py::_compact_news_signal_summary_for_llm_r3_impl`→`_selected_symbol_news_signal_for_llm_r3_impl`, `libs/agents/strategist/output/strategic_answers.py::_build_strategic_answers_r3_impl`→legacy facade `_build_strategic_answers`→읽기 전용 `libs/runtime/strategist/policy/node_policy_projection.py::strat_policy_commander_context_policy_adjustment`→`strategy_policy_annotation.py::attach_horizon_to_commander_context`. 기존 facade의 **use-time monkeypatch**, `q15_commander_refresh_context`/ `selected_symbol_memory`의 중첩 alias와 얕은 복사, malformed `None/list/dict`에서 기존 예외 타입·입력 불변/의도된 alias identity를 **같은 fixed SHA 기준** 비교한다. B가 `strategy_policy_annotation`을 수정하거나 실제 운영 State를 생성하지 않는다.
-- **새 격리 probe:** B 허용 테스트 경로 `tests/test_p15_peer_a_strategist_8owner_consumer.py`(A 소스 import만). `tmp_path`에서 `commander_context={"strategist_refresh_context":{"selected_symbol":"005930","selected_rank":1,"selected_symbol_memory":{"k":["original"]}}}`, fake facade의 `_build_strategic_answers`/news compaction helper를 use-time 교체해 (a) 8-owner import/alias 함수 identity 및 기존 nested 참조 4종, (b) `news_signal_summary`에 정상 `005930`/없는 심볼/비-Mapping 입력을 넣었을 때 **원래 함수와 facade의 동일 반환 또는 동일 예외**, (c) `node_policy_projection` 결과의 `q15`를 후속 consumer가 shallow-copy한 뒤 내부 list를 변형하는 시나리오에서 원본 `commander_context`에 영향이 **있는지 없는지 실제 측정**하고 BASE와 같으면 KEEP, 새 부작용이면 FAIL, (d) annotation이 q15 상위 dict를 교체해도 다른 key와 입력 State가 기존 계약대로 보존되는지, (e) 네트워크·주문·운영 파일 쓰기 0을 검증한다. **실제 alias 공유가 확인되면 그 자체를 회귀로 단정하거나 production 수정을 지시하지 말고**, 의도된 alias와 신규 외부 mutation을 분리해 보고한다. 각 subcase의 실제 기대값은 **동일 고정 SOURCE의 원본 facade/BASE parity**로 확정하고 추측값으로 고정하지 않는다.
-- **실행·증거:** 별도 detached read-only A SOURCE checkout 및 B 소유 test 파일로 `PYTHONPATH=<isolated-A-tree> python -m pytest -q -p no:cacheprovider tests/test_p15_peer_a_strategist_8owner_consumer.py`와 `PYTHONPATH=<isolated-A-tree> python -O -m pytest -q -p no:cacheprovider tests/test_p15_peer_a_strategist_8owner_consumer.py`; 실행 전 실제 import `__file__`/Git blob 8/8과 pytest 설치 확인. B 자체 테스트 신규 작성 시 **B code/test 허용 브랜치만** 정상 커밋·fast-forward push·원격 blob 검증. pytest 없음이면 `TEST_BLOCKED(pytest missing)`, private export/인증 거부면 `PUSH_BLOCKED`만 표시하고 독립 C4 FULL_PASS로 승격하지 않는다. 가능한 read-only `C4_MATRIX`·source provenance·새 음성 fixture 준비는 계속, 로컬 파일/컴파일/stdlib smoke를 pytest PASS로 대체하지 않는다.
-- **C05/C04 조건부 인계:** #12에 `REVIEWER_ID/ROLE=Codex B independent of Claude A | A_SOURCE_SHA | 8_OWNER_C4_MATRIX | NORMAL/-O exact command+exit | OUTSIDE_EFFECTS=0 | FIRST_UNMET | VERDICT=FULL_C4_MET or SCOPED_PARTIAL | PUSH_REMOTE_SHA or BLOCKED`를 기록. 전체 원래 8 owner에 누락 없이 독립 C4를 충족한 경우에만 **C05가** 03_PEER→04_LEAD·C1~C5 인수; **C04가** source KEEP/정확 integration SHA hosted CI(C6) 또는 승인된 엄격 동등성 증거; **C05가** C7/DONE/STATUS. 이번 B probe 또는 C03 지시 커밋만으로 LEAD/CI/DONE 선언 금지. 테스트/푸시/독립성 미충족이면 **정확 최초 누락 C4 행과 마지막 실행 명령**을 다음 회차 체크포인트로 남긴다.
-
-## 1 — Q9 compact의 파일 크기 역증가 방지 (개발·필수)
-
-- **확인한 기존 B 코드:** `scripts/maintenance/compact_q9_decision_windows.py::compact_file/_compact_window/main` (B SOURCE, blob `e6d675039516a736c1ab19892a5fb98574836a13`), 공개 호환 entrypoint `scripts/compact_q9_decision_windows.py`(15 LOC import alias/runpy wrapper, **KEEP**). 현재 `compact_file`은 dict JSON을 읽고 window mapping만 유지한 뒤 무조건 `indent=2`로 재기록한다. 작은 압축 입력은 실제로 **46→111 bytes, 398→1188 bytes** 역증가 관찰. `_compact_window`와 `libs.runtime.q9_decision_snapshots._compact_candidates/_compact_mapping`는 변경하지 않는다.
-- **정확 수정:** JSON 객체/유효 window를 기존과 동일하게 변환하고 **출력 bytes를 먼저 메모리에서 직렬화**한다. 원본 파일 byte 크기 이상이면 **원본/백업/임시파일에 아무 쓰기도 하지 않고** 기존 결과 dict 키(`path,backup_path,before_bytes,after_bytes,reduced_bytes,reduced_pct,window_count`)를 유지하되 `after_bytes=before_bytes,reduced_bytes=0,reduced_pct=0,backup_path=""`로 반환한다. 실제 축소 때만 기존 백업 1회·임시파일 replace·출력 JSON 구조/값을 유지한다. 공개 `main(argv)`/legacy wrapper 인자·stdout/exit는 그대로. 이미 존재하는 backup은 덮어쓰지 않는다. JSON이 객체가 아니면 원래 `ValueError`·원본 불변.
-- **신규 `tests/test_p15_compact_q9_no_growth.py`:** `tmp_path`에 `{"windows":[]}`를 compact JSON bytes로 저장하고 `backup=True` 호출 → 원본 SHA/size/mtime 및 백업·tmp 목록 불변, reduced=0. 둘째로 1개 큰 scanner top20/window payload를 fake JSON으로 구성하여 **실제 줄어드는 경우에만** before>after, backup bytes=원본, 2회째 재실행 시 backup 불변·새로 크기가 늘면 원본 불변. non-dict `[]` → ValueError, bytes 불변. legacy `scripts.compact_q9_decision_windows`와 canonical module이 동일 `compact_file`을 노출하는지 import-only 확인. 외부/운영 경로 사용 금지.
-- **실행:** `python -m pytest -q -p no:cacheprovider tests/test_p15_compact_q9_no_growth.py`; `python -O -m pytest -q -p no:cacheprovider tests/test_p15_compact_q9_no_growth.py`. 실제 shrink가 없는 fixture는 임의로 축소 성공을 꾸미지 말고 payload를 충분히 늘려 확정한다. 반환 계약 변경으로 기존 소비자가 실패하면 재현·호환 최소 보정.
-
-## 2 — 거래 이유 체인의 intent/run 오귀속 방지 (개발·필수)
-
-- **기존 코드:** `scripts/diagnostics/query_trade_reason_chain.py::_event_intent_id/_build_rows/main` (B blob `89ff494d90d9c58ced19634cc877a7af82f60172`), `scripts/query_trade_reason_chain.py` legacy wrapper는 KEEP. `_event_intent_id`는 payload/decision_packet/intent의 ID가 충돌하면 `None`, ID가 모두 없으면 `""`; `_build_rows`는 같은 run 내 실행이 정확히 하나이고 legacy 단일 ID-less 문맥일 때만 LLM/decision fallback, verdict는 명시 ID 필수다.
-- **수정/검증:** 위 fail-closed 상관관계를 유지하며, 실제 입력에서 다른 intent의 `allowed`·LLM rationale·decision trace가 결합되는지 음성 검사한다. 결함 발견 시 **이 두 B 소유 함수 내부에서만** ID 충돌/다중 실행 문맥 귀속을 좁혀 수정, `_build_rows` 공개 키·필터·정렬과 `main` exit(없는 파일 2, 잘못된 action 3, 정상 0)를 보존. 실행·브로커 코드를 수정하지 않는다.
-- **신규 `tests/test_p15_trade_reason_chain_attribution.py`:** temp JSONL ① 같은 run에 BUY intent `I1`, SELL `I2` 및 서로 다른 decision/verdict/LLM → 2행 각자의 rationale/allowed만; ② packet/outer ID 충돌 → 해당 문맥 무귀속; ③ ID 없는 단일 execution → LLM/decision만 fallback, verdict 미귀속; ④ ID 없는 다중 execution → 어느 것도 이전 문맥 누출 없음; ⑤ fake broker_code `0`와 실패 코드 → `only_broker_success`는 성공 행만. `main(["--path",tmp,"--action","SELL","--json"])` stdout JSON·원본 SHA 불변. `iter_jsonl_events` 실제 parser를 temp에서만 사용.
-- **실행:** `python -m pytest -q -p no:cacheprovider tests/test_p15_trade_reason_chain_attribution.py` 및 동일 경로 `python -O -m pytest -q -p no:cacheprovider`.
-
-## 3 — Strategist LLM 진단 필터의 NaN/Inf false-positive 봉쇄 (개발·필수)
-
-- **기존 코드:** `scripts/diagnostics/query_strategist_llm_events.py::_to_float/_filtered_events/main` (blob `c45516931dcb365c8283c596345233458c10a41f`), legacy `scripts/query_strategist_llm_events.py` wrapper KEEP. `_to_float("nan")`이 NaN을 반환해 `abs(NaN)<=1e-12`가 false가 되므로 `--only-nonzero-news`에 **유효하지 않은 뉴스 점수**가 들어갈 수 있다.
-- **정확 수정:** `_to_float`에서 `math.isfinite`를 확인하여 NaN/±Inf·파싱 실패는 기존 default로 반환. 유한 ±값·0·`1e-12` 임계·필터 순서, `--summary` 카운트와 JSON/human 출력은 그대로. `_filtered_events`의 stage/event, day/run 필터 및 `payload.ok` 판단은 유지; live LLM/network 호출 없음.
-- **신규 `tests/test_p15_strategist_llm_event_finite_filter.py`:** temp events에 `strategist_llm/result` score `0,1e-13,0.2,-0.4,"nan","inf","-inf","bad"` 및 다른 stage/day/run 포함. `only_nonzero_news=True`는 0.2/-0.4 두 행만, `only_failures`와 day/run 조합은 기존 정확 필터, `main(["--path",tmp,"--json","--only-nonzero-news"])`의 stdout 2행·원본 해시 불변, missing path exit 2. legacy alias는 같은 함수를 노출해야 한다.
-- **실행:** `python -m pytest -q -p no:cacheprovider tests/test_p15_strategist_llm_event_finite_filter.py` 및 동일 경로 `python -O -m pytest -q -p no:cacheprovider`.
-
-## 4 — Entry blocker 진단 CLI의 출력 경계·필터 전달 (개발·필수)
-
-- **기존 코드:** `scripts/diagnostics/analyze_entry_blockers.py::main` (blob `4d343359ed9515c0ae2d59dfca1e2c8bc3424a0e`), legacy `scripts/analyze_entry_blockers.py` import/runpy wrapper KEEP. CLI는 `--canonical-root`, `--date`, `--symbol`, `--family`, `--limit`, `--json-out`, `--md-out`를 `build_entry_blocker_day_summary`/render에 전달하고 지정 경로에만 쓰는 구조다.
-- **실행 범위:** 실제 reports/canonical 접근 금지. `build_entry_blocker_day_summary`와 `render_entry_blocker_summary_markdown`를 monkeypatch fake로 대체해 정확 kwargs `(tmp/canonical, day="2026-10-28", symbol="005930", family="liquidity", limit=2)`와 반환 dict `{"rows":[{"symbol":"005930"}],"total":1}`를 확인. `--json` stdout JSON, 기본 stdout Markdown, `--json-out/--md-out`가 지정된 tmp 두 파일만 기록하고 두 번 실행 시 결과 동일. 다른 경로 파일 목록/내용 불변. 필요 시 B 소유 `main`에서 **증명된** CLI 전달/파일 예외만 최소 보정하고 인자·출력 계약 유지.
-- **신규 `tests/test_p15_entry_blocker_cli_temp_contract.py`**; `python -m pytest -q -p no:cacheprovider tests/test_p15_entry_blocker_cli_temp_contract.py`, `python -O -m pytest -q -p no:cacheprovider tests/test_p15_entry_blocker_cli_temp_contract.py`.
-
-## 5 — LLM 보고서 분류 CLI의 dry-run·집계 호환 (개발·필수)
-
-- **기존 코드:** `scripts/maintenance/organize_llm_reports.py::main` (blob `280cdbf991f069152d322d90bf2b9678cac7ff9b`), legacy `scripts/organize_llm_reports.py` wrapper KEEP. 실제 `organize_llm_day`는 파일을 이동할 수 있으므로 **절대 운영 root에 호출하지 않는다**.
-- **신규 `tests/test_p15_organize_llm_reports_cli_contract.py`:** `sys.argv`를 `["cmd","--date","2026-10-28","--reports-root",tmp/reports,"--active-grace-sec","120","--dry-run"]`으로 fake, `organize_llm_day`를 spy fake로 대체하여 `Path(tmp/reports),day,active_grace_sec=120,dry_run=True` 정확 전달. 반환 `[{"category":"success"},{"status":"blocked"},{"category":"success"},{}]` → stdout JSON `counts={"success":2,"blocked":1,"unknown":1}`, `date`/dry_run 불변, exit 0, temp 밖 파일 0. 명시 tmp `--dry-run` 없음도 fake를 통해 False 전달만 검사(실제 이동 금지). legacy wrapper의 import-only 동일 `main` 확인. 결함 발견 시 이 B 소유 CLI에서만 수정; 기본 grace=180/기존 args 보존.
-- **실행:** `python -m pytest -q -p no:cacheprovider tests/test_p15_organize_llm_reports_cli_contract.py` 및 동일 경로 `python -O -m pytest -q -p no:cacheprovider`.
-
-## 6 — Claude A 6개 AI Owner 고정 SOURCE 독립 검증 (필수·상대 쓰기 금지)
-
-- **고정 A SOURCE:** `2bce7dcaaadebe9fe825dcf9d2f5e1b1f667ad33`. 격리 detached temp clone의 `libs/ai/{intent_schema.py,strategist.py,strategist_config.py,strategist_factory.py}`, `libs/ai/providers/{__init__.py,openai_provider.py}`와 read-only `graphs/nodes/decide_trade.py`만 검사. 각 Owner의 public 함수·호출자/동적 import·IO/예외·source blob을 정리하고 **실제 fake/deny-socket** 독립 probe를 작성한다. 타인 코드·테스트·브랜치/운영 경로 수정 금지.
-- **정확 입력/기대:** `get_strategist_from_env` 키/endpoint 누락→Blocked/NOOP, 명시 legacy opt-in과 기본 차단, `OpenAIStrategist.from_env` fake 생성·예외→Blocked, `OpenAIStrategist._post_with_retry` fake timeout/backoff/최대 횟수·non-retry 예외, `_CB_STATE` 격리 circuit-open/recovery, `normalize_intent` 유효 가격/수량·미지 action·입력 불변, `decide_trade.py` fake consumer에서 실제 주문/State 쓰기 0. **긴급 SOURCE `1f372f2ffce56f54b732e5e06d83d6ead80afda3`의 비유한 가격 patch는 이 A SOURCE에 없음**: `NaN/Inf`가 ACTIONABLE이면 그 사실만 별도 안전 이슈로 인계하고 A 코드 임의 수정 금지.
-- **검증:** 새 B 독립 test `tests/test_p15_peer_a_ai_six_owner_edges.py`를 **B 브랜치에만** 작성하고 `PYTHONPATH=<isolated-A-tree> python -m pytest -q -p no:cacheprovider tests/test_p15_peer_a_ai_six_owner_edges.py` 및 `PYTHONPATH=<isolated-A-tree> python -O -m pytest -q -p no:cacheprovider tests/test_p15_peer_a_ai_six_owner_edges.py` (import 경로가 B 로컬과 섞이지 않도록 `sys.path`/module file SHA 먼저 검증). SOURCE·normal/-O exit·새 probe·첫 미검증 소비자/효과를 #12에 제출. 기존 고정 A 다른 모듈 검증 결과는 이 여섯 Owner의 PASS가 아니다.
-
-## 7 — frozen 계약 검증의 실제 도구 한도 재개점 (차단 별도, 필수 게이트)
-
-- `tests/test_p161_agent_output_contract_freeze.py`는 수정 금지. B SOURCE `617c8429c69c98ac6f707a820d0e6825766f8642`에서 기존 실행은 **단일 명령 약 30.5초 플랫폼 한도에 도달해 종료코드 없음**, 최종 normal/-O `NOT_VERIFIED(PLATFORM_LIMIT)`. 같은 환경·SHA·범위에서 시간만 낭비하는 재실행 금지. **실제로 더 긴 명령 실행이 허용되는 환경**이 확인된 뒤 `python -m pytest -q -p no:cacheprovider tests/test_p161_agent_output_contract_freeze.py` 및 `python -O -m pytest -q -p no:cacheprovider tests/test_p161_agent_output_contract_freeze.py`로 정확 exit 제출. 해제 담당 B 실행 환경/C04; 한도 지속 시 1~6의 안전 과제를 계속하고 해당 게이트만 BLOCKED 유지.
-
-## 모든 항목 공통 실행·보고
-
-각 개발 패키지는 수정 전 재현(새 입력)→B 소유 최소 code/test 변경→새 정상/최적화(-O) pytest 실제 exit→정확 변경 경로/LOC 전후·caller 호환→허용 B 브랜치 commit/fast-forward push→GitHub 원격 HEAD/blob 재조회. 신규 테스트가 이미 존재하거나 정확 범위 결과가 있으면 해당 번호 `VERIFIED_ALREADY(SHA)`로만 보고, 다른 새 안전 번호 계속. `git HTTPS` 인증 장애는 실제 확인한 **허용된 GitHub 연결 경로**로 정상 push할 수 있는 경우만 사용하고 force/새 브랜치 금지. 플랫폼/의존성/안전 BLOCKED는 해당 번호의 정확 명령·exit·담당·안전 재개점 기록 후 다른 번호 진행. 모든 안전 번호(특히 새 #8 독립 C4) 완료 또는 각 잔여 실증 차단/실제 실행 한도 외에는 종료하지 않는다.
-
-#12에 실제 `START_KST/END_KST/ELAPSED_MIN`(원시 기록 없으면 `NOT_VERIFIED`), 1~8 번호별 `IMPLEMENTED/VERIFIED_ALREADY/BLOCKED/NOT_RUN`, SOURCE/상대 고정 SHA, 새 코드·테스트·정상/-O 명령/exit, 원격 push, 다음 안전 함수, 30분 미만 종료의 실제 사유를 기록. 댓글 간격·예약 길이·pytest 초로 세션 시간을 만들지 않는다. **30분은 감사 경보이지 실행시간 목표가 아니다.**
+- `ENV_BLOCKED_BOTH`이면 B 개발 산출물의 원격 SHA가 **없다는 사실**을 분명히 기록하고, **로컬 Codex + C03 긴급 승인 브랜치**의 검증/구현으로 이관할 대상 파일명·재현 입력만 지정한다. A/B·integration 브랜치에 대한 무단 우회 쓰기 금지.
+- G1/G2 판정은 C05, G3 KEEP/통합은 C04, `05_DONE`·STATUS는 C05가 수행. B가 해당 권한을 대신 행사하거나 실험 성공을 DONE이라고 보고하지 않는다.
+- 30분 강제 작업량 및 형식적인 8번씩 출력을 금지. **원격 코드·G2 증거 또는 처음 확인된 환경 차단 근거**가 있으면 종료 가능. 복구되지 않은 동일 차단은 다음 회차 한 줄 참조하고 재시도 실패만 누적하지 않는다.
