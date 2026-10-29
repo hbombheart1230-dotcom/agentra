@@ -1,52 +1,56 @@
-# RF-014 — 코드 구조/함수 재배치 설계 (T00/V3)
+# RF-014 — 함수·신규 모듈 매핑 상세설계 (실물 코드 대조)
 
-**원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md` blob `81f24f7ca140d1327b3d27cc114e5e315c1f2b9a`.
-**구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 20개 파일; 다른 RF 경로 쓰기 금지.
+**SOURCE:** `integration/p1.5@4b15aefbcaf3a31c2e9ff3710025155d13f152bd`; CSV b46bcb1f29ed3c0a133b059d690173c195c81bf9. **소유:** Claude A 구현, Codex B 읽기 전용 독립 검증. 파일 20개. 원본 RF `docs/refactor/plan/queue/03_PEER_REVIEW/CLAUDE_A/RF-014.md`.
 
-> 설계와 구현은 다르다. 기존 DONE·KEEP·PASS 이력은 그대로 둔다. 이 문서의 `KEEP_IF`는 코드 실사 전 확정 PASS가 아니며, 정당한 KEEP이면 1줄 사유/블롭으로 즉시 통과한다. 반대로 큰 소스의 미완료 함수 이동은 기존 DONE과 별도로 TARGET_GAP으로 추적한다.
+**KEEP/PASS:** 정확한 목표 디렉터리, 단일 책임, 적절한 길이 또는 공개 호환/효과 경계라면 `KEEP_OK|path|사유 1줄|blob`으로 당회 통과. 동일 SHA 새 테스트/전수 peer 금지. 함수 MOVE만 실제 refactoring 성과.
 
-## 1. 소스 함수 → 목표 모듈/함수
+## 1. 함수별 SOURCE → TARGET / 구현 계약
 
-**원본별 실측 함수 매핑 상태: 미확정.** 아래 전체 Git blob/크기 목록과 고정 목표 폴더 기준으로 분리 대상 원본을 지목한다. 코드 본문을 직접 읽지 않은 함수명·신규 함수를 추측해 확정 명령으로 발행하지 않는다. 해당 Actor가 구현 전 *아래 큰 파일*의 실제 `def/class`를 확인해 함수명을 이 문서에 보강하고, 단일 책임이면 KEEP 사유 한 줄로 즉시 통과한다.
+**읽은 실제 파일:** `libs/agents/scanner/projections/selection_evidence_projection.py` blob `bf20e9af5ec4988e7fef831b0cbb3e44644f6914`, **252 LOC**. 파이썬 함수 정의와 들여쓰기를 읽어 분리 후보를 잡았다. 아래 target은 코드 작성 전 현재 Owner·소비자 중복을 1회 확인하여 필요 시 기존 Owner를 재사용한다.
 
-## 2. 우선 구조 분석할 대형 Python 파일
+| 원본 함수/줄 | 분리판정 | 목표 소스::함수 | 본문 행수·주의 |
+|---|---|---|---|
+| `libs/agents/scanner/projections/selection_evidence_projection.py::scan_select_commander_memory_application_trace_selec` L205–230 | **MOVE_BODY** | `libs/agents/scanner/projections/selection_evidence_projection_scan_select_commander_memory_applicati.py::scan_select_commander_memory_application_trace_selec` | 26행, 부작용 정적 탐지 없음 |
+| `libs/agents/scanner/projections/selection_evidence_projection.py::scan_select_reasons_row_conf` L231–252 | **MOVE_BODY** | `libs/agents/scanner/projections/selection_evidence_projection_scan_select_reasons_row_conf.py::scan_select_reasons_row_conf` | 22행, 부작용 정적 탐지 없음 |
 
-**20KB 초과 원본 Python 없음.** 파일이 작아 책임·위치가 맞는 경우 KEEP_OK. 단순 폴더 꾸미기를 위해 추가 파일 만들지 않는다.
+### scan_select_commander_memory_application_trace_selec (L205–230)
+- **기능 경계:** `libs/agents/scanner/projections/selection_evidence_projection.py::scan_select_commander_memory_application_trace_selec` (26행), 내부 호출 `_to_float`. 감지된 경계: 없음.
+- **정확한 목표:** `libs/agents/scanner/projections/selection_evidence_projection_scan_select_commander_memory_applicati.py::scan_select_commander_memory_application_trace_selec`. 본문의 계산·분기·반환을 목표 Owner에 옮기고 원래 이름/서명 thin wrapper만 유지. consumer import/patch seam/출력 bytes와 예외 보존. 중복 본문 삭제.
+- **스모크:** 변경한 경우만 고정 입력 전/후 결과·예외·patchable symbol, fake/mock/tmp 정상 targeted pytest/unittest 1회. 테스트하지 않았다면 NOT_RUN.
 
+### scan_select_reasons_row_conf (L231–252)
+- **기능 경계:** `libs/agents/scanner/projections/selection_evidence_projection.py::scan_select_reasons_row_conf` (22행), 내부 호출 `_to_float`. 감지된 경계: 없음.
+- **정확한 목표:** `libs/agents/scanner/projections/selection_evidence_projection_scan_select_reasons_row_conf.py::scan_select_reasons_row_conf`. 본문의 계산·분기·반환을 목표 Owner에 옮기고 원래 이름/서명 thin wrapper만 유지. consumer import/patch seam/출력 bytes와 예외 보존. 중복 본문 삭제.
+- **스모크:** 변경한 경우만 고정 입력 전/후 결과·예외·patchable symbol, fake/mock/tmp 정상 targeted pytest/unittest 1회. 테스트하지 않았다면 NOT_RUN.
 
-## 3. 소유 전체 파일 / 기본 목표 경로 / 정당한 KEEP 근거
+## 2. 본 RF 전체 파일별 목표/액션
 
-`SOURCE_PATH = 기본 TARGET_PATH`는 T00~T09의 기존 경로 유지 후보이며 새 코어 함수는 위 1·2항으로 분리한다. 경로가 맞고 단일 책임·적정 길이이면 **KEEP_OK**. 근거는 한 줄, 동일 Git blob 재검증 0.
+| SOURCE_PATH | TARGET_PATH | Size/Blob | KEEP/MOVE 구체 사유 |
+|---|---|---|---|
+| `libs/agents/scanner/__init__.py` | `libs/agents/scanner/__init__.py` | 43B `d0176c7a20e6` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/candidate_risk.py` | `libs/agents/scanner/candidate_risk.py` | 3803B `8dea30aebd81` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/context/__init__.py` | `libs/agents/scanner/context/__init__.py` | 119B `bfd3a052024c` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/context/feature_coverage.py` | `libs/agents/scanner/context/feature_coverage.py` | 3108B `32ad1370df7e` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/context/macro_chart_fit.py` | `libs/agents/scanner/context/macro_chart_fit.py` | 7853B `7a5828c8b93b` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/context/macro_focus.py` | `libs/agents/scanner/context/macro_focus.py` | 2641B `24170e434adb` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/context/scoring_inputs.py` | `libs/agents/scanner/context/scoring_inputs.py` | 7390B `b436430ea437` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/context/sentiment_inputs.py` | `libs/agents/scanner/context/sentiment_inputs.py` | 4821B `f514156e8eac` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/policy/__init__.py` | `libs/agents/scanner/policy/__init__.py` | 98B `ef4a8b56c14f` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/policy/blocker_family_overlay.py` | `libs/agents/scanner/policy/blocker_family_overlay.py` | 4444B `81d59515d0ba` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/policy/compatibility.py` | `libs/agents/scanner/policy/compatibility.py` | 13412B `323d5a54f5e2` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/policy/guidance.py` | `libs/agents/scanner/policy/guidance.py` | 13223B `3318a80a01b8` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/policy/repeat_guard.py` | `libs/agents/scanner/policy/repeat_guard.py` | 10402B `5f794e544dd0` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/policy/symbol_prior.py` | `libs/agents/scanner/policy/symbol_prior.py` | 4660B `9bbc39ae6c00` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/projections/__init__.py` | `libs/agents/scanner/projections/__init__.py` | 95B `cd9db42ceffa` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/projections/candidate_context_projection.py` | `libs/agents/scanner/projections/candidate_context_projection.py` | 4373B `15fd6fc26a51` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/projections/control_eligibility.py` | `libs/agents/scanner/projections/control_eligibility.py` | 2357B `d47013045a37` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/projections/output_payloads.py` | `libs/agents/scanner/projections/output_payloads.py` | 13822B `fe5e34d58aec` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/projections/output_snapshots.py` | `libs/agents/scanner/projections/output_snapshots.py` | 13408B `02ef48a40833` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `libs/agents/scanner/projections/selection_evidence_projection.py` | `libs/agents/scanner/projections/selection_evidence_projection.py` | 19820B `bf20e9af5ec4` | 위 함수 원본: MOVE_BODY만 추출, 공개 facade 유지 |
 
-| SOURCE_PATH → 기본 TARGET_PATH | bytes | Git blob | 처리/사유 |
-|---|---:|---|---|
-| `libs/agents/scanner/__init__.py` → `libs/agents/scanner/__init__.py` | 43 | `d0176c7a20e6` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/candidate_risk.py` → `libs/agents/scanner/candidate_risk.py` | 3803 | `8dea30aebd81` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/context/__init__.py` → `libs/agents/scanner/context/__init__.py` | 119 | `bfd3a052024c` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/context/feature_coverage.py` → `libs/agents/scanner/context/feature_coverage.py` | 3108 | `32ad1370df7e` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/context/macro_chart_fit.py` → `libs/agents/scanner/context/macro_chart_fit.py` | 7853 | `7a5828c8b93b` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/context/macro_focus.py` → `libs/agents/scanner/context/macro_focus.py` | 2641 | `24170e434adb` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/context/scoring_inputs.py` → `libs/agents/scanner/context/scoring_inputs.py` | 7390 | `b436430ea437` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/context/sentiment_inputs.py` → `libs/agents/scanner/context/sentiment_inputs.py` | 4821 | `f514156e8eac` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/policy/__init__.py` → `libs/agents/scanner/policy/__init__.py` | 98 | `ef4a8b56c14f` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/policy/blocker_family_overlay.py` → `libs/agents/scanner/policy/blocker_family_overlay.py` | 4444 | `81d59515d0ba` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/policy/compatibility.py` → `libs/agents/scanner/policy/compatibility.py` | 13412 | `323d5a54f5e2` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/policy/guidance.py` → `libs/agents/scanner/policy/guidance.py` | 13223 | `3318a80a01b8` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/policy/repeat_guard.py` → `libs/agents/scanner/policy/repeat_guard.py` | 10402 | `5f794e544dd0` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/policy/symbol_prior.py` → `libs/agents/scanner/policy/symbol_prior.py` | 4660 | `9bbc39ae6c00` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/projections/__init__.py` → `libs/agents/scanner/projections/__init__.py` | 95 | `cd9db42ceffa` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/projections/candidate_context_projection.py` → `libs/agents/scanner/projections/candidate_context_projection.py` | 4373 | `15fd6fc26a51` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/projections/control_eligibility.py` → `libs/agents/scanner/projections/control_eligibility.py` | 2357 | `d47013045a37` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/projections/output_payloads.py` → `libs/agents/scanner/projections/output_payloads.py` | 13822 | `fe5e34d58aec` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/projections/output_snapshots.py` → `libs/agents/scanner/projections/output_snapshots.py` | 13408 | `02ef48a40833` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `libs/agents/scanner/projections/selection_evidence_projection.py` → `libs/agents/scanner/projections/selection_evidence_projection.py` | 19820 | `bf20e9af5ec4` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
+## 3. 개발자 독점 순서와 최소 검증
 
-## 4. 구현 · 검증 · 인수 체크
-
-1. 소유 개발자가 원본 함수와 소비자·효과를 **딱 한 번** 확인. 역할/위치 적합하면 `KEEP_OK | path | 한 줄 사유 | blob` 즉시 통과, 반복 테스트·반대 전수 peer/추가 문서 요구하지 않는다.
-2. 실제 MOVE는 SOURCE의 계산 몸체를 TARGET Owner에 **이전**하고 원본에 같은 이름·인자의 얇은 wrapper만 남긴다. SOURCE LOC 감소·TARGET 새 blob·호출자 연결을 증거로 남긴다.
-3. 변경 함수에 한하여 before/after fixture 2~4개를 대상으로 **normal targeted pytest 또는 unittest 1회**. 변화 없는 KEEP에는 테스트 0. `-O`/전체 CI/전체 frozen 매 RF 의무 없음.
-4. A/B가 각각 자기 브랜치 code/test만 변경·정상 push. 서로 다른 RF가 같은 target 경로를 소유하면 구현 전에 C03이 단독 Owner를 지정. 이 문서의 새로운 타깃은 목표 **제안**이지 기존 FILE_COVERAGE를 자동 변경한 기록이 아니다.
-5. C04가 원격 소스 SHA 기준 선별 통합, C05가 기존 RF 이력을 보존하며 `TARGET_STRUCTURE=PASS/PARTIAL/BLOCKED` 판단. 기존 DONE은 자동 취소하지 않되 TARGET_GAP을 완성으로 포장하지 않는다.
-
-**보고:** `RF | ORIGINAL_SOURCE_BLOB | MOVED_FUNCTIONS | NEW_TARGETS | KEEP_OK(paths+reason) | BEFORE/AFTER_LOC | TEST_EXIT | PUSH_SHA | INTEGRATION_SHA | TARGET_STRUCTURE`. 보호된 주문/Broker/Guard/Step5C/UEF/운영 파일·DB 실효과는 무승인 변경하지 않는다.
+1. Claude A만 표의 실제 `MOVE_BODY` 순수 함수부터 source→target 본문 이동; 기존 Owner가 있으면 새 파일 중복 없이 기존 파일 사용. 하나의 경계가 막혀도 다음 독립 항목으로 진행. 다른 RF·반대 개발자 소유 파일 쓰기 금지.
+2. `KEEP_OK`는 본문/위치/역할을 한 번 확인하고 한 줄 사유+Git SHA로 즉시 종결; 같은 SHA 테스트 재실행하지 않는다. 효과/broker/State·CLI와 frozen oracle은 재배치 자체를 강제하지 않는다.
+3. 실제 MOVE는 원본 구현 제거·새 owner 구현·기존 thin wrapper, before/after LOC, 관련 정상 fake pytest/unittest exit0 후 A 허용 브랜치 code/test 정상 push. C04는 delta만 묶음 통합, C05는 기존 DONE 이력을 보존하되 TARGET_GAP 남았으면 구현으로 되돌린다.
+4. `RF=RF-014|SOURCE_BLOB|FUNCTION_MOVES|TARGET_PATHS/BLOBS|KEEP_REASON|LOC_DELTA|TEST_CMD/EXIT|PUSH_SHA|TARGET_STATUS` 보고. 실거래/운영 DB/Guard/UEF 등 효과 금지.

@@ -1,57 +1,55 @@
-# RF-003 — 코드 구조/함수 재배치 설계 (T02)
+# RF-003 — 함수·신규 모듈 매핑 상세설계 (실물 코드 대조)
 
-**원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/05_DONE/CODEX_B/RF-003.md` blob `24af255d934243d2607722d4986902e4ca17c2bf`.
-**구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 25개 파일; 다른 RF 경로 쓰기 금지.
+**SOURCE:** `integration/p1.5@4b15aefbcaf3a31c2e9ff3710025155d13f152bd`; CSV b46bcb1f29ed3c0a133b059d690173c195c81bf9. **소유:** Codex B 구현, Claude A 읽기 전용 독립 검증. 파일 25개. 원본 RF `docs/refactor/plan/queue/05_DONE/CODEX_B/RF-003.md`.
 
-> 설계와 구현은 다르다. 기존 DONE·KEEP·PASS 이력은 그대로 둔다. 이 문서의 `KEEP_IF`는 코드 실사 전 확정 PASS가 아니며, 정당한 KEEP이면 1줄 사유/블롭으로 즉시 통과한다. 반대로 큰 소스의 미완료 함수 이동은 기존 DONE과 별도로 TARGET_GAP으로 추적한다.
+**KEEP/PASS:** 정확한 목표 디렉터리, 단일 책임, 적절한 길이 또는 공개 호환/효과 경계라면 `KEEP_OK|path|사유 1줄|blob`으로 당회 통과. 동일 SHA 새 테스트/전수 peer 금지. 함수 MOVE만 실제 refactoring 성과.
 
-## 1. 소스 함수 → 목표 모듈/함수
+## 1. 함수별 SOURCE → TARGET / 구현 계약
 
-**원본별 실측 함수 매핑 상태: 미확정.** 아래 전체 Git blob/크기 목록과 고정 목표 폴더 기준으로 분리 대상 원본을 지목한다. 코드 본문을 직접 읽지 않은 함수명·신규 함수를 추측해 확정 명령으로 발행하지 않는다. 해당 Actor가 구현 전 *아래 큰 파일*의 실제 `def/class`를 확인해 함수명을 이 문서에 보강하고, 단일 책임이면 KEEP 사유 한 줄로 즉시 통과한다.
+**읽은 실제 파일:** `apps/api/services/performance.py` blob `01589521f7d8990f0357d141f594953fb9873e63`, **255 LOC**. 파이썬 함수 정의와 들여쓰기를 읽어 분리 후보를 잡았다. 아래 target은 코드 작성 전 현재 Owner·소비자 중복을 1회 확인하여 필요 시 기존 Owner를 재사용한다.
 
-## 2. 우선 구조 분석할 대형 Python 파일
+| 원본 함수/줄 | 분리판정 | 목표 소스::함수 | 본문 행수·주의 |
+|---|---|---|---|
+| `apps/api/services/performance.py::_points` L193–213 | **MOVE_BODY** | `apps/api/services/performance_points.py::_points` | 21행, 부작용 정적 탐지 없음 |
 
-**20KB 초과 원본 Python 없음.** 파일이 작아 책임·위치가 맞는 경우 KEEP_OK. 단순 폴더 꾸미기를 위해 추가 파일 만들지 않는다.
+### _points (L193–213)
+- **기능 경계:** `apps/api/services/performance.py::_points` (21행), 내부 호출 `_point`. 감지된 경계: 없음.
+- **정확한 목표:** `apps/api/services/performance_points.py::_points`. 본문의 계산·분기·반환을 목표 Owner에 옮기고 원래 이름/서명 thin wrapper만 유지. consumer import/patch seam/출력 bytes와 예외 보존. 중복 본문 삭제.
+- **스모크:** 변경한 경우만 고정 입력 전/후 결과·예외·patchable symbol, fake/mock/tmp 정상 targeted pytest/unittest 1회. 테스트하지 않았다면 NOT_RUN.
 
+## 2. 본 RF 전체 파일별 목표/액션
 
-## 3. 소유 전체 파일 / 기본 목표 경로 / 정당한 KEEP 근거
+| SOURCE_PATH | TARGET_PATH | Size/Blob | KEEP/MOVE 구체 사유 |
+|---|---|---|---|
+| `apps/api/services/__init__.py` | `apps/api/services/__init__.py` | 59B `74c0a48acdc7` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/anomalies.py` | `apps/api/services/anomalies.py` | 3043B `e62a7d00a0a1` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/health.py` | `apps/api/services/health.py` | 1333B `3e724a8046d1` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/llm_operations.py` | `apps/api/services/llm_operations.py` | 3066B `ec5a6cba470f` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/market.py` | `apps/api/services/market.py` | 5903B `0f417d35cc4d` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/metric_factory.py` | `apps/api/services/metric_factory.py` | 822B `0a62174d0764` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/operations.py` | `apps/api/services/operations.py` | 9191B `01f0f270ec83` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/opportunities.py` | `apps/api/services/opportunities.py` | 4631B `6168db524c20` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/opportunity_projection.py` | `apps/api/services/opportunity_projection.py` | 4998B `0dce193a4204` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/overview.py` | `apps/api/services/overview.py` | 1610B `57f83b2258fc` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/patch_notes.py` | `apps/api/services/patch_notes.py` | 1812B `0a13a9e6eeaa` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/performance.py` | `apps/api/services/performance.py` | 11164B `01589521f7d8` | 위 함수 원본: MOVE_BODY만 추출, 공개 facade 유지 |
+| `apps/api/services/portfolio.py` | `apps/api/services/portfolio.py` | 6488B `cefe54813de2` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/profile.py` | `apps/api/services/profile.py` | 750B `c3f214f19070` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/reports.py` | `apps/api/services/reports.py` | 4123B `6a8d666d7d5c` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/runtime_status.py` | `apps/api/services/runtime_status.py` | 1523B `874a4ae448e9` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/scheduled_artifacts.py` | `apps/api/services/scheduled_artifacts.py` | 2156B `40f498770413` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/strategy_performance.py` | `apps/api/services/strategy_performance.py` | 4006B `cd39142d1c6d` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/trade_fallback_projection.py` | `apps/api/services/trade_fallback_projection.py` | 1624B `95734ce79a32` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/trade_fallbacks.py` | `apps/api/services/trade_fallbacks.py` | 3328B `f68a95adf0fa` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/trade_integrity_projection.py` | `apps/api/services/trade_integrity_projection.py` | 1664B `2cac10a85ddf` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/trade_summary_projection.py` | `apps/api/services/trade_summary_projection.py` | 3727B `f323f16324e2` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/trade_timeline_projection.py` | `apps/api/services/trade_timeline_projection.py` | 3284B `5b6b2831b030` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/trade_values.py` | `apps/api/services/trade_values.py` | 1598B `d237b7ca32e9` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `apps/api/services/trades.py` | `apps/api/services/trades.py` | 4176B `f48e1c211fd2` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
 
-`SOURCE_PATH = 기본 TARGET_PATH`는 T00~T09의 기존 경로 유지 후보이며 새 코어 함수는 위 1·2항으로 분리한다. 경로가 맞고 단일 책임·적정 길이이면 **KEEP_OK**. 근거는 한 줄, 동일 Git blob 재검증 0.
+## 3. 개발자 독점 순서와 최소 검증
 
-| SOURCE_PATH → 기본 TARGET_PATH | bytes | Git blob | 처리/사유 |
-|---|---:|---|---|
-| `apps/api/services/__init__.py` → `apps/api/services/__init__.py` | 59 | `74c0a48acdc7` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/anomalies.py` → `apps/api/services/anomalies.py` | 3043 | `e62a7d00a0a1` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/health.py` → `apps/api/services/health.py` | 1333 | `3e724a8046d1` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/llm_operations.py` → `apps/api/services/llm_operations.py` | 3066 | `ec5a6cba470f` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/market.py` → `apps/api/services/market.py` | 5903 | `0f417d35cc4d` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/metric_factory.py` → `apps/api/services/metric_factory.py` | 822 | `0a62174d0764` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/operations.py` → `apps/api/services/operations.py` | 9191 | `01f0f270ec83` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/opportunities.py` → `apps/api/services/opportunities.py` | 4631 | `6168db524c20` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/opportunity_projection.py` → `apps/api/services/opportunity_projection.py` | 4998 | `0dce193a4204` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/overview.py` → `apps/api/services/overview.py` | 1610 | `57f83b2258fc` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/patch_notes.py` → `apps/api/services/patch_notes.py` | 1812 | `0a13a9e6eeaa` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/performance.py` → `apps/api/services/performance.py` | 11164 | `01589521f7d8` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/portfolio.py` → `apps/api/services/portfolio.py` | 6488 | `cefe54813de2` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/profile.py` → `apps/api/services/profile.py` | 750 | `c3f214f19070` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/reports.py` → `apps/api/services/reports.py` | 4123 | `6a8d666d7d5c` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/runtime_status.py` → `apps/api/services/runtime_status.py` | 1523 | `874a4ae448e9` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/scheduled_artifacts.py` → `apps/api/services/scheduled_artifacts.py` | 2156 | `40f498770413` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/strategy_performance.py` → `apps/api/services/strategy_performance.py` | 4006 | `cd39142d1c6d` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/trade_fallback_projection.py` → `apps/api/services/trade_fallback_projection.py` | 1624 | `95734ce79a32` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/trade_fallbacks.py` → `apps/api/services/trade_fallbacks.py` | 3328 | `f68a95adf0fa` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/trade_integrity_projection.py` → `apps/api/services/trade_integrity_projection.py` | 1664 | `2cac10a85ddf` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/trade_summary_projection.py` → `apps/api/services/trade_summary_projection.py` | 3727 | `f323f16324e2` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/trade_timeline_projection.py` → `apps/api/services/trade_timeline_projection.py` | 3284 | `5b6b2831b030` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/trade_values.py` → `apps/api/services/trade_values.py` | 1598 | `d237b7ca32e9` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `apps/api/services/trades.py` → `apps/api/services/trades.py` | 4176 | `f48e1c211fd2` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-
-## 4. 구현 · 검증 · 인수 체크
-
-1. 소유 개발자가 원본 함수와 소비자·효과를 **딱 한 번** 확인. 역할/위치 적합하면 `KEEP_OK | path | 한 줄 사유 | blob` 즉시 통과, 반복 테스트·반대 전수 peer/추가 문서 요구하지 않는다.
-2. 실제 MOVE는 SOURCE의 계산 몸체를 TARGET Owner에 **이전**하고 원본에 같은 이름·인자의 얇은 wrapper만 남긴다. SOURCE LOC 감소·TARGET 새 blob·호출자 연결을 증거로 남긴다.
-3. 변경 함수에 한하여 before/after fixture 2~4개를 대상으로 **normal targeted pytest 또는 unittest 1회**. 변화 없는 KEEP에는 테스트 0. `-O`/전체 CI/전체 frozen 매 RF 의무 없음.
-4. A/B가 각각 자기 브랜치 code/test만 변경·정상 push. 서로 다른 RF가 같은 target 경로를 소유하면 구현 전에 C03이 단독 Owner를 지정. 이 문서의 새로운 타깃은 목표 **제안**이지 기존 FILE_COVERAGE를 자동 변경한 기록이 아니다.
-5. C04가 원격 소스 SHA 기준 선별 통합, C05가 기존 RF 이력을 보존하며 `TARGET_STRUCTURE=PASS/PARTIAL/BLOCKED` 판단. 기존 DONE은 자동 취소하지 않되 TARGET_GAP을 완성으로 포장하지 않는다.
-
-**보고:** `RF | ORIGINAL_SOURCE_BLOB | MOVED_FUNCTIONS | NEW_TARGETS | KEEP_OK(paths+reason) | BEFORE/AFTER_LOC | TEST_EXIT | PUSH_SHA | INTEGRATION_SHA | TARGET_STRUCTURE`. 보호된 주문/Broker/Guard/Step5C/UEF/운영 파일·DB 실효과는 무승인 변경하지 않는다.
+1. Codex B만 표의 실제 `MOVE_BODY` 순수 함수부터 source→target 본문 이동; 기존 Owner가 있으면 새 파일 중복 없이 기존 파일 사용. 하나의 경계가 막혀도 다음 독립 항목으로 진행. 다른 RF·반대 개발자 소유 파일 쓰기 금지.
+2. `KEEP_OK`는 본문/위치/역할을 한 번 확인하고 한 줄 사유+Git SHA로 즉시 종결; 같은 SHA 테스트 재실행하지 않는다. 효과/broker/State·CLI와 frozen oracle은 재배치 자체를 강제하지 않는다.
+3. 실제 MOVE는 원본 구현 제거·새 owner 구현·기존 thin wrapper, before/after LOC, 관련 정상 fake pytest/unittest exit0 후 B 허용 브랜치 code/test 정상 push. C04는 delta만 묶음 통합, C05는 기존 DONE 이력을 보존하되 TARGET_GAP 남았으면 구현으로 되돌린다.
+4. `RF=RF-003|SOURCE_BLOB|FUNCTION_MOVES|TARGET_PATHS/BLOBS|KEEP_REASON|LOC_DELTA|TEST_CMD/EXIT|PUSH_SHA|TARGET_STATUS` 보고. 실거래/운영 DB/Guard/UEF 등 효과 금지.

@@ -1,73 +1,94 @@
-# RF-012 — 코드 구조/함수 재배치 설계 (T07)
+# RF-012 — 함수·신규 모듈 매핑 상세설계 (실물 코드 대조)
 
-**원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-012.md` blob `38c80304098229e3c136a72c7d729ab6edfca5ad`.
-**구현 담당:** **Codex B**, 상대 **Claude A**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 37개 파일; 다른 RF 경로 쓰기 금지.
+**SOURCE:** `integration/p1.5@4b15aefbcaf3a31c2e9ff3710025155d13f152bd`; CSV b46bcb1f29ed3c0a133b059d690173c195c81bf9. **소유:** Codex B 구현, Claude A 읽기 전용 독립 검증. 파일 37개. 원본 RF `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-012.md`.
 
-> 설계와 구현은 다르다. 기존 DONE·KEEP·PASS 이력은 그대로 둔다. 이 문서의 `KEEP_IF`는 코드 실사 전 확정 PASS가 아니며, 정당한 KEEP이면 1줄 사유/블롭으로 즉시 통과한다. 반대로 큰 소스의 미완료 함수 이동은 기존 DONE과 별도로 TARGET_GAP으로 추적한다.
+**KEEP/PASS:** 정확한 목표 디렉터리, 단일 책임, 적절한 길이 또는 공개 호환/효과 경계라면 `KEEP_OK|path|사유 1줄|blob`으로 당회 통과. 동일 SHA 새 테스트/전수 peer 금지. 함수 MOVE만 실제 refactoring 성과.
 
-## 1. 소스 함수 → 목표 모듈/함수
+## 1. 함수별 SOURCE → TARGET / 구현 계약
 
-**원본별 실측 함수 매핑 상태: 미확정.** 아래 전체 Git blob/크기 목록과 고정 목표 폴더 기준으로 분리 대상 원본을 지목한다. 코드 본문을 직접 읽지 않은 함수명·신규 함수를 추측해 확정 명령으로 발행하지 않는다. 해당 Actor가 구현 전 *아래 큰 파일*의 실제 `def/class`를 확인해 함수명을 이 문서에 보강하고, 단일 책임이면 KEEP 사유 한 줄로 즉시 통과한다.
+**읽은 실제 파일:** `graphs/nodes/execute_from_packet.py` blob `1a10af59e5e9b4035f1c7403e5aeb814f65c8e3a`, **4106 LOC**. 파이썬 함수 정의와 들여쓰기를 읽어 분리 후보를 잡았다. 아래 target은 코드 작성 전 현재 Owner·소비자 중복을 1회 확인하여 필요 시 기존 Owner를 재사용한다.
 
-## 2. 우선 구조 분석할 대형 Python 파일
+| 원본 함수/줄 | 분리판정 | 목표 소스::함수 | 본문 행수·주의 |
+|---|---|---|---|
+| `graphs/nodes/execute_from_packet.py::execute_from_packet` L2915–4106 | **KEEP_EFFECT_OR_EXTRACT_PURE_SLICE** | `graphs/nodes/execute_from_packet.py::execute_from_packet` | 1192행, BROKER, STATE |
+| `graphs/nodes/execute_from_packet.py::_evaluate_open_order_reconciliation_guard` L2046–2195 | **KEEP_EFFECT_OR_EXTRACT_PURE_SLICE** | `graphs/nodes/execute_from_packet.py::_evaluate_open_order_reconciliation_guard` | 150행, BROKER, CLOCK/ENV |
+| `graphs/nodes/execute_from_packet.py::_prepare_request` L2593–2718 | **KEEP_EFFECT_OR_EXTRACT_PURE_SLICE** | `graphs/nodes/execute_from_packet.py::_prepare_request` | 126행, BROKER |
+| `graphs/nodes/execute_from_packet.py::_resolve_order_price_for_notional_with_source` L1660–1778 | **MOVE_BODY** | `graphs/nodes/execute_from_packet_resolve_order_price_for_notional_with_.py::_resolve_order_price_for_notional_with_source` | 119행, 부작용 정적 탐지 없음 |
+| `graphs/nodes/execute_from_packet.py::_attempt_unfilled_order_recovery` L942–1039 | **KEEP_EFFECT_OR_EXTRACT_PURE_SLICE** | `graphs/nodes/execute_from_packet.py::_attempt_unfilled_order_recovery` | 98행, BROKER |
+| `graphs/nodes/execute_from_packet.py::_order_entry_chart_guard_snapshot` L608–702 | **MOVE_BODY** | `graphs/nodes/execute_from_packet_order_entry_chart_guard_snapshot.py::_order_entry_chart_guard_snapshot` | 95행, 부작용 정적 탐지 없음 |
+| `graphs/nodes/execute_from_packet.py::_update_recent_sell_order_guard` L1526–1612 | **MOVE_BODY** | `graphs/nodes/execute_from_packet_update_recent_sell_order_guard.py::_update_recent_sell_order_guard` | 87행, 부작용 정적 탐지 없음 |
+| `graphs/nodes/execute_from_packet.py::_build_order_from_intent` L2345–2422 | **KEEP_EFFECT_OR_EXTRACT_PURE_SLICE** | `graphs/nodes/execute_from_packet.py::_build_order_from_intent` | 78행, BROKER |
 
-| SOURCE_PATH | bytes | 정확한 Git blob | 다음 코드 설계 절차 |
-|---|---:|---|---|
-| `graphs/nodes/execute_from_packet.py` | 183181 | `1a10af59e5e9b4035f1c7403e5aeb814f65c8e3a` | 실제 함수/메서드 경계 읽기 → 서로 다른 책임만 분리 → `graphs/nodes/execute_from_packet_parts.py` **목표 후보**(동일 역할 기존 모듈 우선) → thin wrapper |
-| `graphs/nodes/decide_trade.py` | 65080 | `6fa69e96f7870ad8615f8b4f6ea8b4c65955dd78` | 실제 함수/메서드 경계 읽기 → 서로 다른 책임만 분리 → `graphs/nodes/decide_trade_parts.py` **목표 후보**(동일 역할 기존 모듈 우선) → thin wrapper |
-| `graphs/nodes/update_state_after_execution.py` | 59649 | `100952d946fe4b38da627266a17885a90f212419` | 실제 함수/메서드 경계 읽기 → 서로 다른 책임만 분리 → `graphs/nodes/update_state_after_execution_parts.py` **목표 후보**(동일 역할 기존 모듈 우선) → thin wrapper |
-| `graphs/nodes/build_portfolio_snapshot.py` | 21537 | `d6afacc15ef3cd9843ef56e28cb84d6237e7d771` | 실제 함수/메서드 경계 읽기 → 서로 다른 책임만 분리 → `graphs/nodes/build_portfolio_snapshot_parts.py` **목표 후보**(동일 역할 기존 모듈 우선) → thin wrapper |
+### execute_from_packet (L2915–4106)
+- **기능 경계:** `graphs/nodes/execute_from_packet.py::execute_from_packet` (1192행), 내부 호출 `_import_event_logger`, `_import_api_catalog`, `_import_supervisor`, `_import_get_executor`, `_mark_submission_dispatched`, `_quote_snapshot_for_order`, `_extract_order_symbol`, `_augment_quote_snapshot_with_spread`, `_extract_upper_limit_quote_snapshot`, `_coerce_float`. 감지된 경계: BROKER, STATE.
+- **정확한 목표:** `graphs/nodes/execute_from_packet.py::execute_from_packet`. 부작용/클래스 context의 원본 순서를 KEEP. 코드를 실제 확인해 순수 subsection이 있으면 단독 helper를 목표 Owner로 분리; 한 책임의 필수 effect라면 KEEP_JUSTIFIED 한줄로 끝낸다.
+- **스모크:** 변경한 경우만 고정 입력 전/후 결과·예외·patchable symbol, fake/mock/tmp 정상 targeted pytest/unittest 1회. 테스트하지 않았다면 NOT_RUN.
 
-## 3. 소유 전체 파일 / 기본 목표 경로 / 정당한 KEEP 근거
+### _evaluate_open_order_reconciliation_guard (L2046–2195)
+- **기능 경계:** `graphs/nodes/execute_from_packet.py::_evaluate_open_order_reconciliation_guard` (150행), 내부 호출 `_is_trueish`, `_coerce_int`. 감지된 경계: BROKER, CLOCK/ENV.
+- **정확한 목표:** `graphs/nodes/execute_from_packet.py::_evaluate_open_order_reconciliation_guard`. 부작용/클래스 context의 원본 순서를 KEEP. 코드를 실제 확인해 순수 subsection이 있으면 단독 helper를 목표 Owner로 분리; 한 책임의 필수 effect라면 KEEP_JUSTIFIED 한줄로 끝낸다.
+- **스모크:** 변경한 경우만 고정 입력 전/후 결과·예외·patchable symbol, fake/mock/tmp 정상 targeted pytest/unittest 1회. 테스트하지 않았다면 NOT_RUN.
 
-`SOURCE_PATH = 기본 TARGET_PATH`는 T00~T09의 기존 경로 유지 후보이며 새 코어 함수는 위 1·2항으로 분리한다. 경로가 맞고 단일 책임·적정 길이이면 **KEEP_OK**. 근거는 한 줄, 동일 Git blob 재검증 0.
+### _prepare_request (L2593–2718)
+- **기능 경계:** `graphs/nodes/execute_from_packet.py::_prepare_request` (126행), 내부 호출 `_import_request_builder`, `_import_settings`. 감지된 경계: BROKER.
+- **정확한 목표:** `graphs/nodes/execute_from_packet.py::_prepare_request`. 부작용/클래스 context의 원본 순서를 KEEP. 코드를 실제 확인해 순수 subsection이 있으면 단독 helper를 목표 Owner로 분리; 한 책임의 필수 effect라면 KEEP_JUSTIFIED 한줄로 끝낸다.
+- **스모크:** 변경한 경우만 고정 입력 전/후 결과·예외·patchable symbol, fake/mock/tmp 정상 targeted pytest/unittest 1회. 테스트하지 않았다면 NOT_RUN.
 
-| SOURCE_PATH → 기본 TARGET_PATH | bytes | Git blob | 처리/사유 |
-|---|---:|---|---|
-| `graphs/nodes/assemble_decision_packet.py` → `graphs/nodes/assemble_decision_packet.py` | 2738 | `dbcae63ac548` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/build_decision_context.py` → `graphs/nodes/build_decision_context.py` | 19640 | `d5e6362add5f` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/build_execution_readiness.py` → `graphs/nodes/build_execution_readiness.py` | 8049 | `a17d56a521b0` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/build_market_snapshot.py` → `graphs/nodes/build_market_snapshot.py` | 4127 | `af11f9d64d6f` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/build_open_order_snapshot.py` → `graphs/nodes/build_open_order_snapshot.py` | 2303 | `995c2931b439` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/build_portfolio_snapshot.py` → `graphs/nodes/build_portfolio_snapshot.py` | 21537 | `d6afacc15ef3` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/build_risk_context.py` → `graphs/nodes/build_risk_context.py` | 1532 | `c3e466816184` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/build_snapshots.py` → `graphs/nodes/build_snapshots.py` | 802 | `a0e20a2084b8` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/decide_trade.py` → `graphs/nodes/decide_trade.py` | 65080 | `6fa69e96f787` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/decision_node.py` → `graphs/nodes/decision_node.py` | 8203 | `172f5ac1243c` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/ensure_token.py` → `graphs/nodes/ensure_token.py` | 786 | `d20d8b2ff32c` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/execute_from_packet.py` → `graphs/nodes/execute_from_packet.py` | 183181 | `1a10af59e5e9` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/execute_order.py` → `graphs/nodes/execute_order.py` | 6641 | `1e23bc4d3461` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/executor_node.py` → `graphs/nodes/executor_node.py` | 381 | `832c6a30e43b` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/hydrate_skill_results_node.py` → `graphs/nodes/hydrate_skill_results_node.py` | 11820 | `a23a588a3e8f` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/load_state.py` → `graphs/nodes/load_state.py` | 412 | `ceb1fb61542a` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/log_decision_trace.py` → `graphs/nodes/log_decision_trace.py` | 1709 | `d74e0605fe92` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/plan_api.py` → `graphs/nodes/plan_api.py` | 572 | `c73adc21da72` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/portfolio_guard_node.py` → `graphs/nodes/portfolio_guard_node.py` | 4608 | `7ec264a1a52a` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/prepare_api_call.py` → `graphs/nodes/prepare_api_call.py` | 1608 | `1529fa5897a5` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/prepare_order_dry_run.py` → `graphs/nodes/prepare_order_dry_run.py` | 1995 | `75741376e535` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/read_account_balance.py` → `graphs/nodes/read_account_balance.py` | 1032 | `867bd3c1bb38` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/reporter_node.py` → `graphs/nodes/reporter_node.py` | 1501 | `214758d222cd` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/risk_cash_truth.py` → `graphs/nodes/risk_cash_truth.py` | 2914 | `bc3bd5ea679e` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/save_state.py` → `graphs/nodes/save_state.py` | 398 | `17d867a0de46` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/skill_contracts.py` → `graphs/nodes/skill_contracts.py` | 14604 | `bf0e50987cd6` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/nodes/update_state_after_execution.py` → `graphs/nodes/update_state_after_execution.py` | 59649 | `100952d946fe` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/eod_report.py` → `graphs/pipelines/eod_report.py` | 533 | `72ce931dc964` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/live_cycle.py` → `graphs/pipelines/live_cycle.py` | 638 | `6fdd06135875` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/m10_live_pipeline.py` → `graphs/pipelines/m10_live_pipeline.py` | 1403 | `f220b5769e71` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/m11_2_live_pipeline.py` → `graphs/pipelines/m11_2_live_pipeline.py` | 1175 | `41766fe275b2` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/m11_live_pipeline.py` → `graphs/pipelines/m11_live_pipeline.py` | 1056 | `784b4a44a849` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/m13_eod_report.py` → `graphs/pipelines/m13_eod_report.py` | 4849 | `632214d0eab2` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/m13_live_loop.py` → `graphs/pipelines/m13_live_loop.py` | 8571 | `72eb87ffd808` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/m13_tick.py` → `graphs/pipelines/m13_tick.py` | 2140 | `944e61a860f2` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/offhours_validation.py` → `graphs/pipelines/offhours_validation.py` | 9295 | `9a5c7576f93c` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
-| `graphs/pipelines/runtime_tick.py` → `graphs/pipelines/runtime_tick.py` | 508 | `184a43571dbd` | KEEP_IF: 목표 디렉터리·단일책임·적정길이인지 본문 1회 확인; 아니면 큰 함수 추출 |
+### _resolve_order_price_for_notional_with_source (L1660–1778)
+- **기능 경계:** `graphs/nodes/execute_from_packet.py::_resolve_order_price_for_notional_with_source` (119행), 내부 호출 `_extract_order_symbol`, `_coerce_float`, `_positive_price_from_row`, `_symbol_matches_row`, `_extract_market_quotes_safe`, `_canonical_artifact_row`. 감지된 경계: 없음.
+- **정확한 목표:** `graphs/nodes/execute_from_packet_resolve_order_price_for_notional_with_.py::_resolve_order_price_for_notional_with_source`. 본문의 계산·분기·반환을 목표 Owner에 옮기고 원래 이름/서명 thin wrapper만 유지. consumer import/patch seam/출력 bytes와 예외 보존. 중복 본문 삭제.
+- **스모크:** 변경한 경우만 고정 입력 전/후 결과·예외·patchable symbol, fake/mock/tmp 정상 targeted pytest/unittest 1회. 테스트하지 않았다면 NOT_RUN.
 
-## 4. 구현 · 검증 · 인수 체크
+### _attempt_unfilled_order_recovery (L942–1039)
+- **기능 경계:** `graphs/nodes/execute_from_packet.py::_attempt_unfilled_order_recovery` (98행), 내부 호출 `_extract_order_symbol`, `_coerce_int`, `_build_cancel_order_for_unfilled`, `_normalize_execution`, `_prepare_request`, `_propagate_cancel_unknown_outcome`, `_execution_market_open_for_recovery`. 감지된 경계: BROKER.
+- **정확한 목표:** `graphs/nodes/execute_from_packet.py::_attempt_unfilled_order_recovery`. 부작용/클래스 context의 원본 순서를 KEEP. 코드를 실제 확인해 순수 subsection이 있으면 단독 helper를 목표 Owner로 분리; 한 책임의 필수 effect라면 KEEP_JUSTIFIED 한줄로 끝낸다.
+- **스모크:** 변경한 경우만 고정 입력 전/후 결과·예외·patchable symbol, fake/mock/tmp 정상 targeted pytest/unittest 1회. 테스트하지 않았다면 NOT_RUN.
 
-1. 소유 개발자가 원본 함수와 소비자·효과를 **딱 한 번** 확인. 역할/위치 적합하면 `KEEP_OK | path | 한 줄 사유 | blob` 즉시 통과, 반복 테스트·반대 전수 peer/추가 문서 요구하지 않는다.
-2. 실제 MOVE는 SOURCE의 계산 몸체를 TARGET Owner에 **이전**하고 원본에 같은 이름·인자의 얇은 wrapper만 남긴다. SOURCE LOC 감소·TARGET 새 blob·호출자 연결을 증거로 남긴다.
-3. 변경 함수에 한하여 before/after fixture 2~4개를 대상으로 **normal targeted pytest 또는 unittest 1회**. 변화 없는 KEEP에는 테스트 0. `-O`/전체 CI/전체 frozen 매 RF 의무 없음.
-4. A/B가 각각 자기 브랜치 code/test만 변경·정상 push. 서로 다른 RF가 같은 target 경로를 소유하면 구현 전에 C03이 단독 Owner를 지정. 이 문서의 새로운 타깃은 목표 **제안**이지 기존 FILE_COVERAGE를 자동 변경한 기록이 아니다.
-5. C04가 원격 소스 SHA 기준 선별 통합, C05가 기존 RF 이력을 보존하며 `TARGET_STRUCTURE=PASS/PARTIAL/BLOCKED` 판단. 기존 DONE은 자동 취소하지 않되 TARGET_GAP을 완성으로 포장하지 않는다.
+## 2. 본 RF 전체 파일별 목표/액션
 
-**보고:** `RF | ORIGINAL_SOURCE_BLOB | MOVED_FUNCTIONS | NEW_TARGETS | KEEP_OK(paths+reason) | BEFORE/AFTER_LOC | TEST_EXIT | PUSH_SHA | INTEGRATION_SHA | TARGET_STRUCTURE`. 보호된 주문/Broker/Guard/Step5C/UEF/운영 파일·DB 실효과는 무승인 변경하지 않는다.
+| SOURCE_PATH | TARGET_PATH | Size/Blob | KEEP/MOVE 구체 사유 |
+|---|---|---|---|
+| `graphs/nodes/assemble_decision_packet.py` | `graphs/nodes/assemble_decision_packet.py` | 2738B `dbcae63ac548` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/build_decision_context.py` | `graphs/nodes/build_decision_context.py` | 19640B `d5e6362add5f` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/build_execution_readiness.py` | `graphs/nodes/build_execution_readiness.py` | 8049B `a17d56a521b0` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/build_market_snapshot.py` | `graphs/nodes/build_market_snapshot.py` | 4127B `af11f9d64d6f` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/build_open_order_snapshot.py` | `graphs/nodes/build_open_order_snapshot.py` | 2303B `995c2931b439` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/build_portfolio_snapshot.py` | `graphs/nodes/build_portfolio_snapshot.py` | 21537B `d6afacc15ef3` | 큰 Python 함수 추가 실사: 서로 다른 실제 책임 확인 후 이름 붙여 분리 |
+| `graphs/nodes/build_risk_context.py` | `graphs/nodes/build_risk_context.py` | 1532B `c3e466816184` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/build_snapshots.py` | `graphs/nodes/build_snapshots.py` | 802B `a0e20a2084b8` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/decide_trade.py` | `graphs/nodes/decide_trade.py` | 65080B `6fa69e96f787` | 큰 Python 함수 추가 실사: 서로 다른 실제 책임 확인 후 이름 붙여 분리 |
+| `graphs/nodes/decision_node.py` | `graphs/nodes/decision_node.py` | 8203B `172f5ac1243c` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/ensure_token.py` | `graphs/nodes/ensure_token.py` | 786B `d20d8b2ff32c` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/execute_from_packet.py` | `graphs/nodes/execute_from_packet.py` | 183181B `1a10af59e5e9` | 위 함수 원본: MOVE_BODY만 추출, 공개 facade 유지 |
+| `graphs/nodes/execute_order.py` | `graphs/nodes/execute_order.py` | 6641B `1e23bc4d3461` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/executor_node.py` | `graphs/nodes/executor_node.py` | 381B `832c6a30e43b` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/hydrate_skill_results_node.py` | `graphs/nodes/hydrate_skill_results_node.py` | 11820B `a23a588a3e8f` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/load_state.py` | `graphs/nodes/load_state.py` | 412B `ceb1fb61542a` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/log_decision_trace.py` | `graphs/nodes/log_decision_trace.py` | 1709B `d74e0605fe92` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/plan_api.py` | `graphs/nodes/plan_api.py` | 572B `c73adc21da72` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/portfolio_guard_node.py` | `graphs/nodes/portfolio_guard_node.py` | 4608B `7ec264a1a52a` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/prepare_api_call.py` | `graphs/nodes/prepare_api_call.py` | 1608B `1529fa5897a5` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/prepare_order_dry_run.py` | `graphs/nodes/prepare_order_dry_run.py` | 1995B `75741376e535` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/read_account_balance.py` | `graphs/nodes/read_account_balance.py` | 1032B `867bd3c1bb38` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/reporter_node.py` | `graphs/nodes/reporter_node.py` | 1501B `214758d222cd` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/risk_cash_truth.py` | `graphs/nodes/risk_cash_truth.py` | 2914B `bc3bd5ea679e` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/save_state.py` | `graphs/nodes/save_state.py` | 398B `17d867a0de46` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/skill_contracts.py` | `graphs/nodes/skill_contracts.py` | 14604B `bf0e50987cd6` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/nodes/update_state_after_execution.py` | `graphs/nodes/update_state_after_execution.py` | 59649B `100952d946fe` | 큰 Python 함수 추가 실사: 서로 다른 실제 책임 확인 후 이름 붙여 분리 |
+| `graphs/pipelines/eod_report.py` | `graphs/pipelines/eod_report.py` | 533B `72ce931dc964` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/pipelines/live_cycle.py` | `graphs/pipelines/live_cycle.py` | 638B `6fdd06135875` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/pipelines/m10_live_pipeline.py` | `graphs/pipelines/m10_live_pipeline.py` | 1403B `f220b5769e71` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/pipelines/m11_2_live_pipeline.py` | `graphs/pipelines/m11_2_live_pipeline.py` | 1175B `41766fe275b2` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/pipelines/m11_live_pipeline.py` | `graphs/pipelines/m11_live_pipeline.py` | 1056B `784b4a44a849` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/pipelines/m13_eod_report.py` | `graphs/pipelines/m13_eod_report.py` | 4849B `632214d0eab2` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/pipelines/m13_live_loop.py` | `graphs/pipelines/m13_live_loop.py` | 8571B `72eb87ffd808` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/pipelines/m13_tick.py` | `graphs/pipelines/m13_tick.py` | 2140B `944e61a860f2` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/pipelines/offhours_validation.py` | `graphs/pipelines/offhours_validation.py` | 9295B `9a5c7576f93c` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+| `graphs/pipelines/runtime_tick.py` | `graphs/pipelines/runtime_tick.py` | 508B `184a43571dbd` | KEEP_IF: 짧고 단일 owner/올바른 패키지면 한줄 PASS |
+
+## 3. 개발자 독점 순서와 최소 검증
+
+1. Codex B만 표의 실제 `MOVE_BODY` 순수 함수부터 source→target 본문 이동; 기존 Owner가 있으면 새 파일 중복 없이 기존 파일 사용. 하나의 경계가 막혀도 다음 독립 항목으로 진행. 다른 RF·반대 개발자 소유 파일 쓰기 금지.
+2. `KEEP_OK`는 본문/위치/역할을 한 번 확인하고 한 줄 사유+Git SHA로 즉시 종결; 같은 SHA 테스트 재실행하지 않는다. 효과/broker/State·CLI와 frozen oracle은 재배치 자체를 강제하지 않는다.
+3. 실제 MOVE는 원본 구현 제거·새 owner 구현·기존 thin wrapper, before/after LOC, 관련 정상 fake pytest/unittest exit0 후 B 허용 브랜치 code/test 정상 push. C04는 delta만 묶음 통합, C05는 기존 DONE 이력을 보존하되 TARGET_GAP 남았으면 구현으로 되돌린다.
+4. `RF=RF-012|SOURCE_BLOB|FUNCTION_MOVES|TARGET_PATHS/BLOBS|KEEP_REASON|LOC_DELTA|TEST_CMD/EXIT|PUSH_SHA|TARGET_STATUS` 보고. 실거래/운영 DB/Guard/UEF 등 효과 금지.
