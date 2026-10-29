@@ -5,7 +5,7 @@
 | RF | 원 Owner / 독립 peer | 수용된 원래 게이트 | 현재 C6/C7 · 담당 |
 |---|---|---|---|
 
-**현재 LEAD 0건 (2026-10-29 17:39 KST)**. 신규 C05 RF-033/041/044/045/066 판정: 긴급 `1f372f2f` 격리 Git blob 동일 추출 RF-041 18 + RF-045/066 6 PASS normal/-O **scoped only**; B `312a5161` inventory symlink 독립 1 FAIL 양 모드; B `617c8429` 혼합 37 PASS 양 모드·frozen NOT_VERIFIED; B A `d30c67ab` RF-033 5파일 88 PASS 양 모드, A `2bce7dca` 관련 파일 동일하지만 원래 45-owner 전체 C4 아님. FIRST_UNMET C1 A 033(45)/041(6), B 044(16)/045(10)/066(17); full opposite C4/정확 integration CI 신규 승인 0. #32 17:12 runtime/API unhealthy, `RUN_SOURCE_SHA=UNKNOWN`/OPEN. C04 선별 통합·정확 SHA hosted normal/-O CI 필요. PENDING47/DEV13/PEER13/LEAD0/DONE20/REWORK0.
+**현재 LEAD 0건 (2026-10-29 17:36 KST)**. 신규 C05 RF-033/041/044/045/066 판정: 긴급 `1f372f2f` 격리 Git blob 동일 추출 RF-041 18 + RF-045/066 6 PASS normal/-O **scoped only**; B `312a5161` inventory symlink 독립 1 FAIL 양 모드; B `617c8429` 혼합 37 PASS 양 모드·frozen NOT_VERIFIED; B A `d30c67ab` RF-033 5파일 88 PASS 양 모드, A `2bce7dca` 관련 파일 동일하지만 원래 45-owner 전체 C4 아님. FIRST_UNMET C1 A 033(45)/041(6), B 044(16)/045(10)/066(17); full opposite C4/정확 integration CI 신규 승인 0. #32 17:12 runtime/API unhealthy, `RUN_SOURCE_SHA=UNKNOWN`/OPEN. C04 선별 통합·정확 SHA hosted normal/-O CI 필요. PENDING47/DEV13/PEER13/LEAD0/DONE20/REWORK0.
 
 **C05 2026-10-29 02:52 KST 첫 미충족 정정:** RF-015/050/032/069의 C1 PARTIAL을 우선순위 C3/C4/C2/C3와 구별하여 원본 `RF_CHECKLIST_META.next=1` 및 STATUS 첫 미충족 C1로 정정. 기존 역사 11 FAIL·LLM full peer·validation-id 탈출·UEF5 승인 차단 유지, 단계 PEER 불변. LEAD 0/DONE 20/C6 후보 0.
 
