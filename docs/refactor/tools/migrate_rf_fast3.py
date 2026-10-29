@@ -46,7 +46,10 @@ def convert(path: Path, source: str) -> tuple[str, bool]:
     legacy = json.loads(metas[0])
     if not isinstance(legacy, dict):
         raise ValueError(f"{path}: malformed legacy metadata")
-    verdicts = [m.group(3) for m in rows]
+    verdicts = []
+    for row in rows:
+        match = re.search(r"— \\*\\*(MET|N/A|PARTIAL|PENDING|SAFETY_BLOCKED|MISSING|BLOCKED)\\*\\*", row.group(2))
+        verdicts.append(match.group(1) if match else ("MET" if row.group(1).lower() == "x" else "PENDING"))
     is_done = path.parent.parent.name == "05_DONE"
     if is_done and any(v not in ("MET", "N/A") for v in verdicts):
         raise ValueError(f"{path}: historical DONE contains unfinished gate")
