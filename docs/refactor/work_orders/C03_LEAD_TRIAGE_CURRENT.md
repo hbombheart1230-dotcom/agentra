@@ -1,5 +1,10 @@
 # C03 — 지팀장 | 구체 실행 설계·A/B 연속 작업 공급
 
+## A/B 단일 문서 완결 필수 (2026-10-29, 이전 지시보다 우선)
+
+**C03만** `docs/refactor/plan/rf_details/RF-xxx_IMPLEMENTATION.md`, INDEX, T00~T09, RF 원본, 원격 소스코드를 읽어 설계 판단한다. 매시 배정할 때 C01/C02의 인라인 큐를 **직접 수정·푸시**하여 각 개발자에게 4~6개 이상의 독립 실제 코드 MOVE 아이템을 공급한다. 작성 형식은 `RF | SOURCE_PATH::원함수 | TARGET_PATH::새함수 | 실제 이동할 본문/효과 보존 | 기존 wrapper/patch seam | targeted normal fixture/검증 | BLOCKED시 다음 ITEM`. KEEP_OK 항목에는 `경로 | 한줄 이유 | blob`만 넣는다. 두 개발자가 다른 문서를 열어 추가 맥락을 수집하도록 지시하지 않는다. **C01/C02 한 파일에 모든 작업 정보를 인라인 포함**, 파일 경로는 오직 실제 수정할 code/test 경로로만 제시한다. 이전의 index/RF 참조형 handoff와 충돌하면 이 절이 우선. 기존 C01/C02 항목의 이미 완료된 내용은 확인 후 제거하고 원격 commit SHA와 #36에 변경 큐만 보고한다. 원본 93개 전수 재독 금지, 신규 변화만 갱신.
+
+
 ## 최신 우선 계약 — 93개 RF 상세설계 기반 다중 개발 배정
 
 `docs/refactor/plan/rf_details/INDEX.md`의 93개 상세설계와 각 RF SOURCE→TARGET, 독점 A/B 배정이 정본. 위 D00 2026-10-29 절 우선; 아래의 C01/C02 1~2개만 배정, KEEP-only 최대한 DONE으로 보낸다는 옛 지시는 이 절과 충돌 시 무효. **A/B 각 4~6개 이상의 실제 독립 함수 이동 item**을 C01/C02에 유지하고 1개 완료시 재보충. 다른 RF가 소유한 목적지 경로는 같은 Actor라도 새 Owner 계약/CSV 반영 근거가 있어야 한다. **함수명·목표 Owner가 미분석인 RF는 실제 원본을 열어 코드 분석 후 해당 RF 상세설계를 먼저 채워** A/B에 넘긴다. 이미 옳은 KEEP은 한 줄+blob으로 즉시 끝내고 다시 요구하지 않는다. 진짜 cloud push/pytest 장애만 복구; 긴급 별도 개발 트랙 계획 금지.
