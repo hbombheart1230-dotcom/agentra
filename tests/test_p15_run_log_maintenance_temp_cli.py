@@ -38,7 +38,7 @@ def test_dry_inspection_preserves_source_and_writes_only_temp_catalog(tmp_path: 
     assert result["moved_total"] == 0
     assert result["move_results"] == []
     assert source.read_text(encoding="utf-8") == "payload"
-    assert sorted(str(x.relative_to(root)) for x in root.rglob("*") if x.is_file()) == [
+    assert sorted(x.relative_to(root).as_posix() for x in root.rglob("*") if x.is_file()) == [
         "dev/catalog/log_inventory_latest.json",
         "dev/catalog/log_inventory_latest.md",
         "offhours_a.jsonl",
