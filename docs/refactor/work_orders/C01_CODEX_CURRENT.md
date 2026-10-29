@@ -1,5 +1,12 @@
 # C01 — Codex B | 다음 실행 코드·테스트 완결 명령
 
+## 매회 원격 지시 버전·환경 사전점검 (2026-10-29)
+
+- 시작 시 다른 프로젝트 문서나 구 tracking ref를 먼저 읽지 말고 **원격 integration/p1.5의 이 CURRENT 한 파일**을 직접 조회한다. 실제 CANONICAL_HEAD와 ORDER_FILE_BLOB_SHA를 기록한다. 번호별 ORDER_ID = C01 : ORDER_FILE_BLOB_SHA : ITEM_NO. 실행 중 명령서가 바뀌어도 시작 시 고정한 번호를 안전하게 수행하고 다음 회차에서 새 버전을 읽는다.
+- 본인 허용 개발 브랜치 원격 HEAD, 로컬 dirty/충돌·코드 소유권을 확인한다. 이어 Python normal/-O pytest 설치 여부와 Git 조회/승인된 push 경로를 점검한다. pytest 부재는 **pytest만 BLOCKED**, push 인증/외부 export 차단은 **push만 BLOCKED**다. 같은 문제로 다른 tmp/fake·읽기 전용 peer·안전한 코드 구현을 전부 중단하지 않는다. 강제 우회·force push·타인 브랜치 쓰기는 허용되지 않는다.
+- 각 번호 상태를 PENDING/RUNNING/LOCAL_IMPLEMENTED/PUSHED/TEST_VERIFIED/PEER_VERIFIED/VERIFIED_ALREADY/BLOCKED/NOT_RUN 중 사실대로 기록한다. 실제 로컬 구현·smoke를 원격 정상/-O PASS로 바꾸지 않는다. 같은 SHA·같은 전체 범위의 정확 증거만 재사용한다.
+- #12에 실측 START_KST/END_KST/ELAPSED_MIN(실측 없으면 NOT_VERIFIED), CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, 번호별 ORDER_ID/ITEM_STATUS, 정확 OWNER_REMOTE_SHA, 변경 경로, normal/-O 실제 exit, push 검증 SHA 또는 실패 근거, LAST_COMMAND/FUNCTION, UNBLOCK_OWNER, NEXT를 기록한다. 기존 아래 지시의 모든 안전 번호가 각자 완료/차단/한도에 도달하기 전에는 일부 PASS만으로 종료하지 않는다.
+
 **대상:** 기존 `work/p15-b-operator-structure-20261022`에서만 소유 code/test 수정·fast-forward push. 시작 시 원격 B HEAD와 아래 고정 SOURCE `617c8429c69c98ac6f707a820d0e6825766f8642`를 대조한다. 이미 다른 실행이 수정 중인 파일은 안전 체크포인트/HEAD 확인 후 겹치지 않게 이어간다. **1~5는 각기 필수 신규 개발·회귀 과제, 6은 필수 정확-SHA 상대 독립 검증.** 번호는 우선순위·선택권·종료 조건이 아니다. 결과가 이미 정확 SHA/범위로 입증된 것은 중복 실행하지 않고, 새 입력·새 소스·새 결손에만 테스트를 추가한다. 7은 실제 플랫폼 한도로 차단된 별도 동결 게이트로 유지한다. 모든 IO는 `tmp_path`·fake/deny-socket; 운영 파일/로그/주문/브로커/Guard/UEF/Step5C/RunLab, frozen 파일·CI/정책·문서/CSV·타인 브랜치 수정 및 force-push 금지.
 
 
