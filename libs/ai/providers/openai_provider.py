@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional, Tuple
@@ -17,6 +18,7 @@ from libs.ai.strategist_config import (
     strategist_retry_max,
     strategist_timeout_sec,
 )
+from libs.ai.providers import openai_response_projection as _projection
 from libs.llm.json_response import extract_json_object_loose, strip_fenced_code_block
 from libs.llm.model_names import normalize_openrouter_model_name
 
@@ -56,109 +58,23 @@ def _extract_json_object(text: str) -> Optional[Dict[str, Any]]:
 
 
 def _extract_chat_content(resp: Dict[str, Any]) -> str:
-    choices = resp.get("choices")
-    if not isinstance(choices, list) or not choices:
-        return ""
-    msg = choices[0] if isinstance(choices[0], dict) else {}
-    msg = msg.get("message") if isinstance(msg.get("message"), dict) else msg
-    content = msg.get("content") if isinstance(msg, dict) else ""
-
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        parts = []
-        for p in content:
-            if isinstance(p, str):
-                parts.append(p)
-            elif isinstance(p, dict) and isinstance(p.get("text"), str):
-                parts.append(p.get("text") or "")
-        return "".join(parts)
-    return ""
+    return _projection.extract_chat_content(resp)
 
 
 def _extract_chat_message(resp: Dict[str, Any]) -> Dict[str, Any]:
-    choices = resp.get("choices")
-    if not isinstance(choices, list) or not choices:
-        return {}
-    first = choices[0] if isinstance(choices[0], dict) else {}
-    msg = first.get("message") if isinstance(first.get("message"), dict) else first
-    return msg if isinstance(msg, dict) else {}
+    return _projection.extract_chat_message(resp)
 
 
 def _extract_chat_finish_reason(resp: Dict[str, Any]) -> str:
-    choices = resp.get("choices")
-    if not isinstance(choices, list) or not choices:
-        return ""
-    first = choices[0] if isinstance(choices[0], dict) else {}
-    return str(first.get("finish_reason") or first.get("native_finish_reason") or "").strip().lower()
+    return _projection.extract_chat_finish_reason(resp)
 
 
 def _chat_output_truncated_without_final_answer(resp: Dict[str, Any]) -> bool:
-    reason = _extract_chat_finish_reason(resp)
-    if reason != "length":
-        return False
-    msg = _extract_chat_message(resp)
-    content = msg.get("content")
-    content_text = str(content or "").strip() if isinstance(content, str) else ""
-    reasoning_text = str(msg.get("reasoning") or "").strip()
-    return (not content_text) and bool(reasoning_text)
+    return _projection.chat_output_truncated_without_final_answer(resp, facade=sys.modules[__name__])
 
 
 def _extract_chat_structured_object(resp: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-    """Extract structured JSON object from non-text chat response shapes."""
-    choices = resp.get("choices")
-    if not isinstance(choices, list) or not choices:
-        return None
-
-    first = choices[0] if isinstance(choices[0], dict) else {}
-    msg = first.get("message") if isinstance(first.get("message"), dict) else first
-    if not isinstance(msg, dict):
-        return None
-
-    # OpenAI structured outputs may expose parsed object directly.
-    parsed = msg.get("parsed")
-    if isinstance(parsed, dict):
-        return dict(parsed)
-
-    content = msg.get("content")
-    if isinstance(content, dict):
-        if isinstance(content.get("json"), dict):
-            return dict(content.get("json") or {})
-        if isinstance(content.get("parsed"), dict):
-            return dict(content.get("parsed") or {})
-    elif isinstance(content, list):
-        for part in content:
-            if not isinstance(part, dict):
-                continue
-            if isinstance(part.get("json"), dict):
-                return dict(part.get("json") or {})
-            if isinstance(part.get("parsed"), dict):
-                return dict(part.get("parsed") or {})
-            if isinstance(part.get("input_json"), dict):
-                return dict(part.get("input_json") or {})
-
-    # Tool-call outputs can include function arguments as JSON.
-    tool_calls = msg.get("tool_calls")
-    if isinstance(tool_calls, list):
-        for tc in tool_calls:
-            if not isinstance(tc, dict):
-                continue
-            fn = tc.get("function")
-            if not isinstance(fn, dict):
-                continue
-            args = fn.get("arguments")
-            if isinstance(args, dict):
-                return dict(args)
-            if isinstance(args, str):
-                obj = _extract_json_object(args)
-                if isinstance(obj, dict):
-                    return obj
-    reasoning = msg.get("reasoning")
-    if isinstance(reasoning, str):
-        obj = _extract_json_object(reasoning)
-        if isinstance(obj, dict):
-            return obj
-    return None
+    return _projection.extract_chat_structured_object(resp, facade=sys.modules[__name__])
 
 
 def _safe_noop_intent(reason: str = "model_no_signal") -> Dict[str, Any]:
@@ -166,36 +82,11 @@ def _safe_noop_intent(reason: str = "model_no_signal") -> Dict[str, Any]:
 
 
 def _to_nonneg_int(v: Any) -> Optional[int]:
-    try:
-        x = int(float(v))
-    except Exception:
-        return None
-    if x < 0:
-        return None
-    return x
+    return _projection.to_nonneg_int(v)
 
 
 def _extract_usage(resp: Dict[str, Any]) -> Dict[str, int]:
-    """Extract token usage from provider response (best-effort)."""
-    usage = resp.get("usage")
-    if not isinstance(usage, dict):
-        return {}
-
-    prompt_tokens = _to_nonneg_int(usage.get("prompt_tokens"))
-    completion_tokens = _to_nonneg_int(usage.get("completion_tokens"))
-    total_tokens = _to_nonneg_int(usage.get("total_tokens"))
-
-    if total_tokens is None and prompt_tokens is not None and completion_tokens is not None:
-        total_tokens = prompt_tokens + completion_tokens
-
-    out: Dict[str, int] = {}
-    if prompt_tokens is not None:
-        out["prompt_tokens"] = prompt_tokens
-    if completion_tokens is not None:
-        out["completion_tokens"] = completion_tokens
-    if total_tokens is not None:
-        out["total_tokens"] = total_tokens
-    return out
+    return _projection.extract_usage(resp, facade=sys.modules[__name__])
 
 
 def _strategy_policy_text() -> str:
@@ -420,12 +311,13 @@ class OpenAIStrategist:
         try:
             import urllib.error as ue
 
-            if isinstance(e, ue.URLError):
-                return True
-
+            # HTTPError subclasses URLError: classify by status code first.
             if isinstance(e, ue.HTTPError):
                 code = int(getattr(e, "code", 0) or 0)
                 return code in (408, 409, 425, 429) or (500 <= code <= 599)
+
+            if isinstance(e, ue.URLError):
+                return True
         except Exception:
             pass
         return False
