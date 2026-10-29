@@ -39,3 +39,10 @@
 - **RF-032 C2 차단 명확화:** B #12 `6461194517` 및 A #11 `6462253630`에서 `--validation-id`의 `../`·절대경로 출력 루트 탈출을 tmp-only 재현/원인 추적. BASE_EXISTING, C2 PARTIAL/MISSING, C4 full peer 미완료. C05가 CLI 허용 ID·호환성 정책 결정, 보호 UEF/closeout 영향 시 홍사장/안전 소유자 승인 전 수정·운영 쓰기 금지. PEER 유지.
 - **다음 안전 RF:** RF-015(역사 11 FAIL BASE/후보 분류는 확보, B의 원래 19-owner 전체 독립 C4 PASS 미완료), RF-031(Writer/State 경계 A normal/`-O` 15 PASS, B full peer 미완료), RF-050/014/016/028/029/032/033/034(각 원래 전체 peer 미완료). 보호 RF-069 승인 없는 historical snapshot NOT_RUN. RF-046/047/052/043/053/067 재종결 금지.
 - RunLab #32 `OPEN/RUNTIME_PENDING`, `RUN_SOURCE_SHA=UNKNOWN`; RF 개발 DONE과 무관하게 승인된 실런 재검증 전 CLOSED 금지. 주문/UEF 보호 무승인 변경·실행 금지.
+
+## 시간대별 2회 수용 게이트 (2026-10-29 개편)
+- D00 §6 및 실물 RF 정본을 우선한다. C05는 **매시 KST 분45** 동일 예약으로 실행하되 같은 2시간 순환에서 짝수시간 분45는 사전 수용, 홀수시간 분45는 사후 수용을 우선 수행한다. 시간대는 우선 검토 순서일 뿐 가능한 다른 안전 RF 판정을 생략하거나 승인 없이 DONE 만드는 근거가 아니다.
+- 사전 수용: #11/#12의 원격 source/code+test·정상/-O·정확 반대팀 full C4, 원본 RF C1~C5/C5 N/A 근거를 대조한다. 다 충족한 RF만 04_LEAD_ACCEPTANCE로 실제 이동·RF/STATUS 동기화하고 C04에 인계한다. 빠른 종결 후보 RF-016처럼 C4만 PARTIAL인 경우 첫 누락을 명시하고 완료라고 속이지 않는다.
+- 사후 수용: C04가 실제 승인 범위에서 반영한 정확 integration SHA와 hosted normal/-O CI(또는 D00 §2.2 정확 동등성)를 확인하여 C6를 판정한다. C6 MET이고 원래 C1~C5 유지되는 RF만 C7 체크/DONE 이동/STATUS·LEAD_CURRENT 갱신 후 원격 재검증한다. 완료 0이더라도 새 단계 변경은 실제 기록하고 #36에 신규 판정만 제출한다.
+- 앞 단계 IN_PROGRESS 또는 사전 조건 미충족이면 해당 항목만 PENDING/BLOCKED, 다른 준비된 RF 계속. 예약이 실행되었다는 사실·로컬 pytest PASS·부분 C4·긴급 브랜치 DEV_RESOLVED·RunLab SOURCE UNKNOWN은 C6/C7 근거 아님.
+- 예전 RF/CI/STATUS 숫자는 역사 스냅샷이다. 항상 현재 원격 실물로 갱신하며 같은 과거 보고를 문서에 누적하지 않는다. 코드·정책·frozen 파일·다른 담당 지시서는 수정 금지.
