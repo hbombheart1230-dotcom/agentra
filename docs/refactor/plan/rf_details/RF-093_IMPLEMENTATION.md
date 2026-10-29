@@ -1,5 +1,9 @@
 # RF-093 — 코드 구조/함수 재배치 설계 (T00)
 
+## T00 root public entry targets
+Root README.md/AGENTS.md/CLAUDE.md/.gitignore/.dockerignore, requirements and conftest.py retain their canonical locations. In particular root conftest.py fixture and import/discovery scope must remain unchanged (KEEP_JUSTIFIED). A misplaced or mixed-function root Python would require its exact SOURCE::function and TARGET::function, not a cosmetic move. Small correct root entry = KEEP_OK.
+
+
 **원본:** `integration/p1.5@ea97703a071238802c25cad92b2c3e55ad9e3062`, FILE_COVERAGE `b46bcb1f29ed3c0a133b059d690173c195c81bf9`. 원 RF: `docs/refactor/plan/queue/01_PENDING/UNASSIGNED/RF-093.md` blob `d0efca8fa2c9aa0d61c85fcb9dd3bad7fafc7d41`.
 **구현 담당:** **Claude A**, 상대 **Codex B**는 해당 원본과 목표 코드 읽기 전용 검증. 소유 11개 파일; 다른 RF 경로 쓰기 금지.
 
