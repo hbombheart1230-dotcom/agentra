@@ -60,14 +60,8 @@ def _is_closed_trade(bundle: Dict[str, Any]) -> bool:
 
 
 def _section_provenance_all_fallback(report: Dict[str, Any]) -> bool:
-    provenance = report.get("section_provenance") if isinstance(report.get("section_provenance"), dict) else {}
-    if not provenance:
-        return False
-    entries = [value for value in provenance.values() if isinstance(value, dict)]
-    if not entries:
-        return False
-    fallback_tags = {"fallback", "unknown", "missing"}
-    return all(str(entry.get("source") or "").strip().lower() in fallback_tags for entry in entries)
+    from scripts.diagnostics.reporter_upgrade_provenance_projection import _section_provenance_all_fallback as owner
+    return owner(report, facade=_migration_sys.modules[__name__])
 
 
 def _reporter_section_fallback(report: Dict[str, Any]) -> bool:

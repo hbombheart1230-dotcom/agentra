@@ -45,6 +45,10 @@ from libs.reporting import intraday_report_linkage_projection as _linkage_owner
 from libs.reporting import intraday_report_quality_projection as _quality_owner
 from libs.reporting import intraday_report_payload_projection as _payload_owner
 from libs.reporting import intraday_report_diagnostics_projection as _diagnostics_owner
+from libs.reporting import intraday_report_queue_read_projection as _queue_read_owner
+from libs.reporting import intraday_report_command_projection as _command_owner
+from libs.reporting import intraday_report_timeout_projection as _timeout_owner
+from libs.reporting import intraday_report_execution_projection as _execution_owner
 from libs.agents.reporter.read_models.intraday_trade_reports_r9_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _trade_day_from_trade_id_r4_impl,
     _runtime_trade_day_r4_impl,
@@ -116,13 +120,7 @@ def _bundle_job_queue_path(root: Path) -> Path:
 
 
 def _read_lock_payload(path: Path) -> Dict[str, Any]:
-    try:
-        if not path.exists():
-            return {}
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        return payload if isinstance(payload, dict) else {}
-    except Exception:
-        return {}
+    return _queue_read_owner._read_lock_payload(path, facade=_r3_sys.modules[__name__])
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
@@ -549,15 +547,7 @@ def finalize_ai_report_diagnostics(
 
 
 def _load_bundle_queue(path: Path) -> List[Dict[str, Any]]:
-    try:
-        if not path.exists():
-            return []
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        if not isinstance(payload, list):
-            return []
-        return [dict(row) for row in payload if isinstance(row, dict)]
-    except Exception:
-        return []
+    return _queue_read_owner._load_bundle_queue(path, facade=_r3_sys.modules[__name__])
 
 
 def _write_bundle_queue(path: Path, rows: List[Dict[str, Any]]) -> None:
@@ -753,10 +743,7 @@ def _creation_epoch_from_wmi(value: Any) -> float:
 
 
 def _stale_process_after_sec() -> float:
-    try:
-        return max(30.0, float(os.getenv("INTRADAY_TRADE_REPORT_STALE_PROCESS_SEC", "180") or 180.0))
-    except Exception:
-        return 180.0
+    return _timeout_owner._stale_process_after_sec(facade=_r3_sys.modules[__name__])
 
 
 def _terminate_process_tree(pid: int) -> bool:
@@ -812,14 +799,11 @@ def _write_bundle_job_lock(
 
 
 def _execution_action(state: Dict[str, Any]) -> str:
-    execution = state.get("execution") if isinstance(state.get("execution"), dict) else {}
-    order = execution.get("order") if isinstance(execution.get("order"), dict) else {}
-    return str(order.get("action") or execution.get("action") or "").strip().upper()
+    return _execution_owner._execution_action(state)
 
 
 def _execution_ok(state: Dict[str, Any]) -> bool:
-    execution = state.get("execution") if isinstance(state.get("execution"), dict) else {}
-    return bool(execution.get("ok")) and bool(execution.get("allowed", True))
+    return _execution_owner._execution_ok(state)
 
 
 def _cache_run_ids(summary: Dict[str, Any], current_run_id: str) -> List[str]:
@@ -842,37 +826,7 @@ def _invalidate_brief_cache(root: Path, run_ids: Iterable[str]) -> List[str]:
 
 
 def _build_bundle_argv(root: Path, state: Dict[str, Any] | None = None) -> List[str]:
-    runtime_state = state if isinstance(state, dict) else {}
-    execution = runtime_state.get("execution") if isinstance(runtime_state.get("execution"), dict) else {}
-    order = execution.get("order") if isinstance(execution.get("order"), dict) else {}
-    run_id = str(runtime_state.get("run_id") or "").strip()
-    symbol = _normalize_symbol(order.get("symbol") or execution.get("symbol") or runtime_state.get("symbol") or "")
-    argv = [
-        "--env-path",
-        str(Path(os.getenv("ENV_PATH", str(root / ".env")))),
-        "--event-log-path",
-        str(Path(os.getenv("EVENT_LOG_PATH", str(root / "data" / "logs" / "events.jsonl")))),
-        "--evidence-log-path",
-        str(Path(os.getenv("EVIDENCE_LOG_PATH", str(root / "data" / "evidence_ledger" / "events.jsonl")))),
-        "--report-dir",
-        str(root / "reports" / "dev" / "analysis" / "live_execution_bundles"),
-        "--reports-root",
-        str(root / "reports"),
-        "--intents-path",
-        str(Path(os.getenv("INTENTS_PATH", str(root / "data" / "logs" / "intents.jsonl")))),
-        "--role",
-        _bundle_role(),
-        "--trade-report-ai",
-        "--json",
-    ]
-    if run_id:
-        argv.extend(["--target-run-id", run_id])
-    if symbol:
-        argv.extend(["--target-symbol", symbol])
-    day = _runtime_trade_day(runtime_state)
-    if day:
-        argv.extend(["--day", day])
-    return argv
+    return _command_owner._build_bundle_argv(root, state, facade=_r3_sys.modules[__name__])
 
 
 def _make_bundle_event_logger(root: Path):
