@@ -1,658 +1,512 @@
-# C02 — Agentra FAST-3 Claude A | ORDER A-20261031-05 | 8 NEW verified actual SOURCE BODY MOVEs
+# C02 — Agentra P1.5 FAST-3 Claude A | ORDER A-20261031-06 | 8 NEW RF-035 SOURCE BODY MOVEs
 
-**Authoritative preflight at publication:** integration HEAD `115425b347e3288b7b07d1df0cadbf7af824eae3`; A remote HEAD `09a816f516d055e1e6b4b0952b74363bfa9648f7`; B remote HEAD `97c1c22cb70fbb022dce4391362f589e00d171ac`. Previous C02 blob `1043ef52a165f9450308b50454d3d53891ad4a41` ORDER A-04 is **8/8 REMOTE_DONE**, A #11 comment 6531488218 normal targeted **44 PASS exit0**, SOURCE `symbol_trade_report.py` after blob `28f8a159f4da31bfb7726681516bddf966706ede`; C04 integrated A-04 at `852480b2b8372fa1c8cf2b5dba4103fcf4185afa` and C05 accepted scoped G1/G2/G3. **Do not repeat A-04 or older PASS.** Current eight A1–A8 are separate unmoved functions, verified on latest A remote; R1–R6 prior reserve bodies were re-compared byte-for-byte against current SOURCE and targets 404, plus new A7/A8 SOURCE/TARGET checked. RF-035 is A-exclusive reporting scope; B RF-063/RF-065 paths disjoint.
+**C03 remote preflight (06:xx KST):** integration HEAD `e2a5b4d9595a4a690a69fde3d0374b0484dfb478`; A remote HEAD `6df60c7d8ca1d954a66bb5c207d386a6671f8104`; previous C02 blob `f031d0dfb45bfff445c04379150ec40e216bf64f` ORDER A-05 **8/8 REMOTE_DONE** from #11 comment 6532635190; normal targeted exit0 reported and remote diff confirmed. All eight old A1–A8 have actual Owner modules on A remote, so **DO NOT REPEAT**. New SOURCE `libs/reporting/intraday_trade_reports.py` remote blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb`, 1,577 LOC, eight non-delegating function bodies confirmed at this SHA. RF-035 exclusive Claude A reporting scope per RF-035 implementation ownership list; B RF-063/RF-065 source paths disjoint. Five new target modules were independently checked 404 on both A and integration before publication. These are new A1–A8, not historical KEEP/test-only.
 
-**Single-file complete execution:** At start pin CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, A_REMOTE_SHA and each SOURCE blob. Read **only this C02**, not D00/RF/queue/detail designs, and do not self-select tasks. Execute **all A1–A8**, continue past each isolated blocker; if a newer remote SHA already moved one item, mark REMOTE_DONE and skip duplicate. Real BODY must leave SOURCE, TARGET becomes sole computation owner, SOURCE thin wrapper preserves caller/monkeypatch and exact signature, annotations, lazy timing, output/errors. Symbol_trade_report has UTF-8 BOM: preserve it. Owner TARGET never imports SOURCE; append without overwriting. Normal targeted fake/tmp test exit0 once per changed scope, `py_compile`, A code/test-only commit and normal push, re-fetch A remote HEAD and SOURCE/TARGET/TEST blob. Git auth failure=PUSH_BLOCKED not G2; pytest absence=test-only blocker and use stdlib smoke where possible; continue other safe work. Report each item and exact SHA/exit to #11. No forced -O/full peer/per-RF hosted CI; C04/C05 own G3/DONE. Never touch B branch, RF/STATUS/C04/C05/docs, production data/State/DB, live network, real account/order, Broker/Guard/Step5C/UEF/RunLab/operational apply. No force push.
+**Single-file complete order:** At start pin CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, A_REMOTE_SHA, SOURCE_BLOB. Execute **all eight** in order; if a single item is blocked, record reason and proceed to next independent safe item. Read only C02 and the code/test paths named below, NOT D00/RF/queue/C03/old handoffs. Each item moves **the entire exact calculation body** out of SOURCE into the designated new TARGET single owner; retain exact SOURCE signature, annotations, docstring, return/error semantics as thin wrapper. TARGET must never import SOURCE. Use `facade=_r3_sys.modules[__name__]` at wrapper call time; TARGET resolves any SOURCE helper/global through `facade.NAME` (including `json`, `_read_json`, `_execution_truth_surface`, `_utc_now_iso`) and preserves lazy evaluation, call order, monkeypatch behavior and exception parity. Append multiple functions to shared target without overwriting. Do not re-move anything already present on a newer A remote; mark REMOTE_DONE if genuinely moved.
 
-## A1 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_extract_trade_artifact_snapshot` blob `28f8a159f4da31bfb7726681516bddf966706ede` → TARGET `libs/reporting/symbol_trade_artifact_projection.py::_extract_trade_artifact_snapshot` (404 A/integration; newly owned by A)
+**Safety/G1/G2:** Code/tests ONLY on `work/p15-a-reporter-pure-20261021`; no A/B cross-ownership, docs, RF, STATUS, C04/C05, frozen or operational policy edits. Fake/temp fixtures only. Never invoke report generation entrypoint, runtime scheduler, real broker, live account/order, Guard, Step5C, UEF, RunLab, operational apply, network or production State/DB. Read-only file tests must use tmp_path. `python -m py_compile libs/reporting/intraday_trade_reports.py libs/reporting/intraday_report_*_projection.py` and normal `python -m pytest -q -p no:cacheprovider <each listed test>` exit0 (or reproducible stdlib smoke if pytest missing). Compare pre-move original with new Owner and thin wrapper for positive/negative/monkeypatch parity. G1 = actual A remote code blob; G2 = normal scoped exit0; C04/C05 own G3 and DONE. No blanket -O/full peer/hosted CI. Commit only changed code/test, normal push or approved exact-tree lease-protected delivery; re-fetch A remote HEAD plus SOURCE/TARGET/TEST blobs and verify. Git auth failure=PUSH_BLOCKED not fake G1; preserve local-only and continue all safe items. Never force push.
 
-**Exact original computation BODY to MOVE once:**
+## A1 — RF-035 | SOURCE `libs/reporting/intraday_trade_reports.py::_read_json` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` lines 123–132 → TARGET `libs/reporting/intraday_report_read_projection.py::_read_json` (new, 404)
+
+**Exact SOURCE computation BODY to MOVE (not copy):**
 
 ```python
-def _extract_trade_artifact_snapshot(
+def _read_json(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+```
+
+**Thin wrapper / call-time patch:** Retain the original SOURCE signature and annotations. Replace only function BODY with delegation to `libs.reporting.intraday_report_read_projection._read_json` using `facade=_r3_sys.modules[__name__]` where referenced helpers/globals require it; pass all existing parameters unchanged. TARGET imports only standard library and type dependencies, never SOURCE. Original globals and nested helpers retain their resolution semantics. No writing or live effects. If a target already exists at new A HEAD, compare actual body; mark REMOTE_DONE if already moved and do not overwrite.
+
+**Normal targeted G2:** new `tests/test_p15_rf035_06h_a1_intraday_read_json_owner.py`: tmp_path missing file -> {}; valid dict JSON {'x':1} -> {'x':1}; JSON array and malformed JSON -> {}; facade.json.loads patched to raise -> {} (same exception handling); verify wrapper/Owner original parity and no writes. Run `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_06h_a1_intraday_read_json_owner.py` normal exit0 or exact stdlib smoke; `py_compile`; compare baseline original/Owner/wrapper and exceptions, then A code/test-only commit + push + remote SOURCE/TARGET/TEST blob refetch. If isolated failure, record FIRST_BLOCKER and continue A2.
+
+## A2 — RF-035 | SOURCE `libs/reporting/intraday_trade_reports.py::_load_story_input` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` lines 225–235 → TARGET `libs/reporting/intraday_report_read_projection.py::_load_story_input` (new, 404)
+
+**Exact SOURCE computation BODY to MOVE (not copy):**
+
+```python
+def _load_story_input(trade_dir: Path) -> tuple[Dict[str, Any], str]:
+    canonical = trade_dir / "ai_trade_report_input.json"
+    normalized_legacy = trade_dir / "ai_trade_report" / "ai_trade_report_input.json"
+    legacy = trade_dir / "trade_story_input.json"
+    for path in (canonical, normalized_legacy, legacy):
+        payload = _read_json(path)
+        if payload:
+            return payload, str(path)
+    return {}, ""
+```
+
+**Thin wrapper / call-time patch:** Retain the original SOURCE signature and annotations. Replace only function BODY with delegation to `libs.reporting.intraday_report_read_projection._load_story_input` using `facade=_r3_sys.modules[__name__]` where referenced helpers/globals require it; pass all existing parameters unchanged. TARGET imports only standard library and type dependencies, never SOURCE. Original globals and nested helpers retain their resolution semantics. No writing or live effects. If a target already exists at new A HEAD, compare actual body; mark REMOTE_DONE if already moved and do not overwrite.
+
+**Normal targeted G2:** new `tests/test_p15_rf035_06h_a2_intraday_story_input_owner.py`: tmp_path with canonical ai_trade_report_input.json {'k':1} and legacy {'k':2} -> ({'k':1},canonical path); remove canonical -> legacy selected; all absent -> ({},''); monkeypatch facade._read_json at call-time, compare wrapper/Owner. Run `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_06h_a2_intraday_story_input_owner.py` normal exit0 or exact stdlib smoke; `py_compile`; compare baseline original/Owner/wrapper and exceptions, then A code/test-only commit + push + remote SOURCE/TARGET/TEST blob refetch. If isolated failure, record FIRST_BLOCKER and continue A3.
+
+## A3 — RF-035 | SOURCE `libs/reporting/intraday_trade_reports.py::build_same_day_reporter_linkage` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` lines 169–224 → TARGET `libs/reporting/intraday_report_linkage_projection.py::build_same_day_reporter_linkage` (new, 404)
+
+**Exact SOURCE computation BODY to MOVE (not copy):**
+
+```python
+def build_same_day_reporter_linkage(
     *,
-    report_path: Path,
-    operator_brief_path: Path,
-    lifecycle_bundle_path: Path,
+    reporter_obj: Dict[str, Any],
+    reporter_js: Path,
+    reporter_md: Path,
+    entry_run_id: str,
+    exit_run_id: str,
+    entry_bundle: Dict[str, Any],
+    exit_bundle: Dict[str, Any],
 ) -> Dict[str, Any]:
-    report = _read_json(report_path)
-    brief = _read_json(operator_brief_path)
-    bundle = _read_json(lifecycle_bundle_path)
-    report_executive = report.get("executive_summary") if isinstance(report.get("executive_summary"), dict) else {}
-    report_market = report.get("market_context_at_entry") if isinstance(report.get("market_context_at_entry"), dict) else {}
-    report_entry = report.get("entry_decision") if isinstance(report.get("entry_decision"), dict) else {}
-    report_final = report.get("final_operator_conclusion") if isinstance(report.get("final_operator_conclusion"), dict) else {}
-    feedback = (
-        bundle.get("strategist_feedback_input")
-        if isinstance(bundle.get("strategist_feedback_input"), dict)
-        else report.get("strategist_feedback_input")
-        if isinstance(report.get("strategist_feedback_input"), dict)
-        else {}
+    reporter_obj = reporter_obj if isinstance(reporter_obj, dict) else {}
+    entry_reporter = entry_bundle.get("reporter") if isinstance(entry_bundle.get("reporter"), dict) else {}
+    exit_reporter = exit_bundle.get("reporter") if isinstance(exit_bundle.get("reporter"), dict) else {}
+    reporter_day_file_found = bool(
+        reporter_js.exists()
+        or reporter_md.exists()
+        or entry_reporter.get("reporter_analysis_day_file_found")
+        or exit_reporter.get("reporter_analysis_day_file_found")
     )
-    shared_facts = (
-        bundle.get("shared_facts")
-        if isinstance(bundle.get("shared_facts"), dict)
-        else report.get("shared_facts")
-        if isinstance(report.get("shared_facts"), dict)
-        else {}
-    )
-    trade_outcome = bundle.get("trade_outcome") if isinstance(bundle.get("trade_outcome"), dict) else {}
-    report_shared_facts = report.get("shared_facts") if isinstance(report.get("shared_facts"), dict) else {}
-    artifact_result_pct = _pick_result_pct(
-        trade_outcome.get("return_pct"),
-        shared_facts.get("return_pct"),
-        shared_facts.get("pnl_pct"),
-        report_shared_facts.get("return_pct"),
-        report_shared_facts.get("pnl_pct"),
-    )
-    entry_reason_text = str(report_entry.get("summary") or "").strip()
-    actual_entry_reason_text = _actual_entry_reason_from_artifacts(
-        report_path=Path(report_path),
-        report_entry_summary=entry_reason_text,
-        bundle=bundle,
-        feedback=feedback,
-    )
-    exit_reason_text = str(shared_facts.get("exit_reason") or "").strip()
-    if not exit_reason_text:
-        exit_reason_text = str(report_final.get("summary") or "").strip()
-    entry_pattern_type = str(feedback.get("entry_pattern_type") or "").strip() or _classify_entry_pattern(actual_entry_reason_text or entry_reason_text)
-    exit_pattern_type = str(feedback.get("exit_pattern_type") or "").strip() or _classify_exit_pattern(exit_reason_text)
-    clean_entry_reason = _clean_symbol_reason(actual_entry_reason_text or entry_reason_text, axis="entry")
-    clean_exit_reason = _clean_symbol_reason(exit_reason_text, axis="exit")
+    linked_run_ids: List[str] = []
+    if bool(entry_reporter.get("reporter_analysis_found")) and entry_run_id:
+        linked_run_ids.append(str(entry_run_id))
+    if bool(exit_reporter.get("reporter_analysis_found")) and exit_run_id and exit_run_id not in linked_run_ids:
+        linked_run_ids.append(str(exit_run_id))
+    run_link_found = bool(linked_run_ids)
+    if run_link_found:
+        status = "linked_run"
+        linkage_source = "run_specific"
+        linkage_reason = "A same-day reporter analysis linked directly to this lifecycle run."
+    elif reporter_day_file_found:
+        status = "linked_day_fallback"
+        linkage_source = "day_fallback"
+        linkage_reason = "A same-day reporter analysis file was attached as fallback context for this lifecycle."
+    else:
+        status = "missing"
+        linkage_source = "missing"
+        linkage_reason = "Same-day reporter analysis is not available for this lifecycle yet."
     return {
-        "report_headline": _clean_symbol_free_text(report_executive.get("headline") or report.get("headline"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "report_executive_summary": _clean_symbol_free_text(report_executive.get("summary"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "report_market_summary": str(report_market.get("summary") or "").strip(),
-        "report_entry_summary": clean_entry_reason,
-        "actual_entry_reason": clean_entry_reason,
-        "report_final_conclusion": _clean_symbol_free_text(report_final.get("summary"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "brief_headline": _clean_symbol_free_text(brief.get("headline"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "brief_executive_summary": _clean_symbol_free_text(brief.get("executive_summary"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "brief_risk_summary": _clean_symbol_free_text(brief.get("risk_summary"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "brief_next_checkpoints": _list_text(brief.get("next_checkpoints"), limit=3),
-        "entry_pattern_type": _clean_symbol_pattern(entry_pattern_type, axis="entry", fallback_reason=clean_entry_reason),
-        "exit_pattern_type": _clean_symbol_pattern(exit_pattern_type, axis="exit", fallback_reason=clean_exit_reason),
-        "thesis_invalidation_code": _clean_symbol_code(feedback.get("thesis_invalidation_code")),
-        "improvement_tags": _list_text(feedback.get("improvement_tags"), limit=6),
-        "review_flags": _list_text(feedback.get("review_flags"), limit=6),
-        "artifact_result_pct": artifact_result_pct,
+        "schema_version": "same_day_reporter_linkage.v1",
+        "status": status,
+        "linkage_source": linkage_source,
+        "linkage_reason": linkage_reason,
+        "reporter_analysis_day_file_found": reporter_day_file_found,
+        "run_link_found": run_link_found,
+        "linked_run_ids": linked_run_ids,
+        "reporter_analysis_json_path": str(reporter_js) if reporter_js.exists() else "",
+        "reporter_analysis_md_path": str(reporter_md) if reporter_md.exists() else "",
+        "reporter_analysis_expected_json_path": str(reporter_js),
+        "reporter_analysis_expected_md_path": str(reporter_md),
+        "reporter_analysis_json_found": bool(reporter_js.exists()),
+        "reporter_analysis_md_found": bool(reporter_md.exists()),
+        "reporter_analysis_summary": str(reporter_obj.get("ai_summary") or ""),
+        "reporter_analysis_grade": str(reporter_obj.get("ai_run_grade") or "N/A"),
     }
 ```
 
-**Implementation / wrapper / monkeypatch:** facade._read_json, _pick_result_pct, _actual_entry_reason_from_artifacts, _classify_entry_pattern/_classify_exit_pattern and clean helpers; read-only fake JSON paths. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
+**Thin wrapper / call-time patch:** Retain the original SOURCE signature and annotations. Replace only function BODY with delegation to `libs.reporting.intraday_report_linkage_projection.build_same_day_reporter_linkage` using `facade=_r3_sys.modules[__name__]` where referenced helpers/globals require it; pass all existing parameters unchanged. TARGET imports only standard library and type dependencies, never SOURCE. Original globals and nested helpers retain their resolution semantics. No writing or live effects. If a target already exists at new A HEAD, compare actual body; mark REMOTE_DONE if already moved and do not overwrite.
 
-**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a1_trade_artifact_snapshot_owner.py`. Input/expected: fake tmp report/brief/bundle JSON: trade_outcome.return_pct=1.25 and entry summary/feedback => artifact_result_pct=1.25 and clean entry/exit fields; missing paths => empty/defaults; patched facade._read_json and _pick_result_pct must affect wrapper and Owner identically. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_artifact_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a1_trade_artifact_snapshot_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A2**; do not end whole order.
+**Normal targeted G2:** new `tests/test_p15_rf035_06h_a3_intraday_linkage_owner.py`: nonexistent reporter_js/md and no reporter flags -> status='missing', linked_run_ids=[]; create fake reporter_js -> status='linked_day_fallback'; entry_bundle={'reporter':{'reporter_analysis_found':True}}, entry_run_id='r1' -> status='linked_run', linked_run_ids=['r1']; no real paths; compare all output fields and negative inputs. Run `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_06h_a3_intraday_linkage_owner.py` normal exit0 or exact stdlib smoke; `py_compile`; compare baseline original/Owner/wrapper and exceptions, then A code/test-only commit + push + remote SOURCE/TARGET/TEST blob refetch. If isolated failure, record FIRST_BLOCKER and continue A4.
 
-## A2 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_build_history_index` blob `28f8a159f4da31bfb7726681516bddf966706ede` → TARGET `libs/reporting/symbol_trade_history_projection.py::_build_history_index` (404 A/integration; newly owned by A)
+## A4 — RF-035 | SOURCE `libs/reporting/intraday_trade_reports.py::_story_input_quality_score` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` lines 236–317 → TARGET `libs/reporting/intraday_report_quality_projection.py::_story_input_quality_score` (new, 404)
 
-**Exact original computation BODY to MOVE once:**
+**Exact SOURCE computation BODY to MOVE (not copy):**
 
 ```python
-def _build_history_index(reports_root: Path, symbol: str) -> List[Dict[str, Any]]:
-    history: List[Dict[str, Any]] = []
-    normalized_symbol = str(symbol or "").strip().upper()
-    for path, obj in _iter_trade_lifecycles(reports_root):
-        if str(obj.get("symbol") or "").strip().upper() != normalized_symbol:
-            continue
-        summary = obj.get("summary") if isinstance(obj.get("summary"), dict) else {}
-        entry = obj.get("entry") if isinstance(obj.get("entry"), dict) else {}
-        exit_row = obj.get("exit") if isinstance(obj.get("exit"), dict) else {}
-        artifacts = obj.get("artifacts") if isinstance(obj.get("artifacts"), dict) else {}
-        trade_id = str(obj.get("trade_id") or "")
-        trade_day = str(obj.get("day") or "")
-        trade_root = (
-            path.parent
-            if path.name == "lifecycle_bundle.json"
-            else path.parent.parent
-        )
-        expected_report_path = trade_root / "reports" / "ai_trade_report.json"
-        expected_operator_brief_path = trade_root / "reports" / "operator_brief.json"
-        lifecycle_bundle_path = trade_root / "lifecycle_bundle.json"
-        artifact_snapshot = _extract_trade_artifact_snapshot(
-            report_path=Path(str(artifacts.get("ai_trade_report_json") or expected_report_path)),
-            operator_brief_path=Path(str(artifacts.get("operator_brief_json") or expected_operator_brief_path)),
-            lifecycle_bundle_path=Path(str(artifacts.get("lifecycle_bundle_json") or lifecycle_bundle_path)),
-        )
-        trade_status = str(obj.get("status") or "").strip()
-        if exit_row:
-            last_action = "SELL"
-        elif trade_status.lower() == "open":
-            last_action = "HOLD"
-        elif entry:
-            last_action = "BUY"
-        else:
-            last_action = ""
-        run_id = (
-            str(entry.get("run_id") or "").strip()
-            or str(exit_row.get("run_id") or "").strip()
-            or str(obj.get("entry_strategist_run_id") or "").strip()
-        )
-        result_pct = _result_pct_from_lifecycle(obj)
-        if result_pct is None:
-            result_pct = _safe_float(artifact_snapshot.get("artifact_result_pct"))
-        raw_entry_reason = str(summary.get("entry_reason_human") or "")
-        artifact_entry_reason = str(artifact_snapshot.get("actual_entry_reason") or "")
-        entry_reason_raw = (
-            artifact_entry_reason
-            if _should_prefer_artifact_entry_reason(raw_entry_reason, artifact_entry_reason)
-            else raw_entry_reason
-        )
-        entry_reason = _clean_symbol_reason(entry_reason_raw, axis="entry")
-        exit_reason = _clean_symbol_reason(summary.get("exit_reason_human"), axis="exit")
-        entry_pattern_type = _clean_symbol_pattern(
-            artifact_snapshot.get("entry_pattern_type"),
-            axis="entry",
-            fallback_reason=entry_reason,
-        )
-        exit_pattern_type = _clean_symbol_pattern(
-            artifact_snapshot.get("exit_pattern_type"),
-            axis="exit",
-            fallback_reason=exit_reason,
-        )
-        history.append(
+def _story_input_quality_score(story_input: Dict[str, Any]) -> int:
+    if not isinstance(story_input, dict) or not story_input:
+        return 0
+
+    def _execution_truth_score(details: Any) -> int:
+        details_obj = details if isinstance(details, dict) else {}
+        local_score = 0
+        if str(details_obj.get("order_id") or "").strip():
+            local_score += 1
+        if details_obj.get("filled_qty") not in (None, ""):
+            local_score += 1
+        if details_obj.get("filled_price") not in (None, ""):
+            local_score += 2
+        if str(details_obj.get("broker_truth_source") or "").strip():
+            local_score += 2
+        if str(details_obj.get("broker_day_truth_source") or "").strip():
+            local_score += 2
+        if str(details_obj.get("broker_day_match_mode") or "").strip():
+            local_score += 1
+        if bool(details_obj.get("broker_day_authoritative")):
+            local_score += 1
+        if details_obj.get("broker_realized_pnl") not in (None, ""):
+            local_score += 2
+        if details_obj.get("broker_fee") not in (None, "") or details_obj.get("broker_tax") not in (None, ""):
+            local_score += 1
+        return local_score
+
+    score = 0
+    status_lower = str(story_input.get("status") or "").strip().lower()
+    trade_symbol = str(story_input.get("symbol") or "").strip()
+    if status_lower in {"open", "closed"}:
+        score += 2
+    if trade_symbol:
+        score += 1
+    if str(story_input.get("run_id") or "").strip():
+        score += 1
+    scanner_reason_human = (
+        story_input.get("scanner_reason_human")
+        if isinstance(story_input.get("scanner_reason_human"), dict)
+        else {}
+    )
+    scanner_trace = (
+        story_input.get("scanner_selection_trace")
+        if isinstance(story_input.get("scanner_selection_trace"), dict)
+        else {}
+    )
+    selected_symbol = str(
+        story_input.get("selected_symbol")
+        or scanner_reason_human.get("selected_symbol")
+        or scanner_trace.get("selected_symbol")
+        or ""
+    ).strip()
+    if selected_symbol:
+        score += 2
+    if status_lower == "closed" and trade_symbol and selected_symbol and trade_symbol != selected_symbol:
+        score -= 2
+    candidate_count = (
+        story_input.get("candidate_count")
+        if story_input.get("candidate_count") not in (None, "")
+        else scanner_reason_human.get("candidate_count")
+    )
+    if isinstance(candidate_count, (int, float)) and float(candidate_count) > 0:
+        score += 1
+    if isinstance(scanner_trace.get("ranked_candidates"), list) and len(scanner_trace.get("ranked_candidates") or []) > 0:
+        score += 1
+    if isinstance(story_input.get("monitor_stop_policy_trace"), dict) and story_input.get("monitor_stop_policy_trace"):
+        score += 1
+    canonical_monitor = story_input.get("canonical_monitor") if isinstance(story_input.get("canonical_monitor"), dict) else {}
+    if canonical_monitor:
+        score += 1
+    if canonical_monitor.get("current_price") not in (None, ""):
+        score += 1
+    if canonical_monitor.get("account_pnl_ratio") not in (None, "") or canonical_monitor.get("effective_pnl_ratio") not in (None, ""):
+        score += 1
+    if str(story_input.get("entry_summary") or "").strip():
+        score += 1
+    score += _execution_truth_score(story_input.get("execution_details"))
+    score += _execution_truth_score(story_input.get("entry_execution_details"))
+    score += _execution_truth_score(story_input.get("exit_execution_details"))
+    return score
+```
+
+**Thin wrapper / call-time patch:** Retain the original SOURCE signature and annotations. Replace only function BODY with delegation to `libs.reporting.intraday_report_quality_projection._story_input_quality_score` using `facade=_r3_sys.modules[__name__]` where referenced helpers/globals require it; pass all existing parameters unchanged. TARGET imports only standard library and type dependencies, never SOURCE. Original globals and nested helpers retain their resolution semantics. No writing or live effects. If a target already exists at new A HEAD, compare actual body; mark REMOTE_DONE if already moved and do not overwrite.
+
+**Normal targeted G2:** new `tests/test_p15_rf035_06h_a4_intraday_story_score_owner.py`: {} -> 0; {'status':'open','symbol':'005930','run_id':'r'} -> 4; add {'execution_details':{'order_id':'x','filled_price':10}} -> 7; non-dict -> 0; original/wrapper/Owner parity, no external inputs. Run `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_06h_a4_intraday_story_score_owner.py` normal exit0 or exact stdlib smoke; `py_compile`; compare baseline original/Owner/wrapper and exceptions, then A code/test-only commit + push + remote SOURCE/TARGET/TEST blob refetch. If isolated failure, record FIRST_BLOCKER and continue A5.
+
+## A5 — RF-035 | SOURCE `libs/reporting/intraday_trade_reports.py::_truth_surface_differs` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` lines 322–328 → TARGET `libs/reporting/intraday_report_quality_projection.py::_truth_surface_differs` (new, 404)
+
+**Exact SOURCE computation BODY to MOVE (not copy):**
+
+```python
+def _truth_surface_differs(existing_story_input: Dict[str, Any], rebuilt_story_input: Dict[str, Any]) -> bool:
+    for key in ("execution_details", "entry_execution_details", "exit_execution_details"):
+        if _execution_truth_surface(existing_story_input.get(key)) != _execution_truth_surface(rebuilt_story_input.get(key)):
+            return True
+    return False
+```
+
+**Thin wrapper / call-time patch:** Retain the original SOURCE signature and annotations. Replace only function BODY with delegation to `libs.reporting.intraday_report_quality_projection._truth_surface_differs` using `facade=_r3_sys.modules[__name__]` where referenced helpers/globals require it; pass all existing parameters unchanged. TARGET imports only standard library and type dependencies, never SOURCE. Original globals and nested helpers retain their resolution semantics. No writing or live effects. If a target already exists at new A HEAD, compare actual body; mark REMOTE_DONE if already moved and do not overwrite.
+
+**Normal targeted G2:** new `tests/test_p15_rf035_06h_a5_intraday_truth_diff_owner.py`: empty dicts -> False; differing execution_details order_id -> True when original facade._execution_truth_surface says so; patch facade._execution_truth_surface to deterministic fake and confirm wrapper/Owner both use patched helper at call time; no broker access. Run `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_06h_a5_intraday_truth_diff_owner.py` normal exit0 or exact stdlib smoke; `py_compile`; compare baseline original/Owner/wrapper and exceptions, then A code/test-only commit + push + remote SOURCE/TARGET/TEST blob refetch. If isolated failure, record FIRST_BLOCKER and continue A6.
+
+## A6 — RF-035 | SOURCE `libs/reporting/intraday_trade_reports.py::build_live_bundle_backfill_payload` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` lines 438–550 → TARGET `libs/reporting/intraday_report_payload_projection.py::build_live_bundle_backfill_payload` (new, 404)
+
+**Exact SOURCE computation BODY to MOVE (not copy):**
+
+```python
+def build_live_bundle_backfill_payload(
+    *,
+    trade_id: str,
+    status: str,
+    story_type: str,
+    execution_mode_label: str,
+    symbol: str,
+    entry_run_id: str,
+    hold_run_ids: List[str],
+    exit_run_id: str,
+    linked_run_ids: List[str],
+    lifecycle_summary: str,
+    lifecycle_bundle_path: Path,
+    story_input_path: Path,
+    story_compact_input_path: Path,
+    trade_report_json_written: str,
+    trade_report_md_written: str,
+    strategist_llm_response_path: Path,
+    ai_trade_report_llm_response_written: str,
+    entry_artifact_path: Path,
+    hold_artifact_path: Path,
+    exit_artifact_path: Path,
+    strategist_evidence_path: Path,
+    scanner_evidence_path: Path,
+    monitor_evidence_path: Path,
+    commander_evidence_path: Path,
+    trade_provenance_path: Path,
+    trade_health_path: Path,
+    trade_artifact_links_path: Path,
+    trade_root: Path,
+    trade_report_summary: str,
+    diagnostics: Mapping[str, Any] | None = None,
+) -> Dict[str, Any]:
+    diagnostics_obj = dict(diagnostics or {})
+    common_row_patch = {
+        "trade_id": trade_id,
+        "story_id": trade_id,
+        "lifecycle_bundle_json_path": str(lifecycle_bundle_path),
+        "trade_lifecycle_json_path": "",
+        "trade_story_input_path": str(story_input_path),
+        "ai_trade_report_input_path": str(story_input_path),
+        "ai_trade_report_compact_input_path": str(story_compact_input_path),
+        "trade_report_json_path": str(trade_report_json_written or ""),
+        "trade_report_md_path": str(trade_report_md_written or ""),
+        "ai_trade_report_json_path": str(trade_report_json_written or ""),
+        "ai_trade_report_md_path": str(trade_report_md_written or ""),
+        "strategist_llm_response_path": str(strategist_llm_response_path),
+        "ai_trade_report_llm_response_path": str(ai_trade_report_llm_response_written or ""),
+        "entry_json_path": str(entry_artifact_path),
+        "hold_json_path": str(hold_artifact_path),
+        "exit_json_path": str(exit_artifact_path),
+        "strategist_evidence_json_path": str(strategist_evidence_path),
+        "scanner_evidence_json_path": str(scanner_evidence_path),
+        "monitor_evidence_json_path": str(monitor_evidence_path),
+        "monitor_timeline_json_path": str(monitor_evidence_path),
+        "commander_evidence_json_path": str(commander_evidence_path),
+        "trade_provenance_json_path": str(trade_provenance_path),
+        "trade_health_json_path": str(trade_health_path),
+        "trade_artifact_links_json_path": str(trade_artifact_links_path),
+        "trade_root_path": str(trade_root),
+        "trade_report_summary": str(trade_report_summary or ""),
+        "report_status": str(diagnostics_obj.get("report_status") or ""),
+        "report_reason_code": str(diagnostics_obj.get("report_reason_code") or ""),
+        "report_reason_human": str(diagnostics_obj.get("report_reason_human") or ""),
+        "report_next_expected_step": str(diagnostics_obj.get("next_expected_step") or ""),
+        "report_generation_model": str(diagnostics_obj.get("llm_model_used") or ""),
+        "report_generation_attempted": bool(diagnostics_obj.get("generation_attempted")),
+        "deterministic_report_status": str(diagnostics_obj.get("deterministic_report_status") or ""),
+        "llm_brief_status": str(diagnostics_obj.get("llm_brief_status") or ""),
+        "ai_trade_report_status": str(diagnostics_obj.get("ai_trade_report_status") or ""),
+    }
+    lifecycle_row = {
+        "trade_id": trade_id,
+        "story_id": trade_id,
+        "status": status,
+        "story_type": story_type,
+        "execution_mode_label": execution_mode_label,
+        "symbol": symbol,
+        "entry_run_id": entry_run_id,
+        "hold_run_ids": list(hold_run_ids or []),
+        "exit_run_id": exit_run_id,
+        "linked_run_ids": list(linked_run_ids or []),
+        "lifecycle_summary": str(lifecycle_summary or ""),
+        "report_json_path": str(lifecycle_bundle_path),
+        **common_row_patch,
+    }
+    bundle_artifacts_patch = {
+        "lifecycle_bundle_json": str(lifecycle_bundle_path),
+        "entry_json": str(entry_artifact_path),
+        "hold_json": str(hold_artifact_path),
+        "exit_json": str(exit_artifact_path),
+        "trade_story_input_json": str(story_input_path),
+        "ai_trade_report_input_json": str(story_input_path),
+        "ai_trade_report_compact_input_json": str(story_compact_input_path),
+        "trade_report_json": str(trade_report_json_written or ""),
+        "trade_report_md": str(trade_report_md_written or ""),
+        "ai_trade_report_json": str(trade_report_json_written or ""),
+        "ai_trade_report_md": str(trade_report_md_written or ""),
+        "strategist_llm_response_json": str(strategist_llm_response_path),
+        "ai_trade_report_llm_response_json": str(ai_trade_report_llm_response_written or ""),
+        "strategist_evidence_json": str(strategist_evidence_path),
+        "scanner_evidence_json": str(scanner_evidence_path),
+        "monitor_evidence_json": str(monitor_evidence_path),
+        "monitor_timeline_json": str(monitor_evidence_path),
+        "commander_evidence_json": str(commander_evidence_path),
+    }
+    return {
+        "lifecycle_row": lifecycle_row,
+        "run_bundle_row_patch": common_row_patch,
+        "bundle_artifacts_patch": bundle_artifacts_patch,
+    }
+```
+
+**Thin wrapper / call-time patch:** Retain the original SOURCE signature and annotations. Replace only function BODY with delegation to `libs.reporting.intraday_report_payload_projection.build_live_bundle_backfill_payload` using `facade=_r3_sys.modules[__name__]` where referenced helpers/globals require it; pass all existing parameters unchanged. TARGET imports only standard library and type dependencies, never SOURCE. Original globals and nested helpers retain their resolution semantics. No writing or live effects. If a target already exists at new A HEAD, compare actual body; mark REMOTE_DONE if already moved and do not overwrite.
+
+**Normal targeted G2:** new `tests/test_p15_rf035_06h_a6_intraday_backfill_payload_owner.py`: supply all signature keyword parameters using tmp_path fake Paths, trade_id='T1', linked_run_ids=['r1'], diagnostics={'report_status':'available','generation_attempted':False}; assert lifecycle_row.trade_id=='T1', run_bundle_row_patch.report_status=='available', bundle_artifacts_patch.lifecycle_bundle_json matches fake path, list copies preserve values; original/Owner/wrapper full dict parity. Run `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_06h_a6_intraday_backfill_payload_owner.py` normal exit0 or exact stdlib smoke; `py_compile`; compare baseline original/Owner/wrapper and exceptions, then A code/test-only commit + push + remote SOURCE/TARGET/TEST blob refetch. If isolated failure, record FIRST_BLOCKER and continue A7.
+
+## A7 — RF-035 | SOURCE `libs/reporting/intraday_trade_reports.py::build_live_execution_summary_payload` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` lines 688–745 → TARGET `libs/reporting/intraday_report_payload_projection.py::build_live_execution_summary_payload` (new, 404)
+
+**Exact SOURCE computation BODY to MOVE (not copy):**
+
+```python
+def build_live_execution_summary_payload(
+    *,
+    day: str,
+    role: str,
+    event_log_path: Path,
+    evidence_log_path: Path,
+    lifecycle_rows: List[Dict[str, Any]],
+    run_bundle_rows: List[Dict[str, Any]],
+    lifecycle_story_type_counts: Mapping[str, Any] | None,
+    run_story_type_counts: Mapping[str, Any] | None,
+    target_ctx: Mapping[str, Any] | None,
+    canonical_trades_root: Path,
+    trade_js: Path,
+    trade_md: Path,
+    reporter_js: Path,
+    reporter_md: Path,
+    operator_summary_json: Path,
+    operator_summary_md: Path,
+) -> Dict[str, Any]:
+    report_status_counts: Dict[str, int] = {}
+    for row in list(lifecycle_rows or []):
+        key = str((row or {}).get("report_status") or "").strip().lower() or "unknown"
+        report_status_counts[key] = int(report_status_counts.get(key, 0) + 1)
+
+    target_ctx = dict(target_ctx or {})
+    return {
+        "schema_version": "live_execution_bundles.v3",
+        "ok": True,
+        "ts": _utc_now_iso(),
+        "day": str(day or ""),
+        "role": str(role or ""),
+        "event_log_path": str(event_log_path),
+        "evidence_log_path": str(evidence_log_path),
+        "bundle_count": len(list(lifecycle_rows or [])),
+        "trade_lifecycle_count": len(list(lifecycle_rows or [])),
+        "run_bundle_count": len(list(run_bundle_rows or [])),
+        "story_type_counts": dict(lifecycle_story_type_counts or {}),
+        "report_status_counts": report_status_counts,
+        "run_story_type_counts": dict(run_story_type_counts or {}),
+        "targeted_mode": bool(target_ctx.get("targeted_mode")),
+        "target_run_id": str(target_ctx.get("target_run_id") or ""),
+        "target_symbol": str(target_ctx.get("target_symbol") or ""),
+        "targeted_execution_run_count": int(target_ctx.get("execution_run_count") or 0),
+        "targeted_lifecycle_context_run_count": int(target_ctx.get("lifecycle_context_run_count") or 0),
+        "canonical_trades_root": str(canonical_trades_root),
+        "bundles": list(lifecycle_rows or []),
+        "run_bundles": list(run_bundle_rows or []),
+        "day_artifacts": {
+            "trade_explain_json": str(trade_js),
+            "trade_explain_md": str(trade_md),
+            "reporter_analysis_json": str(reporter_js) if reporter_js.exists() else "",
+            "reporter_analysis_md": str(reporter_md) if reporter_md.exists() else "",
+            "operator_summary_json": str(operator_summary_json) if operator_summary_json.exists() else "",
+            "operator_summary_md": str(operator_summary_md) if operator_summary_md.exists() else "",
+        },
+    }
+```
+
+**Thin wrapper / call-time patch:** Retain the original SOURCE signature and annotations. Replace only function BODY with delegation to `libs.reporting.intraday_report_payload_projection.build_live_execution_summary_payload` using `facade=_r3_sys.modules[__name__]` where referenced helpers/globals require it; pass all existing parameters unchanged. TARGET imports only standard library and type dependencies, never SOURCE. Original globals and nested helpers retain their resolution semantics. No writing or live effects. If a target already exists at new A HEAD, compare actual body; mark REMOTE_DONE if already moved and do not overwrite.
+
+**Normal targeted G2:** new `tests/test_p15_rf035_06h_a7_intraday_summary_payload_owner.py`: freeze facade._utc_now_iso=lambda:'2026-10-31T00:00:00+00:00'; fake lifecycle_rows=[{'report_status':'ok'},{'report_status':'FAILED'}], run_bundle_rows=[]; expect report_status_counts={'ok':1,'failed':1}, bundle_count=2, ts frozen, nonexistent fake artifact paths -> empty strings; original/Owner/wrapper equality, no writes. Run `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_06h_a7_intraday_summary_payload_owner.py` normal exit0 or exact stdlib smoke; `py_compile`; compare baseline original/Owner/wrapper and exceptions, then A code/test-only commit + push + remote SOURCE/TARGET/TEST blob refetch. If isolated failure, record FIRST_BLOCKER and continue A8.
+
+## A8 — RF-035 | SOURCE `libs/reporting/intraday_trade_reports.py::_report_diagnostics_from_report` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` lines 746–833 → TARGET `libs/reporting/intraday_report_diagnostics_projection.py::_report_diagnostics_from_report` (new, 404)
+
+**Exact SOURCE computation BODY to MOVE (not copy):**
+
+```python
+def _report_diagnostics_from_report(report: Dict[str, Any], llm_artifact: Dict[str, Any]) -> Dict[str, Any]:
+    generation = report.get("generation") if isinstance(report.get("generation"), dict) else {}
+    generation_status = str(generation.get("status") or llm_artifact.get("status") or "").strip().lower()
+    generation_mode = str(generation.get("mode") or "").strip().lower()
+    declared_ai_status = str(
+        report.get("ai_trade_report_status")
+        or generation.get("ai_trade_report_status")
+        or ""
+    ).strip().lower()
+    model = str(generation.get("model") or llm_artifact.get("model") or ((llm_artifact.get("model_info") or {}).get("model")) or "")
+    deterministic_only = generation_mode in {"deterministic", "local_debug"} or (
+        declared_ai_status == "skipped" and generation_status in {"ok", "skipped", ""}
+    )
+    if deterministic_only:
+        ai_trade_report_status = "skipped"
+    elif generation_status in {"ok", "repaired"}:
+        ai_trade_report_status = "ok"
+    elif generation_status in {"partial", "salvaged"}:
+        ai_trade_report_status = "partial"
+    elif generation_status in {"skipped", "disabled"}:
+        ai_trade_report_status = "skipped"
+    else:
+        ai_trade_report_status = "error"
+    diagnostics = {
+        "report_status": "failed",
+        "report_reason_code": "llm_generation_failed",
+        "report_reason_human": "AI trade report generation failed.",
+        "report_generation_reason": "AI trade report generation failed.",
+        "generation_attempted": True,
+        "generation_ts": _utc_now_iso(),
+        "story_input_available": True,
+        "report_output_available": True,
+        "report_artifact_available": True,
+        "llm_model_used": model,
+        "last_error_message": str(llm_artifact.get("error") or ""),
+        "next_expected_step": "Inspect the LLM response artifact and retry generation.",
+        "deterministic_report_status": str(
+            report.get("deterministic_report_status")
+            or generation.get("deterministic_report_status")
+            or "ok"
+        ),
+        "llm_brief_status": str(report.get("llm_brief_status") or generation.get("llm_brief_status") or "skipped"),
+        "ai_trade_report_status": ai_trade_report_status,
+        "llm_response_status": str(llm_artifact.get("status") or ""),
+        "llm_parse_mode": str(llm_artifact.get("parse_mode") or ""),
+        "llm_completeness_score": float(llm_artifact.get("completeness_score") or 0.0),
+        "llm_required_keys_missing": [
+            str(x or "")
+            for x in list(llm_artifact.get("required_keys_missing") or [])
+            if str(x or "").strip()
+        ],
+    }
+    if deterministic_only:
+        diagnostics.update(
             {
-                "trade_id": trade_id,
-                "date": trade_day,
-                "run_id": run_id,
-                "status": trade_status,
-                "last_status": trade_status,
-                "last_action": last_action,
-                "entry_reason": entry_reason,
-                "exit_reason": exit_reason,
-                "lifecycle_summary": _clean_lifecycle_summary(
-                    trade_id=trade_id,
-                    status=trade_status,
-                    entry_reason=entry_reason,
-                    exit_reason=exit_reason,
-                ),
-                "operator_conclusion": str(summary.get("operator_conclusion_human") or ""),
-                "playbook": str((((entry.get("strategist_context") or {}) if isinstance(entry.get("strategist_context"), dict) else {}).get("playbook")) or ""),
-                "hold_seconds": _hold_seconds_from_lifecycle(obj),
-                "result_pct": result_pct,
-                "trade_origin": str(obj.get("trade_origin") or ""),
-                "lifecycle_completeness": str(obj.get("lifecycle_completeness") or ""),
-                "evidence_recovery_used": bool(obj.get("evidence_recovery_used")),
-                "report_path": str(artifacts.get("ai_trade_report_json") or expected_report_path),
-                "operator_brief_path": str(artifacts.get("operator_brief_json") or expected_operator_brief_path),
-                "lifecycle_bundle_path": str(artifacts.get("lifecycle_bundle_json") or lifecycle_bundle_path),
-                "trade_root_path": str(trade_root),
-                "report_headline": str(artifact_snapshot.get("report_headline") or ""),
-                "report_executive_summary": str(artifact_snapshot.get("report_executive_summary") or ""),
-                "report_market_summary": str(artifact_snapshot.get("report_market_summary") or ""),
-                "report_entry_summary": str(artifact_snapshot.get("report_entry_summary") or entry_reason or ""),
-                "report_final_conclusion": str(artifact_snapshot.get("report_final_conclusion") or ""),
-                "brief_headline": str(artifact_snapshot.get("brief_headline") or ""),
-                "brief_executive_summary": str(artifact_snapshot.get("brief_executive_summary") or ""),
-                "brief_risk_summary": str(artifact_snapshot.get("brief_risk_summary") or ""),
-                "brief_next_checkpoints": list(artifact_snapshot.get("brief_next_checkpoints") or []),
-                "entry_pattern_type": entry_pattern_type,
-                "exit_pattern_type": exit_pattern_type,
-                "thesis_invalidation_code": _clean_symbol_code(artifact_snapshot.get("thesis_invalidation_code")),
-                "improvement_tags": list(artifact_snapshot.get("improvement_tags") or []),
-                "review_flags": list(artifact_snapshot.get("review_flags") or []),
+                "report_status": "available",
+                "report_reason_code": "deterministic_only",
+                "report_reason_human": "Deterministic report was generated without AI expansion.",
+                "report_generation_reason": "Deterministic report was generated without AI expansion.",
+                "generation_attempted": False,
+                "next_expected_step": "Review deterministic report sections and evidence linkage.",
+                "last_error_message": "",
             }
         )
-    history.sort(key=lambda row: (str(row.get("date") or ""), str(row.get("trade_id") or "")))
-    return history
-```
-
-**Implementation / wrapper / monkeypatch:** facade._iter_trade_lifecycles, _extract_trade_artifact_snapshot and all clean/pct helpers at call time; read-only; preserve sorted (date,trade_id). Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
-
-**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a2_history_index_owner.py`. Input/expected: two fake lifecycle rows out of order for same symbol => history sorted by (date,trade_id) with preserved action; different symbol filtered; facade._iter_trade_lifecycles and snapshot helper patched after import; no real disk writes. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_history_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a2_history_index_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A3**; do not end whole order.
-
-## A3 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::collect_symbols_for_day` blob `28f8a159f4da31bfb7726681516bddf966706ede` → TARGET `libs/reporting/symbol_trade_symbol_projection.py::collect_symbols_for_day` (404 A/integration; newly owned by A)
-
-**Exact original computation BODY to MOVE once:**
-
-```python
-def collect_symbols_for_day(
-    events_path: Path,
-    reports_root: Path,
-    day: str,
-    trade_index: Optional[List[Dict[str, Any]]] = None,
-) -> List[str]:
-    target_day = str(day or "").strip()
-    symbols: List[str] = []
-    seen: set[str] = set()
-
-    index_rows = trade_index if trade_index is not None else build_daily_trade_index(reports_root, target_day)
-    for row in index_rows:
-        symbol = str(row.get("symbol") or "").strip().upper()
-        if symbol and symbol not in seen:
-            seen.add(symbol)
-            symbols.append(symbol)
-
-    for row in iter_jsonl_events(events_path, day=target_day):
-        ts_day = datetime.fromtimestamp(_to_epoch(row.get("ts") or (row.get("payload") or {}).get("ts")), tz=timezone.utc).strftime("%Y-%m-%d") if _to_epoch(row.get("ts") or (row.get("payload") or {}).get("ts")) > 0 else ""
-        if ts_day != target_day:
-            continue
-        payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-        detail = payload.get("payload") if isinstance(payload.get("payload"), dict) else {}
-        order = payload.get("order") if isinstance(payload.get("order"), dict) else {}
-        for candidate in (
-            detail.get("symbol"),
-            payload.get("symbol"),
-            order.get("symbol"),
-            order.get("stk_cd"),
-        ):
-            symbol = str(candidate or "").strip().upper()
-            if symbol and symbol not in seen:
-                seen.add(symbol)
-                symbols.append(symbol)
-    return symbols
-```
-
-**Implementation / wrapper / monkeypatch:** facade.build_daily_trade_index, iter_jsonl_events, _to_epoch, datetime/timezone at call time; fake tmp log only; preserve index-first dedup and timestamp filtering. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
-
-**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a3_collect_symbols_owner.py`. Input/expected: fake trade index ['005930'], same-day fake JSONL symbols ['000660','005930'] and other-day row => ['005930','000660']; case normalization/dedup and patched _to_epoch parity. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_symbol_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a3_collect_symbols_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A4**; do not end whole order.
-
-## A4 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::build_policy_surface_quality_snapshot` blob `8471837632ec1c7659ba2cbcfe5ee44ec84bf42d` → TARGET `libs/reporting/report_source_policy_projection.py::build_policy_surface_quality_snapshot` (404 A/integration; newly owned by A)
-
-**Exact original computation BODY to MOVE once:**
-
-```python
-def build_policy_surface_quality_snapshot(events_path: Path, reports_root: Path, day: str) -> Dict[str, Any]:
-    try:
-        runtime_health = build_phase_5_2_5_3_runtime_health(
-            reports_root=reports_root,
-            event_log_path=events_path,
-            day=day,
-            limit=500,
+    elif generation_status in {"ok", "repaired"}:
+        diagnostics.update(
+            {
+                "report_status": "available",
+                "report_reason_code": "",
+                "report_reason_human": "AI trade report was generated successfully.",
+                "report_generation_reason": "AI trade report was generated successfully.",
+                "next_expected_step": "Open the full report for detailed lifecycle analysis.",
+                "last_error_message": "",
+            }
         )
-    except FileNotFoundError:
-        summary = build_policy_surface_quality_summary([])
-        chart_summary = build_chart_structure_decision_hint_summary([])
-        return {
-            "summary": summary,
-            "executive_summary": build_policy_surface_quality_executive_summary(summary),
-            "chart_structure_summary": chart_summary,
-            "chart_structure_executive_summary": build_chart_structure_decision_hint_executive_summary(chart_summary),
-            "source": {
-                "run_count": 0,
-                "date": day,
-                "source": "daily_monitor_artifacts",
-                "notes": ["no_canonical_monitor_runs_found"],
-            },
-        }
-    except Exception:
-        summary = build_policy_surface_quality_summary([])
-        chart_summary = build_chart_structure_decision_hint_summary([])
-        return {
-            "summary": summary,
-            "executive_summary": build_policy_surface_quality_executive_summary(summary),
-            "chart_structure_summary": chart_summary,
-            "chart_structure_executive_summary": build_chart_structure_decision_hint_executive_summary(chart_summary),
-            "source": {
-                "run_count": 0,
-                "date": day,
-                "source": "daily_monitor_artifacts",
-                "notes": ["policy_surface_quality_summary_unavailable"],
-            },
-        }
-
-    summary = runtime_health.get("policy_surface_quality_summary")
-    if not isinstance(summary, dict):
-        summary = build_policy_surface_quality_summary([])
-    chart_summary = runtime_health.get("chart_structure_decision_hint_summary")
-    if not isinstance(chart_summary, dict):
-        chart_summary = build_chart_structure_decision_hint_summary([])
-    return {
-        "summary": dict(summary),
-        "executive_summary": build_policy_surface_quality_executive_summary(summary),
-        "chart_structure_summary": dict(chart_summary),
-        "chart_structure_executive_summary": build_chart_structure_decision_hint_executive_summary(chart_summary),
-        "source": {
-            "run_count": int(runtime_health.get("run_count") or 0),
-            "date": day,
-            "source": "daily_monitor_artifacts",
-            "health_schema_version": str(runtime_health.get("schema_version") or ""),
-        },
-    }
+    elif generation_status in {"partial", "salvaged"}:
+        diagnostics.update(
+            {
+                "report_status": "available",
+                "report_reason_code": "llm_generation_salvaged",
+                "report_reason_human": "AI trade report was generated with partial recovery.",
+                "report_generation_reason": "AI trade report was generated with partial recovery.",
+                "next_expected_step": "Open the report and review completeness metadata before relying on every section.",
+            }
+        )
+    return diagnostics
 ```
 
-**Implementation / wrapper / monkeypatch:** facade.build_phase_5_2_5_3_runtime_health and summary/chart helpers at call time; fake-only return values; NEVER invoke live health, Step5C or real paths. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
+**Thin wrapper / call-time patch:** Retain the original SOURCE signature and annotations. Replace only function BODY with delegation to `libs.reporting.intraday_report_diagnostics_projection._report_diagnostics_from_report` using `facade=_r3_sys.modules[__name__]` where referenced helpers/globals require it; pass all existing parameters unchanged. TARGET imports only standard library and type dependencies, never SOURCE. Original globals and nested helpers retain their resolution semantics. No writing or live effects. If a target already exists at new A HEAD, compare actual body; mark REMOTE_DONE if already moved and do not overwrite.
 
-**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a4_policy_surface_owner.py`. Input/expected: fake runtime_health summary run_count=2 => source.run_count=2; stub raises FileNotFoundError => source.notes=['no_canonical_monitor_runs_found']; generic Exception => ['policy_surface_quality_summary_unavailable']; MUST mock phase5 runtime health before invocation, no Step5C. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_policy_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a4_policy_surface_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A5**; do not end whole order.
+**Normal targeted G2:** new `tests/test_p15_rf035_06h_a8_intraday_diagnostics_owner.py`: freeze facade._utc_now_iso; report={'generation':{'status':'ok','model':'fake'}} and llm_artifact={} -> report_status='available', ai_trade_report_status='ok'; generation.mode='deterministic' -> ai_trade_report_status='skipped', generation_attempted=False; completeness_score='invalid' raises same ValueError through wrapper/Owner; no model/network call. Run `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_06h_a8_intraday_diagnostics_owner.py` normal exit0 or exact stdlib smoke; `py_compile`; compare baseline original/Owner/wrapper and exceptions, then A code/test-only commit + push + remote SOURCE/TARGET/TEST blob refetch. If isolated failure, record FIRST_BLOCKER and continue Acompletion report.
 
-## A5 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::build_commander_route_summary` blob `8471837632ec1c7659ba2cbcfe5ee44ec84bf42d` → TARGET `libs/reporting/report_source_route_summary_projection.py::build_commander_route_summary` (404 A/integration; newly owned by A)
+## Reserve — RESERVE_NOT_VERIFIED (A 0/6)
 
-**Exact original computation BODY to MOVE once:**
+Previous six verified reserve items were consumed by A-05 and are REMOTE_DONE. This order has eight separately inspected and verified NEW items, but **no new six reserve candidates were fully validated**. Do not count speculative filenames, already-moved wrappers, KEEP, effectful helpers, or other RF owners as verified reserve. C03 must inspect next A-owned SOURCE bodies/target absence/tests before promoting six future items; A must not self-select from this section.
 
-```python
-def build_commander_route_summary(
-    *,
-    reports_root: Path,
-    day: str,
-    day_rows: Optional[Iterable[Dict[str, Any]]] = None,
-) -> Dict[str, Any]:
-    canonical_dir = reports_root / "canonical" / day
-    canonical_by_run: Dict[str, Dict[str, Any]] = {}
-    if canonical_dir.exists():
-        for run_dir in sorted(canonical_dir.iterdir()):
-            if not run_dir.is_dir():
-                continue
-            commander = read_json(run_dir / "commander.json")
-            if not commander:
-                continue
-            row = _commander_route_from_payload(commander, artifact_path=str(run_dir / "commander.json"))
-            if row.get("route_selected"):
-                canonical_by_run[str(run_dir.name)] = row
+## Required #11 report
 
-    event_rows = day_rows or []
-    event_by_run = _event_route_rows(event_rows)
-
-    all_run_ids = set(canonical_by_run) | set(event_by_run)
-
-    by_run: Dict[str, Dict[str, Any]] = {}
-    route_selected_total: Counter[str] = Counter()
-    strategy_generation_mode_total: Counter[str] = Counter()
-    strategist_fallback_total = 0
-    source_breakdown: Counter[str] = Counter()
-    missing_count = 0
-
-    for run_id in sorted(all_run_ids):
-        selected = canonical_by_run.get(run_id)
-        if not selected:
-            selected = event_by_run.get(run_id)
-        if not selected or not str(selected.get("route_selected") or "").strip():
-            missing_count += 1
-            continue
-        by_run[run_id] = dict(selected)
-        route_selected_total[str(selected.get("route_selected"))] += 1
-        mode = str(selected.get("strategy_generation_mode") or "").strip()
-        if mode:
-            strategy_generation_mode_total[mode] += 1
-        if bool(selected.get("strategist_fallback_used")):
-            strategist_fallback_total += 1
-        source_breakdown[str(selected.get("route_source") or "unknown")] += 1
-
-    return {
-        "route_source": "canonical_commander_preferred",
-        "route_source_run_count": int(len(by_run)),
-        "route_source_missing_count": int(missing_count),
-        "route_selected_total": dict(route_selected_total),
-        "strategy_generation_mode_total": dict(strategy_generation_mode_total),
-        "strategist_fallback_total": int(strategist_fallback_total),
-        "route_source_breakdown": dict(source_breakdown),
-        "by_run": by_run,
-    }
-```
-
-**Implementation / wrapper / monkeypatch:** facade.read_json, _commander_route_from_payload, _event_route_rows, Counter at call time; tmp canonical only; canonical preference and counters. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
-
-**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a5_commander_route_summary_owner.py`. Input/expected: tmp canonical/day/r1/commander.json route=direct; fake events r1 fallback and r2 indirect => r1 canonical wins; run_count=2, route totals direct=1,indirect=1; patched facade.read_json/_event_route_rows parity. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_route_summary_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a5_commander_route_summary_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A6**; do not end whole order.
-
-## A6 — RF-035 | SOURCE `libs/reporting/strategist_llm_summary.py::build_strategist_llm_summary_payload` blob `01e6ea1c6786a5f208d6b6afc6d12f18c8d40319` → TARGET `libs/reporting/strategist_llm_summary_payload_projection.py::build_strategist_llm_summary_payload` (404 A/integration; newly owned by A)
-
-**Exact original computation BODY to MOVE once:**
-
-```python
-def build_strategist_llm_summary_payload(response_json_path: Path) -> Dict[str, Any]:
-    source_path = Path(response_json_path)
-    raw = json.loads(source_path.read_text(encoding="utf-8"))
-    sidecar_meta = _read_json(source_path.with_name("meta.json"))
-    payload = _parse_response_body(raw)
-    canonical_path, canonical = _load_canonical_strategist(source_path)
-    theme_strategy = _as_dict(payload.get("theme_strategy"))
-    refresh_trace = _as_dict(payload.get("strategy_refresh_trace"))
-    horizon = _as_dict(payload.get("strategy_horizon_feedback"))
-    strategy_detail = _strategy_detail_from_sources(payload, canonical)
-    stage_decision = _stage_decision_from_payload(payload, raw, sidecar_meta)
-    stage_meta = _stage_meta(payload, raw, sidecar_meta)
-    news_usage = _news_usage_from_canonical(canonical)
-    market_regime_rail = _market_rail_from_canonical(canonical)
-    news_quality = _news_quality_audit(canonical, news_usage)
-    risk_off_exception_policy = _as_dict(canonical.get("risk_off_exception_policy")) or build_risk_off_exception_policy(
-        market_regime_rail=market_regime_rail,
-        news_quality=news_quality,
-    )
-    output_quality = _strategist_output_quality_audit(
-        payload=payload,
-        canonical=canonical,
-        stage_decision=stage_decision,
-        strategy_detail=strategy_detail,
-        market_rail=market_regime_rail,
-        news_quality=news_quality,
-    )
-
-    return {
-        "schema_version": "strategist_llm_summary.v1",
-        "artifact_type": "strategist_llm_summary",
-        "source_response_json": str(source_path),
-        "source_canonical_strategist_json": str(canonical_path) if canonical_path else "",
-        "generated_at": _utc_now_iso(),
-        "llm_meta": {
-            "stage": _first_text("", raw.get("stage"), sidecar_meta.get("stage")),
-            "stage_index": stage_meta.get("stage_index"),
-            "stage_name": _text(stage_meta.get("stage_name"), ""),
-            "call_kind": _text(stage_meta.get("call_kind"), ""),
-            "stage_component": _text(stage_meta.get("stage_component"), ""),
-            "provider": _first_text("", raw.get("provider"), sidecar_meta.get("provider")),
-            "model": _first_text("", raw.get("model"), sidecar_meta.get("model")),
-            "status": _first_text("", raw.get("status"), raw.get("llm_status"), sidecar_meta.get("status"), sidecar_meta.get("llm_status")),
-            "reason": _first_text("", raw.get("reason"), sidecar_meta.get("reason")),
-            "run_id": _first_text("", raw.get("run_id"), sidecar_meta.get("run_id")),
-            "day": _first_text("", raw.get("day"), sidecar_meta.get("day")),
-            "saved_at": _first_text("", raw.get("saved_at"), sidecar_meta.get("saved_at")),
-            "repair_used": bool(raw.get("repair_used") or sidecar_meta.get("repair_used")),
-            "profile_name": _first_text("", raw.get("llm_execution_profile_name"), sidecar_meta.get("llm_execution_profile_name")),
-            "profile_source": _first_text("", raw.get("llm_execution_profile_source"), sidecar_meta.get("llm_execution_profile_source")),
-        },
-        "operator_readout": _operator_readout_clean(payload, stage_decision),
-        "stage_decision": stage_decision,
-        "strategy_frame": {
-            "playbook": _text(payload.get("playbook")),
-            "selected_themes": _as_list(payload.get("selected_themes")),
-            "theme_selection_mode": _text(theme_strategy.get("selection_mode")),
-            "fallback_reason": _text(theme_strategy.get("fallback_reason"), ""),
-            "rationale": _text(payload.get("rationale"), ""),
-        },
-        "strategy_detail": strategy_detail,
-        "policy_changes": {
-            "playbook_action": _directive(payload, "playbook_action"),
-            "entry_policy_action": _directive(payload, "entry_policy_action"),
-            "monitor_focus_action": _directive(payload, "monitor_focus_action"),
-            "selected_symbol_bias_action": _directive(payload, "selected_symbol_bias_action"),
-            "refresh_action": _directive(payload, "refresh_action"),
-        },
-        "monitor_entry_policy": _as_dict(payload.get("monitor_entry_policy")),
-        "memory_usage": _memory_usage_from_canonical(canonical),
-        "news_usage": news_usage,
-        "news_event_intelligence": _as_dict(
-            payload.get("news_event_intelligence") or canonical.get("news_event_intelligence")
-        ),
-        "news_event_intelligence_usage": _as_dict(payload.get("news_event_intelligence_usage")),
-        "market_regime_rail": market_regime_rail,
-        "news_quality_audit": news_quality,
-        "risk_off_exception_policy": risk_off_exception_policy,
-        "risk_off_exception_conditions": _as_list(payload.get("risk_off_exception_conditions")),
-        "strategist_output_quality_audit": output_quality,
-        "strategy_refresh_trace": {
-            "summary": _text(refresh_trace.get("summary"), ""),
-            "bullets": _as_list(refresh_trace.get("bullets")),
-            "stages": _as_list(refresh_trace.get("stages")),
-        },
-        "strategy_horizon_feedback": horizon,
-    }
-```
-
-**Implementation / wrapper / monkeypatch:** facade.json.loads, _read_json, _parse_response_body, _load_canonical_strategist and all policy/render helpers at call time; fake tmp response; no LLM or network. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
-
-**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a6_strategist_payload_owner.py`. Input/expected: tmp response.json {'stage':'strategist','status':'ok'} and fake canonical/helper outputs => schema_version='strategist_llm_summary.v1', artifact_type='strategist_llm_summary', llm_meta.status='ok'; malformed JSON raises JSONDecodeError identically; no LLM/network. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/strategist_llm_summary.py libs/reporting/strategist_llm_summary_payload_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a6_strategist_payload_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A7**; do not end whole order.
-
-## A7 — RF-035 | SOURCE `libs/reporting/market_regime_rail_review.py::classify_market_regime_rail` blob `cd659475acef1bcdf7301317f5c01ebfe29820c0` → TARGET `libs/reporting/market_regime_rail_classification_projection.py::classify_market_regime_rail` (404 A/integration)
-
-**Exact computation BODY to MOVE:**
-
-```python
-def classify_market_regime_rail(snapshot: Mapping[str, Any]) -> Dict[str, Any]:
-    if not bool(snapshot.get("available", True)) and not snapshot.get("schema_version"):
-        return {
-            "schema_version": "market_regime_rail_observation.v1",
-            "behavior_effect": "evaluation_only",
-            "available": False,
-            "rail_id": "not_available",
-            "rail_confidence": "none",
-            "rationale": "macro snapshot unavailable",
-            "market_inputs": {},
-            "expected_tactical_behavior": [],
-            "q8_review_focus": [],
-        }
-
-    korea = snapshot.get("korea_indices") if isinstance(snapshot.get("korea_indices"), Mapping) else {}
-    sanity = korea_index_sanity(korea) if korea else {"status": "ok", "warning_count": 0, "warnings": [], "extreme_move_requires_confirmation": False}
-    macro_moves = snapshot.get("macro_moves") if isinstance(snapshot.get("macro_moves"), Mapping) else {}
-    global_sentiment = snapshot.get("global_sentiment") if isinstance(snapshot.get("global_sentiment"), Mapping) else {}
-
-    inputs = {
-        "kospi_pct": _change_pct(snapshot, "kospi"),
-        "kosdaq_pct": _change_pct(snapshot, "kosdaq"),
-        "kospi200_pct": _change_pct(snapshot, "kospi200"),
-        "krx_night_futures_pct": _change_pct(snapshot, "krx_night_futures"),
-        "breadth": _to_float(korea.get("breadth"), 0.0),
-        "nasdaq_pct": _change_pct(snapshot, "nasdaq"),
-        "sp500_pct": _change_pct(snapshot, "sp500"),
-        "dxy_pct": _to_float(macro_moves.get("dxy_pct"), _to_float(_indicator(snapshot, "dxy").get("change_pct"), 0.0)),
-        "usdkrw_pct": _to_float(_indicator(snapshot, "usdkrw").get("change_pct"), 0.0),
-        "vix_level": _to_float(macro_moves.get("vix_level"), 0.0),
-        "vix_pct": _to_float(macro_moves.get("vix_pct"), 0.0),
-        "us_10y_delta": _to_float(_indicator(snapshot, "us_10y_yield").get("delta"), 0.0),
-        "global_sentiment_score": _to_float(global_sentiment.get("score"), 0.0),
-    }
-    night = snapshot.get("krx_night_futures") if isinstance(snapshot.get("krx_night_futures"), Mapping) else {}
-    inputs["krx_night_futures_status"] = str(night.get("status") or _indicator(snapshot, "krx_night_futures").get("status") or "")
-    inputs["krx_night_futures_pressure"] = str(
-        night.get("direction_pressure") or _indicator(snapshot, "krx_night_futures").get("direction_pressure") or ""
-    )
-
-    korea_weak = inputs["kosdaq_pct"] <= -1.0 or inputs["kospi_pct"] <= -0.7 or inputs["breadth"] <= -0.35
-    night_gap_down = inputs["krx_night_futures_pct"] <= -1.0
-    night_gap_up = inputs["krx_night_futures_pct"] >= 1.0
-    us_tech_positive = inputs["nasdaq_pct"] >= 0.2 and inputs["sp500_pct"] >= 0.0
-    fx_pressure = inputs["usdkrw_pct"] >= 0.4 or inputs["dxy_pct"] >= 0.2
-    vix_pressure = inputs["vix_level"] >= 20.0 or inputs["vix_pct"] >= 8.0
-
-    if night_gap_down:
-        rail_id = "krx_night_futures_gap_down"
-        confidence = "high" if inputs["krx_night_futures_pct"] <= -2.0 else "medium"
-        behavior = [
-            "treat pre-open derivatives pressure as broad gap-down risk",
-            "require confirmed relative strength before entry",
-            "keep cost-edge and volume confirmation strict",
-            "compare blocked breakouts and reclaim setups against forward shadow outcomes",
-        ]
-        focus = ["breakout_not_ready", "below_vwap_reclaim_not_ready", "volume_confirmation_missing"]
-        rationale = "KRX KOSPI200 night futures showed sharp negative pressure before or near the regular session."
-    elif night_gap_up and not korea_weak:
-        rail_id = "krx_night_futures_gap_up"
-        confidence = "medium"
-        behavior = [
-            "watch opening momentum but avoid unconfirmed gap chase",
-            "compare opening momentum probes against delayed pullback entries",
-            "keep cost-edge active unless promoted policy says otherwise",
-        ]
-        focus = ["opening_momentum_probe", "breakout_not_ready", "pullback_not_mature"]
-        rationale = "KRX KOSPI200 night futures showed positive pre-open derivatives pressure."
-    elif us_tech_positive and korea_weak:
-        rail_id = "us_tech_risk_on_korea_weak"
-        confidence = "high" if inputs["breadth"] <= -0.45 or inputs["kosdaq_pct"] <= -1.5 else "medium"
-        behavior = [
-            "prefer confirmed relative-strength breakout or reclaim over broad pullback",
-            "do not weaken cost-edge or volume confirmation globally",
-            "review semiconductor and large-cap tech candidates against shadow breakout outcomes",
-        ]
-        focus = ["breakout_not_ready", "pullback_not_mature", "human_chart_sanity_guard_blocked"]
-        rationale = "US technology risk appetite was positive while Korean breadth and KOSDAQ were weak."
-    elif korea_weak and (fx_pressure or vix_pressure or inputs["global_sentiment_score"] < -0.2):
-        rail_id = "risk_off_breadth_collapse"
-        confidence = "high" if inputs["breadth"] <= -0.45 else "medium"
-        behavior = [
-            "avoid broad chase",
-            "require strong relative strength before entry",
-            "keep cost-edge and volume confirmation strict",
-        ]
-        focus = ["volume_confirmation_missing", "below_vwap_reclaim_not_ready", "breakout_not_ready"]
-        rationale = "Korean market breadth was weak with macro pressure signals active."
-    elif korea_weak:
-        rail_id = "defensive_rotation"
-        confidence = "medium"
-        behavior = [
-            "prefer defensive or isolated relative strength setups",
-            "avoid weak-volume pullback chase",
-            "measure opportunity cost of blocked breakouts",
-        ]
-        focus = ["breakout_not_ready", "pullback_not_mature"]
-        rationale = "Domestic market was weak without enough global confirmation for full risk-off classification."
-    elif us_tech_positive and not korea_weak:
-        rail_id = "liquidity_leader_rotation"
-        confidence = "medium"
-        behavior = [
-            "watch leader rotation and high-liquidity breakouts",
-            "compare selected candidates against scanner top leaders",
-            "keep cost-edge active",
-        ]
-        focus = ["breakout_not_ready", "below_vwap_reclaim_not_ready"]
-        rationale = "US technology risk appetite was positive and domestic weakness was not dominant."
-    else:
-        rail_id = "macro_pressure_no_trade" if fx_pressure or vix_pressure else "neutral_observation"
-        confidence = "low" if rail_id == "neutral_observation" else "medium"
-        behavior = [
-            "keep current gates unchanged",
-            "collect Q8 shadow evidence before policy changes",
-        ]
-        focus = ["volume_confirmation_missing", "below_vwap_reclaim_not_ready"]
-        rationale = "No stronger market rail was identified from the latest macro snapshot."
-
-    return {
-        "schema_version": "market_regime_rail_observation.v1",
-        "behavior_effect": "evaluation_only",
-        "available": True,
-        "source": snapshot.get("path") or "macro_snapshot",
-        "generated_at": snapshot.get("generated_at"),
-        "rail_id": rail_id,
-        "rail_confidence": confidence,
-        "rationale": rationale,
-        "market_inputs": inputs,
-        "market_input_sanity": sanity,
-        "expected_tactical_behavior": behavior,
-        "q8_review_focus": focus,
-        "secondary_flags": {
-            "korea_weak": korea_weak,
-            "night_gap_down": night_gap_down,
-            "night_gap_up": night_gap_up,
-            "us_tech_positive": us_tech_positive,
-            "fx_pressure": fx_pressure,
-            "vix_pressure": vix_pressure,
-        },
-    }
-```
-
-**Wrapper/callers/monkeypatch:** Preserve `classify_market_regime_rail(snapshot: Mapping[str,Any])->Dict[str,Any]` in SOURCE as thin wrapper; new TARGET owns all threshold/rail selection computation. Call-time `facade` resolves `korea_index_sanity`, `_change_pct`, `_to_float`, `_indicator`, `Mapping` and other globals; TARGET never imports SOURCE. Preserve exact thresholds, ordered branch precedence, confidence and output dictionary, `behavior_effect='evaluation_only'`. No policy/market action, Broker/Guard/Step5C/UEF changes.
-
-**Mandatory normal targeted:** `tests/test_p15_rf035_05h_a7_market_regime_classify_owner.py`. Input `{'available':False}` => rail_id='not_available', available=False, behavior_effect='evaluation_only'; fake krx_night_futures_pct=-2.1 with helper fakes => rail_id='krx_night_futures_gap_down', confidence='high'; fake neutral => rail_id='neutral_observation'. Compare original-vs-Owner-vs-wrapper full dict, patched helper and invalid input exception parity; pure dictionaries only. `python -m py_compile libs/reporting/market_regime_rail_review.py libs/reporting/market_regime_rail_classification_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a7_market_regime_classify_owner.py` normal exit0 (or exact stdlib smoke). Push A code/test and re-fetch blobs. If blocked **continue A8**.
-
-## A8 — RF-035 | SOURCE `libs/reporting/strategist_llm_summary.py::generate_strategist_llm_summary` blob `01e6ea1c6786a5f208d6b6afc6d12f18c8d40319` → TARGET `libs/reporting/strategist_llm_summary_writer_projection.py::generate_strategist_llm_summary` (404 A/integration)
-
-**Exact existing report-artifact BODY to MOVE (only fake/tmp effect in tests):**
-
-```python
-def generate_strategist_llm_summary(response_json_path: Path) -> Tuple[Path, Path, Dict[str, Any]]:
-    source_path = Path(response_json_path)
-    payload = build_strategist_llm_summary_payload(source_path)
-    md_path = source_path.with_name("strategist_summary.md")
-    json_path = source_path.with_name("strategist_summary.json")
-    json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    md_path.write_text(render_strategist_llm_summary_markdown(payload), encoding="utf-8-sig", newline="\n")
-    return md_path, json_path, payload
-```
-
-**Wrapper/callers/monkeypatch:** Keep original signature and return tuple in SOURCE; thin delegate to new Owner with `facade=sys.modules[__name__]`. In TARGET use `facade.Path`, `facade.build_strategist_llm_summary_payload`, `facade.render_strategist_llm_summary_markdown`, `facade.json.dumps` at call time; do not import SOURCE or duplicate JSON/Markdown writer body. Preserve output basenames, UTF-8 JSON indent=2/ensure_ascii=False, UTF-8-SIG Markdown newline='\\n', exception behavior and return path types. No real report dirs, network, LLM or operational writes; fake tmp_path only. Existing active render wrapper is already moved: DO NOT re-move its shadowed old definition.
-
-**Mandatory normal targeted:** `tests/test_p15_rf035_05h_a8_strategist_writer_owner.py`. Use tmp response.json and monkeypatch facade payload builder to `{'schema_version':'strategist_llm_summary.v1','llm_meta':{'status':'ok'}}`, renderer to '# stub\\n'; expected output paths `strategist_summary.md/json` in tmp dir, JSON payload round-trip equality, Markdown starts UTF-8 BOM and exact newline; wrapper vs Owner return and byte parity; patched builder ValueError propagates and writes nothing. `python -m py_compile libs/reporting/strategist_llm_summary.py libs/reporting/strategist_llm_summary_writer_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a8_strategist_writer_owner.py` normal exit0 (or exact stdlib smoke). Commit/push A code/test and re-fetch remote HEAD/SOURCE/TARGET/TEST blobs; if blocked report exact blocker and retain local-only, do not invent G1/G2.
-## RESERVE_NOT_VERIFIED — A 0/6 after promotion, design backlog (NOT executable)
-
-The six previous VERIFIED reserves R1–R6 are now mandatory A1–A6 and **must not be counted as reserves**. Two further independent functions A7/A8 were verified for this order. No six additional unmoved, exclusive, safe pure/report-only functions have been fully proven on the latest A remote, so **RESERVE_VERIFIED=0/6**; do not fabricate candidates or reissue KEEP, previously moved, shadowed definitions, or already assigned functions. Next C03 must inspect other RF-035 reporting sources, actual active function BODY and target 404, caller/monkeypatch/IO and negative fixture, and publish 6 VERIFIED design-only reserves; effectful `generate_symbol_trade_report`, `generate_daily_report`, `generate_trade_explain_report`, `generate_market_regime_rail_review`, `generate_agent_pipeline_trace_report` remain **NOT_VERIFIED**, not executable reserves until protected write/real-mode impact and target ownership are proven. Do not ask A to choose work from this paragraph.
-
-## Required #11 report and push verification
-
-Report `ORDER_ID=A-20261031-05 | CANONICAL_HEAD | ORDER_BLOB_SHA | A_REMOTE_SHA_BEFORE→AFTER | A1..A8 IMPLEMENTED/REMOTE_DONE/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED | exact normal test command/exit and SOURCE/TARGET/TEST blobs | FIRST_BLOCKER | NEXT`. START/END/ELAPSED only if directly measured, never infer from comments. Commit only code/tests to A branch, normal push and refetch. C03 publication itself is **not** code G1/G2/G3 or RF DONE. If any item fails, continue next safe one; no D00/RF/queue reading or autonomous task selection.
+Report `ORDER_ID=A-20261031-06 | ORDER_BLOB | CANONICAL_HEAD | A_START_SHA→A_REMOTE_SHA | A1..A8 IMPLEMENTED/REMOTE_DONE/BLOCKED | SOURCE_BEFORE_AFTER_BLOBS/LOC | TARGET_BLOBS | TEST_NORMAL_COMMAND/EXIT | FIRST_BLOCKER | NEXT`. START/END/ELAPSED only measured values. Each item is independent and mandatory. New C02 issued mid-session does not invalidate a previously pinned start order. C03's order publication is **not** code G1/G2/G3 or RF DONE.
