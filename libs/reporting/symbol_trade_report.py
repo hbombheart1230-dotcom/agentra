@@ -16,6 +16,11 @@ from libs.reporting.operator_period_summary import (
     generate_operator_symbol_summary_artifact,
 )
 import sys as _r3_sys
+from libs.reporting import symbol_trade_read_projection as _read_owner
+from libs.reporting import symbol_trade_text_projection as _text_owner
+from libs.reporting import symbol_trade_scalar_projection as _scalar_owner
+from libs.reporting import symbol_trade_path_projection as _path_owner
+from libs.reporting import symbol_trade_lifecycle_projection as _lifecycle_owner
 from libs.agents.reporter.narrative.symbol_trade_report_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _safe_float_r4_impl,
     _normalize_pct_like_r4_impl,
@@ -77,95 +82,19 @@ def _to_epoch(value: Any) -> int:
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        obj = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return obj if isinstance(obj, dict) else {}
+    return _read_owner._read_json(path, facade=_r3_sys.modules[__name__])
 
 
 def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-
-    def _gen() -> Iterable[Dict[str, Any]]:
-        with path.open("r", encoding="utf-8") as handle:
-            for raw_line in handle:
-                line = raw_line.strip()
-                if not line:
-                    continue
-                try:
-                    row = json.loads(line)
-                except Exception:
-                    continue
-                if isinstance(row, dict):
-                    yield row
-
-    return _gen()
+    return _read_owner._iter_jsonl(path, facade=_r3_sys.modules[__name__])
 
 
 def _iter_trade_lifecycles(reports_root: Path) -> Iterable[Tuple[Path, Dict[str, Any]]]:
-    trades_root = reports_root / "trades"
-    if not trades_root.exists():
-        return []
-
-    def _gen() -> Iterable[Tuple[Path, Dict[str, Any]]]:
-        seen_trade_ids: set[str] = set()
-        for path in sorted(trades_root.rglob("lifecycle/trade_lifecycle.json")):
-            obj = _read_json(path)
-            if obj:
-                trade_id = str(obj.get("trade_id") or "").strip()
-                if trade_id:
-                    seen_trade_ids.add(trade_id)
-                yield path, obj
-
-        for path in sorted(trades_root.rglob("lifecycle_bundle.json")):
-            bundle = _read_json(path)
-            if not bundle:
-                continue
-            trade_id = str(bundle.get("trade_id") or "").strip()
-            if trade_id and trade_id in seen_trade_ids:
-                continue
-            normalized = _normalize_lifecycle_bundle(bundle)
-            if normalized:
-                if trade_id:
-                    seen_trade_ids.add(trade_id)
-                yield path, normalized
-
-    return _gen()
+    return _lifecycle_owner._iter_trade_lifecycles(reports_root, facade=_r3_sys.modules[__name__])
 
 
 def _iter_trade_lifecycles_for_day(reports_root: Path, day: str) -> Iterable[Tuple[Path, Dict[str, Any]]]:
-    day_root = resolve_trade_day_root(reports_root, str(day or "").strip())
-    if not day_root.exists():
-        return []
-
-    def _gen() -> Iterable[Tuple[Path, Dict[str, Any]]]:
-        seen_trade_ids: set[str] = set()
-        for path in sorted(day_root.rglob("lifecycle/trade_lifecycle.json")):
-            obj = _read_json(path)
-            if obj:
-                trade_id = str(obj.get("trade_id") or "").strip()
-                if trade_id:
-                    seen_trade_ids.add(trade_id)
-                yield path, obj
-
-        for path in sorted(day_root.rglob("lifecycle_bundle.json")):
-            bundle = _read_json(path)
-            if not bundle:
-                continue
-            trade_id = str(bundle.get("trade_id") or "").strip()
-            if trade_id and trade_id in seen_trade_ids:
-                continue
-            normalized = _normalize_lifecycle_bundle(bundle)
-            if normalized:
-                if trade_id:
-                    seen_trade_ids.add(trade_id)
-                yield path, normalized
-
-    return _gen()
+    return _lifecycle_owner._iter_trade_lifecycles_for_day(reports_root, day, facade=_r3_sys.modules[__name__])
 
 
 def _normalize_lifecycle_bundle(bundle: Dict[str, Any]) -> Dict[str, Any]:
@@ -181,8 +110,7 @@ def _list_text(values: Any, *, limit: int = 5) -> List[str]:
 
 
 def _contains_any(text: str, needles: List[str]) -> bool:
-    lowered = str(text or "").strip().lower()
-    return any(needle in lowered for needle in needles)
+    return _text_owner._contains_any(text, needles)
 
 
 def _clean_symbol_reason(value: Any, *, axis: str) -> str:
@@ -194,10 +122,7 @@ def _clean_symbol_pattern(value: Any, *, axis: str, fallback_reason: Any = "") -
 
 
 def _clean_symbol_code(value: Any) -> str:
-    text = str(value or "").strip()
-    if text.lower() in {"", "unknown", "none", "null", "-"}:
-        return ""
-    return text
+    return _text_owner._clean_symbol_code(value)
 
 
 def _clean_symbol_free_text(value: Any, *, entry_reason: str = "", exit_reason: str = "") -> str:
@@ -217,7 +142,7 @@ def _dict_at(root: Dict[str, Any], *keys: str) -> Dict[str, Any]:
 
 
 def _summary_input_path_for_report(report_path: Path) -> Path:
-    return Path(report_path).with_name("ai_trade_summary_input.json")
+    return _path_owner._summary_input_path_for_report(report_path, facade=_r3_sys.modules[__name__])
 
 
 def _actual_entry_reason_from_artifacts(
@@ -435,9 +360,7 @@ def _pattern_rows(history: List[Dict[str, Any]], *, positive: bool) -> List[str]
 
 
 def _ratio(numerator: float, denominator: float) -> float:
-    if denominator <= 0:
-        return 0.0
-    return numerator / denominator
+    return _scalar_owner._ratio(numerator, denominator)
 
 
 def _derive_playbook_stats(history: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
