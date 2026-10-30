@@ -19,7 +19,7 @@ def _read_json(path: Path) -> Dict[str, Any]:
     return obj if isinstance(obj, dict) else {}
 ```
 
-**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_read_projection._read_json` without a facade unless a seam requires it. facade.json.loads at call time; broad exception and dict-only result; preserve UTF-8 read and no writes. TARGET is single computation Owner; no SOURCE reverse import.
+**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_read_projection._read_json` with keyword-only `facade=_r3_sys.modules[__name__]`. facade.json.loads at call time; broad exception and dict-only result; preserve UTF-8 read and no writes. TARGET is single computation Owner; no SOURCE reverse import.
 
 **New normal targeted test:** `tests/test_p15_rf035_04h_a1_read_json_owner.py`. Inputs/expected: missing tmp JSON→{}; valid {'ok':1}→same; JSON list/malformed→{}; patch facade.json.loads to raise and verify {}. Check original/Owner/wrapper parity and exceptions; no real IO/effects. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_read_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_04h_a1_read_json_owner.py` normal exit0 (or exact stdlib smoke). Commit only code/test, push A and re-fetch remote HEAD + 3 blobs. If blocked record reason and **continue A2**.
 
