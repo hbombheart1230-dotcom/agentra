@@ -1,210 +1,322 @@
-# C02 — Agentra FAST-3 A-20261031-02 | NEW 8 RF-035 actual BODY MOVEs
+# C02 — FAST-3 Claude A | ORDER A-20261031-03 | NEW 8 verified RF-035 BODY MOVEs
 
-PRIOR REMOTE_DONE: #11 6527585681 confirms A previous 8/8 with normal scoped tests; A HEAD 6251e20ce7bded96f760febb6ab721d2e77739d5. Old C02 blob 318bbc0cdcd1192fbf8aae0c248927b7c62166fd. Old SOURCE markdown.py now thin wrappers (blob 0ed16b2f3d77ed675de1acdbfa5507e4bf53edad). Do not repeat previous MOVE/PASS. New SOURCE trade_explain.py blob 86418b535aa76bb6a8dc88f1beb9a0809a7bc0f3 identical on A/integration. All five new target modules checked 404 on A remote. RF-035 exclusive Claude A Owner; no B overlap.
+**Canonical preflight:** C03 observed integration HEAD ae4c73b35678885158f547c69d6e411bd9ef6e68; A remote HEAD 42240ee55417386f9553ba91f66e5630a88ff682. #11 6528880739 reports previous A-20261031-02 A1–A8 all remote moved and 32 scoped normal PASS. C03 checked new SOURCE blob `bfa1137b3219500c7934eff75bb010a9722e4d12` and reserve SOURCE blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` on A remote; active 3 and reserve 4 TARGET paths return 404 on A and integration. **Previous eight are REMOTE_DONE, never repeat.** RF-035 exclusive A Owner; B's RF-063/RF-065 paths disjoint. This C02 is the entire actor instruction; do NOT open D00, RF, queues, triage or choose tasks.
 
-Read THIS C02 only, then named SOURCE/TARGET/test. Do not read D00, RF, queues or select own work. Pin canonical HEAD, order blob, A remote HEAD and SOURCE blobs before editing. Execute ALL A1-A8; if one BLOCKED continue next independent item. Work only on work/p15-a-reporter-pure-20261021 code/test. MOVE displayed full calculation BODY to TARGET and REMOVE from SOURCE, leaving exact-signature thin compatibility wrapper, preserving annotations/docstrings/caller, return/exception, order, monkeypatch. TARGET must not import SOURCE. For trade_explain use facade=_r3_sys.modules[__name__] for module-global seams; for markdown facade=sys.modules[__name__]. Preserve call-time resolution of helper/global symbols (do not bind at import time). Before move capture baseline golden output on fake fixture; after move compare Owner and wrapper normal/negative/monkeypatch parity. Run py_compile and new targeted normal pytest exit0 (or reproducible stdlib normal smoke if pytest absent). Commit only source/target/new scoped test; normal A push, re-fetch remote ref and SOURCE/TARGET/TEST blobs. If credentials fail mark LOCAL_ONLY/PUSH_BLOCKED, continue other safe items. No force push, operational reports, production file writes, real network/order, Broker/Guard/Step5C/UEF, RunLab, state/DB. -O/full peer/hosted CI not mandatory; C04 integrates and C05 judges G1/G2/G3/DONE.
+**Execution contract:** Pin canonical HEAD, this order blob, A remote HEAD, each SOURCE blob before changes. Execute **ALL A1–A8**, each independently; one blocker means record exact reason and continue next safe item. Move actual displayed computation BODY out of SOURCE into indicated new TARGET single Owner. SOURCE retains exact original public/private name, signature, annotations, docstring, exception/return and a thin delegate to target; no duplicate computation. Add `import sys` and module owner imports only if absent. TARGET may accept keyword-only `facade`, must never import SOURCE; resolve source module helpers/globals at **call time** through `facade=sys.modules[__name__]`, including monkeypatch seams. Shared target modules must be appended to, not overwritten. Capture pre-move fake golden outputs/errors, compare original vs wrapper vs target, including negative and monkeypatch behavior. Tests only with fake dictionaries, tmp_path, controlled datetime; no live network/LLM/order/Broker/Guard/Step5C/UEF/RunLab/production report paths/state/DB. Run `python -m py_compile` on each SOURCE/TARGET and the **new targeted normal test** exit0; if pytest absent, reproducible stdlib normal smoke with exact assertions/exit. Commit only code/test on `work/p15-a-reporter-pure-20261021`; normal push, refetch remote HEAD and SOURCE/TARGET/TEST blob, compare to local tree. If push fails, LOCAL_ONLY/PUSH_BLOCKED, continue other safe items; no force push. Report per item to #11. No -O/full peer/hosted CI requirement; C04/C05 own G3 and DONE. This document commit is NOT code G1/G2/G3.
 
-## A1 RF-035 SOURCE libs/reporting/daily_report_runtime/markdown.py::render_daily_markdown blob 0ed16b2f3d77ed675de1acdbfa5507e4bf53edad -> TARGET libs/reporting/daily_report_runtime/markdown_daily_full_projection.py::render_daily_markdown (new target 404)
+## A1 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::read_json` (blob `bfa1137b3219500c7934eff75bb010a9722e4d12`, line 20) → TARGET `libs/reporting/report_source_read_projection.py::read_json` (new 404)
 
-Exact BODY to MOVE, not duplicate:
-
-```python
-def render_daily_markdown(
-    *,
-    day: str,
-    summary: Dict[str, Any],
-    operator_summary_snapshot_freshness: Dict[str, Any],
-    approvals: int,
-    blocks: int,
-    symbols_for_day: List[str],
-    actions: Counter,
-    stage_counter: Counter,
-    render_residual_positions: ResidualRenderer,
-) -> str:
-    operator_summary_snapshot = (
-        summary.get("operator_summary_snapshot")
-        if isinstance(summary.get("operator_summary_snapshot"), dict)
-        else {}
-    )
-    residual_positions = summary.get("residual_positions") if isinstance(summary.get("residual_positions"), dict) else {}
-    lines = [
-        f"# Daily Report ({day})",
-        "",
-        *render_data_freshness_markdown(summary["data_freshness"]),
-        f"- operator_summary_snapshot_stale: **{operator_summary_snapshot_freshness['stale']}**",
-        "",
-        f"- events: **{summary['events']}**",
-        f"- approvals: **{approvals}** / blocks: **{blocks}**",
-        f"- symbols observed: **{len(symbols_for_day)}**",
-        "",
-        "## Decision actions",
-        "",
-    ]
-    if actions:
-        for key, value in actions.most_common():
-            lines.append(f"- {key}: {value}")
-    else:
-        lines.append("- (none)")
-
-    lines += ["", "## Stage counts", ""]
-    for key, value in stage_counter.most_common():
-        lines.append(f"- {key}: {value}")
-
-    lines += render_operator_summary_snapshot(operator_summary_snapshot, include_system_status=True)
-    lines += render_residual_positions(residual_positions)
-    lines += render_trade_report_integrity(summary)
-    lines += render_broker_alignment(summary)
-    lines += render_route_and_narrative_sections(summary)
-    lines += render_policy_surface_sections(summary)
-    lines += render_top_issues(operator_summary_snapshot)
-    lines += render_recommended_operator_actions(operator_summary_snapshot)
-    return "\n".join(lines) + "\n"
-```
-
-Wrapper: preserve exact signature, old caller and monkeypatch. SOURCE thin delegates to new Owner; module globals resolved through facade at call time. Pass all render_* and render_data_freshness_markdown via facade; preserve residual callback and Counter order. Multiple items sharing a TARGET must append functions, not overwrite.
-
-New targeted test tests/test_p15_rf035_02h_a1_render_daily_markdown_owner.py: fake day 2026-10-30, summary data_freshness {}, events 2, actions Counter approve 1, stage_counter Counter monitor 2; monkeypatch all facade render_* helpers to [] and expect exact header/events/counts/trailing newline; missing data_freshness KeyError. Compare original baseline, wrapper and Owner exact values/errors and patch behavior using fake/temp only. Run python -m py_compile libs/reporting/daily_report_runtime/markdown.py libs/reporting/daily_report_runtime/markdown_daily_full_projection.py; python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_02h_a1_render_daily_markdown_owner.py normal exit0 (or exact stdlib smoke). Commit code/test, normal push A, re-fetch A HEAD and SOURCE/TARGET/TEST blobs. If blocked record exact SHA/error and continue A2.
-
-## A2 RF-035 SOURCE libs/reporting/trade_explain.py::_safe_int blob 86418b535aa76bb6a8dc88f1beb9a0809a7bc0f3 -> TARGET libs/reporting/trade_explain_scalar_projection.py::_safe_int (new target 404)
-
-Exact BODY to MOVE, not duplicate:
+**Exact SOURCE computation BODY to MOVE (remove from SOURCE; retain only thin wrapper):**
 
 ```python
-def _safe_int(v: Any, default: int = 0) -> int:
+def read_json(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
     try:
-        return int(float(v))
+        payload = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
-        return int(default)
+        return {}
+    return payload if isinstance(payload, dict) else {}
 ```
 
-Wrapper: preserve exact signature, old caller and monkeypatch. SOURCE thin delegates to new Owner; module globals resolved through facade at call time. Preserve any global helper/constant via facade and existing exception semantics. Multiple items sharing a TARGET must append functions, not overwrite.
+**Wrapper/caller/monkeypatch:** preserve original signature and all imports/callers; SOURCE delegates to `report_source_read_projection.read_json(..., facade=sys.modules[__name__])` using original positional/keyword semantics. facade.json.loads resolved at call time; read-only tmp_path; preserve broad except and dict-only result. Target contains calculation once, no import of SOURCE.
 
-New targeted test tests/test_p15_rf035_02h_a2_safe_int_owner.py: '2.9' returns 2, bad returns 0, bad with default 7 returns 7; invalid default exception parity. Compare original baseline, wrapper and Owner exact values/errors and patch behavior using fake/temp only. Run python -m py_compile libs/reporting/trade_explain.py libs/reporting/trade_explain_scalar_projection.py; python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_02h_a2_safe_int_owner.py normal exit0 (or exact stdlib smoke). Commit code/test, normal push A, re-fetch A HEAD and SOURCE/TARGET/TEST blobs. If blocked record exact SHA/error and continue A3.
+**New normal targeted test:** `tests/test_p15_rf035_03h_a1_read_json_owner.py`. Golden input/expected: missing tmp path → {}; {'ok':1} JSON→same dict; [] JSON→{}; patch facade.json.loads raise→{}. Assert original/Owner/wrapper output and exception parity, facade monkeypatch at invocation, no real effects. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_read_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_03h_a1_read_json_owner.py` exit0 (or exact stdlib smoke). Commit only code/new test, push A normally, re-fetch remote HEAD and three blobs; if blocked record exact blocker and **continue A2**.
 
-## A3 RF-035 SOURCE libs/reporting/trade_explain.py::_safe_float blob 86418b535aa76bb6a8dc88f1beb9a0809a7bc0f3 -> TARGET libs/reporting/trade_explain_scalar_projection.py::_safe_float (new target 404)
+## A2 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::to_epoch` (blob `bfa1137b3219500c7934eff75bb010a9722e4d12`, line 30) → TARGET `libs/reporting/report_source_clock_projection.py::to_epoch` (new 404)
 
-Exact BODY to MOVE, not duplicate:
+**Exact SOURCE computation BODY to MOVE (remove from SOURCE; retain only thin wrapper):**
 
 ```python
-def _safe_float(v: Any, default: float = 0.0) -> float:
+def to_epoch(ts: Any) -> int:
+    if ts is None:
+        return 0
+    if isinstance(ts, (int, float)):
+        return int(ts)
+    s = str(ts).strip()
+    if not s:
+        return 0
     try:
-        return float(v)
+        return int(float(s))
     except Exception:
-        return float(default)
+        pass
+    if s.endswith("Z"):
+        s = s[:-1] + "+00:00"
+    try:
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return int(dt.timestamp())
+    except Exception:
+        return 0
 ```
 
-Wrapper: preserve exact signature, old caller and monkeypatch. SOURCE thin delegates to new Owner; module globals resolved through facade at call time. Preserve any global helper/constant via facade and existing exception semantics. Multiple items sharing a TARGET must append functions, not overwrite.
+**Wrapper/caller/monkeypatch:** preserve original signature and all imports/callers; SOURCE delegates to `report_source_clock_projection.to_epoch(..., facade=sys.modules[__name__])` using original positional/keyword semantics. facade.datetime.fromisoformat and facade.timezone.utc at call time; preserve int(float), invalid→0. Target contains calculation once, no import of SOURCE.
 
-New targeted test tests/test_p15_rf035_02h_a3_safe_float_owner.py: '2.5' returns 2.5, bad returns 0.0, bad with default 3.25 returns 3.25. Compare original baseline, wrapper and Owner exact values/errors and patch behavior using fake/temp only. Run python -m py_compile libs/reporting/trade_explain.py libs/reporting/trade_explain_scalar_projection.py; python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_02h_a3_safe_float_owner.py normal exit0 (or exact stdlib smoke). Commit code/test, normal push A, re-fetch A HEAD and SOURCE/TARGET/TEST blobs. If blocked record exact SHA/error and continue A4.
+**New normal targeted test:** `tests/test_p15_rf035_03h_a2_to_epoch_owner.py`. Golden input/expected: None→0, '1970-01-02T00:00:00Z'→86400, 'bad'→0, naive ISO UTC; patched facade.datetime/timezone observed. Assert original/Owner/wrapper output and exception parity, facade monkeypatch at invocation, no real effects. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_clock_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_03h_a2_to_epoch_owner.py` exit0 (or exact stdlib smoke). Commit only code/new test, push A normally, re-fetch remote HEAD and three blobs; if blocked record exact blocker and **continue A3**.
 
-## A4 RF-035 SOURCE libs/reporting/trade_explain.py::_utc_day blob 86418b535aa76bb6a8dc88f1beb9a0809a7bc0f3 -> TARGET libs/reporting/trade_explain_scalar_projection.py::_utc_day (new target 404)
+## A3 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::utc_day` (blob `bfa1137b3219500c7934eff75bb010a9722e4d12`, line 53) → TARGET `libs/reporting/report_source_clock_projection.py::utc_day` (new 404)
 
-Exact BODY to MOVE, not duplicate:
+**Exact SOURCE computation BODY to MOVE (remove from SOURCE; retain only thin wrapper):**
 
 ```python
-def _utc_day(ts: Any) -> Optional[str]:
-    epoch = _to_epoch(ts)
-    if epoch is None:
-        return None
+def utc_day(ts: Any) -> str:
+    epoch = to_epoch(ts)
+    if epoch <= 0:
+        return ""
     return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%d")
 ```
 
-Wrapper: preserve exact signature, old caller and monkeypatch. SOURCE thin delegates to new Owner; module globals resolved through facade at call time. Preserve any global helper/constant via facade and existing exception semantics. Multiple items sharing a TARGET must append functions, not overwrite.
+**Wrapper/caller/monkeypatch:** preserve original signature and all imports/callers; SOURCE delegates to `report_source_clock_projection.utc_day(..., facade=sys.modules[__name__])` using original positional/keyword semantics. facade.to_epoch, facade.datetime.fromtimestamp and facade.timezone.utc at call time. Target contains calculation once, no import of SOURCE.
 
-New targeted test tests/test_p15_rf035_02h_a4_utc_day_owner.py: patch facade._to_epoch to 0 -> 1970-01-01, 86400 -> 1970-01-02, None -> None; patch facade.datetime/timezone and compare. Compare original baseline, wrapper and Owner exact values/errors and patch behavior using fake/temp only. Run python -m py_compile libs/reporting/trade_explain.py libs/reporting/trade_explain_scalar_projection.py; python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_02h_a4_utc_day_owner.py normal exit0 (or exact stdlib smoke). Commit code/test, normal push A, re-fetch A HEAD and SOURCE/TARGET/TEST blobs. If blocked record exact SHA/error and continue A5.
+**New normal targeted test:** `tests/test_p15_rf035_03h_a3_utc_day_owner.py`. Golden input/expected: facade.to_epoch patched 86400→'1970-01-02', 0→''; exception parity. Assert original/Owner/wrapper output and exception parity, facade monkeypatch at invocation, no real effects. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_clock_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_03h_a3_utc_day_owner.py` exit0 (or exact stdlib smoke). Commit only code/new test, push A normally, re-fetch remote HEAD and three blobs; if blocked record exact blocker and **continue A4**.
 
-## A5 RF-035 SOURCE libs/reporting/trade_explain.py::official_trade_explain_report_dir blob 86418b535aa76bb6a8dc88f1beb9a0809a7bc0f3 -> TARGET libs/reporting/trade_explain_path_projection.py::official_trade_explain_report_dir (new target 404)
+## A4 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::utc_now_iso` (blob `bfa1137b3219500c7934eff75bb010a9722e4d12`, line 60) → TARGET `libs/reporting/report_source_clock_projection.py::utc_now_iso` (new 404)
 
-Exact BODY to MOVE, not duplicate:
+**Exact SOURCE computation BODY to MOVE (remove from SOURCE; retain only thin wrapper):**
 
 ```python
-def official_trade_explain_report_dir(reports_root: Path) -> Path:
-    return Path(reports_root) / OFFICIAL_TRADE_EXPLAIN_RELATIVE_DIR
+def utc_now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 ```
 
-Wrapper: preserve exact signature, old caller and monkeypatch. SOURCE thin delegates to new Owner; module globals resolved through facade at call time. Preserve any global helper/constant via facade and existing exception semantics. Multiple items sharing a TARGET must append functions, not overwrite.
+**Wrapper/caller/monkeypatch:** preserve original signature and all imports/callers; SOURCE delegates to `report_source_clock_projection.utc_now_iso(..., facade=sys.modules[__name__])` using original positional/keyword semantics. facade.datetime.now and facade.timezone.utc at call time; no actual clock dependency in tests. Target contains calculation once, no import of SOURCE.
 
-New targeted test tests/test_p15_rf035_02h_a5_official_trade_explain_report_dir_owner.py: tmp reports root -> root/dev/analysis/trade_explain; patch facade.OFFICIAL_TRADE_EXPLAIN_RELATIVE_DIR to custom and verify path; no mkdir. Compare original baseline, wrapper and Owner exact values/errors and patch behavior using fake/temp only. Run python -m py_compile libs/reporting/trade_explain.py libs/reporting/trade_explain_path_projection.py; python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_02h_a5_official_trade_explain_report_dir_owner.py normal exit0 (or exact stdlib smoke). Commit code/test, normal push A, re-fetch A HEAD and SOURCE/TARGET/TEST blobs. If blocked record exact SHA/error and continue A6.
+**New normal targeted test:** `tests/test_p15_rf035_03h_a4_utc_now_iso_owner.py`. Golden input/expected: patch facade.datetime.now to 2026-10-31 03:00:00+00:00 → '2026-10-31T03:00:00+00:00'; seconds only. Assert original/Owner/wrapper output and exception parity, facade monkeypatch at invocation, no real effects. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_clock_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_03h_a4_utc_now_iso_owner.py` exit0 (or exact stdlib smoke). Commit only code/new test, push A normally, re-fetch remote HEAD and three blobs; if blocked record exact blocker and **continue A5**.
 
-## A6 RF-035 SOURCE libs/reporting/trade_explain.py::build_trade_explain_output_path_metadata blob 86418b535aa76bb6a8dc88f1beb9a0809a7bc0f3 -> TARGET libs/reporting/trade_explain_path_projection.py::build_trade_explain_output_path_metadata (new target 404)
+## A5 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::epoch_to_iso` (blob `bfa1137b3219500c7934eff75bb010a9722e4d12`, line 64) → TARGET `libs/reporting/report_source_clock_projection.py::epoch_to_iso` (new 404)
 
-Exact BODY to MOVE, not duplicate:
+**Exact SOURCE computation BODY to MOVE (remove from SOURCE; retain only thin wrapper):**
 
 ```python
-def build_trade_explain_output_path_metadata(report_dir: Path) -> Dict[str, Any]:
-    canonical_reports_root = _canonical_report_root(report_dir)
-    requested_dir = Path(report_dir)
-    official_dir = official_trade_explain_report_dir(canonical_reports_root)
-    is_official = requested_dir == official_dir
+def epoch_to_iso(epoch: Any) -> str:
+    try:
+        n = int(float(epoch))
+    except Exception:
+        return ""
+    if n <= 0:
+        return ""
+    return datetime.fromtimestamp(n, tz=timezone.utc).isoformat(timespec="seconds")
+```
+
+**Wrapper/caller/monkeypatch:** preserve original signature and all imports/callers; SOURCE delegates to `report_source_clock_projection.epoch_to_iso(..., facade=sys.modules[__name__])` using original positional/keyword semantics. facade.datetime.fromtimestamp, facade.timezone.utc at call time; retain invalid→empty. Target contains calculation once, no import of SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf035_03h_a5_epoch_to_iso_owner.py`. Golden input/expected: 86400→'1970-01-02T00:00:00+00:00'; 'bad'/0/-1→''; fake facade.datetime parity. Assert original/Owner/wrapper output and exception parity, facade monkeypatch at invocation, no real effects. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_clock_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_03h_a5_epoch_to_iso_owner.py` exit0 (or exact stdlib smoke). Commit only code/new test, push A normally, re-fetch remote HEAD and three blobs; if blocked record exact blocker and **continue A6**.
+
+## A6 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::iter_jsonl` (blob `bfa1137b3219500c7934eff75bb010a9722e4d12`, line 74) → TARGET `libs/reporting/report_source_read_projection.py::iter_jsonl` (new 404)
+
+**Exact SOURCE computation BODY to MOVE (remove from SOURCE; retain only thin wrapper):**
+
+```python
+def iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
+    if not path.exists():
+        return []
+
+    def _gen() -> Iterable[Dict[str, Any]]:
+        with path.open("r", encoding="utf-8") as f:
+            for raw in f:
+                line = raw.strip()
+                if not line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                except Exception:
+                    continue
+                if isinstance(obj, dict):
+                    yield obj
+
+    return _gen()
+```
+
+**Wrapper/caller/monkeypatch:** preserve original signature and all imports/callers; SOURCE delegates to `report_source_read_projection.iter_jsonl(..., facade=sys.modules[__name__])` using original positional/keyword semantics. facade.json.loads inside nested generator at iteration time; no eager file open; preserve missing-list distinction. Target contains calculation once, no import of SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf035_03h_a6_iter_jsonl_owner.py`. Golden input/expected: missing→plain []; tmp file dict, list, malformed, dict→lazy iterator of 2 dicts in file order; patch facade.json.loads after generator creation and before iteration. Assert original/Owner/wrapper output and exception parity, facade monkeypatch at invocation, no real effects. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_read_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_03h_a6_iter_jsonl_owner.py` exit0 (or exact stdlib smoke). Commit only code/new test, push A normally, re-fetch remote HEAD and three blobs; if blocked record exact blocker and **continue A7**.
+
+## A7 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::_commander_route_from_payload` (blob `bfa1137b3219500c7934eff75bb010a9722e4d12`, line 153) → TARGET `libs/reporting/report_source_route_projection.py::_commander_route_from_payload` (new 404)
+
+**Exact SOURCE computation BODY to MOVE (remove from SOURCE; retain only thin wrapper):**
+
+```python
+def _commander_route_from_payload(payload: Dict[str, Any], *, artifact_path: str = "") -> Dict[str, Any]:
+    route_obs = payload.get("route_observability") if isinstance(payload.get("route_observability"), dict) else {}
+    commander_decision = payload.get("commander_decision") if isinstance(payload.get("commander_decision"), dict) else {}
+    route_selected = str(
+        payload.get("route_selected")
+        or payload.get("selected_route")
+        or route_obs.get("route_selected")
+        or commander_decision.get("route_selected")
+        or ""
+    ).strip()
     return {
-        "official_report_dir": str(official_dir),
-        "requested_report_dir": str(requested_dir),
-        "path_status": "official" if is_official else "custom_nonofficial",
-        "deprecated_note": ""
-        if is_official
-        else f"Official trade_explain path is `{official_dir}`; custom output path is supported but non-canonical.",
+        "route_selected": route_selected,
+        "strategy_generation_mode": str(
+            payload.get("strategy_generation_mode")
+            or route_obs.get("strategy_generation_mode")
+            or commander_decision.get("strategy_generation_mode")
+            or ""
+        ).strip(),
+        "strategist_call_decision": str(
+            payload.get("strategist_call_decision")
+            or route_obs.get("strategist_call_decision")
+            or commander_decision.get("strategist_call_decision")
+            or ""
+        ).strip(),
+        "strategist_fallback_used": bool(
+            payload.get("strategist_fallback_used")
+            if payload.get("strategist_fallback_used") is not None
+            else route_obs.get("fallback_used")
+            if route_obs.get("fallback_used") is not None
+            else commander_decision.get("strategist_fallback_used")
+        ),
+        "route_source": "canonical_commander" if artifact_path else "",
+        "artifact_path": artifact_path,
     }
 ```
 
-Wrapper: preserve exact signature, old caller and monkeypatch. SOURCE thin delegates to new Owner; module globals resolved through facade at call time. Preserve any global helper/constant via facade and existing exception semantics. Multiple items sharing a TARGET must append functions, not overwrite.
+**Wrapper/caller/monkeypatch:** preserve original signature and all imports/callers; SOURCE delegates to `report_source_route_projection._commander_route_from_payload(..., facade=sys.modules[__name__])` using original positional/keyword semantics. pure payload mapping, exact fallback precedence/route_source; preserve input dict immutability. Target contains calculation once, no import of SOURCE.
 
-New targeted test tests/test_p15_rf035_02h_a6_build_trade_explain_output_path_metadata_owner.py: patch facade._canonical_report_root and facade.official_trade_explain_report_dir; official -> status official and note empty; custom -> custom_nonofficial and exact note. Compare original baseline, wrapper and Owner exact values/errors and patch behavior using fake/temp only. Run python -m py_compile libs/reporting/trade_explain.py libs/reporting/trade_explain_path_projection.py; python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_02h_a6_build_trade_explain_output_path_metadata_owner.py normal exit0 (or exact stdlib smoke). Commit code/test, normal push A, re-fetch A HEAD and SOURCE/TARGET/TEST blobs. If blocked record exact SHA/error and continue A7.
+**New normal targeted test:** `tests/test_p15_rf035_03h_a7_commander_route_from_payload_owner.py`. Golden input/expected: payload {'route_selected':'direct','strategy_generation_mode':'shadow','fallback_used':True} via route_observability, artifact_path='fake.json' → route_source canonical_commander and fallback True; empty→all blank/False. Assert original/Owner/wrapper output and exception parity, facade monkeypatch at invocation, no real effects. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_route_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_03h_a7_commander_route_from_payload_owner.py` exit0 (or exact stdlib smoke). Commit only code/new test, push A normally, re-fetch remote HEAD and three blobs; if blocked record exact blocker and **continue A8**.
 
-## A7 RF-035 SOURCE libs/reporting/trade_explain.py::_iter_jsonl blob 86418b535aa76bb6a8dc88f1beb9a0809a7bc0f3 -> TARGET libs/reporting/trade_explain_read_projection.py::_iter_jsonl (new target 404)
+## A8 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::_event_route_rows` (blob `bfa1137b3219500c7934eff75bb010a9722e4d12`, line 189) → TARGET `libs/reporting/report_source_route_projection.py::_event_route_rows` (new 404)
 
-Exact BODY to MOVE, not duplicate:
+**Exact SOURCE computation BODY to MOVE (remove from SOURCE; retain only thin wrapper):**
+
+```python
+def _event_route_rows(day_rows: Iterable[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    # OOM RCA follow-up (2026-09-23): folds directly off the iterator in
+    # file/stream order instead of pre-sorting a materialized day_rows list
+    # -- see _build_run_contexts's own comment in operator_visibility.py
+    # for why file order is already chronological order in this system,
+    # and why per-run same-stage-repeat re-ordering isn't a real concern.
+    by_run: Dict[str, Dict[str, Any]] = {}
+    for row in day_rows:
+        run_id = str(row.get("run_id") or "").strip()
+        if not run_id:
+            continue
+        stage = str(row.get("stage") or "").strip()
+        event = str(row.get("event") or "").strip()
+        route_event = stage == "commander_router" and event in {"route_selected", "end", "route"}
+        policy_event = stage == "strategist" and event == "policy_resolution"
+        if not (route_event or policy_event):
+            continue
+        payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+        current = by_run.setdefault(
+            run_id,
+            {
+                "route_selected": "",
+                "strategy_generation_mode": "",
+                "strategist_call_decision": "",
+                "strategist_fallback_used": False,
+                "route_source": "event_fallback",
+                "artifact_path": "",
+            },
+        )
+        if route_event:
+            merged = _commander_route_from_payload(payload)
+            for key in ("route_selected", "strategy_generation_mode", "strategist_call_decision"):
+                if merged.get(key):
+                    current[key] = merged[key]
+            if merged.get("strategist_fallback_used"):
+                current["strategist_fallback_used"] = True
+        if policy_event:
+            mode = str(payload.get("strategy_generation_mode") or "").strip()
+            if mode:
+                current["strategy_generation_mode"] = mode
+            if bool(payload.get("fallback_used")):
+                current["strategist_fallback_used"] = True
+    return by_run
+```
+
+**Wrapper/caller/monkeypatch:** preserve original signature and all imports/callers; SOURCE delegates to `report_source_route_projection._event_route_rows(..., facade=sys.modules[__name__])` using original positional/keyword semantics. facade._commander_route_from_payload at call time; iterator order and setdefault semantics unchanged. Target contains calculation once, no import of SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf035_03h_a8_event_route_rows_owner.py`. Golden input/expected: rows: r1 commander_router route_selected direct + r1 strategist policy_resolution fallback_used True + empty run_id; expect one r1, selected direct, fallback True, event_fallback; patch facade._commander_route_from_payload and assert seam. Assert original/Owner/wrapper output and exception parity, facade monkeypatch at invocation, no real effects. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_route_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_03h_a8_event_route_rows_owner.py` exit0 (or exact stdlib smoke). Commit only code/new test, push A normally, re-fetch remote HEAD and three blobs; if blocked record exact blocker and **continue Afinal report**.
+
+## RESERVE_VERIFIED — A 6/6 | design only, NOT part of A1–A8
+
+These six are **not executable in this order**. C03 independently inspected `libs/reporting/symbol_trade_report.py` at A blob `099cdbd04c9fca68115413ce4d4d4b52c4653946`; each is a real unmoved body (not existing R-4 wrapper), RF-035 A Owner, no B overlap, target absent (404) on A/integration, read-only or pure. C03 must recheck remote HEAD and target existence before promoting any reserve in a later C02. Do not count as implemented or tested.
+
+### R1 RF-035 | `libs/reporting/symbol_trade_report.py::_read_json` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` line 79 → `libs/reporting/symbol_trade_read_projection.py::_read_json` (404)
+
+```python
+def _read_json(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        obj = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return obj if isinstance(obj, dict) else {}
+```
+
+Thin original-signature facade wrapper; facade.json.loads; tmp only. Proposed new targeted normal fake/tmp fixture: missing→{}, dict→dict, list→{}, malformed→{}. Capture original vs target vs wrapper, monkeypatch parity, negative path, normal exit0; only when promoted to executable order. If blocked skip to next verified reserve.
+
+### R2 RF-035 | `libs/reporting/symbol_trade_report.py::_iter_jsonl` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` line 89 → `libs/reporting/symbol_trade_read_projection.py::_iter_jsonl` (404)
 
 ```python
 def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
     if not path.exists():
         return []
-    out: List[Dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for raw in f:
-            line = raw.strip()
-            if not line:
-                continue
-            try:
-                obj = json.loads(line)
-            except Exception:
-                continue
-            if isinstance(obj, dict):
-                out.append(obj)
-    return out
+
+    def _gen() -> Iterable[Dict[str, Any]]:
+        with path.open("r", encoding="utf-8") as handle:
+            for raw_line in handle:
+                line = raw_line.strip()
+                if not line:
+                    continue
+                try:
+                    row = json.loads(line)
+                except Exception:
+                    continue
+                if isinstance(row, dict):
+                    yield row
+
+    return _gen()
 ```
 
-Wrapper: preserve exact signature, old caller and monkeypatch. SOURCE thin delegates to new Owner; module globals resolved through facade at call time. Use facade.json.loads at call time, read fake tmp only, preserve exception scope and eager list. Multiple items sharing a TARGET must append functions, not overwrite.
+Thin original-signature facade wrapper; facade.json.loads in generator; no eager open. Proposed new targeted normal fake/tmp fixture: missing→[], fake file dict/list/bad→dict-only lazy sequence. Capture original vs target vs wrapper, monkeypatch parity, negative path, normal exit0; only when promoted to executable order. If blocked skip to next verified reserve.
 
-New targeted test tests/test_p15_rf035_02h_a7_iter_jsonl_owner.py: tmp missing -> []; tmp lines valid dict/list/bad/dict -> two dicts in order; monkeypatch facade.json.loads to raise -> []. Compare original baseline, wrapper and Owner exact values/errors and patch behavior using fake/temp only. Run python -m py_compile libs/reporting/trade_explain.py libs/reporting/trade_explain_read_projection.py; python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_02h_a7_iter_jsonl_owner.py normal exit0 (or exact stdlib smoke). Commit code/test, normal push A, re-fetch A HEAD and SOURCE/TARGET/TEST blobs. If blocked record exact SHA/error and continue A8.
-
-## A8 RF-035 SOURCE libs/reporting/trade_explain.py::_report_inventory blob 86418b535aa76bb6a8dc88f1beb9a0809a7bc0f3 -> TARGET libs/reporting/trade_explain_inventory_projection.py::_report_inventory (new target 404)
-
-Exact BODY to MOVE, not duplicate:
+### R3 RF-035 | `libs/reporting/symbol_trade_report.py::_contains_any` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` line 183 → `libs/reporting/symbol_trade_text_projection.py::_contains_any` (404)
 
 ```python
-def _report_inventory(day: str, reports_root: Path) -> List[str]:
-    operator_root = operator_summary_artifact_root(reports_root)
-    candidates = [
-        operator_root / "daily" / day / "operator_summary.md",
-        reports_root / "decision_story" / f"decision_story_{day}.md",
-        reports_root / "run_cards" / f"run_cards_{day}.md",
-        reports_root / "metrics" / f"metrics_{day}.md",
-        operator_root / "daily" / day / "daily_report.md",
-        operator_root / "daily" / f"daily_{day}.md",
-        reports_root / "live_watch" / "live_watch_latest.md",
-    ]
-    out: List[str] = []
-    for p in candidates:
-        if p.exists():
-            out.append(str(p))
-    return out
+def _contains_any(text: str, needles: List[str]) -> bool:
+    lowered = str(text or "").strip().lower()
+    return any(needle in lowered for needle in needles)
 ```
 
-Wrapper: preserve exact signature, old caller and monkeypatch. SOURCE thin delegates to new Owner; module globals resolved through facade at call time. Use facade.operator_summary_artifact_root at call time, preserve seven candidate path order. Multiple items sharing a TARGET must append functions, not overwrite.
+Thin original-signature facade wrapper; pure str; no facade globals. Proposed new targeted normal fake/tmp fixture: ('AbC',['bc'])→True; ('', ['x'])→False; preserve case of needles as original. Capture original vs target vs wrapper, monkeypatch parity, negative path, normal exit0; only when promoted to executable order. If blocked skip to next verified reserve.
 
-New targeted test tests/test_p15_rf035_02h_a8_report_inventory_owner.py: tmp reports root, monkeypatch facade.operator_summary_artifact_root; create fake operator daily and metrics files -> exactly two paths in original order; missing -> []. Compare original baseline, wrapper and Owner exact values/errors and patch behavior using fake/temp only. Run python -m py_compile libs/reporting/trade_explain.py libs/reporting/trade_explain_inventory_projection.py; python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_02h_a8_report_inventory_owner.py normal exit0 (or exact stdlib smoke). Commit code/test, normal push A, re-fetch A HEAD and SOURCE/TARGET/TEST blobs. If blocked record exact SHA/error and continue final report.
+### R4 RF-035 | `libs/reporting/symbol_trade_report.py::_clean_symbol_code` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` line 196 → `libs/reporting/symbol_trade_text_projection.py::_clean_symbol_code` (404)
 
-## RESERVE_NOT_VERIFIED (A 0/6)
-Previous six reserves consumed as A1-A6. Additional candidate functions report_source_helpers.py::read_json,to_epoch,utc_day,epoch_to_iso,iter_jsonl,_commander_route_from_payload are NOT VERIFIED for RF ownership, new target absence, body/fixtures and must NOT be selected by A. C03 next pass must design/verify six reserves before A exhaustion.
+```python
+def _clean_symbol_code(value: Any) -> str:
+    text = str(value or "").strip()
+    if text.lower() in {"", "unknown", "none", "null", "-"}:
+        return ""
+    return text
+```
 
-Report to #11 ORDER_ID A-20261031-02, canonical/order/A SHA, A1-A8 status, source/target/test blobs, normal exit, push verification, first blocker/next, measured START/END/ELAPSED. C03 document commits are not code G1/G2/G3 or RF DONE.
+Thin original-signature facade wrapper; pure str; no global dependencies. Proposed new targeted normal fake/tmp fixture: ' unknown '→'', ' 005930 '→'005930'. Capture original vs target vs wrapper, monkeypatch parity, negative path, normal exit0; only when promoted to executable order. If blocked skip to next verified reserve.
+
+### R5 RF-035 | `libs/reporting/symbol_trade_report.py::_ratio` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` line 437 → `libs/reporting/symbol_trade_scalar_projection.py::_ratio` (404)
+
+```python
+def _ratio(numerator: float, denominator: float) -> float:
+    if denominator <= 0:
+        return 0.0
+    return numerator / denominator
+```
+
+Thin original-signature facade wrapper; pure arithmetic; no state. Proposed new targeted normal fake/tmp fixture: (4,2)→2.0; (4,0)→0.0; negative denominator→0.0. Capture original vs target vs wrapper, monkeypatch parity, negative path, normal exit0; only when promoted to executable order. If blocked skip to next verified reserve.
+
+### R6 RF-035 | `libs/reporting/symbol_trade_report.py::_summary_input_path_for_report` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` line 219 → `libs/reporting/symbol_trade_path_projection.py::_summary_input_path_for_report` (404)
+
+```python
+def _summary_input_path_for_report(report_path: Path) -> Path:
+    return Path(report_path).with_name("ai_trade_summary_input.json")
+```
+
+Thin original-signature facade wrapper; facade.Path at call time, fake path only. Proposed new targeted normal fake/tmp fixture: Path('/tmp/a.md')→Path('/tmp/ai_trade_summary_input.json'); no mkdir/write. Capture original vs target vs wrapper, monkeypatch parity, negative path, normal exit0; only when promoted to executable order. If blocked skip to next verified reserve.
+
+## Completion report to Issue #11
+
+`ORDER_ID=A-20261031-03 | CANONICAL_HEAD | ORDER_BLOB_SHA | A_START_REMOTE_SHA | A1..A8 IMPLEMENTED/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED/NOT_RUN | SOURCE_BLOBS_BEFORE_AFTER | TARGET_BLOBS | TEST_NORMAL_EXIT | REMOTE_PUSH_SHA | FIRST_BLOCKER | NEXT`. START_KST/END_KST/ELAPSED_MIN only if measured, no estimates. No docs/RF/STATUS/other actor branches changed. Reserves R1–R6 remain design-only.
