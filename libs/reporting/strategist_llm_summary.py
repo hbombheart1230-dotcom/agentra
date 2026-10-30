@@ -35,6 +35,8 @@ from libs.reporting import strategist_llm_summary_canonical_loader as _canonical
 from libs.reporting import strategist_llm_summary_market_rail as _market_rail_owner
 from libs.reporting import strategist_llm_summary_render_projection as _render_owner
 from libs.reporting import strategist_llm_summary_clock_projection as _clock_owner
+from libs.reporting import strategist_llm_summary_payload_projection as _payload_owner
+from libs.reporting import strategist_llm_summary_writer_projection as _writer_owner
 
 
 def _utc_now_iso() -> str:
@@ -213,92 +215,7 @@ def _rejected_strategy_lines(reasons: Dict[str, Any], *, selected: str) -> List[
 
 
 def build_strategist_llm_summary_payload(response_json_path: Path) -> Dict[str, Any]:
-    source_path = Path(response_json_path)
-    raw = json.loads(source_path.read_text(encoding="utf-8"))
-    sidecar_meta = _read_json(source_path.with_name("meta.json"))
-    payload = _parse_response_body(raw)
-    canonical_path, canonical = _load_canonical_strategist(source_path)
-    theme_strategy = _as_dict(payload.get("theme_strategy"))
-    refresh_trace = _as_dict(payload.get("strategy_refresh_trace"))
-    horizon = _as_dict(payload.get("strategy_horizon_feedback"))
-    strategy_detail = _strategy_detail_from_sources(payload, canonical)
-    stage_decision = _stage_decision_from_payload(payload, raw, sidecar_meta)
-    stage_meta = _stage_meta(payload, raw, sidecar_meta)
-    news_usage = _news_usage_from_canonical(canonical)
-    market_regime_rail = _market_rail_from_canonical(canonical)
-    news_quality = _news_quality_audit(canonical, news_usage)
-    risk_off_exception_policy = _as_dict(canonical.get("risk_off_exception_policy")) or build_risk_off_exception_policy(
-        market_regime_rail=market_regime_rail,
-        news_quality=news_quality,
-    )
-    output_quality = _strategist_output_quality_audit(
-        payload=payload,
-        canonical=canonical,
-        stage_decision=stage_decision,
-        strategy_detail=strategy_detail,
-        market_rail=market_regime_rail,
-        news_quality=news_quality,
-    )
-
-    return {
-        "schema_version": "strategist_llm_summary.v1",
-        "artifact_type": "strategist_llm_summary",
-        "source_response_json": str(source_path),
-        "source_canonical_strategist_json": str(canonical_path) if canonical_path else "",
-        "generated_at": _utc_now_iso(),
-        "llm_meta": {
-            "stage": _first_text("", raw.get("stage"), sidecar_meta.get("stage")),
-            "stage_index": stage_meta.get("stage_index"),
-            "stage_name": _text(stage_meta.get("stage_name"), ""),
-            "call_kind": _text(stage_meta.get("call_kind"), ""),
-            "stage_component": _text(stage_meta.get("stage_component"), ""),
-            "provider": _first_text("", raw.get("provider"), sidecar_meta.get("provider")),
-            "model": _first_text("", raw.get("model"), sidecar_meta.get("model")),
-            "status": _first_text("", raw.get("status"), raw.get("llm_status"), sidecar_meta.get("status"), sidecar_meta.get("llm_status")),
-            "reason": _first_text("", raw.get("reason"), sidecar_meta.get("reason")),
-            "run_id": _first_text("", raw.get("run_id"), sidecar_meta.get("run_id")),
-            "day": _first_text("", raw.get("day"), sidecar_meta.get("day")),
-            "saved_at": _first_text("", raw.get("saved_at"), sidecar_meta.get("saved_at")),
-            "repair_used": bool(raw.get("repair_used") or sidecar_meta.get("repair_used")),
-            "profile_name": _first_text("", raw.get("llm_execution_profile_name"), sidecar_meta.get("llm_execution_profile_name")),
-            "profile_source": _first_text("", raw.get("llm_execution_profile_source"), sidecar_meta.get("llm_execution_profile_source")),
-        },
-        "operator_readout": _operator_readout_clean(payload, stage_decision),
-        "stage_decision": stage_decision,
-        "strategy_frame": {
-            "playbook": _text(payload.get("playbook")),
-            "selected_themes": _as_list(payload.get("selected_themes")),
-            "theme_selection_mode": _text(theme_strategy.get("selection_mode")),
-            "fallback_reason": _text(theme_strategy.get("fallback_reason"), ""),
-            "rationale": _text(payload.get("rationale"), ""),
-        },
-        "strategy_detail": strategy_detail,
-        "policy_changes": {
-            "playbook_action": _directive(payload, "playbook_action"),
-            "entry_policy_action": _directive(payload, "entry_policy_action"),
-            "monitor_focus_action": _directive(payload, "monitor_focus_action"),
-            "selected_symbol_bias_action": _directive(payload, "selected_symbol_bias_action"),
-            "refresh_action": _directive(payload, "refresh_action"),
-        },
-        "monitor_entry_policy": _as_dict(payload.get("monitor_entry_policy")),
-        "memory_usage": _memory_usage_from_canonical(canonical),
-        "news_usage": news_usage,
-        "news_event_intelligence": _as_dict(
-            payload.get("news_event_intelligence") or canonical.get("news_event_intelligence")
-        ),
-        "news_event_intelligence_usage": _as_dict(payload.get("news_event_intelligence_usage")),
-        "market_regime_rail": market_regime_rail,
-        "news_quality_audit": news_quality,
-        "risk_off_exception_policy": risk_off_exception_policy,
-        "risk_off_exception_conditions": _as_list(payload.get("risk_off_exception_conditions")),
-        "strategist_output_quality_audit": output_quality,
-        "strategy_refresh_trace": {
-            "summary": _text(refresh_trace.get("summary"), ""),
-            "bullets": _as_list(refresh_trace.get("bullets")),
-            "stages": _as_list(refresh_trace.get("stages")),
-        },
-        "strategy_horizon_feedback": horizon,
-    }
+    return _payload_owner.build_strategist_llm_summary_payload(response_json_path, facade=sys.modules[__name__])
 
 
 def _bullet_lines(items: List[Any], *, empty: str = "-") -> List[str]:
@@ -587,10 +504,4 @@ def render_strategist_llm_summary_markdown(payload: Dict[str, Any]) -> str:
 
 
 def generate_strategist_llm_summary(response_json_path: Path) -> Tuple[Path, Path, Dict[str, Any]]:
-    source_path = Path(response_json_path)
-    payload = build_strategist_llm_summary_payload(source_path)
-    md_path = source_path.with_name("strategist_summary.md")
-    json_path = source_path.with_name("strategist_summary.json")
-    json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    md_path.write_text(render_strategist_llm_summary_markdown(payload), encoding="utf-8-sig", newline="\n")
-    return md_path, json_path, payload
+    return _writer_owner.generate_strategist_llm_summary(response_json_path, facade=sys.modules[__name__])

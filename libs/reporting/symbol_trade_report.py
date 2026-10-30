@@ -21,6 +21,9 @@ from libs.reporting import symbol_trade_text_projection as _text_owner
 from libs.reporting import symbol_trade_scalar_projection as _scalar_owner
 from libs.reporting import symbol_trade_path_projection as _path_owner
 from libs.reporting import symbol_trade_lifecycle_projection as _lifecycle_owner
+from libs.reporting import symbol_trade_artifact_projection as _artifact_owner
+from libs.reporting import symbol_trade_history_projection as _history_owner
+from libs.reporting import symbol_trade_symbol_projection as _symbol_owner
 from libs.agents.reporter.narrative.symbol_trade_report_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _safe_float_r4_impl,
     _normalize_pct_like_r4_impl,
@@ -175,68 +178,7 @@ def _extract_trade_artifact_snapshot(
     operator_brief_path: Path,
     lifecycle_bundle_path: Path,
 ) -> Dict[str, Any]:
-    report = _read_json(report_path)
-    brief = _read_json(operator_brief_path)
-    bundle = _read_json(lifecycle_bundle_path)
-    report_executive = report.get("executive_summary") if isinstance(report.get("executive_summary"), dict) else {}
-    report_market = report.get("market_context_at_entry") if isinstance(report.get("market_context_at_entry"), dict) else {}
-    report_entry = report.get("entry_decision") if isinstance(report.get("entry_decision"), dict) else {}
-    report_final = report.get("final_operator_conclusion") if isinstance(report.get("final_operator_conclusion"), dict) else {}
-    feedback = (
-        bundle.get("strategist_feedback_input")
-        if isinstance(bundle.get("strategist_feedback_input"), dict)
-        else report.get("strategist_feedback_input")
-        if isinstance(report.get("strategist_feedback_input"), dict)
-        else {}
-    )
-    shared_facts = (
-        bundle.get("shared_facts")
-        if isinstance(bundle.get("shared_facts"), dict)
-        else report.get("shared_facts")
-        if isinstance(report.get("shared_facts"), dict)
-        else {}
-    )
-    trade_outcome = bundle.get("trade_outcome") if isinstance(bundle.get("trade_outcome"), dict) else {}
-    report_shared_facts = report.get("shared_facts") if isinstance(report.get("shared_facts"), dict) else {}
-    artifact_result_pct = _pick_result_pct(
-        trade_outcome.get("return_pct"),
-        shared_facts.get("return_pct"),
-        shared_facts.get("pnl_pct"),
-        report_shared_facts.get("return_pct"),
-        report_shared_facts.get("pnl_pct"),
-    )
-    entry_reason_text = str(report_entry.get("summary") or "").strip()
-    actual_entry_reason_text = _actual_entry_reason_from_artifacts(
-        report_path=Path(report_path),
-        report_entry_summary=entry_reason_text,
-        bundle=bundle,
-        feedback=feedback,
-    )
-    exit_reason_text = str(shared_facts.get("exit_reason") or "").strip()
-    if not exit_reason_text:
-        exit_reason_text = str(report_final.get("summary") or "").strip()
-    entry_pattern_type = str(feedback.get("entry_pattern_type") or "").strip() or _classify_entry_pattern(actual_entry_reason_text or entry_reason_text)
-    exit_pattern_type = str(feedback.get("exit_pattern_type") or "").strip() or _classify_exit_pattern(exit_reason_text)
-    clean_entry_reason = _clean_symbol_reason(actual_entry_reason_text or entry_reason_text, axis="entry")
-    clean_exit_reason = _clean_symbol_reason(exit_reason_text, axis="exit")
-    return {
-        "report_headline": _clean_symbol_free_text(report_executive.get("headline") or report.get("headline"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "report_executive_summary": _clean_symbol_free_text(report_executive.get("summary"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "report_market_summary": str(report_market.get("summary") or "").strip(),
-        "report_entry_summary": clean_entry_reason,
-        "actual_entry_reason": clean_entry_reason,
-        "report_final_conclusion": _clean_symbol_free_text(report_final.get("summary"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "brief_headline": _clean_symbol_free_text(brief.get("headline"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "brief_executive_summary": _clean_symbol_free_text(brief.get("executive_summary"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "brief_risk_summary": _clean_symbol_free_text(brief.get("risk_summary"), entry_reason=clean_entry_reason, exit_reason=clean_exit_reason),
-        "brief_next_checkpoints": _list_text(brief.get("next_checkpoints"), limit=3),
-        "entry_pattern_type": _clean_symbol_pattern(entry_pattern_type, axis="entry", fallback_reason=clean_entry_reason),
-        "exit_pattern_type": _clean_symbol_pattern(exit_pattern_type, axis="exit", fallback_reason=clean_exit_reason),
-        "thesis_invalidation_code": _clean_symbol_code(feedback.get("thesis_invalidation_code")),
-        "improvement_tags": _list_text(feedback.get("improvement_tags"), limit=6),
-        "review_flags": _list_text(feedback.get("review_flags"), limit=6),
-        "artifact_result_pct": artifact_result_pct,
-    }
+    return _artifact_owner._extract_trade_artifact_snapshot(report_path=report_path, operator_brief_path=operator_brief_path, lifecycle_bundle_path=lifecycle_bundle_path, facade=_r3_sys.modules[__name__])
 
 
 def _hold_seconds_from_lifecycle(obj: Dict[str, Any]) -> Optional[float]:
@@ -244,111 +186,7 @@ def _hold_seconds_from_lifecycle(obj: Dict[str, Any]) -> Optional[float]:
 
 
 def _build_history_index(reports_root: Path, symbol: str) -> List[Dict[str, Any]]:
-    history: List[Dict[str, Any]] = []
-    normalized_symbol = str(symbol or "").strip().upper()
-    for path, obj in _iter_trade_lifecycles(reports_root):
-        if str(obj.get("symbol") or "").strip().upper() != normalized_symbol:
-            continue
-        summary = obj.get("summary") if isinstance(obj.get("summary"), dict) else {}
-        entry = obj.get("entry") if isinstance(obj.get("entry"), dict) else {}
-        exit_row = obj.get("exit") if isinstance(obj.get("exit"), dict) else {}
-        artifacts = obj.get("artifacts") if isinstance(obj.get("artifacts"), dict) else {}
-        trade_id = str(obj.get("trade_id") or "")
-        trade_day = str(obj.get("day") or "")
-        trade_root = (
-            path.parent
-            if path.name == "lifecycle_bundle.json"
-            else path.parent.parent
-        )
-        expected_report_path = trade_root / "reports" / "ai_trade_report.json"
-        expected_operator_brief_path = trade_root / "reports" / "operator_brief.json"
-        lifecycle_bundle_path = trade_root / "lifecycle_bundle.json"
-        artifact_snapshot = _extract_trade_artifact_snapshot(
-            report_path=Path(str(artifacts.get("ai_trade_report_json") or expected_report_path)),
-            operator_brief_path=Path(str(artifacts.get("operator_brief_json") or expected_operator_brief_path)),
-            lifecycle_bundle_path=Path(str(artifacts.get("lifecycle_bundle_json") or lifecycle_bundle_path)),
-        )
-        trade_status = str(obj.get("status") or "").strip()
-        if exit_row:
-            last_action = "SELL"
-        elif trade_status.lower() == "open":
-            last_action = "HOLD"
-        elif entry:
-            last_action = "BUY"
-        else:
-            last_action = ""
-        run_id = (
-            str(entry.get("run_id") or "").strip()
-            or str(exit_row.get("run_id") or "").strip()
-            or str(obj.get("entry_strategist_run_id") or "").strip()
-        )
-        result_pct = _result_pct_from_lifecycle(obj)
-        if result_pct is None:
-            result_pct = _safe_float(artifact_snapshot.get("artifact_result_pct"))
-        raw_entry_reason = str(summary.get("entry_reason_human") or "")
-        artifact_entry_reason = str(artifact_snapshot.get("actual_entry_reason") or "")
-        entry_reason_raw = (
-            artifact_entry_reason
-            if _should_prefer_artifact_entry_reason(raw_entry_reason, artifact_entry_reason)
-            else raw_entry_reason
-        )
-        entry_reason = _clean_symbol_reason(entry_reason_raw, axis="entry")
-        exit_reason = _clean_symbol_reason(summary.get("exit_reason_human"), axis="exit")
-        entry_pattern_type = _clean_symbol_pattern(
-            artifact_snapshot.get("entry_pattern_type"),
-            axis="entry",
-            fallback_reason=entry_reason,
-        )
-        exit_pattern_type = _clean_symbol_pattern(
-            artifact_snapshot.get("exit_pattern_type"),
-            axis="exit",
-            fallback_reason=exit_reason,
-        )
-        history.append(
-            {
-                "trade_id": trade_id,
-                "date": trade_day,
-                "run_id": run_id,
-                "status": trade_status,
-                "last_status": trade_status,
-                "last_action": last_action,
-                "entry_reason": entry_reason,
-                "exit_reason": exit_reason,
-                "lifecycle_summary": _clean_lifecycle_summary(
-                    trade_id=trade_id,
-                    status=trade_status,
-                    entry_reason=entry_reason,
-                    exit_reason=exit_reason,
-                ),
-                "operator_conclusion": str(summary.get("operator_conclusion_human") or ""),
-                "playbook": str((((entry.get("strategist_context") or {}) if isinstance(entry.get("strategist_context"), dict) else {}).get("playbook")) or ""),
-                "hold_seconds": _hold_seconds_from_lifecycle(obj),
-                "result_pct": result_pct,
-                "trade_origin": str(obj.get("trade_origin") or ""),
-                "lifecycle_completeness": str(obj.get("lifecycle_completeness") or ""),
-                "evidence_recovery_used": bool(obj.get("evidence_recovery_used")),
-                "report_path": str(artifacts.get("ai_trade_report_json") or expected_report_path),
-                "operator_brief_path": str(artifacts.get("operator_brief_json") or expected_operator_brief_path),
-                "lifecycle_bundle_path": str(artifacts.get("lifecycle_bundle_json") or lifecycle_bundle_path),
-                "trade_root_path": str(trade_root),
-                "report_headline": str(artifact_snapshot.get("report_headline") or ""),
-                "report_executive_summary": str(artifact_snapshot.get("report_executive_summary") or ""),
-                "report_market_summary": str(artifact_snapshot.get("report_market_summary") or ""),
-                "report_entry_summary": str(artifact_snapshot.get("report_entry_summary") or entry_reason or ""),
-                "report_final_conclusion": str(artifact_snapshot.get("report_final_conclusion") or ""),
-                "brief_headline": str(artifact_snapshot.get("brief_headline") or ""),
-                "brief_executive_summary": str(artifact_snapshot.get("brief_executive_summary") or ""),
-                "brief_risk_summary": str(artifact_snapshot.get("brief_risk_summary") or ""),
-                "brief_next_checkpoints": list(artifact_snapshot.get("brief_next_checkpoints") or []),
-                "entry_pattern_type": entry_pattern_type,
-                "exit_pattern_type": exit_pattern_type,
-                "thesis_invalidation_code": _clean_symbol_code(artifact_snapshot.get("thesis_invalidation_code")),
-                "improvement_tags": list(artifact_snapshot.get("improvement_tags") or []),
-                "review_flags": list(artifact_snapshot.get("review_flags") or []),
-            }
-        )
-    history.sort(key=lambda row: (str(row.get("date") or ""), str(row.get("trade_id") or "")))
-    return history
+    return _history_owner._build_history_index(reports_root, symbol, facade=_r3_sys.modules[__name__])
 
 
 def _collect_symbol_event_insights(events_path: Path, symbol: str) -> Dict[str, List[str]]:
@@ -398,35 +236,7 @@ def collect_symbols_for_day(
     day: str,
     trade_index: Optional[List[Dict[str, Any]]] = None,
 ) -> List[str]:
-    target_day = str(day or "").strip()
-    symbols: List[str] = []
-    seen: set[str] = set()
-
-    index_rows = trade_index if trade_index is not None else build_daily_trade_index(reports_root, target_day)
-    for row in index_rows:
-        symbol = str(row.get("symbol") or "").strip().upper()
-        if symbol and symbol not in seen:
-            seen.add(symbol)
-            symbols.append(symbol)
-
-    for row in iter_jsonl_events(events_path, day=target_day):
-        ts_day = datetime.fromtimestamp(_to_epoch(row.get("ts") or (row.get("payload") or {}).get("ts")), tz=timezone.utc).strftime("%Y-%m-%d") if _to_epoch(row.get("ts") or (row.get("payload") or {}).get("ts")) > 0 else ""
-        if ts_day != target_day:
-            continue
-        payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-        detail = payload.get("payload") if isinstance(payload.get("payload"), dict) else {}
-        order = payload.get("order") if isinstance(payload.get("order"), dict) else {}
-        for candidate in (
-            detail.get("symbol"),
-            payload.get("symbol"),
-            order.get("symbol"),
-            order.get("stk_cd"),
-        ):
-            symbol = str(candidate or "").strip().upper()
-            if symbol and symbol not in seen:
-                seen.add(symbol)
-                symbols.append(symbol)
-    return symbols
+    return _symbol_owner.collect_symbols_for_day(events_path, reports_root, day, trade_index, facade=_r3_sys.modules[__name__])
 
 
 def _render_symbol_trade_markdown(payload: Dict[str, Any]) -> str:
