@@ -1,263 +1,16 @@
-# 2026-10-31 02h C03 REMOTE DELTA / EXECUTION PRIORITY
+# C01 — Agentra FAST-3 Codex B | ORDER B-20261031-04 | 7 remaining verified RF-063 BODY MOVEs + B0 repair
 
-B1 RF-063 `_read_json` is now remote moved (SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4`, Owner blob `c573e644ab9f81377ecba906ad283170807c6ee7`). Do not reissue/retest B1. **B0 RF-065 missing `phase5_markdown` import is still REMOTE_BROKEN** (SOURCE `f7ce771eca2286bd6d647641a001f06f0932193c`); execute minimal fix and new normal fixture exactly as below. **B2–B9 remain 8 independent safe actual BODY MOVEs**; B2–B6 current SOURCE blob updated to `e4f1d57cac27bbde6e758c8751f178a8d6b790a4`; B7–B9 SOURCE blob unchanged `c45516931dcb365c8283c596345233458c10a41f`. Do ALL B0 and B2–B9, continuing after any isolated blocker; no new BODY MOVE supply needed while 8 remain. B1 code remote exists but G2 targeted normal not evidenced; do not call it RF DONE. This top note supersedes obsolete historical B1–B9 status lines below; all executable details for remaining items are inline in this C01. No D00/RF/queue exploration.
+**Remote preflight:** canonical integration HEAD `babe536251f175d41f7eab85fe86d4e47b50b8a6`; B remote HEAD `97c1c22cb70fbb022dce4391362f589e00d171ac`. C03 verified compare B `e28d1a9d→97c1c22c` (two source/Owner commits). **B1 _read_json and B2 _resolve_trade_context are REMOTE_CODE_MOVED; do not reexecute or retest identical SHA.** B1 target `trade_artifact_validation_read_projection.py` blob `c573e644ab9f81377ecba906ad283170807c6ee7`; B2 target `trade_artifact_context_projection.py` blob `433de050fa01885bf7315380a6efa5070d741ccf`. Normal targeted G2 for B1/B2 NOT_VERIFIED (code presence is not RF DONE). B0 RF-065 has a **remote broken wrapper** from prior move; the `phase5_markdown` import is still absent, SOURCE blob `f7ce771eca2286bd6d647641a001f06f0932193c`, TARGET blob `cc37e3ddf7ee1ed5b6eee7e8d28f6bff3d6ca7cb`. **B0 is a defect fix, not a new MOVE.** B3–B6 source blob `00258649f2635e8baf23f3e56442e37b6f2c2b1e`, B7–B9 source blob `c45516931dcb365c8283c596345233458c10a41f`. Four new target paths 404 on B/integration. B3–B9 are **7 independently safe real BODY MOVEs**; threshold ≥6 so do not cancel this active order. No #12 comment newer than 6524800387, but B HEAD has new remote commits: remote source is authoritative.
 
-# Agentra P1.5 FAST-3 — C01 B-20261030-21 B0 carryover + NEW 9 verified BODY MOVEs
+**Single-file execution:** Pin CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, B_REMOTE_SHA, each SOURCE blob at start. Execute **B0 and ALL B3–B9**, continuing after isolated blocker. Each B3–B9 task below includes exact SOURCE BODY, TARGET, wrapper, monkeypatch seam, normal fake/tmp fixture and push. SOURCE original signature/annotations/exceptions remain thin delegates; move calculation only once to TARGET; TARGET must not import SOURCE. For B3–B9 use `facade=sys.modules[__name__]` for call-time helper/monkeypatch parity, including command and parser global seams. For B0 add only import + new regression test; never re-move old Markdown BODY. Run `python -m py_compile` and each scoped normal targeted test exit0 (pytest or exact stdlib smoke), compare original/Owner/wrapper, negative and fake patch. Commit only code/tests on `work/p15-b-operator-structure-20261022`, normal push or approved exact reviewed tree/lease update, re-fetch remote HEAD + SOURCE/TARGET/TEST blobs; no force push. HTTPS credential failure is PUSH_BLOCKED, not G2 failure; continue other safe items. No D00/RF/queue/C03 reading or self-selection. No docs/RF/STATUS/other branch edits, no live account/orders/Broker/Guard/Step5C/UEF/RunLab/production state, network, frozen oracle or operational apply. No mandatory -O/full peer/hosted CI. C04/C05 own G3/DONE. A RF-035 paths disjoint.
 
-## 2026-10-31 00h C03 verified correction — B0 RF-065 REMOTE_BROKEN; B1–B9 still NEW_READY
-
-Canonical input `df3967a2231a08c7adacaa219b3923a724f3d6ee`; B owner HEAD `e28d1a9d04ecd497dbce1a85abf9d2cb88dd186c`; #12 `6524800387` reported B0 pushed with `py_compile` only. C04/C05 #36 `6525447463/6525532064` independently identified a **real runtime NameError**: B SOURCE `scripts/research/run_phase5_validation_bundle.py` current blob `f7ce771eca2286bd6d647641a001f06f0932193c` has `_render_bundle_markdown` thin wrapper calling `phase5_markdown._render_bundle_markdown(...)`, but `phase5_markdown` is not imported/bound. TARGET `scripts/research/phase5_validation_markdown.py` **already exists** blob `cc37e3ddf7ee1ed5b6eee7e8d28f6bff3d6ca7cb`. Therefore **B0 is REMOTE_CODE_PRESENT_BUT_BROKEN, NOT REMOTE_DONE and NOT a new BODY MOVE**; do NOT copy/move its body again, do NOT repeat old PASS, and do NOT treat `py_compile` as G2.
+## B0 — RF-065 REMOTE_BROKEN import fix (not new BODY MOVE)
 
 **B0 mandatory minimal fix FIRST:** In SOURCE imports immediately after `from scripts.research import phase5_validation_read_projection as phase5_read`, add **exactly** `from scripts.research import phase5_validation_markdown as phase5_markdown` (module alias; preserve existing facade wrapper). Do not edit TARGET's large markdown BODY unless exact fake parity demonstrates a separate defect. Add NEW `tests/test_p15_rf065_00h_phase5_markdown_import_owner.py` with fake `payload={'day':'2026-10-30','summary':{},'artifacts':{}}`, `repo_root=tmp_path`; assert `bundle._render_bundle_markdown(payload, repo_root=tmp_path)` returns a string with `# Phase 5 Validation Bundle (2026-10-30)` and equals `phase5_markdown._render_bundle_markdown(payload, repo_root=tmp_path, facade=bundle)` byte-for-byte. Negative fake `summary={'symbol_report_count':'invalid'}` must raise the same `ValueError` through wrapper and Owner. Use isolated fake/tmp only, never call `generate_phase5_validation_bundle` or main. `python -m py_compile scripts/research/run_phase5_validation_bundle.py scripts/research/phase5_validation_markdown.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_00h_phase5_markdown_import_owner.py` **normal exit0** (or equivalent reproducible stdlib normal smoke if pytest absent). Commit only SOURCE+new test, push B normal/approved exact reviewed tree, re-fetch B HEAD and SOURCE/TARGET/TEST blobs; report exact normal exit and new remote SHA to #12. If push blocked, preserve LOCAL_ONLY and continue safe B1–B9. This is **defect repair**, not a new structural MOVE or RF DONE.
 
-**B1–B9 still 9 independent RF-063 SOURCE BODY MOVE tasks**, with current source blobs `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` and `c45516931dcb365c8283c596345233458c10a41f` on B; inspected target modules remain absent. The old audit `6aa9a0a0` is LOCAL_ONLY and unavailable in fresh workspace; do not recreate its exact tree or claim delivered. Follow B1–B9 detailed item bodies/targeted fake tests below, including each separate BLOCKED continuation. No D00/RF/queue exploration, no code writes by C03, no operational effects. C04/C05 gate after B's actual normal test and push.
+## B3–B9 — RF-063 actual remaining SOURCE BODY MOVEs
 
----
-
-**Original 21h issuance historical preflight (superseded by 00h correction above).** Prior C01 blob `18938c819b18d6eb9161ee92da3fc84b0cd549a5` had B0 RF-065 PENDING at that time and B1–B9 RF-063. B1–B9 have only LOCAL commit `6aa9a0a0` (#12 `6521349981`) with py_compile exit0/isolated normal smoke exit0, **terminal HTTPS PUSH_BLOCKED**; they are NOT remote G1, do not claim REMOTE_DONE, and DO NOT recreate their local tree or overwrite them. Remote B ref still `8fe73f486c4b8ac43f75558b19c403bbe29f6b50` and remote old audit source blob `1df9947a268f31d73639542db4a09eaac6e172b6` contains bodies, target 404. B0 is now remote code-present but runtime-broken; 00h import/test repair above is authoritative. The historical pre-move BODY below is reference-only. New B1–B9 here are DIFFERENT verified RF-063 source functions from `scripts/diagnostics/check_trade_report_runtime_regression.py` blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` and `scripts/diagnostics/query_strategist_llm_events.py` blob `c45516931dcb365c8283c596345233458c10a41f`; 6 new target modules are 404 on B/integration preflight. They do not touch the old local-only audit source/targets. RF-063/B owner exclusive, A read-only.
-
-**Required delivery recovery before/alongside tasks:** preserve existing local `6aa9a0a0` commit and its exact reviewed tree; attempt approved GitHub blob→tree→commit→lease-protected B ref update ONLY if all original changed blobs/tree and parent are verifiably identical. Re-fetch remote ref/tree after update and report exact SHA equivalence. If that reviewed local tree is unavailable or cannot be proven, mark `PUSH_BLOCKED`, record remote `8fe73f486c4b8ac43f75558b19c403bbe29f6b50`, local `6aa9a0a0`, exact terminal error `fatal: could not read Username for 'https://github.com': No such device or address`, and continue B0 and B1–B9 in a separate safe checkout/branch state without overwriting the preserved local commit. Never claim local-only delivery, never force push or write another branch. No probe commits.
-
-**Execution contract:** Actor Codex B, only `work/p15-b-operator-structure-20261022`, canonical `integration/p1.5`. Before each item `git fetch origin`, record canonical HEAD, C01 blob, remote B HEAD, local HEAD. Use prepared `.venv/bin/python`/pytest when present. Preserve exact SOURCE calculation BODY by MOVING to single TARGET; old SOURCE exact-signature thin wrapper with call-time facade monkeypatch, no reverse import/duplicate body. Each item normal targeted exit0 (or stdlib normal smoke when pytest missing); -O/full peer/hosted CI NOT required by FAST-3. Commit code/test only and verify remote ref/blob/tree after every push. If push credential failure, preserve local commit and continue next disjoint safe task. Do not touch D00/C01/C02/RF/queue/STATUS/HANDOFF/C04/C05, A branch, main, live data/logs/orders/Broker/Guard/Step5C/UEF/RunLab; command builders are **argv construction only, NEVER EXECUTE**. All tasks mandatory, no self-selection. Report each B0–B9, remote/local status, exact normal exit, FIRST_BLOCKER/NEXT in Issue #12. C04 integrates; C05 alone judges G1/G2/G3 and RF DONE.
-
-### B0 — **REMOTE_BROKEN DEFECT REPAIR, NOT NEW MOVE** RF-065, historical original BODY below for reference only
-
-Historical pre-move B SOURCE blob `aaa29ba0fb9739e3f10eab1a99e97f24360c4fdd` at old HEAD `8fe73f48` is obsolete. CURRENT B SOURCE blob `f7ce771eca2286bd6d647641a001f06f0932193c` and TARGET blob `cc37e3ddf7ee1ed5b6eee7e8d28f6bff3d6ca7cb` contain a thin wrapper and moved body already; current wrapper raises NameError until module import is added. Execute 00h minimal fix+new normal test ABOVE, then B1–B9; the following old BODY is **reference-only and MUST NOT be moved again**:
-```python
-def _render_bundle_markdown(payload: Dict[str, Any], *, repo_root: Path) -> str:
-    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
-    artifacts = payload.get("artifacts") if isinstance(payload.get("artifacts"), dict) else {}
-    trade_health = artifacts.get("trade_health") if isinstance(artifacts.get("trade_health"), dict) else {}
-    symbol_reports = artifacts.get("symbol_reports") if isinstance(artifacts.get("symbol_reports"), list) else []
-    latest_runs = artifacts.get("latest_canonical_runs") if isinstance(artifacts.get("latest_canonical_runs"), list) else []
-    policy_surface = (
-        artifacts.get("policy_surface_quality")
-        if isinstance(artifacts.get("policy_surface_quality"), dict)
-        else {}
-    )
-    policy_surface_summary = (
-        policy_surface.get("summary")
-        if isinstance(policy_surface.get("summary"), dict)
-        else {}
-    )
-    policy_surface_exec = (
-        policy_surface.get("executive_summary")
-        if isinstance(policy_surface.get("executive_summary"), dict)
-        else {}
-    )
-    policy_surface_source = (
-        policy_surface.get("source")
-        if isinstance(policy_surface.get("source"), dict)
-        else {}
-    )
-    chart_structure_guard = (
-        artifacts.get("chart_structure_decision_hint")
-        if isinstance(artifacts.get("chart_structure_decision_hint"), dict)
-        else {}
-    )
-    chart_structure_guard_summary = (
-        chart_structure_guard.get("summary")
-        if isinstance(chart_structure_guard.get("summary"), dict)
-        else {}
-    )
-    chart_structure_guard_exec = (
-        chart_structure_guard.get("executive_summary")
-        if isinstance(chart_structure_guard.get("executive_summary"), dict)
-        else {}
-    )
-    chart_structure_guard_source = (
-        chart_structure_guard.get("source")
-        if isinstance(chart_structure_guard.get("source"), dict)
-        else {}
-    )
-    chart_structure_guard_examples = (
-        chart_structure_guard_summary.get("applied_examples")
-        if isinstance(chart_structure_guard_summary.get("applied_examples"), list)
-        else []
-    )
-
-    lines: List[str] = [
-        f"# Phase 5 Validation Bundle ({payload.get('day')})",
-        "",
-        "## Summary",
-        "",
-        f"- daily_report_generated: **{bool(summary.get('daily_report_generated'))}**",
-        f"- operator_daily_summary_generated: **{bool(summary.get('operator_daily_summary_generated'))}**",
-        f"- trade_health_ok: **{bool(summary.get('trade_health_ok'))}**",
-        f"- symbol_report_count: **{int(summary.get('symbol_report_count') or 0)}**",
-        f"- latest_canonical_run_id: `{summary.get('latest_canonical_run_id') or ''}`",
-        "",
-        "## Daily Surfaces",
-        "",
-    ]
-
-    daily = artifacts.get("daily_report") if isinstance(artifacts.get("daily_report"), dict) else {}
-    operator = artifacts.get("operator_daily_summary") if isinstance(artifacts.get("operator_daily_summary"), dict) else {}
-    lines += [
-        f"- daily_report_json: `{daily.get('json_path') or ''}`",
-        f"- daily_report_md: `{daily.get('md_path') or ''}`",
-        f"- operator_daily_summary_json: `{operator.get('json_path') or ''}`",
-        f"- operator_daily_summary_md: `{operator.get('md_path') or ''}`",
-        "",
-        "## Policy Surface Executive Summary",
-        "",
-        f"- status: **{str(policy_surface_exec.get('status') or 'unknown').upper()}**",
-        f"- headline: {str(policy_surface_exec.get('headline') or 'Policy surface unknown')}",
-        "",
-        "## Policy Surface Quality",
-        "",
-        f"- schema_available_rate: **{float(policy_surface_summary.get('schema_available_rate') or 0.0):.4f}**",
-        f"- normalized_policy_rate: **{float(policy_surface_summary.get('normalized_policy_rate') or 0.0):.4f}**",
-        f"- invalid_spec_rate: **{float(policy_surface_summary.get('invalid_spec_rate') or 0.0):.4f}**",
-        f"- total_invalid_specs: **{int(policy_surface_summary.get('total_invalid_specs') or 0)}**",
-        f"- run_count: **{int(policy_surface_source.get('run_count') or 0)}**",
-        f"- source: `{policy_surface_source.get('source') or ''}`",
-        "",
-        "## Chart Structure Decision Hint Executive Summary",
-        "",
-        f"- status: **{str(chart_structure_guard_exec.get('status') or 'unknown').upper()}**",
-        f"- headline: {str(chart_structure_guard_exec.get('headline') or 'Chart structure guard unknown')}",
-        "",
-        "## Chart Structure Decision Hint",
-        "",
-        f"- available_run_count: **{int(chart_structure_guard_summary.get('available_run_count') or 0)}**",
-        f"- applied_count: **{int(chart_structure_guard_summary.get('applied_count') or 0)}**",
-        f"- applied_rate: **{float(chart_structure_guard_summary.get('applied_rate') or 0.0):.4f}**",
-        f"- top_blocking_features: `{json.dumps(chart_structure_guard_summary.get('top_blocking_features') or [], ensure_ascii=False)}`",
-        f"- source: `{chart_structure_guard_source.get('source') or ''}`",
-        "",
-        "## Trade / Report Health",
-        "",
-        f"- trade_dir_count: **{int(trade_health.get('trade_dir_count') or 0)}**",
-        f"- severity_counts: `{json.dumps(trade_health.get('severity_counts') or {}, ensure_ascii=False)}`",
-        f"- issue_counts: `{json.dumps(trade_health.get('issue_counts') or {}, ensure_ascii=False)}`",
-        "",
-        "## Symbol Reports",
-        "",
-    ]
-    if chart_structure_guard_examples:
-        lines += ["## Chart Structure Decision Hint Applied Examples", ""]
-        for example in chart_structure_guard_examples[:3]:
-            if not isinstance(example, dict):
-                continue
-            lines.append(
-                f"- `{example.get('run_id') or '-'}` "
-                f"[{str(example.get('entry_style') or '-').upper()}] "
-                f"{example.get('reason_transition') or '-'} "
-                f"blockers=`{json.dumps(example.get('blocking_features') or [], ensure_ascii=False)}`"
-            )
-        lines.append("")
-    if symbol_reports:
-        for row in symbol_reports:
-            lines.append(
-                f"- `{row.get('symbol')}`: json=`{row.get('json_path')}` md=`{row.get('md_path')}`"
-            )
-    else:
-        lines.append("- (none)")
-
-    decision_story = artifacts.get("decision_story") if isinstance(artifacts.get("decision_story"), dict) else {}
-    run_cards = artifacts.get("run_cards") if isinstance(artifacts.get("run_cards"), dict) else {}
-    trade_explain = artifacts.get("trade_explain") if isinstance(artifacts.get("trade_explain"), dict) else {}
-    pipeline_trace = artifacts.get("pipeline_trace") if isinstance(artifacts.get("pipeline_trace"), dict) else {}
-    lines += [
-        "",
-        "## Inspection Reports",
-        "",
-        f"- decision_story_md: `{decision_story.get('md_path') or ''}`",
-        f"- run_cards_md: `{run_cards.get('md_path') or ''}`",
-        f"- trade_explain_json: `{trade_explain.get('json_path') or ''}`",
-        f"- trade_explain_md: `{trade_explain.get('md_path') or ''}`",
-        f"- pipeline_trace_json: `{pipeline_trace.get('json_path') or ''}`",
-        f"- pipeline_trace_md: `{pipeline_trace.get('md_path') or ''}`",
-        "",
-        "## Latest Canonical Runs",
-        "",
-    ]
-    if latest_runs:
-        for row in latest_runs:
-            lines.append(
-                f"- `{row.get('run_id')}`: commander=`{row.get('commander_json_path')}` monitor=`{row.get('monitor_json_path')}`"
-            )
-    else:
-        lines.append("- (none)")
-
-    issues = trade_health.get("issues") if isinstance(trade_health.get("issues"), list) else []
-    lines += ["", "## Top Issues", ""]
-    if issues:
-        for issue in issues[:10]:
-            lines.append(
-                f"- [{issue.get('severity')}] `{issue.get('trade_id')}` `{issue.get('component')}` `{issue.get('code')}` - {issue.get('message')}"
-            )
-            lines.append(f"  path: `{issue.get('path')}`")
-    else:
-        lines.append("- (none)")
-
-    lines += [
-        "",
-        "## Notes",
-        "",
-        "- This bundle is deterministic/read-only. It does not change runtime behavior.",
-        "- It is intended to make report quality, schema linkage, and artifact paths easy to inspect by eye.",
-        f"- repo_root: `{_safe_rel(repo_root, repo_root) or '.'}`",
-        "",
-    ]
-    return "\n".join(lines)
-```
-
-Keep SOURCE original `def _render_bundle_markdown(payload: Dict[str, Any], *, repo_root: Path) -> str` as thin delegate `return phase5_markdown._render_bundle_markdown(payload, repo_root=repo_root, facade=sys.modules[__name__])`; import `from scripts.research import phase5_validation_markdown as phase5_markdown`; TARGET uses `facade.json.dumps` and `facade._safe_rel` at call time, no reverse import. Test `tests/test_p15_rf065_phase5_markdown_owner.py` fake payload {}→heading '# Phase 5 Validation Bundle (None)' and symbol count 0, {'day':'2026-10-30','summary':{'symbol_report_count':2}}→heading and count 2, full fake nested payload→byte-identical before/after, bad numeric summary count→same ValueError. Run py_compile, normal scoped pytest or stdlib smoke if unavailable, commit/push only code+test, exact remote ref/blob. On blocked record preserved local SHA/error, proceed B1 without overwriting B0 local work.
-
-
-### B1 — RF-063 `_read_json` REMOTE_BODY_MOVED; DO NOT REEXECUTE
-
-B branch SOURCE `scripts/diagnostics/check_trade_report_runtime_regression.py` now has exact-signature thin `_read_json` wrapper to `trade_read._read_json(path,facade=sys.modules[__name__])`; current SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4`, new Owner `scripts/diagnostics/trade_artifact_validation_read_projection.py` blob `c573e644ab9f81377ecba906ad283170807c6ee7`. Remote compare from B `e28d1a9d` is +1 commit, only SOURCE and TARGET changed. This is **REMOTE_DONE_CODE / G2_NORMAL_NOT_VERIFIED** (no targeted test file in that diff), not a new MOVE and not an instruction to retest the same SHA. C04/C05 decide acceptance separately. B MUST continue B0 and B2–B9, not redo B1.
-
-### B2 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_resolve_trade_context` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_context_projection.py::_resolve_trade_context`
-
-**Exact SOURCE BODY to MOVE (not duplicate):**
-```python
-def _resolve_trade_context(reports_root: Path, day: str, trade_id: str) -> Dict[str, Any]:
-    trade_paths = trade_artifact_paths(reports_root, day, trade_id)
-    entry_payload = _read_json(trade_paths["entry_json"])
-    exit_payload = _read_json(trade_paths["exit_json"])
-    hold_payload = _read_json(trade_paths["hold_json"])
-    lifecycle_bundle = _read_json(trade_paths["lifecycle_bundle_json"])
-    story_input = _read_json(trade_paths["ai_trade_report_input_json"])
-    report = _read_json(trade_paths["ai_trade_report_json"])
-    provenance = _read_json(trade_paths["trade_provenance_json"])
-    health = _read_json(trade_paths["trade_health_json"])
-    entry_run_id = str(
-        entry_payload.get("run_id")
-        or ((lifecycle_bundle.get("lifecycle") or {}).get("entry") or {}).get("run_id")
-        or ""
-    ).strip()
-    exit_run_id = str(
-        exit_payload.get("run_id")
-        or ((lifecycle_bundle.get("lifecycle") or {}).get("exit") or {}).get("run_id")
-        or lifecycle_bundle.get("run_id")
-        or ""
-    ).strip()
-    target_run_id = exit_run_id or entry_run_id
-    return {
-        "trade_paths": trade_paths,
-        "entry_payload": entry_payload,
-        "exit_payload": exit_payload,
-        "hold_payload": hold_payload,
-        "lifecycle_bundle": lifecycle_bundle,
-        "story_input": story_input,
-        "report": report,
-        "provenance": provenance,
-        "health": health,
-        "entry_run_id": entry_run_id,
-        "exit_run_id": exit_run_id,
-        "target_run_id": target_run_id,
-    }
-```
-
-**Wrapper/monkeypatch:** SOURCE keeps exact signature/annotations/defaults and becomes a thin delegate. TARGET takes keyword-only `facade` only if needed, does NOT import SOURCE, does not copy body into SOURCE. facade.trade_artifact_paths and facade._read_json at call time; preserve ordered keys and run_id fallbacks; never actual broker/production report read. For multi-function targets add without overwriting earlier functions. Preserve caller exception/format/order/identity.
-
-**Normal targeted fixture:** `tests/test_p15_rf063_21h_resolve_trade_context_owner.py`: patch facade.trade_artifact_paths with temp paths and facade._read_json fake; empty payloads→target_run_id ''; exit run_id preferred to entry; compare dict/keys. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_context_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_resolve_trade_context_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
-
-### B3 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_bundle_repair_command` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_command_projection.py::_build_bundle_repair_command`
+### B3 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_bundle_repair_command` SOURCE blob `00258649f2635e8baf23f3e56442e37b6f2c2b1e` → `scripts/diagnostics/trade_artifact_command_projection.py::_build_bundle_repair_command`
 
 **Exact SOURCE BODY to MOVE (not duplicate):**
 ```python
@@ -300,7 +53,7 @@ def _build_bundle_repair_command(
 
 **Normal targeted fixture:** `tests/test_p15_rf063_21h_build_bundle_repair_command_owner.py`: day='2026-10-30', target_run_id='r', role='manual', max_runs=2, fake paths→argv includes '--no-trade-report-ai','--json' in exact order; patch facade.ROOT. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_command_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_build_bundle_repair_command_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
 
-### B4 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_report_regen_command` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_command_projection.py::_build_report_regen_command`
+### B4 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_report_regen_command` SOURCE blob `00258649f2635e8baf23f3e56442e37b6f2c2b1e` → `scripts/diagnostics/trade_artifact_command_projection.py::_build_report_regen_command`
 
 **Exact SOURCE BODY to MOVE (not duplicate):**
 ```python
@@ -339,7 +92,7 @@ def _build_report_regen_command(
 
 **Normal targeted fixture:** `tests/test_p15_rf063_21h_build_report_regen_command_owner.py`: local_debug=False,with_llm=False→no '--with-llm'; local_debug=True→'--local-debug'; timeout=1→'--hard-timeout-sec','1'; no subprocess. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_command_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_build_report_regen_command_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
 
-### B5 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::validate_trade_artifact_chain` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_validation_evidence_projection.py::validate_trade_artifact_chain`
+### B5 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::validate_trade_artifact_chain` SOURCE blob `00258649f2635e8baf23f3e56442e37b6f2c2b1e` → `scripts/diagnostics/trade_artifact_validation_evidence_projection.py::validate_trade_artifact_chain`
 
 **Exact SOURCE BODY to MOVE (not duplicate):**
 ```python
@@ -488,7 +241,7 @@ def validate_trade_artifact_chain(reports_root: Path, day: str, trade_id: str) -
 
 **Normal targeted fixture:** `tests/test_p15_rf063_21h_validate_trade_artifact_chain_owner.py`: fake tmp context with all artifact paths missing→ordered missing_artifact failures; fully fake empty context yields ok=False; spy helper call; compare before/after entire dict. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_validation_evidence_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_validate_trade_artifact_chain_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
 
-### B6 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_parser` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_validation_cli.py::_build_parser`
+### B6 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_parser` SOURCE blob `00258649f2635e8baf23f3e56442e37b6f2c2b1e` → `scripts/diagnostics/trade_artifact_validation_cli.py::_build_parser`
 
 **Exact SOURCE BODY to MOVE (not duplicate):**
 ```python
@@ -588,7 +341,7 @@ def _filtered_events(
 
 ## VERIFIED future reserve — 6/6, not executable by Actor
 
-At B `8fe73f486c4b8ac43f75558b19c403bbe29f6b50`, `scripts/diagnostics/check_reports_trades_health.py` source blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` has six inspected non-wrapper bodies; three proposed target paths 404 on B/integration. Tests are design hypotheses NOT_RUN; revalidate before next C03 issue.
+Reverified at B `97c1c22cb70fbb022dce4391362f589e00d171ac`, `scripts/diagnostics/check_reports_trades_health.py` source blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` has six inspected non-wrapper bodies; three proposed target paths 404 on B/integration. Tests are design hypotheses NOT_RUN; revalidate before next C03 issue.
 
 - R1 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_read_json` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_read_projection.py::_read_json`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: missing tmp→{}; valid dict→dict; malformed→{}; facade.json.loads. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
 - R2 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_iter_trade_dirs` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_read_projection.py::_iter_trade_dirs`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: tmp reports/trades/day nested dirs→sorted; facade._iter_trade_dirs_under_day; no production root. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
@@ -597,6 +350,6 @@ At B `8fe73f486c4b8ac43f75558b19c403bbe29f6b50`, `scripts/diagnostics/check_repo
 - R5 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_ai_trade_report_is_complete` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_read_projection.py::_ai_trade_report_is_complete`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: fake tmp report with required dict sections→True; missing→False; facade._artifact_path/_read_json. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
 - R6 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_build_parser` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_cli.py::_build_parser`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: parse_args([]) defaults; '--day' filter; unknown→SystemExit(2); no main. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
 
-## Final B report
+## Final #12 report
 
-Report real START_KST/END_KST/ELAPSED (no estimate), canonical/order/B remote and local SHAs, old audit local-only recovery, B0 and NEW B1–B9 separately, normal test exits, remote SOURCE/TARGET/TEST blobs and exact ref/tree after push, FIRST_BLOCKER/NEXT. C03 supply is not code G1/G2/G3 or RF DONE.
+`ORDER_ID=B-20261031-04 | CANONICAL_HEAD | ORDER_BLOB_SHA | B_START_REMOTE_SHA | B0,B3..B9 status | SOURCE_BEFORE_AFTER_BLOBS | TARGET_BLOBS | NEW_TEST_NORMAL_EXIT | REMOTE_PUSH_SHA | FIRST_BLOCKER | NEXT`. B1/B2 REMOTE_CODE_MOVED but G2 normal evidence NOT_VERIFIED; do not count them as new MOVE or RF DONE. START/END/ELAPSED only if measured, no estimates. Six reserves design-only, not executable.
