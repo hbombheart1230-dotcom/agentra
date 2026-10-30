@@ -1,45 +1,29 @@
-# C01 — Codex B | 신규 실제 BODY MOVE 6건 (B1~B6, 2026-10-30 08시 C03 발행)
+# C01 — Codex B | 신규 BODY MOVE 8건 B1~B8 · RF-044 Commander shadow advisory
+> 2026-10-30 10:40 KST 지팀장 신규 주문. **이전 C01 6건(B stage4 + adjustment2)은 10:35 C04 통합 완료: 재배정·재시험·성과 중복 0.** 이 파일을 새 단일 실행 주문으로 사용한다.
 
-## 단일 진입·고정·금지
-- **이 C01 한 파일만** 실행 명령으로 읽는다. RF 상세·INDEX·T00·D00·HANDOFF·STATUS·큐 문서 탐색/수정 금지. 자기 `work/p15-b-operator-structure-20261022` 브랜치의 지정 code/test만 정상 commit/push. A reporting, 실계좌/주문, Broker/Guard/Step5C/UEF, 운영 DB/State, 실네트워크, frozen oracle/CI, 타인 브랜치 변경 금지.
-- C03 확인 B HEAD **`4e50fec226809af388268539ff9bc2e1cfda078d`**. `graphs/nodes/strategist_node.py` SOURCE blob **`a6e75945f2d084ebd80166ac8a68bdc1b7655f8f`** (3554 LOC), `libs/runtime/strategist/llm/adjustment_directives.py` blob **`148a531f206bb9cec6fdde90bea1b7a1fea4a361`** (311 LOC). 신규 TARGET 4개는 B 원격에서 모두 404 확인. B HEAD가 달라지면 item별 source 함수 본문/target blob 재확인 후 이미 MOVE면 `ALREADY_MOVED`만 기록.
-- 이전 B5/B6/B7/B8: repair messages B5 `ddf5e58c`, UI report index B6 + Commander advisory B7/B8 `4e50fec2` **원격 완료**. #12 B6~B8은 정상 targeted **3 PASS (B 보고)**. 이 네 개 및 과거 B1~B4 재이동·재시험·신규 실적 계상 금지. B 최신 `agent_outputs.py`와 `data_access_core.py`는 현재 C03 GitHub 텍스트 조회가 인코딩 오류/비텍스트 응답이므로 **이번 신규 SOURCE로 사용하지 않는다**; 이를 소스 손상 확정이나 통합 PASS로 추정하지 않는다. C04는 B 이전 완료 파일을 통합 전 실제 bytes·compile·targeted smoke로 별도 검증.
-- 시작 `CANONICAL_HEAD | ORDER_FILE_BLOB_SHA | OWNER_REMOTE_SHA | ORDER_ID=C01:<ORDER_FILE_BLOB_SHA>:B1,B2,B3,B4,B5,B6` 고정. 한 item 막혀도 다른 독립 안전 item 계속. 작업 중 새 C01 발행은 시작 주문을 소급 실패 처리하지 않는다.
+## 시작·Owner·검증 전제
+- 진입점은 **원격 `integration/p1.5`의 이 C01 한 파일**. RF/INDEX/D00/HANDOFF/STATUS/큐 읽기 금지. 자신의 기존 `work/p15-b-operator-structure-20261022` 브랜치의 아래 SOURCE/TARGET/TEST만 수정·commit/push. A reporting/타인 코드·문서·CI·frozen oracle·운영 DB/State/실계좌/실주문/네트워크/Broker/Guard/Supervisor/Executor/Step5C/UEF 변경 금지.
+- C03 원격 실측: B `libs/contracts/agent_outputs.py` Git blob **`174fa6f671e8834211cf5675415d3ecc1c8d66ee`**, 총 **1271 LOC**. 이 문서의 새 TARGET 2개 B 원격 모두 **404** 확인. 기존 `commander_shadow_advice.py`(이전 완료)와 `commander_shadow_runtime/evidence.py`는 KEEP. **RF-044 단독 B owner**; A 수정 경로 교집합 0. B HEAD가 전진하면 각 원본 함수가 이미 thin wrapper인지 새 target이 존재하는지 먼저 비교. 이미 원격 MOVE됐으면 `ALREADY_MOVED`로 보고하며 재수정·재테스트·신규 성과 계상 금지.
+- 먼저 `CANONICAL_HEAD | ORDER_FILE_BLOB_SHA | OWNER_REMOTE_SHA | ORDER_ID=C01:<ORDER_FILE_BLOB_SHA>:B1..B8` 고정; dirty tree/원격 blob·python/pytest/승인 push 경로 검사. 진행 중 새 주문 발행은 시작 주문을 소급 무효화하지 않는다.
+- **모두 필수 8건.** 한 item PASS·로컬 commit·push 실패·짧은 시간 경과 후 종료 금지. 한 item BLOCKED면 다른 7건 중 독립 안전 과제 계속. 8건이 모두 완료/정당 차단된 후만 종료. 신규 작업 자율 선택 금지; C03이 다음 회차에 보충한다.
 
-## 공통 MOVE/테스트/푸시
-- 각 SOURCE 실제 계산/문자열 본문을 삭제하고 지정 TARGET에 **유일 Owner**로 이동; 기존 SOURCE 원명·원서명 **thin wrapper**만 유지. B1~B4는 `graphs/nodes/strategist_node.py`에서 새 모듈을 import한 뒤 원서명으로 delegate; B5/B6는 `adjustment_directives.py`의 `*_r3_impl` 원서명을 유지해 새 모듈로 delegate. B5/B6 target은 facade를 역import하지 않고 원래 전달받은 `facade` 그대로 전달. monkeypatch/use-time helper, 문자열 bytes, dict/list alias, 예외/정렬/순서 보존. 기존 source와 새 target의 **중복 계산 본문 금지**.
-- B1~B3 같은 `stage_prompt_contracts.py`, B4 별도 `stage_call_kind.py`, B5/B6 각각 별도 target. 모두 **B 단독 소유**. `def` 범위 bounded-hunk patch, 잘린 도구 출력 소스에 삽입 금지. golden fixture 전후 parity·입력 불변·thin wrapper 확인. 각 item 아래 2~4 targeted fixture를 새 test에 추가. 정상 `python -m pytest -q -p no:cacheprovider <6개 새 테스트 경로>` 1회 exit0 또는 pytest 부재 시 stdlib unittest smoke exit0; `python -m py_compile`. full suite/매번 -O/full peer/hosted CI 강제 금지. 본인 정상 push 후 `git ls-remote`·원격 SOURCE/TARGET/TEST blob 재확인; Git 인증 실패는 `PUSH_BLOCKED`로 분리하고 나머지 안전 item 계속.
+## 공통 MOVE 계약
+- SOURCE 각 `def`의 **실제 계산·텍스트 본문**을 신규 TARGET의 유일 Owner로 옮기고, SOURCE에는 **기존 이름·정확 인자/기본값을 유지한 thin wrapper**만 남긴다. `_r3_sys.modules[__name__]`를 `facade=`로 전달하고 TARGET은 `agent_outputs`를 import하지 않는다. `_dict/_clip` 등은 `facade._dict/_clip` **호출 시점**에 조회; dict/list alias·키 삽입 순서·문구·형 변환·예외·branch precedence·monkeypatch 완전 보존. 기존 Commander advisory는 **관측 전용**(실제 실행/승인 결론 변경 금지).
+- B1~B5는 신규 `libs/contracts/agent_output_parts/commander_shadow_advice_extended.py`에 순차 추가. B6~B8은 신규 `libs/contracts/agent_output_parts/commander_shadow_assessments.py`에 순차 추가. 각 SOURCE 함수만 bounded-hunk patch; 잘린 도구 출력이나 인코딩 오염 금지. SOURCE 이전 golden vs wrapper/OWNER 직접호출, 예외·입력불변, helper patch seam 2~4 fixture/item.
+- 각 TEST 신규 8파일 아래. `python -m py_compile` 변경 source/target/test, 정상 `python -m pytest -q -p no:cacheprovider <8개 신규 테스트 경로>` 1회 exit0 또는 pytest 부재 시 재현 가능한 stdlib smoke exit0. `-O`·full suite·full peer·hosted CI 전수는 **필수 아님**. commit/승인 경로 push 후 `git ls-remote` 및 원격 SOURCE/TARGET/TEST blob 재조회. push 실패는 `PUSH_BLOCKED`, 로컬 commit은 G1 아님; 다른 item 계속.
 
-## B1 — Stage role boundary text (19 원본 행)
-- SOURCE `graphs/nodes/strategist_node.py::_stage_specific_role_boundary(call_kind: str) -> str` L609–627, blob `a6e75945` → TARGET **신규** `libs/runtime/strategist/llm/stage_prompt_contracts.py::stage_specific_role_boundary(call_kind)`.
-- selected-symbol/stale-hold/EOD-carry/default의 **정확 영어 문자열 bytes**, order/gate 권한 금지 문구와 branch precedence를 몸체 그대로 MOVE. no LLM call.
-- TEST `tests/test_p15_stage_role_boundary_owner.py`: (1) selected_symbol; (2) stale hold; (3) EOD carry; (4) unknown/empty default + wrapper/owner exact string parity.
+## 신규 B1~B8 · 각각 독립 구현·검증
+| ID | SOURCE (모두 `libs/contracts/agent_outputs.py`) | 유일 TARGET (상기 두 신규 모듈) | 정확 이전할 의미 / 필수 회귀 | 신규 TEST |
+|---|---|---|---|---|
+| **B1** | `_commander_shadow_llm_call_advice` L970–990 | `commander_shadow_advice_extended.py::llm_call_advice` | `strategist_llm` vs observations status, SKIP market_changed/repeated 우선, blocked/error/fallback→RETRY_MINIMAL, partial/salvaged/repaired→RETRY_COMPACT, 기본 ALLOW; None/malformed·precedence 및 bytes | `tests/test_p15_shadow_llm_call_advice_owner.py` |
+| **B2** | `_commander_shadow_suggested_action` L991–1007 | `...advice_extended.py::suggested_action` | POSITION_ALREADY_OPEN monitor_only, NO_MARKET_CHANGE/REPEATED skip reuse, RETRY_COMPACT/MINIMAL, default allow; 충돌 우선순위/원문 exact | `tests/test_p15_shadow_suggested_action_owner.py` |
+| **B3** | `_commander_shadow_next_action_recommendation` L1008–1029 | `...advice_extended.py::next_action_recommendation` | POSITION_ALREADY_OPEN→HOLD_OBSERVE, retry/set, wait reasons, `facade._clip` monitor decision BUY/SELL/HOLD, NO_ACTION; 우선순위/patch spy | `tests/test_p15_shadow_next_action_owner.py` |
+| **B4** | `_commander_shadow_reason_summary` L1030–1054 | `...advice_extended.py::reason_summary` | 11개 reason→정확 영어 문구 dict, `facade._clip`으로 llm/monitor/executor, fallback 원문; 문구 bytes/unknown/None/patch | `tests/test_p15_shadow_reason_summary_owner.py` |
+| **B5** | `_commander_shadow_recommendation_gap` L1055–1073 | `...advice_extended.py::recommendation_gap` | strategist executed/LLM called True·False·None; skip vs refresh 우선, 마지막 aligned; None/미지정 경계 | `tests/test_p15_shadow_recommendation_gap_owner.py` |
+| **B6** | `_commander_shadow_pre_strategist_snapshot` L1074–1097 | `commander_shadow_assessments.py::pre_strategist_snapshot` | prior_context dict, market_changed/repeated/status, `facade._clip` symbol/playbook/reason 180, dict 8키 순서·원본 alias | `tests/test_p15_shadow_pre_strategist_owner.py` |
+| **B7** | `_commander_shadow_post_strategist_assessment` L1098–1119 | `...assessments.py::post_strategist_assessment` | strategist_output/llm status fallback, executed/llm_called/cache, regime/sentiment, context_delta_summary 원객체 alias, 정확 키 순서 | `tests/test_p15_shadow_post_strategist_owner.py` |
+| **B8** | `_commander_shadow_post_monitor_assessment` L1120–1134 | `...assessments.py::post_monitor_assessment` | monitor decision, entry reason, passed/failed first 8, axis, original monitor_gate_details alias 및 `facade._clip` patch, 키 순서 | `tests/test_p15_shadow_post_monitor_owner.py` |
 
-## B2 — Stage task requirement text (22 원본 행)
-- SOURCE `graphs/nodes/strategist_node.py::_stage_specific_task_requirement(call_kind: str) -> str` L628–649 → TARGET `libs/runtime/strategist/llm/stage_prompt_contracts.py::stage_specific_task_requirement(call_kind)`.
-- 4개 call kind별 필수 출력 필드·Stage3 horizon 제한·Stage4 flatten/carry 문구, 공백/쉼표/끝 공백까지 원문 유지. B1과 병합하지 않는다.
-- TEST `tests/test_p15_stage_task_requirement_owner.py`: (1) Stage2 fields; (2) Stage3 same-session; (3) Stage4 carry; (4) default playbook + old/new exact bytes.
-
-## B3 — Stage user requirement text (28 원본 행)
-- SOURCE `graphs/nodes/strategist_node.py::_stage_specific_user_requirement(call_kind: str) -> str` L650–677 → TARGET `libs/runtime/strategist/llm/stage_prompt_contracts.py::stage_specific_user_requirement(call_kind)`.
-- Stage2 **no direct BUY/SELL**, Stage3 no SELL/overnight, Stage4 hard closeout/Guard, default explicit adjustment directive 문자열 정확 보존. 정책을 바꾸거나 약화하지 않는다.
-- TEST `tests/test_p15_stage_user_requirement_owner.py`: (1) Stage2 no BUY/SELL; (2) Stage3 no SELL; (3) Stage4 no bypass; (4) default exact bytes/old-new parity.
-
-## B4 — Resolve strategist call kind (42 원본 행)
-- SOURCE `graphs/nodes/strategist_node.py::_resolve_strategist_llm_call_kind(payload: Dict[str, Any]) -> str` L1485–1526 → TARGET **신규** `libs/runtime/strategist/llm/stage_call_kind.py::resolve_strategist_llm_call_kind(payload)`.
-- commander_refresh_context.requested true일 때 **closeout/EOD/overnight → hold/position/carry_state → selected_symbol** 우선순위, false일 때 explicit `resolved_call_kind` 우선, 허용 4종만 통과, 나머지 market_strategy_frame fallback. 입력 mutate 금지.
-- TEST `tests/test_p15_stage_call_kind_owner.py`: (1) closeout vs hold precedence; (2) hold/carry_state; (3) selected requested; (4) explicit/invalid/None payload·wrapper/owner parity.
-
-## B5 — Infer policy adjustment direction (36 원본 행)
-- SOURCE `libs/runtime/strategist/llm/adjustment_directives.py::_infer_policy_adjustment_direction_r3_impl(baseline_summary,current_summary,*,facade)` L11–46, blob `148a531f` → TARGET **신규** `libs/runtime/strategist/llm/adjustment_directives_infer_policy_adjustment_direction_r3.py::_infer_policy_adjustment_direction_r3_impl(baseline_summary,current_summary,*,facade)`.
-- higher-is-tighter 4개, lower-is-tighter 3개, min_extended_from_vwap_pct 특례의 `float(value or 0.0)` 비교·`tighten/relax/mixed/none` 판정 전체 MOVE. facade 인자는 그대로 수용(미사용도 시그니처 보존), dict 아닌 입력→빈 맵, 숫자 변환 예외 parity.
-- TEST `tests/test_p15_adjustment_direction_owner.py`: (1) tighten/relax; (2) mixed/none; (3) min_extended special/zero; (4) malformed numeric ValueError·wrapper/owner parity.
-
-## B6 — Rejected tactical strategy reasons (32 원본 행)
-- SOURCE `libs/runtime/strategist/llm/adjustment_directives.py::_normalize_rejected_strategy_reasons_r3_impl(raw,*,tactical_strategy,strategy_scores,facade)` L271–302 → TARGET **신규** `libs/runtime/strategist/llm/adjustment_directives_normalize_rejected_strategy_reasons_.py::_normalize_rejected_strategy_reasons_r3_impl(raw,*,tactical_strategy,strategy_scores,facade)` (RF-018 설계의 정확 target 명칭).
-- canonical tactic key + allowed `facade._TACTICAL_STRATEGIES`·selected 제외·최대 6개 직접 reason, 없으면 `facade._unit_score` 내림차순 top4 fallback, score<=selected vs clamp 이유 token 전체 MOVE. TARGET에서 `Dict` 타입을 import하거나 future annotations 선언, `facade.canonical_tactic_key/_clean_directive_reason/_unit_score` **use-time** 호출.
-- TEST `tests/test_p15_adjustment_rejected_reasons_owner.py`: (1) direct canonical reasons 6 cap; (2) selected/unknown/empty reason skip; (3) score fallback tie/top4/boundary; (4) patched facade helpers·malformed inputs/old-new exception parity.
-
-## KEEP·종료·인계
-- `_build_strategist_llm_messages`는 대형 메시지 조립 경계지만 **이번 범위 외 KEEP/DEFER**; `_run_strategist_frame_llm`(LLM/ledger), `strategist_node(state)`(Graph/State), `_load_recent_strategy_feedback`(IO), Broker/Guard/UEF, stage contract builder(기존 Owner) **KEEP_EFFECT/SAFETY_HOLD**. 기존 `_stage_specific_llm_contract`는 별도 기존 contract delegation KEEP. 이번 6개는 순수 문구/정규화만 이동; order/Guard 정책/실행 변경 없음.
-- #12 댓글 **한 번**: `ORDER_ID | B1..B6 STATUS | SOURCE_BEFORE/AFTER_BLOB+LOC | TARGET_BLOBS | NORMAL_CMD/EXIT | PUSH_REMOTE_SHA | FIRST_BLOCKER/NEXT`. C04 최소 통합/targeted smoke → C05 G1/G2/G3·DONE. B는 문서·STATUS·이슈 본문·타인 코드를 수정하지 않는다.
+### KEEP/안전·보고
+- `build_commander_shadow_artifact` 상위 orchestration, `_commander_shadow_has_open_order`·gate 결정/실주문, 기존 Owner `commander_shadow_advice/runtime/evidence` 본문 **KEEP**. 이 8개는 Advisor snapshot/text 계산만 분리하며 실행·승인·Guard 경로 변경 0.
+- **#12에 결과 1회:** `ORDER_ID | B1..B8 item 상태 | SOURCE_BEFORE/AFTER_BLOB+LOC | TARGET_BLOBS | TEST_PATHS | NORMAL_CMD/EXIT | PUSH_REMOTE_SHA/ERROR | FIRST_BLOCKER | NEXT`. 실측 START/END/ELAPSED, 원격 검증 실패시 `NOT_DELIVERED` 명시. C04 최소 통합, C05 G1/G2/G3 및 DONE 권한 유지.
