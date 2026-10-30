@@ -1085,14 +1085,12 @@ def _commander_shadow_post_monitor_assessment(
     actual_runtime: Dict[str, Any],
     monitor_gate_details: Dict[str, Any],
 ) -> Dict[str, Any]:
-    return {
-        "monitor_decision": _clip(actual_runtime.get("monitor_decision"), max_len=24),
-        "entry_block_reason": _clip(monitor_gate_details.get("entry_block_reason"), max_len=180),
-        "failed_gates": list(monitor_gate_details.get("failed_gates") or [])[:8],
-        "passed_gates": list(monitor_gate_details.get("passed_gates") or [])[:8],
-        "primary_failure_axis": _clip(monitor_gate_details.get("primary_failure_axis"), max_len=80),
-        "monitor_gate_details": monitor_gate_details,
-    }
+    from libs.contracts.agent_output_parts import commander_shadow_assessments as _owner
+    return _owner.post_monitor_assessment(
+        actual_runtime=actual_runtime,
+        monitor_gate_details=monitor_gate_details,
+        facade=_r3_sys.modules[__name__],
+    )
 
 
 def _commander_shadow_end_of_cycle_summary(

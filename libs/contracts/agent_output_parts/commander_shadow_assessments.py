@@ -49,3 +49,20 @@ def post_strategist_assessment(
         "recommendation_gap": recommendation_gap,
         "context_delta_summary": context_delta_summary,
     }
+
+
+
+def post_monitor_assessment(
+    *,
+    actual_runtime: Dict[str, Any],
+    monitor_gate_details: Dict[str, Any],
+    facade,
+) -> Dict[str, Any]:
+    return {
+        "monitor_decision": facade._clip(actual_runtime.get("monitor_decision"), max_len=24),
+        "entry_block_reason": facade._clip(monitor_gate_details.get("entry_block_reason"), max_len=180),
+        "failed_gates": list(monitor_gate_details.get("failed_gates") or [])[:8],
+        "passed_gates": list(monitor_gate_details.get("passed_gates") or [])[:8],
+        "primary_failure_axis": facade._clip(monitor_gate_details.get("primary_failure_axis"), max_len=80),
+        "monitor_gate_details": monitor_gate_details,
+    }
