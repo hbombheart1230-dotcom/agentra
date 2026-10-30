@@ -13,6 +13,7 @@ Safety:
 from __future__ import annotations
 
 import os
+import sys
 import time
 from typing import Any, Dict, List
 
@@ -20,39 +21,16 @@ from libs.llm.model_catalog import build_execution_profile_observability, resolv
 from libs.llm.model_names import normalize_openrouter_model_name
 from libs.llm.llm_router import LLMRouter
 from libs.reporting.llm_artifacts import build_llm_response_artifact, classify_llm_exception, make_attempt
+from libs.reporting import llm_daily_summary_message_projection as _message_owner
+from libs.reporting import llm_daily_summary_env_projection as _env_owner
 
 
 def _is_dry_run() -> bool:
-    return str(os.getenv("DRY_RUN", "0")).strip() in ("1", "true", "True")
+    return _env_owner._is_dry_run(facade=sys.modules[__name__])
 
 
 def _build_messages(state: Dict[str, Any], policy: Dict[str, Any]) -> List[Dict[str, Any]]:
-    day = str(state.get("eod_day") or policy.get("day") or "")
-    report = dict(state.get("daily_report") or {})
-    approvals = report.get("approvals")
-    denials = report.get("denials")
-    runs = report.get("runs")
-
-    # Keep prompt compact; we only need a short manager-friendly summary.
-    sys = {
-        "role": "system",
-        "content": (
-            "You are a trading system reporter. "
-            "Summarize the day's automated decisions succinctly in Korean. "
-            "No financial advice. Use bullet points." 
-        ),
-    }
-    user = {
-        "role": "user",
-        "content": (
-            f"Day: {day}\n"
-            f"approvals: {approvals}\n"
-            f"denials: {denials}\n"
-            f"runs: {runs}\n\n"
-            "Write a short summary (max 6 bullets) and a one-line takeaway."
-        ),
-    }
-    return [sys, user]
+    return _message_owner._build_messages(state, policy)
 
 
 def summarize_daily_report(*, state: Dict[str, Any], policy: Dict[str, Any]) -> str:

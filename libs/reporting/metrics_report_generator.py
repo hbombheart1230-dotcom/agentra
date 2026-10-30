@@ -2,6 +2,7 @@
 
 import json
 import os
+import sys
 from collections import Counter
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -35,26 +36,11 @@ from libs.reporting.metrics_report.markdown import (
 )
 from libs.reporting.report_source_helpers import build_commander_route_summary
 from libs.core.path_isolation import resolve_runtime_write_path
+from libs.reporting import metrics_report_generator_read_projection as _read_owner
 
 
 def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-
-    def gen() -> Iterable[Dict[str, Any]]:
-        with path.open("r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    obj = json.loads(line)
-                except Exception:
-                    continue
-                if isinstance(obj, dict):
-                    yield obj
-
-    return gen()
+    return _read_owner._iter_events(path, facade=sys.modules[__name__])
 
 
 def generate_metrics_report(events_path: Path, out_dir: Path, day: str | None = None) -> Tuple[Path, Path]:
