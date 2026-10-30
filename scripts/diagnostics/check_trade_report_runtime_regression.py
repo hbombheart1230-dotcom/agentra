@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from libs.reporting.llm_artifacts import trade_artifact_paths
+from scripts.diagnostics import trade_artifact_command_projection as trade_commands
 from scripts.diagnostics import trade_artifact_validation_read_projection as trade_read
 from scripts.diagnostics import trade_artifact_context_projection as trade_context
 
@@ -134,28 +135,11 @@ def _build_bundle_repair_command(
     report_dir: str,
     reports_root: str,
 ) -> List[str]:
-    return [
-        sys.executable,
-        str(ROOT / "scripts" / "run_live_execution_bundle_report.py"),
-        "--day",
-        str(day),
-        "--target-run-id",
-        str(target_run_id),
-        "--max-runs",
-        str(max_runs),
-        "--event-log-path",
-        str(event_log_path),
-        "--evidence-log-path",
-        str(evidence_log_path),
-        "--report-dir",
-        str(report_dir),
-        "--reports-root",
-        str(reports_root),
-        "--no-trade-report-ai",
-        "--role",
-        str(role),
-        "--json",
-    ]
+    return trade_commands._build_bundle_repair_command(
+        day=day, target_run_id=target_run_id, role=role, max_runs=max_runs,
+        event_log_path=event_log_path, evidence_log_path=evidence_log_path,
+        report_dir=report_dir, reports_root=reports_root, facade=sys.modules[__name__],
+    )
 
 
 def _build_report_regen_command(
