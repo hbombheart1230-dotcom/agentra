@@ -1052,20 +1052,15 @@ def _commander_shadow_pre_strategist_snapshot(
     strategist_action_recommendation: str,
     llm_call_advice: str,
 ) -> Dict[str, Any]:
-    prior = _dict(_dict(state.get("commander_shadow_runtime")).get("prior_context"))
-    return {
-        "market_changed": observations.get("market_changed"),
-        "repeated_same_context": observations.get("repeated_same_context"),
-        "last_llm_status": observations.get("last_llm_status"),
-        "prior_symbol": _clip(prior.get("selected_symbol"), max_len=24),
-        "prior_playbook": _clip(prior.get("playbook"), max_len=40),
-        "strategist_action_recommendation": strategist_action_recommendation,
-        "llm_call_advice": llm_call_advice,
-        "reason": _clip(
-            f"context_delta={context_delta_summary.get('signal_changed')} market_changed={observations.get('market_changed')} repeated={observations.get('repeated_same_context')}",
-            max_len=180,
-        ),
-    }
+    from libs.contracts.agent_output_parts import commander_shadow_assessments as _owner
+    return _owner.pre_strategist_snapshot(
+        state=state,
+        observations=observations,
+        context_delta_summary=context_delta_summary,
+        strategist_action_recommendation=strategist_action_recommendation,
+        llm_call_advice=llm_call_advice,
+        facade=_r3_sys.modules[__name__],
+    )
 
 
 def _commander_shadow_post_strategist_assessment(
