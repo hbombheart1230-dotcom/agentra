@@ -49,6 +49,9 @@ from libs.reporting import intraday_report_queue_read_projection as _queue_read_
 from libs.reporting import intraday_report_command_projection as _command_owner
 from libs.reporting import intraday_report_timeout_projection as _timeout_owner
 from libs.reporting import intraday_report_execution_projection as _execution_owner
+from libs.reporting import intraday_report_scalar_projection as _scalar_owner
+from libs.reporting import intraday_report_path_projection as _path_owner
+from libs.reporting import intraday_report_queue_path_projection as _queue_path_owner
 from libs.agents.reporter.read_models.intraday_trade_reports_r9_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _trade_day_from_trade_id_r4_impl,
     _runtime_trade_day_r4_impl,
@@ -66,11 +69,11 @@ from libs.agents.reporter.read_models.intraday_trade_reports_r9_bodies_01 import
 
 
 def _is_trueish(value: Any) -> bool:
-    return str(value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+    return _scalar_owner._is_trueish(value)
 
 
 def _normalize_symbol(value: Any) -> str:
-    return str(value or "").strip().upper()
+    return _scalar_owner._normalize_symbol(value)
 
 
 def _trade_day_from_trade_id(trade_id: str) -> str:
@@ -98,7 +101,7 @@ def _bundle_role() -> str:
 
 
 def _script_path(root: Path) -> Path:
-    return root / "scripts" / "run_live_execution_bundle_report.py"
+    return _path_owner._script_path(root)
 
 
 def _runner_module_name() -> str:
@@ -106,17 +109,15 @@ def _runner_module_name() -> str:
 
 
 def _brief_cache_dir(root: Path) -> Path:
-    return Path(
-        os.getenv("OPERATOR_UI_CACHE_PATH", str(root / "data" / "operator_ui" / "brief_cache"))
-    )
+    return _path_owner._brief_cache_dir(root, facade=_r3_sys.modules[__name__])
 
 
 def _bundle_job_lock_path(root: Path) -> Path:
-    return root / "reports" / "runtime" / "intraday_trade_report_bundle.lock"
+    return _queue_path_owner._bundle_job_lock_path(root)
 
 
 def _bundle_job_queue_path(root: Path) -> Path:
-    return root / "reports" / "runtime" / "intraday_trade_report_bundle.queue.json"
+    return _queue_path_owner._bundle_job_queue_path(root)
 
 
 def _read_lock_payload(path: Path) -> Dict[str, Any]:
@@ -128,11 +129,11 @@ def _read_json(path: Path) -> Dict[str, Any]:
 
 
 def _stable_json_text(payload: Any) -> str:
-    return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return _scalar_owner._stable_json_text(payload, facade=_r3_sys.modules[__name__])
 
 
 def _payload_fingerprint(payload: Any) -> str:
-    return hashlib.sha256(_stable_json_text(payload).encode("utf-8")).hexdigest()
+    return _scalar_owner._payload_fingerprint(payload, facade=_r3_sys.modules[__name__])
 
 
 def _safe_float(value: Any, default: Optional[float] = 0.0) -> Optional[float]:

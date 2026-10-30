@@ -89,7 +89,6 @@ def _story_input_quality_score(story_input: Dict[str, Any], *, facade: Any) -> i
     return score
 
 
-
 def _truth_surface_differs(existing_story_input: Dict[str, Any], rebuilt_story_input: Dict[str, Any], *, facade: Any) -> bool:
     for key in ("execution_details", "entry_execution_details", "exit_execution_details"):
         if facade._execution_truth_surface(existing_story_input.get(key)) != facade._execution_truth_surface(rebuilt_story_input.get(key)):

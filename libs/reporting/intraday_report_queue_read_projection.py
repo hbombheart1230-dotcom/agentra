@@ -18,7 +18,6 @@ def _read_lock_payload(path: Path, *, facade: Any) -> Dict[str, Any]:
         return {}
 
 
-
 def _load_bundle_queue(path: Path, *, facade: Any) -> List[Dict[str, Any]]:
     try:
         if not path.exists():

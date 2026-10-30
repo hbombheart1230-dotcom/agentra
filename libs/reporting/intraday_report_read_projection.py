@@ -18,7 +18,6 @@ def _read_json(path: Path, *, facade: Any) -> Dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
-
 def _load_story_input(trade_dir: Path, *, facade: Any) -> tuple[Dict[str, Any], str]:
     canonical = trade_dir / "ai_trade_report_input.json"
     normalized_legacy = trade_dir / "ai_trade_report" / "ai_trade_report_input.json"

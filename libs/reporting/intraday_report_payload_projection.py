@@ -122,7 +122,6 @@ def build_live_bundle_backfill_payload(
     }
 
 
-
 def build_live_execution_summary_payload(
     *,
     day: str,

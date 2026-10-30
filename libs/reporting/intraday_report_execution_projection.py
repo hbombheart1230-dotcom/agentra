@@ -13,7 +13,6 @@ def _execution_action(state: Dict[str, Any]) -> str:
     return str(order.get("action") or execution.get("action") or "").strip().upper()
 
 
-
 def _execution_ok(state: Dict[str, Any]) -> bool:
     execution = state.get("execution") if isinstance(state.get("execution"), dict) else {}
     return bool(execution.get("ok")) and bool(execution.get("allowed", True))
