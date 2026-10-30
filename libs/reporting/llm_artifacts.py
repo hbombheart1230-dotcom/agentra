@@ -2,10 +2,16 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
+from libs.reporting import llm_artifacts_attempt_projection as _attempt_owner
+from libs.reporting import llm_artifacts_compact_projection as _compact_owner
+from libs.reporting import llm_artifacts_hash_projection as _hash_owner
+from libs.reporting import llm_artifacts_prompt_projection as _prompt_owner
+from libs.reporting import llm_artifacts_status_projection as _status_owner
 from libs.runtime.llm_report_classifier import find_llm_run_dir
 
 
@@ -140,84 +146,23 @@ def utc_now_iso() -> str:
 
 
 def split_prompt_messages(messages: Any) -> Tuple[str, str]:
-    system_parts: List[str] = []
-    user_parts: List[str] = []
-    if not isinstance(messages, list):
-        return "", ""
-    for row in messages:
-        if not isinstance(row, dict):
-            continue
-        role = str(row.get("role") or "").strip().lower()
-        content = str(row.get("content") or "")
-        if not content:
-            continue
-        if role == "system":
-            system_parts.append(content)
-        elif role == "user":
-            user_parts.append(content)
-    return "\n\n".join(system_parts).strip(), "\n\n".join(user_parts).strip()
+    return _prompt_owner.split_prompt_messages(messages)
 
 
 def split_prompt_text(prompt_text: Any) -> Tuple[str, str]:
-    text = str(prompt_text or "").strip()
-    if not text:
-        return "", ""
-    system_prompt = ""
-    user_prompt = ""
-    system_match = []
-    user_match = []
-    current_role = ""
-    current_lines: List[str] = []
-    for raw_line in text.splitlines():
-        line = str(raw_line or "")
-        stripped = line.strip().lower()
-        if stripped in {"[system]", "[user]"}:
-            if current_role == "system" and current_lines:
-                system_match.append("\n".join(current_lines).strip())
-            elif current_role == "user" and current_lines:
-                user_match.append("\n".join(current_lines).strip())
-            current_role = stripped.strip("[]")
-            current_lines = []
-            continue
-        current_lines.append(line)
-    if current_role == "system" and current_lines:
-        system_match.append("\n".join(current_lines).strip())
-    elif current_role == "user" and current_lines:
-        user_match.append("\n".join(current_lines).strip())
-    system_prompt = "\n\n".join(x for x in system_match if x).strip()
-    user_prompt = "\n\n".join(x for x in user_match if x).strip()
-    if system_prompt or user_prompt:
-        return system_prompt, user_prompt
-    return "", text
+    return _prompt_owner.split_prompt_text(prompt_text)
 
 
 def normalize_llm_status(value: Any, *, default: str = "fallback") -> str:
-    raw = str(value or "").strip().lower()
-    if raw in {"ok", "partial", "salvaged", "repaired", "fallback", "error", "parse_error", "timeout", "network_error", "empty_response"}:
-        return raw
-    if raw == "line_repaired":
-        return "salvaged"
-    if raw in {"disabled", "unavailable", "dry_run"}:
-        return "fallback"
-    return default
+    return _status_owner.normalize_llm_status(value, default=default)
 
 
 def canonical_llm_status(value: Any, *, default: str = "fallback") -> str:
-    raw = normalize_llm_status(value, default=default)
-    if raw in {"ok", "partial", "salvaged", "repaired", "fallback", "error"}:
-        return raw
-    if raw in {"parse_error", "timeout", "network_error", "empty_response"}:
-        return "error"
-    return default
+    return _status_owner.canonical_llm_status(value, default=default, facade=sys.modules[__name__])
 
 
 def classify_llm_exception(exc: Exception) -> str:
-    text = str(exc or "").strip().lower()
-    if isinstance(exc, TimeoutError) or "timeout" in text or "timed out" in text:
-        return "timeout"
-    if any(marker in text for marker in ("connection", "network", "dns", "ssl", "reset by peer", "temporarily unavailable")):
-        return "network_error"
-    return "error"
+    return _status_owner.classify_llm_exception(exc)
 
 
 def make_attempt(
@@ -232,28 +177,18 @@ def make_attempt(
     status: Any = "ok",
     meta: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    system_prompt, user_prompt = split_prompt_messages(messages)
-    payload = {
-        "step": str(step or "").strip() or "primary",
-        "role": str(meta.get("role") if isinstance(meta, dict) and meta.get("role") is not None else "").strip() if isinstance(meta, dict) else "",
-        "system_prompt": system_prompt,
-        "user_prompt": user_prompt,
-        "raw_response_text": str(raw_response_text or ""),
-        "parsed_output": parsed_output if isinstance(parsed_output, (dict, list)) else {},
-        "model_info": {
-            "provider": str(provider or "OpenRouter"),
-            "model": str(model or ""),
-        },
-        "latency_ms": int(float(latency_ms or 0)),
-        "status": normalize_llm_status(status),
-        "llm_status": canonical_llm_status(status),
-    }
-    if isinstance(meta, dict):
-        for key, value in meta.items():
-            if key in payload:
-                continue
-            payload[key] = value
-    return payload
+    return _attempt_owner.make_attempt(
+        step=step,
+        messages=messages,
+        raw_response_text=raw_response_text,
+        parsed_output=parsed_output,
+        model=model,
+        provider=provider,
+        latency_ms=latency_ms,
+        status=status,
+        meta=meta,
+        facade=sys.modules[__name__],
+    )
 
 
 def build_llm_response_artifact(
@@ -270,113 +205,20 @@ def build_llm_response_artifact(
     latency_ms: Any = 0,
     meta: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    out = {
-        "schema_version": "llm_response_artifact.v1",
-        "component": str(component or "").strip(),
-        "role": str(component or "").strip(),
-        "run_id": str(run_id or ""),
-        "trade_id": str(trade_id or ""),
-        "story_id": str(story_id or trade_id or ""),
-        "day": str(day or ""),
-        "saved_at": utc_now_iso(),
-        "status": normalize_llm_status(status),
-        "llm_status": canonical_llm_status(status),
-        "latency_ms": int(float(latency_ms or 0)),
-        "parsed_output": parsed_output if isinstance(parsed_output, (dict, list)) else {},
-        "model_info": dict(model_info or {}),
-        "model": str((model_info or {}).get("model") or ""),
-        "attempts": [dict(row) for row in list(attempts or []) if isinstance(row, dict)],
-    }
-    final_attempt = out["attempts"][-1] if out["attempts"] else {}
-    out["system_prompt"] = str(final_attempt.get("system_prompt") or "")
-    out["user_prompt"] = str(final_attempt.get("user_prompt") or "")
-    out["raw_response_text"] = str(final_attempt.get("raw_response_text") or "")
-    if not out["parsed_output"] and isinstance(final_attempt.get("parsed_output"), (dict, list)):
-        out["parsed_output"] = final_attempt.get("parsed_output")
-    if isinstance(final_attempt.get("model_info"), dict):
-        if not out["model_info"]:
-            out["model_info"] = dict(final_attempt.get("model_info") or {})
-        if not str(out.get("model") or "").strip():
-            out["model"] = str((final_attempt.get("model_info") or {}).get("model") or "")
-    out["error"] = str(final_attempt.get("error") or "")
-    out["retry_count"] = max(0, len(out["attempts"]) - 1)
-    if isinstance(meta, dict):
-        out["meta"] = dict(meta)
-        if not out["error"] and meta.get("error") is not None:
-            out["error"] = str(meta.get("error") or "")
-        if "token_usage" in meta and isinstance(meta.get("token_usage"), dict):
-            out["token_usage"] = dict(meta.get("token_usage") or {})
-        if "response_truncated" in meta:
-            out["response_truncated"] = bool(meta.get("response_truncated"))
-        if "repair_used" in meta:
-            out["repair_used"] = bool(meta.get("repair_used"))
-        if "llm_error_type" in meta:
-            out["llm_error_type"] = str(meta.get("llm_error_type") or "")
-    metadata_sources = []
-    if isinstance(meta, dict):
-        metadata_sources.append(meta)
-    if isinstance(final_attempt, dict):
-        metadata_sources.append(final_attempt)
-    for source in metadata_sources:
-        for key in (
-            "parse_mode",
-            "required_keys_expected",
-            "required_keys_present",
-            "required_keys_missing",
-            "completeness_score",
-            "used_fallback_sections",
-            "finish_reason",
-            "llm_execution_profile_name",
-            "llm_execution_profile_source",
-            "llm_execution_effective_config",
-        ):
-            if key in out and out.get(key) not in (None, "", [], {}):
-                continue
-            value = source.get(key) if isinstance(source, dict) else None
-            if value in (None, ""):
-                continue
-            if key == "completeness_score":
-                try:
-                    out[key] = float(value)
-                except Exception:
-                    continue
-            elif key == "llm_execution_effective_config":
-                if isinstance(value, dict):
-                    out[key] = dict(value)
-            elif key in {"required_keys_expected", "required_keys_present", "required_keys_missing", "used_fallback_sections"}:
-                if isinstance(value, list):
-                    out[key] = list(value)
-            else:
-                out[key] = value
-    if "parse_mode" not in out:
-        out["parse_mode"] = "none"
-    if "required_keys_expected" not in out:
-        out["required_keys_expected"] = []
-    if "required_keys_present" not in out:
-        out["required_keys_present"] = []
-    if "required_keys_missing" not in out:
-        out["required_keys_missing"] = []
-    if "completeness_score" not in out:
-        out["completeness_score"] = 0.0
-    if "used_fallback_sections" not in out:
-        out["used_fallback_sections"] = []
-    if "finish_reason" not in out:
-        out["finish_reason"] = ""
-    if "llm_execution_profile_name" not in out:
-        out["llm_execution_profile_name"] = ""
-    if "llm_execution_profile_source" not in out:
-        out["llm_execution_profile_source"] = ""
-    if "llm_execution_effective_config" not in out:
-        out["llm_execution_effective_config"] = {}
-    if "token_usage" not in out:
-        out["token_usage"] = {}
-    if "response_truncated" not in out:
-        out["response_truncated"] = False
-    if "repair_used" not in out:
-        out["repair_used"] = any(bool(row.get("repair_used")) for row in out["attempts"])
-    if "llm_error_type" not in out:
-        out["llm_error_type"] = ""
-    return out
+    return _attempt_owner.build_llm_response_artifact(
+        component=component,
+        run_id=run_id,
+        trade_id=trade_id,
+        story_id=story_id,
+        day=day,
+        status=status,
+        attempts=attempts,
+        parsed_output=parsed_output,
+        model_info=model_info,
+        latency_ms=latency_ms,
+        meta=meta,
+        facade=sys.modules[__name__],
+    )
 
 
 def llm_artifact_paths(reports_root: Path, day: str, run_id: str, component: str) -> Dict[str, Path]:
@@ -391,13 +233,11 @@ def llm_artifact_paths(reports_root: Path, day: str, run_id: str, component: str
 
 
 def _json_stable_text(payload: Any) -> str:
-    if isinstance(payload, (dict, list)):
-        return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-    return str(payload or "")
+    return _hash_owner.json_stable_text(payload, facade=sys.modules[__name__])
 
 
 def _sha256_text(text: Any) -> str:
-    return hashlib.sha256(str(text or "").encode("utf-8")).hexdigest()
+    return _hash_owner.sha256_text(text, facade=sys.modules[__name__])
 
 
 def persist_llm_artifact_refs(
@@ -561,31 +401,17 @@ def build_compact_input_artifact(
     source_input: Any = None,
     compact_input: Any = None,
 ) -> Dict[str, Any]:
-    source_payload = source_input if isinstance(source_input, (dict, list)) else {}
-    compact_payload = compact_input if isinstance(compact_input, (dict, list)) else {}
-    source_text = json.dumps(source_payload, ensure_ascii=False)
-    compact_text = json.dumps(compact_payload, ensure_ascii=False)
-    source_char_count = len(source_text)
-    compact_char_count = len(compact_text)
-    reduction_ratio = 0.0
-    if source_char_count > 0:
-        reduction_ratio = max(0.0, 1.0 - (compact_char_count / float(source_char_count)))
-    return {
-        "schema_version": "llm_compact_input.v1",
-        "component": str(component or "").strip(),
-        "role": str(component or "").strip(),
-        "run_id": str(run_id or ""),
-        "trade_id": str(trade_id or ""),
-        "story_id": str(story_id or trade_id or ""),
-        "day": str(day or ""),
-        "saved_at": utc_now_iso(),
-        "input_variant": "llm_compact_input",
-        "source_artifact_path": str(source_artifact_path or ""),
-        "source_char_count": source_char_count,
-        "compact_input_char_count": compact_char_count,
-        "reduction_ratio": reduction_ratio,
-        "compact_input": compact_payload,
-    }
+    return _compact_owner.build_compact_input_artifact(
+        component=component,
+        run_id=run_id,
+        trade_id=trade_id,
+        story_id=story_id,
+        day=day,
+        source_artifact_path=source_artifact_path,
+        source_input=source_input,
+        compact_input=compact_input,
+        facade=sys.modules[__name__],
+    )
 
 
 def trade_artifact_paths(
