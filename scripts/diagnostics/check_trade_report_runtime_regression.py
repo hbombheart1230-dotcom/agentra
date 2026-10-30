@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
 
 from libs.reporting.llm_artifacts import trade_artifact_paths
 from scripts.diagnostics import trade_artifact_validation_read_projection as trade_read
+from scripts.diagnostics import trade_artifact_context_projection as trade_context
 
 
 DEFAULT_GOLDEN_CASES: Tuple[Tuple[str, str], ...] = (
@@ -83,41 +84,7 @@ def _normalize_cases(values: List[str]) -> List[Dict[str, str]]:
 
 
 def _resolve_trade_context(reports_root: Path, day: str, trade_id: str) -> Dict[str, Any]:
-    trade_paths = trade_artifact_paths(reports_root, day, trade_id)
-    entry_payload = _read_json(trade_paths["entry_json"])
-    exit_payload = _read_json(trade_paths["exit_json"])
-    hold_payload = _read_json(trade_paths["hold_json"])
-    lifecycle_bundle = _read_json(trade_paths["lifecycle_bundle_json"])
-    story_input = _read_json(trade_paths["ai_trade_report_input_json"])
-    report = _read_json(trade_paths["ai_trade_report_json"])
-    provenance = _read_json(trade_paths["trade_provenance_json"])
-    health = _read_json(trade_paths["trade_health_json"])
-    entry_run_id = str(
-        entry_payload.get("run_id")
-        or ((lifecycle_bundle.get("lifecycle") or {}).get("entry") or {}).get("run_id")
-        or ""
-    ).strip()
-    exit_run_id = str(
-        exit_payload.get("run_id")
-        or ((lifecycle_bundle.get("lifecycle") or {}).get("exit") or {}).get("run_id")
-        or lifecycle_bundle.get("run_id")
-        or ""
-    ).strip()
-    target_run_id = exit_run_id or entry_run_id
-    return {
-        "trade_paths": trade_paths,
-        "entry_payload": entry_payload,
-        "exit_payload": exit_payload,
-        "hold_payload": hold_payload,
-        "lifecycle_bundle": lifecycle_bundle,
-        "story_input": story_input,
-        "report": report,
-        "provenance": provenance,
-        "health": health,
-        "entry_run_id": entry_run_id,
-        "exit_run_id": exit_run_id,
-        "target_run_id": target_run_id,
-    }
+    return trade_context._resolve_trade_context(reports_root, day, trade_id, facade=sys.modules[__name__])
 
 
 def _command_to_text(command: List[str]) -> str:
