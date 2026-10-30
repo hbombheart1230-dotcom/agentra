@@ -1,4 +1,12 @@
-NaN### B1 — RF-044 | SOURCE `libs/contracts/agent_outputs.py::_monitor_decision_summary` (blob `b8060eb65d0d1b73d9fb49d7cf6b0d1730cee5de`, L218–247) → TARGET `libs/contracts/agent_output_parts/monitor_decision_summary.py::monitor_decision_summary`
+# Agentra FAST-3 — Codex B 단일 실행 주문 (B1–B10)
+
+**정본/권한:** 먼저 원격 `integration/p1.5`에서 이 파일 하나만 읽고, 자신의 `work/p15-b-operator-structure-20261022` 브랜치에서 아래 B1–B10의 실제 BODY MOVE를 순서대로 모두 수행한다. D00/RF/INDEX/T00/다른 담당 문서는 개발자에게 탐색시키지 않는다. 시작 시 integration HEAD, 이 문서 blob, 자기 원격 HEAD를 고정하고, 이미 원격에 MOVE된 동일 SOURCE/TARGET은 REMOTE_DONE으로 중복 변경·재시험하지 않는다.
+
+**각 항목 완료:** 안전한 source body를 TARGET 단일 owner로 옮기고 SOURCE에는 원시그니처 thin wrapper와 호출시점 monkeypatch seam을 보존한다. 해당 항목의 2~4개 이상 fixture로 정상 targeted pytest 또는 동등한 Python smoke exit0를 확인하고 code/test만 커밋·자기 브랜치에 정상 push한 뒤 원격 ref와 SOURCE/TARGET/test blob을 재조회한다. 첫 PASS·부분 push 차단으로 종료하지 말고 다음 안전 항목을 계속한다. 로컬 전용 커밋은 G1이 아니다. 각 item별 결과/실측 START·END/테스트 exit/원격 SHA·FIRST_BLOCKER를 Issue #12 댓글 하나로 보고한다. 전체 peer·매 RF -O·CI는 필수로 부활시키지 않는다.
+
+**금지:** D00/C01/C02/RF/STATUS/HANDOFF 등 문서 변경, 타인 브랜치, 실계좌·실주문·Broker/Guard/Step5C/UEF/RunLab 운영 효과, force push. 기존 주문의 시작 버전은 실행 중 새 지시가 나와도 소급 무효화하지 않는다.
+
+### B1 — RF-044 | SOURCE `libs/contracts/agent_outputs.py::_monitor_decision_summary` (blob `b8060eb65d0d1b73d9fb49d7cf6b0d1730cee5de`, L218–247) → TARGET `libs/contracts/agent_output_parts/monitor_decision_summary.py::monitor_decision_summary`
 
 **Move body:** read-only decision **text**: missing inputs first, then entry/exit/hold/default; use `facade._clip/_dict` at call time; never alter Monitor decisions. Keep SOURCE `_monitor_decision_summary` original signature as a thin wrapper, preserve call-time patch seam and exact caller behavior; use the single target module (create if absent). **Fixture inputs→expected (2–4+):** `missing_inputs=['foo']`→`Decision: insufficient data (foo)`; entry signal `'breakout'` threshold `1.5`→`Entry: breakout met with 1.5 -> BUY`; hold→`Hold: conditions stable, no exit trigger`; patch facade._clip spy. **Targeted test:** `tests/test_p15_agent_output_monitor_decision_summary_owner.py`. **Blocked:** record exact error/SHA, leave this item intact and continue the next item; no effectful workaround. **Delivery:** code/test-only commit, actor-branch push, remote ref+three blobs verification.
 
