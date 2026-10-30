@@ -1,29 +1,41 @@
-> **FUTURE DESIGN ONLY:** P1.6 custom vs LangGraph vs pydantic-graph evaluation is NOT authorized to run before P1.5 formal freeze and fresh user approval. Current priority: [P1.5 DOC-FIRST](../README.md). Historical contents remain for reference.
+# Agentra P1.6 — Canonical Document Home
 
-# P1.6 — Orchestration Modernization (DESIGN ONLY)
+> **STATUS: DESIGN CONSOLIDATION / NOT STARTED / NO RUNTIME AUTHORIZATION (2026-10-30).**
+> **Canonical branch: integration/p1.5.** P1.6 becomes executable only after P1.5 formally closes and the owner approves its gate. This folder is the sole active home for P1.6 scope and future work orders. No P1.5 automation or trading runtime is changed by this document consolidation.
 
-**Status:** DESIGN/PREPARED, NOT IMPLEMENTED, NOT ACCEPTED (2026-10-12)  
-**Branch:** `design/p1.6-orchestration`  
-**Source snapshot:** `refactor/p1.5@62cdebf63e295765ca546a0e6ffb569f7aba0bdb` (P1.5 WIP, **not** P1.5 freeze)  
-**Canonical repository:** `hbombheart1230-dotcom/agentra` (former `Trading_Agent_System` name redirects)
+## Read only these three active documents
 
-P1.6 evaluates the orchestration *of the existing seven agents*, not the trading algorithms. A new graph engine is an option, not a predetermined decision.
+1. **[README.md](README.md)** — entrypoint, authority, document map and P1.5 continuity.
+2. **[MASTER_PLAN.md](MASTER_PLAN.md)** — product identity, seven-department responsibilities, target architecture, scope and pruning decisions.
+3. **[VALIDATION_AND_HANDOFF.md](VALIDATION_AND_HANDOFF.md)** — P1.5-to-P1.6 handoff, evidence gates, candidate framework benchmark, independent verification and operational restrictions.
 
-## Read in this order
-**Implementation-grade blueprint added 2026-10-12 (still PRE-DESIGN, not implemented):**
-- [IMPLEMENTATION_BLUEPRINT.md](IMPLEMENTATION_BLUEPRINT.md): concrete future ADD/MODIFY/KEEP file paths, functions, interfaces and locked boundaries.
-- [STATE_ROUTING_AND_ENGINE_DESIGN.md](STATE_ROUTING_AND_ENGINE_DESIGN.md): state patch/delete semantics, exact graph routing, LangGraph/Pydantic candidate code sketches and checkpoint policy.
-- [BUILD_PACKETS_AND_TEST_MATRIX.md](BUILD_PACKETS_AND_TEST_MATRIX.md): WO-16.0–16.6, per-file tests, acceptance/rollback and agent handoff.
-These are proposed changes, not code commits. Additional code inspection: `refactor/p1.5@fb8de628eb56b0941007e90ad2e98b4f684983ba` (WIP). Reconcile with accepted P1.5.11 freeze SHA before development.
+No implementation packet, agent, scheduler, dependency, settings file, or P1.6 runtime is authorized by opening this folder. Do not open the archived 2026-10-12 packets as current work instructions.
 
-1. [MASTER_PLAN.md](MASTER_PLAN.md) — program boundary, major phases and go/no-go.
-2. [CODE_AUDIT.md](CODE_AUDIT.md) — source-backed entrypoints, mode split, authority boundaries and gaps.
-3. [BENCHMARK_AND_GATES.md](BENCHMARK_AND_GATES.md) — comparable experiments, freeze gates and acceptance.
+## Current authority and execution continuity
 
-## Authority and isolation
-- This design branch **does not supersede** `docs/refactor/work_orders/CURRENT.md` or alter Claude's P1.5 implementation scope. Existing P1.5 single-implementation-branch rule remains for code work; this **user-requested, documentation-only P1.6 exception** may not be used as a new implementation/worktree branch.
-- `main` and `refactor/p1.5` are unchanged by P1.6 planning. Do **not** merge this branch, run a shadow engine, install dependencies, touch broker/LLM/live Docker/host, or modify production state.
-- Before any P1.6 executable proof, P1.5.11 must formally freeze with full regression, actual provenance/LLM parity as applicable, UEF/Docker/authority/write isolation, and GPT+user acceptance. Reconcile this snapshot against the eventual freeze SHA **by explicit review**, not blind rebase or merge.
-- Agentra workflow: GPT architecture → Claude implementation → Codex independent audit → GPT/user acceptance. Keep Agentco separate.
+- **P1.5 is the active implementation program.** Current entry/role router: [../work_orders/CURRENT.md](../work_orders/CURRENT.md); P1.5 contract: [../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md](../work_orders/D00_ENGINEERING_DELIVERY_POLICY.md). C01/C02 own A/B code/tests; C03 dispatches, C04 integrates, C05 closes RF, C06 independently audits. RunLab: [../../runtime/validation/CURRENT.md](../../runtime/validation/CURRENT.md), Issue #32. GitHub Issues #11, #12, #32, #36 and #37 retain their current evidentiary roles.
+- P1.5's running automation, scheduled development/integration/DONE/audit, CI and RunLab validation **continue under their own current contracts**. P1.6 preparation neither pauses, edits, reroutes nor supersedes these tasks. If they need changes, issue a separately authorized P1.5 instruction.
+- The older [P1.5/P1.6 master plan](../p1_5_p1_6_master_plan.md) is historical roadmap context. Its narrow P1.6 orchestration-only scope is superseded **for future design planning in this folder** by the user's 2026-10-30 direction; its frozen P1.5 execution/safety gates and later P2–P8 phase boundaries remain intact.
+- Earlier [Architecture V2](../../architecture/architecture_v2.md) and [Q100 design](../../research/q100_research_and_learning_roadmap.md) are reference designs, not deployed proof and not competing P1.6 entrypoints. Exact current implementation must be verified at P1.5 freeze.
 
-**DELIVERABLE NOW:** code audit + overall plan **and implementation-grade file/function-level blueprint**. Zero runtime/test/config/dependency changes; P1.6 implementation and benchmark are NOT RUN.
+## Identity snapshot — direction agreed, formal freeze pending
+
+Agentra targets an **AI-led, short-horizon quant trading desk**: scalping/intraday and 2–3 day swing; approximately three concurrent holdings (design target, not a live limit change). Seven specialist departments research autonomously; Commander makes portfolio investment decisions, while Supervisor/guards and Executor keep independent safety/side-effect authority. No long-term portfolio investment objective.
+
+P1.6 first **decides what the system is and what to remove**, then conditionally assesses custom orchestration vs LangGraph vs pydantic-graph. It also defines future seams for model routing, bounded adaptive policy, Q/UEF/Q100 experience retrieval and an out-of-band AI Engineering Lab; it does **not** prematurely implement P2–P8 capabilities.
+
+## Archived old planning material
+
+The five original 2026-10-12 documents are preserved **byte-identically** under [archive/2026-10-12_orchestration_only/](archive/2026-10-12_orchestration_only/):
+
+- CODE_AUDIT.md — historical source inspection on old, unfrozen branch SHAs.
+- IMPLEMENTATION_BLUEPRINT.md — old graph-engine-only file/function proposal.
+- STATE_ROUTING_AND_ENGINE_DESIGN.md — old graph state/retry sketches.
+- BUILD_PACKETS_AND_TEST_MATRIX.md — old, inactive WO-16.0–16.6 work packets.
+- BENCHMARK_AND_GATES.md — old framework parity/benchmark gate proposal.
+
+**All five are reference-only.** Their obsolete branch, SHA, Claude-implementation/Codex-audit assignments and implementation-only assumptions must not become live orders. Benchmarks and old interface examples require fresh verification after P1.5 closes. Preserve history and links; do not duplicate the five documents into new active counterparts.
+
+## Change control
+
+Scope of this consolidation: documentation only inside this P1.6 directory. No change to D00, CURRENT, C01–C06, RF/STATUS, runtime validation, code, tests, dependencies, broker credentials, operational databases or active automation. No P1.6 benchmark, code execution, model call or acceptance performed. Formal design approval and subsequent runtime authorization are separate events.
