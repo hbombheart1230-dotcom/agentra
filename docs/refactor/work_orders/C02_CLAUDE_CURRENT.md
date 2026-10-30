@@ -401,9 +401,234 @@ def _is_dry_run() -> bool:
 
 **New normal targeted test:** `tests/test_p15_rf035_00h_a8__is_dry_run_owner.py`. Fake/tmp fixture and expected output: patch source.os.getenv('DRY_RUN','0') -> '1','true','True' => True; 'TRUE','0','',None => False per original string conversion; spy that getter called at use time; compare Owner and wrapper. Record before-original vs Owner vs wrapper exact return/exception and patch-seam parity. Run `python -m py_compile libs/reporting/llm_daily_summary.py libs/reporting/llm_daily_summary_env_projection.py`, then `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_00h_a8__is_dry_run_owner.py` (or equivalent .venv python; if pytest unavailable, stdlib normal smoke with exact command/exit). On success commit only scoped SOURCE/TARGET/test, normal push A, refetch remote HEAD and three blobs; on conflict or safety blocker record exact first blocker and **continue Aend/report**. No old same-SHA PASS reruns.
 
-## Reserve — RESERVE_NOT_VERIFIED (0/6 after promotion)
+## Future reserve — 6/6 VERIFIED design (NOT executable in current A order)
 
-All six formerly verified reserve candidates R1–R6 were promoted into A1–A6, so **remaining verified reserve is 0**, not six. A7–A8 were separately source/target-checked new work, not reserve. C03 must inspect six additional RF-035 exclusive source bodies, exact current blobs, absent unique targets, effect isolation and fake tests in the next supply cycle. A may not self-select reserve. No speculative candidate is counted as VERIFIED.
+**Source/ownership proof:** RF-035 implementation coverage explicitly lists `libs/reporting/daily_report_runtime/markdown.py` as Claude-A-owned; SOURCE current A/integration blob `8755975bc5d78e26b48c36179556011498a476d9` identical, 6 distinct non-wrapper top-level function BODIES directly inspected. Five unique TARGET module paths were checked 404 on A and integration. All are deterministic dict→Markdown lines; no file reads/writes, real account/order, network, Guard, Step5C, UEF or RunLab effects. These are **future** items only, not A1–A8, not tested, not code/G1/G2/G3, and not self-selectable by A. Revalidate blobs/target absence before promotion.
+
+### R1 RF-035 | `libs/reporting/daily_report_runtime/markdown.py::render_operator_summary_snapshot` blob `8755975bc5d78e26b48c36179556011498a476d9` L14 → `libs/reporting/daily_report_runtime/markdown_snapshot_projection.py::render_operator_summary_snapshot` (new 404)
+
+Original SOURCE BODY (21 lines) to move only in a **future** C03-issued order:
+```python
+def render_operator_summary_snapshot(
+    operator_summary_snapshot: Dict[str, Any],
+    *,
+    include_system_status: bool,
+) -> List[str]:
+    executive = (
+        operator_summary_snapshot.get("executive_summary")
+        if isinstance(operator_summary_snapshot.get("executive_summary"), dict)
+        else {}
+    )
+    if not executive.get("summary_lines"):
+        return []
+
+    lines = ["", "## Operator Summary Snapshot", ""]
+    if include_system_status and executive.get("system_status"):
+        lines.append(f"- system_status: **{executive['system_status']}**")
+    for line in executive.get("summary_lines") or []:
+        lines.append(f"- {line}")
+    return lines
+```
+Wrapper: exact original signature delegates to Owner, none; no reverse import or duplicate calculation. Targeted fake normal test design: pure fake {'executive_summary':{'summary_lines':['ok'],'system_status':'healthy'}} + include_system_status True -> header and system_status and '- ok'; False omits status; empty -> []. `tests/test_p15_rf035_reserve_r1_render_operator_summary_snapshot_owner.py` (future only). Preserve original output/exception/monkeypatch parity; py_compile + normal scoped pytest/stdlib smoke exit0 and A push/refetch required **after** future issuance. On conflict skip to next safe reserve item, report BLOCKED.
+
+### R2 RF-035 | `libs/reporting/daily_report_runtime/markdown.py::render_route_and_narrative_sections` blob `8755975bc5d78e26b48c36179556011498a476d9` L35 → `libs/reporting/daily_report_runtime/markdown_route_projection.py::render_route_and_narrative_sections` (new 404)
+
+Original SOURCE BODY (26 lines) to move only in a **future** C03-issued order:
+```python
+def render_route_and_narrative_sections(payload: Dict[str, Any]) -> List[str]:
+    route_summary = payload.get("route_summary") if isinstance(payload.get("route_summary"), dict) else {}
+    narrative_policy = (
+        payload.get("narrative_axis_policy")
+        if isinstance(payload.get("narrative_axis_policy"), dict)
+        else narrative_axis_policy()
+    )
+    return [
+        "",
+        "## Route Provenance",
+        "",
+        f"- route_source: `{route_summary.get('route_source') or '-'}`",
+        f"- route_source_run_count: **{int(route_summary.get('route_source_run_count') or 0)}**",
+        f"- route_source_missing_count: **{int(route_summary.get('route_source_missing_count') or 0)}**",
+        f"- route_source_breakdown: `{json.dumps(route_summary.get('route_source_breakdown') or {}, ensure_ascii=False)}`",
+        f"- route_selected_total: `{json.dumps(route_summary.get('route_selected_total') or {}, ensure_ascii=False)}`",
+        "",
+        "## Narrative Axis Policy",
+        "",
+        f"- entry_primary_for: `{narrative_policy.get('entry_primary_for') or []}`",
+        f"- exit_primary_for: `{narrative_policy.get('exit_primary_for') or []}`",
+        f"- mixed_only_for_ambiguous_cases: **{bool(narrative_policy.get('mixed_only_for_ambiguous_cases'))}**",
+        f"- runtime_semantics_unchanged: **{bool(narrative_policy.get('runtime_semantics_unchanged'))}**",
+    ]
+```
+Wrapper: exact original signature delegates to Owner, facade.json.dumps and facade.narrative_axis_policy at call time; no reverse import or duplicate calculation. Targeted fake normal test design: fake route_source='sim', counts 1/0 and narrative_axis_policy dict -> deterministic route/narrative lines; missing policy -> patched facade.narrative_axis_policy. `tests/test_p15_rf035_reserve_r2_render_route_and_narrative_sections_owner.py` (future only). Preserve original output/exception/monkeypatch parity; py_compile + normal scoped pytest/stdlib smoke exit0 and A push/refetch required **after** future issuance. On conflict skip to next safe reserve item, report BLOCKED.
+
+### R3 RF-035 | `libs/reporting/daily_report_runtime/markdown.py::render_trade_report_integrity` blob `8755975bc5d78e26b48c36179556011498a476d9` L61 → `libs/reporting/daily_report_runtime/markdown_integrity_projection.py::render_trade_report_integrity` (new 404)
+
+Original SOURCE BODY (39 lines) to move only in a **future** C03-issued order:
+```python
+def render_trade_report_integrity(payload: Dict[str, Any]) -> List[str]:
+    integrity = payload.get("trade_report_integrity") if isinstance(payload.get("trade_report_integrity"), dict) else {}
+    if not integrity:
+        return []
+    missing = integrity.get("missing") if isinstance(integrity.get("missing"), list) else []
+    broker_closed_report_open = (
+        integrity.get("broker_closed_report_open")
+        if isinstance(integrity.get("broker_closed_report_open"), list)
+        else []
+    )
+    lines = [
+        "",
+        "## Trade Report Integrity",
+        "",
+        f"- status: **{str(integrity.get('status') or 'unknown').upper()}**",
+        f"- expected_trade_count: **{int(integrity.get('expected_trade_count') or 0)}**",
+        f"- summary_md_count: **{int(integrity.get('summary_md_count') or 0)}**",
+        f"- summary_json_count: **{int(integrity.get('summary_json_count') or 0)}**",
+        f"- summary_input_count: **{int(integrity.get('summary_input_count') or 0)}**",
+        f"- missing_count: **{int(integrity.get('missing_count') or 0)}**",
+        f"- broker_closed_report_open_count: **{int(integrity.get('broker_closed_report_open_count') or 0)}**",
+    ]
+    for row in broker_closed_report_open[:10]:
+        if not isinstance(row, dict):
+            continue
+        lines.append(
+            f"- broker closed but report open `{row.get('trade_id') or '-'}` {row.get('symbol') or ''}: "
+            f"status=`{row.get('lifecycle_status') or 'unknown'}`"
+        )
+    for row in missing[:10]:
+        if not isinstance(row, dict):
+            continue
+        lines.append(
+            f"- missing `{row.get('trade_id') or '-'}` {row.get('symbol') or ''}: "
+            f"`{json.dumps(row.get('missing') or [], ensure_ascii=False)}`"
+        )
+    return lines
+```
+Wrapper: exact original signature delegates to Owner, facade.json.dumps at call time; no reverse import or duplicate calculation. Targeted fake normal test design: empty payload -> []; fake status='missing_reports',missing_count=1,missing=[{'trade_id':'T1','missing':['ai_trade_summary_md']}] -> exact status and missing lines; skip non-dict rows. `tests/test_p15_rf035_reserve_r3_render_trade_report_integrity_owner.py` (future only). Preserve original output/exception/monkeypatch parity; py_compile + normal scoped pytest/stdlib smoke exit0 and A push/refetch required **after** future issuance. On conflict skip to next safe reserve item, report BLOCKED.
+
+### R4 RF-035 | `libs/reporting/daily_report_runtime/markdown.py::render_policy_surface_sections` blob `8755975bc5d78e26b48c36179556011498a476d9` L153 → `libs/reporting/daily_report_runtime/markdown_policy_projection.py::render_policy_surface_sections` (new 404)
+
+Original SOURCE BODY (79 lines) to move only in a **future** C03-issued order:
+```python
+def render_policy_surface_sections(payload: Dict[str, Any]) -> List[str]:
+    policy_surface_summary = (
+        payload.get("policy_surface_quality_summary")
+        if isinstance(payload.get("policy_surface_quality_summary"), dict)
+        else {}
+    )
+    policy_surface_exec = (
+        payload.get("policy_surface_quality_executive_summary")
+        if isinstance(payload.get("policy_surface_quality_executive_summary"), dict)
+        else {}
+    )
+    chart_structure_summary = (
+        payload.get("chart_structure_decision_hint_summary")
+        if isinstance(payload.get("chart_structure_decision_hint_summary"), dict)
+        else {}
+    )
+    chart_structure_exec = (
+        payload.get("chart_structure_decision_hint_executive_summary")
+        if isinstance(payload.get("chart_structure_decision_hint_executive_summary"), dict)
+        else {}
+    )
+    policy_surface_source = (
+        payload.get("policy_surface_quality_source")
+        if isinstance(payload.get("policy_surface_quality_source"), dict)
+        else {}
+    )
+    chart_structure_source = (
+        payload.get("chart_structure_decision_hint_source")
+        if isinstance(payload.get("chart_structure_decision_hint_source"), dict)
+        else {}
+    )
+    chart_structure_examples = (
+        chart_structure_summary.get("applied_examples")
+        if isinstance(chart_structure_summary.get("applied_examples"), list)
+        else []
+    )
+
+    lines = [
+        "",
+        "## Policy Surface Executive Summary",
+        "",
+        f"- status: **{str(policy_surface_exec.get('status') or 'unknown').upper()}**",
+        f"- headline: {str(policy_surface_exec.get('headline') or 'Policy surface unknown')}",
+        "",
+        "## Policy Surface Quality",
+        "",
+        f"- schema_available_rate: **{float(policy_surface_summary.get('schema_available_rate') or 0.0):.4f}**",
+        f"- normalized_policy_rate: **{float(policy_surface_summary.get('normalized_policy_rate') or 0.0):.4f}**",
+        f"- invalid_spec_rate: **{float(policy_surface_summary.get('invalid_spec_rate') or 0.0):.4f}**",
+        f"- total_invalid_specs: **{int(policy_surface_summary.get('total_invalid_specs') or 0)}**",
+        f"- run_count: **{int(policy_surface_source.get('run_count') or 0)}**",
+        "",
+        "## Chart Structure Decision Hint Executive Summary",
+        "",
+        f"- status: **{str(chart_structure_exec.get('status') or 'unknown').upper()}**",
+        f"- headline: {str(chart_structure_exec.get('headline') or 'Chart structure guard unknown')}",
+        "",
+        "## Chart Structure Decision Hint",
+        "",
+        f"- available_run_count: **{int(chart_structure_summary.get('available_run_count') or 0)}**",
+        f"- applied_count: **{int(chart_structure_summary.get('applied_count') or 0)}**",
+        f"- applied_rate: **{float(chart_structure_summary.get('applied_rate') or 0.0):.4f}**",
+        f"- top_blocking_features: `{json.dumps(chart_structure_summary.get('top_blocking_features') or [], ensure_ascii=False)}`",
+        f"- run_count: **{int(chart_structure_source.get('run_count') or 0)}**",
+    ]
+    if chart_structure_examples:
+        lines += ["", "## Chart Structure Decision Hint Applied Examples", ""]
+        for example in chart_structure_examples[:3]:
+            if not isinstance(example, dict):
+                continue
+            lines.append(
+                f"- `{example.get('run_id') or '-'}` "
+                f"[{str(example.get('entry_style') or '-').upper()}] "
+                f"{example.get('reason_transition') or '-'} "
+                f"blockers=`{json.dumps(example.get('blocking_features') or [], ensure_ascii=False)}`"
+            )
+    return lines
+```
+Wrapper: exact original signature delegates to Owner, facade.json.dumps at call time; no reverse import or duplicate calculation. Targeted fake normal test design: empty payload -> stable section headings and zero counts; fake applied_examples=[{'run_id':'R1','entry_style':'pullback'}] -> example line; invalid int count -> same ValueError. `tests/test_p15_rf035_reserve_r4_render_policy_surface_sections_owner.py` (future only). Preserve original output/exception/monkeypatch parity; py_compile + normal scoped pytest/stdlib smoke exit0 and A push/refetch required **after** future issuance. On conflict skip to next safe reserve item, report BLOCKED.
+
+### R5 RF-035 | `libs/reporting/daily_report_runtime/markdown.py::render_top_issues` blob `8755975bc5d78e26b48c36179556011498a476d9` L232 → `libs/reporting/daily_report_runtime/markdown_operator_projection.py::render_top_issues` (new 404)
+
+Original SOURCE BODY (16 lines) to move only in a **future** C03-issued order:
+```python
+def render_top_issues(operator_summary_snapshot: Dict[str, Any]) -> List[str]:
+    top_issues = (
+        operator_summary_snapshot.get("top_issues")
+        if isinstance(operator_summary_snapshot.get("top_issues"), list)
+        else []
+    )
+    if not top_issues:
+        return []
+    lines = ["", "## Top Issues", ""]
+    for issue in top_issues:
+        if not isinstance(issue, dict):
+            continue
+        lines.append(f"- [{issue.get('severity') or '-'}] {issue.get('code') or '-'}: {issue.get('detail') or '-'}")
+    return lines
+```
+Wrapper: exact original signature delegates to Owner, pure, no facade; no reverse import or duplicate calculation. Targeted fake normal test design: empty snapshot -> []; fake top_issues=[{'severity':'warn','code':'X','detail':'demo'}] -> ['','## Top Issues','','- [warn] X: demo']; invalid rows skipped. `tests/test_p15_rf035_reserve_r5_render_top_issues_owner.py` (future only). Preserve original output/exception/monkeypatch parity; py_compile + normal scoped pytest/stdlib smoke exit0 and A push/refetch required **after** future issuance. On conflict skip to next safe reserve item, report BLOCKED.
+
+### R6 RF-035 | `libs/reporting/daily_report_runtime/markdown.py::render_recommended_operator_actions` blob `8755975bc5d78e26b48c36179556011498a476d9` L248 → `libs/reporting/daily_report_runtime/markdown_operator_projection.py::render_recommended_operator_actions` (new 404)
+
+Original SOURCE BODY (14 lines) to move only in a **future** C03-issued order:
+```python
+def render_recommended_operator_actions(operator_summary_snapshot: Dict[str, Any]) -> List[str]:
+    recommended_actions = (
+        operator_summary_snapshot.get("recommended_operator_actions")
+        if isinstance(operator_summary_snapshot.get("recommended_operator_actions"), list)
+        else []
+    )
+    if not recommended_actions:
+        return []
+    lines = ["", "## Recommended Operator Actions", ""]
+    for action in recommended_actions:
+        lines.append(f"- {action}")
+    return lines
+```
+Wrapper: exact original signature delegates to Owner, pure, no facade; no reverse import or duplicate calculation. Targeted fake normal test design: empty snapshot -> []; fake recommended_operator_actions=['A','B'] -> ['','## Recommended Operator Actions','','- A','- B']. `tests/test_p15_rf035_reserve_r6_render_recommended_operator_actions_owner.py` (future only). Preserve original output/exception/monkeypatch parity; py_compile + normal scoped pytest/stdlib smoke exit0 and A push/refetch required **after** future issuance. On conflict skip to next safe reserve item, report BLOCKED.
 
 ## Required A report
 
