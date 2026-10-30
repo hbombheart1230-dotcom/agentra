@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from datetime import date
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
@@ -46,22 +47,12 @@ from libs.reporting.report_source_helpers import build_policy_surface_quality_sn
 from libs.reporting.symbol_trade_report import build_daily_trade_index
 from libs.reporting.symbol_trade_report import collect_symbols_for_day
 from libs.core.symbols import normalize_symbol
+from libs.reporting import daily_report_generator_read_projection as _read_owner
+from libs.reporting import daily_report_generator_trade_projection as _trade_owner
 
 
 def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-    def gen():
-        with path.open("r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    yield json.loads(line)
-                except Exception:
-                    continue
-    return gen()
+    return _read_owner._iter_events(path, facade=sys.modules[__name__])
 
 
 def _load_operator_summary_snapshot(events_path: Path, out_dir: Path, day: str) -> Dict[str, Any]:
@@ -86,31 +77,11 @@ def _load_policy_surface_quality_snapshot(events_path: Path, out_dir: Path, day:
 
 
 def _find_trade_dir(reports_root: Path, day: str, trade_id: str) -> Path | None:
-    direct = reports_root / "trades" / day / trade_id
-    if direct.exists():
-        return direct
-    matches = sorted((reports_root / "trades" / day).glob(f"*/{trade_id}"))
-    return matches[0] if matches else None
+    return _read_owner._find_trade_dir(reports_root, day, trade_id)
 
 
 def _broker_closed_symbols_from_alignment(broker_alignment: Dict[str, Any] | None) -> set[str]:
-    if not isinstance(broker_alignment, dict):
-        return set()
-    snapshot = broker_alignment.get("account_snapshot") if isinstance(broker_alignment.get("account_snapshot"), dict) else {}
-    symbols = snapshot.get("day_trade_closed_symbols") if isinstance(snapshot.get("day_trade_closed_symbols"), list) else []
-    out = {
-        normalize_symbol(symbol, allow_test_symbols=True)
-        for symbol in symbols
-        if normalize_symbol(symbol, allow_test_symbols=True)
-    }
-    rows = snapshot.get("day_trade_diary_rows") if isinstance(snapshot.get("day_trade_diary_rows"), list) else []
-    for row in rows:
-        if not isinstance(row, dict) or not bool(row.get("closed_by_day_trade_diary")):
-            continue
-        symbol = normalize_symbol(row.get("symbol"), allow_test_symbols=True)
-        if symbol:
-            out.add(symbol)
-    return out
+    return _trade_owner._broker_closed_symbols_from_alignment(broker_alignment, facade=sys.modules[__name__])
 
 
 def _build_trade_report_integrity(
@@ -189,70 +160,7 @@ def _build_trade_report_integrity(
 
 
 def _render_residual_positions_markdown(residual: Dict[str, Any]) -> List[str]:
-    positions = residual.get("positions") if isinstance(residual.get("positions"), list) else []
-    lines = ["", "## 장마감 잔여 보유 종목", ""]
-    if not bool(residual.get("available")):
-        lines.append("- 상태 스냅샷을 읽지 못해 잔여 보유 종목을 확인하지 못했습니다.")
-        return lines
-    if not positions:
-        lines.append("- 장마감 기준 잔여 보유 종목이 없습니다.")
-        return lines
-    closeout = residual.get("closeout_state") if isinstance(residual.get("closeout_state"), dict) else {}
-    reconciled = (
-        residual.get("reconciled_closed_positions")
-        if isinstance(residual.get("reconciled_closed_positions"), list)
-        else []
-    )
-    closeout_mode = str(closeout.get("mode") or "").strip()
-    closeout_reason = str(closeout.get("reason") or "").strip()
-    if closeout_mode or closeout_reason:
-        closeout_line = f"- closeout 상태: {closeout_mode or '-'} / {closeout_reason or '-'}"
-        closeout_note = str(closeout.get("report_note") or "").strip()
-        if closeout_note:
-            closeout_line += f" ({closeout_note})"
-        lines.append(closeout_line)
-    if reconciled:
-        symbols = ", ".join(
-            str(row.get("symbol") or "").strip()
-            for row in reconciled
-            if isinstance(row, dict) and str(row.get("symbol") or "").strip()
-        )
-        if symbols:
-            lines.append(f"- 장중 청산 확인: {symbols}는 당일 전량 매도 기록으로 잔여 보유에서 제외했습니다.")
-    for row in positions:
-        if not isinstance(row, dict):
-            continue
-        symbol = str(row.get("symbol") or "-")
-        status = str(row.get("status") or "잔여 보유")
-        qty = int(row.get("qty") or 0)
-        avg_price = row.get("avg_price")
-        current_price = row.get("current_price")
-        pnl_ratio = row.get("account_pnl_ratio")
-        reason = str(row.get("overnight_reason") or "").strip()
-        decision_label = str(row.get("overnight_decision_label") or "").strip()
-        price_text = f"평균 {avg_price:,.0f}" if isinstance(avg_price, (int, float)) and avg_price else "평균 -"
-        current_text = f"현재 {current_price:,.0f}" if isinstance(current_price, (int, float)) and current_price else "현재 -"
-        ratio_text = f" / 평가 손익률 {float(pnl_ratio) * 100:.2f}%" if isinstance(pnl_ratio, (int, float)) else ""
-        detail = f"- {symbol}: {status} / {qty}주 / {price_text} / {current_text}{ratio_text}"
-        if decision_label:
-            detail += f" / 오버나이트 판단: {decision_label}"
-        if reason and not bool(row.get("overnight_decision_missing")):
-            detail += f" / 사유 {reason}"
-        if bool(row.get("weekend_carry")):
-            detail += f" / 주말 보유 {int(row.get('holding_gap_days') or 3)}일"
-        lines.append(detail)
-        if bool(row.get("weekend_carry")) and not bool(row.get("allow_weekend_carry")):
-            lines.append("  - 주의: 금요일 carry 승인이라 주말 갭 리스크가 포함됩니다.")
-        missing_detail = str(row.get("overnight_missing_detail") or "").strip()
-        if bool(row.get("overnight_decision_missing")) and missing_detail:
-            lines.append(f"  - 판단 기록 근거: {missing_detail}")
-        signals = [str(x) for x in list(row.get("overnight_positive_signals") or []) if str(x or "").strip()]
-        blockers = [str(x) for x in list(row.get("overnight_blockers") or []) if str(x or "").strip()]
-        if signals:
-            lines.append(f"  - 승인 근거: {', '.join(signals[:5])}")
-        if blockers:
-            lines.append(f"  - 차단/주의 근거: {', '.join(blockers[:5])}")
-    return lines
+    return _trade_owner._render_residual_positions_markdown(residual)
 
 def generate_daily_report(events_path: Path, out_dir: Path, day: str | None = None) -> Tuple[Path, Path]:
     """Generate a daily markdown + json summary from events.jsonl.
