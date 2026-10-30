@@ -1070,19 +1070,14 @@ def _commander_shadow_post_strategist_assessment(
     context_delta_summary: Dict[str, Any],
     recommendation_gap: str,
 ) -> Dict[str, Any]:
-    strategist_output = _dict(state.get("strategist_output"))
-    strategist_llm = _dict(state.get("strategist_llm"))
-    return {
-        "strategist_executed": actual_runtime.get("strategist_executed"),
-        "llm_called_by_strategist": actual_runtime.get("llm_called_by_strategist"),
-        "used_cached_strategist": actual_runtime.get("used_cached_strategist"),
-        "llm_status": _clip(strategist_llm.get("status") or strategist_output.get("llm_frame_status"), max_len=40),
-        "playbook": _clip(strategist_output.get("playbook"), max_len=40),
-        "market_regime": _clip(strategist_output.get("market_regime"), max_len=40),
-        "market_sentiment": _clip(strategist_output.get("market_sentiment"), max_len=40),
-        "recommendation_gap": recommendation_gap,
-        "context_delta_summary": context_delta_summary,
-    }
+    from libs.contracts.agent_output_parts import commander_shadow_assessments as _owner
+    return _owner.post_strategist_assessment(
+        state=state,
+        actual_runtime=actual_runtime,
+        context_delta_summary=context_delta_summary,
+        recommendation_gap=recommendation_gap,
+        facade=_r3_sys.modules[__name__],
+    )
 
 
 def _commander_shadow_post_monitor_assessment(

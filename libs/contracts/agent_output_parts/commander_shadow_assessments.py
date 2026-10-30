@@ -25,3 +25,27 @@ def pre_strategist_snapshot(
             max_len=180,
         ),
     }
+
+
+
+def post_strategist_assessment(
+    *,
+    state: Dict[str, Any],
+    actual_runtime: Dict[str, Any],
+    context_delta_summary: Dict[str, Any],
+    recommendation_gap: str,
+    facade,
+) -> Dict[str, Any]:
+    strategist_output = facade._dict(state.get("strategist_output"))
+    strategist_llm = facade._dict(state.get("strategist_llm"))
+    return {
+        "strategist_executed": actual_runtime.get("strategist_executed"),
+        "llm_called_by_strategist": actual_runtime.get("llm_called_by_strategist"),
+        "used_cached_strategist": actual_runtime.get("used_cached_strategist"),
+        "llm_status": facade._clip(strategist_llm.get("status") or strategist_output.get("llm_frame_status"), max_len=40),
+        "playbook": facade._clip(strategist_output.get("playbook"), max_len=40),
+        "market_regime": facade._clip(strategist_output.get("market_regime"), max_len=40),
+        "market_sentiment": facade._clip(strategist_output.get("market_sentiment"), max_len=40),
+        "recommendation_gap": recommendation_gap,
+        "context_delta_summary": context_delta_summary,
+    }
