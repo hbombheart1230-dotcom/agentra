@@ -973,19 +973,13 @@ def _commander_shadow_llm_call_advice(
     observations: Dict[str, Any],
     state: Dict[str, Any],
 ) -> str:
-    strategist_llm = _dict(state.get("strategist_llm"))
-    llm_status = str(observations.get("last_llm_status") or strategist_llm.get("status") or "").strip().lower()
-    if strategist_action_recommendation == "SKIP" and observations.get("market_changed") is False:
-        return "SKIP"
-    if strategist_action_recommendation == "SKIP" and observations.get("repeated_same_context") is True:
-        return "SKIP"
-    if bool(strategist_llm.get("blocked")) or llm_status in {"error", "fallback"}:
-        return "RETRY_MINIMAL"
-    if llm_status in {"partial", "salvaged", "repaired"}:
-        return "RETRY_COMPACT"
-    if strategist_action_recommendation == "SKIP":
-        return "SKIP"
-    return "ALLOW"
+    from libs.contracts.agent_output_parts import commander_shadow_advice_extended as _owner
+    return _owner.llm_call_advice(
+        strategist_action_recommendation=strategist_action_recommendation,
+        observations=observations,
+        state=state,
+        facade=_r3_sys.modules[__name__],
+    )
 
 
 def _commander_shadow_suggested_action(
