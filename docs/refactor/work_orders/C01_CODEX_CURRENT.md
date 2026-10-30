@@ -296,7 +296,7 @@ def _filtered_events(
 
 ## VERIFIED future reserve — 6/6, not executable by Actor
 
-Reverified at B `97c1c22cb70fbb022dce4391362f589e00d171ac`, `scripts/diagnostics/check_reports_trades_health.py` source blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` has six inspected non-wrapper bodies; three proposed target paths 404 on B/integration. Tests are design hypotheses NOT_RUN; revalidate before next C03 issue.
+Reverified at B `88a1a763d1053d0227afbe1f9920405dfa58ebc6`, `scripts/diagnostics/check_reports_trades_health.py` source blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` has six inspected non-wrapper bodies; three proposed target paths 404 on B/integration. Tests are design hypotheses NOT_RUN; revalidate before next C03 issue.
 
 - R1 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_read_json` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_read_projection.py::_read_json`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: missing tmp→{}; valid dict→dict; malformed→{}; facade.json.loads. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
 - R2 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_iter_trade_dirs` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_read_projection.py::_iter_trade_dirs`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: tmp reports/trades/day nested dirs→sorted; facade._iter_trade_dirs_under_day; no production root. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
@@ -307,4 +307,4 @@ Reverified at B `97c1c22cb70fbb022dce4391362f589e00d171ac`, `scripts/diagnostics
 
 ## Final #12 report
 
-`ORDER_ID=B-20261031-04 | CANONICAL_HEAD | ORDER_BLOB_SHA | B_START_REMOTE_SHA | B0,B3..B9 status | SOURCE_BEFORE_AFTER_BLOBS | TARGET_BLOBS | NEW_TEST_NORMAL_EXIT | REMOTE_PUSH_SHA | FIRST_BLOCKER | NEXT`. B1/B2 REMOTE_CODE_MOVED but G2 normal evidence NOT_VERIFIED; do not count them as new MOVE or RF DONE. START/END/ELAPSED only if measured, no estimates. Six reserves design-only, not executable.
+`ORDER_ID=B-20261031-06 | CANONICAL_HEAD | ORDER_BLOB_SHA | B_START_REMOTE_SHA | B0,B4..B9 status | SOURCE_BEFORE_AFTER_BLOBS | TARGET_BLOBS | NEW_TEST_NORMAL_EXIT | REMOTE_PUSH_SHA | FIRST_BLOCKER | NEXT`. B1/B2 REMOTE_CODE_MOVED but G2 normal evidence NOT_VERIFIED; do not count them as new MOVE or RF DONE. START/END/ELAPSED only if measured, no estimates. Six reserves design-only, not executable.
