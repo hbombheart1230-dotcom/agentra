@@ -1004,19 +1004,14 @@ def _commander_shadow_next_action_recommendation(
     no_trade_reason_code: str,
     actual_runtime: Dict[str, Any],
 ) -> str:
-    if no_trade_reason_code == "POSITION_ALREADY_OPEN":
-        return "HOLD_OBSERVE"
-    if strategist_action_recommendation in {"RETRY_COMPACT", "RETRY_MINIMAL", "USE_FALLBACK"} or llm_call_advice in {
-        "RETRY_COMPACT",
-        "RETRY_MINIMAL",
-    }:
-        return "RETRY_COMPACT_NEXT"
-    if no_trade_reason_code in {"WAIT_FOR_CONFIRMATION", "LOW_SIGNAL_QUALITY", "LOW_CONFIDENCE", "DATA_INSUFFICIENT"}:
-        return "WAIT_NEXT_BAR"
-    monitor_decision = _clip(actual_runtime.get("monitor_decision"), max_len=24).upper()
-    if monitor_decision in {"BUY", "SELL", "HOLD"}:
-        return "HOLD_OBSERVE"
-    return "NO_ACTION"
+    from libs.contracts.agent_output_parts import commander_shadow_advice_extended as _owner
+    return _owner.next_action_recommendation(
+        strategist_action_recommendation=strategist_action_recommendation,
+        llm_call_advice=llm_call_advice,
+        no_trade_reason_code=no_trade_reason_code,
+        actual_runtime=actual_runtime,
+        facade=_r3_sys.modules[__name__],
+    )
 
 
 def _commander_shadow_reason_summary(
