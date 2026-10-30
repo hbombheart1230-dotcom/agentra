@@ -16,6 +16,11 @@ from libs.reporting import strategist_llm_summary_strategy as _strategy_owner
 from libs.reporting import strategist_llm_summary_quality_lines as _quality_lines_owner
 from libs.reporting import strategist_llm_summary_usage_lines as _usage_lines_owner
 from libs.reporting import strategist_llm_summary_strategy_lines as _strategy_lines_owner
+from libs.reporting import strategist_llm_summary_stage_markdown as _stage_markdown_owner
+from libs.reporting import strategist_llm_summary_directive_line as _directive_line_owner
+from libs.reporting import strategist_llm_summary_watch_status as _watch_status_owner
+from libs.reporting import strategist_llm_summary_playbook_flow as _playbook_flow_owner
+from libs.reporting import strategist_llm_summary_operator_projection as _operator_projection_owner
 
 
 def _utc_now_iso() -> str:
@@ -148,15 +153,7 @@ def _directive(payload: Dict[str, Any], key: str) -> Dict[str, Any]:
 
 
 def _compact_operator_summary(value: Dict[str, Any]) -> Dict[str, Any]:
-    return {
-        "available": bool(value.get("available")),
-        "status": _text(value.get("status"), ""),
-        "artifact_path": _text(value.get("artifact_path"), ""),
-        "trade_count": value.get("trade_count"),
-        "closed_trade_count": value.get("closed_trade_count"),
-        "win_rate": value.get("win_rate"),
-        "avg_return_pct": value.get("avg_return_pct"),
-    }
+    return _operator_projection_owner.compact_operator_summary(value, facade=sys.modules[__name__])
 
 
 def _memory_usage_from_canonical(canonical: Dict[str, Any]) -> Dict[str, Any]:
@@ -278,15 +275,7 @@ def _strategy_patch_status(detail: Dict[str, Any]) -> str:
 
 
 def _playbook_flow_label(detail: Dict[str, Any]) -> str:
-    pre = _text(detail.get("pre_llm_playbook"), "")
-    requested = _text(detail.get("requested_playbook"), "")
-    final = _text(detail.get("final_playbook"), "")
-    parts = [part for part in (pre, requested, final) if part]
-    if not parts:
-        return "-"
-    flow = " -> ".join(parts)
-    source = _text(detail.get("requested_playbook_source"), "")
-    return f"{flow} (source={source})" if source else flow
+    return _playbook_flow_owner.playbook_flow_label(detail, facade=sys.modules[__name__])
 
 
 def _score_value(value: Any) -> float:
@@ -315,36 +304,11 @@ def _strategy_score_lines(scores: Dict[str, Any], *, selected: str) -> List[str]
 
 
 def _watch_scope_label_clean(value: Dict[str, Any]) -> str:
-    if not value:
-        return ""
-    rank = value.get("max_priority_rank")
-    runner_ups = value.get("max_runner_ups")
-    parts: List[str] = []
-    if rank not in (None, ""):
-        parts.append(f"{rank}위까지")
-    if runner_ups not in (None, ""):
-        parts.append(f"차순위 {runner_ups}개")
-    if value.get("cascade_enabled") not in (None, ""):
-        parts.append(f"cascade {'활성' if bool(value.get('cascade_enabled')) else '비활성'}")
-    return " / ".join(parts)
+    return _watch_status_owner.watch_scope_label_clean(value, facade=sys.modules[__name__])
 
 
 def _strategy_patch_status_clean(detail: Dict[str, Any]) -> str:
-    required_keys = (
-        "pre_llm_playbook",
-        "llm_requested_playbook",
-        "requested_playbook",
-        "requested_playbook_source",
-        "final_playbook",
-        "tactical_strategy",
-        "strategy_scores",
-        "rejected_strategy_reasons",
-        "candidate_watch_policy",
-    )
-    missing = [key for key in required_keys if not detail.get(key)]
-    if not missing:
-        return "적용됨"
-    return f"일부 누락 ({', '.join(missing)})"
+    return _watch_status_owner.strategy_patch_status_clean(detail, facade=sys.modules[__name__])
 
 
 def _strategy_score_lines_clean(scores: Dict[str, Any], *, selected: str) -> List[str]:
@@ -450,21 +414,7 @@ def _bullet_lines(items: List[Any], *, empty: str = "-") -> List[str]:
 
 
 def _directive_line(label: str, value: Dict[str, Any]) -> str:
-    if not value:
-        return f"- {label}: -"
-    action = _text(value.get("action"))
-    target = value.get("target")
-    if target is None:
-        target = value.get("target_fields") or value.get("target_axes")
-    reason = _text(value.get("reason"), "")
-    target_text = ", ".join(str(x) for x in target) if isinstance(target, list) else _text(target, "")
-    if target_text and reason:
-        return f"- {label}: **{action}** -> {target_text}; {reason}"
-    if target_text:
-        return f"- {label}: **{action}** -> {target_text}"
-    if reason:
-        return f"- {label}: **{action}**; {reason}"
-    return f"- {label}: **{action}**"
+    return _directive_line_owner.directive_line(label, value, facade=sys.modules[__name__])
 
 
 def _memory_usage_lines(memory: Dict[str, Any]) -> List[str]:
@@ -739,104 +689,7 @@ def _quality_audit_lines(payload: Dict[str, Any]) -> List[str]:
 
 
 def _render_stage_specific_summary_markdown_clean(payload: Dict[str, Any]) -> str:
-    meta = _as_dict(payload.get("llm_meta"))
-    readout = _as_dict(payload.get("operator_readout"))
-    stage_decision = _as_dict(payload.get("stage_decision"))
-    detail = _as_dict(payload.get("strategy_detail"))
-    watch = _as_dict(detail.get("candidate_watch_policy"))
-    monitor_instruction = _as_dict(stage_decision.get("monitor_instruction"))
-    entry_policy_delta = _as_dict(stage_decision.get("entry_policy_delta"))
-    commander_actionability = _as_dict(stage_decision.get("commander_actionability"))
-    runners = ", ".join(str(x) for x in _as_list(stage_decision.get("runner_up_order"))) or "-"
-    triggers = ", ".join(str(x) for x in _as_list(stage_decision.get("priority_exit_triggers"))) or "-"
-
-    lines: List[str] = [
-        f"# Strategist LLM Summary ({_text(meta.get('day'), '-')})",
-        "",
-        "---",
-        "",
-        "## 단계별 전략가 LLM 출력",
-        "",
-        f"- 상태: {_text(meta.get('status'))} / model={_text(meta.get('model'))}",
-        f"- 단계: {stage_decision.get('stage_index')} / {_text(stage_decision.get('stage_name'))}",
-        f"- 호출 종류: {_text(stage_decision.get('call_kind'))}",
-        f"- stage component: {_text(stage_decision.get('stage_component') or meta.get('stage_component'))}",
-        "",
-        "### 결정",
-        "",
-        f"- decision: **{_text(stage_decision.get('decision'))}**",
-        f"- target_symbol: {_text(stage_decision.get('target_symbol'))}",
-        f"- target_rank: {stage_decision.get('target_rank')}",
-        f"- runner_up_order: {runners}",
-        f"- confidence: {stage_decision.get('confidence')}",
-        f"- exit_pressure: {_text(stage_decision.get('exit_pressure'), '')}",
-        f"- thesis_status: {_text(stage_decision.get('thesis_status'), '')}",
-        f"- next_check_minutes: {stage_decision.get('next_check_minutes')}",
-        f"- priority_exit_triggers: {triggers}",
-        "",
-        "### 모니터 지시",
-        "",
-    ]
-    if monitor_instruction:
-        for key in sorted(monitor_instruction):
-            lines.append(f"- {key}: {_json_inline(monitor_instruction.get(key))}")
-    else:
-        lines.append("- -")
-    lines += ["", "### 진입 정책 delta", ""]
-    if entry_policy_delta:
-        for key in sorted(entry_policy_delta):
-            lines.append(f"- {key}: {_json_inline(entry_policy_delta.get(key))}")
-    else:
-        lines.append("- -")
-    lines += ["", "### 지휘관 적용 가능성", ""]
-    if commander_actionability:
-        for key in sorted(commander_actionability):
-            lines.append(f"- {key}: {_json_inline(commander_actionability.get(key))}")
-    else:
-        lines.append("- -")
-    lines += [
-        "",
-        "### 사유",
-        "",
-        _text(stage_decision.get("reason")),
-        "",
-        "## Canonical 전략 컨텍스트",
-        "",
-        f"- final_playbook: {_text(detail.get('final_playbook'))}",
-        f"- tactical_strategy: {_text(detail.get('tactical_strategy'))}",
-        f"- playbook_flow: {_playbook_flow_label(detail)}",
-        f"- candidate_watch: {_watch_scope_label_clean(watch) or '-'}",
-        "",
-        *_quality_audit_lines(payload),
-        "## 운영 점검",
-        "",
-        f"- 요약: **{_text(readout.get('headline'))}**",
-        f"- 주요 원인: {_text(readout.get('root_cause'))}",
-        "",
-        "### 잘 된 점",
-        "",
-        *_bullet_lines(_as_list(readout.get("good_points"))),
-        "",
-        "### 문제점",
-        "",
-        *_bullet_lines(_as_list(readout.get("issues"))),
-        "",
-        "### 권고 액션",
-        "",
-        *_bullet_lines(_as_list(readout.get("recommended_actions"))),
-        "",
-        "---",
-        "",
-        "## 근거",
-        "",
-        f"- source_response_json: `{payload.get('source_response_json')}`",
-        f"- source_canonical_strategist_json: `{payload.get('source_canonical_strategist_json')}`",
-        f"- run_id: `{_text(meta.get('run_id'), '')}`",
-        f"- saved_at: `{_text(meta.get('saved_at'), '')}`",
-        f"- generated_at: `{_text(payload.get('generated_at'), '')}`",
-        "",
-    ]
-    return "\n".join(lines)
+    return _stage_markdown_owner.render_stage_specific_summary_markdown_clean(payload, facade=sys.modules[__name__])
 
 
 def render_strategist_llm_summary_markdown(payload: Dict[str, Any]) -> str:
