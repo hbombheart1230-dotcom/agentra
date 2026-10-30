@@ -70,7 +70,7 @@ def _is_closed_trade(bundle: Dict[str, Any]) -> bool:
 
 **New normal targeted test:** `tests/test_p15_rf063_08h_b3_is_closed_trade_owner.py` with fake/temp fixture and expected result: lifecycle.exit nonempty -> True; status closed -> True; {} -> False. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_state_projection.py`; `python -m unittest tests/test_p15_rf063_08h_b3_is_closed_trade_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. MANDATORY NOW: move actual BODY, normal test, commit code/test and push; if blocked record exact reason and continue next item.
 
-### B4 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_reporter_section_fallback` SOURCE blob `e55b950ad121641186797c891d2129c76615412e` L73 (10 lines) → `scripts/diagnostics/reporter_upgrade_state_projection.py::_reporter_section_fallback`
+### B4 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_reporter_section_fallback` SOURCE blob `e55b950ad121641186797c891d2129c76615412e` L67 (10 lines) → `scripts/diagnostics/reporter_upgrade_state_projection.py::_reporter_section_fallback`
 
 **EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
@@ -88,7 +88,7 @@ def _reporter_section_fallback(report: Dict[str, Any]) -> bool:
 
 **New normal targeted test:** `tests/test_p15_rf063_08h_b4_reporter_section_fallback_owner.py` with fake/temp fixture and expected result: reporter_evaluation fallback -> True; model or empty -> False. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_state_projection.py`; `python -m unittest tests/test_p15_rf063_08h_b4_reporter_section_fallback_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. MANDATORY NOW: move actual BODY, normal test, commit code/test and push; if blocked record exact reason and continue next item.
 
-### B5 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_missing_canonical_paths` SOURCE blob `e55b950ad121641186797c891d2129c76615412e` L83 (6 lines) → `scripts/diagnostics/reporter_upgrade_state_projection.py::_missing_canonical_paths`
+### B5 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_missing_canonical_paths` SOURCE blob `e55b950ad121641186797c891d2129c76615412e` L77 (6 lines) → `scripts/diagnostics/reporter_upgrade_state_projection.py::_missing_canonical_paths`
 
 **EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
@@ -102,7 +102,7 @@ def _missing_canonical_paths(bundle: Dict[str, Any]) -> bool:
 
 **New normal targeted test:** `tests/test_p15_rf063_08h_b5_missing_canonical_paths_owner.py` with fake/temp fixture and expected result: six canonical artifact paths -> False; missing one -> True. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_state_projection.py`; `python -m unittest tests/test_p15_rf063_08h_b5_missing_canonical_paths_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. MANDATORY NOW: move actual BODY, normal test, commit code/test and push; if blocked record exact reason and continue next item.
 
-### B6 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_thin_trace` SOURCE blob `e55b950ad121641186797c891d2129c76615412e` L89 (27 lines) → `scripts/diagnostics/reporter_upgrade_trace_projection.py::_thin_trace`
+### B6 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_thin_trace` SOURCE blob `e55b950ad121641186797c891d2129c76615412e` L83 (27 lines) → `scripts/diagnostics/reporter_upgrade_trace_projection.py::_thin_trace`
 
 **EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
