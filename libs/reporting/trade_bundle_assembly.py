@@ -42,6 +42,7 @@ from libs.runtime.strategy_horizon_feedback import (
     update_post_exit_shadow_with_price_observations,
 )
 import sys as _r3_sys
+from libs.reporting import trade_bundle_strategy_anchor_projection as _anchor_owner
 from libs.agents.reporter.read_models.bundle_assembly_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _latest_exit_monitor_context_from_timeline_r4_impl,
     apply_latest_exit_monitor_context_from_timeline_r4_impl,
@@ -183,18 +184,7 @@ def attach_strategy_anchor(
     strategist_compact_input_path: Path,
     strategist_llm_response_path: Path,
 ) -> Dict[str, Any]:
-    out = dict(payload or {})
-    out["entry_strategist_run_id"] = str(strategy_anchor_run_id or "")
-    out["strategy_anchor_run_id"] = str(strategy_anchor_run_id or "")
-    out["strategy_anchor"] = {
-        "run_id": str(strategy_anchor_run_id or ""),
-        "artifacts": {
-            "strategist_input_json": str(strategist_input_path),
-            "strategist_compact_input_json": str(strategist_compact_input_path),
-            "strategist_llm_response_json": str(strategist_llm_response_path),
-        },
-    }
-    return out
+    return _anchor_owner.attach_strategy_anchor(payload, strategy_anchor_run_id=strategy_anchor_run_id, strategist_input_path=strategist_input_path, strategist_compact_input_path=strategist_compact_input_path, strategist_llm_response_path=strategist_llm_response_path)
 
 
 def apply_strategy_anchor_metadata(
@@ -206,45 +196,7 @@ def apply_strategy_anchor_metadata(
     strategist_compact_input_path: Path,
     strategist_llm_response_path: Path,
 ) -> Dict[str, Any]:
-    lifecycle["entry_strategist_run_id"] = strategy_anchor_run_id
-    lifecycle["strategy_anchor_run_id"] = strategy_anchor_run_id
-    lifecycle["strategy_anchor"] = {
-        "run_id": strategy_anchor_run_id,
-        "source": "strategist_input_artifact" if strategy_anchor_run_id else "missing",
-        "artifacts": {
-            "strategist_input_json": str(strategist_input_path),
-            "strategist_compact_input_json": str(strategist_compact_input_path),
-            "strategist_llm_response_json": str(strategist_llm_response_path),
-        },
-    }
-    lifecycle_bundle["entry_strategist_run_id"] = strategy_anchor_run_id
-    lifecycle_bundle["strategy_anchor_run_id"] = strategy_anchor_run_id
-    lifecycle_bundle["market_context_human"] = attach_strategy_anchor(
-        lifecycle_bundle.get("market_context_human") if isinstance(lifecycle_bundle.get("market_context_human"), dict) else {},
-        strategy_anchor_run_id=strategy_anchor_run_id,
-        strategist_input_path=strategist_input_path,
-        strategist_compact_input_path=strategist_compact_input_path,
-        strategist_llm_response_path=strategist_llm_response_path,
-    )
-    lifecycle_bundle["scanner_reason_human"] = attach_strategy_anchor(
-        lifecycle_bundle.get("scanner_reason_human") if isinstance(lifecycle_bundle.get("scanner_reason_human"), dict) else {},
-        strategy_anchor_run_id=strategy_anchor_run_id,
-        strategist_input_path=strategist_input_path,
-        strategist_compact_input_path=strategist_compact_input_path,
-        strategist_llm_response_path=strategist_llm_response_path,
-    )
-    lifecycle_bundle["monitor_reason_human"] = attach_strategy_anchor(
-        lifecycle_bundle.get("monitor_reason_human") if isinstance(lifecycle_bundle.get("monitor_reason_human"), dict) else {},
-        strategy_anchor_run_id=strategy_anchor_run_id,
-        strategist_input_path=strategist_input_path,
-        strategist_compact_input_path=strategist_compact_input_path,
-        strategist_llm_response_path=strategist_llm_response_path,
-    )
-    return {
-        "lifecycle": lifecycle,
-        "lifecycle_bundle": lifecycle_bundle,
-        "strategy_anchor_run_id": strategy_anchor_run_id,
-    }
+    return _anchor_owner.apply_strategy_anchor_metadata(lifecycle=lifecycle, lifecycle_bundle=lifecycle_bundle, strategy_anchor_run_id=strategy_anchor_run_id, strategist_input_path=strategist_input_path, strategist_compact_input_path=strategist_compact_input_path, strategist_llm_response_path=strategist_llm_response_path, facade=_r3_sys.modules[__name__])
 
 
 def build_live_run_bundle(
