@@ -1,202 +1,12 @@
-# C02 — Agentra FAST-3 Claude A | ORDER A-20261031-04 | 8 NEW verified BODY MOVEs
+# C02 — Agentra FAST-3 Claude A | ORDER A-20261031-05 | 8 NEW verified actual SOURCE BODY MOVEs
 
-**Remote preflight:** integration HEAD `f4b6f4ee21c3a27396ea87d1de98dcec35d3dffb`; A remote HEAD `85128e3877832afbdd7ca9179fd81419cdb026e1`. #11 comment 6530396167 A-03 reports A1–A8 REMOTE_DONE with normal targeted 45 PASS; C03 verified new Owner files and old SOURCE wrapper on A. **Do not repeat A-03.** RF-035 is Claude A's exclusive reporting Owner; B RF-063/RF-065 paths do not overlap. This C02 is the **only execution order**; do not read D00/RF/queue/C03 or select work independently.
+**Authoritative preflight at publication:** integration HEAD `115425b347e3288b7b07d1df0cadbf7af824eae3`; A remote HEAD `09a816f516d055e1e6b4b0952b74363bfa9648f7`; B remote HEAD `97c1c22cb70fbb022dce4391362f589e00d171ac`. Previous C02 blob `1043ef52a165f9450308b50454d3d53891ad4a41` ORDER A-04 is **8/8 REMOTE_DONE**, A #11 comment 6531488218 normal targeted **44 PASS exit0**, SOURCE `symbol_trade_report.py` after blob `28f8a159f4da31bfb7726681516bddf966706ede`; C04 integrated A-04 at `852480b2b8372fa1c8cf2b5dba4103fcf4185afa` and C05 accepted scoped G1/G2/G3. **Do not repeat A-04 or older PASS.** Current eight A1–A8 are separate unmoved functions, verified on latest A remote; R1–R6 prior reserve bodies were re-compared byte-for-byte against current SOURCE and targets 404, plus new A7/A8 SOURCE/TARGET checked. RF-035 is A-exclusive reporting scope; B RF-063/RF-065 paths disjoint.
 
-**Safety and execution:** At start pin CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, A_REMOTE_SHA and SOURCE blob; if an item was already moved on a newer remote SHA, mark REMOTE_DONE and continue, never duplicate. Execute **all A1–A8**, not only first PASS. Move each exact displayed computation BODY from SOURCE to TARGET; keep original signature/annotations/docstring with a thin wrapper and import Owner module, no duplicate calculation. `symbol_trade_report.py` begins with UTF-8 BOM: **preserve BOM**. Existing SOURCE imports `sys as _r3_sys`; wrapper can use `_r3_sys.modules[__name__]` to pass `facade` for call-time monkeypatch compatibility. TARGET must never import SOURCE. For pure functions facade is unnecessary; for helper/IO functions inject `facade` keyword-only, resolve helpers from facade when called (including nested generator iteration). Shared Owner files must append functions without overwriting earlier ones. Capture original output/error first and assert original-vs-Owner-vs-wrapper exact parity, negative cases and patch seams. Run `python -m py_compile` on SOURCE/TARGET and the named normal targeted test (pytest exit0 or equivalent exact stdlib smoke). Only fake dictionaries, temp dirs and controlled clock; **no live Broker/Guard/Step5C/UEF/RunLab, real account, order, production report/State/DB, network, or operational apply**. Commit only A code/new tests on `work/p15-a-reporter-pure-20261021`, normal push, re-fetch A remote HEAD and SOURCE/TARGET/TEST blobs; no force push. Push failure=LOCAL_ONLY/PUSH_BLOCKED, continue next safe item. Each item separately IMPLEMENTED/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED/NOT_RUN in #11. G1/G2 are remote code/normal scoped test; C04/C05 own G3/DONE. No forced -O, full peer or per-RF CI.
+**Single-file complete execution:** At start pin CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, A_REMOTE_SHA and each SOURCE blob. Read **only this C02**, not D00/RF/queue/detail designs, and do not self-select tasks. Execute **all A1–A8**, continue past each isolated blocker; if a newer remote SHA already moved one item, mark REMOTE_DONE and skip duplicate. Real BODY must leave SOURCE, TARGET becomes sole computation owner, SOURCE thin wrapper preserves caller/monkeypatch and exact signature, annotations, lazy timing, output/errors. Symbol_trade_report has UTF-8 BOM: preserve it. Owner TARGET never imports SOURCE; append without overwriting. Normal targeted fake/tmp test exit0 once per changed scope, `py_compile`, A code/test-only commit and normal push, re-fetch A remote HEAD and SOURCE/TARGET/TEST blob. Git auth failure=PUSH_BLOCKED not G2; pytest absence=test-only blocker and use stdlib smoke where possible; continue other safe work. Report each item and exact SHA/exit to #11. No forced -O/full peer/per-RF hosted CI; C04/C05 own G3/DONE. Never touch B branch, RF/STATUS/C04/C05/docs, production data/State/DB, live network, real account/order, Broker/Guard/Step5C/UEF/RunLab/operational apply. No force push.
 
-## A1 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_read_json` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_read_projection.py::_read_json` (404 on A/integration)
+## A1 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_extract_trade_artifact_snapshot` blob `28f8a159f4da31bfb7726681516bddf966706ede` → TARGET `libs/reporting/symbol_trade_artifact_projection.py::_extract_trade_artifact_snapshot` (404 A/integration; newly owned by A)
 
-**Exact computation BODY to MOVE (remove from SOURCE, thin wrapper remains):**
-
-```python
-def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        obj = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return obj if isinstance(obj, dict) else {}
-```
-
-**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_read_projection._read_json` with keyword-only `facade=_r3_sys.modules[__name__]`. facade.json.loads at call time; broad exception and dict-only result; preserve UTF-8 read and no writes. TARGET is single computation Owner; no SOURCE reverse import.
-
-**New normal targeted test:** `tests/test_p15_rf035_04h_a1_read_json_owner.py`. Inputs/expected: missing tmp JSON→{}; valid {'ok':1}→same; JSON list/malformed→{}; patch facade.json.loads to raise and verify {}. Check original/Owner/wrapper parity and exceptions; no real IO/effects. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_read_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_04h_a1_read_json_owner.py` normal exit0 (or exact stdlib smoke). Commit only code/test, push A and re-fetch remote HEAD + 3 blobs. If blocked record reason and **continue A2**.
-
-## A2 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_iter_jsonl` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_read_projection.py::_iter_jsonl` (404 on A/integration)
-
-**Exact computation BODY to MOVE (remove from SOURCE, thin wrapper remains):**
-
-```python
-def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-
-    def _gen() -> Iterable[Dict[str, Any]]:
-        with path.open("r", encoding="utf-8") as handle:
-            for raw_line in handle:
-                line = raw_line.strip()
-                if not line:
-                    continue
-                try:
-                    row = json.loads(line)
-                except Exception:
-                    continue
-                if isinstance(row, dict):
-                    yield row
-
-    return _gen()
-```
-
-**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_read_projection._iter_jsonl` with keyword-only `facade=_r3_sys.modules[__name__]`. facade.json.loads at iterator advance, not construction; preserve missing→plain [] and lazy file opening; sorted order is NOT introduced. TARGET is single computation Owner; no SOURCE reverse import.
-
-**New normal targeted test:** `tests/test_p15_rf035_04h_a2_iter_jsonl_owner.py`. Inputs/expected: missing path→[]; tmp JSONL with {'a':1}, [], bad line, {'b':2} yields two dicts in file order; patch json.loads after iterator creation to confirm lazy seam. Check original/Owner/wrapper parity and exceptions; no real IO/effects. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_read_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_04h_a2_iter_jsonl_owner.py` normal exit0 (or exact stdlib smoke). Commit only code/test, push A and re-fetch remote HEAD + 3 blobs. If blocked record reason and **continue A3**.
-
-## A3 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_contains_any` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_text_projection.py::_contains_any` (404 on A/integration)
-
-**Exact computation BODY to MOVE (remove from SOURCE, thin wrapper remains):**
-
-```python
-def _contains_any(text: str, needles: List[str]) -> bool:
-    lowered = str(text or "").strip().lower()
-    return any(needle in lowered for needle in needles)
-```
-
-**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_text_projection._contains_any` without a facade unless a seam requires it. pure text comparison, do not normalize needles; exact original case sensitivity for needles. TARGET is single computation Owner; no SOURCE reverse import.
-
-**New normal targeted test:** `tests/test_p15_rf035_04h_a3_contains_any_owner.py`. Inputs/expected: ('AbC',['bc'])→true; ('AbC',['BC'])→false; ('',['x'])→false; no mutation. Check original/Owner/wrapper parity and exceptions; no real IO/effects. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_text_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_04h_a3_contains_any_owner.py` normal exit0 (or exact stdlib smoke). Commit only code/test, push A and re-fetch remote HEAD + 3 blobs. If blocked record reason and **continue A4**.
-
-## A4 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_clean_symbol_code` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_text_projection.py::_clean_symbol_code` (404 on A/integration)
-
-**Exact computation BODY to MOVE (remove from SOURCE, thin wrapper remains):**
-
-```python
-def _clean_symbol_code(value: Any) -> str:
-    text = str(value or "").strip()
-    if text.lower() in {"", "unknown", "none", "null", "-"}:
-        return ""
-    return text
-```
-
-**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_text_projection._clean_symbol_code` without a facade unless a seam requires it. pure text cleaning; preserve original case for valid codes and leading zeros. TARGET is single computation Owner; no SOURCE reverse import.
-
-**New normal targeted test:** `tests/test_p15_rf035_04h_a4_clean_symbol_code_owner.py`. Inputs/expected: ' unknown '→''; ' 005930 '→'005930'; None→''; '-'→''. Check original/Owner/wrapper parity and exceptions; no real IO/effects. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_text_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_04h_a4_clean_symbol_code_owner.py` normal exit0 (or exact stdlib smoke). Commit only code/test, push A and re-fetch remote HEAD + 3 blobs. If blocked record reason and **continue A5**.
-
-## A5 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_ratio` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_scalar_projection.py::_ratio` (404 on A/integration)
-
-**Exact computation BODY to MOVE (remove from SOURCE, thin wrapper remains):**
-
-```python
-def _ratio(numerator: float, denominator: float) -> float:
-    if denominator <= 0:
-        return 0.0
-    return numerator / denominator
-```
-
-**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_scalar_projection._ratio` without a facade unless a seam requires it. pure arithmetic; do not change <=0 denominator behavior or introduce rounding. TARGET is single computation Owner; no SOURCE reverse import.
-
-**New normal targeted test:** `tests/test_p15_rf035_04h_a5_ratio_owner.py`. Inputs/expected: (4,2)→2.0; (4,0)→0.0; (4,-2)→0.0; float inputs preserve result. Check original/Owner/wrapper parity and exceptions; no real IO/effects. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_scalar_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_04h_a5_ratio_owner.py` normal exit0 (or exact stdlib smoke). Commit only code/test, push A and re-fetch remote HEAD + 3 blobs. If blocked record reason and **continue A6**.
-
-## A6 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_summary_input_path_for_report` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_path_projection.py::_summary_input_path_for_report` (404 on A/integration)
-
-**Exact computation BODY to MOVE (remove from SOURCE, thin wrapper remains):**
-
-```python
-def _summary_input_path_for_report(report_path: Path) -> Path:
-    return Path(report_path).with_name("ai_trade_summary_input.json")
-```
-
-**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_path_projection._summary_input_path_for_report` with keyword-only `facade=_r3_sys.modules[__name__]`. facade.Path resolved at invocation; no filesystem mkdir/write. TARGET is single computation Owner; no SOURCE reverse import.
-
-**New normal targeted test:** `tests/test_p15_rf035_04h_a6_summary_input_path_for_report_owner.py`. Inputs/expected: Path('/tmp/a.md')→Path('/tmp/ai_trade_summary_input.json'); patched facade.Path called; no files created. Check original/Owner/wrapper parity and exceptions; no real IO/effects. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_path_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_04h_a6_summary_input_path_for_report_owner.py` normal exit0 (or exact stdlib smoke). Commit only code/test, push A and re-fetch remote HEAD + 3 blobs. If blocked record reason and **continue A7**.
-
-## A7 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_iter_trade_lifecycles` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_lifecycle_projection.py::_iter_trade_lifecycles` (404 on A/integration)
-
-**Exact computation BODY to MOVE (remove from SOURCE, thin wrapper remains):**
-
-```python
-def _iter_trade_lifecycles(reports_root: Path) -> Iterable[Tuple[Path, Dict[str, Any]]]:
-    trades_root = reports_root / "trades"
-    if not trades_root.exists():
-        return []
-
-    def _gen() -> Iterable[Tuple[Path, Dict[str, Any]]]:
-        seen_trade_ids: set[str] = set()
-        for path in sorted(trades_root.rglob("lifecycle/trade_lifecycle.json")):
-            obj = _read_json(path)
-            if obj:
-                trade_id = str(obj.get("trade_id") or "").strip()
-                if trade_id:
-                    seen_trade_ids.add(trade_id)
-                yield path, obj
-
-        for path in sorted(trades_root.rglob("lifecycle_bundle.json")):
-            bundle = _read_json(path)
-            if not bundle:
-                continue
-            trade_id = str(bundle.get("trade_id") or "").strip()
-            if trade_id and trade_id in seen_trade_ids:
-                continue
-            normalized = _normalize_lifecycle_bundle(bundle)
-            if normalized:
-                if trade_id:
-                    seen_trade_ids.add(trade_id)
-                yield path, normalized
-
-    return _gen()
-```
-
-**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_lifecycle_projection._iter_trade_lifecycles` with keyword-only `facade=_r3_sys.modules[__name__]`. facade._read_json and facade._normalize_lifecycle_bundle resolved at iterator advance; preserve sorted rglob, canonical-before-bundle, seen_trade_ids, lazy generator, missing→plain []. TARGET is single computation Owner; no SOURCE reverse import.
-
-**New normal targeted test:** `tests/test_p15_rf035_04h_a7_iter_trade_lifecycles_owner.py`. Inputs/expected: tmp reports/trades with canonical lifecycle for T1 and bundles for T1,T2: T1 once (canonical wins), T2 normalized once; missing trades root→[]; fake facade helpers verify monkeypatch after generator creation. Check original/Owner/wrapper parity and exceptions; no real IO/effects. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_lifecycle_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_04h_a7_iter_trade_lifecycles_owner.py` normal exit0 (or exact stdlib smoke). Commit only code/test, push A and re-fetch remote HEAD + 3 blobs. If blocked record reason and **continue A8**.
-
-## A8 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_iter_trade_lifecycles_for_day` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_lifecycle_projection.py::_iter_trade_lifecycles_for_day` (404 on A/integration)
-
-**Exact computation BODY to MOVE (remove from SOURCE, thin wrapper remains):**
-
-```python
-def _iter_trade_lifecycles_for_day(reports_root: Path, day: str) -> Iterable[Tuple[Path, Dict[str, Any]]]:
-    day_root = resolve_trade_day_root(reports_root, str(day or "").strip())
-    if not day_root.exists():
-        return []
-
-    def _gen() -> Iterable[Tuple[Path, Dict[str, Any]]]:
-        seen_trade_ids: set[str] = set()
-        for path in sorted(day_root.rglob("lifecycle/trade_lifecycle.json")):
-            obj = _read_json(path)
-            if obj:
-                trade_id = str(obj.get("trade_id") or "").strip()
-                if trade_id:
-                    seen_trade_ids.add(trade_id)
-                yield path, obj
-
-        for path in sorted(day_root.rglob("lifecycle_bundle.json")):
-            bundle = _read_json(path)
-            if not bundle:
-                continue
-            trade_id = str(bundle.get("trade_id") or "").strip()
-            if trade_id and trade_id in seen_trade_ids:
-                continue
-            normalized = _normalize_lifecycle_bundle(bundle)
-            if normalized:
-                if trade_id:
-                    seen_trade_ids.add(trade_id)
-                yield path, normalized
-
-    return _gen()
-```
-
-**Wrapper/callers/monkeypatch:** Original name, full signature, callers, return and exception behavior remain. Wrapper delegates to `symbol_trade_lifecycle_projection._iter_trade_lifecycles_for_day` with keyword-only `facade=_r3_sys.modules[__name__]`. facade.resolve_trade_day_root at invocation and facade._read_json/_normalize_lifecycle_bundle at iteration; same sorted/dedup/lazy semantics; never access real reports. TARGET is single computation Owner; no SOURCE reverse import.
-
-**New normal targeted test:** `tests/test_p15_rf035_04h_a8_iter_trade_lifecycles_for_day_owner.py`. Inputs/expected: fake facade.resolve_trade_day_root→tmp day root; canonical T1 and duplicate bundle T1 plus new T2→T1,T2 once; missing day→[]; verify facade seam and input day stripping. Check original/Owner/wrapper parity and exceptions; no real IO/effects. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_lifecycle_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_04h_a8_iter_trade_lifecycles_for_day_owner.py` normal exit0 (or exact stdlib smoke). Commit only code/test, push A and re-fetch remote HEAD + 3 blobs. If blocked record reason and **continue final report**.
-
-## RESERVE_VERIFIED — 6/6 design-only, NOT executable in A-04
-
-C03 inspected each real unmoved SOURCE body at the A remote blobs shown, checked six new TARGET paths absent on A/integration, RF-035 A exclusive and no B path overlap. All are read-only or pure under fake/temp; none has been implemented/tested. Recheck HEAD/source/target before promotion. Reserve is **not** additional work for A this run.
-
-### R1 RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_extract_trade_artifact_snapshot` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_artifact_projection.py::_extract_trade_artifact_snapshot` (404 A/integration)
-
-**Inspected real BODY (design-only):**
+**Exact original computation BODY to MOVE once:**
 
 ```python
 def _extract_trade_artifact_snapshot(
@@ -269,11 +79,13 @@ def _extract_trade_artifact_snapshot(
     }
 ```
 
-**Seam/safety:** facade._read_json, _pick_result_pct, _actual_entry_reason_from_artifacts, _classify_entry_pattern/_classify_exit_pattern and clean helpers; read-only fake JSON paths. Preserve exact-signature thin SOURCE wrapper and output/error parity if promoted. **Proposed normal targeted fake/tmp fixture:** tmp report/brief/bundle with fake return_pct 1.25, entry summary and feedback→artifact_result_pct=1.25, required fields present; missing files→empty/defaults; exact helper monkeypatch parity. Targeted test NOT_RUN, no code changes; on blocked promotion skip to next verified reserve.
+**Implementation / wrapper / monkeypatch:** facade._read_json, _pick_result_pct, _actual_entry_reason_from_artifacts, _classify_entry_pattern/_classify_exit_pattern and clean helpers; read-only fake JSON paths. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
 
-### R2 RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_build_history_index` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_history_projection.py::_build_history_index` (404 A/integration)
+**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a1_trade_artifact_snapshot_owner.py`. Input/expected: fake tmp report/brief/bundle JSON: trade_outcome.return_pct=1.25 and entry summary/feedback => artifact_result_pct=1.25 and clean entry/exit fields; missing paths => empty/defaults; patched facade._read_json and _pick_result_pct must affect wrapper and Owner identically. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_artifact_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a1_trade_artifact_snapshot_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A2**; do not end whole order.
 
-**Inspected real BODY (design-only):**
+## A2 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::_build_history_index` blob `28f8a159f4da31bfb7726681516bddf966706ede` → TARGET `libs/reporting/symbol_trade_history_projection.py::_build_history_index` (404 A/integration; newly owned by A)
+
+**Exact original computation BODY to MOVE once:**
 
 ```python
 def _build_history_index(reports_root: Path, symbol: str) -> List[Dict[str, Any]]:
@@ -384,11 +196,13 @@ def _build_history_index(reports_root: Path, symbol: str) -> List[Dict[str, Any]
     return history
 ```
 
-**Seam/safety:** facade._iter_trade_lifecycles, _extract_trade_artifact_snapshot and all clean/pct helpers at call time; read-only; preserve sorted (date,trade_id). Preserve exact-signature thin SOURCE wrapper and output/error parity if promoted. **Proposed normal targeted fake/tmp fixture:** fake 2 lifecycle rows out of order for same symbol→sorted history with expected trade_id/action; different symbol filtered; no disk writes. Targeted test NOT_RUN, no code changes; on blocked promotion skip to next verified reserve.
+**Implementation / wrapper / monkeypatch:** facade._iter_trade_lifecycles, _extract_trade_artifact_snapshot and all clean/pct helpers at call time; read-only; preserve sorted (date,trade_id). Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
 
-### R3 RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::collect_symbols_for_day` blob `099cdbd04c9fca68115413ce4d4d4b52c4653946` → TARGET `libs/reporting/symbol_trade_symbol_projection.py::collect_symbols_for_day` (404 A/integration)
+**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a2_history_index_owner.py`. Input/expected: two fake lifecycle rows out of order for same symbol => history sorted by (date,trade_id) with preserved action; different symbol filtered; facade._iter_trade_lifecycles and snapshot helper patched after import; no real disk writes. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_history_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a2_history_index_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A3**; do not end whole order.
 
-**Inspected real BODY (design-only):**
+## A3 — RF-035 | SOURCE `libs/reporting/symbol_trade_report.py::collect_symbols_for_day` blob `28f8a159f4da31bfb7726681516bddf966706ede` → TARGET `libs/reporting/symbol_trade_symbol_projection.py::collect_symbols_for_day` (404 A/integration; newly owned by A)
+
+**Exact original computation BODY to MOVE once:**
 
 ```python
 def collect_symbols_for_day(
@@ -428,11 +242,13 @@ def collect_symbols_for_day(
     return symbols
 ```
 
-**Seam/safety:** facade.build_daily_trade_index, iter_jsonl_events, _to_epoch, datetime/timezone at call time; fake tmp log only; preserve index-first dedup and timestamp filtering. Preserve exact-signature thin SOURCE wrapper and output/error parity if promoted. **Proposed normal targeted fake/tmp fixture:** fake index symbols ['005930'], fake same-day events ['000660','005930'] and other-day event→['005930','000660']; case-normalize and dedup. Targeted test NOT_RUN, no code changes; on blocked promotion skip to next verified reserve.
+**Implementation / wrapper / monkeypatch:** facade.build_daily_trade_index, iter_jsonl_events, _to_epoch, datetime/timezone at call time; fake tmp log only; preserve index-first dedup and timestamp filtering. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
 
-### R4 RF-035 | SOURCE `libs/reporting/report_source_helpers.py::build_policy_surface_quality_snapshot` blob `8471837632ec1c7659ba2cbcfe5ee44ec84bf42d` → TARGET `libs/reporting/report_source_policy_projection.py::build_policy_surface_quality_snapshot` (404 A/integration)
+**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a3_collect_symbols_owner.py`. Input/expected: fake trade index ['005930'], same-day fake JSONL symbols ['000660','005930'] and other-day row => ['005930','000660']; case normalization/dedup and patched _to_epoch parity. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/symbol_trade_report.py libs/reporting/symbol_trade_symbol_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a3_collect_symbols_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A4**; do not end whole order.
 
-**Inspected real BODY (design-only):**
+## A4 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::build_policy_surface_quality_snapshot` blob `8471837632ec1c7659ba2cbcfe5ee44ec84bf42d` → TARGET `libs/reporting/report_source_policy_projection.py::build_policy_surface_quality_snapshot` (404 A/integration; newly owned by A)
+
+**Exact original computation BODY to MOVE once:**
 
 ```python
 def build_policy_surface_quality_snapshot(events_path: Path, reports_root: Path, day: str) -> Dict[str, Any]:
@@ -494,11 +310,13 @@ def build_policy_surface_quality_snapshot(events_path: Path, reports_root: Path,
     }
 ```
 
-**Seam/safety:** facade.build_phase_5_2_5_3_runtime_health and summary/chart helpers at call time; fake-only return values; NEVER invoke live health, Step5C or real paths. Preserve exact-signature thin SOURCE wrapper and output/error parity if promoted. **Proposed normal targeted fake/tmp fixture:** stub runtime_health run_count=2 with summaries→source.run_count=2; FileNotFoundError→notes ['no_canonical_monitor_runs_found']; generic Exception→['policy_surface_quality_summary_unavailable']. Targeted test NOT_RUN, no code changes; on blocked promotion skip to next verified reserve.
+**Implementation / wrapper / monkeypatch:** facade.build_phase_5_2_5_3_runtime_health and summary/chart helpers at call time; fake-only return values; NEVER invoke live health, Step5C or real paths. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
 
-### R5 RF-035 | SOURCE `libs/reporting/report_source_helpers.py::build_commander_route_summary` blob `8471837632ec1c7659ba2cbcfe5ee44ec84bf42d` → TARGET `libs/reporting/report_source_route_summary_projection.py::build_commander_route_summary` (404 A/integration)
+**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a4_policy_surface_owner.py`. Input/expected: fake runtime_health summary run_count=2 => source.run_count=2; stub raises FileNotFoundError => source.notes=['no_canonical_monitor_runs_found']; generic Exception => ['policy_surface_quality_summary_unavailable']; MUST mock phase5 runtime health before invocation, no Step5C. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_policy_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a4_policy_surface_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A5**; do not end whole order.
 
-**Inspected real BODY (design-only):**
+## A5 — RF-035 | SOURCE `libs/reporting/report_source_helpers.py::build_commander_route_summary` blob `8471837632ec1c7659ba2cbcfe5ee44ec84bf42d` → TARGET `libs/reporting/report_source_route_summary_projection.py::build_commander_route_summary` (404 A/integration; newly owned by A)
+
+**Exact original computation BODY to MOVE once:**
 
 ```python
 def build_commander_route_summary(
@@ -560,11 +378,13 @@ def build_commander_route_summary(
     }
 ```
 
-**Seam/safety:** facade.read_json, _commander_route_from_payload, _event_route_rows, Counter at call time; tmp canonical only; canonical preference and counters. Preserve exact-signature thin SOURCE wrapper and output/error parity if promoted. **Proposed normal targeted fake/tmp fixture:** tmp canonical/day/r1/commander.json selects direct, event r1 selects fallback, event r2 selects indirect→r1 canonical wins; run_count2, route totals direct1/indirect1; no writes. Targeted test NOT_RUN, no code changes; on blocked promotion skip to next verified reserve.
+**Implementation / wrapper / monkeypatch:** facade.read_json, _commander_route_from_payload, _event_route_rows, Counter at call time; tmp canonical only; canonical preference and counters. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
 
-### R6 RF-035 | SOURCE `libs/reporting/strategist_llm_summary.py::build_strategist_llm_summary_payload` blob `01e6ea1c6786a5f208d6b6afc6d12f18c8d40319` → TARGET `libs/reporting/strategist_llm_summary_payload_projection.py::build_strategist_llm_summary_payload` (404 A/integration)
+**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a5_commander_route_summary_owner.py`. Input/expected: tmp canonical/day/r1/commander.json route=direct; fake events r1 fallback and r2 indirect => r1 canonical wins; run_count=2, route totals direct=1,indirect=1; patched facade.read_json/_event_route_rows parity. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/report_source_helpers.py libs/reporting/report_source_route_summary_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a5_commander_route_summary_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A6**; do not end whole order.
 
-**Inspected real BODY (design-only):**
+## A6 — RF-035 | SOURCE `libs/reporting/strategist_llm_summary.py::build_strategist_llm_summary_payload` blob `01e6ea1c6786a5f208d6b6afc6d12f18c8d40319` → TARGET `libs/reporting/strategist_llm_summary_payload_projection.py::build_strategist_llm_summary_payload` (404 A/integration; newly owned by A)
+
+**Exact original computation BODY to MOVE once:**
 
 ```python
 def build_strategist_llm_summary_payload(response_json_path: Path) -> Dict[str, Any]:
@@ -656,8 +476,183 @@ def build_strategist_llm_summary_payload(response_json_path: Path) -> Dict[str, 
     }
 ```
 
-**Seam/safety:** facade.json.loads, _read_json, _parse_response_body, _load_canonical_strategist and all policy/render helpers at call time; fake tmp response; no LLM or network. Preserve exact-signature thin SOURCE wrapper and output/error parity if promoted. **Proposed normal targeted fake/tmp fixture:** tmp response {'stage':'strategist','status':'ok'} with mocked canonical/helpers→schema_version strategist_llm_summary.v1, artifact_type strategist_llm_summary, llm_meta.status ok; invalid JSON retains JSONDecodeError. Targeted test NOT_RUN, no code changes; on blocked promotion skip to next verified reserve.
+**Implementation / wrapper / monkeypatch:** facade.json.loads, _read_json, _parse_response_body, _load_canonical_strategist and all policy/render helpers at call time; fake tmp response; no LLM or network. Preserve exact-signature thin SOURCE wrapper and output/error parity. Move the complete BODY (not a duplicate) to the new TARGET function; preserve SOURCE's original public signature/annotations/docstring and replace its BODY with a thin delegation wrapper. TARGET must not import SOURCE. Resolve referenced SOURCE helpers/globals through `facade=sys.modules[__name__]` (for symbol_trade_report use its existing `_r3_sys.modules[__name__]`) at call time; keep lazy iterator helper lookup at iteration time. Maintain exact output, exception order and original callers. No changes to any operational/real account files.
 
-## Required #11 report
+**Mandatory new normal targeted test:** `tests/test_p15_rf035_05h_a6_strategist_payload_owner.py`. Input/expected: tmp response.json {'stage':'strategist','status':'ok'} and fake canonical/helper outputs => schema_version='strategist_llm_summary.v1', artifact_type='strategist_llm_summary', llm_meta.status='ok'; malformed JSON raises JSONDecodeError identically; no LLM/network. Capture original behavior before MOVE and assert original-vs-Owner-vs-wrapper output/error parity and monkeypatch seams. Only fake/temp/controlled clock; do not invoke real data, health or network. `python -m py_compile libs/reporting/strategist_llm_summary.py libs/reporting/strategist_llm_summary_payload_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a6_strategist_payload_owner.py` normal exit0, or exact reproducible stdlib normal smoke if pytest missing. Commit only code+test on A branch, normal push and refetch A remote HEAD/SOURCE/TARGET/TEST blobs; report G1/G2 evidence. If blocked record exact error/SHA and **continue A7**; do not end whole order.
 
-`ORDER_ID=A-20261031-04 | CANONICAL_HEAD | ORDER_BLOB_SHA | A_START_REMOTE_SHA | A1..A8 status | SOURCE_BEFORE_AFTER_BLOBS | TARGET_BLOBS | NEW_TESTS_NORMAL_EXIT | PUSH_REMOTE_SHA | FIRST_BLOCKER | NEXT`. START/END/ELAPSED only if measured. Do not edit docs/RF/STATUS/other branches. Reserve R1–R6 design only.
+## A7 — RF-035 | SOURCE `libs/reporting/market_regime_rail_review.py::classify_market_regime_rail` blob `cd659475acef1bcdf7301317f5c01ebfe29820c0` → TARGET `libs/reporting/market_regime_rail_classification_projection.py::classify_market_regime_rail` (404 A/integration)
+
+**Exact computation BODY to MOVE:**
+
+```python
+def classify_market_regime_rail(snapshot: Mapping[str, Any]) -> Dict[str, Any]:
+    if not bool(snapshot.get("available", True)) and not snapshot.get("schema_version"):
+        return {
+            "schema_version": "market_regime_rail_observation.v1",
+            "behavior_effect": "evaluation_only",
+            "available": False,
+            "rail_id": "not_available",
+            "rail_confidence": "none",
+            "rationale": "macro snapshot unavailable",
+            "market_inputs": {},
+            "expected_tactical_behavior": [],
+            "q8_review_focus": [],
+        }
+
+    korea = snapshot.get("korea_indices") if isinstance(snapshot.get("korea_indices"), Mapping) else {}
+    sanity = korea_index_sanity(korea) if korea else {"status": "ok", "warning_count": 0, "warnings": [], "extreme_move_requires_confirmation": False}
+    macro_moves = snapshot.get("macro_moves") if isinstance(snapshot.get("macro_moves"), Mapping) else {}
+    global_sentiment = snapshot.get("global_sentiment") if isinstance(snapshot.get("global_sentiment"), Mapping) else {}
+
+    inputs = {
+        "kospi_pct": _change_pct(snapshot, "kospi"),
+        "kosdaq_pct": _change_pct(snapshot, "kosdaq"),
+        "kospi200_pct": _change_pct(snapshot, "kospi200"),
+        "krx_night_futures_pct": _change_pct(snapshot, "krx_night_futures"),
+        "breadth": _to_float(korea.get("breadth"), 0.0),
+        "nasdaq_pct": _change_pct(snapshot, "nasdaq"),
+        "sp500_pct": _change_pct(snapshot, "sp500"),
+        "dxy_pct": _to_float(macro_moves.get("dxy_pct"), _to_float(_indicator(snapshot, "dxy").get("change_pct"), 0.0)),
+        "usdkrw_pct": _to_float(_indicator(snapshot, "usdkrw").get("change_pct"), 0.0),
+        "vix_level": _to_float(macro_moves.get("vix_level"), 0.0),
+        "vix_pct": _to_float(macro_moves.get("vix_pct"), 0.0),
+        "us_10y_delta": _to_float(_indicator(snapshot, "us_10y_yield").get("delta"), 0.0),
+        "global_sentiment_score": _to_float(global_sentiment.get("score"), 0.0),
+    }
+    night = snapshot.get("krx_night_futures") if isinstance(snapshot.get("krx_night_futures"), Mapping) else {}
+    inputs["krx_night_futures_status"] = str(night.get("status") or _indicator(snapshot, "krx_night_futures").get("status") or "")
+    inputs["krx_night_futures_pressure"] = str(
+        night.get("direction_pressure") or _indicator(snapshot, "krx_night_futures").get("direction_pressure") or ""
+    )
+
+    korea_weak = inputs["kosdaq_pct"] <= -1.0 or inputs["kospi_pct"] <= -0.7 or inputs["breadth"] <= -0.35
+    night_gap_down = inputs["krx_night_futures_pct"] <= -1.0
+    night_gap_up = inputs["krx_night_futures_pct"] >= 1.0
+    us_tech_positive = inputs["nasdaq_pct"] >= 0.2 and inputs["sp500_pct"] >= 0.0
+    fx_pressure = inputs["usdkrw_pct"] >= 0.4 or inputs["dxy_pct"] >= 0.2
+    vix_pressure = inputs["vix_level"] >= 20.0 or inputs["vix_pct"] >= 8.0
+
+    if night_gap_down:
+        rail_id = "krx_night_futures_gap_down"
+        confidence = "high" if inputs["krx_night_futures_pct"] <= -2.0 else "medium"
+        behavior = [
+            "treat pre-open derivatives pressure as broad gap-down risk",
+            "require confirmed relative strength before entry",
+            "keep cost-edge and volume confirmation strict",
+            "compare blocked breakouts and reclaim setups against forward shadow outcomes",
+        ]
+        focus = ["breakout_not_ready", "below_vwap_reclaim_not_ready", "volume_confirmation_missing"]
+        rationale = "KRX KOSPI200 night futures showed sharp negative pressure before or near the regular session."
+    elif night_gap_up and not korea_weak:
+        rail_id = "krx_night_futures_gap_up"
+        confidence = "medium"
+        behavior = [
+            "watch opening momentum but avoid unconfirmed gap chase",
+            "compare opening momentum probes against delayed pullback entries",
+            "keep cost-edge active unless promoted policy says otherwise",
+        ]
+        focus = ["opening_momentum_probe", "breakout_not_ready", "pullback_not_mature"]
+        rationale = "KRX KOSPI200 night futures showed positive pre-open derivatives pressure."
+    elif us_tech_positive and korea_weak:
+        rail_id = "us_tech_risk_on_korea_weak"
+        confidence = "high" if inputs["breadth"] <= -0.45 or inputs["kosdaq_pct"] <= -1.5 else "medium"
+        behavior = [
+            "prefer confirmed relative-strength breakout or reclaim over broad pullback",
+            "do not weaken cost-edge or volume confirmation globally",
+            "review semiconductor and large-cap tech candidates against shadow breakout outcomes",
+        ]
+        focus = ["breakout_not_ready", "pullback_not_mature", "human_chart_sanity_guard_blocked"]
+        rationale = "US technology risk appetite was positive while Korean breadth and KOSDAQ were weak."
+    elif korea_weak and (fx_pressure or vix_pressure or inputs["global_sentiment_score"] < -0.2):
+        rail_id = "risk_off_breadth_collapse"
+        confidence = "high" if inputs["breadth"] <= -0.45 else "medium"
+        behavior = [
+            "avoid broad chase",
+            "require strong relative strength before entry",
+            "keep cost-edge and volume confirmation strict",
+        ]
+        focus = ["volume_confirmation_missing", "below_vwap_reclaim_not_ready", "breakout_not_ready"]
+        rationale = "Korean market breadth was weak with macro pressure signals active."
+    elif korea_weak:
+        rail_id = "defensive_rotation"
+        confidence = "medium"
+        behavior = [
+            "prefer defensive or isolated relative strength setups",
+            "avoid weak-volume pullback chase",
+            "measure opportunity cost of blocked breakouts",
+        ]
+        focus = ["breakout_not_ready", "pullback_not_mature"]
+        rationale = "Domestic market was weak without enough global confirmation for full risk-off classification."
+    elif us_tech_positive and not korea_weak:
+        rail_id = "liquidity_leader_rotation"
+        confidence = "medium"
+        behavior = [
+            "watch leader rotation and high-liquidity breakouts",
+            "compare selected candidates against scanner top leaders",
+            "keep cost-edge active",
+        ]
+        focus = ["breakout_not_ready", "below_vwap_reclaim_not_ready"]
+        rationale = "US technology risk appetite was positive and domestic weakness was not dominant."
+    else:
+        rail_id = "macro_pressure_no_trade" if fx_pressure or vix_pressure else "neutral_observation"
+        confidence = "low" if rail_id == "neutral_observation" else "medium"
+        behavior = [
+            "keep current gates unchanged",
+            "collect Q8 shadow evidence before policy changes",
+        ]
+        focus = ["volume_confirmation_missing", "below_vwap_reclaim_not_ready"]
+        rationale = "No stronger market rail was identified from the latest macro snapshot."
+
+    return {
+        "schema_version": "market_regime_rail_observation.v1",
+        "behavior_effect": "evaluation_only",
+        "available": True,
+        "source": snapshot.get("path") or "macro_snapshot",
+        "generated_at": snapshot.get("generated_at"),
+        "rail_id": rail_id,
+        "rail_confidence": confidence,
+        "rationale": rationale,
+        "market_inputs": inputs,
+        "market_input_sanity": sanity,
+        "expected_tactical_behavior": behavior,
+        "q8_review_focus": focus,
+        "secondary_flags": {
+            "korea_weak": korea_weak,
+            "night_gap_down": night_gap_down,
+            "night_gap_up": night_gap_up,
+            "us_tech_positive": us_tech_positive,
+            "fx_pressure": fx_pressure,
+            "vix_pressure": vix_pressure,
+        },
+    }
+```
+
+**Wrapper/callers/monkeypatch:** Preserve `classify_market_regime_rail(snapshot: Mapping[str,Any])->Dict[str,Any]` in SOURCE as thin wrapper; new TARGET owns all threshold/rail selection computation. Call-time `facade` resolves `korea_index_sanity`, `_change_pct`, `_to_float`, `_indicator`, `Mapping` and other globals; TARGET never imports SOURCE. Preserve exact thresholds, ordered branch precedence, confidence and output dictionary, `behavior_effect='evaluation_only'`. No policy/market action, Broker/Guard/Step5C/UEF changes.
+
+**Mandatory normal targeted:** `tests/test_p15_rf035_05h_a7_market_regime_classify_owner.py`. Input `{'available':False}` => rail_id='not_available', available=False, behavior_effect='evaluation_only'; fake krx_night_futures_pct=-2.1 with helper fakes => rail_id='krx_night_futures_gap_down', confidence='high'; fake neutral => rail_id='neutral_observation'. Compare original-vs-Owner-vs-wrapper full dict, patched helper and invalid input exception parity; pure dictionaries only. `python -m py_compile libs/reporting/market_regime_rail_review.py libs/reporting/market_regime_rail_classification_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a7_market_regime_classify_owner.py` normal exit0 (or exact stdlib smoke). Push A code/test and re-fetch blobs. If blocked **continue A8**.
+
+## A8 — RF-035 | SOURCE `libs/reporting/strategist_llm_summary.py::generate_strategist_llm_summary` blob `01e6ea1c6786a5f208d6b6afc6d12f18c8d40319` → TARGET `libs/reporting/strategist_llm_summary_writer_projection.py::generate_strategist_llm_summary` (404 A/integration)
+
+**Exact existing report-artifact BODY to MOVE (only fake/tmp effect in tests):**
+
+```python
+def generate_strategist_llm_summary(response_json_path: Path) -> Tuple[Path, Path, Dict[str, Any]]:
+    source_path = Path(response_json_path)
+    payload = build_strategist_llm_summary_payload(source_path)
+    md_path = source_path.with_name("strategist_summary.md")
+    json_path = source_path.with_name("strategist_summary.json")
+    json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    md_path.write_text(render_strategist_llm_summary_markdown(payload), encoding="utf-8-sig", newline="\n")
+    return md_path, json_path, payload
+```
+
+**Wrapper/callers/monkeypatch:** Keep original signature and return tuple in SOURCE; thin delegate to new Owner with `facade=sys.modules[__name__]`. In TARGET use `facade.Path`, `facade.build_strategist_llm_summary_payload`, `facade.render_strategist_llm_summary_markdown`, `facade.json.dumps` at call time; do not import SOURCE or duplicate JSON/Markdown writer body. Preserve output basenames, UTF-8 JSON indent=2/ensure_ascii=False, UTF-8-SIG Markdown newline='\\n', exception behavior and return path types. No real report dirs, network, LLM or operational writes; fake tmp_path only. Existing active render wrapper is already moved: DO NOT re-move its shadowed old definition.
+
+**Mandatory normal targeted:** `tests/test_p15_rf035_05h_a8_strategist_writer_owner.py`. Use tmp response.json and monkeypatch facade payload builder to `{'schema_version':'strategist_llm_summary.v1','llm_meta':{'status':'ok'}}`, renderer to '# stub\\n'; expected output paths `strategist_summary.md/json` in tmp dir, JSON payload round-trip equality, Markdown starts UTF-8 BOM and exact newline; wrapper vs Owner return and byte parity; patched builder ValueError propagates and writes nothing. `python -m py_compile libs/reporting/strategist_llm_summary.py libs/reporting/strategist_llm_summary_writer_projection.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_05h_a8_strategist_writer_owner.py` normal exit0 (or exact stdlib smoke). Commit/push A code/test and re-fetch remote HEAD/SOURCE/TARGET/TEST blobs; if blocked report exact blocker and retain local-only, do not invent G1/G2.
+## RESERVE_NOT_VERIFIED — A 0/6 after promotion, design backlog (NOT executable)
+
+The six previous VERIFIED reserves R1–R6 are now mandatory A1–A6 and **must not be counted as reserves**. Two further independent functions A7/A8 were verified for this order. No six additional unmoved, exclusive, safe pure/report-only functions have been fully proven on the latest A remote, so **RESERVE_VERIFIED=0/6**; do not fabricate candidates or reissue KEEP, previously moved, shadowed definitions, or already assigned functions. Next C03 must inspect other RF-035 reporting sources, actual active function BODY and target 404, caller/monkeypatch/IO and negative fixture, and publish 6 VERIFIED design-only reserves; effectful `generate_symbol_trade_report`, `generate_daily_report`, `generate_trade_explain_report`, `generate_market_regime_rail_review`, `generate_agent_pipeline_trace_report` remain **NOT_VERIFIED**, not executable reserves until protected write/real-mode impact and target ownership are proven. Do not ask A to choose work from this paragraph.
+
+## Required #11 report and push verification
+
+Report `ORDER_ID=A-20261031-05 | CANONICAL_HEAD | ORDER_BLOB_SHA | A_REMOTE_SHA_BEFORE→AFTER | A1..A8 IMPLEMENTED/REMOTE_DONE/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED | exact normal test command/exit and SOURCE/TARGET/TEST blobs | FIRST_BLOCKER | NEXT`. START/END/ELAPSED only if directly measured, never infer from comments. Commit only code/tests to A branch, normal push and refetch. C03 publication itself is **not** code G1/G2/G3 or RF DONE. If any item fails, continue next safe one; no D00/RF/queue reading or autonomous task selection.
