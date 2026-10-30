@@ -1,4 +1,12 @@
-NaN### A1 — RF-035 | SOURCE `libs/reporting/strategist_llm_summary.py::_as_dict` (blob `2d1b76fa3f53a2a18e3eb116fc38fcea255d64a9`, L35–38) → TARGET `libs/reporting/strategist_llm_summary_primitives.py::as_dict`
+# Agentra FAST-3 — Claude A 단일 실행 주문 (A1–A9)
+
+**정본/권한:** 먼저 원격 `integration/p1.5`에서 이 파일 하나만 읽고, 자신의 `work/p15-a-reporter-pure-20261021` 브랜치에서 아래 A1–A9의 실제 BODY MOVE를 순서대로 모두 수행한다. D00/RF/INDEX/T00/다른 담당 문서는 개발자에게 탐색시키지 않는다. 시작 시 integration HEAD, 이 문서 blob, 자기 원격 HEAD를 고정하고, 이미 원격에 MOVE된 동일 SOURCE/TARGET은 REMOTE_DONE으로 중복 변경·재시험하지 않는다.
+
+**각 항목 완료:** 안전한 source body를 TARGET 단일 owner로 옮기고 SOURCE에는 원시그니처 thin wrapper와 호출시점 monkeypatch seam을 보존한다. 해당 항목의 2~4개 이상 fixture로 정상 targeted pytest 또는 동등한 Python smoke exit0를 확인하고 code/test만 커밋·자기 브랜치에 정상 push한 뒤 원격 ref와 SOURCE/TARGET/test blob을 재조회한다. 첫 PASS·부분 push 차단으로 종료하지 말고 다음 안전 항목을 계속한다. 로컬 전용 커밋은 G1이 아니다. 각 item별 결과/실측 START·END/테스트 exit/원격 SHA·FIRST_BLOCKER를 Issue #11 댓글 하나로 보고한다. 전체 peer·매 RF -O·CI는 필수로 부활시키지 않는다.
+
+**금지:** D00/C01/C02/RF/STATUS/HANDOFF 등 문서 변경, 타인 브랜치, 실계좌·실주문·Broker/Guard/Step5C/UEF/RunLab 운영 효과, force push. 기존 주문의 시작 버전은 실행 중 새 지시가 나와도 소급 무효화하지 않는다.
+
+### A1 — RF-035 | SOURCE `libs/reporting/strategist_llm_summary.py::_as_dict` (blob `2d1b76fa3f53a2a18e3eb116fc38fcea255d64a9`, L35–38) → TARGET `libs/reporting/strategist_llm_summary_primitives.py::as_dict`
 
 **Move body:** `dict(value) if isinstance(value, dict) else {}`; shallow copy and type gate. Keep SOURCE `_as_dict` original signature as a thin wrapper, preserve call-time patch seam and exact caller behavior; use the single target module (create if absent). **Fixture inputs→expected (2–4+):** `{'x':1}`→equal new dict (`is not` input); `[]`→`{}`; dict subclass→plain dict; input unchanged. **Targeted test:** `tests/test_p15_summary_primitive_dict_owner.py`. **Blocked:** record exact error/SHA, leave this item intact and continue the next item; no effectful workaround. **Delivery:** code/test-only commit, actor-branch push, remote ref+three blobs verification.
 
