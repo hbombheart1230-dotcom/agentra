@@ -22,3 +22,10 @@ def canonical_strategist_path_for_response(source_path: Path) -> Path | None:
             return None
     reports_root = llm_dir.parent
     return reports_root / "canonical" / day_dir.name / run_dir.name / "strategist.json"
+
+
+def trade_strategist_input_path_for_response(source_path: Path) -> Path | None:
+    if source_path.parent.name != "reports":
+        return None
+    candidate = source_path.parent.parent / "strategist_input.json"
+    return candidate if candidate.exists() else None

@@ -26,6 +26,10 @@ from libs.reporting import strategist_llm_summary_sample_counts as _sample_count
 from libs.reporting import strategist_llm_summary_first_values as _first_values_owner
 from libs.reporting import strategist_llm_summary_legacy_watch_status as _legacy_watch_status_owner
 from libs.reporting import strategist_llm_summary_legacy_scores as _legacy_scores_owner
+from libs.reporting import strategist_llm_summary_primitives as _primitives_owner
+from libs.reporting import strategist_llm_summary_directive_projection as _directive_projection_owner
+from libs.reporting import strategist_llm_summary_json_projection as _json_projection_owner
+from libs.reporting import strategist_llm_summary_markdown_helpers as _markdown_helpers_owner
 
 
 def _utc_now_iso() -> str:
@@ -33,16 +37,15 @@ def _utc_now_iso() -> str:
 
 
 def _as_dict(value: Any) -> Dict[str, Any]:
-    return dict(value) if isinstance(value, dict) else {}
+    return _primitives_owner.as_dict(value)
 
 
 def _as_list(value: Any) -> List[Any]:
-    return list(value) if isinstance(value, list) else []
+    return _primitives_owner.as_list(value)
 
 
 def _text(value: Any, default: str = "-") -> str:
-    raw = str(value or "").strip()
-    return raw if raw else default
+    return _primitives_owner.text(value, default)
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
@@ -91,10 +94,7 @@ def _canonical_strategist_path_for_response(source_path: Path) -> Path | None:
 
 
 def _trade_strategist_input_path_for_response(source_path: Path) -> Path | None:
-    if source_path.parent.name != "reports":
-        return None
-    candidate = source_path.parent.parent / "strategist_input.json"
-    return candidate if candidate.exists() else None
+    return _path_projection_owner.trade_strategist_input_path_for_response(source_path)
 
 
 def _load_canonical_strategist(source_path: Path) -> Tuple[Path | None, Dict[str, Any]]:
@@ -130,8 +130,7 @@ def _headline_count_from_sample_map(value: Any) -> int:
 
 
 def _directive(payload: Dict[str, Any], key: str) -> Dict[str, Any]:
-    directives = _as_dict(payload.get("strategy_adjustment_directives"))
-    return _as_dict(directives.get(key))
+    return _directive_projection_owner.directive(payload, key, facade=sys.modules[__name__])
 
 
 def _compact_operator_summary(value: Dict[str, Any]) -> Dict[str, Any]:
@@ -209,10 +208,7 @@ def _strategy_detail_from_sources(payload: Dict[str, Any], canonical: Dict[str, 
 
 
 def _json_inline(value: Any) -> str:
-    try:
-        return json.dumps(value, ensure_ascii=False, sort_keys=True)
-    except Exception:
-        return str(value)
+    return _json_projection_owner.json_inline(value)
 
 
 def _watch_scope_label(value: Dict[str, Any]) -> str:
@@ -228,10 +224,7 @@ def _playbook_flow_label(detail: Dict[str, Any]) -> str:
 
 
 def _score_value(value: Any) -> float:
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return float("-inf")
+    return _legacy_scores_owner.score_value(value)
 
 
 def _score_label(value: Any) -> str:
@@ -348,8 +341,7 @@ def build_strategist_llm_summary_payload(response_json_path: Path) -> Dict[str, 
 
 
 def _bullet_lines(items: List[Any], *, empty: str = "-") -> List[str]:
-    rows = [f"- {item}" for item in items if str(item or "").strip()]
-    return rows if rows else [f"- {empty}"]
+    return _markdown_helpers_owner.bullet_lines(items, empty=empty)
 
 
 def _directive_line(label: str, value: Dict[str, Any]) -> str:
@@ -534,9 +526,7 @@ def render_strategist_llm_summary_markdown(payload: Dict[str, Any]) -> str:
 
 
 def _monitor_adjustment_lines(value: Dict[str, Any]) -> List[str]:
-    if not value:
-        return ["- -"]
-    return [f"- {key}: {value.get(key)}" for key in sorted(value)]
+    return _markdown_helpers_owner.monitor_adjustment_lines(value)
 
 
 def _render_stage_specific_summary_markdown(payload: Dict[str, Any]) -> str:
