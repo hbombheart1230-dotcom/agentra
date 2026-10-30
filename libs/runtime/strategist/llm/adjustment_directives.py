@@ -6,42 +6,12 @@ capture, no getattr fallback), so monkeypatching matches the original module-lev
 Owner never imports the facade.
 """
 from __future__ import annotations
+from libs.runtime.strategist.llm.adjustment_directives_infer_policy_adjustment_direction_r3 import _infer_policy_adjustment_direction_r3_impl as _infer_policy_adjustment_direction_owner
+from libs.runtime.strategist.llm.adjustment_directives_normalize_rejected_strategy_reasons_ import _normalize_rejected_strategy_reasons_r3_impl as _normalize_rejected_strategy_reasons_owner
 
 
 def _infer_policy_adjustment_direction_r3_impl(baseline_summary, current_summary, *, facade):
-    tighter = 0
-    looser = 0
-    baseline = dict(baseline_summary or {}) if isinstance(baseline_summary, dict) else {}
-    current = dict(current_summary or {}) if isinstance(current_summary, dict) else {}
-    higher_is_tighter = {"volume_ratio_min", "pullback_min_pct", "breakout_buffer_pct", "intent_cooldown_sec"}
-    lower_is_tighter = {"max_extended_from_vwap_pct", "pullback_max_pct", "reclaim_tolerance_pct"}
-
-    for key in higher_is_tighter:
-        if key in baseline and key in current and baseline.get(key) != current.get(key):
-            if float(current.get(key) or 0.0) > float(baseline.get(key) or 0.0):
-                tighter += 1
-            else:
-                looser += 1
-    for key in lower_is_tighter:
-        if key in baseline and key in current and baseline.get(key) != current.get(key):
-            if float(current.get(key) or 0.0) < float(baseline.get(key) or 0.0):
-                tighter += 1
-            else:
-                looser += 1
-    if "min_extended_from_vwap_pct" in baseline and "min_extended_from_vwap_pct" in current:
-        if baseline.get("min_extended_from_vwap_pct") != current.get("min_extended_from_vwap_pct"):
-            if float(current.get("min_extended_from_vwap_pct") or 0.0) > float(baseline.get("min_extended_from_vwap_pct") or 0.0):
-                tighter += 1
-            else:
-                looser += 1
-
-    if tighter and not looser:
-        return "tighten"
-    if looser and not tighter:
-        return "relax"
-    if tighter or looser:
-        return "mixed"
-    return "none"
+    return _infer_policy_adjustment_direction_owner(baseline_summary, current_summary, facade=facade)
 
 
 def _normalize_policy_adjustment_surface_r3_impl(
@@ -269,35 +239,7 @@ def _normalize_strategy_adjustment_directives_r3_impl(
 
 
 def _normalize_rejected_strategy_reasons_r3_impl(raw, *, tactical_strategy, strategy_scores, facade):
-    out: Dict[str, str] = {}
-    if isinstance(raw, dict):
-        for key, value in raw.items():
-            name = facade.canonical_tactic_key(key)
-            if name not in facade._TACTICAL_STRATEGIES or name == tactical_strategy:
-                continue
-            reason = facade._clean_directive_reason(value, default="")
-            if reason:
-                out[name] = reason
-            if len(out) >= 6:
-                break
-    if out:
-        return out
-    selected_score = facade._unit_score(strategy_scores.get(tactical_strategy), 0.0)
-    ordered = sorted(
-        [
-            (name, facade._unit_score(score, 0.0))
-            for name, score in dict(strategy_scores or {}).items()
-            if name in facade._TACTICAL_STRATEGIES and name != tactical_strategy
-        ],
-        key=lambda row: row[1],
-        reverse=True,
-    )
-    for name, score in ordered[:4]:
-        if score <= selected_score:
-            out[name] = "score_below_selected_tactical_strategy"
-        else:
-            out[name] = "not_selected_after_playbook_and_risk_clamp"
-    return out
+    return _normalize_rejected_strategy_reasons_owner(raw, tactical_strategy=tactical_strategy, strategy_scores=strategy_scores, facade=facade)
 
 
 def _sanitize_reason_list_r3_impl(raw, defaults, *, facade):

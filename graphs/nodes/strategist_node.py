@@ -44,6 +44,12 @@ from libs.runtime.strategist_packet_visibility import (
     summarize_read_model_facts,
 )
 from libs.runtime.strategist.llm.stage_contracts import build_stage_specific_contract
+from libs.runtime.strategist.llm.stage_prompt_contracts import (
+    stage_specific_role_boundary,
+    stage_specific_task_requirement,
+    stage_specific_user_requirement,
+)
+from libs.runtime.strategist.llm.stage_call_kind import resolve_strategist_llm_call_kind
 from libs.runtime.monitor_policy import (
     MonitorEntryPolicy,
     build_monitor_entry_policy_bundle,
@@ -607,72 +613,15 @@ def _derive_stage_specific_common_overrides(out: Dict[str, Any]) -> None:
 
 
 def _stage_specific_role_boundary(call_kind: str) -> str:
-    if call_kind == "selected_symbol_tactical_refresh":
-        return (
-            "You may recommend how to watch the Scanner-selected symbol and runner-ups, "
-            "but you do not approve orders. Monitor calculates the final entry signal and Commander owns hard risk gates. "
-        )
-    if call_kind == "stale_intraday_hold_review":
-        return (
-            "You review an already-held intraday position for hold, tighter exit handling, or exit pressure, "
-            "but you do not place or approve sell orders. Monitor and Commander retain hard exit authority. "
-        )
-    if call_kind == "end_of_day_carry_review":
-        return (
-            "You review held positions near the close for flatten/carry risk, "
-            "but you do not bypass deterministic closeout, broker truth, weekend, or risk controls. "
-        )
-    return "Do not select final stock and do not produce order instructions. "
+    return stage_specific_role_boundary(call_kind)
 
 
 def _stage_specific_task_requirement(call_kind: str) -> str:
-    if call_kind == "selected_symbol_tactical_refresh":
-        return (
-            "Your role is to compare Scanner rank #1 with compressed runner-ups, use selected_symbol_memory only as bounded symbol-specific evidence when memory is enabled, "
-            "and output selected_symbol_decision, target_symbol, target_rank, runner_up_order, monitor_instruction, entry_policy_delta, memory_usage, market_regime_rail, news_quality, risk_off_exception_conditions, news_event_intelligence_usage, commander_actionability, confidence, and reason. "
-        )
-    if call_kind == "stale_intraday_hold_review":
-        return (
-            "Your role is to review whether the held position thesis is still intact, whether exit pressure is rising, and whether the current operating horizon should be maintained, shortened, or extended for this symbol. "
-            "Do not blindly preserve the entry horizon. Stage 3 may revise only same-session horizons; overnight carry remains a Stage 4 decision. "
-            "Output hold_review_decision, horizon_action, current_horizon, proposed_horizon, revised_hold_window, exit_pressure, thesis_status, evidence_confidence, data_quality, monitor_adjustment, priority_exit_triggers, next_check_minutes, and reason. "
-        )
-    if call_kind == "end_of_day_carry_review":
-        return (
-            "Your role is to review each held position near session close for carry risk versus same-day flattening. "
-            "Output carry_review, portfolio_level_decision, and risk_note. "
-        )
-    return (
-        "Your role is to choose exactly ONE playbook, provide a short rationale, produce a realistic and bounded monitor_entry_policy, propose tactical strategy detail, propose candidate_watch_policy, and produce explicit strategy_adjustment_directives that indicate what should change, what should be maintained, and why. "
-    )
+    return stage_specific_task_requirement(call_kind)
 
 
 def _stage_specific_user_requirement(call_kind: str) -> str:
-    if call_kind == "selected_symbol_tactical_refresh":
-        return (
-            "Decision requirements: return the Stage 2 selected-symbol tactical refresh contract only. "
-            "Compare rank #1 and runner-ups in one call, decide whether to watch rank #1, avoid rank #1, tighten rank #1 gates, cascade to runner-ups, or no-trade. "
-            "Always include market_regime_rail, news_quality, and risk_off_exception_conditions so Commander and reports can audit whether market/news context changed the recommendation. "
-            "If news_event_intelligence exists, include news_event_intelligence_usage as observation-only evidence usage; it must not imply direct BUY/SELL or gate bypass. "
-            "Do not output a direct BUY/SELL. "
-        )
-    if call_kind == "stale_intraday_hold_review":
-        return (
-            "Decision requirements: return the Stage 3 stale intraday hold review contract only. "
-            "Decide hold, tighten_exit, exit_now, or wait_until_next_check using the held position thesis, net PnL, VWAP, drawdown, time decay, and market context. "
-            "Explicitly decide whether the active same-session horizon should be maintained, shortened, or extended. Do not authorize overnight carry in Stage 3. "
-            "Keep the reason tied to the held symbol under review and do not attribute unrelated candidate or market theme labels to that position. "
-            "Do not output a direct SELL order. "
-        )
-    if call_kind == "end_of_day_carry_review":
-        return (
-            "Decision requirements: return the Stage 4 end-of-day carry review contract only. "
-            "For each held position decide carry_overnight, flatten_today, or reduce_or_flatten, then provide a portfolio-level carry decision. "
-            "Do not bypass hard closeout, weekend, broker-truth, or risk controls. "
-        )
-    return (
-        "Decision requirements: choose exactly ONE playbook, provide a short but concrete rationale, produce tactical_strategy, strategy_scores, rejected_strategy_reasons, candidate_watch_policy, a realistic and bounded monitor_entry_policy, and strategy_adjustment_directives that clearly state whether to maintain, tighten, relax, rebalance, deprioritize, prefer, or switch, which fields, axes, or playbooks are affected, and why this action is justified by deterministic evidence. "
-    )
+    return stage_specific_user_requirement(call_kind)
 
 
 def _stage_specific_llm_contract(call_kind: str, base_contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -1271,45 +1220,7 @@ def _load_deterministic_read_models(state: Dict[str, Any], candidates: List[str]
 
 
 def _resolve_strategist_llm_call_kind(payload: Dict[str, Any]) -> str:
-    compact = payload if isinstance(payload, dict) else {}
-    context = compact.get("commander_refresh_context") if isinstance(compact.get("commander_refresh_context"), dict) else {}
-    if bool(context.get("requested")):
-        scope = str(context.get("refresh_scope") or "").strip().lower()
-        reason = str(context.get("reason") or "").strip().lower()
-        carry_state = str(context.get("carry_state") or "").strip().lower()
-        if (
-            "closeout" in scope
-            or "closeout" in reason
-            or "end_of_day" in scope
-            or "end_of_day" in reason
-            or "eod" in scope
-            or "eod" in reason
-            or "overnight_review" in scope
-            or "overnight_review" in reason
-            or "overnight" in reason
-            or reason in {"end_of_day_carry_review", "session_closeout_carry_review"}
-        ):
-            return "end_of_day_carry_review"
-        if (
-            "open_position" in scope
-            or "hold" in scope
-            or "position" in scope
-            or "hold" in reason
-            or "loss_threshold" in reason
-            or "preopen_carry" in reason
-            or carry_state
-        ):
-            return "stale_intraday_hold_review"
-        return "selected_symbol_tactical_refresh"
-    explicit = str(compact.get("resolved_call_kind") or compact.get("call_kind") or "").strip().lower()
-    if explicit in {
-        "selected_symbol_tactical_refresh",
-        "stale_intraday_hold_review",
-        "end_of_day_carry_review",
-        "market_strategy_frame",
-    }:
-        return explicit
-    return "market_strategy_frame"
+    return resolve_strategist_llm_call_kind(payload)
 
 
 def _hide_stage1_symbol_memory(compact: Dict[str, Any]) -> None:
