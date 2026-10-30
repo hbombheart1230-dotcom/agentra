@@ -6,6 +6,40 @@
 
 **Per-item mandatory MOVE:** Move actual existing calculation BODY, never copy-and-leave-duplicate. Preserve original SOURCE function name, signature, defaults, annotations, docstring where present, and a thin delegating wrapper. Target can take extra keyword-only `facade`; wrapper passes `facade=sys.modules[__name__]` (SOURCE already imports sys). Use call-time `facade.NAME` for any original global/callee that can be monkeypatched; no reverse TARGET→SOURCE import. Preserve exact output bytes, order, identity, laziness, exception types, original effect boundaries. New target file is owned by this actor and RF. Test **before/after golden parity** in fake/tmp_path only, including explicit normal and negative fixtures below. For each item run `.venv/bin/python -m pytest -q -p no:cacheprovider <targeted test>` and record actual exit; if pytest unavailable use reproducible stdlib normal smoke, do not fabricate PASS. FAST-3 G2 needs one normal targeted exit0; -O/full peer/hosted CI are not mandatory. Commit **only code + new targeted test** for that item, push normally to authorized actor branch, fetch exact remote ref and SOURCE/TARGET/TEST blob SHA after every push. Terminal HTTPS failure is PUSH_BLOCKED only: preserve local commit, use approved connected GitHub write only if exact reviewed tree equivalence can be proven; otherwise report LOCAL_ONLY and proceed to next safe non-overwriting item. No probe commit, no main, no document/RF/STATUS/C04/C05/HANDOFF writes. No protected Broker/Guard/Step5C/UEF, real orders, live network, RunLab runtime, operational DB/state, frozen oracle, production filesystem writes or forced push. C04 integrates; C05 alone decides G1/G2/G3 and RF DONE. Do **all 8** in order; a single PASS/commit/push failure is not a stop condition.
 
+## 2026-10-30 19h C03 syntax-blocker correction — SAME B1–B8, no reassignment
+
+**Evidence:** #12 comment `6519207511` reports auto-generated facade wrapper `SyntaxError` at `py_compile`, **no B commit/push/test**, B remote still `f3a907bde784bfa5056100161c8b461c94562589`. Thus these eight are **PENDING/BLOCKED_BY_GENERATOR, not REMOTE_DONE**. Do not run a bulk signature generator or leave any generated invalid code. Start from clean authorized B branch, implement explicit signatures one item at a time, `.venv/bin/python -m py_compile scripts/research/run_phase5_validation_bundle.py <changed target>` before targeted pytest. A syntax error in one item is **item-local BLOCKED**, restore only that item's uncommitted changes safely and continue next independently safe item. Do not discard earlier preserved local commits or overwrite another task. No need to repeat past RF-063 PASS.
+
+**Exact SOURCE thin wrapper signatures (copy signatures, not code bodies; preserve annotations/imports):** SOURCE already imports `sys`. Import TARGET modules as `phase5_read`, `phase5_markdown`, `phase5_cli` from `scripts.research`; TARGET modules must not import SOURCE. Each TARGET implements actual old calculation body and optional keyword-only `facade` for call-time monkeypatch, never `globals().update`.
+
+```python
+def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
+    return phase5_read._iter_events(path, facade=sys.modules[__name__])
+
+def _read_json(path: Path) -> Dict[str, Any]:
+    return phase5_read._read_json(path, facade=sys.modules[__name__])
+
+def _to_day_key(ts: Any) -> Optional[str]:
+    return phase5_read._to_day_key(ts, facade=sys.modules[__name__])
+
+def _resolve_day(event_log_path: Path, requested_day: Optional[str]) -> str:
+    return phase5_read._resolve_day(event_log_path, requested_day, facade=sys.modules[__name__])
+
+def _safe_rel(path: Path, root: Path) -> str:
+    return phase5_read._safe_rel(path, root)
+
+def _pick_latest_canonical_run_id(reports_root: Path, day: str) -> str:
+    return phase5_read._pick_latest_canonical_run_id(reports_root, day)
+
+def _render_bundle_markdown(payload: Dict[str, Any], *, repo_root: Path) -> str:
+    return phase5_markdown._render_bundle_markdown(payload, repo_root=repo_root, facade=sys.modules[__name__])
+
+def _build_parser() -> argparse.ArgumentParser:
+    return phase5_cli._build_parser(facade=sys.modules[__name__])
+```
+
+**CRITICAL:** B1 must retain nested lazy generator and `facade.json.loads` at *iteration* time, not import/call time. B3 `facade.datetime/timezone`; B4 `facade._iter_events/_to_day_key/date`; B7 `facade.json.dumps/_safe_rel`; B8 `facade.argparse.ArgumentParser`. Use original function body from the fixed source blob below, not textual regex reconstruction. TARGET function may add `*, facade` even when SOURCE cannot. Run `py_compile` and then per-item normal scoped test; commit/push code+tests only and re-fetch remote exact SHA/blob. This amendment changes the **order blob only**, not the original eight item identities. Continue all B1–B8; no C01/D00/RF self-edits.
+
 ### B1 — RF-065 | SOURCE `scripts/research/run_phase5_validation_bundle.py::_iter_events` (blob `7f7b2aa0717131b4de178050dd9b3a55051561ad`, L29–47) → TARGET `scripts/research/phase5_validation_read_projection.py::_iter_events`
 
 **MOVE BODY:** Move missing-path→[] and nested lazy `_gen()` generator that opens UTF-8 JSONL only on iteration, strips blanks, ignores malformed JSON, yields dict objects only. Preserve laziness, exceptions from open/read and iteration order.
