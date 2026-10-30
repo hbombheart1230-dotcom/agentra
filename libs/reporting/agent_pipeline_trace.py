@@ -12,6 +12,8 @@ from libs.reporting.reasoning_trace import (
 )
 from libs.reporting.strategy_read_model import build_news_symbol_linkage_view
 import sys as _r3_sys
+from libs.reporting import agent_pipeline_trace_read_projection as read_projection
+from libs.reporting import agent_pipeline_trace_scalar_projection as scalar_projection
 from libs.agents.reporter.narrative.pipeline_trace_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _to_epoch_r4_impl,
     _latest_decision_trace_payload_r4_impl,
@@ -30,21 +32,7 @@ from libs.agents.reporter.narrative.agent_pipeline_trace_r8_bodies_01 import (  
 
 
 def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-    out: List[Dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for raw in f:
-            line = raw.strip()
-            if not line:
-                continue
-            try:
-                obj = json.loads(line)
-            except Exception:
-                continue
-            if isinstance(obj, dict):
-                out.append(obj)
-    return out
+    return read_projection._iter_jsonl(path, facade=_r3_sys.modules[__name__])
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
@@ -52,31 +40,19 @@ def _to_epoch(ts: Any) -> Optional[int]:
 
 
 def _utc_day(ts: Any) -> Optional[str]:
-    e = _to_epoch(ts)
-    if e is None:
-        return None
-    return datetime.fromtimestamp(e, tz=timezone.utc).strftime("%Y-%m-%d")
+    return scalar_projection._utc_day(ts, facade=_r3_sys.modules[__name__])
 
 
 def _safe_int(v: Any, default: int = 0) -> int:
-    try:
-        return int(float(v))
-    except Exception:
-        return int(default)
+    return scalar_projection._safe_int(v, default=default)
 
 
 def _safe_float(v: Any, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return float(default)
+    return scalar_projection._safe_float(v, default=default)
 
 
 def _latest_row(rows: List[Dict[str, Any]], *, stage: str, event: str) -> Dict[str, Any]:
-    for row in reversed(rows):
-        if str(row.get("stage") or "").strip() == stage and str(row.get("event") or "").strip() == event:
-            return row
-    return {}
+    return scalar_projection._latest_row(rows, stage=stage, event=event)
 
 
 def _latest_decision_trace_payload(rows: List[Dict[str, Any]], *, event: str, agent: str) -> Dict[str, Any]:
@@ -100,13 +76,7 @@ def _summarize_scanner_sources(candidates: List[Dict[str, Any]]) -> Dict[str, in
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        obj = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return obj if isinstance(obj, dict) else {}
+    return read_projection._read_json(path, facade=_r3_sys.modules[__name__])
 
 
 def _format_strategist_directives_summary(directives: Dict[str, Any]) -> str:

@@ -3,6 +3,9 @@ from __future__ import annotations
 from collections import Counter
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
+import sys as _p15_sys
+from libs.reporting import strategist_llm_evaluation_projection as projection
+
 
 def _text(value: Any) -> str:
     text = str(value or "").strip()
@@ -92,46 +95,11 @@ def _shadow_rows(payloads: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
 
 
 def _tactic_performance(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
-    grouped: Dict[str, List[Mapping[str, Any]]] = {}
-    for row in rows:
-        tactic = _tactic(row)
-        if not tactic:
-            continue
-        grouped.setdefault(tactic, []).append(row)
-    out: List[Dict[str, Any]] = []
-    for tactic, items in grouped.items():
-        returns = [_result_pct(row) for row in items]
-        wins = sum(1 for value in returns if value > 0.0)
-        losses = sum(1 for value in returns if value < 0.0)
-        out.append(
-            {
-                "name": tactic,
-                "shape": _shape_from_tactic(tactic),
-                "count": len(items),
-                "win_count": wins,
-                "loss_count": losses,
-                "win_rate": float(wins) / float(len(items)) if items else 0.0,
-                "avg_return_pct": sum(returns) / float(len(returns)) if returns else 0.0,
-            }
-        )
-    out.sort(key=lambda row: (int(row.get("count") or 0), abs(float(row.get("avg_return_pct") or 0.0))), reverse=True)
-    return out
+    return projection._tactic_performance(rows, facade=_p15_sys.modules[__name__])
 
 
 def _shadow_shape_diagnostics(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    shapes = Counter(_shape_from_reason(_text(row.get("reason")), _text(row.get("primary_failure_axis"))) for row in rows)
-    would_enter_shapes = Counter(
-        _shape_from_reason(_text(row.get("reason")), _text(row.get("primary_failure_axis")))
-        for row in rows
-        if _bool(row.get("would_enter"))
-    )
-    opening_would = sum(1 for row in rows if _bool(row.get("opening_momentum_probe_would_enter")) or _bool(row.get("opening_largecap_surge_would_enter")))
-    return {
-        "candidate_count": len(rows),
-        "by_shape": _top_counter(shapes),
-        "would_enter_by_shape": _top_counter(would_enter_shapes),
-        "opening_would_enter_count": opening_would,
-    }
+    return projection._shadow_shape_diagnostics(rows, facade=_p15_sys.modules[__name__])
 
 
 def _quality_label(*, rows: Sequence[Mapping[str, Any]], primary_tactic: str, shadow: Dict[str, Any]) -> str:
