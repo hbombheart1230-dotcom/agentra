@@ -1,34 +1,25 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, Mapping
 
 from libs.market.korea_index_sanity import korea_index_sanity
+from libs.reporting import market_regime_rail_review_scalar_projection as _scalar_owner
+from libs.reporting import market_regime_rail_review_markdown_projection as _markdown_owner
 
 
 def _to_float(value: Any, default: float = 0.0) -> float:
-    try:
-        if value in (None, ""):
-            return float(default)
-        return float(value)
-    except Exception:
-        return float(default)
+    return _scalar_owner._to_float(value, default)
 
 
 def _indicator(snapshot: Mapping[str, Any], key: str) -> Mapping[str, Any]:
-    macro = snapshot.get("macro_indicators") if isinstance(snapshot.get("macro_indicators"), Mapping) else {}
-    indicators = macro.get("indicators") if isinstance(macro.get("indicators"), Mapping) else {}
-    row = indicators.get(key) if isinstance(indicators.get(key), Mapping) else {}
-    return row
+    return _scalar_owner._indicator(snapshot, key, facade=sys.modules[__name__])
 
 
 def _change_pct(snapshot: Mapping[str, Any], key: str) -> float:
-    index_moves = snapshot.get("index_moves") if isinstance(snapshot.get("index_moves"), Mapping) else {}
-    move_key = f"{key}_pct"
-    if move_key in index_moves:
-        return _to_float(index_moves.get(move_key), 0.0)
-    return _to_float(_indicator(snapshot, key).get("change_pct"), 0.0)
+    return _scalar_owner._change_pct(snapshot, key, facade=sys.modules[__name__])
 
 
 def load_latest_macro_snapshot(day: str, *, root: Path = Path("data/logs/macro_indicators")) -> Dict[str, Any]:
@@ -183,63 +174,7 @@ def classify_market_regime_rail(snapshot: Mapping[str, Any]) -> Dict[str, Any]:
 
 
 def render_market_regime_rail_markdown(rail: Mapping[str, Any], *, day: str) -> str:
-    inputs = rail.get("market_inputs") if isinstance(rail.get("market_inputs"), Mapping) else {}
-    lines = [
-        f"# Market Regime Rail Review ({day})",
-        "",
-        "This report is read-only evaluation output. It does not change trading behavior.",
-        "",
-        "## Rail",
-        "",
-        f"- rail_id: `{rail.get('rail_id') or 'not_available'}`",
-        f"- confidence: `{rail.get('rail_confidence') or 'none'}`",
-        f"- behavior_effect: `{rail.get('behavior_effect') or 'evaluation_only'}`",
-        f"- source: `{rail.get('source') or '-'}`",
-        f"- rationale: {rail.get('rationale') or '-'}",
-        "",
-        "## Market Inputs",
-        "",
-    ]
-    for key in (
-        "kospi_pct",
-        "kosdaq_pct",
-        "kospi200_pct",
-        "krx_night_futures_pct",
-        "breadth",
-        "nasdaq_pct",
-        "sp500_pct",
-        "usdkrw_pct",
-        "dxy_pct",
-        "vix_level",
-        "vix_pct",
-        "global_sentiment_score",
-    ):
-        lines.append(f"- {key}: **{float(inputs.get(key) or 0.0):.4f}**")
-    if inputs.get("krx_night_futures_status") or inputs.get("krx_night_futures_pressure"):
-        lines.append(f"- krx_night_futures_status: `{inputs.get('krx_night_futures_status') or '-'}`")
-        lines.append(f"- krx_night_futures_pressure: `{inputs.get('krx_night_futures_pressure') or '-'}`")
-    sanity = rail.get("market_input_sanity") if isinstance(rail.get("market_input_sanity"), Mapping) else {}
-    warnings = sanity.get("warnings") if isinstance(sanity.get("warnings"), list) else []
-    if warnings:
-        lines += ["", "## Market Input Sanity", ""]
-        lines.append(f"- status: `{sanity.get('status') or 'warning'}`")
-        lines.append(f"- extreme_move_requires_confirmation: `{bool(sanity.get('extreme_move_requires_confirmation'))}`")
-        for row in warnings[:8]:
-            if not isinstance(row, Mapping):
-                continue
-            lines.append(
-                "- warning: "
-                f"`{row.get('code')}` {row.get('index') or '-'} "
-                f"change_pct={float(row.get('change_pct') or 0.0):.4f} "
-                f"severity=`{row.get('severity') or '-'}`"
-            )
-    lines += ["", "## Expected Tactical Behavior", ""]
-    for item in list(rail.get("expected_tactical_behavior") or []):
-        lines.append(f"- {item}")
-    lines += ["", "## Q8 Review Focus", ""]
-    for item in list(rail.get("q8_review_focus") or []):
-        lines.append(f"- `{item}`")
-    return "\n".join(lines).rstrip() + "\n"
+    return _markdown_owner.render_market_regime_rail_markdown(rail, day=day, facade=sys.modules[__name__])
 
 
 def generate_market_regime_rail_review(*, reports_root: Path, day: str) -> Dict[str, Any]:
