@@ -4,21 +4,18 @@ from collections import Counter
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
 import sys as _p15_sys
+from libs.reporting import strategist_llm_evaluation_formatting as _formatting_owner
 from libs.reporting import strategist_llm_evaluation_projection as projection
+from libs.reporting import strategist_llm_evaluation_rows as _rows_owner
+from libs.reporting import strategist_llm_evaluation_scalar as _scalar_owner
 
 
 def _text(value: Any) -> str:
-    text = str(value or "").strip()
-    return "" if text.lower() in {"", "-", "none", "null", "unknown", "not_captured"} else text
+    return _scalar_owner._text(value)
 
 
 def _float(value: Any, default: float = 0.0) -> float:
-    try:
-        if value in (None, ""):
-            return float(default)
-        return float(value)
-    except Exception:
-        return float(default)
+    return _scalar_owner._float(value, default)
 
 
 def _bool(value: Any) -> bool:
@@ -47,51 +44,23 @@ def _tactic(row: Mapping[str, Any]) -> str:
 
 
 def _shape_from_reason(reason: str, axis: str = "") -> str:
-    reason = _text(reason)
-    axis = _text(axis)
-    if reason in {"pullback_not_mature", "pullback_below_vwap_reclaim_not_ready"} or axis == "pullback_structure":
-        return "pullback"
-    if reason == "below_vwap_reclaim_not_ready" or axis == "vwap_relationship":
-        return "vwap_reclaim"
-    if reason.startswith("breakout_") or axis == "breakout_readiness":
-        return "breakout"
-    if reason in {"volume_confirmation_missing", "volume_insufficient"} or axis == "volume_confirmation":
-        return "volume_confirmation"
-    return "other"
+    return _rows_owner._shape_from_reason(reason, axis, facade=_p15_sys.modules[__name__])
 
 
 def _shape_from_tactic(tactic: str) -> str:
-    tactic = _text(tactic)
-    if tactic in {"vwap_reclaim_pullback", "leader_vwap_reclaim_pullback", "theme_leader_pullback"}:
-        return "vwap_reclaim"
-    if tactic in {"opening_largecap_surge", "opening_gap_momentum"}:
-        return "opening"
-    if tactic in {"breakout_continuation", "opening_range_breakout"}:
-        return "breakout"
-    if tactic in {"lower_vwap_rebound_probe"}:
-        return "lower_rebound"
-    if tactic in {"defensive_observe"}:
-        return "defensive"
-    return tactic or "unavailable"
+    return _rows_owner._shape_from_tactic(tactic, facade=_p15_sys.modules[__name__])
 
 
 def _top_counter(counter: Counter[str], *, limit: int = 6) -> List[Dict[str, Any]]:
-    return [{"name": name, "count": count} for name, count in counter.most_common(limit) if name]
+    return _rows_owner._top_counter(counter, limit=limit)
 
 
 def _closed_rows(rows: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
-    return [dict(row) for row in rows if isinstance(row, Mapping) and _row_closed(row)]
+    return _rows_owner._closed_rows(rows, facade=_p15_sys.modules[__name__])
 
 
 def _shadow_rows(payloads: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
-    for payload in payloads:
-        if not isinstance(payload, Mapping):
-            continue
-        for row in list(payload.get("candidates") or []):
-            if isinstance(row, Mapping):
-                out.append(dict(row))
-    return out
+    return _rows_owner._shadow_rows(payloads, facade=_p15_sys.modules[__name__])
 
 
 def _tactic_performance(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
@@ -157,15 +126,7 @@ def build_strategist_llm_evaluation(
 
 
 def _format_perf(rows: Sequence[Mapping[str, Any]], *, limit: int = 3) -> str:
-    parts: List[str] = []
-    for row in list(rows)[:limit]:
-        name = _text(row.get("name"))
-        if not name:
-            continue
-        parts.append(
-            f"{name} ({row.get('count')}, win {float(row.get('win_rate') or 0.0) * 100:.1f}%, avg {float(row.get('avg_return_pct') or 0.0):.2f}%)"
-        )
-    return ", ".join(parts) if parts else "none"
+    return _formatting_owner._format_perf(rows, limit=limit, facade=_p15_sys.modules[__name__])
 
 
 def render_strategist_llm_evaluation_lines(payload: Mapping[str, Any] | None) -> List[str]:
