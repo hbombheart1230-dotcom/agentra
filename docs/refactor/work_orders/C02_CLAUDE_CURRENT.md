@@ -1,44 +1,158 @@
-# Agentra P1.5 FAST-3 — Claude A NEW 8 actual BODY MOVE items (C03 2026-10-30 19h KST)
+# Agentra P1.5 FAST-3 — C02 A-20261030-20 NEW 8 verified BODY MOVEs
 
-**ORDER_ID=A-20261030-19; REPLACES_ORDER_BLOB=5667dbcbe5c3e9f75d6edb828cb93b709ea75228.** Previous A1–A8 trade lookup/run paths are **REMOTE_DONE 8/8** at A remote `dc2bc153a522f9a296f4ae81b354d0afe7885941` (#11 6519315242); C04 integrated exact 11/11 blobs at `d0475b492695b1e833c9c0c60aec52e42eb43396`. Never repeat those eight or their same-SHA tests. **NEW_READY=8**, all below are new functions with real calculation bodies. RF Owner **RF-035, Claude A exclusive**, Codex B read-only. Authorized branch `work/p15-a-reporter-pure-20261021`; canonical `integration/p1.5`. Only this C02 is the actor assignment. No D00/RF/queue/INDEX/C03/HANDOFF reading or self-selected tasks. Existing in-flight starting order remains valid.
+**C03 supply 2026-10-30 20h KST.** Previous order blob `c5d41b1ad5f71c64f1ad18168621428fe15d7659` A1–A8 are REMOTE_DONE at A HEAD `3522454025395e4d8c67a2bad42863e66e6a5b97` (#11 6520335284), verified SOURCE thin wrappers + new owners and targeted tests. Do not rerun those or earlier same-SHA PASS. This is 8 different functions, RF-035 Claude A exclusive, B read-only. Source `libs/reporting/strategist_llm_evaluation.py` A/integration blob `17345581f395401d29e02e8ed234ec9f430b0550`; new targets scalar/rows/formatting 404 on A and integration preflight.
 
-**PRE-FLIGHT (before every item):** `git fetch origin`; capture `git rev-parse origin/integration/p1.5`, `git ls-remote origin refs/heads/work/p15-a-reporter-pure-20261021`, `git rev-parse HEAD`, `git rev-parse origin/integration/p1.5:docs/refactor/work_orders/C02_CLAUDE_CURRENT.md` (Git blob). Use prepared `.venv/bin/python` and `.venv/bin/python -m pytest` when available. Source snapshots at A HEAD `dc2bc153...`: (S1) `libs/reporting/agent_pipeline_trace.py` blob `ced3ee27e2f9ad27933242419dc2d5303ab61176`, (S2) `libs/reporting/strategist_llm_evaluation.py` blob `c9ad479f1e0ae7886112885a0184e01d0c870a42`. Both same blobs at integration preflight. **All three new TARGET modules were 404 on both A and integration**. Re-fetch before modifying; if SOURCE changed or TARGET appeared, inspect function body + thin wrapper + targeted test: only proven moved => REMOTE_DONE; otherwise item-specific BLOCKED and continue other safe items without overwrite.
+**Execution contract (all items, not optional):** Actor=Claude A; authorized branch=`work/p15-a-reporter-pure-20261021`; canonical=`integration/p1.5`; source Git blob=`17345581f395401d29e02e8ed234ec9f430b0550`; this order blob at run start must be fetched from canonical (previous blob `c5d41b1ad5f71c64f1ad18168621428fe15d7659` is replaced). Before EACH item: `git fetch origin`, record remote canonical SHA, remote actor SHA, local HEAD, and order blob; use prepared `.venv/bin/python` and pytest when available. Work only in own code and new test files; never write D00/C01/C02/RF/queue/STATUS/HANDOFF/C04/C05, another branch, main, or live operational files. Use one isolated fake/tmp fixture, no network/order/Broker/Guard/Step5C/UEF/RunLab effects. Actual original BODY must be removed from SOURCE and moved into the single TARGET owner, leaving the original exact signature/annotations/defaults/docstring as thin delegation wrapper. Preserve call-time module monkeypatch via `facade=sys.modules[__name__]` (import `sys as _p15_sys` or `sys` already present); target never imports SOURCE, never duplicates BODY or mutates global state. Keep caller public signatures/outputs/identity/exception/order/format unchanged. Each item: pre-move golden output and error, post-move source wrapper and target equality, negative and monkeypatch fixture; `.venv/bin/python -m py_compile SOURCE TARGET`; `.venv/bin/python -m pytest -q -p no:cacheprovider EXACT_TEST` normal exit0 (stdlib normal smoke only when pytest absent), record real exit. FAST-3 G2 does not require -O/full peer/hosted CI. Commit code+targeted tests only, push actor branch normally, refetch remote ref and exact SOURCE/TARGET/TEST blob/tree after every push. HTTPS credential error blocks PUSH only: preserve local commit, approved GitHub exact-tree path only if full reviewed tree/ref equivalence proven; else LOCAL_ONLY, continue next safe non-overwriting item. No probe commits, no force push. Each blocked item is item-local; continue all remaining safe tasks. C04 integrates; C05 alone judges G1/G2/G3/RF DONE.
 
-**MANDATORY implementation for EACH item:** Move the actual complete calculation BODY into its specified single-owner TARGET; do not leave a duplicate SOURCE implementation. SOURCE keeps exact original name, parameters, defaults, annotations and thin delegation; preserve return identity, order, exceptions, lazy reads and original module-level monkeypatch at **invocation time**. Source `agent_pipeline_trace.py` already imports `sys as _r3_sys`; source `strategist_llm_evaluation.py` can import `sys as _p15_sys`. Target receives keyword-only `facade` for source module globals/helpers; never import SOURCE from TARGET, never mutate `globals()`, and never copy mutable global state at import. Keep existing callers untouched. Snapshot pre-move output/error with fake fixtures, then assert SOURCE wrapper and TARGET match baseline and each other, including negative and monkeypatch tests. For each item run normal `.venv/bin/python -m pytest -q -p no:cacheprovider <one exact test path>`, record actual exit; stdlib smoke allowed only if pytest genuinely unavailable. **-O, full peer, hosted CI not mandatory under FAST-3 G2.** Commit only modified code/new targeted tests, normal push A branch, fetch remote ref and SOURCE/TARGET/TEST blobs after **every** push. HTTPS credential failure => preserve local commit; approved GitHub write only if exact reviewed commit tree equivalence and remote ref/blob verified, else LOCAL_ONLY/PUSH_BLOCKED and continue next safe item. No probe commits, force push, main, D00/C/RF/STATUS/HANDOFF edits.
+### A1 — RF-035 | `libs/reporting/strategist_llm_evaluation.py::_text` (current blob `17345581f395401d29e02e8ed234ec9f430b0550`, L10) → `libs/reporting/strategist_llm_evaluation_scalar.py::_text`
 
-**SAFETY:** Offline, fake/tmp_path read-only fixtures; no real log/report writes, no live network, LLM, Broker, Guard, Step5C, UEF, RunLab, operational state/DB, real orders, production paths, frozen oracle or protected policy edits. SOURCE `generate_agent_pipeline_trace_report` (creates files) and public strategist evaluation output/effect boundaries stay in SOURCE. This is C03 task supply, **not** G1/G2/G3 achievement; C04 selects integration and C05 alone decides RF stage/DONE. Execute A1 through A8; individual BLOCKED never ends the remaining safe queue.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _text(value: Any) -> str:
+    text = str(value or "").strip()
+    return "" if text.lower() in {"", "-", "none", "null", "unknown", "not_captured"} else text
+```
 
-### A1 — RF-035 | S1 `libs/reporting/agent_pipeline_trace.py::_iter_jsonl` (blob `ced3ee27e2f9ad27933242419dc2d5303ab61176`, L32–49) → `libs/reporting/agent_pipeline_trace_read_projection.py::_iter_jsonl`
-**MOVE BODY:** `path.exists()` guard→[], open UTF-8, line.strip, skip blank/invalid JSON, append dict-only and return list; preserve read/JSON exception boundary (JSON exceptions swallowed per line, open errors propagated), order and list identity. **Wrapper:** `return read_projection._iter_jsonl(path, facade=_r3_sys.modules[__name__])`; TARGET calls `facade.json.loads` at runtime. **Test:** `tests/test_p15_rf035_pipeline_iter_jsonl_owner.py`; missing tmp file→[]; file lines `{"a":1}\ninvalid\n[2]\n{"b":2}\n`→[{"a":1},{"b":2}]; facade.json.loads spy/raising ValueError for one row preserves skip. Compare pre-move/source/owner. Normal targeted exit0, commit SOURCE+read_projection+test, push/ref/blob; if blocked record exact error and continue A2.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_text` to `libs/reporting/strategist_llm_evaluation_scalar.py`; facade none; exact str(value or '')/strip and sentinel lower-case test. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-### A2 — RF-035 | S1 `libs/reporting/agent_pipeline_trace.py::_utc_day` (same blob, L54–60) → `libs/reporting/agent_pipeline_trace_scalar_projection.py::_utc_day`
-**MOVE BODY:** call `_to_epoch(ts)`, None→None, else `datetime.fromtimestamp(e,tz=timezone.utc).strftime("%Y-%m-%d")` unchanged; no time reads. **Wrapper:** `return scalar_projection._utc_day(ts, facade=_r3_sys.modules[__name__])`; TARGET calls `facade._to_epoch`, `facade.datetime`, `facade.timezone` at invocation. **Test:** `tests/test_p15_rf035_pipeline_utc_day_owner.py`; patched facade._to_epoch returning 0→"1970-01-01", None→None, 86400→"1970-01-02"; spy ensures call-time seam, no system clock. Normal exit0/push/blobs; blocked→A3.
+**Normal targeted fixture:** `tests/test_p15_rf035_eval_text_owner.py`: None→''; ' unknown '→''; '  BUY  '→'BUY'; numeric 0→''. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_eval_text_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-### A3 — RF-035 | S1 `libs/reporting/agent_pipeline_trace.py::_safe_int` (same blob, L61–67) → `libs/reporting/agent_pipeline_trace_scalar_projection.py::_safe_int`
-**MOVE BODY:** `int(float(v))` and broad Exception fallback `int(default)` exactly; do not normalize bool or NaN differently. **Wrapper:** `return scalar_projection._safe_int(v, default=default)`; preserve `(v: Any, default: int=0)->int`. **Test:** `tests/test_p15_rf035_pipeline_safe_int_owner.py`; "3.9"→3, "bad" with default7→7, None/default4→4; malformed default error type parity. Normal exit0/push/blobs; blocked→A4.
+### A2 — RF-035 | `libs/reporting/strategist_llm_evaluation.py::_float` (current blob `17345581f395401d29e02e8ed234ec9f430b0550`, L15) → `libs/reporting/strategist_llm_evaluation_scalar.py::_float`
 
-### A4 — RF-035 | S1 `libs/reporting/agent_pipeline_trace.py::_safe_float` (same blob, L68–74) → `libs/reporting/agent_pipeline_trace_scalar_projection.py::_safe_float`
-**MOVE BODY:** `float(v)` and broad Exception fallback `float(default)`; preserve NaN/Inf and fallback errors. **Wrapper:** `return scalar_projection._safe_float(v, default=default)`, original signature. **Test:** `tests/test_p15_rf035_pipeline_safe_float_owner.py`; "1.25"→1.25, "bad"/default2.5→2.5, None/default0.0→0.0, invalid default raises same exception. Normal exit0/push/blobs; blocked→A5.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _float(value: Any, default: float = 0.0) -> float:
+    try:
+        if value in (None, ""):
+            return float(default)
+        return float(value)
+    except Exception:
+        return float(default)
+```
 
-### A5 — RF-035 | S1 `libs/reporting/agent_pipeline_trace.py::_latest_row` (same blob, L75–81) → `libs/reporting/agent_pipeline_trace_scalar_projection.py::_latest_row`
-**MOVE BODY:** reversed(rows) scan, str/strip stage and event equality, return exact matching row object or {} unchanged. **Wrapper:** `return scalar_projection._latest_row(rows, stage=stage, event=event)`; preserve keyword-only stage/event. **Test:** `tests/test_p15_rf035_pipeline_latest_row_owner.py`; two same-stage/event rows→last object **is** input[-1]; no match→{}; whitespace stage/event normalized only in row as before; malformed row exception parity. Normal exit0/push/blobs; blocked→A6.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_float` to `libs/reporting/strategist_llm_evaluation_scalar.py`; facade none; retain broad Exception fallback float(default), do not alter nan/inf. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-### A6 — RF-035 | S1 `libs/reporting/agent_pipeline_trace.py::_read_json` (same blob, L102–111) → `libs/reporting/agent_pipeline_trace_read_projection.py::_read_json`
-**MOVE BODY:** missing path→{}, `json.loads(path.read_text(encoding="utf-8"))` broad Exception→{}, dict-only return, no writes. **Wrapper:** `return read_projection._read_json(path, facade=_r3_sys.modules[__name__])`; TARGET resolves `facade.json.loads` on invocation. **Test:** `tests/test_p15_rf035_pipeline_read_json_owner.py`; tmp valid dict→same dict, list/invalid/missing→{}, patched json.loads raises→{}, ensure no writes. Normal exit0/push/blobs; blocked→A7.
+**Normal targeted fixture:** `tests/test_p15_rf035_eval_float_owner.py`: '2.5'→2.5; None/default=4→4.0; 'bad'/default=3→3.0; invalid default raises ValueError. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_eval_float_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-### A7 — RF-035 | S2 `libs/reporting/strategist_llm_evaluation.py::_tactic_performance` (blob `c9ad479f1e0ae7886112885a0184e01d0c870a42`, L94–118) → `libs/reporting/strategist_llm_evaluation_projection.py::_tactic_performance`
-**MOVE BODY:** group rows by `_tactic` preserving insertion order, skip blank tactic, collect `_result_pct` returns, win/loss/count/win_rate/avg, `_shape_from_tactic`, sort descending by (count, abs(avg)) with stable ties. No data mutation. **Wrapper:** `return projection._tactic_performance(rows, facade=_p15_sys.modules[__name__])`; TARGET uses `facade._tactic`, `facade._result_pct`, `facade._shape_from_tactic` at invocation; preserve original annotations. **Test:** `tests/test_p15_rf035_strategist_tactic_performance_owner.py`; rows two opening_gap_momentum returns +2/-1, one defensive_observe 0 → first {name:opening_gap_momentum,shape:opening,count:2,win_count:1,loss_count:1,win_rate:0.5,avg_return_pct:0.5}, second defensive count1; empty→[]; monkeypatch facade._result_pct to spy/return 5 and check new average; compare full before/after. Normal exit0/push/blobs; blocked→A8.
+### A3 — RF-035 | `libs/reporting/strategist_llm_evaluation.py::_shape_from_reason` (current blob `17345581f395401d29e02e8ed234ec9f430b0550`, L49) → `libs/reporting/strategist_llm_evaluation_rows.py::_shape_from_reason`
 
-### A8 — RF-035 | S2 `libs/reporting/strategist_llm_evaluation.py::_shadow_shape_diagnostics` (same blob, L121–134) → `libs/reporting/strategist_llm_evaluation_projection.py::_shadow_shape_diagnostics`
-**MOVE BODY:** both `Counter` comprehensions over `_shape_from_reason(_text(reason),_text(axis))`, `_bool(would_enter)`, opening flags and exact four-key dict/order; no normalization changes. **Wrapper:** `return projection._shadow_shape_diagnostics(rows, facade=_p15_sys.modules[__name__])`; TARGET uses `facade.Counter`, `facade._shape_from_reason`, `facade._text`, `facade._bool`, `facade._top_counter` on each invocation; no `globals().update`. **Test:** `tests/test_p15_rf035_strategist_shadow_shape_owner.py`; [{reason:"breakout_late",would_enter:"yes",opening_momentum_probe_would_enter:true},{reason:"volume_confirmation_missing",would_enter:false}]→candidate_count2, by_shape breakout1/volume_confirmation1, would_enter breakout1, opening_would_enter_count1; empty→counts0/lists[]; patched facade._bool returns False→would_enter[] and opening0. Normal exit0/push/blobs; blocked→retry individually safe blocked item then report.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _shape_from_reason(reason: str, axis: str = "") -> str:
+    reason = _text(reason)
+    axis = _text(axis)
+    if reason in {"pullback_not_mature", "pullback_below_vwap_reclaim_not_ready"} or axis == "pullback_structure":
+        return "pullback"
+    if reason == "below_vwap_reclaim_not_ready" or axis == "vwap_relationship":
+        return "vwap_reclaim"
+    if reason.startswith("breakout_") or axis == "breakout_readiness":
+        return "breakout"
+    if reason in {"volume_confirmation_missing", "volume_insufficient"} or axis == "volume_confirmation":
+        return "volume_confirmation"
+    return "other"
+```
 
-## Verified FUTURE reserve (NOT actor self-selection)
-**RESERVE_VERIFIED=6/6** at A HEAD `dc2bc153a522f9a296f4ae81b354d0afe7885941`: S2 `libs/reporting/strategist_llm_evaluation.py` blob `c9ad479f1e0ae7886112885a0184e01d0c870a42`, six distinct non-wrapper bodies. Owner RF-035; no cross-Actor overlap; both proposed TARGETs `libs/reporting/strategist_llm_evaluation_rows.py` and `libs/reporting/strategist_llm_evaluation_formatting.py` 404 at A and integration. All are read-only pure projections, fake lists/Counter only; no network/state/Broker/Guard/RunLab. Recheck HEAD, source blob, target 404 before **future C03 issue**:
-- R1 `_shape_from_reason` L46–57 → `..._rows.py::_shape_from_reason`; reason breakout_late→breakout, axis pullback_structure→pullback, empty→other; `facade._text` at call time.
-- R2 `_shape_from_tactic` L60–72 → `..._rows.py::_shape_from_tactic`; opening_gap_momentum→opening, defensive_observe→defensive, empty→unavailable; `facade._text` seam.
-- R3 `_top_counter` L75–76 → `..._rows.py::_top_counter`; Counter({"x":3,"y":1})→[{name:x,count:3},{name:y,count:1}], limit1→x only, empty name filtered; no effect.
-- R4 `_closed_rows` L79–80 → `..._rows.py::_closed_rows`; [{status:closed},{status:open}]→first dict only, new dict copy; `facade._row_closed` seam, Mapping type at call time.
-- R5 `_shadow_rows` L83–91 → `..._rows.py::_shadow_rows`; payload candidates [{symbol:A},3]→[{symbol:A}], malformed payload ignored; new dict copies and order preserved.
-- R6 `_format_perf` L191–200 → `..._formatting.py::_format_perf`; [{name:x,count:2,win_rate:0.5,avg_return_pct:1.25}]→"x (2, win 50.0%, avg 1.25%)"; empty→"none", limit0→"none"; `facade._text` seam.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_shape_from_reason` to `libs/reporting/strategist_llm_evaluation_rows.py`; facade._text at call time; no source import in target. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-**Issue #11 final:** measured START_KST/END_KST (never infer), canonical SHA, ORDER_BLOB, owner before/after SHA, each A1–A8 IMPLEMENTED/REMOTE_DONE/BLOCKED, exact SOURCE/TARGET/test blob, normal command/exit, per-push remote ref, FIRST_BLOCKER/NEXT. No local-only delivery claim. Do not touch docs or another owner's branch.
+**Normal targeted fixture:** `tests/test_p15_rf035_eval_shape_from_reason_owner.py`: ('breakout_late','')→'breakout'; ('','pullback_structure')→'pullback'; ('','')→'other'; monkeypatch _text spy. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_eval_shape_from_reason_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
+
+### A4 — RF-035 | `libs/reporting/strategist_llm_evaluation.py::_shape_from_tactic` (current blob `17345581f395401d29e02e8ed234ec9f430b0550`, L63) → `libs/reporting/strategist_llm_evaluation_rows.py::_shape_from_tactic`
+
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _shape_from_tactic(tactic: str) -> str:
+    tactic = _text(tactic)
+    if tactic in {"vwap_reclaim_pullback", "leader_vwap_reclaim_pullback", "theme_leader_pullback"}:
+        return "vwap_reclaim"
+    if tactic in {"opening_largecap_surge", "opening_gap_momentum"}:
+        return "opening"
+    if tactic in {"breakout_continuation", "opening_range_breakout"}:
+        return "breakout"
+    if tactic in {"lower_vwap_rebound_probe"}:
+        return "lower_rebound"
+    if tactic in {"defensive_observe"}:
+        return "defensive"
+    return tactic or "unavailable"
+```
+
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_shape_from_tactic` to `libs/reporting/strategist_llm_evaluation_rows.py`; facade._text at call time; preserve original branch order. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
+
+**Normal targeted fixture:** `tests/test_p15_rf035_eval_shape_from_tactic_owner.py`: 'opening_gap_momentum'→'opening'; 'defensive_observe'→'defensive'; ''→'unavailable'; monkeypatch _text spy. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_eval_shape_from_tactic_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
+
+### A5 — RF-035 | `libs/reporting/strategist_llm_evaluation.py::_top_counter` (current blob `17345581f395401d29e02e8ed234ec9f430b0550`, L78) → `libs/reporting/strategist_llm_evaluation_rows.py::_top_counter`
+
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _top_counter(counter: Counter[str], *, limit: int = 6) -> List[Dict[str, Any]]:
+    return [{"name": name, "count": count} for name, count in counter.most_common(limit) if name]
+```
+
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_top_counter` to `libs/reporting/strategist_llm_evaluation_rows.py`; Counter.most_common(limit) stable ties and name filtering; no mutation. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
+
+**Normal targeted fixture:** `tests/test_p15_rf035_eval_top_counter_owner.py`: Counter({'x':3,'y':1})→[{'name':'x','count':3},{'name':'y','count':1}]; limit=1→x; empty→[]. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_eval_top_counter_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
+
+### A6 — RF-035 | `libs/reporting/strategist_llm_evaluation.py::_closed_rows` (current blob `17345581f395401d29e02e8ed234ec9f430b0550`, L82) → `libs/reporting/strategist_llm_evaluation_rows.py::_closed_rows`
+
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _closed_rows(rows: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
+    return [dict(row) for row in rows if isinstance(row, Mapping) and _row_closed(row)]
+```
+
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_closed_rows` to `libs/reporting/strategist_llm_evaluation_rows.py`; facade.Mapping and facade._row_closed at call time; preserve new dict copies and iterable one-pass. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
+
+**Normal targeted fixture:** `tests/test_p15_rf035_eval_closed_rows_owner.py`: [{'status':'closed'},{'status':'open'}]→first dict only, not same object; monkeypatch _row_closed spy. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_eval_closed_rows_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
+
+### A7 — RF-035 | `libs/reporting/strategist_llm_evaluation.py::_shadow_rows` (current blob `17345581f395401d29e02e8ed234ec9f430b0550`, L86) → `libs/reporting/strategist_llm_evaluation_rows.py::_shadow_rows`
+
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _shadow_rows(payloads: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
+    out: List[Dict[str, Any]] = []
+    for payload in payloads:
+        if not isinstance(payload, Mapping):
+            continue
+        for row in list(payload.get("candidates") or []):
+            if isinstance(row, Mapping):
+                out.append(dict(row))
+    return out
+```
+
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_shadow_rows` to `libs/reporting/strategist_llm_evaluation_rows.py`; facade.Mapping at call time; list(payload.get('candidates') or []) and copy dict exactly. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
+
+**Normal targeted fixture:** `tests/test_p15_rf035_eval_shadow_rows_owner.py`: [{'candidates':[{'symbol':'A'},3]},None]→[{'symbol':'A'}]; identity new dict; malformed candidate ignored. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_eval_shadow_rows_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
+
+### A8 — RF-035 | `libs/reporting/strategist_llm_evaluation.py::_format_perf` (current blob `17345581f395401d29e02e8ed234ec9f430b0550`, L159) → `libs/reporting/strategist_llm_evaluation_formatting.py::_format_perf`
+
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _format_perf(rows: Sequence[Mapping[str, Any]], *, limit: int = 3) -> str:
+    parts: List[str] = []
+    for row in list(rows)[:limit]:
+        name = _text(row.get("name"))
+        if not name:
+            continue
+        parts.append(
+            f"{name} ({row.get('count')}, win {float(row.get('win_rate') or 0.0) * 100:.1f}%, avg {float(row.get('avg_return_pct') or 0.0):.2f}%)"
+        )
+    return ", ".join(parts) if parts else "none"
+```
+
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_format_perf` to `libs/reporting/strategist_llm_evaluation_formatting.py`; facade._text at call time; preserve f-string precision, list slice and exception behavior. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
+
+**Normal targeted fixture:** `tests/test_p15_rf035_eval_format_perf_owner.py`: [{'name':'x','count':2,'win_rate':0.5,'avg_return_pct':1.25}]→'x (2, win 50.0%, avg 1.25%)'; empty/limit0→'none'. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_eval_format_perf_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
+
+
+## Verified future reserve — 6/6, not self-selected by Actor
+
+At A `35224540`, `libs/reporting/strategist_llm_evaluation.py` blob `17345581f395401d29e02e8ed234ec9f430b0550`, six other real un-moved bodies inspected; target `strategist_llm_evaluation_extra_projection.py` absent, formatting owner absent preflight. Do NOT implement these unless future C03 C02 replaces this order. Tests listed are design hypotheses, not PASS:
+- R1 RF-035 `libs/reporting/strategist_llm_evaluation.py::_bool` blob `17345581f395401d29e02e8ed234ec9f430b0550` L24 → `libs/reporting/strategist_llm_evaluation_extra_projection.py::_bool`; exact body 6 lines, bool True→True, 1→True, 'yes'→True, 'off'→False; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R2 RF-035 `libs/reporting/strategist_llm_evaluation.py::_row_closed` blob `17345581f395401d29e02e8ed234ec9f430b0550` L32 → `libs/reporting/strategist_llm_evaluation_extra_projection.py::_row_closed`; exact body 4 lines, {'status':'closed'}→True, {'action':'SELL'}→True, {}→False; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R3 RF-035 `libs/reporting/strategist_llm_evaluation.py::_result_pct` blob `17345581f395401d29e02e8ed234ec9f430b0550` L38 → `libs/reporting/strategist_llm_evaluation_extra_projection.py::_result_pct`; exact body 5 lines, {'truth_net_return_pct':'1.5'}→1.5; empty→0; facade._float seam; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R4 RF-035 `libs/reporting/strategist_llm_evaluation.py::_tactic` blob `17345581f395401d29e02e8ed234ec9f430b0550` L45 → `libs/reporting/strategist_llm_evaluation_extra_projection.py::_tactic`; exact body 2 lines, {'quant_tactic_id':'opening_gap_momentum'}→name; facade._text; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R5 RF-035 `libs/reporting/strategist_llm_evaluation.py::_quality_label` blob `17345581f395401d29e02e8ed234ec9f430b0550` L105 → `libs/reporting/strategist_llm_evaluation_extra_projection.py::_quality_label`; exact body 16 lines, []→insufficient_trade_samples; 3 negative same tactic→poor_lane_selection; facade._tactic/_result_pct/_shape_from_tactic; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R6 RF-035 `libs/reporting/strategist_llm_evaluation.py::render_strategist_llm_evaluation_lines` blob `17345581f395401d29e02e8ed234ec9f430b0550` L171 → `libs/reporting/strategist_llm_evaluation_formatting.py::render_strategist_llm_evaluation_lines`; exact body 23 lines, None→[]; {'lane_selection_quality':'aligned_lane_selection'}→header + quality line; facade._format_perf; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+
+## Final A report
+
+Issue #11: real START_KST/END_KST/ELAPSED, canonical/order/A before→after SHA, A1–A8 each MOVE/REMOTE_DONE/BLOCKED, source/owner/test blobs and targeted normal command/exit, each push remote ref/blob, FIRST_BLOCKER/NEXT. Local-only is not delivered. No RF DONE claimed by C03 supply.
