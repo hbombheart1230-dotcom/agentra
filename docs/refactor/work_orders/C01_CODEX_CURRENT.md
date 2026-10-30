@@ -1,310 +1,473 @@
-# C01 — Agentra FAST-3 Codex B | ORDER B-20261031-06 | 6 remaining verified RF-063 BODY MOVEs + B0 repair
+# C01 — Codex B | Agentra FAST-3 | ORDER B-20261031-07 | EIGHT VERIFIED NEW BODY MOVEs
 
-**C03 2026-10-31 06h delta:** B remote HEAD `88a1a763d1053d0227afbe1f9920405dfa58ebc6` advanced from `97c1c22c` by one remote commit. **B3 `_build_bundle_repair_command` is REMOTE_CODE_MOVED**: SOURCE `scripts/diagnostics/check_trade_report_runtime_regression.py` blob `17ad91326e215038927d877e14dc52e611ecea48` now thin-delegates to `trade_commands._build_bundle_repair_command`; new Owner `scripts/diagnostics/trade_artifact_command_projection.py` blob `0d7a655d771fd33c0dd1be0c5df4f5053c59bdcc`. B3 normal targeted G2 is NOT_VERIFIED; do not re-run identical SHA/test as new MOVE. B1/B2 previously REMOTE_CODE_MOVED. **B4–B9 = six safe remaining independent BODY MOVEs**, so D00 replacement threshold (<6) is not met; retain B4–B9, no B self-selection. B0 RF-065 phase5_markdown import still missing at SOURCE blob `f7ce771eca2286bd6d647641a001f06f0932193c` and remains defect repair (not MOVE). New SOURCE blob for B4–B6 is `17ad91326e215038927d877e14dc52e611ecea48`, B7–B9 unchanged `c45516931dcb365c8283c596345233458c10a41f`. All B4–B9 tests are new scopes; Git auth failure affects push only. Actor must pin this updated C01 blob at start and continue all six plus B0. C03 does not write B code or tests.
+## CURRENT SINGLE-FILE EXECUTION CONTRACT (2026-10-31 07h)
 
-## B0 — RF-065 REMOTE_BROKEN import fix (not new BODY MOVE)
+Canonical `integration/p1.5` input HEAD `e84a1aeb1abd1f75f84261ec62de27152c0673fa`; B own remote HEAD `5773c4a30ffdead13108f62bb8c8182b9c1909af`; OLD_ORDER_BLOB `3d8ff368883979cd6881929bcc3f36cc28167c04`. On start pin CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, OWNER_REMOTE_SHA and SOURCE blobs; if remote HEAD changes, verify before acting. Old B-06 is **REMOTE_DONE** (#12 6533774550: B0 repaired, B5–B9 moved normal unittest 3 PASS; B1–B4 previously remote moved), no old MOVE or same-SHA test reissued. B-07 consists of the eight **new** numbered items below, all independently mandatory. New publication during a run does not invalidate pinned start order.
 
-**B0 mandatory minimal fix FIRST:** In SOURCE imports immediately after `from scripts.research import phase5_validation_read_projection as phase5_read`, add **exactly** `from scripts.research import phase5_validation_markdown as phase5_markdown` (module alias; preserve existing facade wrapper). Do not edit TARGET's large markdown BODY unless exact fake parity demonstrates a separate defect. Add NEW `tests/test_p15_rf065_00h_phase5_markdown_import_owner.py` with fake `payload={'day':'2026-10-30','summary':{},'artifacts':{}}`, `repo_root=tmp_path`; assert `bundle._render_bundle_markdown(payload, repo_root=tmp_path)` returns a string with `# Phase 5 Validation Bundle (2026-10-30)` and equals `phase5_markdown._render_bundle_markdown(payload, repo_root=tmp_path, facade=bundle)` byte-for-byte. Negative fake `summary={'symbol_report_count':'invalid'}` must raise the same `ValueError` through wrapper and Owner. Use isolated fake/tmp only, never call `generate_phase5_validation_bundle` or main. `python -m py_compile scripts/research/run_phase5_validation_bundle.py scripts/research/phase5_validation_markdown.py`; `python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_00h_phase5_markdown_import_owner.py` **normal exit0** (or equivalent reproducible stdlib normal smoke if pytest absent). Commit only SOURCE+new test, push B normal/approved exact reviewed tree, re-fetch B HEAD and SOURCE/TARGET/TEST blobs; report exact normal exit and new remote SHA to #12. If push blocked, preserve LOCAL_ONLY and continue safe B4–B9. This is **defect repair**, not a new structural MOVE or RF DONE.
+**Owner/safety:** RF-063 Codex B exclusively owns scripts/diagnostics files; other Actor is read-only. Every SOURCE BODY below was inspected at the owner HEAD, and each new TARGET path independently returned **404 on both owner branch and integration**. Preserve public wrapper, monkeypatch seam, caller/exception/output parity; use fake/tmp only. No operational or real-trade effect, Broker/Guard/Step5C/UEF/RunLab, live network, subprocess, scheduler or production files. No D00/RF/queue/design re-reading, autonomous selection, Markdown/RF/STATUS/C04/C05/HANDOFF writes, other Actor branch edits or force push. Only own code and code tests. G1 remote code, G2 targeted normal exit0 and C04/C05 G3 are separate; this document is not development evidence.
 
-## B4–B9 — RF-063 actual remaining SOURCE BODY MOVEs
+**Execution and delivery:** Move each exact computation BODY to new single Owner and leave thin SOURCE wrapper. Build named `unittest` test with original/Owner/wrapper parity, negative and call-time monkeypatch. Run `python -m py_compile` and `python -m unittest tests/test_...py -v` normal exit0 for each; stdlib unittest avoids pytest installation dependence. Commit code/test only, normal approved push and re-fetch own HEAD + SOURCE/TARGET/TEST blobs. If Git HTTPS auth blocks push, report PUSH_BLOCKED (local commit is not G1), continue all other safe items; approved exact-tree ref update requires exact parent lease/refetch. First PASS, first commit, time spent, or one failure never ends remaining work. No -O/full peer/hosted CI as blanket requirements.
 
-### B4 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_report_regen_command` SOURCE blob `17ad91326e215038927d877e14dc52e611ecea48` → `scripts/diagnostics/trade_artifact_command_projection.py::_build_report_regen_command`
+## EIGHT CURRENT VERIFIED SOURCE BODY MOVEs
 
-**Exact SOURCE BODY to MOVE (not duplicate):**
+### B1 | RF-063 | `scripts/diagnostics/check_reports_trades_health.py::_read_json` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` L17 (10 lines) → `scripts/diagnostics/reports_trades_health_read_projection.py::_read_json`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
-def _build_report_regen_command(
+def _read_json(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+```
+
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reports_trades_health_read_projection._read_json` passing `facade=sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: facade.json.loads. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf063_07h_b1_read_json_owner.py` with fake/temp fixture and expected result: missing/malformed/non-dict tmp JSON -> {}; dict -> dict. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reports_trades_health.py scripts/diagnostics/reports_trades_health_read_projection.py`; `python -m unittest tests/test_p15_rf063_07h_b1_read_json_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. Implement and test this mandatory item; commit code/test only on own branch, normal push and re-fetch exact HEAD/source/target/test blob. If blocked, record FIRST_BLOCKER and continue next item.
+
+### B2 | RF-063 | `scripts/diagnostics/check_reports_trades_health.py::_iter_trade_dirs` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` L27 (18 lines) → `scripts/diagnostics/reports_trades_health_read_projection.py::_iter_trade_dirs`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def _iter_trade_dirs(reports_root: Path, day: str = "") -> List[Path]:
+    trades_root = reports_root / "trades"
+    if not trades_root.exists():
+        return []
+    if day:
+        day_root = trades_root / day
+        if not day_root.exists():
+            return []
+        return _iter_trade_dirs_under_day(day_root)
+    out: List[Path] = []
+    for path in sorted(trades_root.iterdir()):
+        if not path.is_dir():
+            continue
+        if len(path.name) == 10 and path.name.count("-") == 2:
+            out.extend(_iter_trade_dirs_under_day(path))
+    return out
+```
+
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reports_trades_health_read_projection._iter_trade_dirs` passing `facade=sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: facade._iter_trade_dirs_under_day. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf063_07h_b2_iter_trade_dirs_owner.py` with fake/temp fixture and expected result: missing reports/trades -> []; fake day root, patched facade._iter_trade_dirs_under_day -> spy result; sorted multiple days. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reports_trades_health.py scripts/diagnostics/reports_trades_health_read_projection.py`; `python -m unittest tests/test_p15_rf063_07h_b2_iter_trade_dirs_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. Implement and test this mandatory item; commit code/test only on own branch, normal push and re-fetch exact HEAD/source/target/test blob. If blocked, record FIRST_BLOCKER and continue next item.
+
+### B3 | RF-063 | `scripts/diagnostics/check_reports_trades_health.py::_artifact_path` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` L45 (8 lines) → `scripts/diagnostics/reports_trades_health_read_projection.py::_artifact_path`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def _artifact_path(trade_dir: Path, *candidates: str) -> Path:
+    for raw in candidates:
+        path = trade_dir / raw
+        if path.exists():
+            return path
+    return trade_dir / candidates[0]
+```
+
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reports_trades_health_read_projection._artifact_path` passing `facade=sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: Path.exists temp only. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf063_07h_b3_artifact_path_owner.py` with fake/temp fixture and expected result: first existing candidate -> first; none -> first candidate; no candidates -> IndexError parity. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reports_trades_health.py scripts/diagnostics/reports_trades_health_read_projection.py`; `python -m unittest tests/test_p15_rf063_07h_b3_artifact_path_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. Implement and test this mandatory item; commit code/test only on own branch, normal push and re-fetch exact HEAD/source/target/test blob. If blocked, record FIRST_BLOCKER and continue next item.
+
+### B4 | RF-063 | `scripts/diagnostics/check_reports_trades_health.py::_issue` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` L53 (19 lines) → `scripts/diagnostics/reports_trades_health_issue_projection.py::_issue`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def _issue(
     *,
-    day: str,
+    severity: str,
     trade_id: str,
-    reports_root: str,
-    local_debug: bool,
-    hard_timeout_sec: Optional[float],
-    with_llm: bool = False,
-) -> List[str]:
-    command = [
-        sys.executable,
-        str(ROOT / "scripts" / "run_ai_trade_report_batch.py"),
-        "--day",
-        str(day),
-        "--trade-id",
-        str(trade_id),
-        "--reports-root",
-        str(reports_root),
-        "--retry-max",
-        "0",
-        "--json",
-    ]
-    if hard_timeout_sec is not None:
-        command.extend(["--hard-timeout-sec", str(hard_timeout_sec)])
-    if local_debug:
-        command.append("--local-debug")
-    elif with_llm:
-        command.append("--with-llm")
-    return command
-```
-
-**Wrapper/monkeypatch:** SOURCE keeps exact signature/annotations/defaults and becomes a thin delegate. TARGET takes keyword-only `facade` only if needed, does NOT import SOURCE, does not copy body into SOURCE. facade.sys.executable and facade.ROOT at call time; preserve local_debug over with_llm priority, hard timeout, argv order; NEVER execute. For multi-function targets add without overwriting earlier functions. Preserve caller exception/format/order/identity.
-
-**Normal targeted fixture:** `tests/test_p15_rf063_21h_build_report_regen_command_owner.py`: local_debug=False,with_llm=False→no '--with-llm'; local_debug=True→'--local-debug'; timeout=1→'--hard-timeout-sec','1'; no subprocess. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_command_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_build_report_regen_command_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
-
-### B5 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::validate_trade_artifact_chain` SOURCE blob `17ad91326e215038927d877e14dc52e611ecea48` → `scripts/diagnostics/trade_artifact_validation_evidence_projection.py::validate_trade_artifact_chain`
-
-**Exact SOURCE BODY to MOVE (not duplicate):**
-```python
-def validate_trade_artifact_chain(reports_root: Path, day: str, trade_id: str) -> Dict[str, Any]:
-    ctx = _resolve_trade_context(reports_root, day, trade_id)
-    trade_paths = ctx["trade_paths"]
-    entry_payload = ctx["entry_payload"]
-    exit_payload = ctx["exit_payload"]
-    hold_payload = ctx["hold_payload"]
-    lifecycle_bundle = ctx["lifecycle_bundle"]
-    story_input = ctx["story_input"]
-    report = ctx["report"]
-    provenance = ctx["provenance"]
-    health = ctx["health"]
-
-    failures: List[str] = []
-    warnings: List[str] = []
-    artifact_exists = {
-        "entry_json": trade_paths["entry_json"].exists(),
-        "hold_json": trade_paths["hold_json"].exists(),
-        "exit_json": trade_paths["exit_json"].exists(),
-        "lifecycle_bundle_json": trade_paths["lifecycle_bundle_json"].exists(),
-        "ai_trade_report_input_json": trade_paths["ai_trade_report_input_json"].exists(),
-        "ai_trade_report_json": trade_paths["ai_trade_report_json"].exists(),
-        "ai_trade_report_md": trade_paths["ai_trade_report_md"].exists(),
-    }
-    for key, exists in artifact_exists.items():
-        if not exists:
-            failures.append(f"missing_artifact:{key}")
-
-    authoritative_status = str(
-        provenance.get("lifecycle_status")
-        or health.get("lifecycle_status")
-        or lifecycle_bundle.get("trade_lifecycle_status")
-        or lifecycle_bundle.get("status")
-        or ""
-    ).strip().lower()
-    closed_trade = _is_closed_trade(
-        {
-            **lifecycle_bundle,
-            "trade_lifecycle_status": authoritative_status or lifecycle_bundle.get("trade_lifecycle_status"),
-        },
-        exit_payload,
-    )
-    entry_evidence = _has_substantive_entry_evidence(entry_payload)
-    exit_evidence = _has_substantive_exit_evidence(exit_payload)
-    linked_run_ids = [
-        str(value or "").strip()
-        for value in list(lifecycle_bundle.get("linked_run_ids") or [])
-        if str(value or "").strip()
-    ]
-    selected_rank = _safe_int(
-        story_input.get("selected_rank"),
-        _safe_int(((story_input.get("scanner_selection_trace") or {}) if isinstance(story_input.get("scanner_selection_trace"), dict) else {}).get("selected_rank")),
-    )
-    candidate_count = _safe_int(
-        story_input.get("candidate_count"),
-        _safe_int(((story_input.get("scanner_selection_trace") or {}) if isinstance(story_input.get("scanner_selection_trace"), dict) else {}).get("candidate_count")),
-    )
-    selected_symbol = str(
-        story_input.get("selected_symbol")
-        or ((story_input.get("scanner_selection_trace") or {}) if isinstance(story_input.get("scanner_selection_trace"), dict) else {}).get("selected_symbol")
-        or story_input.get("symbol")
-        or ""
-    ).strip()
-    hold_duration = str(hold_payload.get("hold_duration") or lifecycle_bundle.get("hold_duration") or story_input.get("hold_duration") or "").strip()
-    hold_duration_sec = hold_payload.get("hold_duration_sec")
-    if hold_duration_sec in (None, ""):
-        hold_duration_sec = lifecycle_bundle.get("hold_duration_sec")
-    if hold_duration_sec in (None, ""):
-        hold_duration_sec = story_input.get("hold_duration_sec")
-    hold_duration_sec_int = _safe_int(hold_duration_sec, default=-1)
-    story_status = str(story_input.get("status") or "").strip().lower()
-    story_action = str(story_input.get("action") or "").strip().upper()
-
-    if closed_trade and not str(exit_payload.get("run_id") or "").strip():
-        failures.append("closed_trade_missing_exit_run_id")
-    if closed_trade and not linked_run_ids:
-        failures.append("closed_trade_missing_linked_run_ids")
-    if closed_trade and entry_evidence and not str(entry_payload.get("run_id") or "").strip():
-        failures.append("closed_trade_missing_entry_run_id")
-    if closed_trade and entry_evidence and not str(entry_payload.get("ts") or "").strip():
-        failures.append("closed_trade_missing_entry_ts")
-    if closed_trade and not str(exit_payload.get("ts") or "").strip():
-        failures.append("closed_trade_missing_exit_ts")
-    if closed_trade and entry_evidence:
-        if hold_duration in {"", "00:00:00", "0초", "0.0m", "0m"}:
-            failures.append("closed_trade_fake_or_missing_hold_duration")
-        if hold_duration_sec_int == 0:
-            failures.append("closed_trade_zero_hold_duration_sec")
-    if closed_trade and selected_rank <= 0:
-        failures.append("closed_trade_selected_rank_zero")
-    if closed_trade and candidate_count <= 0:
-        failures.append("closed_trade_candidate_count_zero")
-    if authoritative_status and story_status and story_status != authoritative_status:
-        failures.append("story_input_status_conflicts_with_authoritative_status")
-    if authoritative_status == "open" and not exit_evidence and story_action == "SELL":
-        failures.append("story_input_action_conflicts_with_open_trade")
-    if selected_symbol and selected_symbol != str(story_input.get("symbol") or "").strip():
-        failures.append("selected_symbol_mismatch_story_symbol")
-    generation = report.get("generation") if isinstance(report.get("generation"), dict) else {}
-    generation_status = str(generation.get("status") or "").strip().lower()
-    if report and generation_status not in {"ok", "partial", "salvaged", "repaired"}:
-        failures.append("ai_trade_report_generation_status_bad")
-    if report and _section_provenance_all_fallback(report):
-        failures.append("ai_trade_report_all_section_provenance_fallback")
-
-    linkage = lifecycle_bundle.get("same_day_reporter_linkage") if isinstance(lifecycle_bundle.get("same_day_reporter_linkage"), dict) else {}
-    if linkage:
-        linkage_status = str(linkage.get("status") or "").strip().lower()
-        json_path = str(linkage.get("reporter_analysis_json_path") or "").strip()
-        md_path = str(linkage.get("reporter_analysis_md_path") or "").strip()
-        if linkage_status == "missing" and (json_path or md_path):
-            failures.append("reporter_linkage_missing_but_artifact_path_populated")
-
-    trade_origin = str(provenance.get("trade_origin") or lifecycle_bundle.get("trade_origin") or "").strip()
-    completeness = str(provenance.get("lifecycle_completeness") or lifecycle_bundle.get("lifecycle_completeness") or "").strip()
-    if closed_trade and entry_evidence and trade_origin == "recovered_partial":
-        warnings.append("trade_origin_is_recovered_partial_even_with_entry_evidence")
-    if closed_trade and not entry_evidence and completeness != "partial":
-        failures.append("thin_entry_evidence_not_marked_partial")
-
+    component: str,
+    code: str,
+    message: str,
+    path: Path,
+) -> Dict[str, Any]:
     return {
-        "day": day,
+        "severity": severity,
         "trade_id": trade_id,
-        "closed_trade": closed_trade,
-        "authoritative_status": authoritative_status,
-        "entry_run_id": str(entry_payload.get("run_id") or "").strip(),
-        "exit_run_id": str(exit_payload.get("run_id") or "").strip(),
-        "linked_run_ids": linked_run_ids,
-        "selected_symbol": selected_symbol,
-        "selected_rank": selected_rank,
-        "candidate_count": candidate_count,
-        "hold_duration": hold_duration,
-        "hold_duration_sec": None if hold_duration_sec in (None, "") else hold_duration_sec_int,
-        "trade_origin": trade_origin,
-        "lifecycle_completeness": completeness,
-        "artifact_exists": artifact_exists,
-        "failures": failures,
-        "warnings": warnings,
-        "ok": len(failures) == 0,
+        "component": component,
+        "code": code,
+        "message": message,
+        "path": str(path),
     }
 ```
 
-**Wrapper/monkeypatch:** SOURCE keeps exact signature/annotations/defaults and becomes a thin delegate. TARGET takes keyword-only `facade` only if needed, does NOT import SOURCE, does not copy body into SOURCE. facade._resolve_trade_context, _is_closed_trade, _has_substantive_entry_evidence, _has_substantive_exit_evidence, _safe_int, _section_provenance_all_fallback at call time; preserve failure order, output fields, no write/subprocess. For multi-function targets add without overwriting earlier functions. Preserve caller exception/format/order/identity.
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reports_trades_health_issue_projection._issue` passing `facade=sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: pure, six keys. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
 
-**Normal targeted fixture:** `tests/test_p15_rf063_21h_validate_trade_artifact_chain_owner.py`: fake tmp context with all artifact paths missing→ordered missing_artifact failures; fully fake empty context yields ok=False; spy helper call; compare before/after entire dict. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_validation_evidence_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_validate_trade_artifact_chain_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
+**New normal targeted test:** `tests/test_p15_rf063_07h_b4_issue_owner.py` with fake/temp fixture and expected result: warn/t/brief/x/m/tmp -> exact six-key dict including path str. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reports_trades_health.py scripts/diagnostics/reports_trades_health_issue_projection.py`; `python -m unittest tests/test_p15_rf063_07h_b4_issue_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. Implement and test this mandatory item; commit code/test only on own branch, normal push and re-fetch exact HEAD/source/target/test blob. If blocked, record FIRST_BLOCKER and continue next item.
 
-### B6 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_parser` SOURCE blob `17ad91326e215038927d877e14dc52e611ecea48` → `scripts/diagnostics/trade_artifact_validation_cli.py::_build_parser`
+### B5 | RF-063 | `scripts/diagnostics/check_reports_trades_health.py::_ai_trade_report_is_complete` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` L72 (22 lines) → `scripts/diagnostics/reports_trades_health_read_projection.py::_ai_trade_report_is_complete`
 
-**Exact SOURCE BODY to MOVE (not duplicate):**
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def _ai_trade_report_is_complete(trade_dir: Path) -> bool:
+    report_path = _artifact_path(trade_dir, "ai_trade_report/ai_trade_report.json", "trade_report.json")
+    report = _read_json(report_path)
+    if not report:
+        return False
+    required_sections = (
+        "executive_summary",
+        "market_context_at_entry",
+        "why_this_symbol_was_chosen",
+        "entry_decision",
+        "holding_monitoring_story",
+        "exit_decision",
+        "execution_quality",
+        "scanner_filters",
+        "guard_approval_result",
+        "reporter_evaluation",
+        "errors_weaknesses_improvement_points",
+        "final_operator_conclusion",
+    )
+    return all(isinstance(report.get(key), dict) for key in required_sections)
+```
+
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reports_trades_health_read_projection._ai_trade_report_is_complete` passing `facade=sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: facade._artifact_path, facade._read_json. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf063_07h_b5_ai_trade_report_is_complete_owner.py` with fake/temp fixture and expected result: 12 required sections dict -> True; missing one or file -> False. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reports_trades_health.py scripts/diagnostics/reports_trades_health_read_projection.py`; `python -m unittest tests/test_p15_rf063_07h_b5_ai_trade_report_is_complete_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. Implement and test this mandatory item; commit code/test only on own branch, normal push and re-fetch exact HEAD/source/target/test blob. If blocked, record FIRST_BLOCKER and continue next item.
+
+### B6 | RF-063 | `scripts/diagnostics/check_reports_trades_health.py::audit_reports_trades_health` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` L94 (167 lines) → `scripts/diagnostics/reports_trades_health_audit_projection.py::audit_reports_trades_health`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def audit_reports_trades_health(reports_root: Path, *, day: str = "") -> Dict[str, Any]:
+    trade_dirs = _iter_trade_dirs(reports_root, day=day)
+    issues: List[Dict[str, Any]] = []
+    issue_counts: Counter[str] = Counter()
+    llm_status_counts: Counter[str] = Counter()
+    lifecycle_status_counts: Counter[str] = Counter()
+    duplicate_counts: Counter[str] = Counter()
+    sidecar_counts: Counter[str] = Counter()
+
+    for trade_dir in trade_dirs:
+        trade_id = trade_dir.name
+        lifecycle_path = _artifact_path(trade_dir, "lifecycle_bundle.json", "lifecycle/trade_lifecycle.json", "trade_lifecycle.json")
+        ai_trade_report_llm_path = _artifact_path(
+            trade_dir,
+            "reports/ai_trade_report_llm_response.json",
+            "ai_trade_report/ai_trade_report_llm_response.json",
+        )
+        brief_llm_path = _artifact_path(
+            trade_dir,
+            "reports/brief_llm_response.json",
+        )
+        strategist_llm_path = _artifact_path(
+            trade_dir,
+            "reports/strategist_llm_response.json",
+            "strategist/strategist_llm_response.json",
+        )
+
+        for sidecar_name in ("_provenance.json", "_health.json", "_artifact_links.json"):
+            if (trade_dir / sidecar_name).exists():
+                sidecar_counts[f"{sidecar_name}:present"] += 1
+            else:
+                sidecar_counts[f"{sidecar_name}:missing"] += 1
+                issues.append(
+                    _issue(
+                        severity="warn",
+                        trade_id=trade_id,
+                        component="trade_root",
+                        code="sidecar_missing",
+                        message=f"Missing additive sidecar {sidecar_name}.",
+                        path=trade_dir / sidecar_name,
+                    )
+                )
+                issue_counts["sidecar_missing"] += 1
+
+        lifecycle = _read_json(lifecycle_path)
+        lifecycle_diag = lifecycle.get("ai_report_diagnostics") if isinstance(lifecycle.get("ai_report_diagnostics"), dict) else {}
+        lifecycle_status = str(lifecycle_diag.get("report_status") or "").strip().lower()
+        if lifecycle_status:
+            lifecycle_status_counts[lifecycle_status] += 1
+
+        component_paths = {
+            "ai_trade_report": ai_trade_report_llm_path,
+            "brief": brief_llm_path,
+            "strategist": strategist_llm_path,
+        }
+        component_rows: Dict[str, Dict[str, Any]] = {}
+        for component, path in component_paths.items():
+            payload = _read_json(path)
+            component_rows[component] = payload
+            if not payload:
+                continue
+            status = str(payload.get("status") or "").strip().lower()
+            meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+            if component == "strategist" and bool(meta.get("synthetic_placeholder")):
+                llm_status_counts["strategist:synthetic_placeholder"] += 1
+                continue
+            if (
+                component == "strategist"
+                and status == "fallback"
+                and not str(payload.get("model") or "").strip()
+                and not str(payload.get("raw_response_text") or "").strip()
+                and not str(payload.get("error") or "").strip()
+                and int(payload.get("retry_count") or 0) == 0
+            ):
+                llm_status_counts["strategist:synthetic_placeholder"] += 1
+                continue
+            if status:
+                llm_status_counts[f"{component}:{status}"] += 1
+            if component == "ai_trade_report" and status in {"partial", "salvaged", "repaired"}:
+                missing = payload.get("required_keys_missing") if isinstance(payload.get("required_keys_missing"), list) else []
+                parse_error = str(meta.get("parse_error") or payload.get("error") or "").strip()
+                if _ai_trade_report_is_complete(trade_dir):
+                    issues.append(
+                        _issue(
+                            severity="info",
+                            trade_id=trade_id,
+                            component=component,
+                            code="llm_recovered",
+                            message=f"AI trade report LLM output is {status}, but the final report artifact is structurally complete.",
+                            path=path,
+                        )
+                    )
+                    issue_counts["llm_recovered"] += 1
+                else:
+                    issues.append(
+                        _issue(
+                            severity="warn",
+                            trade_id=trade_id,
+                            component=component,
+                            code="llm_partial",
+                            message=f"AI trade report LLM output is {status}; missing_keys={len(missing)} parse_error={parse_error[:120]}",
+                            path=path,
+                        )
+                    )
+                    issue_counts["llm_partial"] += 1
+            elif component == "brief" and status == "error":
+                reason = str(meta.get("reason") or payload.get("error") or "").strip()
+                issues.append(
+                    _issue(
+                        severity="warn",
+                        trade_id=trade_id,
+                        component=component,
+                        code="llm_error",
+                        message=reason or "Brief generation failed without a saved reason.",
+                        path=path,
+                    )
+                )
+                issue_counts["llm_error"] += 1
+            elif component == "strategist" and status == "fallback":
+                parse_mode = str(payload.get("parse_mode") or "").strip().lower()
+                raw_len = len(str(payload.get("raw_response_text") or ""))
+                issues.append(
+                    _issue(
+                        severity="warn",
+                        trade_id=trade_id,
+                        component=component,
+                        code="llm_fallback",
+                        message=f"Strategist LLM fell back; parse_mode={parse_mode or 'none'} raw_response_len={raw_len}.",
+                        path=path,
+                    )
+                )
+                issue_counts["llm_fallback"] += 1
+
+        ai_report_payload = component_rows.get("ai_trade_report") or {}
+        ai_report_status = str(ai_report_payload.get("status") or "").strip().lower()
+        if lifecycle_status == "failed" and ai_report_status in {"partial", "salvaged", "repaired"}:
+            issues.append(
+                _issue(
+                    severity="warn",
+                    trade_id=trade_id,
+                    component="lifecycle",
+                    code="diagnostic_status_mismatch",
+                    message=(
+                        "Lifecycle diagnostics say failed, but an AI trade report artifact exists in "
+                        f"{ai_report_status} state."
+                    ),
+                    path=lifecycle_path,
+                )
+            )
+            issue_counts["diagnostic_status_mismatch"] += 1
+
+    severity_counts = Counter(str(item.get("severity") or "info").lower() for item in issues)
+    return {
+        "ok": len([item for item in issues if str(item.get("severity") or "").lower() == "error"]) == 0,
+        "reports_root": str(reports_root),
+        "day": day,
+        "trade_dir_count": len(trade_dirs),
+        "llm_status_counts": dict(sorted(llm_status_counts.items())),
+        "lifecycle_report_status_counts": dict(sorted(lifecycle_status_counts.items())),
+        "issue_counts": dict(sorted(issue_counts.items())),
+        "severity_counts": dict(sorted(severity_counts.items())),
+        "duplicate_counts": dict(sorted(duplicate_counts.items())),
+        "sidecar_counts": dict(sorted(sidecar_counts.items())),
+        "issues": issues,
+    }
+```
+
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reports_trades_health_audit_projection.audit_reports_trades_health` passing `facade=sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: facade._iter_trade_dirs/_artifact_path/_issue/_read_json/_ai_trade_report_is_complete/facade.Counter. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf063_07h_b6_audit_reports_trades_health_owner.py` with fake/temp fixture and expected result: empty tmp root -> ok=True trade_dir_count=0 issues=[]; fake one trade without sidecars -> sidecar_missing count=3, ok=True. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reports_trades_health.py scripts/diagnostics/reports_trades_health_audit_projection.py`; `python -m unittest tests/test_p15_rf063_07h_b6_audit_reports_trades_health_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. Implement and test this mandatory item; commit code/test only on own branch, normal push and re-fetch exact HEAD/source/target/test blob. If blocked, record FIRST_BLOCKER and continue next item.
+
+### B7 | RF-063 | `scripts/diagnostics/check_reports_trades_health.py::_build_parser` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` L261 (8 lines) → `scripts/diagnostics/reports_trades_health_cli.py::_build_parser`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Replay and validate trade report runtime regression cases.")
+    parser = argparse.ArgumentParser(description="Read-only health audit for reports/trades artifacts.")
     parser.add_argument("--reports-root", default="reports")
-    parser.add_argument("--event-log-path", default="data/logs/events.jsonl")
-    parser.add_argument("--evidence-log-path", default="data/evidence_ledger/events.jsonl")
-    parser.add_argument("--report-dir", default="reports/dev/analysis/live_execution_bundles")
-    parser.add_argument("--case", action="append", default=[], help="DAY:TRADE_ID[:RUN_ID]. Defaults to the golden trade matrix.")
-    parser.add_argument("--role", default="manual_repair_bundle")
-    parser.add_argument("--max-runs", type=int, default=200)
-    parser.add_argument("--skip-repair", action="store_true")
-    parser.add_argument("--skip-local-debug", action="store_true")
-    parser.add_argument("--llm-acceptance", action="store_true")
-    parser.add_argument("--llm-hard-timeout-sec", type=float, default=900.0)
+    parser.add_argument("--day", default="")
     parser.add_argument("--json", action="store_true")
     return parser
 ```
 
-**Wrapper/monkeypatch:** SOURCE keeps exact signature/annotations/defaults and becomes a thin delegate. TARGET takes keyword-only `facade` only if needed, does NOT import SOURCE, does not copy body into SOURCE. facade.argparse.ArgumentParser at call time if patched; preserve flags/defaults, never invoke main or repair. For multi-function targets add without overwriting earlier functions. Preserve caller exception/format/order/identity.
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reports_trades_health_cli._build_parser` passing `facade=sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: facade.argparse.ArgumentParser, never main. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
 
-**Normal targeted fixture:** `tests/test_p15_rf063_21h_build_parser_owner.py`: parse_args([])→reports_root 'reports', max_runs 200, skip_repair False; ['--skip-repair','--json']→True; unknown→SystemExit(2). Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_validation_cli.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_build_parser_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
+**New normal targeted test:** `tests/test_p15_rf063_07h_b7_build_parser_owner.py` with fake/temp fixture and expected result: parse_args([]) -> reports_root reports, day '', json False; --day 2026-10-30 --json; unknown -> SystemExit(2). Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reports_trades_health.py scripts/diagnostics/reports_trades_health_cli.py`; `python -m unittest tests/test_p15_rf063_07h_b7_build_parser_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. Implement and test this mandatory item; commit code/test only on own branch, normal push and re-fetch exact HEAD/source/target/test blob. If blocked, record FIRST_BLOCKER and continue next item.
 
-### B7 — RF-063 | `scripts/diagnostics/query_strategist_llm_events.py::_to_float` SOURCE blob `c45516931dcb365c8283c596345233458c10a41f` → `scripts/diagnostics/strategist_event_query_projection.py::_to_float`
+### B8 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_section_provenance_all_fallback` SOURCE blob `ab585cf1618d03df548543162a850900c1d2c008` L62 (11 lines) → `scripts/diagnostics/reporter_upgrade_provenance_projection.py::_section_provenance_all_fallback`
 
-**Exact SOURCE BODY to MOVE (not duplicate):**
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
-def _to_float(value: Any, default: float = 0.0) -> float:
+def _section_provenance_all_fallback(report: Dict[str, Any]) -> bool:
+    provenance = report.get("section_provenance") if isinstance(report.get("section_provenance"), dict) else {}
+    if not provenance:
+        return False
+    entries = [value for value in provenance.values() if isinstance(value, dict)]
+    if not entries:
+        return False
+    fallback_tags = {"fallback", "unknown", "missing"}
+    return all(str(entry.get("source") or "").strip().lower() in fallback_tags for entry in entries)
+```
+
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reporter_upgrade_provenance_projection._section_provenance_all_fallback` passing `facade=_migration_sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: pure provenance predicate. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf063_07h_b8_section_provenance_all_fallback_owner.py` with fake/temp fixture and expected result: empty -> False; fallback+unknown sources -> True; mixed model -> False. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_provenance_projection.py`; `python -m unittest tests/test_p15_rf063_07h_b8_section_provenance_all_fallback_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. Implement and test this mandatory item; commit code/test only on own branch, normal push and re-fetch exact HEAD/source/target/test blob. If blocked, record FIRST_BLOCKER and continue next item.
+
+## SIX VERIFIED FUTURE RESERVES (6/6) — NOT EXECUTABLE NOW
+
+Each reserve source function body was inspected at same owner HEAD, target independently 404 on owner and integration, safe fake/temp test designed; no implementation/test executed. Must re-fetch and revalidate after current order; changed/moved means RESERVE_NOT_VERIFIED, never reuse REMOTE_DONE.
+
+### R1 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_read_json` SOURCE blob `ab585cf1618d03df548543162a850900c1d2c008` L26 (10 lines) → `scripts/diagnostics/reporter_upgrade_read_projection.py::_read_json`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def _read_json(path: Path) -> Dict[str, Any]:
     try:
-        return float(value)
+        if not path.exists():
+            return {}
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        return payload if isinstance(payload, dict) else {}
     except Exception:
-        return float(default)
+        return {}
 ```
 
-**Wrapper/monkeypatch:** SOURCE keeps exact signature/annotations/defaults and becomes a thin delegate. TARGET takes keyword-only `facade` only if needed, does NOT import SOURCE, does not copy body into SOURCE. pure; no facade; preserve broad Exception fallback float(default) and nan/inf handling. For multi-function targets add without overwriting earlier functions. Preserve caller exception/format/order/identity.
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reporter_upgrade_read_projection._read_json` passing `facade=_migration_sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: facade.json.loads. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
 
-**Normal targeted fixture:** `tests/test_p15_rf063_21h_to_float_owner.py`: '2.5'→2.5; None default=3→3.0; invalid default='bad' raises ValueError; no external calls. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/query_strategist_llm_events.py scripts/diagnostics/strategist_event_query_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_to_float_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
+**New normal targeted test:** `tests/test_p15_rf063_07h_r1_read_json_owner.py` with fake/temp fixture and expected result: missing/malformed/non-dict tmp -> {}; dict -> dict. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_read_projection.py`; `python -m unittest tests/test_p15_rf063_07h_r1_read_json_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. VERIFIED DESIGN RESERVE ONLY: NOT assigned; do not implement until C03 next order after new source/target revalidation.
 
-### B8 — RF-063 | `scripts/diagnostics/query_strategist_llm_events.py::_infer_call_kind` SOURCE blob `c45516931dcb365c8283c596345233458c10a41f` → `scripts/diagnostics/strategist_event_query_projection.py::_infer_call_kind`
+### R2 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_trade_dirs_for_day` SOURCE blob `ab585cf1618d03df548543162a850900c1d2c008` L36 (9 lines) → `scripts/diagnostics/reporter_upgrade_read_projection.py::_trade_dirs_for_day`
 
-**Exact SOURCE BODY to MOVE (not duplicate):**
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
-def _infer_call_kind(payload: Dict[str, Any]) -> str:
-    explicit = str(payload.get("call_kind") or "").strip()
-    if explicit:
-        return explicit
-    schema_version = str(payload.get("schema_version") or "").strip().lower()
-    prompt_version = str(payload.get("prompt_version") or "").strip().lower()
-    intent_action = str(payload.get("intent_action") or "").strip().upper()
-    error_type = str(payload.get("error_type") or "").strip()
-    if schema_version == "strategist_output.v1" or prompt_version.startswith("m31-strategic-frame"):
-        return "strategic_frame"
-    if schema_version == "intent.v1" or intent_action in {"BUY", "SELL", "NOOP"}:
-        return "legacy_trade_intent"
-    if error_type == "StrategistBlocked":
-        return "blocked_legacy_runtime"
-    return "unknown"
-```
-
-**Wrapper/monkeypatch:** SOURCE keeps exact signature/annotations/defaults and becomes a thin delegate. TARGET takes keyword-only `facade` only if needed, does NOT import SOURCE, does not copy body into SOURCE. pure; preserve explicit call_kind precedence, schema/prompt/intent/error priority, string conversions. For multi-function targets add without overwriting earlier functions. Preserve caller exception/format/order/identity.
-
-**Normal targeted fixture:** `tests/test_p15_rf063_21h_infer_call_kind_owner.py`: {'call_kind':'custom'}→custom; {'schema_version':'strategist_output.v1'}→strategic_frame; {'intent_action':'BUY'}→legacy_trade_intent; {}→unknown. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/query_strategist_llm_events.py scripts/diagnostics/strategist_event_query_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_infer_call_kind_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
-
-### B9 — RF-063 | `scripts/diagnostics/query_strategist_llm_events.py::_filtered_events` SOURCE blob `c45516931dcb365c8283c596345233458c10a41f` → `scripts/diagnostics/strategist_event_query_projection.py::_filtered_events`
-
-**Exact SOURCE BODY to MOVE (not duplicate):**
-```python
-def _filtered_events(
-    rows: List[Dict[str, Any]],
-    *,
-    run_id: str = "",
-    day: str = "",
-    only_failures: bool = False,
-    only_nonzero_news: bool = False,
-) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
-    for rec in rows:
-        if rec.get("stage") != "strategist_llm" or rec.get("event") != "result":
-            continue
-        if day and not str(rec.get("ts_kst") or rec.get("ts") or "").startswith(day):
-            continue
-        if run_id and str(rec.get("run_id") or "") != run_id:
-            continue
-        p = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-        if only_failures and bool(p.get("ok")):
-            continue
-        if only_nonzero_news and abs(_to_float(p.get("context_symbol_sentiment_score"), 0.0)) <= 1e-12:
-            continue
-        out.append(rec)
+def _trade_dirs_for_day(reports_root: Path, day: str) -> List[Path]:
+    base = reports_root / "trades" / str(day or "").strip()
+    if not base.exists():
+        return []
+    out = [path for path in base.iterdir() if path.is_dir()]
+    out.sort(key=lambda p: p.name)
     return out
 ```
 
-**Wrapper/monkeypatch:** SOURCE keeps exact signature/annotations/defaults and becomes a thin delegate. TARGET takes keyword-only `facade` only if needed, does NOT import SOURCE, does not copy body into SOURCE. facade._to_float at call time; preserve row identity, filter order and only_nonzero_news epsilon 1e-12. For multi-function targets add without overwriting earlier functions. Preserve caller exception/format/order/identity.
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reporter_upgrade_read_projection._trade_dirs_for_day` passing `facade=_migration_sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: read-only tmp. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
 
-**Normal targeted fixture:** `tests/test_p15_rf063_21h_filtered_events_owner.py`: rows with strategist_llm result and other stages→only result; day/run_id exact filter; only_failures removes ok; only_nonzero_news filters zero; monkeypatch facade._to_float spy. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/query_strategist_llm_events.py scripts/diagnostics/strategist_event_query_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_filtered_events_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
+**New normal targeted test:** `tests/test_p15_rf063_07h_r2_trade_dirs_for_day_owner.py` with fake/temp fixture and expected result: temp day dir with b,a -> sorted a,b; missing -> []. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_read_projection.py`; `python -m unittest tests/test_p15_rf063_07h_r2_trade_dirs_for_day_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. VERIFIED DESIGN RESERVE ONLY: NOT assigned; do not implement until C03 next order after new source/target revalidation.
 
-## VERIFIED future reserve — 6/6, not executable by Actor
+### R3 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_is_closed_trade` SOURCE blob `ab585cf1618d03df548543162a850900c1d2c008` L45 (17 lines) → `scripts/diagnostics/reporter_upgrade_state_projection.py::_is_closed_trade`
 
-Reverified at B `88a1a763d1053d0227afbe1f9920405dfa58ebc6`, `scripts/diagnostics/check_reports_trades_health.py` source blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` has six inspected non-wrapper bodies; three proposed target paths 404 on B/integration. Tests are design hypotheses NOT_RUN; revalidate before next C03 issue.
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def _is_closed_trade(bundle: Dict[str, Any]) -> bool:
+    lifecycle = bundle.get("lifecycle") if isinstance(bundle.get("lifecycle"), dict) else {}
+    exit_payload = lifecycle.get("exit") if isinstance(lifecycle.get("exit"), dict) else {}
+    if exit_payload:
+        return True
+    status = str(
+        bundle.get("trade_lifecycle_status")
+        or lifecycle.get("status")
+        or bundle.get("status")
+        or ""
+    ).strip().lower()
+    if status in {"closed", "exited", "sell"}:
+        return True
+    top_exit = bundle.get("exit") if isinstance(bundle.get("exit"), dict) else {}
+    return bool(top_exit.get("available"))
+```
 
-- R1 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_read_json` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_read_projection.py::_read_json`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: missing tmp→{}; valid dict→dict; malformed→{}; facade.json.loads. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
-- R2 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_iter_trade_dirs` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_read_projection.py::_iter_trade_dirs`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: tmp reports/trades/day nested dirs→sorted; facade._iter_trade_dirs_under_day; no production root. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
-- R3 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_artifact_path` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_read_projection.py::_artifact_path`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: tmp path first exists→first; none→first candidate; no write. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
-- R4 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_issue` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_issue_projection.py::_issue`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: fake severity/trade/path→exact seven-key dict; pure. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
-- R5 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_ai_trade_report_is_complete` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_read_projection.py::_ai_trade_report_is_complete`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: fake tmp report with required dict sections→True; missing→False; facade._artifact_path/_read_json. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
-- R6 RF-063 `scripts/diagnostics/check_reports_trades_health.py::_build_parser` SOURCE blob `90853b7c3ec2a1bf85607a2253363fe376d46e9d` → `scripts/diagnostics/reports_trades_health_cli.py::_build_parser`. Original BODY inspected at B HEAD, target 404 B/integration. Fixture hypothesis: parse_args([]) defaults; '--day' filter; unknown→SystemExit(2); no main. Read-only/temp, no real trade/Guard/Broker effect. **NOT assigned/NOT_RUN; recheck source/target before future order.**
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reporter_upgrade_state_projection._is_closed_trade` passing `facade=_migration_sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: pure. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
 
-## Final #12 report
+**New normal targeted test:** `tests/test_p15_rf063_07h_r3_is_closed_trade_owner.py` with fake/temp fixture and expected result: lifecycle.exit nonempty -> True; status closed -> True; {} -> False. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_state_projection.py`; `python -m unittest tests/test_p15_rf063_07h_r3_is_closed_trade_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. VERIFIED DESIGN RESERVE ONLY: NOT assigned; do not implement until C03 next order after new source/target revalidation.
 
-`ORDER_ID=B-20261031-06 | CANONICAL_HEAD | ORDER_BLOB_SHA | B_START_REMOTE_SHA | B0,B4..B9 status | SOURCE_BEFORE_AFTER_BLOBS | TARGET_BLOBS | NEW_TEST_NORMAL_EXIT | REMOTE_PUSH_SHA | FIRST_BLOCKER | NEXT`. B1/B2 REMOTE_CODE_MOVED but G2 normal evidence NOT_VERIFIED; do not count them as new MOVE or RF DONE. START/END/ELAPSED only if measured, no estimates. Six reserves design-only, not executable.
+### R4 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_reporter_section_fallback` SOURCE blob `ab585cf1618d03df548543162a850900c1d2c008` L73 (10 lines) → `scripts/diagnostics/reporter_upgrade_state_projection.py::_reporter_section_fallback`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def _reporter_section_fallback(report: Dict[str, Any]) -> bool:
+    provenance = report.get("section_provenance") if isinstance(report.get("section_provenance"), dict) else {}
+    for key in ("reporter_evaluation", "errors_weaknesses_improvement_points"):
+        item = provenance.get(key) if isinstance(provenance.get(key), dict) else {}
+        source = str(item.get("source") or "").strip().lower()
+        if source in {"fallback", "unknown", "missing"}:
+            return True
+    return False
+```
+
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reporter_upgrade_state_projection._reporter_section_fallback` passing `facade=_migration_sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: pure. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf063_07h_r4_reporter_section_fallback_owner.py` with fake/temp fixture and expected result: reporter_evaluation fallback -> True; model or empty -> False. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_state_projection.py`; `python -m unittest tests/test_p15_rf063_07h_r4_reporter_section_fallback_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. VERIFIED DESIGN RESERVE ONLY: NOT assigned; do not implement until C03 next order after new source/target revalidation.
+
+### R5 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_missing_canonical_paths` SOURCE blob `ab585cf1618d03df548543162a850900c1d2c008` L83 (6 lines) → `scripts/diagnostics/reporter_upgrade_state_projection.py::_missing_canonical_paths`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def _missing_canonical_paths(bundle: Dict[str, Any]) -> bool:
+    artifacts = bundle.get("artifacts") if isinstance(bundle.get("artifacts"), dict) else {}
+    values = [str(artifacts.get(key) or bundle.get(key) or "").strip() for key in CANONICAL_ARTIFACT_KEYS]
+    return any(not value for value in values)
+```
+
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reporter_upgrade_state_projection._missing_canonical_paths` passing `facade=_migration_sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: facade.CANONICAL_ARTIFACT_KEYS. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf063_07h_r5_missing_canonical_paths_owner.py` with fake/temp fixture and expected result: six canonical artifact paths -> False; missing one -> True. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_state_projection.py`; `python -m unittest tests/test_p15_rf063_07h_r5_missing_canonical_paths_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. VERIFIED DESIGN RESERVE ONLY: NOT assigned; do not implement until C03 next order after new source/target revalidation.
+
+### R6 | RF-063 | `scripts/diagnostics/check_reporter_upgrade_regression.py::_thin_trace` SOURCE blob `ab585cf1618d03df548543162a850900c1d2c008` L89 (27 lines) → `scripts/diagnostics/reporter_upgrade_trace_projection.py::_thin_trace`
+
+**EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
+```python
+def _thin_trace(bundle: Dict[str, Any]) -> bool:
+    scanner_trace = bundle.get("scanner_selection_trace") if isinstance(bundle.get("scanner_selection_trace"), dict) else {}
+    if not scanner_trace:
+        scanner_reason = bundle.get("scanner_reason_human") if isinstance(bundle.get("scanner_reason_human"), dict) else {}
+        scanner_trace = (
+            scanner_reason.get("scanner_selection_trace")
+            if isinstance(scanner_reason.get("scanner_selection_trace"), dict)
+            else {}
+        )
+    ranked = scanner_trace.get("ranked_candidates") if isinstance(scanner_trace.get("ranked_candidates"), list) else []
+    if not ranked:
+        scanner_reason = bundle.get("scanner_reason_human") if isinstance(bundle.get("scanner_reason_human"), dict) else {}
+        ranked = scanner_reason.get("ranked_candidates") if isinstance(scanner_reason.get("ranked_candidates"), list) else []
+
+    monitor_trace = bundle.get("monitor_stop_policy_trace") if isinstance(bundle.get("monitor_stop_policy_trace"), dict) else {}
+    if not monitor_trace:
+        monitor_reason = bundle.get("monitor_reason_human") if isinstance(bundle.get("monitor_reason_human"), dict) else {}
+        monitor_trace = (
+            monitor_reason.get("monitor_stop_policy_trace")
+            if isinstance(monitor_reason.get("monitor_stop_policy_trace"), dict)
+            else {}
+        )
+    scanner_thin = len(ranked) == 0
+    monitor_thin = len(monitor_trace) == 0
+    return scanner_thin or monitor_thin
+```
+
+**Thin compatibility wrapper/caller/patch seam:** Preserve exact SOURCE signature, defaults, annotations, docstring, output ordering, identity, exceptions and lazy behavior. Replace body with one delegation to `scripts.diagnostics.reporter_upgrade_trace_projection._thin_trace` passing `facade=_migration_sys.modules[__name__]` when global references require it. TARGET must not import SOURCE. Use facade.NAME at call time for module globals; locals/builtins unchanged. Specific: pure. When TARGET has earlier functions, append rather than overwrite. Caller imports unchanged; no duplicate BODY in SOURCE.
+
+**New normal targeted test:** `tests/test_p15_rf063_07h_r6_thin_trace_owner.py` with fake/temp fixture and expected result: empty vs complete scanner/monitor trace; compare exact original booleans, malformed nested inputs. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile scripts/diagnostics/check_reporter_upgrade_regression.py scripts/diagnostics/reporter_upgrade_trace_projection.py`; `python -m unittest tests/test_p15_rf063_07h_r6_thin_trace_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. VERIFIED DESIGN RESERVE ONLY: NOT assigned; do not implement until C03 next order after new source/target revalidation.
+
+## REPORT AND CONTINUATION
+
+Post to #12: `ORDER_ID=B-20261031-07 | CANONICAL_HEAD | OLD_ORDER_BLOB=3d8ff368883979cd6881929bcc3f36cc28167c04 | ORDER_FILE_BLOB_SHA | OWNER_REMOTE_SHA_BEFORE→AFTER | B1/B2/B3/B4/B5/B6/B7/B8 STATUS | SOURCE_BEFORE_AFTER_BLOBS/LOC | NEW_OWNER_BLOBS | TEST_NORMAL_COMMAND/EXIT | PUSH_REMOTE_SHA | FIRST_BLOCKER | NEXT`. START/END/ELAPSED only if measured. If one blocked continue next safe item; if all complete, await next C03 supply. Do not count reserve or this documentation as G1/G2/G3/RF DONE.
