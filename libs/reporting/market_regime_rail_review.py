@@ -8,6 +8,7 @@ from typing import Any, Dict, Mapping
 from libs.market.korea_index_sanity import korea_index_sanity
 from libs.reporting import market_regime_rail_review_scalar_projection as _scalar_owner
 from libs.reporting import market_regime_rail_review_markdown_projection as _markdown_owner
+from libs.reporting import market_regime_rail_review_read_projection as _read_projection_owner
 
 
 def _to_float(value: Any, default: float = 0.0) -> float:
@@ -23,12 +24,7 @@ def _change_pct(snapshot: Mapping[str, Any], key: str) -> float:
 
 
 def load_latest_macro_snapshot(day: str, *, root: Path = Path("data/logs/macro_indicators")) -> Dict[str, Any]:
-    path = root / str(day)[:10] / "latest.json"
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {"available": False, "path": str(path), "error": "macro_snapshot_unavailable"}
-    return {**dict(payload), "available": True, "path": str(path)}
+    return _read_projection_owner.load_latest_macro_snapshot(day, root=root, facade=sys.modules[__name__])
 
 
 def classify_market_regime_rail(snapshot: Mapping[str, Any]) -> Dict[str, Any]:
