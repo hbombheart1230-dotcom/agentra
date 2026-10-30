@@ -26,6 +26,7 @@ from scripts.check_reports_trades_health import audit_reports_trades_health
 from scripts.generate_daily_report import generate_daily_report
 from scripts.research import phase5_validation_cli_args as phase5_cli
 from scripts.research import phase5_validation_read_projection as phase5_read
+from scripts.research import phase5_validation_markdown as phase5_markdown
 
 
 def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
