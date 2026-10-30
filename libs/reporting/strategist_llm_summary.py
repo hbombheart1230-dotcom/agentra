@@ -21,6 +21,11 @@ from libs.reporting import strategist_llm_summary_directive_line as _directive_l
 from libs.reporting import strategist_llm_summary_watch_status as _watch_status_owner
 from libs.reporting import strategist_llm_summary_playbook_flow as _playbook_flow_owner
 from libs.reporting import strategist_llm_summary_operator_projection as _operator_projection_owner
+from libs.reporting import strategist_llm_summary_path_projection as _path_projection_owner
+from libs.reporting import strategist_llm_summary_sample_counts as _sample_counts_owner
+from libs.reporting import strategist_llm_summary_first_values as _first_values_owner
+from libs.reporting import strategist_llm_summary_legacy_watch_status as _legacy_watch_status_owner
+from libs.reporting import strategist_llm_summary_legacy_scores as _legacy_scores_owner
 
 
 def _utc_now_iso() -> str:
@@ -82,20 +87,7 @@ def _parse_response_body(raw: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _canonical_strategist_path_for_response(source_path: Path) -> Path | None:
-    if source_path.name != "response.json":
-        return None
-    artifact_dir = source_path.parent
-    run_dir = artifact_dir.parent
-    day_dir = run_dir.parent
-    llm_dir = day_dir.parent
-    if llm_dir.name != "llm":
-        category_dir = run_dir.parent
-        day_dir = category_dir.parent
-        llm_dir = day_dir.parent
-        if llm_dir.name != "llm":
-            return None
-    reports_root = llm_dir.parent
-    return reports_root / "canonical" / day_dir.name / run_dir.name / "strategist.json"
+    return _path_projection_owner.canonical_strategist_path_for_response(source_path)
 
 
 def _trade_strategist_input_path_for_response(source_path: Path) -> Path | None:
@@ -134,17 +126,7 @@ def _load_canonical_strategist(source_path: Path) -> Tuple[Path | None, Dict[str
 
 
 def _headline_count_from_sample_map(value: Any) -> int:
-    total = 0
-    if not isinstance(value, dict):
-        return total
-    for row in value.values():
-        if not isinstance(row, dict):
-            continue
-        try:
-            total += int(row.get("count") or 0)
-        except Exception:
-            pass
-    return total
+    return _sample_counts_owner.headline_count_from_sample_map(value)
 
 
 def _directive(payload: Dict[str, Any], key: str) -> Dict[str, Any]:
@@ -211,11 +193,7 @@ def _operator_readout(payload: Dict[str, Any], stage_decision: Dict[str, Any] | 
 
 
 def _first_text(default: str, *values: Any) -> str:
-    for value in values:
-        text = _text(value, "")
-        if text:
-            return text
-    return default
+    return _first_values_owner.first_text(default, *values, facade=sys.modules[__name__])
 
 
 def _operator_readout_clean(payload: Dict[str, Any], stage_decision: Dict[str, Any] | None = None) -> Dict[str, Any]:
@@ -223,11 +201,7 @@ def _operator_readout_clean(payload: Dict[str, Any], stage_decision: Dict[str, A
 
 
 def _first_dict(*values: Any) -> Dict[str, Any]:
-    for value in values:
-        row = _as_dict(value)
-        if row:
-            return row
-    return {}
+    return _first_values_owner.first_dict(*values, facade=sys.modules[__name__])
 
 
 def _strategy_detail_from_sources(payload: Dict[str, Any], canonical: Dict[str, Any]) -> Dict[str, Any]:
@@ -242,36 +216,11 @@ def _json_inline(value: Any) -> str:
 
 
 def _watch_scope_label(value: Dict[str, Any]) -> str:
-    if not value:
-        return ""
-    rank = value.get("max_priority_rank")
-    runner_ups = value.get("max_runner_ups")
-    parts: List[str] = []
-    if rank not in (None, ""):
-        parts.append(f"{rank}위까지")
-    if runner_ups not in (None, ""):
-        parts.append(f"차순위 {runner_ups}개")
-    if value.get("cascade_enabled") not in (None, ""):
-        parts.append(f"cascade {'활성' if bool(value.get('cascade_enabled')) else '비활성'}")
-    return " / ".join(parts)
+    return _legacy_watch_status_owner.watch_scope_label(value, facade=sys.modules[__name__])
 
 
 def _strategy_patch_status(detail: Dict[str, Any]) -> str:
-    required_keys = (
-        "pre_llm_playbook",
-        "llm_requested_playbook",
-        "requested_playbook",
-        "requested_playbook_source",
-        "final_playbook",
-        "tactical_strategy",
-        "strategy_scores",
-        "rejected_strategy_reasons",
-        "candidate_watch_policy",
-    )
-    missing = [key for key in required_keys if not detail.get(key)]
-    if not missing:
-        return "적용됨"
-    return f"일부 누락 ({', '.join(missing)})"
+    return _legacy_watch_status_owner.strategy_patch_status(detail, facade=sys.modules[__name__])
 
 
 def _playbook_flow_label(detail: Dict[str, Any]) -> str:
@@ -286,21 +235,11 @@ def _score_value(value: Any) -> float:
 
 
 def _score_label(value: Any) -> str:
-    numeric = _score_value(value)
-    if numeric != float("-inf"):
-        return f"{numeric:.2f}".rstrip("0").rstrip(".")
-    return _text(value)
+    return _legacy_scores_owner.score_label(value, facade=sys.modules[__name__])
 
 
 def _strategy_score_lines(scores: Dict[str, Any], *, selected: str) -> List[str]:
-    if not scores:
-        return ["- -"]
-    rows = sorted(scores.items(), key=lambda row: (_score_value(row[1]), str(row[0])), reverse=True)
-    lines: List[str] = []
-    for name, score in rows:
-        marker = " (선택)" if str(name) == selected else ""
-        lines.append(f"- {name}: {_score_label(score)}{marker}")
-    return lines
+    return _legacy_scores_owner.strategy_score_lines(scores, selected=selected, facade=sys.modules[__name__])
 
 
 def _watch_scope_label_clean(value: Dict[str, Any]) -> str:
