@@ -24,85 +24,32 @@ from libs.reporting.trade_explain import (
 )
 from scripts.check_reports_trades_health import audit_reports_trades_health
 from scripts.generate_daily_report import generate_daily_report
+from scripts.research import phase5_validation_cli_args as phase5_cli
+from scripts.research import phase5_validation_read_projection as phase5_read
 
 
 def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-
-    def _gen() -> Iterable[Dict[str, Any]]:
-        with path.open("r", encoding="utf-8") as handle:
-            for raw_line in handle:
-                line = raw_line.strip()
-                if not line:
-                    continue
-                try:
-                    obj = json.loads(line)
-                except Exception:
-                    continue
-                if isinstance(obj, dict):
-                    yield obj
-
-    return _gen()
+    return phase5_read._iter_events(path, facade=sys.modules[__name__])
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return payload if isinstance(payload, dict) else {}
+    return phase5_read._read_json(path, facade=sys.modules[__name__])
 
 
 def _to_day_key(ts: Any) -> Optional[str]:
-    if ts is None:
-        return None
-    text = str(ts).strip()
-    if not text:
-        return None
-    try:
-        epoch = int(float(text))
-        return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%d")
-    except Exception:
-        pass
-    if text.endswith("Z"):
-        text = text[:-1] + "+00:00"
-    try:
-        dt = datetime.fromisoformat(text)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return dt.astimezone(timezone.utc).strftime("%Y-%m-%d")
-    except Exception:
-        return None
+    return phase5_read._to_day_key(ts, facade=sys.modules[__name__])
 
 
 def _resolve_day(event_log_path: Path, requested_day: Optional[str]) -> str:
-    if requested_day:
-        return str(requested_day).strip()
-    days = sorted({d for row in _iter_events(event_log_path) if (d := _to_day_key(row.get("ts") or row.get("ts_kst")))} )
-    if days:
-        return days[-1]
-    return date.today().isoformat()
+    return phase5_read._resolve_day(event_log_path, requested_day, facade=sys.modules[__name__])
 
 
 def _safe_rel(path: Path, root: Path) -> str:
-    try:
-        return str(path.resolve().relative_to(root.resolve()))
-    except Exception:
-        return str(path)
+    return phase5_read._safe_rel(path, root)
 
 
 def _pick_latest_canonical_run_id(reports_root: Path, day: str) -> str:
-    base = reports_root / "canonical" / day
-    if not base.exists():
-        return ""
-    candidates = [path for path in base.iterdir() if path.is_dir()]
-    if not candidates:
-        return ""
-    latest = max(candidates, key=lambda path: path.stat().st_mtime)
-    return latest.name
+    return phase5_read._pick_latest_canonical_run_id(reports_root, day)
 
 
 def _write_json(path: Path, payload: Dict[str, Any]) -> None:
@@ -457,18 +404,7 @@ def generate_phase5_validation_bundle(
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description="Generate a read-only validation bundle for phase 5 reporting/policy artifacts."
-    )
-    parser.add_argument("--event-log-path", default="data/logs/events.jsonl")
-    parser.add_argument("--reports-root", default="reports")
-    parser.add_argument("--output-dir", default="reports/dev/analysis/phase5_validation")
-    parser.add_argument("--day", default=None)
-    parser.add_argument("--max-runs", type=int, default=120)
-    parser.add_argument("--max-executions", type=int, default=120)
-    parser.add_argument("--max-news-titles", type=int, default=5)
-    parser.add_argument("--json", action="store_true")
-    return parser
+    return phase5_cli._build_parser(facade=sys.modules[__name__])
 
 
 def main(argv: Optional[List[str]] = None) -> int:
