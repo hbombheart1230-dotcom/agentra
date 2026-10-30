@@ -14,7 +14,7 @@
 ## 신규 A1~A8 · 동일 SOURCE `libs/reporting/strategist_llm_summary.py`
 | ID | SOURCE 원함수·원본 라인 | TARGET 함수(신규 상기 모듈) | 이동할 로직 및 회귀 fixture | 신규 TEST |
 |---|---|---|---|---|
-| **A1** | `_canonical_strategist_path_for_response(source_path: Path) -> Path | None` L84–100 | `path_projection.py::canonical_strategist_path_for_response(source_path)` | response.json 확인, llm/day/run·category 별 중첩 fallback, 최종 canonical strategist.json 경로; 두 경로/이름 mismatch/Path parity; 파일 존재 검사 추가 금지 | `tests/test_p15_summary_canonical_path_owner.py` |
+| **A1** | `_canonical_strategist_path_for_response(source_path: Path) -> Path \| None` L84–100 | `path_projection.py::canonical_strategist_path_for_response(source_path)` | response.json 확인, llm/day/run·category 별 중첩 fallback, 최종 canonical strategist.json 경로; 두 경로/이름 mismatch/Path parity; 파일 존재 검사 추가 금지 | `tests/test_p15_summary_canonical_path_owner.py` |
 | **A2** | `_headline_count_from_sample_map(value: Any) -> int` L136–149 | `sample_counts.py::headline_count_from_sample_map(value)` | dict values의 dict row count int(value or 0) 합, 잘못된 항목/예외 skip, 음수·문자열·None·입력불변 | `tests/test_p15_summary_headline_count_owner.py` |
 | **A3** | `_first_text(default: str, *values: Any) -> str` L213–220 | `first_values.py::first_text(default,*values,facade)` | `facade._text(value, "")`를 왼쪽부터 호출·첫 truthy 반환, 전부 빈 경우 default, helper monkeypatch 호출 순서·예외 | `tests/test_p15_summary_first_text_owner.py` |
 | **A4** | `_first_dict(*values: Any) -> Dict[str, Any]` L225–232 | `first_values.py::first_dict(*values,facade)` | `facade._as_dict` 첫 nonempty map·원본 dict alias, all empty {}, invalid/patch exception parity | `tests/test_p15_summary_first_dict_owner.py` |
