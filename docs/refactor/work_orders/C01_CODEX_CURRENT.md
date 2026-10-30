@@ -1,3 +1,7 @@
+# 2026-10-31 02h C03 REMOTE DELTA / EXECUTION PRIORITY
+
+B1 RF-063 `_read_json` is now remote moved (SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4`, Owner blob `c573e644ab9f81377ecba906ad283170807c6ee7`). Do not reissue/retest B1. **B0 RF-065 missing `phase5_markdown` import is still REMOTE_BROKEN** (SOURCE `f7ce771eca2286bd6d647641a001f06f0932193c`); execute minimal fix and new normal fixture exactly as below. **B2–B9 remain 8 independent safe actual BODY MOVEs**; B2–B6 current SOURCE blob updated to `e4f1d57cac27bbde6e758c8751f178a8d6b790a4`; B7–B9 SOURCE blob unchanged `c45516931dcb365c8283c596345233458c10a41f`. Do ALL B0 and B2–B9, continuing after any isolated blocker; no new BODY MOVE supply needed while 8 remain. B1 code remote exists but G2 targeted normal not evidenced; do not call it RF DONE. This top note supersedes obsolete historical B1–B9 status lines below; all executable details for remaining items are inline in this C01. No D00/RF/queue exploration.
+
 # Agentra P1.5 FAST-3 — C01 B-20261030-21 B0 carryover + NEW 9 verified BODY MOVEs
 
 ## 2026-10-31 00h C03 verified correction — B0 RF-065 REMOTE_BROKEN; B1–B9 still NEW_READY
@@ -203,25 +207,11 @@ def _render_bundle_markdown(payload: Dict[str, Any], *, repo_root: Path) -> str:
 Keep SOURCE original `def _render_bundle_markdown(payload: Dict[str, Any], *, repo_root: Path) -> str` as thin delegate `return phase5_markdown._render_bundle_markdown(payload, repo_root=repo_root, facade=sys.modules[__name__])`; import `from scripts.research import phase5_validation_markdown as phase5_markdown`; TARGET uses `facade.json.dumps` and `facade._safe_rel` at call time, no reverse import. Test `tests/test_p15_rf065_phase5_markdown_owner.py` fake payload {}→heading '# Phase 5 Validation Bundle (None)' and symbol count 0, {'day':'2026-10-30','summary':{'symbol_report_count':2}}→heading and count 2, full fake nested payload→byte-identical before/after, bad numeric summary count→same ValueError. Run py_compile, normal scoped pytest or stdlib smoke if unavailable, commit/push only code+test, exact remote ref/blob. On blocked record preserved local SHA/error, proceed B1 without overwriting B0 local work.
 
 
-### B1 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_read_json` SOURCE blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` → `scripts/diagnostics/trade_artifact_validation_read_projection.py::_read_json`
+### B1 — RF-063 `_read_json` REMOTE_BODY_MOVED; DO NOT REEXECUTE
 
-**Exact SOURCE BODY to MOVE (not duplicate):**
-```python
-def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return payload if isinstance(payload, dict) else {}
-```
+B branch SOURCE `scripts/diagnostics/check_trade_report_runtime_regression.py` now has exact-signature thin `_read_json` wrapper to `trade_read._read_json(path,facade=sys.modules[__name__])`; current SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4`, new Owner `scripts/diagnostics/trade_artifact_validation_read_projection.py` blob `c573e644ab9f81377ecba906ad283170807c6ee7`. Remote compare from B `e28d1a9d` is +1 commit, only SOURCE and TARGET changed. This is **REMOTE_DONE_CODE / G2_NORMAL_NOT_VERIFIED** (no targeted test file in that diff), not a new MOVE and not an instruction to retest the same SHA. C04/C05 decide acceptance separately. B MUST continue B0 and B2–B9, not redo B1.
 
-**Wrapper/monkeypatch:** SOURCE keeps exact signature/annotations/defaults and becomes a thin delegate. TARGET takes keyword-only `facade` only if needed, does NOT import SOURCE, does not copy body into SOURCE. facade.json.loads at call time; preserve path.exists guard and broad Exception; read temp only. For multi-function targets add without overwriting earlier functions. Preserve caller exception/format/order/identity.
-
-**Normal targeted fixture:** `tests/test_p15_rf063_21h_read_json_owner.py`: tmp_path missing→{}; valid dict→same; JSON list/invalid→{}; monkeypatch facade.json.loads to raise→{}. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_validation_read_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_read_json_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
-
-### B2 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_resolve_trade_context` SOURCE blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` → `scripts/diagnostics/trade_artifact_context_projection.py::_resolve_trade_context`
+### B2 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_resolve_trade_context` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_context_projection.py::_resolve_trade_context`
 
 **Exact SOURCE BODY to MOVE (not duplicate):**
 ```python
@@ -267,7 +257,7 @@ def _resolve_trade_context(reports_root: Path, day: str, trade_id: str) -> Dict[
 
 **Normal targeted fixture:** `tests/test_p15_rf063_21h_resolve_trade_context_owner.py`: patch facade.trade_artifact_paths with temp paths and facade._read_json fake; empty payloads→target_run_id ''; exit run_id preferred to entry; compare dict/keys. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_context_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_resolve_trade_context_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
 
-### B3 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_bundle_repair_command` SOURCE blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` → `scripts/diagnostics/trade_artifact_command_projection.py::_build_bundle_repair_command`
+### B3 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_bundle_repair_command` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_command_projection.py::_build_bundle_repair_command`
 
 **Exact SOURCE BODY to MOVE (not duplicate):**
 ```python
@@ -310,7 +300,7 @@ def _build_bundle_repair_command(
 
 **Normal targeted fixture:** `tests/test_p15_rf063_21h_build_bundle_repair_command_owner.py`: day='2026-10-30', target_run_id='r', role='manual', max_runs=2, fake paths→argv includes '--no-trade-report-ai','--json' in exact order; patch facade.ROOT. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_command_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_build_bundle_repair_command_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
 
-### B4 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_report_regen_command` SOURCE blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` → `scripts/diagnostics/trade_artifact_command_projection.py::_build_report_regen_command`
+### B4 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_report_regen_command` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_command_projection.py::_build_report_regen_command`
 
 **Exact SOURCE BODY to MOVE (not duplicate):**
 ```python
@@ -349,7 +339,7 @@ def _build_report_regen_command(
 
 **Normal targeted fixture:** `tests/test_p15_rf063_21h_build_report_regen_command_owner.py`: local_debug=False,with_llm=False→no '--with-llm'; local_debug=True→'--local-debug'; timeout=1→'--hard-timeout-sec','1'; no subprocess. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_command_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_build_report_regen_command_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
 
-### B5 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::validate_trade_artifact_chain` SOURCE blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` → `scripts/diagnostics/trade_artifact_validation_evidence_projection.py::validate_trade_artifact_chain`
+### B5 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::validate_trade_artifact_chain` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_validation_evidence_projection.py::validate_trade_artifact_chain`
 
 **Exact SOURCE BODY to MOVE (not duplicate):**
 ```python
@@ -498,7 +488,7 @@ def validate_trade_artifact_chain(reports_root: Path, day: str, trade_id: str) -
 
 **Normal targeted fixture:** `tests/test_p15_rf063_21h_validate_trade_artifact_chain_owner.py`: fake tmp context with all artifact paths missing→ordered missing_artifact failures; fully fake empty context yields ok=False; spy helper call; compare before/after entire dict. Golden baseline before MOVE vs wrapper vs target, negative/monkeypatch, isolated fake/tmp only. `.venv/bin/python -m py_compile scripts/diagnostics/check_trade_report_runtime_regression.py scripts/diagnostics/trade_artifact_validation_evidence_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_21h_validate_trade_artifact_chain_owner.py` normal exit0 required, or reproducible stdlib smoke when pytest absent, record actual exit. Commit only code/test; normal push B branch; refetch remote ref and exact SOURCE/TARGET/TEST blobs/tree after push. On failure preserve local SHA/error and continue next safe disjoint item.
 
-### B6 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_parser` SOURCE blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` → `scripts/diagnostics/trade_artifact_validation_cli.py::_build_parser`
+### B6 — RF-063 | `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_parser` SOURCE blob `e4f1d57cac27bbde6e758c8751f178a8d6b790a4` → `scripts/diagnostics/trade_artifact_validation_cli.py::_build_parser`
 
 **Exact SOURCE BODY to MOVE (not duplicate):**
 ```python
