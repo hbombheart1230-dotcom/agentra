@@ -48,127 +48,43 @@ def _read_json(path: Path) -> Dict[str, Any]:
 
 
 def _safe_int(value: Any, default: int = 0) -> int:
-    try:
-        if value in (None, ""):
-            return int(default)
-        return int(float(value))
-    except Exception:
-        return int(default)
+    from scripts.diagnostics import trade_artifact_evidence_predicates as _owner
+    return _owner._safe_int(value=value, default=default, facade=sys.modules[__name__])
 
 
 def _is_closed_trade(lifecycle_bundle: Dict[str, Any], exit_payload: Dict[str, Any]) -> bool:
-    status = str(
-        lifecycle_bundle.get("trade_lifecycle_status")
-        or lifecycle_bundle.get("status")
-        or ""
-    ).strip().lower()
-    if status == "open":
-        return False
-    if _has_substantive_exit_evidence(exit_payload):
-        return True
-    return status in {"closed", "exited", "sell"}
+    from scripts.diagnostics import trade_artifact_evidence_predicates as _owner
+    return _owner._is_closed_trade(lifecycle_bundle=lifecycle_bundle, exit_payload=exit_payload, facade=sys.modules[__name__])
 
 
 def _is_empty_placeholder(value: Any) -> bool:
-    if value is None:
-        return True
-    if isinstance(value, bool):
-        return value is False
-    if isinstance(value, (int, float)):
-        return value == 0
-    if isinstance(value, str):
-        return not value.strip()
-    if isinstance(value, list):
-        return len(value) == 0
-    if isinstance(value, dict):
-        if not value:
-            return True
-        return all(_is_empty_placeholder(item) for item in value.values())
-    return False
+    from scripts.diagnostics import trade_artifact_evidence_predicates as _owner
+    return _owner._is_empty_placeholder(value=value, facade=sys.modules[__name__])
 
 
 def _has_substantive_entry_evidence(entry_payload: Dict[str, Any]) -> bool:
-    entry = entry_payload if isinstance(entry_payload, dict) else {}
-    if not entry:
-        return False
-    if str(entry.get("run_id") or "").strip():
-        return True
-    if str(entry.get("ts") or "").strip():
-        return True
-    for key in ("price", "avg_price", "qty"):
-        if entry.get(key) not in (None, "", 0, 0.0):
-            return True
-    scanner_context = entry.get("scanner_context") if isinstance(entry.get("scanner_context"), dict) else {}
-    if str(scanner_context.get("selected_symbol") or "").strip():
-        return True
-    execution_context = entry.get("execution_context") if isinstance(entry.get("execution_context"), dict) else {}
-    execution_details = entry.get("execution_details") if isinstance(entry.get("execution_details"), dict) else {}
-    if str(execution_context.get("order_status") or execution_details.get("order_status") or "").strip():
-        return True
-    if str(execution_context.get("order_id") or execution_details.get("order_id") or "").strip():
-        return True
-    return False
+    from scripts.diagnostics import trade_artifact_evidence_predicates as _owner
+    return _owner._has_substantive_entry_evidence(entry_payload=entry_payload, facade=sys.modules[__name__])
 
 
 def _has_substantive_exit_evidence(exit_payload: Dict[str, Any]) -> bool:
-    exit_ctx = exit_payload if isinstance(exit_payload, dict) else {}
-    if not exit_ctx:
-        return False
-    if str(exit_ctx.get("run_id") or "").strip():
-        return True
-    if str(exit_ctx.get("ts") or "").strip():
-        return True
-    if str(exit_ctx.get("reason_human") or "").strip():
-        return True
-    for key in ("price", "avg_price", "qty"):
-        if exit_ctx.get(key) not in (None, "", 0, 0.0):
-            return True
-    execution_details = exit_ctx.get("execution_details") if isinstance(exit_ctx.get("execution_details"), dict) else {}
-    if str(execution_details.get("order_status") or "").strip():
-        return True
-    if str(execution_details.get("order_id") or "").strip():
-        return True
-    monitor_context = exit_ctx.get("monitor_context") if isinstance(exit_ctx.get("monitor_context"), dict) else {}
-    if str(monitor_context.get("trigger_type") or "").strip():
-        return True
-    return False
+    from scripts.diagnostics import trade_artifact_evidence_predicates as _owner
+    return _owner._has_substantive_exit_evidence(exit_payload=exit_payload, facade=sys.modules[__name__])
 
 
 def _section_provenance_all_fallback(report: Dict[str, Any]) -> bool:
-    provenance = report.get("section_provenance") if isinstance(report.get("section_provenance"), dict) else {}
-    if not provenance:
-        return False
-    items = [value for value in provenance.values() if isinstance(value, dict)]
-    if not items:
-        return False
-    fallback_tags = {"fallback", "unknown", "missing"}
-    return all(str(item.get("source") or "").strip().lower() in fallback_tags for item in items)
+    from scripts.diagnostics import trade_artifact_evidence_predicates as _owner
+    return _owner._section_provenance_all_fallback(report=report, facade=sys.modules[__name__])
 
 
 def _parse_case(raw: str) -> Dict[str, str]:
-    parts = [str(part or "").strip() for part in str(raw or "").split(":")]
-    if len(parts) < 2 or not parts[0] or not parts[1]:
-        raise ValueError(f"invalid case spec: {raw}")
-    return {
-        "day": parts[0],
-        "trade_id": parts[1],
-        "target_run_id": parts[2] if len(parts) >= 3 else "",
-    }
+    from scripts.diagnostics import trade_artifact_case_projection as _owner
+    return _owner._parse_case(raw=raw, facade=sys.modules[__name__])
 
 
 def _normalize_cases(values: List[str]) -> List[Dict[str, str]]:
-    if not values:
-        return [{"day": day, "trade_id": trade_id, "target_run_id": ""} for day, trade_id in DEFAULT_GOLDEN_CASES]
-    out: List[Dict[str, str]] = []
-    seen: set[Tuple[str, str]] = set()
-    for raw in values:
-        case = _parse_case(raw)
-        key = (case["day"], case["trade_id"])
-        if key in seen:
-            continue
-        out.append(case)
-        seen.add(key)
-    return out
+    from scripts.diagnostics import trade_artifact_case_projection as _owner
+    return _owner._normalize_cases(values=values, facade=sys.modules[__name__])
 
 
 def _resolve_trade_context(reports_root: Path, day: str, trade_id: str) -> Dict[str, Any]:
@@ -210,7 +126,8 @@ def _resolve_trade_context(reports_root: Path, day: str, trade_id: str) -> Dict[
 
 
 def _command_to_text(command: List[str]) -> str:
-    return " ".join(str(part) for part in command)
+    from scripts.diagnostics import trade_artifact_command_text as _owner
+    return _owner._command_to_text(command=command, facade=sys.modules[__name__])
 
 
 def _run_python_json(command: List[str]) -> Dict[str, Any]:
