@@ -223,30 +223,13 @@ def _monitor_decision_summary(
     signal_snapshot: Dict[str, Any],
     missing_inputs: List[str],
 ) -> str:
-    if missing_inputs:
-        missing = ",".join([_clip(item, max_len=24) for item in list(missing_inputs)[:3] if _clip(item, max_len=24)])
-        return _clip(f"Decision: insufficient data ({missing or 'unavailable'})", max_len=120)
-    phase = str(decision_phase or "").strip().lower()
-    reason = _clip(primary_reason_text, max_len=64) or "unavailable"
-    if phase == "entry":
-        entry_signal = _clip(_dict(signal_snapshot).get("entry_pattern"), max_len=42) or reason
-        entry_thresholds = _dict(_dict(threshold_snapshot).get("entry_thresholds"))
-        threshold_text = (
-            _clip(entry_thresholds.get("max_extended_from_vwap_pct"), max_len=24)
-            or _clip(entry_thresholds.get("volume_ratio_min"), max_len=24)
-            or "thresholds"
-        )
-        return _clip(f"Entry: {entry_signal} met with {threshold_text} -> BUY", max_len=120)
-    if phase == "exit":
-        trigger = _clip(_dict(signal_snapshot).get("exit_triggered_rule"), max_len=48) or reason
-        return _clip(f"Exit: {trigger}", max_len=120)
-    if phase == "hold":
-        return "Hold: conditions stable, no exit trigger"
-    return _clip(f"No action: {reason}", max_len=120)
+    from libs.contracts.agent_output_parts import monitor_decision_summary as _owner
+    return _owner.monitor_decision_summary(decision_phase=decision_phase, primary_reason_text=primary_reason_text, threshold_snapshot=threshold_snapshot, signal_snapshot=signal_snapshot, missing_inputs=missing_inputs, facade=_r3_sys.modules[__name__])
 
 
 def _phase(state: Dict[str, Any]) -> str:
-    return str(state.get("runtime_phase") or state.get("phase") or "").strip()
+    from libs.contracts.agent_output_parts import artifact_metadata as _owner
+    return _owner.phase(state, facade=_r3_sys.modules[__name__])
 
 
 def _run_ts(state: Dict[str, Any]) -> str:
@@ -261,18 +244,8 @@ def _run_ts(state: Dict[str, Any]) -> str:
 
 
 def _parse_day_from_timestamp(value: str) -> str:
-    text = str(value or "").strip()
-    if not text:
-        return ""
-    if len(text) == 10 and text[4:5] == "-" and text[7:8] == "-":
-        return text
-    normalized = text.replace("Z", "+00:00") if text.endswith("Z") else text
-    try:
-        return kst_day_str(datetime.fromisoformat(normalized))
-    except Exception:
-        if len(text) >= 10 and text[4:5] == "-" and text[7:8] == "-":
-            return text[:10]
-    return ""
+    from libs.contracts.agent_output_parts import artifact_metadata as _owner
+    return _owner.parse_day_from_timestamp(value, facade=_r3_sys.modules[__name__])
 
 
 def _run_day(state: Dict[str, Any]) -> str:
@@ -304,176 +277,18 @@ def _base_output(state: Dict[str, Any], *, agent: str, symbol: str = "", status:
 
 
 def _required_keys_for_agent(agent: str) -> List[str]:
-    base = ["schema_version", "agent", "run_id", "day", "ts", "phase", "status"]
-    specific: Dict[str, List[str]] = {
-        "strategist": [
-            "market_regime",
-            "market_context_summary",
-            "news_evidence_summary",
-            "sentiment_evidence_summary",
-            "volatility_context",
-            "strategy_thesis",
-            "playbook",
-            "market_context",
-            "news_context",
-            "strategy_frame",
-            "policy_selected",
-            "llm_trace",
-            "decision_summary",
-            "llm_metadata_summary",
-            "source_refs",
-        ],
-        "scanner": [
-            "candidate_pool_snapshot",
-            "filter_funnel",
-            "universe_size",
-            "candidate_list_summary",
-            "ranking_table",
-            "selected_symbol",
-            "selected_rank",
-            "selection_reason",
-            "selection_reason_detail",
-            "rejection_summary",
-            "filter_feature_summary",
-            "evidence_refs",
-        ],
-        "monitor": [
-            "position_snapshot",
-            "monitor_evaluation",
-            "monitor_action_decision",
-            "thresholds_guards_used",
-            "threshold_snapshot",
-            "signal_snapshot",
-            "market_snapshot_refs",
-            "evaluation_summary",
-            "decision",
-            "decision_phase",
-            "decision_action",
-            "decision_status",
-            "decision_summary",
-            "primary_reason_code",
-            "primary_reason_text",
-            "secondary_reason_codes",
-            "intent_emitted",
-            "evidence_quality",
-            "missing_inputs",
-            "generated_at",
-            "decision_reason_chain",
-            "trigger_details",
-            "evidence_refs",
-        ],
-        "supervisor": [
-            "invoked_agents",
-            "command",
-            "decision",
-            "approval_result",
-            "reason",
-            "blocked_allowed_details",
-        ],
-        "executor": [
-            "action",
-            "order_request_summary",
-            "execution_enabled",
-            "approval_mode",
-            "broker_result",
-            "final_execution_status",
-            "failure_reason",
-        ],
-        "commander": [
-            "mode",
-            "phase",
-            "path",
-            "runtime_mode",
-            "runtime_phase",
-            "selected_route",
-            "route_reason_codes",
-            "route_reason_text",
-            "open_position_count",
-            "open_position_symbols",
-            "strategist_cache_used",
-            "strategist_blocked",
-            "cooldown_applied",
-            "incident_state",
-            "portfolio_preflight_result",
-            "generated_at",
-            "session_type",
-            "market_clock_phase",
-            "portfolio_state_summary",
-            "market_regime_summary",
-            "goal",
-            "agent_invocation_plan",
-            "decision_checkpoints",
-            "final_runtime_path",
-            "final_reason",
-            "handoff_instruction",
-            "invoked_agents",
-            "command",
-            "decision",
-            "approval_result",
-            "reason",
-            "blocked_allowed_details",
-        ],
-    }
-    out = list(base)
-    out.extend(list(specific.get(str(agent or "").strip().lower(), [])))
-    return out
+    from libs.contracts.agent_output_parts import artifact_validation as _owner
+    return _owner.required_keys_for_agent(agent, facade=_r3_sys.modules[__name__])
 
 
 def _required_keys_for_artifact(obj: Dict[str, Any]) -> List[str]:
-    artifact = dict(obj or {}) if isinstance(obj, dict) else {}
-    agent = str(artifact.get("agent") or "").strip().lower()
-    mode = str(artifact.get("mode") or "").strip().lower()
-    if agent == "commander" and (mode == "shadow" or bool(artifact.get("shadow_only"))):
-        base = ["schema_version", "agent", "run_id", "day", "ts", "phase", "status"]
-        specific = [
-            "mode",
-            "decision",
-            "strategist_action_recommendation",
-            "llm_call_advice",
-            "suggested_action",
-            "next_action_recommendation",
-            "no_trade_reason_code",
-            "reason_summary",
-            "observations",
-            "actual_runtime",
-            "monitor_gate_details",
-            "context_delta_summary",
-            "pre_strategist_shadow_snapshot",
-            "post_strategist_assessment",
-            "post_monitor_assessment",
-            "end_of_cycle_summary",
-            "shadow_only",
-            "generated_at",
-        ]
-        return base + specific
-    return _required_keys_for_agent(agent)
+    from libs.contracts.agent_output_parts import artifact_validation as _owner
+    return _owner.required_keys_for_artifact(obj, facade=_r3_sys.modules[__name__])
 
 
 def validate_artifact(artifact: Dict[str, Any]) -> Dict[str, Any]:
-    obj = dict(artifact or {}) if isinstance(artifact, dict) else {}
-    expected = _required_keys_for_artifact(obj)
-    present: List[str] = []
-    missing: List[str] = []
-    for key in expected:
-        if _is_present(obj.get(key)):
-            present.append(key)
-        else:
-            missing.append(key)
-    completeness = float(len(present)) / float(len(expected)) if expected else 1.0
-    if not missing:
-        status = "ok"
-    elif not present:
-        status = "invalid"
-    else:
-        status = "partial"
-    return {
-        "schema_version": AGENT_VALIDATION_SCHEMA_VERSION,
-        "status": status,
-        "required_keys_expected": expected,
-        "required_keys_present": present,
-        "required_keys_missing": missing,
-        "completeness_score": completeness,
-    }
+    from libs.contracts.agent_output_parts import artifact_validation as _owner
+    return _owner.validate_artifact(artifact, facade=_r3_sys.modules[__name__])
 
 
 def build_strategist_output_artifact(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -888,17 +703,8 @@ def build_commander_output_artifact(
 
 
 def _commander_shadow_has_open_order(state: Dict[str, Any]) -> Any:
-    monitor = _dict(state.get("monitor"))
-    order_lifecycle = _dict(monitor.get("order_lifecycle"))
-    if not order_lifecycle:
-        return None
-    stage = _clip(order_lifecycle.get("stage"), max_len=40).lower()
-    terminal = order_lifecycle.get("terminal")
-    if stage:
-        return stage not in {"filled", "cancelled", "canceled", "rejected"} and terminal is not True
-    if terminal in (True, False):
-        return not bool(terminal)
-    return None
+    from libs.contracts.agent_output_parts import commander_shadow_checks as _owner
+    return _owner.has_open_order(state, facade=_r3_sys.modules[__name__])
 
 
 def _commander_shadow_actual_runtime(state: Dict[str, Any], *, path: str) -> Dict[str, Any]:
@@ -914,27 +720,13 @@ def _commander_shadow_observations(state: Dict[str, Any], *, path: str) -> Dict[
 
 
 def _gate_pass(metrics: Dict[str, Any], passed_checks: List[str], failed_checks: List[str], key: str) -> Any:
-    if key in metrics:
-        value = metrics.get(key)
-        if isinstance(value, bool):
-            return value
-    if key in passed_checks:
-        return True
-    if key in failed_checks:
-        return False
-    return None
+    from libs.contracts.agent_output_parts import commander_shadow_checks as _owner
+    return _owner.gate_pass(metrics, passed_checks, failed_checks, key, facade=_r3_sys.modules[__name__])
 
 
 def _score_from_checks(*, passed_checks: List[str], failed_checks: List[str], fallback: Any) -> Any:
-    try:
-        if fallback not in (None, ""):
-            return round(float(fallback), 4)
-    except Exception:
-        pass
-    total = len(passed_checks) + len(failed_checks)
-    if total <= 0:
-        return None
-    return round(float(len(passed_checks)) / float(total), 4)
+    from libs.contracts.agent_output_parts import commander_shadow_checks as _owner
+    return _owner.score_from_checks(passed_checks=passed_checks, failed_checks=failed_checks, fallback=fallback, facade=_r3_sys.modules[__name__])
 
 
 def _commander_shadow_monitor_gate_details(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -1101,13 +893,8 @@ def _commander_shadow_end_of_cycle_summary(
     next_action_recommendation: str,
     recommendation_gap: str,
 ) -> Dict[str, Any]:
-    return {
-        "no_trade_reason_code": no_trade_reason_code,
-        "reason_summary": reason_summary,
-        "actual_runtime": actual_runtime,
-        "next_action_recommendation": next_action_recommendation,
-        "recommendation_gap": recommendation_gap,
-    }
+    from libs.contracts.agent_output_parts import commander_shadow_cycle as _owner
+    return _owner.end_of_cycle_summary(no_trade_reason_code=no_trade_reason_code, reason_summary=reason_summary, actual_runtime=actual_runtime, next_action_recommendation=next_action_recommendation, recommendation_gap=recommendation_gap, facade=_r3_sys.modules[__name__])
 
 
 def build_commander_shadow_artifact(
