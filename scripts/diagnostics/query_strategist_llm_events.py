@@ -15,30 +15,15 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from libs.reporting.event_log_reader import iter_jsonl_events
+from scripts.diagnostics import strategist_event_query_projection as event_projection
 
 
 def _to_float(value: Any, default: float = 0.0) -> float:
-    try:
-        return float(value)
-    except Exception:
-        return float(default)
+    return event_projection._to_float(value, default)
 
 
 def _infer_call_kind(payload: Dict[str, Any]) -> str:
-    explicit = str(payload.get("call_kind") or "").strip()
-    if explicit:
-        return explicit
-    schema_version = str(payload.get("schema_version") or "").strip().lower()
-    prompt_version = str(payload.get("prompt_version") or "").strip().lower()
-    intent_action = str(payload.get("intent_action") or "").strip().upper()
-    error_type = str(payload.get("error_type") or "").strip()
-    if schema_version == "strategist_output.v1" or prompt_version.startswith("m31-strategic-frame"):
-        return "strategic_frame"
-    if schema_version == "intent.v1" or intent_action in {"BUY", "SELL", "NOOP"}:
-        return "legacy_trade_intent"
-    if error_type == "StrategistBlocked":
-        return "blocked_legacy_runtime"
-    return "unknown"
+    return event_projection._infer_call_kind(payload)
 
 
 def _load_jsonl(path: Path) -> List[Dict[str, Any]]:
@@ -53,21 +38,7 @@ def _filtered_events(
     only_failures: bool = False,
     only_nonzero_news: bool = False,
 ) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
-    for rec in rows:
-        if rec.get("stage") != "strategist_llm" or rec.get("event") != "result":
-            continue
-        if day and not str(rec.get("ts_kst") or rec.get("ts") or "").startswith(day):
-            continue
-        if run_id and str(rec.get("run_id") or "") != run_id:
-            continue
-        p = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-        if only_failures and bool(p.get("ok")):
-            continue
-        if only_nonzero_news and abs(_to_float(p.get("context_symbol_sentiment_score"), 0.0)) <= 1e-12:
-            continue
-        out.append(rec)
-    return out
+    return event_projection._filtered_events(rows, run_id=run_id, day=day, only_failures=only_failures, only_nonzero_news=only_nonzero_news, facade=sys.modules[__name__])
 
 
 def _print_human(path: Path, rows: List[Dict[str, Any]]) -> None:
