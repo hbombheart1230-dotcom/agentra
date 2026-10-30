@@ -1,5 +1,20 @@
 # D00 — Agentra P1.5 단일 실행·권한 계약
 
+## 2026-10-30 홍사장 직접 지시 — **C01/C02 연속 공급·배정 실패 방지 (강행)**
+> 이 절은 기존 "1~3개 먼저"·"4~6개"·단순 KEEP 우선/단순 시간 채우기·옛 회차 지침에 **우선**한다. 단, 아래 FAST-3 G1/G2/G3·RF/파일 Owner 독점·실계좌/안전 HOLD·C04/C05 권한을 덮어쓰지 않는다.
+
+1. **C03 공급 의무:** 매시 C03 시작 시 A/B 각 원격 C01/C02 주문 blob, 각 Owner 브랜치 HEAD, #11/#12의 최신 실제 완료/차단 증거를 확인한다. 이미 모두 완료된 동일 주문을 다음 예약에 재발행하는 행위는 `SUPPLY_GAP`이다. **각 Actor의 미완료 안전 실제 BODY MOVE가 6개 미만**이면 C03은 해당 회차 **8~10개 신규 독립 item**이 담긴 단일 C01 또는 C02를 정상 commit/push해 **다음 Actor 실행 전** 공급한다. 한쪽만 소진했으면 그쪽만 교체하며, 진행 중인 타인의 시작 주문을 취소하지 않는다.
+2. **예비 안전 공급:** C03은 Actor마다 최소 **6개 사전 분석한 예비 item**을 확보·유지할 책임이 있다. 예비는 실제 Owner RF, 소스 경로/원함수·본문/blob, 허가된 단일 TARGET Owner·미구현 여부, IO/State/실거래 영향과 테스트 경로를 확인한 것만 인정한다. 추측 파일명/KEEP/과거 완료 item은 **예비 0**, 예비 확인 전 `RESERVE_NOT_VERIFIED`. 같은 SOURCE/TARGET을 A/B에 중복 배정 금지. 새로운 target 독점권은 C03의 범위·소유권 판단을 전제로 한다.
+3. **주문 품질:** C01/C02는 각 item마다 `RF | SOURCE_FILE::FUNCTION + 원격 blob | TARGET_FILE::FUNCTION | 이동할 실제 계산 본문/효과와 보존할 wrapper/monkeypatch | 신규 targeted test | 차단 후 다음 item | push 확인`을 **인라인 완결**해야 한다. 단일 1~3개, KEEP-only, 지난 완료 항목 재시험/재명명, 빈 템플릿, 보고용 커밋만으로 `SUPPLIED` 주장 금지. 분리 가능한 순수 계산을 우선하고 effect/실주문/운영 안전 계약은 보호한다.
+4. **작업자 실행 의무:** 발행된 시작 주문의 **모든** item을 각각 완료하거나 근거 있는 BLOCKED로 기록하고, 한 item PASS·첫 커밋·짧은 실행시간·부분 push 실패 때문에 나머지 안전 item을 포기하지 않는다. 빠르게 전부 완료했다면 시간 채우기 금지. 실행 중 새 지시 발행은 기존 시작 주문을 소급 무효화하지 않는다. pytest 부재는 테스트만, Git 인증 실패는 push만 BLOCKED이며 다른 안전 item 진행; 로컬 commit은 원격 G1 아님.
+5. **누락 즉시 보고:** 회차에 8개 신규 공급·정상 푸시를 못하면 C03은 성공/NO_DELTA 대신 #36에 `SUPPLY_GAP | ACTOR | EXHAUSTED_ORDER_SHA | VERIFIED_DONE | NEW_READY | RESERVE_VERIFIED | FIRST_BLOCKER | NEXT_RF_SOURCE | NEXT`를 기록한다. 실제 수행 안 된 시험·예비·원격 변경을 PASS로 만들지 않는다. 자동 예약 자체가 돌지 않았거나 한도 도달이면 `NOT_RUN/EXECUTION_LIMIT` 증거로 별도 표시한다. **개발 실행 예약이 1시간 간격이라는 사실은 1시간 작업 의무나 자동 재실행 보장이 아니다.**
+6. **구조 실적과 RF DONE 엄격 분리:** `REFACTOR_CHANGED`(실제 BODY MOVE/중복 계산 제거), `KEEP_VERIFIED_ONLY`, `ALREADY_SPLIT_BEFORE_BASE`, `LOCAL_ONLY`, `PUSH_VERIFIED`, `INTEGRATED`, `RF_DONE_DELTA`를 별도로 집계. C03이 공급한 문서 커밋/대기시간/기존 DONE의 추가 TARGET_GAP 폐쇄를 신규 RF DONE으로 중복 계상 금지. C04의 정확 SOURCE 선별 통합, C05 G1~G3/STATUS를 계속 따른다.
+
+**적용 즉시:** 2026-10-30 10:40 KST C01/C02는 기존 완료 주문을 각각 신규 **8개**로 교체. C03의 예비 6개/Actor는 아직 별도 실사 전이므로 **확보됐다고 주장하지 않는다**. 이후 회차에 확인·보충할 의무다. 이 사용자 명시 요청에 따라 이번 D00 수정만 허용하며 C03 자동화가 향후 D00을 반복 갱신할 권한을 자동 획득하는 것은 아니다.
+
+---
+
+
 **A/B 단일 작업서 원칙(2026-10-29 최우선):** RF 상세설계 93개는 **지팀장 C03 설계 자료**이며 **A/B 실행 진입점이 아니다**. 각 개발자에게 SOURCE 원함수, TARGET 새 파일/함수, MOVE 방법, 테스트, KEEP 근거, 재개점을 **C01 또는 C02 한 파일 본문에 직접 기재**한다. A/B는 해당 파일 한 개만 먼저 읽고 실행 코드/테스트 파일 이외의 INDEX·RF 상세·D00·Txx·HANDOFF 탐색 불필요. C03이 매시 C01/C02 본문 큐를 보충, 클라우드 작업자는 지시서만 실행. 정당 KEEP 즉시 통과, 원본/타깃 교차 Actor 0, 실효과 보호는 그대로.
 
 
@@ -8,7 +23,7 @@
 - 동결 목표: T00~T09 및 TREE_V3_FROZEN 그대로. [93개 설계](../plan/rf_details/INDEX.md)의 SOURCE→FUNCTION→TARGET 및 RFC 원본 파일 독점권을 사용. 세부 파일이 미조회 함수라고 표기하면 **C03이 실제 소스를 열고 함수명을 확정한 후** A/B에 배정; 임의 추측 구현 금지.
 - **KEEP_OK 즉시 통과:** 정해진 폴더 위치, 단일 책임, 적절한 길이와 기존 호환 또는 합리적인 공개 CLI/State/effect 경계가 만족되면 KEEP_OK|path|한줄사유|blob으로 승인. 같은 blob 재시험/peer/장문 검토 금지. KEEP은 구조 목표 충족으로 수용하며 신규 CODE_MOVE 성과에 포함하지 않는다.
 - **MOVE 진척:** 원본 함수의 실제 몸체 제거 → 목표 단일 Owner 함수에 옮김 → 원시그니처 얇은 wrapper → caller/monkeypatch/출력/예외 보존. 이중 구현·파일명만 이동은 실패. 실제 변경한 함수의 기존 출력과 새 출력/예외를 fake fixture로 비교하여 정상 targeted pytest/unittest 1회(exit0). 반복 -O/full-suite/full-peer/hosted CI 금지.
-- **다중 RF:** C03은 A/B 각각 4~6개 이상 서로 독립적인 실제 함수 과제를 C01/C02에 공급, 한 Item PASS/KEEP/차단 뒤 다른 안전 항목 계속. A/B 원본/신규 target 파일 소유권 충돌 0; 각 자신의 branch code/test만. C04 묶음 통합, C05 READY 묶음 종결, C06 MOVE와 KEEP 분리 감사.
+- **다중 RF(위 2026-10-30 강행 계약으로 갱신):** C03은 A/B 각각 최소 8개 신규 실제 함수 과제를 C01/C02에 공급하고 Actor당 검증된 예비 6개 확보를 지향, 한 Item PASS/KEEP/차단 뒤 다른 안전 항목 계속. A/B 원본/신규 target 파일 소유권 충돌 0; 각 자신의 branch code/test만. C04 묶음 통합, C05 READY 묶음 종결, C06 MOVE와 KEEP 분리 감사.
 - 기존 26개 DONE 및 모든 이전 검증 이력은 보존. DONE에도 남은 목표 부채가 확인되면 TARGET_GAP_OPEN(정확 SOURCE::함수/TARGET::함수)로 다음 구현에 배정하되 DONE을 일괄 취소하거나 과거 PASS 반복하지 않는다. 실거래/운영 DB/State·Broker/Guard/Step5C/UEF/frozen oracle 변경 금지. 긴급 트랙은 **클라우드 인증/pytest/push 등 실제 환경 차단 해결에만** 사용하고 별도 구조개발 트랙으로 운영하지 않는다.
 
 
