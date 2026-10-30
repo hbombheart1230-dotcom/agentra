@@ -10,7 +10,7 @@ Canonical input HEAD `feba2f3a032860135c181f76d034464334cafaa5`; A owner remote 
 
 ## EIGHT CURRENT VERIFIED SOURCE BODY MOVEs
 
-### A1 | RF-035 | `libs/reporting/intraday_trade_reports.py::_is_trueish` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L64 (4 lines) → `libs/reporting/intraday_report_scalar_projection.py::_is_trueish`
+### A1 | RF-035 | `libs/reporting/intraday_trade_reports.py::_is_trueish` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L68 (4 lines) → `libs/reporting/intraday_report_scalar_projection.py::_is_trueish`
 
 **EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
@@ -22,7 +22,7 @@ def _is_trueish(value: Any) -> bool:
 
 **New normal targeted test:** `tests/test_p15_rf035_08h_a1_is_trueish_owner.py` with fake/temp fixture and expected result: ' YES ' -> True; 0 and None -> False. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile libs/reporting/intraday_trade_reports.py libs/reporting/intraday_report_scalar_projection.py`; `python -m unittest tests/test_p15_rf035_08h_a1_is_trueish_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. MANDATORY NOW: move actual BODY, normal test, commit code/test and push; if blocked record exact reason and continue next item.
 
-### A2 | RF-035 | `libs/reporting/intraday_trade_reports.py::_normalize_symbol` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L68 (4 lines) → `libs/reporting/intraday_report_scalar_projection.py::_normalize_symbol`
+### A2 | RF-035 | `libs/reporting/intraday_trade_reports.py::_normalize_symbol` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L72 (4 lines) → `libs/reporting/intraday_report_scalar_projection.py::_normalize_symbol`
 
 **EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
@@ -34,7 +34,7 @@ def _normalize_symbol(value: Any) -> str:
 
 **New normal targeted test:** `tests/test_p15_rf035_08h_a2_normalize_symbol_owner.py` with fake/temp fixture and expected result: ' 005930 ' -> '005930'; ab -> AB; None -> ''. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile libs/reporting/intraday_trade_reports.py libs/reporting/intraday_report_scalar_projection.py`; `python -m unittest tests/test_p15_rf035_08h_a2_normalize_symbol_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. MANDATORY NOW: move actual BODY, normal test, commit code/test and push; if blocked record exact reason and continue next item.
 
-### A3 | RF-035 | `libs/reporting/intraday_trade_reports.py::_stable_json_text` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L132 (4 lines) → `libs/reporting/intraday_report_scalar_projection.py::_stable_json_text`
+### A3 | RF-035 | `libs/reporting/intraday_trade_reports.py::_stable_json_text` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L130 (4 lines) → `libs/reporting/intraday_report_scalar_projection.py::_stable_json_text`
 
 **EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
@@ -46,7 +46,7 @@ def _stable_json_text(payload: Any) -> str:
 
 **New normal targeted test:** `tests/test_p15_rf035_08h_a3_stable_json_text_owner.py` with fake/temp fixture and expected result: {'b':2,'a':1} -> compact sorted JSON; unicode not escaped. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile libs/reporting/intraday_trade_reports.py libs/reporting/intraday_report_scalar_projection.py`; `python -m unittest tests/test_p15_rf035_08h_a3_stable_json_text_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. MANDATORY NOW: move actual BODY, normal test, commit code/test and push; if blocked record exact reason and continue next item.
 
-### A4 | RF-035 | `libs/reporting/intraday_trade_reports.py::_payload_fingerprint` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L136 (4 lines) → `libs/reporting/intraday_report_scalar_projection.py::_payload_fingerprint`
+### A4 | RF-035 | `libs/reporting/intraday_trade_reports.py::_payload_fingerprint` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L134 (4 lines) → `libs/reporting/intraday_report_scalar_projection.py::_payload_fingerprint`
 
 **EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
@@ -58,7 +58,7 @@ def _payload_fingerprint(payload: Any) -> str:
 
 **New normal targeted test:** `tests/test_p15_rf035_08h_a4_payload_fingerprint_owner.py` with fake/temp fixture and expected result: {'a':1} -> sha256 stable JSON; patch facade._stable_json_text changes hash. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile libs/reporting/intraday_trade_reports.py libs/reporting/intraday_report_scalar_projection.py`; `python -m unittest tests/test_p15_rf035_08h_a4_payload_fingerprint_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. MANDATORY NOW: move actual BODY, normal test, commit code/test and push; if blocked record exact reason and continue next item.
 
-### A5 | RF-035 | `libs/reporting/intraday_trade_reports.py::_brief_cache_dir` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L104 (6 lines) → `libs/reporting/intraday_report_path_projection.py::_brief_cache_dir`
+### A5 | RF-035 | `libs/reporting/intraday_trade_reports.py::_brief_cache_dir` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L108 (6 lines) → `libs/reporting/intraday_report_path_projection.py::_brief_cache_dir`
 
 **EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
@@ -72,7 +72,7 @@ def _brief_cache_dir(root: Path) -> Path:
 
 **New normal targeted test:** `tests/test_p15_rf035_08h_a5_brief_cache_dir_owner.py` with fake/temp fixture and expected result: tmp root and fake env -> tmp/cache; default -> root/data/operator_ui/brief_cache. Assert original baseline vs new Owner vs thin wrapper equality (including negative exception type/message and monkeypatch after import). `python -m py_compile libs/reporting/intraday_trade_reports.py libs/reporting/intraday_report_path_projection.py`; `python -m unittest tests/test_p15_rf035_08h_a5_brief_cache_dir_owner.py -v` **normal exit0**, record actual command/exit; no mandatory -O/full peer/hosted CI. No production paths, network, subprocess, broker, Guard, Step5C, UEF, real state, RunLab, scheduler or live calls. MANDATORY NOW: move actual BODY, normal test, commit code/test and push; if blocked record exact reason and continue next item.
 
-### A6 | RF-035 | `libs/reporting/intraday_trade_reports.py::_script_path` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L96 (4 lines) → `libs/reporting/intraday_report_path_projection.py::_script_path`
+### A6 | RF-035 | `libs/reporting/intraday_trade_reports.py::_script_path` SOURCE blob `31cc169edeafa33db93d58ea103b2ac9ad77af56` L100 (4 lines) → `libs/reporting/intraday_report_path_projection.py::_script_path`
 
 **EXACT SOURCE COMPUTATION BODY — MOVE, do not duplicate:**
 ```python
