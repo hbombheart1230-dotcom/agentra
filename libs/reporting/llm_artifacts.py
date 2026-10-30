@@ -10,13 +10,15 @@ from typing import Any, Dict, List, Tuple
 from libs.reporting import llm_artifacts_attempt_projection as _attempt_owner
 from libs.reporting import llm_artifacts_compact_projection as _compact_owner
 from libs.reporting import llm_artifacts_hash_projection as _hash_owner
+from libs.reporting import llm_artifacts_path_projection as _path_owner
 from libs.reporting import llm_artifacts_prompt_projection as _prompt_owner
 from libs.reporting import llm_artifacts_status_projection as _status_owner
+from libs.reporting import llm_artifacts_trade_path_projection as _trade_path_owner
 from libs.runtime.llm_report_classifier import find_llm_run_dir
 
 
 def canonical_trade_day_root(reports_root: Path, day: str) -> Path:
-    return Path(reports_root) / "trades" / str(day or "").strip()
+    return _path_owner.canonical_trade_day_root(reports_root, day)
 
 
 def iter_trade_dirs(trade_day_root: Path) -> List[Path]:
@@ -58,10 +60,7 @@ def find_trade_dir(trade_day_root: Path, trade_id: str) -> Path | None:
 
 
 def _repo_root_from_reports_root(reports_root: Path) -> Path:
-    root = Path(reports_root)
-    if root.name == "reports":
-        return root.parent
-    return root
+    return _path_owner._repo_root_from_reports_root(reports_root)
 
 
 def _looks_like_trade_day_dir(path: Path) -> bool:
@@ -422,106 +421,14 @@ def trade_artifact_paths(
     prefer_existing_day_root: bool = False,
     time_bucket: str | None = None,
 ) -> Dict[str, Path]:
-    normalized_day = str(day or "").strip()
-    normalized_trade_id = str(trade_id or "").strip()
-    trade_day_root = (
-        resolve_trade_day_root(reports_root, normalized_day)
-        if prefer_existing_day_root
-        else canonical_trade_day_root(reports_root, normalized_day)
+    return _trade_path_owner.trade_artifact_paths(
+        reports_root,
+        day,
+        trade_id,
+        prefer_existing_day_root=prefer_existing_day_root,
+        time_bucket=time_bucket,
+        facade=sys.modules[__name__],
     )
-    existing_trade_root = find_trade_dir(trade_day_root, normalized_trade_id)
-    if existing_trade_root is not None:
-        trade_root = existing_trade_root
-    else:
-        bucket = str(time_bucket or "").strip()
-        if bucket:
-            trade_root = trade_day_root / bucket / normalized_trade_id
-        else:
-            trade_root = trade_day_root / normalized_trade_id
-    legacy_root = reports_root / "trades" / normalized_day[:4] / normalized_day[5:7] / normalized_trade_id
-    # Phase 3 primary structure (operator-facing):
-    # reports/trades/<day>/<trade_id>/
-    #   lifecycle_bundle.json, entry.json, hold.json, exit.json
-    #   evidence/*.json
-    #   reports/*.json|md
-    reports_dir = trade_root / "reports"
-    evidence_dir = trade_root / "evidence"
-    lifecycle_bundle_json = trade_root / "lifecycle_bundle.json"
-    entry_json = trade_root / "entry.json"
-    hold_json = trade_root / "hold.json"
-    exit_json = trade_root / "exit.json"
-    commander_evidence_json = evidence_dir / "commander_evidence.json"
-    monitor_evidence_json = evidence_dir / "monitor_evidence.json"
-
-    # Legacy normalized layout (read fallback only).
-    legacy_normalized_strategist_dir = trade_root / "strategist"
-    legacy_normalized_ai_report_dir = trade_root / "ai_trade_report"
-    legacy_normalized_lifecycle_dir = trade_root / "lifecycle"
-    return {
-        "trade_root": trade_root,
-        "legacy_trade_root": legacy_root,
-        "reports_dir": reports_dir,
-        "evidence_dir": evidence_dir,
-        "strategist_dir": reports_dir,
-        "ai_trade_report_dir": reports_dir,
-        "brief_dir": reports_dir,
-        "lifecycle_dir": trade_root,
-        "lifecycle_bundle_json": lifecycle_bundle_json,
-        "entry_json": entry_json,
-        "hold_json": hold_json,
-        "exit_json": exit_json,
-        # Compact trade-scoped LLM status artifacts (no raw body content).
-        "strategist_llm_response_json": reports_dir / "strategist_llm_response.json",
-        "strategist_summary_md": reports_dir / "strategist_summary.md",
-        "strategist_summary_json": reports_dir / "strategist_summary.json",
-        "ai_trade_report_llm_response_json": reports_dir / "ai_trade_report_llm_response.json",
-        "brief_llm_response_json": reports_dir / "brief_llm_response.json",
-        # Deprecated intermediate artifacts (no forward writes in Phase 3).
-        "strategist_input_json": trade_root / "strategist_input.json",
-        "strategist_compact_input_json": trade_root / "strategist_compact_input.json",
-        "ai_trade_report_input_json": trade_root / "ai_trade_report_input.json",
-        "ai_trade_report_compact_input_json": trade_root / "ai_trade_report_compact_input.json",
-        "brief_input_json": trade_root / "brief_input.json",
-        "brief_compact_input_json": trade_root / "brief_compact_input.json",
-        # Operator-facing summary reports.
-        "ai_trade_report_json": reports_dir / "ai_trade_report.json",
-        "ai_trade_report_md": reports_dir / "ai_trade_report.md",
-        "ai_trade_summary_input_json": reports_dir / "ai_trade_summary_input.json",
-        "ai_trade_summary_json": reports_dir / "ai_trade_summary.json",
-        "ai_trade_summary_md": reports_dir / "ai_trade_summary.md",
-        "ai_trade_summary_llm_response_json": reports_dir / "ai_trade_summary_llm_response.json",
-        "brief_json": reports_dir / "operator_brief.json",
-        "brief_md": reports_dir / "operator_brief.md",
-        # Deprecated compatibility files (read fallback only).
-        "trade_lifecycle_json": trade_root / "trade_lifecycle.json",
-        "aggregated_execution_bundle_json": trade_root / "aggregated_execution_bundle.json",
-        # Evidence set.
-        "strategist_evidence_json": evidence_dir / "strategist_evidence.json",
-        "scanner_evidence_json": evidence_dir / "scanner_evidence.json",
-        "monitor_evidence_json": monitor_evidence_json,
-        "monitor_timeline_json": monitor_evidence_json,
-        "commander_evidence_json": commander_evidence_json,
-        "trade_provenance_json": trade_root / "_provenance.json",
-        "trade_health_json": trade_root / "_health.json",
-        "trade_artifact_links_json": trade_root / "_artifact_links.json",
-        # Legacy normalized read fallbacks.
-        "legacy_normalized_strategist_llm_response_json": legacy_normalized_strategist_dir / "strategist_llm_response.json",
-        "legacy_normalized_ai_trade_report_input_json": legacy_normalized_ai_report_dir / "ai_trade_report_input.json",
-        "legacy_normalized_ai_trade_report_compact_input_json": legacy_normalized_ai_report_dir / "ai_trade_report_compact_input.json",
-        "legacy_normalized_ai_trade_report_json": legacy_normalized_ai_report_dir / "ai_trade_report.json",
-        "legacy_normalized_ai_trade_report_md": legacy_normalized_ai_report_dir / "ai_trade_report.md",
-        "legacy_normalized_ai_trade_report_llm_response_json": legacy_normalized_ai_report_dir / "ai_trade_report_llm_response.json",
-        "legacy_normalized_trade_lifecycle_json": legacy_normalized_lifecycle_dir / "trade_lifecycle.json",
-        "legacy_normalized_aggregated_execution_bundle_json": legacy_normalized_lifecycle_dir / "aggregated_execution_bundle.json",
-        "legacy_normalized_strategist_evidence_json": evidence_dir / "strategist_evidence.json",
-        "legacy_normalized_scanner_evidence_json": evidence_dir / "scanner_evidence.json",
-        "legacy_normalized_monitor_timeline_json": evidence_dir / "monitor_timeline.json",
-        "legacy_trade_story_input_json": legacy_root / "trade_story_input.json",
-        "legacy_trade_report_json": legacy_root / "trade_report.json",
-        "legacy_trade_report_md": legacy_root / "trade_report.md",
-        "legacy_trade_lifecycle_json": legacy_root / "trade_lifecycle.json",
-        "legacy_aggregated_execution_bundle_json": legacy_root / "aggregated_execution_bundle.json",
-    }
 
 
 def operator_summary_artifact_root(reports_root: Path) -> Path:
@@ -530,73 +437,24 @@ def operator_summary_artifact_root(reports_root: Path) -> Path:
     Passing either `reports` or `reports/operator_summary` should resolve to
     the same active operator-summary surface without double nesting.
     """
-    root = Path(reports_root)
-    if root.name == "operator_summary":
-        return root
-    if root.name in {"daily", "weekly", "monthly", "symbols"} and root.parent.name == "operator_summary":
-        return root.parent
-    return root / "operator_summary"
+    return _path_owner.operator_summary_artifact_root(reports_root)
 
 
 def daily_artifact_paths(reports_root: Path, day: str) -> Dict[str, Path]:
     """Canonical daily reporting paths under reports/operator_summary/daily/YYYY-MM-DD/."""
-    normalized_day = str(day or "").strip()
-    operator_root = operator_summary_artifact_root(reports_root)
-    daily_root = operator_root / "daily" / normalized_day
-    return {
-        "root_dir": daily_root,
-        "daily_root": daily_root,
-        "daily_report_json": daily_root / "daily_report.json",
-        "daily_report_md": daily_root / "daily_report.md",
-        "daily_summary_json": daily_root / "daily_summary.json",
-        "daily_summary_md": daily_root / "daily_summary.md",
-        "daily_report_llm_response_json": daily_root / "daily_report_llm_response.json",
-        "operator_summary_json": daily_root / "operator_summary.json",
-        "operator_summary_md": daily_root / "operator_summary.md",
-        "trade_index_json": daily_root / "trade_index.json",
-        "legacy_daily_json": operator_root / "daily" / f"daily_{normalized_day}.json",
-        "legacy_daily_md": operator_root / "daily" / f"daily_{normalized_day}.md",
-        "root_daily_json": operator_root / f"daily_{normalized_day}.json",
-        "root_daily_md": operator_root / f"daily_{normalized_day}.md",
-    }
+    return _path_owner.daily_artifact_paths(reports_root, day, facade=sys.modules[__name__])
 
 
 def symbol_artifact_paths(reports_root: Path, symbol: str) -> Dict[str, Path]:
     """Canonical symbol-history reporting paths under reports/operator_summary/symbols/<SYMBOL>/."""
-    normalized_symbol = str(symbol or "").strip().upper()
-    symbol_root = operator_summary_artifact_root(reports_root) / "symbols" / normalized_symbol
-    return {
-        "root_dir": symbol_root,
-        "symbol_trade_report_json": symbol_root / "symbol_trade_report.json",
-        "symbol_trade_report_md": symbol_root / "symbol_trade_report.md",
-        "symbol_summary_json": symbol_root / "symbol_summary.json",
-        "symbol_summary_md": symbol_root / "symbol_summary.md",
-        "symbol_memory_json": symbol_root / "symbol_memory.json",
-        "trade_history_json": symbol_root / "trade_history.json",
-        "daily_index_json": symbol_root / "daily_index.json",
-        "latest_snapshot_json": symbol_root / "latest_snapshot.json",
-    }
+    return _path_owner.symbol_artifact_paths(reports_root, symbol, facade=sys.modules[__name__])
 
 
 def weekly_artifact_paths(reports_root: Path, week: str) -> Dict[str, Path]:
     """Canonical operator weekly summary paths under reports/operator_summary/weekly/YYYY-Www/."""
-    normalized_week = str(week or "").strip()
-    weekly_root = operator_summary_artifact_root(reports_root) / "weekly" / normalized_week
-    return {
-        "root_dir": weekly_root,
-        "weekly_root": weekly_root,
-        "weekly_summary_json": weekly_root / "weekly_summary.json",
-        "weekly_summary_md": weekly_root / "weekly_summary.md",
-    }
+    return _path_owner.weekly_artifact_paths(reports_root, week, facade=sys.modules[__name__])
 
 
 def monthly_artifact_paths(reports_root: Path, month: str) -> Dict[str, Path]:
     """Canonical operator monthly summary paths under reports/operator_summary/monthly/YYYY-MM/."""
-    normalized_month = str(month or "").strip()
-    monthly_root = operator_summary_artifact_root(reports_root) / "monthly" / normalized_month
-    return {
-        "root_dir": monthly_root,
-        "monthly_root": monthly_root,
-        "monthly_summary_json": monthly_root / "monthly_summary.json",
-        "monthly_summary_md": monthly_root / "monthly_summary.md",
-    }
+    return _path_owner.monthly_artifact_paths(reports_root, month, facade=sys.modules[__name__])
