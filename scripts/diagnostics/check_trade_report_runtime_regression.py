@@ -143,34 +143,10 @@ def _build_bundle_repair_command(
 
 
 def _build_report_regen_command(
-    *,
-    day: str,
-    trade_id: str,
-    reports_root: str,
-    local_debug: bool,
-    hard_timeout_sec: Optional[float],
-    with_llm: bool = False,
+    *, day: str, trade_id: str, reports_root: str, local_debug: bool,
+    hard_timeout_sec: Optional[float], with_llm: bool = False,
 ) -> List[str]:
-    command = [
-        sys.executable,
-        str(ROOT / "scripts" / "run_ai_trade_report_batch.py"),
-        "--day",
-        str(day),
-        "--trade-id",
-        str(trade_id),
-        "--reports-root",
-        str(reports_root),
-        "--retry-max",
-        "0",
-        "--json",
-    ]
-    if hard_timeout_sec is not None:
-        command.extend(["--hard-timeout-sec", str(hard_timeout_sec)])
-    if local_debug:
-        command.append("--local-debug")
-    elif with_llm:
-        command.append("--with-llm")
-    return command
+    return trade_commands._build_report_regen_command(day=day, trade_id=trade_id, reports_root=reports_root, local_debug=local_debug, hard_timeout_sec=hard_timeout_sec, with_llm=with_llm, facade=sys.modules[__name__])
 
 
 def validate_trade_artifact_chain(reports_root: Path, day: str, trade_id: str) -> Dict[str, Any]:
