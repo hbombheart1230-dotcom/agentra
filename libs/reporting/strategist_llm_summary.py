@@ -30,6 +30,7 @@ from libs.reporting import strategist_llm_summary_primitives as _primitives_owne
 from libs.reporting import strategist_llm_summary_directive_projection as _directive_projection_owner
 from libs.reporting import strategist_llm_summary_json_projection as _json_projection_owner
 from libs.reporting import strategist_llm_summary_markdown_helpers as _markdown_helpers_owner
+from libs.reporting import strategist_llm_summary_read_projection as _read_projection_owner
 
 
 def _utc_now_iso() -> str:
@@ -49,13 +50,7 @@ def _text(value: Any, default: str = "-") -> str:
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return dict(payload) if isinstance(payload, dict) else {}
+    return _read_projection_owner._read_json(path, facade=sys.modules[__name__])
 
 
 _STAGE_META_BY_CALL_KIND: Dict[str, Dict[str, Any]] = {
