@@ -12,7 +12,9 @@ from libs.reporting import llm_artifacts_compact_projection as _compact_owner
 from libs.reporting import llm_artifacts_hash_projection as _hash_owner
 from libs.reporting import llm_artifacts_path_projection as _path_owner
 from libs.reporting import llm_artifacts_prompt_projection as _prompt_owner
+from libs.reporting import llm_artifacts_run_paths as _run_paths_owner
 from libs.reporting import llm_artifacts_status_projection as _status_owner
+from libs.reporting import llm_artifacts_trade_lookup as _lookup_owner
 from libs.reporting import llm_artifacts_trade_path_projection as _trade_path_owner
 from libs.runtime.llm_report_classifier import find_llm_run_dir
 
@@ -22,41 +24,11 @@ def canonical_trade_day_root(reports_root: Path, day: str) -> Path:
 
 
 def iter_trade_dirs(trade_day_root: Path) -> List[Path]:
-    root = Path(trade_day_root)
-    if not root.exists() or not root.is_dir():
-        return []
-    found: Dict[str, Path] = {}
-    for path in root.rglob("*"):
-        if not path.is_dir():
-            continue
-        name = str(path.name or "").strip()
-        if name in {"reports", "brief", "ai_trade_report", "lifecycle", "strategist", "evidence"}:
-            trade_root = path.parent
-        else:
-            trade_root = path
-        trade_name = str(trade_root.name or "").strip()
-        if not trade_name.startswith("TRD_") and not (
-            (path / "lifecycle_bundle.json").exists()
-            or (path / "aggregated_execution_bundle.json").exists()
-            or (path / "trade_lifecycle.json").exists()
-        ):
-            continue
-        found[str(trade_root.resolve())] = trade_root
-    return sorted(found.values(), key=lambda item: (item.parent.name, item.name))
+    return _lookup_owner.iter_trade_dirs(trade_day_root)
 
 
 def find_trade_dir(trade_day_root: Path, trade_id: str) -> Path | None:
-    normalized_trade_id = str(trade_id or "").strip()
-    if not normalized_trade_id:
-        return None
-    root = Path(trade_day_root)
-    direct = root / normalized_trade_id
-    if direct.exists() and direct.is_dir():
-        return direct
-    for trade_dir in iter_trade_dirs(root):
-        if trade_dir.name == normalized_trade_id:
-            return trade_dir
-    return None
+    return _lookup_owner.find_trade_dir(trade_day_root, trade_id, facade=sys.modules[__name__])
 
 
 def _repo_root_from_reports_root(reports_root: Path) -> Path:
@@ -64,80 +36,23 @@ def _repo_root_from_reports_root(reports_root: Path) -> Path:
 
 
 def _looks_like_trade_day_dir(path: Path) -> bool:
-    if not path.exists() or not path.is_dir():
-        return False
-    try:
-        for child in path.iterdir():
-            if not child.is_dir():
-                continue
-            if str(child.name or "").startswith("TRD_"):
-                return True
-            for grandchild in child.iterdir():
-                if grandchild.is_dir() and str(grandchild.name or "").startswith("TRD_"):
-                    return True
-        return False
-    except Exception:
-        return False
+    return _lookup_owner._looks_like_trade_day_dir(path)
 
 
 def misplaced_trade_day_root(reports_root: Path, day: str) -> Path | None:
-    normalized_day = str(day or "").strip()
-    if not normalized_day:
-        return None
-    primary = canonical_trade_day_root(reports_root, normalized_day)
-    repo_root = _repo_root_from_reports_root(reports_root)
-    candidate = repo_root / normalized_day
-    if candidate == primary:
-        return None
-    if not _looks_like_trade_day_dir(candidate):
-        return None
-    return candidate
+    return _lookup_owner.misplaced_trade_day_root(reports_root, day, facade=sys.modules[__name__])
 
 
 def resolve_trade_day_root(reports_root: Path, day: str) -> Path:
-    primary = canonical_trade_day_root(reports_root, day)
-    if primary.exists():
-        return primary
-    fallback = misplaced_trade_day_root(reports_root, day)
-    if fallback is not None:
-        return fallback
-    return primary
+    return _lookup_owner.resolve_trade_day_root(reports_root, day, facade=sys.modules[__name__])
 
 
 def iter_trade_day_roots(reports_root: Path) -> List[Path]:
-    roots: List[Path] = []
-    seen_days: set[str] = set()
-    canonical_root = Path(reports_root) / "trades"
-    if canonical_root.exists():
-        for child in sorted(path for path in canonical_root.iterdir() if path.is_dir()):
-            roots.append(child)
-            seen_days.add(child.name)
-    repo_root = _repo_root_from_reports_root(reports_root)
-    for child in sorted(path for path in repo_root.iterdir() if path.is_dir()):
-        if child.name in seen_days:
-            continue
-        if not _looks_like_trade_day_dir(child):
-            continue
-        roots.append(child)
-    return roots
+    return _lookup_owner.iter_trade_day_roots(reports_root, facade=sys.modules[__name__])
 
 
 def list_misplaced_trade_day_roots(reports_root: Path) -> List[Path]:
-    repo_root = _repo_root_from_reports_root(reports_root)
-    canonical_root = Path(reports_root) / "trades"
-    canonical_days = {
-        child.name
-        for child in canonical_root.iterdir()
-        if canonical_root.exists() and child.is_dir()
-    } if canonical_root.exists() else set()
-    out: List[Path] = []
-    for child in sorted(path for path in repo_root.iterdir() if path.is_dir()):
-        if child.name in canonical_days:
-            continue
-        if not _looks_like_trade_day_dir(child):
-            continue
-        out.append(child)
-    return out
+    return _lookup_owner.list_misplaced_trade_day_roots(reports_root, facade=sys.modules[__name__])
 
 
 def utc_now_iso() -> str:
@@ -221,14 +136,7 @@ def build_llm_response_artifact(
 
 
 def llm_artifact_paths(reports_root: Path, day: str, run_id: str, component: str) -> Dict[str, Path]:
-    run_base = find_llm_run_dir(Path(reports_root), str(day or "").strip(), str(run_id or "").strip())
-    base = run_base / str(component or "").strip()
-    return {
-        "base_dir": base,
-        "prompt_json": base / "prompt.json",
-        "response_json": base / "response.json",
-        "meta_json": base / "meta.json",
-    }
+    return _run_paths_owner.llm_artifact_paths(reports_root, day, run_id, component, facade=sys.modules[__name__])
 
 
 def _json_stable_text(payload: Any) -> str:
