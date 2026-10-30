@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from libs.reporting.llm_artifacts import trade_artifact_paths
+from scripts.diagnostics import trade_artifact_validation_read_projection as trade_read
 
 
 DEFAULT_GOLDEN_CASES: Tuple[Tuple[str, str], ...] = (
@@ -38,13 +39,7 @@ def _emit_text(text: str) -> None:
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return payload if isinstance(payload, dict) else {}
+    return trade_read._read_json(path, facade=sys.modules[__name__])
 
 
 def _safe_int(value: Any, default: int = 0) -> int:
