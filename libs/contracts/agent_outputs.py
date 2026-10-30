@@ -1020,23 +1020,13 @@ def _commander_shadow_reason_summary(
     observations: Dict[str, Any],
     actual_runtime: Dict[str, Any],
 ) -> str:
-    llm_status = _clip(observations.get("last_llm_status"), max_len=40) or "unknown"
-    monitor_decision = _clip(actual_runtime.get("monitor_decision"), max_len=24) or "WAIT"
-    executor_action = _clip(actual_runtime.get("executor_action"), max_len=24) or "NONE"
-    mapping = {
-        "NONE": f"Observed runtime ended with monitor={monitor_decision} and executor={executor_action} without a stronger commander block signal.",
-        "POSITION_ALREADY_OPEN": "Open position state already existed, so monitor-only observation was more appropriate than a fresh strategist cycle.",
-        "RISK_BLOCKED": "Risk or portfolio guard signals were stronger than any need to refresh strategist context in this cycle.",
-        "EXECUTION_BLOCKED": "Execution or approval constraints were the main reason to stand down, independent of strategist quality.",
-        "DATA_INSUFFICIENT": "Available minute, feature, or symbol data was too thin to justify a fresh strategist-driven trade attempt.",
-        "NO_MARKET_CHANGE": "The cycle looked materially similar to the prior context, so a new strategist run likely added little value.",
-        "LLM_UNSTABLE": f"Recent strategist LLM status was {llm_status}, so a compact or minimal retry would have been safer than a full refresh.",
-        "LOW_CONFIDENCE": "Signal confidence was weak enough that waiting for stronger confirmation looked safer than acting now.",
-        "LOW_SIGNAL_QUALITY": "Monitor signal quality was too weak to justify a trade, even if strategist context was available.",
-        "REPEATED_SAME_CONTEXT": "The cycle repeated nearly the same strategist context, suggesting reuse or skip would have been reasonable.",
-        "WAIT_FOR_CONFIRMATION": "Monitor gates were not fully aligned yet, so waiting for another bar or clearer confirmation looked appropriate.",
-    }
-    return mapping.get(no_trade_reason_code, "Shadow commander observed the cycle, but the evidence was limited and should be treated as advisory only.")
+    from libs.contracts.agent_output_parts import commander_shadow_advice_extended as _owner
+    return _owner.reason_summary(
+        no_trade_reason_code=no_trade_reason_code,
+        observations=observations,
+        actual_runtime=actual_runtime,
+        facade=_r3_sys.modules[__name__],
+    )
 
 
 def _commander_shadow_recommendation_gap(
