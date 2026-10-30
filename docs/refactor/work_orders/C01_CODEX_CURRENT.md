@@ -1,127 +1,418 @@
-# Agentra P1.5 FAST-3 — B NEW BODY MOVE 8-item single-file execution order
+# Agentra P1.5 FAST-3 — C01 B-20261030-20 CARRYOVER B0 + NEW 9 verified BODY MOVEs
 
-**Issued 2026-10-30 18h KST by C03.** Previous C01 blob `38118e267c28cd195bfdb24dee22693b24db54f7` was REMOTE_DONE (9/9) at owner HEAD `f3a907bde784bfa5056100161c8b461c94562589`; do not reimplement or retest. New items are separate functions. Canonical `integration/p1.5`; authorized B owner branch `work/p15-b-operator-structure-20261022`. Read **this order only** for assignment; no D00/RF/queue/INDEX/C03/HANDOFF lookup or self-selection. Starting orders already in flight are not retroactively cancelled.
+**C03 supply 2026-10-30 20h KST.** Prior order blob `af8b3c4ee2608a4fb1ceb46f33166b1c97864432` B1–B6 and B8 were delivered via approved exact-tree path at B HEAD `8fe73f486c4b8ac43f75558b19c403bbe29f6b50` (#12 6520528480); source `scripts/research/run_phase5_validation_bundle.py` blob `aaa29ba0fb9739e3f10eab1a99e97f24360c4fdd` now thin wrappers for those 7. Their tests are NOT all pytest-verified (only recorded stdlib smoke); do not count same-SHA retests as new MOVE. Old B7 remains PENDING, retained as B0 below. **Nine newly assigned independent RF-063 bodies** are from `scripts/diagnostics/check_audit_trail_completeness.py` B/integration blob `1df9947a268f31d73639542db4a09eaac6e172b6`; five new TARGETs 404 on B/integration. B owner exclusive; A read-only. Total executable queue=10 (1 carryover + 9 new), do not drop B0.
 
-**Verified source:** `scripts/research/run_phase5_validation_bundle.py` exact owner-branch blob `7f7b2aa0717131b4de178050dd9b3a55051561ad` at HEAD `f3a907bde784bfa5056100161c8b461c94562589`. All TARGET files listed below were 404 on owner branch at preflight; no A/B SOURCE/TARGET overlap. Owner RF RF-065; preserve original file Owner. Before each item fetch origin and capture canonical SHA, this order blob, owner remote HEAD and current local HEAD. If source/blob/target differs, inspect exact new code: mark already moved REMOTE_DONE only on wrapper+target+test evidence, otherwise BLOCKED for that item, and continue other safe items without overwriting concurrent changes.
+**Execution contract (all items, not optional):** Actor=Codex B; authorized branch=`work/p15-b-operator-structure-20261022`; canonical=`integration/p1.5`; source Git blob=`1df9947a268f31d73639542db4a09eaac6e172b6`; this order blob at run start must be fetched from canonical (previous blob `af8b3c4ee2608a4fb1ceb46f33166b1c97864432` is replaced). Before EACH item: `git fetch origin`, record remote canonical SHA, remote actor SHA, local HEAD, and order blob; use prepared `.venv/bin/python` and pytest when available. Work only in own code and new test files; never write D00/C01/C02/RF/queue/STATUS/HANDOFF/C04/C05, another branch, main, or live operational files. Use one isolated fake/tmp fixture, no network/order/Broker/Guard/Step5C/UEF/RunLab effects. Actual original BODY must be removed from SOURCE and moved into the single TARGET owner, leaving the original exact signature/annotations/defaults/docstring as thin delegation wrapper. Preserve call-time module monkeypatch via `facade=sys.modules[__name__]` (import `sys as _p15_sys` or `sys` already present); target never imports SOURCE, never duplicates BODY or mutates global state. Keep caller public signatures/outputs/identity/exception/order/format unchanged. Each item: pre-move golden output and error, post-move source wrapper and target equality, negative and monkeypatch fixture; `.venv/bin/python -m py_compile SOURCE TARGET`; `.venv/bin/python -m pytest -q -p no:cacheprovider EXACT_TEST` normal exit0 (stdlib normal smoke only when pytest absent), record real exit. FAST-3 G2 does not require -O/full peer/hosted CI. Commit code+targeted tests only, push actor branch normally, refetch remote ref and exact SOURCE/TARGET/TEST blob/tree after every push. HTTPS credential error blocks PUSH only: preserve local commit, approved GitHub exact-tree path only if full reviewed tree/ref equivalence proven; else LOCAL_ONLY, continue next safe non-overwriting item. No probe commits, no force push. Each blocked item is item-local; continue all remaining safe tasks. C04 integrates; C05 alone judges G1/G2/G3/RF DONE.
 
-**Per-item mandatory MOVE:** Move actual existing calculation BODY, never copy-and-leave-duplicate. Preserve original SOURCE function name, signature, defaults, annotations, docstring where present, and a thin delegating wrapper. Target can take extra keyword-only `facade`; wrapper passes `facade=sys.modules[__name__]` (SOURCE already imports sys). Use call-time `facade.NAME` for any original global/callee that can be monkeypatched; no reverse TARGET→SOURCE import. Preserve exact output bytes, order, identity, laziness, exception types, original effect boundaries. New target file is owned by this actor and RF. Test **before/after golden parity** in fake/tmp_path only, including explicit normal and negative fixtures below. For each item run `.venv/bin/python -m pytest -q -p no:cacheprovider <targeted test>` and record actual exit; if pytest unavailable use reproducible stdlib normal smoke, do not fabricate PASS. FAST-3 G2 needs one normal targeted exit0; -O/full peer/hosted CI are not mandatory. Commit **only code + new targeted test** for that item, push normally to authorized actor branch, fetch exact remote ref and SOURCE/TARGET/TEST blob SHA after every push. Terminal HTTPS failure is PUSH_BLOCKED only: preserve local commit, use approved connected GitHub write only if exact reviewed tree equivalence can be proven; otherwise report LOCAL_ONLY and proceed to next safe non-overwriting item. No probe commit, no main, no document/RF/STATUS/C04/C05/HANDOFF writes. No protected Broker/Guard/Step5C/UEF, real orders, live network, RunLab runtime, operational DB/state, frozen oracle, production filesystem writes or forced push. C04 integrates; C05 alone decides G1/G2/G3 and RF DONE. Do **all 8** in order; a single PASS/commit/push failure is not a stop condition.
+### B0 — **CARRYOVER, NOT NEW** RF-065, former B7 still PENDING
 
-## 2026-10-30 19h C03 syntax-blocker correction — SAME B1–B8, no reassignment
-
-**Evidence:** #12 comment `6519207511` reports auto-generated facade wrapper `SyntaxError` at `py_compile`, **no B commit/push/test**, B remote still `f3a907bde784bfa5056100161c8b461c94562589`. Thus these eight are **PENDING/BLOCKED_BY_GENERATOR, not REMOTE_DONE**. Do not run a bulk signature generator or leave any generated invalid code. Start from clean authorized B branch, implement explicit signatures one item at a time, `.venv/bin/python -m py_compile scripts/research/run_phase5_validation_bundle.py <changed target>` before targeted pytest. A syntax error in one item is **item-local BLOCKED**, restore only that item's uncommitted changes safely and continue next independently safe item. Do not discard earlier preserved local commits or overwrite another task. No need to repeat past RF-063 PASS.
-
-**Exact SOURCE thin wrapper signatures (copy signatures, not code bodies; preserve annotations/imports):** SOURCE already imports `sys`. Import TARGET modules as `phase5_read`, `phase5_markdown`, `phase5_cli` from `scripts.research`; TARGET modules must not import SOURCE. Each TARGET implements actual old calculation body and optional keyword-only `facade` for call-time monkeypatch, never `globals().update`.
-
+At B HEAD `8fe73f486c4b8ac43f75558b19c403bbe29f6b50`, SOURCE `scripts/research/run_phase5_validation_bundle.py::_render_bundle_markdown` blob `aaa29ba0fb9739e3f10eab1a99e97f24360c4fdd` L60, TARGET `scripts/research/phase5_validation_markdown.py::_render_bundle_markdown` 404. Previous B1–B6+B8 already REMOTE_DONE, do not retest/reimplement. Preserve this **single incomplete B7** while issuing nine new RF-063 items; execute B0 first, then B1–B9, without cancellation of in-flight work. Exact calculation BODY to MOVE, including bytes/order/float formatting and exceptions:
 ```python
-def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
-    return phase5_read._iter_events(path, facade=sys.modules[__name__])
-
-def _read_json(path: Path) -> Dict[str, Any]:
-    return phase5_read._read_json(path, facade=sys.modules[__name__])
-
-def _to_day_key(ts: Any) -> Optional[str]:
-    return phase5_read._to_day_key(ts, facade=sys.modules[__name__])
-
-def _resolve_day(event_log_path: Path, requested_day: Optional[str]) -> str:
-    return phase5_read._resolve_day(event_log_path, requested_day, facade=sys.modules[__name__])
-
-def _safe_rel(path: Path, root: Path) -> str:
-    return phase5_read._safe_rel(path, root)
-
-def _pick_latest_canonical_run_id(reports_root: Path, day: str) -> str:
-    return phase5_read._pick_latest_canonical_run_id(reports_root, day)
-
 def _render_bundle_markdown(payload: Dict[str, Any], *, repo_root: Path) -> str:
-    return phase5_markdown._render_bundle_markdown(payload, repo_root=repo_root, facade=sys.modules[__name__])
+    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
+    artifacts = payload.get("artifacts") if isinstance(payload.get("artifacts"), dict) else {}
+    trade_health = artifacts.get("trade_health") if isinstance(artifacts.get("trade_health"), dict) else {}
+    symbol_reports = artifacts.get("symbol_reports") if isinstance(artifacts.get("symbol_reports"), list) else []
+    latest_runs = artifacts.get("latest_canonical_runs") if isinstance(artifacts.get("latest_canonical_runs"), list) else []
+    policy_surface = (
+        artifacts.get("policy_surface_quality")
+        if isinstance(artifacts.get("policy_surface_quality"), dict)
+        else {}
+    )
+    policy_surface_summary = (
+        policy_surface.get("summary")
+        if isinstance(policy_surface.get("summary"), dict)
+        else {}
+    )
+    policy_surface_exec = (
+        policy_surface.get("executive_summary")
+        if isinstance(policy_surface.get("executive_summary"), dict)
+        else {}
+    )
+    policy_surface_source = (
+        policy_surface.get("source")
+        if isinstance(policy_surface.get("source"), dict)
+        else {}
+    )
+    chart_structure_guard = (
+        artifacts.get("chart_structure_decision_hint")
+        if isinstance(artifacts.get("chart_structure_decision_hint"), dict)
+        else {}
+    )
+    chart_structure_guard_summary = (
+        chart_structure_guard.get("summary")
+        if isinstance(chart_structure_guard.get("summary"), dict)
+        else {}
+    )
+    chart_structure_guard_exec = (
+        chart_structure_guard.get("executive_summary")
+        if isinstance(chart_structure_guard.get("executive_summary"), dict)
+        else {}
+    )
+    chart_structure_guard_source = (
+        chart_structure_guard.get("source")
+        if isinstance(chart_structure_guard.get("source"), dict)
+        else {}
+    )
+    chart_structure_guard_examples = (
+        chart_structure_guard_summary.get("applied_examples")
+        if isinstance(chart_structure_guard_summary.get("applied_examples"), list)
+        else []
+    )
 
-def _build_parser() -> argparse.ArgumentParser:
-    return phase5_cli._build_parser(facade=sys.modules[__name__])
+    lines: List[str] = [
+        f"# Phase 5 Validation Bundle ({payload.get('day')})",
+        "",
+        "## Summary",
+        "",
+        f"- daily_report_generated: **{bool(summary.get('daily_report_generated'))}**",
+        f"- operator_daily_summary_generated: **{bool(summary.get('operator_daily_summary_generated'))}**",
+        f"- trade_health_ok: **{bool(summary.get('trade_health_ok'))}**",
+        f"- symbol_report_count: **{int(summary.get('symbol_report_count') or 0)}**",
+        f"- latest_canonical_run_id: `{summary.get('latest_canonical_run_id') or ''}`",
+        "",
+        "## Daily Surfaces",
+        "",
+    ]
+
+    daily = artifacts.get("daily_report") if isinstance(artifacts.get("daily_report"), dict) else {}
+    operator = artifacts.get("operator_daily_summary") if isinstance(artifacts.get("operator_daily_summary"), dict) else {}
+    lines += [
+        f"- daily_report_json: `{daily.get('json_path') or ''}`",
+        f"- daily_report_md: `{daily.get('md_path') or ''}`",
+        f"- operator_daily_summary_json: `{operator.get('json_path') or ''}`",
+        f"- operator_daily_summary_md: `{operator.get('md_path') or ''}`",
+        "",
+        "## Policy Surface Executive Summary",
+        "",
+        f"- status: **{str(policy_surface_exec.get('status') or 'unknown').upper()}**",
+        f"- headline: {str(policy_surface_exec.get('headline') or 'Policy surface unknown')}",
+        "",
+        "## Policy Surface Quality",
+        "",
+        f"- schema_available_rate: **{float(policy_surface_summary.get('schema_available_rate') or 0.0):.4f}**",
+        f"- normalized_policy_rate: **{float(policy_surface_summary.get('normalized_policy_rate') or 0.0):.4f}**",
+        f"- invalid_spec_rate: **{float(policy_surface_summary.get('invalid_spec_rate') or 0.0):.4f}**",
+        f"- total_invalid_specs: **{int(policy_surface_summary.get('total_invalid_specs') or 0)}**",
+        f"- run_count: **{int(policy_surface_source.get('run_count') or 0)}**",
+        f"- source: `{policy_surface_source.get('source') or ''}`",
+        "",
+        "## Chart Structure Decision Hint Executive Summary",
+        "",
+        f"- status: **{str(chart_structure_guard_exec.get('status') or 'unknown').upper()}**",
+        f"- headline: {str(chart_structure_guard_exec.get('headline') or 'Chart structure guard unknown')}",
+        "",
+        "## Chart Structure Decision Hint",
+        "",
+        f"- available_run_count: **{int(chart_structure_guard_summary.get('available_run_count') or 0)}**",
+        f"- applied_count: **{int(chart_structure_guard_summary.get('applied_count') or 0)}**",
+        f"- applied_rate: **{float(chart_structure_guard_summary.get('applied_rate') or 0.0):.4f}**",
+        f"- top_blocking_features: `{json.dumps(chart_structure_guard_summary.get('top_blocking_features') or [], ensure_ascii=False)}`",
+        f"- source: `{chart_structure_guard_source.get('source') or ''}`",
+        "",
+        "## Trade / Report Health",
+        "",
+        f"- trade_dir_count: **{int(trade_health.get('trade_dir_count') or 0)}**",
+        f"- severity_counts: `{json.dumps(trade_health.get('severity_counts') or {}, ensure_ascii=False)}`",
+        f"- issue_counts: `{json.dumps(trade_health.get('issue_counts') or {}, ensure_ascii=False)}`",
+        "",
+        "## Symbol Reports",
+        "",
+    ]
+    if chart_structure_guard_examples:
+        lines += ["## Chart Structure Decision Hint Applied Examples", ""]
+        for example in chart_structure_guard_examples[:3]:
+            if not isinstance(example, dict):
+                continue
+            lines.append(
+                f"- `{example.get('run_id') or '-'}` "
+                f"[{str(example.get('entry_style') or '-').upper()}] "
+                f"{example.get('reason_transition') or '-'} "
+                f"blockers=`{json.dumps(example.get('blocking_features') or [], ensure_ascii=False)}`"
+            )
+        lines.append("")
+    if symbol_reports:
+        for row in symbol_reports:
+            lines.append(
+                f"- `{row.get('symbol')}`: json=`{row.get('json_path')}` md=`{row.get('md_path')}`"
+            )
+    else:
+        lines.append("- (none)")
+
+    decision_story = artifacts.get("decision_story") if isinstance(artifacts.get("decision_story"), dict) else {}
+    run_cards = artifacts.get("run_cards") if isinstance(artifacts.get("run_cards"), dict) else {}
+    trade_explain = artifacts.get("trade_explain") if isinstance(artifacts.get("trade_explain"), dict) else {}
+    pipeline_trace = artifacts.get("pipeline_trace") if isinstance(artifacts.get("pipeline_trace"), dict) else {}
+    lines += [
+        "",
+        "## Inspection Reports",
+        "",
+        f"- decision_story_md: `{decision_story.get('md_path') or ''}`",
+        f"- run_cards_md: `{run_cards.get('md_path') or ''}`",
+        f"- trade_explain_json: `{trade_explain.get('json_path') or ''}`",
+        f"- trade_explain_md: `{trade_explain.get('md_path') or ''}`",
+        f"- pipeline_trace_json: `{pipeline_trace.get('json_path') or ''}`",
+        f"- pipeline_trace_md: `{pipeline_trace.get('md_path') or ''}`",
+        "",
+        "## Latest Canonical Runs",
+        "",
+    ]
+    if latest_runs:
+        for row in latest_runs:
+            lines.append(
+                f"- `{row.get('run_id')}`: commander=`{row.get('commander_json_path')}` monitor=`{row.get('monitor_json_path')}`"
+            )
+    else:
+        lines.append("- (none)")
+
+    issues = trade_health.get("issues") if isinstance(trade_health.get("issues"), list) else []
+    lines += ["", "## Top Issues", ""]
+    if issues:
+        for issue in issues[:10]:
+            lines.append(
+                f"- [{issue.get('severity')}] `{issue.get('trade_id')}` `{issue.get('component')}` `{issue.get('code')}` - {issue.get('message')}"
+            )
+            lines.append(f"  path: `{issue.get('path')}`")
+    else:
+        lines.append("- (none)")
+
+    lines += [
+        "",
+        "## Notes",
+        "",
+        "- This bundle is deterministic/read-only. It does not change runtime behavior.",
+        "- It is intended to make report quality, schema linkage, and artifact paths easy to inspect by eye.",
+        f"- repo_root: `{_safe_rel(repo_root, repo_root) or '.'}`",
+        "",
+    ]
+    return "\n".join(lines)
 ```
 
-**CRITICAL:** B1 must retain nested lazy generator and `facade.json.loads` at *iteration* time, not import/call time. B3 `facade.datetime/timezone`; B4 `facade._iter_events/_to_day_key/date`; B7 `facade.json.dumps/_safe_rel`; B8 `facade.argparse.ArgumentParser`. Use original function body from the fixed source blob below, not textual regex reconstruction. TARGET function may add `*, facade` even when SOURCE cannot. Run `py_compile` and then per-item normal scoped test; commit/push code+tests only and re-fetch remote exact SHA/blob. This amendment changes the **order blob only**, not the original eight item identities. Continue all B1–B8; no C01/D00/RF self-edits.
+Keep SOURCE original `def _render_bundle_markdown(payload: Dict[str, Any], *, repo_root: Path) -> str` as thin delegate `return phase5_markdown._render_bundle_markdown(payload, repo_root=repo_root, facade=sys.modules[__name__])`; import `from scripts.research import phase5_validation_markdown as phase5_markdown`; TARGET uses `facade.json.dumps` and `facade._safe_rel` at call time, no reverse import. Test `tests/test_p15_rf065_phase5_markdown_owner.py` fake payload {}→heading '# Phase 5 Validation Bundle (None)' and symbol count 0, {'day':'2026-10-30','summary':{'symbol_report_count':2}}→heading and count 2, full fake nested payload→byte-identical before/after, bad numeric summary count→same ValueError. Run py_compile, normal scoped pytest or stdlib smoke if unavailable, commit/push only code+test, exact remote ref/blob. On blocked record preserved local SHA/error, proceed B1 without overwriting B0 local work.
 
-### B1 — RF-065 | SOURCE `scripts/research/run_phase5_validation_bundle.py::_iter_events` (blob `7f7b2aa0717131b4de178050dd9b3a55051561ad`, L29–47) → TARGET `scripts/research/phase5_validation_read_projection.py::_iter_events`
 
-**MOVE BODY:** Move missing-path→[] and nested lazy `_gen()` generator that opens UTF-8 JSONL only on iteration, strips blanks, ignores malformed JSON, yields dict objects only. Preserve laziness, exceptions from open/read and iteration order.
+### B1 — RF-063 | `scripts/diagnostics/check_audit_trail_completeness.py::_to_epoch` (current blob `1df9947a268f31d73639542db4a09eaac6e172b6`, L15) → `scripts/diagnostics/audit_trail_time_projection.py::_to_epoch`
 
-**Wrapper/caller/monkeypatch:** Call `facade.json.loads` inside deferred generator at iteration; retain SOURCE signature, return generator vs list distinction, original monkeypatch seam. Leave original SOURCE `_iter_events` as original-signature thin delegate. Caller imports remain unchanged; TARGET is the single computation owner.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _to_epoch(ts: Any) -> Optional[int]:
+    if ts is None:
+        return None
+    if isinstance(ts, (int, float)):
+        return int(ts)
+    s = str(ts).strip()
+    if not s:
+        return None
+    try:
+        return int(float(s))
+    except Exception:
+        pass
+    if s.endswith("Z"):
+        s = s[:-1] + "+00:00"
+    try:
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return int(dt.timestamp())
+    except Exception:
+        return None
+```
 
-**Normal targeted test:** `tests/test_p15_rf065_phase5_iter_events_owner.py`; fake/tmp-only input→expected: missing tmp JSONL→[]; valid dict/blank/invalid/list/valid dict→two dicts in order; no file open before iteration; patch facade.json.loads spy counts lines. Snapshot exact pre-move result/error and compare SOURCE wrapper and TARGET after MOVE, check call-time monkeypatch and input immutability when applicable. Execute `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_phase5_iter_events_owner.py` and record actual exit.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_to_epoch` to `scripts/diagnostics/audit_trail_time_projection.py`; facade.datetime/timezone at call time; numeric int(ts), ISO Z and naive UTC conversion unchanged. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-**Safety / delivery / blocked-next:** Only read-only/path/format/CLI-argument computation under temp fixtures; no runtime operation or production artifact mutation. Commit SOURCE + `scripts/research/phase5_validation_read_projection.py` + this test only, normal push work/p15-b-operator-structure-20261022, re-fetch exact remote ref and three blobs. On safety/fixture/credential failure record error and preserved SHA, continue B2.
+**Normal targeted fixture:** `tests/test_p15_rf063_audit_to_epoch_owner.py`: None/''→None; 0→0; '1970-01-01T00:00:00Z'→0; 'bad'→None. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_audit_to_epoch_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-### B2 — RF-065 | SOURCE `scripts/research/run_phase5_validation_bundle.py::_read_json` (blob `7f7b2aa0717131b4de178050dd9b3a55051561ad`, L49–57) → TARGET `scripts/research/phase5_validation_read_projection.py::_read_json`
+### B2 — RF-063 | `scripts/diagnostics/check_audit_trail_completeness.py::_utc_day` (current blob `1df9947a268f31d73639542db4a09eaac6e172b6`, L38) → `scripts/diagnostics/audit_trail_time_projection.py::_utc_day`
 
-**MOVE BODY:** Move path.exists guard, UTF-8 text read, `json.loads` broad Exception fallback to {}, and dict-only return exactly; read-only temp fixture.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _utc_day(ts: Any) -> str:
+    epoch = _to_epoch(ts)
+    if epoch is None:
+        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%d")
+```
 
-**Wrapper/caller/monkeypatch:** Use `facade.json.loads` at call time; preserve SOURCE original signature and broad exception behavior. Leave original SOURCE `_read_json` as original-signature thin delegate. Caller imports remain unchanged; TARGET is the single computation owner.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_utc_day` to `scripts/diagnostics/audit_trail_time_projection.py`; facade._to_epoch/datetime/timezone at call time; fake clock only, never wall-clock assertion. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-**Normal targeted test:** `tests/test_p15_rf065_phase5_read_json_owner.py`; fake/tmp-only input→expected: missing tmp file→{}; valid `{"a":1}`→{'a':1}; valid `[1]`→{}; malformed JSON→{}; patch facade.json.loads raising→{}. Snapshot exact pre-move result/error and compare SOURCE wrapper and TARGET after MOVE, check call-time monkeypatch and input immutability when applicable. Execute `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_phase5_read_json_owner.py` and record actual exit.
+**Normal targeted fixture:** `tests/test_p15_rf063_audit_utc_day_owner.py`: 0→'1970-01-01'; None with patched datetime.now→'2030-01-02'; _to_epoch spy. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_audit_utc_day_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-**Safety / delivery / blocked-next:** Only read-only/path/format/CLI-argument computation under temp fixtures; no runtime operation or production artifact mutation. Commit SOURCE + `scripts/research/phase5_validation_read_projection.py` + this test only, normal push work/p15-b-operator-structure-20261022, re-fetch exact remote ref and three blobs. On safety/fixture/credential failure record error and preserved SHA, continue B3.
+### B3 — RF-063 | `scripts/diagnostics/check_audit_trail_completeness.py::_extract_ts` (current blob `1df9947a268f31d73639542db4a09eaac6e172b6`, L45) → `scripts/diagnostics/audit_trail_decision_projection.py::_extract_ts`
 
-### B3 — RF-065 | SOURCE `scripts/research/run_phase5_validation_bundle.py::_to_day_key` (blob `7f7b2aa0717131b4de178050dd9b3a55051561ad`, L59–79) → TARGET `scripts/research/phase5_validation_read_projection.py::_to_day_key`
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _extract_ts(row: Dict[str, Any]) -> Any:
+    payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+    return row.get("ts") or payload.get("ts")
+```
 
-**MOVE BODY:** Move None/blank guards, epoch `int(float(text))` UTC branch, ISO `Z`→`+00:00`, naive→UTC, `astimezone(timezone.utc).strftime('%Y-%m-%d')`, exception→None.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_extract_ts` to `scripts/diagnostics/audit_trail_decision_projection.py`; dict-only nested payload, truthiness fallback; do not treat numeric 0 as valid primary. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-**Wrapper/caller/monkeypatch:** Resolve `facade.datetime`, `facade.timezone` at invocation for monkeypatch parity; keep original Optional[str] signature. Leave original SOURCE `_to_day_key` as original-signature thin delegate. Caller imports remain unchanged; TARGET is the single computation owner.
+**Normal targeted fixture:** `tests/test_p15_rf063_audit_extract_ts_owner.py`: {'ts':0,'payload':{'ts':42}}→42; {'ts':'abc'}→'abc'; missing→None. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_audit_extract_ts_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-**Normal targeted test:** `tests/test_p15_rf065_phase5_day_key_owner.py`; fake/tmp-only input→expected: None/''→None; '0'→'1970-01-01'; '2026-10-30T12:00:00Z'→'2026-10-30'; 'bad'→None; naive '2026-10-30T00:00:00'→'2026-10-30'. Snapshot exact pre-move result/error and compare SOURCE wrapper and TARGET after MOVE, check call-time monkeypatch and input immutability when applicable. Execute `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_phase5_day_key_owner.py` and record actual exit.
+### B4 — RF-063 | `scripts/diagnostics/check_audit_trail_completeness.py::_extract_decision_action` (current blob `1df9947a268f31d73639542db4a09eaac6e172b6`, L68) → `scripts/diagnostics/audit_trail_decision_projection.py::_extract_decision_action`
 
-**Safety / delivery / blocked-next:** Only read-only/path/format/CLI-argument computation under temp fixtures; no runtime operation or production artifact mutation. Commit SOURCE + `scripts/research/phase5_validation_read_projection.py` + this test only, normal push work/p15-b-operator-structure-20261022, re-fetch exact remote ref and three blobs. On safety/fixture/credential failure record error and preserved SHA, continue B4.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _extract_decision_action(row: Dict[str, Any]) -> str:
+    payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+    packet = payload.get("decision_packet") if isinstance(payload.get("decision_packet"), dict) else {}
+    intent = packet.get("intent") if isinstance(packet.get("intent"), dict) else {}
+    action = intent.get("action") or payload.get("action") or payload.get("intent")
+    return str(action or "").strip().upper()
+```
 
-### B4 — RF-065 | SOURCE `scripts/research/run_phase5_validation_bundle.py::_resolve_day` (blob `7f7b2aa0717131b4de178050dd9b3a55051561ad`, L81–88) → TARGET `scripts/research/phase5_validation_read_projection.py::_resolve_day`
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_extract_decision_action` to `scripts/diagnostics/audit_trail_decision_projection.py`; nested decision_packet.intent.action then payload.action/intent; str.strip.upper unchanged. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-**MOVE BODY:** Move requested-day strip priority, `sorted({d for row in _iter_events(...) if (d := _to_day_key(row.get('ts') or row.get('ts_kst')))})` latest day, and `date.today().isoformat()` fallback; keep exact short-circuit.
+**Normal targeted fixture:** `tests/test_p15_rf063_audit_extract_decision_action_owner.py`: nested BUY→'BUY'; payload.action='sell'→'SELL'; missing→''; invalid payload ignored. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_audit_extract_decision_action_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-**Wrapper/caller/monkeypatch:** At invocation resolve `facade._iter_events`, `facade._to_day_key`, `facade.date` to preserve monkeypatch and fake clock; no real event log reads in tests. Leave original SOURCE `_resolve_day` as original-signature thin delegate. Caller imports remain unchanged; TARGET is the single computation owner.
+### B5 — RF-063 | `scripts/diagnostics/check_audit_trail_completeness.py::_extract_allowed` (current blob `1df9947a268f31d73639542db4a09eaac6e172b6`, L76) → `scripts/diagnostics/audit_trail_decision_projection.py::_extract_allowed`
 
-**Normal targeted test:** `tests/test_p15_rf065_phase5_resolve_day_owner.py`; fake/tmp-only input→expected: requested ' 2026-10-30 '→'2026-10-30' without reading events; fake JSONL 10-29+10-30→10-30; no events with patched date.today()→fixed 2030-01-02; patched event spy receives temp path. Snapshot exact pre-move result/error and compare SOURCE wrapper and TARGET after MOVE, check call-time monkeypatch and input immutability when applicable. Execute `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_phase5_resolve_day_owner.py` and record actual exit.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _extract_allowed(row: Dict[str, Any]) -> Optional[bool]:
+    payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+    v = payload.get("allowed")
+    if isinstance(v, bool):
+        return v
+    return None
+```
 
-**Safety / delivery / blocked-next:** Only read-only/path/format/CLI-argument computation under temp fixtures; no runtime operation or production artifact mutation. Commit SOURCE + `scripts/research/phase5_validation_read_projection.py` + this test only, normal push work/p15-b-operator-structure-20261022, re-fetch exact remote ref and three blobs. On safety/fixture/credential failure record error and preserved SHA, continue B5.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_extract_allowed` to `scripts/diagnostics/audit_trail_decision_projection.py`; only isinstance(v,bool) returns value, no truthy coercion. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-### B5 — RF-065 | SOURCE `scripts/research/run_phase5_validation_bundle.py::_safe_rel` (blob `7f7b2aa0717131b4de178050dd9b3a55051561ad`, L90–95) → TARGET `scripts/research/phase5_validation_read_projection.py::_safe_rel`
+**Normal targeted fixture:** `tests/test_p15_rf063_audit_extract_allowed_owner.py`: payload.allowed True→True; False→False; 1/'true'/missing→None. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_audit_extract_allowed_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-**MOVE BODY:** Move `str(path.resolve().relative_to(root.resolve()))` and broad exception fallback `str(path)` verbatim; no path writes.
+### B6 — RF-063 | `scripts/diagnostics/check_audit_trail_completeness.py::_latest_day` (current blob `1df9947a268f31d73639542db4a09eaac6e172b6`, L84) → `scripts/diagnostics/audit_trail_time_projection.py::_latest_day`
 
-**Wrapper/caller/monkeypatch:** Preserve original signature and exact `Path.resolve` exception behavior; target standalone or facade with no SOURCE reverse import. Leave original SOURCE `_safe_rel` as original-signature thin delegate. Caller imports remain unchanged; TARGET is the single computation owner.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _latest_day(rows: List[Dict[str, Any]]) -> str:
+    days = sorted({str(r.get("_day") or "") for r in rows if str(r.get("_day") or "").strip()})
+    if days:
+        return str(days[-1])
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+```
 
-**Normal targeted test:** `tests/test_p15_rf065_phase5_safe_rel_owner.py`; fake/tmp-only input→expected: tmp root/child→'child'; tmp root itself→'.'; outside tmp root→original str(path); monkeypatch resolve raising→original str(path). Snapshot exact pre-move result/error and compare SOURCE wrapper and TARGET after MOVE, check call-time monkeypatch and input immutability when applicable. Execute `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_phase5_safe_rel_owner.py` and record actual exit.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_latest_day` to `scripts/diagnostics/audit_trail_time_projection.py`; sort set of nonblank _day, fallback facade.datetime.now(facade.timezone.utc). For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-**Safety / delivery / blocked-next:** Only read-only/path/format/CLI-argument computation under temp fixtures; no runtime operation or production artifact mutation. Commit SOURCE + `scripts/research/phase5_validation_read_projection.py` + this test only, normal push work/p15-b-operator-structure-20261022, re-fetch exact remote ref and three blobs. On safety/fixture/credential failure record error and preserved SHA, continue B6.
+**Normal targeted fixture:** `tests/test_p15_rf063_audit_latest_day_owner.py`: unordered days 10-29,10-30→'2026-10-30'; [] fake clock→'2030-01-02'. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_audit_latest_day_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-### B6 — RF-065 | SOURCE `scripts/research/run_phase5_validation_bundle.py::_pick_latest_canonical_run_id` (blob `7f7b2aa0717131b4de178050dd9b3a55051561ad`, L97–106) → TARGET `scripts/research/phase5_validation_read_projection.py::_pick_latest_canonical_run_id`
+### B7 — RF-063 | `scripts/diagnostics/check_audit_trail_completeness.py::_iter_rows` (current blob `1df9947a268f31d73639542db4a09eaac6e172b6`, L50) → `scripts/diagnostics/audit_trail_read_projection.py::_iter_rows`
 
-**MOVE BODY:** Move `reports_root/'canonical'/day`, missing→'', direct child dirs only, `max(..., key=path.stat().st_mtime)` and return latest.name. Read-only stat, no changes to run identity policy.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _iter_rows(path: Path) -> List[Dict[str, Any]]:
+    if not path.exists():
+        return []
+    out: List[Dict[str, Any]] = []
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            s = line.strip()
+            if not s:
+                continue
+            try:
+                obj = json.loads(s)
+            except Exception:
+                continue
+            if isinstance(obj, dict):
+                out.append(obj)
+    return out
+```
 
-**Wrapper/caller/monkeypatch:** Preserve original signature and stat-tie semantics; `facade` for call-time globals if any, no new sorting or error suppression. Leave original SOURCE `_pick_latest_canonical_run_id` as original-signature thin delegate. Caller imports remain unchanged; TARGET is the single computation owner.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_iter_rows` to `scripts/diagnostics/audit_trail_read_projection.py`; facade.json.loads at invocation, open UTF-8 read-only, blank/malformed/list skip; open exceptions propagate. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-**Normal targeted test:** `tests/test_p15_rf065_phase5_latest_run_owner.py`; fake/tmp-only input→expected: missing tmp canonical day→''; empty canonical day→''; tmp dirs RUN_A/RUN_B with os.utime B later→'RUN_B'; temp regular file ignored. Snapshot exact pre-move result/error and compare SOURCE wrapper and TARGET after MOVE, check call-time monkeypatch and input immutability when applicable. Execute `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_phase5_latest_run_owner.py` and record actual exit.
+**Normal targeted fixture:** `tests/test_p15_rf063_audit_iter_rows_owner.py`: missing temp JSONL→[]; dict/blank/invalid/list/dict→two dicts in order; spy loads; no production file. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_audit_iter_rows_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-**Safety / delivery / blocked-next:** Only read-only/path/format/CLI-argument computation under temp fixtures; no runtime operation or production artifact mutation. Commit SOURCE + `scripts/research/phase5_validation_read_projection.py` + this test only, normal push work/p15-b-operator-structure-20261022, re-fetch exact remote ref and three blobs. On safety/fixture/credential failure record error and preserved SHA, continue B7.
+### B8 — RF-063 | `scripts/diagnostics/check_audit_trail_completeness.py::_build_markdown` (current blob `1df9947a268f31d73639542db4a09eaac6e172b6`, L212) → `scripts/diagnostics/audit_trail_markdown.py::_build_markdown`
 
-### B7 — RF-065 | SOURCE `scripts/research/run_phase5_validation_bundle.py::_render_bundle_markdown` (blob `7f7b2aa0717131b4de178050dd9b3a55051561ad`, L113–292) → TARGET `scripts/research/phase5_validation_markdown.py::_render_bundle_markdown`
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _build_markdown(*, day: str, out: Dict[str, Any]) -> str:
+    anomalies = out.get("anomaly_examples") if isinstance(out.get("anomaly_examples"), dict) else {}
+    stage_event_total = out.get("stage_event_total") if isinstance(out.get("stage_event_total"), dict) else {}
+    lines = [
+        f"# Audit Trail Completeness ({day})",
+        "",
+        f"- ok: **{bool(out.get('ok'))}**",
+        f"- events: **{int(out.get('events') or 0)}**",
+        f"- runs: **{int(out.get('run_total') or 0)}**",
+        f"- actionable_decision_run_total: **{int(out.get('actionable_decision_run_total') or 0)}**",
+        f"- linked_complete_run_total: **{int(out.get('linked_complete_run_total') or 0)}**",
+        f"- link_success_rate: **{float(out.get('link_success_rate') or 0.0):.2%}**",
+        "",
+        "## Anomaly Totals",
+        "",
+        f"- missing_execution_start_total: {int(out.get('missing_execution_start_total') or 0)}",
+        f"- missing_execution_resolution_total: {int(out.get('missing_execution_resolution_total') or 0)}",
+        f"- missing_execution_payload_total: {int(out.get('missing_execution_payload_total') or 0)}",
+        f"- missing_terminal_event_total: {int(out.get('missing_terminal_event_total') or 0)}",
+        f"- orphan_execution_run_total: {int(out.get('orphan_execution_run_total') or 0)}",
+        "",
+        "## execute_from_packet stage_event_total",
+        "",
+    ]
 
-**MOVE BODY:** Move entire 180-line Markdown builder unchanged: summary/artifacts dict guards, policy and chart sections, fixed heading/line order, numeric casts and .4f formatting, json.dumps(ensure_ascii=False), examples[:3], symbol reports, inspection reports, latest canonical runs, issues[:10], final notes and `\n`.join(lines). Do not split into new policies or alter bytes.
+    for k in ("start", "verdict", "execution", "degrade_policy_block", "end", "error"):
+        lines.append(f"- {k}: {int(stage_event_total.get(k) or 0)}")
 
-**Wrapper/caller/monkeypatch:** Use `facade.json.dumps` and `facade._safe_rel` at invocation; keep SOURCE original signature `(payload, *, repo_root)` and identical exceptions; target no SOURCE import. Leave original SOURCE `_render_bundle_markdown` as original-signature thin delegate. Caller imports remain unchanged; TARGET is the single computation owner.
+    lines += ["", "## Anomaly Examples", ""]
+    for key in (
+        "missing_execution_start",
+        "missing_execution_resolution",
+        "missing_execution_payload",
+        "missing_terminal_event",
+        "orphan_execution",
+    ):
+        vals = anomalies.get(key) if isinstance(anomalies.get(key), list) else []
+        if vals:
+            lines.append(f"- {key}: {', '.join(str(x) for x in vals)}")
+        else:
+            lines.append(f"- {key}: (none)")
 
-**Normal targeted test:** `tests/test_p15_rf065_phase5_markdown_owner.py`; fake/tmp-only input→expected: {}→heading '# Phase 5 Validation Bundle (None)' and '- symbol_report_count: **0**'; {'day':'2026-10-30','summary':{'symbol_report_count':2}}→heading date and count2; fake full payload with symbol_reports/chart examples/issue rows→byte-identical before/after Markdown; nonnumeric summary count 'bad'→same ValueError. Snapshot exact pre-move result/error and compare SOURCE wrapper and TARGET after MOVE, check call-time monkeypatch and input immutability when applicable. Execute `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_phase5_markdown_owner.py` and record actual exit.
+    failures = out.get("failures") if isinstance(out.get("failures"), list) else []
+    lines += ["", "## Failures", ""]
+    if failures:
+        for x in failures:
+            lines.append(f"- {x}")
+    else:
+        lines.append("- (none)")
+    lines.append("")
+    return "\n".join(lines)
+```
 
-**Safety / delivery / blocked-next:** Only read-only/path/format/CLI-argument computation under temp fixtures; no runtime operation or production artifact mutation. Commit SOURCE + `scripts/research/phase5_validation_markdown.py` + this test only, normal push work/p15-b-operator-structure-20261022, re-fetch exact remote ref and three blobs. On safety/fixture/credential failure record error and preserved SHA, continue B8.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_build_markdown` to `scripts/diagnostics/audit_trail_markdown.py`; exact lines/header/section ordering, .2% formatting, anomaly keys, failures and trailing newline; no IO. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-### B8 — RF-065 | SOURCE `scripts/research/run_phase5_validation_bundle.py::_build_parser` (blob `7f7b2aa0717131b4de178050dd9b3a55051561ad`, L459–471) → TARGET `scripts/research/phase5_validation_cli_args.py::_build_parser`
+**Normal targeted fixture:** `tests/test_p15_rf063_audit_build_markdown_owner.py`: day='2026-10-30', out={'ok':True,'events':0}→starts '# Audit Trail Completeness (2026-10-30)\n'; contains '- ok: **True**'; anomalies none; bad numeric events→same ValueError. Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_audit_build_markdown_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-**MOVE BODY:** Move only argparse.ArgumentParser construction and eight `add_argument` definitions, default paths/limits, `--json` store_true, return parser. Do NOT move `main`, output writing, generation, CLI exit behavior or alter argv parsing.
+### B9 — RF-063 | `scripts/diagnostics/check_audit_trail_completeness.py::_build_parser` (current blob `1df9947a268f31d73639542db4a09eaac6e172b6`, L265) → `scripts/diagnostics/audit_trail_cli_args.py::_build_parser`
 
-**Wrapper/caller/monkeypatch:** Resolve `facade.argparse.ArgumentParser` at call time for monkeypatch parity; keep original signature and thin wrapper, preserve SystemExit/usage text. Leave original SOURCE `_build_parser` as original-signature thin delegate. Caller imports remain unchanged; TARGET is the single computation owner.
+**Exact SOURCE calculation BODY to MOVE (not to duplicate):**
+```python
+def _build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(description="Check intent->decision->execution audit trail completeness.")
+    p.add_argument("--event-log-path", default="data/logs/events.jsonl")
+    p.add_argument("--report-dir", default="reports/audit")
+    p.add_argument("--day", default=None)
+    p.add_argument("--require-actionable", action="store_true")
+    p.add_argument("--json", action="store_true")
+    return p
+```
 
-**Normal targeted test:** `tests/test_p15_rf065_phase5_parser_owner.py`; fake/tmp-only input→expected: parse_args([])→event_log_path 'data/logs/events.jsonl', reports_root 'reports', max_runs 120, json False; ['--day','2026-10-30','--json']→day set/json True; ['--max-runs','bad']→SystemExit(2) with same stderr; spy facade.ArgumentParser. Snapshot exact pre-move result/error and compare SOURCE wrapper and TARGET after MOVE, check call-time monkeypatch and input immutability when applicable. Execute `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf065_phase5_parser_owner.py` and record actual exit.
+**Wrapper/monkeypatch:** SOURCE retains exact signature and delegates `_build_parser` to `scripts/diagnostics/audit_trail_cli_args.py`; facade.argparse.ArgumentParser at call time; only parser creation, NEVER main/argv effect. For globals/helpers referenced in old body, target uses `facade.NAME` at call time. Preserve any existing caller/exception/identity contract; no target→source import.
 
-**Safety / delivery / blocked-next:** Only read-only/path/format/CLI-argument computation under temp fixtures; no runtime operation or production artifact mutation. Commit SOURCE + `scripts/research/phase5_validation_cli_args.py` + this test only, normal push work/p15-b-operator-structure-20261022, re-fetch exact remote ref and three blobs. On safety/fixture/credential failure record error and preserved SHA, continue retry any earlier individually BLOCKED safe item, then report remaining blockers.
+**Normal targeted fixture:** `tests/test_p15_rf063_audit_build_parser_owner.py`: parse_args([])→event_log_path 'data/logs/events.jsonl', report_dir 'reports/audit', json False; ['--day','2026-10-30','--json']→day and True; unknown option→SystemExit(2). Baseline vs source wrapper vs target, fake/temp only, no production effect. `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf063_audit_build_parser_owner.py` (normal exit must be recorded, not assumed); run `py_compile` first. Commit only SOURCE+TARGET+test; push and verify exact remote SHA/blob. On blocked, record first error/sha and proceed to next safe item.
 
-## KEEP, reserve, final report
 
-KEEP original writer/effect/CLI-main functions and protected operational boundaries. No A/B overlap, no automatic RF DONE, no claims from identical-SHA retests. **RESERVE_VERIFIED=6/6 (C03 future order only, NOT B self-selection).** RF-063 source `scripts/diagnostics/check_audit_trail_completeness.py` actor blob `1df9947a268f31d73639542db4a09eaac6e172b6`; six real non-wrapper pure/clock projection bodies inspected, targets `scripts/diagnostics/audit_trail_time_projection.py` and `scripts/diagnostics/audit_trail_decision_projection.py` both 404 on B and integration. R1 `_to_epoch` L15–37→time_projection::_to_epoch: None/blank→None, 0→0, ISO 2026-10-30T00:00:00Z→UTC epoch, invalid→None; facade.datetime/timezone patch. R2 `_utc_day` L38–44→time_projection::_utc_day: epoch0→1970-01-01, None→fake UTC today; facade._to_epoch and datetime clock patch. R3 `_extract_ts` L45–49→decision_projection::_extract_ts: row ts preferred, falsy 0 falls back to payload.ts, non-dict payload→None. R4 `_extract_decision_action` L68–75→decision_projection::_extract_decision_action: nested decision_packet.intent.action BUY→'BUY', payload.action fallback 'sell'→'SELL', missing→''. R5 `_extract_allowed` L76–83→decision_projection::_extract_allowed: payload.allowed True/False→same bool, 1/'true'/missing→None. R6 `_latest_day` L84–90→time_projection::_latest_day: unordered rows _day 2026-10-29/30→'2026-10-30', empty→fake UTC today; facade.datetime patch. Pure read-only dict/date calculations; no audit-log writes, real broker, network, runtime or protected effects. Caller/patch and target nonexistence preflight verified; **no test run, no code MOVE, no delivery yet**. Recheck latest owner HEAD/blobs/target 404 before next issue. Do not self-select reserve.
+## Verified future reserve — 6/6, not self-selected by Actor
 
-**Issue #12:** measured START_KST/END_KST/ELAPSED_MIN; canonical/order/owner SHA; B1–B8 each IMPLEMENTED/REMOTE_DONE/BLOCKED; before/after SOURCE blob+LOC, new owner/test blob, normal test command/exit, remote push/ref/blob or exact failure, FIRST_BLOCKER/NEXT. Never claim local-only as delivered.
+At B `8fe73f48`, `scripts/diagnostics/check_trade_report_runtime_regression.py` blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c`, six distinct un-moved bodies inspected. All proposed targets absent on B and integration. These are read-only context, argument *construction only*, pure evidence, parser; **never execute generated commands/subprocess or real LLM/order/repair**. Tests are hypotheses, NOT_RUN. Recheck owner SHA/targets before future issue:
+- R1 RF-063 `scripts/diagnostics/check_trade_report_runtime_regression.py::_read_json` blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` L40 → `scripts/diagnostics/trade_artifact_validation_read_projection.py::_read_json`; exact body 8 lines, missing tmp file→{}; dict→dict; invalid/list→{}; facade.json.loads; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R2 RF-063 `scripts/diagnostics/check_trade_report_runtime_regression.py::_resolve_trade_context` blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` L90 → `scripts/diagnostics/trade_artifact_context_projection.py::_resolve_trade_context`; exact body 36 lines, fake trade_artifact_paths temp files; missing→empty dict payloads/run_id ''; facade.trade_artifact_paths/_read_json; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R3 RF-063 `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_bundle_repair_command` blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` L164 → `scripts/diagnostics/trade_artifact_command_projection.py::_build_bundle_repair_command`; exact body 33 lines, fake day/run/paths yields ordered argv with --no-trade-report-ai and --json; NEVER execute command; facade.sys.executable/ROOT; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R4 RF-063 `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_report_regen_command` blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` L199 → `scripts/diagnostics/trade_artifact_command_projection.py::_build_report_regen_command`; exact body 29 lines, with_llm False and local_debug False→no --with-llm; local_debug True→--local-debug; timeout1→--hard-timeout-sec 1; no execution; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R5 RF-063 `scripts/diagnostics/check_trade_report_runtime_regression.py::validate_trade_artifact_chain` blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` L230 → `scripts/diagnostics/trade_artifact_validation_evidence_projection.py::validate_trade_artifact_chain`; exact body 139 lines, fake temp path dicts missing→ordered missing_artifact failures; no production reads; facade._resolve_trade_context and predicate helpers; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+- R6 RF-063 `scripts/diagnostics/check_trade_report_runtime_regression.py::_build_parser` blob `3176dab6c01dda0e7edc24f5fed5ea65e83d8d0c` L371 → `scripts/diagnostics/trade_artifact_validation_cli.py::_build_parser`; exact body 15 lines, parse_args([]) defaults reports_root reports, max_runs 200; --skip-repair True; no execution; only fake/temp/side-effect-free owner projection, verify current blob and TARGET 404 before future C03 issue.
+
+## Final B report
+
+Issue #12: real START_KST/END_KST/ELAPSED, canonical/order/B before→after SHA, B0 and B1–B9 separately MOVE/REMOTE_DONE/BLOCKED, source/owner/test blobs, normal targeted exit and push ref/blob equivalence, FIRST_BLOCKER/NEXT. Local-only is not delivered. No C03 code G1/G2/G3 or RF DONE claim.
