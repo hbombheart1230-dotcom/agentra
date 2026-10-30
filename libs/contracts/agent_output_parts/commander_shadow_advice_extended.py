@@ -92,3 +92,24 @@ def reason_summary(
         "WAIT_FOR_CONFIRMATION": "Monitor gates were not fully aligned yet, so waiting for another bar or clearer confirmation looked appropriate.",
     }
     return mapping.get(no_trade_reason_code, "Shadow commander observed the cycle, but the evidence was limited and should be treated as advisory only.")
+
+
+
+def recommendation_gap(
+    *,
+    strategist_action_recommendation: str,
+    llm_call_advice: str,
+    actual_runtime: Dict[str, Any],
+    facade,
+) -> str:
+    strategist_executed = actual_runtime.get("strategist_executed")
+    llm_called = actual_runtime.get("llm_called_by_strategist")
+    if strategist_action_recommendation == "SKIP" and strategist_executed is True:
+        return "strategist_ran_despite_skip_recommendation"
+    if strategist_action_recommendation in {"RUN", "RETRY_COMPACT", "RETRY_MINIMAL", "USE_FALLBACK"} and strategist_executed is False:
+        return "strategist_not_run_despite_refresh_recommendation"
+    if llm_call_advice == "SKIP" and llm_called is True:
+        return "llm_called_despite_skip_advice"
+    if llm_call_advice in {"ALLOW", "RETRY_COMPACT", "RETRY_MINIMAL"} and llm_called is False and strategist_executed is True:
+        return "llm_not_called_despite_refresh_advice"
+    return "aligned"

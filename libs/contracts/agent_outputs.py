@@ -1035,17 +1035,13 @@ def _commander_shadow_recommendation_gap(
     llm_call_advice: str,
     actual_runtime: Dict[str, Any],
 ) -> str:
-    strategist_executed = actual_runtime.get("strategist_executed")
-    llm_called = actual_runtime.get("llm_called_by_strategist")
-    if strategist_action_recommendation == "SKIP" and strategist_executed is True:
-        return "strategist_ran_despite_skip_recommendation"
-    if strategist_action_recommendation in {"RUN", "RETRY_COMPACT", "RETRY_MINIMAL", "USE_FALLBACK"} and strategist_executed is False:
-        return "strategist_not_run_despite_refresh_recommendation"
-    if llm_call_advice == "SKIP" and llm_called is True:
-        return "llm_called_despite_skip_advice"
-    if llm_call_advice in {"ALLOW", "RETRY_COMPACT", "RETRY_MINIMAL"} and llm_called is False and strategist_executed is True:
-        return "llm_not_called_despite_refresh_advice"
-    return "aligned"
+    from libs.contracts.agent_output_parts import commander_shadow_advice_extended as _owner
+    return _owner.recommendation_gap(
+        strategist_action_recommendation=strategist_action_recommendation,
+        llm_call_advice=llm_call_advice,
+        actual_runtime=actual_runtime,
+        facade=_r3_sys.modules[__name__],
+    )
 
 
 def _commander_shadow_pre_strategist_snapshot(
