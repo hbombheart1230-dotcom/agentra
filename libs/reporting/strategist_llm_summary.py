@@ -31,6 +31,8 @@ from libs.reporting import strategist_llm_summary_directive_projection as _direc
 from libs.reporting import strategist_llm_summary_json_projection as _json_projection_owner
 from libs.reporting import strategist_llm_summary_markdown_helpers as _markdown_helpers_owner
 from libs.reporting import strategist_llm_summary_read_projection as _read_projection_owner
+from libs.reporting import strategist_llm_summary_canonical_loader as _canonical_loader_owner
+from libs.reporting import strategist_llm_summary_market_rail as _market_rail_owner
 
 
 def _utc_now_iso() -> str:
@@ -93,31 +95,7 @@ def _trade_strategist_input_path_for_response(source_path: Path) -> Path | None:
 
 
 def _load_canonical_strategist(source_path: Path) -> Tuple[Path | None, Dict[str, Any]]:
-    canonical_path = _canonical_strategist_path_for_response(source_path)
-    if canonical_path is not None and canonical_path.exists():
-        try:
-            raw = json.loads(canonical_path.read_text(encoding="utf-8"))
-        except Exception:
-            raw = {}
-        if isinstance(raw, dict) and raw:
-            return canonical_path, dict(raw)
-
-    input_path = _trade_strategist_input_path_for_response(source_path)
-    if input_path is None:
-        return canonical_path, {}
-    try:
-        raw_input = json.loads(input_path.read_text(encoding="utf-8"))
-    except Exception:
-        return input_path, {}
-    if not isinstance(raw_input, dict):
-        return input_path, {}
-    source_input = _as_dict(raw_input.get("source_input"))
-    if not source_input:
-        return input_path, {}
-    canonical = dict(source_input)
-    canonical.setdefault("generated_at", raw_input.get("saved_at"))
-    canonical.setdefault("run_id", raw_input.get("run_id"))
-    return input_path, canonical
+    return _canonical_loader_owner._load_canonical_strategist(source_path, facade=sys.modules[__name__])
 
 
 def _headline_count_from_sample_map(value: Any) -> int:
@@ -141,21 +119,7 @@ def _news_usage_from_canonical(canonical: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _market_rail_from_canonical(canonical: Dict[str, Any]) -> Dict[str, Any]:
-    global_signal = _as_dict(canonical.get("global_sentiment_signal"))
-    if not global_signal:
-        global_signal = _as_dict(_as_dict(canonical.get("market_context")).get("global_signal"))
-    packet = {
-        "generated_at": _text(canonical.get("generated_at") or canonical.get("saved_at"), ""),
-        "global_sentiment": {
-            "score": global_signal.get("score"),
-            "status": global_signal.get("status"),
-            "source": global_signal.get("source"),
-        },
-        "index_moves": _as_dict(global_signal.get("index_moves")),
-        "korea_indices": _as_dict(global_signal.get("korea_indices")),
-        "macro_moves": _as_dict(global_signal.get("macro_moves")),
-    }
-    return classify_market_regime_rail(packet)
+    return _market_rail_owner._market_rail_from_canonical(canonical, facade=sys.modules[__name__])
 
 
 def _news_quality_audit(canonical: Dict[str, Any], news_usage: Dict[str, Any]) -> Dict[str, Any]:
