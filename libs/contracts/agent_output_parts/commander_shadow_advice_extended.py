@@ -22,3 +22,22 @@ def llm_call_advice(
     if strategist_action_recommendation == "SKIP":
         return "SKIP"
     return "ALLOW"
+
+
+
+def suggested_action(
+    *,
+    strategist_action_recommendation: str,
+    llm_call_advice: str,
+    no_trade_reason_code: str,
+    facade,
+) -> str:
+    if strategist_action_recommendation == "SKIP" and no_trade_reason_code == "POSITION_ALREADY_OPEN":
+        return "monitor_only_observe"
+    if strategist_action_recommendation == "SKIP" and no_trade_reason_code in {"NO_MARKET_CHANGE", "REPEATED_SAME_CONTEXT"}:
+        return "skip_strategist_reuse_context"
+    if llm_call_advice == "RETRY_COMPACT":
+        return "compact_strategist_retry"
+    if llm_call_advice == "RETRY_MINIMAL":
+        return "minimal_strategist_retry"
+    return "allow_current_flow"

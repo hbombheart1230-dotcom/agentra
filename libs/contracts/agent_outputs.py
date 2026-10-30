@@ -988,15 +988,13 @@ def _commander_shadow_suggested_action(
     llm_call_advice: str,
     no_trade_reason_code: str,
 ) -> str:
-    if strategist_action_recommendation == "SKIP" and no_trade_reason_code == "POSITION_ALREADY_OPEN":
-        return "monitor_only_observe"
-    if strategist_action_recommendation == "SKIP" and no_trade_reason_code in {"NO_MARKET_CHANGE", "REPEATED_SAME_CONTEXT"}:
-        return "skip_strategist_reuse_context"
-    if llm_call_advice == "RETRY_COMPACT":
-        return "compact_strategist_retry"
-    if llm_call_advice == "RETRY_MINIMAL":
-        return "minimal_strategist_retry"
-    return "allow_current_flow"
+    from libs.contracts.agent_output_parts import commander_shadow_advice_extended as _owner
+    return _owner.suggested_action(
+        strategist_action_recommendation=strategist_action_recommendation,
+        llm_call_advice=llm_call_advice,
+        no_trade_reason_code=no_trade_reason_code,
+        facade=_r3_sys.modules[__name__],
+    )
 
 
 def _commander_shadow_next_action_recommendation(
