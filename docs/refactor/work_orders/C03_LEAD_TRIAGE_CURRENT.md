@@ -1,13 +1,23 @@
 # C03 — 지팀장 | 구체 실행 설계·A/B 연속 작업 공급
 
-## 최신 실행 체크포인트 — 2026-10-30 00:00 KST (아래 역사 스냅샷보다 우선)
+## 2026-10-30 10:40 KST — 홍사장 직접 지시 · **공급 공백 0 강행 계약** (이하 과거 체크포인트보다 우선)
 
-- **새 원격 실구현:** A `048c6d3faeba24a90116e818ae98104293addd9c` (#11 `6499861521`)의 `libs/reporting/reporter_ai_review.py` blob `a8c2507f→f10f9419`, **499→314 LOC**, 새 Owner `reporter_ai_review_input.py=e9b2c620`(166 LOC)·`reporter_ai_review_result.py=39bc26aa`(54 LOC), **4개 실제 MOVE**. `openai_provider.py=341296b5→0830c0a3` **727→618 LOC**, 새 `openai_response_projection.py=86ffe347`(147 LOC), **7개 MOVE**. A 보고 정상 targeted **187 PASS exit0**, remote blob 확인, C03 자체 pytest NOT_RUN. **G1/G2 후보, C04 최소 통합·통합 SHA smoke 및 C05 G3/DONE 인계 필요.** integration `c45c0fd3`에서는 두 신규 Reporter Owner **미존재**, 원본 Reporter blob `a8c2507f`이므로 아직 G3 아님. 기존 KEEP_OK는 새 구조 성과에서 제외.
-- **B** `14558ddc004037530925cc4f023d6d81a0a62158` (#12 `6498984560`): Commander `agent_outputs.py=d52816cf→2a1d5d8c`, 새 `commander_shadow_runtime.py=1e0f7e75`에 **2개 함수 실제 MOVE**, B 보고 targeted unittest 2 PASS + pytest 1 PASS 정상 exit0, remote SHA 확인. integration `c45c0fd3`에 runtime owner blob `1e0f7e75` **이미 동일**; C05 G3 판정/증거 재사용, 중복 MOVE·재테스트 금지. 추가 2개 evidence projection은 B source 원함수 실측, target 미존재.
-- **새 6+6 인라인 배정:** C02(A) `alpha_research_board/builder.py`의 `_opening_rows/_broad_opening/_latent/_fresh_change/_attention_order` **5개**와 `model_catalog.resolve_policy_llm_slot` **1개**. C01(B) `agent_outputs` monitor gate/context delta **2개**, `strategist_node` stage/token/repair **3개**, Operator UI `_trade_report_index` **1개**. 각 SOURCE blob/line, 정확 target, use-time facade, fake fixture, normal test exit, 본인 push 및 재개점은 각 **한 파일 본문**에 모두 기재; A/B RF·INDEX·T00 탐색 불필요. **A/B 대상 경로 교집합 0**, 기존 완료/정당 KEEP 재배정 0. C04/C05 문서·코드·STATUS 변경 0.
-- **신규 입력:** #11 `6499861521`, #12 `6498984560`, #32 신규 없음(`6493735258` 유지). 긴급 `069dadd5eef4d9d11dea23850b1c5e8e534eb310` 변화 없음. RunLab `RUN_SOURCE_SHA=UNKNOWN`, 운영/실주문 HOLD. 기존 아래 21:46~22:00 스냅샷·RF-031 미완료·B copy 미해결 텍스트는 **역사 자료**이며 현재 판정에 재사용하지 않는다. 실제 RF 물리 단계/STATUS는 C05만 수정.
-- **최종 책임:** A/B가 진행 중이면 시작 당시 지시 blob 계약대로 끝낸 뒤 새 C01/C02를 다음 회차부터 사용한다. C03 문서 push는 개발 G1/G2가 아니며 A/B 코드 푸시와 별개. C04 선별 통합·C05 DONE 수용은 해당 담당의 독점 업무.
+**적용순위:** D00 신규 "C01/C02 연속 공급" 절 및 여기의 이 절은 이 문서 내부 과거 1~3개 배정·오래된 SHA·RF-031 우선/KEEP-only 최우선/이전 회차 유지 문구보다 우선한다. 기존 FAST-3 G1/G2/G3, Owner 독점·안전 HOLD·실거래 금지·C04/C05 권한은 절대 완화하지 않는다. 이번 명령서 갱신은 C03 문서 작업이며 신규 G1/G2/G3 개발 실적이 아니다.
 
+**기준 실측:** 2026-10-30 #11 A20 `9d77ad4d` 6 MOVE/67 normal PASS → C04 `71e437c6` 통합(09:35), C05 기존 RF-035 DONE 대상 인수(09:46). A21 #11 `6512468248`(10:13)은 같은 C02 blob 재읽기→6 ALREADY_MOVED·**신규 개발 0**, 즉 **배정 실패 실증**. #12 B1~B6 `5963a234` remote/normal12 PASS → C04 `3c81220f` 6 BODY MOVE 선택 통합(10:35); RF-008 4 TARGET_GAP 폐쇄, RF-018 2 C05 인수 대기. **DONE 마지막 검증값 31/93**, C04 통합을 신규 DONE으로 세지 않는다. 현재 C01/C02는 **각 8개 신규 item으로 교체**, 기존 완료 12개 중복 배정 0. C01 새 blob `2c6cdac861faf09e591b713c7bad4ce37127ab43`, C02 새 blob `9628325ad46903208821b4bd898270a5afafdf22`. 신규 개발 원격 푸시/테스트는 아직 **NOT_RUN**. 
+
+### C03 매회 반드시 실행 — 실패하면 `SUPPLY_GAP`으로 공개
+1. **시작 1분 이내** 원격 `integration/p1.5`의 C01/C02 blob과 A/B 자기 브랜치 최근 HEAD, #11/#12 신규 댓글을 대조한다. 각 item에 `PENDING / RUNNING / REMOTE_DONE / VERIFIED_ALREADY / BLOCKED` 표시. 과거 완료 item/동일 SHA PASS/단순 KEEP은 **신규 업무량에서 0**. 원격 push가 한 번 막혔던 B는 새 원격 delivery 복구 여부를 별도 확인한다. 작업자의 보고만으로 COMPLETE 단정 금지.
+2. **A 또는 B의 실질 미완료 안전 MOVE가 6건 미만이면 해당 회차에 직접 신규 C01/C02를 교체·정상 푸시**한다. 목표는 **각자 8~10개의 실제 독립 SOURCE BODY MOVE**가 다음 실행 시점에 준비되어 있도록 하는 것. 분00 C03 배정→B 분10 / A 외부 예약 다음 실행 전 발행. 절대로 "지난번 작업 완료→C01/C02 유지→다음 회차 ALREADY_MOVED"를 반복하지 않는다. **완료 검증 후 낡은 지시서를 보존하는 것은 C03 공급 실패**다. 한쪽만 소진했으면 그쪽만 교체, 진행 중 다른 쪽의 시작 주문은 보존한다.
+3. **예비 큐 6건/Actor**를 C03 내부 설계 상태로 유지한다. 예비 item도 실제 Owner RF·원함수+라인/blob·target 미존재/사용 여부·의존성·효과/안전·테스트 가설까지 **실사한 것만** 개수에 포함한다. 단순 후보/KEEP/이미 MOVE는 예비 0. **현 시점 예비 재고는 실사·발행 전이므로 A/B 각각 `RESERVE_NOT_VERIFIED`**; 있는 것처럼 보고 금지. 다음 회차부터 C03이 확인·보충, 정당한 후보 부족은 RF 소유 범위에서 새 SOURCE 분석 후 정확 설계로 충당한다. 승인되지 않은 임의 target 소유권 변경/다른 팀 파일 차용 금지.
+4. **한 item·한 커밋·한 테스트 PASS·짧은 실행시간은 종료조건이 아니다.** A/B에게는 그 시작 주문의 모든 안전 항목 수행을 요구한다. 전부 안전하게 완료됐으면 빠른 종료 자체는 위반이 아니며 시간을 채우라고 가짜 작업을 만들지 않는다. 코드만 로컬이면 `LOCAL_ONLY`, push 장애만 `PUSH_BLOCKED`, 시작 주문에서 실제 안전 item이 0이면 `NO_ASSIGNABLE_ITEM`으로 분리한다. 환경 장애는 나머지 item 계속. C03은 현지 호출·푸시 실패를 개발자 개인 태만으로 오판하지 않는다.
+5. **배정 실패 에스컬레이션:** 소진/완료를 확인했으나 새 8개를 준비·푸시 못했으면 그 회차 #36에 `SUPPLY_GAP | ACTOR | LAST_ORDER_BLOB | REMOTE_DONE_COUNT | READY_NEW | RESERVE_VERIFIED | FIRST_BLOCKER | NEXT_RF_SOURCE | NEXT_SCHEDULE`를 명시한다. "변화 0"·"기존 C01 유지"·같은 주문 재발행으로 성공 보고 금지. C03 시간표가 실행되지 않았거나 클라우드 한도면 해당 근거와 `NOT_RUN/EXECUTION_LIMIT`만 정직하게 기록한다.
+6. **품질/실적:** MOVE 이후 단일 Owner body, 이전 SOURCE wrapper, 원격 코드 SHA, 관련 targeted normal exit0를 확인한다. `MOVED_FUNCTIONS, SOURCE_LOC_BEFORE_AFTER, NEW_OWNER_BLOBS, NEW_TESTS, PUSH_REMOTE_SHA, C04_INTEGRATION_SHA, RF_DONE_DELTA`를 **각각 별도** 측정한다. 복사/파일 이동/KEEP/기준점 이전 분리는 구조 개선 수치에서 배제한다. C04 최소 선별 통합과 C05 FAST-3 수용으로 연결, 기존 31 DONE을 부풀리지 않는다.
+7. **허용 범위:** C03은 C01/C02/C03와 사용자 명시 승인한 D00 정책만 갱신한다. A/B 각자 코드/test owner branch 외 문서·다른 Actor 수정 금지. real/운영 주문·Guard·UEF·RunLab 승인 경계를 절대 완화하지 않는다.
+
+**다음 회차 우선:** 새 C01 B1~B8(`agent_outputs.py` advisory) 및 새 C02 A1~A8(`strategist_llm_summary.py` summary) 실행 원격 증거를 접수한다. 한쪽이 8건 완료했으면 **같은 주문 유지 금지**, 새 owner 검증 후 새 8건 준비. C04 10:35 B 통합의 RF-018 인수는 C05가 독점 처리. **현재 예비 6+6은 아직 미검증**, C03이 만들 책임이 남아 있다.
+
+---
 ## A/B 단일 문서 완결 필수 (2026-10-29, 이전 지시보다 우선)
 
 **C03만** `docs/refactor/plan/rf_details/RF-xxx_IMPLEMENTATION.md`, INDEX, T00~T09, RF 원본, 원격 소스코드를 읽어 설계 판단한다. 매시 배정할 때 C01/C02의 인라인 큐를 **직접 수정·푸시**하여 각 개발자에게 4~6개 이상의 독립 실제 코드 MOVE 아이템을 공급한다. 작성 형식은 `RF | SOURCE_PATH::원함수 | TARGET_PATH::새함수 | 실제 이동할 본문/효과 보존 | 기존 wrapper/patch seam | targeted normal fixture/검증 | BLOCKED시 다음 ITEM`. KEEP_OK 항목에는 `경로 | 한줄 이유 | blob`만 넣는다. 두 개발자가 다른 문서를 열어 추가 맥락을 수집하도록 지시하지 않는다. **C01/C02 한 파일에 모든 작업 정보를 인라인 포함**, 파일 경로는 오직 실제 수정할 code/test 경로로만 제시한다. 이전의 index/RF 참조형 handoff와 충돌하면 이 절이 우선. 기존 C01/C02 항목의 이미 완료된 내용은 확인 후 제거하고 원격 commit SHA와 #36에 변경 큐만 보고한다. 원본 93개 전수 재독 금지, 신규 변화만 갱신.
@@ -27,9 +37,9 @@
 
 ## FAST-3 최우선 운영 (2026-10-29 홍사장 속도 지시)
 - D00 §2 FAST-3가 이 문서 내 과거 C1~C7/전체 Owner C4/매-RF normal -O/hosted 전체 CI/30분 업무량 강제 규칙보다 우선한다. RF 개발 DONE의 필수는 **G1 소스·Owner**, **G2 변경 부분 테스트 1회**, **G3 최소 통합·상태 반영**뿐. 원래 RF 7개는 이력 자료.
-- A/B에게는 1~3개 실질적으로 가장 빠르게 끝낼 수 있는 코드/호환 수정만 먼저 지정하고, 기존 4~6 패키지+full peer 목록을 무조건 모두 처리하게 강제하지 않는다. 이전 C01/C02의 7번 등 동결/상대 전수 peer를 개발 DONE의 BLOCKER로 재전달 금지.
+- **2026-10-29 과거 기록 (현재 무효):** 당시 1~3개 소량 배정은 2026-10-30 상단 **8~10개 신규 공급 의무**로 대체되었다. full peer/-O 강제 금지는 유지된다. 이전 C01/C02의 7번 등 동결/상대 전수 peer를 개발 DONE의 BLOCKER로 재전달 금지.
 - 변경 없는 KEEP 파일·기존 정상 실행 증거를 최대한 재사용하고, 기능에 직접 영향을 주는 단일 실패/테스트에 집중한다. 상대팀 독립 probe는 선택적인 병렬 검토이고 완료 선행 조건이 아니다. 실제 mock/paper 런검증은 P1.5 개발 DONE 후 별도 수행.
-- **현재 최우선:** **A는 RF-031의 실제 코드 추출(상단 STRUCTURAL-REALITY/C02 계약)을 먼저** 완료하고, C04/C05는 A가 이미 완료·푸시한 RF-051/054/058 G1/G2를 별도 병렬로 인수해 G3/DONE 처리한다. RF-016은 이미 05_DONE(21/93), 재인계·동일 94건 재실행 금지. 기존 RF-014/015 KEEP 검증은 코드 구조개선 실적으로 세지 않는다. real mode 금지.
+- **과거 2026-10-29 작업 메모(현재 우선 지시 아님):** **A의 RF-031 실제 코드 추출**은 이미 이전 회차에서 수행된 것으로 최신 #11/C04 증거와 대조하며, C04/C05는 A가 이미 완료·푸시한 RF-051/054/058 G1/G2를 별도 병렬로 인수해 G3/DONE 처리한다. RF-016은 이미 05_DONE(21/93), 재인계·동일 94건 재실행 금지. 기존 RF-014/015 KEEP 검증은 코드 구조개선 실적으로 세지 않는다. real mode 금지.
 - 문서와 STATUS의 옛 7칸 텍스트를 새로운 필수 요구로 재해석하지 않는다. C05가 migrate_rf_fast3.py --write 및 sync_rf_checklist_status.py --write/--check를 인수하도록 #36에 지시한다.
 
 **핵심 원칙:** 지팀장이 코드·아키텍처·RF 계약·소유권·안전·독립 검증을 모두 판단한다. Codex B는 C01, Claude A는 C02 **단 한 개의 이번 회차 작업 명령서**만 읽고 이전 채팅 문맥 없이 그대로 구현한다. A/B에게 프로젝트 상황 파악, 큐·RF·D00·CURRENT 재독, '무엇을 할지 알아서 결정', 과거 PASS 반복을 맡기지 않는다. 이 문서와 D00은 지팀장용이다. C04(선별 통합/CI)와 C05(최종 수용/DONE/STATUS)는 예약과 역할을 유지한다.
