@@ -1,0 +1,182 @@
+"""intraday_trade_reports projections (moved verbatim from intraday_trade_reports).
+
+Module globals and helpers are resolved on ``facade`` (the intraday_trade_reports module) at call time; this module never imports it.
+"""
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any, Dict, List, Mapping
+
+
+def build_live_bundle_backfill_payload(
+    *,
+    trade_id: str,
+    status: str,
+    story_type: str,
+    execution_mode_label: str,
+    symbol: str,
+    entry_run_id: str,
+    hold_run_ids: List[str],
+    exit_run_id: str,
+    linked_run_ids: List[str],
+    lifecycle_summary: str,
+    lifecycle_bundle_path: Path,
+    story_input_path: Path,
+    story_compact_input_path: Path,
+    trade_report_json_written: str,
+    trade_report_md_written: str,
+    strategist_llm_response_path: Path,
+    ai_trade_report_llm_response_written: str,
+    entry_artifact_path: Path,
+    hold_artifact_path: Path,
+    exit_artifact_path: Path,
+    strategist_evidence_path: Path,
+    scanner_evidence_path: Path,
+    monitor_evidence_path: Path,
+    commander_evidence_path: Path,
+    trade_provenance_path: Path,
+    trade_health_path: Path,
+    trade_artifact_links_path: Path,
+    trade_root: Path,
+    trade_report_summary: str,
+    diagnostics: Mapping[str, Any] | None = None,
+    facade: Any,
+) -> Dict[str, Any]:
+    diagnostics_obj = dict(diagnostics or {})
+    common_row_patch = {
+        "trade_id": trade_id,
+        "story_id": trade_id,
+        "lifecycle_bundle_json_path": str(lifecycle_bundle_path),
+        "trade_lifecycle_json_path": "",
+        "trade_story_input_path": str(story_input_path),
+        "ai_trade_report_input_path": str(story_input_path),
+        "ai_trade_report_compact_input_path": str(story_compact_input_path),
+        "trade_report_json_path": str(trade_report_json_written or ""),
+        "trade_report_md_path": str(trade_report_md_written or ""),
+        "ai_trade_report_json_path": str(trade_report_json_written or ""),
+        "ai_trade_report_md_path": str(trade_report_md_written or ""),
+        "strategist_llm_response_path": str(strategist_llm_response_path),
+        "ai_trade_report_llm_response_path": str(ai_trade_report_llm_response_written or ""),
+        "entry_json_path": str(entry_artifact_path),
+        "hold_json_path": str(hold_artifact_path),
+        "exit_json_path": str(exit_artifact_path),
+        "strategist_evidence_json_path": str(strategist_evidence_path),
+        "scanner_evidence_json_path": str(scanner_evidence_path),
+        "monitor_evidence_json_path": str(monitor_evidence_path),
+        "monitor_timeline_json_path": str(monitor_evidence_path),
+        "commander_evidence_json_path": str(commander_evidence_path),
+        "trade_provenance_json_path": str(trade_provenance_path),
+        "trade_health_json_path": str(trade_health_path),
+        "trade_artifact_links_json_path": str(trade_artifact_links_path),
+        "trade_root_path": str(trade_root),
+        "trade_report_summary": str(trade_report_summary or ""),
+        "report_status": str(diagnostics_obj.get("report_status") or ""),
+        "report_reason_code": str(diagnostics_obj.get("report_reason_code") or ""),
+        "report_reason_human": str(diagnostics_obj.get("report_reason_human") or ""),
+        "report_next_expected_step": str(diagnostics_obj.get("next_expected_step") or ""),
+        "report_generation_model": str(diagnostics_obj.get("llm_model_used") or ""),
+        "report_generation_attempted": bool(diagnostics_obj.get("generation_attempted")),
+        "deterministic_report_status": str(diagnostics_obj.get("deterministic_report_status") or ""),
+        "llm_brief_status": str(diagnostics_obj.get("llm_brief_status") or ""),
+        "ai_trade_report_status": str(diagnostics_obj.get("ai_trade_report_status") or ""),
+    }
+    lifecycle_row = {
+        "trade_id": trade_id,
+        "story_id": trade_id,
+        "status": status,
+        "story_type": story_type,
+        "execution_mode_label": execution_mode_label,
+        "symbol": symbol,
+        "entry_run_id": entry_run_id,
+        "hold_run_ids": list(hold_run_ids or []),
+        "exit_run_id": exit_run_id,
+        "linked_run_ids": list(linked_run_ids or []),
+        "lifecycle_summary": str(lifecycle_summary or ""),
+        "report_json_path": str(lifecycle_bundle_path),
+        **common_row_patch,
+    }
+    bundle_artifacts_patch = {
+        "lifecycle_bundle_json": str(lifecycle_bundle_path),
+        "entry_json": str(entry_artifact_path),
+        "hold_json": str(hold_artifact_path),
+        "exit_json": str(exit_artifact_path),
+        "trade_story_input_json": str(story_input_path),
+        "ai_trade_report_input_json": str(story_input_path),
+        "ai_trade_report_compact_input_json": str(story_compact_input_path),
+        "trade_report_json": str(trade_report_json_written or ""),
+        "trade_report_md": str(trade_report_md_written or ""),
+        "ai_trade_report_json": str(trade_report_json_written or ""),
+        "ai_trade_report_md": str(trade_report_md_written or ""),
+        "strategist_llm_response_json": str(strategist_llm_response_path),
+        "ai_trade_report_llm_response_json": str(ai_trade_report_llm_response_written or ""),
+        "strategist_evidence_json": str(strategist_evidence_path),
+        "scanner_evidence_json": str(scanner_evidence_path),
+        "monitor_evidence_json": str(monitor_evidence_path),
+        "monitor_timeline_json": str(monitor_evidence_path),
+        "commander_evidence_json": str(commander_evidence_path),
+    }
+    return {
+        "lifecycle_row": lifecycle_row,
+        "run_bundle_row_patch": common_row_patch,
+        "bundle_artifacts_patch": bundle_artifacts_patch,
+    }
+
+
+
+def build_live_execution_summary_payload(
+    *,
+    day: str,
+    role: str,
+    event_log_path: Path,
+    evidence_log_path: Path,
+    lifecycle_rows: List[Dict[str, Any]],
+    run_bundle_rows: List[Dict[str, Any]],
+    lifecycle_story_type_counts: Mapping[str, Any] | None,
+    run_story_type_counts: Mapping[str, Any] | None,
+    target_ctx: Mapping[str, Any] | None,
+    canonical_trades_root: Path,
+    trade_js: Path,
+    trade_md: Path,
+    reporter_js: Path,
+    reporter_md: Path,
+    operator_summary_json: Path,
+    operator_summary_md: Path,
+    facade: Any,
+) -> Dict[str, Any]:
+    report_status_counts: Dict[str, int] = {}
+    for row in list(lifecycle_rows or []):
+        key = str((row or {}).get("report_status") or "").strip().lower() or "unknown"
+        report_status_counts[key] = int(report_status_counts.get(key, 0) + 1)
+
+    target_ctx = dict(target_ctx or {})
+    return {
+        "schema_version": "live_execution_bundles.v3",
+        "ok": True,
+        "ts": facade._utc_now_iso(),
+        "day": str(day or ""),
+        "role": str(role or ""),
+        "event_log_path": str(event_log_path),
+        "evidence_log_path": str(evidence_log_path),
+        "bundle_count": len(list(lifecycle_rows or [])),
+        "trade_lifecycle_count": len(list(lifecycle_rows or [])),
+        "run_bundle_count": len(list(run_bundle_rows or [])),
+        "story_type_counts": dict(lifecycle_story_type_counts or {}),
+        "report_status_counts": report_status_counts,
+        "run_story_type_counts": dict(run_story_type_counts or {}),
+        "targeted_mode": bool(target_ctx.get("targeted_mode")),
+        "target_run_id": str(target_ctx.get("target_run_id") or ""),
+        "target_symbol": str(target_ctx.get("target_symbol") or ""),
+        "targeted_execution_run_count": int(target_ctx.get("execution_run_count") or 0),
+        "targeted_lifecycle_context_run_count": int(target_ctx.get("lifecycle_context_run_count") or 0),
+        "canonical_trades_root": str(canonical_trades_root),
+        "bundles": list(lifecycle_rows or []),
+        "run_bundles": list(run_bundle_rows or []),
+        "day_artifacts": {
+            "trade_explain_json": str(trade_js),
+            "trade_explain_md": str(trade_md),
+            "reporter_analysis_json": str(reporter_js) if reporter_js.exists() else "",
+            "reporter_analysis_md": str(reporter_md) if reporter_md.exists() else "",
+            "operator_summary_json": str(operator_summary_json) if operator_summary_json.exists() else "",
+            "operator_summary_md": str(operator_summary_md) if operator_summary_md.exists() else "",
+        },
+    }
