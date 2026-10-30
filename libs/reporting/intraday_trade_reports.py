@@ -40,6 +40,11 @@ from libs.reporting.trade_regeneration_truth import rehydrate_lifecycle_bundle_e
 from libs.reporting.trade_story_pipeline import build_trade_story_input_from_bundle, render_bundle_markdown
 from libs.runtime.windows_subprocess import background_creationflags, popen_hidden, run_hidden
 import sys as _r3_sys
+from libs.reporting import intraday_report_read_projection as _read_owner
+from libs.reporting import intraday_report_linkage_projection as _linkage_owner
+from libs.reporting import intraday_report_quality_projection as _quality_owner
+from libs.reporting import intraday_report_payload_projection as _payload_owner
+from libs.reporting import intraday_report_diagnostics_projection as _diagnostics_owner
 from libs.agents.reporter.read_models.intraday_trade_reports_r9_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _trade_day_from_trade_id_r4_impl,
     _runtime_trade_day_r4_impl,
@@ -121,13 +126,7 @@ def _read_lock_payload(path: Path) -> Dict[str, Any]:
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return payload if isinstance(payload, dict) else {}
+    return _read_owner._read_json(path, facade=_r3_sys.modules[__name__])
 
 
 def _stable_json_text(payload: Any) -> str:
@@ -176,143 +175,15 @@ def build_same_day_reporter_linkage(
     entry_bundle: Dict[str, Any],
     exit_bundle: Dict[str, Any],
 ) -> Dict[str, Any]:
-    reporter_obj = reporter_obj if isinstance(reporter_obj, dict) else {}
-    entry_reporter = entry_bundle.get("reporter") if isinstance(entry_bundle.get("reporter"), dict) else {}
-    exit_reporter = exit_bundle.get("reporter") if isinstance(exit_bundle.get("reporter"), dict) else {}
-    reporter_day_file_found = bool(
-        reporter_js.exists()
-        or reporter_md.exists()
-        or entry_reporter.get("reporter_analysis_day_file_found")
-        or exit_reporter.get("reporter_analysis_day_file_found")
-    )
-    linked_run_ids: List[str] = []
-    if bool(entry_reporter.get("reporter_analysis_found")) and entry_run_id:
-        linked_run_ids.append(str(entry_run_id))
-    if bool(exit_reporter.get("reporter_analysis_found")) and exit_run_id and exit_run_id not in linked_run_ids:
-        linked_run_ids.append(str(exit_run_id))
-    run_link_found = bool(linked_run_ids)
-    if run_link_found:
-        status = "linked_run"
-        linkage_source = "run_specific"
-        linkage_reason = "A same-day reporter analysis linked directly to this lifecycle run."
-    elif reporter_day_file_found:
-        status = "linked_day_fallback"
-        linkage_source = "day_fallback"
-        linkage_reason = "A same-day reporter analysis file was attached as fallback context for this lifecycle."
-    else:
-        status = "missing"
-        linkage_source = "missing"
-        linkage_reason = "Same-day reporter analysis is not available for this lifecycle yet."
-    return {
-        "schema_version": "same_day_reporter_linkage.v1",
-        "status": status,
-        "linkage_source": linkage_source,
-        "linkage_reason": linkage_reason,
-        "reporter_analysis_day_file_found": reporter_day_file_found,
-        "run_link_found": run_link_found,
-        "linked_run_ids": linked_run_ids,
-        "reporter_analysis_json_path": str(reporter_js) if reporter_js.exists() else "",
-        "reporter_analysis_md_path": str(reporter_md) if reporter_md.exists() else "",
-        "reporter_analysis_expected_json_path": str(reporter_js),
-        "reporter_analysis_expected_md_path": str(reporter_md),
-        "reporter_analysis_json_found": bool(reporter_js.exists()),
-        "reporter_analysis_md_found": bool(reporter_md.exists()),
-        "reporter_analysis_summary": str(reporter_obj.get("ai_summary") or ""),
-        "reporter_analysis_grade": str(reporter_obj.get("ai_run_grade") or "N/A"),
-    }
+    return _linkage_owner.build_same_day_reporter_linkage(reporter_obj=reporter_obj, reporter_js=reporter_js, reporter_md=reporter_md, entry_run_id=entry_run_id, exit_run_id=exit_run_id, entry_bundle=entry_bundle, exit_bundle=exit_bundle, facade=_r3_sys.modules[__name__])
 
 
 def _load_story_input(trade_dir: Path) -> tuple[Dict[str, Any], str]:
-    canonical = trade_dir / "ai_trade_report_input.json"
-    normalized_legacy = trade_dir / "ai_trade_report" / "ai_trade_report_input.json"
-    legacy = trade_dir / "trade_story_input.json"
-    for path in (canonical, normalized_legacy, legacy):
-        payload = _read_json(path)
-        if payload:
-            return payload, str(path)
-    return {}, ""
+    return _read_owner._load_story_input(trade_dir, facade=_r3_sys.modules[__name__])
 
 
 def _story_input_quality_score(story_input: Dict[str, Any]) -> int:
-    if not isinstance(story_input, dict) or not story_input:
-        return 0
-
-    def _execution_truth_score(details: Any) -> int:
-        details_obj = details if isinstance(details, dict) else {}
-        local_score = 0
-        if str(details_obj.get("order_id") or "").strip():
-            local_score += 1
-        if details_obj.get("filled_qty") not in (None, ""):
-            local_score += 1
-        if details_obj.get("filled_price") not in (None, ""):
-            local_score += 2
-        if str(details_obj.get("broker_truth_source") or "").strip():
-            local_score += 2
-        if str(details_obj.get("broker_day_truth_source") or "").strip():
-            local_score += 2
-        if str(details_obj.get("broker_day_match_mode") or "").strip():
-            local_score += 1
-        if bool(details_obj.get("broker_day_authoritative")):
-            local_score += 1
-        if details_obj.get("broker_realized_pnl") not in (None, ""):
-            local_score += 2
-        if details_obj.get("broker_fee") not in (None, "") or details_obj.get("broker_tax") not in (None, ""):
-            local_score += 1
-        return local_score
-
-    score = 0
-    status_lower = str(story_input.get("status") or "").strip().lower()
-    trade_symbol = str(story_input.get("symbol") or "").strip()
-    if status_lower in {"open", "closed"}:
-        score += 2
-    if trade_symbol:
-        score += 1
-    if str(story_input.get("run_id") or "").strip():
-        score += 1
-    scanner_reason_human = (
-        story_input.get("scanner_reason_human")
-        if isinstance(story_input.get("scanner_reason_human"), dict)
-        else {}
-    )
-    scanner_trace = (
-        story_input.get("scanner_selection_trace")
-        if isinstance(story_input.get("scanner_selection_trace"), dict)
-        else {}
-    )
-    selected_symbol = str(
-        story_input.get("selected_symbol")
-        or scanner_reason_human.get("selected_symbol")
-        or scanner_trace.get("selected_symbol")
-        or ""
-    ).strip()
-    if selected_symbol:
-        score += 2
-    if status_lower == "closed" and trade_symbol and selected_symbol and trade_symbol != selected_symbol:
-        score -= 2
-    candidate_count = (
-        story_input.get("candidate_count")
-        if story_input.get("candidate_count") not in (None, "")
-        else scanner_reason_human.get("candidate_count")
-    )
-    if isinstance(candidate_count, (int, float)) and float(candidate_count) > 0:
-        score += 1
-    if isinstance(scanner_trace.get("ranked_candidates"), list) and len(scanner_trace.get("ranked_candidates") or []) > 0:
-        score += 1
-    if isinstance(story_input.get("monitor_stop_policy_trace"), dict) and story_input.get("monitor_stop_policy_trace"):
-        score += 1
-    canonical_monitor = story_input.get("canonical_monitor") if isinstance(story_input.get("canonical_monitor"), dict) else {}
-    if canonical_monitor:
-        score += 1
-    if canonical_monitor.get("current_price") not in (None, ""):
-        score += 1
-    if canonical_monitor.get("account_pnl_ratio") not in (None, "") or canonical_monitor.get("effective_pnl_ratio") not in (None, ""):
-        score += 1
-    if str(story_input.get("entry_summary") or "").strip():
-        score += 1
-    score += _execution_truth_score(story_input.get("execution_details"))
-    score += _execution_truth_score(story_input.get("entry_execution_details"))
-    score += _execution_truth_score(story_input.get("exit_execution_details"))
-    return score
+    return _quality_owner._story_input_quality_score(story_input, facade=_r3_sys.modules[__name__])
 
 
 def _execution_truth_surface(details: Any) -> Dict[str, Any]:
@@ -320,10 +191,7 @@ def _execution_truth_surface(details: Any) -> Dict[str, Any]:
 
 
 def _truth_surface_differs(existing_story_input: Dict[str, Any], rebuilt_story_input: Dict[str, Any]) -> bool:
-    for key in ("execution_details", "entry_execution_details", "exit_execution_details"):
-        if _execution_truth_surface(existing_story_input.get(key)) != _execution_truth_surface(rebuilt_story_input.get(key)):
-            return True
-    return False
+    return _quality_owner._truth_surface_differs(existing_story_input, rebuilt_story_input, facade=_r3_sys.modules[__name__])
 
 
 def resolve_story_input_for_regeneration(
@@ -468,84 +336,7 @@ def build_live_bundle_backfill_payload(
     trade_report_summary: str,
     diagnostics: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    diagnostics_obj = dict(diagnostics or {})
-    common_row_patch = {
-        "trade_id": trade_id,
-        "story_id": trade_id,
-        "lifecycle_bundle_json_path": str(lifecycle_bundle_path),
-        "trade_lifecycle_json_path": "",
-        "trade_story_input_path": str(story_input_path),
-        "ai_trade_report_input_path": str(story_input_path),
-        "ai_trade_report_compact_input_path": str(story_compact_input_path),
-        "trade_report_json_path": str(trade_report_json_written or ""),
-        "trade_report_md_path": str(trade_report_md_written or ""),
-        "ai_trade_report_json_path": str(trade_report_json_written or ""),
-        "ai_trade_report_md_path": str(trade_report_md_written or ""),
-        "strategist_llm_response_path": str(strategist_llm_response_path),
-        "ai_trade_report_llm_response_path": str(ai_trade_report_llm_response_written or ""),
-        "entry_json_path": str(entry_artifact_path),
-        "hold_json_path": str(hold_artifact_path),
-        "exit_json_path": str(exit_artifact_path),
-        "strategist_evidence_json_path": str(strategist_evidence_path),
-        "scanner_evidence_json_path": str(scanner_evidence_path),
-        "monitor_evidence_json_path": str(monitor_evidence_path),
-        "monitor_timeline_json_path": str(monitor_evidence_path),
-        "commander_evidence_json_path": str(commander_evidence_path),
-        "trade_provenance_json_path": str(trade_provenance_path),
-        "trade_health_json_path": str(trade_health_path),
-        "trade_artifact_links_json_path": str(trade_artifact_links_path),
-        "trade_root_path": str(trade_root),
-        "trade_report_summary": str(trade_report_summary or ""),
-        "report_status": str(diagnostics_obj.get("report_status") or ""),
-        "report_reason_code": str(diagnostics_obj.get("report_reason_code") or ""),
-        "report_reason_human": str(diagnostics_obj.get("report_reason_human") or ""),
-        "report_next_expected_step": str(diagnostics_obj.get("next_expected_step") or ""),
-        "report_generation_model": str(diagnostics_obj.get("llm_model_used") or ""),
-        "report_generation_attempted": bool(diagnostics_obj.get("generation_attempted")),
-        "deterministic_report_status": str(diagnostics_obj.get("deterministic_report_status") or ""),
-        "llm_brief_status": str(diagnostics_obj.get("llm_brief_status") or ""),
-        "ai_trade_report_status": str(diagnostics_obj.get("ai_trade_report_status") or ""),
-    }
-    lifecycle_row = {
-        "trade_id": trade_id,
-        "story_id": trade_id,
-        "status": status,
-        "story_type": story_type,
-        "execution_mode_label": execution_mode_label,
-        "symbol": symbol,
-        "entry_run_id": entry_run_id,
-        "hold_run_ids": list(hold_run_ids or []),
-        "exit_run_id": exit_run_id,
-        "linked_run_ids": list(linked_run_ids or []),
-        "lifecycle_summary": str(lifecycle_summary or ""),
-        "report_json_path": str(lifecycle_bundle_path),
-        **common_row_patch,
-    }
-    bundle_artifacts_patch = {
-        "lifecycle_bundle_json": str(lifecycle_bundle_path),
-        "entry_json": str(entry_artifact_path),
-        "hold_json": str(hold_artifact_path),
-        "exit_json": str(exit_artifact_path),
-        "trade_story_input_json": str(story_input_path),
-        "ai_trade_report_input_json": str(story_input_path),
-        "ai_trade_report_compact_input_json": str(story_compact_input_path),
-        "trade_report_json": str(trade_report_json_written or ""),
-        "trade_report_md": str(trade_report_md_written or ""),
-        "ai_trade_report_json": str(trade_report_json_written or ""),
-        "ai_trade_report_md": str(trade_report_md_written or ""),
-        "strategist_llm_response_json": str(strategist_llm_response_path),
-        "ai_trade_report_llm_response_json": str(ai_trade_report_llm_response_written or ""),
-        "strategist_evidence_json": str(strategist_evidence_path),
-        "scanner_evidence_json": str(scanner_evidence_path),
-        "monitor_evidence_json": str(monitor_evidence_path),
-        "monitor_timeline_json": str(monitor_evidence_path),
-        "commander_evidence_json": str(commander_evidence_path),
-    }
-    return {
-        "lifecycle_row": lifecycle_row,
-        "run_bundle_row_patch": common_row_patch,
-        "bundle_artifacts_patch": bundle_artifacts_patch,
-    }
+    return _payload_owner.build_live_bundle_backfill_payload(trade_id=trade_id, status=status, story_type=story_type, execution_mode_label=execution_mode_label, symbol=symbol, entry_run_id=entry_run_id, hold_run_ids=hold_run_ids, exit_run_id=exit_run_id, linked_run_ids=linked_run_ids, lifecycle_summary=lifecycle_summary, lifecycle_bundle_path=lifecycle_bundle_path, story_input_path=story_input_path, story_compact_input_path=story_compact_input_path, trade_report_json_written=trade_report_json_written, trade_report_md_written=trade_report_md_written, strategist_llm_response_path=strategist_llm_response_path, ai_trade_report_llm_response_written=ai_trade_report_llm_response_written, entry_artifact_path=entry_artifact_path, hold_artifact_path=hold_artifact_path, exit_artifact_path=exit_artifact_path, strategist_evidence_path=strategist_evidence_path, scanner_evidence_path=scanner_evidence_path, monitor_evidence_path=monitor_evidence_path, commander_evidence_path=commander_evidence_path, trade_provenance_path=trade_provenance_path, trade_health_path=trade_health_path, trade_artifact_links_path=trade_artifact_links_path, trade_root=trade_root, trade_report_summary=trade_report_summary, diagnostics=diagnostics, facade=_r3_sys.modules[__name__])
 
 
 def persist_live_story_input_artifacts(
@@ -704,131 +495,11 @@ def build_live_execution_summary_payload(
     operator_summary_json: Path,
     operator_summary_md: Path,
 ) -> Dict[str, Any]:
-    report_status_counts: Dict[str, int] = {}
-    for row in list(lifecycle_rows or []):
-        key = str((row or {}).get("report_status") or "").strip().lower() or "unknown"
-        report_status_counts[key] = int(report_status_counts.get(key, 0) + 1)
-
-    target_ctx = dict(target_ctx or {})
-    return {
-        "schema_version": "live_execution_bundles.v3",
-        "ok": True,
-        "ts": _utc_now_iso(),
-        "day": str(day or ""),
-        "role": str(role or ""),
-        "event_log_path": str(event_log_path),
-        "evidence_log_path": str(evidence_log_path),
-        "bundle_count": len(list(lifecycle_rows or [])),
-        "trade_lifecycle_count": len(list(lifecycle_rows or [])),
-        "run_bundle_count": len(list(run_bundle_rows or [])),
-        "story_type_counts": dict(lifecycle_story_type_counts or {}),
-        "report_status_counts": report_status_counts,
-        "run_story_type_counts": dict(run_story_type_counts or {}),
-        "targeted_mode": bool(target_ctx.get("targeted_mode")),
-        "target_run_id": str(target_ctx.get("target_run_id") or ""),
-        "target_symbol": str(target_ctx.get("target_symbol") or ""),
-        "targeted_execution_run_count": int(target_ctx.get("execution_run_count") or 0),
-        "targeted_lifecycle_context_run_count": int(target_ctx.get("lifecycle_context_run_count") or 0),
-        "canonical_trades_root": str(canonical_trades_root),
-        "bundles": list(lifecycle_rows or []),
-        "run_bundles": list(run_bundle_rows or []),
-        "day_artifacts": {
-            "trade_explain_json": str(trade_js),
-            "trade_explain_md": str(trade_md),
-            "reporter_analysis_json": str(reporter_js) if reporter_js.exists() else "",
-            "reporter_analysis_md": str(reporter_md) if reporter_md.exists() else "",
-            "operator_summary_json": str(operator_summary_json) if operator_summary_json.exists() else "",
-            "operator_summary_md": str(operator_summary_md) if operator_summary_md.exists() else "",
-        },
-    }
+    return _payload_owner.build_live_execution_summary_payload(day=day, role=role, event_log_path=event_log_path, evidence_log_path=evidence_log_path, lifecycle_rows=lifecycle_rows, run_bundle_rows=run_bundle_rows, lifecycle_story_type_counts=lifecycle_story_type_counts, run_story_type_counts=run_story_type_counts, target_ctx=target_ctx, canonical_trades_root=canonical_trades_root, trade_js=trade_js, trade_md=trade_md, reporter_js=reporter_js, reporter_md=reporter_md, operator_summary_json=operator_summary_json, operator_summary_md=operator_summary_md, facade=_r3_sys.modules[__name__])
 
 
 def _report_diagnostics_from_report(report: Dict[str, Any], llm_artifact: Dict[str, Any]) -> Dict[str, Any]:
-    generation = report.get("generation") if isinstance(report.get("generation"), dict) else {}
-    generation_status = str(generation.get("status") or llm_artifact.get("status") or "").strip().lower()
-    generation_mode = str(generation.get("mode") or "").strip().lower()
-    declared_ai_status = str(
-        report.get("ai_trade_report_status")
-        or generation.get("ai_trade_report_status")
-        or ""
-    ).strip().lower()
-    model = str(generation.get("model") or llm_artifact.get("model") or ((llm_artifact.get("model_info") or {}).get("model")) or "")
-    deterministic_only = generation_mode in {"deterministic", "local_debug"} or (
-        declared_ai_status == "skipped" and generation_status in {"ok", "skipped", ""}
-    )
-    if deterministic_only:
-        ai_trade_report_status = "skipped"
-    elif generation_status in {"ok", "repaired"}:
-        ai_trade_report_status = "ok"
-    elif generation_status in {"partial", "salvaged"}:
-        ai_trade_report_status = "partial"
-    elif generation_status in {"skipped", "disabled"}:
-        ai_trade_report_status = "skipped"
-    else:
-        ai_trade_report_status = "error"
-    diagnostics = {
-        "report_status": "failed",
-        "report_reason_code": "llm_generation_failed",
-        "report_reason_human": "AI trade report generation failed.",
-        "report_generation_reason": "AI trade report generation failed.",
-        "generation_attempted": True,
-        "generation_ts": _utc_now_iso(),
-        "story_input_available": True,
-        "report_output_available": True,
-        "report_artifact_available": True,
-        "llm_model_used": model,
-        "last_error_message": str(llm_artifact.get("error") or ""),
-        "next_expected_step": "Inspect the LLM response artifact and retry generation.",
-        "deterministic_report_status": str(
-            report.get("deterministic_report_status")
-            or generation.get("deterministic_report_status")
-            or "ok"
-        ),
-        "llm_brief_status": str(report.get("llm_brief_status") or generation.get("llm_brief_status") or "skipped"),
-        "ai_trade_report_status": ai_trade_report_status,
-        "llm_response_status": str(llm_artifact.get("status") or ""),
-        "llm_parse_mode": str(llm_artifact.get("parse_mode") or ""),
-        "llm_completeness_score": float(llm_artifact.get("completeness_score") or 0.0),
-        "llm_required_keys_missing": [
-            str(x or "")
-            for x in list(llm_artifact.get("required_keys_missing") or [])
-            if str(x or "").strip()
-        ],
-    }
-    if deterministic_only:
-        diagnostics.update(
-            {
-                "report_status": "available",
-                "report_reason_code": "deterministic_only",
-                "report_reason_human": "Deterministic report was generated without AI expansion.",
-                "report_generation_reason": "Deterministic report was generated without AI expansion.",
-                "generation_attempted": False,
-                "next_expected_step": "Review deterministic report sections and evidence linkage.",
-                "last_error_message": "",
-            }
-        )
-    elif generation_status in {"ok", "repaired"}:
-        diagnostics.update(
-            {
-                "report_status": "available",
-                "report_reason_code": "",
-                "report_reason_human": "AI trade report was generated successfully.",
-                "report_generation_reason": "AI trade report was generated successfully.",
-                "next_expected_step": "Open the full report for detailed lifecycle analysis.",
-                "last_error_message": "",
-            }
-        )
-    elif generation_status in {"partial", "salvaged"}:
-        diagnostics.update(
-            {
-                "report_status": "available",
-                "report_reason_code": "llm_generation_salvaged",
-                "report_reason_human": "AI trade report was generated with partial recovery.",
-                "report_generation_reason": "AI trade report was generated with partial recovery.",
-                "next_expected_step": "Open the report and review completeness metadata before relying on every section.",
-            }
-        )
-    return diagnostics
+    return _diagnostics_owner._report_diagnostics_from_report(report, llm_artifact, facade=_r3_sys.modules[__name__])
 
 
 def _apply_ai_report_diagnostics_summary(payload: Dict[str, Any], diagnostics: Dict[str, Any]) -> Dict[str, Any]:
