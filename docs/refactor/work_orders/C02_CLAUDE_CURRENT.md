@@ -1,289 +1,410 @@
-# Agentra P1.5 FAST-3 — C02 A-20261030-23 NEW 8 verified RF-035 BODY MOVEs
+# Agentra FAST-3 — C02 A-20261031-00 | 8 NEW RF-035 SOURCE BODY MOVEs
 
-**C03 supply (UTC measured issuance):** 2026-10-30T14:02:56.409Z. Canonical INPUT_SHA `130498f922874a932ad9e41b77625e5177f6a5dd`; A remote HEAD `92bde2e7c89aba6c97372d4fc56b73c70f394bc6`; old C02 blob `d48318ce25ab2595ac14b833cbc10528ddfd9731`. The previous A1–A8 (controlled_validation_daily six, strategist_llm_summary two) are **8/8 REMOTE_DONE**, confirmed at A `92bde2e7c89aba6c97372d4fc56b73c70f394bc6` and Issue #11 `6523832263` with normal 26 PASS; NEVER retest/reassign them. New SOURCE blobs: `libs/reporting/daily_report_generator.py`=`cfcc8fc70cd2b72168dcea4f40a3f01d1b1cdfbf`, `libs/reporting/market_regime_rail_review.py`=`e6cfd5280d597602ba167ec1d3cc5fac29080a3c`; same on A/integration. All four new TARGET paths absent (404) on both branches before issuance. RF-035 exclusive Claude A ownership includes both SOURCE files per RF-035 coverage; B owns unrelated RF-063/065 and must not be touched. This document is design/supply, NOT G1/G2/G3 implementation.
+**Authority/preflight:** canonical integration at start `be3ca1b6a796120d22472914517dd9b802e333da`; A owner remote `4c0db15690c15f8e3609a3d4befa2ee91af0d5f3`; OLD_C02_BLOB `e26c5c04e3422e3eb2dd987933d6e31a1c55fffc`. Issue #11 6525028712 and C04/C05 #36 6525447463/6525532064 prove previous A1–A8 all REMOTE_DONE (31 scoped normal PASS; integrated `06e39040`). Never reassign or rerun them. Eight below are NEW, six promoted from verified unused reserve and two additional directly inspected safe read-only helpers. RF-035 Owner=Claude A, B read-only. All SOURCE Git blobs match A and integration; eight TARGET paths were verified absent (404) on A and integration before this issuance. This document is a task supply, NOT code G1/G2/G3.
 
-**One-file execution contract:** Read only this C02 to execute; no D00, RF, queue, detailed design, or autonomous task choice. Pin remote integration SHA/C02 blob/A remote SHA/local SHA before each item. Work only on `work/p15-a-reporter-pure-20261021` and code/test paths listed below. Move every original calculation BODY to one new owner, leave original exact-signature thin facade wrapper, preserve call-time monkeypatch and original bytes/errors; no duplicate body or reverse import. Add `from __future__ import annotations` and necessary typing imports in new modules. Run isolated normal targeted tests; FAST-3 G2 needs one normal exit0, not mandatory -O/full peer/CI. Execute A1→A8 sequentially; one BLOCKED item never cancels remaining safe items. Commit code/tests only; normal push A and refetch remote SHA/blob/tree after each push. Terminal HTTPS auth failure: preserve local commit, use approved exact-tree write only when reviewed tree/parent identity provable, else PUSH_BLOCKED and continue safely. Do not touch B branch, integration code, D00/C01/C02/RF/queue/STATUS/HANDOFF/C04/C05, main, production logs, runtime state, real broker/order, Guard/Step5C/UEF, RunLab or operating policy. All fixtures fake/tmp only; never execute real trading or report generation on live paths. C04 integrates, C05 exclusively judges G1/G2/G3/DONE.
+**Single-document execution:** Read ONLY this C02 and actual code/test paths below; do not read D00/RF/queue/C03 or select your own tasks. Pin fresh canonical HEAD, C02 blob, A HEAD and SOURCE blob before touching each item; if changed, reconcile against latest actual remote state and do not overwrite. Work solely on `work/p15-a-reporter-pure-20261021`, only the SOURCE/TARGET and NEW targeted test for each item. Move exact original calculation BODY (not copy) to single new Owner, leave exact original signature and docstring in a thin wrapper delegating to Owner. Where specified use `facade=sys.modules[__name__]` and a keyword-only `facade` in Owner to preserve call-time monkeypatch; no reverse import or duplicate body. Preserve all caller signatures, output bytes/order/exception behavior, imports and state semantics. New Owner needs its own typing/Path imports; no tests may use live paths. Do ALL A1–A8; a blocked item never cancels other independent safe items. Normal targeted pytest or reproducible stdlib smoke exit0 per changed item; -O/full peer/hosted CI not mandatory. `py_compile` alone is not G2. Code/test only commit, normal push to A, then refetch remote A HEAD and exact SOURCE/TARGET/TEST blobs. If HTTPS credentials block push, record LOCAL_ONLY/PUSH_BLOCKED and preserve tree; no force push, no unreviewed tree recreation. No production files, real orders, Broker/Guard/Step5C/UEF, RunLab, operational report/state writes, or A/B cross-owner modifications. C04 integrates; C05 owns G1/G2/G3/DONE.
 
-## A1 — RF-035 | SOURCE `libs/reporting/daily_report_generator.py::_iter_events` blob `cfcc8fc70cd2b72168dcea4f40a3f01d1b1cdfbf` → TARGET `libs/reporting/daily_report_generator_read_projection.py::_iter_events` (new, A/integration 404 verified)
+## A1 — RF-035 | SOURCE `libs/reporting/daily_report_generator.py::_build_trade_report_integrity` blob `eee37fe6d8c97b23cafbff184142bfcbda4a2944` L87 → TARGET `libs/reporting/daily_report_generator_integrity_projection.py::_build_trade_report_integrity` (new, verified 404)
 
-**MOVE exactly this original calculation BODY** from SOURCE into TARGET (not a copy). Preserve signature, docstring, output, exception, ordering, lazy evaluation and monkeypatch behavior:
+**Exact original SOURCE BODY to MOVE (75 source lines, unique definition):**
+
+```python
+def _build_trade_report_integrity(
+    reports_root: Path,
+    day: str,
+    trade_index: List[Dict[str, Any]],
+    broker_alignment: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    rows: List[Dict[str, Any]] = []
+    missing: List[Dict[str, Any]] = []
+    broker_closed_symbols = _broker_closed_symbols_from_alignment(broker_alignment)
+    broker_closed_report_open: List[Dict[str, Any]] = []
+    for item in trade_index:
+        if not isinstance(item, dict):
+            continue
+        trade_id = str(item.get("trade_id") or "").strip()
+        if not trade_id:
+            continue
+        symbol = normalize_symbol(item.get("symbol"), allow_test_symbols=True)
+        lifecycle_status = str(
+            item.get("status")
+            or item.get("trade_lifecycle_status")
+            or item.get("lifecycle_status")
+            or ""
+        ).strip().lower()
+        trade_dir = _find_trade_dir(reports_root, day, trade_id)
+        reports_dir = trade_dir / "reports" if trade_dir else None
+        checks = {
+            "ai_trade_summary_input_json": bool(reports_dir and (reports_dir / "ai_trade_summary_input.json").exists()),
+            "ai_trade_summary_json": bool(reports_dir and (reports_dir / "ai_trade_summary.json").exists()),
+            "ai_trade_summary_md": bool(reports_dir and (reports_dir / "ai_trade_summary.md").exists()),
+        }
+        row = {
+            "trade_id": trade_id,
+            "symbol": symbol or str(item.get("symbol") or ""),
+            "lifecycle_status": lifecycle_status,
+            "trade_dir": str(trade_dir) if trade_dir else "",
+            **checks,
+        }
+        rows.append(row)
+        if symbol and symbol in broker_closed_symbols and lifecycle_status not in ("closed", "done", "completed"):
+            broker_closed_report_open.append(
+                {
+                    "trade_id": trade_id,
+                    "symbol": symbol,
+                    "lifecycle_status": lifecycle_status or "unknown",
+                    "issue": "broker_day_trade_closed_but_report_open",
+                }
+            )
+        if not all(checks.values()):
+            missing.append(
+                {
+                    "trade_id": trade_id,
+                    "symbol": row["symbol"],
+                    "missing": [key for key, value in checks.items() if not value],
+                }
+            )
+    status = "ok"
+    if missing:
+        status = "missing_reports"
+    if broker_closed_report_open:
+        status = "broker_lifecycle_mismatch" if not missing else "missing_reports_and_broker_lifecycle_mismatch"
+    return {
+        "schema_version": "trade_report_integrity.v1",
+        "expected_trade_count": len([x for x in trade_index if isinstance(x, dict) and str(x.get("trade_id") or "").strip()]),
+        "checked_trade_count": len(rows),
+        "summary_md_count": sum(1 for row in rows if row.get("ai_trade_summary_md")),
+        "summary_json_count": sum(1 for row in rows if row.get("ai_trade_summary_json")),
+        "summary_input_count": sum(1 for row in rows if row.get("ai_trade_summary_input_json")),
+        "missing_count": len(missing),
+        "broker_closed_report_open_count": len(broker_closed_report_open),
+        "status": status,
+        "missing": missing,
+        "broker_closed_report_open": broker_closed_report_open,
+    }
+```
+
+**Wrapper/callers/monkeypatch:** facade._broker_closed_symbols_from_alignment, facade._find_trade_dir, facade.normalize_symbol must be resolved at call time; preserve report key/count/status ordering and missing reports; do not query broker. Preserve original public/source signature and any existing imports; SOURCE wrapper only delegates to new Owner. Do not execute a live report, LLM, trading or operational command.
+
+**New normal targeted test:** `tests/test_p15_rf035_00h_a1__build_trade_report_integrity_owner.py`. Fake/tmp fixture and expected output: empty trade_index, None broker_alignment -> expected_trade_count=0, checked_trade_count=0, status='ok'; one fake tmp trade with no report files -> missing_count=1, status='missing_reports'; fake broker closed symbol with open lifecycle -> broker_closed_report_open_count=1 and combined mismatch status; monkeypatch helper sentinel. Record before-original vs Owner vs wrapper exact return/exception and patch-seam parity. Run `python -m py_compile libs/reporting/daily_report_generator.py libs/reporting/daily_report_generator_integrity_projection.py`, then `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_00h_a1__build_trade_report_integrity_owner.py` (or equivalent .venv python; if pytest unavailable, stdlib normal smoke with exact command/exit). On success commit only scoped SOURCE/TARGET/test, normal push A, refetch remote HEAD and three blobs; on conflict or safety blocker record exact first blocker and **continue A2**. No old same-SHA PASS reruns.
+
+## A2 — RF-035 | SOURCE `libs/reporting/metrics_report_generator.py::_iter_events` blob `1f0fa8dd454ce0d32645bbe6de7a6e1f3c587954` L40 → TARGET `libs/reporting/metrics_report_generator_read_projection.py::_iter_events` (new, verified 404)
+
+**Exact original SOURCE BODY to MOVE (20 source lines, unique definition):**
 
 ```python
 def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
     if not path.exists():
         return []
-    def gen():
+
+    def gen() -> Iterable[Dict[str, Any]]:
         with path.open("r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:
                     continue
                 try:
-                    yield json.loads(line)
+                    obj = json.loads(line)
                 except Exception:
                     continue
+                if isinstance(obj, dict):
+                    yield obj
+
     return gen()
 ```
 
-**Owner/wrapper contract:** SOURCE original `def` and signature remains, but BODY becomes one thin delegate to `daily_report_generator_read_projection._iter_events`; add `import sys` to SOURCE if needed. `json.loads` → `facade.json.loads` inside the lazy nested generator; preserve missing-path [] vs generator and broad Exception swallowing. For facade items, TARGET may add a keyword-only `facade` parameter and SOURCE passes `facade=sys.modules[__name__]`; TARGET must not import SOURCE. Retain all public callers and existing imports; if target already contains earlier items, append without overwriting.
+**Wrapper/callers/monkeypatch:** facade.json.loads resolved during iteration, not generator construction; preserve missing-path [] vs generator, skip non-dict JSON, malformed lines and exception behavior. Preserve original public/source signature and any existing imports; SOURCE wrapper only delegates to new Owner. Do not execute a live report, LLM, trading or operational command.
 
-**Normal targeted fixture:** `tests/test_p15_rf035_23h_1_iter_events_owner.py`: tmp_path absent → []; JSONL lines `{\"event\":1}`, `BAD`, blank, `{\"event\":2}` → ordered `[{'event':1},{'event':2}]`; patched facade.json.loads raising → no rows. Compare list() of pre-move source, owner and wrapper; no production logs. Record BEFORE baseline and AFTER wrapper/owner byte/value/exception parity. `python -m py_compile libs/reporting/daily_report_generator.py libs/reporting/daily_report_generator_read_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_23h_1_iter_events_owner.py` normal exit0 (if pytest unavailable, provide reproducible stdlib normal smoke with exact command/exit). Commit only source/owner/test, push only A, refetch remote A HEAD and exact SOURCE/TARGET/TEST blobs. On a source-blob conflict or protected effect, mark this item BLOCKED with exact SHA and continue A2; on HTTPS push failure preserve local commit and continue disjoint safe item without overwriting.
+**New normal targeted test:** `tests/test_p15_rf035_00h_a2__iter_events_owner.py`. Fake/tmp fixture and expected output: missing tmp path -> []; JSONL valid dict, array, invalid line, dict -> exactly two dicts in order; patch facade.json.loads to count lazy calls; assert no open before iteration. Record before-original vs Owner vs wrapper exact return/exception and patch-seam parity. Run `python -m py_compile libs/reporting/metrics_report_generator.py libs/reporting/metrics_report_generator_read_projection.py`, then `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_00h_a2__iter_events_owner.py` (or equivalent .venv python; if pytest unavailable, stdlib normal smoke with exact command/exit). On success commit only scoped SOURCE/TARGET/test, normal push A, refetch remote HEAD and three blobs; on conflict or safety blocker record exact first blocker and **continue A3**. No old same-SHA PASS reruns.
 
-## A2 — RF-035 | SOURCE `libs/reporting/daily_report_generator.py::_find_trade_dir` blob `cfcc8fc70cd2b72168dcea4f40a3f01d1b1cdfbf` → TARGET `libs/reporting/daily_report_generator_read_projection.py::_find_trade_dir` (new, A/integration 404 verified)
+## A3 — RF-035 | SOURCE `libs/reporting/llm_daily_summary.py::_build_messages` blob `e847ee3941da571732364e3f2d0d5741f93ce363` L29 → TARGET `libs/reporting/llm_daily_summary_message_projection.py::_build_messages` (new, verified 404)
 
-**MOVE exactly this original calculation BODY** from SOURCE into TARGET (not a copy). Preserve signature, docstring, output, exception, ordering, lazy evaluation and monkeypatch behavior:
-
-```python
-def _find_trade_dir(reports_root: Path, day: str, trade_id: str) -> Path | None:
-    direct = reports_root / "trades" / day / trade_id
-    if direct.exists():
-        return direct
-    matches = sorted((reports_root / "trades" / day).glob(f"*/{trade_id}"))
-    return matches[0] if matches else None
-```
-
-**Owner/wrapper contract:** SOURCE original `def` and signature remains, but BODY becomes one thin delegate to `daily_report_generator_read_projection._find_trade_dir`; add `import sys` to SOURCE if needed. No module-global helper; exact-signature thin wrapper may delegate without facade. Preserve direct path priority and sorted `glob` fallback, including glob metacharacter behavior. For facade items, TARGET may add a keyword-only `facade` parameter and SOURCE passes `facade=sys.modules[__name__]`; TARGET must not import SOURCE. Retain all public callers and existing imports; if target already contains earlier items, append without overwriting.
-
-**Normal targeted fixture:** `tests/test_p15_rf035_23h_2_find_trade_dir_owner.py`: tmp_path/trades/2026-10-30/T1 direct → direct; only tmp_path/trades/2026-10-30/SYM/T1 → nested; absent → None; two nested dirs → sorted first. No production report root. Record BEFORE baseline and AFTER wrapper/owner byte/value/exception parity. `python -m py_compile libs/reporting/daily_report_generator.py libs/reporting/daily_report_generator_read_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_23h_2_find_trade_dir_owner.py` normal exit0 (if pytest unavailable, provide reproducible stdlib normal smoke with exact command/exit). Commit only source/owner/test, push only A, refetch remote A HEAD and exact SOURCE/TARGET/TEST blobs. On a source-blob conflict or protected effect, mark this item BLOCKED with exact SHA and continue A3; on HTTPS push failure preserve local commit and continue disjoint safe item without overwriting.
-
-## A3 — RF-035 | SOURCE `libs/reporting/daily_report_generator.py::_broker_closed_symbols_from_alignment` blob `cfcc8fc70cd2b72168dcea4f40a3f01d1b1cdfbf` → TARGET `libs/reporting/daily_report_generator_trade_projection.py::_broker_closed_symbols_from_alignment` (new, A/integration 404 verified)
-
-**MOVE exactly this original calculation BODY** from SOURCE into TARGET (not a copy). Preserve signature, docstring, output, exception, ordering, lazy evaluation and monkeypatch behavior:
+**Exact original SOURCE BODY to MOVE (29 source lines, unique definition):**
 
 ```python
-def _broker_closed_symbols_from_alignment(broker_alignment: Dict[str, Any] | None) -> set[str]:
-    if not isinstance(broker_alignment, dict):
-        return set()
-    snapshot = broker_alignment.get("account_snapshot") if isinstance(broker_alignment.get("account_snapshot"), dict) else {}
-    symbols = snapshot.get("day_trade_closed_symbols") if isinstance(snapshot.get("day_trade_closed_symbols"), list) else []
-    out = {
-        normalize_symbol(symbol, allow_test_symbols=True)
-        for symbol in symbols
-        if normalize_symbol(symbol, allow_test_symbols=True)
+def _build_messages(state: Dict[str, Any], policy: Dict[str, Any]) -> List[Dict[str, Any]]:
+    day = str(state.get("eod_day") or policy.get("day") or "")
+    report = dict(state.get("daily_report") or {})
+    approvals = report.get("approvals")
+    denials = report.get("denials")
+    runs = report.get("runs")
+
+    # Keep prompt compact; we only need a short manager-friendly summary.
+    sys = {
+        "role": "system",
+        "content": (
+            "You are a trading system reporter. "
+            "Summarize the day's automated decisions succinctly in Korean. "
+            "No financial advice. Use bullet points." 
+        ),
     }
-    rows = snapshot.get("day_trade_diary_rows") if isinstance(snapshot.get("day_trade_diary_rows"), list) else []
-    for row in rows:
-        if not isinstance(row, dict) or not bool(row.get("closed_by_day_trade_diary")):
-            continue
-        symbol = normalize_symbol(row.get("symbol"), allow_test_symbols=True)
-        if symbol:
-            out.add(symbol)
-    return out
+    user = {
+        "role": "user",
+        "content": (
+            f"Day: {day}\n"
+            f"approvals: {approvals}\n"
+            f"denials: {denials}\n"
+            f"runs: {runs}\n\n"
+            "Write a short summary (max 6 bullets) and a one-line takeaway."
+        ),
+    }
+    return [sys, user]
 ```
 
-**Owner/wrapper contract:** SOURCE original `def` and signature remains, but BODY becomes one thin delegate to `daily_report_generator_trade_projection._broker_closed_symbols_from_alignment`; add `import sys` to SOURCE if needed. `normalize_symbol` → `facade.normalize_symbol` at invocation time, including repeated calls in set comprehension and diary loop; preserve allow_test_symbols=True and skip invalid rows. For facade items, TARGET may add a keyword-only `facade` parameter and SOURCE passes `facade=sys.modules[__name__]`; TARGET must not import SOURCE. Retain all public callers and existing imports; if target already contains earlier items, append without overwriting.
+**Wrapper/callers/monkeypatch:** Pure message construction; preserve exact original prompt text/whitespace and message ordering, no LLM call; source wrapper delegates directly. Preserve original public/source signature and any existing imports; SOURCE wrapper only delegates to new Owner. Do not execute a live report, LLM, trading or operational command.
 
-**Normal targeted fixture:** `tests/test_p15_rf035_23h_3_broker_closed_symbols_from_alignment_owner.py`: None → empty set; fake snapshot day_trade_closed_symbols=['aaa'] plus diary row symbol='bbb', closed_by_day_trade_diary=True → {'AAA','BBB'} under patched source normalize_symbol uppercasing; unclosed and non-dict diary rows ignored; patch seam and baseline parity. No broker connection or account query. Record BEFORE baseline and AFTER wrapper/owner byte/value/exception parity. `python -m py_compile libs/reporting/daily_report_generator.py libs/reporting/daily_report_generator_trade_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_23h_3_broker_closed_symbols_from_alignment_owner.py` normal exit0 (if pytest unavailable, provide reproducible stdlib normal smoke with exact command/exit). Commit only source/owner/test, push only A, refetch remote A HEAD and exact SOURCE/TARGET/TEST blobs. On a source-blob conflict or protected effect, mark this item BLOCKED with exact SHA and continue A4; on HTTPS push failure preserve local commit and continue disjoint safe item without overwriting.
+**New normal targeted test:** `tests/test_p15_rf035_00h_a3__build_messages_owner.py`. Fake/tmp fixture and expected output: state={'eod_day':'2026-10-30','daily_report':{'approvals':2,'denials':1,'runs':3}}, policy={'day':'wrong'} -> two messages, first role system, second role user containing Day: 2026-10-30 and approvals: 2; missing state -> same original two messages; compare exact strings. Record before-original vs Owner vs wrapper exact return/exception and patch-seam parity. Run `python -m py_compile libs/reporting/llm_daily_summary.py libs/reporting/llm_daily_summary_message_projection.py`, then `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_00h_a3__build_messages_owner.py` (or equivalent .venv python; if pytest unavailable, stdlib normal smoke with exact command/exit). On success commit only scoped SOURCE/TARGET/test, normal push A, refetch remote HEAD and three blobs; on conflict or safety blocker record exact first blocker and **continue A4**. No old same-SHA PASS reruns.
 
-## A4 — RF-035 | SOURCE `libs/reporting/daily_report_generator.py::_render_residual_positions_markdown` blob `cfcc8fc70cd2b72168dcea4f40a3f01d1b1cdfbf` → TARGET `libs/reporting/daily_report_generator_trade_projection.py::_render_residual_positions_markdown` (new, A/integration 404 verified)
+## A4 — RF-035 | SOURCE `libs/reporting/strategist_llm_summary.py::_utc_now_iso` blob `b75edd9c2823f525556a15a6dc79b49d562b2f20` L38 → TARGET `libs/reporting/strategist_llm_summary_clock_projection.py::_utc_now_iso` (new, verified 404)
 
-**MOVE exactly this original calculation BODY** from SOURCE into TARGET (not a copy). Preserve signature, docstring, output, exception, ordering, lazy evaluation and monkeypatch behavior:
+**Exact original SOURCE BODY to MOVE (4 source lines, unique definition):**
 
 ```python
-def _render_residual_positions_markdown(residual: Dict[str, Any]) -> List[str]:
-    positions = residual.get("positions") if isinstance(residual.get("positions"), list) else []
-    lines = ["", "## 장마감 잔여 보유 종목", ""]
-    if not bool(residual.get("available")):
-        lines.append("- 상태 스냅샷을 읽지 못해 잔여 보유 종목을 확인하지 못했습니다.")
-        return lines
-    if not positions:
-        lines.append("- 장마감 기준 잔여 보유 종목이 없습니다.")
-        return lines
-    closeout = residual.get("closeout_state") if isinstance(residual.get("closeout_state"), dict) else {}
-    reconciled = (
-        residual.get("reconciled_closed_positions")
-        if isinstance(residual.get("reconciled_closed_positions"), list)
-        else []
-    )
-    closeout_mode = str(closeout.get("mode") or "").strip()
-    closeout_reason = str(closeout.get("reason") or "").strip()
-    if closeout_mode or closeout_reason:
-        closeout_line = f"- closeout 상태: {closeout_mode or '-'} / {closeout_reason or '-'}"
-        closeout_note = str(closeout.get("report_note") or "").strip()
-        if closeout_note:
-            closeout_line += f" ({closeout_note})"
-        lines.append(closeout_line)
-    if reconciled:
-        symbols = ", ".join(
-            str(row.get("symbol") or "").strip()
-            for row in reconciled
-            if isinstance(row, dict) and str(row.get("symbol") or "").strip()
-        )
-        if symbols:
-            lines.append(f"- 장중 청산 확인: {symbols}는 당일 전량 매도 기록으로 잔여 보유에서 제외했습니다.")
-    for row in positions:
-        if not isinstance(row, dict):
-            continue
-        symbol = str(row.get("symbol") or "-")
-        status = str(row.get("status") or "잔여 보유")
-        qty = int(row.get("qty") or 0)
-        avg_price = row.get("avg_price")
-        current_price = row.get("current_price")
-        pnl_ratio = row.get("account_pnl_ratio")
-        reason = str(row.get("overnight_reason") or "").strip()
-        decision_label = str(row.get("overnight_decision_label") or "").strip()
-        price_text = f"평균 {avg_price:,.0f}" if isinstance(avg_price, (int, float)) and avg_price else "평균 -"
-        current_text = f"현재 {current_price:,.0f}" if isinstance(current_price, (int, float)) and current_price else "현재 -"
-        ratio_text = f" / 평가 손익률 {float(pnl_ratio) * 100:.2f}%" if isinstance(pnl_ratio, (int, float)) else ""
-        detail = f"- {symbol}: {status} / {qty}주 / {price_text} / {current_text}{ratio_text}"
-        if decision_label:
-            detail += f" / 오버나이트 판단: {decision_label}"
-        if reason and not bool(row.get("overnight_decision_missing")):
-            detail += f" / 사유 {reason}"
-        if bool(row.get("weekend_carry")):
-            detail += f" / 주말 보유 {int(row.get('holding_gap_days') or 3)}일"
-        lines.append(detail)
-        if bool(row.get("weekend_carry")) and not bool(row.get("allow_weekend_carry")):
-            lines.append("  - 주의: 금요일 carry 승인이라 주말 갭 리스크가 포함됩니다.")
-        missing_detail = str(row.get("overnight_missing_detail") or "").strip()
-        if bool(row.get("overnight_decision_missing")) and missing_detail:
-            lines.append(f"  - 판단 기록 근거: {missing_detail}")
-        signals = [str(x) for x in list(row.get("overnight_positive_signals") or []) if str(x or "").strip()]
-        blockers = [str(x) for x in list(row.get("overnight_blockers") or []) if str(x or "").strip()]
-        if signals:
-            lines.append(f"  - 승인 근거: {', '.join(signals[:5])}")
-        if blockers:
-            lines.append(f"  - 차단/주의 근거: {', '.join(blockers[:5])}")
-    return lines
+def _utc_now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
 ```
 
-**Owner/wrapper contract:** SOURCE original `def` and signature remains, but BODY becomes one thin delegate to `daily_report_generator_trade_projection._render_residual_positions_markdown`; add `import sys` to SOURCE if needed. No global helpers. Pure dict→ordered Markdown lines; preserve numeric formatting, all Korean text, weekend carry warnings, errors and list order. Do not read live positions. For facade items, TARGET may add a keyword-only `facade` parameter and SOURCE passes `facade=sys.modules[__name__]`; TARGET must not import SOURCE. Retain all public callers and existing imports; if target already contains earlier items, append without overwriting.
+**Wrapper/callers/monkeypatch:** facade.datetime and facade.timezone at call time, preserve UTC timezone and .isoformat() exactly; no real clock use in fixture. Preserve original public/source signature and any existing imports; SOURCE wrapper only delegates to new Owner. Do not execute a live report, LLM, trading or operational command.
 
-**Normal targeted fixture:** `tests/test_p15_rf035_23h_4_render_residual_positions_markdown_owner.py`: {'available':False} → snapshot-unavailable line; {'available':True,'positions':[]} → no-position line; fake one row qty=2, avg_price=1000, current_price=1100, account_pnl_ratio=.1, weekend_carry=True → `2주`, `평가 손익률 10.00%`, weekend warning; qty='invalid' raises ValueError in both. No live account. Record BEFORE baseline and AFTER wrapper/owner byte/value/exception parity. `python -m py_compile libs/reporting/daily_report_generator.py libs/reporting/daily_report_generator_trade_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_23h_4_render_residual_positions_markdown_owner.py` normal exit0 (if pytest unavailable, provide reproducible stdlib normal smoke with exact command/exit). Commit only source/owner/test, push only A, refetch remote A HEAD and exact SOURCE/TARGET/TEST blobs. On a source-blob conflict or protected effect, mark this item BLOCKED with exact SHA and continue A5; on HTTPS push failure preserve local commit and continue disjoint safe item without overwriting.
+**New normal targeted test:** `tests/test_p15_rf035_00h_a4__utc_now_iso_owner.py`. Fake/tmp fixture and expected output: patch source.datetime.now(timezone.utc) to fixed 2026-10-30T00:00:00+00:00 -> exact '2026-10-30T00:00:00+00:00'; compare wrapper and Owner. Record before-original vs Owner vs wrapper exact return/exception and patch-seam parity. Run `python -m py_compile libs/reporting/strategist_llm_summary.py libs/reporting/strategist_llm_summary_clock_projection.py`, then `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_00h_a4__utc_now_iso_owner.py` (or equivalent .venv python; if pytest unavailable, stdlib normal smoke with exact command/exit). On success commit only scoped SOURCE/TARGET/test, normal push A, refetch remote HEAD and three blobs; on conflict or safety blocker record exact first blocker and **continue A5**. No old same-SHA PASS reruns.
 
-## A5 — RF-035 | SOURCE `libs/reporting/market_regime_rail_review.py::_to_float` blob `e6cfd5280d597602ba167ec1d3cc5fac29080a3c` → TARGET `libs/reporting/market_regime_rail_review_scalar_projection.py::_to_float` (new, A/integration 404 verified)
+## A5 — RF-035 | SOURCE `libs/reporting/market_regime_rail_review.py::load_latest_macro_snapshot` blob `778c8f2dfc4657a2a5f12e89adca0f55c9a01b23` L25 → TARGET `libs/reporting/market_regime_rail_review_read_projection.py::load_latest_macro_snapshot` (new, verified 404)
 
-**MOVE exactly this original calculation BODY** from SOURCE into TARGET (not a copy). Preserve signature, docstring, output, exception, ordering, lazy evaluation and monkeypatch behavior:
+**Exact original SOURCE BODY to MOVE (9 source lines, unique definition):**
 
 ```python
-def _to_float(value: Any, default: float = 0.0) -> float:
+def load_latest_macro_snapshot(day: str, *, root: Path = Path("data/logs/macro_indicators")) -> Dict[str, Any]:
+    path = root / str(day)[:10] / "latest.json"
     try:
-        if value in (None, ""):
-            return float(default)
-        return float(value)
+        payload = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
-        return float(default)
+        return {"available": False, "path": str(path), "error": "macro_snapshot_unavailable"}
+    return {**dict(payload), "available": True, "path": str(path)}
 ```
 
-**Owner/wrapper contract:** SOURCE original `def` and signature remains, but BODY becomes one thin delegate to `market_regime_rail_review_scalar_projection._to_float`; add `import sys` to SOURCE if needed. No module globals; exact signature/default. Preserve catch-all Exception and float(default) conversion, including NaN semantics. For facade items, TARGET may add a keyword-only `facade` parameter and SOURCE passes `facade=sys.modules[__name__]`; TARGET must not import SOURCE. Retain all public callers and existing imports; if target already contains earlier items, append without overwriting.
+**Wrapper/callers/monkeypatch:** Preserve exact signature/default root=Path('data/logs/macro_indicators'), read-only path, facade.json.loads at call time and broad exception; no Guard or market feed. Preserve original public/source signature and any existing imports; SOURCE wrapper only delegates to new Owner. Do not execute a live report, LLM, trading or operational command.
 
-**Normal targeted fixture:** `tests/test_p15_rf035_23h_5_to_float_owner.py`: '2.5'→2.5; None/default=1→1.0; 'bad'/default=3→3.0; float('nan') remains nan (math.isnan); invalid default propagates ValueError as original. Fake values only. Record BEFORE baseline and AFTER wrapper/owner byte/value/exception parity. `python -m py_compile libs/reporting/market_regime_rail_review.py libs/reporting/market_regime_rail_review_scalar_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_23h_5_to_float_owner.py` normal exit0 (if pytest unavailable, provide reproducible stdlib normal smoke with exact command/exit). Commit only source/owner/test, push only A, refetch remote A HEAD and exact SOURCE/TARGET/TEST blobs. On a source-blob conflict or protected effect, mark this item BLOCKED with exact SHA and continue A6; on HTTPS push failure preserve local commit and continue disjoint safe item without overwriting.
+**New normal targeted test:** `tests/test_p15_rf035_00h_a5_load_latest_macro_snapshot_owner.py`. Fake/tmp fixture and expected output: tmp root/day/latest.json missing -> {'available':False,'path':exact_tmp_path,'error':'macro_snapshot_unavailable'}; valid {'x':1} -> x=1,available=True,path=tmp; invalid JSON -> same unavailable shape; monkeypatch facade.json.loads. Record before-original vs Owner vs wrapper exact return/exception and patch-seam parity. Run `python -m py_compile libs/reporting/market_regime_rail_review.py libs/reporting/market_regime_rail_review_read_projection.py`, then `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_00h_a5_load_latest_macro_snapshot_owner.py` (or equivalent .venv python; if pytest unavailable, stdlib normal smoke with exact command/exit). On success commit only scoped SOURCE/TARGET/test, normal push A, refetch remote HEAD and three blobs; on conflict or safety blocker record exact first blocker and **continue A6**. No old same-SHA PASS reruns.
 
-## A6 — RF-035 | SOURCE `libs/reporting/market_regime_rail_review.py::_indicator` blob `e6cfd5280d597602ba167ec1d3cc5fac29080a3c` → TARGET `libs/reporting/market_regime_rail_review_scalar_projection.py::_indicator` (new, A/integration 404 verified)
+## A6 — RF-035 | SOURCE `libs/reporting/strategist_llm_summary.py::render_strategist_llm_summary_markdown` blob `b75edd9c2823f525556a15a6dc79b49d562b2f20` L583 → TARGET `libs/reporting/strategist_llm_summary_render_projection.py::render_strategist_llm_summary_markdown` (new, verified 404)
 
-**MOVE exactly this original calculation BODY** from SOURCE into TARGET (not a copy). Preserve signature, docstring, output, exception, ordering, lazy evaluation and monkeypatch behavior:
-
-```python
-def _indicator(snapshot: Mapping[str, Any], key: str) -> Mapping[str, Any]:
-    macro = snapshot.get("macro_indicators") if isinstance(snapshot.get("macro_indicators"), Mapping) else {}
-    indicators = macro.get("indicators") if isinstance(macro.get("indicators"), Mapping) else {}
-    row = indicators.get(key) if isinstance(indicators.get(key), Mapping) else {}
-    return row
-```
-
-**Owner/wrapper contract:** SOURCE original `def` and signature remains, but BODY becomes one thin delegate to `market_regime_rail_review_scalar_projection._indicator`; add `import sys` to SOURCE if needed. `Mapping` in every isinstance → `facade.Mapping` at call time. Return the original row object (identity), not a copy; missing/invalid branches {}. For facade items, TARGET may add a keyword-only `facade` parameter and SOURCE passes `facade=sys.modules[__name__]`; TARGET must not import SOURCE. Retain all public callers and existing imports; if target already contains earlier items, append without overwriting.
-
-**Normal targeted fixture:** `tests/test_p15_rf035_23h_6_indicator_owner.py`: {'macro_indicators':{'indicators':{'kospi':{'change_pct':1}}}}→same row object; missing/invalid nested dict→{}; facade.Mapping patch seam with compatible mapping type; no macro file read. Record BEFORE baseline and AFTER wrapper/owner byte/value/exception parity. `python -m py_compile libs/reporting/market_regime_rail_review.py libs/reporting/market_regime_rail_review_scalar_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_23h_6_indicator_owner.py` normal exit0 (if pytest unavailable, provide reproducible stdlib normal smoke with exact command/exit). Commit only source/owner/test, push only A, refetch remote A HEAD and exact SOURCE/TARGET/TEST blobs. On a source-blob conflict or protected effect, mark this item BLOCKED with exact SHA and continue A7; on HTTPS push failure preserve local commit and continue disjoint safe item without overwriting.
-
-## A7 — RF-035 | SOURCE `libs/reporting/market_regime_rail_review.py::_change_pct` blob `e6cfd5280d597602ba167ec1d3cc5fac29080a3c` → TARGET `libs/reporting/market_regime_rail_review_scalar_projection.py::_change_pct` (new, A/integration 404 verified)
-
-**MOVE exactly this original calculation BODY** from SOURCE into TARGET (not a copy). Preserve signature, docstring, output, exception, ordering, lazy evaluation and monkeypatch behavior:
+**Exact original SOURCE BODY to MOVE (167 source lines, ACTIVE LAST definition; earlier shadowed definition KEEP):**
 
 ```python
-def _change_pct(snapshot: Mapping[str, Any], key: str) -> float:
-    index_moves = snapshot.get("index_moves") if isinstance(snapshot.get("index_moves"), Mapping) else {}
-    move_key = f"{key}_pct"
-    if move_key in index_moves:
-        return _to_float(index_moves.get(move_key), 0.0)
-    return _to_float(_indicator(snapshot, key).get("change_pct"), 0.0)
-```
+def render_strategist_llm_summary_markdown(payload: Dict[str, Any]) -> str:
+    meta = _as_dict(payload.get("llm_meta"))
+    readout = _as_dict(payload.get("operator_readout"))
+    stage_decision = _as_dict(payload.get("stage_decision"))
+    if bool(stage_decision.get("is_stage_specific")):
+        return _render_stage_specific_summary_markdown_clean(payload)
 
-**Owner/wrapper contract:** SOURCE original `def` and signature remains, but BODY becomes one thin delegate to `market_regime_rail_review_scalar_projection._change_pct`; add `import sys` to SOURCE if needed. `Mapping` → `facade.Mapping`; `_to_float` → `facade._to_float`; `_indicator` → `facade._indicator` at call time. Preserve index_moves explicit key precedence and fallback. For facade items, TARGET may add a keyword-only `facade` parameter and SOURCE passes `facade=sys.modules[__name__]`; TARGET must not import SOURCE. Retain all public callers and existing imports; if target already contains earlier items, append without overwriting.
+    frame = _as_dict(payload.get("strategy_frame"))
+    detail = _as_dict(payload.get("strategy_detail"))
+    changes = _as_dict(payload.get("policy_changes"))
+    entry = _as_dict(payload.get("monitor_entry_policy"))
+    memory = _as_dict(payload.get("memory_usage"))
+    news = _as_dict(payload.get("news_usage"))
+    refresh = _as_dict(payload.get("strategy_refresh_trace"))
+    horizon = _as_dict(payload.get("strategy_horizon_feedback"))
+    hold = _as_dict(horizon.get("expected_hold_window"))
+    exit_guidance = _as_dict(horizon.get("exit_guidance"))
+    handoff = _as_dict(horizon.get("monitor_handoff"))
+    selected_themes = _as_list(frame.get("selected_themes"))
+    theme_text = ", ".join(str(x) for x in selected_themes) if selected_themes else "-"
+    watch = _as_dict(detail.get("candidate_watch_policy"))
+    tactical_strategy = _text(detail.get("tactical_strategy"), "")
+    strategy_scores = _as_dict(detail.get("strategy_scores"))
+    rejected_reasons = _as_dict(detail.get("rejected_strategy_reasons"))
 
-**Normal targeted fixture:** `tests/test_p15_rf035_23h_7_change_pct_owner.py`: {'index_moves':{'kospi_pct':'1.2'}}→1.2; fallback macro_indicators.indicators.kospi.change_pct='-0.4'→-0.4; empty→0.0; patch facade._to_float sentinel to prove call-time seam; no real market inputs. Record BEFORE baseline and AFTER wrapper/owner byte/value/exception parity. `python -m py_compile libs/reporting/market_regime_rail_review.py libs/reporting/market_regime_rail_review_scalar_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_23h_7_change_pct_owner.py` normal exit0 (if pytest unavailable, provide reproducible stdlib normal smoke with exact command/exit). Commit only source/owner/test, push only A, refetch remote A HEAD and exact SOURCE/TARGET/TEST blobs. On a source-blob conflict or protected effect, mark this item BLOCKED with exact SHA and continue A8; on HTTPS push failure preserve local commit and continue disjoint safe item without overwriting.
-
-## A8 — RF-035 | SOURCE `libs/reporting/market_regime_rail_review.py::render_market_regime_rail_markdown` blob `e6cfd5280d597602ba167ec1d3cc5fac29080a3c` → TARGET `libs/reporting/market_regime_rail_review_markdown_projection.py::render_market_regime_rail_markdown` (new, A/integration 404 verified)
-
-**MOVE exactly this original calculation BODY** from SOURCE into TARGET (not a copy). Preserve signature, docstring, output, exception, ordering, lazy evaluation and monkeypatch behavior:
-
-```python
-def render_market_regime_rail_markdown(rail: Mapping[str, Any], *, day: str) -> str:
-    inputs = rail.get("market_inputs") if isinstance(rail.get("market_inputs"), Mapping) else {}
-    lines = [
-        f"# Market Regime Rail Review ({day})",
+    lines: List[str] = [
+        f"# Strategist LLM Summary ({_text(meta.get('day'), '-')})",
         "",
-        "This report is read-only evaluation output. It does not change trading behavior.",
+        "---",
         "",
-        "## Rail",
+        "## 전략가 원문 해석 출력",
         "",
-        f"- rail_id: `{rail.get('rail_id') or 'not_available'}`",
-        f"- confidence: `{rail.get('rail_confidence') or 'none'}`",
-        f"- behavior_effect: `{rail.get('behavior_effect') or 'evaluation_only'}`",
-        f"- source: `{rail.get('source') or '-'}`",
-        f"- rationale: {rail.get('rationale') or '-'}",
+        "> 아래 내용은 전략가 LLM 응답과 canonical 전략가 산출물을 사람이 읽기 좋게 재배열한 것입니다.",
         "",
-        "## Market Inputs",
+        f"- 상태: {_text(meta.get('status'))} / model={_text(meta.get('model'))}",
+        "",
+        "### 전략 프레임",
+        "",
+        f"- 플레이북: **{_text(frame.get('playbook'))}**",
+        f"- 선택 테마: {theme_text}",
+        f"- 테마 선택 모드: {_text(frame.get('theme_selection_mode'))}",
+        f"- fallback 사유: {_text(frame.get('fallback_reason'))}",
+        "",
+        "**전략가 rationale**",
+        "",
+        _text(frame.get("rationale")),
+        "",
+        "### 전략 디테일",
+        "",
+        f"- 전략 강화 필드: {_strategy_patch_status_clean(detail)}",
+        f"- 플레이북 흐름: {_playbook_flow_label(detail)}",
+        f"- LLM 요청 플레이북: {_text(detail.get('llm_requested_playbook'))}",
+        f"- 최종 플레이북: {_text(detail.get('final_playbook'))}",
+        f"- 선택 전술: {_text(detail.get('tactical_strategy'))}",
+        f"- 후보 감시 제안: {_watch_scope_label_clean(watch) or '-'}",
+        "",
+        "#### 전략 점수",
+        "",
+        *_strategy_score_lines_clean(strategy_scores, selected=tactical_strategy),
+        "",
+        "#### 제외 전략 이유",
+        "",
+        *_rejected_strategy_lines(rejected_reasons, selected=tactical_strategy),
+        "",
+        "### 메모리 사용",
+        "",
+        *_memory_usage_lines_clean(memory),
+        "",
+        "### 뉴스 사용",
+        "",
+        *_news_usage_lines_clean(news),
+        "",
+        *_quality_audit_lines(payload),
+        "### 정책 조정",
+        "",
+        _directive_line("플레이북", _as_dict(changes.get("playbook_action"))),
+        _directive_line("진입 정책", _as_dict(changes.get("entry_policy_action"))),
+        _directive_line("모니터 초점", _as_dict(changes.get("monitor_focus_action"))),
+        _directive_line("성과 bias", _as_dict(changes.get("selected_symbol_bias_action"))),
+        _directive_line("refresh", _as_dict(changes.get("refresh_action"))),
+        "",
+        "### 전략 Refresh 흐름",
+        "",
+        f"- 요약: {_text(refresh.get('summary'))}",
         "",
     ]
-    for key in (
-        "kospi_pct",
-        "kosdaq_pct",
-        "kospi200_pct",
-        "krx_night_futures_pct",
-        "breadth",
-        "nasdaq_pct",
-        "sp500_pct",
-        "usdkrw_pct",
-        "dxy_pct",
-        "vix_level",
-        "vix_pct",
-        "global_sentiment_score",
-    ):
-        lines.append(f"- {key}: **{float(inputs.get(key) or 0.0):.4f}**")
-    if inputs.get("krx_night_futures_status") or inputs.get("krx_night_futures_pressure"):
-        lines.append(f"- krx_night_futures_status: `{inputs.get('krx_night_futures_status') or '-'}`")
-        lines.append(f"- krx_night_futures_pressure: `{inputs.get('krx_night_futures_pressure') or '-'}`")
-    sanity = rail.get("market_input_sanity") if isinstance(rail.get("market_input_sanity"), Mapping) else {}
-    warnings = sanity.get("warnings") if isinstance(sanity.get("warnings"), list) else []
-    if warnings:
-        lines += ["", "## Market Input Sanity", ""]
-        lines.append(f"- status: `{sanity.get('status') or 'warning'}`")
-        lines.append(f"- extreme_move_requires_confirmation: `{bool(sanity.get('extreme_move_requires_confirmation'))}`")
-        for row in warnings[:8]:
-            if not isinstance(row, Mapping):
-                continue
-            lines.append(
-                "- warning: "
-                f"`{row.get('code')}` {row.get('index') or '-'} "
-                f"change_pct={float(row.get('change_pct') or 0.0):.4f} "
-                f"severity=`{row.get('severity') or '-'}`"
-            )
-    lines += ["", "## Expected Tactical Behavior", ""]
-    for item in list(rail.get("expected_tactical_behavior") or []):
-        lines.append(f"- {item}")
-    lines += ["", "## Q8 Review Focus", ""]
-    for item in list(rail.get("q8_review_focus") or []):
-        lines.append(f"- `{item}`")
-    return "\n".join(lines).rstrip() + "\n"
+    lines.extend(_bullet_lines(_as_list(refresh.get("bullets"))))
+    lines += ["", "#### 단계", ""]
+    stages = _as_list(refresh.get("stages"))
+    stage_line_count = 0
+    for stage in stages:
+        row = _as_dict(stage)
+        if not row:
+            continue
+        stage_line_count += 1
+        lines.append(
+            f"- {_text(row.get('stage'))}: {_text(row.get('label'))}; "
+            f"effective={row.get('effective')}; {_text(row.get('summary'))}"
+        )
+    if stage_line_count == 0:
+        lines.append("- -")
+
+    lines += [
+        "",
+        "### 모니터 진입 정책",
+        "",
+        f"- enabled: {entry.get('enabled')}",
+        f"- timeframe_minutes: {entry.get('timeframe_minutes')}",
+        f"- volume_ratio_min: {entry.get('volume_ratio_min')}",
+        f"- vwap 확장 허용: min={entry.get('min_extended_from_vwap_pct')}, max={entry.get('max_extended_from_vwap_pct')}",
+        f"- pullback 범위: min={entry.get('pullback_min_pct')}, max={entry.get('pullback_max_pct')}",
+        f"- reclaim_tolerance_pct: {entry.get('reclaim_tolerance_pct')}",
+        f"- intent_cooldown_sec: {entry.get('intent_cooldown_sec')}",
+        f"- require_vwap_reclaim / require_rebound: {entry.get('require_vwap_reclaim')} / {entry.get('require_rebound')}",
+        "",
+        "### 보유 Horizon",
+        "",
+        f"- strategy_horizon: {_text(horizon.get('strategy_horizon'))}",
+        f"- hold_window_sec: min={hold.get('min_sec')}, target={hold.get('target_sec')}, max={hold.get('max_sec')}",
+        f"- preferred_exit: {_text(handoff.get('preferred_exit') or exit_guidance.get('profit_take_style'))}",
+        f"- hold_bias: {_text(handoff.get('hold_bias'))}",
+        f"- do_not_force_hold: {handoff.get('do_not_force_hold')}",
+        f"- allow_early_exit: {exit_guidance.get('allow_early_exit')}",
+        "",
+        "#### 무효화 조건",
+        "",
+        *_bullet_lines(_as_list(horizon.get("invalidation_conditions"))),
+        "",
+        "---",
+        "",
+        "## 운영자 검토 요약",
+        "",
+        "> 아래 내용은 전략가 원문을 기준으로 한 deterministic 검토입니다. 추가 LLM 호출은 포함하지 않습니다.",
+        "",
+        f"- 검토 결론: **{_text(readout.get('headline'))}**",
+        f"- 주요 원인: {_text(readout.get('root_cause'))}",
+        "",
+        "### 잘 된 점",
+        "",
+        *_bullet_lines(_as_list(readout.get("good_points"))),
+        "",
+        "### 문제점",
+        "",
+        *_bullet_lines(_as_list(readout.get("issues"))),
+        "",
+        "### 권고 액션",
+        "",
+        *_bullet_lines(_as_list(readout.get("recommended_actions"))),
+        "",
+        "### 검증 포인트",
+        "",
+        *_bullet_lines(_as_list(readout.get("validation_questions"))),
+        "",
+        "---",
+        "",
+        "## 근거",
+        "",
+        f"- source_response_json: `{payload.get('source_response_json')}`",
+        f"- source_canonical_strategist_json: `{payload.get('source_canonical_strategist_json')}`",
+        f"- run_id: `{_text(meta.get('run_id'), '')}`",
+        f"- saved_at: `{_text(meta.get('saved_at'), '')}`",
+        f"- generated_at: `{_text(payload.get('generated_at'), '')}`",
+        "",
+    ]
+    return "\n".join(lines)
 ```
 
-**Owner/wrapper contract:** SOURCE original `def` and signature remains, but BODY becomes one thin delegate to `market_regime_rail_review_markdown_projection.render_market_regime_rail_markdown`; add `import sys` to SOURCE if needed. `Mapping` checks → `facade.Mapping` at call time; exact original order, `.rstrip()+'\n'`, float precision, warning limit 8, no IO. Keep public signature `rail, *, day` on SOURCE. For facade items, TARGET may add a keyword-only `facade` parameter and SOURCE passes `facade=sys.modules[__name__]`; TARGET must not import SOURCE. Retain all public callers and existing imports; if target already contains earlier items, append without overwriting.
+**Wrapper/callers/monkeypatch:** ONLY the active SECOND top-level definition (~L583) is moved; earlier shadowed definition (~L318) stays untouched and counts as zero. Every source helper (_as_dict,_as_list,_text,_strategy_patch_status_clean,_playbook_flow_label,_watch_scope_label_clean,_strategy_score_lines_clean,_rejected_strategy_lines,_memory_usage_lines_clean,_news_usage_lines_clean,_quality_audit_lines,_directive_line,_bullet_lines,_render_stage_specific_summary_markdown_clean and all other module helpers) must resolve through facade at invocation; no Owner->SOURCE import. Exact Korean markdown bytes/newline/section order. Preserve original public/source signature and any existing imports; SOURCE wrapper only delegates to new Owner. Do not execute a live report, LLM, trading or operational command.
 
-**Normal targeted fixture:** `tests/test_p15_rf035_23h_8_render_market_regime_rail_markdown_owner.py`: rail={} day='2026-10-30'→exact heading and `evaluation_only`; market_inputs.kospi_pct=1.23456→`1.2346`; fake sanity warnings + expected_tactical_behavior + q8_review_focus→same ordered bytes; numeric 'bad' raises ValueError. No policy/Guard/market execution. Record BEFORE baseline and AFTER wrapper/owner byte/value/exception parity. `python -m py_compile libs/reporting/market_regime_rail_review.py libs/reporting/market_regime_rail_review_markdown_projection.py`; `.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_23h_8_render_market_regime_rail_markdown_owner.py` normal exit0 (if pytest unavailable, provide reproducible stdlib normal smoke with exact command/exit). Commit only source/owner/test, push only A, refetch remote A HEAD and exact SOURCE/TARGET/TEST blobs. On a source-blob conflict or protected effect, mark this item BLOCKED with exact SHA and continue Anext safe assigned item; on HTTPS push failure preserve local commit and continue disjoint safe item without overwriting.
+**New normal targeted test:** `tests/test_p15_rf035_00h_a6_render_strategist_llm_summary_markdown_owner.py`. Fake/tmp fixture and expected output: empty fake payload -> compare complete exact markdown string before/after/Owner; fake llm_meta.day, strategy_frame.playbook, operator_readout -> exact text; stage_decision.is_stage_specific=True with patched facade._render_stage_specific_summary_markdown_clean returning 'STAGE_SENTINEL' -> exact sentinel; no files/network. Record before-original vs Owner vs wrapper exact return/exception and patch-seam parity. Run `python -m py_compile libs/reporting/strategist_llm_summary.py libs/reporting/strategist_llm_summary_render_projection.py`, then `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_00h_a6_render_strategist_llm_summary_markdown_owner.py` (or equivalent .venv python; if pytest unavailable, stdlib normal smoke with exact command/exit). On success commit only scoped SOURCE/TARGET/test, normal push A, refetch remote HEAD and three blobs; on conflict or safety blocker record exact first blocker and **continue A7**. No old same-SHA PASS reruns.
 
-## Future reserve — 6/6 VERIFIED design, **not executable in this A order**
+## A7 — RF-035 | SOURCE `libs/reporting/daily_report_generator.py::_load_operator_summary_snapshot` blob `eee37fe6d8c97b23cafbff184142bfcbda4a2944` L58 → TARGET `libs/reporting/daily_report_generator_operator_projection.py::_load_operator_summary_snapshot` (new, verified 404)
 
-All six were independently checked against A remote `92bde2e7c89aba6c97372d4fc56b73c70f394bc6` and the RF-035 Claude-A-exclusive file coverage. The SOURCE functions below have actual non-wrapper bodies; each TARGET was 404 on A and integration before this issue. These are **future candidates only**, not extra tasks, tests or remote implementations. After current A1–A8, C03 must revalidate source blobs, dependency/caller compatibility and target absence before promoting them to the next complete 8–10-item C02. No actor self-selection.
+**Exact original SOURCE BODY to MOVE (17 source lines, unique definition):**
 
-- **R1 RF-035** SOURCE `libs/reporting/daily_report_generator.py::_build_trade_report_integrity` blob `cfcc8fc70cd2b72168dcea4f40a3f01d1b1cdfbf`, 75-line BODY → TARGET `libs/reporting/daily_report_generator_integrity_projection.py::_build_trade_report_integrity` (404 both). Reads only temp trade-report existence and a passed-in broker_alignment **dict**, never queries broker. Calls `_broker_closed_symbols_from_alignment`, `_find_trade_dir`, `normalize_symbol` through facade at invocation time; preserve report status/key counts and list order. Fake fixture: empty trade_index→checked 0/status ok; missing tmp reports→missing_reports; fake closed symbol with report-open row→broker_lifecycle_mismatch; no live broker/state.
-- **R2 RF-035** SOURCE `libs/reporting/metrics_report_generator.py::_iter_events` blob `1f0fa8dd454ce0d32645bbe6de7a6e1f3c587954`, 20-line BODY → TARGET `libs/reporting/metrics_report_generator_read_projection.py::_iter_events` (404 both). Read-only lazy JSONL generator; `facade.json.loads` at iteration time, invalid/non-dict rows skipped. Fixture: missing tmp→[]; valid dict+JSON array+bad line→only dict; patch loads error→skip. No production event log.
-- **R3 RF-035** SOURCE `libs/reporting/llm_daily_summary.py::_build_messages` blob `e847ee3941da571732364e3f2d0d5741f93ce363`, 29-line BODY → TARGET `libs/reporting/llm_daily_summary_message_projection.py::_build_messages` (404 both). Pure fake state/policy → system/user prompt list; no LLM invocation, network, order, state write. Fixture: eod_day wins over policy day; fake approvals/denials/runs appear in user content; missing values preserve exact formatting and message order. Preserve original prompt bytes; no prompt policy changes.
-- **R4 RF-035** SOURCE `libs/reporting/strategist_llm_summary.py::_utc_now_iso` blob `b75edd9c2823f525556a15a6dc79b49d562b2f20`, 4-line BODY → TARGET `libs/reporting/strategist_llm_summary_clock_projection.py::_utc_now_iso` (404 both). Clock-only UTC ISO formatting, `facade.datetime`/`facade.timezone` call-time. Fixture: fake 2026-10-30T00:00:00+00:00→exact ISO string; patched clock seam. No actual clock-sensitive operational run.
-- **R5 RF-035** SOURCE `libs/reporting/market_regime_rail_review.py::load_latest_macro_snapshot` blob `e6cfd5280d597602ba167ec1d3cc5fac29080a3c`, 9-line BODY → TARGET `libs/reporting/market_regime_rail_review_read_projection.py::load_latest_macro_snapshot` (404 both). Read-only path `root/day[:10]/latest.json`; preserve default root signature, `facade.json.loads`, broad exception, and return shape. Fixture: tmp root missing→available false/error; valid dict→available true/path; malformed JSON→same error. No real macro feed, policy change or Guard.
-- **R6 RF-035** SOURCE `libs/reporting/strategist_llm_summary.py::render_strategist_llm_summary_markdown` blob `b75edd9c2823f525556a15a6dc79b49d562b2f20`, **active second definition at ~L583**, ~165-line BODY → TARGET `libs/reporting/strategist_llm_summary_render_projection.py::render_strategist_llm_summary_markdown` (404 both). Pure dict→Markdown text; earlier shadowed legacy definition at ~L318 is **not** a new item and must not be moved/recounted. All `_as_dict/_as_list/_text/_bullet_lines/_quality_audit_lines/_strategy_score_lines_clean/_render_stage_specific_summary_markdown_clean` and other helper calls use call-time facade; preserve exact Korean/section order and newline bytes. Fixture: empty fake payload→stable headings; fake strategy_frame/readout→exact output; is_stage_specific true→patched facade stage renderer; no files, LLM or trading effects. Before issuance, recheck duplicate-definition resolution and source/target parity.
+```python
+def _load_operator_summary_snapshot(events_path: Path, out_dir: Path, day: str) -> Dict[str, Any]:
+    paths = daily_artifact_paths(out_dir, day)
+    payload = build_operator_daily_summary_payload(
+        events_path,
+        out_dir,
+        day=day,
+        metrics_report_dir=out_dir / "metrics",
+        m30_post_golive_dir=out_dir / "milestones" / "m30_post_golive",
+        m30_golive_dir=out_dir / "milestones" / "m30_golive",
+        m31_slo_incident_dir=out_dir / "m31_slo_incident",
+    )
+    snapshot = build_operator_summary_snapshot_from_payload(payload)
+    snapshot["report_json_path"] = str(paths["operator_summary_json"])
+    snapshot["report_md_path"] = str(paths["operator_summary_md"])
+    return snapshot
+```
 
-**Reserve test status:** all tests NOT_RUN (design fixtures only). The next C03 order must inline full original bodies, wrappers, tests and push checks for selected reserves. A1–A8 above remain the only current mandatory tasks.
+**Wrapper/callers/monkeypatch:** facade.daily_artifact_paths, facade.build_operator_daily_summary_payload, facade.build_operator_summary_snapshot_from_payload resolved at call time; no actual report writes, mocked builders only; preserve metrics/milestones path arguments and output keys. Preserve original public/source signature and any existing imports; SOURCE wrapper only delegates to new Owner. Do not execute a live report, LLM, trading or operational command.
 
-## Final A report
+**New normal targeted test:** `tests/test_p15_rf035_00h_a7__load_operator_summary_snapshot_owner.py`. Fake/tmp fixture and expected output: patch facade.daily_artifact_paths to return fake tmp operator_summary_json/md, payload builder to record events_path/out_dir/day and return {'ok':1}, snapshot builder to return {'status':'ok'}; expect report_json_path/report_md_path exact tmp strings and status ok; fake builder exception must propagate identically. Record before-original vs Owner vs wrapper exact return/exception and patch-seam parity. Run `python -m py_compile libs/reporting/daily_report_generator.py libs/reporting/daily_report_generator_operator_projection.py`, then `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_00h_a7__load_operator_summary_snapshot_owner.py` (or equivalent .venv python; if pytest unavailable, stdlib normal smoke with exact command/exit). On success commit only scoped SOURCE/TARGET/test, normal push A, refetch remote HEAD and three blobs; on conflict or safety blocker record exact first blocker and **continue A8**. No old same-SHA PASS reruns.
 
-Report in Issue #11: `ORDER_ID=A-20261030-23 | CANONICAL_HEAD | C02_BLOB | A_REMOTE_BEFORE/AFTER | A1..A8 IMPLEMENTED/BLOCKED | SOURCE_BLOBS_BEFORE/AFTER | OWNER_BLOBS | TARGETED_NORMAL_COMMAND/EXIT | LOCAL_ONLY/PUSH_VERIFIED | FIRST_BLOCKER | NEXT | START_KST/END_KST` (only actual measured times). No RF DONE claim. A code/test only.
+## A8 — RF-035 | SOURCE `libs/reporting/llm_daily_summary.py::_is_dry_run` blob `e847ee3941da571732364e3f2d0d5741f93ce363` L25 → TARGET `libs/reporting/llm_daily_summary_env_projection.py::_is_dry_run` (new, verified 404)
+
+**Exact original SOURCE BODY to MOVE (4 source lines, unique definition):**
+
+```python
+def _is_dry_run() -> bool:
+    return str(os.getenv("DRY_RUN", "0")).strip() in ("1", "true", "True")
+```
+
+**Wrapper/callers/monkeypatch:** facade.os.getenv at invocation time; read only DRY_RUN, do not change enable/disable policy, no LLM invocation; source exact-signature wrapper. Preserve original public/source signature and any existing imports; SOURCE wrapper only delegates to new Owner. Do not execute a live report, LLM, trading or operational command.
+
+**New normal targeted test:** `tests/test_p15_rf035_00h_a8__is_dry_run_owner.py`. Fake/tmp fixture and expected output: patch source.os.getenv('DRY_RUN','0') -> '1','true','True' => True; 'TRUE','0','',None => False per original string conversion; spy that getter called at use time; compare Owner and wrapper. Record before-original vs Owner vs wrapper exact return/exception and patch-seam parity. Run `python -m py_compile libs/reporting/llm_daily_summary.py libs/reporting/llm_daily_summary_env_projection.py`, then `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_00h_a8__is_dry_run_owner.py` (or equivalent .venv python; if pytest unavailable, stdlib normal smoke with exact command/exit). On success commit only scoped SOURCE/TARGET/test, normal push A, refetch remote HEAD and three blobs; on conflict or safety blocker record exact first blocker and **continue Aend/report**. No old same-SHA PASS reruns.
+
+## Reserve — RESERVE_NOT_VERIFIED (0/6 after promotion)
+
+All six formerly verified reserve candidates R1–R6 were promoted into A1–A6, so **remaining verified reserve is 0**, not six. A7–A8 were separately source/target-checked new work, not reserve. C03 must inspect six additional RF-035 exclusive source bodies, exact current blobs, absent unique targets, effect isolation and fake tests in the next supply cycle. A may not self-select reserve. No speculative candidate is counted as VERIFIED.
+
+## Required A report
+
+Issue #11: `ORDER_ID=A-20261031-00 | CANONICAL_HEAD | C02_BLOB | A_REMOTE_BEFORE/AFTER | A1..A8 IMPLEMENTED/BLOCKED | SOURCE_BLOBS_BEFORE/AFTER | TARGET_BLOBS | TARGETED_NORMAL_COMMAND/EXIT | PUSH_VERIFIED/LOCAL_ONLY | FIRST_BLOCKER | NEXT | START_KST/END_KST` (measured only). Do not claim RF DONE, code G3, or runtime validation.
