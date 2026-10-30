@@ -23,3 +23,10 @@ def strategy_score_lines(scores: Dict[str, Any], *, selected: str, facade: Any) 
         marker = " (선택)" if str(name) == selected else ""
         lines.append(f"- {name}: {facade._score_label(score)}{marker}")
     return lines
+
+
+def score_value(value: Any) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return float("-inf")
