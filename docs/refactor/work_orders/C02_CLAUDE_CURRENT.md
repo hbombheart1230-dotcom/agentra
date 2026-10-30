@@ -503,9 +503,174 @@ def _report_diagnostics_from_report(report: Dict[str, Any], llm_artifact: Dict[s
 
 **Normal targeted G2:** new `tests/test_p15_rf035_06h_a8_intraday_diagnostics_owner.py`: freeze facade._utc_now_iso; report={'generation':{'status':'ok','model':'fake'}} and llm_artifact={} -> report_status='available', ai_trade_report_status='ok'; generation.mode='deterministic' -> ai_trade_report_status='skipped', generation_attempted=False; completeness_score='invalid' raises same ValueError through wrapper/Owner; no model/network call. Run `python -m pytest -q -p no:cacheprovider tests/test_p15_rf035_06h_a8_intraday_diagnostics_owner.py` normal exit0 or exact stdlib smoke; `py_compile`; compare baseline original/Owner/wrapper and exceptions, then A code/test-only commit + push + remote SOURCE/TARGET/TEST blob refetch. If isolated failure, record FIRST_BLOCKER and continue Acompletion report.
 
-## Reserve — RESERVE_NOT_VERIFIED (A 0/6)
+## VERIFIED future reserve — A 6/6, NOT executable until next C03 promotion
 
-Previous six verified reserve items were consumed by A-05 and are REMOTE_DONE. This order has eight separately inspected and verified NEW items, but **no new six reserve candidates were fully validated**. Do not count speculative filenames, already-moved wrappers, KEEP, effectful helpers, or other RF owners as verified reserve. C03 must inspect next A-owned SOURCE bodies/target absence/tests before promoting six future items; A must not self-select from this section.
+**Verified design only, not implemented/tested.** RF-035 exclusive A source paths confirmed in RF-035 implementation owner list; B scope disjoint. All source bodies below were read at current A remote and each target checked 404 on A/integration. These six are **not part of A-06**; Actor must execute A1–A8 only. On next C03, re-fetch SOURCE/TARGET after A-06 and promote only still-unmoved items, refreshing blob/fixtures; if changed, downgrade RESERVE_NOT_VERIFIED.
+
+### R1 — RF-035 | `libs/reporting/intraday_trade_reports.py::_read_lock_payload` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` L113–122 → `libs/reporting/intraday_report_queue_read_projection.py::_read_lock_payload` (404)
+
+```python
+def _read_lock_payload(path: Path) -> Dict[str, Any]:
+    try:
+        if not path.exists():
+            return {}
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        return payload if isinstance(payload, dict) else {}
+    except Exception:
+        return {}
+```
+
+**Design verification:** move this actual body once, keep exact-signature thin SOURCE wrapper with `facade=_r3_sys.modules[__name__]` at call time, TARGET must not import SOURCE. Fake/temp normal targeted fixture: missing tmp lock -> {}; valid JSON object -> same dict; malformed/list -> {}; patched facade.json.loads raises -> {}. Original/Owner/wrapper equality, negative/error and monkeypatch parity, py_compile and normal exit0, A code/test-only push + remote blob verification. On isolated blocker continue next verified item; no protected effect/real RunLab/Guard/Step5C/UEF/production data.
+
+### R2 — RF-035 | `libs/reporting/intraday_trade_reports.py::_load_bundle_queue` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` L880–891 → `libs/reporting/intraday_report_queue_read_projection.py::_load_bundle_queue` (404)
+
+```python
+def _load_bundle_queue(path: Path) -> List[Dict[str, Any]]:
+    try:
+        if not path.exists():
+            return []
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(payload, list):
+            return []
+        return [dict(row) for row in payload if isinstance(row, dict)]
+    except Exception:
+        return []
+```
+
+**Design verification:** move this actual body once, keep exact-signature thin SOURCE wrapper with `facade=_r3_sys.modules[__name__]` at call time, TARGET must not import SOURCE. Fake/temp normal targeted fixture: tmp JSON [{'id':1},3,{'id':2}] -> [{'id':1},{'id':2}]; malformed/missing/nonlist -> []; facade.json.loads patch. Original/Owner/wrapper equality, negative/error and monkeypatch parity, py_compile and normal exit0, A code/test-only push + remote blob verification. On isolated blocker continue next verified item; no protected effect/real RunLab/Guard/Step5C/UEF/production data.
+
+### R3 — RF-035 | `libs/reporting/intraday_trade_reports.py::_build_bundle_argv` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` L1173–1206 → `libs/reporting/intraday_report_command_projection.py::_build_bundle_argv` (404)
+
+```python
+def _build_bundle_argv(root: Path, state: Dict[str, Any] | None = None) -> List[str]:
+    runtime_state = state if isinstance(state, dict) else {}
+    execution = runtime_state.get("execution") if isinstance(runtime_state.get("execution"), dict) else {}
+    order = execution.get("order") if isinstance(execution.get("order"), dict) else {}
+    run_id = str(runtime_state.get("run_id") or "").strip()
+    symbol = _normalize_symbol(order.get("symbol") or execution.get("symbol") or runtime_state.get("symbol") or "")
+    argv = [
+        "--env-path",
+        str(Path(os.getenv("ENV_PATH", str(root / ".env")))),
+        "--event-log-path",
+        str(Path(os.getenv("EVENT_LOG_PATH", str(root / "data" / "logs" / "events.jsonl")))),
+        "--evidence-log-path",
+        str(Path(os.getenv("EVIDENCE_LOG_PATH", str(root / "data" / "evidence_ledger" / "events.jsonl")))),
+        "--report-dir",
+        str(root / "reports" / "dev" / "analysis" / "live_execution_bundles"),
+        "--reports-root",
+        str(root / "reports"),
+        "--intents-path",
+        str(Path(os.getenv("INTENTS_PATH", str(root / "data" / "logs" / "intents.jsonl")))),
+        "--role",
+        _bundle_role(),
+        "--trade-report-ai",
+        "--json",
+    ]
+    if run_id:
+        argv.extend(["--target-run-id", run_id])
+    if symbol:
+        argv.extend(["--target-symbol", symbol])
+    day = _runtime_trade_day(runtime_state)
+    if day:
+        argv.extend(["--day", day])
+    return argv
+```
+
+**Design verification:** move this actual body once, keep exact-signature thin SOURCE wrapper with `facade=_r3_sys.modules[__name__]` at call time, TARGET must not import SOURCE. Fake/temp normal targeted fixture: tmp root, fake state={'run_id':'r','symbol':'005930'} and monkeypatched facade.os.getenv, facade._runtime_trade_day, facade._normalize_symbol, facade._bundle_role; argv includes --target-run-id r, --target-symbol 005930, --day from fake; assert no subprocess/network/write. Original/Owner/wrapper equality, negative/error and monkeypatch parity, py_compile and normal exit0, A code/test-only push + remote blob verification. On isolated blocker continue next verified item; no protected effect/real RunLab/Guard/Step5C/UEF/production data.
+
+### R4 — RF-035 | `libs/reporting/intraday_trade_reports.py::_stale_process_after_sec` blob `819ce8b895d8fb5adc8b60cf3ba42988d35803cb` L1084–1090 → `libs/reporting/intraday_report_timeout_projection.py::_stale_process_after_sec` (404)
+
+```python
+def _stale_process_after_sec() -> float:
+    try:
+        return max(30.0, float(os.getenv("INTRADAY_TRADE_REPORT_STALE_PROCESS_SEC", "180") or 180.0))
+    except Exception:
+        return 180.0
+```
+
+**Design verification:** move this actual body once, keep exact-signature thin SOURCE wrapper with `facade=_r3_sys.modules[__name__]` at call time, TARGET must not import SOURCE. Fake/temp normal targeted fixture: fake facade.os.getenv value '12' -> 30.0, '60' -> 60.0, 'bad' -> 180.0; never read live env. Original/Owner/wrapper equality, negative/error and monkeypatch parity, py_compile and normal exit0, A code/test-only push + remote blob verification. On isolated blocker continue next verified item; no protected effect/real RunLab/Guard/Step5C/UEF/production data.
+
+### R5 — RF-035 | `libs/reporting/trade_bundle_assembly.py::attach_strategy_anchor` blob `f5c61ac32748c05e5070004e68fac96e2034119b` L178–199 → `libs/reporting/trade_bundle_strategy_anchor_projection.py::attach_strategy_anchor` (404)
+
+```python
+def attach_strategy_anchor(
+    payload: Mapping[str, Any] | None,
+    *,
+    strategy_anchor_run_id: str,
+    strategist_input_path: Path,
+    strategist_compact_input_path: Path,
+    strategist_llm_response_path: Path,
+) -> Dict[str, Any]:
+    out = dict(payload or {})
+    out["entry_strategist_run_id"] = str(strategy_anchor_run_id or "")
+    out["strategy_anchor_run_id"] = str(strategy_anchor_run_id or "")
+    out["strategy_anchor"] = {
+        "run_id": str(strategy_anchor_run_id or ""),
+        "artifacts": {
+            "strategist_input_json": str(strategist_input_path),
+            "strategist_compact_input_json": str(strategist_compact_input_path),
+            "strategist_llm_response_json": str(strategist_llm_response_path),
+        },
+    }
+    return out
+```
+
+**Design verification:** move this actual body once, keep exact-signature thin SOURCE wrapper with `facade=_r3_sys.modules[__name__]` at call time, TARGET must not import SOURCE. Fake/temp normal targeted fixture: fake payload={'x':1}, anchor='r', tmp paths -> copied payload with strategy_anchor.run_id r and artifact path strings, original dict unchanged; empty anchor fallback. Original/Owner/wrapper equality, negative/error and monkeypatch parity, py_compile and normal exit0, A code/test-only push + remote blob verification. On isolated blocker continue next verified item; no protected effect/real RunLab/Guard/Step5C/UEF/production data.
+
+### R6 — RF-035 | `libs/reporting/trade_bundle_assembly.py::apply_strategy_anchor_metadata` blob `f5c61ac32748c05e5070004e68fac96e2034119b` L200–249 → `libs/reporting/trade_bundle_strategy_anchor_projection.py::apply_strategy_anchor_metadata` (404)
+
+```python
+def apply_strategy_anchor_metadata(
+    *,
+    lifecycle: Dict[str, Any],
+    lifecycle_bundle: Dict[str, Any],
+    strategy_anchor_run_id: str,
+    strategist_input_path: Path,
+    strategist_compact_input_path: Path,
+    strategist_llm_response_path: Path,
+) -> Dict[str, Any]:
+    lifecycle["entry_strategist_run_id"] = strategy_anchor_run_id
+    lifecycle["strategy_anchor_run_id"] = strategy_anchor_run_id
+    lifecycle["strategy_anchor"] = {
+        "run_id": strategy_anchor_run_id,
+        "source": "strategist_input_artifact" if strategy_anchor_run_id else "missing",
+        "artifacts": {
+            "strategist_input_json": str(strategist_input_path),
+            "strategist_compact_input_json": str(strategist_compact_input_path),
+            "strategist_llm_response_json": str(strategist_llm_response_path),
+        },
+    }
+    lifecycle_bundle["entry_strategist_run_id"] = strategy_anchor_run_id
+    lifecycle_bundle["strategy_anchor_run_id"] = strategy_anchor_run_id
+    lifecycle_bundle["market_context_human"] = attach_strategy_anchor(
+        lifecycle_bundle.get("market_context_human") if isinstance(lifecycle_bundle.get("market_context_human"), dict) else {},
+        strategy_anchor_run_id=strategy_anchor_run_id,
+        strategist_input_path=strategist_input_path,
+        strategist_compact_input_path=strategist_compact_input_path,
+        strategist_llm_response_path=strategist_llm_response_path,
+    )
+    lifecycle_bundle["scanner_reason_human"] = attach_strategy_anchor(
+        lifecycle_bundle.get("scanner_reason_human") if isinstance(lifecycle_bundle.get("scanner_reason_human"), dict) else {},
+        strategy_anchor_run_id=strategy_anchor_run_id,
+        strategist_input_path=strategist_input_path,
+        strategist_compact_input_path=strategist_compact_input_path,
+        strategist_llm_response_path=strategist_llm_response_path,
+    )
+    lifecycle_bundle["monitor_reason_human"] = attach_strategy_anchor(
+        lifecycle_bundle.get("monitor_reason_human") if isinstance(lifecycle_bundle.get("monitor_reason_human"), dict) else {},
+        strategy_anchor_run_id=strategy_anchor_run_id,
+        strategist_input_path=strategist_input_path,
+        strategist_compact_input_path=strategist_compact_input_path,
+        strategist_llm_response_path=strategist_llm_response_path,
+    )
+    return {
+        "lifecycle": lifecycle,
+        "lifecycle_bundle": lifecycle_bundle,
+        "strategy_anchor_run_id": strategy_anchor_run_id,
+    }
+```
+
+**Design verification:** move this actual body once, keep exact-signature thin SOURCE wrapper with `facade=_r3_sys.modules[__name__]` at call time, TARGET must not import SOURCE. Fake/temp normal targeted fixture: fake lifecycle={}, lifecycle_bundle={}, tmp paths, anchor='r'; assert in-place identity preserved, both updated and nested strategy_anchor; patch facade.attach_strategy_anchor to verify call-time seam; no filesystem writes. Original/Owner/wrapper equality, negative/error and monkeypatch parity, py_compile and normal exit0, A code/test-only push + remote blob verification. On isolated blocker continue next verified item; no protected effect/real RunLab/Guard/Step5C/UEF/production data.
 
 ## Required #11 report
 
