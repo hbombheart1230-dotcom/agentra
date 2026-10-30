@@ -14,6 +14,7 @@ from libs.reporting.daily_report_runtime import markdown_policy_projection as _p
 from libs.reporting.daily_report_runtime import markdown_operator_projection as _operator_owner
 from libs.reporting.daily_report_runtime import markdown_alignment_projection as _alignment_owner
 from libs.reporting.daily_report_runtime import markdown_daily_projection as _daily_owner
+from libs.reporting.daily_report_runtime import markdown_daily_full_projection as _daily_full_owner
 
 
 ResidualRenderer = Callable[[Dict[str, Any]], List[str]]
@@ -73,41 +74,4 @@ def render_daily_markdown(
     stage_counter: Counter,
     render_residual_positions: ResidualRenderer,
 ) -> str:
-    operator_summary_snapshot = (
-        summary.get("operator_summary_snapshot")
-        if isinstance(summary.get("operator_summary_snapshot"), dict)
-        else {}
-    )
-    residual_positions = summary.get("residual_positions") if isinstance(summary.get("residual_positions"), dict) else {}
-    lines = [
-        f"# Daily Report ({day})",
-        "",
-        *render_data_freshness_markdown(summary["data_freshness"]),
-        f"- operator_summary_snapshot_stale: **{operator_summary_snapshot_freshness['stale']}**",
-        "",
-        f"- events: **{summary['events']}**",
-        f"- approvals: **{approvals}** / blocks: **{blocks}**",
-        f"- symbols observed: **{len(symbols_for_day)}**",
-        "",
-        "## Decision actions",
-        "",
-    ]
-    if actions:
-        for key, value in actions.most_common():
-            lines.append(f"- {key}: {value}")
-    else:
-        lines.append("- (none)")
-
-    lines += ["", "## Stage counts", ""]
-    for key, value in stage_counter.most_common():
-        lines.append(f"- {key}: {value}")
-
-    lines += render_operator_summary_snapshot(operator_summary_snapshot, include_system_status=True)
-    lines += render_residual_positions(residual_positions)
-    lines += render_trade_report_integrity(summary)
-    lines += render_broker_alignment(summary)
-    lines += render_route_and_narrative_sections(summary)
-    lines += render_policy_surface_sections(summary)
-    lines += render_top_issues(operator_summary_snapshot)
-    lines += render_recommended_operator_actions(operator_summary_snapshot)
-    return "\n".join(lines) + "\n"
+    return _daily_full_owner.render_daily_markdown(day=day, summary=summary, operator_summary_snapshot_freshness=operator_summary_snapshot_freshness, approvals=approvals, blocks=blocks, symbols_for_day=symbols_for_day, actions=actions, stage_counter=stage_counter, render_residual_positions=render_residual_positions, facade=sys.modules[__name__])

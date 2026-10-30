@@ -20,6 +20,10 @@ from libs.reporting.report_source_helpers import (
     utc_now_iso,
 )
 import sys as _r3_sys
+from libs.reporting import trade_explain_scalar_projection as _scalar_owner
+from libs.reporting import trade_explain_path_projection as _path_owner
+from libs.reporting import trade_explain_read_projection as _read_owner
+from libs.reporting import trade_explain_inventory_projection as _inventory_owner
 from libs.agents.reporter.narrative.trade_explain_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _to_epoch_r4_impl,
     _extract_news_items_r4_impl,
@@ -41,17 +45,11 @@ OFFICIAL_TRADE_EXPLAIN_REPORT_DIR = (Path("reports") / OFFICIAL_TRADE_EXPLAIN_RE
 
 
 def _safe_int(v: Any, default: int = 0) -> int:
-    try:
-        return int(float(v))
-    except Exception:
-        return int(default)
+    return _scalar_owner._safe_int(v, default)
 
 
 def _safe_float(v: Any, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return float(default)
+    return _scalar_owner._safe_float(v, default)
 
 
 def _normalize_live_symbol(value: Any) -> str:
@@ -63,28 +61,11 @@ def _to_epoch(ts: Any) -> Optional[int]:
 
 
 def _utc_day(ts: Any) -> Optional[str]:
-    epoch = _to_epoch(ts)
-    if epoch is None:
-        return None
-    return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%d")
+    return _scalar_owner._utc_day(ts, facade=_r3_sys.modules[__name__])
 
 
 def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-    out: List[Dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for raw in f:
-            line = raw.strip()
-            if not line:
-                continue
-            try:
-                obj = json.loads(line)
-            except Exception:
-                continue
-            if isinstance(obj, dict):
-                out.append(obj)
-    return out
+    return _read_owner._iter_jsonl(path, facade=_r3_sys.modules[__name__])
 
 
 def _latest_day(path: Path) -> Optional[str]:
@@ -96,22 +77,11 @@ def _canonical_report_root(report_dir: Path) -> Path:
 
 
 def official_trade_explain_report_dir(reports_root: Path) -> Path:
-    return Path(reports_root) / OFFICIAL_TRADE_EXPLAIN_RELATIVE_DIR
+    return _path_owner.official_trade_explain_report_dir(reports_root, facade=_r3_sys.modules[__name__])
 
 
 def build_trade_explain_output_path_metadata(report_dir: Path) -> Dict[str, Any]:
-    canonical_reports_root = _canonical_report_root(report_dir)
-    requested_dir = Path(report_dir)
-    official_dir = official_trade_explain_report_dir(canonical_reports_root)
-    is_official = requested_dir == official_dir
-    return {
-        "official_report_dir": str(official_dir),
-        "requested_report_dir": str(requested_dir),
-        "path_status": "official" if is_official else "custom_nonofficial",
-        "deprecated_note": ""
-        if is_official
-        else f"Official trade_explain path is `{official_dir}`; custom output path is supported but non-canonical.",
-    }
+    return _path_owner.build_trade_explain_output_path_metadata(report_dir, facade=_r3_sys.modules[__name__])
 
 
 def _extract_news_items(news: Dict[str, Any], llm_ctx: Dict[str, Any]) -> List[str]:
@@ -146,21 +116,7 @@ def _build_sell_pairs_fifo(executions: List[Dict[str, Any]]) -> List[Dict[str, A
 
 
 def _report_inventory(day: str, reports_root: Path) -> List[str]:
-    operator_root = operator_summary_artifact_root(reports_root)
-    candidates = [
-        operator_root / "daily" / day / "operator_summary.md",
-        reports_root / "decision_story" / f"decision_story_{day}.md",
-        reports_root / "run_cards" / f"run_cards_{day}.md",
-        reports_root / "metrics" / f"metrics_{day}.md",
-        operator_root / "daily" / day / "daily_report.md",
-        operator_root / "daily" / f"daily_{day}.md",
-        reports_root / "live_watch" / "live_watch_latest.md",
-    ]
-    out: List[str] = []
-    for p in candidates:
-        if p.exists():
-            out.append(str(p))
-    return out
+    return _inventory_owner._report_inventory(day, reports_root, facade=_r3_sys.modules[__name__])
 
 
 def _to_markdown(
