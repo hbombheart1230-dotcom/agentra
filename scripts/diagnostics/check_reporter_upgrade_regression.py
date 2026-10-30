@@ -24,39 +24,18 @@ CANONICAL_ARTIFACT_KEYS: Tuple[str, ...] = (
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    try:
-        if not path.exists():
-            return {}
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        return payload if isinstance(payload, dict) else {}
-    except Exception:
-        return {}
+    from scripts.diagnostics.reporter_upgrade_read_projection import _read_json as owner
+    return owner(path, facade=_migration_sys.modules[__name__])
 
 
 def _trade_dirs_for_day(reports_root: Path, day: str) -> List[Path]:
-    base = reports_root / "trades" / str(day or "").strip()
-    if not base.exists():
-        return []
-    out = [path for path in base.iterdir() if path.is_dir()]
-    out.sort(key=lambda p: p.name)
-    return out
+    from scripts.diagnostics.reporter_upgrade_read_projection import _trade_dirs_for_day as owner
+    return owner(reports_root, day, facade=_migration_sys.modules[__name__])
 
 
 def _is_closed_trade(bundle: Dict[str, Any]) -> bool:
-    lifecycle = bundle.get("lifecycle") if isinstance(bundle.get("lifecycle"), dict) else {}
-    exit_payload = lifecycle.get("exit") if isinstance(lifecycle.get("exit"), dict) else {}
-    if exit_payload:
-        return True
-    status = str(
-        bundle.get("trade_lifecycle_status")
-        or lifecycle.get("status")
-        or bundle.get("status")
-        or ""
-    ).strip().lower()
-    if status in {"closed", "exited", "sell"}:
-        return True
-    top_exit = bundle.get("exit") if isinstance(bundle.get("exit"), dict) else {}
-    return bool(top_exit.get("available"))
+    from scripts.diagnostics.reporter_upgrade_state_projection import _is_closed_trade as owner
+    return owner(bundle, facade=_migration_sys.modules[__name__])
 
 
 def _section_provenance_all_fallback(report: Dict[str, Any]) -> bool:
@@ -65,109 +44,24 @@ def _section_provenance_all_fallback(report: Dict[str, Any]) -> bool:
 
 
 def _reporter_section_fallback(report: Dict[str, Any]) -> bool:
-    provenance = report.get("section_provenance") if isinstance(report.get("section_provenance"), dict) else {}
-    for key in ("reporter_evaluation", "errors_weaknesses_improvement_points"):
-        item = provenance.get(key) if isinstance(provenance.get(key), dict) else {}
-        source = str(item.get("source") or "").strip().lower()
-        if source in {"fallback", "unknown", "missing"}:
-            return True
-    return False
+    from scripts.diagnostics.reporter_upgrade_state_projection import _reporter_section_fallback as owner
+    return owner(report, facade=_migration_sys.modules[__name__])
 
 
 def _missing_canonical_paths(bundle: Dict[str, Any]) -> bool:
-    artifacts = bundle.get("artifacts") if isinstance(bundle.get("artifacts"), dict) else {}
-    values = [str(artifacts.get(key) or bundle.get(key) or "").strip() for key in CANONICAL_ARTIFACT_KEYS]
-    return any(not value for value in values)
+    from scripts.diagnostics.reporter_upgrade_state_projection import _missing_canonical_paths as owner
+    return owner(bundle, facade=_migration_sys.modules[__name__])
 
 
 def _thin_trace(bundle: Dict[str, Any]) -> bool:
-    scanner_trace = bundle.get("scanner_selection_trace") if isinstance(bundle.get("scanner_selection_trace"), dict) else {}
-    if not scanner_trace:
-        scanner_reason = bundle.get("scanner_reason_human") if isinstance(bundle.get("scanner_reason_human"), dict) else {}
-        scanner_trace = (
-            scanner_reason.get("scanner_selection_trace")
-            if isinstance(scanner_reason.get("scanner_selection_trace"), dict)
-            else {}
-        )
-    ranked = scanner_trace.get("ranked_candidates") if isinstance(scanner_trace.get("ranked_candidates"), list) else []
-    if not ranked:
-        scanner_reason = bundle.get("scanner_reason_human") if isinstance(bundle.get("scanner_reason_human"), dict) else {}
-        ranked = scanner_reason.get("ranked_candidates") if isinstance(scanner_reason.get("ranked_candidates"), list) else []
-
-    monitor_trace = bundle.get("monitor_stop_policy_trace") if isinstance(bundle.get("monitor_stop_policy_trace"), dict) else {}
-    if not monitor_trace:
-        monitor_reason = bundle.get("monitor_reason_human") if isinstance(bundle.get("monitor_reason_human"), dict) else {}
-        monitor_trace = (
-            monitor_reason.get("monitor_stop_policy_trace")
-            if isinstance(monitor_reason.get("monitor_stop_policy_trace"), dict)
-            else {}
-        )
-    scanner_thin = len(ranked) == 0
-    monitor_thin = len(monitor_trace) == 0
-    return scanner_thin or monitor_thin
-
-
+    from scripts.diagnostics.reporter_upgrade_trace_projection import _thin_trace as owner
+    return owner(bundle, facade=_migration_sys.modules[__name__])
 def analyze_day(reports_root: Path, day: str) -> Dict[str, Any]:
-    trade_dirs = _trade_dirs_for_day(reports_root, day)
-    metrics = {
-        "day": day,
-        "total_trades": 0,
-        "closed_trades": 0,
-        "closed_trade_ai_report_exists": 0,
-        "closed_trade_ai_report_missing": 0,
-        "all_fallback_section_count": 0,
-        "reporter_fallback_count": 0,
-        "missing_canonical_path_count": 0,
-        "thin_trace_count": 0,
-    }
-
-    for trade_dir in trade_dirs:
-        metrics["total_trades"] += 1
-        bundle = _read_json(trade_dir / "lifecycle_bundle.json")
-        report = _read_json(trade_dir / "reports" / "ai_trade_report.json")
-
-        if _missing_canonical_paths(bundle):
-            metrics["missing_canonical_path_count"] += 1
-        if _thin_trace(bundle):
-            metrics["thin_trace_count"] += 1
-
-        if not _is_closed_trade(bundle):
-            continue
-        metrics["closed_trades"] += 1
-
-        if report:
-            metrics["closed_trade_ai_report_exists"] += 1
-            if _section_provenance_all_fallback(report):
-                metrics["all_fallback_section_count"] += 1
-            if _reporter_section_fallback(report):
-                metrics["reporter_fallback_count"] += 1
-        else:
-            metrics["closed_trade_ai_report_missing"] += 1
-
-    closed = max(1, int(metrics["closed_trades"]))
-    metrics["ratios"] = {
-        "closed_trade_ai_report_exists_ratio": float(metrics["closed_trade_ai_report_exists"]) / float(closed),
-        "all_fallback_section_ratio": float(metrics["all_fallback_section_count"]) / float(closed),
-        "reporter_fallback_ratio": float(metrics["reporter_fallback_count"]) / float(closed),
-    }
-    return metrics
-
-
+    from scripts.diagnostics.reporter_upgrade_analysis_projection import analyze_day as owner
+    return owner(reports_root, day, facade=_migration_sys.modules[__name__])
 def compare_days(base: Dict[str, Any], target: Dict[str, Any]) -> Dict[str, Any]:
-    keys = (
-        "closed_trades",
-        "closed_trade_ai_report_exists",
-        "closed_trade_ai_report_missing",
-        "all_fallback_section_count",
-        "reporter_fallback_count",
-        "missing_canonical_path_count",
-        "thin_trace_count",
-    )
-    return {
-        "base_day": str(base.get("day") or ""),
-        "target_day": str(target.get("day") or ""),
-        "deltas": {key: int(target.get(key) or 0) - int(base.get(key) or 0) for key in keys},
-    }
+    from scripts.diagnostics.reporter_upgrade_comparison_projection import compare_days as owner
+    return owner(base, target, facade=_migration_sys.modules[__name__])
 
 
 def _parse_args() -> argparse.Namespace:
