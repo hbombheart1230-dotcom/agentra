@@ -1,150 +1,22 @@
-# C02 — Claude A | A-20261031-19 | FAST-3 eight NEW verified SOURCE BODY MOVEs
+# C02 — Claude A | A-20261031-20 | FAST-3 eight NEW verified SOURCE BODY MOVEs
 
-**CANONICAL_HEAD_AT_ISSUANCE:** `58ae1829a470d45120c5777405f2787f1fea255e` · **OLD_ORDER_BLOB:** `aa76914f70432192da088d32978a28424898ecb9` · **A_REMOTE_HEAD_AT_DESIGN:** `3041b41ea51b455971e1fcf609095b60a48daf40` · **SOURCE_BLOB:** `c46916f178b600cef3729d65e197e7e971d851cd`.
+**CANONICAL_HEAD_AT_ISSUANCE:** `c38cc05709700486c59704710b26f9db6db45575` · **OLD_ORDER_BLOB:** `b005ac47c17274054ed1d73f45e38b492504ee24` · **A_REMOTE_HEAD_AT_DESIGN:** `d55f50fe3830e768fbdf01d595739095b317862d` · **SOURCE_BLOB:** `1758abc17594e8c1ecf99810a47a207f340a2c39`.
 
-#11 6541615114 and remote A source/Owner/test evidence: A-20261031-18 A1–A8 **REMOTE_DONE 8/8**, normal unittest 8/8 exit0, integrated via C04 5d7ef926 and C05 accepted. DO NOT repeat prior profitability-recovery tasks or prior tests. #12 6541579406: B-18 0/8, B remote f5e41ab6 unchanged, B C01 remains valid and MUST NOT be replaced by A. #32 no new comment after 6520075820; RunLab runtime exit255, RUN_SOURCE_SHA=UNKNOWN, operational SAFETY_HOLD.
+**C03 new delta (20h):** #11 `6542146568`: A-20261031-19 A1–A8 actual BODY MOVEs REMOTE_DONE 8/8, actor push `d55f50fe3830e768fbdf01d595739095b317862d`, normal `python -m unittest tests/test_p15_rf035_19h_quant_shadow_owners.py` exit0 8/8. C04 exact integration `d7f5684207fabb307e8e00d4c8211351b1f7e8a0` and C05 scoped acceptance; RF-035 already DONE, RF_DONE_DELTA=0. No repeat of A19 or same-SHA tests. #12 `6542067869`: B18 B7/B8 REMOTE_DONE 2/8, B1–B6 still safe READY; C01 separately trimmed by C03, no A/B cross-work. #32 unchanged since `6520075820`, RunLab exit255/RUN_SOURCE_SHA UNKNOWN; do not operate runtime. Emergency branch no new observed HEAD.
 
-**Single-document execution:** Read only THIS C02. Pin CANONICAL_HEAD, ORDER_BLOB, A_REMOTE_HEAD, ORDER_ID. Implement all A1–A8 independently in this order, continuing after any individual blocker. Do not read D00/RF/queue/C03/handoff or self-select reserve. The new C02 does not cancel an already-started older A order retroactively. A only edits its own branch code/tests. No docs/RF/STATUS/C04/C05 or other Actor files, force push, frozen oracle, workflow or live effects.
+**One-file execution contract:** Claude A reads THIS C02 only, pins CANONICAL_HEAD/ORDER_BLOB/A_REMOTE_HEAD/ORDER_ID, executes **all A1–A8** independently; a blocked item does not block the others. No D00, RF details, queue, C03 or handoff reading; no self-selection of FUTURE RESERVE. A newer C02 does not retroactively cancel an already-started order. A edits/pushes only A branch code and targeted test, not docs, RF, STATUS, C04/C05, B branch or operational files.
 
-**Verified scope:** RF-035, Claude A exclusive reporting SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py`; A and integration exact SOURCE blob `c46916f178b600cef3729d65e197e7e971d851cd` matched. Eight distinct TARGET paths below and the new test file returned **404 on both A and integration**. No B overlap. All eight are existing read-only shadow candidate *report/evaluation* helpers, not the live quant-enforcement implementation. Move each exact existing SOURCE function BODY (not a copy or a rename-only change) to the specified new single Owner; SOURCE retains original public/private signature, annotations and a thin delegation wrapper. Preserve output bytes/order, dict/list identity where relevant, exception types, call-time monkeypatch, generator laziness. TARGET never imports SOURCE; use keyword-only `facade` for names looked up from SOURCE globals and SOURCE passes `sys.modules[__name__]` (import sys under collision-free alias if needed). For pure functions without module globals, do not add unnecessary facade. Import annotations in Owner under `from __future__ import annotations`, avoid evaluating `facade.*` in annotations. Do not change any callers unless a verified thin-wrapper/monkeypatch compatibility defect requires a narrowly scoped test-only fix.
+**Verified scope:** RF-035 exclusively CLAUDE_A; actual SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py` at blob `1758abc17594e8c1ecf99810a47a207f340a2c39` matched A and integration after A19. The 8 TARGET files below plus `tests/test_p15_rf035_20h_quant_shadow_owners.py` were **404 on both A and integration**. The six future-reserve TARGETs were also 404 both refs. All 8 SOURCE function bodies were inspected at A remote HEAD and are still original calculation bodies, not prior thin wrappers; disjoint from A19 and B. These are **read-only shadow reporting/evaluation** helpers, never live entry enforcement.
 
-**Safety:** fake in-memory inputs and TemporaryDirectory only; never invoke actual shadow pipeline, entry enforcement, real reports, broker/order/Guard/Step5C/UEF/RunLab, live network, operational State/DB, runtime/deploy or real CLI. No trading policy change. Use scoped normal `python -m unittest tests/test_p15_rf035_19h_quant_shadow_owners.py -v` (or scoped pytest) **exit0** after all items, with 8 per-item golden preimage→wrapper→Owner parity checks, negative/exception checks, AST actual BODY removal/thin-wrapper check and post-import facade monkeypatch seams. `python -m py_compile` on SOURCE and all eight TARGET modules before normal test. Each item below names the exact test case and input→expected; make actual test implementations in the one new test file, not placeholder assertions. Preserve baseline golden results from original source blob. Report any existing unrelated failures separately, never invent PASS. Git commit/push only A code+test on `work/p15-a-reporter-pure-20261021`, non-force, re-fetch A remote HEAD and SOURCE/8 Owners/test blobs; Git authentication failure is PUSH_BLOCKED only (continue remaining safe items). C04 integration and C05 G1/G2/G3/DONE are separate, not A/C03 duties.
+**Implementation:** Move each exact Python BODY below into named NEW A-exclusive Owner module; leave original signature/annotations in SOURCE as a thin delegating wrapper (no duplicated computation). Owner must NOT import SOURCE. For call-time globals use `def fn(..., *, facade):` in Owner and SOURCE delegates with `facade=_p15_sys.modules[__name__]` (`import sys as _p15_sys` only if needed). Resolve specified names via `facade.name` at invocation, not captured imports; preserve monkeypatch seams, call order, dict copy/identity, exceptions, output bytes. Use `from __future__ import annotations` in new Owner modules; keep original public SOURCE signatures unchanged. Do not modify callers unless a narrow verified seam defect requires test-only correction.
 
-**Allowed changed files:** `libs/reporting/quant_shadow_candidate_evaluation.py`, exactly the eight new `libs/reporting/quant_shadow_*_projection.py` TARGET paths below, and `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Do not touch the six FUTURE RESERVE targets.
+**Safety:** fake in-memory mappings and TemporaryDirectory only; never invoke full shadow pipeline, live entry/order, broker, Guard/Step5C/UEF, RunLab, operational State/DB, network, deploy, real CLI, protected policies or frozen oracle. No strategy behavior changes. First obtain original-preimage golden for each item, then assert original vs SOURCE wrapper vs Owner parity, negative/exception behavior, post-import facade monkeypatch, and AST proof that SOURCE computation BODY was removed (one-line originals require Owner-body verification, not AST alone). Create **actual tests** `tests/test_p15_rf035_20h_quant_shadow_owners.py` with named `test_a1_...` through `test_a8_...`. Run `python -m py_compile` on SOURCE and all 8 TARGET files, then normal `python -m unittest tests/test_p15_rf035_20h_quant_shadow_owners.py -v` (or scoped pytest) **exit0**. No blanket -O/full-peer/full-suite/hosted-CI requirement. Record actual exit, pass count, SOURCE before/after LOC, Owner/test blobs. Commit/push only A code+test to `work/p15-a-reporter-pure-20261021`, non-force, re-fetch A HEAD and every SOURCE/Owner/test blob; if HTTPS auth fails mark PUSH_BLOCKED and continue safe items, use only previously approved exact-tree expected-head lease if available. C04 G3/C05 DONE are separate.
 
-## A1 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_bool @ L32
-**TARGET:** `libs/reporting/quant_shadow_scalar_projection.py::_bool` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
-```python
-def _bool(value: Any) -> bool:
-    if isinstance(value, bool):
-        return value
-    if isinstance(value, (int, float)):
-        return bool(value)
-    return str(value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
-```
-**Wrapper / callers / monkeypatch:** pure builtin conversion, no facade required; retain bool-before-number precedence. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_scalar_projection.py::_bool`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
-**Normal targeted test:** `test_a1_bool` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: True→True; 'YES'→True; 'off'→False; 0→False. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A2.
+**Allowed changed files:** `libs/reporting/quant_shadow_candidate_evaluation.py`, exactly the eight A1–A8 TARGETs below, and `tests/test_p15_rf035_20h_quant_shadow_owners.py`. Do not implement reserve R1–R6 in this order.
 
-## A2 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_iter_days @ L51
-**TARGET:** `libs/reporting/quant_shadow_day_projection.py::_iter_days` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
-```python
-def _iter_days(start: str, end: str) -> Iterable[str]:
-    start_date = date.fromisoformat(str(start)[:10])
-    end_date = date.fromisoformat(str(end)[:10])
-    current = start_date
-    while current <= end_date:
-        yield current.isoformat()
-        current += timedelta(days=1)
-```
-**Wrapper / callers / monkeypatch:** date/timedelta through call-time facade; SOURCE generator wrapper MUST use `yield from Owner._iter_days(...,facade=sys.modules[__name__])`, never `return Owner...`; retain laziness/ValueError. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_day_projection.py::_iter_days`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
-**Normal targeted test:** `test_a2_iter_days` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: '2026-10-30'..'2026-10-31'→['2026-10-30','2026-10-31']; reversed range→[]; malformed date→ValueError. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A3.
-
-## A3 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_top_counter @ L261
-**TARGET:** `libs/reporting/quant_shadow_counter_projection.py::_top_counter` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
-```python
-def _top_counter(counter: Counter[str], *, limit: int = 8) -> List[Dict[str, Any]]:
-    return [
-        {"name": name, "count": count}
-        for name, count in counter.most_common(limit)
-        if name
-    ]
-```
-**Wrapper / callers / monkeypatch:** pure Counter input; no facade required; preserve most_common tie order and list/dict identity semantics. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_counter_projection.py::_top_counter`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
-**Normal targeted test:** `test_a3_top_counter` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: Counter({'a':2,'b':1}),limit=1→[{'name':'a','count':2}]; empty→[]. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A4.
-
-## A4 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_row_blockers @ L269
-**TARGET:** `libs/reporting/quant_shadow_blocker_projection.py::_row_blockers` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
-```python
-def _row_blockers(row: Mapping[str, Any]) -> List[str]:
-    blockers: List[str] = []
-    for value in (row.get("blockers"),):
-        if isinstance(value, list):
-            blockers.extend(_text(item) for item in value if _text(item))
-    decision = row.get("entry_quant_decision")
-    if isinstance(decision, Mapping):
-        value = decision.get("blockers")
-        if isinstance(value, list):
-            blockers.extend(_text(item) for item in value if _text(item))
-    return blockers
-```
-**Wrapper / callers / monkeypatch:** resolve `_text` and `Mapping` through call-time facade, preserve nested blocker order/duplicates and repeated `_text` calls. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_blocker_projection.py::_row_blockers`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
-**Normal targeted test:** `test_a4_row_blockers` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: {'blockers':['a','']}→['a']; {'entry_quant_decision':{'blockers':['b','b']}}→['b','b']. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A5.
-
-## A5 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_count_reason @ L393
-**TARGET:** `libs/reporting/quant_shadow_reason_projection.py::_count_reason` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
-```python
-def _count_reason(candidates: Sequence[Mapping[str, Any]], names: set[str]) -> int:
-    total = 0
-    for row in candidates:
-        reason = _text(row.get("reason"))
-        primary = _text(row.get("primary_failure_axis"))
-        cost_floor = _cost_floor_state(row)
-        if reason in names or primary in names or cost_floor in names:
-            total += 1
-            continue
-        blockers = _row_blockers(row)
-        if any(blocker in names for blocker in blockers):
-            total += 1
-    return total
-```
-**Wrapper / callers / monkeypatch:** resolve `_text`, `_cost_floor_state`, `_row_blockers` via call-time facade; preserve early-continue and per-row counting once. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_reason_projection.py::_count_reason`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
-**Normal targeted test:** `test_a5_count_reason` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: [{'reason':'bad'}],{'bad'}→1; [],{'bad'}→0; nested blocker matching counts once. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A6.
-
-## A6 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_runner_up_risk_count @ L408
-**TARGET:** `libs/reporting/quant_shadow_runnerup_projection.py::_runner_up_risk_count` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
-```python
-def _runner_up_risk_count(candidates: Sequence[Mapping[str, Any]]) -> int:
-    total = 0
-    for row in candidates:
-        if _text(row.get("shadow_role")) != "runner_up_evaluated":
-            continue
-        if _bool(row.get("would_enter")):
-            total += 1
-            continue
-        if _bool(row.get("runner_up_quality_blocked")) or _bool(row.get("weak_fallback_blocked")):
-            total += 1
-            continue
-        reason = _text(row.get("reason"))
-        if reason in {"runner_up_quality_gate_failed", "weak_fallback_pullback"}:
-            total += 1
-    return total
-```
-**Wrapper / callers / monkeypatch:** resolve `_text`, `_bool` via call-time facade; preserve ordered early-continues, role gate and duplicate-free per-row count. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_runnerup_projection.py::_runner_up_risk_count`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
-**Normal targeted test:** `test_a6_runner_up_risk_count` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: [{'shadow_role':'runner_up_evaluated','would_enter':True}]→1; [{'shadow_role':'other','would_enter':True}]→0. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A7.
-
-## A7 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_mean @ L561
-**TARGET:** `libs/reporting/quant_shadow_mean_projection.py::_mean` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
-```python
-def _mean(values: Sequence[float]) -> float | None:
-    clean = [float(value) for value in values if value is not None]
-    if not clean:
-        return None
-    return round(sum(clean) / float(len(clean)), 4)
-```
-**Wrapper / callers / monkeypatch:** pure float/sum/round; no facade; retain None filtering and float conversion exceptions. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_mean_projection.py::_mean`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
-**Normal targeted test:** `test_a7_mean` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: []→None; [1.0,None,3.0]→2.0; ['bad']→ValueError. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A8.
-
-## A8 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_scorecard_return_signal @ L685
-**TARGET:** `libs/reporting/quant_shadow_scorecard_signal_projection.py::_scorecard_return_signal` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
-```python
-def _scorecard_return_signal(row: Mapping[str, Any]) -> float | None:
-    for key in ("avg_return_15m_pct", "avg_return_5m_pct", "avg_return_30m_pct", "avg_return_3m_pct"):
-        value = row.get(key)
-        if value not in (None, ""):
-            try:
-                return float(value)
-            except Exception:
-                continue
-    return None
-```
-**Wrapper / callers / monkeypatch:** pure mapping/float conversion; no facade; retain key priority and fallback after ValueError. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_scorecard_signal_projection.py::_scorecard_return_signal`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
-**Normal targeted test:** `test_a8_scorecard_return_signal` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: {'avg_return_15m_pct':'0.2'}→0.2; {'avg_return_15m_pct':'bad','avg_return_5m_pct':'0.4'}→0.4; {}→None. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue report/push.
-
-## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY, NOT EXECUTABLE
-Six additional RF-035 Claude A-exclusive SOURCE BODY candidates below were independently inspected on A and integration at blob `c46916f178b600cef3729d65e197e7e971d851cd`; each new TARGET was 404 on both refs. They are disjoint from A1–A8 and B. **Not authorized for implementation without new C03 order**. A1–A8 will alter this same SOURCE blob, so C03 must recheck current actor HEAD/blob and TARGET absence before any promotion.
-
-### R1 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_cost_floor_state` @ L282 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
-**TARGET:** `libs/reporting/quant_shadow_cost_floor_projection.py::_cost_floor_state` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+## A1 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_cost_floor_state` @ L269 | SOURCE_BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_cost_floor_projection.py::_cost_floor_state` (NEW, 404 A/integration, A-exclusive).
+**Exact SOURCE computation BODY to MOVE (not copy/KEEP/test-only):**
 ```python
 def _cost_floor_state(row: Mapping[str, Any]) -> str:
     direct = _text(row.get("entry_quant_cost_floor_state"))
@@ -164,10 +36,12 @@ def _cost_floor_state(row: Mapping[str, Any]) -> str:
             return _text(factors.get("cost_floor_state"))
     return ""
 ```
-**Safety/patch:** read-only shadow reporting/evaluation, no live effects; _text/Mapping late-bound via facade; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'entry_quant_cost_floor_state':'safe'}→'safe'; {}→''; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+**Thin wrapper/callers/monkeypatch:** facade._text and facade.Mapping at invocation; preserve direct→decision.cost_edge→snapshot precedence and early return. SOURCE original signature remains; delegate to Owner at call time; preserve original output/exception semantics, no Owner→SOURCE import or duplicate BODY.
+**Normal targeted test:** `test_a1_cost_floor_state` in `tests/test_p15_rf035_20h_quant_shadow_owners.py`; input→expected: {'entry_quant_cost_floor_state':'safe'}→'safe'; {'entry_quant_decision':{'cost_edge':{'cost_floor_state':'hold'}}}→'hold'; {}→''. Compare preimage golden, wrapper, Owner; negative and call-time patch seams; AST BODY removal. If BLOCKED record exact first reason and continue **A2**.
 
-### R2 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_quant_decision` @ L301 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
-**TARGET:** `libs/reporting/quant_shadow_entry_decision_projection.py::_entry_quant_decision` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+## A2 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_quant_decision` @ L288 | SOURCE_BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_entry_decision_projection.py::_entry_quant_decision` (NEW, 404 A/integration, A-exclusive).
+**Exact SOURCE computation BODY to MOVE (not copy/KEEP/test-only):**
 ```python
 def _entry_quant_decision(row: Mapping[str, Any]) -> str:
     decision = row.get("entry_quant_decision")
@@ -175,10 +49,12 @@ def _entry_quant_decision(row: Mapping[str, Any]) -> str:
         return _text(decision.get("decision"))
     return ""
 ```
-**Safety/patch:** read-only shadow reporting/evaluation, no live effects; _text/Mapping late-bound via facade; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'entry_quant_decision':{'decision':'entry_ready'}}→'entry_ready'; {}→''; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+**Thin wrapper/callers/monkeypatch:** facade._text and facade.Mapping at invocation; preserve absent/non-Mapping return empty string. SOURCE original signature remains; delegate to Owner at call time; preserve original output/exception semantics, no Owner→SOURCE import or duplicate BODY.
+**Normal targeted test:** `test_a2_entry_quant_decision` in `tests/test_p15_rf035_20h_quant_shadow_owners.py`; input→expected: {'entry_quant_decision':{'decision':'entry_ready'}}→'entry_ready'; {}→''. Compare preimage golden, wrapper, Owner; negative and call-time patch seams; AST BODY removal. If BLOCKED record exact first reason and continue **A3**.
 
-### R3 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_tactic_id` @ L308 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
-**TARGET:** `libs/reporting/quant_shadow_tactic_projection.py::_tactic_id` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+## A3 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_tactic_id` @ L295 | SOURCE_BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_tactic_projection.py::_tactic_id` (NEW, 404 A/integration, A-exclusive).
+**Exact SOURCE computation BODY to MOVE (not copy/KEEP/test-only):**
 ```python
 def _tactic_id(row: Mapping[str, Any]) -> str:
     direct = _text(row.get("quant_tactic_id") or row.get("tactic_id"))
@@ -194,10 +70,12 @@ def _tactic_id(row: Mapping[str, Any]) -> str:
         return _text(snapshot.get("tactic_id"))
     return ""
 ```
-**Safety/patch:** read-only shadow reporting/evaluation, no live effects; _text/Mapping late-bound via facade; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'quant_tactic_id':'T1'}→'T1'; {'entry_quant_decision':{'tactic_id':'T2'}}→'T2'; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+**Thin wrapper/callers/monkeypatch:** facade._text and facade.Mapping at invocation; preserve quant_tactic_id→tactic_id→decision→snapshot priority. SOURCE original signature remains; delegate to Owner at call time; preserve original output/exception semantics, no Owner→SOURCE import or duplicate BODY.
+**Normal targeted test:** `test_a3_tactic_id` in `tests/test_p15_rf035_20h_quant_shadow_owners.py`; input→expected: {'quant_tactic_id':'T1'}→'T1'; {'entry_quant_decision':{'tactic_id':'T2'}}→'T2'; {}→''. Compare preimage golden, wrapper, Owner; negative and call-time patch seams; AST BODY removal. If BLOCKED record exact first reason and continue **A4**.
 
-### R4 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_tactic_suitability_tier` @ L323 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
-**TARGET:** `libs/reporting/quant_shadow_tactic_tier_projection.py::_tactic_suitability_tier` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+## A4 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_tactic_suitability_tier` @ L310 | SOURCE_BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_tactic_tier_projection.py::_tactic_suitability_tier` (NEW, 404 A/integration, A-exclusive).
+**Exact SOURCE computation BODY to MOVE (not copy/KEEP/test-only):**
 ```python
 def _tactic_suitability_tier(row: Mapping[str, Any]) -> str:
     direct = _text(row.get("tactic_suitability_tier"))
@@ -212,25 +90,155 @@ def _tactic_suitability_tier(row: Mapping[str, Any]) -> str:
                 return tier
     return ""
 ```
-**Safety/patch:** read-only shadow reporting/evaluation, no live effects; _text/Mapping late-bound via facade; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'tactic_suitability_tier':'high'}→'high'; {}→''; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+**Thin wrapper/callers/monkeypatch:** facade._text and facade.Mapping at invocation; preserve direct tier priority over nested tier. SOURCE original signature remains; delegate to Owner at call time; preserve original output/exception semantics, no Owner→SOURCE import or duplicate BODY.
+**Normal targeted test:** `test_a4_tactic_suitability_tier` in `tests/test_p15_rf035_20h_quant_shadow_owners.py`; input→expected: {'tactic_suitability_tier':'high'}→'high'; {'entry_quant_decision':{'tactic_suitability':{'tier':'low'}}}→'low'; {}→''. Compare preimage golden, wrapper, Owner; negative and call-time patch seams; AST BODY removal. If BLOCKED record exact first reason and continue **A5**.
 
-### R5 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_forward_base` @ L337 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
-**TARGET:** `libs/reporting/quant_shadow_forward_base_projection.py::_forward_base` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+## A5 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_forward_base` @ L324 | SOURCE_BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_forward_base_projection.py::_forward_base` (NEW, 404 A/integration, A-exclusive).
+**Exact SOURCE computation BODY to MOVE (not copy/KEEP/test-only):**
 ```python
 def _forward_base(row: Mapping[str, Any]) -> Dict[str, Any]:
     base = row.get("shadow_forward_base")
     return dict(base) if isinstance(base, Mapping) else {}
 ```
-**Safety/patch:** read-only shadow reporting/evaluation, no live effects; Mapping late-bound via facade; preserve dict copy; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'shadow_forward_base':{'x':1}}→{'x':1}; {}→{}; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+**Thin wrapper/callers/monkeypatch:** facade.Mapping at invocation; preserve dict copy, not alias, and non-Mapping empty fallback. SOURCE original signature remains; delegate to Owner at call time; preserve original output/exception semantics, no Owner→SOURCE import or duplicate BODY.
+**Normal targeted test:** `test_a5_forward_base` in `tests/test_p15_rf035_20h_quant_shadow_owners.py`; input→expected: {'shadow_forward_base':{'a':1}}→{'a':1} (distinct dict identity); {}→{}. Compare preimage golden, wrapper, Owner; negative and call-time patch seams; AST BODY removal. If BLOCKED record exact first reason and continue **A6**.
 
-### R6 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_forward_outcome` @ L342 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
-**TARGET:** `libs/reporting/quant_shadow_forward_outcome_projection.py::_forward_outcome` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+## A6 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_forward_outcome` @ L329 | SOURCE_BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_forward_outcome_projection.py::_forward_outcome` (NEW, 404 A/integration, A-exclusive).
+**Exact SOURCE computation BODY to MOVE (not copy/KEEP/test-only):**
 ```python
 def _forward_outcome(row: Mapping[str, Any]) -> Dict[str, Any]:
     outcome = row.get("shadow_forward_outcome")
     return dict(outcome) if isinstance(outcome, Mapping) else {}
 ```
-**Safety/patch:** read-only shadow reporting/evaluation, no live effects; Mapping late-bound via facade; preserve dict copy; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'shadow_forward_outcome':{'available':True}}→{'available':True}; {}→{}; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+**Thin wrapper/callers/monkeypatch:** facade.Mapping at invocation; preserve dict copy, not alias, and non-Mapping empty fallback. SOURCE original signature remains; delegate to Owner at call time; preserve original output/exception semantics, no Owner→SOURCE import or duplicate BODY.
+**Normal targeted test:** `test_a6_forward_outcome` in `tests/test_p15_rf035_20h_quant_shadow_owners.py`; input→expected: {'shadow_forward_outcome':{'checkpoints':{}}}→{'checkpoints':{}} (distinct dict identity); {}→{}. Compare preimage golden, wrapper, Owner; negative and call-time patch seams; AST BODY removal. If BLOCKED record exact first reason and continue **A7**.
+
+## A7 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_shape` @ L388 | SOURCE_BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_entry_shape_projection.py::_entry_shape` (NEW, 404 A/integration, A-exclusive).
+**Exact SOURCE computation BODY to MOVE (not copy/KEEP/test-only):**
+```python
+def _entry_shape(row: Mapping[str, Any]) -> str:
+    reason = _text(row.get("reason"))
+    primary = _text(row.get("primary_failure_axis"))
+    if reason in {
+        "pullback_not_mature",
+        "pullback_below_vwap_reclaim_not_ready",
+        "pullback_structure_above_vwap_with_volume_confirmation",
+    } or primary == "pullback_structure":
+        return "pullback"
+    if reason in {
+        "below_vwap_reclaim_not_ready",
+        "pullback_below_vwap_reclaim_not_ready",
+    } or primary == "vwap_relationship":
+        return "vwap_reclaim"
+    if reason in {
+        "breakout_above_recent_high_with_vwap_hold_and_volume_confirmation",
+        "breakout_above_recent_high_with_vwap_structure_confirmation",
+        "breakout_not_ready",
+    } or primary == "breakout_readiness":
+        return "breakout"
+    if reason in {"volume_confirmation_missing", "volume_insufficient"} or primary == "volume_confirmation":
+        return "volume_confirmation"
+    if reason == "human_chart_sanity_guard_blocked" or primary == "human_chart_sanity":
+        return "human_chart_sanity"
+    return "other"
+```
+**Thin wrapper/callers/monkeypatch:** facade._text at invocation; preserve exact ordered reason/primary branch precedence; diagnostic classification only, no live policy. SOURCE original signature remains; delegate to Owner at call time; preserve original output/exception semantics, no Owner→SOURCE import or duplicate BODY.
+**Normal targeted test:** `test_a7_entry_shape` in `tests/test_p15_rf035_20h_quant_shadow_owners.py`; input→expected: {'reason':'breakout_not_ready'}→'breakout'; {'primary_failure_axis':'volume_confirmation'}→'volume_confirmation'; {}→'other'. Compare preimage golden, wrapper, Owner; negative and call-time patch seams; AST BODY removal. If BLOCKED record exact first reason and continue **A8**.
+
+## A8 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_checkpoint_value` @ L528 | SOURCE_BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_checkpoint_projection.py::_checkpoint_value` (NEW, 404 A/integration, A-exclusive).
+**Exact SOURCE computation BODY to MOVE (not copy/KEEP/test-only):**
+```python
+def _checkpoint_value(row: Mapping[str, Any], checkpoint: str, metric: str) -> float | None:
+    outcome = _forward_outcome(row)
+    checkpoints = outcome.get("checkpoints")
+    if not isinstance(checkpoints, Mapping):
+        return None
+    payload = checkpoints.get(checkpoint)
+    if not isinstance(payload, Mapping) or _text(payload.get("status")) != "observed":
+        return None
+    value = payload.get(metric)
+    try:
+        if value in (None, ""):
+            return None
+        return float(value)
+    except Exception:
+        return None
+```
+**Thin wrapper/callers/monkeypatch:** facade._forward_outcome, facade._text, facade.Mapping at invocation; preserve observed-only status, numeric coercion and exception→None. SOURCE original signature remains; delegate to Owner at call time; preserve original output/exception semantics, no Owner→SOURCE import or duplicate BODY.
+**Normal targeted test:** `test_a8_checkpoint_value` in `tests/test_p15_rf035_20h_quant_shadow_owners.py`; input→expected: {'shadow_forward_outcome':{'checkpoints':{'5m':{'status':'observed','ret':'1.25'}}}},'5m','ret'→1.25; {'shadow_forward_outcome':{'checkpoints':{'5m':{'status':'pending','ret':3}}}},'5m','ret'→None. Compare preimage golden, wrapper, Owner; negative and call-time patch seams; AST BODY removal. If BLOCKED record exact first reason and continue **report/push**.
+
+## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY, NOT EXECUTABLE
+All six are additional, distinct RF-035 Claude A SOURCE functions on current A/integration SOURCE blob `1758abc17594e8c1ecf99810a47a207f340a2c39`; all six proposed TARGETs returned 404 on both refs; read-only reporting calculations, no B collision. They are **NOT authorized for implementation** until C03 issues a new C02 and rechecks A HEAD, SOURCE body/blob, TARGET absence, safety and caller seams after A1–A8 change this SOURCE. Tests below are design fixtures only.
+
+### R1 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_opening_probe` @ L346 | BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_opening_probe_projection.py::_opening_probe` (404 A/integration; A-exclusive, future only).
+**Verified BODY (DESIGN ONLY):**
+```python
+def _opening_probe(row: Mapping[str, Any]) -> Dict[str, Any]:
+    probe = row.get("opening_momentum_probe_shadow")
+    return dict(probe) if isinstance(probe, Mapping) else {}
+```
+**Safety/patch:** facade.Mapping; dict copy from opening_momentum_probe_shadow. No real pipeline, fake in-memory only; SOURCE thin wrapper and call-time seam when later authorized. **Future normal test input→expected:** {'opening_momentum_probe_shadow':{'would_probe':1}}→{'would_probe':1}; {}→{}; original golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, no implementation now.
+
+### R2 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_opening_probe_would_enter` @ L351 | BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_opening_probe_enter_projection.py::_opening_probe_would_enter` (404 A/integration; A-exclusive, future only).
+**Verified BODY (DESIGN ONLY):**
+```python
+def _opening_probe_would_enter(row: Mapping[str, Any]) -> bool:
+    if row.get("opening_momentum_probe_would_enter") not in (None, ""):
+        return _bool(row.get("opening_momentum_probe_would_enter"))
+    return _bool(_opening_probe(row).get("would_probe"))
+```
+**Safety/patch:** facade._bool and facade._opening_probe at invocation; direct field overrides nested fallback. No real pipeline, fake in-memory only; SOURCE thin wrapper and call-time seam when later authorized. **Future normal test input→expected:** {'opening_momentum_probe_would_enter':'yes'}→True; {'opening_momentum_probe_shadow':{'would_probe':1}}→True; {}→False; original golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, no implementation now.
+
+### R3 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_largecap_surge_probe` @ L357 | BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_largecap_probe_projection.py::_largecap_surge_probe` (404 A/integration; A-exclusive, future only).
+**Verified BODY (DESIGN ONLY):**
+```python
+def _largecap_surge_probe(row: Mapping[str, Any]) -> Dict[str, Any]:
+    probe = row.get("opening_largecap_surge_shadow")
+    return dict(probe) if isinstance(probe, Mapping) else {}
+```
+**Safety/patch:** facade.Mapping; dict copy from opening_largecap_surge_shadow. No real pipeline, fake in-memory only; SOURCE thin wrapper and call-time seam when later authorized. **Future normal test input→expected:** {'opening_largecap_surge_shadow':{'would_probe':1}}→{'would_probe':1}; {}→{}; original golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, no implementation now.
+
+### R4 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_largecap_surge_would_enter` @ L362 | BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_largecap_probe_enter_projection.py::_largecap_surge_would_enter` (404 A/integration; A-exclusive, future only).
+**Verified BODY (DESIGN ONLY):**
+```python
+def _largecap_surge_would_enter(row: Mapping[str, Any]) -> bool:
+    if row.get("opening_largecap_surge_would_enter") not in (None, ""):
+        return _bool(row.get("opening_largecap_surge_would_enter"))
+    return _bool(_largecap_surge_probe(row).get("would_probe"))
+```
+**Safety/patch:** facade._bool and facade._largecap_surge_probe at invocation; direct overrides nested. No real pipeline, fake in-memory only; SOURCE thin wrapper and call-time seam when later authorized. **Future normal test input→expected:** {'opening_largecap_surge_would_enter':True}→True; {'opening_largecap_surge_shadow':{'would_probe':1}}→True; {}→False; original golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, no implementation now.
+
+### R5 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_below_vwap_reclaim_observation` @ L450 | BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_below_vwap_projection.py::_below_vwap_reclaim_observation` (404 A/integration; A-exclusive, future only).
+**Verified BODY (DESIGN ONLY):**
+```python
+def _below_vwap_reclaim_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
+    payload = row.get("below_vwap_reclaim_observation")
+    if isinstance(payload, Mapping):
+        return dict(payload)
+    return classify_below_vwap_reclaim_observation(row)
+```
+**Safety/patch:** facade.Mapping and facade.classify_below_vwap_reclaim_observation at invocation; fake payload avoids live pipeline. No real pipeline, fake in-memory only; SOURCE thin wrapper and call-time seam when later authorized. **Future normal test input→expected:** {'below_vwap_reclaim_observation':{'state':'x'}}→{'state':'x'}; fallback only with patched fake classifier; original golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, no implementation now.
+
+### R6 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_lane_observation` @ L476 | BLOB=`1758abc17594e8c1ecf99810a47a207f340a2c39`
+**TARGET:** `libs/reporting/quant_shadow_entry_lane_projection.py::_entry_lane_observation` (404 A/integration; A-exclusive, future only).
+**Verified BODY (DESIGN ONLY):**
+```python
+def _entry_lane_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
+    payload = row.get("entry_lane_observation")
+    if isinstance(payload, Mapping):
+        return dict(payload)
+    return build_entry_lane_observation(row)
+```
+**Safety/patch:** facade.Mapping and facade.build_entry_lane_observation at invocation; fake payload avoids live pipeline. No real pipeline, fake in-memory only; SOURCE thin wrapper and call-time seam when later authorized. **Future normal test input→expected:** {'entry_lane_observation':{'lane':'L'}}→{'lane':'L'}; fallback only with patched fake builder; original golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, no implementation now.
 
 ## REPORT / PUSH
-#11: `ORDER_ID=A-20261031-19 | CANONICAL_HEAD | ORDER_BLOB | A_REMOTE_BEFORE→AFTER | A1..A8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Measure times, do not infer. Only actual remote code+test G1/G2; C03 documentation update is not G1/G2/G3, C04 G3 and C05 DONE separate. RunLab remains SAFETY_HOLD.
+#11 comment: `ORDER_ID=A-20261031-20 | CANONICAL_HEAD | ORDER_BLOB | A_REMOTE_BEFORE→AFTER | A1..A8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. START/END measured only, never inferred from comment time. C03 document supply is NOT code G1/G2/G3 or new RF_DONE. RunLab SOURCE_UNKNOWN/exit255 remains SAFETY_HOLD.
