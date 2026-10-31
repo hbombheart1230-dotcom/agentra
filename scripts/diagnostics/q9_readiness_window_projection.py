@@ -1,0 +1,5 @@
+from pathlib import Path
+from typing import Any
+def _q9_checks(reports_root:Path,day:str,*,facade:Any)->dict[str,Any]:
+ q9_path=reports_root/'operator_summary'/'daily'/day/'q9_decision_windows.json';validity_path=reports_root/'evaluation'/'daily'/day/'q9_day_validity.json';q9=facade._read_json(q9_path);validity=facade._read_json(validity_path);windows=[r for r in q9.get('windows') or [] if isinstance(r,dict)];times=[p for p in (facade._parse_dt(r.get('generated_at')) for r in windows) if p is not None];first=min(times) if times else None;last=max(times) if times else None
+ return {'artifact':facade._artifact(q9_path),'validity_artifact':facade._artifact(validity_path),'window_count':len(windows),'first_window_kst':first.isoformat() if first else '','last_window_kst':last.isoformat() if last else '','day_validity_status':validity.get('status') or '','counts_as_formal_day':bool(validity.get('counts_as_formal_day')),'validity_blockers':validity.get('blockers') or [],'validity_warnings':validity.get('warnings') or []}

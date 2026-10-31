@@ -109,25 +109,8 @@ def _artifact(path: Path) -> dict[str, Any]:
 
 
 def _q9_checks(reports_root: Path, day: str) -> dict[str, Any]:
-    q9_path = reports_root / "operator_summary" / "daily" / day / "q9_decision_windows.json"
-    validity_path = reports_root / "evaluation" / "daily" / day / "q9_day_validity.json"
-    q9 = _read_json(q9_path)
-    validity = _read_json(validity_path)
-    windows = [row for row in q9.get("windows") or [] if isinstance(row, dict)]
-    times = [parsed for parsed in (_parse_dt(row.get("generated_at")) for row in windows) if parsed is not None]
-    first = min(times) if times else None
-    last = max(times) if times else None
-    return {
-        "artifact": _artifact(q9_path),
-        "validity_artifact": _artifact(validity_path),
-        "window_count": len(windows),
-        "first_window_kst": first.isoformat() if first else "",
-        "last_window_kst": last.isoformat() if last else "",
-        "day_validity_status": validity.get("status") or "",
-        "counts_as_formal_day": bool(validity.get("counts_as_formal_day")),
-        "validity_blockers": validity.get("blockers") or [],
-        "validity_warnings": validity.get("warnings") or [],
-    }
+    from scripts.diagnostics.q9_readiness_window_projection import _q9_checks as owner
+    return owner(reports_root, day, facade=sys.modules[__name__])
 
 
 def _baseline_artifacts(reports_root: Path, day: str) -> dict[str, Any]:
