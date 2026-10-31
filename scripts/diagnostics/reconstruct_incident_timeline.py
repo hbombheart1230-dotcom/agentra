@@ -17,26 +17,8 @@ from libs.reporting.event_log_reader import iter_jsonl_events
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
-    if ts is None:
-        return None
-    if isinstance(ts, (int, float)):
-        return int(ts)
-    s = str(ts).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s))
-    except Exception:
-        pass
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    try:
-        dt = datetime.fromisoformat(s)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
-    except Exception:
-        return None
+    from scripts.diagnostics.incident_timeline_time_projection import _to_epoch as owner
+    return owner(ts, facade=_migration_sys.modules[__name__])
 
 
 def _utc_day(ts: Any) -> str:
@@ -55,126 +37,28 @@ def _numeric_summary(values: List[float]) -> Dict[str, float]:
 
 
 def _incident_trigger(row: Dict[str, Any]) -> Tuple[bool, str]:
-    stage = str(row.get("stage") or "")
-    event = str(row.get("event") or "")
-    payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-
-    if stage == "commander_router" and event == "error":
-        reason = str(payload.get("error_type") or payload.get("error") or "commander_error")
-        return True, f"commander_router:error:{reason}"
-
-    if stage == "commander_router" and event == "transition":
-        transition = str(payload.get("transition") or "").strip().lower()
-        if transition == "cooldown":
-            reason = str(payload.get("reason") or "cooldown_transition")
-            return True, f"commander_router:transition:{reason}"
-
-    if stage == "commander_router" and event == "resilience":
-        reason = str(payload.get("reason") or "").strip().lower()
-        if reason in ("cooldown_active", "incident_threshold_cooldown"):
-            return True, f"commander_router:resilience:{reason}"
-
-    if stage == "execute_from_packet" and event == "error":
-        reason = str(payload.get("error") or "execute_error")
-        return True, f"execute_from_packet:error:{reason}"
-
-    return False, ""
+    from scripts.diagnostics.incident_timeline_trigger_projection import _incident_trigger as owner
+    return owner(row)
 
 
 def _is_recovery(row: Dict[str, Any]) -> Tuple[bool, str]:
-    stage = str(row.get("stage") or "")
-    event = str(row.get("event") or "")
-    payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-
-    if stage == "commander_router" and event == "intervention":
-        return True, "commander_router:intervention"
-    if stage == "commander_router" and event == "end":
-        status = str(payload.get("status") or "").strip().lower()
-        if status in ("ok", "resuming", "normal"):
-            return True, f"commander_router:end:{status or 'ok'}"
-    if stage == "commander_router" and event == "resilience":
-        reason = str(payload.get("reason") or "").strip().lower()
-        if reason in ("cooldown_not_active", "resume_applied", "operator_resumed"):
-            return True, f"commander_router:resilience:{reason}"
-    if stage == "execute_from_packet" and event == "end":
-        return True, "execute_from_packet:end"
-    return False, ""
+    from scripts.diagnostics.incident_timeline_recovery_projection import _is_recovery as owner
+    return owner(row)
 
 
 def _event_reason(row: Dict[str, Any]) -> str:
-    payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
-    for key in ("reason", "error_type", "error", "status"):
-        v = payload.get(key)
-        if v:
-            return str(v)
-    return ""
+    from scripts.diagnostics.incident_timeline_reason_projection import _event_reason as owner
+    return owner(row)
 
 
 def _build_markdown(out: Dict[str, Any]) -> str:
-    lines = [
-        f"# Incident Timeline Reconstruction ({out.get('day')})",
-        "",
-        f"- ok: **{bool(out.get('ok'))}**",
-        f"- events: **{int(out.get('events') or 0)}**",
-        f"- runs: **{int(out.get('runs') or 0)}**",
-        f"- incident_total: **{int(out.get('incident_total') or 0)}**",
-        f"- recovered_incident_total: **{int(out.get('recovered_incident_total') or 0)}**",
-        f"- unresolved_incident_total: **{int(out.get('unresolved_incident_total') or 0)}**",
-        "",
-        "## Trigger Totals",
-        "",
-    ]
-    trigger_total = out.get("trigger_total") if isinstance(out.get("trigger_total"), dict) else {}
-    if trigger_total:
-        for k, v in sorted(trigger_total.items()):
-            lines.append(f"- {k}: {int(v)}")
-    else:
-        lines.append("- (none)")
-
-    lines += ["", "## Recovery Totals", ""]
-    recovery_total = out.get("recovery_total") if isinstance(out.get("recovery_total"), dict) else {}
-    if recovery_total:
-        for k, v in sorted(recovery_total.items()):
-            lines.append(f"- {k}: {int(v)}")
-    else:
-        lines.append("- (none)")
-
-    ttr = out.get("ttr_sec") if isinstance(out.get("ttr_sec"), dict) else {}
-    lines += [
-        "",
-        "## Time To Recovery (sec)",
-        "",
-        f"- count: {int(float(ttr.get('count') or 0.0))}",
-        f"- avg: {float(ttr.get('avg') or 0.0):.3f}",
-        f"- p50: {float(ttr.get('p50') or 0.0):.3f}",
-        f"- p95: {float(ttr.get('p95') or 0.0):.3f}",
-        f"- max: {float(ttr.get('max') or 0.0):.3f}",
-        "",
-        "## Failures",
-        "",
-    ]
-    failures = out.get("failures") if isinstance(out.get("failures"), list) else []
-    if failures:
-        for msg in failures:
-            lines.append(f"- {msg}")
-    else:
-        lines.append("- (none)")
-    lines.append("")
-    return "\n".join(lines)
+    from scripts.diagnostics.incident_timeline_markdown_projection import _build_markdown as owner
+    return owner(out)
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Reconstruct incident timelines from JSONL event logs.")
-    p.add_argument("--event-log-path", default="data/logs/events.jsonl")
-    p.add_argument("--report-dir", default="reports/incident_timeline")
-    p.add_argument("--day", default=None)
-    p.add_argument("--run-id", default="")
-    p.add_argument("--window-before-sec", type=int, default=120)
-    p.add_argument("--window-after-sec", type=int, default=900)
-    p.add_argument("--require-incidents", action="store_true")
-    p.add_argument("--require-recovered", action="store_true")
-    p.add_argument("--json", action="store_true")
-    return p
+    from scripts.diagnostics.incident_timeline_cli_projection import _build_parser as owner
+    return owner(facade=_migration_sys.modules[__name__])
 
 
 def main(argv: Optional[List[str]] = None) -> int:

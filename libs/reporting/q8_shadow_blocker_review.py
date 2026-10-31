@@ -23,6 +23,8 @@ from libs.reporting import q8_shadow_blocker_candidate_projection as _candidate_
 from libs.reporting import q8_shadow_blocker_checkpoint_projection as _checkpoint_owner
 from libs.reporting import q8_shadow_blocker_decision_projection as _decision_owner
 from libs.reporting import q8_shadow_blocker_group_projection as _group_owner
+from libs.reporting import q8_shadow_blocker_review_build_projection as _build_review_owner
+from libs.reporting import q8_shadow_blocker_markdown_projection as _markdown_review_owner
 
 
 DEFAULT_REVIEW_REASONS = (
@@ -83,131 +85,11 @@ def build_q8_shadow_blocker_review(
     market_regime_rail: Mapping[str, Any] | None = None,
     quant_shadow_evaluation: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    raw_rows = attach_forward_outcomes(_candidate_rows(payloads), minute_rows_by_symbol=minute_rows_by_symbol)
-    rows = _dedupe_rows(raw_rows)
-    trusted_forward_count = 0
-    for row in rows:
-        outcome = row.get("shadow_forward_outcome") if isinstance(row.get("shadow_forward_outcome"), Mapping) else {}
-        if _bool(_checkpoint_values(outcome).get("available")):
-            trusted_forward_count += 1
-    trusted_forward_coverage = round(float(trusted_forward_count) / float(len(rows)), 4) if rows else 0.0
-    evaluation_gate = (
-        quant_shadow_evaluation.get("evaluation_trust_gate")
-        if isinstance(quant_shadow_evaluation, Mapping)
-        and isinstance(quant_shadow_evaluation.get("evaluation_trust_gate"), Mapping)
-        else {}
-    )
-    trust_gate = (
-        dict(evaluation_gate)
-        if evaluation_gate
-        else build_q8_trust_gate(
-            raw_candidate_count=len(raw_rows),
-            deduped_candidate_count=len(rows),
-            trusted_forward_count=trusted_forward_count,
-            trusted_forward_coverage=trusted_forward_coverage,
-            candidate_watchlist=[],
-        )
-    )
-    promotion_allowed = bool(trust_gate.get("promotion_allowed"))
-    review_reason_set = {str(reason) for reason in review_reasons}
-    grouped: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
-    for row in rows:
-        reason = _text(row.get("reason"))
-        if reason in review_reason_set:
-            grouped[reason].append(row)
-    groups = [
-        _summarize_group(reason, grouped.get(reason, []), promotion_allowed=promotion_allowed)
-        for reason in review_reasons
-    ]
-    observed_total = sum(int(group.get("observed_count") or 0) for group in groups)
-    return {
-        "schema_version": "q8_shadow_blocker_review.v1",
-        "behavior_effect": "evaluation_only",
-        "market_regime_rail": dict(market_regime_rail or {}),
-        "raw_candidate_count": len(raw_rows),
-        "deduped_candidate_count": len(rows),
-        "duplicate_count": max(0, len(raw_rows) - len(rows)),
-        "dedupe_key": list(CANONICAL_DEDUPE_KEY_FIELDS),
-        "evaluation_trust_gate": trust_gate,
-        "promotion_allowed": promotion_allowed,
-        "candidate_count": len(rows),
-        "review_reason_count": len(groups),
-        "observed_review_candidate_count": observed_total,
-        "groups": groups,
-    }
+    return _build_review_owner.build_q8_shadow_blocker_review(payloads, minute_rows_by_symbol=minute_rows_by_symbol, review_reasons=review_reasons, market_regime_rail=market_regime_rail, quant_shadow_evaluation=quant_shadow_evaluation, facade=sys.modules[__name__])
 
 
 def render_q8_shadow_blocker_review_markdown(review: Mapping[str, Any], *, day: str) -> str:
-    lines = [
-        f"# Q8 Shadow Blocker Review ({day})",
-        "",
-        "This report is read-only evaluation output. It does not change trading behavior.",
-        "",
-        "## Summary",
-        "",
-        f"- candidate_count: **{int(review.get('candidate_count') or 0)}**",
-        f"- raw_candidate_count: **{int(review.get('raw_candidate_count') or review.get('candidate_count') or 0)}**",
-        f"- duplicate_count: **{int(review.get('duplicate_count') or 0)}**",
-        f"- dedupe_key: `{', '.join(list(review.get('dedupe_key') or []))}`",
-        f"- review_reason_count: **{int(review.get('review_reason_count') or 0)}**",
-        f"- observed_review_candidate_count: **{int(review.get('observed_review_candidate_count') or 0)}**",
-    ]
-    gate = review.get("evaluation_trust_gate") if isinstance(review.get("evaluation_trust_gate"), Mapping) else {}
-    if gate:
-        lines.extend(
-            [
-                f"- trust_gate: `{gate.get('status') or '-'}`",
-                f"- promotion_allowed: `{bool(gate.get('promotion_allowed'))}`",
-                f"- trust_block_reasons: `{', '.join(list(gate.get('block_reasons') or gate.get('reasons') or [])) or '-'}`",
-            ]
-        )
-    rail = review.get("market_regime_rail") if isinstance(review.get("market_regime_rail"), Mapping) else {}
-    if rail:
-        lines.append(
-            f"- market_regime_rail: `{rail.get('rail_id') or 'not_available'}` "
-            f"({rail.get('rail_confidence') or 'none'})"
-        )
-        lines.append(f"- market_regime_rationale: {rail.get('rationale') or '-'}")
-        focus = [str(x) for x in list(rail.get("q8_review_focus") or []) if str(x or "").strip()]
-        if focus:
-            lines.append(f"- market_regime_q8_focus: `{', '.join(focus)}`")
-    lines += [
-        "",
-        "## Blocker Outcomes",
-        "",
-        "| Reason | Candidates | Observed | Avg Latest | Avg MFE | Avg MAE | Missed Opp | Adverse | Decision |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
-    ]
-    groups = review.get("groups") if isinstance(review.get("groups"), list) else []
-    for group in groups:
-        if not isinstance(group, Mapping):
-            continue
-        lines.append(
-            f"| `{group.get('reason') or '-'}` "
-            f"| {int(group.get('candidate_count') or 0)} "
-            f"| {int(group.get('observed_count') or 0)} "
-            f"| {float(group.get('avg_latest_return_pct') or 0.0):.4f}% "
-            f"| {float(group.get('avg_max_favorable_pct') or 0.0):.4f}% "
-            f"| {float(group.get('avg_max_adverse_pct') or 0.0):.4f}% "
-            f"| {int(group.get('missed_opportunity_count') or 0)} "
-            f"| {int(group.get('adverse_count') or 0)} "
-            f"| `{group.get('decision') or 'retain_under_observation'}` |"
-        )
-    for group in groups:
-        if not isinstance(group, Mapping) or not group.get("examples"):
-            continue
-        lines += ["", f"## Examples: {group.get('reason')}", ""]
-        for example in list(group.get("examples") or [])[:5]:
-            if not isinstance(example, Mapping):
-                continue
-            lines.append(
-                f"- `{example.get('symbol') or '-'}` role `{example.get('role') or '-'}` "
-                f"rank `{example.get('rank') if example.get('rank') is not None else '-'}` "
-                f"latest {float(example.get('latest_return_pct') or 0.0):.4f}% "
-                f"MFE {float(example.get('max_favorable_pct') or 0.0):.4f}% "
-                f"MAE {float(example.get('max_adverse_pct') or 0.0):.4f}%"
-            )
-    return "\n".join(lines).rstrip() + "\n"
+    return _markdown_review_owner.render_q8_shadow_blocker_review_markdown(review, day=day, facade=sys.modules[__name__])
 
 
 def generate_q8_shadow_blocker_review(

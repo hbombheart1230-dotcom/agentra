@@ -20,6 +20,8 @@ from libs.reporting import post_exit_shadow_clock_projection as _clock_owner
 from libs.reporting import post_exit_shadow_read_projection as _read_owner
 from libs.reporting import post_exit_shadow_freshness_decision_projection as _decision_owner
 from libs.reporting import post_exit_shadow_path_projection as _path_owner
+from libs.reporting import post_exit_shadow_state_path_projection as _state_path_owner
+from libs.reporting import post_exit_shadow_eod_fallback_projection as _eod_fallback_owner
 from libs.agents.reporter.narrative.post_exit_recap_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _symbol_candidates_r4_impl,
     _rows_from_record_r4_impl,
@@ -63,25 +65,7 @@ def _read_json(path: Path) -> Dict[str, Any]:
 
 
 def resolve_post_exit_state_path(reports_root: Path, state_path: Path | None = None) -> Path | None:
-    candidates: List[Path] = []
-    if state_path is not None and str(state_path).strip():
-        candidates.append(Path(state_path))
-    for key in ("STATE_STORE_PATH", "MOCK_EXAM_STATE_PATH"):
-        raw = str(os.getenv(key) or "").strip()
-        if raw:
-            candidates.append(Path(raw))
-
-    reports_root_path = Path(reports_root)
-    candidates.append(reports_root_path.parent / "data" / "state.json")
-    candidates.append(Path("data/state.json"))
-
-    for candidate in candidates:
-        path = candidate
-        if not path.is_absolute():
-            path = (Path.cwd() / path).resolve()
-        if path.exists():
-            return path
-    return None
+    return _state_path_owner.resolve_post_exit_state_path(reports_root, state_path, facade=_r3_sys.modules[__name__])
 
 
 def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
@@ -149,57 +133,7 @@ def merge_minute_rows(*row_groups: Iterable[Mapping[str, Any]]) -> List[Dict[str
 def opening_rank1_eod_fallback_row(
     *, reports_root: Path, day: str, symbol: str
 ) -> tuple[Dict[str, Any] | None, Dict[str, Any]]:
-    path = (
-        Path(reports_root)
-        / "evaluation"
-        / "opening_rank1_shadow"
-        / str(day)
-        / "opening_rank1_shadow_daily.json"
-    )
-    payload = _read_json(path)
-    normalized = normalize_symbol(symbol or "", allow_test_symbols=True)
-    for raw in payload.get("episodes") or []:
-        episode = _as_dict(raw)
-        if normalize_symbol(episode.get("symbol") or "", allow_test_symbols=True) != normalized:
-            continue
-        eod = _as_dict(_as_dict(episode.get("checkpoints")).get("EOD"))
-        if str(eod.get("status") or "").strip().lower() != "observed":
-            continue
-        price = eod.get("price") if eod.get("price") not in (None, "") else eod.get("observed_price")
-        try:
-            close = float(price)
-        except Exception:
-            continue
-        observed_epoch = _epoch_seconds(eod.get("observed_epoch") or eod.get("observed_ts"))
-        if observed_epoch is None:
-            try:
-                observed_epoch = datetime.fromisoformat(str(day)).replace(
-                    hour=15, minute=30, tzinfo=KST
-                ).timestamp()
-            except Exception:
-                continue
-        observed_kst = datetime.fromtimestamp(observed_epoch, tz=timezone.utc).astimezone(KST)
-        row = {
-            "ts": int(observed_epoch),
-            "raw_ts": observed_kst.strftime("%Y%m%d%H%M%S"),
-            "open": close,
-            "high": close,
-            "low": close,
-            "close": close,
-            "volume": eod.get("volume"),
-            "source": "opening_rank1_shadow.EOD",
-            "eod_fallback": True,
-        }
-        return row, {
-            "applied": True,
-            "source": "opening_rank1_shadow.EOD",
-            "source_path": str(path),
-        }
-    return None, {
-        "applied": False,
-        "reason": "matching_observed_opening_rank1_eod_not_found",
-        "source_path": str(path),
-    }
+    return _eod_fallback_owner.opening_rank1_eod_fallback_row(reports_root=reports_root, day=day, symbol=symbol, facade=_r3_sys.modules[__name__])
 
 
 def fetch_fresh_minute_rows_for_symbol(symbol: str, *, run_id: str = "post_exit_shadow_recap") -> tuple[List[Dict[str, Any]], Dict[str, Any]]:
