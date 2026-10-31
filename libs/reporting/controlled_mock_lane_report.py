@@ -1,8 +1,16 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any, Mapping
+
+from libs.reporting import controlled_lane_lookup_projection as _lookup_owner
+from libs.reporting import controlled_lane_ledger_projection as _ledger_owner
+from libs.reporting import controlled_lane_surface_build_projection as _build_owner
+from libs.reporting import controlled_lane_surface_read_projection as _read_owner
+from libs.reporting import controlled_lane_markdown_projection as _markdown_owner
+from libs.reporting import controlled_lane_scalar_projection as _scalar_owner
 
 
 LANE_LABELS = {
@@ -13,7 +21,7 @@ LANE_LABELS = {
 
 
 def _mapping(value: Any) -> dict[str, Any]:
-    return dict(value) if isinstance(value, Mapping) else {}
+    return _scalar_owner._mapping(value, facade=sys.modules[__name__])
 
 
 def _text(value: Any) -> str:
@@ -21,35 +29,15 @@ def _text(value: Any) -> str:
 
 
 def _first_mapping(*values: Any) -> dict[str, Any]:
-    for value in values:
-        row = _mapping(value)
-        if row:
-            return row
-    return {}
+    return _scalar_owner._first_mapping(*values, facade=sys.modules[__name__])
 
 
 def _deep_first(value: Any, *keys: str) -> str:
-    if isinstance(value, Mapping):
-        for key in keys:
-            if _text(value.get(key)):
-                return _text(value.get(key))
-        for child in value.values():
-            found = _deep_first(child, *keys)
-            if found:
-                return found
-    elif isinstance(value, list):
-        for child in value:
-            found = _deep_first(child, *keys)
-            if found:
-                return found
-    return ""
+    return _lookup_owner._deep_first(value, *keys, facade=sys.modules[__name__])
 
 
 def _position_strategy(state: Mapping[str, Any], symbol: str) -> dict[str, Any]:
-    persisted = _mapping(state.get("persisted_state"))
-    contexts = _mapping(persisted.get("position_strategy_context"))
-    row = _mapping(contexts.get(symbol))
-    return _mapping(row.get("output"))
+    return _lookup_owner._position_strategy(state, symbol, facade=sys.modules[__name__])
 
 
 def _fixed_lane_strategy() -> dict[str, Any]:
@@ -65,25 +53,7 @@ def _fixed_lane_strategy() -> dict[str, Any]:
 def _ledger_row(
     *, root: Path, day: str, symbol: str, order_id: str = "", run_id: str = ""
 ) -> dict[str, Any]:
-    path = root / "data" / "logs" / "controlled_mock_lanes" / day / "lane_submissions.json"
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError):
-        return {}
-    rows = payload.get("submissions") if isinstance(payload, Mapping) else []
-    symbol_matches = [
-        dict(row) for row in list(rows or [])
-        if isinstance(row, Mapping) and _text(row.get("symbol")) == symbol
-    ]
-    if order_id:
-        exact = [row for row in symbol_matches if _text(row.get("order_id")).lstrip("0") == order_id.lstrip("0")]
-        if exact:
-            return exact[-1]
-    if run_id:
-        exact = [row for row in symbol_matches if _text(row.get("run_id")) == run_id]
-        if exact:
-            return exact[-1]
-    return {}
+    return _ledger_owner._ledger_row(root=root, day=day, symbol=symbol, order_id=order_id, run_id=run_id, facade=sys.modules[__name__])
 
 
 def build_controlled_lane_report_surface(
@@ -91,59 +61,11 @@ def build_controlled_lane_report_surface(
     prior_entry: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Recover controlled-lane entry evidence without same-symbol guessing."""
-    execution = _mapping(state.get("execution"))
-    order = _mapping(execution.get("order"))
-    meta = _mapping(order.get("meta"))
-    prior = _mapping(prior_entry)
-    lane = _first_mapping(meta.get("controlled_mock_lane"), prior.get("controlled_mock_lane"))
-    symbol = _text(order.get("symbol") or execution.get("symbol") or prior.get("symbol") or state.get("symbol"))
-    strategy = _first_mapping(meta.get("position_strategy_snapshot"), prior.get("position_strategy_snapshot"))
-    if not strategy and symbol:
-        strategy = _position_strategy(state, symbol)
-    if not lane and day and root is not None and symbol:
-        order_id = _deep_first(prior, "order_id", "ord_no")
-        entry_run_id = _text(prior.get("run_id"))
-        lane = _ledger_row(root=Path(root), day=day, symbol=symbol, order_id=order_id, run_id=entry_run_id)
-        if lane and not strategy:
-            strategy = _fixed_lane_strategy()
-    if not lane or not strategy.get("controlled_mock_lane"):
-        return {}
-    lane_id = _text(lane.get("lane_id"))
-    return {
-        "schema_version": "controlled_mock_lane_report.v2",
-        "lane_id": lane_id,
-        "lane_label": LANE_LABELS.get(lane_id, lane_id),
-        "symbol": _text(lane.get("symbol") or symbol),
-        "signal_id": _text(lane.get("signal_id")),
-        "signal_epoch": lane.get("signal_epoch"),
-        "entry_run_id": _text(lane.get("run_id") or prior.get("run_id")),
-        "entry_order_id": _text(lane.get("order_id") or _deep_first(prior, "order_id", "ord_no")),
-        "score": lane.get("score"),
-        "evidence": _mapping(lane.get("evidence")),
-        "daily_limit": lane.get("daily_limit"),
-        "reservation": _mapping(lane.get("reservation")),
-        "strategy_horizon": _text(strategy.get("strategy_horizon")),
-        "expected_hold_window": _mapping(strategy.get("expected_hold_window")),
-        "llm_used": bool(strategy.get("llm_used")),
-        "stage3_horizon_review_allowed": bool(strategy.get("horizon_revision_allowed", True)),
-        "selection_authority": "deterministic_independent_lane",
-        "scanner_rank_applicable": False,
-        "execution_scope": "kiwoom_mock_only",
-    }
+    return _build_owner.build_controlled_lane_report_surface(state, day=day, root=root, prior_entry=prior_entry, facade=sys.modules[__name__])
 
 
 def controlled_lane_surface_from_report(report: Mapping[str, Any]) -> dict[str, Any]:
-    fact_payload = _mapping(report.get("fact_payload"))
-    trade = _mapping(fact_payload.get("trade"))
-    lifecycle = _first_mapping(report.get("trade_lifecycle"), report.get("lifecycle"), trade.get("trade_lifecycle"), trade.get("lifecycle"))
-    entry = _mapping(lifecycle.get("entry"))
-    lifecycle_bundle = _first_mapping(report.get("lifecycle_bundle"), trade.get("lifecycle_bundle"))
-    bundle_entry = _mapping(_mapping(lifecycle_bundle.get("lifecycle")).get("entry"))
-    return _first_mapping(
-        report.get("controlled_mock_lane"), trade.get("controlled_mock_lane"),
-        lifecycle_bundle.get("controlled_mock_lane"), entry.get("controlled_mock_lane"),
-        bundle_entry.get("controlled_mock_lane"),
-    )
+    return _read_owner.controlled_lane_surface_from_report(report, facade=sys.modules[__name__])
 
 
 def attach_controlled_lane_report_surface(report: dict[str, Any], story_input: Mapping[str, Any]) -> dict[str, Any]:
@@ -236,32 +158,7 @@ def apply_controlled_lane_story_surface(
 
 
 def render_controlled_lane_report_lines(report: Mapping[str, Any]) -> list[str]:
-    surface = controlled_lane_surface_from_report(report)
-    if not surface:
-        return []
-    evidence = _mapping(surface.get("evidence"))
-    window = _mapping(surface.get("expected_hold_window"))
-    lines = [
-        f"* 실행 레인: **{_text(surface.get('lane_label')) or _text(surface.get('lane_id'))}**",
-        f"* 신호 ID: `{_text(surface.get('signal_id')) or '-'}`",
-        f"* 선택 권한: {_text(surface.get('selection_authority')) or 'deterministic_independent_lane'}",
-        f"* Scanner 순위: {'해당 없음' if surface.get('scanner_rank_applicable') is False else '적용'}",
-        f"* LLM 사용: {'예' if surface.get('llm_used') else '아니오'}",
-    ]
-    if surface.get("score") not in (None, ""):
-        lines.append(f"* 신호 점수: {surface.get('score')}")
-    if evidence:
-        evidence_text = " / ".join(f"{key}={value}" for key, value in evidence.items() if value not in (None, "", [], {}))
-        if evidence_text:
-            lines.append(f"* 고정 가설 근거: {evidence_text}")
-    if window:
-        lines.append("* 고정 보유 구간: " f"최소 {window.get('min_sec', '-')}초 / 목표 {window.get('target_sec', '-')}초 / 최대 {window.get('max_sec', '-')}초")
-    if surface.get("stage3_horizon_review_allowed"):
-        lines.append("* R3 연결: 허용. 3차 전략가의 보유기간 재검토를 적용할 수 있습니다.")
-    else:
-        lines.append("* R3 연결: 차단. 독립 레인과 고정 horizon 비교를 위해 3차 전략가가 보유기간을 변경하지 않습니다.")
-    lines.append("* 주문 범위: 키움 모의투자 검증 전용")
-    return lines
+    return _markdown_owner.render_controlled_lane_report_lines(report, facade=sys.modules[__name__])
 
 
 __all__ = ["apply_controlled_lane_story_surface", "attach_controlled_lane_report_surface", "build_controlled_lane_report_surface", "controlled_lane_surface_from_report", "render_controlled_lane_report_lines"]
