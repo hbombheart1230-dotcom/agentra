@@ -1,8 +1,10 @@
-# C01 — Codex B | B-20261031-10 | FAST-3 SINGLE EXECUTION ORDER
+# C01 — Codex B | B-20261031-13 | FAST-3 CONTINUATION — SIX VERIFIED REMAINING BODY MOVES
 
-**PIN AT START:** `integration/p1.5` HEAD at issuance `959ca9e9fdade3963fa25a2d12710d66ab218741`; remote `ORDER_FILE_BLOB_SHA` from this document; Actor branch `work/p15-b-operator-structure-20261022` HEAD at start. Previous 09h order blob `d7d5e47e9764ec4c80781d65396fa1d7d3ba5d2c` is **8/8 REMOTE_DONE**, no repeat. A newly issued order never cancels an Actor's already pinned start order. This C-file is the only task specification: DO NOT read D00, RF, queue, C03, handoffs or select tasks independently.
+**PIN AT START:** integration/p1.5 HEAD at issuance `bd46731caf6d4950af3457694d689e0bbb0f784b`; ORDER_FILE_BLOB_SHA=fetch this document from `integration/p1.5`; B actor remote HEAD at design `10a234f02c87f0210e5c50b4e039f7d6907e7aa4`. Previous B-20261031-10 order blob `fa87f666b9ef9769b815d3d200f8ebfba20150e3` was 2/8 REMOTE_DONE and 6/8 still unimplemented remotely. #12 comment 6538201693 reports B5/B6 `_print_human`/`_print_summary` moved to `scripts/diagnostics/strategist_query_render_projection.py` and normal unittest 2 exit0; remote B source blob `ca96ad4782c7557c66c21d808a829c925655f39d`, Owner blob `2c786e7a3d0cac485b645d354ae299fea84cac84` verified. **B5/B6 are REMOTE_DONE, NOT executable and NOT to be repeated.** Their old SOURCE_BLOB `f368e15c` is stale and deliberately removed from this order.
 
-**EIGHT MANDATORY NEW BODY MOVES:** Execute every item 1–8 or record individual evidence-based BLOCKED; continue other safe items after first PASS/commit/push failure. Exact SOURCE blob and target function absence verified at Actor remote. On refreshed SHA, classify already-moved actual BODY as REMOTE_DONE, not new work; if SOURCE changed and safety cannot be established, mark that item STALE/BLOCKED and continue. Move calculation BODY exactly once, leave thin facade and patch seam, preserve exceptions and output ordering. One normal targeted unittest/pytest/smoke exit0 is G2; no forced -O/full peer/hosted CI. Actor writes ONLY own code/tests; C04 integrates and C05 decides G1/G2/G3/DONE/STATUS. No operational/trading effects, real broker/guard/Step5C/UEF, RunLab, live network, real State, frozen oracle, CI or force push.
+**SIX EXECUTABLE REMAINING ITEMS ONLY:** B1–B4 and B7–B8 below are RF-063 B-exclusive diagnostics calculation BODY moves. Actual original source still present: `query_m25_notification_events.py` SOURCE_BLOB `ec1f122a60875da5fbea743d42ddeca75bc07c7f`, `query_commander_resilience_events.py` SOURCE_BLOB `caebd5b1466a7f408a70be98ee94b89d5cda5e01`. Their three target modules `notification_query_time_projection.py`, `notification_query_env_projection.py`, `notification_query_cli_projection.py` and `commander_resilience_query_projection.py` were rechecked 404 at B HEAD. Six independent safe moves remain, so D00 replacement threshold (<6) is NOT met. The prior LOCAL_ONLY B1–B4/B7–B8 bytes were pruned and do not count as remote completion; reimplement from exact pinned bodies below, not stale local commit. All six must be executed or individually evidence-BLOCKED; do not stop at first PASS, partial commit or push error.
+
+**Single execution contract:** Do NOT read D00, RF, queue, C03 or handoffs, and do not independently select work. At start pin CANONICAL_HEAD/ORDER_FILE_BLOB_SHA/OWNER_REMOTE_SHA. Move real BODY to target once, SOURCE keeps same-signature thin wrapper, caller and use-time monkeypatch seam, exception/output/generator behavior; no reverse target→source import. Normal targeted unittest/pytest exit0 once per changed scope suffices G2; no mandatory -O/full peer/hosted CI. Actor modifies/pushes own code/tests only; no docs/RF/STATUS/queue. Fake/temp only, no live network, Broker/Guard/Step5C/UEF, operating State, RunLab, frozen oracle, deployment or force push. If terminal push blocked, continue all safe items and preserve exact-tree evidence; LOCAL_ONLY is not G1. C04 integrates, C05 judges G1/G2/G3/DONE.
 
 ## B1 | RF-063 | scripts/diagnostics/query_m25_notification_events.py::_to_epoch @ L26 | SOURCE_BLOB=ec1f122a60875da5fbea743d42ddeca75bc07c7f
 
@@ -94,90 +96,6 @@ def _build_parser() -> argparse.ArgumentParser:
 
 **Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b4_build_parser_owner.py`, explicit input→expected: parse_args(['--json']).json is True; fake env default. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_m25_notification_events.py scripts/diagnostics/notification_query_cli_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b4_build_parser_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
 
-## B5 | RF-063 | scripts/diagnostics/query_strategist_llm_events.py::_print_human @ L44 | SOURCE_BLOB=f368e15c2783e26f3fd7dd068ff2a167a76b4339
-
-**TARGET:** `scripts/diagnostics/strategist_query_render_projection.py::_print_human` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _print_human(path: Path, rows: List[Dict[str, Any]]) -> None:
-    print("=== Strategist LLM Events ===")
-    print(f"path={path}")
-    print(f"shown={len(rows)}")
-    for rec in rows:
-        p = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-        ts = str(rec.get("ts") or "")
-        run_id = str(rec.get("run_id") or "")
-        call_kind = _infer_call_kind(p)
-        ok = p.get("ok")
-        action = str(p.get("intent_action") or "")
-        reason = str(p.get("intent_reason") or "")
-        latency = p.get("latency_ms")
-        attempts = p.get("attempts")
-        prompt_version = str(p.get("prompt_version") or "")
-        schema_version = str(p.get("schema_version") or "")
-        prompt_tokens = p.get("prompt_tokens")
-        completion_tokens = p.get("completion_tokens")
-        total_tokens = p.get("total_tokens")
-        estimated_cost_usd = p.get("estimated_cost_usd")
-        regime = str(p.get("context_regime") or "")
-        signal_score = p.get("context_signal_score")
-        sym_sent = p.get("context_symbol_sentiment_score")
-        global_sent = p.get("context_global_sentiment_score")
-        sym_sent_status = str(p.get("context_symbol_sentiment_status") or "")
-        global_sent_status = str(p.get("context_global_sentiment_status") or "")
-        composite = p.get("context_composite_score")
-        err = str(p.get("error_type") or "")
-        print(
-            f"{ts} run_id={run_id} call_kind={call_kind} ok={ok} action={action} reason={reason} "
-            f"latency_ms={latency} attempts={attempts} "
-            f"prompt_version={prompt_version} schema_version={schema_version} "
-            f"prompt_tokens={prompt_tokens} completion_tokens={completion_tokens} "
-            f"total_tokens={total_tokens} estimated_cost_usd={estimated_cost_usd} "
-            f"context_regime={regime} context_signal_score={signal_score} "
-            f"context_symbol_sentiment_score={sym_sent} context_global_sentiment_score={global_sent} "
-            f"context_symbol_sentiment_status={sym_sent_status} "
-            f"context_global_sentiment_status={global_sent_status} "
-            f"context_composite_score={composite} "
-            f"error_type={err}"
-        )
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade._infer_call_kind; redirect stdout. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
-
-**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b5_print_human_owner.py`, explicit input→expected: empty rows stdout has header, shown=0. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_strategist_llm_events.py scripts/diagnostics/strategist_query_render_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b5_print_human_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
-
-## B6 | RF-063 | scripts/diagnostics/query_strategist_llm_events.py::_print_summary @ L87 | SOURCE_BLOB=f368e15c2783e26f3fd7dd068ff2a167a76b4339
-
-**TARGET:** `scripts/diagnostics/strategist_query_render_projection.py::_print_summary` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _print_summary(rows: List[Dict[str, Any]]) -> None:
-    by_kind: Dict[str, Dict[str, int]] = {}
-    by_reason: Dict[str, int] = {}
-    by_action: Dict[str, int] = {}
-    for rec in rows:
-        p = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-        call_kind = _infer_call_kind(p)
-        ok = "ok" if bool(p.get("ok")) else "non_ok"
-        by_kind.setdefault(call_kind, {})
-        by_kind[call_kind][ok] = int(by_kind[call_kind].get(ok) or 0) + 1
-        reason = str(p.get("intent_reason") or p.get("status") or "none")
-        by_reason[reason] = int(by_reason.get(reason) or 0) + 1
-        action = str(p.get("intent_action") or "none")
-        by_action[action] = int(by_action.get(action) or 0) + 1
-
-    print("summary.call_kind=", json.dumps(by_kind, ensure_ascii=False, sort_keys=True))
-    print("summary.intent_action=", json.dumps(by_action, ensure_ascii=False, sort_keys=True))
-    print(
-        "summary.intent_reason_top=",
-        json.dumps(sorted(by_reason.items(), key=lambda kv: kv[1], reverse=True)[:10], ensure_ascii=False),
-    )
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade._infer_call_kind/json; redirect stdout. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
-
-**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b6_print_summary_owner.py`, explicit input→expected: empty rows stdout contains summary.call_kind= {}. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_strategist_llm_events.py scripts/diagnostics/strategist_query_render_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b6_print_summary_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
-
 ## B7 | RF-063 | scripts/diagnostics/query_commander_resilience_events.py::_is_incident_event @ L24 | SOURCE_BLOB=caebd5b1466a7f408a70be98ee94b89d5cda5e01
 
 **TARGET:** `scripts/diagnostics/commander_resilience_query_projection.py::_is_incident_event` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
@@ -233,6 +151,8 @@ def _filtered_events(
 **Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b8_filtered_events_owner.py`, explicit input→expected: commander_router/error and other/error -> one commander_router/error. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_commander_resilience_events.py scripts/diagnostics/commander_resilience_query_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b8_filtered_events_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
 
 ## SIX VERIFIED FUTURE RESERVES — NOT EXECUTABLE THIS ORDER
+
+Revalidated at B remote `10a234f02c87f0210e5c50b4e039f7d6907e7aa4`: commander source blob `caebd5b1466a7f408a70be98ee94b89d5cda5e01`, incident timeline source blob `c47b817cef0c29957d010c105487594ae5a874c6`; all six named reserve target modules still absent (404). These remain design-only and cannot replace an executable item without a new C03 order.
 
 All six have actual SOURCE BODY and exclusive absent TARGET verified at Actor HEAD; no reserve is code implementation or test PASS. Promote only by a future new C03 order.
 
@@ -485,6 +405,7 @@ def _build_markdown(out: Dict[str, Any]) -> str:
 
 **Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b6_build_markdown_owner.py`, explicit input→expected: day=2026-10-31 events=0 -> header and zero events. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
 
+
 ## REPORT AND CONTINUITY
 
-Post to Issue #12: `ORDER_ID=B-20261031-10 | CANONICAL_HEAD | ORDER_FILE_BLOB_SHA | OWNER_REMOTE_SHA_BEFORE→AFTER | B1..B8 statuses | SOURCE/TARGET/TEST_BLOBS | NORMAL_TEST_COMMAND/EXIT | PUSH_REMOTE_SHA | FIRST_BLOCKER | NEXT`. START/END/ELAPSED only if measured. HTTPS auth failure is PUSH_BLOCKED only: continue safe tests, use already approved exact-tree lease workflow if available, never force-push. Report LOCAL_ONLY separately. Reserves are NOT executable in this order. C03 publication is not code G1/G2/G3.
+Report to #12: `ORDER_ID=B-20261031-13 | CANONICAL_HEAD | ORDER_BLOB | B_REMOTE_HEAD_BEFORE/AFTER | B1,B2,B3,B4,B7,B8 IMPLEMENTED/REMOTE_DONE/BLOCKED | B5,B6 REMOTE_DONE_FROM_PREVIOUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | NEW_BODY_MOVES | FIRST_BLOCKER | NEXT_SAFE_ITEM | START_KST/END_KST/ELAPSED_MIN`. Times measured only, never inferred from comment timestamps. B5/B6 are not new work. R1–R6 reserve is design-only, NOT executable. Normal push and re-fetch branch HEAD/blob; report PUSH_BLOCKED separately if auth fails, continue remaining safe items. No C04/C05/RF/STATUS/doc edits.
