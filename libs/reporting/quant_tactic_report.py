@@ -1,15 +1,24 @@
 from __future__ import annotations
 
+import sys
 from typing import Any, Dict, List, Mapping
 
 from libs.runtime.quant.decision import build_entry_quant_decision
 from libs.runtime.quant.suitability import score_candidate_tactic_suitability
 from libs.reporting import quant_tactic_items_projection as _items_owner
 from libs.reporting import quant_tactic_fmt_projection as _fmt_owner
+from libs.reporting import quant_tactic_mapping_projection as _mapping_owner
+from libs.reporting import quant_tactic_pct_projection as _pct_owner
+from libs.reporting import quant_tactic_decision_label_projection as _decision_label_owner
+from libs.reporting import quant_tactic_reason_text_projection as _reason_text_owner
+from libs.reporting import quant_tactic_monitor_projection as _monitor_owner
+from libs.reporting import quant_tactic_nested_dicts_projection as _nested_dicts_owner
+from libs.reporting import quant_tactic_first_nested_mapping_projection as _first_nested_owner
+from libs.reporting import quant_tactic_symbol_projection as _symbol_owner
 
 
 def _mapping(value: Any) -> Dict[str, Any]:
-    return dict(value or {}) if isinstance(value, Mapping) else {}
+    return _mapping_owner._mapping(value, facade=sys.modules[__name__])
 
 
 def _items(value: Any) -> List[str]:
@@ -21,73 +30,31 @@ def _fmt(value: Any) -> str:
 
 
 def _pct(value: Any) -> str:
-    if value in (None, ""):
-        return "-"
-    try:
-        num = float(value)
-    except Exception:
-        return str(value)
-    return f"{num * 100.0:.2f}%"
+    return _pct_owner._pct(value)
 
 
 def _decision_label(value: Any) -> str:
-    raw = str(value or "").strip()
-    mapping = {
-        "entry_ready": "진입 준비",
-        "block_recommended": "진입 차단 권고",
-        "wait": "대기",
-        "hold_watch": "보유 관찰",
-        "hard_exit": "즉시 청산 허용",
-        "confirm_before_exit_recommended": "청산 전 확인 권고",
-        "early_exit_warning": "조기 청산 경고",
-        "exit_aligned": "청산 정합",
-    }
-    return mapping.get(raw, raw or "-")
+    return _decision_label_owner._decision_label(value)
 
 
 def _reason_text(values: Any) -> str:
-    rows = _items(values)
-    return ", ".join(rows[:5]) if rows else "-"
+    return _reason_text_owner._reason_text(values, facade=sys.modules[__name__])
 
 
 def _monitor(report: Mapping[str, Any]) -> Dict[str, Any]:
-    monitor = _mapping(report.get("monitor_snapshot"))
-    if not monitor:
-        monitor = _mapping(report.get("monitor_output"))
-    return monitor
+    return _monitor_owner._monitor(report, facade=sys.modules[__name__])
 
 
 def _nested_dicts(value: Any, *, max_depth: int = 9) -> List[Dict[str, Any]]:
-    if max_depth < 0:
-        return []
-    out: List[Dict[str, Any]] = []
-    if isinstance(value, Mapping):
-        item = dict(value)
-        out.append(item)
-        for child in item.values():
-            out.extend(_nested_dicts(child, max_depth=max_depth - 1))
-    elif isinstance(value, (list, tuple)):
-        for child in value:
-            out.extend(_nested_dicts(child, max_depth=max_depth - 1))
-    return out
+    return _nested_dicts_owner._nested_dicts(value, max_depth=max_depth, facade=sys.modules[__name__])
 
 
 def _first_nested_mapping(root: Mapping[str, Any], key: str) -> Dict[str, Any]:
-    for item in _nested_dicts(root):
-        found = _mapping(item.get(key))
-        if found:
-            return found
-    return {}
+    return _first_nested_owner._first_nested_mapping(root, key, facade=sys.modules[__name__])
 
 
 def _symbol(report: Mapping[str, Any]) -> str:
-    fact_trade = _mapping(_mapping(report.get("fact_payload")).get("trade"))
-    return str(
-        report.get("symbol")
-        or fact_trade.get("symbol")
-        or _mapping(report.get("shared_facts")).get("symbol")
-        or ""
-    ).strip()
+    return _symbol_owner._symbol(report, facade=sys.modules[__name__])
 
 
 def _playbook(report: Mapping[str, Any], *, fallback: str = "") -> str:
