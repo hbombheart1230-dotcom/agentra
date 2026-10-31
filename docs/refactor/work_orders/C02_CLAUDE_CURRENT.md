@@ -292,8 +292,97 @@ def read_trade_diagnostic_row(trade_dir: Path) -> Dict[str, Any]:
 **Wrapper/monkeypatch/callers:** Leave original signature/defaults/annotations in SOURCE as thin delegation. TARGET never imports SOURCE. _artifact_path/_read_json/_resolve_same_day_linkage/_resolve_holding_evidence/_resolve_execution_details/_is_closed_trade/_safe_float/_execution_missing_fields/_resolve_ai_trade_report_status/_linkage_surface_present/_is_closed_trade_report_generation_regression via facade; do not fix unrelated behavior or access real reports. For SOURCE global lookups, TARGET accepts keyword-only `facade` and accesses `facade.NAME` at invocation, SOURCE passes `sys.modules[__name__]`. No duplicate BODY, preserve return identity, exceptions, byte output, call-time patch seams.
 **Normal targeted test:** `test_a8_read_trade_diagnostic_row` in `tests/test_p15_rf035_18h_reporting_projection_owners.py`. Input→expected: empty temp trade dir named 'T123' → trade_id='T123', closed_trade=False, missing fields count matches golden. Compare original golden vs facade wrapper and Owner, include negative/exception parity, post-import monkeypatch and AST thin-wrapper. Temp/memory only; no real reports. After all eight run `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_*_projection.py` and `python -m unittest tests/test_p15_rf035_18h_reporting_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A code/test, re-fetch remote HEAD/source/Owner/test blob. If blocked record and **continue Ahandoff**.
 
-## FUTURE RESERVE — RESERVE_NOT_VERIFIED 0/6
-The six earlier verified profitability-recovery reserves have been promoted to A1–A6. **No remaining item is currently VERIFIED.** C03 next should inspect RF-035 other read-only reporting Owner files, SOURCE BODY/blob, missing TARGET, side effects, caller/patch and normal fixture before counting six new reserves. `_resolve_holding_evidence` is **NOT_VERIFIED** due to an apparent unbound `holding_phase_summary` branch and must not be auto-selected or silently fixed. A does not choose future work.
+## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY
+
+Six RF-035 pure shadow-diagnostic SOURCE bodies inspected at A/integration blob `c46916f178b600cef3729d65e197e7e971d851cd`; exact six new TARGET paths returned 404 on both A and integration. Distinct from current eight profitability-recovery moves. Do not execute without a new C03 order and fresh blob/target recheck.
+
+### R1 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_bool` @ L32 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_scalar_projection.py::_bool` (404 A/integration, A-exclusive)
+```python
+def _bool(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    return str(value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+```
+**Safety/patch:** pure truth normalization, no side effects; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** True→True; 'YES'→True; 'off'→False; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+
+### R2 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_iter_days` @ L51 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_day_projection.py::_iter_days` (404 A/integration, A-exclusive)
+```python
+def _iter_days(start: str, end: str) -> Iterable[str]:
+    start_date = date.fromisoformat(str(start)[:10])
+    end_date = date.fromisoformat(str(end)[:10])
+    current = start_date
+    while current <= end_date:
+        yield current.isoformat()
+        current += timedelta(days=1)
+```
+**Safety/patch:** date/timedelta via facade, preserve generator laziness and ValueError; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** start='2026-10-30',end='2026-10-31'→two ISO days; reversed→empty iterator; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+
+### R3 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_top_counter` @ L261 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_counter_projection.py::_top_counter` (404 A/integration, A-exclusive)
+```python
+def _top_counter(counter: Counter[str], *, limit: int = 8) -> List[Dict[str, Any]]:
+    return [
+        {"name": name, "count": count}
+        for name, count in counter.most_common(limit)
+        if name
+    ]
+```
+**Safety/patch:** Counter input, preserve most_common tie order; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** Counter({'a':2,'b':1}),limit=1→[{'name':'a','count':2}]; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+
+### R4 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_row_blockers` @ L269 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_blocker_projection.py::_row_blockers` (404 A/integration, A-exclusive)
+```python
+def _row_blockers(row: Mapping[str, Any]) -> List[str]:
+    blockers: List[str] = []
+    for value in (row.get("blockers"),):
+        if isinstance(value, list):
+            blockers.extend(_text(item) for item in value if _text(item))
+    decision = row.get("entry_quant_decision")
+    if isinstance(decision, Mapping):
+        value = decision.get("blockers")
+        if isinstance(value, list):
+            blockers.extend(_text(item) for item in value if _text(item))
+    return blockers
+```
+**Safety/patch:** _text via facade, preserve nested blocker order and duplicates; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** {'blockers':['a','']}→['a']; nested entry_quant_decision.blockers preserved; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+
+### R5 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_count_reason` @ L393 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_reason_projection.py::_count_reason` (404 A/integration, A-exclusive)
+```python
+def _count_reason(candidates: Sequence[Mapping[str, Any]], names: set[str]) -> int:
+    total = 0
+    for row in candidates:
+        reason = _text(row.get("reason"))
+        primary = _text(row.get("primary_failure_axis"))
+        cost_floor = _cost_floor_state(row)
+        if reason in names or primary in names or cost_floor in names:
+            total += 1
+            continue
+        blockers = _row_blockers(row)
+        if any(blocker in names for blocker in blockers):
+            total += 1
+    return total
+```
+**Safety/patch:** _text/_cost_floor_state/_row_blockers via facade, preserve short circuit; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** [{'reason':'bad'}],{'bad'}→1; []→0; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+
+### R6 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_runner_up_risk_count` @ L408 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_runnerup_projection.py::_runner_up_risk_count` (404 A/integration, A-exclusive)
+```python
+def _runner_up_risk_count(candidates: Sequence[Mapping[str, Any]]) -> int:
+    total = 0
+    for row in candidates:
+        if _text(row.get("shadow_role")) != "runner_up_evaluated":
+            continue
+        if _bool(row.get("would_enter")):
+            total += 1
+            continue
+        if _bool(row.get("runner_up_quality_blocked")) or _bool(row.get("weak_fallback_blocked")):
+            total += 1
+            continue
+        reason = _text(row.get("reason"))
+        if reason in {"runner_up_quality_gate_failed", "weak_fallback_pullback"}:
+            total += 1
+    return total
+```
+**Safety/patch:** _text/_bool via facade, preserve precedence and count; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** [{'shadow_role':'runner_up_evaluated','would_enter':True}]→1; other role→0; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
 
 ## REPORT / PUSH
 #11: `ORDER_ID=A-20261031-18 | CANONICAL_HEAD | ORDER_BLOB | A_REMOTE_BEFORE→AFTER | A1..A8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times measured only. C03 document push is not code G1/G2/G3 or RF_DONE. RunLab SOURCE_UNKNOWN/exit255 remains SAFETY_HOLD.
