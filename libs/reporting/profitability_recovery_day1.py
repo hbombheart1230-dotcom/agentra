@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List
 
 from libs.reporting.llm_artifacts import iter_trade_dirs as _iter_trade_dirs
+from libs.reporting import profitability_recovery_scalar_projection as _scalar_owner
+from libs.reporting import profitability_recovery_trade_projection as _trade_owner
 
 
 REQUIRED_EXECUTION_FIELDS = (
@@ -44,33 +46,15 @@ def _artifact_path(trade_dir: Path, *candidates: str) -> Path:
 
 
 def _safe_float(value: Any) -> float | None:
-    try:
-        if value in (None, ""):
-            return None
-        return float(value)
-    except Exception:
-        return None
+    return _scalar_owner._safe_float(value)
 
 
 def _is_closed_trade(lifecycle_bundle: Dict[str, Any]) -> bool:
-    status = str(
-        lifecycle_bundle.get("trade_lifecycle_status")
-        or lifecycle_bundle.get("status")
-        or ""
-    ).strip().lower()
-    if status == "closed":
-        return True
-    exit_obj = lifecycle_bundle.get("exit") if isinstance(lifecycle_bundle.get("exit"), dict) else {}
-    exit_action = str(exit_obj.get("action") or "").strip().upper()
-    return exit_action == "SELL"
+    return _trade_owner._is_closed_trade(lifecycle_bundle)
 
 
 def _linkage_surface_present(linkage: Dict[str, Any]) -> bool:
-    if not linkage:
-        return False
-    status = str(linkage.get("status") or "").strip().lower()
-    reason = str(linkage.get("linkage_reason") or "").strip()
-    return bool(status) and (status != "missing" or bool(reason))
+    return _trade_owner._linkage_surface_present(linkage)
 
 
 def _execution_missing_fields(execution_details: Dict[str, Any]) -> List[str]:
