@@ -86,52 +86,13 @@ def _safe_float(v: Any, default: float = 0.0) -> float:
 
 
 def _max_drawdown_ratio(equity: List[float]) -> Tuple[float, float]:
-    if not equity:
-        return 0.0, 0.0
-    peak = float(equity[0])
-    max_dd = 0.0
-    max_dd_ratio = 0.0
-    for v in equity:
-        x = float(v)
-        if x > peak:
-            peak = x
-        dd = peak - x
-        if dd > max_dd:
-            max_dd = dd
-        denom = abs(peak) if abs(peak) > 1e-12 else 0.0
-        ratio = (dd / denom) if denom > 0.0 else 0.0
-        if ratio > max_dd_ratio:
-            max_dd_ratio = ratio
-    return float(max_dd), float(max_dd_ratio)
+    from scripts.diagnostics.m26_scorecard_drawdown_projection import _max_drawdown_ratio as owner
+    return owner(equity)
 
 
 def _risk_adjusted(samples: List[float]) -> Dict[str, float]:
-    if not samples:
-        return {
-            "sample_count": 0.0,
-            "pnl_mean": 0.0,
-            "pnl_std": 0.0,
-            "downside_std": 0.0,
-            "sharpe_proxy": 0.0,
-            "sortino_proxy": 0.0,
-        }
-
-    n = float(len(samples))
-    mean = float(statistics.fmean(samples))
-    std = float(statistics.pstdev(samples)) if len(samples) > 1 else 0.0
-    downside = [x for x in samples if x < 0.0]
-    downside_std = float(statistics.pstdev(downside)) if len(downside) > 1 else (float(abs(downside[0])) if len(downside) == 1 else 0.0)
-
-    sharpe = (mean / std) * math.sqrt(n) if std > 1e-12 else 0.0
-    sortino = (mean / downside_std) * math.sqrt(n) if downside_std > 1e-12 else 0.0
-    return {
-        "sample_count": n,
-        "pnl_mean": mean,
-        "pnl_std": std,
-        "downside_std": downside_std,
-        "sharpe_proxy": float(sharpe),
-        "sortino_proxy": float(sortino),
-    }
+    from scripts.diagnostics.m26_scorecard_risk_projection import _risk_adjusted as owner
+    return owner(samples, facade=sys.modules[__name__])
 
 
 def _load_close_price_by_symbol(path: Path, *, day: str) -> Dict[str, float]:
