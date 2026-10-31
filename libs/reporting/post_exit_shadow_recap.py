@@ -14,6 +14,8 @@ from libs.runtime.strategy_horizon_feedback import (
 import sys as _r3_sys
 from libs.reporting import post_exit_shadow_scalar_projection as _scalar_owner
 from libs.reporting import post_exit_shadow_format_projection as _format_owner
+from libs.reporting import post_exit_shadow_env_projection as _env_owner
+from libs.reporting import post_exit_shadow_freshness_projection as _freshness_owner
 from libs.agents.reporter.narrative.post_exit_recap_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _symbol_candidates_r4_impl,
     _rows_from_record_r4_impl,
@@ -117,8 +119,7 @@ def _epoch_seconds(value: Any) -> float | None:
 
 
 def _fresh_minute_fetch_enabled() -> bool:
-    raw = str(os.getenv("POST_EXIT_SHADOW_RECAP_FETCH_FRESH_MINUTES", "1")).strip().lower()
-    return raw not in {"0", "false", "no", "off"}
+    return _env_owner._fresh_minute_fetch_enabled(facade=_r3_sys.modules[__name__])
 
 
 def _shadow_latest_required_epoch(shadow: Mapping[str, Any]) -> float | None:
@@ -126,17 +127,11 @@ def _shadow_latest_required_epoch(shadow: Mapping[str, Any]) -> float | None:
 
 
 def _rows_reach_epoch(rows: Iterable[Mapping[str, Any]], target_epoch: float | None) -> bool:
-    if target_epoch is None:
-        return False
-    return any((_epoch_seconds(row.get("ts")) or 0.0) >= float(target_epoch) for row in rows if isinstance(row, Mapping))
+    return _freshness_owner._rows_reach_epoch(rows, target_epoch, facade=_r3_sys.modules[__name__])
 
 
 def _rows_reach_regular_close(rows: Iterable[Mapping[str, Any]]) -> bool:
-    return any(
-        _row_kst_hhmmss(row) >= "153000"
-        for row in rows
-        if isinstance(row, Mapping) and _row_kst_hhmmss(row)
-    )
+    return _freshness_owner._rows_reach_regular_close(rows, facade=_r3_sys.modules[__name__])
 
 
 def _post_exit_shadow_needs_fresh_minutes(shadow: Mapping[str, Any], rows: List[Dict[str, Any]]) -> bool:

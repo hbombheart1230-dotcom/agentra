@@ -13,16 +13,14 @@ from libs.reporting import q8_historical_day_projection as _day_owner
 from libs.reporting import q8_historical_aggregate_projection as _aggregate_owner
 from libs.reporting import q8_historical_markdown_table_projection as _table_owner
 from libs.reporting import q8_historical_decision_projection as _decision_owner
+from libs.reporting import q8_historical_read_projection as _read_owner
+from libs.reporting import q8_historical_trade_projection as _trade_owner
+from libs.reporting import q8_historical_daily_projection as _daily_owner
+from libs.reporting import q8_historical_pattern_projection as _pattern_owner
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    for encoding in ("utf-8-sig", "utf-8"):
-        try:
-            payload = json.loads(path.read_text(encoding=encoding))
-            return payload if isinstance(payload, dict) else {}
-        except Exception:
-            continue
-    return {}
+    return _read_owner._read_json(path, facade=sys.modules[__name__])
 
 
 def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
@@ -68,18 +66,7 @@ def _quant_shadow_candidate_root(reports_root: Path) -> Path:
 
 
 def _iter_quant_shadow_candidate_rows(reports_root: Path, *, start: str, end: str) -> Iterable[Dict[str, Any]]:
-    root = _quant_shadow_candidate_root(reports_root)
-    for day in _iter_days(start, end):
-        day_root = root / day
-        if not day_root.exists():
-            continue
-        for path in sorted(day_root.glob("*.json")):
-            if path.name == "latest.json":
-                continue
-            payload = _read_json(path)
-            for row in list(payload.get("candidates") or []):
-                if isinstance(row, Mapping):
-                    yield dict(row)
+    yield from _read_owner._iter_quant_shadow_candidate_rows(reports_root, start=start, end=end, facade=sys.modules[__name__])
 
 
 def _trade_id_from_path(path: Path) -> str:
@@ -241,40 +228,7 @@ def _decision_for_reclaim_subtype(row: Mapping[str, Any]) -> str:
 
 
 def _extract_trade_rows(reports_root: Path, *, start: str, end: str) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
-    for path in sorted((reports_root / "trades").glob("*/**/reports/ai_trade_summary.json")):
-        try:
-            day = path.parts[path.parts.index("trades") + 1]
-        except Exception:
-            continue
-        if day < start or day > end:
-            continue
-        payload = _read_json(path)
-        trade = payload.get("trade") if isinstance(payload.get("trade"), dict) else {}
-        truth = payload.get("truth_surface") if isinstance(payload.get("truth_surface"), dict) else {}
-        decision = payload.get("decision_flow") if isinstance(payload.get("decision_flow"), dict) else {}
-        quant = payload.get("quant_tactic") if isinstance(payload.get("quant_tactic"), dict) else {}
-        pnl_pct = _pct_from_ratio(truth.get("pnl_pct"))
-        rows.append(
-            {
-                "day": day,
-                "trade_id": _text(trade.get("trade_id")) or _trade_id_from_path(path),
-                "symbol": _text(trade.get("symbol")),
-                "status": _text(trade.get("status")),
-                "pnl_pct": pnl_pct,
-                "truth_source": _text(truth.get("truth_source")),
-                "tactic": _text(
-                    quant.get("tactic_id")
-                    or quant.get("selected_tactic")
-                    or trade.get("tactical_strategy")
-                    or decision.get("tactical_strategy")
-                ),
-                "playbook": _text(quant.get("playbook") or trade.get("playbook") or decision.get("playbook")),
-                "entry_reason": _text(decision.get("entry_reason") or decision.get("entry_trigger")),
-                "exit_reason": _text(decision.get("exit_reason") or decision.get("exit_trigger")),
-            }
-        )
-    return rows
+    return _trade_owner._extract_trade_rows(reports_root, start=start, end=end, facade=sys.modules[__name__])
 
 
 def _aggregate_return_rows(rows: Sequence[Mapping[str, Any]], key: str, *, limit: int = 12) -> List[Dict[str, Any]]:
@@ -282,45 +236,7 @@ def _aggregate_return_rows(rows: Sequence[Mapping[str, Any]], key: str, *, limit
 
 
 def _daily_summary_rows(reports_root: Path, *, start: str, end: str) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
-    for day in _iter_days(start, end):
-        path = reports_root / "operator_summary" / "daily" / day / "daily_summary.json"
-        if not path.exists():
-            continue
-        payload = _read_json(path)
-        metrics = payload.get("metrics") if isinstance(payload.get("metrics"), dict) else {}
-        q = (
-            payload.get("quant_shadow_candidate_evaluation")
-            if isinstance(payload.get("quant_shadow_candidate_evaluation"), dict)
-            else {}
-        )
-        gate = q.get("evaluation_trust_gate") if isinstance(q.get("evaluation_trust_gate"), dict) else {}
-        rail = payload.get("market_regime_rail_review") if isinstance(payload.get("market_regime_rail_review"), dict) else {}
-        rows.append(
-            {
-                "day": day,
-                "trade_count": _int(metrics.get("trade_count")),
-                "closed_trade_count": _int(metrics.get("closed_trade_count")),
-                "return_sample_count": _int(metrics.get("return_sample_count")),
-                "unavailable_return_count": _int(metrics.get("unavailable_return_count")),
-                "win_rate": _float(metrics.get("win_rate")) or 0.0,
-                "avg_return_pct": _float(metrics.get("avg_return_pct")) or 0.0,
-                "truth_surface_count": _int(metrics.get("truth_surface_count")),
-                "shadow_candidate_count": _int(q.get("candidate_count")),
-                "shadow_deduped_candidate_count": _int(q.get("deduped_candidate_count")),
-                "shadow_duplicate_candidate_count": _int(q.get("duplicate_candidate_count")),
-                "shadow_evaluated_count": _int(q.get("evaluated_count")),
-                "shadow_would_enter_count": _int(q.get("would_enter_count")),
-                "shadow_forward_outcome_coverage": _float(q.get("forward_outcome_coverage")),
-                "q8_trust_gate_status": _text(gate.get("status")),
-                "q8_promotion_allowed": bool(gate.get("promotion_allowed")),
-                "q8_trusted_forward_count": _int(gate.get("trusted_forward_count")),
-                "q8_trusted_forward_coverage": _float(gate.get("trusted_forward_coverage")),
-                "q8_duplicate_rate": _float(gate.get("duplicate_rate")),
-                "market_regime_rail": _text(rail.get("rail_id") or rail.get("market_regime_rail")),
-            }
-        )
-    return rows
+    return _daily_owner._daily_summary_rows(reports_root, start=start, end=end, facade=sys.modules[__name__])
 
 
 def _aggregate_shadow_summaries(reports_root: Path, *, start: str, end: str) -> Dict[str, Any]:
@@ -435,62 +351,7 @@ def _pattern_rows_from_daily_summaries(
     section: str,
     group_key: str,
 ) -> List[Dict[str, Any]]:
-    grouped: Dict[str, Dict[str, Any]] = defaultdict(
-        lambda: {
-            "count": 0,
-            "closed_or_realized_count": 0,
-            "win_count": 0,
-            "loss_count": 0,
-            "flat_count": 0,
-            "return_sum": 0.0,
-            "return_weight": 0,
-            "cost_drag_loss_count": 0,
-        }
-    )
-    for day in _iter_days(start, end):
-        path = reports_root / "operator_summary" / "daily" / day / "daily_summary.json"
-        if not path.exists():
-            continue
-        payload = _read_json(path)
-        pattern = payload.get("pattern_performance") if isinstance(payload.get("pattern_performance"), dict) else {}
-        section_payload = pattern.get(section) if isinstance(pattern.get(section), dict) else {}
-        rows = section_payload.get(group_key) if isinstance(section_payload.get(group_key), list) else []
-        for row in rows:
-            if not isinstance(row, Mapping):
-                continue
-            name = _text(row.get("name")) or "missing"
-            bucket = grouped[name]
-            count = _int(row.get("count"))
-            closed = _int(row.get("closed_or_realized_count") or count)
-            avg = _float(row.get("avg_return_pct"))
-            bucket["count"] += count
-            bucket["closed_or_realized_count"] += closed
-            bucket["win_count"] += _int(row.get("win_count"))
-            bucket["loss_count"] += _int(row.get("loss_count"))
-            bucket["flat_count"] += _int(row.get("flat_count"))
-            bucket["cost_drag_loss_count"] += _int(row.get("cost_drag_loss_count"))
-            if avg is not None and closed > 0:
-                bucket["return_sum"] += float(avg) * closed
-                bucket["return_weight"] += closed
-    out: List[Dict[str, Any]] = []
-    for name, bucket in grouped.items():
-        closed = int(bucket.get("closed_or_realized_count") or 0)
-        wins = int(bucket.get("win_count") or 0)
-        out.append(
-            {
-                "name": name,
-                "count": int(bucket.get("count") or 0),
-                "closed_or_realized_count": closed,
-                "win_count": wins,
-                "loss_count": int(bucket.get("loss_count") or 0),
-                "flat_count": int(bucket.get("flat_count") or 0),
-                "win_rate": round(wins / closed, 4) if closed else 0.0,
-                "avg_return_pct": _weighted_avg(float(bucket.get("return_sum") or 0.0), int(bucket.get("return_weight") or 0)),
-                "cost_drag_loss_count": int(bucket.get("cost_drag_loss_count") or 0),
-            }
-        )
-    out.sort(key=lambda row: (int(row.get("closed_or_realized_count") or 0), abs(float(row.get("avg_return_pct") or 0.0))), reverse=True)
-    return out
+    return _pattern_owner._pattern_rows_from_daily_summaries(reports_root, start=start, end=end, section=section, group_key=group_key, facade=sys.modules[__name__])
 
 
 def _promotion_recommendations(payload: Mapping[str, Any]) -> List[Dict[str, Any]]:
