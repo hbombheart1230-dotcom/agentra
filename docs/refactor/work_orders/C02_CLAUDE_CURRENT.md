@@ -1,302 +1,19 @@
-# C02 — Claude A | A-20261031-18 | FAST-3 eight NEW verified SOURCE BODY MOVEs
+# C02 — Claude A | A-20261031-19 | FAST-3 eight NEW verified SOURCE BODY MOVEs
 
-**CANONICAL_HEAD_AT_ISSUANCE:** `86bf6e034a8dbfaaca19cb744f74ad136e4b677a` · **OLD_ORDER_BLOB:** `3f53b86981d0db59fa7e5f22afece54997354cc0` · **A_REMOTE_HEAD_AT_DESIGN:** `ea6c23bb2f31aa3daa75a74f4291c32d876f3721` · **SOURCE_BLOB:** `de0194163fc2602881feaebd8cd125fb6f204b13`.
-#11 `6541098810` and remote A HEAD confirm A-20261031-17 A1–A8 REMOTE_DONE, normal 8/8 exit0, remote source/Owner/test SHA. Prior completed items never reused. RF-035 exclusively owns `libs/reporting/profitability_recovery_day1.py` (RF-035 Owner table checked). A1–A6 promote earlier reserves after exact fresh BODY comparison; A7–A8 are separately inspected read-only diagnostic calculations. All eight new TARGET modules verified absent 404 on A and integration before issuance.
+**CANONICAL_HEAD_AT_ISSUANCE:** `58ae1829a470d45120c5777405f2787f1fea255e` · **OLD_ORDER_BLOB:** `aa76914f70432192da088d32978a28424898ecb9` · **A_REMOTE_HEAD_AT_DESIGN:** `3041b41ea51b455971e1fcf609095b60a48daf40` · **SOURCE_BLOB:** `c46916f178b600cef3729d65e197e7e971d851cd`.
 
-**Single-document contract:** Read only this C02, pin CANONICAL_HEAD/ORDER_BLOB/A_REMOTE_HEAD. Do not read D00/RF/queue/C03/handoff or self-select. Move entire exact computation BODY into named new A Owner, SOURCE thin signature-preserving wrapper; TARGET must not import SOURCE. Use call-time facade for globals, preserve caller/monkeypatch seams, return identity, errors, output ordering. No duplicate BODY/KEEP-only or same-SHA rechecks counted as MOVE. Execute A1–A8 independently; blocked item never cancels other safe items, and a new order does not retroactively invalidate a started order.
+#11 6541615114 and remote A source/Owner/test evidence: A-20261031-18 A1–A8 **REMOTE_DONE 8/8**, normal unittest 8/8 exit0, integrated via C04 5d7ef926 and C05 accepted. DO NOT repeat prior profitability-recovery tasks or prior tests. #12 6541579406: B-18 0/8, B remote f5e41ab6 unchanged, B C01 remains valid and MUST NOT be replaced by A. #32 no new comment after 6520075820; RunLab runtime exit255, RUN_SOURCE_SHA=UNKNOWN, operational SAFETY_HOLD.
 
-**Safety:** diagnostic read-only fake/temp/in-memory only. Do not invoke real report roots or `main()`, network, broker/order/Guard/Step5C/UEF, RunLab, operational DB/state, deployments, frozen oracle/CI workflow, or modify protected effect. A source/test branch only, no docs/RF/STATUS/C04/C05 or force push. Normal scoped unittest/pytest exit0 is G2, no blanket -O/full peer/hosted CI. HTTPS auth failure is PUSH_BLOCKED only; continue other safe work, use only approved normal/exact-tree expected-head delivery. Re-fetch remote SHA and source/Owner/test blobs. C04 G3 integration and C05 RF DONE separate.
+**Single-document execution:** Read only THIS C02. Pin CANONICAL_HEAD, ORDER_BLOB, A_REMOTE_HEAD, ORDER_ID. Implement all A1–A8 independently in this order, continuing after any individual blocker. Do not read D00/RF/queue/C03/handoff or self-select reserve. The new C02 does not cancel an already-started older A order retroactively. A only edits its own branch code/tests. No docs/RF/STATUS/C04/C05 or other Actor files, force push, frozen oracle, workflow or live effects.
 
-**Allowed code/test:** `libs/reporting/profitability_recovery_day1.py`, the eight exact A TARGET paths below, and `tests/test_p15_rf035_18h_reporting_projection_owners.py` only.
+**Verified scope:** RF-035, Claude A exclusive reporting SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py`; A and integration exact SOURCE blob `c46916f178b600cef3729d65e197e7e971d851cd` matched. Eight distinct TARGET paths below and the new test file returned **404 on both A and integration**. No B overlap. All eight are existing read-only shadow candidate *report/evaluation* helpers, not the live quant-enforcement implementation. Move each exact existing SOURCE function BODY (not a copy or a rename-only change) to the specified new single Owner; SOURCE retains original public/private signature, annotations and a thin delegation wrapper. Preserve output bytes/order, dict/list identity where relevant, exception types, call-time monkeypatch, generator laziness. TARGET never imports SOURCE; use keyword-only `facade` for names looked up from SOURCE globals and SOURCE passes `sys.modules[__name__]` (import sys under collision-free alias if needed). For pure functions without module globals, do not add unnecessary facade. Import annotations in Owner under `from __future__ import annotations`, avoid evaluating `facade.*` in annotations. Do not change any callers unless a verified thin-wrapper/monkeypatch compatibility defect requires a narrowly scoped test-only fix.
 
-## A1 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::iter_trade_dirs` @ L33 | SOURCE_BLOB=`de0194163fc2602881feaebd8cd125fb6f204b13`
-**TARGET:** `libs/reporting/profitability_recovery_trade_dirs_projection.py::iter_trade_dirs` (NEW A-exclusive, verified absent on A and integration).
-**Exact computation BODY to MOVE (not test-only/KEEP):**
-```python
-def iter_trade_dirs(reports_root: Path, day: str) -> List[Path]:
-    day_root = Path(reports_root) / "trades" / str(day)
-    if not day_root.exists():
-        return []
-    return sorted(_iter_trade_dirs(day_root))
-```
-**Wrapper/monkeypatch/callers:** Leave original signature/defaults/annotations in SOURCE as thin delegation. TARGET never imports SOURCE. _iter_trade_dirs and Path via facade; sorted deterministic order. For SOURCE global lookups, TARGET accepts keyword-only `facade` and accesses `facade.NAME` at invocation, SOURCE passes `sys.modules[__name__]`. No duplicate BODY, preserve return identity, exceptions, byte output, call-time patch seams.
-**Normal targeted test:** `test_a1_iter_trade_dirs` in `tests/test_p15_rf035_18h_reporting_projection_owners.py`. Input→expected: empty temp root/day → [] ; with two mock trade folders → deterministic sorted paths. Compare original golden vs facade wrapper and Owner, include negative/exception parity, post-import monkeypatch and AST thin-wrapper. Temp/memory only; no real reports. After all eight run `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_*_projection.py` and `python -m unittest tests/test_p15_rf035_18h_reporting_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A code/test, re-fetch remote HEAD/source/Owner/test blob. If blocked record and **continue A2**.
+**Safety:** fake in-memory inputs and TemporaryDirectory only; never invoke actual shadow pipeline, entry enforcement, real reports, broker/order/Guard/Step5C/UEF/RunLab, live network, operational State/DB, runtime/deploy or real CLI. No trading policy change. Use scoped normal `python -m unittest tests/test_p15_rf035_19h_quant_shadow_owners.py -v` (or scoped pytest) **exit0** after all items, with 8 per-item golden preimage→wrapper→Owner parity checks, negative/exception checks, AST actual BODY removal/thin-wrapper check and post-import facade monkeypatch seams. `python -m py_compile` on SOURCE and all eight TARGET modules before normal test. Each item below names the exact test case and input→expected; make actual test implementations in the one new test file, not placeholder assertions. Preserve baseline golden results from original source blob. Report any existing unrelated failures separately, never invent PASS. Git commit/push only A code+test on `work/p15-a-reporter-pure-20261021`, non-force, re-fetch A remote HEAD and SOURCE/8 Owners/test blobs; Git authentication failure is PUSH_BLOCKED only (continue remaining safe items). C04 integration and C05 G1/G2/G3/DONE are separate, not A/C03 duties.
 
-## A2 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_read_hold_payload` @ L68 | SOURCE_BLOB=`de0194163fc2602881feaebd8cd125fb6f204b13`
-**TARGET:** `libs/reporting/profitability_recovery_hold_projection.py::_read_hold_payload` (NEW A-exclusive, verified absent on A and integration).
-**Exact computation BODY to MOVE (not test-only/KEEP):**
-```python
-def _read_hold_payload(trade_dir: Path) -> Dict[str, Any]:
-    return _read_json(trade_dir / "hold.json")
-```
-**Wrapper/monkeypatch/callers:** Leave original signature/defaults/annotations in SOURCE as thin delegation. TARGET never imports SOURCE. _read_json via facade; preserve direct helper patch seam. For SOURCE global lookups, TARGET accepts keyword-only `facade` and accesses `facade.NAME` at invocation, SOURCE passes `sys.modules[__name__]`. No duplicate BODY, preserve return identity, exceptions, byte output, call-time patch seams.
-**Normal targeted test:** `test_a2_read_hold_payload` in `tests/test_p15_rf035_18h_reporting_projection_owners.py`. Input→expected: temp trade_dir without hold.json → {}; temp hold.json object → exact dict. Compare original golden vs facade wrapper and Owner, include negative/exception parity, post-import monkeypatch and AST thin-wrapper. Temp/memory only; no real reports. After all eight run `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_*_projection.py` and `python -m unittest tests/test_p15_rf035_18h_reporting_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A code/test, re-fetch remote HEAD/source/Owner/test blob. If blocked record and **continue A3**.
+**Allowed changed files:** `libs/reporting/quant_shadow_candidate_evaluation.py`, exactly the eight new `libs/reporting/quant_shadow_*_projection.py` TARGET paths below, and `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Do not touch the six FUTURE RESERVE targets.
 
-## A3 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_resolve_same_day_linkage` @ L72 | SOURCE_BLOB=`de0194163fc2602881feaebd8cd125fb6f204b13`
-**TARGET:** `libs/reporting/profitability_recovery_linkage_projection.py::_resolve_same_day_linkage` (NEW A-exclusive, verified absent on A and integration).
-**Exact computation BODY to MOVE (not test-only/KEEP):**
-```python
-def _resolve_same_day_linkage(lifecycle_bundle: Dict[str, Any], trade_dir: Path) -> Dict[str, Any]:
-    linkage = lifecycle_bundle.get("same_day_reporter_linkage")
-    if isinstance(linkage, dict) and _linkage_surface_present(linkage):
-        return dict(linkage)
-
-    artifacts = _bundle_artifacts(lifecycle_bundle)
-    section_provenance = _section_provenance(lifecycle_bundle)
-    candidate_paths = [
-        artifacts.get("reporter_analysis_json"),
-        artifacts.get("reporter_analysis_md"),
-        ((section_provenance.get("reporter_status_human") or {}) if isinstance(section_provenance.get("reporter_status_human"), dict) else {}).get("artifact_path"),
-    ]
-    for raw in candidate_paths:
-        if not raw:
-            continue
-        candidate = Path(str(raw))
-        if not candidate.is_absolute():
-            candidate = Path.cwd() / candidate
-        if candidate.exists():
-            return {
-                "status": "linked_day_fallback",
-                "linkage_reason": "same_day_reporter_artifact_present",
-                "artifact_path": str(candidate),
-            }
-    return linkage if isinstance(linkage, dict) else {}
-```
-**Wrapper/monkeypatch/callers:** Leave original signature/defaults/annotations in SOURCE as thin delegation. TARGET never imports SOURCE. _linkage_surface_present/_bundle_artifacts/_section_provenance/Path via facade; absolute temp-only artifact probes. For SOURCE global lookups, TARGET accepts keyword-only `facade` and accesses `facade.NAME` at invocation, SOURCE passes `sys.modules[__name__]`. No duplicate BODY, preserve return identity, exceptions, byte output, call-time patch seams.
-**Normal targeted test:** `test_a3_resolve_same_day_linkage` in `tests/test_p15_rf035_18h_reporting_projection_owners.py`. Input→expected: lifecycle with same_day_reporter_linkage.status='linked' and a visible linkage key → original dict; missing artifacts → {}. Compare original golden vs facade wrapper and Owner, include negative/exception parity, post-import monkeypatch and AST thin-wrapper. Temp/memory only; no real reports. After all eight run `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_*_projection.py` and `python -m unittest tests/test_p15_rf035_18h_reporting_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A code/test, re-fetch remote HEAD/source/Owner/test blob. If blocked record and **continue A4**.
-
-## A4 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::iter_trade_diagnostic_rows` @ L330 | SOURCE_BLOB=`de0194163fc2602881feaebd8cd125fb6f204b13`
-**TARGET:** `libs/reporting/profitability_recovery_row_iteration_projection.py::iter_trade_diagnostic_rows` (NEW A-exclusive, verified absent on A and integration).
-**Exact computation BODY to MOVE (not test-only/KEEP):**
-```python
-def iter_trade_diagnostic_rows(reports_root: Path, day: str) -> List[Dict[str, Any]]:
-    return [read_trade_diagnostic_row(trade_dir) for trade_dir in iter_trade_dirs(reports_root, day)]
-```
-**Wrapper/monkeypatch/callers:** Leave original signature/defaults/annotations in SOURCE as thin delegation. TARGET never imports SOURCE. read_trade_diagnostic_row/iter_trade_dirs via facade, preserve call-time monkeypatch. For SOURCE global lookups, TARGET accepts keyword-only `facade` and accesses `facade.NAME` at invocation, SOURCE passes `sys.modules[__name__]`. No duplicate BODY, preserve return identity, exceptions, byte output, call-time patch seams.
-**Normal targeted test:** `test_a4_iter_trade_diagnostic_rows` in `tests/test_p15_rf035_18h_reporting_projection_owners.py`. Input→expected: empty temp trade day → [] ; one mock trade folder → one diagnostic row. Compare original golden vs facade wrapper and Owner, include negative/exception parity, post-import monkeypatch and AST thin-wrapper. Temp/memory only; no real reports. After all eight run `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_*_projection.py` and `python -m unittest tests/test_p15_rf035_18h_reporting_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A code/test, re-fetch remote HEAD/source/Owner/test blob. If blocked record and **continue A5**.
-
-## A5 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::audit_profitability_recovery_day` @ L338 | SOURCE_BLOB=`de0194163fc2602881feaebd8cd125fb6f204b13`
-**TARGET:** `libs/reporting/profitability_recovery_audit_projection.py::audit_profitability_recovery_day` (NEW A-exclusive, verified absent on A and integration).
-**Exact computation BODY to MOVE (not test-only/KEEP):**
-```python
-def audit_profitability_recovery_day(reports_root: Path, day: str) -> Dict[str, Any]:
-    rows = iter_trade_diagnostic_rows(reports_root, day)
-    return {
-        "schema_version": "profitability_recovery_day1_audit.v1",
-        "day": str(day),
-        "trade_count": len(rows),
-        "closed_trade_count": sum(1 for row in rows if bool(row.get("closed_trade"))),
-        "closed_trade_report_generation_regression_count": sum(
-            1 for row in rows if bool(row.get("closed_trade_report_generation_regression"))
-        ),
-        "closed_trade_decision_only_misclassification_count": sum(
-            1 for row in rows if bool(row.get("closed_trade_decision_only_misclassification"))
-        ),
-        "holding_evidence_thin_count": sum(1 for row in rows if bool(row.get("holding_evidence_thin"))),
-        "same_day_linkage_missing_count": sum(1 for row in rows if bool(row.get("same_day_linkage_missing"))),
-        "execution_fields_missing_count": sum(
-            int(row.get("execution_missing_fields_count") or 0) for row in rows
-        ),
-        "top_recurring_diagnostic_weakness": _top_recurring_weakness(rows),
-        "rows": rows,
-    }
-```
-**Wrapper/monkeypatch/callers:** Leave original signature/defaults/annotations in SOURCE as thin delegation. TARGET never imports SOURCE. iter_trade_diagnostic_rows/_top_recurring_weakness via facade, dict keys and sum semantics exact. For SOURCE global lookups, TARGET accepts keyword-only `facade` and accesses `facade.NAME` at invocation, SOURCE passes `sys.modules[__name__]`. No duplicate BODY, preserve return identity, exceptions, byte output, call-time patch seams.
-**Normal targeted test:** `test_a5_audit_profitability_recovery_day` in `tests/test_p15_rf035_18h_reporting_projection_owners.py`. Input→expected: empty temp root/day → trade_count=0, top_recurring_diagnostic_weakness='none'. Compare original golden vs facade wrapper and Owner, include negative/exception parity, post-import monkeypatch and AST thin-wrapper. Temp/memory only; no real reports. After all eight run `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_*_projection.py` and `python -m unittest tests/test_p15_rf035_18h_reporting_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A code/test, re-fetch remote HEAD/source/Owner/test blob. If blocked record and **continue A6**.
-
-## A6 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::build_daily_profitability_scorecard` @ L361 | SOURCE_BLOB=`de0194163fc2602881feaebd8cd125fb6f204b13`
-**TARGET:** `libs/reporting/profitability_recovery_scorecard_projection.py::build_daily_profitability_scorecard` (NEW A-exclusive, verified absent on A and integration).
-**Exact computation BODY to MOVE (not test-only/KEEP):**
-```python
-def build_daily_profitability_scorecard(reports_root: Path, day: str) -> Dict[str, Any]:
-    audit = audit_profitability_recovery_day(reports_root, day)
-    rows = list(audit.get("rows") or [])
-    return {
-        "schema_version": "daily_profitability_scorecard.v1",
-        "day": str(day),
-        "total_trades": int(audit.get("trade_count") or 0),
-        "closed_trades": int(audit.get("closed_trade_count") or 0),
-        "loss_trades": sum(1 for row in rows if bool(row.get("loss_trade"))),
-        "lifecycle_linkage_missing_count": int(audit.get("same_day_linkage_missing_count") or 0),
-        "holding_evidence_thin_count": int(audit.get("holding_evidence_thin_count") or 0),
-        "execution_fields_missing_count": int(audit.get("execution_fields_missing_count") or 0),
-        "closed_trade_report_generation_regression_count": int(
-            audit.get("closed_trade_report_generation_regression_count") or 0
-        ),
-        "closed_trade_decision_only_misclassification_count": int(
-            audit.get("closed_trade_decision_only_misclassification_count") or 0
-        ),
-        "top_recurring_diagnostic_weakness": str(
-            audit.get("top_recurring_diagnostic_weakness") or "none"
-        ),
-        "rows": rows,
-    }
-```
-**Wrapper/monkeypatch/callers:** Leave original signature/defaults/annotations in SOURCE as thin delegation. TARGET never imports SOURCE. audit_profitability_recovery_day via facade, preserve row identity and schema keys. For SOURCE global lookups, TARGET accepts keyword-only `facade` and accesses `facade.NAME` at invocation, SOURCE passes `sys.modules[__name__]`. No duplicate BODY, preserve return identity, exceptions, byte output, call-time patch seams.
-**Normal targeted test:** `test_a6_build_daily_profitability_scorecard` in `tests/test_p15_rf035_18h_reporting_projection_owners.py`. Input→expected: empty temp root/day → total_trades=0, closed_trades=0, loss_trades=0. Compare original golden vs facade wrapper and Owner, include negative/exception parity, post-import monkeypatch and AST thin-wrapper. Temp/memory only; no real reports. After all eight run `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_*_projection.py` and `python -m unittest tests/test_p15_rf035_18h_reporting_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A code/test, re-fetch remote HEAD/source/Owner/test blob. If blocked record and **continue A7**.
-
-## A7 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_resolve_execution_details` @ L171 | SOURCE_BLOB=`de0194163fc2602881feaebd8cd125fb6f204b13`
-**TARGET:** `libs/reporting/profitability_recovery_execution_projection.py::_resolve_execution_details` (NEW A-exclusive, verified absent on A and integration).
-**Exact computation BODY to MOVE (not test-only/KEEP):**
-```python
-def _resolve_execution_details(lifecycle_bundle: Dict[str, Any], trade_dir: Path) -> Dict[str, Any]:
-    explicit = lifecycle_bundle.get("execution_details")
-    if isinstance(explicit, dict) and explicit:
-        return dict(explicit)
-
-    execution = lifecycle_bundle.get("execution")
-    execution = execution if isinstance(execution, dict) else {}
-    story_contract = lifecycle_bundle.get("story_contract")
-    story_contract = story_contract if isinstance(story_contract, dict) else {}
-    entry = _read_json(trade_dir / "entry.json")
-    exit_payload = _read_json(trade_dir / "exit.json")
-
-    order_id = (
-        execution.get("ord_no")
-        or ((entry.get("execution_details") or {}) if isinstance(entry.get("execution_details"), dict) else {}).get("order_id")
-        or ((exit_payload.get("execution_details") or {}) if isinstance(exit_payload.get("execution_details"), dict) else {}).get("order_id")
-        or None
-    )
-
-    if order_id in (None, ""):
-        for ctx in (lifecycle_bundle.get("exit_execution_details", {}), lifecycle_bundle.get("entry_execution_details", {})):
-            if ctx.get("order_id") not in (None, ""):
-                order_id = ctx.get("order_id")
-                break
-
-    execution_mode_label = str(story_contract.get("execution_mode_label") or "").strip().lower()
-    execution_mode = None
-    broker_env = None
-    if "simulation" in execution_mode_label or "mock" in execution_mode_label:
-        execution_mode = "simulation"
-        broker_env = "mock"
-    elif execution_mode_label:
-        execution_mode = execution_mode_label
-
-    filled_qty = execution.get("qty")
-    avg_price = (
-        execution.get("avg_price")
-        or execution.get("price")
-        or entry.get("price")
-        or exit_payload.get("price")
-        or None
-    )
-    if avg_price in (None, ""):
-        for ctx in (lifecycle_bundle.get("exit_execution_details", {}), lifecycle_bundle.get("entry_execution_details", {})):
-            if ctx.get("avg_price") not in (None, ""):
-                avg_price = ctx.get("avg_price")
-                break
-    if avg_price in (None, ""):
-        avg_price = (
-            _safe_float(lifecycle_bundle.get("exit", {}).get("price")) or
-            _safe_float(lifecycle_bundle.get("entry", {}).get("price")) or
-            _safe_float(lifecycle_bundle.get("monitor_snapshot", {}).get("average_price"))
-        )
-
-    order_status = execution.get("status")
-    if order_status in (None, "") and str(execution.get("action") or "").strip():
-        order_status = "filled"
-
-    return {
-        "order_status": order_status if order_status not in ("", []) else None,
-        "order_id": order_id if order_id not in ("", []) else None,
-        "execution_mode": execution_mode,
-        "broker_env": broker_env,
-        "filled_qty": filled_qty if filled_qty not in ("", []) else None,
-        "avg_price": avg_price if avg_price not in ("", []) else None,
-    }
-```
-**Wrapper/monkeypatch/callers:** Leave original signature/defaults/annotations in SOURCE as thin delegation. TARGET never imports SOURCE. _read_json/_safe_float via facade, only temp fixture paths; preserve fallback precedence and exception semantics. For SOURCE global lookups, TARGET accepts keyword-only `facade` and accesses `facade.NAME` at invocation, SOURCE passes `sys.modules[__name__]`. No duplicate BODY, preserve return identity, exceptions, byte output, call-time patch seams.
-**Normal targeted test:** `test_a7_resolve_execution_details` in `tests/test_p15_rf035_18h_reporting_projection_owners.py`. Input→expected: {'execution_details':{'order_id':'X'}} with temp dir → {'order_id':'X'}; empty lifecycle/temp → same original six-key missing/None structure. Compare original golden vs facade wrapper and Owner, include negative/exception parity, post-import monkeypatch and AST thin-wrapper. Temp/memory only; no real reports. After all eight run `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_*_projection.py` and `python -m unittest tests/test_p15_rf035_18h_reporting_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A code/test, re-fetch remote HEAD/source/Owner/test blob. If blocked record and **continue A8**.
-
-## A8 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::read_trade_diagnostic_row` @ L253 | SOURCE_BLOB=`de0194163fc2602881feaebd8cd125fb6f204b13`
-**TARGET:** `libs/reporting/profitability_recovery_diagnostic_row_projection.py::read_trade_diagnostic_row` (NEW A-exclusive, verified absent on A and integration).
-**Exact computation BODY to MOVE (not test-only/KEEP):**
-```python
-def read_trade_diagnostic_row(trade_dir: Path) -> Dict[str, Any]:
-    lifecycle_path = _artifact_path(
-        trade_dir,
-        "lifecycle_bundle.json",
-        "lifecycle/trade_lifecycle.json",
-        "trade_lifecycle.json",
-    )
-    generation_state_path = trade_dir / "reports" / "report_generation_state.json"
-    ai_trade_report_llm_path = _artifact_path(
-        trade_dir,
-        "reports/ai_trade_report_llm_response.json",
-        "ai_trade_report/ai_trade_report_llm_response.json",
-    )
-    lifecycle_bundle = _read_json(lifecycle_path)
-    generation_state = _read_json(generation_state_path)
-    components = generation_state.get("components") if isinstance(generation_state.get("components"), dict) else {}
-    ai_component = components.get("ai_trade_report") if isinstance(components.get("ai_trade_report"), dict) else {}
-    ai_trade_report_llm_exists = ai_trade_report_llm_path.exists()
-    same_day_linkage = _resolve_same_day_linkage(lifecycle_bundle, trade_dir)
-    holding_evidence = _resolve_holding_evidence(lifecycle_bundle, trade_dir)
-    holding_phase_summary = str(holding_evidence.get("holding_phase_summary") or "").strip()
-    hold_events_count = int(holding_evidence.get("hold_events_count") or 0)
-    monitor_context_snapshots = [
-        dict(row)
-        for row in list(holding_evidence.get("monitor_context_snapshots") or [])
-        if isinstance(row, dict)
-    ]
-    execution_details = _resolve_execution_details(lifecycle_bundle, trade_dir)
-    closed_trade = _is_closed_trade(lifecycle_bundle)
-    story_type = str(
-        lifecycle_bundle.get("story_type")
-        or ((lifecycle_bundle.get("story_contract") or {}) if isinstance(lifecycle_bundle.get("story_contract"), dict) else {}).get("story_type")
-        or ""
-    ).strip().lower()
-    ai_status = _resolve_ai_trade_report_status(lifecycle_bundle, ai_component, ai_trade_report_llm_exists)
-    return_pct = _safe_float(((lifecycle_bundle.get("trade_outcome") or {}) if isinstance(lifecycle_bundle.get("trade_outcome"), dict) else {}).get("return_pct"))
-    same_day_linkage_missing = not _linkage_surface_present(same_day_linkage)
-    holding_evidence_thin = bool(
-        lifecycle_bundle.get("hold_evidence_thin")
-        or hold_events_count <= 0
-        or (not monitor_context_snapshots and not holding_phase_summary)
-    )
-    execution_missing_fields = _execution_missing_fields(execution_details)
-    row = {
-        "trade_id": str(lifecycle_bundle.get("trade_id") or trade_dir.name),
-        "day": str(lifecycle_bundle.get("day") or trade_dir.parent.name),
-        "symbol": str(lifecycle_bundle.get("symbol") or ""),
-        "story_type": story_type,
-        "lifecycle_status": str(lifecycle_bundle.get("trade_lifecycle_status") or lifecycle_bundle.get("status") or ""),
-        "closed_trade": closed_trade,
-        "loss_trade": bool(return_pct is not None and return_pct < 0),
-        "return_pct": return_pct,
-        "hold_duration": str(holding_evidence.get("hold_duration") or ""),
-        "hold_duration_sec": holding_evidence.get("hold_duration_sec"),
-        "holding_evidence_thin": holding_evidence_thin,
-        "holding_phase_summary": holding_phase_summary,
-        "hold_events_count": hold_events_count,
-        "monitor_context_snapshots_count": len(monitor_context_snapshots),
-        "same_day_linkage_status": str(same_day_linkage.get("status") or ""),
-        "same_day_linkage_reason": str(same_day_linkage.get("linkage_reason") or ""),
-        "same_day_linkage_missing": same_day_linkage_missing,
-        "execution_fields_missing": execution_missing_fields,
-        "execution_missing_fields_count": len(execution_missing_fields),
-        "ai_trade_report_llm_response_exists": ai_trade_report_llm_exists,
-        "ai_trade_report_status": ai_status,
-        "closed_trade_report_generation_regression": _is_closed_trade_report_generation_regression(
-            closed_trade=closed_trade,
-            ai_trade_report_llm_exists=ai_trade_report_llm_exists,
-            ai_status=ai_status,
-        ),
-        "closed_trade_decision_only_misclassification": bool(closed_trade and story_type == "decision_only"),
-        "report_generation_state_path": str(generation_state_path),
-        "lifecycle_bundle_path": str(lifecycle_path),
-    }
-    return row
-```
-**Wrapper/monkeypatch/callers:** Leave original signature/defaults/annotations in SOURCE as thin delegation. TARGET never imports SOURCE. _artifact_path/_read_json/_resolve_same_day_linkage/_resolve_holding_evidence/_resolve_execution_details/_is_closed_trade/_safe_float/_execution_missing_fields/_resolve_ai_trade_report_status/_linkage_surface_present/_is_closed_trade_report_generation_regression via facade; do not fix unrelated behavior or access real reports. For SOURCE global lookups, TARGET accepts keyword-only `facade` and accesses `facade.NAME` at invocation, SOURCE passes `sys.modules[__name__]`. No duplicate BODY, preserve return identity, exceptions, byte output, call-time patch seams.
-**Normal targeted test:** `test_a8_read_trade_diagnostic_row` in `tests/test_p15_rf035_18h_reporting_projection_owners.py`. Input→expected: empty temp trade dir named 'T123' → trade_id='T123', closed_trade=False, missing fields count matches golden. Compare original golden vs facade wrapper and Owner, include negative/exception parity, post-import monkeypatch and AST thin-wrapper. Temp/memory only; no real reports. After all eight run `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_*_projection.py` and `python -m unittest tests/test_p15_rf035_18h_reporting_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A code/test, re-fetch remote HEAD/source/Owner/test blob. If blocked record and **continue Ahandoff**.
-
-## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY
-
-Six RF-035 pure shadow-diagnostic SOURCE bodies inspected at A/integration blob `c46916f178b600cef3729d65e197e7e971d851cd`; exact six new TARGET paths returned 404 on both A and integration. Distinct from current eight profitability-recovery moves. Do not execute without a new C03 order and fresh blob/target recheck.
-
-### R1 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_bool` @ L32 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_scalar_projection.py::_bool` (404 A/integration, A-exclusive)
+## A1 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_bool @ L32
+**TARGET:** `libs/reporting/quant_shadow_scalar_projection.py::_bool` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
 ```python
 def _bool(value: Any) -> bool:
     if isinstance(value, bool):
@@ -305,9 +22,11 @@ def _bool(value: Any) -> bool:
         return bool(value)
     return str(value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
 ```
-**Safety/patch:** pure truth normalization, no side effects; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** True→True; 'YES'→True; 'off'→False; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+**Wrapper / callers / monkeypatch:** pure builtin conversion, no facade required; retain bool-before-number precedence. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_scalar_projection.py::_bool`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
+**Normal targeted test:** `test_a1_bool` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: True→True; 'YES'→True; 'off'→False; 0→False. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A2.
 
-### R2 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_iter_days` @ L51 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_day_projection.py::_iter_days` (404 A/integration, A-exclusive)
+## A2 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_iter_days @ L51
+**TARGET:** `libs/reporting/quant_shadow_day_projection.py::_iter_days` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
 ```python
 def _iter_days(start: str, end: str) -> Iterable[str]:
     start_date = date.fromisoformat(str(start)[:10])
@@ -317,9 +36,11 @@ def _iter_days(start: str, end: str) -> Iterable[str]:
         yield current.isoformat()
         current += timedelta(days=1)
 ```
-**Safety/patch:** date/timedelta via facade, preserve generator laziness and ValueError; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** start='2026-10-30',end='2026-10-31'→two ISO days; reversed→empty iterator; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+**Wrapper / callers / monkeypatch:** date/timedelta through call-time facade; SOURCE generator wrapper MUST use `yield from Owner._iter_days(...,facade=sys.modules[__name__])`, never `return Owner...`; retain laziness/ValueError. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_day_projection.py::_iter_days`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
+**Normal targeted test:** `test_a2_iter_days` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: '2026-10-30'..'2026-10-31'→['2026-10-30','2026-10-31']; reversed range→[]; malformed date→ValueError. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A3.
 
-### R3 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_top_counter` @ L261 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_counter_projection.py::_top_counter` (404 A/integration, A-exclusive)
+## A3 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_top_counter @ L261
+**TARGET:** `libs/reporting/quant_shadow_counter_projection.py::_top_counter` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
 ```python
 def _top_counter(counter: Counter[str], *, limit: int = 8) -> List[Dict[str, Any]]:
     return [
@@ -328,9 +49,11 @@ def _top_counter(counter: Counter[str], *, limit: int = 8) -> List[Dict[str, Any
         if name
     ]
 ```
-**Safety/patch:** Counter input, preserve most_common tie order; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** Counter({'a':2,'b':1}),limit=1→[{'name':'a','count':2}]; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+**Wrapper / callers / monkeypatch:** pure Counter input; no facade required; preserve most_common tie order and list/dict identity semantics. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_counter_projection.py::_top_counter`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
+**Normal targeted test:** `test_a3_top_counter` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: Counter({'a':2,'b':1}),limit=1→[{'name':'a','count':2}]; empty→[]. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A4.
 
-### R4 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_row_blockers` @ L269 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_blocker_projection.py::_row_blockers` (404 A/integration, A-exclusive)
+## A4 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_row_blockers @ L269
+**TARGET:** `libs/reporting/quant_shadow_blocker_projection.py::_row_blockers` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
 ```python
 def _row_blockers(row: Mapping[str, Any]) -> List[str]:
     blockers: List[str] = []
@@ -344,9 +67,11 @@ def _row_blockers(row: Mapping[str, Any]) -> List[str]:
             blockers.extend(_text(item) for item in value if _text(item))
     return blockers
 ```
-**Safety/patch:** _text via facade, preserve nested blocker order and duplicates; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** {'blockers':['a','']}→['a']; nested entry_quant_decision.blockers preserved; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+**Wrapper / callers / monkeypatch:** resolve `_text` and `Mapping` through call-time facade, preserve nested blocker order/duplicates and repeated `_text` calls. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_blocker_projection.py::_row_blockers`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
+**Normal targeted test:** `test_a4_row_blockers` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: {'blockers':['a','']}→['a']; {'entry_quant_decision':{'blockers':['b','b']}}→['b','b']. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A5.
 
-### R5 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_count_reason` @ L393 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_reason_projection.py::_count_reason` (404 A/integration, A-exclusive)
+## A5 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_count_reason @ L393
+**TARGET:** `libs/reporting/quant_shadow_reason_projection.py::_count_reason` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
 ```python
 def _count_reason(candidates: Sequence[Mapping[str, Any]], names: set[str]) -> int:
     total = 0
@@ -362,9 +87,11 @@ def _count_reason(candidates: Sequence[Mapping[str, Any]], names: set[str]) -> i
             total += 1
     return total
 ```
-**Safety/patch:** _text/_cost_floor_state/_row_blockers via facade, preserve short circuit; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** [{'reason':'bad'}],{'bad'}→1; []→0; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+**Wrapper / callers / monkeypatch:** resolve `_text`, `_cost_floor_state`, `_row_blockers` via call-time facade; preserve early-continue and per-row counting once. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_reason_projection.py::_count_reason`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
+**Normal targeted test:** `test_a5_count_reason` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: [{'reason':'bad'}],{'bad'}→1; [],{'bad'}→0; nested blocker matching counts once. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A6.
 
-### R6 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_runner_up_risk_count` @ L408 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd` → TARGET `libs/reporting/quant_shadow_runnerup_projection.py::_runner_up_risk_count` (404 A/integration, A-exclusive)
+## A6 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_runner_up_risk_count @ L408
+**TARGET:** `libs/reporting/quant_shadow_runnerup_projection.py::_runner_up_risk_count` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
 ```python
 def _runner_up_risk_count(candidates: Sequence[Mapping[str, Any]]) -> int:
     total = 0
@@ -382,7 +109,128 @@ def _runner_up_risk_count(candidates: Sequence[Mapping[str, Any]]) -> int:
             total += 1
     return total
 ```
-**Safety/patch:** _text/_bool via facade, preserve precedence and count; pure fake/in-memory shadow diagnostic only. SOURCE thin wrapper, no duplicate BODY, call-time monkeypatch parity. **Future normal test input→expected:** [{'shadow_role':'runner_up_evaluated','would_enter':True}]→1; other role→0; original golden/wrapper/Owner and negative/exception parity. **RESERVE_VERIFIED DESIGN ONLY**, C03 fresh HEAD/blob/target recheck before promotion.
+**Wrapper / callers / monkeypatch:** resolve `_text`, `_bool` via call-time facade; preserve ordered early-continues, role gate and duplicate-free per-row count. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_runnerup_projection.py::_runner_up_risk_count`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
+**Normal targeted test:** `test_a6_runner_up_risk_count` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: [{'shadow_role':'runner_up_evaluated','would_enter':True}]→1; [{'shadow_role':'other','would_enter':True}]→0. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A7.
+
+## A7 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_mean @ L561
+**TARGET:** `libs/reporting/quant_shadow_mean_projection.py::_mean` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
+```python
+def _mean(values: Sequence[float]) -> float | None:
+    clean = [float(value) for value in values if value is not None]
+    if not clean:
+        return None
+    return round(sum(clean) / float(len(clean)), 4)
+```
+**Wrapper / callers / monkeypatch:** pure float/sum/round; no facade; retain None filtering and float conversion exceptions. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_mean_projection.py::_mean`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
+**Normal targeted test:** `test_a7_mean` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: []→None; [1.0,None,3.0]→2.0; ['bad']→ValueError. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue A8.
+
+## A8 | RF-035 | Owner=CLAUDE_A | SOURCE=libs/reporting/quant_shadow_candidate_evaluation.py | SOURCE_BLOB=c46916f178b600cef3729d65e197e7e971d851cd | SOURCE::_scorecard_return_signal @ L685
+**TARGET:** `libs/reporting/quant_shadow_scorecard_signal_projection.py::_scorecard_return_signal` (NEW, A-exclusive; 404 A/integration). **MOVE actual BODY exactly:**
+```python
+def _scorecard_return_signal(row: Mapping[str, Any]) -> float | None:
+    for key in ("avg_return_15m_pct", "avg_return_5m_pct", "avg_return_30m_pct", "avg_return_3m_pct"):
+        value = row.get(key)
+        if value not in (None, ""):
+            try:
+                return float(value)
+            except Exception:
+                continue
+    return None
+```
+**Wrapper / callers / monkeypatch:** pure mapping/float conversion; no facade; retain key priority and fallback after ValueError. Keep SOURCE original signature as thin wrapper delegating to `libs/reporting/quant_shadow_scorecard_signal_projection.py::_scorecard_return_signal`; no duplicate computation, no TARGET→SOURCE import, preserve preexisting call sites and error behavior.
+**Normal targeted test:** `test_a8_scorecard_return_signal` in `tests/test_p15_rf035_19h_quant_shadow_owners.py`. Input→expected: {'avg_return_15m_pct':'0.2'}→0.2; {'avg_return_15m_pct':'bad','avg_return_5m_pct':'0.4'}→0.4; {}→None. Compare original-preimage golden with SOURCE wrapper and TARGET; negative/error and call-time patch where applicable, AST thin wrapper; fake/temp only. **Blocked:** record exact reason/status, then continue report/push.
+
+## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY, NOT EXECUTABLE
+Six additional RF-035 Claude A-exclusive SOURCE BODY candidates below were independently inspected on A and integration at blob `c46916f178b600cef3729d65e197e7e971d851cd`; each new TARGET was 404 on both refs. They are disjoint from A1–A8 and B. **Not authorized for implementation without new C03 order**. A1–A8 will alter this same SOURCE blob, so C03 must recheck current actor HEAD/blob and TARGET absence before any promotion.
+
+### R1 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_cost_floor_state` @ L282 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
+**TARGET:** `libs/reporting/quant_shadow_cost_floor_projection.py::_cost_floor_state` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+```python
+def _cost_floor_state(row: Mapping[str, Any]) -> str:
+    direct = _text(row.get("entry_quant_cost_floor_state"))
+    if direct:
+        return direct
+    decision = row.get("entry_quant_decision")
+    if isinstance(decision, Mapping):
+        cost_edge = decision.get("cost_edge")
+        if isinstance(cost_edge, Mapping):
+            state = _text(cost_edge.get("cost_floor_state"))
+            if state:
+                return state
+    snapshot = row.get("quant_factor_snapshot")
+    if isinstance(snapshot, Mapping):
+        factors = snapshot.get("factors")
+        if isinstance(factors, Mapping):
+            return _text(factors.get("cost_floor_state"))
+    return ""
+```
+**Safety/patch:** read-only shadow reporting/evaluation, no live effects; _text/Mapping late-bound via facade; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'entry_quant_cost_floor_state':'safe'}→'safe'; {}→''; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+
+### R2 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_quant_decision` @ L301 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
+**TARGET:** `libs/reporting/quant_shadow_entry_decision_projection.py::_entry_quant_decision` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+```python
+def _entry_quant_decision(row: Mapping[str, Any]) -> str:
+    decision = row.get("entry_quant_decision")
+    if isinstance(decision, Mapping):
+        return _text(decision.get("decision"))
+    return ""
+```
+**Safety/patch:** read-only shadow reporting/evaluation, no live effects; _text/Mapping late-bound via facade; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'entry_quant_decision':{'decision':'entry_ready'}}→'entry_ready'; {}→''; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+
+### R3 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_tactic_id` @ L308 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
+**TARGET:** `libs/reporting/quant_shadow_tactic_projection.py::_tactic_id` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+```python
+def _tactic_id(row: Mapping[str, Any]) -> str:
+    direct = _text(row.get("quant_tactic_id") or row.get("tactic_id"))
+    if direct:
+        return direct
+    decision = row.get("entry_quant_decision")
+    if isinstance(decision, Mapping):
+        tactic = _text(decision.get("tactic_id"))
+        if tactic:
+            return tactic
+    snapshot = row.get("quant_factor_snapshot")
+    if isinstance(snapshot, Mapping):
+        return _text(snapshot.get("tactic_id"))
+    return ""
+```
+**Safety/patch:** read-only shadow reporting/evaluation, no live effects; _text/Mapping late-bound via facade; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'quant_tactic_id':'T1'}→'T1'; {'entry_quant_decision':{'tactic_id':'T2'}}→'T2'; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+
+### R4 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_tactic_suitability_tier` @ L323 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
+**TARGET:** `libs/reporting/quant_shadow_tactic_tier_projection.py::_tactic_suitability_tier` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+```python
+def _tactic_suitability_tier(row: Mapping[str, Any]) -> str:
+    direct = _text(row.get("tactic_suitability_tier"))
+    if direct:
+        return direct
+    decision = row.get("entry_quant_decision")
+    if isinstance(decision, Mapping):
+        suitability = decision.get("tactic_suitability")
+        if isinstance(suitability, Mapping):
+            tier = _text(suitability.get("tier"))
+            if tier:
+                return tier
+    return ""
+```
+**Safety/patch:** read-only shadow reporting/evaluation, no live effects; _text/Mapping late-bound via facade; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'tactic_suitability_tier':'high'}→'high'; {}→''; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+
+### R5 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_forward_base` @ L337 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
+**TARGET:** `libs/reporting/quant_shadow_forward_base_projection.py::_forward_base` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+```python
+def _forward_base(row: Mapping[str, Any]) -> Dict[str, Any]:
+    base = row.get("shadow_forward_base")
+    return dict(base) if isinstance(base, Mapping) else {}
+```
+**Safety/patch:** read-only shadow reporting/evaluation, no live effects; Mapping late-bound via facade; preserve dict copy; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'shadow_forward_base':{'x':1}}→{'x':1}; {}→{}; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
+
+### R6 | RF-035 | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_forward_outcome` @ L342 | BLOB=`c46916f178b600cef3729d65e197e7e971d851cd`
+**TARGET:** `libs/reporting/quant_shadow_forward_outcome_projection.py::_forward_outcome` (404 A/integration, A-exclusive). **Verified BODY (design only):**
+```python
+def _forward_outcome(row: Mapping[str, Any]) -> Dict[str, Any]:
+    outcome = row.get("shadow_forward_outcome")
+    return dict(outcome) if isinstance(outcome, Mapping) else {}
+```
+**Safety/patch:** read-only shadow reporting/evaluation, no live effects; Mapping late-bound via facade; preserve dict copy; thin SOURCE wrapper, no duplicated BODY, preserve call-time monkeypatch. **Future targeted normal test input→expected:** {'shadow_forward_outcome':{'available':True}}→{'available':True}; {}→{}; preimage golden/wrapper/Owner and exception parity. **RESERVE_VERIFIED DESIGN ONLY**, recheck HEAD/blob/target before promotion.
 
 ## REPORT / PUSH
-#11: `ORDER_ID=A-20261031-18 | CANONICAL_HEAD | ORDER_BLOB | A_REMOTE_BEFORE→AFTER | A1..A8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times measured only. C03 document push is not code G1/G2/G3 or RF_DONE. RunLab SOURCE_UNKNOWN/exit255 remains SAFETY_HOLD.
+#11: `ORDER_ID=A-20261031-19 | CANONICAL_HEAD | ORDER_BLOB | A_REMOTE_BEFORE→AFTER | A1..A8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Measure times, do not infer. Only actual remote code+test G1/G2; C03 documentation update is not G1/G2/G3, C04 G3 and C05 DONE separate. RunLab remains SAFETY_HOLD.
