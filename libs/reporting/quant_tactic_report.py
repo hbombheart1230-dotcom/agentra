@@ -4,6 +4,8 @@ from typing import Any, Dict, List, Mapping
 
 from libs.runtime.quant.decision import build_entry_quant_decision
 from libs.runtime.quant.suitability import score_candidate_tactic_suitability
+from libs.reporting import quant_tactic_items_projection as _items_owner
+from libs.reporting import quant_tactic_fmt_projection as _fmt_owner
 
 
 def _mapping(value: Any) -> Dict[str, Any]:
@@ -11,17 +13,11 @@ def _mapping(value: Any) -> Dict[str, Any]:
 
 
 def _items(value: Any) -> List[str]:
-    if not isinstance(value, (list, tuple)):
-        return []
-    return [str(item or "").strip() for item in value if str(item or "").strip()]
+    return _items_owner._items(value)
 
 
 def _fmt(value: Any) -> str:
-    if value in (None, ""):
-        return "-"
-    if isinstance(value, float):
-        return f"{value:.4f}".rstrip("0").rstrip(".")
-    return str(value)
+    return _fmt_owner._fmt(value)
 
 
 def _pct(value: Any) -> str:

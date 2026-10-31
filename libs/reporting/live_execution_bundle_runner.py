@@ -237,6 +237,12 @@ from libs.reporting import live_bundle_duration_human_projection as _duration_hu
 from libs.reporting import live_bundle_trade_sequence_projection as _trade_seq_owner
 from libs.reporting import live_bundle_artifact_paths_projection as _artifact_paths_owner
 from libs.reporting import live_bundle_wmi_epoch_projection as _wmi_epoch_owner
+from libs.reporting import live_bundle_stale_timeout_projection as _stale_timeout_owner
+from libs.reporting import live_bundle_lock_path_projection as _lock_path_owner
+from libs.reporting import live_bundle_queue_path_projection as _queue_path_owner
+from libs.reporting import live_bundle_json_read_projection as _json_read_owner
+from libs.reporting import live_bundle_jsonl_iter_projection as _jsonl_iter_owner
+from libs.reporting import live_bundle_trade_id_projection as _trade_id_owner
 
 
 def _env_bool(name: str, default: bool = True) -> bool:
@@ -248,14 +254,11 @@ def _normalize_model_name(model: Any) -> str:
 
 
 def _background_job_lock_path() -> Path | None:
-    raw = str(os.getenv("INTRADAY_TRADE_REPORT_JOB_LOCK_PATH") or "").strip()
-    if raw:
-        return Path(raw)
-    return ROOT / "reports" / "runtime" / "intraday_trade_report_bundle.lock"
+    return _lock_path_owner._background_job_lock_path(facade=sys.modules[__name__])
 
 
 def _background_job_queue_path() -> Path:
-    return ROOT / "reports" / "runtime" / "intraday_trade_report_bundle.queue.json"
+    return _queue_path_owner._background_job_queue_path(facade=sys.modules[__name__])
 
 
 def _bundle_role(value: Any = "") -> str:
@@ -573,10 +576,7 @@ def _creation_epoch_from_wmi(value: Any) -> float:
 
 
 def _stale_process_after_sec() -> float:
-    try:
-        return max(30.0, float(os.getenv("INTRADAY_TRADE_REPORT_STALE_PROCESS_SEC", "180") or 180.0))
-    except Exception:
-        return 180.0
+    return _stale_timeout_owner._stale_process_after_sec(facade=sys.modules[__name__])
 
 
 def _terminate_process_tree(pid: int) -> bool:
@@ -749,31 +749,11 @@ def _clear_background_job_lock(path: Path | None, *, role: str = "") -> None:
 
 
 def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
-    if not path.exists():
-        return []
-    out: List[Dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for raw in f:
-            line = raw.strip()
-            if not line:
-                continue
-            try:
-                obj = json.loads(line)
-            except Exception:
-                continue
-            if isinstance(obj, dict):
-                out.append(obj)
-    return out
+    return _jsonl_iter_owner._iter_jsonl(path, facade=sys.modules[__name__])
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        obj = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return obj if isinstance(obj, dict) else {}
+    return _json_read_owner._read_json(path, facade=sys.modules[__name__])
 
 
 def _latest_decision_trace_payload(rows: List[Dict[str, Any]], *, event: str, agent: str) -> Dict[str, Any]:
@@ -1112,9 +1092,7 @@ def _format_duration_human(seconds: int) -> str:
 
 
 def _build_trade_id(day: str, symbol: str, seq: int) -> str:
-    compact_day = str(day or "").replace("-", "")
-    clean_symbol = normalize_symbol(symbol or "", allow_test_symbols=True) or "UNKNOWN"
-    return f"TRD_{compact_day}_{clean_symbol}_{int(seq):02d}"
+    return _trade_id_owner._build_trade_id(day, symbol, seq, facade=sys.modules[__name__])
 
 
 def _trade_id_sequence(trade_id: str) -> int:
