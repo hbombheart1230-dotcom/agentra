@@ -1,189 +1,15 @@
-# C02 — Claude A | A-20261031-16 | FAST-3 eight NEW verified SOURCE BODY MOVEs
+# C02 — Claude A | A-20261031-17 | FAST-3 eight NEW verified SOURCE BODY MOVEs
 
-**CANONICAL_HEAD_AT_ISSUANCE:** `a7808f27807ea5a99158d07855ba1ffab6f0f0bf` · **OLD_ORDER_BLOB:** `f663f6a1e7fa139c6db70f4d1103055cb2c86252` · **A_REMOTE_HEAD_AT_DESIGN:** `05ddbb06159cdd1ddfaa27f27ae085bc8cc6c3ae`. #11 comment 6540008605 and remote A HEAD confirm A-20261031-15 A1–A8 REMOTE_DONE with normal unittest 24/24 exit0 and new Owner/test blobs. Never reuse completed BODY, same-SHA PASS or KEEP. RF-035 A-exclusive physical owner file list includes BOTH `libs/reporting/execution_truth_surface.py` and `libs/reporting/profitability_recovery_day1.py`; B is read-only. SOURCE blobs actor/integration identical: `35ea270497e07885bf50bc95eed32ff8e681547e` and `c1b07665b62dbd6970249a04e71b2b7a1e7b039e`. All new TARGET paths below were checked 404 on A and integration. Eight distinct real SOURCE calculations, not prior moves.
+**CANONICAL_HEAD_AT_ISSUANCE:** `420b885efbff732bad9730202fa23f3afab926a2` · **OLD_ORDER_BLOB:** `b0f10269bcf72c7003e292c380cf7aa99a2d35d7` · **A_REMOTE_HEAD_AT_DESIGN:** `358a1531c18a542d6d4df05199ea7d52d1fecf13` · **SOURCE_BLOB:** `4dcdc03719ae59803ab7b63a6bbb37c935983174`. #11 `6540535600` and remote A HEAD confirm prior A-20261031-16 A1–A8 REMOTE_DONE, normal 9/9 exit0 and new owner/test blobs. Prior completed items never reused. RF-035 owns `libs/reporting/profitability_recovery_day1.py` exclusively; integration source blob identical. A1–A6 promote previous verified reserves after recheck; A7/A8 separately inspected. All five new TARGET modules checked ABSENT 404 on A and integration.
 
-## SINGLE DOCUMENT EXECUTION / SAFETY — COMPLETE A1–A8
+**Single-document execution contract:** Read this C01/C02 only, pin order blob, canonical HEAD and actor HEAD; do not read D00/RF/queue/C03/handoff or self-select. Move the entire exact SOURCE computation BODY to the named new actor-only TARGET; SOURCE keeps original signature/defaults/annotations as thin delegation wrapper, TARGET never imports SOURCE. For dynamic globals (including imports, constants and monkeypatchable helpers), TARGET accepts keyword-only `facade` and uses `facade.NAME` at call time; SOURCE passes `sys.modules[__name__]` or equivalent. Preserve byte output, identity, ordering, exceptions and caller patch seams; use golden original vs wrapper/Owner, thin-wrapper AST and post-import patch tests. Pure helpers may omit facade. Never count KEEP, same-SHA PASS, or pre-moved code as new BODY MOVE. Complete every safe item even if one is blocked; an already-started order is not retroactively cancelled.
 
-Read this C02 only. At start pin CANONICAL_HEAD, C02 ORDER_BLOB, actor HEAD, each SOURCE blob and ORDER_ID; do not read D00/RF/queue/C03/handoff or choose tasks. For each item MOVE the exact SOURCE calculation BODY below into its new A-only TARGET; leave SOURCE original function name/signature/defaults/annotations and thin delegation wrapper. No duplicate BODY, no TARGET import of SOURCE. When computation references original module globals, TARGET accepts keyword-only `facade` and resolves `facade.NAME` at call time; SOURCE passes `sys.modules[__name__]` (import sys if needed). Preserve monkeypatch after import, identity, exception behavior, original Korean text, list order, bytes and call-time dependencies. Pure functions need no facade. If one item blocked, record exact blocker and continue all remaining safe items; if already moved on fresh A HEAD mark REMOTE_DONE, not new work.
+**Safety:** fake/in-memory/TemporaryDirectory and patched environment only. No actual reports/main(), real account/order/Broker/Guard/Step5C/UEF/RunLab, network, operational state, deployment, frozen oracle, CI workflow, force push, other actor branch or docs/RF/STATUS/C04/C05. One normal targeted unittest/pytest exit0 on changed scope is G2; no blanket -O/full peer/hosted CI. Actor commits/pushes code/test on own branch only (normal push or approved exact-tree expected-head lease), re-fetches remote HEAD/source/target/test blobs. HTTPS auth failure is PUSH_BLOCKED only; continue other safe items. C04 integration and C05 G1/G2/G3/DONE separate.
 
-**Safety:** in-memory/fake/TemporaryDirectory only; no live broker/accounts/orders, operating state/guard/Step5C/UEF/RunLab, real network, deployment, frozen oracle, CI workflow, force push or policy. Only change two listed RF-035 SOURCE files, explicitly named new Owner modules and `tests/test_p15_rf035_16h_reporting_owners.py`. No B code, docs/RF/STATUS/queue/C04/C05 changes. Normal targeted unittest/pytest exit0 once suffices G2; no mandatory -O/full peer/hosted CI. Commit/push A-only code/tests with normal non-force or approved expected-head lease, re-fetch remote A HEAD and exact SOURCE/TARGET/test blobs. LOCAL_ONLY is not remote G1; HTTPS failure affects PUSH only, continue other safe work. C04 integration and C05 G1/G2/G3/DONE are separate.
+**Allowed code/test:** `libs/reporting/profitability_recovery_day1.py`, explicitly named new A target modules and `tests/test_p15_rf035_17h_projection_owners.py` only.
 
-## A1 | RF-035 | SOURCE `libs/reporting/execution_truth_surface.py::_clip` @ L12 | SOURCE_BLOB=`35ea270497e07885bf50bc95eed32ff8e681547e`
-
-**TARGET:** `libs/reporting/execution_truth_scalar_projection.py::_clip` — NEW A-exclusive Owner; 404 on actor and integration. **Exact computation BODY to MOVE, not copy:**
-
-```python
-def _clip(value: Any, *, max_len: int = 120) -> str:
-    text = str(value or "").strip()
-    if not text:
-        return ""
-    return text[:max_len]
-```
-
-**Wrapper/callers/monkeypatch:** pure; preserve str/strip/slice, keyword-only max_len and errors. Preserve original signature and call-site imports; SOURCE wrapper delegates, TARGET never imports SOURCE. Verify original pre-move golden vs wrapper/Owner normal/negative/exception/post-import patch parity; AST/source test must show no duplicate original BODY. **Targeted test:** `test_a1_clip` in `tests/test_p15_rf035_16h_reporting_owners.py`. **Input→expected:** '  ABC  ',max_len=2 → 'AB'; None → ''; max_len=-1 retains original Python slicing. Fake/in-memory only. **Normal:** `python -m py_compile libs/reporting/execution_truth_surface.py libs/reporting/execution_truth_scalar_projection.py`, then `python -m unittest tests/test_p15_rf035_16h_reporting_owners.py -v` (once all eight methods exist; equivalent exact-scope pytest allowed). Report actual exit/PASS, never invent. Commit/push A source+Owner+test and refetch remote SHA/blob; if blocked report reason and continue A2.
-
-## A2 | RF-035 | SOURCE `libs/reporting/execution_truth_surface.py::_fmt_price` @ L19 | SOURCE_BLOB=`35ea270497e07885bf50bc95eed32ff8e681547e`
-
-**TARGET:** `libs/reporting/execution_truth_scalar_projection.py::_fmt_price` — NEW A-exclusive Owner; 404 on actor and integration. **Exact computation BODY to MOVE, not copy:**
-
-```python
-def _fmt_price(value: Any) -> str:
-    try:
-        if value in (None, ""):
-            return "-"
-        return f"{float(value):.2f}"
-    except Exception:
-        return str(value or "-")
-```
-
-**Wrapper/callers/monkeypatch:** pure; preserve None/empty '-', float 2 decimals, exception fallback. Preserve original signature and call-site imports; SOURCE wrapper delegates, TARGET never imports SOURCE. Verify original pre-move golden vs wrapper/Owner normal/negative/exception/post-import patch parity; AST/source test must show no duplicate original BODY. **Targeted test:** `test_a2_fmt_price` in `tests/test_p15_rf035_16h_reporting_owners.py`. **Input→expected:** '123.456' → '123.46'; None → '-'; 'bad' → 'bad'. Fake/in-memory only. **Normal:** `python -m py_compile libs/reporting/execution_truth_surface.py libs/reporting/execution_truth_scalar_projection.py`, then `python -m unittest tests/test_p15_rf035_16h_reporting_owners.py -v` (once all eight methods exist; equivalent exact-scope pytest allowed). Report actual exit/PASS, never invent. Commit/push A source+Owner+test and refetch remote SHA/blob; if blocked report reason and continue A3.
-
-## A3 | RF-035 | SOURCE `libs/reporting/execution_truth_surface.py::_fmt_pct` @ L28 | SOURCE_BLOB=`35ea270497e07885bf50bc95eed32ff8e681547e`
-
-**TARGET:** `libs/reporting/execution_truth_scalar_projection.py::_fmt_pct` — NEW A-exclusive Owner; 404 on actor and integration. **Exact computation BODY to MOVE, not copy:**
-
-```python
-def _fmt_pct(value: Any) -> str:
-    try:
-        if value in (None, ""):
-            return "-"
-        return f"{float(value) * 100:.2f}%"
-    except Exception:
-        return str(value or "-")
-```
-
-**Wrapper/callers/monkeypatch:** pure; preserve ratio×100, 2 decimal percent, exception fallback. Preserve original signature and call-site imports; SOURCE wrapper delegates, TARGET never imports SOURCE. Verify original pre-move golden vs wrapper/Owner normal/negative/exception/post-import patch parity; AST/source test must show no duplicate original BODY. **Targeted test:** `test_a3_fmt_pct` in `tests/test_p15_rf035_16h_reporting_owners.py`. **Input→expected:** 0.125 → '12.50%'; None → '-'; 'bad' → 'bad'. Fake/in-memory only. **Normal:** `python -m py_compile libs/reporting/execution_truth_surface.py libs/reporting/execution_truth_scalar_projection.py`, then `python -m unittest tests/test_p15_rf035_16h_reporting_owners.py -v` (once all eight methods exist; equivalent exact-scope pytest allowed). Report actual exit/PASS, never invent. Commit/push A source+Owner+test and refetch remote SHA/blob; if blocked report reason and continue A4.
-
-## A4 | RF-035 | SOURCE `libs/reporting/execution_truth_surface.py::_is_available` @ L37 | SOURCE_BLOB=`35ea270497e07885bf50bc95eed32ff8e681547e`
-
-**TARGET:** `libs/reporting/execution_truth_scalar_projection.py::_is_available` — NEW A-exclusive Owner; 404 on actor and integration. **Exact computation BODY to MOVE, not copy:**
-
-```python
-def _is_available(value: Any) -> bool:
-    text = str(value or "").strip().lower()
-    return text not in {"", "unavailable", "not_available", "none", "-"}
-```
-
-**Wrapper/callers/monkeypatch:** pure; preserve unavailable sentinel case-fold and zero string. Preserve original signature and call-site imports; SOURCE wrapper delegates, TARGET never imports SOURCE. Verify original pre-move golden vs wrapper/Owner normal/negative/exception/post-import patch parity; AST/source test must show no duplicate original BODY. **Targeted test:** `test_a4_is_available` in `tests/test_p15_rf035_16h_reporting_owners.py`. **Input→expected:** 'not_available' → False; '0' → True; None → False. Fake/in-memory only. **Normal:** `python -m py_compile libs/reporting/execution_truth_surface.py libs/reporting/execution_truth_scalar_projection.py`, then `python -m unittest tests/test_p15_rf035_16h_reporting_owners.py -v` (once all eight methods exist; equivalent exact-scope pytest allowed). Report actual exit/PASS, never invent. Commit/push A source+Owner+test and refetch remote SHA/blob; if blocked report reason and continue A5.
-
-## A5 | RF-035 | SOURCE `libs/reporting/execution_truth_surface.py::build_execution_truth_bullets` @ L42 | SOURCE_BLOB=`35ea270497e07885bf50bc95eed32ff8e681547e`
-
-**TARGET:** `libs/reporting/execution_truth_bullet_projection.py::build_execution_truth_bullets` — NEW A-exclusive Owner; 404 on actor and integration. **Exact computation BODY to MOVE, not copy:**
-
-```python
-def build_execution_truth_bullets(
-    *,
-    execution_details: Dict[str, Any] | None = None,
-    shared_facts: Dict[str, Any] | None = None,
-) -> List[str]:
-    details = dict(execution_details or {})
-    facts = dict(shared_facts or {})
-
-    broker_truth_source = _clip(details.get("broker_truth_source"), max_len=80)
-    broker_fill_price = details.get("filled_price") if broker_truth_source else facts.get("broker_fill_price")
-    broker_buy_price = (
-        details.get("broker_buy_price")
-        if details.get("broker_buy_price") not in (None, "")
-        else facts.get("broker_buy_price")
-    )
-    broker_fee = details.get("broker_fee") if details.get("broker_fee") not in (None, "") else facts.get("broker_fee")
-    broker_tax = details.get("broker_tax") if details.get("broker_tax") not in (None, "") else facts.get("broker_tax")
-    pnl_value = details.get("broker_realized_pnl") if details.get("broker_realized_pnl") not in (None, "") else facts.get("pnl")
-    pnl_pct = details.get("broker_realized_pnl_pct") if details.get("broker_realized_pnl_pct") not in (None, "") else facts.get("pnl_pct")
-    price_truth_source = _clip(facts.get("price_truth_source"), max_len=40)
-    pnl_truth_source = _clip(details.get("pnl_truth_source") or facts.get("pnl_truth_source"), max_len=80)
-    same_price_round_trip = False
-    try:
-        same_price_round_trip = (
-            broker_buy_price not in (None, "")
-            and broker_fill_price not in (None, "")
-            and float(broker_buy_price) == float(broker_fill_price)
-        )
-    except Exception:
-        same_price_round_trip = False
-
-    bullets: List[str] = []
-    if broker_fill_price not in (None, ""):
-        bullets.append(f"브로커 체결 기준 가격은 {_fmt_price(broker_fill_price)}였습니다.")
-    if _is_available(pnl_value):
-        if pnl_pct not in (None, ""):
-            bullets.append(f"브로커 실현 손익은 {pnl_value} / {_fmt_pct(pnl_pct)} 기준으로 정리했습니다.")
-        else:
-            bullets.append(f"브로커 실현 손익은 {pnl_value} 기준으로 정리했습니다.")
-    if broker_fee not in (None, "") or broker_tax not in (None, ""):
-        bullets.append(
-            f"브로커 수수료/세금은 {broker_fee if broker_fee not in (None, '') else '-'} / {broker_tax if broker_tax not in (None, '') else '-'}였습니다."
-        )
-    if same_price_round_trip and _is_available(pnl_value):
-        bullets.append("매수가와 매도가가 같았고, 손익은 가격 변동이 아니라 수수료와 세금에서 발생했습니다.")
-    if broker_truth_source:
-        bullets.append(f"체결 truth 소스는 {broker_truth_source}였습니다.")
-    if price_truth_source and price_truth_source not in {"", "unavailable"}:
-        bullets.append(f"가격 truth 소스는 {with_ro_particle(price_truth_source_label(price_truth_source))} 확인했습니다.")
-    if pnl_truth_source and pnl_truth_source not in {"", "unavailable"}:
-        bullets.append(f"손익 truth 소스는 {with_ro_particle(pnl_truth_source_label(pnl_truth_source))} 확인했습니다.")
-    return bullets
-```
-
-**Wrapper/callers/monkeypatch:** call-time facade for _clip/_fmt_price/_fmt_pct/_is_available/with_ro_particle/price_truth_source_label/pnl_truth_source_label; preserve Korean strings and bullet ordering; NEVER alter actual broker facts or execution. Preserve original signature and call-site imports; SOURCE wrapper delegates, TARGET never imports SOURCE. Verify original pre-move golden vs wrapper/Owner normal/negative/exception/post-import patch parity; AST/source test must show no duplicate original BODY. **Targeted test:** `test_a5_build_execution_truth_bullets` in `tests/test_p15_rf035_16h_reporting_owners.py`. **Input→expected:** fake details {broker_truth_source:'paper',filled_price:100,broker_buy_price:100,broker_realized_pnl:-1,broker_realized_pnl_pct:-0.01,broker_fee:1} → contains '브로커 체결 기준 가격은 100.00', '브로커 실현 손익은 -1 / -1.00%', same-price fee sentence; original golden exact list. Fake/in-memory only. **Normal:** `python -m py_compile libs/reporting/execution_truth_surface.py libs/reporting/execution_truth_bullet_projection.py`, then `python -m unittest tests/test_p15_rf035_16h_reporting_owners.py -v` (once all eight methods exist; equivalent exact-scope pytest allowed). Report actual exit/PASS, never invent. Commit/push A source+Owner+test and refetch remote SHA/blob; if blocked report reason and continue A6.
-
-## A6 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_safe_float` @ L46 | SOURCE_BLOB=`c1b07665b62dbd6970249a04e71b2b7a1e7b039e`
-
-**TARGET:** `libs/reporting/profitability_recovery_scalar_projection.py::_safe_float` — NEW A-exclusive Owner; 404 on actor and integration. **Exact computation BODY to MOVE, not copy:**
-
-```python
-def _safe_float(value: Any) -> float | None:
-    try:
-        if value in (None, ""):
-            return None
-        return float(value)
-    except Exception:
-        return None
-```
-
-**Wrapper/callers/monkeypatch:** pure; no facade; preserve None/empty/bad and float exceptions. Preserve original signature and call-site imports; SOURCE wrapper delegates, TARGET never imports SOURCE. Verify original pre-move golden vs wrapper/Owner normal/negative/exception/post-import patch parity; AST/source test must show no duplicate original BODY. **Targeted test:** `test_a6_safe_float` in `tests/test_p15_rf035_16h_reporting_owners.py`. **Input→expected:** '1.25' → 1.25; None → None; 'bad' → None. Fake/in-memory only. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_scalar_projection.py`, then `python -m unittest tests/test_p15_rf035_16h_reporting_owners.py -v` (once all eight methods exist; equivalent exact-scope pytest allowed). Report actual exit/PASS, never invent. Commit/push A source+Owner+test and refetch remote SHA/blob; if blocked report reason and continue A7.
-
-## A7 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_is_closed_trade` @ L55 | SOURCE_BLOB=`c1b07665b62dbd6970249a04e71b2b7a1e7b039e`
-
-**TARGET:** `libs/reporting/profitability_recovery_trade_projection.py::_is_closed_trade` — NEW A-exclusive Owner; 404 on actor and integration. **Exact computation BODY to MOVE, not copy:**
-
-```python
-def _is_closed_trade(lifecycle_bundle: Dict[str, Any]) -> bool:
-    status = str(
-        lifecycle_bundle.get("trade_lifecycle_status")
-        or lifecycle_bundle.get("status")
-        or ""
-    ).strip().lower()
-    if status == "closed":
-        return True
-    exit_obj = lifecycle_bundle.get("exit") if isinstance(lifecycle_bundle.get("exit"), dict) else {}
-    exit_action = str(exit_obj.get("action") or "").strip().upper()
-    return exit_action == "SELL"
-```
-
-**Wrapper/callers/monkeypatch:** pure read-only lifecycle classification; no order effects; preserve status precedence and SELL fallback. Preserve original signature and call-site imports; SOURCE wrapper delegates, TARGET never imports SOURCE. Verify original pre-move golden vs wrapper/Owner normal/negative/exception/post-import patch parity; AST/source test must show no duplicate original BODY. **Targeted test:** `test_a7_is_closed_trade` in `tests/test_p15_rf035_16h_reporting_owners.py`. **Input→expected:** {'trade_lifecycle_status':'closed'} → True; {'exit':{'action':'SELL'}} → True; {} → False. Fake/in-memory only. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_trade_projection.py`, then `python -m unittest tests/test_p15_rf035_16h_reporting_owners.py -v` (once all eight methods exist; equivalent exact-scope pytest allowed). Report actual exit/PASS, never invent. Commit/push A source+Owner+test and refetch remote SHA/blob; if blocked report reason and continue A8.
-
-## A8 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_linkage_surface_present` @ L68 | SOURCE_BLOB=`c1b07665b62dbd6970249a04e71b2b7a1e7b039e`
-
-**TARGET:** `libs/reporting/profitability_recovery_trade_projection.py::_linkage_surface_present` — NEW A-exclusive Owner; 404 on actor and integration. **Exact computation BODY to MOVE, not copy:**
-
-```python
-def _linkage_surface_present(linkage: Dict[str, Any]) -> bool:
-    if not linkage:
-        return False
-    status = str(linkage.get("status") or "").strip().lower()
-    reason = str(linkage.get("linkage_reason") or "").strip()
-    return bool(status) and (status != "missing" or bool(reason))
-```
-
-**Wrapper/callers/monkeypatch:** pure read-only linkage predicate; preserve missing/reason distinction. Preserve original signature and call-site imports; SOURCE wrapper delegates, TARGET never imports SOURCE. Verify original pre-move golden vs wrapper/Owner normal/negative/exception/post-import patch parity; AST/source test must show no duplicate original BODY. **Targeted test:** `test_a8_linkage_surface_present` in `tests/test_p15_rf035_16h_reporting_owners.py`. **Input→expected:** {'status':'missing','linkage_reason':''} → False; {'status':'missing','linkage_reason':'x'} → True; {'status':'ok'} → True. Fake/in-memory only. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_trade_projection.py`, then `python -m unittest tests/test_p15_rf035_16h_reporting_owners.py -v` (once all eight methods exist; equivalent exact-scope pytest allowed). Report actual exit/PASS, never invent. Commit/push A source+Owner+test and refetch remote SHA/blob; if blocked report reason and continue Ahandoff.
-
-## FUTURE RESERVE — VERIFIED 6/6, NOT EXECUTABLE IN THIS ORDER
-
-All six are different, **not yet moved** real SOURCE calculations from RF-035 `libs/reporting/profitability_recovery_day1.py` at actor/integration blob `c1b07665b62dbd6970249a04e71b2b7a1e7b039e`. Their three future TARGET modules were independently checked ABSENT 404 on A and integration. Source bodies were inspected (not wrappers/KEEP); these are design reserves only, **not** A1–A8 or permission to self-select. C03 must promote via a new C02 after rechecking HEAD/blob.
-
-### R1 | RF-035 | `libs/reporting/profitability_recovery_day1.py::_execution_missing_fields` L76 | blob `c1b07665b62dbd6970249a04e71b2b7a1e7b039e` → `libs/reporting/profitability_recovery_evidence_projection.py::_execution_missing_fields` (ABSENT 404)
-
+## A1 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_execution_missing_fields` @ L60 | SOURCE_BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174`
+**TARGET:** `libs/reporting/profitability_recovery_evidence_projection.py::_execution_missing_fields` (NEW A-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
 ```python
 def _execution_missing_fields(execution_details: Dict[str, Any]) -> List[str]:
     execution_details = execution_details if isinstance(execution_details, dict) else {}
@@ -193,31 +19,28 @@ def _execution_missing_fields(execution_details: Dict[str, Any]) -> List[str]:
             missing.append(str(key))
     return missing
 ```
+**Wrapper/patch:** REQUIRED_EXECUTION_FIELDS resolved through SOURCE facade at call time; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_a1_execution_missing_fields` in `tests/test_p15_rf035_17h_projection_owners.py`. **Input→expected:** {} → list(REQUIRED_EXECUTION_FIELDS); all fields supplied → []. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_evidence_projection.py` and after all eight `python -m unittest tests/test_p15_rf035_17h_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A source/Owner/test, re-fetch SHA/blob; if blocked continue A2.
 
-**Patch/safety:** REQUIRED_EXECUTION_FIELDS call-time facade; read-only in-memory diagnostic, no operating reports or broker calls. **Future targeted normal input→expected:** {} → REQUIRED_EXECUTION_FIELDS in original order; complete fake fields → []; original/wrapper/Owner exact parity and thin-wrapper check required. `RESERVE_VERIFIED` design only, NOT current A1–A8.
-
-### R2 | RF-035 | `libs/reporting/profitability_recovery_day1.py::_bundle_artifacts` L85 | blob `c1b07665b62dbd6970249a04e71b2b7a1e7b039e` → `libs/reporting/profitability_recovery_evidence_projection.py::_bundle_artifacts` (ABSENT 404)
-
+## A2 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_bundle_artifacts` @ L69 | SOURCE_BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174`
+**TARGET:** `libs/reporting/profitability_recovery_evidence_projection.py::_bundle_artifacts` (NEW A-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
 ```python
 def _bundle_artifacts(lifecycle_bundle: Dict[str, Any]) -> Dict[str, Any]:
     artifacts = lifecycle_bundle.get("artifacts")
     return artifacts if isinstance(artifacts, dict) else {}
 ```
+**Wrapper/patch:** pure, preserve dict identity; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_a2_bundle_artifacts` in `tests/test_p15_rf035_17h_projection_owners.py`. **Input→expected:** {'artifacts':{'x':1}} → same dict object; list → {}. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_evidence_projection.py` and after all eight `python -m unittest tests/test_p15_rf035_17h_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A source/Owner/test, re-fetch SHA/blob; if blocked continue A3.
 
-**Patch/safety:** pure alias identity; read-only in-memory diagnostic, no operating reports or broker calls. **Future targeted normal input→expected:** {'artifacts':{'a':1}} → same dict object; [] → {}; original/wrapper/Owner exact parity and thin-wrapper check required. `RESERVE_VERIFIED` design only, NOT current A1–A8.
-
-### R3 | RF-035 | `libs/reporting/profitability_recovery_day1.py::_section_provenance` L90 | blob `c1b07665b62dbd6970249a04e71b2b7a1e7b039e` → `libs/reporting/profitability_recovery_evidence_projection.py::_section_provenance` (ABSENT 404)
-
+## A3 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_section_provenance` @ L74 | SOURCE_BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174`
+**TARGET:** `libs/reporting/profitability_recovery_evidence_projection.py::_section_provenance` (NEW A-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
 ```python
 def _section_provenance(lifecycle_bundle: Dict[str, Any]) -> Dict[str, Any]:
     section_provenance = lifecycle_bundle.get("section_provenance")
     return section_provenance if isinstance(section_provenance, dict) else {}
 ```
+**Wrapper/patch:** pure, preserve dict identity; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_a3_section_provenance` in `tests/test_p15_rf035_17h_projection_owners.py`. **Input→expected:** {'section_provenance':{'x':1}} → same dict object; missing → {}. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_evidence_projection.py` and after all eight `python -m unittest tests/test_p15_rf035_17h_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A source/Owner/test, re-fetch SHA/blob; if blocked continue A4.
 
-**Patch/safety:** pure alias identity; read-only in-memory diagnostic, no operating reports or broker calls. **Future targeted normal input→expected:** {'section_provenance':{'x':1}} → same dict; missing → {}; original/wrapper/Owner exact parity and thin-wrapper check required. `RESERVE_VERIFIED` design only, NOT current A1–A8.
-
-### R4 | RF-035 | `libs/reporting/profitability_recovery_day1.py::_is_closed_trade_report_generation_regression` L286 | blob `c1b07665b62dbd6970249a04e71b2b7a1e7b039e` → `libs/reporting/profitability_recovery_status_projection.py::_is_closed_trade_report_generation_regression` (ABSENT 404)
-
+## A4 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_is_closed_trade_report_generation_regression` @ L270 | SOURCE_BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174`
+**TARGET:** `libs/reporting/profitability_recovery_status_projection.py::_is_closed_trade_report_generation_regression` (NEW A-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
 ```python
 def _is_closed_trade_report_generation_regression(
     *, closed_trade: bool, ai_trade_report_llm_exists: bool, ai_status: str
@@ -231,11 +54,10 @@ def _is_closed_trade_report_generation_regression(
         return False
     return normalized in {"failed", "error", "skipped"}
 ```
+**Wrapper/patch:** pure, preserve failed/error/skipped and short circuit; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_a4_is_closed_trade_report_generation_regression` in `tests/test_p15_rf035_17h_projection_owners.py`. **Input→expected:** closed_trade=True,llm_exists=False → True; closed_trade=False → False. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_status_projection.py` and after all eight `python -m unittest tests/test_p15_rf035_17h_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A source/Owner/test, re-fetch SHA/blob; if blocked continue A5.
 
-**Patch/safety:** pure read-only diagnostic; read-only in-memory diagnostic, no operating reports or broker calls. **Future targeted normal input→expected:** closed_trade=True, ai_trade_report_llm_exists=False, ai_status='' → True; closed_trade=False → False; original/wrapper/Owner exact parity and thin-wrapper check required. `RESERVE_VERIFIED` design only, NOT current A1–A8.
-
-### R5 | RF-035 | `libs/reporting/profitability_recovery_day1.py::_top_recurring_weakness` L380 | blob `c1b07665b62dbd6970249a04e71b2b7a1e7b039e` → `libs/reporting/profitability_recovery_weakness_projection.py::_top_recurring_weakness` (ABSENT 404)
-
+## A5 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_top_recurring_weakness` @ L364 | SOURCE_BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174`
+**TARGET:** `libs/reporting/profitability_recovery_weakness_projection.py::_top_recurring_weakness` (NEW A-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
 ```python
 def _top_recurring_weakness(rows: Iterable[Dict[str, Any]]) -> str:
     counter: Counter[str] = Counter()
@@ -254,11 +76,10 @@ def _top_recurring_weakness(rows: Iterable[Dict[str, Any]]) -> str:
         return "none"
     return str(counter.most_common(1)[0][0])
 ```
+**Wrapper/patch:** Counter through SOURCE facade at call time, preserve tie order; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_a5_top_recurring_weakness` in `tests/test_p15_rf035_17h_projection_owners.py`. **Input→expected:** [] → 'none'; [{'same_day_linkage_missing':True}] → 'same_day_linkage_missing'. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_weakness_projection.py` and after all eight `python -m unittest tests/test_p15_rf035_17h_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A source/Owner/test, re-fetch SHA/blob; if blocked continue A6.
 
-**Patch/safety:** Counter call-time facade; preserve tie order; read-only in-memory diagnostic, no operating reports or broker calls. **Future targeted normal input→expected:** [] → 'none'; [{'same_day_linkage_missing':True}] → 'same_day_linkage_missing'; original/wrapper/Owner exact parity and thin-wrapper check required. `RESERVE_VERIFIED` design only, NOT current A1–A8.
-
-### R6 | RF-035 | `libs/reporting/profitability_recovery_day1.py::_resolve_ai_trade_report_status` L266 | blob `c1b07665b62dbd6970249a04e71b2b7a1e7b039e` → `libs/reporting/profitability_recovery_status_projection.py::_resolve_ai_trade_report_status` (ABSENT 404)
-
+## A6 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_resolve_ai_trade_report_status` @ L250 | SOURCE_BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174`
+**TARGET:** `libs/reporting/profitability_recovery_status_projection.py::_resolve_ai_trade_report_status` (NEW A-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
 ```python
 def _resolve_ai_trade_report_status(
     lifecycle_bundle: Dict[str, Any],
@@ -279,9 +100,144 @@ def _resolve_ai_trade_report_status(
         return "ok"
     return ""
 ```
+**Wrapper/patch:** pure, preserve status precedence; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_a6_resolve_ai_trade_report_status` in `tests/test_p15_rf035_17h_projection_owners.py`. **Input→expected:** {}, {}, True → 'ok'; {'status':'FAILED'}, {}, False → 'failed'. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_status_projection.py` and after all eight `python -m unittest tests/test_p15_rf035_17h_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A source/Owner/test, re-fetch SHA/blob; if blocked continue A7.
 
-**Patch/safety:** pure precedence/normalization; read-only in-memory diagnostic, no operating reports or broker calls. **Future targeted normal input→expected:** {}, {}, True → 'ok'; ai_component={'status':'failed'} → 'failed'; original/wrapper/Owner exact parity and thin-wrapper check required. `RESERVE_VERIFIED` design only, NOT current A1–A8.
+## A7 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_read_json` @ L23 | SOURCE_BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174`
+**TARGET:** `libs/reporting/profitability_recovery_io_projection.py::_read_json` (NEW A-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
+```python
+def _read_json(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+```
+**Wrapper/patch:** json via SOURCE facade at call time; temp read-only; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_a7_read_json` in `tests/test_p15_rf035_17h_projection_owners.py`. **Input→expected:** missing temp file → {}; temp JSON object → dict; malformed → {}. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_io_projection.py` and after all eight `python -m unittest tests/test_p15_rf035_17h_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A source/Owner/test, re-fetch SHA/blob; if blocked continue A8.
 
-## REPORT / PUSH / CONTINUITY
+## A8 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_artifact_path` @ L40 | SOURCE_BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174`
+**TARGET:** `libs/reporting/profitability_recovery_artifact_projection.py::_artifact_path` (NEW A-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
+```python
+def _artifact_path(trade_dir: Path, *candidates: str) -> Path:
+    for raw in candidates:
+        candidate = trade_dir / raw
+        if candidate.exists():
+            return candidate
+    return trade_dir / candidates[0]
+```
+**Wrapper/patch:** Path.exists read-only, preserve first candidate and IndexError; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_a8_artifact_path` in `tests/test_p15_rf035_17h_projection_owners.py`. **Input→expected:** temp b.json exists, ('a.json','b.json') → b.json; neither exists → a.json. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile libs/reporting/profitability_recovery_day1.py libs/reporting/profitability_recovery_artifact_projection.py` and after all eight `python -m unittest tests/test_p15_rf035_17h_projection_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push A source/Owner/test, re-fetch SHA/blob; if blocked continue Ahandoff.
 
-Report #11: `ORDER_ID=A-20261031-16 | CANONICAL_HEAD | ORDER_BLOB | A_REMOTE_BEFORE→AFTER | A1..A8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times only if measured. All safe items must be done or individually BLOCKED. C03 document commits are not code G1/G2/G3 or RF_DONE. RunLab Exited(255) and RUN_SOURCE_SHA UNKNOWN remain operating SAFETY_HOLD; do not touch runtime.
+## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY
+
+### R1 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::iter_trade_dirs` @ L33 | BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174` → TARGET `libs/reporting/profitability_recovery_trade_dirs_projection.py::iter_trade_dirs` (404 actor/integration)
+```python
+def iter_trade_dirs(reports_root: Path, day: str) -> List[Path]:
+    day_root = Path(reports_root) / "trades" / str(day)
+    if not day_root.exists():
+        return []
+    return sorted(_iter_trade_dirs(day_root))
+```
+**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** empty temp trade day → []. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+
+### R2 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_read_hold_payload` @ L79 | BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174` → TARGET `libs/reporting/profitability_recovery_hold_projection.py::_read_hold_payload` (404 actor/integration)
+```python
+def _read_hold_payload(trade_dir: Path) -> Dict[str, Any]:
+    return _read_json(trade_dir / "hold.json")
+```
+**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** temp trade dir without hold.json → {}. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+
+### R3 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::_resolve_same_day_linkage` @ L83 | BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174` → TARGET `libs/reporting/profitability_recovery_linkage_projection.py::_resolve_same_day_linkage` (404 actor/integration)
+```python
+def _resolve_same_day_linkage(lifecycle_bundle: Dict[str, Any], trade_dir: Path) -> Dict[str, Any]:
+    linkage = lifecycle_bundle.get("same_day_reporter_linkage")
+    if isinstance(linkage, dict) and _linkage_surface_present(linkage):
+        return dict(linkage)
+
+    artifacts = _bundle_artifacts(lifecycle_bundle)
+    section_provenance = _section_provenance(lifecycle_bundle)
+    candidate_paths = [
+        artifacts.get("reporter_analysis_json"),
+        artifacts.get("reporter_analysis_md"),
+        ((section_provenance.get("reporter_status_human") or {}) if isinstance(section_provenance.get("reporter_status_human"), dict) else {}).get("artifact_path"),
+    ]
+    for raw in candidate_paths:
+        if not raw:
+            continue
+        candidate = Path(str(raw))
+        if not candidate.is_absolute():
+            candidate = Path.cwd() / candidate
+        if candidate.exists():
+            return {
+                "status": "linked_day_fallback",
+                "linkage_reason": "same_day_reporter_artifact_present",
+                "artifact_path": str(candidate),
+            }
+    return linkage if isinstance(linkage, dict) else {}
+```
+**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** linked lifecycle fixture → linked dict. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+
+### R4 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::iter_trade_diagnostic_rows` @ L360 | BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174` → TARGET `libs/reporting/profitability_recovery_row_iteration_projection.py::iter_trade_diagnostic_rows` (404 actor/integration)
+```python
+def iter_trade_diagnostic_rows(reports_root: Path, day: str) -> List[Dict[str, Any]]:
+    return [read_trade_diagnostic_row(trade_dir) for trade_dir in iter_trade_dirs(reports_root, day)]
+```
+**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** empty temp trade day → []. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+
+### R5 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::audit_profitability_recovery_day` @ L382 | BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174` → TARGET `libs/reporting/profitability_recovery_audit_projection.py::audit_profitability_recovery_day` (404 actor/integration)
+```python
+def audit_profitability_recovery_day(reports_root: Path, day: str) -> Dict[str, Any]:
+    rows = iter_trade_diagnostic_rows(reports_root, day)
+    return {
+        "schema_version": "profitability_recovery_day1_audit.v1",
+        "day": str(day),
+        "trade_count": len(rows),
+        "closed_trade_count": sum(1 for row in rows if bool(row.get("closed_trade"))),
+        "closed_trade_report_generation_regression_count": sum(
+            1 for row in rows if bool(row.get("closed_trade_report_generation_regression"))
+        ),
+        "closed_trade_decision_only_misclassification_count": sum(
+            1 for row in rows if bool(row.get("closed_trade_decision_only_misclassification"))
+        ),
+        "holding_evidence_thin_count": sum(1 for row in rows if bool(row.get("holding_evidence_thin"))),
+        "same_day_linkage_missing_count": sum(1 for row in rows if bool(row.get("same_day_linkage_missing"))),
+        "execution_fields_missing_count": sum(
+            int(row.get("execution_missing_fields_count") or 0) for row in rows
+        ),
+        "top_recurring_diagnostic_weakness": _top_recurring_weakness(rows),
+        "rows": rows,
+    }
+```
+**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** empty temp trade day → trade_count=0, top weakness='none'. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+
+### R6 | RF-035 | SOURCE `libs/reporting/profitability_recovery_day1.py::build_daily_profitability_scorecard` @ L405 | BLOB=`4dcdc03719ae59803ab7b63a6bbb37c935983174` → TARGET `libs/reporting/profitability_recovery_scorecard_projection.py::build_daily_profitability_scorecard` (404 actor/integration)
+```python
+def build_daily_profitability_scorecard(reports_root: Path, day: str) -> Dict[str, Any]:
+    audit = audit_profitability_recovery_day(reports_root, day)
+    rows = list(audit.get("rows") or [])
+    return {
+        "schema_version": "daily_profitability_scorecard.v1",
+        "day": str(day),
+        "total_trades": int(audit.get("trade_count") or 0),
+        "closed_trades": int(audit.get("closed_trade_count") or 0),
+        "loss_trades": sum(1 for row in rows if bool(row.get("loss_trade"))),
+        "lifecycle_linkage_missing_count": int(audit.get("same_day_linkage_missing_count") or 0),
+        "holding_evidence_thin_count": int(audit.get("holding_evidence_thin_count") or 0),
+        "execution_fields_missing_count": int(audit.get("execution_fields_missing_count") or 0),
+        "closed_trade_report_generation_regression_count": int(
+            audit.get("closed_trade_report_generation_regression_count") or 0
+        ),
+        "closed_trade_decision_only_misclassification_count": int(
+            audit.get("closed_trade_decision_only_misclassification_count") or 0
+        ),
+        "top_recurring_diagnostic_weakness": str(
+            audit.get("top_recurring_diagnostic_weakness") or "none"
+        ),
+        "rows": rows,
+    }
+```
+**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** empty temp trade day → total_trades=0. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+
+## REPORT / PUSH
+
+#11: `ORDER_ID=A-20261031-17 | CANONICAL_HEAD | ORDER_BLOB | A_REMOTE_BEFORE→AFTER | A1..A8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times measured only. C03 document commit is not code G1/G2/G3 or RF_DONE. RunLab exit255/RUN_SOURCE_SHA UNKNOWN operating SAFETY_HOLD.
