@@ -31,6 +31,14 @@ from libs.reporting import quant_shadow_reason_projection as _reason_owner
 from libs.reporting import quant_shadow_runnerup_projection as _runnerup_owner
 from libs.reporting import quant_shadow_mean_projection as _mean_owner
 from libs.reporting import quant_shadow_scorecard_signal_projection as _scorecard_signal_owner
+from libs.reporting import quant_shadow_cost_floor_projection as _cost_floor_owner
+from libs.reporting import quant_shadow_entry_decision_projection as _entry_decision_owner
+from libs.reporting import quant_shadow_tactic_projection as _tactic_owner
+from libs.reporting import quant_shadow_tactic_tier_projection as _tactic_tier_owner
+from libs.reporting import quant_shadow_forward_base_projection as _forward_base_owner
+from libs.reporting import quant_shadow_forward_outcome_projection as _forward_outcome_owner
+from libs.reporting import quant_shadow_entry_shape_projection as _entry_shape_owner
+from libs.reporting import quant_shadow_checkpoint_projection as _checkpoint_owner
 
 
 def _text(value: Any) -> str:
@@ -267,68 +275,27 @@ def _row_blockers(row: Mapping[str, Any]) -> List[str]:
 
 
 def _cost_floor_state(row: Mapping[str, Any]) -> str:
-    direct = _text(row.get("entry_quant_cost_floor_state"))
-    if direct:
-        return direct
-    decision = row.get("entry_quant_decision")
-    if isinstance(decision, Mapping):
-        cost_edge = decision.get("cost_edge")
-        if isinstance(cost_edge, Mapping):
-            state = _text(cost_edge.get("cost_floor_state"))
-            if state:
-                return state
-    snapshot = row.get("quant_factor_snapshot")
-    if isinstance(snapshot, Mapping):
-        factors = snapshot.get("factors")
-        if isinstance(factors, Mapping):
-            return _text(factors.get("cost_floor_state"))
-    return ""
+    return _cost_floor_owner._cost_floor_state(row, facade=sys.modules[__name__])
 
 
 def _entry_quant_decision(row: Mapping[str, Any]) -> str:
-    decision = row.get("entry_quant_decision")
-    if isinstance(decision, Mapping):
-        return _text(decision.get("decision"))
-    return ""
+    return _entry_decision_owner._entry_quant_decision(row, facade=sys.modules[__name__])
 
 
 def _tactic_id(row: Mapping[str, Any]) -> str:
-    direct = _text(row.get("quant_tactic_id") or row.get("tactic_id"))
-    if direct:
-        return direct
-    decision = row.get("entry_quant_decision")
-    if isinstance(decision, Mapping):
-        tactic = _text(decision.get("tactic_id"))
-        if tactic:
-            return tactic
-    snapshot = row.get("quant_factor_snapshot")
-    if isinstance(snapshot, Mapping):
-        return _text(snapshot.get("tactic_id"))
-    return ""
+    return _tactic_owner._tactic_id(row, facade=sys.modules[__name__])
 
 
 def _tactic_suitability_tier(row: Mapping[str, Any]) -> str:
-    direct = _text(row.get("tactic_suitability_tier"))
-    if direct:
-        return direct
-    decision = row.get("entry_quant_decision")
-    if isinstance(decision, Mapping):
-        suitability = decision.get("tactic_suitability")
-        if isinstance(suitability, Mapping):
-            tier = _text(suitability.get("tier"))
-            if tier:
-                return tier
-    return ""
+    return _tactic_tier_owner._tactic_suitability_tier(row, facade=sys.modules[__name__])
 
 
 def _forward_base(row: Mapping[str, Any]) -> Dict[str, Any]:
-    base = row.get("shadow_forward_base")
-    return dict(base) if isinstance(base, Mapping) else {}
+    return _forward_base_owner._forward_base(row, facade=sys.modules[__name__])
 
 
 def _forward_outcome(row: Mapping[str, Any]) -> Dict[str, Any]:
-    outcome = row.get("shadow_forward_outcome")
-    return dict(outcome) if isinstance(outcome, Mapping) else {}
+    return _forward_outcome_owner._forward_outcome(row, facade=sys.modules[__name__])
 
 
 def _candidate_day(row: Mapping[str, Any]) -> str:
@@ -386,30 +353,7 @@ def _runner_up_risk_count(candidates: Sequence[Mapping[str, Any]]) -> int:
 
 
 def _entry_shape(row: Mapping[str, Any]) -> str:
-    reason = _text(row.get("reason"))
-    primary = _text(row.get("primary_failure_axis"))
-    if reason in {
-        "pullback_not_mature",
-        "pullback_below_vwap_reclaim_not_ready",
-        "pullback_structure_above_vwap_with_volume_confirmation",
-    } or primary == "pullback_structure":
-        return "pullback"
-    if reason in {
-        "below_vwap_reclaim_not_ready",
-        "pullback_below_vwap_reclaim_not_ready",
-    } or primary == "vwap_relationship":
-        return "vwap_reclaim"
-    if reason in {
-        "breakout_above_recent_high_with_vwap_hold_and_volume_confirmation",
-        "breakout_above_recent_high_with_vwap_structure_confirmation",
-        "breakout_not_ready",
-    } or primary == "breakout_readiness":
-        return "breakout"
-    if reason in {"volume_confirmation_missing", "volume_insufficient"} or primary == "volume_confirmation":
-        return "volume_confirmation"
-    if reason == "human_chart_sanity_guard_blocked" or primary == "human_chart_sanity":
-        return "human_chart_sanity"
-    return "other"
+    return _entry_shape_owner._entry_shape(row, facade=sys.modules[__name__])
 
 
 def _entry_shape_payload(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
@@ -526,20 +470,7 @@ def _mean(values: Sequence[float]) -> float | None:
 
 
 def _checkpoint_value(row: Mapping[str, Any], checkpoint: str, metric: str) -> float | None:
-    outcome = _forward_outcome(row)
-    checkpoints = outcome.get("checkpoints")
-    if not isinstance(checkpoints, Mapping):
-        return None
-    payload = checkpoints.get(checkpoint)
-    if not isinstance(payload, Mapping) or _text(payload.get("status")) != "observed":
-        return None
-    value = payload.get(metric)
-    try:
-        if value in (None, ""):
-            return None
-        return float(value)
-    except Exception:
-        return None
+    return _checkpoint_owner._checkpoint_value(row, checkpoint, metric, facade=sys.modules[__name__])
 
 
 def _forward_outcome_summary(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:

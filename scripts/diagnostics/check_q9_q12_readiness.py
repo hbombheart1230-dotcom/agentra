@@ -29,24 +29,13 @@ LOOP_PATTERNS = {
 
 
 def _read_json(path: Path) -> dict[str, Any]:
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8-sig"))
-        return payload if isinstance(payload, dict) else {}
-    except Exception:
-        return {}
+    from scripts.diagnostics.q9_readiness_json_projection import _read_json as owner
+    return owner(path, facade=sys.modules[__name__])
 
 
 def _parse_dt(value: Any) -> datetime | None:
-    text = str(value or "").strip()
-    if not text:
-        return None
-    try:
-        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(KST)
+    from scripts.diagnostics.q9_readiness_time_projection import _parse_dt as owner
+    return owner(value, facade=sys.modules[__name__])
 
 
 def _powershell_processes() -> list[dict[str, Any]]:
@@ -115,15 +104,8 @@ def _live_status(lock_path: Path) -> dict[str, Any]:
 
 
 def _artifact(path: Path) -> dict[str, Any]:
-    payload = _read_json(path)
-    return {
-        "path": str(path),
-        "exists": path.exists(),
-        "size_bytes": path.stat().st_size if path.exists() else 0,
-        "schema_version": payload.get("schema_version") or "",
-        "capture_status": payload.get("capture_status") or "",
-        "evidence_status": payload.get("evidence_status") or "",
-    }
+    from scripts.diagnostics.q9_readiness_artifact_projection import _artifact as owner
+    return owner(path, facade=sys.modules[__name__])
 
 
 def _q9_checks(reports_root: Path, day: str) -> dict[str, Any]:
