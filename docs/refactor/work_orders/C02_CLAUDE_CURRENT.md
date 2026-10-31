@@ -1,276 +1,12 @@
-# C02 — Claude A | A-20261031-11 | FAST-3 SINGLE EXECUTION ORDER
+# C02 — Claude A | A-20261031-12 | FAST-3 SINGLE EXECUTION ORDER
 
-**PIN AT START:** integration/p1.5 issuance INPUT_HEAD=`bdab684749b90aac12f7e2ca037eee0adbcd5388`; C02 blob SHA from remote at start; A Actor branch `work/p15-a-reporter-pure-20261021` HEAD at design=`c56a0d7e0e867aceb818a0ccfe0473fe81faab69`. Previous A-20261031-10 order blob `ec2f78ac7fb9ffaf86b6d0fd419ecd21fa488244` is **8/8 REMOTE_DONE** at A HEAD `c56a0d7e0e867aceb818a0ccfe0473fe81faab69`; do not repeat. The new order never cancels a previously pinned run. This is the ONLY task specification; A must not read D00/RF/queue/C03/handoffs or select its own tasks.
+**PIN AT START:** CANONICAL_INPUT_HEAD=`d8fdfb9dd7cf4d7be5b01861d38c8cfb441a61b1`; ORDER_FILE_BLOB_SHA=fetch this C02 from `integration/p1.5`; A_REMOTE_HEAD_AT_DESIGN=`1485132c2c6b4f24c27bba4749b4fe133deaae66`; previous A-20261031-11 C02 blob=`b1784e27c3bd92b7fbcb4cf07be0faa484006a2d` is **8/8 REMOTE_DONE** at A remote `1485132c2c6b4f24c27bba4749b4fe133deaae66` (#11 latest run 46). Do not redo completed 11h work. A's start-pinned order is not retroactively cancelled. This is the only task instruction: do not read D00, RF, queue, C03, handoffs, or select your own items.
 
-**EIGHT NEW MANDATORY RF-035 SOURCE BODY MOVES:** execute A1–A8, or individually mark evidenced BLOCKED and continue all remaining safe items. The six former reserve functions have been re-verified against the **current A source blobs** and their original full BODY remains identical; target paths absent. A7/A8 are new read-only freshness predicate moves. Keep original signature, defaults, annotations, caller-visible import/monkeypatch and exception timing; SOURCE thin wrapper, Owner single BODY, no duplicate. For facade globals pass the source module at **call time**; preserve generators via `yield from`. Target never imports SOURCE. Use only fake/temp and mocked clock; no real broker/order/Guard/UEF/Step5C, operating state, live network, deployment, CI, frozen oracle or RunLab changes. Normal targeted unittest/pytest/smoke exit0 once per changed range suffices G2; no mandatory -O/full peer/hosted CI. A edits only own code/tests, pushes own branch normally and re-fetches remote SHA; C04 integrates, C05 alone accepts G1/G2/G3/DONE.
+**EXECUTE ALL EIGHT NEW SOURCE BODY MOVES (RF-035, exclusive Claude A reporting Owner).** These are 6 previously reserved and now **revalidated against the latest A source blobs** plus 2 newly inspected read-only bodies. Each actual original body matches the code below, target module was absent at A remote HEAD, and no A/B source/target collision was found. On refreshed A HEAD recheck SOURCE blob/target: if body already moved, classify REMOTE_DONE (not new); if source changed and parity is unproven, mark STALE/BLOCKED individually and continue all safe items. Preserve function signature/defaults/annotations, import-visible caller contract, output ordering and exceptions. Move each calculation BODY to a single Owner, SOURCE keeps only a thin delegate; no duplicate computation. If globals are referenced, Owner accepts `facade` and resolves the source module's globals at use time; SOURCE passes `sys.modules[__name__]` (or existing `_r3_sys.modules[__name__]`), preserving monkeypatch seams. Target must never import SOURCE. Preserve generator lazy timing (`yield from` when appropriate). Do not change external side effects. Test fake/temp only, mock time and file reads; NO live trading/order/Broker/Guard/Step5C/UEF/RunLab, production State, live network, CI/frozen oracle, deploy or force push. Normal targeted unittest/pytest/smoke exit0 once for each changed range is sufficient G2; no mandatory -O/full peer/full CI. Actor edits/pushes own code/tests only. C04 integrates, C05 alone decides G1/G2/G3 and RF DONE.
 
-## A1 | RF-035 | libs/reporting/q8_historical_review.py::_read_json @ L18 | SOURCE_BLOB=1ed6e8755bcacaae445e7ec1ad8c9c8711544af8
+## A1 | RF-035 | libs/reporting/q8_historical_review.py::_aggregate_shadow_summaries @ L242 | SOURCE_BLOB=14c227068e0facd5be52189b3940521e64fb9710
 
-**TARGET:** `libs/reporting/q8_historical_read_projection.py::_read_json` (target function ABSENT at verified Actor HEAD; RF-035 exclusive A reporting owner). **EXACT SOURCE COMPUTATION BODY TO MOVE:**
-
-```python
-def _read_json(path: Path) -> Dict[str, Any]:
-    for encoding in ("utf-8-sig", "utf-8"):
-        try:
-            payload = json.loads(path.read_text(encoding=encoding))
-            return payload if isinstance(payload, dict) else {}
-        except Exception:
-            continue
-    return {}
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. fake/temp read-only. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles. Preserve original signature, lazy generator timing, original exception and output order. For every facade global read, resolve via `facade` at call time, SOURCE delegates with `facade=sys.modules[__name__]`; target must not import source. Existing callers and import monkeypatch seam must remain compatible. Report-only fake/temp fixture, no live effects.
-
-**Mandatory targeted normal G2:** `tests/test_p15_rf035_11h_a1_read_json_owner.py`. Input→expected: temp JSON dict -> dict; invalid -> {}.. Compare original baseline with Owner and wrapper; include exception and facade monkeypatch parity. Run `python -m py_compile libs/reporting/q8_historical_review.py libs/reporting/q8_historical_read_projection.py` and `python -m unittest tests/test_p15_rf035_11h_a1_read_json_owner.py -v` (normal exit0). Commit/push ONLY own code/test, re-fetch SOURCE/TARGET/test blob and Actor remote SHA; if blocked report exact reason and continue A2.
-
-## A2 | RF-035 | libs/reporting/q8_historical_review.py::_iter_quant_shadow_candidate_rows @ L70 | SOURCE_BLOB=1ed6e8755bcacaae445e7ec1ad8c9c8711544af8
-
-**TARGET:** `libs/reporting/q8_historical_read_projection.py::_iter_quant_shadow_candidate_rows` (target function ABSENT at verified Actor HEAD; RF-035 exclusive A reporting owner). **EXACT SOURCE COMPUTATION BODY TO MOVE:**
-
-```python
-def _iter_quant_shadow_candidate_rows(reports_root: Path, *, start: str, end: str) -> Iterable[Dict[str, Any]]:
-    root = _quant_shadow_candidate_root(reports_root)
-    for day in _iter_days(start, end):
-        day_root = root / day
-        if not day_root.exists():
-            continue
-        for path in sorted(day_root.glob("*.json")):
-            if path.name == "latest.json":
-                continue
-            payload = _read_json(path)
-            for row in list(payload.get("candidates") or []):
-                if isinstance(row, Mapping):
-                    yield dict(row)
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. fake/temp read-only, yield from; facade._quant_shadow_candidate_root/_iter_days/_read_json/Mapping. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles. Preserve original signature, lazy generator timing, original exception and output order. For every facade global read, resolve via `facade` at call time, SOURCE delegates with `facade=sys.modules[__name__]`; target must not import source. Existing callers and import monkeypatch seam must remain compatible. Report-only fake/temp fixture, no live effects.
-
-**Mandatory targeted normal G2:** `tests/test_p15_rf035_11h_a2_iter_quant_shadow_candidate_rows_owner.py`. Input→expected: temp 2-day fixture skips latest.json, stable order.. Compare original baseline with Owner and wrapper; include exception and facade monkeypatch parity. Run `python -m py_compile libs/reporting/q8_historical_review.py libs/reporting/q8_historical_read_projection.py` and `python -m unittest tests/test_p15_rf035_11h_a2_iter_quant_shadow_candidate_rows_owner.py -v` (normal exit0). Commit/push ONLY own code/test, re-fetch SOURCE/TARGET/test blob and Actor remote SHA; if blocked report exact reason and continue A3.
-
-## A3 | RF-035 | libs/reporting/q8_historical_review.py::_extract_trade_rows @ L243 | SOURCE_BLOB=1ed6e8755bcacaae445e7ec1ad8c9c8711544af8
-
-**TARGET:** `libs/reporting/q8_historical_trade_projection.py::_extract_trade_rows` (target function ABSENT at verified Actor HEAD; RF-035 exclusive A reporting owner). **EXACT SOURCE COMPUTATION BODY TO MOVE:**
-
-```python
-def _extract_trade_rows(reports_root: Path, *, start: str, end: str) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
-    for path in sorted((reports_root / "trades").glob("*/**/reports/ai_trade_summary.json")):
-        try:
-            day = path.parts[path.parts.index("trades") + 1]
-        except Exception:
-            continue
-        if day < start or day > end:
-            continue
-        payload = _read_json(path)
-        trade = payload.get("trade") if isinstance(payload.get("trade"), dict) else {}
-        truth = payload.get("truth_surface") if isinstance(payload.get("truth_surface"), dict) else {}
-        decision = payload.get("decision_flow") if isinstance(payload.get("decision_flow"), dict) else {}
-        quant = payload.get("quant_tactic") if isinstance(payload.get("quant_tactic"), dict) else {}
-        pnl_pct = _pct_from_ratio(truth.get("pnl_pct"))
-        rows.append(
-            {
-                "day": day,
-                "trade_id": _text(trade.get("trade_id")) or _trade_id_from_path(path),
-                "symbol": _text(trade.get("symbol")),
-                "status": _text(trade.get("status")),
-                "pnl_pct": pnl_pct,
-                "truth_source": _text(truth.get("truth_source")),
-                "tactic": _text(
-                    quant.get("tactic_id")
-                    or quant.get("selected_tactic")
-                    or trade.get("tactical_strategy")
-                    or decision.get("tactical_strategy")
-                ),
-                "playbook": _text(quant.get("playbook") or trade.get("playbook") or decision.get("playbook")),
-                "entry_reason": _text(decision.get("entry_reason") or decision.get("entry_trigger")),
-                "exit_reason": _text(decision.get("exit_reason") or decision.get("exit_trigger")),
-            }
-        )
-    return rows
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. fake/temp read-only; facade._read_json/_pct_from_ratio/_text/_trade_id_from_path. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles. Preserve original signature, lazy generator timing, original exception and output order. For every facade global read, resolve via `facade` at call time, SOURCE delegates with `facade=sys.modules[__name__]`; target must not import source. Existing callers and import monkeypatch seam must remain compatible. Report-only fake/temp fixture, no live effects.
-
-**Mandatory targeted normal G2:** `tests/test_p15_rf035_11h_a3_extract_trade_rows_owner.py`. Input→expected: temp ai_trade_summary.json -> trade_id/symbol/pnl_pct.. Compare original baseline with Owner and wrapper; include exception and facade monkeypatch parity. Run `python -m py_compile libs/reporting/q8_historical_review.py libs/reporting/q8_historical_trade_projection.py` and `python -m unittest tests/test_p15_rf035_11h_a3_extract_trade_rows_owner.py -v` (normal exit0). Commit/push ONLY own code/test, re-fetch SOURCE/TARGET/test blob and Actor remote SHA; if blocked report exact reason and continue A4.
-
-## A4 | RF-035 | libs/reporting/q8_historical_review.py::_daily_summary_rows @ L284 | SOURCE_BLOB=1ed6e8755bcacaae445e7ec1ad8c9c8711544af8
-
-**TARGET:** `libs/reporting/q8_historical_daily_projection.py::_daily_summary_rows` (target function ABSENT at verified Actor HEAD; RF-035 exclusive A reporting owner). **EXACT SOURCE COMPUTATION BODY TO MOVE:**
-
-```python
-def _daily_summary_rows(reports_root: Path, *, start: str, end: str) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
-    for day in _iter_days(start, end):
-        path = reports_root / "operator_summary" / "daily" / day / "daily_summary.json"
-        if not path.exists():
-            continue
-        payload = _read_json(path)
-        metrics = payload.get("metrics") if isinstance(payload.get("metrics"), dict) else {}
-        q = (
-            payload.get("quant_shadow_candidate_evaluation")
-            if isinstance(payload.get("quant_shadow_candidate_evaluation"), dict)
-            else {}
-        )
-        gate = q.get("evaluation_trust_gate") if isinstance(q.get("evaluation_trust_gate"), dict) else {}
-        rail = payload.get("market_regime_rail_review") if isinstance(payload.get("market_regime_rail_review"), dict) else {}
-        rows.append(
-            {
-                "day": day,
-                "trade_count": _int(metrics.get("trade_count")),
-                "closed_trade_count": _int(metrics.get("closed_trade_count")),
-                "return_sample_count": _int(metrics.get("return_sample_count")),
-                "unavailable_return_count": _int(metrics.get("unavailable_return_count")),
-                "win_rate": _float(metrics.get("win_rate")) or 0.0,
-                "avg_return_pct": _float(metrics.get("avg_return_pct")) or 0.0,
-                "truth_surface_count": _int(metrics.get("truth_surface_count")),
-                "shadow_candidate_count": _int(q.get("candidate_count")),
-                "shadow_deduped_candidate_count": _int(q.get("deduped_candidate_count")),
-                "shadow_duplicate_candidate_count": _int(q.get("duplicate_candidate_count")),
-                "shadow_evaluated_count": _int(q.get("evaluated_count")),
-                "shadow_would_enter_count": _int(q.get("would_enter_count")),
-                "shadow_forward_outcome_coverage": _float(q.get("forward_outcome_coverage")),
-                "q8_trust_gate_status": _text(gate.get("status")),
-                "q8_promotion_allowed": bool(gate.get("promotion_allowed")),
-                "q8_trusted_forward_count": _int(gate.get("trusted_forward_count")),
-                "q8_trusted_forward_coverage": _float(gate.get("trusted_forward_coverage")),
-                "q8_duplicate_rate": _float(gate.get("duplicate_rate")),
-                "market_regime_rail": _text(rail.get("rail_id") or rail.get("market_regime_rail")),
-            }
-        )
-    return rows
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. fake/temp read-only; facade._iter_days/_read_json/_int/_float/_text. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles. Preserve original signature, lazy generator timing, original exception and output order. For every facade global read, resolve via `facade` at call time, SOURCE delegates with `facade=sys.modules[__name__]`; target must not import source. Existing callers and import monkeypatch seam must remain compatible. Report-only fake/temp fixture, no live effects.
-
-**Mandatory targeted normal G2:** `tests/test_p15_rf035_11h_a4_daily_summary_rows_owner.py`. Input→expected: temp daily_summary.json -> one trade_count row.. Compare original baseline with Owner and wrapper; include exception and facade monkeypatch parity. Run `python -m py_compile libs/reporting/q8_historical_review.py libs/reporting/q8_historical_daily_projection.py` and `python -m unittest tests/test_p15_rf035_11h_a4_daily_summary_rows_owner.py -v` (normal exit0). Commit/push ONLY own code/test, re-fetch SOURCE/TARGET/test blob and Actor remote SHA; if blocked report exact reason and continue A5.
-
-## A5 | RF-035 | libs/reporting/q8_historical_review.py::_pattern_rows_from_daily_summaries @ L430 | SOURCE_BLOB=1ed6e8755bcacaae445e7ec1ad8c9c8711544af8
-
-**TARGET:** `libs/reporting/q8_historical_pattern_projection.py::_pattern_rows_from_daily_summaries` (target function ABSENT at verified Actor HEAD; RF-035 exclusive A reporting owner). **EXACT SOURCE COMPUTATION BODY TO MOVE:**
-
-```python
-def _pattern_rows_from_daily_summaries(
-    reports_root: Path,
-    *,
-    start: str,
-    end: str,
-    section: str,
-    group_key: str,
-) -> List[Dict[str, Any]]:
-    grouped: Dict[str, Dict[str, Any]] = defaultdict(
-        lambda: {
-            "count": 0,
-            "closed_or_realized_count": 0,
-            "win_count": 0,
-            "loss_count": 0,
-            "flat_count": 0,
-            "return_sum": 0.0,
-            "return_weight": 0,
-            "cost_drag_loss_count": 0,
-        }
-    )
-    for day in _iter_days(start, end):
-        path = reports_root / "operator_summary" / "daily" / day / "daily_summary.json"
-        if not path.exists():
-            continue
-        payload = _read_json(path)
-        pattern = payload.get("pattern_performance") if isinstance(payload.get("pattern_performance"), dict) else {}
-        section_payload = pattern.get(section) if isinstance(pattern.get(section), dict) else {}
-        rows = section_payload.get(group_key) if isinstance(section_payload.get(group_key), list) else []
-        for row in rows:
-            if not isinstance(row, Mapping):
-                continue
-            name = _text(row.get("name")) or "missing"
-            bucket = grouped[name]
-            count = _int(row.get("count"))
-            closed = _int(row.get("closed_or_realized_count") or count)
-            avg = _float(row.get("avg_return_pct"))
-            bucket["count"] += count
-            bucket["closed_or_realized_count"] += closed
-            bucket["win_count"] += _int(row.get("win_count"))
-            bucket["loss_count"] += _int(row.get("loss_count"))
-            bucket["flat_count"] += _int(row.get("flat_count"))
-            bucket["cost_drag_loss_count"] += _int(row.get("cost_drag_loss_count"))
-            if avg is not None and closed > 0:
-                bucket["return_sum"] += float(avg) * closed
-                bucket["return_weight"] += closed
-    out: List[Dict[str, Any]] = []
-    for name, bucket in grouped.items():
-        closed = int(bucket.get("closed_or_realized_count") or 0)
-        wins = int(bucket.get("win_count") or 0)
-        out.append(
-            {
-                "name": name,
-                "count": int(bucket.get("count") or 0),
-                "closed_or_realized_count": closed,
-                "win_count": wins,
-                "loss_count": int(bucket.get("loss_count") or 0),
-                "flat_count": int(bucket.get("flat_count") or 0),
-                "win_rate": round(wins / closed, 4) if closed else 0.0,
-                "avg_return_pct": _weighted_avg(float(bucket.get("return_sum") or 0.0), int(bucket.get("return_weight") or 0)),
-                "cost_drag_loss_count": int(bucket.get("cost_drag_loss_count") or 0),
-            }
-        )
-    out.sort(key=lambda row: (int(row.get("closed_or_realized_count") or 0), abs(float(row.get("avg_return_pct") or 0.0))), reverse=True)
-    return out
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. fake/temp read-only; facade._iter_days/_read_json/_text/_int/_float/_weighted_avg/defaultdict. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles. Preserve original signature, lazy generator timing, original exception and output order. For every facade global read, resolve via `facade` at call time, SOURCE delegates with `facade=sys.modules[__name__]`; target must not import source. Existing callers and import monkeypatch seam must remain compatible. Report-only fake/temp fixture, no live effects.
-
-**Mandatory targeted normal G2:** `tests/test_p15_rf035_11h_a5_pattern_rows_from_daily_summaries_owner.py`. Input→expected: temp two-day patterns -> weighted average and stable sort.. Compare original baseline with Owner and wrapper; include exception and facade monkeypatch parity. Run `python -m py_compile libs/reporting/q8_historical_review.py libs/reporting/q8_historical_pattern_projection.py` and `python -m unittest tests/test_p15_rf035_11h_a5_pattern_rows_from_daily_summaries_owner.py -v` (normal exit0). Commit/push ONLY own code/test, re-fetch SOURCE/TARGET/test blob and Actor remote SHA; if blocked report exact reason and continue A6.
-
-## A6 | RF-035 | libs/reporting/post_exit_shadow_recap.py::_fresh_minute_fetch_enabled @ L119 | SOURCE_BLOB=859c85e32bf1e77fa724c08fa20dc2a78a0c7769
-
-**TARGET:** `libs/reporting/post_exit_shadow_env_projection.py::_fresh_minute_fetch_enabled` (target function ABSENT at verified Actor HEAD; RF-035 exclusive A reporting owner). **EXACT SOURCE COMPUTATION BODY TO MOVE:**
-
-```python
-def _fresh_minute_fetch_enabled() -> bool:
-    raw = str(os.getenv("POST_EXIT_SHADOW_RECAP_FETCH_FRESH_MINUTES", "1")).strip().lower()
-    return raw not in {"0", "false", "no", "off"}
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade.os, mock getenv. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles. Preserve original signature, lazy generator timing, original exception and output order. For every facade global read, resolve via `facade` at call time, SOURCE delegates with `facade=sys.modules[__name__]`; target must not import source. Existing callers and import monkeypatch seam must remain compatible. Report-only fake/temp fixture, no live effects.
-
-**Mandatory targeted normal G2:** `tests/test_p15_rf035_11h_a6_fresh_minute_fetch_enabled_owner.py`. Input→expected: mock env 'off'->False; '1'->True.. Compare original baseline with Owner and wrapper; include exception and facade monkeypatch parity. Run `python -m py_compile libs/reporting/post_exit_shadow_recap.py libs/reporting/post_exit_shadow_env_projection.py` and `python -m unittest tests/test_p15_rf035_11h_a6_fresh_minute_fetch_enabled_owner.py -v` (normal exit0). Commit/push ONLY own code/test, re-fetch SOURCE/TARGET/test blob and Actor remote SHA; if blocked report exact reason and continue A7.
-
-## A7 | RF-035 | libs/reporting/post_exit_shadow_recap.py::_rows_reach_epoch @ L128 | SOURCE_BLOB=859c85e32bf1e77fa724c08fa20dc2a78a0c7769
-
-**TARGET:** `libs/reporting/post_exit_shadow_freshness_projection.py::_rows_reach_epoch` (new RF-035 read-only projection owner, target path ABSENT at Actor HEAD). **EXACT SOURCE COMPUTATION BODY TO MOVE:**
-
-```python
-def _rows_reach_epoch(rows: Iterable[Mapping[str, Any]], target_epoch: float | None) -> bool:
-    if target_epoch is None:
-        return False
-    return any((_epoch_seconds(row.get("ts")) or 0.0) >= float(target_epoch) for row in rows if isinstance(row, Mapping))
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** Preserve same signature/annotations and facade import surface; SOURCE delegates to Owner using `facade=_r3_sys.modules[__name__]`. Rewrite references `_epoch_seconds`, `_row_kst_hhmmss`, `Mapping` to runtime facade or safe Owner imports, with patch-at-call-time parity; no SOURCE import from TARGET. Preserve short-circuit, generator consumption, exception timing. Only synthetic list rows, no real state, no fresh market fetch or operating action.
-
-**Mandatory targeted normal G2:** `tests/test_p15_rf035_11h_a7_rows_reach_epoch_owner.py`. Input→expected: facade._epoch_seconds patched to 200.0; rows=[{'ts':'fake'}], target_epoch=100.0 → True, target_epoch=300.0 → False; None → False. Compare baseline/Owner/wrapper, negative/exception and monkeypatch. Run `python -m py_compile libs/reporting/post_exit_shadow_recap.py libs/reporting/post_exit_shadow_freshness_projection.py` and `python -m unittest tests/test_p15_rf035_11h_a7_rows_reach_epoch_owner.py -v` normal exit0. Commit/push own code/test, remote SHA/blob re-fetch; on failure record exact blocker and continue other safe items.
-
-## A8 | RF-035 | libs/reporting/post_exit_shadow_recap.py::_rows_reach_regular_close @ L134 | SOURCE_BLOB=859c85e32bf1e77fa724c08fa20dc2a78a0c7769
-
-**TARGET:** `libs/reporting/post_exit_shadow_freshness_projection.py::_rows_reach_regular_close` (new RF-035 read-only projection owner, target path ABSENT at Actor HEAD). **EXACT SOURCE COMPUTATION BODY TO MOVE:**
-
-```python
-def _rows_reach_regular_close(rows: Iterable[Mapping[str, Any]]) -> bool:
-    return any(
-        _row_kst_hhmmss(row) >= "153000"
-        for row in rows
-        if isinstance(row, Mapping) and _row_kst_hhmmss(row)
-    )
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** Preserve same signature/annotations and facade import surface; SOURCE delegates to Owner using `facade=_r3_sys.modules[__name__]`. Rewrite references `_epoch_seconds`, `_row_kst_hhmmss`, `Mapping` to runtime facade or safe Owner imports, with patch-at-call-time parity; no SOURCE import from TARGET. Preserve short-circuit, generator consumption, exception timing. Only synthetic list rows, no real state, no fresh market fetch or operating action.
-
-**Mandatory targeted normal G2:** `tests/test_p15_rf035_11h_a8_rows_reach_regular_close_owner.py`. Input→expected: facade._row_kst_hhmmss patched to '153001' for [{'ts':'fake'}] → True; patched to '152959' → False; [] → False. Compare baseline/Owner/wrapper, negative/exception and monkeypatch. Run `python -m py_compile libs/reporting/post_exit_shadow_recap.py libs/reporting/post_exit_shadow_freshness_projection.py` and `python -m unittest tests/test_p15_rf035_11h_a8_rows_reach_regular_close_owner.py -v` normal exit0. Commit/push own code/test, remote SHA/blob re-fetch; on failure record exact blocker and continue other safe items.
-## SIX VERIFIED FUTURE RESERVES — DESIGN ONLY, NOT EXECUTABLE THIS ORDER
-
-All six SOURCE functions and actual BODY were read at A HEAD `c56a0d7e0e867aceb818a0ccfe0473fe81faab69`, with SOURCE blob and exclusive target absence checked. These are **future hypotheses**, not test PASS, not remote code MOVE, and not authorized for execution until new C03 order. Recheck freshness at promotion.
-
-### R1 VERIFIED DESIGN ONLY | RF-035 | libs/reporting/q8_historical_review.py::_aggregate_shadow_summaries @ L326 | SOURCE_BLOB=1ed6e8755bcacaae445e7ec1ad8c9c8711544af8
-
-**TARGET:** `libs/reporting/q8_historical_shadow_aggregate_projection.py::_aggregate_shadow_summaries` (new, exclusive A RF-035 projection; verify fresh SHA before promotion). **EXACT UNMOVED SOURCE BODY:**
+**TARGET (new exclusive Owner, absent at A remote HEAD):** `libs/reporting/q8_historical_shadow_aggregate_projection.py::_aggregate_shadow_summaries`. **EXACT CURRENT SOURCE COMPUTATION BODY TO MOVE** (preserve semantics; only change global lookup plumbing needed for use-time facade):
 
 ```python
 def _aggregate_shadow_summaries(reports_root: Path, *, start: str, end: str) -> Dict[str, Any]:
@@ -377,11 +113,13 @@ def _aggregate_shadow_summaries(reports_root: Path, *, start: str, end: str) -> 
     }
 ```
 
-**Owner/callers/monkeypatch:** preserve signature and exception timing; SOURCE becomes thin facade wrapper; Owner receives `facade` for module globals at use time (or imports pure stdlib names); no reverse import, no duplicate computation. Evaluation/report-only; use fake/temp roots or mock clock, never real trading/state/network/RunLab. **Reserve G2 hypothesis (NOT EXECUTABLE IN THIS ORDER):** empty temp report root for one-day interval → no group days; two fake daily summaries → reason/group totals equal baseline. Compare baseline→Owner→wrapper and patch seam with a new targeted stdlib unittest; require normal exit0 and remote SHA before G1/G2 claim.
+**Thin wrapper / callers / monkeypatch:** Keep original `_aggregate_shadow_summaries` signature in `libs/reporting/q8_historical_review.py`; delegate to `libs/reporting/q8_historical_shadow_aggregate_projection.py::_aggregate_shadow_summaries` at call time, not a copied implementation. Retain existing import and monkeypatch seam, original exceptions/output ordering, and generator laziness. Where module globals are referenced, owner resolves them from passed source `facade` at use time (do not capture values at import time); no reverse import. **Safety:** report-only computation/read-only on fake/temp fixtures; do not touch real state, live network, broker/order/guard/Step5C/UEF, runtime or frozen tests.
 
-### R2 VERIFIED DESIGN ONLY | RF-035 | libs/reporting/q8_historical_review.py::_promotion_recommendations @ L496 | SOURCE_BLOB=1ed6e8755bcacaae445e7ec1ad8c9c8711544af8
+**Mandatory targeted normal G2:** `tests/test_p15_rf035_12h_a1_aggregate_shadow_summaries_owner.py`. Explicit input→expected: empty temp report root for one-day interval → no group days; two fake daily summaries → reason/group totals equal baseline. Compare original baseline output/exception with new Owner and SOURCE wrapper, including patched facade global where relevant. Run `python -m py_compile libs/reporting/q8_historical_review.py libs/reporting/q8_historical_shadow_aggregate_projection.py` then `python -m unittest tests/test_p15_rf035_12h_a1_aggregate_shadow_summaries_owner.py -v` normal exit0 (or equivalent targeted pytest). Commit only Actor-owned code/test, normal push and re-fetch A remote SOURCE/TARGET/test blob and HEAD. On BLOCKED report exact reason and continue A2; never stop after first PASS or push failure.
 
-**TARGET:** `libs/reporting/q8_historical_recommendation_projection.py::_promotion_recommendations` (new, exclusive A RF-035 projection; verify fresh SHA before promotion). **EXACT UNMOVED SOURCE BODY:**
+## A2 | RF-035 | libs/reporting/q8_historical_review.py::_promotion_recommendations @ L357 | SOURCE_BLOB=14c227068e0facd5be52189b3940521e64fb9710
+
+**TARGET (new exclusive Owner, absent at A remote HEAD):** `libs/reporting/q8_historical_recommendation_projection.py::_promotion_recommendations`. **EXACT CURRENT SOURCE COMPUTATION BODY TO MOVE** (preserve semantics; only change global lookup plumbing needed for use-time facade):
 
 ```python
 def _promotion_recommendations(payload: Mapping[str, Any]) -> List[Dict[str, Any]]:
@@ -449,11 +187,13 @@ def _promotion_recommendations(payload: Mapping[str, Any]) -> List[Dict[str, Any
     return recs
 ```
 
-**Owner/callers/monkeypatch:** preserve signature and exception timing; SOURCE becomes thin facade wrapper; Owner receives `facade` for module globals at use time (or imports pure stdlib names); no reverse import, no duplicate computation. Evaluation/report-only; use fake/temp roots or mock clock, never real trading/state/network/RunLab. **Reserve G2 hypothesis (NOT EXECUTABLE IN THIS ORDER):** {'q8_blocker_groups':[],'trade_by_tactic':[]} → baseline empty recommendation list; fake negative defensive_observe group → identical advisory recommendation. Compare baseline→Owner→wrapper and patch seam with a new targeted stdlib unittest; require normal exit0 and remote SHA before G1/G2 claim.
+**Thin wrapper / callers / monkeypatch:** Keep original `_promotion_recommendations` signature in `libs/reporting/q8_historical_review.py`; delegate to `libs/reporting/q8_historical_recommendation_projection.py::_promotion_recommendations` at call time, not a copied implementation. Retain existing import and monkeypatch seam, original exceptions/output ordering, and generator laziness. Where module globals are referenced, owner resolves them from passed source `facade` at use time (do not capture values at import time); no reverse import. **Safety:** report-only computation/read-only on fake/temp fixtures; do not touch real state, live network, broker/order/guard/Step5C/UEF, runtime or frozen tests.
 
-### R3 VERIFIED DESIGN ONLY | RF-035 | libs/reporting/q8_historical_review.py::build_q8_historical_review_payload @ L561 | SOURCE_BLOB=1ed6e8755bcacaae445e7ec1ad8c9c8711544af8
+**Mandatory targeted normal G2:** `tests/test_p15_rf035_12h_a2_promotion_recommendations_owner.py`. Explicit input→expected: {'q8_blocker_groups':[],'trade_by_tactic':[]} → baseline empty recommendation list; fake negative defensive_observe group → identical advisory recommendation. Compare original baseline output/exception with new Owner and SOURCE wrapper, including patched facade global where relevant. Run `python -m py_compile libs/reporting/q8_historical_review.py libs/reporting/q8_historical_recommendation_projection.py` then `python -m unittest tests/test_p15_rf035_12h_a2_promotion_recommendations_owner.py -v` normal exit0 (or equivalent targeted pytest). Commit only Actor-owned code/test, normal push and re-fetch A remote SOURCE/TARGET/test blob and HEAD. On BLOCKED report exact reason and continue A3; never stop after first PASS or push failure.
 
-**TARGET:** `libs/reporting/q8_historical_payload_projection.py::build_q8_historical_review_payload` (new, exclusive A RF-035 projection; verify fresh SHA before promotion). **EXACT UNMOVED SOURCE BODY:**
+## A3 | RF-035 | libs/reporting/q8_historical_review.py::build_q8_historical_review_payload @ L422 | SOURCE_BLOB=14c227068e0facd5be52189b3940521e64fb9710
+
+**TARGET (new exclusive Owner, absent at A remote HEAD):** `libs/reporting/q8_historical_payload_projection.py::build_q8_historical_review_payload`. **EXACT CURRENT SOURCE COMPUTATION BODY TO MOVE** (preserve semantics; only change global lookup plumbing needed for use-time facade):
 
 ```python
 def build_q8_historical_review_payload(
@@ -528,11 +268,13 @@ def build_q8_historical_review_payload(
     return payload
 ```
 
-**Owner/callers/monkeypatch:** preserve signature and exception timing; SOURCE becomes thin facade wrapper; Owner receives `facade` for module globals at use time (or imports pure stdlib names); no reverse import, no duplicate computation. Evaluation/report-only; use fake/temp roots or mock clock, never real trading/state/network/RunLab. **Reserve G2 hypothesis (NOT EXECUTABLE IN THIS ORDER):** empty temp reports root with start=end='2026-10-30' → schema_version='q8_historical_review.v1', daily_count=0, promotion gate remains blocked. Compare baseline→Owner→wrapper and patch seam with a new targeted stdlib unittest; require normal exit0 and remote SHA before G1/G2 claim.
+**Thin wrapper / callers / monkeypatch:** Keep original `build_q8_historical_review_payload` signature in `libs/reporting/q8_historical_review.py`; delegate to `libs/reporting/q8_historical_payload_projection.py::build_q8_historical_review_payload` at call time, not a copied implementation. Retain existing import and monkeypatch seam, original exceptions/output ordering, and generator laziness. Where module globals are referenced, owner resolves them from passed source `facade` at use time (do not capture values at import time); no reverse import. **Safety:** report-only computation/read-only on fake/temp fixtures; do not touch real state, live network, broker/order/guard/Step5C/UEF, runtime or frozen tests.
 
-### R4 VERIFIED DESIGN ONLY | RF-035 | libs/reporting/q8_historical_review.py::render_q8_historical_review_markdown @ L637 | SOURCE_BLOB=1ed6e8755bcacaae445e7ec1ad8c9c8711544af8
+**Mandatory targeted normal G2:** `tests/test_p15_rf035_12h_a3_build_q8_historical_review_payload_owner.py`. Explicit input→expected: empty temp reports root with start=end='2026-10-30' → schema_version='q8_historical_review.v1', daily_count=0, promotion gate remains blocked. Compare original baseline output/exception with new Owner and SOURCE wrapper, including patched facade global where relevant. Run `python -m py_compile libs/reporting/q8_historical_review.py libs/reporting/q8_historical_payload_projection.py` then `python -m unittest tests/test_p15_rf035_12h_a3_build_q8_historical_review_payload_owner.py -v` normal exit0 (or equivalent targeted pytest). Commit only Actor-owned code/test, normal push and re-fetch A remote SOURCE/TARGET/test blob and HEAD. On BLOCKED report exact reason and continue A4; never stop after first PASS or push failure.
 
-**TARGET:** `libs/reporting/q8_historical_markdown_projection.py::render_q8_historical_review_markdown` (new, exclusive A RF-035 projection; verify fresh SHA before promotion). **EXACT UNMOVED SOURCE BODY:**
+## A4 | RF-035 | libs/reporting/q8_historical_review.py::render_q8_historical_review_markdown @ L498 | SOURCE_BLOB=14c227068e0facd5be52189b3940521e64fb9710
+
+**TARGET (new exclusive Owner, absent at A remote HEAD):** `libs/reporting/q8_historical_markdown_projection.py::render_q8_historical_review_markdown`. **EXACT CURRENT SOURCE COMPUTATION BODY TO MOVE** (preserve semantics; only change global lookup plumbing needed for use-time facade):
 
 ```python
 def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:
@@ -744,22 +486,26 @@ def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:
     return "\n".join(lines)
 ```
 
-**Owner/callers/monkeypatch:** preserve signature and exception timing; SOURCE becomes thin facade wrapper; Owner receives `facade` for module globals at use time (or imports pure stdlib names); no reverse import, no duplicate computation. Evaluation/report-only; use fake/temp roots or mock clock, never real trading/state/network/RunLab. **Reserve G2 hypothesis (NOT EXECUTABLE IN THIS ORDER):** synthetic empty historical payload → byte-identical Markdown and headings as baseline. Compare baseline→Owner→wrapper and patch seam with a new targeted stdlib unittest; require normal exit0 and remote SHA before G1/G2 claim.
+**Thin wrapper / callers / monkeypatch:** Keep original `render_q8_historical_review_markdown` signature in `libs/reporting/q8_historical_review.py`; delegate to `libs/reporting/q8_historical_markdown_projection.py::render_q8_historical_review_markdown` at call time, not a copied implementation. Retain existing import and monkeypatch seam, original exceptions/output ordering, and generator laziness. Where module globals are referenced, owner resolves them from passed source `facade` at use time (do not capture values at import time); no reverse import. **Safety:** report-only computation/read-only on fake/temp fixtures; do not touch real state, live network, broker/order/guard/Step5C/UEF, runtime or frozen tests.
 
-### R5 VERIFIED DESIGN ONLY | RF-035 | libs/reporting/post_exit_shadow_recap.py::_utc_now_iso @ L51 | SOURCE_BLOB=859c85e32bf1e77fa724c08fa20dc2a78a0c7769
+**Mandatory targeted normal G2:** `tests/test_p15_rf035_12h_a4_render_q8_historical_review_markdown_owner.py`. Explicit input→expected: synthetic empty historical payload → byte-identical Markdown and headings as baseline. Compare original baseline output/exception with new Owner and SOURCE wrapper, including patched facade global where relevant. Run `python -m py_compile libs/reporting/q8_historical_review.py libs/reporting/q8_historical_markdown_projection.py` then `python -m unittest tests/test_p15_rf035_12h_a4_render_q8_historical_review_markdown_owner.py -v` normal exit0 (or equivalent targeted pytest). Commit only Actor-owned code/test, normal push and re-fetch A remote SOURCE/TARGET/test blob and HEAD. On BLOCKED report exact reason and continue A5; never stop after first PASS or push failure.
 
-**TARGET:** `libs/reporting/post_exit_shadow_clock_projection.py::_utc_now_iso` (new, exclusive A RF-035 projection; verify fresh SHA before promotion). **EXACT UNMOVED SOURCE BODY:**
+## A5 | RF-035 | libs/reporting/post_exit_shadow_recap.py::_utc_now_iso @ L53 | SOURCE_BLOB=36c3fdbaf86998c4194f5fe17c0b793f9a8f8207
+
+**TARGET (new exclusive Owner, absent at A remote HEAD):** `libs/reporting/post_exit_shadow_clock_projection.py::_utc_now_iso`. **EXACT CURRENT SOURCE COMPUTATION BODY TO MOVE** (preserve semantics; only change global lookup plumbing needed for use-time facade):
 
 ```python
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 ```
 
-**Owner/callers/monkeypatch:** preserve signature and exception timing; SOURCE becomes thin facade wrapper; Owner receives `facade` for module globals at use time (or imports pure stdlib names); no reverse import, no duplicate computation. Evaluation/report-only; use fake/temp roots or mock clock, never real trading/state/network/RunLab. **Reserve G2 hypothesis (NOT EXECUTABLE IN THIS ORDER):** mock datetime.now(timezone.utc) fixed 2026-10-31T00:00:00+00:00 → exact ISO text. Compare baseline→Owner→wrapper and patch seam with a new targeted stdlib unittest; require normal exit0 and remote SHA before G1/G2 claim.
+**Thin wrapper / callers / monkeypatch:** Keep original `_utc_now_iso` signature in `libs/reporting/post_exit_shadow_recap.py`; delegate to `libs/reporting/post_exit_shadow_clock_projection.py::_utc_now_iso` at call time, not a copied implementation. Retain existing import and monkeypatch seam, original exceptions/output ordering, and generator laziness. Where module globals are referenced, owner resolves them from passed source `facade` at use time (do not capture values at import time); no reverse import. **Safety:** report-only computation/read-only on fake/temp fixtures; do not touch real state, live network, broker/order/guard/Step5C/UEF, runtime or frozen tests.
 
-### R6 VERIFIED DESIGN ONLY | RF-035 | libs/reporting/post_exit_shadow_recap.py::_read_json @ L55 | SOURCE_BLOB=859c85e32bf1e77fa724c08fa20dc2a78a0c7769
+**Mandatory targeted normal G2:** `tests/test_p15_rf035_12h_a5_utc_now_iso_owner.py`. Explicit input→expected: mock datetime.now(timezone.utc) fixed 2026-10-31T00:00:00+00:00 → exact ISO text. Compare original baseline output/exception with new Owner and SOURCE wrapper, including patched facade global where relevant. Run `python -m py_compile libs/reporting/post_exit_shadow_recap.py libs/reporting/post_exit_shadow_clock_projection.py` then `python -m unittest tests/test_p15_rf035_12h_a5_utc_now_iso_owner.py -v` normal exit0 (or equivalent targeted pytest). Commit only Actor-owned code/test, normal push and re-fetch A remote SOURCE/TARGET/test blob and HEAD. On BLOCKED report exact reason and continue A6; never stop after first PASS or push failure.
 
-**TARGET:** `libs/reporting/post_exit_shadow_read_projection.py::_read_json` (new, exclusive A RF-035 projection; verify fresh SHA before promotion). **EXACT UNMOVED SOURCE BODY:**
+## A6 | RF-035 | libs/reporting/post_exit_shadow_recap.py::_read_json @ L57 | SOURCE_BLOB=36c3fdbaf86998c4194f5fe17c0b793f9a8f8207
+
+**TARGET (new exclusive Owner, absent at A remote HEAD):** `libs/reporting/post_exit_shadow_read_projection.py::_read_json`. **EXACT CURRENT SOURCE COMPUTATION BODY TO MOVE** (preserve semantics; only change global lookup plumbing needed for use-time facade):
 
 ```python
 def _read_json(path: Path) -> Dict[str, Any]:
@@ -770,8 +516,57 @@ def _read_json(path: Path) -> Dict[str, Any]:
     return raw if isinstance(raw, dict) else {}
 ```
 
-**Owner/callers/monkeypatch:** preserve signature and exception timing; SOURCE becomes thin facade wrapper; Owner receives `facade` for module globals at use time (or imports pure stdlib names); no reverse import, no duplicate computation. Evaluation/report-only; use fake/temp roots or mock clock, never real trading/state/network/RunLab. **Reserve G2 hypothesis (NOT EXECUTABLE IN THIS ORDER):** temp {'a':1} JSON → {'a':1}; malformed/non-dict → {}. Compare baseline→Owner→wrapper and patch seam with a new targeted stdlib unittest; require normal exit0 and remote SHA before G1/G2 claim.
+**Thin wrapper / callers / monkeypatch:** Keep original `_read_json` signature in `libs/reporting/post_exit_shadow_recap.py`; delegate to `libs/reporting/post_exit_shadow_read_projection.py::_read_json` at call time, not a copied implementation. Retain existing import and monkeypatch seam, original exceptions/output ordering, and generator laziness. Where module globals are referenced, owner resolves them from passed source `facade` at use time (do not capture values at import time); no reverse import. **Safety:** report-only computation/read-only on fake/temp fixtures; do not touch real state, live network, broker/order/guard/Step5C/UEF, runtime or frozen tests.
 
-## REPORT AND CONTINUITY
+**Mandatory targeted normal G2:** `tests/test_p15_rf035_12h_a6_read_json_owner.py`. Explicit input→expected: temp {'a':1} JSON → {'a':1}; malformed/non-dict → {}. Compare original baseline output/exception with new Owner and SOURCE wrapper, including patched facade global where relevant. Run `python -m py_compile libs/reporting/post_exit_shadow_recap.py libs/reporting/post_exit_shadow_read_projection.py` then `python -m unittest tests/test_p15_rf035_12h_a6_read_json_owner.py -v` normal exit0 (or equivalent targeted pytest). Commit only Actor-owned code/test, normal push and re-fetch A remote SOURCE/TARGET/test blob and HEAD. On BLOCKED report exact reason and continue A7; never stop after first PASS or push failure.
 
-Report to #11: `ORDER_ID=A-20261031-11 | CANONICAL_HEAD | ORDER_FILE_BLOB_SHA | OWNER_REMOTE_SHA_BEFORE→AFTER | A1..A8 per-item status | SOURCE/TARGET/TEST_BLOBS | NORMAL_TEST_COMMAND/EXIT | PUSH_REMOTE_SHA | FIRST_BLOCKER | NEXT`. START/END/ELAPSED only measured. Git auth failure is PUSH_BLOCKED only; continue other safe work. Do not run reserves or modify C01/B/C04/C05/RF/STATUS. A doc publication by C03 is not code G1/G2/G3.
+## A7 | RF-035 | libs/reporting/post_exit_shadow_recap.py::_post_exit_shadow_needs_fresh_minutes @ L137 | SOURCE_BLOB=36c3fdbaf86998c4194f5fe17c0b793f9a8f8207
+
+**TARGET (new exclusive Owner, absent at A remote HEAD):** `libs/reporting/post_exit_shadow_freshness_decision_projection.py::_post_exit_shadow_needs_fresh_minutes`. **EXACT CURRENT SOURCE COMPUTATION BODY TO MOVE** (preserve semantics; only change global lookup plumbing needed for use-time facade):
+
+```python
+def _post_exit_shadow_needs_fresh_minutes(shadow: Mapping[str, Any], rows: List[Dict[str, Any]]) -> bool:
+    target_epoch = _shadow_latest_required_epoch(shadow)
+    now_epoch = datetime.now(timezone.utc).timestamp()
+    if target_epoch is not None:
+        if now_epoch + 30.0 < target_epoch:
+            return False
+        if not _rows_reach_epoch(rows, target_epoch):
+            return True
+
+    now_kst = datetime.now(timezone.utc).astimezone(KST)
+    checkpoints = _as_dict(shadow.get("checkpoints"))
+    eod = _as_dict(checkpoints.get("EOD"))
+    eod_pending = str(eod.get("status") or "").strip().lower() != "observed"
+    if eod_pending and now_kst.strftime("%H%M%S") >= "153500":
+        return not _rows_reach_regular_close(rows)
+    return False
+```
+
+**Thin wrapper / callers / monkeypatch:** Keep original `_post_exit_shadow_needs_fresh_minutes` signature in `libs/reporting/post_exit_shadow_recap.py`; delegate to `libs/reporting/post_exit_shadow_freshness_decision_projection.py::_post_exit_shadow_needs_fresh_minutes` at call time, not a copied implementation. Retain existing import and monkeypatch seam, original exceptions/output ordering, and generator laziness. Where module globals are referenced, owner resolves them from passed source `facade` at use time (do not capture values at import time); no reverse import. **Safety:** report-only computation/read-only on fake/temp fixtures; do not touch real state, live network, broker/order/guard/Step5C/UEF, runtime or frozen tests.
+
+**Mandatory targeted normal G2:** `tests/test_p15_rf035_12h_a7_post_exit_shadow_needs_fresh_minutes_owner.py`. Explicit input→expected: Freeze facade.datetime/timezone/KST at 2026-10-31 16:00 KST; facade._shadow_latest_required_epoch returns None; fake shadow checkpoints.EOD.status='observed' with rows=[] -> False; status='pending' with facade._rows_reach_regular_close returning False -> True. Verify call-time monkeypatch and unchanged exception behavior. Compare original baseline output/exception with new Owner and SOURCE wrapper, including patched facade global where relevant. Run `python -m py_compile libs/reporting/post_exit_shadow_recap.py libs/reporting/post_exit_shadow_freshness_decision_projection.py` then `python -m unittest tests/test_p15_rf035_12h_a7_post_exit_shadow_needs_fresh_minutes_owner.py -v` normal exit0 (or equivalent targeted pytest). Commit only Actor-owned code/test, normal push and re-fetch A remote SOURCE/TARGET/test blob and HEAD. On BLOCKED report exact reason and continue A8; never stop after first PASS or push failure.
+
+## A8 | RF-035 | libs/reporting/post_exit_shadow_recap.py::iter_trade_report_json_paths @ L283 | SOURCE_BLOB=36c3fdbaf86998c4194f5fe17c0b793f9a8f8207
+
+**TARGET (new exclusive Owner, absent at A remote HEAD):** `libs/reporting/post_exit_shadow_path_projection.py::iter_trade_report_json_paths`. **EXACT CURRENT SOURCE COMPUTATION BODY TO MOVE** (preserve semantics; only change global lookup plumbing needed for use-time facade):
+
+```python
+def iter_trade_report_json_paths(reports_root: Path, day: str) -> List[Path]:
+    trade_root = reports_root / "trades" / day
+    if not trade_root.exists():
+        return []
+    return sorted(trade_root.rglob("reports/ai_trade_report.json"))
+```
+
+**Thin wrapper / callers / monkeypatch:** Keep original `iter_trade_report_json_paths` signature in `libs/reporting/post_exit_shadow_recap.py`; delegate to `libs/reporting/post_exit_shadow_path_projection.py::iter_trade_report_json_paths` at call time, not a copied implementation. Retain existing import and monkeypatch seam, original exceptions/output ordering, and generator laziness. Where module globals are referenced, owner resolves them from passed source `facade` at use time (do not capture values at import time); no reverse import. **Safety:** report-only computation/read-only on fake/temp fixtures; do not touch real state, live network, broker/order/guard/Step5C/UEF, runtime or frozen tests.
+
+**Mandatory targeted normal G2:** `tests/test_p15_rf035_12h_a8_iter_trade_report_json_paths_owner.py`. Explicit input→expected: Use tmp_path with trades/2026-10-31/x/reports/ai_trade_report.json and trades/2026-10-31/y/reports/ai_trade_report.json; expect two sorted Path values; missing day -> []; verify baseline/owner/wrapper parity and no writes. Compare original baseline output/exception with new Owner and SOURCE wrapper, including patched facade global where relevant. Run `python -m py_compile libs/reporting/post_exit_shadow_recap.py libs/reporting/post_exit_shadow_path_projection.py` then `python -m unittest tests/test_p15_rf035_12h_a8_iter_trade_report_json_paths_owner.py -v` normal exit0 (or equivalent targeted pytest). Commit only Actor-owned code/test, normal push and re-fetch A remote SOURCE/TARGET/test blob and HEAD. On BLOCKED report exact reason and continue A1–8 remaining safe items; never stop after first PASS or push failure.
+
+## RESERVE — RESERVE_NOT_VERIFIED (0/6) / DO NOT EXECUTE
+
+All six previously VERIFIED design reserves have been promoted to A1–A6, so **no spare item is verified** in this order. Do not invent or self-select replacement tasks. C03 next supply scan must inspect six new exclusive RF-035 SOURCE BODY candidates, their exact remote blobs, target nonexistence, fake/temp test expectations and A/B overlap before marking VERIFIED. Initial unverified investigation pool (NOT ASSIGNED): `libs/reporting/strategist_llm_summary.py::render_strategist_llm_summary_markdown`, `::_render_stage_specific_summary_markdown`; `libs/reporting/trade_bundle_assembly.py::_coalesce_non_empty`; `libs/reporting/post_exit_shadow_recap.py::resolve_post_exit_state_path`; other report-only functions only after fresh source/owner inspection. IO-writing, broker/guard and operational functions are excluded. Reserve shortfall is a **C03 design gap**, not an A blocker.
+
+## REPORT / CONTINUITY
+
+Report to #11: `ORDER_ID=A-20261031-12 | CANONICAL_HEAD | ORDER_BLOB | A_REMOTE_HEAD_BEFORE/AFTER | A1..A8 IMPLEMENTED/REMOTE_DONE/BLOCKED | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | NEW_BODY_MOVES | FIRST_BLOCKER | NEXT_SAFE_ITEM | START_KST/END_KST/ELAPSED_MIN`. START/END only measured, no inferred duration. Terminal push failure is PUSH_BLOCKED, not G1; continue safe items and preserve exact-tree evidence. G1 remote code, G2 normal targeted exit0, G3 C04/C05 handoff are separate. No RF/STATUS/queue/doc edits by A.
