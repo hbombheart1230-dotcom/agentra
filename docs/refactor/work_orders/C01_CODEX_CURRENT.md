@@ -1,447 +1,13 @@
-# C01 — Codex B | B-20261031-09 | FAST-3 SINGLE EXECUTION ORDER
+# C01 — Codex B | B-20261031-10 | FAST-3 SINGLE EXECUTION ORDER
 
-**PRE-FLIGHT:** Canonical integration HEAD at issuance `d64fe61b777892d91e9aba6bb580f6fa63f967c5`; ORDER_FILE_BLOB_SHA is the blob of THIS file when fetched at run start; Owner branch `work/p15-b-operator-structure-20261022`. Pin all three before work. Do not read D00, RF, queue, handoffs or separate design; all executable scope is inline below. A later order does not retroactively cancel the pinned start order. This order supersedes the previous 08h 8/8 REMOTE_DONE batch; do not rerun prior tests. RF owner RF-063 exclusive, no other Actor paths. SOURCE blob must match current owner HEAD or mark STALE/BLOCKED and continue independent items; no guesswork.
+**PIN AT START:** `integration/p1.5` HEAD at issuance `959ca9e9fdade3963fa25a2d12710d66ab218741`; remote `ORDER_FILE_BLOB_SHA` from this document; Actor branch `work/p15-b-operator-structure-20261022` HEAD at start. Previous 09h order blob `d7d5e47e9764ec4c80781d65396fa1d7d3ba5d2c` is **8/8 REMOTE_DONE**, no repeat. A newly issued order never cancels an Actor's already pinned start order. This C-file is the only task specification: DO NOT read D00, RF, queue, C03, handoffs or select tasks independently.
 
-**MANDATORY 8 REAL BODY MOVES:** every numbered item independently implement or provide item-specific blocker; do not stop at first PASS/commit. Move computation BODY (not copy) into specified new Owner, keep original signature/defaults/annotations/docstring as thin facade wrapper, preserve lazy generator behavior, exceptions, output ordering, caller imports and post-import monkeypatch. TARGET must NOT import SOURCE (no cycles); if global name lookup is needed, Owner accepts keyword-only `facade` and resolves globals from facade at CALL time, wrapper passes `sys.modules[__name__]` (import sys as private alias if needed). Preserve generator iteration-time lookup. Test before/after parity with fake/temp inputs; one normal exit0 scoped unittest or pytest is G2. No mandatory -O, full peer or CI. Source-only module names and existing caller public paths remain unchanged. Do not touch real accounts, Broker/Guard/Step5C/UEF, live network, production State/DB, RunLab, deploy, scheduler, frozen oracle or real orders. Read-only reporting calculations only.
+**EIGHT MANDATORY NEW BODY MOVES:** Execute every item 1–8 or record individual evidence-based BLOCKED; continue other safe items after first PASS/commit/push failure. Exact SOURCE blob and target function absence verified at Actor remote. On refreshed SHA, classify already-moved actual BODY as REMOTE_DONE, not new work; if SOURCE changed and safety cannot be established, mark that item STALE/BLOCKED and continue. Move calculation BODY exactly once, leave thin facade and patch seam, preserve exceptions and output ordering. One normal targeted unittest/pytest/smoke exit0 is G2; no forced -O/full peer/hosted CI. Actor writes ONLY own code/tests; C04 integrates and C05 decides G1/G2/G3/DONE/STATUS. No operational/trading effects, real broker/guard/Step5C/UEF, RunLab, live network, real State, frozen oracle, CI or force push.
 
-## B1 | RF-063 | scripts/diagnostics/generate_ops_diagnostic_report.py::_to_epoch @ L26 | SOURCE_BLOB=2e39f6482f092351276790af5f96c1530326ce8e
+## B1 | RF-063 | scripts/diagnostics/query_m25_notification_events.py::_to_epoch @ L26 | SOURCE_BLOB=ec1f122a60875da5fbea743d42ddeca75bc07c7f
 
-**TARGET exclusive new Owner:** `scripts/diagnostics/ops_diagnostic_scalar_projection.py::_to_epoch` (verified ABSENT at actor remote preflight). **EXACT COMPUTATION BODY TO MOVE:**
+**TARGET:** `scripts/diagnostics/notification_query_time_projection.py::_to_epoch` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
 
-```python
-def _to_epoch(ts: Any) -> Optional[int]:
-    if ts is None:
-        return None
-    if isinstance(ts, (int, float)):
-        return int(ts)
-
-    s = str(ts).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s))
-    except Exception:
-        pass
-
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    try:
-        dt = datetime.fromisoformat(s)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
-    except Exception:
-        return None
-```
-
-**Wrapper/callers/monkeypatch:** Preserve original signature and imports. SOURCE delegates exactly once to Owner (for generator `_iter_days` use `yield from owner(...)`, not `return iterator`). TARGET must contain the above computation once, SOURCE no duplicate. Global/patch seam: facade.datetime/timezone. Preserve dynamic facade references and error type/message, including bad inputs. If an item has existing target on refreshed HEAD, classify REMOTE_DONE only if actual BODY moved and wrapper present; never overwrite an unrelated target.
-
-**Targeted normal test:** new `tests/test_p15_rf063_09h_b1_to_epoch_owner.py`; explicit input→expected: '2026-10-31T00:00:00Z' -> int(datetime(2026,10,31,tzinfo=UTC).timestamp()); '' -> None. Assert baseline-vs-Owner-vs-wrapper output and negative/error behavior, monkeypatch after import where applicable, no real IO. For generator check lazy behavior and `list(...)`. For stdout-only diagnostics use `redirect_stdout(StringIO())`. Run `python -m py_compile scripts/diagnostics/generate_ops_diagnostic_report.py scripts/diagnostics/ops_diagnostic_scalar_projection.py` then `python -m unittest tests/test_p15_rf063_09h_b1_to_epoch_owner.py -v` (normal exit 0). Commit only code/test on OWN branch and normal push; re-fetch owner HEAD, SOURCE/TARGET/test blobs. If test/permission/push blocked, record exact command, error, local vs remote state, continue B2.
-
-## B2 | RF-063 | scripts/diagnostics/generate_ops_diagnostic_report.py::_utc_day @ L51 | SOURCE_BLOB=2e39f6482f092351276790af5f96c1530326ce8e
-
-**TARGET exclusive new Owner:** `scripts/diagnostics/ops_diagnostic_scalar_projection.py::_utc_day` (verified ABSENT at actor remote preflight). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _utc_day(ts: Any) -> str:
-    epoch = _to_epoch(ts)
-    if epoch is None:
-        return date.today().isoformat()
-    return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%d")
-```
-
-**Wrapper/callers/monkeypatch:** Preserve original signature and imports. SOURCE delegates exactly once to Owner (for generator `_iter_days` use `yield from owner(...)`, not `return iterator`). TARGET must contain the above computation once, SOURCE no duplicate. Global/patch seam: facade._to_epoch/date/datetime/timezone; no live clock in test. Preserve dynamic facade references and error type/message, including bad inputs. If an item has existing target on refreshed HEAD, classify REMOTE_DONE only if actual BODY moved and wrapper present; never overwrite an unrelated target.
-
-**Targeted normal test:** new `tests/test_p15_rf063_09h_b2_utc_day_owner.py`; explicit input→expected: '2026-10-31T01:00:00Z' -> '2026-10-31'; None -> mocked facade.date.today().isoformat(). Assert baseline-vs-Owner-vs-wrapper output and negative/error behavior, monkeypatch after import where applicable, no real IO. For generator check lazy behavior and `list(...)`. For stdout-only diagnostics use `redirect_stdout(StringIO())`. Run `python -m py_compile scripts/diagnostics/generate_ops_diagnostic_report.py scripts/diagnostics/ops_diagnostic_scalar_projection.py` then `python -m unittest tests/test_p15_rf063_09h_b2_utc_day_owner.py -v` (normal exit 0). Commit only code/test on OWN branch and normal push; re-fetch owner HEAD, SOURCE/TARGET/test blobs. If test/permission/push blocked, record exact command, error, local vs remote state, continue B3.
-
-## B3 | RF-063 | scripts/diagnostics/generate_ops_diagnostic_report.py::_to_float @ L58 | SOURCE_BLOB=2e39f6482f092351276790af5f96c1530326ce8e
-
-**TARGET exclusive new Owner:** `scripts/diagnostics/ops_diagnostic_scalar_projection.py::_to_float` (verified ABSENT at actor remote preflight). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _to_float(v: Any) -> Optional[float]:
-    try:
-        if v is None:
-            return None
-        return float(v)
-    except Exception:
-        return None
-```
-
-**Wrapper/callers/monkeypatch:** Preserve original signature and imports. SOURCE delegates exactly once to Owner (for generator `_iter_days` use `yield from owner(...)`, not `return iterator`). TARGET must contain the above computation once, SOURCE no duplicate. Global/patch seam: pure. Preserve dynamic facade references and error type/message, including bad inputs. If an item has existing target on refreshed HEAD, classify REMOTE_DONE only if actual BODY moved and wrapper present; never overwrite an unrelated target.
-
-**Targeted normal test:** new `tests/test_p15_rf063_09h_b3_to_float_owner.py`; explicit input→expected: '3.5' -> 3.5; None and 'bad' -> None. Assert baseline-vs-Owner-vs-wrapper output and negative/error behavior, monkeypatch after import where applicable, no real IO. For generator check lazy behavior and `list(...)`. For stdout-only diagnostics use `redirect_stdout(StringIO())`. Run `python -m py_compile scripts/diagnostics/generate_ops_diagnostic_report.py scripts/diagnostics/ops_diagnostic_scalar_projection.py` then `python -m unittest tests/test_p15_rf063_09h_b3_to_float_owner.py -v` (normal exit 0). Commit only code/test on OWN branch and normal push; re-fetch owner HEAD, SOURCE/TARGET/test blobs. If test/permission/push blocked, record exact command, error, local vs remote state, continue B4.
-
-## B4 | RF-063 | scripts/diagnostics/generate_ops_diagnostic_report.py::_extract_noop_reason @ L75 | SOURCE_BLOB=2e39f6482f092351276790af5f96c1530326ce8e
-
-**TARGET exclusive new Owner:** `scripts/diagnostics/ops_diagnostic_summary_projection.py::_extract_noop_reason` (verified ABSENT at actor remote preflight). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _extract_noop_reason(payload: Dict[str, Any]) -> str:
-    packet = payload.get("decision_packet") if isinstance(payload.get("decision_packet"), dict) else {}
-    intent = packet.get("intent") if isinstance(packet.get("intent"), dict) else {}
-    reason = str(intent.get("reason") or "").strip()
-    if reason:
-        return reason
-    trace = payload.get("trace") if isinstance(payload.get("trace"), dict) else {}
-    raw_intent = trace.get("raw_intent") if isinstance(trace.get("raw_intent"), dict) else {}
-    reason = str(raw_intent.get("reason") or "").strip()
-    return reason or "unknown"
-```
-
-**Wrapper/callers/monkeypatch:** Preserve original signature and imports. SOURCE delegates exactly once to Owner (for generator `_iter_days` use `yield from owner(...)`, not `return iterator`). TARGET must contain the above computation once, SOURCE no duplicate. Global/patch seam: pure nested mapping. Preserve dynamic facade references and error type/message, including bad inputs. If an item has existing target on refreshed HEAD, classify REMOTE_DONE only if actual BODY moved and wrapper present; never overwrite an unrelated target.
-
-**Targeted normal test:** new `tests/test_p15_rf063_09h_b4_extract_noop_reason_owner.py`; explicit input→expected: decision_packet.intent.reason='A' -> 'A'; trace.raw_intent.reason='B' -> 'B'; {} -> 'unknown'. Assert baseline-vs-Owner-vs-wrapper output and negative/error behavior, monkeypatch after import where applicable, no real IO. For generator check lazy behavior and `list(...)`. For stdout-only diagnostics use `redirect_stdout(StringIO())`. Run `python -m py_compile scripts/diagnostics/generate_ops_diagnostic_report.py scripts/diagnostics/ops_diagnostic_summary_projection.py` then `python -m unittest tests/test_p15_rf063_09h_b4_extract_noop_reason_owner.py -v` (normal exit 0). Commit only code/test on OWN branch and normal push; re-fetch owner HEAD, SOURCE/TARGET/test blobs. If test/permission/push blocked, record exact command, error, local vs remote state, continue B5.
-
-## B5 | RF-063 | scripts/diagnostics/generate_ops_diagnostic_report.py::_build_summary @ L87 | SOURCE_BLOB=2e39f6482f092351276790af5f96c1530326ce8e
-
-**TARGET exclusive new Owner:** `scripts/diagnostics/ops_diagnostic_summary_projection.py::_build_summary` (verified ABSENT at actor remote preflight). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _build_summary(rows: List[Dict[str, Any]], *, day: str) -> Dict[str, Any]:
-    run_ids = {str(r.get("run_id") or "") for r in rows if str(r.get("run_id") or "").strip()}
-
-    verdict_reason_total: Counter[str] = Counter()
-    broker_code_total: Counter[str] = Counter()
-    broker_failure_total: Counter[str] = Counter()
-    noop_reason_total: Counter[str] = Counter()
-    llm_latency_ms: List[float] = []
-    llm_total = 0
-    llm_ok_total = 0
-    llm_error_total = 0
-    execution_total = 0
-    verdict_block_total = 0
-    broker_success_total = 0
-    broker_fail_total = 0
-    broker_unknown_total = 0
-
-    for r in rows:
-        stage = str(r.get("stage") or "")
-        event = str(r.get("event") or "")
-        payload = r.get("payload") if isinstance(r.get("payload"), dict) else {}
-
-        if stage == "execute_from_packet" and event == "verdict":
-            if payload.get("allowed") is False:
-                verdict_block_total += 1
-                reason = str(payload.get("reason") or "").strip() or "unknown"
-                verdict_reason_total[reason] += 1
-
-        if stage == "execute_from_packet" and event == "execution":
-            execution_total += 1
-            ex_payload = payload.get("payload") if isinstance(payload.get("payload"), dict) else {}
-            bcode = str(ex_payload.get("broker_code") or "").strip()
-            if bcode:
-                broker_code_total[bcode] += 1
-            b_ok = _broker_code_success(ex_payload.get("broker_code"))
-            if b_ok is None:
-                if "api_ok" in ex_payload:
-                    b_ok = bool(ex_payload.get("api_ok"))
-                else:
-                    broker_unknown_total += 1
-            if b_ok is True:
-                broker_success_total += 1
-            elif b_ok is False:
-                broker_fail_total += 1
-                k = bcode or "unknown"
-                broker_failure_total[k] += 1
-
-        if stage == "decision" and event == "trace":
-            packet = payload.get("decision_packet") if isinstance(payload.get("decision_packet"), dict) else {}
-            intent = packet.get("intent") if isinstance(packet.get("intent"), dict) else {}
-            action = str(intent.get("action") or "").strip().upper()
-            if action == "NOOP":
-                noop_reason_total[_extract_noop_reason(payload)] += 1
-
-        if stage == "strategist_llm" and event == "result":
-            llm_total += 1
-            if payload.get("ok") is True:
-                llm_ok_total += 1
-            else:
-                llm_error_total += 1
-            lat = _to_float(payload.get("latency_ms"))
-            if lat is not None and lat >= 0.0:
-                llm_latency_ms.append(float(lat))
-
-    noop_total = int(sum(noop_reason_total.values()))
-    noop_reason_ratio = {
-        str(k): (float(v) / float(noop_total) if noop_total > 0 else 0.0)
-        for k, v in noop_reason_total.items()
-    }
-    focus_noop_reasons = ("model_no_signal", "missing_rationale", "post_exit_cooldown")
-    focus_ratio = {k: float(noop_reason_ratio.get(k, 0.0)) for k in focus_noop_reasons}
-
-    out = {
-        "schema_version": "ops_diagnostic.v1",
-        "day": day,
-        "events": int(len(rows)),
-        "runs": int(len(run_ids)),
-        "execution": {
-            "execution_total": int(execution_total),
-            "verdict_block_total": int(verdict_block_total),
-            "verdict_reason_topN": [
-                {"reason": str(reason), "count": int(cnt)}
-                for reason, cnt in verdict_reason_total.most_common(10)
-            ],
-            "broker_success_total": int(broker_success_total),
-            "broker_fail_total": int(broker_fail_total),
-            "broker_unknown_total": int(broker_unknown_total),
-            "broker_success_rate": (
-                float(broker_success_total) / float(execution_total) if execution_total > 0 else 0.0
-            ),
-            "broker_code_topN": [
-                {"broker_code": str(code), "count": int(cnt)}
-                for code, cnt in broker_code_total.most_common(10)
-            ],
-            "broker_failure_topN": [
-                {"broker_code": str(code), "count": int(cnt)}
-                for code, cnt in broker_failure_total.most_common(10)
-            ],
-        },
-        "noop": {
-            "total": int(noop_total),
-            "reason_total": {str(k): int(v) for k, v in noop_reason_total.items()},
-            "reason_ratio": {str(k): float(v) for k, v in noop_reason_ratio.items()},
-            "focus_reason_ratio": focus_ratio,
-        },
-        "strategist_llm": {
-            "total": int(llm_total),
-            "ok_total": int(llm_ok_total),
-            "error_total": int(llm_error_total),
-            "latency_ms": _numeric_summary(llm_latency_ms),
-        },
-    }
-    return out
-```
-
-**Wrapper/callers/monkeypatch:** Preserve original signature and imports. SOURCE delegates exactly once to Owner (for generator `_iter_days` use `yield from owner(...)`, not `return iterator`). TARGET must contain the above computation once, SOURCE no duplicate. Global/patch seam: facade.Counter/_broker_code_success/_extract_noop_reason/_to_float/_numeric_summary; NO real broker call. Preserve dynamic facade references and error type/message, including bad inputs. If an item has existing target on refreshed HEAD, classify REMOTE_DONE only if actual BODY moved and wrapper present; never overwrite an unrelated target.
-
-**Targeted normal test:** new `tests/test_p15_rf063_09h_b5_build_summary_owner.py`; explicit input→expected: fake NOOP decision + strategist_llm result -> noop.total=1, strategist_llm.total=1; [] -> zero totals. Assert baseline-vs-Owner-vs-wrapper output and negative/error behavior, monkeypatch after import where applicable, no real IO. For generator check lazy behavior and `list(...)`. For stdout-only diagnostics use `redirect_stdout(StringIO())`. Run `python -m py_compile scripts/diagnostics/generate_ops_diagnostic_report.py scripts/diagnostics/ops_diagnostic_summary_projection.py` then `python -m unittest tests/test_p15_rf063_09h_b5_build_summary_owner.py -v` (normal exit 0). Commit only code/test on OWN branch and normal push; re-fetch owner HEAD, SOURCE/TARGET/test blobs. If test/permission/push blocked, record exact command, error, local vs remote state, continue B6.
-
-## B6 | RF-063 | scripts/diagnostics/generate_ops_diagnostic_report.py::_build_markdown @ L202 | SOURCE_BLOB=2e39f6482f092351276790af5f96c1530326ce8e
-
-**TARGET exclusive new Owner:** `scripts/diagnostics/ops_diagnostic_markdown_projection.py::_build_markdown` (verified ABSENT at actor remote preflight). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _build_markdown(summary: Dict[str, Any]) -> str:
-    exe = summary.get("execution") if isinstance(summary.get("execution"), dict) else {}
-    noop = summary.get("noop") if isinstance(summary.get("noop"), dict) else {}
-    llm = summary.get("strategist_llm") if isinstance(summary.get("strategist_llm"), dict) else {}
-
-    lines: List[str] = [
-        f"# Ops Diagnostic Report ({summary.get('day')})",
-        "",
-        f"- schema_version: **{summary.get('schema_version')}**",
-        f"- events: **{int(summary.get('events') or 0)}**",
-        f"- runs: **{int(summary.get('runs') or 0)}**",
-        "",
-        "## Execution",
-        "",
-        f"- execution_total: **{int(exe.get('execution_total') or 0)}**",
-        f"- verdict_block_total: **{int(exe.get('verdict_block_total') or 0)}**",
-        f"- broker_success_total: **{int(exe.get('broker_success_total') or 0)}**",
-        f"- broker_fail_total: **{int(exe.get('broker_fail_total') or 0)}**",
-        f"- broker_unknown_total: **{int(exe.get('broker_unknown_total') or 0)}**",
-        f"- broker_success_rate: **{float(exe.get('broker_success_rate') or 0.0):.2%}**",
-        "",
-        "### verdict_reason_topN",
-        "",
-    ]
-
-    top_verdict = exe.get("verdict_reason_topN") if isinstance(exe.get("verdict_reason_topN"), list) else []
-    if top_verdict:
-        for row in top_verdict:
-            if not isinstance(row, dict):
-                continue
-            lines.append(f"- {row.get('reason')}: {int(row.get('count') or 0)}")
-    else:
-        lines.append("- (none)")
-
-    lines += ["", "### broker_failure_topN", ""]
-    top_fail = exe.get("broker_failure_topN") if isinstance(exe.get("broker_failure_topN"), list) else []
-    if top_fail:
-        for row in top_fail:
-            if not isinstance(row, dict):
-                continue
-            lines.append(f"- {row.get('broker_code')}: {int(row.get('count') or 0)}")
-    else:
-        lines.append("- (none)")
-
-    lines += ["", "## NOOP", "", f"- total: **{int(noop.get('total') or 0)}**", "", "### focus_reason_ratio", ""]
-    focus = noop.get("focus_reason_ratio") if isinstance(noop.get("focus_reason_ratio"), dict) else {}
-    for key in ("model_no_signal", "missing_rationale", "post_exit_cooldown"):
-        lines.append(f"- {key}: {float(focus.get(key) or 0.0):.2%}")
-
-    latency = llm.get("latency_ms") if isinstance(llm.get("latency_ms"), dict) else {}
-    lines += [
-        "",
-        "## Strategist LLM",
-        "",
-        f"- total: **{int(llm.get('total') or 0)}**",
-        f"- ok_total: **{int(llm.get('ok_total') or 0)}**",
-        f"- error_total: **{int(llm.get('error_total') or 0)}**",
-        f"- latency_ms_p50: **{float(latency.get('p50') or 0.0):.1f}**",
-        f"- latency_ms_p95: **{float(latency.get('p95') or 0.0):.1f}**",
-        "",
-    ]
-    return "\n".join(lines)
-```
-
-**Wrapper/callers/monkeypatch:** Preserve original signature and imports. SOURCE delegates exactly once to Owner (for generator `_iter_days` use `yield from owner(...)`, not `return iterator`). TARGET must contain the above computation once, SOURCE no duplicate. Global/patch seam: pure deterministic formatting. Preserve dynamic facade references and error type/message, including bad inputs. If an item has existing target on refreshed HEAD, classify REMOTE_DONE only if actual BODY moved and wrapper present; never overwrite an unrelated target.
-
-**Targeted normal test:** new `tests/test_p15_rf063_09h_b6_build_markdown_owner.py`; explicit input→expected: {'day':'2026-10-31'} -> starts '# Ops Diagnostic Report (2026-10-31)' and contains '## Execution'. Assert baseline-vs-Owner-vs-wrapper output and negative/error behavior, monkeypatch after import where applicable, no real IO. For generator check lazy behavior and `list(...)`. For stdout-only diagnostics use `redirect_stdout(StringIO())`. Run `python -m py_compile scripts/diagnostics/generate_ops_diagnostic_report.py scripts/diagnostics/ops_diagnostic_markdown_projection.py` then `python -m unittest tests/test_p15_rf063_09h_b6_build_markdown_owner.py -v` (normal exit 0). Commit only code/test on OWN branch and normal push; re-fetch owner HEAD, SOURCE/TARGET/test blobs. If test/permission/push blocked, record exact command, error, local vs remote state, continue B7.
-
-## B7 | RF-063 | scripts/diagnostics/query_trade_reason_chain.py::_event_intent_id @ L29 | SOURCE_BLOB=89ff494d90d9c58ced19634cc877a7af82f60172
-
-**TARGET exclusive new Owner:** `scripts/diagnostics/trade_reason_intent_projection.py::_event_intent_id` (verified ABSENT at actor remote preflight). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _event_intent_id(payload: Dict[str, Any]) -> Optional[str]:
-    packet = payload.get("decision_packet")
-    packet = packet if isinstance(packet, dict) else {}
-    intent = packet.get("intent")
-    intent = intent if isinstance(intent, dict) else {}
-    ids = {str(value).strip() for value in (
-        payload.get("intent_id"), packet.get("intent_id"), intent.get("intent_id")
-    ) if value is not None and str(value).strip()}
-    # Conflicting IDs are not an attribution basis; empty means legacy ID-less.
-    return next(iter(ids)) if len(ids) == 1 else None if ids else ""
-```
-
-**Wrapper/callers/monkeypatch:** Preserve original signature and imports. SOURCE delegates exactly once to Owner (for generator `_iter_days` use `yield from owner(...)`, not `return iterator`). TARGET must contain the above computation once, SOURCE no duplicate. Global/patch seam: pure; conflict attribution fail-closed unchanged. Preserve dynamic facade references and error type/message, including bad inputs. If an item has existing target on refreshed HEAD, classify REMOTE_DONE only if actual BODY moved and wrapper present; never overwrite an unrelated target.
-
-**Targeted normal test:** new `tests/test_p15_rf063_09h_b7_event_intent_id_owner.py`; explicit input→expected: matching explicit IDs -> 'A'; conflicting IDs -> None; missing -> ''. Assert baseline-vs-Owner-vs-wrapper output and negative/error behavior, monkeypatch after import where applicable, no real IO. For generator check lazy behavior and `list(...)`. For stdout-only diagnostics use `redirect_stdout(StringIO())`. Run `python -m py_compile scripts/diagnostics/query_trade_reason_chain.py scripts/diagnostics/trade_reason_intent_projection.py` then `python -m unittest tests/test_p15_rf063_09h_b7_event_intent_id_owner.py -v` (normal exit 0). Commit only code/test on OWN branch and normal push; re-fetch owner HEAD, SOURCE/TARGET/test blobs. If test/permission/push blocked, record exact command, error, local vs remote state, continue B8.
-
-## B8 | RF-063 | scripts/diagnostics/query_trade_reason_chain.py::_build_rows @ L41 | SOURCE_BLOB=89ff494d90d9c58ced19634cc877a7af82f60172
-
-**TARGET exclusive new Owner:** `scripts/diagnostics/trade_reason_rows_projection.py::_build_rows` (verified ABSENT at actor remote preflight). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _build_rows(
-    events: List[Dict[str, Any]],
-    *,
-    run_id_filter: str = "",
-    action_filter: str = "",
-    only_broker_success: bool = False,
-) -> List[Dict[str, Any]]:
-    by_run: Dict[str, Dict[str, Any]] = {}
-    out: List[Dict[str, Any]] = []
-    execution_counts = Counter(str(rec.get("run_id") or "").strip() for rec in events
-                               if rec.get("stage") == "execute_from_packet" and rec.get("event") == "execution")
-
-    for rec in events:
-        run_id = str(rec.get("run_id") or "").strip()
-        if not run_id:
-            continue
-        if run_id not in by_run:
-            by_run[run_id] = {}
-        ctx = by_run[run_id]
-
-        stage = str(rec.get("stage") or "").strip()
-        event = str(rec.get("event") or "").strip()
-        payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-
-        if stage == "strategist_llm" and event == "result":
-            intent_id = _event_intent_id(payload)
-            if intent_id is not None:
-                ctx.setdefault("llm", {})[intent_id] = payload
-            continue
-
-        if stage == "decision" and event == "trace":
-            intent_id = _event_intent_id(payload)
-            if intent_id is not None:
-                ctx.setdefault("decision", {})[intent_id] = payload
-            continue
-
-        if stage == "execute_from_packet" and event == "verdict":
-            intent_id = _event_intent_id(payload)
-            if intent_id is not None:
-                ctx.setdefault("verdict", {})[intent_id] = payload
-            continue
-
-        if stage == "execute_from_packet" and event == "execution":
-            order = payload.get("order") if isinstance(payload.get("order"), dict) else {}
-            ex_payload = payload.get("payload") if isinstance(payload.get("payload"), dict) else {}
-            action = str(order.get("action") or "").strip().upper()
-            if action not in ("BUY", "SELL"):
-                continue
-
-            if run_id_filter and run_id != run_id_filter:
-                continue
-            if action_filter and action != action_filter:
-                continue
-
-            broker_ok = _broker_code_success(ex_payload.get("broker_code"))
-            if only_broker_success and broker_ok is not True:
-                continue
-
-            intent_id = _event_intent_id(payload)
-
-            def context(kind: str) -> Dict[str, Any]:
-                candidates = ctx.get(kind, {})
-                if intent_id:
-                    return candidates.get(intent_id, {})
-                # Preserve legacy single-execution decision/LLM context only.
-                # Verdict attribution always requires a matching explicit ID.
-                if (intent_id == "" and kind != "verdict" and execution_counts[run_id] == 1
-                        and set(candidates) == {""}):
-                    return candidates[""]
-                return {}
-
-            llm = context("llm")
-            decision = context("decision")
-            decision_trace = decision.get("trace") if isinstance(decision.get("trace"), dict) else {}
-            decision_packet = decision.get("decision_packet") if isinstance(decision.get("decision_packet"), dict) else {}
-            decision_intent = decision_packet.get("intent") if isinstance(decision_packet.get("intent"), dict) else {}
-            verdict = context("verdict")
-            decision_rationale = str(decision_trace.get("rationale") or "")
-            if not decision_rationale:
-                decision_rationale = str(decision_intent.get("rationale") or "")
-            llm_intent_rationale = str(llm.get("intent_rationale") or "")
-            if not decision_rationale and llm_intent_rationale:
-                decision_rationale = llm_intent_rationale
-
-            row = {
-                "ts": str(rec.get("ts") or ""),
-                "run_id": run_id,
-                "action": action,
-                "symbol": str(order.get("symbol") or ""),
-                "qty": order.get("qty"),
-                "price": order.get("price"),
-                "order_type": order.get("order_type"),
-                "execution_reason": str(payload.get("reason") or ""),
-                "allowed": payload["allowed"] if "allowed" in payload else verdict.get("allowed"),
-                "verdict_reason": str(verdict.get("reason") or ""),
-                "broker_code": str(ex_payload.get("broker_code") or ""),
-                "broker_ok": broker_ok,
-                "broker_message": str(ex_payload.get("broker_message") or ""),
-                "order_id": str(ex_payload.get("order_id") or ""),
-                "decision_strategy": str(decision_trace.get("strategy") or ""),
-                "decision_rationale": decision_rationale,
-                "decision_reason": str(decision_intent.get("reason") or ""),
-                "llm_provider": str(llm.get("provider") or ""),
-                "llm_model": str(llm.get("model") or ""),
-                "llm_ok": llm.get("ok"),
-                "llm_intent_action": str(llm.get("intent_action") or ""),
-                "llm_intent_reason": str(llm.get("intent_reason") or ""),
-                "llm_intent_rationale": llm_intent_rationale,
-                "llm_latency_ms": llm.get("latency_ms"),
-            }
-            out.append(row)
-
-    return out
-```
-
-**Wrapper/callers/monkeypatch:** Preserve original signature and imports. SOURCE delegates exactly once to Owner (for generator `_iter_days` use `yield from owner(...)`, not `return iterator`). TARGET must contain the above computation once, SOURCE no duplicate. Global/patch seam: facade.Counter/_event_intent_id/_broker_code_success; read-only event projection, NEVER broker IO. Preserve dynamic facade references and error type/message, including bad inputs. If an item has existing target on refreshed HEAD, classify REMOTE_DONE only if actual BODY moved and wrapper present; never overwrite an unrelated target.
-
-**Targeted normal test:** new `tests/test_p15_rf063_09h_b8_build_rows_owner.py`; explicit input→expected: fake execution BUY order with run_id='r1', symbol='TEST', broker_code='0' -> one row action BUY/run_id r1; filter SELL -> []. Assert baseline-vs-Owner-vs-wrapper output and negative/error behavior, monkeypatch after import where applicable, no real IO. For generator check lazy behavior and `list(...)`. For stdout-only diagnostics use `redirect_stdout(StringIO())`. Run `python -m py_compile scripts/diagnostics/query_trade_reason_chain.py scripts/diagnostics/trade_reason_rows_projection.py` then `python -m unittest tests/test_p15_rf063_09h_b8_build_rows_owner.py -v` (normal exit 0). Commit only code/test on OWN branch and normal push; re-fetch owner HEAD, SOURCE/TARGET/test blobs. If test/permission/push blocked, record exact command, error, local vs remote state, continue Ball other safe items.
-
-## SIX FUTURE RESERVES — VERIFIED DESIGN ONLY; NOT EXECUTABLE THIS ORDER
-
-The following six are independent candidate BODY MOVEs, not completed code, not actor work in this pinned order. C03 checked actual SOURCE bodies, Owner RF and exclusive TARGET function absence at actor HEAD. Do NOT implement until next C03 explicitly promotes into a new order. If target collision appears, reverify before promotion.
-
-### R1 VERIFIED | RF-063 | `scripts/diagnostics/query_m25_notification_events.py::_to_epoch` L26 blob `ec1f122a60875da5fbea743d42ddeca75bc07c7f` → `scripts/diagnostics/notification_query_time_projection.py::_to_epoch`
-
-Actual unrelocated body:
 ```python
 def _to_epoch(ts: Any) -> Optional[int]:
     if ts is None:
@@ -465,11 +31,15 @@ def _to_epoch(ts: Any) -> Optional[int]:
     except Exception:
         return None
 ```
-Test hypothesis: '2026-10-31T00:00:00Z' -> UTC epoch; invalid -> None. Seam/safety: facade.datetime/timezone; wrapper must preserve signature/exception/monkeypatch, normal fake/temp test and push. **RESERVE ONLY, NO EXECUTION NOW.**
 
-### R2 VERIFIED | RF-063 | `scripts/diagnostics/query_m25_notification_events.py::_utc_day` L49 blob `ec1f122a60875da5fbea743d42ddeca75bc07c7f` → `scripts/diagnostics/notification_query_time_projection.py::_utc_day`
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade.datetime/timezone. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
 
-Actual unrelocated body:
+**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b1_to_epoch_owner.py`, explicit input→expected: '2026-10-31T00:00:00Z'->UTC epoch; ''->None. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_m25_notification_events.py scripts/diagnostics/notification_query_time_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b1_to_epoch_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
+
+## B2 | RF-063 | scripts/diagnostics/query_m25_notification_events.py::_utc_day @ L49 | SOURCE_BLOB=ec1f122a60875da5fbea743d42ddeca75bc07c7f
+
+**TARGET:** `scripts/diagnostics/notification_query_time_projection.py::_utc_day` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
 ```python
 def _utc_day(ts: Any) -> str:
     epoch = _to_epoch(ts)
@@ -477,21 +47,29 @@ def _utc_day(ts: Any) -> str:
         return datetime.now(timezone.utc).strftime("%Y-%m-%d")
     return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%d")
 ```
-Test hypothesis: valid UTC timestamp -> ISO day; None -> mocked clock. Seam/safety: facade._to_epoch/datetime/timezone; wrapper must preserve signature/exception/monkeypatch, normal fake/temp test and push. **RESERVE ONLY, NO EXECUTION NOW.**
 
-### R3 VERIFIED | RF-063 | `scripts/diagnostics/query_m25_notification_events.py::_env_str` L21 blob `ec1f122a60875da5fbea743d42ddeca75bc07c7f` → `scripts/diagnostics/notification_query_env_projection.py::_env_str`
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade._to_epoch/datetime/timezone; freeze clock. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
 
-Actual unrelocated body:
+**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b2_utc_day_owner.py`, explicit input→expected: '2026-10-31T01:00:00Z'->'2026-10-31'; None->mocked UTC date. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_m25_notification_events.py scripts/diagnostics/notification_query_time_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b2_utc_day_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
+
+## B3 | RF-063 | scripts/diagnostics/query_m25_notification_events.py::_env_str @ L21 | SOURCE_BLOB=ec1f122a60875da5fbea743d42ddeca75bc07c7f
+
+**TARGET:** `scripts/diagnostics/notification_query_env_projection.py::_env_str` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
 ```python
 def _env_str(name: str, default: str) -> str:
     raw = str(os.getenv(name, "") or "").strip()
     return raw if raw else str(default)
 ```
-Test hypothesis: fake env value ' yes ' -> 'yes'; unset -> default. Seam/safety: facade.os.getenv; no production .env read; wrapper must preserve signature/exception/monkeypatch, normal fake/temp test and push. **RESERVE ONLY, NO EXECUTION NOW.**
 
-### R4 VERIFIED | RF-063 | `scripts/diagnostics/query_m25_notification_events.py::_build_parser` L60 blob `ec1f122a60875da5fbea743d42ddeca75bc07c7f` → `scripts/diagnostics/notification_query_cli_projection.py::_build_parser`
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade.os; mock getenv, no .env. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
 
-Actual unrelocated body:
+**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b3_env_str_owner.py`, explicit input→expected: fake env ' yes '->'yes'; missing->default. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_m25_notification_events.py scripts/diagnostics/notification_query_env_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b3_env_str_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
+
+## B4 | RF-063 | scripts/diagnostics/query_m25_notification_events.py::_build_parser @ L60 | SOURCE_BLOB=ec1f122a60875da5fbea743d42ddeca75bc07c7f
+
+**TARGET:** `scripts/diagnostics/notification_query_cli_projection.py::_build_parser` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
 ```python
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Query M25 notification event log summary.")
@@ -511,11 +89,15 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json", action="store_true")
     return p
 ```
-Test hypothesis: parse_args(['--json']) -> json=True, default log path from fake env. Seam/safety: facade.argparse/_env_str; no actual CLI run; wrapper must preserve signature/exception/monkeypatch, normal fake/temp test and push. **RESERVE ONLY, NO EXECUTION NOW.**
 
-### R5 VERIFIED | RF-063 | `scripts/diagnostics/query_strategist_llm_events.py::_print_human` L44 blob `f368e15c2783e26f3fd7dd068ff2a167a76b4339` → `scripts/diagnostics/strategist_query_render_projection.py::_print_human`
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade.argparse/_env_str; parse only. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
 
-Actual unrelocated body:
+**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b4_build_parser_owner.py`, explicit input→expected: parse_args(['--json']).json is True; fake env default. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_m25_notification_events.py scripts/diagnostics/notification_query_cli_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b4_build_parser_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
+
+## B5 | RF-063 | scripts/diagnostics/query_strategist_llm_events.py::_print_human @ L44 | SOURCE_BLOB=f368e15c2783e26f3fd7dd068ff2a167a76b4339
+
+**TARGET:** `scripts/diagnostics/strategist_query_render_projection.py::_print_human` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
 ```python
 def _print_human(path: Path, rows: List[Dict[str, Any]]) -> None:
     print("=== Strategist LLM Events ===")
@@ -559,11 +141,15 @@ def _print_human(path: Path, rows: List[Dict[str, Any]]) -> None:
             f"error_type={err}"
         )
 ```
-Test hypothesis: empty rows -> header/path/shown=0; capture stdout only. Seam/safety: facade._infer_call_kind and print seam; no IO beyond redirected stdout; wrapper must preserve signature/exception/monkeypatch, normal fake/temp test and push. **RESERVE ONLY, NO EXECUTION NOW.**
 
-### R6 VERIFIED | RF-063 | `scripts/diagnostics/query_strategist_llm_events.py::_print_summary` L87 blob `f368e15c2783e26f3fd7dd068ff2a167a76b4339` → `scripts/diagnostics/strategist_query_render_projection.py::_print_summary`
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade._infer_call_kind; redirect stdout. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
 
-Actual unrelocated body:
+**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b5_print_human_owner.py`, explicit input→expected: empty rows stdout has header, shown=0. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_strategist_llm_events.py scripts/diagnostics/strategist_query_render_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b5_print_human_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
+
+## B6 | RF-063 | scripts/diagnostics/query_strategist_llm_events.py::_print_summary @ L87 | SOURCE_BLOB=f368e15c2783e26f3fd7dd068ff2a167a76b4339
+
+**TARGET:** `scripts/diagnostics/strategist_query_render_projection.py::_print_summary` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
 ```python
 def _print_summary(rows: List[Dict[str, Any]]) -> None:
     by_kind: Dict[str, Dict[str, int]] = {}
@@ -587,8 +173,318 @@ def _print_summary(rows: List[Dict[str, Any]]) -> None:
         json.dumps(sorted(by_reason.items(), key=lambda kv: kv[1], reverse=True)[:10], ensure_ascii=False),
     )
 ```
-Test hypothesis: empty rows -> summary.call_kind={} etc; capture stdout only. Seam/safety: facade._infer_call_kind/json/print; no network; wrapper must preserve signature/exception/monkeypatch, normal fake/temp test and push. **RESERVE ONLY, NO EXECUTION NOW.**
 
-## REPORT / PUSH / STOP CONDITIONS
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade._infer_call_kind/json; redirect stdout. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
 
-Report to #12: `ORDER_ID=B-20261031-09 | CANONICAL_HEAD | ORDER_FILE_BLOB_SHA | OWNER_REMOTE_SHA_BEFORE→AFTER | B1..B8 individual IMPLEMENTED/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED | SOURCE_BEFORE_AFTER_BLOBS | TARGET_BLOBS | NORMAL_TEST_COMMAND/EXIT | PUSH_REMOTE_SHA | FIRST_BLOCKER | NEXT`. Measured START_KST/END_KST/ELAPSED_MIN only, no estimates. A Git authentication failure blocks push only; continue all other safe item work. No RF/STATUS/C04/C05/D00/document/CI changes, no force-push. Actor code/test only. G1 remote code, G2 scoped normal test, G3 C04/C05 only; document publication itself is not G1/G2/G3.
+**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b6_print_summary_owner.py`, explicit input→expected: empty rows stdout contains summary.call_kind= {}. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_strategist_llm_events.py scripts/diagnostics/strategist_query_render_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b6_print_summary_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
+
+## B7 | RF-063 | scripts/diagnostics/query_commander_resilience_events.py::_is_incident_event @ L24 | SOURCE_BLOB=caebd5b1466a7f408a70be98ee94b89d5cda5e01
+
+**TARGET:** `scripts/diagnostics/commander_resilience_query_projection.py::_is_incident_event` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
+```python
+def _is_incident_event(rec: Dict[str, Any]) -> bool:
+    event = str(rec.get("event") or "")
+    payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
+    if event == "error":
+        return True
+    if event == "transition" and str(payload.get("transition") or "") == "cooldown":
+        return True
+    if event == "resilience":
+        reason = str(payload.get("reason") or "")
+        if reason in ("cooldown_active", "incident_threshold_cooldown"):
+            return True
+    return False
+```
+
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure read-only event label. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+
+**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b7_is_incident_event_owner.py`, explicit input→expected: {'event':'error'}->True; {'event':'route'}->False. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_commander_resilience_events.py scripts/diagnostics/commander_resilience_query_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b7_is_incident_event_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
+
+## B8 | RF-063 | scripts/diagnostics/query_commander_resilience_events.py::_filtered_events @ L38 | SOURCE_BLOB=caebd5b1466a7f408a70be98ee94b89d5cda5e01
+
+**TARGET:** `scripts/diagnostics/commander_resilience_query_projection.py::_filtered_events` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
+```python
+def _filtered_events(
+    rows: List[Dict[str, Any]],
+    *,
+    run_id: str = "",
+    only_incidents: bool = False,
+    include_route: bool = False,
+) -> List[Dict[str, Any]]:
+    out: List[Dict[str, Any]] = []
+    for rec in rows:
+        if rec.get("stage") != "commander_router":
+            continue
+        event = str(rec.get("event") or "")
+        if event == "route" and not include_route:
+            continue
+        if run_id and str(rec.get("run_id") or "") != run_id:
+            continue
+        if only_incidents and not _is_incident_event(rec):
+            continue
+        out.append(rec)
+    return out
+```
+
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade._is_incident_event; stable order. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+
+**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b8_filtered_events_owner.py`, explicit input→expected: commander_router/error and other/error -> one commander_router/error. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_commander_resilience_events.py scripts/diagnostics/commander_resilience_query_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b8_filtered_events_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
+
+## SIX VERIFIED FUTURE RESERVES — NOT EXECUTABLE THIS ORDER
+
+All six have actual SOURCE BODY and exclusive absent TARGET verified at Actor HEAD; no reserve is code implementation or test PASS. Promote only by a future new C03 order.
+
+### R1 VERIFIED | RF-063 | scripts/diagnostics/query_commander_resilience_events.py::_summary @ L60 | SOURCE_BLOB=caebd5b1466a7f408a70be98ee94b89d5cda5e01
+
+**TARGET:** `scripts/diagnostics/commander_resilience_summary_projection.py::_summary` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
+```python
+def _summary(rows: List[Dict[str, Any]], *, total_matched: int) -> Dict[str, Any]:
+    event_total: Dict[str, int] = {}
+    cooldown_transitions = 0
+    intervention_total = 0
+    error_total = 0
+    latest_status = ""
+    latest_run_id = ""
+
+    for rec in rows:
+        event = str(rec.get("event") or "")
+        payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
+        event_total[event] = int(event_total.get(event, 0)) + 1
+
+        is_cooldown_transition = (
+            event == "transition"
+            and (
+                str(payload.get("transition") or "") == "cooldown"
+                or str(payload.get("reason") or "") == "cooldown_active"
+            )
+        )
+        is_cooldown_resilience = (
+            event == "resilience"
+            and str(payload.get("reason") or "") == "incident_threshold_cooldown"
+        )
+        if is_cooldown_transition or is_cooldown_resilience:
+            cooldown_transitions += 1
+        if event == "intervention":
+            intervention_total += 1
+        if event == "error":
+            error_total += 1
+
+        status = str(payload.get("status") or "")
+        if status:
+            latest_status = status
+        latest_run_id = str(rec.get("run_id") or latest_run_id)
+
+    return {
+        "total_matched": int(total_matched),
+        "shown": int(len(rows)),
+        "event_total": event_total,
+        "cooldown_transition_total": int(cooldown_transitions),
+        "intervention_total": int(intervention_total),
+        "error_total": int(error_total),
+        "latest_status": latest_status,
+        "latest_run_id": latest_run_id,
+    }
+```
+
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure read-only counters. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+
+**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b1_summary_owner.py`, explicit input→expected: [error] total_matched=1 -> error_total=1, shown=1. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+
+### R2 VERIFIED | RF-063 | scripts/diagnostics/query_commander_resilience_events.py::_print_human @ L108 | SOURCE_BLOB=caebd5b1466a7f408a70be98ee94b89d5cda5e01
+
+**TARGET:** `scripts/diagnostics/commander_resilience_render_projection.py::_print_human` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
+```python
+def _print_human(path: Path, rows: List[Dict[str, Any]], summary: Dict[str, Any]) -> None:
+    print("=== Commander Resilience Events ===")
+    print(f"path={path}")
+    print(f"total_matched={summary.get('total_matched')} shown={summary.get('shown')}")
+    print(
+        f"cooldown_transition_total={summary.get('cooldown_transition_total')} "
+        f"intervention_total={summary.get('intervention_total')} "
+        f"error_total={summary.get('error_total')}"
+    )
+    print(f"latest_run_id={summary.get('latest_run_id')} latest_status={summary.get('latest_status')}")
+    for rec in rows:
+        ts = str(rec.get("ts") or "")
+        run_id = str(rec.get("run_id") or "")
+        event = str(rec.get("event") or "")
+        payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
+        key = ""
+        if event == "transition":
+            key = (
+                f"transition={payload.get('transition')} status={payload.get('status')} "
+                f"reason={payload.get('reason')} cooldown_until_epoch={payload.get('cooldown_until_epoch')}"
+            )
+        elif event == "resilience":
+            key = (
+                f"reason={payload.get('reason')} incident_count={payload.get('incident_count')} "
+                f"incident_threshold={payload.get('incident_threshold')} "
+                f"cooldown_until_epoch={payload.get('cooldown_until_epoch')}"
+            )
+        elif event == "intervention":
+            key = f"type={payload.get('type')} at_epoch={payload.get('at_epoch')}"
+        elif event == "error":
+            key = f"error_type={payload.get('error_type')} error={payload.get('error')}"
+        elif event == "end":
+            key = f"status={payload.get('status')} path={payload.get('path')}"
+        elif event == "route":
+            key = f"mode={payload.get('mode')}"
+        print(f"{ts} run_id={run_id} event={event} {key}".strip())
+```
+
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. redirect stdout only. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+
+**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b2_print_human_owner.py`, explicit input→expected: empty rows stdout header and totals. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+
+### R3 VERIFIED | RF-063 | scripts/diagnostics/reconstruct_incident_timeline.py::_incident_trigger @ L57 | SOURCE_BLOB=c47b817cef0c29957d010c105487594ae5a874c6
+
+**TARGET:** `scripts/diagnostics/incident_timeline_trigger_projection.py::_incident_trigger` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
+```python
+def _incident_trigger(row: Dict[str, Any]) -> Tuple[bool, str]:
+    stage = str(row.get("stage") or "")
+    event = str(row.get("event") or "")
+    payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+
+    if stage == "commander_router" and event == "error":
+        reason = str(payload.get("error_type") or payload.get("error") or "commander_error")
+        return True, f"commander_router:error:{reason}"
+
+    if stage == "commander_router" and event == "transition":
+        transition = str(payload.get("transition") or "").strip().lower()
+        if transition == "cooldown":
+            reason = str(payload.get("reason") or "cooldown_transition")
+            return True, f"commander_router:transition:{reason}"
+
+    if stage == "commander_router" and event == "resilience":
+        reason = str(payload.get("reason") or "").strip().lower()
+        if reason in ("cooldown_active", "incident_threshold_cooldown"):
+            return True, f"commander_router:resilience:{reason}"
+
+    if stage == "execute_from_packet" and event == "error":
+        reason = str(payload.get("error") or "execute_error")
+        return True, f"execute_from_packet:error:{reason}"
+
+    return False, ""
+```
+
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure incident labeling, no Guard effects. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+
+**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b3_incident_trigger_owner.py`, explicit input→expected: commander_router/error error_type=E -> (True,'commander_router:error:E'). Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+
+### R4 VERIFIED | RF-063 | scripts/diagnostics/reconstruct_incident_timeline.py::_is_recovery @ L84 | SOURCE_BLOB=c47b817cef0c29957d010c105487594ae5a874c6
+
+**TARGET:** `scripts/diagnostics/incident_timeline_recovery_projection.py::_is_recovery` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
+```python
+def _is_recovery(row: Dict[str, Any]) -> Tuple[bool, str]:
+    stage = str(row.get("stage") or "")
+    event = str(row.get("event") or "")
+    payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+
+    if stage == "commander_router" and event == "intervention":
+        return True, "commander_router:intervention"
+    if stage == "commander_router" and event == "end":
+        status = str(payload.get("status") or "").strip().lower()
+        if status in ("ok", "resuming", "normal"):
+            return True, f"commander_router:end:{status or 'ok'}"
+    if stage == "commander_router" and event == "resilience":
+        reason = str(payload.get("reason") or "").strip().lower()
+        if reason in ("cooldown_not_active", "resume_applied", "operator_resumed"):
+            return True, f"commander_router:resilience:{reason}"
+    if stage == "execute_from_packet" and event == "end":
+        return True, "execute_from_packet:end"
+    return False, ""
+```
+
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure recovery labeling. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+
+**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b4_is_recovery_owner.py`, explicit input→expected: commander_router/intervention -> (True,'commander_router:intervention'). Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+
+### R5 VERIFIED | RF-063 | scripts/diagnostics/reconstruct_incident_timeline.py::_event_reason @ L104 | SOURCE_BLOB=c47b817cef0c29957d010c105487594ae5a874c6
+
+**TARGET:** `scripts/diagnostics/incident_timeline_reason_projection.py::_event_reason` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
+```python
+def _event_reason(row: Dict[str, Any]) -> str:
+    payload = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+    for key in ("reason", "error_type", "error", "status"):
+        v = payload.get(key)
+        if v:
+            return str(v)
+    return ""
+```
+
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+
+**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b5_event_reason_owner.py`, explicit input→expected: payload.reason='x' -> 'x'; {}->''. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+
+### R6 VERIFIED | RF-063 | scripts/diagnostics/reconstruct_incident_timeline.py::_build_markdown @ L113 | SOURCE_BLOB=c47b817cef0c29957d010c105487594ae5a874c6
+
+**TARGET:** `scripts/diagnostics/incident_timeline_markdown_projection.py::_build_markdown` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+
+```python
+def _build_markdown(out: Dict[str, Any]) -> str:
+    lines = [
+        f"# Incident Timeline Reconstruction ({out.get('day')})",
+        "",
+        f"- ok: **{bool(out.get('ok'))}**",
+        f"- events: **{int(out.get('events') or 0)}**",
+        f"- runs: **{int(out.get('runs') or 0)}**",
+        f"- incident_total: **{int(out.get('incident_total') or 0)}**",
+        f"- recovered_incident_total: **{int(out.get('recovered_incident_total') or 0)}**",
+        f"- unresolved_incident_total: **{int(out.get('unresolved_incident_total') or 0)}**",
+        "",
+        "## Trigger Totals",
+        "",
+    ]
+    trigger_total = out.get("trigger_total") if isinstance(out.get("trigger_total"), dict) else {}
+    if trigger_total:
+        for k, v in sorted(trigger_total.items()):
+            lines.append(f"- {k}: {int(v)}")
+    else:
+        lines.append("- (none)")
+
+    lines += ["", "## Recovery Totals", ""]
+    recovery_total = out.get("recovery_total") if isinstance(out.get("recovery_total"), dict) else {}
+    if recovery_total:
+        for k, v in sorted(recovery_total.items()):
+            lines.append(f"- {k}: {int(v)}")
+    else:
+        lines.append("- (none)")
+
+    ttr = out.get("ttr_sec") if isinstance(out.get("ttr_sec"), dict) else {}
+    lines += [
+        "",
+        "## Time To Recovery (sec)",
+        "",
+        f"- count: {int(float(ttr.get('count') or 0.0))}",
+        f"- avg: {float(ttr.get('avg') or 0.0):.3f}",
+        f"- p50: {float(ttr.get('p50') or 0.0):.3f}",
+        f"- p95: {float(ttr.get('p95') or 0.0):.3f}",
+        f"- max: {float(ttr.get('max') or 0.0):.3f}",
+        "",
+        "## Failures",
+        "",
+    ]
+    failures = out.get("failures") if isinstance(out.get("failures"), list) else []
+    if failures:
+        for msg in failures:
+            lines.append(f"- {msg}")
+    else:
+        lines.append("- (none)")
+    lines.append("")
+    return "\n".join(lines)
+```
+
+**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure markdown, no IO. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+
+**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b6_build_markdown_owner.py`, explicit input→expected: day=2026-10-31 events=0 -> header and zero events. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+
+## REPORT AND CONTINUITY
+
+Post to Issue #12: `ORDER_ID=B-20261031-10 | CANONICAL_HEAD | ORDER_FILE_BLOB_SHA | OWNER_REMOTE_SHA_BEFORE→AFTER | B1..B8 statuses | SOURCE/TARGET/TEST_BLOBS | NORMAL_TEST_COMMAND/EXIT | PUSH_REMOTE_SHA | FIRST_BLOCKER | NEXT`. START/END/ELAPSED only if measured. HTTPS auth failure is PUSH_BLOCKED only: continue safe tests, use already approved exact-tree lease workflow if available, never force-push. Report LOCAL_ONLY separately. Reserves are NOT executable in this order. C03 publication is not code G1/G2/G3.
